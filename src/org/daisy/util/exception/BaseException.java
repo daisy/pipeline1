@@ -71,10 +71,26 @@ public class BaseException extends Exception {
 		a_writer.flush();
 	}
 
+	public String getRootCauseMessages() {
+	    StringBuffer _buffer = new StringBuffer();
+	    Throwable _thr = rootCause;
+	    while (_thr != null) {
+	        try {
+                BaseException _base = (BaseException)_thr;
+                _buffer.append(_base.getMessage() + "\n\t");
+                _thr = _base.getRootCause();
+            } catch (ClassCastException e) {
+                _buffer.append(_thr.getMessage());
+                _thr = null;
+            }
+	    }
+	    return _buffer.toString();
+	}
+	
 	/**
 	 * @return Returns the rootCause.
 	 */
-	public Throwable getRootCause() {
+	public Throwable getRootCause() {	    
 		return rootCause;
 	}
 

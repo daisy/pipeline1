@@ -68,6 +68,11 @@ public class Parameter {
 		System.err.println("ref set to: '" + (ref==null?"null":ref) + "'");
 	}
 	
+	public Parameter(String a_name, String a_value) {
+	    name = a_name;
+	    value = a_value;
+	}
+	
 	/**
 	 * @return Returns the id.
 	 */

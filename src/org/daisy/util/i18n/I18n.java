@@ -42,6 +42,8 @@ public class I18n {
 			return MessageFormat.format(_msg, a_params);
 		} catch (MissingResourceException e) {
 			return "<missing resource in bundle> " + a_msgId;
+		} catch (IllegalArgumentException e) {
+		    return "<wrong format of resource in bundle> " + a_msgId;
 		}
 	}
 	

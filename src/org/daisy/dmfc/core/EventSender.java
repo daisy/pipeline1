@@ -12,7 +12,7 @@ import org.daisy.util.i18n.I18n;
 
 /**
  * Base class for several classes in DMFC that need event handling functionality.
- * @author LINUSE
+ * @author Linus Ericson
  */
 public abstract class EventSender {
 

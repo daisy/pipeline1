@@ -60,7 +60,7 @@ public class DMFCCore extends EventSender {
 		
 		// FIXME no hard coded language please
 		DirClassLoader _resourceLoader = new DirClassLoader(new File("resources"), new File("resources"));
-		ResourceBundle _bundle = ResourceBundle.getBundle("dmfc_messages", new Locale("sv"), _resourceLoader);
+		ResourceBundle _bundle = ResourceBundle.getBundle("dmfc_messages", new Locale("sv", "SE"), _resourceLoader);
 		setI18nBundle(_bundle);
 		
 		// FIXME read these from file
@@ -142,7 +142,7 @@ public class DMFCCore extends EventSender {
 		} catch (ScriptException e) {
 			sendMessage(e.getMessage());
 			if (e.getRootCause() != null) {
-				sendMessage("Root cause: " + e.getRootCause().getMessage());
+				sendMessage("Root cause: " + e.getRootCauseMessages());				
 			}
 			_ret = false;
 		} catch (ValidationException e) {

@@ -33,6 +33,7 @@ public class Parameter {
 	private String direction;
 	private String type;
 	private String defaultValue;
+	private String value = null;
 	
 	public Parameter(Element a_parameter) {
 		name = a_parameter.valueOf("name");
@@ -43,7 +44,12 @@ public class Parameter {
 		// FIXME make sure the type matches a valid mime-type
 		type = a_parameter.valueOf("@type");
 		defaultValue = a_parameter.valueOf("default");
+		
+		if (a_parameter.selectSingleNode("value") != null) {
+		    value = a_parameter.valueOf("value");
+		}
 	}
+	
 	/**
 	 * @return Returns the direction.
 	 */
@@ -79,4 +85,17 @@ public class Parameter {
 		return type;
 	}
 
+    /**
+     * @return Returns the value.
+     */
+    public String getValue() {
+        return value;
+    }
+    
+    /**
+     * @return Returns the defaultValue.
+     */
+    public String getDefaultValue() {
+        return defaultValue;
+    }
 }

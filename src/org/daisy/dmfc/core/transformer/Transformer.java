@@ -3,8 +3,8 @@
  */
 package org.daisy.dmfc.core.transformer;
 
-import java.util.Collection;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -12,6 +12,7 @@ import java.util.Set;
 import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.Prompt;
+import org.daisy.dmfc.exception.TransformerRunException;
 
 /**
  * Base class for all Transformers. Every Transformer extending this base class
@@ -20,7 +21,7 @@ import org.daisy.dmfc.core.Prompt;
  * 
  * Extending this class shall not be considered as derivative works.
  * 
- * @author LINUSE
+ * @author Linus Ericson
  */
 public abstract class Transformer extends EventSender {
 	
@@ -59,7 +60,7 @@ public abstract class Transformer extends EventSender {
 	 * @param a_parameters a collection of parameters
 	 * @return <code>true</code> if the Transformer was successful, <code>false</code> otherwise.
 	 */
-	public abstract boolean execute(Collection a_parameters);
+	public abstract boolean execute(Map a_parameters) throws TransformerRunException;
 	
 	/**
 	 * Performs any Transformer specific checks. In the default implementation,

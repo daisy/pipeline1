@@ -18,11 +18,10 @@
  */
 package org.daisy.dmfc.core.script;
 
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -36,7 +35,7 @@ public class Task {
 	
 	private String name;
 	private boolean interactive;
-	private Collection parameters = new Vector();
+	private Map parameters = new LinkedHashMap();
 	
 	/**
 	 * Creates a new <code>Task</code>
@@ -53,7 +52,7 @@ public class Task {
 		for (Iterator _iter = _parameters.iterator(); _iter.hasNext(); ) {
 			Element _parameter = (Element)_iter.next();
 			Parameter _param = new Parameter(_parameter, a_properties);
-			parameters.add(_param);
+			parameters.put(_param.getName(), _param);			
 		}
 	}
 	/**
@@ -73,7 +72,7 @@ public class Task {
 	/**
 	 * @return Returns the parameters.
 	 */
-	public Collection getParameters() {
+	public Map getParameters() {
 		return parameters;
 	}
 

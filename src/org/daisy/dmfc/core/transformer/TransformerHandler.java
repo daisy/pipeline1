@@ -25,7 +25,9 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -130,10 +132,9 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @param a_parameters parameters to the Transformer
 	 * @return <code>true</code> if the run was successful, <code>false</code> otherwise
 	 */
-	public boolean run(Collection a_parameters, boolean a_interactive) throws TransformerRunException {		
+	public boolean run(Map a_parameters, boolean a_interactive) throws TransformerRunException {		
 		Transformer _transformer = null;
 		try {
-			validateParameters(a_parameters);
 			_transformer = createTransformerObject(a_interactive);
 		} catch (IllegalArgumentException e) {
 			throw new TransformerRunException("Illegal argument", e);
@@ -143,44 +144,64 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			throw new TransformerRunException("Illegal access", e);
 		} catch (InvocationTargetException e) {
 			throw new TransformerRunException("Invocation problem", e);
-		} catch (ValidationException e) {
-			throw new TransformerRunException("Parameters are invalid", e);
+		} 
+		
+		// Turn the parameters to a simple key->value string map
+		Map _params = new LinkedHashMap();
+		for (Iterator _iter = a_parameters.keySet().iterator(); _iter.hasNext(); ) {
+		    String _key = (String)_iter.next();
+		    org.daisy.dmfc.core.script.Parameter _param = (org.daisy.dmfc.core.script.Parameter)a_parameters.get(_key);
+		    _params.put(_key, _param.getValue());
 		}
-		return _transformer.execute(a_parameters);
+		
+		return _transformer.execute(_params);
 	}
 	
 	/**
-	 * Checks if the parameters in a task script are valid for this Transformer
+	 * Checks if the parameters in a task script are valid for this Transformer.
+	 * Also add any hard-coded parameters. 
 	 * @param a_parameters a collection of parameters
 	 */
-	public void validateParameters(Collection a_parameters) throws ValidationException {
+	public void validateParameters(Map a_parameters) throws ValidationException {
 		HashMap _map = new HashMap();
+
+		// Add all hard-coded parameters in the TDF to the script parameters
+		for (Iterator _iter = parameters.iterator(); _iter.hasNext(); ) {
+		    Parameter _param = (Parameter)_iter.next();
+			if (_param.getValue() != null) {
+			    if (a_parameters.containsKey(_param.getName())) {			        
+			        throw new ValidationException(i18n("PARAM_NOT_BY_USER", _param.getName()));
+			    }
+			    org.daisy.dmfc.core.script.Parameter _scriptParameter = new org.daisy.dmfc.core.script.Parameter(_param.getName(), _param.getValue()); 
+			    a_parameters.put(_param.getName(), _scriptParameter);
+			}
+		}
 		
 		// Make sure there are no parameters in the script file that is not in the TDF.
 		for (Iterator _iter = parameters.iterator(); _iter.hasNext(); ) {
-			Parameter _transformerParam = (Parameter)_iter.next();
+			Parameter _transformerParam = (Parameter)_iter.next();			
 			_map.put(_transformerParam.getName(), _transformerParam);
 		}		
-		for (Iterator _iter = a_parameters.iterator(); _iter.hasNext(); ) {
+		for (Iterator _iter = a_parameters.values().iterator(); _iter.hasNext(); ) {
 			org.daisy.dmfc.core.script.Parameter _scriptParameter = (org.daisy.dmfc.core.script.Parameter)_iter.next();
 			Parameter _transformerParameter = (Parameter)_map.get(_scriptParameter.getName());
 			if (_transformerParameter == null) {
 				throw new ValidationException("Parameter " + _scriptParameter.getName() + " in script file is not recognized by Transformer " + getName());
 			}
-		}
-		_map.clear();
+		}		
 		
 		// Make sure there are no required parameters in the TDF that are not present in the script file
-		for (Iterator _iter = a_parameters.iterator(); _iter.hasNext(); ) {
-			org.daisy.dmfc.core.script.Parameter _scriptParam = (org.daisy.dmfc.core.script.Parameter)_iter.next();
-			_map.put(_scriptParam.getName(), _scriptParam);
-		}
 		for (Iterator _iter = parameters.iterator(); _iter.hasNext(); ) {
 			Parameter _transformerParam = (Parameter)_iter.next();
 			if (_transformerParam.isRequired()) {
-				org.daisy.dmfc.core.script.Parameter _scriptParam = (org.daisy.dmfc.core.script.Parameter)_map.get(_transformerParam.getName());
+				org.daisy.dmfc.core.script.Parameter _scriptParam = (org.daisy.dmfc.core.script.Parameter)a_parameters.get(_transformerParam.getName());
 				if (_scriptParam == null) {
 					throw new ValidationException("Parameter " + _transformerParam.getName() + " is required by the Transformer " + getName());
+				}
+			} else {
+			    org.daisy.dmfc.core.script.Parameter _scriptParam = (org.daisy.dmfc.core.script.Parameter)a_parameters.get(_transformerParam.getName());
+				if (_scriptParam == null) {
+					a_parameters.put(_transformerParam.getName(), new org.daisy.dmfc.core.script.Parameter(_transformerParam.getName(), _transformerParam.getDefaultValue()));
 				}
 			}
 		}
@@ -194,26 +215,6 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	private void createTransformerClass(File a_transformerDescription) throws ClassNotFoundException {
 		sendMessage("About to create the Transformer class '" + classname + "'");
 		File _dir = a_transformerDescription.getAbsoluteFile();
-		/*
-		boolean found = false;
-		// FIXME magic number
-		for (int i = 0; i < 3 && !found; ++i) {
-			_dir = _dir.getParentFile();
-			found = true;
-			try {
-				//transformerClassLoader = new DirClassLoader(_dir);
-				transformerClassLoader = new DirClassLoader(new File("plugin"), _dir);
-				transformerClass = Class.forName(classname, true, transformerClassLoader);
-				sendMessage("Class " + classname + " found in " + _dir.getAbsolutePath());
-			} catch (ClassNotFoundException e) {
-				sendMessage("Class not found in " + _dir.getAbsolutePath());
-				found = false;
-			}
-		}
-		if (!found) {
-			throw new ClassNotFoundException("Could not find class file " + classname + " for Transformer " + name);
-		}
-		*/
 		_dir = _dir.getParentFile();
 		transformerClassLoader = new DirClassLoader(new File("plugin"), _dir);
 		transformerClass = Class.forName(classname, true, transformerClassLoader);
@@ -222,7 +223,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	/**
 	 * Creates an instance object of the Transformer class.
 	 * @param a_interactive
-	 * @return
+	 * @return a <code>Transformer</code> object
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException

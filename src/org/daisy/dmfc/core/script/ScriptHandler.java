@@ -112,11 +112,10 @@ public class ScriptHandler extends EventSender {
 				Task _task = (Task)_iter.next();
 				TransformerHandler _handler = (TransformerHandler)transformerHandlers.get(_task.getName());
 				
-				for (Iterator _paramIter = _task.getParameters().iterator(); _paramIter.hasNext(); ) {
+				for (Iterator _paramIter = _task.getParameters().values().iterator(); _paramIter.hasNext(); ) {
 					Parameter _parameter = (Parameter)_paramIter.next();
 					System.err.println("validating param " + _parameter.getName());
 					if (_parameter.getRef() != null) {
-						System.err.println("has ref"); 
 						Node _refd = _doc.selectSingleNode("//task/parameter[@id='" + _parameter.getRef() + "']");
 												
 						if (_refd == null) {
@@ -125,6 +124,7 @@ public class ScriptHandler extends EventSender {
 						}
 						
 						String _taskWithIDName = _doc.valueOf("//task[parameter/@id='" + _parameter.getRef() + "']/@name");
+						// We already know this handler exists
 						TransformerHandler _handlerWithID = (TransformerHandler)transformerHandlers.get(_taskWithIDName);
 						
 						// Make sure all in params with a ref has a matching (mime-wise) out param id
@@ -154,7 +154,7 @@ public class ScriptHandler extends EventSender {
 	}
 	
 	/**
-	 * Reads the properies in the script file.
+	 * Reads the properties in the script file.
 	 * @param a_element
 	 */
 	private void readProperties(Element a_element) {
@@ -162,6 +162,7 @@ public class ScriptHandler extends EventSender {
 		this.description = a_element.valueOf("description");
 		this.version = a_element.valueOf("@version");
 		
+		// Read properties
 		XPath _xpathSelector = DocumentHelper.createXPath("property");
 		List _properties = _xpathSelector.selectNodes(a_element);
 		for (Iterator _iter = _properties.iterator(); _iter.hasNext(); ) {
@@ -171,6 +172,7 @@ public class ScriptHandler extends EventSender {
 			properties.put(_name, _value);
 		}
 		
+		// Read tasks
 		_xpathSelector = DocumentHelper.createXPath("task");
 		List _tasks = _xpathSelector.selectNodes(a_element);
 		for (Iterator _iter = _tasks.iterator(); _iter.hasNext(); ) {
