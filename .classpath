@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry output="plugin" kind="src" path="plugin"/>
+	<classpathentry output="transformers" kind="src" path="transformers"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/dom4j-1.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/jaxen-1.1-beta-4.jar"/>

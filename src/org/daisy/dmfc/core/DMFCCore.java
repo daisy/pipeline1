@@ -26,6 +26,7 @@ import java.util.ResourceBundle;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
+import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.util.exception.ValidationException;
@@ -76,10 +77,10 @@ public class DMFCCore extends EventSender {
 	 */
 	public void reloadTransformers() {
 		try {
-			Validator _validator = new RelaxngSchematronValidator(new File("resources/transformer.rng"), true);
+			Validator _validator = new RelaxngSchematronValidator(new File("resources", "transformer.rng"), true);
 			sendMessage("Reloading Transformers");
 			transformerHandlers.clear();		
-			addTransformers(new File("plugin"), _validator);			
+			addTransformers(new File("transformers"), _validator);			
 			sendMessage("Reloading of Transformers done");
 		} catch (ValidationException e) {
 			sendMessage("Reloading of transformers failed " + e.getMessage());
@@ -121,7 +122,7 @@ public class DMFCCore extends EventSender {
 				} catch (TransformerDisabledException e) {
 					sendMessage("Transformer in file '" + _current.getAbsolutePath() + "' disabled: " + e.getMessage());
 					if (e.getRootCause() != null) {
-						sendMessage("Root cause: " + e.getRootCause().getMessage());
+						sendMessage("Root cause: " + e.getRootCauseMessagesAsString());
 					}
 				}
 			}
@@ -134,34 +135,49 @@ public class DMFCCore extends EventSender {
 	 * @return true if the exeution was successful, false otherwise.
 	 */
 	public boolean executeScript(File a_script) {		
-		boolean _ret = true;
+		boolean _ret = false;
 		try {
-			Validator _validator = new RelaxngSchematronValidator(new File("resources/script.rng"), false);
+			Validator _validator = new RelaxngSchematronValidator(new File("resources", "script.rng"), false);
 			ScriptHandler _handler = new ScriptHandler(a_script, transformerHandlers, getEventListeners(), _validator);
 			_handler.execute();
+			_ret = true;
 		} catch (ScriptException e) {
 			sendMessage(e.getMessage());
 			if (e.getRootCause() != null) {
-				sendMessage("Root cause: " + e.getRootCauseMessages());				
+			    String _msg = new String();
+			    String[] _msgs = e.getRootCauseMessages();			    
+			    for (int i = 0; i < _msgs.length; ++i) {
+			        _msg = _msgs[i] + "\n";
+			    }
+				sendMessage("Root cause: " + _msg);				
 			}
-			_ret = false;
 		} catch (ValidationException e) {
 			sendMessage("Problems parsing script file" + e.getMessage());
 			if (e.getRootCause() != null) {
 				sendMessage("Root cause: " + e.getRootCause().getMessage());
 			}
-			_ret = false;
-		}
+		} catch (MIMEException e) {
+			if (e.getRootCause() != null) {
+			    String _msg = new String();
+			    String[] _msgs = e.getRootCauseMessages();			    
+			    for (int i = 0; i < _msgs.length; ++i) {
+			        _msg = _msgs[i] + "\n";
+			    }
+				sendMessage("Root cause: " + _msg);				
+			}
+        }
 		return _ret;
 	}
 	
 	/**
 	 * Validates a task script
 	 * @param a_script the script to validate
-	 * @throws ScriptException if the script is not valid,
+	 * @throws ValidationException
+	 * @throws ScriptException
+	 * @throws MIMEException
 	 */
-	public void validateScript(File a_script) throws ScriptException, ValidationException {
-		Validator _validator = new RelaxngSchematronValidator(new File("resources/script.rng"), false);
+	public void validateScript(File a_script) throws ValidationException, ScriptException, MIMEException {
+		Validator _validator = new RelaxngSchematronValidator(new File("resources", "script.rng"), false);
 		new ScriptHandler(a_script, transformerHandlers, getEventListeners(), _validator);
 	}
 }

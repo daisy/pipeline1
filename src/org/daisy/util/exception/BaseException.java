@@ -20,6 +20,7 @@ package org.daisy.util.exception;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Vector;
 
 /**
  * Base class for exceptions
@@ -71,18 +72,37 @@ public class BaseException extends Exception {
 		a_writer.flush();
 	}
 
-	public String getRootCauseMessages() {
-	    StringBuffer _buffer = new StringBuffer();
+	/**
+	 * Get all root cause messages.
+	 * @return an array of root cause messages
+	 */
+	public String[] getRootCauseMessages() {
+	    Vector _vec = new Vector();
 	    Throwable _thr = rootCause;
 	    while (_thr != null) {
 	        try {
                 BaseException _base = (BaseException)_thr;
-                _buffer.append(_base.getMessage() + "\n\t");
+                _vec.add(_base.getMessage());
                 _thr = _base.getRootCause();
             } catch (ClassCastException e) {
-                _buffer.append(_thr.getMessage());
+                _vec.add(_thr.getMessage());
                 _thr = null;
             }
+	    }
+	    int _count = _vec.size();
+	    String[] _messages = new String[_count];
+	    _vec.copyInto(_messages);
+	    return _messages;
+	}
+	
+	public String getRootCauseMessagesAsString() {
+	    StringBuffer _buffer = new StringBuffer();
+	    String[] _msgs = getRootCauseMessages();
+	    if (_msgs.length > 0) {
+	        _buffer.append(_msgs[0]);	    
+		    for (int i = 1; i < _msgs.length; ++i) {
+		        _buffer.append(", caused by " + _msgs[i]);
+		    }
 	    }
 	    return _buffer.toString();
 	}

@@ -55,17 +55,16 @@ public class Parameter {
 		while (_matcher.find()) {
 		    String _propName = _matcher.group(1);
 		    String _prop = (String)a_properties.get(_propName);
-		    System.err.println("PROP: " + _propName + " = " + _prop);
 		    _matcher.appendReplacement(_sb, _prop);
 		}
 		_matcher.appendTail(_sb);
 		value = _sb.toString();
+		// FIXME add ${dollar} pattern
 		//value.replaceAll("\\$\\{\\$\\}", "\\$"); // replace ${$} with $		
 		id = a_element.valueOf("@id");
 		if (a_element.selectSingleNode("@ref") != null) {
 			ref = a_element.valueOf("@ref");
 		}
-		System.err.println("ref set to: '" + (ref==null?"null":ref) + "'");
 	}
 	
 	public Parameter(String a_name, String a_value) {

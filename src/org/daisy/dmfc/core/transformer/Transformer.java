@@ -46,8 +46,7 @@ public abstract class Transformer extends EventSender {
 				_locale = new Locale(_lang);
 			} else {
 				_locale = new Locale(_lang, _country);
-			}
-			System.err.println(getClass().getClassLoader().toString());
+			}			
 			ResourceBundle _bundle = ResourceBundle.getBundle("messages", _locale, this.getClass().getClassLoader());
 			setI18nBundle(_bundle);
 		} catch (MissingResourceException e) {

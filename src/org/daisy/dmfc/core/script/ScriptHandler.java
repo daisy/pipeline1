@@ -30,6 +30,7 @@ import java.util.Set;
 import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.MIMERegistry;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
+import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.exception.ValidationException;
@@ -62,8 +63,9 @@ public class ScriptHandler extends EventSender {
 	 * @param a_eventListeners a set of event listeners
 	 * @param a_validator a validator
 	 * @throws ScriptException if the script is invalid
+	 * @throws MIMEException
 	 */
-	public ScriptHandler(File a_script, Map a_transformerHandlers, Set a_eventListeners, Validator a_validator) throws ScriptException {
+	public ScriptHandler(File a_script, Map a_transformerHandlers, Set a_eventListeners, Validator a_validator) throws ScriptException, MIMEException {
 		super(a_eventListeners);
 		transformerHandlers = a_transformerHandlers;
 		
@@ -88,8 +90,7 @@ public class ScriptHandler extends EventSender {
 			for (Iterator _iter = tasks.iterator(); _iter.hasNext(); ) {
 				Task _task = (Task)_iter.next();
 				TransformerHandler _handler = (TransformerHandler)transformerHandlers.get(_task.getName());
-				System.err.println("validating " + _task.getName());
-				
+								
 				if (_handler == null) {
 					throw new ScriptException("Transformer " + _task.getName() + " is not a known Transformer");
 				}
@@ -113,8 +114,7 @@ public class ScriptHandler extends EventSender {
 				TransformerHandler _handler = (TransformerHandler)transformerHandlers.get(_task.getName());
 				
 				for (Iterator _paramIter = _task.getParameters().values().iterator(); _paramIter.hasNext(); ) {
-					Parameter _parameter = (Parameter)_paramIter.next();
-					System.err.println("validating param " + _parameter.getName());
+					Parameter _parameter = (Parameter)_paramIter.next();					
 					if (_parameter.getRef() != null) {
 						Node _refd = _doc.selectSingleNode("//task/parameter[@id='" + _parameter.getRef() + "']");
 												

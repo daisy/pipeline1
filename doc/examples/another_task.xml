@@ -12,12 +12,7 @@
 		<parameter id="id1">
 			<name>out</name>
 			<value>test.out</value>
-		</parameter>
-		
-		<parameter>
-			<name>xslt</name>
-			<value>test.out</value>
-		</parameter>
+		</parameter>		
 				
 	</task>
 

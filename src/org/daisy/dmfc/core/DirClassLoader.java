@@ -62,10 +62,8 @@ public class DirClassLoader extends ClassLoader {
 		}
 		byte[] data = new byte[(int)_classFile.length()];
 		try {
-			//System.err.println("Classloading " + a_classname);
 			FileInputStream _fis = new FileInputStream(_classFile);
 			int _num = _fis.read(data);
-			//System.err.println("Read " + _num + " bytes.");
 			if (_num != _classFile.length()) {
 				System.err.println("The file was not completely read");
 			}
@@ -74,7 +72,6 @@ public class DirClassLoader extends ClassLoader {
 		} catch (IOException e) {
 			throw new ClassNotFoundException("Can't read class at: " + _classFile.getAbsolutePath());
 		}
-		//System.err.println("Defining class.");
 		return defineClass(a_classname, data, 0, data.length);
 	}
 	

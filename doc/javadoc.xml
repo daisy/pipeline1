@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="javadoc">
     <target name="javadoc">
-        <javadoc access="public" author="true" classpath="../plugin;../lib/jing.jar;../bin;../lib/dom4j-1.5.2.jar;../lib/jaxen-1.1-beta-4.jar" destdir="api" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="org.daisy.util.file,org.daisy.dmfc.ui,org.daisy.dmfc.core.transformer,org.daisy.dmfc.core.script,org.daisy.util.i18n,org.daisy.dmfc.core,org.daisy.util.exception,org.daisy.dmfc.exception,org.daisy.util.xml.validator" sourcepath="../plugin;../src" splitindex="true" use="true" version="true"/>
+        <javadoc access="public" author="true" classpath="../lib/jing.jar;../bin;../lib/dom4j-1.5.2.jar;../lib/jaxen-1.1-beta-4.jar;../transformers" destdir="api" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="org.daisy.util.file,org.daisy.dmfc.core.script,org.daisy.util.exception,org.daisy.dmfc.core,org.daisy.dmfc.transformers,org.daisy.dmfc.ui,org.daisy.dmfc.core.transformer,org.daisy.util.i18n,org.daisy.dmfc.exception,org.daisy.util.xml.validator" sourcepath="../transformers;../src" splitindex="true" use="true" version="true"/>
     </target>
 </project>

@@ -18,6 +18,8 @@
  */
 package org.daisy.dmfc.core.transformer;
 
+import org.daisy.dmfc.core.MIMERegistry;
+import org.daisy.dmfc.exception.MIMEException;
 import org.dom4j.Element;
 
 /**
@@ -35,14 +37,25 @@ public class Parameter {
 	private String defaultValue;
 	private String value = null;
 	
-	public Parameter(Element a_parameter) {
+	/**
+	 * Creates a new Parameter.
+	 * @param a_parameter the dom4j element to get the data from.
+	 * @throws MIMEException if a type attribute is not a valid MIME type
+	 */
+	public Parameter(Element a_parameter) throws MIMEException {
 		name = a_parameter.valueOf("name");
 		description = a_parameter.valueOf("description");
 		example = a_parameter.valueOf("example");
 		required = Boolean.valueOf(a_parameter.valueOf("@required")).booleanValue();
 		direction = a_parameter.valueOf("@direction");
-		// FIXME make sure the type matches a valid mime-type
-		type = a_parameter.valueOf("@type");
+
+		// Make sure the 'type' matches a MIME type
+		type = a_parameter.valueOf("@type");		
+		MIMERegistry _mime = MIMERegistry.instance();
+		if (!_mime.contains(type)) {
+		    throw new MIMEException("Type attribute " + type + " of parameter " + name + " is not a valid MIME type.");
+		}
+		
 		defaultValue = a_parameter.valueOf("default");
 		
 		if (a_parameter.selectSingleNode("value") != null) {

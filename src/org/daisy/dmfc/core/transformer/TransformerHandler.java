@@ -34,6 +34,7 @@ import java.util.Vector;
 import org.daisy.dmfc.core.DirClassLoader;
 import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.exception.ValidationException;
@@ -123,7 +124,9 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			throw new TransformerDisabledException("Cannot run static isSupported method of Transformer", e);
 		} catch (ValidationException e) {
 			throw new TransformerDisabledException(i18n("TDF_VALIDATION_EXECPTION"), e);
-		}	
+		} catch (MIMEException e) {
+		    throw new TransformerDisabledException("MIME exception", e);
+        }	
 	}
 	
 	
@@ -216,7 +219,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		sendMessage("About to create the Transformer class '" + classname + "'");
 		File _dir = a_transformerDescription.getAbsoluteFile();
 		_dir = _dir.getParentFile();
-		transformerClassLoader = new DirClassLoader(new File("plugin"), _dir);
+		transformerClassLoader = new DirClassLoader(new File("transformers"), _dir);
 		transformerClass = Class.forName(classname, true, transformerClassLoader);
 	}
 	
@@ -238,8 +241,9 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	/**
 	 * Reads the properties in the TDF.
 	 * @param a_element
+	 * @throws MIMEException
 	 */
-	private void readProperties(Element a_element) {
+	private void readProperties(Element a_element) throws MIMEException {
 		this.name = a_element.valueOf("name");
 		this.description = a_element.valueOf("description");
 		this.classname = a_element.valueOf("classname");
@@ -324,9 +328,8 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 				else {
 					if (!_real.matches(_value)) {
 						_platformOk = false;
-						System.err.print("-");
 					}
-					System.err.println("Property: " + _name + ", value: " + _value + ", real: " + _real);
+					//System.err.println("Property: " + _name + ", value: " + _value + ", real: " + _real);
 				}
 			}
 			if (_platformOk) {
