@@ -14,6 +14,7 @@ import java.net.URL;
  * A class loader that can load classes and resources from specified
  * directories that are not in the classpath.
  * @author LINUSE
+ * 
  */
 public class DirClassLoader extends ClassLoader {
 
