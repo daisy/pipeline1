@@ -1,0 +1,24 @@
+<taskScript version="1.0">
+	<name>TestScript</name>
+	<description>This script does nothing useful</description>
+	
+	<task name="XSLTTest" interactive="false">
+
+		<parameter>
+			<name>xml</name>
+			<value>file:///C:/temp/hepp.xml</value>
+		</parameter>
+					
+		<parameter id="id1">
+			<name>out</name>
+			<value>test.out</value>
+		</parameter>
+		
+		<parameter>
+			<name>xslt</name>
+			<value>test.out</value>
+		</parameter>
+				
+	</task>
+
+</taskScript>
