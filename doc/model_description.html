@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html	PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+				"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>DMFC Model Description</title>
+	<style type="text/css">
+		body {margin: 3em; padding-right: 2em;}		
+		h1,h2,h3,h4 {font-weight: bold;}
+		ul.contents {list-style: none;}
+		h4 {margin-bottom: 0.1em; margin-top: 0.5em; /*border: red solid 1px;*/}
+		h3 {margin-bottom: 0.1em; margin-top: 1em; /*border: green solid 1px;*/}
+		h2 {margin-bottom: 1em; padding-top: 1em; border-top: #dddddd 3px dotted; }		
+		p {margin-top: 0.0em; margin-bottom: 0.5em; /*border: black solid 1px;*/}
+		.comment {border-left: 2px solid red; margin-left: -1em; padding-left: 1em;}
+		.disclaimer {font-weight: bold; font-style: italic; padding-left: 5em; padding-right: 5em; text-indent: -5em;}
+	</style>
+</head>
+<body>
+
+<h1>DMFC Model Description</h1>
+
+<ul class="contents">
+	<li><a href="#usage">Overview</a>
+		<ul>
+			<li><a href="#components">Components</a></li>
+			<li><a href="#framework">Framework</a></li>
+			<li><a href="#module">Conversion module description</a></li>			
+			<li><a href="#scripts">Task scripts</a></li>
+		</ul>	
+	</li>
+	<li><a href="#ui">User interface</a>
+		<ul>
+			<li><a href="#prompting">Messaging and Prompting</a></li>
+			<li><a href="#toggleable">Toggleable interactivity</a></li>
+		</ul>	
+	</li>
+	<li><a href="#platform">Platform Support</a></li>
+	<li><a href="#i18n">Internationalization and Localization</a>
+		<ul>
+			<li><a href="#internationalization">Internationalization</a></li>
+			<li><a href="#localization">Localization</a></li>
+		</ul>	
+	</li>
+	<li><a href="#FilesAndFolders">Files and folders structure</a>
+		<ul>					  
+			<li><a href="#frameworkFilesAndFolders">Framework</a></li>
+			<li><a href="#moduleFilesAndFolders">Conversion module</a></li>
+		</ul>
+	</li>
+</ul>
+
+<p class="disclaimer">
+Disclaimer: In this model description we have assumed that the DMFC core will be
+implemented in the <code>Java</code> programming language. This makes it simpler
+to give examples of existing solutions to any specific problems.
+</p>
+
+<!-- ********** Overview ****************************************** -->
+<h2 id="usage">Overview</h2>
+<h3 id="components">Components</h3>
+<p>
+The DMFC framework consists of a Java based core and a set of conversion modules
+implemented in Java or some other programming language. Each conversion module has a XML
+based description file, describing its capabilities to the framework. 
+A utility package provides common functionality that will be
+useful to many conversion modules.
+</p>
+<p>
+The framework is able to run XML based scripts that describe how a set of conversion
+modules are to be executed.
+</p>
+<p>
+Many different user interfaces can be developed for the framework, thus making it
+possible to use DMFC in a standalone or integrated environment.
+</p>
+
+<h3 id="framework">Framework</h3>
+<h4>Features of the framework</h4>
+<p>
+From the perspective of the user interface, the DMFC framework has the ability to:
+</p>
+<ul>
+	<li>Run task scripts (see <a href="#scripts">task scripts</a>)</li>
+	<li>Validate task scripts (see <a href="#validation">validation</a>)</li>
+	<li>Collect conversion module information (name, parameters etc.)</li>
+</ul>
+
+<h4>Communication between the framework core and the conversion modules</h4>
+<p>
+Conversion modules written in Java will have no problem communicating with the framework
+core since they will simply extend an abstract <code>ConversionModule</code> class
+that holds the common functionality.
+</p>
+
+<p>
+When conversion modules are written in a foreign language such as Python or Perl there
+will be no communication between the framework and the conversion module in the first
+iteration of DMFC (the <i>KISS</i> principle). A later version of DMFC could implement
+some communication with foreign conversion modules (maybe based on SOAP?). If this type
+of communication is needed for a conversion module immediately, one could implement a
+Java wrapper class that handles this.
+</p>
+
+<h4>Messaging and logging</h4>
+<p>
+All messages can be internationalized and localized. The messaging system is described
+in <a href="#ui">User Interface</a> section and in the <a href="#i18n">
+Internationalization and localization section</a>. Messages can also be logged to
+file, presumably in a Log4j like fashion with multiple levels of logging.
+</p>
+
+<h3 id="module">Conversion module description</h3>
+<p>
+A conversion module is a plugin that the framework uses to perform a certain task 
+(such as converting a Daisy 2.02 book to Daisy 3). Once the framework is finished,
+it should be easy to plug in new conversion modules into the system.
+</p>
+<p>
+Each conversion module resides in its own directory and is described in an XML based 
+manifest file. An example of such a file can be found <a href="conversion_module-example.txt">here</a>. The 
+description file contains:
+</p>
+<ul>
+	<li>The name of the conversion module</li>
+	<li>A textual description of what the conversion module does</li>
+	<li>The class name of the conversion module</li>
+	<li>Parameter descriptions (name, description, MIME-type etc.)</li>
+	<li>Platform dependency specifications</li>
+	<li>Version information</li>
+</ul>
+<p>
+Each conversion module has a Java class associated with it. For conversion modules
+written in other languages than Java, the class will be a wrapper class (e.g. 
+<code>PerlRunner</code>) handling the communication with the rest of the framework.
+The wrapper class will also be responsible performing any platform specific dependency
+checks (e.g. checking if Perl is installed) that cannot be described in the conversion
+module XML description.
+</p>
+
+<h3 id="scripts">Task scripts</h3>
+<p>
+DMFC executes task scripts. Each script contains one or more tasks, where each task 
+represents the execution of a conversion module. An example of a task script can be found 
+<a href="task_script-example.txt">here</a>. The scripts contain the following information:
+</p>
+<ul>
+	<li>Name of the script</li>
+	<li>Textual description of what the script does</li>
+	<li>For each task
+		<ul>
+			<li>Name of the conversion module to run</li>
+			<li>Logging and interactivity levels</li>
+			<li>Parameters to the conversion module (name and value)</li>
+		</ul>
+	</li>
+</ul>
+<p>
+In the initial implementation of DMFC, the tasks in the task scripts will be executed in
+sequential order. A later version of DMFC might contain dependencies between tasks and
+other features such as conditional task execution.
+</p>
+<p>
+User interfaces are expected to generate task scripts using the conversion module information provided
+by the framework. The default (command line based) user interface will probably not have that
+ability. Instead, it will simply pass a "hand written" task script to the framework.
+</p>
+
+<h4 id="chaining">Chaining of conversion modules</h4>
+<p>
+There needs to be a way to describe that the output from one conversion module can be the input of
+another to facilitate sequencing of conversion modules.
+</p>
+<p>
+If each input and output parameter is tagged with a MIME type in the conversion module description 
+(e.g. 'DAISY 2.02 file set'), the MIME types of two conversion modules run in a sequence can be validated.
+But if conversion module <code>A</code> outputs two Daisy 2.02 books, and conversion module <code>B</code>
+takes a single Daisy 2.02 book as input, there will be now way for DMFC to automagically select the right one
+when the two conversion modules are run in sequence. Therefore each input parameter in the task script file
+needs to contain a reference to the corresponding output parameter of a previous conversion module.
+</p>
+<p>
+This is an area that might need further consideration and any input from the group will be
+appreciated.
+</p>
+
+<h4 id="validation">Validation</h4>
+<p>
+Using the <a href="#module">conversion module descriptions</a> and <a href="#chaining">the chaining
+method</a>, a task script can be validated before it is run by the framework.
+</p>
+
+
+
+<!-- ********** User interface ********************************* -->
+<h2 id="ui">User interface</h2>
+<p>Default installation includes a basic commandline interface. For writing alternative UIs, the framework exposes three interfaces
+(DMFCCore, ConversionModuleInfo, EventListener).
+</p>
+
+<h3 id="prompting">Messaging and prompting</h3>
+	<h4>Messaging</h4>
+	<p>Messages are sent to the user from the conversion module simply by calling a method residing
+	 in the superclass (ConversionModule).</p>
+	
+	<h4>Promting</h4>
+	<p>Conversion modules can request user input by calling a method (getUserInput) inherited from ConversionModule. It's up to the UI/Application 
+	communicating with the framework to implement EventListener and thereby fullfill the conversion module's request. An object is sent as a parameter in the
+	method getUserInput, it contains all data needed for displaying message in i18n style, and a method for validating input using regular expressions. 
+	</p>
+		
+<h3 id="toggleable">Toggleable interactivity</h3>
+	<p>Conversion modules should be able to run in non-interactive mode.
+	In effect this means that conversion modules should have a default value for each user input request
+	which will be selected automatically by the framework in case non-interactive mode is selected.</p>
+
+<!-- ********** Platform Support ******************************* -->
+<h2 id="platform">Platform Support</h2>
+	<p>Some conversion modules might only work on one or a few platforms (e.g. when using an exe-file). 
+	This can be specified in the conversion module description file. 
+	</p>
+	<p>Example of a element from a conversion modules description file:</p>
+	<pre>
+&lt;platform>
+    &lt;property>
+        &lt;name>os.name&lt;/name>
+        &lt;value>Linux.*&lt;/value>
+    &lt;/property>
+&lt;/platform>	
+	</pre>
+	<p>The absence of the platform element indicates that this conversion module has no platform restriction other than that of the framework.</p>  
+	<p>
+		In addition each conversion module can override a static method from its parent (ConversionModule) that does further platform configuration checks. This possibility exists so that 
+		conversion modules can examine the platform more thoroughly (e.g. is Perl available or is Xerces XML-parser availible). 
+		The method is static, enabling this check to be done without instantiating the class in question.
+
+	</p>
+
+<!-- ********** Internationalization and Localization ********** -->
+<h2 id="i18n">Internationalization and Localization</h2>
+
+<h3 id="internationalization">Internationalization</h3>
+<p>
+On instantiation of the DMFC core a language and a locale can be selected. All
+messages the framework or any conversion module sends to the user can be internationalized
+and localized.
+</p>
+<p>
+Messages for each language are described in a separate language description file.
+Each language description file contains a set of ID-value pairs. The ID:s are the
+same for all language files, but the values contain translated messages for each
+language. When the framework (or conversion module) prints a message, the message
+is referred to by ID and the matching value in the current language file is used. 
+</p>
+
+<h3 id="localization">Localization</h3>
+<p>
+The value strings in the language files are written in the 
+<code>java.text.MessageFormat</code> syntax, thus making it possible to adapt all
+parameters of the messages according to the current locale.
+</p>
+
+
+
+
+<!-- ********** Files and folders structure ************** -->
+<h2 id="FilesAndFolders">Files and folders structure</h2>
+
+<h3 id="frameworkFilesAndFolders">Framework</h3>
+
+<p>The framework consists of the following files:</p>
+<ul>
+<li>Class files</li>
+<li>Resource bundle (for example i18n message files)</li>
+<li>Property files (different general system settings)</li>
+</ul>
+
+<p>Folders:</p>
+<ul>
+	<li>Class folder (class files and resource bundle)</li>
+	<li>Property files folder</li>
+	<li>Conversion Module main folder (parent folder of all conversion module folders)</li>
+	<li>Utilities(common functionality package)</li>
+</ul>
+
+<h3 id="moduleFilesAndFolders">Conversion modules</h3>
+<p>Each conversion module consists of the following files:</p>
+<ul>
+	<li>Conversion performing object (class file, XSLT sheet, exe, etc.)</li>
+	<li>Language description files</li>
+	<li>Conversion module description file</li>
+</ul>	
+
+<h4>Class files</h4>
+<p>
+The conversion module class files either reside in the folder of the conversion
+module (i.e. where the manifest file is) that executes it, or in some place where commonly used class files (e.g. 
+the ExeRunner class) are placed.
+</p>
+
+<p>
+If several manifest files (conversion modules) use the same ConversionModule class, this is done by creating
+subfolders to the folder with the common class file. Each subfolder created contains the manifest of a
+conversion module that uses the class file in the parent folder.
+</p>
+<p>
+The conversion module classes can therefore reside in three different directories:
+</p>
+<ul>
+	<li>In the same folder as the manifest file</li>
+	<li>In a parent folder of the manifest file</li>
+	<li>In a common folder for class files that are part of DMFC (e.g. ExeRunner, XSLTRunner)</li>
+</ul>
+
+<h4>Language description files</h4>
+<p>
+Any language description files are placed in the directory of the conversion module.
+Each ConversionModule class of the framework may also have a set of language files associated with it.
+</p>
+
+
+</body>
+</html>
