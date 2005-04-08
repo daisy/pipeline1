@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import org.daisy.dmfc.core.DirClassLoader;
 import org.daisy.dmfc.core.EventSender;
@@ -63,7 +64,6 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	private String classname;
 	private String version;
 	private Collection parameters = new Vector();
-	private boolean supported;
 	
 	private InputListener inputListener;
 		
@@ -123,7 +123,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		} catch (TransformerRunException e) {
 			throw new TransformerDisabledException("Cannot run static isSupported method of Transformer", e);
 		} catch (ValidationException e) {
-			throw new TransformerDisabledException(i18n("TDF_VALIDATION_EXECPTION"), e);
+			throw new TransformerDisabledException(i18n("TDF_VALIDATION_EXCEPTION"), e);
 		} catch (MIMEException e) {
 		    throw new TransformerDisabledException("MIME exception", e);
         }	
@@ -135,7 +135,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @param a_parameters parameters to the Transformer
 	 * @return <code>true</code> if the run was successful, <code>false</code> otherwise
 	 */
-	public boolean run(Map a_parameters, boolean a_interactive) throws TransformerRunException {		
+	public boolean run(Map a_parameters, boolean a_interactive) throws TransformerRunException {
 		Transformer _transformer = null;
 		try {
 			_transformer = createTransformerObject(a_interactive);
@@ -216,7 +216,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @throws ClassNotFoundException
 	 */
 	private void createTransformerClass(File a_transformerDescription) throws ClassNotFoundException {
-		sendMessage("About to create the Transformer class '" + classname + "'");
+	    sendMessage(Level.FINE, i18n("LOADING_TRANSFORMER", name, classname));
 		File _dir = a_transformerDescription.getAbsoluteFile();
 		_dir = _dir.getParentFile();
 		transformerClassLoader = new DirClassLoader(new File("transformers"), _dir);
@@ -323,7 +323,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 				String _real = System.getProperty(_name);
 				if (_real == null) {
 					_platformOk = false;
-					sendMessage("Unknown property: '" + _name + "'");
+					sendMessage(Level.WARNING, "Unknown property: '" + _name + "'");
 				}
 				else {
 					if (!_real.matches(_value)) {

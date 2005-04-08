@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.InputListener;
@@ -37,20 +38,11 @@ public abstract class Transformer extends EventSender {
 		super(a_eventListeners);
 		inputListener = a_inputListener;
 		interactive = a_interactive.booleanValue();
-		
 		try {
-			String _lang = System.getProperty("dmfc.lang", "en");
-			String _country = System.getProperty("dmfc.country");
-			Locale _locale;
-			if (_country == null) {
-				_locale = new Locale(_lang);
-			} else {
-				_locale = new Locale(_lang, _country);
-			}			
-			ResourceBundle _bundle = ResourceBundle.getBundle("messages", _locale, this.getClass().getClassLoader());
+			ResourceBundle _bundle = ResourceBundle.getBundle("messages", Locale.ENGLISH, this.getClass().getClassLoader());
 			setI18nBundle(_bundle);
 		} catch (MissingResourceException e) {
-			sendMessage("No resource bundle found!");
+			sendMessage(Level.INFO, "No resource bundle found for " + this.getClass().getName());
 		}		
 	}
 	
@@ -76,10 +68,10 @@ public abstract class Transformer extends EventSender {
 	 * @param a_defaultValue a default value
 	 * @return the input from the user if the Transformer was run in interactive mode, the default value otherwise.
 	 */
-	final protected String getUserInput(Prompt a_prompt, String a_defaultValue) {		
-		if (interactive) {
-			inputListener.getInputAsString(a_prompt);
+	final protected String getUserInput(Prompt a_prompt, String a_defaultValue) {
+		if (!interactive) {
+		    return a_defaultValue;			
 		}		
-		return a_defaultValue;
+		return inputListener.getInputAsString(a_prompt);
 	}
 }

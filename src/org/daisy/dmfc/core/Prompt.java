@@ -18,11 +18,56 @@
  */
 package org.daisy.dmfc.core;
 
+import java.util.logging.Level;
+
 /**
  * @author Linus Ericson
  */
 public class Prompt {
-	
-	// FIXME nothing here yet
+	// FIXME add message originator
+    private String message = null;
+    private Level level = null;
+    private double progress = 0;
+    private boolean progressReport = false;
+    
+    public Prompt(Level a_level, String a_message) {
+        message = a_message;
+        level = a_level;
+    }
+    
+    public Prompt(double a_progress) {
+        if (a_progress < 0 || a_progress > 100) {
+            throw new IllegalArgumentException("Progress must be in the interval [0,100]. Was " + a_progress);
+        }
+        progress = a_progress;
+        progressReport = true;
+    }
 
+    /**
+     * @return Returns the level.
+     */
+    public Level getLevel() {
+        return level;
+    }
+    
+    /**
+     * @return Returns the message.
+     */
+    public String getMessage() {
+        return message;
+    }
+    
+    /**
+     * @return Returns the progress.
+     */
+    public double getProgress() {
+        return progress;
+    }
+    
+    /**
+     * @return Returns the progressReport.
+     */
+    public boolean isProgressReport() {
+        return progressReport;
+    }
 }

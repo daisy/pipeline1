@@ -4,7 +4,7 @@
 	
 	<property name="mp3listName" value="mp3list.txt"/>
 	
-	<task name="HelloWorld" interactive="true">
+	<task name="HelloWorld" interactive="false">
 
 		<parameter>
 			<name>inbook</name>

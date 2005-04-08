@@ -111,4 +111,10 @@ public class Parameter {
     public String getDefaultValue() {
         return defaultValue;
     }
+    /**
+     * @return Returns the description.
+     */
+    public String getDescription() {
+        return description;
+    }
 }

@@ -23,12 +23,14 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
+import org.daisy.dmfc.logging.MessageLogger;
 import org.daisy.util.exception.ValidationException;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.xml.validator.RelaxngSchematronValidator;
@@ -51,24 +53,38 @@ public class DMFCCore extends EventSender {
 	private Map transformerHandlers = new HashMap();
 	
 	/**
+	 * Create an instance of DMFC using the default locale.
+	 * This is the same as <code>new DMFCCore(a_inputListener, a_eventListener, new Locale("en"))</code>. 
+	 * @param a_inputListener
+	 * @param a_eventListener
+	 */
+	public DMFCCore(InputListener a_inputListener, EventListener a_eventListener) {
+	    this(a_inputListener, a_eventListener, new Locale("en"));
+	}
+	
+	/**
 	 * Create an instance of DMFC.
 	 * @param a_inputListener a listener of (user) input events
 	 * @param a_eventListener a listener of events
+	 * @param a_locale the locale to use
 	 */
-	public DMFCCore(InputListener a_inputListener, EventListener a_eventListener) {
+	public DMFCCore(InputListener a_inputListener, EventListener a_eventListener, Locale a_locale) {
 		super(a_eventListener);
 		inputListener = a_inputListener;
-		
-		// FIXME no hard coded language please
+		Locale.setDefault(a_locale);
+			
 		DirClassLoader _resourceLoader = new DirClassLoader(new File("resources"), new File("resources"));
-		ResourceBundle _bundle = ResourceBundle.getBundle("dmfc_messages", new Locale("sv", "SE"), _resourceLoader);
+		ResourceBundle _bundle = ResourceBundle.getBundle("dmfc_messages", Locale.ENGLISH, _resourceLoader);
 		setI18nBundle(_bundle);
 		
 		// FIXME read these from file
-		System.setProperty("dmfc.tempDir" , "c:\\temp");
-		setLanguage("en");
+		System.setProperty("dmfc.tempDir" , "c:\\temp");		
 		
 		TempFile.setTempDir(new File(System.getProperty("dmfc.tempDir")));
+		
+		// Setup logging
+		MessageLogger _logger = new MessageLogger();
+		addEventListener(_logger);		
 	}	
 
 	/**
@@ -78,22 +94,15 @@ public class DMFCCore extends EventSender {
 	public void reloadTransformers() {
 		try {
 			Validator _validator = new RelaxngSchematronValidator(new File("resources", "transformer.rng"), true);
-			sendMessage("Reloading Transformers");
+			sendMessage(Level.CONFIG, "Reloading Transformers");
 			transformerHandlers.clear();		
 			addTransformers(new File("transformers"), _validator);			
-			sendMessage("Reloading of Transformers done");
+			sendMessage(Level.CONFIG, "Reloading of Transformers done");
 		} catch (ValidationException e) {
-			sendMessage("Reloading of transformers failed " + e.getMessage());
+			sendMessage(Level.SEVERE, "Reloading of transformers failed " + e.getMessage());
+			// FIXME throw sensible exception here
 			e.printStackTrace();
 		}
-	}
-	
-	/**
-	 * Sets the language used by DMFC
-	 * @param a_language
-	 */
-	public void setLanguage(String a_language) {
-		System.setProperty("dmfc.lang", a_language);
 	}
 	
 	/**
@@ -103,7 +112,7 @@ public class DMFCCore extends EventSender {
 	 */
 	private void addTransformers(File a_dir, Validator a_validator) {
 		if (!a_dir.isDirectory()) {
-			sendMessage(a_dir.getAbsolutePath() + " is not a directory.");
+			sendMessage(Level.SEVERE, a_dir.getAbsolutePath() + " is not a directory.");
 			return;
 		}
 		File[] _children = a_dir.listFiles();
@@ -120,9 +129,9 @@ public class DMFCCore extends EventSender {
 					}
 					transformerHandlers.put(_th.getName(), _th);
 				} catch (TransformerDisabledException e) {
-					sendMessage("Transformer in file '" + _current.getAbsolutePath() + "' disabled: " + e.getMessage());
+					sendMessage(Level.WARNING, "Transformer in file '" + _current.getAbsolutePath() + "' disabled: " + e.getMessage());
 					if (e.getRootCause() != null) {
-						sendMessage("Root cause: " + e.getRootCauseMessagesAsString());
+						sendMessage(Level.WARNING, "Root cause: " + e.getRootCauseMessagesAsString());
 					}
 				}
 			}
@@ -138,23 +147,23 @@ public class DMFCCore extends EventSender {
 		boolean _ret = false;
 		try {
 			Validator _validator = new RelaxngSchematronValidator(new File("resources", "script.rng"), false);
-			ScriptHandler _handler = new ScriptHandler(a_script, transformerHandlers, getEventListeners(), _validator);
+			ScriptHandler _handler = new ScriptHandler(a_script, transformerHandlers, getI18n(), getEventListeners(), _validator);
 			_handler.execute();
 			_ret = true;
 		} catch (ScriptException e) {
-			sendMessage(e.getMessage());
+			sendMessage(Level.SEVERE, "Script file exception" + e.getMessage());
 			if (e.getRootCause() != null) {
 			    String _msg = new String();
 			    String[] _msgs = e.getRootCauseMessages();			    
 			    for (int i = 0; i < _msgs.length; ++i) {
 			        _msg = _msgs[i] + "\n";
 			    }
-				sendMessage("Root cause: " + _msg);				
+				sendMessage(Level.SEVERE, "Root cause: " + _msg);				
 			}
 		} catch (ValidationException e) {
-			sendMessage("Problems parsing script file" + e.getMessage());
+			sendMessage(Level.SEVERE, "Problems parsing script file" + e.getMessage());
 			if (e.getRootCause() != null) {
-				sendMessage("Root cause: " + e.getRootCause().getMessage());
+				sendMessage(Level.SEVERE, "Root cause: " + e.getRootCause().getMessage());
 			}
 		} catch (MIMEException e) {
 			if (e.getRootCause() != null) {
@@ -163,7 +172,7 @@ public class DMFCCore extends EventSender {
 			    for (int i = 0; i < _msgs.length; ++i) {
 			        _msg = _msgs[i] + "\n";
 			    }
-				sendMessage("Root cause: " + _msg);				
+				sendMessage(Level.SEVERE, "Root cause: " + _msg);				
 			}
         }
 		return _ret;
@@ -178,6 +187,6 @@ public class DMFCCore extends EventSender {
 	 */
 	public void validateScript(File a_script) throws ValidationException, ScriptException, MIMEException {
 		Validator _validator = new RelaxngSchematronValidator(new File("resources", "script.rng"), false);
-		new ScriptHandler(a_script, transformerHandlers, getEventListeners(), _validator);
+		new ScriptHandler(a_script, transformerHandlers, getI18n(), getEventListeners(), _validator);
 	}
 }

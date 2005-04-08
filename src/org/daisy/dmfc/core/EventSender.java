@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.daisy.util.i18n.I18n;
 
@@ -18,7 +19,7 @@ public abstract class EventSender {
 
 	private Set eventListeners;
 	private I18n internationalization = null;
-	
+		
 	protected EventSender(EventListener a_eventListener) {
 		eventListeners = new HashSet();
 		addEventListener(a_eventListener);
@@ -36,14 +37,24 @@ public abstract class EventSender {
 		return eventListeners;
 	}
 	
-	protected void sendMessage(String a_message) {
-		Iterator _iter = eventListeners.iterator();
+	protected void sendMessage(Level a_level, String a_message) {
+	    Prompt _prompt = new Prompt(a_level, a_message);
+		Iterator _iter = eventListeners.iterator();		
 		while (_iter.hasNext()) {
-			EventListener _eventListener = (EventListener)_iter.next();
-			_eventListener.message(a_message);
+			EventListener _eventListener = (EventListener)_iter.next();			
+			_eventListener.message(_prompt);
 		}
 	}
-		
+	
+	protected void progress(double a_progress) {
+	    Prompt _prompt = new Prompt(a_progress);
+	    Iterator _iter = eventListeners.iterator();	    
+		while (_iter.hasNext()) {
+			EventListener _eventListener = (EventListener)_iter.next();			
+			_eventListener.message(_prompt);
+		}
+	}
+	
 	protected String i18n(String a_msgId) {
 		if (internationalization == null) {
 			return "<i18n not initialized> " + a_msgId;

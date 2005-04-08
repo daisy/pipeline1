@@ -95,6 +95,11 @@ public class BaseException extends Exception {
 	    return _messages;
 	}
 	
+	/**
+	 * Gets a string representation of the array returned by
+	 * getRootCauseMessages
+	 * @return a string of root cause messages
+	 */
 	public String getRootCauseMessagesAsString() {
 	    StringBuffer _buffer = new StringBuffer();
 	    String[] _msgs = getRootCauseMessages();

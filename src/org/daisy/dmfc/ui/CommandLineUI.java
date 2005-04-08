@@ -18,7 +18,11 @@
  */
 package org.daisy.dmfc.ui;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Locale;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.EventListener;
@@ -32,19 +36,26 @@ import org.daisy.dmfc.core.Prompt;
 public class CommandLineUI implements InputListener, EventListener {
 
 	public String getInputAsString(Prompt a_prompt) {
-		System.err.println("Prompt: ");
-		return null;
+		System.err.println("Prompt: " + a_prompt.getMessage());
+		BufferedReader _br = new BufferedReader(new InputStreamReader(System.in));
+		String _line = null;
+		try {
+		    _line = _br.readLine();
+        } catch (IOException e) {
+        }
+		return _line;
 	}
 
-	public void message(String a_message) {
-		System.out.println("Message: " + a_message);		
+	public void message(Prompt a_prompt) {
+	    if (!a_prompt.isProgressReport()) {
+	        System.out.println("Message: " + a_prompt.getMessage());
+	    }
 	}
 
 	public static void main(String[] args) {
 		if (args.length == 1) {
 			CommandLineUI _ui = new CommandLineUI();
-			DMFCCore _dmfc = new DMFCCore(_ui, _ui);
-			_dmfc.setLanguage("sv");
+			DMFCCore _dmfc = new DMFCCore(_ui, _ui, new Locale("sv", "SE"));			
 			_dmfc.reloadTransformers();
 			_dmfc.executeScript(new File(args[0]));
 		} else {

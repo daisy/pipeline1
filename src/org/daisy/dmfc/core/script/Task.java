@@ -44,8 +44,7 @@ public class Task {
 	 */
 	public Task(Element a_element, Map a_properties) {
 		name = a_element.valueOf("@name");
-		System.err.println("task " + name);
-		interactive = Boolean.getBoolean(a_element.valueOf("@interactive"));
+		interactive = Boolean.valueOf(a_element.valueOf("@interactive")).booleanValue();
 		
 		XPath _xpathSelector = DocumentHelper.createXPath("parameter");
 		List _parameters = _xpathSelector.selectNodes(a_element);

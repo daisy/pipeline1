@@ -16,15 +16,29 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.daisy.dmfc.core;
+package org.daisy.dmfc.logging;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
 
 /**
- * Classes implementing this interface (UIs, loggers, etc) will receive messages
- * from the framework and the transformers.
- * 
  * @author Linus Ericson
  */
-public interface EventListener {
-	
-	public void message(Prompt a_prompt);
+public class LineFormatter extends Formatter {
+
+    private static SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    
+    public String format(LogRecord a_logRecord) {
+        StringBuffer _buffer = new StringBuffer();
+        _buffer.append(simpleDate.format(new Date()));
+        _buffer.append(" ");
+        _buffer.append(a_logRecord.getLevel().getName());
+        _buffer.append(" ");
+        _buffer.append(a_logRecord.getMessage());
+        _buffer.append("\n");
+        return _buffer.toString();
+    }
+
 }
