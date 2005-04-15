@@ -18,25 +18,45 @@ import org.daisy.util.i18n.I18n;
 public abstract class EventSender {
 
 	private Set eventListeners;
-	private I18n internationalization = null;
+	private I18n internationalization = new I18n();
 		
+	/**
+	 * Creates a new EventSender specifying a single listener of the object.
+	 * @param a_eventListener a event listener
+	 */
 	protected EventSender(EventListener a_eventListener) {
 		eventListeners = new HashSet();
 		addEventListener(a_eventListener);
 	}
 	
+	/**
+	 * Creates a new EventSender specifying a set of listeners of the object.
+	 * @param a_eventListeners
+	 */
 	protected EventSender(Set a_eventListeners) {
 		eventListeners = a_eventListeners;
 	}
 	
+	/**
+	 * Adds a EventListener.
+	 * @param a_eventListener the EventListener to add.
+	 */
 	protected void addEventListener(EventListener a_eventListener) {
 		eventListeners.add(a_eventListener);
 	}
 	
+	/**
+	 * @return a set of EventListeneters
+	 */
 	protected Set getEventListeners() {
 		return eventListeners;
 	}
 	
+	/**
+	 * Sends a message to all listeners.
+	 * @param a_level the level of the message
+	 * @param a_message the message
+	 */
 	protected void sendMessage(Level a_level, String a_message) {
 	    Prompt _prompt = new Prompt(a_level, a_message);
 		Iterator _iter = eventListeners.iterator();		
@@ -46,6 +66,10 @@ public abstract class EventSender {
 		}
 	}
 	
+	/**
+	 * Sends a progress report to all listeners.
+	 * @param a_progress the progress
+	 */
 	protected void progress(double a_progress) {
 	    Prompt _prompt = new Prompt(a_progress);
 	    Iterator _iter = eventListeners.iterator();	    
@@ -56,16 +80,10 @@ public abstract class EventSender {
 	}
 	
 	protected String i18n(String a_msgId) {
-		if (internationalization == null) {
-			return "<i18n not initialized> " + a_msgId;
-		}
 		return internationalization.format(a_msgId);
 	}
 	
 	protected String i18n(String a_msgId, Object[] a_params) {
-		if (internationalization == null) {
-			return "<i18n not initialized> " + a_msgId;
-		}
 		return internationalization.format(a_msgId, a_params);
 	}
 	
@@ -77,12 +95,8 @@ public abstract class EventSender {
 		return i18n(a_msgId, new Object[]{a_param1, a_param2});
 	}
 	
-	protected void setI18nBundle(ResourceBundle a_bundle) {
-		internationalization = new I18n(a_bundle);
-	}
-	
-	protected void setI18n(I18n a_i18n) {
-		internationalization = a_i18n;
+	protected void addI18nBundle(ResourceBundle a_bundle) {
+	    internationalization.addBundle(a_bundle);
 	}
 	
 	protected I18n getI18n() {

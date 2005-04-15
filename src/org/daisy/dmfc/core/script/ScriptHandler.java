@@ -35,7 +35,6 @@ import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.exception.ValidationException;
-import org.daisy.util.i18n.I18n;
 import org.daisy.util.xml.validator.Validator;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -67,10 +66,9 @@ public class ScriptHandler extends EventSender {
 	 * @throws ScriptException if the script is invalid
 	 * @throws MIMEException
 	 */
-	public ScriptHandler(File a_script, Map a_transformerHandlers, I18n a_i18n, Set a_eventListeners, Validator a_validator) throws ScriptException, MIMEException {
+	public ScriptHandler(File a_script, Map a_transformerHandlers, Set a_eventListeners, Validator a_validator) throws ScriptException, MIMEException {
 		super(a_eventListeners);
 		transformerHandlers = a_transformerHandlers;
-		setI18n(a_i18n);
 		
 		try {
 			// Validate the script file
@@ -195,7 +193,7 @@ public class ScriptHandler extends EventSender {
 			for (Iterator _iter = tasks.iterator(); _iter.hasNext(); ) {
 				Task _task = (Task)_iter.next();
 				TransformerHandler _th = (TransformerHandler)transformerHandlers.get(_task.getName());
-				sendMessage(Level.CONFIG, "Running task: '" + _task.getName() + "'");
+				sendMessage(Level.CONFIG, i18n("RUNNING_TASK", _task.getName()));
 				_th.run(_task.getParameters(), _task.isInteractive());				
 			}
 		} catch (TransformerRunException e) {

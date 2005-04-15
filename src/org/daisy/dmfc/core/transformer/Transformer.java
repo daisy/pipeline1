@@ -40,7 +40,7 @@ public abstract class Transformer extends EventSender {
 		interactive = a_interactive.booleanValue();
 		try {
 			ResourceBundle _bundle = ResourceBundle.getBundle("messages", Locale.ENGLISH, this.getClass().getClassLoader());
-			setI18nBundle(_bundle);
+			addI18nBundle(_bundle);
 		} catch (MissingResourceException e) {
 			sendMessage(Level.INFO, "No resource bundle found for " + this.getClass().getName());
 		}		

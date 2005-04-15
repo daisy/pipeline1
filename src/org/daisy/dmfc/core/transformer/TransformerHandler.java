@@ -39,7 +39,6 @@ import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.exception.ValidationException;
-import org.daisy.util.i18n.I18n;
 import org.daisy.util.xml.validator.Validator;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -63,7 +62,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	private String description;
 	private String classname;
 	private String version;
-	private Collection parameters = new Vector();
+	private Vector parameters = new Vector();
 	
 	private InputListener inputListener;
 		
@@ -78,10 +77,9 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @param a_eventListeners an event listener
 	 * @throws TransformerDisabledException
 	 */
-	public TransformerHandler(File a_transformerDescription, I18n a_i18n, InputListener a_inputListener, Set a_eventListeners, Validator a_validator) throws TransformerDisabledException {
+	public TransformerHandler(File a_transformerDescription, InputListener a_inputListener, Set a_eventListeners, Validator a_validator) throws TransformerDisabledException {
 		super(a_eventListeners);
-		inputListener = a_inputListener;
-		setI18n(a_i18n);
+		inputListener = a_inputListener;		
 		
 		/*
 		 * If any validation or dependency check fails, disable this Transformer 
@@ -297,8 +295,23 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		return description;
 	}
 
+	/**
+	 * Gets a collection of the parameters of the Transformer. Only the
+	 * parameters that are of interest to a user of a Transformer is
+	 * returned. Any hard coded parameters that cannot be changed
+	 * will not be returned.
+	 */
 	public Collection getParameters() {
-		return parameters;
+	    Vector _params = (Vector)parameters.clone();	    
+	    // Remove all hard coded parameters
+	    for (int i = 0; i < parameters.size(); ++i) {
+	        ParameterInfo _param = (ParameterInfo)parameters.elementAt(i);
+	        if (_param.getValue() != null) {
+	            //System.err.println("Removing hard coded param " + _param.getName());
+	            _params.remove(_param);
+	        }
+	    }
+		return _params;
 	}	
 	
 	/**

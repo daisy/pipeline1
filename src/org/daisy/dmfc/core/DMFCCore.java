@@ -19,6 +19,7 @@
 package org.daisy.dmfc.core;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.dmfc.logging.MessageLogger;
 import org.daisy.util.exception.ValidationException;
 import org.daisy.util.file.TempFile;
+import org.daisy.util.i18n.I18n;
 import org.daisy.util.xml.validator.RelaxngSchematronValidator;
 import org.daisy.util.xml.validator.Validator;
 
@@ -43,7 +45,7 @@ import org.daisy.util.xml.validator.Validator;
  * <pre>
  * DMFCCore dmfc = new DMFCCore(inputListener, eventListener);
  * dmfc.reloadTransformers();
- * dmfc.executeScript(file);
+ * dmfc.executeScript(scriptFile);
  * </pre>
  * @author Linus Ericson
  */
@@ -75,7 +77,7 @@ public class DMFCCore extends EventSender {
 			
 		DirClassLoader _resourceLoader = new DirClassLoader(new File("resources"), new File("resources"));
 		ResourceBundle _bundle = ResourceBundle.getBundle("dmfc_messages", Locale.ENGLISH, _resourceLoader);
-		setI18nBundle(_bundle);
+		I18n.setDefaultBundle(_bundle);
 		
 		// FIXME read these from file
 		System.setProperty("dmfc.tempDir" , "c:\\temp");		
@@ -90,8 +92,9 @@ public class DMFCCore extends EventSender {
 	/**
 	 * Iterate over all Transformer Description Files (TDF) and
 	 * load each Transformer.
+	 * @return <code>true</code> if the reloading was successful, <code>false</code> otherwise.
 	 */
-	public void reloadTransformers() {
+	public boolean reloadTransformers() {
 		try {
 			Validator _validator = new RelaxngSchematronValidator(new File("resources", "transformer.rng"), true);
 			sendMessage(Level.CONFIG, "Reloading Transformers");
@@ -100,9 +103,9 @@ public class DMFCCore extends EventSender {
 			sendMessage(Level.CONFIG, "Reloading of Transformers done");
 		} catch (ValidationException e) {
 			sendMessage(Level.SEVERE, "Reloading of transformers failed " + e.getMessage());
-			// FIXME throw sensible exception here
-			e.printStackTrace();
-		}
+			return false;
+		}		
+		return true;
 	}
 	
 	/**
@@ -123,7 +126,7 @@ public class DMFCCore extends EventSender {
 			}
 			else if (_current.getName().matches(".*\\.tdf")) {
 				try {
-					TransformerHandler _th = new TransformerHandler(_current, getI18n(), inputListener, getEventListeners(), a_validator);
+					TransformerHandler _th = new TransformerHandler(_current, inputListener, getEventListeners(), a_validator);
 					if (transformerHandlers.containsKey(_th.getName())) {
 						throw new TransformerDisabledException("Transformer '" + _th.getName() + "' aleady exists");
 					}
@@ -139,6 +142,14 @@ public class DMFCCore extends EventSender {
 	}
 	
 	/**
+	 * Gets a collection of the current <code>TransformerInfo</code> objects.
+	 * @return a collection of <code>TransformerInfo</code> objects.
+	 */
+	public Collection getTransformerInfoCollection() {
+	    return transformerHandlers.values();
+	}
+	
+	/**
 	 * Executes a task script.
 	 * @param a_script the script to execute
 	 * @return true if the exeution was successful, false otherwise.
@@ -147,11 +158,11 @@ public class DMFCCore extends EventSender {
 		boolean _ret = false;
 		try {
 			Validator _validator = new RelaxngSchematronValidator(new File("resources", "script.rng"), false);
-			ScriptHandler _handler = new ScriptHandler(a_script, transformerHandlers, getI18n(), getEventListeners(), _validator);
+			ScriptHandler _handler = new ScriptHandler(a_script, transformerHandlers, getEventListeners(), _validator);
 			_handler.execute();
 			_ret = true;
 		} catch (ScriptException e) {
-			sendMessage(Level.SEVERE, "Script file exception" + e.getMessage());
+			sendMessage(Level.SEVERE, "Script file exception: " + e.getMessage());
 			if (e.getRootCause() != null) {
 			    String _msg = new String();
 			    String[] _msgs = e.getRootCauseMessages();			    
@@ -187,6 +198,6 @@ public class DMFCCore extends EventSender {
 	 */
 	public void validateScript(File a_script) throws ValidationException, ScriptException, MIMEException {
 		Validator _validator = new RelaxngSchematronValidator(new File("resources", "script.rng"), false);
-		new ScriptHandler(a_script, transformerHandlers, getI18n(), getEventListeners(), _validator);
+		new ScriptHandler(a_script, transformerHandlers, getEventListeners(), _validator);
 	}
 }

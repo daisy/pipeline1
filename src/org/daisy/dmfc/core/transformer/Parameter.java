@@ -21,12 +21,13 @@ package org.daisy.dmfc.core.transformer;
 import org.daisy.dmfc.core.MIMERegistry;
 import org.daisy.dmfc.exception.MIMEException;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * A parameter in the Transformer Description File (TDF).
  * @author Linus Ericson
  */
-public class Parameter {
+public class Parameter implements ParameterInfo {
 	
 	private String name;
 	private String description;
@@ -42,25 +43,38 @@ public class Parameter {
 	 * @param a_parameter the dom4j element to get the data from.
 	 * @throws MIMEException if a type attribute is not a valid MIME type
 	 */
-	public Parameter(Element a_parameter) throws MIMEException {
-		name = a_parameter.valueOf("name");
-		description = a_parameter.valueOf("description");
-		example = a_parameter.valueOf("example");
-		required = Boolean.valueOf(a_parameter.valueOf("@required")).booleanValue();
-		direction = a_parameter.valueOf("@direction");
+	public Parameter(Element a_parameter) throws MIMEException {	    
+		name = getFromXPath(a_parameter, "name");
+		description = getFromXPath(a_parameter, "description");
+		example = getFromXPath(a_parameter, "example");
+		if (a_parameter.selectSingleNode("@required") != null) {
+		    required = Boolean.valueOf(a_parameter.valueOf("@required")).booleanValue();
+		}
+		direction = getFromXPath(a_parameter, "@direction");
 
 		// Make sure the 'type' matches a MIME type
-		type = a_parameter.valueOf("@type");		
+		type = getFromXPath(a_parameter, "@type");
 		MIMERegistry _mime = MIMERegistry.instance();
 		if (!_mime.contains(type)) {
 		    throw new MIMEException("Type attribute " + type + " of parameter " + name + " is not a valid MIME type.");
 		}
-		
-		defaultValue = a_parameter.valueOf("default");
-		
-		if (a_parameter.selectSingleNode("value") != null) {
-		    value = a_parameter.valueOf("value");
-		}
+
+		defaultValue = getFromXPath(a_parameter, "default");
+		value = getFromXPath(a_parameter, "value");
+	}
+	
+	/**
+	 * Gets the value of the Node at the location specified by the XPath
+	 * if the Node exists, or null if the specified Node does not exist.
+	 * @param a_node the originating Node
+	 * @param a_xpath an XPath expression
+	 * @return the value of the XPath expression or null
+	 */
+	private String getFromXPath(Node a_node, String a_xpath) {
+	    if (a_node.selectSingleNode(a_xpath) != null) {
+	        return a_node.valueOf(a_xpath);
+	    }
+	    return null;
 	}
 	
 	/**
