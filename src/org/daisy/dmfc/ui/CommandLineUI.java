@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Locale;
+import java.util.logging.Level;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.EventListener;
@@ -47,8 +48,8 @@ public class CommandLineUI implements InputListener, EventListener {
 	}
 
 	public void message(Prompt a_prompt) {
-	    if (!a_prompt.isProgressReport()) {
-	        System.out.println("Message: " + a_prompt.getMessage());
+	    if (!a_prompt.isProgressReport() && a_prompt.getLevel().intValue() >= Level.ALL.intValue()) {
+	        System.out.println("Message: " + a_prompt.getLevel().getName() + " " + a_prompt.getMessage());
 	    }
 	}
 
