@@ -194,7 +194,9 @@ public class ScriptHandler extends EventSender {
 				Task _task = (Task)_iter.next();
 				TransformerHandler _th = (TransformerHandler)transformerHandlers.get(_task.getName());
 				sendMessage(Level.CONFIG, i18n("RUNNING_TASK", _task.getName()));
-				_th.run(_task.getParameters(), _task.isInteractive());				
+				if (!_th.run(_task.getParameters(), _task.isInteractive())) {
+				    throw new ScriptException("Task " + _task.getName() + " failed");
+				}
 			}
 		} catch (TransformerRunException e) {
 			throw new ScriptException("Error while running task", e);
