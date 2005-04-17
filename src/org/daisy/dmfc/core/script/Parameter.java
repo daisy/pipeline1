@@ -50,6 +50,7 @@ public class Parameter {
 		value = a_element.valueOf("value");
 		
 		// Expand properties in the value string
+		// FIXME add error checking
 		Matcher _matcher = propertyPattern.matcher(value);
 		StringBuffer _sb = new StringBuffer();
 		while (_matcher.find()) {

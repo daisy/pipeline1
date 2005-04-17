@@ -31,7 +31,7 @@ public abstract class Transformer extends EventSender {
 	
 	/**
 	 * Creates a new Transformer.
-	 * @param a_eventListener an event listener
+	 * @param a_eventListeners a set of  event listeners
 	 * @param a_interactive
 	 */
 	public Transformer(InputListener a_inputListener, Set a_eventListeners, Boolean a_interactive) {		

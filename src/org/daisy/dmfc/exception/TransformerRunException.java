@@ -21,6 +21,7 @@ package org.daisy.dmfc.exception;
 import org.daisy.util.exception.*;
 
 /**
+ * A TransformerRunException is thrown by a plugin when it is being run.
  * @author Linus Ericson
  */
 public class TransformerRunException extends BaseException {

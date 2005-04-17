@@ -41,6 +41,8 @@ import org.daisy.util.file.StreamRedirector;
  * ExeRunner reads a set of parameters.
  * <ul>
  * <li><b>exe_command</b> the name pattern of the program to run.
+ * <li><b>exe_workdir</b> (optional) sets the working directory of the program
+ * to run.
  * <li><b>exe_stdout</b> optional parameter specifying a filename where the
  * stdout stream is sent. If the parameter is not specified, stdout is sent
  * to the stdout of DMFC.
