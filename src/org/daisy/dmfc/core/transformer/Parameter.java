@@ -18,6 +18,10 @@
  */
 package org.daisy.dmfc.core.transformer;
 
+import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.daisy.dmfc.core.MIMERegistry;
 import org.daisy.dmfc.exception.MIMEException;
 import org.dom4j.Element;
@@ -29,6 +33,8 @@ import org.dom4j.Node;
  */
 public class Parameter implements ParameterInfo {
 	
+    private static Pattern variablePattern = Pattern.compile("\\$\\{(\\w+)\\}");
+    
 	private String name;
 	private String description;
 	private String example;
@@ -38,12 +44,15 @@ public class Parameter implements ParameterInfo {
 	private String defaultValue;
 	private String value = null;
 	
+	private File tdfDir;
+	
 	/**
 	 * Creates a new Parameter.
 	 * @param a_parameter the dom4j element to get the data from.
 	 * @throws MIMEException if a type attribute is not a valid MIME type
 	 */
-	public Parameter(Element a_parameter) throws MIMEException {	    
+	public Parameter(Element a_parameter, File a_tdfDir) throws MIMEException {
+	    tdfDir = a_tdfDir;
 		name = getFromXPath(a_parameter, "name");
 		description = getFromXPath(a_parameter, "description");
 		example = getFromXPath(a_parameter, "example");
@@ -59,9 +68,38 @@ public class Parameter implements ParameterInfo {
 		    throw new MIMEException("Type attribute " + type + " of parameter " + name + " is not a valid MIME type.");
 		}
 
-		defaultValue = getFromXPath(a_parameter, "default");
-		value = getFromXPath(a_parameter, "value");
+		defaultValue = expandPatterns(getFromXPath(a_parameter, "default"));
+		value = expandPatterns(getFromXPath(a_parameter, "value"));
 	}
+	
+	/**
+	 * Expand patterns. The function currently expands:
+	 * <dl>
+	 * <dt>${transformer_dir}</dt><dd>The directory of the TDF.</dd>
+	 * <dt>${dollar}</dt><dd>A dollar sign.</dd>
+	 * </dl>
+	 * @param a_valueWithPattern a string to expand
+	 * @return the expanded string
+	 */
+	private String expandPatterns(String a_valueWithPattern) {
+        if (a_valueWithPattern == null) {
+            return null;
+        }
+        Matcher _matcher = variablePattern.matcher(a_valueWithPattern);
+        StringBuffer _sb = new StringBuffer();
+        while (_matcher.find()) {
+            String _variable = _matcher.group(1);            
+            if (_variable.equals("transformer_dir")) {
+                String _dir = tdfDir.getPath();
+                _dir = _dir.replaceAll("\\\\", "\\\\\\\\");       // Replace one backslash with two
+                _matcher.appendReplacement(_sb, _dir);
+            } else if (_variable.equals("dollar")) {
+                _matcher.appendReplacement(_sb, "\\$");
+            }            
+        }
+        _matcher.appendTail(_sb);        
+        return _sb.toString();
+    }
 	
 	/**
 	 * Gets the value of the Node at the location specified by the XPath

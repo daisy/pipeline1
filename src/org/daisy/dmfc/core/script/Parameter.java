@@ -49,8 +49,7 @@ public class Parameter {
 		System.err.println("param " + name);
 		value = a_element.valueOf("value");
 		
-		// Expand properties in the value string
-		// FIXME add error checking
+		// Expand properties in the value string		
 		Matcher _matcher = propertyPattern.matcher(value);
 		StringBuffer _sb = new StringBuffer();
 		while (_matcher.find()) {
@@ -60,8 +59,7 @@ public class Parameter {
 		}
 		_matcher.appendTail(_sb);
 		value = _sb.toString();
-		// FIXME add ${dollar} pattern
-		//value.replaceAll("\\$\\{\\$\\}", "\\$"); // replace ${$} with $		
+		
 		id = a_element.valueOf("@id");
 		if (a_element.selectSingleNode("@ref") != null) {
 			ref = a_element.valueOf("@ref");

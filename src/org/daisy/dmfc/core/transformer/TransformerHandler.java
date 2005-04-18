@@ -95,7 +95,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			Document _doc = _xmlReader.read(a_transformerDescription);
 			
 			// Get properties from transformer description file
-			readProperties(_doc.getRootElement());
+			readProperties(_doc.getRootElement(), a_transformerDescription.getParentFile());
 			
 			// Perform platform dependency checks
 			if (!isPlatformOk(_doc.getRootElement())) {
@@ -241,7 +241,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @param a_element
 	 * @throws MIMEException
 	 */
-	private void readProperties(Element a_element) throws MIMEException {
+	private void readProperties(Element a_element, File a_tdfDir) throws MIMEException {
 		this.name = a_element.valueOf("name");
 		this.description = a_element.valueOf("description");
 		this.classname = a_element.valueOf("classname");
@@ -251,7 +251,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		List _parameters = _xpathSelector.selectNodes(a_element);
 		for (Iterator _iter = _parameters.iterator(); _iter.hasNext(); ) {
 			Element _parameter = (Element)_iter.next();
-			Parameter _param = new Parameter(_parameter);
+			Parameter _param = new Parameter(_parameter, a_tdfDir);
 			parameters.add(_param);
 		}
 	}
