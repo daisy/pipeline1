@@ -83,7 +83,7 @@ public class ScriptHandler extends EventSender {
 			// Get properties from script file
 			readProperties(_doc.getRootElement());
 			
-			// FIXME add useful default properties
+			// Add useful default properties
 			properties.put("dollar", "\\$");
 				
 			/*
