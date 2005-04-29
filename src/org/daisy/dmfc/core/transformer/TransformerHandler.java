@@ -155,7 +155,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		    _params.put(_key, _param.getValue());
 		}
 		
-		return _transformer.execute(_params);
+		return _transformer.executeWrapper(_params);
 	}
 	
 	/**
@@ -233,6 +233,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	private Transformer createTransformerObject(boolean a_interactive) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {		
 		Object _params[] = {inputListener, this.getEventListeners(), new Boolean(a_interactive)};
 		Transformer _trans = (Transformer)transformerConstructor.newInstance(_params);
+		_trans.setMessageOriginator(name);
 		return _trans;
 	}
 	

@@ -19,10 +19,14 @@
 package org.daisy.dmfc.core;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
@@ -31,6 +35,7 @@ import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
+import org.daisy.dmfc.logging.LoggingPropertiesReader;
 import org.daisy.dmfc.logging.MessageLogger;
 import org.daisy.util.exception.ValidationException;
 import org.daisy.util.file.TempFile;
@@ -52,7 +57,7 @@ import org.daisy.util.xml.validator.Validator;
 public class DMFCCore extends EventSender {
 
 	private InputListener inputListener;
-	private Map transformerHandlers = new HashMap();
+	private Map transformerHandlers = new HashMap();	
 	
 	/**
 	 * Create an instance of DMFC using the default locale.
@@ -79,16 +84,41 @@ public class DMFCCore extends EventSender {
 		ResourceBundle _bundle = ResourceBundle.getBundle("dmfc_messages", Locale.ENGLISH, _resourceLoader);
 		I18n.setDefaultBundle(_bundle);
 		
-		// FIXME read these from file
-		System.setProperty("dmfc.tempDir" , "c:\\temp");		
+		if (!loadProperties(ClassLoader.getSystemResourceAsStream("dmfc.properties"))) {
+		    System.err.println("Can't read properties!");
+		}		
 		
 		TempFile.setTempDir(new File(System.getProperty("dmfc.tempDir")));
-		
+			
 		// Setup logging
 		MessageLogger _logger = new MessageLogger();
-		addEventListener(_logger);		
+		addEventListener(_logger);
+		LoggingPropertiesReader.addHandlers(_logger, System.getProperty("dmfc.logging"));		
 	}	
 
+	/**
+	 * Adds a set properties to the system properties.
+	 * @param a_propertiesStream an InputStream
+	 * @return <code>true</code> if the loading was successful, <code>false</code> otherwise
+	 */
+	public boolean loadProperties(InputStream a_propertiesStream) {
+	    try {
+	        Properties _properties = new Properties();
+            _properties.load(a_propertiesStream);
+            
+            Enumeration _enum = _properties.propertyNames();
+            while (_enum.hasMoreElements()) {
+                String _name = (String)_enum.nextElement();
+                String _value = _properties.getProperty(_name);
+                System.setProperty(_name, _value);
+            }            
+        } catch (IOException e) {            
+            e.printStackTrace();
+            return false;
+        }
+	    return true;
+	}
+	
 	/**
 	 * Iterate over all Transformer Description Files (TDF) and
 	 * load each Transformer.

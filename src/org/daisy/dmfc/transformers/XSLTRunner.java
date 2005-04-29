@@ -61,7 +61,7 @@ public class XSLTRunner extends Transformer {
         super(a_inputListener, a_eventListeners, a_interactive);
     }
 
-    public boolean execute(Map a_parameters) throws TransformerRunException {
+    protected boolean execute(Map a_parameters) throws TransformerRunException {
         String _xmlFileName = (String)a_parameters.get("xml");
         String _xsltFileName = (String)a_parameters.get("xslt");
         String _outFileName = (String)a_parameters.get("out");

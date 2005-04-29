@@ -38,12 +38,17 @@ public abstract class Transformer extends EventSender {
 		super(a_eventListeners);
 		inputListener = a_inputListener;
 		interactive = a_interactive.booleanValue();
+		messageOriginator = "Transformer";
 		try {
 			ResourceBundle _bundle = ResourceBundle.getBundle("messages", Locale.ENGLISH, this.getClass().getClassLoader());
 			addI18nBundle(_bundle);
 		} catch (MissingResourceException e) {
 			sendMessage(Level.INFO, "No resource bundle found for " + this.getClass().getName());
-		}		
+		}
+	}
+	
+	/*package*/ final void setMessageOriginator(String a_originator) {
+	    messageOriginator = a_originator;
 	}
 	
 	/**
@@ -51,7 +56,15 @@ public abstract class Transformer extends EventSender {
 	 * @param a_parameters a collection of parameters
 	 * @return <code>true</code> if the Transformer was successful, <code>false</code> otherwise.
 	 */
-	public abstract boolean execute(Map a_parameters) throws TransformerRunException;
+	protected abstract boolean execute(Map a_parameters) throws TransformerRunException;
+	
+	final public boolean executeWrapper(Map a_parameters) throws TransformerRunException {
+	    boolean _ret;
+	    status(true);
+	    _ret = execute(a_parameters);
+	    status(false);
+	    return _ret;
+	}
 	
 	/**
 	 * Performs any Transformer specific checks. In the default implementation,
@@ -68,10 +81,10 @@ public abstract class Transformer extends EventSender {
 	 * @param a_defaultValue a default value
 	 * @return the input from the user if the Transformer was run in interactive mode, the default value otherwise.
 	 */
-	final protected String getUserInput(Prompt a_prompt, String a_defaultValue) {
+	final protected String getUserInput(Level a_level, String a_message, String a_defaultValue) {
 		if (!interactive) {
 		    return a_defaultValue;			
 		}		
-		return inputListener.getInputAsString(a_prompt);
+		return inputListener.getInputAsString(new Prompt(a_level, a_message, messageOriginator));		
 	}
 }

@@ -33,7 +33,7 @@ import org.daisy.dmfc.core.Prompt;
  * @author Linus Ericson
  */
 public class MessageLogger implements EventListener {
-
+    
     private static Logger logger = Logger.getLogger("dmfc.logger");
     
     static {
@@ -41,6 +41,7 @@ public class MessageLogger implements EventListener {
         logger.setLevel(Level.ALL);
     }
     
+       
     /**
      * Creates a logger without any handlers.
      */
@@ -57,10 +58,22 @@ public class MessageLogger implements EventListener {
      * @see java.util.logging.FileHandler
      */
     public boolean addFileHandler(Level a_level, String a_fileNamePattern) {
-	    try {	        
+	    try {
 	        Handler _handler = new FileHandler(a_fileNamePattern);
 	        Formatter _formatter = new LineFormatter();
 	        _handler.setFormatter(_formatter);
+	        _handler.setLevel(a_level);
+	        logger.addHandler(_handler);
+	    } catch (IOException e) {
+	        return false;
+	    }
+	    return true;
+    }
+       
+    public boolean addFileHandler(Formatter a_formatter, Level a_level, String a_fileNamePattern, int a_limit, int a_count, boolean a_append) {
+	    try {	        
+	        Handler _handler = new FileHandler(a_fileNamePattern, a_limit, a_count, a_append);	        
+	        _handler.setFormatter(a_formatter);
 	        _handler.setLevel(a_level);
 	        logger.addHandler(_handler);
 	    } catch (IOException e) {
@@ -72,19 +85,19 @@ public class MessageLogger implements EventListener {
     /**
      * Adds a ConsoleHandler to this logger.
      * @param a_level only log messages at level <code>a_level</code> or above.
+     * @param a_formatter the formatter to use with the handler
      */
-    public void addConsoleHandler(Level a_level) {    
+    public void addConsoleHandler(Formatter a_formatter, Level a_level) {    
         Handler _handler = new ConsoleHandler();	        
-        Formatter _formatter = new LineFormatter();
-        _handler.setFormatter(_formatter);
+        _handler.setFormatter(a_formatter);
         _handler.setLevel(a_level);
         logger.addHandler(_handler);
 	}
         
     public void message(Prompt a_prompt) {
-        if (a_prompt.isProgressReport()) {
+        if (a_prompt.getType() == Prompt.PROGRESS) {
             logger.info("Progress: " + a_prompt.getProgress());
-        } else {
+        } else if (a_prompt.getType() == Prompt.MESSAGE) {            
             logger.log(a_prompt.getLevel(), a_prompt.getMessage());
         }
     }

@@ -19,6 +19,7 @@ public abstract class EventSender {
 
 	private Set eventListeners;
 	private I18n internationalization = new I18n();
+	protected String messageOriginator = "DMFC";
 		
 	/**
 	 * Creates a new EventSender specifying a single listener of the object.
@@ -58,12 +59,8 @@ public abstract class EventSender {
 	 * @param a_message the message
 	 */
 	protected void sendMessage(Level a_level, String a_message) {
-	    Prompt _prompt = new Prompt(a_level, a_message);
-		Iterator _iter = eventListeners.iterator();		
-		while (_iter.hasNext()) {
-			EventListener _eventListener = (EventListener)_iter.next();			
-			_eventListener.message(_prompt);
-		}
+	    Prompt _prompt = new Prompt(a_level, a_message, messageOriginator);
+		send(_prompt);
 	}
 	
 	/**
@@ -71,11 +68,20 @@ public abstract class EventSender {
 	 * @param a_progress the progress
 	 */
 	protected void progress(double a_progress) {
-	    Prompt _prompt = new Prompt(a_progress);
-	    Iterator _iter = eventListeners.iterator();	    
+	    Prompt _prompt = new Prompt(a_progress, messageOriginator);
+	    send(_prompt);
+	}
+	
+	protected void status(boolean a_started) {
+	    Prompt _prompt = new Prompt(a_started, messageOriginator);
+	    send(_prompt);
+	}
+	
+	private void send(Prompt a_prompt) {
+	    Iterator _iter = eventListeners.iterator();		
 		while (_iter.hasNext()) {
 			EventListener _eventListener = (EventListener)_iter.next();			
-			_eventListener.message(_prompt);
+			_eventListener.message(a_prompt);
 		}
 	}
 	

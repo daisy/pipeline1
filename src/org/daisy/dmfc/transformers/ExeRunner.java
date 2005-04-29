@@ -74,7 +74,7 @@ public class ExeRunner extends Transformer {
         super(a_inputListener, a_eventListeners, a_interactive);
     }
     
-    public boolean execute(Map a_parameters) throws TransformerRunException {
+    protected boolean execute(Map a_parameters) throws TransformerRunException {
         // Read parameters
         String _commandPattern = (String)a_parameters.remove("exe_command");
         String _workDir = (String)a_parameters.remove("exe_workdir");
@@ -133,6 +133,17 @@ public class ExeRunner extends Transformer {
             _out.start();
             _err.start();
             
+            int _pollInterval;
+            try {
+                _pollInterval = Integer.parseInt(System.getProperty("dmfc.pollExeInterval", "500"));
+                if (_pollInterval < 10) {
+                    throw new NumberFormatException("Must be at least 10");
+                }
+            } catch (NumberFormatException e) {
+                sendMessage(Level.WARNING, System.getProperty("dmfc.pollExeInterval") + " is not a valid poll interval (must be at least 10ms)");
+                _pollInterval = 500;
+            }
+            
             // Wait (by polling) for exit value            
             while (!_finished) {
                 try {
@@ -151,9 +162,8 @@ public class ExeRunner extends Transformer {
                         break;                        
                     }
                 }
-                // FIXME magic number
                 if (!_finished) {
-                    Thread.sleep(500);
+                    Thread.sleep(_pollInterval);
                 }
             }
         } catch (FileNotFoundException e) {

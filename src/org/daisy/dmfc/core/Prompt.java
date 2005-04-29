@@ -24,25 +24,58 @@ import java.util.logging.Level;
  * @author Linus Ericson
  */
 public class Prompt {
-	// FIXME add message originator
+    public static final int MESSAGE = 0;
+    public static final int PROGRESS = 1;
+    public static final int TRANSFORMER_START = 2;
+    public static final int TRANSFORMER_END = 3;
+    
     private String message = null;
     private Level level = null;
     private double progress = 0;
-    private boolean progressReport = false;
+    private String messageOriginator = "";
+    private int type = Prompt.MESSAGE;
     
-    public Prompt(Level a_level, String a_message) {
+    /**
+     * Creates a simple text message.
+     * @param a_level the level of the message
+     * @param a_message the message itself
+     * @param a_originator the originator of the message
+     */
+    public Prompt(Level a_level, String a_message, String a_originator) {
         message = a_message;
         level = a_level;
+        messageOriginator = a_originator;
+        type = Prompt.MESSAGE;
     }
     
-    public Prompt(double a_progress) {
+    /**
+     * Report Transformer progress.
+     * @param a_progress 
+     * @param a_originator the originator of the message
+     */
+    public Prompt(double a_progress, String a_originator) {
         if (a_progress < 0 || a_progress > 100) {
             throw new IllegalArgumentException("Progress must be in the interval [0,100]. Was " + a_progress);
         }
         progress = a_progress;
-        progressReport = true;
+        messageOriginator = a_originator;
+        type = Prompt.PROGRESS;
     }
 
+    /**
+     * Report when a Transformer has started or finished running.
+     * @param a_start <code>true</code> if the Transformer has just been started, <code>false</code> otherwise
+     * @param a_originator the name of the Transformer that has started/finished.
+     */
+    public Prompt(boolean a_start, String a_originator) {
+        messageOriginator = a_originator;
+        if (a_start) {
+            type = Prompt.TRANSFORMER_START;
+        } else {
+            type = Prompt.TRANSFORMER_END;
+        }
+    }
+    
     /**
      * @return Returns the level.
      */
@@ -62,12 +95,19 @@ public class Prompt {
      */
     public double getProgress() {
         return progress;
+    }    
+    
+    /**
+     * @return Returns the type.
+     */
+    public int getType() {
+        return type;
     }
     
     /**
-     * @return Returns the progressReport.
+     * @return Returns the messageOriginator.
      */
-    public boolean isProgressReport() {
-        return progressReport;
+    public String getMessageOriginator() {
+        return messageOriginator;
     }
 }
