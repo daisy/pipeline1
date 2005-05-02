@@ -89,7 +89,7 @@ public class XSLTRunner extends Transformer {
             e.printStackTrace();
             throw new TransformerRunException(e.getMessage(), e);
         }
-        return false;
+        return true;
     }
 
 }
