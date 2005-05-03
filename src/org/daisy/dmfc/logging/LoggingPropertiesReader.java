@@ -27,10 +27,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Helper class for adding handlers to a logger. The handlers are described
+ * in a properties file.
  * @author Linus Ericson
  */
 public class LoggingPropertiesReader {    
     
+    /**
+     * Adds a set of handlers descripbed in the specified file to the specified logger.
+     * @param a_logger the logger to add the handlers to.
+     * @param a_loggingPropertyFileName filename of property file.
+     */
     public static void addHandlers(MessageLogger a_logger, String a_loggingPropertyFileName) {
         // Check if specified
         if (a_loggingPropertyFileName == null) {
@@ -54,7 +61,6 @@ public class LoggingPropertiesReader {
             String _propertyName = (String)_iter.next();
             Matcher _matcher = _pattern.matcher(_propertyName);
             if (_matcher.matches()) {
-                System.err.println("Found a handler");
                 String _handlerName = _matcher.group(1);
                 String _filePattern = _properties.getProperty(_handlerName + ".pattern");
                 if (_filePattern == null) {
@@ -66,6 +72,12 @@ public class LoggingPropertiesReader {
         }
     }
     
+    /**
+     * Creates a formatter specified by class name.
+     * @param a_className a class name
+     * @return a <code>Formatter</code>
+     * @see java.util.logging.Formatter
+     */
     private static Formatter createFormatter(String a_className) {
         Formatter _formatter = null;
         try {
@@ -81,6 +93,12 @@ public class LoggingPropertiesReader {
         return _formatter;
     }
     
+    /**
+     * Adds a console handler to the logger.
+     * @param a_logger
+     * @param a_handlerName
+     * @param a_properties
+     */
     private static void addConsoleHandler(MessageLogger a_logger, String a_handlerName, Properties a_properties) {
         Formatter _formatter = createFormatter(a_properties.getProperty(a_handlerName + ".formatter"));
         if (_formatter == null) {
