@@ -56,7 +56,7 @@ public class DirClassLoader extends ClassLoader {
 		String _separator = File.separator;		
 		_separator = _separator.replaceAll("\\\\", "\\\\\\\\");         // Aargh!
 		String _newClassName = a_classname.replaceAll("\\.", _separator);
-		File _classFile = new File(classDir.getAbsolutePath() + File.separator + _newClassName + ".class");
+		File _classFile = new File(classDir, _newClassName + ".class");
 		if (!_classFile.exists()) {
 			throw new ClassNotFoundException("Can't locate class at: " + _classFile.getAbsolutePath());
 		}
@@ -85,8 +85,8 @@ public class DirClassLoader extends ClassLoader {
 	 * @return a URL to the resource, or <code>null</code> if the resource is not found
 	 */
 	public URL getResource(String a_resource) {
-		System.err.println("Trying to fetch " + a_resource);
-		File _resourceFile = new File(resourceDir.getAbsolutePath() + File.separator + a_resource);
+		//System.err.println("Trying to fetch " + a_resource);
+		File _resourceFile = new File(resourceDir, a_resource);
 		if (_resourceFile.canRead()) {
 			try {
 				System.err.println("Found resource at " + _resourceFile.getAbsolutePath());

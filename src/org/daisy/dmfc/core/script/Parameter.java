@@ -46,7 +46,6 @@ public class Parameter {
 	 */
 	public Parameter(Element a_element, Map a_properties) {
 		name = a_element.valueOf("name");
-		System.err.println("param " + name);
 		value = a_element.valueOf("value");
 		
 		// Expand properties in the value string		

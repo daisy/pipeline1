@@ -49,7 +49,7 @@ public class CommandLineUI implements InputListener, EventListener {
 
 	public void message(Prompt a_prompt) {
 	    if (a_prompt.getType() == Prompt.MESSAGE && a_prompt.getLevel().intValue() >= Level.ALL.intValue()) {
-	        System.out.println(a_prompt.getMessageOriginator() + ": " + a_prompt.getLevel().getName() + " " + a_prompt.getMessage());
+	        System.out.println("[" + a_prompt.getMessageOriginator() + ", " + a_prompt.getLevel().getName() + "] " + a_prompt.getMessage());
 	    }
 	    if (a_prompt.getType() == Prompt.TRANSFORMER_START) {
 	        System.out.println("Transformer " + a_prompt.getMessageOriginator() + " has just been started");

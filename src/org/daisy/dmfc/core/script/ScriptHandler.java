@@ -134,7 +134,7 @@ public class ScriptHandler extends EventSender {
 						// Make sure all in params with a ref has a matching (mime-wise) out param id
 						String _typeOfRef = _handler.getParameterType(_parameter.getName());
 						String _typeOfId = _handlerWithID.getParameterType(_refd.valueOf("name"));
-						System.err.println("*** typeOfRef: " + _typeOfRef + ", typeOfId: " + _typeOfId);
+						//System.err.println("*** typeOfRef: " + _typeOfRef + ", typeOfId: " + _typeOfId);
 						MIMERegistry _mime = MIMERegistry.instance();
 						if (!_mime.matches(_typeOfId, _typeOfRef)) {
 							throw new ScriptException("Where id/ref = " + _parameter.getRef() + ": MIME type '" + 
