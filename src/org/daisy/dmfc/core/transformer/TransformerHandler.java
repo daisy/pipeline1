@@ -217,7 +217,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	    sendMessage(Level.FINE, i18n("LOADING_TRANSFORMER", name, classname));
 		File _dir = a_transformerDescription.getAbsoluteFile();
 		_dir = _dir.getParentFile();
-		transformerClassLoader = new DirClassLoader(new File("transformers"), _dir);
+		transformerClassLoader = new DirClassLoader(new File(System.getProperty("dmfc.home"), "transformers"), _dir);
 		transformerClass = Class.forName(classname, true, transformerClassLoader);
 	}
 	

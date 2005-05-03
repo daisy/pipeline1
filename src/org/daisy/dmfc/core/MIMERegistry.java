@@ -46,7 +46,7 @@ public class MIMERegistry {
 	 * @throws MIMEException
 	 */
 	private MIMERegistry() throws MIMEException {
-	    File _registryFile = new File("resources", "mimereg.xml");
+	    File _registryFile = new File(System.getProperty("dmfc.home") + File.separator + "resources", "mimereg.xml");
 
 	    try {
             // Parse the registry file into a dom4j Document

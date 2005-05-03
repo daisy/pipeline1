@@ -21,8 +21,10 @@ package org.daisy.dmfc.core;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -57,7 +59,8 @@ import org.daisy.util.xml.validator.Validator;
 public class DMFCCore extends EventSender {
 
 	private InputListener inputListener;
-	private Map transformerHandlers = new HashMap();	
+	private Map transformerHandlers = new HashMap();
+	private String home;
 	
 	/**
 	 * Create an instance of DMFC using the default locale.
@@ -79,14 +82,20 @@ public class DMFCCore extends EventSender {
 		super(a_eventListener);
 		inputListener = a_inputListener;
 		Locale.setDefault(a_locale);
-			
-		DirClassLoader _resourceLoader = new DirClassLoader(new File("resources"), new File("resources"));
-		ResourceBundle _bundle = ResourceBundle.getBundle("dmfc_messages", Locale.ENGLISH, _resourceLoader);
-		I18n.setDefaultBundle(_bundle);
 		
+		// Set DMFC home dir
+		home = getHomeDir();
+		System.setProperty("dmfc.home", home);				
+		
+		// Load properties
 		if (!loadProperties(ClassLoader.getSystemResourceAsStream("dmfc.properties"))) {
 		    System.err.println("Can't read properties!");
 		}		
+		
+		// Load messages
+		DirClassLoader _resourceLoader = new DirClassLoader(new File(home, "resources"), new File(home, "resources"));
+		ResourceBundle _bundle = ResourceBundle.getBundle("dmfc_messages", Locale.ENGLISH, _resourceLoader);
+		I18n.setDefaultBundle(_bundle);				
 		
 		TempFile.setTempDir(new File(System.getProperty("dmfc.tempDir")));
 			
@@ -97,21 +106,34 @@ public class DMFCCore extends EventSender {
 	}	
 
 	/**
+	 * Find out what the home directory of DMFC is.
+	 * @return the home directory of DMFC.
+	 */
+	private String getHomeDir() {
+	    URL _url = ClassLoader.getSystemResource("dmfc.properties");
+	    if (_url == null) {
+	        System.err.println("Can't find dmfc.properties");
+	        // FIXME throw Exception
+	    }
+	    String _dir = new File(_url.getFile()).getParentFile().getParent();
+	    try {	        
+            _dir = URLDecoder.decode(_dir, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            System.err.println("This is not supposed to happen!");
+        }
+	    return _dir;
+	}
+	
+	/**
 	 * Adds a set properties to the system properties.
 	 * @param a_propertiesStream an InputStream
 	 * @return <code>true</code> if the loading was successful, <code>false</code> otherwise
 	 */
 	public boolean loadProperties(InputStream a_propertiesStream) {
 	    try {
-	        Properties _properties = new Properties();
-            _properties.load(a_propertiesStream);
-            
-            Enumeration _enum = _properties.propertyNames();
-            while (_enum.hasMoreElements()) {
-                String _name = (String)_enum.nextElement();
-                String _value = _properties.getProperty(_name);
-                System.setProperty(_name, _value);
-            }            
+	        Properties _properties = new Properties(System.getProperties());
+            _properties.load(a_propertiesStream);         
+            System.setProperties(_properties);
         } catch (IOException e) {            
             e.printStackTrace();
             return false;
@@ -126,13 +148,13 @@ public class DMFCCore extends EventSender {
 	 */
 	public boolean reloadTransformers() {
 		try {
-			Validator _validator = new RelaxngSchematronValidator(new File("resources", "transformer.rng"), true);
+			Validator _validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "transformer.rng"), true);
 			sendMessage(Level.CONFIG, "Reloading Transformers");
 			transformerHandlers.clear();		
-			addTransformers(new File("transformers"), _validator);			
+			addTransformers(new File(home, "transformers"), _validator);			
 			sendMessage(Level.CONFIG, "Reloading of Transformers done");
 		} catch (ValidationException e) {
-			sendMessage(Level.SEVERE, "Reloading of transformers failed " + e.getMessage());
+			sendMessage(Level.SEVERE, "Reloading of Transformers failed " + e.getMessage());
 			return false;
 		}		
 		return true;
@@ -187,7 +209,7 @@ public class DMFCCore extends EventSender {
 	public boolean executeScript(File a_script) {		
 		boolean _ret = false;
 		try {
-			Validator _validator = new RelaxngSchematronValidator(new File("resources", "script.rng"), false);
+			Validator _validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "script.rng"), false);
 			ScriptHandler _handler = new ScriptHandler(a_script, transformerHandlers, getEventListeners(), _validator);
 			_handler.execute();
 			_ret = true;
@@ -227,7 +249,7 @@ public class DMFCCore extends EventSender {
 	 * @throws MIMEException
 	 */
 	public void validateScript(File a_script) throws ValidationException, ScriptException, MIMEException {
-		Validator _validator = new RelaxngSchematronValidator(new File("resources", "script.rng"), false);
+		Validator _validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "script.rng"), false);
 		new ScriptHandler(a_script, transformerHandlers, getEventListeners(), _validator);
 	}
 }
