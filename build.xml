@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- http://ant.apache.org/manual -->
+<project default="compile">
+
+	<property name="version" value="0_1_0"/>
+	
+	<!--project directories -->
+	<!-- ${base.dir} should point to the DMFC project root directory.-->
+	<property name="base.dir" value="."/>
+	
+	<property name="dmfc.src.dir" value="${base.dir}/src"/>
+	<property name="build.dir" value="${base.dir}/bin"/>
+	
+	<property name="transformers.dir" value="${base.dir}/transformers"/>
+	
+	<property name="lib.dir" value="${base.dir}/lib"/>
+	<property name="javadoc.dir" value="${base.dir}/doc/api"/>
+	<property name="distribution.dir" value="${base.dir}/dist"/>
+	
+	<!-- general tasks -->
+	<target name="resetDistributionDir">
+		<delete dir="${distribution.dir}"/>
+		<mkdir dir="${distribution.dir}"/>
+	</target>
+	
+	<target name="createDistributionDir">
+		<mkdir dir="${distribution.dir}"/>
+	</target>
+	
+	<target name="removeClasses" if="${build.dir}"
+			description="Cleans up old class files so that the new ones can be built.">
+		<delete dir="${build.dir}/org">
+			<fileset dir="${build.dir}" includes="**/*.class"/>
+		</delete>
+	</target>
+	
+	<target name="compile" description="Compiles all src classes" depends="removeClasses">
+		<javac 	srcdir="${dmfc.src.dir}" 
+				destdir="${build.dir}" 
+				includes="**/*.java" 
+				debug="true"
+				/>
+		<javac 	srcdir="${transformers.dir}" 
+				destdir="${transformers.dir}" 
+				includes="**/*.java" 
+				debug="true"
+				/>
+	</target>
+	<!-- end of general tasks -->
+	
+	<!-- distribution build related tasks -->
+	<!-- binary distribution build -->
+	<target name="buildDMFCJar" 
+			description="Creates a dmfc.jar with class files in the distribution folder" 
+			depends="compile,createDistributionDir">
+		<delete file="${distribution.dir}/dmfc.jar"/>
+		<jar jarfile="${distribution.dir}/dmfc.jar">
+			<fileset dir="${base.dir}">
+				<include name="bin/**/*.class"/>
+				<include name="bin/**/*.properties"/>
+			</fileset>
+			<fileset dir="${base.dir}">
+				<include name="transformers/**/*.*"/>
+				<exclude name="transformers/**/*.java"/>
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="buildDMFCZip" 
+			description="Creates a dmfc.zip with non-java files in the distribution folder"
+			depends="createDistributionDir">
+		<delete file="${distribution.dir}/dmfc.zip"/>
+		<zip zipfile="${distribution.dir}/dmfc.zip">
+			<fileset dir="${base.dir}">
+				<include name="resources/**/*.*"/>
+				<include name="dmfc.bat"/>
+				<include name="doc/**/*.*"/>
+				<exclude name="doc/api/**/*.*"/>
+				<include name="lib/**/*.jar"/>
+			</fileset>
+		</zip>
+	</target>
+	
+	
+	<!-- end of binary distribution build -->
+	
+	<target name="buildSrcJar" 
+			description="Creates a dmfc_src_${version}.jar with *.java files in the distribution folder"
+			depends="createDistributionDir">
+		<jar jarfile="${distribution.dir}/dmfc_src_${version}.jar" >
+			<fileset dir="${base.dir}">
+				<include name="build.xml"/>
+			</fileset>
+			<fileset dir="${base.dir}">
+				<include name="src/**/*.java"/>
+				<include name="src/**/*.properties"/>
+			</fileset>
+			<fileset dir="${base.dir}">
+				<include name="transformers/**/*.*"/>
+				<exclude name="transformers/**/*.class"/>
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="buildJavadocZip" 
+			description="Creates a dmfc_doc_${version}.zip with javadoc files in the distribution folder"
+			depends="createDistributionDir">
+		<subant target="">
+			<fileset dir="doc" includes="javadoc.xml" />
+			<property name="base.dir" value="../"/>
+		</subant>
+		<zip zipfile="${distribution.dir}/dmfc_doc_${version}.zip" >
+			<fileset dir="${javadoc.dir}" includes="**"/>
+		</zip>
+	</target>
+	
+	<target name="buildDMFC"
+			description="Creates all DMFC packages"
+			depends="buildSrcJar,
+					 buildJavadocZip"/>
+	<!-- end of distribution build related tasks -->	
+</project>
