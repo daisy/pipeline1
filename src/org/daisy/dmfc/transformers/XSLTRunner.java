@@ -19,8 +19,10 @@
 package org.daisy.dmfc.transformers;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
@@ -62,26 +64,44 @@ public class XSLTRunner extends Transformer {
     }
 
     protected boolean execute(Map a_parameters) throws TransformerRunException {
-        String _xmlFileName = (String)a_parameters.get("xml");
-        String _xsltFileName = (String)a_parameters.get("xslt");
-        String _outFileName = (String)a_parameters.get("out");
-        String _factory = (String)a_parameters.get("factory");
+        String xmlFileName = (String)a_parameters.remove("xml");
+        String xsltFileName = (String)a_parameters.remove("xslt");
+        String outFileName = (String)a_parameters.remove("out");
+        String factory = (String)a_parameters.remove("factory");
         
-        Source _xml = new StreamSource(_xmlFileName);
-		Source _xslt = new StreamSource(_xsltFileName);		
+        // Set input files
+        sendMessage(Level.FINE, i18n("XSLT_READING_XML", xmlFileName));
+        Source _xml = new StreamSource(new File(xmlFileName));
+        sendMessage(Level.FINE, i18n("XSLT_READING_XSLT", xsltFileName));
+		Source _xslt = new StreamSource(new File(xsltFileName));
+		
 		try {
 		    String _property = "javax.xml.transform.TransformerFactory";
 		    String _oldFactory = System.getProperty(_property);
-		    if (_factory != null) {
-		        System.setProperty(_property, _factory);
+		    if (factory != null) {
+		        System.setProperty(_property, factory);
 		    }
 			TransformerFactory _transformerFactory = TransformerFactory.newInstance();			
-			if (_factory != null) {
-			    System.setProperty(_property, (_oldFactory==null?"":_oldFactory));
-			}
+			
+			// Reset old factory
+			System.setProperty(_property, (_oldFactory==null?"":_oldFactory));			
 					    
             javax.xml.transform.Transformer _transformer = _transformerFactory.newTransformer(_xslt);
-            _transformer.transform(_xml, new StreamResult(new File(_outFileName)));
+            
+            // Set any parameters to the XSLT
+            for (Iterator it = a_parameters.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry paramEntry = (Map.Entry)it.next();
+                _transformer.setParameter((String)paramEntry.getKey(), paramEntry.getValue());
+            }
+            
+            // Set output file
+            File _outFile = new File(outFileName);
+            StreamResult _sr = new StreamResult(_outFile);
+            _sr.setSystemId(_outFile.toURI().toString());
+            
+            // Perform transformation
+            sendMessage(Level.FINE, i18n("XSLT_WRITING_OUT", outFileName));
+            _transformer.transform(_xml, _sr);
         } catch (TransformerConfigurationException e) {
             e.printStackTrace();
             throw new TransformerRunException(e.getMessage(), e);
