@@ -43,7 +43,7 @@
 				<attribute name="interactive">
 					<data type="boolean"/>
 				</attribute>				
-				<oneOrMore>
+				<zeroOrMore>
 					<element name="parameter">
 						<optional>
 							<choice>
@@ -58,7 +58,7 @@
 						<element name="name"><text/></element>
 						<element name="value"><text/></element>
 					</element>
-				</oneOrMore>
+				</zeroOrMore>
 			</element>
 		</oneOrMore>
 	</define>
