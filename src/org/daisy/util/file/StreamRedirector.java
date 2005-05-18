@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 /**
+ * Redirects an input stream to a output stream in a separate thread.
  * @author Linus Ericson
  */
 public class StreamRedirector extends Thread {
@@ -33,28 +34,33 @@ public class StreamRedirector extends Thread {
     protected InputStream inputStream;
     protected OutputStream outputStream;
     
-    public StreamRedirector(InputStream a_inputStream, OutputStream a_outputSteam) {
-        inputStream = a_inputStream;
-        outputStream = a_outputSteam;
+    /**
+     * Creates a new <code>StreamRedirector</code>.
+     * @param inStream the input stream to redirect
+     * @param outSteam the output stream to redirect the input to.
+     */
+    public StreamRedirector(InputStream inStream, OutputStream outSteam) {
+        inputStream = inStream;
+        outputStream = outSteam;
     }
 
     public void run() {
         try {
-            PrintWriter _writer = null;
+            PrintWriter writer = null;
             if (outputStream != null) {
-                _writer = new PrintWriter(outputStream);
+                writer = new PrintWriter(outputStream);
             }
                 
-            InputStreamReader _isr = new InputStreamReader(inputStream);
-            BufferedReader _br = new BufferedReader(_isr);
-            String _line=null;
-            while ( (_line = _br.readLine()) != null) {
-                if (_writer != null) {
-                    _writer.println(_line);
+            InputStreamReader isr = new InputStreamReader(inputStream);
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            while ( (line = br.readLine()) != null) {
+                if (writer != null) {
+                    writer.println(line);
                 }  
             }
-            if (_writer != null) {
-                _writer.flush();
+            if (writer != null) {
+                writer.flush();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();  
