@@ -20,6 +20,9 @@
 		<element name="name"><text/></element>
 		<element name="description"><text/></element>
 		<element name="classname"><text/></element>
+		<zeroOrMore>
+			<element name="jar"><text/></element>
+		</zeroOrMore>
 		<element name="license"><text/></element>
 		<element name="author"><text/></element>
 		<element name="support"><text/></element>		
