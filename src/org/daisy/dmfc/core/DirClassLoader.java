@@ -19,18 +19,16 @@
 package org.daisy.dmfc.core;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 
 /**
  * A class loader that can load classes and resources from specified
  * directories that are not in the classpath.
  * @author Linus Ericson
  */
-public class DirClassLoader extends ClassLoader {
+public class DirClassLoader extends URLClassLoader {
 
 	private File classDir;
 	private File resourceDir;
@@ -42,37 +40,22 @@ public class DirClassLoader extends ClassLoader {
 	 * @param a_resourceDir directory for resource files
 	 */
 	public DirClassLoader(File a_classDir, File a_resourceDir) {
+		super(new URL[]{fileToURL(a_classDir)});
 		classDir = a_classDir;
 		resourceDir = a_resourceDir;
 	}
 	
-	/**
-	 * Finds a class on the file system.
-	 * @param a_classname name of the Class to load
-	 * @return the Class
-	 * @throws ClassNotFoundException if the specified class is not found
-	 */
-	public Class findClass(String a_classname) throws ClassNotFoundException {
-		String _separator = File.separator;		
-		_separator = _separator.replaceAll("\\\\", "\\\\\\\\");         // Aargh!
-		String _newClassName = a_classname.replaceAll("\\.", _separator);
-		File _classFile = new File(classDir, _newClassName + ".class");
-		if (!_classFile.exists()) {
-			throw new ClassNotFoundException("Can't locate class at: " + _classFile.getAbsolutePath());
-		}
-		byte[] data = new byte[(int)_classFile.length()];
-		try {
-			FileInputStream _fis = new FileInputStream(_classFile);
-			int _num = _fis.read(data);
-			if (_num != _classFile.length()) {
-				System.err.println("The file was not completely read");
-			}
-		} catch (FileNotFoundException e) {
-			throw new ClassNotFoundException("Can't locate class at: " + _classFile.getAbsolutePath());
-		} catch (IOException e) {
-			throw new ClassNotFoundException("Can't read class at: " + _classFile.getAbsolutePath());
-		}
-		return defineClass(a_classname, data, 0, data.length);
+	private static URL fileToURL(File a_file) {
+	    try {
+            return a_file.toURL();
+        } catch (MalformedURLException e) {
+            // Nothing
+        }
+        return null;
+	}
+		
+	public void addJar(File a_jar) {
+	    this.addURL(fileToURL(a_jar));
 	}
 	
 	public String toString() {
@@ -103,21 +86,21 @@ public class DirClassLoader extends ClassLoader {
 	 * in the order of how the classes are searched for. This function tries to 
 	 * load the class from the directory specified in the constructor <b>before</b>
 	 * it calls the parent class loader.
-	 * @param a_className class name of the Class to load
+	 * @param className class name of the Class to load
 	 * @return the loaded Class 
 	 * @throws if the specified class is not found
 	 */
-	public Class loadClass(String a_className) throws ClassNotFoundException {
-		Class _loadedClass = findLoadedClass(a_className);
-		if (_loadedClass != null) {
-			return _loadedClass;
+	public Class loadClass(String className) throws ClassNotFoundException {
+		Class foundClass = findLoadedClass(className);
+		if (foundClass != null) {		   
+			return foundClass;
 		}
 		try {
-			_loadedClass = findClass(a_className);
-		} catch (ClassNotFoundException e) {
-			_loadedClass = super.loadClass(a_className);
+			foundClass = findClass(className);			
+		} catch (ClassNotFoundException e) {		    
+			foundClass = super.loadClass(className);
 		}		
-		return _loadedClass;
+		return foundClass;
 	}
 
 }
