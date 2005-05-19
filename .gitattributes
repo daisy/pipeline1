@@ -1,4 +1,6 @@
 * text=auto !eol
 doc/diagram.png -text
 lib/jing.jar -text
+lib/saxon.jar -text
+lib/saxon8.jar -text
 resources/transformer.rng -text svneol=unset#application/octet-stream
