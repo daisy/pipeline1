@@ -29,6 +29,7 @@ import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.EventListener;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.Prompt;
+import org.daisy.dmfc.exception.DMFCConfigurationException;
 
 /**
  * A simple command line UI for starting DMFC.
@@ -60,13 +61,16 @@ public class CommandLineUI implements InputListener, EventListener {
 	}
 
 	public static void main(String[] args) {
-		if (args.length == 1) {
-			CommandLineUI _ui = new CommandLineUI();
-			DMFCCore _dmfc = new DMFCCore(_ui, _ui, new Locale("sv", "SE"));			
-			_dmfc.reloadTransformers();
-			_dmfc.executeScript(new File(args[0]));
-		} else {
-			System.out.println("Program requires one parameter (a script file name)");
-		}
+		try {
+            if (args.length == 1) {
+            	CommandLineUI _ui = new CommandLineUI();
+            	DMFCCore _dmfc = new DMFCCore(_ui, _ui, new Locale("sv", "SE"));			
+            	_dmfc.executeScript(new File(args[0]));
+            } else {
+            	System.out.println("Program requires one parameter (a script file name)");
+            }
+        } catch (DMFCConfigurationException e) {            
+            e.printStackTrace();
+        }
 	}
 }

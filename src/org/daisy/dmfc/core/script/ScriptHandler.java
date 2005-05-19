@@ -19,6 +19,7 @@
 package org.daisy.dmfc.core.script;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,6 +29,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.MIMERegistry;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
@@ -35,14 +40,14 @@ import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.exception.ValidationException;
+import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.validator.Validator;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.Node;
-import org.dom4j.XPath;
-import org.dom4j.io.SAXReader;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 
 /**
  * This class loads and executes the script files.
@@ -70,18 +75,21 @@ public class ScriptHandler extends EventSender {
 		super(a_eventListeners);
 		transformerHandlers = a_transformerHandlers;
 		
+		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+		docBuilderFactory.setValidating(false);
+		
 		try {
 			// Validate the script file
 			if (!a_validator.isValid(a_script)) {
 				throw new ScriptException("Script file is not valid");
 			}
 			
-			// Parse the script file into a dom4j Document
-			SAXReader _xmlReader = new SAXReader();
-			Document _doc = _xmlReader.read(a_script);
-			
+			// Parse the script file
+			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(a_script);
+						
 			// Get properties from script file
-			readProperties(_doc.getRootElement());
+			readProperties(doc.getDocumentElement());
 			
 			// Add useful default properties
 			properties.put("dollar", "\\$");
@@ -102,16 +110,15 @@ public class ScriptHandler extends EventSender {
 
 			// Make sure there are no two elements with the same ID.
 			// FIXME Use a schematron rule (or similar) instead
-			XPath _xpathSelector = DocumentHelper.createXPath("//parameter/@id");
-			List _ids = _xpathSelector.selectNodes(_doc);
-			Set _idSet = new HashSet();
-			for (Iterator _iter = _ids.iterator(); _iter.hasNext(); ) {
-				String _id = ((Node)_iter.next()).valueOf(".");
-				if(!_idSet.add(_id)) {
-					throw new ScriptException("id attributes must be unique");
-				}
+			NodeList ids = XPathUtils.selectNodes(doc, "//parameter/@id");
+			Set idSet = new HashSet();
+			for (int i = 0; i < ids.getLength(); ++i) {
+			    String id = XPathUtils.valueOf(ids.item(i), ".");
+			    if (!idSet.add(id)) {
+			        throw new ScriptException("id attributes must be unique");
+			    }
 			}
-			
+						
 			// Validate parameters
 			for (Iterator _iter = tasks.iterator(); _iter.hasNext(); ) {
 				Task _task = (Task)_iter.next();
@@ -120,20 +127,21 @@ public class ScriptHandler extends EventSender {
 				for (Iterator _paramIter = _task.getParameters().values().iterator(); _paramIter.hasNext(); ) {
 					Parameter _parameter = (Parameter)_paramIter.next();					
 					if (_parameter.getRef() != null) {
-						Node _refd = _doc.selectSingleNode("//task/parameter[@id='" + _parameter.getRef() + "']");
-												
-						if (_refd == null) {
+					    Node refd = XPathUtils.selectSingleNode(doc, "//task/parameter[@id='" + _parameter.getRef() + "']");
+																		
+						if (refd == null) {
 							throw new ScriptException("Parameter " + _parameter.getName() + " in task " + 
 									_task.getName() + " has a reference to a non-existing id");
 						}
 						
-						String _taskWithIDName = _doc.valueOf("//task[parameter/@id='" + _parameter.getRef() + "']/@name");
+						String taskWithIDName = XPathUtils.valueOf(doc, "//task[parameter/@id='" + _parameter.getRef() + "']/@name");
+						
 						// We already know this handler exists
-						TransformerHandler _handlerWithID = (TransformerHandler)transformerHandlers.get(_taskWithIDName);
+						TransformerHandler _handlerWithID = (TransformerHandler)transformerHandlers.get(taskWithIDName);
 						
 						// Make sure all in params with a ref has a matching (mime-wise) out param id
 						String _typeOfRef = _handler.getParameterType(_parameter.getName());
-						String _typeOfId = _handlerWithID.getParameterType(_refd.valueOf("name"));
+						String _typeOfId = _handlerWithID.getParameterType(XPathUtils.valueOf(refd, "name"));						
 						//System.err.println("*** typeOfRef: " + _typeOfRef + ", typeOfId: " + _typeOfId);
 						MIMERegistry _mime = MIMERegistry.instance();
 						if (!_mime.matches(_typeOfId, _typeOfRef)) {
@@ -152,9 +160,13 @@ public class ScriptHandler extends EventSender {
 			
 		} catch (ValidationException e) {
 			throw new ScriptException("Script file is not valid", e);
-		} catch (DocumentException e) {
-			throw new ScriptException("Problems parsing script file" , e);
-		}
+		} catch (ParserConfigurationException e) {
+		    throw new ScriptException("Problems parsing script file" , e);
+        } catch (SAXException e) {
+            throw new ScriptException("Problems parsing script file" , e);
+        } catch (IOException e) {
+            throw new ScriptException("Problems accessing script file" , e);
+        }		
 	}
 	
 	/**
@@ -162,28 +174,26 @@ public class ScriptHandler extends EventSender {
 	 * @param a_element
 	 */
 	private void readProperties(Element a_element) {
-		this.name = a_element.valueOf("name");
-		this.description = a_element.valueOf("description");
-		this.version = a_element.valueOf("@version");
-		
-		// Read properties
-		XPath _xpathSelector = DocumentHelper.createXPath("property");
-		List _properties = _xpathSelector.selectNodes(a_element);
-		for (Iterator _iter = _properties.iterator(); _iter.hasNext(); ) {
-			Element _property = (Element)_iter.next();
-			String _name = _property.valueOf("@name");
-			String _value = _property.valueOf("@value");
-			properties.put(_name, _value);
-		}
-		
-		// Read tasks
-		_xpathSelector = DocumentHelper.createXPath("task");
-		List _tasks = _xpathSelector.selectNodes(a_element);
-		for (Iterator _iter = _tasks.iterator(); _iter.hasNext(); ) {
-			Element _taskElement = (Element)_iter.next();
-			Task _task = new Task(_taskElement, properties);			
-			tasks.add(_task);
-		}
+	    name = XPathUtils.valueOf(a_element, "name");
+	    description = XPathUtils.valueOf(a_element, "description");
+	    version = XPathUtils.valueOf(a_element, "@version");
+	    
+	    // Read properties
+	    NodeList propertyList = XPathUtils.selectNodes(a_element, "property");
+	    for (int i = 0; i < propertyList.getLength(); ++i) {
+	        Element property = (Element)propertyList.item(i);
+	        String propertyName = XPathUtils.valueOf(property, "@name");
+	        String value = XPathUtils.valueOf(property, "@value");
+	        properties.put(propertyName, value);
+	    }
+	    
+	    // Read tasks
+	    NodeList taskList = XPathUtils.selectNodes(a_element, "task");
+	    for (int i = 0; i < taskList.getLength(); ++i) {
+	        Element taskElement = (Element)taskList.item(i);
+	        Task task = new Task(taskElement, properties);
+	        tasks.add(task);
+	    }
 	}
 	
 	/**

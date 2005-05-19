@@ -34,6 +34,7 @@ import java.util.logging.Level;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
+import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
@@ -51,7 +52,6 @@ import org.daisy.util.xml.validator.Validator;
  * A common usage of DMFC would include the following:
  * <pre>
  * DMFCCore dmfc = new DMFCCore(inputListener, eventListener);
- * dmfc.reloadTransformers();
  * dmfc.executeScript(scriptFile);
  * </pre>
  * @author Linus Ericson
@@ -67,8 +67,9 @@ public class DMFCCore extends EventSender {
 	 * This is the same as <code>new DMFCCore(a_inputListener, a_eventListener, new Locale("en"))</code>. 
 	 * @param a_inputListener
 	 * @param a_eventListener
+	 * @throws DMFCConfigurationException
 	 */
-	public DMFCCore(InputListener a_inputListener, EventListener a_eventListener) {
+	public DMFCCore(InputListener a_inputListener, EventListener a_eventListener) throws DMFCConfigurationException {
 	    this(a_inputListener, a_eventListener, new Locale("en"));
 	}
 	
@@ -77,19 +78,20 @@ public class DMFCCore extends EventSender {
 	 * @param a_inputListener a listener of (user) input events
 	 * @param a_eventListener a listener of events
 	 * @param a_locale the locale to use
+	 * @throws DMFCConfigurationException
 	 */
-	public DMFCCore(InputListener a_inputListener, EventListener a_eventListener, Locale a_locale) {
+	public DMFCCore(InputListener a_inputListener, EventListener a_eventListener, Locale a_locale) throws DMFCConfigurationException {
 		super(a_eventListener);
 		inputListener = a_inputListener;
 		Locale.setDefault(a_locale);
 		
 		// Set DMFC home dir
 		home = getHomeDir();
-		System.setProperty("dmfc.home", home);				
+		System.setProperty("dmfc.home", home);
 		
 		// Load properties
 		if (!loadProperties(ClassLoader.getSystemResourceAsStream("dmfc.properties"))) {
-		    System.err.println("Can't read properties!");
+		    throw new DMFCConfigurationException("Can't read dmfc.properties!");
 		}		
 		
 		// Load messages
@@ -102,24 +104,30 @@ public class DMFCCore extends EventSender {
 		// Setup logging
 		MessageLogger _logger = new MessageLogger();
 		addEventListener(_logger);
-		LoggingPropertiesReader.addHandlers(_logger, System.getProperty("dmfc.logging"));		
+		LoggingPropertiesReader.addHandlers(_logger, System.getProperty("dmfc.logging"));
+		
+		// Load the transformers
+		if (!reloadTransformers()) {
+		    throw new DMFCConfigurationException("Cannot load the transformers");
+		}
 	}	
 
 	/**
 	 * Find out what the home directory of DMFC is.
 	 * @return the home directory of DMFC.
+	 * @throws DMFCConfigurationException
 	 */
-	private String getHomeDir() {
+	private String getHomeDir() throws DMFCConfigurationException {
 	    URL _url = ClassLoader.getSystemResource("dmfc.properties");
 	    if (_url == null) {
 	        System.err.println("Can't find dmfc.properties");
-	        // FIXME throw Exception
+	        throw new DMFCConfigurationException("Can't find dmfc.properties");
 	    }
 	    String _dir = new File(_url.getFile()).getParentFile().getParent();
 	    try {	        
             _dir = URLDecoder.decode(_dir, "utf-8");
         } catch (UnsupportedEncodingException e) {
-            System.err.println("This is not supposed to happen!");
+            throw new DMFCConfigurationException("This is not supposed to happen!", e);            
         }
 	    return _dir;
 	}
@@ -155,6 +163,7 @@ public class DMFCCore extends EventSender {
 			sendMessage(Level.CONFIG, "Reloading of Transformers done");
 		} catch (ValidationException e) {
 			sendMessage(Level.SEVERE, "Reloading of Transformers failed " + e.getMessage());
+			e.printStackTrace();
 			return false;
 		}		
 		return true;
@@ -216,7 +225,7 @@ public class DMFCCore extends EventSender {
 		} catch (ScriptException e) {
 			sendMessage(Level.SEVERE, "Script file exception: " + e.getMessage());
 			if (e.getRootCause() != null) {
-			    String _msg = new String();
+			    String _msg = "";
 			    String[] _msgs = e.getRootCauseMessages();			    
 			    for (int i = 0; i < _msgs.length; ++i) {
 			        _msg = _msgs[i] + "\n";
@@ -230,7 +239,7 @@ public class DMFCCore extends EventSender {
 			}
 		} catch (MIMEException e) {
 			if (e.getRootCause() != null) {
-			    String _msg = new String();
+			    String _msg = "";
 			    String[] _msgs = e.getRootCauseMessages();			    
 			    for (int i = 0; i < _msgs.length; ++i) {
 			        _msg = _msgs[i] + "\n";

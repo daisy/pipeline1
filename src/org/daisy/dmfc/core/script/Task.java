@@ -18,14 +18,12 @@
  */
 package org.daisy.dmfc.core.script;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.XPath;
+import org.daisy.util.xml.XPathUtils;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * A task in a script file.
@@ -43,16 +41,15 @@ public class Task {
 	 * @param a_properties any properties that have been set in the script file
 	 */
 	public Task(Element a_element, Map a_properties) {
-		name = a_element.valueOf("@name");
-		interactive = Boolean.valueOf(a_element.valueOf("@interactive")).booleanValue();
+	    name = XPathUtils.valueOf(a_element, "@name");		
+		interactive = Boolean.valueOf(XPathUtils.valueOf(a_element, "@interactive")).booleanValue();
 		
-		XPath _xpathSelector = DocumentHelper.createXPath("parameter");
-		List _parameters = _xpathSelector.selectNodes(a_element);
-		for (Iterator _iter = _parameters.iterator(); _iter.hasNext(); ) {
-			Element _parameter = (Element)_iter.next();
-			Parameter _param = new Parameter(_parameter, a_properties);
-			parameters.put(_param.getName(), _param);			
-		}
+		NodeList nodeList = XPathUtils.selectNodes(a_element, "parameter");
+		for (int i = 0; i < nodeList.getLength(); ++i) {
+		    Element parameter = (Element)nodeList.item(i);
+		    Parameter param = new Parameter(parameter, a_properties);
+		    parameters.put(param.getName(), param);
+		}		
 	}
 	/**
 	 * @return Returns the interactive.

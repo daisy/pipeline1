@@ -22,7 +22,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.dom4j.Element;
+import org.daisy.util.xml.XPathUtils;
+import org.w3c.dom.Element;
 
 /**
  * A parameter to a task.
@@ -45,8 +46,8 @@ public class Parameter {
 	 * @param a_element
 	 */
 	public Parameter(Element a_element, Map a_properties) {
-		name = a_element.valueOf("name");
-		value = a_element.valueOf("value");
+	    name = XPathUtils.valueOf(a_element, "name");
+	    value = XPathUtils.valueOf(a_element, "value");
 		
 		// Expand properties in the value string		
 		Matcher _matcher = propertyPattern.matcher(value);
@@ -58,11 +59,11 @@ public class Parameter {
 		}
 		_matcher.appendTail(_sb);
 		value = _sb.toString();
-		
-		id = a_element.valueOf("@id");
-		if (a_element.selectSingleNode("@ref") != null) {
-			ref = a_element.valueOf("@ref");
-		}
+				
+		id = XPathUtils.valueOf(a_element, "@id");
+		if (XPathUtils.selectSingleNode(a_element, "@ref") != null) {
+		    ref = XPathUtils.valueOf(a_element, "@ref");
+		}		
 	}
 	
 	public Parameter(String a_name, String a_value) {

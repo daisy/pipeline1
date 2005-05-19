@@ -19,18 +19,20 @@
 package org.daisy.dmfc.core;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.daisy.dmfc.exception.MIMEException;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.XPath;
-import org.dom4j.io.SAXReader;
+import org.daisy.util.xml.XPathUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Singleton MIME registry class. Use the <code>instance</code> method
@@ -48,16 +50,21 @@ public class MIMERegistry {
 	private MIMERegistry() throws MIMEException {
 	    File _registryFile = new File(System.getProperty("dmfc.home") + File.separator + "resources", "mimereg.xml");
 
+	    DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+	    docBuilderFactory.setValidating(true);
 	    try {
-            // Parse the registry file into a dom4j Document
-            SAXReader _xmlReader = new SAXReader();
-            _xmlReader.setValidation(true);
-            Document _doc = _xmlReader.read(_registryFile);
-            
-            readProperties(_doc.getRootElement());
-        } catch (DocumentException e) {
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(_registryFile);
+            readProperties(doc.getDocumentElement());
+        } catch (MIMEException e) {
             throw new MIMEException("MIME registry file error: " + e.getMessage(), e);
-        }		
+        } catch (ParserConfigurationException e) {
+            throw new MIMEException("MIME registry file error: " + e.getMessage(), e);
+        } catch (SAXException e) {
+            throw new MIMEException("MIME registry file error: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new MIMEException("MIME registry file error: " + e.getMessage(), e);
+        }        		
 	}
 	
 	/**
@@ -78,38 +85,37 @@ public class MIMERegistry {
 	 * @throws MIMEException
 	 */
 	private void readProperties(Element a_element) throws MIMEException {
-		XPath _xpathSelector = DocumentHelper.createXPath("type");
-		List _types = _xpathSelector.selectNodes(a_element);
-		Map _idEntries = new HashMap();
-		
-		// Iterate over all 'type' subelements 
-		for (Iterator _iter = _types.iterator(); _iter.hasNext(); ) {
-			Element _type = (Element)_iter.next();
-			String _id = _type.valueOf("@id");
-			String _name = _type.valueOf("@name");
-			String _parents = _type.valueOf("@parentType");
-			
-			if (_idEntries.containsKey(_id)) {
-			    throw new MIMEException("Duplicate entry, ID " + _id);
-			}
-			
-			// Create MIME type
-			MIMEType _mimeType = new MIMEType(_id, _name);
-			
-			// Add references to parent registry entries
-			if (!_parents.matches("\\s*")) {
-				String[] _refsArr = _parents.split("\\s+");
-				for (int i = 0; i < _refsArr.length; ++i) {
-				    MIMEType _refType = (MIMEType)_idEntries.get(_refsArr[i]);
-				    if (_refType == null) {
-				        throw new MIMEException("Referenced MIME type " + _refsArr[i] + " could not be found.");
+	    Map idEntries = new HashMap();
+	    NodeList nodeSet = XPathUtils.selectNodes(a_element, "type");  
+	    
+	    // Iterate over all 'type' subelements 
+        for (int i = 0; i < nodeSet.getLength(); ++i) {
+	        Element type = (Element)nodeSet.item(i);
+	        String id = XPathUtils.valueOf(type, "@id");
+	        String name = XPathUtils.valueOf(type, "@name");
+	        String parents = XPathUtils.valueOf(type, "@parentType");
+	        
+	        if (idEntries.containsKey(id)) {
+	            throw new MIMEException("Duplicate entry, ID " + id);
+	        }
+	        
+	        // Create MIME type
+	        MIMEType mimeType = new MIMEType(id, name);
+	        
+	        // Add references to parent registry entries
+			if (!parents.matches("\\s*")) {
+				String[] refsArr = parents.split("\\s+");
+				for (int j = 0; j < refsArr.length; ++j) {
+				    MIMEType refType = (MIMEType)idEntries.get(refsArr[j]);
+				    if (refType == null) {
+				        throw new MIMEException("Referenced MIME type " + refsArr[j] + " could not be found.");
 				    }
-				    _mimeType.addParent(_refType);
+				    mimeType.addParent(refType);
 				}
 			}
-			_idEntries.put(_id, _mimeType);
-			entries.put(_name, _mimeType);
-		}
+			idEntries.put(id, mimeType);
+			entries.put(name, mimeType);
+	    }
 	}
 	
 	/**

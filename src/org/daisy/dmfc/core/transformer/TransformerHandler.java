@@ -19,18 +19,23 @@
 package org.daisy.dmfc.core.transformer;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.daisy.dmfc.core.DirClassLoader;
 import org.daisy.dmfc.core.EventSender;
@@ -39,13 +44,12 @@ import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.exception.ValidationException;
+import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.validator.Validator;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.XPath;
-import org.dom4j.io.SAXReader;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Handles descriptions of and initiates the execution of Transformers.
@@ -61,12 +65,13 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	private String name;
 	private String description;
 	private String classname;
+	private Set jars = new HashSet();
 	private String version;
 	private Vector parameters = new Vector();
 	
 	private InputListener inputListener;
 		
-	private ClassLoader transformerClassLoader;
+	private DirClassLoader transformerClassLoader;
 	private Class transformerClass;
 	private Constructor transformerConstructor;
 	
@@ -80,6 +85,9 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	public TransformerHandler(File a_transformerDescription, InputListener a_inputListener, Set a_eventListeners, Validator a_validator) throws TransformerDisabledException {
 		super(a_eventListeners);
 		inputListener = a_inputListener;		
+				
+		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+		docBuilderFactory.setValidating(false);
 		
 		/*
 		 * If any validation or dependency check fails, disable this Transformer 
@@ -90,15 +98,15 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 				throw new TransformerDisabledException("Transformer description file is not valid");
 			}
 			
-			// Parse the description file into a dom4j Document
-			SAXReader _xmlReader = new SAXReader();
-			Document _doc = _xmlReader.read(a_transformerDescription);
-			
+			// Parse the description file
+			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(a_transformerDescription);
+					
 			// Get properties from transformer description file
-			readProperties(_doc.getRootElement(), a_transformerDescription.getParentFile());
-			
+			readProperties(doc.getDocumentElement(), a_transformerDescription.getParentFile());
+						
 			// Perform platform dependency checks
-			if (!isPlatformOk(_doc.getRootElement())) {
+			if (!isPlatformOk(doc.getDocumentElement())) {
 				throw new TransformerDisabledException("Platform dependency check failed");
 			}
 			
@@ -112,8 +120,6 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			if (!transformerSupported()) {
 				throw new TransformerDisabledException("Transformer not supported");
 			}
-		} catch (DocumentException e) {
-			throw new TransformerDisabledException("Problems parsing Transformer description file", e);
 		} catch (ClassNotFoundException e) {
 			throw new TransformerDisabledException("Cannot create class for Transformer", e);
 		} catch (NoSuchMethodException e) {
@@ -124,6 +130,12 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			throw new TransformerDisabledException(i18n("TDF_VALIDATION_EXCEPTION"), e);
 		} catch (MIMEException e) {
 		    throw new TransformerDisabledException("MIME exception", e);
+        } catch (ParserConfigurationException e) {
+            throw new TransformerDisabledException("Problems parsing Transformer description file", e);
+        } catch (SAXException e) {
+            throw new TransformerDisabledException("Problems parsing Transformer description file", e);
+        } catch (IOException e) {
+            throw new TransformerDisabledException("Problems accessing Transformer description file", e);
         }	
 	}
 	
@@ -149,12 +161,11 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		
 		// Turn the parameters to a simple key->value string map
 		Map _params = new LinkedHashMap();
-		for (Iterator _iter = a_parameters.keySet().iterator(); _iter.hasNext(); ) {
-		    String _key = (String)_iter.next();
-		    org.daisy.dmfc.core.script.Parameter _param = (org.daisy.dmfc.core.script.Parameter)a_parameters.get(_key);
-		    _params.put(_key, _param.getValue());
+		for (Iterator it = a_parameters.entrySet().iterator(); it.hasNext(); ) {
+		    Map.Entry entry = (Map.Entry)it.next();
+		    _params.put(entry.getKey(), ((org.daisy.dmfc.core.script.Parameter)entry.getValue()).getValue());
 		}
-		
+				
 		return _transformer.executeWrapper(_params);
 	}
 	
@@ -218,6 +229,10 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		File _dir = a_transformerDescription.getAbsoluteFile();
 		_dir = _dir.getParentFile();
 		transformerClassLoader = new DirClassLoader(new File(System.getProperty("dmfc.home"), "transformers"), _dir);
+		for (Iterator _iter = jars.iterator(); _iter.hasNext(); ) {
+		    String _jar = (String)_iter.next();
+		    transformerClassLoader.addJar(new File(_dir, _jar));
+		}		
 		transformerClass = Class.forName(classname, true, transformerClassLoader);
 	}
 	
@@ -231,7 +246,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @throws InvocationTargetException
 	 */
 	private Transformer createTransformerObject(boolean a_interactive) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {		
-		Object _params[] = {inputListener, this.getEventListeners(), new Boolean(a_interactive)};
+		Object _params[] = {inputListener, this.getEventListeners(), Boolean.valueOf(a_interactive)};
 		Transformer _trans = (Transformer)transformerConstructor.newInstance(_params);
 		_trans.setMessageOriginator(name);
 		return _trans;
@@ -243,18 +258,24 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @throws MIMEException
 	 */
 	private void readProperties(Element a_element, File a_tdfDir) throws MIMEException {
-		this.name = a_element.valueOf("name");
-		this.description = a_element.valueOf("description");
-		this.classname = a_element.valueOf("classname");
-		this.version = a_element.valueOf("@version");
+	    name = XPathUtils.valueOf(a_element, "name");
+	    description = XPathUtils.valueOf(a_element, "description");
+	    classname = XPathUtils.valueOf(a_element, "classname");
 		
-		XPath _xpathSelector = DocumentHelper.createXPath("parameters/parameter");
-		List _parameters = _xpathSelector.selectNodes(a_element);
-		for (Iterator _iter = _parameters.iterator(); _iter.hasNext(); ) {
-			Element _parameter = (Element)_iter.next();
-			Parameter _param = new Parameter(_parameter, a_tdfDir);
-			parameters.add(_param);
-		}
+	    NodeList jarList = XPathUtils.selectNodes(a_element, "jar");
+	    for (int i = 0; i < jarList.getLength(); ++i) {
+	        Element jar = (Element)jarList.item(i);
+	        jars.add(XPathUtils.valueOf(jar, "."));
+	    }
+	    
+	    version = XPathUtils.valueOf(a_element, "@version");	    		
+		
+	    NodeList parameterList = XPathUtils.selectNodes(a_element, "parameters/parameter");
+	    for (int i = 0; i < parameterList.getLength(); ++i) {
+	        Element parameter = (Element)parameterList.item(i);
+	        Parameter param = new Parameter(parameter, a_tdfDir);
+	        parameters.add(param);
+	    }	    
 	}
 	
 	/**
@@ -275,7 +296,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 */
 	private boolean transformerSupported() throws NoSuchMethodException, TransformerRunException {
 		Method _isSupportedMethod = transformerClass.getMethod("isSupported", null);
-		Boolean _result = new Boolean(true);
+		Boolean _result;
 		try {
 			_result = (Boolean)_isSupportedMethod.invoke(null, null);
 		} catch (IllegalArgumentException e) {
@@ -322,28 +343,28 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 */
 	private boolean isPlatformOk(Element a_element) {
 		boolean _ret = true;
-		XPath _xpathSelector = DocumentHelper.createXPath("platforms/platform");
-		List _platforms = _xpathSelector.selectNodes(a_element);
-		if (_platforms.size() > 0) {
-			_ret = false;
+		NodeList platformList = XPathUtils.selectNodes(a_element, "platforms/platform");
+		if (platformList.getLength() > 0) {
+		    _ret = false;
 		}
-		for (Iterator _iter = _platforms.iterator(); _iter.hasNext(); ) {			
-			Element _platform = (Element)_iter.next();
+		for (int i = 0; i < platformList.getLength(); ++i) {
+		    Element platform = (Element)platformList.item(i);			
 			boolean _platformOk = true;
-			for (Iterator _properties = _platform.elementIterator("property"); _properties.hasNext(); ) {
-				Element _property = (Element)_properties.next();
-				String _name = _property.valueOf("name");
-				String _value = _property.valueOf("value");
-				String _real = System.getProperty(_name);
+			NodeList propertyList = XPathUtils.selectNodes(platform, "property");
+			for (int j = 0; j < propertyList.getLength(); ++j) {		
+			    Element property = (Element)propertyList.item(j);
+			    String propertyName = XPathUtils.valueOf(property, "name");
+			    String value = XPathUtils.valueOf(property, "value");				
+				String _real = System.getProperty(propertyName);
 				if (_real == null) {
 					_platformOk = false;
-					sendMessage(Level.WARNING, "Unknown property: '" + _name + "'");
+					sendMessage(Level.WARNING, "Unknown property: '" + propertyName + "'");
 				}
 				else {
-					if (!_real.matches(_value)) {
+					if (!_real.matches(value)) {
 						_platformOk = false;
 					}
-					//System.err.println("Property: " + _name + ", value: " + _value + ", real: " + _real);
+					//System.err.println("Property: " + propertyName + ", value: " + value + ", real: " + real);
 				}
 			}
 			if (_platformOk) {

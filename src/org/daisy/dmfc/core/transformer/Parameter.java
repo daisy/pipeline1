@@ -24,8 +24,9 @@ import java.util.regex.Pattern;
 
 import org.daisy.dmfc.core.MIMERegistry;
 import org.daisy.dmfc.exception.MIMEException;
-import org.dom4j.Element;
-import org.dom4j.Node;
+import org.daisy.util.xml.XPathUtils;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * A parameter in the Transformer Description File (TDF).
@@ -56,8 +57,8 @@ public class Parameter implements ParameterInfo {
 		name = getFromXPath(a_parameter, "name");
 		description = getFromXPath(a_parameter, "description");
 		example = getFromXPath(a_parameter, "example");
-		if (a_parameter.selectSingleNode("@required") != null) {
-		    required = Boolean.valueOf(a_parameter.valueOf("@required")).booleanValue();
+		if (XPathUtils.selectSingleNode(a_parameter, "@required") != null) {
+		    required = Boolean.valueOf(XPathUtils.valueOf(a_parameter, "@required")).booleanValue();
 		}
 		direction = getFromXPath(a_parameter, "@direction");
 
@@ -109,9 +110,9 @@ public class Parameter implements ParameterInfo {
 	 * @return the value of the XPath expression or null
 	 */
 	private String getFromXPath(Node a_node, String a_xpath) {
-	    if (a_node.selectSingleNode(a_xpath) != null) {
-	        return a_node.valueOf(a_xpath);
-	    }
+	    if (XPathUtils.selectSingleNode(a_node, a_xpath) != null) {
+	        return XPathUtils.valueOf(a_node, a_xpath);
+	    }	    
 	    return null;
 	}
 	
