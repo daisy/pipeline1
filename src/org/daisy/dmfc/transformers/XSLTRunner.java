@@ -81,13 +81,14 @@ public class XSLTRunner extends Transformer {
 		    String oldFactory = System.getProperty(property);
 		    if (factory != null) {
 		        System.setProperty(property, factory);
+		        sendMessage(Level.FINER, i18n("XSLT_USING_FACTORY", factory));
 		    }
-			TransformerFactory _transformerFactory = TransformerFactory.newInstance();			
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();			
 			
 			// Reset old factory
 			System.setProperty(property, (oldFactory==null?"":oldFactory));			
 					    
-            javax.xml.transform.Transformer transformer = _transformerFactory.newTransformer(xslt);
+            javax.xml.transform.Transformer transformer = transformerFactory.newTransformer(xslt);
             
             // Set any parameters to the XSLT
             for (Iterator it = parameters.entrySet().iterator(); it.hasNext(); ) {
