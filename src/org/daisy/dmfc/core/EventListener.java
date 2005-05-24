@@ -26,5 +26,5 @@ package org.daisy.dmfc.core;
  */
 public interface EventListener {
 	
-	public void message(Prompt a_prompt);
+	public void message(Prompt prompt);
 }

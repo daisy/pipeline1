@@ -24,12 +24,12 @@ package org.daisy.util.exception;
  */
 public class ValidationException extends BaseException {
 
-	public ValidationException(String a_message) {
-		super(a_message);
+	public ValidationException(String message) {
+		super(message);
 	}
 
-	public ValidationException(String a_message, Throwable a_rootCause) {
-		super(a_message, a_rootCause);
+	public ValidationException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
 }

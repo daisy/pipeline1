@@ -77,14 +77,14 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	
 	/**
 	 * Creates a Transformer handler.
-	 * @param a_transformerDescription a transformer description file
-	 * @param a_inputListener an input listener
-	 * @param a_eventListeners an event listener
+	 * @param transformerDescription a transformer description file
+	 * @param inListener an input listener
+	 * @param eventListeners an event listener
 	 * @throws TransformerDisabledException
 	 */
-	public TransformerHandler(File a_transformerDescription, InputListener a_inputListener, Set a_eventListeners, Validator a_validator) throws TransformerDisabledException {
-		super(a_eventListeners);
-		inputListener = a_inputListener;		
+	public TransformerHandler(File transformerDescription, InputListener inListener, Set eventListeners, Validator validator) throws TransformerDisabledException {
+		super(eventListeners);
+		inputListener = inListener;		
 				
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		docBuilderFactory.setValidating(false);
@@ -94,16 +94,16 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		 */
 		try {						
 			// Validate the transformer description file
-			if (!a_validator.isValid(a_transformerDescription)) {
+			if (!validator.isValid(transformerDescription)) {
 				throw new TransformerDisabledException("Transformer description file is not valid");
 			}
 			
 			// Parse the description file
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			Document doc = docBuilder.parse(a_transformerDescription);
+			Document doc = docBuilder.parse(transformerDescription);
 					
 			// Get properties from transformer description file
-			readProperties(doc.getDocumentElement(), a_transformerDescription.getParentFile());
+			readProperties(doc.getDocumentElement(), transformerDescription.getParentFile());
 						
 			// Perform platform dependency checks
 			if (!isPlatformOk(doc.getDocumentElement())) {
@@ -111,7 +111,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			}
 			
 			// Create the class loader and Transformer class (not object)
-			createTransformerClass(a_transformerDescription);
+			createTransformerClass(transformerDescription);
 			
 			// Make sure the right constructor is present
 			checkForTransformerConstructor();
@@ -142,13 +142,13 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	
 	/**
 	 * Run the Transformer associated with this handler.
-	 * @param a_parameters parameters to the Transformer
+	 * @param runParameters parameters to the Transformer
 	 * @return <code>true</code> if the run was successful, <code>false</code> otherwise
 	 */
-	public boolean run(Map a_parameters, boolean a_interactive) throws TransformerRunException {
-		Transformer _transformer = null;
+	public boolean run(Map runParameters, boolean interactive) throws TransformerRunException {
+		Transformer transformer = null;
 		try {
-			_transformer = createTransformerObject(a_interactive);
+			transformer = createTransformerObject(interactive);
 		} catch (IllegalArgumentException e) {
 			throw new TransformerRunException("Illegal argument", e);
 		} catch (InstantiationException e) {
@@ -160,60 +160,60 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		} 
 		
 		// Turn the parameters to a simple key->value string map
-		Map _params = new LinkedHashMap();
-		for (Iterator it = a_parameters.entrySet().iterator(); it.hasNext(); ) {
+		Map params = new LinkedHashMap();
+		for (Iterator it = runParameters.entrySet().iterator(); it.hasNext(); ) {
 		    Map.Entry entry = (Map.Entry)it.next();
-		    _params.put(entry.getKey(), ((org.daisy.dmfc.core.script.Parameter)entry.getValue()).getValue());
+		    params.put(entry.getKey(), ((org.daisy.dmfc.core.script.Parameter)entry.getValue()).getValue());
 		}
 				
-		return _transformer.executeWrapper(_params);
+		return transformer.executeWrapper(params);
 	}
 	
 	/**
 	 * Checks if the parameters in a task script are valid for this Transformer.
 	 * Also add any hard-coded parameters. 
-	 * @param a_parameters a collection of parameters
+	 * @param params a collection of parameters
 	 */
-	public void validateParameters(Map a_parameters) throws ValidationException {
-		HashMap _map = new HashMap();
+	public void validateParameters(Map params) throws ValidationException {
+		HashMap map = new HashMap();
 
 		// Add all hard-coded parameters in the TDF to the script parameters
-		for (Iterator _iter = parameters.iterator(); _iter.hasNext(); ) {
-		    Parameter _param = (Parameter)_iter.next();
-			if (_param.getValue() != null) {
-			    if (a_parameters.containsKey(_param.getName())) {			        
-			        throw new ValidationException(i18n("PARAM_NOT_BY_USER", _param.getName()));
+		for (Iterator it = parameters.iterator(); it.hasNext(); ) {
+		    Parameter param = (Parameter)it.next();
+			if (param.getValue() != null) {
+			    if (params.containsKey(param.getName())) {			        
+			        throw new ValidationException(i18n("PARAM_NOT_BY_USER", param.getName()));
 			    }
-			    org.daisy.dmfc.core.script.Parameter _scriptParameter = new org.daisy.dmfc.core.script.Parameter(_param.getName(), _param.getValue()); 
-			    a_parameters.put(_param.getName(), _scriptParameter);
+			    org.daisy.dmfc.core.script.Parameter scriptParameter = new org.daisy.dmfc.core.script.Parameter(param.getName(), param.getValue()); 
+			    params.put(param.getName(), scriptParameter);
 			}
 		}
 		
 		// Make sure there are no parameters in the script file that is not in the TDF.
-		for (Iterator _iter = parameters.iterator(); _iter.hasNext(); ) {
-			Parameter _transformerParam = (Parameter)_iter.next();			
-			_map.put(_transformerParam.getName(), _transformerParam);
+		for (Iterator it = parameters.iterator(); it.hasNext(); ) {
+			Parameter transformerParam = (Parameter)it.next();			
+			map.put(transformerParam.getName(), transformerParam);
 		}		
-		for (Iterator _iter = a_parameters.values().iterator(); _iter.hasNext(); ) {
-			org.daisy.dmfc.core.script.Parameter _scriptParameter = (org.daisy.dmfc.core.script.Parameter)_iter.next();
-			Parameter _transformerParameter = (Parameter)_map.get(_scriptParameter.getName());
-			if (_transformerParameter == null) {
-				throw new ValidationException("Parameter " + _scriptParameter.getName() + " in script file is not recognized by Transformer " + getName());
+		for (Iterator it = params.values().iterator(); it.hasNext(); ) {
+			org.daisy.dmfc.core.script.Parameter scriptParameter = (org.daisy.dmfc.core.script.Parameter)it.next();
+			Parameter transformerParameter = (Parameter)map.get(scriptParameter.getName());
+			if (transformerParameter == null) {
+				throw new ValidationException("Parameter " + scriptParameter.getName() + " in script file is not recognized by Transformer " + getName());
 			}
 		}		
 		
 		// Make sure there are no required parameters in the TDF that are not present in the script file
-		for (Iterator _iter = parameters.iterator(); _iter.hasNext(); ) {
-			Parameter _transformerParam = (Parameter)_iter.next();
-			if (_transformerParam.isRequired()) {
-				org.daisy.dmfc.core.script.Parameter _scriptParam = (org.daisy.dmfc.core.script.Parameter)a_parameters.get(_transformerParam.getName());
-				if (_scriptParam == null) {
-					throw new ValidationException("Parameter " + _transformerParam.getName() + " is required by the Transformer " + getName());
+		for (Iterator it = parameters.iterator(); it.hasNext(); ) {
+			Parameter transformerParam = (Parameter)it.next();
+			if (transformerParam.isRequired()) {
+				org.daisy.dmfc.core.script.Parameter scriptParam = (org.daisy.dmfc.core.script.Parameter)params.get(transformerParam.getName());
+				if (scriptParam == null) {
+					throw new ValidationException("Parameter " + transformerParam.getName() + " is required by the Transformer " + getName());
 				}
 			} else {
-			    org.daisy.dmfc.core.script.Parameter _scriptParam = (org.daisy.dmfc.core.script.Parameter)a_parameters.get(_transformerParam.getName());
-				if (_scriptParam == null) {
-					a_parameters.put(_transformerParam.getName(), new org.daisy.dmfc.core.script.Parameter(_transformerParam.getName(), _transformerParam.getDefaultValue()));
+			    org.daisy.dmfc.core.script.Parameter scriptParam = (org.daisy.dmfc.core.script.Parameter)params.get(transformerParam.getName());
+				if (scriptParam == null) {
+					params.put(transformerParam.getName(), new org.daisy.dmfc.core.script.Parameter(transformerParam.getName(), transformerParam.getDefaultValue()));
 				}
 			}
 		}
@@ -221,59 +221,59 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	
 	/**
 	 * Tries to find and load the Java class associated with this Transformer.
-	 * @param a_transformerDescription
+	 * @param transformerDescription
 	 * @throws ClassNotFoundException
 	 */
-	private void createTransformerClass(File a_transformerDescription) throws ClassNotFoundException {
+	private void createTransformerClass(File transformerDescription) throws ClassNotFoundException {
 	    sendMessage(Level.FINE, i18n("LOADING_TRANSFORMER", name, classname));
-		File _dir = a_transformerDescription.getAbsoluteFile();
-		_dir = _dir.getParentFile();
-		transformerClassLoader = new DirClassLoader(new File(System.getProperty("dmfc.home"), "transformers"), _dir);
-		for (Iterator _iter = jars.iterator(); _iter.hasNext(); ) {
-		    String _jar = (String)_iter.next();
-		    transformerClassLoader.addJar(new File(_dir, _jar));
+		File dir = transformerDescription.getAbsoluteFile();
+		dir = dir.getParentFile();
+		transformerClassLoader = new DirClassLoader(new File(System.getProperty("dmfc.home"), "transformers"), dir);
+		for (Iterator it = jars.iterator(); it.hasNext(); ) {
+		    String jar = (String)it.next();
+		    transformerClassLoader.addJar(new File(dir, jar));
 		}		
 		transformerClass = Class.forName(classname, true, transformerClassLoader);
 	}
 	
 	/**
 	 * Creates an instance object of the Transformer class.
-	 * @param a_interactive
+	 * @param interactive
 	 * @return a <code>Transformer</code> object
 	 * @throws IllegalArgumentException
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	private Transformer createTransformerObject(boolean a_interactive) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {		
-		Object _params[] = {inputListener, this.getEventListeners(), Boolean.valueOf(a_interactive)};
-		Transformer _trans = (Transformer)transformerConstructor.newInstance(_params);
-		_trans.setMessageOriginator(name);
-		return _trans;
+	private Transformer createTransformerObject(boolean interactive) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {		
+		Object params[] = {inputListener, this.getEventListeners(), Boolean.valueOf(interactive)};
+		Transformer trans = (Transformer)transformerConstructor.newInstance(params);
+		trans.setMessageOriginator(name);
+		return trans;
 	}
 	
 	/**
 	 * Reads the properties in the TDF.
-	 * @param a_element
+	 * @param element
 	 * @throws MIMEException
 	 */
-	private void readProperties(Element a_element, File a_tdfDir) throws MIMEException {
-	    name = XPathUtils.valueOf(a_element, "name");
-	    description = XPathUtils.valueOf(a_element, "description");
-	    classname = XPathUtils.valueOf(a_element, "classname");
+	private void readProperties(Element element, File tdfDir) throws MIMEException {
+	    name = XPathUtils.valueOf(element, "name");
+	    description = XPathUtils.valueOf(element, "description");
+	    classname = XPathUtils.valueOf(element, "classname");
 		
-	    NodeList jarList = XPathUtils.selectNodes(a_element, "jar");
+	    NodeList jarList = XPathUtils.selectNodes(element, "jar");
 	    for (int i = 0; i < jarList.getLength(); ++i) {
 	        Element jar = (Element)jarList.item(i);
 	        jars.add(XPathUtils.valueOf(jar, "."));
 	    }
 	    
-	    version = XPathUtils.valueOf(a_element, "@version");	    		
+	    version = XPathUtils.valueOf(element, "@version");	    		
 		
-	    NodeList parameterList = XPathUtils.selectNodes(a_element, "parameters/parameter");
+	    NodeList parameterList = XPathUtils.selectNodes(element, "parameters/parameter");
 	    for (int i = 0; i < parameterList.getLength(); ++i) {
 	        Element parameter = (Element)parameterList.item(i);
-	        Parameter param = new Parameter(parameter, a_tdfDir);
+	        Parameter param = new Parameter(parameter, tdfDir);
 	        parameters.add(param);
 	    }	    
 	}
@@ -283,8 +283,8 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @throws NoSuchMethodException
 	 */
 	private void checkForTransformerConstructor() throws NoSuchMethodException {
-		Class[] _params = {InputListener.class, Set.class, Boolean.class};
-		transformerConstructor = transformerClass.getConstructor(_params);
+		Class[] params = {InputListener.class, Set.class, Boolean.class};
+		transformerConstructor = transformerClass.getConstructor(params);
 	}
 	
 	/**
@@ -295,10 +295,10 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @throws TransformerRunException
 	 */
 	private boolean transformerSupported() throws NoSuchMethodException, TransformerRunException {
-		Method _isSupportedMethod = transformerClass.getMethod("isSupported", null);
-		Boolean _result;
+		Method isSupportedMethod = transformerClass.getMethod("isSupported", null);
+		Boolean result;
 		try {
-			_result = (Boolean)_isSupportedMethod.invoke(null, null);
+			result = (Boolean)isSupportedMethod.invoke(null, null);
 		} catch (IllegalArgumentException e) {
 			throw new TransformerRunException("Illegal argument", e);
 		} catch (IllegalAccessException e) {
@@ -306,7 +306,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		} catch (InvocationTargetException e) {
 			throw new TransformerRunException("Invocation problem", e);
 		}
-		return _result.booleanValue();
+		return result.booleanValue();
 	}
 
 	public String getName() {
@@ -324,61 +324,61 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * will not be returned.
 	 */
 	public Collection getParameters() {
-	    Vector _params = (Vector)parameters.clone();	    
+	    Vector params = (Vector)parameters.clone();	    
 	    // Remove all hard coded parameters
 	    for (int i = 0; i < parameters.size(); ++i) {
-	        ParameterInfo _param = (ParameterInfo)parameters.elementAt(i);
-	        if (_param.getValue() != null) {
+	        ParameterInfo param = (ParameterInfo)parameters.elementAt(i);
+	        if (param.getValue() != null) {
 	            //System.err.println("Removing hard coded param " + _param.getName());
-	            _params.remove(_param);
+	            params.remove(param);
 	        }
 	    }
-		return _params;
+		return params;
 	}	
 	
 	/**
 	 * Checks if the current platform is supported by this Transformer
-	 * @param a_element
+	 * @param element
 	 * @return <code>true</code> if the platform is supported, <code>false</code> otherwise
 	 */
-	private boolean isPlatformOk(Element a_element) {
-		boolean _ret = true;
-		NodeList platformList = XPathUtils.selectNodes(a_element, "platforms/platform");
+	private boolean isPlatformOk(Element element) {
+		boolean ret = true;
+		NodeList platformList = XPathUtils.selectNodes(element, "platforms/platform");
 		if (platformList.getLength() > 0) {
-		    _ret = false;
+		    ret = false;
 		}
 		for (int i = 0; i < platformList.getLength(); ++i) {
 		    Element platform = (Element)platformList.item(i);			
-			boolean _platformOk = true;
+			boolean platformOk = true;
 			NodeList propertyList = XPathUtils.selectNodes(platform, "property");
 			for (int j = 0; j < propertyList.getLength(); ++j) {		
 			    Element property = (Element)propertyList.item(j);
 			    String propertyName = XPathUtils.valueOf(property, "name");
 			    String value = XPathUtils.valueOf(property, "value");				
-				String _real = System.getProperty(propertyName);
-				if (_real == null) {
-					_platformOk = false;
+				String realValue = System.getProperty(propertyName);
+				if (realValue == null) {
+					platformOk = false;
 					sendMessage(Level.WARNING, "Unknown property: '" + propertyName + "'");
 				}
 				else {
-					if (!_real.matches(value)) {
-						_platformOk = false;
+					if (!realValue.matches(value)) {
+						platformOk = false;
 					}
 					//System.err.println("Property: " + propertyName + ", value: " + value + ", real: " + real);
 				}
 			}
-			if (_platformOk) {
-				_ret = true;
+			if (platformOk) {
+				ret = true;
 			}
 		}
-		return _ret;
+		return ret;
 	}
 	
-	public String getParameterType(String a_name) {
-		for (Iterator _iter = parameters.iterator(); _iter.hasNext(); ) {
-			Parameter _param = (Parameter)_iter.next();
-			if (a_name.equals(_param.getName())) {
-				return _param.getType();
+	public String getParameterType(String parameterName) {
+		for (Iterator it = parameters.iterator(); it.hasNext(); ) {
+			Parameter param = (Parameter)it.next();
+			if (parameterName.equals(param.getName())) {
+				return param.getType();
 			}
 		}
 		return null;

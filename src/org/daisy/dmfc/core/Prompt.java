@@ -37,39 +37,39 @@ public class Prompt {
     
     /**
      * Creates a simple text message.
-     * @param a_level the level of the message
-     * @param a_message the message itself
-     * @param a_originator the originator of the message
+     * @param lvl the level of the message
+     * @param msg the message itself
+     * @param originator the originator of the message
      */
-    public Prompt(Level a_level, String a_message, String a_originator) {
-        message = a_message;
-        level = a_level;
-        messageOriginator = a_originator;
+    public Prompt(Level lvl, String msg, String originator) {
+        message = msg;
+        level = lvl;
+        messageOriginator = originator;
         type = Prompt.MESSAGE;
     }
     
     /**
      * Report Transformer progress.
-     * @param a_progress 
-     * @param a_originator the originator of the message
+     * @param prgrs 
+     * @param originator the originator of the message
      */
-    public Prompt(double a_progress, String a_originator) {
-        if (a_progress < 0 || a_progress > 100) {
-            throw new IllegalArgumentException("Progress must be in the interval [0,100]. Was " + a_progress);
+    public Prompt(double prgrs, String originator) {
+        if (prgrs < 0 || prgrs > 100) {
+            throw new IllegalArgumentException("Progress must be in the interval [0,100]. Was " + prgrs);
         }
-        progress = a_progress;
-        messageOriginator = a_originator;
+        progress = prgrs;
+        messageOriginator = originator;
         type = Prompt.PROGRESS;
     }
 
     /**
      * Report when a Transformer has started or finished running.
-     * @param a_start <code>true</code> if the Transformer has just been started, <code>false</code> otherwise
-     * @param a_originator the name of the Transformer that has started/finished.
+     * @param start <code>true</code> if the Transformer has just been started, <code>false</code> otherwise
+     * @param originator the name of the Transformer that has started/finished.
      */
-    public Prompt(boolean a_start, String a_originator) {
-        messageOriginator = a_originator;
-        if (a_start) {
+    public Prompt(boolean start, String originator) {
+        messageOriginator = originator;
+        if (start) {
             type = Prompt.TRANSFORMER_START;
         } else {
             type = Prompt.TRANSFORMER_END;

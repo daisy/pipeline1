@@ -32,6 +32,12 @@ public class FilenameOrFileURI {
     
     private static Pattern schemePattern = Pattern.compile("[a-z]{2,}:.*");
     
+    /**
+     * Convert a filename or a file URI to a <code>File</code>
+     * object.
+     * @param filenameOrFileURI a filename or a file URI
+     * @return a <code>File</code> object
+     */
     public static File toFile(String filenameOrFileURI) {
         try {
             if (hasScheme(filenameOrFileURI)) {
@@ -50,32 +56,25 @@ public class FilenameOrFileURI {
         return null;
     }
     
+    /**
+     * Convert a filename or a file URI to a <code>URI</code>
+     * object.
+     * @param filenameOrFileURI a filename or a file URI
+     * @return a <code>URI</code> object
+     */
     public static URI toURI(String filenameOrFileURI) {
         File file = toFile(filenameOrFileURI);
         return file==null?null:file.toURI();
     }
     
+    /**
+     * Checks if a path starts with  scheme identifier. If it
+     * does, it is assumed to be a URI.
+     * @param test the string to test.
+     * @return <code>true</code> if the specified string starts with a scheme
+     * identitier, <code>false</code> otherwise. 
+     */
     private static boolean hasScheme(String test) {
         return schemePattern.matcher(test).matches();        
-    }
-    
-    /* Test methods */
-    
-    private static void test(String tst) {
-        File res = FilenameOrFileURI.toFile(tst);
-        URI res2 = FilenameOrFileURI.toURI(tst);
-        System.err.println("\n" + tst + "\n\t-> " + (res==null?"null":res.toString()));
-        System.err.println("\t-> " + (res2==null?"null":res2.toString()));
-    }
-    
-    public static void main(String args[]) {
-        test("C:\\Program Files\\jEdit 4.2\\jedit.jar");
-        test("C:/Program Files/jEdit 4.2/jedit.jar");
-        test("file:///C:/Program%20Files/eclipse-3.0.2/workspace/dmfc/doc/developer-primer.html");        
-        test("/tpb/spool/arkiv/C13500_C13999/C13930/ncc.html");
-        test("file:///tpb/spool/arkiv/C13500_C13999/C13930/ncc.html");
-        test("file:/c:/tpb/spool/arkiv/C13500_C13999/C13930/ncc.html");
-        test("http://www.google.com");
-    }
-    
+    }    
 }

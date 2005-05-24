@@ -36,26 +36,26 @@ public class DirClassLoader extends URLClassLoader {
 	/**
 	 * Creates a new class loader that can also load classes and resources 
 	 * from the specified directories.
-	 * @param a_classDir directory for class files
-	 * @param a_resourceDir directory for resource files
+	 * @param clsDir directory for class files
+	 * @param resDir directory for resource files
 	 */
-	public DirClassLoader(File a_classDir, File a_resourceDir) {
-		super(new URL[]{fileToURL(a_classDir)});
-		classDir = a_classDir;
-		resourceDir = a_resourceDir;
+	public DirClassLoader(File clsDir, File resDir) {
+		super(new URL[]{fileToURL(clsDir)});
+		classDir = clsDir;
+		resourceDir = resDir;
 	}
 	
-	private static URL fileToURL(File a_file) {
+	private static URL fileToURL(File file) {
 	    try {
-            return a_file.toURL();
+            return file.toURL();
         } catch (MalformedURLException e) {
             // Nothing
         }
         return null;
 	}
 		
-	public void addJar(File a_jar) {
-	    this.addURL(fileToURL(a_jar));
+	public void addJar(File jar) {
+	    this.addURL(fileToURL(jar));
 	}
 	
 	public String toString() {
@@ -67,13 +67,13 @@ public class DirClassLoader extends URLClassLoader {
 	 * @param a_resource name of the resource to load
 	 * @return a URL to the resource, or <code>null</code> if the resource is not found
 	 */
-	public URL getResource(String a_resource) {
-		//System.err.println("Trying to fetch " + a_resource);
-		File _resourceFile = new File(resourceDir, a_resource);
-		if (_resourceFile.canRead()) {
+	public URL getResource(String resource) {
+		//System.err.println("Trying to fetch " + resource);
+		File resourceFile = new File(resourceDir, resource);
+		if (resourceFile.canRead()) {
 			try {
-				System.err.println("Found resource at " + _resourceFile.getAbsolutePath());
-				return _resourceFile.toURL();
+				System.err.println("Found resource at " + resourceFile.getAbsolutePath());
+				return resourceFile.toURL();
 			} catch (MalformedURLException e) {
 				return null;
 			}

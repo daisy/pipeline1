@@ -38,9 +38,9 @@ public class TempFile {
 	 * will be used.
 	 * @param a_directory a directory
 	 */
-	public static void setTempDir(File a_directory) {
-		if (a_directory.isDirectory()) {
-			tempDir = a_directory;
+	public static void setTempDir(File directory) {
+		if (directory.isDirectory()) {
+			tempDir = directory;
 		}
 	}
 	
@@ -59,8 +59,8 @@ public class TempFile {
 	 * @throws IOException
 	 */
 	public static File create() throws IOException {
-		TempFile _temp = new TempFile();
-		return _temp.getFile();
+		TempFile temp = new TempFile();
+		return temp.getFile();
 	}
 	
 	/**

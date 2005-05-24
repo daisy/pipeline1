@@ -35,38 +35,38 @@ public class LoggingPropertiesReader {
     
     /**
      * Adds a set of handlers descripbed in the specified file to the specified logger.
-     * @param a_logger the logger to add the handlers to.
-     * @param a_loggingPropertyFileName filename of property file.
+     * @param logger the logger to add the handlers to.
+     * @param loggingPropertyFileName filename of property file.
      */
-    public static void addHandlers(MessageLogger a_logger, String a_loggingPropertyFileName) {
+    public static void addHandlers(MessageLogger logger, String loggingPropertyFileName) {
         // Check if specified
-        if (a_loggingPropertyFileName == null) {
+        if (loggingPropertyFileName == null) {
             System.err.println("No handlers added");
             return;
         }
         
         // Read logging properties file
-        Properties _properties = new Properties();
+        Properties properties = new Properties();
         try {
-            _properties.load(ClassLoader.getSystemResourceAsStream(a_loggingPropertyFileName));
+            properties.load(ClassLoader.getSystemResourceAsStream(loggingPropertyFileName));
         } catch (IOException e) {
             System.err.println("ioexception, no handlers added");
         }
         
         // Compile regex pattern
-        Pattern _pattern = Pattern.compile("(.*)\\.formatter");
+        Pattern pattern = Pattern.compile("(.*)\\.formatter");
         
         // Find all formatters
-        for (Iterator _iter = _properties.keySet().iterator(); _iter.hasNext(); ) {
-            String _propertyName = (String)_iter.next();
-            Matcher _matcher = _pattern.matcher(_propertyName);
-            if (_matcher.matches()) {
-                String _handlerName = _matcher.group(1);
-                String _filePattern = _properties.getProperty(_handlerName + ".pattern");
-                if (_filePattern == null) {
-                    addConsoleHandler(a_logger, _handlerName, _properties);
+        for (Iterator it = properties.keySet().iterator(); it.hasNext(); ) {
+            String propertyName = (String)it.next();
+            Matcher matcher = pattern.matcher(propertyName);
+            if (matcher.matches()) {
+                String handlerName = matcher.group(1);
+                String filePattern = properties.getProperty(handlerName + ".pattern");
+                if (filePattern == null) {
+                    addConsoleHandler(logger, handlerName, properties);
                 } else {
-                    addFileHandler(a_logger, _handlerName, _properties);
+                    addFileHandler(logger, handlerName, properties);
                 }
             }
         }
@@ -74,15 +74,15 @@ public class LoggingPropertiesReader {
     
     /**
      * Creates a formatter specified by class name.
-     * @param a_className a class name
+     * @param className a class name
      * @return a <code>Formatter</code>
      * @see java.util.logging.Formatter
      */
-    private static Formatter createFormatter(String a_className) {
-        Formatter _formatter = null;
+    private static Formatter createFormatter(String className) {
+        Formatter formatter = null;
         try {
-            Class _class = Class.forName(a_className);
-            _formatter = (Formatter)_class.newInstance();
+            Class cls = Class.forName(className);
+            formatter = (Formatter)cls.newInstance();
         } catch (ClassNotFoundException e) {
             return null;
         } catch (InstantiationException e) {
@@ -90,64 +90,64 @@ public class LoggingPropertiesReader {
         } catch (IllegalAccessException e) {
             return null;
         }
-        return _formatter;
+        return formatter;
     }
     
     /**
      * Adds a console handler to the logger.
-     * @param a_logger
-     * @param a_handlerName
-     * @param a_properties
+     * @param logger
+     * @param handlerName
+     * @param properties
      */
-    private static void addConsoleHandler(MessageLogger a_logger, String a_handlerName, Properties a_properties) {
-        Formatter _formatter = createFormatter(a_properties.getProperty(a_handlerName + ".formatter"));
-        if (_formatter == null) {
+    private static void addConsoleHandler(MessageLogger logger, String handlerName, Properties properties) {
+        Formatter formatter = createFormatter(properties.getProperty(handlerName + ".formatter"));
+        if (formatter == null) {
             return;
         }
         
-        String _levelName = a_properties.getProperty(a_handlerName + ".level", "ALL");
-        Level _level;
+        String levelName = properties.getProperty(handlerName + ".level", "ALL");
+        Level level;
         try {
-            _level = Level.parse(_levelName);
+            level = Level.parse(levelName);
         } catch (IllegalArgumentException e) {
-            _level = Level.ALL;
+            level = Level.ALL;
         }
-        a_logger.addConsoleHandler(_formatter, _level);
+        logger.addConsoleHandler(formatter, level);
     }
     
-    private static void addFileHandler(MessageLogger a_logger, String a_handlerName, Properties a_properties) {
-        Formatter _formatter = createFormatter(a_properties.getProperty(a_handlerName + ".formatter"));
-        if (_formatter == null) {
+    private static void addFileHandler(MessageLogger logger, String handlerName, Properties properties) {
+        Formatter formatter = createFormatter(properties.getProperty(handlerName + ".formatter"));
+        if (formatter == null) {
             return;
         }
         
-        String _levelName = a_properties.getProperty(a_handlerName + ".level", "ALL");
-        Level _level;
+        String levelName = properties.getProperty(handlerName + ".level", "ALL");
+        Level level;
         try {
-            _level = Level.parse(_levelName);
+            level = Level.parse(levelName);
         } catch (IllegalArgumentException e) {
-            _level = Level.ALL;
+            level = Level.ALL;
         }
         
-        String _filePattern = a_properties.getProperty(a_handlerName + ".pattern");
+        String filePattern = properties.getProperty(handlerName + ".pattern");
         
-        int _limit;
+        int limit;
         try {
-        	_limit = Integer.parseInt(a_properties.getProperty(a_handlerName + ".limit", "0"));
+        	limit = Integer.parseInt(properties.getProperty(handlerName + ".limit", "0"));
         } catch (NumberFormatException e) {
-            _limit = 0;
+            limit = 0;
         }
         
-        int _count;
+        int count;
         try {
-        	_count = Integer.parseInt(a_properties.getProperty(a_handlerName + ".count", "0"));
+        	count = Integer.parseInt(properties.getProperty(handlerName + ".count", "0"));
         } catch (NumberFormatException e) {
-            _count = 0;
+            count = 0;
         }
         
-        boolean _append = Boolean.valueOf(a_properties.getProperty(a_handlerName + ".append", "false")).booleanValue();
+        boolean append = Boolean.valueOf(properties.getProperty(handlerName + ".append", "false")).booleanValue();
         
-        a_logger.addFileHandler(_formatter, _level, _filePattern, _limit, _count, _append);
+        logger.addFileHandler(formatter, level, filePattern, limit, count, append);
     }
     
 }

@@ -27,11 +27,11 @@ import org.daisy.util.exception.*;
  */
 public class TransformerDisabledException extends BaseException {
 
-	public TransformerDisabledException(String a_message) {
-		super(a_message);
+	public TransformerDisabledException(String message) {
+		super(message);
 	}
 		
-	public TransformerDisabledException(String a_message, Throwable a_rootCause) {
-		super(a_message, a_rootCause);
+	public TransformerDisabledException(String message, Throwable cause) {
+		super(message, cause);
 	}
 }

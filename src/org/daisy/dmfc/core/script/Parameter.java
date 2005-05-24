@@ -43,32 +43,32 @@ public class Parameter {
 	
 	/**
 	 * Constructor
-	 * @param a_element
+	 * @param element
 	 */
-	public Parameter(Element a_element, Map a_properties) {
-	    name = XPathUtils.valueOf(a_element, "name");
-	    value = XPathUtils.valueOf(a_element, "value");
+	public Parameter(Element element, Map properties) {
+	    name = XPathUtils.valueOf(element, "name");
+	    value = XPathUtils.valueOf(element, "value");
 		
 		// Expand properties in the value string		
-		Matcher _matcher = propertyPattern.matcher(value);
-		StringBuffer _sb = new StringBuffer();
-		while (_matcher.find()) {
-		    String _propName = _matcher.group(1);
-		    String _prop = (String)a_properties.get(_propName);
-		    _matcher.appendReplacement(_sb, _prop);
+		Matcher matcher = propertyPattern.matcher(value);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+		    String propName = matcher.group(1);
+		    String prop = (String)properties.get(propName);
+		    matcher.appendReplacement(sb, prop);
 		}
-		_matcher.appendTail(_sb);
-		value = _sb.toString();
+		matcher.appendTail(sb);
+		value = sb.toString();
 				
-		id = XPathUtils.valueOf(a_element, "@id");
-		if (XPathUtils.selectSingleNode(a_element, "@ref") != null) {
-		    ref = XPathUtils.valueOf(a_element, "@ref");
+		id = XPathUtils.valueOf(element, "@id");
+		if (XPathUtils.selectSingleNode(element, "@ref") != null) {
+		    ref = XPathUtils.valueOf(element, "@ref");
 		}		
 	}
 	
-	public Parameter(String a_name, String a_value) {
-	    name = a_name;
-	    value = a_value;
+	public Parameter(String paramName, String paramValue) {
+	    name = paramName;
+	    value = paramValue;
 	}
 	
 	/**

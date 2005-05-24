@@ -25,12 +25,12 @@ import org.daisy.util.exception.*;
  */
 public class ScriptException extends BaseException {
 
-	public ScriptException(String a_message) {
-		super(a_message);
+	public ScriptException(String message) {
+		super(message);
 	}
 
-	public ScriptException(String a_message, Throwable a_rootCause) {
-		super(a_message, a_rootCause);
+	public ScriptException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
 }

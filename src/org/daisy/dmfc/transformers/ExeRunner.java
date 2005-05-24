@@ -66,104 +66,104 @@ public class ExeRunner extends Transformer {
     private static Pattern variablePattern = Pattern.compile("\\$\\{(\\w+)\\}");
     
     /**
-     * @param a_inputListener
-     * @param a_eventListeners
-     * @param a_interactive
-     */
-    public ExeRunner(InputListener a_inputListener, Set a_eventListeners, Boolean a_interactive) {
-        super(a_inputListener, a_eventListeners, a_interactive);
+     * @param inListener
+     * @param eventListeners
+     * @param interactive
+     */    
+    public ExeRunner(InputListener inListener, Set eventListeners, Boolean interactive) {
+        super(inListener, eventListeners, interactive);
     }
     
-    protected boolean execute(Map a_parameters) throws TransformerRunException {
+    protected boolean execute(Map parameters) throws TransformerRunException {
         // Read parameters
-        String _commandPattern = (String)a_parameters.remove("exe_command");
-        String _workDir = (String)a_parameters.remove("exe_workdir");
-        String _stdout = (String)a_parameters.remove("exe_stdout");
-        String _stderr = (String)a_parameters.remove("exe_stderr");
-        String _timeout = (String)a_parameters.remove("exe_timeout");
-        String _successRegex = (String)a_parameters.remove("exe_success_regex");
+        String commandPattern = (String)parameters.remove("exe_command");
+        String workDir = (String)parameters.remove("exe_workdir");
+        String stdout = (String)parameters.remove("exe_stdout");
+        String stderr = (String)parameters.remove("exe_stderr");
+        String timeout = (String)parameters.remove("exe_timeout");
+        String successRegex = (String)parameters.remove("exe_success_regex");
         
         // Compile regex pattern
-        Pattern _success = null;
-        if (_successRegex != null) {
+        Pattern success = null;
+        if (successRegex != null) {
             try {
-                _success = Pattern.compile(_successRegex);
+                success = Pattern.compile(successRegex);
             } catch (PatternSyntaxException e) {
                 throw new TransformerRunException("Invalid regex pattern for parameter exe_success_regex", e);
             }
         }
                 
         // Expand command pattern
-        String _command = expandCommandPattern(_commandPattern, a_parameters);
+        String command = expandCommandPattern(commandPattern, parameters);
         
         // Execute command  
-        boolean _finished = false;
-        int _exitVal = 1;
+        boolean finished = false;
+        int exitVal = 1;
         try {
-            Runtime _runtime = Runtime.getRuntime();
+            Runtime runtime = Runtime.getRuntime();
             
             // Set working directory
-            File _wd = null;
-            if (_workDir != null) {
-                _wd = new File(_workDir);
+            File wd = null;
+            if (workDir != null) {
+                wd = new File(workDir);
             }
             
             // Calculate timeout
-            Date _startDate = new Date();
-            Date _timeoutDate = null;
-            if (_timeout != null) {
-                _timeoutDate = new Date(_startDate.getTime() + Integer.parseInt(_timeout));
+            Date startDate = new Date();
+            Date timeoutDate = null;
+            if (timeout != null) {
+                timeoutDate = new Date(startDate.getTime() + Integer.parseInt(timeout));
             }
             
             // Start the program
-            sendMessage(Level.FINE, "Running '" + _command + "'");
-            Process _proc = _runtime.exec(_command, null, _wd);
+            sendMessage(Level.FINE, "Running '" + command + "'");
+            Process proc = runtime.exec(command, null, wd);
             
             // Setup and start stream redirectors
-            OutputStream _outStream = System.out;
-            OutputStream _errStream = System.err;
-            if (_stdout != null) {
-                _outStream = new FileOutputStream(_stdout);
+            OutputStream outStream = System.out;
+            OutputStream errStream = System.err;
+            if (stdout != null) {
+                outStream = new FileOutputStream(stdout);
             }            
-            if (_stderr != null) {
-                _errStream = new FileOutputStream(_stderr);
+            if (stderr != null) {
+                errStream = new FileOutputStream(stderr);
             }            
-            StreamRedirector _out = new StreamRedirector(_proc.getInputStream(), _outStream);
-            StreamRedirector _err = new StreamRedirector(_proc.getErrorStream(), _errStream);            
-            _out.start();
-            _err.start();
+            StreamRedirector out = new StreamRedirector(proc.getInputStream(), outStream);
+            StreamRedirector err = new StreamRedirector(proc.getErrorStream(), errStream);            
+            out.start();
+            err.start();
             
-            int _pollInterval;
+            int pollInterval;
             try {
-                _pollInterval = Integer.parseInt(System.getProperty("dmfc.pollExeInterval", "500"));
-                if (_pollInterval < 10) {
+                pollInterval = Integer.parseInt(System.getProperty("dmfc.pollExeInterval", "500"));
+                if (pollInterval < 10) {
                     throw new NumberFormatException("Must be at least 10");
                 }
             } catch (NumberFormatException e) {
                 sendMessage(Level.WARNING, System.getProperty("dmfc.pollExeInterval") + " is not a valid poll interval (must be at least 10ms)");
-                _pollInterval = 500;
+                pollInterval = 500;
             }
             
             // Wait (by polling) for exit value            
-            while (!_finished) {
+            while (!finished) {
                 try {
-                    _exitVal = _proc.exitValue();
-                    _finished = true;
-                    Date _doneDate = new Date();
-                    sendMessage(Level.FINE, i18n("PROGRAM_RAN_FOR", _command, new Long((_doneDate.getTime() - _startDate.getTime())/1000)));
+                    exitVal = proc.exitValue();
+                    finished = true;
+                    Date doneDate = new Date();
+                    sendMessage(Level.FINE, i18n("PROGRAM_RAN_FOR", command, new Long((doneDate.getTime() - startDate.getTime())/1000)));
                 } catch (IllegalThreadStateException e) {
                     // Nothing
                 }
-                if (!_finished && _timeoutDate != null) {
-                    if (_timeoutDate.before(new Date())) {
+                if (!finished && timeoutDate != null) {
+                    if (timeoutDate.before(new Date())) {
                         sendMessage(Level.SEVERE, "Terminating ExeRunner due to timeout");
-                        _proc.destroy();
-                        _exitVal = 1;
+                        proc.destroy();
+                        exitVal = 1;
                         break;                        
                     }
                 }
-                if (!_finished) {
-                    Thread.sleep(_pollInterval);
+                if (!finished) {
+                    Thread.sleep(pollInterval);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -175,35 +175,35 @@ public class ExeRunner extends Transformer {
         }
         
         // If the program was aborted, it is a failure
-        if (!_finished) {
+        if (!finished) {
             return false;
         }
         
         // If no exe_success_regex was specified, a exit value of 0 is counted
         // as a success. All other exit values are considered a failure.
-        if (_success == null) {
-            return _exitVal == 0;
+        if (success == null) {
+            return exitVal == 0;
         }
         
         // Match the exit value against the specified regex
-        return _success.matcher(String.valueOf(_exitVal)).matches();
+        return success.matcher(String.valueOf(exitVal)).matches();
     }
 
-    private String expandCommandPattern(String a_commandPattern, Map a_parameters) throws TransformerRunException {
-        if (a_commandPattern == null) {
+    private String expandCommandPattern(String commandPattern, Map parameters) throws TransformerRunException {
+        if (commandPattern == null) {
             return "";
         }
-        Matcher _matcher = variablePattern.matcher(a_commandPattern);
-        StringBuffer _sb = new StringBuffer();
-        while (_matcher.find()) {
-            String _variable = _matcher.group(1);
-            String _value = (String)a_parameters.get(_variable);
-            if (_value == null) {
-                throw new TransformerRunException("Unrecognized variable in command pattern string: " + _variable);
+        Matcher matcher = variablePattern.matcher(commandPattern);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            String variable = matcher.group(1);
+            String value = (String)parameters.get(variable);
+            if (value == null) {
+                throw new TransformerRunException("Unrecognized variable in command pattern string: " + variable);
             }
-            _matcher.appendReplacement(_sb, _value);
+            matcher.appendReplacement(sb, value);
         }
-        _matcher.appendTail(_sb);
-        return _sb.toString();
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 }

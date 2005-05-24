@@ -49,28 +49,28 @@ public class Parameter implements ParameterInfo {
 	
 	/**
 	 * Creates a new Parameter.
-	 * @param a_parameter the dom4j element to get the data from.
+	 * @param parameter the dom4j element to get the data from.
 	 * @throws MIMEException if a type attribute is not a valid MIME type
 	 */
-	public Parameter(Element a_parameter, File a_tdfDir) throws MIMEException {
-	    tdfDir = a_tdfDir;
-		name = getFromXPath(a_parameter, "name");
-		description = getFromXPath(a_parameter, "description");
-		example = getFromXPath(a_parameter, "example");
-		if (XPathUtils.selectSingleNode(a_parameter, "@required") != null) {
-		    required = Boolean.valueOf(XPathUtils.valueOf(a_parameter, "@required")).booleanValue();
+	public Parameter(Element parameter, File transformerDir) throws MIMEException {
+	    tdfDir = transformerDir;
+		name = getFromXPath(parameter, "name");
+		description = getFromXPath(parameter, "description");
+		example = getFromXPath(parameter, "example");
+		if (XPathUtils.selectSingleNode(parameter, "@required") != null) {
+		    required = Boolean.valueOf(XPathUtils.valueOf(parameter, "@required")).booleanValue();
 		}
-		direction = getFromXPath(a_parameter, "@direction");
+		direction = getFromXPath(parameter, "@direction");
 
 		// Make sure the 'type' matches a MIME type
-		type = getFromXPath(a_parameter, "@type");
-		MIMERegistry _mime = MIMERegistry.instance();
-		if (!_mime.contains(type)) {
+		type = getFromXPath(parameter, "@type");
+		MIMERegistry mime = MIMERegistry.instance();
+		if (!mime.contains(type)) {
 		    throw new MIMEException("Type attribute " + type + " of parameter " + name + " is not a valid MIME type.");
 		}
 
-		defaultValue = expandPatterns(getFromXPath(a_parameter, "default"));
-		value = expandPatterns(getFromXPath(a_parameter, "value"));
+		defaultValue = expandPatterns(getFromXPath(parameter, "default"));
+		value = expandPatterns(getFromXPath(parameter, "value"));
 	}
 	
 	/**

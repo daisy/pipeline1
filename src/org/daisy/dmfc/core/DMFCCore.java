@@ -65,46 +65,46 @@ public class DMFCCore extends EventSender {
 	/**
 	 * Create an instance of DMFC using the default locale.
 	 * This is the same as <code>new DMFCCore(a_inputListener, a_eventListener, new Locale("en"))</code>. 
-	 * @param a_inputListener
-	 * @param a_eventListener
+	 * @param inListener
+	 * @param evListener
 	 * @throws DMFCConfigurationException
 	 */
-	public DMFCCore(InputListener a_inputListener, EventListener a_eventListener) throws DMFCConfigurationException {
-	    this(a_inputListener, a_eventListener, new Locale("en"));
+	public DMFCCore(InputListener inListener, EventListener evListener) throws DMFCConfigurationException {
+	    this(inListener, evListener, new Locale("en"));
 	}
 	
 	/**
 	 * Create an instance of DMFC.
-	 * @param a_inputListener a listener of (user) input events
-	 * @param a_eventListener a listener of events
-	 * @param a_locale the locale to use
+	 * @param inListener a listener of (user) input events
+	 * @param evListener a listener of events
+	 * @param locale the locale to use
 	 * @throws DMFCConfigurationException
 	 */
-	public DMFCCore(InputListener a_inputListener, EventListener a_eventListener, Locale a_locale) throws DMFCConfigurationException {
-		super(a_eventListener);
-		inputListener = a_inputListener;
-		Locale.setDefault(a_locale);
+	public DMFCCore(InputListener inListener, EventListener evListener, Locale locale) throws DMFCConfigurationException {
+		super(evListener);
+		inputListener = inListener;
+		Locale.setDefault(locale);
 		
 		// Set DMFC home dir
 		home = getHomeDir();
 		System.setProperty("dmfc.home", home);
 		
-		// Load properties
+		// Load properties from file
 		if (!loadProperties(ClassLoader.getSystemResourceAsStream("dmfc.properties"))) {
 		    throw new DMFCConfigurationException("Can't read dmfc.properties!");
-		}		
+		}
 		
 		// Load messages
-		DirClassLoader _resourceLoader = new DirClassLoader(new File(home, "resources"), new File(home, "resources"));
-		ResourceBundle _bundle = ResourceBundle.getBundle("dmfc_messages", Locale.ENGLISH, _resourceLoader);
-		I18n.setDefaultBundle(_bundle);				
+		DirClassLoader resourceLoader = new DirClassLoader(new File(home, "resources"), new File(home, "resources"));
+		ResourceBundle bundle = ResourceBundle.getBundle("dmfc_messages", Locale.ENGLISH, resourceLoader);
+		I18n.setDefaultBundle(bundle);				
 		
 		TempFile.setTempDir(new File(System.getProperty("dmfc.tempDir")));
 			
 		// Setup logging
-		MessageLogger _logger = new MessageLogger();
-		addEventListener(_logger);
-		LoggingPropertiesReader.addHandlers(_logger, System.getProperty("dmfc.logging"));
+		MessageLogger logger = new MessageLogger();
+		addEventListener(logger);
+		LoggingPropertiesReader.addHandlers(logger, System.getProperty("dmfc.logging"));
 		
 		// Load the transformers
 		if (!reloadTransformers()) {
@@ -118,18 +118,18 @@ public class DMFCCore extends EventSender {
 	 * @throws DMFCConfigurationException
 	 */
 	private String getHomeDir() throws DMFCConfigurationException {
-	    URL _url = ClassLoader.getSystemResource("dmfc.properties");
-	    if (_url == null) {
+	    URL url = ClassLoader.getSystemResource("dmfc.properties");
+	    if (url == null) {
 	        System.err.println("Can't find dmfc.properties");
 	        throw new DMFCConfigurationException("Can't find dmfc.properties");
 	    }
-	    String _dir = new File(_url.getFile()).getParentFile().getParent();
+	    String dir = new File(url.getFile()).getParentFile().getParent();
 	    try {	        
-            _dir = URLDecoder.decode(_dir, "utf-8");
+            dir = URLDecoder.decode(dir, "utf-8");
         } catch (UnsupportedEncodingException e) {
             throw new DMFCConfigurationException("This is not supposed to happen!", e);            
         }
-	    return _dir;
+	    return dir;
 	}
 	
 	/**
@@ -137,11 +137,11 @@ public class DMFCCore extends EventSender {
 	 * @param a_propertiesStream an InputStream
 	 * @return <code>true</code> if the loading was successful, <code>false</code> otherwise
 	 */
-	public boolean loadProperties(InputStream a_propertiesStream) {
+	public boolean loadProperties(InputStream propertiesStream) {
 	    try {
-	        Properties _properties = new Properties(System.getProperties());
-            _properties.load(a_propertiesStream);         
-            System.setProperties(_properties);
+	        Properties properties = new Properties(System.getProperties());
+            properties.load(propertiesStream);         
+            System.setProperties(properties);
         } catch (IOException e) {            
             e.printStackTrace();
             return false;
@@ -156,10 +156,10 @@ public class DMFCCore extends EventSender {
 	 */
 	public boolean reloadTransformers() {
 		try {
-			Validator _validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "transformer.rng"), true);
+			Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "transformer.rng"), true);
 			sendMessage(Level.CONFIG, "Reloading Transformers");
 			transformerHandlers.clear();		
-			addTransformers(new File(home, "transformers"), _validator);			
+			addTransformers(new File(home, "transformers"), validator);			
 			sendMessage(Level.CONFIG, "Reloading of Transformers done");
 		} catch (ValidationException e) {
 			sendMessage(Level.SEVERE, "Reloading of Transformers failed " + e.getMessage());
@@ -171,29 +171,29 @@ public class DMFCCore extends EventSender {
 	
 	/**
 	 * Recursively add transformers as the transformer description files (TDFs) are found
-	 * @param a_dir the directory to start searching in
-	 * @param a_validator a Validator of TDFs
+	 * @param dir the directory to start searching in
+	 * @param validator a Validator of TDFs
 	 */
-	private void addTransformers(File a_dir, Validator a_validator) {
-		if (!a_dir.isDirectory()) {
-			sendMessage(Level.SEVERE, a_dir.getAbsolutePath() + " is not a directory.");
+	private void addTransformers(File dir, Validator validator) {
+		if (!dir.isDirectory()) {
+			sendMessage(Level.SEVERE, dir.getAbsolutePath() + " is not a directory.");
 			return;
 		}
-		File[] _children = a_dir.listFiles();
-		for (int i = 0; i < _children.length; ++i) {
-			File _current = _children[i];
-			if (_current.isDirectory()) {
-				addTransformers(_current, a_validator);
+		File[] children = dir.listFiles();
+		for (int i = 0; i < children.length; ++i) {
+			File current = children[i];
+			if (current.isDirectory()) {
+				addTransformers(current, validator);
 			}
-			else if (_current.getName().matches(".*\\.tdf")) {
+			else if (current.getName().matches(".*\\.tdf")) {
 				try {
-					TransformerHandler _th = new TransformerHandler(_current, inputListener, getEventListeners(), a_validator);
-					if (transformerHandlers.containsKey(_th.getName())) {
-						throw new TransformerDisabledException("Transformer '" + _th.getName() + "' aleady exists");
+					TransformerHandler th = new TransformerHandler(current, inputListener, getEventListeners(), validator);
+					if (transformerHandlers.containsKey(th.getName())) {
+						throw new TransformerDisabledException("Transformer '" + th.getName() + "' aleady exists");
 					}
-					transformerHandlers.put(_th.getName(), _th);
+					transformerHandlers.put(th.getName(), th);
 				} catch (TransformerDisabledException e) {
-					sendMessage(Level.WARNING, "Transformer in file '" + _current.getAbsolutePath() + "' disabled: " + e.getMessage());
+					sendMessage(Level.WARNING, "Transformer in file '" + current.getAbsolutePath() + "' disabled: " + e.getMessage());
 					if (e.getRootCause() != null) {
 						sendMessage(Level.WARNING, "Root cause: " + e.getRootCauseMessagesAsString());
 					}
@@ -212,25 +212,25 @@ public class DMFCCore extends EventSender {
 	
 	/**
 	 * Executes a task script.
-	 * @param a_script the script to execute
+	 * @param script the script to execute
 	 * @return true if the exeution was successful, false otherwise.
 	 */
-	public boolean executeScript(File a_script) {		
-		boolean _ret = false;
+	public boolean executeScript(File script) {		
+		boolean ret = false;
 		try {
-			Validator _validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "script.rng"), false);
-			ScriptHandler _handler = new ScriptHandler(a_script, transformerHandlers, getEventListeners(), _validator);
-			_handler.execute();
-			_ret = true;
+			Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "script.rng"), false);
+			ScriptHandler handler = new ScriptHandler(script, transformerHandlers, getEventListeners(), validator);
+			handler.execute();
+			ret = true;
 		} catch (ScriptException e) {
 			sendMessage(Level.SEVERE, "Script file exception: " + e.getMessage());
 			if (e.getRootCause() != null) {
-			    String _msg = "";
-			    String[] _msgs = e.getRootCauseMessages();			    
-			    for (int i = 0; i < _msgs.length; ++i) {
-			        _msg = _msgs[i] + "\n";
+			    String msg = "";
+			    String[] msgs = e.getRootCauseMessages();			    
+			    for (int i = 0; i < msgs.length; ++i) {
+			        msg = msgs[i] + "\n";
 			    }
-				sendMessage(Level.SEVERE, "Root cause: " + _msg);				
+				sendMessage(Level.SEVERE, "Root cause: " + msg);				
 			}
 		} catch (ValidationException e) {
 			sendMessage(Level.SEVERE, "Problems parsing script file" + e.getMessage());
@@ -239,26 +239,26 @@ public class DMFCCore extends EventSender {
 			}
 		} catch (MIMEException e) {
 			if (e.getRootCause() != null) {
-			    String _msg = "";
-			    String[] _msgs = e.getRootCauseMessages();			    
-			    for (int i = 0; i < _msgs.length; ++i) {
-			        _msg = _msgs[i] + "\n";
+			    String msg = "";
+			    String[] msgs = e.getRootCauseMessages();			    
+			    for (int i = 0; i < msgs.length; ++i) {
+			        msg = msgs[i] + "\n";
 			    }
-				sendMessage(Level.SEVERE, "Root cause: " + _msg);				
+				sendMessage(Level.SEVERE, "Root cause: " + msg);				
 			}
         }
-		return _ret;
+		return ret;
 	}
 	
 	/**
 	 * Validates a task script
-	 * @param a_script the script to validate
+	 * @param script the script to validate
 	 * @throws ValidationException
 	 * @throws ScriptException
 	 * @throws MIMEException
 	 */
-	public void validateScript(File a_script) throws ValidationException, ScriptException, MIMEException {
-		Validator _validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "script.rng"), false);
-		new ScriptHandler(a_script, transformerHandlers, getEventListeners(), _validator);
+	public void validateScript(File script) throws ValidationException, ScriptException, MIMEException {
+		Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "script.rng"), false);
+		new ScriptHandler(script, transformerHandlers, getEventListeners(), validator);
 	}
 }

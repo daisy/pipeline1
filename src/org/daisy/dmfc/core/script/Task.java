@@ -37,17 +37,17 @@ public class Task {
 	
 	/**
 	 * Creates a new <code>Task</code>
-	 * @param a_element the element to create the <code>Task</code> from
-	 * @param a_properties any properties that have been set in the script file
+	 * @param element the element to create the <code>Task</code> from
+	 * @param properties any properties that have been set in the script file
 	 */
-	public Task(Element a_element, Map a_properties) {
-	    name = XPathUtils.valueOf(a_element, "@name");		
-		interactive = Boolean.valueOf(XPathUtils.valueOf(a_element, "@interactive")).booleanValue();
+	public Task(Element element, Map properties) {
+	    name = XPathUtils.valueOf(element, "@name");		
+		interactive = Boolean.valueOf(XPathUtils.valueOf(element, "@interactive")).booleanValue();
 		
-		NodeList nodeList = XPathUtils.selectNodes(a_element, "parameter");
+		NodeList nodeList = XPathUtils.selectNodes(element, "parameter");
 		for (int i = 0; i < nodeList.getLength(); ++i) {
 		    Element parameter = (Element)nodeList.item(i);
-		    Parameter param = new Parameter(parameter, a_properties);
+		    Parameter param = new Parameter(parameter, properties);
 		    parameters.put(param.getName(), param);
 		}		
 	}

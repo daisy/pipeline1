@@ -31,39 +31,39 @@ public abstract class Transformer extends EventSender {
 	
 	/**
 	 * Creates a new Transformer.
-	 * @param a_eventListeners a set of  event listeners
-	 * @param a_interactive
+	 * @param eventListeners a set of  event listeners
+	 * @param isInteractive
 	 */
-	public Transformer(InputListener a_inputListener, Set a_eventListeners, Boolean a_interactive) {		
-		super(a_eventListeners);
-		inputListener = a_inputListener;
-		interactive = a_interactive.booleanValue();
+	public Transformer(InputListener inListener, Set eventListeners, Boolean isInteractive) {		
+		super(eventListeners);
+		inputListener = inListener;
+		interactive = isInteractive.booleanValue();
 		messageOriginator = "Transformer";
 		try {
-			ResourceBundle _bundle = ResourceBundle.getBundle("messages", Locale.ENGLISH, this.getClass().getClassLoader());
-			addI18nBundle(_bundle);
+			ResourceBundle bundle = ResourceBundle.getBundle("messages", Locale.ENGLISH, this.getClass().getClassLoader());
+			addI18nBundle(bundle);
 		} catch (MissingResourceException e) {
 			sendMessage(Level.INFO, "No resource bundle found for " + this.getClass().getName());
 		}
 	}
 	
-	/*package*/ final void setMessageOriginator(String a_originator) {
-	    messageOriginator = a_originator;
+	/*package*/ final void setMessageOriginator(String originator) {
+	    messageOriginator = originator;
 	}
 	
 	/**
 	 * Executes the Transformer with the specified parameters.
-	 * @param a_parameters a collection of parameters
+	 * @param parameters a collection of parameters
 	 * @return <code>true</code> if the Transformer was successful, <code>false</code> otherwise.
 	 */
-	protected abstract boolean execute(Map a_parameters) throws TransformerRunException;
+	protected abstract boolean execute(Map parameters) throws TransformerRunException;
 	
-	final public boolean executeWrapper(Map a_parameters) throws TransformerRunException {
-	    boolean _ret;
+	final public boolean executeWrapper(Map parameters) throws TransformerRunException {
+	    boolean ret;
 	    status(true);
-	    _ret = execute(a_parameters);
+	    ret = execute(parameters);
 	    status(false);
-	    return _ret;
+	    return ret;
 	}
 	
 	/**
@@ -78,13 +78,13 @@ public abstract class Transformer extends EventSender {
 	/**
 	 * Final function for reading user input. This method cannot be overridden.
 	 * @param a_prompt
-	 * @param a_defaultValue a default value
+	 * @param defaultValue a default value
 	 * @return the input from the user if the Transformer was run in interactive mode, the default value otherwise.
 	 */
-	final protected String getUserInput(Level a_level, String a_message, String a_defaultValue) {
+	final protected String getUserInput(Level level, String message, String defaultValue) {
 		if (!interactive) {
-		    return a_defaultValue;			
+		    return defaultValue;			
 		}		
-		return inputListener.getInputAsString(new Prompt(a_level, a_message, messageOriginator));		
+		return inputListener.getInputAsString(new Prompt(level, message, messageOriginator));		
 	}
 }

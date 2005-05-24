@@ -37,35 +37,36 @@ import org.daisy.dmfc.exception.DMFCConfigurationException;
  */
 public class CommandLineUI implements InputListener, EventListener {
 
-	public String getInputAsString(Prompt a_prompt) {
-		System.err.println("Prompt: " + a_prompt.getMessage());
-		BufferedReader _br = new BufferedReader(new InputStreamReader(System.in));
-		String _line = null;
+	public String getInputAsString(Prompt prompt) {
+		System.err.println("[" + prompt.getMessageOriginator() + "] Prompt: " + prompt.getMessage());
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String line = null;
 		try {
-		    _line = _br.readLine();
+		    line = br.readLine();
         } catch (IOException e) {
         }
-		return _line;
+		return line;
 	}
 
-	public void message(Prompt a_prompt) {
-	    if (a_prompt.getType() == Prompt.MESSAGE && a_prompt.getLevel().intValue() >= Level.ALL.intValue()) {
-	        System.out.println("[" + a_prompt.getMessageOriginator() + ", " + a_prompt.getLevel().getName() + "] " + a_prompt.getMessage());
+	public void message(Prompt prompt) {
+	    if (prompt.getType() == Prompt.MESSAGE && prompt.getLevel().intValue() >= Level.ALL.intValue()) {
+	        System.out.println("[" + prompt.getMessageOriginator() + ", " + prompt.getLevel().getName() + "] " + prompt.getMessage());
 	    }
-	    if (a_prompt.getType() == Prompt.TRANSFORMER_START) {
-	        System.out.println("Transformer " + a_prompt.getMessageOriginator() + " has just been started");
+	    if (prompt.getType() == Prompt.TRANSFORMER_START) {
+	        System.out.println("Transformer " + prompt.getMessageOriginator() + " has just been started");
 	    }
-	    if (a_prompt.getType() == Prompt.TRANSFORMER_END) {
-	        System.out.println("Transformer " + a_prompt.getMessageOriginator() + " has just finished running");
+	    if (prompt.getType() == Prompt.TRANSFORMER_END) {
+	        System.out.println("Transformer " + prompt.getMessageOriginator() + " has just finished running");
 	    }
 	}
 
 	public static void main(String[] args) {
 		try {
             if (args.length == 1) {
-            	CommandLineUI _ui = new CommandLineUI();
-            	DMFCCore _dmfc = new DMFCCore(_ui, _ui, new Locale("sv", "SE"));			
-            	_dmfc.executeScript(new File(args[0]));
+            	CommandLineUI ui = new CommandLineUI();
+            	DMFCCore dmfc = new DMFCCore(ui, ui, new Locale("sv", "SE"));
+            	//DMFCCore dmfc = new DMFCCore(ui, ui);
+            	dmfc.executeScript(new File(args[0]));
             } else {
             	System.out.println("Program requires one parameter (a script file name)");
             }

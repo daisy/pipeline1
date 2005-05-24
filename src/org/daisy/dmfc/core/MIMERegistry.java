@@ -48,13 +48,13 @@ public class MIMERegistry {
 	 * @throws MIMEException
 	 */
 	private MIMERegistry() throws MIMEException {
-	    File _registryFile = new File(System.getProperty("dmfc.home") + File.separator + "resources", "mimereg.xml");
+	    File registryFile = new File(System.getProperty("dmfc.home") + File.separator + "resources", "mimereg.xml");
 
 	    DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 	    docBuilderFactory.setValidating(true);
 	    try {
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document doc = docBuilder.parse(_registryFile);
+            Document doc = docBuilder.parse(registryFile);
             readProperties(doc.getDocumentElement());
         } catch (MIMEException e) {
             throw new MIMEException("MIME registry file error: " + e.getMessage(), e);
@@ -81,12 +81,12 @@ public class MIMERegistry {
 	
 	/**
 	 * Reads the MIME types from the dom4j document.
-	 * @param a_element
+	 * @param element
 	 * @throws MIMEException
 	 */
-	private void readProperties(Element a_element) throws MIMEException {
+	private void readProperties(Element element) throws MIMEException {
 	    Map idEntries = new HashMap();
-	    NodeList nodeSet = XPathUtils.selectNodes(a_element, "type");  
+	    NodeList nodeSet = XPathUtils.selectNodes(element, "type");  
 	    
 	    // Iterate over all 'type' subelements 
         for (int i = 0; i < nodeSet.getLength(); ++i) {
@@ -122,30 +122,30 @@ public class MIMERegistry {
 	 * Checks if two MIME types match.
 	 * This function would typically return true for (pseudo code) matches("XHTML", "XML"),
 	 * but not for matches("XML", "XHTML")
-	 * @param a_subType a sub type
-	 * @param a_superType a super type
+	 * @param subType a sub type
+	 * @param superType a super type
 	 * @return <code>true</code> if <code>a_subType</code> is a type of <code>a_superType</code>
 	 * @throws MIMEException
 	 */
-	public boolean matches(String a_subType, String a_superType) throws MIMEException {
-	    MIMEType _sub = (MIMEType)entries.get(a_subType);
-	    MIMEType _super = (MIMEType)entries.get(a_superType);
-	    if (_sub == null) {
-	        throw new MIMEException("MIME type '" + a_subType + "' not found in MIME registry");	        
+	public boolean matches(String subType, String superType) throws MIMEException {
+	    MIMEType sub = (MIMEType)entries.get(subType);
+	    MIMEType sup = (MIMEType)entries.get(superType);
+	    if (sub == null) {
+	        throw new MIMEException("MIME type '" + subType + "' not found in MIME registry");	        
 	    }
-	    if (_super == null) {
-	        throw new MIMEException("MIME type '" + a_superType + "' not found in MIME registry");	        
+	    if (sup == null) {
+	        throw new MIMEException("MIME type '" + superType + "' not found in MIME registry");	        
 	    }
-	    return _sub.matches(_super);		
+	    return sub.matches(sup);		
 	}
 	
 	/**
 	 * Checks whether the specified MIME type exists in the registry.
-	 * @param a_type a MIME type
+	 * @param type a MIME type
 	 * @return <code>true</code> if the MIME type exists, <code>false</code> otherwise
 	 */
-	public boolean contains(String a_type) {
-	    MIMEType _type = (MIMEType)entries.get(a_type);
-	    return _type != null;
+	public boolean contains(String type) {
+	    MIMEType mimeType = (MIMEType)entries.get(type);
+	    return mimeType != null;
 	}
 }

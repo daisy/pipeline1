@@ -30,15 +30,15 @@ public class LineFormatter extends Formatter {
 
     private static SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
-    public String format(LogRecord a_logRecord) {
-        StringBuffer _buffer = new StringBuffer();
-        _buffer.append(simpleDate.format(new Date()));
-        _buffer.append(" ");
-        _buffer.append(a_logRecord.getLevel().getName());
-        _buffer.append(" ");
-        _buffer.append(a_logRecord.getMessage());
-        _buffer.append("\n");
-        return _buffer.toString();
+    public String format(LogRecord logRecord) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(simpleDate.format(new Date()));
+        buffer.append(" ");
+        buffer.append(logRecord.getLevel().getName());
+        buffer.append(" ");
+        buffer.append(logRecord.getMessage());
+        buffer.append("\n");
+        return buffer.toString();
     }
 
 }

@@ -26,11 +26,11 @@ import org.daisy.util.exception.BaseException;
 public class MIMEException extends BaseException {
 
     /**
-     * @param a_message
-     * @param a_rootCause
+     * @param message
+     * @param cause
      */
-    public MIMEException(String a_message, Throwable a_rootCause) {
-        super(a_message, a_rootCause);
+    public MIMEException(String message, Throwable cause) {
+        super(message, cause);
     }
     
     /**

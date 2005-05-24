@@ -28,18 +28,18 @@ import org.daisy.util.exception.BaseException;
 public class DMFCConfigurationException extends BaseException {
 
     /**
-     * @param a_message
+     * @param message
      */
-    public DMFCConfigurationException(String a_message) {
-        super(a_message);        
+    public DMFCConfigurationException(String message) {
+        super(message);        
     }
 
     /**
-     * @param a_message
-     * @param a_rootCause
+     * @param message
+     * @param cause
      */
-    public DMFCConfigurationException(String a_message, Throwable a_rootCause) {
-        super(a_message, a_rootCause);
+    public DMFCConfigurationException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

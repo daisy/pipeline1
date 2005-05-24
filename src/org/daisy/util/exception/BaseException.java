@@ -32,44 +32,44 @@ public class BaseException extends Exception {
 	
 	/**
 	 * Creates a new BaseException
-	 * @param a_message a description of the exception
+	 * @param message a description of the exception
 	 */
-	public BaseException(String a_message) {
-		super(a_message);
+	public BaseException(String message) {
+		super(message);
 	}
 	
 	/**
 	 * Creates a new BaseException
-	 * @param a_message a description of the exception
-	 * @param a_rootCause the root cause of the exception
+	 * @param message a description of the exception
+	 * @param cause the root cause of the exception
 	 */
-	public BaseException(String a_message, Throwable a_rootCause) {
-		super(a_message);
-		rootCause = a_rootCause;
+	public BaseException(String message, Throwable cause) {
+		super(message);
+		rootCause = cause;
 	}
 	
 	/**
 	 * Sets the root cause of this exception.
-	 * @param a_rootCause the root cause of the exception
+	 * @param cause the root cause of the exception
 	 */
-	public void setRootCause(Throwable a_rootCause) {
-		rootCause = a_rootCause;
+	public void setRootCause(Throwable cause) {
+		rootCause = cause;
 	}
 	
 	public void printStackTrace() {
 		printStackTrace(System.err);
 	}
 
-	public void printStackTrace(PrintStream a_outStream) {
-		printStackTrace(new PrintWriter(a_outStream));
+	public void printStackTrace(PrintStream outStream) {
+		printStackTrace(new PrintWriter(outStream));
 	}
 
-	public void printStackTrace(PrintWriter a_writer) {
-		super.printStackTrace(a_writer);
+	public void printStackTrace(PrintWriter writer) {
+		super.printStackTrace(writer);
 		if(rootCause != null) {
-			rootCause.printStackTrace(a_writer);
+			rootCause.printStackTrace(writer);
 		}
-		a_writer.flush();
+		writer.flush();
 	}
 
 	/**
@@ -77,22 +77,22 @@ public class BaseException extends Exception {
 	 * @return an array of root cause messages
 	 */
 	public String[] getRootCauseMessages() {
-	    Vector _vec = new Vector();
-	    Throwable _thr = rootCause;
-	    while (_thr != null) {
+	    Vector vec = new Vector();
+	    Throwable thr = rootCause;
+	    while (thr != null) {
 	        try {
-                BaseException _base = (BaseException)_thr;
-                _vec.add(_base.getMessage());
-                _thr = _base.getRootCause();
+                BaseException base = (BaseException)thr;
+                vec.add(base.getMessage());
+                thr = base.getRootCause();
             } catch (ClassCastException e) {
-                _vec.add(_thr.getMessage());
-                _thr = null;
+                vec.add(thr.getMessage());
+                thr = null;
             }
 	    }
-	    int _count = _vec.size();
-	    String[] _messages = new String[_count];
-	    _vec.copyInto(_messages);
-	    return _messages;
+	    int count = vec.size();
+	    String[] messages = new String[count];
+	    vec.copyInto(messages);
+	    return messages;
 	}
 	
 	/**
@@ -101,15 +101,15 @@ public class BaseException extends Exception {
 	 * @return a string of root cause messages
 	 */
 	public String getRootCauseMessagesAsString() {
-	    StringBuffer _buffer = new StringBuffer();
-	    String[] _msgs = getRootCauseMessages();
-	    if (_msgs.length > 0) {
-	        _buffer.append(_msgs[0]);	    
-		    for (int i = 1; i < _msgs.length; ++i) {
-		        _buffer.append(", caused by " + _msgs[i]);
+	    StringBuffer buffer = new StringBuffer();
+	    String[] msgs = getRootCauseMessages();
+	    if (msgs.length > 0) {
+	        buffer.append(msgs[0]);	    
+		    for (int i = 1; i < msgs.length; ++i) {
+		        buffer.append(", caused by " + msgs[i]);
 		    }
 	    }
-	    return _buffer.toString();
+	    return buffer.toString();
 	}
 	
 	/**

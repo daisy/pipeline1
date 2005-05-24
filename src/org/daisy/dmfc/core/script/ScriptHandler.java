@@ -65,28 +65,28 @@ public class ScriptHandler extends EventSender {
 	
 	/**
 	 * Creates a Script handler.
-	 * @param a_script a script file
-	 * @param a_eventListeners a set of event listeners
-	 * @param a_validator a validator
+	 * @param script a script file
+	 * @param evListeners a set of event listeners
+	 * @param validator a validator
 	 * @throws ScriptException if the script is invalid
 	 * @throws MIMEException
 	 */
-	public ScriptHandler(File a_script, Map a_transformerHandlers, Set a_eventListeners, Validator a_validator) throws ScriptException, MIMEException {
-		super(a_eventListeners);
-		transformerHandlers = a_transformerHandlers;
+	public ScriptHandler(File script, Map handlers, Set evListeners, Validator validator) throws ScriptException, MIMEException {
+		super(evListeners);
+		transformerHandlers = handlers;
 		
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		docBuilderFactory.setValidating(false);
 		
 		try {
 			// Validate the script file
-			if (!a_validator.isValid(a_script)) {
+			if (!validator.isValid(script)) {
 				throw new ScriptException("Script file is not valid");
 			}
 			
 			// Parse the script file
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			Document doc = docBuilder.parse(a_script);
+			Document doc = docBuilder.parse(script);
 						
 			// Get properties from script file
 			readProperties(doc.getDocumentElement());
@@ -99,12 +99,12 @@ public class ScriptHandler extends EventSender {
 			 */
 			
 			// Make sure every Transformer in the script file exists
-			for (Iterator _iter = tasks.iterator(); _iter.hasNext(); ) {
-				Task _task = (Task)_iter.next();
-				TransformerHandler _handler = (TransformerHandler)transformerHandlers.get(_task.getName());
+			for (Iterator it = tasks.iterator(); it.hasNext(); ) {
+				Task task = (Task)it.next();
+				TransformerHandler handler = (TransformerHandler)transformerHandlers.get(task.getName());
 								
-				if (_handler == null) {
-					throw new ScriptException("Transformer " + _task.getName() + " is not a known Transformer");
+				if (handler == null) {
+					throw new ScriptException("Transformer " + task.getName() + " is not a known Transformer");
 				}
 			}
 
@@ -120,41 +120,41 @@ public class ScriptHandler extends EventSender {
 			}
 						
 			// Validate parameters
-			for (Iterator _iter = tasks.iterator(); _iter.hasNext(); ) {
-				Task _task = (Task)_iter.next();
-				TransformerHandler _handler = (TransformerHandler)transformerHandlers.get(_task.getName());
+			for (Iterator it = tasks.iterator(); it.hasNext(); ) {
+				Task task = (Task)it.next();
+				TransformerHandler handler = (TransformerHandler)transformerHandlers.get(task.getName());
 				
-				for (Iterator _paramIter = _task.getParameters().values().iterator(); _paramIter.hasNext(); ) {
-					Parameter _parameter = (Parameter)_paramIter.next();					
-					if (_parameter.getRef() != null) {
-					    Node refd = XPathUtils.selectSingleNode(doc, "//task/parameter[@id='" + _parameter.getRef() + "']");
+				for (Iterator paramIter = task.getParameters().values().iterator(); paramIter.hasNext(); ) {
+					Parameter parameter = (Parameter)paramIter.next();					
+					if (parameter.getRef() != null) {
+					    Node refd = XPathUtils.selectSingleNode(doc, "//task/parameter[@id='" + parameter.getRef() + "']");
 																		
 						if (refd == null) {
-							throw new ScriptException("Parameter " + _parameter.getName() + " in task " + 
-									_task.getName() + " has a reference to a non-existing id");
+							throw new ScriptException("Parameter " + parameter.getName() + " in task " + 
+									task.getName() + " has a reference to a non-existing id");
 						}
 						
-						String taskWithIDName = XPathUtils.valueOf(doc, "//task[parameter/@id='" + _parameter.getRef() + "']/@name");
+						String taskWithIDName = XPathUtils.valueOf(doc, "//task[parameter/@id='" + parameter.getRef() + "']/@name");
 						
 						// We already know this handler exists
-						TransformerHandler _handlerWithID = (TransformerHandler)transformerHandlers.get(taskWithIDName);
+						TransformerHandler handlerWithID = (TransformerHandler)transformerHandlers.get(taskWithIDName);
 						
 						// Make sure all in params with a ref has a matching (mime-wise) out param id
-						String _typeOfRef = _handler.getParameterType(_parameter.getName());
-						String _typeOfId = _handlerWithID.getParameterType(XPathUtils.valueOf(refd, "name"));						
+						String typeOfRef = handler.getParameterType(parameter.getName());
+						String typeOfId = handlerWithID.getParameterType(XPathUtils.valueOf(refd, "name"));						
 						//System.err.println("*** typeOfRef: " + _typeOfRef + ", typeOfId: " + _typeOfId);
-						MIMERegistry _mime = MIMERegistry.instance();
-						if (!_mime.matches(_typeOfId, _typeOfRef)) {
-							throw new ScriptException("Where id/ref = " + _parameter.getRef() + ": MIME type '" + 
-									_typeOfId + "' of Transformer '" + _handlerWithID.getName() +
-									"' is not compatible with MIME type '" + _typeOfRef + "' of Transformer '" + 
-									_handler.getName() + "'");
+						MIMERegistry mime = MIMERegistry.instance();
+						if (!mime.matches(typeOfId, typeOfRef)) {
+							throw new ScriptException("Where id/ref = " + parameter.getRef() + ": MIME type '" + 
+									typeOfId + "' of Transformer '" + handlerWithID.getName() +
+									"' is not compatible with MIME type '" + typeOfRef + "' of Transformer '" + 
+									handler.getName() + "'");
 						}
 					}
 				}				
 				
 				// Make sure parameters are OK (none missing, no extra etc)
-				_handler.validateParameters(_task.getParameters());
+				handler.validateParameters(task.getParameters());
 				
 			}				
 			
@@ -171,15 +171,15 @@ public class ScriptHandler extends EventSender {
 	
 	/**
 	 * Reads the properties in the script file.
-	 * @param a_element
+	 * @param element
 	 */
-	private void readProperties(Element a_element) {
-	    name = XPathUtils.valueOf(a_element, "name");
-	    description = XPathUtils.valueOf(a_element, "description");
-	    version = XPathUtils.valueOf(a_element, "@version");
+	private void readProperties(Element element) {
+	    name = XPathUtils.valueOf(element, "name");
+	    description = XPathUtils.valueOf(element, "description");
+	    version = XPathUtils.valueOf(element, "@version");
 	    
 	    // Read properties
-	    NodeList propertyList = XPathUtils.selectNodes(a_element, "property");
+	    NodeList propertyList = XPathUtils.selectNodes(element, "property");
 	    for (int i = 0; i < propertyList.getLength(); ++i) {
 	        Element property = (Element)propertyList.item(i);
 	        String propertyName = XPathUtils.valueOf(property, "@name");
@@ -188,7 +188,7 @@ public class ScriptHandler extends EventSender {
 	    }
 	    
 	    // Read tasks
-	    NodeList taskList = XPathUtils.selectNodes(a_element, "task");
+	    NodeList taskList = XPathUtils.selectNodes(element, "task");
 	    for (int i = 0; i < taskList.getLength(); ++i) {
 	        Element taskElement = (Element)taskList.item(i);
 	        Task task = new Task(taskElement, properties);
@@ -203,12 +203,12 @@ public class ScriptHandler extends EventSender {
 	    sendMessage(Level.CONFIG, i18n("RUNNING_SCRIPT", name));
 		
 		try {
-			for (Iterator _iter = tasks.iterator(); _iter.hasNext(); ) {
-				Task _task = (Task)_iter.next();
-				TransformerHandler _th = (TransformerHandler)transformerHandlers.get(_task.getName());
-				sendMessage(Level.CONFIG, i18n("RUNNING_TASK", _task.getName()));
-				if (!_th.run(_task.getParameters(), _task.isInteractive())) {
-				    throw new ScriptException("Task " + _task.getName() + " failed");
+			for (Iterator it = tasks.iterator(); it.hasNext(); ) {
+				Task task = (Task)it.next();
+				TransformerHandler th = (TransformerHandler)transformerHandlers.get(task.getName());
+				sendMessage(Level.CONFIG, i18n("RUNNING_TASK", task.getName()));
+				if (!th.run(task.getParameters(), task.isInteractive())) {
+				    throw new ScriptException("Task " + task.getName() + " failed");
 				}
 			}
 		} catch (TransformerRunException e) {

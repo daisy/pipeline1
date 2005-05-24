@@ -26,12 +26,12 @@ import org.daisy.util.exception.*;
  */
 public class TransformerRunException extends BaseException {
 
-	public TransformerRunException(String a_message) {
-		super(a_message);
+	public TransformerRunException(String message) {
+		super(message);
 	}
 
-	public TransformerRunException(String a_message, Throwable a_rootCause) {
-		super(a_message, a_rootCause);
+	public TransformerRunException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
 }

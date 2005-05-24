@@ -23,27 +23,27 @@ public abstract class EventSender {
 		
 	/**
 	 * Creates a new EventSender specifying a single listener of the object.
-	 * @param a_eventListener a event listener
+	 * @param eventListener a event listener
 	 */
-	protected EventSender(EventListener a_eventListener) {
+	protected EventSender(EventListener eventListener) {
 		eventListeners = new HashSet();
-		addEventListener(a_eventListener);
+		addEventListener(eventListener);
 	}
 	
 	/**
 	 * Creates a new EventSender specifying a set of listeners of the object.
 	 * @param a_eventListeners
 	 */
-	protected EventSender(Set a_eventListeners) {
-		eventListeners = a_eventListeners;
+	protected EventSender(Set listeners) {
+		eventListeners = listeners;
 	}
 	
 	/**
 	 * Adds a EventListener.
-	 * @param a_eventListener the EventListener to add.
+	 * @param eventListener the EventListener to add.
 	 */
-	protected void addEventListener(EventListener a_eventListener) {
-		eventListeners.add(a_eventListener);
+	protected void addEventListener(EventListener eventListener) {
+		eventListeners.add(eventListener);
 	}
 	
 	/**
@@ -55,54 +55,54 @@ public abstract class EventSender {
 	
 	/**
 	 * Sends a message to all listeners.
-	 * @param a_level the level of the message
-	 * @param a_message the message
+	 * @param level the level of the message
+	 * @param message the message
 	 */
-	protected void sendMessage(Level a_level, String a_message) {
-	    Prompt _prompt = new Prompt(a_level, a_message, messageOriginator);
-		send(_prompt);
+	protected void sendMessage(Level level, String message) {
+	    Prompt prompt = new Prompt(level, message, messageOriginator);
+		send(prompt);
 	}
 	
 	/**
 	 * Sends a progress report to all listeners.
-	 * @param a_progress the progress
+	 * @param progress the progress
 	 */
-	protected void progress(double a_progress) {
-	    Prompt _prompt = new Prompt(a_progress, messageOriginator);
-	    send(_prompt);
+	protected void progress(double progress) {
+	    Prompt prompt = new Prompt(progress, messageOriginator);
+	    send(prompt);
 	}
 	
-	protected void status(boolean a_started) {
-	    Prompt _prompt = new Prompt(a_started, messageOriginator);
-	    send(_prompt);
+	protected void status(boolean started) {
+	    Prompt prompt = new Prompt(started, messageOriginator);
+	    send(prompt);
 	}
 	
-	private void send(Prompt a_prompt) {
-	    Iterator _iter = eventListeners.iterator();		
-		while (_iter.hasNext()) {
-			EventListener _eventListener = (EventListener)_iter.next();			
-			_eventListener.message(a_prompt);
+	private void send(Prompt prompt) {
+	    Iterator it = eventListeners.iterator();		
+		while (it.hasNext()) {
+			EventListener eventListener = (EventListener)it.next();			
+			eventListener.message(prompt);
 		}
 	}
 	
-	protected String i18n(String a_msgId) {
-		return internationalization.format(a_msgId);
+	protected String i18n(String msgId) {
+		return internationalization.format(msgId);
 	}
 	
-	protected String i18n(String a_msgId, Object[] a_params) {
-		return internationalization.format(a_msgId, a_params);
+	protected String i18n(String msgId, Object[] params) {
+		return internationalization.format(msgId, params);
 	}
 	
-	protected String i18n(String a_msgId, Object a_param) {
-		return i18n(a_msgId, new Object[]{a_param});
+	protected String i18n(String msgId, Object param) {
+		return i18n(msgId, new Object[]{param});
 	}
 	
-	protected String i18n(String a_msgId, Object a_param1, Object a_param2) {
-		return i18n(a_msgId, new Object[]{a_param1, a_param2});
+	protected String i18n(String msgId, Object param1, Object param2) {
+		return i18n(msgId, new Object[]{param1, param2});
 	}
 	
-	protected void addI18nBundle(ResourceBundle a_bundle) {
-	    internationalization.addBundle(a_bundle);
+	protected void addI18nBundle(ResourceBundle bundle) {
+	    internationalization.addBundle(bundle);
 	}
 	
 	protected I18n getI18n() {

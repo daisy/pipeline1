@@ -34,20 +34,20 @@ public class MIMEType {
     /**
      * Creates a new <code>MIMEType</code>.
      * Each <code>MIMEType</code> can have a set of parent types.
-     * @param a_id 
-     * @param a_name
+     * @param typeId 
+     * @param typeName
      */
-    public MIMEType(String a_id, String a_name) {
-        id = a_id;
-        name = a_name;
+    public MIMEType(String typeId, String typeName) {
+        id = typeId;
+        name = typeName;
     }
     
     /**
      * Adds a parent to this MIME type.
-     * @param a_parent the MIME type to add as a parent of this type.
+     * @param parent the MIME type to add as a parent of this type.
      */
-    public void addParent(MIMEType a_parent) {        
-        parents.add(a_parent);
+    public void addParent(MIMEType parent) {        
+        parents.add(parent);
     }
     
     /**
@@ -55,17 +55,17 @@ public class MIMEType {
      * <pre>boolean b = mimeTypeA.matches(mimeTypeB);</pre>
      * For the example above to return true, <code>typeA</code> or one of
      * its ancestors must be equal to <code>typeB</code>. 
-     * @param a_possibleMatch a MIME type to match against
+     * @param possibleMatch a MIME type to match against
      * @return <code>true</code> if this MIME type or one of its ancestors
      * is equal to <code>a_possibleMatch</code>, <code>false</code> otherwise.
      */
-    public boolean matches(MIMEType a_possibleMatch) {
-        if (a_possibleMatch.equals(this)) {
+    public boolean matches(MIMEType possibleMatch) {
+        if (possibleMatch.equals(this)) {
             return true;
         }
-        for (Iterator _iter = parents.iterator(); _iter.hasNext(); ) {
-            MIMEType _mt = (MIMEType)_iter.next();
-            if (_mt.matches(a_possibleMatch)) {
+        for (Iterator it = parents.iterator(); it.hasNext(); ) {
+            MIMEType mt = (MIMEType)it.next();
+            if (mt.matches(possibleMatch)) {
                 return true;
             }
         }

@@ -35,44 +35,44 @@ public class I18n {
     public I18n() {
 	}
     
-	public I18n(ResourceBundle a_bundle) {
-	    bundles.push(a_bundle);
+	public I18n(ResourceBundle bundle) {
+	    bundles.push(bundle);
 	}
 	
-	public static void setDefaultBundle(ResourceBundle a_bundle) {
-	    defaultBundle = a_bundle;
+	public static void setDefaultBundle(ResourceBundle bundle) {
+	    defaultBundle = bundle;
 	}
 	
-	public void addBundle(ResourceBundle a_bundle) {
-	    bundles.push(a_bundle);
+	public void addBundle(ResourceBundle bundle) {
+	    bundles.push(bundle);
 	}
 	
-	public String format(String a_msgId, Object[] a_params) {
+	public String format(String msgId, Object[] params) {
 	    try {
-		    for (Iterator _iter = bundles.iterator(); _iter.hasNext(); ) {
+		    for (Iterator it = bundles.iterator(); it.hasNext(); ) {
 		        try {
-			        ResourceBundle _bundle = (ResourceBundle)_iter.next();
-			        String _msg = _bundle.getString(a_msgId);
-			        return MessageFormat.format(_msg, a_params);
+			        ResourceBundle bundle = (ResourceBundle)it.next();
+			        String msg = bundle.getString(msgId);
+			        return MessageFormat.format(msg, params);
 		        } catch (MissingResourceException e) {
 		            // Nothing
 		        }
 		    }
 		    if (defaultBundle != null) {
 		        try {		        
-			        String _msg = defaultBundle.getString(a_msgId);
-			        return MessageFormat.format(_msg, a_params);
+			        String msg = defaultBundle.getString(msgId);
+			        return MessageFormat.format(msg, params);
 		        } catch (MissingResourceException e) {
 		            // Nothing
 		        }
 		    }
 	    } catch (IllegalArgumentException e) {
-	        return "<wrong format of resource in bundle> " + a_msgId;
+	        return "<wrong format of resource in bundle> " + msgId;
 	    }	    
-	    return "<missing resource> " + a_msgId;	    
+	    return "<missing resource> " + msgId;	    
 	}
 	
-	public String format(String a_msgId) {		
-		return format(a_msgId, null);
+	public String format(String msgId) {		
+		return format(msgId, null);
 	}
 }

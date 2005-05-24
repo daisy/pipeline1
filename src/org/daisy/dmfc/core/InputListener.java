@@ -29,9 +29,9 @@ public interface InputListener {
 	
 	/**
 	 * Get (interactive) input from the user.
-	 * @param a_prompt
+	 * @param prompt
 	 * @return the input from the user
 	 */
-	public String getInputAsString(Prompt a_prompt);
+	public String getInputAsString(Prompt prompt);
 	
 }
