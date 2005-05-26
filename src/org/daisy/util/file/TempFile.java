@@ -36,7 +36,7 @@ public class TempFile {
 	 * Sets the directory where the temporary files will be stored.
 	 * If the directory is not set, the temporary directory of the system
 	 * will be used.
-	 * @param a_directory a directory
+	 * @param directory a directory
 	 */
 	public static void setTempDir(File directory) {
 		if (directory.isDirectory()) {
