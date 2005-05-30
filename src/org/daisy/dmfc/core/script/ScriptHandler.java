@@ -81,7 +81,7 @@ public class ScriptHandler extends EventSender {
 		try {
 			// Validate the script file
 			if (!validator.isValid(script)) {
-				throw new ScriptException("Script file is not valid");
+				throw new ScriptException(i18n("SCRIPT_NOT_VALID"));
 			}
 			
 			// Parse the script file
@@ -104,7 +104,7 @@ public class ScriptHandler extends EventSender {
 				TransformerHandler handler = (TransformerHandler)transformerHandlers.get(task.getName());
 								
 				if (handler == null) {
-					throw new ScriptException("Transformer " + task.getName() + " is not a known Transformer");
+				    throw new ScriptException(i18n("TRANSFORMER_NOT_KNOWN", task.getName()));
 				}
 			}
 
@@ -115,7 +115,7 @@ public class ScriptHandler extends EventSender {
 			for (int i = 0; i < ids.getLength(); ++i) {
 			    String id = XPathUtils.valueOf(ids.item(i), ".");
 			    if (!idSet.add(id)) {
-			        throw new ScriptException("id attributes must be unique");
+			        throw new ScriptException(i18n("ID_ATTRIBUTES_MUST_BE_UNIQUE"));
 			    }
 			}
 						
@@ -130,8 +130,7 @@ public class ScriptHandler extends EventSender {
 					    Node refd = XPathUtils.selectSingleNode(doc, "//task/parameter[@id='" + parameter.getRef() + "']");
 																		
 						if (refd == null) {
-							throw new ScriptException("Parameter " + parameter.getName() + " in task " + 
-									task.getName() + " has a reference to a non-existing id");
+						    throw new ScriptException(i18n("PARAMETER_REFERENCES_WRONG_ID", parameter.getName(), task.getName()));
 						}
 						
 						String taskWithIDName = XPathUtils.valueOf(doc, "//task[parameter/@id='" + parameter.getRef() + "']/@name");
@@ -145,11 +144,8 @@ public class ScriptHandler extends EventSender {
 						//System.err.println("*** typeOfRef: " + _typeOfRef + ", typeOfId: " + _typeOfId);
 						MIMERegistry mime = MIMERegistry.instance();
 						if (!mime.matches(typeOfId, typeOfRef)) {
-							throw new ScriptException("Where id/ref = " + parameter.getRef() + ": MIME type '" + 
-									typeOfId + "' of Transformer '" + handlerWithID.getName() +
-									"' is not compatible with MIME type '" + typeOfRef + "' of Transformer '" + 
-									handler.getName() + "'");
-						}
+						    Object[] args = {parameter.getRef(), typeOfId, handlerWithID.getName(), typeOfRef, handler.getName()};
+						    throw new ScriptException(i18n("MIME_TYPE_MISMATCH", args));						}
 					}
 				}				
 				
@@ -158,14 +154,14 @@ public class ScriptHandler extends EventSender {
 				
 			}				
 			
-		} catch (ValidationException e) {
-			throw new ScriptException("Script file is not valid", e);
+		} catch (ValidationException e) {		    
+			throw new ScriptException(i18n("SCRIPT_NOT_VALID"));
 		} catch (ParserConfigurationException e) {
-		    throw new ScriptException("Problems parsing script file" , e);
+		    throw new ScriptException(i18n("SCRIPT_PARSE_ERROR"), e);
         } catch (SAXException e) {
-            throw new ScriptException("Problems parsing script file" , e);
+            throw new ScriptException(i18n("SCRIPT_PARSE_ERROR"), e);
         } catch (IOException e) {
-            throw new ScriptException("Problems accessing script file" , e);
+            throw new ScriptException(i18n("SCRIPT_ACCESS_ERROR") , e);
         }		
 	}
 	
@@ -197,7 +193,7 @@ public class ScriptHandler extends EventSender {
 	}
 	
 	/**
-	 * Iterates over all tasks and executes each ane every one of them
+	 * Iterates over all tasks and executes each and every one of them
 	 */
 	public void execute() throws ScriptException {
 	    sendMessage(Level.CONFIG, i18n("RUNNING_SCRIPT", name));
@@ -208,14 +204,14 @@ public class ScriptHandler extends EventSender {
 				TransformerHandler th = (TransformerHandler)transformerHandlers.get(task.getName());
 				sendMessage(Level.CONFIG, i18n("RUNNING_TASK", task.getName()));
 				if (!th.run(task.getParameters(), task.isInteractive())) {
-				    throw new ScriptException("Task " + task.getName() + " failed");
+				    throw new ScriptException(i18n("TASK_FAILED", task.getName()));
 				}
 			}
 		} catch (TransformerRunException e) {
-			throw new ScriptException("Error while running task", e);
+		    throw new ScriptException(i18n("ERROR_RUNNING_TASK"), e);
 		}
 		
-		sendMessage(Level.CONFIG, "End of running script");
+		sendMessage(Level.CONFIG, i18n("END_OF_SCRIPT"));
 	}
 	
 }

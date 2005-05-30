@@ -64,7 +64,7 @@ public class DirClassLoader extends URLClassLoader {
 	
 	/**
 	 * Gets a resource from the file system.
-	 * @param a_resource name of the resource to load
+	 * @param resource name of the resource to load
 	 * @return a URL to the resource, or <code>null</code> if the resource is not found
 	 */
 	public URL getResource(String resource) {

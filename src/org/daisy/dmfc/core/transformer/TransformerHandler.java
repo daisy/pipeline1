@@ -95,7 +95,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		try {						
 			// Validate the transformer description file
 			if (!validator.isValid(transformerDescription)) {
-				throw new TransformerDisabledException("Transformer description file is not valid");
+			    throw new TransformerDisabledException(i18n("TDF_NOT_VALID"));
 			}
 			
 			// Parse the description file
@@ -107,7 +107,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 						
 			// Perform platform dependency checks
 			if (!isPlatformOk(doc.getDocumentElement())) {
-				throw new TransformerDisabledException("Platform dependency check failed");
+			    throw new TransformerDisabledException(i18n("PLATFORM_CHECK_FAILED"));
 			}
 			
 			// Create the class loader and Transformer class (not object)
@@ -118,12 +118,12 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			
 			// Do dependency checks in the class associated with the Transformer
 			if (!transformerSupported()) {
-				throw new TransformerDisabledException("Transformer not supported");
+			    throw new TransformerDisabledException(i18n("TRANSFORMER_NOT_SUPPORTED"));
 			}
 		} catch (ClassNotFoundException e) {
-			throw new TransformerDisabledException("Cannot create class for Transformer", e);
+			throw new TransformerDisabledException(i18n("CANNOT_CREATE_TRANSFORMER_CLASS"), e);
 		} catch (NoSuchMethodException e) {
-			throw new TransformerDisabledException("Cannot find constructor or method of Transformer", e);
+		    throw new TransformerDisabledException(i18n("NOSUCHMETHOD_IN_TRANSFORMER"), e);
 		} catch (TransformerRunException e) {
 			throw new TransformerDisabledException("Cannot run static isSupported method of Transformer", e);
 		} catch (ValidationException e) {
@@ -131,11 +131,11 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		} catch (MIMEException e) {
 		    throw new TransformerDisabledException("MIME exception", e);
         } catch (ParserConfigurationException e) {
-            throw new TransformerDisabledException("Problems parsing Transformer description file", e);
+            throw new TransformerDisabledException(i18n("PROBLEMS_PARSING_TDF"), e);
         } catch (SAXException e) {
-            throw new TransformerDisabledException("Problems parsing Transformer description file", e);
+            throw new TransformerDisabledException(i18n("PROBLEMS_PARSING_TDF"), e);
         } catch (IOException e) {
-            throw new TransformerDisabledException("Problems accessing Transformer description file", e);
+            throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
         }	
 	}
 	
@@ -150,14 +150,14 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		try {
 			transformer = createTransformerObject(interactive);
 		} catch (IllegalArgumentException e) {
-			throw new TransformerRunException("Illegal argument", e);
+		    throw new TransformerRunException(i18n("TRANSFORMER_ILLEGAL_ARGUMENT"), e);
 		} catch (InstantiationException e) {
 			throw new TransformerRunException("Instantiation problems", e);
 		} catch (IllegalAccessException e) {
-			throw new TransformerRunException("Illegal access", e);
+		    throw new TransformerRunException(i18n("TRANSFORMER_ILLEGAL_ACCESS"), e);
 		} catch (InvocationTargetException e) {
-			throw new TransformerRunException("Invocation problem", e);
-		} 
+		    throw new TransformerRunException(i18n("TRANSFORMER_INVOCATION_PROBLEM"), e);
+		}		
 		
 		// Turn the parameters to a simple key->value string map
 		Map params = new LinkedHashMap();
@@ -198,7 +198,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			org.daisy.dmfc.core.script.Parameter scriptParameter = (org.daisy.dmfc.core.script.Parameter)it.next();
 			Parameter transformerParameter = (Parameter)map.get(scriptParameter.getName());
 			if (transformerParameter == null) {
-				throw new ValidationException("Parameter " + scriptParameter.getName() + " in script file is not recognized by Transformer " + getName());
+			    throw new ValidationException(i18n("PARAMETER_NOT_RECOGNIZED", scriptParameter.getName(), getName()));
 			}
 		}		
 		
@@ -208,7 +208,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			if (transformerParam.isRequired()) {
 				org.daisy.dmfc.core.script.Parameter scriptParam = (org.daisy.dmfc.core.script.Parameter)params.get(transformerParam.getName());
 				if (scriptParam == null) {
-					throw new ValidationException("Parameter " + transformerParam.getName() + " is required by the Transformer " + getName());
+				    throw new ValidationException(i18n("PARAMETER_REQUIRED", transformerParam.getName(), getName()));
 				}
 			} else {
 			    org.daisy.dmfc.core.script.Parameter scriptParam = (org.daisy.dmfc.core.script.Parameter)params.get(transformerParam.getName());
@@ -300,11 +300,11 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		try {
 			result = (Boolean)isSupportedMethod.invoke(null, null);
 		} catch (IllegalArgumentException e) {
-			throw new TransformerRunException("Illegal argument", e);
+			throw new TransformerRunException(i18n("TRANSFORMER_ILLEGAL_ARGUMENT"), e);
 		} catch (IllegalAccessException e) {
-			throw new TransformerRunException("Illegal access", e);
+			throw new TransformerRunException(i18n("TRANSFORMER_ILLEGAL_ACCESS"), e);
 		} catch (InvocationTargetException e) {
-			throw new TransformerRunException("Invocation problem", e);
+			throw new TransformerRunException(i18n("TRANSFORMER_INVOCATION_PROBLEM"), e);
 		}
 		return result.booleanValue();
 	}
@@ -358,7 +358,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 				String realValue = System.getProperty(propertyName);
 				if (realValue == null) {
 					platformOk = false;
-					sendMessage(Level.WARNING, "Unknown property: '" + propertyName + "'");
+					sendMessage(Level.WARNING, i18n("UNKNOWN_PROPERTY", propertyName));
 				}
 				else {
 					if (!realValue.matches(value)) {

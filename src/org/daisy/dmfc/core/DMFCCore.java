@@ -134,7 +134,7 @@ public class DMFCCore extends EventSender {
 	
 	/**
 	 * Adds a set properties to the system properties.
-	 * @param a_propertiesStream an InputStream
+	 * @param propertiesStream an InputStream
 	 * @return <code>true</code> if the loading was successful, <code>false</code> otherwise
 	 */
 	public boolean loadProperties(InputStream propertiesStream) {
@@ -157,12 +157,12 @@ public class DMFCCore extends EventSender {
 	public boolean reloadTransformers() {
 		try {
 			Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "transformer.rng"), true);
-			sendMessage(Level.CONFIG, "Reloading Transformers");
+			sendMessage(Level.CONFIG, i18n("RELOADING_TRANSFORMERS"));
 			transformerHandlers.clear();		
 			addTransformers(new File(home, "transformers"), validator);			
-			sendMessage(Level.CONFIG, "Reloading of Transformers done");
+			sendMessage(Level.CONFIG, i18n("RELOADING_TRANSFORMERS_DONE"));
 		} catch (ValidationException e) {
-			sendMessage(Level.SEVERE, "Reloading of Transformers failed " + e.getMessage());
+			sendMessage(Level.SEVERE, i18n("RELOADING_TRANSFORMERS_FAILED", e.getMessage()));
 			e.printStackTrace();
 			return false;
 		}		
@@ -176,7 +176,7 @@ public class DMFCCore extends EventSender {
 	 */
 	private void addTransformers(File dir, Validator validator) {
 		if (!dir.isDirectory()) {
-			sendMessage(Level.SEVERE, dir.getAbsolutePath() + " is not a directory.");
+		    sendMessage(Level.SEVERE, i18n("ADD_TRANSFORMER_NOT_DIRECTORY", dir.getAbsolutePath()));
 			return;
 		}
 		File[] children = dir.listFiles();
@@ -189,13 +189,13 @@ public class DMFCCore extends EventSender {
 				try {
 					TransformerHandler th = new TransformerHandler(current, inputListener, getEventListeners(), validator);
 					if (transformerHandlers.containsKey(th.getName())) {
-						throw new TransformerDisabledException("Transformer '" + th.getName() + "' aleady exists");
+					    throw new TransformerDisabledException(i18n("TRANSFORMER_ALREADY_EXISTS", th.getName()));						
 					}
 					transformerHandlers.put(th.getName(), th);
 				} catch (TransformerDisabledException e) {
-					sendMessage(Level.WARNING, "Transformer in file '" + current.getAbsolutePath() + "' disabled: " + e.getMessage());
+				    sendMessage(Level.WARNING, i18n("TRANSFORMER_DISABLED", current.getAbsolutePath(), e.getMessage()));					
 					if (e.getRootCause() != null) {
-						sendMessage(Level.WARNING, "Root cause: " + e.getRootCauseMessagesAsString());
+						sendMessage(Level.WARNING, i18n("ROOT_CAUSE", e.getRootCauseMessagesAsString()));
 					}
 				}
 			}
@@ -223,19 +223,19 @@ public class DMFCCore extends EventSender {
 			handler.execute();
 			ret = true;
 		} catch (ScriptException e) {
-			sendMessage(Level.SEVERE, "Script file exception: " + e.getMessage());
+		    sendMessage(Level.SEVERE, i18n("SCRIPT_EXCEPTION", e.getMessage()));
 			if (e.getRootCause() != null) {
 			    String msg = "";
 			    String[] msgs = e.getRootCauseMessages();			    
 			    for (int i = 0; i < msgs.length; ++i) {
 			        msg = msgs[i] + "\n";
 			    }
-				sendMessage(Level.SEVERE, "Root cause: " + msg);				
+				sendMessage(Level.SEVERE, i18n("ROOT_CAUSE", msg));				
 			}
 		} catch (ValidationException e) {
-			sendMessage(Level.SEVERE, "Problems parsing script file" + e.getMessage());
+		    sendMessage(Level.SEVERE, i18n("SCRIPT_VALIDATION_PROBLEM", e.getMessage()));
 			if (e.getRootCause() != null) {
-				sendMessage(Level.SEVERE, "Root cause: " + e.getRootCause().getMessage());
+				sendMessage(Level.SEVERE, i18n("ROOT_CAUSE", e.getRootCause().getMessage()));
 			}
 		} catch (MIMEException e) {
 			if (e.getRootCause() != null) {
@@ -244,7 +244,7 @@ public class DMFCCore extends EventSender {
 			    for (int i = 0; i < msgs.length; ++i) {
 			        msg = msgs[i] + "\n";
 			    }
-				sendMessage(Level.SEVERE, "Root cause: " + msg);				
+				sendMessage(Level.SEVERE, i18n("ROOT_CAUSE", msg));
 			}
         }
 		return ret;
