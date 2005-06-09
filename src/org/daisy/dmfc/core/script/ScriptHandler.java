@@ -83,7 +83,7 @@ public class ScriptHandler extends EventSender {
 			if (!validator.isValid(script)) {
 				throw new ScriptException(i18n("SCRIPT_NOT_VALID"));
 			}
-			
+
 			// Parse the script file
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 			Document doc = docBuilder.parse(script);
@@ -155,7 +155,7 @@ public class ScriptHandler extends EventSender {
 			}				
 			
 		} catch (ValidationException e) {		    
-			throw new ScriptException(i18n("SCRIPT_NOT_VALID"));
+			throw new ScriptException(i18n("SCRIPT_NOT_VALID"), e);
 		} catch (ParserConfigurationException e) {
 		    throw new ScriptException(i18n("SCRIPT_PARSE_ERROR"), e);
         } catch (SAXException e) {
@@ -202,9 +202,9 @@ public class ScriptHandler extends EventSender {
 			for (Iterator it = tasks.iterator(); it.hasNext(); ) {
 				Task task = (Task)it.next();
 				TransformerHandler th = (TransformerHandler)transformerHandlers.get(task.getName());
-				sendMessage(Level.CONFIG, i18n("RUNNING_TASK", task.getName()));
+				sendMessage(Level.CONFIG, i18n("RUNNING_TASK", th.getName()));
 				if (!th.run(task.getParameters(), task.isInteractive())) {
-				    throw new ScriptException(i18n("TASK_FAILED", task.getName()));
+				    throw new ScriptException(i18n("TASK_FAILED", th.getName()));
 				}
 			}
 		} catch (TransformerRunException e) {
