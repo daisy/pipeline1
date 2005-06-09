@@ -1,0 +1,42 @@
+<transformer version="1.0">
+	<name>XSLTTest</name>
+	<description>This is a sample</description>
+	<classname>org.daisy.dmfc.transformers.XSLTRunner</classname>
+	<license>LGPL</license>
+	<author>Linus</author>
+	<support>No</support>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/xml">
+			<name>xml</name>
+			<description>The XML file</description>
+			<example>file:///C:/temp/hepp.xml</example>
+		</parameter>
+		
+		<parameter type="application/xml">
+			<name>xslt</name>
+			<value>${transformer_dir}/sheet.xsl</value>
+		</parameter>
+		
+		<parameter type="string">
+			<name>factory</name>
+			<!--<value>com.icl.saxon.TransformerFactoryImpl</value>-->
+			<!--<value>net.sf.saxon.TransformerFactoryImpl</value>-->			
+			<value>com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl</value>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/xml">
+			<name>out</name>
+			<description>The output document</description>
+			<example>file:///C:/temp/out.xml</example>
+		</parameter>
+				
+		<parameter type="string">
+			<name>hepp</name>
+			<value>hepp!</value>
+		</parameter>
+				
+	</parameters>
+
+</transformer>

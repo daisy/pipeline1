@@ -1,0 +1,14 @@
+<transformer version="1.0">
+	<name>SubHello</name>
+	<description>
+		This Transformer is a test of parent-child functionality
+	</description>
+	<classname>int_daisy_helloWorld.sub.SubHelloTransformer</classname>
+	<license>LGPL</license>
+	<author>Linus</author>
+	<support>No</support>	
+
+	<parameters>
+	</parameters>
+
+</transformer>

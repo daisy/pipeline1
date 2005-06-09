@@ -1,0 +1,55 @@
+<transformer version="1.0">
+	<name>HelloWorld</name>
+	<description>
+		This Transformer says "Hello world!", asks the user for his/her name,
+		and prints the name and value of all parameters.
+	</description>
+	<classname>int_daisy_helloWorld.HelloWorldTransformer</classname>
+	<license>LGPL</license>
+	<author>Linus</author>
+	<support>No</support>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="text/plain">
+			<name>inbook</name>
+			<description>URI to a Daisy 2.02 fileset</description>
+			<example>file:///C:/temp/ncc.html</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="text/plain">
+			<name>mp3list</name>
+			<description>URI to output folder</description>
+			<example>file:///C:/temp/</example>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>conversionRule</name>
+			<description>The conversion rule used to rename the MP3 files</description>
+			<example>aaa_###.mp3</example>
+			<default>###_${old}.mp3</default>
+		</parameter>
+				
+	</parameters>
+		
+	<platforms>	
+		<platform>
+			<property>
+				<name>os.name</name>
+				<value>Windows.*</value>
+			</property>
+			<property>
+				<name>os.version</name>
+				<value>5\..*</value>
+			</property>
+		</platform>
+		
+		<platform>
+			<property>
+				<name>os.name</name>
+				<value>Linux.*</value>
+			</property>
+		</platform>	
+	</platforms>
+
+</transformer>
