@@ -1,0 +1,35 @@
+<transformer version="1.0">
+	<name>dtbook2xhtml</name>
+	<description>Transforms a DTBook 2005 document to XHTML 1.0</description>
+	<classname>org.daisy.dmfc.transformers.XSLTRunner</classname>
+	<license>unknown</license>
+	<author>Dave Pawson</author>
+	<support>No</support>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/xml">
+			<name>xml</name>
+			<description>The DTBook 2005 XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+		
+		<parameter type="application/xml">
+			<name>xslt</name>			
+			<value>${transformer_dir}/dtbook2xhtml.xsl</value>
+		</parameter>		
+		
+		<parameter type="string">
+			<name>factory</name>			
+			<value>com.icl.saxon.TransformerFactoryImpl</value>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/xhtml+xml">
+			<name>out</name>
+			<description>The output XHTML document</description>
+			<example>file:///path/to/outFile.html</example>
+		</parameter>		
+				
+	</parameters>	
+
+</transformer>
