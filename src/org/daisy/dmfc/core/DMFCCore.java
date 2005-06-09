@@ -42,11 +42,11 @@ import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.dmfc.logging.LoggingPropertiesReader;
 import org.daisy.dmfc.logging.MessageLogger;
-import org.daisy.util.exception.ValidationException;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.i18n.I18n;
-import org.daisy.util.xml.validator.RelaxngSchematronValidator;
-import org.daisy.util.xml.validator.Validator;
+import org.daisy.util.xml.validation.RelaxngSchematronValidator;
+import org.daisy.util.xml.validation.ValidationException;
+import org.daisy.util.xml.validation.Validator;
 
 
 /**
