@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
@@ -58,6 +60,8 @@ import org.daisy.util.xml.validator.Validator;
  */
 public class DMFCCore extends EventSender {
 
+    private static Pattern tdfFolderPattern = Pattern.compile(".*[^a-z]([a-z]+)_([a-z]+)_(.*)");
+    
 	private InputListener inputListener;
 	private Map transformerHandlers = new HashMap();
 	private String home;
@@ -156,7 +160,7 @@ public class DMFCCore extends EventSender {
 	 */
 	public boolean reloadTransformers() {
 		try {
-			Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "transformer.rng"), true);
+			Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "transformer.rng"), null,true,true);
 			sendMessage(Level.CONFIG, i18n("RELOADING_TRANSFORMERS"));
 			transformerHandlers.clear();		
 			addTransformers(new File(home, "transformers"), validator);			
@@ -168,7 +172,7 @@ public class DMFCCore extends EventSender {
 		}		
 		return true;
 	}
-	
+		
 	/**
 	 * Recursively add transformers as the transformer description files (TDFs) are found
 	 * @param dir the directory to start searching in
@@ -182,24 +186,50 @@ public class DMFCCore extends EventSender {
 		File[] children = dir.listFiles();
 		for (int i = 0; i < children.length; ++i) {
 			File current = children[i];
+			
+			// Process subdirectories
 			if (current.isDirectory()) {
 				addTransformers(current, validator);
 			}
 			else if (current.getName().matches(".*\\.tdf")) {
-				try {
-					TransformerHandler th = new TransformerHandler(current, inputListener, getEventListeners(), validator);
-					if (transformerHandlers.containsKey(th.getName())) {
-					    throw new TransformerDisabledException(i18n("TRANSFORMER_ALREADY_EXISTS", th.getName()));						
+			    String transformerName = getTransformerNameFromPath(current.getAbsolutePath());			    
+			    if (transformerName != null) {
+			        try {
+						TransformerHandler th = new TransformerHandler(current, inputListener, getEventListeners(), validator);					
+						if (transformerHandlers.containsKey(transformerName)) {
+						    throw new TransformerDisabledException(i18n("TRANSFORMER_ALREADY_EXISTS", transformerName));						
+						}
+						transformerHandlers.put(transformerName, th);
+					} catch (TransformerDisabledException e) {
+					    sendMessage(Level.WARNING, i18n("TRANSFORMER_DISABLED", current.getAbsolutePath(), e.getMessage()));					
+						if (e.getRootCause() != null) {
+							sendMessage(Level.WARNING, i18n("ROOT_CAUSE", e.getRootCauseMessagesAsString()));
+						}
 					}
-					transformerHandlers.put(th.getName(), th);
-				} catch (TransformerDisabledException e) {
-				    sendMessage(Level.WARNING, i18n("TRANSFORMER_DISABLED", current.getAbsolutePath(), e.getMessage()));					
-					if (e.getRootCause() != null) {
-						sendMessage(Level.WARNING, i18n("ROOT_CAUSE", e.getRootCauseMessagesAsString()));
-					}
-				}
+			    } else {
+			        sendMessage(Level.WARNING, "TDF has incorrect folder pattern! " + current.getAbsolutePath());
+			    }
 			}
 		}
+	}
+	
+	/**
+	 * Convert a TDF path to a transformer name. The nam created is the name
+	 * scripts use to refer to the transformer.
+	 * @param path path to a TDF.
+	 * @return a transformer name.
+	 */
+	private String getTransformerNameFromPath(String path) {
+	    Matcher tdfFolderMatcher = tdfFolderPattern.matcher(path);
+	    if (tdfFolderMatcher.matches()) {	        
+	        String countryCode = tdfFolderMatcher.group(1);
+	        String organization = tdfFolderMatcher.group(2);
+	        String localname = tdfFolderMatcher.group(3);
+	        localname = localname.substring(0, localname.lastIndexOf(File.separator));
+	        localname = localname.replace(File.separatorChar, '.');
+	        return countryCode + "_" + organization + "_" + localname;
+	    }
+	    return null;
 	}
 	
 	/**
@@ -218,7 +248,7 @@ public class DMFCCore extends EventSender {
 	public boolean executeScript(File script) {		
 		boolean ret = false;
 		try {
-			Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "script.rng"), false);
+			Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "script.rng"), null,true,false);
 			ScriptHandler handler = new ScriptHandler(script, transformerHandlers, getEventListeners(), validator);
 			handler.execute();
 			ret = true;
@@ -258,7 +288,7 @@ public class DMFCCore extends EventSender {
 	 * @throws MIMEException
 	 */
 	public void validateScript(File script) throws ValidationException, ScriptException, MIMEException {
-		Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "script.rng"), false);
+		Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "script.rng"), null,true,false);
 		new ScriptHandler(script, transformerHandlers, getEventListeners(), validator);
 	}
 }
