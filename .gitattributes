@@ -1,6 +1,10 @@
 * text=auto !eol
 doc/diagram.png -text
+lib/batik-css.jar -text
+lib/batik-parser.jar -text
+lib/batik-util.jar -text
 lib/jing.jar -text
+lib/sac.jar -text
 lib/saxon.jar -text
 lib/saxon8.jar -text
 resources/transformer.rng -text svneol=unset#application/octet-stream
