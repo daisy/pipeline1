@@ -1,18 +1,18 @@
 <taskScript version="1.0">
-	<name>TestScript</name>
+	<name>TestScript2</name>
 	<description>This script does nothing useful</description>
 	
-	<task name="XSLTTest" interactive="false">
+	<task name="int_daisy_xsltTest" interactive="false">
 
 		<parameter>
 			<name>xml</name>
-			<value>file:///C:/temp/hepp.xml</value>
+			<value>d:/books/tb50-2.xml</value>
 		</parameter>
 					
 		<parameter id="id1">
 			<name>out</name>
-			<value>test.out</value>
-		</parameter>		
+			<value>d:/books/test.txt</value>
+		</parameter>
 				
 	</task>
 

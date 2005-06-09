@@ -4,11 +4,11 @@
 	
 	<property name="mp3listName" value="mp3list.txt"/>
 	
-	<task name="HelloWorld" interactive="false">
+	<task name="int_daisy_helloWorld" interactive="true">
 
 		<parameter>
 			<name>inbook</name>
-			<value>file:///C:/temp/book/ncc.html</value>
+			<value>file:///d:/books/ncc.html</value>
 		</parameter>
 
 		<parameter id="id1">
@@ -16,11 +16,12 @@
 			<value>${mp3listName}</value>
 		</parameter>
 		
+		<!--
 		<parameter>
 			<name>conversionRule</name>
 			<value>4711</value>
 		</parameter>
-		
+		-->
 	</task>
 
 </taskScript>

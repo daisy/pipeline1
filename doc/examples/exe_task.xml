@@ -1,0 +1,16 @@
+<taskScript version="1.0">
+	<name>TestScript</name>
+	<description>This script starts an external application</description>
+	
+	<property name="mp3listName" value="mp3list.txt"/>
+	
+	<task name="int_daisy_exeTest" interactive="false">
+
+		<parameter>
+			<name>file</name>
+			<value>ncc.html</value>
+		</parameter>
+		
+	</task>
+
+</taskScript>

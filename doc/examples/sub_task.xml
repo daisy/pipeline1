@@ -1,0 +1,8 @@
+<taskScript version="1.0">
+	<name>HelloWorldSub</name>
+	<description>This script does nothing useful</description>
+	
+	<task name="int_daisy_helloWorld.sub" interactive="true">
+	</task>
+
+</taskScript>
