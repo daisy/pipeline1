@@ -1,0 +1,39 @@
+<transformer version="1.0">
+	<name>ExeTest</name>
+	<description>This is a sample</description>
+	<classname>org.daisy.dmfc.transformers.ExeRunner</classname>
+	<license>LGPL</license>
+	<author>Linus</author>
+	<support>No</support>
+	
+	<parameters>
+
+		<parameter type="string">
+			<name>exe_command</name>
+			<value>notepad.exe ${file}</value>
+		</parameter>
+		
+		<parameter type="string">
+			<name>exe_timeout</name>
+			<value>3000</value>
+		</parameter>			
+				
+		<parameter required="true" direction="in" type="application/xml">
+			<name>file</name>
+			<description>The XML file</description>
+			<example>C:/temp/hepp.xml</example>
+		</parameter>
+				
+	</parameters>	
+
+
+	<platforms>	
+		<platform>
+			<property>
+				<name>os.name</name>
+				<value>Windows.*</value>
+			</property>			
+		</platform>
+	</platforms>
+	
+</transformer>
