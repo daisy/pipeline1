@@ -18,16 +18,12 @@
  */
 package org.daisy.dmfc.transformers;
 
-import java.io.File;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -35,12 +31,15 @@ import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.xml.xslt.Stylesheet;
+import org.daisy.util.xml.xslt.XSLTException;
 
 /**
  * Transform a XML document using XSLT. The XSLTRunner class is an internal
  * transformer class of DMFC.
  * <p>
  * The Transformer reads four arguments:
+ * </p>
  * <ul> 
  * <li><code>xml</code> - The URI of a XML document</li>
  * <li><code>xslt</code> - The URI of a XSLT Stylesheet</li>
@@ -49,6 +48,8 @@ import org.daisy.util.file.FilenameOrFileURI;
  * If the <code>factory</code> parameter is not specified, the default
  * TransformerFactory will be used.</li>
  * </ul>
+ * <p>
+ * Any remaining parameters will be sent as parameters to the xslt.
  * </p>
  * @author Linus Ericson
  */
@@ -70,45 +71,26 @@ public class XSLTRunner extends Transformer {
         String outFileName = (String)parameters.remove("out");
         String factory = (String)parameters.remove("factory");
         
-        // Set input files
+        // xml
+        Source xmlSource = new StreamSource(FilenameOrFileURI.toFile(xmlFileName));
         sendMessage(Level.FINE, i18n("XSLT_READING_XML", xmlFileName));
-        Source xml = new StreamSource(FilenameOrFileURI.toFile(xmlFileName));
+        
+        // xslt
+		Source xsltSource = new StreamSource(FilenameOrFileURI.toFile(xsltFileName));                
         sendMessage(Level.FINE, i18n("XSLT_READING_XSLT", xsltFileName));
-		Source xslt = new StreamSource(FilenameOrFileURI.toFile(xsltFileName));
+        
+        // factory
+        if (factory != null) {
+	        sendMessage(Level.FINER, i18n("XSLT_USING_FACTORY", factory));
+	    }
+        
+        // result
+        Result result = new StreamResult(FilenameOrFileURI.toFile(outFileName));
+        sendMessage(Level.FINE, i18n("XSLT_WRITING_OUT", outFileName));
 		
 		try {
-		    String property = "javax.xml.transform.TransformerFactory";
-		    String oldFactory = System.getProperty(property);
-		    if (factory != null) {
-		        System.setProperty(property, factory);
-		        sendMessage(Level.FINER, i18n("XSLT_USING_FACTORY", factory));
-		    }
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();			
-			
-			// Reset old factory
-			System.setProperty(property, (oldFactory==null?"":oldFactory));			
-					    
-            javax.xml.transform.Transformer transformer = transformerFactory.newTransformer(xslt);
-            
-            // Set any parameters to the XSLT
-            for (Iterator it = parameters.entrySet().iterator(); it.hasNext(); ) {
-                Map.Entry paramEntry = (Map.Entry)it.next();
-                transformer.setParameter((String)paramEntry.getKey(), paramEntry.getValue());
-            }
-            
-            // Set output file
-            File outFile = FilenameOrFileURI.toFile(outFileName);            
-            StreamResult sr = new StreamResult(outFile);
-            sr.setSystemId(outFile.toURI().toString());
-            
-            // Perform transformation
-            sendMessage(Level.FINE, i18n("XSLT_WRITING_OUT", outFile.toString()));
-            transformer.transform(xml, sr);
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
-            throw new TransformerRunException(e.getMessage(), e);
-        } catch (TransformerException e) {
-            e.printStackTrace();
+		    Stylesheet.apply(xmlSource, xsltSource, result, factory, parameters);
+        } catch (XSLTException e) {
             throw new TransformerRunException(e.getMessage(), e);
         }
         return true;
