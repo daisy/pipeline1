@@ -39,6 +39,22 @@ import org.daisy.util.file.FilenameOrFileURI;
  */
 public class Stylesheet {
     
+    /**
+     * Apply an XSLT stylesheet to an XML document. To use a specific TransformerFactory
+     * implementation, specify the <code>factory</code> parameter using a fully qualified
+     * class name. If the <code>factory</code> parameter is set to <code>null</code>,
+     * the TransformerFactory specified by the <code>javax.xml.transform.TransformerFactory</code>
+     * system property is used.
+     *  
+     * @param xml the XML <code>Source</code>.
+     * @param xslt the XSLT <code>Source</code>.
+     * @param result the <code>Result</code>.
+     * @param factory the name of the <code>TransformerFactory</code> to use.
+     * @param parameters a <code>Map</code> containing parameters that are sent to the stylesheet. 
+     * @throws XSLTException
+     * @see javax.xml.transform.Source
+     * @see javax.xml.transform.Result
+     */
     public static void apply(Source xml, Source xslt, Result result, String factory, Map parameters) throws XSLTException{        		
 		try {
 		    // Create factory
@@ -72,10 +88,34 @@ public class Stylesheet {
         }
     }
     
+    /**
+     * Apply an XSLT stylesheet to an XML document. Overloaded method. This is
+     * the same as calling
+     * <pre>
+     * apply(xml, xslt, result, null, null)
+     * </pre>
+     * @param xml the XML <code>Source</code>.
+     * @param xslt the XSLT <code>Source</code>.
+     * @param result the <code>Result</code>.
+     * @throws XSLTException
+     * @see #apply(Source, Source, Result, String, Map)
+     */
     public static void apply(Source xml, Source xslt, Result result) throws XSLTException {
         apply(xml, xslt, result, null, null);
     }
     
+    /**
+     * Apply an XSLT stylesheet to an XML document. The input and output documents
+     * can be specified using file URIs (i.e. <code>file://path/to/file</code>) or
+     * regular filenames.
+     * @param xmlFile a file URI or a filename to the XML file.
+     * @param xsltFile a file URI or a filename to the XSLT stylesheet.
+     * @param outFile a file URI or a filename to the output doucment.
+     * @param factory the name of the <code>TransformerFactory</code> to use.
+     * @param parameters a <code>Map</code> containing parameters that are sent to the stylesheet.
+     * @throws XSLTException
+     * @see #apply(Source, Source, Result, String, Map)
+     */
     public static void apply(String xmlFile, String xsltFile, String outFile, String factory, Map parameters) throws XSLTException {
         Source xmlSource = new StreamSource(FilenameOrFileURI.toFile(xmlFile));
         Source xsltSource = new StreamSource(FilenameOrFileURI.toFile(xsltFile));
@@ -83,6 +123,18 @@ public class Stylesheet {
         apply(xmlSource, xsltSource, outResult, factory, parameters);
     }
     
+    /**
+     * Apply an XSLT stylesheet to an XML document. Overloaded method. This is
+     * the same as calling
+     * <pre>
+     * apply(xmlFile, xsltFile, outFile, null, null)
+     * </pre>
+     * @param xmlFile a file URI or a filename to the XML file.
+     * @param xsltFile a file URI or a filename to the XSLT stylesheet.
+     * @param outFile a file URI or a filename to the output doucment.
+     * @throws XSLTException
+     * @see #apply(String, String, String, String, Map)
+     */
     public static void apply(String xmlFile, String xsltFile, String outFile) throws XSLTException {        
         apply(xmlFile, xsltFile, outFile, null, null);
     }
