@@ -44,11 +44,10 @@ abstract class SmilFileImpl extends XmlFileImpl implements SmilFile{
 								}else{    
 									try {
 										if (qName == "audio") {
-											//if (attrValue.matches(RegexPatterns.FILE_MP3)) {
 											if (matches(Regex.getInstance().FILE_MP3,attrValue)) {
 												putReferencedMember(uri, new Mp3FileImpl(uri));
 											}else{
-												FilesetObserver.getInstance().errorEvent(this.toURI(), new FilesetException("audio file format not yet supported"));
+												FilesetObserver.getInstance().errorEvent(new FilesetExceptionRecoverable(this.getName()+": audio file format " +attrValue+" not yet supported"));
 											}
 										}else if (qName == "text") {
 											if ((FilesetObserver.getInstance().getCurrentListener().getFileSetType() == FilesetType.DAISY_202)&&(matches(Regex.getInstance().FILE_XHTML,attrValue))) {
@@ -56,7 +55,7 @@ abstract class SmilFileImpl extends XmlFileImpl implements SmilFile{
 											} else if(FilesetObserver.getInstance().getCurrentListener().getFileSetType() == FilesetType.Z3986) {
 												putReferencedMember(uri, new Z3986DtbookFileImpl(uri));
 											} else {
-												FilesetObserver.getInstance().errorEvent(this.toURI(), new FilesetException("textual content file format not recognized"));
+												FilesetObserver.getInstance().errorEvent(new FilesetExceptionRecoverable(this.getName()+": textual content file format " +attrValue+" not recognized"));
 											}
 										}else if (qName == "img") {
 											putReferencedMember(uri, new ImageFileImpl(uri));

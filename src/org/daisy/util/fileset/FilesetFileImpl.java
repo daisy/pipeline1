@@ -25,9 +25,9 @@ abstract class FilesetFileImpl extends File {
 	FilesetFileImpl(URI uri) {
 		super(uri);   		
 		if(!this.exists()) {
-			FilesetObserver.getInstance().errorEvent(uri, new FileNotFoundException());
+			FilesetObserver.getInstance().errorEvent(new FileNotFoundException(this.getName()));
 		}else if (!this.canRead()) {
-			FilesetObserver.getInstance().errorEvent(uri, new IOException());
+			FilesetObserver.getInstance().errorEvent(new IOException(this.getName()));
 		}else{
 			//basic success, note: important to add it before instantiation (and parse) of extender is done because of the recursion
 			FilesetObserver.getInstance().localResourceEvent(this);

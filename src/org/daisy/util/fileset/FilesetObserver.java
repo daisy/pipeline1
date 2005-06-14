@@ -1,7 +1,5 @@
 package org.daisy.util.fileset;
 
-import java.net.URI;
-
 /**
  * Acts as an observer and mediator between a registered fileset and loosely coupled instantiated members
  * @author Markus Gylling
@@ -39,11 +37,14 @@ public class FilesetObserver {
     	return currentListener;
     }
 
-    public void errorEvent(URI uri,Exception e) {       
-        //currentListener.addError(uri, e);       
-    	currentListener.addError(e,uri);
-    }
+//    public void errorEvent(URI uri,Exception e) {          
+//    	currentListener.addError(e,uri);
+//    }
 
+    public void errorEvent(Exception e) {          
+    	currentListener.addError(e);
+    }
+    
     public void localResourceEvent(FilesetFileImpl file) {       
         currentListener.addLocalMember(file);       
     }

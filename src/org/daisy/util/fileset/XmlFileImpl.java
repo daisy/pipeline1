@@ -43,18 +43,28 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityRes
 			parser.getXMLReader().setContentHandler(this);
 			parser.getXMLReader().setErrorHandler(this);
 			parser.getXMLReader().setEntityResolver(this);
-			parser.getXMLReader().setDTDHandler(this);												
+			parser.getXMLReader().setDTDHandler(this);		
+			
+//			try {
+//				parser.getXMLReader().parse(new InputSource(this.getAbsolutePath()));
+//			} catch (IOException ioe){
+//				FilesetObserver.getInstance().errorEvent(this.toURI(), ioe);
+//			} catch (SAXException se) {
+//				FilesetObserver.getInstance().errorEvent(this.toURI(), se);
+//			}
+			
 		} //(this.exists() && this.canRead()) --> else parent AbstractFile already reported nonexistance or notreadable
 	}
 	
-	protected void parse() {		
-		//en andra konstruktor som anger att en descendant anropar: då, parsa inte så gör desc det istället
+	protected void parse() {	
+		if (this.exists() && this.canRead()){
 		try {
 			parser.getXMLReader().parse(new InputSource(this.getAbsolutePath()));
 		} catch (IOException ioe){
-			FilesetObserver.getInstance().errorEvent(this.toURI(), ioe);
+			FilesetObserver.getInstance().errorEvent(ioe);
 		} catch (SAXException se) {
-			FilesetObserver.getInstance().errorEvent(this.toURI(), se);
+			FilesetObserver.getInstance().errorEvent(se);
+		}
 		}
 	}
 	
@@ -63,11 +73,11 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityRes
 	}
 	
 	public void fatalError(SAXParseException spe) throws SAXException {
-		FilesetObserver.getInstance().errorEvent(this.toURI(),spe);	
+		FilesetObserver.getInstance().errorEvent(spe);	
 	}
 	
 	public void error(SAXParseException spe) throws SAXException {
-		FilesetObserver.getInstance().errorEvent(this.toURI(),spe);
+		FilesetObserver.getInstance().errorEvent(spe);
 	}
 	
 	public void warning(SAXParseException spe) throws SAXException {
@@ -131,7 +141,7 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityRes
 					try {
 						value = value.substring(value.indexOf(doublequote)+1,value.lastIndexOf(doublequote));
 					} catch (Exception e) {
-						FilesetObserver.getInstance().errorEvent(this.toURI(),e);
+						FilesetObserver.getInstance().errorEvent(e);
 					}
 					if (!matches(Regex.getInstance().URI_REMOTE,value)) {
 						putLocalURI(value);
@@ -157,7 +167,7 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityRes
 				}				
 			}						
 		}else{
-			FilesetObserver.getInstance().errorEvent(this.toURI(), new FilesetException("unsupported processingInstruction" + target + " encountered"));
+			FilesetObserver.getInstance().errorEvent(new FilesetExceptionRecoverable("unsupported processingInstruction" + target + " encountered in" + this.getName()));
 		}				
 	}
 	

@@ -55,7 +55,7 @@ abstract class Xhtml10FileImpl extends XmlFileImpl implements TextualContentFile
 									} else if ((attrName=="src")&&(qName.equals("img"))) {
 										putReferencedMember(uri, new ImageFileImpl(uri));	
 									} else {
-										FilesetObserver.getInstance().errorEvent(this.toURI(),new FilesetException("ungroked pattern: " +qName+"::"+attrs.getQName(i)+"::"+attrs.getValue(i)));										
+										FilesetObserver.getInstance().errorEvent(new FilesetExceptionRecoverable("ungroked pattern: " +qName+"::"+attrs.getQName(i)+"::"+attrs.getValue(i)+ " in " + this.getName()));										
 									}
 								} catch (Exception e) {
 									throw new SAXException(e);

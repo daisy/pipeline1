@@ -30,9 +30,9 @@ class CssFileImpl extends FilesetFileImpl implements DocumentHandler, ErrorHandl
 			try {
 				parser.parseStyleSheet(new InputSource(this.toURI().toString()));
 			} catch (IOException ioe) {
-				FilesetObserver.getInstance().errorEvent(this.toURI(), ioe);
+				FilesetObserver.getInstance().errorEvent(ioe);
 			} catch (CSSException ce) {
-				FilesetObserver.getInstance().errorEvent(this.toURI(), ce);
+				FilesetObserver.getInstance().errorEvent(ce);
 			}
 		}//(this.exists() && this.canRead()) --> else parent AbstractFile already reported nonexistance or notreadable
 	}
@@ -66,7 +66,7 @@ class CssFileImpl extends FilesetFileImpl implements DocumentHandler, ErrorHandl
 				}
 			}          
 		} catch (Exception e) {
-			FilesetObserver.getInstance().errorEvent(this.toURI(), e);
+			FilesetObserver.getInstance().errorEvent(e);
 		}
 	}
 	

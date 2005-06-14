@@ -1,5 +1,4 @@
 package org.daisy.util.fileset;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,13 +14,13 @@ import org.xml.sax.SAXException;
 
 /**
  * <p>Fileset retriever for miscellaneous filesets.</p>
- * <p>Exposes a flat unordered list of AbstractFile extenders through {@link #getLocalMember(URI)} and {@link #getLocalMembersIterator()}.</p>
+ * <p>Exposes a flat unordered list of FilesetFile extenders through {@link #getLocalMember(URI)} and {@link #getLocalMembersIterator()}.</p>
  * <p>Non-local resources (typically online URIs) are exposed as Strings (URIs as they occured in instance) through {@link #getRemoteMembersIterator()}.</p>
  * 
  * <p>Each local member in its turn exposes two main collections:</p>
  * <ul>
  * <li>{@link org.daisy.util.fileset.FilesetFileImpl#getReferencedLocalMember(URI)}<br/> Referenced members - collection of other members that this member references -<strong>sequentially sorted as they appear in document order</strong></li>
- * <li>{@link org.daisy.util.fileset.FilesetFileImpl#getReferringLocalMember(URI)} <br/>Referring members - collection of other members that refernces this member -<strong>not sorted</strong></li>
+ * <li>{@link org.daisy.util.fileset.FilesetFileImpl#getReferringLocalMember(URI)} <br/>Referring members - collection of other members that references this member -<strong>not sorted</strong></li>
  * </ul> 
  * 
  * <p>Usage example:</p>
@@ -29,11 +28,11 @@ import org.xml.sax.SAXException;
  *		try {
  *			Fileset fileset = new Fileset(new URI("file:/E:/dtbs/hauy/ncc.html"));
  *			if (fileset.hadErrors()) { //errors that didnt abort population process				
- *				// use the &lt;URI&gt;,&lt;Exception&gt; hashmap to traverse errors
+ *				// use the &lt;Exception&gt;,&lt;URI&gt; hashmap to traverse errors
  *				Iterator it = fileset.getErrorsIterator();
  *				while(it.hasNext()) {
- *					URI uri = (URI)it.next();
- *					Exception e = fileset.getError(uri);					
+ *					Exception e = (Exception)it.next();
+ *					URI uri = fileset.getError(e);					
  *					System.err.println("error " + e.getMessage() + " occurred in " + uri.getPath());
  *				}
  *			}
@@ -58,13 +57,14 @@ import org.xml.sax.SAXException;
 public class Fileset {
 	private HashMap localMembers = new HashMap();	//collects AbstractFile extenders, via FilesetObserver; here are all local files instantiated through the recursive process started by build()
 	private HashSet remoteMembers = new HashSet();	//collects Strings typically consisting of online URIs
-	private HashMap errors = new HashMap();			//collects errors (URI, Exception) that occured during build process
-	private FilesetFile manifestMember = null;			//a convenience pointer to the main member (ncc, opf, etc)
+	//private HashMap errors = new HashMap();			//collects errors (URI, Exception) that occured during build process
+	private HashSet errors = new HashSet();			//collects recoverable errors <Exception> that occured during build process
+	private FilesetFile manifestMember = null;		//a convenience pointer to the main member (ncc, opf, etc)
 	private boolean dtdValidate;
 	private FilesetType filesetType = null;
 	
 	/**
-	 * Class instantiator. 
+	 * Class constructor. 
 	 * @param manifestURI the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
 	 * @param doDTDValidation sets DTD validation on or off. Default value is off.
 	 */
@@ -73,7 +73,8 @@ public class Fileset {
 	}
 	
 	/**
-	 * Class instantiator. 
+	 * <p>Class constructor.</p>
+	 * <p>Populates the fileset with DTD validation (if applicable) turned off, see {@link #Fileset(URI, boolean)} 
 	 * @param manifestURI the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
 	 */
 	public Fileset(URI manifestURI) throws FilesetException {
@@ -181,12 +182,16 @@ public class Fileset {
 	
 	/**
 	 * Adds an object to the errors collection 
-	 * @param uri Absolute URI of the file where the errors occured
 	 * @param e Exception that occured
 	 */
-	protected void addError(Exception e,URI uri) {
-		errors.put(e,uri);
-	}
+
+	protected void addError(Exception e) {
+	  errors.add(e);
+    }
+	
+//	protected void addError(Exception e,URI uri) {
+//		errors.put(e,uri);
+//	}
 	
 	/**
 	 * @return true if errors occured during membership population, false otherwise
@@ -202,17 +207,14 @@ public class Fileset {
 	 * @see #hadErrors()
 	 */
 	public Iterator getErrorsIterator() {
-		return errors.keySet().iterator();
+		//return errors.keySet().iterator();
+		return errors.iterator();
 	}
-	
-	public Exception getError(Exception key) {
-		return (Exception)errors.get(key);
+		
+	public HashSet getErrorSet() {
+		return (HashSet)errors.clone();
 	}
-	
-	public HashMap getErrorMap() {
-		return errors;
-	}
-	
+		
 	/**
 	 * @return the manifest member; ie the one used as input base for subsequent population of fileset
 	 */
@@ -247,7 +249,7 @@ public class Fileset {
 			filesetType = FilesetType.DAISY_202;
 			//populate the whole fileset recursively
 			manifestMember = new D202NccFileImpl(manifest.toURI()); 
-			//and then get the mastersmil which is not referenced by any colleague
+			//...and then get the mastersmil which is not referenced by any colleague
 			File test = new File(manifestMember.getParentFile(), "master.smil");
 			if (test.exists()){
 				D202MasterSmilFile msmil = new D202MasterSmilFileImpl(test.toURI()); 
@@ -256,15 +258,7 @@ public class Fileset {
 		} else if (matches(Regex.getInstance().FILE_OPF,manifest.getName())){ 
 			filesetType = FilesetType.Z3986;
 			//populate the whole fileset recursively
-			manifestMember = new OpfFileImpl(manifest.toURI());
-//			test
-//			OpfFile myOpf = (OpfFile) manifestMember;
-//			Iterator itx = myOpf.getOrderedSpineIterator();
-//			while (itx.hasNext()) {
-//				URI key = (URI)itx.next();
-//				System.err.println(myOpf.getSpineItem(key));
-//			}
-			
+			manifestMember = new OpfFileImpl(manifest.toURI());			
 		}else{
 			throw new FilesetException("Input manifest "+ manifest.getName() +" not recognized");
 		}    	
@@ -287,11 +281,4 @@ public class Fileset {
 		return m.matches();	
 	}
 	
-	//    public void printFileset() { 
-	//        Iterator it = members.keySet().iterator();
-	//    	while (it.hasNext()) {
-	//    	    Object o = members.get(it.next());
-	//    	    System.err.println(o + " :: " + o.getClass().getSimpleName());    	    
-	//    	}    	
-	//    }
 }
