@@ -34,4 +34,7 @@ public class ValidationException extends BaseException {
 		super(message, cause);
 	}
 
+	public ValidationException(Throwable cause) {
+		super("ValidationException: ", cause);
+	}
 }
