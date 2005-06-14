@@ -9,10 +9,11 @@ import org.xml.sax.SAXException;
 /**
  * @author Markus Gylling
  */
-public class ResourceFile extends XMLFile {
+class Z3986ResourceFileImpl extends XmlFileImpl implements Z3986ResourceFile {
 
-	public ResourceFile(URI uri) throws ParserConfigurationException, SAXException {
+	Z3986ResourceFileImpl(URI uri) throws ParserConfigurationException, SAXException {
 		super(uri);		
+		parse();
 	}
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		qName = qName.intern();
@@ -40,9 +41,9 @@ public class ResourceFile extends XMLFile {
 							}else{
 								try {  
 									if (matches(Regex.getInstance().FILE_MP3,attrValue)) { 
-										putReferencedMember(uri, new MP3File(uri));
+										putReferencedMember(uri, new Mp3FileImpl(uri));
 									}else if (matches(Regex.getInstance().FILE_IMAGE,attrValue)) {
-										putReferencedMember(uri, new ImageFile(uri));
+										putReferencedMember(uri, new ImageFileImpl(uri));
 									}
 								} catch (Exception e) {
 									throw new SAXException(e);

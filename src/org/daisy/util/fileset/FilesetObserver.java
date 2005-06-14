@@ -44,7 +44,7 @@ public class FilesetObserver {
     	currentListener.addError(e,uri);
     }
 
-    public void localResourceEvent(AbstractFile file) {       
+    public void localResourceEvent(FilesetFileImpl file) {       
         currentListener.addLocalMember(file);       
     }
     

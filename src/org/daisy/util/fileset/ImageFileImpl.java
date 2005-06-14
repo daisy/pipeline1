@@ -8,11 +8,9 @@ import org.xml.sax.SAXException;
 /**
  * @author Markus Gylling
  */
+class ImageFileImpl extends FilesetFileImpl implements ImageFile {
 
-abstract class AudioFile extends FilesetFileImpl {
-
-    AudioFile(URI uri) throws SAXException, IOException {
+    ImageFileImpl(URI uri) throws SAXException, IOException {
         super(uri);
-    }
-    
+    }    
 }

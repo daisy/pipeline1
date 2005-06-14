@@ -16,13 +16,13 @@ import java.util.regex.Pattern;
  * @author Markus Gylling
  */
 
-public abstract class AbstractFile extends File {
+abstract class FilesetFileImpl extends File {
 	private HashSet myLocalURIs = new HashSet();
 	private HashSet myRemoteURIs = new HashSet();
 	private LinkedHashMap myFilesetReferences = new LinkedHashMap(); 
 	private HashMap myFilesetReferers = new HashMap(); 
 	
-	public AbstractFile(URI uri) {
+	FilesetFileImpl(URI uri) {
 		super(uri);   		
 		if(!this.exists()) {
 			FilesetObserver.getInstance().errorEvent(uri, new FileNotFoundException());
@@ -71,8 +71,8 @@ public abstract class AbstractFile extends File {
 	 * @param uri absolute URI of member that may be referenced
 	 * @return the corresponding Fileset member object if it is referenced from this member, null otherwise
 	 */
-	public AbstractFile getReferencedLocalMember(URI uri) {
-		return (AbstractFile)myFilesetReferences.get(uri);
+	public FilesetFile getReferencedLocalMember(URI uri) {
+		return (FilesetFile)myFilesetReferences.get(uri);
 	}
 	
 	/**
@@ -86,8 +86,8 @@ public abstract class AbstractFile extends File {
 	 * @param uri absolute URI of member that may be referring to this member
 	 * @return the corresponding Fileset member object if referring to this member, null otherwise
 	 */
-	public Object getReferringLocalMember(URI uri) {
-		return myFilesetReferers.get(uri);
+	public FilesetFile getReferringLocalMember(URI uri) {
+		return (FilesetFile)myFilesetReferers.get(uri);
 	}
 	
 	/**
@@ -102,7 +102,7 @@ public abstract class AbstractFile extends File {
 		URI myURI = this.toURI();
 		Iterator it = fileset.keySet().iterator();
 		while (it.hasNext()) {
-			AbstractFile member = (AbstractFile) fileset.get(it.next());
+			FilesetFileImpl member = (FilesetFileImpl) fileset.get(it.next());
 			Object o = member.getReferencedLocalMember(myURI);
 			if (o!=null){
 				myFilesetReferers.put(member.toURI(),member);

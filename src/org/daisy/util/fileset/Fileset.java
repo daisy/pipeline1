@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.daisy.util.fileset.AbstractFile;
+import org.daisy.util.fileset.FilesetFileImpl;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
@@ -20,8 +20,8 @@ import org.xml.sax.SAXException;
  * 
  * <p>Each local member in its turn exposes two main collections:</p>
  * <ul>
- * <li>{@link org.daisy.util.fileset.AbstractFile#getReferencedLocalMember(URI)}<br/> Referenced members - collection of other members that this member references -<strong>sequentially sorted as they appear in document order</strong></li>
- * <li>{@link org.daisy.util.fileset.AbstractFile#getReferringLocalMember(URI)} <br/>Referring members - collection of other members that refernces this member -<strong>not sorted</strong></li>
+ * <li>{@link org.daisy.util.fileset.FilesetFileImpl#getReferencedLocalMember(URI)}<br/> Referenced members - collection of other members that this member references -<strong>sequentially sorted as they appear in document order</strong></li>
+ * <li>{@link org.daisy.util.fileset.FilesetFileImpl#getReferringLocalMember(URI)} <br/>Referring members - collection of other members that refernces this member -<strong>not sorted</strong></li>
  * </ul> 
  * 
  * <p>Usage example:</p>
@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
  *			//use the &lt;URI&gt;,&lt;AbstractFile&gt; hashmap for local members collection traversal 
  *			Iterator it = fileset.getLocalMembersIterator();
  *			while (it.hasNext()) {
- *				AbstractFile ob = fileset.getLocalMember((URI)it.next());
+ *				FilesetFile ob = fileset.getLocalMember((URI)it.next());
  *				if(ob instanceof SMILFile) {
  *					SMILFile smil = (SMILFile)ob;
  *					//etc
@@ -59,15 +59,28 @@ public class Fileset {
 	private HashMap localMembers = new HashMap();	//collects AbstractFile extenders, via FilesetObserver; here are all local files instantiated through the recursive process started by build()
 	private HashSet remoteMembers = new HashSet();	//collects Strings typically consisting of online URIs
 	private HashMap errors = new HashMap();			//collects errors (URI, Exception) that occured during build process
-	private Object manifestMember = null;			//a convenience pointer to the main member (ncc, opf, etc)
+	private FilesetFile manifestMember = null;			//a convenience pointer to the main member (ncc, opf, etc)
 	private boolean dtdValidate;
 	private FilesetType filesetType = null;
 	
 	/**
 	 * Class instantiator. 
 	 * @param manifestURI the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
+	 * @param doDTDValidation sets DTD validation on or off. Default value is off.
 	 */
 	public Fileset(URI manifestURI, boolean doDTDValidation) throws FilesetException {
+		initialize(manifestURI, doDTDValidation);
+	}
+	
+	/**
+	 * Class instantiator. 
+	 * @param manifestURI the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
+	 */
+	public Fileset(URI manifestURI) throws FilesetException {
+      initialize(manifestURI, false);
+	}
+	
+	private void initialize(URI manifestURI, boolean doDTDValidation) throws FilesetException  {
 		File f = new File(manifestURI);
 		if(!f.exists()){
 			throw new FilesetException(new FileNotFoundException("manifest not found"));
@@ -80,7 +93,7 @@ public class Fileset {
 			} catch (Exception e) {
 				throw new FilesetException(e);		
 			} 
-		}    
+		}    		
 	}
 	
 	/**
@@ -88,7 +101,7 @@ public class Fileset {
 	 * @param ob Object of a type extending AbstractFile
 	 */
 	protected void addLocalMember (Object ob) {		
-		File tmp = (File)ob; //cast to be able to use .toURI for the key        		
+		JavaFile tmp = (JavaFile)ob; //cast to be able to use .toURI for the key        		
 		localMembers.put(tmp.toURI(),ob); //but dont cast what is set as object 	    
 	}
 	
@@ -106,8 +119,8 @@ public class Fileset {
 	 * @return the member object corresponding to the URI key 
 	 * @see #getLocalMember(String)
 	 */
-	public AbstractFile getLocalMember (URI uri) {
-		return (AbstractFile)localMembers.get(uri);	    	    
+	public FilesetFile getLocalMember (URI uri) {
+		return (FilesetFile)localMembers.get(uri);	    	    
 	}	
 	
 	/**
@@ -116,12 +129,12 @@ public class Fileset {
 	 * @return the member object corresponding to the name 
 	 * @see #getLocalMember(URI)
 	 */
-	public AbstractFile getLocalMember(String localName) {    	
+	public FilesetFile getLocalMember(String localName) {    	
 		Iterator it = getLocalMembersIterator();    	
 		while(it.hasNext()) {
 			URI key = (URI)it.next();
 			if (key.toString().endsWith(localName)) {
-				return (AbstractFile)localMembers.get(key);
+				return (FilesetFile)localMembers.get(key);
 			}
 		}  
 		return null;    	
@@ -174,11 +187,6 @@ public class Fileset {
 	protected void addError(Exception e,URI uri) {
 		errors.put(e,uri);
 	}
-
-	
-	//	protected void addError(URI uri, Exception e) {
-//		errors.put(uri, e);
-//	}
 	
 	/**
 	 * @return true if errors occured during membership population, false otherwise
@@ -208,8 +216,8 @@ public class Fileset {
 	/**
 	 * @return the manifest member; ie the one used as input base for subsequent population of fileset
 	 */
-	public AbstractFile getManifestMember() {
-		return (AbstractFile)manifestMember;
+	public FilesetFileImpl getManifestMember() {
+		return (FilesetFileImpl)manifestMember;
 	}
 	
 	public FilesetType getFileSetType() {
@@ -234,15 +242,28 @@ public class Fileset {
 		//add to observer
 		FilesetObserver.getInstance().addListener(this);  
 		
-		//use filename as base form for determination    	
-		//if (manifest.getName().matches(RegexPatterns.FILE_NCC)) {		//daisy 2.02 
-		if (matches(Regex.getInstance().FILE_NCC,manifest.getName())) {		//daisy 2.02
+		//use filename as base form for determination    	 
+		if (matches(Regex.getInstance().FILE_NCC,manifest.getName())) {		
 			filesetType = FilesetType.DAISY_202;
-			manifestMember = new D202NccFile(manifest.toURI()); 		//this populates the whole fileset recursively 
-			//} else if (manifest.getName().matches(RegexPatterns.FILE_OPF)){ //zed
-		} else if (matches(Regex.getInstance().FILE_OPF,manifest.getName())){ //zed
+			//populate the whole fileset recursively
+			manifestMember = new D202NccFileImpl(manifest.toURI()); 
+			//and then get the mastersmil which is not referenced by any colleague
+			File test = new File(manifestMember.getParentFile(), "master.smil");
+			if (test.exists()){
+				D202MasterSmilFile msmil = new D202MasterSmilFileImpl(test.toURI()); 
+			}
+			
+		} else if (matches(Regex.getInstance().FILE_OPF,manifest.getName())){ 
 			filesetType = FilesetType.Z3986;
-			manifestMember = new OPFFile(manifest.toURI()); 		//this populates the whole fileset recursively
+			//populate the whole fileset recursively
+			manifestMember = new OpfFileImpl(manifest.toURI());
+//			test
+//			OpfFile myOpf = (OpfFile) manifestMember;
+//			Iterator itx = myOpf.getOrderedSpineIterator();
+//			while (itx.hasNext()) {
+//				URI key = (URI)itx.next();
+//				System.err.println(myOpf.getSpineItem(key));
+//			}
 			
 		}else{
 			throw new FilesetException("Input manifest "+ manifest.getName() +" not recognized");
@@ -253,7 +274,7 @@ public class Fileset {
 		// == set of other fileset members referring to the member
 		Iterator it = getLocalMembersIterator();
 		while(it.hasNext()){
-			AbstractFile mem = (AbstractFile) localMembers.get(it.next());
+			FilesetFileImpl mem = (FilesetFileImpl) localMembers.get(it.next());
 			mem.setReferringLocalMembers(localMembers);    	    
 		}
 		

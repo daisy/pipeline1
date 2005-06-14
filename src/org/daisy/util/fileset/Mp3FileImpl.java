@@ -8,11 +8,9 @@ import org.xml.sax.SAXException;
 /**
  * @author Markus Gylling
  */
+public class Mp3FileImpl extends AudioFile implements Mp3File {
 
-abstract class AudioFile extends FilesetFileImpl {
-
-    AudioFile(URI uri) throws SAXException, IOException {
+    Mp3FileImpl(URI uri) throws SAXException, IOException {
         super(uri);
-    }
-    
+    }    
 }
