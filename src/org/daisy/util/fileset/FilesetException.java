@@ -1,15 +1,13 @@
 package org.daisy.util.fileset;
 
+import org.daisy.util.exception.BaseException;
+
 /**
- * Base class for all exceptions thrown by this package
+ * Wraps all nonrecoverable exceptions thrown by this package
  * @author Markus Gylling 
  */
 
-public class FilesetException extends Exception {
-
-	public FilesetException() {
-		super();
-	}
+public class FilesetException extends BaseException {
 
 	public FilesetException(String message) {
 		super(message);
@@ -20,6 +18,7 @@ public class FilesetException extends Exception {
 	}
 
 	public FilesetException(Throwable cause) {
-		super(cause);
+		super("Fileset exception:", cause);
 	}
+
 }
