@@ -19,10 +19,6 @@
 package org.daisy.dmfc.transformers;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +30,8 @@ import java.util.regex.PatternSyntaxException;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
-import org.daisy.util.file.StreamRedirector;
+import org.daisy.util.execution.Command;
+import org.daisy.util.execution.ExecutionException;
 
 /**
  * Run arbitraty applications.
@@ -66,9 +63,10 @@ public class ExeRunner extends Transformer {
     private static Pattern variablePattern = Pattern.compile("\\$\\{(\\w+)\\}");
     
     /**
-     * @param inListener
-     * @param eventListeners
-     * @param interactive
+     * Constructs a new ExeRunner transformer.
+     * @param inputListener an input listener
+     * @param eventListeners a set of event listeners
+     * @param interactive specified whether the Transformer should be run in interactive mode
      */    
     public ExeRunner(InputListener inListener, Set eventListeners, Boolean interactive) {
         super(inListener, eventListeners, interactive);
@@ -83,102 +81,59 @@ public class ExeRunner extends Transformer {
         String timeout = (String)parameters.remove("exe_timeout");
         String successRegex = (String)parameters.remove("exe_success_regex");
         
-        // Compile regex pattern
+        // Compile successRegex pattern
         Pattern success = null;
         if (successRegex != null) {
             try {
                 success = Pattern.compile(successRegex);
             } catch (PatternSyntaxException e) {
-                throw new TransformerRunException("Invalid regex pattern for parameter exe_success_regex", e);
+                throw new TransformerRunException(i18n("INVALID_SUCCESS_REGEX"), e);
             }
         }
-                
+        
         // Expand command pattern
-        String command = expandCommandPattern(commandPattern, parameters);
+        String command = expandCommandPattern(commandPattern, parameters);        
         
-        // Execute command  
-        boolean finished = false;
-        int exitVal = 1;
-        try {
-            Runtime runtime = Runtime.getRuntime();
-            
-            // Set working directory
-            File wd = null;
-            if (workDir != null) {
-                wd = new File(workDir);
-            }
-            
-            // Calculate timeout
-            Date startDate = new Date();
-            Date timeoutDate = null;
-            if (timeout != null) {
-                timeoutDate = new Date(startDate.getTime() + Integer.parseInt(timeout));
-            }
-            
-            // Start the program
-            sendMessage(Level.FINE, "Running '" + command + "'");
-            Process proc = runtime.exec(command, null, wd);
-            
-            // Setup and start stream redirectors
-            OutputStream outStream = System.out;
-            OutputStream errStream = System.err;
-            if (stdout != null) {
-                outStream = new FileOutputStream(stdout);
-            }            
-            if (stderr != null) {
-                errStream = new FileOutputStream(stderr);
-            }            
-            StreamRedirector out = new StreamRedirector(proc.getInputStream(), outStream);
-            StreamRedirector err = new StreamRedirector(proc.getErrorStream(), errStream);            
-            out.start();
-            err.start();
-            
-            int pollInterval;
-            try {
-                pollInterval = Integer.parseInt(System.getProperty("dmfc.pollExeInterval", "500"));
-                if (pollInterval < 10) {
-                    throw new NumberFormatException("Must be at least 10");
-                }
-            } catch (NumberFormatException e) {
-                sendMessage(Level.WARNING, System.getProperty("dmfc.pollExeInterval") + " is not a valid poll interval (must be at least 10ms)");
-                pollInterval = 500;
-            }
-            
-            // Wait (by polling) for exit value            
-            while (!finished) {
-                try {
-                    exitVal = proc.exitValue();
-                    finished = true;
-                    Date doneDate = new Date();
-                    sendMessage(Level.FINE, i18n("PROGRAM_RAN_FOR", command, new Long((doneDate.getTime() - startDate.getTime())/1000)));
-                } catch (IllegalThreadStateException e) {
-                    // Nothing
-                }
-                if (!finished && timeoutDate != null) {
-                    if (timeoutDate.before(new Date())) {
-                        sendMessage(Level.SEVERE, "Terminating ExeRunner due to timeout");
-                        proc.destroy();
-                        exitVal = 1;
-                        break;                        
-                    }
-                }
-                if (!finished) {
-                    Thread.sleep(pollInterval);
-                }
-            }
-        } catch (FileNotFoundException e) {
-            throw new TransformerRunException("Cannot write to file", e);
-        } catch (IOException e) {
-            throw new TransformerRunException("Cannot run command", e);        
-        } catch (InterruptedException e) {
-            throw new TransformerRunException("Interrupted in sleep", e);
+        // Setup workdir
+        File dir = null;
+        if (workDir != null) {
+            dir = new File(workDir);
         }
         
-        // If the program was aborted, it is a failure
-        if (!finished) {
+        // Redirect stdout
+        File stdoutFile = null;
+        if (stdout != null) {
+            stdoutFile = new File(stdout);  
+        }
+        
+        // Redirect stderr
+        File stderrFile = null;
+        if (stderr != null) {
+            stderrFile = new File(stderr);
+        }
+        
+        int maxRunningTime = Integer.parseInt(timeout);
+        
+        // Read poll interval
+        int pollInterval = Integer.parseInt(System.getProperty("dmfc.pollExeInterval", "500"));
+        if (pollInterval < 10) {
+            sendMessage(Level.WARNING, i18n("POLL_INTERVAL_TO_SMALL"));
+            pollInterval = 500;
+        }
+        
+        int exitVal;
+        try {
+            sendMessage(Level.FINE, i18n("RUNNING_COMMAND", command));
+            Date startDate = new Date();
+            exitVal = Command.execute(command, dir, stdoutFile, stderrFile, maxRunningTime, pollInterval);
+            Date doneDate = new Date();
+            sendMessage(Level.FINE, i18n("PROGRAM_RAN_FOR", command, new Long((doneDate.getTime() - startDate.getTime())/1000)));
+            
+        } catch (ExecutionException e) {
+            sendMessage(Level.WARNING, e.getMessage());
             return false;
         }
-        
+          
         // If no exe_success_regex was specified, a exit value of 0 is counted
         // as a success. All other exit values are considered a failure.
         if (success == null) {
@@ -199,7 +154,7 @@ public class ExeRunner extends Transformer {
             String variable = matcher.group(1);
             String value = (String)parameters.get(variable);
             if (value == null) {
-                throw new TransformerRunException("Unrecognized variable in command pattern string: " + variable);
+                throw new TransformerRunException(i18n("UNRECOGIZED_COMMAD_PATTERN_VARIABLE", variable));
             }
             matcher.appendReplacement(sb, value);
         }
