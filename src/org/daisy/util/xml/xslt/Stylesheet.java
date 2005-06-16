@@ -18,18 +18,27 @@
  */
 package org.daisy.util.xml.xslt;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.util.file.FilenameOrFileURI;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 /**
  * Some utility functions for applying XSLT stylesheets. This class contains
@@ -63,7 +72,7 @@ public class Stylesheet {
 		    if (factory != null) {
 		        System.setProperty(property, factory);
 		    }
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();			
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			
 			// Reset old factory property
 			System.setProperty(property, (oldFactory==null?"":oldFactory));			
@@ -107,20 +116,42 @@ public class Stylesheet {
     /**
      * Apply an XSLT stylesheet to an XML document. The input and output documents
      * can be specified using file URIs (i.e. <code>file://path/to/file</code>) or
-     * regular filenames.
+     * regular filenames. If the <code>factory</code> parameter is set to
+     * <code>null</code>, the TransformerFactory specified by the
+     * <code>javax.xml.transform.TransformerFactory</code> system property is
+     * used. If <code>resolver</code> is <code>null</code>, the default entity
+     * resolver will be used.
      * @param xmlFile a file URI or a filename to the XML file.
      * @param xsltFile a file URI or a filename to the XSLT stylesheet.
      * @param outFile a file URI or a filename to the output doucment.
      * @param factory the name of the <code>TransformerFactory</code> to use.
      * @param parameters a <code>Map</code> containing parameters that are sent to the stylesheet.
+     * @param resolver an entity resolver
      * @throws XSLTException
      * @see #apply(Source, Source, Result, String, Map)
      */
-    public static void apply(String xmlFile, String xsltFile, String outFile, String factory, Map parameters) throws XSLTException {
-        Source xmlSource = new StreamSource(FilenameOrFileURI.toFile(xmlFile));
-        Source xsltSource = new StreamSource(FilenameOrFileURI.toFile(xsltFile));
-        Result outResult = new StreamResult(FilenameOrFileURI.toFile(outFile));
-        apply(xmlSource, xsltSource, outResult, factory, parameters);
+    public static void apply(String xmlFile, String xsltFile, String outFile, String factory, Map parameters, EntityResolver resolver) throws XSLTException {
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true);
+        try {
+            SAXParser parser = parserFactory.newSAXParser();        
+            XMLReader reader = parser.getXMLReader();
+            if (resolver != null) {
+                reader.setEntityResolver(resolver);
+            }
+            
+            Source xmlSource = new SAXSource(reader, new InputSource(new FileInputStream(FilenameOrFileURI.toFile(xmlFile))));
+            Source xsltSource = new SAXSource(reader, new InputSource(new FileInputStream(FilenameOrFileURI.toFile(xsltFile))));
+	        	        
+	        Result outResult = new StreamResult(FilenameOrFileURI.toFile(outFile));
+	        apply(xmlSource, xsltSource, outResult, factory, parameters);
+        } catch (SAXException e) {
+            throw new XSLTException(e.getMessage(), e);
+        } catch (ParserConfigurationException e) {
+            throw new XSLTException(e.getMessage(), e);
+        } catch (FileNotFoundException e) {
+            throw new XSLTException(e.getMessage(), e);
+        }
     }
     
     /**
@@ -136,6 +167,6 @@ public class Stylesheet {
      * @see #apply(String, String, String, String, Map)
      */
     public static void apply(String xmlFile, String xsltFile, String outFile) throws XSLTException {        
-        apply(xmlFile, xsltFile, outFile, null, null);
-    }
+        apply(xmlFile, xsltFile, outFile, null, null, null);
+    }    
 }
