@@ -64,7 +64,7 @@ public class ExeRunner extends Transformer {
     
     /**
      * Constructs a new ExeRunner transformer.
-     * @param inputListener an input listener
+     * @param inListener an input listener
      * @param eventListeners a set of event listeners
      * @param interactive specified whether the Transformer should be run in interactive mode
      */    
