@@ -3,7 +3,7 @@ package org.daisy.util.xml.validation;
 //import javax.xml.parsers.ParserConfigurationException;
 //import javax.xml.parsers.SAXParserFactory;
 
-import org.daisy.util.xml.dtdcatalog.CatalogEntityResolver;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
@@ -12,7 +12,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import com.thaiopensource.xml.sax.XMLReaderCreator;
 
 /**
- * Custom implementation of Clarks XMLReaderCreator, supporting the set of {@link org.daisy.util.xml.dtdcatalog.CatalogEntityResolver}
+ * Custom implementation of Clarks XMLReaderCreator, supporting the set of {@link org.daisy.util.xml.catalog.CatalogEntityResolver}
  * @author markusg
  */
 

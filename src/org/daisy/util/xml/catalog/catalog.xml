@@ -1,0 +1,275 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- <!DOCTYPE catalog PUBLIC "-//OASIS//DTD XML Catalogs V1.1//EN" "http://www.oasis-open.org/committees/entity/release/1.1/catalog.dtd"> -->
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">
+  <group> <!-- xhtml 1.0 -->
+    <public publicId="-//W3C//DTD XHTML 1.0 Strict//EN" uri="./xhtml10/xhtml1-strict.dtd" />
+    <system systemId="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" uri="./xhtml10/xhtml1-strict.dtd" />      
+    <public publicId="-//W3C//DTD XHTML 1.0 Transitional//EN" uri="./xhtml10/xhtml1-transitional.dtd" />
+    <system systemId="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" uri="./xhtml10/xhtml1-transitional.dtd" />      
+    <public publicId="-//W3C//ENTITIES Latin 1 for XHTML//EN" uri="./xhtml10/xhtml-lat1.ent" />
+    <system systemId="http://www.w3.org/TR/xhtml1/DTD/xhtml-lat1.ent" uri="./xhtml10/xhtml-lat1.ent" />      
+    <public publicId="-//W3C//ENTITIES Symbols for XHTML//EN" uri="./xhtml10/xhtml-symbol.ent" />
+    <system systemId="http://www.w3.org/TR/xhtml1/DTD/xhtml-symbol.ent" uri="./xhtml10/xhtml-symbol.ent" />      
+    <public publicId="-//W3C//ENTITIES Special for XHTML//EN" uri="./xhtml10/xhtml-special.ent" />
+    <system systemId="http://www.w3.org/TR/xhtml1/DTD/xhtml-special.ent" uri="./xhtml10/xhtml-special.ent" />        
+  </group>  
+  <group> <!-- xhtml 1.1 -->
+    <public publicId="-//W3C//DTD XHTML 1.1//EN" uri="./xhtml11/xhtml11.dtd" />
+    <system systemId="http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd" uri="./xhtml11/xhtml11.dtd" />  
+    <public publicId="-//W3C//ELEMENTS XHTML Inline Style 1.0//EN" uri="./xhtml11/xhtml-inlstyle-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-inlstyle-1.mod" uri="./xhtml11/xhtml-inlstyle-1.mod" />     
+    <public publicId="-//W3C//ENTITIES XHTML 1.1 Document Model 1.0//EN" uri="./xhtml11/xhtml11-model-1.mod" />         
+    <public publicId="-//W3C//ENTITIES XHTML Modular Framework 1.0//EN" uri="./xhtml11/xhtml-framework-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-framework-1.mod" uri="./xhtml11/xhtml-framework-1.mod" />
+    <public publicId="-//W3C//ELEMENTS XHTML Text 1.0//EN" uri="./xhtml11/xhtml-text-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-text-1.mod" uri="./xhtml11/xhtml-text-1.mod" />
+    <public publicId="-//W3C//ELEMENTS XHTML Hypertext 1.0//EN" uri="./xhtml11/xhtml-hypertext-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-hypertext-1.mod" uri="./xhtml11/xhtml-hypertext-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Lists 1.0//EN" uri="./xhtml11/xhtml-list-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-list-1.mod" uri="./xhtml11/xhtml-list-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Editing Elements 1.0//EN" uri="./xhtml11/xhtml-edit-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-edit-1.mod" uri="./xhtml11/xhtml-edit-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML BIDI Override Element 1.0//EN" uri="./xhtml11/xhtml-bdo-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-bdo-1.mod" uri="./xhtml11/xhtml-bdo-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Ruby 1.0//EN" uri="./xhtml11/xhtml-ruby-1.mod" />
+    <system systemId="http://www.w3.org/TR/ruby/xhtml-ruby-1.mod" uri="./xhtml11/xhtml-ruby-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Presentation 1.0//EN" uri="./xhtml11/xhtml-pres-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-pres-1.mod" uri="./xhtml11/xhtml-pres-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Link Element 1.0//EN" uri="./xhtml11/xhtml-link-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-link-1.mod" uri="./xhtml11/xhtml-link-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Metainformation 1.0//EN" uri="./xhtml11/xhtml-meta-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-meta-1.mod" uri="./xhtml11/xhtml-meta-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Base Element 1.0//EN" uri="./xhtml11/xhtml-base-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-base-1.mod" uri="./xhtml11/xhtml-base-1.mod" />
+    <public publicId="-//W3C//ELEMENTS XHTML Scripting 1.0//EN" uri="./xhtml11/xhtml-script-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-script-1.mod" uri="./xhtml11/xhtml-script-1.mod" />
+    <public publicId="-//W3C//ELEMENTS XHTML Style Sheets 1.0//EN" uri="./xhtml11/xhtml-style-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-style-1.mod" uri="./xhtml11/xhtml-style-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Images 1.0//EN" uri="./xhtml11/xhtml-image-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-image-1.mod" uri="./xhtml11/xhtml-image-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Client-side Image Maps 1.0//EN" uri="./xhtml11/xhtml-csismap-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-csismap-1.mod" uri="./xhtml11/xhtml-csismap-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Server-side Image Maps 1.0//EN" uri="./xhtml11/xhtml-ssismap-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-ssismap-1.mod" uri="./xhtml11/xhtml-ssismap-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Param Element 1.0//EN" uri="./xhtml11/xhtml-param-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-param-1.mod" uri="./xhtml11/xhtml-param-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Embedded Object 1.0//EN" uri="./xhtml11/xhtml-object-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-object-1.mod" uri="./xhtml11/xhtml-object-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Tables 1.0//EN" uri="./xhtml11/xhtml-table-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-table-1.mod" uri="./xhtml11/xhtml-table-1.mod" />     
+    <public publicId="-//W3C//ELEMENTS XHTML Forms 1.0//EN" uri="./xhtml11/xhtml-form-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-form-1.mod" uri="./xhtml11/xhtml-form-1.mod" />         
+    <!--
+    <public publicId="-//W3C//ELEMENTS XHTML Legacy Markup 1.0//EN" uri="./xhtml11/xhtml-legacy-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-legacy-1.mod" uri="./xhtml11/xhtml-legacy-1.mod" />
+    -->
+    <public publicId="-//W3C//ELEMENTS XHTML Document Structure 1.0//EN" uri="./xhtml11/xhtml-struct-1.mod" />
+    <system systemId="http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-struct-1.mod" uri="./xhtml11/xhtml-struct-1.mod" />
+  </group>    
+  <group> <!-- xhtml mobile -->
+     <public publicId="-//WAPFORUM//DTD XHTML Mobile 1.0//EN" uri="./xhtml-mobile10/xhtml-mobile10.dtd"/>
+     <system systemId="http://www.wapforum.org/DTD/xhtml-mobile10.dtd" uri="./xhtml-mobile10/xhtml-mobile10.dtd"/>  
+     <public publicId="-//WAPFORUM//ENTITIES XHTML Mobile 1.0 Document Model 1.0//EN" uri="./xhtml-mobile10/xhtml-mobile10-model-1.mod" />
+     <system systemId="http://www.wapforum.org/DTD/xhtml-mobile10-model-1.mod" uri="./xhtml-mobile10/xhtml-mobile10-model-1.mod" />
+  </group>
+  <group> <!-- xhtml compound -->
+    <public publicId="-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" uri="./xhtml-mod/xhtml-math-svg.dtd" />
+    <system systemId="http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd" uri="./xhtml-mod/xhtml-math-svg.dtd" />
+  </group>
+  <group> <!-- zed 2002 -->
+    <public publicId="-//NISO//DTD dtbook v1.1.0//EN" uri="./z39862002/dtbook110.dtd" />
+    <system systemId="http://www.loc.gov/nls/z3986/v100/dtbook110.dtd" uri="./z39862002/dtbook110.dtd" />      
+    <public publicId="-//NISO//DTD dtbsmil v1.1.0//EN" uri="./z39862002/dtbsmil110.dtd" />
+    <system systemId="http://www.loc.gov/nls/z3986/v100/dtbsmil110.dtd" uri="./z39862002/dtbsmil110.dtd" />      
+    <public publicId="-//NISO//DTD ncx v1.1.0//EN" uri="./z39862002/dtbsmil110.dtd" />
+    <system systemId="http://www.loc.gov/nls/z3986/v100/ncx110.dtd" uri="./z39862002/dtbsmil110.dtd" />      
+    <public publicId="-//NISO//DTD ncx v1.1.0//EN" uri="./z39862002/dtbsmil110.dtd" />
+    <system systemId="http://www.loc.gov/nls/z3986/v100/ncx110.dtd" uri="./z39862002/dtbsmil110.dtd" />      
+    <public publicId="-//NISO//DTD resource v1.1.0//EN" uri="./z39862002/resource110.dtd" />
+    <system systemId="http://www.loc.gov/nls/z3986/v100/resource110.dtd" uri="./z39862002/resource110.dtd" />      
+  </group>
+  <group> <!-- zed 2005 --> </group>
+  
+  <group> <!-- Daisy 2.02 --> 
+    <public publicId="-//DAISY//DTD content v2.02//EN" uri="./d202/xhtml1-transitional-bodyref.dtd" />
+    <public publicId="-//DAISY//DTD ncc v2.02//EN" uri="./d202/d202ncc.dtd" />
+    <public publicId="-//DAISY//RNG ncc v2.02//EN" uri="./d202/d202ncc.rng" />
+    <public publicId="-//DAISY//DTD nccmulti v2.02//EN" uri="./d202/d202nccmulti.dtd" />
+    <public publicId="-//DAISY//DTD smil v2.02//EN" uri="./d202/d202smil.dtd" />
+    <public publicId="-//DAISY//RNG smil v2.02//EN" uri="./d202/d202smil.rng" />
+    <public publicId="-//DAISY//DTD msmil v2.02//EN" uri="./d202/d202msmil.dtd" />
+    <public publicId="-//DAISY//RNG msmil v2.02//EN" uri="./d202/d202msmil.rng" />
+    <public publicId="-//DAISY//DTD discinfo v2.02//EN" uri="./d202/d202discinfo.dtd" />      
+  </group>
+  
+  
+  <group> <!-- oeb 1.01 -->
+    <public publicId="+//ISBN 0-9673008-1-9//DTD OEB 1.0.1 Package//EN" uri="./oeb/oebpkg101.dtd" />
+    <system systemId="http://openebook.org/dtds/oeb-1.0.1/oebpkg101.dtd" uri="./oeb/oebpkg101.dtd" />      
+    <public publicId="+//ISBN 0-9673008-1-9//DTD OEB 1.0 Entities//EN" uri="./oeb/oeb1.ent" />
+    <system systemId="http://openebook.org/dtds/oeb-1.0.1/oeb1.ent" uri="./oeb/oeb1.ent" />      
+    <system systemId="oeb1.ent" uri="./oeb/oeb1.ent" />    
+  </group>
+  <group> <!-- smil 1.0 -->
+    <public publicId="-//W3C//DTD SMIL 1.0//EN" uri="./smil1/SMIL10.dtd" />
+    <system systemId="http://www.w3.org/TR/REC-smil/SMIL10.dtd" uri="./smil1/SMIL10.dtd" />          
+    <system systemId="SMIL10.dtd" uri="./smil1/SMIL10.dtd" />         
+  </group>  
+  <group> <!-- smil 2.0 -->
+    <public publicId="-//W3C//DTD SMIL 2.0//EN" uri="./smil2/SMIL20.dtd" /> 
+    <system systemId="http://www.w3.org/2001/SMIL20/SMIL20.dtd" uri="./smil2/SMIL20.dtd" />
+    <!-- <public publicId="-//W3C//DTD SMIL 2.0 Basic//EN" uri="./smil2/SMIL20Basic.dtd" />
+    <system systemId="http://www.w3.org/2001/SMIL20/SMIL20Basic.dtd" uri="./smil2/SMIL20Basic.dtd" /> -->
+    <public publicId="-//W3C//ENTITIES SMIL 2.0 Modular Framework 1.0//EN" uri="./smil2/smil-framework-1.mod" />  
+    <system systemId="http://www.w3.org/2001/SMIL20/smil-framework-1.mod" uri="./smil2/smil-framework-1.mod" />      
+    <public publicId="-//W3C//ENTITIES SMIL 2.0 Datatypes 1.0//EN" uri="./smil2/smil-datatypes-1.mod" /> 
+    <system systemId="http://www.w3.org/2001/SMIL20/smil-datatypes-1.mod" uri="./smil2/smil-datatypes-1.mod" />      
+    <public publicId="-//W3C//ENTITIES SMIL 2.0 Qualified Names 1.0//EN" uri="./smil2/smil-qname-1.mod" /> 
+    <system systemId="http://www.w3.org/2001/SMIL20/smil-qname-1.mod" uri="./smil2/smil-qname-1.mod" />      
+    <public publicId="-//W3C//ENTITIES SMIL 2.0 Common Attributes 1.0//EN" uri="./smil2/smil-attribs-1.mod" />  
+    <system systemId="http://www.w3.org/2001/SMIL20/smil-attribs-1.mod" uri="./smil2/smil-attribs-1.mod" />      
+    <public publicId="-//W3C//ENTITIES SMIL 2.0 Document Model 1.0//EN" uri="./smil2/smil-model-1.mod" /> 
+    <system systemId="http://www.w3.org/2001/SMIL20/smil-model-1.mod" uri="./smil2/smil-model-1.mod" />      
+    <public publicId="-//W3C//ELEMENTS SMIL 2.0 Document Structure//EN" uri="./smil2/SMIL-struct.mod" /> 
+    <system systemId="http://www.w3.org/2001/SMIL20/SMIL-struct.mod" uri="./smil2/SMIL-struct.mod" />      
+    <public publicId="-//W3C//ELEMENTS SMIL 2.0 Animation//EN" uri="./smil2/SMIL-anim.mod" /> 
+    <system systemId="http://www.w3.org/2001/SMIL20/SMIL-anim.mod" uri="./smil2/SMIL-anim.mod" />      
+    <public publicId="-//W3C//ELEMENTS SMIL 2.0 Content Control//EN" uri="./smil2/SMIL-control.mod" />  
+    <system systemId="http://www.w3.org/2001/SMIL20/SMIL-control.mod" uri="./smil2/SMIL-control.mod" />      
+    <public publicId="-//W3C//ELEMENTS SMIL 2.0 Document Metainformation//EN" uri="./smil2/SMIL-metainformation.mod" />  
+    <system systemId="http://www.w3.org/2001/SMIL20/SMIL-metainformation.mod" uri="./smil2/SMIL-metainformation.mod" />      
+    <public publicId="-//W3C//ELEMENTS SMIL 2.0 Layout//EN" uri="./smil2/SMIL-layout.mod" />
+    <system systemId="http://www.w3.org/2001/SMIL20/SMIL-layout.mod" uri="./smil2/SMIL-layout.mod" />      
+    <public publicId="-//W3C//ELEMENTS SMIL 2.0 Linking//EN" uri="./smil2/SMIL-link.mod" />  
+    <system systemId="http://www.w3.org/2001/SMIL20/SMIL-link.mod" uri="./smil2/SMIL-link.mod" />      
+    <public publicId="-//W3C//ELEMENTS SMIL 2.0 Media Objects//EN" uri="./smil2/SMIL-media.mod" />
+    <system systemId="http://www.w3.org/2001/SMIL20/SMIL-media.mod" uri="./smil2/SMIL-media.mod" />      
+    <public publicId="-//W3C//ELEMENTS SMIL 2.0 Timing//EN" uri="./smil2/SMIL-timing.mod" />
+    <system systemId="http://www.w3.org/2001/SMIL20/SMIL-timing.mod" uri="./smil2/SMIL-timing.mod" />      
+    <public publicId="-//W3C//ELEMENTS SMIL 2.0 Transition//EN" uri="./smil2/SMIL-transition.mod" />  
+    <system systemId="http://www.w3.org/2001/SMIL20/SMIL-transition.mod" uri="./smil2/SMIL-transition.mod" />      
+    <!-- <public publicId="-//W3C//ELEMENTS SMIL 2.0 Integration//EN" uri="./smil2/SMIL-integrate.mod" />
+    <system systemId="http://www.w3.org/2001/SMIL20/SMIL-integrate.mod" uri="./smil2/SMIL-integrate.mod" /> -->
+  </group>  
+  <group> <!-- MathML -->
+    <system systemId="http://www.w3.org/Math/DTD/mathml1/mathml.dtd" uri="./mathml/mathml.dtd" />    
+    <system systemId="-//W3C//DTD MathML 2.0//EN" uri="./mathml/mathml2.dtd" />	
+    <public publicId="http://www.w3.org/TR/MathML2/dtd/mathml2.dtd" uri="./mathml/mathml2.dtd" />
+  </group>
+  <group> <!-- SVG -->    
+    <public publicId="-//W3C//DTD SVG 1.0//EN" uri="./svg/svg10.dtd" />
+    <system systemId="http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd" uri="./svg/svg10.dtd" />    
+    <public publicId="-//W3C//DTD SVG 1.1//EN" uri="./svg/svg11.dtd" />
+    <system systemId="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" uri="./svg/svg11.dtd" />    
+    <public publicId="-//W3C//DTD SVG 1.1 Basic//EN" uri="./svg/svg11-basic.dtd" />
+    <system systemId="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-basic.dtd" uri="./svg/svg11-basic.dtd" />    
+    <public publicId="-//W3C//DTD SVG 1.1 Tiny//EN" uri="./svg/svg11-tiny.dtd" />
+    <system systemId="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd" uri="./svg/svg11-tiny.dtd" />    
+  </group>
+  <group> <!-- TEI p4-->
+    <public publicId="-//TEI P4//ELEMENTS Additional Element Set for Simple Analysis//EN" uri="./tei-p4/teiana2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teiana2.dtd" uri="./tei-p4/teiana2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES Element Classes for Simple Analysis//EN" uri="./tei-p4/teiana2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teiana2.ent" uri="./tei-p4/teiana2.ent" />
+    <public publicId="-//TEI P4//ELEMENTS Back Matter//EN" uri="./tei-p4/teiback2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teiback2.dtd" uri="./tei-p4/teiback2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES TEI ElementClasses//EN" uri="./tei-p4/teiclas2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teiclas2.ent" uri="./tei-p4/teiclas2.ent" />
+    <public publicId="-//TEI P4//ELEMENTS Core Elements//EN" uri="./tei-p4/teicore2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teicore2.dtd" uri="./tei-p4/teicore2.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS Front Matter//EN" uri="./tei-p4/teifron2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teifron2.dtd" uri="./tei-p4/teifron2.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS TEI Header//EN" uri="./tei-p4/teihdr2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teihdr2.dtd" uri="./tei-p4/teihdr2.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS Default Text Structure//EN" uri="./tei-p4/teistr2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teistr2.dtd" uri="./tei-p4/teistr2.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS Additional Element Set for Certainty and Responsibility//EN" uri="./tei-p4/teicert2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teicert2.dtd" uri="./tei-p4/teicert2.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS Additional Element Set for Language Corpora//EN" uri="./tei-p4/teicorp2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teicorp2.dtd" uri="./tei-p4/teicorp2.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS Base Element Set for Print Dictionaries//EN" uri="./tei-p4/teidict2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teidict2.dtd" uri="./tei-p4/teidict2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES Element Classes&#10;for Print Dictionaries//EN" uri="./tei-p4/teidict2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teidict2.ent" uri="./tei-p4/teidict2.ent" />
+    <public publicId="-//TEI P4//ELEMENTS Base Element Set for Drama 2001-12//EN" uri="./tei-p4/teidram2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teidram2.dtd" uri="./tei-p4/teidram2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES Element Classes for Drama//EN" uri="./tei-p4/teidram2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teidram2.ent" uri="./tei-p4/teidram2.ent" />
+    <public publicId="-//TEI P4//ELEMENTS Additional Element Set&#10;for Tables, Formulae, and Graphics//EN" uri="./tei-p4/teifig2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teifig2.dtd" uri="./tei-p4/teifig2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES Formulae Notations and Contents//EN" uri="./tei-p4/teifig2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teifig2.ent" uri="./tei-p4/teifig2.ent" />
+    <public publicId="-//TEI P4//DTD Auxiliary Document Type:  Feature System Declaration//EN" uri="./tei-p4/teifsd2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teifsd2.dtd" uri="./tei-p4/teifsd2.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS Additional Element Set for Feature Structure Annotation//EN" uri="./tei-p4/teifs2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teifs2.dtd" uri="./tei-p4/teifs2.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS General Base Element Set//EN" uri="./tei-p4/teigen2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teigen2.dtd" uri="./tei-p4/teigen2.dtd" />
+    <public publicId="-//TEI P4//DTD Main Document Type//EN" uri="./tei-p4/tei2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/tei2.dtd" uri="./tei-p4/tei2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES Generic Identifiers//EN" uri="./tei-p4/teigis2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teigis2.ent" uri="./tei-p4/teigis2.ent" />
+    <public publicId="-//TEI P4//ENTITIES TEI Keywords//EN" uri="./tei-p4/teikey2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teikey2.ent" uri="./tei-p4/teikey2.ent" />
+    <public publicId="-//TEI P4//ELEMENTS Additional Element Set for Linking, Segmentation, and Alignment//EN" uri="./tei-p4/teilink2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teilink2.dtd" uri="./tei-p4/teilink2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES Element Classes for Linking, Segmentation, and Alignment//EN" uri="./tei-p4/teilink2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teilink2.ent" uri="./tei-p4/teilink2.ent" />
+    <public publicId="-//TEI P4//ELEMENTS Base Element Set for Mixed Text Types//EN" uri="./tei-p4/teimix2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teimix2.dtd" uri="./tei-p4/teimix2.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS Additional Element Set for Names and Dates//EN" uri="./tei-p4/teind2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teind2.dtd" uri="./tei-p4/teind2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES Element Classes for Names and Dates//EN" uri="./tei-p4/teind2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teind2.ent" uri="./tei-p4/teind2.ent" />
+    <public publicId="-//TEI P4//ELEMENTS Additional Element Set for Graphs, Networks, and Trees//EN" uri="./tei-p4/teinet2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teinet2.dtd" uri="./tei-p4/teinet2.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS Base Element Set for Prose//EN" uri="./tei-p4/teipros2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teipros2.dtd" uri="./tei-p4/teipros2.dtd" />
+    <public publicId="-//TEI P4//DTD Auxiliary Document Type: Independent TEI Header//EN" uri="./tei-p4/teishd2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teishd2.dtd" uri="./tei-p4/teishd2.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS Base Element Set for Transcriptions of Speech//EN" uri="./tei-p4/teispok2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teispok2.dtd" uri="./tei-p4/teispok2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES Element Classes for Transcriptions of Speech//EN" uri="./tei-p4/teispok2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teispok2.ent" uri="./tei-p4/teispok2.ent" />
+    <public publicId="-//TEI P4//ELEMENTS Additional Element Set for Text-Critical Apparatus//EN" uri="./tei-p4/teitc2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teitc2.dtd" uri="./tei-p4/teitc2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES Element Classes for Critical Apparatus//EN" uri="./tei-p4/teitc2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teitc2.ent" uri="./tei-p4/teitc2.ent" />
+    <public publicId="-//TEI P4//ELEMENTS Base Element Set for Terminological Data//EN" uri="./tei-p4/teiterm2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teiterm2.dtd" uri="./tei-p4/teiterm2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES Element Classes&#10;for Terminological Data//EN" uri="./tei-p4/teiterm2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teiterm2.ent" uri="./tei-p4/teiterm2.ent" />
+    <public publicId="-//TEI P4//ELEMENTS Terminological Databases (Flat)//EN" uri="./tei-p4/teite2f.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teite2f.dtd" uri="./tei-p4/teite2f.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS Terminological Databases (Nested)//EN" uri="./tei-p4/teite2n.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teite2n.dtd" uri="./tei-p4/teite2n.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS Additional Element Set for Transcription of Primary Sources//EN" uri="./tei-p4/teitran2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teitran2.dtd" uri="./tei-p4/teitran2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES Element Classes for Transcription of Primary Sources//EN" uri="./tei-p4/teitran2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teitran2.ent" uri="./tei-p4/teitran2.ent" />
+    <public publicId="-//TEI P4//DTD Auxiliary Document Type: Tag Set Documentation//EN" uri="./tei-p4/teitsd2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teitsd2.dtd" uri="./tei-p4/teitsd2.dtd" />
+    <public publicId="-//TEI P4//ELEMENTS Base Element Set for Verse//EN" uri="./tei-p4/teivers2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teivers2.dtd" uri="./tei-p4/teivers2.dtd" />
+    <public publicId="-//TEI P4//ENTITIES Element Classes for Verse//EN" uri="./tei-p4/teivers2.ent" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teivers2.ent" uri="./tei-p4/teivers2.ent" />
+    <public publicId="-//TEI P4//DTD Auxiliary Document Type: Writing System Declaration//EN" uri="./tei-p4/teiwsd2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teiwsd2.dtd" uri="./tei-p4/teiwsd2.dtd" />
+    <public publicId="-//TEI P4//DTD Concurrent Document Type: Pages and Lines//EN" uri="./tei-p4/teipl2.dtd" /> 
+    <system systemId="http://www.tei-c.org/Guidelines/DTD/teipl2.dtd" uri="./tei-p4/teipl2.dtd" />    
+  </group>
+  <group> <!-- DocBook 4.1 -->
+    <public publicId="-//OASIS//DTD DocBook V4.1//EN" uri="./docbk41/docbook.dtd" />
+    <public publicId="-//OASIS//ENTITIES DocBook Notations V4.1//EN" uri="./docbk41/dbnotn.mod" />
+    <public publicId="-//OASIS//ENTITIES DocBook Character Entities V4.1//EN" uri="./docbk41/dbcent.mod" />
+    <public publicId="-//OASIS//ELEMENTS DocBook Information Pool V4.1//EN" uri="./docbk41/dbpool.mod" />
+    <public publicId="-//OASIS//ELEMENTS DocBook Document Hierarchy V4.1//EN" uri="./docbk41/dbhier.mod" />
+    <public publicId="-//OASIS//ENTITIES DocBook Additional General Entities V4.1//EN" uri="./docbk41/dbgenent.mod" />
+    <public publicId="-//USA-DOD//DTD Table Model 951010//EN" uri="./docbk41/cals-tbl.dtd" />
+  </group>
+  <group> <!-- voice -->
+    <public publicId="-//W3C//DTD SYNTHESIS 1.0//EN" uri="./ssml/synthesis.dtd" />
+    <system systemId="http://www.w3.org/TR/speech-synthesis/synthesis.dtd" uri="./ssml/synthesis.dtd" />
+  </group>
+  
+</catalog>

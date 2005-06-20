@@ -13,9 +13,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
-import javazoom.jl.decoder.BitstreamException;
-
-import org.xml.sax.SAXException;
 
 /**
  * <p>Base class for the org.daisy.util.fileset File hierarchy.</p>

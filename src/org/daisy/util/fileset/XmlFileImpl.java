@@ -10,10 +10,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.daisy.util.xml.dtdcatalog.CatalogEntityResolver;
-import org.daisy.util.xml.dtdcatalog.CatalogException;
-import org.daisy.util.xml.dtdcatalog.CatalogExceptionNotRecoverable;
-import org.daisy.util.xml.dtdcatalog.CatalogExceptionRecoverable;
+
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.catalog.CatalogException;
+import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.catalog.CatalogExceptionRecoverable;
 import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;

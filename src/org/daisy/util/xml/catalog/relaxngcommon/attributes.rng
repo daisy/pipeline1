@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:sch="http://www.ascc.net/xml/schematron"
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+>
+  <a:documentation>
+    attributes.rng
+    Last edit by: mgylling 2005-06-09
+  </a:documentation>
+
+  <include href="datatypes.rng"/>
+  
+  <define name="attribute.id.required">
+    <attribute name="id">
+      <ref name="datatype.id"/>
+    </attribute>
+  </define>
+
+  <define name="attribute.id.optional">
+    <optional>
+      <ref name="attribute.id.required"/>
+    </optional>
+  </define>
+
+  <define name="attribute.href.required">
+    <attribute name="href">
+      <ref name="datatype.uri"/>
+    </attribute>
+  </define>
+
+  <define name="attribute.href.optional">
+    <attribute name="href">
+      <ref name="datatype.uri"/>
+    </attribute>
+  </define>
+
+  <define name="attribute.href.required.relative.smilwithfragment">
+    <attribute name="href">
+      <ref name="datatype.uri.relative.smilwithfragment"/>
+    </attribute>
+  </define>
+
+  <define name="attribute.class.required">
+    <attribute name="class">
+      <text/>
+    </attribute>
+  </define>
+
+  <define name="attribute.class.optional">
+    <optional>
+      <ref name="attribute.class.required"/>
+    </optional>
+  </define>
+  
+  <define name="attribute.dur.required">
+    <attribute name="dur">
+      <ref name="datatype.smilclock"/>
+    </attribute>
+  </define>
+
+  <define name="attribute.dur.optional">
+    <optional>
+      <ref name="attribute.dur.required"/>
+    </optional>
+  </define>
+
+</grammar>

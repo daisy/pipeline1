@@ -4,8 +4,6 @@
 package org.daisy.util.fileset;
 
 import java.io.IOException;
-import java.util.HashMap;
-
 import javazoom.jl.decoder.BitstreamException;
 import org.xml.sax.SAXException;
 

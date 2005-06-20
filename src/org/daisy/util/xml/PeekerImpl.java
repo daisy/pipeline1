@@ -13,7 +13,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.daisy.util.exception.SAXStopParsingException;
-import org.daisy.util.xml.dtdcatalog.CatalogEntityResolver;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
