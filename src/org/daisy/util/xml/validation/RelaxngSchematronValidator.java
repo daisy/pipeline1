@@ -51,7 +51,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
 	
 	/**
 	 * Creates a new RELAXNG/Schematron validator using the specified schema
-	 * @param schema a RELAXNG schema with embedded Schematron rules
+	 * @param schema a RELAXNG schema, possibly with embedded Schematron rules
 	 * @param errh an imlementation of the SAX ErrorHandler interface; if fed to constructor as null, validation errors are reported to system.err
 	 * @param useSchematron tells whether Schematron validation should be performed
 	 * @param useRelaxNG tells whether RelaxNG validation should be performed
