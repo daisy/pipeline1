@@ -171,7 +171,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 								continue;
 							} catch (FileNotFoundException fnfe) {
 								errors.add(fnfe);
-								System.err.println("ioe in getType");
+								//System.err.println("ioe in getType");
 								continue;
 							} catch (IOException ioe) {
 								errors.add(ioe);

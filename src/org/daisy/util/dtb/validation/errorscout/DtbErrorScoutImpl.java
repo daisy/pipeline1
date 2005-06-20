@@ -1,9 +1,13 @@
 package org.daisy.util.dtb.validation.errorscout;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+
+import javazoom.jl.decoder.BitstreamException;
 
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.validation.ValidationException;
@@ -20,6 +24,7 @@ import org.daisy.util.fileset.Regex;
 import org.daisy.util.fileset.SmilFile;
 import org.daisy.util.fileset.TextualContentFile;
 import org.daisy.util.fileset.XmlFile;
+import org.daisy.util.fileset.Z3986SmilFile;
 import org.daisy.util.xml.validation.RelaxngSchematronValidator;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -154,13 +159,14 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 		while(iter.hasNext()) {			
 			member = fileset.getLocalMember((URI)iter.next());	
 			try {
-				
+
+				//do interdoc link checks for all xml files
 				if(member instanceof XmlFile) {
 					if (doInterDocLinkScouting) {
 						if(!isInterDocLinkValid((XmlFile)member))hasErrors = true;
 					}  
 				}
-				
+								
 				if(member instanceof D202NccFile) {
 					if(doRelaxNgScouting) {
 						if(!d202NccRngSchValidator.isValid((File)member)) hasErrors = true;
@@ -170,27 +176,47 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 						if (member instanceof D202SmilFile){
 							if(!d202SmilRngSchValidator.isValid((File)member)) hasErrors = true;
 						}  
-					}  										
-					if (doSmilDurationScouting) {
-						//SmilFile smil = (SmilFile) member;
-						//System.err.print("calculated: "+smil.getMyCalculatedTimeInThisSmil().secondsValue());
-						//System.err.println(" given: "+smil.getMyGivenTimeInThisSmil().secondsValue());
+					}  														
+					if ((doSmilDurationScouting)&&
+							((member instanceof D202SmilFile)||(member instanceof Z3986SmilFile))) {
+						try{
+							SmilFile smil = (SmilFile) member;
+							//test timeInThisSmil
+							long calculated = Math.round(smil.getCalculatedDuration().secondsValue());							
+							if(calculated != smil.getStatedDuration().secondsValue()) {
+								errors.add(new FilesetException("expected duration "+calculated+" but found "+smil.getStatedDuration().secondsValue()+ " in "+smil.getName()));
+								hasErrors=true;
+							}
+						}catch (Exception e){							
+							errors.add(e);
+						}
 					}
 				}else if (member instanceof TextualContentFile){
 					if (member instanceof D202TextualContentFile){
-						//TODO something?
+						//TODO something...
 					}													
 				}else if (member instanceof AudioFile){
 					if(doAudioFileScouting) {
 						if (member instanceof Mp3File){
-							Mp3File mp3file = (Mp3File) member;																
-							//							System.err.println("bitrate " + mp3file.getBitrate());
-							//							System.err.println("layer " + mp3file.getLayer());
-							//							System.err.println("fs " + mp3file.getSampleFrequency());
-							//							System.err.println("ismpeg2 " + mp3file.isMpeg2Lsf());
-							//							System.err.println("id3 " + mp3file.hasID3v2());
-							//							System.err.println("isMono " + mp3file.isMono());
-							//							System.err.println("isVbr " + mp3file.isVbr());								
+							Mp3File mp3file = (Mp3File) member;
+							try {
+								mp3file.parse();
+								if (mp3file.hasID3v2()) {
+									errors.add(new FilesetException("warning: mp3 file "+mp3file.getName()+" has ID3 tags"));
+									hasErrors=true;
+								}
+								if (!mp3file.isMono()) {
+									errors.add(new FilesetException("warning: mp3 file "+mp3file.getName()+" is not mono"));
+									hasErrors=true;
+								}
+								if (mp3file.isVbr()) {
+									errors.add(new FilesetException("mp3 file "+mp3file.getName()+" is VBR"));
+									hasErrors=true;
+								}
+							} catch (Exception e) {
+								errors.add(e);
+								hasErrors=true;
+							}
 						}
 					}
 				}					
@@ -224,10 +250,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 	private boolean isInterDocLinkValid(XmlFile member) throws DtbErrorScoutException {		
 		//check that all intermembership URIs with fragments in this doc resolves
 		//note: nonresolving intermembership URIs without fragments are already reported by Fileset.errors
-		boolean result = true;
-		
-		
-		
+		boolean result = true;						
 		try {
 			Iterator uriator = member.getUriIterator();				
 			while (uriator.hasNext()) {
@@ -240,22 +263,18 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 						//get the full URI of the member to resolve
 						URI uri = member.toURI().resolve(uriPath);
 						if(!uri.equals(cache)) {
-							//System.err.println("no cache hit");
 							//the referenced member is other than last time
 							cache=uri;
 							//get the file instance from Fileset via the URI key
 							referencedMember=(XmlFile)member.getReferencedLocalMember(uri);
 							if (referencedMember==null){
-								errors.add(new DtbErrorScoutExceptionRecoverable ("reference to nonexisting member "+referencedMember.getName()+"in URI " + value+ " in file " + member.getName()));
+								errors.add(new DtbErrorScoutException ("reference to nonexisting member "+referencedMember.getName()+"in URI " + value+ " in file " + member.getName()));
 								return false;
 							}								
-						}else{
-							//System.err.println("cache hit");
 						}
-						
 						//check whether this colleague has the id value
 						if(!referencedMember.hasIDValue(uriFragment)) {
-							errors.add(new DtbErrorScoutExceptionRecoverable ("reference to nonexisting fragment in URI " + value + " in file " + member.getName()));
+							errors.add(new DtbErrorScoutException ("reference to nonexisting fragment in URI " + value + " in file " + member.getName()));
 							result = false;
 						}
 					}
