@@ -21,4 +21,6 @@ public interface Mp3File extends AudioFile {
 	
 	public boolean hasID3v2();
 	
+	public long getCalculatedDurationMillis();
+	
 }
