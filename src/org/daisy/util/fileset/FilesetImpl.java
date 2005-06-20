@@ -102,8 +102,8 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		    }  
 		}
 		
-		System.err.println("fileset completely populated");
-		System.err.println("size: " + this.localMembers.size());
+//		System.err.println("fileset completely populated");
+//		System.err.println("size: " + this.localMembers.size());
 		
 		
 	}
@@ -295,7 +295,6 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 	public boolean hadErrors() {		
 		return (!errors.isEmpty());
 	}
-
 
 	public Iterator getErrorsIterator() {
 		return errors.iterator();
