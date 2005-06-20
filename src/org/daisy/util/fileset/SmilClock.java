@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  @author James Pritchett
  */
 
-class SmilClock implements Comparable {
+public class SmilClock implements Comparable {
 //	TODO move this to a more appropriate package
 	private static Pattern fullClockPattern = Pattern.compile("(npt=)?(\\d+):([0-5]\\d):([0-5]\\d)([.](\\d+))?");
 	private static Pattern partialClockPattern  = Pattern.compile("(npt=)?([0-5]\\d):([0-5]\\d)([.](\\d+))?");
