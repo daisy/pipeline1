@@ -1,18 +1,19 @@
 package org.daisy.util.fileset;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 
-import org.xml.sax.SAXException;
+import javazoom.jl.decoder.BitstreamException;
 
 /**
  * @author Markus Gylling
  */
+public interface AudioFile extends FilesetFile {
+	
+	public void parse() throws FileNotFoundException, IOException, BitstreamException;
+	
+	public int getSampleFrequency();
+	
+	public boolean isMono();
 
-abstract class AudioFile extends FilesetFileImpl {
-
-    AudioFile(URI uri) throws SAXException, IOException {
-        super(uri);
-    }
-    
 }

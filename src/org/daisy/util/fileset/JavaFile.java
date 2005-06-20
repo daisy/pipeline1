@@ -1,4 +1,6 @@
-
+/*
+ * Created on 2005-jun-17
+ */
 package org.daisy.util.fileset;
 
 import java.io.File;
@@ -7,9 +9,11 @@ import java.net.URI;
 import java.net.URL;
 
 /**
+ * Abstract interface to bring some methods along from {@link java.io.File} 
+ * into {@link org.daisy.util.fileset.FilesetFile} 
  * @author Markus Gylling 
  */
-abstract interface JavaFile {
+public abstract interface JavaFile {
 	boolean canRead();
 	boolean canWrite();
 	String getName();

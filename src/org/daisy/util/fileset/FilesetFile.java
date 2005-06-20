@@ -1,18 +1,26 @@
+/*
+ * Created on 2005-jun-17
+ */
 package org.daisy.util.fileset;
 
-import java.net.URI;
-import java.util.Iterator;
+import java.io.IOException;
+import java.util.HashMap;
+
+import javazoom.jl.decoder.BitstreamException;
+import org.xml.sax.SAXException;
 
 /**
+ * <p>Base representation of the {@link org.daisy.util.fileset} member hierarchy.</p>
  * @author Markus Gylling
  */
-public interface FilesetFile extends JavaFile {
-	public Iterator getLocalURIsIterator() ;
-	public Iterator getRemoteURIsIterator();
-	public boolean hasLocalURIs(); 
-	public boolean hasRemoteURIs();
-	public FilesetFile getReferencedLocalMember(URI uri);
-	public Iterator getReferencedLocalMembersIterator();
-	public FilesetFile getReferringLocalMember(URI uri);
-	public Iterator getReferringLocalMembersIterator(); 
+public interface FilesetFile extends JavaFile, Referable {
+	
+	/**
+	 * a generic command to make the member populate its own properties; at the very least
+	 * URIs (if existing) to uriStrings
+	 * IDs (if existing) to idStrings
+	 */
+	
+	public abstract void parse()throws IOException, SAXException, BitstreamException;
+	
 }

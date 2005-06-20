@@ -4,80 +4,92 @@ import java.io.IOException;
 import java.net.URI;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.Attributes;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * @author Markus Gylling
  */
-abstract class SmilFileImpl extends XmlFileImpl implements SmilFile{
+
+public class SmilFileImpl extends XmlFileImpl implements SmilFile {
+	private SmilClock myStatedDuration = null;
+	private SmilClock myStatedTotalElapsedTime = null;	
+	private SmilClock audioClipBegin = null; //does not gather anything outside startelement; put here for optim
+	private SmilClock audioClipEnd = null; //does not gather anything outside startelement; put here for optim
+	private long myCalculatedDuration;
+	private static boolean doSmilTiming = true;
 	
 	SmilFileImpl(URI uri) throws ParserConfigurationException, SAXException, IOException {
-		super(uri);		
+		super(uri);
 	}
-
-	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {        		
-		qName = qName.intern();
-		for (int i = 0; i < attrs.getLength(); i++) {			
-			String attrName = attrs.getQName(i).trim().intern();
-			String attrValue = attrs.getValue(i).trim().intern();
-			
-			//check if its an ID and if so add
-			if (attrName=="id") {
-				myIDValues.add(attrValue);
-			}
-			//now check if there are references to other files etc
-			if(matches(Regex.getInstance().SMIL_ELEMENTS_WITH_URI_ATTRS,qName)){
-				if(matches(Regex.getInstance().SMIL_ATTRIBUTES_WITH_URI_ATTRS,attrName)){
-					if (!matches(Regex.getInstance().URI_REMOTE,attrValue)) {
-						putLocalURI(attrValue);
-						if (attrName=="src") { 
-							if (qName == "text"){
-								attrValue = attrValue.replace(attrValue.substring(attrValue.indexOf("#")),"");
-							}                    
-							URI uri = resolveURI(attrValue);
-							if (!uri.equals(cache)) { //optim only
-								cache=uri;
-								Object o = FilesetObserver.getInstance().getCurrentListener().getLocalMember(uri); 
-								if (o!=null) {
-									//already added to listener fileset, so only put to local references collection
-									putReferencedMember(uri, o);
-								}else{    
-									try {
-										if (qName == "audio") {
-											if (matches(Regex.getInstance().FILE_MP3,attrValue)) {
-												putReferencedMember(uri, new Mp3FileImpl(uri));
-											}else{
-												FilesetObserver.getInstance().errorEvent(new FilesetExceptionRecoverable(this.getName()+": audio file format " +attrValue+" not yet supported"));
-											}
-										}else if (qName == "text") {
-											if ((FilesetObserver.getInstance().getCurrentListener().getFileSetType() == FilesetType.DAISY_202)&&(matches(Regex.getInstance().FILE_XHTML,attrValue))) {
-												putReferencedMember(uri, new D202TextualContentFileImpl(uri));
-											} else if(FilesetObserver.getInstance().getCurrentListener().getFileSetType() == FilesetType.Z3986) {
-												putReferencedMember(uri, new Z3986DtbookFileImpl(uri));
-											} else {
-												FilesetObserver.getInstance().errorEvent(new FilesetExceptionRecoverable(this.getName()+": textual content file format " +attrValue+" not recognized"));
-											}
-										}else if (qName == "img") {
-											putReferencedMember(uri, new ImageFileImpl(uri));
-										}                         
-									} catch (Exception e) {
-										throw new SAXException(e);
-									}
-								}
-							} //(!uri.equals(cache))
-						}//attrName=="src"
-						
-						else if ((attrName=="href") && (qName=="a")) {
-							//TODO handle smil anchors
-						}
-						
-					}//!attrValue.matches(RegexPatterns.ONLINE_URI
-					else {
-						putRemoteURI(attrValue);
-					}//!attrValue.matches(RegexPatterns.URI_NONLOCAL
-				}//matches(Regex.getInstance().SMIL_ATTRIBUTES_WITH_URI_ATTRS
-			} //qName.matches(RegexPatterns.SMIL_ELEMENTS_WITH_URI_ATTRS))												
-		}//for int i		
-	}//startElement
 	
+	public SmilFileImpl(URI uri, ErrorHandler errh) throws ParserConfigurationException, SAXException, IOException {
+		super(uri, errh);		
+	}
+	
+	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
+		sName = sName.intern();
+		for (int i = 0; i < attrs.getLength(); i++) {
+			attrName = attrs.getQName(i).trim().intern();
+			attrValue = attrs.getValue(i).trim().intern();			
+			if (attrName=="id") {
+				putIdValue(attrValue);
+			}else if(Regex.getInstance().matches(Regex.getInstance().SMIL_ATTRIBUTES_WITH_URIS,attrName)) {
+				putUriValue(attrValue);
+			}	
+			
+			if (doSmilTiming) {
+				try {
+					if (sName=="meta") {
+						if (attrValue=="ncc:timeInThisSmil") {
+							myStatedDuration = new SmilClock(attrs.getValue("content"));
+						}else if (attrValue=="ncc:totalElapsedTime"||attrValue=="dtb:totalElapsedTime") {
+							myStatedTotalElapsedTime = new SmilClock(attrs.getValue("content"));
+						}
+					}				
+					if (sName == "audio") {
+						//collect the audio element values, and check them later outside for loop						
+						if((attrName=="clip-begin"||attrName=="clipBegin")) {
+							audioClipBegin = new SmilClock(attrValue);				
+						}else if((attrName=="clip-end"||attrName=="clipEnd")) {
+							audioClipEnd = new SmilClock(attrValue);		
+						}									
+					}
+				} catch (Exception nfe) {
+					this.listeningErrorHandler.error(new SAXParseException(this.getName()+": exception when calculating " +attrValue,null));
+					
+				}
+			}
+		}
+		//all attributes of this element have now been looped through
+		//test the audio dur stuff
+		if (doSmilTiming) {
+			if (sName == "audio") {
+				if(audioClipBegin!=null&&audioClipEnd!=null){ //TODO optimize
+					//means we had a standard dtb audio element
+					myCalculatedDuration = myCalculatedDuration + (audioClipEnd.millisecondsValue() - audioClipBegin.millisecondsValue());				
+					//reset
+					audioClipBegin=null; audioClipEnd=null; 
+				}
+			}
+		}
+	}
+	
+	
+	public SmilClock getCalculatedDuration() {
+		return new SmilClock(myCalculatedDuration);
+	}
+	
+	public SmilClock getStatedDuration() {				
+		return (myStatedDuration!=null) ? myStatedDuration : null;
+	}
+	
+	public SmilClock getStatedTotalElapsedTime() {
+		return (myStatedTotalElapsedTime!=null) ? myStatedTotalElapsedTime : null;
+	}
+	
+	public long getCalculatedDurationMillis() {
+		return myCalculatedDuration;
+	}
 }

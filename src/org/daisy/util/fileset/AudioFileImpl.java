@@ -7,12 +7,11 @@ import java.net.URI;
 /**
  * @author Markus Gylling
  */
-class ImageFileImpl extends FilesetFileImpl implements ImageFile {
 
-    ImageFileImpl(URI uri) throws FileNotFoundException, IOException {
+abstract class AudioFileImpl extends FilesetFileImpl {
+
+    AudioFileImpl(URI uri) throws FileNotFoundException, IOException {
         super(uri);
     }
-
-	public void parse(){}
-
+    
 }

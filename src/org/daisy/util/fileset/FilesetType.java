@@ -8,5 +8,6 @@ public final class FilesetType {
 	private FilesetType() {}          
     public static final FilesetType DAISY_202 = new FilesetType();
     public static final FilesetType Z3986 = new FilesetType();
+    public static final FilesetType OTHER = new FilesetType();
 	
 }

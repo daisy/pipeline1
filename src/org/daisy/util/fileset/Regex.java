@@ -1,48 +1,48 @@
+/*
+ * Created on 2005-jun-17
+ */
 package org.daisy.util.fileset;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * <p>A singleton source for common and <em>compiled</em> regex patterns.</p>
  * <p>Usage example:</p>
- * <code>
- *   if (!matches(Regex.getInstance().URI_REMOTE, string)) {
- *     //string matched, do something
- *   }		 
- *   
- *  private boolean matches(Pattern compiledPattern, String match) {
- *	  Matcher m = compiledPattern.matcher(match);
- *	  return m.matches();	
- *	}
- * </code>
+ * <code><pre>
+ *   if (Regex.getInstance().matches(Regex.getInstance().URI_REMOTE), string)) {
+ *     //match
+ *   }		    
+ * </pre></code>
  * @author Markus Gylling
  */
 public class Regex {
 	
 	private Regex(){
-		URI_REMOTE = Pattern.compile( "(http:.+)|(https:.+)|(ftp:.+)|(mailto:.+)|(gopher:.+)|(news:.+)|(nntp:.+)|(rtsp:.+)");   
+		URI_REMOTE = Pattern.compile( "(http:.+)|(https:.+)|(ftp:.+)|(mailto:.+)|(gopher:.+)|(news:.+)|(nntp:.+)|(rtsp:.+)");		
 		URI_SMIL_FILE_WITH_FRAGMENT = Pattern.compile(".+\\.[Ss][Mm][Ii][Ll]#.+");
 		URI_WITH_FRAGMENT = Pattern.compile(".+\\..+#.+");  
 		
-		FILE_SMIL = Pattern.compile(".+\\.[Ss][Mm][Ii][Ll]");  
-		FILE_CSS = Pattern.compile(".+\\.[Cc][Ss][Ss]");
-		FILE_XSL = Pattern.compile(".+\\.[Xx][Ss][Ll][Tt]?");
-		FILE_NCC = Pattern.compile("[Nn][Cc][Cc].[Hh][Tt][Mm][Ll]?");
-		FILE_OPF = Pattern.compile(".+\\.[Oo][Pp][Ff]");
-		FILE_AUDIO = Pattern.compile("(.+\\.[Mm][Pp]3)|(.+\\.[Ww][Aa][Vv])");
-		FILE_MP3 = Pattern.compile(".+\\.[Mm][Pp]3");
-		FILE_DTD = Pattern.compile(".+\\.[Dd][Tt][Dd]");
-		FILE_XHTML = Pattern.compile(".+\\.[Xx]?[Hh][Tt][Mm][Ll]?");
-		FILE_IMAGE = Pattern.compile( "(.+\\.[Jj][Pp][Gg])|(.+\\.[Jj][Pp][Ee][Gg])|(.+\\.[Pn][Ng][Gg])|(.+\\.[Gg][Ii][Ff])|(.+\\.[Bb][Mm][Pp])");
-		FILE_NCX = Pattern.compile(".+\\.[Nn][Cc][Xx]");
-		FILE_RESOURCE = Pattern.compile(".+\\.[Rr][Ee][Ss]");
-		FILE_DTBOOK = Pattern.compile(".+\\.[Xx][Mm][Ll]");  
+		FILE_SMIL = Pattern.compile(".+\\.[Ss][Mm][Ii][Ll]$");  
+		FILE_CSS = Pattern.compile(".+\\.[Cc][Ss][Ss]$");
+		FILE_XSL = Pattern.compile(".+\\.[Xx][Ss][Ll][Tt]?$");
+		FILE_NCC = Pattern.compile("[Nn][Cc][Cc].[Hh][Tt][Mm][Ll]?$");
+		FILE_OPF = Pattern.compile(".+\\.[Oo][Pp][Ff]$");
+		FILE_AUDIO = Pattern.compile("(.+\\.[Mm][Pp]3)|(.+\\.[Ww][Aa][Vv])$");
+		FILE_MP3 = Pattern.compile(".+\\.[Mm][Pp]3$");
+		FILE_DTD = Pattern.compile(".+\\.[Dd][Tt][Dd]$");
+		FILE_XHTML = Pattern.compile(".+\\.[Xx]?[Hh][Tt][Mm][Ll]?$");
+		FILE_IMAGE = Pattern.compile( "(.+\\.[Jj][Pp][Gg]$)|(.+\\.[Jj][Pp][Ee][Gg]$)|(.+\\.[Pn][Ng][Gg]$)|(.+\\.[Gg][Ii][Ff]$)|(.+\\.[Bb][Mm][Pp]$)");
+		FILE_NCX = Pattern.compile(".+\\.[Nn][Cc][Xx]$");
+		FILE_RESOURCE = Pattern.compile(".+\\.[Rr][Ee][Ss]$");
+		FILE_DTBOOK = Pattern.compile(".+\\.[Xx][Mm][Ll]$");
+		FILE_XML = Pattern.compile(".+\\.[Xx][Mm][Ll]$");
 		
 		XHTML_ELEMENTS_WITH_URI_ATTRS = Pattern.compile("(a)|(link)|(img)");
 		XHTML_ATTRS_WITH_URIS = Pattern.compile("(href)|(src)");  
 		
 		SMIL_ELEMENTS_WITH_URI_ATTRS = Pattern.compile( "(text)|(audio)|(img)|(a)");
-		SMIL_ATTRIBUTES_WITH_URI_ATTRS = Pattern.compile("(href)|(src)");
+		SMIL_ATTRIBUTES_WITH_URIS = Pattern.compile("(href)|(src)");
 		
 		CSS_PROPERTIES_WITH_URLS = Pattern.compile("(background)|(background-image)|(list-style)");
 		
@@ -51,7 +51,7 @@ public class Regex {
 		DTBOOK_ATTRIBUTES_WITH_URIS = Pattern.compile( "(smilref)|(src)|(href)");				
 	}
 	
-	public Pattern URI_REMOTE;   
+	public Pattern URI_REMOTE;	
 	public Pattern URI_SMIL_FILE_WITH_FRAGMENT;
 	public Pattern URI_WITH_FRAGMENT;  
 	
@@ -67,27 +67,31 @@ public class Regex {
 	public Pattern FILE_IMAGE;
 	public Pattern FILE_NCX;
 	public Pattern FILE_RESOURCE;
-	public Pattern FILE_DTBOOK;  
+	public Pattern FILE_DTBOOK;
+	public Pattern FILE_XML; 
 	
 	public Pattern XHTML_ELEMENTS_WITH_URI_ATTRS;
 	public Pattern XHTML_ATTRS_WITH_URIS;  
 	
 	public Pattern SMIL_ELEMENTS_WITH_URI_ATTRS;
-	public Pattern SMIL_ATTRIBUTES_WITH_URI_ATTRS;
+	public Pattern SMIL_ATTRIBUTES_WITH_URIS;
 	
 	public Pattern CSS_PROPERTIES_WITH_URLS;	
 	public Pattern NCX_ELEMENTS_WITH_URI_ATTRS;
 	public Pattern RESOURCE_ELEMENTS_WITH_URI_ATTRS;
 	public Pattern DTBOOK_ATTRIBUTES_WITH_URIS;
-	
-	
-	
+			
 	static private Regex _instance = null;    
 	
 	static public Regex getInstance() {
 		if (null == _instance) _instance = new Regex();        
 		return _instance;
 	}
+	
+	public boolean matches(Pattern compiledPattern, String match) {
+	 	Matcher m = compiledPattern.matcher(match);
+	 	return m.matches();	
+	 }
 	
 //	Uniform Resource Identifier (URI) SCHEMES
 //

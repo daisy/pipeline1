@@ -1,5 +1,7 @@
 package org.daisy.util.fileset;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,6 +9,7 @@ import java.util.LinkedHashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.Attributes;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 
 /**
@@ -17,12 +20,15 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 	private boolean inManifest = false;
 	private boolean inSpine = false;
 	private HashMap manifestSmilItems = new HashMap();
-	private LinkedHashMap spineMap= new LinkedHashMap();
-
+	private LinkedHashMap spineMap= null;
+	private boolean finalSpineMapIsBuilt = false;
 	
-	OpfFileImpl(URI uri) throws ParserConfigurationException, SAXException {		
+	OpfFileImpl(URI uri) throws FileNotFoundException, ParserConfigurationException, SAXException, IOException {		
 		super(uri); 
-		parse();
+	}
+	
+	OpfFileImpl(URI uri, ErrorHandler errh) throws FileNotFoundException, ParserConfigurationException, SAXException, IOException {		
+		super(uri, errh); 
 	}
 	
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
@@ -35,85 +41,84 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 		}
 		
 		//assumes that spine always comes after manifest (which is a rule in the DTD)
+		//TODO fix spine logic
 		
 		for (int i = 0; i < attrs.getLength(); i++) {
-			String attrName = attrs.getQName(i).trim().intern();
-			String attrValue = attrs.getValue(i).trim().intern();
+			attrName = attrs.getQName(i).trim().intern();
+			attrValue = attrs.getValue(i).trim().intern();
 			
 			//check if its an ID and if so add
 			if (attrName=="id") {
-				myIDValues.add(attrValue);
+				this.putIdValue(attrValue);
 			}
 			
 			if(inManifest && qName=="item") { 
 				if(attrName=="href") {
-					if (!matches(Regex.getInstance().URI_REMOTE,attrValue)) {
-						//manifest href references a local member
-						putLocalURI(attrValue);						   							
-						URI uri = resolveURI(attrValue);	
-						if (!uri.equals(cache)) { //optim							
-							cache=uri;
-							Object o = FilesetObserver.getInstance().getCurrentListener().getLocalMember(uri); 
-							if (o!=null) {
-								//already added to listener fileset, so only put to local references collection
-								putReferencedMember(uri, o);
-							}else{
-								try {  //dont use mime here since its too spec version dependent
-									if (matches(Regex.getInstance().FILE_SMIL,attrValue)) {
-										//collect the id and uri for spinelist building
-										String idval = attrs.getValue("id");										
-										this.manifestSmilItems.put(idval, uri);										  
-										//then continue as always
-										putReferencedMember(uri, new Z3986SmilFileImpl(uri));	
-									}else if (matches(Regex.getInstance().FILE_NCX,attrValue)) {
-										putReferencedMember(uri, new Z3986NcxFileImpl(uri));	
-									}else if (matches(Regex.getInstance().FILE_CSS,attrValue)) {
-										putReferencedMember(uri, new CssFileImpl(uri));
-									}else if (matches(Regex.getInstance().FILE_RESOURCE,attrValue)) {
-										putReferencedMember(uri, new Z3986ResourceFileImpl(uri));	
-									}else if (matches(Regex.getInstance().FILE_IMAGE,attrValue)) {
-										putReferencedMember(uri, new ImageFileImpl(uri));
-									}else if (matches(Regex.getInstance().FILE_MP3,attrValue)) {										
-										putReferencedMember(uri, new Mp3FileImpl(uri));
-									//let other files build dtbook during the recursion since the filename is not required to be .xml
-									//}else if (matches(RegexPatterns2.getInstance().FILE_DTBOOK,attrValue)) {
-									//	putReferencedMember(uri, new DtbookFile(uri));
-									}																								
-								} catch (Exception e) {
-									throw new SAXException(e);
-								} 
-							}
-						}//(!uri.equals(cache)
-					}else{			
-						putRemoteURI(attrValue);					  
-					}//(!attrValue.matches(RegexPatterns.URI_NONLOCAL)) {					
-				}				
-			}//if(qName=="item")
+					putUriValue(attrValue);										
+					if (regex.matches(regex.FILE_SMIL,attrValue)) {
+						if (!regex.matches(regex.URI_REMOTE,attrValue)) {
+							//collect the id and uri for spinelist building
+							String idval = attrs.getValue("id");										
+							this.manifestSmilItems.put(idval, this.toURI().resolve(attrValue));
+						}	
+					}
+				}	
+			}
+			
 			else if(inSpine && qName=="itemref") {
-			  //now we've gone through manifest, all smil files are in Fileset main list
-			  //and we have the local manifestSmilItems<idString>,<URI> map to match with 	
-			  if (attrName=="idref") {
-			  	//get the uri from the local map
-			  	URI smilkey = (URI)manifestSmilItems.get(attrValue);
-			  	//retrieve the object from the main fileset map 
-			  	Z3986SmilFile smil = (Z3986SmilFile) FilesetObserver.getInstance().getCurrentListener().getLocalMember(smilkey);
-			  	//put it in the spineMap
-			  	spineMap.put(smilkey, smil);
-			  }
+				//now we've gone through manifest
+				//and we have the local manifestSmilItems<idString>,<URI> map to match with 	
+				if (attrName=="idref") {
+					//get the uri from the local manifestsmilmap
+					URI smilkey = (URI)manifestSmilItems.get(attrValue);
+					//put it in the spineMap
+					spineMap.put(smilkey, null);
+				}
 			}
 		} //for (int i							
 	}		
-			
-	public void endElement(String uri, String localName, String qName) throws SAXException {
-		if (qName=="spine") inSpine = false;
-		if (qName=="manifest") inManifest = false;
+	
+	public void endElement(String uri, String localName, String qName) throws SAXException {		
+		if (qName.equals("spine")){
+			inSpine = false;
+		}else if (qName.equals("manifest")) {
+			inManifest = false;
+		}
 	}
-
-	public Iterator getSpineIterator() {
-      return spineMap.keySet().iterator();		
+	
+	public Iterator getSpineIterator() { 
+		return spineMap.keySet().iterator();		
 	}
-
-	public Z3986SmilFile getSpineItem(URI uri) {
-		return (Z3986SmilFile)spineMap.get(uri);
+	
+	public Z3986SmilFile getSpineItem(URI uri) throws FilesetException { 
+		if (finalSpineMapIsBuilt) {
+			return (Z3986SmilFile)spineMap.get(uri);	
+		}
+		throw new FilesetException("spinemap is not built, call with fileset param or stich with URIs only");	    
 	}	
+	
+	public Z3986SmilFile getSpineItem(URI uri, Fileset fileset) throws FilesetException { 
+		if (!finalSpineMapIsBuilt) {
+			buildSpineMap(fileset);
+		}
+		return (Z3986SmilFile)spineMap.get(uri);    	    
+	}	
+	
+	
+	public void buildSpineMap (Fileset fileset) {
+		//this can be done only when a complete fileset is built
+		LinkedHashMap finalSpineMap = new LinkedHashMap();
+		Iterator it = spineMap.keySet().iterator();
+		while(it.hasNext()) {
+			URI smilkey = (URI)it.next();
+			Z3986SmilFile smil = (Z3986SmilFile) fileset.getLocalMember(smilkey);
+			finalSpineMap.put(smilkey, smil);		  
+		}		
+		spineMap.clear();
+		spineMap.putAll(finalSpineMap);
+		finalSpineMap = null;
+		finalSpineMapIsBuilt = true;
+	}
+	
+	
 }
