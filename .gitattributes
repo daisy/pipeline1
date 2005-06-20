@@ -4,6 +4,7 @@ lib/batik-css.jar -text
 lib/batik-parser.jar -text
 lib/batik-util.jar -text
 lib/jing.jar -text
+lib/jl1.0.jar -text
 lib/sac.jar -text
 lib/saxon.jar -text
 lib/saxon8.jar -text
