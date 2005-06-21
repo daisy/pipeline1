@@ -21,6 +21,7 @@ import org.daisy.util.fileset.FilesetException;
 import org.daisy.util.fileset.FilesetImpl;
 import org.daisy.util.fileset.Mp3File;
 import org.daisy.util.fileset.Regex;
+import org.daisy.util.fileset.SmilClock;
 import org.daisy.util.fileset.SmilFile;
 import org.daisy.util.fileset.TextualContentFile;
 import org.daisy.util.fileset.XmlFile;
@@ -36,28 +37,22 @@ import org.daisy.util.fileset.FilesetType;
  */
 public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 	private RelaxngSchematronValidator d202NccRngSchValidator;
-	private RelaxngSchematronValidator d202SmilRngSchValidator;		
-	
-	private LinkedHashSet errors = new LinkedHashSet(); //<Exception>
-	
-	private FilesetType filesetType;
-	
+	private RelaxngSchematronValidator d202SmilRngSchValidator;			
+	private LinkedHashSet errors = new LinkedHashSet(); //<Exception>	
+	private FilesetType filesetType;	
 	private FilesetFile member;		
-	private Fileset fileset = null;
-	
+	private Fileset fileset = null;	
+	private Regex regex = Regex.getInstance();
 	//for use in interdoc link checking
 	private URI cache = null;
-	private XmlFile referencedMember = null;
-	
+	private XmlFile referencedMember = null;	
 	//vars used to determine scouting contents	
-	private DtbErrorScoutingLevel scoutingLevel;
-	
-	private Regex regex = Regex.getInstance();
-	
+	private DtbErrorScoutingLevel scoutingLevel;			
 	private boolean doDtdScouting = true;
 	private boolean doInterDocLinkScouting = true;
 	private boolean doRelaxNgScouting = false;
-	private boolean doSchematronScouting = false;
+	private boolean doLimitedSchematronScouting = false;
+	private boolean doFullSchematronScouting = false;
 	private boolean doSmilDurationScouting = false;	
 	private boolean doAudioFileScouting = false;
 	
@@ -94,28 +89,25 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 			if (scoutingLevel==DtbErrorScoutingLevel.MEDIUM) {
 				doRelaxNgScouting = true;			
 				doSmilDurationScouting = true;		
-				doAudioFileScouting = true;									
+				doAudioFileScouting = true;
+				doLimitedSchematronScouting = true;
 			}else if (scoutingLevel==DtbErrorScoutingLevel.MAXED) {
 				doRelaxNgScouting = true;
 				doSmilDurationScouting = true;		
-				doAudioFileScouting = true;									
-				doSchematronScouting = true;
+				doAudioFileScouting = true;			
+				doLimitedSchematronScouting = true;
+				doFullSchematronScouting = true;
 			}
 		}		
 		
 		//prepare the rng+sch validators
-		if(doRelaxNgScouting||doSchematronScouting){
+		if(doRelaxNgScouting||doLimitedSchematronScouting||doFullSchematronScouting){
 			if (filesetType==FilesetType.DAISY_202) {				
 				try{					
-					File d202NccSchema = new File(
-							CatalogEntityResolver.getInstance().resolveEntityToURL("-//DAISY//RNG ncc v2.02//EN",null).toURI());
-					File d202SmilSchema = new File(
-							CatalogEntityResolver.getInstance().resolveEntityToURL("-//DAISY//RNG smil v2.02//EN",null).toURI());
-					
-					d202NccRngSchValidator = new RelaxngSchematronValidator
-					(d202NccSchema,this,doRelaxNgScouting,doSchematronScouting);		  
-					d202SmilRngSchValidator = new RelaxngSchematronValidator
-					(d202SmilSchema,this,doRelaxNgScouting,doSchematronScouting);					
+					File d202NccSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("-//DAISY//RNG ncc v2.02//EN",null).toURI());
+					File d202SmilSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("-//DAISY//RNG smil v2.02//EN",null).toURI());					
+					d202NccRngSchValidator = new RelaxngSchematronValidator(d202NccSchema,this,doRelaxNgScouting,doLimitedSchematronScouting);		  
+					d202SmilRngSchValidator = new RelaxngSchematronValidator(d202SmilSchema,this,doRelaxNgScouting,doFullSchematronScouting);					
 				}catch(Exception e){						
 					throw new DtbErrorScoutException(e);
 				}
@@ -154,20 +146,34 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 			throw new DtbErrorScoutException(fse);
 		}
 		
+		//System.err.println("fileset built");
+		
 		//iterate through Fileset members and apply appropriate scouting
-		Iterator iter = fileset.getLocalMembersURIIterator();
+		long calculatedTotalTimeMillis = 0;
+		SmilClock statedTotalTime = null;
+		
+		Iterator iter = fileset.getLocalMembersURIIterator();				
 		while(iter.hasNext()) {			
 			member = fileset.getLocalMember((URI)iter.next());	
 			try {
-
+				
 				//do interdoc link checks for all xml files
 				if(member instanceof XmlFile) {
 					if (doInterDocLinkScouting) {
 						if(!isInterDocLinkValid((XmlFile)member))hasErrors = true;
 					}  
 				}
-								
+				
+				//do specific tests for each type
 				if(member instanceof D202NccFile) {
+					D202NccFile ncc = (D202NccFile) member;
+					//get the totaltime for check after while loop
+					statedTotalTime = ncc.getStatedDuration();
+					//check the heading hirearchy
+					if (!ncc.hasCorrectHeadingSequence()){
+						errors.add(new FilesetException("incorrect heading hierarchy in "+ncc.getName()));
+						hasErrors = true;
+					}
 					if(doRelaxNgScouting) {
 						if(!d202NccRngSchValidator.isValid((File)member)) hasErrors = true;
 					}															
@@ -181,19 +187,26 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 							((member instanceof D202SmilFile)||(member instanceof Z3986SmilFile))) {
 						try{
 							SmilFile smil = (SmilFile) member;
+							//add to total count 
+							calculatedTotalTimeMillis = calculatedTotalTimeMillis + smil.getCalculatedDuration().millisecondsValue();
 							//test timeInThisSmil
-							long calculated = Math.round(smil.getCalculatedDuration().secondsValue());							
-							if(calculated != smil.getStatedDuration().secondsValue()) {
-								errors.add(new FilesetException("expected duration "+calculated+" but found "+smil.getStatedDuration().secondsValue()+ " in "+smil.getName()));
-								hasErrors=true;
+							if (smil.getStatedDuration()!=null) {							
+								if(smil.getCalculatedDuration().secondsValueRounded() != smil.getStatedDuration().secondsValue()) {
+									errors.add(new FilesetException("expected duration "+smil.getCalculatedDuration().secondsValueRounded()+" but found "+smil.getStatedDuration().secondsValue()+ " in "+smil.getName()));
+									hasErrors=true;
+								}
 							}
 						}catch (Exception e){							
 							errors.add(e);
 						}
 					}
 				}else if (member instanceof TextualContentFile){
-					if (member instanceof D202TextualContentFile){
-						//TODO something...
+					if (member instanceof D202TextualContentFile){						
+						D202TextualContentFile doc = (D202TextualContentFile)member;
+						if (!doc.hasCorrectHeadingSequence()){
+							errors.add(new FilesetException("incorrect heading hierarchy in "+doc.getName()));
+							hasErrors = true;
+						}
 					}													
 				}else if (member instanceof AudioFile){
 					if(doAudioFileScouting) {
@@ -223,7 +236,22 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 			} catch (ValidationException ve) {
 				throw new DtbErrorScoutException(ve);
 			}
-		}		
+		}//iter.hasNext
+		
+		if (doSmilDurationScouting){
+			//test totaltime
+			if (statedTotalTime!=null) {
+				SmilClock calculatedTotalTime = new SmilClock(calculatedTotalTimeMillis);
+				if (statedTotalTime.secondsValueRounded()!= calculatedTotalTime.secondsValueRounded()) {
+					errors.add(new FilesetException("found stated totaltime "+statedTotalTime.secondsValueRounded()+" but expected "+calculatedTotalTime.secondsValueRounded()));
+					hasErrors=true;
+				}
+			}else{
+				errors.add(new FilesetException("no stated totaltime for this DTB"));
+				hasErrors=true;
+			}  
+		}
+		
 		return hasErrors;
 	}
 	
@@ -256,7 +284,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 			while (uriator.hasNext()) {
 				String value = (String) uriator.next();
 				if(!regex.matches(regex.URI_REMOTE,value)) {
-					if(regex.matches(regex.URI_WITH_FRAGMENT,value)) {
+					if(regex.matches(regex.URI_WITH_FRAGMENT,value)) {					
 						//break the bare string up
 						String uriFragment = getFragment(value); 
 						String uriPath = stripFragment(value);
@@ -276,7 +304,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 						if(!referencedMember.hasIDValue(uriFragment)) {
 							errors.add(new DtbErrorScoutException ("reference to nonexisting fragment in URI " + value + " in file " + member.getName()));
 							result = false;
-						}
+						}					
 					}
 				}
 			} //while (uriator.hasNext())
