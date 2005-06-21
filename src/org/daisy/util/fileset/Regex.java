@@ -39,7 +39,8 @@ public class Regex {
 		FILE_XML = Pattern.compile(".+\\.[Xx][Mm][Ll]$");
 		
 		XHTML_ELEMENTS_WITH_URI_ATTRS = Pattern.compile("(a)|(link)|(img)");
-		XHTML_ATTRS_WITH_URIS = Pattern.compile("(href)|(src)");  
+		XHTML_ATTRS_WITH_URIS = Pattern.compile("(href)|(src)"); 
+		XHTML_HEADING_ELEMENT = Pattern.compile("^h[1-6]$");
 		
 		SMIL_ELEMENTS_WITH_URI_ATTRS = Pattern.compile( "(text)|(audio)|(img)|(a)");
 		SMIL_ATTRIBUTES_WITH_URIS = Pattern.compile("(href)|(src)");
@@ -72,6 +73,7 @@ public class Regex {
 	
 	public Pattern XHTML_ELEMENTS_WITH_URI_ATTRS;
 	public Pattern XHTML_ATTRS_WITH_URIS;  
+	public Pattern XHTML_HEADING_ELEMENT;
 	
 	public Pattern SMIL_ELEMENTS_WITH_URI_ATTRS;
 	public Pattern SMIL_ATTRIBUTES_WITH_URIS;
