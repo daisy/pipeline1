@@ -164,7 +164,7 @@ public class Stylesheet {
      * @param xsltFile a file URI or a filename to the XSLT stylesheet.
      * @param outFile a file URI or a filename to the output doucment.
      * @throws XSLTException
-     * @see #apply(String, String, String, String, Map)
+     * @see #apply(String, String, String, String, Map, EntityResolver)
      */
     public static void apply(String xmlFile, String xsltFile, String outFile) throws XSLTException {        
         apply(xmlFile, xsltFile, outFile, null, null, null);
