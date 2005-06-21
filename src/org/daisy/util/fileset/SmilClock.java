@@ -187,6 +187,14 @@ public class SmilClock implements Comparable {
 		return (double) this.msecValue / 1000;
 	}
 	
+	/**
+	 Returns clock value in seconds, rounded to full seconds
+	 @return clock value in seconds, rounded to full seconds
+	 */
+	public long secondsValueRounded() {
+		return Math.round((double) this.msecValue / 1000);
+	}
+	
 	// implement equals() so we can test values for equality
 	public boolean equals(Object otherObject) {
 		if (this == otherObject) return true;       // Objects are identical
