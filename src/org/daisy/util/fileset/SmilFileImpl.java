@@ -18,7 +18,7 @@ public class SmilFileImpl extends XmlFileImpl implements SmilFile {
 	private SmilClock audioClipBegin = null; //does not gather anything outside startelement; put here for optim
 	private SmilClock audioClipEnd = null; //does not gather anything outside startelement; put here for optim
 	private long myCalculatedDuration;
-	private static boolean doSmilTiming = true;
+	//private static boolean doSmilTiming = true;
 	
 	SmilFileImpl(URI uri) throws ParserConfigurationException, SAXException, IOException {
 		super(uri);
@@ -39,7 +39,7 @@ public class SmilFileImpl extends XmlFileImpl implements SmilFile {
 				putUriValue(attrValue);
 			}	
 			
-			if (doSmilTiming) {
+			//if (doSmilTiming) {
 				try {
 					if (sName=="meta") {
 						if (attrValue=="ncc:timeInThisSmil") {
@@ -60,11 +60,11 @@ public class SmilFileImpl extends XmlFileImpl implements SmilFile {
 					this.listeningErrorHandler.error(new SAXParseException(this.getName()+": exception when calculating " +attrValue,null));
 					
 				}
-			}
+			//}
 		}
 		//all attributes of this element have now been looped through
 		//test the audio dur stuff
-		if (doSmilTiming) {
+		//if (doSmilTiming) {
 			if (sName == "audio") {
 				if(audioClipBegin!=null&&audioClipEnd!=null){ //TODO optimize
 					//means we had a standard dtb audio element
@@ -73,7 +73,7 @@ public class SmilFileImpl extends XmlFileImpl implements SmilFile {
 					audioClipBegin=null; audioClipEnd=null; 
 				}
 			}
-		}
+		//}
 	}
 	
 	
@@ -82,11 +82,11 @@ public class SmilFileImpl extends XmlFileImpl implements SmilFile {
 	}
 	
 	public SmilClock getStatedDuration() {				
-		return (myStatedDuration!=null) ? myStatedDuration : null;
+		return myStatedDuration;
 	}
 	
 	public SmilClock getStatedTotalElapsedTime() {
-		return (myStatedTotalElapsedTime!=null) ? myStatedTotalElapsedTime : null;
+		return myStatedTotalElapsedTime;
 	}
 	
 	public long getCalculatedDurationMillis() {
