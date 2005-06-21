@@ -133,9 +133,9 @@ public final class CatalogFile extends File {
 		File entity = (File)srcIdTable.get(id);
 		if (entity==null) {
 			throw new CatalogExceptionEntityNotSupported("No support in catalog for public id: "+id); 
-		}else{
-			return entity.toURL();
-		}  
+		}
+		String uri = entity.toURI().toASCIIString();
+		return new URL(uri);		  
 	}
 	
 	private String fileToString(FileInputStream fis) throws IOException {
