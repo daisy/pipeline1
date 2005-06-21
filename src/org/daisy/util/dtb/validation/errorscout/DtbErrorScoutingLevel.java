@@ -21,6 +21,7 @@ public final class DtbErrorScoutingLevel {
      * <p>Testlevel <code>MEDIUM</code> performs all tests of level SLIM, plus:</p>
      * <ul>
      * <li>execution of RelaxNG, Smil timing and Mp3 tests</li>
+     * <li>Schematron tests on manifest files (ncc, opf)</li>
      * </ul>
      */
     public static final DtbErrorScoutingLevel MEDIUM = new DtbErrorScoutingLevel();
@@ -28,7 +29,7 @@ public final class DtbErrorScoutingLevel {
     /**
      * <p>Testlevel <code>MAXED</code> performs all tests of the SLIM and MEDIAN levels, plus:</p> 
      * <ul>
-     * <li>additional (timeconsuming) Schematron tests on metadata.</li>
+     * <li>additional (timeconsuming) Schematron tests (on smil files, etc).</li>
      * </ul>
      * <p>Note: do not assume that level MAXED performs full conformance validation. For that, get a tool such as ZedVal</p>
      */
