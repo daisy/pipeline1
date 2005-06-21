@@ -102,8 +102,8 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		    }  
 		}
 		
-//		System.err.println("fileset completely populated");
-//		System.err.println("size: " + this.localMembers.size());
+		//System.err.println("fileset completely populated");
+		//System.err.println("size: " + this.localMembers.size());
 		
 		
 	}
@@ -146,8 +146,8 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 			URI resolvedURI = null;
 			URI cache = null;
 			while (it.hasNext()) {
-				value = (String)it.next();				
-				if(!regex.matches(regex.URI_REMOTE,value)) {	
+				value = (String)it.next();					
+				if(!regex.matches(regex.URI_REMOTE,value)) {
 					//strip fragment if existing
 					value = stripFragment(value);					
 					//resolve the uri string
@@ -192,7 +192,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 						//put in the incoming members references list
 						referer.putReferencedMember(newmember.toURI(),newmember);
 					} //!resolvedURI.equals(cache)
-				}//if !matches URI_REMOTE
+				}//if matches URI_LOCAL
 				else {
 					remoteMembers.add(value);
 				}
