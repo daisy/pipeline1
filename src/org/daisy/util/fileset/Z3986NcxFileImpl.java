@@ -26,10 +26,10 @@ class Z3986NcxFileImpl extends XmlFileImpl implements Z3986NcxFile {
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		qName = qName.intern();
 		for (int i = 0; i < attrs.getLength(); i++) {
-			attrName = attrs.getQName(i).trim().intern();
-			attrValue = attrs.getValue(i).trim().intern();			
+			attrName = attrs.getQName(i).intern();
+			attrValue = attrs.getValue(i).intern();			
 			if (attrName=="id") {
-				this.putIdValue(attrValue);
+				this.putIdAndQName(attrValue,qName);
 			}else if (attrName=="src") {
 				this.putUriValue(attrValue);
 			}			

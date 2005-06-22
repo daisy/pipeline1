@@ -1,20 +1,17 @@
 package org.daisy.util.fileset;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
 import java.net.URI;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
@@ -47,7 +44,7 @@ class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, Er
 	static DocumentBuilderFactory domFactory = null;
 	static DocumentBuilder domBuilder = null;
 	
-	private HashSet idValues = new HashSet();
+	private Map idMap = new HashMap(); //<idvalue>,<carrierQname>
 	protected ErrorHandler listeningErrorHandler = null;
 	
 	private boolean isWellformed = true;
@@ -125,8 +122,20 @@ class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, Er
 		return isDTDValidated;
 	}
 		
+//	public boolean hasIDValue(String value) {
+//		return idValues.contains(value);
+//	}
+	
 	public boolean hasIDValue(String value) {
-		return idValues.contains(value);
+		return idMap.containsKey(value);
+	}
+
+	public boolean hasIDValueOnQName(String value, String QName) {
+		String test = (String)idMap.get(value);
+		if(test!=null) {
+			return QName.equals(test);
+		}		
+		return false;
 	}
 	
 	public void fatalError(SAXParseException spe) throws SAXException {		
@@ -168,10 +177,14 @@ class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, Er
 		System.err.println(sb.toString());
 	}
 	
-	protected void putIdValue(String idvalue) {
-		idValues.add(idvalue);
+//	protected void putIdValue(String idvalue) {
+//		idValues.add(idvalue);
+//	}
+	
+	protected void putIdAndQName(String idvalue, String qName) {
+		idMap.put(idvalue,qName);		
 	}
-		
+	
 	public InputSource resolveEntity(String publicId, String systemId) throws IOException {
 		//TODO handle local and remote sets		
 		//redirect to the 202 subset DTDs 

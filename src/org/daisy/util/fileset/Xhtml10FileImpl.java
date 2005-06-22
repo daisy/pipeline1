@@ -26,10 +26,10 @@ class Xhtml10FileImpl extends XmlFileImpl implements TextualContentFile, Xhtml10
 	
 	public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		for (int i = 0; i < attrs.getLength(); i++) {
-			attrName = attrs.getQName(i).trim().intern();
-			attrValue = attrs.getValue(i).trim().intern();			
+			attrName = attrs.getQName(i).intern();
+			attrValue = attrs.getValue(i).intern();			
 			if (attrName=="id") {
-				putIdValue(attrValue);
+				putIdAndQName(attrValue,qName);
 			}else if(regex.matches(regex.XHTML_ATTRS_WITH_URIS,attrName)) {
 				putUriValue(attrValue);
 			}						

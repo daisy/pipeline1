@@ -21,10 +21,10 @@ class D202MasterSmilFileImpl extends SmilFileImpl implements D202MasterSmilFile 
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {        		
 		if(inBody){
 			for (int i = 0; i < attrs.getLength(); i++) {			
-				attrName = attrs.getQName(i).trim().intern();
-				attrValue = attrs.getValue(i).trim().intern();					
+				attrName = attrs.getQName(i).intern();
+				attrValue = attrs.getValue(i).intern();					
 				if (attrName=="id") {
-					this.putIdValue(attrValue);
+					this.putIdAndQName(attrValue,qName);
 				}else if (attrName=="src") {
 					this.putUriValue(attrValue);
 				}	

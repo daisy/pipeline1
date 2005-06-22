@@ -26,11 +26,11 @@ class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile {
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		qName = qName.intern();
 		for (int i = 0; i < attrs.getLength(); i++) {
-			attrName = attrs.getQName(i).trim().intern();
-			attrValue = attrs.getValue(i).trim().intern();
+			attrName = attrs.getQName(i).intern();
+			attrValue = attrs.getValue(i).intern();
 						
 			if (attrName=="id") {
-				putIdValue(attrValue);
+				putIdAndQName(attrValue,qName);
 			} else if (regex.matches(regex.DTBOOK_ATTRIBUTES_WITH_URIS,attrName)) {
 			   putUriValue(attrValue);
 			}									
