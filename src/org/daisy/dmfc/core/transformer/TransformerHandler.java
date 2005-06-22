@@ -217,6 +217,20 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 				}
 			}
 		}
+		
+		// Make sure values of enum parameters matches a valid enum value
+		for (Iterator it = parameters.iterator(); it.hasNext(); ) {
+		    Parameter transformerParam = (Parameter)it.next();
+		    // Find paramters eith enum values
+		    if (transformerParam.getEnumValues() != null) {
+		        // Find the matching script file parameter value
+		        String scriptParamValue = ((org.daisy.dmfc.core.script.Parameter)params.get(transformerParam.getName())).getValue();		        
+		        Collection enumValues = transformerParam.getEnumValues();
+		        if (!enumValues.contains(scriptParamValue)) {
+		            throw new ValidationException(i18n("PARAMETER_NOT_IN_ENUM_VALUES", transformerParam.getName(), scriptParamValue));
+		        }
+		    }
+		}
 	}
 	
 	/**

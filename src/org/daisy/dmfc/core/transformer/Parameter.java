@@ -19,6 +19,8 @@
 package org.daisy.dmfc.core.transformer;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +29,7 @@ import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.util.xml.XPathUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * A parameter in the Transformer Description File (TDF).
@@ -44,6 +47,7 @@ public class Parameter implements ParameterInfo {
 	private String type;
 	private String defaultValue;
 	private String value = null;
+	private Collection enumValues = null;
 	
 	private File tdfDir;
 	
@@ -57,6 +61,16 @@ public class Parameter implements ParameterInfo {
 		name = getFromXPath(parameter, "name");
 		description = getFromXPath(parameter, "description");
 		example = getFromXPath(parameter, "example");
+		
+		NodeList enumValueNodes = XPathUtils.selectNodes(parameter, "enum/value");
+		if (enumValueNodes.getLength() > 0) {
+		    enumValues = new ArrayList();
+		    for (int i = 0; i < enumValueNodes.getLength(); ++i) {
+		        Element enumValue = (Element)enumValueNodes.item(i);
+		        enumValues.add(XPathUtils.valueOf(enumValue, "."));
+		    }
+		}
+		
 		if (XPathUtils.selectSingleNode(parameter, "@required") != null) {
 		    required = Boolean.valueOf(XPathUtils.valueOf(parameter, "@required")).booleanValue();
 		}
@@ -169,5 +183,9 @@ public class Parameter implements ParameterInfo {
      */
     public String getDescription() {
         return description;
+    }
+
+     public Collection getEnumValues() {
+        return enumValues;
     }
 }

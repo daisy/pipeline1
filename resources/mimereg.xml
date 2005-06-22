@@ -14,6 +14,8 @@
 
 	<!-- Other -->
 	<type id="string" name="string"/>
+	<type id="enum" name="enum" parentType="string"/>
+	<type id="rtf" name="application/rtf"/>
 
 	<!-- Images -->
 	<type id="jpg" name="image/jpeg"/>

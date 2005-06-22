@@ -18,6 +18,8 @@
  */
 package org.daisy.dmfc.core.transformer;
 
+import java.util.Collection;
+
 /**
  * @author Linus Ericson
  */
@@ -38,4 +40,6 @@ public interface ParameterInfo {
     public String getDefaultValue();
     
     public String getValue();
+    
+    public Collection getEnumValues();
 }

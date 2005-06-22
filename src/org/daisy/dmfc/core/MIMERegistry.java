@@ -32,14 +32,16 @@ import org.daisy.util.xml.XPathUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Singleton MIME registry class. Use the <code>instance</code> method
  * to obtain an (the) object of this class.
  * @author Linus Ericson
  */
-public class MIMERegistry {
+public class MIMERegistry implements ErrorHandler {
 	private static MIMERegistry registry = null;
 	private Map entries = new HashMap();
 	
@@ -54,6 +56,7 @@ public class MIMERegistry {
 	    docBuilderFactory.setValidating(true);
 	    try {
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            docBuilder.setErrorHandler(this);
             Document doc = docBuilder.parse(registryFile);
             readProperties(doc.getDocumentElement());
         } catch (MIMEException e) {
@@ -74,7 +77,11 @@ public class MIMERegistry {
 	 */
 	public static MIMERegistry instance() throws MIMEException {
 		if (registry == null) {
-			registry = new MIMERegistry();
+		    synchronized (MIMERegistry.class) {
+		        if (registry == null) {
+		            registry = new MIMERegistry();
+		        }
+		    }
 		}
 		return registry;
 	}
@@ -148,4 +155,19 @@ public class MIMERegistry {
 	    MIMEType mimeType = (MIMEType)entries.get(type);
 	    return mimeType != null;
 	}
+
+    
+    public void warning(SAXParseException e) throws SAXException {
+        throw new SAXException("[Line " + e.getLineNumber() + ", column " + e.getColumnNumber() + "] " + e.getMessage(), e);
+    }
+
+    
+    public void error(SAXParseException e) throws SAXException {
+        throw new SAXException("[Line " + e.getLineNumber() + ", column " + e.getColumnNumber() + "] " + e.getMessage(), e);
+    }
+
+    
+    public void fatalError(SAXParseException e) throws SAXException {
+        throw new SAXException("[Line " + e.getLineNumber() + ", column " + e.getColumnNumber() + "] " + e.getMessage(), e);
+    }
 }
