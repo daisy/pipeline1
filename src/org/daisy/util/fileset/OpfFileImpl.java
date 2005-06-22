@@ -3,11 +3,13 @@ package org.daisy.util.fileset;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -120,5 +122,8 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 		finalSpineMapIsBuilt = true;
 	}
 	
+	public Collection getSpineValues(){
+		return this.spineMap.values();
+	}
 	
 }
