@@ -27,7 +27,7 @@ public interface XmlFile extends FilesetFile, Referring {
 	 *@return true if <code>idval</code> exists as the value of an attribute named <code>id</code> on an element <code>qName</code> in the document, false otherwise
 	 *@see #hasIDValue(String)
 	 */
-	public boolean hasIDValueOnQName(String value, String qName);
+	public boolean hasIDValueOnQName(String idval, String qName);
 	
 	/**
 	 *@return true if the document has been parsed and found wellformed; false if the document has been parsed and found malformed

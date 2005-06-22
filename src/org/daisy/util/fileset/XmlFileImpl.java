@@ -130,8 +130,8 @@ class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, Er
 		return idMap.containsKey(value);
 	}
 
-	public boolean hasIDValueOnQName(String value, String QName) {
-		String test = (String)idMap.get(value);
+	public boolean hasIDValueOnQName(String idval, String QName) {
+		String test = (String)idMap.get(idval);
 		if(test!=null) {
 			return QName.equals(test);
 		}		
@@ -225,7 +225,7 @@ class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, Er
 	public void endPrefixMapping(String arg0) throws SAXException {}
 	
 	public void ignorableWhitespace(char[] arg0, int arg1, int arg2) throws SAXException {}
-	//	
+	
 	public void processingInstruction(String target, String data) throws SAXException {		
 		if (target.equals("xml-stylesheet")) { //see: http://www.w3.org/TR/xml-stylesheet/			
 			String content[] = data.split(" ");
