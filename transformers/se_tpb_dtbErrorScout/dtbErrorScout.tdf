@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformer version="1.0">
+	<name>DTB Error Scout</name>
+	<description>Checks feasible validity of a DTB, does not claim to do full conformance checking</description>
+	<classname>se_tpb_dtbErrorScout.DtbErrorScout</classname>
+	<license>unknown</license>
+	<author>Markus Gylling</author>
+	<support>No</support>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/xml">
+			<name>manifest</name>
+			<description>The manifest file (ncc, opf)</description>
+			<example>file:///path/to/ncc.html</example>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>scoutLevel</name>
+			<description>The scout level</description>
+			<example>MEDIUM</example>
+			<default>MEDIUM</default>
+		</parameter>		
+		
+		<parameter required="false" type="string">
+			<name>filesetType</name>
+			<description>The fileset type</description>			
+			<example>DAISY_202</example>
+			<default>DAISY_202</default>
+		</parameter>					
+	</parameters>	
+
+</transformer>
