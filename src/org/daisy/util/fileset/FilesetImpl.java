@@ -32,7 +32,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 	private ManifestFile manifestMember;	
 	private FilesetType filesetType = null;
 	private Regex regex = Regex.getInstance();
-	private Peeker peeker = (Peeker)new PeekerImpl();
+	private Peeker peeker; 
 	
 	/**
 	 * Default class constructor
@@ -49,6 +49,8 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		System.setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
 		System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration","com.sun.org.apache.xerces.internal.parsers.XML11Configuration");
 				
+		peeker = (Peeker)new PeekerImpl();
+		
 		File f = new File(manifest);
 		
 		if(f.exists() && f.canRead()){
