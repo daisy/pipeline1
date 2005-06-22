@@ -60,7 +60,8 @@ public class DtbErrorScout extends Transformer {
         sendMessage(Level.FINER, i18n("USING_FILESET_TYPE", filesetType));
         
         try {
-            org.daisy.util.dtb.validation.errorscout.DtbErrorScout errorScout = new DtbErrorScoutImpl(FilesetType.parse(filesetType), DtbErrorScoutingLevel.parse(scoutLevel));                  
+            org.daisy.util.dtb.validation.errorscout.DtbErrorScout errorScout = new DtbErrorScoutImpl(FilesetType.parse(filesetType), DtbErrorScoutingLevel.parse(scoutLevel));
+            long startTime = System.currentTimeMillis();
             if (errorScout.scout(FilenameOrFileURI.toFile(manifest).toURI())) {             
                 Iterator it = errorScout.getErrorsIterator();                           
                 while (it.hasNext()) {
@@ -75,7 +76,8 @@ public class DtbErrorScout extends Transformer {
                 }
                 return false;
             }
-            sendMessage(Level.INFO, i18n("NO_ERRORS_FOUND"));                
+            long endTime = System.currentTimeMillis();
+            sendMessage(Level.INFO, i18n("NO_ERRORS_FOUND", new Long(endTime - startTime)));                
         } catch (DtbErrorScoutException e) {
             throw new TransformerRunException(e.getMessage(), e);
         }
