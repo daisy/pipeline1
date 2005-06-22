@@ -24,5 +24,5 @@ public interface Referable {
 	 */
 	public Iterator getReferringLocalMembersIterator(); 
 	
-	void setReferringLocalMembers(HashMap fileset);
+	//public void setReferringLocalMembers(HashMap fileset);
 }
