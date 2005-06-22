@@ -68,7 +68,7 @@ public class SmilFileImpl extends XmlFileImpl implements SmilFile {
 			if (sName == "audio") {
 				if(audioClipBegin!=null&&audioClipEnd!=null){ //TODO optimize
 					//means we had a standard dtb audio element
-					myCalculatedDuration = myCalculatedDuration + (audioClipEnd.millisecondsValue() - audioClipBegin.millisecondsValue());				
+					myCalculatedDuration += (audioClipEnd.millisecondsValue() - audioClipBegin.millisecondsValue());				
 					//reset
 					audioClipBegin=null; audioClipEnd=null; 
 				}
