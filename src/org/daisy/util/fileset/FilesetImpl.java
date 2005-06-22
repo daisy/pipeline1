@@ -349,5 +349,21 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		errors.add(exception);
 		System.err.println("fatal CSSParseException in Fileset errhandler");
 	}
+
+
+	public long getLocalMemberSize() {		
+		return this.localMembers.size();
+	}
+
+	public long getByteSize() {
+	  long bytesize = 0;	
+      Collection c = getLocalMembers();
+      Iterator it = c.iterator();
+	  while (it.hasNext()) {
+	  	File f = (File)it.next();
+	  	bytesize += f.length();
+	  }
+      return bytesize;
+	}
 	
 }
