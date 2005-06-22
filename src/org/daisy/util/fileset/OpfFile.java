@@ -12,6 +12,7 @@ public interface OpfFile extends XmlFile, ManifestFile {
 
 	public Iterator getSpineIterator();
 	public Z3986SmilFile getSpineItem(URI uri)throws FilesetException;
-	public void buildSpineMap(Fileset fileset);
-	public Collection getSpineValues();
+	//public void buildSpineMap(Fileset fileset);
+	public Collection getSpineItems()throws FilesetException;
+	
 }

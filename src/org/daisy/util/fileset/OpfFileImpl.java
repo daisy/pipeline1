@@ -46,12 +46,11 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 		//TODO fix spine logic
 		
 		for (int i = 0; i < attrs.getLength(); i++) {
-			attrName = attrs.getQName(i).trim().intern();
-			attrValue = attrs.getValue(i).trim().intern();
+			attrName = attrs.getQName(i).intern();
+			attrValue = attrs.getValue(i).intern();
 			
-			//check if its an ID and if so add
 			if (attrName=="id") {
-				this.putIdValue(attrValue);
+				this.putIdAndQName(attrValue,qName);
 			}
 			
 			if(inManifest && qName=="item") { 
@@ -96,16 +95,22 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 		if (finalSpineMapIsBuilt) {
 			return (Z3986SmilFile)spineMap.get(uri);	
 		}
-		throw new FilesetException("spinemap is not built, call with fileset param or stich with URIs only");	    
+		throw new FilesetException("spinemap is not built");	    
 	}	
 	
-	public Z3986SmilFile getSpineItem(URI uri, Fileset fileset) throws FilesetException { 
-		if (!finalSpineMapIsBuilt) {
-			buildSpineMap(fileset);
+//	public Z3986SmilFile getSpineItem(URI uri, Fileset fileset) throws FilesetException { 
+//		if (!finalSpineMapIsBuilt) {
+//			buildSpineMap(fileset);
+//		}
+//		return (Z3986SmilFile)spineMap.get(uri);    	    
+//	}	
+	
+	public Collection getSpineItems() throws FilesetException { 
+		if (finalSpineMapIsBuilt) {
+			return spineMap.values();	
 		}
-		return (Z3986SmilFile)spineMap.get(uri);    	    
-	}	
-	
+		throw new FilesetException("spinemap is not built");		    	    
+	}
 	
 	public void buildSpineMap (Fileset fileset) {
 		//this can be done only when a complete fileset is built
@@ -122,8 +127,8 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 		finalSpineMapIsBuilt = true;
 	}
 	
-	public Collection getSpineValues(){
-		return this.spineMap.values();
-	}
+//	public Collection getSpineValues(){
+//		return this.spineMap.values();
+//	}
 	
 }
