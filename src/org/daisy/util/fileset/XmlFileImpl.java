@@ -1,7 +1,11 @@
 package org.daisy.util.fileset;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.net.URI;
 import java.util.HashSet;
 
@@ -10,6 +14,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogException;
@@ -163,24 +171,7 @@ class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, Er
 	protected void putIdValue(String idvalue) {
 		idValues.add(idvalue);
 	}
-	
-	public Document getDocument() throws ParserConfigurationException, SAXException, IOException {
-		if (domFactory == null) {
-			domFactory = DocumentBuilderFactory.newInstance();
-			domFactory.setNamespaceAware(true);
-			domFactory.setValidating(false);			
-			try {
-			  domFactory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion",true);
-			} catch (Exception e) {
-				System.err.println("could not set all features on domFactory");
-			}
-			domBuilder = domFactory.newDocumentBuilder();	
-		}					
-        domBuilder.setEntityResolver(this);
-        domBuilder.setErrorHandler(this);
-		return domBuilder.parse(this);
-	}
-	
+		
 	public InputSource resolveEntity(String publicId, String systemId) throws IOException {
 		//TODO handle local and remote sets		
 		//redirect to the 202 subset DTDs 
@@ -271,6 +262,37 @@ class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, Er
 	
 	public void comment(char[] ch, int start, int length) throws SAXException {}
 	
+	public Document asDocument() throws ParserConfigurationException, SAXException, IOException {
+		if (domFactory == null) {
+			domFactory = DocumentBuilderFactory.newInstance();
+			domFactory.setNamespaceAware(true);
+			domFactory.setValidating(false);			
+			try {
+			  domFactory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion",true);
+			} catch (Exception e) {
+				System.err.println("could not set all features on domFactory");
+			}
+			domBuilder = domFactory.newDocumentBuilder();	
+		}					
+        domBuilder.setEntityResolver(this);
+        domBuilder.setErrorHandler(this);
+		return domBuilder.parse(this);
+	}
 	
+	public InputSource asInputSource() throws FileNotFoundException {
+		return new InputSource(new FileReader(this));
+	}
+	
+	public DOMSource asDOMSource() throws ParserConfigurationException, SAXException, IOException {
+		return new DOMSource(this.asDocument());
+	}
+	
+	public SAXSource asSAXSource() throws FileNotFoundException {
+		return new SAXSource(this.asInputSource());
+	}
+	
+	public StreamSource asStreamSource() throws FileNotFoundException {
+		return new StreamSource(new FileReader(this));
+	}
 	
 }
