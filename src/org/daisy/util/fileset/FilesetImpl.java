@@ -78,7 +78,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 					//send it to the observer which handles the rest generically
 					this.fileInstantiatedEvent((FilesetFile)this.manifestMember);
                     //do some obscure stuff
-					OpfFile opf = (OpfFile)this.manifestMember;
+					OpfFileImpl opf = (OpfFileImpl)this.manifestMember;
 					opf.buildSpineMap(this);
 					
 				}else{
@@ -98,7 +98,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		//populate the reffering property
 		Iterator it = localMembers.keySet().iterator();
 		while(it.hasNext()) {
-			FilesetFile file = (FilesetFile) localMembers.get(it.next());
+			FilesetFileImpl file = (FilesetFileImpl) localMembers.get(it.next());
 			if (file instanceof Referable) {
 			  file.setReferringLocalMembers(localMembers);
 		    }  
@@ -146,16 +146,17 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 			Iterator it = referer.getUriIterator();
 			String value;
 			URI resolvedURI = null;
-			URI cache = null;
+			URI cachedURI = null;
 			while (it.hasNext()) {
 				value = (String)it.next();					
 				if(!regex.matches(regex.URI_REMOTE,value)) {
 					//strip fragment if existing
 					value = stripFragment(value);					
 					//resolve the uri string
-					resolvedURI = referer.toURI().resolve(value);
-					if (!resolvedURI.equals(cache)) {
-						cache = resolvedURI; 						
+					resolvedURI = referer.toURI().resolve(value);										
+					if (cachedURI==null) cachedURI = resolvedURI; 
+					if (resolvedURI.hashCode()!=cachedURI.hashCode()) {
+						cachedURI = resolvedURI; 						
 						//check if this file has already been added to main collection
 						FilesetFile newmember = (FilesetFile)localMembers.get(resolvedURI);
 						if (newmember == null) {

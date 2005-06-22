@@ -91,20 +91,4 @@ abstract class FilesetFileImpl extends File implements FilesetFile {
 			}
 		}	    
 	}
-//		
-//	/**
-//	 * Resolves a relative URI
-//	 * @param relativeURI as found in document ('../file.xml' etc)
-//	 * @return a resolved absolute URI ('file:/E:/folder/file.xml'). Base is always the document where the relative URI occurs.
-//	 */
-//	protected URI resolveURI(String relativeURI) {		
-//		return this.toURI().resolve(relativeURI);								
-//	}
-//	
-//	protected boolean matches(Pattern compiledPattern, String match) {
-//		 Matcher m = compiledPattern.matcher(match);
-//		 return m.matches();	
-//	}
-//	
-
 }
