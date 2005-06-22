@@ -9,6 +9,11 @@
 			<name>manifest</name>
 			<value>C:/TPBooks/C10337/ncc.html</value>
 		</parameter>
+		
+		<parameter>
+			<name>scoutLevel</name>
+			<value>MEDIUM</value>
+		</parameter>
 						
 	</task>
 
