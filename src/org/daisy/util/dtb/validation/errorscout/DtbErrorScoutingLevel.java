@@ -35,5 +35,22 @@ public final class DtbErrorScoutingLevel {
      */
     public static final DtbErrorScoutingLevel MAXED = new DtbErrorScoutingLevel();
 
-
+    /**
+     * Parses a string representation of a level into a <code>DtbErrorScoutingLevel</code>. 
+     * @param level the level to parse
+     * @return a <code>DtbErrorScoutingLevel</code>
+     * @throws IllegalArgumentException
+     */
+    public static DtbErrorScoutingLevel parse(String level) throws IllegalArgumentException {
+        if ("SLIM".equals(level)) {
+            return SLIM;
+        }
+        if ("MEDIUM".equals(level)) {
+            return MEDIUM;
+        }
+        if ("MAXED".equals(level)) {
+            return MAXED;
+        }
+        throw new IllegalArgumentException("DtbErrorScoutingLevel must be one of SLIM, MEDIUM or MAXED");
+    }
 }
