@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="lib/batik-parser.jar"/>
 	<classpathentry kind="lib" path="lib/batik-util.jar"/>
 	<classpathentry kind="lib" path="lib/sac.jar"/>
+	<classpathentry kind="lib" path="lib/jl1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
