@@ -27,9 +27,16 @@ public interface Fileset {
 	public FilesetFile getLocalMember(URI absoluteURI);
 	
 	/**
-	 *@return the collection of Fileset members (FilesetFile extenders)
+	 *@return the collection of local Fileset members 
 	 */
 	public Collection getLocalMembers();
+
+	
+	/**
+	 *@return the collection of remote resources referenced from within the fileset (typically http, mailto, etc URIs) 
+	 */
+	public Collection getRemoteResources();
+
 	
 	/**
 	 *@return true if errors were encountered during membership population process, false otherwise

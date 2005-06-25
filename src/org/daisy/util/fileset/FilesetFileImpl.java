@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 
 /**
@@ -20,11 +21,9 @@ import java.util.LinkedHashSet;
  */
 
 abstract class FilesetFileImpl extends File implements FilesetFile {
-	private LinkedHashSet myUriStrings = new LinkedHashSet();
-	private LinkedHashMap myFilesetReferences = new LinkedHashMap(); 
-	//private LinkedHashSet myFilesetReferences2 = new LinkedHashSet();
-	private HashMap myFilesetReferers = new HashMap(); 
-	//private HashSet myFilesetReferers2 = new HashSet();
+	private LinkedHashSet myUriStrings = new LinkedHashSet();	
+	private LinkedHashMap myFilesetReferences = new LinkedHashMap();	
+	private Map myFilesetReferers = new HashMap();	
 	protected Regex regex = Regex.getInstance(); 
 	
 	FilesetFileImpl(URI uri) throws IOException, FileNotFoundException {
@@ -47,8 +46,7 @@ abstract class FilesetFileImpl extends File implements FilesetFile {
 	}
 		
 	public Iterator getUriIterator() {
-		return this.myUriStrings.iterator();
-		
+		return this.myUriStrings.iterator();		
 	}
 
 	public boolean hasUris() {		
@@ -71,15 +69,22 @@ abstract class FilesetFileImpl extends File implements FilesetFile {
 		return myFilesetReferences.values();
 	}
 	
-	public FilesetFile getReferringLocalMember(URI uri) {
+	public FilesetFile getReferringLocalMember(URI uri) throws FilesetException{
+		if (myFilesetReferers.isEmpty()) throw new FilesetException("this collection has not been set");
 		return (FilesetFile)myFilesetReferers.get(uri);		
 	}
 	
-	public Iterator getReferringLocalMembersIterator() {
+	public Iterator getReferringLocalMembersIterator() throws FilesetException {
+		if (myFilesetReferers.isEmpty()) throw new FilesetException("this collection has not been set");
 		return myFilesetReferers.keySet().iterator(); 
 	}
+
+	public Collection getReferringLocalMembers() throws FilesetException {
+		if (myFilesetReferers.isEmpty()) throw new FilesetException("this collection has not been set");
+		return myFilesetReferers.values(); 
+	}
 	
-	public void setReferringLocalMembers(HashMap fileset) {
+	void setReferringLocalMembers(Map fileset) {
 		//populate the myFilesetReferers HashMap - who points to me?
 		URI myURI = this.toURI();
 		Iterator it = fileset.keySet().iterator();

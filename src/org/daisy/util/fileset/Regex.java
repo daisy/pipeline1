@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class Regex {
 	
 	private Regex(){
-		URI_REMOTE = Pattern.compile( "(http:.+)|(https:.+)|(ftp:.+)|(mailto:.+)|(gopher:.+)|(news:.+)|(nntp:.+)|(rtsp:.+)");		
+		URI_REMOTE = Pattern.compile("(^http:.+)|(^https:.+)|(^ftp:.+)|(^mailto:.+)|(^gopher:.+)|(^news:.+)|(^nntp:.+)|(^rtsp:.+)");		
 		URI_SMIL_FILE_WITH_FRAGMENT = Pattern.compile(".+\\.[Ss][Mm][Ii][Ll]#.+");
 		URI_WITH_FRAGMENT = Pattern.compile(".+\\..+#.+");  
 		
@@ -38,18 +38,18 @@ public class Regex {
 		FILE_DTBOOK = Pattern.compile(".+\\.[Xx][Mm][Ll]$");
 		FILE_XML = Pattern.compile(".+\\.[Xx][Mm][Ll]$");
 		
-		XHTML_ELEMENTS_WITH_URI_ATTRS = Pattern.compile("(a)|(link)|(img)");
-		XHTML_ATTRS_WITH_URIS = Pattern.compile("(href)|(src)"); 
+		XHTML_ELEMENTS_WITH_URI_ATTRS = Pattern.compile("(^a$)|(^link$)|(^img$)");
+		XHTML_ATTRS_WITH_URIS = Pattern.compile("(^href$)|(^src$)"); 
 		XHTML_HEADING_ELEMENT = Pattern.compile("^h[1-6]$");
 		
-		SMIL_ELEMENTS_WITH_URI_ATTRS = Pattern.compile( "(text)|(audio)|(img)|(a)");
-		SMIL_ATTRIBUTES_WITH_URIS = Pattern.compile("(href)|(src)");
+		SMIL_ELEMENTS_WITH_URI_ATTRS = Pattern.compile( "(^text$)|(^audio$)|(^img$)|(^a$)");
+		SMIL_ATTRIBUTES_WITH_URIS = Pattern.compile("(^href$)|(^src$)");
 		
-		CSS_PROPERTIES_WITH_URLS = Pattern.compile("(background)|(background-image)|(list-style)");
+		CSS_PROPERTIES_WITH_URLS = Pattern.compile("(^background$)|(^background-image$)|(^list-style$)");
 		
-		NCX_ELEMENTS_WITH_URI_ATTRS = Pattern.compile( "(content)|(audio)|(img)");
-		RESOURCE_ELEMENTS_WITH_URI_ATTRS = Pattern.compile( "(audio)|(img)");
-		DTBOOK_ATTRIBUTES_WITH_URIS = Pattern.compile( "(smilref)|(src)|(href)");				
+		NCX_ELEMENTS_WITH_URI_ATTRS = Pattern.compile( "(^content$)|(^audio$)|(^img$)");
+		RESOURCE_ELEMENTS_WITH_URI_ATTRS = Pattern.compile( "(^audio$)|(^img$)");
+		DTBOOK_ATTRIBUTES_WITH_URIS = Pattern.compile( "(^smilref$)|(^src$)|(^href$)");				
 	}
 	
 	public Pattern URI_REMOTE;	

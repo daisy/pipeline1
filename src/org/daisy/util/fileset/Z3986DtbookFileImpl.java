@@ -24,10 +24,12 @@ class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile {
 	}
 	
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
-		qName = qName.intern();
+		//qName = qName.intern();
 		for (int i = 0; i < attrs.getLength(); i++) {
-			attrName = attrs.getQName(i).intern();
-			attrValue = attrs.getValue(i).intern();
+//			attrName = attrs.getQName(i).intern();
+//			attrValue = attrs.getValue(i).intern();
+			attrName = attrs.getQName(i);
+			attrValue = attrs.getValue(i);
 						
 			if (attrName=="id") {
 				putIdAndQName(attrValue,qName);

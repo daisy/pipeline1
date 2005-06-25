@@ -58,7 +58,7 @@ public interface XmlFile extends FilesetFile, Referring {
 	public boolean isDTDValidated();
 	
 	/**
-	 *@return a {@link org.w3c.dom.Document} instance of this file
+	 *@return this file as an {@link org.w3c.dom.Document} instance
 	 */
 	public Document asDocument() throws ParserConfigurationException, SAXException, IOException;
 	

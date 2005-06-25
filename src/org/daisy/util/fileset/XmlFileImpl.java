@@ -74,10 +74,26 @@ class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, Er
 	
 	private void initialize() throws ParserConfigurationException, SAXException {
 		if (saxFactory==null) {
-			saxFactory = SAXParserFactory.newInstance();		
-			saxFactory.setValidating(true);
+			saxFactory = SAXParserFactory.newInstance();	
+			saxFactory.setValidating(getValidatingProperty());			
 			saxFactory.setNamespaceAware(true);
-			saxParser = saxFactory.newSAXParser();						
+			saxParser = saxFactory.newSAXParser();
+			try {
+				saxFactory.setFeature("http://xml.org/sax/features/string-interning",true);	
+			} catch (Exception e) {
+				System.err.println("string-interning setfeature failed in xmlfileimpl");
+			}
+			
+			//setFeatures if nonvalidating
+			if(!saxFactory.isValidating()) {
+				try {
+					saxFactory.setFeature("http://xml.org/sax/features/validation", false);
+					saxFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+					saxFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);							
+				} catch (Exception e) {
+					 System.err.println("sax setfeature failed in xmlfileimpl");
+				}
+			}
 		}   
 		saxParser.getXMLReader().setContentHandler(this);
 		saxParser.getXMLReader().setEntityResolver(this);
@@ -90,6 +106,19 @@ class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, Er
 		//parser.getXMLReader().setProperty("http://apache.org/xml/properties/input-buffer-size", new Integer(2048));
 		//************* end debug **************
 		
+	}
+	
+	private boolean getValidatingProperty() {		
+		try {		  
+		  if (System.getProperty("org.daisy.util.fileset.validating").equals("true")) {
+		  	//System.err.println("validation on");
+		  	return true;
+		  }
+		}catch (Exception e) {
+		
+		}  
+		//System.err.println("validation off");
+		return false;
 	}
 	
 	public void parse() throws IOException, SAXParseException, SAXException {

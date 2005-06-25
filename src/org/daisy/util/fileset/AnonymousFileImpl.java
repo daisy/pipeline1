@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Markus Gylling
  */
-public class AnonymousFileImpl extends FilesetFileImpl {
+class AnonymousFileImpl extends FilesetFileImpl {
   
 	public AnonymousFileImpl(URI uri) throws FileNotFoundException, IOException {
 		super(uri);		

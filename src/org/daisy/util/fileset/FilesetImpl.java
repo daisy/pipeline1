@@ -3,8 +3,9 @@
  */
 package org.daisy.util.fileset;
 
+
+
 import java.io.File;
-//import com.sun.org.apache.xerces.internal.impl.Constants;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
@@ -12,6 +13,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javazoom.jl.decoder.BitstreamException;
 import org.daisy.util.xml.Peeker;
@@ -26,31 +29,62 @@ import org.xml.sax.SAXParseException;
  * @author Markus Gylling
  */
 public class FilesetImpl implements FilesetErrorHandler, Fileset {
-	private HashMap localMembers = new HashMap();	//<URI>, <FilesetFile>	
+	private Map localMembers = new HashMap();	//<URI>, <FilesetFile>	
 	private HashSet remoteMembers = new HashSet();	//<String> 
 	private HashSet errors = new HashSet();			//<Exception>	
 	private ManifestFile manifestMember;	
 	private FilesetType filesetType = null;
 	private Regex regex = Regex.getInstance();
 	private Peeker peeker; 
-	
+	private boolean setReferringCollections; 
 	/**
 	 * Default class constructor
 	 * @param manifest the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
+	 * @see #FilesetImpl(URI, boolean)
+	 * @see #FilesetImpl(URI,boolean, boolean)
 	 */
 	public FilesetImpl(URI manifest) throws FilesetException {
-		initialize(manifest);	
+		initialize(manifest,false,false);	
 	}
 	
-	private void initialize(URI manifest) throws FilesetException  {
+	/**
+	 * Extended class constructor
+	 * @param manifest the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
+	 * @param dtdValidate sets whether XML members in the fileset will be DTD validated in the case they reference a DTD. The default value of this property is false.
+	 * @see #FilesetImpl(URI)
+	 * @see #FilesetImpl(URI,boolean, boolean) 
+	 */
+	public FilesetImpl(URI manifest, boolean dtdValidate) throws FilesetException {
+		initialize(manifest,dtdValidate,false);	
+	}
+	
+	/**
+	 * Extended class constructor. 	 
+	 * @param manifest the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
+	 * @param dtdValidate sets whether XML members in the fileset will be DTD validated.  The default value of this property is false.
+	 * @param setReferringCollections sets whether the referringLocalMembers collection will be created on each member. Note - this is a costly procedure in terms of timeconsumption for large filesets.  The default value of this property is false.
+	 * @see #FilesetImpl(URI)
+	 * @see #FilesetImpl(URI, boolean)
+	 * @see {@link org.daisy.util.fileset.Referable} 
+	 */
+	public FilesetImpl(URI manifest, boolean dtdValidate, boolean setReferringCollections) throws FilesetException {
+		initialize(manifest,dtdValidate,setReferringCollections);	
+	}
+	
+	private void initialize(URI manifest, boolean dtdValidate, boolean setReferringCollections) throws FilesetException  {
+		
 		//speed up JAXP		
 		//TODO System.getProperty("java.version") || java.vendor
 		System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
 		System.setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
 		System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration","com.sun.org.apache.xerces.internal.parsers.XML11Configuration");
-				
-		peeker = (Peeker)new PeekerImpl();
 		
+		this.setReferringCollections = setReferringCollections;
+		if (dtdValidate) {
+		  System.setProperty("org.daisy.util.fileset.validating", "true");
+		} 
+		
+		peeker = (Peeker)new PeekerImpl();		
 		File f = new File(manifest);
 		
 		if(f.exists() && f.canRead()){
@@ -62,13 +96,13 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 					this.manifestMember = new D202NccFileImpl(f.toURI(),this);						
 					//send it to the observer which handles the rest generically
 					this.fileInstantiatedEvent((FilesetFile)manifestMember);
-                    //do some obscure stuff
+					//do some obscure stuff
 					File test = new File(manifestMember.getParentFile(), "master.smil");
 					if (test.exists()){
 						D202MasterSmilFile msmil = new D202MasterSmilFileImpl(test.toURI());
 						this.fileInstantiatedEvent((FilesetFile)msmil);
 					}
-
+					
 					
 				}else if(regex.matches(regex.FILE_OPF, f.getName())) {
 					//set the fileset type
@@ -77,12 +111,12 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 					this.manifestMember = new OpfFileImpl(f.toURI(),this);					 						
 					//send it to the observer which handles the rest generically
 					this.fileInstantiatedEvent((FilesetFile)this.manifestMember);
-                    //do some obscure stuff
+					//do some obscure stuff
 					OpfFileImpl opf = (OpfFileImpl)this.manifestMember;
 					opf.buildSpineMap(this);
 					
 				}else{
-//					other types
+					//					other types
 				}
 			} catch (Exception e){
 				//thrown if the manifest could not be instantiated
@@ -95,33 +129,32 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		
 		//if we get here the fileset is completely populated without fatal errors
 		
-		//populate the reffering property
-		Iterator it = localMembers.keySet().iterator();
-		while(it.hasNext()) {
-			FilesetFileImpl file = (FilesetFileImpl) localMembers.get(it.next());
-			if (file instanceof Referable) {
-			  file.setReferringLocalMembers(localMembers);
-		    }  
+		//TODO reimplement and optimize
+		if(this.setReferringCollections){
+			//		populate the reffering property
+			Iterator it = localMembers.keySet().iterator();
+			while(it.hasNext()) {
+				FilesetFileImpl file = (FilesetFileImpl) localMembers.get(it.next());
+				if (file instanceof Referable) {
+					file.setReferringLocalMembers(localMembers);
+				}  
+			}
 		}
-		
 		//System.err.println("fileset completely populated");
-		//System.err.println("size: " + this.localMembers.size());
-		
+		//System.err.println("size: " + this.localMembers.size());		
+		System.clearProperty("org.daisy.util.fileset.validating");
 		
 	}
 	
 	void fileInstantiatedEvent(FilesetFile member) throws ParserConfigurationException {
 		//all file instantiations are reported here
 		//but never by the member itself
-		
-		if(member==null) {
-			System.err.println("member==null");
-		}
-		
+				
 		//add to this.localMembers			
 		localMembers.put(member.toURI(),member);
 		
-		if (member instanceof Referring) {			
+		if (member instanceof Referring) {
+			//if its referring we need to find out whom else it points to
 			try {
 				member.parse();
 			} catch (IOException ioe) {
@@ -264,7 +297,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		//if no factual match, still instantiate it		
 		errors.add(new FilesetException("no matching file type found for " + value + ": this file appears as AnonymousFile"));
 		return new AnonymousFileImpl(uri);			
-								
+		
 	}
 	
 	private String stripFragment(String value) {				
@@ -290,7 +323,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 	public FilesetFile getLocalMember(URI absoluteURI) {
 		return (FilesetFile)localMembers.get(absoluteURI);		
 	}
-
+	
 	public Collection getLocalMembers() {
 		return localMembers.values();		
 	}
@@ -298,11 +331,11 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 	public boolean hadErrors() {		
 		return (!errors.isEmpty());
 	}
-
+	
 	public Iterator getErrorsIterator() {
 		return errors.iterator();
 	}	
-
+	
 	public Collection getErrors() {
 		return this.errors;
 	}
@@ -350,21 +383,25 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		errors.add(exception);
 		System.err.println("fatal CSSParseException in Fileset errhandler");
 	}
-
-
+	
+	
 	public long getLocalMemberSize() {		
 		return this.localMembers.size();
 	}
-
+	
 	public long getByteSize() {
-	  long bytesize = 0;	
-      Collection c = getLocalMembers();
-      Iterator it = c.iterator();
-	  while (it.hasNext()) {
-	  	File f = (File)it.next();
-	  	bytesize += f.length();
-	  }
-      return bytesize;
+		long bytesize = 0;	
+		Collection c = getLocalMembers();
+		Iterator it = c.iterator();
+		while (it.hasNext()) {
+			File f = (File)it.next();
+			bytesize += f.length();
+		}
+		return bytesize;
+	}
+
+	public Collection getRemoteResources() {
+      return (Collection)this.remoteMembers;
 	}
 	
 }

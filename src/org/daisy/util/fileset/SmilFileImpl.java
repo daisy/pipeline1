@@ -29,10 +29,13 @@ public class SmilFileImpl extends XmlFileImpl implements SmilFile {
 	}
 	
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
-		sName = sName.intern();
+		//sName = sName.intern();
 		for (int i = 0; i < attrs.getLength(); i++) {
-			attrName = attrs.getQName(i).intern();
-			attrValue = attrs.getValue(i).intern();			
+//			attrName = attrs.getQName(i).intern();
+//			attrValue = attrs.getValue(i).intern();			
+			attrName = attrs.getQName(i);
+			attrValue = attrs.getValue(i);			
+
 			if (attrName=="id") {
 				putIdAndQName(attrValue,qName);
 			}else if(Regex.getInstance().matches(Regex.getInstance().SMIL_ATTRIBUTES_WITH_URIS,attrName)) {
