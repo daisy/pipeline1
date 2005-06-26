@@ -88,7 +88,20 @@
     <public publicId="-//NISO//DTD resource v1.1.0//EN" uri="./z39862002/resource110.dtd" />
     <system systemId="http://www.loc.gov/nls/z3986/v100/resource110.dtd" uri="./z39862002/resource110.dtd" />      
   </group>
-  <group> <!-- zed 2005 --> </group>
+  <group> <!-- zed 2005 --> 
+    <public publicId="-//NISO//DTD dtbook 2005-1//EN" uri="./z39862005/dtbook-2005-1.dtd" />
+    <system systemId="http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd" uri="./z39862005/dtbook-2005-1.dtd" />
+    <public publicId="-//NISO//DTD ncx 2005-1//EN" uri="./z39862005/ncx-2005-1.dtd" />
+    <system systemId="http://www.daisy.org/z3986/2005/ncx-2005-1.dtd" uri="./z39862005/ncx-2005-1.dtd" />
+    <public publicId="-//NISO//DTD dtbsmil 2005-1//EN" uri="./z39862005/dtbsmil-2005-1.dtd" />
+    <system systemId="http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd" uri="./z39862005/dtbsmil-2005-1.dtd" />
+    <public publicId="-//NISO//DTD distInfo 2005-1//EN" uri="./z39862005/" />
+    <system systemId="http://www.daisy.org/z3986/2005/distInfo-2005-1.dtd" uri="./z39862005/distInfo-2005-1.dtd" />
+    <public publicId="-//NISO//DTD bookmark 2005-1//EN" uri="./z39862005/bookmark-2005-1.dtd" />
+    <system systemId="http://www.daisy.org/z3986/2005/bookmark-2005-1.dtd" uri="./z39862005/bookmark-2005-1.dtd" />
+    <public publicId="-//NISO//DTD resource 2005-1//EN" uri="./z39862005/resource-2005-1.dtd" />
+    <system systemId="http://www.daisy.org/z3986/2005/resource-2005-1.dtd" uri="./z39862005/resource-2005-1.dtd" />    
+  </group>
   
   <group> <!-- Daisy 2.02 --> 
     <public publicId="-//DAISY//DTD content v2.02//EN" uri="./d202/xhtml1-transitional-bodyref.dtd" />
@@ -102,13 +115,19 @@
     <public publicId="-//DAISY//DTD discinfo v2.02//EN" uri="./d202/d202discinfo.dtd" />      
   </group>
   
-  
-  <group> <!-- oeb 1.01 -->
+  <group> <!-- oeb -->
     <public publicId="+//ISBN 0-9673008-1-9//DTD OEB 1.0.1 Package//EN" uri="./oeb/oebpkg101.dtd" />
     <system systemId="http://openebook.org/dtds/oeb-1.0.1/oebpkg101.dtd" uri="./oeb/oebpkg101.dtd" />      
     <public publicId="+//ISBN 0-9673008-1-9//DTD OEB 1.0 Entities//EN" uri="./oeb/oeb1.ent" />
     <system systemId="http://openebook.org/dtds/oeb-1.0.1/oeb1.ent" uri="./oeb/oeb1.ent" />      
-    <system systemId="oeb1.ent" uri="./oeb/oeb1.ent" />    
+    <system systemId="oeb1.ent" uri="./oeb/oeb1.ent" />
+    <public publicId="+//ISBN 0-9673008-1-9//DTD OEB 1.2 Package//EN" uri="./oeb/oebpkg12.dtd" />    
+    <system systemId="http://openebook.org/dtds/oeb-1.2/oebpkg12.dtd" uri="./oeb/oebpkg12.dtd" />          
+    <public publicId="+//ISBN 0-9673008-1-9//DTD OEB 1.2 Entities//EN" uri="./oeb/oeb12.ent" />
+    <system systemId="http://openebook.org/dtds/oeb-1.2/oeb12.ent" uri="./oeb/oeb12.ent" />      
+    <system systemId="oeb12.ent" uri="./oeb/oeb12.ent" />
+    <public publicId="+//ISBN 0-9673008-1-9//DTD OEB 1.2 Document//EN" uri="./oeb/oebdoc12.dtd" />
+    <system systemId="http://openebook.org/dtds/oeb-1.2/oebdoc12.dtd" uri="./oeb/oebdoc12.dtd" />
   </group>
   <group> <!-- smil 1.0 -->
     <public publicId="-//W3C//DTD SMIL 1.0//EN" uri="./smil1/SMIL10.dtd" />
