@@ -29,7 +29,7 @@ class Xhtml10FileImpl extends XmlFileImpl implements TextualContentFile, Xhtml10
 //			attrName = attrs.getQName(i).intern();
 //			attrValue = attrs.getValue(i).intern();			
 			attrName = attrs.getQName(i);
-			attrValue = attrs.getValue(i);	
+			attrValue = attrs.getValue(i).intern(); //for some reason	
 			if (attrName=="id") {
 				putIdAndQName(attrValue,qName);
 			}else if(regex.matches(regex.XHTML_ATTRS_WITH_URIS,attrName)) {

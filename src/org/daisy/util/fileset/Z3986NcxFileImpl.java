@@ -29,7 +29,7 @@ class Z3986NcxFileImpl extends XmlFileImpl implements Z3986NcxFile {
 //			attrName = attrs.getQName(i).intern();
 //			attrValue = attrs.getValue(i).intern();			
 			attrName = attrs.getQName(i);
-			attrValue = attrs.getValue(i);			
+			attrValue = attrs.getValue(i).intern(); //for some reason			
 			if (attrName=="id") {
 				this.putIdAndQName(attrValue,qName);
 			}else if (attrName=="src") {

@@ -28,7 +28,7 @@ class Z3986ResourceFileImpl extends XmlFileImpl implements Z3986ResourceFile {
 //			attrName = attrs.getQName(i).intern();
 //			attrValue = attrs.getValue(i).intern();
 			attrName = attrs.getQName(i);
-			attrValue = attrs.getValue(i);	
+			attrValue = attrs.getValue(i).intern();	
 			if (attrName=="id") {
 				putIdAndQName(attrValue,qName);
 			}else if (attrName=="src") {

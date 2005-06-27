@@ -24,7 +24,7 @@ class D202MasterSmilFileImpl extends SmilFileImpl implements D202MasterSmilFile 
 //				attrName = attrs.getQName(i).intern();
 //				attrValue = attrs.getValue(i).intern();					
 				attrName = attrs.getQName(i);
-				attrValue = attrs.getValue(i);
+				attrValue = attrs.getValue(i).intern();
 				if (attrName=="id") {
 					this.putIdAndQName(attrValue,qName);
 				}else if (attrName=="src") {

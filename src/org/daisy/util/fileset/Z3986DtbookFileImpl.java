@@ -29,7 +29,7 @@ class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile {
 //			attrName = attrs.getQName(i).intern();
 //			attrValue = attrs.getValue(i).intern();
 			attrName = attrs.getQName(i);
-			attrValue = attrs.getValue(i);
+			attrValue = attrs.getValue(i).intern();
 						
 			if (attrName=="id") {
 				putIdAndQName(attrValue,qName);
