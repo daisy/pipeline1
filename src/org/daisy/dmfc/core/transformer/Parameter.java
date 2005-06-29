@@ -124,8 +124,9 @@ public class Parameter implements ParameterInfo {
 	 * @return the value of the XPath expression or null
 	 */
 	private String getFromXPath(Node a_node, String a_xpath) {
-	    if (XPathUtils.selectSingleNode(a_node, a_xpath) != null) {
-	        return XPathUtils.valueOf(a_node, a_xpath);
+	    String result = XPathUtils.valueOf(a_node, a_xpath);
+	    if (result != "") {
+	        return result;
 	    }	    
 	    return null;
 	}
