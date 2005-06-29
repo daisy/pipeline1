@@ -33,6 +33,8 @@ import org.w3c.dom.NodeList;
  */
 public class XPathUtils {
 
+    private static XPath xpathObj = XPathFactory.newInstance().newXPath();
+        
     /**
      * Evaluates an XPath expression and returns the {@link String} value
      * of the result, similar to the <code>value-of</code> function in XSLT.
@@ -43,9 +45,8 @@ public class XPathUtils {
      * @return a {@link String}.
      */
     public static String valueOf(Node node, String xpath) {
-        XPath xpathObj = XPathFactory.newInstance().newXPath();
 	    try {
-            return (String)xpathObj.evaluate(xpath, node, XPathConstants.STRING);
+	        return (String)xpathObj.evaluate(xpath, node, XPathConstants.STRING);
         } catch (XPathExpressionException e) {            
             return "";
         }
@@ -58,8 +59,7 @@ public class XPathUtils {
      * @return a {@link NodeList}, or <code>null</code> if there is an
      * error in the XPath expression.
      */
-    public static NodeList selectNodes(Node node, String xpath) {
-        XPath xpathObj = XPathFactory.newInstance().newXPath();
+    public static NodeList selectNodes(Node node, String xpath) {        
         try {
             return (NodeList)xpathObj.evaluate(xpath, node, XPathConstants.NODESET);
         } catch (XPathExpressionException e) {            
@@ -76,7 +76,6 @@ public class XPathUtils {
      * error in the XPath expression.
      */
     public static Node selectSingleNode(Node node, String xpath) {
-        XPath xpathObj = XPathFactory.newInstance().newXPath();
         try {
             return (Node)xpathObj.evaluate(xpath, node, XPathConstants.NODE);
         } catch (XPathExpressionException e) {            
