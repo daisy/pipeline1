@@ -75,6 +75,8 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	private Class transformerClass;
 	private Constructor transformerConstructor;
 	
+	private File transformerDirectory;
+	
 	/**
 	 * Creates a Transformer handler.
 	 * @param transformerDescription a transformer description file
@@ -84,7 +86,8 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 */
 	public TransformerHandler(File transformerDescription, InputListener inListener, Set eventListeners, Validator validator) throws TransformerDisabledException {
 		super(eventListeners);
-		inputListener = inListener;		
+		inputListener = inListener;
+		transformerDirectory = transformerDescription.getParentFile();
 				
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		docBuilderFactory.setValidating(false);
@@ -103,7 +106,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			Document doc = docBuilder.parse(transformerDescription);
 					
 			// Get properties from transformer description file
-			readProperties(doc.getDocumentElement(), transformerDescription.getParentFile());
+			readProperties(doc.getDocumentElement(), transformerDirectory);
 						
 			// Perform platform dependency checks
 			if (!isPlatformOk(doc.getDocumentElement())) {
@@ -166,7 +169,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		    params.put(entry.getKey(), ((org.daisy.dmfc.core.script.Parameter)entry.getValue()).getValue());
 		}
 				
-		return transformer.executeWrapper(params);
+		return transformer.executeWrapper(params, transformerDirectory);
 	}
 	
 	/**

@@ -3,6 +3,7 @@
  */
 package org.daisy.dmfc.core.transformer;
 
+import java.io.File;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -28,6 +29,8 @@ public abstract class Transformer extends EventSender {
 	
 	private boolean interactive;	
 	private InputListener inputListener;
+	
+	private File transformerDirectory = null;
 	
 	/**
 	 * Creates a new Transformer.
@@ -58,8 +61,9 @@ public abstract class Transformer extends EventSender {
 	 */
 	protected abstract boolean execute(Map parameters) throws TransformerRunException;
 	
-	final public boolean executeWrapper(Map parameters) throws TransformerRunException {
+	final public boolean executeWrapper(Map parameters, File dir) throws TransformerRunException {
 	    boolean ret;
+	    transformerDirectory = dir;
 	    status(true);
 	    ret = execute(parameters);
 	    status(false);
@@ -86,5 +90,13 @@ public abstract class Transformer extends EventSender {
 		    return defaultValue;			
 		}		
 		return inputListener.getInputAsString(new Prompt(level, message, messageOriginator));		
+	}
+	
+	/**
+	 * Final function for returning the transformer directory. This method cannot be overridden.
+	 * @return the directory of the transformer
+	 */
+	final protected File getTransformerDirectory() {
+	    return transformerDirectory;
 	}
 }
