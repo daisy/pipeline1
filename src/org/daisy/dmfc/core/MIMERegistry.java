@@ -50,7 +50,7 @@ public class MIMERegistry implements ErrorHandler {
 	 * @throws MIMEException
 	 */
 	private MIMERegistry() throws MIMEException {
-	    File registryFile = new File(System.getProperty("dmfc.home") + File.separator + "resources", "mimereg.xml");
+	    File registryFile = new File(DMFCCore.getHomeDirectory().getPath() + File.separator + "resources", "mimereg.xml");
 
 	    DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 	    docBuilderFactory.setValidating(true);

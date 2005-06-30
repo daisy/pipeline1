@@ -37,6 +37,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.DirClassLoader;
 import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.InputListener;
@@ -245,7 +246,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	    sendMessage(Level.FINE, i18n("LOADING_TRANSFORMER", name, classname));
 		File dir = transformerDescription.getAbsoluteFile();
 		dir = dir.getParentFile();
-		transformerClassLoader = new DirClassLoader(new File(System.getProperty("dmfc.home"), "transformers"), dir);
+		transformerClassLoader = new DirClassLoader(new File(DMFCCore.getHomeDirectory(), "transformers"), dir);
 		for (Iterator it = jars.iterator(); it.hasNext(); ) {
 		    String jar = (String)it.next();
 		    transformerClassLoader.addJar(new File(dir, jar));
