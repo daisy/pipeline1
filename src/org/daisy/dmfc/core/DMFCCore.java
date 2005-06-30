@@ -21,9 +21,9 @@ package org.daisy.dmfc.core;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -61,10 +61,10 @@ import org.daisy.util.xml.validation.Validator;
 public class DMFCCore extends EventSender {
 
     private static Pattern tdfFolderPattern = Pattern.compile(".*[^a-z]([a-z]+)_([a-z]+)_(.*)");
+    private static File homeDirectory = null;
     
 	private InputListener inputListener;
-	private Map transformerHandlers = new HashMap();
-	private String home;
+	private Map transformerHandlers = new HashMap();	
 	
 	/**
 	 * Create an instance of DMFC using the default locale.
@@ -88,18 +88,18 @@ public class DMFCCore extends EventSender {
 		super(evListener);
 		inputListener = inListener;
 		Locale.setDefault(locale);
-		
+				
 		// Set DMFC home dir
-		home = getHomeDir();
-		System.setProperty("dmfc.home", home);
+		homeDirectory = getHomeDir();
+		System.setProperty("dmfc.home", getHomeDirectory().getAbsolutePath());
 		
 		// Load properties from file
 		if (!loadProperties(ClassLoader.getSystemResourceAsStream("dmfc.properties"))) {
 		    throw new DMFCConfigurationException("Can't read dmfc.properties!");
 		}
-		
+
 		// Load messages
-		DirClassLoader resourceLoader = new DirClassLoader(new File(home, "resources"), new File(home, "resources"));
+		DirClassLoader resourceLoader = new DirClassLoader(new File(getHomeDirectory(), "resources"), new File(getHomeDirectory(), "resources"));
 		ResourceBundle bundle = ResourceBundle.getBundle("dmfc_messages", Locale.ENGLISH, resourceLoader);
 		I18n.setDefaultBundle(bundle);				
 		
@@ -117,23 +117,31 @@ public class DMFCCore extends EventSender {
 	}	
 
 	/**
-	 * Find out what the home directory of DMFC is.
+	 * Find the home directory of DMFC.
 	 * @return the home directory of DMFC.
 	 * @throws DMFCConfigurationException
 	 */
-	private String getHomeDir() throws DMFCConfigurationException {
+	private static File getHomeDir() throws DMFCConfigurationException {
 	    URL url = ClassLoader.getSystemResource("dmfc.properties");
 	    if (url == null) {
 	        System.err.println("Can't find dmfc.properties");
 	        throw new DMFCConfigurationException("Can't find dmfc.properties");
 	    }
-	    String dir = new File(url.getFile()).getParentFile().getParent();
-	    try {	        
-            dir = URLDecoder.decode(dir, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new DMFCConfigurationException("This is not supposed to happen!", e);            
-        }
+	    File dir;
+        try {
+            dir = new File(new URI(url.toExternalForm())).getParentFile().getParentFile();
+        } catch (URISyntaxException e) {
+            throw new DMFCConfigurationException("Can't create file object");
+        }        
 	    return dir;
+	}
+	
+	/**
+	 * Gets the home directory of DMFC.
+	 * @return the home directory of DMFC or <code>null</code> if it has not yet been set.
+	 */
+	public static File getHomeDirectory() {
+	    return homeDirectory;
 	}
 	
 	/**
@@ -160,10 +168,10 @@ public class DMFCCore extends EventSender {
 	 */
 	public boolean reloadTransformers() {
 		try {
-			Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "transformer.rng"), null,true,true);
+			Validator validator = new RelaxngSchematronValidator(new File(getHomeDirectory().getPath() + File.separator + "resources", "transformer.rng"), null,true,true);
 			sendMessage(Level.CONFIG, i18n("RELOADING_TRANSFORMERS"));
 			transformerHandlers.clear();		
-			addTransformers(new File(home, "transformers"), validator);			
+			addTransformers(new File(getHomeDirectory(), "transformers"), validator);			
 			sendMessage(Level.CONFIG, i18n("RELOADING_TRANSFORMERS_DONE"));
 		} catch (ValidationException e) {
 			sendMessage(Level.SEVERE, i18n("RELOADING_TRANSFORMERS_FAILED", e.getMessage()));
@@ -248,7 +256,7 @@ public class DMFCCore extends EventSender {
 	public boolean executeScript(File script) {		
 		boolean ret = false;
 		try {
-			Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "script.rng"), null,true,false);
+			Validator validator = new RelaxngSchematronValidator(new File(getHomeDirectory().getPath() + File.separator + "resources", "script.rng"), null,true,false);
 			ScriptHandler handler = new ScriptHandler(script, transformerHandlers, getEventListeners(), validator);
 			handler.execute();
 			ret = true;
@@ -272,7 +280,9 @@ public class DMFCCore extends EventSender {
 			    String msg = "";
 			    String[] msgs = e.getRootCauseMessages();			    
 			    for (int i = 0; i < msgs.length; ++i) {
-			        msg = msgs[i] + "\n";
+			        if (msgs[i] != null) { 
+			            msg = msgs[i] + "\n";
+			        }
 			    }
 				sendMessage(Level.SEVERE, i18n("ROOT_CAUSE", msg));
 			}
@@ -288,7 +298,7 @@ public class DMFCCore extends EventSender {
 	 * @throws MIMEException
 	 */
 	public void validateScript(File script) throws ValidationException, ScriptException, MIMEException {
-		Validator validator = new RelaxngSchematronValidator(new File(home + File.separator + "resources", "script.rng"), null,true,false);
+		Validator validator = new RelaxngSchematronValidator(new File(getHomeDirectory().getPath() + File.separator + "resources", "script.rng"), null,true,false);
 		new ScriptHandler(script, transformerHandlers, getEventListeners(), validator);
 	}
 }
