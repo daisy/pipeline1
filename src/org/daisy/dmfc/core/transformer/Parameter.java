@@ -24,12 +24,18 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.EndElement;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
+
 import org.daisy.dmfc.core.MIMERegistry;
 import org.daisy.dmfc.exception.MIMEException;
-import org.daisy.util.xml.XPathUtils;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.daisy.dmfc.exception.NotSupposedToHappenException;
 
 /**
  * A parameter in the Transformer Description File (TDF).
@@ -50,41 +56,125 @@ public class Parameter implements ParameterInfo {
 	private Collection enumValues = null;
 	
 	private File tdfDir;
-	
+		
 	/**
-	 * Creates a new Parameter.
-	 * @param parameter the dom4j element to get the data from.
-	 * @throws MIMEException if a type attribute is not a valid MIME type
+	 * Creates a new TDF Parameter. This method assumes a &lt;parameter&gt;
+	 * start tag has just been read from the XML event reader.
+	 * @param start the &lt;paramter&gt; start element
+	 * @param er the XML event reader to get the parameter values from
+	 * @param transformerDir the directory of the transformer
+	 * @throws XMLStreamException
+	 * @throws MIMEException
 	 */
-	public Parameter(Element parameter, File transformerDir) throws MIMEException {
+	public Parameter(StartElement start, XMLEventReader er, File transformerDir) throws XMLStreamException, MIMEException {
 	    tdfDir = transformerDir;
-		name = getFromXPath(parameter, "name");
-		description = getFromXPath(parameter, "description");
-		example = getFromXPath(parameter, "example");
-		
-		NodeList enumValueNodes = XPathUtils.selectNodes(parameter, "enum/value");
-		if (enumValueNodes.getLength() > 0) {
-		    enumValues = new ArrayList();
-		    for (int i = 0; i < enumValueNodes.getLength(); ++i) {
-		        Element enumValue = (Element)enumValueNodes.item(i);
-		        enumValues.add(XPathUtils.valueOf(enumValue, "."));
-		    }
-		}
-		
-		if (XPathUtils.selectSingleNode(parameter, "@required") != null) {
-		    required = Boolean.valueOf(XPathUtils.valueOf(parameter, "@required")).booleanValue();
-		}
-		direction = getFromXPath(parameter, "@direction");
-
-		// Make sure the 'type' matches a MIME type
-		type = getFromXPath(parameter, "@type");
-		MIMERegistry mime = MIMERegistry.instance();
+	    String current = null;
+	    
+	    Attribute att = start.getAttributeByName(new QName("required"));
+	    if (att != null) {
+	        required = Boolean.valueOf(att.getValue()).booleanValue();
+	    }
+	    
+	    att = start.getAttributeByName(new QName("direction"));
+	    direction = att!=null?att.getValue():null;
+	    
+	    att = start.getAttributeByName(new QName("type"));
+	    type = att!=null?att.getValue():null;
+	    // Make sure the specified MIME type exists
+	    MIMERegistry mime = MIMERegistry.instance();
 		if (!mime.contains(type)) {
 		    throw new MIMEException("Type attribute " + type + " of parameter " + name + " is not a valid MIME type.");
 		}
-
-		defaultValue = expandPatterns(getFromXPath(parameter, "default"));
-		value = expandPatterns(getFromXPath(parameter, "value"));
+		
+	    while (er.hasNext()) {
+	        XMLEvent event = er.nextEvent();
+	        switch (event.getEventType()) {
+	        case XMLStreamConstants.START_ELEMENT:
+	            StartElement se = event.asStartElement();
+	        	String seName = se.getName().getLocalPart();
+	        	if (seName.equals("name")) {
+	        	    current = "name";
+	        	} else if (seName.equals("description")) {
+	        	    current = "description";
+	        	} else if (seName.equals("example")) {
+	        	    current = "example";
+	        	} else if (seName.equals("default")) {
+	        	    current = "default";
+	        	} else if (seName.equals("value")) {
+	        	    current = "value";
+	        	} else if (seName.equals("enum")) {
+	        	    enumValues = new ArrayList();
+	        	    addEnums(er);
+	        	}
+	            break;	  
+	        case XMLStreamConstants.CHARACTERS:
+	            String data = event.asCharacters().getData();
+	        	if (current == null) {
+	        	    break;
+	        	}
+	            if (current.equals("name")) {
+	                name = data;
+	            } else if (current.equals("description")) {
+	                description = data;
+	            } else if (current.equals("example")) {
+	                example = data;
+	            } else if (current.equals("default")) {
+	                defaultValue = expandPatterns(data);
+	            } else if (current.equals("value")) {
+	                value = expandPatterns(data);
+	            }
+	            break;
+	        case XMLStreamConstants.END_ELEMENT:
+	            EndElement ee = event.asEndElement();
+	        	if (ee.getName().getLocalPart().equals("parameter")) {
+	        	    // Stop when the </parameter> end tag is found.
+	        	    return;
+	        	}
+	        	current = null;
+	            break;
+	        }
+	    }
+	    throw new NotSupposedToHappenException("Did not find </parameter> end tag in TDF");
+	}
+	
+	/**
+	 * Reads an enum definition. This method assumes a &lt;enum&gt; start tag
+	 * has just been read from the XML event reader.
+	 * @param er the XML event reader
+	 * @throws XMLStreamException
+	 */
+	private void addEnums(XMLEventReader er) throws XMLStreamException {
+	    boolean inValue = false;
+	    while (er.hasNext()) {
+	        XMLEvent event = er.nextEvent();
+	        switch (event.getEventType()) {
+	        case XMLStreamConstants.START_ELEMENT:
+	            StartElement se = event.asStartElement();	
+	        	String seName = se.getName().getLocalPart();
+	        	if (seName.equals("value")) {
+	        	    inValue = true;
+	        	}
+	            break;
+	        case XMLStreamConstants.CHARACTERS:
+	            if (!inValue) {
+	                break;
+	            }
+	            String data = event.asCharacters().getData();
+	            enumValues.add(data);
+	            break;
+	        case XMLStreamConstants.END_ELEMENT:
+	            EndElement ee = event.asEndElement();
+	        	String eeName = ee.getName().getLocalPart();
+	        	if (eeName.equals("enum")) {
+	        	    // Stop when </enum> end tag is found.
+	        	    return;
+	        	} else if (eeName.equals("value")) {
+	        	    inValue = false;
+	        	}
+	            break;
+	        }
+	    }
+	    throw new NotSupposedToHappenException("Did not find </enum> end tag in TDF");
 	}
 	
 	/**
@@ -115,21 +205,6 @@ public class Parameter implements ParameterInfo {
         _matcher.appendTail(_sb);        
         return _sb.toString();
     }
-	
-	/**
-	 * Gets the value of the Node at the location specified by the XPath
-	 * if the Node exists, or null if the specified Node does not exist.
-	 * @param a_node the originating Node
-	 * @param a_xpath an XPath expression
-	 * @return the value of the XPath expression or null
-	 */
-	private String getFromXPath(Node a_node, String a_xpath) {
-	    String result = XPathUtils.valueOf(a_node, a_xpath);
-	    if (result != "") {
-	        return result;
-	    }	    
-	    return null;
-	}
 	
 	/**
 	 * @return Returns the direction.

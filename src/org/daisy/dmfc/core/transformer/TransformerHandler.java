@@ -19,6 +19,7 @@
 package org.daisy.dmfc.core.transformer;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -32,25 +33,28 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
+import java.util.regex.PatternSyntaxException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.EndElement;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.DirClassLoader;
 import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.exception.MIMEException;
+import org.daisy.dmfc.exception.NotSupposedToHappenException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.dmfc.exception.TransformerRunException;
-import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.validation.ValidationException;
 import org.daisy.util.xml.validation.Validator;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Handles descriptions of and initiates the execution of Transformers.
@@ -69,6 +73,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	private Set jars = new HashSet();
 	private String version;
 	private Vector parameters = new Vector();
+	private boolean platformSupported = true;
 	
 	private InputListener inputListener;
 		
@@ -89,9 +94,6 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		super(eventListeners);
 		inputListener = inListener;
 		transformerDirectory = transformerDescription.getParentFile();
-				
-		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-		docBuilderFactory.setValidating(false);
 		
 		/*
 		 * If any validation or dependency check fails, disable this Transformer 
@@ -101,18 +103,18 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			if (!validator.isValid(transformerDescription)) {
 			    throw new TransformerDisabledException(i18n("TDF_NOT_VALID"));
 			}
-			
-			// Parse the description file
-			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			Document doc = docBuilder.parse(transformerDescription);
-					
-			// Get properties from transformer description file
-			readProperties(doc.getDocumentElement(), transformerDirectory);
 						
-			// Perform platform dependency checks
-			if (!isPlatformOk(doc.getDocumentElement())) {
-			    throw new TransformerDisabledException(i18n("PLATFORM_CHECK_FAILED"));
-			}
+			// Read properties using StAX
+			XMLInputFactory factory = XMLInputFactory.newInstance();
+	        factory.setProperty("javax.xml.stream.isCoalescing", Boolean.TRUE);
+	        factory.setProperty("javax.xml.stream.supportDTD", Boolean.FALSE);
+	        XMLEventReader er = factory.createXMLEventReader(new FileInputStream(transformerDescription));
+	        
+	        readProperties(er);
+	        
+	        if (!platformSupported) {
+	            throw new TransformerDisabledException(i18n("PLATFORM_CHECK_FAILED"));
+	        }        
 			
 			// Create the class loader and Transformer class (not object)
 			createTransformerClass(transformerDescription);
@@ -134,12 +136,10 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			throw new TransformerDisabledException(i18n("TDF_VALIDATION_EXCEPTION"), e);
 		} catch (MIMEException e) {
 		    throw new TransformerDisabledException("MIME exception", e);
-        } catch (ParserConfigurationException e) {
-            throw new TransformerDisabledException(i18n("PROBLEMS_PARSING_TDF"), e);
-        } catch (SAXException e) {
-            throw new TransformerDisabledException(i18n("PROBLEMS_PARSING_TDF"), e);
         } catch (IOException e) {
             throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
+        } catch (XMLStreamException e) {
+            throw new TransformerDisabledException(i18n("PROBLEMS_PARSING_TDF"), e);            
         }	
 	}
 	
@@ -268,32 +268,90 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		Transformer trans = (Transformer)transformerConstructor.newInstance(params);
 		trans.setMessageOriginator(name);
 		return trans;
+	}	
+	
+	/**
+	 * Loop over all &lt;parameter&gt; elements. This method assumes the
+	 * &lt;parameters&gt; start tag has just been read from the XML event reader.
+	 * @param er the XML event reader
+	 * @throws MIMEException
+	 * @throws XMLStreamException
+	 */
+	private void loopParameters(XMLEventReader er) throws MIMEException, XMLStreamException {
+	    while (er.hasNext()) {
+	        XMLEvent event = er.nextEvent();
+	        switch (event.getEventType()) {
+	        case XMLStreamConstants.START_ELEMENT:
+	            StartElement se = event.asStartElement();	
+	        	if (se.getName().getLocalPart().equals("parameter")) {
+	        	    Parameter param = new Parameter(se, er, transformerDirectory);
+	        	    parameters.add(param);
+	        	}
+	            break;	        
+	        case XMLStreamConstants.END_ELEMENT:
+	            EndElement ee = event.asEndElement();
+	        	if (ee.getName().getLocalPart().equals("parameters")) {
+	        	    // Stop when the </parameters> end tag is found. 
+	        	    return;
+	        	}
+	            break;
+	        }
+	    }
+	    throw new NotSupposedToHappenException("Did not find </parameters> end tag in TDF");
 	}
 	
 	/**
 	 * Reads the properties in the TDF.
-	 * @param element
+	 * @param er an <code>XMLEventReader</code>.
 	 * @throws MIMEException
+	 * @throws XMLStreamException
 	 */
-	private void readProperties(Element element, File tdfDir) throws MIMEException {
-	    name = XPathUtils.valueOf(element, "name");
-	    description = XPathUtils.valueOf(element, "description");
-	    classname = XPathUtils.valueOf(element, "classname");
-		
-	    NodeList jarList = XPathUtils.selectNodes(element, "jar");
-	    for (int i = 0; i < jarList.getLength(); ++i) {
-	        Element jar = (Element)jarList.item(i);
-	        jars.add(XPathUtils.valueOf(jar, "."));
+	private void readProperties(XMLEventReader er) throws MIMEException, XMLStreamException {
+	    String current = null;
+	    while (er.hasNext()) {
+	        XMLEvent event = er.nextEvent();
+	        switch (event.getEventType()) {
+	        case XMLStreamConstants.START_ELEMENT:
+	            StartElement se = event.asStartElement();
+	        	String seName = se.getName().getLocalPart();
+		       	if (seName.equals("transformer")) {
+		            current = "transformer";
+		            Attribute att = se.getAttributeByName(new QName("version"));
+		            version = att.getValue();
+		        } else if (seName.equals("name")) {
+		            current = "name";	                
+		        } else if (seName.equals("description")) {
+		            current = "description";
+		        } else if (seName.equals("classname")) {
+		            current = "classname";
+		        } else if (seName.equals("jar")) {
+		            current = "jar";
+		        } else if (seName.equals("parameters")) {
+		            loopParameters(er);
+		        } else if (seName.equals("platforms")) {
+		            platformSupported = isPlatformOk(er);
+		        }
+	            break;
+	        case XMLStreamConstants.CHARACTERS:
+	            String data = event.asCharacters().getData();
+	        	if (current == null) {
+	        	    break;
+	        	}
+	            if (current.equals("name")) {
+	                name = data;
+	            } else if (current.equals("description")) {
+	                description = data;
+	            } else if (current.equals("classname")) {
+	                classname = data;
+	            } else if (current.equals("jar")) {
+	                jars.add(data);
+	            }
+	            break;
+	        case XMLStreamConstants.END_ELEMENT:
+	            current = null;
+	            break;
+	        }        
 	    }
-	    
-	    version = XPathUtils.valueOf(element, "@version");	    		
-		
-	    NodeList parameterList = XPathUtils.selectNodes(element, "parameters/parameter");
-	    for (int i = 0; i < parameterList.getLength(); ++i) {
-	        Element parameter = (Element)parameterList.item(i);
-	        Parameter param = new Parameter(parameter, tdfDir);
-	        parameters.add(param);
-	    }	    
 	}
 	
 	/**
@@ -355,41 +413,127 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	}	
 	
 	/**
-	 * Checks if the current platform is supported by this Transformer
-	 * @param element
+	 * Checks if the current platform is supported by this Transformer.
+	 * This method assumes the &lt;platforms&gt; start tag has just been read
+	 * from the XMLEventReader.
+	 * @param er the XML event reader to read the platform specification from
 	 * @return <code>true</code> if the platform is supported, <code>false</code> otherwise
+	 * @throws XMLStreamException
 	 */
-	private boolean isPlatformOk(Element element) {
-		boolean ret = true;
-		NodeList platformList = XPathUtils.selectNodes(element, "platforms/platform");
-		if (platformList.getLength() > 0) {
-		    ret = false;
-		}
-		for (int i = 0; i < platformList.getLength(); ++i) {
-		    Element platform = (Element)platformList.item(i);			
-			boolean platformOk = true;
-			NodeList propertyList = XPathUtils.selectNodes(platform, "property");
-			for (int j = 0; j < propertyList.getLength(); ++j) {		
-			    Element property = (Element)propertyList.item(j);
-			    String propertyName = XPathUtils.valueOf(property, "name");
-			    String value = XPathUtils.valueOf(property, "value");				
-				String realValue = System.getProperty(propertyName);
-				if (realValue == null) {
-					platformOk = false;
-					sendMessage(Level.WARNING, i18n("UNKNOWN_PROPERTY", propertyName));
-				}
-				else {
-					if (!realValue.matches(value)) {
-						platformOk = false;
-					}
-					//System.err.println("Property: " + propertyName + ", value: " + value + ", real: " + real);
-				}
-			}
-			if (platformOk) {
-				ret = true;
-			}
-		}
-		return ret;
+	private boolean isPlatformOk(XMLEventReader er) throws XMLStreamException {
+	    /*
+	     * Only one of the <platform> sub elements needs to evaluate to true
+	     * for the current platform to be considered as supported. Therefore,
+	     * the result is initialized to false and set to true once a
+	     * <platform> element that evaluates to true if found.
+	     */
+	    boolean result = false;
+	    while (er.hasNext()) {
+	        XMLEvent event = er.nextEvent();
+	        switch (event.getEventType()) {
+	        case XMLStreamConstants.START_ELEMENT:
+	            StartElement se = event.asStartElement();	
+	        	String seName = se.getName().getLocalPart();
+	        	if (seName.equals("platform")) {
+	        	    if (checkSinglePlatformElement(er)) {
+	        	        result = true;
+	        	        /*
+	        	         * Continue reading an processing events until the
+	        	         * <platforms> end tag is found. That way we leave
+	        	         * the XMLEventReader in a nice state and we are able
+	        	         * to validate the rest of the platform checks.
+	        	         */	        	        
+	        	    }
+	        	}
+	            break;	        
+	        case XMLStreamConstants.END_ELEMENT:
+	            EndElement ee = event.asEndElement();
+	        	String eeName = ee.getName().getLocalPart();
+	        	if (eeName.equals("platforms")) {
+	        	    return result;
+	        	}
+	            break;
+	        }
+	    }
+	    throw new NotSupposedToHappenException("Did not find </platforms> end tag in TDF");
+	}
+	
+	/**
+	 * Evaluates a single &lt;platform&gt; element.
+	 * This method assumes a &lt;platform&gt; start tag has just been read
+	 * from the XMLEventReader.
+	 * @param er the XML event reader to read the platform information from.
+	 * @return <code>true</code> if the platform is supported, <code>false</code> otherwise
+	 * @throws XMLStreamException
+	 */
+	private boolean checkSinglePlatformElement(XMLEventReader er) throws XMLStreamException {
+	    /*
+	     * All <property> elements within a <platform> must evaluate to true
+	     * for the platform element to evaluate to true. Therefore the result
+	     * is initailized to true and set to false once a property that
+	     * evaluates to false is found.
+	     */
+	    boolean result = true;
+	    String propertyName = null;
+	    String propertyValue = null;
+	    String current = null;
+	    while (er.hasNext()) {
+	        XMLEvent event = er.nextEvent();
+	        switch (event.getEventType()) {
+	        case XMLStreamConstants.START_ELEMENT:
+	            StartElement se = event.asStartElement();	
+	        	String seName = se.getName().getLocalPart();
+	        	if (seName.equals("property")) {
+	        	    propertyName = null;
+	        	    propertyValue = null;
+	        	} else if (seName.equals("name")) {
+	        	    current = "name";
+	        	} else if (seName.equals("value")) {
+	        	    current = "value";
+	        	}
+	            break;
+	        case XMLStreamConstants.CHARACTERS:
+	            String data = event.asCharacters().getData();
+	        	if (current == null) {
+	        	    break;
+	        	}
+	            if (current.equals("name")) {
+	                propertyName = data;
+	            } else if (current.equals("value")) {
+	                propertyValue = data;
+	            } 
+	            break;
+	        case XMLStreamConstants.END_ELEMENT:
+	            EndElement ee = event.asEndElement();
+	        	String eeName = ee.getName().getLocalPart();	        	
+	        	if (eeName.equals("property")) {
+	        	    /*
+	        	     * Once a </property> end tag is found, a property can be
+	        	     * evaluated. Continue processing events until the </platform>
+	        	     * end tag is found even if the result is set to false so the
+	        	     * XMLEventReader is left in a nice state and all properties
+	        	     * can be validated.
+	        	     */
+	        	    String realValue = System.getProperty(propertyName);
+	        	    try {
+						if (realValue == null) {						
+							sendMessage(Level.WARNING, i18n("UNKNOWN_PROPERTY", propertyName));
+							result = false;
+						} else if (!realValue.matches(propertyValue)) {						    
+						    result = false;
+						}
+	        	    } catch (PatternSyntaxException e) {
+	        	        sendMessage(Level.WARNING, i18n("INCORRECT_PROPERTY_VALUE", propertyName));
+	        	        result = false;
+	        	    }
+	        	} else if (eeName.equals("platform")) {
+	        	    return result;
+	        	}
+	        	current = null;
+	            break;
+	        }
+	    }
+	    throw new NotSupposedToHappenException("Did not find </platform> end tag in TDF");
 	}
 	
 	public String getParameterType(String parameterName) {
