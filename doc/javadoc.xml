@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project default="javadoc">
-    <target name="javadoc">
-        <javadoc access="public" author="true" classpath="../lib/jing.jar;../bin;../lib/dom4j-1.5.2.jar;../lib/jaxen-1.1-beta-4.jar" destdir="api" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="org.daisy.*" sourcepath="../src" splitindex="true" use="true" version="true"/>
-    </target>
-</project>
