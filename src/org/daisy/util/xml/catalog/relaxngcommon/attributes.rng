@@ -7,7 +7,9 @@
 >
   <a:documentation>
     attributes.rng
-    Last edit by: mgylling 2005-06-09
+    Original version: mgylling 2005-06-01    
+    Version/change history:
+    
   </a:documentation>
 
   <include href="datatypes.rng"/>
@@ -54,6 +56,33 @@
     </optional>
   </define>
   
+  <define name="attribute.xml.lang.required">
+    <attribute name="xml:lang">
+      <ref name="datatype.rfc1766"/>
+    </attribute>
+  </define>
+
+  <define name="attribute.xml.lang.optional">
+    <optional>
+      <ref name="attribute.xml.lang.required"/>
+    </optional>
+  </define>
+
+  <define name="attribute.dir.required">
+    <attribute name="dir">
+      <choice>
+        <value>ltr</value>
+        <value>rtl</value>
+      </choice>
+    </attribute>
+  </define>
+
+  <define name="attribute.dir.optional">
+    <optional>
+      <ref name="attribute.dir.required"/>    
+    </optional>
+  </define>
+  
   <define name="attribute.dur.required">
     <attribute name="dur">
       <ref name="datatype.smilclock"/>
@@ -65,5 +94,42 @@
       <ref name="attribute.dur.required"/>
     </optional>
   </define>
+  
+  <define name="attribute.src.required">
+    <attribute name="src">
+      <ref name="datatype.uri"/>
+    </attribute>
+  </define>
+
+  <define name="attribute.src.optional">
+    <optional>
+      <ref name="attribute.src.required"/>
+    </optional>
+  </define>
+
+  <define name="attribute.clipBegin.required">
+    <attribute name="clipBegin">
+      <ref name="datatype.smilclock"/>
+    </attribute>
+  </define>
+
+  <define name="attribute.clipBegin.optional">
+    <optional>
+      <ref name="attribute.clipBegin.required"/>
+    </optional>
+  </define>
+
+  <define name="attribute.clipEnd.required">
+    <attribute name="clipEnd">
+      <ref name="datatype.smilclock"/>
+    </attribute>
+  </define>
+
+  <define name="attribute.clipEnd.optional">
+    <optional>
+      <ref name="attribute.clipEnd.required"/>
+    </optional>
+  </define>
+  
 
 </grammar>

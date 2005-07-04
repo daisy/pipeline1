@@ -124,4 +124,10 @@
     </choice>
   </define>
 
+  <define name="datatype.resxpathsubset">
+    <data type="string">
+      <param name="pattern">//(.+)((\\[.+\\])?)</param>
+    </data>
+  </define>
+
 </grammar>
