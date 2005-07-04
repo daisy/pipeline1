@@ -17,23 +17,38 @@ import com.thaiopensource.xml.sax.XMLReaderCreator;
  */
 
 public class XmlReaderCreatorImpl implements XMLReaderCreator{
+	private boolean loadDTD = true;
 	
 	public XmlReaderCreatorImpl() {}
 	
+	
+	public XmlReaderCreatorImpl(boolean loadDTD) {
+	  this.loadDTD = loadDTD;
+	}
+	
 	public XMLReader createXMLReader() throws SAXException {		
-	    XMLReader xr;	    
-	    xr = XMLReaderFactory.createXMLReader();	    
-	    xr.setFeature("http://xml.org/sax/features/namespaces", true);
-	    xr.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
-	    xr.setEntityResolver(CatalogEntityResolver.getInstance());
+	    XMLReader xr = null;	    
 	    try {
+	      xr = XMLReaderFactory.createXMLReader("com.sun.org.apache.xerces.internal.parsers.SAXParser");
+	    } catch(SAXException se) {
+	    	xr = XMLReaderFactory.createXMLReader();
+	    }
+	    
+	    try {
+	      xr.setEntityResolver(CatalogEntityResolver.getInstance());	
+	      xr.setFeature("http://xml.org/sax/features/namespaces", true);
+	      xr.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
 	      xr.setFeature("http://xml.org/sax/features/validation", false);
+	      if(!loadDTD) {
+	        xr.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+	        xr.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);	      	    
+	      }
 	    }
 	    catch (SAXNotRecognizedException e) {
-	    	System.err.println("caught SAXNotRecognizedException in  org.daisy.util.validation.XmlReaderCreatorImpl");
+	    	System.err.println("caught SAXNotRecognizedException in org.daisy.util.validation.XmlReaderCreatorImpl");
 	    }
 	    catch (SAXNotSupportedException e) {
-	    	System.err.println("caught SAXNotSupportedException in  org.daisy.util.validation.XmlReaderCreatorImpl");
+	    	System.err.println("caught SAXNotSupportedException in org.daisy.util.validation.XmlReaderCreatorImpl");
 	    }
 	    
 	    return xr;		
