@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Markus Gylling
  */
-class XslFileImpl extends XmlFileImpl implements XmlFile {
+class XslFileImpl extends XmlFileImpl implements XslFile {
 
 	XslFileImpl(URI uri) throws FileNotFoundException, ParserConfigurationException, SAXException, IOException {
 		super(uri);
