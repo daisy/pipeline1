@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar  
+  ns="http://openebook.org/namespaces/oeb-package/1.0/"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:sch="http://www.ascc.net/xml/schematron"
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"  
+>
+  <sch:ns prefix="oeb" uri="http://openebook.org/namespaces/oeb-package/1.0/"/>
+  
+  <a:documentation>
+    oebpkg12.rng
+    Original version: mgylling 2005-07-01
+    org.daisy.util.xml.catalog mapping by the PID '+//ISBN 0-9673008-1-9//RNG OEB 1.2 Package//EN'
+    Version/change history:
+    
+  </a:documentation>
+
+  <start>
+      <ref name="anyElement"/>  
+  </start>
+    
+  <define name="anyElement">
+    <element>
+      <anyName/>
+      <zeroOrMore>
+	<choice>
+	  <attribute>
+	    <anyName/>
+	  </attribute>
+	  <text/>
+	  <ref name="anyElement"/>
+	</choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  
+</grammar>  

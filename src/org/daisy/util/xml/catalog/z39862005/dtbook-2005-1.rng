@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar  
+  ns="http://www.daisy.org/z3986/2005/resource/"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:sch="http://www.ascc.net/xml/schematron"
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"  
+>
+  <sch:ns prefix="dtbk" uri="http://www.daisy.org/z3986/2005/dtbook/"/>
+
+  <a:documentation>
+    dtbook-2005-1.rng
+    org.daisy.util.xml.catalog mapping by the PID '-//NISO//RNG dtbook 2005-1//EN'
+    Original version: mgylling 2005-07-01    
+    Version/change history:
+    
+  </a:documentation>
+  
+  <include href="../relaxngcommon/attributes.rng" />
+
+  <start>
+      <ref name="root"/>  
+  </start>
+  
+  <define name="root">
+    <element name="dtbook">
+      <ref name="dtbook.attlist"/>
+      <ref name="anyElement"/>
+    </element>
+  </define>
+  
+  <define name="dtbook.attlist">
+    <attribute name="version">
+      <value>2005-1</value>
+    </attribute>
+    <ref name="i18n.attributes"/>
+  </define>
+  
+  <define name="i18n.attributes">
+    <ref name="attribute.xml.lang.optional"/>
+    <ref name="attribute.dir.optional"/>
+  </define>
+  
+  <define name="anyElement">
+    <element>
+      <anyName/>
+      <zeroOrMore>
+	    <choice>
+	      <attribute>
+	        <anyName/>
+	      </attribute>
+	      <text/>
+	      <ref name="anyElement"/>
+	    </choice>
+      </zeroOrMore>
+    </element>
+  </define>          
+</grammar>

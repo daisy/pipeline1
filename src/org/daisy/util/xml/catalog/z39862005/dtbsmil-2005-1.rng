@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar  
+  ns="http://www.w3.org/2001/SMIL20/"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:sch="http://www.ascc.net/xml/schematron"
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"  
+>
+  <sch:ns prefix="smil" uri="http://www.w3.org/2001/SMIL20/"/>
+  
+  <a:documentation>
+    dtbsmil-2005-1.rng
+    Last edit by: mgylling 2005-07-01
+    org.daisy.util.xml.catalog mapping by the PID '-//NISO//RNG dtbsmil 2005-1//EN'
+  </a:documentation>
+
+  <start>
+      <ref name="anyElement"/>  
+  </start>
+    
+  <define name="anyElement">
+    <element>
+      <anyName/>
+      <zeroOrMore>
+	<choice>
+	  <attribute>
+	    <anyName/>
+	  </attribute>
+	  <text/>
+	  <ref name="anyElement"/>
+	</choice>
+      </zeroOrMore>
+    </element>
+  </define>
+</grammar>  

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar  
+  ns="http://www.daisy.org/z3986/2005/resource/"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:sch="http://www.ascc.net/xml/schematron"
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"  
+>
+  <sch:ns prefix="res" uri="http://www.daisy.org/z3986/2005/resource/"/>
+
+  <a:documentation>
+    resource-2005-1.rng
+    org.daisy.util.xml.catalog mapping by the PID '-//NISO//RNG resource 2005-1//EN'
+    Original version: mgylling 2005-07-01    
+    Version/change history:
+    
+  </a:documentation>
+  
+  <include href="../relaxngcommon/attributes.rng" />
+
+  <start>
+      <ref name="root"/>  
+  </start>
+    
+  <define name="root">
+    <element name="resources">
+      <ref name="resources.attlist"/>
+      <optional>
+        <ref name="head"/>
+      </optional>
+      <oneOrMore>
+        <ref name="scope"/>
+      </oneOrMore>  
+    </element>
+  </define>
+
+  <define name="resources.attlist">
+    <attribute name="version">
+      <value>2005-1</value>
+    </attribute>
+    <ref name="attribute.id.optional"/>
+  </define>
+  
+  <define name="head">
+    <zeroOrMore>
+      <element name="meta">
+        <attribute name="name"/>
+        <attribute name="content"/>
+        <optional>
+          <attribute name="scheme"/>
+        </optional>      
+      </element>
+    </zeroOrMore>
+  </define>
+
+  <define name="scope">
+    <element name="scope">
+      <ref name="scope.attlist"/>
+      <oneOrMore>
+        <ref name="nodeSet"/>
+      </oneOrMore>  
+    </element>  
+  </define>
+  
+  <define name="scope.attlist">
+    <ref name="attribute.id.optional"/>
+    <attribute name="nsuri">
+      <ref name="datatype.uri"/>
+    </attribute>        
+    <sch:pattern name="resNsUriAtt" id="resNsUriAtt">
+      <!-- The namespace URI (the value of the nsuri attribute) must be unique for each scope element. -->
+      <sch:rule context="res:scope">
+       <sch:assert test="count(//res:scope[@nsuri=current()/@nsuri])=1"> 
+          [sch][resNsUriAtt]
+        </sch:assert>        
+      </sch:rule>
+    </sch:pattern> 
+  </define>
+  
+  <define name="nodeSet">
+    <element name="nodeSet">
+      <ref name="nodeSet.attlist"/>
+      <oneOrMore>
+        <ref name="resource"/>
+      </oneOrMore>
+    </element>
+    <sch:pattern name="nodeSetLangUnique" id="nodeSetLangUnique">
+      <!-- Within any given nodeSet, there must not be two resources with the same language.  -->
+      <sch:rule context="res:nodeSet/res:resource">
+        <sch:assert test="count(../res:resource[@xml:lang=current()/@xml:lang])=1">
+          [sch][nodeSetLangUnique]
+        </sch:assert>        
+      </sch:rule>
+    </sch:pattern>     
+  </define>
+ 
+  <define name="nodeSet.attlist">
+    <ref name="attribute.id.required"/>
+    <attribute name="select">
+      <ref name="datatype.resxpathsubset"/>
+    </attribute>      
+  </define>
+     
+  <define name="resource">
+    <element name="resource">
+      <ref name="resource.attlist"/>
+      <choice>
+       <ref name="text"/>
+       <group>
+         <ref name="text"/>
+         <ref name="audio"/>
+       </group>
+       <ref name="audio"/>
+      </choice>
+      <optional>
+        <ref name="img"/>
+      </optional>
+    </element>
+  </define>
+  
+  <define name="resource.attlist">
+    <ref name="attribute.id.optional"/>
+    <ref name="attribute.xml.lang.required"/>
+  </define>
+  
+  <define name="text">
+    <element name="text">
+      <ref name="attribute.id.optional"/>
+      <ref name="attribute.dir.optional"/>  
+      <text/>
+    </element>
+  </define>
+  
+  <define name="audio">
+    <element name="audio">
+      <ref name="attribute.id.optional"/>  
+      <ref name="attribute.src.required"/>
+      <ref name="attribute.clipBegin.required"/> 
+      <ref name="attribute.clipEnd.required"/>
+    </element>
+  </define>
+  
+  <define name="img">
+    <element name="img">
+      <ref name="attribute.src.required"/>
+      <ref name="attribute.id.optional"/>  
+    </element>
+  </define>
+    
+</grammar>
