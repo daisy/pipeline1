@@ -1,14 +1,9 @@
 package org.daisy.util.dtb.validation.errorscout;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-
-import javazoom.jl.decoder.BitstreamException;
-
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.validation.ValidationException;
 import org.daisy.util.fileset.AudioFile;
@@ -20,11 +15,14 @@ import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetException;
 import org.daisy.util.fileset.FilesetImpl;
 import org.daisy.util.fileset.Mp3File;
+import org.daisy.util.fileset.OpfFile;
 import org.daisy.util.fileset.Regex;
 import org.daisy.util.fileset.SmilClock;
 import org.daisy.util.fileset.SmilFile;
 import org.daisy.util.fileset.TextualContentFile;
 import org.daisy.util.fileset.XmlFile;
+import org.daisy.util.fileset.Z3986NcxFile;
+import org.daisy.util.fileset.Z3986ResourceFile;
 import org.daisy.util.fileset.Z3986SmilFile;
 import org.daisy.util.xml.validation.RelaxngSchematronValidator;
 import org.xml.sax.ErrorHandler;
@@ -37,7 +35,14 @@ import org.daisy.util.fileset.FilesetType;
  */
 public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 	private RelaxngSchematronValidator d202NccRngSchValidator;
-	private RelaxngSchematronValidator d202SmilRngSchValidator;			
+	private RelaxngSchematronValidator d202SmilRngSchValidator;		
+		
+	private RelaxngSchematronValidator z39OpfRngSchValidator; 
+	private RelaxngSchematronValidator z39SmilRngSchValidator; 
+	private RelaxngSchematronValidator z39NcxRngSchValidator; 
+	private RelaxngSchematronValidator z39ResRngSchValidator;
+	private RelaxngSchematronValidator z39DtbookRngSchValidator;
+
 	private LinkedHashSet errors = new LinkedHashSet(); //<Exception>	
 	private FilesetType filesetType;	
 	private FilesetFile member;		
@@ -99,7 +104,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 				doFullSchematronScouting = true;
 			}
 		}		
-		
+				
 		//prepare the rng+sch validators
 		if(doRelaxNgScouting||doLimitedSchematronScouting||doFullSchematronScouting){
 			if (filesetType==FilesetType.DAISY_202) {				
@@ -111,6 +116,23 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 				}catch(Exception e){						
 					throw new DtbErrorScoutException(e);
 				}
+			}else if (filesetType==FilesetType.Z3986) {
+				try{					
+					File z39OpfSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("+//ISBN 0-9673008-1-9//RNG OEB 1.2 Package//EN",null).toURI());
+					File z39SmilSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("-//NISO//RNG dtbsmil 2005-1//EN",null).toURI());
+					File z39NcxSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("-//NISO//RNG ncx 2005-1//EN",null).toURI());
+					File z39ResSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("-//NISO//RNG resource 2005-1//EN",null).toURI());
+					File z39DtbookSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("-//NISO//RNG dtbook 2005-1//EN",null).toURI());
+					
+					z39OpfRngSchValidator = new RelaxngSchematronValidator(z39OpfSchema,this,doRelaxNgScouting,false);
+					z39SmilRngSchValidator = new RelaxngSchematronValidator(z39SmilSchema,this,doRelaxNgScouting,false);
+					z39NcxRngSchValidator = new RelaxngSchematronValidator(z39NcxSchema,this,doRelaxNgScouting,false);
+					z39ResRngSchValidator = new RelaxngSchematronValidator(z39ResSchema,this,doRelaxNgScouting,true);
+					z39DtbookRngSchValidator = new RelaxngSchematronValidator(z39DtbookSchema,this,doRelaxNgScouting,false);
+					
+				}catch(Exception e){						
+					throw new DtbErrorScoutException(e.getMessage());
+				}							
 			}else{
 				throw new DtbErrorScoutException("FilesetType not supported");
 			}
@@ -133,7 +155,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 		
 		//build the fileset
 		try { 
-			fileset = (Fileset)new FilesetImpl(manifest);
+			fileset = (Fileset)new FilesetImpl(manifest,true,false);
 			if (this.filesetType!=fileset.getFilesetType()) {
 				throw new DtbErrorScoutException("This ErrorScout instance does not support this fileset type");				
 			}
@@ -162,8 +184,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 					if (doInterDocLinkScouting) {
 						if(!isInterDocLinkValid((XmlFile)member))hasErrors = true;
 					}  
-				}
-				
+				}				
 				//do specific tests for each type
 				if(member instanceof D202NccFile) {
 					D202NccFile ncc = (D202NccFile) member;
@@ -176,12 +197,31 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 					}
 					if(doRelaxNgScouting) {
 						if(!d202NccRngSchValidator.isValid((File)member)) hasErrors = true;
-					}															
+					}
+				} else if (member instanceof Z3986NcxFile){
+					if(doRelaxNgScouting) {
+						if(!z39NcxRngSchValidator.isValid((File)member)) hasErrors = true;
+					}					
+				} else if (member instanceof Z3986ResourceFile){
+					if(doRelaxNgScouting) {
+						if(!z39ResRngSchValidator.isValid((File)member)) hasErrors = true;
+					}				
+				} else if (member instanceof OpfFile){
+					OpfFile opf = (OpfFile) member;
+					//get the totaltime for check after while loop
+					statedTotalTime = opf.getStatedDuration();
+					if(doRelaxNgScouting) {
+						if(!z39OpfRngSchValidator.isValid((File)member)) hasErrors = true;
+					}	
 				}else if (member instanceof SmilFile){
+					
 					if(doRelaxNgScouting) {
 						if (member instanceof D202SmilFile){
 							if(!d202SmilRngSchValidator.isValid((File)member)) hasErrors = true;
 						}  
+						if (member instanceof Z3986SmilFile){
+							if(!z39SmilRngSchValidator.isValid((File)member)) hasErrors = true;
+						} 
 					}  														
 					if ((doSmilDurationScouting)&&
 							((member instanceof D202SmilFile)||(member instanceof Z3986SmilFile))) {
@@ -296,8 +336,9 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 							//get the file instance from Fileset via the URI key
 							referencedMember=(XmlFile)member.getReferencedLocalMember(uri);
 							if (referencedMember==null){
-								errors.add(new DtbErrorScoutException ("reference to nonexisting member "+referencedMember.getName()+"in URI " + value+ " in file " + member.getName()));
-								return false;
+								errors.add(new DtbErrorScoutException ("reference to nonexisting member in URI " + value+ " in file " + member.getName()));
+								//return false;
+								continue;
 							}								
 						}
 						//check whether this colleague has the id value
@@ -314,8 +355,9 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 		return result;
 	}
 	
-	private String stripFragment(String value) {				
-		StringBuffer sb = new StringBuffer();
+	private String stripFragment(String value) {
+		//StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		char hash = '#';
 		for (int i = 0; i < value.length(); i++) {
 			if (value.charAt(i)==hash) {
@@ -326,8 +368,9 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 		return sb.toString();								
 	}
 	
-	private String getFragment(String value) {				
-		StringBuffer sb = new StringBuffer();
+	private String getFragment(String value) {					
+		//StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		char hash = '#';		
 		int hashPos = -1;
 		
@@ -340,7 +383,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 		}
 		return sb.toString();								
 	}
-	
+	 
 	//	private boolean matches(Pattern compiledPattern, String match) {
 	//		Matcher m = compiledPattern.matcher(match);
 	//		return m.matches();	
