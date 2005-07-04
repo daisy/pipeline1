@@ -72,7 +72,7 @@ public class PeekerImpl extends DefaultHandler implements ContentHandler, ErrorH
 			parser.parse(f, this);
 			//parser.getXMLReader().parse(f.getAbsolutePath());	  
 		}catch (SAXStopParsingException sspe) {
-			parser.reset();	
+			//parser.reset();	
 		}
 	}
 	
