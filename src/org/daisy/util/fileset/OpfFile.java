@@ -14,5 +14,6 @@ public interface OpfFile extends XmlFile, ManifestFile {
 	public Z3986SmilFile getSpineItem(URI uri)throws FilesetException;
 	//public void buildSpineMap(Fileset fileset);
 	public Collection getSpineItems()throws FilesetException;
+	public SmilClock getStatedDuration();
 	
 }

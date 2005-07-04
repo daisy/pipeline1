@@ -13,6 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * @author Markus Gylling
@@ -22,8 +23,9 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 	private boolean inManifest = false;
 	private boolean inSpine = false;
 	private HashMap manifestSmilItems = new HashMap();
-	private LinkedHashMap spineMap= null;
+	private LinkedHashMap spineMap= new LinkedHashMap();
 	private boolean finalSpineMapIsBuilt = false;
+	private SmilClock myStatedDuration = null;
 	
 	OpfFileImpl(URI uri) throws FileNotFoundException, ParserConfigurationException, SAXException, IOException {		
 		super(uri); 
@@ -50,6 +52,17 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 //			attrValue = attrs.getValue(i).intern();
 			attrName = attrs.getQName(i);
 			attrValue = attrs.getValue(i).intern();
+			
+			try {
+				if (sName=="meta") {
+					if (attrValue=="dtb:totalTime") {
+						myStatedDuration = new SmilClock(attrs.getValue("content"));
+					}
+				}				
+			} catch (Exception nfe) {
+				this.listeningErrorHandler.error(new SAXParseException(this.getName()+": exception when calculating " +attrValue,null));
+				
+			}
 			
 			if (attrName=="id") {
 				this.putIdAndQName(attrValue,qName);
@@ -128,6 +141,12 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 		finalSpineMap = null;
 		finalSpineMapIsBuilt = true;
 	}
+
+	public SmilClock getStatedDuration() {		
+		return myStatedDuration;
+	}
+
+
 	
 //	public Collection getSpineValues(){
 //		return this.spineMap.values();
