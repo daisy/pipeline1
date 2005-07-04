@@ -3,8 +3,6 @@
  */
 package org.daisy.util.fileset;
 
-
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -149,7 +147,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 	void fileInstantiatedEvent(FilesetFile member) throws ParserConfigurationException {
 		//all file instantiations are reported here
 		//but never by the member itself
-				
+		System.out.println("loading " + member.getName());		
 		//add to this.localMembers			
 		localMembers.put(member.toURI(),member);
 		
@@ -187,8 +185,6 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 					value = stripFragment(value);					
 					//resolve the uri string
 					resolvedURI = referer.toURI().resolve(value);										
-					//if (cachedURI==null) cachedURI = resolvedURI; 
-					//if (resolvedURI.hashCode()!=cachedURI.hashCode()) {
 					if (!resolvedURI.equals(cachedURI)) {
 						cachedURI = resolvedURI; 					
      					//check if this file has already been added to main collection
@@ -242,12 +238,11 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 	 * Can also use the {@link org.daisy.util.xml.Peeker} class for XML instances 
 	 * @param owner the FilesetFile in which the reference to this instance occurs
 	 * @param uri the absolute URI of the new instance (resolved from owners URI)
-	 * @param value the string value of the reference (in the owner)
+	 * @param value the string value of the reference (pre-URI-resolve, aka attr value as-is in the owner)
 	 */
 	private FilesetFile getType(FilesetFile owner, URI uri, String value) throws ParserConfigurationException, BitstreamException, SAXException, FilesetException, FileNotFoundException, IOException {
 		FilesetFile file = null;
-		//peeker.peek(uri);
-		
+				
 		if (regex.matches(regex.FILE_SMIL,value)) {
 			if (this.filesetType == FilesetType.DAISY_202) {				
 				return new D202SmilFileImpl(uri, this);
@@ -288,6 +283,10 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 			return new ImageFileImpl(uri);
 		}
 		
+		else if (regex.matches(regex.FILE_RESOURCE,value)){
+			return new Z3986ResourceFileImpl(uri);
+		}
+		
 		else if (regex.matches(regex.FILE_XML,value)){
 			peeker.peek(uri);
 			if (peeker.getRootElementLocalName().equals("dtbook")) {
@@ -302,9 +301,10 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 	}
 	
 	private String stripFragment(String value) {				
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
+		int length = value.length();
 		char hash = '#';
-		for (int i = 0; i < value.length(); i++) {
+		for (int i = 0; i < length; i++) {
 			if (value.charAt(i)==hash) {
 				return sb.toString();
 			}
