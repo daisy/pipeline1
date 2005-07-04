@@ -77,6 +77,7 @@ class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, Er
 			saxFactory = SAXParserFactory.newInstance();	
 			saxFactory.setValidating(getValidatingProperty());			
 			saxFactory.setNamespaceAware(true);
+			
 			saxParser = saxFactory.newSAXParser();
 			try {
 				saxFactory.setFeature("http://xml.org/sax/features/string-interning",true);	
@@ -96,9 +97,11 @@ class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, Er
 			}
 		}   
 		saxParser.getXMLReader().setContentHandler(this);
-		saxParser.getXMLReader().setEntityResolver(this);
+		saxParser.getXMLReader().setEntityResolver(this);		
 		saxParser.getXMLReader().setDTDHandler(this);		
 		saxParser.getXMLReader().setErrorHandler(this);	
+		
+		//System.err.println(saxParser.getClass().getCanonicalName());
 		
 		//************** debug ***************		
 		//System.err.println(parser.getProperty("http://apache.org/xml/properties/input-buffer-size"));
