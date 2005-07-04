@@ -42,7 +42,9 @@ class CssFileImpl extends FilesetFileImpl implements DocumentHandler, ErrorHandl
 
 	
 	public void parse() throws CSSException, IOException {
+		//System.err.println("start");
 		parser.parseStyleSheet(new InputSource(this.toURI().toString()));		
+		//System.err.println("stop");
 	}
 
 	
@@ -50,9 +52,15 @@ class CssFileImpl extends FilesetFileImpl implements DocumentHandler, ErrorHandl
 		try {
 			//collect all properties that contain url() statements  
 			if (regex.matches(regex.CSS_PROPERTIES_WITH_URLS,name)) {
-				if (regex.matches(regex.FILE_IMAGE,value.getStringValue())) {
-				  putUriValue(value.getStringValue());
-				}  
+				//System.err.println(name);
+				try {
+				  String str = value.getStringValue();
+					if (regex.matches(regex.FILE_IMAGE,str)) {
+						  putUriValue(value.getStringValue());
+					}
+				}catch (Exception e) {
+					//System.err.println("value.getStringValue failed in css");					
+				}				 
 		 	}
 		} catch (Exception e) {
 			this.listeningErrorHandler.error(new CSSParseException("css property event",null,e));
