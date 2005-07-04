@@ -427,7 +427,7 @@
           </sch:pattern>  
         </ref>
         
-        <ref name="nccProdNotes"> <!-- mandatory if producersÂ´ notes are used -->
+        <ref name="nccProdNotes"> <!-- mandatory if producers notes are used -->
           <sch:pattern name="nccProdNotes" id="nccProdNotes">                      
             <sch:rule context="xht:body/xht:span[@class='optional-prodnote']">
               <!-- if there are prodnotes there should be one meta element -->
