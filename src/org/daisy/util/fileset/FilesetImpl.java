@@ -147,7 +147,9 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 	void fileInstantiatedEvent(FilesetFile member) throws ParserConfigurationException {
 		//all file instantiations are reported here
 		//but never by the member itself
-		System.out.println("loading " + member.getName());		
+		
+		//System.out.println("loading " + member.getName());		
+		
 		//add to this.localMembers			
 		localMembers.put(member.toURI(),member);
 		
