@@ -70,7 +70,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
 		
 		//mg: Implement XmlReaderCreator in order to hook up the DTD catalog
 		// ValidateProperty.ENTITY_RESOLVER does not seem to work
-		XmlReaderCreatorImpl xrc = new XmlReaderCreatorImpl();        	
+		XmlReaderCreatorImpl xrc = new XmlReaderCreatorImpl(false);        	
 		builder.put(ValidateProperty.XML_READER_CREATOR,xrc);
 		
 		try {
