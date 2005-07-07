@@ -81,10 +81,8 @@
     <system systemId="http://www.loc.gov/nls/z3986/v100/dtbook110.dtd" uri="./z39862002/dtbook110.dtd" />      
     <public publicId="-//NISO//DTD dtbsmil v1.1.0//EN" uri="./z39862002/dtbsmil110.dtd" />
     <system systemId="http://www.loc.gov/nls/z3986/v100/dtbsmil110.dtd" uri="./z39862002/dtbsmil110.dtd" />      
-    <public publicId="-//NISO//DTD ncx v1.1.0//EN" uri="./z39862002/dtbsmil110.dtd" />
-    <system systemId="http://www.loc.gov/nls/z3986/v100/ncx110.dtd" uri="./z39862002/dtbsmil110.dtd" />      
-    <public publicId="-//NISO//DTD ncx v1.1.0//EN" uri="./z39862002/dtbsmil110.dtd" />
-    <system systemId="http://www.loc.gov/nls/z3986/v100/ncx110.dtd" uri="./z39862002/dtbsmil110.dtd" />      
+    <public publicId="-//NISO//DTD ncx v1.1.0//EN" uri="./z39862002/ncx110.dtd" />
+    <system systemId="http://www.loc.gov/nls/z3986/v100/ncx110.dtd" uri="./z39862002/ncx110.dtd" />      
     <public publicId="-//NISO//DTD resource v1.1.0//EN" uri="./z39862002/resource110.dtd" />
     <system systemId="http://www.loc.gov/nls/z3986/v100/resource110.dtd" uri="./z39862002/resource110.dtd" />      
   </group>
