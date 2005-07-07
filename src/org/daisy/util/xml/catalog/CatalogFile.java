@@ -8,6 +8,8 @@ import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Hashtable;
+import java.util.Iterator;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -126,6 +128,17 @@ public final class CatalogFile extends File {
 			return (new InputSource(new StringReader(s)));            
 		}
 		return (new InputSource(new StringReader((String)entity)));          
+	}
+	
+	public InputSource getSystemIdEntityFromSuffix(String suffix)throws IOException, CatalogExceptionEntityNotSupported {
+		//typically: check the filename only in an unmatched URI/Path
+		for (Iterator iter = sIdTable.keySet().iterator(); iter.hasNext();) {
+			String key = (String) iter.next();
+			if (key.endsWith(suffix)) {
+		      return this.getSystemIdEntity(key);
+			}
+		}
+		return null;
 	}
 	
 	public URL getEntityLocalURL (String id) throws IOException, CatalogExceptionEntityNotSupported {        
