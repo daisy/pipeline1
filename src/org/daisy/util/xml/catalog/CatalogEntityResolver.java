@@ -101,23 +101,21 @@ public class CatalogEntityResolver implements EntityResolver {
             try {
                 return catalog.getPublicIdEntity(publicId);    
             } catch (CatalogExceptionEntityNotSupported ceens) {
-                //there was no match in catalog for inparam public id
+                //no match in catalog for inparam public id
             	//try systemId before giving up
             }
         }          
         try {
             return catalog.getSystemIdEntity(systemId);    
         } catch (CatalogExceptionEntityNotSupported ceens) {
-        	//there was no match in catalog for inparam system id either
+        	//no match in catalog for inparam system id either
         	//try to match on filename alone (suffix)        	
-        	try {
-				URI uri = new URI(systemId);
-				File file = new File(uri);
-				String filename = file.getName();
+        	try {				
+				String filename = new File(new URI(systemId)).getName();
 				try {
 					return catalog.getSystemIdEntityFromSuffix(filename);
 				} catch (CatalogExceptionEntityNotSupported ceens2) {
-				  //silence		 
+				    //no support for suffix (filename) either							 
 				}								
 			} catch (Exception e) {
 			  //silence
