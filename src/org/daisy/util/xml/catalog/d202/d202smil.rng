@@ -35,7 +35,9 @@
           </oneOrMore> 
           <element name="layout">
             <ref name="attribute.id.optional"/>
-            <attribute name="type" a:defaultValue="text/smil-basic-layout"/>
+            <optional>
+              <attribute name="type" a:defaultValue="text/smil-basic-layout"/>
+            </optional>
             <element name="region">
               <empty/>
               <ref name="attribute.id.required"/>
