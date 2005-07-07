@@ -1,5 +1,6 @@
 package org.daisy.util.xml.catalog;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -107,8 +108,21 @@ public class CatalogEntityResolver implements EntityResolver {
         try {
             return catalog.getSystemIdEntity(systemId);    
         } catch (CatalogExceptionEntityNotSupported ceens) {
-            //there was no match in catalog for inparam system id either            
-        	EntityNotSupportedExceptions.add(publicId+"::"+systemId);
+        	//there was no match in catalog for inparam system id either
+        	//try to match on filename alone (suffix)        	
+        	try {
+				URI uri = new URI(systemId);
+				File file = new File(uri);
+				String filename = file.getName();
+				try {
+					return catalog.getSystemIdEntityFromSuffix(filename);
+				} catch (CatalogExceptionEntityNotSupported ceens2) {
+				  //silence		 
+				}								
+			} catch (Exception e) {
+			  //silence
+			}
+			EntityNotSupportedExceptions.add(publicId+"::"+systemId);
         	return null;
         }
     } 
