@@ -37,14 +37,14 @@
 	<!-- DAISY 2.02 -->
 	<type id="daisy2.02" name="application/x-dtbfileset-2.02+xml" definition="The navigation control center member of the DAISY 2.02 fileset."/>	
 	<type id="ncc2.02" name="application/x-ncc-2.02+xml" parentType="xhtml"/>
-	<type id="smil2.02" name="application/x-smil-2.02+xml"/>
-	<type id="mastersmil2.02" name="application/x-mastersmil-2.02+xml"/>	
+	<type id="smil2.02" name="application/x-smil-2.02+xml" parentType="xml"/>
+	<type id="mastersmil2.02" name="application/x-mastersmil-2.02+xml" parentType="xml"/>	
 	<type id="ldabadpcm2.02" name="audio/x-ldabadpcm"/>
 
 	<!-- DAISY z39.86 -->
-	<type id="dtbook" name="text/x-dtbook+xml" />
-	<type id="ncx" name="application/x-dtbncx+xml" />
-	<type id="smil" name="application/smil" /> 
-	<type id="dtbresource" name="application/x-dtbresource+xml" />	
+	<type id="dtbook" name="text/x-dtbook+xml" parentType="xml"/>
+	<type id="ncx" name="application/x-dtbncx+xml" parentType="xml"/>
+	<type id="smil" name="application/smil" parentType="xml"/> 
+	<type id="dtbresource" name="application/x-dtbresource+xml" parentType="xml"/>	
 
 </registry>
