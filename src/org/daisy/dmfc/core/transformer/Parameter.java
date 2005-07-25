@@ -83,7 +83,7 @@ public class Parameter implements ParameterInfo {
 	    // Make sure the specified MIME type exists
 	    MIMERegistry mime = MIMERegistry.instance();
 		if (!mime.contains(type)) {
-		    throw new MIMEException("Type attribute " + type + " of parameter " + name + " is not a valid MIME type.");
+		    throw new MIMEException("Type attribute " + type + " is not a valid MIME type.");
 		}
 		
 	    while (er.hasNext()) {
