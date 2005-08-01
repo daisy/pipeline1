@@ -11,3 +11,4 @@ lib/sac.jar -text
 lib/saxon.jar -text
 lib/saxon8.jar -text
 resources/transformer.rng -text svneol=unset#application/octet-stream
+transformers/uk_rnib_dtbook2xhtml/dtbook2xhtml.xsl svneol=native#unset
