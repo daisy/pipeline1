@@ -19,6 +19,7 @@
 package org.daisy.util.xml.stax;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import javax.xml.stream.events.XMLEvent;
 
@@ -68,6 +69,9 @@ import javax.xml.stream.events.XMLEvent;
     }
 
     public Object next() {
+        if (next == null) {
+            throw new NoSuchElementException();
+        }
         return next;
     }
 

@@ -19,6 +19,8 @@
 package org.daisy.util.xml.stax;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +35,10 @@ import javax.xml.stream.events.XMLEvent;
  * <code>gotoAndRemoveBookmark(String)</code> function is called, the
  * <code>BookmarkedXMLEventReader</code> will replay the saved events instead
  * of reading new ones from the stream. 
+ * <p>
+ * <b>Caution!</b> Remember not to leave any dangling bookmarks since all events from the earliest
+ * bookmark is buffered.
+ * </p>
  * @author Linus Ericson
  */
 public class BookmarkedXMLEventReader implements XMLEventReader {
@@ -110,6 +116,103 @@ public class BookmarkedXMLEventReader implements XMLEventReader {
      */
     public Set getBookmarkNames() {
         return bookmarks.keySet();
+    }
+    
+    /**
+     * Checks if a given bookmark exists.
+     * @param name the name of the bookmark
+     * @return <code>true</code> if the bookmark exists, <code>false</code> otherwise.
+     */
+    public boolean bookmarkExists(String name) {
+        return bookmarks.containsKey(name);
+    }
+    
+    /**
+     * Checks if the current position is at a bookmark.
+     * Warning: this method performs a linear search over all bookmarks.
+     */
+    public boolean atBookmark() {
+        for (Iterator it = bookmarks.keySet().iterator(); it.hasNext(); ) {
+            LinkedEvent le = (LinkedEvent)bookmarks.get(it.next());
+            if (le == current) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Checks if the current position in the event stream is at the specified bookmark.
+     * @param name the name of the bookmark
+     */
+    public boolean atBookmark(String name) {
+        if (!bookmarkExists(name)) {
+            throw new IllegalArgumentException("Unknown bookmark: " + name);
+        }
+        LinkedEvent le = (LinkedEvent)bookmarks.get(name);        
+        return (le == current);
+    }
+    
+    /**
+     * Gets the name of all bookmarks at the current position.
+     * Warning: this method performs a linear search over all bookmarks.
+     * @return a Set of bookmark names
+     */
+    public Set getBookmarkNamesHere() {
+        Set result = new HashSet();
+        for (Iterator it = bookmarks.keySet().iterator(); it.hasNext(); ) {
+            String bookmarkName = (String)it.next();
+            LinkedEvent le = (LinkedEvent)bookmarks.get(bookmarkName);
+            if (le == current) {
+                result.add(bookmarkName);
+            }
+        }
+        return result; 
+    }
+    
+    public boolean isNextReadBuffered() {
+        return (current != null && current.hasNext());
+    }
+    
+    /**
+     * Copy a bookmark.
+     * @param from the bookmark to copy
+     * @param to the name of the new bookmark
+     */
+    public void copyBookmark(String from, String to) {
+        LinkedEvent le = (LinkedEvent)bookmarks.get(from);
+        if (le == null) {
+            throw new IllegalArgumentException("Unknown bookmark: " + from);
+        }
+        bookmarks.put(to, le);
+    }
+    
+    /**
+     * Rename a bookmark.
+     * @param from the bookmark to rename
+     * @param to the new name of the bookmark
+     */
+    public void renameBookmark(String from, String to) {
+        copyBookmark(from, to);
+        removeBookmark(from);
+    }
+    
+    /**
+     * Checks if two bookmarks point to the same location in the stream.
+     * @param name1 the name of the first bookmark
+     * @param name2 the name of the second bookmark
+     * @return <code>true</code> if the bookmarks point to the same location, <code>false</code> otherwise
+     */
+    public boolean bookmarksEqual(String name1, String name2) {
+        LinkedEvent le1 = (LinkedEvent)bookmarks.get(name1);
+        if (le1 == null) {
+            throw new IllegalArgumentException("Unknown bookmark: " + le1);
+        }
+        LinkedEvent le2 = (LinkedEvent)bookmarks.get(name2);
+        if (le2 == null) {
+            throw new IllegalArgumentException("Unknown bookmark: " + le2);
+        }
+        return (le1 == le2);
     }
     
     /* ---------- Methods from XMLEventReader ---------- */
