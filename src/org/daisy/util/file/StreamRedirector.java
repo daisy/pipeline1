@@ -33,6 +33,7 @@ public class StreamRedirector extends Thread {
     
     protected InputStream inputStream;
     protected OutputStream outputStream;
+    protected boolean flush = false;
     
     /**
      * Creates a new <code>StreamRedirector</code>.
@@ -44,6 +45,12 @@ public class StreamRedirector extends Thread {
         outputStream = outSteam;
     }
 
+    public StreamRedirector(InputStream inStream, OutputStream outSteam, boolean flushOutstream) {
+        inputStream = inStream;
+        outputStream = outSteam;
+        flush = flushOutstream;
+    }
+    
     public void run() {
         try {
             PrintWriter writer = null;
@@ -57,6 +64,9 @@ public class StreamRedirector extends Thread {
             while ( (line = br.readLine()) != null) {
                 if (writer != null) {
                     writer.println(line);
+                    if (flush) {
+                        writer.flush();
+                    }
                 }  
             }
             if (writer != null) {
