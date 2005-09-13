@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE grammar [
+<!ENTITY daisy05 "DAISY 2005">
+
+
+]>
+<grammar 
+    xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" 
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    ns="http://www.daisy.org/z3986/2005/dtbook/"
+    xmlns="http://relaxng.org/ns/structure/1.0" 
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
+  <a:documentation>
+    <dc:title>dtbook schema</dc:title>
+    <dc:description>A schema for a text file forming part of a DAISY
+    talking book</dc:description>
+    <dc:identifier>http://www.daisy.org/dtbook/rng/identNeededForIndividualFiles/dtbook.rng
+    </dc:identifier>
+    <dc:hasPart>This is group 1. Containing dtbook, book, head, frontmatter, bodymatter and rearmatter</dc:hasPart>
+    
+    <dc:creator>Dave Pawson</dc:creator>
+    <dc:dateCreated>20040216T14:00:00Z</dc:dateCreated>
+    <dc:dateModified/>
+    <dc:isPartOf>http://www.daisy.org/dtbook/rng</dc:isPartOf>
+    <dc:publisher>http://www.daisy.org</dc:publisher>
+    <dc:rights>&#xa9; Dave Pawson, daisy consortium </dc:rights>
+
+ <a:revhistory>
+    <a:revision>
+      <a:revnumber>0.2</a:revnumber>
+      <a:date>2005-09-02T12:59:38.0Z</a:date>
+      <a:authorinitials>Dave P</a:authorinitials>
+      <a:revremark>Initial Issue</a:revremark>
+    </a:revision>
+ </a:revhistory>
+  </a:documentation>
+
+
+
+
+
+
+
+
+
+
+ 
+ <div>
+<html:h3>Pattern Head</html:h3>
+<html:p>head contains metainformation about the book but no actual
+content of the book itself, which is placed in &lt;book>.  This
+information is consonant with the &lt;head> information in xhtml, see
+[XHTML11STRICT]. Other miscellaneous elements can occur before and
+after the required &lt;title>.  &lt;title> should occur first.
+  </html:p>
+
+<define name="Head">
+<element name="head">
+<empty/>
+</element>
+</define>
+ </div>
+
+
+<div>
+  <html:h3>Element book  </html:h3>
+  <html:p>book surrounds the actual content of the document, which
+    is divided into &lt;frontmatter>, &lt;bodymatter>, and &lt;rearmatter>.
+    &lt;head>, which contains metadata, precedes &lt;book>.
+  </html:p>
+  <define name="Book">
+    <element name="book">
+      <oneOrMore>
+	<choice>
+	<ref name="Para"/>
+	<ref name="List"/>
+	</choice>
+      </oneOrMore>
+    </element>
+  </define>
+</div>
+ 
+
+
+<!-- Block level content -->
+
+<div>
+  <html:h3>Element list   </html:h3>
+  <html:p>  </html:p>
+  <define name="List">
+    <element  name="list">
+      <ref name="Depth.att"/>
+      <text/>
+    </element>
+  </define>
+</div>
+
+
+
+
+<div>
+<html:h3>Element p </html:h3> 
+
+<html:p>p contains a paragraph, which may contain inline markup.
+</html:p>
+<define name="Para">
+  <element name="p">
+    <ref name="CoreAttrs.group"/>
+    <optional><ref name="Showin.att"/> </optional>
+      <zeroOrMore>
+	<choice>
+	  <ref name="Inline.group"/>
+	  <ref name="Img"/>
+	</choice>
+      </zeroOrMore>
+   </element>
+</define>
+</div>
+
+
+<div>
+<html:h3>Element img  </html:h3>
+<html:p>An image  </html:p>
+<define name="Img">
+<element  name="img">
+<ref name="Height.att"/>
+<empty/>
+</element>
+</define>
+</div>
+
+
+
+
+
+<div>
+  <html:h3>Element dtbook</html:h3>
+  <html:p>dtbook is the root element in the Digital Talking Book.
+    &lt;dtbook> contains&lt;head> and the contents itself
+    in &lt;book>.
+
+  </html:p>
+  <define name="Dtbook">
+    <element name="dtbook">
+      <attribute name="version" >
+	<value type="string">1.2.2</value>
+      </attribute>
+      <ref name="Head"/>
+      <ref name="Book"/>
+    </element>
+  </define>
+</div>
+
+ 
+<!-- Keep the ordering here, top level down to inlines. -->
+
+
+<div>
+<html:h3>Inline inclusions</html:h3>
+<html:p>A reduced set of inlines compared to &daisy05;</html:p>
+
+<include href="inlines.rng"/>
+</div>
+
+
+
+
+
+  <start>
+      <ref name="Dtbook"/>
+  </start>
+
+
+</grammar>
+
+
+
+<!-- 
+<div>
+<html:h3>Element   </html:h3>
+<html:p>  </html:p>
+<define name="">
+<element  name="">
+<text/>
+</element>
+</define>
+</div>
+ -->
