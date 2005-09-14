@@ -1,8 +1,7 @@
 package org.daisy.util.xml.catalog;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URISyntaxException;
@@ -13,6 +12,7 @@ import java.util.Iterator;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -26,9 +26,13 @@ import org.xml.sax.helpers.DefaultHandler;
  * The physical catalog file supports a subset of the Oasis 1.1 Catalog specification.
  * @author markusg
  */
-
-public final class CatalogFile extends File {
-	private File catalog; //in order to access properties from the sax inner class	 
+/*
+ * 2005-09-14 Piotr Kiernicki
+ * - made changes in order to be able to use the catalog.xml in a jar file.
+ */
+public final class CatalogFile {
+	private CatalogFile catalog; //in order to access properties from the sax inner class
+    private URL catalogURL;
 	private static Hashtable pIdTable = new Hashtable();   //holds PIDs in <pId>,<File> OR <pid>,<String> form
 	private static Hashtable sIdTable = new Hashtable();   //holds SIDs in <sId>,<File> OR <pid>,<String> form
 	private static Hashtable srcIdTable = new Hashtable(); //holds both sID and PID, in <id>,<file> form	
@@ -40,8 +44,8 @@ public final class CatalogFile extends File {
 	 * @throws SAXException
 	 */
 	public CatalogFile(URL url) throws URISyntaxException, IOException, SAXException {        
-		super(url.toURI());                       
 		catalog = this;
+        catalogURL = url;
 
 		try {
 			//get a jaxp sax instance
@@ -59,7 +63,7 @@ public final class CatalogFile extends File {
 				System.err.println(snse.getMessage());
 		    }								    
 			SAXParser p = factory.newSAXParser();
-			p.parse(url.openStream(), new CatalogSaxHandler());            
+            p.parse(url.openStream(), new CatalogSaxHandler());
 		} catch (CatalogExceptionRecoverable cer) {			
 			System.err.println(cer.getMessage());		
 		} catch (ParserConfigurationException pce) {
@@ -103,11 +107,17 @@ public final class CatalogFile extends File {
 			throw new CatalogExceptionEntityNotSupported("No support in catalog for public id: "+publicId); 
 			//System.err.println(("No support in catalog for public id: "+publicId));
 			//return null;
-		}else if (entity instanceof java.io.File){
-			String p = fileToString(new FileInputStream((File)entity));                        
-			pIdTable.put(publicId,p); //replace in table    
-			return (new InputSource(new StringReader(p)));            
-		}else{
+        }else if (entity instanceof java.net.URL){
+            String s = streamToString(((URL)entity).openStream());                        
+            pIdTable.put(publicId,s); //replace in table    
+            return (new InputSource(new StringReader(s)));            
+        }
+//		}else if (entity instanceof java.io.File){
+//			String p = fileToString(new FileInputStream((File)entity));                        
+//			pIdTable.put(publicId,p); //replace in table    
+//			return (new InputSource(new StringReader(p)));            
+//		}
+        else{
 			return (new InputSource(new StringReader((String)entity)));
 		}  
 	}
@@ -122,8 +132,8 @@ public final class CatalogFile extends File {
 		Object entity = sIdTable.get(systemId);
 		if (entity==null) {
 			throw new CatalogExceptionEntityNotSupported("No support in catalog for system id: "+systemId); 
-		}else if (entity instanceof java.io.File){
-			String s = fileToString(new FileInputStream((File)entity));                        
+		}else if (entity instanceof java.net.URL){
+			String s = streamToString(((URL)entity).openStream());                        
 			sIdTable.put(systemId,s); //replace in table    
 			return (new InputSource(new StringReader(s)));            
 		}
@@ -142,15 +152,16 @@ public final class CatalogFile extends File {
 	}
 	
 	public URL getEntityLocalURL (String id) throws IOException, CatalogExceptionEntityNotSupported {        
-		File entity = (File)srcIdTable.get(id);
-		if (entity==null) {
-			throw new CatalogExceptionEntityNotSupported("No support in catalog for public id: "+id); 
-		}
-		String uri = entity.toURI().toASCIIString();
-		return new URL(uri);		  
+        URL entity = (URL)srcIdTable.get(id);
+        try {
+            InputStream is = entity.openStream();
+        } catch (IOException e) {
+            throw new CatalogExceptionEntityNotSupported("No support in catalog for public id: "+id);
+        }
+		return entity;		  
 	}
 	
-	private String fileToString(FileInputStream fis) throws IOException {
+	private String streamToString(InputStream fis) throws IOException {
 		StringBuffer sb = new StringBuffer();
 		InputStreamReader isr = new InputStreamReader(fis);
 		int ch=0;            
@@ -169,7 +180,7 @@ public final class CatalogFile extends File {
 		public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws CatalogExceptionRecoverable {
 			String pId = null;
 			String sId = null;
-			File entity = null;
+			URL entity = null;
 			if (qName == null) {
 				System.err.println("qname==null");
 				return;
@@ -185,23 +196,22 @@ public final class CatalogFile extends File {
 						}else if (attrs.getQName(i) == "uri") {
 							//entity = new File(catalog.getParentFile(),attrs.getValue(i));
 							//do this in case we are inside a jar:
-							URL url = catalog.getClass().getResource("./" + attrs.getValue(i));
+                            String uri = attrs.getValue(i);
+                            if(uri.indexOf("./")==0){
+                                uri = uri.substring(2);
+                            }
+                            URL url = catalog.getClass().getResource(uri);
 							if (url!=null) {
-								try {
-									entity = new File(url.toURI());                  
-								} catch (URISyntaxException use) {
-									System.err.println(use.getMessage());
-									//throw new CatalogExceptionRecoverable(use);
-								}
+                                entity = url;
 							}else{
-								System.err.println("CatalogFile warning: Entity ./" + attrs.getValue(i) + " defined in catalog " +  catalog.getName() + " not retrievable");
+								System.err.println("CatalogFile warning: Entity " + attrs.getValue(i) + " defined in catalog " +  catalog.getName() + " not retrievable");
 								//throw new CatalogExceptionRecoverable("Entity ./" + attrs.getValue(i) + " defined in catalog " +  catalog.getName() + " not retrievable");
 							}//if (url
 						}//if (attrs  
 					} //for 
 					
 					if (entity != null) {
-						if (entity.exists()) {
+						if (true) {
 							if (pId != null) {
 								srcIdTable.put(pId,entity);
 								pIdTable.put(pId,entity);
@@ -211,7 +221,7 @@ public final class CatalogFile extends File {
 								sIdTable.put(sId,entity);
 							}                            
 						}else{
-							System.err.println("CatalogFile warning: Entity " + entity.getName() + " defined in catalog " +  catalog.getName() + " not found in " + entity.getParentFile().getAbsolutePath());
+							System.err.println("CatalogFile warning: Entity " + entity + " defined in catalog " +  catalog.getName() + " not found.");
 							//throw new CatalogExceptionRecoverable("Entity " + entity.getName() + " defined in catalog " +  catalog.getName() + " not found in " + entity.getParentFile().getAbsolutePath());                        
 						} //if (entity.exists()                                                                            
 					} //if (((entity != null)||
@@ -234,4 +244,7 @@ public final class CatalogFile extends File {
 			return null;
 		}
 	}    
+    private String getName(){
+        return catalogURL.getFile();
+    }
 }
