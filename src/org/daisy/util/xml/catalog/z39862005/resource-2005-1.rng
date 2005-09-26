@@ -12,6 +12,9 @@
     org.daisy.util.xml.catalog mapping by the PID '-//NISO//RNG resource 2005-1//EN'
     Original version: mgylling 2005-07-01    
     Version/change history:
+    2005-09-07 Piotr Kiernicki: 
+    	- added xmlns attribute to resources.attlist
+    	- added "<element name="head">" in <define name="head">
     
   </a:documentation>
   
@@ -37,19 +40,24 @@
     <attribute name="version">
       <value>2005-1</value>
     </attribute>
+    <attribute name="xmlns">
+      <value>http://www.loc.gov/nls/z3986/2005/resource/</value>
+    </attribute>
     <ref name="attribute.id.optional"/>
   </define>
   
   <define name="head">
-    <zeroOrMore>
-      <element name="meta">
-        <attribute name="name"/>
-        <attribute name="content"/>
-        <optional>
-          <attribute name="scheme"/>
-        </optional>      
-      </element>
-    </zeroOrMore>
+	  <element name="head">
+	    <zeroOrMore>
+	      <element name="meta">
+	        <attribute name="name"/>
+	        <attribute name="content"/>
+	        <optional>
+	          <attribute name="scheme"/>
+	        </optional>      
+	      </element>
+	    </zeroOrMore>
+	  </element>
   </define>
 
   <define name="scope">
