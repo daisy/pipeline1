@@ -55,6 +55,18 @@
       <ref name="attribute.class.required"/>
     </optional>
   </define>
+
+  <define name="attribute.title.required">
+    <attribute name="title">
+      <text/>
+    </attribute>
+  </define> 
+   
+  <define name="attribute.title.optional">
+    <optional>
+      <ref name="attribute.title.required"/>
+    </optional>
+  </define>
   
   <define name="attribute.xml.lang.required">
     <attribute name="xml:lang">
@@ -131,5 +143,27 @@
     </optional>
   </define>
   
+  <define name="attribute.customTest.required">
+	  	<attribute name="customTest">
+	  		<ref name="datatype.idref"/>
+	  	</attribute>
+  <define>
 
+  <define name="attribute.customTest.optional">
+  	<otpional>
+		<ref name="attribute.customTest.required"/>
+  	</optional>
+  <define>
+
+  <define name="attribute.region.required">
+    <attribute name="region">
+      <text/>
+    </attribute>
+  </define> 
+   
+  <define name="attribute.region.optional">
+    <optional>
+      <ref name="attribute.region.required"/>
+    </optional>
+  </define>
 </grammar>
