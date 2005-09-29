@@ -147,13 +147,13 @@
 	  	<attribute name="customTest">
 	  		<ref name="datatype.idref"/>
 	  	</attribute>
-  <define>
+  </define>
 
   <define name="attribute.customTest.optional">
-  	<otpional>
+  	<optional>
 		<ref name="attribute.customTest.required"/>
   	</optional>
-  <define>
+  </define>
 
   <define name="attribute.region.required">
     <attribute name="region">

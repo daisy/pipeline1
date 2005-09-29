@@ -231,7 +231,7 @@
 
   <define name="element.text">
   	<element name="text">
-	  	<ref name="attribute.id.otpional"/>
+	  	<ref name="attribute.id.optional"/>
 	  	<ref name="attribute.region.optional"/>
 	  	<ref name="attribute.src.required"/>
   	</element>
@@ -239,7 +239,7 @@
 
   <define name="element.audio">
   	<element name="audio">
-	  	<ref name="attribute.id.otpional"/>
+	  	<ref name="attribute.id.optional"/>
 	  	<ref name="attribute.region.optional"/>
 	  	<ref name="attribute.src.required"/>
 	  	<ref name="attribute.clipBegin.required"/>
@@ -249,7 +249,7 @@
 
   <define name="element.img">
   	<element name="img">
-	  	<ref name="attribute.id.otpional"/>
+	  	<ref name="attribute.id.optional"/>
 	  	<ref name="attribute.region.optional"/>
 	  	<ref name="attribute.src.required"/>
   	</element>
