@@ -29,13 +29,16 @@ import org.xml.sax.helpers.DefaultHandler;
 /*
  * 2005-09-14 Piotr Kiernicki
  * - made changes in order to be able to use the catalog.xml in a jar file.
+ * 2005-09-29 Linus Ericson
+ * - made it possible to load resources from other directories
+ * - made Hastables non-static to support multiple independent instances
  */
 public final class CatalogFile {
-	private CatalogFile catalog; //in order to access properties from the sax inner class
+	private Class resourceClass;
     private URL catalogURL;
-	private static Hashtable pIdTable = new Hashtable();   //holds PIDs in <pId>,<File> OR <pid>,<String> form
-	private static Hashtable sIdTable = new Hashtable();   //holds SIDs in <sId>,<File> OR <pid>,<String> form
-	private static Hashtable srcIdTable = new Hashtable(); //holds both sID and PID, in <id>,<file> form	
+	private Hashtable pIdTable = new Hashtable();   //holds PIDs in <pId>,<File> OR <pid>,<String> form
+	private Hashtable sIdTable = new Hashtable();   //holds SIDs in <sId>,<File> OR <pid>,<String> form
+	private Hashtable srcIdTable = new Hashtable(); //holds both sID and PID, in <id>,<file> form	
 	/**
 	 * Class instantiator
 	 * @param url URL of the catalog file
@@ -43,8 +46,11 @@ public final class CatalogFile {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	public CatalogFile(URL url) throws URISyntaxException, IOException, SAXException {        
-		catalog = this;
+	public CatalogFile(URL url, Class resourceBase) throws URISyntaxException, IOException, SAXException {
+	    resourceClass = resourceBase;
+	    if (resourceBase == null) {
+	        resourceClass = this.getClass();
+	    }
         catalogURL = url;
 
 		try {
@@ -153,6 +159,9 @@ public final class CatalogFile {
 	
 	public URL getEntityLocalURL (String id) throws IOException, CatalogExceptionEntityNotSupported {        
         URL entity = (URL)srcIdTable.get(id);
+        if (entity == null) {
+            throw new CatalogExceptionEntityNotSupported("No support in catalog for public id: "+id);
+        }
         try {
             InputStream is = entity.openStream();
         } catch (IOException e) {
@@ -200,11 +209,11 @@ public final class CatalogFile {
                             if(uri.indexOf("./")==0){
                                 uri = uri.substring(2);
                             }
-                            URL url = catalog.getClass().getResource(uri);
+                            URL url = resourceClass.getResource(uri);
 							if (url!=null) {
                                 entity = url;
 							}else{
-								System.err.println("CatalogFile warning: Entity " + attrs.getValue(i) + " defined in catalog " +  catalog.getName() + " not retrievable");
+								System.err.println("CatalogFile warning: Entity " + attrs.getValue(i) + " defined in catalog " +  catalogURL + " not retrievable");
 								//throw new CatalogExceptionRecoverable("Entity ./" + attrs.getValue(i) + " defined in catalog " +  catalog.getName() + " not retrievable");
 							}//if (url
 						}//if (attrs  
@@ -221,12 +230,12 @@ public final class CatalogFile {
 								sIdTable.put(sId,entity);
 							}                            
 						}else{
-							System.err.println("CatalogFile warning: Entity " + entity + " defined in catalog " +  catalog.getName() + " not found.");
+							System.err.println("CatalogFile warning: Entity " + entity + " defined in catalog " +  catalogURL + " not found.");
 							//throw new CatalogExceptionRecoverable("Entity " + entity.getName() + " defined in catalog " +  catalog.getName() + " not found in " + entity.getParentFile().getAbsolutePath());                        
 						} //if (entity.exists()                                                                            
 					} //if (((entity != null)||
 					else {
-						System.err.println("CatalogFile warning: public or system element without uri attribute in catalog "+  catalog.getName() + "; " + sId + "; " + pId);
+						System.err.println("CatalogFile warning: public or system element without uri attribute in catalog "+  catalogURL + "; " + sId + "; " + pId);
 						//throw new CatalogExceptionRecoverable("public or system element without uri attribute in catalog "+  catalog.getName());
 					}
 				}//if (attrs != null)
@@ -234,7 +243,7 @@ public final class CatalogFile {
 		}//startelement  
 				
 		public void fatalError(SAXParseException spe) throws CatalogExceptionNotRecoverable {
-			throw new CatalogExceptionNotRecoverable("fatal parse error in " + catalog.getName() +":" + spe.getMessage() + "line: " + spe.getLineNumber());            
+			throw new CatalogExceptionNotRecoverable("fatal parse error in " + catalogURL +":" + spe.getMessage() + "line: " + spe.getLineNumber());            
 		}
 		
 		public InputSource resolveEntity(String arg0, String arg1) throws IOException, SAXException {
@@ -243,8 +252,5 @@ public final class CatalogFile {
 			System.err.println("CatalogFile warning: CatalogFile tries to retrieve own entity");
 			return null;
 		}
-	}    
-    private String getName(){
-        return catalogURL.getFile();
-    }
+	}
 }

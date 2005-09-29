@@ -65,7 +65,7 @@ public class CatalogEntityResolver implements EntityResolver {
     private CatalogEntityResolver() throws CatalogExceptionNotRecoverable {
         URL catalogURL = this.getClass().getResource("catalog.xml");
         try {
-            catalog = new CatalogFile(catalogURL);
+            catalog = new CatalogFile(catalogURL, this.getClass());
         } catch (URISyntaxException use) {
             throw new CatalogExceptionNotRecoverable(use);
         } catch (IOException ioe) {
