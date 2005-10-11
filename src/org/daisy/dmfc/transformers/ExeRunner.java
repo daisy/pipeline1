@@ -112,7 +112,10 @@ public class ExeRunner extends Transformer {
             stderrFile = new File(stderr);
         }
         
-        int maxRunningTime = Integer.parseInt(timeout);
+        int maxRunningTime = 0;
+        if (timeout != null) {
+            maxRunningTime = Integer.parseInt(timeout);
+        }
         
         // Read poll interval
         int pollInterval = Integer.parseInt(System.getProperty("dmfc.pollExeInterval", "500"));
