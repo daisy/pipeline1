@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE out:stylesheet[
+<!DOCTYPE xsl:stylesheet[
   <!ENTITY catts "@id|@class|@title|@xml:lang">
   <!ENTITY cncatts "@id|@title|@xml:lang">
 
 ]>
-<out:stylesheet 
+<xsl:stylesheet 
   xmlns:out="http://www.w3.org/1999/XSL/Transform" 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-  xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+  xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/
   xmlns:d="rnib.org.uk/tbs#"
   xmlns="http://www.w3.org/1999/xhtml"
 
@@ -68,17 +68,41 @@ dtb:address</d:para>
     </d:revdescription>
     <d:revremark>Omitted to copy @src|@alt|@longdesc|@height|@width for dtb:img. Now added. noteref failed to pick up @idref value. Corrected.</d:revremark>
    </d:revision>
-   
-   <d:revision>
+
+  <d:revision>
     <d:revnumber>1.5</d:revnumber>
-    <d:date>15 August  2005</d:date>
-    <d:authorinitials>LinusE &amp; MarkusG</d:authorinitials>
+    <d:date>2005-09-12T15:24:07.0Z</d:date>
+    <d:authorinitials>DaveP</d:authorinitials>
     <d:revdescription>
-     <d:para>Corrected namespace declaration.</d:para>
+     <d:para>Bug report by Joel</d:para>
     </d:revdescription>
-    <d:revremark>nsURI is now daisy.org instead of loc.gov.</d:revremark>
+    <d:revremark>Attributes not copied over from root elementCorrected.</d:revremark>
+    <d:revremark>Failed to process display lists</d:revremark>
    </d:revision>
-   
+
+  <d:revision>
+    <d:revnumber>1.6</d:revnumber>
+    <d:date>2005-09-13T14:27:44.0Z</d:date>
+    <d:authorinitials>DaveP</d:authorinitials>
+    <d:revdescription>
+     <d:para>Bug report by Linus</d:para>
+    </d:revdescription>
+    <d:revremark>dtb namespace corrected.</d:revremark>
+   </d:revision>
+
+  <d:revision>
+    <d:revnumber>1.7</d:revnumber>
+    <d:date>2005-10-06T12:31:28.0Z</d:date>
+    <d:authorinitials>DaveP</d:authorinitials>
+    <d:revdescription>
+     <d:para>Bug report by Joel. </d:para>
+    </d:revdescription>
+    <d:revremark>Added processing for abbr, acronym, bdo, covertitle,
+dfn, dl, link, sent, title, w.</d:revremark>
+   </d:revision>
+
+
+
   </d:revhistory>
   </d:doc>
 
@@ -95,331 +119,362 @@ dtb:address</d:para>
      doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
 
 
-   <out:template match="/">
-      <out:apply-templates/>
-   </out:template>
+   <xsl:template match="/">
+      <xsl:apply-templates/>
+   </xsl:template>
 
 
-   <out:template match="dtb:dtbook">
+   <xsl:template match="dtb:dtbook">
      <xsl:element name="html" namespace="http://www.w3.org/1999/xhtml">
+       <xsl:if test="@xml:lang">
+         <xsl:copy-of select="@xml:lang"/>
+       </xsl:if>
+       <xsl:if test="@dir">
+         <xsl:copy-of select="@dir"/>
+       </xsl:if>
+
+       
        <xsl:comment>
          DAISY dtb 2005 -> XHTML 1.0 transform, 
          rev: <xsl:value-of select="$rev"/>
        date: <xsl:value-of select="$date"/>     
      </xsl:comment>
-     <out:apply-templates/>
+     <xsl:apply-templates/>
    </xsl:element>
-   </out:template>
+   </xsl:template>
 
 
-   <out:template match="dtb:head">
+   <xsl:template match="dtb:head">
      <head>
        <title>
          <xsl:value-of select="dtb:meta[@name='dc:title']/@content"/>
        </title>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </head>
-   </out:template>
+   </xsl:template>
 
 
-   <out:template match="dtb:meta">
+   <xsl:template match="dtb:meta">
      <meta>
        <xsl:copy-of select="@*"/>
      </meta>
-   </out:template>
+   </xsl:template>
 
 
-   <out:template match="dtb:book">
-     <body><out:apply-templates/></body>
-   </out:template>
+ <!-- Unsure. How does this position for a copy? -->
+   <xsl:template match="dtb:link">
+     <link>
+       <xsl:copy-of select="@*"/>
+     </link>
+   </xsl:template>
 
 
-   <out:template match="dtb:frontmatter">
+
+
+   <xsl:template match="dtb:book">
+     <body><xsl:apply-templates/></body>
+   </xsl:template>
+
+
+   <xsl:template match="dtb:frontmatter">
      <div class="frontmatter">
        <xsl:copy-of select="&cncatts;"/>  
-       <out:apply-templates/></div>
-   </out:template>
+       <xsl:apply-templates/></div>
+   </xsl:template>
 
 
 
 
-   <out:template match="dtb:level1">
+   <xsl:template match="dtb:level1">
      <div class="level1">
        <xsl:copy-of select="&cncatts;"/>  
-       <out:apply-templates/></div>
-   </out:template>
-   <out:template match="dtb:level2">
+       <xsl:apply-templates/></div>
+   </xsl:template>
+   <xsl:template match="dtb:level2">
      <div class="level2">
        <xsl:copy-of select="&cncatts;"/>  
-       <out:apply-templates/></div>
-   </out:template>
-   <out:template match="dtb:level3">
+       <xsl:apply-templates/></div>
+   </xsl:template>
+   <xsl:template match="dtb:level3">
      <div class="level3">
        <xsl:copy-of select="&cncatts;"/>  
-       <out:apply-templates/></div>
-   </out:template>
-   <out:template match="dtb:level4">
+       <xsl:apply-templates/></div>
+   </xsl:template>
+   <xsl:template match="dtb:level4">
      <div class="level4">
        <xsl:copy-of select="&cncatts;"/>  
-       <out:apply-templates/></div>
-   </out:template>
-   <out:template match="dtb:level5">
+       <xsl:apply-templates/></div>
+   </xsl:template>
+   <xsl:template match="dtb:level5">
      <div class="level5">
        <xsl:copy-of select="&cncatts;"/>  
-     <out:apply-templates/></div>
-   </out:template>
-   <out:template match="dtb:level6">
+     <xsl:apply-templates/></div>
+   </xsl:template>
+   <xsl:template match="dtb:level6">
      <div class="level6">
        <xsl:copy-of select="&cncatts;"/>    
-       <out:apply-templates/></div>
-   </out:template>
+       <xsl:apply-templates/></div>
+   </xsl:template>
 
-   <out:template match="dtb:level">
+   <xsl:template match="dtb:level">
      <div class="level">
         <xsl:copy-of select="&cncatts;"/>
-       <out:apply-templates/></div>
-   </out:template>
+       <xsl:apply-templates/></div>
+   </xsl:template>
 
 
-
-
-
-   <out:template match="dtb:p">
+   <xsl:template match="dtb:covertitle">
      <p>
        <xsl:copy-of select="&catts;"/>
-       <out:apply-templates/></p>
-   </out:template>
+       <xsl:apply-templates/>
+     </p>
+   </xsl:template>
 
 
-   <out:template match="dtb:pagenum">
+
+   <xsl:template match="dtb:p">
+     <p>
+       <xsl:copy-of select="&catts;"/>
+       <xsl:apply-templates/></p>
+   </xsl:template>
+
+
+   <xsl:template match="dtb:pagenum">
      <span class="pagenum">
      <xsl:copy-of select="&cncatts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </span>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:list/dtb:pagenum" priority="1">
+   <xsl:template match="dtb:list/dtb:pagenum" priority="1">
      <li><span class="pagenum">
          <xsl:copy-of select="&cncatts;"/>
-         <out:apply-templates/>
+         <xsl:apply-templates/>
        </span> </li>
-   </out:template>
+   </xsl:template>
 
+   <xsl:template match="dtb:blockquote/dtb:pagenum">
+     <div class="dummy">
+     <span class="pagenum">
+     <xsl:copy-of select="&cncatts;"/>
+      <xsl:apply-templates/>
+    </span>
+  </div>
+   </xsl:template>
 
-
-  <out:template match="dtb:address">
+  <xsl:template match="dtb:address">
    <div class="address">
      <xsl:copy-of select="&cncatts;"/>
-     <out:apply-templates/>
+     <xsl:apply-templates/>
    </div>
-  </out:template>
+  </xsl:template>
 
 
-   <out:template match="dtb:h1">
+   <xsl:template match="dtb:h1">
      <h1>
        <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </h1>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:h2">
+   <xsl:template match="dtb:h2">
      <h2>
        <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </h2>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:h3">
+   <xsl:template match="dtb:h3">
      <h3>
        <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </h3>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:h4">
+   <xsl:template match="dtb:h4">
      <h4>
        <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </h4>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:h5">
+   <xsl:template match="dtb:h5">
      <h5>
        <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </h5>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:h6">
+   <xsl:template match="dtb:h6">
      <h6>
        <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </h6>
-   </out:template>
+   </xsl:template>
 
 
-  <out:template match="dtb:bridgehead">
+  <xsl:template match="dtb:bridgehead">
     <div class="bridgehead">
       <xsl:copy-of select="&cncatts;"/>
-      <out:apply-templates/></div>
-   </out:template>
+      <xsl:apply-templates/></div>
+   </xsl:template>
    
 
 
 
-   <out:template match="dtb:list[not(@type)]">
-     <ul><xsl:copy-of select="&catts;"/><out:apply-templates/></ul>
-   </out:template>
+   <xsl:template match="dtb:list[not(@type)]">
+     <ul><xsl:copy-of select="&catts;"/><xsl:apply-templates/></ul>
+   </xsl:template>
 
 
  
 
 
-   <out:template match="dtb:lic">
+   <xsl:template match="dtb:lic">
      <span class="lic">
        <xsl:copy-of select="&cncatts;"/>
-       <out:apply-templates/></span>
-   </out:template>
+       <xsl:apply-templates/></span>
+   </xsl:template>
 
 
-   <out:template match="dtb:br">
-     <br />  <out:apply-templates/>
-   </out:template>
+   <xsl:template match="dtb:br">
+     <br />  <xsl:apply-templates/>
+   </xsl:template>
 
 
   
 
 
-   <out:template match="dtb:bodymatter">
-     <div class="bodymatter"><out:apply-templates/></div>
-   </out:template>
+   <xsl:template match="dtb:bodymatter">
+     <div class="bodymatter"><xsl:apply-templates/></div>
+   </xsl:template>
 
 
  
 
-   <out:template match="dtb:noteref">
+   <xsl:template match="dtb:noteref">
      <span class="noteref">
        <a href="{@idref}">
-       <out:apply-templates/>
+       <xsl:apply-templates/>
      </a>
    </span>
-   </out:template>
+   </xsl:template>
 
 
  
 
 
-   <out:template match="dtb:img">
+   <xsl:template match="dtb:img">
      <img >
      <xsl:copy-of select="&catts;"/>
      <xsl:copy-of select="@src|@alt|@longdesc|@height|@width"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </img>
-   </out:template>
+   </xsl:template>
 
 
-   <out:template match="dtb:caption">
+   <xsl:template match="dtb:caption">
      <caption>
        <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </caption>
-   </out:template>
+   </xsl:template>
 
 
-   <out:template match="dtb:imggroup/dtb:caption">
+   <xsl:template match="dtb:imggroup/dtb:caption">
      <p class="caption">
        <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </p>
-   </out:template>
+   </xsl:template>
 
 
   
 
 
-   <out:template match="dtb:div">
+   <xsl:template match="dtb:div">
      <div>
        <xsl:copy-of select="&catts;"/>
-       <out:apply-templates/>
+       <xsl:apply-templates/>
      </div>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:imggroup">
+   <xsl:template match="dtb:imggroup">
      <div class="imggroup">
        <xsl:copy-of select="&catts;"/>
-       <out:apply-templates/>
+       <xsl:apply-templates/>
      </div>
-   </out:template>
+   </xsl:template>
 
 
 
 
-  <out:template match="dtb:annotation">
-    <div class="annotation"><out:apply-templates/></div>
-   </out:template>
+  <xsl:template match="dtb:annotation">
+    <div class="annotation"><xsl:apply-templates/></div>
+   </xsl:template>
 
-  <out:template match="dtb:author">
-    <div class="author"><out:apply-templates/></div>
-   </out:template>
+  <xsl:template match="dtb:author">
+    <div class="author"><xsl:apply-templates/></div>
+   </xsl:template>
 
 
-   <out:template match="dtb:blockquote">
+   <xsl:template match="dtb:blockquote">
      <blockquote>
        <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </blockquote>
-   </out:template>
+   </xsl:template>
 
 
-  <out:template match="dtb:byline">
-    <div class="byline"><out:apply-templates/></div>
-   </out:template>
+  <xsl:template match="dtb:byline">
+    <div class="byline"><xsl:apply-templates/></div>
+   </xsl:template>
 
-  <out:template match="dtb:dateline">
-    <div class="dateline"><out:apply-templates/></div>
-   </out:template>
+  <xsl:template match="dtb:dateline">
+    <div class="dateline"><xsl:apply-templates/></div>
+   </xsl:template>
 
-  <out:template match="dtb:doctitle">
-    <div class="doctitle"><out:apply-templates/></div>
-   </out:template>
+  <xsl:template match="dtb:doctitle">
+    <div class="doctitle"><xsl:apply-templates/></div>
+   </xsl:template>
 
-  <out:template match="dtb:docauthor">
-    <div class="docauthor"><out:apply-templates/></div>
-   </out:template>
+  <xsl:template match="dtb:docauthor">
+    <div class="docauthor"><xsl:apply-templates/></div>
+   </xsl:template>
 
-  <out:template match="dtb:epigraph">
-    <div class="epigraph"><out:apply-templates/></div>
-   </out:template>
+  <xsl:template match="dtb:epigraph">
+    <div class="epigraph"><xsl:apply-templates/></div>
+   </xsl:template>
 
 
 
-   <out:template match="dtb:note">
+   <xsl:template match="dtb:note">
       <div class="note">
         <xsl:copy-of select="&catts;"/>
-        <out:apply-templates/>
+        <xsl:apply-templates/>
       </div>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:sidebar">
+   <xsl:template match="dtb:sidebar">
       <div class="sidebar">
         <xsl:copy-of select="&catts;"/>
-        <out:apply-templates/>
+        <xsl:apply-templates/>
       </div>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:hd">
+   <xsl:template match="dtb:hd">
       <div class="hd">
         <xsl:copy-of select="&catts;"/>
-        <out:apply-templates/>
+        <xsl:apply-templates/>
       </div>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:list/dtb:hd">
+   <xsl:template match="dtb:list/dtb:hd">
       <li class="hd">
         <xsl:copy-of select="&catts;"/>
-        <out:apply-templates/>
+        <xsl:apply-templates/>
       </li>
-   </out:template>
+   </xsl:template>
 
 
 
@@ -452,6 +507,31 @@ dtb:address</d:para>
        <xsl:apply-templates/>
      </li>
    </xsl:template>
+
+ 
+
+   <xsl:template match="dtb:dl">
+     <dl>
+       <xsl:copy-of select="&catts;"/>
+       <xsl:apply-templates/>
+     </dl>
+   </xsl:template>
+
+  <xsl:template match="dtb:dt">
+     <dt>
+       <xsl:copy-of select="&catts;"/>
+       <xsl:apply-templates/>
+     </dt>
+   </xsl:template>
+
+  <xsl:template match="dtb:dd">
+     <dd>
+       <xsl:copy-of select="&catts;"/>
+       <xsl:apply-templates/>
+     </dd>
+   </xsl:template>
+
+
 
 
    <xsl:template match="dtb:table">
@@ -530,136 +610,192 @@ dtb:address</d:para>
 
 
 
-   <out:template match="dtb:poem">
+   <xsl:template match="dtb:poem">
   <div class="poem">
     <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </div>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:cite">
+
+   <xsl:template match="dtb:poem/dtb:title">
+     <p class="title">
+       <xsl:apply-templates/>
+     </p>
+
+   </xsl:template>
+
+   <xsl:template match="dtb:cite/dtb:title">
+     <span class="title">
+       <xsl:apply-templates/>
+     </span>
+
+   </xsl:template>
+
+
+
+   <xsl:template match="dtb:cite">
      <cite>
        <xsl:copy-of select="&catts;"/>
-       <out:apply-templates/>
+       <xsl:apply-templates/>
      </cite>
-   </out:template>
+   </xsl:template>
 
 
 
-   <out:template match="dtb:code">
+   <xsl:template match="dtb:code">
      <code>
        <xsl:copy-of select="&catts;"/>
-       <out:apply-templates/>
+       <xsl:apply-templates/>
      </code>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:kbd">
+   <xsl:template match="dtb:kbd">
      <kbd>
        <xsl:copy-of select="&catts;"/>
-       <out:apply-templates/>
+       <xsl:apply-templates/>
      </kbd>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:q">
+   <xsl:template match="dtb:q">
      <q>
        <xsl:copy-of select="&catts;"/>
-       <out:apply-templates/>
+       <xsl:apply-templates/>
      </q>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:samp">
+   <xsl:template match="dtb:samp">
      <samp>
        <xsl:copy-of select="&catts;"/>
-       <out:apply-templates/>
+       <xsl:apply-templates/>
      </samp>
-   </out:template>
+   </xsl:template>
 
 
 
-   <out:template match="dtb:linegroup">
+   <xsl:template match="dtb:linegroup">
      <div class="linegroup">
        <xsl:copy-of select="&catts;"/>  
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </div>
-   </out:template>
+   </xsl:template>
 
 
-   <out:template match="dtb:line">
+   <xsl:template match="dtb:line">
    <div class="line">
        <xsl:copy-of select="&catts;"/>  
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </div>
-   </out:template>
+   </xsl:template>
 
-   <out:template match="dtb:linenum">
+   <xsl:template match="dtb:linenum">
    <span class="linenum">
        <xsl:copy-of select="&catts;"/>  
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </span>
-   </out:template>
+   </xsl:template>
 
 
 
 
-   <out:template match="dtb:prodnote">
+   <xsl:template match="dtb:prodnote">
      <div class="prodnote">
        <xsl:copy-of select="&catts;"/>  
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </div>
-   </out:template>
+   </xsl:template>
 
 
-   <out:template match="dtb:rearmatter">
-     <div class="rearmatter"><out:apply-templates/></div>
-   </out:template>
+   <xsl:template match="dtb:rearmatter">
+     <div class="rearmatter"><xsl:apply-templates/></div>
+   </xsl:template>
 
 
    <!-- Inlines -->
 
-   <out:template match="dtb:a">
-     <span class="anchor"><out:apply-templates/></span>
-   </out:template>
+   <xsl:template match="dtb:a">
+     <span class="anchor"><xsl:apply-templates/></span>
+   </xsl:template>
 
- <out:template match="dtb:em">
+ <xsl:template match="dtb:em">
    <em>
      <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </em>
-   </out:template>
+   </xsl:template>
 
- <out:template match="dtb:strong">
+ <xsl:template match="dtb:strong">
    <strong>
      <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </strong>
-   </out:template>
- <out:template match="dtb:sup">
+   </xsl:template>
+
+
+   <xsl:template match="dtb:abbr">
+     <abbr>
+       <xsl:copy-of select="&catts;"/>
+      <xsl:apply-templates/>
+     </abbr>
+   </xsl:template>
+
+  <xsl:template match="dtb:acronym">
+     <acronym>
+       <xsl:copy-of select="&catts;"/>
+      <xsl:apply-templates/>
+     </acronym>
+   </xsl:template>
+
+  <xsl:template match="dtb:bdo">
+    <bdo>
+       <xsl:copy-of select="@*"/>
+      <xsl:apply-templates/>
+    </bdo>
+  </xsl:template>
+
+  <xsl:template match="dtb:dfn">
+     <span class="definition"><xsl:apply-templates/></span>
+   </xsl:template>
+
+  <xsl:template match="dtb:sent">
+     <span class="sentence"><xsl:apply-templates/></span>
+   </xsl:template>
+
+
+  <xsl:template match="dtb:w">
+     <span class="word"><xsl:apply-templates/></span>
+   </xsl:template>
+
+
+
+
+ <xsl:template match="dtb:sup">
    <sup>
      <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </sup>
-   </out:template>
- <out:template match="dtb:sub">
+   </xsl:template>
+ <xsl:template match="dtb:sub">
    <sub>
      <xsl:copy-of select="&catts;"/>
-      <out:apply-templates/>
+      <xsl:apply-templates/>
     </sub>
-   </out:template>
+   </xsl:template>
 
 
 
-   <out:template match="dtb:a[@href]">
+   <xsl:template match="dtb:a[@href]">
      <a>
        <xsl:copy-of select="&catts;"/>
        <xsl:copy-of select="@href"/>
 
-       <out:apply-templates/>
+       <xsl:apply-templates/>
      </a>
-   </out:template>
+   </xsl:template>
 
-  <out:template match="dtb:annoref">
-     <span class="annoref"><out:apply-templates/></span>
-   </out:template>
+  <xsl:template match="dtb:annoref">
+     <span class="annoref"><xsl:apply-templates/></span>
+   </xsl:template>
 
 
 
@@ -669,8 +805,8 @@ dtb:address</d:para>
    <xsl:template match="dtb:*">
      <xsl:message>
   *****<xsl:value-of select="name(..)"/>/{<xsl:value-of select="namespace-uri()"/>}<xsl:value-of select="name()"/>******
-     </xsl:message>
+   </xsl:message>
    </xsl:template>
 
 
-</out:stylesheet>
+</xsl:stylesheet>
