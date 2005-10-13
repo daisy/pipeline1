@@ -7,7 +7,7 @@
 <xsl:stylesheet 
   xmlns:out="http://www.w3.org/1999/XSL/Transform" 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-  xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/
+  xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
   xmlns:d="rnib.org.uk/tbs#"
   xmlns="http://www.w3.org/1999/xhtml"
 
