@@ -58,7 +58,7 @@ public abstract class EventSender {
 	 * @param level the level of the message
 	 * @param message the message
 	 */
-	protected void sendMessage(Level level, String message) {
+	public void sendMessage(Level level, String message) {
 	    Prompt prompt = new Prompt(level, message, messageOriginator);
 		send(prompt);
 	}
