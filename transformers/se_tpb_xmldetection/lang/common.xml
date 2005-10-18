@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<language>
+
+	<initialism before=".*[\s(]|^" after="([\-,\.\s:;?!)].*)|$" suffix="s|:s">
+		<key>
+			<name>IBM</name>
+			<expansion id="tpbLibrary">Intelligent Business Machines</expansion>
+		</key>		
+	</initialism>
+	
+	<acronym before=".*[\s(]|^" after="([\-,\.\s:;?!)].*)|$" suffix="s|:s">
+	</acronym>
+	
+	<abbreviation before=".*[\s(]|^" after="([,\.\s:;?!)].*)|$">
+	</abbreviation>
+
+	<fix before=".*[\s(]|^" after="([,\.\s:;?!)].*)|$">
+	</fix>
+
+</language>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<language xml:lang="en">
+
+	<initialism before=".*[\s(]|^" after="([\-,\.\s:;?!)].*)|$" suffix="s|:s">				
+		<key>
+			<name>BBC</name>
+			<expansion priority="1" id="bbcTV">British Broadcasting Corporation</expansion>
+			<expansion priority="2" id="bbcBicycle">British Bicycle Company</expansion>
+		</key>
+		<key>
+			<name>RNIB</name>
+			<expansion>Royal National Institute of the Blind</expansion>
+		</key>
+		<key>
+			<name>TPB</name>
+			<expansion id="tpbLibrary">The Swedish Library of Talking Books and Braille</expansion>
+		</key>
+	</initialism>
+	
+	<acronym before=".*[\s(]|^" after="([\-,\.\s:;?!)].*)|$" suffix="s|:s">
+		<key>
+			<name>DAISY</name>
+			<expansion id="daisyBook">Digital audio based information system</expansion>
+		</key>
+	</acronym>
+	
+	<abbreviation before=".*[\s(]|^" after="([,\.\s:;?!)].*)|$">
+		<key>
+			<name>e.g.</name>
+			<name>eg.</name>
+			<expansion>for example</expansion>
+		</key>		
+	</abbreviation>
+
+	<fix before=".*[\s(]|^" after="([,\.\s:;?!)].*)|$">
+		<item key="\d+-\p{L}+" value="num-word"/>
+		<item key="\d+(?: \d{3})+" value="num-with-space"/>
+	</fix>
+
+</language>

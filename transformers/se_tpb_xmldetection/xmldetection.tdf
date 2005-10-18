@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformer version="1.0">
+	<name>XML Detection</name>
+	<description>Performs abbr, acronym, sentence and word detection on XML documents.</description>
+	<classname>se_tpb_xmldetection.XMLDetection</classname>
+	<license>unknown</license>
+	<author>Linus Ericson</author>
+	<support>No</support>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/xml">
+			<name>input</name>
+			<description>Input XML document</description>
+			<example>file:///path/to/input/document.xml</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/xml">
+			<name>output</name>
+			<description>Output XML document</description>
+			<example>file:///path/to/output/document.xml</example>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>doAbbrAcronymDetection</name>
+			<description>Perform abbreviation and acronym detection</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>		
+		
+		<parameter required="false" type="enum">
+			<name>doSentenceDetection</name>
+			<description>Perform sentence detection</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>		
+		
+		<parameter required="false" type="enum">
+			<name>doWordDetection</name>
+			<description>Perform word detection</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>		
+		
+	</parameters>	
+
+</transformer>
