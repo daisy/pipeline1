@@ -30,7 +30,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -88,7 +90,11 @@ public class DMFCCore extends EventSender {
 		super(evListener);
 		inputListener = inListener;
 		Locale.setDefault(locale);
-				
+		
+		/*System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
+		System.setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
+		System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration","com.sun.org.apache.xerces.internal.parsers.XML11Configuration");
+			*/	
 		// Set DMFC home dir
 		homeDirectory = getHomeDir();
 		System.setProperty("dmfc.home", getHomeDirectory().getAbsolutePath());
@@ -102,14 +108,19 @@ public class DMFCCore extends EventSender {
 		DirClassLoader resourceLoader = new DirClassLoader(new File(getHomeDirectory(), "resources"), new File(getHomeDirectory(), "resources"));
 		ResourceBundle bundle = ResourceBundle.getBundle("dmfc_messages", Locale.ENGLISH, resourceLoader);
 		I18n.setDefaultBundle(bundle);				
-		
+
 		TempFile.setTempDir(new File(System.getProperty("dmfc.tempDir")));
 			
 		// Setup logging
+		Logger lg = Logger.getLogger("");
+        Handler[] handlers = lg.getHandlers();
+        for (int i = 0; i < handlers.length; ++i) {
+            lg.removeHandler(handlers[i]);
+        }		
 		MessageLogger logger = new MessageLogger();
 		addEventListener(logger);
 		LoggingPropertiesReader.addHandlers(logger, System.getProperty("dmfc.logging"));
-		
+
 		// Load the transformers
 		if (!reloadTransformers()) {
 		    throw new DMFCConfigurationException("Cannot load the transformers");
