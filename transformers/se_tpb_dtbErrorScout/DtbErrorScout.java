@@ -67,7 +67,7 @@ public class DtbErrorScout extends Transformer {
                 while (it.hasNext()) {
                     Exception e = (Exception)it.next();
                     sendMessage(Level.WARNING, e.getMessage());
-                    System.err.print(e.toString());
+                    //System.err.print(e.toString());
                     if(e instanceof SAXParseException) {
                         SAXParseException se = (SAXParseException) e;
                         sendMessage(Level.INFO, i18n("AT_LINE", new Integer(se.getLineNumber())));
