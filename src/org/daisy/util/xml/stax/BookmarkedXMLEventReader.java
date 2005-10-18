@@ -36,8 +36,8 @@ import javax.xml.stream.events.XMLEvent;
  * <code>BookmarkedXMLEventReader</code> will replay the saved events instead
  * of reading new ones from the stream. 
  * <p>
- * <b>Caution!</b> Remember not to leave any dangling bookmarks since all events from the earliest
- * bookmark is buffered.
+ * <b>Caution!</b> Remember not to leave any dangling bookmarks since all events
+ * from the earliest bookmark are buffered.
  * </p>
  * @author Linus Ericson
  */
