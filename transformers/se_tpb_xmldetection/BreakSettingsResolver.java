@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.daisy.dmfc.core.DirClassLoader;
 import org.daisy.util.xml.catalog.CatalogExceptionEntityNotSupported;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.catalog.CatalogFile;
@@ -37,7 +38,15 @@ import org.xml.sax.SAXException;
     
     private BreakSettingsResolver() throws CatalogExceptionNotRecoverable {
         try {
-            Class cls = Class.forName(this.getClass().getPackage().getName() + ".DummyClass", true, ClassLoader.getSystemClassLoader());
+            ClassLoader cl = this.getClass().getClassLoader();
+            if (cl instanceof DirClassLoader) {
+                DirClassLoader dcl = (DirClassLoader)cl;
+                System.err.println("dcl");
+                cl = new DirClassLoader(dcl.getClassDir(), dcl.getResourceDir().getParentFile());
+            } else {
+                System.err.println("cl");
+            }
+            Class cls = Class.forName(this.getClass().getPackage().getName() + ".DummyClass", true, cl);
             URL catalogURL = cls.getResource("type.xml");
             catalog = new CatalogFile(catalogURL, cls);
         } catch (URISyntaxException use) {
