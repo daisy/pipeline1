@@ -102,5 +102,13 @@ public class DirClassLoader extends URLClassLoader {
 		}		
 		return foundClass;
 	}
+	
+	
 
+    public File getClassDir() {
+        return classDir;
+    }
+    public File getResourceDir() {
+        return resourceDir;
+    }
 }
