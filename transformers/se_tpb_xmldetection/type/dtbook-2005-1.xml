@@ -53,6 +53,7 @@
 		<element name="abbr"/>
 		<element name="acronym"/>
 		<element name="pagenum"/>
+		<element name="noteref"/>
 		<element name="w"/>
 	</wordSkip>
 	
