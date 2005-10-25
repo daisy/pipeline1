@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,9 +66,12 @@ public class XMLDetection extends Transformer {
         File currentInput = FilenameOrFileURI.toFile(input);
         File finalOutput = FilenameOrFileURI.toFile(output);
         
-        /* Setup logger */        
+        /* Setup logger. Only add logger once. */        
         Logger logger = Logger.getLogger(this.getClass().getPackage().getName());
-        logger.addHandler(new LogHandler(this));
+        Handler[] handlers = logger.getHandlers();
+        if (handlers.length == 0) {
+            logger.addHandler(new LogHandler(this));
+        }
         
         
         try {
