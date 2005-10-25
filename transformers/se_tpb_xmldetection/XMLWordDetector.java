@@ -48,6 +48,7 @@ public class XMLWordDetector extends XMLBreakDetector {
     protected ContextStack contextStack = null;
     
     private Locale lastLocale = null;
+    private boolean doctypeSeen = false;
 
     /* *** CONSTRUCTORS *** */
     
@@ -83,6 +84,9 @@ public class XMLWordDetector extends XMLBreakDetector {
                     }
                 }
             } else if (event.isStartElement()) {
+                if (!doctypeSeen) {
+                    throw new UnsupportedDocumentTypeException("No DOCTYPE declaration found.");
+                }
                 StartElement se = event.asStartElement();
                 if (breakSettings.skipContent(se.getName())) {
                     skipContextStackLength = contextStack.getParentContext().size();
@@ -116,6 +120,7 @@ public class XMLWordDetector extends XMLBreakDetector {
                 DTD dtd = (DTD)event;                
                 parseDoctype(dtd.getDocumentTypeDeclaration());
                 writeEvent(event);
+                doctypeSeen = true;
             } else if (event.isStartDocument()) { 
                 StartDocument sd = (StartDocument)event;
                 if (sd.encodingSet()) {

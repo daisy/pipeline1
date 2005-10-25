@@ -61,6 +61,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
     protected ContextStack contextStack = null;
         
     private Locale lastLocale = null;
+    private boolean doctypeSeen = false;
     
     /* *** CONSTRUCTORS *** */
     
@@ -114,6 +115,10 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                     }
                 }
             } else if (event.isStartElement() || event.isEndElement()) {
+                if (!doctypeSeen) {
+                    throw new UnsupportedDocumentTypeException("No DOCTYPE declaration found.");
+                }
+                
                 // Event is a start element or an end element
                 boolean isStart = false;
                 
@@ -227,6 +232,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                 DTD dtd = (DTD)event;                
                 parseDoctype(dtd.getDocumentTypeDeclaration());
                 writeEvent(event);
+                doctypeSeen = true;
             } else if (event.isStartDocument()) { 
                 StartDocument sd = (StartDocument)event;
                 if (sd.encodingSet()) {
