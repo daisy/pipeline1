@@ -113,13 +113,13 @@ public class XMLDetection extends Transformer {
             FileUtils.copy(currentInput, finalOutput);
             
         } catch (CatalogExceptionNotRecoverable e) {
-            e.printStackTrace();
+            throw new TransformerRunException("Catalog problem", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new TransformerRunException("IO problem", e);
         } catch (XMLStreamException e) {
-            e.printStackTrace();
+            throw new TransformerRunException("StAX problem", e);
         } catch (UnsupportedDocumentTypeException e) {
-            e.printStackTrace();
+            throw new TransformerRunException("Unsupported DOCTYPE", e);
         }            
         
         return true;
