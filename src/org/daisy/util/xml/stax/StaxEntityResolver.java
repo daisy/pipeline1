@@ -45,6 +45,9 @@ public class StaxEntityResolver implements XMLResolver {
     public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace) throws XMLStreamException {
         try {
             InputSource is = resolver.resolveEntity(publicID, systemID);
+            if (is == null) {
+                return null;
+            }
             InputStream istr = is.getByteStream();
             if (istr != null) {
                 return istr;
@@ -60,9 +63,11 @@ public class StaxEntityResolver implements XMLResolver {
                 return bais;
             }
         } catch (SAXException e) {
-            e.printStackTrace();
+            throw new XMLStreamException(e);
+            //e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new XMLStreamException(e);
+            //e.printStackTrace();
         }
         return null;
     }
