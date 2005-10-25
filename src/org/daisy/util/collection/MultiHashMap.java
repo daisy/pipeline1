@@ -139,7 +139,7 @@ public class MultiHashMap implements Map {
      * Gets the collection for the specified key.
      * @param key the key
      * @return a Collection or null if the key did not exists.
-     * @see getCollection(Object)
+     * @see #getCollection(Object)
      */
     public Object get(Object key) {
         return map.get(key);
