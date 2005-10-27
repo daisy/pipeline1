@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +32,7 @@ import javax.xml.stream.XMLStreamException;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.dmfc.logging.LineFormatter;
 import org.daisy.dmfc.logging.LogHandler;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
@@ -59,9 +61,14 @@ public class XMLDetection extends Transformer {
         String doAbbrAcronymDetection = (String)parameters.remove("doAbbrAcronymDetection");
         String doSentenceDetection = (String)parameters.remove("doSentenceDetection");
         String doWordDetection = (String)parameters.remove("doWordDetection");
+        String logFile = (String)parameters.remove("logFile");
         
         sendMessage(Level.FINER, i18n("USING_INPUT", input));
         sendMessage(Level.FINER, i18n("USING_OUTPUT", output));
+        
+        if (logFile != null && !logFile.equals("")) {
+            sendMessage(Level.FINER, i18n("USING_LOGFILE", logFile));
+        }
         
         File currentInput = FilenameOrFileURI.toFile(input);
         File finalOutput = FilenameOrFileURI.toFile(output);
@@ -69,12 +76,30 @@ public class XMLDetection extends Transformer {
         /* Setup logger. Only add logger once. */        
         Logger logger = Logger.getLogger(this.getClass().getPackage().getName());
         Handler[] handlers = logger.getHandlers();
-        if (handlers.length == 0) {
-            logger.addHandler(new LogHandler(this));
+        
+        boolean hasLogHandler = false;
+        boolean hasFileHandler = false;
+        for (int i = 0; i < handlers.length; ++i) {
+            if (handlers[i] instanceof LogHandler) {
+                hasLogHandler = true;
+            } else if (handlers[i] instanceof FileHandler) {
+                hasFileHandler = true;
+            }
         }
         
-        
-        try {
+        try {            
+            if (!hasLogHandler) {
+                LogHandler handler = new LogHandler(this);
+                handler.setLevel(Level.WARNING);
+                logger.addHandler(handler);
+            }
+            if (!hasFileHandler && logFile != null && !logFile.equals("")) {
+                FileHandler fileHandler = new FileHandler(logFile);
+                fileHandler.setLevel(Level.ALL);
+                fileHandler.setFormatter(new LineFormatter());
+                logger.addHandler(fileHandler);
+            }
+            
             // Abbr + Acronym
             if (Boolean.parseBoolean(doAbbrAcronymDetection)) {
                 sendMessage(Level.FINER, i18n("STARTING_ABBR_ACRONYM"));

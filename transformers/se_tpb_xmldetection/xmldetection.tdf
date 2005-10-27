@@ -21,6 +21,13 @@
 			<example>file:///path/to/output/document.xml</example>
 		</parameter>
 		
+		<parameter required="false" direction="out" type="application/xml">
+			<name>logFile</name>
+			<description>Log file</description>
+			<example>/path/to/log/file</example>
+			<default></default>
+		</parameter>
+		
 		<parameter required="false" type="enum">
 			<name>doAbbrAcronymDetection</name>
 			<description>Perform abbreviation and acronym detection</description>
