@@ -35,23 +35,16 @@ public class LogHandler extends Handler {
         eventSender = sender;
     }
     
-    /* (non-Javadoc)
-     * @see java.util.logging.Handler#publish(java.util.logging.LogRecord)
-     */
     public void publish(LogRecord record) {
-        eventSender.sendMessage(record.getLevel(), record.getMessage());
+        if (this.getLevel().intValue() <= record.getLevel().intValue()) {
+            eventSender.sendMessage(record.getLevel(), record.getMessage());
+        } 
     }
 
-    /* (non-Javadoc)
-     * @see java.util.logging.Handler#flush()
-     */
     public void flush() {
 
     }
 
-    /* (non-Javadoc)
-     * @see java.util.logging.Handler#close()
-     */
     public void close() throws SecurityException {
 
     }
