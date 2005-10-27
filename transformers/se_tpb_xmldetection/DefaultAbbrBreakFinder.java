@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
@@ -41,6 +42,9 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 /*package*/ class DefaultAbbrBreakFinder extends BreakFinder {
     
     private static Logger logger = Logger.getLogger(DefaultAbbrBreakFinder.class.getName());
+    static {        
+        logger.setLevel(Level.ALL);
+    }
     
     private LangSettingsResolver resolver = null;
     private LangSettings langSettings = null; 
@@ -119,16 +123,16 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
             if (type != Abbr.INITIALISM && type != Abbr.ACRONYM && type != Abbr.ABBREVIATION && type != Abbr.FIX) {
                 // Not a single type. Not much to do really since different types are
                 // allowed in different contexts. Let's skip this match.
-                logger.warning("Not a single match (text=" + text.substring(m.start(), m.end()) + ", type=" + type + "). Skipping...");
+                logger.finer("Not a single match (text=" + text.substring(m.start(), m.end()) + ", type=" + type + "). Skipping...");
             } else {
 	            // Is that allowed in this context? 
 	            if (langSettings.allowedContext(text, m.start(), m.end(), type)) {
 	                Abbr abbr = new Abbr(match, langSettings.expand(match, type), type, m.start(), m.end());
 	                result.add(abbr);
-	                logger.info("Expansion [lang=" + current + "]: " + abbr);
+	                logger.finer(abbr + "\t" + current);
 	                //System.err.println(match + "\t" + langSettings.expand(match, type) + "\t" + current + "\t" + type);
 	            } else {
-	                logger.info("Not allowed in context: ..." + text.substring(Math.max(0,m.start()-5), Math.min(m.end()+5, text.length())) + "... [" + text.substring(m.start(), m.end()) + "]");	                
+	                logger.finer("Not allowed in context: ..." + text.substring(Math.max(0,m.start()-5), Math.min(m.end()+5, text.length())) + "... [" + text.substring(m.start(), m.end()) + "]");	                
 	            }
             }
         }
