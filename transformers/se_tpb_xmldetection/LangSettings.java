@@ -363,6 +363,7 @@ public class LangSettings {
 	    	        }
 	    	    }
 	    	} 
+	    	break;
         case Abbr.ACRONYM:
             coll = acronyms.getCollection(key);
 	    	if (coll != null) {
@@ -374,6 +375,7 @@ public class LangSettings {
 	    	        }
 	    	    }
 	    	} 
+	    	break;
         case Abbr.ABBREVIATION:
             coll = abbrs.getCollection(key);
 	    	if (coll != null) {
@@ -385,6 +387,7 @@ public class LangSettings {
 	    	        }
 	    	    }
 	    	} 
+	    	break;
         case Abbr.FIX:
             // FIXME this is wrong
             item = (Item)fixes.get(key);
@@ -420,14 +423,14 @@ public class LangSettings {
             //System.err.println("Found lang: " + item.getLang());
             if (language.equals(item.getLang())) {
                 result = item.getValue();
-                logger.info("Found match in current language [" + language + "]: " + item.getValue());
+                logger.finer("Found match in current language [" + language + "]: " + item.getValue());
                 return result;
             } else if (item.getLang() == null) {
                 result = item.getValue();
             }
         }
         if (result != null) {
-            logger.info("Found match in language [common]: " + result);
+            logger.finer("Found match in language [common]: " + result);
         }
         return result;
     }
@@ -445,7 +448,7 @@ public class LangSettings {
                 logger.warning("No expansion found for " + key);
         	    return null;
         	} else if (coll.size() != 1) {
-        	    logger.info("Multiple choices for " + key + ": " + coll);
+        	    logger.finer("Multiple choices for " + key + ": " + coll);
         	    String result = null;
         	    if (sameId(coll)) {
         	        //System.err.println("Same ID!");
@@ -461,7 +464,7 @@ public class LangSettings {
 	    	    logger.warning("No abbr expansion found for " + key);
 	    	    return null;
 	    	} else if (coll.size() != 1) {
-	    	    logger.info("Multiple abbr choices for " + key + ": " + coll);
+	    	    logger.finer("Multiple abbr choices for " + key + ": " + coll);
 	    	    return null;
 	    	}
 		    item = (Item)coll.iterator().next();
