@@ -215,7 +215,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                                 elementName.equals(breakSettings.getInitialismElement())) {
                             abbrAcronym = new Abbr(buffer.substring(abbrAcronym.getStart(), buffer.length()), abbrAcronym.getExpansion(), abbrAcronym.getType(), abbrAcronym.getStart(), buffer.length());
                             abbrAcronymList.add(abbrAcronym);
-                            logger.info(abbrAcronym.toString());
+                            logger.finer(abbrAcronym.toString());
                         }                        
                     }
                 }
@@ -269,7 +269,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
             Attribute att = se.getAttributeByName(new QName(key));
             if (att != null) {
                 if (!att.getValue().equals(value)) {
-                    logger.info("Attribute " + key + " has wrong value " + att.getValue() + "(" + value + ")");
+                    //logger.info("Attribute " + key + " has wrong value " + att.getValue() + "(" + value + ")");
                     return false;
                 }
             } else {
