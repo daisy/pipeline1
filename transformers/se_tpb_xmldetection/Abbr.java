@@ -79,22 +79,22 @@ package se_tpb_xmldetection;
         String result = null;
         switch (type) {
         case INITIALISM:
-            result = "Initialism(";
+            result = "initialism\t";
             break;
         case ACRONYM:
-            result = "Acronym(";
+            result = "acronym\t";
             break;
         case ABBREVIATION:
-            result = "Abbr(";
+            result = "abbr\t";
             break;
         case FIX:
-            result = "Fix(";
+            result = "fix\t";
             break;
         }        
         result += key;
-        result += "," + expansion;
-        result += "," + start;
-        result += "," + end;
-        return result + ")";
+        result += "\t" + expansion;
+        //result += "\t" + start;
+        //result += "\t" + end;
+        return result;// + ")";
     }
 }
