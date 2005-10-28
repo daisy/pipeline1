@@ -66,10 +66,6 @@ public class LangSettings {
     protected Pattern beforeFix = null;
     protected Pattern afterFix = null;
     
-    protected Pattern completePattern = null;
-    protected Pattern initialismPattern = null;
-    protected Pattern acronymPattern = null;
-    protected Pattern abbrPattern = null;
     protected Pattern fixPattern = null;
     
     protected String initialismSuffixPattern = null;
@@ -502,127 +498,105 @@ public class LangSettings {
         return type;
     }
     
-    public Pattern getAbbrPattern() {
-        return abbrPattern;
-    }
-    
     public MultiHashMap getAbbrs() {
         return abbrs;
     }
     
-    public void setAbbrs(MultiHashMap abbrs) {
-        this.abbrs = abbrs;
-        abbrPattern = buildRegex(abbrs, true, "");
-    }
-    
-    public Pattern getAcronymPattern() {
-        return acronymPattern;
+    public void setAbbrs(MultiHashMap abbreviations) {
+        this.abbrs = abbreviations;        
     }
     
     public MultiHashMap getAcronyms() {
         return acronyms;
     }
     
-    public void setAcronyms(MultiHashMap acronyms) {
-        this.acronyms = acronyms;
-        acronymPattern = buildRegex(acronyms, true, "(?:" + acronymSuffixPattern + ")?");
+    public void setAcronyms(MultiHashMap acro) {
+        this.acronyms = acro;        
     }
     
-    public Pattern getCompletePattern() {
-        if (completePattern == null) {
-            StringBuffer pattern = new StringBuffer("");
-            String i = initialisms.size()==0?"":("(?:" + initialismPattern.toString() + ")|");
-            String ac = acronyms.size()==0?"":("(?:" + acronymPattern.toString() + ")|");
-            String ab = abbrs.size()==0?"":("(?:" + abbrPattern.toString() + ")|");
-            String f = fixes.size()==0?"":("(?:" + fixPattern.toString() + ")|");
-            pattern = pattern.append(i).append(ac).append(ab).append(f);
-            pattern.setLength(pattern.length()-1);
-            completePattern = Pattern.compile(pattern.toString(), Pattern.DOTALL);
-        }
-        return completePattern;
+    public Collection getCompleteStringCollection() {
+        Collection coll = new ArrayList();
+        coll.addAll(initialisms.keySet());
+        coll.addAll(acronyms.keySet());
+        coll.addAll(abbrs.keySet());        
+        return coll;
     }
     
     public Map getFixes() {
         return fixes;
     }
     
-    public void setFixes(Map fixes) {
-        this.fixes = fixes;
-        fixPattern = buildRegex(fixes, false, "");
+    public void setFixes(Map fix) {
+        this.fixes = fix;
+        fixPattern = buildRegex(fix, false, "");
     }
-    
+        
     public Pattern getFixPattern() {
         return fixPattern;
-    }
-    
-    public Pattern getInitialismPattern() {
-        return initialismPattern;
     }
     
     public MultiHashMap getInitialisms() {
         return initialisms;
     }
     
-    public void setInitialisms(MultiHashMap initialisms) {
-        this.initialisms = initialisms;
-        initialismPattern = buildRegex(initialisms, true, "(?:" + initialismSuffixPattern + ")?");
-    }
-    
+    public void setInitialisms(MultiHashMap inits) {
+        this.initialisms = inits;        
+    }    
     
     public Pattern getAfterAbbr() {
         return afterAbbr;
     }
-    public void setAfterAbbr(String afterAbbr) {
-        this.afterAbbr = Pattern.compile(afterAbbr, Pattern.DOTALL);
+    public void setAfterAbbr(String after) {
+        this.afterAbbr = Pattern.compile(after, Pattern.DOTALL);
     }
     public Pattern getAfterAcronym() {
         return afterAcronym;
     }
-    public void setAfterAcronym(String afterAcronym) {
-        this.afterAcronym = Pattern.compile(afterAcronym, Pattern.DOTALL);
+    public void setAfterAcronym(String after) {
+        this.afterAcronym = Pattern.compile(after, Pattern.DOTALL);
     }
     public Pattern getAfterFix() {
         return afterFix;
     }
-    public void setAfterFix(String afterFix) {
-        this.afterFix = Pattern.compile(afterFix, Pattern.DOTALL);
+    public void setAfterFix(String after) {
+        this.afterFix = Pattern.compile(after, Pattern.DOTALL);
     }
     public Pattern getAfterInitialism() {
         return afterInitialism;
     }
-    public void setAfterInitialism(String afterInitialism) {
-        this.afterInitialism = Pattern.compile(afterInitialism, Pattern.DOTALL);
+    public void setAfterInitialism(String after) {
+        this.afterInitialism = Pattern.compile(after, Pattern.DOTALL);
     }
     public Pattern getBeforeAbbr() {
         return beforeAbbr;
     }
-    public void setBeforeAbbr(String beforeAbbr) {
-        this.beforeAbbr = Pattern.compile(beforeAbbr, Pattern.DOTALL);
+    public void setBeforeAbbr(String before) {
+        this.beforeAbbr = Pattern.compile(before, Pattern.DOTALL);
     }
     public Pattern getBeforeAcronym() {
         return beforeAcronym;
     }
-    public void setBeforeAcronym(String beforeAcronym) {
-        this.beforeAcronym = Pattern.compile(beforeAcronym, Pattern.DOTALL);
+    public void setBeforeAcronym(String before) {
+        this.beforeAcronym = Pattern.compile(before, Pattern.DOTALL);
     }
     public Pattern getBeforeFix() {
         return beforeFix;
     }
-    public void setBeforeFix(String beforeFix) {
-        this.beforeFix = Pattern.compile(beforeFix, Pattern.DOTALL);
+    public void setBeforeFix(String before) {
+        this.beforeFix = Pattern.compile(before, Pattern.DOTALL);
     }
     public Pattern getBeforeInitialism() {
         return beforeInitialism;
     }
-    public void setBeforeInitialism(String beforeInitialism) {
-        this.beforeInitialism = Pattern.compile(beforeInitialism, Pattern.DOTALL);
+    public void setBeforeInitialism(String beforeInits) {
+        this.beforeInitialism = Pattern.compile(beforeInits, Pattern.DOTALL);
     }
     
-    public void setAcronymSuffixPattern(String acronymSuffixPattern) {
-        this.acronymSuffixPattern = "(?:" + acronymSuffixPattern + ")?";
+    public void setAcronymSuffixPattern(String suffixPattern) {
+        this.acronymSuffixPattern = "(?:" + suffixPattern + ")?";
     }
-    public void setInitialismSuffixPattern(String initialismSuffixPattern) {
-        this.initialismSuffixPattern = "(?:" + initialismSuffixPattern + ")?";
+    public void setInitialismSuffixPattern(String suffixPattern) {
+        this.initialismSuffixPattern = "(?:" + suffixPattern + ")?";
     }
     public String getAcronymSuffixPattern() {
         return acronymSuffixPattern;

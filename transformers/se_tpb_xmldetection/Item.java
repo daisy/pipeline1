@@ -29,9 +29,9 @@ package se_tpb_xmldetection;
     private String lang;
     private int priority = -1;
     
-    public Item(String key, String value, String mayEndSentence) {
-        this.key = key;
-        this.value = value;
+    public Item(String name, String val, String mayEndSentence) {
+        this.key = name;
+        this.value = val;
         endSent = mayEndSentence;
     }
     
@@ -43,8 +43,8 @@ package se_tpb_xmldetection;
         return endSent;
     }
     
-    public void setValue(String value) {
-        this.value = value;
+    public void setValue(String val) {
+        this.value = val;
     }
     
     public String getKey() {
@@ -59,23 +59,23 @@ package se_tpb_xmldetection;
         return id;
     }
     
-    public void setId(String id) {
-        this.id = id;
+    public void setId(String itemID) {
+        this.id = itemID;
     }
     
     public String getLang() {
         return lang;
     }
     
-    public void setLang(String lang) {
-        this.lang = lang;
+    public void setLang(String language) {
+        this.lang = language;
     }
     
     
     public int getPriority() {
         return priority;
     }
-    public void setPriority(int priority) {
-        this.priority = priority;
+    public void setPriority(int prio) {
+        this.priority = prio;
     }
 }

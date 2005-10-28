@@ -29,11 +29,14 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.daisy.util.collection.MultiHashMap;
+import org.daisy.util.text.CombinedMatcher;
+import org.daisy.util.text.RegexMatcher;
+import org.daisy.util.text.StringCollectionMatcher;
+import org.daisy.util.text.TextMatcher;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 /**
@@ -104,38 +107,32 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
             langSettings.setInitialisms(newInitialisms);
             langSettings.setAcronyms(newAcronyms);            
         }
-        //System.err.println("\nLanguage: " + current);
-        //System.err.println("Text: " + text);        
         
         Vector result = new Vector();
         
-        Matcher m = langSettings.getCompletePattern().matcher(text);
+        TextMatcher scm = new StringCollectionMatcher(langSettings.getCompleteStringCollection(), text);
+        TextMatcher rm = new RegexMatcher(langSettings.getFixPattern(), text);
+        TextMatcher m = new CombinedMatcher(scm, rm);
         while (m.find()) {
-            String match = "";
-            for (int i = m.groupCount(); i > 0; --i) {
-                if (m.group(i) != null) {
-                    match = m.group(i);
-                }
-            }
+            String match = m.getMatch();
             
             // OK, we have found a match. What type was it?
             int type = langSettings.getType(match);
             if (type != Abbr.INITIALISM && type != Abbr.ACRONYM && type != Abbr.ABBREVIATION && type != Abbr.FIX) {
                 // Not a single type. Not much to do really since different types are
                 // allowed in different contexts. Let's skip this match.
-                logger.finer("Not a single match (text=" + text.substring(m.start(), m.end()) + ", type=" + type + "). Skipping...");
+                logger.finer("Not a single match (text=" + text.substring(m.getStart(), m.getEnd()) + ", type=" + type + "). Skipping...");
             } else {
 	            // Is that allowed in this context? 
-	            if (langSettings.allowedContext(text, m.start(), m.end(), type)) {
-	                Abbr abbr = new Abbr(match, langSettings.expand(match, type), type, m.start(), m.end());
+	            if (langSettings.allowedContext(text, m.getStart(), m.getEnd(), type)) {
+	                Abbr abbr = new Abbr(match, langSettings.expand(match, type), type, m.getStart(), m.getEnd());
 	                result.add(abbr);
-	                logger.finer(abbr + "\t" + current);
-	                //System.err.println(match + "\t" + langSettings.expand(match, type) + "\t" + current + "\t" + type);
+	                logger.finer(abbr + "\t" + current);	                
 	            } else {
-	                logger.finer("Not allowed in context: ..." + text.substring(Math.max(0,m.start()-5), Math.min(m.end()+5, text.length())) + "... [" + text.substring(m.start(), m.end()) + "]");	                
+	                logger.finer("Not allowed in context: ..." + text.substring(Math.max(0,m.getStart()-5), Math.min(m.getEnd()+5, text.length())) + "... [" + text.substring(m.getStart(), m.getEnd()) + "]");	                
 	            }
             }
-        }
+        }        
         
         return result;        
     }
