@@ -110,9 +110,15 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         
         Vector result = new Vector();
         
-        TextMatcher scm = new StringCollectionMatcher(langSettings.getCompleteStringCollection(), text);
-        TextMatcher rm = new RegexMatcher(langSettings.getFixPattern(), text);
-        TextMatcher m = new CombinedMatcher(scm, rm);
+        //TextMatcher scm = new StringCollectionMatcher(langSettings.getCompleteStringCollection(), text);        
+        TextMatcher acroScm = new StringCollectionMatcher(langSettings.getAcronyms().keySet(), text, langSettings.getAcronymSuffixPattern());
+        TextMatcher initScm = new StringCollectionMatcher(langSettings.getInitialisms().keySet(), text, langSettings.getInitialismSuffixPattern());
+        TextMatcher abbrScm = new StringCollectionMatcher(langSettings.getAbbrs().keySet(), text, null);        
+        TextMatcher rm = new RegexMatcher(langSettings.getFixPattern(), text, 0);
+        
+        TextMatcher m1 = new CombinedMatcher(acroScm, initScm);
+        TextMatcher m2 = new CombinedMatcher(abbrScm, rm);
+        TextMatcher m = new CombinedMatcher(m1, m2);
         while (m.find()) {
             String match = m.getMatch();
             

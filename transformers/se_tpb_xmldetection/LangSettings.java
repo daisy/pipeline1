@@ -282,9 +282,9 @@ public class LangSettings {
         Collection coll = null;
         String suffix = "";
         if (type == Abbr.INITIALISM) {
-            suffix = getInitialismSuffixPattern();
+            suffix = "(?:" + getInitialismSuffixPattern() + ")?";
         } else if (type == Abbr.ACRONYM) {
-            suffix = getAcronymSuffixPattern();
+            suffix = "(?:" + getAcronymSuffixPattern() + ")?";
         }
         Pattern p = Pattern.compile("(" + Pattern.quote(key) + ")" + suffix);
         Matcher m = p.matcher(key);
@@ -516,7 +516,7 @@ public class LangSettings {
     
     public Collection getCompleteStringCollection() {
         Collection coll = new ArrayList();
-        coll.addAll(initialisms.keySet());
+        coll.addAll(initialisms.keySet());        
         coll.addAll(acronyms.keySet());
         coll.addAll(abbrs.keySet());        
         return coll;
@@ -593,10 +593,10 @@ public class LangSettings {
     }
     
     public void setAcronymSuffixPattern(String suffixPattern) {
-        this.acronymSuffixPattern = "(?:" + suffixPattern + ")?";
+        this.acronymSuffixPattern = suffixPattern;
     }
     public void setInitialismSuffixPattern(String suffixPattern) {
-        this.initialismSuffixPattern = "(?:" + suffixPattern + ")?";
+        this.initialismSuffixPattern = suffixPattern;
     }
     public String getAcronymSuffixPattern() {
         return acronymSuffixPattern;
