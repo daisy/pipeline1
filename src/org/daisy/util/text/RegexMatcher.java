@@ -31,6 +31,22 @@ public class RegexMatcher implements TextMatcher {
 
     private Matcher matcher;
     private String t;
+    private int g;
+    
+    /**
+     * Creates a new <code>RegexMatcher</code>.
+     * When using this constructor, the getStart() and getEnd() functions will
+     * return the indexes for the entire match, but getMatch() will only return
+     * the '<code>group</code>'th matching group.
+     * @param regexPattern the regular expression to use while searching.
+     * @param text the text to search in.
+     * @param group the regex group for getMatch() to return.
+     */
+    public RegexMatcher(Pattern regexPattern, String text, int group) {
+        matcher = regexPattern.matcher(text);
+        t = text;
+        g = group;
+    }
     
     /**
      * Creates a new <code>RegexMatcher</code>.
@@ -38,8 +54,7 @@ public class RegexMatcher implements TextMatcher {
      * @param text the text to search in.
      */
     public RegexMatcher(Pattern regexPattern, String text) {
-        matcher = regexPattern.matcher(text);
-        t = text;
+        this(regexPattern, text, 0);
     }
     
     public boolean find() {        
@@ -55,7 +70,7 @@ public class RegexMatcher implements TextMatcher {
     }
 
     public String getMatch() {        
-        return matcher.group();
+        return matcher.group(g);
     }
 
     public String getText() {        
