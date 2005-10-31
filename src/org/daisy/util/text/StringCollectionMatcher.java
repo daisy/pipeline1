@@ -20,6 +20,8 @@ package org.daisy.util.text;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A <code>TextMatcher</code> that searches for a collection of strings.
@@ -36,14 +38,33 @@ public class StringCollectionMatcher implements TextMatcher {
     private String match;
     private boolean result = false;
     
+    private String suffix;
+    private int currentStart = 0;
+    private int currentEnd = 0;
+    
+    /**
+     * Creates a new <code>StringCollectionMatcher</code>.
+     * When using this constructor, a specified suffix will be allowed in the
+     * matches. The getStart() and getEnd() functions will return the indexes
+     * for the match with the suffix included, but the getMatch() function
+     * will return the match without suffix.
+     * @param strings a collection of strings to serach for.
+     * @param textToSearch the text to search.
+     * @param suffixPattern a suffix regular expression.
+     */
+    public StringCollectionMatcher(Collection strings, String textToSearch, String suffixPattern) {
+        coll = strings;
+        text = textToSearch;
+        suffix = suffixPattern;
+    }
+    
     /**
      * Creates a new <code>StringCollectionMatcher</code>.
      * @param strings a collection of strings to serach for.
      * @param textToSearch the text to search.
      */
     public StringCollectionMatcher(Collection strings, String textToSearch) {
-        coll = strings;
-        text = textToSearch;
+        this(strings, textToSearch, null);
     }
     
     /**
@@ -54,17 +75,33 @@ public class StringCollectionMatcher implements TextMatcher {
         coll.addAll(strings);
     }
     
+    public void indexOf(String textToSearch, String stringToFind, int position, String suffixPattern) {       
+        if (suffixPattern != null) {
+            Pattern pattern = Pattern.compile(Pattern.quote(stringToFind) + "(?:" + suffixPattern + ")?");
+            Matcher matcher = pattern.matcher(textToSearch);
+            if (matcher.find(position)) {
+                currentStart = matcher.start();
+                currentEnd = matcher.end();
+            } else {
+                currentStart = -1;
+            }
+        } else {
+            currentStart = textToSearch.indexOf(stringToFind, position);
+            currentEnd = currentStart + stringToFind.length();
+        }        
+    }
+    
     public boolean find() {
         result = false;
         start = Integer.MAX_VALUE;
         int originalEnd = end;
         for (Iterator it = coll.iterator(); it.hasNext(); ) {
             String current = (String)it.next();
-            int currentStart = text.indexOf(current, originalEnd);
+            //int currentStart = text.indexOf(current, originalEnd);
+            indexOf(text, current, originalEnd, suffix);
             if (currentStart != -1) {
                 // A match was found
                 
-                int currentEnd = currentStart + current.length();
                 if (currentStart < start || (currentStart == start && currentEnd > end)) {
                     // Earlier match or longer match
                     start = currentStart;
