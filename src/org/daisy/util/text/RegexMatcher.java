@@ -58,6 +58,9 @@ public class RegexMatcher implements TextMatcher {
     }
     
     public boolean find() {        
+        if (matcher.pattern().toString().equals("")) {
+            return false;
+        }
         return matcher.find();
     }
 
