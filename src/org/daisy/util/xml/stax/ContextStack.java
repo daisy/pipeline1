@@ -28,6 +28,8 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.daisy.util.i18n.LocaleUtils;
+
 /**
  * A class that keeps track of a context path in an XML document.
  * <p>For every event that you read from your EventReader, add the
@@ -41,15 +43,11 @@ import javax.xml.stream.events.XMLEvent;
  * @author Linus Ericson
  */
 public class ContextStack {
-
+    
     protected class ContextInfo {
         public ContextInfo(QName n, String xmlLang) {
             name = n;
-            if (xmlLang != null) {
-                locale = new Locale(xmlLang);
-            } else {
-                locale = null;
-            }
+            locale = LocaleUtils.string2locale(xmlLang);
         }
         public QName name;
         public Locale locale;
