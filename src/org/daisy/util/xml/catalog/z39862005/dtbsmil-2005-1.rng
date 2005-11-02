@@ -1,281 +1,467 @@
 <?xml version="1.0" encoding="utf-8"?>
-<grammar  
-  ns="http://www.w3.org/2001/SMIL20/"
-  xmlns="http://relaxng.org/ns/structure/1.0"
-  xmlns:sch="http://www.ascc.net/xml/schematron"
-  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"  
+<grammar	
+	ns="http://www.w3.org/2001/SMIL20/"
+	xmlns="http://relaxng.org/ns/structure/1.0"
+	xmlns:sch="http://www.ascc.net/xml/schematron"
+	xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"	
+	xmlns:zed="http://www.daisy.org/ns/zedval/testmap"
 >
-  <sch:ns prefix="smil" uri="http://www.w3.org/2001/SMIL20/"/>
-  
-  <a:documentation>
-    dtbsmil-2005-1.rng
-    mgylling 2005-07-01
-    Last edit by: Piotr Kiernicki 2005-09-06
-    org.daisy.util.xml.catalog mapping by the PID '-//NISO//RNG dtbsmil 2005-1//EN'
-  </a:documentation>
+	<sch:ns prefix="smil" uri="http://www.w3.org/2001/SMIL20/"/>
+	
+	<a:documentation>
+		dtbsmil-2005-1.rng
+		mgylling 2005-07-01
+		Last edit by: Piotr Kiernicki 2005-10-24
+		org.daisy.util.xml.catalog mapping by the PID '-//NISO//RNG dtbsmil 2005-1//EN'
+	</a:documentation>
+	
+	<include href="../relaxngcommon/attributes.rng" />
 
-  <include href="../relaxngcommon/attributes.rng" />
+	<start>
+			<ref name="element.smil"/>	
+	</start>
+	
+	<define name="element.smil">
+		<element name="smil" ns="http://www.w3.org/2001/SMIL20/"><!-- see http://www.oasis-open.org/committees/relax-ng/tutorial.html#IDADGZR-->
+			<zed:test id="smil_xmlnsPresence"/>
+			<zed:test id="smil_xmlnsValue"/>
+			
+			<ref name="core.attList"/>
+			<ref name="attribute.xml.lang.optional"/>
+			<ref name="element.head"/>
+			<ref name="element.body"/>
+		</element>
+	</define>
+	
+	<define name="core.attList">
+		<ref name="attribute.id.optional"/>
+		<ref name="attribute.class.optional"/>
+		<ref name="attribute.title.optional"/>
+	</define>
 
-  <start>
-      <ref name="element.smil"/>  
-  </start>
-  <define name="element.smil">
-  	<element name="smil">
-	  	<ref name="core.attList"/>
-	    <attribute name="xmlns">
-	      <value>http://www.w3.org/2001/SMIL20/</value>
-	    </attribute>
-	    <ref name="attribute.xml.lang.optional"/>
-	  	<ref name="element.head"/>
-	  	<ref name="element.body"/>
-  	</element>
-  </define>
-  
-  <define name="core.attList">
-  	<ref name="attribute.id.optional"/>
-  	<ref name="attribute.class.optional"/>
-	<ref name="attribute.title.optional"/>
-  </define>
-  
-  <define name="element.head">
-  	<element name="head">
-	  	<ref name="core.attList"/>
-	  	<ref name="attribute.xml.lang.optional"/>
-	  	<zeroOrMore>
-	  		<ref name="element.meta"/>
-	  	</zeroOrMore>
-	  	<optional>
-	  		<ref name="element.layout"/>
-		  	<zeroOrMore>
-		  		<ref name="element.meta"/>
-		  	</zeroOrMore>
-	  	</optional>
-	  	<optional>
-	  		<ref name="element.customAttributes"/>
-		  	<zeroOrMore>
-		  		<ref name="element.meta"/>
-		  	</zeroOrMore>  		
-	  	</optional>
-  	</element>
-  </define>
+	<define name="element.head">
+		<element name="head">
+			<ref name="core.attList"/>
+			<ref name="attribute.xml.lang.optional"/>
+			<zeroOrMore>
+				<ref name="element.meta"/>
+			</zeroOrMore>
+			<optional>
+				<ref name="element.layout"/>
+				<zeroOrMore>
+					<ref name="element.meta"/>
+				</zeroOrMore>
+			</optional>
+			<optional>
+				<ref name="element.customAttributes"/>
+				<zeroOrMore>
+					<ref name="element.meta"/>
+				</zeroOrMore>			
+			</optional>
+		</element>
+	</define>
 
-  <define name="element.meta">
-  	<element name="meta">
-	  	<attribute name="name">
-			<text/>
-	  	</attribute>
-	  	<optional>
-		  	<attribute name="content">
-				<text/>
-		  	</attribute>
-	  	</optional>
-  	</element>
-  </define>
+	<define name="element.meta">
+		<element name="meta">
+		<ref name="attList.meta"/>
+			<empty/>
+		</element>
+	</define>
+	
+	<define name="attList.meta">
+		<choice>
+			<group>
+				<attribute name="name">
+					<zed:test id="smil_metaDtbUidPresence"/>
+					<a:documentation>required</a:documentation>
+					<value>dtb:uid</value>
+				</attribute>
+				<ref name="attribute.content.stringvalue.required"/>
+			</group>
+	
+			<group>
+				<attribute name="name">
+					<zed:test id="smil_metaDtbGenPresence"/>
+					<a:documentation>optional-recommended</a:documentation>
+					<value>dtb:generator</value>
+				</attribute>
+				<ref name="attribute.content.stringvalue.required"/>
+				<ref name="attribute.scheme.optional"/>
+			</group>
+	
+			<group>
+				<attribute name="name">
+					<zed:test id="smil_metaDtbTotElaPresence"/>
+					<a:documentation>required</a:documentation>
+					<value>dtb:totalElapsedTime</value>
+				</attribute>
+				<attribute name="content">
+					<ref name="datatype.smilclock">
+						<zed:test id="smil_metaDtbTotElaSyntax"/>
+					</ref>
+				</attribute>
+				<ref name="attribute.scheme.optional"/>
+			</group>
+	
+			<group>
+				<attribute name="name">
+					<ref name="datatype.string.nondtbns">
+						<zed:test id="smil_metaDtbPrefixRestriction"/>
+					</ref>
+				</attribute>
+				<ref name="attribute.content.stringvalue.required"/>
+				<ref name="attribute.scheme.optional"/>
+			</group>	
+		</choice>
+	</define>
 
-  <define name="element.layout">
-  	<element name="layout">
-  	<ref name="core.attList"/>
-  	<ref name="attribute.xml.lang.optional"/>
-	<oneOrMore>
-		<ref name="element.region"/>
-	</oneOrMore>
-	</element>
-  </define>
-  
-  <define name="element.region">
-	<element name="region">
+	<define name="element.layout">
+		<element name="layout">
+			<ref name="core.attList"/>
+			<ref name="attribute.xml.lang.optional"/>
+			<oneOrMore>
+				<ref name="element.region"/>
+			</oneOrMore>
+		</element>
+	</define>
+	
+	<define name="element.region">
+		<element name="region">
+			<ref name="attList.region"/>
+			<empty/>
+		</element>
+	</define>
+	
+	<define name="attList.region">
+
 		<ref name="attribute.id.required"/>
-	  	<attribute name="bottom"><!-- default value is 'auto' -->
-			<text/>
-	  	</attribute>
-	  	<attribute name="left">
-			<text/>
-	  	</attribute>
-	  	<attribute name="right">
-			<text/>
-	  	</attribute>
-	  	<attribute name="top">
-			<text/>
-	  	</attribute>
-	  	<attribute name="height">
-			<text/>
-	  	</attribute>
-	  	<attribute name="width">
-			<text/>
-	  	</attribute>
-	  	<attribute name="fit">
-	  		<choice>
-	  			<value>hidden</value>
-	  			<value>fill</value>
-	  			<value>meet</value>
-	  			<value>scroll</value>
-	  			<value>slice</value>
-	  		</choice>
-	  	</attribute>
-	  	<optional>
-	  		<attribute name="backgroundColor">
-	  			<text/>
-	  		</attribute>
-	  	</optional>
-		<attribute name="showBackground">
-	  		<choice>
-	  			<value>always</value><!-- default value is 'always' -->
-	  			<value>whenActive</value>
-	  		</choice>				
+		<ref name="attribute.xml.lang.optional"/>
+
+		<optional><attribute name="height" a:defaultValue="auto"/></optional>
+		<optional><attribute name="width" a:defaultValue="auto"/></optional>
+		<optional><attribute name="bottom" a:defaultValue="auto"/></optional>
+		<optional><attribute name="top" a:defaultValue="auto"/></optional>
+		<optional><attribute name="left" a:defaultValue="auto"/></optional>
+		<optional><attribute name="right" a:defaultValue="auto"/></optional>
+
+		<optional><attribute name="backgroundColor"/></optional>
+		<optional><attribute name="z-index"/></optional>
+				
+		<optional>
+			<attribute name="fit" a:defaultValue="hidden">
+				<choice>
+					<value>hidden</value>
+					<value>fill</value>
+					<value>meet</value>
+					<value>scroll</value>
+					<value>slice</value>
+				</choice>
+			</attribute>
+		</optional>
+		<optional>
+			<attribute name="showBackground" a:defaultValue="always">
+					<choice>
+						<value>always</value>
+						<value>whenActive</value>
+					</choice>				
+			</attribute>
+		</optional>
+
+	</define>
+
+	<define name="element.customAttributes">
+		<element name="customAttributes">
+			<ref name="core.attList"/>
+			<ref name="attribute.xml.lang.optional"/>
+			<oneOrMore>
+				<ref name="element.customTest"/>
+			</oneOrMore>
+		</element>
+	</define>
+
+	<define name="element.customTest">
+		<element name="customTest">
+			<ref name="attList.customTest"/>
+			<empty/>
+		</element>
+	</define>
+
+	<define name="attList.customTest">
+		<ref name="attribute.id.required"/>
+		<ref name="attribute.class.optional"/>
+		<ref name="attribute.title.optional"/>
+		<ref name="attribute.xml.lang.optional"/>
+		
+		<attribute name="defaultState" a:defaultValue="false">
+			<zed:test id="smil_CstTstDefStAttr"/>
+			<a:documentation>'
+				smil_CstTstDefStAttr makes the defaultState required
+				http://www.daisy.org/z3986/2005/z3986-2005.html#para_110
+			</a:documentation>
+			<choice>
+				<value>true</value>
+				<value>false</value>
+			</choice>				
 		</attribute>
-	  	<optional>
-	  		<attribute name="z-index">
-	  			<text/>
-	  		</attribute>
-	  	</optional>
-	</element><!-- end of region -->
-  </define>
+				
+		<attribute name="override" a:defaultValue="hidden">
+			<zed:test id="smil_CstTstOverrideAttr"/>
+			<a:documentation>
+				smil_CstTstOverrideAttr makes the override attribute required
+				http://www.daisy.org/z3986/2005/z3986-2005.html#para_112
+			</a:documentation>
 
-  <define name="element.customAttributes">
-  	<element name="customAttributes">
-	  	<ref name="core.attList"/>
-	  	<ref name="attribute.xml.lang.optional"/>
-	  	<oneOrMore>
-			<ref name="element.customTest"/>
-	  	</oneOrMore>
-  	</element>
-  </define>
-  
-  <define name="element.customTest">
-	<element name="customTest">
-	  	<ref name="attribute.id.required"/>
-	  	<ref name="attribute.class.optional"/>
-  		<ref name="attribute.title.optional"/>
-		<attribute name="defaultState">
-	  		<choice>
-	  			<value>true</value><!-- default value is 'false' -->
-	  			<value>false</value>
-	  		</choice>				
-		</attribute>
-	  	<ref name="attribute.xml.lang.optional"/>
-		<attribute name="override">
-	  		<choice>
-	  			<value>visible</value><!-- default value in SMIL is 'hidden' 
-	  									according to the spec the recommended value 
-	  									of the override attribute is 'visible'
-	  									-->
-	  			<value>hidden</value>
-	  		</choice>				
-		</attribute>		  	
-	</element>
-  </define>
-
-  <define name="element.body">
-  	<element name="body">
-	  	<ref name="core.attList"/>
-	  	<ref name="attribute.xml.lang.optional"/>
-		<oneOrMore>
+			<zed:test id="smil_overrideVis"/>
+			<a:documentation>
+				smil_overrideVis requires the override attribute's value to be 'visible'
+				http://www.daisy.org/z3986/2005/z3986-2005.html#para_112
+			</a:documentation>
 			<choice>
-			  	<ref name="element.par"/>
-			  	<ref name="element.seq"/>
-			  	<ref name="element.text"/>
-			  	<ref name="element.audio"/>
-			  	<ref name="element.img"/>
-			  	<ref name="element.a"/>
-			</choice>
-		</oneOrMore>
-	</element>
-  </define>
-  
-  <define name="element.par">
-  	<element name="par">
-	  	<ref name="attribute.id.required"/>
-	  	<ref name="attribute.class.optional"/>
-		<ref name="attribute.customTest.optional"/>
-		<oneOrMore>
-			<choice>
-			  	<ref name="element.seq"/>
-			  	<ref name="element.text"/>
-			  	<ref name="element.audio"/>
-			  	<ref name="element.img"/>
-			  	<ref name="element.a"/>
-			</choice>
-		</oneOrMore>	
-	</element>
-  </define>
+				<value>visible</value>
+<!--				<value>hidden</value>
+TODO is this right to exclude hidden?
+-->
+			</choice>				
+		</attribute>	
+	</define>
 
-  <define name="element.seq">
-  	<element name="seq">
-	  	<ref name="attribute.id.required"/>
-	  	<ref name="attribute.class.optional"/>
-		<ref name="attribute.customTest.optional"/>
-	  	<ref name="attribute.dur.optional"/>
-	  	<optional>
-	  	<attribute name="end">
-	 		<text/>
-	  	</attribute>
-	  	</optional>
-	  	<attribute name="fill">
-	  		<choice>
-	  			<value>freeze</value>
-	  			<value>remove</value>
-	  		</choice>
-	  	</attribute>
-		<oneOrMore>
-			<choice>
-			  	<ref name="element.par"/>
-			  	<ref name="element.seq"/>
-			  	<ref name="element.text"/>
-			  	<ref name="element.audio"/>
-			  	<ref name="element.img"/>
-			  	<ref name="element.a"/>
-			</choice>
-		</oneOrMore>
-	</element>
-  </define>
 
-  <define name="element.text">
-  	<element name="text">
-	  	<ref name="attribute.id.optional"/>
-	  	<ref name="attribute.region.optional"/>
-	  	<ref name="attribute.src.required"/>
-  	</element>
-  </define>
+	<define name="element.body">
+		<element name="body">
+			<ref name="core.attList"/>
+			<ref name="attribute.xml.lang.optional"/>
+			<oneOrMore>
+				<choice>
+					<ref name="element.par"/>
+					<ref name="element.seq"/>
+					<ref name="element.text"/>
+					<ref name="element.audio"/>
+					<ref name="element.img"/>
+					<ref name="element.a"/>
+				</choice>
+			</oneOrMore>
 
-  <define name="element.audio">
-  	<element name="audio">
-	  	<ref name="attribute.id.optional"/>
-	  	<ref name="attribute.region.optional"/>
-	  	<ref name="attribute.src.required"/>
-	  	<ref name="attribute.clipBegin.required"/>
-	  	<ref name="attribute.clipEnd.required"/>
-  	</element>
-  </define>
+			<sch:pattern name="smil_validRegionPattern" id="smil_validRegionPattern">
+       			<sch:rule context="//smil:*[@region]">
+					<zed:test id="smil_validRegionValue"/>
+					<sch:assert test="//smil:layout/smil:region[@id=current()/@region]"> 
+						[sch][smil_validRegionPattern]
+					</sch:assert>   					
+				</sch:rule>
+			</sch:pattern>						
 
-  <define name="element.img">
-  	<element name="img">
-	  	<ref name="attribute.id.optional"/>
-	  	<ref name="attribute.region.optional"/>
-	  	<ref name="attribute.src.required"/>
-  	</element>
-  </define>
+			<sch:pattern name="smil_endValuePattern" id="smil_endValuePattern">
+       			<sch:rule context="//smil:*[@end]">
+	       			<zed:test id="smil_endValue"/>
+					<sch:assert test="(@end = concat('DTBuserEscape;', current()/child::*[last()]/@id, '.end'))
+									or (starts-with(@end, concat('DTBuserResume;', current()/child::*[last()]/@id, '.end+')))
+									or (starts-with(@end, concat('DTBuserEscape;DTBuserResume;', current()/child::*[last()]/@id, '.end+')))"> 
+						[sch][smil_endValuePattern]
+					</sch:assert>        
+					<a:documenation>
+						TODO the rule does not validate the Clock-value in: *DTBuserResume;childId-value.end+Clock-value
+					</a:documenation>							
+				</sch:rule>
+			</sch:pattern>	
 
-  <define name="element.a">
-  	<element name="a">
-	  	<ref name="core.attList"/>
-	  	<ref name="attribute.xml.lang.optional"/>
-	  	<ref name="attribute.href.required"/>
-	  	<attribute name="external">
-	  		<choice><!-- default value is 'false' -->
-	  			<value>true</value>
-	  			<value>false</value>
-	  		</choice>
-	  	</attribute>
-		<zeroOrMore>
-			<choice>
-			  	<ref name="element.par"/>
-			  	<ref name="element.seq"/>
-			  	<ref name="element.text"/>
-			  	<ref name="element.audio"/>
-			  	<ref name="element.img"/>
-			</choice>
-		</zeroOrMore>
-	</element>
-  </define>
+			<sch:pattern name="smil_escStructIsSeqPattern" id="smil_escStructIsSeqPattern">
+       			<sch:rule context="//smil:*[starts-with(@end, 'DTBuserEscape;')]">
+					<zed:test id="smil_escStructIsSeq"/>
+					<sch:assert test="local-name(.)='seq'"> 
+						[sch][smil_escStructIsSeqPattern]
+					</sch:assert>        
+				</sch:rule>
+			</sch:pattern>		
 
-</grammar>  
+			<sch:pattern name="smil_escStructHasChildTcPattern" id="smil_escStructHasChildTcPattern">
+       			<sch:rule context="//smil:*[starts-with(@end, 'DTBuserEscape;')]">
+					<zed:test id="smil_escStructHasChildTc"/>
+					<sch:assert test="(count(smil:seq) &gt; 0) or (count(smil:par) &gt; 0)"> 
+						[sch][smil_escStructHasChildTcPattern]
+					</sch:assert>        
+				</sch:rule>
+			</sch:pattern>	
+			
+			<sch:pattern name="smil_escStrucClassAttrPattern" id="smil_escStrucClassAttrPattern">
+       			<sch:rule context="//smil:*[starts-with(@end, 'DTBuserEscape;')]">
+					<zed:test id="smil_escStrucClassAttr"/>
+					<sch:assert test="@class"> 
+						[sch][smil_escStrucClassAttrPattern]
+					</sch:assert>        
+				</sch:rule>
+			</sch:pattern>		
+		
+			<sch:pattern name="smil_pauseStructIsSeqPattern" id="smil_pauseStructIsSeqPattern">
+       			<sch:rule context="//smil:*[contains(@end, 'DTBuserResume')]">
+					<zed:test id="smil_pauseStructIsSeq"/>
+					<sch:assert test="local-name(.)='seq'"> 
+						[sch][smil_pauseStructIsSeqPattern]
+					</sch:assert>        
+				</sch:rule>
+			</sch:pattern>
+			
+			<sch:pattern name="smil_pauseStructHasChildTcPattern" id="smil_pauseStructHasChildTcPattern">
+       			<sch:rule context="//smil:*[contains(@end, 'DTBuserResume')]">
+					<zed:test id="smil_pauseStructHasChildTc"/>
+					<sch:assert test="(count(smil:seq) &gt; 0) or (count(smil:par) &gt; 0)"> 
+						[sch][smil_pauseStructHasChildTcPattern]
+					</sch:assert>        
+				</sch:rule>
+			</sch:pattern>
+
+		</element>
+	</define>
+	
+	<define name="element.par">
+		<element name="par">
+			<ref name="attribute.id.required"/>
+			<ref name="attribute.class.optional"/>
+			<ref name="attribute.customTest.optional"/>
+			<oneOrMore>
+				<choice>
+					<ref name="element.seq"/>
+					<ref name="element.text"/>
+					<ref name="element.audio"/>
+					<ref name="element.img"/>
+					<ref name="element.a"/>
+				</choice>
+			</oneOrMore>
+			<sch:pattern name="smil_parContentPattern" id="smil_parContentPattern">
+       			<sch:rule context="smil:par">
+	       			<zed:test id="smil_parContent"/>
+					<a:documenation>
+						Each par can contain no more than one each of text, audio, image, and seq;
+						http://www.niso.org/standards/resources/Z39-86-2005.html#para_118
+					</a:documenation>
+					<sch:assert test="not(count(smil:seq)&gt;1) 
+									and not(count(smil:text)&gt;1)
+									and not(count(smil:audio)&gt;1)
+									and not(count(smil:img)&gt;1)"> 
+						[sch][smil_parContentPattern]
+					</sch:assert>        
+				</sch:rule>
+			</sch:pattern>		
+		</element>
+	</define>
+
+	<define name="element.seq">
+		<element name="seq">
+			<ref name="attribute.id.required"/>
+			<ref name="attribute.class.optional"/>
+			<ref name="attribute.customTest.optional"/>
+			<ref name="attribute.dur.optional">
+				<zed:test id="smil_seqDurValue"/>
+			</ref>
+			<optional>
+				<attribute name="end">
+					<sch:pattern name="smil_escStructChildIdValuePattern" id="smil_escStructChildIdValuePattern">
+		       			<sch:rule context="smil:seq[@end]">
+							<zed:test id="smil_escStructChildIdValue"/> <!-- TODO subset of smil_endValue ?-->
+							<sch:assert test="(@end = concat('DTBuserEscape;', current()/child::*[last()]/@id, '.end'))
+												or (starts-with(@end, concat('DTBuserEscape;DTBuserResume;', current()/child::*[last()]/@id, '.end+')))
+											"> 
+								[sch][smil_escStructChildIdValuePattern]
+							</sch:assert>        
+							<a:documenation>
+								TODO the rule does not validate the Clock-value in: *DTBuserResume;childId-value.end + Clock-value
+							</a:documenation>							
+						</sch:rule>
+					</sch:pattern>					
+					<text/>
+				</attribute>
+			</optional>
+			<optional>
+				<attribute name="fill" a:defaultValue="remove">
+					<choice>
+						<value>freeze</value>
+						<value>remove</value>
+					</choice>
+				</attribute>
+			</optional>
+			<oneOrMore>
+				<choice>
+					<ref name="element.par"/>
+					<ref name="element.seq"/>
+					<ref name="element.text"/>
+					<ref name="element.audio"/>
+					<ref name="element.img"/>
+					<ref name="element.a"/>
+				</choice>
+			</oneOrMore>
+		</element>
+	</define>
+
+	<define name="element.text">
+		<element name="text">
+			<ref name="attribute.id.optional"/>
+			<ref name="attribute.region.optional"/>
+			<ref name="attribute.src.required">
+				<zed:test id="smil_textSrcValue"/>
+			</ref>
+		</element>
+	</define>
+
+	<define name="element.audio">
+		<element name="audio">
+			<ref name="attribute.id.optional"/>
+			<ref name="attribute.region.optional"/>
+			
+			<ref name="attribute.src.required">
+				<zed:test id="smil_audioSrcValue"/>
+			</ref>
+			<ref name="attribute.clipBegin.required">
+				<zed:test id="smil_clipBeginValue"/>
+			</ref>
+			<ref name="attribute.clipEnd.required">
+				<zed:test id="smil_clipEndValue"/>
+			</ref>
+
+			<sch:pattern name="smil_clipEndAfterclipBeginPattern" id="smil_clipEndAfterclipBeginPattern">
+       			<sch:rule context="smil:audio">
+	       			<zed:test id="smil_clipEndAfterclipBegin"/>
+					<sch:assert test="number(translate(@clipEnd,':.','')) &gt; number(translate(@clipBegin,':.',''))"> 
+						[sch][smil_clipEndAfterclipBeginPattern]
+					</sch:assert>        
+				</sch:rule>
+			</sch:pattern>	
+		</element>
+	</define>
+
+	<define name="element.img">
+		<element name="img">
+			<ref name="attribute.id.optional"/>
+			<ref name="attribute.region.optional"/>
+			<ref name="attribute.src.required">
+				<zed:test id="smil_imgSrcValue"/>
+			</ref>
+		</element>
+	</define>
+
+	<define name="element.a">
+		<element name="a">
+			<zed:test id="smil_anchorsNotNested"/>
+			<ref name="core.attList"/>
+			<ref name="attribute.xml.lang.optional"/>
+			<ref name="attribute.href.required">
+				<zed:test id="smil_hrefValue"/>
+			</ref>
+			<optional>
+				<attribute name="external"  a:defaultValue="false">
+					<choice>
+						<value>true</value>
+						<value>false</value>
+					</choice>
+				</attribute>
+			</optional>
+			<zeroOrMore>
+				<choice>
+					<ref name="element.par"/>
+					<ref name="element.seq"/>
+					<ref name="element.text"/>
+					<ref name="element.audio"/>
+					<ref name="element.img"/>
+				</choice>
+			</zeroOrMore>
+		</element>
+	</define>
+</grammar>	
