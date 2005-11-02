@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -52,6 +53,9 @@ import org.daisy.util.xml.stax.ContextStack;
 public class XMLSentenceDetector extends XMLBreakDetector {
 
     private static Logger logger = Logger.getLogger(XMLSentenceDetector.class.getName());
+    static {        
+        logger.setLevel(Level.ALL);
+    }
     
     protected final static String LAST_EVENT = "last event";
     protected final static String LATEST_BREAKING = "latest breaking";    
@@ -140,13 +144,13 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                         // Find the sentence breaks between these tags and write everything
                         //System.err.println("In the buffer: " + buffer.toString());
                         //System.err.println("Locale: " + lastLocale);
-                        if (lastLocale != null) {
+                        //if (lastLocale != null) {
                             breakFinder.setLocale(lastLocale);
-                        }
+                        //}
                         if (shouldBeProcessed(firstTagName, firstTagIsStart, elementName, event.isStartElement())) {
                             //System.err.println("Should be processed.");
                             if (!buffer.toString().matches("\\s*")) {
-                                logger.fine(abbrAcronymList.toString());
+                                //logger.fine(abbrAcronymList.toString());
                                 Vector breaks = breakFinder.findBreaks(buffer.toString(), abbrAcronymList);
                                 /*
                                 System.err.println(buffer);

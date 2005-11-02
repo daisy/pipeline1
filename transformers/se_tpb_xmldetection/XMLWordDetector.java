@@ -100,15 +100,9 @@ public class XMLWordDetector extends XMLBreakDetector {
                     QName current = (QName)contextStack.getContext().get(index);
                 
                     if (shouldBeProcessed(current)) {
-                        if (lastLocale != null) {
-                            breakFinder.setLocale(lastLocale);
-                        }
+                        breakFinder.setLocale(lastLocale);                        
                         //System.err.println("Finding breaks in: '" + data + "'");
                         handleBreaks(data);
-                        /*Vector breaks = breakFinder.findBreaks(data);
-                        System.err.println(breaks);
-                        writeElements(data, breaks);
-                        */
                     } else {
                         //System.err.println("Skipping: '" + data + "'");
                         writeEvent(event);

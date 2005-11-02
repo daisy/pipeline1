@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 
 import org.daisy.util.collection.MultiHashMap;
+import org.daisy.util.i18n.LocaleUtils;
 import org.daisy.util.text.CombinedMatcher;
 import org.daisy.util.text.RegexMatcher;
 import org.daisy.util.text.StringCollectionMatcher;
@@ -48,7 +49,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
     static {        
         logger.setLevel(Level.ALL);
     }
-    
+        
     private LangSettingsResolver resolver = null;
     private LangSettings langSettings = null; 
     private Map langSettingsMap = new HashMap();
@@ -73,21 +74,46 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         baseAcronyms.putAll(lscommon.getAcronyms());
         
         for (Iterator it = xmllang.iterator(); it.hasNext(); ) {
-            String lang = (String)it.next();
-            logger.info("Loading language: " + lang);
-            Locale loc = new Locale(lang);
-            URL langURL = resolver.resolve(loc);
-            LangSettings ls = null;
-            if (langURL != null) {
-                ls = new LangSettings(lang, langURL);
-            } else {
-                logger.warning("No language settings found for " + loc);
-                ls = new LangSettings(lang, lscommon);
+            String lang = (String)it.next();            
+            Locale loc = LocaleUtils.string2locale(lang);
+            lang = loc.toString();
+            if (!loc.getCountry().equals("")) {
+                logger.info("Preloading language: " + loc.getLanguage());
+                loadLanguage(loc.getLanguage(), lscommon);
             }
-            baseInitialisms.putAll(ls.getInitialisms());
-            baseAcronyms.putAll(ls.getAcronyms());
-            langSettingsMap.put(loc.toString(), ls);
-        }        
+            
+            logger.info("Loading language: " + lang);
+            loadLanguage(lang, lscommon);
+        }
+        switchToLang("common");
+    }
+    
+    private void loadLanguage(String locale, LangSettings defaultLS) throws XMLStreamException, IOException {
+        if (!langSettingsMap.containsKey(locale)) {
+	        URL langURL = resolver.resolve(locale);
+	        LangSettings ls = null;
+	        if (langURL != null) {
+	            ls = new LangSettings(locale, langURL);
+	        } else {
+	            logger.warning("No language settings found for " + locale);
+	            ls = new LangSettings(locale, defaultLS);
+	        }
+	        baseInitialisms.putAll(ls.getInitialisms());
+	        baseAcronyms.putAll(ls.getAcronyms());
+	        langSettingsMap.put(locale, ls);
+        } else {
+            System.err.println(locale + " already exists.");
+        }
+    }
+    
+    private void switchToLang(String lang) {
+        langSettings = (LangSettings)langSettingsMap.get(lang);   
+        MultiHashMap newInitialisms = new MultiHashMap(baseInitialisms);
+        MultiHashMap newAcronyms = new MultiHashMap(baseAcronyms);
+        newInitialisms.putAll(langSettings.getInitialisms());
+        newAcronyms.putAll(langSettings.getAcronyms());
+        langSettings.setInitialisms(newInitialisms);
+        langSettings.setAcronyms(newAcronyms);
     }
     
     public Vector findBreaks(String text, ArrayList al) {
@@ -95,22 +121,17 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         if ((newLocale != null && !newLocale.equals(current)) ||
                 (newLocale == null && current != null)) {            
             current = newLocale;
-            
+            if (current == null) {
+                current = new Locale("common");
+            }
             if (!langSettingsMap.containsKey(current.toString())) {
                 throw new IllegalStateException("Language " + current + " should already be present!");
             } 
-            langSettings = (LangSettings)langSettingsMap.get(current.toString());   
-            MultiHashMap newInitialisms = new MultiHashMap(baseInitialisms);
-            MultiHashMap newAcronyms = new MultiHashMap(baseAcronyms);
-            newInitialisms.putAll(langSettings.getInitialisms());
-            newAcronyms.putAll(langSettings.getAcronyms());
-            langSettings.setInitialisms(newInitialisms);
-            langSettings.setAcronyms(newAcronyms);            
+            switchToLang(current.toString());               
         }
         
         Vector result = new Vector();
         
-        //TextMatcher scm = new StringCollectionMatcher(langSettings.getCompleteStringCollection(), text);        
         TextMatcher acroScm = new StringCollectionMatcher(langSettings.getAcronyms().keySet(), text, langSettings.getAcronymSuffixPattern());
         TextMatcher initScm = new StringCollectionMatcher(langSettings.getInitialisms().keySet(), text, langSettings.getInitialismSuffixPattern());
         TextMatcher abbrScm = new StringCollectionMatcher(langSettings.getAbbrs().keySet(), text, null);        

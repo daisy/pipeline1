@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import javax.xml.stream.XMLStreamException;
 
 import org.daisy.util.collection.MultiHashMap;
+import org.daisy.util.i18n.LocaleUtils;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 /**
@@ -62,30 +63,49 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         langSettingsMap.put("common", lscommon);
         baseInitialisms.putAll(lscommon.getInitialisms());
         baseAcronyms.putAll(lscommon.getAcronyms());
+        
         for (Iterator it = xmllang.iterator(); it.hasNext(); ) {
             String lang = (String)it.next();
-            logger.info("Lang: " + lang);
-            Locale loc = new Locale(lang);
-            URL langURL = resolver.resolve(loc);
-            LangSettings ls = null;
-            if (langURL != null) {
-                ls = new LangSettings(lang, langURL);
-            } else {
-                logger.warning("Warning: no lang settings for " + loc);
-                ls = new LangSettings(lang, lscommon);
-            }            
-            baseInitialisms.putAll(ls.getInitialisms());
-            baseAcronyms.putAll(ls.getAcronyms());
-            langSettingsMap.put(loc.toString(), ls);
+            Locale loc = LocaleUtils.string2locale(lang);
+            lang = loc.toString();
+            if (!loc.getCountry().equals("")) {
+                logger.info("Preloading language: " + loc.getLanguage());
+                loadLanguage(loc.getLanguage(), lscommon);
+            }
+            
+            logger.info("Loading language: " + lang);
+            loadLanguage(lang, lscommon);            
         }
+    }
+    
+    private void loadLanguage(String locale, LangSettings defaultLS) throws XMLStreamException, IOException {
+        URL langURL = resolver.resolve(locale);
+        LangSettings ls = null;
+        if (langURL != null) {
+            ls = new LangSettings(locale, langURL);
+        } else {
+            logger.warning("No language settings found for " + locale);
+            ls = new LangSettings(locale, defaultLS);
+        }
+        baseInitialisms.putAll(ls.getInitialisms());
+        baseAcronyms.putAll(ls.getAcronyms());
+        langSettingsMap.put(locale, ls);
     }
     
     public Vector findBreaks(String text, ArrayList al) {
         // Has the locale changed?
         if ((newLocale != null && !newLocale.equals(current)) ||
                 (newLocale == null && current != null)) {
-            iterator = BreakIterator.getSentenceInstance(newLocale);
+            if (newLocale != null) {
+                iterator = BreakIterator.getSentenceInstance(newLocale);
+            } else {
+                logger.info("No language specified. Using default BreakIterator instance.");
+                iterator = BreakIterator.getSentenceInstance();
+            }
             current = newLocale;
+            if (current == null) {
+                current = new Locale("common");
+            }
             try {
                 if (!langSettingsMap.containsKey(current.toString())) {
                     URL url = resolver.resolve(current);                    
