@@ -72,6 +72,7 @@
 		<element name="h4"/>
 		<element name="h5"/>
 		<element name="h6"/>
+		<element name="hd"/>
 		<element name="li"/>
 		<element name="lic"/>
 		<element name="line"/>
