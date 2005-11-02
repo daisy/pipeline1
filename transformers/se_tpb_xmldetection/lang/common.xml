@@ -5,7 +5,7 @@
 	<initialism before=".*[\s(]|^" after="([\-,\.\s:;?!)].*)|$" suffix="s|:s">
 		<key>
 			<name>IBM</name>
-			<expansion id="tpbLibrary">Intelligent Business Machines</expansion>
+			<expansion>Intelligent Business Machines</expansion>
 		</key>		
 	</initialism>
 	
