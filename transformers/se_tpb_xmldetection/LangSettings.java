@@ -26,8 +26,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,6 +44,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.util.collection.MultiHashMap;
+import org.daisy.util.i18n.LocaleUtils;
 
 /**
  * @author Linus Ericson
@@ -49,6 +52,9 @@ import org.daisy.util.collection.MultiHashMap;
 public class LangSettings {
     
     private static Logger logger = Logger.getLogger(LangSettings.class.getName());
+    static {        
+        logger.setLevel(Level.ALL);
+    }
     
     protected String language = null;
     
@@ -412,20 +418,27 @@ public class LangSettings {
     }
     
     private String getFromBestLanguage(Collection coll) {
+        boolean foundParentLang = false;
         String result = null;
         //System.err.println("Current lang: " + language);
+        Locale loc = LocaleUtils.string2locale(language);
         for (Iterator it = coll.iterator(); it.hasNext(); ) {
             Item item = (Item)it.next();
             //System.err.println("Found lang: " + item.getLang());
-            if (language.equals(item.getLang())) {
+            if (language!=null && language.equals(item.getLang())) {
                 result = item.getValue();
                 logger.finer("Found match in current language [" + language + "]: " + item.getValue());
                 return result;
-            } else if (item.getLang() == null) {
+            } else if (loc!=null && loc.getLanguage().equals(item.getLang())) {
+                result = item.getValue();
+                foundParentLang = true;
+            } else if (!foundParentLang && item.getLang() == null) {
                 result = item.getValue();
             }
         }
-        if (result != null) {
+        if (foundParentLang) {
+            logger.finer("Found match in language [" + loc.getLanguage() + "]: " + result);
+        } else if (result != null) {
             logger.finer("Found match in language [common]: " + result);
         }
         return result;
