@@ -21,21 +21,26 @@ package org.daisy.dmfc.core.transformer;
 import java.util.Collection;
 
 /**
+ * Interface containing Transformer information functions.
  * @author Linus Ericson
  */
 public interface TransformerInfo {
+    
 	/**
+	 * Gets the name of the Transformer.
 	 * @return the name of the Transformer
 	 */
 	public String getName();
 
 	/**
+	 * Gets the description of the Transformer.
 	 * @return a description of the Transformer
 	 */
 	public String getDescription();
 	
 	/**
-	 * @return a collection of paramters that the Transfomer accepts as input
+	 * Gets the colleaction of paramters that the Transfomer accepts as input
+	 * @return a collection of <code>Parameter</code>s.
 	 */
 	public Collection getParameters();	
 }

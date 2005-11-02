@@ -21,24 +21,60 @@ package org.daisy.dmfc.core.transformer;
 import java.util.Collection;
 
 /**
+ * Information about a Transformer parameter.
  * @author Linus Ericson
  */
 public interface ParameterInfo {
 
+    /**
+     * Gets the name of a parameter.
+     * @return the name of the parameter
+     */
     public String getName();
     
+    /**
+     * Gets the description of a parameter.
+     * @return the description of the parameter.
+     */
     public String getDescription();
     
+    /**
+     * Gets the example usage string of a parameter.
+     * @return the example usage.
+     */
     public String getExample();
     
+    /**
+     * Checks wether a parameter is required to be present
+     * in the script file or not. 
+     * @return <code>true</code> if the parameter is required, <code>false</code> otherwise.
+     */
     public boolean isRequired();
     
+    /**
+     * Gets the direction of a parameter.
+     * @return "in", if this is an input parameter, "out" otherwise.
+     */
     public String getDirection();
     
+    /**
+     * Gets the type of a parameter.
+     * @return the type of the parameter.
+     */
     public String getType();
     
+    /**
+     * Gets the default value of the parameter.
+     * This field is only present if <code>isRequired()</code>
+     * returns <code>false</code>.
+     * @return the default value of the parameter.
+     */
     public String getDefaultValue();
     
+    /**
+     * Gets the value of the parameter if the value was hard coded in the TDF.
+     * @return the value of the parameter.
+     */
     public String getValue();
     
     public Collection getEnumValues();
