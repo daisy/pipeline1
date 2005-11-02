@@ -4,6 +4,7 @@
   xmlns="http://relaxng.org/ns/structure/1.0"
   xmlns:sch="http://www.ascc.net/xml/schematron"
   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+  xmlns:zed="http://www.daisy.org/ns/zedval/testmap"
 >
   <a:documentation>
     attributes.rng
@@ -56,6 +57,22 @@
     </optional>
   </define>
 
+  <define name="attribute.content.stringvalue">
+    <attribute name="content">
+      <ref name="datatype.string"/>
+    </attribute>
+  </define>
+
+  <define name="attribute.content.stringvalue.required">
+    <ref name="attribute.content.stringvalue"/>
+  </define>
+
+  <define name="attribute.content.stringvalue.optional">
+    <optional>
+      <ref name="attribute.content.stringvalue"/>
+    </optional>
+  </define>
+
   <define name="attribute.title.required">
     <attribute name="title">
       <text/>
@@ -70,7 +87,9 @@
   
   <define name="attribute.xml.lang.required">
     <attribute name="xml:lang">
-      <ref name="datatype.rfc1766"/>
+      <ref name="datatype.rfc1766">
+      	<zed:test id="smil_xmlLangAttrValue"/>
+      </ref>
     </attribute>
   </define>
 
@@ -164,6 +183,22 @@
   <define name="attribute.region.optional">
     <optional>
       <ref name="attribute.region.required"/>
+    </optional>
+  </define>
+  
+  <define name="attribute.scheme">
+    <attribute name="scheme">
+      <ref name="datatype.string"/>
+    </attribute>
+  </define>
+
+  <define name="attribute.scheme.required">
+    <ref name="attribute.scheme"/>
+  </define>
+
+  <define name="attribute.scheme.optional">
+    <optional>
+      <ref name="attribute.scheme"/>
     </optional>
   </define>
 </grammar>
