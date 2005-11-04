@@ -72,7 +72,7 @@ public class DirClassLoader extends URLClassLoader {
 		File resourceFile = new File(resourceDir, resource);
 		if (resourceFile.canRead()) {
 			try {
-				System.err.println("Found resource at " + resourceFile.getAbsolutePath());
+				//System.err.println("Found resource at " + resourceFile.getAbsolutePath());
 				return resourceFile.toURL();
 			} catch (MalformedURLException e) {
 				return null;
