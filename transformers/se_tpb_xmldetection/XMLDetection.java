@@ -20,6 +20,7 @@ package se_tpb_xmldetection;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.FileHandler;
@@ -61,10 +62,23 @@ public class XMLDetection extends Transformer {
         String doAbbrAcronymDetection = (String)parameters.remove("doAbbrAcronymDetection");
         String doSentenceDetection = (String)parameters.remove("doSentenceDetection");
         String doWordDetection = (String)parameters.remove("doWordDetection");
+        String customLang = (String)parameters.remove("customLang");
+        String doOverride = (String)parameters.remove("doOverride");
         String logFile = (String)parameters.remove("logFile");
         
         sendMessage(Level.FINER, i18n("USING_INPUT", input));
         sendMessage(Level.FINER, i18n("USING_OUTPUT", output));
+        
+        if (customLang != null) {
+            if (customLang.equals("")) {
+                customLang = null;
+            } else {
+                sendMessage(Level.FINER, i18n("USING_CUSTOMLANG", customLang));
+                if (Boolean.parseBoolean(doOverride)) {
+                    sendMessage(Level.FINER, i18n("OVERRIDING"));
+                }
+            }
+        }
         
         if (logFile != null && !logFile.equals("")) {
             sendMessage(Level.FINER, i18n("USING_LOGFILE", logFile));
@@ -105,7 +119,11 @@ public class XMLDetection extends Transformer {
                 sendMessage(Level.FINER, i18n("STARTING_ABBR_ACRONYM"));
 	            TempFile temp = new TempFile();
 	            sendMessage(Level.FINER, "Temp abbr: " + temp.getFile());
-	            XMLAbbrDetector abbrDetector = new XMLAbbrDetector(currentInput, temp.getFile());                
+	            URL customLangFileURL = null;
+	            if (customLang != null) {
+	                customLangFileURL = new File(customLang).toURL(); 
+	            }
+	            XMLAbbrDetector abbrDetector = new XMLAbbrDetector(currentInput, temp.getFile(), customLangFileURL, Boolean.parseBoolean(doOverride));                
 	            abbrDetector.detect(null);
 	            currentInput = temp.getFile();
 	            sendMessage(Level.FINER, i18n("FINISHING_ABBR_ACRONYM"));
@@ -116,7 +134,11 @@ public class XMLDetection extends Transformer {
                 sendMessage(Level.FINER, i18n("STARTING_SENTENCE"));
                 TempFile temp = new TempFile();
                 sendMessage(Level.FINER, "Temp sent: " + temp.getFile());
-                XMLSentenceDetector sentDetector = new XMLSentenceDetector(currentInput, temp.getFile());                
+                URL customLangFileURL = null;
+	            if (customLang != null) {
+	                customLangFileURL = new File(customLang).toURL(); 
+	            }
+                XMLSentenceDetector sentDetector = new XMLSentenceDetector(currentInput, temp.getFile(), customLangFileURL, Boolean.parseBoolean(doOverride));                
                 sentDetector.detect(null);
                 currentInput = temp.getFile();
                 sendMessage(Level.FINER, i18n("FINISHING_SENTENCE"));

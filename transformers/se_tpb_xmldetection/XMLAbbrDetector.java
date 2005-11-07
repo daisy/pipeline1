@@ -21,6 +21,7 @@ package se_tpb_xmldetection;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -52,12 +53,23 @@ public class XMLAbbrDetector extends XMLWordDetector {
      * @throws IOException
      */
     public XMLAbbrDetector(File inFile, File outFile) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
+        this(inFile, outFile, null, false);
+    }
+    
+    /**
+     * @param inFile
+     * @param outFile
+     * @throws CatalogExceptionNotRecoverable
+     * @throws XMLStreamException
+     * @throws IOException
+     */
+    public XMLAbbrDetector(File inFile, File outFile, URL customLang, boolean override) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
         super(inFile, outFile);
         Set xmllang = LangDetector.getXMLLangSet(inFile);
         caas = new ContextAwareAbbrSettings(); 
         setBreakSettings(caas);
         setContextStackFilter(caas);
-        setBreakFinder(new DefaultAbbrBreakFinder(xmllang));        
+        setBreakFinder(new DefaultAbbrBreakFinder(xmllang, customLang, override));        
     }
 
     protected void handleBreaks(String data) throws XMLStreamException {

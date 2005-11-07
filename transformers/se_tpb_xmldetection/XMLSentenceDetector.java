@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
@@ -70,12 +71,16 @@ public class XMLSentenceDetector extends XMLBreakDetector {
     /* *** CONSTRUCTORS *** */
     
     public XMLSentenceDetector (File inFile, File outFile) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
+        this(inFile, outFile, null, false);
+    }
+    
+    public XMLSentenceDetector (File inFile, File outFile, URL customLang, boolean override) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
         super(outFile);
         ContextAwareBreakSettings cabi = new ContextAwareBreakSettings(true); 
         setBreakSettings(cabi);
         setContextStackFilter(cabi);
         Set xmllang = LangDetector.getXMLLangSet(inFile);
-        setBreakFinder(new DefaultSentenceBreakFinder(xmllang));
+        setBreakFinder(new DefaultSentenceBreakFinder(xmllang, customLang, override));
         
         reader = new BookmarkedXMLEventReader(inputFactory.createXMLEventReader(new FileInputStream(inFile)));
         writer = null;

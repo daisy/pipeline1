@@ -57,6 +57,8 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
     private MultiHashMap baseInitialisms = new MultiHashMap(false);
     private MultiHashMap baseAcronyms = new MultiHashMap(false);
     
+    private boolean override = false;
+    
     /**
      * Creates an initialism, acronym, abbreviation and fix break finder.
      * @param xmllang the set of languages to be loaded, typically the set of languages present in the document.
@@ -64,7 +66,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
      * @throws XMLStreamException
      * @throws IOException
      */
-    public DefaultAbbrBreakFinder(Set xmllang) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
+    public DefaultAbbrBreakFinder(Set xmllang, URL customLang, boolean overrideLang) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
         resolver = LangSettingsResolver.getInstance();
         
         logger.info("Loading language: common");
@@ -72,6 +74,15 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         langSettingsMap.put("common", lscommon);
         baseInitialisms.putAll(lscommon.getInitialisms());
         baseAcronyms.putAll(lscommon.getAcronyms());
+        
+        if (customLang != null) {
+            logger.info("Loading language: custom");
+            LangSettings lscustom = new LangSettings("custom", customLang);
+            langSettingsMap.put("custom", lscustom);
+            baseInitialisms.putAll(lscustom.getInitialisms());
+            baseAcronyms.putAll(lscustom.getAcronyms());  
+            override = overrideLang;
+        }
         
         for (Iterator it = xmllang.iterator(); it.hasNext(); ) {
             String lang = (String)it.next();            
@@ -114,6 +125,24 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         newAcronyms.putAll(langSettings.getAcronyms());
         langSettings.setInitialisms(newInitialisms);
         langSettings.setAcronyms(newAcronyms);
+        
+        if (override) {
+	        LangSettings lscustom = (LangSettings)langSettingsMap.get("custom");        
+	        replaceWithCustom(lscustom.getInitialisms(), langSettings.getInitialisms());
+	        replaceWithCustom(lscustom.getAcronyms(), langSettings.getAcronyms());
+	        replaceWithCustom(lscustom.getAbbrs(), langSettings.getAbbrs());
+        }
+               
+    }
+    
+    private void replaceWithCustom(MultiHashMap customMap, MultiHashMap langMap) {
+        for (Iterator it = customMap.keySet().iterator(); it.hasNext(); ) {
+            String key = (String)it.next();
+            if (langMap.containsKey(key)) {
+                langMap.remove(key);
+                langMap.putAll(key, customMap.getCollection(key));
+            }
+        }
     }
     
     public Vector findBreaks(String text, ArrayList al) {

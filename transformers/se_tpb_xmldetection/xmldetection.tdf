@@ -61,6 +61,24 @@
 			<default>true</default>
 		</parameter>		
 		
+		<parameter required="false" direction="in" type="application/xml">
+			<name>customLang</name>
+			<description>User supplied language file.</description>
+			<example>/path/to/lang/file</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>doOverride</name>
+			<description>Override languages defined in input document with contents from custom language file.</description>
+			<example>false</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+		
 	</parameters>	
 
 </transformer>

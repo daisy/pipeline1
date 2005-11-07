@@ -57,12 +57,25 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
     protected MultiHashMap baseInitialisms = new MultiHashMap(false);
     protected MultiHashMap baseAcronyms = new MultiHashMap(false);
     
-    public DefaultSentenceBreakFinder(Set xmllang) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
+    private boolean override = false;
+    
+    public DefaultSentenceBreakFinder(Set xmllang, URL customLang, boolean overrideLang) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
         resolver = LangSettingsResolver.getInstance();
+        
+        logger.info("Loading language: common");
         LangSettings lscommon = new LangSettings(null, resolver.resolve("common"));
         langSettingsMap.put("common", lscommon);
         baseInitialisms.putAll(lscommon.getInitialisms());
         baseAcronyms.putAll(lscommon.getAcronyms());
+        
+        if (customLang != null) {
+            logger.info("Loading language: custom");
+            LangSettings lscustom = new LangSettings("custom", customLang);
+            langSettingsMap.put("custom", lscustom);
+            baseInitialisms.putAll(lscustom.getInitialisms());
+            baseAcronyms.putAll(lscustom.getAcronyms());  
+            override = overrideLang;
+        }
         
         for (Iterator it = xmllang.iterator(); it.hasNext(); ) {
             String lang = (String)it.next();
@@ -76,58 +89,71 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
             logger.info("Loading language: " + lang);
             loadLanguage(lang, lscommon);            
         }
+        switchToLang("common");
     }
     
     private void loadLanguage(String locale, LangSettings defaultLS) throws XMLStreamException, IOException {
-        URL langURL = resolver.resolve(locale);
-        LangSettings ls = null;
-        if (langURL != null) {
-            ls = new LangSettings(locale, langURL);
+        if (!langSettingsMap.containsKey(locale)) {
+	        URL langURL = resolver.resolve(locale);
+	        LangSettings ls = null;
+	        if (langURL != null) {
+	            ls = new LangSettings(locale, langURL);
+	        } else {
+	            logger.warning("No language settings found for " + locale);
+	            ls = new LangSettings(locale, defaultLS);
+	        }
+	        baseInitialisms.putAll(ls.getInitialisms());
+	        baseAcronyms.putAll(ls.getAcronyms());
+	        langSettingsMap.put(locale, ls);
         } else {
-            logger.warning("No language settings found for " + locale);
-            ls = new LangSettings(locale, defaultLS);
+            System.err.println(locale + " already exists.");
         }
-        baseInitialisms.putAll(ls.getInitialisms());
-        baseAcronyms.putAll(ls.getAcronyms());
-        langSettingsMap.put(locale, ls);
+    }
+    
+    private void switchToLang(String lang) {
+        langSettings = (LangSettings)langSettingsMap.get(lang);   
+        MultiHashMap newInitialisms = new MultiHashMap(baseInitialisms);
+        MultiHashMap newAcronyms = new MultiHashMap(baseAcronyms);
+        newInitialisms.putAll(langSettings.getInitialisms());
+        newAcronyms.putAll(langSettings.getAcronyms());
+        langSettings.setInitialisms(newInitialisms);
+        langSettings.setAcronyms(newAcronyms);
+        
+        if (override) {
+	        LangSettings lscustom = (LangSettings)langSettingsMap.get("custom");        
+	        replaceWithCustom(lscustom.getInitialisms(), langSettings.getInitialisms());
+	        replaceWithCustom(lscustom.getAcronyms(), langSettings.getAcronyms());
+	        replaceWithCustom(lscustom.getAbbrs(), langSettings.getAbbrs());
+        }
+               
+    }
+    
+    private void replaceWithCustom(MultiHashMap customMap, MultiHashMap langMap) {
+        for (Iterator it = customMap.keySet().iterator(); it.hasNext(); ) {
+            String key = (String)it.next();
+            if (langMap.containsKey(key)) {
+                langMap.remove(key);
+                langMap.putAll(key, customMap.getCollection(key));
+            }
+        }
     }
     
     public Vector findBreaks(String text, ArrayList al) {
         // Has the locale changed?
         if ((newLocale != null && !newLocale.equals(current)) ||
                 (newLocale == null && current != null)) {
-            if (newLocale != null) {
-                iterator = BreakIterator.getSentenceInstance(newLocale);
-            } else {
-                logger.info("No language specified. Using default BreakIterator instance.");
-                iterator = BreakIterator.getSentenceInstance();
-            }
             current = newLocale;
             if (current == null) {
+                logger.info("No language specified. Using default BreakIterator instance.");
+                iterator = BreakIterator.getSentenceInstance();
                 current = new Locale("common");
+            } else {
+                iterator = BreakIterator.getSentenceInstance(newLocale);
             }
-            try {
-                if (!langSettingsMap.containsKey(current.toString())) {
-                    URL url = resolver.resolve(current);                    
-                    logger.info("Reading lang settings: " + url);
-                    langSettings = new LangSettings(current.toString(), url);
-                    baseInitialisms.putAll(langSettings.getInitialisms());
-                    baseAcronyms.putAll(langSettings.getAcronyms());
-                    langSettingsMap.put(current.toString(), langSettings);
-                } else {
-                    langSettings = (LangSettings)langSettingsMap.get(current.toString());
-                    MultiHashMap newInitialisms = new MultiHashMap(baseInitialisms);
-                    MultiHashMap newAcronyms = new MultiHashMap(baseAcronyms);
-                    newInitialisms.putAll(langSettings.getInitialisms());
-                    newAcronyms.putAll(langSettings.getAcronyms());
-                    langSettings.setInitialisms(newInitialisms);
-                    langSettings.setAcronyms(newAcronyms);
-                }                
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (XMLStreamException e) {
-                e.printStackTrace();
-            }
+            if (!langSettingsMap.containsKey(current.toString())) {
+                throw new IllegalStateException("Language " + current + " should already be present!");
+            } 
+            switchToLang(current.toString());
         }
         
         Vector result = new Vector();
