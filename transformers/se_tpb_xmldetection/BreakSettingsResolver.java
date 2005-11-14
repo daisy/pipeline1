@@ -41,10 +41,10 @@ import org.xml.sax.SAXException;
             ClassLoader cl = this.getClass().getClassLoader();
             if (cl instanceof DirClassLoader) {
                 DirClassLoader dcl = (DirClassLoader)cl;
-                System.err.println("dcl");
+                //System.err.println("dcl");
                 cl = new DirClassLoader(dcl.getClassDir(), dcl.getResourceDir().getParentFile());
             } else {
-                System.err.println("cl");
+                //System.err.println("cl");
             }
             Class cls = Class.forName(this.getClass().getPackage().getName() + ".DummyClass", true, cl);
             URL catalogURL = cls.getResource("type.xml");
