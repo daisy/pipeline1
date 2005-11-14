@@ -26,7 +26,8 @@ import java.util.regex.Pattern;
 /**
  * A <code>TextMatcher</code> that searches for a collection of strings.
  * This class searches for the earliest and longest possible occurrence
- * of any of the strings in the collection.
+ * of any of the strings in the collection.  This class is <em>not</em>
+ * thread safe.
  * @author Linus Ericson
  */
 public class StringCollectionMatcher implements TextMatcher {
@@ -38,7 +39,7 @@ public class StringCollectionMatcher implements TextMatcher {
     private String match;
     private boolean result = false;
     
-    private String suffix;
+    private Pattern pattern = null;
     private int currentStart = 0;
     private int currentEnd = 0;
     
@@ -55,7 +56,9 @@ public class StringCollectionMatcher implements TextMatcher {
     public StringCollectionMatcher(Collection strings, String textToSearch, String suffixPattern) {
         coll = strings;
         text = textToSearch;
-        suffix = suffixPattern;
+        if (suffixPattern != null) {
+            pattern = Pattern.compile("(?:" + suffixPattern + ")?");
+        }
     }
     
     /**
@@ -75,20 +78,17 @@ public class StringCollectionMatcher implements TextMatcher {
         coll.addAll(strings);
     }
     
-    public void indexOf(String textToSearch, String stringToFind, int position, String suffixPattern) {       
-        if (suffixPattern != null) {
-            Pattern pattern = Pattern.compile(Pattern.quote(stringToFind) + "(?:" + suffixPattern + ")?");
+    private void indexOf(String textToSearch, String stringToFind, int position) {       
+        currentStart = textToSearch.indexOf(stringToFind, position);
+        currentEnd = currentStart + stringToFind.length();
+        if (currentStart!=-1 && pattern!=null) {            
             Matcher matcher = pattern.matcher(textToSearch);
-            if (matcher.find(position)) {
-                currentStart = matcher.start();
+            if (matcher.find(currentStart + stringToFind.length())) {
                 currentEnd = matcher.end();
             } else {
                 currentStart = -1;
             }
-        } else {
-            currentStart = textToSearch.indexOf(stringToFind, position);
-            currentEnd = currentStart + stringToFind.length();
-        }        
+        }
     }
     
     public boolean find() {
@@ -97,8 +97,7 @@ public class StringCollectionMatcher implements TextMatcher {
         int originalEnd = end;
         for (Iterator it = coll.iterator(); it.hasNext(); ) {
             String current = (String)it.next();
-            //int currentStart = text.indexOf(current, originalEnd);
-            indexOf(text, current, originalEnd, suffix);
+            indexOf(text, current, originalEnd);
             if (currentStart != -1) {
                 // A match was found
                 
