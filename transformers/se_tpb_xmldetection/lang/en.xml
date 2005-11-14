@@ -430,7 +430,7 @@
 	<acronym before=".*[\s(]|^" after="([\-,\.\s:;?!)].*)|$" suffix="s|:s">				
 		<key>
 			<name>DAISY</name>
-			<expansion id="daisyBook">Digital audio based information system</expansion>
+			<expansion id="daisyBook">Digital Accessible Information System</expansion>
 		</key>		
 	</acronym>
 	<abbreviation before=".*[\s(]|^" after="([,\.\s:;?!)].*)|$">
