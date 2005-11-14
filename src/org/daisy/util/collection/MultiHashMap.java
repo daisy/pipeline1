@@ -179,15 +179,15 @@ public class MultiHashMap implements Map {
      */
     public void putAll(Map othermap) {
         if (othermap instanceof MultiHashMap) {
-            for (Iterator it = othermap.keySet().iterator(); it.hasNext(); ) {
-                Object key = it.next();
-                this.putAll(key, (Collection)othermap.get(key));
-            }
+            for (Iterator it = othermap.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry entry = (Map.Entry)it.next();
+                this.putAll(entry.getKey(), (Collection)entry.getValue());
+            }            
         } else {
-	        for (Iterator it = othermap.keySet().iterator(); it.hasNext(); ) {
-	            Object key = it.next();
-	            this.put(key, othermap.get(key));
-	        }
+            for (Iterator it = othermap.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry entry = (Map.Entry)it.next();
+                this.put(entry.getKey(), entry.getValue());
+            }            
         }
     }
 
