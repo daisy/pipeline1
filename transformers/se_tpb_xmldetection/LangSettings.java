@@ -95,7 +95,7 @@ public class LangSettings {
         this.setAcronymSuffixPattern(defaultSettings.acronymSuffixPattern);        
     }
     
-    public LangSettings(String lang, URL url) throws XMLStreamException, IOException {
+    public LangSettings(String lang, URL url, LangSettings defaultAbbrFixSettings) throws XMLStreamException, IOException {
         language = lang;
         
         XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -107,8 +107,16 @@ public class LangSettings {
                        
         MultiHashMap initialismsMap = new MultiHashMap(false);
         MultiHashMap acronymsMap = new MultiHashMap(false);
-        MultiHashMap abbrsMap = new MultiHashMap(false);
-        Map fixesMap = new HashMap();
+        
+        MultiHashMap abbrsMap = null;
+        Map fixesMap = null;
+        if (defaultAbbrFixSettings != null) {
+            abbrsMap = new MultiHashMap(defaultAbbrFixSettings.getAbbrs());
+            fixesMap = new HashMap(defaultAbbrFixSettings.getFixes());
+        } else {
+            abbrsMap = new MultiHashMap(false);
+            fixesMap = new HashMap();
+        }
         Map currentMap = null;
         
         while (er.hasNext()) {
@@ -474,7 +482,11 @@ public class LangSettings {
 	    	    return null;
 	    	} else if (coll.size() != 1) {
 	    	    logger.finer("Multiple abbr choices for " + key + ": " + coll);
-	    	    return null;
+	    	    String result = null;
+	    	    if (sameId(coll)) {
+	    	        result = getFromBestLanguage(coll);
+	    	    }
+	    	    return result;
 	    	}
 		    item = (Item)coll.iterator().next();
 		    return item.getValue();

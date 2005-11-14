@@ -70,14 +70,14 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         resolver = LangSettingsResolver.getInstance();
         
         logger.info("Loading language: common");
-        LangSettings lscommon = new LangSettings(null, resolver.resolve("common"));
+        LangSettings lscommon = new LangSettings(null, resolver.resolve("common"), null);
         langSettingsMap.put("common", lscommon);
         baseInitialisms.putAll(lscommon.getInitialisms());
         baseAcronyms.putAll(lscommon.getAcronyms());
         
         if (customLang != null) {
             logger.info("Loading language: custom");
-            LangSettings lscustom = new LangSettings("custom", customLang);
+            LangSettings lscustom = new LangSettings("custom", customLang, null);
             langSettingsMap.put("custom", lscustom);
             baseInitialisms.putAll(lscustom.getInitialisms());
             baseAcronyms.putAll(lscustom.getAcronyms());  
@@ -102,9 +102,19 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
     private void loadLanguage(String locale, LangSettings defaultLS) throws XMLStreamException, IOException {
         if (!langSettingsMap.containsKey(locale)) {
 	        URL langURL = resolver.resolve(locale);
+	        
+	        // Check to see if parent locale should be used as base
+	        Locale loc = LocaleUtils.string2locale(locale);
+	        if (!loc.getCountry().equals("")) {
+	            if (langSettingsMap.containsKey(loc.getLanguage())) {
+	                logger.info("Using " + loc.getLanguage() + " as base language for " + loc.toString());
+	                defaultLS = (LangSettings)langSettingsMap.get(loc.getLanguage());
+	            }
+	        }
+	        
 	        LangSettings ls = null;
 	        if (langURL != null) {
-	            ls = new LangSettings(locale, langURL);
+	            ls = new LangSettings(locale, langURL, defaultLS);
 	        } else {
 	            logger.warning("No language settings found for " + locale);
 	            ls = new LangSettings(locale, defaultLS);
@@ -113,7 +123,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 	        baseAcronyms.putAll(ls.getAcronyms());
 	        langSettingsMap.put(locale, ls);
         } else {
-            System.err.println(locale + " already exists.");
+            //System.err.println(locale + " already exists.");
         }
     }
     
