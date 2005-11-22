@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>WordML2DTBook</title>
+	</head>
+	<body>
+		<h1>WordML2DTBook as of November 21, 2005</h1>
+		<h2>General assumptions</h2>
+		<p>The text must be contained in a single flow. The converter has not been designed for nor tested 
+		with anchored or free floating objects.</p>
+		<h2>List of addressed objects:</h2>
+		<ul>
+			<li>Paragraph styles</li>
+			<li>Character styles</li>
+			<li>Lists</li>
+			<li>Tables</li>
+			<li>Footnotes</li>
+			<li>Images</li>
+		</ul>
+		<p>Objects not in this list are ignored, e.g. page breaks, cross references...</p>
+		<h2>Paragraph and character styles</h2>
+		<h3>Paragraph styles</h3>
+		<p>The WordML2DTBook transform will recognize the following built-in paragraph formats:</p>
+		<table border="1">
+			<tr><th>name</th><th>action</th></tr>
+			<tr><td>heading 1</td><td>h1</td></tr>
+			<tr><td>heading 2</td><td>h2</td></tr>
+			<tr><td>heading 3</td><td>h3</td></tr>
+			<tr><td>heading 4</td><td>h4</td></tr>
+			<tr><td>heading 5</td><td>h5</td></tr>
+			<tr><td>heading 6</td><td>h6</td></tr>
+			<tr><td>footnote text</td><td>a block of consecutive paragraphs with footnote text is wrapped in a note-tag and each paragraph is wrapped in a p-tag</td></tr>
+			<tr><td>block text</td><td>a block of consecutive paragraphs with block text is wrapped in a blockquote-tag and each paragraph is wrapped in a p-tag</td></tr>
+			<tr><td>annotation text</td><td>the content is commented out</td></tr>
+		</table>
+		<h3>Character styles</h3>
+		<p>The WordML2DTBook transform will recognize the following built-in character formats:</p>
+		<table border="1">
+			<tr><th>name</th><th>action</th></tr>
+			<tr><td>strong</td><td>strong</td></tr>
+			<tr><td>emphasis</td><td>em</td></tr>
+			<tr><td>page number</td><td>pagenum</td></tr>
+			<tr><td>footnote reference</td><td>noteref</td></tr>
+		</table>
+		<h3>Customizing</h3>
+		<p>Additional styles can be defined using the custom section of the "mappings" tag
+		set. It has been suggested that this section should be separated from the xslt.</p>
+		<h2>Structure</h2>
+		<p>WordML contains wrapper elements that closely matches the levelx tagging, which consequently are converted into levelx tags.</p>
+		<h2>Lists</h2>
+		<p>List paragraphs are converted into lists of type pl and the list item symbol is kept as contents.</p>
+		<p>Hierarchical lists will be flattened.</p>
+		<h2>Tables</h2>
+		<p>Tables are converted, but row spanning can't be used.</p>
+		<h2>Footnotes</h2>
+		<p>By using standard footnotes i Word, the link between note and reference is preserved. If this is
+		not an option, it is possible to use the "footnote reference" character style and the "footnote text" 
+		paragraph style. However, a link between the two is not created using this method.</p>
+		<h2>Images</h2>
+		<p>An imagegroup and an img tag is created for an image, but the image is not extracted (this is beyond
+		the limitations of XSLT 1.0 anyway).</p>
+		<h2>Formatting</h2>
+		<p>No formatting is taken into account in this transform, thus e.g. bold or italic is <em>not</em>
+		converted. Bold or italics that should be retained must be tagged using the strong or emphasis character style, respectively.</p>
+		<h2>Future improvements</h2>
+		<ul>
+			<li>Auto connect footnotes that were created using styles.</li>
+			<li>Handle hierarchical lists</li>
+			<li>Moving the customizable part out of the xslt</li>
+		</ul>
+	</body>
+</html>

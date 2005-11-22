@@ -1,0 +1,36 @@
+
+<transformer version="1.0">
+	<name>wordML2DTBook</name>
+	<description>Transforms WordML from Microsoft Office Word 2003 to DTBook 2005-1</description>
+	<classname>org.daisy.dmfc.transformers.XSLTRunner</classname>
+	<license>unknown</license>
+	<author>Joel Håkansson</author>
+	<support>No</support>
+	
+	<parameters>
+	
+		<parameter required="true" direction="in" type="application/xml">
+			<name>xml</name>
+			<description>The WordML XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter type="application/xml">
+			<name>xslt</name>
+			<value>${transformer_dir}/wordml2dtbook.xsl</value>
+		</parameter>
+
+		<parameter type="string">
+			<name>factory</name>
+			<value>com.icl.saxon.TransformerFactoryImpl</value>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/xml">
+			<name>out</name>
+			<description>The output DTBook 2005-1 XML file</description>
+			<example>file:///path/to/outFile.xml</example>
+		</parameter>
+
+	</parameters>
+
+</transformer>
