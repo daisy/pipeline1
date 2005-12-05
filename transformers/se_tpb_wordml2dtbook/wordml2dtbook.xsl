@@ -205,17 +205,6 @@
 	</xsl:choose>
 </xsl:template>
 
-<!-- 
-<xsl:template match="w:r">
-	<xsl:choose>
-		<xsl:when test="w:rPr/w:rStyle/@w:val='Betoning'"><em><xsl:value-of select="."/></em></xsl:when>
-		<xsl:when test="w:rPr/w:rStyle/@w:val='Stark'"><strong><xsl:value-of select="."/></strong></xsl:when>
-		<xsl:when test="w:rPr/w:rStyle/@w:val='Sidnummer'"><pagenum id="p-{.}"><xsl:value-of select="."/></pagenum></xsl:when>
-		<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
-	</xsl:choose>
-</xsl:template>
--->
-
 <xsl:template match="w:r">
 	<xsl:variable name="styleName" select="key('matchStyle', w:rPr/w:rStyle/@w:val)/w:name/@w:val"/>
 	<xsl:variable name="tag" select="($this//d:mappings/d:custom[@d:style=$customStyle]|
@@ -249,9 +238,9 @@
 
 <xsl:template match="w:pict">
   <xsl:if test="v:shape/v:imagedata">
-	  <imggroup>
-		  <img src="{v:shape/v:imagedata/@o:title}.jpg" alt=""/>
-	  </imggroup>
+		<imggroup>
+			<img src="{v:shape/v:imagedata/@o:title}.jpg" alt=""/>
+		</imggroup>
   </xsl:if>
 </xsl:template>
 
@@ -260,7 +249,7 @@
 </xsl:template>
 
 <xsl:template match="w:tab">
-  <xsl:text>&#x0009;</xsl:text>
+	<xsl:text>&#x0009;</xsl:text>
 </xsl:template>
 
 <xsl:template match="w:br">
@@ -301,17 +290,16 @@
 </xsl:template>
 
 <xsl:template match="*">
-  <!-- <xsl:apply-templates select="w:p"/> -->
-  <xsl:apply-templates/>
+	<xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template name="copy">
-  <xsl:element name="{name()}">
-  	<xsl:for-each select="@*">
-  	  <xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
-  	</xsl:for-each>
-  	<xsl:apply-templates/>
-  </xsl:element>
+	<xsl:element name="{name()}">
+		<xsl:for-each select="@*">
+			<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
+		</xsl:for-each>
+		<xsl:apply-templates/>
+	</xsl:element>
 </xsl:template>
 
 </xsl:stylesheet>
