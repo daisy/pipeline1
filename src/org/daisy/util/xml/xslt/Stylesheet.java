@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
@@ -59,12 +60,13 @@ public class Stylesheet {
      * @param xslt the XSLT <code>Source</code>.
      * @param result the <code>Result</code>.
      * @param factory the name of the <code>TransformerFactory</code> to use.
-     * @param parameters a <code>Map</code> containing parameters that are sent to the stylesheet. 
+     * @param parameters a <code>Map</code> containing parameters that are sent to the stylesheet.
+     * @param errorListener an ErrorListener 
      * @throws XSLTException
      * @see javax.xml.transform.Source
      * @see javax.xml.transform.Result
      */
-    public static void apply(Source xml, Source xslt, Result result, String factory, Map parameters) throws XSLTException{        		
+    public static void apply(Source xml, Source xslt, Result result, String factory, Map parameters, ErrorListener errorListener) throws XSLTException{        		
 		try {
 		    // Create factory
 		    String property = "javax.xml.transform.TransformerFactory";
@@ -74,9 +76,13 @@ public class Stylesheet {
 		    }
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			
+			if (errorListener != null) {
+			    transformerFactory.setErrorListener(errorListener);
+			}
+			
 			// Reset old factory property
 			System.setProperty(property, (oldFactory==null?"":oldFactory));			
-					   
+
 			// Create transformer
             javax.xml.transform.Transformer transformer = transformerFactory.newTransformer(xslt);
 
@@ -95,6 +101,26 @@ public class Stylesheet {
         } catch (TransformerException e) {
             throw new XSLTException(e.getMessageAndLocation(), e);            
         }
+    }
+    
+    /**
+     * Apply an XSLT stylesheet to an XML document. To use a specific TransformerFactory
+     * implementation, specify the <code>factory</code> parameter using a fully qualified
+     * class name. If the <code>factory</code> parameter is set to <code>null</code>,
+     * the TransformerFactory specified by the <code>javax.xml.transform.TransformerFactory</code>
+     * system property is used.
+     *  
+     * @param xml the XML <code>Source</code>.
+     * @param xslt the XSLT <code>Source</code>.
+     * @param result the <code>Result</code>.
+     * @param factory the name of the <code>TransformerFactory</code> to use.
+     * @param parameters a <code>Map</code> containing parameters that are sent to the stylesheet. 
+     * @throws XSLTException
+     * @see javax.xml.transform.Source
+     * @see javax.xml.transform.Result
+     */
+    public static void apply(Source xml, Source xslt, Result result, String factory, Map parameters) throws XSLTException{        		
+		apply(xml, xslt, result, factory, parameters, null);
     }
     
     /**
