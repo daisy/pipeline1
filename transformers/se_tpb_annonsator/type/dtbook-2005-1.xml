@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleSet xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/">
+
+	<prefix>annon</prefix>
+	<namespace>http://www.example.com</namespace>
+	<attributeBefore>before</attributeBefore>
+	<attributeAfter>after</attributeAfter>
+	<addAttributes>true</addAttributes>
+
+	<rule match="dtb:pagenum[@page='front']">
+		<lang lang="sv">
+			<before>Sidan (romerska siffror)</before>
+		</lang>
+		<lang lang="en">
+			<before>Page (Roman Numeral)</before>
+		</lang>
+	</rule>
+	
+	<rule match="dtb:pagenum[@page='normal']">
+		<lang lang="sv">
+			<before>Sidan</before>
+		</lang>
+		<lang lang="en">
+			<before>Page</before>
+		</lang>
+	</rule>
+
+	<rule match="dtb:noteref">
+		<lang lang="sv">
+			<before>Notreferens.</before>
+		</lang>
+		<lang lang="en">
+			<before>Note reference.</before>
+		</lang>
+	</rule>
+	
+	<rule match="dtb:note">
+		<lang lang="sv">
+			<before>Not.</before>
+		</lang>
+		<lang lang="en">
+			<before>Note.</before>
+		</lang>
+	</rule>
+	
+	<rule match="dtb:prodnote">
+		<lang lang="sv">
+			<before>Produktionsnot.</before>
+			<after>Slut på produktionsnot.</after>
+		</lang>
+		<lang lang="en">
+			<before>Production note.</before>
+			<after>End of production note.</after>
+		</lang>
+	</rule>
+
+	<rule match="dtb:sidebar">
+		<lang lang="sv">
+			<before>Parallell text.</before>
+			<after>Slut på parallell text.</after>
+		</lang>
+		<lang lang="en">
+			<before>Side bar.</before>
+			<after>End of side bar.</after>
+		</lang>
+	</rule>
+
+	<rule match="dtb:blockquote">
+		<lang lang="sv">
+			<before>Ett citat följer:</before>
+			<after>Slut på citat.</after>
+		</lang>
+		<lang lang="en">
+			<before>A quote follows:</before>
+			<after>End of quote.</after>
+		</lang>
+	</rule>
+
+	
+	<rule match="dtb:table">
+		<lang lang="sv">
+			<before>Tabell.</before>
+			<after>Slut på tabell.</after>
+		</lang>
+		<lang lang="en">
+			<before>Table.</before>
+			<after>End of table.</after>
+		</lang>
+	</rule>
+
+	<rule match="dtb:code">
+		<lang lang="sv">
+			<before>Kodstycke.</before>
+			<after>Slut på kodstycke.</after>
+		</lang>
+		<lang lang="en">
+			<before>Code.</before>
+			<after>End of code.</after>
+		</lang>
+	</rule>
+
+	<rule match="dtb:kbd">
+		<lang lang="sv">
+			<before>Tangentbordsinstruktion.</before>
+		</lang>
+		<lang lang="en">
+			<before>Keyborad instruction.</before>
+		</lang>
+	</rule>
+
+</ruleSet>
