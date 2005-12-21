@@ -157,7 +157,7 @@ public final class CatalogFile {
 		return null;
 	}
 	
-	public URL getEntityLocalURL (String id) throws IOException, CatalogExceptionEntityNotSupported {        
+	public URL getEntityLocalURL (String id) throws CatalogExceptionEntityNotSupported {        
         URL entity = (URL)srcIdTable.get(id);
         if (entity == null) {
             throw new CatalogExceptionEntityNotSupported("No support in catalog for public id: "+id);
@@ -210,6 +210,9 @@ public final class CatalogFile {
                                 uri = uri.substring(2);
                             }
                             URL url = resourceClass.getResource(uri);
+                            if (url == null) {
+                                url = resourceClass.getClassLoader().getResource(uri);
+                            }
 							if (url!=null) {
                                 entity = url;
 							}else{
