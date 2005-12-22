@@ -33,7 +33,12 @@ import java.util.Vector;
         // Has the locale changed?
         if ((newLocale != null && !newLocale.equals(current)) ||
                 (newLocale == null && current != null)) {
-            iterator = BreakIterator.getWordInstance(newLocale);
+            //System.err.println(newLocale);
+            if (newLocale == null) {
+                iterator = BreakIterator.getWordInstance();
+            } else {
+                iterator = BreakIterator.getWordInstance(newLocale);
+            }
             current = newLocale;
         }
         
