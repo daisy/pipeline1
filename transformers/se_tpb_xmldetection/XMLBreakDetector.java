@@ -133,6 +133,10 @@ public abstract class XMLBreakDetector {
         }
     }
     
+    protected boolean parseNamespace(String namespaceURI) {
+        return breakSettings.setup(namespaceURI);
+    }
+    
     protected void writeEvent(XMLEvent event) throws XMLStreamException {        
         if (event.isStartElement()) {
             if (!rootElementSeen) {

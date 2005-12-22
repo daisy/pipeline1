@@ -30,6 +30,8 @@ public interface BreakSettings {
 
     public boolean setup(String publicId, String systemId) throws UnsupportedDocumentTypeException;
     
+    public boolean setup(String namespaceURI);
+    
     public boolean isSentenceBreaking(QName elementName);
     
     public boolean skipContent(QName elementName);

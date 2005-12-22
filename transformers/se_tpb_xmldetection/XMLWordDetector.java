@@ -68,6 +68,8 @@ public class XMLWordDetector extends XMLBreakDetector {
         boolean skipContent = false;
         int skipContextStackLength = 0;
         
+        boolean rootElementSeen = false;
+        
         // Main event loop
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
@@ -84,9 +86,16 @@ public class XMLWordDetector extends XMLBreakDetector {
                     }
                 }
             } else if (event.isStartElement()) {
-                if (!doctypeSeen) {
-                    throw new UnsupportedDocumentTypeException("No DOCTYPE declaration found.");
-                }
+                if (!rootElementSeen) {
+                    rootElementSeen = true;                    
+                    if (!doctypeSeen) {
+                        StartElement se = event.asStartElement();
+                        if (!parseNamespace(se.getName().getNamespaceURI())) {
+                            throw new UnsupportedDocumentTypeException("Unsupported document type.");
+                        }
+                    }
+                }  
+                
                 StartElement se = event.asStartElement();
                 if (breakSettings.skipContent(se.getName())) {
                     skipContextStackLength = contextStack.getParentContext().size();

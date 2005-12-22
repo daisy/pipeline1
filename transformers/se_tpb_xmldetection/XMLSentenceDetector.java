@@ -102,6 +102,8 @@ public class XMLSentenceDetector extends XMLBreakDetector {
         ArrayList abbrAcronymList = new ArrayList();
         Abbr abbrAcronym = null;
         
+        boolean rootElementSeen = false;
+        
         // Main event loop
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
@@ -124,9 +126,15 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                     }
                 }
             } else if (event.isStartElement() || event.isEndElement()) {
-                if (!doctypeSeen) {
-                    throw new UnsupportedDocumentTypeException("No DOCTYPE declaration found.");
-                }
+                if (!rootElementSeen) {
+                    rootElementSeen = true;                    
+                    if (!doctypeSeen) {
+                        StartElement se = event.asStartElement();
+                        if (!parseNamespace(se.getName().getNamespaceURI())) {
+                            throw new UnsupportedDocumentTypeException("Unsupported document type.");
+                        }
+                    }
+                }                
                 
                 // Event is a start element or an end element
                 boolean isStart = false;

@@ -19,7 +19,7 @@
 	<fixElement namespace="http://www.daisy.org/z3986/2005/dtbook/" prefix="" name="w" expandAttribute="class"/>
 
 	<defaultPaths>
-		<path name="/dtbook/book/bodymatter"/>
+		<path name="/dtbook/book"/>
 	</defaultPaths>
 
 	<nonSentenceBreaking>

@@ -35,6 +35,8 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.settings.SettingsResolver;
+import org.daisy.util.xml.settings.SettingsResolverException;
 import org.daisy.util.xml.stax.ContextStack;
 
 /**
@@ -42,7 +44,7 @@ import org.daisy.util.xml.stax.ContextStack;
  */
 /*package*/ class ContextAwareBreakSettings extends ContextStack implements BreakSettings {
 
-    protected BreakSettingsResolver resolver = null; 
+    protected SettingsResolver resolver = null;
     protected boolean sentenceInstance = false;
     protected QName sentenceElement = null;
     protected QName wordElement = null;
@@ -71,7 +73,13 @@ import org.daisy.util.xml.stax.ContextStack;
     protected Set defaultPaths = new HashSet();
     
     public ContextAwareBreakSettings(boolean sentence) throws CatalogExceptionNotRecoverable {
-        resolver = BreakSettingsResolver.getInstance();
+        try {
+            //resolver = BreakSettingsResolver.getInstance();
+            resolver = SettingsResolver.getInstance("type.xml", this.getClass());
+        } catch (SettingsResolverException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         sentenceInstance = sentence;
     }
        
@@ -114,6 +122,21 @@ import org.daisy.util.xml.stax.ContextStack;
             // FIXME do something uselful here
             e.printStackTrace();
         } catch (XMLStreamException e) {
+            // FIXME do something uselful here
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean setup(String namespaceURI) {        
+        try {
+            URL url = resolver.resolve(namespaceURI);
+            parseXml(url);
+            return true;
+        } catch (XMLStreamException e) {
+            // FIXME do something uselful here
+            e.printStackTrace();
+        } catch (IOException e) {
             // FIXME do something uselful here
             e.printStackTrace();
         }
