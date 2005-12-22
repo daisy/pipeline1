@@ -1,5 +1,5 @@
 /*
- * #### - ################################
+ * DMFC - The DAISY Multi Format Converter
  * Copyright (C) 2005  Daisy Consortium
  *
  * This library is free software; you can redistribute it and/or
@@ -22,12 +22,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -46,12 +45,14 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.daisy.dmfc.core.DirClassLoader;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.settings.SettingsResolver;
+import org.daisy.util.xml.settings.SettingsResolverException;
+import org.daisy.util.xml.settings.UnsupportedDocumentTypeException;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
 import org.w3c.dom.Document;
@@ -59,19 +60,13 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import se_tpb_xmldetection.UnsupportedDocumentTypeException;
-
 /**
  * @author Linus Ericson 
  * @author Martin Blomberg
  */
 public class Annonsator extends Transformer implements ErrorListener {
 
-    protected final static Pattern dtdPattern = Pattern.compile("<!DOCTYPE\\s+\\w+(\\s+((SYSTEM\\s+(\"[^\"]*\"|'[^']*')|PUBLIC\\s+(\"[^\"]*\"|'[^']*')\\s+(\"[^\"]*\"|'[^']*'))))?\\s*(\\[.*\\]\\s*)?>");
-    
-    private AnnonsatorSettingsResolver resolver = null;
-    
-    private Class resourceLoader = null;
+    private SettingsResolver resolver = null;
     
     /**
      * @param inListener
@@ -89,14 +84,16 @@ public class Annonsator extends Transformer implements ErrorListener {
         
         XMLInputFactory factory = XMLInputFactory.newInstance();
         try {
-            resolver = AnnonsatorSettingsResolver.getInstance(); 
+            resolver = SettingsResolver.getInstance("type.xml", this.getClass()); 
             
             XMLEventReader reader = factory.createXMLEventReader(new FileInputStream(input));
             URL configUrl = null;
+            
+            // Detect which config file to use
             while (reader.hasNext()) {
                 XMLEvent event = reader.nextEvent();
                 if (event.getEventType() == XMLStreamConstants.DTD) {
-                    configUrl = parseDoctype(((DTD)event).getDocumentTypeDeclaration());
+                    configUrl = resolver.parseDoctype(((DTD)event).getDocumentTypeDeclaration());
                     break;
                 } else if (event.isStartElement()) {
                     StartElement se = event.asStartElement();
@@ -106,11 +103,15 @@ public class Annonsator extends Transformer implements ErrorListener {
                 }
             }            
             reader.close();
+            
+            // Create stylesheet
             AnnonsatorXSLTBuilder xsltBuilder = new AnnonsatorXSLTBuilder(configUrl, getResource("attributes.template"), getResource("text.template"));
             xsltBuilder.setOutputFile(xslOutput);
             xsltBuilder.printToFile();
             Document xslt = xsltBuilder.getTemplate();
             sendMessage(Level.FINE, i18n("STYLESHEET_CREATED"));
+            
+            // Perform transformation
             DOMSource xsltSource = new DOMSource(xslt);            
             SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setValidating(true);
@@ -119,13 +120,12 @@ public class Annonsator extends Transformer implements ErrorListener {
             xmlreader.setEntityResolver(CatalogEntityResolver.getInstance());
             SAXSource xmlSource = new SAXSource(xmlreader, new InputSource(new FileInputStream(input)));
             Result result = new StreamResult(new FileOutputStream(output));
-            //Stylesheet.apply(xmlSource, xsltSource, result);
+            // Attribute version of stylesheet uses XSLT 2.0 
             Stylesheet.apply(xmlSource, xsltSource, result, "net.sf.saxon.TransformerFactoryImpl", parameters, this);
+            
         } catch (FileNotFoundException e) {
             throw new TransformerRunException(e.getMessage(), e);
         } catch (XMLStreamException e) {
-            throw new TransformerRunException(e.getMessage(), e);
-        } catch (UnsupportedDocumentTypeException e) {
             throw new TransformerRunException(e.getMessage(), e);
         } catch (CatalogExceptionNotRecoverable e) {
             throw new TransformerRunException(e.getMessage(), e);
@@ -137,48 +137,25 @@ public class Annonsator extends Transformer implements ErrorListener {
             throw new TransformerRunException(e.getMessage(), e);
         } catch (ParserConfigurationException e) {
             throw new TransformerRunException(e.getMessage(), e);
+        } catch (SettingsResolverException e) {
+            throw new TransformerRunException(e.getMessage(), e);
+        } catch (UnsupportedDocumentTypeException e) {
+            throw new TransformerRunException(e.getMessage(), e);
         }
         
         return true;
     }
     
     public URL getResource(String resource) {
-        if (resourceLoader == null) {
-	        ClassLoader cl = this.getClass().getClassLoader();
-	        if (cl instanceof DirClassLoader) {
-	            DirClassLoader dcl = (DirClassLoader)cl;
-	            //System.err.println("dcl");
-	            cl = new DirClassLoader(dcl.getClassDir(), dcl.getResourceDir().getParentFile());
-	        } else {
-	            //System.err.println("cl");
-	        }
-	        try {
-	            resourceLoader = Class.forName(this.getClass().getPackage().getName() + ".DummyClass", true, cl);
-	        } catch (ClassNotFoundException e) {
-	           return null;
-	        }
+        URL url = null;
+        try {
+            url = new URL(getTransformerDirectory().toURL(), resource);
+        } catch (MalformedURLException e) {
+            sendMessage(Level.WARNING, "Malformed resource URL to resource: " + resource);
         }
-        return resourceLoader.getResource(resource);
+        return url;
     }
     
-    protected URL parseDoctype(String doctype) throws UnsupportedDocumentTypeException, IOException {
-        Matcher matcher = dtdPattern.matcher(doctype);
-        if (matcher.matches()) {
-            if (matcher.group(3).startsWith("PUBLIC")) {
-                String pub = matcher.group(5);
-                String sys = matcher.group(6);
-                pub = pub.substring(1, pub.length() - 1);
-                sys = sys.substring(1, sys.length() - 1);
-                return resolver.resolve(pub, sys);                
-            } 
-            String sys = matcher.group(4);                        
-            sys = sys.substring(1, sys.length() - 1);
-            return resolver.resolve(null, sys);            
-        } 
-        throw new UnsupportedDocumentTypeException("Cannot parse doctype declaration");        
-    }
-
-
     public void warning(TransformerException arg0) throws TransformerException {
         System.err.println("Warning: " + arg0.getLocalizedMessage());
     }
