@@ -52,6 +52,16 @@
 			</meta:revdescription>
 			<meta:revremark/>
 		</meta:revision>
+		<meta:revision>
+			<meta:revnumber>1.1.1</meta:revnumber>
+			<meta:date>28 December  2005</meta:date>
+			<meta:authorinitials>JoelH</meta:authorinitials>
+			<meta:revdescription>
+				<meta:para>Removed spaces in pagenum id's</meta:para>
+				<meta:para>Fixed a problem with smartTags</meta:para>
+			</meta:revdescription>
+			<meta:revremark/>
+		</meta:revision>
 	</meta:revhistory>
 </meta:doc>
   
@@ -182,7 +192,7 @@
 			<xsl:choose>
 				<xsl:when test="$tag/@d:action='map'">
 					<xsl:element name="{$tag/@d:val}">
-						<xsl:apply-templates select="w:r"/>
+						<xsl:apply-templates select="descendant::w:r"/>
 					</xsl:element>
 				</xsl:when>
 				<xsl:when test="$tag/@d:action='wrap'">
@@ -191,17 +201,17 @@
 							<xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
 						</xsl:if>
 						<p>
-							<xsl:apply-templates select="w:r"/>
+							<xsl:apply-templates select="descendant::w:r"/>
 						</p>
 					</xsl:element>
 				</xsl:when>
 				<xsl:when test="$tag/@d:action='comment'">
-					<xsl:comment><xsl:apply-templates select="w:r"/></xsl:comment>
+					<xsl:comment><xsl:apply-templates select="descendant::w:r"/></xsl:comment>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:when>
 		<!-- no matching action found for this paragrap style -->
-		<xsl:otherwise><p><xsl:apply-templates select="w:r"/></p></xsl:otherwise>
+		<xsl:otherwise><p><xsl:apply-templates select="descendant::w:r"/></p></xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
 
@@ -218,7 +228,7 @@
 					<xsl:element name="{$tag/@d:val}"><xsl:apply-templates/></xsl:element>
 				</xsl:when>
 				<xsl:when test="$tag/@d:action='pagenum'">
-					<pagenum id="p-{.}"><xsl:apply-templates/></pagenum>
+					<pagenum id="p-{translate(.,' ','')}"><xsl:apply-templates/></pagenum>
 				</xsl:when>
 				<xsl:when test="$tag/@d:action='noteref'">
 					<xsl:choose>
