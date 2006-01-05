@@ -89,6 +89,7 @@
 		<element name="strong"/>
 		<element name="sub"/>
 		<element name="sup"/>
+		<element name="td"/>
 		<element name="w"/>
 	</mayContainText>
 
