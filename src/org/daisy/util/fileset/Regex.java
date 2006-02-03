@@ -29,10 +29,11 @@ public class Regex {
 		FILE_NCC = Pattern.compile("[Nn][Cc][Cc].[Hh][Tt][Mm][Ll]?$");
 		FILE_OPF = Pattern.compile(".+\\.[Oo][Pp][Ff]$");
 		FILE_AUDIO = Pattern.compile("(.+\\.[Mm][Pp]3)|(.+\\.[Ww][Aa][Vv])$");
-		FILE_MP3 = Pattern.compile(".+\\.[Mm][Pp]3$");
+		FILE_MP3 = Pattern.compile(".+\\.[Mm][Pp]3$");		
+		FILE_WAV = Pattern.compile(".+\\.[Ww][Aa][Vv]$");
 		FILE_DTD = Pattern.compile(".+\\.[Dd][Tt][Dd]$");
 		FILE_XHTML = Pattern.compile(".+\\.[Xx]?[Hh][Tt][Mm][Ll]?$");
-		FILE_IMAGE = Pattern.compile( "(.+\\.[Jj][Pp][Gg]$)|(.+\\.[Jj][Pp][Ee][Gg]$)|(.+\\.[Pn][Ng][Gg]$)|(.+\\.[Gg][Ii][Ff]$)|(.+\\.[Bb][Mm][Pp]$)");
+		FILE_IMAGE = Pattern.compile( "(.+\\.[Jj][Pp][Gg]$)|(.+\\.[Jj][Pp][Ee][Gg]$)|(.+\\.[Pp][Nn][Gg]$)|(.+\\.[Gg][Ii][Ff]$)|(.+\\.[Bb][Mm][Pp]$)");
 		FILE_NCX = Pattern.compile(".+\\.[Nn][Cc][Xx]$");
 		FILE_RESOURCE = Pattern.compile(".+\\.[Rr][Ee][Ss]$");
 		FILE_DTBOOK = Pattern.compile(".+\\.[Xx][Mm][Ll]$");
@@ -63,6 +64,7 @@ public class Regex {
 	public Pattern FILE_OPF;
 	public Pattern FILE_AUDIO;
 	public Pattern FILE_MP3;
+	public Pattern FILE_WAV;
 	public Pattern FILE_DTD;
 	public Pattern FILE_XHTML;
 	public Pattern FILE_IMAGE;

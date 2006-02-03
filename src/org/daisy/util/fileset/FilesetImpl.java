@@ -14,7 +14,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
+
 import javazoom.jl.decoder.BitstreamException;
+
 import org.daisy.util.xml.Peeker;
 import org.daisy.util.xml.PeekerImpl;
 import org.w3c.css.sac.CSSException;
@@ -255,6 +257,10 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		
 		else if (regex.matches(regex.FILE_MP3,value)){
 			return new Mp3FileImpl(uri);
+		}
+		
+		else if (regex.matches(regex.FILE_WAV,value)){
+			return new WavFileImpl(uri);
 		}
 		
 		else if (regex.matches(regex.FILE_XHTML,value)) {	
