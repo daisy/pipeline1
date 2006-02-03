@@ -1,5 +1,7 @@
 package org.daisy.util.fileset;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -119,10 +121,16 @@ public class SmilClock implements Comparable {
 		nfInt.setMinimumIntegerDigits(2);
 		NumberFormat nfMsec = NumberFormat.getIntegerInstance();
 		nfMsec.setMinimumIntegerDigits(3);
+		DecimalFormatSymbols dfSymbols = new DecimalFormatSymbols();
+		dfSymbols.setDecimalSeparator('.');
+		DecimalFormat dfDouble = new DecimalFormat("0.###", dfSymbols);
+		dfDouble.setMaximumFractionDigits(3);
+		dfDouble.setGroupingUsed(false);
+		/*
 		NumberFormat nfDouble = NumberFormat.getInstance();
 		nfDouble.setMaximumFractionDigits(3);
 		nfDouble.setGroupingUsed(false);
-		
+		*/
 		// Break out all the pieces ...
 		msec = this.msecValue % 1000;
 		tmp = (this.msecValue - msec) / 1000;
@@ -151,19 +159,19 @@ public class SmilClock implements Comparable {
 			}
 			break;
 		case TIMECOUNT:
-			s = nfDouble.format((double)this.msecValue / 1000);
+			s = dfDouble.format((double)this.msecValue / 1000);
 			break;
 		case TIMECOUNT_MSEC:
-			s = nfDouble.format((double)this.msecValue) + "ms";
+			s = dfDouble.format((double)this.msecValue) + "ms";
 			break;
 		case TIMECOUNT_SEC:
-			s = nfDouble.format((double)this.msecValue / 1000) + "s";
+			s = dfDouble.format((double)this.msecValue / 1000) + "s";
 			break;
 		case TIMECOUNT_MIN:
-			s = nfDouble.format((double)this.msecValue / 60000) + "min";
+			s = dfDouble.format((double)this.msecValue / 60000) + "min";
 			break;
 		case TIMECOUNT_HR:
-			s = nfDouble.format((double)this.msecValue / 3600000) + "h";
+			s = dfDouble.format((double)this.msecValue / 3600000) + "h";
 			break;
 		default:
 			throw new NumberFormatException("Unknown SMIL clock format code: " + format);
