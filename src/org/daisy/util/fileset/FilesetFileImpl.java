@@ -37,6 +37,9 @@ abstract class FilesetFileImpl extends File implements FilesetFile {
 		}
 	}
 	
+	public File getFile() {
+	    return this;
+	}
 	
 	/**
 	 * Adds a URI string to the local ordered uri string collection

@@ -19,6 +19,7 @@ public abstract interface JavaFile {
 	String getName();
 	String getParent();
 	File getParentFile();
+	File getFile();
 	URI toURI();
 	URL toURL() throws MalformedURLException;
 }
