@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 
+import org.daisy.util.file.NullOutputStream;
 import org.daisy.util.file.StreamRedirector;
 
 /**
@@ -46,7 +47,7 @@ public class Command {
      * @return the exit value of the program that was run.
      * @throws ExecutionException
      */
-    public static int execute(String command, File workDir, File stdout, File stderr, int timeout, int pollInterval) throws ExecutionException {        
+    public static int execute(String command, File workDir, OutputStream stdout, OutputStream stderr, int timeout, int pollInterval) throws ExecutionException {        
         // Check working directory
         if (workDir != null && !workDir.isDirectory()) {
             throw new ExecutionException("'" + workDir + "' is not a directory");
@@ -77,10 +78,10 @@ public class Command {
             OutputStream outStream = System.out;
             OutputStream errStream = System.err;
             if (stdout != null) {
-                outStream = new FileOutputStream(stdout);
+                outStream = stdout;
             }            
             if (stderr != null) {
-                errStream = new FileOutputStream(stderr);
+                errStream = stderr;
             }            
             StreamRedirector out = new StreamRedirector(proc.getInputStream(), outStream);
             StreamRedirector err = new StreamRedirector(proc.getErrorStream(), errStream);            
@@ -133,6 +134,26 @@ public class Command {
      * @see #execute(String, File, File, File, int, int)
      */
     public static int execute(String command) throws ExecutionException {
-        return execute(command, null, null, null, -1, 500);
+        return execute(command, null, (OutputStream)null, (OutputStream)null, -1, 500);
+    }
+    
+    public static int execute(String command, boolean ignoreOutput) throws ExecutionException {
+        OutputStream out = null;
+        OutputStream err = null;
+        if (ignoreOutput) {
+            out = new NullOutputStream();
+            err = new NullOutputStream();
+        }
+        return execute(command, null, out, err, -1, 500);
+    }
+    
+    public static int execute(String command, File workDir, File stdout, File stderr, int timeout, int pollInterval) throws ExecutionException {
+        try {
+            return execute(command, workDir, new FileOutputStream(stdout), new FileOutputStream(stderr), timeout, pollInterval);
+        } catch (ExecutionException e) {
+            throw new ExecutionException(e.getMessage(), e);            
+        } catch (FileNotFoundException e) {
+            throw new ExecutionException(e.getMessage(), e);
+        }
     }
 }
