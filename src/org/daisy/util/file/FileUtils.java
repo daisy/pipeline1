@@ -36,6 +36,9 @@ public class FileUtils {
      * @throws IOException if anything bad happens.
      */
     public static void copy(File inFile, File outFile) throws IOException {
+        if (inFile.equals(outFile)) {
+            return;
+        }
         FileInputStream fis  = new FileInputStream(inFile);
         FileOutputStream fos = new FileOutputStream(outFile);
         byte[] buf = new byte[1024];
@@ -45,6 +48,18 @@ public class FileUtils {
         }
         fis.close();
         fos.close();
+    }
+    
+    public static File createDirectory(File dir) throws IOException {
+        if (!dir.exists()) {
+            boolean result = dir.mkdirs();
+            if (!result) {
+                throw new IOException("Could not create directory " + dir);
+            }
+        } else if (!dir.isDirectory()) {
+            throw new IOException(dir + " already exists and is not a directory");
+        }
+        return dir;
     }
     
 }
