@@ -123,7 +123,7 @@ public class SmilClock implements Comparable {
 		nfMsec.setMinimumIntegerDigits(3);
 		DecimalFormatSymbols dfSymbols = new DecimalFormatSymbols();
 		dfSymbols.setDecimalSeparator('.');
-		DecimalFormat dfDouble = new DecimalFormat("0.###", dfSymbols);
+		DecimalFormat dfDouble = new DecimalFormat("0.000", dfSymbols);
 		dfDouble.setMaximumFractionDigits(3);
 		dfDouble.setGroupingUsed(false);
 		/*
