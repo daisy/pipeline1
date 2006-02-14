@@ -189,7 +189,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 					value = stripFragment(value);					
 					//resolve the uri string
 					resolvedURI = referer.toURI().resolve(value);										
-					if (!resolvedURI.equals(cachedURI)) {
+					if (!resolvedURI.equals(cachedURI) && !value.equals("")) {
 						cachedURI = resolvedURI; 					
      					//check if this file has already been added to main collection
 						FilesetFile newmember = (FilesetFile)localMembers.get(resolvedURI);
