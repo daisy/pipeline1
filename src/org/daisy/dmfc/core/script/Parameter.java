@@ -55,7 +55,7 @@ public class Parameter {
 		while (matcher.find()) {
 		    String propName = matcher.group(1);
 		    String prop = (String)properties.get(propName);
-		    matcher.appendReplacement(sb, prop);
+		    matcher.appendReplacement(sb, prop.replaceAll("\\\\", "\\\\\\\\"));
 		}
 		matcher.appendTail(sb);
 		value = sb.toString();
