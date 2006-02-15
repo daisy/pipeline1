@@ -56,9 +56,8 @@
 			depends="compile,createDistributionDir">
 		<delete file="${distribution.dir}/dmfc.jar"/>
 		<jar jarfile="${distribution.dir}/dmfc.jar">
-			<fileset dir="${base.dir}">
-				<include name="bin/**/*.class"/>
-				<include name="bin/**/*.properties"/>
+			<fileset dir="${base.dir}/bin">
+				<include name="**/*.*"/>
 			</fileset>
 			<fileset dir="${base.dir}">
 				<include name="transformers/**/*.*"/>
@@ -119,5 +118,58 @@
 			description="Creates all DMFC packages"
 			depends="buildSrcJar,
 					 buildJavadocZip"/>
+	
+	
+	<target name="buildUtil"
+			description="Builds the util library in a separate JAR"
+			depends="createDistributionDir">
+		<jar jarfile="${distribution.dir}/org.daisy.util-bin.jar" >
+			<fileset dir="${base.dir}/bin">
+				<include name="org/daisy/util/**/*.*"/>
+			</fileset>
+		</jar>
+		<jar jarfile="${distribution.dir}/org.daisy.util-src.jar" >
+			<fileset dir="${base.dir}/src">
+				<include name="org/daisy/util/**/*.*"/>
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="buildDMFCZipNoUtil" 
+			description="Creates a dmfc.zip without util library"
+			depends="createDistributionDir">
+		<delete file="${distribution.dir}/dmfc.zip"/>
+		<zip zipfile="${distribution.dir}/dmfc.zip">
+			<fileset dir="${base.dir}">
+				<include name="bin/**/*.*"/>
+				<include name="transformers/**/*.*"/>
+				<include name="resources/**/*.*"/>
+				<include name="dmfc.bat"/>
+				<include name="doc/**/*.*"/>
+				<exclude name="doc/api/**/*.*"/>
+				<include name="lib/**/*.jar"/>
+				<exclude name="**/org/daisy/util/**/*.*"/>
+			</fileset>
+		</zip>
+	</target>
+	
+	<target name="buildDMFCFatZip" 
+			description="Creates a dmfc-fat.zip"
+			depends="createDistributionDir">
+		<delete file="${distribution.dir}/dmfc-fat.zip"/>
+		<zip zipfile="${distribution.dir}/dmfc-fat.zip">
+			<fileset dir="${base.dir}">
+				<include name="bin/**/*.*"/>
+				<include name="transformers/**/*.*"/>
+				<include name="resources/**/*.*"/>
+				<include name="dmfc.bat"/>
+				<include name="dmfc.sh"/>
+				<include name="doc/**/*.*"/>
+				<exclude name="doc/api/**/*.*"/>
+				<include name="lib/**/*.jar"/>
+			</fileset>
+		</zip>
+	</target>
+	
 	<!-- end of distribution build related tasks -->	
 </project>
