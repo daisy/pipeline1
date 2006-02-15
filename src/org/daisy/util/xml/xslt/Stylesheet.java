@@ -20,6 +20,7 @@ package org.daisy.util.xml.xslt;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -36,6 +37,8 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.catalog.CatalogURIResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -93,13 +96,15 @@ public class Stylesheet {
 	                transformer.setParameter((String)paramEntry.getKey(), paramEntry.getValue());
 	            }
             }
-                        
+            transformer.setURIResolver(new CatalogURIResolver());            
             // Perform transformation            
             transformer.transform(xml, result);
         } catch (TransformerConfigurationException e) {
             throw new XSLTException(e.getMessageAndLocation(), e);            
         } catch (TransformerException e) {
             throw new XSLTException(e.getMessageAndLocation(), e);            
+        } catch (CatalogExceptionNotRecoverable e) {
+            throw new XSLTException(e.getMessage(), e);
         }
     }
     
@@ -168,7 +173,8 @@ public class Stylesheet {
             
             Source xmlSource = new SAXSource(reader, new InputSource(new FileInputStream(FilenameOrFileURI.toFile(xmlFile))));
             Source xsltSource = new SAXSource(reader, new InputSource(new FileInputStream(FilenameOrFileURI.toFile(xsltFile))));
-	        	        
+            xmlSource.setSystemId(FilenameOrFileURI.toURI(xmlFile).toString());
+            xsltSource.setSystemId(FilenameOrFileURI.toURI(xsltFile).toString());
 	        Result outResult = new StreamResult(FilenameOrFileURI.toFile(outFile));
 	        apply(xmlSource, xsltSource, outResult, factory, parameters);
         } catch (SAXException e) {
