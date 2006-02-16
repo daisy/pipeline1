@@ -1,0 +1,25 @@
+<transformer version="1.0">
+	<name>zed2daisy202</name>
+	<description>Transforms a Z3986 2005 file set to a Daisy 2.02 fileset</description>
+	<classname>se_tpb_zed2daisy202.Zed2Daisy202</classname>
+	<license>unknown</license>
+	<author>Linus Ericson</author>
+	<support>No</support>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/xml">
+			<name>manifest</name>
+			<description>The Z3986 2005 manifest</description>
+			<example>/path/to/file.xml</example>
+		</parameter>
+	
+		<parameter required="true" direction="out" type="application/xhtml+xml">
+			<name>outDir</name>
+			<description>The output Daisy 2.02 file set directory</description>
+			<example>/path/to/</example>
+		</parameter>		
+				
+	</parameters>	
+
+</transformer>
