@@ -43,7 +43,12 @@
 	<xsl:template match="h:meta[@name='ncc:maxPageNormal']">
 		<meta name="ncc:maxPageNormal">
 			<xsl:attribute name="content">
-				<xsl:value-of select="/h:html/h:body/h:span[@class='page-normal'][last()]/h:a"/>
+				<xsl:choose>
+					<xsl:when test="/h:html/h:body/h:span[@class='page-normal']">
+						<xsl:value-of select="/h:html/h:body/h:span[@class='page-normal'][last()]/h:a"/>
+					</xsl:when>
+					<xsl:otherwise>0</xsl:otherwise>				
+				</xsl:choose>
 			</xsl:attribute>
 		</meta>
 	</xsl:template>
