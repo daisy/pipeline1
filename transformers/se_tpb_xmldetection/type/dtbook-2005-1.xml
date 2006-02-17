@@ -34,7 +34,7 @@
 		<element name="linenum"/>
 		<element name="noteref"/>
 		<element name="pagenum"/>
-		<element name="prodnote"/>
+		<!--<element name="prodnote"/>-->
 		<element name="q"/>
 		<element name="span"/>
 		<element name="strong"/>
