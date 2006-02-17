@@ -39,6 +39,7 @@ public class FileUtils {
         if (inFile.equals(outFile)) {
             return;
         }
+        createDirectory(outFile.getParentFile());
         FileInputStream fis  = new FileInputStream(inFile);
         FileOutputStream fos = new FileOutputStream(outFile);
         byte[] buf = new byte[1024];
@@ -50,6 +51,12 @@ public class FileUtils {
         fos.close();
     }
     
+    /**
+     * Make sure a directory exists
+     * @param dir
+     * @return
+     * @throws IOException if the dir could not be created or if a regular file with the specified name exists.
+     */
     public static File createDirectory(File dir) throws IOException {
         if (!dir.exists()) {
             boolean result = dir.mkdirs();
