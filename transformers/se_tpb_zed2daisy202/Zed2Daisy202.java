@@ -20,6 +20,7 @@ package se_tpb_zed2daisy202;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -120,9 +121,9 @@ public class Zed2Daisy202 extends Transformer {
                 } else if (fsf instanceof Z3986DtbookFile) {
                     dtbook = fsf.getFile();
                 } else if (fsf instanceof AudioFile) {
-                    filesToCopy.add(fsf.getFile());
+                    filesToCopy.add(fsf);
                 } else if (fsf instanceof ImageFile) {
-                    filesToCopy.add(fsf.getFile());
+                    filesToCopy.add(fsf);
                 } else {
                     System.err.println("ignore: " + fsf.getName());
                 }
@@ -143,7 +144,7 @@ public class Zed2Daisy202 extends Transformer {
             this.progress(NCC_DONE);
             
             // Copy files
-            this.copyFiles(filesToCopy);            
+            this.copyFiles(filesToCopy, fileset);            
             this.progress(COPY_DONE);
             
         } catch (FilesetException e) {            
@@ -285,16 +286,17 @@ public class Zed2Daisy202 extends Transformer {
      * @param files the set of files to copy
      * @throws IOException
      */
-    private void copyFiles(Set files) throws IOException {
+    private void copyFiles(Set files, Fileset fileset) throws IOException {
         int fileNum = files.size();
         int fileCount = 0;
         for (Iterator it = files.iterator(); it.hasNext(); ) {
             fileCount++;
-            File inFile = (File)it.next();
-            Object[] params = {new Integer(fileNum), new Integer(fileCount), inFile.getName()};
+            FilesetFile fsf = (FilesetFile)it.next();
+            Object[] params = {new Integer(fileNum), new Integer(fileCount), fsf.getName()};
             this.sendMessage(Level.INFO, i18n("COPYING_FILE", params));
-            File outFile = new File(outputDir, inFile.getName());
-            FileUtils.copy(inFile, outFile);
+            URI relativeURI = fileset.getRelativeURI(fsf);
+            File out = new File(outputDir.toURI().resolve(relativeURI));
+            FileUtils.copy(fsf.getFile(), out);
             this.progress(0.85 + (0.99-0.85)*((double)fileCount/fileNum));
         }
     }
