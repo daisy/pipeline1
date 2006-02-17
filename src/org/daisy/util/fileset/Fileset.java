@@ -71,4 +71,11 @@ public interface Fileset {
 	 */
 	public long getByteSize();
 	
+	/**
+	 * Gets an URI relative to the folder of the manifest file
+	 * @param filesetFile a member of the fileset
+	 * @return a relative URI
+	 */
+	public URI getRelativeURI(FilesetFile filesetFile);
+	
 }

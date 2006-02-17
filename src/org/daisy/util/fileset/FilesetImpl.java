@@ -413,4 +413,12 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
       return (Collection)this.remoteMembers;
 	}
 	
+	public URI getRelativeURI(FilesetFile filesetFile) {
+	    ManifestFile manifest = this.getManifestMember();
+	    URI parent = manifest.getFile().getParentFile().toURI();
+	    URI filesetFileURI = filesetFile.getFile().toURI();
+	    URI relative = parent.relativize(filesetFileURI);
+	    return relative;
+	}
+	
 }
