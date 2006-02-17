@@ -28,7 +28,7 @@
   </start>
     
   <define name="root">
-    <element name="resources" ns="http://www.loc.gov/nls/z3986/2005/resource/">
+    <element name="resources" ns="http://www.daisy.org/z3986/2005/resource/">
       <ref name="resources.attlist"/>
       <optional>
         <ref name="head"/>
