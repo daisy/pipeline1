@@ -92,9 +92,10 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
 				Source xml = new SAXSource(ValidationDriver.fileInputSource(schema));
 				Source xslt = new StreamSource(this.getClass().getResourceAsStream("RNG2Schtrn.xsl"));                                
 				TransformerFactory factory = TransformerFactory.newInstance();
-				Transformer transformer = factory.newTransformer(xslt);
+				Transformer transformer = factory.newTransformer(xslt);								
 				TempFile schematronSchema = new TempFile();
-				transformer.transform(xml, new StreamResult(schematronSchema.getFile()));
+				//mg 20060204: added getCanonicalPath to circumvent win tempdir not supported as streamresult inparam ("erronoues syntax for dir")
+				transformer.transform(xml, new StreamResult(schematronSchema.getFile().getCanonicalPath()));
 				
 				// Try to load Schematron schema
 				schematronDriver = new ValidationDriver(builder.toPropertyMap());
