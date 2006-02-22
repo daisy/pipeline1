@@ -1,0 +1,24 @@
+<transformer version="1.0">
+	<name>Daisy 2.02 to Zed 2005</name>
+	<description>Transforms a Daisy 2.02 fileset to a Z3986 2005 file set</description>
+	<classname>int_daisy_daisy2022Zed2005.Daisy2022Zed2005</classname>
+	<license>unknown</license>
+	<author>Brandon Nelson Markus Gylling</author>
+	<support></support>
+	
+	<parameters>
+		<parameter required="true" direction="in" type="application/xml">
+			<name>ncc</name>
+			<description>The Daisy 2.02 NCC file</description>
+			<example>/path/to/ncc.html</example>
+		</parameter>
+	
+		<parameter required="true" direction="out" type="application/xhtml+xml">
+			<name>outDir</name>
+			<description>The output Z3986-2005 file set directory</description>
+			<example>/path/to/</example>
+		</parameter>		
+				
+	</parameters>	
+
+</transformer>
