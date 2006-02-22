@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
  * @author Markus Gylling
  */
 
-class D202TextualContentFileImpl extends Xhtml10FileImpl implements TextualContentFile  {
+class D202TextualContentFileImpl extends Xhtml10FileImpl implements D202TextualContentFile  {
     
     D202TextualContentFileImpl(URI uri) throws ParserConfigurationException, SAXException, IOException {
         super(uri);          
