@@ -14,12 +14,12 @@
 
 <xsl:template match="smil">
 <smil>
-	<xsl:call-template name="head" />
-	<xsl:call-template name="body" />	
+	<xsl:apply-templates select="head" />
+	<xsl:apply-templates select="body" />	
 </smil>
 </xsl:template>
 
-<xsl:template name="head">
+<xsl:template match="head">
 <head>
 	<meta name="dtb:uid" content="{$uid}" />
 	<meta name="dtb:totalElapsedTime" content="{$totalElapsedTime}" />
@@ -27,11 +27,12 @@
 </head>
 </xsl:template>
 
-<xsl:template name="body">
+<xsl:template match="body">
 <body>
 	<seq dur="{$timeinThisSmil}">
-		<xsl:apply-templates select="seq/node()" />
+		<xsl:apply-templates select="seq/*" />
 	</seq>
+	<xsl:comment><xsl:copy-of select="*" /></xsl:comment>
 </body>
 </xsl:template>
 
@@ -43,10 +44,10 @@
 </xsl:template>
 
 <xsl:template match="text">
-<text src="{$dtbookFileName}#{substring-after(@src, '#')}" id="@id" />
+<text src="{$dtbookFileName}#{substring-after(@src, '#')}" id="{@id}" />
 </xsl:template>
 
-<xsl:template name="audio">
+<xsl:template match="audio">
 <audio id="{@id}" src="{@src}" clipBegin="{@clip-begin}" clipEnd="{@clip-end}" />
 </xsl:template>
 
