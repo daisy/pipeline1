@@ -15,6 +15,8 @@ import org.xml.sax.SAXParseException;
  */
 class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile {
 	private SmilClock myStatedDuration = null;
+	private String myDcIdentifier = null;
+	private String myDcTitle = null;
 	
     D202NccFileImpl(URI uri) throws ParserConfigurationException, SAXException, IOException {
         super(uri);          
@@ -39,9 +41,14 @@ class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile {
 			try {
 				if (sName=="meta") {
 					if (attrValue=="ncc:totalTime") {
-						myStatedDuration = new SmilClock(attrs.getValue("content"));
+						myStatedDuration = new SmilClock(attrs.getValue("content")); 
+					}else if (attrValue=="dc:identifier") {
+						myDcIdentifier = attrs.getValue("content");
+					}else if (attrValue=="dc:title") {
+						myDcTitle = attrs.getValue("content");
 					}
-				}				
+
+				}	
 			} catch (Exception nfe) {
 				this.listeningErrorHandler.error(new SAXParseException(this.getName()+": exception when calculating " +attrValue,null));
 				
@@ -52,5 +59,19 @@ class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile {
 	
 	public SmilClock getStatedDuration() {				
 		return myStatedDuration;
+	}
+	
+	/**
+	 *returns the value of meta dc:identifier if set, null otherwise
+	 */
+	public String getDcIdentifier() {
+		return myDcIdentifier;
+	}
+	
+	/**
+	 *returns the value of meta dc:title if set, null otherwise
+	 */
+	public String getDcTitle() {
+		return myDcTitle;
 	}
 }

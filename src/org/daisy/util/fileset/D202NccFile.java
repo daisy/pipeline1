@@ -6,4 +6,6 @@ package org.daisy.util.fileset;
  */
 public interface D202NccFile extends Xhtml10File, ManifestFile{
 	public SmilClock getStatedDuration();
+	public String getDcIdentifier();
+	public String getDcTitle();
 }
