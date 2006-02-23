@@ -7,16 +7,40 @@
 	<support></support>
 	
 	<parameters>
-		<parameter required="true" direction="in" type="application/xml">
+	
+	<!-- <parameter required="true" direction="in" type="application/x-dtbd202ncc+xml"> -->
+	    <parameter required="true" direction="in" type="application/xml">
 			<name>ncc</name>
-			<description>The Daisy 2.02 NCC file</description>
-			<example>/path/to/ncc.html</example>
+			<description>Path to the Daisy 2.02 NCC file</description>
+			<example>D:/path/to/ncc.html</example>
+		</parameter>
+	
+		<parameter required="false" direction="in" type="text/css">
+			<name>css</name>
+			<description>
+			  Path to a dtbook css to include in output.
+			  If this param is not set, a default css will
+			  be inserted if needed.			
+			</description>
+			<example>D:/path/to/dtbook.css</example>
+            <default/>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="application/x-dtbresource+xml">
+			<name>resource</name>
+			<description>
+			  Path to a Z3986 resource file to include in output.
+			  If this param is not set, a default resource file will
+			  be inserted.			
+			</description>
+			<example>D:/path/to/resourcefile.res</example>
+            <default/>			
 		</parameter>
 	
 		<parameter required="true" direction="out" type="application/xhtml+xml">
 			<name>outDir</name>
 			<description>The output Z3986-2005 file set directory</description>
-			<example>/path/to/</example>
+			<example>D:/path/to/outputdir/</example>
 		</parameter>		
 				
 	</parameters>	
