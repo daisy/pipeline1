@@ -13,8 +13,10 @@ import org.xml.sax.SAXException;
  */
 
 class Xhtml10FileImpl extends XmlFileImpl implements TextualContentFile, Xhtml10File {
+		
 	private int currentHeadingLevel =0;
 	private boolean correctHeadingSequence = true;
+	protected boolean parsingBody = false;
 	
 	Xhtml10FileImpl(URI uri) throws ParserConfigurationException, SAXException, IOException {
 		super(uri); 
@@ -24,10 +26,13 @@ class Xhtml10FileImpl extends XmlFileImpl implements TextualContentFile, Xhtml10
 		super(uri, errh);          
 	}
 	
+	public String getMimeType() {
+	      return FilesetConstants.MIMETYPE_XHTML10;
+	}
+	
 	public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
+		if(sName=="body") parsingBody = true;
 		for (int i = 0; i < attrs.getLength(); i++) {
-//			attrName = attrs.getQName(i).intern();
-//			attrValue = attrs.getValue(i).intern();			
 			attrName = attrs.getQName(i);
 			attrValue = attrs.getValue(i).intern(); //for some reason	
 			if (attrName=="id") {
@@ -44,6 +49,7 @@ class Xhtml10FileImpl extends XmlFileImpl implements TextualContentFile, Xhtml10
 	
 	
 	public void endElement(String uri, String localName, String qName) throws SAXException {
+		if(localName=="body") parsingBody = false;
 		if (correctHeadingSequence == true){
 			if(regex.matches(regex.XHTML_HEADING_ELEMENT,localName)) {
 				try{					

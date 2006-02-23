@@ -37,7 +37,7 @@ import org.xml.sax.ext.LexicalHandler;
  * @author Markus Gylling
  */
 
-class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, ErrorHandler, ContentHandler, DTDHandler, LexicalHandler {        
+abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, ErrorHandler, ContentHandler, DTDHandler, LexicalHandler {        
 	static SAXParserFactory saxFactory;
 	static SAXParser saxParser;
 	
@@ -339,5 +339,5 @@ class XmlFileImpl extends FilesetFileImpl implements XmlFile, EntityResolver, Er
 	public StreamSource asStreamSource() throws FileNotFoundException {
 		return new StreamSource(new FileReader(this));
 	}
-	
+		
 }

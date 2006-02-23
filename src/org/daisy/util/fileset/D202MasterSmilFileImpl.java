@@ -18,6 +18,9 @@ class D202MasterSmilFileImpl extends SmilFileImpl implements D202MasterSmilFile 
 		super(uri);
 	}
 	
+	public String getMimeType() {
+	      return FilesetConstants.MIMETYPE_D202_MASTERSMIL;
+	}
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {        		
 		if(inBody){
 			for (int i = 0; i < attrs.getLength(); i++) {			

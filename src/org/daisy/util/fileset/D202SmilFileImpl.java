@@ -19,4 +19,8 @@ class D202SmilFileImpl extends SmilFileImpl implements D202SmilFile {
 	public D202SmilFileImpl(URI uri, ErrorHandler errh) throws ParserConfigurationException, SAXException, IOException {
 		super(uri, errh);		
 	}
+	
+	public String getMimeType() {
+	      return FilesetConstants.MIMETYPE_D202_SMIL;
+	}
 }

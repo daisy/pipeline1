@@ -13,7 +13,7 @@ import javazoom.jl.decoder.Header;
 /**
  * @author Markus Gylling
  */
-class Mp3FileImpl extends AudioFileImpl implements Mp3File {
+class Mp2FileImpl extends AudioFileImpl implements Mp2File {
 	private FileInputStream fis = null;
 	private Bitstream bts = null;
 	private Header header = null;		
@@ -27,7 +27,7 @@ class Mp3FileImpl extends AudioFileImpl implements Mp3File {
 	private float duration; 
 	
 	
-	Mp3FileImpl(URI uri) throws FileNotFoundException, IOException {
+	Mp2FileImpl(URI uri) throws FileNotFoundException, IOException {
 		super(uri);
 	}    
 		
@@ -95,7 +95,7 @@ class Mp3FileImpl extends AudioFileImpl implements Mp3File {
 	}
 
 	public String getMimeType() {
-		return FilesetConstants.MIMETYPE_AUDIO_MP3;		
+		return FilesetConstants.MIMETYPE_AUDIO_MP2;		
 	}
 
 }

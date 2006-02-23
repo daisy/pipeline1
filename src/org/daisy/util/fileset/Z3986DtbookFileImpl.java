@@ -23,6 +23,11 @@ class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile {
 		super(uri, errh);		
 	}
 	
+	public String getMimeType() {
+      return FilesetConstants.MIMETYPE_DTBOOK_Z2005;
+	}
+
+	
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		//qName = qName.intern();
 		for (int i = 0; i < attrs.getLength(); i++) {
@@ -38,4 +43,5 @@ class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile {
 			}									
 		}//for (int i
 	}//startElement
+
 }

@@ -266,9 +266,9 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		else if (regex.matches(regex.FILE_XHTML,value)) {	
 			if (this.filesetType == FilesetType.DAISY_202) {
 				return new D202TextualContentFileImpl(uri, this);
-			}else{
-				return new Xhtml10FileImpl(uri, this);
 			}
+			return new Xhtml10FileImpl(uri, this);
+			
 		}
 		
 		else if (regex.matches(regex.FILE_NCC,value)) {			
@@ -287,10 +287,18 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 			return new CssFileImpl(uri, this);
 		}
 		
-		else if (regex.matches(regex.FILE_IMAGE,value)){
-			return new ImageFileImpl(uri);
+		else if (regex.matches(regex.FILE_JPG,value)){
+			return new JpgFileImpl(uri);
+		}
+
+		else if (regex.matches(regex.FILE_GIF,value)){
+			return new GifFileImpl(uri);
 		}
 		
+		else if (regex.matches(regex.FILE_PNG,value)){
+			return new PngFileImpl(uri);
+		}
+				
 		else if (regex.matches(regex.FILE_RESOURCE,value)){
 			return new Z3986ResourceFileImpl(uri);
 		}

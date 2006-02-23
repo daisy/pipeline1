@@ -14,11 +14,24 @@ import org.xml.sax.SAXException;
 public interface FilesetFile extends JavaFile, Referable {
 	
 	/**
-	 * a generic command to make the member populate its own properties; at the very least
-	 * URIs (if existing) to uriStrings
-	 * IDs (if existing) to idStrings
+	 * <p>A generic command to make the member populate its own properties; at the very least:</p>
+	 * <ul>
+	 * <li>URIs (if existing) to uriStrings</li>
+	 * <li>IDs (if existing) to idStrings</li>
+	 * </ul>
 	 */
 	
 	public abstract void parse()throws IOException, SAXException, BitstreamException;
+
+	/**
+	 * <p>Returns the mime-type of this filetype.</p>
+	 * <p>Some Mimetypes are IANA classics;
+	 * other are Z3986 defined, others are
+	 * ad-hoc strings.</p>
+	 * <p>All mimetypes returned by this method are retrieved from
+	 * {@link FilesetConstants}.
+	 * @see FilesetConstants
+	 */
+	public abstract String getMimeType();			
 	
 }

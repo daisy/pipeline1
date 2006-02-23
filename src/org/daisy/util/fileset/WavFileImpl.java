@@ -43,6 +43,10 @@ class WavFileImpl extends AudioFileImpl implements WavFile {
 		super(uri);
 	}
 
+	public String getMimeType() {
+		return FilesetConstants.MIMETYPE_AUDIO_PCMWAV;		
+	}
+    
     public void parse() throws FileNotFoundException, IOException, BitstreamException {
         try {
             AudioFileFormat aff = AudioSystem.getAudioFileFormat(this.getAbsoluteFile());

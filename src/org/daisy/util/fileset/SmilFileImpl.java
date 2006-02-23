@@ -28,6 +28,10 @@ public class SmilFileImpl extends XmlFileImpl implements SmilFile {
 		super(uri, errh);		
 	}
 	
+	public String getMimeType() {
+	      return FilesetConstants.MIMETYPE_SMIL;
+	}
+	
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		//sName = sName.intern();
 		for (int i = 0; i < attrs.getLength(); i++) {

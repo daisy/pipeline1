@@ -23,6 +23,10 @@ class Z3986NcxFileImpl extends XmlFileImpl implements Z3986NcxFile {
 		super(uri, errh);
 	}
 	
+	public String getMimeType() {
+	      return FilesetConstants.MIMETYPE_NCX_Z2005;
+	}
+	
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		//qName = qName.intern();
 		for (int i = 0; i < attrs.getLength(); i++) {

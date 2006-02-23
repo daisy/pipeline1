@@ -7,7 +7,7 @@ import java.net.URI;
 /**
  * @author Markus Gylling
  */
-class ImageFileImpl extends FilesetFileImpl implements ImageFile {
+abstract class ImageFileImpl extends FilesetFileImpl implements ImageFile {
 
     ImageFileImpl(URI uri) throws FileNotFoundException, IOException {
         super(uri);

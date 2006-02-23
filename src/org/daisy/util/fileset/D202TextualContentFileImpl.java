@@ -22,4 +22,7 @@ class D202TextualContentFileImpl extends Xhtml10FileImpl implements D202TextualC
         super(uri, errh);  
     }
     
+	public String getMimeType() {
+	      return FilesetConstants.MIMETYPE_D202_CONTENT;
+	}
 }

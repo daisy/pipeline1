@@ -18,6 +18,9 @@ class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile {
 	private String myDcIdentifier = null;
 	private String myDcTitle = null;
 	
+	private boolean hasNccSetInfo = false;
+	private boolean hasRelAttrsInBody = false;
+		
     D202NccFileImpl(URI uri) throws ParserConfigurationException, SAXException, IOException {
         super(uri);          
     }
@@ -25,17 +28,23 @@ class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile {
     D202NccFileImpl(URI uri, ErrorHandler errh) throws ParserConfigurationException, SAXException, IOException {
         super(uri, errh);          
     }
-        
-	public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
-		for (int i = 0; i < attrs.getLength(); i++) {
-//			attrName = attrs.getQName(i).intern();
-//			attrValue = attrs.getValue(i).intern();							
+    
+	public String getMimeType() {
+	      return FilesetConstants.MIMETYPE_D202_NCC;
+	}
+    
+	public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {		
+		for (int i = 0; i < attrs.getLength(); i++) {					
 			attrName = attrs.getQName(i);
 			attrValue = attrs.getValue(i).intern(); //for some reason							
 			if (attrName=="id") {
 				putIdAndQName(attrValue,qName);
 			}else if (regex.matches(regex.XHTML_ATTRS_WITH_URIS,attrName)) {
 				putUriValue(attrValue);
+			}
+			
+			if (this.parsingBody && attrName=="rel") {
+				this.hasRelAttrsInBody = true;
 			}
 			
 			try {
@@ -46,7 +55,12 @@ class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile {
 						myDcIdentifier = attrs.getValue("content");
 					}else if (attrValue=="dc:title") {
 						myDcTitle = attrs.getValue("content");
-					}
+					}else if (attrValue=="ncc:setInfo"||attrValue=="ncc:setinfo") {
+						String setinfovalue = attrs.getValue("content");
+						if (!setinfovalue.equals("1 of 1")){
+							this.hasNccSetInfo = true;
+						}
+					}	
 
 				}	
 			} catch (Exception nfe) {
@@ -61,17 +75,20 @@ class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile {
 		return myStatedDuration;
 	}
 	
-	/**
-	 *returns the value of meta dc:identifier if set, null otherwise
-	 */
 	public String getDcIdentifier() {
 		return myDcIdentifier;
 	}
 	
-	/**
-	 *returns the value of meta dc:title if set, null otherwise
-	 */
 	public String getDcTitle() {
 		return myDcTitle;
 	}
+
+	public boolean hasMultiVolumeIndicators() {
+		if(this.hasRelAttrsInBody && this.hasNccSetInfo) {
+			return true;
+		}
+		return false;
+	}
+
+
 }

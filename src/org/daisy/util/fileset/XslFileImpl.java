@@ -22,5 +22,9 @@ class XslFileImpl extends XmlFileImpl implements XslFile {
 		super(uri, errh);
 	}	
 
+	public String getMimeType() {
+	      return FilesetConstants.MIMETYPE_XSL;
+	}
+	
 	//TODO override XMLFile startelement here and get whatever resources xsl may reference
 }

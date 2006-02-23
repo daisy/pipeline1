@@ -19,5 +19,8 @@ class AnonymousFileImpl extends FilesetFileImpl {
 	}
 
 	public void parse() throws IOException, SAXException, BitstreamException {}
-	
+
+	public String getMimeType() {
+		return "application/x-anonymous";
+	}	
 }

@@ -33,6 +33,9 @@ public class Regex {
 		FILE_WAV = Pattern.compile(".+\\.[Ww][Aa][Vv]$");
 		FILE_DTD = Pattern.compile(".+\\.[Dd][Tt][Dd]$");
 		FILE_XHTML = Pattern.compile(".+\\.[Xx]?[Hh][Tt][Mm][Ll]?$");
+		FILE_JPG = Pattern.compile("(.+\\.[Jj][Pp][Gg]$)|(.+\\.[Jj][Pp][Ee][Gg]$)");
+		FILE_GIF = Pattern.compile(".+\\.[Gg][Ii][Ff]$");
+		FILE_PNG = Pattern.compile(".+\\.[Pp][Nn][Gg]$");
 		FILE_IMAGE = Pattern.compile( "(.+\\.[Jj][Pp][Gg]$)|(.+\\.[Jj][Pp][Ee][Gg]$)|(.+\\.[Pp][Nn][Gg]$)|(.+\\.[Gg][Ii][Ff]$)|(.+\\.[Bb][Mm][Pp]$)");
 		FILE_NCX = Pattern.compile(".+\\.[Nn][Cc][Xx]$");
 		FILE_RESOURCE = Pattern.compile(".+\\.[Rr][Ee][Ss]$");
@@ -67,6 +70,9 @@ public class Regex {
 	public Pattern FILE_WAV;
 	public Pattern FILE_DTD;
 	public Pattern FILE_XHTML;
+	public Pattern FILE_JPG;
+	public Pattern FILE_GIF;
+	public Pattern FILE_PNG;
 	public Pattern FILE_IMAGE;
 	public Pattern FILE_NCX;
 	public Pattern FILE_RESOURCE;

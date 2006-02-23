@@ -94,6 +94,10 @@ class CssFileImpl extends FilesetFileImpl implements DocumentHandler, ErrorHandl
 		}  
 	}
 	
+	public String getMimeType() {
+		return FilesetConstants.MIMETYPE_CSS;		
+	}
+	
 	public void startDocument(InputSource source) throws CSSException {}
 	
 	public void endDocument(InputSource source) throws CSSException {}
@@ -118,8 +122,5 @@ class CssFileImpl extends FilesetFileImpl implements DocumentHandler, ErrorHandl
 	
 	public void startMedia(SACMediaList media) throws CSSException {}
 	
-	public void endMedia(SACMediaList media) throws CSSException {}
-
-
-	
+	public void endMedia(SACMediaList media) throws CSSException {}	
 }

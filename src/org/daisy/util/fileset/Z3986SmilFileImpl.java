@@ -19,4 +19,5 @@ class Z3986SmilFileImpl extends SmilFileImpl implements Z3986SmilFile {
 	public Z3986SmilFileImpl(URI uri, ErrorHandler errh) throws ParserConfigurationException, SAXException, IOException {
 		super(uri, errh);	
 	}
+	
 }

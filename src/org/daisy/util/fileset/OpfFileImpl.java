@@ -35,6 +35,10 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 		super(uri, errh); 
 	}
 	
+	public String getMimeType() {
+		return FilesetConstants.MIMETYPE_OPF;		
+	}
+	
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		//qName = qName.intern();
 		
