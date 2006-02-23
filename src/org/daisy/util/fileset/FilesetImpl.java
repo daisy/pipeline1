@@ -84,12 +84,21 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		  System.setProperty("org.daisy.util.fileset.validating", "true");
 		} 
 		
-		peeker = (Peeker)new PeekerImpl();		
+		peeker = new PeekerImpl();		
 		File f = new File(manifest);
-		
+						
 		if(f.exists() && f.canRead()){
+
+			try {
+				peeker.peek(f.toURI()); 
+			}catch (Exception e) {
+				//it wasnt an xmlfile or something else went wrong
+				peeker.reset(); //this sets all peeker.gets to the empty string, not null.
+			}
+	
+			
 			try{
-				if (regex.matches(regex.FILE_NCC, f.getName())) {
+				if ((regex.matches(regex.FILE_NCC, f.getName()))&&(peeker.getRootElementLocalName().equals("html"))) {
 					//set the fileset type
 					this.filesetType = FilesetType.DAISY_202;
 					//instantiate the appropriate filetype with this as errorhandler					
@@ -104,7 +113,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 					}
 					
 					
-				}else if(regex.matches(regex.FILE_OPF, f.getName())) {
+				}else if((regex.matches(regex.FILE_OPF, f.getName()))&&(peeker.getRootElementLocalName().equals("package"))) {
 					//set the fileset type
 					this.filesetType = FilesetType.Z3986;
 					//instantiate the appropriate filetype with this as errorhandler
@@ -114,7 +123,30 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 					//do some obscure stuff
 					OpfFileImpl opf = (OpfFileImpl)this.manifestMember;
 					opf.buildSpineMap(this);
-					
+
+				}else if((regex.matches(regex.FILE_RESOURCE, f.getName()))&&(peeker.getRootElementLocalName().equals("resources"))) {
+					//set the fileset type
+					this.filesetType = FilesetType.Z3986_RESOURCEFILE;
+					//instantiate the appropriate filetype with this as errorhandler
+					this.manifestMember = new Z3986ResourceFileImpl(f.toURI(),this);					 						
+					//send it to the observer which handles the rest generically
+					this.fileInstantiatedEvent((FilesetFile)this.manifestMember);		
+
+				}else if(peeker.getRootElementLocalName().equals("dtbook")) {
+					//set the fileset type
+					this.filesetType = FilesetType.DTBOOK_DOCUMENT;
+					//instantiate the appropriate filetype with this as errorhandler
+					this.manifestMember = new Z3986DtbookFileImpl(f.toURI(),this);					 						
+					//send it to the observer which handles the rest generically
+					this.fileInstantiatedEvent((FilesetFile)this.manifestMember);		
+
+				}else if(peeker.getRootElementLocalName().equals("html")) {
+					//set the fileset type
+					this.filesetType = FilesetType.XHTML_DOCUMENT;
+					//instantiate the appropriate filetype with this as errorhandler
+					this.manifestMember = new Xhtml10FileImpl(f.toURI(),this);					 						
+					//send it to the observer which handles the rest generically
+					this.fileInstantiatedEvent((FilesetFile)this.manifestMember);												
 				}else{
 					//					other types
 				}

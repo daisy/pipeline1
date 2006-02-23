@@ -13,7 +13,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Markus Gylling
  */
-class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile {
+class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, ManifestFile {
 	
 	Z3986DtbookFileImpl(URI uri) throws FileNotFoundException, ParserConfigurationException, SAXException, IOException {
 		super(uri);		
