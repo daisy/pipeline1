@@ -111,8 +111,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 						D202MasterSmilFile msmil = new D202MasterSmilFileImpl(test.toURI());
 						this.fileInstantiatedEvent((FilesetFile)msmil);
 					}
-					
-					
+										
 				}else if((regex.matches(regex.FILE_OPF, f.getName()))&&(peeker.getRootElementLocalName().equals("package"))) {
 					//set the fileset type
 					this.filesetType = FilesetType.Z3986;
@@ -132,6 +131,14 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 					//send it to the observer which handles the rest generically
 					this.fileInstantiatedEvent((FilesetFile)this.manifestMember);		
 
+				}else if(regex.matches(regex.FILE_CSS, f.getName())) {
+					//set the fileset type
+					this.filesetType = FilesetType.CSS;
+					//instantiate the appropriate filetype with this as errorhandler
+					this.manifestMember = new CssFileImpl(f.toURI(),this);					 						
+					//send it to the observer which handles the rest generically
+					this.fileInstantiatedEvent((FilesetFile)this.manifestMember);		
+
 				}else if(peeker.getRootElementLocalName().equals("dtbook")) {
 					//set the fileset type
 					this.filesetType = FilesetType.DTBOOK_DOCUMENT;
@@ -146,7 +153,8 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 					//instantiate the appropriate filetype with this as errorhandler
 					this.manifestMember = new Xhtml10FileImpl(f.toURI(),this);					 						
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent((FilesetFile)this.manifestMember);												
+					this.fileInstantiatedEvent((FilesetFile)this.manifestMember);	
+					
 				}else{
 					//					other types
 				}

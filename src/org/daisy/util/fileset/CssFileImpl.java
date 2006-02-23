@@ -18,7 +18,7 @@ import org.w3c.css.sac.SelectorList;
  * @author Markus Gylling
  */
 
-class CssFileImpl extends FilesetFileImpl implements DocumentHandler, ErrorHandler, CssFile {
+class CssFileImpl extends FilesetFileImpl implements DocumentHandler, ErrorHandler, CssFile, ManifestFile {
 	private ErrorHandler listeningErrorHandler = null;
 	private Parser parser;
 	

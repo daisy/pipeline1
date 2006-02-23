@@ -11,6 +11,7 @@ public final class FilesetType {
     public static final FilesetType Z3986_RESOURCEFILE = new FilesetType();
     public static final FilesetType XHTML_DOCUMENT = new FilesetType();
     public static final FilesetType DTBOOK_DOCUMENT = new FilesetType();
+    public static final FilesetType CSS = new FilesetType();
     public static final FilesetType OTHER = new FilesetType();
     
     public static FilesetType parse(String type) throws IllegalArgumentException {
@@ -29,10 +30,14 @@ public final class FilesetType {
         if ("DTBOOK_DOCUMENT".equals(type)) {
             return DTBOOK_DOCUMENT;
         }
+        if ("CSS".equals(type)) {
+            return CSS;
+        }
+
         if ("OTHER".equals(type)) {
             return OTHER;
         }
-        throw new IllegalArgumentException("FileSet type must be one of DAISY_202, Z3986, Z3986_RESOURCEFILE, XHTML_DOCUMENT, DTBOOK_DOCUMENT or OTHER");
+        throw new IllegalArgumentException("FileSet type must be one of DAISY_202, Z3986, Z3986_RESOURCEFILE, XHTML_DOCUMENT, DTBOOK_DOCUMENT, CSS or OTHER");
     }
 	
 }
