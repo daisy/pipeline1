@@ -20,4 +20,5 @@ public interface Peeker {
 	public String getRootElementLocalName();
 	public String getRootElementNsUri();
 	public String getRootElementQName();
+	public void reset();
 }

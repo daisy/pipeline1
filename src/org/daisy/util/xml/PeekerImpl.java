@@ -35,17 +35,13 @@ public class PeekerImpl extends DefaultHandler implements ContentHandler, ErrorH
 	static SAXParserFactory factory;
 	static SAXParser parser;
 	
-	private String rootElementNsUri;
-	private String rootElementQName;
-	private String rootElementLocalName;
-	private String firstPublicId;
+	private String rootElementNsUri="";
+	private String rootElementQName="";
+	private String rootElementLocalName="";
+	private String firstPublicId="";
 	
 	public PeekerImpl() {
-		
-//		System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
-//		System.setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
-//		System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration","com.sun.org.apache.xerces.internal.parsers.XML11Configuration");
-		
+				
 		if (factory==null) {
 			factory = SAXParserFactory.newInstance();		
 			factory.setValidating(false);
@@ -54,6 +50,7 @@ public class PeekerImpl extends DefaultHandler implements ContentHandler, ErrorH
 		try {
 			parser = factory.newSAXParser();
 		} catch (ParserConfigurationException e) {
+			
 			System.err.println("ParserConfigurationException in peeker");
 		} catch (SAXException e) {
 			System.err.println("SAXException in peeker");
@@ -63,18 +60,25 @@ public class PeekerImpl extends DefaultHandler implements ContentHandler, ErrorH
 	}
 	
 	public void peek(URI uri) throws SAXException, IOException {
-		rootElementNsUri = null;
-		rootElementQName = null;
-		rootElementLocalName = null;
-		firstPublicId = null;
+		rootElementNsUri = "";
+		rootElementQName = "";
+		rootElementLocalName = "";
+		firstPublicId = "";
 		try{
 			File f = new File(uri);
 			parser.parse(f, this);
-			//parser.getXMLReader().parse(f.getAbsolutePath());	  
 		}catch (SAXStopParsingException sspe) {
 			//parser.reset();	
 		}
 	}
+	
+	public void reset() {
+		rootElementNsUri="";
+		rootElementQName="";
+		rootElementLocalName="";
+		firstPublicId="";		
+	}
+
 	
 	public String getFirstPublicId() {
 		return firstPublicId;
@@ -150,5 +154,6 @@ public class PeekerImpl extends DefaultHandler implements ContentHandler, ErrorH
 		}
 		return CatalogEntityResolver.getInstance().resolveEntity(publicId, systemId);
 	}
+
 	
 }
