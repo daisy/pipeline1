@@ -135,7 +135,7 @@ public class Daisy2022Zed2005 extends Transformer {
 			
 			// check for properties that should make us 
 			// abort before even attempting the transform                  
-			inputContentDoc = this.checkInitialAbortCauses();
+			inputContentDoc = this.checkInputDtbState();
 			
 			// create output directory            
 			outputDir = FileUtils.createDirectory(new File(inparamOutDir)); 
@@ -151,7 +151,7 @@ public class Daisy2022Zed2005 extends Transformer {
 			if(inputNcc.getDcTitle()!=null) nccDcTitle = inputNcc.getDcTitle();	
 			
 			//create zed smil from the 2.02 smil input docs
-			SmilClock dtbTotalTime = this.createZedSmil(nccDcIdentifier, nccDcTitle);
+			SmilClock dtbTotalTime = this.createZedSmil(nccDcIdentifier, nccDcTitle, inputContentDoc);
 			
 			//create ncx from the input ncc
 			this.createZedNcx(inputNcc,nccDcIdentifier);
@@ -183,7 +183,7 @@ public class Daisy2022Zed2005 extends Transformer {
 		
 	}
 	
-	private SmilClock createZedSmil(String uid,String title) throws CatalogExceptionNotRecoverable, XSLTException, FilesetException {
+	private SmilClock createZedSmil(String uid,String title,D202TextualContentFile inputContentDoc) throws CatalogExceptionNotRecoverable, XSLTException, FilesetException {
 		D202SmilFile d202_smil = null;
 		long totalElapsedTime = 0; //in milliseconds
 		
@@ -202,7 +202,13 @@ public class Daisy2022Zed2005 extends Transformer {
 				parameters.put("title", title);
 				parameters.put("totalElapsedTime",new SmilClock(totalElapsedTime).toString(SmilClock.FULL));
 				parameters.put("timeinThisSmil",d202_smil.getCalculatedDuration().toString(SmilClock.FULL));
-				parameters.put("dtbookFileName",this.getAsciiFilename(uid,"xml"));						
+				parameters.put("dtbookFileName",this.getAsciiFilename(uid,"xml"));		
+				if (inputContentDoc == null) {
+					//send this so that XSLT knows that it should drop text elements
+					//the presence of this param means "drop text elems"
+					//the absence of this param means "dont drop text elems"
+					parameters.put("isNcxOnly","true");
+				}						
 				Stylesheet.apply(d202_smil.getFile().getAbsolutePath(), xsltFile.getAbsolutePath(), smilOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());		
 				manifestItems.put(smilOut.getAbsolutePath(), FilesetFileFactory.newZ3986SmilFile(smilOut.toURI()));								
 				totalElapsedTime += d202_smil.getCalculatedDurationMillis();								                	              	
@@ -413,6 +419,7 @@ public class Daisy2022Zed2005 extends Transformer {
 			}else if (fsf instanceof Z3986ResourceFile) {
 				manifestItems.put(out.getAbsolutePath(), FilesetFileFactory.newZ3986ResourceFile(out.toURI())); 
 			}else{
+				System.err.println("unknown filetype encountered in " + this.getClass().getSimpleName() + " .copyFiles");
 				manifestItems.put(out.getAbsolutePath(), out); 
 			}                        
 			this.progress(0.85 + (0.99-0.85)*((double)fileCount/fileNum));
@@ -428,7 +435,7 @@ public class Daisy2022Zed2005 extends Transformer {
 		return "audio,text,image"; //TODO
 	}
 	
-	private D202TextualContentFile checkInitialAbortCauses() throws TransformerRunException {
+	private D202TextualContentFile checkInputDtbState() throws TransformerRunException {
 		D202TextualContentFile xhtFile = null;
 		
 		//abortcause: 2.02 DTB with > 1 content doc                        
@@ -450,7 +457,7 @@ public class Daisy2022Zed2005 extends Transformer {
 			throw new TransformerRunException("input DTB indicates it is multivolume - merge first!");
 		}
 		
-		//abortcause: fileset had errors
+		//messagecause: fileset had errors
 		if(inputFileset.hadErrors()) {
 			//since it was built nonvalidating, this is prolly a serious error (malformedness, files missing)
 			String errors=null;
@@ -458,8 +465,7 @@ public class Daisy2022Zed2005 extends Transformer {
 				Exception e = (Exception )i.next();
 				errors = errors + "\n" +  e.getMessage();            		
 			}
-			//TODO send to a listener instead and try continuing
-			throw new TransformerRunException("input fileset had " 
+			this.sendMessage(Level.WARNING, "input fileset had " 
 					+ inputFileset.getErrors().size() 
 					+ " errors: "
 					+ errors
@@ -493,10 +499,8 @@ public class Daisy2022Zed2005 extends Transformer {
 			addedCssFileset = this.buildFileSet(css.getAbsolutePath());
 		} catch (FilesetException e) {
 			return (CssFile)css;
-		}
-		
-		return (CssFile)addedCssFileset.getManifestMember();
-		
+		}		
+		return (CssFile)addedCssFileset.getManifestMember();		
 	}
 	
 	private void setResourceFile(String inparamResourceFilePath) throws IOException {
@@ -514,7 +518,7 @@ public class Daisy2022Zed2005 extends Transformer {
 				
 			}
 		}
-		//now we know which css to use
+		//now we know which resource file to use
 		try {
 			addedResourceFileFileset = this.buildFileSet(res.getAbsolutePath());
 		} catch (FilesetException e) {
