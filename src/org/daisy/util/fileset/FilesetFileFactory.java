@@ -5,7 +5,7 @@ import java.net.URI;
 /**
  * Use to retrieve single instances 
  * from the FilesetFile hierarchy, ie
- * a FilesetFile descendant without a Fileset owner
+ * a FilesetFile without a Fileset owner
  * @author Markus Gylling
  */
 public final class FilesetFileFactory {
@@ -140,6 +140,18 @@ public final class FilesetFileFactory {
 	public static PngFile newPngFile(URI resource) throws FilesetException {		
 		try {
 			return new PngFileImpl(resource);
+		} catch (Exception e) {
+			throw new FilesetException(e.getMessage(),e);
+		}
+	}
+	
+	/**
+	 * Tries to create and return a Z3986ResourceFile using the input resource. 
+	 * @throws FilesetException 
+	 */
+	public static Z3986ResourceFile newZ3986ResourceFile(URI resource) throws FilesetException {		
+		try {
+			return new Z3986ResourceFileImpl(resource);
 		} catch (Exception e) {
 			throw new FilesetException(e.getMessage(),e);
 		}
