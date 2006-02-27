@@ -12,13 +12,6 @@
 	- navList
 	- xml:lang
 	- smilCustomTest
-
-	Transformer wish list: create separate mp3 for all headings, page numbers
-
-	Questions for TPB:
-	- playOrder determined solely by position among span class="page-*" and headings?
-			full-text: how to determine playOrder for navList elements? 
-	- tell Linus about xsl:output (don't use name attribute), content="" in 06-speechgen.ncx
 -->
 
 <c:config>
