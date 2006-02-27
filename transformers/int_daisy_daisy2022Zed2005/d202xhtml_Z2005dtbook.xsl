@@ -4,7 +4,11 @@
 		xmlns:html="http://www.w3.org/1999/xhtml"
 		exclude-result-prefixes="html">
 
-<xsl:output name="dtbook" doctype-public="-//NISO//DTD resource 2005-1//EN" doctype-system="http://www.daisy.org/z3986/2005/resource-2005-1.dtd" method="xml" encoding="UTF-8" indent="yes" />
+<xsl:output doctype-public="-//NISO//DTD resource 2005-1//EN" 
+	doctype-system="http://www.daisy.org/z3986/2005/resource-2005-1.dtd" 
+	method="xml" 
+	encoding="UTF-8" 
+	indent="yes" />
 
 <xsl:template match="html:html">
 <dtbook>

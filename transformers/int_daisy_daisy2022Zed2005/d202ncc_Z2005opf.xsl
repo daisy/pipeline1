@@ -4,8 +4,11 @@
 	xmlns:html="http://www.w3.org/1999/xhtml"
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
 	xmlns:c="http://daisymfc.sf.net/xslt/config"
-	xmlns="http://openebook.org/dtds/oeb-1.2/oebpkg12.dtd"
-	exclude-result-prefixes="html">
+	xmlns="http://openebook.org/namespaces/oeb-package/1.0/"
+	exclude-result-prefixes="html c">
+
+	<!-- issue: xmlns:dc declaration not appearing in dc-metadata element, but 
+			appears in xml declaration. Does it matter? -->
 
 <c:config>
 	<c:generator>DMFC Daisy 2.02 to z39.86-2005</c:generator>
@@ -16,8 +19,7 @@
 	<c:description>Creates the Z2005 opf file.</c:description>    
 </c:config>
 
-<xsl:output name="opf"
-	doctype-public="+//ISBN 0-9673008-1-9//DTD OEB 1.2 Package//EN" 
+<xsl:output doctype-public="+//ISBN 0-9673008-1-9//DTD OEB 1.2 Package//EN" 
 	doctype-system="http://openebook.org/dtds/oeb-1.2/oebpkg12.dtd" 
 	method="xml" 
 	encoding="UTF-8" 
@@ -27,7 +29,7 @@
 <xsl:param name="dtbMultimediaContent" />
 
 <xsl:template match="/html:html">
-	<package>
+	<package unique-identifier="{html:head/html:meta[@name='dc:identifier']/@content}">
 		<xsl:apply-templates select="html:head" />
 		<xsl:call-template name="manifest" />
 		<xsl:call-template name="spine" />
@@ -42,8 +44,6 @@
 </xsl:template>
 
 <xsl:template name="dc-metadata">
-	<!-- issue: xmlns:dc declaration not appearing in dc-metadata element, but 
-			appears in xml declaration. Does it matter? -->
 	<dc-metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oebpackage="http://openebook.org/namespaces/oeb-package/1.0/">
 		<xsl:namespace name="dc">http://purl.org/dc/elements/1.1/</xsl:namespace>
 		<dc:Title><xsl:value-of select="html:title" /></dc:Title>

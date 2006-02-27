@@ -3,12 +3,22 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:html="http://www.w3.org/1999/xhtml"
 	xmlns:c="http://daisymfc.sf.net/xslt/config"
-	xmlns="http://www.daisy.org/z3986/2005/ncx-2005-1.dtd"
-	exclude-result-prefixes="html">
+	xmlns="http://www.daisy.org/z3986/2005/ncx/"
+	exclude-result-prefixes="html c">
 
-<!-- To do: fill in docTitle <audio> 
-	audio elements (whether or not it's a headings-only file... transformer wish list)
-	
+<!-- 
+	To do: 
+	- fill in audio elements
+	- navList
+	- xml:lang
+	- smilCustomTest
+
+	Transformer wish list: create separate mp3 for all headings, page numbers
+
+	Questions for TPB:
+	- playOrder determined solely by position among span class="page-*" and headings?
+			full-text: how to determine playOrder for navList elements? 
+	- tell Linus about xsl:output (don't use name attribute), content="" in 06-speechgen.ncx
 -->
 
 <c:config>
@@ -20,15 +30,14 @@
 	<c:description>Creates the Z2005 ncx file.</c:description>    
 </c:config>
 
-<xsl:output name="ncx" 
-	doctype-public="-//NISO//DTD ncx 2005-1//EN" 
+<xsl:output doctype-public="-//NISO//DTD ncx 2005-1//EN" 
 	doctype-system="http://www.daisy.org/z3986/2005/ncx-2005-1.dtd" 
 	method="xml" 
 	encoding="UTF-8" 
 	indent="yes" />
 
 <xsl:template match="/html:html">
-	<ncx>
+	<ncx version="2005-1">
 		<xsl:apply-templates select="html:head" />
 		<xsl:apply-templates select="html:body" />
 	</ncx>
@@ -46,17 +55,23 @@
 	<docTitle>
 		<text><xsl:value-of select="html:title" /></text>
 	</docTitle>
-	<xsl:if test="html:meta[@name='dc:creator']">
-		<docAuthor>
-			<text><xsl:value-of select="html:meta[@name='dc:creator']/@content" /></text>
-		</docAuthor>
-	</xsl:if>
+	<xsl:apply-templates select="html:meta[@name='dc:creator']" />
+</xsl:template>
+
+<xsl:template match="html:meta[@name='dc:creator']" >
+<docAuthor>
+	<text><xsl:value-of select="@content" /></text>
+</docAuthor>
 </xsl:template>
 
 <xsl:template match="html:body">
 	<xsl:call-template name="navMap" />
-	<xsl:call-template name="pageList" />
-	<xsl:call-template name="navList" />
+	<xsl:if test="html:span[@class='page-normal' or @class='page-front' or @class='page-special']">
+		<xsl:call-template name="pageList" />
+	</xsl:if>
+	<xsl:if test="0=1">
+		<xsl:call-template name="navList" />
+	</xsl:if>
 </xsl:template>
 
 <xsl:template name="navMap">
@@ -66,7 +81,7 @@
 </xsl:template>
 
 <xsl:template match="html:h1|html:h2|html:h3|html:h4|html:h5|html:h6">
-	<navPoint id="{@id}" playOrder="{count(preceding::*[self::html:h1 or self::html:h2 or self::html:h3 or self::html:h4 or self::html:h5 or self::html:h6])}">
+	<navPoint id="{@id}" class="{local-name()}"><xsl:attribute name="playOrder"><xsl:call-template name="positionInNCC" /></xsl:attribute>
 		<navLabel>
 			<text><xsl:value-of select="." /></text>
 		</navLabel>
@@ -77,8 +92,22 @@
 
 <xsl:template name="pageList">
 <pageList>
-
+	<xsl:apply-templates select="html:span[@class='page-normal' or @class='page-front' or @class='page-special']" />
 </pageList>
+</xsl:template>
+
+<xsl:template match="html:span[@class='page-normal' or @class='page-front' or @class='page-special']">
+	<pageTarget class="pagenum" type="{substring-after(@class, '-')}" value="{.}" id="{@id}">
+		<xsl:attribute name="playOrder"><xsl:call-template name="positionInNCC" /></xsl:attribute>
+		<navLabel>
+			<text><xsl:value-of select="." /></text>
+		</navLabel>
+		<content src="{html:a/@href}" />
+	</pageTarget>
+</xsl:template>
+
+<xsl:template name="positionInNCC">
+	<xsl:value-of select="count(preceding::*[self::html:h1 or self::html:h2 or self::html:h3 or self::html:h4 or self::html:h5 or self::html:h6 or self::html:span[substring-before(@class, '-')='page']]) + 1" />
 </xsl:template>
 
 <xsl:template name="navList">
