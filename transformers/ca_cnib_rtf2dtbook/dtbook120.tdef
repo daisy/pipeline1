@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- dtbook120
+To do: 
+
+head "metadata" is in elements like <title>, etc.
+
+<hx> needs to be mapped to h1, h2, ..., ht
+
+<pagenums> need to get moved before hx
+
+table cell width: colspan, but is in layout measurement... might need to do a highest common factor approximation
+
+put img in imggroup
+
+remove block elements from p (img, ...)
+
+footnotes, pagenums, ...
+
+character styles: does Majix capture only layout aspects?
+
+-->
+
+<!DOCTYPE params [
+    <!ELEMENT params (dtdname, dtdsysid, dtdpubid, tagmap)>
+    <!ATTLIST params majix-version CDATA #REQUIRED>
+    <!ELEMENT dtdname EMPTY>
+    <!ATTLIST dtdname name CDATA #REQUIRED>
+    <!ELEMENT dtdsysid EMPTY>
+    <!ATTLIST dtdsysid name CDATA #REQUIRED>
+    <!ELEMENT dtdpubid EMPTY>
+    <!ATTLIST dtdpubid name CDATA #REQUIRED>
+    <!ELEMENT tagmap (tag+)>
+    <!ELEMENT tag EMPTY>
+    <!ATTLIST tag id CDATA #REQUIRED category CDATA #REQUIRED type CDATA #IMPLIED gi CDATA #IMPLIED tag CDATA #REQUIRED attrs CDATA #IMPLIED special CDATA #IMPLIED attr2 CDATA #IMPLIED attr3 CDATA #IMPLIED>
+    ]>
+<params majix-version="1.0">
+    <dtdname name="dtbook"/>
+    <!--
+    <dtdsysid name="dtbook120.dtd"/>
+    <dtdpubid name="-//NISO//DTD dtbook v1.2.0//EN"/>
+    -->
+    <dtdsysid name="http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd"/>
+    <dtdpubid name="-//NISO//DTD dtbook 2005-1//EN"/>
+    <tagmap>
+        <tag category="section" id="ti" tag="doctitle" attrs=""/>
+        <tag category="section" id="h1" tag="level1" attrs=""/>
+        <tag category="section" id="h2" tag="level2" attrs=""/>
+        <tag category="section" id="h3" tag="level3" attrs=""/>
+        <tag category="section" id="h4" tag="level4" attrs=""/>
+        <tag category="section" id="h5" tag="level5" attrs=""/>
+        <tag category="section" id="h6" tag="level6" attrs=""/>
+        <tag category="section" id="h1t" tag="h1" attrs=""/>
+        <tag category="section" id="h2t" tag="h2" attrs=""/>
+        <tag category="section" id="h3t" tag="h3" attrs=""/>
+        <tag category="section" id="h4t" tag="h4" attrs=""/>
+        <tag category="section" id="h5t" tag="h5" attrs=""/>
+        <tag category="section" id="h6t" tag="h6" attrs=""/>
+		<tag category="section" id="hd" tag="hd" attrs=""/>
+				
+        <tag category="body" id="pa" tag="p" attrs=""/>
+        <tag category="body" id="b1" tag="b1" attrs=""/>
+        <tag category="body" id="b2" tag="b2" attrs=""/>
+        <tag category="body" id="b3" tag="b3" attrs=""/>
+        <tag category="body" id="b4" tag="b4" attrs=""/>
+        <tag category="body" id="b5" tag="b5" attrs=""/>
+        <tag category="body" id="b6" tag="b6" attrs=""/>
+        <tag category="body" id="b7" tag="b7" attrs=""/>
+        <tag category="body" id="b8" tag="b8" attrs=""/>
+        <tag category="body" id="b9" tag="b9" attrs=""/>
+        <tag category="body" id="sl" tag="list" attrs=""/>
+        <tag category="body" id="ol" tag="list" attrs="type=&quot;ol&quot;"/>
+        <tag category="body" id="ul" tag="list" attrs="type=&quot;ul&quot;"/>
+        <tag category="body" id="li" tag="li" attrs=""/>
+        <tag category="body" id="dl" tag="dl" attrs=""/>
+        <tag category="body" id="df" tag="" attrs=""/>
+        <tag category="body" id="dt" tag="dt" attrs=""/>
+        <tag category="body" id="dd" tag="dd" attrs=""/>
+        <tag category="body" id="at" tag="attention" attrs=""/>
+        <tag category="body" id="nt" tag="note" attrs=""/>
+        <tag category="body" id="pb" tag="page" attrs=""/>
+        <tag category="table" id="ta" tag="table" attrs=""/>
+        <tag category="table" id="ro" tag="tr" attrs=""/>
+        <tag category="table" id="ce" tag="td" attrs="" special="true"/>
+        <tag category="table" id="cw" tag="" attrs="colspan"/>
+        <tag category="special" id="gr" tag="img" attrs="" attr2="src"/>
+        <tag category="special" id="gp" tag="g" attrs=""/>
+        <tag category="special" id="gd" tag="images" attrs=""/>
+        <tag category="special" id="pe" tag="wmf" attrs=""/>
+        <tag category="special" id="pnn" tag="wmf" attrs=""/>
+        <tag category="special" id="pni" tag="-/TetraSix/NOTATION Windows Metafile/EN" attrs=""/>
+        <tag category="special" id="hl" tag="link" attrs="" attr2="url" attr3="refid"/>
+        <tag category="special" id="ix" tag="*BOOLEAN*" attrs="true"/>
+        <tag category="special" id="ec" tag="ISO-8859-1" attrs=""/>
+        <tag category="special" id="sa" tag="*BOOLEAN*" attrs="true"/>
+        <tag category="charprop" id="bt" tag="strong" attrs=""/>
+        <tag category="charprop" id="it" tag="em" attrs=""/>
+        <tag category="charprop" id="ut" tag="em" attrs=""/>
+        <tag category="charprop" id="vt" tag="em" attrs=""/>
+        <tag category="info" id="ip" tag="*BOOLEAN*" attrs="true"/>
+        <tag category="info" id="in" tag="head" attrs=""/>
+        <tag category="info" id="iz" tag="title" attrs=""/>
+        <tag category="info" id="is" tag="subject" attrs=""/>
+        <tag category="info" id="ia" tag="author" attrs=""/>
+        <tag category="info" id="io" tag="operator" attrs=""/>
+        <tag category="info" id="im" tag="manager" attrs=""/>
+        <tag category="info" id="ic" tag="company" attrs=""/>
+
+		
+        <tag category="special" id="tc" tag="toc" attrs=""/>
+        <tag category="entities" id="tb" tag="" attrs=""/>
+        <tag category="entities" id="lb" tag="" attrs=""/>
+        <tag category="inlline" id="em" tag="emph" attrs=""/>
+        <tag category="inlline" id="sg" tag="strong" attrs=""/>
+        <tag category="inlline" id="pn" tag="prodname" attrs=""/>
+        <tag category="inlline" id="jg" tag="jargon" attrs=""/>
+        <tag category="inlline" id="tm" tag="trademark" attrs=""/>
+        <tag category="inlline" id="kw" tag="kw" attrs=""/>
+		<tag category="inlline" id="pgnm" tag="pagenum"/>
+        <tag category="inlline" id="ei" tag="exemple" attrs=""/>
+        <tag category="inlline" id="i1" tag="ie1" attrs=""/>
+        <tag category="inlline" id="i2" tag="ie2" attrs=""/>
+        <tag category="inlline" id="i3" tag="ie3" attrs=""/>
+        <tag category="inlline" id="i4" tag="ie4" attrs=""/>
+        <tag category="inlline" id="i5" tag="ie5" attrs=""/>
+        <tag category="inlline" id="i6" tag="ie5" attrs=""/>
+        <tag category="inlline" id="i7" tag="ie5" attrs=""/>
+        <tag category="inlline" id="i8" tag="ie5" attrs=""/>
+        <tag category="inlline" id="i9" tag="ie5" attrs=""/>
+        <tag category="special" id="id" tag="" attrs="id"/>
+        <tag category="misc" id="ie" tag="*BOOLEAN*" attrs="true"/>
+    </tagmap>
+</params>

@@ -7,9 +7,11 @@ lib/jing.jar -text
 lib/jl1.0.jar -text
 lib/jsr173_1.0_api.jar -text
 lib/jsr173_1.0_ri.jar -text
+lib/majix.jar -text
 lib/sac.jar -text
 lib/saxon.jar -text
 lib/saxon8-dom.jar -text
 lib/saxon8.jar -text
 lib/wstx-lgpl-2.0.3.jar -text
+lib/xp.jar -text
 resources/transformer.rng -text svneol=unset#application/octet-stream
