@@ -40,6 +40,8 @@ public class Parameter {
 	private String value = null;
 	private String id = null;
 	private String ref = null;
+    
+    private Map propertiesRef;
 	
 	/**
 	 * Constructor
@@ -48,17 +50,8 @@ public class Parameter {
 	public Parameter(Element element, Map properties) {
 	    name = XPathUtils.valueOf(element, "name");
 	    value = XPathUtils.valueOf(element, "value");
+        propertiesRef = properties;
 		
-		// Expand properties in the value string		
-		Matcher matcher = propertyPattern.matcher(value);
-		StringBuffer sb = new StringBuffer();
-		while (matcher.find()) {
-		    String propName = matcher.group(1);
-		    String prop = (String)properties.get(propName);
-		    matcher.appendReplacement(sb, prop.replaceAll("\\\\", "\\\\\\\\"));
-		}
-		matcher.appendTail(sb);
-		value = sb.toString();
 				
 		id = XPathUtils.valueOf(element, "@id");
 		if (XPathUtils.selectSingleNode(element, "@ref") != null) {
@@ -96,7 +89,19 @@ public class Parameter {
 	 * @return Returns the value.
 	 */
 	public String getValue() {
-		return value;
+        if (value == null) {
+            return null;
+        }
+	    // Expand properties in the value string     
+        Matcher matcher = propertyPattern.matcher(value);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            String propName = matcher.group(1);
+            String prop = (String)propertiesRef.get(propName);
+            matcher.appendReplacement(sb, prop.replaceAll("\\\\", "\\\\\\\\"));
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
 	}
 
 }
