@@ -4,6 +4,7 @@
 package org.daisy.util.fileset;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -20,6 +21,9 @@ public abstract interface JavaFile {
 	String getParent();
 	File getParentFile();
 	File getFile();
+	String getAbsolutePath() throws IOException;
+	String getCanonicalPath() throws IOException;
 	URI toURI();
 	URL toURL() throws MalformedURLException;
+	boolean exists();
 }
