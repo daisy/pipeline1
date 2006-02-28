@@ -310,7 +310,7 @@ public class Daisy2022Zed2005 extends Transformer {
 					
 					Element item = opfDom.createElement("item");
 					//set the mime
-					item.setAttribute("mime-type", mime);
+					item.setAttribute("media-type", mime);
 					//set the href
 					URI itemURI = new File(fsf.getFile().getAbsolutePath()).toURI();		    
 					URI relative = opfURI.relativize(itemURI);
