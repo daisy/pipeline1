@@ -20,6 +20,8 @@ package org.daisy.dmfc.core;
 
 import java.util.logging.Level;
 
+import org.daisy.util.fileset.SmilClock;
+
 /**
  * @author Linus Ericson
  */
@@ -34,6 +36,8 @@ public class Prompt {
     private double progress = 0;
     private String messageOriginator = "";
     private int type = Prompt.MESSAGE;
+    private SmilClock totalTime = null;
+    private SmilClock timeLeft = null;
     
     /**
      * Creates a simple text message.
@@ -53,9 +57,14 @@ public class Prompt {
      * @param prgrs 
      * @param originator the originator of the message
      */
-    public Prompt(double prgrs, String originator) {
-        if (prgrs < 0 || prgrs > 100) {
-            throw new IllegalArgumentException("Progress must be in the interval [0,100]. Was " + prgrs);
+    public Prompt(double prgrs, long startTime, String originator) {
+        if (prgrs < 0 || prgrs > 1) {
+            throw new IllegalArgumentException("Progress must be in the interval [0,1]. Was " + prgrs);
+        }
+        long now = System.currentTimeMillis();
+        if (prgrs > 0) {
+            totalTime = new SmilClock((long)((double)(now - startTime) / prgrs));
+            timeLeft = new SmilClock((long)(totalTime.millisecondsValue() - (now - startTime)));
         }
         progress = prgrs;
         messageOriginator = originator;
@@ -109,5 +118,12 @@ public class Prompt {
      */
     public String getMessageOriginator() {
         return messageOriginator;
+    }
+    
+    public SmilClock getTotalTime() {
+        return totalTime;
+    }
+    public SmilClock getTimeLeft() {
+        return timeLeft;
     }
 }

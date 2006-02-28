@@ -29,6 +29,8 @@ public abstract class Transformer extends EventSender {
 	
 	private boolean interactive;	
 	private InputListener inputListener;
+    
+    private long startTime = 0;
 	
 	private File transformerDirectory = null;
 	
@@ -65,11 +67,22 @@ public abstract class Transformer extends EventSender {
 	    boolean ret;
 	    transformerDirectory = dir;
 	    status(true);
+        startTime = System.currentTimeMillis();
 	    ret = execute(parameters);
 	    status(false);
 	    return ret;
 	}
 	
+    /**
+     * Sends a progress report to all listeners.
+     * @param progress the progress
+     */
+    protected void progress(double progress) {
+        Prompt prompt = new Prompt(progress, startTime, messageOriginator);
+        send(prompt);
+    }
+    
+    
 	/**
 	 * Performs any Transformer specific checks. In the default implementation,
 	 * this function always returns <code>true</code>.
@@ -81,7 +94,8 @@ public abstract class Transformer extends EventSender {
 	
 	/**
 	 * Final function for reading user input. This method cannot be overridden.
-	 * @param a_prompt
+	 * @param level the level of the message
+     * @param the message itself
 	 * @param defaultValue a default value
 	 * @return the input from the user if the Transformer was run in interactive mode, the default value otherwise.
 	 */

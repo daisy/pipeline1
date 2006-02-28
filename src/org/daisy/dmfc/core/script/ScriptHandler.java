@@ -20,6 +20,7 @@ package org.daisy.dmfc.core.script;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,6 +61,7 @@ public class ScriptHandler extends EventSender {
 	private Map properties = new HashMap();
 	private String version;
 	private List tasks = new LinkedList();
+    private int currentTaskIndex = -1;
 	
 	private Map transformerHandlers;
 	
@@ -90,9 +92,6 @@ public class ScriptHandler extends EventSender {
 						
 			// Get properties from script file
 			readProperties(doc.getDocumentElement());
-			
-			// Add useful default properties
-			properties.put("dollar", "\\$");
 				
 			/*
 			 * More script validation 
@@ -198,11 +197,14 @@ public class ScriptHandler extends EventSender {
 	public void execute() throws ScriptException {
 	    sendMessage(Level.CONFIG, i18n("RUNNING_SCRIPT", name));
 		
+        currentTaskIndex = -1;
+        
 		try {
 			for (Iterator it = tasks.iterator(); it.hasNext(); ) {
 				Task task = (Task)it.next();
 				TransformerHandler th = (TransformerHandler)transformerHandlers.get(task.getName());
 				sendMessage(Level.CONFIG, i18n("RUNNING_TASK", th.getName()));
+                currentTaskIndex++;
 				if (!th.run(task.getParameters(), task.isInteractive())) {
 				    throw new ScriptException(i18n("TASK_FAILED", th.getName()));
 				}
@@ -213,5 +215,58 @@ public class ScriptHandler extends EventSender {
 		
 		sendMessage(Level.CONFIG, i18n("END_OF_SCRIPT"));
 	}
+    
+    public boolean setProperty(String name, String value) {
+        boolean ret = properties.containsKey(name);
+        properties.put(name, value);
+        return ret;
+    }
+
+    /**
+     * Get the description of a script
+     * @return a description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Get the name of a script
+     * @return the name of the script
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Get all properties of a script
+     * @return a Map of properties
+     */
+    public Map getProperties() {
+        return properties;
+    }
+
+    public List getTasks() {
+        return tasks;
+    }
+    
+    public int getTaskCount() {
+        return tasks.size();
+    }
+    
+    public List getTransformerInfoList() {
+        List transformerInfoList = new ArrayList(this.getTaskCount());
+        for (Iterator it = tasks.iterator(); it.hasNext(); ) {
+            Task task = (Task)it.next();
+            String name = task.getName();
+            TransformerHandler th = (TransformerHandler)transformerHandlers.get(name);
+            transformerInfoList.add(th);
+        }
+        return transformerInfoList;
+    }
+    
+    public int getCurrentTaskIndex() {
+        return currentTaskIndex;
+    }
 	
 }

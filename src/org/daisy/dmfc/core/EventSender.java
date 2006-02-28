@@ -63,21 +63,12 @@ public abstract class EventSender {
 		send(prompt);
 	}
 	
-	/**
-	 * Sends a progress report to all listeners.
-	 * @param progress the progress
-	 */
-	protected void progress(double progress) {
-	    Prompt prompt = new Prompt(progress, messageOriginator);
-	    send(prompt);
-	}
-	
 	protected void status(boolean started) {
 	    Prompt prompt = new Prompt(started, messageOriginator);
 	    send(prompt);
 	}
 	
-	private void send(Prompt prompt) {
+	protected void send(Prompt prompt) {
 	    Iterator it = eventListeners.iterator();		
 		while (it.hasNext()) {
 			EventListener eventListener = (EventListener)it.next();			

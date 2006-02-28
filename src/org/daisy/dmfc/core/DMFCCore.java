@@ -312,4 +312,15 @@ public class DMFCCore extends EventSender {
 		Validator validator = new RelaxngSchematronValidator(new File(getHomeDirectory().getPath() + File.separator + "resources", "script.rng"), null,true,false);
 		new ScriptHandler(script, transformerHandlers, getEventListeners(), validator);
 	}
+    
+    public ScriptHandler createScript(File templateScript) throws ValidationException, ScriptException, MIMEException {
+        Validator validator = new RelaxngSchematronValidator(new File(getHomeDirectory().getPath() + File.separator + "resources", "script.rng"), null,true,false);
+        ScriptHandler handler = new ScriptHandler(templateScript, transformerHandlers, getEventListeners(), validator);
+        return handler;
+    }
+    
+    public void executeScript(ScriptHandler handler) throws ScriptException {
+        handler.execute();
+    }
+    
 }
