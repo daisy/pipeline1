@@ -32,6 +32,8 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
@@ -52,6 +54,7 @@ import org.daisy.util.fileset.Z3986SmilFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
+import org.daisy.util.xml.xslt.TransformerCache;
 import org.daisy.util.xml.xslt.XSLTException;
 
 /**
@@ -227,6 +230,8 @@ public class Zed2Daisy202 extends Transformer {
         parameters.put("ncx_document", ncx.toURI());
         parameters.put("add_title", "true");
         
+        TransformerCache cache = new TransformerCache();
+        
         // For each SMIL file
         Collection spineItems = opf.getSpineItems();      
         int smilNum = spineItems.size();
@@ -238,19 +243,19 @@ public class Zed2Daisy202 extends Transformer {
             Object[] params = {new Integer(smilNum), new Integer(smilCount), smil202.getName()};
             this.sendMessage(Level.INFO, i18n("SMIL", params));            
             
-            File temp1 = TempFile.create();
             File temp2 = TempFile.create();
             
+            DOMResult dom = new DOMResult();
+                        
             // Step 1: Flatten the Z3986 smil to a Daisy 2.02 compatible one 
-            Stylesheet.apply(smilZed.getFile().getAbsolutePath(), smil2smil.getAbsolutePath(), temp1.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
-            
+            Stylesheet.apply(smilZed.getFile().getAbsolutePath(), cache.get(smil2smil.getAbsolutePath(), XSLT_FACTORY), dom, parameters, CatalogEntityResolver.getInstance());
+                        
             // Step 2: Add the smil clip that reads the <h1 class="title"> to the first smil
-            Stylesheet.apply(temp1.getAbsolutePath(), smilAddTitle.getAbsolutePath(), temp2.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
-            
+            Stylesheet.apply(new DOMSource(dom.getNode()), cache.get(smilAddTitle.getAbsolutePath(), XSLT_FACTORY), temp2.getAbsolutePath(), parameters, CatalogEntityResolver.getInstance());
+                        
             // Step 3: Update the ncc:timeInThisSmil, ncc:totalElapsedTime and the dur attribute of the main seq
             totalElapsedTime += smilClockFixer.fix(temp2, smil202, totalElapsedTime, null);
             
-            temp1.delete();
             temp2.delete();
             parameters.put("add_title", "false");
             this.progress(FILESET_DONE + (SMIL_DONE-FILESET_DONE)*((double)smilCount/smilNum));
