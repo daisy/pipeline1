@@ -76,21 +76,19 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
  * Creates a Z3986-2005 DTB fileset from a Daisy 2.02 DTB fileset.
- * 
- * Current known assumptions and limitations:
+ * <p>Current known prerequisites:</p>
  * <ul>
- *  <li></li>
- *  <li></li>
- *  <li></li>
- *  <li></li>
- *  <li></li>
- * </ul>
+ *  <li>Input DTB must be single volume (merge first!)</li>
+ *  <li>Input DTB must contain zero or one content documents (merge first!)</li>
+ * </ul> 
  * @author Brandon Nelson
  * @author Markus Gylling
  */
+
 public class Daisy2022Zed2005 extends Transformer {
 	
 	//TODO add support for uid as inparam, overriding ncc:dc:identifier
+	//TODO: XSLT does not adress repointing SMIL text frag destinations to their timecontainer parent
 	
 	private static final String XSLT_FACTORY = "net.sf.saxon.TransformerFactoryImpl";
 	
@@ -177,7 +175,8 @@ public class Daisy2022Zed2005 extends Transformer {
 		} catch (ParserConfigurationException e) {
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (SAXException e) {
-			throw new TransformerRunException(e.getMessage(), e);		}
+			throw new TransformerRunException(e.getMessage(), e);		
+		}
 		System.err.println("----------> zedification done.");
 		return true;
 		
@@ -211,7 +210,7 @@ public class Daisy2022Zed2005 extends Transformer {
 				}						
 				Stylesheet.apply(d202_smil.getFile().getAbsolutePath(), xsltFile.getAbsolutePath(), smilOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());		
 				manifestItems.put(smilOut.getAbsolutePath(), FilesetFileFactory.newZ3986SmilFile(smilOut.toURI()));								
-				totalElapsedTime += d202_smil.getCalculatedDurationMillis();								                	              	
+				totalElapsedTime += d202_smil.getCalculatedDurationMillis();						                	              	
 			} 
 		}
 		
@@ -250,9 +249,8 @@ public class Daisy2022Zed2005 extends Transformer {
 		parameters.put("uid", uid);
 		parameters.put("title", title);
 		parameters.put("cssUri", cssUri);
-		
-		File inFile = (File)xhtml;            
-		Stylesheet.apply(inFile.getAbsolutePath(), xsltFile.getAbsolutePath(), dtbookOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
+				           
+		Stylesheet.apply(xhtml.getFile().getAbsolutePath(), xsltFile.getAbsolutePath(), dtbookOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
 		
 		manifestItems.put(dtbookOut.getAbsolutePath(), FilesetFileFactory.newZ3986DtbookFile(dtbookOut.toURI()));
 		
@@ -312,7 +310,7 @@ public class Daisy2022Zed2005 extends Transformer {
 					
 					Element item = opfDom.createElement("item");
 					//set the mime
-					item.setAttribute("media-type", mime);
+					item.setAttribute("mime-type", mime);
 					//set the href
 					URI itemURI = new File(fsf.getFile().getAbsolutePath()).toURI();		    
 					URI relative = opfURI.relativize(itemURI);
@@ -483,21 +481,30 @@ public class Daisy2022Zed2005 extends Transformer {
 		//first take the one provided in the dmfc install
 		File css = new File(this.getTransformerDirectory().getCanonicalPath()+"/resources/dtbook-dmfc-default.css");         	
 		
-		//try to get user inparam css, fall back to install provided if fail            
+		//try to get user inparam css, fall back to install provided if fail 
+		boolean fail = false;
 		if(inparamCssPath!=null) {
 			try{
 				File temp = new File(inparamCssPath);
 				if (temp.exists() && temp.canRead()) {
 					css = temp;		   
+				}else{
+					fail = true;
 				}
 			}catch (Exception e) {
-				
+				fail = true;
 			}
+		}
+		
+		if(fail) {
+			this.sendMessage(Level.WARNING,"failed to access user specified css file: " 
+					+ inparamCssPath );
 		}
 		//now we know which css to use
 		try {
 			addedCssFileset = this.buildFileSet(css.getAbsolutePath());
 		} catch (FilesetException e) {
+			this.sendMessage(Level.WARNING,"error when accessing css");
 			return (CssFile)css;
 		}		
 		return (CssFile)addedCssFileset.getManifestMember();		
@@ -507,22 +514,31 @@ public class Daisy2022Zed2005 extends Transformer {
 		//first take the one provided in the dmfc install
 		File res = new File(this.getTransformerDirectory().getCanonicalPath()+"/resources/dmfc.res");         	
 		
-		//try to get user inparam css, fall back to install provided if fail            
+		//try to get user inparam resourcefile, fall back to install provided if fail   
+		boolean fail = false;
 		if(inparamResourceFilePath!=null) {
 			try{
 				File temp = new File(inparamResourceFilePath);
 				if (temp.exists() && temp.canRead()) {
 					res = temp;		   
+				} else {
+					fail = true;	
 				}
 			}catch (Exception e) {
-				
+				fail = true;
 			}
 		}
+		
+		if(fail) {
+			this.sendMessage(Level.WARNING,"failed to access user specified resource file: " 
+					+ inparamResourceFilePath );
+		}
+		
 		//now we know which resource file to use
 		try {
 			addedResourceFileFileset = this.buildFileSet(res.getAbsolutePath());
 		} catch (FilesetException e) {
-			
+			this.sendMessage(Level.WARNING,"error when accessing resource file.");
 		}						
 	}
 	
