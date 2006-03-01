@@ -1,6 +1,7 @@
 package org.daisy.dmfc.qmanager;
 
 import java.io.File;
+import java.util.List;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
 
@@ -30,8 +31,14 @@ public class SingleJobFactory implements IJobFactory {
 		this.input=_input;
 	}
 	
+	/**
+	 * * The output directory is constructed as follows:
+	 * <em>inputfilepath/name of input file/all files created</em>
+	 * where the name of the input file becomes the name of a directory
+	 * @param _output File (Directory)
+	 */
 	public void setOutputDocument(File _output){
-		this.output=_output;
+		this.output= new File(_output.getName() + File.pathSeparatorChar + input.getName()  + File.pathSeparatorChar);
 	}
 	
 	public void setScriptHandler(ScriptHandler _script){
@@ -42,5 +49,6 @@ public class SingleJobFactory implements IJobFactory {
 		job=new Job(input, output, script);
 		queue.addJobToQueue(job);
 	}
+	
 	
 }
