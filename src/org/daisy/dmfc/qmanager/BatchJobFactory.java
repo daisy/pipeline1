@@ -18,7 +18,7 @@ import java.util.List;
  */
 
 public class BatchJobFactory extends SingleJobFactory{
-
+	
 	private List selectedFiles;
 	
 	public BatchJobFactory(){
@@ -37,12 +37,11 @@ public class BatchJobFactory extends SingleJobFactory{
 	 * The output directory is constructed as follows:
 	 * <em>inputfilepath/name of input file/all files created</em>
 	 * where the name of the input file becomes the name of a directory
-	 * 
-	 * Overrides setOutputDocument of SingleJobFactory
-	 * 
+	 *
 	 * @param _output File, directory for the output
 	 */
 	public void setOutputDocument(File _output){
+		
 		this.output= new File(_output.getName() + File.pathSeparatorChar + input.getName()  + File.pathSeparatorChar);
 	}
 	
