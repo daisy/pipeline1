@@ -31,7 +31,7 @@
 		<element name="em"/>
 		<element name="img"/>
 		<element name="kbd"/>
-		<element name="linenum"/>
+		<!--<element name="linenum"/>-->
 		<element name="noteref"/>
 		<element name="pagenum"/>
 		<!--<element name="prodnote"/>-->
@@ -48,6 +48,8 @@
 		<element name="code"/>
 		<element name="head"/>
 		<element name="sent"/>
+		
+		<element name="linenum"/>
 	</sentenceSkip>
 	
 	<wordSkip>
@@ -55,6 +57,7 @@
 		<element name="acronym"/>
 		<element name="pagenum"/>
 		<element name="noteref"/>
+		<element name="linenum"/>
 		<element name="w"/>
 	</wordSkip>
 	
