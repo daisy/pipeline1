@@ -1,8 +1,13 @@
 package org.daisy.dmfc.qmanager;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.dmfc.core.script.Task;
+import org.daisy.dmfc.exception.ScriptException;
 
 
 /**
@@ -30,7 +35,7 @@ public class Job {
 	 * A job refers to the script to be run and identifies the input and output files or
 	 * directories.
 	 * This business object has no functionality.
-	 * Information on the transformer in a script is accessed through the ScriptHandler 
+	 * Information on the transformers in a script is accessed through the ScriptHandler 
 	 * object.
 	 * 
 	 * @param _inputFile File
@@ -79,5 +84,30 @@ public class Job {
 		this.status=_status;
 	}
 	
+	//Other information about the script /job
+	public List getAllTasksInScript(){
+		return this.script.getTasks();
+	}
 	
+	public List getTransformerInfo(){
+		return this.script.getTransformerInfoList();
+	}
+	
+	public List getTransformersInScript() throws ScriptException{
+		List tasks = getAllTasksInScript();
+		List transformerNames = new ArrayList();
+	
+		for (Iterator it = tasks.iterator(); it.hasNext(); ) {
+			Task task = (Task)it.next();
+			String name = task.getName();				
+			if (name == null) {
+			    throw new ScriptException("TRANSFORMER_NOT_KNOWN" + task.getName());
+			}
+			else{
+				tasks.add(name);
+			}
+			name = null;
+		}
+		return transformerNames;
+	}
 }
