@@ -168,10 +168,10 @@
 		<span class="pagenum">
 			<xsl:copy-of select="&cncatts;"/>
 			<xsl:choose>
-				<xsl:when test="@class='front'">
+				<xsl:when test="@page='front'">
 					<xsl:attribute name="class">page-front</xsl:attribute>
 				</xsl:when>
-				<xsl:when test="@class='special'">
+				<xsl:when test="@page='special'">
 					<xsl:attribute name="class">page-special</xsl:attribute>
 				</xsl:when>
 				<xsl:otherwise>
