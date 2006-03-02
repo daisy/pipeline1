@@ -7,7 +7,7 @@
 >
   <a:documentation>
     d202ncc.rng
-    Last edit by: mgylling 2005-06-09
+    Last edit by: linuse 2006-03-01
     catalog-mapped by the PID '-//DAISY//RNG ncc v2.02//EN'
   </a:documentation>
   
@@ -397,13 +397,13 @@
           <sch:pattern name="nccSidebars" id="nccSidebars">                      
             <sch:rule context="xht:body/xht:span[@class='sidebar']">
               <!-- if there are sidebars there should be one meta element -->
-              <sch:assert test="count(xht:head//xht:meta[@name='ncc:sidebars'])=1">
+              <sch:assert test="count(//xht:head/xht:meta[@name='ncc:sidebars'])=1">
                 [sch]meta ncc:sidebars seems not to be in ncc
               </sch:assert>
             </sch:rule>            
             <sch:rule context="xht:head/xht:meta[@name='ncc:sidebars']">
               <!-- meta value should correspond to number of sidebars in body -->
-              <sch:assert test="number(@content) = count(xht:body/xht:span[@class='sidebar'])">
+              <sch:assert test="number(@content) = count(//xht:body/xht:span[@class='sidebar'])">
                 [sch]meta ncc:sidebars seems to have incorrect value
               </sch:assert>
             </sch:rule>
@@ -414,13 +414,13 @@
           <sch:pattern name="nccFootnotes" id="nccFootnotes">                      
             <sch:rule context="xht:body/xht:span[@class='noteref']">
               <!-- if there are footnotes there should be one meta element -->
-              <sch:assert test="count(xht:head//xht:meta[@name='ncc:footnotes'])=1">
+              <sch:assert test="count(//xht:head/xht:meta[@name='ncc:footnotes'])=1">
                 [sch]meta ncc:footnotes seems not to be in ncc
               </sch:assert>
             </sch:rule>            
             <sch:rule context="xht:head/xht:meta[@name='ncc:footnotes']">
               <!-- meta value should correspond to number of footnotes in body -->
-              <sch:assert test="number(@content) = count(xht:body/xht:span[@class='noteref'])">
+              <sch:assert test="number(@content) = count(//xht:body/xht:span[@class='noteref'])">
                 [sch]meta ncc:footnotes seems to have incorrect value
               </sch:assert>
             </sch:rule>
@@ -431,14 +431,14 @@
           <sch:pattern name="nccProdNotes" id="nccProdNotes">                      
             <sch:rule context="xht:body/xht:span[@class='optional-prodnote']">
               <!-- if there are prodnotes there should be one meta element -->
-              <sch:assert test="count(xht:head//xht:meta[@name='ncc:prodnotes'])=1">
-                [sch]meta ncc:prodnotes seems not to be in ncc
+              <sch:assert test="count(//xht:head/xht:meta[@name='ncc:prodNotes'])=1">
+                [sch]meta ncc:prodNotes seems not to be in ncc
               </sch:assert>
             </sch:rule>            
-            <sch:rule context="xht:head/xht:meta[@name='ncc:prodnotes']">
+            <sch:rule context="xht:head/xht:meta[@name='ncc:prodNotes']">
               <!-- meta value should correspond to number of prodnotes in body -->
-              <sch:assert test="number(@content) = count(xht:body/xht:span[@class='optional-prodnote'])">
-                [sch]meta ncc:prodnotes seems to have incorrect value
+              <sch:assert test="number(@content) = count(//xht:body/xht:span[@class='optional-prodnote'])">
+                [sch]meta ncc:prodNotes seems to have incorrect value
               </sch:assert>
             </sch:rule>
           </sch:pattern>
