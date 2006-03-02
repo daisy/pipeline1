@@ -127,7 +127,13 @@ class SmilFileClockFixer {
             if ("meta".equals(se.getName().getLocalPart())) {
                 Attribute name = se.getAttributeByName(new QName("name"));
                 if (name!=null && "ncc:timeInThisSmil".equals(name.getValue())) {
-                    SmilClock sc = new SmilClock(timeInThisSmil);
+                    long diff = timeInThisSmil % 1000;
+                    if (diff >= 500) {
+                        timeInThisSmil += (1000-diff);
+                    } else {
+                        timeInThisSmil -= diff;
+                    }
+                    SmilClock sc = new SmilClock(timeInThisSmil);                    
                     Attribute content = this.getEventFactory().createAttribute("content", sc.toString());
                     Collection coll = new ArrayList();
                     coll.add(name);
@@ -135,6 +141,12 @@ class SmilFileClockFixer {
                     StartElement result = this.getEventFactory().createStartElement(se.getName(), coll.iterator(), se.getNamespaces());
                     return result;
                 } else if (name!=null && "ncc:totalElapsedTime".equals(name.getValue())) {
+                    long diff = totalElapsedTime % 1000;
+                    if (diff >= 500) {
+                        totalElapsedTime += (1000-diff);
+                    } else {
+                        totalElapsedTime -= diff;
+                    }
                     SmilClock sc = new SmilClock(totalElapsedTime);
                     Attribute content = this.getEventFactory().createAttribute("content", sc.toString());
                     Collection coll = new ArrayList();
