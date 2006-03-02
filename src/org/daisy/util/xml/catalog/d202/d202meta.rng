@@ -7,7 +7,7 @@
 >
   <a:documentation>
     d202meta.rng
-    Last edit by: mgylling 2005-06-09
+    Last edit by: linuse 2006-03-02
   </a:documentation>
     
   
@@ -158,7 +158,7 @@
       
       <define name="nccProdNotes"> <!-- mandatory if producers notes are used --> 
         <attribute name="name">
-          <value type="string">ncc:prodnotes</value>
+          <value type="string">ncc:prodNotes</value>
         </attribute>          
         <attribute name="content">
           <ref name="datatype.integer"/>
