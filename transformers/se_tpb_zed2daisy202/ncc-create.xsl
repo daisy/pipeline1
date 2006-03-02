@@ -217,7 +217,7 @@
        Meatadata elements 
        **************************************************************** -->
   <xsl:template name="metadata">
-    <ncc:meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+    <ncc:meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8"/>
     <ncc:title><xsl:value-of select="//dc:Title"/></ncc:title>
     <xsl:call-template name="opf_dc_metadata">
     	<xsl:with-param name="name" select="'dc:Creator'"/>
