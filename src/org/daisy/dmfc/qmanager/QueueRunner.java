@@ -26,9 +26,19 @@ import org.daisy.dmfc.exception.ScriptException;
 public class QueueRunner  {
 	
 	private Queue queue;
+	private DMFCCore dmfc;
+	private EventListener ev;
+	private InputListener il;
 	
-	public QueueRunner(){
+	public QueueRunner(EventListener ev, InputListener il){
 		this.queue=Queue.getInstance();
+		try{
+			this.dmfc=new DMFCCore(il, ev);
+		}
+		catch (DMFCConfigurationException e) {  
+			//add error messages to be thrown to GUI
+               e.printStackTrace();
+		}
 	}
 	
 	
@@ -60,19 +70,17 @@ public class QueueRunner  {
 			//get the task script
 			ScriptHandler script = job.getScript();
 			
-			try{
-				DMFCCore dmfc = new DMFCCore(il, el);
 				script.setProperty("input", job.getInputFile().getName());
 				script.setProperty("outputDir", job.getOutputFile().getName());
-				dmfc.executeScript(script);
-			}
-			catch(ScriptException se){
-				//add error messages to be thrown to GUI
-			}
-			catch (DMFCConfigurationException e) {  
-				//add error messages to be thrown to GUI
-	               e.printStackTrace();
-			}
+				
+				try{
+					dmfc.executeScript(script);
+				}
+				catch(ScriptException se){
+					//add error messages to be thrown to GUI
+					se.printStackTrace();
+				}
+			
 			
 		}
 	}
