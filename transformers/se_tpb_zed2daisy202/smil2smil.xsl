@@ -18,16 +18,12 @@
   </c:config>
 
   <!--
-   TODO: 
-    - title, dc:title, ncc:totalElapsedTime och ncc:timeInThisSmil är optional. Skrota dessa?
-    - testa nästlade seq:ar och par:s
-    - dur-attribut på bas-seq
-    
-   FIXED:
-    - note och noteref
-    
    ASSUMED:
     - noteref in smil must be immediately followed by note
+    
+   NOTES:
+    - dur attribute on base seq is fixed later
+    - ncc:totalElapsedTime and ncc:timeInThisSmil are fixed later
    -->
 
   <xsl:param name="xhtml_document">content.html</xsl:param>
