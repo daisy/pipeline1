@@ -172,43 +172,20 @@
   <!-- ****************************************************************
        Par element
        **************************************************************** -->
-  <!--
   <xsl:template match="s:par[s:text|s:audio]">
-    <par endsync="last">
-      <xsl:copy-of select="@id"/>      
-      <xsl:choose>
-	      <xsl:when test="@customTest">
-	      	<xsl:variable name="systemRequired">
-	      		<xsl:call-template name="get_system_required">
-	      			<xsl:with-param name="customTest" select="@customTest"/>
-	      		</xsl:call-template>
-	      	</xsl:variable>
-	        <xsl:if test="$systemRequired!=''">
-	        	<xsl:attribute name="system-required">
-	        		<xsl:value-of select="$systemRequired"/>
-	        	</xsl:attribute>
-	        </xsl:if>
-	      </xsl:when>	      
-	      <xsl:when test="ancestor-or-self::s:seq/@customTest">
-	        <xsl:variable name="systemRequired">
-	      		<xsl:call-template name="get_system_required">
-	      			<xsl:with-param name="customTest" select="(ancestor-or-self::s:seq/@customTest)[1]"/>
-	      		</xsl:call-template>
-	      	</xsl:variable>
-	        <xsl:if test="$systemRequired!=''">
-	        	<xsl:attribute name="system-required">
-	        		<xsl:value-of select="$systemRequired"/>
-	        	</xsl:attribute>
-	        </xsl:if>
-	      </xsl:when>
-      </xsl:choose>          
-      <xsl:apply-templates mode="inPar"/>
-    </par>
-  </xsl:template>
-  -->
-  
-  <xsl:template match="s:par[s:text|s:audio]">
+  	<xsl:variable name="isPagenum">
+  		<xsl:call-template name="get_system_required">
+  			<xsl:with-param name="customTest" select="@customTest"/>
+  		</xsl:call-template>
+  	</xsl:variable>
   	<xsl:choose>
+  		<!-- is this a pagenum? In that case we set the system-required=pagenumber-on
+  		     even though it's wrapped inside another skippable structure -->
+  		<xsl:when test="$isPagenum='pagenumber-on'">
+  			<par id="{@id}" endsync="last" system-required="pagenumber-on">
+		      <xsl:apply-templates mode="inPar"/>
+	      </par>
+  		</xsl:when>
   		<!-- does a parent have a customTest attribute? -->
   		<xsl:when test="ancestor::s:seq/@customTest">
   			<xsl:variable name="systemRequired">
