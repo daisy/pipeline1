@@ -30,6 +30,23 @@
 		</h1>
 	</xsl:template>
 	
+	<!-- ncc:depth -->
+	<xsl:template match="h:meta[@name='ncc:depth']">
+		<meta name="ncc:depth">
+			<xsl:attribute name="content">			
+				<xsl:choose>
+					<xsl:when test="//h:h6">6</xsl:when>
+					<xsl:when test="//h:h5">5</xsl:when>
+					<xsl:when test="//h:h4">4</xsl:when>
+					<xsl:when test="//h:h3">3</xsl:when>
+					<xsl:when test="//h:h2">2</xsl:when>
+					<xsl:when test="//h:h1">1</xsl:when>
+					<xsl:otherwise>0</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+		</meta>
+	</xsl:template>
+	
 	<!-- ncc:footnotes -->
 	<xsl:template match="h:meta[@name='ncc:footnotes']">
 		<meta name="ncc:footnotes">

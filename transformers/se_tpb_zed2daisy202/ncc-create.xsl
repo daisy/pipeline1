@@ -14,7 +14,7 @@
   <c:config>
   	<c:generator>DMFC z3986-2005 to Daisy 2.02</c:generator>
     <c:name>createNcc</c:name>
-    <c:version>0.1</c:version>
+    <c:version>0.2</c:version>
     
     <c:author>Linus Ericson</c:author>
     <c:description>Creates the Daisy 2.02 ncc.html file.</c:description>    
@@ -258,18 +258,7 @@
     	<xsl:with-param name="meta" select="'dc:title'"/>
     </xsl:call-template>
     <ncc:meta name="ncc:charset" content="utf-8"/>
-    <!--
-    <meta name="ncc:depth">
-      <xsl:attribute name="content">
-        <xsl:for-each select="//n:navPoint">
-          <xsl:sort select="count(ancestor-or-self::n:navPoint)" data-type="number"/>
-          <xsl:if test="position()=last()">
-            <xsl:value-of select="count(ancestor-or-self::n:navPoint)"/>
-          </xsl:if>
-        </xsl:for-each>      
-      </xsl:attribute>
-    </meta>        
-    -->
+    <ncc:meta name="ncc:depth" content="FIXME"/>
     <ncc:meta name="ncc:footnotes" content="FIXME"/>
     <ncc:meta name="ncc:generator">
       <xsl:attribute name="content">
