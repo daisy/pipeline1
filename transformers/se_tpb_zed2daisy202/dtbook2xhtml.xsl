@@ -293,7 +293,7 @@
    <xsl:template match="dtb:caption">
      <caption>
        <xsl:copy-of select="&catts;"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates mode="inlineOnly"/>
     </caption>
    </xsl:template>
 
@@ -864,7 +864,7 @@
 			<xsl:when test="$element/@class"><xsl:attribute name="class"><xsl:value-of select="$element/@class"/></xsl:attribute></xsl:when>
 			<xsl:otherwise>
 				<xsl:attribute name="class">
-					<xsl:text>FIXME</xsl:text>
+					<xsl:text>inline-</xsl:text>
 					<xsl:value-of select="name($element)"/>
 				</xsl:attribute>
 			</xsl:otherwise>
