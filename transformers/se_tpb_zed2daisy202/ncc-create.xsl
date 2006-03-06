@@ -2,14 +2,13 @@
 
 <xsl:transform version="1.0" 
                xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-               xmlns:exslt="http://exslt.org/common"
                xmlns:ncc="http://www.w3.org/1999/xhtml" 
                xmlns:x="http://www.w3.org/1999/xhtml" 
                xmlns:n="http://www.daisy.org/z3986/2005/ncx/" 
                xmlns:c="http://daisymfc.sf.net/xslt/config"
                xmlns:o="http://openebook.org/namespaces/oeb-package/1.0/"
                xmlns:dc="http://purl.org/dc/elements/1.1/"
-               exclude-result-prefixes="x n c exslt o dc">
+               exclude-result-prefixes="x n c o dc">
 
   <c:config>
   	<c:generator>DMFC z3986-2005 to Daisy 2.02</c:generator>
@@ -29,7 +28,8 @@
 	      indent="yes"/>
 
   <!-- ****************************************************************
-       Root template
+       OPF: Root template
+       Add metadata and the navigation elements
        **************************************************************** -->
   <xsl:template match="/">
     <ncc:html xmlns="http://www.w3.org/1999/xhtml">
@@ -42,40 +42,41 @@
     </ncc:html>
   </xsl:template>
 
+  <!-- ****************************************************************
+       OPF: Navigation
+       For each item in the spine...
+       **************************************************************** -->
 	<xsl:template name="navigation">
-		<xsl:apply-templates select="//o:itemref[1]">
-			<xsl:with-param name="first" select="'true'"/>
-		</xsl:apply-templates>
-		<xsl:apply-templates select="//o:itemref[position() != 1]">
-			<xsl:with-param name="first" select="'false'"/>
-		</xsl:apply-templates>
+		<xsl:apply-templates select="//o:itemref"/>
 	</xsl:template>
-  
-  <xsl:template match="o:itemref">
-  	<xsl:param name="first"/>
-  	<xsl:variable name="idref" select="@idref"/>
-  	<!--<xsl:message>SMIL: <xsl:value-of select="concat($baseDir, //o:item[@id=$idref]/@href)"/></xsl:message>-->
 
+  <!-- ****************************************************************
+       OPF: Spine item
+       Apply templates on the base seq on the corresponding SMIL.
+       **************************************************************** -->  
+  <xsl:template match="o:itemref">
+  	<xsl:variable name="idref" select="@idref"/>
   	<xsl:apply-templates select="document(concat($baseDir, //o:item[@id=$idref]/@href))//body/seq">
-  		<xsl:with-param name="first" select="$first"/>
   		<xsl:with-param name="doc" select="//o:item[@id=$idref]/@href"/>
   	</xsl:apply-templates>
   </xsl:template>
-  
+
+  <!-- ****************************************************************
+       SMIL: Base seq
+       **************************************************************** -->    
   <xsl:template match="body/seq">
-  	<xsl:param name="first"/>
   	<xsl:param name="doc"/>
   	<xsl:apply-templates>
-  		<xsl:with-param name="first" select="$first"/>
   		<xsl:with-param name="doc" select="$doc"/>
   	</xsl:apply-templates>
   </xsl:template>
   
+  <!-- ****************************************************************
+       SMIL: par
+       **************************************************************** -->    
   <xsl:template match="par">
-  	<xsl:param name="first"/>
   	<xsl:param name="doc"/>
-  	<xsl:choose>
-  		<xsl:when test="@system-required and not(@system-required='footnote-on' and count(ancestor::seq)!=2)">
+  		<xsl:if test="@system-required and not(@system-required='footnote-on' and count(ancestor::seq)!=2)">
   			<ncc:span>
   				<xsl:attribute name="id">
   					<xsl:value-of select="generate-id()"/>
@@ -129,15 +130,11 @@
 	  					</xsl:choose>	  					
 	  			</ncc:a>
   			</ncc:span>
-  		</xsl:when>
-  		<xsl:otherwise>
-  			<!--<ncc:hx>hopp</ncc:hx>-->
+  		</xsl:if>
   			<xsl:call-template name="maybeGenerateHeading">
   				<xsl:with-param name="uri" select="text/@src"/>
   				<xsl:with-param name="doc" select="concat($doc,'#',@id)"/>
 	  		</xsl:call-template>
-  		</xsl:otherwise>
-  	</xsl:choose>
   </xsl:template>
   
   <xsl:template name="get_content_value_of">
@@ -162,37 +159,37 @@
 		<xsl:for-each select="document(concat($baseDir,$content))//*[@id=$fragment]">
 			<xsl:choose>
 				<xsl:when test="ancestor-or-self::x:h1">					
-					<ncc:h1>
+					<ncc:h1 headingid="{generate-id(ancestor-or-self::x:h1)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:h1>
 				</xsl:when>
 				<xsl:when test="ancestor-or-self::x:h2">
-					<ncc:h2>
+					<ncc:h2 headingid="{generate-id(ancestor-or-self::x:h2)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:h2>
 				</xsl:when>
 				<xsl:when test="ancestor-or-self::x:h3">
-					<ncc:h3>
+					<ncc:h3 headingid="{generate-id(ancestor-or-self::x:h3)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:h3>
 				</xsl:when>
 				<xsl:when test="ancestor-or-self::x:h4">
-					<ncc:h4>
+					<ncc:h4 headingid="{generate-id(ancestor-or-self::x:h4)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:h4>
 				</xsl:when>
 				<xsl:when test="ancestor-or-self::x:h5">
-					<ncc:h5>
+					<ncc:h5 headingid="{generate-id(ancestor-or-self::x:h5)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:h5>
 				</xsl:when>
 				<xsl:when test="ancestor-or-self::x:h6">
-					<ncc:h6>
+					<ncc:h6 headingid="{generate-id(ancestor-or-self::x:h6)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:h6>
 				</xsl:when>
 				<xsl:when test="ancestor-or-self::x:hd">
-					<ncc:hd>
+					<ncc:hd headingid="{generate-id(ancestor-or-self::x:hd)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:hd>
 				</xsl:when>
@@ -279,9 +276,7 @@
     <ncc:meta name="ncc:setInfo" content="1 of 1"/>
     <ncc:meta name="ncc:sidebars" content="FIXME"/>
     <ncc:meta name="ncc:tocItems" content="FIXME"/>
-    <ncc:meta name="ncc:totalTime">
-      <xsl:attribute name="content">FIXME</xsl:attribute>
-    </ncc:meta>    
+    <ncc:meta name="ncc:totalTime" content="FIXME"/>
     
     <!-- Some optional content -->
     <xsl:call-template name="opf_dc_metadata">

@@ -27,20 +27,16 @@
    -->
 
   <xsl:param name="xhtml_document">content.html</xsl:param>
+  <xsl:param name="dtbook_document"/>
   <xsl:param name="ncx_document"/>
   <xsl:param name="baseDir"/>
+  <xsl:param name="add_title"/>
 
-<!--
   <xsl:output method="xml" 
 	      encoding="utf-8" 
 	      indent="yes" 
 	      doctype-public="-//W3C//DTD SMIL 1.0//EN" 
 	      doctype-system="http://www.w3.org/TR/REC-SMIL/SMIL10.dtd"
-	/>
--->
-  <xsl:output method="xml" 
-	      encoding="utf-8" 
-	      indent="yes" 	 
 	/>
 
   <!-- ****************************************************************
@@ -56,6 +52,18 @@
       </head>
       <body>
         <seq dur="FIXME">
+          <xsl:if test="$add_title='true'">
+            <xsl:for-each select="document($ncx_document)//n:docTitle">
+              <par endsync="last" id="doctitle">
+                <text id="doctitleText">
+                  <xsl:attribute name="src">
+                    <xsl:call-template name="find_doctitle"/>
+                  </xsl:attribute>
+                </text>
+                <audio id="doctitleAudio" clip-begin="{n:audio/@clipBegin}" clip-end="{n:audio/@clipEnd}" src="{n:audio/@src}"/>
+              </par>
+            </xsl:for-each>
+          </xsl:if>          
           <xsl:apply-templates/>
         </seq>
       </body>
@@ -89,31 +97,16 @@
     	</xsl:call-template>
     </xsl:variable>
     <xsl:if test="not($sectionTitle='')">
-	    <meta name="title">
-	      <xsl:attribute name="content"><xsl:value-of select="$sectionTitle"/></xsl:attribute>
-	    </meta> 
+	    <meta name="title" content="{$sectionTitle}"/>
     </xsl:if>
     <xsl:variable name="docTitle">
     	<xsl:call-template name="get_book_title"/>
     </xsl:variable>
     <xsl:if test="not($docTitle='')">
-	    <meta name="dc:title">
-	      <xsl:attribute name="content"><xsl:value-of select="$docTitle"/></xsl:attribute>
-	    </meta> 
+	    <meta name="dc:title" content="{$docTitle}"/>
     </xsl:if>
-    <!--
-    <meta name="ncc:totalElapsedTime">
-      <xsl:attribute name="content">
-        <xsl:value-of select="/s:smil/s:head/s:meta[@name='dtb:totalElapsedTime']/@content"/>
-      </xsl:attribute>
-    </meta>
-    -->
-    <meta name="ncc:totalElapsedTime">
-      <xsl:attribute name="content">FIXME</xsl:attribute>
-    </meta>
-    <meta name="ncc:timeInThisSmil">
-      <xsl:attribute name="content">FIXME</xsl:attribute>
-    </meta>
+    <meta name="ncc:totalElapsedTime" content="FIXME"/>
+    <meta name="ncc:timeInThisSmil" content="FIXME"/>
   </xsl:template>
 
 
@@ -121,13 +114,7 @@
        Audio element
        **************************************************************** -->
   <xsl:template match="s:audio" mode="inPar">
-    <audio>
-      <xsl:attribute name="clip-begin">
-        <xsl:value-of select="@clipBegin"/>
-      </xsl:attribute>
-      <xsl:attribute name="clip-end">
-        <xsl:value-of select="@clipEnd"/>
-      </xsl:attribute>
+    <audio clip-begin="{@clipBegin}" clip-end="{@clipEnd}" src="{@src}">
       <xsl:attribute name="id">
         <xsl:choose>
           <xsl:when test="@id">
@@ -139,7 +126,6 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
-      <xsl:copy-of select="@src"/>      
     </audio>
   </xsl:template>
 
@@ -492,6 +478,19 @@
 			<xsl:value-of select="document($ncx_document)//n:docTitle/n:text"/>
 		</xsl:if>
 	</xsl:template>
+	
+	<xsl:template name="find_doctitle">  	
+  	  <xsl:variable name="titleId" select="document($dtbook_document)//d:doctitle[1]"/>
+  	  <xsl:choose>
+  		<xsl:when test="$titleId/@id">
+  			<xsl:value-of select="concat($xhtml_document, '#', $titleId/@id)"/>
+  		</xsl:when>
+  		<xsl:otherwise>
+  			<xsl:value-of select="concat($xhtml_document, '#h1classtitle')"/>
+  		</xsl:otherwise>
+  	</xsl:choose>
+  </xsl:template>
+	
 
 </xsl:transform>
 

@@ -182,27 +182,25 @@ public class Zed2Daisy202 extends Transformer {
         File createNcc = new File(this.getTransformerDirectory(), "ncc-create.xsl");
         File nccRemoveDupes = new File(this.getTransformerDirectory(), "ncc-remove-dupes.xsl");
         File nccClean = new File(this.getTransformerDirectory(), "ncc-clean.xsl");
-        
-        File temp = TempFile.create();
-        File temp2 = TempFile.create();
-        File temp3 = TempFile.create();
+                
+        DOMResult dom1 = new DOMResult();
+        DOMResult dom2 = new DOMResult();
+        File tempFile = TempFile.create();
         
         // Step 1: Create the ncc by looking through the smil files and identifying headings in the content document
-        Stylesheet.apply(opf.getAbsolutePath(), createNcc.getAbsolutePath(), temp.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
+        Stylesheet.apply(opf.getAbsolutePath(), createNcc.getAbsolutePath(), dom1, XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
         
         // Step 2: Remove duplicate entries in the ncc (step 1 created two entries for a heading containing two sync points)
-        Stylesheet.apply(temp.getAbsolutePath(), nccRemoveDupes.getAbsolutePath(), temp2.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
+        Stylesheet.apply(new DOMSource(dom1.getNode()), nccRemoveDupes.getAbsolutePath(), dom2, XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
         
         // Step 3: add class="title" to first h1 and fix some metadata
-        Stylesheet.apply(temp2.getAbsolutePath(), nccClean.getAbsolutePath(), temp3.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
+        Stylesheet.apply(new DOMSource(dom2.getNode()), nccClean.getAbsolutePath(), tempFile.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
         
         // Step 4: insert ncc:totalTime and indent file
         NccFixer nccFixer = new NccFixer();
-        nccFixer.fix(temp3, nccFile, totalElapsedTime);
+        nccFixer.fix(tempFile, nccFile, totalElapsedTime);
         
-        temp.delete();
-        temp2.delete();
-        temp3.delete();
+        tempFile.delete();
     }
     
     /**
@@ -221,7 +219,6 @@ public class Zed2Daisy202 extends Transformer {
         SmilFileClockFixer smilClockFixer = new SmilFileClockFixer();
         long totalElapsedTime = 0;
         File smil2smil = new File(this.getTransformerDirectory(), "smil2smil.xsl");
-        File smilAddTitle = new File(this.getTransformerDirectory(), "smilAddTitle.xsl");
         
         Map parameters = new HashMap();
         parameters.put("xhtml_document", contentXHTML);
@@ -244,16 +241,11 @@ public class Zed2Daisy202 extends Transformer {
             this.sendMessage(Level.INFO, i18n("SMIL", params));            
             
             File temp2 = TempFile.create();
-            
-            DOMResult dom = new DOMResult();
                         
             // Step 1: Flatten the Z3986 smil to a Daisy 2.02 compatible one 
-            Stylesheet.apply(smilZed.getFile().getAbsolutePath(), cache.get(smil2smil.getAbsolutePath(), XSLT_FACTORY), dom, parameters, CatalogEntityResolver.getInstance());
+            Stylesheet.apply(smilZed.getFile().getAbsolutePath(), cache.get(smil2smil.getAbsolutePath(), XSLT_FACTORY), temp2.getAbsolutePath(), parameters, CatalogEntityResolver.getInstance());
                         
-            // Step 2: Add the smil clip that reads the <h1 class="title"> to the first smil
-            Stylesheet.apply(new DOMSource(dom.getNode()), cache.get(smilAddTitle.getAbsolutePath(), XSLT_FACTORY), temp2.getAbsolutePath(), parameters, CatalogEntityResolver.getInstance());
-                        
-            // Step 3: Update the ncc:timeInThisSmil, ncc:totalElapsedTime and the dur attribute of the main seq
+            // Step 2: Update the ncc:timeInThisSmil, ncc:totalElapsedTime and the dur attribute of the main seq
             totalElapsedTime += smilClockFixer.fix(temp2, smil202, totalElapsedTime, null);
             
             temp2.delete();
