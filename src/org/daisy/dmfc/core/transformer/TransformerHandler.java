@@ -24,9 +24,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -400,16 +398,13 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	    return transformerDirectory;
 	}
 	
-	public URL getDocumentation() {
+	public Collection getDocumentation() {
+	    Collection coll = new ArrayList();
 	    File doc = new File(getTransformerDir(), "doc.html");
-	    try {
-	        if (doc.canRead()) {
-	            return doc.toURL();
-	        }	    
-        } catch (MalformedURLException e) {
-            // Nothing
-        }
-        return null;
+        if (doc.canRead()) {
+            coll.add(new Documentation(doc.toURI(), "Documentation"));
+        }	    
+        return coll;
 	}
 
 	/**
