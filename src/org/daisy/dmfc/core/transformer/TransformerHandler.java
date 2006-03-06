@@ -392,6 +392,10 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	public String getDescription() {
 		return description;
 	}
+	
+	public File getTransformerDir() {
+	    return transformerDirectory;
+	}
 
 	/**
 	 * Gets a collection of the parameters of the Transformer. Only the

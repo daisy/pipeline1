@@ -18,6 +18,7 @@
  */
 package org.daisy.dmfc.core.transformer;
 
+import java.io.File;
 import java.util.Collection;
 
 /**
@@ -43,4 +44,10 @@ public interface TransformerInfo {
 	 * @return a collection of <code>Parameter</code>s.
 	 */
 	public Collection getParameters();	
+	
+	/**
+	 * Gets the directory of the transformer.
+	 * @return the transformer directory
+	 */
+	public File getTransformerDir();
 }
