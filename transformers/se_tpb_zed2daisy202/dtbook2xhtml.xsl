@@ -275,8 +275,19 @@
 
 
 	<xsl:template match="dtb:noteref">
-		<a href="#{@idref}" class="noteref">
+		<a class="noteref">
 			<xsl:copy-of select="&cncatts;"/>
+			<xsl:attribute name="href">
+				<xsl:choose>
+					<xsl:when test="@smilref">
+						<xsl:value-of select="@smilref"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text>#</xsl:text>
+						<xsl:value-of select="@idref"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>			
 			<xsl:apply-templates/>
 		</a>
 	</xsl:template>
