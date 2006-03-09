@@ -215,22 +215,36 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                 } else {
                     // This is a non-breaking tag, and we have seen a breaking tag before
                     if (event.isStartElement()) {
+                        int abbrType = 0;
+                        String expandAttributeName = null;                        
+                        boolean skip = false;
                         if (elementName.equals(breakSettings.getAbbrElement()) && attributesMatch(event.asStartElement(), breakSettings.getAbbrAttributes())) {
-                            Attribute expand = event.asStartElement().getAttributeByName(new QName(breakSettings.getAbbrExpandAttribute()));
-                            abbrAcronym = new Abbr(null, expand!=null?expand.getValue():null, Abbr.ABBREVIATION, buffer.length(), 0);
+                            expandAttributeName = breakSettings.getAbbrExpandAttribute();
+                            abbrType = Abbr.ABBREVIATION;
                         } else if (elementName.equals(breakSettings.getAcronymElement()) && attributesMatch(event.asStartElement(), breakSettings.getAcronymAttributes())) {
-                            Attribute expand = event.asStartElement().getAttributeByName(new QName(breakSettings.getAcronymExpandAttribute()));
-                            abbrAcronym = new Abbr(null, expand!=null?expand.getValue():null, Abbr.ACRONYM, buffer.length(), 0);
+                            expandAttributeName = breakSettings.getAcronymExpandAttribute();
+                            abbrType = Abbr.ACRONYM;
                         } else if (elementName.equals(breakSettings.getInitialismElement()) && attributesMatch(event.asStartElement(), breakSettings.getInitialismAttributes())) {
-                            Attribute expand = event.asStartElement().getAttributeByName(new QName(breakSettings.getInitialismExpandAttribute()));
-                            abbrAcronym = new Abbr(null, expand!=null?expand.getValue():null, Abbr.INITIALISM, buffer.length(), 0);
-                        }                        
+                            expandAttributeName = breakSettings.getInitialismExpandAttribute();
+                            abbrType = Abbr.INITIALISM;
+                        } else {
+                            skip = true;
+                        }
+                        if (!skip) {
+	                        Attribute expand = event.asStartElement().getAttributeByName(new QName(expandAttributeName));
+	                        QName expAttrName = breakSettings.getExpAttr();
+	                        Attribute expAttr = null;
+	                        if (expAttrName != null) {
+	                            expAttr = event.asStartElement().getAttributeByName(expAttrName);
+	                        }
+	                        abbrAcronym = new Abbr(null, expand!=null?expand.getValue():null, expAttr!=null?expAttr.getValue():null, abbrType, buffer.length(), 0);
+                        }
                     } else /* isEndElement */ {
                         // FIXME make sure end matches with start
                         if (elementName.equals(breakSettings.getAbbrElement()) ||
                                 elementName.equals(breakSettings.getAcronymElement()) ||
                                 elementName.equals(breakSettings.getInitialismElement())) {
-                            abbrAcronym = new Abbr(buffer.substring(abbrAcronym.getStart(), buffer.length()), abbrAcronym.getExpansion(), abbrAcronym.getType(), abbrAcronym.getStart(), buffer.length());
+                            abbrAcronym = new Abbr(buffer.substring(abbrAcronym.getStart(), buffer.length()), abbrAcronym.getExpansion(), abbrAcronym.getExpAttr(), abbrAcronym.getType(), abbrAcronym.getStart(), buffer.length());
                             abbrAcronymList.add(abbrAcronym);
                             logger.finer(abbrAcronym.toString());
                         }                        

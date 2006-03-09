@@ -191,7 +191,10 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
             } else {
 	            // Is that allowed in this context? 
 	            if (langSettings.allowedContext(text, m.getStart(), m.getEnd(), type)) {
-	                Abbr abbr = new Abbr(match, langSettings.expand(match, type), type, m.getStart(), m.getEnd());
+	                Item item = langSettings.expand(match, type);
+	                String expansion = item==null?null:item.getValue();
+	                String expAttr = item==null?null:item.getExp();
+	                Abbr abbr = new Abbr(match, expansion, expAttr, type, m.getStart(), m.getEnd());
 	                result.add(abbr);
 	                logger.finer(abbr + "\t" + current);	                
 	            } else {

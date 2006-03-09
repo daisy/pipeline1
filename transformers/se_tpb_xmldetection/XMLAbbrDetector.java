@@ -33,6 +33,7 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 
@@ -92,24 +93,26 @@ public class XMLAbbrDetector extends XMLWordDetector {
                 writeString(text.substring(oldEnd, start));
             }
             String exp = abbr.getExpansion(); 
+            QName expAttrQName = caas.getExpAttr();
+            String expAtt = abbr.getExpAttr();
             switch (abbr.getType()) {
             case Abbr.INITIALISM:
-                writeEvent(eventFactory.createStartElement(caas.getInitialismElement(), getBreakAttributes(caas.getInitialismAttributes(), caas.getInitialismExpandAttribute(), exp), null));
+                writeEvent(eventFactory.createStartElement(caas.getInitialismElement(), getBreakAttributes(caas.getInitialismAttributes(), caas.getInitialismExpandAttribute(), exp, expAttrQName, expAtt), null));
             	writeString(text.substring(start, end));
             	writeEvent(eventFactory.createEndElement(caas.getInitialismElement(), null));            	
                 break;
             case Abbr.ACRONYM:
-                writeEvent(eventFactory.createStartElement(caas.getAcronymElement(), getBreakAttributes(caas.getAcronymAttributes(), caas.getAcronymExpandAttribute(), exp), null));
+                writeEvent(eventFactory.createStartElement(caas.getAcronymElement(), getBreakAttributes(caas.getAcronymAttributes(), caas.getAcronymExpandAttribute(), exp, expAttrQName, expAtt), null));
         		writeString(text.substring(start, end));
         		writeEvent(eventFactory.createEndElement(caas.getAcronymElement(), null));
                 break;
             case Abbr.ABBREVIATION:
-                writeEvent(eventFactory.createStartElement(caas.getAbbrElement(), getBreakAttributes(caas.getAbbrAttributes(), caas.getAbbrExpandAttribute(), exp), null));
+                writeEvent(eventFactory.createStartElement(caas.getAbbrElement(), getBreakAttributes(caas.getAbbrAttributes(), caas.getAbbrExpandAttribute(), exp, expAttrQName, expAtt), null));
         		writeString(text.substring(start, end));
         		writeEvent(eventFactory.createEndElement(caas.getAbbrElement(), null));
                 break;
             case Abbr.FIX:
-                writeEvent(eventFactory.createStartElement(caas.getFixElement(), getBreakAttributes(caas.getFixAttributes(), caas.getFixExpandAttribute(), exp), null));
+                writeEvent(eventFactory.createStartElement(caas.getFixElement(), getBreakAttributes(caas.getFixAttributes(), caas.getFixExpandAttribute(), exp, expAttrQName, expAtt), null));
         		writeString(text.substring(start, end));
         		writeEvent(eventFactory.createEndElement(caas.getFixElement(), null));
                 break;
@@ -119,7 +122,7 @@ public class XMLAbbrDetector extends XMLWordDetector {
         writeString(text.substring(oldEnd));
     }
     
-    private Iterator getBreakAttributes(Map map, String att, String exp) {
+    private Iterator getBreakAttributes(Map map, String att, String exp, QName expAttName, String expAttValue) {
         Iterator result = null;
         Vector v = new Vector();
         if (map != null) {
@@ -133,6 +136,11 @@ public class XMLAbbrDetector extends XMLWordDetector {
         }
         if (att != null && exp != null) {
             Attribute attr = eventFactory.createAttribute(att, exp);
+            v.add(attr);
+            result = v.iterator();
+        }
+        if (expAttName != null && expAttValue != null) {
+            Attribute attr = eventFactory.createAttribute(expAttName, expAttValue);
             v.add(attr);
             result = v.iterator();
         }

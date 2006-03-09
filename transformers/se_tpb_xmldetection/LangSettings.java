@@ -194,8 +194,10 @@ public class LangSettings {
                 } else if (se.getName().getLocalPart().equals("expansion")) {
                     Attribute attId = se.getAttributeByName(new QName("id"));
                     Attribute attPrio = se.getAttributeByName(new QName("priority"));
-                    String id = attId!=null?attId.getValue():null;
-                    int prio = attPrio!=null?Integer.parseInt(attPrio.getValue()):-1;                    
+                    Attribute attExp = se.getAttributeByName(new QName("exp"));
+                    String id = attId!=null?attId.getValue():null;                    
+                    int prio = attPrio!=null?Integer.parseInt(attPrio.getValue()):-1;
+                    String exp = attExp!=null?attExp.getValue():null;
                     
                     if (nameList.size() != mayEndSentenceList.size()) {
                         throw new RuntimeException("This is not supposed to happen! (empty name element?)");
@@ -212,6 +214,7 @@ public class LangSettings {
                         item.setId(id);
                         item.setPriority(prio);
                         item.setLang(lang);
+                        item.setExp(exp);
                         itemSet.add(item);
                     }
                     inExpansion = true;
@@ -425,23 +428,23 @@ public class LangSettings {
         return true;
     }
     
-    private String getFromBestLanguage(Collection coll) {
+    private Item getFromBestLanguage(Collection coll) {
         boolean foundParentLang = false;
-        String result = null;
+        Item result = null;
         //System.err.println("Current lang: " + language);
         Locale loc = LocaleUtils.string2locale(language);
         for (Iterator it = coll.iterator(); it.hasNext(); ) {
             Item item = (Item)it.next();
             //System.err.println("Found lang: " + item.getLang());
             if (language!=null && language.equals(item.getLang())) {
-                result = item.getValue();
+                result = item;
                 logger.finer("Found match in current language [" + language + "]: " + item.getValue());
                 return result;
             } else if (loc!=null && loc.getLanguage().equals(item.getLang())) {
-                result = item.getValue();
+                result = item;
                 foundParentLang = true;
             } else if (!foundParentLang && item.getLang() == null) {
-                result = item.getValue();
+                result = item;
             }
         }
         if (foundParentLang) {
@@ -452,7 +455,7 @@ public class LangSettings {
         return result;
     }
     
-    public String expand(String key, int type) {
+    public Item expand(String key, int type) {
         Collection coll;
         Item item;
         if (type == Abbr.INITIALISM || type == Abbr.ACRONYM) {
@@ -466,7 +469,7 @@ public class LangSettings {
         	    return null;
         	} else if (coll.size() != 1) {
         	    logger.finer("Multiple choices for " + key + ": " + coll);
-        	    String result = null;
+        	    Item result = null;
         	    if (sameId(coll)) {
         	        //System.err.println("Same ID!");
         	        result = getFromBestLanguage(coll);
@@ -474,7 +477,7 @@ public class LangSettings {
         	    return result;
         	}        	
     	    item = (Item)coll.iterator().next();
-    	    return item.getValue();    
+    	    return item;    
         } else if (type == Abbr.ABBREVIATION) {
             coll = abbrs.getCollection(key);
 	    	if (coll == null) {
@@ -482,20 +485,20 @@ public class LangSettings {
 	    	    return null;
 	    	} else if (coll.size() != 1) {
 	    	    logger.finer("Multiple abbr choices for " + key + ": " + coll);
-	    	    String result = null;
+	    	    Item result = null;
 	    	    if (sameId(coll)) {
 	    	        result = getFromBestLanguage(coll);
 	    	    }
 	    	    return result;
 	    	}
 		    item = (Item)coll.iterator().next();
-		    return item.getValue();
+		    return item;
         } else if (type == Abbr.FIX) {
             for (Iterator it = fixes.keySet().iterator(); it.hasNext(); ) {
                 String k = (String)it.next();
                 if (Pattern.compile(k, Pattern.DOTALL).matcher(key).matches()) {
                     item = (Item)fixes.get(k);
-                    return item!=null?item.getValue():null;
+                    return item;
                 }
             }
             throw new RuntimeException("No fix match found for " + key);

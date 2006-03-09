@@ -122,7 +122,9 @@ public class XMLWordDetector extends XMLBreakDetector {
             } else if (event.getEventType() == XMLStreamConstants.DTD) {            
                 DTD dtd = (DTD)event;                
                 parseDoctype(dtd.getDocumentTypeDeclaration());
-                writeEvent(event);
+                if ("".equals(breakSettings.getBreakElement().getPrefix()) && (breakSettings.getExpAttr()==null || "".equals(breakSettings.getExpAttr().getPrefix()))) {
+                    writeEvent(event);
+                }
                 doctypeSeen = true;
             } else if (event.isStartDocument()) { 
                 StartDocument sd = (StartDocument)event;

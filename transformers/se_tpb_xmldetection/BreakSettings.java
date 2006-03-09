@@ -67,5 +67,7 @@ public interface BreakSettings {
     public String getAbbrExpandAttribute();
     
     public String getFixExpandAttribute();
+    
+    public QName getExpAttr();
         
 }

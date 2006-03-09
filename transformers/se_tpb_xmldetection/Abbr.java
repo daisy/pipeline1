@@ -38,6 +38,7 @@ package se_tpb_xmldetection;
     private int type;
     private String key;
     private String expansion;
+    private String expAttr;
     
     /**
      * Creates a new <code>Abbr</code> object.
@@ -47,12 +48,13 @@ package se_tpb_xmldetection;
      * @param s start index
      * @param e end index
      */
-    public Abbr(String k, String exp, int t, int s, int e) {
+    public Abbr(String k, String exp, String expAt, int t, int s, int e) {
         key = k;
         expansion = exp;
         type = t;
         start = s;
         end = e;
+        expAttr = expAt;
     }
     
     public int getEnd() {
@@ -61,6 +63,10 @@ package se_tpb_xmldetection;
     
     public String getExpansion() {
         return expansion;
+    }
+    
+    public String getExpAttr() {
+        return expAttr;
     }
     
     public String getKey() {

@@ -27,6 +27,8 @@ package se_tpb_xmldetection;
     private String endSent;    
     private String id;
     private String lang;
+    private String exp;
+    
     private int priority = -1;
     
     public Item(String name, String val, String mayEndSentence) {
@@ -77,5 +79,12 @@ package se_tpb_xmldetection;
     }
     public void setPriority(int prio) {
         this.priority = prio;
+    }
+    
+    public String getExp() {
+        return exp;
+    }
+    public void setExp(String exp) {
+        this.exp = exp;
     }
 }

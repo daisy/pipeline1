@@ -52,6 +52,7 @@ import org.daisy.util.xml.stax.ContextStack;
     protected QName acronymElement = null;
     protected QName initialismElement = null;
     protected QName fixElement = null;
+    protected QName expAttribute = null;
     
     protected Map sentenceAttributes = new HashMap();
     protected Map wordAttributes = new HashMap();
@@ -210,6 +211,8 @@ import org.daisy.util.xml.stax.ContextStack;
                         throw new RuntimeException("A name of the path must be declared");
                     }
                     defaultPaths.add(name.getValue());
+                } else if (se.getName().getLocalPart().equals("expAttribute")) {
+                    expAttribute = getQName(se);
                 }
             } else if (event.isEndElement()) {
                 EndElement ee = event.asEndElement();
@@ -292,6 +295,10 @@ import org.daisy.util.xml.stax.ContextStack;
     
     public QName getFixElement() {
         return fixElement;
+    }
+    
+    public QName getExpAttr() {
+        return expAttribute;
     }
     
     public Map getAbbrAttributes() {

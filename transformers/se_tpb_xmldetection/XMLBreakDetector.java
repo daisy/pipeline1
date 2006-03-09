@@ -144,6 +144,7 @@ public abstract class XMLBreakDetector {
                  * Make sure a namespace declaration for the break element exists 
                  */
                 QName breakElement = getBreakElement();
+                QName expAttrName = breakSettings.getExpAttr();
                 StartElement se = event.asStartElement();
                 Vector namespaces = new Vector();
                 boolean alreadyExists = false;
@@ -169,12 +170,40 @@ public abstract class XMLBreakDetector {
                 if (!alreadyExists) {
                     namespaces.add(eventFactory.createNamespace(breakElement.getPrefix(), breakElement.getNamespaceURI()));
                 }
+                maybeAddExpAttrNS(namespaces, expAttrName);
                 event = eventFactory.createStartElement(se.getName(), se.getAttributes(), namespaces.iterator());                
                 rootElementSeen = true;
             }
         }
         writeStack.addEvent(event);
         writer.add(event);
+    }
+    
+    private void maybeAddExpAttrNS(Vector namespaces, QName expAttrName) throws XMLStreamException {
+        if (expAttrName != null) {
+            boolean alreadyExists = false;
+	        for (Iterator it = namespaces.iterator(); it.hasNext(); ) {
+	            Namespace ns = (Namespace)it.next();
+	            if (ns.getPrefix().equals(expAttrName.getPrefix())) {
+	                if (ns.getNamespaceURI() == null) {
+	                    if (expAttrName.getNamespaceURI() == null) {
+	                        alreadyExists = true;
+	                    } else {
+	                        throw new XMLStreamException("Break element has conflicting prefix/namespace");
+	                    }
+	                } else {
+	                    if (ns.getNamespaceURI().equals(expAttrName.getNamespaceURI())) {
+	                        alreadyExists = true;
+	                    } else {
+	                        throw new XMLStreamException("Break element has conflicting prefix/namespace");
+	                    }
+	                }
+	            }
+	        }
+	        if (!alreadyExists) {
+	            namespaces.add(eventFactory.createNamespace(expAttrName.getPrefix(), expAttrName.getNamespaceURI()));
+	        }
+        }
     }
     
     protected void writeString(String text) throws XMLStreamException {
