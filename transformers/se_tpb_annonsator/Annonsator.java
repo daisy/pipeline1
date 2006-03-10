@@ -97,7 +97,7 @@ public class Annonsator extends Transformer implements ErrorListener {
                     break;
                 } else if (event.isStartElement()) {
                     StartElement se = event.asStartElement();
-                    System.err.println(se.getName().getNamespaceURI());
+                    //System.err.println(se.getName().getNamespaceURI());
                     configUrl = resolver.resolve(se.getName().getNamespaceURI());
                     break;
                 }
@@ -114,7 +114,7 @@ public class Annonsator extends Transformer implements ErrorListener {
             // Perform transformation
             DOMSource xsltSource = new DOMSource(xslt);            
             SAXParserFactory spf = SAXParserFactory.newInstance();
-            spf.setValidating(true);
+            spf.setValidating(false);
             SAXParser sp = spf.newSAXParser();
             XMLReader xmlreader = sp.getXMLReader();
             xmlreader.setEntityResolver(CatalogEntityResolver.getInstance());
