@@ -155,7 +155,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 		
 		//build the fileset
 		try { 
-			fileset = (Fileset)new FilesetImpl(manifest,true,false);
+			fileset = new FilesetImpl(manifest,true,false);
 			if (this.filesetType!=fileset.getFilesetType()) {
 				throw new DtbErrorScoutException("This ErrorScout instance does not support this fileset type");				
 			}
