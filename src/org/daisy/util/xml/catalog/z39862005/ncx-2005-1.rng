@@ -1,34 +1,666 @@
 <?xml version="1.0" encoding="utf-8"?>
-<grammar  
-  ns="http://www.daisy.org/z3986/2005/ncx/"
-  xmlns="http://relaxng.org/ns/structure/1.0"
-  xmlns:sch="http://www.ascc.net/xml/schematron"
-  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"  
+<grammar
+	datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+    ns="http://www.daisy.org/z3986/2005/ncx/"
+	xmlns="http://relaxng.org/ns/structure/1.0"
+	xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+	xmlns:zed="http://www.daisy.org/ns/zedval/testmap"
+	xmlns:c="http://www.daisy.org/ns/zedval/chunks"
+    xmlns:sch="http://www.ascc.net/xml/schematron"
 >
-  <sch:ns prefix="smil" uri="http://www.daisy.org/z3986/2005/ncx/"/>
-  
+  <sch:ns prefix="ncx" uri="http://www.daisy.org/z3986/2005/ncx/"/>
+
   <a:documentation>
-    ncx-2005-1.rng
-    Last edit by: mgylling 2005-07-01
-    org.daisy.util.xml.catalog mapping by the PID '-//NISO//RNG ncx 2005-1//EN'
+      RelaxNg schema for Z39.86 NCX version 2005-1  
+      Last edit by: mgylling 2006-03-12
+	  Original version: mgylling 2005-07-01
+	  
+  	  org.daisy.util.xml.catalog mapping by 
+	  the PID '-//NISO//RNG ncx 2005-1//EN'
+    
+      Version/change history:
+	  
   </a:documentation>
 
+  <include href="../relaxngcommon/attributes.rng" />
+
   <start>
-      <ref name="anyElement"/>  
+    <ref name="ncx"/>
   </start>
-    
-  <define name="anyElement">
-    <element>
-      <anyName/>
+
+  <define name="ncx">
+    <element name="ncx">
+      <ref name="ncx.attlist"/>
+      <ref name="head"/>
+      <ref name="docTitle"/>
       <zeroOrMore>
-	<choice>
-	  <attribute>
-	    <anyName/>
-	  </attribute>
-	  <text/>
-	  <ref name="anyElement"/>
-	</choice>
+        <ref name="docAuthor"/>
+      </zeroOrMore>
+      <ref name="navMap"/>
+      <zeroOrMore>
+        <ref name="pageList"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="navList"/>
       </zeroOrMore>
     </element>
   </define>
+
+  <define name="ncx.attlist">
+    <attribute name="version">
+      <zed:test id="ncx_versionPresence"/>
+      <zed:test id="ncx_versionValue"/>
+      <value>2005-1</value>
+    </attribute>
+    <ref name="i18n"/>
+  </define>
+
+  <div c:name="docTitle">
+   <define name="docTitle">
+     <element name="docTitle">
+       <ref name="docTitle.attlist"/>
+       <ref name="text"/>
+       <optional>
+         <ref name="audio"/>
+       </optional>
+       <optional>
+         <ref name="img"/>
+       </optional>
+     </element>
+   </define>
+
+   <define name="docTitle.attlist" combine="interleave">
+     <ref name="attribute.id.optional"/>
+     <ref name="i18n"/>
+   </define>
+  </div>
+
+  <div c:name="docAuthor">
+    <define name="docAuthor">
+      <element name="docAuthor">
+        <ref name="attlist.docAuthor"/>
+        <ref name="text"/>
+        <optional>
+          <ref name="audio"/>
+        </optional>
+        <optional>
+         <ref name="img"/>
+       </optional>        
+      </element>
+    </define>
+
+    <define name="attlist.docAuthor" combine="interleave">
+      <ref name="attribute.id.optional"/>
+      <ref name="i18n"/>
+    </define>
+  </div>
+
+  <div c:name="navMap">
+   <define name="navMap">
+     <element name="navMap">
+       <ref name="navMap.attlist"/>
+       <zeroOrMore>
+         <ref name="navInfo"/>
+       </zeroOrMore>
+       <zeroOrMore>
+         <ref name="navLabel"/>
+       </zeroOrMore>
+       <oneOrMore>
+         <ref name="navPoint"/>
+       </oneOrMore>
+     </element>
+   </define>
+
+   <define name="navMap.attlist" combine="interleave">
+     <ref name="attribute.id.optional"/>
+   </define>
+
+   <define name="navLabel">
+     <element name="navLabel">
+       <ref name="attlist.navLabel"/>
+       <choice>
+         <group>
+           <ref name="text"/>
+           <optional>
+             <ref name="audio"/>
+           </optional>
+         </group>
+         <ref name="audio"/>
+       </choice>
+       <optional>
+         <ref name="img"/>
+       </optional>
+     </element>
+   </define>
+
+   <define name="attlist.navLabel" combine="interleave">
+     <ref name="i18n"/>
+   </define>
+
+   <define name="navPoint">
+     <element name="navPoint">
+       <ref name="navPoint.attlist"/>
+       <oneOrMore>
+         <ref name="navLabel"/>
+       </oneOrMore>
+       <ref name="content"/>
+       <zeroOrMore>
+          <ref name="navPoint"/>
+       </zeroOrMore>
+     </element>
+   </define>
+
+   <define name="navPoint.attlist" combine="interleave">
+     <ref name="attribute.id.required"/>
+     <ref name="attribute.class.optional"/>
+     <ref name="attribute.playOrder"/>
+   </define>
+
+   <define name="content">
+     <element name="content">
+       <ref name="attlist.content"/>
+       <empty/>
+     </element>
+   </define>
+
+   <define name="attlist.content" combine="interleave">
+     <ref name="attribute.id.optional"/>
+     <attribute name="src">
+       <ref name="datatype.uri">
+         <zed:test id="ncx_contentSrcAttrValue"/>
+       </ref>
+     </attribute>
+   </define>
+  </div>
+
+   <define name="navList">
+     <element name="navList">
+       <ref name="navList.attlist"/>
+       <zeroOrMore>
+         <ref name="navInfo"/>
+       </zeroOrMore>
+       <oneOrMore>
+         <ref name="navLabel"/>
+       </oneOrMore>
+       <oneOrMore>
+         <ref name="navTarget"/>
+       </oneOrMore>
+     </element>
+   </define>
+   
+   <define name="pageList">
+     <element name="pageList">
+       <ref name="navList.attlist"/>
+       <zeroOrMore>
+         <ref name="navLabel"/>
+       </zeroOrMore>
+       <zeroOrMore>
+         <ref name="navInfo"/>
+       </zeroOrMore>
+       <oneOrMore>
+         <ref name="pageTarget"/>
+       </oneOrMore>
+     </element>
+   </define>
+
+   <define name="navList.attlist" combine="interleave">
+     <ref name="attribute.id.optional"/>
+     <optional>
+       <attribute name="class"/>
+     </optional>
+   </define>
+
+   <define name="navTarget">
+     <element name="navTarget">
+       <ref name="navTarget.attlist"/>
+       <oneOrMore>
+         <ref name="navLabel"/>
+       </oneOrMore>       
+       <ref name="content"/>
+     </element>
+    </define>
+
+   <define name="pageTarget">
+     <element name="pageTarget">
+       <ref name="navTarget.attlist"/>
+       <attribute name="type">
+       <choice>
+         <value>front</value>
+         <value>normal</value>
+         <value>special</value>       
+       </choice>
+       </attribute>
+       <oneOrMore>
+         <ref name="navLabel"/>
+       </oneOrMore>
+       <ref name="content"/>
+     </element>
+    </define>
+
+   <define name="navTarget.attlist" combine="interleave">
+     <ref name="attribute.id.required"/>
+     <ref name="attribute.playOrder"/>
+     <optional>
+       <attribute name="class"/>
+     </optional>
+     <optional>
+       <attribute name="value">
+         <ref name="datatype.nonNegativeInteger">
+           <zed:test id="ncx_ValueAttrValue"/>
+         </ref>
+       </attribute>
+     </optional>
+   </define>
+
+   <define name="navInfo">
+     <element name="navInfo">
+      <ref name="i18n"/>
+      <choice>
+         <group>
+           <ref name="text"/>
+           <optional>
+             <ref name="audio"/>
+           </optional>
+         </group>
+         <ref name="audio"/>
+       </choice>
+       <optional>
+         <ref name="img"/>
+       </optional>            
+     </element>   
+   </define>
+
+  <div c:name="common">
+   
+   <define name="attribute.playOrder">
+     <attribute name="playOrder">
+       <ref name="datatype.positiveInteger">
+         <zed:test id="ncx_playOrderPosInt"/>
+       </ref>
+     </attribute>
+   </define>
+   
+   <define name="i18n">
+     <ref name="attribute.xml.lang.optional"/>
+     <optional>
+       <attribute name="dir">
+         <choice>
+           <value>ltr</value>
+           <value>rtl</value>
+         </choice>
+       </attribute>
+     </optional>
+    </define>
+
+    <define name="text">
+      <element name="text">
+        <ref name="attlist.text"/>
+        <text/>
+      </element>
+    </define>
+
+    <define name="attlist.text" combine="interleave">
+      <ref name="attribute.id.optional"/>
+      <ref name="attribute.class.optional"/>
+    </define>
+
+    <define name="audio">
+      <element name="audio">
+        <ref name="audio.attlist"/>
+        <empty/>
+      </element>
+    </define>
+
+    <define name="audio.attlist" combine="interleave">
+      <ref name="attribute.id.optional"/>
+      <ref name="attribute.class.optional"/>
+      <attribute name="src">
+        <ref name="datatype.uri">
+          <zed:test id="ncx_audioSrcValue"/>
+        </ref>
+      </attribute>
+      <optional>
+        <attribute name="clipBegin">
+          <ref name="datatype.smilclock">
+            <zed:test id="ncx_clipBeginValue"/>
+          </ref>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="clipEnd">
+          <ref name="datatype.smilclock">
+            <zed:test id="ncx_clipEndValue"/>
+          </ref>
+        </attribute>
+      </optional>
+    </define>
+
+   <define name="img">
+     <element name="img">
+       <ref name="img.attlist"/>
+       <empty/>
+     </element>
+   </define>
+
+   <define name="img.attlist" combine="interleave">
+     <ref name="attribute.id.optional"/>
+     <ref name="attribute.class.optional"/>
+     <attribute name="src">
+       <ref name="datatype.uri">
+         <zed:test id="ncx_imgSrcValue"/>
+       </ref>
+     </attribute>
+   </define>
+
+  </div>
+  
+  <div c:name="head">
+       <define name="head">
+       <element name="head">
+         <interleave>
+           <zeroOrMore>
+             <ref name="smilCustomTest"/>
+           </zeroOrMore>
+           <oneOrMore>
+             <ref name="meta"/>
+           </oneOrMore>
+         </interleave>
+       </element>
+     </define>
+
+     <define name="meta">
+         <element name="meta">
+           <ref name="meta.attlist"/>
+           <empty/>
+         </element>
+     </define>
+
+     <define name="meta.attlist" combine="interleave">
+       <choice>       
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:uid</value>
+           </attribute>
+           <ref name="attribute.content.stringvalue.required"/>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:depth</value>
+           </attribute>
+           <attribute name="content">
+             <ref name="datatype.nonNegativeInteger">
+               <zed:test id="ncx_metaDtbDepthValue"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         
+         <group>
+           <attribute name="name">
+             <a:documentation>optional-recomended</a:documentation>
+             <value>dtb:generator</value>
+           </attribute>
+           <ref name="attribute.content.stringvalue.required"/>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+                  
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:totalPageCount</value>
+           </attribute>
+           <attribute name="content">
+             <ref name="datatype.nonNegativeInteger">
+               <zed:test id="ncx_metaDtbtotPageCountValue"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:maxPageNumber</value>
+           </attribute>
+           <attribute name="content">
+             <ref name="datatype.nonNegativeInteger">
+               <zed:test id="ncx_metaDtbmaxPageNumValue"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         
+         <!--
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:maxPageNormal</value>
+           </attribute>
+           <attribute name="content">
+             <ref name="datatype.nonNegativeInteger">
+               <zed:test id="ncx_metaDtbMaxPageNormalContentAttrValue"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:pageFront</value>
+           </attribute>
+           <attribute name="content">
+             <ref name="datatype.nonNegativeInteger">
+               <zed:test id="ncx_metaDtbPageFrontContentAttrValue"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:pageNormal</value>
+           </attribute>
+           <attribute name="content">
+             <ref name="datatype.nonNegativeInteger">
+               <zed:test id="ncx_metaDtbPageNormalContentAttrValue"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:pageSpecial</value>
+           </attribute>
+           <attribute name="content">
+             <ref name="datatype.nonNegativeInteger">
+               <zed:test id="ncx_metaDtbPageSpecialContentAttrValue"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         -->
+         <group>
+           <attribute name="name">
+             <ref name="datatype.string.nondtbns">
+               <zed:test id="ncx_metaDtbPrefixRestriction"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.content.stringvalue.required"/>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+       </choice>
+     </define>
+
+     <define name="smilCustomTest">
+       <element name="smilCustomTest">
+         <ref name="attlist.smilCustomTest"/>
+         <empty/>
+       </element>
+     </define>
+
+     <define name="attlist.smilCustomTest" combine="interleave">
+       <ref name="attribute.id.required"/>
+       <optional>
+         <attribute name="defaultState" a:defaultValue="false">
+           <choice>
+             <value>true</value>
+             <value>false</value>
+           </choice>
+         </attribute>
+       </optional>
+       <optional>
+         <attribute name="bookStruct">
+           <choice>
+             <value>PAGE_NUMBER</value>
+             <value>NOTE</value>
+             <value>NOTE_REFERENCE</value>
+             <value>ANNOTATION</value>
+             <value>LINE_NUMBER</value>
+             <value>OPTIONAL_SIDEBAR</value>
+             <value>OPTIONAL_PRODUCER_NOTE</value>
+           </choice>
+         </attribute>  
+       </optional>
+       <optional>
+         <attribute name="override" a:defaultValue="hidden">
+           <choice>
+             <value>visible</value>
+             <value>hidden</value>
+           </choice>
+         </attribute>
+       </optional>
+     </define>
+  
+  </div>
+
+  <sch:pattern name="ncx_metaDtbmaxPageNumPresence" id="ncx_metaDtbmaxPageNumPresence">
+      <!-- dtb:maxPageNumber meta element exists  -->
+      <sch:rule context="ncx:head">
+        <sch:assert test="count(ncx:meta[@name='dtb:maxPageNumber'])=1">
+          [sch][ncx_metaDtbmaxPageNumPresence]
+        </sch:assert>        
+      </sch:rule>
+  </sch:pattern>
+  
+  <sch:pattern name="ncx_metaDtbtotPageCountPresence" id="ncx_metaDtbtotPageCountPresence">
+      <!-- dtb:totalPageCount meta element exists  -->
+      <sch:rule context="ncx:head">
+        <sch:assert test="count(ncx:meta[@name='dtb:totalPageCount'])=1">
+          [sch][ncx_metaDtbtotPageCountPresence]
+        </sch:assert>        
+      </sch:rule>
+  </sch:pattern>
+  
+  <sch:pattern name="ncx_metaDtbDepthPresence" id="ncx_metaDtbDepthPresence">
+      <!-- dtb:depth meta element exists  -->
+      <sch:rule context="ncx:head">
+        <sch:assert test="count(ncx:meta[@name='dtb:depth'])=1">
+          [sch][ncx_metaDtbDepthPresence]
+        </sch:assert>        
+      </sch:rule>
+  </sch:pattern>
+  
+  <sch:pattern name="ncx_metaDtbGeneratorPresence" id="ncx_metaDtbGeneratorPresence">
+      <!-- dtb:generator meta element exists   -->
+      <sch:rule context="ncx:head">
+        <sch:assert test="count(ncx:meta[@name='dtb:generator'])=1">
+          [sch][ncx_metaDtbGeneratorPresence]
+        </sch:assert>        
+      </sch:rule>
+  </sch:pattern>
+  
+  <sch:pattern name="ncx_metaDtbUidPresence" id="ncx_metaDtbUidPresence">
+      <!-- dtb:uid meta element exists   -->
+      <sch:rule context="ncx:head">
+        <sch:assert test="count(ncx:meta[@name='dtb:uid'])=1">
+          [sch][ncx_metaDtbUidPresence]
+        </sch:assert>        
+      </sch:rule>
+  </sch:pattern>
+  
+  <sch:pattern name="ncx_pageTargUniqValTypeComb" id="ncx_pageTargUniqValTypeComb">
+      <!-- pageTarget combination of value and type attributes is unique -->
+      <sch:rule context="ncx:pageList/ncx:pageTarget[@value]">
+        <sch:assert test="count(//ncx:pageTarget[@value=current()/@value and @type=current()/@type])=1">
+          [sch][ncx_pageTargUniqValTypeComb]
+        </sch:assert>        
+      </sch:rule>
+  </sch:pattern>
+  
+  <sch:pattern name="ncx_playOrderOrigin" id="ncx_playOrderOrigin">
+      <!-- The sequence of play orders begins with value 1 -->
+      <sch:rule context="ncx:ncx">
+        <sch:assert test="count(//*[@playOrder='1'])=1">
+          [sch][ncx_playOrderOrigin]
+        </sch:assert>
+      </sch:rule>
+  </sch:pattern>
+
+  <sch:pattern name="ncx_multiNavLabel" id="ncx_multiNavLabel">
+      <!-- multiple navLabels within an NCX node have unique xml:lang values -->
+      <sch:rule context="ncx:navLabel">
+      <sch:assert test="count(../ncx:navLabel[@xml:lang=current()/@xml:lang])&lt;2">
+          [sch][ncx_multiNavLabel]
+        </sch:assert>        
+      </sch:rule>
+  </sch:pattern>
+  
+    <sch:pattern name="ncx_multiNavInfo" id="ncx_multiNavInfo">
+      <!-- multiple navInfos within an NCX node have unique xml:lang values -->
+      <sch:rule context="ncx:navInfo">
+        <sch:assert test="count(../ncx:navInfo[@xml:lang=current()/@xml:lang])&lt;2">
+          [sch][ncx_multiNavInfo]
+        </sch:assert>        
+      </sch:rule>
+    </sch:pattern>
+    
+    <sch:pattern name="ncx_metaDtbtotPageCountValueCorrelated" id="ncx_metaDtbtotPageCountValueCorrelated">
+      <!-- dtb:totalPageCount content attribute value indicates total number of pages in NCX -->
+      <sch:rule context="ncx:meta[@name='dtb:totalPageCount']">
+        <sch:assert test="count(ncx:ncx/ncx:pageList/ncx:pageTarget)=current()/@content">
+          [sch][ncx_metaDtbtotPageCountValueCorrelated]
+        </sch:assert>        
+      </sch:rule>
+    </sch:pattern>
+    
+    <sch:pattern name="ncx_playOrderNoGaps" id="ncx_playOrderNoGaps">
+      <!-- The sequence of playOrder must have no gaps -->
+      <sch:rule context="//*[number(@playOrder) &gt; 1]">
+        <sch:assert test="count(//*[@playOrder][number(@playOrder) = number(current()/@playOrder)-1])&gt;0"> 
+          [sch][ncx_playOrderNoGaps]
+        </sch:assert>        
+      </sch:rule>
+    </sch:pattern>
+
+    <sch:pattern name="ncx_playOrderMatch2" id="ncx_playOrderMatch2">
+      <!-- navPoints, navTargets, and pageTargets that have identical playOrder values point to same SMIL container -->
+      <sch:rule context="//*[@playOrder]">
+        <sch:assert test="count(//*[@playOrder][number(@playOrder)=number(current()/@playOrder)]/ncx:content[@src != current()/ncx:content/@src])=0">
+          [sch][ncx_playOrderMatch2]
+        </sch:assert>        
+      </sch:rule>
+    </sch:pattern>
+
+    <sch:pattern name="ncx_playOrderMatch" id="ncx_playOrderMatch">
+      <!-- navPoints, navTargets, and pageTargets that point to same SMIL container have identical playOrder values -->
+      <sch:rule context="//*[@playOrder][ncx:content]">
+        <sch:assert test="count(//*[@playOrder][ncx:content][ncx:content/@src=current()/ncx:content/@src][number(@playOrder)!=number(current()/@playOrder)])=0">
+          [sch][ncx_playOrderMatch]
+        </sch:assert>        
+      </sch:rule>
+    </sch:pattern>
+	
+  <!--
+      <sch:pattern name="" id="">
+      <sch:rule context="">
+        <sch:assert test="">
+          [sch][]
+        </sch:assert>        
+      </sch:rule>
+    </sch:pattern>
+  -->
 </grammar>

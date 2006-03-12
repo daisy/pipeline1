@@ -9,10 +9,15 @@
 	<sch:ns prefix="smil" uri="http://www.w3.org/2001/SMIL20/"/>
 	
 	<a:documentation>
-		dtbsmil-2005-1.rng
-		mgylling 2005-07-01
-		Last edit by: Piotr Kiernicki 2005-10-24
-		org.daisy.util.xml.catalog mapping by the PID '-//NISO//RNG dtbsmil 2005-1//EN'
+      RelaxNg schema for Z39.86 SMIL version 2005-1  
+      Last edit by: mgylling 2006-03-12
+	  Original version: mgylling 2005-07-01
+	  
+  	  org.daisy.util.xml.catalog mapping by 
+	  the PID '-//NISO//RNG dtbsmil 2005-1//EN'
+    
+      Version/change history:		
+		
 	</a:documentation>
 	
 	<include href="../relaxngcommon/attributes.rng" />
@@ -24,8 +29,7 @@
 	<define name="element.smil">
 		<element name="smil" ns="http://www.w3.org/2001/SMIL20/"><!-- see http://www.oasis-open.org/committees/relax-ng/tutorial.html#IDADGZR-->
 			<zed:test id="smil_xmlnsPresence"/>
-			<zed:test id="smil_xmlnsValue"/>
-			
+			<zed:test id="smil_xmlnsValue"/>			
 			<ref name="core.attList"/>
 			<ref name="attribute.xml.lang.optional"/>
 			<ref name="element.head"/>
@@ -194,7 +198,7 @@
 		
 		<attribute name="defaultState" a:defaultValue="false">
 			<zed:test id="smil_CstTstDefStAttr"/>
-			<a:documentation>'
+			<a:documentation>
 				smil_CstTstDefStAttr makes the defaultState required
 				http://www.daisy.org/z3986/2005/z3986-2005.html#para_110
 			</a:documentation>
@@ -228,6 +232,7 @@ TODO is this right to exclude hidden?
 
 	<define name="element.body">
 		<element name="body">
+		   <!-- TODO mg: does the spec require a seq as first child of body? -->
 			<ref name="core.attList"/>
 			<ref name="attribute.xml.lang.optional"/>
 			<oneOrMore>
@@ -241,70 +246,69 @@ TODO is this right to exclude hidden?
 				</choice>
 			</oneOrMore>
 
-			<sch:pattern name="smil_validRegionPattern" id="smil_validRegionPattern">
+			<sch:pattern name="smil_validRegion" id="smil_validRegion">
        			<sch:rule context="//smil:*[@region]">
-					<zed:test id="smil_validRegionValue"/>
+					<zed:test id="smil_validRegion"/>
 					<sch:assert test="//smil:layout/smil:region[@id=current()/@region]"> 
-						[sch][smil_validRegionPattern]
+						[sch][smil_validRegion]
 					</sch:assert>   					
 				</sch:rule>
-			</sch:pattern>						
-
-			<sch:pattern name="smil_endValuePattern" id="smil_endValuePattern">
+			</sch:pattern>									
+			<sch:pattern name="smil_endValue" id="smil_endValue">
        			<sch:rule context="//smil:*[@end]">
 	       			<zed:test id="smil_endValue"/>
+	       			<!-- mg ??this really should only check for syntax, doesnt need to check childId since this is done by smil_escStructChildIdValue -->
 					<sch:assert test="(@end = concat('DTBuserEscape;', current()/child::*[last()]/@id, '.end'))
 									or (starts-with(@end, concat('DTBuserResume;', current()/child::*[last()]/@id, '.end+')))
 									or (starts-with(@end, concat('DTBuserEscape;DTBuserResume;', current()/child::*[last()]/@id, '.end+')))"> 
-						[sch][smil_endValuePattern]
+						[sch][smil_endValue]
 					</sch:assert>        
 					<a:documenation>
 						TODO the rule does not validate the Clock-value in: *DTBuserResume;childId-value.end+Clock-value
 					</a:documenation>							
 				</sch:rule>
 			</sch:pattern>	
-
-			<sch:pattern name="smil_escStructIsSeqPattern" id="smil_escStructIsSeqPattern">
+			<sch:pattern name="smil_escStructIsSeq" id="smil_escStructIsSeq">
        			<sch:rule context="//smil:*[starts-with(@end, 'DTBuserEscape;')]">
 					<zed:test id="smil_escStructIsSeq"/>
 					<sch:assert test="local-name(.)='seq'"> 
-						[sch][smil_escStructIsSeqPattern]
+						[sch][smil_escStructIsSeq]
 					</sch:assert>        
 				</sch:rule>
 			</sch:pattern>		
 
-			<sch:pattern name="smil_escStructHasChildTcPattern" id="smil_escStructHasChildTcPattern">
+			<sch:pattern name="smil_escStructHasChildTc" id="smil_escStructHasChildTc">
        			<sch:rule context="//smil:*[starts-with(@end, 'DTBuserEscape;')]">
 					<zed:test id="smil_escStructHasChildTc"/>
 					<sch:assert test="(count(smil:seq) &gt; 0) or (count(smil:par) &gt; 0)"> 
-						[sch][smil_escStructHasChildTcPattern]
+						[sch][smil_escStructHasChildTc]
 					</sch:assert>        
 				</sch:rule>
 			</sch:pattern>	
 			
-			<sch:pattern name="smil_escStrucClassAttrPattern" id="smil_escStrucClassAttrPattern">
+			<sch:pattern name="smil_escStrucClassAttr" id="smil_escStrucClassAttr">
        			<sch:rule context="//smil:*[starts-with(@end, 'DTBuserEscape;')]">
 					<zed:test id="smil_escStrucClassAttr"/>
 					<sch:assert test="@class"> 
-						[sch][smil_escStrucClassAttrPattern]
+						[sch][smil_escStrucClassAttr]
 					</sch:assert>        
 				</sch:rule>
 			</sch:pattern>		
 		
-			<sch:pattern name="smil_pauseStructIsSeqPattern" id="smil_pauseStructIsSeqPattern">
+			<sch:pattern name="smil_pauseStructIsSeq" id="smil_pauseStructIsSeq">
        			<sch:rule context="//smil:*[contains(@end, 'DTBuserResume')]">
 					<zed:test id="smil_pauseStructIsSeq"/>
 					<sch:assert test="local-name(.)='seq'"> 
-						[sch][smil_pauseStructIsSeqPattern]
+						[sch][smil_pauseStructIsSeq]
 					</sch:assert>        
 				</sch:rule>
 			</sch:pattern>
 			
-			<sch:pattern name="smil_pauseStructHasChildTcPattern" id="smil_pauseStructHasChildTcPattern">
+			<sch:pattern name="smil_pauseStructHasChildTc" id="smil_pauseStructHasChildTc">
        			<sch:rule context="//smil:*[contains(@end, 'DTBuserResume')]">
 					<zed:test id="smil_pauseStructHasChildTc"/>
 					<sch:assert test="(count(smil:seq) &gt; 0) or (count(smil:par) &gt; 0)"> 
-						[sch][smil_pauseStructHasChildTcPattern]
+						[sch][smil_pauseStructHasChildTc]
 					</sch:assert>        
 				</sch:rule>
 			</sch:pattern>
@@ -317,6 +321,14 @@ TODO is this right to exclude hidden?
 			<ref name="attribute.id.required"/>
 			<ref name="attribute.class.optional"/>
 			<ref name="attribute.customTest.optional"/>
+			<sch:pattern name="smil_customTestAttrResolvesToCustomTestElement">
+       			<sch:rule context="smil:*[@customTest]">
+					<zed:test id="smil_customTestAttrResolvesToCustomTestElement"/>
+					<sch:assert test="count(//smil:customTest[@id=current()/@customTest])=1">
+					   	[sch][smil_customTestAttrResolvesToCustomTestElement]
+					</sch:assert>					        
+				</sch:rule>
+			</sch:pattern>			
 			<oneOrMore>
 				<choice>
 					<ref name="element.seq"/>
@@ -326,7 +338,7 @@ TODO is this right to exclude hidden?
 					<ref name="element.a"/>
 				</choice>
 			</oneOrMore>
-			<sch:pattern name="smil_parContentPattern" id="smil_parContentPattern">
+			<sch:pattern name="smil_parContent" id="smil_parContent">
        			<sch:rule context="smil:par">
 	       			<zed:test id="smil_parContent"/>
 					<a:documenation>
@@ -337,7 +349,7 @@ TODO is this right to exclude hidden?
 									and not(count(smil:text)&gt;1)
 									and not(count(smil:audio)&gt;1)
 									and not(count(smil:img)&gt;1)"> 
-						[sch][smil_parContentPattern]
+						[sch][smil_parContent]
 					</sch:assert>        
 				</sch:rule>
 			</sch:pattern>		
@@ -354,19 +366,19 @@ TODO is this right to exclude hidden?
 			</ref>
 			<optional>
 				<attribute name="end">
-					<sch:pattern name="smil_escStructChildIdValuePattern" id="smil_escStructChildIdValuePattern">
+					<sch:pattern name="smil_escStructChildIdValue" id="smil_escStructChildIdValue">
 		       			<sch:rule context="smil:seq[@end]">
 							<zed:test id="smil_escStructChildIdValue"/> <!-- TODO subset of smil_endValue ?-->
 							<sch:assert test="(@end = concat('DTBuserEscape;', current()/child::*[last()]/@id, '.end'))
 												or (starts-with(@end, concat('DTBuserEscape;DTBuserResume;', current()/child::*[last()]/@id, '.end+')))
 											"> 
-								[sch][smil_escStructChildIdValuePattern]
+								[sch][smil_escStructChildIdValue]
 							</sch:assert>        
 							<a:documenation>
 								TODO the rule does not validate the Clock-value in: *DTBuserResume;childId-value.end + Clock-value
 							</a:documenation>							
 						</sch:rule>
-					</sch:pattern>					
+					</sch:pattern>	
 					<text/>
 				</attribute>
 			</optional>
@@ -415,15 +427,6 @@ TODO is this right to exclude hidden?
 			<ref name="attribute.clipEnd.required">
 				<zed:test id="smil_clipEndValue"/>
 			</ref>
-
-			<sch:pattern name="smil_clipEndAfterclipBeginPattern" id="smil_clipEndAfterclipBeginPattern">
-       			<sch:rule context="smil:audio">
-	       			<zed:test id="smil_clipEndAfterclipBegin"/>
-					<sch:assert test="number(translate(@clipEnd,':.','')) &gt; number(translate(@clipBegin,':.',''))"> 
-						[sch][smil_clipEndAfterclipBeginPattern]
-					</sch:assert>        
-				</sch:rule>
-			</sch:pattern>	
 		</element>
 	</define>
 
@@ -440,6 +443,14 @@ TODO is this right to exclude hidden?
 	<define name="element.a">
 		<element name="a">
 			<zed:test id="smil_anchorsNotNested"/>
+			<sch:pattern name="smil_anchorsNotNested" id="smil_anchorsNotNested">
+       			<sch:rule context="smil:a">
+	       			<zed:test id="smil_anchorsNotNested"/>
+					<sch:assert test="count(.//smil:a)=0"> 
+						[sch][smil_anchorsNotNested]
+					</sch:assert>        
+				</sch:rule>
+			</sch:pattern>
 			<ref name="core.attList"/>
 			<ref name="attribute.xml.lang.optional"/>
 			<ref name="attribute.href.required">

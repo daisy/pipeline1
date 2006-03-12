@@ -8,17 +8,19 @@
   <sch:ns prefix="res" uri="http://www.daisy.org/z3986/2005/resource/"/>
 
   <a:documentation>
-    resource-2005-1.rng
-    org.daisy.util.xml.catalog mapping by the PID '-//NISO//RNG resource 2005-1//EN'
-    Original version: mgylling 2005-07-01    
-    Version/change history:
-    2005-09-07 Piotr Kiernicki: 
+	  RelaxNg schema for Z39.86 NCX version 2005-1  
+      Last edit by: mgylling 2006-03-12
+	  Original version: mgylling 2005-07-01    	  
+      
+	  org.daisy.util.xml.catalog mapping by 
+	  the PID '-//NISO//RNG resource 2005-1//EN'
+    
+      Version/change history:
+      2005-09-07 Piotr Kiernicki: 
     	- added xmlns attribute to resources.attlist
     	- added &lt;element name="head"&gt; in &lt;define name="head"&gt;
-    2005-11-02
-    	- replaced the declaration of the 'xmlns attribute' in resource.attlist with
-    	  'ns attribute' in the resources element declaration
-    
+      2006-02-04 mgylling:
+        -fixed the ns error that piotr tried to clean above	    
   </a:documentation>
   
   <include href="../relaxngcommon/attributes.rng" />
@@ -28,7 +30,7 @@
   </start>
     
   <define name="root">
-    <element name="resources" ns="http://www.daisy.org/z3986/2005/resource/">
+    <element name="resources">
       <ref name="resources.attlist"/>
       <optional>
         <ref name="head"/>
@@ -78,7 +80,7 @@
       <!-- The namespace URI (the value of the nsuri attribute) must be unique for each scope element. -->
       <sch:rule context="res:scope">
        <sch:assert test="count(//res:scope[@nsuri=current()/@nsuri])=1"> 
-          [sch][resNsUriAtt]
+          [sch][resource_resNsUriAtt]
         </sch:assert>        
       </sch:rule>
     </sch:pattern> 
@@ -95,7 +97,7 @@
       <!-- Within any given nodeSet, there must not be two resources with the same language.  -->
       <sch:rule context="res:nodeSet/res:resource">
         <sch:assert test="count(../res:resource[@xml:lang=current()/@xml:lang])=1">
-          [sch][nodeSetLangUnique]
+          [sch][resource_nodeSetLangUnique]
         </sch:assert>        
       </sch:rule>
     </sch:pattern>     

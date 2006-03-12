@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grammar  
-  ns="http://www.daisy.org/z3986/2005/resource/"
+  ns="http://www.daisy.org/z3986/2005/dtbook/"
   xmlns="http://relaxng.org/ns/structure/1.0"
   xmlns:sch="http://www.ascc.net/xml/schematron"
   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"  
@@ -8,11 +8,16 @@
   <sch:ns prefix="dtbk" uri="http://www.daisy.org/z3986/2005/dtbook/"/>
 
   <a:documentation>
-    dtbook-2005-1.rng
-    org.daisy.util.xml.catalog mapping by the PID '-//NISO//RNG dtbook 2005-1//EN'
-    Original version: mgylling 2005-07-01    
-    Version/change history:
+      RelaxNg schema for Z39.86 Dtbook version 2005-1  
+      Last edit by: mgylling 2006-03-12
+	  Original version: mgylling 2005-07-01
+	  
+  	  org.daisy.util.xml.catalog mapping by 
+	  the PID '-//NISO//RNG dtbook 2005-1//EN'
     
+      Version/change history:
+	    mg20060204: added schtests
+	        
   </a:documentation>
   
   <include href="../relaxngcommon/attributes.rng" />
@@ -24,7 +29,9 @@
   <define name="root">
     <element name="dtbook">
       <ref name="dtbook.attlist"/>
-      <ref name="anyElement"/>
+      <oneOrMore>
+        <ref name="anyElement"/>
+      </oneOrMore>  
     </element>
   </define>
   
@@ -46,12 +53,44 @@
       <zeroOrMore>
 	    <choice>
 	      <attribute>
-	        <anyName/>
+		      <anyName/>  
 	      </attribute>
 	      <text/>
 	      <ref name="anyElement"/>
 	    </choice>
       </zeroOrMore>
     </element>
-  </define>          
+  </define>
+  
+  <sch:pattern name="dtbook_MetaUid" id="dtbook_MetaUid">
+    <!-- dtb:uid meta element exists -->
+    <sch:rule context="dtbk:head">
+      <sch:assert test="count(dtbk:meta[@name='dtb:uid'])=1"> 
+        [sch][dtbook_MetaUid]
+      </sch:assert>        
+    </sch:rule>
+  </sch:pattern> 
+ 
+  <sch:pattern name="dtbook_MetaTitle" id="dtbook_MetaTitle">
+    <sch:rule context="dtbk:head">
+      <sch:assert test="count(dtbk:meta[@name='dc:Title'])=1"> 
+        [sch][dtbook_MetaTitle]
+      </sch:assert>  
+    </sch:rule>
+  </sch:pattern>     
+  
+  <!--        
+  <sch:pattern name="dtbook_idrefNote" id="dtbook_idrefNote">
+   <sch:rule context="dtbk:noteref">
+     <sch:assert test="count(//dtbk:note[@id=current()/@idref])=1">&lt;noteref idref='...'/&gt; without &lt;note id='...'/&gt;</sch:assert>    
+   </sch:rule>
+  </sch:pattern>  
+
+  <sch:pattern name="dtbook_idrefAnnotation" id="dtbook_idrefAnnotation">
+   <sch:rule context="dtbk:annoref">
+     <sch:assert test="count(//dtbk:annotation[@id=current()/@idref])=1">&lt;annoref idref='...'/&gt; without &lt;annotation id='...'/&gt;</sch:assert>    
+   </sch:rule>
+  </sch:pattern>  
+  -->        
+          
 </grammar>
