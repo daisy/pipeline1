@@ -20,6 +20,8 @@ package org.daisy.util.xml.validation;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -31,7 +33,11 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.util.file.TempFile;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.catalog.CatalogURIResolver;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -40,128 +46,316 @@ import com.thaiopensource.validate.ValidateProperty;
 import com.thaiopensource.validate.ValidationDriver;
 
 /**
- * Validate an XML document using a RELAXNG schema with embedded Schematron rules.
+ * Validate an XML document using a RELAXNG schema with embedded Schematron
+ * rules.
+ * 
  * @author Linus Ericson
  * @author Markus Gylling
  */
 public class RelaxngSchematronValidator implements Validator, ErrorHandler {
-	
-	private ValidationDriver relaxngDriver = null;
-	private ValidationDriver schematronDriver = null;
-	
-	/**
-	 * Creates a new RELAXNG/Schematron validator using the specified schema
-	 * @param schema a RELAXNG schema, possibly with embedded Schematron rules
-	 * @param errh an imlementation of the SAX ErrorHandler interface; if fed to constructor as null, validation errors are reported to system.err
-	 * @param useSchematron tells whether Schematron validation should be performed
-	 * @param useRelaxNG tells whether RelaxNG validation should be performed
-	 * @throws ValidationException 
-	 */
-	public RelaxngSchematronValidator(File schema, ErrorHandler errh, boolean useRelaxNG, boolean useSchematron) throws ValidationException {
-		PropertyMapBuilder builder = new PropertyMapBuilder();
-		
-		//set the errorhandler
-		if (null!=errh) {
-			builder.put(ValidateProperty.ERROR_HANDLER, errh);
-		}else{
-			//fall back on self if user did not supply an errorhandler
-			builder.put(ValidateProperty.ERROR_HANDLER, this);
-		}
-		
-		//mg: Implement XmlReaderCreator in order to hook up the DTD catalog
-		// ValidateProperty.ENTITY_RESOLVER does not seem to work
-		XmlReaderCreatorImpl xrc = new XmlReaderCreatorImpl(false);        	
-		builder.put(ValidateProperty.XML_READER_CREATOR,xrc);
-		
-		try {
-			if(useRelaxNG) {
-				// Load RELAXNG schema
-				relaxngDriver = new ValidationDriver(builder.toPropertyMap());
-				try {
-					if (!relaxngDriver.loadSchema(ValidationDriver.fileInputSource(schema))) {
-						throw new ValidationException("Cannot load RELAXNG schema " + schema.getAbsolutePath());
-					}
-				}catch (Exception e){
-					e.printStackTrace(System.err);
-					throw new ValidationException("Cannot load RELAXNG schema " + schema.getAbsolutePath());
-				}
-			}
-			
-			if (useSchematron) {
-				// Use XSLT to strip out Schematron rules
-				Source xml = new SAXSource(ValidationDriver.fileInputSource(schema));
-				Source xslt = new StreamSource(this.getClass().getResourceAsStream("RNG2Schtrn.xsl"));                                
-				TransformerFactory factory = TransformerFactory.newInstance();
-				Transformer transformer = factory.newTransformer(xslt);								
-				TempFile schematronSchema = new TempFile();
-				//mg 20060204: added getCanonicalPath to circumvent win tempdir not supported as streamresult inparam ("erronoues syntax for dir")
-				transformer.transform(xml, new StreamResult(schematronSchema.getFile().getCanonicalPath()));
-				
-				// Try to load Schematron schema
-				schematronDriver = new ValidationDriver(builder.toPropertyMap());
-				if (!schematronDriver.loadSchema(ValidationDriver.fileInputSource(schematronSchema.getFile()))) {                                        
-					throw new ValidationException("Cannot load Schematron schema " + schema.getAbsolutePath());                    
-				}
-				
-				// Delete temporary schematron file
-				schematronSchema.delete();
-			}
-		} catch (SAXException e) {
-			throw new ValidationException("Parsing: " + e.getMessage(), e);
-		} catch (IOException e) {
-			throw new ValidationException("Parsing: " + e.getMessage(), e);
-		} catch (TransformerConfigurationException e) {
-			throw new ValidationException("Parsing: " + e.getMessage(), e);
-		} catch (TransformerException e) {
-			throw new ValidationException("Parsing: " + e.getMessage(), e);
-		}	
-	}
-	
-	public boolean isValid(File xml) throws ValidationException {
-		boolean rngResult = true;
-		boolean schResult = true;
-		
-		if ((relaxngDriver== null)&&(schematronDriver== null)) {
-			throw new ValidationException("Validation: ", new ValidationException("no driver loaded"));
-		}
-		
-		try {
-			if (relaxngDriver!= null) {            	
-				rngResult = relaxngDriver.validate(ValidationDriver.fileInputSource(xml));    
-			}            
-			if (schematronDriver != null) {            	
-				schResult = schematronDriver.validate(ValidationDriver.fileInputSource(xml));
-			}            
-		} catch (SAXException e) {
-			throw new ValidationException("Validation: " + e.getMessage(), e);
-		} catch (IOException e) {
-			throw new ValidationException("Validation: " + e.getMessage(), e);
-		}
-		
-		return rngResult && schResult ? true : false;
-	}
-	
-	public void warning(SAXParseException e) throws SAXException {
-		printMessage("Warning", e);        
-	}
-	
-	public void error(SAXParseException e) throws SAXException {
-		printMessage("Error", e);
-	}
-	
-	public void fatalError(SAXParseException e) throws SAXException {
-		printMessage("Fatal error", e);
-	}
-	
-	private void printMessage(String type,SAXParseException spe) {
-		StringBuffer sb = new StringBuffer();
-		sb.append(type);
-		sb.append(" in ");
-		sb.append(spe.getSystemId());
-		sb.append(": ");
-		sb.append(spe.getMessage());
-		sb.append(". Line:" + spe.getLineNumber());
-		sb.append(" Column:" + spe.getColumnNumber());
-		System.err.println(sb.toString());
-	}
+
+    private ValidationDriver relaxngDriver = null;
+
+    private ValidationDriver schematronDriver = null;
+
+    /**
+     * Creates a new RELAXNG/Schematron validator using the specified schema
+     * 
+     * @param schema
+     *            a RELAXNG schema, possibly with embedded Schematron rules
+     * @param errh
+     *            an imlementation of the SAX ErrorHandler interface; if fed to
+     *            constructor as null, validation errors are reported to
+     *            system.err
+     * @param useSchematron
+     *            tells whether Schematron validation should be performed
+     * @param useRelaxNG
+     *            tells whether RelaxNG validation should be performed
+     * @throws ValidationException
+     */
+    public RelaxngSchematronValidator(File schema, ErrorHandler errh,
+            boolean useRelaxNG, boolean useSchematron)
+            throws ValidationException {
+
+        try {
+            initialize(schema.toURL(), errh, useRelaxNG, useSchematron);
+        } catch (MalformedURLException e) {
+            throw new ValidationException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Creates a new RELAXNG/Schematron validator using the specified schema
+     * This constructor assumes that the schema contains RelaxNG and Schematron
+     * 
+     * @param schemaURL
+     *            URL of a RELAXNG schema, possibly with embedded Schematron
+     *            rules
+     * @param errh
+     *            an imlementation of the SAX ErrorHandler interface; if fed to
+     *            constructor as null, validation errors are reported to
+     *            system.err
+     * @throws ValidationException
+     */
+
+    public RelaxngSchematronValidator(URL schemaUrl, ErrorHandler errh)
+            throws ValidationException {
+        initialize(schemaUrl, errh, true, true);
+    }
+
+    /**
+     * Creates a new RELAXNG/Schematron validator using the specified schema
+     * 
+     * @param schemaURL
+     *            URL of a RELAXNG schema, possibly with embedded Schematron
+     *            rules
+     * @param errh
+     *            an imlementation of the SAX ErrorHandler interface; if fed to
+     *            constructor as null, validation errors are reported to
+     *            system.err
+     * @param useSchematron
+     *            tells whether Schematron validation should be performed
+     * @param useRelaxNG
+     *            tells whether RelaxNG validation should be performed
+     * @throws ValidationException
+     */
+
+    public RelaxngSchematronValidator(URL schemaUrl, ErrorHandler errh,
+            boolean useRelaxNG, boolean useSchematron)
+            throws ValidationException {
+        initialize(schemaUrl, errh, useRelaxNG, useSchematron);
+    }
+
+    /**
+     * Creates a new RELAXNG/Schematron validator using the specified schema
+     * This constructor assumes that the schema contains RelaxNG and Schematron
+     * 
+     * @param schemaPublicOrSystemId
+     *            Public or System ID of a RELAXNG schema, possibly with
+     *            embedded Schematron rules
+     * @param errh
+     *            an imlementation of the SAX ErrorHandler interface; if fed to
+     *            constructor as null, validation errors are reported to
+     *            system.err
+     * @param useSchematron
+     *            tells whether Schematron validation should be performed
+     * @param useRelaxNG
+     *            tells whether RelaxNG validation should be performed
+     * @throws ValidationException
+     */
+    public RelaxngSchematronValidator(String schemaPublicOrSystemId,
+            ErrorHandler errh) throws ValidationException {
+
+        try {
+            initialize(CatalogEntityResolver.getInstance().resolveEntityToURL(
+                    schemaPublicOrSystemId), errh, true, true);
+        } catch (CatalogExceptionNotRecoverable e) {
+            throw new ValidationException(e.getMessage(), e);
+        } catch (IOException e) {
+            throw new ValidationException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Creates a new RELAXNG/Schematron validator using the specified schema
+     * This constructor assumes that the schema contains RelaxNG and Schematron
+     * 
+     * @param schemaPublicId
+     *            Public ID of a RELAXNG schema, possibly with embedded
+     *            Schematron rules
+     * @param schemaSystemId
+     *            System ID of a RELAXNG schema, possibly with embedded
+     *            Schematron rules
+     * 
+     * @param errh
+     *            an imlementation of the SAX ErrorHandler interface; if fed to
+     *            constructor as null, validation errors are reported to
+     *            system.err
+     * @throws ValidationException
+     */
+    public RelaxngSchematronValidator(String schemaPublicId,
+            String schemaSystemId, ErrorHandler errh)
+            throws ValidationException {
+
+        try {
+            initialize(CatalogEntityResolver.getInstance().resolveEntityToURL(
+                    schemaPublicId, schemaSystemId), errh, true, true);
+        } catch (CatalogExceptionNotRecoverable e) {
+            throw new ValidationException(e.getMessage(), e);
+        } catch (IOException e) {
+            throw new ValidationException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Creates a new RELAXNG/Schematron validator using the specified schema
+     * This constructor assumes that the schema contains RelaxNG and Schematron
+     * 
+     * @param schemaPublicId
+     *            Public ID of a RELAXNG schema, possibly with embedded
+     *            Schematron rules
+     * @param schemaSystemId
+     *            System ID of a RELAXNG schema, possibly with embedded
+     *            Schematron rules
+     * 
+     * @param errh
+     *            an imlementation of the SAX ErrorHandler interface; if fed to
+     *            constructor as null, validation errors are reported to
+     *            system.err
+     * @param useSchematron
+     *            tells whether Schematron validation should be performed
+     * @param useRelaxNG
+     *            tells whether RelaxNG validation should be performed
+     * @throws ValidationException
+     */
+    public RelaxngSchematronValidator(String schemaPublicId,
+            String schemaSystemId, ErrorHandler errh, boolean useRelaxNG,
+            boolean useSchematron) throws ValidationException {
+
+        try {
+            initialize(CatalogEntityResolver.getInstance().resolveEntityToURL(
+                    schemaPublicId, schemaSystemId), errh, useRelaxNG,
+                    useSchematron);
+        } catch (CatalogExceptionNotRecoverable e) {
+            throw new ValidationException(e.getMessage(), e);
+        } catch (IOException e) {
+            throw new ValidationException(e.getMessage(), e);
+        }
+    }
+
+    private void initialize(URL schemaUrl, ErrorHandler errh,
+            boolean useRelaxNG, boolean useSchematron)
+            throws ValidationException {
+
+        PropertyMapBuilder builder = new PropertyMapBuilder();
+
+        // set the errorhandler
+        if (null != errh) {
+            builder.put(ValidateProperty.ERROR_HANDLER, errh);
+        } else {
+            // fall back on self if user did not supply an errorhandler
+            builder.put(ValidateProperty.ERROR_HANDLER, this);
+        }
+
+        // mg: Implement XmlReaderCreator in order to hook up the DTD catalog
+        // ValidateProperty.ENTITY_RESOLVER does not seem to work
+        XmlReaderCreatorImpl xrc = new XmlReaderCreatorImpl(false);
+        builder.put(ValidateProperty.XML_READER_CREATOR, xrc);
+
+        try {
+            if (useRelaxNG) {
+                // Load RELAXNG schema
+                relaxngDriver = new ValidationDriver(builder.toPropertyMap());
+                try {
+                    if (!relaxngDriver.loadSchema(new InputSource(schemaUrl
+                            .openConnection().getInputStream()))) {
+                        throw new ValidationException(
+                                "Cannot load RELAXNG schema "
+                                        + schemaUrl.toString());
+                    }
+                } catch (Exception e) {
+                    throw new ValidationException("Cannot load RELAXNG schema "
+                            + schemaUrl.toString(), e);
+                }
+            }
+
+            if (useSchematron) {
+                // Use XSLT to strip out Schematron rules
+                // Source xml = new
+                // SAXSource(ValidationDriver.fileInputSource(schema));
+                
+                Source xml = new StreamSource(schemaUrl
+                        .openConnection().getInputStream(),schemaUrl.toString());
+                
+                Source xslt = new StreamSource(this.getClass()
+                        .getResourceAsStream("RNG2Schtrn.xsl"));
+                
+                TransformerFactory factory = TransformerFactory.newInstance();
+                
+                Transformer transformer = factory.newTransformer(xslt);
+                
+                //transformer.setURIResolver(new CatalogURIResolver());
+                
+                TempFile schematronSchema = new TempFile();
+
+                String tempFilePath;                
+
+                tempFilePath = schematronSchema.getFile().getCanonicalPath();
+                
+                transformer.transform(xml, new StreamResult(tempFilePath));
+
+                // Try to load Schematron schema
+                schematronDriver = new ValidationDriver(builder.toPropertyMap());
+
+                if (!schematronDriver.loadSchema(ValidationDriver.fileInputSource(schematronSchema.getFile()))) {
+                    throw new ValidationException(
+                            "Cannot load Schematron schema "
+                                    + schemaUrl.toString());
+                }
+
+                // Delete temporary schematron file
+                schematronSchema.delete();
+            }
+        } catch (SAXException e) {
+            throw new ValidationException("Parsing: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new ValidationException("Parsing: " + e.getMessage(), e);
+        } catch (TransformerConfigurationException e) {
+            throw new ValidationException("Parsing: " + e.getMessage(), e);
+        } catch (TransformerException e) {
+            throw new ValidationException("Parsing: " + e.getMessage(), e);
+        }
+
+    }
+
+    public boolean isValid(File xml) throws ValidationException {
+        boolean rngResult = true;
+        boolean schResult = true;
+
+        if ((relaxngDriver == null) && (schematronDriver == null)) {
+            throw new ValidationException("Validation: ",
+                    new ValidationException("no driver loaded"));
+        }
+
+        try {
+            if (relaxngDriver != null) {
+                rngResult = relaxngDriver.validate(ValidationDriver
+                        .fileInputSource(xml));
+            }
+            if (schematronDriver != null) {
+                schResult = schematronDriver.validate(ValidationDriver
+                        .fileInputSource(xml));
+            }
+        } catch (SAXException e) {
+            throw new ValidationException("Validation: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new ValidationException("Validation: " + e.getMessage(), e);
+        }
+
+        return rngResult && schResult ? true : false;
+    }
+
+    public void warning(SAXParseException e) throws SAXException {
+        printMessage("Warning", e);
+    }
+
+    public void error(SAXParseException e) throws SAXException {
+        printMessage("Error", e);
+    }
+
+    public void fatalError(SAXParseException e) throws SAXException {
+        printMessage("Fatal error", e);
+    }
+
+    private void printMessage(String type, SAXParseException spe) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(type);
+        sb.append(" in ");
+        sb.append(spe.getSystemId());
+        sb.append(": ");
+        sb.append(spe.getMessage());
+        sb.append(". Line:" + spe.getLineNumber());
+        sb.append(" Column:" + spe.getColumnNumber());
+        System.err.println(sb.toString());
+    }
 }

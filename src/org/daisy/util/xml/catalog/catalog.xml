@@ -1,6 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- <!DOCTYPE catalog PUBLIC "-//OASIS//DTD XML Catalogs V1.1//EN" "http://www.oasis-open.org/committees/entity/release/1.1/catalog.dtd"> -->
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">
+
+  <group> <!-- relaxng common -->
+      <system systemId="../relaxngcommon/attributes.rng" uri="./relaxngcommon/attributes.rng" />
+      <system systemId="attributes.rng" uri="./relaxngcommon/attributes.rng" />  
+      <system systemId="../relaxngcommon/datatypes.rng" uri="./relaxngcommon/datatypes.rng" />
+      <system systemId="datatypes.rng" uri="./relaxngcommon/datatypes.rng" />  
+  </group>
+
   <group> <!-- xhtml 1.0 -->
     <public publicId="-//W3C//DTD XHTML 1.0 Strict//EN" uri="./xhtml10/xhtml1-strict.dtd" />
     <system systemId="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" uri="./xhtml10/xhtml1-strict.dtd" />      
@@ -79,30 +87,50 @@
   <group> <!-- zed 2002 -->
     <public publicId="-//NISO//DTD dtbook v1.1.0//EN" uri="./z39862002/dtbook110.dtd" />
     <system systemId="http://www.loc.gov/nls/z3986/v100/dtbook110.dtd" uri="./z39862002/dtbook110.dtd" />      
+    
     <public publicId="-//NISO//DTD dtbsmil v1.1.0//EN" uri="./z39862002/dtbsmil110.dtd" />
     <system systemId="http://www.loc.gov/nls/z3986/v100/dtbsmil110.dtd" uri="./z39862002/dtbsmil110.dtd" />      
+    <system systemId="dtbsmil110.rng" uri="./z39862002/dtbsmil110.rng" />
+    
     <public publicId="-//NISO//DTD ncx v1.1.0//EN" uri="./z39862002/ncx110.dtd" />
     <system systemId="http://www.loc.gov/nls/z3986/v100/ncx110.dtd" uri="./z39862002/ncx110.dtd" />      
+    <system systemId="ncx110.rng" uri="./z39862002/ncx110.rng" />
+    
     <public publicId="-//NISO//DTD resource v1.1.0//EN" uri="./z39862002/resource110.dtd" />
     <system systemId="http://www.loc.gov/nls/z3986/v100/resource110.dtd" uri="./z39862002/resource110.dtd" />      
+    <system systemId="resource110.rng" uri="./z39862002/resource110.rng" />
   </group>
   <group> <!-- zed 2005 --> 
     <public publicId="-//NISO//DTD dtbook 2005-1//EN" uri="./z39862005/dtbook-2005-1.dtd" />
     <public publicId="-//NISO//RNG dtbook 2005-1//EN" uri="./z39862005/dtbook-2005-1.rng" />
     <system systemId="http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd" uri="./z39862005/dtbook-2005-1.dtd" />
+    <system systemId="dtbook-2005-1.dtd" uri="./z39862005/dtbook-2005-1.dtd" />
+    <system systemId="dtbook-2005-1.rng" uri="./z39862005/dtbook-2005-1.rng" />    
+    
     <public publicId="-//NISO//DTD ncx 2005-1//EN" uri="./z39862005/ncx-2005-1.dtd" />
     <public publicId="-//NISO//RNG ncx 2005-1//EN" uri="./z39862005/ncx-2005-1.rng" />
     <system systemId="http://www.daisy.org/z3986/2005/ncx-2005-1.dtd" uri="./z39862005/ncx-2005-1.dtd" />
+    <system systemId="ncx-2005-1.dtd" uri="./z39862005/ncx-2005-1.dtd" />    
+    <system systemId="ncx-2005-1.rng" uri="./z39862005/ncx-2005-1.rng" />
+    
     <public publicId="-//NISO//DTD dtbsmil 2005-1//EN" uri="./z39862005/dtbsmil-2005-1.dtd" />
     <public publicId="-//NISO//RNG dtbsmil 2005-1//EN" uri="./z39862005/dtbsmil-2005-1.rng" />
     <system systemId="http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd" uri="./z39862005/dtbsmil-2005-1.dtd" />
-    <public publicId="-//NISO//DTD distInfo 2005-1//EN" uri="./z39862005/" />
-    <system systemId="http://www.daisy.org/z3986/2005/distInfo-2005-1.dtd" uri="./z39862005/distInfo-2005-1.dtd" />
-    <public publicId="-//NISO//DTD bookmark 2005-1//EN" uri="./z39862005/bookmark-2005-1.dtd" />
-    <system systemId="http://www.daisy.org/z3986/2005/bookmark-2005-1.dtd" uri="./z39862005/bookmark-2005-1.dtd" />
+    <system systemId="dtbsmil-2005-1.dtd" uri="./z39862005/dtbsmil-2005-1.dtd" />
+    <system systemId="dtbsmil-2005-1.rng" uri="./z39862005/dtbsmil-2005-1.rng" />  
+    
     <public publicId="-//NISO//DTD resource 2005-1//EN" uri="./z39862005/resource-2005-1.dtd" />
     <public publicId="-//NISO//RNG resource 2005-1//EN" uri="./z39862005/resource-2005-1.rng" />
     <system systemId="http://www.daisy.org/z3986/2005/resource-2005-1.dtd" uri="./z39862005/resource-2005-1.dtd" />    
+    <system systemId="resource-2005-1.dtd" uri="./z39862005/resource-2005-1.dtd" />
+    <system systemId="resource-2005-1.rng" uri="./z39862005/resource-2005-1.rng" />
+      
+    <public publicId="-//NISO//DTD distInfo 2005-1//EN" uri="./z39862005/" />
+    <system systemId="http://www.daisy.org/z3986/2005/distInfo-2005-1.dtd" uri="./z39862005/distInfo-2005-1.dtd" />
+    <system systemId="distInfo-2005-1.dtd" uri="./z39862005/distInfo-2005-1.dtd" />    
+    <public publicId="-//NISO//DTD bookmark 2005-1//EN" uri="./z39862005/bookmark-2005-1.dtd" />
+    <system systemId="http://www.daisy.org/z3986/2005/bookmark-2005-1.dtd" uri="./z39862005/bookmark-2005-1.dtd" />
+    <system systemId="bookmark-2005-1.dtd" uri="./z39862005/bookmark-2005-1.dtd" />    
   </group>
   
   <group> <!-- Daisy 2.02 --> 
@@ -123,14 +151,19 @@
     <public publicId="+//ISBN 0-9673008-1-9//DTD OEB 1.0 Entities//EN" uri="./oeb/oeb1.ent" />
     <system systemId="http://openebook.org/dtds/oeb-1.0.1/oeb1.ent" uri="./oeb/oeb1.ent" />      
     <system systemId="oeb1.ent" uri="./oeb/oeb1.ent" />
+    <system systemId="oebpkg101.rng" uri="./oeb/oebpkg101.rng" />
+    
     <public publicId="+//ISBN 0-9673008-1-9//DTD OEB 1.2 Package//EN" uri="./oeb/oebpkg12.dtd" />
     <public publicId="+//ISBN 0-9673008-1-9//RNG OEB 1.2 Package//EN" uri="./oeb/oebpkg12.rng" />
     <system systemId="http://openebook.org/dtds/oeb-1.2/oebpkg12.dtd" uri="./oeb/oebpkg12.dtd" />          
     <public publicId="+//ISBN 0-9673008-1-9//DTD OEB 1.2 Entities//EN" uri="./oeb/oeb12.ent" />
     <system systemId="http://openebook.org/dtds/oeb-1.2/oeb12.ent" uri="./oeb/oeb12.ent" />      
     <system systemId="oeb12.ent" uri="./oeb/oeb12.ent" />
+    <system systemId="oebpkg12.rng" uri="./oeb/oebpkg12.rng" />
+    
     <public publicId="+//ISBN 0-9673008-1-9//DTD OEB 1.2 Document//EN" uri="./oeb/oebdoc12.dtd" />
     <system systemId="http://openebook.org/dtds/oeb-1.2/oebdoc12.dtd" uri="./oeb/oebdoc12.dtd" />
+    
   </group>
   <group> <!-- smil 1.0 -->
     <public publicId="-//W3C//DTD SMIL 1.0//EN" uri="./smil1/SMIL10.dtd" />
