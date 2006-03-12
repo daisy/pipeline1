@@ -2,23 +2,19 @@
 <grammar
  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
  xmlns="http://relaxng.org/ns/structure/1.0"
- xmlns:dc="http://purl.org/dc/elements/1.1/"
- xmlns:sch="http://www.ascc.net/xml/schematron"
+ xmlns:dc="http://purl.org/dc/elements/1.0/"
  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
  xmlns:zed="http://www.daisy.org/ns/zedval/testmap"
  xmlns:c="http://www.daisy.org/ns/zedval/chunks"
 >
-  <sch:ns prefix="pkg" uri="http://openebook.org/namespaces/oeb-package/1.0/"/>
-  <sch:ns prefix="dc" uri="http://purl.org/dc/elements/1.1/"/>
-  
+
   <a:documentation>
-      RelaxNg schema for oeb package 1.2 DTD
-      Last edit by: mgylling 2006-03-10
-	  Original version: mgylling 2005-07-01
+      RelaxNg schema for oeb package 101 DTD: oebpkg101.dtd
+      Last edit by: mgylling 2003-04-14
   </a:documentation>
 
   <include href="../relaxngcommon/attributes.rng" />
-  
+
   <start>
     <ref name="package"/>
   </start>
@@ -43,14 +39,6 @@
       <ref name="CommonAttributes"/>
       <attribute name="unique-identifier">
         <ref name="datatype.idref"/>
-        <sch:pattern name="opf_DcIdUniqIdref" id="opf_DcIdUniqIdref">
-          <sch:rule context="//pkg:package">
-		    <zed:test id="opf_DcIdUniqIdref"/>
-		    <sch:assert test="//pkg:package/pkg:metadata/pkg:dc-metadata/dc:Identifier[@id=current()/@unique-identifier]"> 
-              [sch][opf_DcIdUniqIdref]
-		    </sch:assert>   					
-		  </sch:rule>				
-        </sch:pattern>        
       </attribute>
       <empty/>
     </define>
@@ -97,89 +85,15 @@
         <zed:test id="opf_mnfHrefUri"/>
       </ref>
       <attribute name="media-type">
-        <ref name="datatype.mime.z2005list"/>
+        <ref name="datatype.mime"/>
       </attribute>
       <optional>
         <attribute name="fallback">
           <ref name="datatype.idref"/>
         </attribute>
       </optional>
-
-      <!-- this done in java as not to rely on correctness of mime
-      <sch:pattern name="opf_mnfNcxId" id="opf_mnfNcxId">
-        <sch:rule context="//pkg:package/pkg:manifest">
-		  <zed:test id="opf_mnfNcxId"/>
-		  <sch:assert test="count(pkg:item[@id='ncx' and @media-type='application/x-dtbncx+xml'])=1"> 
-		    [sch][opf_mnfNcxId]
-		  </sch:assert>   					
-		</sch:rule>				
-      </sch:pattern>
-      -->
-      <!-- this done in java as not to rely on correctness of mime
-      <sch:pattern name="opf_mnfResId" id="opf_mnfResId">
-        <sch:rule context="//pkg:package/pkg:manifest/pkg:item[@media-type='application/x-dtbresource+xml']">
-		  <zed:test id="opf_mnfResId"/>
-		  <sch:assert test="@id='resource'"> 
-		    [sch][opf_mnfResId]
-		  </sch:assert>   					
-		</sch:rule>				
-      </sch:pattern>      
-      -->
-      <!-- this done in java as not to rely on correctness of mime  
-        each smil file listed in manifest is referenced by spine     
-      <sch:pattern name="opf_SpineRefAllSmilInMnf" id="opf_SpineRefAllSmilInMnf">
-
-        <sch:rule context="//pkg:package/pkg:manifest/pkg:item[@media-type='application/smil']">
-		  <zed:test id="opf_SpineRefAllSmilInMnf"/>
-		  <sch:assert test="//pkg:package/pkg:spine/pkg:itemref[@idref=current()/@id]"> 
-		    [sch][opf_SpineRefAllSmilInMnf]
-		  </sch:assert>   					
-		</sch:rule>				
-      </sch:pattern>      
-      --> 
-      <!-- this done in java as not to rely on correctness of mime       
-               manifest references at least one SMIL file 
-      <sch:pattern name="opf_mnfOneSmil" id="opf_mnfOneSmil">
-
-        <sch:rule context="//pkg:package/pkg:manifest">
-		  <zed:test id="opf_mnfOneSmil"/>
-		  <sch:assert test="count(pkg:item[@media-type='application/smil'])>0"> 
-		    [sch][opf_mnfOneSmil]
-		  </sch:assert>   					
-		</sch:rule>				
-      </sch:pattern>		
-	  -->
-	  <!--	this done in java as not to rely on correctness of mime
-      <sch:pattern name="opf_opfInManifest" id="opf_opfInManifest">
-        <sch:rule context="//pkg:package/pkg:manifest">
-		  <zed:test id="opf_opfInManifest"/>
-		  <sch:assert test="count(pkg:item[@media-type='text/xml'])=1"> 
-		    [sch][opf_opfInManifest]
-		  </sch:assert>   					
-		</sch:rule>				
-      </sch:pattern>
-      -->
-      <!-- this done in java as not to rely on correctness of mime       
-      <sch:pattern name="opf_mnfNcxCount" id="opf_mnfNcxCount">
-        <sch:rule context="//pkg:package/pkg:manifest">
-		  <zed:test id="opf_mnfNcxCount"/>
-		  <sch:assert test="count(pkg:item[@media-type='application/x-dtbncx+xml'])=1"> 
-		    [sch][opf_mnfNcxCount]
-		  </sch:assert>   					
-		</sch:rule>				
-      </sch:pattern>
-      -->
-      <!-- this done in java as not to rely on correctness of mime                    
-      <sch:pattern name="opf_mnfResCount" id="opf_mnfResCount">
-        <sch:rule context="//pkg:package/pkg:manifest">
-		  <zed:test id="opf_mnfResCount"/>
-		  <sch:assert test="count(pkg:item[@media-type='application/x-dtbresource+xml'])&lt;2"> 
-		    [sch][opf_mnfResCount]
-		  </sch:assert>   					
-		</sch:rule>				
-      </sch:pattern>      
-      -->                                 
     </define>
+
   </div>
 
   <div c:name="spine">
@@ -208,17 +122,6 @@
       <attribute name="idref">
         <ref name="datatype.idref"/>
       </attribute>
-      <!-- this done in java as not to rely on correctness of mime
-      spine itemref idref attributes points to the id of a SMIL file listed in manifest 
-      <sch:pattern name="opf_spnItemRefIdrefSmil" id="opf_spnItemRefIdrefSmil">
-        <sch:rule context="//pkg:package/pkg:spine/pkg:itemref">
-		  <zed:test id="[sch][opf_spnItemRefIdrefSmil]"/>
-		  <sch:assert test="//pkg:item[@id=current()/@idref and @media-type='application/smil']"> 
-			[sch][opf_spnItemRefIdrefSmil]
-		  </sch:assert>   					
-		</sch:rule>
-	  </sch:pattern>
-	  -->	  
     </define>
   </div>
 
@@ -303,12 +206,10 @@
   <div c:name="dc-metadata">
     <define name="dc-metadata">
       <ref name="attlist.dc-metadata"/>
-      
       <interleave>
         <oneOrMore>
           <element name="dc:Title">
-          <ref name="CommonAttributes"/>          
-             <ref name="datatype.string.non-null"/>
+           <text/>
           </element>
         </oneOrMore>
 
@@ -363,7 +264,7 @@
               <text/>
             </attribute>
           </optional>
-           <ref name="datatype.iso8601.yyyyMmDd">           
+           <ref name="datatype.iso8601">
              <zed:test id="opf_DcDateValue"/>
            </ref>
           </element>
@@ -379,7 +280,7 @@
         <zeroOrMore>
           <element name="dc:Format">
           <ref name="CommonAttributes"/>
-            <value>ANSI/NISO Z39.86-2005</value>
+            <value>ANSI/NISO Z39.86-2002</value>
             <zed:test id="opf_DcFormatValue"/>
           </element>
         </zeroOrMore>
@@ -391,7 +292,7 @@
               <ref name="attribute.scheme.optional"/>
               <ref name="CommonAttributes"/>
             </interleave>
-              <ref name="datatype.string.non-null"/>
+              <text/>
           </element>
         </oneOrMore>
 
@@ -437,6 +338,15 @@
 
     <define name="attlist.dc-metadata" combine="interleave">
       <ref name="CommonAttributes"/>
+<!--
+      <attribute name="xmlns:dc">
+        <value>http://purl.org/dc/elements/1.0/</value>
+      </attribute>
+
+      <attribute name="oebpackage">
+        <value>http://openebook.org/namespaces/oeb-package/1.0/</value>
+      </attribute>
+-->
     </define>
 
   </div>
@@ -459,19 +369,11 @@
       <choice>
         <group>
           <a:documentation>Optional - recommended. Not repeatable.</a:documentation>
-          <sch:pattern name="opf_xMetaDtbSourceDatePresence" id="opf_xMetaDtbSourceDatePresence">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="opf_xMetaDtbSourceDatePresence"/>
-					<sch:assert test="count(pkg:meta[@name='dtb:sourceDate'])&lt;2"> 
-						[sch][opf_xMetaDtbSourceDatePresence]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>
           <attribute name="name">
             <value>dtb:sourceDate</value>
           </attribute>
           <attribute name="content">
-            <ref name="datatype.iso8601.yyyyMmDd"/>
+            <ref name="datatype.iso8601"/>
             <zed:test id="opf_xMetaDtbSourceDateValue"/>
           </attribute>
           <ref name="attribute.scheme.optional"/>
@@ -480,14 +382,6 @@
 
         <group>
           <a:documentation>Optional - recommended. Not repeatable.</a:documentation>
-          <sch:pattern name="opf_xMetaDtbSourceEditionPresence" id="opf_xMetaDtbSourceEditionPresence">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="opf_xMetaDtbSourceEditionPresence"/>
-					<sch:assert test="count(pkg:meta[@name='dtb:sourceEdition'])&lt;2"> 
-						[sch][opf_xMetaDtbSourceEditionPresence]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>
           <attribute name="name">
             <value>dtb:sourceEdition</value>
           </attribute>
@@ -498,14 +392,6 @@
 
         <group>
           <a:documentation>Optional - recommended. Not repeatable.</a:documentation>
-          <sch:pattern name="opf_xMetaDtbSourcePublisherPresence" id="opf_xMetaDtbSourcePublisherPresence">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="opf_xMetaDtbSourcePublisherPresence"/>
-					<sch:assert test="count(pkg:meta[@name='dtb:sourcePublisher'])&lt;2"> 
-						[sch][opf_xMetaDtbSourcePublisherPresence]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>
           <attribute name="name">
             <value>dtb:sourcePublisher</value>
           </attribute>
@@ -516,14 +402,6 @@
 
         <group>
           <a:documentation>Optional - recommended. Not repeatable.</a:documentation>
-          <sch:pattern name="opf_xMetaDtbSourceRightsPresence" id="opf_xMetaDtbSourceRightsPresence">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="opf_xMetaDtbSourceRightsPresence"/>
-					<sch:assert test="count(pkg:meta[@name='dtb:sourceRights'])&lt;2"> 
-                       [sch][opf_xMetaDtbSourceRightsPresence]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>
           <attribute name="name">
             <value>dtb:sourceRights</value>
           </attribute>
@@ -534,14 +412,6 @@
 
         <group>
           <a:documentation>Occurrence: Optional. Not repeatable.</a:documentation>
-          <sch:pattern name="opf_xMetaDtbSourceTitlePresence" id="opf_xMetaDtbSourceTitlePresence">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="opf_xMetaDtbSourceTitlePresence"/>
-					<sch:assert test="count(pkg:meta[@name='dtb:sourceTitle'])&lt;2"> 
-                       [sch][opf_xMetaDtbSourceTitlePresence]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>
           <attribute name="name">
             <value>dtb:sourceTitle</value>
           </attribute>
@@ -552,14 +422,6 @@
 
         <group>
           <a:documentation>Occurrence: Required. Not repeatable.</a:documentation>
-          <sch:pattern name="opf_xMetaMmTypePresence" id="opf_xMetaMmTypePresence">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="[sch][opf_xMetaMmTypePresence]"/>
-					<sch:assert test="count(pkg:meta[@name='dtb:multimediaType'])=1"> 
-						[sch][opf_xMetaMmTypePresence]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>
           <attribute name="name">
             <value>dtb:multimediaType</value>
           </attribute>
@@ -576,77 +438,6 @@
           </attribute>
           <ref name="attribute.scheme.optional"/>
           <ref name="CommonAttributes"/>
-        </group>
-
-        <group>
-          <a:documentation>Occurrence: Required. Not repeatable.</a:documentation>
-          <sch:pattern name="opf_xMetaMmContentPresence" id="opf_xMetaMmContentPresence">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="[sch][opf_xMetaMmTypePresence]"/>
-					<sch:assert test="count(pkg:meta[@name='dtb:multimediaContent'])=1"> 
-						[sch][opf_xMetaMmContentPresence]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>
-          <attribute name="name">
-            <value>dtb:multimediaContent</value>
-          </attribute>
-          <attribute name="content">
-            <choice>
-              <zed:test id="opf_xMetaMmContentValue"/>
-              <value>audio</value>
-              <value>text</value>
-              <value>image</value>
-              <value>audio,text</value>
-              <value>audio,image</value>              
-              <value>audio,text,image</value>
-              <value>audio,image,text</value>              
-              <value>text,audio</value>
-              <value>text,image</value>              
-              <value>text,audio,image</value>
-              <value>text,image,audio</value>                            
-              <value>image,text</value>
-              <value>image,audio</value>              
-              <value>image,text,audio</value>
-              <value>image,audio,text</value>
-            </choice>           
-          </attribute>
-          <ref name="attribute.scheme.optional"/>
-          <ref name="CommonAttributes"/>
-
-          <!-- this done in java as not to rely on correctness of mime
-          when dtb:multimediaContent includes the top-level media type "audio", there is at least one audio file in manifest          
-          <sch:pattern name="opf_xMetaMmContentValueManifestAudio" id="opf_xMetaMmContentValueManifestAudio">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata/pkg:meta[@name='dtb:multimediaContent' and contains(@content,'audio')]">
-					<zed:test id="opf_xMetaMmContentValueManifestAudio"/>
-					<sch:assert test="count(//pkg:package/pkg:manifest/pkg:item[@media-type='audio/mpeg4-generic' or @media-type='audio/mpeg' or @media-type='audio/x-wav' ])&gt;0"> 
-						[sch][opf_xMetaMmContentValueManifestAudio]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>
-		  -->
-          <!-- this done in java as not to rely on correctness of mime		  
-          when dtb:multimediaContent includes the top-level media type "image", there is at least one image file in manifest		  
-		  <sch:pattern name="opf_xMetaMmContentValueManifestImage" id="opf_xMetaMmContentValueManifestImage">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata/pkg:meta[@name='dtb:multimediaContent' and contains(@content,'image')]">
-					<zed:test id="opf_xMetaMmContentValueManifestImage"/>
-					<sch:assert test="count(//pkg:package/pkg:manifest/pkg:item[@media-type='image/jpeg' or @media-type='image/png' or @media-type='image/svg+xml' ])&gt;0"> 
-						[sch][opf_xMetaMmContentValueManifestImage]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>
-          -->
-          <!-- this done in java as not to rely on correctness of mime          
-          when dtb:multimediaContent includes the top-level media type "text", there is at least one dtbook file in manifest
-		  <sch:pattern name="opf_xMetaMmContentValueManifestText" id="opf_xMetaMmContentValueManifestText">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata/pkg:meta[@name='dtb:multimediaContent' and contains(@content,'text')]">
-					<zed:test id="opf_xMetaMmContentValueManifestText"/>
-					<sch:assert test="count(//pkg:package/pkg:manifest/pkg:item[@media-type='application/x-dtbook+xml'])&gt;0"> 
-						[sch][opf_xMetaMmContentValueManifestText]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>
-		  -->		       
         </group>
 
         <group>
@@ -671,14 +462,6 @@
 
         <group>
           <a:documentation>Optional. Not repeatable.</a:documentation>
-          <sch:pattern name="opf_xMetaDtbProducedDatePresence" id="opf_xMetaDtbProducedDatePresence">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="opf_xMetaDtbProducedDatePresence"/>
-					<sch:assert test="count(pkg:meta[@name='dtb:producedDate'])&lt;2"> 
-						[sch][opf_xMetaDtbProducedDatePresence]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>          
           <attribute name="name">
             <value>dtb:producedDate</value>
           </attribute>
@@ -702,14 +485,6 @@
 
         <group>
           <a:documentation>Occurrence: Optional. Not repeatable.</a:documentation>
-          <sch:pattern name="opf_xMetaDtbRevisionPresence" id="opf_xMetaDtbRevisionPresence">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="opf_xMetaDtbRevisionPresence"/>
-					<sch:assert test="count(pkg:meta[@name='dtb:revision'])&lt;2"> 
-						[sch][opf_xMetaDtbRevisionPresence]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>          
           <attribute name="name">
             <value>dtb:revision</value>
           </attribute>
@@ -723,14 +498,6 @@
 
         <group>
           <a:documentation>Optional. Not repeatable.</a:documentation>
-          <sch:pattern name="opf_xMetaDtbRevisionDatePresence" id="opf_xMetaDtbRevisionDatePresence">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="opf_xMetaDtbRevisionDatePresence"/>
-					<sch:assert test="count(pkg:meta[@name='dtb:revisionDate'])&lt;2"> 
-						[sch][opf_xMetaDtbRevisionDatePresence]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>
           <attribute name="name">
             <value>dtb:revisionDate</value>
           </attribute>
@@ -744,14 +511,6 @@
 
         <group>
           <a:documentation>Occurrence: Optional. Not repeatable.</a:documentation>
-          <sch:pattern name="opf_xMetaDtbRevisionDescriptionPresence" id="opf_xMetaDtbRevisionDescriptionPresence">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="opf_xMetaDtbRevisionDescriptionPresence"/>
-					<sch:assert test="count(pkg:meta[@name='dtb:revisionDescription'])&lt;2"> 
-						[sch][opf_xMetaDtbRevisionDescriptionPresence]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>
           <attribute name="name">
             <value>dtb:revisionDescription</value>
           </attribute>
@@ -762,14 +521,6 @@
 
         <group>
           <a:documentation>Occurrence: Required. Not repeatable.</a:documentation>
-          <sch:pattern name="opf_xMetaTotTimePresence" id="opf_xMetaTotTimePresence">
-       			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="opf_xMetaTotTimePresence"/>
-					<sch:assert test="count(pkg:meta[@name='dtb:totalTime'])=1"> 
-						[sch][opf_xMetaTotTimePresence]
-					</sch:assert>   					
-				</sch:rule>
-		  </sch:pattern>          
           <attribute name="name">
             <value>dtb:totalTime</value>
           </attribute>
@@ -840,8 +591,32 @@
     </define>
 
     <define name="InternationalAttributes">
-        <ref name="attribute.xml.lang.optional"/>
+      <optional>
+        <ref name="attribute.xml.lang"/>
+      </optional>
     </define>
+	  
+	<define name="datatype.pkg.guide.reference.type.values">
+    <choice>
+      <value>cover</value>
+      <value>title-page</value>
+      <value>toc</value>
+      <value>index</value>
+      <value>glossary</value>
+      <value>acknowledgements</value>
+      <value>bibliography</value>
+      <value>colophon</value>
+      <value>copyright-page</value>
+      <value>dedication</value>
+      <value>epigraph</value>
+      <value>foreword</value>
+      <value>loi</value>
+      <value>lot</value>
+      <value>notes</value>
+      <value>preface</value>
+      <value>[other.].*</value>
+    </choice>
+  </define>
   </div>
 
 </grammar>
