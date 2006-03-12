@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+  xmlns:zed="http://www.daisy.org/ns/zedval/testmap"
+	xmlns:c="http://www.daisy.org/ns/zedval/chunks"
+>
+
+  <a:documentation>
+      RelaxNg schema for Z39.86 resource file: resource101.dtd
+      Last edit by: mgylling 2003-04-14
+  </a:documentation>
+
+  <include href="../relaxngcommon/attributes.rng" />
+	
+  <start>
+    <ref name="resources"/>
+  </start>
+
+  <define name="resources">
+    <element name="resources">
+      <ref name="attlist.resources"/>
+      <optional>
+        <ref name="head"/>
+      </optional>
+      <oneOrMore>
+        <ref name="resource"/>
+      </oneOrMore>
+    </element>
+  </define>
+
+  <define name="attlist.resources" combine="interleave">
+    <optional>
+      <attribute name="version" a:defaultValue="1.1.0">
+        <value type="string">1.1.0</value>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="head">
+    <element name="head">
+      <zeroOrMore>
+        <ref name="meta"/>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <define name="resource">
+    <element name="resource">
+      <ref name="attlist.resource"/>
+      <choice>
+        <group>
+          <ref name="text"/>
+          <optional>
+            <ref name="audio"/>
+          </optional>
+        </group>
+        <ref name="audio"/>
+      </choice>
+      <optional>
+        <ref name="img"/>
+      </optional>
+    </element>
+  </define>
+
+  <define name="attlist.resource" combine="interleave">
+    <choice>
+      <group>
+        <attribute name="type">
+          <value>ncx</value>
+        </attribute>
+        <attribute name="elementRef">
+          <ref name="datatype.ncx.element.names">
+            <zed:test id="res_elmRefTypeNcx"/>
+          </ref>
+        </attribute>
+        <ref name="attlist.resource.common"/>
+      </group>
+      <group>
+        <attribute name="type">
+          <value>dtbook</value>
+        </attribute>
+        <attribute name="elementRef">
+          <ref name="datatype.dtbook.element.names">
+            <zed:test id="res_elmRefTypeDtbook"/>
+          </ref>
+        </attribute>
+        <ref name="attlist.resource.common"/>
+      </group>
+    </choice>
+  </define>
+
+  <define name="attlist.resource.common" combine="interleave">
+    <optional>
+      <attribute name="classRef"/>
+    </optional>
+    <optional>
+      <attribute name="idRef"/>
+    </optional>
+    <optional>
+      <ref name="attribute.lang">
+        <zed:test id="res_langAttr"/>
+      </ref>
+    </optional>
+  </define>
+
+  <!-- version of the above that doesnt certify elementref value depending on type value
+  <define name="attlist.resource" combine="interleave">
+    <attribute name="type">
+      <choice>
+        <value>ncx</value>
+        <value>dtbook</value>
+      </choice>
+    </attribute>
+    <attribute name="elementRef">
+      <ref name="datatype.dtbook.element.names"/>
+    </attribute>
+    <optional>
+      <attribute name="classRef"/>
+    </optional>
+    <optional>
+      <attribute name="idRef"/>
+    </optional>
+    <optional>
+      <ref name="attribute.lang"/>
+    </optional>
+  </define>
+  -->
+
+
+  <define name="text">
+    <element name="text">
+      <text/>
+    </element>
+  </define>
+
+  <define name="audio">
+    <element name="audio">
+      <ref name="attlist.audio"/>
+      <empty/>
+    </element>
+  </define>
+
+  <define name="attlist.audio" combine="interleave">
+    <attribute name="src">
+      <ref name="datatype.uri">
+        <zed:test id="res_audioSrcValue"/>
+      </ref>
+    </attribute>
+    <optional>
+      <attribute name="clipBegin">
+        <ref name="datatype.smilclock">
+          <zed:test id="res_clipBeginValue"/>
+        </ref>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="clipEnd">
+        <ref name="datatype.smilclock">
+          <zed:test id="res_clipEndValue"/>
+        </ref>
+      </attribute>
+    </optional>
+  </define>
+
+  <define name="img">
+    <element name="img">
+      <ref name="attlist.img"/>
+      <empty/>
+    </element>
+  </define>
+
+  <define name="attlist.img" combine="interleave">
+    <attribute name="src">
+      <ref name="datatype.uri">
+        <zed:test id="res_imgSrcValue"/>
+      </ref>
+    </attribute>
+  </define>
+
+  <define name="meta">
+    <element name="meta">
+      <ref name="attlist.meta"/>
+      <empty/>
+    </element>
+  </define>
+
+  <define name="attlist.meta" combine="interleave">
+    <attribute name="name"/>
+    <attribute name="content"/>
+    <optional>
+      <attribute name="scheme"/>
+    </optional>
+  </define>
+
+</grammar>

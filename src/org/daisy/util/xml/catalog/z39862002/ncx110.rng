@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar
+	datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+	xmlns="http://relaxng.org/ns/structure/1.0"
+	xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+	xmlns:zed="http://www.daisy.org/ns/zedval/testmap"
+	xmlns:c="http://www.daisy.org/ns/zedval/chunks"
+>
+
+  <a:documentation>
+      RelaxNg schema for Z39.86 ncx DTD: ncx110.dtd
+      Last edit by: mgylling 2003-04-14
+  </a:documentation>
+
+  <include href="../relaxngcommon/attributes.rng" />
+  
+  <start>
+    <ref name="ncx"/>
+  </start>
+
+  <div c:name="root">
+    <define name="ncx">
+      <element name="ncx">
+        <ref name="ncx.attlist"/>
+        <ref name="head"/>
+        <ref name="docTitle"/>
+        <zeroOrMore>
+          <ref name="docAuthor"/>
+        </zeroOrMore>
+        <ref name="navMap"/>
+        <zeroOrMore>
+          <ref name="navList"/>
+        </zeroOrMore>
+      </element>
+    </define>
+
+    <define name="ncx.attlist">
+      <optional>
+        <attribute name="version" a:defaultValue="1.1.0">
+          <value type="string">1.1.0</value>
+        </attribute>
+       </optional>
+       <ref name="i18n"/>
+     </define>
+   </div>
+
+  <div c:name="head">
+     <define name="head">
+       <element name="head">
+         <interleave>
+           <zeroOrMore>
+             <ref name="smilCustomTest"/>
+           </zeroOrMore>
+           <oneOrMore>
+             <ref name="meta"/>
+           </oneOrMore>
+         </interleave>
+       </element>
+     </define>
+
+     <define name="meta">
+         <element name="meta">
+           <ref name="meta.attlist"/>
+           <empty/>
+         </element>
+     </define>
+
+     <define name="meta.attlist" combine="interleave">
+       <choice>
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:uid</value>
+           </attribute>
+           <ref name="attribute.content.stringvalue.required"/>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:depth</value>
+           </attribute>
+           <attribute name="content">
+             <ref name="datatype.nonNegativeInteger">
+               <zed:test id="ncx_metaDtbDepthValue"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         <group>
+           <attribute name="name">
+             <a:documentation>optional-recomended</a:documentation>
+             <value>dtb:generator</value>
+           </attribute>
+           <ref name="attribute.content.stringvalue.required"/>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:maxPageNormal</value>
+           </attribute>
+           <attribute name="content">
+             <ref name="datatype.nonNegativeInteger">
+               <zed:test id="ncx_metaDtbMaxPageNormalContentAttrValue"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:pageFront</value>
+           </attribute>
+           <attribute name="content">
+             <ref name="datatype.nonNegativeInteger">
+               <zed:test id="ncx_metaDtbPageFrontContentAttrValue"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:pageNormal</value>
+           </attribute>
+           <attribute name="content">
+             <ref name="datatype.nonNegativeInteger">
+               <zed:test id="ncx_metaDtbPageNormalContentAttrValue"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         <group>
+           <attribute name="name">
+             <a:documentation>required</a:documentation>
+             <value>dtb:pageSpecial</value>
+           </attribute>
+           <attribute name="content">
+             <ref name="datatype.nonNegativeInteger">
+               <zed:test id="ncx_metaDtbPageSpecialContentAttrValue"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+         <group>
+           <attribute name="name">
+             <ref name="datatype.string.nondtbns">
+               <zed:test id="ncx_metaDtbPrefixRestriction"/>
+             </ref>
+           </attribute>
+           <ref name="attribute.content.stringvalue.required"/>
+           <ref name="attribute.scheme.optional"/>
+         </group>
+       </choice>
+     </define>
+
+     <define name="smilCustomTest">
+       <element name="smilCustomTest">
+         <ref name="attlist.smilCustomTest"/>
+         <empty/>
+       </element>
+     </define>
+
+     <define name="attlist.smilCustomTest" combine="interleave">
+       <ref name="attribute.id.required"/>
+       <optional>
+         <attribute name="defaultState" a:defaultValue="false">
+           <choice>
+             <value>true</value>
+             <value>false</value>
+           </choice>
+         </attribute>
+       </optional>
+       <optional>
+         <attribute name="override" a:defaultValue="hidden">
+           <choice>
+             <value>visible</value>
+             <value>hidden</value>
+           </choice>
+         </attribute>
+       </optional>
+     </define>
+  </div>
+
+  <div c:name="docTitle">
+   <define name="docTitle">
+     <element name="docTitle">
+       <ref name="docTitle.attlist"/>
+       <ref name="text"/>
+       <optional>
+         <ref name="audio"/>
+       </optional>
+     </element>
+   </define>
+
+   <define name="docTitle.attlist" combine="interleave">
+     <ref name="attribute.id.optional"/>
+     <ref name="i18n"/>
+   </define>
+  </div>
+
+  <div c:name="docAuthor">
+    <define name="docAuthor">
+      <element name="docAuthor">
+        <ref name="attlist.docAuthor"/>
+        <ref name="text"/>
+        <optional>
+          <ref name="audio"/>
+        </optional>
+      </element>
+    </define>
+
+    <define name="attlist.docAuthor" combine="interleave">
+      <ref name="attribute.id.optional"/>
+      <ref name="i18n"/>
+    </define>
+  </div>
+
+  <div c:name="navMap">
+   <define name="navMap">
+     <element name="navMap">
+       <ref name="navMap.attlist"/>
+       <zeroOrMore>
+         <ref name="navLabel"/>
+       </zeroOrMore>
+       <oneOrMore>
+         <ref name="navPoint"/>
+       </oneOrMore>
+     </element>
+   </define>
+
+   <define name="navMap.attlist" combine="interleave">
+     <ref name="attribute.id.optional"/>
+   </define>
+
+   <define name="navLabel">
+     <element name="navLabel">
+       <ref name="attlist.navLabel"/>
+       <choice>
+         <group>
+           <ref name="text"/>
+           <optional>
+             <ref name="audio"/>
+           </optional>
+         </group>
+           <ref name="audio"/>
+       </choice>
+       <optional>
+         <ref name="img"/>
+       </optional>
+     </element>
+   </define>
+
+   <define name="attlist.navLabel" combine="interleave">
+     <ref name="i18n"/>
+   </define>
+
+   <define name="navPoint">
+     <element name="navPoint">
+       <ref name="navPoint.attlist"/>
+       <oneOrMore>
+         <ref name="navLabel"/>
+       </oneOrMore>
+       <ref name="content"/>
+       <zeroOrMore>
+          <ref name="navPoint"/>
+       </zeroOrMore>
+     </element>
+   </define>
+
+   <define name="navPoint.attlist" combine="interleave">
+     <ref name="attribute.id.required"/>
+     <optional>
+       <attribute name="onFocus">
+         <ref name="script"/>
+       </attribute>
+     </optional>
+     <optional>
+       <attribute name="onBlur">
+         <ref name="script"/>
+       </attribute>
+     </optional>
+     <ref name="attribute.class.optional"/>
+     <optional>
+       <attribute name="value">
+       	<ref name="datatype.nonNegativeInteger">
+       	  <zed:test id="ncx_navPointValueAttrValue"/>
+       	</ref>
+       </attribute>
+     </optional>
+     <optional>
+       <attribute name="pageRef">
+         <ref name="datatype.idref"/>
+       </attribute>
+     </optional>
+   </define>
+
+   <define name="content">
+     <element name="content">
+       <ref name="attlist.content"/>
+       <empty/>
+     </element>
+   </define>
+
+   <define name="attlist.content" combine="interleave">
+     <ref name="attribute.id.optional"/>
+     <attribute name="src">
+       <ref name="datatype.uri">
+         <zed:test id="ncx_contentSrcAttrValue"/>
+       </ref>
+     </attribute>
+   </define>
+  </div>
+
+
+  <div c:name="navList">
+   <define name="navList">
+     <element name="navList">
+       <ref name="navList.attlist"/>
+       <oneOrMore>
+         <ref name="navLabel"/>
+       </oneOrMore>
+       <oneOrMore>
+         <ref name="navTarget"/>
+       </oneOrMore>
+     </element>
+   </define>
+
+   <define name="navList.attlist" combine="interleave">
+     <ref name="attribute.id.optional"/>
+     <optional>
+       <attribute name="class">
+         <a:documenation>checks that a dtbook element name is used as value</a:documenation>
+         <ref name="datatype.dtbook.element.names">
+           <zed:test id="ncx_navListClassAttrValue"/>
+         </ref>
+       </attribute>
+     </optional>
+   </define>
+
+   <define name="navTarget">
+     <element name="navTarget">
+       <ref name="navTarget.attlist"/>
+       <oneOrMore>
+         <ref name="navLabel"/>
+       </oneOrMore>
+       <ref name="content"/>
+     </element>
+    </define>
+
+   <define name="navTarget.attlist" combine="interleave">
+     <ref name="attribute.id.required"/>
+     <optional>
+       <attribute name="class">
+         <a:documenation>checks that a dtbook element name is used as value</a:documenation>
+         <ref name="datatype.dtbook.element.names">
+           <zed:test id="ncx_navTargetClassAttrValue"/>
+         </ref>
+       </attribute>
+     </optional>
+     <optional>
+       <attribute name="onFocus">
+         <ref name="script"/>
+       </attribute>
+     </optional>
+     <optional>
+       <attribute name="onBlur">
+         <ref name="script"/>
+       </attribute>
+     </optional>
+     <optional>
+       <attribute name="value">
+         <ref name="datatype.nonNegativeInteger">
+           <zed:test id="ncx_navTargetValueAttrValue"/>
+         </ref>
+       </attribute>
+     </optional>
+     <attribute name="mapRef">
+       <ref name="datatype.idref"/>
+     </attribute>
+   </define>
+  </div>
+
+
+  <div c:name="common">
+
+   <define name="i18n">
+     <optional>
+       <ref name="attribute.lang"/>
+     </optional>
+     <optional>
+       <attribute name="dir">
+         <choice>
+           <value>ltr</value>
+           <value>rtl</value>
+         </choice>
+       </attribute>
+     </optional>
+    </define>
+
+    <define name="text">
+      <element name="text">
+        <ref name="attlist.text"/>
+        <text/>
+      </element>
+    </define>
+
+    <define name="attlist.text" combine="interleave">
+      <ref name="attribute.id.optional"/>
+      <ref name="attribute.class.optional"/>
+    </define>
+
+    <define name="audio">
+      <element name="audio">
+        <ref name="audio.attlist"/>
+        <empty/>
+      </element>
+    </define>
+
+    <define name="audio.attlist" combine="interleave">
+      <ref name="attribute.id.optional"/>
+      <ref name="attribute.class.optional"/>
+      <attribute name="src">
+        <ref name="datatype.uri">
+          <zed:test id="ncx_audioSrcValue"/>
+        </ref>
+      </attribute>
+      <optional>
+        <attribute name="clipBegin">
+          <ref name="datatype.smilclock">
+            <zed:test id="ncx_clipBeginValue"/>
+          </ref>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="clipEnd">
+          <ref name="datatype.smilclock">
+            <zed:test id="ncx_clipEndValue"/>
+          </ref>
+        </attribute>
+      </optional>
+    </define>
+
+   <define name="img">
+     <element name="img">
+       <ref name="img.attlist"/>
+       <empty/>
+     </element>
+   </define>
+
+   <define name="img.attlist" combine="interleave">
+     <ref name="attribute.id.optional"/>
+     <ref name="attribute.class.optional"/>
+     <attribute name="src">
+       <ref name="datatype.uri">
+         <zed:test id="ncx_imgSrcValue"/>
+       </ref>
+     </attribute>
+   </define>
+
+   <define name="script">
+       <data type="string"/>
+   </define>
+	  
+  <define name="datatype.ncx.element.names">
+    <choice>
+      <value>ncx</value>
+      <value>head</value>
+      <value>smilCustomTest</value>
+      <value>meta</value>
+      <value>docTitle</value>
+      <value>docAuthor</value>
+      <value>navMap</value>
+      <value>navPoint</value>
+      <value>navList</value>
+      <value>navTarget</value>
+      <value>navLabel</value>
+      <value>content</value>
+      <value>text</value>
+      <value>audio</value>
+      <value>img</value>
+    </choice>
+  </define>
+  </div>
+</grammar>

@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar
+	datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+	xmlns="http://relaxng.org/ns/structure/1.0"
+	xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+	xmlns:zed="http://www.daisy.org/ns/zedval/testmap"
+	xmlns:c="http://www.daisy.org/ns/zedval/chunks"
+>
+
+  <a:documentation>
+      RelaxNg schema for Z39.86 dtbsmil DTD: dtbsmil110.dtd
+      Last edit by: jpritchett 2003-08-20
+  </a:documentation>
+
+  <include href="../relaxngcommon/attributes.rng" />
+
+  <start>
+    <ref name="smil"/>
+  </start>
+
+  <div c:name="root">
+    <define name="smil">
+      <element name="smil">
+        <ref name="attlist.smil"/>
+        <ref name="head"/>
+        <ref name="body"/>
+      </element>
+    </define>
+
+    <define name="attlist.smil" combine="interleave">
+      <ref name="Core.attrib"/>
+      <optional>
+        <ref name="attribute.xml.lang"/>
+      </optional>
+    </define>
+  </div>
+
+  <div c:name="head">
+    <define name="head">
+      <element name="head">
+        <ref name="attlist.head"/>
+         <oneOrMore>
+           <ref name="meta"/>
+         </oneOrMore>
+        <optional>
+          <ref name="layout"/>
+        </optional>
+        <optional>
+          <ref name="customAttributes"/>
+        </optional>
+      </element>
+    </define>
+
+    <define name="attlist.head" combine="interleave">
+      <ref name="Core.attrib"/>
+      <optional>
+        <ref name="attribute.xml.lang"/>
+      </optional>
+    </define>
+
+    <define name="meta">
+      <element name="meta">
+        <ref name="attlist.meta"/>
+        <empty/>
+      </element>
+    </define>
+
+    <define name="attlist.meta" combine="interleave">
+      <choice>
+        <group>
+          <attribute name="name">
+            <a:documentation>required</a:documentation>
+            <value>dtb:uid</value>
+          </attribute>
+          <ref name="attribute.content.stringvalue.required"/>
+        </group>
+
+        <group>
+          <attribute name="name">
+           <a:documentation>optional-recommended</a:documentation>
+            <value>dtb:generator</value>
+          </attribute>
+          <ref name="attribute.content.stringvalue.required"/>
+          <ref name="attribute.scheme.optional"/>
+        </group>
+
+        <group>
+          <attribute name="name">
+            <a:documentation>required</a:documentation>
+            <value>dtb:totalElapsedTime</value>
+          </attribute>
+          <attribute name="content">
+            <ref name="datatype.smilclock">
+              <zed:test id="smil_metaDtbTotElaSyntax"/>
+            </ref>
+          </attribute>
+          <ref name="attribute.scheme.optional"/>
+        </group>
+
+        <group>
+          <attribute name="name">
+            <ref name="datatype.string.nondtbns">
+              <zed:test id="smil_metaDtbPrefixRestriction"/>
+            </ref>
+          </attribute>
+          <ref name="attribute.content.stringvalue.required"/>
+          <ref name="attribute.scheme.optional"/>
+        </group>
+
+      </choice>
+
+    </define>
+
+    <define name="layout">
+      <element name="layout">
+        <ref name="attlist.layout"/>
+        <oneOrMore>
+          <ref name="region"/>
+        </oneOrMore>
+      </element>
+    </define>
+
+    <define name="attlist.layout" combine="interleave">
+      <ref name="Core.attrib"/>
+      <optional>
+        <ref name="attribute.xml.lang">
+          <zed:test id="smil_layoutXmlLangValue"/>
+        </ref>
+      </optional>
+    </define>
+
+    <define name="region">
+      <element name="region">
+        <ref name="attlist.region"/>
+        <empty/>
+      </element>
+    </define>
+
+    <define name="attlist.region" combine="interleave">
+      <ref name="attribute.id.required"/>
+      <optional>
+        <attribute name="height" a:defaultValue="auto"/>
+      </optional>
+      <optional>
+        <attribute name="width" a:defaultValue="auto"/>
+      </optional>
+      <optional>
+        <attribute name="bottom" a:defaultValue="auto"/>
+      </optional>
+      <optional>
+        <attribute name="top" a:defaultValue="auto"/>
+      </optional>
+      <optional>
+        <attribute name="left" a:defaultValue="auto"/>
+      </optional>
+      <optional>
+        <attribute name="right" a:defaultValue="auto"/>
+      </optional>
+      <optional>
+        <attribute name="fit" a:defaultValue="hidden">
+          <choice>
+            <value>hidden</value>
+            <value>fill</value>
+            <value>meet</value>
+            <value>scroll</value>
+            <value>slice</value>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="z-index"/>
+      </optional>
+      <optional>
+        <attribute name="backgroundColor"/>
+      </optional>
+      <optional>
+        <attribute name="showBackground" a:defaultValue="always">
+          <choice>
+            <value>always</value>
+            <value>whenActive</value>
+          </choice>
+        </attribute>
+      </optional>
+    </define>
+
+    <define name="customAttributes">
+      <element name="customAttributes">
+        <ref name="attlist.customAttributes"/>
+        <oneOrMore>
+          <ref name="customTest"/>
+        </oneOrMore>
+      </element>
+    </define>
+
+    <define name="attlist.customAttributes" combine="interleave">
+      <ref name="Core.attrib"/>
+      <optional>
+        <ref name="attribute.xml.lang">
+          <zed:test id="smil_customAttrsXmlLangValue"/>
+        </ref>
+      </optional>
+    </define>
+
+    <define name="customTest">
+      <element name="customTest">
+        <ref name="attlist.customTest"/>
+        <empty/>
+      </element>
+    </define>
+
+    <define name="attlist.customTest" combine="interleave">
+      <attribute name="id">
+        <!-- 20030407 must be tokenized as ID
+        <ref name="datatype.dtbook.element.names" />
+        <ref name="datatype.id" />
+        -->
+        <ref name="datatype.id.and.dtbook.element.names" />
+        <zed:test id="smil_CstTestIdValue"/>
+      </attribute>
+
+      <attribute name="defaultState" a:defaultValue="false">
+        <a:documenation>note: this attr is added at parse time if nonexisting: test requires parse with externalEntityResolve off</a:documenation>
+        <zed:test id="smil_CstTstDefStAttr"/>
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </attribute>
+      <attribute name="override" a:defaultValue="hidden">
+        <a:documenation>note: this attr is added at parse time if nonexisting: test requires parse with externalEntityResolve off</a:documenation>
+        <zed:test id="smil_CstTstOverrideAttr"/>
+        <choice>
+          <value>visible</value>
+          <value>hidden</value>
+        </choice>
+      </attribute>
+      <ref name="attribute.class.optional"/>
+      <ref name="attribute.title.optional"/>
+      <optional>
+        <ref name="attribute.xml.lang">
+          <zed:test id="smil_customTestXmlLangValue"/>
+        </ref>
+      </optional>
+    </define>
+  </div>
+
+  <div c:name="body">
+    <define name="body">
+      <element name="body">
+        <ref name="attlist.body"/>
+        <oneOrMore>
+          <choice>
+            <ref name="par"/>
+            <ref name="seq"/>
+            <ref name="text"/>
+            <ref name="audio"/>
+            <ref name="img"/>
+            <ref name="a"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+
+   <define name="attlist.body" combine="interleave">
+      <ref name="Core.attrib"/>
+      <optional>
+        <ref name="attribute.xml.lang">
+          <zed:test id="smil_bodyXmlLangValue"/>
+        </ref>
+      </optional>
+    </define>
+
+    <define name="seq">
+      <element name="seq">
+        <ref name="attlist.seq"/>
+        <oneOrMore>
+          <choice>
+            <ref name="par"/>
+            <ref name="seq"/>
+            <ref name="text"/>
+            <ref name="audio"/>
+            <ref name="img"/>
+            <ref name="a"/>
+          </choice>
+        </oneOrMore>
+      </element>
+    </define>
+
+    <define name="attlist.seq" combine="interleave">
+      <ref name="attribute.id.required"/>
+      <optional>
+        <attribute name="class">
+          <ref name="datatype.dtbook.element.names">
+            <zed:test id="smil_seqParClassAttr"/>
+          </ref>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="customTest">
+          <ref name="datatype.idref"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="dur">
+          <ref name="datatype.smilclock">
+            <zed:test id="smil_seqDurValue"/>
+          </ref>
+        </attribute>
+      </optional>
+    </define>
+
+    <define name="par">
+      <a:documentation>Implements 7.4.7</a:documentation>
+      <element name="par">
+        <ref name="attlist.par"/>
+        <interleave>
+          <zed:test id="smil_parContent"/>
+          <zeroOrMore>
+            <ref name="a"/>
+          </zeroOrMore>
+          <choice>
+            <group>
+              <interleave>
+                <ref name="seq"/>
+                <ref name="text"/>
+                <ref name="audio"/>
+                <ref name="img"/>
+              </interleave>
+            </group>
+
+            <group>
+              <interleave>
+                <ref name="seq"/>
+                <ref name="text"/>
+                <ref name="audio"/>
+              </interleave>
+            </group>
+
+            <group>
+              <interleave>
+                <ref name="seq"/>
+                <ref name="text"/>
+                <ref name="img"/>
+              </interleave>
+            </group>
+
+            <group>
+              <interleave>
+                <ref name="seq"/>
+                <ref name="audio"/>
+                <ref name="img"/>
+              </interleave>
+            </group>
+
+            <group>
+              <interleave>
+                <ref name="text"/>
+                <ref name="audio"/>
+                <ref name="img"/>
+              </interleave>
+            </group>
+
+            <group>
+              <interleave>
+                <ref name="seq"/>
+                <ref name="text"/>
+              </interleave>
+            </group>
+
+            <group>
+              <interleave>
+                <ref name="seq"/>
+                <ref name="audio"/>
+              </interleave>
+            </group>
+
+            <group>
+              <interleave>
+                <ref name="seq"/>
+                <ref name="img"/>
+              </interleave>
+            </group>
+
+            <group>
+              <interleave>
+                <ref name="text"/>
+                <ref name="audio"/>
+              </interleave>
+            </group>
+
+            <group>
+              <interleave>
+                <ref name="text"/>
+                <ref name="img"/>
+              </interleave>
+            </group>
+
+            <group>
+              <interleave>
+                <ref name="audio"/>
+                <ref name="img"/>
+              </interleave>
+            </group>
+
+            <ref name="seq"/>
+
+            <ref name="text"/>
+
+            <ref name="audio"/>
+
+            <ref name="img"/>
+          </choice>
+
+  <!-- less neurotic version of above
+          <interleave>
+            <optional>
+              <ref name="seq"/>
+            </optional>
+            <optional>
+              <ref name="text"/>
+            </optional>
+            <optional>
+              <ref name="audio"/>
+            </optional>
+            <optional>
+              <ref name="img"/>
+            </optional>
+          </interleave>
+  -->
+        </interleave>
+      </element>
+    </define>
+
+    <define name="attlist.par" combine="interleave">
+      <ref name="attribute.id.required"/>
+      <optional>
+        <attribute name="class">
+          <ref name="datatype.dtbook.element.names">
+            <zed:test id="smil_seqParClassAttr"/>
+          </ref>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="customTest">
+          <ref name="datatype.idref"/>
+        </attribute>
+      </optional>
+    </define>
+
+    <define name="text">
+      <element name="text">
+        <ref name="attlist.text"/>
+        <empty/>
+      </element>
+    </define>
+
+    <define name="attlist.text" combine="interleave">
+      <ref name="attribute.id.optional"/>
+      <optional>
+        <attribute name="region"/>
+      </optional>
+      <attribute name="src">
+      	<ref name="datatype.uri">
+      	  <zed:test id="smil_textSrcValue"/>
+      	</ref>
+      </attribute>
+      <optional>
+        <attribute name="type"/>
+      </optional>
+    </define>
+
+    <define name="audio">
+      <element name="audio">
+        <ref name="attlist.audio"/>
+        <empty/>
+      </element>
+    </define>
+
+    <define name="attlist.audio" combine="interleave">
+      <ref name="attribute.id.optional"/>
+      <attribute name="src">
+        <ref name="datatype.uri">
+          <zed:test id="smil_textSrcValue"/>
+        </ref>
+      </attribute>
+      <optional>
+        <attribute name="type"/>
+      </optional>
+      <optional>
+        <attribute name="clipBegin">
+          <choice>
+            <ref name="datatype.smilclock.npt">
+              <zed:test id="smil_clipBeginValue"/>
+            </ref>
+            <ref name="datatype.smilclock">
+              <zed:test id="smil_clipBeginValue"/>
+            </ref>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="clipEnd">
+          <choice>
+            <ref name="datatype.smilclock.npt">
+              <zed:test id="smil_clipBeginValue"/>
+            </ref>
+            <ref name="datatype.smilclock">
+              <zed:test id="smil_clipBeginValue"/>
+            </ref>
+          </choice>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="region"/>
+      </optional>
+    </define>
+
+    <define name="img">
+      <element name="img">
+        <ref name="attlist.img"/>
+        <empty/>
+      </element>
+    </define>
+
+    <define name="attlist.img" combine="interleave">
+      <ref name="attribute.id.optional"/>
+      <optional>
+        <attribute name="region"/>
+      </optional>
+      <attribute name="src">
+      	<ref name="datatype.uri">
+      	  <zed:test id="smil_textSrcValue"/>
+      	</ref>
+      </attribute>
+      <optional>
+        <attribute name="type"/>
+      </optional>
+    </define>
+
+    <define name="a">
+      <element name="a">
+        <ref name="attlist.a"/>
+        <zeroOrMore>
+          <choice>
+            <ref name="text"/>
+            <ref name="audio"/>
+            <ref name="img"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+
+    <define name="attlist.a" combine="interleave">
+      <ref name="attribute.href.required"/>
+      <optional>
+        <ref name="attribute.xml.lang">
+          <zed:test id="smil_anchorXmlLangValue"/>
+        </ref>
+      </optional>
+      <ref name="Core.attrib"/>
+    </define>
+  </div>
+
+  <div c:name="common">
+     <define name="Core.attrib">
+        <ref name="attribute.id.optional"/>
+        <ref name="attribute.class.optional"/>
+        <ref name="attribute.title.optional"/>
+     </define>
+  </div>
+
+</grammar>
