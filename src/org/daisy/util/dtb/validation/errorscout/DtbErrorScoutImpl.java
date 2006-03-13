@@ -21,6 +21,7 @@ import org.daisy.util.fileset.SmilClock;
 import org.daisy.util.fileset.SmilFile;
 import org.daisy.util.fileset.TextualContentFile;
 import org.daisy.util.fileset.XmlFile;
+import org.daisy.util.fileset.Z3986DtbookFile;
 import org.daisy.util.fileset.Z3986NcxFile;
 import org.daisy.util.fileset.Z3986ResourceFile;
 import org.daisy.util.fileset.Z3986SmilFile;
@@ -109,26 +110,18 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 		if(doRelaxNgScouting||doLimitedSchematronScouting||doFullSchematronScouting){
 			if (filesetType==FilesetType.DAISY_202) {				
 				try{					
-					File d202NccSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("-//DAISY//RNG ncc v2.02//EN",null).toURI());
-					File d202SmilSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("-//DAISY//RNG smil v2.02//EN",null).toURI());					
-					d202NccRngSchValidator = new RelaxngSchematronValidator(d202NccSchema,this,doRelaxNgScouting,doLimitedSchematronScouting);		  
-					d202SmilRngSchValidator = new RelaxngSchematronValidator(d202SmilSchema,this,doRelaxNgScouting,doFullSchematronScouting);					
+					d202NccRngSchValidator = new RelaxngSchematronValidator("-//DAISY//RNG ncc v2.02//EN",null,this,doRelaxNgScouting,doLimitedSchematronScouting);		  
+					d202SmilRngSchValidator = new RelaxngSchematronValidator("-//DAISY//RNG smil v2.02//EN",null,this,doRelaxNgScouting,doFullSchematronScouting);					
 				}catch(Exception e){						
 					throw new DtbErrorScoutException(e);
 				}
 			}else if (filesetType==FilesetType.Z3986) {
 				try{					
-					File z39OpfSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("+//ISBN 0-9673008-1-9//RNG OEB 1.2 Package//EN",null).toURI());
-					File z39SmilSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("-//NISO//RNG dtbsmil 2005-1//EN",null).toURI());
-					File z39NcxSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("-//NISO//RNG ncx 2005-1//EN",null).toURI());
-					File z39ResSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("-//NISO//RNG resource 2005-1//EN",null).toURI());
-					File z39DtbookSchema = new File(CatalogEntityResolver.getInstance().resolveEntityToURL("-//NISO//RNG dtbook 2005-1//EN",null).toURI());
-					
-					z39OpfRngSchValidator = new RelaxngSchematronValidator(z39OpfSchema,this,doRelaxNgScouting,false);
-					z39SmilRngSchValidator = new RelaxngSchematronValidator(z39SmilSchema,this,doRelaxNgScouting,false);
-					z39NcxRngSchValidator = new RelaxngSchematronValidator(z39NcxSchema,this,doRelaxNgScouting,false);
-					z39ResRngSchValidator = new RelaxngSchematronValidator(z39ResSchema,this,doRelaxNgScouting,true);
-					z39DtbookRngSchValidator = new RelaxngSchematronValidator(z39DtbookSchema,this,doRelaxNgScouting,false);
+				    z39OpfRngSchValidator = new RelaxngSchematronValidator("+//ISBN 0-9673008-1-9//RNG OEB 1.2 Package//EN",null,this,doRelaxNgScouting,false);
+					z39SmilRngSchValidator = new RelaxngSchematronValidator("-//NISO//RNG dtbsmil 2005-1//EN",null,this,doRelaxNgScouting,false);
+					z39NcxRngSchValidator = new RelaxngSchematronValidator("-//NISO//RNG ncx 2005-1//EN",null,this,doRelaxNgScouting,false);
+					z39ResRngSchValidator = new RelaxngSchematronValidator("-//NISO//RNG resource 2005-1//EN",null,this,doRelaxNgScouting,true);
+					z39DtbookRngSchValidator = new RelaxngSchematronValidator("-//NISO//RNG dtbook 2005-1//EN",null,this,doRelaxNgScouting,true);
 					
 				}catch(Exception e){						
 					throw new DtbErrorScoutException(e.getMessage());
@@ -247,7 +240,13 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 							errors.add(new FilesetException("incorrect heading hierarchy in "+doc.getName()));
 							hasErrors = true;
 						}
-					}													
+					} else if (member instanceof Z3986DtbookFile) {
+					    if (doRelaxNgScouting) {
+					        if (!z39DtbookRngSchValidator.isValid(member.getFile())) {
+					            hasErrors = true;
+					        }
+					    }
+					}
 				}else if (member instanceof AudioFile){
 					if(doAudioFileScouting) {
 						if (member instanceof Mp3File){
