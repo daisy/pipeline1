@@ -247,8 +247,9 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
                 // Load RELAXNG schema
                 relaxngDriver = new ValidationDriver(builder.toPropertyMap());
                 try {
-                    if (!relaxngDriver.loadSchema(new InputSource(schemaUrl
-                            .openConnection().getInputStream()))) {
+                    InputSource inputSource = new InputSource(schemaUrl.openStream());
+                    inputSource.setSystemId(schemaUrl.toString());
+                    if (!relaxngDriver.loadSchema(inputSource)) {
                         throw new ValidationException(
                                 "Cannot load RELAXNG schema "
                                         + schemaUrl.toString());
@@ -264,8 +265,8 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
                 // Source xml = new
                 // SAXSource(ValidationDriver.fileInputSource(schema));
                 
-                Source xml = new StreamSource(schemaUrl
-                        .openConnection().getInputStream(),schemaUrl.toString());
+                Source xml = new StreamSource(schemaUrl.openStream(),
+                        schemaUrl.toString());
                 
                 Source xslt = new StreamSource(this.getClass()
                         .getResourceAsStream("RNG2Schtrn.xsl"));
