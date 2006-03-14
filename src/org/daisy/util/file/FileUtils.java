@@ -28,37 +28,45 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * Basic file functions.
+ * 
  * @author Linus Ericson
  */
 public class FileUtils {
-    
+
     /**
      * Copy a file.
-     * @param inFile source file
-     * @param outFile destination file
-     * @throws IOException if anything bad happens.
+     * 
+     * @param inFile
+     *            source file
+     * @param outFile
+     *            destination file
+     * @throws IOException
+     *             if anything bad happens.
      */
     public static void copy(File inFile, File outFile) throws IOException {
         if (inFile.equals(outFile)) {
             return;
         }
         createDirectory(outFile.getParentFile());
-        FileInputStream fis  = new FileInputStream(inFile);
+        FileInputStream fis = new FileInputStream(inFile);
         FileOutputStream fos = new FileOutputStream(outFile);
         byte[] buf = new byte[1024];
         int i = 0;
-        while ((i=fis.read(buf))!=-1) {
+        while ((i = fis.read(buf)) != -1) {
             fos.write(buf, 0, i);
         }
         fis.close();
         fos.close();
     }
-    
+
     /**
      * Make sure a directory exists
+     * 
      * @param dir
      * @return
-     * @throws IOException if the dir could not be created or if a regular file with the specified name exists.
+     * @throws IOException
+     *             if the dir could not be created or if a regular file with the
+     *             specified name exists.
      */
     public static File createDirectory(File dir) throws IOException {
         if (!dir.exists()) {
@@ -67,29 +75,24 @@ public class FileUtils {
                 throw new IOException("Could not create directory " + dir);
             }
         } else if (!dir.isDirectory()) {
-            throw new IOException(dir + " already exists and is not a directory");
+            throw new IOException(dir
+                    + " already exists and is not a directory");
         }
         return dir;
     }
-    
-    public static File writeStringToFile(File file, String string, String encoding) {
-        try {
-            if(!file.exists()) {
-                file = new File(file.getAbsolutePath());
-            }            
-            FileOutputStream out = new FileOutputStream(file);
-            PrintStream p = new PrintStream(out,true,encoding);            
-            p.print(string);
-            p.flush();
-            p.close();
-            
-        } catch (FileNotFoundException e) {
 
-        } catch (UnsupportedEncodingException e) {
-
+    public static File writeStringToFile(File file, String string,
+            String encoding) throws FileNotFoundException,
+            UnsupportedEncodingException {
+        if (!file.exists()) {
+            file = new File(file.getAbsolutePath());
         }
-        
+        FileOutputStream out = new FileOutputStream(file);
+        PrintStream p = new PrintStream(out, true, encoding);
+        p.print(string);
+        p.flush();
+        p.close();
         return file;
     }
-    
+
 }
