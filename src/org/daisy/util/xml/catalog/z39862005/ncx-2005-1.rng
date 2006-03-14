@@ -165,11 +165,9 @@
 
    <define name="attlist.content" combine="interleave">
      <ref name="attribute.id.optional"/>
-     <attribute name="src">
-       <ref name="datatype.uri">
-         <zed:test id="ncx_contentSrcAttrValue"/>
-       </ref>
-     </attribute>
+	 <ref name="attribute.src.required.z3986-2005.subset">
+       <zed:test id="ncx_contentSrcAttrValue"/>		
+	 </ref>  
    </define>
   </div>
 
@@ -314,11 +312,9 @@
     <define name="audio.attlist" combine="interleave">
       <ref name="attribute.id.optional"/>
       <ref name="attribute.class.optional"/>
-      <attribute name="src">
-        <ref name="datatype.uri">
-          <zed:test id="ncx_audioSrcValue"/>
-        </ref>
-      </attribute>
+      <ref name="attribute.src.required.z3986-2005.subset">
+        <zed:test id="ncx_audioSrcValue"/>
+	  </ref>
       <optional>
         <attribute name="clipBegin">
           <ref name="datatype.smilclock">
@@ -345,11 +341,9 @@
    <define name="img.attlist" combine="interleave">
      <ref name="attribute.id.optional"/>
      <ref name="attribute.class.optional"/>
-     <attribute name="src">
-       <ref name="datatype.uri">
-         <zed:test id="ncx_imgSrcValue"/>
-       </ref>
-     </attribute>
+     <ref name="attribute.src.required.z3986-2005.subset">
+ 	   <zed:test id="ncx_imgSrcValue"/>
+	 </ref>
    </define>
 
   </div>

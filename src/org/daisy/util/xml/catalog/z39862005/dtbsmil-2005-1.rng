@@ -407,7 +407,7 @@ TODO is this right to exclude hidden?
 		<element name="text">
 			<ref name="attribute.id.optional"/>
 			<ref name="attribute.region.optional"/>
-			<ref name="attribute.src.required">
+			<ref name="attribute.src.required.z3986-2005.subset">
 				<zed:test id="smil_textSrcValue"/>
 			</ref>
 		</element>
@@ -416,9 +416,8 @@ TODO is this right to exclude hidden?
 	<define name="element.audio">
 		<element name="audio">
 			<ref name="attribute.id.optional"/>
-			<ref name="attribute.region.optional"/>
-			
-			<ref name="attribute.src.required">
+			<ref name="attribute.region.optional"/>			
+			<ref name="attribute.src.required.z3986-2005.subset">
 				<zed:test id="smil_audioSrcValue"/>
 			</ref>
 			<ref name="attribute.clipBegin.required">
@@ -434,7 +433,7 @@ TODO is this right to exclude hidden?
 		<element name="img">
 			<ref name="attribute.id.optional"/>
 			<ref name="attribute.region.optional"/>
-			<ref name="attribute.src.required">
+			<ref name="attribute.src.required.z3986-2005.subset">
 				<zed:test id="smil_imgSrcValue"/>
 			</ref>
 		</element>

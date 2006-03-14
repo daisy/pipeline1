@@ -54,6 +54,12 @@
     <data type="anyURI"/>
   </define>
   
+  <define name="datatype.uri.z3986-2005.subset">
+    <data type="string">
+      <param name="pattern">[A-Za-z0-9/\.\-_#]+</param>
+    </data>
+  </define>
+	
   <define name="datatype.uri.relative.smilwithfragment">
     <data type="string">
       <param name="pattern">.+\.[Ss][Mm][Ii][Ll]#.+</param>

@@ -93,7 +93,7 @@
     <define name="attlist.item" combine="interleave">
       <ref name="InternationalAttributes"/>
       <ref name="attribute.id.required"/>
-      <ref name="attribute.href.required">
+      <ref name="attribute.href.required.z3986-2005.subset">
         <zed:test id="opf_mnfHrefUri"/>
       </ref>
       <attribute name="media-type">
