@@ -20,8 +20,11 @@ package org.daisy.util.file;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Basic file functions.
@@ -67,6 +70,26 @@ public class FileUtils {
             throw new IOException(dir + " already exists and is not a directory");
         }
         return dir;
+    }
+    
+    public static File writeStringToFile(File file, String string, String encoding) {
+        try {
+            if(!file.exists()) {
+                file = new File(file.getAbsolutePath());
+            }            
+            FileOutputStream out = new FileOutputStream(file);
+            PrintStream p = new PrintStream(out,true,encoding);            
+            p.print(string);
+            p.flush();
+            p.close();
+            
+        } catch (FileNotFoundException e) {
+
+        } catch (UnsupportedEncodingException e) {
+
+        }
+        
+        return file;
     }
     
 }
