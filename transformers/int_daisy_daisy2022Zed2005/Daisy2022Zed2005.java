@@ -285,7 +285,7 @@ public class Daisy2022Zed2005 extends Transformer {
 	private void finalizeManifest(File unfinishedOpf) throws IOException, ParserConfigurationException, SAXException {
 //		the xslt has already added the smilfiles to manifest
 //		note: since this function relativizes item URIs, 
-//		opf and its friends must be placed in final form in relation to eachoter
+//		opf and its friends must be placed in final form in relation to eachother
 //		ie cant have stuff in temp locations.    	
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
