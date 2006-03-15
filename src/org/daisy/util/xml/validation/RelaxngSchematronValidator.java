@@ -89,8 +89,15 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
             throws ValidationException {
 
         try {
-            InputSource is = new InputSource(new FileReader(schemaFile));
-            is.setSystemId(schemaFile.toURL().toString());
+//            InputSource is = new InputSource(new FileReader(schemaFile));                        
+//            is.setSystemId(schemaFile.toURL().toString());
+            //testa om detta funkar...
+            //samma som sista instantiatorn... 
+            URL fileUrl = schemaFile.toURL();
+            InputSource is = new InputSource(
+                    fileUrl.openConnection().getInputStream());
+            is.setSystemId(fileUrl.toString());        
+            
             initialize(is, errh, useRelaxNG, useSchematron, true);
         } catch (ValidationException e) {
             throw e;
