@@ -18,14 +18,8 @@
  */
 package org.daisy.util.xml.validation;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.URL;
 
 import javax.xml.transform.Source;
@@ -40,7 +34,6 @@ import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
-
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -89,16 +82,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
             throws ValidationException {
 
         try {
-//            InputSource is = new InputSource(new FileReader(schemaFile));                        
-//            is.setSystemId(schemaFile.toURL().toString());
-            //testa om detta funkar...
-            //samma som sista instantiatorn... 
-            URL fileUrl = schemaFile.toURL();
-            InputSource is = new InputSource(
-                    fileUrl.openConnection().getInputStream());
-            is.setSystemId(fileUrl.toString());        
-            
-            initialize(is, errh, useRelaxNG, useSchematron, true);
+            initialize(schemaFile.toURL(), errh, useRelaxNG, useSchematron, true);
         } catch (ValidationException e) {
             throw e;
         } catch (IOException e) {
@@ -128,15 +112,10 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
     public RelaxngSchematronValidator(URL schemaUrl, ErrorHandler errh)
             throws ValidationException {
         try {
-            InputSource is = new InputSource(schemaUrl.openConnection()
-                    .getInputStream());
-            is.setSystemId(schemaUrl.toString());
-            initialize(is, errh, true, true, true);
+            initialize(schemaUrl, errh, true, true, true);
         } catch (ValidationException e) {
             throw e;
-        } catch (IOException e) {
-            throw new ValidationException(e.getMessage(), e);
-        }
+        } 
     }
 
     /**
@@ -163,14 +142,9 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
             boolean useRelaxNG, boolean useSchematron)
             throws ValidationException {
         try {
-            InputSource is = new InputSource(schemaUrl.openConnection()
-                    .getInputStream());
-            is.setSystemId(schemaUrl.toString());
-            initialize(is, errh, useRelaxNG, useSchematron, true);
+            initialize(schemaUrl, errh, useRelaxNG, useSchematron, true);
         } catch (ValidationException e) {
             throw e;
-        } catch (IOException e) {
-            throw new ValidationException(e.getMessage(), e);
         }
     }
 
@@ -200,7 +174,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
             ErrorHandler errh) throws ValidationException {
 
         try {
-            initialize(CatalogEntityResolver.getInstance().resolveEntity(
+            initialize(CatalogEntityResolver.getInstance().resolveEntityToURL(
                     schemaPublicOrSystemId, schemaPublicOrSystemId), errh,
                     true, true, true);
         } catch (CatalogExceptionNotRecoverable e) {
@@ -237,7 +211,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
             throws ValidationException {
 
         try {
-            initialize(CatalogEntityResolver.getInstance().resolveEntity(
+            initialize(CatalogEntityResolver.getInstance().resolveEntityToURL(
                     schemaPublicId, schemaSystemId), errh, true, true, true);
         } catch (CatalogExceptionNotRecoverable e) {
             throw new ValidationException(e.getMessage(), e);
@@ -277,7 +251,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
             boolean useSchematron) throws ValidationException {
 
         try {
-            initialize(CatalogEntityResolver.getInstance().resolveEntity(
+            initialize(CatalogEntityResolver.getInstance().resolveEntityToURL(
                     schemaPublicId, schemaSystemId), errh, useRelaxNG,
                     useSchematron, true);
         } catch (CatalogExceptionNotRecoverable e) {
@@ -294,20 +268,17 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
     **/
     
     public RelaxngSchematronValidator(ErrorHandler errh, String schSchemaData) throws ValidationException {                        
-        InputSource is;
         try {
             TempFile f = new TempFile();            
             FileUtils.writeStringToFile(f.getFile(),schSchemaData,"utf-8");            
-            is = new InputSource(f.getFile().toURL().openConnection().getInputStream());
-            is.setSystemId(f.getFile().toURL().toString());        
-            initialize(is,errh,false,true,false);
+            initialize(f.getFile().toURL(),errh,false,true,false);
             f.delete();
         } catch (IOException e) {
             throw new ValidationException(e.getMessage(), e);
         }        
     }
 
-    private void initialize(InputSource schema, ErrorHandler errh,
+    private void initialize(URL schema, ErrorHandler errh,
             boolean useRelaxNG, boolean useSchematron, boolean isCompound)
             throws ValidationException {
         PropertyMapBuilder builder = new PropertyMapBuilder();
@@ -330,14 +301,15 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
                 // Load RELAXNG schema
                 relaxngDriver = new ValidationDriver(builder.toPropertyMap());
                 try {
-                    if (!relaxngDriver.loadSchema(schema)) {
+                    InputSource schemaSource = new InputSource(schema.openStream());
+                    schemaSource.setSystemId(schema.toString());
+                    if (!relaxngDriver.loadSchema(schemaSource)) {
                         throw new ValidationException(
-                                "Cannot load RELAXNG schema "
-                                        + schema.getSystemId());
+                                "Cannot load RELAXNG schema " + schema);
                     }
                 } catch (Exception e) {
                     throw new ValidationException("Cannot load RELAXNG schema "
-                            + schema.getSystemId(), e);
+                            + schema, e);
                 }
             }
 
@@ -348,27 +320,22 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
 
                 if (isCompound) {
                     // Use XSLT to strip out Schematron rules
-                    if (schema.getSystemId() == null) {
-                        System.err
-                                .println("warning: schema.getSystemId()==null in RelaxngSchematronValidator");
-                    }
-
-                    Source xml = new StreamSource(new InputStreamReader(schema
-                            .getByteStream()), schema.getSystemId());
-
+                    Source xml = new StreamSource(schema.openStream(), schema.toString());
+                    
                     Source xslt = new StreamSource(this.getClass()
                             .getResourceAsStream("RNG2Schtrn.xsl"));
-                    TransformerFactory factory = TransformerFactory
-                            .newInstance();
+                    TransformerFactory factory = TransformerFactory.newInstance();
 
                     Transformer transformer = factory.newTransformer(xslt);
                     transformer.transform(xml, new StreamResult(
                             schematronSchema.getFile().getCanonicalPath()));
                     schSource = new InputSource(schematronSchema.getFile()
                             .toURL().toString());
+                    schSource.setSystemId(schematronSchema.getFile().toURL().toString());
                 } else {
                     // just pass along the method inputparam InputSource
-                    schSource = schema;
+                    schSource = new InputSource(schema.openStream());
+                    schSource.setSystemId(schema.toString());
                 }
 
                 // Try to load Schematron schema
@@ -376,8 +343,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
 
                 if (!schematronDriver.loadSchema(schSource)) {
                     throw new ValidationException(
-                            "Cannot load Schematron schema "
-                                    + schema.getSystemId());
+                            "Cannot load Schematron schema " + schema);
                 }
 
                 // Delete temporary schematron file
