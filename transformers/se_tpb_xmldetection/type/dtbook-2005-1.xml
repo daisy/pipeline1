@@ -2,7 +2,7 @@
 
 <elementInfo>
 
-	<!--<expAttribute namespace="http://www.tpb.se/vnml" prefix="vnml" name="exp"/>-->
+	<expAttribute namespace="http://www.tpb.se/vnml" prefix="vnml" name="exp"/>
 
 	<sentenceElement namespace="http://www.daisy.org/z3986/2005/dtbook/" prefix="" name="sent"/>
 	
@@ -94,6 +94,7 @@
 		<element name="strong"/>
 		<element name="sub"/>
 		<element name="sup"/>
+		<element name="th"/>
 		<element name="td"/>
 		<element name="w"/>
 	</mayContainText>
