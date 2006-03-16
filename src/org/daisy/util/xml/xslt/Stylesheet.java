@@ -21,6 +21,7 @@ package org.daisy.util.xml.xslt;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -352,7 +353,12 @@ public class Stylesheet {
         apply(xmlDom, xslt, result, parameters);
     }
     
-    
+    public static void apply(DOMSource xmlDom, Transformer xslt, StringBuffer outBuffer, Map parameters, EntityResolver resolver) throws XSLTException {
+        StringWriter sw = new StringWriter();
+        Result result = new StreamResult(sw);
+        apply(xmlDom, xslt, result, parameters);
+        outBuffer.append(sw.getBuffer());
+    }
     
     /*package*/ static Source file2source(File xml, EntityResolver resolver) throws ParserConfigurationException, SAXException, FileNotFoundException {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
