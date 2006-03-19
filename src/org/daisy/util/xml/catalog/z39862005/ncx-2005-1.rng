@@ -647,6 +647,7 @@
         </sch:assert>        
       </sch:rule>
     </sch:pattern>
+	
 	<!--
 		get 'Unknown system function: max'
 		so doing it in custom instead
@@ -658,6 +659,7 @@
       </sch:rule>
     </sch:pattern>
 	-->
+	
   <!--
       <sch:pattern name="" id="">
       <sch:rule context="">
