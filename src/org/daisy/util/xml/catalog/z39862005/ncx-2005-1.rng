@@ -615,7 +615,7 @@
     <sch:pattern name="ncx_metaDtbtotPageCountValueCorrelated" id="ncx_metaDtbtotPageCountValueCorrelated">
       <!-- dtb:totalPageCount content attribute value indicates total number of pages in NCX -->
       <sch:rule context="ncx:meta[@name='dtb:totalPageCount']">
-        <sch:assert test="count(ncx:ncx/ncx:pageList/ncx:pageTarget)=current()/@content">
+        <sch:assert test="count(/ncx:ncx/ncx:pageList/ncx:pageTarget)=current()/@content">
           [sch][ncx_metaDtbtotPageCountValueCorrelated]
         </sch:assert>        
       </sch:rule>
