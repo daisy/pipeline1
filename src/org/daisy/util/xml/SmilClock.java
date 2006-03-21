@@ -1,4 +1,4 @@
-package org.daisy.util.fileset;
+package org.daisy.util.xml;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -7,11 +7,31 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- A <code>SmilClock</code> object is a wrapper for a SMIL clock value (time)
- @version 1.0.2 (11/06/2005) (minor optimization mods by markus)
- @author James Pritchett
+ * A <code>SmilClock</code> object is a wrapper for a SMIL clock value (time)
+ * <pre>
+ * Versions:
+ * 0.1.0 (09/02/2003)
+ * - Implemented string parsing
+ * - Implemented both toString() methods
+ * 0.1.1 (10/02/2003)
+ * - Added static method to get/set tolerance for equals() and compareTo() methods
+ * - Modified equals() and compareTo() to take tolerance value into account
+ * 0.2.0 (10/04/2003)
+ * - Added support for npt= formats
+ * - Fixed bug in SmilClock(double) constructor
+ * - Fixed nasty bug in SmilClock(String) constructor
+ * 1.0.1 (11/01/2004)
+ * - Fixed bug in milliseconds parsing in SmilClock(String s); now handles values with more/less than 3 digits
+ * - Fixed bug in toString(int format) that caused milliseconds to lose leading zeroes
+ * 1.0.2 (11/06/2005) Markus
+ * - Added optimization: patterns compiled and static
+ * 1.0.3 (21/06/2005) Markus 
+ * - Added secondsValueRounded
+ * 1.0.4 (10/02/2006) Linus
+ * - Fixed locale bug in toString: now using DecimalFormat instead of NumberFormat
+ * </pre>
+ * @author James Pritchett
  */
-
 public class SmilClock implements Comparable {
 //	TODO move this to a more appropriate package
 	private static Pattern fullClockPattern = Pattern.compile("(npt=)?(\\d+):([0-5]\\d):([0-5]\\d)([.](\\d+))?");
@@ -126,11 +146,7 @@ public class SmilClock implements Comparable {
 		DecimalFormat dfDouble = new DecimalFormat("0.000", dfSymbols);
 		dfDouble.setMaximumFractionDigits(3);
 		dfDouble.setGroupingUsed(false);
-		/*
-		NumberFormat nfDouble = NumberFormat.getInstance();
-		nfDouble.setMaximumFractionDigits(3);
-		nfDouble.setGroupingUsed(false);
-		*/
+		
 		// Break out all the pieces ...
 		msec = this.msecValue % 1000;
 		tmp = (this.msecValue - msec) / 1000;
@@ -213,9 +229,7 @@ public class SmilClock implements Comparable {
 		if (Math.abs(other.msecValue - this.msecValue) <= msecTolerance) {
 			return true;
 		}
-		else {
-			return false;
-		}
+		return false;		
 	}
 	
 	// implement Comparable interface so we can sort and compare values

@@ -4,6 +4,8 @@ import java.io.File;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+
+import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.validation.ValidationException;
 import org.daisy.util.fileset.AudioFile;
@@ -17,7 +19,6 @@ import org.daisy.util.fileset.FilesetImpl;
 import org.daisy.util.fileset.Mp3File;
 import org.daisy.util.fileset.OpfFile;
 import org.daisy.util.fileset.Regex;
-import org.daisy.util.fileset.SmilClock;
 import org.daisy.util.fileset.SmilFile;
 import org.daisy.util.fileset.TextualContentFile;
 import org.daisy.util.fileset.XmlFile;

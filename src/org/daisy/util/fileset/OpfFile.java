@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.daisy.util.xml.SmilClock;
+
 /**
  * Reprenents an OPF (OpenEbook Package File) file
  * @author Markus Gylling

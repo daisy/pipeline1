@@ -5,7 +5,7 @@ import java.util.logging.Level;
 
 import org.daisy.dmfc.core.EventListener;
 import org.daisy.dmfc.core.Prompt;
-import org.daisy.util.fileset.SmilClock;
+import org.daisy.util.xml.SmilClock;
 
 public class LocalEventListener implements EventListener{
 

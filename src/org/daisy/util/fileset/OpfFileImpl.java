@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.daisy.util.xml.SmilClock;
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;

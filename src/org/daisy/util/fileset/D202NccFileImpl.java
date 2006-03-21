@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.daisy.util.xml.SmilClock;
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;

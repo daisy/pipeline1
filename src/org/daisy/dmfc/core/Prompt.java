@@ -20,7 +20,7 @@ package org.daisy.dmfc.core;
 
 import java.util.logging.Level;
 
-import org.daisy.util.fileset.SmilClock;
+import org.daisy.util.xml.SmilClock;
 
 /**
  * @author Linus Ericson

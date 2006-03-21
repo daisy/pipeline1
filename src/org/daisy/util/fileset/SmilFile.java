@@ -1,5 +1,7 @@
 package org.daisy.util.fileset;
 
+import org.daisy.util.xml.SmilClock;
+
 /**
  * Represents a SMIL file
  * @author Markus Gylling

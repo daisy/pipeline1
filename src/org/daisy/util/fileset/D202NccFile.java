@@ -1,5 +1,7 @@
 package org.daisy.util.fileset;
 
+import org.daisy.util.xml.SmilClock;
+
 /**
  * Represents the ncc.html file in a Daisy 2.02 fileset
  * @author Markus Gylling
