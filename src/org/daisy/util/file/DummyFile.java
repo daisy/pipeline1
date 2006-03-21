@@ -1,5 +1,5 @@
 /*
- * DMFC - The DAISY Multi Format Converter
+ * org.daisy.util - The DAISY java utility library
  * Copyright (C) 2006  Daisy Consortium
  *
  * This library is free software; you can redistribute it and/or
@@ -16,20 +16,27 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.daisy.dmfc.core;
+package org.daisy.util.file;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
- * Observer of progress.
- * This interface is typically implemented by subclasses of the
- * <code>org.daisy.dmfc.core.transformer.Transformer</code> class and used by
- * other classes to report progress back to the transformer.
  * @author Linus Ericson
  */
-public interface ProgressObserver {
+public class DummyFile {
     
-    /**
-     * Report a progress event.
-     * @param progress the current progress in the interval [0,1]
-     */
-    public void reportProgress(double progress);
+    public static File create(String name) throws IOException {
+        TempFile tempFile = new TempFile();
+        create(tempFile.getFile(), name);
+        return tempFile.getFile();
+    }
+    
+    public static void create(File path, String name) throws IOException {
+        FileOutputStream fos = new FileOutputStream(path);
+        fos.write(1);
+        fos.close();
+    }
+    
 }

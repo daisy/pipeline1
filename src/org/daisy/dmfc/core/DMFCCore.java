@@ -40,6 +40,7 @@ import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.MIMEException;
+import org.daisy.dmfc.exception.ScriptAbortException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.dmfc.logging.LoggingPropertiesReader;
@@ -188,7 +189,7 @@ public class DMFCCore extends EventSender {
 			sendMessage(Level.SEVERE, i18n("RELOADING_TRANSFORMERS_FAILED", e.getMessage()));
 			e.printStackTrace();
 			return false;
-		}		
+		}
 		return true;
 	}
 		
@@ -271,6 +272,8 @@ public class DMFCCore extends EventSender {
 			ScriptHandler handler = new ScriptHandler(script, transformerHandlers, getEventListeners(), validator);
 			handler.execute();
 			ret = true;
+		} catch (ScriptAbortException e) {
+				sendMessage(Level.SEVERE, "Script aborted");			
 		} catch (ScriptException e) {
 		    sendMessage(Level.SEVERE, i18n("SCRIPT_EXCEPTION", e.getMessage()));
 			if (e.getRootCause() != null) {

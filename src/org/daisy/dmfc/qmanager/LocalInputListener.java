@@ -19,5 +19,9 @@ public class LocalInputListener implements InputListener {
         }
 		return line;
 	}
+
+    public boolean isAborted() {
+        return false;
+    }
 	
 }

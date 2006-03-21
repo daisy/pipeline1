@@ -1,6 +1,6 @@
 /*
  * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
+ * Copyright (C) 2006  Daisy Consortium
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,24 +16,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.daisy.dmfc.core;
+package org.daisy.util.execution;
 
 /**
- * A user interface implementing this interface will get requests 
- * of user input from Transformers (provided the Transformers are
- * in interactive mode).
- * 
+ * Observer of progress.
+ * This interface is typically implemented by subclasses of the
+ * <code>org.daisy.dmfc.core.transformer.Transformer</code> class and used by
+ * other classes to report progress back to the transformer.
  * @author Linus Ericson
  */
-public interface InputListener {
-	
-	/**
-	 * Get (interactive) input from the user.
-	 * @param prompt
-	 * @return the input from the user
-	 */
-	public String getInputAsString(Prompt prompt);
-	
-	public boolean isAborted();
-	
+public interface ProgressObserver {
+    
+    /**
+     * Report a progress event.
+     * @param progress the current progress in the interval [0,1]
+     */
+    public void reportProgress(double progress);
 }

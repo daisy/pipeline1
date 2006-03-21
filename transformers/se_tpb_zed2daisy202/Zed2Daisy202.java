@@ -37,6 +37,7 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
+import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
@@ -103,6 +104,7 @@ public class Zed2Daisy202 extends Transformer {
             this.sendMessage(Level.INFO, i18n("BUILDING_FILESET"));
             Fileset fileset = this.buildFileSet(manifest);            
             this.progress(FILESET_DONE);
+            this.checkAbort();
             
             Set filesToCopy = new HashSet();
             
@@ -135,20 +137,24 @@ public class Zed2Daisy202 extends Transformer {
             // Create smils
             long totalElapsedTime = this.createSmils(opf, dtbook, ncx);            
             this.progress(SMIL_DONE);
+            this.checkAbort();
             
             // Create xhtml 
             this.sendMessage(Level.INFO, i18n("CREATING_XHTML", contentXHTML));
             this.createXhtml(dtbook);            
             this.progress(XHTML_DONE);
+            this.checkAbort();
 
             // Create NCC
             this.sendMessage(Level.INFO, i18n("BUILDING_NCC", "ncc.html"));
             this.createNcc(opf.getFile(), totalElapsedTime);            
             this.progress(NCC_DONE);
+            this.checkAbort();
             
             // Copy files
             this.copyFiles(filesToCopy, fileset);            
             this.progress(COPY_DONE);
+            this.checkAbort();
             
         } catch (FilesetException e) {            
             throw new TransformerRunException(e.getMessage(), e);
@@ -214,8 +220,9 @@ public class Zed2Daisy202 extends Transformer {
      * @throws CatalogExceptionNotRecoverable
      * @throws XSLTException
      * @throws FilesetException
+     * @throws TransformerAbortException
      */
-    private long createSmils(OpfFile opf, File dtbook, File ncx) throws XMLStreamException, IOException, CatalogExceptionNotRecoverable, XSLTException, FilesetException {
+    private long createSmils(OpfFile opf, File dtbook, File ncx) throws XMLStreamException, IOException, CatalogExceptionNotRecoverable, XSLTException, FilesetException, TransformerAbortException {
         SmilFileClockFixer smilClockFixer = new SmilFileClockFixer();
         long totalElapsedTime = 0;
         File smil2smil = new File(this.getTransformerDirectory(), "smil2smil.xsl");
@@ -251,6 +258,7 @@ public class Zed2Daisy202 extends Transformer {
             temp2.delete();
             parameters.put("add_title", "false");
             this.progress(FILESET_DONE + (SMIL_DONE-FILESET_DONE)*((double)smilCount/smilNum));
+            this.checkAbort();
         }
         
         return totalElapsedTime;
@@ -282,8 +290,9 @@ public class Zed2Daisy202 extends Transformer {
      * Copy the rest of the book (audio and images).
      * @param files the set of files to copy
      * @throws IOException
+     * @throws TransformerAbortException
      */
-    private void copyFiles(Set files, Fileset fileset) throws IOException {
+    private void copyFiles(Set files, Fileset fileset) throws IOException, TransformerAbortException {
         int fileNum = files.size();
         int fileCount = 0;
         for (Iterator it = files.iterator(); it.hasNext(); ) {
@@ -295,6 +304,7 @@ public class Zed2Daisy202 extends Transformer {
             File out = new File(outputDir.toURI().resolve(relativeURI));
             FileUtils.copy(fsf.getFile(), out);
             this.progress(0.85 + (0.99-0.85)*((double)fileCount/fileNum));
+            this.checkAbort();
         }
     }
     

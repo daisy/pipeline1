@@ -37,6 +37,10 @@ import org.daisy.dmfc.exception.DMFCConfigurationException;
  */
 public class CommandLineUI implements InputListener, EventListener {
 
+    public boolean isAborted() {
+        return false;
+    }
+    
 	public String getInputAsString(Prompt prompt) {
 		System.err.println("[" + prompt.getMessageOriginator() + "] Prompt: " + prompt.getMessage());
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -65,7 +69,7 @@ public class CommandLineUI implements InputListener, EventListener {
             if (args.length == 1) {
             	CommandLineUI ui = new CommandLineUI();
             	DMFCCore dmfc = new DMFCCore(ui, ui, new Locale("sv", "SE"));
-            	//DMFCCore dmfc = new DMFCCore(ui, ui);
+            	//DMFCCore dmfc = new DMFCCore(ui, ui);            	
             	dmfc.executeScript(new File(args[0]));
             } else {
             	System.out.println("Program requires one parameter (a script file name)");

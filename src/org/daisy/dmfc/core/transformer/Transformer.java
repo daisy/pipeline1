@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.Prompt;
+import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
 
 /**
@@ -64,11 +65,17 @@ public abstract class Transformer extends EventSender {
 	protected abstract boolean execute(Map parameters) throws TransformerRunException;
 	
 	final public boolean executeWrapper(Map parameters, File dir) throws TransformerRunException {
+	    if (inputListener.isAborted()) {
+	        throw new TransformerAbortException(messageOriginator + " aborted.");
+	    }
 	    boolean ret;
 	    transformerDirectory = dir;
 	    status(true);
         startTime = System.currentTimeMillis();
 	    ret = execute(parameters);
+	    if (inputListener.isAborted()) {
+	        throw new TransformerAbortException(messageOriginator + " aborted.");
+	    }
 	    status(false);
 	    return ret;
 	}
@@ -82,6 +89,9 @@ public abstract class Transformer extends EventSender {
         send(prompt);
     }
     
+    protected void abortEvent() {
+        // Nothing by default
+    }
     
 	/**
 	 * Performs any Transformer specific checks. In the default implementation,
@@ -104,6 +114,13 @@ public abstract class Transformer extends EventSender {
 		    return defaultValue;			
 		}		
 		return inputListener.getInputAsString(new Prompt(level, message, messageOriginator));		
+	}
+	
+	final protected void checkAbort() throws TransformerAbortException {
+	    if (inputListener.isAborted()) {
+	        abortEvent();
+	        throw new TransformerAbortException(messageOriginator + " aborted.");
+	    }
 	}
 	
 	/**

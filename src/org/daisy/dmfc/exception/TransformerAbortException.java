@@ -1,6 +1,6 @@
 /*
  * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
+ * Copyright (C) 2006  Daisy Consortium
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,24 +16,26 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.daisy.dmfc.core;
+package org.daisy.dmfc.exception;
 
 /**
- * A user interface implementing this interface will get requests 
- * of user input from Transformers (provided the Transformers are
- * in interactive mode).
- * 
  * @author Linus Ericson
  */
-public interface InputListener {
-	
-	/**
-	 * Get (interactive) input from the user.
-	 * @param prompt
-	 * @return the input from the user
-	 */
-	public String getInputAsString(Prompt prompt);
-	
-	public boolean isAborted();
-	
+public class TransformerAbortException extends TransformerRunException {
+
+    /**
+     * @param message
+     */
+    public TransformerAbortException(String message) {
+        super(message);
+    }
+
+    /**
+     * @param message
+     * @param cause
+     */
+    public TransformerAbortException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

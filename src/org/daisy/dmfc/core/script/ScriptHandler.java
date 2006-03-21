@@ -38,7 +38,9 @@ import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.MIMERegistry;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.exception.MIMEException;
+import org.daisy.dmfc.exception.ScriptAbortException;
 import org.daisy.dmfc.exception.ScriptException;
+import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.validation.ValidationException;
@@ -209,7 +211,10 @@ public class ScriptHandler extends EventSender {
 				    throw new ScriptException(i18n("TASK_FAILED", th.getName()));
 				}
 			}
+		} catch (TransformerAbortException e) {
+		    throw new ScriptAbortException("Script aborted.");
 		} catch (TransformerRunException e) {
+		    e.printStackTrace();
 		    throw new ScriptException(i18n("ERROR_RUNNING_TASK"), e);
 		}
 		
