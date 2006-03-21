@@ -6,6 +6,7 @@ package org.daisy.util.fileset;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author Markus Gylling
@@ -77,5 +78,17 @@ public interface Fileset {
 	 * @return a relative URI
 	 */
 	public URI getRelativeURI(FilesetFile filesetFile);
+	
+	/**
+	 * Gets a collection of URIs found in the fileset, but where the file was missing. 
+	 * @return a collection of URIs
+	 */
+	public Collection getMissingURIs();
+	
+	/**
+	 * Gets the set of local URIs.
+	 * @return a set of local URIs.
+	 */
+	public Set getLocalMembersURIs();
 	
 }

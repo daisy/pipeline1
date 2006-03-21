@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -32,6 +33,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 	private Map localMembers = new HashMap();	//<URI>, <FilesetFile>	
 	private HashSet remoteMembers = new HashSet();	//<String> 
 	private HashSet errors = new HashSet();			//<Exception>	
+	private HashSet missingURIs = new HashSet();
 	private ManifestFile manifestMember;	
 	private FilesetType filesetType = null;
 	private Regex regex = Regex.getInstance();
@@ -156,7 +158,8 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 					this.fileInstantiatedEvent((FilesetFile)this.manifestMember);	
 					
 				}else{
-					//					other types
+					// other types
+				    throw new FilesetException("Unsupported manifest type");
 				}
 			} catch (Exception e){
 				//thrown if the manifest could not be instantiated
@@ -248,6 +251,7 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 								continue;
 							} catch (FileNotFoundException fnfe) {
 								errors.add(fnfe);
+								missingURIs.add(resolvedURI);
 								//System.err.println("ioe in getType");
 								continue;
 							} catch (IOException ioe) {
@@ -373,6 +377,10 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		return manifestMember;
 	}
 	
+	public Set getLocalMembersURIs() {
+	    return localMembers.keySet();
+	}
+	
 	public Iterator getLocalMembersURIIterator() {
 		return localMembers.keySet().iterator();		
 	}
@@ -467,6 +475,10 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 	    URI filesetFileURI = filesetFile.getFile().toURI();
 	    URI relative = parent.relativize(filesetFileURI);
 	    return relative;
+	}
+	
+	public Collection getMissingURIs() {
+	    return missingURIs;
 	}
 	
 }
