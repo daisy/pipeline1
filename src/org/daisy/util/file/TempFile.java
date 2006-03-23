@@ -64,6 +64,21 @@ public class TempFile {
 	}
 	
 	/**
+	 * Creates a temporary directory. The directory is <em>not</em>
+	 * automatically deleted when the virtual machine exists.
+	 * @return a temporary directory
+	 * @throws IOException
+	 */
+	public static File createDir() throws IOException {
+	    synchronized (TempFile.class) {
+	        File temp = File.createTempFile("temp", ".tmp", tempDir);
+	        temp.delete();
+	        temp.mkdirs();
+	        return temp;
+	    }
+	}
+	
+	/**
 	 * @return the <code>File</code> reference to to the <code>TempFile</code> 
 	 */
 	public File getFile() {
