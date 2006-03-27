@@ -47,7 +47,7 @@
 	
 	<sentenceSkip>
 		<element name="address"/>
-		<element name="code"/>
+		<!-- <element name="code"/> -->
 		<element name="head"/>
 		<element name="sent"/>
 		
@@ -69,8 +69,11 @@
 		<element name="acronym"/>
 		<element name="b"/>
 		<element name="caption"/>
+		<element name="code"/>
+		<element name="dd"/>
 		<element name="docauthor"/>
 		<element name="doctitle"/>
+		<element name="dt"/>
 		<element name="em"/>
 		<element name="h1"/>
 		<element name="h2"/>
