@@ -31,7 +31,9 @@
 			<zed:test id="smil_xmlnsPresence"/>
 			<zed:test id="smil_xmlnsValue"/>			
 			<ref name="core.attList"/>
-			<ref name="attribute.xml.lang.optional"/>
+			<ref name="attribute.xml.lang.optional">
+			      	<zed:test id="smil_xmlLangAttrValue"/>
+			</ref>	
 			<ref name="element.head"/>
 			<ref name="element.body"/>
 		</element>
