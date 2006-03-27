@@ -31,6 +31,7 @@
   <xsl:param name="ncx_document"/>
   <xsl:param name="baseDir"/>
   <xsl:param name="add_title"/>
+  <xsl:param name="precalc_document"/>
 
   <xsl:output method="xml" 
 	      encoding="utf-8" 
@@ -53,6 +54,7 @@
       <body>
         <seq dur="FIXME">
           <xsl:if test="$add_title='true'">
+          	<!--
             <xsl:for-each select="document($ncx_document)//n:docTitle">
               <par endsync="last" id="doctitle">
                 <text id="doctitleText">
@@ -61,6 +63,17 @@
                   </xsl:attribute>
                 </text>
                 <audio id="doctitleAudio" clip-begin="{n:audio/@clipBegin}" clip-end="{n:audio/@clipEnd}" src="{n:audio/@src}"/>
+              </par>
+            </xsl:for-each>
+            -->
+            <xsl:for-each select="document($precalc_document)/doc/ncx">
+              <par endsync="last" id="doctitle">
+                <text id="doctitleText">
+                  <xsl:attribute name="src">
+                    <xsl:call-template name="find_doctitle"/>
+                  </xsl:attribute>
+                </text>
+                <audio id="doctitleAudio" clip-begin="{@clipBegin}" clip-end="{@clipEnd}" src="{@src}"/>
               </par>
             </xsl:for-each>
           </xsl:if>          
@@ -305,8 +318,10 @@
 		<xsl:param name="subElementUri"/>
 		<xsl:variable name="dtbook" select="substring-before($subElementUri, '#')"/>
 		<xsl:variable name="fragment" select="substring-after($subElementUri, '#')"/>
-						
+		<!--				
 		<xsl:value-of select="document(concat($baseDir,$dtbook))//d:note[descendant-or-self::*[@id=$fragment]]/@id"/>		
+		-->
+		<xsl:value-of select="document($precalc_document)/doc/notes/note[item[@id=$fragment]]/@id"/>		
 	</xsl:template>
 
 
@@ -362,35 +377,22 @@
        Get system-required property
        
        Get the value to use in the system-required attribute, given a
-       customTest attribute value. The result can becomputed  in two
-       ways: if a ncx document is defined (preferred), the bookStruct
-       in the ncx is used, otherwise the value of the customTest itself
-       is used to make a guess...
+       customTest attribute value. 
        **************************************************************** -->
   <xsl:template name="get_system_required">
   	<xsl:param name="customTest"/>
-  	<xsl:choose>
-  		<xsl:when test="$ncx_document">
-  			<xsl:variable name="bookStruct">
-  				<xsl:value-of select="document($ncx_document)//*[@id=$customTest]/@bookStruct"/>
-  			</xsl:variable>
-  			<xsl:choose>
-  				<xsl:when test="$bookStruct='OPTIONAL_SIDEBAR'">sidebar-on</xsl:when>
-  				<xsl:when test="$bookStruct='OPTIONAL_PRODUCER_NOTE'">prodnote-on</xsl:when>
-  				<xsl:when test="$bookStruct='NOTE'">footnote-on</xsl:when>
-  				<xsl:when test="$bookStruct='PAGE_NUMBER'">pagenumber-on</xsl:when>
-  			</xsl:choose>
-  		</xsl:when>
-  		<xsl:otherwise>
-  			<xsl:message>smil2smil: No NCX defined. Using heuristics to find system-required properties.</xsl:message>
-  			<xsl:choose>
-  				<xsl:when test="$customTest='sidebar'">sidebar-on</xsl:when>
-  				<xsl:when test="$customTest='prodnote'">prodnote-on</xsl:when>
-  				<xsl:when test="$customTest='note'">footnote-on</xsl:when>
-  				<xsl:when test="$customTest='pagenum'">pagenumber-on</xsl:when>
-  			</xsl:choose>
-  		</xsl:otherwise>
-  	</xsl:choose>  	
+	<xsl:variable name="bookStruct">
+		<!--
+		<xsl:value-of select="document($ncx_document)//*[@id=$customTest]/@bookStruct"/>
+  		-->
+  		<xsl:value-of select="document($precalc_document)/doc/ncx/customTest[@id=$customTest]/@bookStruct"/>
+  	</xsl:variable>
+	<xsl:choose>
+		<xsl:when test="$bookStruct='OPTIONAL_SIDEBAR'">sidebar-on</xsl:when>
+		<xsl:when test="$bookStruct='OPTIONAL_PRODUCER_NOTE'">prodnote-on</xsl:when>
+		<xsl:when test="$bookStruct='NOTE'">footnote-on</xsl:when>
+		<xsl:when test="$bookStruct='PAGE_NUMBER'">pagenumber-on</xsl:when>
+	</xsl:choose>
   </xsl:template>
   
   
@@ -404,19 +406,15 @@
   	<xsl:param name="customTest"/>
   	<xsl:choose>
   		<xsl:when test="not($customTest)">no</xsl:when>
-  		<xsl:when test="$ncx_document">
+  		<xsl:otherwise>
   			<xsl:variable name="bookStruct">
+  				<!--
   				<xsl:value-of select="document($ncx_document)//*[@id=$customTest]/@bookStruct"/>
+  				-->
+  				<xsl:value-of select="document($precalc_document)/doc/ncx/customTest[@id=$customTest]/@bookStruct"/>
   			</xsl:variable>
   			<xsl:choose>
   				<xsl:when test="$bookStruct='NOTE_REFERENCE'">yes</xsl:when>
-  				<xsl:otherwise>no</xsl:otherwise>
-  			</xsl:choose>
-  		</xsl:when>
-  		<xsl:otherwise>
-  			<xsl:message>smil2smil: No NCX defined. Using heuristics to find if is_noteref.</xsl:message>
-  			<xsl:choose>
-  				<xsl:when test="$customTest='noteref'">yes</xsl:when>
   				<xsl:otherwise>no</xsl:otherwise>
   			</xsl:choose>
   		</xsl:otherwise>
@@ -434,19 +432,15 @@
   	<xsl:param name="customTest"/>
   	<xsl:choose>
   		<xsl:when test="not($customTest)">no</xsl:when>
-  		<xsl:when test="$ncx_document">
+  		<xsl:otherwise>
   			<xsl:variable name="bookStruct">
+  				<!--
   				<xsl:value-of select="document($ncx_document)//*[@id=$customTest]/@bookStruct"/>
+  				-->
+  				<xsl:value-of select="document($precalc_document)/doc/ncx/customTest[@id=$customTest]/@bookStruct"/>
   			</xsl:variable>
   			<xsl:choose>
   				<xsl:when test="$bookStruct='NOTE'">yes</xsl:when>
-  				<xsl:otherwise>no</xsl:otherwise>
-  			</xsl:choose>
-  		</xsl:when>
-  		<xsl:otherwise>
-  			<xsl:message>smil2smil: No NCX defined. Using heuristics to find if is_note.</xsl:message>
-  			<xsl:choose>
-  				<xsl:when test="$customTest='note'">yes</xsl:when>
   				<xsl:otherwise>no</xsl:otherwise>
   			</xsl:choose>
   		</xsl:otherwise>
@@ -463,8 +457,10 @@
 		<xsl:param name="uri"/>
 		<xsl:variable name="dtbook" select="substring-before($uri, '#')"/>
 		<xsl:variable name="fragment" select="substring-after($uri, '#')"/>
-						
+		<!--				
 		<xsl:value-of select="document(concat($baseDir,$dtbook))//*[self::d:h1 or self::d:h2 or self::d:h3 or self::d:h4 or self::d:h5 or self::d:h6 or (self::d:hd and parent::d:level)][descendant-or-self::*[@id=$fragment]]"/>
+		-->
+		<xsl:value-of select="document($precalc_document)/doc/headings/heading[item[@id=$fragment]]/@title"/>
 	</xsl:template>
 	
 	
@@ -474,16 +470,27 @@
        Gets the title of the book from the NCX document
        **************************************************************** -->
 	<xsl:template name="get_book_title">
-		<xsl:if test="$ncx_document">
-			<xsl:value-of select="document($ncx_document)//n:docTitle/n:text"/>
-		</xsl:if>
+		<!--
+		<xsl:value-of select="document($ncx_document)//n:docTitle/n:text"/>
+		-->
+		<xsl:value-of select="document($precalc_document)/doc/ncx/@title"/>
 	</xsl:template>
 	
 	<xsl:template name="find_doctitle">  	
+	<!--
   	  <xsl:variable name="titleId" select="document($dtbook_document)//d:doctitle[1]"/>
   	  <xsl:choose>
   		<xsl:when test="$titleId/@id">
   			<xsl:value-of select="concat($xhtml_document, '#', $titleId/@id)"/>
+  		</xsl:when>
+  		<xsl:otherwise>
+  			<xsl:value-of select="concat($xhtml_document, '#h1classtitle')"/>
+  		</xsl:otherwise>
+  	</xsl:choose>
+  	-->
+  	<xsl:choose>
+  		<xsl:when test="document($precalc_document)/doc/@id">
+  			<xsl:value-of select="concat($xhtml_document, '#', document($precalc_document)/doc/@id)"/>
   		</xsl:when>
   		<xsl:otherwise>
   			<xsl:value-of select="concat($xhtml_document, '#h1classtitle')"/>

@@ -133,7 +133,7 @@ public class Zed2Daisy202 extends Transformer {
                     System.err.println("ignore: " + fsf.getName());
                 }
             }
-            
+                        
             // Create smils
             long totalElapsedTime = this.createSmils(opf, dtbook, ncx);            
             this.progress(SMIL_DONE);
@@ -223,16 +223,24 @@ public class Zed2Daisy202 extends Transformer {
      * @throws TransformerAbortException
      */
     private long createSmils(OpfFile opf, File dtbook, File ncx) throws XMLStreamException, IOException, CatalogExceptionNotRecoverable, XSLTException, FilesetException, TransformerAbortException {
+
+        // Extract the information the smil2smil stylesheet needs
+        // from the DTBook and the OPF. This will speed up the
+        // transformation significantly.
+        PreCalc preCalc = new PreCalc(dtbook, ncx);            
+        File preCalcFile = preCalc.getPreCalcFile();        
+        
         SmilFileClockFixer smilClockFixer = new SmilFileClockFixer();
         long totalElapsedTime = 0;
         File smil2smil = new File(this.getTransformerDirectory(), "smil2smil.xsl");
         
         Map parameters = new HashMap();
         parameters.put("xhtml_document", contentXHTML);
-        parameters.put("dtbook_document", dtbook.toURI());
+        //parameters.put("dtbook_document", dtbook.toURI());
         parameters.put("baseDir", inputDir.toURI());
-        parameters.put("ncx_document", ncx.toURI());
+        //parameters.put("ncx_document", ncx.toURI());
         parameters.put("add_title", "true");
+        parameters.put("precalc_document", preCalcFile.toURI());
         
         TransformerCache cache = new TransformerCache();
         
