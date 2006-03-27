@@ -61,10 +61,19 @@ public class ContextStack {
         if (event.isStartElement()) {
             String xmlLang = null;
             StartElement se = event.asStartElement();
-            Attribute attr = se.getAttributeByName(new QName(XMLConstants.XML_NS_URI, "lang", XMLConstants.XML_NS_PREFIX));
-            if (attr != null) {
-                xmlLang = attr.getValue();
+            // Avoid bug in woodstox by avoiding getAttributeByName here
+            //Attribute attr = se.getAttributeByName(new QName(XMLConstants.XML_NS_URI, "lang", XMLConstants.XML_NS_PREFIX));
+            //if (attr != null) {
+            //    xmlLang = attr.getValue();
+            //}
+            for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+                Attribute att = (Attribute)it.next();
+                if ("lang".equals(att.getName().getLocalPart()) && "xml".equals(att.getName().getPrefix())) {
+                    xmlLang = att.getValue();
+                    break;
+                }
             }
+            
             context.push(new ContextInfo(se.getName(), xmlLang));
         } else if (event.isEndElement()) {
             context.pop();
