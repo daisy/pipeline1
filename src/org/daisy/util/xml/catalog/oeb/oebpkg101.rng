@@ -592,10 +592,10 @@
 
     <define name="InternationalAttributes">
       <optional>
-        <ref name="attribute.xml.lang"/>
+        <ref name="attribute.xml.lang.optional"/>
       </optional>
     </define>
-	  
+<!--	  
 	<define name="datatype.pkg.guide.reference.type.values">
     <choice>
       <value>cover</value>
@@ -617,6 +617,7 @@
       <value>[other.].*</value>
     </choice>
   </define>
+-->	
   </div>
 
 </grammar>

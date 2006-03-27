@@ -386,9 +386,7 @@
   <div c:name="common">
 
    <define name="i18n">
-     <optional>
-       <ref name="attribute.lang"/>
-     </optional>
+     <ref name="attribute.lang.optional"/>
      <optional>
        <attribute name="dir">
          <choice>

@@ -29,9 +29,7 @@
 
     <define name="attlist.smil" combine="interleave">
       <ref name="Core.attrib"/>
-      <optional>
-        <ref name="attribute.xml.lang"/>
-      </optional>
+      <ref name="attribute.xml.lang.optional"/>
     </define>
   </div>
 
@@ -53,9 +51,7 @@
 
     <define name="attlist.head" combine="interleave">
       <ref name="Core.attrib"/>
-      <optional>
-        <ref name="attribute.xml.lang"/>
-      </optional>
+      <ref name="attribute.xml.lang.optional"/>
     </define>
 
     <define name="meta">
@@ -122,11 +118,9 @@
 
     <define name="attlist.layout" combine="interleave">
       <ref name="Core.attrib"/>
-      <optional>
-        <ref name="attribute.xml.lang">
+        <ref name="attribute.xml.lang.optional">
           <zed:test id="smil_layoutXmlLangValue"/>
         </ref>
-      </optional>
     </define>
 
     <define name="region">
@@ -194,11 +188,9 @@
 
     <define name="attlist.customAttributes" combine="interleave">
       <ref name="Core.attrib"/>
-      <optional>
-        <ref name="attribute.xml.lang">
+        <ref name="attribute.xml.lang.optional">
           <zed:test id="smil_customAttrsXmlLangValue"/>
         </ref>
-      </optional>
     </define>
 
     <define name="customTest">
@@ -236,11 +228,9 @@
       </attribute>
       <ref name="attribute.class.optional"/>
       <ref name="attribute.title.optional"/>
-      <optional>
-        <ref name="attribute.xml.lang">
+        <ref name="attribute.xml.lang.optional">
           <zed:test id="smil_customTestXmlLangValue"/>
         </ref>
-      </optional>
     </define>
   </div>
 
@@ -263,11 +253,9 @@
 
    <define name="attlist.body" combine="interleave">
       <ref name="Core.attrib"/>
-      <optional>
-        <ref name="attribute.xml.lang">
+        <ref name="attribute.xml.lang.optional">
           <zed:test id="smil_bodyXmlLangValue"/>
-        </ref>
-      </optional>
+        </ref>	  
     </define>
 
     <define name="seq">
@@ -488,26 +476,16 @@
       </optional>
       <optional>
         <attribute name="clipBegin">
-          <choice>
-            <ref name="datatype.smilclock.npt">
-              <zed:test id="smil_clipBeginValue"/>
-            </ref>
             <ref name="datatype.smilclock">
               <zed:test id="smil_clipBeginValue"/>
             </ref>
-          </choice>
         </attribute>
       </optional>
       <optional>
         <attribute name="clipEnd">
-          <choice>
-            <ref name="datatype.smilclock.npt">
-              <zed:test id="smil_clipBeginValue"/>
-            </ref>
             <ref name="datatype.smilclock">
               <zed:test id="smil_clipBeginValue"/>
             </ref>
-          </choice>
         </attribute>
       </optional>
       <optional>
@@ -552,11 +530,9 @@
 
     <define name="attlist.a" combine="interleave">
       <ref name="attribute.href.required"/>
-      <optional>
-        <ref name="attribute.xml.lang">
+        <ref name="attribute.xml.lang.optional">
           <zed:test id="smil_anchorXmlLangValue"/>
         </ref>
-      </optional>
       <ref name="Core.attrib"/>
     </define>
   </div>

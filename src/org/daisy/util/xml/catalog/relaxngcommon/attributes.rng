@@ -124,9 +124,7 @@
   
   <define name="attribute.xml.lang.required">
     <attribute name="xml:lang">
-      <ref name="datatype.rfc1766">
-      	<zed:test id="smil_xmlLangAttrValue"/>
-      </ref>
+      <ref name="datatype.rfc1766"/>
     </attribute>
   </define>
 
@@ -136,6 +134,19 @@
     </optional>
   </define>
 
+  <define name="attribute.lang.required">
+    <attribute name="lang">
+      <ref name="datatype.rfc1766"/>
+    </attribute>
+  </define>
+
+  <define name="attribute.lang.optional">
+    <optional>
+      <ref name="attribute.lang.required"/>
+    </optional>
+  </define>
+
+	
   <define name="attribute.dir.required">
     <attribute name="dir">
       <choice>
