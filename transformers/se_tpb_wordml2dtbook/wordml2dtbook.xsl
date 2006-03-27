@@ -1,5 +1,22 @@
-
-<xsl:stylesheet version="1.0"
+<!--
+ * WordML2DTBook
+ * Copyright © 2006 The Swedish Library of Talking Books and Braille, TPB (www.tpb.se)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->
+ <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:w="http://schemas.microsoft.com/office/word/2003/wordml"
 	xmlns:v="urn:schemas-microsoft-com:vml"
@@ -77,6 +94,7 @@
 			<d:tag d:name="footnote text" d:action="wrap" d:val="note" d:addId="true"/>
 			<!-- Indraget Stycke -->
 			<d:tag d:name="Block Text" d:action="wrap" d:val="blockquote" d:addId="false"/>
+			<d:tag d:name="Body Text Indent" d:action="wrap" d:val="blockquote" d:addId="false"/>
 			<!-- Kommentarer -->
 			<d:tag d:name="annotation text" d:action="comment"/>
 		</d:paragraphs>
@@ -287,6 +305,25 @@
 	</td>
 </xsl:template>
 
+<!-- Test med rowspan, ej färdigt -->
+<!-- 
+<xsl:template match="w:tc">
+	<xsl:if test="not(w:tcPr/w:vmerge) or w:tcPr/w:vmerge/@w:val">
+	<td>
+		<xsl:if test="w:tcPr/w:gridSpan">
+			<xsl:attribute name="colspan"><xsl:value-of select="w:tcPr/w:gridSpan/@w:val"/></xsl:attribute>
+		</xsl:if>
+		<xsl:if test="w:tcPr/w:vmerge/@w:val='restart'">
+			<xsl:variable name="val" select="count(preceding-sibling::w:tc)"/>
+			<xsl:variable name="id" select="generate-id(.)"/>
+			<xsl:variable name="te" select="ancestor::w:tbl/w:tr/w:tc[]"
+			<xsl:attribute name="rowspan"><xsl:value-of select="count(ancestor::w:tbl/w:tr/w:tc[$val][w:tcPr/w:vmerge and not(w:tcPr/w:vmerge/@w:val)])"/></xsl:attribute>
+		</xsl:if>
+		<xsl:apply-templates/>
+	</td>
+	</xsl:if>
+</xsl:template>
+-->
 <xsl:template match="w:footnote">
 	<noteref idref="note-{count(preceding::w:footnote[ancestor::w:body])+1}"><xsl:value-of select="count(preceding::w:footnote[ancestor::w:body])+1"/></noteref>
 </xsl:template>
