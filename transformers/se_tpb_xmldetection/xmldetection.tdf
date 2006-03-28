@@ -79,6 +79,17 @@
 			<default>false</default>
 		</parameter>
 		
+		<parameter required="false" type="enum">
+			<name>copyReferredFiles</name>
+			<description>Copy files referred by input file</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>	
+		
 	</parameters>	
 
 </transformer>
