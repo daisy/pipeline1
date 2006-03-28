@@ -61,10 +61,10 @@ public class FileBunchCopy {
 	 */
 	public static void copyFiles(Fileset fileset, File outputDir, Collection uris, ProgressObserver observer, boolean createDummies) throws IOException {
         int fileNum = 1;
-        URI manifestURI = fileset.getManifestMember().toURI();
+        URI manifestDirURI = fileset.getManifestMember().getParentFile().toURI();
         for (Iterator it = uris.iterator(); it.hasNext(); fileNum++) {
             URI uri = (URI)it.next();
-            URI relativeURI = manifestURI.relativize(uri);
+            URI relativeURI = manifestDirURI.relativize(uri);
             File in = new File(uri);
             if (!in.exists()) {
                 if (!createDummies) {
