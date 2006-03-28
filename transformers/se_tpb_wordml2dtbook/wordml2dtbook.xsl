@@ -79,6 +79,15 @@
 			</meta:revdescription>
 			<meta:revremark/>
 		</meta:revision>
+		<meta:revision>
+			<meta:revnumber>1.1.11</meta:revnumber>
+			<meta:date>28 March  2006</meta:date>
+			<meta:authorinitials>JoelH</meta:authorinitials>
+			<meta:revdescription>
+				<meta:para>Fixed a problem with lists.</meta:para>
+			</meta:revdescription>
+			<meta:revremark/>
+		</meta:revision>
 	</meta:revhistory>
 </meta:doc>
   
@@ -192,7 +201,7 @@
 		<!-- <xsl:apply-templates select="w:r"/> -->
 		<xsl:apply-templates/>
 	</li>
-	<xsl:apply-templates select="following-sibling::node()[1]" mode="processList"/>
+	<xsl:apply-templates select="following-sibling::w:p[1]" mode="processList"/>
 </xsl:template>
 
 <!-- override the default rule for this mode, needed for the last call above -->
