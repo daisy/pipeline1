@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformer version="1.0">
 	<name>XML Detection</name>
-	<description>Performs abbr, acronym, sentence and word detection on XML documents.</description>
+	<description>Performs abbreviation, acronym, sentence and word detection on XML documents.</description>
 	<classname>se_tpb_xmldetection.XMLDetection</classname>
 	<license>unknown</license>
 	<author>Linus Ericson</author>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformer version="1.0">
-	<name>Annonsator</name>
+	<name>Structure announcer</name>
 	<description>Performs structural announcements in XML documents.</description>
 	<classname>se_tpb_annonsator.Annonsator</classname>
 	<license>unknown</license>

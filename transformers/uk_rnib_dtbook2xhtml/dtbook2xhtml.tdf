@@ -1,5 +1,5 @@
 <transformer version="1.0">
-	<name>dtbook2xhtml</name>
+	<name>DTBook to XHTML</name>
 	<description>Transforms a DTBook 2005 document to XHTML 1.0</description>
 	<classname>org.daisy.dmfc.transformers.XSLTRunner</classname>
 	<license>unknown</license>

@@ -1,5 +1,5 @@
 <transformer version="1.0">
-	<name>dtbook2text</name>
+	<name>DTBook to Text</name>
 	<description>Transforms a DTBook 2005 document to plain text, wrapped at 70 characters</description>
 	<classname>org.daisy.dmfc.transformers.XSLTRunner</classname>
 	<license>unknown</license>

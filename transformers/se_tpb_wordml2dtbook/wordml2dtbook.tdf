@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  -->
 <transformer version="1.0">
-	<name>wordML2DTBook</name>
+	<name>WordML to DTBook</name>
 	<description>Transforms WordML from Microsoft Office Word 2003 to DTBook 2005-1</description>
 	<classname>org.daisy.dmfc.transformers.XSLTRunner</classname>
 	<license>unknown</license>
