@@ -19,6 +19,7 @@
 -->
 	<xsl:param name="filter_word"/>
 	<xsl:param name="baseDir"/>
+	<xsl:param name="first_smil"/>
 
 	<xsl:output method="xml" encoding="utf-8" indent="no"
 		doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -84,7 +85,18 @@
      <body>
      
 			<xsl:for-each select="//dtb:doctitle[1]">
-				<h1 class="title" id="h1classtitle"><xsl:value-of select="."/></h1>
+				<h1 class="title" id="h1classtitle">
+					<xsl:choose>
+						<xsl:when test="$first_smil">
+							<a href="{$first_smil}#doctitle">
+								<xsl:value-of select="."/>
+							</a>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="."/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</h1>
 			</xsl:for-each>
 			<xsl:apply-templates/>
 		</body>

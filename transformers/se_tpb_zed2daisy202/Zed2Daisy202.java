@@ -141,7 +141,7 @@ public class Zed2Daisy202 extends Transformer {
             
             // Create xhtml 
             this.sendMessage(Level.INFO, i18n("CREATING_XHTML", contentXHTML));
-            this.createXhtml(dtbook);            
+            this.createXhtml(dtbook, opf);            
             this.progress(XHTML_DONE);
             this.checkAbort();
 
@@ -279,12 +279,18 @@ public class Zed2Daisy202 extends Transformer {
      * @throws XSLTException
      * @throws IOException
      */
-    private void createXhtml(File dtbook) throws CatalogExceptionNotRecoverable, XSLTException, IOException {
+    private void createXhtml(File dtbook, OpfFile opf) throws CatalogExceptionNotRecoverable, XSLTException, IOException {
         File xhtmlOut = new File(outputDir, contentXHTML);
         File xsltFile = new File(this.getTransformerDirectory(), "dtbook2xhtml.xsl");
+        
+        Iterator it = opf.getSpineIterator();
+        URI uri = (URI)it.next();
+        uri = opf.getParentFile().toURI().relativize(uri);
+        
         Map parameters = new HashMap();
         parameters.put("filter_word", "yes");
         parameters.put("baseDir", inputDir.toURI());
+        parameters.put("first_smil", uri);
         
         // Step 1: Convert the DTBook to XHTML
         Stylesheet.apply(dtbook.getAbsolutePath(), xsltFile.getAbsolutePath(), xhtmlOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
