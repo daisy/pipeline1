@@ -17,5 +17,5 @@ public interface IJobFactory {
 
 	public void setInputDocument(File input);
 	public void setOutputDocument(File output);
-	public void setScriptHandler(ScriptHandler script);
+	public void setScriptHandler(File script);
 }

@@ -21,7 +21,8 @@ public class SingleJobFactory implements IJobFactory {
 	protected Queue queue;
 	protected File input;
 	protected File output;
-	protected ScriptHandler script;
+	//protected ScriptHandler script;
+	protected File script;
 	
 	public SingleJobFactory(){
 		queue= Queue.getInstance();
@@ -41,7 +42,7 @@ public class SingleJobFactory implements IJobFactory {
 		this.output= new File(_output.getName() + File.pathSeparatorChar + input.getName()  + File.pathSeparatorChar);
 	}
 	
-	public void setScriptHandler(ScriptHandler _script){
+	public void setScriptHandler(File _script){
 		this.script=_script;
 	}
 	

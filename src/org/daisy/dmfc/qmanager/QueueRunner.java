@@ -1,18 +1,18 @@
 package org.daisy.dmfc.qmanager;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
-
-import javax.naming.ConfigurationException;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.EventListener;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
+import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptException;
+import org.daisy.util.xml.validation.ValidationException;
 
 
 
@@ -68,14 +68,27 @@ public class QueueRunner  {
 			Job job = (Job)it.next();
 			
 			//get the task script
-			ScriptHandler script = job.getScript();
+			ScriptHandler sh = null;
+			File script = job.getScript();
 			
-				script.setProperty("input", job.getInputFile().getName());
-				script.setProperty("outputDir", job.getOutputFile().getName());
+				//script.setProperty("input", job.getInputFile().getName());
+				//script.setProperty("outputDir", job.getOutputFile().getName());
 				
 				try{
-					dmfc.executeScript(script);
+					sh= dmfc.createScript(script);
+//					sh.setProperty("input", job.getInputFile().getName());
+					sh.setProperty("outputDir", job.getOutputFile().getName());
+					dmfc.executeScript(sh);
 				}
+				catch(ValidationException ve){
+					ve.getMessage();
+					ve.printStackTrace();
+				}
+				catch(MIMEException me){
+					me.getMessage();
+					me.printStackTrace();
+				}
+				
 				catch(ScriptException se){
 					//add error messages to be thrown to GUI
 					se.printStackTrace();
