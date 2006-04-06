@@ -26,6 +26,11 @@ public class Queue {
 	       return _instance;  
 	}
 	
+	private Queue(){
+		this.linkedListJobs= new LinkedList();
+	}
+	
+	
 	//get and set methods
 	
 	public void setCurrentJobIndex(int jobRunning){
@@ -50,32 +55,34 @@ public class Queue {
 		this.selectedJobIndex++;	
 	}
 	
+	
+	
 	/**
 	 * Move up one index in linked list
 	 * @param Job
 	 */
-	public void moveUp(Job job){
-		deleteFromQueue(job);
+	public void moveUp(int index){
+		Job job = (Job)linkedListJobs.get(index);
+		this.selectedJobIndex=index;
+		deleteFromQueue(index);
 		incrementSelectedJobIndex();
 		this.linkedListJobs.add(selectedJobIndex, job);
 	}
 	
+	
 	/**Move down one index in linked list
 	 * @param Job
 	 */
-	public void moveDown(Job job){
-		deleteFromQueue(job);
+	public void moveDown(int index){
+		Job job = (Job)linkedListJobs.get(index);
+		this.selectedJobIndex=index;
+		deleteFromQueue(index);
 		decrementSelectedJobIndex();
 		this.linkedListJobs.add(selectedJobIndex, job);
 	}
 	
-	/**
-	 * Delete a Job from the linked list
-	 * 
-	 * @param Job 
-	 */
-	public void deleteFromQueue(Job job){
-		int index = getPlaceInQueue(job);
+	
+	public void deleteFromQueue(int index){
 		linkedListJobs.remove(index);
 	}
 	/**
@@ -110,5 +117,10 @@ public class Queue {
 	
 	public Job getNextJobInQueue(int placeInQueue){
 		return editJob(placeInQueue);
+	}
+	
+	public int getSizeOfQueue(){
+		return this.linkedListJobs.size();
+		
 	}
 }
