@@ -20,8 +20,7 @@
     
       Version/change history:
 	    mg20060204: added schtests
-		mg20060315: added pagenum and more schtests
-	        
+		mg20060315: added pagenum and more schtests	        
   </a:documentation>
   
   <include href="../relaxngcommon/attributes.rng" />
@@ -104,8 +103,7 @@
   		</choice>
   	</element>
   </define>
-	
-	
+		
   <sch:pattern name="dtbook_MetaUid" id="dtbook_MetaUid">
     <!-- dtb:uid meta element exists -->
     <sch:rule context="dtbk:head">
@@ -114,14 +112,14 @@
       </sch:assert>        
     </sch:rule>
   </sch:pattern> 
- 
+
   <sch:pattern name="dtbook_MetaTitle" id="dtbook_MetaTitle">
     <sch:rule context="dtbk:head">
       <sch:assert test="count(dtbk:meta[@name='dc:Title'])=1"> 
         [sch][dtbook_MetaTitle]
       </sch:assert>  
     </sch:rule>
-  </sch:pattern>     
+  </sch:pattern>
 
   <sch:pattern name="dtbook_idrefNote" id="dtbook_idrefNote">
     <sch:rule context="dtbk:noteref">
@@ -137,6 +135,6 @@
 		[sch][dtbook_idrefAnnotation]
 	  </sch:assert>	
     </sch:rule>
-  </sch:pattern>   
+  </sch:pattern>
 	          
 </grammar>
