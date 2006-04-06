@@ -224,10 +224,13 @@ public class SmilClock implements Comparable {
 		if (this == otherObject) return true;       // Objects are identical
 		if (otherObject == null) return false;      // There ain't nuthin' like a null ...
 		if (getClass() != otherObject.getClass()) return false;     // No class-mixing, either
-		
-		SmilClock other = (SmilClock)otherObject;   // Cast it, then compare, using tolerance
-		if (Math.abs(other.msecValue - this.msecValue) <= msecTolerance) {
-			return true;
+		try{
+			SmilClock other = (SmilClock)otherObject;   // Cast it, then compare, using tolerance		
+			if (Math.abs(other.msecValue - this.msecValue) <= msecTolerance) {
+				return true;
+			}
+		}catch (ClassCastException cce) {
+			//do nothing
 		}
 		return false;		
 	}
