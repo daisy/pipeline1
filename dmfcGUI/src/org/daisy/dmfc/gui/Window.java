@@ -22,6 +22,7 @@ import org.daisy.dmfc.gui.widgetproperties.LabelProperties;
 import org.daisy.dmfc.gui.widgetproperties.ListProperties;
 import org.daisy.dmfc.gui.widgetproperties.TextProperties;
 import org.daisy.dmfc.qmanager.Job;
+import org.daisy.dmfc.qmanager.Queue;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -35,6 +36,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
@@ -89,9 +91,15 @@ public class Window extends Composite {
 	//TextField
 	Text txtScriptRunning1;
 	
-	//ArrayList of Jobs in the Queue
-	ArrayList alJobs = new ArrayList();
-	LinkedList llJobs = new LinkedList();
+	// Queue of all Jobs
+	Queue cue;
+	
+	//Composite
+	Composite compJobsInQueue;
+	
+	//int 
+	int index;
+	
 	
 	//Selected Conversion
 	private String selectedConversion;
@@ -117,6 +125,7 @@ public class Window extends Composite {
 		UIManager.windowNum++;
 		
 		new MenuDMFC(shell);
+		cue=cue.getInstance();
 		
 		shell.setText("Daisy Multi Format Converter");
 		shell.setMaximized(true);
@@ -237,7 +246,7 @@ public class Window extends Composite {
 		addButtonsComp.setLayoutData(formFill);
 		
 	//Bottom left
-		Composite compJobsInQueue = new Composite (shell, SWT.NONE);
+		compJobsInQueue = new Composite (shell, SWT.NONE);
 		compJobsInQueue.setBackground(ColorChoices.white);
 		RowLayout rowLayout4 = new RowLayout(SWT.VERTICAL);
 		rowLayout4.pack = true;
@@ -249,6 +258,14 @@ public class Window extends Composite {
 		
 		this.tblJobs2 = new Table(compJobsInQueue, SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL |SWT.SINGLE |SWT.FULL_SELECTION );
 		jqtp2 = new JobQueueTableProperties(tblJobs2);
+		tblJobs2.addListener (SWT.Selection, new Listener () {
+			public void handleEvent (Event event) {
+				int mark = tblJobs2.getSelectionIndex();
+				System.out.println("Index selected is " + mark);
+				setSelectedIndex(mark);
+			}
+		});
+		
 		
 		FormData formFill4 = new FormData();
 		formFill4.top = new FormAttachment(listConversion, 35);
@@ -271,7 +288,7 @@ public class Window extends Composite {
 		this.btnMoveUp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				moveJobUp();
-				jqtp2.populateTable(alJobs);
+				jqtp2.populateTable(cue);
 			}
 		});
 		
@@ -282,7 +299,7 @@ public class Window extends Composite {
 		this.btnMoveDown.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				moveJobDown();
-				jqtp2.populateTable(alJobs);
+				jqtp2.populateTable(cue);
 			}
 		});
 		
@@ -292,7 +309,7 @@ public class Window extends Composite {
 		this.btnDelete.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				deleteJob();
-				jqtp2.populateTable(alJobs);
+				jqtp2.populateTable(cue);
 			}
 		});
 		
@@ -300,9 +317,7 @@ public class Window extends Composite {
 		buttonProperties.setProperties(btnEdit, "Edit");
 		this.btnEdit.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				ConvertSingleFile csf = new ConvertSingleFile();
-				//csf.editConversion(job);
-				csf.open();
+				editJob();
 			}
 		});
 		
@@ -397,31 +412,16 @@ public void widgetSelected(SelectionEvent e) {
 	}
 	
 	public void addToQueue(Job job){
-		/*alJobs.add(job);
-		jqtp2.populateTable(alJobs);
 		
-		Iterator it = alJobs.iterator();
-		while (it.hasNext()){
-			Job singleJob = (Job) it.next();
-			System.out.println(singleJob.toString());
-		}
-		*/
-		llJobs.add(job);
-		jqtp2.populateTable(llJobs);
+		cue.addJobToQueue(job);
+		System.out.println("place in cue " + cue.getPlaceInQueue(job));		
+		jqtp2.populateTable(cue);
+		
+		
 	}
 
 	
-	public void addToQueue(ArrayList alOfJobs){
-		alJobs.addAll(alOfJobs);
-		jqtp2.populateTable(alJobs);
-		
-		Iterator it = alJobs.iterator();
-		while (it.hasNext()){
-			Job job = (Job) it.next();
-			System.out.println(job.toString());
-		}
-			
-	}
+	
 	/**
 	 * Clear all fields in the gui
 	 */
@@ -455,11 +455,92 @@ public void widgetSelected(SelectionEvent e) {
 		}
 	}
 	
-	public void moveJobUp(){}
+	public Composite getCompJobsInQueue(){
+		return this.compJobsInQueue;
+	}
 	
-	public void moveJobDown(){}
+	public void setSelectedIndex(int mark){
+		this.index=mark;
+	}
 	
-	public void deleteJob(){}
+	public void moveJobUp(){
+		if(index==cue.getSizeOfQueue()-1){
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+					messageBox.setMessage("Cannot move the last item in a table higher.");
+					messageBox.setText("Error:  Unable to Move Up List");
+					messageBox.open();
+		}
+		else if(index<cue.getSizeOfQueue()){
+			cue.moveUp(index);
+			jqtp2.populateTable(cue);
+		}
+	
+		else{	
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+					messageBox.setMessage("Cannot select a blank row in the table");
+					messageBox.setText("Error:  Invalid Selection");
+					messageBox.open();
+		}
+	}
+	
+	public void moveJobDown(){
+		if(index==0){
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+					messageBox.setMessage("Cannot move the first item in a table lower.");
+					messageBox.setText("Error:  Unable to Move Down List");
+					messageBox.open();
+		}
+		else if(index<cue.getSizeOfQueue()){
+			cue.moveDown(index);
+			jqtp2.populateTable(cue);
+		}
+	
+		else{	
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+					messageBox.setMessage("Cannot select a blank row in the table");
+					messageBox.setText("Error:  Invalid Selection");
+					messageBox.open();
+		}
+	}
+	
+	public void deleteJob(){
+		if(index<cue.getSizeOfQueue()){
+			cue.deleteFromQueue(index);
+			jqtp2.populateTable(cue);
+		}
+		else{
+			
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+					messageBox.setMessage("Cannot select a blank row in the table");
+					messageBox.setText("Error:  Invalid Selection");
+					messageBox.open();
+		}
+	}
+	
+	
+	public void editJob(){
+		if(index<cue.getSizeOfQueue()){
+			Job job= cue.editJob(index);
+			cue.deleteFromQueue(index);
+			ConvertSingleFile csf = new ConvertSingleFile();
+			csf.editConversion(job);
+			csf.open();
+			
+		}
+		else{
+			
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+					messageBox.setMessage("Cannot select a blank row in the table");
+					messageBox.setText("Error:  Invalid Selection");
+					messageBox.open();
+		}
+	}
 	
 }
 

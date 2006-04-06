@@ -355,12 +355,15 @@ public class ConvertSingleFile extends Composite {
 					
 		} else {
 			
-			Job job = new Job();
+				Job job = new Job();
 				job.setInputFile(new File (fileSelected));
 				job.setOutputFile(new File(outputPath));
 				job.setScript(new File(script));
 				job.setStatus(Status.WAITING);
 				Window.getInstance().addToQueue(job);
+				
+				//Doesn't work...keep looking, tried redraw() on the composite...
+				//Window.getInstance().open();
 				dispose();
 		}
 	}
@@ -370,5 +373,13 @@ public class ConvertSingleFile extends Composite {
 		txtInputDoc.setText(job.getInputFile().getName());
 		txtOutputDoc.setText(job.getOutputFile().getName());
 	}
+	
+	/*
+	public void editConversion(int index){
+		txtConversionName.setText(job.getScript().getName());
+		txtInputDoc.setText(job.getInputFile().getName());
+		txtOutputDoc.setText(job.getOutputFile().getName());
+	}
+	*/
 	
 }
