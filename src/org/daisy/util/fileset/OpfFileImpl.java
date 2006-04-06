@@ -23,10 +23,13 @@ import org.xml.sax.SAXParseException;
 class OpfFileImpl extends XmlFileImpl implements OpfFile {
 	private boolean inManifest = false;
 	private boolean inSpine = false;
+	private boolean inDcFormat = false;
 	private HashMap manifestSmilItems = new HashMap();
 	private LinkedHashMap spineMap= new LinkedHashMap();
 	private boolean finalSpineMapIsBuilt = false;
 	private SmilClock myStatedDuration = null;
+	private	String myStatedMultiMediaType = null;
+	private	String myStatedDcFormat = null;
 	
 	OpfFileImpl(URI uri) throws FileNotFoundException, ParserConfigurationException, SAXException, IOException {		
 		super(uri); 
@@ -43,10 +46,15 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		//qName = qName.intern();
 		
+				
 		if (qName=="spine") { 
 			inSpine = true;
 		} else if (qName=="manifest") {
 			inManifest = true;
+		}
+		
+		if (qName.toLowerCase().equals("dc:format")) {
+			inDcFormat = true;
 		}
 		
 		//assumes that spine always comes after manifest (which is a rule in the DTD)
@@ -62,8 +70,11 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 				if (sName=="meta") {
 					if (attrValue=="dtb:totalTime") {
 						myStatedDuration = new SmilClock(attrs.getValue("content"));
-					}
-				}				
+					}else if(attrValue=="dtb:multimediaType") {
+						myStatedMultiMediaType = attrs.getValue("content");
+					}										
+				}
+
 			} catch (Exception nfe) {
 				this.listeningErrorHandler.error(new SAXParseException(this.getName()+": exception when calculating " +attrValue,null));
 				
@@ -104,8 +115,17 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 			inSpine = false;
 		}else if (qName.equals("manifest")) {
 			inManifest = false;
+		}else if (qName.toLowerCase().equals("dc:format")) {
+			inDcFormat = false;
 		}
+
 	}
+	
+    public void characters(char[] ch, int start, int length) throws SAXException {
+    	if(inDcFormat){    	
+    		myStatedDcFormat = String.copyValueOf(ch,start,length);
+    	}    	
+    }
 	
 	public Iterator getSpineIterator() { 
 		return spineMap.keySet().iterator();		
@@ -151,7 +171,13 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 		return myStatedDuration;
 	}
 
-
+	public String getMetaDtbMultiMediaType() {
+		return myStatedMultiMediaType;
+	}
+	
+	public String getMetaDcFormat() {
+		return myStatedDcFormat;		
+	}
 	
 //	public Collection getSpineValues(){
 //		return this.spineMap.values();

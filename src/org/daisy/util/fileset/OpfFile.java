@@ -17,5 +17,7 @@ public interface OpfFile extends XmlFile, ManifestFile {
 	//public void buildSpineMap(Fileset fileset);
 	public Collection getSpineItems()throws FilesetException;
 	public SmilClock getStatedDuration();
+	public String getMetaDtbMultiMediaType();
+	public String getMetaDcFormat();
 	
 }
