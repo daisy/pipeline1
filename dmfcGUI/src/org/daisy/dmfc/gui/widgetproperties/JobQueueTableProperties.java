@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.daisy.dmfc.qmanager.Job;
+import org.daisy.dmfc.qmanager.Queue;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -80,24 +81,34 @@ public class JobQueueTableProperties {
 	
 	public void populateTable(LinkedList llJobs){
 		table.clearAll();
-		/*
-		Iterator it = alJobs.iterator();
-		while (it.hasNext()){
-			Job jobItem = (Job)it.next();
-			
-			
-		*/
+		int count = 0;
 		int size = llJobs.size();
 		for (int i = 0;i<size;i++){
 			Job jobItem= (Job)llJobs.get(i);
-			TableItem ti = new TableItem(table ,SWT.NONE,0);
+			TableItem ti = new TableItem(table ,SWT.NONE,count);
 			ti.setText(new String[] {
 			String.valueOf(jobItem.getStatus()),
 			jobItem.getScript().getName(),
 			jobItem.getInputFile().getName(),
 			jobItem.getOutputFile().getName()});
-		
+			count++;
 		}	
+	}
+		public void populateTable(Queue cue){
+			table.clearAll();
+			LinkedList llJobs=cue.getLinkedListJobs();
+			int count = 0;
+			int size = cue.getSizeOfQueue();
+			for (int i = 0;i<size;i++){
+				Job jobItem= (Job)llJobs.get(i);
+				TableItem ti = new TableItem(table ,SWT.NONE,count);
+				ti.setText(new String[] {
+				String.valueOf(jobItem.getStatus()),
+				jobItem.getScript().getName(),
+				jobItem.getInputFile().getName(),
+				jobItem.getOutputFile().getName()});
+				count++;
+			}	
 		
 				
 	}
