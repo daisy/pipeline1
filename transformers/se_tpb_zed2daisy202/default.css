@@ -58,6 +58,10 @@ ul.plain li {list-style-type: none; margin-top: 1em; }
 ul li {list-style-type: disc; margin-top: 1em; }
 dt {margin-top: 1em; font-weight: bold;}
 span.pagenum {text-align: right; padding-left: 5em;}
+ol.lower-roman {list-style-type: lower-roman;}
+ol.upper-roman {list-style-type: upper-roman;}
+ol.lower-alpha {list-style-type: lower-alpha;}
+ol.upper-alpha {list-style-type: upper-alpha;}
 
 
 /* --- TABLES --- */

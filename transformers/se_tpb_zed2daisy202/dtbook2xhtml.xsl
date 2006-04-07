@@ -494,8 +494,23 @@
 
 
    <xsl:template match="dtb:list[@type='ol']">
-     <ol> <xsl:copy-of select="&catts;"/>
-       <xsl:apply-templates/>
+     <ol> 
+		<xsl:choose>
+			<xsl:when test="@enum='i'">
+				<xsl:attribute name="class">lower-roman</xsl:attribute>
+			</xsl:when>
+			<xsl:when test="@enum='I'">
+				<xsl:attribute name="class">upper-roman</xsl:attribute>
+			</xsl:when>
+			<xsl:when test="@enum='a'">
+				<xsl:attribute name="class">lower-alpha</xsl:attribute>
+			</xsl:when>	
+			<xsl:when test="@enum='A'">
+				<xsl:attribute name="class">upper-alpha</xsl:attribute>
+			</xsl:when>	
+		</xsl:choose>
+     	<xsl:copy-of select="&cncatts;"/>
+        <xsl:apply-templates/>
      </ol>
    </xsl:template>
 
