@@ -37,8 +37,7 @@
 	
 	<define name="datatype.romannumeral">
 		<data type="string">
-			<param name="pattern">
-				[Mm]*([Dd]?[Cc]{0,3}|[Cc][DdMm])([Ll]?[Xx]{0,3}|[Xx][LlCc])([Vv]?[Ii]{0,3}|[Ii][VvXx])</param>
+			<param name="pattern">[Mm]*([Dd]?[Cc]{0,3}|[Cc][DdMm])([Ll]?[Xx]{0,3}|[Xx][LlCc])([Vv]?[Ii]{0,3}|[Ii][VvXx])</param>
 		</data>
 		<!-- 
 		^(?i:(?=[MDCLXVI])((M{0,3})((C[DM])|(D?C{0,3}))?((X[LC])|(L?XX{0,2}))?((I[VX])|(V?(II{0,2}))|V)?))$
