@@ -107,5 +107,38 @@
 			<before>Keyborad instruction.</before>
 		</lang>
 	</rule>
+	
+	<copy attributes="true" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+		<xsl:template match="dtb:li">
+			<xsl:copy>
+				<xsl:if test="parent::dtb:list/@type='ol'">				
+					<xsl:attribute name="{$prefix}:{$attrib_before}" namespace="{$ns}">
+						<xsl:if test="parent::dtb:list[@enum='i' or @enum='I']">
+							<xsl:text>Roman numeral, </xsl:text>
+						</xsl:if>
+						<xsl:variable name="start">
+							<xsl:choose>
+								<xsl:when test="parent::dtb:list/@start">
+									<xsl:value-of select="parent::dtb:list/@start"/>
+								</xsl:when>
+								<xsl:otherwise>1</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="parent::dtb:list[@enum='a' or @enum='A']">
+								<xsl:value-of select="codepoints-to-string(string-to-codepoints('A') - 1 + count(preceding-sibling::dtb:li) + round($start))"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="count(preceding-sibling::dtb:li) + round($start)"/>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:text>. </xsl:text>
+					</xsl:attribute>
+				</xsl:if>
+				<xsl:copy-of select="@*"/>
+				<xsl:apply-templates/>
+			</xsl:copy>
+		</xsl:template>
+	</copy>
 
 </ruleSet>

@@ -221,7 +221,17 @@ public class AnnonsatorXSLTBuilder {
 			    
 			}
 			testBefore.getParentNode().removeChild(testBefore);
-			testAfter.getParentNode().removeChild(testAfter);			
+			testAfter.getParentNode().removeChild(testAfter);	
+			
+			NodeList copyNode = XPathUtils.selectNodes(config, "//copy[@attributes='false']/*");
+			/* Insert any copied nodes */
+			if (copyNode != null) {
+				for (int i = 0; i < copyNode.getLength(); ++i) {
+				    Node copyElem = copyNode.item(i);
+				    copyElem = template.importNode(copyElem, true);
+				    template.getDocumentElement().appendChild(copyElem);
+				}
+			}
 		} catch (FileNotFoundException e) {
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (SAXException e) {
@@ -291,6 +301,8 @@ public class AnnonsatorXSLTBuilder {
 			String attribBefore = XPathUtils.valueOf(config, "//attributeBefore");
 			String attribAfter = XPathUtils.valueOf(config, "//attributeAfter");
 			
+			NodeList copyNode = XPathUtils.selectNodes(config, "//copy[@attributes='true']/*");
+			
 			/* templateRuleClone represents a rule template from the xsl template*/
 			Element templateRule = template.getElementById("templateRule");
 			
@@ -327,6 +339,15 @@ public class AnnonsatorXSLTBuilder {
 			addParameter("attrib_before", attribBefore, paramTemplate);
 			addParameter("attrib_after", attribAfter, paramTemplate);
 			paramTemplate.getParentNode().removeChild(paramTemplate);
+			
+			/* Insert any copied nodes */
+			if (copyNode != null) {
+				for (int i = 0; i < copyNode.getLength(); ++i) {
+				    Node copyElem = copyNode.item(i);
+				    copyElem = template.importNode(copyElem, true);
+				    template.getDocumentElement().appendChild(copyElem);
+				}
+			}
 
 		} catch (SAXException e) {
 			throw new TransformerRunException(e.getMessage(), e);
