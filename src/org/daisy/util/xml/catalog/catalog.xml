@@ -85,6 +85,9 @@
     <system systemId="http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd" uri="./xhtml-mod/xhtml-math-svg.dtd" />
   </group>
   <group> <!-- zed 2002 -->
+	<public publicId="-//NISO//DTD distInfo v1.1.0//EN" uri="./z39862002/distInfo110.dtd" />
+    <system systemId="http://www.loc.gov/nls/z3986/v100/distInfo110.dtd" uri="./z39862002/distInfo110.dtd" />
+    
     <public publicId="-//NISO//DTD dtbook v1.1.0//EN" uri="./z39862002/dtbook110.dtd" />
     <system systemId="http://www.loc.gov/nls/z3986/v100/dtbook110.dtd" uri="./z39862002/dtbook110.dtd" />      
     
@@ -125,7 +128,7 @@
     <system systemId="resource-2005-1.dtd" uri="./z39862005/resource-2005-1.dtd" />
     <system systemId="resource-2005-1.rng" uri="./z39862005/resource-2005-1.rng" />
       
-    <public publicId="-//NISO//DTD distInfo 2005-1//EN" uri="./z39862005/" />
+    <public publicId="-//NISO//DTD distInfo 2005-1//EN" uri="./z39862005/distInfo-2005-1.dtd" />
     <system systemId="http://www.daisy.org/z3986/2005/distInfo-2005-1.dtd" uri="./z39862005/distInfo-2005-1.dtd" />
     <system systemId="distInfo-2005-1.dtd" uri="./z39862005/distInfo-2005-1.dtd" />    
     <public publicId="-//NISO//DTD bookmark 2005-1//EN" uri="./z39862005/bookmark-2005-1.dtd" />
