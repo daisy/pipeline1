@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transformer version="1.0">
+	<name>DTBook to LaTeX</name>
+	<description>Transforms a DTBook 2005 document to LaTeX</description>
+	<classname>org.daisy.dmfc.transformers.XSLTRunner</classname>
+	<license>unknown</license>
+	<author>Linus Ericson</author>
+	<support>No</support>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="text/x-dtbook+xml">
+			<name>xml</name>
+			<description>The DTBook 2005 XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+		
+		<parameter type="application/xml">
+			<name>xslt</name>			
+			<value>${transformer_dir}/dtbook2latex.xsl</value>
+		</parameter>		
+		
+		<parameter type="string">
+			<name>factory</name>			
+			<value>net.sf.saxon.TransformerFactoryImpl</value>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="text/plain">
+			<name>out</name>
+			<description>The output LaTeX document</description>
+			<example>file:///path/to/outFile.tex</example>
+		</parameter>		
+				
+	</parameters>	
+
+</transformer>
