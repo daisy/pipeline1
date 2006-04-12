@@ -172,7 +172,7 @@
    <xsl:template match="dtb:p">
      <p>
        <xsl:copy-of select="&catts;"/>
-       <xsl:apply-templates/></p>
+       <xsl:apply-templates mode="inlineOnly"/></p>
    </xsl:template>
 
 
