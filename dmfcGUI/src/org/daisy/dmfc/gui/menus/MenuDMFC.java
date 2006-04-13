@@ -34,7 +34,18 @@ public class MenuDMFC {
 				System.exit(0);
 			}
 		});
+	/*
+		shell.addShellListener(new ShellAdapter() {
+	        public void shellClosed(ShellEvent e) {
+	            MessageBox mb = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+	            mb.setText("Confirm Exit");
+	            mb.setMessage("Are you sure you want to exit?");
+	            int rc = mb.open();
+	            e.doit = rc == SWT.OK;
+	        }
+	});
 		
+	*/	
 		
 //	Top Level "View"
 		MenuItem view = new MenuItem(menu, SWT.CASCADE);
