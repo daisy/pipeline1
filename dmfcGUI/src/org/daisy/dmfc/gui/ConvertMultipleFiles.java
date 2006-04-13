@@ -2,6 +2,7 @@ package org.daisy.dmfc.gui;
 
 import java.io.File;
 
+import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.gui.menus.MenuMultipleConvert;
 import org.daisy.dmfc.gui.widgetproperties.ButtonProperties;
 import org.daisy.dmfc.gui.widgetproperties.ColorChoices;
@@ -36,7 +37,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Used to select multiple files.
- * All files selected will under the same conversion as listed 
+ * All files selected will use the same conversion as listed 
  * on the top of the screen.
  * @author Laurie Sherve
  *
@@ -46,6 +47,7 @@ public class ConvertMultipleFiles extends Composite {
 	Shell shell;
 	Window window;
 	FormAttachmentsHelper fah = new FormAttachmentsHelper();
+	CompatibleFilesTableProperties cftp;
 	IProperties labelProperties = new LabelProperties();
 	IProperties textProperties = new TextProperties();
 	IProperties buttonProperties = new ButtonProperties();
@@ -75,10 +77,12 @@ public class ConvertMultipleFiles extends Composite {
 	Table tblCompatibleFiles;
 	
 	// String
-	String dirSelected = "";
+	String dirSelected ;
 	String outputPath = "";
 	String script = "";
 
+	//ScriptHandler
+	ScriptHandler scriptHandler;
 	
 
 	public ConvertMultipleFiles() {
@@ -141,8 +145,9 @@ public class ConvertMultipleFiles extends Composite {
 			RowData dataText = new RowData();
 			dataText.width = 250;
 		 	txtConversionName.setLayoutData(dataText);
-		 	txtConversionName.setText(window.getInstance().getNameOfConversionChosen());
-		 	script=txtConversionName.getText();
+		 	scriptHandler = window.getInstance().getConversionChosen();
+		 	txtConversionName.setText(scriptHandler.getName());
+		 //	script=txtConversionName.getText();
 //			
 			FormData formDatalblCon = new FormData();
 			 fah.setFormData(formDatalblCon, 10,10,17,10,17,10,75,10);
@@ -153,19 +158,30 @@ public class ConvertMultipleFiles extends Composite {
 		// Composite Input stuff
 			 Composite compInputFields = new Composite(shell, SWT.NONE);
 			 compInputFields.setBackground(ColorChoices.white);
-			 GridLayout gridLayout = new GridLayout(2, false);
+			 GridLayout gridLayout = new GridLayout(3, false);
 			 compInputFields.setLayout(gridLayout);
 			
 			  // Label folder to search in
 			 lblInputDocument = new Label(compInputFields, SWT.NONE);
 			 labelProperties.setProperties(lblInputDocument, "Select Folder");
-			 GridData data = new GridData();
+			 lblInputDocument.pack();
+			 GridData data = new GridData(SWT.LEFT | SWT.CENTER );
 			 data.horizontalSpan=1;
-			 data.widthHint = 100;
+			 //data.widthHint = 100;
 			 lblInputDocument.setLayoutData(data);
 			 
+			 
+			 // TextField to hold folder chosen
+			 txtDirectorySelected = new Text(compInputFields, SWT.BORDER);
+			 textProperties.setProperties(txtDirectorySelected, "");
+			 GridData data5 = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
+			 data5.horizontalSpan=1;
+			 data5.widthHint = 300;
+			 txtDirectorySelected.setLayoutData(data5);
+			 
+			 
            // Browse button
-			 btnBrowseInput= new Button(compInputFields, SWT.NONE);
+			 btnBrowseInput= new Button(compInputFields, SWT.BORDER);
 			 GridData data2 = new GridData();
 			 data2.horizontalSpan=1;
 			 btnBrowseInput.setLayoutData(data2);
@@ -177,22 +193,23 @@ public class ConvertMultipleFiles extends Composite {
 					}
 				});
 			 
+			 
+			 
 			 lblOnlyCompatibleShown = new Label(compInputFields, SWT.NONE);
 			 GridData data3 = new GridData();
-			 data3.horizontalSpan = 2;
+			 data3.horizontalSpan = 3;
 			 lblOnlyCompatibleShown.setLayoutData(data3);
 			 labelProperties.setProperties(lblOnlyCompatibleShown, "(Only Compatible File Types Displayed)");
 			 
 			 
 			 tblCompatibleFiles= new Table(compInputFields, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL |SWT.MULTI |SWT.FULL_SELECTION);;
-			 CompatibleFilesTableProperties cftp = new CompatibleFilesTableProperties(tblCompatibleFiles);
+			 cftp = new CompatibleFilesTableProperties(tblCompatibleFiles);
 			
 			 GridData data4 = new GridData(GridData.FILL_HORIZONTAL);
-			 data4.horizontalSpan = 2;
+			 data4.horizontalSpan = 3;
 			 tblCompatibleFiles.setLayoutData(data4);
 			 
 		
-			 
 			 FormData formDataDocInput = new FormData();
 			 formDataDocInput.top = new FormAttachment(compConversionChosen, 10);
 			 formDataDocInput.left = new FormAttachment(17, 10);
@@ -242,6 +259,7 @@ public class ConvertMultipleFiles extends Composite {
 			 this.btnBrowseOutput.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						setOutputPathSelected();
+						populateCompatibleFilesTable();
 					}
 				});
 			
@@ -286,7 +304,7 @@ public class ConvertMultipleFiles extends Composite {
 			 btnOK.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						sendJobInfoToMain();
-						dispose();
+						
 					}
 				});
 			 
@@ -343,22 +361,37 @@ public class ConvertMultipleFiles extends Composite {
 				Job job = new Job();
 				job.setInputFile(new File (dirSelected));
 				job.setOutputFile(new File(outputPath));
-				job.setScript(new File(script));
+				job.setScript(scriptHandler);
 				job.setStatus(Status.WAITING);
 				Window.getInstance().addToQueue(job);
 				dispose();
 			
 		}
 	}
+	
+	public void populateCompatibleFilesTable(){
+		cftp.populateTable(txtDirectorySelected, shell);
+	
+	}
+	
+	/**
+	 * 
+	 *
+	 */
 	public void setDirectorySelected() {
+		
 		DirectoryDialog directoryDialog = new DirectoryDialog(shell);
 		directoryDialog.setText("Choose a directory");
 		directoryDialog.setFilterPath("/");
 		dirSelected = directoryDialog.open();
-		if (dirSelected!=null){
+		if (dirSelected==null){
+			System.out.println("dirSelected is Null");
+		}
+		else{
 			System.out.println("Directory Selected  " + dirSelected);
 			txtDirectorySelected.setText(dirSelected);
 		}
+		
 	}
 
 	public void setOutputPathSelected() {

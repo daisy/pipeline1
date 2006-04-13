@@ -3,6 +3,7 @@ package org.daisy.dmfc.gui;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.gui.menus.MenuSingleConvert;
 import org.daisy.dmfc.gui.widgetproperties.ButtonProperties;
 import org.daisy.dmfc.gui.widgetproperties.ColorChoices;
@@ -24,6 +25,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -70,6 +72,9 @@ public class ConvertSingleFile extends Composite {
 	ArrayList alJobs = new ArrayList();
 	
 	
+	//ScriptHandler object, get name of the conversion
+	ScriptHandler scriptHandler;
+	
 	public ConvertSingleFile() {
 		this(new Shell(UIManager.display));
 	}
@@ -87,8 +92,7 @@ public class ConvertSingleFile extends Composite {
 		shell.setMaximized(true);
 		shell.setBackground(ColorChoices.white);
 		
-		//shell.setSize(356, 275);
-		//shell.setLocation(214, 216);
+		
 		shell.setLayout(new FormLayout());
 		
 		
@@ -126,8 +130,9 @@ public class ConvertSingleFile extends Composite {
 		RowData dataText = new RowData();
 		dataText.width = 250;
 	 	txtConversionName.setLayoutData(dataText);
-	 	txtConversionName.setText(window.getInstance().getNameOfConversionChosen());
-	 	script=txtConversionName.getText();
+	 	scriptHandler = window.getInstance().getConversionChosen();
+	 	txtConversionName.setText(scriptHandler.getName());
+	 	//script=txtConversionName.getText();
 //		
 		FormData formDatalblCon = new FormData();
 		 fah.setFormData(formDatalblCon, 10,10,17,10,17,10,75,10);
@@ -307,10 +312,19 @@ public class ConvertSingleFile extends Composite {
 	 * @todo problem, text field contains something
 	 */
 	public void setFileSelected() {
+		FileDialog fileDialog = new FileDialog(shell);
+		fileDialog.setText("Choose an input file");
+		fileDialog.setFilterPath("c://");
+		fileSelected = fileDialog.open();
+		
+		/*
 		DirectoryDialog directoryDialog = new DirectoryDialog(shell);
 		directoryDialog.setText("Choose a directory");
 		directoryDialog.setFilterPath("/");
 		fileSelected = directoryDialog.open();
+		*/
+		
+		
 		this.txtInputDoc.setText("");
 		if (fileSelected!=null ){
 			System.out.println("Directory Selected  " + fileSelected);
@@ -327,7 +341,7 @@ public class ConvertSingleFile extends Composite {
 	public void setOutputPathSelected() {
 		DirectoryDialog directoryDialog = new DirectoryDialog(shell);
 		directoryDialog.setText("Choose a directory");
-		directoryDialog.setFilterPath("/");
+		directoryDialog.setFilterPath("c://");
 		outputPath = directoryDialog.open();
 		System.out.println("outputPath Selected  " + outputPath);
 		this.txtOutputDoc.setText("");
@@ -358,7 +372,7 @@ public class ConvertSingleFile extends Composite {
 				Job job = new Job();
 				job.setInputFile(new File (fileSelected));
 				job.setOutputFile(new File(outputPath));
-				job.setScript(new File(script));
+				job.setScript(scriptHandler);
 				job.setStatus(Status.WAITING);
 				Window.getInstance().addToQueue(job);
 				
@@ -374,12 +388,6 @@ public class ConvertSingleFile extends Composite {
 		txtOutputDoc.setText(job.getOutputFile().getName());
 	}
 	
-	/*
-	public void editConversion(int index){
-		txtConversionName.setText(job.getScript().getName());
-		txtInputDoc.setText(job.getInputFile().getName());
-		txtOutputDoc.setText(job.getOutputFile().getName());
-	}
-	*/
+	
 	
 }

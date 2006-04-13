@@ -1,5 +1,8 @@
 package org.daisy.dmfc.gui;
 
+import java.util.List;
+
+import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.gui.widgetproperties.ButtonProperties;
 import org.daisy.dmfc.gui.widgetproperties.ColorChoices;
 import org.daisy.dmfc.gui.widgetproperties.FontChoices;
@@ -9,12 +12,15 @@ import org.daisy.dmfc.gui.widgetproperties.LabelProperties;
 import org.daisy.dmfc.gui.widgetproperties.ProgressBarProperties;
 import org.daisy.dmfc.gui.widgetproperties.TextProperties;
 import org.daisy.dmfc.gui.widgetproperties.TransformerListTableProperties;
+import org.daisy.dmfc.qmanager.LocalEventListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -61,6 +67,7 @@ public class CurrentJobDetails extends Composite{
 	//TextFields
 	Text txtElapsedTime;
 	Text txtEstimatedTime;
+	Text txtConversionRunning;
 	
 	//Table
 	Table tblListTransformers;
@@ -68,8 +75,31 @@ public class CurrentJobDetails extends Composite{
 	//Progress bar
 	ProgressBar pb;
 	
+	//ScriptHandler object
+	ScriptHandler scriptHandler;
 	
-	public CurrentJobDetails() {
+	
+	//List of TransformerInfo
+	List listTransformers;
+	
+	//EventListener
+	LocalEventListener lel;
+	
+	
+	
+	
+	//CurrentJobDetails singleton instance
+	static CurrentJobDetails instance;
+	
+	public static CurrentJobDetails getInstance(){
+		if (instance==null){
+			instance = new CurrentJobDetails();
+		}
+		return instance;
+	}
+	
+	
+	private CurrentJobDetails() {
 		this(new Shell(UIManager.display));
 	}
 	
@@ -77,6 +107,8 @@ public class CurrentJobDetails extends Composite{
 	public CurrentJobDetails(final Shell shell) {
 		super(shell, SWT.NONE);
 		this.shell = shell;
+		
+		getListeners();
 		
 		shell.setText("Daisy Multi Format Converter");
 		shell.setMaximized(true);
@@ -105,14 +137,38 @@ public class CurrentJobDetails extends Composite{
 		compLeft.setLayout(rowLeft);
 	
 		
-		this.lblListTransformers = new Label(compLeft, SWT.NONE);
+		Composite subCompositeLeft = new Composite(compLeft, SWT.NONE);
+		subCompositeLeft.setBackground(ColorChoices.white);
+		GridLayout gridLayout = new GridLayout(2, false);
+		subCompositeLeft.setLayout(gridLayout);
+		
+		this.lblListTransformers = new Label(subCompositeLeft, SWT.NONE);
 		labelProperties.setProperties(lblListTransformers, "Current Conversion");
+		lblListTransformers.pack();
+		 GridData data = new GridData(SWT.LEFT | SWT.CENTER );
+		 data.horizontalSpan=1;
+		 //data.widthHint = 100;
+		 lblListTransformers.setLayoutData(data);
+		
+		this.txtConversionRunning = new Text(subCompositeLeft, SWT.BORDER);
+		textProperties.setProperties(txtConversionRunning, "");
+		txtConversionRunning.setText(Window.getInstance().getConversionChosen().getName());
+		
+		//Get the scripthandler object
+		//scriptHandler = window.getInstance().getConversionChosen();
+		//txtConversionRunning.setText(scriptHandler.getName());
+		 GridData data5 = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
+		 data5.horizontalSpan=1;
+		 data5.widthHint = 200;
+		 txtConversionRunning.setLayoutData(data5);
+		
 		
 		this.lblListChecked = new Label(compLeft, SWT.NONE);
 		labelProperties.setProperties(lblListChecked, "Each Transformer Checked as Completed");
 		
 		this.tblListTransformers = new Table(compLeft, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL  |SWT.FULL_SELECTION );
-		TransformerListTableProperties tltp = new TransformerListTableProperties(tblListTransformers);
+		TransformerListTableProperties tltp = new TransformerListTableProperties(tblListTransformers, window.getInstance().getConversionChosen());
+		tltp.populateTable();
 		
 		
 		FormData formDataLeft = new FormData();
@@ -185,8 +241,7 @@ public class CurrentJobDetails extends Composite{
 		formDataBottom.bottom = new FormAttachment(70, 10);
 		formDataBottom.right = new FormAttachment(65,10);
 		compBottom.setLayoutData(formDataBottom);
-		
-		
+
 	}	
 	
 	public void open() {
@@ -197,7 +252,24 @@ public class CurrentJobDetails extends Composite{
 	}
 	
 	public void dispose() {
+		instance=null;
 		shell.dispose();
 	}
+	
+	
+	public void getListeners(){
+		lel = Window.getInstance().getLocalEventListener();
+		System.out.println("Did I get a listener?" + lel.getMessage());
+		double time = lel.getTotalTime();
+		System.out.println("***********************");
+		System.out.println("The total time is: " + time);
+		
+	}
+	
+	public void calculateTiming(){
+		
+		
+	}
+	
 	
 }

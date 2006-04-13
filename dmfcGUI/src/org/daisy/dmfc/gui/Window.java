@@ -1,17 +1,14 @@
 package org.daisy.dmfc.gui;
 
 
-
-
-
-
-
-
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 
+import org.daisy.dmfc.core.DMFCCore;
+import org.daisy.dmfc.core.EventListener;
+import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.dmfc.exception.DMFCConfigurationException;
+import org.daisy.dmfc.exception.MIMEException;
+import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.gui.menus.MenuDMFC;
 import org.daisy.dmfc.gui.widgetproperties.ButtonProperties;
 import org.daisy.dmfc.gui.widgetproperties.ColorChoices;
@@ -22,7 +19,11 @@ import org.daisy.dmfc.gui.widgetproperties.LabelProperties;
 import org.daisy.dmfc.gui.widgetproperties.ListProperties;
 import org.daisy.dmfc.gui.widgetproperties.TextProperties;
 import org.daisy.dmfc.qmanager.Job;
+import org.daisy.dmfc.qmanager.LocalEventListener;
+import org.daisy.dmfc.qmanager.LocalInputListener;
 import org.daisy.dmfc.qmanager.Queue;
+import org.daisy.dmfc.qmanager.QueueRunner;
+import org.daisy.util.xml.validation.ValidationException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -53,6 +54,9 @@ public class Window extends Composite {
 	private static int queueNum = 0;
 	private int currentNum = 0;
 	private Shell shell;
+	private DMFCCore dmfc;
+	LocalInputListener lil;
+	LocalEventListener lel;
 	
 	private static Window window;
 	
@@ -85,6 +89,9 @@ public class Window extends Composite {
 	//Lists
 	List listConversion;
 	
+	//File array of conversions
+	File [] arFiles ;
+	
 	//Table
 	Table tblJobs2;
 	
@@ -94,12 +101,20 @@ public class Window extends Composite {
 	// Queue of all Jobs
 	Queue cue;
 	
+	//QueueManager to run scripts
+	QueueRunner queRunner;
+	
 	//Composite
 	Composite compJobsInQueue;
 	
 	//int 
 	int index;
 	
+	//Array of ScriptHandler objects
+	ScriptHandler [] listScriptHandlers;
+
+	//The ScriptHandler to pass around
+	ScriptHandler scriptHandler;
 	
 	//Selected Conversion
 	private String selectedConversion;
@@ -369,12 +384,20 @@ public void widgetSelected(SelectionEvent e) {
 		
 		this.btnRun = new Button(bottomComp, SWT.SHADOW_OUT);
 		buttonProperties.setProperties(btnRun, "Run Queue");
+		this.btnRun.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				runScript();
+			}
+		});
+		
+
+		
 		
 		this.btnDetails = new Button(bottomComp, SWT.SHADOW_OUT);
 		buttonProperties.setProperties(btnDetails, " Queue Run Details");
 		this.btnDetails.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				new CurrentJobDetails().open();
+				CurrentJobDetails.getInstance().open();
 			}
 		});
 		
@@ -407,8 +430,8 @@ public void widgetSelected(SelectionEvent e) {
 	}
 	
 	
-	public String getNameOfConversionChosen(){
-		return this.selectedConversion;
+	public ScriptHandler getConversionChosen(){
+		return this.scriptHandler;
 	}
 	
 	public void addToQueue(Job job){
@@ -432,26 +455,80 @@ public void widgetSelected(SelectionEvent e) {
 	}
 	
 	/**
-	 * populates the list of conversions
-	 * with files on the file system
-	 *  Files must be in the directory notes, mine on the C drive in src
-	 *  @todo - add this to the properties file?
+	 * Creates ScriptHandler objects
+	 * From files on the file system.
+	 * These ScriptHandler Objects are used in the conversions
+	 * All attributes of a script, the name, description, parameters, etc
+	 * can be found in this object.  The object must be passed 
+	 * among the screens, and the description taken for each item,
+	 * the mime types used taken for each script, etc.
+	 *  @todo - add the file location to the properties file? At least 
+	 *  take out the hardcoding and parameterize.
 	 */
 	public void populateList(){
-		File file = new File("C:\\src\\dmfc\\doc\\examples");
+		 lil = new LocalInputListener();
+		 lel = new LocalEventListener();
+		try {
+			dmfc = new DMFCCore(lil, lel);
+		} catch (DMFCConfigurationException e) {
+			e.printStackTrace();
+		}
+		//File file = new File("C:\\src\\dmfc\\doc\\examples");
+		File homeDir = dmfc.getHomeDirectory();
+		System.out.println("The home directory is: " + homeDir.getAbsolutePath());
+
+		File file = new File("C:\\src\\dmfcgui\\src\\scripts");
 		if (file.isDirectory()){
-			String [] arFiles = file.list();
+			arFiles = file.listFiles();
+			
+			//For each file in the directory, create a ScriptHandler object.
+			listScriptHandlers= new ScriptHandler[arFiles.length];
 			
 			for (int i = 0; i <arFiles.length; i++){
-				listConversion.add( arFiles[i]);
+				//listConversion.add( arFiles[i].getName());
+				File toSH = (File)arFiles[i];
+				
+				try{
+				
+				ScriptHandler sh = dmfc.createScript(toSH);
+				/*System.out.println("This is script number " + i + "  ");
+				System.out.println("The description of the script is " + sh.getDescription());
+				System.out.println("The name of the script is: " + sh.getName());
+				System.out.println("The number of tasks in the script are: " + sh.getTaskCount());
+				*/
+				
+				listScriptHandlers[i]=sh;
+				listConversion.add(listScriptHandlers[i].getName());
+				
+				}
+				catch(ValidationException ve){
+					ve.getMessage();
+					ve.printStackTrace();
+				}
+				catch(MIMEException me){
+					me.getMessage();
+					me.printStackTrace();
+				}
+				catch(ScriptException se){
+					//add error messages to be thrown to GUI
+					se.printStackTrace();
+				}
+				
 			}
 		}
 	}
 	
 	public void getConversionSelection(){
 		if(listConversion.getSelectionCount()==1){
-			this.selectedConversion= (listConversion.getSelection())[0];
-			System.out.println("selected item:  " + selectedConversion  );
+			
+			//get the script from the arraylist
+			int focus = listConversion.getFocusIndex();
+			System.out.println("wht is the focus index? " + focus);
+			
+			this.scriptHandler= listScriptHandlers[focus];
+			
+			//this.selectedConversion= (listConversion.getSelection())[0];
+			//System.out.println("selected item:  " + selectedConversion  );
 		}
 	}
 	
@@ -540,6 +617,25 @@ public void widgetSelected(SelectionEvent e) {
 					messageBox.setText("Error:  Invalid Selection");
 					messageBox.open();
 		}
+	}
+	
+	
+	public void runScript(){
+		
+		//java.util.List list = scriptHandler.getTransformerInfoList();	
+		
+		queRunner = new QueueRunner(dmfc);
+		queRunner.executeJobsInQueue();
+		CurrentJobDetails.getInstance().open();
+				
+	}
+	
+	public DMFCCore getDMFC(){
+		return this.dmfc;
+	}
+	
+	public LocalEventListener getLocalEventListener(){	
+		return lel;
 	}
 	
 }
