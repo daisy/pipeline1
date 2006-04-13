@@ -79,21 +79,7 @@ public class JobQueueTableProperties {
 				
 	}
 	
-	public void populateTable(LinkedList llJobs){
-		table.clearAll();
-		int count = 0;
-		int size = llJobs.size();
-		for (int i = 0;i<size;i++){
-			Job jobItem= (Job)llJobs.get(i);
-			TableItem ti = new TableItem(table ,SWT.NONE,count);
-			ti.setText(new String[] {
-			String.valueOf(jobItem.getStatus()),
-			jobItem.getScript().getName(),
-			jobItem.getInputFile().getName(),
-			jobItem.getOutputFile().getName()});
-			count++;
-		}	
-	}
+	
 		public void populateTable(Queue cue){
 			table.clearAll();
 			LinkedList llJobs=cue.getLinkedListJobs();
