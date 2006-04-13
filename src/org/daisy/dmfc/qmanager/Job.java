@@ -1,6 +1,13 @@
 package org.daisy.dmfc.qmanager;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.dmfc.core.script.Task;
+import org.daisy.dmfc.exception.ScriptException;
 
 
 /**
@@ -18,7 +25,9 @@ public class Job {
 	private int status = Status.WAITING;
 	private File inputFile;
 	private File outputFile;
-	private File script;
+	private ScriptHandler script;
+	
+	
 	
 	public Job(){}
 	
@@ -34,7 +43,7 @@ public class Job {
 	 * @param _outputFile File
 	 * @param _script File
 	 */
-	public Job(File _inputFile, File _outputFile, File _script){
+	public Job(File _inputFile, File _outputFile, ScriptHandler _script){
 		this.inputFile=_inputFile;
 		this.outputFile=_outputFile;
 		this.script= _script;
@@ -56,7 +65,7 @@ public class Job {
 		return this.outputFile;
 	}
 
-	public File getScript() {
+	public ScriptHandler getScript() {
 		return this.script;
 	}
 	
@@ -70,7 +79,7 @@ public class Job {
 	public void setOutputFile(File output){
 		this.outputFile=output;
 	}
-	public void setScript(File _script){
+	public void setScript(ScriptHandler _script){
 		this.script=_script;
 	}
 	public void setStatus(int _status){
@@ -78,7 +87,7 @@ public class Job {
 	}
 
 	
-	/*
+	
 	//Other information about the script /job
 	public List getAllTasksInScript(){
 		return this.script.getTasks();
@@ -106,8 +115,8 @@ public class Job {
 		return transformerNames;
 	}
 	
-*/
+
 	public String toString(){
-		return "input file name " + this.inputFile.getName() + "OutputFileName " + this.outputFile.getName();
+		return "input file name " + this.inputFile.getAbsolutePath() + "   OutputFileName " + this.outputFile.getPath();
 	}
 }

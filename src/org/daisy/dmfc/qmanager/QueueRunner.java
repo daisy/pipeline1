@@ -1,18 +1,17 @@
 package org.daisy.dmfc.qmanager;
 
-import java.io.File;
+
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Locale;
+import java.util.List;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.EventListener;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.dmfc.core.transformer.TransformerInfo;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
-import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptException;
-import org.daisy.util.xml.validation.ValidationException;
 
 
 
@@ -23,12 +22,18 @@ import org.daisy.util.xml.validation.ValidationException;
  *
  */
 
-public class QueueRunner  {
+public class QueueRunner{
 	
 	private Queue queue;
 	private DMFCCore dmfc;
+	ScriptHandler scriptHandler;
 	private EventListener ev;
 	private InputListener il;
+	
+	public QueueRunner(DMFCCore dmfc){
+		this.queue=Queue.getInstance();
+		this.dmfc=dmfc;
+	}
 	
 	public QueueRunner(EventListener ev, InputListener il){
 		this.queue=Queue.getInstance();
@@ -50,14 +55,10 @@ public class QueueRunner  {
 	 * Each script is executed by the DMFCCore 
 	 * (and each task is executed by the ScriptHandler)
 	 * 
-	 *@param il InputListener interface - for concrete web or local IL
-	 *@param el EventListener interface - for concrete web or local EL
 	 *@throws ScriptException on execute()
 	 */
-	public void executeJobsInQueue(InputListener il, EventListener el){
-		
-		/** @todo possibly put this in a properties file? Does this differ from script to script?*/
-		Locale locale = new Locale("en", "US");
+	
+	public void executeJobsInQueue(){
 			
 		//walk through the queue and return jobs
 		LinkedList jobList = queue.getLinkedListJobs();
@@ -66,35 +67,40 @@ public class QueueRunner  {
 		while(it.hasNext()){
 			//get the Job from the Queue
 			Job job = (Job)it.next();
+			scriptHandler = job.getScript();
 			
-			//get the task script
-			ScriptHandler sh = null;
-			File script = job.getScript();
+			//add the input and output files to the script
+			//actually, this only returns if the parameters are present in the script...
+			scriptHandler.setProperty("input", job.getInputFile().getPath());
+			scriptHandler.setProperty("outputDir", job.getOutputFile().getPath());
 			
-				//script.setProperty("input", job.getInputFile().getName());
-				//script.setProperty("outputDir", job.getOutputFile().getName());
+			List list = scriptHandler.getTransformerInfoList();
+			//Iterator iter = list.iterator();
+			//while(iter.hashNext()){
+			
+			TransformerInfo tinfo = (TransformerInfo)list.get(0); // get info on first transformer, change to list.get(list.size() - 1) for the last transformer
+			
+			
+			/*
+			Collection coll = tinfo.getParameters();
+			forEach (ParameterInfo p in coll) {
+			  if ("in".equals(p.getDirection())) {
+			    // this is an input parameter
+			    type = p.getType();
+			  }
+			}
+			*/
+					
+			
 				
-				try{
-					sh= dmfc.createScript(script);
-//					sh.setProperty("input", job.getInputFile().getName());
-					sh.setProperty("outputDir", job.getOutputFile().getName());
-					dmfc.executeScript(sh);
-				}
-				catch(ValidationException ve){
-					ve.getMessage();
-					ve.printStackTrace();
-				}
-				catch(MIMEException me){
-					me.getMessage();
-					me.printStackTrace();
-				}
-				
-				catch(ScriptException se){
-					//add error messages to be thrown to GUI
-					se.printStackTrace();
-				}
-			
-			
+			try{	
+				scriptHandler.execute();
+			}
+			catch(ScriptException se){
+				se.getMessage();
+			}
+
 		}
 	}
+	
 }
