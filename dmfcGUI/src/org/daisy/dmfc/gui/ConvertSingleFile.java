@@ -51,6 +51,7 @@ public class ConvertSingleFile extends Composite {
 	Label lblNameConversion;
 	Label lblInputDocument;
 	Label lblOutputDocument;
+	Label lblDaisyMFC;
 	
 	//Buttons
 	Button btnBrowseInput;
@@ -71,6 +72,9 @@ public class ConvertSingleFile extends Composite {
 	//ArrayList of Jobs
 	ArrayList alJobs = new ArrayList();
 	
+	
+	//Original job.  If used in edit mode, this is returned if canceled
+	Job editJob;
 	
 	//ScriptHandler object, get name of the conversion
 	ScriptHandler scriptHandler;
@@ -97,7 +101,7 @@ public class ConvertSingleFile extends Composite {
 		
 		
 		//Title
-		Label lblDaisyMFC = new Label(shell, SWT.NONE);
+		lblDaisyMFC = new Label(shell, SWT.NONE);
 		lblDaisyMFC.setForeground(ColorChoices.darkBlue);
 		lblDaisyMFC.setText("Convert Single File");
 		lblDaisyMFC.setFont(FontChoices.fontSubTitle);
@@ -267,8 +271,10 @@ public class ConvertSingleFile extends Composite {
 		 btnOK.setLayoutData(data);
 		 btnOK.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
+					if (lblDaisyMFC.getText().equalsIgnoreCase("Edit Conversion")){
+						sendEditedJobToMain();
+					}
 					sendJobInfoToMain();
-					
 				}
 			});
 		
@@ -280,6 +286,9 @@ public class ConvertSingleFile extends Composite {
 		 btnCancel.setLayoutData(data);
 		 btnCancel.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
+					if (lblDaisyMFC.getText().equalsIgnoreCase("Edit Conversion")){
+						Window.getInstance().addToQueue(editJob);
+					}
 					dispose();
 				}
 			});
@@ -316,14 +325,6 @@ public class ConvertSingleFile extends Composite {
 		fileDialog.setText("Choose an input file");
 		fileDialog.setFilterPath("c://");
 		fileSelected = fileDialog.open();
-		
-		/*
-		DirectoryDialog directoryDialog = new DirectoryDialog(shell);
-		directoryDialog.setText("Choose a directory");
-		directoryDialog.setFilterPath("/");
-		fileSelected = directoryDialog.open();
-		*/
-		
 		
 		this.txtInputDoc.setText("");
 		if (fileSelected!=null ){
@@ -382,10 +383,23 @@ public class ConvertSingleFile extends Composite {
 		}
 	}
 	
+	/**
+	 * Sets information to be edited.
+	 * @param Job job, called from table at Window.
+	 */
 	public void editConversion(Job job){
+		this.editJob=job;
+		lblDaisyMFC.setText("Edit Conversion");
 		txtConversionName.setText(job.getScript().getName());
-		txtInputDoc.setText(job.getInputFile().getName());
-		txtOutputDoc.setText(job.getOutputFile().getName());
+		txtInputDoc.setText(job.getInputFile().getPath());
+		txtOutputDoc.setText(job.getOutputFile().getPath());
+		scriptHandler = job.getScript();
+		
+	}
+	
+	public void sendEditedJobToMain(){
+		this.fileSelected= txtInputDoc.getText();
+		this.outputPath=txtOutputDoc.getText();
 	}
 	
 	

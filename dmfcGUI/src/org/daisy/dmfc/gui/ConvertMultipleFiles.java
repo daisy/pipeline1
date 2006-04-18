@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.ParameterInfo;
@@ -89,6 +90,8 @@ public class ConvertMultipleFiles extends Composite {
 	String dirSelected ;
 	String outputPath = "";
 	String script = "";
+	String strSubfolderOfInputFolder;
+	String strSubfolderOfOutputFolder;
 
 	//ScriptHandler
 	ScriptHandler scriptHandler;
@@ -279,14 +282,11 @@ public class ConvertMultipleFiles extends Composite {
 			 btnBrowseOutput = new Button(compOutputFields, SWT.BORDER);
 			 buttonProperties.setProperties(btnBrowseOutput, "Browse");
 			 GridData dataBrowse = new GridData();
-			 btnBrowseOutput.setLayoutData(dataBrowse);
-			 
-			 
+			 btnBrowseOutput.setLayoutData(dataBrowse); 
 			 this.btnBrowseOutput.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						setOutputPathSelected();
-						populateCompatibleFilesTable();
-						getFileTypesForScriptHandler();
+						//getFileTypesForScriptHandler();
 					}
 				});
 			
@@ -303,8 +303,21 @@ public class ConvertMultipleFiles extends Composite {
 			 btnRadio1= new Button(compRadioButtons, SWT.RADIO);
 			 radioButtonProperties.setProperties(btnRadio1, "Subfolder of Input Document");
 			 btnRadio1.setSelection(true);
+			 this.btnRadio1.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						setOutputPath();
+					}
+				});
+			 
+			 
 			 btnRadio2= new Button(compRadioButtons, SWT.RADIO);
-			 radioButtonProperties.setProperties(btnRadio2, "Subfolder of Created Folder");
+			 radioButtonProperties.setProperties(btnRadio2, "Subfolder of Selected Folder");
+			 this.btnRadio2.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						resetOutputPath();
+					}
+				});
+			 
 			 
 			 GridData dataRadio = new GridData();
 			 dataRadio.horizontalSpan = 2;
@@ -427,18 +440,72 @@ public class ConvertMultipleFiles extends Composite {
 		else{
 			System.out.println("Directory Selected  " + dirSelected);
 			txtDirectorySelected.setText(dirSelected);
+			
+			//set the output path to a subfolder of the input directory selected
+			
+			String lastDir = "";
+			StringTokenizer st = new StringTokenizer(dirSelected, File.separator);
+			while(st.hasMoreTokens()){
+				lastDir = st.nextToken();
+				
+			}
+			System.out.println("The last token is " + lastDir);
+			strSubfolderOfInputFolder =dirSelected + File.separator + lastDir + File.separator;
+			txtOutputDoc.setText(strSubfolderOfInputFolder);
+			//txtOutputDoc.setText(dirSelected + File.separator + lastDir + File.separator);
+			
+			
 		}
 		
 	}
-
+	
+	
+	public void setOutputPath(){
+		if (strSubfolderOfInputFolder==null){
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+					messageBox.setMessage("Sorry, First select and input folder.");
+					messageBox.setText("Error:  Select Input Folder");
+					messageBox.open();	
+		}
+		else{
+			txtOutputDoc.setText(strSubfolderOfInputFolder);
+		}
+	}
+	
+	
+	public void resetOutputPath(){
+		txtOutputDoc.setText("");
+	}
+	
+	
 	public void setOutputPathSelected() {
-		DirectoryDialog directoryDialog = new DirectoryDialog(shell);
-		directoryDialog.setText("Choose a directory");
-		directoryDialog.setFilterPath("/");
-		outputPath = directoryDialog.open();
-		if (outputPath!=null){
-			System.out.println("outputPath Selected  " + outputPath);
-			txtOutputDoc.setText(outputPath);
+		if (btnRadio2.isEnabled()){
+			DirectoryDialog directoryDialog = new DirectoryDialog(shell);
+			directoryDialog.setText("Choose a directory");
+			directoryDialog.setFilterPath("/");
+			outputPath = directoryDialog.open();
+			
+			if (outputPath!=null){
+				
+				String lastDir = "";
+				StringTokenizer st = new StringTokenizer(outputPath, File.separator);
+				while(st.hasMoreTokens()){
+					lastDir = st.nextToken();
+					
+				}
+				System.out.println("The last token is " + lastDir);
+				strSubfolderOfOutputFolder =outputPath + File.separator + lastDir + File.separator;
+				txtOutputDoc.setText(strSubfolderOfOutputFolder);
+				
+				
+				//System.out.println("outputPath Selected  " + outputPath);
+				
+			}
+		}
+		
+		else{
+			//do nothing
 		}
 		
 	}

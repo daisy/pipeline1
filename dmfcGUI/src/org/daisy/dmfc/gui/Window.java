@@ -600,14 +600,15 @@ public void widgetSelected(SelectionEvent e) {
 	
 	
 	public void editJob(){
+		
 		if(index<cue.getSizeOfQueue()){
 			Job job= cue.editJob(index);
 			cue.deleteFromQueue(index);
 			ConvertSingleFile csf = new ConvertSingleFile();
 			csf.editConversion(job);
-			csf.open();
-			
+			csf.open();	
 		}
+	
 		else{
 			
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
