@@ -87,7 +87,7 @@ public class Window extends Composite {
 	Button btnTerminate;
 	
 	//Lists
-	List listConversion;
+	public List listConversion;
 	
 	//File array of conversions
 	File [] arFiles ;
@@ -440,7 +440,6 @@ public void widgetSelected(SelectionEvent e) {
 		System.out.println("place in cue " + cue.getPlaceInQueue(job));		
 		jqtp2.populateTable(cue);
 		
-		
 	}
 
 	
@@ -450,6 +449,7 @@ public void widgetSelected(SelectionEvent e) {
 	 */
 	
 	public void clearFields(){
+		this.clearFields();
 		selectedConversion="";
 		tblJobs2.clearAll();
 	}
@@ -474,8 +474,8 @@ public void widgetSelected(SelectionEvent e) {
 			e.printStackTrace();
 		}
 		//File file = new File("C:\\src\\dmfc\\doc\\examples");
-		File homeDir = dmfc.getHomeDirectory();
-		System.out.println("The home directory is: " + homeDir.getAbsolutePath());
+	//	File homeDir = dmfc.getHomeDirectory();
+		//System.out.println("The home directory is: " + homeDir.getAbsolutePath());
 
 		File file = new File("C:\\src\\dmfcgui\\src\\scripts");
 		if (file.isDirectory()){
@@ -521,14 +521,13 @@ public void widgetSelected(SelectionEvent e) {
 	public void getConversionSelection(){
 		if(listConversion.getSelectionCount()==1){
 			
-			//get the script from the arraylist
+			//get the script from the list
 			int focus = listConversion.getFocusIndex();
 			System.out.println("wht is the focus index? " + focus);
 			
-			this.scriptHandler= listScriptHandlers[focus];
+			this.scriptHandler= listScriptHandlers[focus + 1];
 			
-			//this.selectedConversion= (listConversion.getSelection())[0];
-			//System.out.println("selected item:  " + selectedConversion  );
+			
 		}
 	}
 	

@@ -1,6 +1,10 @@
 package org.daisy.dmfc.gui.menus;
 
+import org.daisy.dmfc.gui.ConvertMultipleFiles;
+import org.daisy.dmfc.gui.ConvertSingleFile;
+import org.daisy.dmfc.gui.CurrentJobDetails;
 import org.daisy.dmfc.gui.UIManager;
+import org.daisy.dmfc.gui.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -8,9 +12,12 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 public class MenuDMFC {
+	
+	Window window;
 	
 	public MenuDMFC(final Shell shell){
 		
@@ -30,22 +37,21 @@ public class MenuDMFC {
 		actionItem.setAccelerator(SWT.MOD1 + 'Q');
 		actionItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				UIManager.dispose();
-				System.exit(0);
-			}
-		});
-	/*
-		shell.addShellListener(new ShellAdapter() {
-	        public void shellClosed(ShellEvent e) {
-	            MessageBox mb = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+				MessageBox mb = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
 	            mb.setText("Confirm Exit");
 	            mb.setMessage("Are you sure you want to exit?");
-	            int rc = mb.open();
-	            e.doit = rc == SWT.OK;
-	        }
-	});
-		
-	*/	
+				int close = mb.open();
+				switch (close){
+					case SWT.OK:
+						UIManager.dispose();
+						System.exit(0);
+						break;
+					case SWT.CANCEL:
+						break;
+				}
+			}
+		});
+
 		
 //	Top Level "View"
 		MenuItem view = new MenuItem(menu, SWT.CASCADE);
@@ -59,20 +65,25 @@ public class MenuDMFC {
 		enableJobDetails.setAccelerator(SWT.MOD1 + 'E');
 		enableJobDetails.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
-			System.out.println("Enabling");
+				System.out.println("Enabling");
+				CurrentJobDetails.getInstance().open();
+			
 			}
 			});
 		
 		
+	/*
 		MenuItem disableJobDetails = new MenuItem(viewmenu, SWT.PUSH);
 		disableJobDetails.setText("Disable Job Details\tCtrl+D");
 		
 		disableJobDetails.setAccelerator(SWT.MOD1 + 'D');
 		disableJobDetails.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
-			System.out.println("Dis-enabling");
+				System.out.println("Dis-enabling");
 			}
 			});
+			
+	*/
 		
 	//Top Level "Action"
 		
@@ -81,17 +92,66 @@ public class MenuDMFC {
 		Menu actionmenu = new Menu(shell, SWT.DROP_DOWN);
 		action.setMenu(actionmenu);
 	
+		
 		MenuItem selectJobDetails = new MenuItem(actionmenu, SWT.PUSH);
 		selectJobDetails.setText("Select Conversion\tCtrl+S");
+		selectJobDetails.setAccelerator(SWT.MOD1 + 'S');
+		//focus listener on the conversions
+		selectJobDetails.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				System.out.println("Convert Single File");
+				window.getInstance().listConversion.forceFocus();
+			}
+			});
+		
+		
+		
+		MenuItem convertSingleFile = new MenuItem(actionmenu, SWT.PUSH);
+		convertSingleFile.setText("Convert Single File\tCtrl+F");
+		convertSingleFile.setAccelerator(SWT.MOD1 + 'F');
+		convertSingleFile.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				System.out.println("Convert Single File");
+				window.getInstance().getConversionSelection();
+				//window.getInstance().getConversionChosen();
+				new ConvertSingleFile().open();
+			
+			}
+			});
+		
+		
+		MenuItem convertMultipleFile = new MenuItem(actionmenu, SWT.PUSH);
+		convertMultipleFile.setText("Convert Multiple Files\tCtrl+M");
+		convertMultipleFile.setAccelerator(SWT.MOD1 + 'M');
+		convertMultipleFile.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				System.out.println("Convert Single File");
+				window.getInstance().getConversionSelection();
+				new ConvertMultipleFiles().open();
+			
+			}
+			});
+		
+		
+		//Submenus?
 		
 		MenuItem manageJobsInQueue = new MenuItem(actionmenu, SWT.PUSH);
 		manageJobsInQueue.setText("Manage Jobs in Queue\tCtrl+J");
+		manageJobsInQueue.setAccelerator(SWT.MOD1 + 'J');
+		
+		//Run, View Details, Terminate Conversions
 		
 		MenuItem runConversions = new MenuItem(actionmenu, SWT.PUSH);
 		runConversions.setText("Run Conversions\tCtrl+R");
+		runConversions.setAccelerator(SWT.MOD1 + 'R');
 		
 		MenuItem viewJobDetails = new MenuItem(actionmenu, SWT.PUSH);
-		viewJobDetails.setText("View Job Details\tCtrl+T");
+		viewJobDetails.setText("View Job Details\tCtrl+D");
+		viewJobDetails.setAccelerator(SWT.MOD1 + 'D');
+		
+		MenuItem terminateConversion = new MenuItem(actionmenu, SWT.PUSH);
+		terminateConversion.setText("Terminate Conversions\tCtrl+T");
+		terminateConversion.setAccelerator(SWT.MOD1 + 'T');
 		
 		
 		

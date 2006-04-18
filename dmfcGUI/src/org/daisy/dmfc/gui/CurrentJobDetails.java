@@ -110,6 +110,7 @@ public class CurrentJobDetails extends Composite{
 		
 		getListeners();
 		
+		
 		shell.setText("Daisy Multi Format Converter");
 		shell.setMaximized(true);
 		shell.setBackground(ColorChoices.white);
@@ -152,7 +153,9 @@ public class CurrentJobDetails extends Composite{
 		
 		this.txtConversionRunning = new Text(subCompositeLeft, SWT.BORDER);
 		textProperties.setProperties(txtConversionRunning, "");
-		txtConversionRunning.setText(Window.getInstance().getConversionChosen().getName());
+		
+		//this is wrong, it will be the first in the job queue
+		//txtConversionRunning.setText(Window.getInstance().getConversionChosen().getName());
 		
 		//Get the scripthandler object
 		//scriptHandler = window.getInstance().getConversionChosen();
@@ -260,9 +263,9 @@ public class CurrentJobDetails extends Composite{
 	public void getListeners(){
 		lel = Window.getInstance().getLocalEventListener();
 		System.out.println("Did I get a listener?" + lel.getMessage());
-		double time = lel.getTotalTime();
+		//double time = lel.getTotalTime();
 		System.out.println("***********************");
-		System.out.println("The total time is: " + time);
+		//System.out.println("The total time is: " + time);
 		
 	}
 	

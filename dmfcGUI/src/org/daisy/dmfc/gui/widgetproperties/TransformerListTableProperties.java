@@ -19,7 +19,7 @@ public class TransformerListTableProperties {
 		
 		this.table=_table;
 		this.scriptHandler=script;
-		System.out.println("The name of the ScriptHandler is " + scriptHandler.getName());
+		//System.out.println("The name of the ScriptHandler is " + scriptHandler.getName());
 		
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);

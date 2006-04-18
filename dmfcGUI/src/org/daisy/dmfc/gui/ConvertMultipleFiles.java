@@ -1,8 +1,14 @@
 package org.daisy.dmfc.gui;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.dmfc.core.transformer.ParameterInfo;
+import org.daisy.dmfc.core.transformer.TransformerInfo;
 import org.daisy.dmfc.gui.menus.MenuMultipleConvert;
 import org.daisy.dmfc.gui.widgetproperties.ButtonProperties;
 import org.daisy.dmfc.gui.widgetproperties.ColorChoices;
@@ -28,10 +34,13 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 
@@ -74,7 +83,7 @@ public class ConvertMultipleFiles extends Composite {
 	Text txtOutputDoc;
 	
 	//Tables
-	Table tblCompatibleFiles;
+	 final Table tblCompatibleFiles;
 	
 	// String
 	String dirSelected ;
@@ -84,7 +93,10 @@ public class ConvertMultipleFiles extends Composite {
 	//ScriptHandler
 	ScriptHandler scriptHandler;
 	
-
+	//ArrayList to hold selected input files
+	ArrayList al = new ArrayList();
+	
+	
 	public ConvertMultipleFiles() {
 		this(new Shell(UIManager.display));
 	}
@@ -147,7 +159,7 @@ public class ConvertMultipleFiles extends Composite {
 		 	txtConversionName.setLayoutData(dataText);
 		 	scriptHandler = window.getInstance().getConversionChosen();
 		 	txtConversionName.setText(scriptHandler.getName());
-		 //	script=txtConversionName.getText();
+		
 //			
 			FormData formDatalblCon = new FormData();
 			 fah.setFormData(formDatalblCon, 10,10,17,10,17,10,75,10);
@@ -190,6 +202,7 @@ public class ConvertMultipleFiles extends Composite {
 			 this.btnBrowseInput.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						setDirectorySelected();
+						populateCompatibleFilesTable();
 					}
 				});
 			 
@@ -200,11 +213,24 @@ public class ConvertMultipleFiles extends Composite {
 			 data3.horizontalSpan = 3;
 			 lblOnlyCompatibleShown.setLayoutData(data3);
 			 labelProperties.setProperties(lblOnlyCompatibleShown, "(Only Compatible File Types Displayed)");
+			
 			 
-			 
-			 tblCompatibleFiles= new Table(compInputFields, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL |SWT.MULTI |SWT.FULL_SELECTION);;
+			 tblCompatibleFiles= new Table(compInputFields, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL |SWT.MULTI );;
 			 cftp = new CompatibleFilesTableProperties(tblCompatibleFiles);
 			
+			 
+			 tblCompatibleFiles.addListener (SWT.Selection, new Listener () {
+					public void handleEvent (Event event) {
+						//String string = event.detail == SWT.CHECK ? "Checked" : "Selected";
+						//adds a TableItem to the arrayList
+						al.add(event.item);
+						
+					}
+				});
+			 
+			
+			 
+			 
 			 GridData data4 = new GridData(GridData.FILL_HORIZONTAL);
 			 data4.horizontalSpan = 3;
 			 tblCompatibleFiles.setLayoutData(data4);
@@ -260,6 +286,7 @@ public class ConvertMultipleFiles extends Composite {
 					public void widgetSelected(SelectionEvent e) {
 						setOutputPathSelected();
 						populateCompatibleFilesTable();
+						getFileTypesForScriptHandler();
 					}
 				});
 			
@@ -339,6 +366,13 @@ public class ConvertMultipleFiles extends Composite {
 	}
 	
 	//calls from listeners
+	
+	public void populateCompatibleFilesTable(){
+		cftp.populateTable(new File(dirSelected));
+		
+	}
+	
+	
 	public void sendJobInfoToMain() {
 		if (tblCompatibleFiles.getItemCount()==0 
 				|| txtOutputDoc.getText().equalsIgnoreCase("")
@@ -353,26 +387,29 @@ public class ConvertMultipleFiles extends Composite {
 					messageBox.open();
 
 					
-		} else {
+		} 
+		else {
+			
+			//all use the same conversion
 			//Create all job objects from each input file chosen
-			
-			//for each file chosen...
-			
+
+			Iterator it = al.iterator();
+			while (it.hasNext()){
 				Job job = new Job();
-				job.setInputFile(new File (dirSelected));
+				TableItem ti = (TableItem) it.next();
+				job.setInputFile(new File (ti.getText()));
 				job.setOutputFile(new File(outputPath));
 				job.setScript(scriptHandler);
 				job.setStatus(Status.WAITING);
 				Window.getInstance().addToQueue(job);
-				dispose();
+				
 			
 		}
+			dispose();
+	}
 	}
 	
-	public void populateCompatibleFilesTable(){
-		cftp.populateTable(txtDirectorySelected, shell);
 	
-	}
 	
 	/**
 	 * 
@@ -403,6 +440,47 @@ public class ConvertMultipleFiles extends Composite {
 			System.out.println("outputPath Selected  " + outputPath);
 			txtOutputDoc.setText(outputPath);
 		}
+		
+	}
+	
+	public void getFileTypesForScriptHandler(){
+		
+		System.out.println("GetFileTypes for Script");
+		
+		String fileType = null;
+		
+		List list= this.scriptHandler.getTransformerInfoList();
+	
+		 // get info on first transformer, change to list.get(list.size() - 1) for the last transformer
+		TransformerInfo tinfo = (TransformerInfo)list.get(0);
+		
+		//Returns a collection of parameter information
+		Collection col = tinfo.getParameters();
+		
+		Iterator it = col.iterator();		
+		
+		while(it.hasNext()){
+			ParameterInfo pi =(ParameterInfo)it.next();
+			String parameter = pi.getDirection();
+			if (parameter.equalsIgnoreCase("in")){
+				fileType = pi.getType();
+				System.out.println("Valid types for this script " + fileType);
+			}
+		}	
+			
+		}
+	//}
+	
+	
+	
+	/**
+	 * "Another problem would be that a transformer can have multiple
+	 *  input and output parameters, so it might not be possible to 
+	 *  have a single input file type and output file type for a script."
+	 *  email from Linus
+	 *
+	 */
+	public void filterDirectorySelected(){
 		
 	}
 	

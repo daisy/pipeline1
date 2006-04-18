@@ -6,6 +6,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 public class MenuSingleConvert {
@@ -28,8 +29,18 @@ public class MenuSingleConvert {
 		actionItem.setAccelerator(SWT.MOD1 + 'Q');
 		actionItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				UIManager.dispose();
-				System.exit(0);
+				MessageBox mb = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+	            mb.setText("Confirm Exit");
+	            mb.setMessage("Are you sure you want to exit?");
+				int close = mb.open();
+				switch (close){
+					case SWT.OK:
+						UIManager.dispose();
+						System.exit(0);
+						break;
+					case SWT.CANCEL:
+						break;
+				}
 			}
 		});
 		
