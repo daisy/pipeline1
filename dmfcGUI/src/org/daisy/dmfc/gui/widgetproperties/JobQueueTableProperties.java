@@ -37,7 +37,7 @@ public class JobQueueTableProperties {
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		table.setBounds(10,10,270,160);
-		table.setFont(FontChoices.fontLabel);
+		//table.setFont(FontChoices.fontLabel);
 	
 		tcStatus = new TableColumn (table, SWT.LEFT);
 		tcStatus.setText("Status");

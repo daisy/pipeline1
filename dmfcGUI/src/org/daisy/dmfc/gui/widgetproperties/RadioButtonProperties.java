@@ -10,7 +10,7 @@ public class RadioButtonProperties implements IProperties{
 	public void setProperties(Control radioButton, String message){
 		
 		((Button)radioButton).setText(message);
-		((Button)radioButton).setFont(FontChoices.fontButton);
+		//((Button)radioButton).setFont(FontChoices.fontButton);
 		((Button)radioButton).setBackground(ColorChoices.white);	
 	}
 	
