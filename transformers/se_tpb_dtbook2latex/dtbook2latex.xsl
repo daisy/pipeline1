@@ -6,6 +6,8 @@ sidebar
 prodnote
 annoref
 table
+språk
+hyperlänkar
 -->
 
 <xsl:stylesheet version="2.0"
@@ -29,9 +31,39 @@ table
    	<xsl:text>\usepackage[pdftex]{graphicx}&#10;</xsl:text>
    	<xsl:text>\usepackage{ucs}&#10;</xsl:text>
    	<xsl:text>\usepackage[utf8x]{inputenc}&#10;</xsl:text>
+   	<!--<xsl:call-template name="findLanguage"/>-->
    	<xsl:text>\setlength{\parskip}{1.5ex}&#10;</xsl:text>
    	<xsl:text>\setlength{\parindent}{0ex}&#10;&#10;&#10;</xsl:text>
    	<xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template name="findLanguage">
+   	<xsl:variable name="lang">
+   		<xsl:choose>
+	   		<xsl:when test="//dtb:meta[@name='dc:Language']">
+	   			<xsl:value-of select="//dtb:meta[@name='dc:Language']/@content"/>
+	   		</xsl:when>
+	   		<xsl:when test="//dtb:meta[@name='dc:language']">
+	   			<xsl:value-of select="//dtb:meta[@name='dc:language']/@content"/>
+	   		</xsl:when>
+	   		<xsl:when test="/dtb:dtbook/@xml:lang">
+	   			<xsl:value-of select="/dtb:dtbook/@xml:lang"/>
+	   		</xsl:when>   			
+   		</xsl:choose>
+   	</xsl:variable>
+   	<xsl:variable name="trLang">
+   		<xsl:choose>
+   			<xsl:when test="matches($lang, 'sv([_\-].+)?')">swedish</xsl:when>
+   			<xsl:when test="matches($lang, 'en[_\-][Uu][Ss]')">USenglish</xsl:when>
+   			<xsl:when test="matches($lang, 'en[_\-][Uu][Kk]')">UKenglish</xsl:when>
+   			<xsl:when test="matches($lang, 'en([_\-].+)?')">english</xsl:when>
+   		</xsl:choose>
+   	</xsl:variable>
+   	<xsl:if test="$trLang">
+   		<xsl:text>\usepackage[</xsl:text>
+   		<xsl:value-of select="$trLang"/>
+   		<xsl:text>]{babel}&#10;</xsl:text>
+   	</xsl:if>
    </xsl:template>
 
    <xsl:template match="dtb:head">
@@ -52,7 +84,14 @@ table
    	<xsl:text>\frontmatter&#10;</xsl:text>
    	<xsl:apply-templates select="//dtb:meta" mode="titlePage"/>
 	<xsl:text>\maketitle&#10;</xsl:text>
+	<xsl:if test="dtb:level1/dtb:list[descendant::dtb:lic]">
+		<xsl:text>\tableofcontents&#10;</xsl:text>
+	</xsl:if>
 	<xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="dtb:frontmatter/dtb:level1/dtb:list[descendant::dtb:lic]" priority="1">
+   	<xsl:message>skip!</xsl:message>
    </xsl:template>
 
 	<xsl:template match="dtb:meta[@name='dc:title' or @name='dc:Title']" mode="titlePage">
@@ -123,37 +162,37 @@ table
    </xsl:template>
 
    <xsl:template match="dtb:h1">
-   	<xsl:text>\chapter*{</xsl:text>
+   	<xsl:text>\chapter{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:h2">
-   	<xsl:text>\section*{</xsl:text>
+   	<xsl:text>\section{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:h3">
-   	<xsl:text>\subsection*{</xsl:text>
+   	<xsl:text>\subsection{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
    </xsl:template>
 
    <xsl:template match="dtb:h4">
-   	<xsl:text>\subsubsection*{</xsl:text>
+   	<xsl:text>\subsubsection{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
    </xsl:template>
 
    <xsl:template match="dtb:h5">
-   	<xsl:text>\paragraph*{</xsl:text>
+   	<xsl:text>\paragraph{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
    </xsl:template>
 
    <xsl:template match="dtb:h6">
-   	<xsl:text>\subparagraph*{</xsl:text>
+   	<xsl:text>\subparagraph{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
    </xsl:template>
@@ -274,7 +313,9 @@ table
    </xsl:template>
 
    <xsl:template match="dtb:sidebar">
+   	<xsl:text>\fbox{\parbox{10cm}{</xsl:text>
    	<xsl:apply-templates/>
+   	<xsl:text>}}&#10;&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:hd">
@@ -442,12 +483,7 @@ table
    </xsl:template>
 
    <xsl:template match="dtb:prodnote">
-   <!--
-   	<xsl:text>\fbox{\parbox{10cm}{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}}</xsl:text>
-   	-->
- 	   	<xsl:apply-templates/>
+   	<xsl:text>\marginpar{\framebox[5mm]{!}}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:rearmatter">
