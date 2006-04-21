@@ -50,8 +50,9 @@ div.annotation {font-size: 90%; border: 1px dotted gray; padding: 1em;}
 
 
 /* --- INLINES --- */
-span.noteref {vertical-align: super; font-size : 80%; border : 1px solid rgb(255,0,0); }
-span.annoref {border-bottom : 1px dashed rgb(255,0,0); }
+span.noteref, a.noteref {vertical-align: super; font-size : 80%; border : 1px solid rgb(255,0,0); }
+span.annoref, a.annoref {border-bottom : 1px dashed gray; }
+acronym, abbr {border-bottom : 1px dashed rgb(255,0,0); }
 
 
 /* --- LISTS --- */

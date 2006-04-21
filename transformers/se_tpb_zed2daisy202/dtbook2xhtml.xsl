@@ -339,7 +339,7 @@
    	 </xsl:choose>     
    	 -->
    	 <div class="caption">
-		    <xsl:copy-of select="&catts;"/>
+		    <xsl:copy-of select="&cncatts;"/>
 		    <xsl:apply-templates/>
 		 </div>
    </xsl:template>
@@ -364,7 +364,7 @@
    	 	 </xsl:when>
    	 	 <xsl:otherwise>
 		   	 <div class="imggroup">
-		       <xsl:copy-of select="&catts;"/>
+		       <xsl:copy-of select="&cncatts;"/>
 		       <xsl:apply-templates/>
 		     </div>
    	 	 </xsl:otherwise>
@@ -837,7 +837,21 @@
    </xsl:template>
 
   <xsl:template match="dtb:annoref">
-     <span class="annoref"><xsl:copy-of select="&cncatts;"/><xsl:apply-templates/></span>
+     <a class="annoref">
+     	<xsl:copy-of select="&cncatts;"/>
+     	<xsl:attribute name="href">
+			<xsl:choose>
+				<xsl:when test="@smilref">
+					<xsl:value-of select="@smilref"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>#</xsl:text>
+					<xsl:value-of select="@idref"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:attribute>			
+     	<xsl:apply-templates/>
+     </a>
    </xsl:template>
 
    <xsl:template match="dtb:*">
