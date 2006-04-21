@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- <!DOCTYPE catalog PUBLIC "-//OASIS//DTD XML Catalogs V1.1//EN" "http://www.oasis-open.org/committees/entity/release/1.1/catalog.dtd"> -->
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">
+  
+  <group> <!-- zed 2005 --> 
+    <public publicId="-//NISO//DTD dtbook 2005-1//EN" uri="type/dtbook-2005-1.xml" />
+    <public publicId="-//NISO//RNG dtbook 2005-1//EN" uri="type/dtbook-2005-1.xml" />
+    <system systemId="http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd" uri="type/dtbook-2005-1.xml" />
+    
+    <system systemId="http://www.daisy.org/z3986/2005/dtbook/" uri="type/dtbook-2005-1.xml" />
+  </group>
+  
+</catalog>
