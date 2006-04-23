@@ -92,6 +92,9 @@ public class Parameter {
         if (value == null) {
             return null;
         }
+        if (propertiesRef == null) {
+        	return value;
+        }
 	    // Expand properties in the value string     
         Matcher matcher = propertyPattern.matcher(value);
         StringBuffer sb = new StringBuffer();
