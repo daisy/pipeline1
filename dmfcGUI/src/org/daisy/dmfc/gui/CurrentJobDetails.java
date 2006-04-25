@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 
@@ -108,8 +109,7 @@ public class CurrentJobDetails extends Composite{
 		super(shell, SWT.NONE);
 		this.shell = shell;
 		
-		getListeners();
-		
+		lel = Window.getInstance().getLocalEventListener();
 		
 		shell.setText("Daisy Multi Format Converter");
 		shell.setMaximized(true);
@@ -119,7 +119,7 @@ public class CurrentJobDetails extends Composite{
    //Title
 		Label lblDaisyMFC = new Label(shell, SWT.NONE);
 		lblDaisyMFC.setForeground(ColorChoices.darkBlue);
-		lblDaisyMFC.setText("Current Job Details");
+		lblDaisyMFC.setText("Current Conversion Details");
 		lblDaisyMFC.setFont(FontChoices.fontSubTitle);
 		lblDaisyMFC.setBackground(ColorChoices.white);
 		
@@ -172,6 +172,18 @@ public class CurrentJobDetails extends Composite{
 		this.tblListTransformers = new Table(compLeft, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL  |SWT.FULL_SELECTION );
 		TransformerListTableProperties tltp = new TransformerListTableProperties(tblListTransformers, window.getInstance().getConversionChosen());
 		tltp.populateTable();
+		
+		
+		/*can I get the list in the table?
+		TableItem tableItem = tblListTransformers.getItem(1);
+		this.tableItem.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				setTime();
+			}
+		});
+		*/
+		
+		
 		
 		
 		FormData formDataLeft = new FormData();
@@ -259,19 +271,17 @@ public class CurrentJobDetails extends Composite{
 		shell.dispose();
 	}
 	
-	
-	public void getListeners(){
-		lel = Window.getInstance().getLocalEventListener();
-		System.out.println("Did I get a listener?" + lel.getMessage());
-		//double time = lel.getTotalTime();
-		System.out.println("***********************");
-		//System.out.println("The total time is: " + time);
-		
-	}
+
 	
 	public void calculateTiming(){
 		
 		
+	}
+	
+	public void setTime(){
+		txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
+		txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
+		pb.setSelection((int)(lel.getTimeLeft()/lel.getTotalTime()));
 	}
 	
 	

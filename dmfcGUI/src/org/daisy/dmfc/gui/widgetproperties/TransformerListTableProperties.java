@@ -23,16 +23,11 @@ public class TransformerListTableProperties {
 		
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
-		table.setFont(FontChoices.fontLabel);
+		//table.setFont(FontChoices.fontLabel);
 		table.setBackground(ColorChoices.white);
-		table.setBounds(0,0,300, 100);
+		//table.setBounds(0,0,300, 100);
 	
-		/*
-		TableColumn tcCheckSelected = new TableColumn (table, SWT.LEFT);
-		tcCheckSelected.setText("x");
-		tcCheckSelected.setWidth(20);
-		tcCheckSelected.setResizable(true);
-		*/
+		
 		
 		TableColumn tcConversionName = new TableColumn (table, SWT.LEFT);
 		tcConversionName.setText("Names of Transformers in Conversion");
@@ -49,18 +44,18 @@ public class TransformerListTableProperties {
 		if (listTransformerInfo!=null){
 			int count=0;
 			int size = listTransformerInfo.size();
+			System.out.println("Transformer List, how many? " + size);
 			for (int i = 0; i<size; i++){
 				TransformerHandler transHandler = (TransformerHandler)listTransformerInfo.get(i);
 				TableItem ti = new TableItem(table ,SWT.NONE,count);
 				ti.setText(new String[] {
 				transHandler.getName()});
-			
-		}
-		}
-			else{
-				TableItem tableItem = new TableItem(table ,SWT.NONE);
-				tableItem.setText(scriptHandler.getName());
 			}
+		}
+		else{
+			TableItem tableItem = new TableItem(table ,SWT.NONE);
+			tableItem.setText(scriptHandler.getName());
+		}
 				
 		
 		

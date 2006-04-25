@@ -184,16 +184,16 @@ public class Window extends Composite {
 		
 		//Just the list, ma'am
 		this.listConversion= new List(shell, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		listProperties.setProperties(listConversion, "Conversion Name");
+		listProperties.setProperties(listConversion, "Select Conversion Options(s)");
 		populateList();
 		
 		listConversion.addListener (SWT.Selection, new Listener () {
 			public void handleEvent (Event e) {
 				int selection = listConversion.getSelectionCount();
-				System.out.println ("The number selected is " + selection);
+				//System.out.println ("The number selected is " + selection);
 				if (selection==1){
 					addMultipleFiles.setEnabled(true);
-					addSingleFile.setEnabled(true);
+					
 					
 				}
 			}
@@ -206,8 +206,6 @@ public class Window extends Composite {
 				System.out.println ("The number selected is " + selection);
 				if (selection==1){
 					addMultipleFiles.setEnabled(true);
-					addSingleFile.setEnabled(true);
-					
 				}
 			}
 		});
@@ -230,6 +228,7 @@ public class Window extends Composite {
 		addButtonsComp.setLayout(rowLayout);
 		
 		
+		/*
 		this.addSingleFile = new Button (addButtonsComp, SWT.SHADOW_OUT);
 		this.addSingleFile.setEnabled(false);
 		buttonProperties.setProperties(addSingleFile, "Convert Single File");
@@ -239,12 +238,13 @@ public class Window extends Composite {
 				new ConvertSingleFile().open();
 			}
 		});
+		*/
 		
 		
 		this.addMultipleFiles = new Button (addButtonsComp, SWT.SHADOW_OUT);
 		this.addMultipleFiles.setEnabled(false);
 		
-		buttonProperties.setProperties(addMultipleFiles, "Convert Multiple Files");
+		buttonProperties.setProperties(addMultipleFiles, "Browse For Files ");
 		this.addMultipleFiles.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				getConversionSelection();
@@ -269,7 +269,7 @@ public class Window extends Composite {
 		compJobsInQueue.setLayout(rowLayout4);
 		
 		this.lblJobsInQueue2 = new Label(compJobsInQueue, SWT.NONE);
-		labelProperties.setProperties(lblJobsInQueue2, "Jobs (Conversions) in Queue");
+		labelProperties.setProperties(lblJobsInQueue2, "List of all Conversion Jobs");
 		
 		this.tblJobs2 = new Table(compJobsInQueue, SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL |SWT.SINGLE |SWT.FULL_SELECTION );
 		jqtp2 = new JobQueueTableProperties(tblJobs2);
@@ -320,7 +320,7 @@ public class Window extends Composite {
 		
 		
 		this.btnDelete = new Button (moveJobsComp, SWT.SHADOW_OUT);
-		buttonProperties.setProperties(btnDelete, "Delete");
+		buttonProperties.setProperties(btnDelete, "Remove from List");
 		this.btnDelete.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				deleteJob();
@@ -329,7 +329,7 @@ public class Window extends Composite {
 		});
 		
 		this.btnEdit = new Button (moveJobsComp, SWT.SHADOW_OUT);
-		buttonProperties.setProperties(btnEdit, "Edit");
+		buttonProperties.setProperties(btnEdit, "Change Selected Files");
 		this.btnEdit.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				editJob();
@@ -383,7 +383,7 @@ public void widgetSelected(SelectionEvent e) {
 		bottomComp.setLayout(rowLayout5);
 		
 		this.btnRun = new Button(bottomComp, SWT.SHADOW_OUT);
-		buttonProperties.setProperties(btnRun, "Run Queue");
+		buttonProperties.setProperties(btnRun, "Run All Jobs");
 		this.btnRun.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				runScript();
@@ -394,7 +394,7 @@ public void widgetSelected(SelectionEvent e) {
 		
 		
 		this.btnDetails = new Button(bottomComp, SWT.SHADOW_OUT);
-		buttonProperties.setProperties(btnDetails, " Queue Run Details");
+		buttonProperties.setProperties(btnDetails, " Conversion Details");
 		this.btnDetails.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				CurrentJobDetails.getInstance().open();
@@ -525,7 +525,7 @@ public void widgetSelected(SelectionEvent e) {
 			int focus = listConversion.getFocusIndex();
 			System.out.println("wht is the focus index? " + focus);
 			
-			this.scriptHandler= listScriptHandlers[focus + 1];
+			this.scriptHandler= listScriptHandlers[focus];
 			
 			
 		}
@@ -539,11 +539,11 @@ public void widgetSelected(SelectionEvent e) {
 		this.index=mark;
 	}
 	
-	public void moveJobUp(){
+	public void moveJobDown(){
 		if(index==cue.getSizeOfQueue()-1){
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
 					SWT.CANCEL);
-					messageBox.setMessage("Cannot move the last item in a table higher.");
+					messageBox.setMessage("Cannot move the last item to a lower position.");
 					messageBox.setText("Error:  Unable to Move Up List");
 					messageBox.open();
 		}
@@ -561,11 +561,11 @@ public void widgetSelected(SelectionEvent e) {
 		}
 	}
 	
-	public void moveJobDown(){
+	public void moveJobUp(){
 		if(index==0){
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
 					SWT.CANCEL);
-					messageBox.setMessage("Cannot move the first item in a table lower.");
+					messageBox.setMessage("Cannot move the first item to a higher position.");
 					messageBox.setText("Error:  Unable to Move Down List");
 					messageBox.open();
 		}

@@ -1,5 +1,6 @@
 package org.daisy.dmfc.gui;
 
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -128,7 +129,7 @@ public class ConvertMultipleFiles extends Composite {
 			// Title
 			Label lblDaisyMFC = new Label(shell, SWT.NONE);
 			lblDaisyMFC.setForeground(ColorChoices.darkBlue);
-			lblDaisyMFC.setText("Convert Multiple Files");
+			lblDaisyMFC.setText("Select Files to be Converted");
 			lblDaisyMFC.setFont(FontChoices.fontSubTitle);
 			lblDaisyMFC.setBackground(ColorChoices.white);
 			
@@ -182,7 +183,6 @@ public class ConvertMultipleFiles extends Composite {
 			 lblInputDocument.pack();
 			 GridData data = new GridData(SWT.LEFT | SWT.CENTER );
 			 data.horizontalSpan=1;
-			 //data.widthHint = 100;
 			 lblInputDocument.setLayoutData(data);
 			 
 			 
@@ -227,7 +227,6 @@ public class ConvertMultipleFiles extends Composite {
 						//String string = event.detail == SWT.CHECK ? "Checked" : "Selected";
 						//adds a TableItem to the arrayList
 						al.add(event.item);
-						
 					}
 				});
 			 
@@ -243,6 +242,7 @@ public class ConvertMultipleFiles extends Composite {
 			 formDataDocInput.top = new FormAttachment(compConversionChosen, 10);
 			 formDataDocInput.left = new FormAttachment(17, 10);
 			 formDataDocInput.bottom = new FormAttachment(40, 10);
+			 //formDataDocInput.bottom = new FormAttachment(70, 10);
 			 formDataDocInput.right = new FormAttachment(75,10);
 			 compInputFields.setLayoutData(formDataDocInput);
 			 
@@ -271,24 +271,7 @@ public class ConvertMultipleFiles extends Composite {
 			 gridLay.numColumns = 2;
 			 compOutputFields.setLayout(gridLay);
 			 
-          //Text field
-			 txtOutputDoc=new Text(compOutputFields, SWT.BORDER);
-			 textProperties.setProperties(txtOutputDoc, null);
-			 GridData dataInput = new GridData(GridData.FILL_HORIZONTAL);
-			 txtOutputDoc.setLayoutData(dataInput);
-			 
-			 
-          //Browse Button
-			 btnBrowseOutput = new Button(compOutputFields, SWT.BORDER);
-			 buttonProperties.setProperties(btnBrowseOutput, "Browse");
-			 GridData dataBrowse = new GridData();
-			 btnBrowseOutput.setLayoutData(dataBrowse); 
-			 this.btnBrowseOutput.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						setOutputPathSelected();
-						//getFileTypesForScriptHandler();
-					}
-				});
+         
 			
 		// RadioButtons
 			 Composite compRadioButtons = new Composite(compOutputFields, SWT.BORDER);
@@ -305,6 +288,7 @@ public class ConvertMultipleFiles extends Composite {
 			 btnRadio1.setSelection(true);
 			 this.btnRadio1.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
+						btnBrowseOutput.setEnabled(false);
 						setOutputPath();
 					}
 				});
@@ -314,15 +298,36 @@ public class ConvertMultipleFiles extends Composite {
 			 radioButtonProperties.setProperties(btnRadio2, "Subfolder of Selected Folder");
 			 this.btnRadio2.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
+						btnBrowseOutput.setEnabled(true);
 						resetOutputPath();
 					}
 				});
 			 
-			 
 			 GridData dataRadio = new GridData();
 			 dataRadio.horizontalSpan = 2;
 			 compRadioButtons.setLayoutData(dataRadio);
-			
+		
+			 //Text field
+			 txtOutputDoc=new Text(compOutputFields, SWT.BORDER);
+			 textProperties.setProperties(txtOutputDoc, null);
+			 GridData dataInput = new GridData(GridData.FILL_HORIZONTAL);
+			 txtOutputDoc.setLayoutData(dataInput);
+			 
+			 
+          //Browse Button
+			 btnBrowseOutput = new Button(compOutputFields, SWT.BORDER);
+			 btnBrowseOutput.setEnabled(false);
+			 buttonProperties.setProperties(btnBrowseOutput, "Browse");
+			 GridData dataBrowse = new GridData();
+			 btnBrowseOutput.setLayoutData(dataBrowse); 
+			 this.btnBrowseOutput.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						setOutputPathSelected();
+						
+						//getFileTypesForScriptHandler();
+					}
+				});
+			 
 			 
 			 FormData formDataOutput = new FormData();
 			 formDataOutput.top = new FormAttachment(lblOutputDocument, 10);
@@ -343,6 +348,7 @@ public class ConvertMultipleFiles extends Composite {
 			 buttonProperties.setProperties(btnOK, "OK");
 			 btnOK.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
+						
 						sendJobInfoToMain();
 						
 					}
@@ -381,8 +387,7 @@ public class ConvertMultipleFiles extends Composite {
 	//calls from listeners
 	
 	public void populateCompatibleFilesTable(){
-		cftp.populateTable(new File(dirSelected));
-		
+		cftp.populateTable(new File(dirSelected));	
 	}
 	
 	
@@ -403,9 +408,12 @@ public class ConvertMultipleFiles extends Composite {
 		} 
 		else {
 			
+			
 			//all use the same conversion
 			//Create all job objects from each input file chosen
-
+			
+			outputPath = txtOutputDoc.getText();
+			
 			Iterator it = al.iterator();
 			while (it.hasNext()){
 				Job job = new Job();
@@ -415,11 +423,10 @@ public class ConvertMultipleFiles extends Composite {
 				job.setScript(scriptHandler);
 				job.setStatus(Status.WAITING);
 				Window.getInstance().addToQueue(job);
-				
 			
-		}
+			}
 			dispose();
-	}
+		}
 	}
 	
 	
@@ -498,8 +505,6 @@ public class ConvertMultipleFiles extends Composite {
 				strSubfolderOfOutputFolder =outputPath + File.separator + lastDir + File.separator;
 				txtOutputDoc.setText(strSubfolderOfOutputFolder);
 				
-				
-				//System.out.println("outputPath Selected  " + outputPath);
 				
 			}
 		}

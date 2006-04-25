@@ -45,17 +45,17 @@ public class JobQueueTableProperties {
 		tcStatus.setResizable(true);
 	
 		tcJobs = new TableColumn (table, SWT.LEFT);
-		tcJobs.setText("Conversion Name");
+		tcJobs.setText("Types of Conversion/s");
 		tcJobs.setWidth(175);
 		tcJobs.setResizable(true);
 	
 		tcInputFile = new TableColumn (table, SWT.LEFT);
-		tcInputFile.setText("Input File");
+		tcInputFile.setText("Input File Name");
 		tcInputFile.setWidth(200);
 		tcInputFile.setResizable(true);
 		
 		tcOutputFile = new TableColumn (table, SWT.LEFT);
-		tcOutputFile.setText("Output File");
+		tcOutputFile.setText("Output File Name");
 		tcOutputFile.setWidth(200);
 		tcOutputFile.setResizable(false);
 	
@@ -69,10 +69,10 @@ public class JobQueueTableProperties {
 			Job jobItem = (Job)it.next();
 			TableItem ti = new TableItem(table ,SWT.NONE,0);
 			ti.setText(new String[] {
-			String.valueOf(jobItem.getStatus()),
+			getStatus(jobItem.getStatus()),
 			jobItem.getScript().getName(),
-			jobItem.getInputFile().getName(),
-			jobItem.getOutputFile().getName()});
+			jobItem.getInputFile().getPath(),
+			jobItem.getOutputFile().getPath()});
 		
 			
 		}
@@ -89,14 +89,36 @@ public class JobQueueTableProperties {
 				Job jobItem= (Job)llJobs.get(i);
 				TableItem ti = new TableItem(table ,SWT.NONE,count);
 				ti.setText(new String[] {
-				String.valueOf(jobItem.getStatus()),
+				getStatus(jobItem.getStatus()),
 				jobItem.getScript().getName(),
-				jobItem.getInputFile().getName(),
-				jobItem.getOutputFile().getName()});
+				jobItem.getInputFile().getPath(),
+				jobItem.getOutputFile().getPath()});
 				count++;
 			}	
 		
 				
 	}
+		public String getStatus(int status){
+			String strStatus = "";
+			switch (status){
+				case 1:
+					strStatus= "Waiting";
+					break;
+				case 2:
+					strStatus = "In Progress";
+					break;
+				case 3:
+					strStatus = "Completed";
+					break;
+				case 4:
+					strStatus= "Failed";
+					break;
+				default:
+					//throw ThisShouldNeverHappenException
+					break;
+			}
+			return strStatus;
+				
+		}
 	
 }
