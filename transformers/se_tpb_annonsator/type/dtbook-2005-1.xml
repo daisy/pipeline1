@@ -7,6 +7,7 @@
 	<attributeAfter>after</attributeAfter>
 	<addAttributes>true</addAttributes>
 
+	<!-- performed in speech generator
 	<rule match="dtb:pagenum[@page='front']">
 		<lang lang="sv">
 			<before>Sidan (romerska siffror)</before>
@@ -15,7 +16,9 @@
 			<before>Page (Roman Numeral)</before>
 		</lang>
 	</rule>
+	-->
 	
+	<!-- performed in speech generator
 	<rule match="dtb:pagenum[@page='normal']">
 		<lang lang="sv">
 			<before>Sidan</before>
@@ -24,7 +27,9 @@
 			<before>Page</before>
 		</lang>
 	</rule>
+	-->
 
+	<!-- performed in speech generator	
 	<rule match="dtb:noteref">
 		<lang lang="sv">
 			<before>Notreferens.</before>
@@ -33,6 +38,7 @@
 			<before>Note reference.</before>
 		</lang>
 	</rule>
+	-->
 	
 	<rule match="dtb:note">
 		<lang lang="sv">
@@ -54,6 +60,17 @@
 		</lang>
 	</rule>
 
+	<rule match="dtb:imggroup/dtb:prodnote">
+		<lang lang="sv">
+			<before>Bildbeskrivning.</before>
+			<after>Slut på bildbeskrivning.</after>
+		</lang>
+		<lang lang="en">
+			<before>Image description.</before>
+			<after>End of image description.</after>
+		</lang>
+	</rule>
+
 	<rule match="dtb:sidebar">
 		<lang lang="sv">
 			<before>Parallell text.</before>
@@ -62,6 +79,17 @@
 		<lang lang="en">
 			<before>Side bar.</before>
 			<after>End of side bar.</after>
+		</lang>
+	</rule>
+
+	<rule match="dtb:poem">
+		<lang lang="sv">
+			<before>En dikt följer.</before>
+			<after>Slut på dikten.</after>
+		</lang>
+		<lang lang="en">
+			<before>A poem follows.</before>
+			<after>End of poem.</after>
 		</lang>
 	</rule>
 

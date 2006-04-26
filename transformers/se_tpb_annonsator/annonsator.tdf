@@ -5,7 +5,7 @@
 	<classname>se_tpb_annonsator.Annonsator</classname>
 	<license>unknown</license>
 	<author>Linus Ericson and Martin Blomberg</author>
-	<support>No</support>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	
 	<parameters>
 
