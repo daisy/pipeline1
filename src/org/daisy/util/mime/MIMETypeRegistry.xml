@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mimeRegistry [
+  <!ELEMENT mimeRegistry (directory+)>
+  <!ELEMENT directory (type*)>
+  <!ATTLIST directory 
+	name CDATA #REQUIRED
+  >	  
+  <!ELEMENT type EMPTY>
+  <!ATTLIST type
+	id ID #REQUIRED
+	name CDATA #REQUIRED
+	parentTypes IDREFS #IMPLIED
+	aliasTypes IDREFS #IMPLIED	  
+	namePatterns CDATA #IMPLIED
+	definition CDATA #IMPLIED 
+  >
+]>
+
+<mimeRegistry>
+	<!-- 
+		last edit: mgylling 20060422
+		http://www.w3schools.com/media/media_mimeref.asp
+		http://www.iana.org/assignments/media-types/
+	-->	
+		
+	<directory name="application">
+		<type id="rtf" name="application/rtf" namePatterns="*.rtf"/>
+		<type id="pdf" name="application/pdf" namePatterns="*.pdf"/>
+		<type id="xml" name="application/xml" aliasTypes="textxml" namePatterns="*.xml"/>
+		<type id="axepe" name="application/xml-external-parsed-entity" aliasTypes="txepe"/>
+		<type id="axdtd" name="application/xml-dtd" namePatterns="*.dtd"/>		
+		<type id="xslt" name="application/xslt+xml" parentTypes="xml" namePatterns="*.xsl *.xslt"/>		
+		<type id="smil" name="application/smil" aliasTypes="smilx" parentTypes="xml" namePatterns="*.smil *.smi *.sml"/>
+		<type id="smilx" name="application/smil+xml" aliasTypes="smil" parentTypes="xml" namePatterns="*.smil *.smi *.sml"/>
+		<type id="xhtml" name="application/xhtml+xml" parentTypes="xml" aliasTypes="texthtml" namePatterns="*.xhtml *.html *.htm"/>	
+		<type id="msword" name="application/msword" namePatterns="*.doc"/>
+		<type id="rnc" name="application/relax-ng-compact-syntax" namePatterns="*.rnc"/>
+		<type id="plucker" name="application/prs.plucker"/>
+		<type id="latex" name="application/x-latex" namePatterns="*.latex"/>
+		<type id="ex" name="application/x-tex" namePatterns="*.tex"/>
+		<type id="texi" name="application/x-texinfo" namePatterns="*.texi *.texinfo"/>
+		<!-- archives -->
+		<type id="zip" name="application/zip"/>
+		<type id="z" name="application/x-compress" namePatterns="*.z"/>
+		<type id="tgz" name="application/x-compressed" 	namePatterns="*.tgz"/>
+		<type id="ps" name="application/postscript" namePatterns="*.ai *.eps *.ps"/>
+		<type id="gtar" name="application/x-gtar" namePatterns="*.gtar"/>
+		<type id="gz" name="application/x-gzip" namePatterns="*.gz"/>
+		<type id="sit" name="application/x-stuffit" namePatterns="*.sit"/>
+		<type id="tar" name="application/x-tar" namePatterns="*.tar"/>
+		<!-- daisy 2.02 -->
+		<type id="d202fileset" name="application/x-dtbfilesetd202+xml" definition="collective mime for a Daisy 2.02 DTB fileset"/>	
+		<type id="d202ncc" name="application/x-dtbd202ncc+xml" parentTypes="xhtml" namePatterns="ncc.htm*"/>
+		<type id="d202mastersmil" name="application/x-dtbd202msmil+xml" parentTypes="smil" namePatterns="master.smil"/>
+		<type id="d202smil" name="application/x-dtbd202smil+xml" parentTypes="smil" namePatterns="*.smil"/>
+		<type id="d202text" name="application/x-dtbd202xhtml+xml" parentTypes="xhtml" aliasTypes="xhtml" namePatterns="*.html"/>		
+		<!-- Z3986-2005 -->
+		<type id="z3986fileset" name="application/x-dtbfilesetz3986+xml" definition="collective mime for a Z3986 DTB fileset"/>			
+		<type id="nimasfileset" name="application/x-nimasfileset+xml" definition="collective mime for a NIMAS fileset"/>						
+		<type id="z3986resource" name="application/x-dtbresource+xml" parentTypes="xml"/>
+		<type id="z3986dtbook" name="application/x-dtbook+xml" parentTypes="xml"/>
+		<type id="z3986ncx" name="application/x-dtbncx+xml" parentTypes="xml"/>
+	</directory>
+
+	<directory name="audio">
+		<type id="m3u" name="audio/x-mpegurl"/>
+		<type id="pls" name="audio/x-scpls"/>
+		<type id="mp4" name="audio/mpeg4-generic" definition="used for AAC in z3986-2005" aliasTypes="mp4a"/>		
+		<type id="mp4a" name="audio/MP4A-LATM" definition="used for AAC in z3986-2002" aliasTypes="mp4"/>		
+		<type id="a3gpp" name="audio/3gpp"/>					
+		<type id="mpeg" name="audio/mpeg" aliasTypes="xmp3" namePatterns="*.mp3"/>
+		<type id="mpeg2" name="audio/mpeg2" namePatterns="*.mp2"/>
+		<type id="wav" name="audio/x-wav" namePatterns="*.wav"/>
+		<type id="xmpeg" name="audio/x-mpeg"/>
+		<type id="xmp3" name="audio/x-mp3" aliasTypes="mpeg" namePatterns="*.mp3"/>
+		<type id="ldabadpcm" name="audio/x-ldabadpcm" definition="proprietary version non compatible with standard ADPCM"/>		
+		<type id="aiff"	name="audio/x-aiff" namePatterns="*.aif *.aifc *.aiff"/>
+		<type id="realaudio" name="audio/x-pn-realaudio" namePatterns="*.ra *.ram"/>			
+	</directory>
+
+	<directory name="image">
+		<type id="jpg" name="image/jpeg" namePatterns="*.jpe *.jpeg *.jpg"/>
+		<type id="gif" name="image/gif" namePatterns="*.gif"/>
+		<type id="png" name="image/png" namePatterns="*.png"/>
+		<type id="svg" name="image/svg+xml" namePatterns="*.svg"/>
+		<type id="bmp" name="image/bmp" namePatterns="*.bmp"/>
+		<type id="tiff" name="image/tiff" namePatterns="*.tif *.tiff"/>
+		<type id="ico" name="image/x-icon" namePatterns="*.ico"/>
+	</directory>
+
+	<directory name="message"></directory>
+
+	<directory name="model"></directory>
+
+	<directory name="multipart"></directory>
+
+	<directory name="text">
+		<type id="plain" name="text/plain"/>
+		<type id="texthtml" name="text/html" namePatterns="*.htm *.html *.stm" aliasTypes="xhtml" parentTypes="xml sgml"/>
+		<type id="textxml" name="text/xml" aliasTypes="xml"/>
+		<type id="css" name="text/css"/>
+		<type id="sgml" name="text/sgml"/>
+		<type id="txepe" name="text/xml-external-parsed-entity" aliasTypes="axepe"/>
+	</directory>
+
+	<directory name="video">
+		<type id="vmpg" name="video/mpeg" namePatterns="*.mp2 *.mpa *.mpe*.mpeg *.mpg *.mpv2"/>
+		<type id="qt" name="video/quicktime" namePatterns="*.mov *.qt"/>
+		<type id="vasf" name="video/x-ms-asf" namePatterns="*.asf *.asr *.asx"/>				
+	</directory>
+	
+	<directory name="other">
+		<type id="string" name="string"/>
+		<type id="enum" name="enum" parentTypes="string"/>
+	</directory>
+	
+</mimeRegistry>
