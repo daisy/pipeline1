@@ -4,7 +4,7 @@
 	<classname>ca_cnib_rtf2dtbook.RTF2DTBook</classname>
 	<license>unknown</license>
 	<author>Brandon Nelson</author>
-	<support>No</support>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	
 	<parameters>
 
@@ -21,23 +21,13 @@
 		</parameter>		
 		
 		<parameter type="string">
-			<name>template</name>			
-			<value>${transformer_dir}/dtbook120.majixt</value>
-		</parameter>		
-		
-		<parameter type="string">
-			<name>stylemap</name>			
-			<value>${transformer_dir}/dtbook120.sty</value>
+			<name>python</name>			
+			<value>${transformer_dir}/rtf2xml.py</value>
 		</parameter>
 		
 		<parameter type="string">
-			<name>tagmap</name>			
-			<value>${transformer_dir}/dtbook120.tdef</value>
-		</parameter>		
-		
-		<parameter type="string">
 			<name>stylesheet</name>			
-			<value>${transformer_dir}/cleanup.xsl</value>
+			<value>${transformer_dir}/xml2dtbook.xsl</value>
 		</parameter>
 		
 		<parameter type="string">
