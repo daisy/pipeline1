@@ -54,6 +54,7 @@ public class Chain {
     Collection chain = new ArrayList();
     String factoryImpl = null;
     EntityResolver resolver = null;
+    XMLReader reader = null;
     
     /**
      * Constructs a new XSLT chain. This constructor does noth specify what
@@ -93,6 +94,13 @@ public class Chain {
     }
     
     /**
+     * mg: force the instance to use this xmlreader
+     */
+    public void setXMLReader(XMLReader xr) {
+    	this.reader = xr;
+    }
+    
+    /**
      * Applies the stylesheet chain to an XML doucment.
      * @param xml the XML document
      * @param result the result of the transformation chain
@@ -102,12 +110,14 @@ public class Chain {
         if (chain.size() == 0) {
             throw new XSLTException("No stylesheets to apply.");
         }
-        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        parserFactory.setNamespaceAware(true);
-                
         try {
-            SAXParser parser = parserFactory.newSAXParser();
-            XMLReader reader = parser.getXMLReader();
+        	if(reader == null) {
+        		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        		parserFactory.setNamespaceAware(true);                     		
+        		SAXParser parser = parserFactory.newSAXParser();
+        		reader = parser.getXMLReader();
+        	}
+        	
             if (resolver != null) {
                 reader.setEntityResolver(resolver);
             }
@@ -127,7 +137,7 @@ public class Chain {
             XMLFilter parentFilter = null;
             for (Iterator it = chain.iterator(); it.hasNext(); ) {
                 Source xsltSource = (Source)it.next();
-                XMLFilter filter = transformerFactory.newXMLFilter(xsltSource);
+                XMLFilter filter = transformerFactory.newXMLFilter(xsltSource);                
                 if (resolver != null) {
                     filter.setEntityResolver(resolver);
                 }
@@ -174,7 +184,7 @@ public class Chain {
         }        
     }
     
-    public static InputSource saxSourceToInputSource(SAXSource source) {
+    public static InputSource saxSourceToInputSource(SAXSource source) {    	
         return source.getInputSource();
     }
     
