@@ -13,7 +13,5 @@
 	<classpathentry kind="lib" path="lib/jsr173_1.0_api.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-lgpl-2.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/saxon8-dom.jar"/>
-	<classpathentry kind="lib" path="lib/majix.jar"/>
-	<classpathentry kind="lib" path="lib/xp.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
