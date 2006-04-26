@@ -33,6 +33,7 @@
 	<!-- XML -->
 	<type id="xml" name="application/xml"/>
 	<type id="xhtml" name="application/xhtml+xml" parentType="xml"/>
+	<type id="xslt" name="application/xslt+xml" parentType="xml" />		
 
 	<!-- DAISY 2.02 -->
 	<type id="daisy2.02" name="application/x-dtbfileset-2.02+xml" definition="The navigation control center member of the DAISY 2.02 fileset."/>	
@@ -46,5 +47,8 @@
 	<type id="ncx" name="application/x-dtbncx+xml" parentType="xml"/>
 	<type id="smil" name="application/smil" parentType="xml"/> 
 	<type id="dtbresource" name="application/x-dtbresource+xml" parentType="xml"/>	
+	
+	<!-- binary -->
+	<type id="pdf" name="application/pdf"/>
 
 </registry>
