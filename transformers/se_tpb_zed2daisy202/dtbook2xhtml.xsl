@@ -123,39 +123,60 @@
 	</xsl:template>
 
    <xsl:template match="dtb:level1">
-     <div class="level1">
-       <xsl:copy-of select="&cncatts;"/>  
+     <div>
+       <xsl:copy-of select="&catts;"/>  
+       <xsl:if test="not(@class)">
+       	<xsl:attribute name="class">level1</xsl:attribute>
+       </xsl:if>
        <xsl:apply-templates/></div>
    </xsl:template>
    <xsl:template match="dtb:level2">
-     <div class="level2">
-       <xsl:copy-of select="&cncatts;"/>  
+     <div>
+       <xsl:copy-of select="&catts;"/>  
+       <xsl:if test="not(@class)">
+       	<xsl:attribute name="class">level2</xsl:attribute>
+       </xsl:if>
        <xsl:apply-templates/></div>
    </xsl:template>
    <xsl:template match="dtb:level3">
-     <div class="level3">
-       <xsl:copy-of select="&cncatts;"/>  
+     <div>
+       <xsl:copy-of select="&catts;"/>  
+       <xsl:if test="not(@class)">
+       	<xsl:attribute name="class">level3</xsl:attribute>
+       </xsl:if>
        <xsl:apply-templates/></div>
    </xsl:template>
    <xsl:template match="dtb:level4">
-     <div class="level4">
-       <xsl:copy-of select="&cncatts;"/>  
+     <div>
+       <xsl:copy-of select="&catts;"/>  
+       <xsl:if test="not(@class)">
+       	<xsl:attribute name="class">level4</xsl:attribute>
+       </xsl:if>
        <xsl:apply-templates/></div>
    </xsl:template>
    <xsl:template match="dtb:level5">
-     <div class="level5">
-       <xsl:copy-of select="&cncatts;"/>  
+     <div>
+       <xsl:copy-of select="&catts;"/>  
+       <xsl:if test="not(@class)">
+       	<xsl:attribute name="class">level5</xsl:attribute>
+       </xsl:if>
      <xsl:apply-templates/></div>
    </xsl:template>
    <xsl:template match="dtb:level6">
-     <div class="level6">
-       <xsl:copy-of select="&cncatts;"/>    
+     <div>
+       <xsl:copy-of select="&catts;"/>    
+       <xsl:if test="not(@class)">
+       	<xsl:attribute name="class">level6</xsl:attribute>
+       </xsl:if>
        <xsl:apply-templates/></div>
    </xsl:template>
 
    <xsl:template match="dtb:level">
-     <div class="level">
-        <xsl:copy-of select="&cncatts;"/>
+     <div>
+        <xsl:copy-of select="&catts;"/>
+        <xsl:if test="not(@class)">
+       	<xsl:attribute name="class">level</xsl:attribute>
+       </xsl:if>
        <xsl:apply-templates/></div>
    </xsl:template>
 
