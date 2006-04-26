@@ -84,10 +84,12 @@ blockquote {margin-left: 10em; font-size: 90%; font-style: italic; margin-bottom
 
 
 /* --- POEM --- */
-div.poem {margin-bottom: 2em; margin-top: 2em; margin-left: 4em; }
+div.poem {font-family:bookman, times, serif; font-weight:700; margin-bottom: 2em; margin-top: 2em; margin-left: 4em; }
+div.linegroup {margin-bottom: 1em; margin-top: 1em; margin-left: 4em; }
 .linenum {margin-right: 2em;}
-div.author {font-weight: 700;}
+div.author {font-weight: 700; font-style:italic;}
 .dateline {font-size: 80%; font-style: italic; }
 .byline {margin-top: 1em; margin-bottom: 1em; }
 div.title {font-weight: 700; font-size: 125%; margin-top: 2em; }
 div.poem div.hd {font-size: 100%; font-weight: bold; margin-top: 1em; margin-bottom: 0.3em;}
+div.poem span.page-normal {font-family:arial, verdana,sans-serif; display: block; text-align: right; margin-right: 2em; font-weight: bold; border-top: solid 1px #E5E5E5; padding-top: 2em; margin-top: 3em;}
