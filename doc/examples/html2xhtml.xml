@@ -1,0 +1,19 @@
+<taskScript version="1.0">
+	<name>HTML to XHTML converter</name>
+	<description>converts HTML to XHTML</description>
+	
+	<task name="int_daisy_html2xhtml" interactive="false">
+
+		<parameter>
+			<name>input</name>
+			<value>D:/InputStreamReader.html</value>						
+		</parameter>
+					
+		<parameter id="id1">
+			<name>outDir</name>
+			<value>d:/xhtmlout/</value>
+		</parameter>		
+				
+	</task>
+
+</taskScript>
