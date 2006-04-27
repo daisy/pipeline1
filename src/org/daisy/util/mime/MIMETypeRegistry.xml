@@ -112,6 +112,7 @@
 	<directory name="other">
 		<type id="string" name="string"/>
 		<type id="enum" name="enum" parentTypes="string"/>
+		<type id="anon" name="anonymous" />
 	</directory>
 	
 </mimeRegistry>
