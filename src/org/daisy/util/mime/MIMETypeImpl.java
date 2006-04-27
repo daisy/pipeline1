@@ -48,9 +48,9 @@ public class MIMETypeImpl implements MIMEType {
 	MIMETypeImpl(String mime, String id, String aliases, String parents, String namePatterns) {
 		this.mimeString = mime;
 		this.registryId = id;
-		if(aliases.length()>0) this.aliasIdrefs = aliases; // an IDREFS string or ""
-		if(parents.length()>0) this.parentIdrefs = parents; // an IDREFS string or ""
-		if(namePatterns.length()>0) this.namePatterns = namePatterns; // a space separated string or ""
+		if(aliases!=null||aliases.length()>0) this.aliasIdrefs = aliases; // an IDREFS string or ""
+		if(parents!=null||parents.length()>0) this.parentIdrefs = parents; // an IDREFS string or ""
+		if(namePatterns!=null||namePatterns.length()>0) this.namePatterns = namePatterns; // a space separated string or ""
 	}
 
 	public Map getAncestors() throws MIMETypeException {

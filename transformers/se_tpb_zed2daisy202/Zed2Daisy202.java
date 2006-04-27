@@ -42,16 +42,16 @@ import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
-import org.daisy.util.fileset.AudioFile;
-import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetException;
-import org.daisy.util.fileset.FilesetFile;
-import org.daisy.util.fileset.FilesetImpl;
-import org.daisy.util.fileset.ImageFile;
-import org.daisy.util.fileset.OpfFile;
-import org.daisy.util.fileset.Z3986DtbookFile;
-import org.daisy.util.fileset.Z3986NcxFile;
-import org.daisy.util.fileset.Z3986SmilFile;
+import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.interfaces.audio.AudioFile;
+import org.daisy.util.fileset.interfaces.image.ImageFile;
+import org.daisy.util.fileset.interfaces.xml.OpfFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986NcxFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986SmilFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
@@ -130,7 +130,7 @@ public class Zed2Daisy202 extends Transformer {
                 } else if (fsf instanceof ImageFile) {
                     filesToCopy.add(fsf);
                 } else {
-                    System.err.println("ignore: " + fsf.getName());
+                    System.err.println("ignore: " + fsf.getFile().getName());
                 }
             }
                         
@@ -251,7 +251,7 @@ public class Zed2Daisy202 extends Transformer {
         for (Iterator it = spineItems.iterator(); it.hasNext(); ) {
             smilCount++;
             Z3986SmilFile smilZed = (Z3986SmilFile)it.next();
-            File smil202 = new File(outputDir, smilZed.getName());
+            File smil202 = new File(outputDir, smilZed.getFile().getName());
             Object[] params = {new Integer(smilNum), new Integer(smilCount), smil202.getName()};
             this.sendMessage(Level.INFO, i18n("SMIL", params));            
             
@@ -278,14 +278,15 @@ public class Zed2Daisy202 extends Transformer {
      * @throws CatalogExceptionNotRecoverable
      * @throws XSLTException
      * @throws IOException
+     * @throws FilesetException 
      */
-    private void createXhtml(File dtbook, OpfFile opf) throws CatalogExceptionNotRecoverable, XSLTException, IOException {
+    private void createXhtml(File dtbook, OpfFile opf) throws CatalogExceptionNotRecoverable, XSLTException, IOException, FilesetException {
         File xhtmlOut = new File(outputDir, contentXHTML);
         File xsltFile = new File(this.getTransformerDirectory(), "dtbook2xhtml.xsl");
         
-        Iterator it = opf.getSpineIterator();
+        Iterator it = opf.getSpineItems().iterator();
         URI uri = (URI)it.next();
-        uri = opf.getParentFile().toURI().relativize(uri);
+        uri = opf.getFile().getParentFile().toURI().relativize(uri);
         
         Map parameters = new HashMap();
         parameters.put("filter_word", "yes");
@@ -312,7 +313,7 @@ public class Zed2Daisy202 extends Transformer {
         for (Iterator it = files.iterator(); it.hasNext(); ) {
             fileCount++;
             FilesetFile fsf = (FilesetFile)it.next();
-            Object[] params = {new Integer(fileNum), new Integer(fileCount), fsf.getName()};
+            Object[] params = {new Integer(fileNum), new Integer(fileCount), fsf.getFile().getName()};
             this.sendMessage(Level.INFO, i18n("COPYING_FILE", params));
             URI relativeURI = fileset.getRelativeURI(fsf);
             File out = new File(outputDir.toURI().resolve(relativeURI));

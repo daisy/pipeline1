@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.daisy.util.execution.ProgressObserver;
-import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.interfaces.Fileset;
 
 /**
  * Okej. Vad ska hända här?
@@ -61,7 +61,7 @@ public class FileBunchCopy {
 	 */
 	public static void copyFiles(Fileset fileset, File outputDir, Collection uris, ProgressObserver observer, boolean createDummies) throws IOException {
         int fileNum = 1;
-        URI manifestDirURI = fileset.getManifestMember().getParentFile().toURI();
+        URI manifestDirURI = fileset.getManifestMember().getFile().getParentFile().toURI();
         for (Iterator it = uris.iterator(); it.hasNext(); fileNum++) {
             URI uri = (URI)it.next();
             URI relativeURI = manifestDirURI.relativize(uri);
@@ -72,7 +72,8 @@ public class FileBunchCopy {
                 }
                 in = DummyFile.create(in.getName());
             }
-            File out = new File(outputDir.toURI().resolve(relativeURI));
+            //File out = new File(outputDir.toURI().resolve(relativeURI));
+            File out = new File(relativeURI.resolve(outputDir.toURI()));
             FileUtils.copy(in, out);
             if (observer != null) {
                 observer.reportProgress((double)fileNum/uris.size());
@@ -118,4 +119,6 @@ public class FileBunchCopy {
 	public static void copyFiles(File inputBaseDir, File outputBaseDir, Set paths) throws IOException {
 		copyFiles(inputBaseDir, outputBaseDir, paths, null, false);
 	}
+	
+	
 }

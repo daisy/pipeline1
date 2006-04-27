@@ -41,9 +41,9 @@ import org.daisy.util.file.FileBunchCopy;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
-import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetException;
-import org.daisy.util.fileset.FilesetImpl;
+import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 
@@ -172,7 +172,7 @@ public class XMLDetection extends Transformer {
                 Collection filesToCopy = new HashSet();
 	            Fileset fileset = new FilesetImpl(FilenameOrFileURI.toURI(input), false, true);
 	            filesToCopy.addAll(fileset.getLocalMembersURIs());
-	            filesToCopy.remove(fileset.getManifestMember().toURI());
+	            filesToCopy.remove(fileset.getManifestMember().getFile().toURI());
 	            if (fileset.hadErrors()) {
 	                filesToCopy.addAll(fileset.getMissingURIs());
 	            }

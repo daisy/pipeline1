@@ -8,29 +8,30 @@ import java.util.LinkedHashSet;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.validation.ValidationException;
-import org.daisy.util.fileset.AudioFile;
-import org.daisy.util.fileset.D202NccFile;
-import org.daisy.util.fileset.D202SmilFile;
-import org.daisy.util.fileset.D202TextualContentFile;
-import org.daisy.util.fileset.FilesetFile;
-import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetException;
-import org.daisy.util.fileset.FilesetImpl;
-import org.daisy.util.fileset.Mp3File;
-import org.daisy.util.fileset.OpfFile;
-import org.daisy.util.fileset.Regex;
-import org.daisy.util.fileset.SmilFile;
-import org.daisy.util.fileset.TextualContentFile;
-import org.daisy.util.fileset.XmlFile;
-import org.daisy.util.fileset.Z3986DtbookFile;
-import org.daisy.util.fileset.Z3986NcxFile;
-import org.daisy.util.fileset.Z3986ResourceFile;
-import org.daisy.util.fileset.Z3986SmilFile;
 import org.daisy.util.xml.validation.RelaxngSchematronValidator;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.daisy.util.fileset.FilesetType;
+import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.interfaces.audio.AudioFile;
+import org.daisy.util.fileset.interfaces.audio.Mp3File;
+import org.daisy.util.fileset.interfaces.xml.OpfFile;
+import org.daisy.util.fileset.interfaces.xml.SmilFile;
+import org.daisy.util.fileset.interfaces.xml.TextualContentFile;
+import org.daisy.util.fileset.interfaces.xml.XmlFile;
+import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
+import org.daisy.util.fileset.interfaces.xml.d202.D202SmilFile;
+import org.daisy.util.fileset.interfaces.xml.d202.D202TextualContentFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986NcxFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986OpfFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986ResourceFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986SmilFile;
+import org.daisy.util.fileset.util.FilesetRegex;
 
 /**
  * @author Markus Gylling
@@ -49,7 +50,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 	private FilesetType filesetType;	
 	private FilesetFile member;		
 	private Fileset fileset = null;	
-	private Regex regex = Regex.getInstance();
+	private FilesetRegex regex = FilesetRegex.getInstance();
 	//for use in interdoc link checking
 	private URI cache = null;
 	private XmlFile referencedMember = null;	
@@ -168,11 +169,10 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 		long calculatedTotalTimeMillis = 0;
 		SmilClock statedTotalTime = null;
 		
-		Iterator iter = fileset.getLocalMembersURIIterator();				
+		Iterator iter = fileset.getLocalMembers().iterator();				
 		while(iter.hasNext()) {			
-			member = fileset.getLocalMember((URI)iter.next());	
-			try {
-				
+			member = (FilesetFile)iter.next();	
+			try {				
 				//do interdoc link checks for all xml files
 				if(member instanceof XmlFile) {
 					if (doInterDocLinkScouting) {
@@ -186,7 +186,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 					statedTotalTime = ncc.getStatedDuration();
 					//check the heading hirearchy
 					if (!ncc.hasCorrectHeadingSequence()){
-						errors.add(new FilesetException("incorrect heading hierarchy in "+ncc.getName()));
+						errors.add(new FilesetException("incorrect heading hierarchy in "+ncc.getFile().getName()));
 						hasErrors = true;
 					}
 					if(doRelaxNgScouting) {
@@ -201,7 +201,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 						if(!z39ResRngSchValidator.isValid((File)member)) hasErrors = true;
 					}				
 				} else if (member instanceof OpfFile){
-					OpfFile opf = (OpfFile) member;
+					Z3986OpfFile opf = (Z3986OpfFile) member;
 					//get the totaltime for check after while loop
 					statedTotalTime = opf.getStatedDuration();
 					if(doRelaxNgScouting) {
@@ -226,7 +226,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 							//test timeInThisSmil
 							if (smil.getStatedDuration()!=null) {							
 								if(smil.getCalculatedDuration().secondsValueRounded() != smil.getStatedDuration().secondsValue()) {
-									errors.add(new FilesetException("expected duration "+smil.getCalculatedDuration().secondsValueRounded()+" but found "+smil.getStatedDuration().secondsValue()+ " in "+smil.getName()));
+									errors.add(new FilesetException("expected duration "+smil.getCalculatedDuration().secondsValueRounded()+" but found "+smil.getStatedDuration().secondsValue()+ " in "+smil.getFile().getName()));
 									hasErrors=true;
 								}
 							}
@@ -238,7 +238,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 					if (member instanceof D202TextualContentFile){						
 						D202TextualContentFile doc = (D202TextualContentFile)member;
 						if (!doc.hasCorrectHeadingSequence()){
-							errors.add(new FilesetException("incorrect heading hierarchy in "+doc.getName()));
+							errors.add(new FilesetException("incorrect heading hierarchy in "+doc.getFile().getName()));
 							hasErrors = true;
 						}
 					} else if (member instanceof Z3986DtbookFile) {
@@ -255,15 +255,15 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 							try {
 								mp3file.parse();
 								if (mp3file.hasID3v2()) {
-									errors.add(new FilesetException("warning: mp3 file "+mp3file.getName()+" has ID3 tags"));
+									errors.add(new FilesetException("warning: mp3 file "+mp3file.getFile().getName()+" has ID3 tags"));
 									hasErrors=true;
 								}
 								if (!mp3file.isMono()) {
-									errors.add(new FilesetException("warning: mp3 file "+mp3file.getName()+" is not mono"));
+									errors.add(new FilesetException("warning: mp3 file "+mp3file.getFile().getName()+" is not mono"));
 									hasErrors=true;
 								}
 								if (mp3file.isVbr()) {
-									errors.add(new FilesetException("mp3 file "+mp3file.getName()+" is VBR"));
+									errors.add(new FilesetException("mp3 file "+mp3file.getFile().getName()+" is VBR"));
 									hasErrors=true;
 								}
 							} catch (Exception e) {
@@ -329,21 +329,21 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 						String uriFragment = getFragment(value); 
 						String uriPath = stripFragment(value);
 						//get the full URI of the member to resolve
-						URI uri = member.toURI().resolve(uriPath);
+						URI uri = member.getFile().toURI().resolve(uriPath);
 						if(!uri.equals(cache)) {
 							//the referenced member is other than last time
 							cache=uri;
 							//get the file instance from Fileset via the URI key
 							referencedMember=(XmlFile)member.getReferencedLocalMember(uri);
 							if (referencedMember==null){
-								errors.add(new DtbErrorScoutException ("reference to nonexisting member in URI " + value+ " in file " + member.getName()));
+								errors.add(new DtbErrorScoutException ("reference to nonexisting member in URI " + value+ " in file " + member.getFile().getName()));
 								//return false;
 								continue;
 							}								
 						}
 						//check whether this colleague has the id value
 						if(!referencedMember.hasIDValue(uriFragment)) {
-							errors.add(new DtbErrorScoutException ("reference to nonexisting fragment in URI " + value + " in file " + member.getName()));
+							errors.add(new DtbErrorScoutException ("reference to nonexisting fragment in URI " + value + " in file " + member.getFile().getName()));
 							result = false;
 						}					
 					}

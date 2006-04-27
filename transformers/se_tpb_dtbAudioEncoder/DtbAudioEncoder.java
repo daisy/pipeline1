@@ -35,12 +35,12 @@ import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
-import org.daisy.util.fileset.AudioFile;
-import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetException;
-import org.daisy.util.fileset.FilesetFile;
-import org.daisy.util.fileset.FilesetImpl;
-import org.daisy.util.fileset.OpfFile;
+import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.interfaces.audio.AudioFile;
+import org.daisy.util.fileset.interfaces.xml.OpfFile;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 /**
@@ -93,7 +93,7 @@ public class DtbAudioEncoder extends Transformer {
             int totalNum = 0;
             for (Iterator it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
                 FilesetFile fsf = (FilesetFile)it.next();                
-                if (fsf instanceof AudioFile && fsf.getName().matches(".+\\.[Ww][Aa][Vv]")) {
+                if (fsf instanceof AudioFile && fsf.getFile().getName().matches(".+\\.[Ww][Aa][Vv]")) {
                     totalSize += fsf.getFile().length();
                     ++totalNum;
                 }                
@@ -105,13 +105,13 @@ public class DtbAudioEncoder extends Transformer {
             for (Iterator it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
                 FilesetFile fsf = (FilesetFile)it.next();
                 
-                if (fsf instanceof AudioFile && fsf.getName().matches(".+\\.[Ww][Aa][Vv]")) {
+                if (fsf instanceof AudioFile && fsf.getFile().getName().matches(".+\\.[Ww][Aa][Vv]")) {
                     // Encode audio files
                     ++currentNum;
-                    Object[] params = {new Integer(totalNum), new Integer(currentNum), fsf.getName()};
+                    Object[] params = {new Integer(totalNum), new Integer(currentNum), fsf.getFile().getName()};
                     this.sendMessage(Level.FINER, i18n("ENCODING", params));
                     this.encodeFile(fsf.getFile(), outputDirectory, fileset.getRelativeURI(fsf));
-                    alreadyDone.add(fsf.getName());
+                    alreadyDone.add(fsf.getFile().getName());
                     currentSize += fsf.getFile().length();
                     this.progress(0.03 + (0.95-0.03)*((double)currentSize/totalSize));
                     this.checkAbort();
@@ -119,10 +119,10 @@ public class DtbAudioEncoder extends Transformer {
                     // Modify files that reference the (old) audio files
                     for (Iterator it2 = fsf.getReferringLocalMembers().iterator(); it2.hasNext(); ) {
                         FilesetFile fsf2 = (FilesetFile)it2.next();
-                        if (!alreadyDone.contains(fsf2.getName())) {
+                        if (!alreadyDone.contains(fsf2.getFile().getName())) {
                             this.relinkFile(fsf2, outputDirectory, fileset.getRelativeURI(fsf2));                            
                         }
-                        alreadyDone.add(fsf2.getName());
+                        alreadyDone.add(fsf2.getFile().getName());
                     }
                 }
                 this.checkAbort();
@@ -135,7 +135,7 @@ public class DtbAudioEncoder extends Transformer {
                 
                 this.checkAbort();
                 
-                if (!alreadyDone.contains(fsf.getName())) {                    
+                if (!alreadyDone.contains(fsf.getFile().getName())) {                    
                     this.copyFile(fsf.getFile(), outputDirectory, fileset.getRelativeURI(fsf));
                 }
                 

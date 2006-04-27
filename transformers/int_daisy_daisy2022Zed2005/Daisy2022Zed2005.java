@@ -39,28 +39,28 @@ import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
-import org.daisy.util.fileset.AudioFile;
-import org.daisy.util.fileset.CssFile;
-import org.daisy.util.fileset.D202NccFile;
-import org.daisy.util.fileset.D202SmilFile;
-import org.daisy.util.fileset.D202TextualContentFile;
-import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetException;
-import org.daisy.util.fileset.FilesetFile;
-import org.daisy.util.fileset.FilesetFileFactory;
-import org.daisy.util.fileset.FilesetImpl;
-import org.daisy.util.fileset.GifFile;
-import org.daisy.util.fileset.ImageFile;
-import org.daisy.util.fileset.JpgFile;
-import org.daisy.util.fileset.Mp2File;
-import org.daisy.util.fileset.Mp3File;
-import org.daisy.util.fileset.OpfFile;
-import org.daisy.util.fileset.PngFile;
-import org.daisy.util.fileset.SmilFile;
-import org.daisy.util.fileset.WavFile;
-import org.daisy.util.fileset.Z3986DtbookFile;
-import org.daisy.util.fileset.Z3986NcxFile;
-import org.daisy.util.fileset.Z3986ResourceFile;
+import org.daisy.util.fileset.impl.FilesetFileFactory;
+import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.interfaces.audio.AudioFile;
+import org.daisy.util.fileset.interfaces.audio.Mp2File;
+import org.daisy.util.fileset.interfaces.audio.Mp3File;
+import org.daisy.util.fileset.interfaces.audio.WavFile;
+import org.daisy.util.fileset.interfaces.image.GifFile;
+import org.daisy.util.fileset.interfaces.image.ImageFile;
+import org.daisy.util.fileset.interfaces.image.JpgFile;
+import org.daisy.util.fileset.interfaces.image.PngFile;
+import org.daisy.util.fileset.interfaces.text.CssFile;
+import org.daisy.util.fileset.interfaces.xml.OpfFile;
+import org.daisy.util.fileset.interfaces.xml.SmilFile;
+import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
+import org.daisy.util.fileset.interfaces.xml.d202.D202SmilFile;
+import org.daisy.util.fileset.interfaces.xml.d202.D202TextualContentFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986NcxFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986ResourceFile;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
@@ -155,7 +155,7 @@ public class Daisy2022Zed2005 extends Transformer {
 			this.createZedNcx(inputNcc,nccDcIdentifier);
 			
 			//create dtbook from the input xhtml
-			this.createZedDtbook(inputContentDoc,nccDcIdentifier,nccDcTitle,sourceCss.getName());  
+			this.createZedDtbook(inputContentDoc,nccDcIdentifier,nccDcTitle,sourceCss.getFile().getName());  
 			
 			//copy things that move to output unchanged
 			this.copyMembers();
@@ -192,7 +192,7 @@ public class Daisy2022Zed2005 extends Transformer {
 			FilesetFile fsf = (FilesetFile)it.next();
 			if (fsf instanceof D202SmilFile) {
 				d202_smil = (D202SmilFile) fsf;
-				File smilOut = new File(outputDir, d202_smil.getName());
+				File smilOut = new File(outputDir, d202_smil.getFile().getName());
 				File xsltFile = new File(this.getTransformerDirectory(), "d202smil_Z2005smil.xsl");		
 				//remember: the XSLTs are written context unaware, 
 				//so they need to get all necessary context info as inparams.
@@ -274,7 +274,7 @@ public class Daisy2022Zed2005 extends Transformer {
 		
 		Stylesheet.apply(ncc.getFile().getAbsolutePath(), xsltFile.getAbsolutePath(), opfOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
 		
-		manifestItems.put(opfOut.getAbsolutePath(), FilesetFileFactory.newOpfFile(opfOut.toURI()));
+		manifestItems.put(opfOut.getAbsolutePath(), FilesetFileFactory.newZ3986OpfFile(opfOut.toURI()));
 		
 		//run finalize after manifestItems.put so that the opf gets included in the manifest itemlist
 		finalizeManifest(opfOut);
@@ -302,7 +302,7 @@ public class Daisy2022Zed2005 extends Transformer {
 		for (Iterator i = manifestItems.keySet().iterator(); i.hasNext(); ) {		  
 			try{
 				FilesetFile fsf = (FilesetFile)manifestItems.get(i.next());
-				String mime = fsf.getMimeType();		
+				String mime = fsf.getMimeType().toString();		
 				
 				URI opfURI = unfinishedOpf.getParentFile().toURI();
 				
@@ -395,7 +395,7 @@ public class Daisy2022Zed2005 extends Transformer {
 		for (Iterator it = files.iterator(); it.hasNext(); ) {
 			fileCount++;
 			FilesetFile fsf = (FilesetFile)it.next();
-			Object[] params = {new Integer(fileNum), new Integer(fileCount), fsf.getName()};
+			Object[] params = {new Integer(fileNum), new Integer(fileCount), fsf.getFile().getName()};
 			this.sendMessage(Level.INFO, i18n("COPYING_FILE", params));
 			URI relativeURI = fileset.getRelativeURI(fsf);
 			File out = new File(outputDir.toURI().resolve(relativeURI));
@@ -459,7 +459,7 @@ public class Daisy2022Zed2005 extends Transformer {
 		if(inputFileset.hadErrors()) {
 			//since it was built nonvalidating, this is prolly a serious error (malformedness, files missing)
 			String errors=null;
-			for(Iterator i = inputFileset.getErrorsIterator(); i.hasNext();) {
+			for(Iterator i = inputFileset.getErrors().iterator(); i.hasNext();) {
 				Exception e = (Exception )i.next();
 				errors = errors + "\n" +  e.getMessage();            		
 			}

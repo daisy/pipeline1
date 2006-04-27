@@ -2,7 +2,8 @@ package org.daisy.util.dtb.validation.errorscout;
 
 import java.net.URI;
 import java.util.Iterator;
-import org.daisy.util.fileset.Fileset;
+
+import org.daisy.util.fileset.interfaces.Fileset;
 /**
  * <p>Go scouting in a DTB for errors</p>
  * <p>Checks feasible validity of a DTB, does not claim to do full conformance checking</p>
