@@ -1,0 +1,25 @@
+<transformer version="1.0">
+	<name>ODF to DTBook</name>
+	<description>OpenDocument Text to DTBook transformer</description>
+	<classname>uk_rnib_odf2dtbook.Odf2Dtbook</classname>
+	<license>GPL</license>
+	<author>Dave Pawson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/vnd.oasis.opendocument.text">
+			<name>odf</name>
+			<description>The OpenDocument Text file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="text/x-dtbook+xml">
+			<name>dtbook</name>
+			<description>The DTBook 2005 XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+				
+	</parameters>	
+
+</transformer>
