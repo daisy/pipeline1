@@ -19,6 +19,7 @@ public final class MIMEConstants {
 	public static final String MIME_APPLICATION_XML = "application/xml";
 	public static final String MIME_APPLICATION_XML_DTD = "application/xml-dtd";
 	public static final String MIME_APPLICATION_XML_EXTERNAL_PARSED_ENTITY = "application/xml-external-parsed-entity";
+	public static final String MIME_APPLICATION_XSLT_XML = "application/xslt+xml";	
 	public static final String MIME_APPLICATION_X_COMPRESS = "application/x-compress";
 	public static final String MIME_APPLICATION_X_COMPRESSED = "application/x-compressed";
 	public static final String MIME_APPLICATION_X_DTBD202MSMIL_XML = "application/x-dtbd202msmil+xml";
@@ -61,6 +62,7 @@ public final class MIMEConstants {
 	public static final String MIME_IMAGE_TIFF = "image/tiff";
 	public static final String MIME_IMAGE_X_ICON = "image/x-icon";
 	public static final String MIME_STRING = "string";
+	public static final String MIME_ANONYMOUS = "anonymous";
 	public static final String MIME_TEXT_CSS = "text/css";
 	public static final String MIME_TEXT_HTML = "text/html";
 	public static final String MIME_TEXT_PLAIN = "text/plain";
