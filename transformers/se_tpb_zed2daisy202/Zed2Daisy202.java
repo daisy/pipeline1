@@ -285,7 +285,8 @@ public class Zed2Daisy202 extends Transformer {
         File xsltFile = new File(this.getTransformerDirectory(), "dtbook2xhtml.xsl");
         
         Iterator it = opf.getSpineItems().iterator();
-        URI uri = (URI)it.next();
+        
+        URI uri = ((Z3986SmilFile)it.next()).getFile().toURI();
         uri = opf.getFile().getParentFile().toURI().relativize(uri);
         
         Map parameters = new HashMap();
