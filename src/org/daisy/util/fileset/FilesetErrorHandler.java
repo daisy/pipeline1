@@ -1,6 +1,3 @@
-/*
- * Created on 2005-jun-19
- */
 package org.daisy.util.fileset;
 
 /**

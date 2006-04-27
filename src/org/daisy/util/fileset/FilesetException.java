@@ -23,4 +23,5 @@ public class FilesetException extends BaseException {
 		super("Fileset exception:", cause);
 	}
 
+	private static final long serialVersionUID = 5400731112977853555L;
 }
