@@ -72,8 +72,7 @@ public class FileBunchCopy {
                 }
                 in = DummyFile.create(in.getName());
             }
-            //File out = new File(outputDir.toURI().resolve(relativeURI));
-            File out = new File(relativeURI.resolve(outputDir.toURI()));
+            File out = new File(outputDir.toURI().resolve(relativeURI));
             FileUtils.copy(in, out);
             if (observer != null) {
                 observer.reportProgress((double)fileNum/uris.size());
