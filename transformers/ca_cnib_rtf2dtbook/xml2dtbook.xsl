@@ -9,6 +9,7 @@ Supported styles:
 Paragraph styles:
 - "Heading 1" ... "Heading 6"
 - "Normal"
+- "Block Text" => <blockquote><p>
 - Lists:
 	- "List Bullet" => <list type="ul">
 	- "List Number" => <list type="ol"> (with guesses made at enum types and start values > 1)
@@ -110,10 +111,14 @@ B Nelson, CNIB Library
 		</xsl:element>
 	</xsl:template>
 
-	<xsl:template match="rtf:paragraph-definition[starts-with(@name, 'heading')]">
+	<xsl:template match="rtf:paragraph-definition[matches(@name, '^heading', 'i')]">
 		<xsl:element name="h{../@level}">
 			<xsl:apply-templates select="rtf:para/node()" />
 		</xsl:element>
+	</xsl:template>
+
+	<xsl:template match="rtf:paragraph-definition[matches(@name, 'block text', 'i')]">
+		<blockquote><xsl:apply-templates select="*" /></blockquote>
 	</xsl:template>
 
 	<xsl:template match="rtf:paragraph-definition">
