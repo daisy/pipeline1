@@ -135,7 +135,19 @@
 			<before>Keyborad instruction.</before>
 		</lang>
 	</rule>
-	
+
+	<rule match="*[starts-with(@xml:lang,'mi') and ancestor::*/@xml:lang='en']">
+		<lang lang="mi">
+			<before>Maori text.</before>
+		</lang>
+	</rule>
+
+	<rule match="*[starts-with(@xml:lang,'mi') and ancestor::*/@xml:lang='sv']">
+		<lang lang="mi">
+			<before>Maorisk text.</before>
+		</lang>
+	</rule>
+
 	<copy attributes="true" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 		<xsl:template match="dtb:li">
 			<xsl:copy>
