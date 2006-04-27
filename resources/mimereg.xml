@@ -48,6 +48,9 @@
 	<type id="smil" name="application/smil" parentType="xml"/> 
 	<type id="dtbresource" name="application/x-dtbresource+xml" parentType="xml"/>	
 	
+	<!-- Open Document Format -->
+	<type id="odt" name="application/vnd.oasis.opendocument.text"/>
+	
 	<!-- binary -->
 	<type id="pdf" name="application/pdf"/>
 
