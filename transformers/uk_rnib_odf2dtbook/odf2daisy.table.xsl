@@ -1,4 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
+ <!-- 
+#
+# odf2daisy.table.xsl,  Dave Pawson; http://www.dpawson.co.uk
+# Process an odf writer file, table content.
+# 
+#
+# 
+# Original: 2006-03-23T14:25:46.0Z
+#       :Initial issued
+#
+#
+# Copyright &#xA9; Dave Pawson,  2006
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have seen a copy of the GNU General Public License;
+# if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+# 
+# Generates a daisy output file to dtbook-2005-1
+#
+ -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 xmlns='http://www.daisy.org/z3986/2005/dtbook/'
 xmlns:xs="http://www.w3.org/2001/XMLSchema"
