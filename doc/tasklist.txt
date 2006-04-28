@@ -8,4 +8,6 @@ licpack		license pack to the CVS				MG
 errscout	go through errscout,
 			append missing tests				MG
 fileset		finalize refactoring
-			of fileset							MG				
+			of fileset							MG
+mimefix		correct mime types in the TDFs		LE
+mimereg2    make core use new mime registry		LE
