@@ -6,7 +6,7 @@
 	<author>John Cowan (http://mercury.ccil.org/~cowan/XML/tagsoup/); Markus Gylling</author>
 	<support>http://daisymfc.sourceforge.net</support>	
 	<parameters>	
-	    <parameter required="true" direction="in" type="text/x-dtbook+xml">
+	    <parameter required="true" direction="in" type="text/html">
 			<name>input</name>
 			<description>Path to the HTML input file</description>
 			<example>D:/path/to/input.html</example>
