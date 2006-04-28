@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://www.tpb.se/word2xmlstylesheet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.tpb.se/word2xmlstylesheet tagset.xsd">
+	<standardWord version="4">
+		<paragraphs>
+			<tag name="heading 1"><map value="h1"/></tag>
+			<tag name="heading 2"><map value="h2"/></tag>
+			<tag name="heading 3"><map value="h3"/></tag>
+			<tag name="heading 4"><map value="h4"/></tag>
+			<tag name="heading 5"><map value="h5"/></tag>
+			<tag name="heading 6"><map value="h6"/></tag>
+			<tag name="footnote text"><wrap value="note" using="p" addId="true" merge="false"/></tag>
+			<!-- Indraget Stycke -->
+			<tag name="Block Text"><wrap value="blockquote" using="p" addId="false" merge="true"/></tag>
+			<tag name="Body Text Indent"><wrap value="blockquote" using="p" addId="false" merge="false"/></tag>
+			<!-- Kommentarer -->
+			<tag name="annotation text"><comment/></tag>
+		</paragraphs>
+		<character>
+			<tag name="Strong"><map value="strong"/></tag>
+			<tag name="Emphasis"><map value="em"/></tag>
+			<tag name="page number"><pagenum/></tag>
+			<tag name="footnote reference"><noteref/></tag>
+		</character>
+	</standardWord>
+</mappings>

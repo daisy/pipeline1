@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://www.tpb.se/word2xmlstylesheet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.tpb.se/word2xmlstylesheet tagset.xsd">
+	<custom style="tpb">
+		<paragraphs>
+			<tag name="TPB-Titel"><map value="doctitle"/></tag>
+			<tag name="TPB-Författare"><map value="docauthor"/></tag>
+			<tag name="TPB-Metadata"><comment/></tag>
+			<tag name="TPB-Bildtext"><wrap value="imggroup" using="caption" addId="false" merge="true"/></tag>
+			<tag name="TPB-Poem"><wrap value="poem" using="line" addId="false" merge="true"/></tag>
+			<tag name="TPB-Parallelltext">
+				<wrap value="sidebar" using="p" addId="false" merge="true">
+					<attribute name="render" value="optional"/>
+				</wrap>
+			</tag>
+			<!--  -->
+			<tag name="Body Text Indent"><wrap value="blockquote" using="p" addId="false" merge="true"/></tag>
+			<tag name="List">
+				<wrap value="list" using="li" addId="false" merge="true">
+					<attribute name="type" value="pl"/>
+				</wrap>
+			</tag>
+		</paragraphs>
+		<character>
+			<tag name="TPB-Sidnummer"><pagenum/></tag>
+		</character>
+	</custom>
+</mappings>

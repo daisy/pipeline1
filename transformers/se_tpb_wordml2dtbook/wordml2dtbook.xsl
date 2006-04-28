@@ -88,54 +88,33 @@
 			</meta:revdescription>
 			<meta:revremark/>
 		</meta:revision>
+		<meta:revision>
+			<meta:revnumber>1.2</meta:revnumber>
+			<meta:date>28 April  2006</meta:date>
+			<meta:authorinitials>JoelH</meta:authorinitials>
+			<meta:revdescription>
+				<meta:para>Externalized tag set definitions and created an XML schema for them.</meta:para>
+				<meta:para>Fixed a precedence problem.</meta:para>
+				<meta:para>Added attribute "merge" to wrap element (tag set definitions). The effect is that all consecutive paras using the same style will be included in the same outer element.</meta:para>
+				<meta:para>Added element "attribute" to wrap element (tag set definitions).</meta:para>
+				<meta:para>Added support for rowspan in tables</meta:para>
+				<meta:para>Added support for image alt-text</meta:para>
+				<meta:para>Changed naming convention for images</meta:para>
+				<meta:para>Added page-attribute: normal (for arabic numerals), front (for roman numerals), special (otherwise)</meta:para>
+			</meta:revdescription>
+			<meta:revremark/>
+		</meta:revision>
 	</meta:revhistory>
 </meta:doc>
-  
-<d:mappings>
-	<d:standardWord d:version="4">
-		<d:paragraphs>
-			<d:tag d:name="heading 1" d:action="map" d:val="h1"/>
-			<d:tag d:name="heading 2" d:action="map" d:val="h2"/>
-			<d:tag d:name="heading 3" d:action="map" d:val="h3"/>
-			<d:tag d:name="heading 4" d:action="map" d:val="h4"/>
-			<d:tag d:name="heading 5" d:action="map" d:val="h5"/>
-			<d:tag d:name="heading 6" d:action="map" d:val="h6"/>
-			<d:tag d:name="footnote text" d:action="wrap" d:val="note" d:addId="true"/>
-			<!-- Indraget Stycke -->
-			<d:tag d:name="Block Text" d:action="wrap" d:val="blockquote" d:addId="false"/>
-			<d:tag d:name="Body Text Indent" d:action="wrap" d:val="blockquote" d:addId="false"/>
-			<!-- Kommentarer -->
-			<d:tag d:name="annotation text" d:action="comment"/>
-		</d:paragraphs>
-		<d:character>
-			<d:tag d:name="Strong" d:action="map" d:val="strong"/>
-			<d:tag d:name="Emphasis" d:action="map" d:val="em"/>
-			<d:tag d:name="page number" d:action="pagenum"/>
-			<d:tag d:name="footnote reference" d:action="noteref"/>
-		</d:character>
-	</d:standardWord>
-	<d:custom d:style="default">
-		<d:paragraphs>
-			<d:tag d:name="TPB-Titel" d:action="map" d:val="doctitle"/>
-			<d:tag d:name="TPB-Författare" d:action="map" d:val="docauthor"/>
-			<d:tag d:name="TPB-Metadata" d:action="comment"/>
-		</d:paragraphs>
-		<d:character>
-			<d:tag d:name="TPB-Sidnummer" d:action="pagenum"/>
-		</d:character>
-	</d:custom>
-</d:mappings>
 
 <xsl:output method="xml" indent="no" encoding="UTF-8" 
 	doctype-public="-//NISO//DTD dtbook 2005-1//EN"
 	doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd"/>
 
-<xsl:param name="tagSet" select="4"/>
-<xsl:param name="customStyle" select="'default'"/>
+<xsl:param name="tagSet" select="'4'"/>
+<xsl:param name="customStyle" select="'tpb'"/>
+<xsl:param name="mapset" select="document('custom-tagset.xml')|document('default-tagset.xml')"/>
 
-<xsl:variable name="this" select="document('')"/>
-
-<!-- <xsl:key name="matchStyle" match="/w:wordDocument/w:styles/w:style" use="w:pPr/w:pStyle/@w:val"/> -->
 <xsl:key name="matchStyle" match="/w:wordDocument/w:styles/w:style" use="@w:styleId"/>
 
 <xsl:template match="w:wordDocument">
@@ -207,57 +186,105 @@
 <!-- override the default rule for this mode, needed for the last call above -->
 <xsl:template match="*" mode="processList"/>
 
+<xsl:template match="w:p" mode="processBlock">
+	<xsl:param name="pStyleName"/>
+	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
+	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
+	<xsl:variable name="sTags" select="$mapset//d:standardWord[@version=$tagSet]/d:paragraphs/d:tag[@name=$styleName]"/>
+	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
+	
+	<xsl:if test="$styleName=$pStyleName">
+		<xsl:element name="{$tag/d:wrap/@using}">
+			<xsl:apply-templates select="descendant::w:r"/>
+		</xsl:element>
+		<xsl:apply-templates select="following::w:p[1]" mode="processBlock">
+			<xsl:with-param name="pStyleName" select="$styleName"/>
+		</xsl:apply-templates>
+	</xsl:if>
+</xsl:template>
+
+<!-- override the default rule for this mode, needed for the last call above -->
+<xsl:template match="*" mode="processBlock"/>
+
 <xsl:template match="w:p">
 	<!-- <xsl:variable name="style" select="key('matchStyle', w:pPr/w:pStyle/@w:val)"/> -->
 	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
-	<xsl:variable name="tag" select="($this//d:mappings/d:custom[@d:style=$customStyle]|
-									  $this//d:mappings/d:standardWord[@d:version=$tagSet])
-									  /d:paragraphs/d:tag[@d:name=$styleName]"/>
+	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
+	<xsl:variable name="sTags" select="$mapset//d:standardWord[@version=$tagSet]/d:paragraphs/d:tag[@name=$styleName]"/>
+	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
+	
 	<xsl:choose>
 		<!-- found a matching action -->
 		<xsl:when test="count($tag)&gt;0">
 			<xsl:choose>
-				<xsl:when test="$tag/@d:action='map'">
-					<xsl:element name="{$tag/@d:val}">
+				<xsl:when test="$tag/d:map">
+					<xsl:element name="{$tag/d:map/@value}">
 						<xsl:apply-templates select="descendant::w:r"/>
 					</xsl:element>
 				</xsl:when>
-				<xsl:when test="$tag/@d:action='wrap'">
-					<xsl:element name="{$tag/@d:val}">
-						<xsl:if test="$tag/@d:addId='true'">
-							<xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
-						</xsl:if>
-						<p>
-							<xsl:apply-templates select="descendant::w:r"/>
-						</p>
-					</xsl:element>
+				<!-- wrap, but only if merge=false or if merge=true and this style name is different from the preceding -->
+				<xsl:when test="$tag/d:wrap">
+					<xsl:variable name="pStyleName" select="string(key('matchStyle', preceding::w:p[1]/w:pPr/w:pStyle/@w:val)/w:name/@w:val)"/>
+					<xsl:if test="$tag/d:wrap/@merge='false' or $pStyleName!=$styleName">
+						<!--
+						<xsl:comment>¤¤Merge:<xsl:value-of select="$tag/d:wrap/@merge"/>:¤¤</xsl:comment>
+						<xsl:comment>¤¤pStyleName:<xsl:value-of select="$pStyleName"/>:¤¤</xsl:comment>
+						<xsl:comment>¤¤styleName:<xsl:value-of select="$styleName"/>:¤¤</xsl:comment>-->
+						<xsl:element name="{$tag/d:wrap/@value}">
+							<xsl:if test="$tag/d:wrap/@addId='true'">
+								<xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
+							</xsl:if>
+							<xsl:for-each select="$tag/d:wrap/d:attribute">
+								<xsl:attribute name="{@name}"><xsl:value-of select="@value"/>
+							</xsl:attribute>
+							</xsl:for-each>
+							<xsl:element name="{$tag/d:wrap/@using}">
+								<xsl:apply-templates select="descendant::w:r"/>
+							</xsl:element>
+							<xsl:if test="$tag/d:wrap/@merge='true'">
+								<xsl:apply-templates select="following::w:p[1]" mode="processBlock">
+									<xsl:with-param name="pStyleName" select="$styleName"/>
+								</xsl:apply-templates>
+							</xsl:if>
+						</xsl:element>
+					</xsl:if>
 				</xsl:when>
-				<xsl:when test="$tag/@d:action='comment'">
+				<xsl:when test="$tag/d:comment">
 					<xsl:comment><xsl:apply-templates select="descendant::w:r"/></xsl:comment>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:when>
-		<!-- no matching action found for this paragrap style -->
+		<!-- no matching action found for this paragraph style -->
 		<xsl:otherwise><p><xsl:apply-templates select="descendant::w:r"/></p></xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
 
 <xsl:template match="w:r">
 	<xsl:variable name="styleName" select="key('matchStyle', w:rPr/w:rStyle/@w:val)/w:name/@w:val"/>
-	<xsl:variable name="tag" select="($this//d:mappings/d:custom[@d:style=$customStyle]|
-									  $this//d:mappings/d:standardWord[@d:version=$tagSet])
-									  /d:character/d:tag[@d:name=$styleName]"/>
+	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:character/d:tag[@name=$styleName]"/>
+	<xsl:variable name="sTags" select="$mapset//d:standardWord[@version=$tagSet]/d:character/d:tag[@name=$styleName]"/>
+	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
+	
 	<xsl:choose>
 		<!-- found a matching action -->
 		<xsl:when test="count($tag)&gt;0">
 			<xsl:choose>
-				<xsl:when test="$tag/@d:action='map'">
-					<xsl:element name="{$tag/@d:val}"><xsl:apply-templates/></xsl:element>
+				<xsl:when test="$tag/d:map">
+					<xsl:element name="{$tag/d:map/@value}"><xsl:apply-templates/></xsl:element>
 				</xsl:when>
-				<xsl:when test="$tag/@d:action='pagenum'">
-					<pagenum id="p-{translate(.,' ','')}"><xsl:apply-templates/></pagenum>
+				<xsl:when test="$tag/d:pagenum">
+					<pagenum id="p-{translate(.,' ','')}">
+						<xsl:attribute name="page">
+							<xsl:choose>
+								<xsl:when test="string(.)=string(number(.))">normal</xsl:when>
+								<xsl:when test="string-length(translate(., 'ivxlcdmIVXLCDM', ''))=0">front</xsl:when>
+								<xsl:otherwise>special</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<xsl:apply-templates/>
+					</pagenum>
 				</xsl:when>
-				<xsl:when test="$tag/@d:action='noteref'">
+				<xsl:when test="$tag/d:noteref">
 					<xsl:choose>
 						<xsl:when test="count(w:footnote)&gt;0"><xsl:apply-templates/></xsl:when>
 						<xsl:otherwise><noteref idref=""><xsl:apply-templates/></noteref></xsl:otherwise>
@@ -273,25 +300,32 @@
 <!-- Field information. No output. -->
 <xsl:template match="w:instrText"/>
 
+<xsl:template name="addZeros">
+	<xsl:param name="value"/>
+	<xsl:choose>
+	<xsl:when test="string-length($value)&lt;3">
+		<xsl:call-template name="addZeros">
+			<xsl:with-param name="value" select="concat(0, $value)"/>
+		</xsl:call-template>
+	</xsl:when>
+	<xsl:otherwise><xsl:value-of select="$value"/></xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
 <xsl:template match="w:pict">
   <xsl:if test="v:shape/v:imagedata">
+	  <xsl:variable name="img-no"><xsl:call-template name="addZeros">
+			  <xsl:with-param name="value" select="count(preceding::v:shape/v:imagedata)+1"/>
+		  </xsl:call-template></xsl:variable>
 		<imggroup>
-			<img src="{v:shape/v:imagedata/@o:title}.jpg" alt=""/>
+			<img src="image{$img-no}.jpg" alt="{v:shape/@alt}"/>
 		</imggroup>
   </xsl:if>
 </xsl:template>
 
-<xsl:template match="w:t">
-	<xsl:value-of select="."/>
-</xsl:template>
-
-<xsl:template match="w:tab">
-	<xsl:text>&#x0009;</xsl:text>
-</xsl:template>
-
-<xsl:template match="w:br">
-	<br/>
-</xsl:template>
+<xsl:template match="w:t"><xsl:value-of select="."/></xsl:template>
+<xsl:template match="w:tab"><xsl:text>&#x0009;</xsl:text></xsl:template>
+<xsl:template match="w:br"><br/></xsl:template>
 
 <xsl:template match="w:tbl">
 	<table>
@@ -314,25 +348,64 @@
 	</td>
 </xsl:template>
 
-<!-- Test med rowspan, ej färdigt -->
-<!-- 
-<xsl:template match="w:tc">
-	<xsl:if test="not(w:tcPr/w:vmerge) or w:tcPr/w:vmerge/@w:val">
+<!-- Handle rowspan -->
+<xsl:template match="w:tc[w:tcPr/w:vmerge/@w:val='restart']" priority="10">
 	<td>
 		<xsl:if test="w:tcPr/w:gridSpan">
 			<xsl:attribute name="colspan"><xsl:value-of select="w:tcPr/w:gridSpan/@w:val"/></xsl:attribute>
 		</xsl:if>
-		<xsl:if test="w:tcPr/w:vmerge/@w:val='restart'">
-			<xsl:variable name="val" select="count(preceding-sibling::w:tc)"/>
-			<xsl:variable name="id" select="generate-id(.)"/>
-			<xsl:variable name="te" select="ancestor::w:tbl/w:tr/w:tc[]"
-			<xsl:attribute name="rowspan"><xsl:value-of select="count(ancestor::w:tbl/w:tr/w:tc[$val][w:tcPr/w:vmerge and not(w:tcPr/w:vmerge/@w:val)])"/></xsl:attribute>
-		</xsl:if>
+		<xsl:variable name="val"><xsl:apply-templates select="." mode="getGridPos"/></xsl:variable>
+		<xsl:attribute name="rowspan">
+			<xsl:apply-templates select="ancestor::w:tr" mode="countRowspan">
+				<xsl:with-param name="gridPos" select="number($val)"/>
+			</xsl:apply-templates>
+		</xsl:attribute>
 		<xsl:apply-templates/>
 	</td>
-	</xsl:if>
 </xsl:template>
--->
+
+<xsl:template match="w:tc[w:tcPr/w:vmerge]" priority="5"/>
+
+<xsl:template match="w:tc" mode="getGridPos"><xsl:value-of select="1+count(preceding-sibling::w:tc)+sum(preceding-sibling::w:tc/w:tcPr/w:gridSpan[@w:val&gt;1]/@w:val) - count(preceding-sibling::w:tc/w:tcPr/w:gridSpan[@w:val&gt;1])"/></xsl:template>
+
+<xsl:template match="w:tr" mode="findSiblingPos">
+	<xsl:param name="gridPos"/> <!-- position in grid -->
+	<xsl:param name="siblingPos" select="number($gridPos)"/> <!-- sibling position -->
+	<xsl:variable name="cp">
+		<xsl:apply-templates select="w:tc[$siblingPos]" mode="getGridPos"/>
+	</xsl:variable>
+	<xsl:variable name="calcPos" select="number($cp)"/>
+	<xsl:choose>
+		<xsl:when test="$calcPos=$gridPos"><xsl:value-of select="$siblingPos"/></xsl:when>
+		<xsl:when test="$calcPos&lt;$gridPos or $siblingPos=1">0</xsl:when>
+		<xsl:otherwise><xsl:apply-templates select="." mode="findSiblingPos">
+				<xsl:with-param name="gridPos" select="$gridPos"/>
+				<xsl:with-param name="siblingPos" select="$siblingPos - 1"/>
+			</xsl:apply-templates></xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
+<xsl:template match="w:tr" mode="countRowspan">
+	<xsl:param name="gridPos"/>
+	<xsl:variable name="tmp"><xsl:apply-templates select="." mode="findSiblingPos">
+			<xsl:with-param name="gridPos" select="$gridPos"/>
+		</xsl:apply-templates></xsl:variable>
+	<xsl:variable name="siblingPos" select="number($tmp)"/>
+	<xsl:choose>
+		<xsl:when test="w:tc[$siblingPos]/w:tcPr/w:vmerge">
+			<xsl:variable name="val"><xsl:choose>
+				<xsl:when test="following-sibling::w:tr">
+				<xsl:apply-templates select="(following-sibling::w:tr)[1]" mode="countRowspan">
+					<xsl:with-param name="gridPos" select="$gridPos"/>
+				</xsl:apply-templates>
+				</xsl:when>
+				<xsl:otherwise>0</xsl:otherwise>
+			</xsl:choose></xsl:variable><xsl:value-of select="1+number($val)"/></xsl:when>
+		<xsl:otherwise>0</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+<!-- / Handle rowspan -->
+
 <xsl:template match="w:footnote">
 	<noteref idref="note-{count(preceding::w:footnote[ancestor::w:body])+1}"><xsl:value-of select="count(preceding::w:footnote[ancestor::w:body])+1"/></noteref>
 </xsl:template>
@@ -349,13 +422,12 @@
 	<xsl:apply-templates/>
 </xsl:template>
 
+<!--
 <xsl:template name="copy">
-	<xsl:element name="{name()}">
-		<xsl:for-each select="@*">
-			<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
-		</xsl:for-each>
+	<xsl:copy>
+		<xsl:copy-of select="@*"/>
 		<xsl:apply-templates/>
-	</xsl:element>
-</xsl:template>
+	</xsl:copy>
+</xsl:template>-->
 
 </xsl:stylesheet>
