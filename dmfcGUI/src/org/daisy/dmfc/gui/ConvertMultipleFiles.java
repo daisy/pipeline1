@@ -55,6 +55,9 @@ import org.eclipse.swt.widgets.Text;
  */
 public class ConvertMultipleFiles extends Composite {
 
+	//for singleton
+	private static ConvertMultipleFiles instance;
+	
 	Shell shell;
 	Window window;
 	FormAttachmentsHelper fah = new FormAttachmentsHelper();
@@ -101,6 +104,8 @@ public class ConvertMultipleFiles extends Composite {
 	ArrayList al = new ArrayList();
 	
 	
+	
+	
 	public ConvertMultipleFiles() {
 		this(new Shell(UIManager.display));
 	}
@@ -113,8 +118,8 @@ public class ConvertMultipleFiles extends Composite {
 			super(shell, SWT.NONE);
 			this.shell = shell;
 			
-			UIManager.windowNum++;
 			new MenuMultipleConvert(shell);
+			
 			
 			
 			shell.setText("Daisy Multi Format Converter");
@@ -369,9 +374,15 @@ public class ConvertMultipleFiles extends Composite {
 			 formDataOkCancel.right = new FormAttachment(75,10);
 			 compOkCancelButtons.setLayoutData(formDataOkCancel);
 			 
+			 instance=this;
 			 shell.pack();
 		}	
 
+	
+	public ConvertMultipleFiles getInstance(){
+		return instance;
+	}
+	
 	public void open() {
 		shell.open();
 
@@ -387,7 +398,11 @@ public class ConvertMultipleFiles extends Composite {
 	//calls from listeners
 	
 	public void populateCompatibleFilesTable(){
-		cftp.populateTable(new File(dirSelected));	
+		if (dirSelected==null){
+			System.out.println("Directory selected is null");
+		}
+		else
+			cftp.populateTable(new File(dirSelected));	
 	}
 	
 	
@@ -402,13 +417,18 @@ public class ConvertMultipleFiles extends Composite {
 					SWT.CANCEL);
 					messageBox.setMessage("Compatible Files Table and Output paths must be completed");
 					messageBox.setText("Error:  Complete Fields");
+					messageBox.open();			
+		}
+		
+		else if(al.isEmpty()){
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+					messageBox.setMessage("Please check files to be converted.");
+					messageBox.setText("Error:  Choose Compatible Files");
 					messageBox.open();
-
-					
-		} 
+		}
+	
 		else {
-			
-			
 			//all use the same conversion
 			//Create all job objects from each input file chosen
 			
@@ -425,6 +445,7 @@ public class ConvertMultipleFiles extends Composite {
 				Window.getInstance().addToQueue(job);
 			
 			}
+			al.clear();
 			dispose();
 		}
 	}
@@ -471,7 +492,7 @@ public class ConvertMultipleFiles extends Composite {
 		if (strSubfolderOfInputFolder==null){
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
 					SWT.CANCEL);
-					messageBox.setMessage("Sorry, First select and input folder.");
+					messageBox.setMessage("Sorry, First select an input folder.");
 					messageBox.setText("Error:  Select Input Folder");
 					messageBox.open();	
 		}
@@ -555,5 +576,11 @@ public class ConvertMultipleFiles extends Composite {
 	public void filterDirectorySelected(){
 		
 	}
+	
+	public Table getTableCompatibleFiles(){
+		return this.tblCompatibleFiles;
+	}
+	
+	//public Table
 	
 }

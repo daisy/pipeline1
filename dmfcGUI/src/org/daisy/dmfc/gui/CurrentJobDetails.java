@@ -66,8 +66,8 @@ public class CurrentJobDetails extends Composite{
 
 	
 	//TextFields
-	Text txtElapsedTime;
-	Text txtEstimatedTime;
+	public Text txtElapsedTime;
+	public Text txtEstimatedTime;
 	Text txtConversionRunning;
 	
 	//Table
@@ -209,18 +209,20 @@ public class CurrentJobDetails extends Composite{
 		
 		txtElapsedTime = new Text(compRight, SWT.BORDER);
 		textProperties.setProperties(txtElapsedTime, null);
+		txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
 		
 		lblEstimatedTime = new Label(compRight, SWT.NONE);
 		labelProperties.setProperties(lblEstimatedTime, "Estimated Time to Completion");
 		
 		txtEstimatedTime= new Text(compRight, SWT.BORDER);
 		textProperties.setProperties(txtEstimatedTime, null);
+		txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
 		
 		lblTotalConversionProgress= new Label(compRight, SWT.NONE);
 		labelProperties.setProperties(lblTotalConversionProgress, "Conversion Progress");
 		
 		pb= new ProgressBar(compRight, SWT.NONE);
-		pb.setSelection(35);
+		pb.setSelection(lel.getProgress());
 		
 		FormData formDataRight = new FormData();
 		formDataRight.top = new FormAttachment(lblDaisyMFC, 20);
@@ -257,6 +259,7 @@ public class CurrentJobDetails extends Composite{
 		formDataBottom.right = new FormAttachment(65,10);
 		compBottom.setLayoutData(formDataBottom);
 
+		
 	}	
 	
 	public void open() {
@@ -270,19 +273,5 @@ public class CurrentJobDetails extends Composite{
 		instance=null;
 		shell.dispose();
 	}
-	
-
-	
-	public void calculateTiming(){
-		
-		
-	}
-	
-	public void setTime(){
-		txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
-		txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
-		pb.setSelection((int)(lel.getTimeLeft()/lel.getTotalTime()));
-	}
-	
 	
 }

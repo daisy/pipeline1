@@ -2,6 +2,7 @@ package org.daisy.dmfc.gui;
 
 
 
+
 import org.daisy.dmfc.gui.widgetproperties.ColorChoices;
 import org.daisy.dmfc.gui.widgetproperties.FontChoices;
 import org.eclipse.swt.graphics.Image;
@@ -23,6 +24,10 @@ public class UIManager {
 	public static int windowNum = 0;
 	public static Image back, forward, stop;
 	
+	/**
+	 * Load images first, if there are any to load.
+	 *
+	 */
 	public static void load() {
 		/*
 		back = new Image(display, 5,5);
@@ -33,6 +38,7 @@ public class UIManager {
 	
 	public static void open() {
 		
+		//new DaisyLink();
 		Window.getInstance().open();
 		//new DMFCMainScreen().open();
 		//new AboutDialog().open();
@@ -43,11 +49,6 @@ public class UIManager {
 		
 	}
 	
-	/*
-	public static void open(String url) {
-		new Window(url).open();
-	}
-	*/
 	
 	public static void dispose() {
 		/*  dispose of all images, fonts, colors
@@ -63,13 +64,6 @@ public class UIManager {
 			}
 		
 	}
-	
-	/*
-	public static int getProgressBarStyle() {
-		if (SWT.getPlatform().equals("win32")) return SWT.BORDER;
-			else return SWT.BORDER | SWT.SMOOTH;
-	}
-	*/
 }
 
 

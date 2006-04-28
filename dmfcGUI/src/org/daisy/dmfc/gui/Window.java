@@ -4,7 +4,6 @@ package org.daisy.dmfc.gui;
 import java.io.File;
 
 import org.daisy.dmfc.core.DMFCCore;
-import org.daisy.dmfc.core.EventListener;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.MIMEException;
@@ -50,9 +49,8 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Laurie Sherve
  */
-public class Window extends Composite {
-	private static int queueNum = 0;
-	private int currentNum = 0;
+public class Window extends Composite{
+	
 	private Shell shell;
 	private DMFCCore dmfc;
 	LocalInputListener lil;
@@ -76,7 +74,7 @@ public class Window extends Composite {
 	
 	
 	//Buttons
-	Button addSingleFile;
+	//Button addSingleFile;
 	Button addMultipleFiles;
 	Button btnMoveUp;
 	Button btnMoveDown;
@@ -93,7 +91,7 @@ public class Window extends Composite {
 	File [] arFiles ;
 	
 	//Table
-	Table tblJobs2;
+	public Table tblJobs2;
 	
 	//TextField
 	Text txtScriptRunning1;
@@ -110,14 +108,22 @@ public class Window extends Composite {
 	//int 
 	int index;
 	
+	//boolean - if jobs are being run
+	public boolean executing;
+	
 	//Array of ScriptHandler objects
 	ScriptHandler [] listScriptHandlers;
 
 	//The ScriptHandler to pass around
 	ScriptHandler scriptHandler;
 	
-	//Selected Conversion
-	private String selectedConversion;
+	//enable items on menu
+	MenuDMFC menu;
+	
+	
+	//ConvertMultipleFiles screen
+	ConvertMultipleFiles cmv;
+	
 	
 	public static Window getInstance(){
 		if (window==null){
@@ -125,8 +131,7 @@ public class Window extends Composite {
 		}
 		return window;
 	}
-	
-	//Properties
+
 	
 	private Window() {
 		this(new Shell(UIManager.display));
@@ -136,11 +141,15 @@ public class Window extends Composite {
 	private Window(final Shell shell) {
 		super(shell, SWT.NONE);
 		this.shell = shell;
+		menu = new MenuDMFC(shell);
 		
-		UIManager.windowNum++;
-		
-		new MenuDMFC(shell);
 		cue=cue.getInstance();
+		executing=false;
+		createContents();
+		shell.pack();
+		
+	}
+	public void createContents(){
 		
 		shell.setText("Daisy Multi Format Converter");
 		shell.setMaximized(true);
@@ -201,7 +210,6 @@ public class Window extends Composite {
 		
 		listConversion.addListener (SWT.DefaultSelection, new Listener () {
 			public void handleEvent (Event e) {
-				
 				int selection = listConversion.getSelectionCount();
 				System.out.println ("The number selected is " + selection);
 				if (selection==1){
@@ -228,19 +236,6 @@ public class Window extends Composite {
 		addButtonsComp.setLayout(rowLayout);
 		
 		
-		/*
-		this.addSingleFile = new Button (addButtonsComp, SWT.SHADOW_OUT);
-		this.addSingleFile.setEnabled(false);
-		buttonProperties.setProperties(addSingleFile, "Convert Single File");
-		this.addSingleFile.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				getConversionSelection();
-				new ConvertSingleFile().open();
-			}
-		});
-		*/
-		
-		
 		this.addMultipleFiles = new Button (addButtonsComp, SWT.SHADOW_OUT);
 		this.addMultipleFiles.setEnabled(false);
 		
@@ -248,7 +243,8 @@ public class Window extends Composite {
 		this.addMultipleFiles.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				getConversionSelection();
-				new ConvertMultipleFiles().open();
+				getNewCMFScreen();
+
 			}
 		});
 		
@@ -269,9 +265,11 @@ public class Window extends Composite {
 		compJobsInQueue.setLayout(rowLayout4);
 		
 		this.lblJobsInQueue2 = new Label(compJobsInQueue, SWT.NONE);
+	
 		labelProperties.setProperties(lblJobsInQueue2, "List of all Conversion Jobs");
 		
 		this.tblJobs2 = new Table(compJobsInQueue, SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL |SWT.SINGLE |SWT.FULL_SELECTION );
+		this.tblJobs2.setRedraw(true);
 		jqtp2 = new JobQueueTableProperties(tblJobs2);
 		tblJobs2.addListener (SWT.Selection, new Listener () {
 			public void handleEvent (Event event) {
@@ -280,6 +278,7 @@ public class Window extends Composite {
 				setSelectedIndex(mark);
 			}
 		});
+		
 		
 		
 		FormData formFill4 = new FormData();
@@ -299,7 +298,7 @@ public class Window extends Composite {
 		moveJobsComp.setLayout(rowLayout2);
 		
 		this.btnMoveUp = new Button (moveJobsComp, SWT.SHADOW_OUT);
-		buttonProperties.setProperties(btnMoveUp, "Move Up");
+		buttonProperties.setProperties(btnMoveUp, "Move Up List");
 		this.btnMoveUp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				moveJobUp();
@@ -310,7 +309,7 @@ public class Window extends Composite {
 		
 		
 		this.btnMoveDown = new Button (moveJobsComp, SWT.SHADOW_OUT);
-		buttonProperties.setProperties(btnMoveDown, "Move Down");
+		buttonProperties.setProperties(btnMoveDown, "Move Down List");
 		this.btnMoveDown.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				moveJobDown();
@@ -346,32 +345,6 @@ public class Window extends Composite {
 		moveJobsComp.setLayoutData(formFill2);
 		
 		
-		/*button.addSelectionListener(new SelectionAdapter(){
-public void widgetSelected(SelectionEvent e) {
-   if (e.getSource() == DataGrid.this.button){
-      TableItem[] items = DataGrid.this.table.getSelection();
-      if (items == null || items.length < 1){
-         Toolkit.getDefaultToolkit().beep();  
-      } else {
-         System.out.println("Selected key..." + items[0]);
-         EditForm form = new EditForm(DataGrid.this.shell);
-         form.setKey(items[0].getText());
-         form.show();
-         DataGrid.this.refreshData();
-      }
-   }  
-}
-});  
-*/
-		/*&
-		table.addListener (SWT.Selection, new Listener () {
-			public void handleEvent (Event event) {
-				String string = event.detail == SWT.CHECK ? "Checked" : "Selected";
-				System.out.println (event.item + " " + string);
-			}
-		});
-		*/
-		
 	//Bottom Buttons
 		
 		Composite bottomComp = new Composite(shell, SWT.NONE);
@@ -386,7 +359,17 @@ public void widgetSelected(SelectionEvent e) {
 		buttonProperties.setProperties(btnRun, "Run All Jobs");
 		this.btnRun.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				runScript();
+				if (cue.getLinkedListJobs().isEmpty()){
+					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+							SWT.CANCEL);
+							messageBox.setMessage("There are no conversions chosen \n" +
+									"Please choose a conversion first.");
+							messageBox.setText("Error: No conversions chosen");
+							messageBox.open();
+				}
+				else{
+					runScript();
+				}
 			}
 		});
 		
@@ -394,6 +377,7 @@ public void widgetSelected(SelectionEvent e) {
 		
 		
 		this.btnDetails = new Button(bottomComp, SWT.SHADOW_OUT);
+		this.btnDetails.setEnabled(false);
 		buttonProperties.setProperties(btnDetails, " Conversion Details");
 		this.btnDetails.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -414,7 +398,7 @@ public void widgetSelected(SelectionEvent e) {
 		formFill5.right = new FormAttachment(55,10);
 		bottomComp.setLayoutData(formFill5);
 	    
-		 shell.pack();
+		
 		
 	}
 	
@@ -434,12 +418,17 @@ public void widgetSelected(SelectionEvent e) {
 		return this.scriptHandler;
 	}
 	
+	
+	/**
+	 * Adds to Linked List, which adds to the Job Table
+	 * @param job Job
+	 */
 	public void addToQueue(Job job){
 		
-		cue.addJobToQueue(job);
-		System.out.println("place in cue " + cue.getPlaceInQueue(job));		
+		cue.addJobToQueue(job);		
 		jqtp2.populateTable(cue);
-		
+		tblJobs2.redraw();
+	
 	}
 
 	
@@ -450,7 +439,6 @@ public void widgetSelected(SelectionEvent e) {
 	
 	public void clearFields(){
 		this.clearFields();
-		selectedConversion="";
 		tblJobs2.clearAll();
 	}
 	
@@ -491,12 +479,7 @@ public void widgetSelected(SelectionEvent e) {
 				try{
 				
 				ScriptHandler sh = dmfc.createScript(toSH);
-				/*System.out.println("This is script number " + i + "  ");
-				System.out.println("The description of the script is " + sh.getDescription());
-				System.out.println("The name of the script is: " + sh.getName());
-				System.out.println("The number of tasks in the script are: " + sh.getTaskCount());
-				*/
-				
+							
 				listScriptHandlers[i]=sh;
 				listConversion.add(listScriptHandlers[i].getName());
 				
@@ -523,8 +506,6 @@ public void widgetSelected(SelectionEvent e) {
 			
 			//get the script from the list
 			int focus = listConversion.getFocusIndex();
-			System.out.println("wht is the focus index? " + focus);
-			
 			this.scriptHandler= listScriptHandlers[focus];
 			
 			
@@ -619,15 +600,33 @@ public void widgetSelected(SelectionEvent e) {
 		}
 	}
 	
-	
-	public void runScript(){
+	/**
+	 * Runs the DMFC converter, and updates 
+	 * progress on the Converter Details page
+	 *
+	 */
+	public void runScript(){	
 		
-		//java.util.List list = scriptHandler.getTransformerInfoList();	
+		executing=true;
+		this.menu.getEnableJobDetails().setEnabled(true);
+		this.btnDetails.setEnabled(true);
 		
-		queRunner = new QueueRunner(dmfc);
-		queRunner.executeJobsInQueue();
-		CurrentJobDetails.getInstance().open();
-				
+		new QueueRunner(dmfc).start();
+		
+		UIManager.display.asyncExec(new Runnable(){
+			public void run(){
+				if (CurrentJobDetails.getInstance().isDisposed())return;
+			
+			//increment the progress bar
+			//CurrentJobDetails.getInstance().pb.setSelection(getSelection()+1);
+				CurrentJobDetails.getInstance().pb.setSelection((lel.getProgress()));
+				CurrentJobDetails.getInstance().txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
+				CurrentJobDetails.getInstance().txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
+		}
+	});
+		
+		
+		//if lel.getMessage==END+SCRIPT, then disable buttons?
 	}
 	
 	public DMFCCore getDMFC(){
@@ -636,6 +635,21 @@ public void widgetSelected(SelectionEvent e) {
 	
 	public LocalEventListener getLocalEventListener(){	
 		return lel;
+	}
+	
+	public boolean getExecuting(){
+		return this.executing;
+	}
+	
+
+	public ConvertMultipleFiles getConvertMultipleFiles(){
+			return cmv;
+		
+	}
+	
+	public void getNewCMFScreen(){
+		cmv = new ConvertMultipleFiles();
+		cmv.open();
 	}
 	
 }
