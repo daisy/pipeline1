@@ -82,12 +82,7 @@ public class MenuMultipleConvert {
 				window=Window.getInstance();
 				window.getConvertMultipleFiles().getTableCompatibleFiles().forceFocus();
 				
-				MessageBox messageBox = new MessageBox(shell, SWT.ICON_INFORMATION |
-						SWT.CANCEL);
-						messageBox.setMessage("Use the arrow keys to scroll " +
-								"through the files. \n  Press \n the space bar to select a file");
-						messageBox.setText("How to Select a File");
-						messageBox.open();
+				
 			}
 			});
 		
@@ -96,14 +91,9 @@ public class MenuMultipleConvert {
 		setOuputPath.setText("Select Output Path\tCtrl+O");
 		setOuputPath.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				
-				
-				MessageBox messageBox = new MessageBox(shell, SWT.ICON_INFORMATION |
-						SWT.CANCEL);
-						messageBox.setMessage("Use the arrow keys to scroll \n " +
-								"through the files.  Press \n the space bar to select a file");
-						messageBox.setText("How to Select a File");
-						messageBox.open();
+				window=Window.getInstance();
+				//force focus on radio buttons
+				//window.getConvertMultipleFiles().getTableCompatibleFiles().forceFocus();
 			}
 			});
 		
@@ -149,8 +139,7 @@ public class MenuMultipleConvert {
 			}
 			});
 		
-		MenuItem contactUs = new MenuItem(helpmenu, SWT.PUSH);
-		contactUs.setText("Contact Us\tCtrl+C");
+		
 		
 		MenuItem daisyWebSite = new MenuItem(helpmenu, SWT.PUSH);
 		daisyWebSite.setText("Go to the DAISY web site\tCtrl+D");
@@ -160,11 +149,20 @@ public class MenuMultipleConvert {
 			}
 			});
 		
-		MenuItem tpbWebSite = new MenuItem(helpmenu, SWT.PUSH);
-		tpbWebSite.setText("Go to the TPB web site\tCtrl+T");
-		tpbWebSite.addSelectionListener(new SelectionAdapter() {
+		MenuItem about = new MenuItem(helpmenu, SWT.PUSH);
+		about.setText("About\tCtrl+A");
+		about.setAccelerator(SWT.MOD1 + 'A');
+		about.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				new WebLinks("http://www.tpb.se");
+				System.out.println("AboutScreen");
+				MessageBox messageBox = new MessageBox(shell, SWT.ICON_INFORMATION |
+						SWT.CANCEL);
+						messageBox.setMessage("DAISY Multi-Format Converter \n\n" +
+								"Copyright by the DAISY Consortium 2006 \n" +
+								"Version 1.0, June 2006"
+								);
+						messageBox.setText("About");
+						messageBox.open();
 			}
 			});
 	

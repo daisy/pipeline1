@@ -19,19 +19,18 @@ public class TransformerListTableProperties {
 		
 		this.table=_table;
 		this.scriptHandler=script;
-		//System.out.println("The name of the ScriptHandler is " + scriptHandler.getName());
+		System.out.println("The name of the ScriptHandler is " + scriptHandler.getName());
 		
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
-		//table.setFont(FontChoices.fontLabel);
 		table.setBackground(ColorChoices.white);
-		//table.setBounds(0,0,300, 100);
+		//table.setBounds(0,0,300, 200);
 	
 		
 		
 		TableColumn tcConversionName = new TableColumn (table, SWT.LEFT);
 		tcConversionName.setText("Names of Transformers in Conversion");
-		tcConversionName.setWidth(350);
+		tcConversionName.setWidth(220);
 		tcConversionName.setResizable(true);
 		
 	}

@@ -74,14 +74,22 @@ public class MenuSingleConvert {
 		MenuItem dmfcGuiHelp = new MenuItem(helpmenu, SWT.PUSH);
 		dmfcGuiHelp.setText("GUI Help\tCtrl+H");
 		
-		MenuItem contactUs = new MenuItem(helpmenu, SWT.PUSH);
-		contactUs.setText("Contact Us\tCtrl+U");
-		
-		MenuItem daisyWebSite = new MenuItem(helpmenu, SWT.PUSH);
-		daisyWebSite.setText("Go to the DAISY web site\tCtrl+D");
-		
-		MenuItem tpbWebSite = new MenuItem(helpmenu, SWT.PUSH);
-		tpbWebSite.setText("Go to the TPB web site\tCtrl+B");
+		MenuItem about = new MenuItem(helpmenu, SWT.PUSH);
+		about.setText("Go to the TPB web site\tCtrl+T");
+		about.setAccelerator(SWT.MOD1 + 'A');
+		about.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("AboutScreen");
+				MessageBox messageBox = new MessageBox(shell, SWT.ICON_INFORMATION |
+						SWT.CANCEL);
+						messageBox.setMessage("DAISY Multi-Format Converter \n\n" +
+								"Copyright by the DAISY Consortium 2006 \n" +
+								"Version 1.0, June 2006"
+								);
+						messageBox.setText("About");
+						messageBox.open();
+			}
+			});
 	
 	
 	}

@@ -17,6 +17,7 @@ import org.daisy.dmfc.gui.widgetproperties.JobQueueTableProperties;
 import org.daisy.dmfc.gui.widgetproperties.LabelProperties;
 import org.daisy.dmfc.gui.widgetproperties.ListProperties;
 import org.daisy.dmfc.gui.widgetproperties.TextProperties;
+import org.daisy.dmfc.gui.widgetproperties.TransformerListTableProperties;
 import org.daisy.dmfc.qmanager.Job;
 import org.daisy.dmfc.qmanager.LocalEventListener;
 import org.daisy.dmfc.qmanager.LocalInputListener;
@@ -29,14 +30,18 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
@@ -49,8 +54,9 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Laurie Sherve
  */
-public class Window extends Composite{
+public class Window { 
 	
+	private Display display;
 	private Shell shell;
 	private DMFCCore dmfc;
 	LocalInputListener lil;
@@ -71,6 +77,11 @@ public class Window extends Composite{
 	Label lblSelectConversion;
 	Label lblJobsInQueue2;
 	Label lblScriptRunning1;
+	Label lblListTransformers;
+	Label lblListChecked;
+	Label lblElapsedTime;
+	Label lblEstimatedTime;
+	Label lblTotalConversionProgress;
 	
 	
 	//Buttons
@@ -92,9 +103,16 @@ public class Window extends Composite{
 	
 	//Table
 	public Table tblJobs2;
+	Table tblListTransformers;
 	
 	//TextField
 	Text txtScriptRunning1;
+	Text txtConversionRunning;
+	Text txtElapsedTime;
+	Text txtEstimatedTime;
+	
+	//ProgressBar - length of running jobs
+	ProgressBar pb;
 	
 	// Queue of all Jobs
 	Queue cue;
@@ -104,6 +122,7 @@ public class Window extends Composite{
 	
 	//Composite
 	Composite compJobsInQueue;
+	Composite compDetails;
 	
 	//int 
 	int index;
@@ -120,7 +139,6 @@ public class Window extends Composite{
 	//enable items on menu
 	MenuDMFC menu;
 	
-	
 	//ConvertMultipleFiles screen
 	ConvertMultipleFiles cmv;
 	
@@ -133,22 +151,41 @@ public class Window extends Composite{
 	}
 
 	
-	private Window() {
-		this(new Shell(UIManager.display));
-	}
-	
-	
-	private Window(final Shell shell) {
-		super(shell, SWT.NONE);
-		this.shell = shell;
-		menu = new MenuDMFC(shell);
+	private Window(){
 		
+		display=UIManager.display;
+		shell=new Shell (display);
+		shell.setBackground(ColorChoices.white);
+		menu = new MenuDMFC(shell);
 		cue=cue.getInstance();
 		executing=false;
 		createContents();
 		shell.pack();
 		
 	}
+	
+	
+/*
+	private Window() {
+		this(new Shell(UIManager.display));
+	}
+	
+	
+	private Window(final Shell shell) {
+		super(shell, SWT.V_SCROLL);
+		this.shell = shell;
+		shell.setBackground(ColorChoices.white);
+		menu = new MenuDMFC(shell);
+		
+		cue=cue.getInstance();
+		executing=false;
+		createContents();
+		shell.pack();	
+	}
+	
+*/
+	
+	
 	public void createContents(){
 		
 		shell.setText("Daisy Multi Format Converter");
@@ -196,24 +233,12 @@ public class Window extends Composite{
 		listProperties.setProperties(listConversion, "Select Conversion Options(s)");
 		populateList();
 		
-		listConversion.addListener (SWT.Selection, new Listener () {
-			public void handleEvent (Event e) {
+		this.listConversion.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
 				int selection = listConversion.getSelectionCount();
 				//System.out.println ("The number selected is " + selection);
 				if (selection==1){
-					addMultipleFiles.setEnabled(true);
-					
-					
-				}
-			}
-		});
-		
-		listConversion.addListener (SWT.DefaultSelection, new Listener () {
-			public void handleEvent (Event e) {
-				int selection = listConversion.getSelectionCount();
-				System.out.println ("The number selected is " + selection);
-				if (selection==1){
-					addMultipleFiles.setEnabled(true);
+					addMultipleFiles.setEnabled(true);	
 				}
 			}
 		});
@@ -259,15 +284,25 @@ public class Window extends Composite{
 	//Bottom left
 		compJobsInQueue = new Composite (shell, SWT.NONE);
 		compJobsInQueue.setBackground(ColorChoices.white);
-		RowLayout rowLayout4 = new RowLayout(SWT.VERTICAL);
+		/*RowLayout rowLayout4 = new RowLayout(SWT.VERTICAL);
 		rowLayout4.pack = true;
 		rowLayout4.spacing = 15;
 		compJobsInQueue.setLayout(rowLayout4);
+		*/
 		
+		GridLayout gridLayoutJobs = new GridLayout();
+		compJobsInQueue.setLayout(gridLayoutJobs);
+		
+		
+		GridData data = new GridData();
+		data.heightHint=15;
 		this.lblJobsInQueue2 = new Label(compJobsInQueue, SWT.NONE);
-	
 		labelProperties.setProperties(lblJobsInQueue2, "List of all Conversion Jobs");
+		lblJobsInQueue2.setLayoutData(data);
 		
+		
+		data = new GridData();
+		data.heightHint=120;
 		this.tblJobs2 = new Table(compJobsInQueue, SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL |SWT.SINGLE |SWT.FULL_SELECTION );
 		this.tblJobs2.setRedraw(true);
 		jqtp2 = new JobQueueTableProperties(tblJobs2);
@@ -278,13 +313,12 @@ public class Window extends Composite{
 				setSelectedIndex(mark);
 			}
 		});
-		
-		
+		tblJobs2.setLayoutData(data);
 		
 		FormData formFill4 = new FormData();
-		formFill4.top = new FormAttachment(listConversion, 35);
+		formFill4.top = new FormAttachment(listConversion, 15);
 		formFill4.left = new FormAttachment(0, 20);
-		formFill4.bottom = new FormAttachment(65, 10);
+		formFill4.bottom = new FormAttachment(55, 10);
 		formFill4.right = new FormAttachment(70,10);
 		compJobsInQueue.setLayoutData(formFill4);
 		
@@ -305,7 +339,6 @@ public class Window extends Composite{
 				jqtp2.populateTable(cue);
 			}
 		});
-		
 		
 		
 		this.btnMoveDown = new Button (moveJobsComp, SWT.SHADOW_OUT);
@@ -334,7 +367,6 @@ public class Window extends Composite{
 				editJob();
 			}
 		});
-		
 		
 		
 		FormData formFill2 = new FormData();
@@ -374,14 +406,13 @@ public class Window extends Composite{
 		});
 		
 
-		
-		
 		this.btnDetails = new Button(bottomComp, SWT.SHADOW_OUT);
 		this.btnDetails.setEnabled(false);
 		buttonProperties.setProperties(btnDetails, " Conversion Details");
 		this.btnDetails.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				CurrentJobDetails.getInstance().open();
+				//CurrentJobDetails.getInstance().open();
+				showConversionDetails();
 			}
 		});
 		
@@ -394,13 +425,132 @@ public class Window extends Composite{
 		FormData formFill5 = new FormData();
 		formFill5.top = new FormAttachment(compJobsInQueue, 35);
 		formFill5.left = new FormAttachment(0, 20);
-		formFill5.bottom = new FormAttachment(66, 100);
+		formFill5.bottom = new FormAttachment(56, 100);
 		formFill5.right = new FormAttachment(55,10);
 		bottomComp.setLayoutData(formFill5);
-	    
 		
+
+	//Conversion Details, shown only if asked for
+		
+		compDetails= new Composite(shell, SWT.V_SCROLL);
+		compDetails.setVisible(false);
+		
+		GridLayout gridlayout = new GridLayout(4, false);
+		//gridlayout.verticalSpacing=20;
+		gridlayout.horizontalSpacing=17;
+		gridlayout.marginHeight=5;
+		
+		
+		compDetails.setLayout(gridlayout);
+	
+		
+		
+	//First column
+		Composite compColumnOne = new Composite(compDetails, SWT.BORDER);
+		GridLayout gridColumnOne = new GridLayout();
+		gridColumnOne.verticalSpacing=20;
+		gridColumnOne.horizontalSpacing=20;
+		compColumnOne.setLayout(gridColumnOne);
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.widthHint=160;
+		data.grabExcessHorizontalSpace=true;
+		this.lblListTransformers = new Label(compColumnOne, SWT.NONE);
+		lblListTransformers.setText("Current Conversion");
+		lblListTransformers.setLayoutData(data);
+		//labelProperties.setProperties(lblListTransformers, "Current Conversion");
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING |GridData.FILL_HORIZONTAL |GridData.VERTICAL_ALIGN_BEGINNING);
+		data.grabExcessHorizontalSpace=true;
+		this.txtConversionRunning = new Text(compColumnOne, SWT.BORDER);
+		this.txtConversionRunning.setText("");
+		this.txtConversionRunning.pack();
+		//this.txtConversionRunning.s
+		txtConversionRunning.setLayoutData(data);
+		
+		
+	//Second Column
+		Composite compColumnTwo = new Composite(compDetails, SWT.BORDER);
+		GridLayout gridColumnTwo = new GridLayout();
+		gridColumnTwo.verticalSpacing=10;
+		gridColumnTwo.horizontalSpacing=20;
+		compColumnTwo.setLayout(gridColumnOne);
+		
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.widthHint=270;
+		this.lblListChecked = new Label(compColumnTwo, SWT.NONE);
+		lblListChecked.setText("Transformers in Conversion");
+		lblListChecked.setLayoutData(data);
+		
+		data = new GridData(GridData.FILL_BOTH);
+		data.heightHint=70;
+		this.tblListTransformers = new Table(compColumnTwo, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL  |SWT.FULL_SELECTION );
+		
+		tblListTransformers.setLayoutData(data);
+		
+		
+	//Third column
+		Composite compColumnThree = new Composite(compDetails, SWT.BORDER);
+		GridLayout gridColumnThree = new GridLayout();
+		compColumnThree.setLayout(gridColumnThree);
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_END);
+		lblElapsedTime = new Label(compColumnThree, SWT.NONE);
+		lblElapsedTime.setText("Elapsed Time");
+		lblElapsedTime.setLayoutData(data);
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_END);
+		lblEstimatedTime = new Label(compColumnThree, SWT.NONE);
+		lblEstimatedTime.setText("Estimated Time");
+		lblEstimatedTime.setLayoutData(data);
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_END);
+		this.lblTotalConversionProgress = new Label(compColumnThree, SWT.NONE);
+		lblTotalConversionProgress.setText("Conversion Progress");
+		lblTotalConversionProgress.setLayoutData(data);
+		
+		
+	//Fourth column
+		
+		Composite compColumnFour = new Composite(compDetails, SWT.BORDER);
+		GridLayout gridColumnFour = new GridLayout();
+		compColumnFour.setLayout(gridColumnFour);
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		txtElapsedTime = new Text(compColumnFour, SWT.NONE);
+		txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
+		txtElapsedTime.setLayoutData(data);
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		txtEstimatedTime = new Text(compColumnFour, SWT.NONE);
+		txtElapsedTime.setText(String.valueOf(lel.getTotalTime()));
+		txtEstimatedTime.setLayoutData(data);
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		pb = new ProgressBar(compColumnFour, SWT.NONE);
+		pb.setSelection(lel.getProgress());
+		pb.setLayoutData(data);
+		
+		
+		
+		FormData formFillEnd = new FormData();
+		formFillEnd.top = new FormAttachment(bottomComp, 0);
+		formFillEnd.left = new FormAttachment(0, 20);
+		formFillEnd.bottom = new FormAttachment(80, 100);
+		formFillEnd.right = new FormAttachment(85,10);
+		compDetails.setLayoutData(formFillEnd);
+	    	
+	}
+	
+	
+	public void showConversionDetails(){
+		TransformerListTableProperties tltp = new TransformerListTableProperties(tblListTransformers, getConversionChosen());
+		tltp.populateTable();
+		compDetails.setVisible(true);
 		
 	}
+	
 	
 	public void open() {
 		shell.open();
@@ -618,7 +768,6 @@ public class Window extends Composite{
 				if (CurrentJobDetails.getInstance().isDisposed())return;
 			
 			//increment the progress bar
-			//CurrentJobDetails.getInstance().pb.setSelection(getSelection()+1);
 				CurrentJobDetails.getInstance().pb.setSelection((lel.getProgress()));
 				CurrentJobDetails.getInstance().txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
 				CurrentJobDetails.getInstance().txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
@@ -643,8 +792,7 @@ public class Window extends Composite{
 	
 
 	public ConvertMultipleFiles getConvertMultipleFiles(){
-			return cmv;
-		
+			return cmv;	
 	}
 	
 	public void getNewCMFScreen(){
