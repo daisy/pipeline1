@@ -1,0 +1,11 @@
+dmfc tasklist 20050428-->
+
+id			what								who		status		
+--------------------------------------------------------------
+xrefrng		@xref to tdf rng					MG	 
+xrefvalues	give @xref values					MG		
+licpack		license pack to the CVS				MG	
+errscout	go through errscout,
+			append missing tests				MG
+fileset		finalize refactoring
+			of fileset							MG				
