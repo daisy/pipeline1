@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!--
+         DAISY dtb 2005 -> XHTML 1.0 transform, 
+         rev: 1.7
+       date: 2005-10-06T12:31:28.0Z--><head>
+      <title/>
+      <meta name="dc:Title" content="RTF2DTBook - 2006-4-28"/>
+      <meta name="dc:Creator" content="Brandon Nelson"/>
+	  <style type="text/css">
+		td {border: 1px solid; vertical-align: top;}
+		</style>
+   </head>
+   <body>
+      <div class="frontmatter">
+         <div class="doctitle">RTF2DTBook - 2006-4-28</div>
+      </div>
+      <div class="bodymatter">
+         <div class="level1">
+            <h1>RTF2DTBook</h1>
+            <p>Part of the DAISY MultiFormat Converter</p>
+            <p>Current version: 0.9 (2006-4-28)</p>
+            <p>This document is provided in DTBook format, converted directly from RTF with this tool, and in HTML, converted by the RNIB's DTBook2XHTML tool.</p>
+            <div class="level2">
+               <h2>Paragraph styles and structures</h2>
+               <p>RTF  style names appear in bold; opening DTBook tags and attributes in HTML code.</p>
+               <table>
+                  <tr>
+                     <td rowspan="1" colspan="1">
+                        <strong>Normal</strong>
+                     </td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;p&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">
+                        <strong>Heading 1</strong> through<strong> Heading 6</strong>
+                     </td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;h1&gt;</code> through <code>&lt;h6&gt;</code>, with relevant <code>&lt;levelx&gt;</code> section wrappers added. Nesting must proceed in natural DTBook order.</td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">
+                        <strong>Block Text</strong>
+                     </td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;blockquote&gt;&lt;p&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">Lists</td>
+                     <td rowspan="1" colspan="1">Nesting supported:<ul>
+                           <li>
+                              <strong>List Bullet</strong>: <code>&lt;list type="ul"&gt;</code>, <code>&lt;li&gt;</code>
+                              <ul>
+                                 <li>
+                                    <strong>List Bullet 2</strong> is second level list, etc.</li>
+                              </ul>
+                           </li>
+                           <li>
+                              <strong>List Number</strong>: <code>&lt;list type="ol"&gt;</code>, <code>&lt;li&gt;</code>
+                              <ul>
+                                 <li>
+                                    <strong>List Number 2</strong> is second level list, etc.</li>
+                              </ul>
+                           </li>
+                           <li>list attributes:<ul>
+                                 <li>
+                                    <code>enum="1"</code>: when the first list item marker has an ordinal from 1-9</li>
+                                 <li>
+                                    <code>enum="a"</code>: for initial item markers a-h</li>
+                                 <li>
+                                    <code>enum="A"</code>: for item markers A-H, and their start attributes</li>
+                                 <li>
+                                    <code>enum="i"</code>: for lower case roman numerals</li>
+                                 <li>
+                                    <code>enum="I"</code>: for upper case roman numerals</li>
+                                 <li>
+                                    <code>start="[x]"</code>: for arabic or alphabetic enum types which do not start at "1", "a" or "A".</li>
+                              </ul>
+                           </li>
+                           <li>list item markers themselves are dropped, given the intention of dtbook to convey these logically.</li>
+                        </ul>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">Tables</td>
+                     <td rowspan="1" colspan="1">Simple tables are supported, using basic <code>&lt;table&gt;</code> and <code>&lt;tr&gt;</code> elements.<ul>
+                           <li>
+                              <strong>Header</strong>: <code>&lt;th&gt;</code>
+                           </li>
+                           <li>
+                              <strong>Normal</strong>: <code>&lt;td&gt;</code>
+                           </li>
+                           <li>column-spanning cells are not tagged as such.</li>
+                        </ul>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">Footnotes</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;noteref&gt;</code>, <code>&lt;note&gt;</code>
+                        <ul>
+                           <li>Two types of footnotes are supported: proper Word footnotes, and <em>manual</em> footnotes, using styles <strong>Footnote Reference</strong> and <strong>Footnote Text</strong>. The ID attributes assigned are derived from the footnote number, so a document with duplicate footnote numbers will need to be assigned unique IDs in the XML.</li>
+                        </ul>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">Caption</td>
+                     <td rowspan="1" colspan="1">If beside an image, an <code>&lt;imggroup&gt;</code> is created, with a dummy <code>&lt;img&gt;</code> tag and <code>&lt;caption&gt;</code> tag for the text.</td>
+                  </tr>
+               </table>
+            </div>
+            <div class="level2">
+               <h2>Character styles</h2>
+               <table>
+                  <tr>
+                     <td rowspan="1" colspan="1">Page Number</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;pagenum&gt;</code>
+                        <ul>
+                           <li>Arabic numerals: <code>page="normal"</code>
+                           </li>
+                           <li>Roman numerals: <code>page="front"</code>
+                           </li>
+                           <li>Other: <code>page="special"</code>
+                           </li>
+                           <li>ID attribute: page number prefixed by the letter p, e.g. <code>id="p12"</code>
+                           </li>
+                        </ul>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">italic/underline</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;em&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">bold</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;strong&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">superscript</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;sup&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">subscript</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;sub&gt;</code>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="1" colspan="1">HTML Code</td>
+                     <td rowspan="1" colspan="1">
+                        <code>&lt;code&gt;</code>
+                     </td>
+                  </tr>
+               </table>
+               <p>Other features: </p>
+               <ul>
+                  <li>Well-formed, indented XML output. (Ensuring validity is another matter...) </li>
+                  <li>Heuristics which drop unnecessary <code>&lt;p&gt;</code> tags, such as in paragraphs which contain only a page number, or table cells and list items which contain only one paragraph.</li>
+               </ul>
+            </div>
+         </div>
+      </div>
+   </body>
+</html>
