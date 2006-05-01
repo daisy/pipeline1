@@ -6,10 +6,12 @@ This transformer (in its current version) requires the separate installation of 
 
 2. Rename the .jar file to .zip, and extract the folder structure to somewhere like C:\jython.
 
-3. In DMFC/src/dmfc.properties, edit the line that begins with "python.home", to point to the jython installation from step 2.
+3. In DMFC/src/dmfc.properties, edit the line that begins with "python.home", to point to the jython installation from step 2 (use double backslashes).
 
 4. Add jython.jar to the Eclipse project. Select "Project" menu -> "Properties". At the left, select "Java Build Path", then the tab labelled "Libraries". Click "Add External JARs...", navigate to the jython installation and select jython.jar.
 
-5. Edit the parameters in DMFC/doc/examples/rtf2dtbook.xml of the locations of the input RTF and the desired output dtbook.
+5. Edit the parameters in DMFC/doc/examples/rtf2dtbook.xml to the locations of the input RTF and the desired output dtbook.
 
+
+6. Run DMFC, with an argument of "doc/examples/rtf2dtbook.xml".
 
