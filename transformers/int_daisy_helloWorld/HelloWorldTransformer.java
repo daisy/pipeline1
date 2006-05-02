@@ -43,21 +43,21 @@ public class HelloWorldTransformer extends Transformer {
 	protected boolean execute(Map a_parameters) {
 	    progress(0);
 		sendMessage(Level.INFO, i18n("RUNNING", "world!"));
-		progress(10);
+		progress(0.1);
 		TestClass t = new TestClass();
 		t.test();
-		progress(30);
+		progress(0.3);
 		String _ret = getUserInput(Level.INFO, i18n("WHAT_IS_YOUR_NAME"), "default value");
-		progress(50);
+		progress(0.5);
 		sendMessage(Level.INFO, "User says: " + _ret);
-		progress(70);
+		progress(0.7);
 		
 		for (Iterator it = a_parameters.entrySet().iterator(); it.hasNext(); ) {
 		    Map.Entry entry = (Map.Entry)it.next();
 		    sendMessage(Level.INFO, i18n("FOUND_PARAM", entry.getKey(), entry.getValue()));
 		}		
 		
-		progress(100);
+		progress(1);
 		/*
 		com.example.linus.Hepp h = new com.example.linus.Hepp();
 		System.err.println(h.hepp());
