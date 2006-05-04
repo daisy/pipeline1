@@ -18,7 +18,7 @@ import org.xml.sax.SAXParseException;
  * @author Markus Gylling
  */
 
-public class SmilFileImpl extends XmlFileImpl implements SmilFile, Z3986SmilFile {
+public class SmilFileImpl extends XmlFileImpl implements SmilFile {
 	private SmilClock myStatedDuration = null;
 	private SmilClock myStatedTotalElapsedTime = null;	
 	private SmilClock audioClipBegin = null; //does not gather anything outside startelement; put here for optim
