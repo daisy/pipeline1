@@ -17,6 +17,8 @@ public interface FilesetErrorHandler {
 	 * <li>FilesetFileWarningException -  extends FilesetFileException - low severity - file still usable without needing to expect critical data access failures</li>
 	 * <li>FilesetFileException - super type - severity unspecified</li> 
 	 * </ul>
+	 * <p>A default implementation of this interface exists in
+	 * org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl</p>
 	 */
 	
 	public void error(FilesetFileException ffe) throws FilesetFileException;
