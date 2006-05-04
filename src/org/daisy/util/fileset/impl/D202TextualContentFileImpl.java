@@ -2,11 +2,11 @@ package org.daisy.util.fileset.impl;
 
 import java.io.IOException;
 import java.net.URI;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.daisy.util.fileset.interfaces.xml.d202.D202TextualContentFile;
-import org.daisy.util.mime.MIMETypeException;
-import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -14,15 +14,21 @@ import org.xml.sax.SAXException;
  * @author Markus Gylling
  */
 
-class D202TextualContentFileImpl extends Xhtml10FileImpl implements D202TextualContentFile  {
+final class D202TextualContentFileImpl extends Xhtml10FileImpl implements D202TextualContentFile  {
 
-	D202TextualContentFileImpl(URI uri) throws ParserConfigurationException, SAXException, IOException, MIMETypeException {
+	D202TextualContentFileImpl(URI uri) throws ParserConfigurationException, SAXException, IOException {
         super(uri,D202TextualContentFile.mimeStringConstant);          
     }
-
-    D202TextualContentFileImpl(URI uri, ErrorHandler errh) throws ParserConfigurationException, SAXException, IOException, MIMETypeException {
-        super(uri, errh,D202TextualContentFile.mimeStringConstant);  
-    }
     	
+	public InputSource resolveEntity(String publicId, String systemId) throws IOException {
+		//override the XmlFileImpl method in order to substitute DTDs
+		//from xhtml to the subset one
+		if (publicId.startsWith("-//W3C//DTD XHTML")) {
+			publicId = "-//DAISY//DTD content v2.02//EN";
+		}	
+		return super.resolveEntity(publicId,systemId);
+	}
+    
 	private static final long serialVersionUID = 4658421573363931119L;
+	
 }

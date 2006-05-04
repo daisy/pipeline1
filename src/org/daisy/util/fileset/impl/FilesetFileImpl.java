@@ -1,8 +1,11 @@
 package org.daisy.util.fileset.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,34 +14,41 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
-import org.daisy.util.file.EFileImpl;
-import org.daisy.util.fileset.FilesetException;
+import org.daisy.util.file.EFile;
+import org.daisy.util.file.IEFile;
+import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.util.FilesetRegex;
-import org.daisy.util.mime.MIMEType;
 import org.daisy.util.mime.MIMETypeException;
+import org.xml.sax.InputSource;
 
 /**
  * <p>Base class for the org.daisy.util.fileset File hierarchy.</p>
  * @author Markus Gylling
  */
 
-abstract class FilesetFileImpl extends EFileImpl implements FilesetFile {
+abstract class FilesetFileImpl extends EFile implements FilesetFile, IEFile {
 	private LinkedHashSet myUriStrings = new LinkedHashSet();	
 	private LinkedHashMap myFilesetReferences = new LinkedHashMap();	
-	private Map myFilesetReferers = new HashMap();	
-	protected FilesetRegex regex = FilesetRegex.getInstance(); 	
-	private MIMEType mimeType = null;
+	private Map myFilesetReferers = null;	
+	protected LinkedHashSet myExceptions = new LinkedHashSet();	
+	protected boolean isParsed = false;
+	protected FilesetRegex regex = FilesetRegex.getInstance();
 	
-	FilesetFileImpl(URI uri, String mimeString) throws IOException, FileNotFoundException, MIMETypeException {
-		super(uri);			
+		
+	FilesetFileImpl(URI uri, String mimeString) throws IOException, FileNotFoundException {		
+		super(uri);				
 		if(!this.exists())  {
 			throw new FileNotFoundException("File not found: " + this.getName());
 		} else if (!this.canRead()){
 			throw new IOException("I/O Exception: " + this.getName());
-		} else {
-		  this.setMimeType(mimeString);
-	      //ok to bubble up		
+		} else {		  
+			try{
+				super.setMimeType(mimeString);
+			}catch(MIMETypeException mte){
+				myExceptions.add(new FilesetFileErrorException(this,mte)); //we dont throw if this fails			
+			}
+			//ok to bubble up		
 		}
 	}
 	
@@ -53,47 +63,42 @@ abstract class FilesetFileImpl extends EFileImpl implements FilesetFile {
 		myUriStrings.add(uri);
 	}
 		
-	public Iterator getUriIterator() {
-		return this.myUriStrings.iterator();		
+	public Collection getUriStrings(){
+		return this.myUriStrings;
 	}
-
-	public boolean hasUris() {		
-		return (!this.myUriStrings.isEmpty());
-	}
-	
-	public void putReferencedMember(URI uri, FilesetFile file) {
-		myFilesetReferences.put(uri,file);
+		
+	public void putReferencedMember(FilesetFile file) {
+		myFilesetReferences.put(file.getFile().toURI(),file);
 	}
 			
 	public FilesetFile getReferencedLocalMember(URI uri) {
 		return (FilesetFile)myFilesetReferences.get(uri);
 	}
-	
-//	public Iterator getReferencedLocalMembersURIIterator() {
-//		return myFilesetReferences.keySet().iterator();    
-//	}
-	
+		
 	public Collection getReferencedLocalMembers() {
 		return myFilesetReferences.values();
 	}
 	
-	public FilesetFile getReferringLocalMember(URI uri) throws FilesetException{
-		if (myFilesetReferers.isEmpty()) throw new FilesetException("this collection has not been set");
-		return (FilesetFile)myFilesetReferers.get(uri);		
-	}
-	
-//	public Iterator getReferringLocalMembersIterator() throws FilesetException {
-//		if (myFilesetReferers.isEmpty()) throw new FilesetException("this collection has not been set");
-//		return myFilesetReferers.keySet().iterator(); 
-//	}
-
-	public Collection getReferringLocalMembers() throws FilesetException {
-		if (myFilesetReferers.isEmpty()) throw new FilesetException("this collection has not been set");
+	public Collection getReferringLocalMembers() throws NullPointerException {
+		if (myFilesetReferers==null) throw new NullPointerException("this collection has not been set");
 		return myFilesetReferers.values(); 
 	}
 	
+	public FilesetFile getReferringLocalMember(URI uri) throws  NullPointerException {
+		if (myFilesetReferers==null) throw new NullPointerException ("this collection has not been set");
+		if (!myFilesetReferers.isEmpty()){ 
+			return (FilesetFile)myFilesetReferers.get(uri);
+		}
+		return null;
+	}
+	
+    public boolean isParsed() {
+        return isParsed;
+    }
+	
 	void setReferringLocalMembers(Map fileset) {
 		//populate the myFilesetReferers HashMap - who points to me?
+		myFilesetReferers = new HashMap();
 		URI myURI = this.toURI();
 		Iterator it = fileset.keySet().iterator();
 		while (it.hasNext()) {
@@ -110,5 +115,65 @@ abstract class FilesetFileImpl extends EFileImpl implements FilesetFile {
 	    URI filesetFileURI = filesetFile.getFile().toURI();
 	    URI relative = parent.relativize(filesetFileURI);
 	    return relative;
+	}	
+
+    public InputSource asInputSource() throws FileNotFoundException {    	
+    	InputSource is = new InputSource(new FileReader(this));
+    	is.setSystemId(this.toString());
+        return is;
+    }
+    
+    public InputStream asInputStream() throws FileNotFoundException {    	
+    	return new FileInputStream(this);    	        
+    }
+        
+    public boolean hadErrors() {
+    	return !myExceptions.isEmpty();
+    }
+
+    public Collection getErrors() {
+    	return myExceptions;
+    }
+
+	public int compareTo(Object arg0) {
+		if(arg0.equals(this)){
+			return 0;
+		}
+		return -1;
 	}
 }
+
+
+
+
+
+
+
+
+//void setErrorListener(FilesetErrorHandler listener) {
+//this.myErrorListener = listener;
+//}
+
+//protected void addError(Exception e) {
+//myExceptions.add(e);
+//if(this.errorListener!=null) {
+//  this.errorListener.error(e);
+//}    	
+//}
+
+//public Iterator getReferringLocalMembersIterator() throws FilesetException {
+//if (myFilesetReferers.isEmpty()) throw new FilesetException("this collection has not been set");
+//return myFilesetReferers.keySet().iterator(); 
+//}
+
+//public Iterator getUriIterator() {
+//return this.myUriStrings.iterator();		
+//}
+
+//public boolean hasUris() {		
+//return (!this.myUriStrings.isEmpty());
+//}
+
+//public Iterator getReferencedLocalMembersURIIterator() {
+//return myFilesetReferences.keySet().iterator();    
+//}

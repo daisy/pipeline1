@@ -5,11 +5,10 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.daisy.util.fileset.interfaces.binary.PdfFile;
-import org.daisy.util.mime.MIMETypeException;
 
-public class PdfFileImpl extends FilesetFileImpl implements PdfFile {
+final class PdfFileImpl extends FilesetFileImpl implements PdfFile {
 
-	PdfFileImpl(URI uri) throws IOException, FileNotFoundException, MIMETypeException {
+	PdfFileImpl(URI uri) throws IOException, FileNotFoundException {
 		super(uri, PdfFile.mimeStringConstant);
 	}
 

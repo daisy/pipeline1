@@ -9,26 +9,27 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import javazoom.jl.decoder.BitstreamException;
 
-import org.daisy.util.fileset.FilesetErrorHandler;
-import org.daisy.util.fileset.FilesetException;
 import org.daisy.util.fileset.FilesetType;
+import org.daisy.util.fileset.exception.FilesetFatalException;
+import org.daisy.util.fileset.exception.FilesetFileException;
+import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
+import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.ManifestFile;
 import org.daisy.util.fileset.interfaces.Referring;
 import org.daisy.util.fileset.interfaces.xml.d202.D202MasterSmilFile;
 import org.daisy.util.fileset.util.FilesetRegex;
+import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.mime.MIMETypeException;
 import org.daisy.util.xml.Peeker;
 import org.daisy.util.xml.PeekerImpl;
-import org.w3c.css.sac.CSSException;
-import org.w3c.css.sac.CSSParseException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -36,52 +37,65 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Markus Gylling
  */
-public class FilesetImpl implements FilesetErrorHandler, Fileset {
-	private Map localMembers = new HashMap();	//<URI>, <FilesetFile>	
+public class FilesetImpl implements Fileset {
+	private Map localMembers = new HashMap();		//<URI>, <FilesetFile>	
 	private HashSet remoteMembers = new HashSet();	//<String> 
-	private HashSet errors = new HashSet();			//<Exception>	
-	private HashSet missingURIs = new HashSet();
+	//private HashSet exceptions = new HashSet();			//<FilesetFileException>	
+	private FilesetExceptionCollector exc = null; 
+	private HashSet missingURIs = new HashSet();	//<URI>
 	private ManifestFile manifestMember;	
 	private FilesetType filesetType = null;
-	private FilesetRegex regex = FilesetRegex.getInstance();
-	private Peeker peeker; 
+	private static FilesetRegex regex = FilesetRegex.getInstance();
+	//private static Peeker peeker; 
+	private static Peeker peeker = new PeekerImpl();
 	private boolean setReferringCollections; 
+	private FilesetErrorHandler errorListener = null;
 	
 	/**
 	 * Default class constructor
-	 * @param manifest the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
+	 * @param manifestURI the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
+	 * @param errh the FilesetErrorHandler that will recieve notification of nonfatal errors
+	 * @throws FilesetNonFatalException 
 	 * @see #FilesetImpl(URI, boolean)
 	 * @see #FilesetImpl(URI,boolean, boolean)
 	 */
-	public FilesetImpl(URI manifest) throws FilesetException {
-		initialize(manifest,false,false);	
+	public FilesetImpl(URI manifestURI, FilesetErrorHandler errh) throws FilesetFatalException {
+		initialize(manifestURI,errh,false,false);
 	}
 	
 	/**
 	 * Extended class constructor
-	 * @param manifest the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
+	 * @param manifestURI the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
+	 * @param errh the FilesetErrorHandler that will recieve notification of nonfatal errors
 	 * @param dtdValidate sets whether XML members in the fileset will be DTD validated in the case they reference a DTD. The default value of this property is false.
+	 * @throws FilesetNonFatalException 
 	 * @see #FilesetImpl(URI)
 	 * @see #FilesetImpl(URI,boolean, boolean) 
 	 */
-	public FilesetImpl(URI manifest, boolean dtdValidate) throws FilesetException {
-		initialize(manifest,dtdValidate,false);	
+	public FilesetImpl(URI manifestURI, FilesetErrorHandler errh, boolean dtdValidate) throws FilesetFatalException {
+		initialize(manifestURI,errh,dtdValidate,false);
 	}
 	
 	/**
 	 * Extended class constructor. 	 
-	 * @param manifest the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
+	 * @param manifestURI the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
+	 * @param errh the FilesetErrorHandler that will recieve notification of nonfatal errors
 	 * @param dtdValidate sets whether XML members in the fileset will be DTD validated.  The default value of this property is false.
 	 * @param setReferringCollections sets whether the referringLocalMembers collection will be created on each member. Note - this is a costly procedure in terms of timeconsumption for large filesets.  The default value of this property is false.
+	 * @throws FilesetNonFatalException 
 	 * @see #FilesetImpl(URI)
 	 * @see #FilesetImpl(URI, boolean)
 	 * @see {@link org.daisy.util.fileset.interfaces.Referable} 
 	 */
-	public FilesetImpl(URI manifest, boolean dtdValidate, boolean setReferringCollections) throws FilesetException {
-		initialize(manifest,dtdValidate,setReferringCollections);	
+	public FilesetImpl(URI manifestURI, FilesetErrorHandler errh, boolean dtdValidate, boolean setReferringCollections) throws FilesetFatalException {
+		initialize(manifestURI,errh,dtdValidate,setReferringCollections);
 	}
-	
-	private void initialize(URI manifest, boolean dtdValidate, boolean setReferringCollections) throws FilesetException  {
+		
+	private void initialize(URI manifestURI, FilesetErrorHandler errh, boolean dtdValidate, boolean setReferringCollections) throws FilesetFatalException  {
+		
+		this.errorListener = errh;
+		if (this.errorListener == null) throw new FilesetFatalException("no FilesetErrorHandler set");
+		exc = new FilesetExceptionCollector(this.errorListener);
 		
 		//speed up JAXP		
 		//TODO System.getProperty("java.version") || java.vendor
@@ -94,95 +108,103 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 		  System.setProperty("org.daisy.util.fileset.validating", "true");
 		} 
 		
-		peeker = new PeekerImpl();		
-		File f = new File(manifest);
+		//peeker = new PeekerImpl();		
+		File f = new File(manifestURI);
 						
 		if(f.exists() && f.canRead()){
-
 			try {
 				peeker.peek(f.toURI()); 
 			}catch (Exception e) {
 				//it wasnt an xmlfile or something else went wrong
 				peeker.reset(); //this sets all peeker.gets to the empty string, not null.
 			}
-	
-			
+				
 			try{
 				if ((regex.matches(regex.FILE_NCC, f.getName()))&&(peeker.getRootElementLocalName().equals("html"))) {
 					//set the fileset type
 					this.filesetType = FilesetType.DAISY_202;
-					//instantiate the appropriate filetype with this as errorhandler					
-					this.manifestMember = new D202NccFileImpl(f.toURI(),this);						
+					//instantiate the appropriate filetype					
+					this.manifestMember = new D202NccFileImpl(f.toURI());						
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent(manifestMember);
-					//do some obscure stuff
+					this.fileInstantiatedEvent((FilesetFileImpl)manifestMember);
+					
+					//do some obscure stuff specific to this fileset type
+					D202NccFileImpl ncc = (D202NccFileImpl)this.manifestMember;
+					ncc.buildSpineMap(this);
+					
 					File test = new File(manifestMember.getFile().getParentFile(), "master.smil");
 					if (test.exists()){
 						D202MasterSmilFile msmil = new D202MasterSmilFileImpl(test.toURI());
-						this.fileInstantiatedEvent(msmil);
+						this.fileInstantiatedEvent((FilesetFileImpl)msmil);
 					}
 										
-				}else if((regex.matches(regex.FILE_OPF, f.getName()))&&(peeker.getRootElementLocalName().equals("package"))) {
-					//mg: dont set the fileset type here, since there are different types of opf
-					//this.filesetType = FilesetType.Z3986;
-					
-					//instantiate the appropriate filetype with this as errorhandler
-					this.manifestMember = new OpfFileImpl(f.toURI(),this);
-					//find out what kind of opf it is (oeb,idpf,z3986,nimas)
-					//we need to parse get to the info we need
-					OpfFileImpl opf = (OpfFileImpl)this.manifestMember;
-					opf.parse();					
-					if(opf.getMetaDcFormat().indexOf("Z39.86")>=0){
+				}else if((regex.matches(regex.FILE_OPF, f.getName()))&&(peeker.getRootElementLocalName().equals("package"))) {		
+					//need to preparse to find out what kind of opf it is
+					OpfFileImpl temp =  new OpfFileImpl(f.toURI());
+					temp.parse();
+					//instantiate the appropriate filetype
+					if(temp.getMetaDcFormat().indexOf("Z39.86")>=0){
 						this.filesetType = FilesetType.Z3986;
-					}else if(opf.getMetaDcFormat().indexOf("NIMAS")>=0){
+						this.manifestMember = new Z3986OpfFileImpl(f.toURI());
+					}else if(temp.getMetaDcFormat().indexOf("NIMAS")>=0){
+						this.manifestMember = new NimasOpfFileImpl(f.toURI());
 						this.filesetType = FilesetType.NIMAS;
-					}
-					
+					}										
 					//send it to the observer which handles the rest generically
-					//note, the opf will be reparsed there... twice!=nice.
-					this.fileInstantiatedEvent(this.manifestMember);
-					//do some obscure stuff					
+					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);
+					//do some obscure stuff specific to this fileset type	
+					OpfFileImpl opf = (OpfFileImpl)this.manifestMember;
 					opf.buildSpineMap(this);
 
 				}else if((regex.matches(regex.FILE_RESOURCE, f.getName()))&&(peeker.getRootElementLocalName().equals("resources"))) {
 					//set the fileset type
 					this.filesetType = FilesetType.Z3986_RESOURCEFILE;
-					//instantiate the appropriate filetype with this as errorhandler
-					this.manifestMember = new Z3986ResourceFileImpl(f.toURI(),this);					 						
+					//instantiate the appropriate filetype
+					this.manifestMember = new Z3986ResourceFileImpl(f.toURI());					 						
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent(this.manifestMember);		
+					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);		
 
 				}else if(regex.matches(regex.FILE_CSS, f.getName())) {
 					//set the fileset type
 					this.filesetType = FilesetType.CSS;
-					//instantiate the appropriate filetype with this as errorhandler
-					this.manifestMember = new CssFileImpl(f.toURI(),this);					 						
+					//instantiate the appropriate filetype
+					this.manifestMember = new CssFileImpl(f.toURI());
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent(this.manifestMember);		
+					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);		
 
 				}else if(peeker.getRootElementLocalName().equals("dtbook")) {
 					//set the fileset type
 					this.filesetType = FilesetType.DTBOOK_DOCUMENT;
-					//instantiate the appropriate filetype with this as errorhandler
-					this.manifestMember = new Z3986DtbookFileImpl(f.toURI(),this);					 						
+					//instantiate the appropriate filetype
+					this.manifestMember = new Z3986DtbookFileImpl(f.toURI());					 						
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent(this.manifestMember);		
+					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);		
 
-				}else if(peeker.getRootElementLocalName().equals("html")) {
+				}else if((peeker.getRootElementLocalName().equals("html"))&&((peeker.getFirstSystemId().indexOf("x")>=0)
+						||(peeker.getFirstPublicId().indexOf("X")>=0)
+						||(peeker.getRootElementNsUri().indexOf("x")>=0))) {
 					//set the fileset type
 					this.filesetType = FilesetType.XHTML_DOCUMENT;
-					//instantiate the appropriate filetype with this as errorhandler
-					this.manifestMember = new Xhtml10FileImpl(f.toURI(),this);					 						
+					//instantiate the appropriate filetype
+					this.manifestMember = new Xhtml10FileImpl(f.toURI());					 						
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent(this.manifestMember);	
+					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);	
+					
+				}else if(regex.matches(regex.FILE_XHTML, f.getName())) {
+					//set the fileset type
+					this.filesetType = FilesetType.HTML_DOCUMENT;
+					//instantiate the appropriate filetype
+					this.manifestMember = new HtmlFileImpl(f.toURI());					 						
+					//send it to the observer which handles the rest generically
+					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);	
 					
 				}else if(regex.matches(regex.FILE_M3U, f.getName())) {
 					//set the fileset type
 					this.filesetType = FilesetType.PLAYLIST_M3U;
-					//instantiate the appropriate filetype with this as errorhandler
+					//instantiate the appropriate filetype
 					this.manifestMember = new M3UFileImpl(f.toURI());					 						
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent(this.manifestMember);		
+					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);		
 					
 				}else if(regex.matches(regex.FILE_PLS, f.getName())) {
 						//set the fileset type
@@ -190,69 +212,120 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 						//instantiate the appropriate filetype with this as errorhandler
 						this.manifestMember = new PlsFileImpl(f.toURI());					 						
 						//send it to the observer which handles the rest generically
-						this.fileInstantiatedEvent(this.manifestMember);	
+						this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);	
 				}else{
 					// other types
-				    throw new FilesetException("Unsupported manifest type");
+				    throw new FilesetFatalException("Unsupported manifest type");
 				}
 			} catch (Exception e){
 				//thrown if the manifest could not be instantiated
 				//only throw outwards for the manifest file instantiation
-				throw new FilesetException(e);				
+				throw new FilesetFatalException(e.getMessage(),e);				
 			}
 		}else{			
-			throw new FilesetException(new IOException("manifest not readable"));								 
+			throw new FilesetFatalException(new IOException("manifest not readable"));								 
 		}  
 		
 		//if we get here the fileset is completely populated without fatal errors
 		
 		if(this.setReferringCollections){
-			//		populate the reffering property
+			//populate the reffering property
 			Iterator it = localMembers.keySet().iterator();
 			while(it.hasNext()) {
 				FilesetFileImpl file = (FilesetFileImpl) localMembers.get(it.next());				
 				file.setReferringLocalMembers(localMembers);				  
 			}
 		}
-		//System.err.println("fileset completely populated");
-		//System.err.println("size: " + this.localMembers.size());		
-		System.clearProperty("org.daisy.util.fileset.validating");
 		
+//		//collect any non-thrown exceptions from each individual member
+//		//and add to Fileset.exceptions
+//		//wrap them in a FilesetFileException so that we have origin
+//		Iterator it = localMembers.keySet().iterator();
+//		while(it.hasNext()) {
+//			FilesetFileImpl file = (FilesetFileImpl) localMembers.get(it.next());
+//			Iterator it2 = file.getErrors().iterator();
+//			while(it2.hasNext()) { 
+//				try{
+//					Exception e = (Exception) it2.next();				
+//					if(e instanceof FilesetFileException) {
+//						//this.exceptions.add(e);
+//						exc.add((FilesetFileException)e);
+//					}else{
+//						//this.exceptions.add(new FilesetFileException(file,e));
+//						exc.add(new FilesetFileException(file,e));
+//					}				
+//				}catch (ClassCastException cce) {
+//					throw new FilesetFatalException(cce);
+//				}
+//			}							  
+//		}
+//		//TODO flytta så det rapporteras per fil
+//		//if (!exceptions.isEmpty()) {
+//		if(exc.hasExceptions()){
+//			//roll them out to errhandler
+//			//Iterator it3 = exceptions.iterator();
+//			Iterator it3 = exc.getExceptions().iterator();
+//			while(it3.hasNext()) {
+//				try {
+//					this.errorListener.error((FilesetFileException)it3.next());
+//				} catch (FilesetFileException e) {
+//
+//				}
+//			}			
+//		}
+		
+		System.clearProperty("org.daisy.util.fileset.validating");
+				
 	}
 	
-	void fileInstantiatedEvent(FilesetFile member) throws ParserConfigurationException {
+	void fileInstantiatedEvent(FilesetFileImpl member) throws ParserConfigurationException, FilesetFatalException {
 		//all file instantiations are reported here
-		//but never by the member itself
-		
-		//System.out.println("loading " + member.getName());		
+		//but never by the instantiated member itself
 		
 		//add to this.localMembers			
 		localMembers.put(member.getFile().toURI(),member);
 		
+		//invoke the generic parse method
+		try {				
+			member.parse();					
+		} catch (IOException ioe) {								
+			//exceptions.add(new FilesetFileFatalErrorException(member,ioe));
+			exc.add(new FilesetFileFatalErrorException(member,ioe));			
+			return;
+		} catch (SAXParseException spe) {
+			//malformedness, dont add/return; already added by XmlFile errhandler				
+		} catch (SAXException se) {
+			//other serious sax error
+			//exceptions.add(new FilesetFileFatalErrorException(member,se));
+			exc.add(new FilesetFileFatalErrorException(member,se));
+			return;
+		} catch (BitstreamException bse) {
+			//exceptions.add(new FilesetFileFatalErrorException(member,bse));
+			exc.add(new FilesetFileFatalErrorException(member,bse));
+			return;							
+		}		
+		
+		//collect and handle any nonthrown exceptions
+		Iterator iter = member.getErrors().iterator();
+		while(iter.hasNext()) { 
+			try{
+				Exception e = (Exception) iter.next();				
+				if(e instanceof FilesetFileException) {
+					//this.exceptions.add(e);
+					exc.add((FilesetFileException)e);
+				}else{
+					//this.exceptions.add(new FilesetFileException(file,e));
+					exc.add(new FilesetFileException(member,e));
+				}				
+			}catch (ClassCastException cce) {
+				throw new FilesetFatalException(cce);
+			}
+		}
+		
 		if (member instanceof Referring) {
-			//if its referring we need to find out whom else it points to
-			try {				
-				member.parse();					
-			} catch (IOException ioe) {
-				System.err.println("ioexception in fileInstantiatedEvent member.parse()");
-				errors.add(ioe);
-				return;
-			} catch (SAXParseException spe) {
-				//malformedness, dont return
-				//added to errors by errhandler
-				System.err.println("saxparseexception in fileInstantiatedEvent member.parse()");
-			} catch (SAXException se) {
-				//other sax error
-				errors.add(se);
-				System.err.println("saxexception in fileInstantiatedEvent member.parse()");
-				return;
-			} catch (BitstreamException bse) {
-				errors.add(bse);
-				System.err.println("bitstreamexception in fileInstantiatedEvent member.parse()");
-				return;							
-			}						
+			//if its referring we need to find out whom else it points to		
 			Referring referer = (Referring)member;
-			Iterator it = referer.getUriIterator();
+			Iterator it = referer.getUriStrings().iterator();
 			String value;
 			URI resolvedURI = null;
 			URI cachedURI = null;
@@ -260,257 +333,207 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 				value = (String)it.next();					
 				if(!regex.matches(regex.URI_REMOTE,value)) {
 					//strip fragment if existing
-					value = stripFragment(value);					
+					value = URIStringParser.stripFragment(value);					
 					//resolve the uri string
 					resolvedURI = referer.getFile().toURI().resolve(value);										
 					if (!resolvedURI.equals(cachedURI) && !value.equals("")) {
 						cachedURI = resolvedURI; 					
-     					//check if this file has already been added to main collection
-						FilesetFile newmember = (FilesetFile)localMembers.get(resolvedURI);
+     					//check if this file has already been added to main collection						
+						FilesetFileImpl newmember = (FilesetFileImpl)localMembers.get(resolvedURI);
 						if (newmember == null) {
 							//this is a member that hasnt been namedropped before													
 							try {
 								//determine what type to instantiate
-								newmember = getType(member, resolvedURI, value);
-							} catch (ParserConfigurationException pce) {
-								errors.add(pce);
-								System.err.println("pce in getType");
-								throw(pce);
-							} catch (SAXException se) {
-								errors.add(se);
-								System.err.println("se in getType");
-								continue;
+								newmember = getType(member, resolvedURI, value, this.filesetType);
+								if(newmember instanceof AnonymousFileImpl) {
+									//exceptions.add(new FilesetFileException(newmember, new AnonymousFileException("no matching file type found for " + value + ": this file appears as AnonymousFile")));
+									exc.add(new FilesetFileWarningException(newmember, new IOException("no matching file type found for " + value + ": this file appears as AnonymousFile")));
+								}
 							} catch (FileNotFoundException fnfe) {
-								errors.add(fnfe);
+								//exceptions.add(new FilesetFileFatalErrorException(member,fnfe));								
+								exc.add(new FilesetFileFatalErrorException(member,fnfe));
 								missingURIs.add(resolvedURI);
-								//System.err.println("ioe in getType");
 								continue;
 							} catch (IOException ioe) {
-								errors.add(ioe);
-								System.err.println("ioe in getType");
+								//exceptions.add(new FilesetFileFatalErrorException(member,ioe));
+								exc.add(new FilesetFileFatalErrorException(member,ioe));
 								continue;
-							} catch (FilesetException fse) {
-								errors.add(fse);
-								System.err.println("fse in getType: " + fse.getMessage());
-								continue;
-							} catch (BitstreamException bse) {
-								errors.add(bse);
-								System.err.println("bse in getType");
-								continue;
-							} catch (MIMETypeException mte) {
-								errors.add(mte);
-								System.err.println("mte in getType");
-								continue;
-							}														
+							} 
 							//report fileInstantiatedEvent
 							this.fileInstantiatedEvent(newmember);						
 						} //if (newmember == null)
 						//put in the incoming members references list
-						referer.putReferencedMember(newmember.getFile().toURI(),newmember);
+						//referer.putReferencedMember(newmember.getFile().toURI(),newmember);
+						referer.putReferencedMember(newmember);
 					} //!resolvedURI.equals(cache)
 				}//if matches URI_LOCAL
 				else {
 					remoteMembers.add(value);
 				}
 			}//while (it.hasNext())			
-		}//if (member instanceof QReferring)  		
+		}//if (member instanceof Referring) 				
 	}
 	
 	/**
-	 * identifies for an incoming reference the most appropriate FilesetFile instance type based primarily on URI and name heuristics
-	 * Can also use the {@link org.daisy.util.xml.Peeker} class for XML instances 
-	 * @param owner the FilesetFile in which the reference to this instance occurs
+	 * identifies for an incoming reference the most appropriate FilesetFile 
+	 * instance type based primarily on root and name heuristics
+	 * @param owner the FilesetFile in which the reference to this instance occurs. This param can be null.
 	 * @param uri the absolute URI of the new instance (resolved from owners URI)
 	 * @param value the string value of the reference (pre-URI-resolve, aka attr value as-is in the owner)
 	 * @throws MIMETypeException 
+	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
-	private FilesetFile getType(FilesetFile owner, URI uri, String value) throws ParserConfigurationException, BitstreamException, SAXException, FilesetException, FileNotFoundException, IOException, MIMETypeException {
-		FilesetFile file = null;
+	
+	/*package*/ static FilesetFileImpl getType(FilesetFileImpl owner, URI uri, String value, FilesetType filesetType) throws FileNotFoundException, IOException {
+		//this is sequenced so that most probable types 
+		//(from a dtb perspective) come first
+		//this means its not beautiful, but a tad faster 		
 				
-		if (regex.matches(regex.FILE_SMIL,value)) {
-			if (this.filesetType == FilesetType.DAISY_202) {				
-				return new D202SmilFileImpl(uri, this);
-			}else if (this.filesetType == FilesetType.Z3986) {			
-				return new Z3986SmilFileImpl(uri, this);
-			}else{
-				try{
-					peeker.peek(uri);
-					if (peeker.getRootElementLocalName()!=null && peeker.getRootElementLocalName().equals("smil")) {
-						return new SmilFileImpl(uri, this);
-					}
-				}catch (Exception e) {
-					//the file wasnt an xml file or something else went wrong
-				}
-			}
-		}
-		
-		else if (regex.matches(regex.FILE_MP3,value)){
+		if (regex.matches(regex.FILE_MP3,value)){
 			return new Mp3FileImpl(uri);
 		}
 		
-		else if (regex.matches(regex.FILE_WAV,value)){
+		if (regex.matches(regex.FILE_WAV,value)){
 			return new WavFileImpl(uri);
 		}
 		
-		else if (regex.matches(regex.FILE_XHTML,value)) {	
-			if (this.filesetType == FilesetType.DAISY_202) {
-				return new D202TextualContentFileImpl(uri, this);
-			}
-			return new Xhtml10FileImpl(uri, this);
+		try{
+			peeker.reset();
+			peeker.peek(uri);
+			String rootName = peeker.getRootElementLocalName().intern();	
 			
+			//test for xml files
+			if (rootName==("smil")) {
+				if (filesetType == FilesetType.DAISY_202) {				
+					return new D202SmilFileImpl(uri);
+				}else if (filesetType == FilesetType.Z3986) {			
+					return new Z3986SmilFileImpl(uri);
+				}else{					
+					return new SmilFileImpl(uri);					
+				}
+			}
+			
+			if (rootName=="html") {				
+				//an (non xhtml) html file may end up here if peeker didnt crash before	root was over			
+				if (regex.matches(regex.FILE_NCC,value)) {			
+					return new D202NccFileImpl(uri);			
+				}else if (filesetType == FilesetType.DAISY_202) {
+					return new D202TextualContentFileImpl(uri);
+				}else if ((peeker.getFirstSystemId().indexOf("x")>=0)
+						||(peeker.getFirstPublicId().indexOf("X")>=0)
+						||(peeker.getRootElementNsUri().indexOf("x")>=0)){
+					//there are no x chars in the html equivalents
+					return new Xhtml10FileImpl(uri);
+				}else{
+					return new HtmlFileImpl(uri);
+				}
+			}
+			
+			if (rootName== "dtbook") {
+				return new Z3986DtbookFileImpl(uri);
+			}
+			
+			if (rootName== "ncx") {			
+				return new Z3986NcxFileImpl(uri);			
+			}
+			
+			if (rootName== "opf") {
+				if(filesetType==FilesetType.Z3986) {
+					return new Z3986OpfFileImpl(uri);
+				}else if(filesetType==FilesetType.NIMAS) {
+					return new NimasOpfFileImpl(uri);
+				}else{	
+					return new OpfFileImpl(uri);
+				}	
+			}
+						
+			if (rootName== "resources"){
+				return new Z3986ResourceFileImpl(uri);
+			}
+			
+			
+		} catch (Exception e) { //peeker.peek
+			//the file wasnt an xml file or something else went wrong
+		}//peeker.peek	
+		
+		
+		//now we know its not an xml file, nor any of the common audiofilestypes mp3|wav
+						
+		//need to test for (non xhtml) html again		
+		if (regex.matches(regex.FILE_XHTML,value)){
+			return new HtmlFileImpl(uri);
 		}
 		
-		else if (regex.matches(regex.FILE_NCC,value)) {			
-			return new D202NccFileImpl(uri, this);			
+		if (regex.matches(regex.FILE_CSS,value)){
+			return new CssFileImpl(uri);
 		}
-		
-		else if (regex.matches(regex.FILE_NCX,value)) {			
-			return new Z3986NcxFileImpl(uri, this);			
-		}
-		
-		else if (regex.matches(regex.FILE_OPF,value)) {
-			return new OpfFileImpl(uri, this);
-		}
-		
-		else if (regex.matches(regex.FILE_CSS,value)){
-			return new CssFileImpl(uri, this);
-		}
-		
-		else if (regex.matches(regex.FILE_JPG,value)){
+	
+		if (regex.matches(regex.FILE_JPG,value)){
 			return new JpgFileImpl(uri);
 		}
 
-		else if (regex.matches(regex.FILE_GIF,value)){
+		if (regex.matches(regex.FILE_GIF,value)){
 			return new GifFileImpl(uri);
 		}
-		
-		else if (regex.matches(regex.FILE_PNG,value)){
+	
+		if (regex.matches(regex.FILE_PNG,value)){
 			return new PngFileImpl(uri);
 		}
-				
-		else if (regex.matches(regex.FILE_RESOURCE,value)){
-			return new Z3986ResourceFileImpl(uri);
+		
+		if (regex.matches(regex.FILE_BMP,value)){
+			return new BmpFileImpl(uri);
 		}
 		
-		else if (regex.matches(regex.FILE_XML,value)){
-			peeker.peek(uri);
-			if (peeker.getRootElementLocalName().equals("dtbook")) {
-				return new Z3986DtbookFileImpl(uri, this);
-			}			
-		}	
+		if (regex.matches(regex.FILE_MP2,value)){
+			return new Mp2FileImpl(uri);
+		}		
+
+		if (regex.matches(regex.FILE_DTD,value)){
+			return new DtdFileImpl(uri);
+		}
 		
-		//if no factual match, still instantiate it		
-		errors.add(new FilesetException("no matching file type found for " + value + ": this file appears as AnonymousFile"));
+		if (regex.matches(regex.FILE_PDF,value)){
+			return new PdfFileImpl(uri);
+		}
+		
+		//if no factual match, still instantiate it				
 		return new AnonymousFileImpl(uri);			
 		
 	}
-	
-	private String stripFragment(String value) {				
-		StringBuilder sb = new StringBuilder();
-		int length = value.length();
-		char hash = '#';
-		for (int i = 0; i < length; i++) {
-			if (value.charAt(i)==hash) {
-				return sb.toString();
-			}
-			sb.append(value.charAt(i));			
-		}
-		return sb.toString();								
-	}
-	
+		
 	public ManifestFile getManifestMember() {		
 		return manifestMember;
 	}
-		
-	public Set getLocalMembersURIs() {
-	    return localMembers.keySet();
+			
+	public Collection getLocalMembers() {
+		return localMembers.values();		
 	}
-	
-//	public Iterator getLocalMembersURIIterator() {
-//		return localMembers.keySet().iterator();		
-//	}
+		
+	public Collection getLocalMembersURIs() {
+		return localMembers.keySet();
+	}
 	
 	public FilesetFile getLocalMember(URI absoluteURI) {
 		return (FilesetFile)localMembers.get(absoluteURI);		
 	}
 	
-	public Collection getLocalMembers() {
-		return localMembers.values();		
-	}
-	
 	public boolean hadErrors() {		
-		return (!errors.isEmpty());
+		//return (!exceptions.isEmpty());
+		return exc.hasExceptions();
 	}
-	
-//	public Iterator getErrorsIterator() {
-//		return errors.iterator();
-//	}	
 	
 	public Collection getErrors() {
-		return this.errors;
+		//return this.exceptions;
+		return exc.getExceptions();
 	}
 	
 	public FilesetType getFilesetType() {
 		return this.filesetType;
 	}
-	
-	public void error(FilesetException exception) throws FilesetException {
-		errors.add(exception);
-		System.err.println("error QFilesetException in Fileset errhandler");
-	}
-	
-	public void warning(FilesetException exception) throws FilesetException {
-		errors.add(exception);		
-		System.err.println("warning QFilesetException in Fileset errhandler");
-	}	
-	
-	public void warning(SAXParseException exception) throws SAXException {
-		errors.add(exception);		
-		// System.err.println("warning saxexception in Fileset errhandler");
-	}
-	
-	public void error(SAXParseException exception) throws SAXException {
-		errors.add(exception);		
-		//	System.err.println("error saxexception in Fileset errhandler");
-	}
-	
-	public void fatalError(SAXParseException exception) throws SAXException {
-		errors.add(exception);			
-		// System.err.println("fatal saxexception in Fileset errhandler");
-	}
-	
-	public void warning(CSSParseException exception) throws CSSException {
-		errors.add(exception);
-		System.err.println("warning CSSParseException in Fileset errhandler");
-	}
-	
-	public void error(CSSParseException exception) throws CSSException {
-		errors.add(exception);
-		System.err.println("error CSSParseException in Fileset errhandler");
-	}
-	
-	public void fatalError(CSSParseException exception) throws CSSException {
-		errors.add(exception);
-		System.err.println("fatal CSSParseException in Fileset errhandler");
-	}
-		
-	public long getLocalMemberSize() {		
-		return this.localMembers.size();
-	}
-	
-	public long getByteSize() {
-		long bytesize = 0;	
-		Collection c = getLocalMembers();
-		Iterator it = c.iterator();
-		while (it.hasNext()) {
-			File f = (File)it.next();
-			bytesize += f.length();
-		}
-		return bytesize;
-	}
-
+			
 	public Collection getRemoteResources() {
-      return (Collection)this.remoteMembers;
+      return this.remoteMembers;
 	}
 	
 	/**
@@ -525,8 +548,77 @@ public class FilesetImpl implements FilesetErrorHandler, Fileset {
 	    return relative;
 	}
 	
-	public Collection getMissingURIs() {
+	public Collection getMissingMembersURIs() {
 	    return missingURIs;
 	}
 	
+	public long getByteSize() {
+		long bytesize = 0;	
+		Collection c = getLocalMembers();
+		Iterator it = c.iterator();
+		while (it.hasNext()) {
+			File f = (File)it.next();
+			bytesize += f.length();
+		}
+		return bytesize;
+	}
 }
+
+
+//public void setErrorHandler(FilesetErrorHandler errh) {
+//this.errorListener = errh;
+//}
+
+//public void fatalError(FilesetException exception) {
+//errors.add(exception);
+//}
+//
+//public void error(FilesetException exception) {
+//errors.add(exception);
+//}
+//
+//public void warning(FilesetException exception) {
+//errors.add(exception);		
+//}	
+//
+//public void warning(SAXParseException exception) {
+//errors.add(exception);		
+//}
+//
+//public void error(SAXParseException exception) {
+//errors.add(exception);		
+//}
+//
+//public void fatalError(SAXParseException exception) {
+//errors.add(exception);			
+//}
+//
+//public void warning(CSSParseException exception) throws CSSException {
+//errors.add(exception);
+//}
+//
+//public void error(CSSParseException exception) throws CSSException {
+//errors.add(exception);
+//}
+//
+//public void fatalError(CSSParseException exception) throws CSSException {
+//errors.add(exception);
+//System.err.println("fatal CSSParseException in Fileset errhandler");
+//}
+
+
+
+//public long getLocalMemberSize() {		
+//	return this.localMembers.size();
+//}
+
+
+//public Iterator getLocalMembersURIIterator() {
+//return localMembers.keySet().iterator();		
+//}
+
+
+
+//public Iterator getErrorsIterator() {
+//return errors.iterator();
+//}

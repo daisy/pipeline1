@@ -6,17 +6,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-import org.daisy.util.fileset.interfaces.audio.Mp3File;
-import org.daisy.util.mime.MIMETypeException;
-
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Header;
 
+import org.daisy.util.fileset.interfaces.audio.Mp3File;
+
 /**
  * @author Markus Gylling
  */
-class Mp3FileImpl extends AudioFileImpl implements Mp3File {
+final class Mp3FileImpl extends AudioFileImpl implements Mp3File {
 
 	private FileInputStream fis = null;
 	private Bitstream bts = null;
@@ -31,7 +30,7 @@ class Mp3FileImpl extends AudioFileImpl implements Mp3File {
 	private float duration; 
 	
 	
-	Mp3FileImpl(URI uri) throws FileNotFoundException, IOException, MIMETypeException {
+	Mp3FileImpl(URI uri) throws FileNotFoundException, IOException {
 		super(uri, Mp3File.mimeStringConstant);
 	}    
 		
@@ -56,6 +55,7 @@ class Mp3FileImpl extends AudioFileImpl implements Mp3File {
 		}
 		fis.close();
 		bts.close();
+		fis.close();
 	}
 
 	public int getLayer() {		

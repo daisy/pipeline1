@@ -5,14 +5,13 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.daisy.util.fileset.interfaces.image.GifFile;
-import org.daisy.util.mime.MIMETypeException;
 
 /**
  * @author Markus Gylling
  */
-class GifFileImpl extends ImageFileImpl implements GifFile {
+final class GifFileImpl extends ImageFileImpl implements GifFile {
 
-	GifFileImpl(URI uri) throws FileNotFoundException, IOException, MIMETypeException {
+	GifFileImpl(URI uri) throws FileNotFoundException, IOException {
 		super(uri,GifFile.mimeStringConstant);
 	}
 

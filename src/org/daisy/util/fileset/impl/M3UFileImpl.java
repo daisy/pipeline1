@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.daisy.util.fileset.interfaces.text.M3UFile;
-import org.daisy.util.mime.MIMETypeException;
 
-public class M3UFileImpl extends PlayListImpl implements M3UFile {
+final class M3UFileImpl extends PlayListImpl implements M3UFile {
 
-	M3UFileImpl(URI uri) throws IOException, MIMETypeException {
+	M3UFileImpl(URI uri) throws IOException {
         super(uri,M3UFile.mimeStringConstant);          
     }
     	

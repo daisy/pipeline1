@@ -27,26 +27,24 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.interfaces.audio.WavFile;
-import org.daisy.util.mime.MIMETypeException;
-
-import javazoom.jl.decoder.BitstreamException;
 
 /**
  * @author Linus Ericson
  */
-class WavFileImpl extends AudioFileImpl implements WavFile {
+final class WavFileImpl extends AudioFileImpl implements WavFile {
 
-    private int sampleFrequency;
+	private int sampleFrequency;
     private int channels;
     private int sampleSize;
     private int duration;
     
-    WavFileImpl(URI uri) throws FileNotFoundException, IOException, MIMETypeException {
+    WavFileImpl(URI uri) throws FileNotFoundException, IOException {
 		super(uri, WavFile.mimeStringConstant);
 	}
     
-    public void parse() throws FileNotFoundException, IOException, BitstreamException {
+    public void parse() throws FileNotFoundException, IOException {
         try {
             AudioFileFormat aff = AudioSystem.getAudioFileFormat(this.getAbsoluteFile());
             if (!"WAVE".equals(aff.getType())) {
@@ -58,8 +56,9 @@ class WavFileImpl extends AudioFileImpl implements WavFile {
             this.sampleSize = format.getSampleSizeInBits();
             this.duration = (int)(1000.0 * aff.getFrameLength() / format.getFrameRate());
         } catch (UnsupportedAudioFileException e) {
+        	myExceptions.add(new FilesetFileFatalErrorException(this,e));
             // FIXME throw better exception
-            throw new IOException("Unsupported file type: " + e.getMessage());
+            //throw new IOException("Unsupported file type: " + e.getMessage());
         } 
     }
 
@@ -79,4 +78,5 @@ class WavFileImpl extends AudioFileImpl implements WavFile {
         return this.sampleSize;
     }
 
+	private static final long serialVersionUID = 3216960118957555595L;
 }

@@ -12,6 +12,6 @@ public interface Xhtml10File extends XmlFile{
 	/**
 	 * @return true if the xhtml heading sequence is correctly hierarchical, false otherwise
 	 */
-	public boolean hasCorrectHeadingSequence();
+	public boolean hasHierarchicalHeadingSequence();
 	
 }

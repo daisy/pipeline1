@@ -6,17 +6,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-import org.daisy.util.fileset.interfaces.audio.Mp2File;
-import org.daisy.util.mime.MIMETypeException;
-
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Header;
 
+import org.daisy.util.fileset.interfaces.audio.Mp2File;
+
 /**
  * @author Markus Gylling
  */
-class Mp2FileImpl extends AudioFileImpl implements Mp2File {
+final class Mp2FileImpl extends AudioFileImpl implements Mp2File {
 
 	private FileInputStream fis = null;
 	private Bitstream bts = null;
@@ -31,7 +30,7 @@ class Mp2FileImpl extends AudioFileImpl implements Mp2File {
 	private float duration; 
 	
 	
-	Mp2FileImpl(URI uri) throws FileNotFoundException, IOException, MIMETypeException {
+	Mp2FileImpl(URI uri) throws FileNotFoundException, IOException {
 		super(uri,Mp2File.mimeStringConstant);
 	}    
 		

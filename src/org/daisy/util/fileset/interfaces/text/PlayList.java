@@ -1,4 +1,3 @@
-
 package org.daisy.util.fileset.interfaces.text;
 
 import org.daisy.util.fileset.interfaces.ManifestFile;

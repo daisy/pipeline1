@@ -1,6 +1,3 @@
-/*
- * Created on 2005-jun-17
- */
 package org.daisy.util.fileset.util;
 
 import java.util.regex.Matcher;
@@ -28,14 +25,16 @@ public class FilesetRegex {
 		FILE_XSL = Pattern.compile(".+\\.[Xx][Ss][Ll][Tt]?$");
 		FILE_NCC = Pattern.compile("[Nn][Cc][Cc].[Hh][Tt][Mm][Ll]?$");
 		FILE_OPF = Pattern.compile(".+\\.[Oo][Pp][Ff]$");
-		FILE_AUDIO = Pattern.compile("(.+\\.[Mm][Pp]3)|(.+\\.[Ww][Aa][Vv])$");
-		FILE_MP3 = Pattern.compile(".+\\.[Mm][Pp]3$");		
+		FILE_AUDIO = Pattern.compile("(.+\\.[Mm][Pp]3$)|(.+\\.[Ww][Aa][Vv]$)|(.+\\.[Mm][Pp][2]$)");
+		FILE_MP3 = Pattern.compile(".+\\.[Mm][Pp]3$");
+		FILE_MP2 = Pattern.compile(".+\\.[Mm][Pp]2$");		
 		FILE_WAV = Pattern.compile(".+\\.[Ww][Aa][Vv]$");
-		FILE_DTD = Pattern.compile(".+\\.[Dd][Tt][Dd]$");
+		FILE_DTD = Pattern.compile("(.+\\.[Dd][Tt][Dd]$)|(.+\\.[Mm][Oo][Dd]$)|.+\\.[Ee][Nn][Tt]$");
 		FILE_XHTML = Pattern.compile(".+\\.[Xx]?[Hh][Tt][Mm][Ll]?$");
 		FILE_JPG = Pattern.compile("(.+\\.[Jj][Pp][Gg]$)|(.+\\.[Jj][Pp][Ee][Gg]$)");
 		FILE_GIF = Pattern.compile(".+\\.[Gg][Ii][Ff]$");
 		FILE_PNG = Pattern.compile(".+\\.[Pp][Nn][Gg]$");
+		FILE_BMP = Pattern.compile(".+\\.[Bb][Mm][Pp]$");		
 		FILE_IMAGE = Pattern.compile( "(.+\\.[Jj][Pp][Gg]$)|(.+\\.[Jj][Pp][Ee][Gg]$)|(.+\\.[Pp][Nn][Gg]$)|(.+\\.[Gg][Ii][Ff]$)|(.+\\.[Bb][Mm][Pp]$)");
 		FILE_NCX = Pattern.compile(".+\\.[Nn][Cc][Xx]$");
 		FILE_RESOURCE = Pattern.compile(".+\\.[Rr][Ee][Ss]$");
@@ -43,6 +42,7 @@ public class FilesetRegex {
 		FILE_XML = Pattern.compile(".+\\.[Xx][Mm][Ll]$");
 		FILE_M3U = Pattern.compile(".+\\.[Mm][3][Uu]$");
 		FILE_PLS = Pattern.compile(".+\\.[Pp][Ll][Ss]$");
+		FILE_PDF = Pattern.compile(".+\\.[Pp][Dd][Ff]$");
 		
 		XHTML_ELEMENTS_WITH_URI_ATTRS = Pattern.compile("(^a$)|(^link$)|(^img$)");
 		XHTML_ATTRS_WITH_URIS = Pattern.compile("(^href$)|(^src$)"); 
@@ -69,12 +69,14 @@ public class FilesetRegex {
 	public Pattern FILE_OPF;
 	public Pattern FILE_AUDIO;
 	public Pattern FILE_MP3;
+	public Pattern FILE_MP2;
 	public Pattern FILE_WAV;
 	public Pattern FILE_DTD;
 	public Pattern FILE_XHTML;
 	public Pattern FILE_JPG;
 	public Pattern FILE_GIF;
 	public Pattern FILE_PNG;
+	public Pattern FILE_BMP;
 	public Pattern FILE_IMAGE;
 	public Pattern FILE_NCX;
 	public Pattern FILE_RESOURCE;
@@ -82,6 +84,7 @@ public class FilesetRegex {
 	public Pattern FILE_XML;
 	public Pattern FILE_M3U; 
 	public Pattern FILE_PLS;
+	public Pattern FILE_PDF;
 	
 	public Pattern XHTML_ELEMENTS_WITH_URI_ATTRS;
 	public Pattern XHTML_ATTRS_WITH_URIS;  

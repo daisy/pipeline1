@@ -8,17 +8,16 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.daisy.util.fileset.interfaces.text.PlsFile;
-import org.daisy.util.mime.MIMETypeException;
 /**
  * @author Markus Gylling
  */
-public class PlsFileImpl extends PlayListImpl implements PlsFile {
+final class PlsFileImpl extends PlayListImpl implements PlsFile {
 
 	private String statedVersion = null;
 	private String statedNumberOfEntries = null;
 	private Map fileTitlePairs = new HashMap(); //<FileLine,TitleLine>
 	
-	PlsFileImpl(URI uri) throws IOException, MIMETypeException {
+	PlsFileImpl(URI uri) throws IOException {
         super(uri,PlsFile.mimeStringConstant);          
     }
     	

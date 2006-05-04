@@ -1,7 +1,9 @@
 package org.daisy.util.fileset.util;
 
 /**
- * A repository of canonical static strings 
+ * A repository of canonical static strings.
+ * The mime type strings available here are deprecated in favor of the mimeTypeConstant strings on filesetfile interfaces 
+ * 
  * @author mgylling
  */
 

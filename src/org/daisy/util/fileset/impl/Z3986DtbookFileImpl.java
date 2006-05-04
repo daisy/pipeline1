@@ -4,19 +4,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.daisy.util.fileset.interfaces.ManifestFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
-import org.daisy.util.mime.MIMETypeException;
 import org.xml.sax.Attributes;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 
 /**
  * @author Markus Gylling
  */
-class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, ManifestFile {
+final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, ManifestFile {
 	private String dcTitle = null;
 	private String dcIdentifier = null;
 	private String dtbUid = null;
@@ -30,14 +29,10 @@ class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, Manife
 	
 	private String charCollector = "";
 	
-	Z3986DtbookFileImpl(URI uri) throws FileNotFoundException, ParserConfigurationException, SAXException, IOException, MIMETypeException {
+	Z3986DtbookFileImpl(URI uri) throws FileNotFoundException, ParserConfigurationException, SAXException, IOException {
 		super(uri,Z3986DtbookFile.mimeStringConstant);		
 	}
-	
-	Z3986DtbookFileImpl(URI uri, ErrorHandler errh) throws FileNotFoundException, ParserConfigurationException, SAXException, IOException, MIMETypeException {
-		super(uri, errh,Z3986DtbookFile.mimeStringConstant);		
-	}
-		
+			
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		//qName = qName.intern();
 		for (int i = 0; i < attrs.getLength(); i++) {
@@ -65,7 +60,8 @@ class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, Manife
 			}
 			
 			if (attrName=="id") {
-				putIdAndQName(attrValue,qName);
+				QName q = new QName(namespaceURI,sName);
+				this.putIdAndQName(attrValue,q);
 			} else if (regex.matches(regex.DTBOOK_ATTRIBUTES_WITH_URIS,attrName)) {
 			   putUriValue(attrValue);
 			}									
@@ -118,6 +114,5 @@ class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, Manife
 		return dtbUid;
 	}
 
-
-
+	private static final long serialVersionUID = -4975394410229229129L;
 }

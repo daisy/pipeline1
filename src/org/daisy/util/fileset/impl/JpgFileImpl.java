@@ -5,14 +5,13 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.daisy.util.fileset.interfaces.image.JpgFile;
-import org.daisy.util.mime.MIMETypeException;
 
 /**
  * @author Markus Gylling
  */
-class JpgFileImpl extends ImageFileImpl implements JpgFile {
+final class JpgFileImpl extends ImageFileImpl implements JpgFile {
 
-	JpgFileImpl(URI uri) throws FileNotFoundException, IOException, MIMETypeException {
+	JpgFileImpl(URI uri) throws FileNotFoundException, IOException {
 		super(uri, JpgFile.mimeStringConstant);
 	}
 

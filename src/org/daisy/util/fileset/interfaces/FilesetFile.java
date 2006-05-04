@@ -1,12 +1,15 @@
 package org.daisy.util.fileset.interfaces;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.util.Collection;
 
 import javazoom.jl.decoder.BitstreamException;
 
-import org.daisy.util.file.EFile;
+import org.daisy.util.file.IEFile;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -14,13 +17,15 @@ import org.xml.sax.SAXException;
  * @author Markus Gylling
  */
 
-public interface FilesetFile extends Referable, EFile {
+public interface FilesetFile extends Referable, IEFile {
 	
 	/**
-	 * <p>A generic command to make the member populate its own properties; at the very least:</p>
+	 * <p>A generic command to make the member populate its own properties; often including:</p>
 	 * <ul>
 	 * <li>URIs (if existing)</li>
-	 * <li>IDs (if existing)</li>
+	 * <li>ID/QName pairs (if existing)</li>
+	 * <li>duration (if existing)</li>
+	 * <li>metadata</li>
 	 * </ul>
 	 */	
 	public abstract void parse() throws IOException, SAXException, BitstreamException;
@@ -32,9 +37,34 @@ public interface FilesetFile extends Referable, EFile {
 	 * @return a relative URI
 	 */
 	public URI getRelativeURI(FilesetFile filesetFile);
+		
+	/**
+	 *@return true if this FilesetFile has been parsed	 
+	 */
+	public boolean isParsed();	
+
+	/**
+	 *@return true if errors (exceptions) where reported 
+	 *during instantiation of this FilesetFile.
+	 *@see #getErrors()	 
+	 */
+	public boolean hadErrors();	
+
+	/**
+	 *@return a collection&lt;Exception&gt; reported 
+	 *during instantiation of this FilesetFile.
+	 *@see #hadErrors()	 
+	 */
+	public Collection getErrors();
 	
 	/**
-	 * Gives access to methods of java.io.File
+	 **@return this file as an {@link org.xml.sax.InputSource}
 	 */
-	public File getFile();
+	public InputSource asInputSource() throws FileNotFoundException;	
+	
+	/**
+	 **@return this file as a FileInputStream
+	 */
+	public InputStream asInputStream() throws FileNotFoundException;
+
 }

@@ -8,14 +8,13 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.daisy.util.fileset.interfaces.image.PngFile;
-import org.daisy.util.mime.MIMETypeException;
 
 /**
  * @author Markus Gylling
  */
-class PngFileImpl extends ImageFileImpl implements PngFile {
+final class PngFileImpl extends ImageFileImpl implements PngFile {
 
-	PngFileImpl(URI uri) throws FileNotFoundException, IOException, MIMETypeException {
+	PngFileImpl(URI uri) throws FileNotFoundException, IOException {
 		super(uri,PngFile.mimeStringConstant);
 	}
 

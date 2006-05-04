@@ -1,6 +1,7 @@
 package org.daisy.util.fileset.interfaces.xml.z3986;
 
 import org.daisy.util.fileset.interfaces.xml.OpfFile;
+import org.daisy.util.mime.MIMEConstants;
 import org.daisy.util.xml.SmilClock;
 
 /**
@@ -11,6 +12,7 @@ import org.daisy.util.xml.SmilClock;
  * @author Markus Gylling
  */
 public interface Z3986OpfFile extends OpfFile{
+	static String mimeStringConstant = MIMEConstants.MIME_TEXT_XML;
 	public SmilClock getStatedDuration();
 	public String getMetaDtbMultiMediaType();
 }
