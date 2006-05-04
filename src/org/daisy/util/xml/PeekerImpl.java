@@ -45,14 +45,14 @@ public class PeekerImpl
 	private XMLStreamReader xer = null;
 	private URI currentURI = null;
 
-	private String rootElementNsUri = null;
-	private String rootElementLocalName = null;
-	private String firstPublicId = null;
-	private String firstSystemId = null;
+	private String rootElementNsUri ="";
+	private String rootElementLocalName = "";
+	private String firstPublicId = "";
+	private String firstSystemId = "";
 
-	private String xmlEncoding = null;
-	private String xmlVersion = null;
-	private String xmlStandalone = null;
+	private String xmlEncoding = "";
+	private String xmlVersion = "";
+	private String xmlStandalone = "";
 
 	public PeekerImpl() {
 
@@ -94,15 +94,16 @@ public class PeekerImpl
 	}
 
 	public void reset() {
-		currentURI = null;
-		rootElementNsUri = null;
-		rootElementLocalName = null;
-		firstPublicId = null;
-		firstSystemId = null;
-		xmlEncoding = null;
-		xmlVersion = null;
-		xmlStandalone = null;
 		xer = null;
+		currentURI = null;
+		//make the getter vars the empty string to allow for less tests when retreiving value
+		rootElementNsUri = "";
+		rootElementLocalName = "";
+		firstPublicId = "";
+		firstSystemId = "";
+		xmlEncoding = "";
+		xmlVersion = "";
+		xmlStandalone = "";
 	}
 
 	public String getFirstPublicId() {
@@ -123,8 +124,8 @@ public class PeekerImpl
 
 	public QName getRootElementQName() {
 		QName q = null;
-		if (rootElementNsUri != null
-				&& rootElementLocalName != null) {
+		if (rootElementNsUri.length() > 0
+				&& rootElementLocalName.length() > 0) {
 			q = new QName(rootElementNsUri, rootElementLocalName);
 		}
 		return q;
