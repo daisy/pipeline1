@@ -342,23 +342,7 @@
    </xsl:template>
 
 
-   <xsl:template match="dtb:imggroup/dtb:caption">
-   <!--
-   	 <xsl:choose>
-   	 	 <xsl:when test="&inlineParent;">
-   	 	 	 <span class="caption">
-		       <xsl:copy-of select="&catts;"/>
-		       <xsl:apply-templates/>
-		     </span>
-   	 	 </xsl:when>
-   	 	 <xsl:otherwise>
-		   	 <div class="caption">
-		       <xsl:copy-of select="&catts;"/>
-		       <xsl:apply-templates/>
-		     </div>
-   	 	 </xsl:otherwise>
-   	 </xsl:choose>     
-   	 -->
+   <xsl:template match="dtb:imggroup/dtb:caption">   
    	 <div class="caption">
 		    <xsl:copy-of select="&cncatts;"/>
 		    <xsl:apply-templates/>
@@ -374,13 +358,7 @@
 
    <xsl:template match="dtb:imggroup">
    	 <xsl:choose>
-   	 	 <xsl:when test="&inlineParent;">
-   	 	 	<!--
-   	 	 	 <span class="imggroup">
-       		 <xsl:copy-of select="&catts;"/>
-       		 <xsl:apply-templates/>
-     		 </span>
-     		 -->
+   	 	 <xsl:when test="&inlineParent;">   	 	 	
      		 <xsl:apply-templates select="." mode="inlineOnly"/>
    	 	 </xsl:when>
    	 	 <xsl:otherwise>
@@ -682,7 +660,11 @@
 
    </xsl:template>
 
-
+	<xsl:template match="dtb:cite/dtb:author">
+     <span class="author">
+       <xsl:apply-templates/>
+     </span>
+   </xsl:template>
 
    <xsl:template match="dtb:cite">
      <cite>
@@ -750,10 +732,17 @@
 
 
    <xsl:template match="dtb:prodnote">
-     <div class="prodnote">
-       <xsl:copy-of select="&cncatts;"/>  
-      <xsl:apply-templates/>
-    </div>
+     <xsl:choose>
+   	 	 <xsl:when test="&inlineParent;">   	 	 	
+     		 <xsl:apply-templates select="." mode="inlineOnly"/>
+   	 	 </xsl:when>
+   	 	 <xsl:otherwise>
+		   	 <div class="prodnote">
+		       <xsl:copy-of select="&cncatts;"/>
+		       <xsl:apply-templates/>
+		     </div>
+   	 	 </xsl:otherwise>
+   	 </xsl:choose>     
    </xsl:template>
 
 
