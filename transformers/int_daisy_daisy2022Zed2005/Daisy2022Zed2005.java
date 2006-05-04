@@ -39,10 +39,12 @@ import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
-import org.daisy.util.fileset.FilesetException;
+import org.daisy.util.fileset.exception.FilesetFatalException;
+import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetFileFactory;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.audio.AudioFile;
 import org.daisy.util.fileset.interfaces.audio.Mp2File;
@@ -61,6 +63,7 @@ import org.daisy.util.fileset.interfaces.xml.d202.D202TextualContentFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986NcxFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986ResourceFile;
+import org.daisy.util.i18n.CharUtils;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
@@ -85,7 +88,7 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
  * @author Markus Gylling
  */
 
-public class Daisy2022Zed2005 extends Transformer {
+public class Daisy2022Zed2005 extends Transformer implements FilesetErrorHandler {
 	
 	//TODO add support for uid as inparam, overriding ncc:dc:identifier
 	//TODO: XSLT does not adress repointing SMIL text frag destinations to their timecontainer parent
@@ -108,6 +111,7 @@ public class Daisy2022Zed2005 extends Transformer {
 	private Fileset addedResourceFileFileset = null;
 	private int inputContentDocCount = 0;
 	private Map manifestItems = new HashMap(); //<FileAbsolutePath>,<FilesetFile>
+	FilesetFileFactory filesetFileFactory = FilesetFileFactory.newInstance(); 
 	
 	public Daisy2022Zed2005(InputListener inListener, Set eventListeners, Boolean isInteractive) {
 		super(inListener, eventListeners, isInteractive);
@@ -164,7 +168,7 @@ public class Daisy2022Zed2005 extends Transformer {
 			this.createZedOpf(inputNcc,nccDcIdentifier,dtbTotalTime);
 			
 			
-		} catch (FilesetException e) {            
+		} catch (FilesetFatalException e) {            
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (CatalogExceptionNotRecoverable e) {
 			throw new TransformerRunException(e.getMessage(), e);
@@ -182,7 +186,7 @@ public class Daisy2022Zed2005 extends Transformer {
 		
 	}
 	
-	private SmilClock createZedSmil(String uid,String title,D202TextualContentFile inputContentDoc) throws CatalogExceptionNotRecoverable, XSLTException, FilesetException {
+	private SmilClock createZedSmil(String uid,String title,D202TextualContentFile inputContentDoc) throws CatalogExceptionNotRecoverable, XSLTException, FilesetFatalException {
 		D202SmilFile d202_smil = null;
 		long totalElapsedTime = 0; //in milliseconds
 		
@@ -209,8 +213,8 @@ public class Daisy2022Zed2005 extends Transformer {
 					parameters.put("isNcxOnly","true");
 				}						
 				Stylesheet.apply(d202_smil.getFile().getAbsolutePath(), xsltFile.getAbsolutePath(), smilOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());		
-				manifestItems.put(smilOut.getAbsolutePath(), FilesetFileFactory.newZ3986SmilFile(smilOut.toURI()));								
-				totalElapsedTime += d202_smil.getCalculatedDurationMillis();						                	              	
+				manifestItems.put(smilOut.getAbsolutePath(), filesetFileFactory.newFilesetFile("Z3986SmilFile",smilOut.toURI()));								
+				totalElapsedTime += d202_smil.getCalculatedDuration().millisecondsValue();						                	              	
 			} 
 		}
 		
@@ -218,7 +222,7 @@ public class Daisy2022Zed2005 extends Transformer {
 		return new SmilClock(totalElapsedTime);
 	}
 	
-	private void createZedNcx(D202NccFile ncc, String uid) throws CatalogExceptionNotRecoverable, XSLTException, FilesetException {
+	private void createZedNcx(D202NccFile ncc, String uid) throws CatalogExceptionNotRecoverable, XSLTException, FilesetFatalException {
 		String ncxFileName = this.getAsciiFilename(uid,"ncx");
 		
 		this.sendMessage(Level.INFO, i18n("CREATING_NCX", ncxFileName));                            	
@@ -231,12 +235,12 @@ public class Daisy2022Zed2005 extends Transformer {
 		
 		Stylesheet.apply(ncc.getFile().getAbsolutePath(), xsltFile.getAbsolutePath(), ncxOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
 		
-		manifestItems.put(ncxOut.getAbsolutePath(), FilesetFileFactory.newZ3986NcxFile(ncxOut.toURI()));
+		manifestItems.put(ncxOut.getAbsolutePath(), filesetFileFactory.newFilesetFile("Z3986NcxFile", ncxOut.toURI()));
 		
 		this.progress(NCX_DONE);
 	}
 	
-	private void createZedDtbook(D202TextualContentFile xhtml, String uid, String title, String cssUri) throws CatalogExceptionNotRecoverable, XSLTException, FilesetException {
+	private void createZedDtbook(D202TextualContentFile xhtml, String uid, String title, String cssUri) throws CatalogExceptionNotRecoverable, XSLTException, FilesetFatalException {
 		
 		String dtbookFileName = this.getAsciiFilename(uid,"xml");
 		
@@ -252,12 +256,12 @@ public class Daisy2022Zed2005 extends Transformer {
 				           
 		Stylesheet.apply(xhtml.getFile().getAbsolutePath(), xsltFile.getAbsolutePath(), dtbookOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
 		
-		manifestItems.put(dtbookOut.getAbsolutePath(), FilesetFileFactory.newZ3986DtbookFile(dtbookOut.toURI()));
+		manifestItems.put(dtbookOut.getAbsolutePath(), filesetFileFactory.newFilesetFile("Z3986DtbookFile",dtbookOut.toURI()));
 		
 		this.progress(DTBOOK_DONE);
 	}
 	
-	private void createZedOpf(D202NccFile ncc, String uid, SmilClock dtbTotalTime) throws XSLTException, IOException, ParserConfigurationException, SAXException, FilesetException {
+	private void createZedOpf(D202NccFile ncc, String uid, SmilClock dtbTotalTime) throws XSLTException, IOException, ParserConfigurationException, SAXException, FilesetFatalException {
 		//the xslt creates metadata, the spine, and adds the smilfiles to manifest
 		//this java object adds the other stuff to manifest (in .finalizeManifest).
 		
@@ -274,7 +278,7 @@ public class Daisy2022Zed2005 extends Transformer {
 		
 		Stylesheet.apply(ncc.getFile().getAbsolutePath(), xsltFile.getAbsolutePath(), opfOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
 		
-		manifestItems.put(opfOut.getAbsolutePath(), FilesetFileFactory.newZ3986OpfFile(opfOut.toURI()));
+		manifestItems.put(opfOut.getAbsolutePath(), filesetFileFactory.newFilesetFile("Z3986OpfFile",opfOut.toURI()));
 		
 		//run finalize after manifestItems.put so that the opf gets included in the manifest itemlist
 		finalizeManifest(opfOut);
@@ -351,7 +355,7 @@ public class Daisy2022Zed2005 extends Transformer {
 		
 	}
 	
-	private void copyMembers() throws FilesetException, IOException {
+	private void copyMembers() throws FilesetFatalException, IOException {
 		
 		Set inputFilesToCopy = new HashSet();
 		
@@ -387,9 +391,9 @@ public class Daisy2022Zed2005 extends Transformer {
 	 * Copy a set of files belonging to a Fileset, relative to the manifest member
 	 * @param files the set of files to copy
 	 * @throws IOException
-	 * @throws FilesetException 
+	 * @throws FilesetFatalException 
 	 */
-	private void copyFiles(Set files, Fileset fileset) throws IOException, FilesetException {
+	private void copyFiles(Set files, Fileset fileset) throws IOException, FilesetFatalException {
 		int fileNum = files.size();
 		int fileCount = 0;
 		for (Iterator it = files.iterator(); it.hasNext(); ) {
@@ -401,21 +405,21 @@ public class Daisy2022Zed2005 extends Transformer {
 			File out = new File(outputDir.toURI().resolve(relativeURI));
 			FileUtils.copy(fsf.getFile(), out);
 			if(fsf instanceof Mp3File) {
-				manifestItems.put(out.getAbsolutePath(), FilesetFileFactory.newMp3File(out.toURI()));
+				manifestItems.put(out.getAbsolutePath(), filesetFileFactory.newFilesetFile("Mp3File",out.toURI()));
 			}else if(fsf instanceof Mp2File) {
-				manifestItems.put(out.getAbsolutePath(), FilesetFileFactory.newMp2File(out.toURI()));                
+				manifestItems.put(out.getAbsolutePath(), filesetFileFactory.newFilesetFile("Mp2File",out.toURI()));                
 			}else if(fsf instanceof WavFile) {
-				manifestItems.put(out.getAbsolutePath(), FilesetFileFactory.newWavFile(out.toURI()));  
+				manifestItems.put(out.getAbsolutePath(), filesetFileFactory.newFilesetFile("WavFile",out.toURI()));  
 			}else if (fsf instanceof JpgFile) {
-				manifestItems.put(out.getAbsolutePath(), FilesetFileFactory.newJpgFile(out.toURI())); 
+				manifestItems.put(out.getAbsolutePath(), filesetFileFactory.newFilesetFile("JpgFile",out.toURI())); 
 			}else if (fsf instanceof PngFile) {
-				manifestItems.put(out.getAbsolutePath(), FilesetFileFactory.newPngFile(out.toURI())); 
+				manifestItems.put(out.getAbsolutePath(), filesetFileFactory.newFilesetFile("PngFile",out.toURI())); 
 			}else if (fsf instanceof GifFile) {
-				manifestItems.put(out.getAbsolutePath(), FilesetFileFactory.newGifFile(out.toURI())); 
+				manifestItems.put(out.getAbsolutePath(), filesetFileFactory.newFilesetFile("GifFile",out.toURI())); 
 			}else if (fsf instanceof CssFile) {
-				manifestItems.put(out.getAbsolutePath(), FilesetFileFactory.newCssFile(out.toURI())); 
+				manifestItems.put(out.getAbsolutePath(), filesetFileFactory.newFilesetFile("CssFile",out.toURI())); 
 			}else if (fsf instanceof Z3986ResourceFile) {
-				manifestItems.put(out.getAbsolutePath(), FilesetFileFactory.newZ3986ResourceFile(out.toURI())); 
+				manifestItems.put(out.getAbsolutePath(), filesetFileFactory.newFilesetFile("Z3986ResourceFile",out.toURI())); 
 			}else{
 				System.err.println("unknown filetype encountered in " + this.getClass().getSimpleName() + " .copyFiles");
 				manifestItems.put(out.getAbsolutePath(), out); 
@@ -424,8 +428,8 @@ public class Daisy2022Zed2005 extends Transformer {
 		}
 	}
 	
-	private Fileset buildFileSet(String manifest) throws FilesetException {
-		return new FilesetImpl(FilenameOrFileURI.toFile(manifest).toURI(), false, true);
+	private Fileset buildFileSet(String manifest) throws FilesetFatalException {
+		return new FilesetImpl(FilenameOrFileURI.toFile(manifest).toURI(), this, false, true);
 	}
 	
 	private String getTopLevelMediaTypes() {
@@ -503,7 +507,7 @@ public class Daisy2022Zed2005 extends Transformer {
 		//now we know which css to use
 		try {
 			addedCssFileset = this.buildFileSet(css.getAbsolutePath());
-		} catch (FilesetException e) {
+		} catch (FilesetFatalException e) {
 			this.sendMessage(Level.WARNING,"error when accessing css");
 			return (CssFile)css;
 		}		
@@ -537,16 +541,21 @@ public class Daisy2022Zed2005 extends Transformer {
 		//now we know which resource file to use
 		try {
 			addedResourceFileFileset = this.buildFileSet(res.getAbsolutePath());
-		} catch (FilesetException e) {
+		} catch (FilesetFatalException e) {
 			this.sendMessage(Level.WARNING,"error when accessing resource file.");
 		}						
 	}
 	
 	private String getAsciiFilename(String name, String extension) {
-		return truncateToAscii(name) + "." + extension;		
+		return truncateToAscii(CharUtils.toNonWhitespace(name)) + "." + extension;		
 	}
 	
 	private String truncateToAscii(String characters) {
-		return characters;		//TODO
+		return CharUtils.toPrintableAscii(characters);		
+	}
+
+	//impl of the FilesetErrorHandler interface
+	public void error(FilesetFileException ffe) throws FilesetFileException {
+		System.err.println(ffe.getCause() + " in " + ffe.getOrigin());		
 	}		
 }
