@@ -105,7 +105,7 @@ public interface MIMEType {
 	 * @return the ID identifier of this MimeType, as specified in the MimeTypeRegistry.xml document. 
 	 * @see #getContentType()
 	 * @see #getSubType()
-	 * @see #getCharset()
+	 * @see #getParametersPart()
 	 * @see #dropParametersPart()
 	 * @see #getString()
 	 */
@@ -159,8 +159,8 @@ public interface MIMEType {
 	public String getSubTypePart();
 	
 	/**
-	 * @return the charset substring of the string identifier
-	 * of this MimeType, or null if no charset is specified.
+	 * @return the parameters substring of the string identifier
+	 * of this MimeType, or null if no paremeter part is specified.
 	 * Example: 'us-ascii' from the MIME type "text/plain;charset=us-ascii".
 	 * @see #getString()
 	 * @see #getSubType()
@@ -170,7 +170,7 @@ public interface MIMEType {
 	
 	/**
 	 * @return the ContentType and SubType substring of the string identifier
-	 * of this MimeType. If no charset part was specified during instantiation, 
+	 * of this MimeType. If no parameter part was specified during instantiation, 
 	 * this method returns a string identical to the getString() method.
 	 * Example: 'text/plain' from the MIME type "text/plain;charset=us-ascii".
 	 * @see #getString()
