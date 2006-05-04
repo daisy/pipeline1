@@ -1,11 +1,12 @@
 package org.daisy.util.mime;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.daisy.util.file.EFileImpl;
 import org.daisy.util.file.EFolder;
-import org.daisy.util.fileset.interfaces.FilesetFile;
+
+
 /**
  * Used for retrieval of MimeType objects.
  * MimeTypeFactory can only return MimeType objects
@@ -57,7 +58,7 @@ public class MIMETypeFactory {
 	 * the input File, or MimeTypeFactoryException if MimeTypeRegistry retrieval failed. 
 	 * @throws MIMETypeFactoryException
 	 */
-	public MIMEType newMimeType(EFileImpl file) throws MIMETypeFactoryException {		
+	public MIMEType newMimeType(File file) throws MIMETypeFactoryException {		
 		throw new MIMETypeFactoryException("not implemented yet");			
 	}
 	
