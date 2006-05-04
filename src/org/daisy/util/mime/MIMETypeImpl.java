@@ -1,12 +1,9 @@
 package org.daisy.util.mime;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,8 +78,7 @@ public class MIMETypeImpl implements MIMEType {
 	}
 
 	public boolean isAncestor(MIMEType mime) throws MIMETypeException {
-		return getAncestors().containsKey(mime.getId());
-		
+		return getAncestors().containsKey(mime.getId());		
 	}
 
 	public Map getAliases() throws MIMETypeException {
