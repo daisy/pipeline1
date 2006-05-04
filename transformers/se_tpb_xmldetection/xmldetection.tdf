@@ -5,7 +5,7 @@
 	<classname>se_tpb_xmldetection.XMLDetection</classname>
 	<license>unknown</license>
 	<author>Linus Ericson</author>
-	<support>No</support>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	
 	<parameters>
 
@@ -21,7 +21,7 @@
 			<example>file:///path/to/output/document.xml</example>
 		</parameter>
 		
-		<parameter required="false" direction="out" type="application/xml">
+		<parameter required="false" direction="out" type="text/plain">
 			<name>logFile</name>
 			<description>Log file</description>
 			<example>/path/to/log/file</example>

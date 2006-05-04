@@ -4,7 +4,7 @@
 	<classname>int_daisy_daisy2022Zed2005.Daisy2022Zed2005</classname>
 	<license>unknown</license>
 	<author>Brandon Nelson Markus Gylling</author>
-	<support></support>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	
 	<parameters>
 	
@@ -37,7 +37,7 @@
             <default/>			
 		</parameter>
 	
-		<parameter required="true" direction="out" type="application/xhtml+xml">
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
 			<name>outDir</name>
 			<description>The output Z3986-2005 file set directory</description>
 			<example>D:/path/to/outputdir/</example>

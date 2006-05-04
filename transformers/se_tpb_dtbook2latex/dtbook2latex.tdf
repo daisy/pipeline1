@@ -25,7 +25,7 @@
 			<value>net.sf.saxon.TransformerFactoryImpl</value>
 		</parameter>
 		
-		<parameter required="true" direction="out" type="text/plain">
+		<parameter required="true" direction="out" type="application/x-latex">
 			<name>out</name>
 			<description>The output LaTeX document</description>
 			<example>file:///path/to/outFile.tex</example>

@@ -5,7 +5,7 @@
 	<classname>se_tpb_dtbErrorScout.DtbErrorScout</classname>
 	<license>unknown</license>
 	<author>Markus Gylling</author>
-	<support>No</support>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	
 	<parameters>
 

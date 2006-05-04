@@ -14,7 +14,7 @@
 			<example>/path/to/file.xml</example>
 		</parameter>
 	
-		<parameter required="true" direction="out" type="application/xhtml+xml">
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
 			<name>outDir</name>
 			<description>The output Daisy 2.02 file set directory</description>
 			<example>/path/to/</example>

@@ -4,7 +4,7 @@
 	<classname>org.daisy.dmfc.transformers.XSLTRunner</classname>
 	<license>unknown</license>
 	<author>Dave Pawson</author>
-	<support>No</support>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	
 	<parameters>
 

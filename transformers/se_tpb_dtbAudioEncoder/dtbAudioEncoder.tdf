@@ -15,7 +15,7 @@
 			<example>/path/to/ncc.html</example>
 		</parameter>
 		
-		<parameter required="true" direction="in" type="application/xml">
+		<parameter required="true" direction="in" type="application/x-filesystemDirectory">
 			<name>outDir</name>
 			<description>The output directory</description>
 			<example>/path/to/</example>

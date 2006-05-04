@@ -4,7 +4,7 @@
 	<classname>se_tpb_xmlValidator.XmlValidator</classname>
 	<license></license>
 	<author>Linus Ericson</author>
-	<support>No</support>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	
 	<parameters>
 
