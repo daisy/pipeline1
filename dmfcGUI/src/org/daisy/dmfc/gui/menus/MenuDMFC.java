@@ -70,13 +70,15 @@ public class MenuDMFC {
 		
 		enableJobDetails = new MenuItem(viewmenu, SWT.PUSH);
 		enableJobDetails.setText("Conversion Details\tCtrl+E");
-		enableJobDetails.setEnabled(true);
+		enableJobDetails.setEnabled(false);
 		enableJobDetails.setAccelerator(SWT.MOD1 + 'E');
 		enableJobDetails.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
 				if (window.executing==true){
-					CurrentJobDetails.getInstance().open();
+					window = Window.getInstance();
+					window.showConversionDetails();
+					//CurrentJobDetails.getInstance().open();
 				}	
 				else{
 					System.out.println("Should not be enabled.");
@@ -213,7 +215,8 @@ public class MenuDMFC {
 				}
 				else{
 					window= Window.getInstance();
-					window.runScript();
+					window.start();
+					//window.runScript();
 				}
 			}
 		});

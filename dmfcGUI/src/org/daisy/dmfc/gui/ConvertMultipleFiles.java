@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.jface.viewers.*;
 
 
 /**
@@ -130,6 +131,7 @@ public class ConvertMultipleFiles {
 			
 		public void createContents(){	
 			
+			TreeViewer viewer = null;
 			
 			shell.setText("Daisy Multi Format Converter");
 			shell.setMaximized(true);

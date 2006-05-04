@@ -9,11 +9,22 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
+/**
+ * Used with a checkbox table 
+ * @author Laurie
+ *
+ */
+
 public class TransformerListTableProperties {
 
 	Table table;
 	ScriptHandler scriptHandler;
 	List listTransformerInfo;
+	
+	public TransformerListTableProperties(Table _table){
+		this.table=_table;
+		createTable();
+	}
 	
 	public TransformerListTableProperties(Table _table, ScriptHandler script){
 		
@@ -21,13 +32,16 @@ public class TransformerListTableProperties {
 		this.scriptHandler=script;
 		System.out.println("The name of the ScriptHandler is " + scriptHandler.getName());
 		
+		createTable();
+	}
+	
+	public void createTable(){
+		
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		table.setBackground(ColorChoices.white);
 		//table.setBounds(0,0,300, 200);
 	
-		
-		
 		TableColumn tcConversionName = new TableColumn (table, SWT.LEFT);
 		tcConversionName.setText("Names of Transformers in Conversion");
 		tcConversionName.setWidth(220);
@@ -35,10 +49,15 @@ public class TransformerListTableProperties {
 		
 	}
 	
+	
+	/**
+	 * not used - jface took over
+	 *
+	 */
 	public void populateTable(){
 		table.clearAll();
 		
-	
+		
 		listTransformerInfo = this.scriptHandler.getTransformerInfoList();
 		if (listTransformerInfo!=null){
 			int count=0;

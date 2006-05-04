@@ -222,6 +222,8 @@ public class CurrentJobDetails extends Composite{
 		labelProperties.setProperties(lblTotalConversionProgress, "Conversion Progress");
 		
 		pb= new ProgressBar(compRight, SWT.NONE);
+		pb.setMaximum(100);
+		pb.setMinimum(1);
 		pb.setSelection(lel.getProgress());
 		
 		FormData formDataRight = new FormData();

@@ -2,13 +2,19 @@ package org.daisy.dmfc.gui;
 
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.gui.menus.MenuDMFC;
+import org.daisy.dmfc.gui.transformerlist.ITransformerListViewer;
+import org.daisy.dmfc.gui.transformerlist.TransformerLabelProvider;
+import org.daisy.dmfc.gui.transformerlist.TransformerList;
 import org.daisy.dmfc.gui.widgetproperties.ButtonProperties;
 import org.daisy.dmfc.gui.widgetproperties.ColorChoices;
 import org.daisy.dmfc.gui.widgetproperties.FontChoices;
@@ -23,7 +29,13 @@ import org.daisy.dmfc.qmanager.LocalEventListener;
 import org.daisy.dmfc.qmanager.LocalInputListener;
 import org.daisy.dmfc.qmanager.Queue;
 import org.daisy.dmfc.qmanager.QueueRunner;
+import org.daisy.dmfc.qmanager.Status;
 import org.daisy.util.xml.validation.ValidationException;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -44,6 +56,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 
@@ -54,7 +67,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Laurie Sherve
  */
-public class Window { 
+public class Window extends Thread { 
 	
 	private Display display;
 	private Shell shell;
@@ -82,6 +95,7 @@ public class Window {
 	Label lblElapsedTime;
 	Label lblEstimatedTime;
 	Label lblTotalConversionProgress;
+	Label lblConversionDetails;
 	
 	
 	//Buttons
@@ -94,6 +108,7 @@ public class Window {
 	Button btnRun;
 	Button btnDetails;
 	Button btnTerminate;
+	Button btnStart;
 	
 	//Lists
 	public List listConversion;
@@ -112,7 +127,7 @@ public class Window {
 	Text txtEstimatedTime;
 	
 	//ProgressBar - length of running jobs
-	ProgressBar pb;
+	 ProgressBar pb;
 	
 	// Queue of all Jobs
 	Queue cue;
@@ -142,6 +157,15 @@ public class Window {
 	//ConvertMultipleFiles screen
 	ConvertMultipleFiles cmv;
 	
+	//tableViewer
+	TableViewer tableViewer;
+	
+	//transformerList
+	TransformerList transformerList;;
+	
+	
+	//set column names
+	private String[] columnNames = new String [] {"Transformers in COnversion"};
 	
 	public static Window getInstance(){
 		if (window==null){
@@ -164,26 +188,6 @@ public class Window {
 		
 	}
 	
-	
-/*
-	private Window() {
-		this(new Shell(UIManager.display));
-	}
-	
-	
-	private Window(final Shell shell) {
-		super(shell, SWT.V_SCROLL);
-		this.shell = shell;
-		shell.setBackground(ColorChoices.white);
-		menu = new MenuDMFC(shell);
-		
-		cue=cue.getInstance();
-		executing=false;
-		createContents();
-		shell.pack();	
-	}
-	
-*/
 	
 	
 	public void createContents(){
@@ -293,7 +297,6 @@ public class Window {
 		GridLayout gridLayoutJobs = new GridLayout();
 		compJobsInQueue.setLayout(gridLayoutJobs);
 		
-		
 		GridData data = new GridData();
 		data.heightHint=15;
 		this.lblJobsInQueue2 = new Label(compJobsInQueue, SWT.NONE);
@@ -367,8 +370,7 @@ public class Window {
 				editJob();
 			}
 		});
-		
-		
+				
 		FormData formFill2 = new FormData();
 		formFill2.top = new FormAttachment(36, 20);
 		formFill2.left = new FormAttachment(compJobsInQueue, 10);
@@ -400,12 +402,13 @@ public class Window {
 							messageBox.open();
 				}
 				else{
-					runScript();
+					start();
+					enableTerminateButton();
 				}
 			}
 		});
 		
-
+		/*
 		this.btnDetails = new Button(bottomComp, SWT.SHADOW_OUT);
 		this.btnDetails.setEnabled(false);
 		buttonProperties.setProperties(btnDetails, " Conversion Details");
@@ -415,11 +418,30 @@ public class Window {
 				showConversionDetails();
 			}
 		});
-		
-		
-		
+	*/
+
+	
+
 		this.btnTerminate = new Button(bottomComp, SWT.SHADOW_OUT);
+		this.btnTerminate.setEnabled(false);
 		buttonProperties.setProperties(btnTerminate, " Terminate Run");
+		this.btnTerminate.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				terminateJob();
+			}
+		});
+		
+		
+		this.btnStart = new Button(bottomComp, SWT.SHADOW_OUT);
+		this.btnStart.setEnabled(true);
+		buttonProperties.setProperties(btnStart, " Start Over ");
+		this.btnStart.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				restartConverter();
+			}
+		});
+
+		
 		
 		
 		FormData formFill5 = new FormData();
@@ -430,10 +452,11 @@ public class Window {
 		bottomComp.setLayoutData(formFill5);
 		
 
-	//Conversion Details, shown only if asked for
+	//Conversion Details, shown at the bottom of page
+	//Consists of a gridLayout with 4 columns
 		
-		compDetails= new Composite(shell, SWT.V_SCROLL);
-		compDetails.setVisible(false);
+		compDetails= new Composite(shell, SWT.NONE);
+		compDetails.setVisible(true);
 		
 		GridLayout gridlayout = new GridLayout(4, false);
 		//gridlayout.verticalSpacing=20;
@@ -446,11 +469,19 @@ public class Window {
 		
 		
 	//First column
-		Composite compColumnOne = new Composite(compDetails, SWT.BORDER);
+		Composite compColumnOne = new Composite(compDetails, SWT.NONE);
 		GridLayout gridColumnOne = new GridLayout();
 		gridColumnOne.verticalSpacing=20;
 		gridColumnOne.horizontalSpacing=20;
 		compColumnOne.setLayout(gridColumnOne);
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.widthHint=160;
+		data.grabExcessHorizontalSpace=true;
+		this.lblConversionDetails = new Label(compColumnOne, SWT.NONE);
+		this.lblConversionDetails.setText("Conversion Details");
+		this.lblConversionDetails.setFont(FontChoices.fontLabel);
+		this.lblConversionDetails.setLayoutData(data);
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.widthHint=160;
@@ -470,28 +501,40 @@ public class Window {
 		
 		
 	//Second Column
-		Composite compColumnTwo = new Composite(compDetails, SWT.BORDER);
+		Composite compColumnTwo = new Composite(compDetails, SWT.NONE);
 		GridLayout gridColumnTwo = new GridLayout();
 		gridColumnTwo.verticalSpacing=10;
 		gridColumnTwo.horizontalSpacing=20;
 		compColumnTwo.setLayout(gridColumnOne);
 		
 		
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		/*data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.widthHint=270;
 		this.lblListChecked = new Label(compColumnTwo, SWT.NONE);
 		lblListChecked.setText("Transformers in Conversion");
 		lblListChecked.setLayoutData(data);
+		*/
 		
 		data = new GridData(GridData.FILL_BOTH);
 		data.heightHint=70;
-		this.tblListTransformers = new Table(compColumnTwo, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL  |SWT.FULL_SELECTION );
 		
+		//first create the table
+		this.tblListTransformers = new Table(compColumnTwo, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL  |SWT.FULL_SELECTION );
+		TransformerListTableProperties tltp = new TransformerListTableProperties(tblListTransformers );
 		tblListTransformers.setLayoutData(data);
 		
+		//create a tableviewer 
+		createTableViewer();
+		tableViewer.setContentProvider(new TransformerContentProvider());
+		tableViewer.setLabelProvider(new TransformerLabelProvider());
 		
+		//input for tableviewer is the instance of exampleTaskList
+	//	taskList = new ExampleTaskList();
+		//tableViewer.setInput(taskList);
+		
+				
 	//Third column
-		Composite compColumnThree = new Composite(compDetails, SWT.BORDER);
+		Composite compColumnThree = new Composite(compDetails, SWT.NONE);
 		GridLayout gridColumnThree = new GridLayout();
 		compColumnThree.setLayout(gridColumnThree);
 		
@@ -513,23 +556,25 @@ public class Window {
 		
 	//Fourth column
 		
-		Composite compColumnFour = new Composite(compDetails, SWT.BORDER);
+		Composite compColumnFour = new Composite(compDetails, SWT.NONE);
 		GridLayout gridColumnFour = new GridLayout();
 		compColumnFour.setLayout(gridColumnFour);
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		txtElapsedTime = new Text(compColumnFour, SWT.NONE);
-		txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
+		//txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
 		txtElapsedTime.setLayoutData(data);
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		txtEstimatedTime = new Text(compColumnFour, SWT.NONE);
-		txtElapsedTime.setText(String.valueOf(lel.getTotalTime()));
+		//txtElapsedTime.setText(String.valueOf(lel.getTotalTime()));
 		txtEstimatedTime.setLayoutData(data);
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		pb = new ProgressBar(compColumnFour, SWT.NONE);
-		pb.setSelection(lel.getProgress());
+		pb.setMaximum(100);
+		pb.setMinimum(1);
+		//pb.setSelection(lel.getProgress()*100);
 		pb.setLayoutData(data);
 		
 		
@@ -577,19 +622,15 @@ public class Window {
 		
 		cue.addJobToQueue(job);		
 		jqtp2.populateTable(cue);
-		tblJobs2.redraw();
-	
+		tblJobs2.redraw();	
 	}
 
+	public void enableTerminateButton(){
+		this.btnTerminate.setEnabled(true);
+	}
 	
-	
-	/**
-	 * Clear all fields in the gui
-	 */
-	
-	public void clearFields(){
-		this.clearFields();
-		tblJobs2.clearAll();
+	public void terminateJob(){
+		
 	}
 	
 	/**
@@ -628,10 +669,10 @@ public class Window {
 				
 				try{
 				
-				ScriptHandler sh = dmfc.createScript(toSH);
-							
-				listScriptHandlers[i]=sh;
-				listConversion.add(listScriptHandlers[i].getName());
+					ScriptHandler sh = dmfc.createScript(toSH);
+								
+					listScriptHandlers[i]=sh;
+					listConversion.add(listScriptHandlers[i].getName());
 				
 				}
 				catch(ValidationException ve){
@@ -645,19 +686,36 @@ public class Window {
 				catch(ScriptException se){
 					//add error messages to be thrown to GUI
 					se.printStackTrace();
-				}
-				
+				}	
 			}
 		}
 	}
+	
+	/**
+	 * called by Start Over button to restart converter
+	 * clears all lists, resets the Job Queue
+	 */
+	public void restartConverter(){
+		cue.getLinkedListJobs().clear();
+		this.tableViewer.getTable().clearAll();
+		this.tblJobs2.clearAll();
+		this.txtConversionRunning.setText("");
+		this.txtElapsedTime.setText("");
+		this.txtEstimatedTime.setText("");
+		this.pb.setSelection(0);
+		this.listConversion.deselectAll();
+		this.btnTerminate.setEnabled(false);
+		this.addMultipleFiles.setEnabled(false);
+	}
+	
 	
 	public void getConversionSelection(){
 		if(listConversion.getSelectionCount()==1){
 			
 			//get the script from the list
 			int focus = listConversion.getFocusIndex();
+			System.out.println("The focus is: " + focus);
 			this.scriptHandler= listScriptHandlers[focus];
-			
 			
 		}
 	}
@@ -666,6 +724,10 @@ public class Window {
 		return this.compJobsInQueue;
 	}
 	
+	/**
+	 * 
+	 * @param mark int, item number in the list selected
+	 */
 	public void setSelectedIndex(int mark){
 		this.index=mark;
 	}
@@ -750,27 +812,102 @@ public class Window {
 		}
 	}
 	
+	
 	/**
-	 * Runs the DMFC converter, and updates 
-	 * progress on the Converter Details page
+	 * create viewer and place an editor on the checkbox column
 	 *
 	 */
-	public void runScript(){	
+	public void createTableViewer(){
+		tableViewer = new TableViewer(tblListTransformers);
+		tableViewer.setUseHashlookup(true);
+		tableViewer.setColumnProperties(columnNames);
+		
+		CellEditor []editors = new CellEditor[columnNames.length];
+		editors[0]= new CheckboxCellEditor(tblListTransformers);
+		
+		//assign the cell editors to the viewer
+		tableViewer.setCellEditors(editors);
+	
+	}
+	
+	/**
+	 * InnerClass that acts as a proxy for the TransformerList 
+	 * providing content for the Table. It implements the ITransformerListViewer 
+	 * interface since it must register changeListeners with the 
+	 * TransformerList 
+	 */
+	class TransformerContentProvider implements IStructuredContentProvider, ITransformerListViewer {
+		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+			if (newInput != null)
+				((TransformerList) newInput).addChangeListener(this);
+			if (oldInput != null)
+				((TransformerList) oldInput).removeChangeListener(this);
+		}
+
+		public void dispose() {
+			transformerList.removeChangeListener(this);
+		}
+
+		// Return the transformers as an array of Objects
+		public Object[] getElements(Object parent) {
+			return transformerList.getTransformers().toArray();
+		}
+
+		/* 
+		 */
+		public void addTransformer(TransformerHandler th) {
+			tableViewer.add(th);
+		}
+
+		/* 
+		 */
+		public void removeTransformer(TransformerHandler th) {
+			tableViewer.remove(th);			
+		}
+
+		/* 
+		 */
+		public void updateTransformer(TransformerHandler th) {
+			tableViewer.update(th, null);	
+		}
+	}
+	
+	
+	
+	
+	/**
+	 * Runs the DMFC converter, and updates 
+	 * progress of the Converter details
+	 *
+	 */
+	//public void runScript(){	
+	public void start(){
 		
 		executing=true;
 		this.menu.getEnableJobDetails().setEnabled(true);
-		this.btnDetails.setEnabled(true);
+	//	this.btnDetails.setEnabled(true);
 		
-		new QueueRunner(dmfc).start();
+		execute();
 		
 		UIManager.display.asyncExec(new Runnable(){
 			public void run(){
-				if (CurrentJobDetails.getInstance().isDisposed())return;
-			
-			//increment the progress bar
-				CurrentJobDetails.getInstance().pb.setSelection((lel.getProgress()));
-				CurrentJobDetails.getInstance().txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
-				CurrentJobDetails.getInstance().txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
+				
+			//increment the progress bar and time remaining
+				//CurrentJobDetails.getInstance().pb.setSelection((lel.getProgress()));
+				pb.setSelection(lel.getProgress() * 100);
+				System.out.println("lel.getProgress()" + lel.getProgress() * 100);
+				
+				txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
+				//CurrentJobDetails.getInstance().txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
+				System.out.println("lel.getTimeLeft()" + lel.getTimeLeft());
+				
+				txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
+				//CurrentJobDetails.getInstance().txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
+				System.out.println("lel.getTotalTime()" + lel.getTotalTime());
+				System.out.println("getTransformerRunning() " + lel.getTransformerRunning());
+				System.out.println("type" + lel.getType());
+				
+				
 		}
 	});
 		
@@ -799,6 +936,65 @@ public class Window {
 		cmv = new ConvertMultipleFiles();
 		cmv.open();
 	}
+	
+	public void execute(){
+				
+				//walk through the queue and return jobs
+				LinkedList jobList = cue.getLinkedListJobs();
+				
+				//number in queue
+				int jobNumber = 0;
+				
+				
+				//count the transformers
+				int count = -1;
+				
+				Iterator it = jobList.iterator();
+				
+				while(it.hasNext()){
+					
+					
+					//get the Job from the Queue
+					Job job = (Job)it.next();
+					
+					//set the name of the conversion running
+					txtConversionRunning.setText(job.getScript().getName());
+					scriptHandler = job.getScript();
+					
+					//update the transformer table
+					transformerList = new TransformerList(job);
+					tableViewer.setInput(transformerList);
+					
+					
+					//add the input and output files to the script
+					//actually, this only returns if the parameters are present in the script...
+					scriptHandler.setProperty("input", job.getInputFile().getPath());
+					scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
+					
+					//List list = scriptHandler.getTransformerInfoList();
+					
+					
+					
+					try{	
+						scriptHandler.execute();
+						int transNumber = job.getScript().getCurrentTaskIndex();
+						System.out.println("what is the current task index? " + transNumber);
+						count++;
+						tableViewer.getTable().getItem(job.getScript().getCurrentTaskIndex()).setChecked(true);
+					
+					}
+					catch(ScriptException se){
+						//if the script is not valid
+						//set the script in the first table to status failed.
+						se.getMessage();
+					}
+					
+					//finally, reset the status in the jobs table
+				
+					job.setStatus(Status.COMPLETED);
+					
+			}
+		}
 	
 }
 
