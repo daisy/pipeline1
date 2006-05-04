@@ -53,7 +53,6 @@ class MIMETypeRegistry implements XMLReporter {
 	 * @param reader
 	 * @throws XMLStreamException
 	 */
-
 	private void buildMap(XMLStreamReader reader) throws XMLStreamException {
 		while (true) {
 		    int event = reader.next();
@@ -168,6 +167,7 @@ class MIMETypeRegistry implements XMLReporter {
 	boolean hasEntry(String candidate) {
 		return getEntryByName(candidate) != null;
 	}
+	
 	/**
 	 * Report the desired message in an application specific format. 
 	 * Only warnings and non-fatal errors should be reported through this interface. 
