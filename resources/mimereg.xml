@@ -15,6 +15,7 @@
 	<!-- Other -->
 	<type id="string" name="string"/>
 	<type id="enum" name="enum" parentType="string"/>
+	<type id="folder" name="application/x-filesystemDirectory"/>
 	<type id="rtf" name="application/rtf"/>
 
 	<!-- Images -->
@@ -29,6 +30,7 @@
 	<!-- TEXT -->
 	<type id="plain" name="text/plain"/>
 	<type id="css" name="text/css"/>
+	<type id="latex" name="application/x-latex"/>
 
 	<!-- HTML -->
 	<type id="html" name="text/html"/>
