@@ -30,9 +30,12 @@
 	<type id="plain" name="text/plain"/>
 	<type id="css" name="text/css"/>
 
+	<!-- HTML -->
+	<type id="html" name="text/html"/>
+
 	<!-- XML -->
 	<type id="xml" name="application/xml"/>
-	<type id="xhtml" name="application/xhtml+xml" parentType="xml"/>
+	<type id="xhtml" name="application/xhtml+xml" parentType="xml html"/>
 	<type id="xslt" name="application/xslt+xml" parentType="xml" />		
 
 	<!-- DAISY 2.02 -->
@@ -43,7 +46,7 @@
 	<type id="ldabadpcm2.02" name="audio/x-ldabadpcm"/>
 
 	<!-- DAISY z39.86 -->
-	<type id="dtbook" name="text/x-dtbook+xml" parentType="xml"/>
+	<type id="dtbook" name="application/x-dtbook+xml" parentType="xml"/>
 	<type id="ncx" name="application/x-dtbncx+xml" parentType="xml"/>
 	<type id="smil" name="application/smil" parentType="xml"/> 
 	<type id="dtbresource" name="application/x-dtbresource+xml" parentType="xml"/>	

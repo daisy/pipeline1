@@ -14,7 +14,7 @@
 			<example>file:///path/to/file.rtf</example>
 		</parameter>
 		
-		<parameter required="true" direction="out" type="text/x-dtbook+xml">
+		<parameter required="true" direction="out" type="application/x-dtbook+xml">
 			<name>dtbook</name>			
 			<description>The DTBook 2005 file</description>
 			<example>file:///path/to/file.xml</example>
