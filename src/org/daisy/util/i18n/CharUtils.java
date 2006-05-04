@@ -254,133 +254,133 @@ public final class CharUtils {
 			return String.valueOf(c);
 		}
 
-		if (c == 'À') {
+		if (c == '\u00c0') {
 			return "A";
-		} else if (c == 'à') {
+		} else if (c == '\u00e0') {
 			return "a";
-		} else if (c == 'Á') {
+		} else if (c == '\u00c1') {
 			return "A";
-		} else if (c == 'á') {
+		} else if (c == '\u00e1') {
 			return "a";
-		} else if (c == 'Â') {
+		} else if (c == '\u00c2') {
 			return "A";
-		} else if (c == 'â') {
+		} else if (c == '\u00e2') {
 			return "a";
-		} else if (c == 'Ã') {
+		} else if (c == '\u00c3') {
 			return "A";
-		} else if (c == 'ã') {
+		} else if (c == '\u00e3') {
 			return "a";
-		} else if (c == 'Ä') {
+		} else if (c == '\u00c4') {
 			return "AE";
-		} else if (c == 'ä') {
+		} else if (c == '\u00e4') {
 			return "ae";
-		} else if (c == 'Å') {
+		} else if (c == '\u00c5') {
 			return "AA";
-		} else if (c == 'å') {
+		} else if (c == '\u00e5') {
 			return "aa";
-		} else if (c == 'Æ') {
+		} else if (c == '\u00c6') {
 			return "AE";
-		} else if (c == 'æ') {
+		} else if (c == '\u00e6') {
 			return "ae";
-		} else if (c == 'Ç') {
+		} else if (c == '\u00c7') {
 			return "C";
-		} else if (c == 'ç') {
+		} else if (c == '\u00e7') {
 			return "c";
-		} else if (c == 'È') {
+		} else if (c == '\u00c8') {
 			return "E";
-		} else if (c == 'è') {
+		} else if (c == '\u00e8') {
 			return "e";
-		} else if (c == 'É') {
+		} else if (c == '\u00c9') {
 			return "E";
-		} else if (c == 'é') {
+		} else if (c == '\u00e9') {
 			return "e";
-		} else if (c == 'Ê') {
+		} else if (c == '\u00ca') {
 			return "E";
-		} else if (c == 'ê') {
+		} else if (c == '\u00ea') {
 			return "e";
-		} else if (c == 'Ë') {
+		} else if (c == '\u00cb') {
 			return "E";
-		} else if (c == 'ë') {
+		} else if (c == '\u00eb') {
 			return "e";
-		} else if (c == 'Ì') {
+		} else if (c == '\u00cc') {
 			return "I";
-		} else if (c == 'ì') {
+		} else if (c == '\u00ec') {
 			return "i";
-		} else if (c == 'Í') {
+		} else if (c == '\u00cd') {
 			return "I";
-		} else if (c == 'í') {
+		} else if (c == '\u00ed') {
 			return "i";
-		} else if (c == 'Î') {
+		} else if (c == '\u00ce') {
 			return "I";
-		} else if (c == 'î') {
+		} else if (c == '\u00ee') {
 			return "i";
-		} else if (c == 'Ï') {
+		} else if (c == '\u00cf') {
 			return "I";
-		} else if (c == 'ï') {
+		} else if (c == '\u00ef') {
 			return "i";
-		} else if (c == 'Ð') {
+		} else if (c == '\u00d0') {
 			return "D";
-		} else if (c == 'ð') {
+		} else if (c == '\u00f0') {
 			return "d";
-		} else if (c == 'Ñ') {
+		} else if (c == '\u00d1') {
 			return "N";
-		} else if (c == 'ñ') {
+		} else if (c == '\u00f1') {
 			return "n";
-		} else if (c == 'Ò') {
+		} else if (c == '\u00d2') {
 			return "O";
-		} else if (c == 'ò') {
+		} else if (c == '\u00f2') {
 			return "o";
-		} else if (c == 'Ó') {
+		} else if (c == '\u00d3') {
 			return "O";
-		} else if (c == 'ó') {
+		} else if (c == '\u00f3') {
 			return "o";
-		} else if (c == 'Ô') {
+		} else if (c == '\u00d4') {
 			return "O";
-		} else if (c == 'ô') {
+		} else if (c == '\u00f4') {
 			return "o";
-		} else if (c == 'Õ') {
+		} else if (c == '\u00d5') {
 			return "O";
-		} else if (c == 'õ') {
+		} else if (c == '\u00f5') {
 			return "o";
-		} else if (c == 'Ö') {
+		} else if (c == '\u00d6') {
 			return "OE";
-		} else if (c == 'ö') {
+		} else if (c == '\u00f6') {
 			return "oe";
-		} else if (c == 'Ø') {
+		} else if (c == '\u00d8') {
 			return "OE";
-		} else if (c == 'ø') {
+		} else if (c == '\u00f8') {
 			return "oe";
-		} else if (c == 'Š') {
+		} else if (c == '\u0160') {
 			return "S";
-		} else if (c == 'š') {
+		} else if (c == '\u0161') {
 			return "s";
-		} else if (c == 'Ù') {
+		} else if (c == '\u00d9') {
 			return "U";
-		} else if (c == 'ù') {
+		} else if (c == '\u00f9') {
 			return "u";
-		} else if (c == 'Ú') {
+		} else if (c == '\u00da') {
 			return "U";
-		} else if (c == 'ú') {
+		} else if (c == '\u00fa') {
 			return "u";
-		} else if (c == 'Û') {
+		} else if (c == '\u00db') {
 			return "U";
-		} else if (c == 'û') {
+		} else if (c == '\u00fb') {
 			return "u";
-		} else if (c == 'Ü') {
+		} else if (c == '\u00dc') {
 			return "U";
-		} else if (c == 'ü') {
+		} else if (c == '\u00fc') {
 			return "u";
-		} else if (c == 'Ý') {
+		} else if (c == '\u00dd') {
 			return "Y";
-		} else if (c == 'ý') {
+		} else if (c == '\u00fd') {
 			return "y";
-		} else if (c == 'Þ') {
+		} else if (c == '\u00de') {
 			return "th";
-		} else if (c == 'þ') {
+		} else if (c == '\u00fe') {
 			return "TH";
-		} else if (c == 'Ÿ') {
+		} else if (c == '\u0178') {
 			return "Y";
-		} else if (c == 'ÿ') {
+		} else if (c == '\u00ff') {
 			return "y";
 		}
 
