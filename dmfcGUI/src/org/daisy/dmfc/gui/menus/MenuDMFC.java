@@ -18,6 +18,7 @@ public class MenuDMFC {
 	
 	Window window;
 	Queue cue;
+
 	
 	//MenuItems, accessed from main Window.
 	MenuItem enableJobDetails;
@@ -63,6 +64,7 @@ public class MenuDMFC {
 
 		
 //	Top Level "View"
+		/*
 		MenuItem view = new MenuItem(menu, SWT.CASCADE);
 		view.setText("View");
 		Menu viewmenu = new Menu(shell, SWT.DROP_DOWN);
@@ -86,7 +88,7 @@ public class MenuDMFC {
 			}
 		});
 		
-		
+		*/
 	
 		
 	//Top Level "Action"
@@ -117,15 +119,15 @@ public class MenuDMFC {
 		convertMultipleFile.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
+		
+				
 				if (window.listConversion.getSelectionCount()==1){
-					
 					
 					window.getConversionSelection();
 					window.getNewCMFScreen();
 					
 					
-					//window.getConversionSelection();
-					//new ConvertMultipleFiles().open();
+					
 				}
 				else{
 					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
@@ -143,21 +145,37 @@ public class MenuDMFC {
 		
 		MenuItem manageJobsInQueue = new MenuItem(actionmenu, SWT.CASCADE);
 		manageJobsInQueue.setText("Manage Jobs in List");
-		
-		
+		manageJobsInQueue.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("ForcedFocus");
+				window.tblJobs2.forceFocus();
+			}
+			});
 		
 		
 		//Submenu of the Manage Job List menu item
 		Menu submenu = new Menu(shell, SWT.DROP_DOWN);
 		manageJobsInQueue.setMenu(submenu);
+		
+		final MenuItem subactionSelectJob = new MenuItem(submenu, SWT.PUSH);
+		subactionSelectJob.setText("&Move Up List\tCtrl+U");
+		subactionSelectJob.setAccelerator(SWT.CTRL+'U');
+		subactionSelectJob.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				window=Window.getInstance();
+				window.tblJobs2.forceFocus();
+				window.setSelectedIndex(window.tblJobs2.getSelectionIndex());
+			}
+			});
+		
 		final MenuItem subactionItemUp = new MenuItem(submenu, SWT.PUSH);
 		subactionItemUp.setText("&Move Up List\tCtrl+U");
 		subactionItemUp.setAccelerator(SWT.CTRL+'U');
 		subactionItemUp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
-				window.tblJobs2.forceFocus();
 				window.moveJobUp();
+				
 			}
 			});
 		
@@ -167,7 +185,6 @@ public class MenuDMFC {
 		subactionItemDown.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
-				window.tblJobs2.forceFocus();
 				window.moveJobDown();
 			}
 			});
@@ -179,7 +196,6 @@ public class MenuDMFC {
 		subactionItemRemove.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
-				window.tblJobs2.forceFocus();
 				window.deleteJob();
 			}
 			});
@@ -216,7 +232,7 @@ public class MenuDMFC {
 				else{
 					window= Window.getInstance();
 					window.start();
-					//window.runScript();
+					
 				}
 			}
 		});
@@ -232,6 +248,7 @@ public class MenuDMFC {
 		terminateConversion.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
+				window.terminateJob();
 				
 			}
 		});
