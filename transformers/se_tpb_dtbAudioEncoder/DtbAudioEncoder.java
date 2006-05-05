@@ -35,12 +35,13 @@ import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
-import org.daisy.util.fileset.FilesetException;
+import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.audio.AudioFile;
 import org.daisy.util.fileset.interfaces.xml.OpfFile;
+import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 /**
@@ -142,8 +143,6 @@ public class DtbAudioEncoder extends Transformer {
             }
             this.progress(0.99);
                    
-        } catch (FilesetException e) {
-            throw new TransformerRunException(e.getMessage(), e);
         } catch (CatalogExceptionNotRecoverable e) {
             throw new TransformerRunException(e.getMessage(), e);
         } catch (FileNotFoundException e) {
@@ -154,13 +153,15 @@ public class DtbAudioEncoder extends Transformer {
             throw new TransformerRunException(e.getMessage(), e);
         } catch (EncodingException e) {
             throw new TransformerRunException(e.getMessage(), e);
+        } catch (FilesetFatalException e) {
+            throw new TransformerRunException(e.getMessage(), e);
         }
         
         return true;
     }
 
-    private Fileset buildFileSet(String manifest) throws FilesetException {
-        return new FilesetImpl(FilenameOrFileURI.toFile(manifest).toURI(), false, true);
+    private Fileset buildFileSet(String manifest) throws FilesetFatalException {
+        return new FilesetImpl(FilenameOrFileURI.toFile(manifest).toURI(), new DefaultFilesetErrorHandlerImpl(), false, true);
     }
     
     private void encodeFile(File wavFile, File outDir, URI relativeURI) throws EncodingException {

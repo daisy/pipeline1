@@ -20,7 +20,7 @@ import org.ccil.cowan.tagsoup.Parser;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
-import org.daisy.util.file.EFileImpl;
+import org.daisy.util.file.EFile;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.TempFile;
@@ -41,7 +41,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector {
 	//TODO bring auxilliary files along somehow (fileset with html manifestmember)
 	
 	private static final String XSLT_FACTORY = "net.sf.saxon.TransformerFactoryImpl";
-	EFileImpl inputFile = null;
+	EFile inputFile = null;
 
 	public Html2Xhtml(InputListener inListener,
 			Set eventListeners,
@@ -54,7 +54,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector {
 
 		try {
 			//create the input fileset
-			inputFile = new EFileImpl((String) parameters.remove("input"));
+			inputFile = new EFile((String) parameters.remove("input"));
 			InputSource is = new InputSource(new FileInputStream(inputFile));
 
 			//create the xslt chain (always one or more XSLTs, where the first is always echo.xsl)
@@ -66,7 +66,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector {
 				//add stylesheets to follow echo.xsl in the user-customized transform chain
 				String[] xsls = xslparam.split(",");
 				for (int i = 0; i < xsls.length; i++) {
-					EFileImpl xslf = new EFileImpl(xsls[i]);
+					EFile xslf = new EFile(xsls[i]);
 					if (!xslf.exists()) {
 						throw new TransformerRunException("Inparameter XSLT file " + xslf.getAbsolutePath()
 								+ " does not exist");

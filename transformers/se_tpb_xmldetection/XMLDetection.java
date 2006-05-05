@@ -41,9 +41,10 @@ import org.daisy.util.file.FileBunchCopy;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
-import org.daisy.util.fileset.FilesetException;
+import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 
@@ -170,11 +171,11 @@ public class XMLDetection extends Transformer {
             if (Boolean.parseBoolean(copyReferredFiles)) {
                 sendMessage(Level.FINER, i18n("COPYING_REFERRED_FILES"));
                 Collection filesToCopy = new HashSet();
-	            Fileset fileset = new FilesetImpl(FilenameOrFileURI.toURI(input), false, true);
+	            Fileset fileset = new FilesetImpl(FilenameOrFileURI.toURI(input), new DefaultFilesetErrorHandlerImpl(), false, true);
 	            filesToCopy.addAll(fileset.getLocalMembersURIs());
 	            filesToCopy.remove(fileset.getManifestMember().getFile().toURI());
 	            if (fileset.hadErrors()) {
-	                filesToCopy.addAll(fileset.getMissingURIs());
+	                filesToCopy.addAll(fileset.getMissingMembersURIs());
 	            }
 	            FileBunchCopy.copyFiles(fileset, finalOutput.getParentFile(), filesToCopy, null, true);
             }
@@ -187,9 +188,9 @@ public class XMLDetection extends Transformer {
             throw new TransformerRunException("StAX problem", e);
         } catch (UnsupportedDocumentTypeException e) {
             throw new TransformerRunException("Unsupported DOCTYPE", e);
-        } catch (FilesetException e) {
+        } catch (FilesetFatalException e) {
             throw new TransformerRunException("Fileset problem", e);
-        }            
+        }           
         
         return true;
     }

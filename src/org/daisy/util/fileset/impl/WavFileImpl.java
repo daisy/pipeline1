@@ -47,8 +47,8 @@ final class WavFileImpl extends AudioFileImpl implements WavFile {
     public void parse() throws FileNotFoundException, IOException {
         try {
             AudioFileFormat aff = AudioSystem.getAudioFileFormat(this.getAbsoluteFile());
-            if (!"WAVE".equals(aff.getType())) {
-                throw new UnsupportedAudioFileException("WAVE file expected, found " + aff.getType() + ": " + this.getAbsolutePath());
+            if (!"WAVE".equals(aff.getType().toString())) {
+                throw new UnsupportedAudioFileException("WAVE file expected2, found " + aff.getType() + ": " + this.getAbsolutePath());
             }
             AudioFormat format = aff.getFormat();
             this.sampleFrequency = (int)format.getSampleRate();

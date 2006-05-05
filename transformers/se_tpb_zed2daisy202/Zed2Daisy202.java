@@ -42,7 +42,7 @@ import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
-import org.daisy.util.fileset.FilesetException;
+import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
@@ -52,6 +52,7 @@ import org.daisy.util.fileset.interfaces.xml.OpfFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986NcxFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986SmilFile;
+import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
@@ -156,8 +157,6 @@ public class Zed2Daisy202 extends Transformer {
             this.progress(COPY_DONE);
             this.checkAbort();
             
-        } catch (FilesetException e) {            
-            throw new TransformerRunException(e.getMessage(), e);
         } catch (CatalogExceptionNotRecoverable e) {
             throw new TransformerRunException(e.getMessage(), e);
         } catch (XSLTException e) {
@@ -165,6 +164,8 @@ public class Zed2Daisy202 extends Transformer {
         } catch (IOException e) {
             throw new TransformerRunException(e.getMessage(), e);
         } catch (XMLStreamException e) {
+            throw new TransformerRunException(e.getMessage(), e);
+        } catch (FilesetFatalException e) {
             throw new TransformerRunException(e.getMessage(), e);
         }
         
@@ -222,7 +223,7 @@ public class Zed2Daisy202 extends Transformer {
      * @throws FilesetException
      * @throws TransformerAbortException
      */
-    private long createSmils(OpfFile opf, File dtbook, File ncx) throws XMLStreamException, IOException, CatalogExceptionNotRecoverable, XSLTException, FilesetException, TransformerAbortException {
+    private long createSmils(OpfFile opf, File dtbook, File ncx) throws XMLStreamException, IOException, CatalogExceptionNotRecoverable, XSLTException, TransformerAbortException {
 
         // Extract the information the smil2smil stylesheet needs
         // from the DTBook and the OPF. This will speed up the
@@ -280,7 +281,7 @@ public class Zed2Daisy202 extends Transformer {
      * @throws IOException
      * @throws FilesetException 
      */
-    private void createXhtml(File dtbook, OpfFile opf) throws CatalogExceptionNotRecoverable, XSLTException, IOException, FilesetException {
+    private void createXhtml(File dtbook, OpfFile opf) throws CatalogExceptionNotRecoverable, XSLTException, IOException {
         File xhtmlOut = new File(outputDir, contentXHTML);
         File xsltFile = new File(this.getTransformerDirectory(), "dtbook2xhtml.xsl");
         
@@ -324,8 +325,8 @@ public class Zed2Daisy202 extends Transformer {
         }
     }
     
-    private Fileset buildFileSet(String manifest) throws FilesetException {
-        return new FilesetImpl(FilenameOrFileURI.toFile(manifest).toURI(), false, true);
+    private Fileset buildFileSet(String manifest) throws FilesetFatalException {
+        return new FilesetImpl(FilenameOrFileURI.toFile(manifest).toURI(), new DefaultFilesetErrorHandlerImpl(), false, true);
     }
     
 }

@@ -5,15 +5,8 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
-import org.daisy.util.xml.SmilClock;
-import org.daisy.util.xml.catalog.CatalogEntityResolver;
-import org.daisy.util.xml.validation.ValidationException;
-import org.daisy.util.fileset.FilesetException;
-import org.daisy.util.xml.validation.RelaxngSchematronValidator;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.daisy.util.fileset.FilesetType;
+import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
@@ -31,7 +24,14 @@ import org.daisy.util.fileset.interfaces.xml.z3986.Z3986NcxFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986OpfFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986ResourceFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986SmilFile;
+import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
 import org.daisy.util.fileset.util.FilesetRegex;
+import org.daisy.util.xml.SmilClock;
+import org.daisy.util.xml.validation.RelaxngSchematronValidator;
+import org.daisy.util.xml.validation.ValidationException;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * @author Markus Gylling
@@ -150,7 +150,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 		
 		//build the fileset
 		try { 
-			fileset = new FilesetImpl(manifest,true,false);
+			fileset = new FilesetImpl(manifest, new DefaultFilesetErrorHandlerImpl(), true,false);
 			if (this.filesetType!=fileset.getFilesetType()) {
 				throw new DtbErrorScoutException("This ErrorScout instance does not support this fileset type");				
 			}
@@ -159,7 +159,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 				//copy to the local errors <Exception> HashSet from the <Exception> HashSet in Fileset
 				errors.addAll(fileset.getErrors());  
 			}
-		}catch(FilesetException fse) {
+		}catch(FilesetFatalException fse) {
 			throw new DtbErrorScoutException(fse);
 		}
 		
@@ -185,8 +185,8 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 					//get the totaltime for check after while loop
 					statedTotalTime = ncc.getStatedDuration();
 					//check the heading hirearchy
-					if (!ncc.hasCorrectHeadingSequence()){
-						errors.add(new FilesetException("incorrect heading hierarchy in "+ncc.getFile().getName()));
+					if (!ncc.hasHierarchicalHeadingSequence()){
+						errors.add(new FilesetFatalException("incorrect heading hierarchy in "+ncc.getFile().getName()));
 						hasErrors = true;
 					}
 					if(doRelaxNgScouting) {
@@ -226,7 +226,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 							//test timeInThisSmil
 							if (smil.getStatedDuration()!=null) {							
 								if(smil.getCalculatedDuration().secondsValueRounded() != smil.getStatedDuration().secondsValue()) {
-									errors.add(new FilesetException("expected duration "+smil.getCalculatedDuration().secondsValueRounded()+" but found "+smil.getStatedDuration().secondsValue()+ " in "+smil.getFile().getName()));
+									errors.add(new FilesetFatalException("expected duration "+smil.getCalculatedDuration().secondsValueRounded()+" but found "+smil.getStatedDuration().secondsValue()+ " in "+smil.getFile().getName()));
 									hasErrors=true;
 								}
 							}
@@ -237,8 +237,8 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 				}else if (member instanceof TextualContentFile){
 					if (member instanceof D202TextualContentFile){						
 						D202TextualContentFile doc = (D202TextualContentFile)member;
-						if (!doc.hasCorrectHeadingSequence()){
-							errors.add(new FilesetException("incorrect heading hierarchy in "+doc.getFile().getName()));
+						if (!doc.hasHierarchicalHeadingSequence()){
+							errors.add(new FilesetFatalException("incorrect heading hierarchy in "+doc.getFile().getName()));
 							hasErrors = true;
 						}
 					} else if (member instanceof Z3986DtbookFile) {
@@ -255,15 +255,15 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 							try {
 								mp3file.parse();
 								if (mp3file.hasID3v2()) {
-									errors.add(new FilesetException("warning: mp3 file "+mp3file.getFile().getName()+" has ID3 tags"));
+									errors.add(new FilesetFatalException("warning: mp3 file "+mp3file.getFile().getName()+" has ID3 tags"));
 									hasErrors=true;
 								}
 								if (!mp3file.isMono()) {
-									errors.add(new FilesetException("warning: mp3 file "+mp3file.getFile().getName()+" is not mono"));
+									errors.add(new FilesetFatalException("warning: mp3 file "+mp3file.getFile().getName()+" is not mono"));
 									hasErrors=true;
 								}
 								if (mp3file.isVbr()) {
-									errors.add(new FilesetException("mp3 file "+mp3file.getFile().getName()+" is VBR"));
+									errors.add(new FilesetFatalException("mp3 file "+mp3file.getFile().getName()+" is VBR"));
 									hasErrors=true;
 								}
 							} catch (Exception e) {
@@ -283,11 +283,11 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 			if (statedTotalTime!=null) {
 				SmilClock calculatedTotalTime = new SmilClock(calculatedTotalTimeMillis);
 				if (statedTotalTime.secondsValueRounded()!= calculatedTotalTime.secondsValueRounded()) {
-					errors.add(new FilesetException("found stated totaltime "+statedTotalTime.secondsValueRounded()+" but expected "+calculatedTotalTime.secondsValueRounded()));
+					errors.add(new FilesetFatalException("found stated totaltime "+statedTotalTime.secondsValueRounded()+" but expected "+calculatedTotalTime.secondsValueRounded()));
 					hasErrors=true;
 				}
 			}else{
-				errors.add(new FilesetException("no stated totaltime for this DTB"));
+				errors.add(new FilesetFatalException("no stated totaltime for this DTB"));
 				hasErrors=true;
 			}  
 		}
@@ -320,9 +320,9 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 		//note: nonresolving intermembership URIs without fragments are already reported by Fileset.errors
 		boolean result = true;						
 		try {
-			Iterator uriator = member.getUriIterator();				
+			Iterator uriator = member.getReferencedLocalMembers().iterator();				
 			while (uriator.hasNext()) {
-				String value = (String) uriator.next();
+				String value = ((FilesetFile)uriator.next()).getFile().toURI().toString();
 				if(!regex.matches(regex.URI_REMOTE,value)) {
 					if(regex.matches(regex.URI_WITH_FRAGMENT,value)) {					
 						//break the bare string up
