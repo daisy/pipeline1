@@ -15,7 +15,7 @@ public class TextProperties implements IProperties {
 		//this is not editable, but it is changeable
 		((Text)text).setEditable(false);
 		//((Text)text).setFont(FontChoices.fontLabel);
-		((Text)text).setBackground(ColorChoices.yellow);
+		((Text)text).setBackground(ColorChoices.white);
 	}
 	
 		

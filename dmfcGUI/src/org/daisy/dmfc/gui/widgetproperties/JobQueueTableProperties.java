@@ -61,43 +61,8 @@ public class JobQueueTableProperties {
 	
 	}
 	
-	public void populateTable(ArrayList alJobs){
-		table.clearAll();
-		
-		Iterator it = alJobs.iterator();
-		while (it.hasNext()){
-			Job jobItem = (Job)it.next();
-			TableItem ti = new TableItem(table ,SWT.NONE,0);
-			ti.setText(new String[] {
-			getStatus(jobItem.getStatus()),
-			jobItem.getScript().getName(),
-			jobItem.getInputFile().getPath(),
-			jobItem.getOutputFile().getPath()});
-		
-			
-		}
-				
-	}
 	
 	
-		public void populateTable(Queue cue){
-			table.clearAll();
-			LinkedList llJobs=cue.getLinkedListJobs();
-			int count = 0;
-			int size = cue.getSizeOfQueue();
-			for (int i = 0;i<size;i++){
-				Job jobItem= (Job)llJobs.get(i);
-				TableItem ti = new TableItem(table ,SWT.NONE,count);
-				ti.setText(new String[] {
-				getStatus(jobItem.getStatus()),
-				jobItem.getScript().getName(),
-				jobItem.getInputFile().getPath(),
-				jobItem.getOutputFile().getPath()});
-				count++;
-			}	
-		
-				
-	}
 		public String getStatus(int status){
 			String strStatus = "";
 			switch (status){
@@ -114,6 +79,7 @@ public class JobQueueTableProperties {
 					strStatus= "Failed";
 					break;
 				default:
+					strStatus = "Bad Result";
 					//throw ThisShouldNeverHappenException
 					break;
 			}

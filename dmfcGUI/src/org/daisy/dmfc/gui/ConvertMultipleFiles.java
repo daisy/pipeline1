@@ -115,27 +115,13 @@ public class ConvertMultipleFiles {
 		shell.pack();
 	}
 	
-	
-/*	public ConvertMultipleFiles() {
-		this(new Shell(UIManager.display));
-	}
-*/
-	/**
-	 * Constructor
-	 * @param shell
-	 */
-/*	public ConvertMultipleFiles(final Shell shell) {
-			super(shell, SWT.NONE);
-			this.shell = shell;
-			*/
 			
-		public void createContents(){	
+	public void createContents(){	
 			
-			TreeViewer viewer = null;
-			
+						
 			shell.setText("Daisy Multi Format Converter");
-			shell.setMaximized(true);
-			shell.setBackground(ColorChoices.white);
+			shell.setMaximized(false);
+			//shell.setBackground(ColorChoices.white);
 			
 			// shell.setSize(356, 275);
 			// shell.setLocation(214, 216);
@@ -147,7 +133,7 @@ public class ConvertMultipleFiles {
 			lblDaisyMFC.setForeground(ColorChoices.darkBlue);
 			lblDaisyMFC.setText("Select Files to be Converted");
 			lblDaisyMFC.setFont(FontChoices.fontSubTitle);
-			lblDaisyMFC.setBackground(ColorChoices.white);
+			//lblDaisyMFC.setBackground(ColorChoices.white);
 			
 			FormData formData = new FormData();
 			fah.setFormData(formData, 0,20,30,20,8,10,65,10);
@@ -156,7 +142,7 @@ public class ConvertMultipleFiles {
 			
 		//Composite top	
 			Composite compConversionChosen = new Composite(shell, SWT.NONE);
-			compConversionChosen.setBackground(ColorChoices.white);
+			//compConversionChosen.setBackground(ColorChoices.white);
 			RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL);
 			rowLayout.spacing = 20;
 			rowLayout.wrap = true;
@@ -189,7 +175,7 @@ public class ConvertMultipleFiles {
 				
 		// Composite Input stuff
 			 Composite compInputFields = new Composite(shell, SWT.NONE);
-			 compInputFields.setBackground(ColorChoices.white);
+			 //compInputFields.setBackground(ColorChoices.white);
 			 GridLayout gridLayout = new GridLayout(3, false);
 			 compInputFields.setLayout(gridLayout);
 			
@@ -279,7 +265,7 @@ public class ConvertMultipleFiles {
 	// Composite output
 			 
 			 Composite compOutputFields = new Composite(shell, SWT.NONE);
-			 compOutputFields.setBackground(ColorChoices.white);
+			// compOutputFields.setBackground(ColorChoices.white);
 			 
 			 GridLayout gridLay = new GridLayout();
 			 gridLay.numColumns = 2;
@@ -352,7 +338,7 @@ public class ConvertMultipleFiles {
 			 
 	// bottom OK and Cancel buttons
 			 Composite compOkCancelButtons = new Composite (shell, SWT.NONE);
-			 compOkCancelButtons.setBackground(ColorChoices.white);
+			 //compOkCancelButtons.setBackground(ColorChoices.white);
 			 RowLayout rowLayout3 = new RowLayout(SWT.HORIZONTAL | SWT.RIGHT);
 			 rowLayout3.pack = false;
 			 rowLayout3.spacing = 25;

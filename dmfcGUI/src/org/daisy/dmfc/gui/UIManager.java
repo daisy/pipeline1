@@ -37,14 +37,9 @@ public class UIManager {
 	}
 	
 	public static void open() {
-		
-		//new DaisyLink();
 		Window.getInstance().open();
-		//new DMFCMainScreen().open();
-		//new AboutDialog().open();
 		//new ConvertSingleFile().open();
-		//new ConvertMultipleFiles().open();
-		//new PlayWithListeners().open();
+		
 		
 		
 	}

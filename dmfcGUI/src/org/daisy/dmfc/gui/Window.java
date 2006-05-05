@@ -11,12 +11,15 @@ import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptException;
+import org.daisy.dmfc.gui.jface.IJobListViewer;
+import org.daisy.dmfc.gui.jface.JobLabelProvider;
+import org.daisy.dmfc.gui.jface.JobList;
+
 import org.daisy.dmfc.gui.menus.MenuDMFC;
 import org.daisy.dmfc.gui.transformerlist.ITransformerListViewer;
 import org.daisy.dmfc.gui.transformerlist.TransformerLabelProvider;
 import org.daisy.dmfc.gui.transformerlist.TransformerList;
 import org.daisy.dmfc.gui.widgetproperties.ButtonProperties;
-import org.daisy.dmfc.gui.widgetproperties.ColorChoices;
 import org.daisy.dmfc.gui.widgetproperties.FontChoices;
 import org.daisy.dmfc.gui.widgetproperties.IProperties;
 import org.daisy.dmfc.gui.widgetproperties.JobQueueTableProperties;
@@ -56,7 +59,6 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 
@@ -96,6 +98,7 @@ public class Window extends Thread {
 	Label lblEstimatedTime;
 	Label lblTotalConversionProgress;
 	Label lblConversionDetails;
+	Label lblDescription;
 	
 	
 	//Buttons
@@ -125,6 +128,7 @@ public class Window extends Thread {
 	Text txtConversionRunning;
 	Text txtElapsedTime;
 	Text txtEstimatedTime;
+	Text txtDescription;
 	
 	//ProgressBar - length of running jobs
 	 ProgressBar pb;
@@ -138,6 +142,9 @@ public class Window extends Thread {
 	//Composite
 	Composite compJobsInQueue;
 	Composite compDetails;
+	
+	//Layout stuff
+	GridData data;
 	
 	//int 
 	int index;
@@ -159,13 +166,16 @@ public class Window extends Thread {
 	
 	//tableViewer
 	TableViewer tableViewer;
+	TableViewer tableJobViewer;
 	
 	//transformerList
-	TransformerList transformerList;;
+	TransformerList transformerList;
+	JobList jobList = new JobList();
 	
 	
 	//set column names
 	private String[] columnNames = new String [] {"Transformers in COnversion"};
+	private String [] columnJobNames = new String [] {""};
 	
 	public static Window getInstance(){
 		if (window==null){
@@ -179,7 +189,6 @@ public class Window extends Thread {
 		
 		display=UIManager.display;
 		shell=new Shell (display);
-		shell.setBackground(ColorChoices.white);
 		menu = new MenuDMFC(shell);
 		cue=cue.getInstance();
 		executing=false;
@@ -194,28 +203,15 @@ public class Window extends Thread {
 		
 		shell.setText("Daisy Multi Format Converter");
 		shell.setMaximized(true);
-		shell.setBackground(ColorChoices.white);
+		//shell.setSize(350, 200);
+		shell.setLocation(50, 50);
 		shell.setLayout(new FormLayout());
 	
-	//SOFTWARE TITLE
-		
-		Label lblDaisyMFC = new Label(shell, SWT.NONE);
-		lblDaisyMFC.setForeground(ColorChoices.darkBlue);
-		lblDaisyMFC.setText("DAISY Multi-Format Converter");
-		lblDaisyMFC.setFont(FontChoices.fontTitle);
-		lblDaisyMFC.setBackground(ColorChoices.white);
-				
-		FormData formData = new FormData();
-		formData.top = new FormAttachment(0, 20);
-		formData.left = new FormAttachment(20, 20);
-		formData.bottom = new FormAttachment(8, 10);
-		formData.right = new FormAttachment(65,10);
-		lblDaisyMFC.setLayoutData(formData);
-		
+	
 	//Top Left
 		
 		Composite compSelectConversion = new Composite (shell, SWT.NONE);
-		compSelectConversion.setBackground(ColorChoices.white);
+		//compSelectConversion.setBackground(ColorChoices.white);
 		RowLayout rowLayout3 = new RowLayout(SWT.VERTICAL);
 		rowLayout3.pack = true;
 		rowLayout3.spacing = 15;
@@ -225,7 +221,7 @@ public class Window extends Thread {
 		labelProperties.setProperties(lblSelectConversion, "Select A Conversion");
 		
 		FormData formFill3 = new FormData();
-		formFill3.top = new FormAttachment(8, 20);
+		formFill3.top = new FormAttachment(4, 20);
 		formFill3.left = new FormAttachment(0, 20);
 		formFill3.bottom = new FormAttachment(13, 10);
 		formFill3.right = new FormAttachment(25,10);
@@ -242,12 +238,13 @@ public class Window extends Thread {
 				int selection = listConversion.getSelectionCount();
 				//System.out.println ("The number selected is " + selection);
 				if (selection==1){
-					addMultipleFiles.setEnabled(true);	
+					addMultipleFiles.setEnabled(true);
+					getConversionSelection();
+					getConversionDescription();
 				}
 			}
 		});
-		
-		
+			
 		FormData form = new FormData();
 		form.top = new FormAttachment(12, 20);
 		form.left = new FormAttachment(0, 20);
@@ -258,15 +255,18 @@ public class Window extends Thread {
 //Create Buttons on the right top side of the screen	
 		
 		Composite addButtonsComp = new Composite(shell, SWT.NONE);
-		addButtonsComp.setBackground(ColorChoices.white);
-		RowLayout rowLayout = new RowLayout(SWT.VERTICAL);
-		rowLayout.pack = false;
-		rowLayout.spacing = 10;
-		addButtonsComp.setLayout(rowLayout);
+		//addButtonsComp.setBackground(ColorChoices.white);
 		
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns=2;
+		gridLayout.makeColumnsEqualWidth = true;
+		addButtonsComp.setLayout(gridLayout);
 		
+		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		data.verticalSpan=2;
 		this.addMultipleFiles = new Button (addButtonsComp, SWT.SHADOW_OUT);
 		this.addMultipleFiles.setEnabled(false);
+		addMultipleFiles.setLayoutData(data);
 		
 		buttonProperties.setProperties(addMultipleFiles, "Browse For Files ");
 		this.addMultipleFiles.addSelectionListener(new SelectionAdapter() {
@@ -278,16 +278,27 @@ public class Window extends Thread {
 		});
 		
 		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
+		this.lblDescription = new Label(addButtonsComp, SWT.NONE);
+		lblDescription.setText("Conversion Description");
+		lblDescription.setLayoutData(data);
+		
+		data = new GridData(GridData.FILL_VERTICAL);
+		data.widthHint=125;
+		this.txtDescription = new Text(addButtonsComp, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		txtDescription.setLayoutData(data);
+		
+		
 		FormData formFill = new FormData();
 		formFill.top = new FormAttachment(12, 20);
 		formFill.left = new FormAttachment(compSelectConversion, 15);
 		formFill.bottom = new FormAttachment(28, 10);
-		formFill.right = new FormAttachment(45,10);
+		formFill.right = new FormAttachment(70,10);
 		addButtonsComp.setLayoutData(formFill);
 		
 	//Bottom left
 		compJobsInQueue = new Composite (shell, SWT.NONE);
-		compJobsInQueue.setBackground(ColorChoices.white);
+		//compJobsInQueue.setBackground(ColorChoices.white);
 		/*RowLayout rowLayout4 = new RowLayout(SWT.VERTICAL);
 		rowLayout4.pack = true;
 		rowLayout4.spacing = 15;
@@ -297,7 +308,7 @@ public class Window extends Thread {
 		GridLayout gridLayoutJobs = new GridLayout();
 		compJobsInQueue.setLayout(gridLayoutJobs);
 		
-		GridData data = new GridData();
+		data = new GridData();
 		data.heightHint=15;
 		this.lblJobsInQueue2 = new Label(compJobsInQueue, SWT.NONE);
 		labelProperties.setProperties(lblJobsInQueue2, "List of all Conversion Jobs");
@@ -309,13 +320,23 @@ public class Window extends Thread {
 		this.tblJobs2 = new Table(compJobsInQueue, SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL |SWT.SINGLE |SWT.FULL_SELECTION );
 		this.tblJobs2.setRedraw(true);
 		jqtp2 = new JobQueueTableProperties(tblJobs2);
-		tblJobs2.addListener (SWT.Selection, new Listener () {
-			public void handleEvent (Event event) {
+		
+		createJobTableViewer();
+		tableJobViewer.setContentProvider(new JobContentProvider());
+		tableJobViewer.setLabelProvider(new JobLabelProvider());
+		jobList = new JobList();
+		tableJobViewer.setInput(jobList);
+		
+		
+		this.tblJobs2.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
 				int mark = tblJobs2.getSelectionIndex();
 				System.out.println("Index selected is " + mark);
 				setSelectedIndex(mark);
 			}
 		});
+	
+		
 		tblJobs2.setLayoutData(data);
 		
 		FormData formFill4 = new FormData();
@@ -328,7 +349,7 @@ public class Window extends Thread {
 		
 //	Buttons on right bottom of screen
 		Composite moveJobsComp = new Composite(shell, SWT.NONE);
-		moveJobsComp.setBackground(ColorChoices.white);
+		//moveJobsComp.setBackground(ColorChoices.white);
 		RowLayout rowLayout2 = new RowLayout(SWT.VERTICAL);
 		rowLayout2.pack = false;
 		rowLayout2.spacing = 10;
@@ -339,7 +360,7 @@ public class Window extends Thread {
 		this.btnMoveUp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				moveJobUp();
-				jqtp2.populateTable(cue);
+				//jqtp2.populateTable(cue);
 			}
 		});
 		
@@ -349,7 +370,7 @@ public class Window extends Thread {
 		this.btnMoveDown.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				moveJobDown();
-				jqtp2.populateTable(cue);
+				//jqtp2.populateTable(cue);
 			}
 		});
 		
@@ -359,7 +380,7 @@ public class Window extends Thread {
 		this.btnDelete.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				deleteJob();
-				jqtp2.populateTable(cue);
+				//jqtp2.populateTable(cue);
 			}
 		});
 		
@@ -372,9 +393,9 @@ public class Window extends Thread {
 		});
 				
 		FormData formFill2 = new FormData();
-		formFill2.top = new FormAttachment(36, 20);
+		formFill2.top = new FormAttachment(33, 20);
 		formFill2.left = new FormAttachment(compJobsInQueue, 10);
-		formFill2.bottom = new FormAttachment(63, 10);
+		formFill2.bottom = new FormAttachment(60, 10);
 		formFill2.right = new FormAttachment(85,10);
 		moveJobsComp.setLayoutData(formFill2);
 		
@@ -382,8 +403,7 @@ public class Window extends Thread {
 	//Bottom Buttons
 		
 		Composite bottomComp = new Composite(shell, SWT.NONE);
-		
-		bottomComp.setBackground(ColorChoices.white);
+		//bottomComp.setBackground(ColorChoices.white);
 		RowLayout rowLayout5 = new RowLayout(SWT.HORIZONTAL);
 		rowLayout5.pack = false;
 		rowLayout5.spacing = 20;
@@ -403,24 +423,10 @@ public class Window extends Thread {
 				}
 				else{
 					start();
-					enableTerminateButton();
 				}
 			}
 		});
-		
-		/*
-		this.btnDetails = new Button(bottomComp, SWT.SHADOW_OUT);
-		this.btnDetails.setEnabled(false);
-		buttonProperties.setProperties(btnDetails, " Conversion Details");
-		this.btnDetails.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				//CurrentJobDetails.getInstance().open();
-				showConversionDetails();
-			}
-		});
-	*/
-
-	
+			
 
 		this.btnTerminate = new Button(bottomComp, SWT.SHADOW_OUT);
 		this.btnTerminate.setEnabled(false);
@@ -508,13 +514,6 @@ public class Window extends Thread {
 		compColumnTwo.setLayout(gridColumnOne);
 		
 		
-		/*data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		data.widthHint=270;
-		this.lblListChecked = new Label(compColumnTwo, SWT.NONE);
-		lblListChecked.setText("Transformers in Conversion");
-		lblListChecked.setLayoutData(data);
-		*/
-		
 		data = new GridData(GridData.FILL_BOTH);
 		data.heightHint=70;
 		
@@ -527,10 +526,6 @@ public class Window extends Thread {
 		createTableViewer();
 		tableViewer.setContentProvider(new TransformerContentProvider());
 		tableViewer.setLabelProvider(new TransformerLabelProvider());
-		
-		//input for tableviewer is the instance of exampleTaskList
-	//	taskList = new ExampleTaskList();
-		//tableViewer.setInput(taskList);
 		
 				
 	//Third column
@@ -613,6 +608,17 @@ public class Window extends Thread {
 		return this.scriptHandler;
 	}
 	
+	public void getConversionDescription(){
+		if (this.scriptHandler !=null){
+			this.txtDescription.setText( this.scriptHandler.getDescription());
+			System.out.println("Conversion description is "+ scriptHandler.getDescription());
+		}
+		else{
+			this.txtDescription.setText( "");
+			System.out.println("Conversion description is blank");
+		}
+	}
+	
 	
 	/**
 	 * Adds to Linked List, which adds to the Job Table
@@ -620,18 +626,26 @@ public class Window extends Thread {
 	 */
 	public void addToQueue(Job job){
 		
-		cue.addJobToQueue(job);		
-		jqtp2.populateTable(cue);
-		tblJobs2.redraw();	
+		cue.addJobToQueue(job);	
+		tableJobViewer.refresh();
+		//jqtp2.populateTable(cue);
+		//tblJobs2.redraw();	
 	}
 
-	public void enableTerminateButton(){
-		this.btnTerminate.setEnabled(true);
-	}
+	
 	
 	public void terminateJob(){
+		lil.setAborted(true);
+		String originator = lel.getMessageOriginator();
 		
+		MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+				SWT.CANCEL);
+				messageBox.setMessage("You have just terminated " + originator);
+				messageBox.setText("Job Terminated");
+				messageBox.open();
 	}
+		
+	
 	
 	/**
 	 * Creates ScriptHandler objects
@@ -698,7 +712,8 @@ public class Window extends Thread {
 	public void restartConverter(){
 		cue.getLinkedListJobs().clear();
 		this.tableViewer.getTable().clearAll();
-		this.tblJobs2.clearAll();
+		this.tableJobViewer.refresh();
+		this.txtDescription.setText("");
 		this.txtConversionRunning.setText("");
 		this.txtElapsedTime.setText("");
 		this.txtEstimatedTime.setText("");
@@ -706,6 +721,8 @@ public class Window extends Thread {
 		this.listConversion.deselectAll();
 		this.btnTerminate.setEnabled(false);
 		this.addMultipleFiles.setEnabled(false);
+		this.btnTerminate.setEnabled(false);
+		this.btnRun.setEnabled(true);
 	}
 	
 	
@@ -724,9 +741,36 @@ public class Window extends Thread {
 		return this.compJobsInQueue;
 	}
 	
+	public DMFCCore getDMFC(){
+		return this.dmfc;
+	}
+	
+	public LocalEventListener getLocalEventListener(){	
+		return lel;
+	}
+	
+	public boolean getExecuting(){
+		return this.executing;
+	}
+	
+
+	public ConvertMultipleFiles getConvertMultipleFiles(){
+			return cmv;	
+	}
+	
+	public void getNewCMFScreen(){
+		cmv = new ConvertMultipleFiles();
+		cmv.open();
+	}
+	
+	public void setRunTerminateButtons(){
+		this.btnTerminate.setEnabled(true);
+		this.btnRun.setEnabled(false);
+	}
+	
 	/**
 	 * 
-	 * @param mark int, item number in the list selected
+	 * @param mark int, item number in the list selected from the jobs table
 	 */
 	public void setSelectedIndex(int mark){
 		this.index=mark;
@@ -742,7 +786,8 @@ public class Window extends Thread {
 		}
 		else if(index<cue.getSizeOfQueue()){
 			cue.moveUp(index);
-			jqtp2.populateTable(cue);
+			tableJobViewer.refresh();
+			
 		}
 	
 		else{	
@@ -764,7 +809,8 @@ public class Window extends Thread {
 		}
 		else if(index<cue.getSizeOfQueue()){
 			cue.moveDown(index);
-			jqtp2.populateTable(cue);
+			tableJobViewer.refresh();
+		
 		}
 	
 		else{	
@@ -779,7 +825,8 @@ public class Window extends Thread {
 	public void deleteJob(){
 		if(index<cue.getSizeOfQueue()){
 			cue.deleteFromQueue(index);
-			jqtp2.populateTable(cue);
+			tableJobViewer.refresh();
+			//jqtp2.populateTable(cue);
 		}
 		else{
 			
@@ -830,6 +877,14 @@ public class Window extends Thread {
 	
 	}
 	
+	public void createJobTableViewer(){
+		tableJobViewer = new TableViewer(tblJobs2);
+		tableJobViewer.setUseHashlookup(true);
+		tableJobViewer.setColumnProperties(columnJobNames);
+		
+	}
+	
+	
 	/**
 	 * InnerClass that acts as a proxy for the TransformerList 
 	 * providing content for the Table. It implements the ITransformerListViewer 
@@ -845,7 +900,6 @@ public class Window extends Thread {
 		}
 
 		public void dispose() {
-			transformerList.removeChangeListener(this);
 		}
 
 		// Return the transformers as an array of Objects
@@ -873,6 +927,55 @@ public class Window extends Thread {
 	}
 	
 	
+	/**
+	 * Provides the content for  the job table.
+	 * It implements the IJobListViewer 
+	 * interface since it must register changeListeners with the 
+	 * JobList 
+	 */
+	class JobContentProvider implements IStructuredContentProvider, IJobListViewer {
+		
+		
+		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+			if (newInput != null)
+				((JobList) newInput).addChangeListener(this);
+			if (oldInput != null)
+				((JobList) oldInput).removeChangeListener(this);
+		}
+
+		public void dispose() {
+			jobList.removeChangeListener(this);
+		}
+
+		// Return the tasks as an array of Objects
+		public Object[] getElements(Object parent) {
+			return jobList.getJobs().toArray();
+		}
+
+		/* (non-Javadoc)
+		 * @see ITaskListViewer#addTask(ExampleTask)
+		 */
+		public void addJob(Job job) {
+			tableJobViewer.add(job);
+		}
+
+		/* (non-Javadoc)
+		 * @see ITaskListViewer#removeTask(ExampleTask)
+		 */
+		public void removeJob(Job job) {
+			tableJobViewer.remove(job);			
+		}
+
+		/* (non-Javadoc)
+		 * @see ITaskListViewer#updateTask(ExampleTask)
+		 */
+		public void updateJob(Job job) {
+			tableJobViewer.update(job, null);	
+		}
+	}
+
+
+	
 	
 	
 	/**
@@ -880,17 +983,22 @@ public class Window extends Thread {
 	 * progress of the Converter details
 	 *
 	 */
-	//public void runScript(){	
 	public void start(){
 		
 		executing=true;
-		this.menu.getEnableJobDetails().setEnabled(true);
-	//	this.btnDetails.setEnabled(true);
 		
+		//place long running methods in a Thread..
 		execute();
+		
+		
+		//place all methods not in event loop in own thread
 		
 		UIManager.display.asyncExec(new Runnable(){
 			public void run(){
+				
+				//enable and disable buttons
+				setRunTerminateButtons();
+				
 				
 			//increment the progress bar and time remaining
 				//CurrentJobDetails.getInstance().pb.setSelection((lel.getProgress()));
@@ -905,37 +1013,13 @@ public class Window extends Thread {
 				//CurrentJobDetails.getInstance().txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
 				System.out.println("lel.getTotalTime()" + lel.getTotalTime());
 				System.out.println("getTransformerRunning() " + lel.getTransformerRunning());
-				System.out.println("type" + lel.getType());
-				
-				
+				System.out.println("type" + lel.getType());	
 		}
 	});
 		
-		
-		//if lel.getMessage==END+SCRIPT, then disable buttons?
 	}
 	
-	public DMFCCore getDMFC(){
-		return this.dmfc;
-	}
 	
-	public LocalEventListener getLocalEventListener(){	
-		return lel;
-	}
-	
-	public boolean getExecuting(){
-		return this.executing;
-	}
-	
-
-	public ConvertMultipleFiles getConvertMultipleFiles(){
-			return cmv;	
-	}
-	
-	public void getNewCMFScreen(){
-		cmv = new ConvertMultipleFiles();
-		cmv.open();
-	}
 	
 	public void execute(){
 				
@@ -971,27 +1055,32 @@ public class Window extends Thread {
 					scriptHandler.setProperty("input", job.getInputFile().getPath());
 					scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
 					
-					//List list = scriptHandler.getTransformerInfoList();
-					
 					
 					
 					try{	
+						
+					 //after the script handler is finished executing, set job to finished.
+						
 						scriptHandler.execute();
 						int transNumber = job.getScript().getCurrentTaskIndex();
 						System.out.println("what is the current task index? " + transNumber);
 						count++;
 						tableViewer.getTable().getItem(job.getScript().getCurrentTaskIndex()).setChecked(true);
 					
+					
 					}
 					catch(ScriptException se){
 						//if the script is not valid
 						//set the script in the first table to status failed.
+						job.setStatus(Status.FAILED);
+						tableJobViewer.refresh();
 						se.getMessage();
 					}
 					
 					//finally, reset the status in the jobs table
-				
+					//after the script has finished..
 					job.setStatus(Status.COMPLETED);
+					tableJobViewer.refresh();	
 					
 			}
 		}
