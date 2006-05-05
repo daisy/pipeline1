@@ -44,13 +44,22 @@ import org.daisy.util.i18n.LocaleUtils;
  */
 public class ContextStack {
     
-    protected class ContextInfo {
-        public ContextInfo(QName n, String xmlLang) {
+	public class ContextInfo {
+		private QName name;
+        private Locale locale;
+        
+		public ContextInfo(QName n, String xmlLang) {
             name = n;
             locale = LocaleUtils.string2locale(xmlLang);
         }
-        public QName name;
-        public Locale locale;
+        
+        public QName getName() {
+        	return name;
+        }
+        
+        public Locale getLocale() {
+        	return locale;
+        }
     }
     
     protected Stack context = new Stack();
@@ -88,7 +97,7 @@ public class ContextStack {
         Stack result = new Stack();
         for (Iterator it = context.iterator(); it.hasNext(); ) {
             ContextInfo ci = (ContextInfo)it.next();
-            result.push(ci.name);
+            result.push(ci);
         }
         return result;
     }
@@ -106,7 +115,10 @@ public class ContextStack {
     public String getContextPath(Stack list) {
         StringBuffer buffer = new StringBuffer();
         for (Iterator it = list.iterator(); it.hasNext(); ) {
-            QName name = (QName)it.next();
+            ContextStack.ContextInfo tmp = 
+            	(ContextStack.ContextInfo) it.next();
+            
+        	QName name = tmp.getName();
             buffer.append("/").append(name.getLocalPart());
         }
         if (list.isEmpty()) {
