@@ -32,7 +32,7 @@ class MIMETypeRegistry implements XMLReporter {
 
 	private MIMETypeRegistry() throws MIMETypeRegistryException {
 		try {
-			URL docURL = this.getClass().getResource("MimeTypeRegistry.xml");
+			URL docURL = this.getClass().getResource("MIMETypeRegistry.xml");
 			XMLStreamReader reader;
 			XMLInputFactory xif = XMLInputFactory.newInstance();				
 	        xif.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
