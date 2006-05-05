@@ -106,7 +106,9 @@ public class XMLWordDetector extends XMLBreakDetector {
                 String data = event.asCharacters().getData();
                 int index = contextStack.getContext().size() - 1;
                 if (index > 0) {
-                    QName current = (QName)contextStack.getContext().get(index);
+                	ContextStack.ContextInfo tmp = 
+                		(ContextStack.ContextInfo) contextStack.getContext().get(index);
+                    QName current = tmp.getName();
                 
                     if (shouldBeProcessed(current)) {
                         breakFinder.setLocale(lastLocale);                        

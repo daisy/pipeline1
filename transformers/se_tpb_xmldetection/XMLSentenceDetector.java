@@ -366,7 +366,9 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                 writeString(text.substring(0, currentBreak - offset));
                 text = text.substring(currentBreak - offset, text.length());
                 offset = currentBreak;
-                QName lastWritten = (QName)writeStack.getContext().pop();
+                ContextStack.ContextInfo tmp = 
+                	(ContextStack.ContextInfo) writeStack.getContext().pop();
+                QName lastWritten = tmp.getName();
                 /*
                  *  FIXME we only need to check that the last element really was
                  * a sentence break element, right? Hmm...
