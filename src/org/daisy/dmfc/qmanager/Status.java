@@ -13,5 +13,26 @@ public class Status {
 		public final static int COMPLETED=3;
 		public final static int FAILED =4;
 		
-	
+		public static String getStatusString(int status){
+			String str= "";
+			switch (status){
+				case 1:
+					str= "Waiting";
+					break;
+				case 2:
+					str = "In Progress";
+					break;
+				case 3:
+					str = "Completed";
+					break;
+				case 4:
+					str = "Failed";
+					break;
+				default:
+					str = "Bad result";
+					break;
+			}
+			return str;
+		}
+		
 }

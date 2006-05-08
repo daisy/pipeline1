@@ -20,7 +20,7 @@ import org.daisy.dmfc.exception.ScriptException;
  *
  */
 
-public class QueueRunner extends Thread{
+public class QueueRunner {
 	
 	private Queue queue;
 	private DMFCCore dmfc;
@@ -55,9 +55,8 @@ public class QueueRunner extends Thread{
 	 * 
 	 *@throws ScriptException on execute()
 	 */
-	
-	//public void executeJobsInQueue(){
-		public void run(){
+		public void execute(){
+	//public void start(){
 			
 			//walk through the queue and return jobs
 			LinkedList jobList = queue.getLinkedListJobs();
@@ -73,7 +72,7 @@ public class QueueRunner extends Thread{
 				//add the input and output files to the script
 				//actually, this only returns if the parameters are present in the script...
 				scriptHandler.setProperty("input", job.getInputFile().getPath());
-				scriptHandler.setProperty("outputDir", job.getOutputFile().getPath());
+				scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
 				
 				//List list = scriptHandler.getTransformerInfoList();
 				
@@ -83,6 +82,7 @@ public class QueueRunner extends Thread{
 				catch(ScriptException se){
 					se.getMessage();
 				}
+				
 
 		}
 	}

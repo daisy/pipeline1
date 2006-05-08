@@ -13,6 +13,8 @@ public class LocalEventListener implements EventListener{
 	SmilClock timeLeft;
 	SmilClock totalTime;
 	double progress;
+	String messageOriginator;
+	int type;
 	
 	
 	public void message(Prompt prompt) {
@@ -38,6 +40,10 @@ public class LocalEventListener implements EventListener{
 		timeLeft=prompt.getTimeLeft();
 		totalTime =prompt.getTotalTime();
 		progress=prompt.getProgress();
+		messageOriginator = prompt.getMessageOriginator();
+		type = prompt.getType();
+		message = prompt.getMessage();
+		
 		
 	}
 
@@ -45,9 +51,6 @@ public class LocalEventListener implements EventListener{
 		return this.message;
 	}
 	
-	public int getMessageType(Prompt prompt){
-		return prompt.getType();	
-	}
 	
 	public double getTimeLeft(){
 	
@@ -76,5 +79,25 @@ public class LocalEventListener implements EventListener{
 		int intProgress = (int)this.progress;
 		return intProgress;
 	}
+	
+	
+	public String getTransformerRunning(){
+		return this.messageOriginator;
+	}
+	
+	public int getType(){
+		return this.type;
+	}
+	
+	public String getMessageOriginator(){
+		return this.messageOriginator;
+	}
+	
+	/*
+	 *public static final int MESSAGE = 0;
+    public static final int PROGRESS = 1;
+    public static final int TRANSFORMER_START = 2;
+    public static final int TRANSFORMER_END = 3;
+	 */
 	
 }

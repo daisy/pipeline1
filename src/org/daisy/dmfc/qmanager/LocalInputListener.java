@@ -9,6 +9,8 @@ import org.daisy.dmfc.core.Prompt;
 
 public class LocalInputListener implements InputListener {
 
+	private boolean isAborted = false;
+	
 	public String getInputAsString(Prompt prompt) {
 		System.err.println("[" + prompt.getMessageOriginator() + "] Prompt: " + prompt.getMessage());
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -21,7 +23,12 @@ public class LocalInputListener implements InputListener {
 	}
 
     public boolean isAborted() {
-        return false;
+        return isAborted;
     }
+    
+    public void setAborted(boolean aborted){
+    	this.isAborted=aborted;
+    }
+    
 	
 }
