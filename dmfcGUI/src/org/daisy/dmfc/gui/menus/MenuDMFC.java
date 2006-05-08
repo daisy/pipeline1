@@ -145,12 +145,7 @@ public class MenuDMFC {
 		
 		MenuItem manageJobsInQueue = new MenuItem(actionmenu, SWT.CASCADE);
 		manageJobsInQueue.setText("Manage Jobs in List");
-		manageJobsInQueue.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				System.out.println("ForcedFocus");
-				window.tblJobs2.forceFocus();
-			}
-			});
+		
 		
 		
 		//Submenu of the Manage Job List menu item
@@ -158,8 +153,8 @@ public class MenuDMFC {
 		manageJobsInQueue.setMenu(submenu);
 		
 		final MenuItem subactionSelectJob = new MenuItem(submenu, SWT.PUSH);
-		subactionSelectJob.setText("&Move Up List\tCtrl+U");
-		subactionSelectJob.setAccelerator(SWT.CTRL+'U');
+		subactionSelectJob.setText("&Select Job From List\tCtrl+J");
+		subactionSelectJob.setAccelerator(SWT.CTRL+'J');
 		subactionSelectJob.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -174,6 +169,7 @@ public class MenuDMFC {
 		subactionItemUp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
+				window.setSelectedIndex(window.tblJobs2.getSelectionIndex());
 				window.moveJobUp();
 				
 			}
@@ -185,6 +181,7 @@ public class MenuDMFC {
 		subactionItemDown.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
+				window.setSelectedIndex(window.tblJobs2.getSelectionIndex());
 				window.moveJobDown();
 			}
 			});
@@ -196,6 +193,7 @@ public class MenuDMFC {
 		subactionItemRemove.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
+				window.setSelectedIndex(window.tblJobs2.getSelectionIndex());
 				window.deleteJob();
 			}
 			});
@@ -207,7 +205,7 @@ public class MenuDMFC {
 		subactionItemChange.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
-				window.tblJobs2.forceFocus();
+				window.setSelectedIndex(window.tblJobs2.getSelectionIndex());
 				window.editJob();
 			}
 			});

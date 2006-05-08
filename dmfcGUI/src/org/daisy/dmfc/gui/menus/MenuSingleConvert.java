@@ -1,6 +1,8 @@
 package org.daisy.dmfc.gui.menus;
 
+import org.daisy.dmfc.gui.ConvertSingleFile;
 import org.daisy.dmfc.gui.UIManager;
+import org.daisy.dmfc.gui.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -11,6 +13,9 @@ import org.eclipse.swt.widgets.Shell;
 
 public class MenuSingleConvert {
 
+	Window window;
+	ConvertSingleFile csf;
+	
 	public MenuSingleConvert(final Shell shell){
 		
 		Menu menu = new Menu(shell, SWT.BAR);
@@ -24,9 +29,9 @@ public class MenuSingleConvert {
 		Menu filemenu = new Menu(shell, SWT.DROP_DOWN);
 		file.setMenu(filemenu);
 		MenuItem actionItem = new MenuItem(filemenu, SWT.PUSH);
-		actionItem.setText("Exit\tCtrl+Q");	
+		actionItem.setText("Exit\tCtrl+X");	
 		
-		actionItem.setAccelerator(SWT.MOD1 + 'Q');
+		actionItem.setAccelerator(SWT.MOD1 + 'X');
 		actionItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				MessageBox mb = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
@@ -53,15 +58,45 @@ public class MenuSingleConvert {
 	
 		MenuItem selectInputFile = new MenuItem(actionmenu, SWT.PUSH);
 		selectInputFile.setText("Select Input File\tCtrl+F");
+		selectInputFile.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				window=Window.getInstance();
+				csf = window.getConvertSingleFile();
+				csf.setFileSelected();
+			}
+			});
+		
 		
 		MenuItem setOuputPath = new MenuItem(actionmenu, SWT.PUSH);
 		setOuputPath.setText("Select Output Path\tCtrl+O");
+		setOuputPath.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				window=Window.getInstance();
+				csf = window.getConvertSingleFile();
+				csf.setOutputPathSelected();
+			}
+			});
+		
 		
 		MenuItem ok = new MenuItem(actionmenu, SWT.PUSH);
 		ok.setText("OK - Save\tCtrl+O");
+		ok.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				window=Window.getInstance();
+				csf = window.getConvertSingleFile();
+				csf.sendJobInfoToMain();
+			}
+			});
 		
 		MenuItem cancel = new MenuItem(actionmenu, SWT.PUSH);
 		cancel.setText("Cancel \tCtrl+C");
+		cancel.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				window=Window.getInstance();
+				csf = window.getConvertSingleFile();
+				csf.dispose();
+			}
+			});
 		
 		
 		

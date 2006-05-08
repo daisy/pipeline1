@@ -54,10 +54,10 @@ public class ConvertSingleFile extends Composite {
 	Label lblDaisyMFC;
 	
 	//Buttons
-	Button btnBrowseInput;
-	Button btnBrowseOutput;
-	Button btnOK;
-	Button btnCancel;
+	public Button btnBrowseInput;
+	public Button btnBrowseOutput;
+	public Button btnOK;
+	public Button btnCancel;
 	
 	//TextFields
 	Text txtConversionName;
@@ -94,7 +94,7 @@ public class ConvertSingleFile extends Composite {
 		
 		shell.setText("Daisy Multi Format Converter");
 		shell.setMaximized(true);
-		shell.setBackground(ColorChoices.white);
+		//shell.setBackground(ColorChoices.white);
 		
 		
 		shell.setLayout(new FormLayout());
@@ -105,7 +105,7 @@ public class ConvertSingleFile extends Composite {
 		lblDaisyMFC.setForeground(ColorChoices.darkBlue);
 		lblDaisyMFC.setText("Convert Single File");
 		lblDaisyMFC.setFont(FontChoices.fontSubTitle);
-		lblDaisyMFC.setBackground(ColorChoices.white);
+		//lblDaisyMFC.setBackground(ColorChoices.white);
 		
 		FormData formData = new FormData();
 		fah.setFormData(formData, 0,20,35,20,8,10,75,10);
@@ -113,7 +113,7 @@ public class ConvertSingleFile extends Composite {
 		
 	//Composite conversion stuff	
 		Composite compConversionChosen = new Composite(shell, SWT.NONE);
-		compConversionChosen.setBackground(ColorChoices.white);
+		//compConversionChosen.setBackground(ColorChoices.white);
 		RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL);
 		rowLayout.spacing = 20;
 		rowLayout.wrap = true;
@@ -159,7 +159,7 @@ public class ConvertSingleFile extends Composite {
 		
 	//Input stuff
 		 Composite compInputFields = new Composite(shell, SWT.NONE);
-		 compInputFields.setBackground(ColorChoices.white);
+		// compInputFields.setBackground(ColorChoices.white);
 		 RowLayout rowLayout1 = new RowLayout(SWT.HORIZONTAL);
 		 rowLayout.spacing = 30;
 		 rowLayout.wrap = true;
@@ -210,7 +210,7 @@ public class ConvertSingleFile extends Composite {
 		 //Composite output
 		 
 		 Composite compOutputFields = new Composite(shell, SWT.NONE);
-		 compOutputFields.setBackground(ColorChoices.white);
+		// compOutputFields.setBackground(ColorChoices.white);
 		 RowLayout rowLayout2 = new RowLayout(SWT.HORIZONTAL);
 		 rowLayout.spacing = 30;
 		 rowLayout.wrap = true;
@@ -256,7 +256,7 @@ public class ConvertSingleFile extends Composite {
 		 
 		 //bottom OK and Cancel buttons
 		 Composite compOkCancelButtons = new Composite (shell, SWT.NONE);
-		 compOkCancelButtons.setBackground(ColorChoices.white);
+		 //compOkCancelButtons.setBackground(ColorChoices.white);
 		 RowLayout rowLayout3 = new RowLayout(SWT.HORIZONTAL);
 		 rowLayout.spacing = 40;
 		 rowLayout.wrap = true;
@@ -318,7 +318,7 @@ public class ConvertSingleFile extends Composite {
 	
 //Methods called by Listeners
 	/**
-	 * @todo problem, text field contains something
+	 * 
 	 */
 	public void setFileSelected() {
 		FileDialog fileDialog = new FileDialog(shell);
@@ -377,8 +377,7 @@ public class ConvertSingleFile extends Composite {
 				job.setStatus(Status.WAITING);
 				Window.getInstance().addToQueue(job);
 				
-				//Doesn't work...keep looking, tried redraw() on the composite...
-				//Window.getInstance().open();
+				
 				dispose();
 		}
 	}

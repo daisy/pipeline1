@@ -102,7 +102,7 @@ public class Window extends Thread {
 	
 	
 	//Buttons
-	//Button addSingleFile;
+	Button btnAddSingleFile;
 	Button addMultipleFiles;
 	Button btnMoveUp;
 	Button btnMoveDown;
@@ -163,6 +163,7 @@ public class Window extends Thread {
 	
 	//ConvertMultipleFiles screen
 	ConvertMultipleFiles cmv;
+	ConvertSingleFile convertSingleFile;
 	
 	//tableViewer
 	TableViewer tableViewer;
@@ -239,6 +240,7 @@ public class Window extends Thread {
 				//System.out.println ("The number selected is " + selection);
 				if (selection==1){
 					addMultipleFiles.setEnabled(true);
+					btnAddSingleFile.setEnabled(true);
 					getConversionSelection();
 					getConversionDescription();
 				}
@@ -263,7 +265,7 @@ public class Window extends Thread {
 		addButtonsComp.setLayout(gridLayout);
 		
 		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		data.verticalSpan=2;
+		data.widthHint=120;
 		this.addMultipleFiles = new Button (addButtonsComp, SWT.SHADOW_OUT);
 		this.addMultipleFiles.setEnabled(false);
 		addMultipleFiles.setLayoutData(data);
@@ -283,6 +285,25 @@ public class Window extends Thread {
 		lblDescription.setText("Conversion Description");
 		lblDescription.setLayoutData(data);
 		
+		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		data.widthHint=120;
+		this.btnAddSingleFile = new Button (addButtonsComp, SWT.SHADOW_OUT);
+		this.btnAddSingleFile.setEnabled(false);
+		btnAddSingleFile.setLayoutData(data);
+		
+		buttonProperties.setProperties(btnAddSingleFile, "Browse for Single File ");
+		this.btnAddSingleFile.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				getConversionSelection();
+				getNewSingleFileScreen();
+
+			}
+		});
+		
+		
+		
+		
+		
 		data = new GridData(GridData.FILL_VERTICAL);
 		data.widthHint=125;
 		this.txtDescription = new Text(addButtonsComp, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
@@ -298,13 +319,6 @@ public class Window extends Thread {
 		
 	//Bottom left
 		compJobsInQueue = new Composite (shell, SWT.NONE);
-		//compJobsInQueue.setBackground(ColorChoices.white);
-		/*RowLayout rowLayout4 = new RowLayout(SWT.VERTICAL);
-		rowLayout4.pack = true;
-		rowLayout4.spacing = 15;
-		compJobsInQueue.setLayout(rowLayout4);
-		*/
-		
 		GridLayout gridLayoutJobs = new GridLayout();
 		compJobsInQueue.setLayout(gridLayoutJobs);
 		
@@ -762,6 +776,17 @@ public class Window extends Thread {
 		cmv = new ConvertMultipleFiles();
 		cmv.open();
 	}
+	
+	
+	public ConvertSingleFile getConvertSingleFile(){
+		return convertSingleFile;	
+}
+
+	public void getNewSingleFileScreen(){
+		convertSingleFile = new ConvertSingleFile();
+		convertSingleFile.open();
+	}
+	
 	
 	public void setRunTerminateButtons(){
 		this.btnTerminate.setEnabled(true);
