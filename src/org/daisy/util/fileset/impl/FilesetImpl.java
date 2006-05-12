@@ -143,13 +143,15 @@ public class FilesetImpl implements Fileset {
 					OpfFileImpl temp =  new OpfFileImpl(f.toURI());
 					temp.parse();
 					//instantiate the appropriate filetype
-					if(temp.getMetaDcFormat().indexOf("Z39.86")>=0){
+					if(temp.getMetaDcFormat()!=null && temp.getMetaDcFormat().indexOf("Z39.86")>=0){
 						this.filesetType = FilesetType.Z3986;
 						this.manifestMember = new Z3986OpfFileImpl(f.toURI());
-					}else if(temp.getMetaDcFormat().indexOf("NIMAS")>=0){
+					}else if(temp.getMetaDcFormat()!=null && temp.getMetaDcFormat().indexOf("NIMAS")>=0){
 						this.manifestMember = new NimasOpfFileImpl(f.toURI());
 						this.filesetType = FilesetType.NIMAS;
-					}										
+					}else{
+						throw new FilesetFatalException("could not detect version of opf (no dc:format)");
+					}
 					//send it to the observer which handles the rest generically
 					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);
 					//do some obscure stuff specific to this fileset type	
