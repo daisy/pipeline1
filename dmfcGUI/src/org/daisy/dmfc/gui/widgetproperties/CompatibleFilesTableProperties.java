@@ -19,6 +19,7 @@ public class CompatibleFilesTableProperties {
 
 	Table table;
 	TableColumn tcFiles;
+	File dirSelected;
 	
 	public CompatibleFilesTableProperties(Table _table){
 		
@@ -36,13 +37,18 @@ public class CompatibleFilesTableProperties {
 		
 	}
 	
-	public void populateTable(File file, ArrayList alPatterns){
+	public void setDirSelected(File dirSelect){
+		this.dirSelected=dirSelect;
+		
+	}
+	
+	public ArrayList setTableContents(ArrayList alPatterns){
 		
 		ArrayList alCompatibleFiles = new ArrayList();
 		
 		EFolder eFolder=null;
 		try {
-			 eFolder = new EFolder(file.getPath());
+			 eFolder = new EFolder(this.dirSelected.getPath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -50,7 +56,7 @@ public class CompatibleFilesTableProperties {
 
 		Collection recursiveFolders = eFolder.getFolders(true, ".+", false);
 		Iterator itFolders = recursiveFolders.iterator();
-		
+		String strExtension="";
 		while (itFolders.hasNext()){
 			File folderFile = (File)itFolders.next();
 			System.out.println("Names of all folders : " + folderFile.getPath());
@@ -62,29 +68,42 @@ public class CompatibleFilesTableProperties {
 				//for each file, create an EFile
 				File compareFile = arFiles[j];
 				EFile eFile = new EFile(compareFile.getPath());
-				String strExtension = eFile.getExtension();
+				strExtension = eFile.getExtension();
+				//System.out.println("the filename is " + compareFile.getName());
+				System.out.println("    the string extension is: " + strExtension);
 				
 //				compare them to the mimetype pattern(s) and 
 				//only place compatible types in the array
 				
 				Iterator itMimeTypes = alPatterns.iterator();
+			
+			
 				while (itMimeTypes.hasNext()){
-					if (strExtension.equalsIgnoreCase((String)itMimeTypes.next()))
-						alCompatibleFiles.add(compareFile);
+					String type = (String)itMimeTypes.next();
+					//System.out.println("    names in the patterns " + type);
+					
+					if (strExtension!=null ){
+						boolean match = strExtension.equalsIgnoreCase(type);
+						if (match){
+							alCompatibleFiles.add(compareFile);
+						}
+					}
 					
 				}
-					
+				
 			}
-			
 		}
-		
-		
-		
+		/*
 		Iterator itCompatible = alCompatibleFiles.iterator();
 		while (itCompatible.hasNext()){
 			TableItem ti = new TableItem(table ,SWT.NONE,0);
 			ti.setText((String)itCompatible.next());
-		}	
+		}
+		*/	
+		int size = alCompatibleFiles.size();
+		System.out.println("How many compatible files in the array?" + size);
+		return alCompatibleFiles;
 	}
+	
 	
 }
