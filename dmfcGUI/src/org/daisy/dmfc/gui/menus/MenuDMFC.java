@@ -106,7 +106,7 @@ public class MenuDMFC {
 		selectJobDetails.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
-				window.listConversion.forceFocus();
+				//window.getTreeScriptList().forceFocus();
 			}
 			});
 		
@@ -118,16 +118,15 @@ public class MenuDMFC {
 		
 		convertMultipleFile.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				window=Window.getInstance();
-		
 				
-				if (window.listConversion.getSelectionCount()==1){
-					
+				
+				window=Window.getInstance();
+				
+				if (window.scriptHandler!=null){
+				
 					window.getConversionSelection();
 					window.getNewCMFScreen();
-					
-					
-					
+						
 				}
 				else{
 					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
@@ -138,14 +137,13 @@ public class MenuDMFC {
 							messageBox.open();
 				}
 			}
-			});
+		});
 		
 		
 	//Manage Job List - has submenus
 		
 		MenuItem manageJobsInQueue = new MenuItem(actionmenu, SWT.CASCADE);
 		manageJobsInQueue.setText("Manage Jobs in List");
-		
 		
 		
 		//Submenu of the Manage Job List menu item

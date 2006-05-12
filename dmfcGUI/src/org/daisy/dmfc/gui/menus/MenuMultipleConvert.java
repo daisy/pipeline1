@@ -93,7 +93,7 @@ public class MenuMultipleConvert {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
 				//force focus on radio buttons
-				//window.getConvertMultipleFiles().getTableCompatibleFiles().forceFocus();
+				window.getConvertMultipleFiles().btnRadio1.forceFocus();
 			}
 			});
 		
@@ -105,7 +105,7 @@ public class MenuMultipleConvert {
 			public void widgetSelected(SelectionEvent e) {
 				window=window.getInstance();
 				window.getConvertMultipleFiles().sendJobInfoToMain();
-				window.getConvertMultipleFiles().dispose();
+				
 			}
 			});
 		
