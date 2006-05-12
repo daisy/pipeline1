@@ -23,6 +23,10 @@ import org.daisy.dmfc.gui.widgetproperties.RadioButtonProperties;
 import org.daisy.dmfc.gui.widgetproperties.TextProperties;
 import org.daisy.dmfc.qmanager.Job;
 import org.daisy.dmfc.qmanager.Status;
+import org.daisy.util.mime.MIMEType;
+import org.daisy.util.mime.MIMETypeException;
+import org.daisy.util.mime.MIMETypeFactory;
+import org.daisy.util.mime.MIMETypeFactoryException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -45,7 +49,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.jface.viewers.*;
 
 
 /**
@@ -81,7 +84,7 @@ public class ConvertMultipleFiles {
 	Button btnBrowseOutput;
 	Button btnOK;
 	Button btnCancel;
-	Button btnRadio1;
+	public Button btnRadio1;
 	Button btnRadio2;
 
 	// TextFields
@@ -231,7 +234,9 @@ public class ConvertMultipleFiles {
 					public void handleEvent (Event event) {
 						//String string = event.detail == SWT.CHECK ? "Checked" : "Selected";
 						//adds a TableItem to the arrayList
-						al.add(event.item);
+						if (event.detail==SWT.CHECK){
+							al.add(event.item);
+						}
 					}
 				});
 			 
@@ -323,8 +328,6 @@ public class ConvertMultipleFiles {
 			 this.btnBrowseOutput.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						setOutputPathSelected();
-						
-						//getFileTypesForScriptHandler();
 					}
 				});
 			 
@@ -396,7 +399,7 @@ public class ConvertMultipleFiles {
 			System.out.println("Directory selected is null");
 		}
 		else
-			cftp.populateTable(new File(dirSelected));	
+			cftp.populateTable(new File(dirSelected), getFileTypesForScriptHandler());	
 	}
 	
 	
@@ -443,8 +446,6 @@ public class ConvertMultipleFiles {
 			dispose();
 		}
 	}
-	
-	
 	
 	/**
 	 * 
@@ -518,9 +519,7 @@ public class ConvertMultipleFiles {
 				}
 				System.out.println("The last token is " + lastDir);
 				strSubfolderOfOutputFolder =outputPath + File.separator + lastDir + File.separator;
-				txtOutputDoc.setText(strSubfolderOfOutputFolder);
-				
-				
+				txtOutputDoc.setText(strSubfolderOfOutputFolder);	
 			}
 		}
 		
@@ -530,15 +529,20 @@ public class ConvertMultipleFiles {
 		
 	}
 	
-	public void getFileTypesForScriptHandler(){
+	public ArrayList getFileTypesForScriptHandler(){
 		
 		System.out.println("GetFileTypes for Script");
+		Collection msglobs = null;
 		
+		//container to hold all the file types valid for script
+		ArrayList alValid = new ArrayList();
+					
+		//get the file types for the scripts
 		String fileType = null;
-		
 		List list= this.scriptHandler.getTransformerInfoList();
 	
 		 // get info on first transformer, change to list.get(list.size() - 1) for the last transformer
+		//no, can only take the file in first transformer in the script list...
 		TransformerInfo tinfo = (TransformerInfo)list.get(0);
 		
 		//Returns a collection of parameter information
@@ -552,11 +556,40 @@ public class ConvertMultipleFiles {
 			if (parameter.equalsIgnoreCase("in")){
 				fileType = pi.getType();
 				System.out.println("Valid types for this script " + fileType);
+				
+				try {
+					MIMEType mt = MIMETypeFactory.newInstance().newMimeType(fileType);
+					msglobs = mt.getFilenamePatterns();
+				} catch (MIMETypeFactoryException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (MIMETypeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				Iterator itPatterns = msglobs.iterator();	
+				
+				while (itPatterns.hasNext()){
+					String mimePattern = (String)itPatterns.next();
+					if (!mimePattern.equalsIgnoreCase("")){
+						StringTokenizer st = new StringTokenizer(mimePattern, ".");
+						st.nextToken();
+						String extension = st.nextToken();
+						System.out.println("File exension is "+ extension);
+						alValid.add(extension);
+					}
+				}
+				//print out items in arraylist
+				
+				Iterator itValid = alValid.iterator();
+				while (itValid.hasNext())
+					System.out.println ("Mime patterns in array " + (String)itValid.next());
 			}
 		}	
-			
-		}
-	//}
+		return alValid;
+	}
+	
 	
 	
 	

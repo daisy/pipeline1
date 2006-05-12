@@ -2,6 +2,7 @@ package org.daisy.dmfc.gui;
 
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -14,8 +15,8 @@ import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.gui.jface.IJobListViewer;
 import org.daisy.dmfc.gui.jface.JobLabelProvider;
 import org.daisy.dmfc.gui.jface.JobList;
-
 import org.daisy.dmfc.gui.menus.MenuDMFC;
+import org.daisy.dmfc.gui.scripttree.ScriptTreeLabelProvider;
 import org.daisy.dmfc.gui.transformerlist.ITransformerListViewer;
 import org.daisy.dmfc.gui.transformerlist.TransformerLabelProvider;
 import org.daisy.dmfc.gui.transformerlist.TransformerList;
@@ -36,8 +37,13 @@ import org.daisy.dmfc.qmanager.Status;
 import org.daisy.util.xml.validation.ValidationException;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -51,15 +57,13 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
 
 
 
@@ -113,11 +117,14 @@ public class Window extends Thread {
 	Button btnTerminate;
 	Button btnStart;
 	
-	//Lists
-	public List listConversion;
+	
+	
+	//tree of conversions
+	Tree treeScriptList;
 	
 	//File array of conversions
 	File [] arFiles ;
+	File [] arScriptFiles;
 	
 	//Table
 	public Table tblJobs2;
@@ -152,11 +159,21 @@ public class Window extends Thread {
 	//boolean - if jobs are being run
 	public boolean executing;
 	
+	//Files
+	File scriptDirectory;
+	File fileSelectedFromTree;
+	
+	
+	
+	//HashMap
+	HashMap hmScriptHandlers = new HashMap();
+	
+	
 	//Array of ScriptHandler objects
 	ScriptHandler [] listScriptHandlers;
 
 	//The ScriptHandler to pass around
-	ScriptHandler scriptHandler;
+	public ScriptHandler scriptHandler;
 	
 	//enable items on menu
 	MenuDMFC menu;
@@ -168,6 +185,8 @@ public class Window extends Thread {
 	//tableViewer
 	TableViewer tableViewer;
 	TableViewer tableJobViewer;
+	//TreeViewer
+	TreeViewer tv;
 	
 	//transformerList
 	TransformerList transformerList;
@@ -175,7 +194,7 @@ public class Window extends Thread {
 	
 	
 	//set column names
-	private String[] columnNames = new String [] {"Transformers in COnversion"};
+	private String[] columnNames = new String [] {"Transformers in Conversion"};
 	private String [] columnJobNames = new String [] {""};
 	
 	public static Window getInstance(){
@@ -187,6 +206,14 @@ public class Window extends Thread {
 
 	
 	private Window(){
+	
+		//instantiates DMFCCore
+		//sets the scripts home directory
+		setScriptDirectory();
+		
+		//creates scripthandler objects for all scripts
+		//and places in a hashmap
+		createHashMapScriptHandlers();
 		
 		display=UIManager.display;
 		shell=new Shell (display);
@@ -204,7 +231,7 @@ public class Window extends Thread {
 		
 		shell.setText("Daisy Multi Format Converter");
 		shell.setMaximized(true);
-		//shell.setSize(350, 200);
+		shell.setSize(800, 600);
 		shell.setLocation(50, 50);
 		shell.setLayout(new FormLayout());
 	
@@ -227,7 +254,46 @@ public class Window extends Thread {
 		formFill3.bottom = new FormAttachment(13, 10);
 		formFill3.right = new FormAttachment(25,10);
 		compSelectConversion.setLayoutData(formFill3);
+				
+		Composite compScriptTree = new Composite(shell, SWT.NONE);
+		compScriptTree.setLayout(new GridLayout());
 		
+
+		tv = new TreeViewer(compScriptTree);
+		data =  new GridData(GridData.FILL_BOTH);
+		data.heightHint=150;
+		data.widthHint=40;
+		tv.getTree().setLayoutData(data);
+		tv.setContentProvider(new ScriptTreeContentProvider(scriptDirectory));
+		tv.setLabelProvider(new ScriptTreeLabelProvider());
+		tv.setInput(scriptDirectory);
+		tv.getTree().deselectAll();
+		tv.addSelectionChangedListener(new ISelectionChangedListener() {
+			   public void selectionChanged(SelectionChangedEvent event) {
+			       
+			       if(event.getSelection() instanceof IStructuredSelection && event.getSelection()!=null) {
+			           IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+			           
+			           File tosh = (File) selection.getFirstElement();
+			           if (tosh!=null){
+				           if (tosh.isDirectory()){
+				        	   //need or else error.  ??
+				           }
+				           else{
+				        	   btnAddSingleFile.setEnabled(true);
+				        	   addMultipleFiles.setEnabled(true);
+						       setFileSelected(tosh);
+						       getConversionDescription();
+				        	   
+				           }
+			           }
+			       }
+			   }
+			});
+		
+		
+		
+		/*
 		
 		//Just the list, ma'am
 		this.listConversion= new List(shell, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -246,18 +312,19 @@ public class Window extends Thread {
 				}
 			}
 		});
+*/			
 			
 		FormData form = new FormData();
 		form.top = new FormAttachment(12, 20);
 		form.left = new FormAttachment(0, 20);
-		form.bottom = new FormAttachment(28, 10);
+		form.bottom = new FormAttachment(30, 10);
 		form.right = new FormAttachment(25,10);
-		listConversion.setLayoutData(form);
+		compScriptTree.setLayoutData(form);
+		//listConversion.setLayoutData(form);
 		
 //Create Buttons on the right top side of the screen	
 		
 		Composite addButtonsComp = new Composite(shell, SWT.NONE);
-		//addButtonsComp.setBackground(ColorChoices.white);
 		
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns=2;
@@ -267,14 +334,17 @@ public class Window extends Thread {
 		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		data.widthHint=120;
 		this.addMultipleFiles = new Button (addButtonsComp, SWT.SHADOW_OUT);
+		//this.addMultipleFiles.setEnabled(true);
 		this.addMultipleFiles.setEnabled(false);
 		addMultipleFiles.setLayoutData(data);
 		
 		buttonProperties.setProperties(addMultipleFiles, "Browse For Files ");
 		this.addMultipleFiles.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				getConversionSelection();
-				getNewCMFScreen();
+					getConversionSelection();
+				if (scriptHandler !=null){
+					getNewCMFScreen();
+				}
 
 			}
 		});
@@ -296,12 +366,8 @@ public class Window extends Thread {
 			public void widgetSelected(SelectionEvent e) {
 				getConversionSelection();
 				getNewSingleFileScreen();
-
 			}
 		});
-		
-		
-		
 		
 		
 		data = new GridData(GridData.FILL_VERTICAL);
@@ -354,7 +420,8 @@ public class Window extends Thread {
 		tblJobs2.setLayoutData(data);
 		
 		FormData formFill4 = new FormData();
-		formFill4.top = new FormAttachment(listConversion, 15);
+		formFill4.top = new FormAttachment(compScriptTree, 15);
+		//formFill4.top = new FormAttachment(listConversion, 15);
 		formFill4.left = new FormAttachment(0, 20);
 		formFill4.bottom = new FormAttachment(55, 10);
 		formFill4.right = new FormAttachment(70,10);
@@ -374,7 +441,7 @@ public class Window extends Thread {
 		this.btnMoveUp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				moveJobUp();
-				//jqtp2.populateTable(cue);
+				
 			}
 		});
 		
@@ -384,7 +451,7 @@ public class Window extends Thread {
 		this.btnMoveDown.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				moveJobDown();
-				//jqtp2.populateTable(cue);
+				
 			}
 		});
 		
@@ -394,7 +461,7 @@ public class Window extends Thread {
 		this.btnDelete.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				deleteJob();
-				//jqtp2.populateTable(cue);
+				
 			}
 		});
 		
@@ -623,9 +690,10 @@ public class Window extends Thread {
 	}
 	
 	public void getConversionDescription(){
-		if (this.scriptHandler !=null){
-			this.txtDescription.setText( this.scriptHandler.getDescription());
-			System.out.println("Conversion description is "+ scriptHandler.getDescription());
+		String description = ((ScriptHandler)hmScriptHandlers.get(fileSelectedFromTree.getName())).getDescription();
+		if (description !=null){
+			this.txtDescription.setText( description);
+			System.out.println("Conversion description is "+ description);
 		}
 		else{
 			this.txtDescription.setText( "");
@@ -672,6 +740,8 @@ public class Window extends Thread {
 	 *  @todo - add the file location to the properties file? At least 
 	 *  take out the hardcoding and parameterize.
 	 */
+	/*
+	
 	public void populateList(){
 		 lil = new LocalInputListener();
 		 lel = new LocalEventListener();
@@ -681,14 +751,28 @@ public class Window extends Thread {
 			e.printStackTrace();
 		}
 		//File file = new File("C:\\src\\dmfc\\doc\\examples");
-	//	File homeDir = dmfc.getHomeDirectory();
-		//System.out.println("The home directory is: " + homeDir.getAbsolutePath());
+		File homeDir = dmfc.getHomeDirectory();
+		File newScriptDir = new File(homeDir.getPath()+ File.separator + "scripts");
+		System.out.println("The scripts directory is: " + newScriptDir.getAbsolutePath());
 
+		if (newScriptDir.isDirectory()){
+			arScriptFiles = newScriptDir.listFiles();
+		}
+		//first get the names of the upper level directories
+		for (int i = 0; i <arScriptFiles.length; i++){
+			String name = arScriptFiles[i].getName();
+			System.out.println("Directories or both  " + name);	
+		}
+		
+		
+		
 		File file = new File("C:\\src\\dmfcgui\\src\\scripts");
 		if (file.isDirectory()){
+			
 			arFiles = file.listFiles();
 			
 			//For each file in the directory, create a ScriptHandler object.
+			//create an array to hold the script handlers
 			listScriptHandlers= new ScriptHandler[arFiles.length];
 			
 			for (int i = 0; i <arFiles.length; i++){
@@ -697,10 +781,10 @@ public class Window extends Thread {
 				
 				try{
 				
-					ScriptHandler sh = dmfc.createScript(toSH);
+					//ScriptHandler sh = dmfc.createScript(toSH);
 								
 					listScriptHandlers[i]=sh;
-					listConversion.add(listScriptHandlers[i].getName());
+					//listConversion.add(listScriptHandlers[i].getName());
 				
 				}
 				catch(ValidationException ve){
@@ -711,6 +795,7 @@ public class Window extends Thread {
 					me.getMessage();
 					me.printStackTrace();
 				}
+				
 				catch(ScriptException se){
 					//add error messages to be thrown to GUI
 					se.printStackTrace();
@@ -718,6 +803,115 @@ public class Window extends Thread {
 			}
 		}
 	}
+	
+	*/
+	
+	
+	/**
+	 * 
+	 * instantiates dmfc core
+	 * sets home directory for scripts
+	 * @return
+	 */
+	public void setScriptDirectory(){
+		
+		 lil = new LocalInputListener();
+		 lel = new LocalEventListener();
+		try {
+			dmfc = new DMFCCore(lil, lel);
+		} catch (DMFCConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+		String curDir = System.getProperty("user.dir");
+		System.out.println("the current user dir is: "+ curDir);
+		
+		File newScriptDir = new File(curDir+ File.separator + "scripts");
+		
+		//File file = new File("C:\\src\\dmfc\\doc\\examples");
+		//File homeDir = dmfc.getHomeDirectory();
+		//File newScriptDir = new File(homeDir.getPath()+ File.separator + "scripts");
+		
+		this.scriptDirectory=newScriptDir;
+		System.out.println("new Script Dir " + scriptDirectory.getPath());
+		
+	}
+	
+	/**
+	 * Creates a hashmap of scripthandlers 
+	 * accessed by a variety of calls.
+	 *
+	 */
+	public void createHashMapScriptHandlers(){
+//		For each file in the subdirectory, create a ScriptHandler object.
+		//create an hashMap to hold the script handlers
+		//key = filename
+		//value = scripthandler of the file
+		
+		File [] arrayFiles= null;
+		
+		System.out.println("is scriptdir set? " + scriptDirectory.getPath());
+		
+		
+		if (scriptDirectory.isDirectory()){
+			System.out.println("Script directory is a directory");
+			//Find list of files in directory
+			arrayFiles = scriptDirectory.listFiles();
+		}
+		else{
+			System.out.println("Script dir is NOT a directory");
+		}
+		
+		//for each directory, again list files.
+		//create a scripthandler object from file (not directory)
+		//add to the script handler hashmap
+	
+		
+			for (int i = 0; i<arrayFiles.length; i++){
+				File categoryDir = (File)arrayFiles[i];
+				System.out.println("Name of category " + categoryDir.getName());
+				
+				if (categoryDir.isDirectory()){
+					File []arCatFiles = categoryDir.listFiles();
+					
+					
+					//create script handlers for each file in subdirectory
+					for (int j = 0; j<arCatFiles.length; j++){
+						File toSH = (File)arCatFiles[j];
+						System.out.println("     Name of file in category " + toSH.getName());
+						
+						try{
+						
+							ScriptHandler sh = dmfc.createScript(toSH);
+							//add to HashMap
+							//key, name of file
+							//value:  ScriptHandler object
+							hmScriptHandlers.put(toSH.getName(), sh);
+								
+						}
+						catch(ValidationException ve){
+							ve.getMessage();
+							ve.printStackTrace();
+						}
+						catch(MIMEException me){
+							me.getMessage();
+							me.printStackTrace();
+						}
+						catch(ScriptException se){
+							//add error messages to be thrown to GUI
+							se.printStackTrace();
+						}	
+					}
+				}
+			}	
+				
+		}
+	
+	
+	
+		
+
+	
 	
 	/**
 	 * called by Start Over button to restart converter
@@ -727,28 +921,45 @@ public class Window extends Thread {
 		cue.getLinkedListJobs().clear();
 		this.tableViewer.getTable().clearAll();
 		this.tableJobViewer.refresh();
+		this.tv.getTree().deselectAll();
 		this.txtDescription.setText("");
 		this.txtConversionRunning.setText("");
 		this.txtElapsedTime.setText("");
 		this.txtEstimatedTime.setText("");
 		this.pb.setSelection(0);
-		this.listConversion.deselectAll();
 		this.btnTerminate.setEnabled(false);
 		this.addMultipleFiles.setEnabled(false);
 		this.btnTerminate.setEnabled(false);
 		this.btnRun.setEnabled(true);
 	}
 	
+	/**
+	 * sets the file selected from the tree to be passed to the 
+	 * create scripthandler method.
+	 * @param file
+	 */
+	public void setFileSelected(File file){
+		fileSelectedFromTree = file;
+	}
+	
+	
 	
 	public void getConversionSelection(){
-		if(listConversion.getSelectionCount()==1){
-			
-			//get the script from the list
-			int focus = listConversion.getFocusIndex();
-			System.out.println("The focus is: " + focus);
-			this.scriptHandler= listScriptHandlers[focus];
-			
+		//create a scripthandler object from the file selected in the tree.
+		
+		if( fileSelectedFromTree==null || fileSelectedFromTree.isDirectory()){	
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+   					SWT.CANCEL);
+   					messageBox.setMessage("Please select a file, not a directory");
+   					messageBox.setText("Error:  Wrong Type Selection");
+   					messageBox.open();
 		}
+		else{
+			this.scriptHandler = (ScriptHandler)hmScriptHandlers.get(fileSelectedFromTree.getName());
+		}
+		
+		
+		
 	}
 	
 	public Composite getCompJobsInQueue(){
@@ -780,8 +991,12 @@ public class Window extends Thread {
 	
 	public ConvertSingleFile getConvertSingleFile(){
 		return convertSingleFile;	
-}
+	}
 
+	public Tree getTreeScriptList(){
+		return this.treeScriptList;
+	}
+	
 	public void getNewSingleFileScreen(){
 		convertSingleFile = new ConvertSingleFile();
 		convertSingleFile.open();
@@ -999,7 +1214,69 @@ public class Window extends Thread {
 		}
 	}
 
-
+	
+	/**
+	 * Provides the content for  scripts tree
+	 * It implements the ITreeContentProvider
+	 * 
+	 */
+	class ScriptTreeContentProvider implements ITreeContentProvider {
+		
+		File scriptDirectory;
+		
+		public ScriptTreeContentProvider (File file){
+			scriptDirectory=file;
+		}
+		
+		/**
+		 * Gets children of specified object
+		 * @param arg0 - the parent object
+		 * @return Object[]
+		 */
+		public Object [] getChildren(Object arg0){
+			//Returns the files and subdirectories in this directory
+			return ((File) arg0).listFiles();
+		}
+		
+		/**
+		 * Gets parent of object
+		 * @param Object the object with a parent
+		 * @return Object
+		 */
+		public Object getParent(Object arg0){
+			return ((File)arg0).getParentFile();
+		}
+		
+		/**
+		 * returns if object has children
+		 */
+		public boolean hasChildren (Object arg0){
+			
+			Object [] obj = getChildren(arg0);
+			return obj==null ? false: obj.length>0;
+		}
+		
+		/**
+		 * gets the root elements of the tree
+		 * We don't care what the arg is since we just want all root elements in the file system.
+		 */
+		public Object[] getElements(Object arg0){
+			return scriptDirectory.listFiles();
+			//return File.listRoots();
+		}
+		
+		public void dispose(){
+			//nothing to dispose
+		}
+		
+		/**
+		 * Called when input changes
+		 */
+		public void inputChanged (Viewer viewer, Object obj1, Object obj2){
+			//nothing to change, in the file system
+		}
+		
+	}
 	
 	
 	
