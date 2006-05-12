@@ -729,82 +729,7 @@ public class Window extends Thread {
 		
 	
 	
-	/**
-	 * Creates ScriptHandler objects
-	 * From files on the file system.
-	 * These ScriptHandler Objects are used in the conversions
-	 * All attributes of a script, the name, description, parameters, etc
-	 * can be found in this object.  The object must be passed 
-	 * among the screens, and the description taken for each item,
-	 * the mime types used taken for each script, etc.
-	 *  @todo - add the file location to the properties file? At least 
-	 *  take out the hardcoding and parameterize.
-	 */
-	/*
 	
-	public void populateList(){
-		 lil = new LocalInputListener();
-		 lel = new LocalEventListener();
-		try {
-			dmfc = new DMFCCore(lil, lel);
-		} catch (DMFCConfigurationException e) {
-			e.printStackTrace();
-		}
-		//File file = new File("C:\\src\\dmfc\\doc\\examples");
-		File homeDir = dmfc.getHomeDirectory();
-		File newScriptDir = new File(homeDir.getPath()+ File.separator + "scripts");
-		System.out.println("The scripts directory is: " + newScriptDir.getAbsolutePath());
-
-		if (newScriptDir.isDirectory()){
-			arScriptFiles = newScriptDir.listFiles();
-		}
-		//first get the names of the upper level directories
-		for (int i = 0; i <arScriptFiles.length; i++){
-			String name = arScriptFiles[i].getName();
-			System.out.println("Directories or both  " + name);	
-		}
-		
-		
-		
-		File file = new File("C:\\src\\dmfcgui\\src\\scripts");
-		if (file.isDirectory()){
-			
-			arFiles = file.listFiles();
-			
-			//For each file in the directory, create a ScriptHandler object.
-			//create an array to hold the script handlers
-			listScriptHandlers= new ScriptHandler[arFiles.length];
-			
-			for (int i = 0; i <arFiles.length; i++){
-				//listConversion.add( arFiles[i].getName());
-				File toSH = (File)arFiles[i];
-				
-				try{
-				
-					//ScriptHandler sh = dmfc.createScript(toSH);
-								
-					listScriptHandlers[i]=sh;
-					//listConversion.add(listScriptHandlers[i].getName());
-				
-				}
-				catch(ValidationException ve){
-					ve.getMessage();
-					ve.printStackTrace();
-				}
-				catch(MIMEException me){
-					me.getMessage();
-					me.printStackTrace();
-				}
-				
-				catch(ScriptException se){
-					//add error messages to be thrown to GUI
-					se.printStackTrace();
-				}	
-			}
-		}
-	}
-	
-	*/
 	
 	
 	/**
@@ -854,13 +779,10 @@ public class Window extends Thread {
 		
 		
 		if (scriptDirectory.isDirectory()){
-			System.out.println("Script directory is a directory");
 			//Find list of files in directory
 			arrayFiles = scriptDirectory.listFiles();
 		}
-		else{
-			System.out.println("Script dir is NOT a directory");
-		}
+		
 		
 		//for each directory, again list files.
 		//create a scripthandler object from file (not directory)

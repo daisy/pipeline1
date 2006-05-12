@@ -11,6 +11,9 @@ import java.util.StringTokenizer;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.ParameterInfo;
 import org.daisy.dmfc.core.transformer.TransformerInfo;
+import org.daisy.dmfc.gui.compatiblefilelist.FileLabelProvider;
+import org.daisy.dmfc.gui.compatiblefilelist.FileList;
+import org.daisy.dmfc.gui.compatiblefilelist.IFileListViewer;
 import org.daisy.dmfc.gui.menus.MenuMultipleConvert;
 import org.daisy.dmfc.gui.widgetproperties.ButtonProperties;
 import org.daisy.dmfc.gui.widgetproperties.ColorChoices;
@@ -27,6 +30,9 @@ import org.daisy.util.mime.MIMEType;
 import org.daisy.util.mime.MIMETypeException;
 import org.daisy.util.mime.MIMETypeFactory;
 import org.daisy.util.mime.MIMETypeFactoryException;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -103,12 +109,23 @@ public class ConvertMultipleFiles {
 	String strSubfolderOfInputFolder;
 	String strSubfolderOfOutputFolder;
 
+	//Files
+	File fileDirSelected;
+	
 	//ScriptHandler
 	ScriptHandler scriptHandler;
 	
 	//ArrayList to hold selected input files
 	ArrayList al = new ArrayList();
+	ArrayList alPatterns = new ArrayList();
+	ArrayList alCompatibleFiles = new ArrayList();
+	ArrayList alTableContents= new ArrayList();
 	
+	//TableViewers
+	TableViewer tableFileViewer;
+	
+	String [] columnFileNames = new String [] {"File Name"};
+			
 	
 	public ConvertMultipleFiles(){
 		display= UIManager.display;
@@ -225,17 +242,24 @@ public class ConvertMultipleFiles {
 			 data = new GridData();
 			 data.horizontalSpan=3;
 			 data.heightHint=140;
+			 
 			 tblCompatibleFiles= new Table(compInputFields, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL |SWT.MULTI );
 			 tblCompatibleFiles.setLayoutData(data);
 			 cftp = new CompatibleFilesTableProperties(tblCompatibleFiles);
-			
 			 
-			 tblCompatibleFiles.addListener (SWT.Selection, new Listener () {
-					public void handleEvent (Event event) {
+			 createFileTableViewer();
+			 tableFileViewer.setContentProvider(new FileContentProvider());
+			 tableFileViewer.setLabelProvider(new FileLabelProvider()); 
+			 
+			 //set the input data once it is chosen.
+			 
+			 
+			 this.tblCompatibleFiles.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
 						//String string = event.detail == SWT.CHECK ? "Checked" : "Selected";
 						//adds a TableItem to the arrayList
-						if (event.detail==SWT.CHECK){
-							al.add(event.item);
+						if (e.detail==SWT.CHECK){
+							al.add(e.item);
 						}
 					}
 				});
@@ -392,14 +416,29 @@ public class ConvertMultipleFiles {
 		shell.dispose();
 	}
 	
+	
+	public void createFileTableViewer(){
+		tableFileViewer = new TableViewer(tblCompatibleFiles);
+		tableFileViewer.setUseHashlookup(true);
+		tableFileViewer.setColumnProperties(columnFileNames);
+		
+	}
+	
+	
 	//calls from listeners
 	
 	public void populateCompatibleFilesTable(){
 		if (dirSelected==null){
 			System.out.println("Directory selected is null");
 		}
-		else
-			cftp.populateTable(new File(dirSelected), getFileTypesForScriptHandler());	
+		else{
+			 fileDirSelected = new File(dirSelected);
+			// populateTable();
+			// getFileTypesForScriptHandler();
+			cftp.setDirSelected(fileDirSelected);
+			alTableContents= cftp.setTableContents(getFileTypesForScriptHandler());	
+			tableFileViewer.setInput(alTableContents);
+		}
 	}
 	
 	
@@ -529,6 +568,10 @@ public class ConvertMultipleFiles {
 		
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList getFileTypesForScriptHandler(){
 		
 		System.out.println("GetFileTypes for Script");
@@ -553,6 +596,13 @@ public class ConvertMultipleFiles {
 		while(it.hasNext()){
 			ParameterInfo pi =(ParameterInfo)it.next();
 			String parameter = pi.getDirection();
+			
+			if (parameter.equalsIgnoreCase("out")){
+				String stringOrDir = pi.getType();
+				System.out.println("Out direction type " + stringOrDir);
+			}
+			
+			
 			if (parameter.equalsIgnoreCase("in")){
 				fileType = pi.getType();
 				System.out.println("Valid types for this script " + fileType);
@@ -582,14 +632,42 @@ public class ConvertMultipleFiles {
 				}
 				//print out items in arraylist
 				
-				Iterator itValid = alValid.iterator();
+				Iterator itValid = alPatterns.iterator();
 				while (itValid.hasNext())
 					System.out.println ("Mime patterns in array " + (String)itValid.next());
 			}
-		}	
+		}
 		return alValid;
 	}
+
+	/**
+	 * InnerClass that acts as a proxy for the FileList 
+	 * providing content for the Table. It implements the IFileListViewer 
+	 * interface since it must register changeListeners with the 
+	 * FileList 
+	 */
+	class FileContentProvider implements IStructuredContentProvider {
+		
+		public void inputChanged(Viewer v, Object oldInput, Object newInput){
+			//nothing is changing
+		}		
+
+		public void dispose() {
+		}
+
+		// Return the file array as an array of Objects
+		public Object[] getElements(Object parent) {
+			return alTableContents.toArray();
+		}
+
+		
+	}
 	
+	
+
+	public ArrayList getArrayListTableContents(){
+		return this.alTableContents;
+	}
 	
 	
 	
@@ -600,9 +678,7 @@ public class ConvertMultipleFiles {
 	 *  email from Linus
 	 *
 	 */
-	public void filterDirectorySelected(){
-		
-	}
+	
 	
 	public Table getTableCompatibleFiles(){
 		return this.tblCompatibleFiles;
