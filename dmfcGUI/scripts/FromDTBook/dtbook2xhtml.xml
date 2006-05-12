@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taskScript version="1.0">
+	<name>DTBook 2005 to XHTML 1.0</name>
+	<description>Converts a DTBook 2005 document to XHTML 1.0</description>
+	
+	<property name="input" value="FIXME"/>
+	<property name="outputPath" value="FIXME"/>
+	
+	<task name="uk_rnib_dtbook2xhtml" interactive="false">
+
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter id="id1">
+			<name>out</name>
+			<value>${outputPath}</value>
+		</parameter>		
+				
+	</task>
+
+</taskScript>
