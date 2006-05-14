@@ -15,5 +15,6 @@ lib/saxon8-dom.jar -text
 lib/saxon8.jar -text
 lib/tagsoup-1.0rc4.jar -text
 lib/wstx-lgpl-2.0.3.jar -text
+lib/xercesImpl.jar -text
 lib/xp.jar -text
 resources/transformer.rng -text svneol=unset#application/octet-stream
