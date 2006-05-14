@@ -26,7 +26,7 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
  * @author Markus Gylling
  * @author Linus Ericson
  */
-class MIMETypeRegistry implements XMLReporter {
+public class MIMETypeRegistry implements XMLReporter {
 	private static MIMETypeRegistry _instance = null;
 	private Map entries = new HashMap();
 
@@ -92,7 +92,7 @@ class MIMETypeRegistry implements XMLReporter {
 	 * Singleton retrieval.
 	 * @return The MimeTypeRegistry instance
 	 */
-	static MIMETypeRegistry getInstance()
+	public static MIMETypeRegistry getInstance()
 			throws MIMETypeRegistryException {
 		if (null == _instance) {
 			synchronized (MIMETypeRegistry.class) {
@@ -109,7 +109,7 @@ class MIMETypeRegistry implements XMLReporter {
 	 *            the ID of this mime type (as in the registry xml representation)
 	 * @return a MimeType if represented in the map, null otherwise.
 	 */
-	MIMEType getEntryById(String key) {
+	public MIMEType getEntryById(String key) {
 		return (MIMEType)entries.get(key);
 	}
 	
@@ -119,7 +119,7 @@ class MIMETypeRegistry implements XMLReporter {
 	 *  since the canonical representations in the registry does not recognize the parameters part.
 	 * @return a MimeType if represented in the map, null otherwise.
 	 */
-	MIMEType getEntryByName(String mime) {			
+	public MIMEType getEntryByName(String mime) {			
 		Collection c = entries.values();
 		Iterator i = c.iterator();
 		while(i.hasNext()) {
@@ -134,7 +134,7 @@ class MIMETypeRegistry implements XMLReporter {
 	/**
 	 * @return the Map&lt;ID,MimeType&gt; of canonical MimeTypes present in the Registry.
 	 */
-	Map getEntries(){
+	public Map getEntries(){
 		return entries;
 	}
 	
@@ -164,7 +164,7 @@ class MIMETypeRegistry implements XMLReporter {
 	 * @return true if a representation exists, false otherwise. Will strip
 	 *         charset if such exists in inparam
 	 */
-	boolean hasEntry(String candidate) {
+	public boolean hasEntry(String candidate) {
 		return getEntryByName(candidate) != null;
 	}
 	
