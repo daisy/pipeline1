@@ -33,9 +33,11 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.daisy.dmfc.core.MIMERegistry;
 import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.NotSupposedToHappenException;
+import org.daisy.util.mime.MIMEType;
+import org.daisy.util.mime.MIMETypeRegistry;
+import org.daisy.util.mime.MIMETypeRegistryException;
 
 /**
  * A parameter in the Transformer Description File (TDF).
@@ -65,8 +67,9 @@ public class Parameter implements ParameterInfo {
 	 * @param transformerDir the directory of the transformer
 	 * @throws XMLStreamException
 	 * @throws MIMEException
+	 * @throws MIMETypeRegistryException 
 	 */
-	public Parameter(StartElement start, XMLEventReader er, File transformerDir) throws XMLStreamException, MIMEException {
+	public Parameter(StartElement start, XMLEventReader er, File transformerDir) throws XMLStreamException, MIMEException, MIMETypeRegistryException {
 	    tdfDir = transformerDir;
 	    String current = null;
 	    
@@ -81,8 +84,8 @@ public class Parameter implements ParameterInfo {
 	    att = start.getAttributeByName(new QName("type"));
 	    type = att!=null?att.getValue():null;
 	    // Make sure the specified MIME type exists
-	    MIMERegistry mime = MIMERegistry.instance();
-		if (!mime.contains(type)) {
+	    MIMETypeRegistry registry = MIMETypeRegistry.getInstance();
+		if (!registry.hasEntry(type)) {
 		    throw new MIMEException("Type attribute " + type + " is not a valid MIME type.");
 		}
 		
@@ -239,6 +242,10 @@ public class Parameter implements ParameterInfo {
 	 */
 	public String getType() {
 		return type;
+	}
+	
+	public MIMEType getMIMEType() throws MIMETypeRegistryException {
+		return MIMETypeRegistry.getInstance().getEntryByName(this.getType());
 	}
 
     /**

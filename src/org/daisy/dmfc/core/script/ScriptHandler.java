@@ -35,13 +35,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.daisy.dmfc.core.EventSender;
-import org.daisy.dmfc.core.MIMERegistry;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptAbortException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.util.mime.MIMEType;
+import org.daisy.util.mime.MIMETypeException;
+import org.daisy.util.mime.MIMETypeRegistry;
+import org.daisy.util.mime.MIMETypeRegistryException;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.validation.ValidationException;
 import org.daisy.util.xml.validation.Validator;
@@ -143,10 +146,15 @@ public class ScriptHandler extends EventSender {
 						String typeOfRef = handler.getParameterType(parameter.getName());
 						String typeOfId = handlerWithID.getParameterType(XPathUtils.valueOf(refd, "name"));						
 						//System.err.println("*** typeOfRef: " + _typeOfRef + ", typeOfId: " + _typeOfId);
-						MIMERegistry mime = MIMERegistry.instance();
-						if (!mime.matches(typeOfId, typeOfRef)) {
+						//MIMERegistry mime = MIMERegistry.instance();
+						MIMETypeRegistry registry = MIMETypeRegistry.getInstance();
+						MIMEType typeId = registry.getEntryByName(typeOfId);
+						MIMEType typeRef = registry.getEntryByName(typeOfRef);
+						if (typeId.isEqualOrAlias(typeRef)) {
+						//if (!mime.matches(typeOfId, typeOfRef)) {
 						    Object[] args = {parameter.getRef(), typeOfId, handlerWithID.getName(), typeOfRef, handler.getName()};
-						    throw new ScriptException(i18n("MIME_TYPE_MISMATCH", args));						}
+						    throw new ScriptException(i18n("MIME_TYPE_MISMATCH", args));
+						}
 					}
 				}				
 				
@@ -163,7 +171,11 @@ public class ScriptHandler extends EventSender {
             throw new ScriptException(i18n("SCRIPT_PARSE_ERROR"), e);
         } catch (IOException e) {
             throw new ScriptException(i18n("SCRIPT_ACCESS_ERROR") , e);
-        }		
+        } catch (MIMETypeException e) {
+        	throw new ScriptException(i18n("MIME_TYPE_MISMATCH") , e);
+		} catch (MIMETypeRegistryException e) {
+			throw new ScriptException(i18n("MIME_TYPE_MISMATCH") , e);
+		} 	
 	}
 	
 	/**

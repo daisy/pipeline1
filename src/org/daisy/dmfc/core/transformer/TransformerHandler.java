@@ -54,6 +54,7 @@ import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.NotSupposedToHappenException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.util.mime.MIMETypeRegistryException;
 import org.daisy.util.xml.validation.ValidationException;
 import org.daisy.util.xml.validation.Validator;
 
@@ -141,7 +142,9 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
             throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
         } catch (XMLStreamException e) {
             throw new TransformerDisabledException(i18n("PROBLEMS_PARSING_TDF"), e);            
-        }	
+        } catch (MIMETypeRegistryException e) {
+        	throw new TransformerDisabledException("MIME exception", e);
+		}	
 	}
 	
 	
@@ -277,8 +280,9 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @param er the XML event reader
 	 * @throws MIMEException
 	 * @throws XMLStreamException
+	 * @throws MIMETypeRegistryException 
 	 */
-	private void loopParameters(XMLEventReader er) throws MIMEException, XMLStreamException {
+	private void loopParameters(XMLEventReader er) throws MIMEException, XMLStreamException, MIMETypeRegistryException {
 	    while (er.hasNext()) {
 	        XMLEvent event = er.nextEvent();
 	        switch (event.getEventType()) {
@@ -306,8 +310,9 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @param er an <code>XMLEventReader</code>.
 	 * @throws MIMEException
 	 * @throws XMLStreamException
+	 * @throws MIMETypeRegistryException 
 	 */
-	private void readProperties(XMLEventReader er) throws MIMEException, XMLStreamException {
+	private void readProperties(XMLEventReader er) throws MIMEException, XMLStreamException, MIMETypeRegistryException {
 	    String current = null;
 	    while (er.hasNext()) {
 	        XMLEvent event = er.nextEvent();

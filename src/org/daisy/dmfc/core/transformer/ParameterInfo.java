@@ -20,6 +20,9 @@ package org.daisy.dmfc.core.transformer;
 
 import java.util.Collection;
 
+import org.daisy.util.mime.MIMEType;
+import org.daisy.util.mime.MIMETypeRegistryException;
+
 /**
  * Information about a Transformer parameter.
  * @author Linus Ericson
@@ -62,6 +65,8 @@ public interface ParameterInfo {
      * @return the type of the parameter.
      */
     public String getType();
+    
+    public MIMEType getMIMEType() throws MIMETypeRegistryException;
     
     /**
      * Gets the default value of the parameter.
