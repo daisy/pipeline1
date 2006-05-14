@@ -36,11 +36,11 @@
 		<type id="msword" name="application/msword" namePatterns="*.doc"/>
 		<type id="rnc" name="application/relax-ng-compact-syntax" namePatterns="*.rnc"/>
 		<type id="plucker" name="application/prs.plucker"/>
-		<type id="latex" name="application/x-latex" namePatterns="*.latex"/>
+		<type id="latex" name="application/x-latex" namePatterns="*.latex *.tex"/>
 		<type id="ex" name="application/x-tex" namePatterns="*.tex"/>
-		<type id="texi" name="application/x-texinfo" namePatterns="*.texi *.texinfo"/>
+		<type id="texi" name="application/x-texinfo" namePatterns="*.texi *.texinfo"/>		
 		<!-- archives -->
-		<type id="zip" name="application/zip"/>
+		<type id="zip" name="application/zip" namePatterns="*.zip"/>
 		<type id="z" name="application/x-compress" namePatterns="*.z"/>
 		<type id="tgz" name="application/x-compressed" 	namePatterns="*.tgz"/>
 		<type id="ps" name="application/postscript" namePatterns="*.ai *.eps *.ps"/>
@@ -48,6 +48,15 @@
 		<type id="gz" name="application/x-gzip" namePatterns="*.gz"/>
 		<type id="sit" name="application/x-stuffit" namePatterns="*.sit"/>
 		<type id="tar" name="application/x-tar" namePatterns="*.tar"/>
+		<!-- OpenDocument -->
+		<type id="odt" name="application/vnd.oasis.opendocument.text" namePatterns="*.odt" definition="OpenDocument Text"/>
+		<type id="odg" name="application/vnd.oasis.opendocument.graphics" namePatterns="*.odg" definition="OpenDocument Drawing"/>
+		<type id="odp" name="application/vnd.oasis.opendocument.presentation" namePatterns="*.odp" definition="OpenDocument Presentation"/>
+		<type id="ods" name="application/vnd.oasis.opendocument.spreadsheet" namePatterns="*.ods" definition="OpenDocument Spreadsheet"/>
+		<type id="odc" name="application/vnd.oasis.opendocument.chart" namePatterns="*.odc" definition="OpenDocument Chart"/>
+		<type id="odf" name="application/vnd.oasis.opendocument.formula" namePatterns="*.odf" definition="OpenDocument Formula"/>
+		<type id="odb" name="application/vnd.oasis.opendocument.database" namePatterns="*.odb" definition="OpenDocument Database"/>
+		<type id="odi" name="application/vnd.oasis.opendocument.image" namePatterns="*.odi" definition="OpenDocument Image"/>
 		<!-- daisy 2.02 -->
 		<type id="d202fileset" name="application/x-dtbfilesetd202+xml" definition="collective mime for a Daisy 2.02 DTB fileset"/>	
 		<type id="d202ncc" name="application/x-dtbd202ncc+xml" parentTypes="xhtml" namePatterns="ncc.htm*"/>
@@ -111,6 +120,7 @@
 	
 	<directory name="other">
 		<type id="string" name="string"/>
+		<type id="folder" name="application/x-filesystemDirectory"/>
 		<type id="enum" name="enum" parentTypes="string"/>
 		<type id="anon" name="anonymous" />
 	</directory>
