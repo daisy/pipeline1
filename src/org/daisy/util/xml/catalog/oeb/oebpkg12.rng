@@ -13,7 +13,7 @@
   
   <a:documentation>
       RelaxNg schema for oeb package 1.2 DTD
-      Last edit by: mgylling 2006-03-10
+      Last edit by: mgylling 2006-05-14
 	  Original version: mgylling 2005-07-01
   </a:documentation>
 
@@ -47,7 +47,7 @@
           <sch:rule context="//pkg:package">
 		    <zed:test id="opf_DcIdUniqIdref"/>
 		    <sch:assert test="//pkg:package/pkg:metadata/pkg:dc-metadata/dc:Identifier[@id=current()/@unique-identifier]"> 
-              [sch][opf_DcIdUniqIdref]
+              [sch][zedid::opf_DcIdUniqIdref]
 		    </sch:assert>   					
 		  </sch:rule>				
         </sch:pattern>        
@@ -110,7 +110,7 @@
         <sch:rule context="//pkg:package/pkg:manifest">
 		  <zed:test id="opf_mnfNcxId"/>
 		  <sch:assert test="count(pkg:item[@id='ncx' and @media-type='application/x-dtbncx+xml'])=1"> 
-		    [sch][opf_mnfNcxId]
+		    [sch][zedid::opf_mnfNcxId]
 		  </sch:assert>   					
 		</sch:rule>				
       </sch:pattern>
@@ -120,7 +120,7 @@
         <sch:rule context="//pkg:package/pkg:manifest/pkg:item[@media-type='application/x-dtbresource+xml']">
 		  <zed:test id="opf_mnfResId"/>
 		  <sch:assert test="@id='resource'"> 
-		    [sch][opf_mnfResId]
+		    [sch][zedid::opf_mnfResId]
 		  </sch:assert>   					
 		</sch:rule>				
       </sch:pattern>      
@@ -132,7 +132,7 @@
         <sch:rule context="//pkg:package/pkg:manifest/pkg:item[@media-type='application/smil']">
 		  <zed:test id="opf_SpineRefAllSmilInMnf"/>
 		  <sch:assert test="//pkg:package/pkg:spine/pkg:itemref[@idref=current()/@id]"> 
-		    [sch][opf_SpineRefAllSmilInMnf]
+		    [sch][zedid::opf_SpineRefAllSmilInMnf]
 		  </sch:assert>   					
 		</sch:rule>				
       </sch:pattern>      
@@ -144,7 +144,7 @@
         <sch:rule context="//pkg:package/pkg:manifest">
 		  <zed:test id="opf_mnfOneSmil"/>
 		  <sch:assert test="count(pkg:item[@media-type='application/smil'])>0"> 
-		    [sch][opf_mnfOneSmil]
+		    [sch][zedid::opf_mnfOneSmil]
 		  </sch:assert>   					
 		</sch:rule>				
       </sch:pattern>		
@@ -154,7 +154,7 @@
         <sch:rule context="//pkg:package/pkg:manifest">
 		  <zed:test id="opf_opfInManifest"/>
 		  <sch:assert test="count(pkg:item[@media-type='text/xml'])=1"> 
-		    [sch][opf_opfInManifest]
+		    [sch][zedid::opf_opfInManifest]
 		  </sch:assert>   					
 		</sch:rule>				
       </sch:pattern>
@@ -164,7 +164,7 @@
         <sch:rule context="//pkg:package/pkg:manifest">
 		  <zed:test id="opf_mnfNcxCount"/>
 		  <sch:assert test="count(pkg:item[@media-type='application/x-dtbncx+xml'])=1"> 
-		    [sch][opf_mnfNcxCount]
+		    [sch][zedid::opf_mnfNcxCount]
 		  </sch:assert>   					
 		</sch:rule>				
       </sch:pattern>
@@ -174,7 +174,7 @@
         <sch:rule context="//pkg:package/pkg:manifest">
 		  <zed:test id="opf_mnfResCount"/>
 		  <sch:assert test="count(pkg:item[@media-type='application/x-dtbresource+xml'])&lt;2"> 
-		    [sch][opf_mnfResCount]
+		    [sch][zedid::opf_mnfResCount]
 		  </sch:assert>   					
 		</sch:rule>				
       </sch:pattern>      
@@ -212,9 +212,9 @@
       spine itemref idref attributes points to the id of a SMIL file listed in manifest 
       <sch:pattern name="opf_spnItemRefIdrefSmil" id="opf_spnItemRefIdrefSmil">
         <sch:rule context="//pkg:package/pkg:spine/pkg:itemref">
-		  <zed:test id="[sch][opf_spnItemRefIdrefSmil]"/>
+		  <zed:test id="opf_spnItemRefIdrefSmil"/>
 		  <sch:assert test="//pkg:item[@id=current()/@idref and @media-type='application/smil']"> 
-			[sch][opf_spnItemRefIdrefSmil]
+			[sch][zedid::opf_spnItemRefIdrefSmil]
 		  </sch:assert>   					
 		</sch:rule>
 	  </sch:pattern>
@@ -463,7 +463,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
 					<zed:test id="opf_xMetaDtbSourceDatePresence"/>
 					<sch:assert test="count(pkg:meta[@name='dtb:sourceDate'])&lt;2"> 
-						[sch][opf_xMetaDtbSourceDatePresence]
+						[sch][zedid::opf_xMetaDtbSourceDatePresence]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>
@@ -484,7 +484,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
 					<zed:test id="opf_xMetaDtbSourceEditionPresence"/>
 					<sch:assert test="count(pkg:meta[@name='dtb:sourceEdition'])&lt;2"> 
-						[sch][opf_xMetaDtbSourceEditionPresence]
+						[sch][zedid::opf_xMetaDtbSourceEditionPresence]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>
@@ -502,7 +502,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
 					<zed:test id="opf_xMetaDtbSourcePublisherPresence"/>
 					<sch:assert test="count(pkg:meta[@name='dtb:sourcePublisher'])&lt;2"> 
-						[sch][opf_xMetaDtbSourcePublisherPresence]
+						[sch][zedid::opf_xMetaDtbSourcePublisherPresence]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>
@@ -520,7 +520,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
 					<zed:test id="opf_xMetaDtbSourceRightsPresence"/>
 					<sch:assert test="count(pkg:meta[@name='dtb:sourceRights'])&lt;2"> 
-                       [sch][opf_xMetaDtbSourceRightsPresence]
+                       [sch][zedid::opf_xMetaDtbSourceRightsPresence]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>
@@ -538,7 +538,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
 					<zed:test id="opf_xMetaDtbSourceTitlePresence"/>
 					<sch:assert test="count(pkg:meta[@name='dtb:sourceTitle'])&lt;2"> 
-                       [sch][opf_xMetaDtbSourceTitlePresence]
+                       [sch][zedid::opf_xMetaDtbSourceTitlePresence]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>
@@ -554,9 +554,9 @@
           <a:documentation>Occurrence: Required. Not repeatable.</a:documentation>
           <sch:pattern name="opf_xMetaMmTypePresence" id="opf_xMetaMmTypePresence">
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="[sch][opf_xMetaMmTypePresence]"/>
+					<zed:test id="opf_xMetaMmTypePresence"/>
 					<sch:assert test="count(pkg:meta[@name='dtb:multimediaType'])=1"> 
-						[sch][opf_xMetaMmTypePresence]
+						[sch][zedid::opf_xMetaMmTypePresence]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>
@@ -582,9 +582,9 @@
           <a:documentation>Occurrence: Required. Not repeatable.</a:documentation>
           <sch:pattern name="opf_xMetaMmContentPresence" id="opf_xMetaMmContentPresence">
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
-					<zed:test id="[sch][opf_xMetaMmTypePresence]"/>
+					<zed:test id="opf_xMetaMmTypePresence"/>
 					<sch:assert test="count(pkg:meta[@name='dtb:multimediaContent'])=1"> 
-						[sch][opf_xMetaMmContentPresence]
+						[sch][zedid::opf_xMetaMmContentPresence]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>
@@ -620,7 +620,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata/pkg:meta[@name='dtb:multimediaContent' and contains(@content,'audio')]">
 					<zed:test id="opf_xMetaMmContentValueManifestAudio"/>
 					<sch:assert test="count(//pkg:package/pkg:manifest/pkg:item[@media-type='audio/mpeg4-generic' or @media-type='audio/mpeg' or @media-type='audio/x-wav' ])&gt;0"> 
-						[sch][opf_xMetaMmContentValueManifestAudio]
+						[sch][zedid::opf_xMetaMmContentValueManifestAudio]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>
@@ -631,7 +631,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata/pkg:meta[@name='dtb:multimediaContent' and contains(@content,'image')]">
 					<zed:test id="opf_xMetaMmContentValueManifestImage"/>
 					<sch:assert test="count(//pkg:package/pkg:manifest/pkg:item[@media-type='image/jpeg' or @media-type='image/png' or @media-type='image/svg+xml' ])&gt;0"> 
-						[sch][opf_xMetaMmContentValueManifestImage]
+						[sch][zedid::opf_xMetaMmContentValueManifestImage]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>
@@ -642,7 +642,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata/pkg:meta[@name='dtb:multimediaContent' and contains(@content,'text')]">
 					<zed:test id="opf_xMetaMmContentValueManifestText"/>
 					<sch:assert test="count(//pkg:package/pkg:manifest/pkg:item[@media-type='application/x-dtbook+xml'])&gt;0"> 
-						[sch][opf_xMetaMmContentValueManifestText]
+						[sch][zedid::opf_xMetaMmContentValueManifestText]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>
@@ -675,7 +675,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
 					<zed:test id="opf_xMetaDtbProducedDatePresence"/>
 					<sch:assert test="count(pkg:meta[@name='dtb:producedDate'])&lt;2"> 
-						[sch][opf_xMetaDtbProducedDatePresence]
+						[sch][zedid::opf_xMetaDtbProducedDatePresence]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>          
@@ -706,7 +706,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
 					<zed:test id="opf_xMetaDtbRevisionPresence"/>
 					<sch:assert test="count(pkg:meta[@name='dtb:revision'])&lt;2"> 
-						[sch][opf_xMetaDtbRevisionPresence]
+						[sch][zedid::opf_xMetaDtbRevisionPresence]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>          
@@ -727,7 +727,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
 					<zed:test id="opf_xMetaDtbRevisionDatePresence"/>
 					<sch:assert test="count(pkg:meta[@name='dtb:revisionDate'])&lt;2"> 
-						[sch][opf_xMetaDtbRevisionDatePresence]
+						[sch][zedid::opf_xMetaDtbRevisionDatePresence]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>
@@ -748,7 +748,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
 					<zed:test id="opf_xMetaDtbRevisionDescriptionPresence"/>
 					<sch:assert test="count(pkg:meta[@name='dtb:revisionDescription'])&lt;2"> 
-						[sch][opf_xMetaDtbRevisionDescriptionPresence]
+						[sch][zedid::opf_xMetaDtbRevisionDescriptionPresence]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>
@@ -766,7 +766,7 @@
        			<sch:rule context="//pkg:package/pkg:metadata/pkg:x-metadata">
 					<zed:test id="opf_xMetaTotTimePresence"/>
 					<sch:assert test="count(pkg:meta[@name='dtb:totalTime'])=1"> 
-						[sch][opf_xMetaTotTimePresence]
+						[sch][zedid::opf_xMetaTotTimePresence]
 					</sch:assert>   					
 				</sch:rule>
 		  </sch:pattern>          

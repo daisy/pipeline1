@@ -245,7 +245,7 @@
           <sch:pattern name="nccCharset" id="nccCharset">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:charset'])=1">
-                [sch]ncc:charset seems not to be in ncc exactly once
+                [sch][msg::ncc:charset seems not to be in ncc exactly once]
               </sch:assert>
             </sch:rule>
           </sch:pattern>
@@ -255,7 +255,7 @@
           <sch:pattern name="dcDate" id="dcDate">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='dc:date'])=1">
-                [sch]dc:date seems not to be in ncc exactly once
+                [sch][msg::dc:date seems not to be in ncc exactly once]
               </sch:assert>
             </sch:rule>
           </sch:pattern>
@@ -265,7 +265,7 @@
           <sch:pattern name="dcFormat" id="dcFormat">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='dc:format'])=1">
-                [sch]dc:date seems not to be in ncc exactly once
+                [sch][msg::dc:date seems not to be in ncc exactly once]
               </sch:assert>
             </sch:rule>
           </sch:pattern>
@@ -275,7 +275,7 @@
           <sch:pattern name="dcIdentifier" id="dcIdentifier">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='dc:identifier'])=1">
-                [sch]dc:identifier seems not to be in ncc exactly once
+                [sch][msg::dc:identifier seems not to be in ncc exactly once]
               </sch:assert>
             </sch:rule>
           </sch:pattern>
@@ -285,12 +285,12 @@
           <sch:pattern name="nccPageFront" id="nccPageFront">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:pageFront'])=1">
-                [sch]meta ncc:pageFront seems not to be in ncc exactly once
+                [sch][msg::meta ncc:pageFront seems not to be in ncc exactly once]
               </sch:assert>
             </sch:rule>
             <sch:rule context="xht:head/xht:meta[@name='ncc:pageFront']">
               <sch:assert test="number(@content) = count(//xht:html/xht:body/xht:span[@class='page-front'])">
-                [sch]given value of ncc:pageFront seems incorrect
+                [sch][msg::given value of ncc:pageFront seems incorrect]
               </sch:assert>
             </sch:rule>
           </sch:pattern>        
@@ -300,12 +300,12 @@
           <sch:pattern name="nccPageNormal" id="nccPageNormal">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:pageNormal'])=1">
-                [sch]meta ncc:pageNormal seems not to be in ncc exactly once
+                [sch][msg::meta ncc:pageNormal seems not to be in ncc exactly once]
               </sch:assert>
             </sch:rule>
             <sch:rule context="xht:head/xht:meta[@name='ncc:pageNormal']">
               <sch:assert test="number(@content) = count(//xht:html/xht:body/xht:span[@class='page-normal'])">
-                [sch]given value of ncc:pageNormal seems incorrect
+                [sch][msg::given value of ncc:pageNormal seems incorrect]
               </sch:assert>
             </sch:rule>
           </sch:pattern>        
@@ -315,12 +315,12 @@
           <sch:pattern name="nccPageSpecial" id="nccPageSpecial">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:pageSpecial'])=1">
-                [sch]dc:identifier seems not to be in ncc exactly once
+                [sch][msg::dc:identifier seems not to be in ncc exactly once]
               </sch:assert>
             </sch:rule>
             <sch:rule context="xht:head/xht:meta[@name='ncc:pageSpecial']">
               <sch:assert test="number(@content) = count(//xht:html/xht:body/xht:span[@class='page-special'])">
-                [sch]given value of ncc:pageSpecial seems incorrect
+                [sch][msg::given value of ncc:pageSpecial seems incorrect]
               </sch:assert>
             </sch:rule>
           </sch:pattern>        
@@ -330,7 +330,7 @@
           <sch:pattern name="dcTitle" id="dcTitle">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='dc:title'])=1">
-                [sch]dc:title seems not to be in ncc exactly once
+                [sch][msg::dc:title seems not to be in ncc exactly once]
               </sch:assert>
             </sch:rule>
           </sch:pattern>        
@@ -345,7 +345,7 @@
             </sch:rule>
             <sch:rule context="xht:head/xht:meta[@name='ncc:tocItems']">
               <sch:assert test="number(@content) = count(//xht:html/xht:body/xht:*)">
-                [sch]given value of ncc:tocItems seems incorrect
+                [sch][msg::given value of ncc:tocItems seems incorrect]
               </sch:assert>
             </sch:rule>
           </sch:pattern>        
@@ -355,7 +355,7 @@
           <sch:pattern name="nccTotalTime" id="nccTotalTime">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:totalTime'])=1">
-                [sch]ncc:totaltime seems not to be in ncc exactly once
+                [sch][msg::ncc:totaltime seems not to be in ncc exactly once]
               </sch:assert>
             </sch:rule>
           </sch:pattern>  
@@ -365,7 +365,7 @@
           <sch:pattern name="dcPublisher" id="dcPublisher">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='dc:publisher'])=1">
-                [sch]dc:publisher seems not to be in ncc exactly once
+                [sch][msg::dc:publisher seems not to be in ncc exactly once]
               </sch:assert>
             </sch:rule>
           </sch:pattern>  
@@ -375,7 +375,7 @@
           <sch:pattern name="dcLanguage" id="dcLanguage">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='dc:language'])&gt;0">
-                [sch]dc:language seems not to be in ncc once or more
+                [sch][msg::dc:language seems not to be in ncc once or more]
               </sch:assert>
             </sch:rule>
           </sch:pattern>  
@@ -385,7 +385,7 @@
           <sch:pattern name="dcCreator" id="dcCreator">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='dc:creator'])&gt;0">
-                [sch]dc:creator seems not to be in ncc once or more
+                [sch][msg::dc:creator seems not to be in ncc once or more]
               </sch:assert>
             </sch:rule>
           </sch:pattern>  
@@ -398,13 +398,13 @@
             <sch:rule context="xht:body/xht:span[@class='sidebar']">
               <!-- if there are sidebars there should be one meta element -->
               <sch:assert test="count(//xht:head/xht:meta[@name='ncc:sidebars'])=1">
-                [sch]meta ncc:sidebars seems not to be in ncc
+                [sch][msg::meta ncc:sidebars seems not to be in ncc]
               </sch:assert>
             </sch:rule>            
             <sch:rule context="xht:head/xht:meta[@name='ncc:sidebars']">
               <!-- meta value should correspond to number of sidebars in body -->
               <sch:assert test="number(@content) = count(//xht:body/xht:span[@class='sidebar'])">
-                [sch]meta ncc:sidebars seems to have incorrect value
+                [sch][msg::meta ncc:sidebars seems to have incorrect value]
               </sch:assert>
             </sch:rule>
           </sch:pattern>  
@@ -415,13 +415,13 @@
             <sch:rule context="xht:body/xht:span[@class='noteref']">
               <!-- if there are footnotes there should be one meta element -->
               <sch:assert test="count(//xht:head/xht:meta[@name='ncc:footnotes'])=1">
-                [sch]meta ncc:footnotes seems not to be in ncc
+                [sch][msg::meta ncc:footnotes seems not to be in ncc]
               </sch:assert>
             </sch:rule>            
             <sch:rule context="xht:head/xht:meta[@name='ncc:footnotes']">
               <!-- meta value should correspond to number of footnotes in body -->
               <sch:assert test="number(@content) = count(//xht:body/xht:span[@class='noteref'])">
-                [sch]meta ncc:footnotes seems to have incorrect value
+                [sch][msg::meta ncc:footnotes seems to have incorrect value]
               </sch:assert>
             </sch:rule>
           </sch:pattern>  
@@ -432,13 +432,13 @@
             <sch:rule context="xht:body/xht:span[@class='optional-prodnote']">
               <!-- if there are prodnotes there should be one meta element -->
               <sch:assert test="count(//xht:head/xht:meta[@name='ncc:prodNotes'])=1">
-                [sch]meta ncc:prodNotes seems not to be in ncc
+                [sch][msg::meta ncc:prodNotes seems not to be in ncc]
               </sch:assert>
             </sch:rule>            
             <sch:rule context="xht:head/xht:meta[@name='ncc:prodNotes']">
               <!-- meta value should correspond to number of prodnotes in body -->
               <sch:assert test="number(@content) = count(//xht:body/xht:span[@class='optional-prodnote'])">
-                [sch]meta ncc:prodNotes seems to have incorrect value
+                [sch][msg::meta ncc:prodNotes seems to have incorrect value]
               </sch:assert>
             </sch:rule>
           </sch:pattern>
@@ -448,12 +448,12 @@
           <sch:pattern name="nccDepth" id="nccDepth">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:depth'])&lt;2">
-                [sch]meta ncc:depth seems to occur more than once
+                [sch][msg::meta ncc:depth seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
             <sch:rule context="xht:head/xht:meta[@name='ncc:depth'][@content='1']">
               <sch:assert test="count(//xht:body/xht:h2)=0">
-                [sch]meta ncc:depth seems to have incorrect value
+                [sch][msg::meta ncc:depth seems to have incorrect value]
               </sch:assert>                                   
             </sch:rule>
             <sch:rule context="xht:head/xht:meta[@name='ncc:depth'][@content='2']">
@@ -463,22 +463,22 @@
             </sch:rule>
             <sch:rule context="xht:head/xht:meta[@name='ncc:depth'][@content='3']">
               <sch:assert test="count(//xht:body/xht:h4)=0">
-                [sch]meta ncc:depth seems to have incorrect value
+                [sch][msg::meta ncc:depth seems to have incorrect value]
               </sch:assert>                                   
             </sch:rule>
             <sch:rule context="xht:head/xht:meta[@name='ncc:depth'][@content='4']">
               <sch:assert test="count(//xht:body/xht:h5)=0">
-                [sch]meta ncc:depth seems to have incorrect value
+                [sch][msg::meta ncc:depth seems to have incorrect value]
               </sch:assert>                                   
             </sch:rule>
             <sch:rule context="xht:head/xht:meta[@name='ncc:depth'][@content='5']">
               <sch:assert test="count(//xht:body/xht:h6)=0">
-                [sch]meta ncc:depth seems to have incorrect value
+                [sch][msg::meta ncc:depth seems to have incorrect value]
               </sch:assert>                                   
             </sch:rule>
             <sch:rule context="xht:head/xht:meta[@name='ncc:depth'][@content='6']">
               <sch:assert test="count(//xht:body/xht:h6)&gt;0">
-                [sch]meta ncc:depth seems to have incorrect value
+                [sch][msg::meta ncc:depth seems to have incorrect value]
               </sch:assert>                                   
             </sch:rule>
 
@@ -489,7 +489,7 @@
           <sch:pattern name="nccFiles" id="nccFiles">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:files'])&lt;2">
-                [sch]meta ncc:files seems to occur more than once
+                [sch][msg::meta ncc:files seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>
@@ -499,19 +499,19 @@
           <sch:pattern name="nccMaxPageNormal" id="nccMaxPageNormal">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:maxPageNormal'])&lt;2">
-                [sch]meta ncc:maxPageNormal seems to occur more than once
+                [sch][msg::meta ncc:maxPageNormal seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
             <!--   
             <sch:rule context="xht:head/xht:meta[@name='ncc:maxPageNormal']/@content">
               <sch:assert test="number(.) = number(//xht:body/xht:span[last()][@class='page-normal'])">
-                [sch]meta ncc:maxPageNormal seems to have incorrect value
+                [sch][msg::meta ncc:maxPageNormal seems to have incorrect value]
               </sch:assert>                                   
             </sch:rule>
             -->        
             <sch:rule context="xht:body/xht:span[last()][@class='page-normal']">
               <sch:assert test="number(.) = number(//xht:head/xht:meta[@name='ncc:maxPageNormal']/@content)">
-                [sch]meta ncc:maxPageNormal seems to have incorrect value
+                [sch][msg::meta ncc:maxPageNormal seems to have incorrect value]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>                    
@@ -521,7 +521,7 @@
           <sch:pattern name="nccMultimediaType" id="nccMultimediaType">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:multimediaType'])&lt;2">
-                [sch]meta ncc:multimediaType seems to occur more than once
+                [sch][msg::meta ncc:multimediaType seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>
@@ -531,7 +531,7 @@
           <sch:pattern name="dcSource" id="dcSource">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='dc:source'])&lt;2">
-                [sch]meta dc:source seems to occur more than once
+                [sch][msg::meta dc:source seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>
@@ -541,7 +541,7 @@
           <sch:pattern name="nccSourceDate" id="nccSourceDate">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:sourceDate'])&lt;2">
-                [sch]meta ncc:sourceDate seems to occur more than once
+                [sch][msg::meta ncc:sourceDate seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>
@@ -551,7 +551,7 @@
           <sch:pattern name="nccSourceEdition" id="nccSourceEdition">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:sourceEdition'])&lt;2">
-                [sch]meta ncc:sourceEdition seems to occur more than once
+                [sch][msg::meta ncc:sourceEdition seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>
@@ -561,7 +561,7 @@
           <sch:pattern name="nccSourcePublisher" id="nccSourcePublisher">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:sourcePublisher'])&lt;2">
-                [sch]meta ncc:sourcePublisher seems to occur more than once
+                [sch][msg::meta ncc:sourcePublisher seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>
@@ -571,7 +571,7 @@
           <sch:pattern name="nccGenerator" id="nccGenerator">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:generator'])&lt;2">
-                [sch]meta ncc:generator seems to occur more than once
+                [sch][msg::meta ncc:generator seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>
@@ -581,7 +581,7 @@
           <sch:pattern name="httpEquiv" id="httpEquiv">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@http-equiv='Content-type'])&lt;2">
-                [sch]meta http-equiv seems to occur more than once
+                [sch][msg::meta http-equiv seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>
@@ -591,7 +591,7 @@
           <sch:pattern name="ncckByteSize" id="ncckByteSize">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:kByteSize'])&lt;2">            
-                [sch]meta ncc:kByteSize seems to occur more than once
+                [sch][msg::meta ncc:kByteSize seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>        
@@ -601,7 +601,7 @@
           <sch:pattern name="nccProducedDate" id="nccProducedDate">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:producedDate'])&lt;2">            
-                [sch]meta ncc:producedDate seems to occur more than once
+                [sch][msg::meta ncc:producedDate seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>        
@@ -611,7 +611,7 @@
           <sch:pattern name="nccProducer" id="nccProducer">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:producer'])&lt;2">            
-                [sch]meta ncc:producer seems to occur more than once
+                [sch][msg::meta ncc:producer seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>                
@@ -621,7 +621,7 @@
           <sch:pattern name="nccRevision" id="nccRevision">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:revision'])&lt;2">            
-                [sch]meta ncc:revision seems to occur more than once
+                [sch][msg::meta ncc:revision seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>              
@@ -631,7 +631,7 @@
           <sch:pattern name="nccRevisionDate" id="nccRevisionDate">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:revisionDate'])&lt;2">            
-                [sch]meta ncc:revisionDate seems to occur more than once
+                [sch][msg::meta ncc:revisionDate seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>              
@@ -641,7 +641,7 @@
           <sch:pattern name="nccSourceRights" id="nccSourceRights">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:sourceRights'])&lt;2">            
-                [sch]meta ncc:sourceRights seems to occur more than once
+                [sch][msg::meta ncc:sourceRights seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>                      
@@ -651,7 +651,7 @@
           <sch:pattern name="nccSourceTitle" id="nccSourceTitle">                      
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='ncc:sourceTitle'])&lt;2">            
-                [sch]meta ncc:sourceTitle seems to occur more than once
+                [sch][msg::meta ncc:sourceTitle seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>
           </sch:pattern>                              

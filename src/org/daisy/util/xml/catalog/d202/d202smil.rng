@@ -223,7 +223,7 @@
             <sch:pattern name="dcFormatSmil" id="dcFormatSmil">
               <sch:rule context="head">
                 <sch:assert test="count(meta[@name='dc:format'])=1">
-                  [sch]meta dc:format seems not to be present exactly once
+                  [sch][msg::meta dc:format seems not to be present exactly once]
                 </sch:assert>
               </sch:rule>
             </sch:pattern>                    
@@ -233,7 +233,7 @@
             <sch:pattern name="nccGeneratorSmil" id="nccGeneratorSmil">                      
               <sch:rule context="head">
                 <sch:assert test="count(meta[@name='ncc:generator'])&lt;2">
-                  [sch]meta ncc:generator seems to occur more than once
+                  [sch][msg::meta ncc:generator seems to occur more than once]
                 </sch:assert>                                   
               </sch:rule>
             </sch:pattern>          
@@ -243,7 +243,7 @@
             <sch:pattern name="dcIdentifierSmil" id="dcIdentifierSmil">                      
               <sch:rule context="head">
                 <sch:assert test="count(meta[@name='dc:identifier'])&lt;2">
-                  [sch]meta dc:identifier seems to occur more than once
+                  [sch][msg::meta dc:identifier seems to occur more than once]
                 </sch:assert>                                   
               </sch:rule>
             </sch:pattern>          
@@ -253,7 +253,7 @@
             <sch:pattern name="dcTitleSmil" id="dcTitleSmil">                      
               <sch:rule context="head">
                 <sch:assert test="count(meta[@name='dc:title'])&lt;2">
-                  [sch]meta dc:title seems to occur more than once
+                  [sch][msg::meta dc:title seems to occur more than once]
                 </sch:assert>                                   
               </sch:rule>
             </sch:pattern>                    
@@ -263,7 +263,7 @@
             <sch:pattern name="nccTimeInThisSmil" id="nccTimeInThisSmil">                      
               <sch:rule context="head">
                 <sch:assert test="count(meta[@name='ncc:timeInThisSmil'])&lt;2">
-                  [sch]meta ncc:timeInThisSmil seems to occur more than once
+                  [sch][msg::meta ncc:timeInThisSmil seems to occur more than once]
                 </sch:assert>                                   
               </sch:rule>
             </sch:pattern>                              
@@ -273,7 +273,7 @@
             <sch:pattern name="nccTotalElapsedTimeSmil" id="nccTotalElapsedTimeSmil">                      
               <sch:rule context="head">
                 <sch:assert test="count(meta[@name='ncc:totalElapsedTime'])&lt;2">
-                  [sch]meta ncc:totalElapsedTime seems to occur more than once
+                  [sch][msg::meta ncc:totalElapsedTime seems to occur more than once]
                 </sch:assert>                                   
               </sch:rule>
             </sch:pattern>                    
@@ -283,7 +283,7 @@
             <sch:pattern name="titleSmil" id="titleSmil">                      
               <sch:rule context="head">
                 <sch:assert test="count(meta[@name='title'])&lt;2">
-                  [sch]meta title seems to occur more than once
+                  [sch][msg::meta title seems to occur more than once]
                 </sch:assert>                                   
               </sch:rule>
             </sch:pattern>                    

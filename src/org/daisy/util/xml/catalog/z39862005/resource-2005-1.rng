@@ -80,7 +80,7 @@
       <!-- The namespace URI (the value of the nsuri attribute) must be unique for each scope element. -->
       <sch:rule context="res:scope">
        <sch:assert test="count(//res:scope[@nsuri=current()/@nsuri])=1"> 
-          [sch][resource_resNsUriAtt]
+          [sch][zedid::resource_resNsUriAtt]
         </sch:assert>        
       </sch:rule>
     </sch:pattern> 
@@ -97,7 +97,7 @@
       <!-- Within any given nodeSet, there must not be two resources with the same language.  -->
       <sch:rule context="res:nodeSet/res:resource">
         <sch:assert test="count(../res:resource[@xml:lang=current()/@xml:lang])=1">
-          [sch][resource_nodeSetLangUnique]
+          [sch][zedid::resource_nodeSetLangUnique]
         </sch:assert>        
       </sch:rule>
     </sch:pattern>     
