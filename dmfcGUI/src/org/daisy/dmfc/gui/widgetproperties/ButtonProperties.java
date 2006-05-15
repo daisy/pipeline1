@@ -11,7 +11,7 @@ public class ButtonProperties implements IProperties{
 	public void setProperties(Control btn, String txt){
 		
 		//((Button)btn).setFont(FontChoices.fontButton);
-		((Button)btn).setBackground(ColorChoices.white);
+		//((Button)btn).setBackground(ColorChoices.white);
 		((Button)btn).setText(txt);	
 	}
 }
