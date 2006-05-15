@@ -3,6 +3,7 @@ package org.daisy.dmfc.gui.menus;
 import org.daisy.dmfc.gui.ConvertSingleFile;
 import org.daisy.dmfc.gui.UIManager;
 import org.daisy.dmfc.gui.Window;
+import org.daisy.dmfc.gui.links.WebLinks;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -110,19 +111,11 @@ public class MenuSingleConvert {
 		dmfcGuiHelp.setText("GUI Help\tCtrl+H");
 		
 		MenuItem about = new MenuItem(helpmenu, SWT.PUSH);
-		about.setText("Go to the TPB web site\tCtrl+T");
-		about.setAccelerator(SWT.MOD1 + 'A');
+		about.setText("Go to the DAISY web site\tCtrl+D");
+		about.setAccelerator(SWT.MOD1 + 'D');
 		about.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				System.out.println("AboutScreen");
-				MessageBox messageBox = new MessageBox(shell, SWT.ICON_INFORMATION |
-						SWT.CANCEL);
-						messageBox.setMessage("DAISY Multi-Format Converter \n\n" +
-								"Copyright by the DAISY Consortium 2006 \n" +
-								"Version 1.0, June 2006"
-								);
-						messageBox.setText("About");
-						messageBox.open();
+				new WebLinks("http://www.daisy.org");
 			}
 			});
 	
