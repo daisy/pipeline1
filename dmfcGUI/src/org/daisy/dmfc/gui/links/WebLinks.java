@@ -14,11 +14,12 @@ public class WebLinks {
 		Shell shell;
 		Display display;
 		
+		
 		public WebLinks(String url) {
 			display=UIManager.display;
 			shell=new Shell (display);
 			shell.setLayout(new FillLayout());
-			Browser browser = new Browser(shell, SWT.NONE);
+			Browser browser= new Browser(shell, SWT.NONE);
 				
 			/* Load an HTML document */
 			browser.setUrl(url);
