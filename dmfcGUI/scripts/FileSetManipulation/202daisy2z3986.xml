@@ -1,19 +1,22 @@
 <taskScript version="1.0">
-	<name>D202 to Zed2005</name>
-	<description>This script converts a Daisy 2.02 DTB to a Zed 2005 DTB</description>
+	<name>Daisy202 to Zed2005</name>
+	<description>Converts a Daisy 2.02 DTB to a Zed 2005 DTB</description>
+	
+	<property name="input" value="FIXME"/>
+	<property name="outputPath" value="FIXME"/>
 	
 	<task name="int_daisy_daisy2022Zed2005" interactive="false">
-
+	
 		<parameter>
 			<name>ncc</name>
-			<value>D:/dtbs/hauy.202.rev4.short/ncc.html</value>
+			<value>${input}</value>
 		</parameter>
 					
 		<parameter id="id1">
 			<name>outDir</name>
-			<value>d:/out/</value>
-		</parameter>		
-				
+			<value>${outputPath}</value>
+		</parameter>				
+		
 	</task>
 
 </taskScript>
