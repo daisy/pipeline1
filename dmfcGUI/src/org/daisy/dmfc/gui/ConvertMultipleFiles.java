@@ -515,8 +515,10 @@ public class ConvertMultipleFiles {
 			
 			for(int i = 0; i<count;i++){
 				Job job = new Job();
+				
 			//	TableItem ti = (TableItem) it.next();
 			//	job.setInputFile(new File (ti.getText()));
+				
 				job.setInputFile((File)checkedObject[i]);
 				job.setOutputFile(new File(outputPath));
 				job.setScript(scriptHandler);
