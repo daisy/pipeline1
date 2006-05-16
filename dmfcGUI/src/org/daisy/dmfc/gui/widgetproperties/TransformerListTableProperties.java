@@ -43,7 +43,7 @@ public class TransformerListTableProperties {
 		//table.setBounds(0,0,300, 200);
 	
 		TableColumn tcConversionName = new TableColumn (table, SWT.LEFT);
-		tcConversionName.setText("Names of Transformers in Conversion");
+		tcConversionName.setText("Transformers in Conversion");
 		tcConversionName.setWidth(220);
 		tcConversionName.setResizable(true);
 		

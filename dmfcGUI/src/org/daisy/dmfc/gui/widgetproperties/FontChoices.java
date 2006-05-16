@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Font;
 public class FontChoices {
 
 	//final static public Font italic = new Font(UIManager.display,"Arial", 24, SWT.BOLD |SWT.ITALIC);
-	final static public Font fontLabel = new Font(UIManager.display,"Arial", 11, SWT.NONE | SWT.COLOR_GREEN);
+	final static public Font fontLabel = new Font(UIManager.display,"Arial", 10, SWT.NONE | SWT.COLOR_BLACK);
 	final static public Font fontButton = new Font(UIManager.display,"Arial", 11, SWT.NONE | SWT.COLOR_GREEN);
 	final static public Font fontTitle = new Font(UIManager.display,"Arial", 18, SWT.BOLD );
 	final static public Font fontSubTitle = new Font(UIManager.display,"Arial", 16, SWT.BOLD |SWT.COLOR_GREEN);
