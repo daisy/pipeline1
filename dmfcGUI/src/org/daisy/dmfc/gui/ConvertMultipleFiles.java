@@ -536,7 +536,7 @@ public class ConvertMultipleFiles {
 	//calls from listeners
 	
 	public void selectAllFiles(){
-		this.tableFileViewer.getTable().selectAll();
+		this.tableFileViewer.getTable();
 	}
 	public void clearSelection(){
 		this.tableFileViewer.getTable().deselectAll();

@@ -21,6 +21,7 @@ import org.daisy.dmfc.gui.transformerlist.ITransformerListViewer;
 import org.daisy.dmfc.gui.transformerlist.TransformerLabelProvider;
 import org.daisy.dmfc.gui.transformerlist.TransformerList;
 import org.daisy.dmfc.gui.widgetproperties.ButtonProperties;
+import org.daisy.dmfc.gui.widgetproperties.ColorChoices;
 import org.daisy.dmfc.gui.widgetproperties.FontChoices;
 import org.daisy.dmfc.gui.widgetproperties.IProperties;
 import org.daisy.dmfc.gui.widgetproperties.JobQueueTableProperties;
@@ -151,6 +152,7 @@ public class Window extends Thread {
 	Composite compDetails;
 	
 	//Layout stuff
+	GridLayout layout;
 	GridData data;
 	
 	//int 
@@ -230,39 +232,47 @@ public class Window extends Thread {
 	public void createContents(){
 		
 		shell.setText("Daisy Multi Format Converter");
-		shell.setMaximized(true);
-		shell.setSize(800, 600);
+		//shell.setMaximized(true);
+		//shell.setSize(800, 600);
+		
 		shell.setLocation(50, 50);
 		shell.setLayout(new FormLayout());
 	
-	
-	//Top Left
+	//************************************************************************************
+	//First Composite.  Includes selection label, selection table, 
+	//browse buttons, conversion description
+    //********************************************************************************
 		
-		Composite compSelectConversion = new Composite (shell, SWT.NONE);
-		//compSelectConversion.setBackground(ColorChoices.white);
-		RowLayout rowLayout3 = new RowLayout(SWT.VERTICAL);
-		rowLayout3.pack = true;
-		rowLayout3.spacing = 15;
-		compSelectConversion.setLayout(rowLayout3);
+		Composite compSelectConversion = new Composite (shell, SWT.BORDER);
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		compSelectConversion.setLayoutData(data);
+		layout = new GridLayout();
+		layout.horizontalSpacing=8;
+		layout.numColumns=2;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		compSelectConversion.setLayout(layout);
 		
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan=2;
 		this.lblSelectConversion = new Label(compSelectConversion, SWT.NONE);
-		labelProperties.setProperties(lblSelectConversion, "Select A Conversion");
+		this.lblSelectConversion.setText("Select A Conversion");
+		this.lblSelectConversion.setFont(FontChoices.fontLabel);
+		lblSelectConversion.setLayoutData(data);
 		
-		FormData formFill3 = new FormData();
-		formFill3.top = new FormAttachment(4, 20);
-		formFill3.left = new FormAttachment(0, 20);
-		formFill3.bottom = new FormAttachment(13, 10);
-		formFill3.right = new FormAttachment(25,10);
-		compSelectConversion.setLayoutData(formFill3);
 				
-		Composite compScriptTree = new Composite(shell, SWT.NONE);
-		compScriptTree.setLayout(new GridLayout());
+		//Composite compScriptTree = new Composite(shell, SWT.BORDER);
+		//compScriptTree.setLayout(new GridLayout());
 		
 
-		tv = new TreeViewer(compScriptTree);
+		//tv = new TreeViewer(compScriptTree);
+		tv = new TreeViewer(compSelectConversion);
 		data =  new GridData(GridData.FILL_BOTH);
-		data.heightHint=150;
-		data.widthHint=40;
+		data.horizontalSpan=1;
+		data.heightHint=180;
+		data.widthHint=180;
 		tv.getTree().setLayoutData(data);
 		tv.setContentProvider(new ScriptTreeContentProvider(scriptDirectory));
 		tv.setLabelProvider(new ScriptTreeLabelProvider());
@@ -293,48 +303,18 @@ public class Window extends Thread {
 		
 		
 		
-		/*
+		// This is in the second column in the compSelectConversion, first composite
+		//Creates a composite to hold buttons, description, and text field
 		
-		//Just the list, ma'am
-		this.listConversion= new List(shell, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		listProperties.setProperties(listConversion, "Select Conversion Options(s)");
-		populateList();
-		
-		this.listConversion.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				int selection = listConversion.getSelectionCount();
-				//System.out.println ("The number selected is " + selection);
-				if (selection==1){
-					addMultipleFiles.setEnabled(true);
-					btnAddSingleFile.setEnabled(true);
-					getConversionSelection();
-					getConversionDescription();
-				}
-			}
-		});
-*/			
-			
-		FormData form = new FormData();
-		form.top = new FormAttachment(12, 20);
-		form.left = new FormAttachment(0, 20);
-		form.bottom = new FormAttachment(30, 10);
-		form.right = new FormAttachment(25,10);
-		compScriptTree.setLayoutData(form);
-		//listConversion.setLayoutData(form);
-		
-//Create Buttons on the right top side of the screen	
-		
-		Composite addButtonsComp = new Composite(shell, SWT.NONE);
-		
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns=2;
-		gridLayout.makeColumnsEqualWidth = true;
-		addButtonsComp.setLayout(gridLayout);
+		Composite addButtonsComp = new Composite(compSelectConversion, SWT.BORDER);
+		layout = new GridLayout();
+		layout.numColumns=1;
+		layout.verticalSpacing=5;
+		addButtonsComp.setLayout(layout);
 		
 		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		data.widthHint=120;
+		//data.widthHint=120;
 		this.addMultipleFiles = new Button (addButtonsComp, SWT.SHADOW_OUT);
-		//this.addMultipleFiles.setEnabled(true);
 		this.addMultipleFiles.setEnabled(false);
 		addMultipleFiles.setLayoutData(data);
 		
@@ -350,17 +330,11 @@ public class Window extends Thread {
 		});
 		
 		
-		data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
-		this.lblDescription = new Label(addButtonsComp, SWT.NONE);
-		lblDescription.setText("Conversion Description");
-		lblDescription.setLayoutData(data);
-		
 		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		data.widthHint=120;
+		//data.widthHint=120;
 		this.btnAddSingleFile = new Button (addButtonsComp, SWT.SHADOW_OUT);
 		this.btnAddSingleFile.setEnabled(false);
 		btnAddSingleFile.setLayoutData(data);
-		
 		buttonProperties.setProperties(btnAddSingleFile, "Browse for Single File ");
 		this.btnAddSingleFile.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -369,36 +343,65 @@ public class Window extends Thread {
 			}
 		});
 		
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		this.lblDescription = new Label(addButtonsComp, SWT.NONE);
+		lblDescription.setText("Conversion Description");
+		lblDescription.setLayoutData(data);
 		
-		data = new GridData(GridData.FILL_VERTICAL);
+		
+		
+		
+		data = new GridData(GridData.GRAB_VERTICAL);
 		data.widthHint=125;
+		data.heightHint=75;
 		this.txtDescription = new Text(addButtonsComp, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		this.txtDescription.setBackground(ColorChoices.white);
+		this.txtDescription.setEditable(false);
 		txtDescription.setLayoutData(data);
+	
 		
 		
 		FormData formFill = new FormData();
-		formFill.top = new FormAttachment(12, 20);
-		formFill.left = new FormAttachment(compSelectConversion, 15);
-		formFill.bottom = new FormAttachment(28, 10);
-		formFill.right = new FormAttachment(70,10);
-		addButtonsComp.setLayoutData(formFill);
+		formFill.top = new FormAttachment(3, 10);
+		formFill.left = new FormAttachment(5, 0);
+		formFill.bottom = new FormAttachment(30, 10);
+		formFill.right = new FormAttachment(65,10);
+		compSelectConversion.setLayoutData(formFill);
 		
-	//Bottom left
-		compJobsInQueue = new Composite (shell, SWT.NONE);
-		GridLayout gridLayoutJobs = new GridLayout();
-		compJobsInQueue.setLayout(gridLayoutJobs);
 		
-		data = new GridData();
-		data.heightHint=15;
+	
+		
+		
+	//********************************************************************
+	//Second composite, located at middle left.	Includes label (jobs), 
+	//table of jobs to run, and all buttons, move up, down, edit and delete
+	//**********************************************************************
+	
+		compJobsInQueue = new Composite (shell, SWT.BORDER);
+		layout = new GridLayout();
+		layout.horizontalSpacing=8;
+		layout.numColumns=4;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		compJobsInQueue.setLayout(layout);
+		
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		data.horizontalSpan = 4;
+		//data.heightHint=15;
 		this.lblJobsInQueue2 = new Label(compJobsInQueue, SWT.NONE);
-		labelProperties.setProperties(lblJobsInQueue2, "List of all Conversion Jobs");
+		this.lblJobsInQueue2.setText("List of all Conversion Jobs");
+		//labelProperties.setProperties(lblJobsInQueue2, "List of all Conversion Jobs");
 		lblJobsInQueue2.setLayoutData(data);
 		
 		
-		data = new GridData();
-		data.heightHint=120;
+		data = new GridData(GridData.FILL_BOTH);
+		data.horizontalSpan = 4;
+		data.heightHint=160;
+		data.widthHint=700;
 		this.tblJobs2 = new Table(compJobsInQueue, SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL |SWT.SINGLE |SWT.FULL_SELECTION );
 		this.tblJobs2.setRedraw(true);
+		this.tblJobs2.setLayoutData(data);
 		jqtp2 = new JobQueueTableProperties(tblJobs2);
 		
 		createJobTableViewer();
@@ -406,7 +409,6 @@ public class Window extends Thread {
 		tableJobViewer.setLabelProvider(new JobLabelProvider());
 		jobList = new JobList();
 		tableJobViewer.setInput(jobList);
-		
 		
 		this.tblJobs2.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -417,26 +419,12 @@ public class Window extends Thread {
 		});
 	
 		
-		tblJobs2.setLayoutData(data);
+	//Buttons, move up, down, delete, edit
 		
-		FormData formFill4 = new FormData();
-		formFill4.top = new FormAttachment(compScriptTree, 15);
-		//formFill4.top = new FormAttachment(listConversion, 15);
-		formFill4.left = new FormAttachment(0, 20);
-		formFill4.bottom = new FormAttachment(55, 10);
-		formFill4.right = new FormAttachment(70,10);
-		compJobsInQueue.setLayoutData(formFill4);
-		
-		
-//	Buttons on right bottom of screen
-		Composite moveJobsComp = new Composite(shell, SWT.NONE);
-		//moveJobsComp.setBackground(ColorChoices.white);
-		RowLayout rowLayout2 = new RowLayout(SWT.VERTICAL);
-		rowLayout2.pack = false;
-		rowLayout2.spacing = 10;
-		moveJobsComp.setLayout(rowLayout2);
-		
-		this.btnMoveUp = new Button (moveJobsComp, SWT.SHADOW_OUT);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan=1;
+		this.btnMoveUp = new Button (compJobsInQueue, SWT.SHADOW_OUT);
+		btnMoveUp.setLayoutData(data);
 		buttonProperties.setProperties(btnMoveUp, "Move Up List");
 		this.btnMoveUp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -445,8 +433,10 @@ public class Window extends Thread {
 			}
 		});
 		
-		
-		this.btnMoveDown = new Button (moveJobsComp, SWT.SHADOW_OUT);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan=1;
+		this.btnMoveDown = new Button (compJobsInQueue, SWT.SHADOW_OUT);
+		this.btnMoveDown.setLayoutData(data);
 		buttonProperties.setProperties(btnMoveDown, "Move Down List");
 		this.btnMoveDown.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -455,8 +445,10 @@ public class Window extends Thread {
 			}
 		});
 		
-		
-		this.btnDelete = new Button (moveJobsComp, SWT.SHADOW_OUT);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan=1;
+		this.btnDelete = new Button (compJobsInQueue, SWT.SHADOW_OUT);
+		this.btnDelete.setLayoutData(data);
 		buttonProperties.setProperties(btnDelete, "Remove from List");
 		this.btnDelete.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -464,8 +456,10 @@ public class Window extends Thread {
 				
 			}
 		});
-		
-		this.btnEdit = new Button (moveJobsComp, SWT.SHADOW_OUT);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan=1;
+		this.btnEdit = new Button (compJobsInQueue, SWT.SHADOW_OUT);
+		this.btnEdit.setLayoutData(data);
 		buttonProperties.setProperties(btnEdit, "Change Selected Files");
 		this.btnEdit.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -474,23 +468,34 @@ public class Window extends Thread {
 		});
 				
 		FormData formFill2 = new FormData();
-		formFill2.top = new FormAttachment(33, 20);
-		formFill2.left = new FormAttachment(compJobsInQueue, 10);
-		formFill2.bottom = new FormAttachment(60, 10);
-		formFill2.right = new FormAttachment(85,10);
-		moveJobsComp.setLayoutData(formFill2);
+		formFill2.top = new FormAttachment(compSelectConversion, 5);
+		formFill2.left = new FormAttachment(5, 0);
+		formFill2.bottom = new FormAttachment(65, 10);
+		formFill2.right = new FormAttachment(65,10);
+		compJobsInQueue.setLayoutData(formFill2);
+		
+	
+		
+	//*****************************************************************
+	//Third Composite.  Includes, Run, Terminate, and Start over Buttons
+	//******************************************************************
+		
+		Composite bottomComp = new Composite(shell, SWT.BORDER);
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		bottomComp.setLayoutData(data);
+		layout = new GridLayout();
+		layout.horizontalSpacing=8;
+		layout.numColumns=3;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		bottomComp.setLayout(layout);
 		
 		
-	//Bottom Buttons
-		
-		Composite bottomComp = new Composite(shell, SWT.NONE);
-		//bottomComp.setBackground(ColorChoices.white);
-		RowLayout rowLayout5 = new RowLayout(SWT.HORIZONTAL);
-		rowLayout5.pack = false;
-		rowLayout5.spacing = 20;
-		bottomComp.setLayout(rowLayout5);
-		
+		data=new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 1;
 		this.btnRun = new Button(bottomComp, SWT.SHADOW_OUT);
+		this.btnRun.setLayoutData(data);
 		buttonProperties.setProperties(btnRun, "Run All Jobs");
 		this.btnRun.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -507,9 +512,12 @@ public class Window extends Thread {
 				}
 			}
 		});
-			
-
+	
+		
+		data=new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 1;
 		this.btnTerminate = new Button(bottomComp, SWT.SHADOW_OUT);
+		this.btnTerminate.setLayoutData(data);
 		this.btnTerminate.setEnabled(false);
 		buttonProperties.setProperties(btnTerminate, " Terminate Run");
 		this.btnTerminate.addSelectionListener(new SelectionAdapter() {
@@ -518,8 +526,10 @@ public class Window extends Thread {
 			}
 		});
 		
-		
+		data=new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 1;
 		this.btnStart = new Button(bottomComp, SWT.SHADOW_OUT);
+		this.btnStart.setLayoutData(data);
 		this.btnStart.setEnabled(true);
 		buttonProperties.setProperties(btnStart, " Start Over ");
 		this.btnStart.addSelectionListener(new SelectionAdapter() {
@@ -532,74 +542,63 @@ public class Window extends Thread {
 		
 		
 		FormData formFill5 = new FormData();
-		formFill5.top = new FormAttachment(compJobsInQueue, 35);
-		formFill5.left = new FormAttachment(0, 20);
-		formFill5.bottom = new FormAttachment(56, 100);
-		formFill5.right = new FormAttachment(55,10);
+		formFill5.top = new FormAttachment(compJobsInQueue, 0);
+		formFill5.left = new FormAttachment(5, 0);
+		formFill5.bottom = new FormAttachment(70, 10);
+		formFill5.right = new FormAttachment(65,10);
 		bottomComp.setLayoutData(formFill5);
 		
-
-	//Conversion Details, shown at the bottom of page
-	//Consists of a gridLayout with 4 columns
-		
-		compDetails= new Composite(shell, SWT.NONE);
-		compDetails.setVisible(true);
-		
-		GridLayout gridlayout = new GridLayout(4, false);
-		//gridlayout.verticalSpacing=20;
-		gridlayout.horizontalSpacing=17;
-		gridlayout.marginHeight=5;
-		
-		
-		compDetails.setLayout(gridlayout);
+	
+	//*********************************************************************
+	//Fourth Composite - includes all conversion details including
+	//labels, table of transformers running, estimated time, elapsed time, 
+	//conversion progress bar.  Displayed on the right side of the page next to everything else.
+	//Consists of a gridLayout with 1 column
+	//**********************************************************************
 	
 		
-		
-	//First column
-		Composite compColumnOne = new Composite(compDetails, SWT.NONE);
-		GridLayout gridColumnOne = new GridLayout();
-		gridColumnOne.verticalSpacing=20;
-		gridColumnOne.horizontalSpacing=20;
-		compColumnOne.setLayout(gridColumnOne);
+		compDetails= new Composite(shell, SWT.BORDER);
+		compDetails.setVisible(true);
+		layout.horizontalSpacing=8;
+		layout.numColumns=2;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		compDetails.setLayout(layout);
+	
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		data.widthHint=160;
+		data.horizontalSpan=2;
+		//data.widthHint=160;
 		data.grabExcessHorizontalSpace=true;
-		this.lblConversionDetails = new Label(compColumnOne, SWT.NONE);
+		this.lblConversionDetails = new Label(compDetails, SWT.NONE);
 		this.lblConversionDetails.setText("Conversion Details");
 		this.lblConversionDetails.setFont(FontChoices.fontLabel);
 		this.lblConversionDetails.setLayoutData(data);
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		data.widthHint=160;
+		data.horizontalSpan=2;
 		data.grabExcessHorizontalSpace=true;
-		this.lblListTransformers = new Label(compColumnOne, SWT.NONE);
+		this.lblListTransformers = new Label(compDetails, SWT.NONE);
 		lblListTransformers.setText("Current Conversion");
 		lblListTransformers.setLayoutData(data);
-		//labelProperties.setProperties(lblListTransformers, "Current Conversion");
+	
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING |GridData.FILL_HORIZONTAL |GridData.VERTICAL_ALIGN_BEGINNING);
 		data.grabExcessHorizontalSpace=true;
-		this.txtConversionRunning = new Text(compColumnOne, SWT.BORDER);
+		data.horizontalSpan=2;
+		this.txtConversionRunning = new Text(compDetails, SWT.BORDER);
 		this.txtConversionRunning.setText("");
 		this.txtConversionRunning.pack();
 		//this.txtConversionRunning.s
 		txtConversionRunning.setLayoutData(data);
 		
 		
-	//Second Column
-		Composite compColumnTwo = new Composite(compDetails, SWT.NONE);
-		GridLayout gridColumnTwo = new GridLayout();
-		gridColumnTwo.verticalSpacing=10;
-		gridColumnTwo.horizontalSpacing=20;
-		compColumnTwo.setLayout(gridColumnOne);
-		
-		
 		data = new GridData(GridData.FILL_BOTH);
-		data.heightHint=70;
+		data.horizontalSpan=2;
 		
 		//first create the table
-		this.tblListTransformers = new Table(compColumnTwo, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL  |SWT.FULL_SELECTION );
+		this.tblListTransformers = new Table(compDetails, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL  |SWT.FULL_SELECTION );
 		TransformerListTableProperties tltp = new TransformerListTableProperties(tblListTransformers );
 		tblListTransformers.setLayoutData(data);
 		
@@ -608,62 +607,58 @@ public class Window extends Thread {
 		tableViewer.setContentProvider(new TransformerContentProvider());
 		tableViewer.setLabelProvider(new TransformerLabelProvider());
 		
-				
-	//Third column
-		Composite compColumnThree = new Composite(compDetails, SWT.NONE);
-		GridLayout gridColumnThree = new GridLayout();
-		compColumnThree.setLayout(gridColumnThree);
 		
-		data = new GridData(GridData.HORIZONTAL_ALIGN_END);
-		lblElapsedTime = new Label(compColumnThree, SWT.NONE);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan=1;
+		lblElapsedTime = new Label(compDetails, SWT.NONE);
 		lblElapsedTime.setText("Elapsed Time");
 		lblElapsedTime.setLayoutData(data);
 		
-		data = new GridData(GridData.HORIZONTAL_ALIGN_END);
-		lblEstimatedTime = new Label(compColumnThree, SWT.NONE);
-		lblEstimatedTime.setText("Estimated Time");
-		lblEstimatedTime.setLayoutData(data);
-		
-		data = new GridData(GridData.HORIZONTAL_ALIGN_END);
-		this.lblTotalConversionProgress = new Label(compColumnThree, SWT.NONE);
-		lblTotalConversionProgress.setText("Conversion Progress");
-		lblTotalConversionProgress.setLayoutData(data);
-		
-		
-	//Fourth column
-		
-		Composite compColumnFour = new Composite(compDetails, SWT.NONE);
-		GridLayout gridColumnFour = new GridLayout();
-		compColumnFour.setLayout(gridColumnFour);
-		
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		txtElapsedTime = new Text(compColumnFour, SWT.NONE);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		data.horizontalSpan=1;
+		txtElapsedTime = new Text(compDetails, SWT.BORDER);
 		//txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
 		txtElapsedTime.setLayoutData(data);
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		txtEstimatedTime = new Text(compColumnFour, SWT.NONE);
+		data.horizontalSpan=1;
+		lblEstimatedTime = new Label(compDetails, SWT.NONE);
+		lblEstimatedTime.setText("Estimated Time");
+		lblEstimatedTime.setLayoutData(data);
+		
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		data.horizontalSpan=1;
+		txtEstimatedTime = new Text(compDetails, SWT.BORDER);
 		//txtElapsedTime.setText(String.valueOf(lel.getTotalTime()));
 		txtEstimatedTime.setLayoutData(data);
 		
+		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		pb = new ProgressBar(compColumnFour, SWT.NONE);
+		data.horizontalSpan=2;
+		this.lblTotalConversionProgress = new Label(compDetails, SWT.NONE);
+		lblTotalConversionProgress.setText("Conversion Progress");
+		lblTotalConversionProgress.setLayoutData(data);
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		data.horizontalSpan=2;
+		pb = new ProgressBar(compDetails, SWT.BORDER);
+		pb.setBackground(ColorChoices.white);
 		pb.setMaximum(100);
 		pb.setMinimum(1);
 		//pb.setSelection(lel.getProgress()*100);
 		pb.setLayoutData(data);
 		
-		
-		
 		FormData formFillEnd = new FormData();
-		formFillEnd.top = new FormAttachment(bottomComp, 0);
-		formFillEnd.left = new FormAttachment(0, 20);
-		formFillEnd.bottom = new FormAttachment(80, 100);
+		formFillEnd.top = new FormAttachment(3, 10);
+		formFillEnd.left = new FormAttachment(compSelectConversion, 5);
+		formFillEnd.bottom = new FormAttachment(70, 10);
 		formFillEnd.right = new FormAttachment(85,10);
-		compDetails.setLayoutData(formFillEnd);
-	    	
+		compDetails.setLayoutData(formFillEnd);	
+		
 	}
 	
+
 	
 	public void showConversionDetails(){
 		TransformerListTableProperties tltp = new TransformerListTableProperties(tblListTransformers, getConversionChosen());
@@ -1109,27 +1104,27 @@ public class Window extends Thread {
 			jobList.removeChangeListener(this);
 		}
 
-		// Return the tasks as an array of Objects
+		// Return the jobs as an array of Objects
 		public Object[] getElements(Object parent) {
 			return jobList.getJobs().toArray();
 		}
 
-		/* (non-Javadoc)
-		 * @see ITaskListViewer#addTask(ExampleTask)
+		/* 
+		 * 
 		 */
 		public void addJob(Job job) {
 			tableJobViewer.add(job);
 		}
 
-		/* (non-Javadoc)
-		 * @see ITaskListViewer#removeTask(ExampleTask)
+		/* (
+		 * 
 		 */
 		public void removeJob(Job job) {
 			tableJobViewer.remove(job);			
 		}
 
-		/* (non-Javadoc)
-		 * @see ITaskListViewer#updateTask(ExampleTask)
+		/* (
+		 * 
 		 */
 		public void updateJob(Job job) {
 			tableJobViewer.update(job, null);	
@@ -1180,11 +1175,11 @@ public class Window extends Thread {
 		
 		/**
 		 * gets the root elements of the tree
-		 * We don't care what the arg is since we just want all root elements in the file system.
+		 *
 		 */
 		public Object[] getElements(Object arg0){
 			return scriptDirectory.listFiles();
-			//return File.listRoots();
+			
 		}
 		
 		public void dispose(){
