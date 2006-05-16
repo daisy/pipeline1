@@ -12,13 +12,9 @@ import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.ParameterInfo;
 import org.daisy.dmfc.core.transformer.TransformerInfo;
 import org.daisy.dmfc.gui.compatiblefilelist.FileLabelProvider;
-import org.daisy.dmfc.gui.compatiblefilelist.FileList;
-import org.daisy.dmfc.gui.compatiblefilelist.IFileListViewer;
 import org.daisy.dmfc.gui.menus.MenuMultipleConvert;
 import org.daisy.dmfc.gui.widgetproperties.ButtonProperties;
-import org.daisy.dmfc.gui.widgetproperties.ColorChoices;
 import org.daisy.dmfc.gui.widgetproperties.CompatibleFilesTableProperties;
-import org.daisy.dmfc.gui.widgetproperties.FontChoices;
 import org.daisy.dmfc.gui.widgetproperties.FormAttachmentsHelper;
 import org.daisy.dmfc.gui.widgetproperties.IProperties;
 import org.daisy.dmfc.gui.widgetproperties.LabelProperties;
@@ -30,26 +26,20 @@ import org.daisy.util.mime.MIMEType;
 import org.daisy.util.mime.MIMETypeException;
 import org.daisy.util.mime.MIMETypeFactory;
 import org.daisy.util.mime.MIMETypeFactoryException;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -112,6 +102,9 @@ public class ConvertMultipleFiles {
 	//Files
 	File fileDirSelected;
 	
+	//boolean - is Directory
+	boolean boolOutputIsDir=false;
+	
 	//GridData - reinitialized for each control.
 	GridData data;
 	
@@ -125,7 +118,7 @@ public class ConvertMultipleFiles {
 	ArrayList alTableContents= new ArrayList();
 	
 	//TableViewers
-	TableViewer tableFileViewer;
+	CheckboxTableViewer tableFileViewer;
 	
 	String [] columnFileNames = new String [] {"File Name"};
 			
@@ -266,7 +259,7 @@ public class ConvertMultipleFiles {
 			 btnSelect.setText("Select All");
 			 this.btnSelect.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
-						selectAllFiles();
+						tableFileViewer.setAllChecked(true);
 						
 					}
 				});
@@ -279,7 +272,7 @@ public class ConvertMultipleFiles {
 			 btnUnCheck.setText("De-Select");
 			 this.btnUnCheck.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
-						clearSelection();
+						tableFileViewer.setAllChecked(false);
 						
 					}
 				});
@@ -299,17 +292,7 @@ public class ConvertMultipleFiles {
 			 
 			 //set the input data once it is chosen.
 			 
-			 this.tblCompatibleFiles.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						//String string = event.detail == SWT.CHECK ? "Checked" : "Selected";
-						//adds a TableItem to the arrayList
-						if (e.detail==SWT.CHECK){
-							al.add(e.item);
-						}
-					}
-				});
-			 
-			
+		
 
 		//end compFilesTable
 	
@@ -394,81 +377,7 @@ public class ConvertMultipleFiles {
 			 
 			 
 			 
-	/* Composite Output
-			 
-			 Composite compOutputFields = new Composite(shell, SWT.BORDER);
-			 compOutputFields.setLayoutData(data);
-			 layout = new GridLayout();
-			 layout.horizontalSpacing=8;
-			 layout.numColumns=1;
-			 layout.marginTop=0;
-			 layout.marginBottom=5;
-			 layout.marginWidth=7;
-			 compOutputFields.setLayout(layout);
-			 
-       
-//		Label for Output Doc
-			 data = new GridData(GridData.FILL_HORIZONTAL);
-			 data.horizontalSpan=1;
-			 lblOutputDocument = new Label(compOutputFields, SWT.BORDER);
-			 lblOutputDocument.setText("Output Path");
-			 lblOutputDocument.setLayoutData(data);
-		
-			
-		// RadioButtons
-			 Composite compRadioButtons = new Composite(compOutputFields, SWT.BORDER);
-			// compRadioButtons.setBackground(ColorChoices.white);
-			 data = new GridData(GridData.HORIZONTAL_ALIGN_END);
-			 data.horizontalSpan=1;
-			 compRadioButtons.setLayoutData(data);
-			  
-			 data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
-			 btnRadio1= new Button(compRadioButtons, SWT.RADIO);
-			 btnRadio1.setLayoutData(data);
-			 radioButtonProperties.setProperties(btnRadio1, "Subfolder of Input Document");
-			 btnRadio1.setSelection(true);
-			 this.btnRadio1.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						btnBrowseOutput.setEnabled(false);
-						setOutputPath();
-					}
-				});
-			 
-			 data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
-			 btnRadio2= new Button(compRadioButtons, SWT.RADIO);
-			 btnRadio2.setLayoutData(data);
-			 radioButtonProperties.setProperties(btnRadio2, "Subfolder of Selected Folder");
-			 this.btnRadio2.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						btnBrowseOutput.setEnabled(true);
-						resetOutputPath();
-					}
-				});
-			 
-		/*	
-			 
-			 //Text field
-			 data = new GridData(GridData.FILL_HORIZONTAL);
-			 data.horizontalSpan=1;
-			 txtOutputDoc=new Text(compOutputFields, SWT.BORDER);
-			 textProperties.setProperties(txtOutputDoc, null);
-			 txtOutputDoc.setLayoutData(data);
-			 
-			 
-          //Browse Button
-			 data = new GridData(GridData.HORIZONTAL_ALIGN_END);
-			 data.horizontalSpan=1;
-			 btnBrowseOutput = new Button(compOutputFields, SWT.BORDER);
-			 btnBrowseOutput.setEnabled(false);
-			 buttonProperties.setProperties(btnBrowseOutput, "Browse"); 
-			 btnBrowseOutput.setLayoutData(data); 
-			 this.btnBrowseOutput.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						setOutputPathSelected();
-					}
-				});
-			 
-		*/ 
+
 		
 			 
 	// bottom OK and Cancel buttons
@@ -524,7 +433,8 @@ public class ConvertMultipleFiles {
 	
 	
 	public void createFileTableViewer(){
-		tableFileViewer = new TableViewer(tblCompatibleFiles);
+		tableFileViewer = new CheckboxTableViewer(tblCompatibleFiles);
+		//tableFileViewer = new TableViewer(tblCompatibleFiles);
 		tableFileViewer.setUseHashlookup(true);
 		tableFileViewer.setColumnProperties(columnFileNames);
 		
@@ -534,6 +444,15 @@ public class ConvertMultipleFiles {
 
 	
 	//calls from listeners
+	
+	public void getSelectedItemsFromTable(){
+		Object [] checkedObjects = tableFileViewer.getCheckedElements();
+		int count = checkedObjects.length;
+		for (int i = 0; i<count; i++){
+			System.out.println("Name of the file selected is " + ((File)checkedObjects[i]).getName());
+		}
+	}
+	
 	
 	public void selectAllFiles(){
 		this.tableFileViewer.getTable();
@@ -549,8 +468,6 @@ public class ConvertMultipleFiles {
 		}
 		else{
 			 fileDirSelected = new File(dirSelected);
-			// populateTable();
-			// getFileTypesForScriptHandler();
 			cftp.setDirSelected(fileDirSelected);
 			alTableContents= cftp.setTableContents(getFileTypesForScriptHandler());	
 			tableFileViewer.setInput(alTableContents);
@@ -559,6 +476,12 @@ public class ConvertMultipleFiles {
 	
 	
 	public void sendJobInfoToMain() {
+		Object [] checkedObject = tableFileViewer.getCheckedElements();
+		int count = checkedObject.length;
+		System.out.println("No of files selected " + count);
+
+	
+		
 		if (tblCompatibleFiles.getItemCount()==0 
 				|| txtOutputDoc.getText().equalsIgnoreCase("")
 				|| txtOutputDoc == null) {
@@ -572,7 +495,8 @@ public class ConvertMultipleFiles {
 					messageBox.open();			
 		}
 		
-		else if(al.isEmpty()){
+		//else if(al.isEmpty()){
+		else if(count<=0){
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
 					SWT.CANCEL);
 					messageBox.setMessage("Please check files to be converted.");
@@ -586,21 +510,26 @@ public class ConvertMultipleFiles {
 			
 			outputPath = txtOutputDoc.getText();
 			
-			Iterator it = al.iterator();
-			while (it.hasNext()){
+			//Iterator it = al.iterator();
+			//while (it.hasNext()){
+			
+			for(int i = 0; i<count;i++){
 				Job job = new Job();
-				TableItem ti = (TableItem) it.next();
-				job.setInputFile(new File (ti.getText()));
+			//	TableItem ti = (TableItem) it.next();
+			//	job.setInputFile(new File (ti.getText()));
+				job.setInputFile((File)checkedObject[i]);
 				job.setOutputFile(new File(outputPath));
 				job.setScript(scriptHandler);
 				job.setStatus(Status.WAITING);
 				Window.getInstance().addToQueue(job);
 			
 			}
+			
+			
 			al.clear();
 			dispose();
 		}
-	}
+ }
 	
 	/**
 	 * 
@@ -712,11 +641,7 @@ public class ConvertMultipleFiles {
 		while(it.hasNext()){
 			ParameterInfo pi =(ParameterInfo)it.next();
 			String parameter = pi.getDirection();
-			
-			if (parameter.equalsIgnoreCase("out")){
-				String stringOrDir = pi.getType();
-				System.out.println("Out direction type " + stringOrDir);
-			}
+					
 			
 			
 			if (parameter.equalsIgnoreCase("in")){
@@ -748,7 +673,8 @@ public class ConvertMultipleFiles {
 				}
 				//print out items in arraylist
 				
-				Iterator itValid = alPatterns.iterator();
+				//Iterator itValid = alPatterns.iterator();
+				Iterator itValid = alValid.iterator();
 				while (itValid.hasNext())
 					System.out.println ("Mime patterns in array " + (String)itValid.next());
 			}

@@ -20,10 +20,11 @@ public class MenuDMFC {
 	Queue cue;
 
 	
-	//MenuItems, accessed from main Window.
+	//MenuItems
 	MenuItem enableJobDetails;
 	MenuItem selectJobDetails;
 	MenuItem convertMultipleFile;
+	MenuItem convertSingleFile;
 	MenuItem runConversions;
 	
 	
@@ -100,30 +101,28 @@ public class MenuDMFC {
 	
 		
 		selectJobDetails = new MenuItem(actionmenu, SWT.PUSH);
-		selectJobDetails.setText("Select Conversion Options\tCtrl+S");
-		selectJobDetails.setAccelerator(SWT.MOD1 + 'S');
+		selectJobDetails.setText("Select A Conversion \tCtrl+C");
+		selectJobDetails.setAccelerator(SWT.MOD1 + 'C');
 		//focus listener on the conversions
 		selectJobDetails.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
-				//window.getTreeScriptList().forceFocus();
+				window.getTreeFromTreeViewer().forceFocus();
 			}
 			});
 		
 		
 		
 		convertMultipleFile = new MenuItem(actionmenu, SWT.PUSH);
-		convertMultipleFile.setText("Select Files to be Converted\tCtrl+F");
+		convertMultipleFile.setText("Browse for Files\tCtrl+F");
 		convertMultipleFile.setAccelerator(SWT.MOD1 + 'F');
 		
 		convertMultipleFile.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				
-				
+							
 				window=Window.getInstance();
 				
 				if (window.scriptHandler!=null){
-				
 					window.getConversionSelection();
 					window.getNewCMFScreen();
 						
@@ -139,13 +138,38 @@ public class MenuDMFC {
 			}
 		});
 		
+		convertSingleFile = new MenuItem(actionmenu, SWT.PUSH);
+		convertSingleFile.setText("Browse for Single File\tCtrl+S");
+		convertSingleFile.setAccelerator(SWT.MOD1 + 'S');
+		
+		convertSingleFile.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				
+				window=Window.getInstance();
+				
+				if (window.scriptHandler!=null){
+					window.getConversionSelection();
+					window.getNewSingleFileScreen();
+						
+				}
+				else{
+					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+							SWT.CANCEL);
+							messageBox.setMessage("There are no conversions chosen \n" +
+									"Please choose a conversion first.");
+							messageBox.setText("Error: No conversions chosen");
+							messageBox.open();
+				}
+			}
+		});
+		
+		
 		
 	//Manage Job List - has submenus
 		
 		MenuItem manageJobsInQueue = new MenuItem(actionmenu, SWT.CASCADE);
 		manageJobsInQueue.setText("Manage Jobs in List");
-		
-		
+			
 		//Submenu of the Manage Job List menu item
 		Menu submenu = new Menu(shell, SWT.DROP_DOWN);
 		manageJobsInQueue.setMenu(submenu);
@@ -186,8 +210,8 @@ public class MenuDMFC {
 		
 		
 		final MenuItem subactionItemRemove = new MenuItem(submenu, SWT.PUSH);
-		subactionItemRemove.setText("&Remove From List\tCtrl+R");
-		subactionItemRemove.setAccelerator(SWT.CTRL+'R');
+		subactionItemRemove.setText("&Remove From List\tCtrl+M");
+		subactionItemRemove.setAccelerator(SWT.CTRL+'M');
 		subactionItemRemove.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -233,13 +257,9 @@ public class MenuDMFC {
 			}
 		});
 		
-		/*
-		MenuItem viewJobDetails = new MenuItem(actionmenu, SWT.PUSH);
-		viewJobDetails.setText("View Job Details\tCtrl+D");
-		viewJobDetails.setAccelerator(SWT.MOD1 + 'D');
-		*/
+		
 		MenuItem terminateConversion = new MenuItem(actionmenu, SWT.PUSH);
-		terminateConversion.setText("Terminate Conversions\tCtrl+T");
+		terminateConversion.setText("Terminate Jobs\tCtrl+T");
 		terminateConversion.setAccelerator(SWT.MOD1 + 'T');
 		terminateConversion.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -249,7 +269,16 @@ public class MenuDMFC {
 			}
 		});
 				
-		
+		MenuItem startOver = new MenuItem(actionmenu, SWT.PUSH);
+		startOver.setText("Start Over\tCtrl+O");
+		startOver.setAccelerator(SWT.MOD1 + 'O');
+		startOver.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				window=Window.getInstance();
+				window.restartConverter();
+				
+			}
+		});
 		
 		
 	//Top Level "Help"

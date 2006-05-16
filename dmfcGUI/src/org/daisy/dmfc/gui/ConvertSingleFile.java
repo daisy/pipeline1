@@ -108,7 +108,7 @@ public class ConvertSingleFile extends Composite {
 		new MenuSingleConvert(shell);
 		
 		shell.setText("Convert Single File");
-		//shell.setSize(600, 400);
+		//shell.setBounds(0,0,500,500);
 		shell.setLocation(150, 150);
 		
 		GridLayout layout = new GridLayout();
@@ -144,7 +144,6 @@ public class ConvertSingleFile extends Composite {
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		lblNameConversion = new Label(compConversionChosen, SWT.NONE);
 		lblNameConversion.setText("Name of Conversion Selected");
-		//labelProperties.setProperties(lblNameConversion, "Name of Conversion Selected");
 	 	lblNameConversion.setLayoutData(data);
 		
 //		Text area

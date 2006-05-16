@@ -339,7 +339,9 @@ public class Window extends Thread {
 		this.btnAddSingleFile.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				getConversionSelection();
-				getNewSingleFileScreen();
+				if (scriptHandler !=null){
+					getNewSingleFileScreen();
+				}
 			}
 		});
 		
@@ -910,8 +912,8 @@ public class Window extends Thread {
 		return convertSingleFile;	
 	}
 
-	public Tree getTreeScriptList(){
-		return this.treeScriptList;
+	public Tree getTreeFromTreeViewer(){
+		return this.tv.getTree();
 	}
 	
 	public void getNewSingleFileScreen(){
