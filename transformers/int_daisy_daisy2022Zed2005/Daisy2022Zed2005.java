@@ -159,7 +159,9 @@ public class Daisy2022Zed2005 extends Transformer implements FilesetErrorHandler
 			this.createZedNcx(inputNcc,nccDcIdentifier);
 			
 			//create dtbook from the input xhtml
-			this.createZedDtbook(inputContentDoc,nccDcIdentifier,nccDcTitle,sourceCss.getFile().getName());  
+			if (this.inputContentDocCount >= 1) {
+				this.createZedDtbook(inputContentDoc,nccDcIdentifier,nccDcTitle,sourceCss.getFile().getName());
+			}
 			
 			//copy things that move to output unchanged
 			this.copyMembers();
