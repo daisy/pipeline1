@@ -418,7 +418,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
         // The first tag is an end tag        
         if (lastIsStart) {
             // The last tag is a start tag
-            return breakSettings.mayContainText((QName)contextStack.getParentContext().get(0));
+            return breakSettings.mayContainText((QName)contextStack.getParentContext().peek());
         } 
         // The last tag is an end tag
         return breakSettings.mayContainText(lastName);
