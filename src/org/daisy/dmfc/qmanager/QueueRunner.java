@@ -10,6 +10,7 @@ import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.ScriptException;
+import org.daisy.dmfc.exception.TransformerRunException;
 
 
 
@@ -55,7 +56,7 @@ public class QueueRunner {
 	 * 
 	 *@throws ScriptException on execute()
 	 */
-		public void execute(){
+		public void execute()throws ScriptException{
 	//public void start(){
 			
 			//walk through the queue and return jobs
@@ -79,8 +80,8 @@ public class QueueRunner {
 				try{	
 					scriptHandler.execute();
 				}
-				catch(ScriptException se){
-					se.getMessage();
+				catch(ScriptException e){
+					throw new ScriptException(e.getMessage(), e);
 				}
 				
 
