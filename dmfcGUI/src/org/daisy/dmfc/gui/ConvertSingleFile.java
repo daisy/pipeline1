@@ -70,7 +70,7 @@ public class ConvertSingleFile extends Composite {
 	//TextFields
 	Text txtConversionName;
 	Text txtInputDoc;
-	final Text txtOutputDoc;
+	Text txtOutputDoc;
 	
 	//String
 	String fileSelected;

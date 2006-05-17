@@ -28,7 +28,7 @@ public class CompatibleFilesTableProperties {
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		table.setBounds(0,0,270,160);
-		//table.setFont(FontChoices.fontLabel);
+		
 		
 		tcFiles = new TableColumn (table, SWT.LEFT);
 		tcFiles.setText("File Name");

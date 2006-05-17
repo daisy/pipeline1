@@ -116,6 +116,7 @@ public class ConvertMultipleFiles {
 	ArrayList alPatterns = new ArrayList();
 	ArrayList alCompatibleFiles = new ArrayList();
 	ArrayList alTableContents= new ArrayList();
+	ArrayList alFileOrDir;
 	
 	//TableViewers
 	CheckboxTableViewer tableFileViewer;
@@ -227,6 +228,8 @@ public class ConvertMultipleFiles {
 					public void widgetSelected(SelectionEvent e) {
 						setDirectorySelected();
 						populateCompatibleFilesTable();
+						//determine if output is a file or folder
+						setFileOrDirFlag();
 					}
 				});
 		
@@ -437,39 +440,38 @@ public class ConvertMultipleFiles {
 		//tableFileViewer = new TableViewer(tblCompatibleFiles);
 		tableFileViewer.setUseHashlookup(true);
 		tableFileViewer.setColumnProperties(columnFileNames);
-		
 	}
 	
 	
 
 	
 	//calls from listeners
-	
-	public void getSelectedItemsFromTable(){
-		Object [] checkedObjects = tableFileViewer.getCheckedElements();
-		int count = checkedObjects.length;
-		for (int i = 0; i<count; i++){
-			System.out.println("Name of the file selected is " + ((File)checkedObjects[i]).getName());
+	/**
+	 * The "out" parameter is not reliable since each chooses it's own names.
+	 * @todo What to rely on to determine if output is a directory or a file?
+	 */
+	public void setFileOrDirFlag(){
+		alFileOrDir = getFileTypesForScriptHandler("out");
+		Iterator itFileOrDir = alFileOrDir.iterator();
+		while (itFileOrDir.hasNext()){
+			System.out.println ("Mime patterns in array " + (String)itFileOrDir.next());
+			String pattern = (String)itFileOrDir.next(); 
+			if (pattern.equalsIgnoreCase("application/x-filesystemDirectory")){
+				boolOutputIsDir=true;
+			}
 		}
-	}
-	
-	
-	public void selectAllFiles(){
-		this.tableFileViewer.getTable();
-	}
-	public void clearSelection(){
-		this.tableFileViewer.getTable().deselectAll();
-	}
-	
+		
+		this.boolOutputIsDir = false;
+	}	
 	
 	public void populateCompatibleFilesTable(){
 		if (dirSelected==null){
 			System.out.println("Directory selected is null");
 		}
 		else{
-			 fileDirSelected = new File(dirSelected);
+			fileDirSelected = new File(dirSelected);
 			cftp.setDirSelected(fileDirSelected);
-			alTableContents= cftp.setTableContents(getFileTypesForScriptHandler());	
+			alTableContents= cftp.setTableContents(getFileTypesForScriptHandler("in"));	
 			tableFileViewer.setInput(alTableContents);
 		}
 	}
@@ -546,6 +548,15 @@ public class ConvertMultipleFiles {
 		if (dirSelected==null){
 			System.out.println("dirSelected is Null");
 		}
+		/*
+		else if (dirSelected.equalsIgnoreCase("c:\\")){
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+					messageBox.setMessage("Choose a subfolder of C:\\");
+					messageBox.setText("Error:  Be More Selective");
+					messageBox.open();	
+		}
+	*/	
 		else{
 			System.out.println("Directory Selected  " + dirSelected);
 			txtDirectorySelected.setText(dirSelected);
@@ -616,11 +627,14 @@ public class ConvertMultipleFiles {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Method used to return either possible "in" parameters
+	 * (file types possible for the conversion)
+	 * or "out" parameters - if output is a file or a directory.
+	 * @return ArrayList of msglobs - file extensions
 	 */
-	public ArrayList getFileTypesForScriptHandler(){
+	public ArrayList getFileTypesForScriptHandler(String inOrOut){
 		
+		String inOut=inOrOut;
 		System.out.println("GetFileTypes for Script");
 		Collection msglobs = null;
 		
@@ -646,9 +660,9 @@ public class ConvertMultipleFiles {
 					
 			
 			
-			if (parameter.equalsIgnoreCase("in")){
+			if (parameter.equalsIgnoreCase(inOut)){
 				fileType = pi.getType();
-				System.out.println("Valid types for this script " + fileType);
+				//System.out.println("Valid types for this script " + fileType);
 				
 				try {
 					MIMEType mt = MIMETypeFactory.newInstance().newMimeType(fileType);
@@ -669,7 +683,7 @@ public class ConvertMultipleFiles {
 						StringTokenizer st = new StringTokenizer(mimePattern, ".");
 						st.nextToken();
 						String extension = st.nextToken();
-						System.out.println("File exension is "+ extension);
+						//System.out.println("File exension is "+ extension);
 						alValid.add(extension);
 					}
 				}
@@ -684,6 +698,14 @@ public class ConvertMultipleFiles {
 		return alValid;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * InnerClass that acts as a proxy for the FileList 
 	 * providing content for the Table. It implements the IFileListViewer 
