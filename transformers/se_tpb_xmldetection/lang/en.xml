@@ -455,6 +455,10 @@
 			<name>AI</name>
 			<expansion>Artificial Intelligence</expansion>
 		</key>
+		<key>
+			<name mayEndSentence="no">vs.</name>
+			<expansion>versus</expansion>
+		</key>
 	</abbreviation>
 	<fix before=".*[\s(]|^" after="([,\.\s:;?!)].*)|$">
 		<item key="\d+-\p{L}+" value="num-word"/>
