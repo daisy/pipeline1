@@ -55,7 +55,7 @@ import org.eclipse.swt.widgets.Text;
  *
  */
 public class ConvertMultipleFiles {
-
+	
 	
 	Shell shell;
 	Display display;
@@ -66,13 +66,13 @@ public class ConvertMultipleFiles {
 	IProperties textProperties = new TextProperties();
 	IProperties buttonProperties = new ButtonProperties();
 	IProperties radioButtonProperties = new RadioButtonProperties();
-
+	
 	// Labels
 	Label lblNameConversion;
 	Label lblInputDocument;
 	Label lblOutputDocument;
 	Label lblOnlyCompatibleShown;
-
+	
 	// Buttons
 	Button btnBrowseInput;
 	Button btnBrowseOutput;
@@ -82,7 +82,7 @@ public class ConvertMultipleFiles {
 	Button btnRadio2;
 	Button btnSelect;
 	Button btnUnCheck;
-
+	
 	// TextFields
 	Text txtConversionName;
 	Text txtDirectorySelected;
@@ -90,7 +90,7 @@ public class ConvertMultipleFiles {
 	Text txtOutputDoc;
 	
 	//Tables
-    Table tblCompatibleFiles;
+	Table tblCompatibleFiles;
 	
 	// String
 	String dirSelected ;
@@ -98,7 +98,7 @@ public class ConvertMultipleFiles {
 	String script = "";
 	String strSubfolderOfInputFolder;
 	String strSubfolderOfOutputFolder;
-
+	
 	//Files
 	File fileDirSelected;
 	
@@ -122,7 +122,7 @@ public class ConvertMultipleFiles {
 	CheckboxTableViewer tableFileViewer;
 	
 	String [] columnFileNames = new String [] {"File Name"};
-			
+	
 	
 	public ConvertMultipleFiles(){
 		display= UIManager.display;
@@ -132,304 +132,306 @@ public class ConvertMultipleFiles {
 		shell.pack();
 	}
 	
-			
-	public void createContents(){	
-			
-						
-			shell.setText("Select Files to be Converted");
-			shell.setLocation(100,100);
-			
-			GridLayout layout = new GridLayout();
-			//different gridlayouts with various columns in each
-			layout.numColumns=1;
-			layout.marginTop=10;
-			layout.marginBottom=10;
-			layout.marginRight=10;
-			layout.marginLeft=15;
-			shell.setLayout(layout);
-			
 	
-			
+	public void createContents(){	
+		
+		
+		shell.setText("Select Files to be Converted");
+		shell.setLocation(100,100);
+		
+		GridLayout layout = new GridLayout();
+		//different gridlayouts with various columns in each
+		layout.numColumns=1;
+		layout.marginTop=10;
+		layout.marginBottom=10;
+		layout.marginRight=10;
+		layout.marginLeft=15;
+		shell.setLayout(layout);
+		
+		
+		
 		//Composite top	
-			Composite compConversionChosen = new Composite(shell, SWT.BORDER);
-			data = new GridData(GridData.FILL_HORIZONTAL);
-			compConversionChosen.setLayoutData(data);
-			layout = new GridLayout();
-			layout.horizontalSpacing=8;
-			layout.numColumns=2;
-			layout.marginTop=0;
-			layout.marginBottom=5;
-			layout.marginWidth=7;
-			compConversionChosen.setLayout(layout);
-			
+		Composite compConversionChosen = new Composite(shell, SWT.BORDER);
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		compConversionChosen.setLayoutData(data);
+		layout = new GridLayout();
+		layout.horizontalSpacing=8;
+		layout.numColumns=2;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		compConversionChosen.setLayout(layout);
+		
 		//	Label
-			data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-			data.horizontalSpan=1;
-			lblNameConversion = new Label(compConversionChosen, SWT.NONE);
-			lblNameConversion.setText("Name of Conversion Selected");
-		 	lblNameConversion.setLayoutData(data);
-			
-//			Text area
-		 	data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
-		 	data.widthHint=100;
-		 	data.horizontalSpan=2;
-		 	txtConversionName = new Text(compConversionChosen, SWT.BORDER);
-			textProperties.setProperties(txtConversionName, null);	
-		 	txtConversionName.setLayoutData(data);
-		 	scriptHandler = window.getInstance().getConversionChosen();
-		 	txtConversionName.setText(scriptHandler.getName());
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan=1;
+		lblNameConversion = new Label(compConversionChosen, SWT.NONE);
+		lblNameConversion.setText("Name of Conversion Selected");
+		lblNameConversion.setLayoutData(data);
+		
+//		Text area
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
+		data.widthHint=100;
+		data.horizontalSpan=2;
+		txtConversionName = new Text(compConversionChosen, SWT.BORDER);
+		textProperties.setProperties(txtConversionName, null);	
+		txtConversionName.setLayoutData(data);
+		scriptHandler = window.getInstance().getConversionChosen();
+		txtConversionName.setText(scriptHandler.getName());
 		
 //		
 		//End Conversion stuff
-			 
-				
+		
+		
 		// Composite Input stuff
-			 Composite compInputFields = new Composite(shell, SWT.BORDER);
-			 data = new GridData(GridData.FILL_HORIZONTAL);
-			 compInputFields.setLayoutData(data);
-			 layout = new GridLayout();
-			 layout.horizontalSpacing=8;
-			 layout.numColumns=3;
-			 layout.marginTop=0;
-			 layout.marginBottom=5;
-			 layout.marginWidth=7;
-			 compInputFields.setLayout(layout);
-			 
-			 GridLayout gridLayout = new GridLayout(3, false);
-			 compInputFields.setLayout(gridLayout);
-			
-			  // Label folder to search in
-			 data =data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING); 
-			 lblInputDocument = new Label(compInputFields, SWT.NONE);
-			 lblInputDocument.setText("Select Folder");
-			 data.horizontalSpan=1;
-			 lblInputDocument.setLayoutData(data);
-			 
-			 
-			 // TextField to hold folder chosen
-			 data =data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER); 
-			 txtDirectorySelected = new Text(compInputFields, SWT.BORDER);
-			 textProperties.setProperties(txtDirectorySelected, "");
-			// data = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
-			 data.horizontalSpan=1;
-			 data.widthHint = 400;
-			 txtDirectorySelected.setLayoutData(data);
-			 
-			 
-           // Browse button
-			 data =data = new GridData(GridData.HORIZONTAL_ALIGN_END); 
-			 btnBrowseInput= new Button(compInputFields, SWT.BORDER);
-			 data = new GridData();
-			 data.horizontalSpan=1;
-			 btnBrowseInput.setLayoutData(data);
-			 buttonProperties.setProperties(btnBrowseInput, "Browse");
-			 
-			 this.btnBrowseInput.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						setDirectorySelected();
-						populateCompatibleFilesTable();
-						//determine if output is a file or folder
-						setFileOrDirFlag();
-					}
-				});
+		Composite compInputFields = new Composite(shell, SWT.BORDER);
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		compInputFields.setLayoutData(data);
+		layout = new GridLayout();
+		layout.horizontalSpacing=8;
+		layout.numColumns=3;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		compInputFields.setLayout(layout);
 		
-			//End input stuff
-			 
-			 
+		GridLayout gridLayout = new GridLayout(3, false);
+		compInputFields.setLayout(gridLayout);
+		
+		// Label folder to search in
+		data =data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING); 
+		lblInputDocument = new Label(compInputFields, SWT.NONE);
+		lblInputDocument.setText("Select Folder");
+		data.horizontalSpan=1;
+		lblInputDocument.setLayoutData(data);
+		
+		
+		// TextField to hold folder chosen
+		data =data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER); 
+		txtDirectorySelected = new Text(compInputFields, SWT.BORDER);
+		textProperties.setProperties(txtDirectorySelected, "");
+		// data = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
+		data.horizontalSpan=1;
+		data.widthHint = 400;
+		txtDirectorySelected.setLayoutData(data);
+		
+		
+		// Browse button
+		data =data = new GridData(GridData.HORIZONTAL_ALIGN_END); 
+		btnBrowseInput= new Button(compInputFields, SWT.BORDER);
+		data = new GridData();
+		data.horizontalSpan=1;
+		btnBrowseInput.setLayoutData(data);
+		buttonProperties.setProperties(btnBrowseInput, "Browse");
+		
+		this.btnBrowseInput.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				setDirectorySelected();
+				if (dirSelected!=null){
+					populateCompatibleFilesTable();
+					//determine if output is a file or folder
+					setFileOrDirFlag();
+				}
+			}
+		});
+		
+		//End input stuff
+		
+		
 		//Compatible file table and buttons 
-			 
-			 Composite compFilesTable = new Composite(shell, SWT.BORDER);
-			 data = new GridData(GridData.FILL_HORIZONTAL);
-			 compFilesTable.setLayoutData(data);
-			 layout = new GridLayout();
-			 layout.horizontalSpacing=15;
-			 layout.numColumns=3;
-			 layout.marginTop=0;
-			 layout.marginBottom=5;
-			 layout.marginWidth=7;
-			 compFilesTable.setLayout(layout);
-			 
-			 data= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-			 data.horizontalSpan = 1;
-			 lblOnlyCompatibleShown = new Label(compFilesTable, SWT.NONE);
-			 lblOnlyCompatibleShown.setLayoutData(data);
-			 lblOnlyCompatibleShown.setText("Only Compatible Files Shown");
-			 
-			 data= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-			 data.horizontalSpan = 1;
-			 btnSelect = new Button(compFilesTable, SWT.BORDER);
-			 btnSelect.setLayoutData(data);
-			 btnSelect.setText("Select All");
-			 this.btnSelect.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						tableFileViewer.setAllChecked(true);
-						
-					}
-				});
-			 
-			 
-			 data= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-			 data.horizontalSpan = 1;
-			 btnUnCheck = new Button(compFilesTable, SWT.BORDER);
-			 btnUnCheck.setLayoutData(data);
-			 btnUnCheck.setText("De-Select");
-			 this.btnUnCheck.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						tableFileViewer.setAllChecked(false);
-						
-					}
-				});
-			 
-			 
-			 data = new GridData(GridData.FILL_BOTH);
-			 data.horizontalSpan=3;
-			 data.heightHint=150;
-			 
-			 tblCompatibleFiles= new Table(compFilesTable, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL |SWT.MULTI );
-			 tblCompatibleFiles.setLayoutData(data);
-			 cftp = new CompatibleFilesTableProperties(tblCompatibleFiles);
-			 
-			 createFileTableViewer();
-			 tableFileViewer.setContentProvider(new FileContentProvider());
-			 tableFileViewer.setLabelProvider(new FileLabelProvider()); 
-			 
-			 //set the input data once it is chosen.
-			 
 		
-
+		Composite compFilesTable = new Composite(shell, SWT.BORDER);
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		compFilesTable.setLayoutData(data);
+		layout = new GridLayout();
+		layout.horizontalSpacing=15;
+		layout.numColumns=3;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		compFilesTable.setLayout(layout);
+		
+		data= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 1;
+		lblOnlyCompatibleShown = new Label(compFilesTable, SWT.NONE);
+		lblOnlyCompatibleShown.setLayoutData(data);
+		lblOnlyCompatibleShown.setText("Only Compatible Files Shown");
+		
+		data= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 1;
+		btnSelect = new Button(compFilesTable, SWT.BORDER);
+		btnSelect.setLayoutData(data);
+		btnSelect.setText("Select All");
+		this.btnSelect.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				tableFileViewer.setAllChecked(true);
+				
+			}
+		});
+		
+		
+		data= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 1;
+		btnUnCheck = new Button(compFilesTable, SWT.BORDER);
+		btnUnCheck.setLayoutData(data);
+		btnUnCheck.setText("De-Select");
+		this.btnUnCheck.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				tableFileViewer.setAllChecked(false);
+				
+			}
+		});
+		
+		
+		data = new GridData(GridData.FILL_BOTH);
+		data.horizontalSpan=3;
+		data.heightHint=150;
+		
+		tblCompatibleFiles= new Table(compFilesTable, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL |SWT.MULTI );
+		tblCompatibleFiles.setLayoutData(data);
+		cftp = new CompatibleFilesTableProperties(tblCompatibleFiles);
+		
+		createFileTableViewer();
+		tableFileViewer.setContentProvider(new FileContentProvider());
+		tableFileViewer.setLabelProvider(new FileLabelProvider()); 
+		
+		//set the input data once it is chosen.
+		
+		
+		
 		//end compFilesTable
+		
+		
+//		Composite Output stuff
+		Composite compOutputFields = new Composite(shell, SWT.BORDER);
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		compOutputFields.setLayoutData(data);
+		layout = new GridLayout();
+		layout.horizontalSpacing=8;
+		layout.numColumns=2;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		layout.makeColumnsEqualWidth=false;
+		compOutputFields.setLayout(layout);
+		
+		//	 Label for Output Doc
+		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		data.horizontalSpan=2;
+		lblOutputDocument = new Label(compOutputFields, SWT.NONE);
+		lblOutputDocument.setText("Output Path");
+		lblOutputDocument.setLayoutData(data);
+		
+		
+		//Composite for radio buttons
+		Composite compRadioButtons = new Composite(compOutputFields, SWT.BORDER);
+		layout = new GridLayout();
+		layout.verticalSpacing=7;
+		layout.numColumns=1;
+		compRadioButtons.setLayout(layout);
+		data = new GridData(GridData.VERTICAL_ALIGN_FILL);
+		data.horizontalSpan=2;
+		compRadioButtons.setLayoutData(data);
+		
+		data=new GridData();
+		btnRadio1= new Button(compRadioButtons, SWT.RADIO);
+		btnRadio1.setText("Subfolder of Input Document");
+		//radioButtonProperties.setProperties(btnRadio1, "Subfolder of Input Document");
+		btnRadio1.setLayoutData(data);
+		btnRadio1.setSelection(true);
+		this.btnRadio1.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				btnBrowseOutput.setEnabled(false);
+				setOutputPath();
+			}
+		});
+		
+		
+		data=new GridData();
+		btnRadio2= new Button(compRadioButtons, SWT.RADIO);
+		btnRadio2.setText("Subfolder of Selected Folder");
+		//radioButtonProperties.setProperties(btnRadio2, "Subfolder of Selected Folder");
+		btnRadio2.setLayoutData(data);
+		this.btnRadio2.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				btnBrowseOutput.setEnabled(true);
+				resetOutputPath();
+			}
+		});
+		
+		//Text field
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		data.horizontalSpan=1;
+		data.widthHint=400;
+		txtOutputDoc=new Text(compOutputFields, SWT.BORDER);
+		// textProperties.setProperties(txtOutputDoc, null);
+		txtOutputDoc.setLayoutData(data);
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan=1;
+		btnBrowseOutput = new Button(compOutputFields, SWT.BORDER);
+		btnBrowseOutput.setEnabled(false);
+		btnBrowseOutput.setText("Browse");
+		// buttonProperties.setProperties(btnBrowseOutput, "Browse"); 
+		btnBrowseOutput.setLayoutData(data); 
+		this.btnBrowseOutput.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				setOutputPathSelected();
+			}
+		});
+		
+		
+		
+		
+		
+		
+		// bottom OK and Cancel buttons
+		Composite compOkCancelButtons = new Composite (shell, SWT.NONE);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
+		compOkCancelButtons.setLayoutData(data);
+		layout = new GridLayout();
+		layout.horizontalSpacing=12;
+		layout.numColumns=2;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		compOkCancelButtons.setLayout(layout);
+		
+		
+		data=new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
+		btnOK = new Button(compOkCancelButtons, SWT.BORDER);
+		buttonProperties.setProperties(btnOK, "OK");
+		btnOK.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				sendJobInfoToMain();
+				
+			}
+		});
+		
+		data=new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
+		btnCancel= new Button(compOkCancelButtons, SWT.BORDER);
+		buttonProperties.setProperties(btnCancel, "Cancel");
+		btnCancel.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				dispose();
+			}
+		});
+		
+		
+		shell.pack();
+	}	
 	
-		
-//			 Composite Output stuff
-			 Composite compOutputFields = new Composite(shell, SWT.BORDER);
-			 data = new GridData(GridData.FILL_HORIZONTAL);
-			 compOutputFields.setLayoutData(data);
-			 layout = new GridLayout();
-			 layout.horizontalSpacing=8;
-			 layout.numColumns=2;
-			 layout.marginTop=0;
-			 layout.marginBottom=5;
-			 layout.marginWidth=7;
-			 layout.makeColumnsEqualWidth=false;
-			 compOutputFields.setLayout(layout);
-			 
-	//	 Label for Output Doc
-			 data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-			 data.horizontalSpan=2;
-			 lblOutputDocument = new Label(compOutputFields, SWT.NONE);
-			 lblOutputDocument.setText("Output Path");
-			 lblOutputDocument.setLayoutData(data);
-
-			 
-	 //Composite for radio buttons
-			 Composite compRadioButtons = new Composite(compOutputFields, SWT.BORDER);
-			 layout = new GridLayout();
-			 layout.verticalSpacing=7;
-			 layout.numColumns=1;
-			 compRadioButtons.setLayout(layout);
-			 data = new GridData(GridData.VERTICAL_ALIGN_FILL);
-			 data.horizontalSpan=2;
-			 compRadioButtons.setLayoutData(data);
-			 
-			 data=new GridData();
-			 btnRadio1= new Button(compRadioButtons, SWT.RADIO);
-			 btnRadio1.setText("Subfolder of Input Document");
-			 //radioButtonProperties.setProperties(btnRadio1, "Subfolder of Input Document");
-			 btnRadio1.setLayoutData(data);
-			 btnRadio1.setSelection(true);
-			 this.btnRadio1.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						btnBrowseOutput.setEnabled(false);
-						setOutputPath();
-					}
-				});
-			
-			 
-			 data=new GridData();
-			 btnRadio2= new Button(compRadioButtons, SWT.RADIO);
-			 btnRadio2.setText("Subfolder of Selected Folder");
-			 //radioButtonProperties.setProperties(btnRadio2, "Subfolder of Selected Folder");
-			 btnRadio2.setLayoutData(data);
-			 this.btnRadio2.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						btnBrowseOutput.setEnabled(true);
-						resetOutputPath();
-					}
-				});
-			 
-			 //Text field
-			 data = new GridData(GridData.FILL_HORIZONTAL);
-			 data.horizontalSpan=1;
-			 data.widthHint=400;
-			 txtOutputDoc=new Text(compOutputFields, SWT.BORDER);
-			// textProperties.setProperties(txtOutputDoc, null);
-			 txtOutputDoc.setLayoutData(data);
-			 
-			 data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-			 data.horizontalSpan=1;
-			 btnBrowseOutput = new Button(compOutputFields, SWT.BORDER);
-			 btnBrowseOutput.setEnabled(false);
-			 btnBrowseOutput.setText("Browse");
-			// buttonProperties.setProperties(btnBrowseOutput, "Browse"); 
-			 btnBrowseOutput.setLayoutData(data); 
-			 this.btnBrowseOutput.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						setOutputPathSelected();
-					}
-				});
-			 
-			 
-			 
-
-		
-			 
-	// bottom OK and Cancel buttons
-			 Composite compOkCancelButtons = new Composite (shell, SWT.NONE);
-			 data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
-			 compOkCancelButtons.setLayoutData(data);
-			 layout = new GridLayout();
-			 layout.horizontalSpacing=12;
-			 layout.numColumns=2;
-			 layout.marginTop=0;
-			 layout.marginBottom=5;
-			 layout.marginWidth=7;
-			 compOkCancelButtons.setLayout(layout);
-			 
-			 
-			 data=new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
-			 btnOK = new Button(compOkCancelButtons, SWT.BORDER);
-			 buttonProperties.setProperties(btnOK, "OK");
-			 btnOK.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						sendJobInfoToMain();
-						
-					}
-				});
-			 
-			 data=new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
-			 btnCancel= new Button(compOkCancelButtons, SWT.BORDER);
-			 buttonProperties.setProperties(btnCancel, "Cancel");
-			 btnCancel.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						dispose();
-					}
-				});
-			 
-		
-			 shell.pack();
-		}	
-
 	
 	
 	
 	public void open() {
 		shell.open();
-
+		
 		while (!shell.isDisposed())
 			if (!UIManager.display.readAndDispatch())
 				UIManager.display.sleep();
 	}
-
+	
 	public void dispose() {
 		shell.dispose();
 	}
@@ -443,7 +445,7 @@ public class ConvertMultipleFiles {
 	}
 	
 	
-
+	
 	
 	//calls from listeners
 	/**
@@ -481,31 +483,31 @@ public class ConvertMultipleFiles {
 		Object [] checkedObject = tableFileViewer.getCheckedElements();
 		int count = checkedObject.length;
 		System.out.println("No of files selected " + count);
-
-	
+		
+		
 		
 		if (tblCompatibleFiles.getItemCount()==0 
 				|| txtOutputDoc.getText().equalsIgnoreCase("")
 				|| txtOutputDoc == null) {
-
+			
 			// display an error message and return.
 			
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
 					SWT.CANCEL);
-					messageBox.setMessage("Compatible Files Table and Output paths must be completed");
-					messageBox.setText("Error:  Complete Fields");
-					messageBox.open();			
+			messageBox.setMessage("Compatible Files Table and Output paths must be completed");
+			messageBox.setText("Error:  Complete Fields");
+			messageBox.open();			
 		}
 		
 		//else if(al.isEmpty()){
 		else if(count<=0){
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
 					SWT.CANCEL);
-					messageBox.setMessage("Please check files to be converted.");
-					messageBox.setText("Error:  Choose Compatible Files");
-					messageBox.open();
+			messageBox.setMessage("Please check files to be converted.");
+			messageBox.setText("Error:  Choose Compatible Files");
+			messageBox.open();
 		}
-	
+		
 		else {
 			//all use the same conversion
 			//Create all job objects from each input file chosen
@@ -518,45 +520,49 @@ public class ConvertMultipleFiles {
 			for(int i = 0; i<count;i++){
 				Job job = new Job();
 				
-			//	TableItem ti = (TableItem) it.next();
-			//	job.setInputFile(new File (ti.getText()));
+				//	TableItem ti = (TableItem) it.next();
+				//	job.setInputFile(new File (ti.getText()));
 				
 				job.setInputFile((File)checkedObject[i]);
 				job.setOutputFile(new File(outputPath));
 				job.setScript(scriptHandler);
 				job.setStatus(Status.WAITING);
 				Window.getInstance().addToQueue(job);
-			
+				
 			}
 			
 			
 			al.clear();
 			dispose();
 		}
- }
+	}
 	
 	/**
-	 * 
+	 * Sets directory selected.
+	 * Later, the dir is recursively trasversed for all
+	 * compatible files.  
 	 *
 	 */
 	public void setDirectorySelected() {
+		
+		File[] roots = File.listRoots();
+		int size = roots.length;
+		for (int i = 0; i<size;i++){
+			System.out.println("FileSystem roots are " + roots[i].getName());
+		}
 		
 		DirectoryDialog directoryDialog = new DirectoryDialog(shell);
 		directoryDialog.setText("Choose a directory");
 		directoryDialog.setFilterPath("/");
 		dirSelected = directoryDialog.open();
-		if (dirSelected==null){
-			System.out.println("dirSelected is Null");
+		
+		
+		if (dirSelected.equalsIgnoreCase("c\\")){
+			System.out.println("Oops, this won't work.");
+			dirSelected=null;
+			
 		}
-		/*
-		else if (dirSelected.equalsIgnoreCase("c:\\")){
-			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-					SWT.CANCEL);
-					messageBox.setMessage("Choose a subfolder of C:\\");
-					messageBox.setText("Error:  Be More Selective");
-					messageBox.open();	
-		}
-	*/	
+		
 		else{
 			System.out.println("Directory Selected  " + dirSelected);
 			txtDirectorySelected.setText(dirSelected);
@@ -577,6 +583,7 @@ public class ConvertMultipleFiles {
 			
 		}
 		
+		
 	}
 	
 	
@@ -584,9 +591,9 @@ public class ConvertMultipleFiles {
 		if (strSubfolderOfInputFolder==null){
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
 					SWT.CANCEL);
-					messageBox.setMessage("Sorry, First select an input folder.");
-					messageBox.setText("Error:  Select Input Folder");
-					messageBox.open();	
+			messageBox.setMessage("Sorry, First select an input folder.");
+			messageBox.setText("Error:  Select Input Folder");
+			messageBox.open();	
 		}
 		else{
 			txtOutputDoc.setText(strSubfolderOfInputFolder);
@@ -640,12 +647,12 @@ public class ConvertMultipleFiles {
 		
 		//container to hold all the file types valid for script
 		ArrayList alValid = new ArrayList();
-					
+		
 		//get the file types for the scripts
 		String fileType = null;
 		List list= this.scriptHandler.getTransformerInfoList();
-	
-		 // get info on first transformer, change to list.get(list.size() - 1) for the last transformer
+		
+		// get info on first transformer, change to list.get(list.size() - 1) for the last transformer
 		//no, can only take the file in first transformer in the script list...
 		TransformerInfo tinfo = (TransformerInfo)list.get(0);
 		
@@ -657,7 +664,7 @@ public class ConvertMultipleFiles {
 		while(it.hasNext()){
 			ParameterInfo pi =(ParameterInfo)it.next();
 			String parameter = pi.getDirection();
-					
+			
 			
 			
 			if (parameter.equalsIgnoreCase(inOut)){
@@ -697,7 +704,7 @@ public class ConvertMultipleFiles {
 		}
 		return alValid;
 	}
-
+	
 	
 	
 	
@@ -717,20 +724,20 @@ public class ConvertMultipleFiles {
 		public void inputChanged(Viewer v, Object oldInput, Object newInput){
 			//nothing is changing
 		}		
-
+		
 		public void dispose() {
 		}
-
+		
 		// Return the file array as an array of Objects
 		public Object[] getElements(Object parent) {
 			return alTableContents.toArray();
 		}
-
+		
 		
 	}
 	
 	
-
+	
 	public ArrayList getArrayListTableContents(){
 		return this.alTableContents;
 	}

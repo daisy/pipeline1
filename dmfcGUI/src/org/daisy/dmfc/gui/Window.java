@@ -226,7 +226,6 @@ public class Window {
 		executing=false;
 		createContents();
 		shell.pack();
-		
 	}
 	
 	
@@ -731,14 +730,14 @@ public class Window {
 	 * @param job Job
 	 */
 	public void addToQueue(Job job){
-		
 		cue.addJobToQueue(job);	
-		tableJobViewer.refresh();
-		
+		tableJobViewer.refresh();	
 	}
 	
-	
-	
+	/**
+	 * terminates the job? Transformer?
+	 *
+	 */
 	public void terminateJob(){
 		lil.setAborted(true);
 		String originator = lel.getMessageOriginator();
@@ -772,8 +771,7 @@ public class Window {
 		}
 		
 		String curDir = System.getProperty("user.dir");
-		System.out.println("the current user dir is: "+ curDir);
-		
+		//System.out.println("the current user dir is: "+ curDir);
 		File newScriptDir = new File(curDir+ File.separator + "scripts");
 		
 		this.scriptDirectory=newScriptDir;
@@ -971,6 +969,7 @@ public class Window {
 	
 	public void setRunTerminateButtons(){
 		this.btnTerminate.setEnabled(true);
+		this.btnStart.setEnabled(true);
 		this.btnRun.setEnabled(false);
 		
 	}
@@ -1265,6 +1264,10 @@ public class Window {
 				//enable and disable buttons
 				setRunTerminateButtons();
 				execute();	
+				pb.setSelection(lel.getProgress() * 100);
+				txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
+				txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
+				
 			}
 		});
 		
@@ -1285,7 +1288,8 @@ public class Window {
 		Iterator it = jobList.iterator();
 		while(it.hasNext()){
 			
-//			increment the progress bar and time remaining			
+//			increment the progress bar and time remaining	
+			//How to get the times progressively?
 			pb.setSelection(lel.getProgress() * 100);
 			txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
 			txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
@@ -1312,7 +1316,6 @@ public class Window {
 			//actually, this only returns if the parameters are present in the script...
 			scriptHandler.setProperty("input", job.getInputFile().getPath());
 			scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
-			
 			
 			
 			try{	

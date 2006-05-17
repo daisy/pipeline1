@@ -51,7 +51,7 @@ public class CompatibleFilesTableProperties {
 		try {
 			
 			 eFolder = new EFolder(this.dirSelected.getPath());
-			 System.out.println("eFolder has folder children " + eFolder.hasFolderChildren());
+			 //System.out.println("eFolder has folder children " + eFolder.hasFolderChildren());
 			 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -69,7 +69,7 @@ public class CompatibleFilesTableProperties {
 					EFile eFile = new EFile(compareFile.getPath());
 					strEnd = eFile.getExtension();
 					//System.out.println("the filename is " + compareFile.getName());
-					System.out.println("    the string extension is: " + strEnd);
+				//	System.out.println("    the string extension is: " + strEnd);
 					
 //					compare them to the mimetype pattern(s) and 
 					//only place compatible types in the array
@@ -101,7 +101,7 @@ public class CompatibleFilesTableProperties {
 			String strExtension="";
 			while (itFolders.hasNext()){
 				File folderFile = (File)itFolders.next();
-				System.out.println("Names of all folders : " + folderFile.getPath());
+				//System.out.println("Names of all folders : " + folderFile.getPath());
 				
 				//get all files in this folder
 				File [] arFiles = folderFile.listFiles();
@@ -112,7 +112,7 @@ public class CompatibleFilesTableProperties {
 					EFile eFile = new EFile(compareFile.getPath());
 					strExtension = eFile.getExtension();
 					//System.out.println("the filename is " + compareFile.getName());
-					System.out.println("    the string extension is: " + strExtension);
+				//	System.out.println("    the string extension is: " + strExtension);
 					
 //					compare them to the mimetype pattern(s) and 
 					//only place compatible types in the array
@@ -137,7 +137,7 @@ public class CompatibleFilesTableProperties {
 			}
 		}
 		int size = alCompatibleFiles.size();
-		System.out.println("How many compatible files in the array?" + size);
+		//System.out.println("How many compatible files in the array?" + size);
 		return alCompatibleFiles;
 	}
 	
