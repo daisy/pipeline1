@@ -150,7 +150,7 @@ public class ScriptHandler extends EventSender {
 						MIMETypeRegistry registry = MIMETypeRegistry.getInstance();
 						MIMEType typeId = registry.getEntryByName(typeOfId);
 						MIMEType typeRef = registry.getEntryByName(typeOfRef);
-						if (typeId.isEqualOrAlias(typeRef)) {
+						if (!typeId.isEqualOrAlias(typeRef)) {
 						//if (!mime.matches(typeOfId, typeOfRef)) {
 						    Object[] args = {parameter.getRef(), typeOfId, handlerWithID.getName(), typeOfRef, handler.getName()};
 						    throw new ScriptException(i18n("MIME_TYPE_MISMATCH", args));
