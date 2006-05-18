@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Level;
 
 import org.daisy.dmfc.core.EventSender;
@@ -16,6 +17,7 @@ import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.Prompt;
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.util.execution.AbortListener;
 
 /**
  * Base class for all Transformers. Every Transformer extending this base class
@@ -34,6 +36,7 @@ public abstract class Transformer extends EventSender {
     private long startTime = 0;
 	
 	private File transformerDirectory = null;
+	private Vector abortListeners = new Vector();
 	
 	/**
 	 * Creates a new Transformer.
@@ -118,9 +121,37 @@ public abstract class Transformer extends EventSender {
 	
 	final protected void checkAbort() throws TransformerAbortException {
 	    if (inputListener.isAborted()) {
+	    	for (int i = abortListeners.size() - 1; i >= 0; i--) {
+	    		AbortListener abort = (AbortListener) abortListeners.get(i);
+	    		abort.abortEvent();
+	    	}
 	        abortEvent();
 	        throw new TransformerAbortException(messageOriginator + " aborted.");
 	    }
+	}
+	
+	
+	/**
+	 * Adds an <code>AbortListener</code> to the set of listeners for this transformer, 
+	 * provided that it is not the same as some listener already in the set. 
+	 * The abort events will be delivered in a LIFO order, i e 
+	 * the first listener to be added will be notified last, and vice versa.
+	 * 
+	 * @param listener a listener to be added.
+	 */
+	public void addAbortListener(AbortListener listener) {
+		if (!abortListeners.contains(listener)) {
+			abortListeners.add(listener);
+		}
+	}
+	
+	
+	/**
+	 * Removes an abort listener from the set of abort listeners of this transformer. 
+	 * @param listener a listener to be removed.
+	 */
+	public void removeAbortListener(AbortListener listener) {
+		abortListeners.remove(listener);
 	}
 	
 	/**
