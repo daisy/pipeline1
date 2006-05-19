@@ -531,7 +531,7 @@ public class ConvertSingleFile extends Composite {
 			String parameter = pi.getDirection();
 			
 			
-			if (parameter.equalsIgnoreCase(inOrOut)){
+			if (parameter !=null && parameter.equalsIgnoreCase(inOrOut)){
 				fileType = pi.getType();
 				System.out.println("Valid types for this script " + fileType);
 				

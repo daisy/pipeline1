@@ -761,7 +761,7 @@ public class ConvertMultipleFiles {
 			
 			
 			
-			if (parameter.equalsIgnoreCase(inOut)){
+			if (parameter !=null &&parameter.equalsIgnoreCase(inOut)){
 				fileType = pi.getType();
 				System.out.println("Valid types for this script " + inOut + " "+ fileType);
 				

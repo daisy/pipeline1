@@ -1286,10 +1286,7 @@ public class Window {
 				
 				//enable and disable buttons
 				setRunTerminateButtons();
-				execute();	
-				pb.setSelection(lel.getProgress() * 100);
-				txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
-				txtEstimatedTime.setText(String.valueOf(lel.getTotalTime())); 
+				execute();		
 				
 	//		}
 	//	});
@@ -1347,6 +1344,11 @@ public class Window {
 					try{	
 						//after the script handler is finished executing, set job to finished.
 						scriptHandler.execute();
+						
+						pb.setSelection(lel.getProgress() * 100);
+						txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
+						txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
+						
 						int transNumber = job.getScript().getCurrentTaskIndex();
 						//System.out.println("what is the current task index? " + transNumber);
 						count++;
