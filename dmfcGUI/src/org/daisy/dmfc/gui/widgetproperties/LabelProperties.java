@@ -1,7 +1,6 @@
 package org.daisy.dmfc.gui.widgetproperties;
 
-import org.daisy.dmfc.gui.UIManager;
-import org.eclipse.swt.graphics.Color;
+
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
