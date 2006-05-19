@@ -118,6 +118,7 @@ public class Window {
 	Button btnTerminate;
 	Button btnStart;
 	Button btnRemoveFinishedJobs;
+	Button btnViewDetails;
 	
 	
 	
@@ -282,7 +283,7 @@ public class Window {
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan=2;
 		this.lblSelectConversion = new Label(compSelectConversion, SWT.NONE);
-		this.lblSelectConversion.setText("Select A Conversion");
+		this.lblSelectConversion.setText("Select Conversion Process");
 		this.lblSelectConversion.setFont(FontChoices.fontLabel);
 		lblSelectConversion.setLayoutData(data);
 		
@@ -436,13 +437,13 @@ public class Window {
 		
 		
 		
-//	Buttons, move up, down, delete, edit
+//		Buttons, move up, down, delete, edit
 		
 		data = new GridData();
 		data.horizontalSpan=1;
 		this.btnMoveUp = new Button (compJobsInQueue, SWT.SHADOW_OUT);
 		btnMoveUp.setLayoutData(data);
-		buttonProperties.setProperties(btnMoveUp, "Move Up List");
+		buttonProperties.setProperties(btnMoveUp, "Move Job Up");
 		this.btnMoveUp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				moveJobUp();
@@ -454,7 +455,7 @@ public class Window {
 		data.horizontalSpan=1;
 		this.btnMoveDown = new Button (compJobsInQueue, SWT.SHADOW_OUT);
 		this.btnMoveDown.setLayoutData(data);
-		buttonProperties.setProperties(btnMoveDown, "Move Down List");
+		buttonProperties.setProperties(btnMoveDown, "Move Job Down");
 		this.btnMoveDown.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				moveJobDown();
@@ -487,7 +488,7 @@ public class Window {
 		
 		
 		//*****************************************************************
-		//Third Composite.  Includes, Run, Terminate, and Start over Buttons
+		//Third Composite.  Includes, Run, View Details, Terminate, and Start over Buttons
 		//******************************************************************
 		
 		
@@ -496,7 +497,7 @@ public class Window {
 		bottomComp.setLayoutData(data);
 		layout = new GridLayout();
 		layout.horizontalSpacing=8;
-		layout.numColumns=4;
+		layout.numColumns=5;
 		layout.marginTop=0;
 		layout.marginBottom=5;
 		layout.marginWidth=7;
@@ -521,6 +522,20 @@ public class Window {
 				else{
 					start();
 				}
+			}
+		});
+		
+		
+		data= new GridData (GridData.HORIZONTAL_ALIGN_FILL);
+		data.horizontalSpan=1;
+		this.btnViewDetails = new Button(bottomComp, SWT.SHADOW_OUT);
+		this.btnViewDetails.setText("View Run Details");
+		this.btnViewDetails.setEnabled(false);
+		this.btnViewDetails.setLayoutData(data);
+		this.btnViewDetails.setEnabled(false);
+		this.btnViewDetails.addSelectionListener(new SelectionAdapter(){
+			public void widgetSelected(SelectionEvent e){
+				viewRunDetails();
 			}
 		});
 		
@@ -556,7 +571,7 @@ public class Window {
 		data.horizontalSpan=1;
 		this.btnRemoveFinishedJobs = new Button(bottomComp, SWT.SHADOW_OUT);
 		this.btnRemoveFinishedJobs.setText("Remove Finished Jobs");
-		this.btnRemoveFinishedJobs.setEnabled(false);
+		this.btnRemoveFinishedJobs.setEnabled(true);
 		this.btnRemoveFinishedJobs.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected (SelectionEvent e){
 				removeCompletedJobs();
@@ -595,7 +610,7 @@ public class Window {
 		compDetails= new Composite(compBigRight, SWT.BORDER);
 		data = new GridData(GridData.FILL_BOTH);
 		compDetails.setLayoutData(data);
-		compDetails.setVisible(true);
+		compDetails.setVisible(false);
 		layout = new GridLayout();
 		layout.horizontalSpacing=8;
 		layout.numColumns=2;
@@ -792,32 +807,27 @@ public class Window {
 		
 		File [] arrayFiles= null;
 		
-		System.out.println("is scriptdir set? " + scriptDirectory.getPath());
-		
+		//System.out.println("is scriptdir set? " + scriptDirectory.getPath());
 		
 		if (scriptDirectory.isDirectory()){
 			//Find list of files in directory
 			arrayFiles = scriptDirectory.listFiles();
 		}
-		
-		
 		//for each directory, again list files.
 		//create a scripthandler object from file (not directory)
 		//add to the script handler hashmap
 		
-		
 		for (int i = 0; i<arrayFiles.length; i++){
 			File categoryDir = (File)arrayFiles[i];
-			System.out.println("Name of category " + categoryDir.getName());
+			//System.out.println("Name of category " + categoryDir.getName());
 			
 			if (categoryDir.isDirectory()){
 				File []arCatFiles = categoryDir.listFiles();
 				
-				
 				//create script handlers for each file in subdirectory
 				for (int j = 0; j<arCatFiles.length; j++){
 					File toSH = (File)arCatFiles[j];
-					System.out.println("     Name of file in category " + toSH.getName());
+					//System.out.println("     Name of file in category " + toSH.getName());
 					
 					try{
 						
@@ -843,14 +853,17 @@ public class Window {
 				}
 			}
 		}	
-		
 	}
 	
 	
-	
-	
-	
-	
+	public void viewRunDetails(){
+		UIManager.display.asyncExec(new Runnable(){
+			public void run(){
+				compDetails.setVisible(true);
+			}
+		});
+		compDetails.setVisible(true);
+	}
 	
 	/**
 	 * called by Start Over button to restart converter
@@ -870,7 +883,7 @@ public class Window {
 		this.addMultipleFiles.setEnabled(false);
 		this.btnTerminate.setEnabled(false);
 		this.btnRun.setEnabled(true);
-		this.btnRemoveFinishedJobs.setEnabled(false);
+		//this.btnRemoveFinishedJobs.setEnabled(false);
 	}
 	
 	/**
@@ -889,6 +902,7 @@ public class Window {
 			}
 		}
 		tableJobViewer.refresh();
+		btnRun.setEnabled(true);
 	}
 	
 	
@@ -959,17 +973,18 @@ public class Window {
 		convertSingleFile.open();
 	}
 	
+	//*****************************************
+	
 	
 	public Tree getTreeFromTreeViewer(){
 		return this.tv.getTree();
 	}
 	
 	
-	
-	
 	public void setRunTerminateButtons(){
 		this.btnTerminate.setEnabled(true);
 		this.btnStart.setEnabled(true);
+		this.btnViewDetails.setEnabled(true);
 		this.btnRun.setEnabled(false);
 		
 	}
@@ -1258,18 +1273,18 @@ public class Window {
 		//place long running methods in a Thread..
 		//place all methods not in event loop in own thread
 		
-		UIManager.display.asyncExec(new Runnable(){
-			public void run(){
+	//	UIManager.display.asyncExec(new Runnable(){
+	//		public void run(){
 				
 				//enable and disable buttons
 				setRunTerminateButtons();
 				execute();	
 				pb.setSelection(lel.getProgress() * 100);
 				txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
-				txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
+				txtEstimatedTime.setText(String.valueOf(lel.getTotalTime())); 
 				
-			}
-		});
+	//		}
+	//	});
 		
 	}
 	
@@ -1294,14 +1309,14 @@ public class Window {
 			txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
 			txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
 			
-			System.out.println("lel.getProgress()" + lel.getProgress() * 100);
-			System.out.println("lel.getTimeLeft()" + lel.getTimeLeft());
-			System.out.println("lel.getTotalTime()" + lel.getTotalTime());
-			System.out.println("getTransformerRunning() " + lel.getTransformerRunning());
-			System.out.println("type" + lel.getType());	
+			//System.out.println("lel.getProgress()" + lel.getProgress() * 100);
+			//System.out.println("lel.getTimeLeft()" + lel.getTimeLeft());
+			//System.out.println("lel.getTotalTime()" + lel.getTotalTime());
+			//System.out.println("getTransformerRunning() " + lel.getTransformerRunning());
+			//System.out.println("type" + lel.getType());	
 			
 			//get the Job from the Queue
-			Job job = (Job)it.next();
+			final Job job = (Job)it.next();
 			
 			//set the name of the conversion running
 			txtConversionRunning.setText(job.getScript().getName());
@@ -1318,34 +1333,52 @@ public class Window {
 			scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
 			
 			
-			try{	
-				//after the script handler is finished executing, set job to finished.
-				scriptHandler.execute();
-				int transNumber = job.getScript().getCurrentTaskIndex();
-				//System.out.println("what is the current task index? " + transNumber);
-				count++;
-				tableViewer.getTable().getItem(job.getScript().getCurrentTaskIndex()).setChecked(true);
-				
-//				finally, reset the status in the jobs table
-//				after the script has finished..
-				job.setStatus(Status.COMPLETED);
-				tableJobViewer.refresh();	
-				
-			}
-			catch(ScriptException se){
-				//if the script is not valid
-				//set the script in the first table to status failed.
-				job.setStatus(Status.FAILED);
-				tableJobViewer.refresh();
-				//show message to the user
-				MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-						SWT.CANCEL);
-				messageBox.setMessage(se.getMessage() + "\n Please copy the above message \n " +
-				"the conversion details and \n give to your system administrator.");
-				messageBox.setText("Error:  Script Exception");
-				messageBox.open();	
-				
-			}
+			UIManager.display.asyncExec(new Runnable(){
+				public void run(){
+					int count = -1;
+					try{	
+						//after the script handler is finished executing, set job to finished.
+						scriptHandler.execute();
+						int transNumber = job.getScript().getCurrentTaskIndex();
+						//System.out.println("what is the current task index? " + transNumber);
+						count++;
+						tableViewer.getTable().getItem(job.getScript().getCurrentTaskIndex()).setChecked(true);
+						
+//						finally, reset the status in the jobs table
+//						after the script has finished..
+						job.setStatus(Status.COMPLETED);
+						tableJobViewer.refresh();	
+						
+					}
+					catch(ScriptException se){
+						//if the script is not valid
+						//set the script in the first table to status failed.
+						job.setStatus(Status.FAILED);
+						tableJobViewer.refresh();
+						//show message to the user
+						MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+								SWT.CANCEL);
+						messageBox.setMessage(se.getMessage() + "\n Please copy the above message \n " +
+						"the conversion details and \n give to your system administrator.");
+						messageBox.setText("Error:  Script Exception");
+						messageBox.open();	
+						
+					}
+					catch(Exception e){
+						//any other possible exceptions? This is not too informative.
+						job.setStatus(Status.FAILED);
+						tableJobViewer.refresh();
+						MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+								SWT.CANCEL);
+						messageBox.setMessage(e.getMessage() + "\n Please copy the above message \n " +
+						" and give to your system administrator.");
+						messageBox.setText("Error");
+						messageBox.open();
+					}
+					
+				}
+			});
+			
 		}
 		this.executing=false;
 		this.btnRemoveFinishedJobs.setEnabled(true);

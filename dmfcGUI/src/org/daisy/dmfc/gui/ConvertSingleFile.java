@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Text;
  *
  */
 public class ConvertSingleFile extends Composite {
-
+	
 	Shell shell;
 	Window window;
 	FormAttachmentsHelper fah = new FormAttachmentsHelper();
@@ -76,10 +76,12 @@ public class ConvertSingleFile extends Composite {
 	String fileSelected;
 	String outputPath;
 	String script;
+	String outExtensionPattern;
 	
 	//boolean - is this an edit or a single file selection?
 	//defaults to editFile, false.
 	boolean editFile = false;
+	boolean boolOutputIsDir = false;
 	
 	//ArrayList of Jobs
 	ArrayList alJobs = new ArrayList();
@@ -121,11 +123,11 @@ public class ConvertSingleFile extends Composite {
 		
 		
 		
-    //3 composites with borders for accessibility
+		//3 composites with borders for accessibility
 		
-
 		
-	//Composite conversion stuff	
+		
+		//Composite conversion stuff	
 		Composite compConversionChosen = new Composite(shell, SWT.BORDER);
 		//compConversionChosen.setBackground(ColorChoices.white);
 		data = new GridData(GridData.FILL_HORIZONTAL);
@@ -137,163 +139,164 @@ public class ConvertSingleFile extends Composite {
 		layout.marginBottom=5;
 		layout.marginWidth=7;
 		compConversionChosen.setLayout(layout);
-	
+		
 		
 		
 //		Label
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		lblNameConversion = new Label(compConversionChosen, SWT.NONE);
 		lblNameConversion.setText("Name of Conversion Selected");
-	 	lblNameConversion.setLayoutData(data);
+		lblNameConversion.setLayoutData(data);
 		
 //		Text area
-	 	data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
-	 	data.widthHint=100;
-	 	txtConversionName = new Text(compConversionChosen, SWT.BORDER);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
+		data.widthHint=100;
+		txtConversionName = new Text(compConversionChosen, SWT.BORDER);
 		textProperties.setProperties(txtConversionName, null);	
-	 	txtConversionName.setLayoutData(data);
-	 	scriptHandler = window.getInstance().getConversionChosen();
-	 	txtConversionName.setText(scriptHandler.getName());
-	 	
+		txtConversionName.setLayoutData(data);
+		scriptHandler = window.getInstance().getConversionChosen();
+		txtConversionName.setText(scriptHandler.getName());
+		
 //		
 		
-	//End ScriptHandler stuff
-		 
-		 
-	
+		//End ScriptHandler stuff
 		
-		 
 		
-	//Input stuff
-		 Composite compInputFields = new Composite(shell, SWT.BORDER);
-		 data = new GridData(GridData.FILL_HORIZONTAL);
-		 compInputFields.setLayoutData(data);
-		 layout = new GridLayout();
-		 layout.horizontalSpacing=8;
-		 layout.numColumns=2;
-		 layout.marginTop=0;
-		 layout.marginBottom=5;
-		 layout.marginWidth=7;
-		 compInputFields.setLayout(layout);
-		 
-			
-//	Label for input Doc
-		 data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		 data.horizontalSpan=2;
-		 lblInputDocument = new Label(compInputFields, SWT.NONE);
-		 labelProperties.setProperties(lblInputDocument, "File to Convert");
-		 lblInputDocument.setLayoutData(data);
-		 
-//	Text Field, input choice
-		 data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		 data.widthHint=200;
-		 txtInputDoc = new Text(compInputFields, SWT.BORDER);
-		 textProperties.setProperties(txtInputDoc, null);
-		 txtInputDoc.setLayoutData(data);
-		 
-//	Browse button
+		
+		
+		
+		
+		//Input stuff
+		Composite compInputFields = new Composite(shell, SWT.BORDER);
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		compInputFields.setLayoutData(data);
+		layout = new GridLayout();
+		layout.horizontalSpacing=8;
+		layout.numColumns=2;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		compInputFields.setLayout(layout);
+		
+		
+//		Label for input Doc
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		 btnBrowseInput= new Button(compInputFields, SWT.BORDER);
-		 buttonProperties.setProperties(btnBrowseInput, "Browse");
-		 btnBrowseInput.setLayoutData(data);
-		 this.btnBrowseInput.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					setFileSelected();
-				}
-			});
-		 
-	
- 
-		 //Composite output
-		 
-		 Composite compOutputFields = new Composite(shell, SWT.BORDER);
-		 data = new GridData(GridData.FILL_HORIZONTAL);
-		 compOutputFields.setLayoutData(data);
-		 layout = new GridLayout();
-		 layout.horizontalSpacing=8;
-		 layout.numColumns=2;
-		 layout.marginTop=0;
-		 layout.marginBottom=5;
-		 layout.marginWidth=7;
-		 compOutputFields.setLayout(layout);
+		data.horizontalSpan=2;
+		lblInputDocument = new Label(compInputFields, SWT.NONE);
+		labelProperties.setProperties(lblInputDocument, "File to Convert");
+		lblInputDocument.setLayoutData(data);
+		
+//		Text Field, input choice
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.widthHint=200;
+		txtInputDoc = new Text(compInputFields, SWT.BORDER);
+		textProperties.setProperties(txtInputDoc, null);
+		txtInputDoc.setLayoutData(data);
+		
+//		Browse button
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		btnBrowseInput= new Button(compInputFields, SWT.BORDER);
+		buttonProperties.setProperties(btnBrowseInput, "Browse");
+		btnBrowseInput.setLayoutData(data);
+		this.btnBrowseInput.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				setFileSelected();
+				setFileOrDirFlag();
+			}
+		});
 		
 		
-//			Label for Output Doc
-		 lblOutputDocument = new Label(compOutputFields, SWT.NONE);
-		 lblOutputDocument.setText("Output File");
-		 data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		 data.horizontalSpan=2;
-		 lblOutputDocument.setLayoutData(data);
-		 
-		 //Text field
-		 data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		 data.widthHint=200;
-		 txtOutputDoc=new Text(compOutputFields, SWT.BORDER);
-		 textProperties.setProperties(txtOutputDoc, null);
-		 txtOutputDoc.setLayoutData(data);
-		 
-		 
-		 //Browse Button
-		 data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		 btnBrowseOutput = new Button(compOutputFields, SWT.BORDER);
-		 buttonProperties.setProperties(btnBrowseOutput, "Browse");
-		 btnBrowseInput.setLayoutData(data);
-		 this.btnBrowseOutput.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					setOutputPathSelected();
-				}
-			});
-		 
-		 
-	
-		 
-		 //bottom OK and Cancel buttons
-		 Composite compOkCancelButtons = new Composite (shell, SWT.NONE);
-		 data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
-		 compOkCancelButtons.setLayoutData(data);
-		 layout = new GridLayout();
-		 layout.horizontalSpacing=12;
-		 layout.numColumns=2;
-		 layout.marginTop=0;
-		 layout.marginBottom=5;
-		 layout.marginWidth=7;
-		 compOkCancelButtons.setLayout(layout);
 		
-		 data=new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
-		 btnOK = new Button(compOkCancelButtons, SWT.BORDER);
-		 buttonProperties.setProperties(btnOK, "OK");
-		 btnOK.setLayoutData(data);
-		 
-		 btnOK.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					//if (lblDaisyMFC.getText().equalsIgnoreCase("Edit Conversion")){
-					if (editFile == true){
-						sendEditedJobToMain();
-					}
-					sendJobInfoToMain();
-				}
-			});
+		//Composite output
 		
-		 data=new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
-		 btnCancel= new Button(compOkCancelButtons, SWT.BORDER);
-		 buttonProperties.setProperties(btnCancel, "Cancel");
-		 btnCancel.setLayoutData(data);
-		 btnCancel.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					//if (lblDaisyMFC.getText().equalsIgnoreCase("Edit Conversion")){
-					if (editFile == true){
-						Window.getInstance().addToQueue(editJob);
-					}
-					dispose();
+		Composite compOutputFields = new Composite(shell, SWT.BORDER);
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		compOutputFields.setLayoutData(data);
+		layout = new GridLayout();
+		layout.horizontalSpacing=8;
+		layout.numColumns=2;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		compOutputFields.setLayout(layout);
+		
+		
+//		Label for Output Doc
+		lblOutputDocument = new Label(compOutputFields, SWT.NONE);
+		lblOutputDocument.setText("Output File");
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan=2;
+		lblOutputDocument.setLayoutData(data);
+		
+		//Text field
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.widthHint=200;
+		txtOutputDoc=new Text(compOutputFields, SWT.BORDER);
+		textProperties.setProperties(txtOutputDoc, null);
+		txtOutputDoc.setLayoutData(data);
+		
+		
+		//Browse Button
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		btnBrowseOutput = new Button(compOutputFields, SWT.BORDER);
+		buttonProperties.setProperties(btnBrowseOutput, "Browse");
+		btnBrowseInput.setLayoutData(data);
+		this.btnBrowseOutput.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				setOutputPathSelected();
+			}
+		});
+		
+		
+		
+		
+		//bottom OK and Cancel buttons
+		Composite compOkCancelButtons = new Composite (shell, SWT.NONE);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
+		compOkCancelButtons.setLayoutData(data);
+		layout = new GridLayout();
+		layout.horizontalSpacing=12;
+		layout.numColumns=2;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		compOkCancelButtons.setLayout(layout);
+		
+		data=new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
+		btnOK = new Button(compOkCancelButtons, SWT.BORDER);
+		buttonProperties.setProperties(btnOK, "OK");
+		btnOK.setLayoutData(data);
+		
+		btnOK.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				//if (lblDaisyMFC.getText().equalsIgnoreCase("Edit Conversion")){
+				if (editFile == true){
+					sendEditedJobToMain();
 				}
-			});
-		 
-		 
-		 
-		 
-		 shell.pack();
+				sendJobInfoToMain();
+			}
+		});
+		
+		data=new GridData(GridData.HORIZONTAL_ALIGN_CENTER );
+		btnCancel= new Button(compOkCancelButtons, SWT.BORDER);
+		buttonProperties.setProperties(btnCancel, "Cancel");
+		btnCancel.setLayoutData(data);
+		btnCancel.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				//if (lblDaisyMFC.getText().equalsIgnoreCase("Edit Conversion")){
+				if (editFile == true){
+					Window.getInstance().addToQueue(editJob);
+				}
+				dispose();
+			}
+		});
+		
+		
+		
+		
+		shell.pack();
 	}
-	 
+	
 	public void open() {
 		shell.open();
 		
@@ -306,7 +309,27 @@ public class ConvertSingleFile extends Composite {
 	}
 	
 	
-//Methods called by Listeners
+	//general utility methods
+	/**
+	 * Sets the file or directory flag and determines the extension
+	 */
+	public void setFileOrDirFlag(){
+		String [] arFiles = getFileTypesForScriptHandler("out");
+		int count = arFiles.length;
+		for (int i = 0; i<count;i++){
+			String pattern = (String)arFiles[i];
+			
+			if (pattern.equalsIgnoreCase("application/x-filesystemDirectory")){   
+				boolOutputIsDir=true;
+			}
+			else{
+				outExtensionPattern = pattern;
+			}
+		}
+	}	
+	
+	
+//	Methods called by Listeners
 	/**
 	 * 
 	 */
@@ -316,7 +339,7 @@ public class ConvertSingleFile extends Composite {
 		//dlg.setFilterPath("");
 		
 		//filter names shown
-		dlg.setFilterExtensions(getFileTypesForScriptHandler());
+		dlg.setFilterExtensions(getFileTypesForScriptHandler("in"));
 		
 		fileSelected = dlg.open();
 		
@@ -332,7 +355,7 @@ public class ConvertSingleFile extends Composite {
 		
 		
 	}
-
+	
 	public void setOutputPathSelected() {
 		DirectoryDialog directoryDialog = new DirectoryDialog(shell);
 		directoryDialog.setText("Choose a directory");
@@ -352,27 +375,26 @@ public class ConvertSingleFile extends Composite {
 		if (txtInputDoc.getText().equalsIgnoreCase("") || txtInputDoc == null
 				|| txtOutputDoc.getText().equalsIgnoreCase("")
 				|| txtOutputDoc == null) {
-
+			
 			// display an error message and return.
 			
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
 					SWT.CANCEL);
-					messageBox.setMessage("File to Convert and Output File must be completed");
-					messageBox.setText("Error:  Complete Fields");
-					messageBox.open();
-
-					
+			messageBox.setMessage("File to Convert and Output File must be completed");
+			messageBox.setText("Error:  Complete Fields");
+			messageBox.open();
+			
+			
 		} else {
 			
-				Job job = new Job();
-				job.setInputFile(new File (fileSelected));
-				job.setOutputFile(new File(outputPath));
-				job.setScript(scriptHandler);
-				job.setStatus(Status.WAITING);
-				Window.getInstance().addToQueue(job);
-				
-				
-				dispose();
+			Job job = new Job();
+			job.setInputFile(new File (fileSelected));
+			job.setOutputFile(new File(outputPath));
+			job.setScript(scriptHandler);
+			job.setStatus(Status.WAITING);
+			Window.getInstance().addToQueue(job);
+			
+			dispose();
 		}
 	}
 	
@@ -401,7 +423,9 @@ public class ConvertSingleFile extends Composite {
 	 * 
 	 * @return
 	 */
-	public String [] getFileTypesForScriptHandler(){
+	public String [] getFileTypesForScriptHandler(String inOrOut){
+		
+		ArrayList alMsglobs = new ArrayList();
 		
 		System.out.println("GetFileTypes for Script");
 		Collection msglobs = null;
@@ -428,7 +452,7 @@ public class ConvertSingleFile extends Composite {
 			String parameter = pi.getDirection();
 			
 			
-			if (parameter.equalsIgnoreCase("in")){
+			if (parameter.equalsIgnoreCase(inOrOut)){
 				fileType = pi.getType();
 				System.out.println("Valid types for this script " + fileType);
 				
@@ -445,25 +469,28 @@ public class ConvertSingleFile extends Composite {
 				
 				Iterator itPatterns = msglobs.iterator();	
 				int size = msglobs.size();
-				arCompatibleFiles = new String [size];
+				//arCompatibleFiles = new String [size];
 				
 				for (int j = 0; j<size; j++){
 					if (itPatterns.hasNext()){
 						String mimePattern = (String)itPatterns.next();
-						if (!mimePattern.equalsIgnoreCase("")){
-							arCompatibleFiles[j]=mimePattern;
+						if (mimePattern!=null && !mimePattern.equalsIgnoreCase("")){
+							alMsglobs.add(mimePattern);
+							//arCompatibleFiles[j]=mimePattern;
 						}
 					}
 				}
-				//print out items in StringArray
 				
+				int count = alMsglobs.size();
+				arCompatibleFiles = new String [count];
+				Iterator itGlobs = alMsglobs.iterator();
 				
-				for (int k = 0; k<size; k++){
-					System.out.println ("Mime patterns in array " + arCompatibleFiles[k]);
+				for (int k = 0; k<count; k++){
+					arCompatibleFiles[k]=(String)itGlobs.next();
 				}	
 			}
 		}
 		return arCompatibleFiles;
 	}
-						
+	
 }

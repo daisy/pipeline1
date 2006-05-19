@@ -2,6 +2,7 @@ package org.daisy.dmfc.gui;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -26,6 +27,7 @@ import org.daisy.util.mime.MIMEType;
 import org.daisy.util.mime.MIMETypeException;
 import org.daisy.util.mime.MIMETypeFactory;
 import org.daisy.util.mime.MIMETypeFactoryException;
+import org.daisy.util.file.FileUtils;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -104,6 +106,9 @@ public class ConvertMultipleFiles {
 	
 	//boolean - is Directory
 	boolean boolOutputIsDir=false;
+	
+	//String pattern of output path
+	String outExtensionPattern= "";
 	
 	//GridData - reinitialized for each control.
 	GridData data;
@@ -201,7 +206,7 @@ public class ConvertMultipleFiles {
 		// Label folder to search in
 		data =data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING); 
 		lblInputDocument = new Label(compInputFields, SWT.NONE);
-		lblInputDocument.setText("Select Folder");
+		lblInputDocument.setText("Folder to search for files to convert");
 		data.horizontalSpan=1;
 		lblInputDocument.setLayoutData(data);
 		
@@ -449,21 +454,22 @@ public class ConvertMultipleFiles {
 	
 	//calls from listeners
 	/**
-	 * The "out" parameter is not reliable since each chooses it's own names.
-	 * @todo What to rely on to determine if output is a directory or a file?
+	 * 
 	 */
 	public void setFileOrDirFlag(){
 		alFileOrDir = getFileTypesForScriptHandler("out");
 		Iterator itFileOrDir = alFileOrDir.iterator();
 		while (itFileOrDir.hasNext()){
-			System.out.println ("Mime patterns in array " + (String)itFileOrDir.next());
+			System.out.println ("Out - Mime patterns in array " + (String)itFileOrDir.next());
 			String pattern = (String)itFileOrDir.next(); 
-			if (pattern.equalsIgnoreCase("application/x-filesystemDirectory")){
+			if (pattern.equalsIgnoreCase("application/x-filesystemDirectory")){   
 				boolOutputIsDir=true;
+			}
+			else{
+				outExtensionPattern = pattern;
 			}
 		}
 		
-		this.boolOutputIsDir = false;
 	}	
 	
 	public void populateCompatibleFilesTable(){
@@ -484,8 +490,6 @@ public class ConvertMultipleFiles {
 		int count = checkedObject.length;
 		System.out.println("No of files selected " + count);
 		
-		
-		
 		if (tblCompatibleFiles.getItemCount()==0 
 				|| txtOutputDoc.getText().equalsIgnoreCase("")
 				|| txtOutputDoc == null) {
@@ -499,7 +503,7 @@ public class ConvertMultipleFiles {
 			messageBox.open();			
 		}
 		
-		//else if(al.isEmpty()){
+		
 		else if(count<=0){
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
 					SWT.CANCEL);
@@ -514,21 +518,60 @@ public class ConvertMultipleFiles {
 			
 			outputPath = txtOutputDoc.getText();
 			
-			//Iterator it = al.iterator();
-			//while (it.hasNext()){
+			//escape all paths.  This is only used to make the directory.
+			//make all directories, even ancestors that don't exist
 			
-			for(int i = 0; i<count;i++){
-				Job job = new Job();
+			String makeDirectoryOnly = outputPath.replaceAll("\\\\", "\\\\\\\\");
+			File makeDirFile = new File(makeDirectoryOnly);
+			
+			if (makeDirFile.exists() && makeDirFile.isFile()){
+				MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+						SWT.CANCEL);
+				messageBox.setMessage("The directory  \n" + makeDirFile.getPath()+" \n exists as a file and cannot be created. ");
+				messageBox.setText("Error:  Directory exists as file");
+				messageBox.open();	
 				
-				//	TableItem ti = (TableItem) it.next();
-				//	job.setInputFile(new File (ti.getText()));
+			}
+			
+			else{
+				try {
+					FileUtils.createDirectory(makeDirFile);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
-				job.setInputFile((File)checkedObject[i]);
-				job.setOutputFile(new File(outputPath));
-				job.setScript(scriptHandler);
-				job.setStatus(Status.WAITING);
-				Window.getInstance().addToQueue(job);
 				
+				
+				for(int i = 0; i<count;i++){
+					Job job = new Job();
+					
+					File inPutFile = (File)checkedObject[i];
+					if(boolOutputIsDir==false){
+						outputPath=addFileNameToOutputPath(outputPath, inPutFile);
+					}
+					
+					outputPath = outputPath.replaceAll("\\\\", "\\\\\\\\");
+					//System.out.println("Double escaped output path?" + outputPath);
+					File outFile = new File(outputPath);
+					
+					
+					try {
+						boolean success = outFile.createNewFile();
+						//System.out.println("File was successfully created?" + success);
+					} catch (IOException e) {
+						/*@todo a messsage that the output file was not created.*/
+						e.printStackTrace();
+					}
+					
+					
+					job.setInputFile((File)checkedObject[i]);
+					job.setOutputFile(outFile);
+					job.setScript(scriptHandler);
+					job.setStatus(Status.WAITING);
+					Window.getInstance().addToQueue(job);
+					
+				}
 			}
 			
 			
@@ -537,9 +580,24 @@ public class ConvertMultipleFiles {
 		}
 	}
 	
+	
+	public String addFileNameToOutputPath(String outPath, File inPath){
+		
+		//Name of the input path file
+		String strInPath = inPath.getName();
+		StringTokenizer st = new StringTokenizer(strInPath, ".");
+		//get just the name
+	
+		//create a new path with the path, nameof file, and appropriate extension
+		String outPutPath = outPath + st.nextToken()+ "." + outExtensionPattern ;
+		System.out.println ("The REAL output path should be " + outPutPath);
+		return outPutPath;
+	}
+	
+	
 	/**
 	 * Sets directory selected.
-	 * Later, the dir is recursively trasversed for all
+	 * Later, the dir is recursively traversed for all
 	 * compatible files.  
 	 *
 	 */
@@ -547,23 +605,31 @@ public class ConvertMultipleFiles {
 		
 		File[] roots = File.listRoots();
 		int size = roots.length;
-		for (int i = 0; i<size;i++){
-			System.out.println("FileSystem roots are " + roots[i].getName());
+		
+		/*
+		 for (int i = 0; i<size;i++){
+			System.out.println("FileSystem roots are " + roots[i].getPath());
 		}
+		*/
 		
 		DirectoryDialog directoryDialog = new DirectoryDialog(shell);
 		directoryDialog.setText("Choose a directory");
 		directoryDialog.setFilterPath("/");
 		dirSelected = directoryDialog.open();
 		
-		
-		if (dirSelected.equalsIgnoreCase("c\\")){
-			System.out.println("Oops, this won't work.");
-			dirSelected=null;
-			
+		for (int i = 0; i<size; i++){
+			String rootPath = roots[i].getPath();
+			if (dirSelected!=null && dirSelected.equalsIgnoreCase(rootPath)){
+				dirSelected=null;
+				MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+						SWT.CANCEL);
+				messageBox.setMessage("Please choose a subdirectory of "+  rootPath);
+				messageBox.setText("Error:  Be More Selective");
+				messageBox.open();	
+			}
 		}
 		
-		else{
+		if (dirSelected!=null){
 			System.out.println("Directory Selected  " + dirSelected);
 			txtDirectorySelected.setText(dirSelected);
 			
@@ -575,15 +641,18 @@ public class ConvertMultipleFiles {
 				lastDir = st.nextToken();
 				
 			}
-			System.out.println("The last token is " + lastDir);
+			
+			//System.out.println("The last token is " + lastDir);
 			strSubfolderOfInputFolder =dirSelected + File.separator + lastDir + File.separator;
+			
+//			if the output path is a directory...
+//          the directory will be placed here
+			//otherwise, a file of the same name but with output path extension
+			//will be created as the output path
+			
+			
 			txtOutputDoc.setText(strSubfolderOfInputFolder);
-			//txtOutputDoc.setText(dirSelected + File.separator + lastDir + File.separator);
-			
-			
-		}
-		
-		
+		}		
 	}
 	
 	
@@ -669,7 +738,7 @@ public class ConvertMultipleFiles {
 			
 			if (parameter.equalsIgnoreCase(inOut)){
 				fileType = pi.getType();
-				//System.out.println("Valid types for this script " + fileType);
+				System.out.println("Valid types for this script " + fileType);
 				
 				try {
 					MIMEType mt = MIMETypeFactory.newInstance().newMimeType(fileType);
@@ -731,32 +800,15 @@ public class ConvertMultipleFiles {
 		// Return the file array as an array of Objects
 		public Object[] getElements(Object parent) {
 			return alTableContents.toArray();
-		}
-		
-		
+		}	
 	}
-	
-	
 	
 	public ArrayList getArrayListTableContents(){
 		return this.alTableContents;
 	}
 	
-	
-	
-	/**
-	 * "Another problem would be that a transformer can have multiple
-	 *  input and output parameters, so it might not be possible to 
-	 *  have a single input file type and output file type for a script."
-	 *  email from Linus
-	 *
-	 */
-	
-	
 	public Table getTableCompatibleFiles(){
 		return this.tblCompatibleFiles;
 	}
-	
-	//public Table
 	
 }
