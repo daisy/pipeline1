@@ -121,9 +121,8 @@ public class MenuDMFC {
 			public void widgetSelected(SelectionEvent e) {
 							
 				window=Window.getInstance();
-				
+				window.getConversionSelection();
 				if (window.scriptHandler!=null){
-					window.getConversionSelection();
 					window.getNewCMFScreen();
 						
 				}
@@ -146,9 +145,9 @@ public class MenuDMFC {
 			public void widgetSelected(SelectionEvent e) {
 				
 				window=Window.getInstance();
+				window.getConversionSelection();
 				
 				if (window.scriptHandler!=null){
-					window.getConversionSelection();
 					window.getNewSingleFileScreen();
 						
 				}
