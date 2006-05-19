@@ -529,12 +529,12 @@ public class Window {
 		data= new GridData (GridData.HORIZONTAL_ALIGN_FILL);
 		data.horizontalSpan=1;
 		this.btnViewDetails = new Button(bottomComp, SWT.SHADOW_OUT);
-		this.btnViewDetails.setText("View Run Details");
-		this.btnViewDetails.setEnabled(false);
+		this.btnViewDetails.setText("Hide Run Details");
+		this.btnViewDetails.setEnabled(true);
 		this.btnViewDetails.setLayoutData(data);
-		this.btnViewDetails.setEnabled(false);
 		this.btnViewDetails.addSelectionListener(new SelectionAdapter(){
 			public void widgetSelected(SelectionEvent e){
+				//check if details visible and change view
 				viewRunDetails();
 			}
 		});
@@ -610,7 +610,7 @@ public class Window {
 		compDetails= new Composite(compBigRight, SWT.BORDER);
 		data = new GridData(GridData.FILL_BOTH);
 		compDetails.setLayoutData(data);
-		compDetails.setVisible(false);
+		compDetails.setVisible(true);
 		layout = new GridLayout();
 		layout.horizontalSpacing=8;
 		layout.numColumns=2;
@@ -754,6 +754,7 @@ public class Window {
 	 *
 	 */
 	public void terminateJob(){
+		
 		lil.setAborted(true);
 		String originator = lel.getMessageOriginator();
 		
@@ -761,7 +762,7 @@ public class Window {
 				SWT.CANCEL);
 		messageBox.setMessage("You have just terminated " + originator);
 		messageBox.setText("Job Terminated");
-		messageBox.open();
+		messageBox.open();        
 	}
 	
 	
@@ -859,7 +860,15 @@ public class Window {
 	public void viewRunDetails(){
 		UIManager.display.asyncExec(new Runnable(){
 			public void run(){
-				compDetails.setVisible(true);
+				if (btnViewDetails.getText().equalsIgnoreCase("View Run Details")){
+					btnViewDetails.setText("Hide Run Details");
+					compDetails.setVisible(true);
+					
+				}
+				else{
+					btnViewDetails.setText("View Run Details");
+					compDetails.setVisible(false);
+				}
 			}
 		});
 		compDetails.setVisible(true);
@@ -984,7 +993,6 @@ public class Window {
 	public void setRunTerminateButtons(){
 		this.btnTerminate.setEnabled(true);
 		this.btnStart.setEnabled(true);
-		this.btnViewDetails.setEnabled(true);
 		this.btnRun.setEnabled(false);
 		
 	}

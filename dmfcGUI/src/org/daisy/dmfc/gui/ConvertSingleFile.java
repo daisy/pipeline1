@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.ParameterInfo;
@@ -82,6 +83,9 @@ public class ConvertSingleFile extends Composite {
 	//defaults to editFile, false.
 	boolean editFile = false;
 	boolean boolOutputIsDir = false;
+	
+	//Array of output mime types
+	String [] arFileOrDir = null;
 	
 	//ArrayList of Jobs
 	ArrayList alJobs = new ArrayList();
@@ -316,6 +320,12 @@ public class ConvertSingleFile extends Composite {
 	public void setFileOrDirFlag(){
 		String [] arFiles = getFileTypesForScriptHandler("out");
 		int count = arFiles.length;
+		
+		//hack until all tdfs completed and mimetypes registered?
+		if (count==0){
+			boolOutputIsDir = true;
+		}
+		
 		for (int i = 0; i<count;i++){
 			String pattern = (String)arFiles[i];
 			
@@ -367,9 +377,26 @@ public class ConvertSingleFile extends Composite {
 			System.out.println("outputPath is not selected " );
 		}
 		else{
+			//add a new directory to this...
 			this.txtOutputDoc.setText(outputPath);
 		}
 	}
+
+	
+	
+	
+	public String addOutputDirectory(String output){
+		
+		String lastDir = "";
+		StringTokenizer st = new StringTokenizer(output, File.separator);
+		while(st.hasMoreTokens()){
+			lastDir = st.nextToken();	
+		}
+		//System.out.println("The last token is " + lastDir);
+		String strSubfolderOfInputFolder =output + File.separator + lastDir + File.separator;
+		return strSubfolderOfInputFolder;
+	}
+	
 	
 	public void sendJobInfoToMain() {
 		if (txtInputDoc.getText().equalsIgnoreCase("") || txtInputDoc == null
@@ -387,8 +414,18 @@ public class ConvertSingleFile extends Composite {
 			
 		} else {
 			
+			//if the output is a file,  add the existing file name 
+			//and the proper extension
+			
+			File inputFile = new File (fileSelected);
+			
+			if (boolOutputIsDir==false){
+				outputPath = addFileNameToOutputPath(outputPath, inputFile);
+			}
+			
+			
 			Job job = new Job();
-			job.setInputFile(new File (fileSelected));
+			job.setInputFile(inputFile);
 			job.setOutputFile(new File(outputPath));
 			job.setScript(scriptHandler);
 			job.setStatus(Status.WAITING);
@@ -397,6 +434,44 @@ public class ConvertSingleFile extends Composite {
 			dispose();
 		}
 	}
+	
+	
+	public String addFileNameToOutputPath(String outPath, File inPath){
+		String outPutPath = outPath;
+		
+		//only created if the output path is a directory.
+		//sanity check, already done in sendInfoToMain()
+		
+		if (boolOutputIsDir==false){
+		
+			//in this case the extension is an msglob, and the *.
+			//need to be removed
+			StringTokenizer stExt = new StringTokenizer(outExtensionPattern, ".");
+			String outExPat = "";
+			while (stExt.hasMoreTokens()){
+				outExPat = stExt.nextToken();
+			}
+			
+			//Name of the input path file
+			String strInPath = inPath.getName();
+			StringTokenizer st = new StringTokenizer(strInPath, ".");
+			//get just the name
+			
+			if (strInPath.endsWith("\\")){
+//				create a new path with the path, nameof file, and appropriate extension
+				outPutPath = outPath + st.nextToken()+ "." + outExPat ;
+			}
+			else{
+				//create a new path with the path, nameof file, and appropriate extension
+				outPutPath = outPath + "\\"+ st.nextToken()+ "." + outExPat ;
+			}
+		}
+		
+		System.out.println ("The REAL output path should be " + outPutPath);
+		return outPutPath;
+	}
+	
+	
 	
 	/**
 	 * Sets information to be edited.
@@ -417,6 +492,10 @@ public class ConvertSingleFile extends Composite {
 		this.fileSelected= txtInputDoc.getText();
 		this.outputPath=txtOutputDoc.getText();
 	}
+	
+	
+	
+	
 	
 	
 	/**

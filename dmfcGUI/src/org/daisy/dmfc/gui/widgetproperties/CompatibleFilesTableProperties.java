@@ -76,7 +76,6 @@ public class CompatibleFilesTableProperties {
 					
 					Iterator itMimeTypes = alPatterns.iterator();
 					
-					
 					while (itMimeTypes.hasNext()){
 						String type = (String)itMimeTypes.next();
 						//System.out.println("    names in the patterns " + type);
@@ -87,9 +86,7 @@ public class CompatibleFilesTableProperties {
 								alCompatibleFiles.add(compareFile);
 							}
 						}
-						
-					}
-					
+					}	
 				}
 			
 		

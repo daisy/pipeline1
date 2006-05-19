@@ -233,9 +233,11 @@ public class ConvertMultipleFiles {
 			public void widgetSelected(SelectionEvent e) {
 				setDirectorySelected();
 				if (dirSelected!=null){
+					
 					populateCompatibleFilesTable();
 					//determine if output is a file or folder
 					setFileOrDirFlag();
+					
 				}
 			}
 		});
@@ -458,18 +460,25 @@ public class ConvertMultipleFiles {
 	 */
 	public void setFileOrDirFlag(){
 		alFileOrDir = getFileTypesForScriptHandler("out");
+		System.out.println("the size of the returned out types is " + alFileOrDir.size());
+		
+		//a hack until all tdfs completed
+		if (alFileOrDir.size()==0){
+			boolOutputIsDir=true;
+		}
+		
 		Iterator itFileOrDir = alFileOrDir.iterator();
 		while (itFileOrDir.hasNext()){
-			System.out.println ("Out - Mime patterns in array " + (String)itFileOrDir.next());
 			String pattern = (String)itFileOrDir.next(); 
-			if (pattern.equalsIgnoreCase("application/x-filesystemDirectory")){   
+			if (pattern.equalsIgnoreCase("application/x-filesystemDirectory")){ 
+				System.out.println("The output type is a directory");
 				boolOutputIsDir=true;
 			}
 			else{
+				System.out.println("The output type is a file");
 				outExtensionPattern = pattern;
 			}
 		}
-		
 	}	
 	
 	public void populateCompatibleFilesTable(){
@@ -557,8 +566,10 @@ public class ConvertMultipleFiles {
 					
 					
 					try {
-						boolean success = outFile.createNewFile();
-						//System.out.println("File was successfully created?" + success);
+						//if the file already exists, it will be overwritten
+						if(!outFile.exists()){
+							boolean success = outFile.createNewFile();
+						}
 					} catch (IOException e) {
 						/*@todo a messsage that the output file was not created.*/
 						e.printStackTrace();
@@ -582,14 +593,24 @@ public class ConvertMultipleFiles {
 	
 	
 	public String addFileNameToOutputPath(String outPath, File inPath){
+		String outPutPath = outPath;
 		
-		//Name of the input path file
-		String strInPath = inPath.getName();
-		StringTokenizer st = new StringTokenizer(strInPath, ".");
-		//get just the name
-	
-		//create a new path with the path, nameof file, and appropriate extension
-		String outPutPath = outPath + st.nextToken()+ "." + outExtensionPattern ;
+		//only created if the output path is a directory.
+		//sanity check, already done in sendInfoToMain()
+		
+		
+		if (boolOutputIsDir==false){
+		
+			//Name of the input path file
+			String strInPath = inPath.getName();
+			StringTokenizer st = new StringTokenizer(strInPath, ".");
+			//get just the name
+			
+			//create a new path with the path, nameof file, and appropriate extension
+			outPutPath = outPath + st.nextToken()+ "." + outExtensionPattern ;
+			
+		}
+		
 		System.out.println ("The REAL output path should be " + outPutPath);
 		return outPutPath;
 	}
@@ -597,8 +618,12 @@ public class ConvertMultipleFiles {
 	
 	/**
 	 * Sets directory selected.
-	 * Later, the dir is recursively traversed for all
-	 * compatible files.  
+	 * The listener then calls getFileTypesForScriptHandler(String inorout)
+	 * and the directory selected is recursively traversed for all
+	 * files compatible with the mime type in the tdf file.
+	 * From the selecteddirectory, the default output path is also determined
+	 * and placed in the output path text field .  This may be changed
+	 * by the user. 
 	 *
 	 */
 	public void setDirectorySelected() {
@@ -738,11 +763,13 @@ public class ConvertMultipleFiles {
 			
 			if (parameter.equalsIgnoreCase(inOut)){
 				fileType = pi.getType();
-				System.out.println("Valid types for this script " + fileType);
+				System.out.println("Valid types for this script " + inOut + " "+ fileType);
 				
 				try {
 					MIMEType mt = MIMETypeFactory.newInstance().newMimeType(fileType);
 					msglobs = mt.getFilenamePatterns();
+					System.out.println("The size of msglogs filepatterns is: " + msglobs.size());
+					
 				} catch (MIMETypeFactoryException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -752,14 +779,25 @@ public class ConvertMultipleFiles {
 				}
 				
 				Iterator itPatterns = msglobs.iterator();	
+				String mimePattern="";
+				int howmany = 0;
 				
 				while (itPatterns.hasNext()){
-					String mimePattern = (String)itPatterns.next();
+					System.out.println("in itPatterns hasNext, the next is: " + ++howmany);
+					mimePattern = (String)itPatterns.next();
+					System.out.println("The mimepattern is " + mimePattern);
+					
 					if (!mimePattern.equalsIgnoreCase("")){
 						StringTokenizer st = new StringTokenizer(mimePattern, ".");
-						st.nextToken();
-						String extension = st.nextToken();
-						//System.out.println("File exension is "+ extension);
+						String extension = "";
+						while (st.hasMoreTokens()){
+							//String firstToken = st.nextToken();
+							//System.out.println("The first token is: " + firstToken);
+							
+							 extension = st.nextToken();
+							
+							System.out.println("File exension is "+ extension);
+						}
 						alValid.add(extension);
 					}
 				}
