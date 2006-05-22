@@ -233,7 +233,7 @@ public class MIMETypeImpl implements MIMEType {
 	
 	private Collection splitString(String string, String regex){
 		Set set = new HashSet();
-		if(string != null){
+		if(string != null && !"".equals(string)){
 			String[] array = string.split(regex);
 			for (int i = 0; i < array.length; i++) {
 				set.add(array[i]);
