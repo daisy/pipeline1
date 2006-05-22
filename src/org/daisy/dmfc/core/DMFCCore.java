@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
+import org.daisy.dmfc.core.transformer.TransformerInfo;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptAbortException;
@@ -258,6 +259,10 @@ public class DMFCCore extends EventSender {
 	 */
 	public Collection getTransformerInfoCollection() {
 	    return transformerHandlers.values();
+	}
+	
+	public TransformerInfo getTransformerInfo(String name) {
+		return (TransformerInfo)transformerHandlers.get(name);
 	}
 	
 	/**
