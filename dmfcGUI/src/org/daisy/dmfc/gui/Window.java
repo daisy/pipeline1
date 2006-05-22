@@ -1281,12 +1281,13 @@ public class Window {
 		//place long running methods in a Thread..
 		//place all methods not in event loop in own thread
 		
-	//	UIManager.display.asyncExec(new Runnable(){
+	//	UIManager.display.syncExec(new Runnable(){
 	//		public void run(){
 				
 				//enable and disable buttons
 				setRunTerminateButtons();
-				execute();		
+				//execute();	
+				execution();
 				
 	//		}
 	//	});
@@ -1338,7 +1339,7 @@ public class Window {
 			scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
 			
 			
-			UIManager.display.asyncExec(new Runnable(){
+			UIManager.display.syncExec(new Runnable(){
 				public void run(){
 					int count = -1;
 					try{	
@@ -1393,6 +1394,58 @@ public class Window {
 		this.executing=false;
 		this.btnRemoveFinishedJobs.setEnabled(true);
 	}
+	
+	public void execution(){
+//		walk through the queue and return jobs
+		LinkedList jobList = cue.getLinkedListJobs();
+		
+		//number in queue
+		int jobNumber = 0;
+		
+		//count the transformers
+		int count = -1;
+		
+		Iterator it = jobList.iterator();
+		Job job=null;
+		while(it.hasNext()){
+			
+			//get the Job from the Queue
+			 job = (Job)it.next();
+			
+			//set the name of the conversion running
+			txtConversionRunning.setText(job.getScript().getName());
+			scriptHandler = job.getScript();
+			
+			//update the transformer table
+			transformerList = new TransformerList(job);
+			tableViewer.setInput(transformerList);
+			
+			
+			//add the input and output files to the script
+			//actually, this only returns if the parameters are present in the script...
+			scriptHandler.setProperty("input", job.getInputFile().getPath());
+			scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
+		
+			
+			JobRunner jr = new JobRunner (this.shell, this.scriptHandler, job, pb, txtElapsedTime, 
+					txtEstimatedTime, lel, tableViewer, tableJobViewer);
+			
+			jr.start();
+			
+			tableJobViewer.refresh();
+			
+		}
+			
+			
+			
+			this.executing=false;
+			this.btnRemoveFinishedJobs.setEnabled(true);
+			
+		}
+	
+	
+	
+	
+	
 }
-
-
+	
