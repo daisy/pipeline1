@@ -1,7 +1,6 @@
 package org.daisy.dmfc.gui.menus;
 
 import org.daisy.dmfc.gui.ConvertMultipleFiles;
-import org.daisy.dmfc.gui.CurrentJobDetails;
 import org.daisy.dmfc.gui.UIManager;
 import org.daisy.dmfc.gui.Window;
 import org.daisy.dmfc.gui.links.WebLinks;
