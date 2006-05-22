@@ -75,9 +75,8 @@ public class LocalEventListener implements EventListener{
 	 * 
 	 * @return int - used for a progress bar
 	 */
-	public int getProgress(){
-		int intProgress = (int)this.progress;
-		return intProgress;
+	public double getProgress(){
+		return this.getProgress();
 	}
 	
 	
