@@ -8,8 +8,7 @@
 	
 	<parameters>
 	
-	<!-- <parameter required="true" direction="in" type="application/x-dtbd202ncc+xml"> -->
-	    <parameter required="true" direction="in" type="application/xml">
+	    <parameter required="true" direction="in" type="application/x-dtbd202ncc+xml">
 			<name>ncc</name>
 			<description>Path to the Daisy 2.02 NCC file</description>
 			<example>D:/path/to/ncc.html</example>
