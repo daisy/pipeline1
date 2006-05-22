@@ -66,9 +66,9 @@
 		<!-- Z3986-2005 -->
 		<type id="z3986fileset" name="application/x-dtbfilesetz3986+xml" definition="collective mime for a Z3986 DTB fileset"/>			
 		<type id="nimasfileset" name="application/x-nimasfileset+xml" definition="collective mime for a NIMAS fileset"/>						
-		<type id="z3986resource" name="application/x-dtbresource+xml" parentTypes="xml"/>
-		<type id="z3986dtbook" name="application/x-dtbook+xml" parentTypes="xml"/>
-		<type id="z3986ncx" name="application/x-dtbncx+xml" parentTypes="xml"/>
+		<type id="z3986resource" name="application/x-dtbresource+xml" parentTypes="xml" namePatterns="*.res"/>
+		<type id="z3986dtbook" name="application/x-dtbook+xml" parentTypes="xml" namePatterns="*.xml"/>
+		<type id="z3986ncx" name="application/x-dtbncx+xml" parentTypes="xml" namePatterns="*.ncx"/>
 	</directory>
 
 	<directory name="audio">
@@ -107,7 +107,7 @@
 		<type id="plain" name="text/plain"/>
 		<type id="texthtml" name="text/html" namePatterns="*.htm *.html *.stm" aliasTypes="xhtml" parentTypes="xml sgml"/>
 		<type id="textxml" name="text/xml" aliasTypes="xml"/>
-		<type id="css" name="text/css"/>
+		<type id="css" name="text/css" namePatterns="*.css"/>
 		<type id="sgml" name="text/sgml"/>
 		<type id="txepe" name="text/xml-external-parsed-entity" aliasTypes="axepe"/>
 	</directory>
