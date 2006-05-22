@@ -1310,7 +1310,7 @@ public class Window {
 			
 //			increment the progress bar and time remaining	
 			//How to get the times progressively?
-			pb.setSelection(lel.getProgress() * 100);
+			pb.setSelection((int)(lel.getProgress() * 100));
 			txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
 			txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
 			
@@ -1345,7 +1345,7 @@ public class Window {
 						//after the script handler is finished executing, set job to finished.
 						scriptHandler.execute();
 						
-						pb.setSelection(lel.getProgress() * 100);
+						pb.setSelection((int)(lel.getProgress() * 100));
 						txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
 						txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
 						
