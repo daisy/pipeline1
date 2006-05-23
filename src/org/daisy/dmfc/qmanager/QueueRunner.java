@@ -10,7 +10,7 @@ import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.ScriptException;
-import org.daisy.dmfc.exception.TransformerRunException;
+
 
 
 
@@ -21,10 +21,14 @@ import org.daisy.dmfc.exception.TransformerRunException;
  *
  */
 
-public class QueueRunner {
+public class QueueRunner  {
 	
 	private Queue queue;
 	private DMFCCore dmfc;
+	
+	
+	
+	//not needed?
 	ScriptHandler scriptHandler;
 	private EventListener ev;
 	private InputListener il;
@@ -41,11 +45,12 @@ public class QueueRunner {
 		}
 		catch (DMFCConfigurationException e) {  
 			//add error messages to be thrown to GUI
-               e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	
 	
+
 	/**
 	 * To run the Queue:
 	 * Each Queue has many jobs
@@ -56,37 +61,37 @@ public class QueueRunner {
 	 * 
 	 *@throws ScriptException on execute()
 	 */
-		public void execute()throws ScriptException{
-	//public void start(){
+	public void execute()throws ScriptException{
+		//public void start(){
+		
+		//walk through the queue and return jobs
+		LinkedList jobList = queue.getLinkedListJobs();
+		int count = 0;
+		
+		Iterator it = jobList.iterator();
+		
+		while(it.hasNext()){
+			//get the Job from the Queue
+			Job job = (Job)it.next();
+			scriptHandler = job.getScript();
 			
-			//walk through the queue and return jobs
-			LinkedList jobList = queue.getLinkedListJobs();
-			int count = 0;
+			//add the input and output files to the script
+			//actually, this only returns if the parameters are present in the script...
+			scriptHandler.setProperty("input", job.getInputFile().getPath());
+			scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
 			
-			Iterator it = jobList.iterator();
+			//List list = scriptHandler.getTransformerInfoList();
 			
-			while(it.hasNext()){
-				//get the Job from the Queue
-				Job job = (Job)it.next();
-				scriptHandler = job.getScript();
-				
-				//add the input and output files to the script
-				//actually, this only returns if the parameters are present in the script...
-				scriptHandler.setProperty("input", job.getInputFile().getPath());
-				scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
-				
-				//List list = scriptHandler.getTransformerInfoList();
-				
-				try{	
-					scriptHandler.execute();
-				}
-				catch(ScriptException e){
-					throw new ScriptException(e.getMessage(), e);
-				}
-				
-
+			try{	
+				scriptHandler.execute();
+			}
+			catch(ScriptException e){
+				throw new ScriptException(e.getMessage(), e);
+			}
+			
+			
 		}
 	}
 }
-	
+
 
