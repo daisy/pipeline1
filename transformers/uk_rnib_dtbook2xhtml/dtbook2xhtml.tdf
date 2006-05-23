@@ -8,7 +8,7 @@
 	
 	<parameters>
 
-		<parameter required="true" direction="in" type="application/xml">
+		<parameter required="true" direction="in" type="application/x-dtbook+xml">
 			<name>xml</name>
 			<description>The DTBook 2005 XML file</description>
 			<example>file:///path/to/file.xml</example>
