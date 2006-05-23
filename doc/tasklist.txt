@@ -11,3 +11,37 @@ fileset		finalize refactoring
 			of fileset							MG
 mimefix		correct mime types in the TDFs		LE		fixed
 mimereg2    make core use new mime registry		LE		fixed
+msgwingui	GUI -new window for critical and
+			warning messages for scripts 		LS
+			
+
+
+
+dmfc next iteration wishlist-->
+
+id          what                                who     status
+----------------------------------------------------------------
+joblist	 	GUI -Each job handles own msgs
+			Ability to 2x click in job list
+			for a list of msgs for that job		LS
+			
+freezejobs	GUI -how to handle completed jobs 
+			in queue.  Freeze? View but take
+			out of queue?						LE & LS
+
+prgreports 	The progress bar, elapsed time 
+		    and estimmated time describe the
+		    progress of the *current 
+		    transformer*, not the current job. 
+		    What would be really nice is a 
+		    progress bar alongside each 
+		    transformer name in the 
+		    "Transformers in Conversion" list. 
+		    That would give a nice visual 
+		    overview of the conversion process. 
+		    Also, when a job is finished, it 
+		    would be cool if the gui would 
+		    report the running time of that 
+		    job in the job queue.				LE & LS
+
+
