@@ -4,12 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 import java.util.Random;
-import java.util.StringTokenizer;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.script.Parameter;
+import org.daisy.dmfc.core.script.Property;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.script.Task;
 import org.daisy.dmfc.core.transformer.ParameterInfo;
@@ -24,8 +24,6 @@ import org.daisy.dmfc.qmanager.Job;
 import org.daisy.dmfc.qmanager.Status;
 import org.daisy.util.mime.MIMEType;
 import org.daisy.util.mime.MIMETypeException;
-import org.daisy.util.mime.MIMETypeFactory;
-import org.daisy.util.mime.MIMETypeFactoryException;
 import org.daisy.util.mime.MIMETypeRegistry;
 import org.daisy.util.mime.MIMETypeRegistryException;
 import org.eclipse.swt.SWT;
@@ -429,65 +427,35 @@ public class ConvertSingleFile extends Composite {
 	
 	
 	public String[] getGlobFromMime(String mime) {
+		if (mime == null) {
+			return null;
+		}
 		try {
 			MIMEType type = MIMETypeRegistry.getInstance().getEntryByName(mime);
-			Object[] arr = type.getFilenamePatterns().toArray();
-			String[] ret = new String[arr.length + 1];
-			for (int i = 0; i < arr.length; ++i) {
-				ret[i] = (String)arr[i];
-			}
-			ret[arr.length] = "*.*";
-			//System.err.println("Glob: " + ret);
-			return ret;
+			if (type != null) {
+				Object[] arr = type.getFilenamePatterns().toArray();
+				String[] ret = new String[arr.length + 1];
+				for (int i = 0; i < arr.length; ++i) {
+					ret[i] = (String)arr[i];
+				}
+				ret[arr.length] = "*.*";
+				//System.err.println("Glob: " + ret);
+				return ret;
+			} 		
 		} catch (MIMETypeRegistryException e) {
 		} catch (MIMETypeException e) {
 		}
 		return null;
 	}
 	
-	public String getMimeForProperty(String property) {
+	public String getMimeForProperty(String propertyName) {
 		ScriptHandler handler = this.scriptHandler;
-		
-		// Generate random string
-		Random random =  new Random();
-        long long1 = random.nextLong();
-        long long2 = random.nextLong();
-        String hash1 = Long.toHexString(long1);
-        String hash2 = Long.toHexString(long2);
-        String hash = hash1 + hash2;
-        
-        // Set property
-        handler.setProperty(property, hash);
-        
-        // Search for script param
-        String taskName = null;
-        String paramName = null;
-        for (Iterator it = handler.getTasks().iterator(); it.hasNext(); ) {
-        	Task task = (Task)it.next();
-        	Collection params = task.getParameters().values();
-        	for (Iterator it2 = params.iterator(); it2.hasNext(); ) {
-        		Parameter param = (Parameter)it2.next();
-        		if (hash.equals(param.getValue())) {
-        			taskName = task.getName();
-        			paramName = param.getName();
-        			//System.err.println("Found script: " + taskName + ", param: " + paramName);
-        		}        		
-        	}
-        }
-        
-        // Search for parameter
-        TransformerInfo tInfo = dmfc.getTransformerInfo(taskName);
-    	Collection params = tInfo.getParameters();
-    	for (Iterator it = params.iterator(); it.hasNext(); ) {
-    		ParameterInfo pInfo = (ParameterInfo)it.next();
-    		if (pInfo.getName().equals(paramName)) {
-    			//System.err.println("The type is: " + pInfo.getType());
-    			return pInfo.getType();
-    		}
-    	}
-    	
-    	// Return null if nothing is found
-		return null;
+		Map properties = handler.getProperties();
+		Property prop = (Property)properties.get(propertyName);
+		if (prop.getType() != null && !prop.getType().equals("")) {
+			return prop.getType();
+		}
+		return null;		
 	}
 	
 	
