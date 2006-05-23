@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.StringTokenizer;
 
+import org.daisy.dmfc.core.DMFCCore;
+import org.daisy.dmfc.core.script.Parameter;
 import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.dmfc.core.script.Task;
 import org.daisy.dmfc.core.transformer.ParameterInfo;
 import org.daisy.dmfc.core.transformer.TransformerInfo;
 import org.daisy.dmfc.gui.menus.MenuSingleConvert;
@@ -22,15 +26,13 @@ import org.daisy.util.mime.MIMEType;
 import org.daisy.util.mime.MIMETypeException;
 import org.daisy.util.mime.MIMETypeFactory;
 import org.daisy.util.mime.MIMETypeFactoryException;
+import org.daisy.util.mime.MIMETypeRegistry;
+import org.daisy.util.mime.MIMETypeRegistryException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -99,16 +101,18 @@ public class ConvertSingleFile extends Composite {
 	//GridData
 	GridData data;
 	
+	private DMFCCore dmfc;
 	
 	
-	public ConvertSingleFile() {
-		this(new Shell(UIManager.display));
+	public ConvertSingleFile(DMFCCore core) {
+		this(core, new Shell(UIManager.display));
 	}
 	
 	
-	public ConvertSingleFile(final Shell shell) {
+	public ConvertSingleFile(DMFCCore core, final Shell shell) {
 		super(shell, SWT.NONE);
 		this.shell = shell;
+		this.dmfc = core;
 		
 		UIManager.windowNum++;
 		new MenuSingleConvert(shell);
@@ -205,7 +209,6 @@ public class ConvertSingleFile extends Composite {
 		this.btnBrowseInput.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				setFileSelected();
-				setFileOrDirFlag();
 			}
 		});
 		
@@ -313,32 +316,6 @@ public class ConvertSingleFile extends Composite {
 	}
 	
 	
-	//general utility methods
-	/**
-	 * Sets the file or directory flag and determines the extension
-	 */
-	public void setFileOrDirFlag(){
-		String [] arFiles = getFileTypesForScriptHandler("out");
-		int count = arFiles.length;
-		
-		//hack until all tdfs completed and mimetypes registered?
-		if (count==0){
-			boolOutputIsDir = true;
-		}
-		
-		for (int i = 0; i<count;i++){
-			String pattern = (String)arFiles[i];
-			
-			if (pattern.equalsIgnoreCase("application/x-filesystemDirectory")){   
-				boolOutputIsDir=true;
-			}
-			else{
-				outExtensionPattern = pattern;
-			}
-		}
-	}	
-	
-	
 //	Methods called by Listeners
 	/**
 	 * 
@@ -346,57 +323,61 @@ public class ConvertSingleFile extends Composite {
 	public void setFileSelected() {
 		FileDialog dlg = new FileDialog(shell, SWT.OPEN);
 		dlg.setText("Choose an input file");
-		//dlg.setFilterPath("");
+		if (txtInputDoc != null) {
+			File file = new File(txtInputDoc.getText());
+			if (file.exists() && !file.isDirectory()) {
+				file = file.getParentFile();
+			}
+			dlg.setFilterPath(file.getAbsolutePath());
+		}
 		
 		//filter names shown
-		dlg.setFilterExtensions(getFileTypesForScriptHandler("in"));
+		dlg.setFilterExtensions(this.getGlobFromMime(this.getMimeForProperty("input")));
 		
-		fileSelected = dlg.open();
+		fileSelected = dlg.open();		
 		
-		this.txtInputDoc.setText("");
 		if (fileSelected!=null ){
-			System.out.println("Directory Selected  " + fileSelected);
+			System.out.println("File selected  " + fileSelected);
 			this.txtInputDoc.setText(fileSelected);
 		}
-		else{
-			this.txtInputDoc.setText("");
-		}
-		
-		
 		
 	}
 	
 	public void setOutputPathSelected() {
-		DirectoryDialog directoryDialog = new DirectoryDialog(shell);
-		directoryDialog.setText("Choose a directory");
-		directoryDialog.setFilterPath("c://");
-		outputPath = directoryDialog.open();
-		System.out.println("outputPath Selected  " + outputPath);
-		this.txtOutputDoc.setText("");
-		if (outputPath==null ){
-			System.out.println("outputPath is not selected " );
-		}
-		else{
-			//add a new directory to this...
-			this.txtOutputDoc.setText(outputPath);
+		String mimeOut = this.getMimeForProperty("outputPath");
+		if ("application/x-filesystemDirectory".equals(mimeOut)) {	
+			// Directory
+			DirectoryDialog directoryDialog = new DirectoryDialog(shell);
+			directoryDialog.setText("Choose output directory");
+			directoryDialog.setFilterPath("c://");
+			outputPath = directoryDialog.open();
+			System.out.println("outputPath Selected  " + outputPath);
+			this.txtOutputDoc.setText("");
+			if (outputPath==null ){
+				System.out.println("outputPath is not selected " );
+			}
+			else{
+				//add a new directory to this...
+				this.txtOutputDoc.setText(outputPath);
+			}
+		} else {
+			// File
+			FileDialog dlg = new FileDialog(shell, SWT.SAVE);
+			dlg.setText("Choose output file");
+			if (txtOutputDoc != null) {
+				File file = new File(txtOutputDoc.getText());
+				if (file.exists() && !file.isDirectory()) {
+					file = file.getParentFile();
+				}
+				dlg.setFilterPath(file.getAbsolutePath());
+			}
+			dlg.setFilterExtensions(this.getGlobFromMime(mimeOut));			
+			outputPath = dlg.open();					
+			if (outputPath!=null ){
+				this.txtOutputDoc.setText(outputPath);
+			}
 		}
 	}
-
-	
-	
-	
-	public String addOutputDirectory(String output){
-		
-		String lastDir = "";
-		StringTokenizer st = new StringTokenizer(output, File.separator);
-		while(st.hasMoreTokens()){
-			lastDir = st.nextToken();	
-		}
-		//System.out.println("The last token is " + lastDir);
-		String strSubfolderOfInputFolder =output + File.separator + lastDir + File.separator;
-		return strSubfolderOfInputFolder;
-	}
-	
 	
 	public void sendJobInfoToMain() {
 		if (txtInputDoc.getText().equalsIgnoreCase("") || txtInputDoc == null
@@ -412,20 +393,9 @@ public class ConvertSingleFile extends Composite {
 			messageBox.open();
 			
 			
-		} else {
-			
-			//if the output is a file,  add the existing file name 
-			//and the proper extension
-			
-			File inputFile = new File (fileSelected);
-			
-			if (boolOutputIsDir==false){
-				outputPath = addFileNameToOutputPath(outputPath, inputFile);
-			}
-			
-			
+		} else {			
 			Job job = new Job();
-			job.setInputFile(inputFile);
+			job.setInputFile(new File(fileSelected));
 			job.setOutputFile(new File(outputPath));
 			job.setScript(scriptHandler);
 			job.setStatus(Status.WAITING);
@@ -434,43 +404,6 @@ public class ConvertSingleFile extends Composite {
 			dispose();
 		}
 	}
-	
-	
-	public String addFileNameToOutputPath(String outPath, File inPath){
-		String outPutPath = outPath;
-		
-		//only created if the output path is a directory.
-		//sanity check, already done in sendInfoToMain()
-		
-		if (boolOutputIsDir==false){
-		
-			//in this case the extension is an msglob, and the *.
-			//need to be removed
-			StringTokenizer stExt = new StringTokenizer(outExtensionPattern, ".");
-			String outExPat = "";
-			while (stExt.hasMoreTokens()){
-				outExPat = stExt.nextToken();
-			}
-			
-			//Name of the input path file
-			String strInPath = inPath.getName();
-			StringTokenizer st = new StringTokenizer(strInPath, ".");
-			//get just the name
-			
-			if (strInPath.endsWith("\\")){
-//				create a new path with the path, nameof file, and appropriate extension
-				outPutPath = outPath + st.nextToken()+ "." + outExPat ;
-			}
-			else{
-				//create a new path with the path, nameof file, and appropriate extension
-				outPutPath = outPath + "\\"+ st.nextToken()+ "." + outExPat ;
-			}
-		}
-		
-		System.out.println ("The REAL output path should be " + outPutPath);
-		return outPutPath;
-	}
-	
 	
 	
 	/**
@@ -495,81 +428,67 @@ public class ConvertSingleFile extends Composite {
 	
 	
 	
-	
-	
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public String [] getFileTypesForScriptHandler(String inOrOut){
-		
-		ArrayList alMsglobs = new ArrayList();
-		
-		System.out.println("GetFileTypes for Script");
-		Collection msglobs = null;
-		
-		//container to hold all the file types valid for script
-		ArrayList alValid = new ArrayList();
-		String [] arCompatibleFiles = null;
-		
-		//get the file types for the scripts
-		String fileType = null;
-		List list= this.scriptHandler.getTransformerInfoList();
-		
-		// get info on first transformer, change to list.get(list.size() - 1) for the last transformer
-		//no, can only take the file in first transformer in the script list...
-		TransformerInfo tinfo = (TransformerInfo)list.get(0);
-		
-		//Returns a collection of parameter information
-		Collection col = tinfo.getParameters();
-		
-		Iterator it = col.iterator();		
-		
-		while(it.hasNext()){
-			ParameterInfo pi =(ParameterInfo)it.next();
-			String parameter = pi.getDirection();
-			
-			
-			if (parameter !=null && parameter.equalsIgnoreCase(inOrOut)){
-				fileType = pi.getType();
-				System.out.println("Valid types for this script " + fileType);
-				
-				try {
-					MIMEType mt = MIMETypeFactory.newInstance().newMimeType(fileType);
-					msglobs = mt.getFilenamePatterns();
-				} catch (MIMETypeFactoryException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (MIMETypeException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				Iterator itPatterns = msglobs.iterator();	
-				int size = msglobs.size();
-				//arCompatibleFiles = new String [size];
-				
-				for (int j = 0; j<size; j++){
-					if (itPatterns.hasNext()){
-						String mimePattern = (String)itPatterns.next();
-						if (mimePattern!=null && !mimePattern.equalsIgnoreCase("")){
-							alMsglobs.add(mimePattern);
-							//arCompatibleFiles[j]=mimePattern;
-						}
-					}
-				}
-				
-				int count = alMsglobs.size();
-				arCompatibleFiles = new String [count];
-				Iterator itGlobs = alMsglobs.iterator();
-				
-				for (int k = 0; k<count; k++){
-					arCompatibleFiles[k]=(String)itGlobs.next();
-				}	
+	public String[] getGlobFromMime(String mime) {
+		try {
+			MIMEType type = MIMETypeRegistry.getInstance().getEntryByName(mime);
+			Object[] arr = type.getFilenamePatterns().toArray();
+			String[] ret = new String[arr.length + 1];
+			for (int i = 0; i < arr.length; ++i) {
+				ret[i] = (String)arr[i];
 			}
+			ret[arr.length] = "*.*";
+			//System.err.println("Glob: " + ret);
+			return ret;
+		} catch (MIMETypeRegistryException e) {
+		} catch (MIMETypeException e) {
 		}
-		return arCompatibleFiles;
+		return null;
 	}
+	
+	public String getMimeForProperty(String property) {
+		ScriptHandler handler = this.scriptHandler;
+		
+		// Generate random string
+		Random random =  new Random();
+        long long1 = random.nextLong();
+        long long2 = random.nextLong();
+        String hash1 = Long.toHexString(long1);
+        String hash2 = Long.toHexString(long2);
+        String hash = hash1 + hash2;
+        
+        // Set property
+        handler.setProperty(property, hash);
+        
+        // Search for script param
+        String taskName = null;
+        String paramName = null;
+        for (Iterator it = handler.getTasks().iterator(); it.hasNext(); ) {
+        	Task task = (Task)it.next();
+        	Collection params = task.getParameters().values();
+        	for (Iterator it2 = params.iterator(); it2.hasNext(); ) {
+        		Parameter param = (Parameter)it2.next();
+        		if (hash.equals(param.getValue())) {
+        			taskName = task.getName();
+        			paramName = param.getName();
+        			//System.err.println("Found script: " + taskName + ", param: " + paramName);
+        		}        		
+        	}
+        }
+        
+        // Search for parameter
+        TransformerInfo tInfo = dmfc.getTransformerInfo(taskName);
+    	Collection params = tInfo.getParameters();
+    	for (Iterator it = params.iterator(); it.hasNext(); ) {
+    		ParameterInfo pInfo = (ParameterInfo)it.next();
+    		if (pInfo.getName().equals(paramName)) {
+    			//System.err.println("The type is: " + pInfo.getType());
+    			return pInfo.getType();
+    		}
+    	}
+    	
+    	// Return null if nothing is found
+		return null;
+	}
+	
 	
 }

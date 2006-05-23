@@ -978,7 +978,7 @@ public class Window {
 	}
 	
 	public void getNewSingleFileScreen(){
-		convertSingleFile = new ConvertSingleFile();
+		convertSingleFile = new ConvertSingleFile(dmfc);
 		convertSingleFile.open();
 	}
 	
@@ -1073,7 +1073,7 @@ public class Window {
 		if(index<cue.getSizeOfQueue()){
 			Job job= cue.editJob(index);
 			cue.deleteFromQueue(index);
-			ConvertSingleFile csf = new ConvertSingleFile();
+			ConvertSingleFile csf = new ConvertSingleFile(dmfc);
 			csf.editConversion(job);
 			csf.open();	
 		}
