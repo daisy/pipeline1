@@ -100,7 +100,7 @@ public class Parameter {
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
             String propName = matcher.group(1);
-            String prop = (String)propertiesRef.get(propName);
+            String prop = (String)((Property)propertiesRef.get(propName)).getValue();
             matcher.appendReplacement(sb, prop.replaceAll("\\\\", "\\\\\\\\"));
         }
         matcher.appendTail(sb);

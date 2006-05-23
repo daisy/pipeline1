@@ -193,7 +193,9 @@ public class ScriptHandler extends EventSender {
 	        Element property = (Element)propertyList.item(i);
 	        String propertyName = XPathUtils.valueOf(property, "@name");
 	        String value = XPathUtils.valueOf(property, "@value");
-	        properties.put(propertyName, value);
+	        String type = XPathUtils.valueOf(property, "@type");
+	        Property prop = new Property(propertyName, value, type);
+	        properties.put(propertyName, prop);
 	    }
 	    
 	    // Read tasks
@@ -235,7 +237,12 @@ public class ScriptHandler extends EventSender {
     
     public boolean setProperty(String name, String value) {
         boolean ret = properties.containsKey(name);
-        properties.put(name, value);
+        if (ret) {
+        	Property prop = (Property)properties.get(name);
+        	prop.setValue(value);
+        } else {
+        	properties.put(name, new Property(name, value));
+        }        
         return ret;
     }
 

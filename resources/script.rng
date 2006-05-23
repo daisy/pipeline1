@@ -30,6 +30,11 @@
 				<attribute name="value">
 					<data type="normalizedString"/>
 				</attribute>
+				<optional>
+					<attribute name="type">
+						<data type="normalizedString"/>
+					</attribute>
+				</optional>
 			</element>
 		</zeroOrMore>
 	</define>
