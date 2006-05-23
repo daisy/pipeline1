@@ -2,8 +2,8 @@
 	<name>Daisy202 to Zed2005</name>
 	<description>Converts a Daisy 2.02 DTB to a Zed 2005 DTB</description>
 	
-	<property name="input" value="FIXME"/>
-	<property name="outputPath" value="FIXME"/>
+	<property name="input" value="FIXME" type="application/x-dtbd202ncc+xml"/>
+	<property name="outputPath" value="FIXME" type="application/x-filesystemDirectory"/>
 	
 	<task name="int_daisy_daisy2022Zed2005" interactive="false">
 	

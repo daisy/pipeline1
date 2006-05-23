@@ -2,8 +2,8 @@
 	<name>RTF to DTBook 2005</name>
 	<description>Converts an RTF document to DTBook</description>
 	
-	<property name="input" value="FIXME"/>
-	<property name="outputPath" value="FIXME"/>
+	<property name="input" value="FIXME" type="application/rtf"/>
+	<property name="outputPath" value="FIXME" type="application/x-dtbook+xml"/>
 	
 	<task name="ca_cnib_rtf2dtbook" interactive="false">
 

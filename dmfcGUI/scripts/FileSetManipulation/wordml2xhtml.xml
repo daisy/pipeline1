@@ -2,8 +2,8 @@
 	<name>WordML to XHTML (via DTBook)</name>
 	<description>Bla bla bla</description>
 	
-	<property name="input" value="FIXME"/>
-	<property name="outputPath" value="FIXME"/>
+	<property name="input" value="FIXME" type="application/xml"/>
+	<property name="outputPath" value="FIXME" type="application/xhtml+xml"/>
 	
 	
 	<task name="se_tpb_wordml2dtbook" interactive="true">
