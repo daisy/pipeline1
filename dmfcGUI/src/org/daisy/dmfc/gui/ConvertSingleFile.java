@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Text;
 
 
 /**
- * User chooses a single file, and output file to convert on this screen
+ * User chooses a single file to convert, and output file on this screen
  * @author Laurie Sherve
  *
  */
@@ -296,9 +296,6 @@ public class ConvertSingleFile extends Composite {
 			}
 		});
 		
-		
-		
-		
 		shell.pack();
 	}
 	
@@ -357,6 +354,7 @@ public class ConvertSingleFile extends Composite {
 			else{
 				//add a new directory to this...
 				this.txtOutputDoc.setText(outputPath);
+				System.out.println("outpath path is " + outputPath);
 			}
 		} else {
 			// File
@@ -439,7 +437,7 @@ public class ConvertSingleFile extends Composite {
 					ret[i] = (String)arr[i];
 				}
 				ret[arr.length] = "*.*";
-				//System.err.println("Glob: " + ret);
+				System.err.println("Glob: " + ret);
 				return ret;
 			} 		
 		} catch (MIMETypeRegistryException e) {
@@ -452,8 +450,17 @@ public class ConvertSingleFile extends Composite {
 		ScriptHandler handler = this.scriptHandler;
 		Map properties = handler.getProperties();
 		Property prop = (Property)properties.get(propertyName);
-		if (prop.getType() != null && !prop.getType().equals("")) {
-			return prop.getType();
+		try{
+			if (prop.getType() != null && !prop.getType().equals("")) {
+				System.out.println("The prop type is " + prop.getType());
+				return prop.getType();
+			}
+			else{
+				System.out.println("Property type equals \"\" ");
+			}
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage() + "Property type is null");
 		}
 		return null;		
 	}

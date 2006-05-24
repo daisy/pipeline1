@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.daisy.dmfc.core.DMFCCore;
+import org.daisy.dmfc.core.EventListener;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
@@ -30,7 +31,6 @@ import org.daisy.dmfc.gui.widgetproperties.ListProperties;
 import org.daisy.dmfc.gui.widgetproperties.TextProperties;
 import org.daisy.dmfc.gui.widgetproperties.TransformerListTableProperties;
 import org.daisy.dmfc.qmanager.Job;
-import org.daisy.dmfc.qmanager.LocalEventListener;
 import org.daisy.dmfc.qmanager.LocalInputListener;
 import org.daisy.dmfc.qmanager.Queue;
 import org.daisy.dmfc.qmanager.QueueRunner;
@@ -49,12 +49,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -80,7 +76,7 @@ public class Window {
 	private Shell shell;
 	private DMFCCore dmfc;
 	LocalInputListener lil;
-	LocalEventListener lel;
+	GUIEventListener gel;
 	
 	private static Window window;
 	
@@ -756,7 +752,7 @@ public class Window {
 	public void terminateJob(){
 		
 		lil.setAborted(true);
-		String originator = lel.getMessageOriginator();
+		String originator = gel.getMessageOriginator();
 		
 		MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
 				SWT.CANCEL);
@@ -779,20 +775,17 @@ public class Window {
 	public void setScriptDirectory(){
 		
 		lil = new LocalInputListener();
-		lel = new LocalEventListener();
+		gel = new GUIEventListener();
 		try {
-			dmfc = new DMFCCore(lil, lel);
+			dmfc = new DMFCCore(lil, gel);
 		} catch (DMFCConfigurationException e) {
 			e.printStackTrace();
 		}
 		
 		String curDir = System.getProperty("user.dir");
-		//System.out.println("the current user dir is: "+ curDir);
 		File newScriptDir = new File(curDir+ File.separator + "scripts");
 		
 		this.scriptDirectory=newScriptDir;
-		//System.out.println("new Script Dir " + scriptDirectory.getPath());
-		
 	}
 	
 	/**
@@ -860,17 +853,17 @@ public class Window {
 	public void viewRunDetails(){
 		UIManager.display.asyncExec(new Runnable(){
 			public void run(){
+				
 				if (btnViewDetails.getText().equalsIgnoreCase("View Run Details")){
 					btnViewDetails.setText("Hide Run Details");
-					compDetails.setVisible(true);
-					
+					compDetails.setVisible(true);			
 				}
 				else{
 					btnViewDetails.setText("View Run Details");
 					compDetails.setVisible(false);
 				}
 			}
-		});
+		});	
 		compDetails.setVisible(true);
 	}
 	
@@ -953,8 +946,8 @@ public class Window {
 		return this.dmfc;
 	}
 	
-	public LocalEventListener getLocalEventListener(){	
-		return lel;
+	public EventListener getLocalEventListener(){	
+		return gel;
 	}
 	
 	public boolean getExecuting(){
@@ -1278,124 +1271,14 @@ public class Window {
 		
 		executing=true;
 		
-		//place long running methods in a Thread..
-		//place all methods not in event loop in own thread
-		
-	//	UIManager.display.syncExec(new Runnable(){
-	//		public void run(){
-				
-				//enable and disable buttons
-				setRunTerminateButtons();
-				//execute();	
-				execution();
-				
-	//		}
-	//	});
-		
+		//enable and disable buttons
+		setRunTerminateButtons();
+		execution();
 	}
 	
-	
-	
-	public void execute(){
-		//walk through the queue and return jobs
-		LinkedList jobList = cue.getLinkedListJobs();
-		
-		//number in queue
-		int jobNumber = 0;
-		
-		//count the transformers
-		int count = -1;
-		
-		Iterator it = jobList.iterator();
-		while(it.hasNext()){
-			
-//			increment the progress bar and time remaining	
-			//How to get the times progressively?
-			pb.setSelection((int)(lel.getProgress() * 100));
-			txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
-			txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
-			
-			//System.out.println("lel.getProgress()" + lel.getProgress() * 100);
-			//System.out.println("lel.getTimeLeft()" + lel.getTimeLeft());
-			//System.out.println("lel.getTotalTime()" + lel.getTotalTime());
-			//System.out.println("getTransformerRunning() " + lel.getTransformerRunning());
-			//System.out.println("type" + lel.getType());	
-			
-			//get the Job from the Queue
-			final Job job = (Job)it.next();
-			
-			//set the name of the conversion running
-			txtConversionRunning.setText(job.getScript().getName());
-			scriptHandler = job.getScript();
-			
-			//update the transformer table
-			transformerList = new TransformerList(job);
-			tableViewer.setInput(transformerList);
-			
-			
-			//add the input and output files to the script
-			//actually, this only returns if the parameters are present in the script...
-			scriptHandler.setProperty("input", job.getInputFile().getPath());
-			scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
-			
-			
-			UIManager.display.syncExec(new Runnable(){
-				public void run(){
-					int count = -1;
-					try{	
-						//after the script handler is finished executing, set job to finished.
-						scriptHandler.execute();
-						
-						pb.setSelection((int)(lel.getProgress() * 100));
-						txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
-						txtEstimatedTime.setText(String.valueOf(lel.getTotalTime()));
-						
-						int transNumber = job.getScript().getCurrentTaskIndex();
-						//System.out.println("what is the current task index? " + transNumber);
-						count++;
-						tableViewer.getTable().getItem(job.getScript().getCurrentTaskIndex()).setChecked(true);
-						
-//						finally, reset the status in the jobs table
-//						after the script has finished..
-						job.setStatus(Status.COMPLETED);
-						tableJobViewer.refresh();	
-						
-					}
-					catch(ScriptException se){
-						//if the script is not valid
-						//set the script in the first table to status failed.
-						job.setStatus(Status.FAILED);
-						tableJobViewer.refresh();
-						//show message to the user
-						MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-								SWT.CANCEL);
-						messageBox.setMessage(se.getMessage() + "\n Please copy the above message \n " +
-						"the conversion details and \n give to your system administrator.");
-						messageBox.setText("Error:  Script Exception");
-						messageBox.open();	
-						
-					}
-					catch(Exception e){
-						//any other possible exceptions? This is not too informative.
-						job.setStatus(Status.FAILED);
-						tableJobViewer.refresh();
-						MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-								SWT.CANCEL);
-						messageBox.setMessage(e.getMessage() + "\n Please copy the above message \n " +
-						" and give to your system administrator.");
-						messageBox.setText("Error");
-						messageBox.open();
-					}
-					
-				}
-			});
-			
-		}
-		this.executing=false;
-		this.btnRemoveFinishedJobs.setEnabled(true);
-	}
 	
 	public void execution(){
+		
 //		walk through the queue and return jobs
 		LinkedList jobList = cue.getLinkedListJobs();
 		
@@ -1420,24 +1303,20 @@ public class Window {
 			transformerList = new TransformerList(job);
 			tableViewer.setInput(transformerList);
 			
+//			//send all widgets to the EventListener
+			gel.setAttributes(txtElapsedTime, txtEstimatedTime, pb, tableViewer, job);
 			
 			//add the input and output files to the script
-			//actually, this only returns if the parameters are present in the script...
 			scriptHandler.setProperty("input", job.getInputFile().getPath());
 			scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
 		
-			
-			JobRunner jr = new JobRunner (this.shell, this.scriptHandler, job, pb, txtElapsedTime, 
-					txtEstimatedTime, lel, tableViewer, tableJobViewer);
-			
+			JobRunner jr = new JobRunner (this.shell, this.scriptHandler, job,  tableJobViewer);
 			jr.start();
 			
-			tableJobViewer.refresh();
+			//tableJobViewer.refresh();
 			
 		}
-			
-			
-			
+
 			this.executing=false;
 			this.btnRemoveFinishedJobs.setEnabled(true);
 			

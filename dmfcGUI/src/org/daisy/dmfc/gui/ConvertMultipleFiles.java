@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.daisy.dmfc.core.script.Property;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.ParameterInfo;
 import org.daisy.dmfc.core.transformer.TransformerInfo;
@@ -27,6 +29,8 @@ import org.daisy.util.mime.MIMEType;
 import org.daisy.util.mime.MIMETypeException;
 import org.daisy.util.mime.MIMETypeFactory;
 import org.daisy.util.mime.MIMETypeFactoryException;
+import org.daisy.util.mime.MIMETypeRegistry;
+import org.daisy.util.mime.MIMETypeRegistryException;
 import org.daisy.util.file.FileUtils;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -41,6 +45,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -236,14 +241,12 @@ public class ConvertMultipleFiles {
 					
 					populateCompatibleFilesTable();
 					//determine if output is a file or folder
-					setFileOrDirFlag();
-					
+					setFileOrDirFlag();	
 				}
 			}
 		});
 		
 		//End input stuff
-		
 		
 		//Compatible file table and buttons 
 		
@@ -272,10 +275,8 @@ public class ConvertMultipleFiles {
 		this.btnSelect.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				tableFileViewer.setAllChecked(true);
-				
 			}
 		});
-		
 		
 		data= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
@@ -285,7 +286,6 @@ public class ConvertMultipleFiles {
 		this.btnUnCheck.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				tableFileViewer.setAllChecked(false);
-				
 			}
 		});
 		
@@ -303,9 +303,6 @@ public class ConvertMultipleFiles {
 		tableFileViewer.setLabelProvider(new FileLabelProvider()); 
 		
 		//set the input data once it is chosen.
-		
-		
-		
 		//end compFilesTable
 		
 		
@@ -411,7 +408,6 @@ public class ConvertMultipleFiles {
 		btnOK.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				sendJobInfoToMain();
-				
 			}
 		});
 		
@@ -423,13 +419,8 @@ public class ConvertMultipleFiles {
 				dispose();
 			}
 		});
-		
-		
 		shell.pack();
 	}	
-	
-	
-	
 	
 	public void open() {
 		shell.open();
@@ -446,13 +437,9 @@ public class ConvertMultipleFiles {
 	
 	public void createFileTableViewer(){
 		tableFileViewer = new CheckboxTableViewer(tblCompatibleFiles);
-		//tableFileViewer = new TableViewer(tblCompatibleFiles);
 		tableFileViewer.setUseHashlookup(true);
 		tableFileViewer.setColumnProperties(columnFileNames);
 	}
-	
-	
-	
 	
 	//calls from listeners
 	/**
@@ -551,7 +538,6 @@ public class ConvertMultipleFiles {
 				}
 				
 				
-				
 				for(int i = 0; i<count;i++){
 					Job job = new Job();
 					
@@ -575,17 +561,13 @@ public class ConvertMultipleFiles {
 						e.printStackTrace();
 					}
 					
-					
 					job.setInputFile((File)checkedObject[i]);
 					job.setOutputFile(outFile);
 					job.setScript(scriptHandler);
 					job.setStatus(Status.WAITING);
 					Window.getInstance().addToQueue(job);
-					
 				}
 			}
-			
-			
 			al.clear();
 			dispose();
 		}
@@ -681,6 +663,69 @@ public class ConvertMultipleFiles {
 	}
 	
 	
+	/**
+	 * Sets directory selected by user
+	 *
+	 */
+	public void setFileSelected() {
+		FileDialog dlg = new FileDialog(shell, SWT.OPEN);
+		dlg.setText("Choose an input file");
+		if (txtInputDoc != null) {
+			File file = new File(txtInputDoc.getText());
+			if (file.exists() && !file.isDirectory()) {
+				file = file.getParentFile();
+			}
+			dlg.setFilterPath(file.getAbsolutePath());
+		}
+		
+		//filter names shown
+		dlg.setFilterExtensions(this.getGlobFromMime(this.getMimeForProperty("input")));
+		
+	//	fileSelected = dlg.open();		
+		
+	//	if (fileSelected!=null ){
+	//		System.out.println("File selected  " + fileSelected);
+	//		this.txtInputDoc.setText(fileSelected);
+	//	}
+		
+	}
+	
+	
+	
+	public String[] getGlobFromMime(String mime) {
+		if (mime == null) {
+			return null;
+		}
+		try {
+			MIMEType type = MIMETypeRegistry.getInstance().getEntryByName(mime);
+			if (type != null) {
+				Object[] arr = type.getFilenamePatterns().toArray();
+				String[] ret = new String[arr.length + 1];
+				for (int i = 0; i < arr.length; ++i) {
+					ret[i] = (String)arr[i];
+				}
+				ret[arr.length] = "*.*";
+				//System.err.println("Glob: " + ret);
+				return ret;
+			} 		
+		} catch (MIMETypeRegistryException e) {
+		} catch (MIMETypeException e) {
+		}
+		return null;
+	}
+	
+	public String getMimeForProperty(String propertyName) {
+		ScriptHandler handler = this.scriptHandler;
+		Map properties = handler.getProperties();
+		Property prop = (Property)properties.get(propertyName);
+		if (prop.getType() != null && !prop.getType().equals("")) {
+			return prop.getType();
+		}
+		return null;		
+	}
+	
+	
+	
 	public void setOutputPath(){
 		if (strSubfolderOfInputFolder==null){
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
@@ -720,11 +765,6 @@ public class ConvertMultipleFiles {
 				txtOutputDoc.setText(strSubfolderOfOutputFolder);	
 			}
 		}
-		
-		else{
-			//do nothing
-		}
-		
 	}
 	
 	/**
@@ -760,7 +800,6 @@ public class ConvertMultipleFiles {
 			String parameter = pi.getDirection();
 			
 			
-			
 			if (parameter !=null &&parameter.equalsIgnoreCase(inOut)){
 				fileType = pi.getType();
 				System.out.println("Valid types for this script " + inOut + " "+ fileType);
@@ -793,9 +832,7 @@ public class ConvertMultipleFiles {
 						while (st.hasMoreTokens()){
 							//String firstToken = st.nextToken();
 							//System.out.println("The first token is: " + firstToken);
-							
 							 extension = st.nextToken();
-							
 							System.out.println("File exension is "+ extension);
 						}
 						alValid.add(extension);
