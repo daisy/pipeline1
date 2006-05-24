@@ -328,7 +328,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
 
                     Transformer transformer = factory.newTransformer(xslt);
                     transformer.transform(xml, new StreamResult(
-                            schematronSchema.getFile().getCanonicalPath()));
+                            schematronSchema.getFile().toURL().toString()));
                     schSource = new InputSource(schematronSchema.getFile()
                             .toURL().toString());
                     schSource.setSystemId(schematronSchema.getFile().toURL().toString());
