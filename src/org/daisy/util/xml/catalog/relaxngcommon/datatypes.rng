@@ -64,6 +64,12 @@
 		</data>
 	</define>
 	
+	<define name="datatype.uri.z3986-2005.subset.relative.smilwithfragment">
+		<data type="string">
+			<param name="pattern">[A-Za-z0-9/\.\-_]+\.[Ss][Mm][Ii][Ll]#.+</param>
+		</data>
+	</define>
+	
 	<define name="datatype.string.nondtbns">
 		<data type="string">
 			<a:documentation>when other meta elems in group must have other ns than
@@ -182,7 +188,8 @@
 	
 	<define name="datatype.resxpathsubset">
 		<data type="string">
-			<param name="pattern">//(.+)((\\[.+\\])?)</param>
+			<!-- <param name="pattern">//(.+)((\\[.+\\])?)</param> -->
+			<param name="pattern">//(\*|(\p{L}|_)(\p{L}|[0-9]|[\.\-_])+)(\[@(\p{L}|_)(\p{L}|[0-9]|[\.\-_])+=("[^"]*"|'[^']*')\])*</param>
 		</data>
 	</define>
 	
