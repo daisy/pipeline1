@@ -17,7 +17,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
-import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
@@ -49,7 +48,7 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
     static SAXParserFactory saxFactory;
     static SAXParser saxParser;
     static DocumentBuilderFactory domFactory = null;
-    static DocumentBuilder domBuilder = null;
+    static DocumentBuilder domBuilder = null;    
     private Map idMap = new HashMap(); // <idvalue>,<carrierQname>
     private boolean isWellformed = true;
     private boolean isDTDValid = true;
@@ -69,21 +68,19 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
     
     private void initialize() throws ParserConfigurationException, SAXException  {
         if (saxFactory == null) {
+        	        	
+    		System.setProperty("org.apache.xerces.xni.parser.Configuration", 
+    				"org.apache.xerces.parsers.XMLGrammarCachingConfiguration");
+        	
             saxFactory = SAXParserFactory.newInstance();
             saxFactory.setValidating(getValidatingProperty());
             saxFactory.setNamespaceAware(true);
-
+            		
             saxParser = saxFactory.newSAXParser();
+            
             //if string interning fails, non of the startElement algos will work, therefore throw
             saxFactory.setFeature("http://xml.org/sax/features/string-interning", true);
-            
-//            try {
-//            	saxFactory.setFeature("http://xml.org/sax/features/use-entity-resolver2", true);            	
-//            } catch (Exception e) {
-//            	//dont throw if this fails
-//            	myExceptions.add(e);
-//            }
-            
+                        
             // setFeatures if nonvalidating
             if (!saxFactory.isValidating()) {
                 try {
@@ -94,18 +91,15 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
                 	//dont throw if these fails
                 	myExceptions.add(e);
                 }
-            }
+            }       
+            
         }
+        
         saxParser.getXMLReader().setContentHandler(this);
         saxParser.getXMLReader().setEntityResolver(this);
         saxParser.getXMLReader().setDTDHandler(this);
         saxParser.getXMLReader().setErrorHandler(this);
-//        try {
-//        saxParser.getXMLReader().setProperty("http://xml.org/sax/properties/declaration-handler", this);
-//        } catch (Exception e) {
-//        	//dont throw if this fails
-//        	myExceptions.add(e);
-//        }
+        
     }
 
     private boolean getValidatingProperty() {
