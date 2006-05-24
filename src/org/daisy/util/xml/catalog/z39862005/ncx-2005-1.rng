@@ -165,8 +165,9 @@
 
    <define name="attlist.content" combine="interleave">
      <ref name="attribute.id.optional"/>
-	 <ref name="attribute.src.required.z3986-2005.subset">
+	 <ref name="attribute.src.required.uri.z3986-2005.subset.relative.smilwithfragment">
        <zed:test id="ncx_contentSrcAttrValue"/>		
+       <zed:test id="ncx_contentSrcHasFragment"/>
 	 </ref>  
    </define>
   </div>
