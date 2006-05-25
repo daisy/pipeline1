@@ -8,6 +8,7 @@ import java.util.LinkedList;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.EventListener;
+import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
@@ -31,10 +32,10 @@ import org.daisy.dmfc.gui.widgetproperties.ListProperties;
 import org.daisy.dmfc.gui.widgetproperties.TextProperties;
 import org.daisy.dmfc.gui.widgetproperties.TransformerListTableProperties;
 import org.daisy.dmfc.qmanager.Job;
+import org.daisy.dmfc.qmanager.LocalEventListener;
 import org.daisy.dmfc.qmanager.LocalInputListener;
 import org.daisy.dmfc.qmanager.Queue;
 import org.daisy.dmfc.qmanager.QueueRunner;
-import org.daisy.dmfc.qmanager.Status;
 import org.daisy.util.xml.validation.ValidationException;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -75,8 +76,8 @@ public class Window {
 	private Display display;
 	private Shell shell;
 	private DMFCCore dmfc;
-	LocalInputListener lil;
-	GUIEventListener gel;
+	InputListener lil;
+	EventListener lel;
 	
 	private static Window window;
 	
@@ -751,8 +752,8 @@ public class Window {
 	 */
 	public void terminateJob(){
 		
-		lil.setAborted(true);
-		String originator = gel.getMessageOriginator();
+		((LocalInputListener)lil).setAborted(true);
+		String originator = ((LocalEventListener)lel).getMessageOriginator();
 		
 		MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
 				SWT.CANCEL);
@@ -775,17 +776,20 @@ public class Window {
 	public void setScriptDirectory(){
 		
 		lil = new LocalInputListener();
-		gel = new GUIEventListener();
+		lel = new LocalEventListener();
 		try {
-			dmfc = new DMFCCore(lil, gel);
+			dmfc = new DMFCCore(lil, lel);
 		} catch (DMFCConfigurationException e) {
 			e.printStackTrace();
 		}
 		
 		String curDir = System.getProperty("user.dir");
+		//System.out.println("the current user dir is: "+ curDir);
 		File newScriptDir = new File(curDir+ File.separator + "scripts");
 		
 		this.scriptDirectory=newScriptDir;
+		//System.out.println("new Script Dir " + scriptDirectory.getPath());
+		
 	}
 	
 	/**
@@ -853,17 +857,17 @@ public class Window {
 	public void viewRunDetails(){
 		UIManager.display.asyncExec(new Runnable(){
 			public void run(){
-				
 				if (btnViewDetails.getText().equalsIgnoreCase("View Run Details")){
 					btnViewDetails.setText("Hide Run Details");
-					compDetails.setVisible(true);			
+					compDetails.setVisible(true);
+					
 				}
 				else{
 					btnViewDetails.setText("View Run Details");
 					compDetails.setVisible(false);
 				}
 			}
-		});	
+		});
 		compDetails.setVisible(true);
 	}
 	
@@ -946,8 +950,8 @@ public class Window {
 		return this.dmfc;
 	}
 	
-	public EventListener getLocalEventListener(){	
-		return gel;
+	public LocalEventListener getLocalEventListener(){	
+		return (LocalEventListener)lel;
 	}
 	
 	public boolean getExecuting(){
@@ -1269,16 +1273,21 @@ public class Window {
 	 */
 	public void start(){
 		
-		executing=true;
-		
+		executing=true;	
 		//enable and disable buttons
 		setRunTerminateButtons();
+		//execute();	
 		execution();
+		
+		
+		
 	}
 	
 	
+	
+	
+	
 	public void execution(){
-		
 //		walk through the queue and return jobs
 		LinkedList jobList = cue.getLinkedListJobs();
 		
@@ -1293,7 +1302,11 @@ public class Window {
 		while(it.hasNext()){
 			
 			//get the Job from the Queue
-			 job = (Job)it.next();
+			  job = (Job)it.next();
+			 job.setStatus(2);
+			tableJobViewer.refresh();
+			 
+			 
 			
 			//set the name of the conversion running
 			txtConversionRunning.setText(job.getScript().getName());
@@ -1303,20 +1316,23 @@ public class Window {
 			transformerList = new TransformerList(job);
 			tableViewer.setInput(transformerList);
 			
-//			//send all widgets to the EventListener
-			gel.setAttributes(txtElapsedTime, txtEstimatedTime, pb, tableViewer, job);
 			
 			//add the input and output files to the script
+			//actually, this only returns if the parameters are present in the script...
 			scriptHandler.setProperty("input", job.getInputFile().getPath());
 			scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
 		
-			JobRunner jr = new JobRunner (this.shell, this.scriptHandler, job,  tableJobViewer);
+			
+			JobRunner jr = new JobRunner (this.shell, this.scriptHandler, job,  tableViewer, tableJobViewer);
+			
 			jr.start();
 			
-			//tableJobViewer.refresh();
+			tableJobViewer.refresh();
 			
 		}
-
+			
+			
+			
 			this.executing=false;
 			this.btnRemoveFinishedJobs.setEnabled(true);
 			
