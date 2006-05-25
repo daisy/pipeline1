@@ -20,7 +20,7 @@ public class MenuDMFC {
 
 	
 	//MenuItems
-	MenuItem enableJobDetails;
+	MenuItem viewLogFile;
 	MenuItem selectJobDetails;
 	MenuItem convertMultipleFile;
 	MenuItem convertSingleFile;
@@ -63,32 +63,7 @@ public class MenuDMFC {
 		});
 
 		
-//	Top Level "View"
-		/*
-		MenuItem view = new MenuItem(menu, SWT.CASCADE);
-		view.setText("View");
-		Menu viewmenu = new Menu(shell, SWT.DROP_DOWN);
-		view.setMenu(viewmenu);
-		
-		enableJobDetails = new MenuItem(viewmenu, SWT.PUSH);
-		enableJobDetails.setText("Conversion Details\tCtrl+E");
-		enableJobDetails.setEnabled(false);
-		enableJobDetails.setAccelerator(SWT.MOD1 + 'E');
-		enableJobDetails.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				window=Window.getInstance();
-				if (window.executing==true){
-					window = Window.getInstance();
-					window.showConversionDetails();
-					//CurrentJobDetails.getInstance().open();
-				}	
-				else{
-					System.out.println("Should not be enabled.");
-				}
-			}
-		});
-		
-		*/
+
 	
 		
 	//Top Level "Action"
@@ -160,6 +135,9 @@ public class MenuDMFC {
 				}
 			}
 		});
+		
+	
+		
 		
 		
 		
@@ -277,6 +255,32 @@ public class MenuDMFC {
 				
 			}
 		});
+	
+		
+		
+	//	Top Level "LogFile"
+	
+		MenuItem logFile = new MenuItem(menu, SWT.CASCADE);
+		logFile.setText("Log File");
+		Menu logmenu = new Menu(shell, SWT.DROP_DOWN);
+		logFile.setMenu(logmenu);
+		
+		viewLogFile = new MenuItem(logmenu, SWT.PUSH);
+		viewLogFile.setText("View Log File\tCtrl+L");
+		viewLogFile.setEnabled(true);
+		viewLogFile.setAccelerator(SWT.MOD1 + 'L');
+		viewLogFile.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				window=Window.getInstance();
+				
+					window = Window.getInstance();
+					window.getLogFile();
+			}
+		});
+		
+		
+		
+		
 		
 		
 	//Top Level "Help"
@@ -342,7 +346,7 @@ public class MenuDMFC {
 		this.convertMultipleFile = convertMultipleFile;
 	}
 
-
+/*
 	public MenuItem getEnableJobDetails() {
 		return enableJobDetails;
 	}
@@ -351,7 +355,7 @@ public class MenuDMFC {
 	public void setEnableJobDetails(MenuItem enableJobDetails) {
 		this.enableJobDetails = enableJobDetails;
 	}
-
+*/
 
 	public MenuItem getRunConversions() {
 		return runConversions;
