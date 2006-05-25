@@ -1,7 +1,10 @@
 package org.daisy.dmfc.gui;
 
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,7 +35,7 @@ import org.daisy.dmfc.gui.widgetproperties.ListProperties;
 import org.daisy.dmfc.gui.widgetproperties.TextProperties;
 import org.daisy.dmfc.gui.widgetproperties.TransformerListTableProperties;
 import org.daisy.dmfc.qmanager.Job;
-import org.daisy.dmfc.qmanager.LocalEventListener;
+import org.daisy.dmfc.gui.core.LocalEventListener;
 import org.daisy.dmfc.qmanager.LocalInputListener;
 import org.daisy.dmfc.qmanager.Queue;
 import org.daisy.dmfc.qmanager.QueueRunner;
@@ -183,6 +186,7 @@ public class Window {
 	//ConvertMultipleFiles screen
 	ConvertMultipleFiles cmv;
 	ConvertSingleFile convertSingleFile;
+	LogFile logFile;
 	
 	//tableViewer
 	TableViewer tableViewer;
@@ -937,10 +941,10 @@ public class Window {
 		else{
 			this.scriptHandler = (ScriptHandler)hmScriptHandlers.get(fileSelectedFromTree.getName());
 		}
-		
-		
-		
+			
 	}
+	
+	
 	
 	public Composite getCompJobsInQueue(){
 		return this.compJobsInQueue;
@@ -977,6 +981,27 @@ public class Window {
 	public void getNewSingleFileScreen(){
 		convertSingleFile = new ConvertSingleFile(dmfc);
 		convertSingleFile.open();
+	}
+	
+	public String getLogFileContents(){
+		String logFileContents="";
+		String logFileName = System.getProperty("user.dir")+ File.separator + "dmfc_lastrun.log";
+		
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(logFileName));
+			String str;
+			while ((str = in.readLine()) != null) {
+				logFileContents = logFileContents+ str + "\n";
+			}
+			in.close();
+		} catch (IOException e) {
+		}
+		return logFileContents;
+	}
+	
+	public void getLogFile(){
+		logFile = new LogFile(getLogFileContents());
+		logFile.open();
 	}
 	
 	//*****************************************
@@ -1264,6 +1289,9 @@ public class Window {
 		
 	}
 	
+
+	
+	
 	
 	
 	/**
@@ -1276,7 +1304,10 @@ public class Window {
 		executing=true;	
 		//enable and disable buttons
 		setRunTerminateButtons();
-		//execute();	
+		
+		//pass the widgets to the event listener
+		this.getLocalEventListener().setAttributes(txtElapsedTime, txtElapsedTime, pb);
+		
 		execution();
 		
 		

@@ -2,7 +2,7 @@ package org.daisy.dmfc.gui;
 
 
 /**
- * Main to run the Daisy MultiFormat Converter
+ * Main to run the Daisy MultiFormat Converter GUI
  * @author Laurie Sherve
  *  
  */
@@ -13,7 +13,5 @@ public class DMFCMain {
 		UIManager.load();
 		UIManager.open();
 		UIManager.dispose();
-		
 	}
-	
 }
