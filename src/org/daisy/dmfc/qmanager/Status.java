@@ -26,10 +26,10 @@ public class Status {
 					str = "Completed";
 					break;
 				case 4:
-					str = "Failed";
+					str = "Failed. See Log";
 					break;
 				default:
-					str = "Bad result";
+					str = "Error. See log";
 					break;
 			}
 			return str;
