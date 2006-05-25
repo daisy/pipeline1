@@ -20,11 +20,9 @@ import org.daisy.dmfc.qmanager.Queue;
 
 public class JobList {
 
-
 	private LinkedList jobList;
 	private Set changeListeners = new HashSet();
 
-	
 	/**
 	 * Constructor
 	 */
