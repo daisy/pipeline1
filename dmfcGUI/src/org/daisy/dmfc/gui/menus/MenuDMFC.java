@@ -151,8 +151,9 @@ public class MenuDMFC {
 		manageJobsInQueue.setMenu(submenu);
 		
 		final MenuItem subactionSelectJob = new MenuItem(submenu, SWT.PUSH);
-		subactionSelectJob.setText("&Select Job From List\tCtrl+J");
-		subactionSelectJob.setAccelerator(SWT.CTRL+'J');
+		subactionSelectJob.setText("Select Job From List");
+	//	subactionSelectJob.setText("&Select Job From List\tCtrl+J");
+	//	subactionSelectJob.setAccelerator(SWT.CTRL+'J');
 		subactionSelectJob.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -162,8 +163,9 @@ public class MenuDMFC {
 			});
 		
 		final MenuItem subactionItemUp = new MenuItem(submenu, SWT.PUSH);
-		subactionItemUp.setText("&Move Up List\tCtrl+U");
-		subactionItemUp.setAccelerator(SWT.CTRL+'U');
+		subactionItemUp.setText("Move Up List");
+		//subactionItemUp.setText("&Move Up List\tCtrl+U");
+		//subactionItemUp.setAccelerator(SWT.CTRL+'U');
 		subactionItemUp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -174,8 +176,9 @@ public class MenuDMFC {
 			});
 		
 		final MenuItem subactionItemDown = new MenuItem(submenu, SWT.PUSH);
-		subactionItemDown.setText("&Move Down List\tCtrl+D");
-		subactionItemDown.setAccelerator(SWT.CTRL+'D');
+		subactionItemDown.setText("Move Down List");
+		//subactionItemDown.setText("&Move Down List\tCtrl+W");
+		//subactionItemDown.setAccelerator(SWT.CTRL+'W');
 		subactionItemDown.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -186,8 +189,9 @@ public class MenuDMFC {
 		
 		
 		final MenuItem subactionItemRemove = new MenuItem(submenu, SWT.PUSH);
-		subactionItemRemove.setText("&Remove From List\tCtrl+M");
-		subactionItemRemove.setAccelerator(SWT.CTRL+'M');
+		subactionItemRemove.setText("Remove From List");
+		//subactionItemRemove.setText("&Remove From List\tCtrl+M");
+		//subactionItemRemove.setAccelerator(SWT.CTRL+'M');
 		subactionItemRemove.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -198,8 +202,9 @@ public class MenuDMFC {
 		
 		
 		final MenuItem subactionItemChange = new MenuItem(submenu, SWT.PUSH);
-		subactionItemChange.setText("&Change File Selection\tCtrl+N");
-		subactionItemChange.setAccelerator(SWT.CTRL+'N');
+		subactionItemChange.setText("Change File Selection");
+		//subactionItemChange.setText("&Change File Selection\tCtrl+N");
+		//subactionItemChange.setAccelerator(SWT.CTRL+'N');
 		subactionItemChange.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -245,6 +250,7 @@ public class MenuDMFC {
 			}
 		});
 				
+		/*
 		MenuItem startOver = new MenuItem(actionmenu, SWT.PUSH);
 		startOver.setText("Start Over\tCtrl+O");
 		startOver.setAccelerator(SWT.MOD1 + 'O');
@@ -255,7 +261,7 @@ public class MenuDMFC {
 				
 			}
 		});
-	
+	*/
 		
 		
 	//	Top Level "LogFile"

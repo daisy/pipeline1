@@ -58,7 +58,7 @@ public class MenuSingleConvert {
 		action.setMenu(actionmenu);
 	
 		MenuItem selectInputFile = new MenuItem(actionmenu, SWT.PUSH);
-		selectInputFile.setText("Select Input File\tCtrl+F");
+		selectInputFile.setText("Select Input File");
 		selectInputFile.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -69,7 +69,7 @@ public class MenuSingleConvert {
 		
 		
 		MenuItem setOuputPath = new MenuItem(actionmenu, SWT.PUSH);
-		setOuputPath.setText("Select Output Path\tCtrl+O");
+		setOuputPath.setText("Select Output Path");
 		setOuputPath.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -81,6 +81,7 @@ public class MenuSingleConvert {
 		
 		MenuItem ok = new MenuItem(actionmenu, SWT.PUSH);
 		ok.setText("OK - Save\tCtrl+O");
+		ok.setAccelerator(SWT.MOD1 + 'O');
 		ok.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -91,6 +92,7 @@ public class MenuSingleConvert {
 		
 		MenuItem cancel = new MenuItem(actionmenu, SWT.PUSH);
 		cancel.setText("Cancel \tCtrl+C");
+		cancel.setAccelerator(SWT.MOD1 + 'C');
 		cancel.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -109,6 +111,12 @@ public class MenuSingleConvert {
 		
 		MenuItem dmfcGuiHelp = new MenuItem(helpmenu, SWT.PUSH);
 		dmfcGuiHelp.setText("GUI Help\tCtrl+H");
+		dmfcGuiHelp.setAccelerator(SWT.MOD1 + 'H');
+		dmfcGuiHelp.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				new WebLinks("http://www.daisy.org/projects/dmfc/HelpGui/index.html");
+			}
+			});
 		
 		MenuItem about = new MenuItem(helpmenu, SWT.PUSH);
 		about.setText("Go to the DAISY web site\tCtrl+D");

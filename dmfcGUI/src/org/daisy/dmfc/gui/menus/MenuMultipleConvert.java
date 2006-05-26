@@ -36,9 +36,9 @@ public class MenuMultipleConvert {
 		Menu filemenu = new Menu(shell, SWT.DROP_DOWN);
 		file.setMenu(filemenu);
 		MenuItem actionItem = new MenuItem(filemenu, SWT.PUSH);
-		actionItem.setText("Exit\tCtrl+Q");	
+		actionItem.setText("Exit\tCtrl+X");	
 		
-		actionItem.setAccelerator(SWT.MOD1 + 'Q');
+		actionItem.setAccelerator(SWT.MOD1 + 'X');
 		actionItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				MessageBox mb = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
@@ -65,7 +65,7 @@ public class MenuMultipleConvert {
 		action.setMenu(actionmenu);
 	
 		MenuItem selectFolder = new MenuItem(actionmenu, SWT.PUSH);
-		selectFolder.setText("Select Folder\tCtrl+F");
+		selectFolder.setText("Select Folder");
 		selectFolder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -76,19 +76,17 @@ public class MenuMultipleConvert {
 		
 		
 		MenuItem selectFiles = new MenuItem(actionmenu, SWT.PUSH);
-		selectFiles.setText("Select Compatible Files\tCtrl+L");
+		selectFiles.setText("Select Compatible Files");
 		selectFiles.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
 				window.getConvertMultipleFiles().getTableCompatibleFiles().forceFocus();
-				
-				
 			}
 			});
 		
 		
 		MenuItem setOuputPath = new MenuItem(actionmenu, SWT.PUSH);
-		setOuputPath.setText("Select Output Path\tCtrl+O");
+		setOuputPath.setText("Select Output Path");
 		setOuputPath.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -101,11 +99,11 @@ public class MenuMultipleConvert {
 		
 		MenuItem ok = new MenuItem(actionmenu, SWT.PUSH);
 		ok.setText("OK - Save\tCtrl+O");
+		ok.setAccelerator(SWT.MOD1 + 'O');
 		ok.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=window.getInstance();
 				window.getConvertMultipleFiles().sendJobInfoToMain();
-				
 			}
 			});
 		
@@ -113,12 +111,11 @@ public class MenuMultipleConvert {
 		
 		MenuItem cancel = new MenuItem(actionmenu, SWT.PUSH);
 		cancel.setText("Cancel \tCtrl+C");
+		cancel.setAccelerator(SWT.MOD1 + 'C');
 		cancel.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
 				window.getConvertMultipleFiles().dispose();
-				
-				
 			}
 			});
 		
@@ -133,6 +130,7 @@ public class MenuMultipleConvert {
 		
 		MenuItem dmfcGuiHelp = new MenuItem(helpmenu, SWT.PUSH);
 		dmfcGuiHelp.setText("GUI Help\tCtrl+H");
+		dmfcGuiHelp.setAccelerator(SWT.MOD1 + 'H');
 		dmfcGuiHelp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				new WebLinks("http://www.daisy.org/projects/dmfc/HelpGui/index.html");
@@ -140,9 +138,9 @@ public class MenuMultipleConvert {
 			});
 		
 		
-		
 		MenuItem daisyWebSite = new MenuItem(helpmenu, SWT.PUSH);
 		daisyWebSite.setText("Go to the DAISY web site\tCtrl+D");
+		daisyWebSite.setAccelerator(SWT.MOD1 + 'D');
 		daisyWebSite.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				new WebLinks("http://www.daisy.org");
