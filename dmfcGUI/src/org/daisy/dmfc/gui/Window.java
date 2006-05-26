@@ -116,7 +116,7 @@ public class Window {
 	Button btnRun;
 	Button btnDetails;
 	Button btnTerminate;
-	Button btnStart;
+	//Button btnStart;
 	Button btnRemoveFinishedJobs;
 	Button btnViewDetails;
 	
@@ -540,7 +540,7 @@ public class Window {
 			}
 		});
 		
-		
+		/*
 		data= new GridData (GridData.HORIZONTAL_ALIGN_FILL);
 		data.horizontalSpan=1;
 		this.btnStart = new Button(bottomComp, SWT.SHADOW_OUT);
@@ -552,7 +552,7 @@ public class Window {
 				restartConverter();
 			}
 		});
-		
+		*/
 		
 		data=new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 		data.horizontalSpan = 1;
@@ -1014,7 +1014,6 @@ public class Window {
 	
 	public void setRunTerminateButtons(){
 		this.btnTerminate.setEnabled(true);
-		this.btnStart.setEnabled(true);
 		this.btnRun.setEnabled(false);
 		
 	}

@@ -31,6 +31,8 @@ import org.daisy.util.mime.MIMETypeFactory;
 import org.daisy.util.mime.MIMETypeFactoryException;
 import org.daisy.util.mime.MIMETypeRegistry;
 import org.daisy.util.mime.MIMETypeRegistryException;
+import org.daisy.util.file.EFile;
+import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -62,7 +64,6 @@ import org.eclipse.swt.widgets.Text;
  *
  */
 public class ConvertMultipleFiles {
-	
 	
 	Shell shell;
 	Display display;
@@ -114,6 +115,7 @@ public class ConvertMultipleFiles {
 	
 	//String pattern of output path
 	String outExtensionPattern= "";
+	String fileSelected;
 	
 	//GridData - reinitialized for each control.
 	GridData data;
@@ -240,7 +242,7 @@ public class ConvertMultipleFiles {
 				if (dirSelected!=null){
 					
 					populateCompatibleFilesTable();
-					//determine if output is a file or folder
+					//determine if output is a file or directory
 					setFileOrDirFlag();	
 				}
 			}
@@ -368,7 +370,6 @@ public class ConvertMultipleFiles {
 		data.horizontalSpan=1;
 		data.widthHint=400;
 		txtOutputDoc=new Text(compOutputFields, SWT.BORDER);
-		// textProperties.setProperties(txtOutputDoc, null);
 		txtOutputDoc.setLayoutData(data);
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
@@ -376,7 +377,6 @@ public class ConvertMultipleFiles {
 		btnBrowseOutput = new Button(compOutputFields, SWT.BORDER);
 		btnBrowseOutput.setEnabled(false);
 		btnBrowseOutput.setText("Browse");
-		// buttonProperties.setProperties(btnBrowseOutput, "Browse"); 
 		btnBrowseOutput.setLayoutData(data); 
 		this.btnBrowseOutput.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -384,10 +384,7 @@ public class ConvertMultipleFiles {
 			}
 		});
 		
-		
-		
-		
-		
+
 		
 		// bottom OK and Cancel buttons
 		Composite compOkCancelButtons = new Composite (shell, SWT.NONE);
@@ -440,257 +437,52 @@ public class ConvertMultipleFiles {
 		tableFileViewer.setUseHashlookup(true);
 		tableFileViewer.setColumnProperties(columnFileNames);
 	}
+		
 	
-	//calls from listeners
-	/**
-	 * 
-	 */
-	public void setFileOrDirFlag(){
-		alFileOrDir = getFileTypesForScriptHandler("out");
-		System.out.println("the size of the returned out types is " + alFileOrDir.size());
-		
-		//a hack until all tdfs completed
-		if (alFileOrDir.size()==0){
-			boolOutputIsDir=true;
-		}
-		
-		Iterator itFileOrDir = alFileOrDir.iterator();
-		while (itFileOrDir.hasNext()){
-			String pattern = (String)itFileOrDir.next(); 
-			if (pattern.equalsIgnoreCase("application/x-filesystemDirectory")){ 
-				System.out.println("The output type is a directory");
-				boolOutputIsDir=true;
-			}
-			else{
-				System.out.println("The output type is a file");
-				outExtensionPattern = pattern;
-			}
-		}
-	}	
+	//********************************************************************
+	//********************************************************************
+	//All methods used to populate compatible files table
+	//********************************************************************
+	//********************************************************************
 	
 	public void populateCompatibleFilesTable(){
 		if (dirSelected==null){
 			System.out.println("Directory selected is null");
 		}
 		else{
+			
+			//for old way, to be deprecated
 			fileDirSelected = new File(dirSelected);
 			cftp.setDirSelected(fileDirSelected);
-			alTableContents= cftp.setTableContents(getFileTypesForScriptHandler("in"));	
-			tableFileViewer.setInput(alTableContents);
-		}
-	}
-	
-	
-	public void sendJobInfoToMain() {
-		Object [] checkedObject = tableFileViewer.getCheckedElements();
-		int count = checkedObject.length;
-		System.out.println("No of files selected " + count);
-		
-		if (tblCompatibleFiles.getItemCount()==0 
-				|| txtOutputDoc.getText().equalsIgnoreCase("")
-				|| txtOutputDoc == null) {
 			
-			// display an error message and return.
-			
-			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-					SWT.CANCEL);
-			messageBox.setMessage("Compatible Files Table and Output paths must be completed");
-			messageBox.setText("Error:  Complete Fields");
-			messageBox.open();			
-		}
-		
-		
-		else if(count<=0){
-			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-					SWT.CANCEL);
-			messageBox.setMessage("Please check files to be converted.");
-			messageBox.setText("Error:  Choose Compatible Files");
-			messageBox.open();
-		}
-		
-		else {
-			//all use the same conversion
-			//Create all job objects from each input file chosen
-			
-			outputPath = txtOutputDoc.getText();
-			
-			//escape all paths.  This is only used to make the directory.
-			//make all directories, even ancestors that don't exist
-			
-			String makeDirectoryOnly = outputPath.replaceAll("\\\\", "\\\\\\\\");
-			File makeDirFile = new File(makeDirectoryOnly);
-			
-			if (makeDirFile.exists() && makeDirFile.isFile()){
-				MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-						SWT.CANCEL);
-				messageBox.setMessage("The directory  \n" + makeDirFile.getPath()+" \n exists as a file and cannot be created. ");
-				messageBox.setText("Error:  Directory exists as file");
-				messageBox.open();	
-				
-			}
-			
+			if (getGlobExtensionArray()!=null){
+				alTableContents=setTableContents(getGlobExtensionArray());
+				}
+			//old way that still works.....but lousy code
 			else{
-				try {
-					FileUtils.createDirectory(makeDirFile);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				
-				for(int i = 0; i<count;i++){
-					Job job = new Job();
-					
-					File inPutFile = (File)checkedObject[i];
-					if(boolOutputIsDir==false){
-						outputPath=addFileNameToOutputPath(outputPath, inPutFile);
-					}
-					
-					outputPath = outputPath.replaceAll("\\\\", "\\\\\\\\");
-					//System.out.println("Double escaped output path?" + outputPath);
-					File outFile = new File(outputPath);
-					
-					
-					try {
-						//if the file already exists, it will be overwritten
-						if(!outFile.exists()){
-							boolean success = outFile.createNewFile();
-						}
-					} catch (IOException e) {
-						/*@todo a messsage that the output file was not created.*/
-						e.printStackTrace();
-					}
-					
-					job.setInputFile((File)checkedObject[i]);
-					job.setOutputFile(outFile);
-					job.setScript(scriptHandler);
-					job.setStatus(Status.WAITING);
-					Window.getInstance().addToQueue(job);
-				}
+				alTableContents= cftp.setTableContents(getFileTypesForScriptHandler("in"));	
 			}
-			al.clear();
-			dispose();
+			tableFileViewer.setInput(alTableContents);	
 		}
 	}
-	
-	
-	public String addFileNameToOutputPath(String outPath, File inPath){
-		String outPutPath = outPath;
-		
-		//only created if the output path is a directory.
-		//sanity check, already done in sendInfoToMain()
-		
-		
-		if (boolOutputIsDir==false){
-		
-			//Name of the input path file
-			String strInPath = inPath.getName();
-			StringTokenizer st = new StringTokenizer(strInPath, ".");
-			//get just the name
-			
-			//create a new path with the path, nameof file, and appropriate extension
-			outPutPath = outPath + st.nextToken()+ "." + outExtensionPattern ;
-			
-		}
-		
-		System.out.println ("The REAL output path should be " + outPutPath);
-		return outPutPath;
-	}
-	
 	
 	/**
-	 * Sets directory selected.
-	 * The listener then calls getFileTypesForScriptHandler(String inorout)
-	 * and the directory selected is recursively traversed for all
-	 * files compatible with the mime type in the tdf file.
-	 * From the selecteddirectory, the default output path is also determined
-	 * and placed in the output path text field .  This may be changed
-	 * by the user. 
-	 *
+	 * Takes array of mime globs and returns an array of
+	 * extensions String []
+	 * @return String []
 	 */
-	public void setDirectorySelected() {
-		
-		File[] roots = File.listRoots();
-		int size = roots.length;
-		
-		/*
-		 for (int i = 0; i<size;i++){
-			System.out.println("FileSystem roots are " + roots[i].getPath());
+	public String [] getGlobExtensionArray(){
+		String [] arMatches=null;
+		String [] arFiles = this.getGlobFromMime(this.getMimeForProperty("input"));
+		if (arFiles!=null){
+			 arMatches = new String [arFiles.length];
+			for (int i = 0; i<arFiles.length; i++){
+				String mimePattern= getGlobExtension(arFiles[i]);
+				arMatches[i]=mimePattern;
+			}	
 		}
-		*/
-		
-		DirectoryDialog directoryDialog = new DirectoryDialog(shell);
-		directoryDialog.setText("Choose a directory");
-		directoryDialog.setFilterPath("/");
-		dirSelected = directoryDialog.open();
-		
-		for (int i = 0; i<size; i++){
-			String rootPath = roots[i].getPath();
-			if (dirSelected!=null && dirSelected.equalsIgnoreCase(rootPath)){
-				dirSelected=null;
-				MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-						SWT.CANCEL);
-				messageBox.setMessage("Please choose a subdirectory of "+  rootPath);
-				messageBox.setText("Error:  Be More Selective");
-				messageBox.open();	
-			}
-		}
-		
-		if (dirSelected!=null){
-			System.out.println("Directory Selected  " + dirSelected);
-			txtDirectorySelected.setText(dirSelected);
-			
-			//set the output path to a subfolder of the input directory selected
-			
-			String lastDir = "";
-			StringTokenizer st = new StringTokenizer(dirSelected, File.separator);
-			while(st.hasMoreTokens()){
-				lastDir = st.nextToken();
-				
-			}
-			
-			//System.out.println("The last token is " + lastDir);
-			strSubfolderOfInputFolder =dirSelected + File.separator + lastDir + File.separator;
-			
-//			if the output path is a directory...
-//          the directory will be placed here
-			//otherwise, a file of the same name but with output path extension
-			//will be created as the output path
-			
-			
-			txtOutputDoc.setText(strSubfolderOfInputFolder);
-		}		
+		return arMatches;
 	}
-	
-	
-	/**
-	 * Sets directory selected by user
-	 *
-	 */
-	public void setFileSelected() {
-		FileDialog dlg = new FileDialog(shell, SWT.OPEN);
-		dlg.setText("Choose an input file");
-		if (txtInputDoc != null) {
-			File file = new File(txtInputDoc.getText());
-			if (file.exists() && !file.isDirectory()) {
-				file = file.getParentFile();
-			}
-			dlg.setFilterPath(file.getAbsolutePath());
-		}
-		
-		//filter names shown
-		dlg.setFilterExtensions(this.getGlobFromMime(this.getMimeForProperty("input")));
-		
-	//	fileSelected = dlg.open();		
-		
-	//	if (fileSelected!=null ){
-	//		System.out.println("File selected  " + fileSelected);
-	//		this.txtInputDoc.setText(fileSelected);
-	//	}
-		
-	}
-	
-	
 	
 	public String[] getGlobFromMime(String mime) {
 		if (mime == null) {
@@ -714,63 +506,111 @@ public class ConvertMultipleFiles {
 		return null;
 	}
 	
+	
+	
 	public String getMimeForProperty(String propertyName) {
 		ScriptHandler handler = this.scriptHandler;
 		Map properties = handler.getProperties();
 		Property prop = (Property)properties.get(propertyName);
-		if (prop.getType() != null && !prop.getType().equals("")) {
-			return prop.getType();
-		}
-		return null;		
-	}
-	
-	
-	
-	public void setOutputPath(){
-		if (strSubfolderOfInputFolder==null){
-			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-					SWT.CANCEL);
-			messageBox.setMessage("Sorry, First select an input folder.");
-			messageBox.setText("Error:  Select Input Folder");
-			messageBox.open();	
-		}
-		else{
-			txtOutputDoc.setText(strSubfolderOfInputFolder);
-		}
-	}
-	
-	
-	public void resetOutputPath(){
-		txtOutputDoc.setText("");
-	}
-	
-	
-	public void setOutputPathSelected() {
-		if (btnRadio2.isEnabled()){
-			DirectoryDialog directoryDialog = new DirectoryDialog(shell);
-			directoryDialog.setText("Choose a directory");
-			directoryDialog.setFilterPath("/");
-			outputPath = directoryDialog.open();
-			
-			if (outputPath!=null){
-				
-				String lastDir = "";
-				StringTokenizer st = new StringTokenizer(outputPath, File.separator);
-				while(st.hasMoreTokens()){
-					lastDir = st.nextToken();
-					
-				}
-				System.out.println("The last token is " + lastDir);
-				strSubfolderOfOutputFolder =outputPath + File.separator + lastDir + File.separator;
-				txtOutputDoc.setText(strSubfolderOfOutputFolder);	
+		try{
+			if (prop.getType() != null && !prop.getType().equals("")) {
+				System.out.println("The prop type is " + prop.getType());
+				return prop.getType();
+			}
+			else{
+				System.out.println("Property type equals \"\" ");
 			}
 		}
+		catch(Exception e){
+			System.out.println(e.getMessage() + "Property type is null");
+		}	
+		return null;
+	}
+	
+	
+	/**
+	 * Gets an arraylist of all files from the directory and
+	 * all recursive directories.
+	 * @param alPatterns
+	 * @return ArrayList - used as input for FileTableViewer
+	 */
+	public ArrayList setTableContents(String [] mimePatternExtensions){
+		ArrayList alCompatibleFiles = new ArrayList();
+		
+		//Get all compatible files in the top (base) selected folder
+		File directorySelected = new File(dirSelected);
+		EFolder eFolder=null;
+		try {
+			eFolder = new EFolder(directorySelected.getPath());
+			//System.out.println("eFolder has folder children " + eFolder.hasFolderChildren());
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		File [] arBaseFiles = directorySelected.listFiles();
+		String strEnd= "";
+		
+		for (int j=0; j<arBaseFiles.length; j++){
+			//for each file, create an EFile
+			File compareFile = arBaseFiles[j];
+			EFile eFile = new EFile(compareFile.getPath());
+			strEnd = eFile.getExtension();
+			//System.out.println("the filename is " + compareFile.getName());
+			//	System.out.println("    the string extension is: " + strEnd);
+			
+//			compare them to the mimetype pattern(s) and 
+			//only place compatible files in the array
+			
+			for (int k=0; k<mimePatternExtensions.length; k++){
+				String type = mimePatternExtensions[k];
+				if (strEnd.equalsIgnoreCase(type)){
+					alCompatibleFiles.add(compareFile);
+				}
+			}
+		}
+		
+		if (eFolder.hasFolderChildren()){
+			
+			Collection recursiveFolders = eFolder.getFolders(true, ".+", false);
+			Iterator itFolders = recursiveFolders.iterator();
+			while (itFolders.hasNext()){
+				File folderFile = (File)itFolders.next();
+				//System.out.println("Names of all folders : " + folderFile.getPath());
+				//get all files in this folder
+				File [] arFiles = folderFile.listFiles();
+				
+				for (int j=0; j<arFiles.length; j++){
+					//for each file, create an EFile
+					File compareFile = arFiles[j];
+					EFile eFile = new EFile(compareFile.getPath());
+					strEnd = eFile.getExtension();
+					//System.out.println("the filename is " + compareFile.getName());
+					//	System.out.println("    the string extension is: " + strEnd);
+					
+//					compare them to the mimetype pattern(s) and 
+					//only place compatible files in the array
+					
+					for (int k=0; k<mimePatternExtensions.length; k++){
+						String type = mimePatternExtensions[k];
+						if (strEnd.equalsIgnoreCase(type)){
+							alCompatibleFiles.add(compareFile);
+						}
+					}
+				}
+			}
+		}
+		int size = alCompatibleFiles.size();
+		System.out.println("How many compatible files in the array?" + size);
+		return alCompatibleFiles;
 	}
 	
 	/**
 	 * Method used to return either possible "in" parameters
 	 * (file types possible for the conversion)
 	 * or "out" parameters - if output is a file or a directory.
+	 ******** This method is to be deprecated once all scripts
+	 ******** have mime properties.
 	 * @return ArrayList of msglobs - file extensions
 	 */
 	public ArrayList getFileTypesForScriptHandler(String inOrOut){
@@ -851,10 +691,292 @@ public class ConvertMultipleFiles {
 	
 	
 	
+	//*********************************************************************
+	//end of methods to populate compatible files table
+	//*********************************************************************
 	
 	
 	
+	/**
+	 * Set output path methods.
+	 * If btnRadio1 isEnabled(), the directory shown is a 
+	 * subdirectory of the same name as the input folder
+	 * If btnRadio2 isEnabled(), the directory may be chosen 
+	 * from a directory dialog by the user
+	 * In either case, the output is determined to be a file or
+	 * a directory.
+	 * if (outputPath is a Directory), the directory shown is propagated 
+	 * to the Job Table.
+	 * if (outputPath is a File), the file name is added to the directory
+	 * chosen and propagated to the Job Table.
+	 */
 	
+	
+	
+	/**
+	 * Resets first default path if radio buttons switched
+	 */
+	public void setOutputPath(){
+		if (strSubfolderOfInputFolder==null){
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+			messageBox.setMessage("Sorry, First select an input folder.");
+			messageBox.setText("Error:  Select Input Folder");
+			messageBox.open();	
+		}
+		else{
+			txtOutputDoc.setText(strSubfolderOfInputFolder);
+		}
+	}
+	
+	
+	/**
+	 * Created and populated same time input folder is chosen.
+	 */
+	public void setDefaultOutputPath(){
+		if (btnRadio1.isEnabled()){
+			String lastDir = "";
+			StringTokenizer st = new StringTokenizer(dirSelected, File.separator);
+			while(st.hasMoreTokens()){
+				lastDir = st.nextToken();
+			}
+			strSubfolderOfInputFolder =dirSelected + File.separator + lastDir + File.separator;
+			txtOutputDoc.setText(strSubfolderOfInputFolder);
+		}
+	}
+	
+	/**
+	 * called if user wants to set own outputPath
+	 * different from the default output path
+	 */
+	public void setOutputPathSelected() {
+		if (btnRadio2.isEnabled()){
+			DirectoryDialog directoryDialog = new DirectoryDialog(shell);
+			directoryDialog.setText("Choose a directory");
+			directoryDialog.setFilterPath("/");
+			outputPath = directoryDialog.open();
+			
+			if (outputPath!=null){
+				String lastDir = "";
+				StringTokenizer st = new StringTokenizer(outputPath, File.separator);
+				while(st.hasMoreTokens()){
+					lastDir = st.nextToken();
+				}
+				strSubfolderOfOutputFolder =outputPath + File.separator + lastDir + File.separator;
+				txtOutputDoc.setText(strSubfolderOfOutputFolder);	
+			}
+		}
+	}
+	
+	/**
+	 * Determines is output path is a file or a directory
+	 * If file, sets the appropriate extension of the
+	 * file output.
+	 */
+	public void setFileOrDirFlag(){
+		String mimeOut = this.getMimeForProperty("outputPath");
+		if (mimeOut!=null){
+			if ("application/x-filesystemDirectory".equals(mimeOut)) {	
+				// Directory
+				boolOutputIsDir = true;
+			}
+			else{
+				//File
+				boolOutputIsDir=false;
+				StringTokenizer st = new StringTokenizer(mimeOut, ".");
+				while (st.hasMoreTokens()){
+					outExtensionPattern=st.nextToken();
+				}
+			}
+		}
+	}	
+	
+	/**
+	 * Method that sends all jobs to the jobs table
+	 */
+	public void sendJobInfoToMain() {
+		Object [] checkedObject = tableFileViewer.getCheckedElements();
+		int count = checkedObject.length;
+		System.out.println("No of files selected " + count);
+		
+		if (tblCompatibleFiles.getItemCount()==0 
+				|| txtOutputDoc.getText().equalsIgnoreCase("")
+				|| txtOutputDoc == null) {
+			
+			// display an error message and return.
+			
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+			messageBox.setMessage("Compatible Files Table and Output paths must be completed");
+			messageBox.setText("Error:  Complete Fields");
+			messageBox.open();			
+		}
+		
+		
+		else if(count<=0){
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+			messageBox.setMessage("Please check files to be converted.");
+			messageBox.setText("Error:  Choose Compatible Files");
+			messageBox.open();
+		}
+		
+		else {
+			//all use the same conversion
+			//Create all job objects from each input file chosen
+			
+			outputPath = txtOutputDoc.getText();
+			
+			//escape all paths.  This is only used to make the directory.
+			//make all directories, even ancestors that don't exist
+			
+			String makeDirectoryOnly = outputPath.replaceAll("\\\\", "\\\\\\\\");
+			File makeDirFile = new File(makeDirectoryOnly);
+			
+			if (makeDirFile.exists() && makeDirFile.isFile()){
+				MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+						SWT.CANCEL);
+				messageBox.setMessage("The directory  \n" + makeDirFile.getPath()+" \n exists as a file and cannot be created. ");
+				messageBox.setText("Error:  Directory exists as file");
+				messageBox.open();	
+				
+			}
+			
+			else{
+				try {
+					FileUtils.createDirectory(makeDirFile);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
+				for(int i = 0; i<count;i++){
+					Job job = new Job();
+					
+					File inPutFile = (File)checkedObject[i];
+					if(boolOutputIsDir==false){
+						outputPath=addFileNameToOutputPath(outputPath, inPutFile);
+					}
+					
+					outputPath = outputPath.replaceAll("\\\\", "\\\\\\\\");
+					//System.out.println("Double escaped output path?" + outputPath);
+					File outFile = new File(outputPath);
+					
+					try {
+						//if the file already exists, it will be overwritten
+						if(!outFile.exists()){
+							boolean success = outFile.createNewFile();
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+					job.setInputFile((File)checkedObject[i]);
+					job.setOutputFile(outFile);
+					job.setScript(scriptHandler);
+					job.setStatus(Status.WAITING);
+					Window.getInstance().addToQueue(job);
+				}
+			}
+			al.clear();
+			dispose();
+		}
+	}
+	
+	
+	public String addFileNameToOutputPath(String outPath, File inPath){
+		String outPutPath = outPath;
+		
+		//used only if the output path is a file.
+			
+		if (boolOutputIsDir==false){
+		
+			//Name of the input path file
+			String strInPath = inPath.getName();
+			StringTokenizer st = new StringTokenizer(strInPath, ".");
+			
+			//create a new path with the path, nameof file, and appropriate extension
+			outPutPath = outPath + st.nextToken()+ "." + outExtensionPattern ;	
+		}
+		
+		//System.out.println ("The REAL output path should be " + outPutPath);
+		return outPutPath;
+	}
+	
+	
+	/**
+	 * Sets directory selected and default output path.
+	 * Listener next populates the compatible files table.
+	 * From the selected directory, the default output path is also determined
+	 * and placed in the output path text field .  This may be changed
+	 * by the user. 
+	 *
+	 */
+	public void setDirectorySelected() {
+		
+		File[] roots = File.listRoots();
+		int size = roots.length;
+		
+		DirectoryDialog directoryDialog = new DirectoryDialog(shell);
+		directoryDialog.setText("Choose a directory");
+		directoryDialog.setFilterPath("/");
+		dirSelected = directoryDialog.open();
+		
+		for (int i = 0; i<size; i++){
+			String rootPath = roots[i].getPath();
+			if (dirSelected!=null && dirSelected.equalsIgnoreCase(rootPath)){
+				dirSelected=null;
+				MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+						SWT.CANCEL);
+				messageBox.setMessage("Please choose a subdirectory of "+  rootPath);
+				messageBox.setText("Error:  Be More Selective");
+				messageBox.open();	
+			}
+		}
+		
+		if (dirSelected!=null){
+			//System.out.println("Directory Selected  " + dirSelected);
+			txtDirectorySelected.setText(dirSelected);
+			
+			//the default output path is also set
+			setDefaultOutputPath();
+		}		
+	}
+	
+	/**
+	 *Removes the extension from an msglob
+	 *i.e. if the glob pattern is "*.html"
+	 *this method will return "html"
+	 *
+	 *Warning, this method may return a blank string, ""
+	 *
+	 * @param pattern - String
+	 * @return String - just the extension
+	 */
+	public String getGlobExtension(String pattern){
+		String extension = "";
+		if (!pattern.equalsIgnoreCase("")){
+			StringTokenizer st = new StringTokenizer(pattern, ".");
+			while (st.hasMoreTokens()){
+				 extension = st.nextToken();
+			}
+		}
+		return extension;
+	}
+	
+	
+	public void resetOutputPath(){
+		txtOutputDoc.setText("");
+	}
+	
+	public ArrayList getArrayListTableContents(){
+		return this.alTableContents;
+	}
+	
+	public Table getTableCompatibleFiles(){
+		return this.tblCompatibleFiles;
+	}
 	
 	
 	/**
@@ -878,12 +1000,6 @@ public class ConvertMultipleFiles {
 		}	
 	}
 	
-	public ArrayList getArrayListTableContents(){
-		return this.alTableContents;
-	}
 	
-	public Table getTableCompatibleFiles(){
-		return this.tblCompatibleFiles;
-	}
 	
 }
