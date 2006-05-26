@@ -41,7 +41,7 @@ public class JobQueueTableProperties {
 	
 		tcStatus = new TableColumn (table, SWT.LEFT);
 		tcStatus.setText("Status");
-		tcStatus.setWidth(75);
+		tcStatus.setWidth(100);
 		tcStatus.setResizable(true);
 	
 		tcJobs = new TableColumn (table, SWT.LEFT);
@@ -57,7 +57,7 @@ public class JobQueueTableProperties {
 		tcOutputFile = new TableColumn (table, SWT.LEFT);
 		tcOutputFile.setText("Output File Name");
 		tcOutputFile.setWidth(200);
-		tcOutputFile.setResizable(false);
+		tcOutputFile.setResizable(true);
 	
 	}
 	

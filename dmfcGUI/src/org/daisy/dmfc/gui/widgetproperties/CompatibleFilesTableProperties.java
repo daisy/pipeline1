@@ -42,8 +42,16 @@ public class CompatibleFilesTableProperties {
 		
 	}
 	
+	
+	/**
+	 * Gets a list of all files from the directory and
+	 * all recursive directories.
+	 * @param alPatterns
+	 * @return
+	 */
 	public ArrayList setTableContents(ArrayList alPatterns){
 		
+		System.out.println("The directory selected is " + dirSelected);
 		ArrayList alCompatibleFiles = new ArrayList();
 		
 		File fileDirSelected = this.dirSelected;
@@ -51,14 +59,13 @@ public class CompatibleFilesTableProperties {
 		try {
 			
 			 eFolder = new EFolder(this.dirSelected.getPath());
-			 //System.out.println("eFolder has folder children " + eFolder.hasFolderChildren());
+			 System.out.println("eFolder has folder children " + eFolder.hasFolderChildren());
 			 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	
-				
 				//get all files in this folder
 				File [] arBaseFiles = fileDirSelected.listFiles();
 				String strEnd= "";
@@ -134,7 +141,7 @@ public class CompatibleFilesTableProperties {
 			}
 		}
 		int size = alCompatibleFiles.size();
-		//System.out.println("How many compatible files in the array?" + size);
+		System.out.println("How many compatible files in the array?" + size);
 		return alCompatibleFiles;
 	}
 	
