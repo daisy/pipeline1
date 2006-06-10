@@ -18,7 +18,6 @@
 
 <mimeRegistry>
 	<!-- 
-		last edit: mgylling 20060422
 		http://www.w3schools.com/media/media_mimeref.asp
 		http://www.iana.org/assignments/media-types/
 	-->	
@@ -41,7 +40,7 @@
 		<type id="texi" name="application/x-texinfo" namePatterns="*.texi *.texinfo"/>		
 		<!-- archives -->
 		<type id="zip" name="application/zip" namePatterns="*.zip"/>
-		<type id="z" name="application/x-compress" namePatterns="*.z"/>
+		<type id="zcmp" name="application/x-compress" namePatterns="*.z"/>
 		<type id="tgz" name="application/x-compressed" 	namePatterns="*.tgz"/>
 		<type id="ps" name="application/postscript" namePatterns="*.ai *.eps *.ps"/>
 		<type id="gtar" name="application/x-gtar" namePatterns="*.gtar"/>
@@ -69,6 +68,9 @@
 		<type id="z3986resource" name="application/x-dtbresource+xml" parentTypes="xml" namePatterns="*.res"/>
 		<type id="z3986dtbook" name="application/x-dtbook+xml" parentTypes="xml" namePatterns="*.xml"/>
 		<type id="z3986ncx" name="application/x-dtbncx+xml" parentTypes="xml" namePatterns="*.ncx"/>
+		<!-- PDTB 1.0 -->
+		<type id="pdtb-uak" name="application/x-pdtb+uak" parentTypes="xml" namePatterns="*.uak"/>
+		<type id="pdtb-bka" name="application/x-pdtb+uak" parentTypes="xml" namePatterns="*.bka"/>
 	</directory>
 
 	<directory name="audio">

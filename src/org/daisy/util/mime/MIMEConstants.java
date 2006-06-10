@@ -31,6 +31,8 @@ public final class MIMEConstants {
 	public static final String MIME_APPLICATION_X_DTBNCX_XML = "application/x-dtbncx+xml";
 	public static final String MIME_APPLICATION_X_DTBOOK_XML = "application/x-dtbook+xml";
 	public static final String MIME_APPLICATION_X_DTBRESOURCE_XML = "application/x-dtbresource+xml";
+	public static final String MIME_APPLICATION_X_PDTB_UAK = "application/x-pdtb+uak";
+	public static final String MIME_APPLICATION_X_PDTB_BKA = "application/x-pdtb+bka";	
 	public static final String MIME_APPLICATION_X_GTAR = "application/x-gtar";
 	public static final String MIME_APPLICATION_X_GZIP = "application/x-gzip";
 	public static final String MIME_APPLICATION_X_LATEX = "application/x-latex";
