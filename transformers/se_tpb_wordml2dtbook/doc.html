@@ -1,80 +1,233 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+ * WordML2DTBook
+ * Copyright © 2006 The Swedish Library of Talking Books and Braille, TPB (www.tpb.se)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>WordML2DTBook</title>
+		<style type="text/css">
+			.revision-060410 {
+				background-color: #FFFF80;
+				text-decoration: underline;
+			}
+			body, table {
+				font-family: helvetica, arial, sans-serif;
+				font-size: 10pt;
+				margin: 1em;
+			}
+			div.main {
+				margin-top: 2em;
+				margin-left: 5em;
+				width: 35em;
+			}
+			div.example {
+				border-style: solid;
+				padding: 1em;
+				border-width: 2px;
+			}
+			th {
+				vertical-align: top;
+			}
+		</style>
 	</head>
 	<body>
-		<h1>WordML2DTBook as of November 21, 2005</h1>
-		<h2>General assumptions</h2>
-		<p>The text must be contained in a single flow. The converter has not been designed for nor tested 
-		with anchored or free floating objects.</p>
-		<p>The nesting of headings must be in accordance with DTBook-structure. E.g., the sequence<br/>
-		h2<br/>
-		text<br/>
-		h4<br/>
-		will produce an invalid DTBook.</p>
-		<h2>List of addressed objects:</h2>
-		<ul>
-			<li>Paragraph styles</li>
-			<li>Character styles</li>
-			<li>Lists</li>
-			<li>Tables</li>
-			<li>Footnotes</li>
-			<li>Images</li>
-		</ul>
-		<p>Objects not in this list are ignored, e.g. page breaks, cross references...</p>
-		<h2>Paragraph and character styles</h2>
-		<h3>Paragraph styles</h3>
-		<p>The WordML2DTBook transform will recognize the following built-in paragraph formats:</p>
-		<table border="1">
-			<tr><th>name</th><th>action</th></tr>
-			<tr><td>heading 1</td><td>h1</td></tr>
-			<tr><td>heading 2</td><td>h2</td></tr>
-			<tr><td>heading 3</td><td>h3</td></tr>
-			<tr><td>heading 4</td><td>h4</td></tr>
-			<tr><td>heading 5</td><td>h5</td></tr>
-			<tr><td>heading 6</td><td>h6</td></tr>
-			<tr><td>footnote text</td><td>a block of consecutive paragraphs with footnote text is wrapped in a note-tag and each paragraph is wrapped in a p-tag</td></tr>
-			<tr><td>block text</td><td>a block of consecutive paragraphs with block text is wrapped in a blockquote-tag and each paragraph is wrapped in a p-tag</td></tr>
-			<tr><td>annotation text</td><td>the content is commented out</td></tr>
-		</table>
-		<h3>Character styles</h3>
-		<p>The WordML2DTBook transform will recognize the following built-in character formats:</p>
-		<table border="1">
-			<tr><th>name</th><th>action</th></tr>
-			<tr><td>strong</td><td>strong</td></tr>
-			<tr><td>emphasis</td><td>em</td></tr>
-			<tr><td>page number</td><td>pagenum</td></tr>
-			<tr><td>footnote reference</td><td>noteref</td></tr>
-		</table>
-		<h4>Note on page number</h4>
-		<p>The outlook is that the transform is used with documents that originate from some other program. Thus, the page number character style should be used to mark were the pages break in the original document and the contents of each style instance must be unique within the document. The transform does not recognise ordinary page breaks in Word. If this behaviour is desirable or not is open for discussion, since the page number style is used in other contexts within Word.</p>
-		<h3>Customizing</h3>
-		<p>Additional styles can be defined using the custom section of the "mappings" tag
-		set. It has been suggested that this section should be separated from the xslt.</p>
-		<h2>Structure</h2>
-		<p>WordML contains wrapper elements that closely matches the levelx tagging, which consequently are converted into levelx tags.</p>
-		<h2>Lists</h2>
-		<p>List paragraphs are converted into lists of type pl and the list item symbol is kept as contents.</p>
-		<p>Hierarchical lists will be flattened.</p>
-		<h2>Tables</h2>
-		<p>Tables are converted, but row spanning can't be used.</p>
-		<h2>Footnotes</h2>
-		<p>By using standard footnotes i Word, the link between note and reference is preserved. If this is
+		<div class="main">
+			<h1>WordML2DTBook</h1>
+			<p>Original version: November 21, 2005</p>
+			<p>
+				<span class="revision-060410">First revision: June 12, 2006.</span>
+			</p>
+			<p class="revision-060410">This XSLT convert documents from WordML to DTBook - either from within Word 2003 using the "Save as..." feature (selecting this stylesheet when saving as xml) or using other XML/XSLT enviorments.</p>
+			<h2>General assumptions</h2>
+			<p class="revision-060410">The conversion has been designed for and tested with documents using a single text flow. Anchored or free floating objects should be avoided entierly (however this does not apply to footnotes).</p>
+			<p class="revision-060410">Word has a more flexible view on structure than DTBook does. Rather than trying to force these odd structures into DTBook - e.g. by adding empty elements - the user is expected to follow a few simple restrictions when creating the documents in Word.</p>
+			<p>
+				<span class="revision-060410">For example, the user must make sure that t</span>he nesting of headings <span class="revision-060410">are</span> in accordance with DTBook-structure <span class="">and that no headings are empty (a heading that contains other headings is not empty).</span>
+			</p>
+			<div class="example">
+				<h3>Example</h3>
+				<p>The sequence</p>
+				<ul>
+					<li>h<span class="revision-060410">eading </span>2</li>
+					<li>text</li>
+					<li>h<span class="revision-060410">eading </span>4</li>
+				</ul>
+				<p>will produce an invalid DTBook. <span class="revision-060410">To produce a valid DTBook, the sequence must be changed to</span>
+				</p>
+				<div class="revision-060410">
+				<ul>
+					<li>heading 2</li>
+					<li>text</li>
+					<li>heading 3</li>
+					<li>text</li>
+				</ul>
+				<p class="r">or to</p>
+				<ul>
+					<li>heading 2</li>
+					<li>text</li>
+					<li>heading 3</li>
+					<li>heading 4</li>
+					<li>text</li>
+				</ul>
+				</div>
+			</div>
+			<h2 class="revision-060410">Objects addressed</h2>
+			<p class="revision-060410">The following objects are adressed in the conversion.</p>
+			<ul>
+				<li>Paragraph styles</li>
+				<li>Character styles</li>
+				<li>Lists</li>
+				<li>Tables</li>
+				<li>Footnotes</li>
+				<li>Images</li>
+			</ul>
+			<p>Any objects not in this list will be ignored, e.g. page breaks and cross references.</p>
+			<h2>Paragraph and character styles</h2>
+			<p class="revision-060410">The transform will recognize a number of built-in styles in Word. This list can be extended by customizing, see the <a href="#custom">Customizing</a> section.</p>
+			<h3>Paragraph styles</h3>
+			<p>The WordML2DTBook transform will recognize the following built-in paragraph formats</p>
+			<table border="1">
+				<tr>
+					<th>name</th>
+					<th>action</th>
+				</tr>
+				<tr>
+					<td>heading 1</td>
+					<td>h1</td>
+				</tr>
+				<tr>
+					<td>heading 2</td>
+					<td>h2</td>
+				</tr>
+				<tr>
+					<td>heading 3</td>
+					<td>h3</td>
+				</tr>
+				<tr>
+					<td>heading 4</td>
+					<td>h4</td>
+				</tr>
+				<tr>
+					<td>heading 5</td>
+					<td>h5</td>
+				</tr>
+				<tr>
+					<td>heading 6</td>
+					<td>h6</td>
+				</tr>
+				<tr>
+					<td>footnote text</td>
+					<td>a block of consecutive paragraphs with footnote text is wrapped in a note-tag and each paragraph is wrapped in a p-tag</td>
+				</tr>
+				<tr>
+					<td>block text</td>
+					<td>a block of consecutive paragraphs with block text is wrapped in a blockquote-tag and each paragraph is wrapped in a p-tag</td>
+				</tr>
+				<tr>
+					<td>annotation text</td>
+					<td>the content is commented out</td>
+				</tr>
+			</table>
+			<h3>Character styles</h3>
+			<p>The WordML2DTBook transform will recognize the following built-in character formats</p>
+			<table border="1">
+				<tr>
+					<th>name</th>
+					<th>action</th>
+				</tr>
+				<tr>
+					<td>strong</td>
+					<td>strong</td>
+				</tr>
+				<tr>
+					<td>emphasis</td>
+					<td>em</td>
+				</tr>
+				<tr>
+					<td>page number</td>
+					<td>pagenum</td>
+				</tr>
+				<tr>
+					<td>footnote reference</td>
+					<td>noteref</td>
+				</tr>
+			</table>
+			<h4>Note on page number</h4>
+			<p>The outlook is that the transform is used with documents that originate from some other program. Thus, the page number character style should be used to mark were the pages break in the original document and the contents of each style instance must be unique within the document. The transform does not recognise ordinary page breaks in Word.</p>
+			<h2>Lists</h2>
+			<p>List paragraphs <span class="revision-060410">and proper lists</span> are converted into lists of type pl and the list item symbol is kept as contents.</p>
+			<div class="revision-060410">
+			<p>The hierarchical structure of lists will be preserved if they were created using proper lists i Word, i.e. not using list paragraphs.</p>
+			<p>Illogical lists of the type 1, 2, 2.1.1, 2.2, 3 (missing the parent 2.1) will generate an invalid DTBook. This can be fixed by manually wrapping the child-list in an list item, as done below</p>
+			<ul>
+				<li>1</li>
+				<li>2<ul><li>
+						<ul><li>2.1.1</li>
+						</ul></li>
+					<li>2.2</li>
+				</ul></li>
+				<li>3</li>
+			</ul>
+			</div>
+			<h2>Tables</h2>
+			<p>Tables are converted, <span class="revision-060410">including rowspan</span>.</p>
+			<h2>Footnotes</h2>
+			<p>By using standard footnotes in Word, the link between note and reference is preserved. If this is
 		not an option, it is possible to use the "footnote reference" character style and the "footnote text" 
 		paragraph style. However, a link between the two is not created using this method.</p>
-		<h2>Images</h2>
-		<p>An imagegroup and an img tag is created for an image, but the image is not extracted (this is beyond
-		the limitations of XSLT 1.0 anyway).</p>
-		<h2>Formatting</h2>
-		<p>No formatting is taken into account in this transform, thus e.g. bold or italic is <em>not</em>
+			<h2>Images</h2>
+			<p>An imagegroup and an img-tag is created for an image, but the image is not extracted (this is beyond
+		the limitations of XSLT 1.0). <span class="revision-060410">The naming convention matches the naming convention used when saving as HTML from Word, thereby simplifying the conversion process. The syntax is: imagexxx.jpg. If an alternative text has been specified for the image, this is preserved in the alt-attribute.</span>
+			</p>
+			<h2>Formatting</h2>
+			<p>No formatting is taken into account in this transform, thus e.g. bold or italic is <em>not</em>
 		converted. Bold or italics that should be retained must be tagged using the strong or emphasis character style, respectively.</p>
-		<h2>Future improvements</h2>
-		<ul>
-			<li>Auto connect footnotes that were created using styles.</li>
-			<li>Handle hierarchical lists</li>
-			<li>Moving the customizable part out of the xslt</li>
-		</ul>
+			<div class="revision-060410">
+				<h2 id="custom">Customizing</h2>
+				<h3>Tag set</h3>
+				<p>The conversion process can to a large extent be changed by editing the tag set rules in the file "custom-tagset.xml". An XML Schema definition of this tag set is supplied to aid customization, see the <a href="docs/index.html">schema documentation</a> for more information.</p>
+				<h3 id="params">Parameters</h3>
+				<p>The following parameters can be used with this stylesheet</p>
+				<table border="1">
+					<tr>
+						<th>name</th>
+						<th>meaning</th>
+					</tr>
+					<tr>
+						<td>customStyle</td>
+						<td>The custom style identifier. Should match the desired style-id in the custom tag set.</td>
+					</tr>
+					<tr>
+						<td>mapset</td>
+						<td>The definitions used when converting. Default value is "document('custom-tagset.xml')|document('default-tagset.xml')"</td>
+					</tr>
+					<tr>
+						<td>tagSet</td>
+						<td>WordML version number. Default value is "'4'", no other values are currently supported.</td>
+					</tr>
+				</table>
+			</div>
+			<h2>Future improvements</h2>
+			<ul>
+				<li>Auto connect footnotes that were created using styles.</li>
+				<li>Optimize recursive calls. The current solution has a limit to the number of list-items in a list. The actual limit depends on the XSLT-processor used.</li>
+			</ul>
+		</div>
 	</body>
 </html>

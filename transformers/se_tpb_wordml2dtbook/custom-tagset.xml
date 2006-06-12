@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mappings xmlns="http://www.tpb.se/word2xmlstylesheet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.tpb.se/word2xmlstylesheet tagset.xsd">
+<mappings version="2006-1" xmlns="http://www.tpb.se/ns/2006/wml2dtbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.tpb.se/ns/2006/wml2dtbook tagset.xsd">
 	<custom style="tpb">
 		<paragraphs>
 			<tag name="TPB-Titel"><map value="doctitle"/></tag>

@@ -25,12 +25,11 @@
 	xmlns:aml="http://schemas.microsoft.com/aml/2001/core"
 	xmlns:wx="http://schemas.microsoft.com/office/word/2003/auxHint"
 	xmlns:o="urn:schemas-microsoft-com:office:office"
-	xmlns:dt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882"
 	xmlns:st1="urn:schemas-microsoft-com:office:smarttags"
-	xmlns:d="http://www.tpb.se/word2xmlstylesheet"
+	xmlns:d="http://www.tpb.se/ns/2006/wml2dtbook"
 	xmlns:meta="rnib.org.uk/tbs#"
 	xmlns="http://www.daisy.org/z3986/2005/dtbook/"
-	exclude-result-prefixes="w v w10 sl aml wx o dt st1 d meta">
+	exclude-result-prefixes="w v w10 sl aml wx o st1 d meta">
 	
 <meta:doc xmlns:meta="rnib.org.uk/tbs#">
 	<meta:revhistory>
@@ -39,7 +38,7 @@
 		</meta:purpose>
 		<meta:revision>
 			<meta:revnumber>1.0</meta:revnumber>
-			<meta:date>30 August  2005</meta:date>
+			<meta:date>30 August 2005</meta:date>
 			<meta:authorinitials>JoelH</meta:authorinitials>
 			<meta:revdescription>
 				<meta:para>Initial issue with DMFC in mind</meta:para>
@@ -53,7 +52,7 @@
 		</meta:revision>
 		<meta:revision>
 			<meta:revnumber>1.1</meta:revnumber>
-			<meta:date>28 October  2005</meta:date>
+			<meta:date>28 October 2005</meta:date>
 			<meta:authorinitials>JoelH</meta:authorinitials>
 			<meta:revdescription>
 				<meta:para>Added support for standard footnotes</meta:para>
@@ -62,7 +61,7 @@
 		</meta:revision>
 		<meta:revision>
 			<meta:revnumber>1.1.01</meta:revnumber>
-			<meta:date>7 November  2005</meta:date>
+			<meta:date>7 November 2005</meta:date>
 			<meta:authorinitials>JoelH</meta:authorinitials>
 			<meta:revdescription>
 				<meta:para>Removed XE-data</meta:para>
@@ -71,7 +70,7 @@
 		</meta:revision>
 		<meta:revision>
 			<meta:revnumber>1.1.1</meta:revnumber>
-			<meta:date>28 December  2005</meta:date>
+			<meta:date>28 December 2005</meta:date>
 			<meta:authorinitials>JoelH</meta:authorinitials>
 			<meta:revdescription>
 				<meta:para>Removed spaces in pagenum id's</meta:para>
@@ -81,7 +80,7 @@
 		</meta:revision>
 		<meta:revision>
 			<meta:revnumber>1.1.11</meta:revnumber>
-			<meta:date>28 March  2006</meta:date>
+			<meta:date>28 March 2006</meta:date>
 			<meta:authorinitials>JoelH</meta:authorinitials>
 			<meta:revdescription>
 				<meta:para>Fixed a problem with lists.</meta:para>
@@ -90,7 +89,7 @@
 		</meta:revision>
 		<meta:revision>
 			<meta:revnumber>1.2</meta:revnumber>
-			<meta:date>28 April  2006</meta:date>
+			<meta:date>28 April 2006</meta:date>
 			<meta:authorinitials>JoelH</meta:authorinitials>
 			<meta:revdescription>
 				<meta:para>Externalized tag set definitions and created an XML schema for them.</meta:para>
@@ -101,6 +100,26 @@
 				<meta:para>Added support for image alt-text</meta:para>
 				<meta:para>Changed naming convention for images</meta:para>
 				<meta:para>Added page-attribute: normal (for arabic numerals), front (for roman numerals), special (otherwise)</meta:para>
+			</meta:revdescription>
+			<meta:revremark/>
+		</meta:revision>
+		<meta:revision>
+			<meta:revnumber>1.2.1</meta:revnumber>
+			<meta:date>17 May 2006</meta:date>
+			<meta:authorinitials>JoelH</meta:authorinitials>
+			<meta:revdescription>
+				<meta:para>Added support for hierarchical lists.</meta:para>
+				<meta:para>Added meta-elements containing info on this conversion (version and date)</meta:para>
+			</meta:revdescription>
+			<meta:revremark/>
+		</meta:revision>
+		<meta:revision>
+			<meta:revnumber>1.2.1.1</meta:revnumber>
+			<meta:date>12 June 2006</meta:date>
+			<meta:authorinitials>JoelH</meta:authorinitials>
+			<meta:revdescription>
+				<meta:para>Changed namespace url</meta:para>
+				<meta:para>Removed an unused namespace</meta:para>
 			</meta:revdescription>
 			<meta:revremark/>
 		</meta:revision>
@@ -128,7 +147,10 @@
 		date: <xsl:value-of select="$date"/>
 	</xsl:comment>
 	<dtbook>
-		<head/>
+		<head>
+			<meta name="wml2dtbook:version" content="{$version}"/>
+			<meta name="wml2dtbook:date" content="{$date}"/>
+		</head>
 		<book>
 			<bodymatter>
 				<xsl:apply-templates select="w:body"/>
@@ -172,19 +194,86 @@
 <!-- Not the beginning of the list -->
 <xsl:template match="w:p[w:pPr/w:listPr]" priority="5"/>
 
+<xsl:template match="w:p[w:pPr/w:listPr]" mode="getLevel">
+	<xsl:choose>
+		<xsl:when test="w:pPr/w:listPr/w:ilvl/@w:val"><xsl:value-of select="w:pPr/w:listPr/w:ilvl/@w:val"/></xsl:when>
+		<xsl:otherwise>0</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
 <!-- process next list-item -->
 <xsl:template match="w:p[w:pPr/w:listPr]" mode="processList">
+	<xsl:param name="level" select="0"/>
+	<xsl:variable name="fLevel">
+		<xsl:apply-templates select="following-sibling::w:p[1]" mode="getLevel"/>
+	</xsl:variable>
 	<li>
 		<xsl:value-of select="w:pPr/w:listPr/wx:t/@wx:val"/>
 		<xsl:text> </xsl:text>
 		<!-- <xsl:apply-templates select="w:r"/> -->
 		<xsl:apply-templates/>
+		<xsl:if test="$fLevel&gt;$level">
+			<xsl:call-template name="listWrap">
+				<xsl:with-param name="level" select="$level"/>
+				<xsl:with-param name="fLevel" select="$fLevel"/>
+			</xsl:call-template>
+		</xsl:if>
 	</li>
-	<xsl:apply-templates select="following-sibling::w:p[1]" mode="processList"/>
+	<xsl:apply-templates select="following-sibling::w:p[1]" mode="findNextItem">
+		<xsl:with-param name="level" select="$level"/>
+	</xsl:apply-templates>
+</xsl:template>
+
+<xsl:template name="listWrap">
+	<xsl:param name="level"/>
+	<xsl:param name="fLevel"/>
+	<xsl:choose>
+		<xsl:when test="$fLevel&gt;$level">
+			<list type="pl">
+				<xsl:call-template name="listWrap">
+					<xsl:with-param name="level" select="$level +1"/>
+					<xsl:with-param name="fLevel" select="$fLevel"/>
+				</xsl:call-template>
+				<xsl:if test="($fLevel - $level)&gt;1">
+					<xsl:apply-templates select="following-sibling::w:p[1]" mode="findNextItem">
+						<xsl:with-param name="level" select="$level +1"/>
+					</xsl:apply-templates>
+				</xsl:if>
+			</list>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:apply-templates select="following-sibling::w:p[1]" mode="processList">
+				<xsl:with-param name="level" select="$level"/>
+			</xsl:apply-templates>
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
+<!-- Find next list-item on the same level -->
+<xsl:template match="w:p[w:pPr/w:listPr]" mode="findNextItem">
+	<xsl:param name="level" select="0"/>
+	<xsl:variable name="cLevel">
+		<xsl:apply-templates select="." mode="getLevel"/>
+	</xsl:variable>
+	<xsl:choose>
+		<xsl:when test="$level=$cLevel">
+			<xsl:apply-templates select="." mode="processList">
+				<xsl:with-param name="level" select="$level"/>
+			</xsl:apply-templates>
+		</xsl:when>
+		<xsl:when test="$level&gt;$cLevel"></xsl:when> <!-- Do nothing -->
+		<xsl:otherwise>
+			<xsl:apply-templates select="following-sibling::w:p[1]" mode="findNextItem">
+				<xsl:with-param name="level" select="$level"/>
+			</xsl:apply-templates>
+		</xsl:otherwise>
+	</xsl:choose>
 </xsl:template>
 
 <!-- override the default rule for this mode, needed for the last call above -->
 <xsl:template match="*" mode="processList"/>
+<xsl:template match="*" mode="findNextItem"/>
+<xsl:template match="*" mode="getLevel">0</xsl:template>
 
 <xsl:template match="w:p" mode="processBlock">
 	<xsl:param name="pStyleName"/>
@@ -273,15 +362,16 @@
 					<xsl:element name="{$tag/d:map/@value}"><xsl:apply-templates/></xsl:element>
 				</xsl:when>
 				<xsl:when test="$tag/d:pagenum">
-					<pagenum id="p-{translate(.,' ','')}">
+					<xsl:variable name="p-no" select="translate(.,' ','')"/>
+					<pagenum id="p-{$p-no}">
 						<xsl:attribute name="page">
 							<xsl:choose>
-								<xsl:when test="string(.)=string(number(.))">normal</xsl:when>
-								<xsl:when test="string-length(translate(., 'ivxlcdmIVXLCDM', ''))=0">front</xsl:when>
+								<xsl:when test="string($p-no)=string(number($p-no))">normal</xsl:when>
+								<xsl:when test="string-length(translate($p-no, 'ivxlcdmIVXLCDM', ''))=0">front</xsl:when>
 								<xsl:otherwise>special</xsl:otherwise>
 							</xsl:choose>
 						</xsl:attribute>
-						<xsl:apply-templates/>
+						<xsl:value-of select="$p-no"/>
 					</pagenum>
 				</xsl:when>
 				<xsl:when test="$tag/d:noteref">
