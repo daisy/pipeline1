@@ -1,5 +1,7 @@
 package org.daisy.util.i18n;
 
+import com.ibm.icu.text.Transliterator;
+
 /**
  * Miscellaneous unicode realm character and string utilities 
  * @author Markus Gylling
@@ -384,10 +386,21 @@ public final class CharUtils {
 			return "y";
 		}
 
-		return "_";
-
+		//if we are here, still no match
+		//try the costly version
+		char[] chars = transliterateToNonAccent(String.valueOf(c)).toCharArray();
+		if((chars.length>1) || (isAsciiPrintable(chars[0]))) {
+			return "_";	
+		}
+		return Character.toString(chars[0]);						
 	}
 
+	public static String transliterateToNonAccent(String str){
+		Transliterator tl = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC;");
+		return tl.transliterate(str);
+	}
+	
+	
 	/**
 	 * converts a char to an xml character entity
 	 * 
@@ -429,8 +442,7 @@ public final class CharUtils {
 	/**
 	 * converts a char to a java-style unicode escaped string
 	 */
-	public static final String unicodeEscape(
-			char ch) {
+	public static final String unicodeHexEscapeJava(char ch) {
 		if (ch < 0x10) {
 			return "\\u000"
 					+ Integer.toHexString(ch);
@@ -445,11 +457,26 @@ public final class CharUtils {
 	}
 
 	/**
+	 * converts a codepoint to a UC-style escaped string
+	 */
+	public static final String unicodeHexEscape(int codePoint) {
+		if (codePoint < 0x10) {
+			return "U+000"+ Integer.toHexString(codePoint);
+		} else if (codePoint < 0x100) {
+			return "U+00"+ Integer.toHexString(codePoint);
+		} else if (codePoint < 0x1000) {
+			return "U+0"+ Integer.toHexString(codePoint);
+		}
+		return "U+" + Integer.toHexString(codePoint);
+	}
+
+	
+	/**
 	 * converts a Character to a java-style unicode escaped string
 	 */
 	public static final String unicodeEscape(
 			Character ch) {
-		return unicodeEscape(ch.charValue());
+		return unicodeHexEscapeJava(ch.charValue());
 	}
 
 	/**
@@ -460,7 +487,7 @@ public final class CharUtils {
 		String ret = "";
 		char[] a = string.toCharArray();
 		for (int i = 0; i < a.length; i++) {			
-			ret = ret + unicodeEscape(a[i]);;
+			ret = ret + unicodeHexEscapeJava(a[i]);;
 		}
 		return ret;
 	}
