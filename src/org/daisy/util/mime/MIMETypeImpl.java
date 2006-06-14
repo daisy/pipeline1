@@ -32,7 +32,7 @@ public class MIMETypeImpl implements MIMEType {
 			String parentIdrefs = null; // an IDREFS string or null
 	 		String namePatterns = null; // an space separated string or null
 	
-	//these two collections are build the first time they are requested
+	//these collections are built the first time they are requested
 	private Map aliases = null; // Map<MimeType>, is null until first request, then may be empty 
 	private Map ancestors = null; // Map<MimeType>, is null until first request, then may be empty
 	private Map descendants = null; // Map<MimeType>, is null until first request, then may be empty 
