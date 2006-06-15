@@ -1,5 +1,4 @@
------- dmfc tasklist 20050428 -----
-
+------------------ dmfc tasklist immediate -------------------
 id			what								who		status		
 --------------------------------------------------------------
 xrefrng		@xref to tdf rng					MG	 
@@ -20,18 +19,27 @@ manipulator	add a manipulation facade to
 winpaths	make sure we dont crash if
 			windows-style paths are used
 			as inparams							LS+LE
-
-
------- dmfc Transformers pipeline/wishlist ------
-zedval		add ZedVal 							MG
-normalizer	add a unicode normalizer			MG
-transcoder	add a transcoder/ucharreplacer		MG
-filenamer	add a dtb filename handler			MG
+xml:lang	add xml:lang list collection
+			to fileset XmlFile					MG			
 
 
 
------- dmfc GUI next iteration wishlist -------
 
+
+------------- dmfc Transformers pipeline/wishlist ------------
+id			what								who		status		
+--------------------------------------------------------------
+zedval		add ZedVal 							MG		started
+normalizer	add a unicode normalizer			MG		started
+transcoder	add a transcoder/ucharreplacer		MG		started
+filenamer	add a dtb filename handler			MG		started
+drmv1		add a DRMv1 impl (not public)		MG		started
+
+
+
+
+
+--------------- dmfc GUI next iteration wishlist ---------------
 id          what                                who     status
 ----------------------------------------------------------------
 joblist	 	GUI -Each job handles own msgs
