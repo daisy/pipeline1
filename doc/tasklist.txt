@@ -1,4 +1,4 @@
-dmfc tasklist 20050428-->
+------ dmfc tasklist 20050428 -----
 
 id			what								who		status		
 --------------------------------------------------------------
@@ -8,16 +8,29 @@ licpack		license pack to the CVS				MG
 errscout	go through errscout,
 			append missing tests				MG
 fileset		finalize refactoring
-			of fileset							MG
+			of fileset							MG		fixed
 mimefix		correct mime types in the TDFs		LE		fixed
 mimereg2    make core use new mime registry		LE		fixed
 msgwingui	GUI -new window for critical and
 			warning messages for scripts 		LS
-			
+odf+bpf		add support for .odf and .bpf
+			as manifest subclasses of xmlfile	MG			
+manipulator	add a manipulation facade to
+			to the fileset package				MG		
+winpaths	make sure we dont crash if
+			windows-style paths are used
+			as inparams							LS+LE
+
+
+------ dmfc Transformers pipeline/wishlist ------
+zedval		add ZedVal 							MG
+normalizer	add a unicode normalizer			MG
+transcoder	add a transcoder/ucharreplacer		MG
+filenamer	add a dtb filename handler			MG
 
 
 
-dmfc next iteration wishlist-->
+------ dmfc GUI next iteration wishlist -------
 
 id          what                                who     status
 ----------------------------------------------------------------
@@ -29,7 +42,7 @@ freezejobs	GUI -how to handle completed jobs
 			in queue.  Freeze? View but take
 			out of queue?						LE & LS
 
-prgreports 	The progress bar, elapsed time 
+prgreports 	GUI The progress bar, elapsed time 
 		    and estimmated time describe the
 		    progress of the *current 
 		    transformer*, not the current job. 
@@ -45,3 +58,4 @@ prgreports 	The progress bar, elapsed time
 		    job in the job queue.				LE & LS
 
 
+			
