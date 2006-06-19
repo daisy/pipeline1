@@ -43,8 +43,13 @@ import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
+import org.daisy.util.fileset.exception.FilesetFileErrorException;
+import org.daisy.util.fileset.exception.FilesetFileException;
+import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
+import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.audio.AudioFile;
 import org.daisy.util.fileset.interfaces.image.ImageFile;
@@ -73,7 +78,7 @@ import org.daisy.util.xml.xslt.XSLTException;
  * </ul>
  * @author Linus Ericson
  */
-public class Zed2Daisy202 extends Transformer {
+public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
 
     private static final String XSLT_FACTORY = "net.sf.saxon.TransformerFactoryImpl";
     //public static final String XSLT_FACTORY = "com.icl.saxon.TransformerFactoryImpl";
@@ -103,7 +108,10 @@ public class Zed2Daisy202 extends Transformer {
         try {
             // Build fileset
             this.sendMessage(Level.INFO, i18n("BUILDING_FILESET"));
-            Fileset fileset = this.buildFileSet(manifest);            
+            Fileset fileset = this.buildFileSet(manifest);   
+            if (fileset.hadErrors()) {
+            	throw new TransformerRunException(i18n("FILESET_HAD_ERRORS"));
+            }
             this.progress(FILESET_DONE);
             this.checkAbort();
             
@@ -326,7 +334,23 @@ public class Zed2Daisy202 extends Transformer {
     }
     
     private Fileset buildFileSet(String manifest) throws FilesetFatalException {
-        return new FilesetImpl(FilenameOrFileURI.toFile(manifest).toURI(), new DefaultFilesetErrorHandlerImpl(), false, true);
+        return new FilesetImpl(FilenameOrFileURI.toFile(manifest).toURI(), this, false, true);
     }
+
+	public void error(FilesetFileException ffe) throws FilesetFileException {		
+		if(ffe instanceof FilesetFileFatalErrorException) {
+			this.sendMessage(Level.WARNING, "Serious error in "	+ ffe.getOrigin().getName() + ": " 
+					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
+		}else if (ffe instanceof FilesetFileErrorException) {
+			this.sendMessage(Level.WARNING, "Error in " + ffe.getOrigin().getName() + ": " 
+					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
+		}else if (ffe instanceof FilesetFileWarningException) {
+			this.sendMessage(Level.WARNING, "Warning in " + ffe.getOrigin().getName() + ": " 
+					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
+		}else{
+			this.sendMessage(Level.WARNING, "Exception with unknown severity in " + ffe.getOrigin().getName() + ": "
+					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
+		}		
+	}
     
 }
