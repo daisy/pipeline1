@@ -28,6 +28,7 @@
 		<element name="a"/>
 		<element name="abbr"/>
 		<element name="acronym"/>
+		<element name="annoref"/>
 		<element name="b"/>
 		<element name="br"/>
 		<element name="em"/>
@@ -57,6 +58,7 @@
 	<wordSkip>
 		<element name="abbr"/>
 		<element name="acronym"/>
+		<element name="annoref"/>
 		<element name="pagenum"/>
 		<element name="noteref"/>
 		<element name="linenum"/>
@@ -67,6 +69,7 @@
 		<element name="a"/>
 		<element name="abbr"/>
 		<element name="acronym"/>
+		<element name="annoref"/>
 		<element name="b"/>
 		<element name="caption"/>
 		<element name="code"/>
