@@ -138,11 +138,13 @@ public class ConvertMultipleFiles {
 	
 	public ConvertMultipleFiles(){
 		display= UIManager.display;
-		shell = new Shell(display);
+		shell = new Shell(display, SWT.APPLICATION_MODAL |SWT.SHELL_TRIM);
 		new MenuMultipleConvert(shell);
 		createContents();
 		shell.pack();
 	}
+	
+	
 	
 	
 	public void createContents(){	

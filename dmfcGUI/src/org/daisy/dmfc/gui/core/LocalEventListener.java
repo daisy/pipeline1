@@ -26,9 +26,12 @@ public class LocalEventListener implements EventListener{
 	ProgressBar progBar;
 	Text elapsed;
 	Text estimated;
+	Prompt prompt;
 	
 	
-	public void message(Prompt prompt) {
+	public void message(Prompt _prompt) {
+		this.prompt=_prompt;
+		
 	    if (prompt.getType() == Prompt.MESSAGE && prompt.getLevel().intValue() >= Level.ALL.intValue()) {
 	        System.out.println("[" + prompt.getMessageOriginator() + ", " + prompt.getLevel().getName() + "] " + prompt.getMessage());
 	        message="[" + prompt.getMessageOriginator() + ", " + prompt.getLevel().getName() + "] " + prompt.getMessage();
@@ -48,19 +51,18 @@ public class LocalEventListener implements EventListener{
 	
 	public void calculateTiming(Prompt prompt){
 		
-		timeLeft=prompt.getTimeLeft();
-		totalTime =prompt.getTotalTime();
-		progress = prompt.getProgress();
-		
-		
 		UIManager.display.syncExec(new Runnable(){
 			public void run(){
 				
+				setTimes();
+				
 				if (timeLeft!=null){
-					elapsed.setText(new Double(getTimeLeft()).toString());
+					estimated.setText(timeLeft.toString(8));
+					
 				}
 				if (totalTime!=null){
-					elapsed.setText(new Double(getTotalTime()).toString());
+					elapsed.setText(totalTime.toString(8));
+					
 				}
 				progBar.setSelection((int)(progress * 100));
 			}
@@ -71,6 +73,13 @@ public class LocalEventListener implements EventListener{
 		message = prompt.getMessage();
 	}
 	
+	public void setTimes(){
+		this.timeLeft=prompt.getTimeLeft();	
+		this.totalTime=prompt.getTotalTime();
+		progress = prompt.getProgress();
+	}
+	
+	
 	public void setAttributes(Text elapsed, Text estimated,  
 			ProgressBar _pb){
 		this.elapsed=elapsed;
@@ -79,39 +88,12 @@ public class LocalEventListener implements EventListener{
 	}
 	
 
+	
+
 	public String getMessage(){
 		return this.message;
 	}
-	
-	
-	public double getTimeLeft(){
-	
-		if (this.timeLeft==null){
-			return 0.0;
-		}
-		else{
-			return timeLeft.secondsValue();
-		}
-	}
-	
-	public double getTotalTime(){
-		if (this.totalTime==null){
-			return 0.0;
-		}
-		else{
-			return totalTime.secondsValue();
-		}
-	}
-	
-
-	public double getProgress(){
-		return this.progress;
-	}
-	
-	
-	public String getTransformerRunning(){
-		return this.messageOriginator;
-	}
+		
 	
 	public int getType(){
 		return this.type;
@@ -121,6 +103,11 @@ public class LocalEventListener implements EventListener{
 		return this.messageOriginator;
 	}
 	
+	
+	/**
+	 * Not used, but could be!
+	 * @param message
+	 */
 	public void appendMessageToFile(String message){
 		String logFileName = System.getProperty("user.dir")+ File.separator + "logFile.txt";
 		try {

@@ -17,6 +17,7 @@ import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.MIMEException;
 import org.daisy.dmfc.exception.ScriptException;
+import org.daisy.dmfc.gui.core.LocalEventListener;
 import org.daisy.dmfc.gui.jface.IJobListViewer;
 import org.daisy.dmfc.gui.jface.JobLabelProvider;
 import org.daisy.dmfc.gui.jface.JobList;
@@ -35,7 +36,6 @@ import org.daisy.dmfc.gui.widgetproperties.ListProperties;
 import org.daisy.dmfc.gui.widgetproperties.TextProperties;
 import org.daisy.dmfc.gui.widgetproperties.TransformerListTableProperties;
 import org.daisy.dmfc.qmanager.Job;
-import org.daisy.dmfc.gui.core.LocalEventListener;
 import org.daisy.dmfc.qmanager.LocalInputListener;
 import org.daisy.dmfc.qmanager.Queue;
 import org.daisy.dmfc.qmanager.QueueRunner;
@@ -58,6 +58,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.ProgressBar;
@@ -150,8 +151,11 @@ public class Window {
 	QueueRunner queRunner;
 	
 	//Composite
-	Composite compJobsInQueue;
-	Composite compDetails;
+	Composite compBigRight;
+	
+	Group compJobsInQueue;
+	//Composite compDetails;
+	Group compDetails;
 	
 	//Layout stuff
 	GridLayout layout;
@@ -164,6 +168,10 @@ public class Window {
 	//boolean - if jobs are being run
 	public boolean executing;
 	
+	//Details is shown flag.  Default is true.
+	boolean showDetails= true;
+	
+
 	//Files
 	File scriptDirectory;
 	File fileSelectedFromTree;
@@ -227,6 +235,11 @@ public class Window {
 		cue=cue.getInstance();
 		executing=false;
 		createContents();
+		
+		if (showDetails){
+			createViewDetails();
+		}
+		
 		shell.pack();
 	}
 	
@@ -269,7 +282,7 @@ public class Window {
 		//browse buttons, conversion description
 		//********************************************************************************
 		
-		Composite compSelectConversion = new Composite (compBigLeft, SWT.BORDER);
+		Group compSelectConversion = new Group (compBigLeft, SWT.NONE);
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		compSelectConversion.setLayoutData(data);
 		layout = new GridLayout();
@@ -281,19 +294,20 @@ public class Window {
 		compSelectConversion.setLayout(layout);
 		
 		
+		/*
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan=2;
 		this.lblSelectConversion = new Label(compSelectConversion, SWT.NONE);
 		this.lblSelectConversion.setText("Select Conversion Process");
-		this.lblSelectConversion.setFont(FontChoices.fontLabel);
+		//this.lblSelectConversion.setFont(FontChoices.fontLabel);
 		lblSelectConversion.setLayoutData(data);
-		
+		*/
+		compSelectConversion.setText("Select Conversion Process");
 		
 		//Composite compScriptTree = new Composite(shell, SWT.BORDER);
 		//compScriptTree.setLayout(new GridLayout());
-		
-		
 		//tv = new TreeViewer(compScriptTree);
+		
 		tv = new TreeViewer(compSelectConversion);
 		data =  new GridData(GridData.FILL_BOTH);
 		data.horizontalSpan=1;
@@ -301,7 +315,12 @@ public class Window {
 		data.widthHint=180;
 		tv.getTree().setLayoutData(data);
 		tv.setContentProvider(new ScriptTreeContentProvider(scriptDirectory));
-		tv.setLabelProvider(new ScriptTreeLabelProvider());
+		
+		//ljs playing, pass the script handler hashmap to the
+		//label provider to change how the file is viewed
+		tv.setLabelProvider(new ScriptTreeLabelProvider(hmScriptHandlers));
+		
+		//tv.setLabelProvider(new ScriptTreeLabelProvider());
 		tv.setInput(scriptDirectory);
 		tv.getTree().deselectAll();
 		tv.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -332,7 +351,7 @@ public class Window {
 		// This is in the second column in the compSelectConversion, first composite
 		//Creates a composite to hold buttons, description, and text field
 		
-		Composite addButtonsComp = new Composite(compSelectConversion, SWT.BORDER);
+		Composite addButtonsComp = new Composite(compSelectConversion, SWT.NONE);
 		layout = new GridLayout();
 		layout.numColumns=1;
 		layout.verticalSpacing=5;
@@ -344,7 +363,7 @@ public class Window {
 		this.addMultipleFiles.setEnabled(false);
 		addMultipleFiles.setLayoutData(data);
 		
-		buttonProperties.setProperties(addMultipleFiles, "Browse For Files ");
+		buttonProperties.setProperties(addMultipleFiles, "Add Multiple Jobs ");
 		this.addMultipleFiles.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				getConversionSelection();
@@ -361,7 +380,7 @@ public class Window {
 		this.btnAddSingleFile = new Button (addButtonsComp, SWT.SHADOW_OUT);
 		this.btnAddSingleFile.setEnabled(false);
 		btnAddSingleFile.setLayoutData(data);
-		buttonProperties.setProperties(btnAddSingleFile, "Browse for Single File ");
+		buttonProperties.setProperties(btnAddSingleFile, "Add Jobs ");
 		this.btnAddSingleFile.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				getConversionSelection();
@@ -393,7 +412,7 @@ public class Window {
 		//table of jobs to run, and all buttons, move up, down, edit and delete
 		//**********************************************************************
 		
-		compJobsInQueue = new Composite (compBigLeft, SWT.BORDER);
+		compJobsInQueue = new Group (compBigLeft, SWT.NONE);
 		data = new GridData();
 		compJobsInQueue.setLayoutData(data);
 		layout = new GridLayout();
@@ -404,6 +423,7 @@ public class Window {
 		layout.marginWidth=7;
 		compJobsInQueue.setLayout(layout);
 		
+		/*
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 4;
 		//data.heightHint=15;
@@ -411,7 +431,9 @@ public class Window {
 		this.lblJobsInQueue2.setText("List of all Conversion Jobs");
 		//labelProperties.setProperties(lblJobsInQueue2, "List of all Conversion Jobs");
 		lblJobsInQueue2.setLayoutData(data);
+		*/
 		
+		compJobsInQueue.setText("List of all Conversion Jobs");
 		
 		data = new GridData(GridData.FILL_BOTH);
 		data.horizontalSpan = 4;
@@ -493,7 +515,7 @@ public class Window {
 		//******************************************************************
 		
 		
-		Composite bottomComp = new Composite(compBigLeft, SWT.BORDER);
+		Group bottomComp = new Group(compBigLeft, SWT.NONE);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 		bottomComp.setLayoutData(data);
 		layout = new GridLayout();
@@ -588,7 +610,7 @@ public class Window {
 		//use pixels.)
 		//*******************************************************
 		
-		Composite compBigRight = new Composite (shell, SWT.NONE);
+		compBigRight = new Composite (shell, SWT.NONE);
 		data = new GridData(GridData.FILL_BOTH);
 		compBigRight.setLayoutData(data);
 		layout = new GridLayout();
@@ -599,16 +621,18 @@ public class Window {
 		layout.marginWidth=7;
 		compBigRight.setLayout(layout);
 		
-		
+	}
 		//*********************************************************************
 		//Fourth Composite - includes all conversion details including
 		//labels, table of transformers running, estimated time, elapsed time, 
 		//conversion progress bar.  Displayed on the right side of the page next to everything else.
 		//Consists of a gridLayout with 1 column
 		//**********************************************************************
+	
+		public void createViewDetails(){
+			System.out.println("I am here, but what is happening?");
 		
-		
-		compDetails= new Composite(compBigRight, SWT.BORDER);
+		compDetails= new Group(compBigRight, SWT.NONE);
 		data = new GridData(GridData.FILL_BOTH);
 		compDetails.setLayoutData(data);
 		compDetails.setVisible(true);
@@ -619,8 +643,8 @@ public class Window {
 		layout.marginBottom=5;
 		layout.marginWidth=7;
 		compDetails.setLayout(layout);
-		
-		
+		compDetails.setText("Conversion Details");
+		/*
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan=2;
 		//data.widthHint=160;
@@ -629,6 +653,7 @@ public class Window {
 		this.lblConversionDetails.setText("Conversion Details");
 		this.lblConversionDetails.setFont(FontChoices.fontLabel);
 		this.lblConversionDetails.setLayoutData(data);
+		*/
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan=2;
@@ -858,17 +883,21 @@ public class Window {
 	}
 	
 	
+	
+	
 	public void viewRunDetails(){
 		UIManager.display.asyncExec(new Runnable(){
 			public void run(){
 				if (btnViewDetails.getText().equalsIgnoreCase("View Run Details")){
 					btnViewDetails.setText("Hide Run Details");
 					compDetails.setVisible(true);
+					//createViewDetails();
 					
 				}
 				else{
 					btnViewDetails.setText("View Run Details");
 					compDetails.setVisible(false);
+					
 				}
 			}
 		});
@@ -970,6 +999,7 @@ public class Window {
 	}
 	
 	public void getNewCMFScreen(){
+		
 		cmv = new ConvertMultipleFiles();
 		cmv.open();
 	}
@@ -979,7 +1009,8 @@ public class Window {
 	}
 	
 	public void getNewSingleFileScreen(){
-		convertSingleFile = new ConvertSingleFile(dmfc);
+		convertSingleFile = new ConvertSingleFile();
+		//convertSingleFile = new ConvertSingleFile(dmfc);
 		convertSingleFile.open();
 	}
 	
@@ -1000,8 +1031,12 @@ public class Window {
 	}
 	
 	public void getLogFile(){
-		logFile = new LogFile(getLogFileContents());
-		logFile.open();
+		UIManager.display.asyncExec(new Runnable(){
+			public void run(){
+				logFile = new LogFile(getLogFileContents());
+				logFile.open();
+			}
+		});
 	}
 	
 	//*****************************************
@@ -1094,7 +1129,7 @@ public class Window {
 		if(index<cue.getSizeOfQueue()){
 			Job job= cue.editJob(index);
 			cue.deleteFromQueue(index);
-			ConvertSingleFile csf = new ConvertSingleFile(dmfc);
+			ConvertSingleFile csf = new ConvertSingleFile();
 			csf.editConversion(job);
 			csf.open();	
 		}

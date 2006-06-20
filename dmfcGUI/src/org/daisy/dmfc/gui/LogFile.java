@@ -22,7 +22,8 @@ public class LogFile {
 	public LogFile(String contents){
 		this.logContents=contents;
 		display= UIManager.display;
-		shell = new Shell(display,SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM );
+		
+		shell = new Shell(display );
 		shell.setText("DMFC Log File");
 		shell.setLocation(150, 150);
 		
@@ -30,8 +31,6 @@ public class LogFile {
 		gridLayout.numColumns=1;
 		gridLayout.makeColumnsEqualWidth=true;
 		shell.setLayout(gridLayout);
-		
-		
 		
 		GridData data = new GridData(GridData.FILL_BOTH);
 		data.heightHint=300;

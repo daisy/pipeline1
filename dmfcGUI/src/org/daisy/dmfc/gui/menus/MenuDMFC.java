@@ -25,6 +25,7 @@ public class MenuDMFC {
 	MenuItem convertMultipleFile;
 	MenuItem convertSingleFile;
 	MenuItem runConversions;
+	MenuItem viewHideRunDetails;
 	
 	
 	public MenuDMFC(final Shell shell){
@@ -62,7 +63,22 @@ public class MenuDMFC {
 			}
 		});
 
+	//Top Level "View"
+		MenuItem view = new MenuItem(menu, SWT.CASCADE);
+		view.setText("View");
+		Menu viewmenu = new Menu(shell, SWT.DROP_DOWN);
+		view.setMenu(viewmenu);
 		
+		viewHideRunDetails = new MenuItem(viewmenu, SWT.PUSH);
+		viewHideRunDetails.setText("Hide Run Details \tCtrl+V");
+		viewHideRunDetails.setAccelerator(SWT.MOD1 + 'V');
+		//show or hide the conversion/run details
+		viewHideRunDetails.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				window=Window.getInstance();
+				//window.getTreeFromTreeViewer().forceFocus();
+			}
+			});
 
 	
 		

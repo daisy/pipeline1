@@ -44,14 +44,17 @@ public class JobRunner extends Thread{
 			//after the script handler is finished executing, set job to finished.
 			scriptHandler.execute();
 			int transNumber = job.getScript().getCurrentTaskIndex();
-			//System.out.println("what is the current task index? " + transNumber);
-			count++;
+			count= job.getScript().getTaskCount();
+			System.out.println("what is the current task index? " + count);
+			//count++;
 			
-						
+			
 			
 			UIManager.display.syncExec(new Runnable(){
 				public void run(){
-					tableViewer.getTable().getItem(job.getScript().getCurrentTaskIndex()).setChecked(true);
+					for (int i = 1; i<=count; i++){
+						tableViewer.getTable().getItem(job.getScript().getCurrentTaskIndex()).setChecked(true);
+					}
 				}
 			});
 			
@@ -81,12 +84,15 @@ public class JobRunner extends Thread{
 					jobViewer.refresh();
 					
 					//show message to the user
-					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-							SWT.CANCEL);
-					messageBox.setMessage(exception +"\n Please copy the above message \n " +
-					"the conversion details and \n give to your system administrator.");
-					messageBox.setText("Error:  Script Exception");
-					messageBox.open();	
+					
+					/*
+					 MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					 SWT.CANCEL);
+					 messageBox.setMessage(exception +"\n Please copy the above message \n " +
+					 "the conversion details and \n give to your system administrator.");
+					 messageBox.setText("Error:  Script Exception");
+					 messageBox.open();	
+					 */
 				}
 			});
 			

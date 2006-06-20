@@ -2,18 +2,11 @@ package org.daisy.dmfc.gui;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
 
 import org.daisy.dmfc.core.DMFCCore;
-import org.daisy.dmfc.core.script.Parameter;
 import org.daisy.dmfc.core.script.Property;
 import org.daisy.dmfc.core.script.ScriptHandler;
-import org.daisy.dmfc.core.script.Task;
-import org.daisy.dmfc.core.transformer.ParameterInfo;
-import org.daisy.dmfc.core.transformer.TransformerInfo;
 import org.daisy.dmfc.gui.menus.MenuSingleConvert;
 import org.daisy.dmfc.gui.widgetproperties.ButtonProperties;
 import org.daisy.dmfc.gui.widgetproperties.FormAttachmentsHelper;
@@ -34,6 +27,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
@@ -46,8 +40,10 @@ import org.eclipse.swt.widgets.Text;
  * @author Laurie Sherve
  *
  */
-public class ConvertSingleFile extends Composite {
+public class ConvertSingleFile  {
 	
+	
+	Display display;
 	Shell shell;
 	Window window;
 	FormAttachmentsHelper fah = new FormAttachmentsHelper();
@@ -102,22 +98,20 @@ public class ConvertSingleFile extends Composite {
 	private DMFCCore dmfc;
 	
 	
-	public ConvertSingleFile(DMFCCore core) {
-		this(core, new Shell(UIManager.display));
-	}
-	
-	
-	public ConvertSingleFile(DMFCCore core, final Shell shell) {
-		super(shell, SWT.NONE);
-		this.shell = shell;
-		this.dmfc = core;
-		
-		UIManager.windowNum++;
+	public ConvertSingleFile(){
+		display= UIManager.display;
+		shell = new Shell(display, SWT.APPLICATION_MODAL |SWT.SHELL_TRIM);
 		new MenuSingleConvert(shell);
+		createContents();
+		shell.pack();
+	}
+		
+	
+	public void createContents(){
 		
 		shell.setText("Convert Single File");
 		//shell.setBounds(0,0,500,500);
-		shell.setLocation(150, 150);
+		shell.setLocation(250, 250);
 		
 		GridLayout layout = new GridLayout();
 		layout.numColumns=1;
@@ -127,11 +121,7 @@ public class ConvertSingleFile extends Composite {
 		layout.marginLeft=15;
 		shell.setLayout(layout);
 		
-		
-		
 		//3 composites with borders for accessibility
-		
-		
 		
 		//Composite conversion stuff	
 		Composite compConversionChosen = new Composite(shell, SWT.BORDER);
@@ -166,11 +156,7 @@ public class ConvertSingleFile extends Composite {
 //		
 		
 		//End ScriptHandler stuff
-		
-		
-		
-		
-		
+
 		
 		//Input stuff
 		Composite compInputFields = new Composite(shell, SWT.BORDER);
