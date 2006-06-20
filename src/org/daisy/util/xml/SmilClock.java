@@ -29,6 +29,8 @@ import java.util.regex.Pattern;
  * - Added secondsValueRounded
  * 1.0.4 (10/02/2006) Linus
  * - Fixed locale bug in toString: now using DecimalFormat instead of NumberFormat
+ * 1.0.5 (20/06/2006 Laurie
+ * - Added HUMAN_READABLE static int toString(int)
  * </pre>
  * @author James Pritchett
  */
@@ -189,6 +191,14 @@ public class SmilClock implements Comparable {
 		case TIMECOUNT_HR:
 			s = dfDouble.format((double)this.msecValue / 3600000) + "h";
 			break;
+		case HUMAN_READABLE:
+			if (msec > 0) {
+				s = hr + " hr " + nfInt.format(min) + " min " + nfInt.format(sec) + " sec " + nfMsec.format(msec) + " msec ";
+			}
+			else {
+				s = hr + " hr " + nfInt.format(min) + " min " + nfInt.format(sec) + " sec ";
+			}
+			break;
 		default:
 			throw new NumberFormatException("Unknown SMIL clock format code: " + format);
 		}
@@ -271,6 +281,7 @@ public class SmilClock implements Comparable {
 	public static final int TIMECOUNT_SEC = 5;
 	public static final int TIMECOUNT_MIN = 6;
 	public static final int TIMECOUNT_HR = 7;
+	public static final int HUMAN_READABLE = 8;
 	
 	private long msecValue;         // All values stored in milliseconds
 	private static long msecTolerance;
