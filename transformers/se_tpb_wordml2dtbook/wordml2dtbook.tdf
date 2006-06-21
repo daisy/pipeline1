@@ -22,7 +22,7 @@
 	<classname>org.daisy.dmfc.transformers.XSLTRunner</classname>
 	<license>unknown</license>
 	<author>Joel Håkansson</author>
-	<support>No</support>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	
 	<parameters>
 	
@@ -32,7 +32,7 @@
 			<example>file:///path/to/file.xml</example>
 		</parameter>
 
-		<parameter type="application/xml">
+		<parameter type="application/xslt+xml">
 			<name>xslt</name>
 			<value>${transformer_dir}/wordml2dtbook.xsl</value>
 		</parameter>
@@ -42,7 +42,7 @@
 			<value>com.icl.saxon.TransformerFactoryImpl</value>
 		</parameter>
 
-		<parameter required="true" direction="out" type="application/xml">
+		<parameter required="true" direction="out" type="application/x-dtbook+xml">
 			<name>out</name>
 			<description>The output DTBook 2005-1 XML file</description>
 			<example>file:///path/to/outFile.xml</example>
