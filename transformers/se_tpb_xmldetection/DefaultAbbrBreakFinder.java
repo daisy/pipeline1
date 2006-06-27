@@ -43,6 +43,10 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 /**
  * @author Linus Ericson
  */
+/* Modified by jpritchett@rfbd.org, 26 June 2006
+ * 	- common & custom abbreviations are now added to the base, just like initialisms and acronyms.
+ */
+
 /*package*/ class DefaultAbbrBreakFinder extends BreakFinder {
     
     private static Logger logger = Logger.getLogger(DefaultAbbrBreakFinder.class.getName());
@@ -56,6 +60,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
     
     private MultiHashMap baseInitialisms = new MultiHashMap(false);
     private MultiHashMap baseAcronyms = new MultiHashMap(false);
+    private MultiHashMap baseAbbrs = new MultiHashMap(false);	// jwpritchett@rfbd.org:  added to support global abbreviations
     
     private boolean override = false;
     
@@ -74,6 +79,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         langSettingsMap.put("common", lscommon);
         baseInitialisms.putAll(lscommon.getInitialisms());
         baseAcronyms.putAll(lscommon.getAcronyms());
+        baseAbbrs.putAll(lscommon.getAbbrs());		// jwpritchett@rfbd.org:  added to support global abbreviations
         
         if (customLang != null) {
             logger.info("Loading language: custom");
@@ -81,6 +87,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
             langSettingsMap.put("custom", lscustom);
             baseInitialisms.putAll(lscustom.getInitialisms());
             baseAcronyms.putAll(lscustom.getAcronyms());  
+            baseAbbrs.putAll(lscustom.getAbbrs());	// jwpritchett@rfbd.org:  added to support global abbreviations
             override = overrideLang;
         }
         
@@ -121,6 +128,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 	        }
 	        baseInitialisms.putAll(ls.getInitialisms());
 	        baseAcronyms.putAll(ls.getAcronyms());
+// jwpritchett@rfbd.org:  Note that initialisms & acronyms apply across languages; abbreviations do not
 	        langSettingsMap.put(locale, ls);
         } else {
             //System.err.println(locale + " already exists.");
@@ -131,10 +139,14 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         langSettings = (LangSettings)langSettingsMap.get(lang);   
         MultiHashMap newInitialisms = new MultiHashMap(baseInitialisms);
         MultiHashMap newAcronyms = new MultiHashMap(baseAcronyms);
+        MultiHashMap newAbbrs = new MultiHashMap(baseAbbrs);	// jwpritchett@rfbd.org:  added to support global abbreviations
         newInitialisms.putAll(langSettings.getInitialisms());
         newAcronyms.putAll(langSettings.getAcronyms());
+        newAbbrs.putAll(langSettings.getAbbrs());	// jwpritchett@rfbd.org:  added to support global abbreviations
         langSettings.setInitialisms(newInitialisms);
         langSettings.setAcronyms(newAcronyms);
+        langSettings.setAbbrs(newAbbrs);	// jwpritchett@rfbd.org:  added to support global abbreviations
+        
         
         if (override) {
 	        LangSettings lscustom = (LangSettings)langSettingsMap.get("custom");        
