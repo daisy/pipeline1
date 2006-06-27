@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- http://ant.apache.org/manual -->
+<project default="compile">
+
+	<property name="version" value="0_1_0"/>
+	
+	<!--project directories -->
+	<property name="base.dir" value="."/>
+	
+	<property name="build.dir" value="${base.dir}/bin"/>	
+	<property name="distribution.dir" value="${base.dir}/dist"/>
+	
+	<!-- general tasks -->
+	<target name="resetDistributionDir">
+		<delete dir="${distribution.dir}"/>
+		<mkdir dir="${distribution.dir}"/>
+	</target>
+	
+	<target name="createDistributionDir">
+		<mkdir dir="${distribution.dir}"/>
+	</target>
+	
+	<target name="removeClasses" if="${build.dir}"
+			description="Cleans up old class files so that the new ones can be built.">
+		<delete dir="${build.dir}/org">
+			<fileset dir="${build.dir}" includes="**/*.class"/>
+		</delete>
+	</target>
+	
+	<target name="compile" description="Compiles all src classes" depends="removeClasses">
+		<javac 	srcdir="${base.dir}/src" 
+				destdir="${build.dir}" 
+				includes="**/*.java" 
+				debug="true"
+				/>
+	</target>
+	<!-- end of general tasks -->
+	
+	<!-- distribution build related tasks -->
+	<!-- binary distribution build -->
+	
+	<target name="buildZip-NSIS" 
+			description="Creates a dmfcgui.zip with non-java files in the distribution folder"
+			depends="createDistributionDir">
+		<delete file="${distribution.dir}/dmfcgui.zip"/>
+		<zip zipfile="${distribution.dir}/dmfcgui.zip">
+			<fileset dir="${base.dir}">
+				<include name="scripts/**/*.*"/>
+				<include name="bin/**/*.*"/>
+			</fileset>
+		</zip>
+	</target>
+	
+	<!-- end of binary distribution build -->
+	<!-- end of distribution build related tasks -->	
+</project>
