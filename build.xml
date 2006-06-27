@@ -135,18 +135,16 @@
 		</jar>
 	</target>
 	
-	<target name="buildDMFCZipNoUtil" 
-			description="Creates a dmfc.zip without util library"
+	<target name="buildDMFC-NSIS" 
+			description="Creates a dmfc-nsis.zip without util library"
 			depends="createDistributionDir">
-		<delete file="${distribution.dir}/dmfc.zip"/>
-		<zip zipfile="${distribution.dir}/dmfc.zip">
+		<delete file="${distribution.dir}/dmfc-nsis.zip"/>
+		<zip zipfile="${distribution.dir}/dmfc-nsis.zip">
 			<fileset dir="${base.dir}">
 				<include name="bin/**/*.*"/>
 				<include name="transformers/**/*.*"/>
+				<exclude name="transformers/**/*.java"/>
 				<include name="resources/**/*.*"/>
-				<include name="dmfc.bat"/>
-				<include name="doc/**/*.*"/>
-				<exclude name="doc/api/**/*.*"/>
 				<include name="lib/**/*.jar"/>
 				<exclude name="**/org/daisy/util/**/*.*"/>
 			</fileset>
