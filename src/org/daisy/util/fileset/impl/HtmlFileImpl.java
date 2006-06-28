@@ -28,8 +28,11 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-//uses TagSoup
-//as the underlying XMLReader
+/**
+ * uses TagSoup
+ * as the underlying XMLReader
+ * @author Markus Gylling
+ */
 
 public class HtmlFileImpl extends SgmlFileImpl implements HtmlFile, ManifestFile, ContentHandler, DTDHandler, ErrorHandler, EntityResolver, AutoDetector {
 	private static Parser parser;
