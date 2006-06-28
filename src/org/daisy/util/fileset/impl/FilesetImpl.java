@@ -99,9 +99,9 @@ public class FilesetImpl implements Fileset {
 		
 		//speed up JAXP		
 		//TODO System.getProperty("java.version") || java.vendor
-		System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
-		System.setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
-		System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration","com.sun.org.apache.xerces.internal.parsers.XML11Configuration");
+//		System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
+//		System.setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
+//		System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration","com.sun.org.apache.xerces.internal.parsers.XML11Configuration");
 		
 		this.setReferringCollections = setReferringCollections;
 		if (dtdValidate) {
@@ -238,44 +238,7 @@ public class FilesetImpl implements Fileset {
 				file.setReferringLocalMembers(localMembers);				  
 			}
 		}
-		
-//		//collect any non-thrown exceptions from each individual member
-//		//and add to Fileset.exceptions
-//		//wrap them in a FilesetFileException so that we have origin
-//		Iterator it = localMembers.keySet().iterator();
-//		while(it.hasNext()) {
-//			FilesetFileImpl file = (FilesetFileImpl) localMembers.get(it.next());
-//			Iterator it2 = file.getErrors().iterator();
-//			while(it2.hasNext()) { 
-//				try{
-//					Exception e = (Exception) it2.next();				
-//					if(e instanceof FilesetFileException) {
-//						//this.exceptions.add(e);
-//						exc.add((FilesetFileException)e);
-//					}else{
-//						//this.exceptions.add(new FilesetFileException(file,e));
-//						exc.add(new FilesetFileException(file,e));
-//					}				
-//				}catch (ClassCastException cce) {
-//					throw new FilesetFatalException(cce);
-//				}
-//			}							  
-//		}
-//		//TODO flytta så det rapporteras per fil
-//		//if (!exceptions.isEmpty()) {
-//		if(exc.hasExceptions()){
-//			//roll them out to errhandler
-//			//Iterator it3 = exceptions.iterator();
-//			Iterator it3 = exc.getExceptions().iterator();
-//			while(it3.hasNext()) {
-//				try {
-//					this.errorListener.error((FilesetFileException)it3.next());
-//				} catch (FilesetFileException e) {
-//
-//				}
-//			}			
-//		}
-		
+				
 		System.clearProperty("org.daisy.util.fileset.validating");
 				
 	}
@@ -365,7 +328,6 @@ public class FilesetImpl implements Fileset {
 							this.fileInstantiatedEvent(newmember);						
 						} //if (newmember == null)
 						//put in the incoming members references list
-						//referer.putReferencedMember(newmember.getFile().toURI(),newmember);
 						referer.putReferencedMember(newmember);
 					} //!resolvedURI.equals(cache)
 				}//if matches URI_LOCAL
@@ -452,6 +414,10 @@ public class FilesetImpl implements Fileset {
 						
 			if (rootName== "resources"){
 				return new Z3986ResourceFileImpl(uri);
+			}
+			
+			if (rootName== "stylesheet"){
+				return new XslFileImpl(uri);
 			}
 			
 			
@@ -565,62 +531,3 @@ public class FilesetImpl implements Fileset {
 		return bytesize;
 	}
 }
-
-
-//public void setErrorHandler(FilesetErrorHandler errh) {
-//this.errorListener = errh;
-//}
-
-//public void fatalError(FilesetException exception) {
-//errors.add(exception);
-//}
-//
-//public void error(FilesetException exception) {
-//errors.add(exception);
-//}
-//
-//public void warning(FilesetException exception) {
-//errors.add(exception);		
-//}	
-//
-//public void warning(SAXParseException exception) {
-//errors.add(exception);		
-//}
-//
-//public void error(SAXParseException exception) {
-//errors.add(exception);		
-//}
-//
-//public void fatalError(SAXParseException exception) {
-//errors.add(exception);			
-//}
-//
-//public void warning(CSSParseException exception) throws CSSException {
-//errors.add(exception);
-//}
-//
-//public void error(CSSParseException exception) throws CSSException {
-//errors.add(exception);
-//}
-//
-//public void fatalError(CSSParseException exception) throws CSSException {
-//errors.add(exception);
-//System.err.println("fatal CSSParseException in Fileset errhandler");
-//}
-
-
-
-//public long getLocalMemberSize() {		
-//	return this.localMembers.size();
-//}
-
-
-//public Iterator getLocalMembersURIIterator() {
-//return localMembers.keySet().iterator();		
-//}
-
-
-
-//public Iterator getErrorsIterator() {
-//return errors.iterator();
-//}
