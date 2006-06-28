@@ -90,7 +90,7 @@ use when preparing an XML file for a specific output medium: one example is spee
 	<h4>Replacement string table syntax</h4>
 	<p>The replacement string tables must comply to the syntax of the two first fields of <a href="http://www.unicode.org/Public/UNIDATA/UnicodeData.txt">http://www.unicode.org/Public/UNIDATA/UnicodeData.txt</a>.</p>
 	<p>This means that the first field must be a hex value representing a unicode codepoint, and the second field an arbitrary length string of characters.</p>
-	<p>A Cr/Lf (linebreak)must occur between each replacement pair.</p>
+	<p>A Cr/Lf (linebreak) must occur between each replacement pair.</p>
 	<p>If a line starts with the hash character, it is considered a comment.</p>
 	<p>Example of replacement text table:</p>
 
@@ -102,7 +102,7 @@ use when preparing an XML file for a specific output medium: one example is spee
 		#end my greek fave chars		
 	</code></pre>
 	
-	<p>Note: when characters beyond the ascci range is used in the second field, the output may be funky. The mozilla character set detection routine is run on all added tables, 
+	<p>Note: when characters beyond the ascii range is used in the second field, the output may be funky. The mozilla character set detection routine is run on all added tables, 
 	but this process is not guaranteed to return a correct charset, only a probable charset.</p>
 	
 	
