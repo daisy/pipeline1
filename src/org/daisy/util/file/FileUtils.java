@@ -20,11 +20,9 @@ package org.daisy.util.file;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 
 /**
@@ -127,14 +125,21 @@ public class FileUtils {
 	public static File writeStringToFile(
 			File file, String string,
 			String encoding)
-			throws FileNotFoundException,
-			UnsupportedEncodingException {
+			throws IOException {
 
 		FileOutputStream out = new FileOutputStream(file);
 		PrintStream p = new PrintStream(out, true, encoding);
 		p.print(string);
 		p.flush();
 		p.close();
+		out.close();
+		return file;
+	}
+		
+	public static File writeBytesToFile(File file, byte[] bytes)throws IOException {
+		FileOutputStream out = new FileOutputStream(file);
+		out.write(bytes);
+		out.close();
 		return file;
 	}
 
