@@ -1,7 +1,40 @@
-# 2006-jun-21 23:59:04
+###############################################################################
+## DMFC GUI install script                                                   ##
+##  - using Nullsoft Scriptable Install System (NSIS)                        ##
+##                                                                           ##
+## Linus Ericson 2006                                                        ##
+##                                                                           ##
+## Depends on ZipDLL, http://nsis.sourceforge.net/wiki/ZipDLL                ##
+###############################################################################
+
+;
+; Usage
+;   
+;   DMFC
+;     Use the build.xml ANT script in the DMFC project to build DMFC and the
+;     util library. Target names are 'buildUtil' and 'buildDMFC-NSIS'.
+;
+;   GUI
+;     Use the build.xml ANT script in the DMFCGUI project to build the GUI.
+;     Target name is 'buildZip-NSIS'.
+;
+;   NSIS
+;     Make sure the defines in the 'Defines' part are correct.
+;
+;     (optionally) Change the value of the 'OutFile' command in the 
+;     'Installer attributes' part.
+;
+;     Apply any changes to the 'DMFC', 'GUI', and 'Other' sections.
+;
+;     Make sure all the (correct) jars are listed in dmfcgui.bat.
+;
+;     Extract swt-win32-*.dll from the org.eclipse.swt.win32.*.jar and place
+;     the result in $SWTDLLDIR
+
 
 Name "DMFC GUI"
-# Defines
+
+### Defines ###################################################################
 !define REGKEY "SOFTWARE\$(^Name)"
 !define VERSION 1.0b1
 !define COMPANY "Daisy Consortium"
@@ -18,20 +51,20 @@ Name "DMFC GUI"
 
 !define SWTDLLDIR "C:\Documents and Settings\Linus Ericson\My Documents\Program\dmfc"
 
-# Included files
+### Included files ############################################################
 !include Sections.nsh
 !include ZipDLL.nsh
 
-# Reserved Files
+### Reserved Files ############################################################
 
-# Variables
+### Variables #################################################################
 Var StartMenuGroup
 
-# Installer pages
+### Installer pages ###########################################################
 Page directory
 Page instfiles
 
-# Installer attributes
+### Installer attributes ######################################################
 OutFile dist\dmfcgui-1.0b1.exe
 InstallDir "$PROGRAMFILES\DMFC GUI"
 CRCCheck on
@@ -49,7 +82,7 @@ VIAddVersionKey LegalCopyright ""
 InstallDirRegKey HKLM "${REGKEY}" Path
 ShowUninstDetails show
 
-# Installer sections
+### Installer sections ########################################################
 Section -Main SEC0000
     #SetOutPath $INSTDIR\dmfc
     #SetOverwrite on
@@ -149,7 +182,7 @@ Section -post SEC0001
     WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
 SectionEnd
 
-# Macro for selecting uninstaller sections
+### Macro for selecting uninstaller sections ##################################
 !macro SELECT_UNSECTION SECTION_NAME UNSECTION_ID
     Push $R0
     ReadRegStr $R0 HKLM "${REGKEY}\Components" "${SECTION_NAME}"
@@ -162,7 +195,7 @@ done${UNSECTION_ID}:
     Pop $R0
 !macroend
 
-# Uninstaller sections
+### Uninstaller sections ######################################################
 Section /o un.Main UNSEC0000
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd
@@ -179,7 +212,9 @@ Section un.post UNSEC0001
     RmDir /REBOOTOK $INSTDIR
 SectionEnd
 
-# Installer functions
+
+
+### Installer functions #######################################################
 Function .onInit
     InitPluginsDir
     MessageBox MB_OK|MB_ICONINFORMATION "FIXME: Check for Java 5"
@@ -187,7 +222,7 @@ Function .onInit
     StrCpy $StartMenuGroup "DMFC GUI"
 FunctionEnd
 
-# Uninstaller functions
+### Uninstaller functions #####################################################
 Function un.onInit
     ReadRegStr $INSTDIR HKLM "${REGKEY}" Path
     ReadRegStr $StartMenuGroup HKLM "${REGKEY}" StartMenuGroup
