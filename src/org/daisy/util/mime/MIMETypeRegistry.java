@@ -161,8 +161,7 @@ public class MIMETypeRegistry implements XMLReporter {
 	 * @param candidate
 	 *            a MIME string that may or may not be represented in the
 	 *            registry.
-	 * @return true if a representation exists, false otherwise. Will strip
-	 *         charset if such exists in inparam
+	 * @return true if a representation exists, false otherwise. 
 	 */
 	public boolean hasEntry(String candidate) {
 		return getEntryByName(candidate) != null;
