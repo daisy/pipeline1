@@ -4,8 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -50,6 +53,7 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
     static DocumentBuilderFactory domFactory = null;
     static DocumentBuilder domBuilder = null;    
     private Map idMap = new HashMap(); // <idvalue>,<carrierQname>
+    protected Set xmlLangValues = new HashSet();
     private boolean isWellformed = true;
     private boolean isDTDValid = true;
     private boolean isDTDValidated = false;
@@ -119,6 +123,10 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
         if (saxFactory.isValidating())isDTDValidated = true;
     }
 
+    public Collection getXmlLangValues(){
+    	return this.xmlLangValues;
+    }
+    
     public boolean isWellformed() throws IllegalStateException {
         if (isParsed)return isWellformed;
         throw new IllegalStateException("Property not set: file not parsed");
