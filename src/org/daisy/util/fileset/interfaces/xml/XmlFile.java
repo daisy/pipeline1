@@ -2,6 +2,8 @@ package org.daisy.util.fileset.interfaces.xml;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,6 +22,14 @@ import org.xml.sax.SAXException;
  */
 public interface XmlFile extends FilesetFile, Referring {
 	static String mimeStringConstant = MIMEConstants.MIME_APPLICATION_XML;
+
+	/**
+	 *@return a collection&lt;String&gt; of all xml:lang values in this XML document. 
+	 * If no xml:lang values exist in this document, the return will
+	 * be an emtpy list, not null. The collection contains only unique items, and
+	 * values are the untampered-with values of the xml:lang attribute.
+	 */
+	public Collection getXmlLangValues();
 	
 	/**
 	 *@return true if <code>idval</code> exists as the value of an attribute named <code>id</code> in the document, false otherwise
