@@ -13,6 +13,7 @@ import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
  */
 public class DefaultFilesetErrorHandlerImpl implements FilesetErrorHandler {
 	private boolean throwOnFatal = false;
+	private static StringBuilder sb = null;
 	
 	public DefaultFilesetErrorHandlerImpl(){
 		
@@ -23,19 +24,30 @@ public class DefaultFilesetErrorHandlerImpl implements FilesetErrorHandler {
 	}
 
 	public void error(FilesetFileException ffe) throws FilesetFileException {
+		if(null==sb)sb = new StringBuilder();
+		sb.delete(0,sb.length());
+		sb.append(ffe.getOrigin().getName());
+		sb.append(' ');
+		sb.append(':');
+		sb.append(ffe.getCause().getMessage());
+		sb.append(' ');
+		sb.append('[');
+		sb.append(ffe.getCause().getClass().getSimpleName());
+		sb.append(']');
+		
 		if(ffe instanceof FilesetFileFatalErrorException) {
-			System.err.println("Serious error in " 
-					+ ffe.getOrigin().getName() + ": " + ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
+			sb.insert(0,"Serious error in ");
+			System.err.println(sb.toString());
 			if(throwOnFatal) throw ffe;
 		}else if (ffe instanceof FilesetFileErrorException) {
-			System.err.println("Error in " 
-					+ ffe.getOrigin().getName() + ": " + ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
+			sb.insert(0,"Error in ");
+			System.err.println(sb.toString());
 		}else if (ffe instanceof FilesetFileWarningException) {
-			System.err.println("Warning in " 
-					+ ffe.getOrigin().getName() + ": " + ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
+			sb.insert(0,"Warning in ");
+			System.err.println(sb.toString());
 		}else{
-			System.err.println("Exception with unknown severity in " 
-					+ ffe.getOrigin().getName() + ": " + ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
+			sb.insert(0,"Exception with unknown severity in ");
+			System.err.println(sb.toString());
 		}
 	}
 
