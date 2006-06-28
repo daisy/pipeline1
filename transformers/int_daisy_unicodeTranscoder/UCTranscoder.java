@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -96,7 +95,7 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 			ucr = new UCharReplacer();
 			String[] tables = param.split(",");
 			for (int i = 0; i < tables.length; i++) {
-				File t = new File(tables[i]);
+				File t = new File(tables[i].trim());
 				if(t.exists()) {
 					try{
 						ucr.addTranslationTable(t.toURL(),getEncoding(t));
