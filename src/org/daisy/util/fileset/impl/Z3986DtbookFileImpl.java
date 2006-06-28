@@ -3,6 +3,9 @@ package org.daisy.util.fileset.impl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,6 +26,7 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	private String docauthor = null;
 	private String dcCreator= null;
 	private String dcPublisher= null;
+	private Set dcLanguages= new HashSet(); //repeatable
 	
 	private boolean inDoctitle = false;
 	private boolean inDocauthor = true;
@@ -33,8 +37,7 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 		super(uri,Z3986DtbookFile.mimeStringConstant);		
 	}
 			
-	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
-		//qName = qName.intern();
+	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {						
 		for (int i = 0; i < attrs.getLength(); i++) {
 			attrName = attrs.getQName(i);
 			attrValue = attrs.getValue(i).intern();
@@ -51,7 +54,9 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 						this.dcPublisher = attrs.getValue("content");		
 					}else if(attrValue.toLowerCase().equals("dtb:uid")){
 						this.dtbUid = attrs.getValue("content");
-					}	
+					}else if(attrValue.toLowerCase().equals("dc:language")){
+						this.dcLanguages.add(attrs.getValue("content"));
+					}		
 				}
 			}else if (sName == "doctitle") {
 				inDoctitle = true;
@@ -59,12 +64,13 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 				inDoctitle = true;
 			}
 			
-			if (attrName=="id") {
-				QName q = new QName(namespaceURI,sName);
-				this.putIdAndQName(attrValue,q);
+			if (attrName=="id") {				
+				this.putIdAndQName(attrValue,new QName(namespaceURI,sName));
 			} else if (regex.matches(regex.DTBOOK_ATTRIBUTES_WITH_URIS,attrName)) {
 			   putUriValue(attrValue);
-			}									
+			}else if (attrName=="xml:lang") {
+				this.xmlLangValues.add(attrValue);
+			}
 		}//for (int i
 	}//startElement
 
@@ -113,6 +119,10 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	public String getDtbUid() {
 		return dtbUid;
 	}
-
+	
+	public Collection getDcLanguages() {		
+		return this.dcLanguages;
+	}
+	
 	private static final long serialVersionUID = -4975394410229229129L;
 }
