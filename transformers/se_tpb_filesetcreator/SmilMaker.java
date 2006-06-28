@@ -68,6 +68,7 @@ public class SmilMaker implements AbortListener {
 		
 	private Set skippable;
 	private Set ecapable;
+	private Set headings;
 	private Set forceLink = new HashSet();
 	private Set otherEncounteredFiles = new HashSet();
 	
@@ -120,7 +121,7 @@ public class SmilMaker implements AbortListener {
 			File smilTemplate, 
 			Set skippable, 
 			Set escapable, 
-			Set forceLink, 
+			Set forceLink,
 			ProgressObserver obs, 
 			FileSetCreator fsc) 
 			throws 
@@ -142,16 +143,24 @@ public class SmilMaker implements AbortListener {
 		if (!outputDirectory.isDirectory()) {
 			if (!outputDirectory.exists()) {
 				outputDirectory.mkdirs();
-			}  else {
+			} else {
 				throw new IllegalArgumentException("Output directory is not a directory; \"" 
-						+ outputDirectory.getAbsolutePath()
-						+ "\"");
+					+ outputDirectory.getAbsolutePath()
+					+ "\"");
 			}
 		}
 		
 		this.smilTemplateFile = smilTemplate;
 		this.skippable = skippable;
 		this.ecapable = escapable;
+		
+		this.headings = new HashSet();
+		headings.add("h1");
+		headings.add("h2");
+		headings.add("h3");
+		headings.add("h4");
+		headings.add("h5");
+		headings.add("h6");
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		documentBuilder = dbf.newDocumentBuilder();
@@ -318,8 +327,8 @@ public class SmilMaker implements AbortListener {
 						closeSeq(escapable);
 					}
 					
-					// är nästa par en ny ljudfil? var beredd på att öppna nytt träd
-					if (!newSmilIncoming && upcomingAudioFileChange(reader)) {
+					// will we pass a heading before next par?
+					if (!newSmilIncoming && nextParIsNewSmil(reader)) {
 						newSmilIncoming  = true;
 					}
 					
@@ -412,7 +421,6 @@ public class SmilMaker implements AbortListener {
 	 * right after the reference after playing the target element instead
 	 * of countinuing after the target. 
 	 * 
-	 * ...confusing?
 	 * @throws TransformerAbortException 
 	 *
 	 */
@@ -654,16 +662,12 @@ public class SmilMaker implements AbortListener {
 	 * output file.
 	 */
 	private XMLEvent newPar(StartElement se) {
-		DEBUG("Free mem: " + Runtime.getRuntime().freeMemory() + " of " + Runtime.getRuntime().totalMemory());
-		
 		String currentSmilClipBegin = null;
 		String currentSmilClipEnd = null;
 		String currentSmilClipSrc = null;
 		String dtbId = null;
 		String idRef = null;
 		
-		// TODO: use Map this.getSmilContext(StartElement) instead?
-		// What about the idref?
 		try {
 			Map tmp = this.getSmilContext(se);
 			currentSmilClipBegin = (String) tmp.get(smilClipBegin);
@@ -922,7 +926,7 @@ public class SmilMaker implements AbortListener {
 		openSeqs.clear();
 		openSeqs.push(rootSeq);
 		
-		// save the DOM and its future filename, not yet on disk, though.
+		// store the DOM and its future filename, not yet on disk, though.
 		smilTrees.add(currentSmil);
 		smilFiles.add(getSmilFile());
 		generatedFiles.add(getSmilFile().getName());
@@ -948,16 +952,30 @@ public class SmilMaker implements AbortListener {
 	 * if no such exists.
 	 * @throws XMLStreamException
 	 */
-	private String getNextSmilSrc(BookmarkedXMLEventReader reader) throws XMLStreamException {
+	private String getNextSmilSrc(BookmarkedXMLEventReader reader, Vector levelChange) throws XMLStreamException {
 		String bookmark = "getNextSmilSrc";
 		reader.setBookmark(bookmark);
 		String src = null;
+		boolean marked = false;
+		if (null == levelChange) {
+			levelChange = new Vector();
+		}
+		levelChange.add(Boolean.FALSE);
 		
 		while (reader.hasNext()) {
 			XMLEvent event = reader.nextEvent();
 			if (!event.isStartElement()) {
 				continue;
 			}
+			
+			String localPart = event.asStartElement().getName().getLocalPart();
+			// a heading?
+			if (!marked && headings.contains(localPart)) {
+				marked = true;
+				levelChange.clear();
+				levelChange.add(Boolean.TRUE);	
+			}
+			
 			
 			if (hasSmilAttributes(event.asStartElement())) {
 				for (Iterator it = event.asStartElement().getAttributes(); it.hasNext(); ) {
@@ -975,57 +993,45 @@ public class SmilMaker implements AbortListener {
 		return src;
 	}
 	
+	private String getNextSmilSrc(BookmarkedXMLEventReader reader) throws XMLStreamException {
+		return getNextSmilSrc(reader, null);
+	}
+	
+	
 	/**
-	 * Returns <code>true</code> if the next audio file encountered in the input
-	 * document is different from the one last read, <code>false</code> otherwise.
-	 * If there is an upcoming change of audio file, the vaiable <code>currentAudioFilename</code>
-	 * will be changed to the upcoming filename.
+	 * Returns <code>true</code> if the next synch point encountered in the input
+	 * document is in a different level from the one last read (and hence should be 
+	 * in a different smil file), <code>false</code> otherwise.
+	 * If there is a change of audio file, the vaiable <code>currentAudioFilename</code>
+	 * will be changed to the new filename.
 	 * @param reader a for the input document
-	 * @return <code>true</code> if the next audio file encountered in the input
-	 * document is different from the one last read, <code>false</code> otherwise.
+	 * @return <code>true</code> if the next synch point encountered in the input
+	 * document is in a different level from the one last read (and hence should be 
+	 * in a different smil file), <code>false</code> otherwise.
 	 * @throws XMLStreamException
 	 */
-	private boolean upcomingAudioFileChange(BookmarkedXMLEventReader reader) throws XMLStreamException {
+	private boolean nextParIsNewSmil(BookmarkedXMLEventReader reader) throws XMLStreamException {
 		
-		boolean isNewFilename = false;
-		String smilSrc = getNextSmilSrc(reader);
+		boolean isNewLevel = false;
+		Vector levelChangeHolder = new Vector();
+		String smilSrc = getNextSmilSrc(reader, levelChangeHolder);
 		
-		if (null != currentAudioFilename && null != smilSrc) {
-			isNewFilename = !smilSrc.equals(currentAudioFilename);
-		}
-		
-		if (null != smilSrc) {
-			setCurrentAudioFile(smilSrc);
-		}
-		return isNewFilename;
-	}
-
-	private boolean isNextSynchNewSmil(BookmarkedXMLEventReader reader) throws XMLStreamException {
-		boolean result = false;
-		String bookmark = "SmilMaker.nextSynchNewSmil";
-		reader.setBookmark(bookmark);
-		
-		XMLEvent event = null;
-		while (reader.hasNext()) {
-			event = reader.nextEvent();
-			if (!event.isStartElement()) {
-				continue;
+		Boolean levelChange = (Boolean) levelChangeHolder.get(0);
+		if (!levelChange.booleanValue()) {
+			if (null != smilSrc) {
+				otherEncounteredFiles.add(smilSrc);
+			}
+			isNewLevel = false;
+		} else {		
+			if (null != currentAudioFilename && null != smilSrc) {
+				isNewLevel = !smilSrc.equals(currentAudioFilename);
 			}
 			
-			StartElement se = event.asStartElement();
-			if (false /*isElemIsAHeading(se)*/) {
-				result = true;
-				break;
-			}
-			
-			if (hasSmilAttributes(se)) {
-				result = false;
-				break;
+			if (null != smilSrc) {
+				setCurrentAudioFile(smilSrc);
 			}
 		}
-		
-		reader.gotoAndRemoveBookmark(bookmark);
-		return result;
+		return isNewLevel;
 	}
 	
 	/**
@@ -1055,7 +1061,9 @@ public class SmilMaker implements AbortListener {
 	 * @param filename the new current file.
 	 */
 	private void setCurrentAudioFile(String filename) {
-		otherEncounteredFiles.add(filename);
+		if (null != filename) {
+			otherEncounteredFiles.add(filename);
+		}
 		currentAudioFilename  = filename;
 	}
 	
