@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -126,7 +127,30 @@ abstract class FilesetFileImpl extends EFile implements FilesetFile, IEFile {
     public InputStream asInputStream() throws FileNotFoundException {    	
     	return new FileInputStream(this);    	        
     }
-        
+       
+	public byte[] asByteArray() throws IOException {
+		InputStream is = this.asInputStream();
+		long length = this.length();
+		byte[] bytes = new byte[(int)length];
+		int offset = 0;
+        int numRead = 0;
+        while (offset < bytes.length
+               && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
+            offset += numRead;
+        }
+        if (offset < bytes.length) {
+            throw new IOException("IOException in " + this.getName());
+        }
+        is.close();
+        return bytes;
+	}
+	
+	public ByteBuffer asByteBuffer() throws IOException {
+		byte[] bytes = this.asByteArray();
+		ByteBuffer buf = ByteBuffer.allocate(bytes.length);				
+		return (ByteBuffer)buf.put(bytes).rewind();
+	}
+    
     public boolean hadErrors() {
     	return !myExceptions.isEmpty();
     }

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.Collection;
 
 import javazoom.jl.decoder.BitstreamException;
@@ -67,4 +68,15 @@ public interface FilesetFile extends Referable, IEFile {
 	 */
 	public InputStream asInputStream() throws FileNotFoundException;
 
+	/**
+	 * @return this file as a byte array 
+	 * where each byte is represented as a decimal int (0-255)
+	 */
+	public byte[] asByteArray() throws IOException;
+	
+	/**
+	 * @return this file as a ByteBuffer 
+	 */
+	public ByteBuffer asByteBuffer() throws IOException;
+			
 }
