@@ -79,7 +79,6 @@ public class FileSetCreator extends Transformer {
 		}
 		
 		//*****************************************************************************************************
-		// Print some info...
 		sendMessage(Level.CONFIG, i18n("USING_INPUT_FILE", manuscriptFilename));
 		sendMessage(Level.CONFIG, i18n("USING_OUTPUT_DIR", outputDirectory));
 		
@@ -415,12 +414,5 @@ public class FileSetCreator extends Transformer {
 	
 	public void checkTransformerAborted() throws TransformerAbortException {
 		super.checkAbort();
-	}
-	
-	
-	private void DEBUG(Set s) {
-		for (Iterator it = s.iterator(); it.hasNext(); ) {
-			DEBUG(it.next().toString());
-		}
 	}
 }
