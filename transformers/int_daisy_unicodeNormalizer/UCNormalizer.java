@@ -101,7 +101,7 @@ public class UCNormalizer extends Transformer implements FilesetManipulatorListe
 			//transformer generics
 			this.checkAbort();
 			processedCount++;
-			this.progress(processedCount/xmlFileCount - 0.02);
+			this.progress(processedCount/xmlFileCount);
 			//smilfiles are only empty elements so abort if textnodesOnly to save time
 			if(this.textnodesOnly && file instanceof SmilFile) return null;			
 			//else, set self to listen to exposed value, using default constructor
