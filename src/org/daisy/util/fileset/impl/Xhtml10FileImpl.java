@@ -35,11 +35,14 @@ class Xhtml10FileImpl extends XmlFileImpl implements TextualContentFile, Xhtml10
 		for (int i = 0; i < attrs.getLength(); i++) {
 			attrName = attrs.getQName(i);
 			attrValue = attrs.getValue(i).intern(); //for some reason	
+						
 			if (attrName=="id") {
 				QName q = new QName(namespaceURI,sName);
 				this.putIdAndQName(attrValue,q);				
 			}else if(regex.matches(regex.XHTML_ATTRS_WITH_URIS,attrName)) {
 				putUriValue(attrValue);
+			}else if (attrName=="xml:lang") {
+				this.xmlLangValues.add(attrValue);
 			}						
 		} //for (int i
 	}
