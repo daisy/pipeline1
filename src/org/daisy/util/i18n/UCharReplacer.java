@@ -142,12 +142,32 @@ public class UCharReplacer  {
 	public void setFallbackToUCD(boolean fallback) {
 		fallbackToUCD = fallback;
 	}
+
+	/**
+	 * @return true if this instance is configured to fall back to the UCD table 
+	 * if a replacement text is not found in the table(s) set in #addTranslationTable()
+	 */
+	public boolean getFallbackToUCD() {
+		return fallbackToUCD; 
+	}
+		
+	/**
+	 * @return true if this instance has successfully loaded one or more
+	 * user replacement tables. (ie successful completion of one or several
+	 * calls to #addTranslationTable()
+	 */
+	public boolean hasUserTables() {
+		return !this.translationTables.isEmpty(); 
+	}
 	
 	private HashMap loadTable(URL tableURL, String encoding) throws IOException {
 		//physical table syntax: uchar;replacementstring
 		//HashMap: key:Integer, value:String
 		
 		if(encoding==null){
+			//caller is expected to use chardet or something like that
+			//if textfile encoding is not known
+			//TODO perhaps use chardet here...
 			encoding = Charset.defaultCharset().name();
 		}
 		
@@ -159,12 +179,14 @@ public class UCharReplacer  {
 		try{
 			while ((currentLine=rdr.readLine()) != null ){
 				lineNumber = rdr.getLineNumber();
-				String[] fields = currentLine.split(";");  
-				if(fields.length>1){
-					map.put(Integer.decode("0x" + fields[0]),fields[1]);
-				}else{
-					System.err.println("error in translation table " 
-							+ tableURL.toString() + " at line " + lineNumber);
+				if(!currentLine.startsWith("#")) {
+					String[] fields = currentLine.split(";");  
+					if(fields.length>1){
+						map.put(Integer.decode("0x" + fields[0]),fields[1]);
+					}else{
+						System.err.println("error in translation table " 
+								+ tableURL.toString() + " at line " + lineNumber);
+					}
 				}
 		    }	    
 		}catch (Exception e) {
@@ -179,7 +201,7 @@ public class UCharReplacer  {
 	
 	private void addWarning(int codePoint) {
 		StringBuilder sb = new StringBuilder(40);
-		sb.append("No replacement text found for ");
+		sb.append("No user provided replacement text found for ");
 		sb.append(CharUtils.unicodeHexEscape(codePoint).toUpperCase());
 		sb.append("[");
 		sb.append(String.copyValueOf(UCharacter.toChars(codePoint)));
@@ -199,4 +221,5 @@ public class UCharReplacer  {
 		list.addAll(warnings.values());
 		return list;
 	}
+		
 }
