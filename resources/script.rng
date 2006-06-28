@@ -18,7 +18,18 @@
 	
 	<define name="details">
 		<element name="name"><text/></element>
-		<element name="description"><text/></element>
+		<element name="description">
+			<ref name="description"/>
+		</element>
+	</define>
+
+	<define name="description">
+		<oneOrMore>
+			<choice>	      	      
+		      <element name="p"><text/></element>
+		      <text/>
+	    	</choice>
+		</oneOrMore>
 	</define>
 
 	<define name="properties">
