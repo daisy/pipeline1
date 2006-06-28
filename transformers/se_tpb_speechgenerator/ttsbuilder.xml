@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- this is the place to put additional parameters to your own tts wrapper impl. -->
+<!-- the class parameter must be supplied, though. -->
+<!-- ${transformer_dir} represents the directory where se_tpb_speechgenerator resides. -->
+
+
+<ttsbuilder>
+	<!--******************************************************************************
+	Windows
+	*******************************************************************************-->
+	<os>
+		<!-- all properties must match java's System.getProperties()-properties.
+			Standard regex match for an os to be usable in this program. -->
+		<property name="os.name" match="[Ww]indows XP" />
+		
+		<lang lang="en">
+			<!-- since xml:lang determines the tts use in this program, provide only one tts per language! -->
+			<!-- 
+								
+				<param name="sapiVoiceSelection" value="Gender=Female;Age!=Child;Language=409"/>
+				
+				would result in a 
+					<voice optional="Gender=Female;Age!=Child;Language=409">bla bla</voice>
+				around every phrase produced using this tts. More on sapi xml control tags here:
+				http://msdn.microsoft.com/library/default.asp?url=/library/en-us/SAPI51sr/Whitepapers/WP_XML_TTS_Tutorial.asp
+				
+				Language Code for Swedish voice: 41D
+					
+				On language codes:
+				note: sapi language codes are in hex notation, without the characteristic "0x"...
+				The parameter:
+				A language ID is a 16 bit value which is the combination of a primary language ID 
+				and a secondary language ID. The bits are allocated as follows:
+				+- - - - - - - - - - - - - - - - - - - -+
+				| Sublanguage ID |  Primary Language ID |
+				+- - - - - - - - - - - - - - - - - - - -+
+				15            10 9                    0 bit
+				Please note that to get primary language from language Id, you must AND the Id 
+				with number 0x3FF (1023 in decimal).
+				
+				(http://xtras.timehouse.fi/download/speechXtradocs.pdf)
+			-->
+			
+			<!-- this is configuration for one tts impl. the "default" attribute should be se to true 
+				for one (1) configuration for each os. -->
+			
+			<tts id="en_sapi" default="true">
+				<param name="class" value="se_tpb_speechgenerator.SAPIImpl"/>
+				<param name="binary" value="${transformer_dir}/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe"/>				
+				<param name="generalRegexFilename" value="${transformer_dir}/regex/richard.xml"/>
+				<param name="xsltFilename" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="yearFilename" value="${transformer_dir}/config/year_en.xml"/>
+				<param name="sapiVoiceSelection" value="Gender=Male"/>
+				<param name="characterTranslationTable" value="${transformer_dir}/characterTranslationTable.txt"/>
+				<param name="translationTableEncoding" value="utf-8"/>
+				
+			</tts>
+		</lang>
+		
+		<!--
+		<lang lang="sv">
+			<tts id="sv_sapi">
+				<param name="class" value="se_tpb_speechgenerator.SAPIImpl"/>
+				<param name="binary" value="c:/Program/SimpleCommandLineTTS/SimpleCommandLineTTS.exe"/> 
+				
+				<param name="generalRegexFilename" value="${transformer_dir}/regex/richard.xml"/>
+				
+				<param name="xsltFilename" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="yearFilename" value="${transformer_dir}/config/year_en.xml"/>
+				<param name="sapiVoiceSelection" value="Language=41D"/>
+				
+			</tts>
+		</lang>
+		-->
+	</os>
+	
+	
+	<!--******************************************************************************
+	Linux
+	*******************************************************************************-->
+	<os>
+		<property name="os.name" match="[Ll]inux.*" />
+		
+		<lang lang="en">
+			<tts id="loquendo" default="true">
+				<param name="class" value="se_tpb_speechgenerator.LoquendoImpl"/>
+				<param name="binary" value="${transformer_dir}/../../../narratorLoquendo"/>
+				<param name="generalRegexFilename" value="${transformer_dir}/regex/richard.xml"/>
+				<param name="ttsProperties" value="${transformer_dir}/config/loquendo.xml"/>
+				<param name="xsltFilename" value="${transformer_dir}/xslt/loquendo-en.xsl"/>
+				<param name="yearFilename" value="${transformer_dir}/config/year_en.xml"/>
+				
+			</tts>
+		</lang>
+	</os>
+</ttsbuilder>

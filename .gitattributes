@@ -18,6 +18,11 @@ lib/wstx-lgpl-2.0.3.jar -text
 lib/xercesImpl.jar -text
 resources/transformer.rng -text svneol=unset#application/octet-stream
 transformers/se_tpb_filesetcreator/resource/tpbnarrator_res.mp3 -text
+transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/Interop.SpeechLib.dll -text
+transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.application -text svneol=unset#application/octet-stream
+transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe -text
+transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe.manifest -text svneol=unset#application/octet-stream
+transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.pdb -text
 transformers/se_tpb_wordml2dtbook/docs/docs_p1.png -text
 transformers/se_tpb_wordml2dtbook/docs/docs_p10.png -text
 transformers/se_tpb_wordml2dtbook/docs/docs_p11.png -text

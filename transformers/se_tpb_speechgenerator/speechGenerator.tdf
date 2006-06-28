@@ -1,0 +1,69 @@
+<transformer version="1.0">
+	<name>Speech Generator</name>
+	<description>
+		Generates audio for a DTBook dokument.
+	</description>
+	<classname>se_tpb_speechgenerator.SpeechGenerator</classname>
+	<license></license>
+	<author>Martin Blomberg</author>
+	<support>No</support>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="text/plain">
+			<name>inputFilename</name>
+			<description>file://path/to/file.xml</description>
+			<example>c:/books/manuscript.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="in" type="text/plain">
+			<name>outputDirectory</name>
+			<description>file://path/to/directory/</description>
+			<example>c:/books/</example>
+		</parameter>
+
+		<parameter required="true" direction="in" type="text/plain">
+			<name>outputFilename</name>
+			<description>file://path/to/file.xml</description>
+			<example>c:/books/file.xml</example>
+		</parameter>
+				
+		<parameter required="false" direction="in" type="text/plain">
+			<name>sgConfigFilename</name>
+			<description>/path/to/configfile.xml</description>
+			<example>${transformer_dir}/config/sgConfig.xml</example>
+			<default>${transformer_dir}/config/sgConfig.xml</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>concurrentAudioMerge</name>
+			<description>should the merge of audio files happen concurrent, true of false?</description>
+			<example>true</example>
+			<enum>
+				<value>false</value>
+				<value>true</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>mp3Output</name>
+			<description>mp3 output, true or false?</description>
+			<example>true</example>
+			<enum>
+				<value>false</value>
+				<value>true</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="text/plain">
+			<name>ttsBuilderConfig</name>
+			<description>/path/to/file.xml</description>
+			<example>${transformer_dir}/ttsbuilder.xml</example>
+			<default>${transformer_dir}/ttsbuilder.xml</default>
+		</parameter>
+		
+	</parameters>
+
+</transformer>
