@@ -1,0 +1,67 @@
+<transformer version="1.0">
+	<name>Unicode Transcoder</name>
+	<description>Performs character set transcoding on all XML documents in a fileset, 
+	roundtripping through a Unicode representation. Can optionally substitute characters 
+	in the XML file with replacement strings.</description>
+	<classname>int_daisy_unicodeTranscoder.UCTranscoder</classname>
+	<license>LGPL</license>
+	<author>Markus Gylling</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/xml">
+			<name>inXML</name>
+			<description>The input XML file</description>
+			<example>D:/path/to/inputFile.xml</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>outDir</name>			
+			<description>The output directory</description>
+			<example>D:/path/to/outputDir/</example>
+		</parameter>	
+		
+		<parameter required="false" direction="out" type="string">
+			<name>outputEncoding</name>
+			<description>Character set encoding of the output file(s). If not set, the input characterset will be maintained.</description>
+			<example>iso-8859-1</example>
+			<default/>
+		</parameter>
+			
+		<parameter required="false" direction="in" type="text/plain">
+			<name>translationTable</name>
+			<description>
+				An optional comma separated list of tables containing replacement strings.
+				The provided table must comply to the syntax of the two
+				first fields of http://www.unicode.org/Public/UNIDATA/UnicodeData.txt;
+				[each line: unicodeHexValue;replacementString]
+			</description>
+			<example>D:/path/to/table1.txt, D:/path/to/table2.txt</example>
+			<default/>
+		</parameter>	
+
+		<parameter required="false" direction="in" type="string">
+			<name>fallbackToUCD</name>
+			<description>
+			   When a translation table has been set, but a replacement text
+			   was not found for a certain character, this parameter decides
+			   whether to use character names defined by Unicode as fallback.
+			</description>
+			<example>true</example>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="string">
+			<name>replaceOnAttributeValues</name>
+			<description>
+			   When a translation table has been set, sets whether the replacement 
+			   text processing should be applied to attribute values
+			</description>
+			<example>true</example>
+			<default>false</default>
+		</parameter>
+						
+	</parameters>	
+
+</transformer>

@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>Transformer documentation: <em>int_daisy_unicodeTranscoder</em></title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>int_daisy_unicodeTranscoder</em></h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>Performs character set transcoding on all XML documents in a fileset, roundtripping through a Unicode representation.</p>
+<p>Can optionally substitute characters in the XML file with replacement strings. This latter feature is intended primarily for
+use when preparing an XML file for a specific output medium: one example is speech synthesizers (who typically doesnt recognize and pronounce all characters in the Unicode repertoire).</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>The transformer is written to work on any file/fileset that can be represented by the <code>org.daisy.util.fileset</code> package.</p>
+<p>Character set transcoding will only be done on XML members of the input fileset; all other types of members pass through untouched.</p> 
+<p>If no file in the fileset is of type XML, then the whole fileset will pass through untouched. It is therefore safe to place this transformer in contexts whose dataflow varies considerably.</p>
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+<p>A file/fileset whose XML members has been transcoded. See <a href="#params">parameters</a></p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because input reqs were not satisfied, or because an exception occurs -->
+<p>No specific recovery scheme. On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf -->
+	<dl>
+		<dt>inXML</dt>
+		<dd>pathspec of the manifest member of input fileset</dd>
+
+		<dt>outDir</dt>
+		<dd>pathspec of output directory</dd>
+
+		<dt>outputEncoding</dt>
+		<dd>Character set encoding of the output file(s). If not set, the input characterset will be maintained.</dd>
+
+		<dt>translationTable</dt>
+		<dd>
+			<p>An optional comma separated list of tables containing replacement strings.</p>			
+		</dd>
+		
+		<dt>fallbackToUCD</dt>
+		<dd>
+			<p>When a translation table has been set, but a replacement text was not found for a certain character, this parameter decides whether to use character names defined by Unicode as fallback.</p>
+			<p>The consequence is that replacement strings will be taken from the second field of <a href="http://www.unicode.org/Public/UNIDATA/UnicodeData.txt">http://www.unicode.org/Public/UNIDATA/UnicodeData.txt</a>.</p>
+		</dd>		
+		
+	</dl>
+	<h3 id="extConfig">Extended configurability</h3>
+	<!-- details on additional config files, system variables etc -->
+	<h4>Replacement string table syntax</h4>
+	<p>The replacement string tables must comply to the syntax of the two first fields of <a href="http://www.unicode.org/Public/UNIDATA/UnicodeData.txt">http://www.unicode.org/Public/UNIDATA/UnicodeData.txt</a>.</p>
+	<p>This means that the first field must be a hex value representing a unicode codepoint, and the second field an arbitrary length string of characters.</p>
+	<p>A Cr/Lf (linebreak)must occur between each replacement pair.</p>
+	<p>If a line starts with the hash character, it is considered a comment.</p>
+	<p>Example of replacement text table:</p>
+
+	<pre><code>
+		#start my greek fave chars
+		0391;GREEK CAPITAL LETTER ALPHA;
+		0392;GREEK CAPITAL LETTER BETA;
+		0393;GREEK CAPITAL LETTER GAMMA;
+		#end my greek fave chars		
+	</code></pre>
+	
+	<p>Note: when characters beyond the ascci range is used in the second field, the output may be funky. The mozilla character set detection routine is run on all added tables, 
+	but this process is not guaranteed to return a correct charset, only a probable charset.</p>
+	
+	
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+<p>A possible feature is to call the replacement string feature only if a set output charset does not support representing the current char.
+Currently, the replacement table substitution will be performed independently of the output charset repertoire. These two modes of behavior should probably be switchable.</p>
+
+<p>Note: after a priori code review, the sjsxp StAX implementation seems safer to use than Woodstox when it comes to transcoding. This should be tested.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<ul>
+	<li><a href="http://www-306.ibm.com/software/globalization/icu/index.jsp">IBM icu4j</a> (at time of writing: icu4j_3_4_4.jar)</li>
+</ul>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Markus Gylling, Daisy Consortium</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>
