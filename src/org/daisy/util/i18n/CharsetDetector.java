@@ -99,7 +99,8 @@ public class CharsetDetector implements nsICharsetDetectionObserver {
         if (isAscii) {
         	detectedCharset = "us-ascii";
         }		
-        probableCharsets = det.getProbableCharsets();		
+        probableCharsets = det.getProbableCharsets();
+        imp.close();
 		return detectedCharset;
 	}
 
