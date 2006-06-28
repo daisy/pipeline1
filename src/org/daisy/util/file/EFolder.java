@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+
+import org.daisy.util.fileset.interfaces.Fileset;
 
 /**
  * EFolder - where E stands for extended.
@@ -40,32 +43,51 @@ public class EFolder extends File {
 
 	public EFolder(URI uri) throws IOException {
 		super(uri);
-		if (this.exists() && !this.isDirectory())
-			throw new IOException(this.getName()
-					+ "is not a folder");
+		testDir();		
 	}
 
 	public EFolder(String path) throws IOException {
 		super(path);
-		if (this.exists() && !this.isDirectory())
-			throw new IOException(this.getName()
-					+ "is not a folder");
+		testDir();	
 	}
 
 	public EFolder(File parent, String child) throws IOException {
 		super(parent, child);
-		if (this.exists() && !this.isDirectory())
-			throw new IOException(this.getName()
-					+ "is not a folder");
+		testDir();	
 	}
 
-	public EFolder (File folder) throws IOException {		
+	public EFolder (File folder) throws IOException {				
 		super(folder.toURI());
-		if (this.exists() && !this.isDirectory())
-			throw new IOException(this.getName()
-					+ "is not a folder");
+		testDir();	
+	}
+
+	private void testDir() throws IOException {
+		if(this.exists()) {
+			if(!this.isDirectory()) {
+				throw new IOException(this.getName()
+						+ "is not a folder");
+			}
+		}
 	}
 	
+	public boolean mkdir() {
+		return testMkResult(super.mkdir());
+	}
+	
+	public boolean mkdirs() {		
+		return testMkResult(super.mkdirs());
+	}
+	
+	private boolean testMkResult(boolean result) {
+		if(!result) {
+			return result;
+		}
+		if(!this.isDirectory()) {
+			return false;
+		}
+		return true;
+	}
+			
 	/**
 	 * @return true if this folder has zero descendants, including hidden files.
 	 */
@@ -281,16 +303,111 @@ public class EFolder extends File {
 	 *         not performed
 	 * @throws IOException
 	 */
-	public File addFile(File source,
-			boolean overwrite) throws IOException {
-		File dest = new File(this, source.getName());
+	public File addFile(File source, boolean overwrite) throws IOException {
+		return addFile(source, overwrite, null);
+	}
+
+	/**
+	 * Copies a file into this folder.
+	 * @param source
+	 *            File to be copied into this folder.
+	 * @param overwrite
+	 *            If true, will attempt to overwrite a preexisting destination.
+	 *            If false and the destination already exists, will not perform
+	 *            the add.
+	 * @param newName
+	 * 			  A local (pathless) name to give the added file.
+	 *            Null is an allowed value.
+	 *            If value is null, the source local name will be maintained.           
+	 * @return the resulting File if the add (and optional rename ) was successfully performed, 
+	 * 			null if the add was not successfully performed
+	 * @throws IOException
+	 */
+	public File addFile(File source, boolean overwrite, String newName) throws IOException {
+		File dest;
+		
+		if(newName==null) {
+			dest = new File(this, source.getName());
+		}else{
+			dest = new File(this, newName);
+		}
+		
 		if (!overwrite && dest.exists()) {
 			return null;
 		}
+		
 		FileUtils.copyFile(source, dest);
+		
 		return dest;
 	}
 
+	
+	/**
+	 * Copies a collection of files into this folder.
+	 * <p>Note that any directory relative relations of input collection will be lost</p> 
+	 * @param fileSources
+	 *            Files to be copied into this folder.
+	 * @param overwrite
+	 *            If true, will attempt to overwrite a preexisting destination.
+	 *            If false and the destination already exists, will not perform
+	 *            the add.
+	 * @return true if all adds were successfully performed, false otherwise
+	 * @throws IOException
+	 * @see #addFiles(Collection, boolean)
+	 */
+	public boolean addFiles(Collection fileSources, boolean overwrite) throws IOException {
+		Iterator i = fileSources.iterator();
+		boolean result = true;
+		
+		while(i.hasNext()) {
+			Object value = i.next();
+			if(value instanceof File) {
+				File source = (File) value;
+				File dest = new File(this, source.getName());				
+				if (!overwrite && dest.exists()) {
+					result = false;
+					System.err.println("destination exists in EFolder.addFiles and overwrite disabled: " + dest.getPath());
+				}else{
+					FileUtils.copyFile(source, dest);
+				}
+			}else{
+				result = false;
+				System.err.println("classcast problem in EFolder.addFiles: " + value.getClass().getSimpleName());
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Copies an org.daisy.util.fileset into this folder
+	 * <p>Any directory relative relations of input fileset (in relation to manifest) will be maintained.
+	 * <p>If a fileset member lives in a superdirectory of the manifest member, an IOException will be thrown. All members
+	 * must be in same folder as or subfolder of the Fileset manifest file.</p>
+	 * @param fileset the Fileset instance to copy into this folder
+	 * @param overwrite whether to overwrite preexisting specimen (specifiles) in destination 
+	 * @return true if all members were copied successfully; false otherwise. If overwrite is false and a copy is skipped, still returns true. 
+	 * @throws IOException if something bad happens
+	 */
+	public boolean addFileset(Fileset fileset, boolean overwrite) throws IOException {
+		EFolder inputBaseDir = fileset.getManifestMember().getParentFolder();
+		Iterator i = fileset.getLocalMembers().iterator();
+		while(i.hasNext()) {
+			File file = (File) i.next();
+			if(file.getParentFile().getCanonicalPath().equals(inputBaseDir.getCanonicalPath())) {
+				//file is in same dir as manifestfile
+				this.addFile(file,overwrite);
+			}else{
+				//file is in subdir
+				URI relative = inputBaseDir.toURI().relativize(file.getParentFile().toURI());
+				if(relative.toString().startsWith("..")) throw new IOException("fileset member "+file.getName()+" does not live in a sibling or descendant folder of manifest member");
+				EFolder subdir = new EFolder(this,relative.getPath());
+				FileUtils.createDirectory(subdir);
+				subdir.addFile(file,overwrite);
+			}						
+		}						
+		return true;
+	}
+	
 	/**
 	 * Deletes the contents of this folder. This folder itself is not deleted.
 	 * Only directly descending files and empty directly descending
@@ -419,6 +536,18 @@ public class EFolder extends File {
 		return FileUtils.writeStringToFile(new File(this, fileLocalName),toWrite,encoding);
 	}
 
+//	public File writeToFile(String fileLocalName,
+//			ByteBuffer toWrite)
+//			throws IOException {		
+//		return FileUtils.writeBytesToFile(new File(this, fileLocalName),toWrite.array());
+//	}
+	
+	public File writeToFile(String fileLocalName,
+			byte[] toWrite)
+			throws IOException {		
+		return FileUtils.writeBytesToFile(new File(this, fileLocalName),toWrite);
+	}
+	
 	/**
 	 * An extended File.listFiles() method
 	 * 
