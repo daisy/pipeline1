@@ -48,6 +48,7 @@
 			<fileset dir="${base.dir}">
 				<include name="scripts/**/*.*"/>
 				<include name="bin/**/*.*"/>
+				<include name="dmfcgui.bat"/>
 			</fileset>
 		</zip>
 	</target>

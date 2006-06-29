@@ -41,15 +41,15 @@ Name "DMFC GUI"
 !define URL http://www.daisy.org/projects/dmfc
 
 
-!define ECLIPSEDIR "C:\Program Files\Eclipse-3.1"
+!define ECLIPSEDIR "C:\Program Files\eclipse-3.1.1"
 
-!define JYTHONDIR "C:\Documents and Settings\Linus Ericson\My Documents\Program\dmfc"
+!define JYTHONDIR "C:\Program Files\eclipse-3.1.1\workspace\dmfc\dist"
 !define JYTHONNAME "jython_Release_2_2alpha1.jar"
 
-!define LAMEDIR "C:\Documents and Settings\Linus Ericson\My Documents\Program\dmfc"
+!define LAMEDIR "C:\Program Files\eclipse-3.1.1\workspace\dmfc\dist"
 !define LAMENAME "lame3.96.1.zip"
 
-!define SWTDLLDIR "C:\Documents and Settings\Linus Ericson\My Documents\Program\dmfc"
+!define SWTDLLDIR "C:\Program Files\eclipse-3.1.1\workspace\dmfc\dist"
 
 ### Included files ############################################################
 !include Sections.nsh
@@ -84,9 +84,7 @@ ShowUninstDetails show
 
 ### Installer sections ########################################################
 Section -Main SEC0000
-    #SetOutPath $INSTDIR\dmfc
-    #SetOverwrite on
-    #File ..\dmfc\dmfc.bat
+    # Register section
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
 SectionEnd
 
@@ -101,11 +99,14 @@ Section -AppDMFC SEC0002
     SetOutPath $INSTDIR\dmfc\lib
     File ..\dmfc\dist\org.daisy.util-bin.jar
     
-    # dmfc fat
+    # dmfc nsis
     SetOutPath $INSTDIR
-    File ..\dmfc\dist\dmfc-fat.zip
-    ZipDLL::extractall $INSTDIR\dmfc-fat.zip $INSTDIR\dmfc
-    Delete $INSTDIR\dmfc-fat.zip
+    File ..\dmfc\dist\dmfc-nsis.zip
+    ZipDLL::extractall $INSTDIR\dmfc-nsis.zip $INSTDIR\dmfc
+    Delete $INSTDIR\dmfc-nsis.zip
+    
+    # Register section
+    WriteRegStr HKLM "${REGKEY}\Components" AppDMFC 1
 SectionEnd
 
 
@@ -130,7 +131,9 @@ Section -AppGUI SEC0003
     # extract swt dll
     SetOutPath $INSTDIR
     File "${SWTDLLDIR}\swt-win32-*.dll"
-
+    
+    # Register section
+    WriteRegStr HKLM "${REGKEY}\Components" AppGUI 1
 SectionEnd
 
 
@@ -140,29 +143,49 @@ SectionEnd
 Section -AppOther SEC0004
     SetOverwrite on
 
-    # lame
+    Var /GLOBAL MY_PATH
+
+    ### install LAME
     SetOutPath $INSTDIR
     File "${LAMEDIR}\${LAMENAME}"
     ZipDLL::extractall "$INSTDIR\${LAMENAME}" "$INSTDIR\lame"
     Delete "$INSTDIR\${LAMENAME}"
+    # update dmfc.lame.path in dmfc.properties
+    Push "$INSTDIR\lame\lame.exe"
+    Push "\"
+    Push "\\"
+    Call StrRep
+    Pop "$MY_PATH"    
+    Push $INSTDIR\dmfc\bin\dmfc.properties
+    Push "dmfc.lame.path"
+    Push "dmfc.lame.path = $MY_PATH"
+    Call ReplaceLineStr
     
-    # jython
+    ### install Jython
     SetOutPath $INSTDIR
     File "${JYTHONDIR}\${JYTHONNAME}"
     ZipDLL::extractall "$INSTDIR\${JYTHONNAME}" "$INSTDIR\jython"
     Delete "$INSTDIR\${JYTHONNAME}"
-    
-    # update dmfc.properties
-    MessageBox MB_OK|MB_ICONINFORMATION "FIXME: Update dmfc.properties"
+    # update jython.home in dmfc.properties
+    Push "${JYTHONDIR}"
+    Push "\"
+    Push "\\"
+    Call StrRep
+    Pop "$MY_PATH"    
+    Push $INSTDIR\dmfc\bin\dmfc.properties
+    Push "python.home"
+    Push "python.home = $MY_PATH"
+    Call ReplaceLineStr
     
     # update dmfcgui.bat
-    MessageBox MB_OK|MB_ICONINFORMATION "FIXME: Update dmfcgui.bat"
-    Push "SET INST=DUMMY"
-    Push "SET INST=$INSTDIR"
-    Push all
-    Push all
+    #MessageBox MB_OK|MB_ICONINFORMATION "FIXME: Update dmfcgui.bat"    
     Push $INSTDIR\dmfcgui.bat
-    Call AdvReplaceInFile    
+    Push "SET INST="
+    Push "SET INST=$INSTDIR"
+    Call ReplaceLineStr
+    
+    # Register section
+    WriteRegStr HKLM "${REGKEY}\Components" AppOther 1
 SectionEnd
 
 
@@ -171,7 +194,8 @@ Section -post SEC0001
     WriteRegStr HKLM "${REGKEY}" StartMenuGroup $StartMenuGroup
     WriteUninstaller $INSTDIR\uninstall.exe
     SetOutPath $SMPROGRAMS\$StartMenuGroup
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\dmfcgui.bat
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe    
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" Publisher "${COMPANY}"
@@ -180,6 +204,9 @@ Section -post SEC0001
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" UninstallString $INSTDIR\uninstall.exe
     WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
     WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
+    
+    # Register section
+    WriteRegStr HKLM "${REGKEY}\Components" post 1
 SectionEnd
 
 ### Macro for selecting uninstaller sections ##################################
@@ -200,9 +227,30 @@ Section /o un.Main UNSEC0000
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd
 
+Section /o un.AppDMFC UNSEC0002
+    RMDir /r /REBOOTOK $INSTDIR\dmfc
+    
+    DeleteRegValue HKLM "${REGKEY}\Components" AppDMFC
+SectionEnd
+
+Section /o un.AppGUI UNSEC0003
+    Delete $INSTDIR\lib\org.eclipse.*.jar
+    Delete $INSTDIR\swt-win32-*.dll    
+
+    DeleteRegValue HKLM "${REGKEY}\Components" AppGUI
+SectionEnd
+
+Section /o un.AppOther UNSEC0004
+    RMDir /r /REBOOTOK $INSTDIR\lame
+    RMDir /r /REBOOTOK $INSTDIR\jython
+
+    DeleteRegValue HKLM "${REGKEY}\Components" AppOther
+SectionEnd
+
 Section un.post UNSEC0001
     DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
     DeleteRegValue HKLM "${REGKEY}" StartMenuGroup
     DeleteRegValue HKLM "${REGKEY}" Path
@@ -210,6 +258,9 @@ Section un.post UNSEC0001
     DeleteRegKey /IfEmpty HKLM "${REGKEY}"
     RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup
     RmDir /REBOOTOK $INSTDIR
+    
+    IfFileExists $INSTDIR\*.* 0 +2
+    MessageBox MB_OK|MB_ICONINFORMATION "Some items in directory '$INSTDIR'$\r$\n were not uninstalled automatically."
 SectionEnd
 
 
@@ -220,6 +271,14 @@ Function .onInit
     MessageBox MB_OK|MB_ICONINFORMATION "FIXME: Check for Java 5"
     MessageBox MB_OK|MB_ICONINFORMATION "FIXME: Check for .NET"
     StrCpy $StartMenuGroup "DMFC GUI"
+    
+    Var /GLOBAL ALREADY_INSTALLED
+    ClearErrors
+    ReadRegStr $ALREADY_INSTALLED HKLM "${REGKEY}" Path
+    IfErrors continue
+    MessageBox MB_YESNO|MB_ICONQUESTION "This software is alreay installed in$\r$\n $ALREADY_INSTALLED$\r$\n$\r$\nInstall anyway?" IDYES continue
+    Abort "Installation aborted"
+  continue:
 FunctionEnd
 
 ### Uninstaller functions #####################################################
@@ -227,112 +286,102 @@ Function un.onInit
     ReadRegStr $INSTDIR HKLM "${REGKEY}" Path
     ReadRegStr $StartMenuGroup HKLM "${REGKEY}" StartMenuGroup
     !insertmacro SELECT_UNSECTION Main ${UNSEC0000}
+    !insertmacro SELECT_UNSECTION AppDMFC ${UNSEC0002}
+    !insertmacro SELECT_UNSECTION AppGUI ${UNSEC0003}
+    !insertmacro SELECT_UNSECTION AppOther ${UNSEC0004}
+    !insertmacro SELECT_UNSECTION post ${UNSEC0001}    
 FunctionEnd
 
+Function ReplaceLineStr
+ Exch $R0 ; string to replace that whole line with
+ Exch
+ Exch $R1 ; string that line should start with
+ Exch
+ Exch 2
+ Exch $R2 ; file
+ Push $R3 ; file handle
+ Push $R4 ; temp file
+ Push $R5 ; temp file handle
+ Push $R6 ; global
+ Push $R7 ; input string length
+ Push $R8 ; line string length
+ Push $R9 ; global
+ 
+  StrLen $R7 $R1
+ 
+  GetTempFileName $R4
+ 
+  FileOpen $R5 $R4 w
+  FileOpen $R3 $R2 r
+ 
+  ReadLoop:
+  ClearErrors
+   FileRead $R3 $R6
+    IfErrors Done
+ 
+   StrLen $R8 $R6
+   StrCpy $R9 $R6 $R7 -$R8
+   StrCmp $R9 $R1 0 +3
+ 
+    FileWrite $R5 "$R0$\r$\n"
+    Goto ReadLoop
+ 
+    FileWrite $R5 $R6
+    Goto ReadLoop
+ 
+  Done:
+ 
+  FileClose $R3
+  FileClose $R5
+ 
+  SetDetailsPrint none
+   Delete $R2
+   Rename $R4 $R2
+  SetDetailsPrint both
+ 
+ Pop $R9
+ Pop $R8
+ Pop $R7
+ Pop $R6
+ Pop $R5
+ Pop $R4
+ Pop $R3
+ Pop $R2
+ Pop $R1
+ Pop $R0
+FunctionEnd
 
-Function AdvReplaceInFile
-    Exch $0 ;file to replace in
-    Exch
-    Exch $1 ;number to replace after
-    Exch
-    Exch 2
-    Exch $2 ;replace and onwards
-    Exch 2
-    Exch 3
-    Exch $3 ;replace with
-    Exch 3
-    Exch 4
-    Exch $4 ;to replace
-    Exch 4
-    Push $5 ;minus count
-    Push $6 ;universal
-    Push $7 ;end string
-    Push $8 ;left string
-    Push $9 ;right string
-    Push $R0 ;file1
-    Push $R1 ;file2
-    Push $R2 ;read
-    Push $R3 ;universal
-    Push $R4 ;count (onwards)
-    Push $R5 ;count (after)
-    Push $R6 ;temp file name
-     
-      GetTempFileName $R6
-      FileOpen $R1 $0 r ;file to search in
-      FileOpen $R0 $R6 w ;temp file
-       StrLen $R3 $4
-       StrCpy $R4 -1
-       StrCpy $R5 -1
- 
-    loop_read:
-     ClearErrors
-     FileRead $R1 $R2 ;read line
-     IfErrors exit
-     
-       StrCpy $5 0
-       StrCpy $7 $R2
-     
-    loop_filter:
-       IntOp $5 $5 - 1
-       StrCpy $6 $7 $R3 $5 ;search
-       StrCmp $6 "" file_write2
-       StrCmp $6 $4 0 loop_filter
-     
-    StrCpy $8 $7 $5 ;left part
-    IntOp $6 $5 + $R3
-    IntCmp $6 0 is0 not0
-    is0:
-    StrCpy $9 ""
-    Goto done
-    not0:
-    StrCpy $9 $7 "" $6 ;right part
-    done:
-    StrCpy $7 $8$3$9 ;re-join
-     
-    IntOp $R4 $R4 + 1
-    StrCmp $2 all file_write1
-    StrCmp $R4 $2 0 file_write2
-    IntOp $R4 $R4 - 1
-     
-    IntOp $R5 $R5 + 1
-    StrCmp $1 all file_write1
-    StrCmp $R5 $1 0 file_write1
-    IntOp $R5 $R5 - 1
-    Goto file_write2
-     
-    file_write1:
-     FileWrite $R0 $7 ;write modified line
-    Goto loop_read
- 
-    file_write2:
-     FileWrite $R0 $R2 ;write unmodified line
-    Goto loop_read
-     
-    exit:
-      FileClose $R0
-      FileClose $R1
-     
-       SetDetailsPrint none
-      Delete $0
-      Rename $R6 $0
-      Delete $R6
-       SetDetailsPrint both
-     
-    Pop $R6
-    Pop $R5
-    Pop $R4
-    Pop $R3
-    Pop $R2
-    Pop $R1
-    Pop $R0
-    Pop $9
-    Pop $8
-    Pop $7
-    Pop $6
-    Pop $5
-    Pop $4
-    Pop $3
-    Pop $2
-    Pop $1
-    Pop $0
+Function StrRep
+  Exch $R4 ; $R4 = Replacement String
+  Exch
+  Exch $R3 ; $R3 = String to replace (needle)
+  Exch 2
+  Exch $R1 ; $R1 = String to do replacement in (haystack)
+  Push $R2 ; Replaced haystack
+  Push $R5 ; Len (needle)
+  Push $R6 ; len (haystack)
+  Push $R7 ; Scratch reg
+  StrCpy $R2 ""
+  StrLen $R5 $R3
+  StrLen $R6 $R1
+loop:
+  StrCpy $R7 $R1 $R5
+  StrCmp $R7 $R3 found
+  StrCpy $R7 $R1 1 ; - optimization can be removed if U know len needle=1
+  StrCpy $R2 "$R2$R7"
+  StrCpy $R1 $R1 $R6 1
+  StrCmp $R1 "" done loop
+found:
+  StrCpy $R2 "$R2$R4"
+  StrCpy $R1 $R1 $R6 $R5
+  StrCmp $R1 "" done loop
+done:
+  StrCpy $R3 $R2
+  Pop $R7
+  Pop $R6
+  Pop $R5
+  Pop $R2
+  Pop $R1
+  Pop $R4
+  Exch $R3
 FunctionEnd
