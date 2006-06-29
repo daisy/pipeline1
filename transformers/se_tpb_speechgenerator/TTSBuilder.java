@@ -87,6 +87,7 @@ public class TTSBuilder {
 	 * @param parameterSubst the parameter/value map.
 	 */
 	public TTSBuilder(File configFile, Map parameterSubst) {
+		this.configFile = configFile;
 		this.config = readXML(configFile);
 		XMLParameter xmlp = new XMLParameter(parameterSubst);
 		xmlp.eval(config);
@@ -104,6 +105,7 @@ public class TTSBuilder {
 		
 		NodeList osList = XPathUtils.selectNodes(docElem, "/ttsbuilder/os");
 		
+		int numRemovedSystems = 0;
 		// for each operating system currentOS
 		for (int i = 0; i < osList.getLength(); i++) {
 			Node currentOS = osList.item(i);
@@ -120,6 +122,7 @@ public class TTSBuilder {
 				
 				if (!systemPropValue.matches(propertyMatch)) {
 					currentOS.getParentNode().removeChild(currentOS);
+					numRemovedSystems++;
 					matching = false;
 					break;
 				}
@@ -132,9 +135,21 @@ public class TTSBuilder {
 					// tmp is either redundant or incorrect
 					Node tmp = osList.item(i);
 					tmp.getParentNode().removeChild(tmp);
+					numRemovedSystems++;
 				}
 			}
 		}
+		
+		// what? no matching operating systems left in the configuration file?
+		if (osList.getLength() == numRemovedSystems) {
+			String osName = System.getProperty("os.name");
+			String message = "TTSBuilder configuration file does not " +
+					"contain any operating system entry matching the current environment, " + 
+					 osName + "\n" + "Add a proper " + osName + " matching section to " + 
+					 configFile + " to fix this problem.";
+			throw new IllegalArgumentException(message);
+		}
+		
 		DEBUG(config);
 	}
 	
