@@ -68,6 +68,8 @@ public class XMLSentenceDetector extends XMLBreakDetector {
     private Locale lastLocale = null;
     private boolean doctypeSeen = false;
     
+    private boolean sentenceOpen = false;
+    
     /* *** CONSTRUCTORS *** */
     
     public XMLSentenceDetector (File inFile, File outFile) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
@@ -83,7 +85,6 @@ public class XMLSentenceDetector extends XMLBreakDetector {
         setBreakFinder(new DefaultSentenceBreakFinder(xmllang, customLang, override));
         
         reader = new BookmarkedXMLEventReader(inputFactory.createXMLEventReader(new FileInputStream(inFile)));
-        writer = null;
     }
     
     /* *** METHODS *** */
@@ -267,10 +268,10 @@ public class XMLSentenceDetector extends XMLBreakDetector {
             } else if (event.isStartDocument()) { 
                 StartDocument sd = (StartDocument)event;
                 if (sd.encodingSet()) {
-                    writer = outputFactory.createXMLEventWriter(new FileOutputStream(outputFile), sd.getCharacterEncodingScheme());
+                	this.setXMLEventWriter(outputFactory.createXMLEventWriter(new FileOutputStream(outputFile), sd.getCharacterEncodingScheme()));
                     writeEvent(event);
                 } else {
-                    writer = outputFactory.createXMLEventWriter(new FileOutputStream(outputFile), "utf-8");
+                	this.setXMLEventWriter(outputFactory.createXMLEventWriter(new FileOutputStream(outputFile), "utf-8"));
                     writeEvent(eventFactory.createStartDocument("utf-8", "1.0"));                    
                 }
             } else if (!reader.bookmarkExists(LATEST_BREAKING)) {
@@ -281,7 +282,6 @@ public class XMLSentenceDetector extends XMLBreakDetector {
             lastLocale = contextStack.getCurrentLocale();
         }
         reader.close();
-        writer.close();
     }
     
     /**
@@ -330,17 +330,45 @@ public class XMLSentenceDetector extends XMLBreakDetector {
         if (writeStartAndEndTag) {
             openSentence();
         }
-        reader.gotoAndRemoveBookmark(LATEST_BREAKING);
+        
         XMLEvent event = null;
+        
+        // Go through all events between LATEST_BREAKING and LAST_EVENT
+        // For each start or end element, remember if a matching end or start element is found
+        MatchingTags matchingTags = new MatchingTags();
+        reader.gotoBookmark(LATEST_BREAKING);
+        while (!reader.atBookmark(LAST_EVENT)) {
+        	event = reader.nextEvent();
+        	if (event.isStartElement()) {
+        		matchingTags.add(event.asStartElement());
+        	} else if (event.isEndElement()) {
+        		matchingTags.add(event.asEndElement());
+        	}
+        }
+        reader.gotoAndRemoveBookmark(LATEST_BREAKING);
+        
         int offset = 0;
+        int tagNumber = -1;
         while (!reader.atBookmark(LAST_EVENT)) {
             event = reader.nextEvent();
             if (event.isCharacters()) {
                 offset = writeCharacters(event.asCharacters().getData(), breaks, offset);
             } else {
-                writeEvent(event);
+            	if (event.isStartElement() || event.isEndElement()) {
+            		tagNumber++;
+            		if (!matchingTags.hasMatchingTag(tagNumber) && sentenceOpen && writeStartAndEndTag) {
+            			closeSentence();
+            			writeEvent(event);
+            			openSentence();
+            		} else {
+            			writeEvent(event);
+            		}
+            	} else {
+            		writeEvent(event);
+            	}                
             }
         }
+        
         if (writeStartAndEndTag) {
             closeSentence();
         }
@@ -386,11 +414,13 @@ public class XMLSentenceDetector extends XMLBreakDetector {
     }
     
     private void openSentence() throws XMLStreamException {
-        writeEvent(eventFactory.createStartElement(getBreakElement(), getBreakAttributes(), null));
+        writeEvent(eventFactory.createStartElement(getBreakElement(), getBreakAttributes(), null), true);
+        sentenceOpen = true;
     }
     
     private void closeSentence() throws XMLStreamException {
-        writeEvent(eventFactory.createEndElement(getBreakElement(), null));
+        writeEvent(eventFactory.createEndElement(getBreakElement(), null), true);
+        sentenceOpen = false;
     }
     
     private void breakSentence() throws XMLStreamException {

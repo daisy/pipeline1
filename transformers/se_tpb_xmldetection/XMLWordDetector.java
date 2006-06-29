@@ -59,7 +59,6 @@ public class XMLWordDetector extends XMLBreakDetector {
         setContextStackFilter(cabi);
         setBreakFinder(new DefaultWordBreakFinder());
         reader = inputFactory.createXMLEventReader(new FileInputStream(inFile));
-        writer = null;
     }
     
     /* *** METHODS *** */
@@ -131,10 +130,10 @@ public class XMLWordDetector extends XMLBreakDetector {
             } else if (event.isStartDocument()) { 
                 StartDocument sd = (StartDocument)event;
                 if (sd.encodingSet()) {
-                    writer = outputFactory.createXMLEventWriter(new FileOutputStream(outputFile), sd.getCharacterEncodingScheme());
+                	this.setXMLEventWriter(outputFactory.createXMLEventWriter(new FileOutputStream(outputFile), sd.getCharacterEncodingScheme()));
                     writeEvent(event);
                 } else {
-                    writer = outputFactory.createXMLEventWriter(new FileOutputStream(outputFile), "utf-8");
+                	this.setXMLEventWriter(outputFactory.createXMLEventWriter(new FileOutputStream(outputFile), "utf-8"));
                     writeEvent(eventFactory.createStartDocument("utf-8", "1.0"));                    
                 }
             } else {
@@ -144,7 +143,6 @@ public class XMLWordDetector extends XMLBreakDetector {
             lastLocale = contextStack.getCurrentLocale();
         }
         reader.close();
-        writer.close();
     }
     
     protected void handleBreaks(String data) throws XMLStreamException {

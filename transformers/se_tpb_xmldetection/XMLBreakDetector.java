@@ -42,6 +42,8 @@ import javax.xml.stream.events.XMLEvent;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.ContextStack;
+import org.daisy.util.xml.stax.EmptyElementFilter;
+import org.daisy.util.xml.stax.EventWriterCache;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 
 /**
@@ -53,7 +55,8 @@ public abstract class XMLBreakDetector {
     
     protected File outputFile = null;
     
-    protected XMLEventWriter writer = null;
+    private XMLEventWriter writer = null;
+    private EventWriterCache writerCache = null;
     protected XMLInputFactory inputFactory = null;
     protected XMLEventFactory eventFactory = null;
     protected XMLOutputFactory outputFactory = null;
@@ -109,6 +112,8 @@ public abstract class XMLBreakDetector {
             allowedPaths = paths;
         }
         detect();
+        writerCache.flush();
+        writer.close();
     }
         
     protected abstract void detect() throws XMLStreamException, UnsupportedDocumentTypeException, FileNotFoundException;
@@ -137,7 +142,16 @@ public abstract class XMLBreakDetector {
         return breakSettings.setup(namespaceURI);
     }
     
-    protected void writeEvent(XMLEvent event) throws XMLStreamException {        
+    protected void setXMLEventWriter(XMLEventWriter xew) {
+    	writer = xew;
+    	writerCache = new EmptyElementFilter(writer);
+    }
+    
+    protected void writeEvent(XMLEvent event) throws XMLStreamException {
+    	this.writeEvent(event, false);
+    }
+    
+    protected void writeEvent(XMLEvent event, boolean filter) throws XMLStreamException {        
         if (event.isStartElement()) {
             if (!rootElementSeen) {
                 /* 
@@ -176,7 +190,8 @@ public abstract class XMLBreakDetector {
             }
         }
         writeStack.addEvent(event);
-        writer.add(event);
+        //writer.add(event);
+        writerCache.writeEvent(event, filter);
     }
     
     private void maybeAddExpAttrNS(Vector namespaces, QName expAttrName) throws XMLStreamException {
