@@ -37,7 +37,7 @@ FF09;)
 3000; 
 303F; 
 FEFF; 
-0170;ü
-0171;Ü
+0170;u
+0171;U
 # some kind of "oh" sound made by SAPI:
 2022; 
