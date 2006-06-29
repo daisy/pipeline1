@@ -12,7 +12,7 @@
 	<os>
 		<!-- all properties must match java's System.getProperties()-properties.
 			Standard regex match for an os to be usable in this program. -->
-		<property name="os.name" match="[Ww]indows XP" />
+		<property name="os.name" match="[Ww]indows.*" />
 		
 		<lang lang="en">
 			<!-- since xml:lang determines the tts use in this program, provide only one tts per language! -->
