@@ -63,6 +63,8 @@ Var StartMenuGroup
 ### Installer pages ###########################################################
 Page directory
 Page instfiles
+UninstPage uninstConfirm
+UninstPage instfiles
 
 ### Installer attributes ######################################################
 OutFile dist\dmfcgui-1.0b1.exe
@@ -167,7 +169,7 @@ Section -AppOther SEC0004
     ZipDLL::extractall "$INSTDIR\${JYTHONNAME}" "$INSTDIR\jython"
     Delete "$INSTDIR\${JYTHONNAME}"
     # update jython.home in dmfc.properties
-    Push "${JYTHONDIR}"
+    Push "$INSTDIR\jython"
     Push "\"
     Push "\\"
     Call StrRep
@@ -193,7 +195,8 @@ Section -post SEC0001
     WriteRegStr HKLM "${REGKEY}" Path $INSTDIR
     WriteRegStr HKLM "${REGKEY}" StartMenuGroup $StartMenuGroup
     WriteUninstaller $INSTDIR\uninstall.exe
-    SetOutPath $SMPROGRAMS\$StartMenuGroup
+    SetOutPath $INSTDIR
+    CreateDirectory "$SMPROGRAMS\$StartMenuGroup"
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\dmfcgui.bat
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe    
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
