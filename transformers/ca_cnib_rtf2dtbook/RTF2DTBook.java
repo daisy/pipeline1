@@ -78,13 +78,16 @@ public class RTF2DTBook extends Transformer {
         
         // Run jython
         sendMessage(Level.FINER, i18n("RUNNING_JYTHON"));
+        this.progress(0.05);
         jython.main(args);
                 
         // Finish up with some XSLT
         sendMessage(Level.FINER, i18n("APPLYING_XSLT"));
+        this.progress(0.70);
         try {
             EntityResolver resolver = CatalogEntityResolver.getInstance();
             Stylesheet.apply(xmlFile.getFile().getAbsolutePath(), stylesheet, dtbookFile, xsltFactory, null, resolver);
+            this.progress(0.99);
         } catch (XSLTException e) {
             throw new TransformerRunException(i18n("ERROR_APPLYING_XSLT"), e);
         } catch (CatalogExceptionNotRecoverable e) {
