@@ -120,8 +120,7 @@ public class Window {
 	//Button btnStart;
 	Button btnRemoveFinishedJobs;
 	Button btnViewDetails;
-	
-	
+
 	
 	//tree of conversions
 	Tree treeScriptList;
@@ -399,8 +398,8 @@ public class Window {
 		
 		
 		data = new GridData(GridData.GRAB_VERTICAL);
-		data.widthHint=125;
-		data.heightHint=75;
+		data.widthHint= 250;//125;
+		data.heightHint= 125;//75;
 		this.txtDescription = new Text(addButtonsComp, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 		this.txtDescription.setBackground(ColorChoices.white);
 		this.txtDescription.setEditable(false);
@@ -1322,11 +1321,7 @@ public class Window {
 		}
 		
 	}
-	
 
-	
-	
-	
 	
 	/**
 	 * Runs the DMFC converter, and updates 
@@ -1343,9 +1338,6 @@ public class Window {
 		this.getLocalEventListener().setAttributes(txtElapsedTime, txtElapsedTime, pb);
 		
 		execution();
-		
-		
-		
 	}
 	
 	
@@ -1370,8 +1362,6 @@ public class Window {
 			  job = (Job)it.next();
 			 job.setStatus(2);
 			tableJobViewer.refresh();
-			 
-			 
 			
 			//set the name of the conversion running
 			txtConversionRunning.setText(job.getScript().getName());
@@ -1396,16 +1386,11 @@ public class Window {
 			
 		}
 			
-			
-			
+
 			this.executing=false;
 			this.btnRemoveFinishedJobs.setEnabled(true);
 			
 		}
-	
-	
-	
-	
 	
 }
 	

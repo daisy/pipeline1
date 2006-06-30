@@ -38,7 +38,7 @@ public class UIManager {
 	
 	public static void open() {
 		Window.getInstance().open();
-		//new ConvertSingleFile().open();
+	
 		
 		
 		
