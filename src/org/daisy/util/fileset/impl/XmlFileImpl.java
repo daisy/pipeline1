@@ -196,7 +196,7 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
      * EntityResolver impl
      */
     public InputSource resolveEntity(String publicId, String systemId) throws IOException {
-    	//call the resolveEntity2 impl
+    	//call the EntityResolver2 impl
     	return resolveEntity(null, publicId, null, systemId);
     }
 
