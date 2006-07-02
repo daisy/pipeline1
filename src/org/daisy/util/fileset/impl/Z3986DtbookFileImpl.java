@@ -66,7 +66,8 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 			
 			if (attrName=="id") {				
 				this.putIdAndQName(attrValue,new QName(namespaceURI,sName));
-			} else if (regex.matches(regex.DTBOOK_ATTRIBUTES_WITH_URIS,attrName)) {
+			} else if (regex.matches(regex.DTBOOK_ATTRIBUTES_WITH_URIS,attrName)
+					||regex.matches(regex.DTBOOK_COMPOUND_ATTRIBUTES_WITH_URIS,attrName)) {
 			   putUriValue(attrValue);
 			}else if (attrName=="xml:lang") {
 				this.xmlLangValues.add(attrValue);
