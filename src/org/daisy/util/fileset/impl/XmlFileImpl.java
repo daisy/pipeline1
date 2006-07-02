@@ -39,6 +39,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DeclHandler;
+import org.xml.sax.ext.EntityResolver2;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
@@ -46,7 +47,7 @@ import org.xml.sax.ext.LexicalHandler;
  */
 
 abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
-        EntityResolver,ErrorHandler, ContentHandler, DTDHandler,
+        EntityResolver, EntityResolver2, ErrorHandler, ContentHandler, DTDHandler,
         LexicalHandler, DeclHandler {
     static SAXParserFactory saxFactory;
     static SAXParser saxParser;
@@ -54,6 +55,7 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
     static DocumentBuilder domBuilder = null;    
     private Map idMap = new HashMap(); // <idvalue>,<carrierQname>
     protected Set xmlLangValues = new HashSet();
+    protected Set namespaces = new HashSet(); //QName
     private boolean isWellformed = true;
     private boolean isDTDValid = true;
     private boolean isDTDValidated = false;
@@ -97,13 +99,22 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
                 }
             }       
             
+            //try to set the extended entityresolver
+            try{
+            	saxFactory.setFeature("http://xml.org/sax/features/use-entity-resolver2",true);
+            } catch (Exception e) {
+				//we are not using a parser that supports this extension
+            	//this is not an erroneous state, just unfortunate.
+            	//EntityResolver is used instead
+            	System.err.println("EntityResolver2 set failed: " + e.getMessage());
+			}	
         }
         
         saxParser.getXMLReader().setContentHandler(this);
         saxParser.getXMLReader().setEntityResolver(this);
         saxParser.getXMLReader().setDTDHandler(this);
         saxParser.getXMLReader().setErrorHandler(this);
-        
+         
     }
 
     private boolean getValidatingProperty() {
@@ -125,6 +136,10 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
 
     public Collection getXmlLangValues(){
     	return this.xmlLangValues;
+    }
+
+    public Collection getNamespaces(){
+    	return this.namespaces;
     }
     
     public boolean isWellformed() throws IllegalStateException {
@@ -172,8 +187,24 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
         idMap.put(idvalue, qName);
     }
 
+    public void startPrefixMapping(String prefix, String uri)throws SAXException {
+    	//add to the namespaces set
+    	this.namespaces.add(new QName(uri,"",prefix));
+    }
+    
+    /**
+     * EntityResolver impl
+     */
     public InputSource resolveEntity(String publicId, String systemId) throws IOException {
-    	//putUriValue(systemId); //reports 'wrong' systemId for entities etc
+    	//call the resolveEntity2 impl
+    	return resolveEntity(null, publicId, null, systemId);
+    }
+
+    /**
+     * EntityResolver2 impl
+     */
+	public InputSource resolveEntity(String name, String publicId, String baseURI, String systemId) throws IOException {
+		
         try {
             return CatalogEntityResolver.getInstance().resolveEntity(publicId,systemId);
         } catch (CatalogException ce) {
@@ -184,16 +215,18 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
                 throw new IOException(ce.getMessage());
             }
         }
+        
         return null;
-    }
-    
-    
-//    public InputSource resolveEntity (String name,String publicId,String baseURI, String systemId) throws SAXException, IOException {
-//    	System.err.println("stop");
-//    	return null;
-//    }
-        
-        
+	}
+	
+    /**
+     * EntityResolver2 impl
+     * Allows applications to provide an external subset for documents that don't explicitly define one. 
+     */
+	public InputSource getExternalSubset(String name, String baseURI) throws SAXException, IOException {
+		return null;
+	}
+    	        
     public void processingInstruction(String target, String data) throws SAXException {
         if (target.equals("xml-stylesheet")) { 
         	//see: http://www.w3.org/TR/xml-stylesheet/
@@ -263,8 +296,7 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
 	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {}
     public void setDocumentLocator(Locator arg0) {}
     public void skippedEntity(String arg0) throws SAXException {}
-    public void startDocument() throws SAXException {}
-    public void startPrefixMapping(String arg0, String arg1)throws SAXException {}
+    public void startDocument() throws SAXException {}        
     public void notationDecl(String arg0, String arg1, String arg2) throws SAXException {}
     public void unparsedEntityDecl(String arg0, String arg1, String arg2,String arg3) throws SAXException {}
     public void startDTD(String name, String publicId, String systemId)throws SAXException {}
@@ -280,4 +312,6 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
 	public void externalEntityDecl(String name, String publicId, String systemId) throws SAXException {}
 	public void internalEntityDecl(String name, String value) throws SAXException {}
     //end methods of ext.DeclHandler
+
+
 }
