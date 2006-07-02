@@ -109,6 +109,8 @@
     <system systemId="http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd" uri="./z39862005/dtbook-2005-1.dtd" />
     <system systemId="dtbook-2005-1.dtd" uri="./z39862005/dtbook-2005-1.dtd" />
     <system systemId="dtbook-2005-1.rng" uri="./z39862005/dtbook-2005-1.rng" />    
+    <!-- TEMPORARY: -->
+    <system systemId="dtbook-2005-x.dtd" uri="./z39862005/dtbook-2005-x.dtd" />
     
     <public publicId="-//NISO//DTD ncx 2005-1//EN" uri="./z39862005/ncx-2005-1.dtd" />
     <public publicId="-//NISO//RNG ncx 2005-1//EN" uri="./z39862005/ncx-2005-1.rng" />
@@ -117,9 +119,15 @@
     <system systemId="ncx-2005-1.rng" uri="./z39862005/ncx-2005-1.rng" />
     
     <public publicId="-//NISO//DTD dtbsmil 2005-1//EN" uri="./z39862005/dtbsmil-2005-1.dtd" />
+    <!-- TEMPORARY: -->
+    <public publicId="-//NISO//DTD dtbsmil 2005-x//EN" uri="./z39862005/dtbsmil-2005-x.dtd" />
     <public publicId="-//NISO//RNG dtbsmil 2005-1//EN" uri="./z39862005/dtbsmil-2005-1.rng" />
     <system systemId="http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd" uri="./z39862005/dtbsmil-2005-1.dtd" />
+    <!-- TEMPORARY: -->
+    <system systemId="http://www.daisy.org/z3986/2005/dtbsmil-2005-x.dtd" uri="./z39862005/dtbsmil-2005-x.dtd" />
     <system systemId="dtbsmil-2005-1.dtd" uri="./z39862005/dtbsmil-2005-1.dtd" />
+    <!-- TEMPORARY: -->
+    <system systemId="dtbsmil-2005-x.dtd" uri="./z39862005/dtbsmil-2005-x.dtd" />
     <system systemId="dtbsmil-2005-1.rng" uri="./z39862005/dtbsmil-2005-1.rng" />  
     
     <public publicId="-//NISO//DTD resource 2005-1//EN" uri="./z39862005/resource-2005-1.dtd" />
@@ -211,8 +219,32 @@
   </group>  
   <group> <!-- MathML -->
     <system systemId="http://www.w3.org/Math/DTD/mathml1/mathml.dtd" uri="./mathml/mathml.dtd" />    
-    <system systemId="-//W3C//DTD MathML 2.0//EN" uri="./mathml/mathml2.dtd" />	
-    <public publicId="http://www.w3.org/TR/MathML2/dtd/mathml2.dtd" uri="./mathml/mathml2.dtd" />
+    <system systemId="http://www.w3.org/TR/MathML2/dtd/mathml2.dtd" uri="./mathml/mathml2.dtd" />	
+    <public publicId="-//W3C//DTD MathML 2.0//EN" uri="./mathml/mathml2.dtd" />
+    <!-- mathml entities -->
+    <public publicId="-//W3C//ENTITIES MathML 2.0 Qualified Names 1.0//EN" uri="./mathml/mathml2-qname-1.mod" />
+    <system systemId="http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd" uri="./mathml/xhtml-math11-f.dtd" />
+    <public publicId="-//W3C//ENTITIES Added Math Symbols: Arrow Relations for MathML 2.0//EN" uri="./mathml/iso9573-13/isoamsa.ent" />
+    <public publicId="-//W3C//ENTITIES Added Math Symbols: Binary Operators for MathML 2.0//EN" uri="./mathml/iso9573-13/isoamsb.ent" />
+    <public publicId="-//W3C//ENTITIES Added Math Symbols: Delimiters for MathML 2.0//EN" uri="./mathml/iso9573-13/isoamsc.ent" />
+    <public publicId="-//W3C//ENTITIES Added Math Symbols: Negated Relations for MathML 2.0//EN" uri="./mathml/iso9573-13/isoamsn.ent" />
+    <public publicId="-//W3C//ENTITIES Added Math Symbols: Ordinary for MathML 2.0//EN" uri="./mathml/iso9573-13/isoamso.ent" />
+    <public publicId="-//W3C//ENTITIES Added Math Symbols: Relations for MathML 2.0//EN" uri="./mathml/iso9573-13/isoamsr.ent" />
+    <public publicId="-//W3C//ENTITIES Greek Symbols for MathML 2.0//EN" uri="./mathml/iso9573-13/isogrk3.ent" />
+    <public publicId="-//W3C//ENTITIES Math Alphabets: Fraktur for MathML 2.0//EN" uri="./mathml/iso9573-13/isomfrk.ent" />
+    <public publicId="-//W3C//ENTITIES Math Alphabets: Open Face for MathML 2.0//EN" uri="./mathml/iso9573-13/isomopf.ent" />
+    <public publicId="-//W3C//ENTITIES Math Alphabets: Script for MathML 2.0//EN" uri="./mathml/iso9573-13/isomscr.ent" />
+    <public publicId="-//W3C//ENTITIES General Technical for MathML 2.0//EN" uri="./mathml/iso9573-13/isotech.ent" />
+    <public publicId="-//W3C//ENTITIES Box and Line Drawing for MathML 2.0//EN" uri="./mathml/iso8879/isobox.ent" />
+    <public publicId="-//W3C//ENTITIES Russian Cyrillic for MathML 2.0//EN" uri="./mathml/iso8879/isocyr1.ent" />
+    <public publicId="-//W3C//ENTITIES Non-Russian Cyrillic for MathML 2.0//EN" uri="./mathml/iso8879/isocyr2.ent" />
+    <public publicId="-//W3C//ENTITIES Diacritical Marks for MathML 2.0//EN" uri="./mathml/iso8879/isodia.ent" />
+    <public publicId="-//W3C//ENTITIES Added Latin 1 for MathML 2.0//EN" uri="./mathml/iso8879/isolat1.ent" />
+    <public publicId="-//W3C//ENTITIES Added Latin 2 for MathML 2.0//EN" uri="./mathml/iso8879/isolat2.ent" />
+    <public publicId="-//W3C//ENTITIES Numeric and Special Graphic for MathML 2.0//EN" uri="./mathml/iso8879/isonum.ent" />
+    <public publicId="-//W3C//ENTITIES Publishing for MathML 2.0//EN" uri="./mathml/iso8879/isopub.ent" />
+    <public publicId="-//W3C//ENTITIES Extra for MathML 2.0//EN" uri="./mathml/mathml/mmlextra.ent" />
+    <public publicId="-//W3C//ENTITIES Aliases for MathML 2.0//EN" uri="./mathml/mathml/mmlalias.ent" />
   </group>
   <group> <!-- SVG -->    
     <public publicId="-//W3C//DTD SVG 1.0//EN" uri="./svg/svg10.dtd" />
