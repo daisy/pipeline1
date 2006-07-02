@@ -17,7 +17,8 @@ import org.xml.sax.SAXException;
  * @author Markus Gylling
  */
 
-class Xhtml10FileImpl extends XmlFileImpl implements TextualContentFile, Xhtml10File, ManifestFile {
+//class Xhtml10FileImpl extends XmlFileImpl implements TextualContentFile, Xhtml10File, ManifestFile {
+class Xhtml10FileImpl extends XmlFileImpl implements Xhtml10File, ManifestFile {
 	private int currentHeadingLevel =0;
 	private boolean correctHeadingSequence = true;
 	protected boolean parsingBody = false;
