@@ -55,7 +55,14 @@ public class FilesetRegex {
 		
 		NCX_ELEMENTS_WITH_URI_ATTRS = Pattern.compile( "(^content$)|(^audio$)|(^img$)");
 		RESOURCE_ELEMENTS_WITH_URI_ATTRS = Pattern.compile( "(^audio$)|(^img$)");
-		DTBOOK_ATTRIBUTES_WITH_URIS = Pattern.compile( "(^smilref$)|(^src$)|(^href$)");				
+		
+		DTBOOK_ATTRIBUTES_WITH_URIS = Pattern.compile( "(^smilref$)|(^src$)|(^href$)");	
+		
+		//extend the DTBOOK_ATTRIBUTES_WITH_URIS pattern with foreign namespace URI carriers
+		//TODO unsure whether to start dealing with QNames et al or if this suffices.
+		//The only problem is if attribute 'bar' is a URI carrier in one namespace but not
+		//in another; then we will have false positives.
+		DTBOOK_COMPOUND_ATTRIBUTES_WITH_URIS = Pattern.compile( "(^altimg$)|(^src$)|(^dtbook:smilref$)");
 	}
 	
 	public Pattern URI_REMOTE;	
@@ -97,6 +104,7 @@ public class FilesetRegex {
 	public Pattern NCX_ELEMENTS_WITH_URI_ATTRS;
 	public Pattern RESOURCE_ELEMENTS_WITH_URI_ATTRS;
 	public Pattern DTBOOK_ATTRIBUTES_WITH_URIS;
+	public Pattern DTBOOK_COMPOUND_ATTRIBUTES_WITH_URIS;
 			
 	static private FilesetRegex _instance = null;    
 	
