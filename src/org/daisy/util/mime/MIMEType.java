@@ -45,7 +45,7 @@ public interface MIMEType {
 	
 	/**
 	 * Asserts equalness and aliashood between this MimeType and another.
-	 * Any charset field in the this or the compared MimeType is ignored
+	 * Any parameter of this or the compared MimeType is ignored
 	 * when doing the comparison.
 	 * @param
 	 *   mime a MimeType object to test aliasness for
@@ -92,8 +92,8 @@ public interface MIMEType {
 	
 	/**
 	 * @return the full string name identifier
-	 * of this MimeType. This string - minus the optionally present charset part - is
-	 * always present in the Mime Registry.
+	 * of this MimeType. This string - minus the optionally present parameter part - is
+	 * always present in the Mime Registry; this is a prerequisite for the objects instantiation.
 	 * @see #getContentType()
 	 * @see #getSubType()
 	 * @see #getCharset()
@@ -121,7 +121,7 @@ public interface MIMEType {
 			
 	/**
 	 * @param 
-	 * 	width A static int (available in MimeType.java) defining the scope of the returned colletion 
+	 * 	width A static int (available in MimeType.java) defining the scope of the returned collection 
 	 * (=whether to include alias, ancestor and descendant filename patterns.)
 	 * @return a collection&lt;String&gt; of known filename patterns for this MimeType.
 	 * The filename patterns use MS Glob format ("*.htm" etc).
