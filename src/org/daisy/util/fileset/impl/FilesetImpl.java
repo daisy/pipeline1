@@ -116,7 +116,6 @@ public class FilesetImpl implements Fileset {
 				peeker.peek(f.toURI()); 
 			}catch (Exception e) {
 				//it wasnt an xmlfile or something else went wrong
-				peeker.reset(); //this sets all peeker.gets to the empty string, not null.
 			}
 				
 			try{
@@ -363,7 +362,6 @@ public class FilesetImpl implements Fileset {
 		}
 		
 		try{
-			peeker.reset();
 			peeker.peek(uri);
 			String rootName = peeker.getRootElementLocalName().intern();	
 			
