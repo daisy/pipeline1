@@ -65,7 +65,7 @@ public interface TTS {
 	 * Sets the absolute path to the binary a TTS might need.
 	 * @throws IOException 
 	 */
-	void setBinaryPath(File pathToBinary) throws IOException;
+	//void setBinaryPath(File pathToBinary) throws IOException;
 	
 	/**
 	 * Gives the TTS the Map <code>params</code> with parameters.
