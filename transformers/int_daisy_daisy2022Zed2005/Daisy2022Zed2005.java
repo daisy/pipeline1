@@ -214,10 +214,11 @@ public class Daisy2022Zed2005 extends Transformer implements FilesetErrorHandler
 					//the absence of this param means "dont drop text elems"
 					parameters.put("isNcxOnly","true");
 				}						
-				Stylesheet.apply(d202_smil.getFile().getAbsolutePath(), xsltFile.getAbsolutePath(), smilOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());		
+				
+				Stylesheet.apply(d202_smil.getFile().getAbsolutePath(), xsltFile.getAbsolutePath(), smilOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
 				manifestItems.put(smilOut.getAbsolutePath(), filesetFileFactory.newFilesetFile("Z3986SmilFile",smilOut.toURI()));								
 				totalElapsedTime += d202_smil.getCalculatedDuration().millisecondsValue();						                	              	
-			} 
+			} //if (fsf instanceof D202SmilFile)
 		}
 		
 		this.progress(SMIL_DONE);
