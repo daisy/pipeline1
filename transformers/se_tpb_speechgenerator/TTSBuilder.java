@@ -48,8 +48,8 @@ public class TTSBuilder {
 	}
 	
 	/**
-	 * Sets a parameter. Parameters not used when creating the TTS are
-	 * passed along to the TTS instance.
+	 * Sets a parameter. No parameter but <tt>TTSBuilder.CLASS</tt> are used when creating the TTS.
+	 * They are instead passed along to the TTS instance.
 	 * @param paramName the parameter name
 	 * @param paramValue the parameter value
 	 */
@@ -144,7 +144,7 @@ public class TTSBuilder {
 		if (osList.getLength() == numRemovedSystems) {
 			String osName = System.getProperty("os.name");
 			String message = "TTSBuilder configuration file does not " +
-					"contain any operating system entry matching the current environment, " + 
+					"contain any operating system entry matching the current environment: " + 
 					 osName + "\n" + "Add a proper " + osName + " matching section to " + 
 					 configFile + " to fix this problem.";
 			throw new IllegalArgumentException(message);
@@ -192,7 +192,7 @@ public class TTSBuilder {
 		}
 		
 		String fullClassName = getParameter(CLASS);
-		String fullBinPath = getParameter(BINARY);
+		//String fullBinPath = getParameter(BINARY);
 		if (null == fullClassName) {
 			throw new IllegalArgumentException("The full class name must be privided for every TTS Java wrapper implementation, edit " + 
 					configFile.getAbsolutePath() + 
@@ -225,7 +225,7 @@ public class TTSBuilder {
 		
 		if (null == tts) {
 			tts = (TTS) ttsClass.newInstance();
-			tts.setBinaryPath(new File(fullBinPath));
+			//tts.setBinaryPath(new File(fullBinPath));
 			tts.setParamMap(parameters);
 		}
 		
