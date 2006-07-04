@@ -51,15 +51,39 @@ public abstract class ExternalTTS implements TTS {
 	private static final String XSLT_FACTORY = "net.sf.saxon.TransformerFactoryImpl";
 	YearAnnouncer yearAnnouncer;
 	
+	/**
+	 * Constructor taking a map of parameters/properties as parameter. 
+	 * @param params A java.util.Map containing parameters.
+	 * @throws IOException
+	 */
 	public ExternalTTS(Map params) throws IOException {
 		this.setParamMap(params);
-		if (null != params.get(TTSBuilder.BINARY)) {
-			this.setBinaryPath(new File((String) params.get(TTSBuilder.BINARY)));
-		}
+		//if (null != params.get(TTSBuilder.BINARY)) {
+		//	this.setBinaryPath(new File((String) params.get(TTSBuilder.BINARY)));
+		//}
 	}
 	
 	
+	/**
+	 * Generates audio for the contents of <tt>doc</tt>.
+	 * @param doc A document holding some xml content.
+	 * @param file a file representing the destination for the generated audio.
+	 * @return the duration of the audio in ms.
+	 * @throws IOException
+	 * @throws UnsupportedAudioFileException
+	 * @throws TransformerRunException
+	 */
 	protected abstract long sayImpl(Document doc, File file) throws IOException, UnsupportedAudioFileException, TransformerRunException;
+	
+	/**
+	 * Generates audio for the string <tt>str</tt>.
+	 * @param str a text string.
+	 * @param file a file representing the destination for the generated audio.
+	 * @return the duration of the audio in ms.
+	 * @throws IOException
+	 * @throws UnsupportedAudioFileException
+	 * @throws TransformerRunException
+	 */
 	protected abstract long sayImpl(String str, File file) throws IOException, UnsupportedAudioFileException, TransformerRunException;
 	
 	/**
