@@ -39,6 +39,14 @@ public final class SAPIImpl extends ExternalTTS {
 	
 	public SAPIImpl(Map params) throws IOException {
 		super(params);
+		String bin = (String) params.get(TTSBuilder.BINARY);
+		if (null == bin) {
+			String message = "Missing property " + TTSBuilder.BINARY +
+			" for tts " + getClass().getName();
+			throw new IllegalArgumentException(message);
+		} else {
+			setBinaryPath(new File(bin));
+		}
 		initialize();
 	}	
 	
@@ -97,8 +105,10 @@ public final class SAPIImpl extends ExternalTTS {
 		line = yearFilter(line);
 		line = replaceUChars(line);
 		line = normalizeWhitespace(line);
+		String noSelection = null;
 		
 		if (sapiVoiceSelection != null) {
+			noSelection = line;
 			line = "<voice optional=\"" + sapiVoiceSelection + "\">" + line + "</voice>";
 		}
 		
@@ -107,11 +117,28 @@ public final class SAPIImpl extends ExternalTTS {
 		send(line);
 		timeVal = getAudioLength(file); 
 		
+		if (timeVal == 0 && noSelection != null) {
+			// an error occured, 
+			// try to speak without the sapi voice selection.
+			initialize();
+			send(file.getAbsolutePath());
+			send(noSelection);
+			timeVal = getAudioLength(file);
+			
+			// we were better off without the voice selection, 
+			// don't use it next time.
+			if (timeVal > 0) {
+				System.err.println("Error using SAPI's voice selection, continuing with SAPI's default voice.");
+				sapiVoiceSelection = null;
+				parameters.remove("sapiVoiceSelection");
+			}
+		}
+		
 		if (timeVal == 0) {
 			DEBUG("\"" + line + "\"");
 			String message = "error speaking sentence: " + line + ",\n" +
 				"error writing file " + file.getAbsolutePath();
-			throw new TransformerRunException("Lost connection to SAPI:\n" + message);
+			throw new TransformerRunException("An error occured using SAPI:\n" + message);
 		}
 		return timeVal;
 	}
