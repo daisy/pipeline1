@@ -347,6 +347,7 @@ public class SpeechGenerator extends Transformer {
 			
 			sendMessage(Level.FINEST, i18n("DONE"));
 		} catch (Throwable e) {
+			sendMessage(Level.SEVERE, "Fatal error occured in se_tpb_speechgenerator: " + e.getMessage());
 			e.printStackTrace();
 			throw new TransformerRunException(e.getMessage(), e);
 		}
@@ -797,7 +798,8 @@ public class SpeechGenerator extends Transformer {
 				elemCount++;
 				String nodeName = event.asStartElement().getName().getLocalPart();
 				
-				if (nodeName != null && (absoluteSynch.contains(nodeName) || "sent".equals(nodeName))) {
+				//if (nodeName != null && (absoluteSynch.contains(nodeName) || "sent".equals(nodeName))) {
+				if (nodeName != null && (absoluteSynch.contains(nodeName) || containsSynch.contains(nodeName))) {
 					reader.gotoAndRemoveBookmark(bookmark);
 					return false;
 				}
