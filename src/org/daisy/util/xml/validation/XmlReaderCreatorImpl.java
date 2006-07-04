@@ -29,9 +29,13 @@ public class XmlReaderCreatorImpl implements XMLReaderCreator{
 	public XMLReader createXMLReader() throws SAXException {		
 	    XMLReader xr = null;	    
 	    try {
-	      xr = XMLReaderFactory.createXMLReader("com.sun.org.apache.xerces.internal.parsers.SAXParser");
+	      xr = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
 	    } catch(SAXException se) {
-	    	xr = XMLReaderFactory.createXMLReader();
+	    	try {
+	    		xr = XMLReaderFactory.createXMLReader("com.sun.org.apache.xerces.internal.parsers.SAXParser");
+	    	} catch(SAXException se2) {
+	    		xr = XMLReaderFactory.createXMLReader();
+	    	}	
 	    }
 	    
 	    try {
