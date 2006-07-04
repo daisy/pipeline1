@@ -874,7 +874,12 @@ class Styles:
         else:
             prefix = 'char'
         num = line[20:-1]
-        value = self.__styles_dict[type][num]['name']
+        # may be invalid RTF--a style down below not defined above!
+        try:
+            value = self.__styles_dict[type][num]['name']
+        except KeyError:
+            value = None
+
         if value:
             self.__write_obj.write(
             'cw<ss<%s-style<nu<%s\n' % (prefix, value)

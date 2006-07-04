@@ -81,6 +81,7 @@ class Inline:
             'tx<hx<__________'  :       self.__found_text_func,
             'tx<ut<__________'  :       self.__found_text_func,
             'mi<mk<inline-fld'  :       self.__found_text_func,
+            'text'              :       self.__found_text_func,
             'cb<nu<clos-brack'  :       self.__close_bracket_func,
             'mi<mk<par-end___'  :       self.__end_para_func,
             'mi<mk<footnt-ope'  :       self.__end_para_func,
@@ -93,6 +94,7 @@ class Inline:
             'tx<nu<__________'  :       self.__found_text_func,
             'tx<hx<__________'  :       self.__found_text_func,
             'tx<ut<__________'  :       self.__found_text_func,
+            'text'              :       self.__found_text_func,
             'mi<mk<inline-fld'  :       self.__found_text_func,
             'ob<nu<open-brack':         self.__found_open_bracket_func,
             'mi<mk<par-end___'  :       self.__end_para_func,
@@ -575,9 +577,19 @@ class Inline:
         line_to_read = 1
         while line_to_read:
             line_to_read = read_obj.readline()
-                
             line = line_to_read
-            self.__token_info = line[:16]
+            token = line[0:-1]
+            self.__token_info = ''
+            if token == 'tx<mc<__________<rdblquote'\
+                or token == 'tx<mc<__________<ldblquote'\
+                or token == 'tx<mc<__________<lquote'\
+                or token == 'tx<mc<__________<rquote'\
+                or token == 'tx<mc<__________<emdash'\
+                or token == 'tx<mc<__________<endash'\
+                or token == 'tx<mc<__________<bullet':
+                self.__token_info = 'text'
+            else:
+                self.__token_info = line[:16]
             self.__set_list_func(line)
             action = self.__state_dict.get(self.__state)
             if action == None:
