@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sgConfig>
 
-	<!-- Vad behöver vara konfigurerbart till detta program? -->
-	<!-- 
-	"måste-element"
-	Element som _alltid_ antingen själva är synkpunkt (om det inte innehåller ett "måste")
-		eller har ett (barn)*barn som är synkpunkt.
-	Namn för attribut som innebär annonsering
-	Vid vilka element ska ljudet mergas? Headings? Hur blir det i så fall med hd? bara "level/hd"?
-	-->
-
 	<absoluteSynch>
 		<item>pagenum</item>
 		<item>noteref</item>
