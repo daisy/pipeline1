@@ -7,6 +7,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
 
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -78,7 +80,7 @@ import org.xml.sax.SAXException;
  * @author markusg
  */
 
-public class CatalogEntityResolver implements EntityResolver {
+public class CatalogEntityResolver implements EntityResolver, LSResourceResolver {
     private static CatalogFile catalog;
 
     private HashSet EntityNotSupportedExceptions = new HashSet(); // <String>
@@ -115,16 +117,19 @@ public class CatalogEntityResolver implements EntityResolver {
         return _instance;
     }
 
+    static public void reload() throws CatalogExceptionNotRecoverable{
+    	_instance = new CatalogEntityResolver();
+    }
+    
     /**
-     * Catalog aware implementation of the SAX resolveEntity method The public
-     * id is always preferred, ie the value of the OASIS Catalog 1.1
+     * Catalog aware implementation of the SAX resolveEntity method.
+     * <p>The public id is always preferred, ie the value of the OASIS Catalog 1.1</p>
      * <code>prefer</code> attribute is hardcoded to <code>public</code>
      * 
-     * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String,
-     *      java.lang.String)
+     * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
      */
-    public InputSource resolveEntity(String publicId, String systemId)
-            throws IOException {
+    public InputSource resolveEntity(String publicId, String systemId) throws IOException {
+    	//System.out.println("Catalog request: publicId: " + publicId + ":: systemId:" + systemId );
         if (publicId != null) {
             try {
                 return catalog.getPublicIdEntity(publicId);
@@ -133,6 +138,7 @@ public class CatalogEntityResolver implements EntityResolver {
                 // try systemId before giving up
             }
         }
+        
         try {
             return catalog.getSystemIdEntity(systemId);
         } catch (CatalogExceptionEntityNotSupported ceens) {
@@ -149,6 +155,8 @@ public class CatalogEntityResolver implements EntityResolver {
                 // silence
             }
             EntityNotSupportedExceptions.add(publicId + "::" + systemId);
+            
+            System.err.println("catalog null");
             return null;
         }
     }
@@ -189,6 +197,19 @@ public class CatalogEntityResolver implements EntityResolver {
     }
 
     /**
+     * LSResourceResolver impl (jaxp 1.3)
+     */
+	public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
+		try {
+			URL url = resolveEntityToURL(publicId,systemId);
+			return (LSInput)url.openStream();
+		} catch (IOException e) {
+		
+		}
+		return null;
+	}
+    
+    /**
      * Overrides and refuses clone since this is a singleton
      * 
      * @see java.lang.Object#clone()
@@ -213,4 +234,6 @@ public class CatalogEntityResolver implements EntityResolver {
     public HashSet getEntityNotSupportedExceptions() {
         return EntityNotSupportedExceptions;
     }
+
+
 }
