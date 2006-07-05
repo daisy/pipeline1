@@ -55,11 +55,14 @@ import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
 import org.daisy.util.xml.stax.ContextStack;
+import org.daisy.util.xml.validation.RelaxngSchematronValidator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import se_tpb_filesetcreator.SrcExtractor;
 
@@ -121,7 +124,7 @@ public class SpeechGenerator extends Transformer {
 	// misc variables
 	private File outputDir;
 	private boolean concurrentMerge;
-	private boolean mergeToMp3;
+	private boolean mp3Output;
 	private static CountDownLatch barrier;
 	private DocumentBuilder domBuilder;
 	boolean DEBUG = false;
@@ -138,35 +141,53 @@ public class SpeechGenerator extends Transformer {
 		
 		try {
 			/* get the params */
-			String inputFilename = (String) parameters.remove("inputFilename");
-			String outputFilename = (String) parameters.remove("outputFilename");
-			String outputDirectory = (String) parameters.get("outputDirectory");
-			String configFilename = (String) parameters.remove("sgConfigFilename");
+			File configFile = new File((String) parameters.remove("sgConfigFilename"));
+			File ttsBuilderConfig = new File((String)parameters.remove("ttsBuilderConfig"));
+			File inputFile = new File((String) parameters.remove("inputFilename"));
+			File outputFile = new File((String) parameters.remove("outputFilename"));
 			
-			// are we supposed to merge audio concurrently?
-			if (null != parameters.get("concurrentAudioMerge")) {
-				concurrentMerge = Boolean.parseBoolean((String) parameters.remove("concurrentAudioMerge"));
-			}
-			
-			// are we supposed to use mp3 as output format?
-			if (null != parameters.get("mp3Output")) {
-				mergeToMp3 = Boolean.parseBoolean((String) parameters.remove("mp3Output"));
-			}
-			
-			// sort out which files to use
-			File inputFile = new File(inputFilename);
-			File outputFile = new File(outputFilename);
-			outputDir = new File(outputDirectory);
+			outputDir = new File((String) parameters.get("outputDirectory"));
 			if (!outputDir.exists()) {
-				outputDir.mkdir();
+				outputDir.mkdirs();
 			}
-				
-			configFilename = new File(getTransformerDirectory(), configFilename).getAbsolutePath();
-			parseConfigFile(configFilename);
+			concurrentMerge = Boolean.parseBoolean((String) parameters.remove("concurrentAudioMerge"));
+			mp3Output = Boolean.parseBoolean((String) parameters.remove("mp3Output"));
+			
+	
+			// validate the configuration file for ttsbuilder
+			ErrorHandler handler = new ErrorHandler() {
+				public void warning(SAXParseException e) {
+					sendMessage(Level.WARNING, readable(e));
+				}
+				public void fatalError(SAXParseException e) {
+					sendMessage(Level.SEVERE, readable(e));
+				}				
+				public void error(SAXParseException e) {
+					sendMessage(Level.SEVERE, readable(e));
+				}				
+				private String readable(SAXParseException e) {
+					return e.getMessage() + " at line " + e.getLineNumber() + 
+						", column " + e.getColumnNumber();
+				}
+			};
+			
+			File rng = new File((String)parameters.remove("ttsBuilderRNG"));
+			RelaxngSchematronValidator validator = 
+				new RelaxngSchematronValidator(rng, handler, true, true);
+			
+			if (!validator.isValid(ttsBuilderConfig)) {
+				String message = "Invalid TTS Builder Configuration, edit " +
+					ttsBuilderConfig + " to solve this problem.";
+				throw new IllegalArgumentException(message);
+			}
+			
+			parseConfigFile(configFile.getAbsolutePath());
 			
 			// copy the additional files
+			sendMessage(Level.FINER, i18n("COPYING_REFERRED_FILES"));
 			SrcExtractor extr = new SrcExtractor(inputFile);
 			FileBunchCopy.copyFiles(extr.getBaseDir(), outputDir, extr.getSrcValues(), null, true);
+			
 			
 			// Get ready to count the number of phrases to generate with TTS.
 			FileInputStream fis = new FileInputStream(inputFile);
@@ -205,11 +226,10 @@ public class SpeechGenerator extends Transformer {
 			
 			// get some tts impls.
 			// the languages (xml:lang) used in this text are stored in the Set languages.			
-			File ttsConfig = new File((String)parameters.remove("ttsBuilderConfig"));
 			Map m = new HashMap();
 			m.put("transformer_dir", getTransformerDirectory().getAbsolutePath());
 			
-			TTSBuilder ttsb = new TTSBuilder(ttsConfig, m);
+			TTSBuilder ttsb = new TTSBuilder(ttsBuilderConfig, m);
 			for (Iterator it = languages.iterator(); it.hasNext(); ) {
 				String lang = (String) it.next();
 				TTS tts = ttsb.newTTS(lang);
@@ -442,6 +462,7 @@ public class SpeechGenerator extends Transformer {
 				}
 			}
 			warning += " found. Fallback to default voice.";
+			sendMessage(Level.FINER, warning);
 		}
 		
 		File file = null;
@@ -615,7 +636,7 @@ public class SpeechGenerator extends Transformer {
 		
 		QName srcName = new QName(smilURI, smilSrc, smilPrefix);
 		String currentAudioFilename = getCurrentAudioFile().getName();
-		if (mergeToMp3) {
+		if (mp3Output) {
 			currentAudioFilename = goMp3(currentAudioFilename);
 		}
 		Attribute src = eventFactory.createAttribute(srcName, currentAudioFilename);
@@ -832,7 +853,7 @@ public class SpeechGenerator extends Transformer {
 		currentAudioFile = getCurrentAudioFile();
 		List wf = new ArrayList();
 		wf.addAll(workingFiles);
-		File mp3file = mergeToMp3 ? goMp3(currentAudioFile) : null;
+		File mp3file = mp3Output ? goMp3(currentAudioFile) : null;
 		
 		if (concurrentMerge) {	
 			WavConcatWorker wcw = new WavConcatWorker(wf, currentAudioFile, mp3file, barrier);
@@ -1059,10 +1080,6 @@ public class SpeechGenerator extends Transformer {
 		
 		for (Iterator atIt = se.getAttributes(); atIt.hasNext(); ) {
 			Attribute at = (Attribute) atIt.next();
-			if (null == at.getName()) {
-				System.err.println("null som qname: " + se);
-				//continue;
-			}
 			if (announceBefore.equals(at.getName())) {
 				return true;
 			}
@@ -1193,7 +1210,7 @@ public class SpeechGenerator extends Transformer {
 	/**
 	 * Reads config data from the DOM rooted at <code>root</code> using
 	 * the xpath expression <code>xPath</code>. The config items are stored
-	 * as <code>String</code>s in the <code>Set set</code>.
+	 * as <code>String</code>s in the <code>Set</code> set.
 	 * @param set the container for the config strings.
 	 * @param root the root of the config DOM.
 	 * @param xPath the expression to apply to <code>root</code>.

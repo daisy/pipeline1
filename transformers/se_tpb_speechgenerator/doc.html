@@ -28,7 +28,7 @@ that end users may come in contact with that information. -->
 	<ul>
 		<li><a href="#params">Parameters (tdf)</a></li>
 		<li><a href="#extConfig">Extended configurability</a></li>
-		<li><a href="#wrappers">TTS Java wrappers</i></a></li>	
+		<li><a href="#wrappers">TTS Java wrappers</a></li>	
 	</ul>
 </li>	
 <li><a href="#future">Further development</a></li>
@@ -166,6 +166,13 @@ then throw an exception and abort.</p>
 	Default: <tt>${transformer_dir}/ttsbuilder.xml</tt>	
 	</dd>
 		
+	<dt>ttsBuilderRNG</dt>
+	<dd>required="false"<br/>
+	Tests for the tts builder configuration file using relaxng with embedded schematron.<br/>
+	Example: <tt>/home/ttsbfiles/file.rng</tt><br/>
+	Default: <tt>${transformer_dir}/ttsbuilder-configtest.rng</tt>	
+	</dd>
+		
 	</dl>
 
 	<h3 id="extConfig">Extended configurability</h3>
@@ -278,19 +285,59 @@ then throw an exception and abort.</p>
 	The factory must be configured properly since it is not able to locate TTS systems on its own.
 	The configuration consists of sections that are operating system dependant. As subsections, 
 		there are language specific sections. Each language must contain no more than
-		one TTS system. For each OS in the configuration, one TTS system should have the attribute
-		 <tt>default="true"</tt> for use as fallback.  
+		one TTS system. During runtime, the TTS Builder configuration file is validated using
+		relaxng and schematron, but since a DTD is a compact way of showing a document's structure, 
+		here's one:
 	</p>
 	
+	<pre>
+&lt;!DOCTYPE ttsbuilder [
+   &lt;!ELEMENT ttsbuilder (os+)&gt;
+   &lt;!ELEMENT os (property*, lang*)&gt;
+   &lt;!ELEMENT property (EMPTY)&gt;
+   &lt;!ELEMENT lang (tts)&gt;
+   &lt;!ELEMENT tts (param+)&gt;
+   &lt;!ELEMENT param (EMPTY)&gt;
+   
+   &lt;!ATTLIST property name  CDATA #REQUIRED&gt;
+   &lt;!ATTLIST property match CDATA #REQUIRED&gt;
+   &lt;!ATTLIST lang lang CDATA #REQUIRED&gt;
+   &lt;!ATTLIST tts default (true) CDATA #IMPLIED&gt;
+   &lt;!ATTLIST param name  CDATA #REQUIRED&gt;
+   &lt;!ATTLIST param value CDATA #REQUIRED&gt;
+]&gt;
+</pre>
+	
+	<p>Besides the rules expressible in a DTD, there are a few others, asserted using schematron:</p>
+	<ul>
+		<li>The length of the <tt>lang</tt>-attribute value must be 2. 
+			This is to follow the ISO-639 2-letter lower-case standard	used in Java.</li>
+		
+		<!--
+		<li>The <tt>lang</tt>-attribute is lower-case.</li>
+		-->
+		
+		<li><tt>lang</tt>-siblings don't have the same <tt>lang</tt>-attribute value.</li>
+		
+		<li>For each <tt>os</tt>, there is one descendant <tt>tts</tt> which has got the
+		attribute <tt>default="true"</tt> to be used as fallback.</li>
+		
+		<li>For each <tt>tts</tt>, there must not be two descendant <tt>param</tt>s with
+		the same value for attribute <tt>name</tt>.</li>
+		
+		<li>For each <tt>tts</tt>, there is a <tt>param</tt> with name attribute
+		value=class</li>
+	</ul>
+	
 	<p>
-		Configuration of a TTS mainly consists of key-value properties, such as Java class name or
+		Configuration of a TTS mainly consists of parameters for a certain TTS wrapper, such as Java class name or
 		path to binary TTS program.
-		Each TTS implementation needs its own Java-wrapper, and hence their 
+		Each TTS system needs its own Java-wrapper, and hence their 
 		configuration can differ extensively. The wrapper communicate with the TTS system of your choice.
 		The properties read from the TTS Builder Configuration are passed to the TTS Java 
-		wrapper constructor (if there is one taking a java.util.Map as parameter) and from 
+		wrapper constructor (if there is one taking a <tt>java.util.Map</tt> as parameter) and from 
 		there, it's up to the wrapper to decide
-		what to do. This gives a developer great possibilities when it comes to making a TTS wrapper 
+		what to do. This gives a developer great possibilities when it comes to creating a TTS wrapper 
 		and its configuration. If the Java wrapper extends <tt>se_tpb_speechgenerator.ExternalTTS</tt>, 
 		some functionality is available. By calling the <tt>void setParamMap(java.util.Map)</tt>
 		the super class attempts to read the following parameters, 
@@ -319,9 +366,6 @@ then throw an exception and abort.</p>
 			-Replaces characters, most likely configured to filter characters your TTS can't handle.</li>
 	</ul>
 	
-	<p>One property is required, though. It's the fully qualified Java class name 
-		(<tt>&lt;param name="class"</tt>...) used for
-	instantiating the TTS. Wrappers implement <tt>the se_tpb_speechgenerator.TTS</tt>-interface.</p>
 	
 	<p>An example of the configuration follows:</p>
 <pre>
@@ -426,7 +470,7 @@ then throw an exception and abort.</p>
 	
 	
 	
-<h3 id="wrappers">TTS Java wrappers</i></h3>
+<h3 id="wrappers">TTS Java wrappers</h3>
 	<p>
 		If you need to use a TTS system other than SAPI, you must develop your
 		own TTS Java wrapper. One way of doing that is to develop a class from scratch
@@ -439,9 +483,11 @@ then throw an exception and abort.</p>
 		<li><tt>long se_tpb_speechgenerator.ExternalTTS().sayImpl(String synchPoint, File outputFile)</tt></li>
 		<li><tt>void se_tpb_speechgenerator.TTS.close()</tt></li>
 	</ul>
-	<p>See the javadoc for details on parameters. This lets you use the TTS system - and possible 
-		inter-process communication - of your choice. Once you have set up a proper TTS Builder Configuration
-		your new TTS wrapper is ready to run.
+	<p>The parameters configured in the TTS Builder Configuration will be passed to a constructor accepting a 
+		<tt>java.util.Map</tt> as a single parameter, otherwise they will be passed to the wrapper by a call to
+		<tt>se_tpb_speechgenerator.ExternalTTS.setParamMap(java.util.Map)</tt>. See the javadoc for 
+		more details. This lets you use the TTS system - and possible inter-process communication - of your choice. 
+		Once you have set up a proper TTS Builder Configuration your new TTS wrapper is ready to run.
 	</p>	
 
 <h2 id="future">Further development</h2>
@@ -455,7 +501,7 @@ then throw an exception and abort.</p>
 		<a title="se_tpb_synchPointNormalizer" 
 			href="../se_tpb_synchPointNormalizer">se_tpb_synchPointNormalizer</a>.
 	</li>
-	<li>RNG/Schematron test the configuration files before running.</li>
+	<li>RNG/Schematron test the Speech Generation Configuration file before running.</li>
 </ul>
 	
 <h2 id="dependencies">Dependencies</h2>

@@ -45,7 +45,7 @@
 			<!-- this is configuration for one tts impl. the "default" attribute should be se to true 
 				for one (1) configuration for each os. -->
 			
-			<tts id="en_sapi" default="true">
+			<tts default="true">
 				<param name="class" value="se_tpb_speechgenerator.SAPIImpl"/>
 				<param name="binary" value="${transformer_dir}/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe"/>				
 				<param name="generalRegexFilename" value="${transformer_dir}/regex/richard.xml"/>
@@ -83,15 +83,15 @@
 		<property name="os.name" match="[Ll]inux.*" />
 		
 		<lang lang="en">
-			<tts id="loquendo" default="true">
+			<tts default="true">
 				<param name="class" value="se_tpb_speechgenerator.LoquendoImpl"/>
 				<param name="binary" value="${transformer_dir}/../../../narratorLoquendo"/>
 				<param name="generalRegexFilename" value="${transformer_dir}/regex/richard.xml"/>
 				<param name="ttsProperties" value="${transformer_dir}/config/loquendo.xml"/>
 				<param name="xsltFilename" value="${transformer_dir}/xslt/loquendo-en.xsl"/>
 				<param name="yearFilename" value="${transformer_dir}/config/year_en.xml"/>
-				
 			</tts>
 		</lang>
+			
 	</os>
 </ttsbuilder>

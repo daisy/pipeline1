@@ -64,6 +64,13 @@
 			<default>${transformer_dir}/ttsbuilder.xml</default>
 		</parameter>
 		
+		<parameter required="false" direction="in" type="application/xml">
+			<name>ttsBuilderRNG</name>
+			<description>Path to a RelaxNG schema</description>
+			<example>c:/schema.rng</example>
+			<default>${transformer_dir}/ttsbuilder-configtest.rng</default>
+		</parameter>
+		
 	</parameters>
 
 </transformer>
