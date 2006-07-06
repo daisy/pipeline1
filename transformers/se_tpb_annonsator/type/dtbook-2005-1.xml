@@ -6,6 +6,25 @@
 	<attributeBefore>before</attributeBefore>
 	<attributeAfter>after</attributeAfter>
 	<addAttributes>true</addAttributes>
+	
+	<!-- rules for announcements of authors -->
+	<rule match="dtb:docauthor[1]">
+		<lang lang="sv">
+			<before>Av</before>
+		</lang>
+		<lang lang="en">
+			<before>By</before>
+		</lang>
+	</rule>
+	
+	<rule match="dtb:docauthor[position()=last() and last()!=1]">
+		<lang lang="sv">
+			<before>och</before>
+		</lang>
+		<lang lang="en">
+			<before>and</before>
+		</lang>
+	</rule>
 
 	<!-- performed in speech generator
 	<rule match="dtb:pagenum[@page='front']">
