@@ -123,6 +123,18 @@
 			</meta:revdescription>
 			<meta:revremark/>
 		</meta:revision>
+		<meta:revision>
+			<meta:revnumber>1.3</meta:revnumber>
+			<meta:date>26 June 2006</meta:date>
+			<meta:authorinitials>JoelH</meta:authorinitials>
+			<meta:revdescription>
+				<meta:para>Extended support for attributes</meta:para>
+				<meta:para>Removed imggroup element from image rule (this can be added through a paragraph style).</meta:para>
+				<meta:para>Added support for "list style" headings</meta:para>
+				<meta:para>Removed unused constructs from the schema</meta:para>
+			</meta:revdescription>
+			<meta:revremark/>
+		</meta:revision>
 	</meta:revhistory>
 </meta:doc>
 
@@ -179,7 +191,7 @@
 
 <xsl:template match="wx:sect">
 	<xsl:if test="count(*[not(self::wx:sub-section)])&gt;0">
-		<level1>
+		<level1 class="chapter">
 			<xsl:apply-templates select="*[not(self::wx:sub-section)]"/>
 		</level1>
 	</xsl:if>
@@ -187,18 +199,41 @@
 </xsl:template>
 
 <!-- Begin list -->
-<xsl:template match="w:p[w:pPr/w:listPr and count(preceding-sibling::w:p[1][w:pPr/w:listPr])=0]" priority="10"> 
-	<list type="pl"><xsl:apply-templates select="." mode="processList"/></list>
+<xsl:template match="w:p[w:pPr/w:listPr and count(preceding-sibling::w:p[1][w:pPr/w:listPr])=0]" priority="10">
+	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
+	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
+	<xsl:variable name="sTags" select="$mapset//d:standardWord[@version=$tagSet]/d:paragraphs/d:tag[@name=$styleName]"/>
+	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
+	<xsl:choose>
+		<xsl:when test="$tag/@listOverride='true'">
+			<xsl:call-template name="processParagraph"/>
+		</xsl:when>
+		<xsl:otherwise><list type="pl"><xsl:apply-templates select="." mode="processList"/></list></xsl:otherwise>
+	</xsl:choose>
 </xsl:template>
 
-<!-- Not the beginning of the list -->
-<xsl:template match="w:p[w:pPr/w:listPr]" priority="5"/>
+<!-- Not the beginning of the list. Do nothing if this is processed as a list, but process if it is not. -->
+<xsl:template match="w:p[w:pPr/w:listPr]" priority="5">
+	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
+	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
+	<xsl:variable name="sTags" select="$mapset//d:standardWord[@version=$tagSet]/d:paragraphs/d:tag[@name=$styleName]"/>
+	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
+	<xsl:if test="$tag/@listOverride='true'">
+		<xsl:call-template name="processParagraph"/>
+	</xsl:if>
+</xsl:template>
 
 <xsl:template match="w:p[w:pPr/w:listPr]" mode="getLevel">
 	<xsl:choose>
 		<xsl:when test="w:pPr/w:listPr/w:ilvl/@w:val"><xsl:value-of select="w:pPr/w:listPr/w:ilvl/@w:val"/></xsl:when>
 		<xsl:otherwise>0</xsl:otherwise>
 	</xsl:choose>
+</xsl:template>
+
+<xsl:template name="getListSymbol">
+	<xsl:if test="w:pPr/w:listPr/wx:t">
+		<xsl:value-of select="concat(w:pPr/w:listPr/wx:t/@wx:val, ' ')"/>
+	</xsl:if>
 </xsl:template>
 
 <!-- process next list-item -->
@@ -208,8 +243,7 @@
 		<xsl:apply-templates select="following-sibling::w:p[1]" mode="getLevel"/>
 	</xsl:variable>
 	<li>
-		<xsl:value-of select="w:pPr/w:listPr/wx:t/@wx:val"/>
-		<xsl:text> </xsl:text>
+		<xsl:call-template name="getListSymbol"/>
 		<!-- <xsl:apply-templates select="w:r"/> -->
 		<xsl:apply-templates/>
 		<xsl:if test="$fLevel&gt;$level">
@@ -283,7 +317,11 @@
 	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
 	
 	<xsl:if test="$styleName=$pStyleName">
-		<xsl:element name="{$tag/d:wrap/@using}">
+		<xsl:element name="{$tag/d:wrap/d:using/@value}">
+			<xsl:call-template name="addAttributes">
+				<xsl:with-param name="node" select="$tag/d:wrap/d:using"/>
+			</xsl:call-template>
+			<xsl:call-template name="getListSymbol"/>
 			<xsl:apply-templates select="descendant::w:r"/>
 		</xsl:element>
 		<xsl:apply-templates select="following::w:p[1]" mode="processBlock">
@@ -296,6 +334,10 @@
 <xsl:template match="*" mode="processBlock"/>
 
 <xsl:template match="w:p">
+	<xsl:call-template name="processParagraph"/>
+</xsl:template>
+
+<xsl:template name="processParagraph">
 	<!-- <xsl:variable name="style" select="key('matchStyle', w:pPr/w:pStyle/@w:val)"/> -->
 	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
 	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
@@ -308,6 +350,8 @@
 			<xsl:choose>
 				<xsl:when test="$tag/d:map">
 					<xsl:element name="{$tag/d:map/@value}">
+						<xsl:call-template name="addAttributes"><xsl:with-param name="node" select="$tag/d:map"/></xsl:call-template>
+						<xsl:call-template name="getListSymbol"/>
 						<xsl:apply-templates select="descendant::w:r"/>
 					</xsl:element>
 				</xsl:when>
@@ -323,11 +367,12 @@
 							<xsl:if test="$tag/d:wrap/@addId='true'">
 								<xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
 							</xsl:if>
-							<xsl:for-each select="$tag/d:wrap/d:attribute">
-								<xsl:attribute name="{@name}"><xsl:value-of select="@value"/>
-							</xsl:attribute>
-							</xsl:for-each>
-							<xsl:element name="{$tag/d:wrap/@using}">
+							<xsl:call-template name="addAttributes"><xsl:with-param name="node" select="$tag/d:wrap"/></xsl:call-template>
+							<xsl:element name="{$tag/d:wrap/d:using/@value}">
+								<xsl:call-template name="addAttributes">
+									<xsl:with-param name="node" select="$tag/d:wrap/d:using"/>
+								</xsl:call-template>
+								<xsl:call-template name="getListSymbol"/>
 								<xsl:apply-templates select="descendant::w:r"/>
 							</xsl:element>
 							<xsl:if test="$tag/d:wrap/@merge='true'">
@@ -339,13 +384,20 @@
 					</xsl:if>
 				</xsl:when>
 				<xsl:when test="$tag/d:comment">
-					<xsl:comment><xsl:apply-templates select="descendant::w:r"/></xsl:comment>
+					<xsl:comment><xsl:call-template name="getListSymbol"/><xsl:value-of select="."/></xsl:comment>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:when>
 		<!-- no matching action found for this paragraph style -->
-		<xsl:otherwise><p><xsl:apply-templates select="descendant::w:r"/></p></xsl:otherwise>
+		<xsl:otherwise><p><xsl:call-template name="getListSymbol"/><xsl:apply-templates select="descendant::w:r"/></p></xsl:otherwise>
 	</xsl:choose>
+</xsl:template>
+
+<xsl:template name="addAttributes">
+	<xsl:param name="node"/>
+	<xsl:for-each select="$node/d:attribute">
+		<xsl:attribute name="{@name}"><xsl:value-of select="@value"/></xsl:attribute>
+	</xsl:for-each>
 </xsl:template>
 
 <xsl:template match="w:r">
@@ -359,7 +411,13 @@
 		<xsl:when test="count($tag)&gt;0">
 			<xsl:choose>
 				<xsl:when test="$tag/d:map">
-					<xsl:element name="{$tag/d:map/@value}"><xsl:apply-templates/></xsl:element>
+					<xsl:element name="{$tag/d:map/@value}">
+						<xsl:call-template name="addAttributes"><xsl:with-param name="node" select="$tag/d:map"/></xsl:call-template>
+						<xsl:apply-templates/>
+					</xsl:element>
+				</xsl:when>
+				<xsl:when test="$tag/d:comment">
+					<xsl:comment><xsl:apply-templates/></xsl:comment>
 				</xsl:when>
 				<xsl:when test="$tag/d:pagenum">
 					<xsl:variable name="p-no" select="translate(.,' ','')"/>
@@ -407,9 +465,7 @@
 	  <xsl:variable name="img-no"><xsl:call-template name="addZeros">
 			  <xsl:with-param name="value" select="count(preceding::v:shape/v:imagedata)+1"/>
 		  </xsl:call-template></xsl:variable>
-		<imggroup>
-			<img src="image{$img-no}.jpg" alt="{v:shape/@alt}"/>
-		</imggroup>
+		<img src="image{$img-no}.jpg" alt="{v:shape/@alt}"/>
   </xsl:if>
 </xsl:template>
 

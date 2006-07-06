@@ -2,16 +2,28 @@
 <mappings version="2006-1" xmlns="http://www.tpb.se/ns/2006/wml2dtbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.tpb.se/ns/2006/wml2dtbook tagset.xsd">
 	<standardWord version="4">
 		<paragraphs>
-			<tag name="heading 1"><map value="h1"/></tag>
-			<tag name="heading 2"><map value="h2"/></tag>
-			<tag name="heading 3"><map value="h3"/></tag>
-			<tag name="heading 4"><map value="h4"/></tag>
-			<tag name="heading 5"><map value="h5"/></tag>
-			<tag name="heading 6"><map value="h6"/></tag>
-			<tag name="footnote text"><wrap value="note" using="p" addId="true" merge="false"/></tag>
+			<tag name="heading 1" listOverride="true"><map value="h1"/></tag>
+			<tag name="heading 2" listOverride="true"><map value="h2"/></tag>
+			<tag name="heading 3" listOverride="true"><map value="h3"/></tag>
+			<tag name="heading 4" listOverride="true"><map value="h4"/></tag>
+			<tag name="heading 5" listOverride="true"><map value="h5"/></tag>
+			<tag name="heading 6" listOverride="true"><map value="h6"/></tag>
+			<tag name="footnote text">
+				<wrap value="note" addId="true" merge="false">
+					<using value="p"/>
+				</wrap>
+			</tag>
 			<!-- Indraget Stycke -->
-			<tag name="Block Text"><wrap value="blockquote" using="p" addId="false" merge="true"/></tag>
-			<tag name="Body Text Indent"><wrap value="blockquote" using="p" addId="false" merge="false"/></tag>
+			<tag name="Block Text">
+				<wrap value="blockquote" addId="false" merge="true">
+					<using value="p"/>
+				</wrap>
+			</tag>
+			<tag name="Body Text Indent">
+				<wrap value="blockquote" addId="false" merge="false">
+					<using value="p"/>
+				</wrap>
+			</tag>
 			<!-- Kommentarer -->
 			<tag name="annotation text"><comment/></tag>
 		</paragraphs>

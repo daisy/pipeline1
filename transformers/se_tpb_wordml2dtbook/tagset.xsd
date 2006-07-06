@@ -7,10 +7,18 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="tag" maxOccurs="unbounded">
+				<xs:element name="tag" maxOccurs="unbounded">
 					<xs:annotation>
 						<xs:documentation>Defines a style</xs:documentation>
 					</xs:annotation>
+					<xs:complexType>
+						<xs:group ref="cTagChoice"/>
+						<xs:attribute name="name" type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>Defines the style name</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
 				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
@@ -38,11 +46,10 @@
 	</xs:element>
 	<xs:element name="map">
 		<xs:complexType>
-			<xs:attribute name="value" type="xs:string" use="required">
-				<xs:annotation>
-					<xs:documentation>Defines the value to map to</xs:documentation>
-				</xs:annotation>
-			</xs:attribute>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="attribute"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="value"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="mappings">
@@ -70,7 +77,20 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="tag" maxOccurs="unbounded"/>
+				<xs:element name="tag" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>Defines a style</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:group ref="pTagChoice"/>
+						<xs:attribute name="name" type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>Defines the style name</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="listOverride" type="xs:boolean" default="false" use="optional"/>
+					</xs:complexType>
+				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -95,74 +115,34 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="tag">
-		<xs:annotation>
-			<xs:documentation>Defines a style</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:choice>
-				<xs:element ref="map">
-					<xs:annotation>
-						<xs:documentation>Defines that the style should map to the specified tag</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element ref="wrap">
-					<xs:annotation>
-						<xs:documentation>Defines that the style should be wrapped in the specified tag</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element ref="comment">
-					<xs:annotation>
-						<xs:documentation>Defines that the style should become a comment</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element ref="pagenum">
-					<xs:annotation>
-						<xs:documentation>Defines that the style should become a pagenum</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element ref="noteref">
-					<xs:annotation>
-						<xs:documentation>Defines that the style should become a noteref</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-			</xs:choice>
-			<xs:attribute name="name" type="xs:string" use="required">
-				<xs:annotation>
-					<xs:documentation>Defines the style name</xs:documentation>
-				</xs:annotation>
-			</xs:attribute>
-		</xs:complexType>
-	</xs:element>
+	<xs:group name="cTagChoice">
+		<xs:choice>
+			<xs:element ref="map"/>
+			<xs:element ref="pagenum"/>
+			<xs:element ref="noteref"/>
+			<xs:element ref="comment"/>
+		</xs:choice>
+	</xs:group>
+		<xs:group name="pTagChoice">
+		<xs:choice>
+			<xs:element ref="map"/>
+			<xs:element ref="wrap"/>
+			<xs:element ref="comment"/>
+		</xs:choice>
+	</xs:group>
 	<xs:element name="wrap">
 		<xs:complexType>
-			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="attribute">
-					<xs:annotation>
-						<xs:documentation>Defines attributes that should be added to the wrapping tag</xs:documentation>
-					</xs:annotation>
-					<xs:complexType>
-						<xs:attribute name="value" type="xs:string" use="required">
-							<xs:annotation>
-								<xs:documentation>Defines the attribute value</xs:documentation>
-							</xs:annotation>
-						</xs:attribute>
-						<xs:attribute name="name" type="xs:NMTOKEN" use="required">
-							<xs:annotation>
-								<xs:documentation>Defines the attribute name</xs:documentation>
-							</xs:annotation>
-						</xs:attribute>
-					</xs:complexType>
-				</xs:element>
+			<xs:sequence>
+				<xs:sequence>
+					<xs:element ref="using"/>
+				</xs:sequence>
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="attribute"/>
+				</xs:sequence>
 			</xs:sequence>
 			<xs:attribute name="value" type="xs:string" use="required">
 				<xs:annotation>
 					<xs:documentation>Defines the tag to wrap with</xs:documentation>
-				</xs:annotation>
-			</xs:attribute>
-			<xs:attribute name="using" type="xs:string" use="required">
-				<xs:annotation>
-					<xs:documentation>Defines the inner tag used when wrapping</xs:documentation>
 				</xs:annotation>
 			</xs:attribute>
 			<xs:attribute name="addId" use="required">
@@ -183,4 +163,32 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
+	<xs:element name="attribute">
+		<xs:annotation>
+			<xs:documentation>Defines attributes that should be added to the wrapping tag</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attributeGroup ref="value"/>
+			<xs:attribute name="name" type="xs:NMTOKEN" use="required">
+				<xs:annotation>
+					<xs:documentation>Defines the attribute name</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="using">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="attribute"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="value"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:attributeGroup name="value">
+		<xs:attribute name="value" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Defines the value</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:attributeGroup>
 </xs:schema>
