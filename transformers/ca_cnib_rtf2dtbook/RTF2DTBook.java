@@ -61,13 +61,14 @@ public class RTF2DTBook extends Transformer {
         }
         
         // Setup jython args
-        String[] args = new String[6];
+        String[] args = new String[7];
         args[0] = FilenameOrFileURI.toFile(python).getAbsolutePath();
         args[1] = "--headings-to-sections";
         args[2] = "--lists";
         args[3] = "--indent=1";
-        args[4] = "--output=" + xmlFile.getFile().getAbsolutePath();
-        args[5] = FilenameOrFileURI.toFile(rtfFile).getAbsolutePath();;
+        args[4] = "--no-empty-para";
+        args[5] = "--output=" + xmlFile.getFile().getAbsolutePath();
+        args[6] = FilenameOrFileURI.toFile(rtfFile).getAbsolutePath();;
         
         /*
         System.err.println("arg0: " + args[0]);
