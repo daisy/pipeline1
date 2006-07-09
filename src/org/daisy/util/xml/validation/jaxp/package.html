@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<title>org.daisy.util.xml.validation.jaxp package</title>
+</head>
+<body>
+
+This package constitutes the org.daisy.util extension implementation of 
+the <a href="http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/validation/package-summary.html">
+JAXP <code>javax.xml.validation</code> package</a>.
+ 
+<p>The primary feature of this implementation is extension to support for RelaxNG and Schematron. 
+Assuming that Xerces2.6 and JRE 1.5 or later are installed on the system, this means that
+usage of the javax.xml.validation package for XSD, RNG and SCH is possible in an implementation anonymous, 
+opaque and orthogonal way.</p>
+
+<p>Further validation languages (such as NVDL and ISO Schematron) are planned.</p>
+
+<p>The JRE shipped {@link javax.xml.validation.SchemaFactoryFinder} is used to locate the factories, so 
+the following system properties must be set in order for the implementations in this package to be discovered:</p>
+
+<code><pre>
+		System.setProperty(
+				"javax.xml.validation.SchemaFactory:http://relaxng.org/ns/structure/1.0",
+				"org.daisy.util.xml.validation.jaxp.RelaxNGSchemaFactory");
+		System.setProperty(
+				"javax.xml.validation.SchemaFactory:http://www.ascc.net/xml/schematron",
+				"org.daisy.util.xml.validation.jaxp.SchematronSchemaFactory");
+</pre></code>
+
+<p>Usage Example:</p>
+<code><pre>
+		javax.xml.validation.SchemaFactory rngFactory = 
+			SchemaFactory.newInstance(SchemaLanguageConstants.RELAXNG_NS_URI);		
+		rngFactory.setErrorHandler(this);
+		rngFactory.setResourceResolver(CatalogEntityResolver.getInstance());					
+		javax.xml.validation.Schema s = rngFactory.newSchema(new File("D:\\dtbook-2005-1.rng"));
+		javax.xml.validation.Validator v = s.newValidator();	
+		//validator is reusable, given that the schema is the same:						
+		File[] files = new File[] {new File("D:\\doc.dtbook"),new File("D:\\doc2.dtbook")};
+		for (int i = 0; i < files.length; i++) {
+			v.validate(new StreamSource(files[i]));
+		}
+</pre></code>
+
+<p>Constants for the SchemaFactory <code>newInstance()</code> call are avaialable in 
+{@link org.daisy.util.xml.validation.SchemaLanguageConstants}.</p>
+
+</body>
+</html>
