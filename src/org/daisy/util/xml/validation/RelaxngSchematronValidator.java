@@ -46,6 +46,10 @@ import com.thaiopensource.validate.ValidationDriver;
 /**
  * Validate an XML document using a RELAXNG schema with embedded Schematron
  * rules.
+ * <p><strong>
+ * Usage of this class is discouraged. It is recommended to use
+ * the {@link org.daisy.util.xml.validation.jaxp} package instead.
+ * </strong></p>
  * 
  * @author Linus Ericson
  * @author Markus Gylling
@@ -291,7 +295,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
             builder.put(ValidateProperty.ERROR_HANDLER, this);
         }
 
-        // mg: Implement XmlReaderCreator in order to hook up the DTD catalog
+        // mg: Implement XmlReaderCreator in order to hook up the catalog
         // ValidateProperty.ENTITY_RESOLVER does not seem to work
         XmlReaderCreatorImpl xrc = new XmlReaderCreatorImpl(false);
         builder.put(ValidateProperty.XML_READER_CREATOR, xrc);
