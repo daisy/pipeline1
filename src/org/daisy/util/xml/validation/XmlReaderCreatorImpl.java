@@ -4,6 +4,7 @@ package org.daisy.util.xml.validation;
 //import javax.xml.parsers.SAXParserFactory;
 
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
@@ -18,12 +19,18 @@ import com.thaiopensource.xml.sax.XMLReaderCreator;
 
 public class XmlReaderCreatorImpl implements XMLReaderCreator{
 	private boolean loadDTD = true;
+	private EntityResolver resolver = null;
 	
 	public XmlReaderCreatorImpl() {}
 	
 	
 	public XmlReaderCreatorImpl(boolean loadDTD) {
 	  this.loadDTD = loadDTD;
+	}
+
+	public XmlReaderCreatorImpl(boolean loadDTD, EntityResolver resolver) {
+		  this.loadDTD = loadDTD;
+		  this.resolver = resolver;
 	}
 	
 	public XMLReader createXMLReader() throws SAXException {		
@@ -39,7 +46,11 @@ public class XmlReaderCreatorImpl implements XMLReaderCreator{
 	    }
 	    
 	    try {
-	      xr.setEntityResolver(CatalogEntityResolver.getInstance());	
+	      if(this.resolver==null) {
+	    	  xr.setEntityResolver(CatalogEntityResolver.getInstance());
+	      }else{
+	    	  xr.setEntityResolver(this.resolver);
+	      }
 	      xr.setFeature("http://xml.org/sax/features/namespaces", true);
 	      xr.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
 	      xr.setFeature("http://xml.org/sax/features/validation", false);
