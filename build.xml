@@ -84,22 +84,24 @@
 	
 	<!-- end of binary distribution build -->
 	
-	<target name="buildSrcJar" 
-			description="Creates a dmfc_src_${version}.jar with *.java files in the distribution folder"
+	<!-- build the dmfc (non util) src zip dist -->
+	<target name="buildSrcZip" 
+			description="Creates a dmfc_src_${version}.zip (excluding org.daisy.util packages) in the distribution folder"
 			depends="createDistributionDir">
-		<jar jarfile="${distribution.dir}/dmfc_src_${version}.jar" >
+		<zip zipfile="${distribution.dir}/dmfc_src_${version}.zip" >
 			<fileset dir="${base.dir}">
 				<include name="build.xml"/>
 			</fileset>
 			<fileset dir="${base.dir}">
-				<include name="src/**/*.java"/>
-				<include name="src/**/*.properties"/>
+				<include name="src/**/*.*"/>				
+				<exclude name="**/CVS/**/*.*"/>
+				<exclude name="src/org/daisy/util/**/*.*"/>
 			</fileset>
 			<fileset dir="${base.dir}">
 				<include name="transformers/**/*.*"/>
 				<exclude name="transformers/**/*.class"/>
 			</fileset>
-		</jar>
+		</zip>
 	</target>
 	
 	<target name="buildJavadocZip" 
@@ -116,7 +118,7 @@
 	
 	<target name="buildDMFC"
 			description="Creates all DMFC packages"
-			depends="buildSrcJar,
+			depends="buildSrcZip,
 					 buildJavadocZip"/>
 	
 	
@@ -144,6 +146,23 @@
 				<include name="bin/**/*.*"/>
 				<include name="transformers/**/*.*"/>
 				<exclude name="transformers/**/*.java"/>
+				<include name="resources/**/*.*"/>
+				<include name="lib/**/*.jar"/>
+				<exclude name="**/org/daisy/util/**/*.*"/>
+			</fileset>
+		</zip>
+	</target>
+
+	<target name="buildDMFC-NSIS-withExcludes" 
+			description="Creates a dmfc-nsis.zip without util library"
+			depends="createDistributionDir">
+		<delete file="${distribution.dir}/dmfc-nsis.zip"/>
+		<zip zipfile="${distribution.dir}/dmfc-nsis.zip">
+			<fileset dir="${base.dir}">
+				<include name="bin/**/*.*"/>
+				<include name="transformers/**/*.*"/>
+				<exclude name="transformers/**/*.java"/>
+				<exclude name="transformers/se_tpb_pdtbCreator/**/*.*"/>
 				<include name="resources/**/*.*"/>
 				<include name="lib/**/*.jar"/>
 				<exclude name="**/org/daisy/util/**/*.*"/>
