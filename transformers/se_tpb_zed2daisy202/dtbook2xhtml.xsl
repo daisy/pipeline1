@@ -41,8 +41,9 @@
    	 	 <xsl:when test="ancestor::*[self::dtb:h1 or self::dtb:h2 or self::dtb:h3 or self::dtb:h4 or self::dtb:h5 or self::dtb:h6 or self::dtb:hd or self::dtb:span or self::dtb:p]">   	 	 	
      		 <xsl:apply-templates select="." mode="inlineOnly"/>
    	 	 </xsl:when>
+<!-- jpritchett@rfbd.org:  Fixed bug in setting @class value (missing braces) -->
    	 	 <xsl:otherwise>
-		   	 <div class="$class">
+		   	 <div class="{$class}">
 		       <xsl:call-template name="copyCncatts"/>
 		       <xsl:apply-templates/>
 		     </div>
