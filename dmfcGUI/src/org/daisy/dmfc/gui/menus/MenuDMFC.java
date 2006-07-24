@@ -43,9 +43,13 @@ public class MenuDMFC {
 		Menu filemenu = new Menu(shell, SWT.DROP_DOWN);
 		file.setMenu(filemenu);
 		MenuItem actionItem = new MenuItem(filemenu, SWT.PUSH);
-		actionItem.setText("Exit\tCtrl+X");	
 		
-		actionItem.setAccelerator(SWT.MOD1 + 'X');
+		//actionItem.setText("Exit\tCtrl+X");	
+		// actionItem.setAccelerator(SWT.MOD1 + 'X');
+		
+		actionItem.setText("Exit");	
+		
+		
 		actionItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				MessageBox mb = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
@@ -63,23 +67,7 @@ public class MenuDMFC {
 			}
 		});
 
-	//Top Level "View"
-		MenuItem view = new MenuItem(menu, SWT.CASCADE);
-		view.setText("View");
-		Menu viewmenu = new Menu(shell, SWT.DROP_DOWN);
-		view.setMenu(viewmenu);
-		
-		viewHideRunDetails = new MenuItem(viewmenu, SWT.PUSH);
-		viewHideRunDetails.setText("Hide Run Details \tCtrl+V");
-		viewHideRunDetails.setAccelerator(SWT.MOD1 + 'V');
-		//show or hide the conversion/run details
-		viewHideRunDetails.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				window=Window.getInstance();
-				//window.getTreeFromTreeViewer().forceFocus();
-			}
-			});
-
+	
 	
 		
 	//Top Level "Action"
@@ -91,8 +79,12 @@ public class MenuDMFC {
 	
 		
 		selectJobDetails = new MenuItem(actionmenu, SWT.PUSH);
-		selectJobDetails.setText("Select A Conversion \tCtrl+C");
-		selectJobDetails.setAccelerator(SWT.MOD1 + 'C');
+		
+		//selectJobDetails.setText("Select A Conversion \tCtrl+C");
+		//selectJobDetails.setAccelerator(SWT.MOD1 + 'C');
+		
+		selectJobDetails.setText("Select Converter");
+		
 		//focus listener on the conversions
 		selectJobDetails.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -102,10 +94,10 @@ public class MenuDMFC {
 			});
 		
 		
-		
 		convertMultipleFile = new MenuItem(actionmenu, SWT.PUSH);
-		convertMultipleFile.setText("Browse for Files\tCtrl+F");
-		convertMultipleFile.setAccelerator(SWT.MOD1 + 'F');
+		
+		convertMultipleFile.setText("Add Multiple Sources\tCtrl+M");
+		convertMultipleFile.setAccelerator(SWT.MOD1 + 'M');
 		
 		convertMultipleFile.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -128,7 +120,7 @@ public class MenuDMFC {
 		});
 		
 		convertSingleFile = new MenuItem(actionmenu, SWT.PUSH);
-		convertSingleFile.setText("Browse for Single File\tCtrl+S");
+		convertSingleFile.setText("Add Single Source\tCtrl+S");
 		convertSingleFile.setAccelerator(SWT.MOD1 + 'S');
 		
 		convertSingleFile.addSelectionListener(new SelectionAdapter() {
@@ -168,8 +160,10 @@ public class MenuDMFC {
 		
 		final MenuItem subactionSelectJob = new MenuItem(submenu, SWT.PUSH);
 		subactionSelectJob.setText("Select Job From List");
+		
 	//	subactionSelectJob.setText("&Select Job From List\tCtrl+J");
 	//	subactionSelectJob.setAccelerator(SWT.CTRL+'J');
+		
 		subactionSelectJob.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -179,7 +173,7 @@ public class MenuDMFC {
 			});
 		
 		final MenuItem subactionItemUp = new MenuItem(submenu, SWT.PUSH);
-		subactionItemUp.setText("Move Up List");
+		subactionItemUp.setText("Move Job Up");
 		//subactionItemUp.setText("&Move Up List\tCtrl+U");
 		//subactionItemUp.setAccelerator(SWT.CTRL+'U');
 		subactionItemUp.addSelectionListener(new SelectionAdapter() {
@@ -192,7 +186,7 @@ public class MenuDMFC {
 			});
 		
 		final MenuItem subactionItemDown = new MenuItem(submenu, SWT.PUSH);
-		subactionItemDown.setText("Move Down List");
+		subactionItemDown.setText("Move Job Down");
 		//subactionItemDown.setText("&Move Down List\tCtrl+W");
 		//subactionItemDown.setAccelerator(SWT.CTRL+'W');
 		subactionItemDown.addSelectionListener(new SelectionAdapter() {
@@ -205,20 +199,20 @@ public class MenuDMFC {
 		
 		
 		final MenuItem subactionItemRemove = new MenuItem(submenu, SWT.PUSH);
-		subactionItemRemove.setText("Remove From List");
+		subactionItemRemove.setText("Remove Job");
 		//subactionItemRemove.setText("&Remove From List\tCtrl+M");
 		//subactionItemRemove.setAccelerator(SWT.CTRL+'M');
 		subactionItemRemove.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
 				window.setSelectedIndex(window.tblJobs2.getSelectionIndex());
-				window.deleteJob();
+				window.deleteJobs();
 			}
 			});
 		
 		
 		final MenuItem subactionItemChange = new MenuItem(submenu, SWT.PUSH);
-		subactionItemChange.setText("Change File Selection");
+		subactionItemChange.setText("Change Selected Sources");
 		//subactionItemChange.setText("&Change File Selection\tCtrl+N");
 		//subactionItemChange.setAccelerator(SWT.CTRL+'N');
 		subactionItemChange.addSelectionListener(new SelectionAdapter() {
@@ -256,8 +250,10 @@ public class MenuDMFC {
 		
 		
 		MenuItem terminateConversion = new MenuItem(actionmenu, SWT.PUSH);
-		terminateConversion.setText("Terminate Jobs\tCtrl+T");
-		terminateConversion.setAccelerator(SWT.MOD1 + 'T');
+		//terminateConversion.setText("Terminate Jobs\tCtrl+T");
+		//terminateConversion.setAccelerator(SWT.MOD1 + 'T');
+		terminateConversion.setText("Cancel All Jobs");
+		
 		terminateConversion.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -280,6 +276,31 @@ public class MenuDMFC {
 	*/
 		
 		
+//		Top Level "View"
+		MenuItem view = new MenuItem(menu, SWT.CASCADE);
+		view.setText("View");
+		Menu viewmenu = new Menu(shell, SWT.DROP_DOWN);
+		view.setMenu(viewmenu);
+		
+		viewHideRunDetails = new MenuItem(viewmenu, SWT.PUSH);
+		
+		//viewHideRunDetails.setText("Hide Run Details \tCtrl+V");
+		//viewHideRunDetails.setAccelerator(SWT.MOD1 + 'V');
+		
+		viewHideRunDetails.setText("Hide Run Details");
+		
+		//show or hide the conversion/run details
+		viewHideRunDetails.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				window=Window.getInstance();
+				window.viewRunDetails();
+				viewHideRunDetails.setText(window.getStrViewRunDetails());
+			}
+			});
+
+		
+		
+		
 	//	Top Level "LogFile"
 	
 		MenuItem logFile = new MenuItem(menu, SWT.CASCADE);
@@ -288,9 +309,13 @@ public class MenuDMFC {
 		logFile.setMenu(logmenu);
 		
 		viewLogFile = new MenuItem(logmenu, SWT.PUSH);
-		viewLogFile.setText("View Log File\tCtrl+L");
+		
+		viewLogFile.setText("View Log File");
+		//viewLogFile.setText("View Log File\tCtrl+L");
+		//viewLogFile.setAccelerator(SWT.MOD1 + 'L');
+		
 		viewLogFile.setEnabled(true);
-		viewLogFile.setAccelerator(SWT.MOD1 + 'L');
+		
 		viewLogFile.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -329,8 +354,10 @@ public class MenuDMFC {
 		
 		
 		MenuItem daisyWebSite = new MenuItem(helpmenu, SWT.PUSH);
-		daisyWebSite.setText("Go to the DAISY web site\tCtrl+D");
-		daisyWebSite.setAccelerator(SWT.MOD1 + 'D');
+		daisyWebSite.setText("Go to the DAISY web site");
+		//daisyWebSite.setText("Go to the DAISY web site\tCtrl+D");
+		//daisyWebSite.setAccelerator(SWT.MOD1 + 'D');
+		
 		daisyWebSite.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				new WebLinks("http://www.daisy.org");
@@ -339,8 +366,11 @@ public class MenuDMFC {
 			});
 		
 		MenuItem about = new MenuItem(helpmenu, SWT.PUSH);
-		about.setText("About\tCtrl+A");
-		about.setAccelerator(SWT.MOD1 + 'A');
+		
+		about.setText("About");
+		//about.setText("About\tCtrl+A");
+		//about.setAccelerator(SWT.MOD1 + 'A');
+		
 		about.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("AboutScreen");
@@ -399,7 +429,8 @@ public class MenuDMFC {
 	}
 	
 	
-	
-
+	public MenuItem getViewRunDetails(){
+		return this.viewHideRunDetails;
+	}
 }
 

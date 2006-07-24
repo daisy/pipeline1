@@ -30,9 +30,11 @@ public class MenuSingleConvert {
 		Menu filemenu = new Menu(shell, SWT.DROP_DOWN);
 		file.setMenu(filemenu);
 		MenuItem actionItem = new MenuItem(filemenu, SWT.PUSH);
-		actionItem.setText("Exit\tCtrl+X");	
 		
-		actionItem.setAccelerator(SWT.MOD1 + 'X');
+		//actionItem.setText("Exit\tCtrl+X");	
+		//actionItem.setAccelerator(SWT.MOD1 + 'X');
+		
+		actionItem.setText("Exit");	
 		actionItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				MessageBox mb = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
@@ -58,7 +60,7 @@ public class MenuSingleConvert {
 		action.setMenu(actionmenu);
 	
 		MenuItem selectInputFile = new MenuItem(actionmenu, SWT.PUSH);
-		selectInputFile.setText("Select Input File");
+		selectInputFile.setText("Select Source File");
 		selectInputFile.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -69,7 +71,7 @@ public class MenuSingleConvert {
 		
 		
 		MenuItem setOuputPath = new MenuItem(actionmenu, SWT.PUSH);
-		setOuputPath.setText("Select Output Path");
+		setOuputPath.setText("Select Destination");
 		setOuputPath.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -91,8 +93,8 @@ public class MenuSingleConvert {
 			});
 		
 		MenuItem cancel = new MenuItem(actionmenu, SWT.PUSH);
-		cancel.setText("Cancel \tCtrl+C");
-		cancel.setAccelerator(SWT.MOD1 + 'C');
+		cancel.setText("Cancel \tCtrl+N");
+		cancel.setAccelerator(SWT.MOD1 + 'N');
 		cancel.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -119,14 +121,16 @@ public class MenuSingleConvert {
 			});
 		
 		MenuItem about = new MenuItem(helpmenu, SWT.PUSH);
-		about.setText("Go to the DAISY web site\tCtrl+D");
-		about.setAccelerator(SWT.MOD1 + 'D');
+		
+		//about.setText("Go to the DAISY web site\tCtrl+D");
+		//about.setAccelerator(SWT.MOD1 + 'D');
+		
+		about.setText("Go to the DAISY web site");
+		
 		about.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				new WebLinks("http://www.daisy.org");
 			}
 			});
-	
-	
 	}
 }

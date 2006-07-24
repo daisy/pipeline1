@@ -30,7 +30,7 @@ public class TransformerListTableProperties {
 		
 		this.table=_table;
 		this.scriptHandler=script;
-		System.out.println("The name of the ScriptHandler is " + scriptHandler.getName());
+		//System.out.println("The name of the ScriptHandler is " + scriptHandler.getName());
 		
 		createTable();
 	}
@@ -44,7 +44,7 @@ public class TransformerListTableProperties {
 	
 		TableColumn tcConversionName = new TableColumn (table, SWT.LEFT);
 		tcConversionName.setText("Transformers in Conversion");
-		tcConversionName.setWidth(220);
+		tcConversionName.setWidth(175);
 		tcConversionName.setResizable(true);
 		
 	}

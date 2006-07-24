@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -54,6 +55,7 @@ public class ConvertSingleFile  {
 	
 	//Labels
 	Label lblNameConversion;
+	Label lblConversion;
 	Label lblInputDocument;
 	Label lblOutputDocument;
 	Label lblDaisyMFC;
@@ -74,6 +76,7 @@ public class ConvertSingleFile  {
 	String outputPath;
 	String script;
 	String outExtensionPattern;
+	
 	
 	//boolean - is this an edit or a single file selection?
 	//defaults to editFile, false.
@@ -109,7 +112,7 @@ public class ConvertSingleFile  {
 	
 	public void createContents(){
 		
-		shell.setText("Convert Single File");
+		shell.setText("Add Single Source");
 		//shell.setBounds(0,0,500,500);
 		shell.setLocation(250, 250);
 		
@@ -124,7 +127,7 @@ public class ConvertSingleFile  {
 		//3 composites with borders for accessibility
 		
 		//Composite conversion stuff	
-		Composite compConversionChosen = new Composite(shell, SWT.BORDER);
+		Group compConversionChosen = new Group(shell, SWT.NONE);
 		//compConversionChosen.setBackground(ColorChoices.white);
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		compConversionChosen.setLayoutData(data);
@@ -141,25 +144,24 @@ public class ConvertSingleFile  {
 //		Label
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		lblNameConversion = new Label(compConversionChosen, SWT.NONE);
-		lblNameConversion.setText("Name of Conversion Selected");
+		lblNameConversion.setText("Name of Converter");
 		lblNameConversion.setLayoutData(data);
 		
-//		Text area
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
-		data.widthHint=100;
-		txtConversionName = new Text(compConversionChosen, SWT.BORDER);
-		textProperties.setProperties(txtConversionName, null);	
-		txtConversionName.setLayoutData(data);
-		scriptHandler = window.getInstance().getConversionChosen();
-		txtConversionName.setText(scriptHandler.getName());
+
+//		Label with Conversion Chosen
 		
-//		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
+		data.widthHint=250;
+		lblConversion = new Label(compConversionChosen, SWT.BORDER);
+		lblConversion.setLayoutData(data);
+		scriptHandler = window.getInstance().getConversionChosen();
+		lblConversion.setText(scriptHandler.getName());
 		
 		//End ScriptHandler stuff
 
 		
 		//Input stuff
-		Composite compInputFields = new Composite(shell, SWT.BORDER);
+		Group compInputFields = new Group(shell, SWT.NONE);
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		compInputFields.setLayoutData(data);
 		layout = new GridLayout();
@@ -175,12 +177,12 @@ public class ConvertSingleFile  {
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan=2;
 		lblInputDocument = new Label(compInputFields, SWT.NONE);
-		labelProperties.setProperties(lblInputDocument, "File to Convert");
+		labelProperties.setProperties(lblInputDocument, "Source File");
 		lblInputDocument.setLayoutData(data);
 		
 //		Text Field, input choice
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		data.widthHint=200;
+		data.widthHint=300;
 		txtInputDoc = new Text(compInputFields, SWT.BORDER);
 		textProperties.setProperties(txtInputDoc, null);
 		txtInputDoc.setLayoutData(data);
@@ -200,7 +202,7 @@ public class ConvertSingleFile  {
 		
 		//Composite output
 		
-		Composite compOutputFields = new Composite(shell, SWT.BORDER);
+		Group compOutputFields = new Group(shell, SWT.NONE);
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		compOutputFields.setLayoutData(data);
 		layout = new GridLayout();
@@ -211,17 +213,16 @@ public class ConvertSingleFile  {
 		layout.marginWidth=7;
 		compOutputFields.setLayout(layout);
 		
-		
 //		Label for Output Doc
 		lblOutputDocument = new Label(compOutputFields, SWT.NONE);
-		lblOutputDocument.setText("Output File");
+		lblOutputDocument.setText("Destination");
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan=2;
 		lblOutputDocument.setLayoutData(data);
 		
 		//Text field
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		data.widthHint=200;
+		data.widthHint=300;
 		txtOutputDoc=new Text(compOutputFields, SWT.BORDER);
 		textProperties.setProperties(txtOutputDoc, null);
 		txtOutputDoc.setLayoutData(data);
@@ -237,8 +238,6 @@ public class ConvertSingleFile  {
 				setOutputPathSelected();
 			}
 		});
-		
-		
 		
 		
 		//bottom OK and Cancel buttons
@@ -309,7 +308,8 @@ public class ConvertSingleFile  {
 			if (file.exists() && !file.isDirectory()) {
 				file = file.getParentFile();
 			}
-			dlg.setFilterPath(file.getAbsolutePath());
+			//dlg.setFilterPath(file.getAbsolutePath());
+			dlg.setFilterPath(FilePaths.singleInputPath);
 		}
 		
 		//filter names shown
@@ -318,29 +318,33 @@ public class ConvertSingleFile  {
 		fileSelected = dlg.open();		
 		
 		if (fileSelected!=null ){
-			System.out.println("File selected  " + fileSelected);
+			//System.out.println("File selected  " + fileSelected);
+			//System.out.println("The filter path is: " + dlg.getFilterPath());
+			FilePaths.singleInputPath=dlg.getFilterPath();
 			this.txtInputDoc.setText(fileSelected);
 		}
 		
 	}
 	
 	public void setOutputPathSelected() {
+		
 		String mimeOut = this.getMimeForProperty("outputPath");
 		if ("application/x-filesystemDirectory".equals(mimeOut)) {	
 			// Directory
 			DirectoryDialog directoryDialog = new DirectoryDialog(shell);
 			directoryDialog.setText("Choose output directory");
-			directoryDialog.setFilterPath("c://");
+			directoryDialog.setFilterPath(FilePaths.singleOutputPath);
 			outputPath = directoryDialog.open();
 			System.out.println("outputPath Selected  " + outputPath);
 			this.txtOutputDoc.setText("");
 			if (outputPath==null ){
-				System.out.println("outputPath is not selected " );
+				//System.out.println("outputPath is not selected " );
 			}
 			else{
 				//add a new directory to this...
 				this.txtOutputDoc.setText(outputPath);
-				System.out.println("outpath path is " + outputPath);
+				FilePaths.singleOutputPath=directoryDialog.getFilterPath();
+				//System.out.println("outpath path is " + outputPath);
 			}
 		} else {
 			// File
@@ -351,12 +355,14 @@ public class ConvertSingleFile  {
 				if (file.exists() && !file.isDirectory()) {
 					file = file.getParentFile();
 				}
-				dlg.setFilterPath(file.getAbsolutePath());
+				//dlg.setFilterPath(file.getAbsolutePath());
+				dlg.setFilterPath(FilePaths.singleOutputPath);
 			}
 			dlg.setFilterExtensions(this.getGlobFromMime(mimeOut));			
 			outputPath = dlg.open();					
 			if (outputPath!=null ){
 				this.txtOutputDoc.setText(outputPath);
+				FilePaths.singleOutputPath=dlg.getFilterPath();
 			}
 		}
 	}
@@ -396,7 +402,8 @@ public class ConvertSingleFile  {
 		this.editJob=job;
 		editFile= true;
 		shell.setText("Daisy Multi-Format Converter, Edit Conversion");
-		txtConversionName.setText(job.getScript().getName());
+		//txtConversionName.setText(job.getScript().getName());
+		lblConversion.setText(job.getScript().getName());
 		txtInputDoc.setText(job.getInputFile().getPath());
 		txtOutputDoc.setText(job.getOutputFile().getPath());
 		scriptHandler = job.getScript();

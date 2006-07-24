@@ -25,18 +25,17 @@ import org.daisy.dmfc.gui.widgetproperties.RadioButtonProperties;
 import org.daisy.dmfc.gui.widgetproperties.TextProperties;
 import org.daisy.dmfc.qmanager.Job;
 import org.daisy.dmfc.qmanager.Status;
+import org.daisy.util.file.EFile;
+import org.daisy.util.file.EFolder;
+import org.daisy.util.file.FileUtils;
 import org.daisy.util.mime.MIMEType;
 import org.daisy.util.mime.MIMETypeException;
 import org.daisy.util.mime.MIMETypeFactory;
 import org.daisy.util.mime.MIMETypeFactoryException;
 import org.daisy.util.mime.MIMETypeRegistry;
 import org.daisy.util.mime.MIMETypeRegistryException;
-import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
-import org.daisy.util.file.FileUtils;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -47,12 +46,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 
@@ -77,6 +75,7 @@ public class ConvertMultipleFiles {
 	
 	// Labels
 	Label lblNameConversion;
+	Label lblConversion;
 	Label lblInputDocument;
 	Label lblOutputDocument;
 	Label lblOnlyCompatibleShown;
@@ -150,7 +149,7 @@ public class ConvertMultipleFiles {
 	public void createContents(){	
 		
 		
-		shell.setText("Select Files to be Converted");
+		shell.setText("Add Multiple Sources");
 		shell.setLocation(100,100);
 		
 		GridLayout layout = new GridLayout();
@@ -163,9 +162,8 @@ public class ConvertMultipleFiles {
 		shell.setLayout(layout);
 		
 		
-		
 		//Composite top	
-		Composite compConversionChosen = new Composite(shell, SWT.BORDER);
+		Group compConversionChosen = new Group(shell, SWT.NONE);
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		compConversionChosen.setLayoutData(data);
 		layout = new GridLayout();
@@ -175,30 +173,32 @@ public class ConvertMultipleFiles {
 		layout.marginBottom=5;
 		layout.marginWidth=7;
 		compConversionChosen.setLayout(layout);
-		
+		compConversionChosen.setText("Name of Converter");		
 		//	Label
+		/*
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan=1;
 		lblNameConversion = new Label(compConversionChosen, SWT.NONE);
-		lblNameConversion.setText("Name of Conversion Selected");
+		lblNameConversion.setText("Name of Converter");
 		lblNameConversion.setLayoutData(data);
+		*/
+//Name of Converter Chosen
 		
-//		Text area
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
 		data.widthHint=100;
 		data.horizontalSpan=2;
-		txtConversionName = new Text(compConversionChosen, SWT.BORDER);
-		textProperties.setProperties(txtConversionName, null);	
-		txtConversionName.setLayoutData(data);
+		lblConversion = new Label(compConversionChosen, SWT.BORDER);
+		lblConversion.setLayoutData(data);
 		scriptHandler = window.getInstance().getConversionChosen();
-		txtConversionName.setText(scriptHandler.getName());
+		lblConversion.setText(scriptHandler.getName());
+			
 		
 //		
 		//End Conversion stuff
 		
 		
 		// Composite Input stuff
-		Composite compInputFields = new Composite(shell, SWT.BORDER);
+		Group compInputFields = new Group(shell, SWT.NONE);
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		compInputFields.setLayoutData(data);
 		layout = new GridLayout();
@@ -208,16 +208,11 @@ public class ConvertMultipleFiles {
 		layout.marginBottom=5;
 		layout.marginWidth=7;
 		compInputFields.setLayout(layout);
+		compInputFields.setText("Folder to search for compatible sources");
 		
 		GridLayout gridLayout = new GridLayout(3, false);
 		compInputFields.setLayout(gridLayout);
 		
-		// Label folder to search in
-		data =data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING); 
-		lblInputDocument = new Label(compInputFields, SWT.NONE);
-		lblInputDocument.setText("Folder to search for files to convert");
-		data.horizontalSpan=1;
-		lblInputDocument.setLayoutData(data);
 		
 		
 		// TextField to hold folder chosen
@@ -254,7 +249,7 @@ public class ConvertMultipleFiles {
 		
 		//Compatible file table and buttons 
 		
-		Composite compFilesTable = new Composite(shell, SWT.BORDER);
+		Group compFilesTable = new Group(shell, SWT.NONE);
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		compFilesTable.setLayoutData(data);
 		layout = new GridLayout();
@@ -265,11 +260,22 @@ public class ConvertMultipleFiles {
 		layout.marginWidth=7;
 		compFilesTable.setLayout(layout);
 		
-		data= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		data.horizontalSpan = 1;
-		lblOnlyCompatibleShown = new Label(compFilesTable, SWT.NONE);
-		lblOnlyCompatibleShown.setLayoutData(data);
-		lblOnlyCompatibleShown.setText("Only Compatible Files Shown");
+		
+		data = new GridData(GridData.FILL_BOTH);
+		data.horizontalSpan=3;
+		data.heightHint=150;
+		
+		tblCompatibleFiles= new Table(compFilesTable, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL |SWT.MULTI );
+		tblCompatibleFiles.setLayoutData(data);
+		cftp = new CompatibleFilesTableProperties(tblCompatibleFiles);
+		
+		createFileTableViewer();
+		tableFileViewer.setContentProvider(new FileContentProvider());
+		tableFileViewer.setLabelProvider(new FileLabelProvider());
+		
+		
+		//set the input data once it is chosen.
+		//end compFilesTable
 		
 		data= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
@@ -294,24 +300,8 @@ public class ConvertMultipleFiles {
 		});
 		
 		
-		data = new GridData(GridData.FILL_BOTH);
-		data.horizontalSpan=3;
-		data.heightHint=150;
-		
-		tblCompatibleFiles= new Table(compFilesTable, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL |SWT.MULTI );
-		tblCompatibleFiles.setLayoutData(data);
-		cftp = new CompatibleFilesTableProperties(tblCompatibleFiles);
-		
-		createFileTableViewer();
-		tableFileViewer.setContentProvider(new FileContentProvider());
-		tableFileViewer.setLabelProvider(new FileLabelProvider()); 
-		
-		//set the input data once it is chosen.
-		//end compFilesTable
-		
-		
 //		Composite Output stuff
-		Composite compOutputFields = new Composite(shell, SWT.BORDER);
+		Group compOutputFields = new Group(shell, SWT.NONE);
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		compOutputFields.setLayoutData(data);
 		layout = new GridLayout();
@@ -322,17 +312,11 @@ public class ConvertMultipleFiles {
 		layout.marginWidth=7;
 		layout.makeColumnsEqualWidth=false;
 		compOutputFields.setLayout(layout);
-		
-		//	 Label for Output Doc
-		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		data.horizontalSpan=2;
-		lblOutputDocument = new Label(compOutputFields, SWT.NONE);
-		lblOutputDocument.setText("Output Path");
-		lblOutputDocument.setLayoutData(data);
+		compOutputFields.setText("Destination");
 		
 		
 		//Composite for radio buttons
-		Composite compRadioButtons = new Composite(compOutputFields, SWT.BORDER);
+		Group compRadioButtons = new Group(compOutputFields, SWT.NONE);
 		layout = new GridLayout();
 		layout.verticalSpacing=7;
 		layout.numColumns=1;
@@ -465,6 +449,7 @@ public class ConvertMultipleFiles {
 				alTableContents= cftp.setTableContents(getFileTypesForScriptHandler("in"));	
 			}
 			tableFileViewer.setInput(alTableContents);	
+			tableFileViewer.setAllChecked(true);
 		}
 	}
 	
@@ -566,7 +551,7 @@ public class ConvertMultipleFiles {
 			
 			for (int k=0; k<mimePatternExtensions.length; k++){
 				String type = mimePatternExtensions[k];
-				if (strEnd.equalsIgnoreCase(type)){
+				if (type!=null && strEnd.equalsIgnoreCase(type)){
 					alCompatibleFiles.add(compareFile);
 				}
 			}
@@ -664,9 +649,9 @@ public class ConvertMultipleFiles {
 				int howmany = 0;
 				
 				while (itPatterns.hasNext()){
-					System.out.println("in itPatterns hasNext, the next is: " + ++howmany);
+					//System.out.println("in itPatterns hasNext, the next is: " + ++howmany);
 					mimePattern = (String)itPatterns.next();
-					System.out.println("The mimepattern is " + mimePattern);
+					//System.out.println("The mimepattern is " + mimePattern);
 					
 					if (!mimePattern.equalsIgnoreCase("")){
 						StringTokenizer st = new StringTokenizer(mimePattern, ".");
@@ -922,7 +907,7 @@ public class ConvertMultipleFiles {
 		
 		DirectoryDialog directoryDialog = new DirectoryDialog(shell);
 		directoryDialog.setText("Choose a directory");
-		directoryDialog.setFilterPath("/");
+		directoryDialog.setFilterPath(FilePaths.singleInputPath);
 		dirSelected = directoryDialog.open();
 		
 		for (int i = 0; i<size; i++){
@@ -940,6 +925,9 @@ public class ConvertMultipleFiles {
 		if (dirSelected!=null){
 			//System.out.println("Directory Selected  " + dirSelected);
 			txtDirectorySelected.setText(dirSelected);
+			
+			//System file path also set
+			FilePaths.singleInputPath=dirSelected;
 			
 			//the default output path is also set
 			setDefaultOutputPath();

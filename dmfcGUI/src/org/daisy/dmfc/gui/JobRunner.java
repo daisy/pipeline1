@@ -6,14 +6,12 @@ package org.daisy.dmfc.gui;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.qmanager.Job;
-import org.daisy.dmfc.qmanager.LocalEventListener;
 import org.daisy.dmfc.qmanager.Status;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
 public class JobRunner extends Thread{
 	
@@ -25,15 +23,16 @@ public class JobRunner extends Thread{
 	ScriptHandler scriptHandler;
 	TableViewer tableViewer;
 	TableViewer jobViewer;
-	
+	Button btnRun;
 	
 	public JobRunner(Shell _shell, ScriptHandler _scriptHandler, Job job,  TableViewer _tableViewer,
-			TableViewer _jobViewer){
+			TableViewer _jobViewer, Button _btnRun){
 		this.shell = _shell;
 		this.scriptHandler=_scriptHandler;
 		this.job=job;
 		this.tableViewer=_tableViewer;
 		this.jobViewer= _jobViewer;
+		this.btnRun = _btnRun;
 		
 	}
 	
@@ -45,9 +44,7 @@ public class JobRunner extends Thread{
 			scriptHandler.execute();
 			int transNumber = job.getScript().getCurrentTaskIndex();
 			count= job.getScript().getTaskCount();
-			System.out.println("what is the current task index? " + count);
-			//count++;
-			
+			//System.out.println("what is the current task index? " + count);
 			
 			
 			UIManager.display.syncExec(new Runnable(){
@@ -59,14 +56,15 @@ public class JobRunner extends Thread{
 			});
 			
 			
-			
 //			finally, reset the status in the jobs table
 //			after the script has finished..
 			job.setStatus(Status.COMPLETED);
 			
+			
 			UIManager.display.syncExec(new Runnable(){
 				public void run(){
-					jobViewer.refresh();	
+					jobViewer.refresh();
+					btnRun.setEnabled(true);
 				}
 			});
 			

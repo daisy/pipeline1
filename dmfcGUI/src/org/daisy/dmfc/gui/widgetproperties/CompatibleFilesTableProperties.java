@@ -31,7 +31,7 @@ public class CompatibleFilesTableProperties {
 		
 		
 		tcFiles = new TableColumn (table, SWT.LEFT);
-		tcFiles.setText("File Name");
+		tcFiles.setText("Compatible Sources");
 		tcFiles.setWidth(500);
 		tcFiles.setResizable(true);
 		

@@ -50,12 +50,12 @@ public class JobQueueTableProperties {
 		tcJobs.setResizable(true);
 	
 		tcInputFile = new TableColumn (table, SWT.LEFT);
-		tcInputFile.setText("Input File Name");
+		tcInputFile.setText("Source");
 		tcInputFile.setWidth(200);
 		tcInputFile.setResizable(true);
 		
 		tcOutputFile = new TableColumn (table, SWT.LEFT);
-		tcOutputFile.setText("Output File Name");
+		tcOutputFile.setText("Destination");
 		tcOutputFile.setWidth(200);
 		tcOutputFile.setResizable(true);
 	

@@ -36,9 +36,12 @@ public class MenuMultipleConvert {
 		Menu filemenu = new Menu(shell, SWT.DROP_DOWN);
 		file.setMenu(filemenu);
 		MenuItem actionItem = new MenuItem(filemenu, SWT.PUSH);
-		actionItem.setText("Exit\tCtrl+X");	
 		
-		actionItem.setAccelerator(SWT.MOD1 + 'X');
+		//actionItem.setText("Exit\tCtrl+X");	
+		//actionItem.setAccelerator(SWT.MOD1 + 'X');
+		
+		actionItem.setText("Exit");	
+		
 		actionItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				MessageBox mb = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
@@ -65,7 +68,7 @@ public class MenuMultipleConvert {
 		action.setMenu(actionmenu);
 	
 		MenuItem selectFolder = new MenuItem(actionmenu, SWT.PUSH);
-		selectFolder.setText("Select Folder");
+		selectFolder.setText("Search for Compatible Sources");
 		selectFolder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -76,7 +79,7 @@ public class MenuMultipleConvert {
 		
 		
 		MenuItem selectFiles = new MenuItem(actionmenu, SWT.PUSH);
-		selectFiles.setText("Select Compatible Files");
+		selectFiles.setText("Select Compatible Sources");
 		selectFiles.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -110,8 +113,8 @@ public class MenuMultipleConvert {
 		
 		
 		MenuItem cancel = new MenuItem(actionmenu, SWT.PUSH);
-		cancel.setText("Cancel \tCtrl+C");
-		cancel.setAccelerator(SWT.MOD1 + 'C');
+		cancel.setText("Cancel \tCtrl+N");
+		cancel.setAccelerator(SWT.MOD1 + 'N');
 		cancel.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				window=Window.getInstance();
@@ -139,15 +142,19 @@ public class MenuMultipleConvert {
 		
 		
 		MenuItem daisyWebSite = new MenuItem(helpmenu, SWT.PUSH);
-		daisyWebSite.setText("Go to the DAISY web site\tCtrl+D");
-		daisyWebSite.setAccelerator(SWT.MOD1 + 'D');
+		
+		//daisyWebSite.setText("Go to the DAISY web site\tCtrl+D");
+		//daisyWebSite.setAccelerator(SWT.MOD1 + 'D');
+		
+		daisyWebSite.setText("Go to the DAISY web site");
+		
 		daisyWebSite.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				new WebLinks("http://www.daisy.org");
 			}
 			});
 		
-		MenuItem about = new MenuItem(helpmenu, SWT.PUSH);
+	/*	MenuItem about = new MenuItem(helpmenu, SWT.PUSH);
 		about.setText("About\tCtrl+A");
 		about.setAccelerator(SWT.MOD1 + 'A');
 		about.addSelectionListener(new SelectionAdapter() {
@@ -163,7 +170,7 @@ public class MenuMultipleConvert {
 						messageBox.open();
 			}
 			});
-	
+	*/
 	
 	}
 	

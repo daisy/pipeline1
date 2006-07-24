@@ -105,6 +105,7 @@ public class Window {
 	Label lblTotalConversionProgress;
 	Label lblConversionDetails;
 	Label lblDescription;
+	Label lblConversionRunning;
 	
 	
 	//Buttons
@@ -115,12 +116,11 @@ public class Window {
 	Button btnDelete;
 	Button btnEdit;
 	Button btnRun;
-	Button btnDetails;
 	Button btnTerminate;
 	//Button btnStart;
 	Button btnRemoveFinishedJobs;
 	Button btnViewDetails;
-
+	
 	
 	//tree of conversions
 	Tree treeScriptList;
@@ -155,6 +155,7 @@ public class Window {
 	Group compJobsInQueue;
 	//Composite compDetails;
 	Group compDetails;
+	Group transformerDetails;
 	
 	//Layout stuff
 	GridLayout layout;
@@ -163,23 +164,20 @@ public class Window {
 	
 	//int 
 	int index;
+	int [] indices;
 	
 	//boolean - if jobs are being run
 	public boolean executing;
 	
 	//Details is shown flag.  Default is true.
-	boolean showDetails= true;
+	boolean showRunDetails= true;
 	
-
 	//Files
 	File scriptDirectory;
 	File fileSelectedFromTree;
 	
-	
-	
 	//HashMap
 	HashMap hmScriptHandlers = new HashMap();
-	
 	
 	//Array of ScriptHandler objects
 	ScriptHandler [] listScriptHandlers;
@@ -194,6 +192,7 @@ public class Window {
 	ConvertMultipleFiles cmv;
 	ConvertSingleFile convertSingleFile;
 	LogFile logFile;
+	String strViewRunDetails="";
 	
 	//tableViewer
 	TableViewer tableViewer;
@@ -234,10 +233,8 @@ public class Window {
 		cue=cue.getInstance();
 		executing=false;
 		createContents();
-		
-		if (showDetails){
-			createViewDetails();
-		}
+		createViewDetails();
+	
 		
 		shell.pack();
 	}
@@ -291,21 +288,8 @@ public class Window {
 		layout.marginBottom=5;
 		layout.marginWidth=7;
 		compSelectConversion.setLayout(layout);
+		compSelectConversion.setText("Select Converter");
 		
-		
-		/*
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		data.horizontalSpan=2;
-		this.lblSelectConversion = new Label(compSelectConversion, SWT.NONE);
-		this.lblSelectConversion.setText("Select Conversion Process");
-		//this.lblSelectConversion.setFont(FontChoices.fontLabel);
-		lblSelectConversion.setLayoutData(data);
-		*/
-		compSelectConversion.setText("Select Conversion Process");
-		
-		//Composite compScriptTree = new Composite(shell, SWT.BORDER);
-		//compScriptTree.setLayout(new GridLayout());
-		//tv = new TreeViewer(compScriptTree);
 		
 		tv = new TreeViewer(compSelectConversion);
 		data =  new GridData(GridData.FILL_BOTH);
@@ -350,19 +334,73 @@ public class Window {
 		// This is in the second column in the compSelectConversion, first composite
 		//Creates a composite to hold buttons, description, and text field
 		
+		
+		
+		
 		Composite addButtonsComp = new Composite(compSelectConversion, SWT.NONE);
 		layout = new GridLayout();
 		layout.numColumns=1;
 		layout.verticalSpacing=5;
 		addButtonsComp.setLayout(layout);
 		
+		
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		this.lblDescription = new Label(addButtonsComp, SWT.NONE);
+		lblDescription.setText("Converter Description");
+		lblDescription.setLayoutData(data);
+		
+		
+		data = new GridData(GridData.GRAB_VERTICAL);
+		data.widthHint= 200;
+		data.heightHint= 210;
+		this.txtDescription = new Text(addButtonsComp, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		this.txtDescription.setBackground(ColorChoices.white);
+		this.txtDescription.setEditable(false);
+		txtDescription.setLayoutData(data);
+		
+		
+//		********************************************************************
+		//Second group, located at middle left.	Includes label (jobs), 
+		//table of jobs to run, and all buttons, move up, down, edit and delete
+		//**********************************************************************
+		
+		compJobsInQueue = new Group (compBigLeft, SWT.NONE);
+		data = new GridData();
+		compJobsInQueue.setLayoutData(data);
+		layout = new GridLayout();
+		layout.horizontalSpacing=8;
+		layout.verticalSpacing=12;
+		layout.numColumns=4;
+		layout.marginTop=0;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		compJobsInQueue.setLayout(layout);
+		
+		
+		compJobsInQueue.setText("Conversion Jobs");
+		
 		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		//data.widthHint=120;
-		this.addMultipleFiles = new Button (addButtonsComp, SWT.SHADOW_OUT);
+		this.btnAddSingleFile = new Button (compJobsInQueue, SWT.SHADOW_OUT);
+		this.btnAddSingleFile.setEnabled(false);
+		btnAddSingleFile.setLayoutData(data);
+		buttonProperties.setProperties(btnAddSingleFile, "Add Single Source ");
+		this.btnAddSingleFile.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				getConversionSelection();
+				if (scriptHandler !=null){
+					getNewSingleFileScreen();
+				}
+			}
+		});
+		
+		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		//data.widthHint=120;
+		this.addMultipleFiles = new Button (compJobsInQueue, SWT.SHADOW_OUT);
 		this.addMultipleFiles.setEnabled(false);
 		addMultipleFiles.setLayoutData(data);
 		
-		buttonProperties.setProperties(addMultipleFiles, "Add Multiple Jobs ");
+		buttonProperties.setProperties(addMultipleFiles, "Add Multiple Sources ");
 		this.addMultipleFiles.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				getConversionSelection();
@@ -374,71 +412,11 @@ public class Window {
 		});
 		
 		
-		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		//data.widthHint=120;
-		this.btnAddSingleFile = new Button (addButtonsComp, SWT.SHADOW_OUT);
-		this.btnAddSingleFile.setEnabled(false);
-		btnAddSingleFile.setLayoutData(data);
-		buttonProperties.setProperties(btnAddSingleFile, "Add Jobs ");
-		this.btnAddSingleFile.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				getConversionSelection();
-				if (scriptHandler !=null){
-					getNewSingleFileScreen();
-				}
-			}
-		});
-		
-		data = new GridData(GridData.FILL_HORIZONTAL);
-		this.lblDescription = new Label(addButtonsComp, SWT.NONE);
-		lblDescription.setText("Conversion Description");
-		lblDescription.setLayoutData(data);
-		
-		
-		
-		
-		data = new GridData(GridData.GRAB_VERTICAL);
-		data.widthHint= 250;//125;
-		data.heightHint= 125;//75;
-		this.txtDescription = new Text(addButtonsComp, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-		this.txtDescription.setBackground(ColorChoices.white);
-		this.txtDescription.setEditable(false);
-		txtDescription.setLayoutData(data);
-		
-		
-//		********************************************************************
-		//Second composite, located at middle left.	Includes label (jobs), 
-		//table of jobs to run, and all buttons, move up, down, edit and delete
-		//**********************************************************************
-		
-		compJobsInQueue = new Group (compBigLeft, SWT.NONE);
-		data = new GridData();
-		compJobsInQueue.setLayoutData(data);
-		layout = new GridLayout();
-		layout.horizontalSpacing=8;
-		layout.numColumns=4;
-		layout.marginTop=0;
-		layout.marginBottom=5;
-		layout.marginWidth=7;
-		compJobsInQueue.setLayout(layout);
-		
-		/*
-		data = new GridData(GridData.FILL_HORIZONTAL);
-		data.horizontalSpan = 4;
-		//data.heightHint=15;
-		this.lblJobsInQueue2 = new Label(compJobsInQueue, SWT.NONE);
-		this.lblJobsInQueue2.setText("List of all Conversion Jobs");
-		//labelProperties.setProperties(lblJobsInQueue2, "List of all Conversion Jobs");
-		lblJobsInQueue2.setLayoutData(data);
-		*/
-		
-		compJobsInQueue.setText("List of all Conversion Jobs");
-		
 		data = new GridData(GridData.FILL_BOTH);
 		data.horizontalSpan = 4;
 		data.heightHint=160;
-		data.widthHint=600;
-		this.tblJobs2 = new Table(compJobsInQueue, SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL |SWT.SINGLE |SWT.FULL_SELECTION );
+		data.widthHint=550;
+		this.tblJobs2 = new Table(compJobsInQueue, SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL |SWT.MULTI |SWT.FULL_SELECTION );
 		this.tblJobs2.setRedraw(true);
 		this.tblJobs2.setLayoutData(data);
 		jqtp2 = new JobQueueTableProperties(tblJobs2);
@@ -451,9 +429,11 @@ public class Window {
 		
 		this.tblJobs2.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				int mark = tblJobs2.getSelectionIndex();
-				System.out.println("Index selected is " + mark);
-				setSelectedIndex(mark);
+				indices =tblJobs2.getSelectionIndices();
+				if (tblJobs2.getSelectionCount()==1){
+					index=tblJobs2.getSelectionIndex();
+					System.out.println("Listener in Window, what is the selection index? " + index);
+				}
 			}
 		});
 		
@@ -468,7 +448,18 @@ public class Window {
 		buttonProperties.setProperties(btnMoveUp, "Move Job Up");
 		this.btnMoveUp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				moveJobUp();
+				if (tblJobs2.getSelectionCount()==1){
+					index=tblJobs2.getSelectionIndex();
+					moveJobUp();
+				}
+				else{
+					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+							SWT.CANCEL);
+					messageBox.setMessage("Please select only one Job to move");
+					messageBox.setText("Single Selection Required");
+					messageBox.open();   
+					
+				}
 			}
 		});
 		
@@ -480,7 +471,17 @@ public class Window {
 		buttonProperties.setProperties(btnMoveDown, "Move Job Down");
 		this.btnMoveDown.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				moveJobDown();
+				if (tblJobs2.getSelectionCount()==1){
+					index=tblJobs2.getSelectionIndex();
+					moveJobDown();
+				}
+				else{
+					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+							SWT.CANCEL);
+					messageBox.setMessage("Please select only one Job to move");
+					messageBox.setText("Single Selection Required");
+					messageBox.open();   	
+				}
 				
 			}
 		});
@@ -489,47 +490,59 @@ public class Window {
 		data.horizontalSpan=1;
 		this.btnDelete = new Button (compJobsInQueue, SWT.SHADOW_OUT);
 		this.btnDelete.setLayoutData(data);
-		buttonProperties.setProperties(btnDelete, "Remove from List");
+		buttonProperties.setProperties(btnDelete, "Remove Job");
 		this.btnDelete.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				deleteJob();
-				
+				indices=tblJobs2.getSelectionIndices();
+				deleteJobs();
 			}
 		});
 		data = new GridData();
 		data.horizontalSpan=1;
 		this.btnEdit = new Button (compJobsInQueue, SWT.SHADOW_OUT);
 		this.btnEdit.setLayoutData(data);
-		buttonProperties.setProperties(btnEdit, "Change Selected Files");
+		buttonProperties.setProperties(btnEdit, "Change Selected Source");
 		this.btnEdit.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				editJob();
+				if (tblJobs2.getSelectionCount()==1){
+					index=tblJobs2.getSelectionIndex();
+					editJob();
+				}
+				else{
+					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+							SWT.CANCEL);
+					messageBox.setMessage("Please select only one Job to change");
+					messageBox.setText("Single Selection Required");
+					messageBox.open();   	
+				}
 			}
 		});
 		
 		
 		
 		//*****************************************************************
-		//Third Composite.  Includes, Run, View Details, Terminate, and Start over Buttons
+		//Third Composite.  Includes, Run, View Details, Terminate Buttons
 		//******************************************************************
 		
-		
-		Group bottomComp = new Group(compBigLeft, SWT.NONE);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		bottomComp.setLayoutData(data);
+		Composite bottomComp = new Composite(compBigLeft, SWT.NONE);
+		//Group bottomComp = new Group(compBigLeft, SWT.NONE);
+		//data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
 		layout = new GridLayout();
 		layout.horizontalSpacing=8;
-		layout.numColumns=5;
-		layout.marginTop=0;
+		layout.numColumns=3;
+		layout.marginTop=5;
 		layout.marginBottom=5;
 		layout.marginWidth=7;
 		bottomComp.setLayout(layout);
+		bottomComp.setLayoutData(data);
 		
 		
 		data=new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 		data.horizontalSpan = 1;
 		this.btnRun = new Button(bottomComp, SWT.SHADOW_OUT);
 		this.btnRun.setLayoutData(data);
+		this.btnRun.setFont(FontChoices.fontButton);
 		buttonProperties.setProperties(btnRun, "Run All Jobs");
 		this.btnRun.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -548,39 +561,28 @@ public class Window {
 		});
 		
 		
-		data= new GridData (GridData.HORIZONTAL_ALIGN_FILL);
-		data.horizontalSpan=1;
-		this.btnViewDetails = new Button(bottomComp, SWT.SHADOW_OUT);
-		this.btnViewDetails.setText("Hide Run Details");
-		this.btnViewDetails.setEnabled(true);
-		this.btnViewDetails.setLayoutData(data);
-		this.btnViewDetails.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent e){
-				//check if details visible and change view
-				viewRunDetails();
-			}
-		});
 		
 		/*
-		data= new GridData (GridData.HORIZONTAL_ALIGN_FILL);
-		data.horizontalSpan=1;
-		this.btnStart = new Button(bottomComp, SWT.SHADOW_OUT);
-		this.btnStart.setText("Start Over");
-		this.btnStart.setLayoutData(data);
-		this.btnStart.setEnabled(false);
-		this.btnStart.addSelectionListener(new SelectionAdapter(){
-			public void widgetSelected(SelectionEvent e){
-				restartConverter();
-			}
-		});
-		*/
+		 data= new GridData (GridData.HORIZONTAL_ALIGN_FILL);
+		 data.horizontalSpan=1;
+		 this.btnStart = new Button(bottomComp, SWT.SHADOW_OUT);
+		 this.btnStart.setText("Start Over");
+		 this.btnStart.setLayoutData(data);
+		 this.btnStart.setEnabled(false);
+		 this.btnStart.addSelectionListener(new SelectionAdapter(){
+		 public void widgetSelected(SelectionEvent e){
+		 restartConverter();
+		 }
+		 });
+		 */
 		
 		data=new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 		data.horizontalSpan = 1;
 		this.btnTerminate = new Button(bottomComp, SWT.SHADOW_OUT);
 		this.btnTerminate.setLayoutData(data);
-		this.btnTerminate.setEnabled(false);
-		buttonProperties.setProperties(btnTerminate, " Terminate Run");
+		this.btnTerminate.setFont(FontChoices.fontButton);
+		this.btnTerminate.setEnabled(true);
+		buttonProperties.setProperties(btnTerminate, " Cancel All Jobs");
 		this.btnTerminate.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				terminateJob();
@@ -621,92 +623,54 @@ public class Window {
 		compBigRight.setLayout(layout);
 		
 	}
-		//*********************************************************************
-		//Fourth Composite - includes all conversion details including
-		//labels, table of transformers running, estimated time, elapsed time, 
-		//conversion progress bar.  Displayed on the right side of the page next to everything else.
-		//Consists of a gridLayout with 1 column
-		//**********************************************************************
+	//*********************************************************************
+	//Fourth Group - includes all conversion details including
+	//labels, table of transformers running, estimated time, elapsed time, 
+	//conversion progress bar.  Displayed on the right side of the page next to everything else.
+	//Consists of a gridLayout with 1 column
+	//**********************************************************************
 	
-		public void createViewDetails(){
-			System.out.println("I am here, but what is happening?");
+	public void createViewDetails(){
+		
 		
 		compDetails= new Group(compBigRight, SWT.NONE);
 		data = new GridData(GridData.FILL_BOTH);
+		data.heightHint=70;
+		//data.widthHint=75;
 		compDetails.setLayoutData(data);
 		compDetails.setVisible(true);
 		layout = new GridLayout();
-		layout.horizontalSpacing=8;
+		layout.horizontalSpacing=10;
 		layout.numColumns=2;
 		layout.marginTop=0;
-		layout.marginBottom=5;
+		layout.marginBottom=0;
 		layout.marginWidth=7;
 		compDetails.setLayout(layout);
-		compDetails.setText("Conversion Details");
-		/*
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		data.horizontalSpan=2;
-		//data.widthHint=160;
-		data.grabExcessHorizontalSpace=true;
-		this.lblConversionDetails = new Label(compDetails, SWT.NONE);
-		this.lblConversionDetails.setText("Conversion Details");
-		this.lblConversionDetails.setFont(FontChoices.fontLabel);
-		this.lblConversionDetails.setLayoutData(data);
-		*/
+		compDetails.setText("Conversion Status");
+		
+		
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan=2;
-		data.grabExcessHorizontalSpace=true;
-		this.lblListTransformers = new Label(compDetails, SWT.NONE);
-		lblListTransformers.setText("Current Conversion");
-		lblListTransformers.setLayoutData(data);
-		
-		
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING |GridData.FILL_HORIZONTAL |GridData.VERTICAL_ALIGN_BEGINNING);
-		data.grabExcessHorizontalSpace=true;
-		data.horizontalSpan=2;
-		this.txtConversionRunning = new Text(compDetails, SWT.BORDER);
-		this.txtConversionRunning.setText("");
-		this.txtConversionRunning.pack();
-		//this.txtConversionRunning.s
-		txtConversionRunning.setLayoutData(data);
-		
-		
-		data = new GridData(GridData.FILL_BOTH);
-		data.horizontalSpan=2;
-		
-		//first create the table
-		this.tblListTransformers = new Table(compDetails, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL  |SWT.FULL_SELECTION );
-		TransformerListTableProperties tltp = new TransformerListTableProperties(tblListTransformers );
-		tblListTransformers.setLayoutData(data);
-		
-		//create a tableviewer 
-		createTableViewer();
-		tableViewer.setContentProvider(new TransformerContentProvider());
-		tableViewer.setLabelProvider(new TransformerLabelProvider());
-		
-		
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		data.horizontalSpan=1;
 		lblElapsedTime = new Label(compDetails, SWT.NONE);
 		lblElapsedTime.setText("Elapsed Time");
 		lblElapsedTime.setLayoutData(data);
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		data.horizontalSpan=1;
+		data.horizontalSpan=2;
 		txtElapsedTime = new Text(compDetails, SWT.BORDER);
 		//txtElapsedTime.setText(String.valueOf(lel.getTimeLeft()));
 		txtElapsedTime.setLayoutData(data);
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		data.horizontalSpan=1;
+		data.horizontalSpan=2;
 		lblEstimatedTime = new Label(compDetails, SWT.NONE);
 		lblEstimatedTime.setText("Estimated Time");
 		lblEstimatedTime.setLayoutData(data);
 		
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		data.horizontalSpan=1;
+		data.horizontalSpan=2;
 		txtEstimatedTime = new Text(compDetails, SWT.BORDER);
 		//txtElapsedTime.setText(String.valueOf(lel.getTotalTime()));
 		txtEstimatedTime.setLayoutData(data);
@@ -727,7 +691,62 @@ public class Window {
 		//pb.setSelection(lel.getProgress()*100);
 		pb.setLayoutData(data);
 		
+		data= new GridData (GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_END);
+		data.horizontalSpan=2;
+		this.btnViewDetails = new Button(compDetails, SWT.SHADOW_OUT);
+		this.btnViewDetails.setText("Hide Run Details");
+		this.btnViewDetails.setEnabled(true);
+		this.btnViewDetails.setLayoutData(data);
+		this.btnViewDetails.addSelectionListener(new SelectionAdapter(){
+			public void widgetSelected(SelectionEvent e){
+				//check if details visible and change view
+				viewRunDetails();
+			}
+		});
 		
+		createJobTransformerList();
+		
+	}
+	
+	public void createJobTransformerList(){
+		
+		transformerDetails= new Group(compBigRight, SWT.NONE);
+		data = new GridData(GridData.FILL_BOTH);
+		transformerDetails.setLayoutData(data);
+		transformerDetails.setVisible(true);
+		layout = new GridLayout();
+		layout.horizontalSpacing=10;
+		layout.numColumns=2;
+		layout.marginTop=5;
+		layout.marginBottom=5;
+		layout.marginWidth=7;
+		transformerDetails.setLayout(layout);
+		transformerDetails.setText("Current Conversion");
+		
+	
+		
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING |GridData.FILL_HORIZONTAL |GridData.VERTICAL_ALIGN_BEGINNING);
+		data.grabExcessHorizontalSpace=true;
+		data.horizontalSpan=2;
+		
+		this.lblConversionRunning = new Label(transformerDetails, SWT.BORDER);
+		this.lblConversionRunning.setText("");
+		this.lblConversionRunning.pack();
+		lblConversionRunning.setLayoutData(data);
+		
+		data = new GridData(GridData.FILL_BOTH);
+		data.horizontalSpan=2;
+		
+		//first create the table
+		this.tblListTransformers = new Table(transformerDetails, SWT.CHECK |SWT.BORDER |SWT.V_SCROLL | SWT.H_SCROLL  |SWT.FULL_SELECTION );
+		TransformerListTableProperties tltp = new TransformerListTableProperties(tblListTransformers );
+		tblListTransformers.setLayoutData(data);
+		
+		//create a tableviewer 
+		createTableViewer();
+		tableViewer.setContentProvider(new TransformerContentProvider());
+		tableViewer.setLabelProvider(new TransformerLabelProvider());
+			
 	}
 	
 	
@@ -756,11 +775,11 @@ public class Window {
 		String description = ((ScriptHandler)hmScriptHandlers.get(fileSelectedFromTree.getName())).getDescription();
 		if (description !=null){
 			this.txtDescription.setText( description);
-			System.out.println("Conversion description is "+ description);
+			//System.out.println("Conversion description is "+ description);
 		}
 		else{
 			this.txtDescription.setText( "");
-			System.out.println("Conversion description is blank");
+			//System.out.println("Conversion description is blank");
 		}
 	}
 	
@@ -780,19 +799,28 @@ public class Window {
 	 */
 	public void terminateJob(){
 		
-		((LocalInputListener)lil).setAborted(true);
-		String originator = ((LocalEventListener)lel).getMessageOriginator();
+		if(this.executing==true){
 		
-		MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-				SWT.CANCEL);
-		messageBox.setMessage("You have just terminated " + originator);
-		messageBox.setText("Job Terminated");
-		messageBox.open();        
+			((LocalInputListener)lil).setAborted(true);
+			String originator = ((LocalEventListener)lel).getMessageOriginator();
+			
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+			messageBox.setMessage("You have just terminated " + originator);
+			messageBox.setText("Job Terminated");
+			messageBox.open();   
+			
+			this.btnRun.setEnabled(true);
+		}
+		
+		else{
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+			messageBox.setMessage("No Conversion is in progress.");
+			messageBox.setText("Error:  No Conversion in Progress");
+			messageBox.open();
+		}
 	}
-	
-	
-	
-	
 	
 	
 	/**
@@ -889,23 +917,30 @@ public class Window {
 			public void run(){
 				if (btnViewDetails.getText().equalsIgnoreCase("View Run Details")){
 					btnViewDetails.setText("Hide Run Details");
-					compDetails.setVisible(true);
-					//createViewDetails();
-					
+					strViewRunDetails="Hide Run Details";
+					menu.getViewRunDetails().setText(strViewRunDetails);
+					transformerDetails.setVisible(true);
 				}
 				else{
 					btnViewDetails.setText("View Run Details");
-					compDetails.setVisible(false);
-					
+					strViewRunDetails="View Run Details";
+					menu.getViewRunDetails().setText(strViewRunDetails);
+					transformerDetails.setVisible(false);	
 				}
 			}
 		});
-		compDetails.setVisible(true);
 	}
+	
+	public String getStrViewRunDetails(){
+		return this.strViewRunDetails;
+	}
+	
+	
 	
 	/**
 	 * called by Start Over button to restart converter
 	 * clears all lists, resets the Job Queue
+	 * Not used, button removed, functionality remains in code
 	 */
 	public void restartConverter(){
 		cue.getLinkedListJobs().clear();
@@ -913,7 +948,8 @@ public class Window {
 		this.tableJobViewer.refresh();
 		this.tv.getTree().deselectAll();
 		this.txtDescription.setText("");
-		this.txtConversionRunning.setText("");
+		//this.txtConversionRunning.setText("");
+		this.lblConversionRunning.setText("");
 		this.txtElapsedTime.setText("");
 		this.txtEstimatedTime.setText("");
 		this.pb.setSelection(0);
@@ -936,14 +972,22 @@ public class Window {
 			
 			//status = completed or failed
 			if (status==3 || status == 4){
+				System.out.println("Delete failed or completed from cue, input: " + job.getInputFile() + " index of " + i);
 				cue.deleteFromQueue(i);
 			}
 		}
 		tableJobViewer.refresh();
 		btnRun.setEnabled(true);
+		clearRunDetails();
 	}
 	
-	
+	public void clearRunDetails(){
+		this.lblConversionRunning.setText("");
+		this.txtElapsedTime.setText("");
+		this.txtEstimatedTime.setText("");
+		this.pb.setSelection(0);
+		this.tableViewer.getTable().clearAll();
+	}
 	
 	/**
 	 * sets the file selected from the tree to be passed to the 
@@ -969,7 +1013,7 @@ public class Window {
 		else{
 			this.scriptHandler = (ScriptHandler)hmScriptHandlers.get(fileSelectedFromTree.getName());
 		}
-			
+		
 	}
 	
 	
@@ -1065,7 +1109,29 @@ public class Window {
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
 					SWT.CANCEL);
 			messageBox.setMessage("Cannot move the last item to a lower position.");
-			messageBox.setText("Error:  Unable to Move Up List");
+			messageBox.setText("Error:  Unable to Move DOWN List");
+			messageBox.open();
+		}
+		else if(index<cue.getSizeOfQueue()){
+			cue.moveDown(index);
+			tableJobViewer.refresh();
+		}
+		
+		else{	
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+			messageBox.setMessage("Cannot select a blank row in the table");
+			messageBox.setText("Error:  Invalid Selection");
+			messageBox.open();
+		}
+	}
+	
+	public void moveJobUp(){
+		if(index==0){
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+			messageBox.setMessage("Cannot move the first item to a higher position.");
+			messageBox.setText("Error:  Unable to Move UP List");
 			messageBox.open();
 		}
 		else if(index<cue.getSizeOfQueue()){
@@ -1083,34 +1149,29 @@ public class Window {
 		}
 	}
 	
-	public void moveJobUp(){
-		if(index==0){
-			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-					SWT.CANCEL);
-			messageBox.setMessage("Cannot move the first item to a higher position.");
-			messageBox.setText("Error:  Unable to Move Down List");
-			messageBox.open();
-		}
-		else if(index<cue.getSizeOfQueue()){
-			cue.moveDown(index);
-			tableJobViewer.refresh();
-			
-		}
+	
+	
+	
+	public void deleteJobs(){
+		int size=indices.length;
+		System.out.println("size of selection is " + size);
+		System.out.println("size of job que: " + cue.getSizeOfQueue());
 		
-		else{	
-			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-					SWT.CANCEL);
-			messageBox.setMessage("Cannot select a blank row in the table");
-			messageBox.setText("Error:  Invalid Selection");
-			messageBox.open();
+		for (int i=indices.length-1; i>-1;i--){
+			System.out.println("the values are " + indices[i]);
+			deleteJob(indices[i]);
+			tableJobViewer.refresh();
 		}
+		tableJobViewer.refresh();
+		this.viewJobList();
 	}
 	
-	public void deleteJob(){
-		if(index<cue.getSizeOfQueue()){
-			cue.deleteFromQueue(index);
+	public void deleteJob(int mark){
+
+		if(mark<cue.getSizeOfQueue()){
+			cue.deleteFromQueue(mark);
 			tableJobViewer.refresh();
-			//jqtp2.populateTable(cue);
+			
 		}
 		else{
 			
@@ -1120,6 +1181,7 @@ public class Window {
 			messageBox.setText("Error:  Invalid Selection");
 			messageBox.open();
 		}
+		tableJobViewer.refresh();
 	}
 	
 	
@@ -1127,6 +1189,7 @@ public class Window {
 		
 		if(index<cue.getSizeOfQueue()){
 			Job job= cue.editJob(index);
+			System.out.println("Edit job, what is the index? " + index);
 			cue.deleteFromQueue(index);
 			ConvertSingleFile csf = new ConvertSingleFile();
 			csf.editConversion(job);
@@ -1321,7 +1384,15 @@ public class Window {
 		}
 		
 	}
-
+	
+	public void viewJobList(){
+		int size = cue.getLinkedListJobs().size();
+		for (int i=0; i<size; i++){
+			System.out.println("The input file is: " + ((Job)cue.getLinkedListJobs().get(i)).getInputFile());
+		}
+	}
+	
+	
 	
 	/**
 	 * Runs the DMFC converter, and updates 
@@ -1359,12 +1430,13 @@ public class Window {
 		while(it.hasNext()){
 			
 			//get the Job from the Queue
-			  job = (Job)it.next();
-			 job.setStatus(2);
+			job = (Job)it.next();
+			job.setStatus(2);
 			tableJobViewer.refresh();
 			
 			//set the name of the conversion running
-			txtConversionRunning.setText(job.getScript().getName());
+			//txtConversionRunning.setText(job.getScript().getName());
+			lblConversionRunning.setText(job.getScript().getName());
 			scriptHandler = job.getScript();
 			
 			//update the transformer table
@@ -1376,21 +1448,21 @@ public class Window {
 			//actually, this only returns if the parameters are present in the script...
 			scriptHandler.setProperty("input", job.getInputFile().getPath());
 			scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
-		
 			
-			JobRunner jr = new JobRunner (this.shell, this.scriptHandler, job,  tableViewer, tableJobViewer);
+			
+			JobRunner jr = new JobRunner (this.shell, this.scriptHandler, job,  tableViewer, tableJobViewer, this.btnRun);
 			
 			jr.start();
 			
 			tableJobViewer.refresh();
 			
 		}
-			
-
-			this.executing=false;
-			this.btnRemoveFinishedJobs.setEnabled(true);
-			
-		}
+		
+		
+		this.executing=false;
+		this.btnRemoveFinishedJobs.setEnabled(true);
+		
+	}
 	
 }
-	
+

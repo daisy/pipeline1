@@ -13,6 +13,7 @@ public class ButtonProperties implements IProperties{
 		//((Button)btn).setFont(FontChoices.fontButton);
 		//((Button)btn).setBackground(ColorChoices.white);
 		((Button)btn).setText(txt);	
+		
 	}
 }
 	
