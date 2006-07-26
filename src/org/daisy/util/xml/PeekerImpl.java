@@ -136,7 +136,7 @@ public class PeekerImpl
             Attributes atts) throws SAXException {
         this.rootElementLocalName = localName;
         this.rootElementNsUri = uri;
-        throw new SAXStopParsingException();
+        throw new SAXStopParsingException("");
     }
 
     public void endElement(String uri,
