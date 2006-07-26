@@ -17,6 +17,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.util.exception.SAXStopParsingException;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.SAXParserPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.sax.SAXConstants;
@@ -93,7 +94,11 @@ public class PeekerImpl
 				parser.getXMLReader().parse(SAXSource.sourceToInputSource(new StreamSource(url.openStream())));
 				// we never get here since SAXStopParsingException is thrown
 			} catch (SAXStopParsingException sspe) {
-				SAXParserPool.getInstance().release(parser,saxParserFeatures,null);
+				try {
+					SAXParserPool.getInstance().release(parser,saxParserFeatures,null);
+				} catch (PoolException e) {
+					throw new SAXException(e.getMessage(),e);
+				}
 			}
 		} else {
 			throw new SAXException("peeker parser is null");
