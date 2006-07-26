@@ -2,9 +2,11 @@ package org.daisy.util.xml;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 
 import javax.xml.namespace.QName;
 
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 /**
  * Peeks into an XML file, returns 
@@ -14,6 +16,9 @@ import org.xml.sax.SAXException;
 
 public interface Peeker {
 	public void peek(URI uri) throws SAXException, IOException;
+	
+	public void peek(URL url) throws SAXException, IOException;
+
 	/**
 	 * @return the first encountered public id while parsing the file; that of the document entity
 	 */
@@ -28,6 +33,11 @@ public interface Peeker {
 	 */
 	public String getRootElementLocalName();
 
+	/**
+	 * @return the attributes of the root element
+	 */
+	public Attributes getRootElementAttributes();
+	
 	/**
 	 * @return the namespace URI of the root element
 	 */
