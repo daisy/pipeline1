@@ -1,13 +1,19 @@
 package org.daisy.util.file;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.ByteBuffer;
 
 import org.daisy.util.mime.MIMEType;
 import org.daisy.util.mime.MIMETypeException;
 import org.daisy.util.mime.MIMETypeFactoryException;
 import org.daisy.util.mime.MIMETypeFactory;
+import org.xml.sax.InputSource;
 
 /**
  * EFile - where E stands for extended.
@@ -115,6 +121,39 @@ public class EFile extends java.io.File  {
 		return null;
 	}
 
+    public InputSource asInputSource() throws FileNotFoundException {    	
+    	InputSource is = new InputSource(new FileReader(this));
+    	is.setSystemId(this.toString());
+        return is;
+    }
+    
+    public InputStream asInputStream() throws FileNotFoundException {    	
+    	return new FileInputStream(this);    	        
+    }
+       
+	public byte[] asByteArray() throws IOException {
+		InputStream is = this.asInputStream();
+		long length = this.length();
+		byte[] bytes = new byte[(int)length];
+		int offset = 0;
+        int numRead = 0;
+        while (offset < bytes.length
+               && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
+            offset += numRead;
+        }
+        if (offset < bytes.length) {
+            throw new IOException("IOException in " + this.getName());
+        }
+        is.close();
+        return bytes;
+	}
+	
+	public ByteBuffer asByteBuffer() throws IOException {
+		byte[] bytes = this.asByteArray();
+		ByteBuffer buf = ByteBuffer.allocate(bytes.length);				
+		return (ByteBuffer)buf.put(bytes).rewind();
+	}
+	
 	private static final long serialVersionUID = 11152264979926847L;
 	
 }
