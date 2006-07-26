@@ -10,7 +10,7 @@ import org.xml.sax.SAXException;
 import com.thaiopensource.validate.ValidationDriver;
 
 /**
- *  This implementation uses Jing. It allows compound schema input (relaxng embedded in RNG or WXS).
+ *  This implementation uses Jing. It allows compound schema input (sch embedded in RNG or WXS).
  *  @author Markus Gylling
  */
 public class SchematronValidator extends AbstractValidator {

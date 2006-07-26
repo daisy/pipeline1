@@ -46,12 +46,10 @@ public final class CatalogFile {
      * 
      * @param url
      *            URL of the catalog file
-     * @throws URISyntaxException
      * @throws IOException
      * @throws SAXException
      */
-    public CatalogFile(URL url, Class resourceBase) throws URISyntaxException,
-            IOException, SAXException {
+    public CatalogFile(URL url, Class resourceBase) throws IOException, SAXException, URISyntaxException {
         resourceClass = resourceBase;
         if (resourceBase == null) {
             resourceClass = this.getClass();
@@ -75,7 +73,9 @@ public final class CatalogFile {
                                 "http://apache.org/xml/features/nonvalidating/load-external-dtd",
                                 false);
             } catch (SAXNotRecognizedException snre) {
-                System.err.println(snre.getMessage());
+            	if(System.getProperty("org.daisy.debug")!=null) {
+            		System.err.println("DEBUG org.daisy.util.xml.catalog.CatalogFile " + snre.getMessage());
+            	}
             } catch (SAXNotSupportedException snse) {
                 System.err.println(snse.getMessage());
             }
@@ -175,8 +175,8 @@ public final class CatalogFile {
         return null;
     }
 
-    public URL getEntityLocalURL(String id)
-            throws CatalogExceptionEntityNotSupported {
+    public URL getEntityLocalURL(String id) throws CatalogExceptionEntityNotSupported {
+    	//FIXME this is weirdly written
         URL entity = (URL) srcIdTable.get(id);
         if (entity == null) {
             throw new CatalogExceptionEntityNotSupported(
