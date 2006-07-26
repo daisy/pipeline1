@@ -17,9 +17,10 @@ import org.xml.sax.SAXNotSupportedException;
  * @author Markus Gylling
  */
 public class SAXParserPool extends AbstractPool {
-	protected static SAXParserPool instance = new SAXParserPool();	
-	private static SAXParserFactory saxParserFactory =  null;
+    private static SAXParserFactory saxParserFactory =  null;
+    protected static SAXParserPool instance = new SAXParserPool();	
 	
+    
 	static public SAXParserPool getInstance() {
 		return instance;
 	}
