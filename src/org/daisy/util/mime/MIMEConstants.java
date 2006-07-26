@@ -10,8 +10,7 @@ public final class MIMEConstants {
 	public static final String MIME_APPLICATION_MSWORD = "application/msword";
 	public static final String MIME_APPLICATION_PDF = "application/pdf";
 	public static final String MIME_APPLICATION_POSTSCRIPT = "application/postscript";
-	public static final String MIME_APPLICATION_PRS_PLUCKER = "application/prs.plucker";
-	public static final String MIME_APPLICATION_RELAX_NG_COMPACT_SYNTAX = "application/relax-ng-compact-syntax";
+	public static final String MIME_APPLICATION_PRS_PLUCKER = "application/prs.plucker";	
 	public static final String MIME_APPLICATION_RTF = "application/rtf";
 	public static final String MIME_APPLICATION_SMIL = "application/smil";
 	public static final String MIME_APPLICATION_SMIL_XML = "application/smil+xml";
@@ -74,7 +73,13 @@ public final class MIMEConstants {
 	public static final String MIME_VIDEO_MPEG = "video/mpeg";
 	public static final String MIME_VIDEO_QUICKTIME = "video/quicktime";
 	public static final String MIME_VIDEO_X_MS_ASF = "video/x-ms-asf";
-
+	
+	public static final String MIME_APPLICATION_X_RELAX_NG= "application/x-relax-ng";
+	public static final String MIME_APPLICATION_X_RELAX_NG_XML_SYNTAX= "application/x-relax-ng-xml-syntax";
+	public static final String MIME_APPLICATION_RELAX_NG_COMPACT_SYNTAX = "application/relax-ng-compact-syntax";
+	public static final String MIME_APPLICATION_X_SCHEMATRON_XML = "application/x-schematron+xml";
+	public static final String MIME_APPLICATION_X_XSD_XML = "application/x-xsd+xml";
+	
 	/**
 	 * some string parse utility methods
 	 * also exposed publicly in MimeType

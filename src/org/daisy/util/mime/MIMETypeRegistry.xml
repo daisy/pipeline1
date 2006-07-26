@@ -16,12 +16,7 @@
   >
 ]>
 
-<mimeRegistry>
-	<!-- 
-		http://www.w3schools.com/media/media_mimeref.asp
-		http://www.iana.org/assignments/media-types/
-	-->	
-		
+<mimeRegistry>		
 	<directory name="application">
 		<type id="rtf" name="application/rtf" namePatterns="*.rtf"/>
 		<type id="pdf" name="application/pdf" namePatterns="*.pdf"/>
@@ -33,7 +28,6 @@
 		<type id="smilx" name="application/smil+xml" aliasTypes="smil" parentTypes="xml" namePatterns="*.smil *.smi *.sml"/>
 		<type id="xhtml" name="application/xhtml+xml" parentTypes="xml" aliasTypes="texthtml" namePatterns="*.xhtml *.html *.htm"/>	
 		<type id="msword" name="application/msword" namePatterns="*.doc"/>
-		<type id="rnc" name="application/relax-ng-compact-syntax" namePatterns="*.rnc"/>
 		<type id="plucker" name="application/prs.plucker"/>
 		<type id="latex" name="application/x-latex" namePatterns="*.latex *.tex"/>
 		<type id="ex" name="application/x-tex" namePatterns="*.tex"/>
@@ -71,6 +65,14 @@
 		<!-- PDTB 1.0 -->
 		<type id="pdtb-uak" name="application/x-pdtb+uak" parentTypes="xml" namePatterns="*.uak"/>
 		<type id="pdtb-bka" name="application/x-pdtb+uak" parentTypes="xml" namePatterns="*.bka"/>
+		<!-- schemas -->
+		<!-- when we dont know if this is compact or xml rng syntax, an anonymous parent -->
+		<type id="rng" name="application/x-relax-ng" namePatterns="*.rng *.rnc" />
+		<type id="rngx" name="application/xml" parentTypes="rng" aliasTypes="rngc" namePatterns="*.rng" />
+		<type id="rngc" name="application/relax-ng-compact-syntax" parentTypes="rng" aliasTypes="rngx" namePatterns="*.rnc" />		
+		<type id="sch" name="application/x-schematron+xml" parentTypes="xml" namePatterns="*.sch" />
+		<type id="xsd" name="application/x-xsd+xml" parentTypes="xml" namePatterns="*.xsd" />		
+		
 	</directory>
 
 	<directory name="audio">
