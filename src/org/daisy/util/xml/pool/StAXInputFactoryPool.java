@@ -27,15 +27,15 @@ public class StAXInputFactoryPool {
 	private StAXInputFactoryPool() {
 		super();
 		xmlInputFactory = XMLInputFactory.newInstance();
-		defaultProperties.put("javax.xml.stream.allocator", xmlInputFactory.ALLOCATOR);
-		defaultProperties.put("javax.xml.stream.isCoalescing", xmlInputFactory.IS_COALESCING);
-		defaultProperties.put("javax.xml.stream.isNamespaceAware", xmlInputFactory.IS_NAMESPACE_AWARE);
-		defaultProperties.put("javax.xml.stream.isReplacingEntityReferences", xmlInputFactory.IS_REPLACING_ENTITY_REFERENCES);
-		defaultProperties.put("javax.xml.stream.isSupportingExternalEntities", xmlInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES);
-		defaultProperties.put("javax.xml.stream.isValidating", xmlInputFactory.IS_VALIDATING);
-		defaultProperties.put("javax.xml.stream.reporter", xmlInputFactory.REPORTER);
-		defaultProperties.put("javax.xml.stream.resolver", xmlInputFactory.RESOLVER);
-		defaultProperties.put("javax.xml.stream.supportDTD", xmlInputFactory.SUPPORT_DTD);
+		defaultProperties.put(XMLInputFactory.ALLOCATOR, xmlInputFactory.getEventAllocator());
+		defaultProperties.put(XMLInputFactory.IS_COALESCING, xmlInputFactory.getProperty(XMLInputFactory.IS_COALESCING));
+		defaultProperties.put(XMLInputFactory.IS_NAMESPACE_AWARE, xmlInputFactory.getProperty(XMLInputFactory.IS_NAMESPACE_AWARE));
+		defaultProperties.put(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, xmlInputFactory.getProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES));
+		defaultProperties.put(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, xmlInputFactory.getProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES));
+		defaultProperties.put(XMLInputFactory.IS_VALIDATING, xmlInputFactory.getProperty(XMLInputFactory.IS_VALIDATING));
+		defaultProperties.put(XMLInputFactory.REPORTER, xmlInputFactory.getXMLReporter());
+		defaultProperties.put(XMLInputFactory.RESOLVER, xmlInputFactory.getXMLResolver());
+		defaultProperties.put(XMLInputFactory.SUPPORT_DTD, xmlInputFactory.getProperty(XMLInputFactory.SUPPORT_DTD));
 	}
 
 	public XMLInputFactory acquire(Map properties) throws PoolException {

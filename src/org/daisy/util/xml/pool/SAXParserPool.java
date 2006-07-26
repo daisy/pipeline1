@@ -8,6 +8,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 /**
  * A SAXParser pool. Used for performance optimization.
@@ -33,6 +35,8 @@ public class SAXParserPool extends AbstractPool {
 	 * Retrieve a SAXParser from the pool.
 	 * <p>If the features and properties maps are null, a namespaceaware nonvalidating parser will be returned.</p>
 	 * <p>Parser instances retrieved through the acquire() method are returned to pool using the release() method.</p>
+	 * <p>Property and feature maps can be populated using {@link org.daisy.util.xml.sax.SAXConstants}.</p>
+	 * 
 	 * <p>For the official SAX features and properties list, see
 	 * http://www.saxproject.org/apidoc/org/xml/sax/package-summary.html#package_description</p>
 	 * 
@@ -49,7 +53,7 @@ public class SAXParserPool extends AbstractPool {
 			if(o!=null) {
 				return (SAXParser)o;
 			}
-			return createSAXParser(features, properties);			
+			return create(features, properties);			
 		} catch (Exception e) {
 			throw new PoolException(e.getMessage(),e);
 		}		
@@ -58,13 +62,24 @@ public class SAXParserPool extends AbstractPool {
 	/**
 	 * return the parser back to the pool
 	 */
-	public void release(SAXParser parser, Map features, Map properties) {
-		parser.reset();
-		super.release(parser, features, properties);
+	public void release(SAXParser parser, Map features, Map properties) throws PoolException {		  		
+		try {
+			//TODO revisit: cost?
+			//reset to release all handlers et al
+			parser.reset();
+			//then repop with identity features, and call release
+			super.release(setFeaturesAndProperties(parser,features,properties), features, properties);
+		} catch (Exception e) {
+			throw new PoolException(e.getMessage(),e);
+		}
 	}
 	
-	private SAXParser createSAXParser(Map features, Map properties) throws ParserConfigurationException, SAXException {
-	    SAXParser parser = saxParserFactory.newSAXParser();
+	private SAXParser create(Map features, Map properties) throws ParserConfigurationException, SAXException {
+	    SAXParser parser = saxParserFactory.newSAXParser();	    	    
+	    return setFeaturesAndProperties(parser,features,properties);		
+	}
+	
+	private SAXParser setFeaturesAndProperties(SAXParser parser, Map features, Map properties) throws SAXNotRecognizedException, SAXNotSupportedException, SAXException {
 	    Iterator i;
 	    if (features != null){
 	      for (i = features.keySet().iterator(); i.hasNext();){
@@ -78,8 +93,7 @@ public class SAXParserPool extends AbstractPool {
 	        parser.getXMLReader().setProperty(property, properties.get(property));
 	      }
 	    }
-	    
 	    return parser;
-		
 	}
 }
+

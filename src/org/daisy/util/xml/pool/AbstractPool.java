@@ -10,8 +10,9 @@ import java.util.Map;
  */
 public abstract class AbstractPool {
 	protected Map processorCache = null; 		//key=Map<propsAndFeatures> value=ArrayList<Processor>
-	protected static int MAX_CACHE_SIZE = 50;  	//max number of processors in a Map value<ArrayList>
+	protected static int MAX_CACHE_SIZE = 50;  	//max number of processors*loadfactor in a Map value<ArrayList>
 												//there is no limitation on the number of entries in the Map
+	private HashMap key = new HashMap(15);
 			
 	protected AbstractPool(){
 		processorCache = new HashMap(MAX_CACHE_SIZE);
@@ -22,7 +23,7 @@ public abstract class AbstractPool {
 	}
 
 	protected Object getProcessorFromCache(Map features, Map properties){				
-	    Map key = new HashMap();
+	    key.clear();
 	    if(null!=features)key.putAll(features);
 	    if(null!=properties)key.putAll(properties);	    
 		ArrayList list = (ArrayList)processorCache.get(key);
@@ -51,7 +52,7 @@ public abstract class AbstractPool {
 	}
 	
 	public void release(Object processor, Map features, Map properties) {		
-		Map key = new HashMap();
+		key.clear();
 		if(null!=features)key.putAll(features);
 		if(null!=properties)key.putAll(properties);	
 		ArrayList list = (ArrayList)processorCache.get(key);		    		    
