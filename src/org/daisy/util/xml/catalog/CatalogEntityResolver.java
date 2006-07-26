@@ -7,6 +7,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.stream.StreamSource;
+
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.EntityResolver;
@@ -80,33 +85,35 @@ import org.xml.sax.SAXException;
  * @author markusg
  */
 
-public class CatalogEntityResolver implements EntityResolver, LSResourceResolver {
+public class CatalogEntityResolver implements EntityResolver, LSResourceResolver, URIResolver {
     private static CatalogFile catalog;
-
-    private HashSet EntityNotSupportedExceptions = new HashSet(); // <String>
+    private EntityNotSupportedExceptions entityNotSupportedExceptions = null;
+    static private CatalogEntityResolver _instance = null;
+    //static private CatalogEntityResolver _instance = new CatalogEntityResolver();
+    
+    //private HashSet EntityNotSupportedExceptions = new HashSet(); // <String>
 
     private CatalogEntityResolver() throws CatalogExceptionNotRecoverable {
         URL catalogURL = this.getClass().getResource("catalog.xml");
         try {
             catalog = new CatalogFile(catalogURL, this.getClass());
-        } catch (URISyntaxException use) {
-            throw new CatalogExceptionNotRecoverable(use);
+            entityNotSupportedExceptions = new EntityNotSupportedExceptions();
         } catch (IOException ioe) {
             throw new CatalogExceptionNotRecoverable(ioe);
         } catch (SAXException se) {
             throw new CatalogExceptionNotRecoverable(se);
-        }
+        } catch (URISyntaxException e) {
+        	throw new CatalogExceptionNotRecoverable(e);
+		}
     }
 
-    static private CatalogEntityResolver _instance = null;
+    
 
     /**
-     * Singleton retrieval
-     * 
+     * Singleton retrieval 
      * @return The catalog entity resolver instance
      */
-    static public CatalogEntityResolver getInstance()
-            throws CatalogExceptionNotRecoverable {
+    static public CatalogEntityResolver getInstance() throws CatalogExceptionNotRecoverable {
         if (null == _instance) {
             synchronized (CatalogEntityResolver.class) {
                 if (null == _instance) {
@@ -117,9 +124,9 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
         return _instance;
     }
 
-    static public void reload() throws CatalogExceptionNotRecoverable{
-    	_instance = new CatalogEntityResolver();
-    }
+//    static public void reload() throws CatalogExceptionNotRecoverable{
+//    	_instance = new CatalogEntityResolver();
+//    }
     
     /**
      * Catalog aware implementation of the SAX resolveEntity method.
@@ -135,6 +142,7 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
                 return catalog.getPublicIdEntity(publicId);
             } catch (CatalogExceptionEntityNotSupported ceens) {
                 // no match in catalog for inparam public id
+            	entityNotSupportedExceptions.add(publicId);
                 // try systemId before giving up
             }
         }
@@ -143,20 +151,18 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
             return catalog.getSystemIdEntity(systemId);
         } catch (CatalogExceptionEntityNotSupported ceens) {
             // no match in catalog for inparam system id either
+        	entityNotSupportedExceptions.add(systemId);
             // try to match on filename alone (suffix)
             try {
                 String filename = new File(new URI(systemId)).getName();
                 try {
                     return catalog.getSystemIdEntityFromSuffix(filename);
                 } catch (CatalogExceptionEntityNotSupported ceens2) {
-                    // no support for suffix (filename) either
+                	entityNotSupportedExceptions.add(systemId+": suffix");
                 }
             } catch (Exception e) {
                 // silence
-            }
-            EntityNotSupportedExceptions.add(publicId + "::" + systemId);
-            
-            System.err.println("catalog null");
+            }                                   
             return null;
         }
     }
@@ -164,13 +170,13 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
     /**
      * @return the URL of the local resolved entity resource
      */
-    public URL resolveEntityToURL(String publicId, String systemId)
-            throws IOException {
+    public URL resolveEntityToURL(String publicId, String systemId) throws IOException {
         if (publicId != null) {
             try {
                 return catalog.getEntityLocalURL(publicId);
             } catch (CatalogExceptionEntityNotSupported ceens) {
                 // there was no match in catalog for inparam public id
+            	entityNotSupportedExceptions.add(publicId);
                 // try systemId before giving up
             }
         }
@@ -178,7 +184,7 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
             return catalog.getEntityLocalURL(systemId);
         } catch (CatalogExceptionEntityNotSupported ceens) {
             // there was no match in catalog for inparam system id either
-            EntityNotSupportedExceptions.add(publicId + "::" + systemId);
+            entityNotSupportedExceptions.add(systemId);
             return null;
         }                        
     }
@@ -191,7 +197,7 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
         try {
             return catalog.getEntityLocalURL(publicOrSystemId);
         } catch (CatalogExceptionEntityNotSupported ceens) {
-
+        	entityNotSupportedExceptions.add(publicOrSystemId);
         }
         return null;
     }
@@ -232,8 +238,49 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
      *         entries in this collection
      */
     public HashSet getEntityNotSupportedExceptions() {
-        return EntityNotSupportedExceptions;
+        return entityNotSupportedExceptions.getSet();
     }
 
+    /**
+     * URIResolver impl. Note: only use this
+     * if you want to resolve URIs in schemas when
+     * the URI destinations are in the Catalog. 
+     * For all other use cases, use CatalogURIResolver.
+     */
+	public Source resolve(String href, String base) throws TransformerException {
+		//href is a reference inside the schema
+		//to a sub schema, for example ../relaxngcommon/attributes.rng
+		try {
+			URL url = this.resolveEntityToURL(href);
+			if(url==null) {
+				
+			}
+			StreamSource ss = new StreamSource(url.openStream());
+			ss.setSystemId(url.toExternalForm());
+			return ss;
+		} catch (IOException e) {
+			
+		}
+		
+		return null;
+	}
 
+	class EntityNotSupportedExceptions {
+		private HashSet exceptions = null; //String
+		
+		EntityNotSupportedExceptions(){
+			exceptions = new HashSet(); 
+		}
+		
+		void add(String describer) {
+            if(System.getProperty("org.daisy.debug")!=null) {
+            	System.err.println("DEBUG org.daisy.util.xml.catalag.CatalogEntityResolver: entity not supported: " + describer);
+            }
+			exceptions.add(describer);
+		}
+		
+		HashSet getSet(){
+			return exceptions;
+		}
+	}
 }
