@@ -1,0 +1,24 @@
+<transformer version="1.0">
+	<name>Fileset Renamer</name>
+	<description>Renames selected members of a fileset using namedroppable algorithms.</description>
+	<classname>int_daisy_filesetRenamer.FilesetRenamer</classname>
+	<license>LGPL</license>
+	<author>Markus Gylling</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>	
+	<parameters>
+	
+		<parameter required="true" direction="in" type="application/xml">
+			<name>inXML</name>
+			<description>The input XML file</description>
+			<example>D:/path/to/inputFile.xml</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>outDir</name>			
+			<description>The output directory</description>
+			<example>D:/path/to/outputDir/</example>
+		</parameter>		
+											
+	</parameters>	
+
+</transformer>
