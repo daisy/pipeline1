@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>Transformer documentation: <em>se_tpb_xmlValidator</em></title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: <em>se_tpb_xmlValidator</em></h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#purpose">Transformer Purpose</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>	
+</li>	
+<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+</li>	
+<li><a href="#future">Further development</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#owner">Author</a></li>
+<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<p>This transformer Validates an XML document against one or several schemas. 
+Simultaneous validation using both inlined and inparam schemas is supported.</p> 
+
+<p>Depending on input document type and inparameters, the validation 
+is performed using one <em>or several</em> validation languages; DTD validation,
+RelaxNG validation, XSD validation, Schematron validation, and URI resolvement checking.</p> 
+
+<p>The output of the transformer is not another document (although this would be a viable place
+to get static PSVI augmented output, if we hadnt thought of PSVI augmentation as inherently evil).</p>
+
+<p>Instead, this transformer generates 0-n <em>messages</em> each with an associated severity level; 
+using <a href="#params">inparameters</a> the user can determine which (if any) severity level should 
+cause the transformer to cause an abort; this feature is intended to be used when this transformer is placed
+in a transformer sequence.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+
+<h2 id="output">Output</h2>
+<p>0-n messages, piped to the DMFC logger.</p>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied
+and no exception occurs -->
+<p>0-n messages issued.</p>
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because
+input reqs were not satisfied, or because an exception occurs -->
+<p>0-n messages issued, and lastly a TransformerException thrown</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf, please use the below definition list -->
+	<dl id="paramslist">
+		<dt>inXML</dt>
+		<dd>Path to the XML document to be validated</dd>
+		<dt>schemas</dt>
+		<dd>
+			Comma separated list of schema identifiers to validate the input document against. 
+			Identifiers may be expressed as a public or system IDs.
+			RelaxNG, W3C Schema and Schematron are allowed types of schemas.
+			Schemas that occur inline do not need to be namedropped here, assuming that
+			the useInlineSchemas parameter is set to true.
+		</dd>
+		<dt>useInlineSchemas</dt>
+		<dd>Whether to perform validation using inline schemas</dd>	
+		<dt>useFileset</dt>
+		<dd>Whether to perform URI resolvment checking using inline schemas</dd>
+		<dt>abortOn</dt>
+		<dd>Enumerated transformer Abort level; WARNING, ERROR, FATAL</dd>
+	</dl>
+	
+<h3 id="extConfig">Extended configurability</h3>
+<!-- details on additional config files, system variables etc -->
+<p>None at the moment.</p>
+	
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+<p>Support for ISO Schematron and NVDL, all using the jaxp.validation API.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<p>jing.jar</p>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Markus Gylling</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>
