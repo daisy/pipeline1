@@ -27,6 +27,8 @@ public class LocalEventListener implements EventListener{
 	Text elapsed;
 	Text estimated;
 	Prompt prompt;
+	TableViewer tableViwer;
+	Job currentJob;
 	
 	
 	public void message(Prompt _prompt) {
@@ -43,6 +45,13 @@ public class LocalEventListener implements EventListener{
 	    if (prompt.getType() == Prompt.TRANSFORMER_END) {
 	        System.out.println("Transformer " + prompt.getMessageOriginator() + " has just finished running");
 	        message="Transformer " + prompt.getMessageOriginator() + " has just finished running";
+	        
+	        // A transformer has finished. Check it off in the table.
+	        UIManager.display.syncExec(new Runnable(){
+				public void run(){
+					tableViwer.getTable().getItem(currentJob.getScript().getCurrentTaskIndex()).setChecked(true);
+				}
+			});	        
 	    }
 	    if (prompt.getType() ==Prompt.PROGRESS){
 	    	calculateTiming(prompt);
@@ -81,14 +90,16 @@ public class LocalEventListener implements EventListener{
 	
 	
 	public void setAttributes(Text elapsed, Text estimated,  
-			ProgressBar _pb){
+			ProgressBar _pb, TableViewer tv){
 		this.elapsed=elapsed;
 		this.estimated= estimated;
 		this.progBar=_pb;
+		this.tableViwer = tv;
 	}
 	
-
-	
+	public void setJob(Job job) {
+		this.currentJob = job;
+	}	
 
 	public String getMessage(){
 		return this.message;

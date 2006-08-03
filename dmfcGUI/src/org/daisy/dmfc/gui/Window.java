@@ -1406,7 +1406,7 @@ public class Window {
 		setRunTerminateButtons();
 		
 		//pass the widgets to the event listener
-		this.getLocalEventListener().setAttributes(txtElapsedTime, txtElapsedTime, pb);
+		this.getLocalEventListener().setAttributes(txtElapsedTime, txtEstimatedTime, pb, tableViewer);
 		
 		execution();
 	}
@@ -1433,6 +1433,9 @@ public class Window {
 			job = (Job)it.next();
 			job.setStatus(2);
 			tableJobViewer.refresh();
+			
+			// Update the LocalEventListener with the new job
+			this.getLocalEventListener().setJob(job);
 			
 			//set the name of the conversion running
 			//txtConversionRunning.setText(job.getScript().getName());

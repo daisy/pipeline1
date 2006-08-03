@@ -41,20 +41,7 @@ public class JobRunner extends Thread{
 		
 		try{	
 			//after the script handler is finished executing, set job to finished.
-			scriptHandler.execute();
-			int transNumber = job.getScript().getCurrentTaskIndex();
-			count= job.getScript().getTaskCount();
-			//System.out.println("what is the current task index? " + count);
-			
-			
-			UIManager.display.syncExec(new Runnable(){
-				public void run(){
-					for (int i = 1; i<=count; i++){
-						tableViewer.getTable().getItem(job.getScript().getCurrentTaskIndex()).setChecked(true);
-					}
-				}
-			});
-			
+			scriptHandler.execute();			
 			
 //			finally, reset the status in the jobs table
 //			after the script has finished..
@@ -99,7 +86,7 @@ public class JobRunner extends Thread{
 			//any other possible exceptions? This is not too informative.
 			final String except=e.getMessage();
 			job.setStatus(Status.FAILED);
-			
+			e.printStackTrace();
 			UIManager.display.syncExec(new Runnable(){
 				public void run(){
 					jobViewer.refresh();
