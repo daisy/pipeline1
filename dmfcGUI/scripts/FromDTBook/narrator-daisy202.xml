@@ -129,10 +129,6 @@
 			<name>outputFilename</name>
 			<value>${outputPath}/z3986/06-speechgen.xml</value>
 		</parameter>
-		<parameter>
-			<name>sgConfigFilename</name>
-			<value>config/sgConfig.xml</value>
-		</parameter>
 	</task>
 
 
