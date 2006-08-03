@@ -192,13 +192,19 @@ SectionEnd
 
 
 Section -post SEC0001
+    # Update registry
     WriteRegStr HKLM "${REGKEY}" Path $INSTDIR
     WriteRegStr HKLM "${REGKEY}" StartMenuGroup $StartMenuGroup
+    
     WriteUninstaller $INSTDIR\uninstall.exe
+    
+    # Create start menu items
     SetOutPath $INSTDIR
     CreateDirectory "$SMPROGRAMS\$StartMenuGroup"
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\dmfcgui.bat
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe    
+    
+    # Create uninstall registry info
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" Publisher "${COMPANY}"
@@ -294,6 +300,11 @@ Function un.onInit
     !insertmacro SELECT_UNSECTION AppOther ${UNSEC0004}
     !insertmacro SELECT_UNSECTION post ${UNSEC0001}    
 FunctionEnd
+
+
+
+### Utitlity functions ########################################################
+
 
 Function ReplaceLineStr
  Exch $R0 ; string to replace that whole line with
