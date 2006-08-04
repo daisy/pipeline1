@@ -129,6 +129,22 @@
 			<fileset dir="${base.dir}/bin">
 				<include name="org/daisy/util/**/*.*"/>
 			</fileset>
+			<manifest>
+				<attribute name="Class-Path" value="
+					./batik-css.jar 
+					./batik-util.jar 
+					./chardet.jar
+					./icu4j_3_4_4.jar
+					./jing.jar 
+					./jl1.0.jar 
+					./jsr173_1.0_api.jar 
+					./sac.jar 
+					./saxon.jar
+					./saxon8.jar
+					./saxon8-dom.jar
+					./wstx-lgpl-2.0.3.jar
+					./xercesImpl.jar"/>
+			</manifest>
 		</jar>
 		<jar jarfile="${distribution.dir}/org.daisy.util-src.jar" >
 			<fileset dir="${base.dir}/src">
