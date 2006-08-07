@@ -563,6 +563,13 @@
        <xsl:apply-templates/>
      </dl>
    </xsl:template>
+   
+   <xsl:template match="dtb:dl/dtb:pagenum" priority="1">
+     <dt><xsl:call-template name="pagenum"/></dt>
+     <dd>
+     	<xsl:comment>empty</xsl:comment>
+     </dd>
+   </xsl:template>
 
   <xsl:template match="dtb:dt">
      <dt>
