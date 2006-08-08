@@ -14,7 +14,7 @@ rem echo JYTHON:  %JYTHON%
 rem echo.
 
 SET SWTJARS="%SWTLIB%\org.eclipse.core.runtime_3.1.1.jar";"%SWTLIB%\org.eclipse.jface_3.1.1.jar";"%SWTLIB%\org.eclipse.swt.win32.win32.x86_3.1.1.jar"
-SET DMFCJARS="%DMFCLIB%\batik-css.jar";"%DMFCLIB%\batik-util.jar";"%DMFCLIB%\chardet.jar";"%DMFCLIB%\icu4j_3_4_4.jar";"%DMFCLIB%\jing.jar";"%DMFCLIB%\jl1.0.jar";"%DMFCLIB%\jsr173_1.0_api.jar";"%DMFCLIB%\org.daisy.util-bin.jar";"%DMFCLIB%\sac.jar";"%DMFCLIB%\saxon8.jar";"%DMFCLIB%\saxon8-dom.jar";"%DMFCLIB%\saxon.jar";"%DMFCLIB%\tagsoup-1.0rc4.jar";"%DMFCLIB%\wstx-lgpl-2.0.3.jar";"%DMFCLIB%\xercesImpl.jar"
+SET DMFCJARS="%DMFCLIB%\org.daisy.util-bin.jar";"%DMFCLIB%\tagsoup-1.0rc4.jar"
 SET BIN="%INST%\bin";"%DMFC%\bin"
 SET SWTDLL="%INST%"
 
