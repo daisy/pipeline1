@@ -36,20 +36,30 @@ Name "DMFC GUI"
 
 ### Defines ###################################################################
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 1.0b1
+!define VERSION 1.0FPA
 !define COMPANY "Daisy Consortium"
 !define URL http://www.daisy.org/projects/dmfc
 
-
+; Path to Eclipse directory
 !define ECLIPSEDIR "C:\Program Files\eclipse-3.1.1"
 
+; Path to and name of the Jython install JAR
 !define JYTHONDIR "C:\Program Files\eclipse-3.1.1\workspace\dmfc\dist"
 !define JYTHONNAME "jython_Release_2_2alpha1.jar"
 
+; Path to and name of the LAME install ZIP
 !define LAMEDIR "C:\Program Files\eclipse-3.1.1\workspace\dmfc\dist"
 !define LAMENAME "lame3.96.1.zip"
 
+; Path to the dir where the SWT dll is extracted
 !define SWTDLLDIR "C:\Program Files\eclipse-3.1.1\workspace\dmfc\dist"
+
+; Major and minor version of .NET required
+!define DOT_MAJOR 2
+!define DOT_MINOR 0
+
+; Version of Java required
+!define JRE_VERSION "1.5.0"
 
 ### Included files ############################################################
 !include Sections.nsh
@@ -277,8 +287,37 @@ SectionEnd
 ### Installer functions #######################################################
 Function .onInit
     InitPluginsDir
+    
+    ; Check for Java
+    Push $1
+    Push $2
+    Call DetectJRE
+    Pop $1
+    StrCmp $1 "OK" JreFound
+    Pop $2
+    StrCmp $2 "None" JreNotFound JreFoundOld
     MessageBox MB_OK|MB_ICONINFORMATION "FIXME: Check for Java 5"
-    MessageBox MB_OK|MB_ICONINFORMATION "FIXME: Check for .NET"
+  JreNotFound:
+    MessageBox MB_OK "You need to have Java version ${JRE_VERSION} installed. No Java found. Aborting."
+    Pop $2
+    Pop $1    
+    Abort "Installation aborted (no Java)"
+  JreFoundOld:
+    MessageBox MB_OK "You need to have Java version ${JRE_VERSION} installed. You have version $2. Aborting."
+    Pop $2
+    Pop $1    
+    Abort "Installation aborted (old Java)"
+  JreFound:
+    Pop $2
+    Pop $1
+    
+    ; Check for .NET
+    Call IsDotNetInstalled
+    Pop $R3
+    StrCmp $R3 1 +3    
+    MessageBox MB_OK "You need to have v${DOT_MAJOR}.${DOT_MINOR} or greater of the .NET Framework installed. Aborting."
+    Abort "Installation aborted (no .NET)"
+    
     StrCpy $StartMenuGroup "DMFC GUI"
     
     Var /GLOBAL ALREADY_INSTALLED
@@ -286,8 +325,9 @@ Function .onInit
     ReadRegStr $ALREADY_INSTALLED HKLM "${REGKEY}" Path
     IfErrors continue
     MessageBox MB_YESNO|MB_ICONQUESTION "This software is alreay installed in$\r$\n $ALREADY_INSTALLED$\r$\n$\r$\nInstall anyway?" IDYES continue
-    Abort "Installation aborted"
-  continue:
+    Abort "Installation aborted (already installed)"
+    
+  continue:    
 FunctionEnd
 
 ### Uninstaller functions #####################################################
@@ -306,6 +346,9 @@ FunctionEnd
 ### Utitlity functions ########################################################
 
 
+### ReplaceLineStr ###
+# This function replaces lines with a string in a text file that start with a
+# specified string.
 Function ReplaceLineStr
  Exch $R0 ; string to replace that whole line with
  Exch
@@ -365,6 +408,10 @@ Function ReplaceLineStr
  Pop $R0
 FunctionEnd
 
+
+### StrRep ###
+# This function searches and replaces all occurrences of a substring in a
+# string.
 Function StrRep
   Exch $R4 ; $R4 = Replacement String
   Exch
@@ -398,4 +445,175 @@ done:
   Pop $R1
   Pop $R4
   Exch $R3
+FunctionEnd
+
+
+### IsDotNetInstalled ###
+# Source:
+#  http://nsis.sourceforge.net/How_to_insure_a_required_version_of_.NETFramework_is_installed
+#  2006-08-07 linuse - modified to return 0 or 1
+; Usage
+; Define in your script two constants:
+;   DOT_MAJOR "(Major framework version)"
+;   DOT_MINOR "{Minor frameword version)"
+; 
+; Call IsDotNetInstalled
+; This function will abort the installation if the required version 
+; or higher version of the .NETFramework is not installed.  Place it in
+; either your .onInit function or your first install section before 
+; other code.
+Function IsDotNetInstalled
+  Push $0
+  Push $1
+  Push $2
+  Push $3
+  Push $4
+  StrCpy $0 "0"
+  StrCpy $1 "SOFTWARE\Microsoft\.NETFramework" ;registry entry to look in.
+  StrCpy $2 0
+ 
+  StartEnum:
+    ;Enumerate the versions installed.
+    EnumRegKey $3 HKLM "$1\policy" $2
+    
+    ;If we don't find any versions installed, it's not here.
+    StrCmp $3 "" noDotNet notEmpty
+    
+    ;We found something.
+    notEmpty:
+      ;Find out if the RegKey starts with 'v'.  
+      ;If it doesn't, goto the next key.
+      StrCpy $4 $3 1 0
+      StrCmp $4 "v" +1 goNext
+      StrCpy $4 $3 1 1
+      
+      ;It starts with 'v'.  Now check to see how the installed major version
+      ;relates to our required major version.
+      ;If it's equal check the minor version, if it's greater, 
+      ;we found a good RegKey.
+      IntCmp $4 ${DOT_MAJOR} +1 goNext yesDotNetReg
+      ;Check the minor version.  If it's equal or greater to our requested 
+      ;version then we're good.
+      StrCpy $4 $3 1 3
+      IntCmp $4 ${DOT_MINOR} yesDotNetReg goNext yesDotNetReg
+ 
+    goNext:
+      ;Go to the next RegKey.
+      IntOp $2 $2 + 1
+      goto StartEnum
+ 
+  yesDotNetReg:
+    ;Now that we've found a good RegKey, let's make sure it's actually
+    ;installed by getting the install path and checking to see if the 
+    ;mscorlib.dll exists.
+    EnumRegValue $2 HKLM "$1\policy\$3" 0
+    ;$2 should equal whatever comes after the major and minor versions 
+    ;(ie, v1.1.4322)
+    StrCmp $2 "" noDotNet
+    ReadRegStr $4 HKLM $1 "InstallRoot"
+    ;Hopefully the install root isn't empty.
+    StrCmp $4 "" noDotNet
+    ;build the actuall directory path to mscorlib.dll.
+    StrCpy $4 "$4$3.$2\mscorlib.dll"
+    IfFileExists $4 yesDotNet noDotNet
+ 
+  noDotNet:
+    ;Nope, something went wrong along the way.  Looks like the 
+    ;proper .NETFramework isn't installed.  
+    ;MessageBox MB_OK "You must have v${DOT_MAJOR}.${DOT_MINOR} or greater of the .NETFramework installed.  Aborting!"
+    StrCpy $0 0
+    Goto done
+
+  yesDotNet:
+    ;Everything checks out.  Go on with the rest of the installation.
+    StrCpy $0 1
+    
+  done:  
+    Pop $4
+    Pop $3
+    Pop $2
+    Pop $1
+    Exch $0  
+FunctionEnd
+
+
+### DetectJRE ###
+# Source:
+#  http://nsis.sourceforge.net/Simple_installer_with_JRE_check
+#  2006-08-08 linuse - slightly modified
+Function DetectJRE
+    Push $2
+    Push $3
+    Push $R1
+    Push $R2
+    ReadRegStr $2 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" "CurrentVersion"
+    StrCmp $2 "" DetectTry2
+    ReadRegStr $3 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment\$2" "JavaHome"
+    StrCmp $3 "" DetectTry2
+    Goto GetJRE
+ 
+  DetectTry2:
+    ReadRegStr $2 HKLM "SOFTWARE\JavaSoft\Java Development Kit" "CurrentVersion"
+    StrCmp $2 "" NoFound
+    ReadRegStr $3 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment\$2" "JavaHome"
+    StrCmp $3 "" NoFound
+ 
+  GetJRE:
+    IfFileExists "$3\bin\java.exe" 0 NoFound
+    StrCpy $R1 $2 1
+    StrCpy $R2 ${JRE_VERSION} 1
+    IntCmp $R1 $R2 0 FoundOld FoundNew
+    StrCpy $R1 $2 1 2
+    StrCpy $R2 ${JRE_VERSION} 1 2
+    IntCmp $R1 $R2 FoundNew FoundOld FoundNew
+ 
+  NoFound:
+    ; r2 r1 3 2
+    Pop $R2
+    ; r1 3 2
+    Pop $R1
+    ; 3 2
+    Pop $3
+    ; 2
+    Pop $2
+    ; 
+    Push "None"
+    ; None
+    Push "NOK"
+    ; NOK None
+    Return
+ 
+  FoundOld:
+    ; r2 r1 3 2
+    Pop $R2
+    ; r1 3 2
+    Pop $R1
+    ; 3 2
+    Pop $3
+    ; 2
+    Exch $2
+    ; path    
+    Push "NOK"
+    ; NOK path
+    Return
+  
+  FoundNew:
+    ; r2 r1 3 2
+    Pop $R2
+    ; r1 3 2
+    Pop $R1
+    ; 3 2
+    Push "$3\bin\java.exe"
+    ; path 3 2
+    Pop $3
+    ; 3 2
+    Exch $3
+    ; path 2
+    Pop $2
+    ; 2
+    Exch $2
+    ; path
+    Push "OK"
+    ; OK path
+    Return 
 FunctionEnd
