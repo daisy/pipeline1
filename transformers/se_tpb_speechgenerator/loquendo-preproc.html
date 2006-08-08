@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+<title>Additional pre-processing rules for Loquendo</title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Additional pre-processing rules for Loquendo</h1>
+	<ul>
+		<li><a href="#year">Years (dmfc/transformers/se_tpb_speechgenerator/config/year_en.xml)</a>
+			
+			
+		</li>
+		
+		<li><a href="#regex">Other text (dmfc/transformers/se_tpb_speechgenerator/regex/richard.xml)</a>
+			<ul>
+				<li><a href="#math">Mathematics</a></li>
+				<li><a href="#sym">Mathematical symbols/Greek alphabet</a></li>
+				<li><a href="#deg">Degrees</a></li>
+				<li><a href="#int">Intervals: Years, percent, pages, time</a></li>
+				<li><a href="#ni">Name initials</a></li>
+				<li><a href="#roman">Roman numerals</a></li>
+				<li><a href="#misc">Miscellaneous</a></li>
+				<li><a href="#owner">Author</a></li>
+			</ul>
+		</li>
+	</ul>
+
+
+<h2 id="year">Years (dmfc/transformers/se_tpb_speechgenerator/config/year_en.xml)</h2>
+
+	<dl>
+		<dt>Decades no longer pronounced with hundred</dt>
+		<dd>1950s &raquo; nineteen hundred fifties &raquo; nineteen fifties</dd>
+	</dl>
+	
+	<dl>
+		<dt>21<sup>th</sup> century as "two thousand" instead of "twenty hundred".</dt>
+		<dd></dd>
+	</dl>
+
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	
+<h2 id="regex">Other text (dmfc/transformers/se_tpb_speechgenerator/regex/richard.xml)</h2>
+
+
+	
+
+	
+	<h3 id="math">Mathematics</h3>
+
+	<dl>
+		<dt>&middot;*&times;</dt>
+		<dd>"times" if between two digits</dd>
+	</dl>
+
+	<dl>
+		<dt>+/-</dt>
+		<dd>"plus minus"</dd>
+	</dl>
+	<p>etc.</p>
+	
+	
+	
+	<h3 id="sym">Mathematical symbols/Greek alphabet</h3>
+	
+	<dl>
+		<dt>&alpha;</dt>
+		<dd>"alpha"</dd>
+	</dl>
+	<p>etc.</p>
+	
+	
+	<h3 id="deg">Degrees</h3>
+	<dl>
+		<dt>&deg;</dt>
+		<dd>"degrees"</dd>
+	</dl>
+		<dl>
+		<dt>&deg; F.</dt>
+		<dd>degrees Fahrenheit</dd>
+	</dl>
+	<p>etc.</p>
+	
+
+	
+	<h3 id="int">Intervals: Years, percent, pages, time.</h3>
+	
+	<dl>
+		<dt>1920-24</dt>
+		<dd>1920 to 24</dd>
+	</dl>
+	<p>etc.</p>
+	
+	
+
+	<h3 id="ni">Name initials</h3>	
+	<dl>
+		<dt>D.G.Pritchard</dt>
+		<dd>The problem with sentence boundary after initials is solved by adding "D.", "G." etc. in the abbreviation file.</dd>
+	</dl>
+
+	
+	<h3 id="roman">Roman numerals</h3>
+	<p>I-XX as cardinals when preceded by words as "section", "part", "paper", etc. As ordinals if following other words with capital initial.</p>
+	<p>Longer roman numerals, e.g. MLCCCVIX are spelled out instead of read as one word.</p>
+
+	<h3 id="misc">Miscellaneous</h3>
+	<dl>
+		<dt>Three-level headline numbers (e.g. "3.1.2"):</dt>
+		<dd>No longer a pause between the last two numbers.</dd>
+	</dl>
+
+	
+	<dl>
+		<dt>Big numbers with chunks of three digits ending in "000" (e.g. "1&nbsp;000&nbsp;000") now read as a number:</dt>
+		<dd></dd>
+	</dl>
+
+	<dl>
+		<dt>Big numbers with chunks of three digits before some currencies and measurements of space and capacity (e.g.
+"$1&nbsp;156") now read as a number:</dt>
+		<dd>"one million", instead of "one o o o &hellip;"</dd>
+	</dl>
+
+	<dl>
+		<dt>Zeroes following "0.":</dt>
+		<dd>Brief pause between the zeroes.</dd>
+	</dl>
+	
+	
+	<p>Brief pause if dash between spaces + letters ("Alpine skiing – 18/03/2006")</p>	
+
+	<p>Colons between digits read.</p>
+	<p>Some acronyms added, e.g. "ISBN", "DTBook".</p>
+	<p>Some units added (e.g. millimeters, cubic miles, decibel, kbyte).</p>
+	
+	<h2 id="owner">Author</h2>
+	<p>Christina Ericsson 2006-05-05</p>
+	
+</body>
+
+</html>

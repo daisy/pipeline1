@@ -28,7 +28,11 @@ that end users may come in contact with that information. -->
 	<ul>
 		<li><a href="#params">Parameters (tdf)</a></li>
 		<li><a href="#extConfig">Extended configurability</a></li>
-		<li><a href="#wrappers">TTS Java wrappers</a></li>	
+		<li><a href="#wrappers">TTS Java wrappers</a>
+			<ul>
+				<li><a href="#loquendo">Loquendo</a></li>
+			</ul>
+		</li>	
 	</ul>
 </li>	
 <li><a href="#future">Further development</a></li>
@@ -488,7 +492,16 @@ then throw an exception and abort.</p>
 		<tt>se_tpb_speechgenerator.ExternalTTS.setParamMap(java.util.Map)</tt>. See the javadoc for 
 		more details. This lets you use the TTS system - and possible inter-process communication - of your choice. 
 		Once you have set up a proper TTS Builder Configuration your new TTS wrapper is ready to run.
-	</p>	
+	</p>
+	
+	<h4 id="loquendo">Loquendo</h4>
+	<p>
+		At TPB we have been using a simple Java wrapper for the Loquendo TTS Linux version. 
+		Work has been made to make the TTS better for us. Some pre-processing rules have been 
+		developed using regexes, and those may come in handy for anyone using 
+		the SAPI version of the Loquendo TTS together with Narrator. 
+		Read more about what have been done: <a href="loquendo-preproc.html">loquendo-preproc.html</a>.
+	</p>
 
 <h2 id="future">Further development</h2>
 <!-- notes on refactoring; TODOs and MAYDOs -->
@@ -501,7 +514,7 @@ then throw an exception and abort.</p>
 		<a title="se_tpb_synchPointNormalizer" 
 			href="../se_tpb_synchPointNormalizer">se_tpb_synchPointNormalizer</a>.
 	</li>
-	<li>RNG/Schematron test the Speech Generation Configuration file before running.</li>
+	<li>RNG/Schematron test the Speech Generator Configuration file before running.</li>
 </ul>
 	
 <h2 id="dependencies">Dependencies</h2>
