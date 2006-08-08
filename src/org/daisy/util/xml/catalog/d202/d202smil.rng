@@ -6,7 +6,7 @@
 >
   <a:documentation>
     d202smil.rng
-    Last edit by: mgylling 2005-06-09
+    Last edit by: linuse 2006-08-07
     catalog-mapped by the PID '-//DAISY//RNG smil v2.02//EN'
   </a:documentation>
 
@@ -74,12 +74,12 @@
       <choice>
         <group>
           <interleave>
-              <oneOrMore>
-                <ref name="par"/>
-                <optional>               
-                  <ref name="noterefseq"/>
-                </optional>
-              </oneOrMore>    
+            <oneOrMore>
+              <ref name="par"/>
+            </oneOrMore>
+            <zeroOrMore>
+              <ref name="noterefseq"/>
+            </zeroOrMore>    
           </interleave>
         </group>
         <ref name="audio"/>
