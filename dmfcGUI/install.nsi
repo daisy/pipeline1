@@ -27,10 +27,6 @@
 ;     Apply any changes to the 'DMFC', 'GUI', and 'Other' sections.
 ;
 ;     Make sure all the (correct) jars are listed in dmfcgui.bat.
-;
-;     Extract swt-win32-*.dll from the org.eclipse.swt.win32.*.jar and place
-;     the result in $SWTDLLDIR
-
 
 Name "DMFC GUI"
 
@@ -141,8 +137,22 @@ Section -AppGUI SEC0003
     File "${ECLIPSEDIR}\plugins\org.eclipse.jface_*.jar"
     
     # extract swt dll
-    SetOutPath $INSTDIR
-    File "${SWTDLLDIR}\swt-win32-*.dll"
+    SetOutPath $INSTDIR    
+    ; find swt jar
+    FindFirst $0 $1 $INSTDIR\lib\org.eclipse.swt.win32.*.jar
+    FindClose $0
+    StrCmp $1 "" SwtJarNotFound
+    Goto SwtJarFound
+  SwtJarNotFound:
+    MessageBox MB_OK "No SWT JAR found. Very strange... Aborting."
+    Abort "Installation error (No SWT JAR!)";
+  SwtJarFound:
+    ; unzip swt jar
+    ZipDLL::extractall $INSTDIR\lib\$1 $INSTDIR\_swttmp_
+    ; copy extracted swt dll
+    CopyFiles /silent $INSTDIR\_swttmp_\swt-win32-*.dll $INSTDIR
+    ; remove temp swt dir
+    RMDir $INSTDIR\_swttmp_
     
     # Register section
     WriteRegStr HKLM "${REGKEY}\Components" AppGUI 1
