@@ -47,9 +47,6 @@ Name "DMFC GUI"
 !define LAMEDIR "C:\Program Files\eclipse-3.1.1\workspace\dmfc\dist"
 !define LAMENAME "lame3.96.1.zip"
 
-; Path to the dir where the SWT dll is extracted
-!define SWTDLLDIR "C:\Program Files\eclipse-3.1.1\workspace\dmfc\dist"
-
 ; Major and minor version of .NET required
 !define DOT_MAJOR 2
 !define DOT_MINOR 0
