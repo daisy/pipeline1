@@ -49,6 +49,7 @@
 				<include name="scripts/**/*.*"/>
 				<include name="bin/**/*.*"/>
 				<include name="dmfcgui.bat"/>
+				<include name="dmfcgui.exe"/>
 			</fileset>
 		</zip>
 	</target>

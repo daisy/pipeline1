@@ -149,7 +149,7 @@ Section -AppGUI SEC0003
     ; copy extracted swt dll
     CopyFiles /silent $INSTDIR\_swttmp_\swt-win32-*.dll $INSTDIR
     ; remove temp swt dir
-    RMDir $INSTDIR\_swttmp_
+    RMDir /r $INSTDIR\_swttmp_
     
     # Register section
     WriteRegStr HKLM "${REGKEY}\Components" AppGUI 1
