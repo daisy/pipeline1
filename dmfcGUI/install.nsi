@@ -7,7 +7,23 @@
 ## Depends on ZipDLL, http://nsis.sourceforge.net/wiki/ZipDLL                ##
 ###############################################################################
 
+; Initial setup
 ;
+;   1. Download and install NSIS from http://nsis.sourceforge.net
+;   2. Install the EclipseNSIS plugin http://eclipsensis.sourceforge.net/#download
+;   3. Download and install the ZipDLL plugin from http://nsis.sourceforge.net/wiki/ZipDLL
+;      Remember to fix the bug as stated on the download page.
+
+
+; Download dependencies
+;
+;   Lame for windows can be downloaded at http://www.rarewares.org/mp3.html. Use the latest
+;   stable release.
+;
+;   Jython can be downloaded at http://www.jython.org. Use release 2.2 or newer
+;   (as of august 2006 this is the development version)
+
+
 ; Usage
 ;   
 ;   DMFC
@@ -15,11 +31,15 @@
 ;     util library. Target names are 'buildUtil' and 'buildDMFC-NSIS'.
 ;
 ;   GUI
+;     Build the dmfcgui.exe using the dmfcgui.nsi NSIS script in the DMFCGUI project.
+;     This file will seldom need to be rebuilt.
+;
 ;     Use the build.xml ANT script in the DMFCGUI project to build the GUI.
 ;     Target name is 'buildZip-NSIS'.
 ;
 ;   NSIS
-;     Make sure the defines in the 'Defines' part are correct.
+;     Make sure the defines in the 'Defines' part are correct. Most importantly,
+;     make sure the ECLIPSEDIR, JYTHONDIR and LAMEDIR defines are correct.
 ;
 ;     (optionally) Change the value of the 'OutFile' command in the 
 ;     'Installer attributes' part.
@@ -218,7 +238,7 @@ Section -post SEC0001
     # Create start menu items
     SetOutPath $INSTDIR
     CreateDirectory "$SMPROGRAMS\$StartMenuGroup"
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\dmfcgui.bat
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\dmfcgui.exe
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe    
     
     # Create uninstall registry info

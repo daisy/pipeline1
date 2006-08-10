@@ -6,6 +6,13 @@
 ##                                                                           ##
 ###############################################################################
 
+; This NSIS script creates a Java launcher for the DMFC GUI.
+;
+; Currently, the output to stdout and stderr are ignored by this launcher.
+; If you turn on the debug mode (no need to rebuild the exe, just place
+; a file named debug.txt in the same directory as the dmfcgui.exe) stdout and
+; stderr will be written to stdout.log and stderr.log, respectively.
+
 !define APPNAME "DMFC GUI"
 
 Name "${APPNAME}"
