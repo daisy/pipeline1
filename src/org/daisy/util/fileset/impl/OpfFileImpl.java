@@ -18,7 +18,6 @@ import org.daisy.util.fileset.interfaces.xml.OpfFile;
 import org.daisy.util.xml.SmilClock;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * This base implementation backing the different Opf interfaces (opf, zed, nimas, etc)
@@ -32,6 +31,7 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 	private boolean inSpine = false;
 	private boolean inDcFormat = false;
 	private boolean inDcTitle = false;
+	private boolean inUidDcIdentifier = false;
 	private HashMap manifestItems = new HashMap();
 	private LinkedHashMap spineMap= new LinkedHashMap();
 	private boolean finalSpineMapIsBuilt = false;
@@ -39,6 +39,8 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 	protected String statedMultiMediaType = null;
 	private	String statedDcFormat = null;
 	private	String statedDcTitle = null;
+	private String uidRootIdRef = null;  //the idref at root element
+	private String statedUid = null;		//the actul uid
 	
 	OpfFileImpl(URI uri) throws FileNotFoundException, ParserConfigurationException, SAXException, IOException {		
 		super(uri,OpfFile.mimeStringConstant); 
@@ -50,7 +52,7 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 		
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		//qName = qName.intern();
-						
+		super.startElement(namespaceURI, sName, qName, attrs);						
 		if (qName=="spine") { 
 			inSpine = true;
 		} else if (qName=="manifest") {
@@ -70,7 +72,12 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 			attrValue = attrs.getValue(i).intern();
 			
 			try {
-				if (sName=="meta") {
+				if(sName=="package"){
+					if (attrName=="unique-identifier") {
+						//catch the root idref to a certain dc:identifier
+						uidRootIdRef = attrValue;
+					}
+				} else if (sName=="meta") {
 					if (attrValue=="dtb:totalTime") {
 						statedDuration = new SmilClock(attrs.getValue("content"));
 					}else if(attrValue=="dtb:multimediaType") {
@@ -83,7 +90,10 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 			
 			if (attrName=="id") {
 				QName q = new QName(namespaceURI,sName);
-				this.putIdAndQName(attrValue,q);				
+				this.putIdAndQName(attrValue,q);	
+				if(qName.toLowerCase().equals("dc:identifier") && attrValue == uidRootIdRef){
+					inUidDcIdentifier = true;
+				}
 			}
 			
 			if(inManifest && qName=="item") { 
@@ -119,7 +129,9 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 			inDcFormat = false;
 		}else if (qName.toLowerCase().equals("dc:title")) {
 			inDcTitle = false;
-		}
+		}else if(qName.toLowerCase().equals("dc:identifier") && (inUidDcIdentifier) ){
+			inUidDcIdentifier = false;
+		}	
 
 	}
 	
@@ -127,8 +139,10 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
     	if(inDcFormat){    	
     		statedDcFormat = String.copyValueOf(ch,start,length);
     	}else if(inDcTitle){    	
-    		statedDcTitle = statedDcTitle + String.copyValueOf(ch,start,length);
-    	}    	
+    		statedDcTitle += String.copyValueOf(ch,start,length);
+    	}else if(inUidDcIdentifier){
+    		statedUid += String.copyValueOf(ch,start,length);
+    	}
     }
 		
 	public Collection getSpineItems() throws IllegalStateException { 
@@ -164,4 +178,8 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile {
 	}
 		
 	private static final long serialVersionUID = 5561960060601196098L;
+
+	public String getUID() {
+		return statedUid;
+	}
 }
