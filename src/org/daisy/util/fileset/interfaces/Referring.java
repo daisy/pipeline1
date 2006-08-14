@@ -20,7 +20,7 @@ public interface Referring extends Descendant  {
 	
 	/**
 	 * @param uri absolute URI that may or may not be referenced from this referrer, 
-	 * and may or may not be represent the location of colleague member of the current Fileset instance. 
+	 * and may or may not represent the location of a colleague member of the current Fileset instance. 
 	 * @return the corresponding member {@link org.daisy.util.FilesetImpl.FilesetFile} object 
 	 * if it is referenced from this member, null otherwise
 	 */
@@ -33,31 +33,3 @@ public interface Referring extends Descendant  {
 	public Collection getReferencedLocalMembers();
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-///**
-//* Gives access to methods of java.io.File
-//*/
-//public File getFile();
-
-///**
-//* @return an iterator&lt;URI&gt; for the collection of members referenced from this member; ordered as appearing in document order 
-//*/
-//public Iterator getReferencedLocalMembersURIIterator();
-//public Iterator getUriIterator();
-//
-//public boolean hasUris();
