@@ -854,6 +854,15 @@ public class Window {
 	 *
 	 */
 	public void createHashMapScriptHandlers(){
+		//mg: this is not recursive, ie only allows one level subdirs
+		//nor supports scripts as direct descendants of main scriptdir
+		//remember that users may add their own scrips so this needs improvement
+		//if we dont need the categories sort here, we can just use EFolder		
+		//Collection scripts = scriptDirAsEFolder.getFiles((deep=true, ".*\.xml", false); 
+		//also to avoid getting most of those 999 exceptions from createScript in developer mode
+		//when the file is not a script
+		
+		
 //		For each file in the subdirectory, create a ScriptHandler object.
 		//create an hashMap to hold the script handlers
 		//key = filename
@@ -876,12 +885,20 @@ public class Window {
 			//System.out.println("Name of category " + categoryDir.getName());
 			
 			if (categoryDir.isDirectory()){
-				File []arCatFiles = categoryDir.listFiles();
+				File []arCatFiles = categoryDir.listFiles();				
 				
 				//create script handlers for each file in subdirectory
 				for (int j = 0; j<arCatFiles.length; j++){
 					File toSH = (File)arCatFiles[j];
 					//System.out.println("     Name of file in category " + toSH.getName());
+					
+					//mg: all System.out.println statements should be surrounded by a 
+					//debug test clause, will make the app snappier 
+					//I have started using:
+					//if(System.getProperty("org.daisy.debug")!=null) {
+					//	System.out.println("blah");
+					//}
+					//so its easily switched on/off without excessive code
 					
 					try{
 						
