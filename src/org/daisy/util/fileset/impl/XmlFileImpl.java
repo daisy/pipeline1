@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +29,8 @@ import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogException;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.catalog.CatalogExceptionRecoverable;
+import org.daisy.util.xml.XMLUtils;
+import org.daisy.util.xml.validation.SchemaLanguageConstants;
 import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -61,6 +64,10 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
     private boolean isDTDValidated = false;
     protected String attrValue;
     protected String attrName;
+    protected boolean isRootElementReported = false;  //required subclasses to do super on StartElement
+    private String prologPublicId = null;
+    private String prologSystemId = null;
+    private Map inlinedSchemaReferences = new HashMap();  //NOT prolog refs, only in document
 
     XmlFileImpl(URI uri) throws ParserConfigurationException, SAXException, FileNotFoundException, IOException {
         super(uri, XmlFile.mimeStringConstant);
@@ -75,8 +82,8 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
     private void initialize() throws ParserConfigurationException, SAXException  {
         if (saxFactory == null) {
         	        	
-    		System.setProperty("org.apache.xerces.xni.parser.Configuration", 
-    				"org.apache.xerces.parsers.XMLGrammarCachingConfiguration");
+//    		System.setProperty("org.apache.xerces.xni.parser.Configuration", 
+//    				"org.apache.xerces.parsers.XMLGrammarCachingConfiguration");
         	
             saxFactory = SAXParserFactory.newInstance();
             saxFactory.setValidating(getValidatingProperty());
@@ -142,6 +149,18 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
     	return this.namespaces;
     }
     
+	public Map getInlineSchemaURIs() {
+	  return this.inlinedSchemaReferences;	
+	}
+	
+	public String getPrologPublicId(){
+		return this.prologPublicId;
+	}
+
+	public String getPrologSystemId() {
+		return this.prologSystemId;
+	}
+    
     public boolean isWellformed() throws IllegalStateException {
         if (isParsed)return isWellformed;
         throw new IllegalStateException("Property not set: file not parsed");
@@ -203,8 +222,16 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
     /**
      * EntityResolver2 impl
      */
+    private boolean isFirstResolveEntityCall = true;
 	public InputSource resolveEntity(String name, String publicId, String baseURI, String systemId) throws IOException {
-		
+		if(isFirstResolveEntityCall && !isRootElementReported) {
+			//gather prolog basics
+			prologPublicId = publicId;
+			prologSystemId = systemId;
+		}		
+		isFirstResolveEntityCall = false;
+
+		//then continue as normal
         try {
             return CatalogEntityResolver.getInstance().resolveEntity(publicId,systemId);
         } catch (CatalogException ce) {
@@ -214,10 +241,27 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
             } else if (ce instanceof CatalogExceptionNotRecoverable) {
                 throw new IOException(ce.getMessage());
             }
-        }
-        
+        }        
         return null;
 	}
+
+    /**
+     * ContentHandler impl. Typically, subclasses override this, and are expected to use a super call
+     */
+
+    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+    	if(!isRootElementReported){
+    		isRootElementReported = true;
+    		//check for inline (non-prolog) schema references
+    		Set xsis = XMLUtils.getXSISchemaLocationURIs(uri, localName, qName, atts);
+    		for (Iterator iter = xsis.iterator(); iter.hasNext();) {
+				String str = (String) iter.next();
+				inlinedSchemaReferences.put(str, SchemaLanguageConstants.W3C_XML_SCHEMA_NS_URI);
+				//also put to URI list
+				this.putUriValue(str);				
+			}
+    	} //if(!isRootElementReported)   	
+    }
 	
     /**
      * EntityResolver2 impl
@@ -286,9 +330,8 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
     	ss.setSystemId(this);
         return ss;
     }
-
-    //empty methods: for subclasses to implement as needed 
-    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {}
+    
+    //empty methods: for subclasses to implement as needed     
 	public void endDocument() throws SAXException {}
 	public void endPrefixMapping(String prefix) throws SAXException {}
 	public void endElement(String uri, String localName, String qName) throws SAXException {}
