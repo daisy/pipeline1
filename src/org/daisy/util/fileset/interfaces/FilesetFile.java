@@ -38,7 +38,15 @@ public interface FilesetFile extends Referable, IEFile {
 	 * @return a relative URI
 	 */
 	public URI getRelativeURI(FilesetFile filesetFile);
-		
+	
+	/**
+	 * Gets an absolute URI from a relative URI within this file
+	 * @param relativeURI String of unresolved URI within this file
+	 * @return an absolute URI
+	 */
+	public URI getAbsolutizedURI(String relativeURI);
+	
+	
 	/**
 	 *@return true if this FilesetFile has been parsed	 
 	 */
