@@ -1,6 +1,6 @@
 <transformer version="1.0">
 	<name>Fileset Renamer</name>
-	<description>Renames selected members of a fileset using namedroppable algorithms.</description>
+	<description>Renames select members of a fileset using namedroppable algorithms.</description>
 	<classname>int_daisy_filesetRenamer.FilesetRenamer</classname>
 	<license>LGPL</license>
 	<author>Markus Gylling</author>
@@ -8,9 +8,51 @@
 	<parameters>
 	
 		<parameter required="true" direction="in" type="application/xml">
-			<name>inXML</name>
-			<description>The input XML file</description>
+			<name>manifest</name>
+			<description>The input fileset main file (ncc, opf, etc)</description>
 			<example>D:/path/to/inputFile.xml</example>
+		</parameter>
+		
+		<parameter required="true" direction="in" type="enum">
+			<name>renamingType</name>
+			<description>The type of renaming to apply. More info in doc.html</description>			
+			<example>scramble</example>
+			<enum>
+				<value>scramble</value>
+				<value>unique</value>	
+				<!-- recognized tokens within the token group are uid,uidHex,chapter,sequential -->
+				<value>uid+sequential</value>
+				<value>uidHex+sequential</value>
+				<value>uid+chapter</value>
+				<value>sequential+chapter</value>
+				<value>uid+sequential+chapter</value>
+				<value>uidHex+sequential+chapter</value>
+				<value>chapter</value>
+			</enum>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>exclude</name>
+			<description>File types to exclude from the renaming process</description>			
+			<example>ImageFile</example>
+			<enum>
+				<value>None</value>
+				<value>AudioFile</value>
+				<value>ImageFile</value>	
+				<value>XmlFile</value>
+				<value>Xhtml10File</value>
+				<value>SmilFile</value>
+				<value>DtbookFile</value>
+				<value>CssFile</value>
+			</enum>
+			<default>None</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="string">
+			<name>prefix</name>
+			<description>Prefix to set on all new names</description>			
+			<example>acme_</example>
+			<default/>
 		</parameter>
 		
 		<parameter required="true" direction="out" type="application/x-filesystemDirectory">

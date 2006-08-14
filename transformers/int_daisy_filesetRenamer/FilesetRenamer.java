@@ -1,11 +1,11 @@
 package int_daisy_filesetRenamer;
 
+import int_daisy_filesetRenamer.strategies.TokenStrategy;
 import int_daisy_filesetRenamer.strategies.RenamingStrategy;
 import int_daisy_filesetRenamer.strategies.ScramblingStrategy;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,12 +23,10 @@ import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.Referring;
-import org.daisy.util.fileset.interfaces.audio.AudioFile;
-import org.daisy.util.fileset.interfaces.image.ImageFile;
 import org.daisy.util.fileset.interfaces.xml.SmilFile;
-import org.daisy.util.fileset.interfaces.xml.TextualContentFile;
 import org.daisy.util.fileset.interfaces.xml.Xhtml10File;
 import org.daisy.util.fileset.interfaces.xml.XmlFile;
+import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
 import org.daisy.util.fileset.manipulation.FilesetFileManipulator;
 import org.daisy.util.fileset.manipulation.FilesetManipulationException;
@@ -48,40 +46,43 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 
 	RenamingStrategy strategy = null;
 	FilesetFile currentFile = null;
-	private StringBuilder sb = new StringBuilder();
+	private StringBuilder sb = null;
 	private String oldName = null;
 	private int start = -1;
-	private FilesetRegex rgx = FilesetRegex.getInstance();
+	private FilesetRegex rgx = null;
 		
 	public FilesetRenamer(InputListener inListener, Set eventListeners, Boolean isInteractive) {
 		super(inListener, eventListeners, isInteractive);
+		sb = new StringBuilder();
+		rgx = FilesetRegex.getInstance();
 	}
 
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		FilesetManipulator fm = null;
 		try {
+			//get a FilesetManipulator instance
 			fm = new FilesetManipulator();
-			// implement FilesetManipulatorListener
+			//implement FilesetManipulatorListener
 			fm.setListener(this);
-			// set input fileset
-			fm.setInputFileset(new File((String) parameters.remove("inXML")).toURI());
-			// set destination
+			//set input fileset
+			fm.setInputFileset(new File((String) parameters.remove("manifest")).toURI());
+			//set destination
 			fm.setOutputFolder((EFolder) FileUtils.createDirectory(new EFolder((String) parameters.remove("outDir"))));
-			
 			fm.getOutputFolder().deleteContents(true); //TODO remove
 			//determine which renaming strategy to use		
-			strategy = setStrategy(parameters,fm);
+			strategy = setStrategy(fm, parameters);
 			//roll through the fileset			
 			fm.iterate();
 			//done.
 		} catch (Exception e) {
 			this.sendMessage(Level.SEVERE, e.getMessage());
 			//try a clean copy here instead of throwing
-			try {
-				fm.getOutputFolder().addFileset(fm.getInputFileset(),true);
-			} catch (IOException ioe) {
-				throw new TransformerRunException(ioe.getMessage(), ioe);
-			}			
+//			TODO reenable			
+//			try {				
+//				//fm.getOutputFolder().addFileset(fm.getInputFileset(),true);
+//			} catch (IOException ioe) {
+//				throw new TransformerRunException(ioe.getMessage(), ioe);
+//			}			
 		}
 
 		return true;
@@ -90,36 +91,50 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	/**
 	 * @return an implementation of NamingStrategy with all needed properties set, and validated.
 	 */
-	private RenamingStrategy setStrategy(Map parameters, FilesetManipulator fm) throws Exception {
-		//Since the strategy is selected by the user using
-		//nicename inparams, we have to get
-		//a little verbose and stuff.
-				
-		//using inparams, determine which implementation to instantiate
-		RenamingStrategy strategy = new ScramblingStrategy();
+	private RenamingStrategy setStrategy(FilesetManipulator fm, Map parameters) throws Exception {		
 		
-		try{
-			strategy.setInputFileset(fm.getInputFileset());			
-			strategy.setTypeRestriction(AudioFile.class);
-			strategy.setTypeRestriction(ImageFile.class);
-			strategy.setTypeRestriction(SmilFile.class);
-			strategy.setTypeRestriction(TextualContentFile.class);
-			strategy.setDefaultPrefix("ha ha ha ");
-			strategy.createStrategy();
-			strategy.validate();
+		String scheme = ((String)parameters.remove("renamingType")).intern();		
+		RenamingStrategy rs = null;
+		
+		try{		
+			//determine what scheme to use
+			if(scheme==("scramble")||scheme==("unique")) {				
+				rs = new ScramblingStrategy(fm.getInputFileset());											
+				if(scheme==("unique")){
+					rs.setDefaultPrefix(ScramblingStrategy.scramble(8));
+				}			
+			}else {
+				//we assume its a token strategy
+				rs = new TokenStrategy(fm.getInputFileset(),scheme);
+			}			
+			
+			//set filetype exclusions per users request
+				//TODO
+			
+			//set constant exclusions
+			rs.setTypeExclusion(D202NccFile.class); 
+			
+			//set prefix
+			String pfx = (String)parameters.remove("prefix");
+			if(pfx!=null) rs.setDefaultPrefix(pfx);
+			
+			//move along
+			rs.createStrategy();
+			rs.validate();
+			
 		}catch (Exception e) {
 			this.sendMessage(Level.SEVERE, e.getMessage());
 			this.sendMessage(Level.INFO, "skipping rename");			
 		}
-				
-		return strategy;
+		//if we are here, we have a working strategy	
+		return rs;
 	}
+
 
 	/**
 	 * FilesetManipulatorListener impl
 	 * @throws FilesetManipulationException
 	 */
-
 	public FilesetFileManipulator nextFile(FilesetFile file) throws FilesetManipulationException {
 		currentFile = file; //for checking filetype in nextValue() below
 		try{
@@ -128,7 +143,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 				//and may refer to other members that may have new names
 				if(file instanceof XmlFile) {
 					//use the constructor of xmleventfeeder that allows localname change				
-					XMLEventValueExposer xeve = new XMLEventValueExposer(this,strategy.getNewLocalName(file));
+					XMLEventValueExposer xeve = new XMLEventValueExposer(this,flatten(strategy.getNewLocalName(file)));					
 					//default is to only replace in attributes (they typically carry URIs)
 					xeve.setEventTypeRestriction(XMLEvent.ATTRIBUTE);				
 					return xeve;
@@ -137,7 +152,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			}
 			//else, this file cannot refer to other members
 			//but may have a new name
-			return new RenamingCopier(strategy.getNewLocalName(file));												
+			return new RenamingCopier(flatten(strategy.getNewLocalName(file)));												
 			
 		}catch (Exception e) {
 			throw new FilesetManipulationException(e.getMessage(),e);
@@ -146,6 +161,15 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	}
 
 		
+	/**
+	 * Tries to assure that the name contains only ascii characters [A-Za-z0-9_-]
+	 */
+	private String flatten(String newLocalName) {
+		//TODO implement
+		//TODO make defeatable via inparam
+		return newLocalName;
+	}
+
 	/**
 	 * XMLEventValueConsumer impl
 	 */
