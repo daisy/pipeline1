@@ -524,6 +524,14 @@ public class ConvertMultipleFiles {
 	public ArrayList setTableContents(String [] mimePatternExtensions){
 		ArrayList alCompatibleFiles = new ArrayList();
 		
+		//mg: optimized usage of EFolder -
+		//1) build a regex by summing mimePatternExtensions(simplified by getting regex version instead of glob version from MIMETypeImpl.getFilenamePatterns())
+		//2) invoke EFolder.getFiles() with the regex and recursive to true: eFolder.getFiles(true, summedRegexString, false):
+		//3) done. Replaces all the code in this method (if return value can be changed to a Collection)
+		
+		//mg: this code is more or less a duplicate of that in CompatibleFilesTableProperties.setTableContents?
+		//is one of them deprecated or should we make a static helper method?
+		
 		//Get all compatible files in the top (base) selected folder
 		File directorySelected = new File(dirSelected);
 		EFolder eFolder=null;

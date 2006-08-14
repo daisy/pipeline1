@@ -51,6 +51,11 @@ public class CompatibleFilesTableProperties {
 	 */
 	public ArrayList setTableContents(ArrayList alPatterns){
 		
+		//mg: optimized usage of EFolder -
+		//1) build a regex by summing alPatterns (simplified by getting regex version instead of glob version from MIMETypeImpl.getFilenamePatterns())
+		//2) invoke EFolder.getFiles() with the regex and recursive to true: eFolder.getFiles(true, summedRegexString, false):
+		//3) done. Replaces all the code in this method (if return value can be changed to a Collection)
+						
 		System.out.println("The directory selected is " + dirSelected);
 		ArrayList alCompatibleFiles = new ArrayList();
 		
