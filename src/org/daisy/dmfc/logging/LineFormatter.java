@@ -31,20 +31,7 @@ public class LineFormatter extends Formatter {
     private static SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
     public String format(LogRecord logRecord) {
-    	
-    	//ljs 2006-08-14
-    	StringBuffer buffer = new StringBuffer();
-        
-        buffer.append(logRecord.getLevel().getName());
-        buffer.append(" ");
-        buffer.append(logRecord.getMessage());
-        buffer.append("\n");
-        buffer.append(simpleDate.format(new Date()));
-        buffer.append(" ");
-        return buffer.toString();
-    	
-    	
-        /*
+    	    
         StringBuffer buffer = new StringBuffer();
         buffer.append(simpleDate.format(new Date()));
         buffer.append(" ");
@@ -53,7 +40,7 @@ public class LineFormatter extends Formatter {
         buffer.append(logRecord.getMessage());
         buffer.append("\n");
         return buffer.toString();
-        */
+       
     }
 
 }

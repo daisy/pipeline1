@@ -38,10 +38,7 @@ public class MessageLogger implements EventListener {
     
     static {
         logger.setUseParentHandlers(false);
-        
-        //ljs 2006-08-14
-        logger.setLevel(Level.WARNING);
-        //logger.setLevel(Level.ALL);
+        logger.setLevel(Level.ALL);
     }
     
        
