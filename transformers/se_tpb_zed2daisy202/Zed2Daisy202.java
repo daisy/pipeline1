@@ -304,7 +304,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         parameters.put("first_smil", uri);
         
         // Step 1: Convert the DTBook to XHTML
-        Stylesheet.apply(dtbook.getAbsolutePath(), xsltFile.getAbsolutePath(), xhtmlOut.getAbsolutePath(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
+        Stylesheet.apply(dtbook.toURI().toString(), xsltFile.toURI().toString(), xhtmlOut.toURI().toString(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
         
         // Step 2: Insert a stylesheet
         FileUtils.copy(new File(this.getTransformerDirectory(), "default.css"), new File(outputDir, "default.css"));

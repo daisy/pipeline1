@@ -18,6 +18,7 @@
  */
 package org.daisy.dmfc.transformers;
 
+import java.io.File;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -31,8 +32,11 @@ import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
+import org.xml.sax.EntityResolver;
 
 /**
  * Transform a XML document using XSLT. The XSLTRunner class is an internal
@@ -72,11 +76,9 @@ public class XSLTRunner extends Transformer {
         String factory = (String)parameters.remove("factory");
         
         // xml
-        Source xmlSource = new StreamSource(FilenameOrFileURI.toFile(xmlFileName));
         sendMessage(Level.FINE, i18n("XSLT_READING_XML", xmlFileName));
         
         // xslt
-		Source xsltSource = new StreamSource(FilenameOrFileURI.toFile(xsltFileName));                
         sendMessage(Level.FINE, i18n("XSLT_READING_XSLT", xsltFileName));
         
         // factory
@@ -85,14 +87,15 @@ public class XSLTRunner extends Transformer {
 	    }
         
         // result
-        Result result = new StreamResult(FilenameOrFileURI.toFile(outFileName));
         sendMessage(Level.FINE, i18n("XSLT_WRITING_OUT", outFileName));
 		
-		try {
-		    Stylesheet.apply(xmlSource, xsltSource, result, factory, parameters);
+		try {			
+		    Stylesheet.apply(xmlFileName, xsltFileName, outFileName, factory, parameters, CatalogEntityResolver.getInstance());
         } catch (XSLTException e) {
             throw new TransformerRunException(e.getMessage(), e);
-        }
+		} catch (CatalogExceptionNotRecoverable e) {
+			throw new TransformerRunException(e.getMessage(), e);
+		}
         return true;
     }
 

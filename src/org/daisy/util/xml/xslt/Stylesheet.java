@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.StringWriter;
+import java.net.URI;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -205,7 +206,7 @@ public class Stylesheet {
             Source xsltSource = new SAXSource(reader, new InputSource(new FileInputStream(FilenameOrFileURI.toFile(xsltFile))));
             xmlSource.setSystemId(FilenameOrFileURI.toURI(xmlFile).toString());
             xsltSource.setSystemId(FilenameOrFileURI.toURI(xsltFile).toString());
-	        Result outResult = new StreamResult(FilenameOrFileURI.toFile(outFile));
+	        Result outResult = new StreamResult(FilenameOrFileURI.toFile(outFile).toURI().toString());	        
 	        apply(xmlSource, xsltSource, outResult, factory, parameters);
         } catch (SAXException e) {
             throw new XSLTException(e.getMessage(), e);
@@ -368,7 +369,7 @@ public class Stylesheet {
         if (resolver != null) {
             reader.setEntityResolver(resolver);
         }
-        Source xmlSource = new SAXSource(reader, new InputSource(new FileInputStream(xml)));
+        Source xmlSource = new SAXSource(reader, new InputSource(xml.toString()));
         xmlSource.setSystemId(xml.toString());
         return xmlSource;
     }
