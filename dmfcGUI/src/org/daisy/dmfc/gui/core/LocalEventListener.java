@@ -34,17 +34,22 @@ public class LocalEventListener implements EventListener{
 	public void message(Prompt _prompt) {
 		this.prompt=_prompt;
 		
-	    if (prompt.getType() == Prompt.MESSAGE && prompt.getLevel().intValue() >= Level.ALL.intValue()) {
+	    if (prompt.getType() == Prompt.MESSAGE && prompt.getLevel().intValue() >= Level.WARNING.intValue()) {
 	        System.out.println("[" + prompt.getMessageOriginator() + ", " + prompt.getLevel().getName() + "] " + prompt.getMessage());
-	        message="[" + prompt.getMessageOriginator() + ", " + prompt.getLevel().getName() + "] " + prompt.getMessage();
+	        //message="[" + prompt.getMessageOriginator() + ", " + prompt.getLevel().getName() + "] " + prompt.getMessage(); 
+	        message="[" + prompt.getMessage() + ", " + prompt.getLevel().getName() + "] " + prompt.getMessageOriginator(); 
+	        appendMessageToFile(message);
 	    }
-	    if (prompt.getType() == Prompt.TRANSFORMER_START) {
-	       System.out.println("Transformer " + prompt.getMessageOriginator() + " has just been started");
+	    if (prompt.getType() == Prompt.TRANSFORMER_START ) {
+	       //System.out.println("Transformer " + prompt.getMessageOriginator() + " has just been started");
 	        message="Transformer " + prompt.getMessageOriginator() + " has just been started";
+	        appendMessageToFile(message);
+	    
 	    }
-	    if (prompt.getType() == Prompt.TRANSFORMER_END) {
-	        System.out.println("Transformer " + prompt.getMessageOriginator() + " has just finished running");
+	    if (prompt.getType() == Prompt.TRANSFORMER_END ) {
+	       // System.out.println("Transformer " + prompt.getMessageOriginator() + " has just finished running");
 	        message="Transformer " + prompt.getMessageOriginator() + " has just finished running";
+	        appendMessageToFile(message);
 	        
 	        // A transformer has finished. Check it off in the table.
 	        UIManager.display.syncExec(new Runnable(){
@@ -53,7 +58,7 @@ public class LocalEventListener implements EventListener{
 				}
 			});	        
 	    }
-	    if (prompt.getType() ==Prompt.PROGRESS){
+	    if (prompt.getType() ==Prompt.PROGRESS ){
 	    	calculateTiming(prompt);
 	    }
 	}
@@ -116,7 +121,7 @@ public class LocalEventListener implements EventListener{
 	
 	
 	/**
-	 * Not used, but could be!
+	 * 
 	 * @param message
 	 */
 	public void appendMessageToFile(String message){
