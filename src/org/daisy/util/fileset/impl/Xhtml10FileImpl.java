@@ -8,7 +8,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.interfaces.ManifestFile;
-import org.daisy.util.fileset.interfaces.xml.TextualContentFile;
 import org.daisy.util.fileset.interfaces.xml.Xhtml10File;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -32,6 +31,7 @@ class Xhtml10FileImpl extends XmlFileImpl implements Xhtml10File, ManifestFile {
 	}	
 						
 	public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
+		super.startElement(namespaceURI, sName, qName, attrs);
 		if(sName=="body") parsingBody = true;
 		for (int i = 0; i < attrs.getLength(); i++) {
 			attrName = attrs.getQName(i);
