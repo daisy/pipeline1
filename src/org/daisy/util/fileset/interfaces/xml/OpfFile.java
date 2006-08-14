@@ -16,9 +16,9 @@ public interface OpfFile extends XmlFile, ManifestFile {
 	static String mimeStringConstant = MIMEConstants.MIME_TEXT_XML;
 	
 	/**
-	 * @return an ordered collection of FilesetFile subclasses listed in spine
-	 * The particular subclass(es) of FilesetFile returned will vary depending on
-	 * whether this class has been subclassed (NimasOpfFile, Z3986OpfFile).
+	 * @return an ordered collection of FilesetFile subclasses listed in spine.
+	 * <p>The particular subclass(es) of FilesetFile returned will vary depending on
+	 * whether this class has been subclassed (NimasOpfFile, Z3986OpfFile).</p>
 	 */
 	public Collection getSpineItems()throws IllegalStateException;
 
@@ -30,7 +30,12 @@ public interface OpfFile extends XmlFile, ManifestFile {
 	/**
 	 * @return the value of the Dc:Title metadata item; null if not existing
 	 */
-	public String getMetaDcTitle();	
+	public String getMetaDcTitle();
+	
+	/**
+	 * @return the value of the Dc:Identifier metadata item set as UID; null if not existing
+	 */
+	public String getUID();
 }
 
 

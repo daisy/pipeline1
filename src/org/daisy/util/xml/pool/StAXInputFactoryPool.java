@@ -16,9 +16,9 @@ import javax.xml.stream.XMLInputFactory;
  * @author Markus Gylling
  */
 public class StAXInputFactoryPool {
-	protected static StAXInputFactoryPool instance = new StAXInputFactoryPool();
 	private static XMLInputFactory xmlInputFactory = null;
 	private static Map defaultProperties = new HashMap();
+	protected static StAXInputFactoryPool instance = new StAXInputFactoryPool();
 
 	static public StAXInputFactoryPool getInstance() {
 		return instance;
@@ -39,12 +39,16 @@ public class StAXInputFactoryPool {
 	}
 
 	public XMLInputFactory acquire(Map properties) throws PoolException {
-		setProperties(defaultProperties);
-		setProperties(properties);
+		try{
+			setProperties(defaultProperties);		
+			setProperties(properties);
+		}catch (Exception e){
+			throw new PoolException(e.getMessage(),e);
+		}
 		return xmlInputFactory;
 	}
 	
-	private void setProperties(Map properties) {
+	private void setProperties(Map properties) throws IllegalArgumentException {
 		if (properties != null) {
 			for (Iterator i = properties.keySet().iterator(); i.hasNext();) {
 				String property = (String) i.next();

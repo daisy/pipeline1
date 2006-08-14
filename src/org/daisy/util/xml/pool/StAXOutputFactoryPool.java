@@ -17,9 +17,9 @@ import javax.xml.stream.XMLOutputFactory;
  * @author Markus Gylling
  */
 public class StAXOutputFactoryPool {
-	protected static StAXOutputFactoryPool instance = new StAXOutputFactoryPool();
 	private static XMLOutputFactory xmlOutputFactory = null;
 	private static Map defaultProperties = new HashMap();
+	protected static StAXOutputFactoryPool instance = new StAXOutputFactoryPool();
 
 	static public StAXOutputFactoryPool getInstance() {
 		return instance;
@@ -27,16 +27,20 @@ public class StAXOutputFactoryPool {
 
 	private StAXOutputFactoryPool() {		
 		xmlOutputFactory = XMLOutputFactory.newInstance();
-		defaultProperties.put("javax.xml.stream.isRepairingNamespaces", xmlOutputFactory.IS_REPAIRING_NAMESPACES);
+		defaultProperties.put("javax.xml.stream.isRepairingNamespaces", xmlOutputFactory.getProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES));
 	}
 
 	public XMLOutputFactory acquire(Map properties) throws PoolException {
-		setProperties(defaultProperties);
-		setProperties(properties);
+		try{
+			setProperties(defaultProperties);		
+			setProperties(properties);
+		}catch (Exception e){
+			throw new PoolException(e.getMessage(),e);
+		}
 		return xmlOutputFactory;
 	}
 	
-	private void setProperties(Map properties) {
+	private void setProperties(Map properties) throws IllegalArgumentException {
 		if (properties != null) {
 			for (Iterator i = properties.keySet().iterator(); i.hasNext();) {
 				String property = (String) i.next();

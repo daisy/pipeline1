@@ -22,6 +22,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.interfaces.sgml.HtmlFile;
 import org.daisy.util.fileset.manipulation.FilesetFileManipulator;
 import org.daisy.util.fileset.manipulation.FilesetManipulationException;
 import org.daisy.util.xml.Peeker;
@@ -91,9 +92,7 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 		this.newLocalName = newLocalName;
 		initialize(outputEncoding);
 	}
-	
-	
-	
+		
 	private void initialize(Charset outputEncoding) throws CatalogExceptionNotRecoverable {
 		if(xif==null){ //first access to statics
 			xif = XMLInputFactory.newInstance();
@@ -125,7 +124,7 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 		
 		contextStack = new ContextStack(true);
 		try{
-			
+
 			reader = xif.createXMLEventReader(new FileInputStream((File)inFile),getEncoding(inFile));			
 			while(reader.hasNext()) {
 				XMLEvent xe = reader.nextEvent();				
@@ -322,7 +321,7 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	 * The XMLReporter interface implementation
 	 */
 	public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
-		  //TODO user builder
+		  //TODO use builder
 		  String report = ""; 
 	      report += errorType + " in " + location.getSystemId();
 	      report +="[line " + location.getLineNumber() + "] [column " + location.getColumnNumber() + "]";

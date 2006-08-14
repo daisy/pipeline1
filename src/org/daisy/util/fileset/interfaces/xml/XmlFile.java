@@ -3,7 +3,7 @@ package org.daisy.util.fileset.interfaces.xml;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
@@ -26,10 +26,19 @@ public interface XmlFile extends FilesetFile, Referring {
 	/**
 	 *@return a collection&lt;String&gt; of all xml:lang values in this XML document. 
 	 * If no xml:lang values exist in this document, the return will
-	 * be an emtpy list, not null. The collection contains only unique items, and
+	 * be an emtpy collection, not null. The collection contains only unique items, and
 	 * values are the untampered-with values of the xml:lang attribute.
 	 */
 	public Collection getXmlLangValues();
+
+	/**
+	 *@return a collection&lt;javax.xml.namespace.QName&gt; of all unique namespaces occuring in this XML document. 
+	 * <p>If no namespaces exist in this document, the return will
+	 * be an emtpy collection, not null. The collection contains only unique items, and
+	 * the QName objects therein will always return null on getLocalPart(), and will (for a default namespace entry) return
+	 * null on getPrefix(). The getPrefix() method is guaranteed to be a String representation of the namespace URI. 
+	 */
+	public Collection getNamespaces();
 	
 	/**
 	 *@return true if <code>idval</code> exists as the value of an attribute named <code>id</code> in the document, false otherwise
@@ -43,6 +52,24 @@ public interface XmlFile extends FilesetFile, Referring {
 	 */
 	public boolean hasIDValueOnQName(String idval, QName qName);
 	
+	/**
+	 * @return a Map of inline schema URIs. 
+	 * <p>Note - this collection does not include schema URIs occuring in document prolog, only on document root (i.e. typically xsi refs).
+	 * <p>If the document contains no inline schema URIs, the returne value is an empty Map, not null.</p>
+	 * <p>Map structure is: UnresolvedSchemaUriString, SchemaNamespaceURI</p>
+	 */
+	public Map getInlineSchemaURIs();
+	
+	/**
+	 * @return the prolog doctype public id, or null if no doctype public id exists in this document
+	 */
+	public String getPrologPublicId();
+
+	/**
+	 * @return the prolog doctype system id, or null if no doctype system id exists in this document
+	 */
+	public String getPrologSystemId();
+				
 	/**
 	 *@return true if the document has been parsed and found wellformed; false if the document has been parsed and found malformed
 	 *@throws IllegalStateException if the document has not been parsed

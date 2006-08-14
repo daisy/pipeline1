@@ -16,8 +16,7 @@ import org.daisy.util.fileset.manipulation.FilesetManipulationException;
  */
 
 public class UnalteringCopier implements FilesetFileManipulator {
-	private boolean overwrite = false; 
-
+	 
 	/** 
 	 * Default constructor
 	 */

@@ -24,7 +24,7 @@ public abstract class AbstractSchemaFactory extends javax.xml.validation.SchemaF
 	protected String schemaLanguage = null;	
 
 	/* 
-	 * This is for the refelction instantiation that the SchemaFactoryFinder performs.
+	 * This is for the reflection instantiation that the SchemaFactoryFinder performs.
 	 */
  	public AbstractSchemaFactory() {
  		super();

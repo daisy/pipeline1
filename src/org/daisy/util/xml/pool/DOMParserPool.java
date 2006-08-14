@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.xerces.parsers.DOMParser;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
+
 /**
  * A singleton DOMParser pool. Used for performance optimization.
  * <p> Uses the singleton approach
