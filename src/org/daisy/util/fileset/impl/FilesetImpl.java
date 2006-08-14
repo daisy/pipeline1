@@ -115,6 +115,7 @@ public class FilesetImpl implements Fileset {
 			try {
 				peeker.peek(f.toURI()); 
 			}catch (Exception e) {
+				//System.err.println("stop");
 				//it wasnt an xmlfile or something else went wrong
 			}
 				
@@ -337,6 +338,7 @@ public class FilesetImpl implements Fileset {
 		}//if (member instanceof Referring) 				
 	}
 	
+	
 	/**
 	 * identifies for an incoming reference the most appropriate FilesetFile 
 	 * instance type based primarily on root and name heuristics
@@ -418,6 +420,21 @@ public class FilesetImpl implements Fileset {
 				return new XslFileImpl(uri);
 			}
 			
+			if(rootName== "schema"){
+				if(peeker.getRootElementNsUri().equals("http://www.ascc.net/xml/schematron")
+						||peeker.getRootElementNsUri().equals("http://purl.oclc.org/dsdl/schematron")){
+					return new SchematronFileImpl(uri);
+				}
+
+				if(peeker.getRootElementNsUri().equals("http://www.w3.org/2001/XMLSchema")){
+					return new XsdFileImpl(uri);
+				}
+								
+			}
+			
+			if(rootName== "grammar" && peeker.getRootElementNsUri().equals("http://relaxng.org/ns/structure/1.0")) {
+				return new RelaxngFileImpl(uri);
+			}
 			
 		} catch (Exception e) { //peeker.peek
 			//the file wasnt an xml file or something else went wrong
