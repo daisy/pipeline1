@@ -37,7 +37,8 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 		super(uri,Z3986DtbookFile.mimeStringConstant);		
 	}
 			
-	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {						
+	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
+		super.startElement(namespaceURI, sName, qName, attrs);
 		for (int i = 0; i < attrs.getLength(); i++) {
 			attrName = attrs.getQName(i);
 			attrValue = attrs.getValue(i).intern();

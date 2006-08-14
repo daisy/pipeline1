@@ -22,6 +22,7 @@ final class Z3986ResourceFileImpl extends XmlFileImpl implements Z3986ResourceFi
 			
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		//qName = qName.intern();		
+		super.startElement(namespaceURI, sName, qName, attrs);
 		for (int i = 0; i < attrs.getLength(); i++) {
 			attrName = attrs.getQName(i);
 			attrValue = attrs.getValue(i).intern();	

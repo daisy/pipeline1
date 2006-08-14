@@ -37,6 +37,7 @@ public class SmilFileImpl extends XmlFileImpl implements SmilFile {
 
 	public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		// sName = sName.intern();
+		super.startElement(namespaceURI, sName, qName, attrs);
 		for (int i = 0; i < attrs.getLength(); i++) {
 			attrName = attrs.getQName(i);
 			attrValue = attrs.getValue(i).intern(); // for some reason

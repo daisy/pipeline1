@@ -21,7 +21,8 @@ final class D202MasterSmilFileImpl extends SmilFileImpl implements D202MasterSmi
 		super(uri, D202MasterSmilFile.mimeStringConstant);
 	}
 	
-	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {        		
+	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
+		super.startElement(namespaceURI, sName, qName, attrs);
 		if(inBody){
 			for (int i = 0; i < attrs.getLength(); i++) {							
 				attrName = attrs.getQName(i);

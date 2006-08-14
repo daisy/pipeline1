@@ -37,7 +37,8 @@ final class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile {
         super(uri, D202NccFile.mimeStringConstant);          
     }
         
-	public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {		
+	public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
+		super.startElement(namespaceURI, sName, qName, attrs);
 		for (int i = 0; i < attrs.getLength(); i++) {					
 			attrName = attrs.getQName(i);
 			attrValue = attrs.getValue(i).intern(); //for some reason							
