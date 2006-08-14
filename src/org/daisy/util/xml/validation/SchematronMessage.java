@@ -24,7 +24,7 @@ import java.util.HashMap;
 public class SchematronMessage {
 
 	private HashMap messages = new HashMap();
-	private String schToken = "[sch]";
+	private static String schToken = "[sch]";
 	
 	public SchematronMessage(String string) throws ValidationException{
 		string = string.trim();
@@ -77,4 +77,10 @@ public class SchematronMessage {
 		return (String)messages.get(messageName);
 	}
 	
+	/**
+	 * Static helper to determine if an arbitrary string may be a schematron message string
+	 */
+	public static boolean isMessage(String string) {
+		return string.indexOf(schToken)>=0;
+	}
 }
