@@ -129,6 +129,8 @@ public class Window {
 	File [] arFiles ;
 	File [] arScriptFiles;
 	
+	
+	
 	//Table
 	public Table tblJobs2;
 	Table tblListTransformers;
@@ -232,6 +234,10 @@ public class Window {
 		menu = new MenuDMFC(shell);
 		cue=cue.getInstance();
 		executing=false;
+		
+		//empty logfile contents
+		deleteOldLogFile();
+		
 		createContents();
 		createViewDetails();
 	
@@ -1076,7 +1082,8 @@ public class Window {
 	
 	public String getLogFileContents(){
 		String logFileContents="";
-		String logFileName = System.getProperty("user.dir")+ File.separator + "dmfc_lastrun.log";
+		//String logFileName = System.getProperty("user.dir")+ File.separator + "dmfc_lastrun.log";
+		String logFileName = System.getProperty("user.dir")+ File.separator + "logFile.txt";
 		
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(logFileName));
@@ -1097,6 +1104,21 @@ public class Window {
 				logFile.open();
 			}
 		});
+	}
+	
+	public void deleteOldLogFile(){
+		String logFileName = System.getProperty("user.dir")+ File.separator + "logFile.txt";
+		
+	    boolean success = (new File(logFileName)).delete();
+	    if (!success) {
+	        System.out.println("It's going to be a long file");
+	    }
+	    else{
+	    	System.out.println("Log file deleted");
+	    }
+
+
+		
 	}
 	
 	//*****************************************
@@ -1485,4 +1507,3 @@ public class Window {
 	}
 	
 }
-
