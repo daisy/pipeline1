@@ -20,7 +20,13 @@ public class LogFile {
 	
 	
 	public LogFile(String contents){
-		this.logContents=contents;
+		
+		if (contents!=null ){
+			this.logContents=contents;
+		}
+		else
+			this.logContents="";
+		
 		display= UIManager.display;
 		
 		shell = new Shell(display );
