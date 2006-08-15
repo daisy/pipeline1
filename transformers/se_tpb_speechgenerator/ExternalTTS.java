@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -163,9 +164,18 @@ public abstract class ExternalTTS implements TTS {
 		String announcements = "";
 		for (int i = 0; i< startElements.size(); i++) {
 			StartElement se = (StartElement) startElements.get(i);
-			Attribute at = se.getAttributeByName(attrName);
-			if (at != null) {
-				announcements += at.getValue() + " ";
+// jpritchett@rfbd.org:  For some reason, the following doesn't work all the time.
+//			Attribute at = se.getAttributeByName(attrName);
+//			if (at != null) {
+//				announcements += at.getValue() + " ";
+//			}
+// Replaced with the following do-it-yourself iteration, 14 Aug 2006
+			for (Iterator atIt = se.getAttributes(); atIt.hasNext(); ) {
+				Attribute at = (Attribute) atIt.next();
+				if (attrName.equals(at.getName())) {
+					announcements += at.getValue() + " ";
+					break;
+				}
 			}
 		}
 		
