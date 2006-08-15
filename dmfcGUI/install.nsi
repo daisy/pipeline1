@@ -45,8 +45,6 @@
 ;     'Installer attributes' part.
 ;
 ;     Apply any changes to the 'DMFC', 'GUI', and 'Other' sections.
-;
-;     Make sure all the (correct) jars are listed in dmfcgui.bat.
 
 Name "DMFC GUI"
 
@@ -57,14 +55,14 @@ Name "DMFC GUI"
 !define URL http://www.daisy.org/projects/dmfc
 
 ; Path to Eclipse directory
-!define ECLIPSEDIR "C:\Program Files\eclipse-3.1.1"
+!define ECLIPSEDIR "C:\Program Files\eclipse-3.2"
 
 ; Path to and name of the Jython install JAR
-!define JYTHONDIR "C:\Program Files\eclipse-3.1.1\workspace\dmfc\dist"
+!define JYTHONDIR "C:\Documents and Settings\LINUSE.TPBAD\workspace\dmfc\dist"
 !define JYTHONNAME "jython_Release_2_2alpha1.jar"
 
 ; Path to and name of the LAME install ZIP
-!define LAMEDIR "C:\Program Files\eclipse-3.1.1\workspace\dmfc\dist"
+!define LAMEDIR "C:\Documents and Settings\LINUSE.TPBAD\workspace\dmfc\dist"
 !define LAMENAME "lame3.96.1.zip"
 
 ; Major and minor version of .NET required
@@ -151,7 +149,9 @@ Section -AppGUI SEC0003
     SetOutPath $INSTDIR\lib
     File "${ECLIPSEDIR}\plugins\org.eclipse.swt.win32.*.jar"
     File "${ECLIPSEDIR}\plugins\org.eclipse.core.runtime_*.jar"
+    File "${ECLIPSEDIR}\plugins\org.eclipse.core.commands_*.jar"
     File "${ECLIPSEDIR}\plugins\org.eclipse.jface_*.jar"
+    File "${ECLIPSEDIR}\plugins\org.eclipse.equinox.common_*.jar"
     
     # extract swt dll
     SetOutPath $INSTDIR    
