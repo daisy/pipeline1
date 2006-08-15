@@ -96,7 +96,7 @@ public class ScriptHandler extends EventSender {
 			Document doc = docBuilder.parse(script);
 						
 			// Get properties from script file
-			readProperties(doc.getDocumentElement());
+			readProperties(doc.getDocumentElement(), script.getParent());
 				
 			/*
 			 * More script validation 
@@ -182,7 +182,7 @@ public class ScriptHandler extends EventSender {
 	 * Reads the properties in the script file.
 	 * @param element
 	 */
-	private void readProperties(Element element) {
+	private void readProperties(Element element, String scriptParentPath) {
 	    name = XPathUtils.valueOf(element, "name");
 	    description = XPathUtils.valueOf(element, "description");
 	    version = XPathUtils.valueOf(element, "@version");
@@ -197,6 +197,8 @@ public class ScriptHandler extends EventSender {
 	        Property prop = new Property(propertyName, value, type);
 	        properties.put(propertyName, prop);
 	    }
+	    
+	    properties.put("script_dir", new Property("script_dir", scriptParentPath));
 	    
 	    // Read tasks
 	    NodeList taskList = XPathUtils.selectNodes(element, "task");
@@ -228,13 +230,21 @@ public class ScriptHandler extends EventSender {
 		} catch (TransformerAbortException e) {
 		    throw new ScriptAbortException("Script aborted.");
 		} catch (TransformerRunException e) {
-		    e.printStackTrace();
+		    this.sendMessage(Level.SEVERE, e.getClass().getName() + ": " + e.getLocalizedMessage());
+		    this.sendStackTrace(e.getStackTrace());
 		    throw new ScriptException(i18n("ERROR_RUNNING_TASK"), e);
 		}
 		
 		sendMessage(Level.CONFIG, i18n("END_OF_SCRIPT"));
 	}
     
+	private void sendStackTrace(StackTraceElement[] elements) {
+		for (int i = 0; i < elements.length; ++i) {
+			StackTraceElement element = elements[i];
+			this.sendMessage(Level.WARNING, "\tat " + element.toString());
+		}
+	}
+	
     public boolean setProperty(String name, String value) {
         boolean ret = properties.containsKey(name);
         if (ret) {
