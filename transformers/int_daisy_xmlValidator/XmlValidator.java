@@ -441,7 +441,7 @@ public class XmlValidator extends Transformer implements ErrorHandler, FilesetEr
 	 */
 	private String getSchemaType(URL url) throws SAXException, IOException {
 		Peeker peeker = new PeekerImpl();
-		peeker.peek(url);
+		//peeker.peek(url);
 		String rootName = peeker.getRootElementLocalName();		
 		if(rootName == "schema") {
 			if(peeker.getRootElementNsUri().equals(SchemaLanguageConstants.SCHEMATRON_NS_URI)){

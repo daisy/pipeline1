@@ -1,6 +1,6 @@
 package int_daisy_filesetRenamer;
 
-import int_daisy_filesetRenamer.strategies.TokenStrategy;
+//import int_daisy_filesetRenamer.strategies.TokenStrategy;
 import int_daisy_filesetRenamer.strategies.RenamingStrategy;
 import int_daisy_filesetRenamer.strategies.ScramblingStrategy;
 
@@ -99,20 +99,20 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 		try{		
 			//determine what scheme to use
 			if(scheme==("scramble")||scheme==("unique")) {				
-				rs = new ScramblingStrategy(fm.getInputFileset());											
+				//rs = new ScramblingStrategy(fm.getInputFileset());											
 				if(scheme==("unique")){
-					rs.setDefaultPrefix(ScramblingStrategy.scramble(8));
+					//rs.setDefaultPrefix(ScramblingStrategy.scramble(8));
 				}			
 			}else {
 				//we assume its a token strategy
-				rs = new TokenStrategy(fm.getInputFileset(),scheme);
+				//rs = new TokenStrategy(fm.getInputFileset(),scheme);
 			}			
 			
 			//set filetype exclusions per users request
 				//TODO
 			
 			//set constant exclusions
-			rs.setTypeExclusion(D202NccFile.class); 
+			//rs.setTypeExclusion(D202NccFile.class); 
 			
 			//set prefix
 			String pfx = (String)parameters.remove("prefix");
