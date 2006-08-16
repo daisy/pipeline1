@@ -52,7 +52,7 @@
 				<param name="xsltFilename" value="${transformer_dir}/xslt/transform.xsl"/>
 				<param name="yearFilename" value="${transformer_dir}/config/year_en.xml"/>
 				<param name="sapiVoiceSelection" value="Gender=Male"/>
-				<param name="characterTranslationTable" value="${transformer_dir}/characterTranslationTable.txt"/>
+				<param name="characterTranslationTable" value="${transformer_dir}/character-translation-table.xml"/>
 				<param name="translationTableEncoding" value="utf-8"/>
 				
 			</tts>

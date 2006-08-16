@@ -1,14 +1,22 @@
 package org.daisy.util.i18n;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.InvalidPropertiesFormatException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Characters;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 
 import com.ibm.icu.lang.UCharacter;
 import com.ibm.icu.text.Normalizer;
@@ -23,6 +31,15 @@ import com.ibm.icu.text.UCharacterIterator;
  *	ucr.setFallbackToUCD(true);		
  *	String ret = ucr.toReplacementString(unicodeCodepoint);
  * </pre></code>
+ * 
+ * The translation table file is using the same xml format as that of
+ * java.util.Properties [1][2], using the HEX representation (without 
+ * the characteristic 0x-prefix!) of a unicode character as the <tt>key</tt> 
+ * attribute and the replacement string as value of the <tt>entry</tt> 
+ * element.
+ * 
+ * [1] http://java.sun.com/j2se/1.5.0/docs/api/java/util/Properties.html
+ * [2] http://java.sun.com/dtd/properties.dtd
  * @author Markus Gylling
  */
 public class UCharReplacer  {	
@@ -161,41 +178,22 @@ public class UCharReplacer  {
 	}
 	
 	private HashMap loadTable(URL tableURL, String encoding) throws IOException {
-		//physical table syntax: uchar;replacementstring
-		//HashMap: key:Integer, value:String
-		
-		if(encoding==null){
-			//caller is expected to use chardet or something like that
-			//if textfile encoding is not known
-			//TODO perhaps use chardet here...
-			encoding = Charset.defaultCharset().name();
-		}
-		
 		HashMap map = new HashMap();
-		LineNumberReader rdr = new LineNumberReader(
-				new InputStreamReader(tableURL.openStream(),encoding));		
-		String currentLine;		
-		int lineNumber = 0;		
-		try{
-			while ((currentLine=rdr.readLine()) != null ){
-				lineNumber = rdr.getLineNumber();
-				if(!currentLine.startsWith("#")) {
-					String[] fields = currentLine.split(";");  
-					if(fields.length>1){
-						map.put(Integer.decode("0x" + fields[0]),fields[1]);
-					}else{
-						System.err.println("error in translation table " 
-								+ tableURL.toString() + " at line " + lineNumber);
-					}
-				}
-		    }	    
-		}catch (Exception e) {
-			rdr.close();
-			throw new IOException(e.getClass().getSimpleName() 
-					+ " in translation table " + tableURL.toString() + " at line " 
-					+ lineNumber + ": " + e.getMessage());
+		
+		// Maring Blomberg 2006-08-15:
+		Properties props = new Properties();
+		props.loadFromXML(tableURL.openStream());
+		Set keys = props.keySet();
+		for (Iterator it = keys.iterator(); it.hasNext(); ) {
+			String key = (String) it.next();
+			try {
+				map.put(Integer.decode("0x" + key), props.getProperty(key));
+			} catch (NumberFormatException e) {
+				System.err.println("error in translation table " 
+								+ tableURL.toString() + ": attribute key=\"" + key + "\" is not a hex number.");
+			}
 		}
-		rdr.close();		
+	
 		return map;
 	}
 	
