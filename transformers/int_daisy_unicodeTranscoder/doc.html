@@ -3,7 +3,7 @@
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
 <head>
 <meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
-<title>Transformer documentation: <em>int_daisy_unicodeTranscoder</em></title>
+<title>Transformer documentation: int_daisy_unicodeTranscoder</title>
 <style type="text/css">
   body {margin: 2em; font-family: arial, verdana, sans-serif;}
 </style>
@@ -75,7 +75,11 @@ use when preparing an XML file for a specific output medium: one example is spee
 
 		<dt>translationTable</dt>
 		<dd>
+			<p>An xml file containing the translation table with characters and 
+				replacement strings.</p>
+			<!--
 			<p>An optional comma separated list of tables containing replacement strings.</p>			
+			-->
 		</dd>
 		
 		<dt>fallbackToUCD</dt>
@@ -88,6 +92,7 @@ use when preparing an XML file for a specific output medium: one example is spee
 	<h3 id="extConfig">Extended configurability</h3>
 	<!-- details on additional config files, system variables etc -->
 	<h4>Replacement string table syntax</h4>
+	<!--
 	<p>The replacement string tables must comply to the syntax of the two first fields of <a href="http://www.unicode.org/Public/UNIDATA/UnicodeData.txt">http://www.unicode.org/Public/UNIDATA/UnicodeData.txt</a>.</p>
 	<p>This means that the first field must be a hex value representing a unicode codepoint, and the second field an arbitrary length string of characters.</p>
 	<p>A Cr/Lf (linebreak) must occur between each replacement pair.</p>
@@ -104,6 +109,32 @@ use when preparing an XML file for a specific output medium: one example is spee
 	
 	<p>Note: when characters beyond the ascii range is used in the second field, the output may be funky. The mozilla character set detection routine is run on all added tables, 
 	but this process is not guaranteed to return a correct charset, only a probable charset.</p>
+		-->
+	<p>The character translation table with a mapping between characters and their replacement strings
+	must comply to the xml format used in java.util.Properties. See 
+	<a href="http://java.sun.com/dtd/properties.dtd">http://java.sun.com/dtd/properties.dtd</a> and 
+	<a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/Properties.html">java.util.Properties</a> 
+	for details.</p>
+	
+	<p>The key attribute of the entry element must be a hex value representing a unicode codepoint, and the
+	entry element value an arbitrary length string of characters.</p>
+	
+	<p>Example of replacement text table:</p>
+	
+	<pre><code>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;		
+&lt;properties&gt;
+	&lt;comment&gt;
+		This is an optional comment.
+	&lt;/comment&gt;
+	
+	&lt;entry key="201F"&gt;"&lt;/entry&gt;
+	&lt;entry key="2039"&gt;"&lt;/entry&gt;
+	&lt;entry key="203A"&gt;"&lt;/entry&gt;
+	
+&lt;/properties&gt;
+	</code></pre>
 	
 	
 <h2 id="future">Further development</h2>
