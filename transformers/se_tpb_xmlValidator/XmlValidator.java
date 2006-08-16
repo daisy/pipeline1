@@ -88,7 +88,12 @@ public class XmlValidator extends Transformer implements ErrorHandler {
             }            
             
             // Validate against using RelaxNG and schematron 
-            Validator validator = new RelaxngSchematronValidator(relaxFile, this, true, schematron);
+            Validator validator;
+            if (relaxFile.canRead()) {
+            	validator = new RelaxngSchematronValidator(relaxFile, this, true, schematron);
+            } else {
+            	validator = new RelaxngSchematronValidator(relaxngSchema, this);
+            }
             validator.isValid(xmlFile);
             
             if (abort) {
