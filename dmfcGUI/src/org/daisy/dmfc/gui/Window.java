@@ -507,7 +507,7 @@ public class Window {
 		data.horizontalSpan=1;
 		this.btnEdit = new Button (compJobsInQueue, SWT.SHADOW_OUT);
 		this.btnEdit.setLayoutData(data);
-		buttonProperties.setProperties(btnEdit, "Change Selected Source");
+		buttonProperties.setProperties(btnEdit, "Change Single Job");
 		this.btnEdit.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (tblJobs2.getSelectionCount()==1){
@@ -586,7 +586,7 @@ public class Window {
 		data.horizontalSpan = 1;
 		this.btnTerminate = new Button(bottomComp, SWT.SHADOW_OUT);
 		this.btnTerminate.setLayoutData(data);
-		this.btnTerminate.setFont(FontChoices.fontButton);
+		//this.btnTerminate.setFont(FontChoices.fontButton);
 		this.btnTerminate.setEnabled(true);
 		buttonProperties.setProperties(btnTerminate, " Cancel All Jobs");
 		this.btnTerminate.addSelectionListener(new SelectionAdapter() {
@@ -600,7 +600,7 @@ public class Window {
 		data=new GridData (GridData.HORIZONTAL_ALIGN_FILL);
 		data.horizontalSpan=1;
 		this.btnRemoveFinishedJobs = new Button(bottomComp, SWT.SHADOW_OUT);
-		this.btnRemoveFinishedJobs.setText("Remove Finished Jobs");
+		this.btnRemoveFinishedJobs.setText("Clear Finished Jobs");
 		this.btnRemoveFinishedJobs.setEnabled(true);
 		this.btnRemoveFinishedJobs.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected (SelectionEvent e){
@@ -659,7 +659,7 @@ public class Window {
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan=2;
 		lblElapsedTime = new Label(compDetails, SWT.NONE);
-		lblElapsedTime.setText("Elapsed Time");
+		lblElapsedTime.setText("Expected Total Transformer Time");
 		lblElapsedTime.setLayoutData(data);
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
@@ -671,7 +671,7 @@ public class Window {
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan=2;
 		lblEstimatedTime = new Label(compDetails, SWT.NONE);
-		lblEstimatedTime.setText("Estimated Time");
+		lblEstimatedTime.setText("Remaining Transformer Time");
 		lblEstimatedTime.setLayoutData(data);
 		
 		
