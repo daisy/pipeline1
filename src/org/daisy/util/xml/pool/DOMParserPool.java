@@ -9,8 +9,6 @@ import org.xml.sax.SAXNotSupportedException;
 
 /**
  * A singleton DOMParser pool. Used for performance optimization.
- * <p> Uses the singleton approach
- * described in http://www-128.ibm.com/developerworks/java/library/j-dcl.html.</p>
  * <p>Do not use this class if you cannot guarantee the availability of 
  * <code>org.apache.xerces.parsers.DOMParser</code> on your classpath; 
  * this implementation does not use the JAXP abstractfactory API.</p>
@@ -57,17 +55,30 @@ public class DOMParserPool extends AbstractPool {
 	}
 
 	/**
-	 * return the parser back to the pool
+	 * Return the parser back to the pool
+	 * @throws PoolException 
 	 */
-	public void release(DOMParser parser, Map features, Map properties) {
-		parser.reset();		
-		super.release(parser, features, properties);
+	public void release(DOMParser parser, Map features, Map properties) throws PoolException {	
+		try {
+			//reset all handlers
+			parser.setDocumentSource(null);			
+			parser.setDTDSource(null);
+			parser.setEntityResolver(null);
+			parser.setErrorHandler(null);			
+			//call reset, repop and release
+			parser.reset();		
+			super.release(setFeaturesAndProperties(parser,features, properties), features, properties);
+		} catch (Exception e) {
+			throw new PoolException(e.getMessage(),e);			
+		} 
 	}
 	
-	private DOMParser createDomParser(Map features, Map properties) throws ClassCastException, SAXNotRecognizedException, SAXNotSupportedException {
-		
-		DOMParser parser = new DOMParser();
-				
+	private DOMParser createDomParser(Map features, Map properties) throws ClassCastException, SAXNotRecognizedException, SAXNotSupportedException {		
+		DOMParser parser = new DOMParser();				    
+	    return setFeaturesAndProperties(parser,features, properties);		
+	}
+	
+	private DOMParser setFeaturesAndProperties(DOMParser parser, Map features, Map properties) throws SAXNotRecognizedException, SAXNotSupportedException {
 	    Iterator i;
 	    if (features != null){
 	      for (i = features.keySet().iterator(); i.hasNext();){
@@ -81,8 +92,6 @@ public class DOMParserPool extends AbstractPool {
 	        parser.setProperty(property, properties.get(property));
 	      }
 	    }
-	    
 	    return parser;
-		
 	}
 }

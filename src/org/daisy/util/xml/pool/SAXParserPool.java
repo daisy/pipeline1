@@ -13,7 +13,6 @@ import org.xml.sax.SAXNotSupportedException;
 
 /**
  * A SAXParser pool. Used for performance optimization.
- * <p>Uses the singleton approach described in http://www-128.ibm.com/developerworks/java/library/j-dcl.html.</p>
  * @author Markus Gylling
  */
 public class SAXParserPool extends AbstractPool {
@@ -61,20 +60,29 @@ public class SAXParserPool extends AbstractPool {
 	}
 
 	/**
-	 * return the parser back to the pool
+	 * Return the parser back to the pool.
+	 * @param parser The SAXParser that is to be returned
+	 * @param features The feature map used as inparam to the acquire method
+	 * @param properties The property map used as inparam to the acquire method
 	 */
 	public void release(SAXParser parser, Map features, Map properties) throws PoolException {		  		
-		try {
-			//TODO revisit: cost?
-			//reset to release all handlers et al
-			parser.reset();
-			//then repop with identity features, and call release
-			super.release(setFeaturesAndProperties(parser,features,properties), features, properties);
+		try {			
+			//reset all handlers
+			parser.getXMLReader().setContentHandler(null);
+			parser.getXMLReader().setDTDHandler(null);
+			parser.getXMLReader().setEntityResolver(null);
+			parser.getXMLReader().setErrorHandler(null);	
+			//call reset, repop and release
+			parser.reset(); 
+			super.release(setFeaturesAndProperties(parser,features, properties), features, properties);
 		} catch (Exception e) {
 			throw new PoolException(e.getMessage(),e);
 		}
 	}
 	
+	/**
+	 * Creates a brand new parser when super does not carry one in the cache
+	 */
 	private SAXParser create(Map features, Map properties) throws ParserConfigurationException, SAXException {
 	    SAXParser parser = saxParserFactory.newSAXParser();	    	    
 	    return setFeaturesAndProperties(parser,features,properties);		
