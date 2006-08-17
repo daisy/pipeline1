@@ -1,0 +1,532 @@
+<languages>
+<lang name="Abkhazian" code="abk" />
+<lang name="Achinese" code="ace" />
+<lang name="Acoli" code="ach" />
+<lang name="Adangme" code="ada" />
+<lang name="Adygei" code="ady" />
+<lang name="Adyghe" code="ady" />
+<lang name="Afar" code="aar" />
+<lang name="Afrihili" code="afh" />
+<lang name="Afrikaans" code="afr" />
+<lang name="Afro-Asiatic" code="afa" />
+<lang name="Ainu" code="ain" />
+<lang name="Akan" code="aka" />
+<lang name="Akkadian" code="akk" />
+<lang name="Albanian" code="alb" />
+<lang name="Alemanic" code="gsw" />
+<lang name="Aleut" code="ale" />
+<lang name="Algonquian" code="alg" />
+<lang name="Altaic" code="tut" />
+<lang name="Amharic" code="amh" />
+<lang name="Angika" code="anp" />
+<lang name="Apache" code="apa" />
+<lang name="Arabic" code="ara" />
+<lang name="Aragonese" code="arg" />
+<lang name="Aramaic" code="arc" />
+<lang name="Arapaho" code="arp" />
+<lang name="Araucanian" code="arn" />
+<lang name="Arawak" code="arw" />
+<lang name="Armenian" code="arm" />
+<lang name="Aromanian" code="rup" />
+<lang name="Artificial" code="art" />
+<lang name="Arumanian" code="rup" />
+<lang name="Assamese" code="asm" />
+<lang name="Asturian" code="ast" />
+<lang name="Athapascan" code="ath" />
+<lang name="Australian" code="aus" />
+<lang name="Austronesian" code="map" />
+<lang name="Avaric" code="ava" />
+<lang name="Avestan" code="ave" />
+<lang name="Awadhi" code="awa" />
+<lang name="Aymara" code="aym" />
+<lang name="Azerbaijani" code="aze" />
+<lang name="Bable" code="ast" />
+<lang name="Balinese" code="ban" />
+<lang name="Baltic" code="bat" />
+<lang name="Baluchi" code="bal" />
+<lang name="Bambara" code="bam" />
+<lang name="Bamileke" code="bai" />
+<lang name="Banda" code="bad" />
+<lang name="Bantu" code="bnt" />
+<lang name="Basa" code="bas" />
+<lang name="Bashkir" code="bak" />
+<lang name="Basque" code="baq" />
+<lang name="Batak" code="btk" />
+<lang name="Beja" code="bej" />
+<lang name="Belarusian" code="bel" />
+<lang name="Bemba" code="bem" />
+<lang name="Bengali" code="ben" />
+<lang name="Berber" code="ber" />
+<lang name="Bhojpuri" code="bho" />
+<lang name="Bihari" code="bih" />
+<lang name="Bikol" code="bik" />
+<lang name="Bilin" code="byn" />
+<lang name="Bini" code="bin" />
+<lang name="Bislama" code="bis" />
+<lang name="Blin" code="byn" />
+<lang name="Bokmål, Norwegian" code="nob" />
+<lang name="Bosnian" code="bos" />
+<lang name="Braj" code="bra" />
+<lang name="Breton" code="bre" />
+<lang name="Buginese" code="bug" />
+<lang name="Bulgarian" code="bul" />
+<lang name="Buriat" code="bua" />
+<lang name="Burmese" code="bur" />
+<lang name="Caddo" code="cad" />
+<lang name="Carib" code="car" />
+<lang name="Castilian" code="spa" />
+<lang name="Catalan" code="cat" />
+<lang name="Caucasian" code="cau" />
+<lang name="Cebuano" code="ceb" />
+<lang name="Celtic" code="cel" />
+<lang name="Central American Indian" code="cai" />
+<lang name="Chagatai" code="chg" />
+<lang name="Chamic" code="cmc" />
+<lang name="Chamorro" code="cha" />
+<lang name="Chechen" code="che" />
+<lang name="Cherokee" code="chr" />
+<lang name="Chewa" code="nya" />
+<lang name="Cheyenne" code="chy" />
+<lang name="Chibcha" code="chb" />
+<lang name="Chichewa" code="nya" />
+<lang name="Chinese" code="chi" />
+<lang name="Chinook jargon" code="chn" />
+<lang name="Chipewyan" code="chp" />
+<lang name="Choctaw" code="cho" />
+<lang name="Chuang" code="zha" />
+<lang name="Church Slavic" code="chu" />
+<lang name="Church Slavonic" code="chu" />
+<lang name="Chuukese" code="chk" />
+<lang name="Chuvash" code="chv" />
+<lang name="Classical Nepal Bhasa" code="nwc" />
+<lang name="Classical Newari" code="nwc" />
+<lang name="Coptic" code="cop" />
+<lang name="Cornish" code="cor" />
+<lang name="Corsican" code="cos" />
+<lang name="Cree" code="cre" />
+<lang name="Creek" code="mus" />
+<lang name="English-based" code="cpe" />
+<lang name="French-based" code="cpf" />
+<lang name="Portuguese-based" code="cpp" />
+<lang name="Creoles and pidgins" code="crp" />
+<lang name="Crimean" code="crh" />
+<lang name="Croatian" code="scr" />
+<lang name="Cushitic" code="cus" />
+<lang name="Czech" code="cze" />
+<lang name="Dakota" code="dak" />
+<lang name="Danish" code="dan" />
+<lang name="Dargwa" code="dar" />
+<lang name="Dayak" code="day" />
+<lang name="Delaware" code="del" />
+<lang name="Dhivehi" code="div" />
+<lang name="Dinka" code="din" />
+<lang name="Divehi" code="div" />
+<lang name="Dogri" code="doi" />
+<lang name="Dogrib" code="dgr" />
+<lang name="Dravidian" code="dra" />
+<lang name="Duala" code="dua" />
+<lang name="Dutch" code="dut" />
+<lang name="Dutch, Middle" code="dum" />
+<lang name="Dyula" code="dyu" />
+<lang name="Dzongkha" code="dzo" />
+<lang name="Eastern Frisian" code="frs" />
+<lang name="Efik" code="efi" />
+<lang name="Egyptian" code="egy" />
+<lang name="Ekajuk" code="eka" />
+<lang name="Elamite" code="elx" />
+<lang name="English" code="eng" />
+<lang name="English, Middle" code="enm" />
+<lang name="English, Old" code="ang" />
+<lang name="Erzya" code="myv" />
+<lang name="Esperanto" code="epo" />
+<lang name="Estonian" code="est" />
+<lang name="Ewe" code="ewe" />
+<lang name="Ewondo" code="ewo" />
+<lang name="Fang" code="fan" />
+<lang name="Fanti" code="fat" />
+<lang name="Faroese" code="fao" />
+<lang name="Fijian" code="fij" />
+<lang name="Filipino" code="fil" />
+<lang name="Finnish" code="fin" />
+<lang name="Finno-Ugrian" code="fiu" />
+<lang name="Fon" code="fon" />
+<lang name="French" code="fre" />
+<lang name="French, Middle" code="frm" />
+<lang name="French, Old" code="fro" />
+<lang name="Frisian" code="fry" />
+<lang name="Friulian" code="fur" />
+<lang name="Fulah" code="ful" />
+<lang name="Ga" code="gaa" />
+<lang name="Gaelic" code="gla" />
+<lang name="Galician" code="glg" />
+<lang name="Ganda" code="lug" />
+<lang name="Gayo" code="gay" />
+<lang name="Gbaya" code="gba" />
+<lang name="Geez" code="gez" />
+<lang name="Georgian" code="geo" />
+<lang name="German" code="ger" />
+<lang name="German, Low" code="nds" />
+<lang name="German, Middle High" code="gmh" />
+<lang name="German, Old High" code="goh" />
+<lang name="Germanic" code="gem" />
+<lang name="Gikuyu" code="kik" />
+<lang name="Gilbertese" code="gil" />
+<lang name="Gondi" code="gon" />
+<lang name="Gorontalo" code="gor" />
+<lang name="Gothic" code="got" />
+<lang name="Grebo" code="grb" />
+<lang name="Greek, Ancient" code="grc" />
+<lang name="Greek, Modern" code="gre" />
+<lang name="Guarani" code="grn" />
+<lang name="Gujarati" code="guj" />
+<lang name="Gwich´in" code="gwi" />
+<lang name="Haida" code="hai" />
+<lang name="Haitian" code="hat" />
+<lang name="Haitian Creole" code="hat" />
+<lang name="Hausa" code="hau" />
+<lang name="Hawaiian" code="haw" />
+<lang name="Hebrew" code="heb" />
+<lang name="Herero" code="her" />
+<lang name="Hiligaynon" code="hil" />
+<lang name="Himachali" code="him" />
+<lang name="Hindi" code="hin" />
+<lang name="Hiri Motu" code="hmo" />
+<lang name="Hittite" code="hit" />
+<lang name="Hmong" code="hmn" />
+<lang name="Hungarian" code="hun" />
+<lang name="Hupa" code="hup" />
+<lang name="Iban" code="iba" />
+<lang name="Icelandic" code="ice" />
+<lang name="Ido" code="ido" />
+<lang name="Igbo" code="ibo" />
+<lang name="Ijo" code="ijo" />
+<lang name="Iloko" code="ilo" />
+<lang name="Inari Sami" code="smn" />
+<lang name="Indic" code="inc" />
+<lang name="Indo-European" code="ine" />
+<lang name="Indonesian" code="ind" />
+<lang name="Ingush" code="inh" />
+<lang name="Interlingua" code="ina" />
+<lang name="Interlingue" code="ile" />
+<lang name="Inuktitut" code="iku" />
+<lang name="Inupiaq" code="ipk" />
+<lang name="Iranian" code="ira" />
+<lang name="Irish" code="gle" />
+<lang name="Irish, Middle" code="mga" />
+<lang name="Irish, Old" code="sga" />
+<lang name="Iroquoian" code="iro" />
+<lang name="Italian" code="ita" />
+<lang name="Japanese" code="jpn" />
+<lang name="Javanese" code="jav" />
+<lang name="Judeo-Arabic" code="jrb" />
+<lang name="Judeo-Persian" code="jpr" />
+<lang name="Kabardian" code="kbd" />
+<lang name="Kabyle" code="kab" />
+<lang name="Kachin" code="kac" />
+<lang name="Kalaallisut" code="kal" />
+<lang name="Kalmyk" code="xal" />
+<lang name="Kamba" code="kam" />
+<lang name="Kannada" code="kan" />
+<lang name="Kanuri" code="kau" />
+<lang name="Karachay-Balkar" code="krc" />
+<lang name="Kara-Kalpak" code="kaa" />
+<lang name="Karelian" code="krl" />
+<lang name="Karen" code="kar" />
+<lang name="Kashmiri" code="kas" />
+<lang name="Kashubian" code="csb" />
+<lang name="Kawi" code="kaw" />
+<lang name="Kazakh" code="kaz" />
+<lang name="Khasi" code="kha" />
+<lang name="Khmer" code="khm" />
+<lang name="Khoisan" code="khi" />
+<lang name="Khotanese" code="kho" />
+<lang name="Kikuyu" code="kik" />
+<lang name="Kimbundu" code="kmb" />
+<lang name="Kinyarwanda" code="kin" />
+<lang name="Kirghiz" code="kir" />
+<lang name="Klingon" code="tlh" />
+<lang name="Komi" code="kom" />
+<lang name="Kongo" code="kon" />
+<lang name="Konkani" code="kok" />
+<lang name="Korean" code="kor" />
+<lang name="Kosraean" code="kos" />
+<lang name="Kpelle" code="kpe" />
+<lang name="Kru" code="kro" />
+<lang name="Kuanyama" code="kua" />
+<lang name="Kumyk" code="kum" />
+<lang name="Kurdish" code="kur" />
+<lang name="Kurukh" code="kru" />
+<lang name="Kutenai" code="kut" />
+<lang name="Kwanyama" code="kua" />
+<lang name="Ladino" code="lad" />
+<lang name="Lahnda" code="lah" />
+<lang name="Lamba" code="lam" />
+<lang name="Lao" code="lao" />
+<lang name="Latin" code="lat" />
+<lang name="Latvian" code="lav" />
+<lang name="Letzeburgesch" code="ltz" />
+<lang name="Lezghian" code="lez" />
+<lang name="Limburgan" code="lim" />
+<lang name="Limburger" code="lim" />
+<lang name="limburgish" code="lim" />
+<lang name="Lingala" code="lin" />
+<lang name="Lithuanian" code="lit" />
+<lang name="Lojban" code="jbo" />
+<lang name="Low German" code="nds" />
+<lang name="Low Saxon" code="nds" />
+<lang name="Lower Sorbian" code="dsb" />
+<lang name="Lozi" code="loz" />
+<lang name="Luba-Katanga" code="lub" />
+<lang name="Luba-Lulua" code="lua" />
+<lang name="Luiseno" code="lui" />
+<lang name="Lule Sami" code="smj" />
+<lang name="Lunda" code="lun" />
+<lang name="Luo" code="luo" />
+<lang name="Luxembourgish" code="ltz" />
+<lang name="Lushai" code="lus" />
+<lang name="Macedo-Romanian" code="rup" />
+<lang name="Macedonian" code="mac" />
+<lang name="Madurese" code="mad" />
+<lang name="Magahi" code="mag" />
+<lang name="Maithili" code="mai" />
+<lang name="Makasar" code="mak" />
+<lang name="Malagasy" code="mlg" />
+<lang name="Malay" code="may" />
+<lang name="Malayalam" code="mal" />
+<lang name="Maldivian" code="div" />
+<lang name="Maltese" code="mlt" />
+<lang name="Manchu" code="mnc" />
+<lang name="Mandar" code="mdr" />
+<lang name="Mandingo" code="man" />
+<lang name="Manipuri" code="mni" />
+<lang name="Manobo" code="mno" />
+<lang name="Manx" code="glv" />
+<lang name="Maori" code="mao" />
+<lang name="Marathi" code="mar" />
+<lang name="Mari" code="chm" />
+<lang name="Marshallese" code="mah" />
+<lang name="Marwari" code="mwr" />
+<lang name="Masai" code="mas" />
+<lang name="Mayan" code="myn" />
+<lang name="Mende" code="men" />
+<lang name="Micmac" code="mic" />
+<lang name="Mi'kmaq" code="mic" />
+<lang name="Minangkabau" code="min" />
+<lang name="Mirandese" code="mwl" />
+<lang name="Miscellaneous" code="mis" />
+<lang name="Mohawk" code="moh" />
+<lang name="Moksha" code="mdf" />
+<lang name="Moldavian" code="mol" />
+<lang name="Mon-Khmer" code="mkh" />
+<lang name="Mongo" code="lol" />
+<lang name="Mongolian" code="mon" />
+<lang name="Mossi" code="mos" />
+<lang name="Multiple" code="mul" />
+<lang name="Munda" code="mun" />
+<lang name="Nahuatl" code="nah" />
+<lang name="Nauru" code="nau" />
+<lang name="Navaho" code="nav" />
+<lang name="Navajo" code="nav" />
+<lang name="Ndebele, North" code="nde" />
+<lang name="Ndebele, South" code="nbl" />
+<lang name="Ndonga" code="ndo" />
+<lang name="Neapolitan" code="nap" />
+<lang name="Nepal Bhasa" code="new" />
+<lang name="Nepali" code="nep" />
+<lang name="Newari" code="new" />
+<lang name="Nias" code="nia" />
+<lang name="Niger-Kordofanian" code="nic" />
+<lang name="Nilo-Saharan" code="ssa" />
+<lang name="Niuean" code="niu" />
+<lang name="N'ko" code="nqo" />
+<lang name="No linguistic content" code="zxx" />
+<lang name="Nogai" code="nog" />
+<lang name="Norse, Old" code="non" />
+<lang name="North American Indian" code="nai" />
+<lang name="Northern Frisian" code="frr" />
+<lang name="Northern Sami" code="sme" />
+<lang name="Northern Sotho" code="nso" />
+<lang name="North Ndebele" code="nde" />
+<lang name="Norwegian" code="nor" />
+<lang name="Norwegian Bokmål" code="nob" />
+<lang name="Norwegian Nynorsk" code="nno" />
+<lang name="Nubian" code="nub" />
+<lang name="Nyamwezi" code="nym" />
+<lang name="Nyanja" code="nya" />
+<lang name="Nyankole" code="nyn" />
+<lang name="Nynorsk, Norwegian" code="nno" />
+<lang name="Nyoro" code="nyo" />
+<lang name="Nzima" code="nzi" />
+<lang name="Occitan" code="oci" />
+<lang name="Oirat" code="xal" />
+<lang name="Ojibwa" code="oji" />
+<lang name="Old Bulgarian" code="chu" />
+<lang name="Old Church Slavonic" code="chu" />
+<lang name="Old Newari" code="nwc" />
+<lang name="Old Slavonic" code="chu" />
+<lang name="Oriya" code="ori" />
+<lang name="Oromo" code="orm" />
+<lang name="Osage" code="osa" />
+<lang name="Ossetian" code="oss" />
+<lang name="Ossetic" code="oss" />
+<lang name="Otomian" code="oto" />
+<lang name="Pahlavi" code="pal" />
+<lang name="Palauan" code="pau" />
+<lang name="Pali" code="pli" />
+<lang name="Pampanga" code="pam" />
+<lang name="Pangasinan" code="pag" />
+<lang name="Panjabi" code="pan" />
+<lang name="Papiamento" code="pap" />
+<lang name="Papuan" code="paa" />
+<lang name="Pedi" code="nso" />
+<lang name="Persian" code="per" />
+<lang name="Persian, Old" code="peo" />
+<lang name="Philippine" code="phi" />
+<lang name="Phoenician" code="phn" />
+<lang name="Pilipino" code="fil" />
+<lang name="Pohnpeian" code="pon" />
+<lang name="Polish" code="pol" />
+<lang name="Portuguese" code="por" />
+<lang name="Prakrit" code="pra" />
+<lang name="Provençal" code="oci" />
+<lang name="Provençal, Old" code="pro" />
+<lang name="Punjabi" code="pan" />
+<lang name="Pushto" code="pus" />
+<lang name="Quechua" code="que" />
+<lang name="Raeto-Romance" code="roh" />
+<lang name="Rajasthani" code="raj" />
+<lang name="Rapanui" code="rap" />
+<lang name="Rarotongan" code="rar" />
+<lang name="Romance" code="roa" />
+<lang name="Romanian" code="rum" />
+<lang name="Romany" code="rom" />
+<lang name="Rundi" code="run" />
+<lang name="Russian" code="rus" />
+<lang name="Salishan" code="sal" />
+<lang name="Samaritan Aramaic" code="sam" />
+<lang name="Sami" code="smi" />
+<lang name="Samoan" code="smo" />
+<lang name="Sandawe" code="sad" />
+<lang name="Sango" code="sag" />
+<lang name="Sanskrit" code="san" />
+<lang name="Santali" code="sat" />
+<lang name="Sardinian" code="srd" />
+<lang name="Sasak" code="sas" />
+<lang name="Saxon, Low" code="nds" />
+<lang name="Scots" code="sco" />
+<lang name="Scottish Gaelic" code="gla" />
+<lang name="Selkup" code="sel" />
+<lang name="Semitic" code="sem" />
+<lang name="Sepedi" code="nso" />
+<lang name="Serbian" code="scc" />
+<lang name="Serer" code="srr" />
+<lang name="Shan" code="shn" />
+<lang name="Shona" code="sna" />
+<lang name="Sichuan Yi" code="iii" />
+<lang name="Sicilian" code="scn" />
+<lang name="Sidamo" code="sid" />
+<lang name="Sign" code="sgn" />
+<lang name="Siksika" code="bla" />
+<lang name="Sindhi" code="snd" />
+<lang name="Sinhala" code="sin" />
+<lang name="Sinhalese" code="sin" />
+<lang name="Sino-Tibetan" code="sit" />
+<lang name="Siouan" code="sio" />
+<lang name="Skolt Sami" code="sms" />
+<lang name="Slave" code="den" />
+<lang name="Slavic" code="sla" />
+<lang name="Slovak" code="slo" />
+<lang name="Slovenian" code="slv" />
+<lang name="Sogdian" code="sog" />
+<lang name="Somali" code="som" />
+<lang name="Songhai" code="son" />
+<lang name="Soninke" code="snk" />
+<lang name="Sorbian" code="wen" />
+<lang name="Sotho, Northern" code="nso" />
+<lang name="Sotho, Southern" code="sot" />
+<lang name="South American Indian" code="sai" />
+<lang name="Southern Altai" code="alt" />
+<lang name="Southern Sami" code="sma" />
+<lang name="South Ndebele" code="nbl" />
+<lang name="Spanish" code="spa" />
+<lang name="Sranan Togo" code="srn" />
+<lang name="Sukuma" code="suk" />
+<lang name="Sumerian" code="sux" />
+<lang name="Sundanese" code="sun" />
+<lang name="Susu" code="sus" />
+<lang name="Swahili" code="swa" />
+<lang name="Swati" code="ssw" />
+<lang name="Swedish" code="swe" />
+<lang name="Swiss German" code="gsw" />
+<lang name="Syriac" code="syr" />
+<lang name="Tagalog" code="tgl" />
+<lang name="Tahitian" code="tah" />
+<lang name="Tai" code="tai" />
+<lang name="Tajik" code="tgk" />
+<lang name="Tamashek" code="tmh" />
+<lang name="Tamil" code="tam" />
+<lang name="Tatar" code="tat" />
+<lang name="Telugu" code="tel" />
+<lang name="Tereno" code="ter" />
+<lang name="Tetum" code="tet" />
+<lang name="Thai" code="tha" />
+<lang name="Tibetan" code="tib" />
+<lang name="Tigre" code="tig" />
+<lang name="Tigrinya" code="tir" />
+<lang name="Timne" code="tem" />
+<lang name="Tiv" code="tiv" />
+<lang name="tlhIngan-Hol" code="tlh" />
+<lang name="Tlingit" code="tli" />
+<lang name="Tok Pisin" code="tpi" />
+<lang name="Tokelau" code="tkl" />
+<lang name="Tonga" code="tog" />
+<lang name="Tonga" code="ton" />
+<lang name="Tsimshian" code="tsi" />
+<lang name="Tsonga" code="tso" />
+<lang name="Tswana" code="tsn" />
+<lang name="Tumbuka" code="tum" />
+<lang name="Tupi" code="tup" />
+<lang name="Turkish" code="tur" />
+<lang name="Turkish, Ottoman" code="ota" />
+<lang name="Turkmen" code="tuk" />
+<lang name="Tuvalu" code="tvl" />
+<lang name="Tuvinian" code="tyv" />
+<lang name="Twi" code="twi" />
+<lang name="Udmurt" code="udm" />
+<lang name="Ugaritic" code="uga" />
+<lang name="Uighur" code="uig" />
+<lang name="Ukrainian" code="ukr" />
+<lang name="Umbundu" code="umb" />
+<lang name="Undetermined" code="und" />
+<lang name="Upper Sorbian" code="hsb" />
+<lang name="Urdu" code="urd" />
+<lang name="Uyghur" code="uig" />
+<lang name="Uzbek" code="uzb" />
+<lang name="Vai" code="vai" />
+<lang name="Valencian" code="cat" />
+<lang name="Venda" code="ven" />
+<lang name="Vietnamese" code="vie" />
+<lang name="Volapük" code="vol" />
+<lang name="Votic" code="vot" />
+<lang name="Wakashan" code="wak" />
+<lang name="Walamo" code="wal" />
+<lang name="Walloon" code="wln" />
+<lang name="Waray" code="war" />
+<lang name="Washo" code="was" />
+<lang name="Welsh" code="wel" />
+<lang name="Western Frisian" code="fry" />
+<lang name="Wolof" code="wol" />
+<lang name="Xhosa" code="xho" />
+<lang name="Yakut" code="sah" />
+<lang name="Yao" code="yao" />
+<lang name="Yapese" code="yap" />
+<lang name="Yiddish" code="yid" />
+<lang name="Yoruba" code="yor" />
+<lang name="Yupik" code="ypk" />
+<lang name="Zande" code="znd" />
+<lang name="Zapotec" code="zap" />
+<lang name="Zenaga" code="zen" />
+<lang name="Zhuang" code="zha" />
+<lang name="Zulu" code="zul" />
+<lang name="Zuni" code="zun" />
+</languages>
