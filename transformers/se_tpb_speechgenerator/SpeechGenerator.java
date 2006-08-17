@@ -252,6 +252,7 @@ public class SpeechGenerator extends Transformer {
 			sendMessage(Level.FINEST, i18n("IN_PROGRESS"));
 			
 			barrier = new CountDownLatch(lastSynchNumber.size() + 1);
+
 			// how many audio files will be produced?
 			// make sure the filenames will be ok.
 			digitLen = Math.max(digitLen, String.valueOf(lastSynchNumber.size()).length());
@@ -846,6 +847,8 @@ public class SpeechGenerator extends Transformer {
 	 */
 	private void mergeAudio() throws IOException, UnsupportedAudioFileException, InterruptedException {
 		if (0 == workingFiles.size()) {
+			//System.err.println("barrier: " + barrier.getCount());
+			barrier.countDown();
 			return;
 		}
 		
