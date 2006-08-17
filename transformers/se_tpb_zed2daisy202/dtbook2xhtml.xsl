@@ -912,13 +912,15 @@
 	
 	<!--   <!ENTITY isInline "self::dtb:a or self::dtb:em or self::dtb:strong or self::dtb:abbr or self::dtb:acronym or self::dtb:bdo or self::dtb:dfn or self::dtb:sent or self::dtb:w or self::dtb:sup or self::dtb:sub or self::dtb:span or self::dtb:annoref or self::dtb:noteref or self::dtb:img or self::dtb:br or self::dtb:q or self::dtb:samp or self::dtb:pagenum"> -->
 	<xsl:template match="dtb:*" mode="inlineOnly">
-		<xsl:message><xsl:value-of select="name(.)"/>: inline only</xsl:message>
+		<!--<xsl:message><xsl:value-of select="name(.)"/>: inline only</xsl:message>-->
 		<xsl:choose>
 			<xsl:when test="self::dtb:a or self::dtb:em or self::dtb:strong or self::dtb:abbr or self::dtb:acronym or self::dtb:bdo or self::dtb:dfn or self::dtb:sent or self::dtb:w or self::dtb:sup or self::dtb:sub or self::dtb:span or self::dtb:annoref or self::dtb:noteref or self::dtb:img or self::dtb:br or self::dtb:q or self::dtb:samp or self::dtb:pagenum">
+				<!--
 				<xsl:message>
 					<xsl:value-of select="name(.)"/>
 					<xsl:text> is inline</xsl:text>
 				</xsl:message>
+				-->
 				<xsl:apply-templates select="."/>
 			</xsl:when>
 			<xsl:otherwise>
