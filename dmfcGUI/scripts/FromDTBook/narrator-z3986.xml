@@ -5,6 +5,65 @@
 	<property name="input" value="FIXME" type="application/x-dtbook+xml"/>
 	<property name="outputPath" value="FIXME" type="application/x-filesystemDirectory"/>
 	
+	<!-- *************************
+	      DTBook input validation 
+	     ************************* -->
+	<task name="se_tpb_xmlValidator" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>relaxngSchema</name>
+			<value>-//NISO//RNG dtbook 2005-1//EN</value>
+		</parameter>
+		<parameter>
+			<name>useSchematron</name>
+			<value>true</value>
+		</parameter>
+		<parameter>
+			<name>useDTD</name>
+			<value>true</value>
+		</parameter>
+	</task>
+	<task name="se_tpb_xmlValidator" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>relaxngSchema</name>
+			<value>-//TPB//RNG dtbook 2005-1 Narrator//EN</value>
+		</parameter>
+		<parameter>
+			<name>useSchematron</name>
+			<value>true</value>
+		</parameter>
+		<parameter>
+			<name>useDTD</name>
+			<value>true</value>
+		</parameter>
+	</task>
+	<!--
+	<task name="se_tpb_xmlValidator" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>relaxngSchema</name>
+			<value>-//TPB//RNG dtbook 2005-1 TPB//EN</value>
+		</parameter>
+		<parameter>
+			<name>useSchematron</name>
+			<value>true</value>
+		</parameter>
+		<parameter>
+			<name>useDTD</name>
+			<value>true</value>
+		</parameter>
+	</task>
+	-->
 	<!-- ****************************
 	      Abbr and Acronym detection 
 	     **************************** -->
