@@ -193,4 +193,10 @@
   	</sch:rule>  	
   </sch:pattern>  
   
+  <sch:pattern name="dtbook_TPB_IdValue" id="dtbook_TPB_IdValue">
+  	<sch:rule context="*[@id]">
+  		<sch:assert test="normalize-space(@id)=@id">ID attributes may not contain whitespace</sch:assert>
+  	</sch:rule>
+  </sch:pattern>
+  
 </grammar>
