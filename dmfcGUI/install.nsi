@@ -141,9 +141,10 @@ Section -AppGUI SEC0003
 
     # gui zip
     SetOutPath $INSTDIR
-    File dist\dmfcgui.zip
-    ZipDLL::extractall $INSTDIR\dmfcgui.zip $INSTDIR
-    Delete $INSTDIR\dmfcgui.zip
+    File dist\extras.zip
+    ZipDLL::extractall $INSTDIR\extras.zip $INSTDIR
+    Delete $INSTDIR\extras.zip
+    File dist\dmfcgui.jar
     
     # copy jars
     SetOutPath $INSTDIR\lib

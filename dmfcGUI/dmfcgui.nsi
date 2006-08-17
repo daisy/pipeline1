@@ -33,8 +33,10 @@ Section ""
   Pop $R0
  
   ; add swt jars
-  Push "$EXEDIR\lib"
-  Call AddJarsInDir
+  ;Push "$EXEDIR\lib"
+  ;Call AddJarsInDir
+  Push "$EXEDIR\dmfcgui.jar"
+  Call AddEntry
   
   ; add dmfc libs
   ;Push "$EXEDIR\dmfc\lib"
@@ -49,8 +51,8 @@ Section ""
   Call AddJarsInDir
   
   ; add dmfcgui classpath
-  Push "$EXEDIR\bin"
-  Call AddEntry
+  ;Push "$EXEDIR\bin"
+  ;Call AddEntry
   
   ; add dmfc classpath
   Push "$EXEDIR\dmfc\bin"
@@ -59,7 +61,7 @@ Section ""
   ExpandEnvStrings $1 %COMSPEC%
   IfFileExists $EXEDIR\debug.txt debug nodebug
  debug:
-  StrCpy $0 '"$1" /C $R0 -Djava.library.path="$EXEDIR" -classpath $classpath ${CLASS} > stdout.log 2> stderr.log'
+  StrCpy $0 '"$1" /C ""$R0" -Djava.library.path="$EXEDIR" -classpath $classpath ${CLASS} > stdout.log 2> stderr.log"'
   Goto exeset
  nodebug:
   StrCpy $0 '"$R0" -Djava.library.path="$EXEDIR" -classpath $classpath ${CLASS}'
