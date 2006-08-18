@@ -246,8 +246,8 @@
   <group> <!-- SVG -->    
     <public publicId="-//W3C//DTD SVG 1.0//EN" uri="./svg/svg10.dtd" />
     <system systemId="http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd" uri="./svg/svg10.dtd" />    
-    <public publicId="-//W3C//DTD SVG 1.1//EN" uri="./svg/svg11.dtd" />
-    <system systemId="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" uri="./svg/svg11.dtd" />    
+    <public publicId="-//W3C//DTD SVG 1.1//EN" uri="./svg/svg11-flat.dtd" />
+    <system systemId="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" uri="./svg/svg11-flat.dtd" />    
     <public publicId="-//W3C//DTD SVG 1.1 Basic//EN" uri="./svg/svg11-basic.dtd" />
     <system systemId="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-basic.dtd" uri="./svg/svg11-basic.dtd" />    
     <public publicId="-//W3C//DTD SVG 1.1 Tiny//EN" uri="./svg/svg11-tiny.dtd" />
