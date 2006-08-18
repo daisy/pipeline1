@@ -17,6 +17,7 @@ lib/tagsoup-1.0rc4.jar -text
 lib/wstx-lgpl-2.0.3.jar -text
 lib/xercesImpl.jar -text
 resources/transformer.rng -text svneol=unset#application/octet-stream
+src/org/daisy/util/xml/catalog/svg/svg11-flat.dtd -text svneol=unset#application/octet-stream
 transformers/se_tpb_filesetcreator/resource/tpbnarrator_res.mp3 -text
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/Interop.SpeechLib.dll -text
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.application -text svneol=unset#application/octet-stream
