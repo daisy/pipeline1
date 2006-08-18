@@ -34,7 +34,9 @@ public class FilesetRegex {
 		FILE_JPG = Pattern.compile("(.+\\.[Jj][Pp][Gg]$)|(.+\\.[Jj][Pp][Ee][Gg]$)");
 		FILE_GIF = Pattern.compile(".+\\.[Gg][Ii][Ff]$");
 		FILE_PNG = Pattern.compile(".+\\.[Pp][Nn][Gg]$");
-		FILE_BMP = Pattern.compile(".+\\.[Bb][Mm][Pp]$");		
+		FILE_BMP = Pattern.compile(".+\\.[Bb][Mm][Pp]$");
+// jpritchett@rfbd.org:  Added SVG
+		FILE_SVG = Pattern.compile(".+\\.[Ss][Vv][Gg]$");
 		FILE_IMAGE = Pattern.compile( "(.+\\.[Jj][Pp][Gg]$)|(.+\\.[Jj][Pp][Ee][Gg]$)|(.+\\.[Pp][Nn][Gg]$)|(.+\\.[Gg][Ii][Ff]$)|(.+\\.[Bb][Mm][Pp]$)");
 		FILE_NCX = Pattern.compile(".+\\.[Nn][Cc][Xx]$");
 		FILE_RESOURCE = Pattern.compile(".+\\.[Rr][Ee][Ss]$");
@@ -84,6 +86,8 @@ public class FilesetRegex {
 	public Pattern FILE_GIF;
 	public Pattern FILE_PNG;
 	public Pattern FILE_BMP;
+// jpritchett@rfbd.org:  Added SVG
+	public Pattern FILE_SVG;
 	public Pattern FILE_IMAGE;
 	public Pattern FILE_NCX;
 	public Pattern FILE_RESOURCE;
