@@ -419,6 +419,11 @@ public class FilesetImpl implements Fileset {
 			if (rootName== "stylesheet"){
 				return new XslFileImpl(uri);
 			}
+
+// jpritchett@rfbd.org:  Added SVG here
+			if (rootName == "svg") {
+				return new SvgFileImpl(uri);
+			}
 			
 			if(rootName== "schema"){
 				if(peeker.getRootElementNsUri().equals("http://www.ascc.net/xml/schematron")
@@ -438,6 +443,7 @@ public class FilesetImpl implements Fileset {
 			
 		} catch (Exception e) { //peeker.peek
 			//the file wasnt an xml file or something else went wrong
+//			e.printStackTrace();
 		}//peeker.peek	
 		
 		
