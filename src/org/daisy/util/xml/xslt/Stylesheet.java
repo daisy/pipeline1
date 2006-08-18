@@ -83,6 +83,11 @@ public class Stylesheet {
 		        System.setProperty(property, factory);
 		    }
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			try {
+				transformerFactory.setAttribute("http://saxon.sf.net/feature/version-warning", Boolean.FALSE);
+			} catch (IllegalArgumentException iae) {
+				
+			}
 			
 			if (errorListener != null) {
 			    transformerFactory.setErrorListener(errorListener);
