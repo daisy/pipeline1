@@ -219,10 +219,10 @@ Section -AppOther SEC0004
     
     # update dmfcgui.bat
     #MessageBox MB_OK|MB_ICONINFORMATION "FIXME: Update dmfcgui.bat"    
-    Push $INSTDIR\dmfcgui.bat
-    Push "SET INST="
-    Push "SET INST=$INSTDIR"
-    Call ReplaceLineStr
+    #Push $INSTDIR\dmfcgui.bat
+    #Push "SET INST="
+    #Push "SET INST=$INSTDIR"
+    #Call ReplaceLineStr
     
     # Register section
     WriteRegStr HKLM "${REGKEY}\Components" AppOther 1
@@ -240,6 +240,7 @@ Section -post SEC0001
     SetOutPath $INSTDIR
     CreateDirectory "$SMPROGRAMS\$StartMenuGroup"
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\dmfcgui.exe
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Release Notes.lnk" $INSTDIR\dmfc\doc\releasenotes\release-notes.txt
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe    
     
     # Create uninstall registry info
@@ -297,6 +298,7 @@ SectionEnd
 Section un.post UNSEC0001
     DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Release Notes.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
     DeleteRegValue HKLM "${REGKEY}" StartMenuGroup
