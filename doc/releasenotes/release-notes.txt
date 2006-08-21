@@ -1,0 +1,27 @@
+DMFC Release Notes
+
+This document contains joint release notes
+for DMFC and DMFC GUI.
+
+DMFC (http://daisymfc.sourceforge.net/) is 
+a DTB- and XML oriented transformation pipeline 
+designed to be used in both serverside and 
+desktop environments.
+
+To facilitate desktop usage, a Graphical User Interface 
+(GUI) is provided. The GUI is hosted on a separate 
+sourceforge project (http://sourceforge.net/projects/daisymfcgui)
+
+********************************
+Version/Date: 2006-08-25
+
+This is the First Public Access (FPA) release of DMFC.
+
+** Known issues **
+2006-08-25-1 
+  Running the RTF-to-Dtbook script more than once 
+  during one session will make the application freeze.
+  The cause of the issue is known (bug in core) and 
+  will be fixed by next release.
+
+********************************
