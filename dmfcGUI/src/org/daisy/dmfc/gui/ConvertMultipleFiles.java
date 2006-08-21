@@ -112,6 +112,11 @@ public class ConvertMultipleFiles {
 	//boolean - is Directory
 	boolean boolOutputIsDir=false;
 	
+	//Output is a directory, = 1
+	//Output is a file, = 2
+	//The is not output, ie, transformer is a validator = 3
+	int intOutputIsDir = 0;
+	
 	//String pattern of output path
 	String outExtensionPattern= "";
 	String fileSelected;
@@ -216,8 +221,8 @@ public class ConvertMultipleFiles {
 		
 		
 		// TextField to hold folder chosen
-		data =data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER); 
-		txtDirectorySelected = new Text(compInputFields, SWT.BORDER);
+		data  = new GridData(GridData.HORIZONTAL_ALIGN_CENTER); 
+		txtDirectorySelected = new Text(compInputFields, SWT.BORDER |SWT.READ_ONLY);
 		textProperties.setProperties(txtDirectorySelected, "");
 		// data = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
 		data.horizontalSpan=1;
@@ -226,7 +231,7 @@ public class ConvertMultipleFiles {
 		
 		
 		// Browse button
-		data =data = new GridData(GridData.HORIZONTAL_ALIGN_END); 
+		data  = new GridData(GridData.HORIZONTAL_ALIGN_END); 
 		btnBrowseInput= new Button(compInputFields, SWT.BORDER);
 		data = new GridData();
 		data.horizontalSpan=1;
@@ -355,7 +360,7 @@ public class ConvertMultipleFiles {
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan=1;
 		data.widthHint=400;
-		txtOutputDoc=new Text(compOutputFields, SWT.BORDER);
+		txtOutputDoc=new Text(compOutputFields, SWT.BORDER |SWT.READ_ONLY);
 		txtOutputDoc.setLayoutData(data);
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
@@ -767,6 +772,10 @@ public class ConvertMultipleFiles {
 	 * Determines is output path is a file or a directory
 	 * If file, sets the appropriate extension of the
 	 * file output.
+	 * 
+	 * Problem, there is no output path for validators.
+	 * I need an enum, not a boolean...
+	 * 
 	 */
 	public void setFileOrDirFlag(){
 		String mimeOut = this.getMimeForProperty("outputPath");
@@ -774,15 +783,23 @@ public class ConvertMultipleFiles {
 			if ("application/x-filesystemDirectory".equals(mimeOut)) {	
 				// Directory
 				boolOutputIsDir = true;
+				intOutputIsDir=1;
 			}
 			else{
 				//File
 				boolOutputIsDir=false;
+				intOutputIsDir=2;
 				StringTokenizer st = new StringTokenizer(mimeOut, ".");
 				while (st.hasMoreTokens()){
 					outExtensionPattern=st.nextToken();
 				}
 			}
+		
+		}
+		
+		//output dir is null
+		else{  
+			intOutputIsDir=3;
 		}
 	}	
 	
@@ -850,7 +867,9 @@ public class ConvertMultipleFiles {
 					Job job = new Job();
 					
 					File inPutFile = (File)checkedObject[i];
-					if(boolOutputIsDir==false){
+					//if(boolOutputIsDir==false){
+						
+					if(intOutputIsDir==2){
 						outputPath=addFileNameToOutputPath(outputPath, inPutFile);
 					}
 					
@@ -885,7 +904,8 @@ public class ConvertMultipleFiles {
 		
 		//used only if the output path is a file.
 			
-		if (boolOutputIsDir==false){
+		//if (boolOutputIsDir==false){
+			if (intOutputIsDir==2){
 		
 			//Name of the input path file
 			String strInPath = inPath.getName();

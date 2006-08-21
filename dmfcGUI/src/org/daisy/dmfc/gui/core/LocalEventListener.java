@@ -27,7 +27,7 @@ public class LocalEventListener implements EventListener{
 	Text elapsed;
 	Text estimated;
 	Prompt prompt;
-	TableViewer tableViwer;
+	TableViewer tableViewer;
 	Job currentJob;
 	
 	
@@ -54,7 +54,7 @@ public class LocalEventListener implements EventListener{
 	        // A transformer has finished. Check it off in the table.
 	        UIManager.display.syncExec(new Runnable(){
 				public void run(){
-					tableViwer.getTable().getItem(currentJob.getScript().getCurrentTaskIndex()).setChecked(true);
+				tableViewer.getTable().getItem(currentJob.getScript().getCurrentTaskIndex()).setChecked(true);
 				}
 			});	        
 	    }
@@ -99,7 +99,7 @@ public class LocalEventListener implements EventListener{
 		this.elapsed=elapsed;
 		this.estimated= estimated;
 		this.progBar=_pb;
-		this.tableViwer = tv;
+		this.tableViewer = tv;
 	}
 	
 	public void setJob(Job job) {

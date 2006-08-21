@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -173,6 +174,10 @@ public class Window {
 	
 	//Details is shown flag.  Default is true.
 	boolean showRunDetails= true;
+	
+	//Thread to run script.execute()
+	JobRunner jr;
+	
 	
 	//Files
 	File scriptDirectory;
@@ -988,6 +993,9 @@ public class Window {
 	 *
 	 */
 	public void removeCompletedJobs(){
+		
+		ArrayList alJob = new ArrayList();
+		
 		int size = cue.getLinkedListJobs().size();
 		for (int i =0; i<size;i++){
 			Job job = (Job)cue.getLinkedListJobs().get(i);
@@ -996,9 +1004,14 @@ public class Window {
 			//status = completed or failed
 			if (status==3 || status == 4){
 				System.out.println("Delete failed or completed from cue, input: " + job.getInputFile() + " index of " + i);
-				cue.deleteFromQueue(i);
+				//cue.deleteFromQueue(i);
+				alJob.add(job);
 			}
 		}
+		
+		cue.getLinkedListJobs().removeAll(alJob);
+		
+		
 		tableJobViewer.refresh();
 		btnRun.setEnabled(true);
 		clearRunDetails();
@@ -1440,7 +1453,7 @@ public class Window {
 	 */
 	public void start(){
 		
-		executing=true;	
+		
 		//enable and disable buttons
 		setRunTerminateButtons();
 		
@@ -1458,12 +1471,13 @@ public class Window {
 //		walk through the queue and return jobs
 		LinkedList jobList = cue.getLinkedListJobs();
 		
+		/*
 		//number in queue
 		int jobNumber = 0;
 		
 		//count the transformers
 		int count = -1;
-		
+		*/
 		Iterator it = jobList.iterator();
 		Job job=null;
 		while(it.hasNext()){
@@ -1492,16 +1506,19 @@ public class Window {
 			scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
 			
 			
-			JobRunner jr = new JobRunner (this.shell, this.scriptHandler, job,  tableViewer, tableJobViewer, this.btnRun);
+			jr = new JobRunner (this.shell, this.scriptHandler, job,  tableViewer, tableJobViewer, this.btnRun);
+			
+			this.executing=true;	
 			
 			jr.start();
+			this.executing=false;
 			
 			tableJobViewer.refresh();
 			
 		}
 		
 		
-		this.executing=false;
+		
 		this.btnRemoveFinishedJobs.setEnabled(true);
 		
 	}

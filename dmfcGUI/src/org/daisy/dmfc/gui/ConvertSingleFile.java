@@ -183,7 +183,7 @@ public class ConvertSingleFile  {
 //		Text Field, input choice
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.widthHint=300;
-		txtInputDoc = new Text(compInputFields, SWT.BORDER);
+		txtInputDoc = new Text(compInputFields, SWT.BORDER|SWT.READ_ONLY);
 		textProperties.setProperties(txtInputDoc, null);
 		txtInputDoc.setLayoutData(data);
 		
@@ -223,7 +223,7 @@ public class ConvertSingleFile  {
 		//Text field
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.widthHint=300;
-		txtOutputDoc=new Text(compOutputFields, SWT.BORDER);
+		txtOutputDoc=new Text(compOutputFields, SWT.BORDER | SWT.READ_ONLY);
 		textProperties.setProperties(txtOutputDoc, null);
 		txtOutputDoc.setLayoutData(data);
 		
