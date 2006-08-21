@@ -4,7 +4,7 @@ id			what									who			status
 ----------------------------------------------------------------------		
 bugs		Remaining bugs in GUI					Laurie
 man			Short GUI manual						Laurie
-scrpts		all scripts commited 					Linus
+scrpts		all scripts committed 					Linus
 desc		script walkthrough 
 			(description extensions)				Markus
 scripdupe	copy scripts to dmfc/examples			Markus			
@@ -18,7 +18,7 @@ rnmenu		release notes start menu item
 			in nsis installer						Linus       DONE
 
 monster		monster test script provision			Linus
-monster 	release test script testrun				Laurie		DONE
+monster 	monster test script testrun				Laurie		DONE
 
 jdocant		fix javadoc ant targets					Linus       DONE
 jdoc 		javadoc cleanup							Markus
@@ -36,7 +36,7 @@ dorgdwn		installer to daisy.org upload			Laurie
 reltech		Release technician handbook				Laurie		DONE (awaiting finalization)
   (can be finalized after FPA)
 
-tracker		Establish which tracker(s) to use		All
+tracker		Establish which tracker(s) to use		All			DONE
 
 
 ----------------------------------------------------------------------
