@@ -77,6 +77,8 @@ threading	change so that JobRunner runs in
 output		Remove output for validators		LS
 filetype	Output file extension exposed
 			on output files						LS
+closeprog   Make it harder to accidentally close
+            the GUI while a script is running   LS
 
 
 
