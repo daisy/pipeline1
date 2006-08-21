@@ -34,8 +34,9 @@ submit		package download submissions at sf		Laurie
 dorgdwn		installer to daisy.org upload			Laurie
 
 reltech		Release technician handbook				Laurie
+  (can be finalized after FPA)
 
-tracker		Establish which tracker to use			All
+tracker		Establish which tracker(s) to use		All
 
 
 ----------------------------------------------------------------------
