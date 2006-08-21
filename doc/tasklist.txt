@@ -68,7 +68,15 @@ winpaths	make sure we dont crash if
 xml:lang	add xml:lang list collection
 			to fileset XmlFile					MG			
 
-
+--------------- dmfc GUI tasklist immediate ---------------
+id          what                                who     status
+----------------------------------------------------------------
+scripts		Add all scripts to the GUI			LS & LE	 nearly complete
+threading	change so that JobRunner runs in
+            only one thread.					LS
+output		Remove output for validators		LS
+filetype	Output file extension exposed
+			on output files						LS
 
 
 
