@@ -63,8 +63,8 @@
 		<type id="z3986dtbook" name="application/x-dtbook+xml" parentTypes="xml" namePatterns="*.xml"/>
 		<type id="z3986ncx" name="application/x-dtbncx+xml" parentTypes="xml" namePatterns="*.ncx"/>
 		<!-- PDTB 1.0 -->
-		<type id="pdtb-uak" name="application/x-pdtb+uak" parentTypes="xml" namePatterns="*.uak"/>
-		<type id="pdtb-bka" name="application/x-pdtb+uak" parentTypes="xml" namePatterns="*.bka"/>
+		<type id="pdtb-uak" name="application/x-pdtb+uak" namePatterns="*.uak"/>
+		<type id="pdtb-bka" name="application/x-pdtb+bka" namePatterns="*.bka"/>
 		<!-- schemas -->
 		<!-- when we dont know if this is compact or xml rng syntax, an anonymous parent -->
 		<type id="rng" name="application/x-relax-ng" namePatterns="*.rng *.rnc" />
