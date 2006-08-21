@@ -10,18 +10,29 @@ desktop environments.
 
 To facilitate desktop usage, a Graphical User Interface 
 (GUI) is provided. The GUI is hosted on a separate 
-sourceforge project (http://sourceforge.net/projects/daisymfcgui)
+sourceforge project (http://sourceforge.net/projects/daisymfcgui).
+
+Report bugs and issues to:
+http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
 ********************************
 Version/Date: 2006-08-25
 
 This is the First Public Access (FPA) release of DMFC.
+Below two sections: Known Issues and Pending Features
 
-** Known issues **
-2006-08-25-1 
+** Known Issues **
+Below issues are already identified and marked for fixing til next release:
+
+#1543841
   Running the RTF-to-Dtbook script more than once 
   during one session will make the application freeze.
-  The cause of the issue is known (bug in core) and 
+  The cause of the issue is known (#1543841) and 
   will be fixed by next release.
+
+** Pending features **
+Below features are not yet implemented, but high on the list for the next release:
+- Access to transformer documentation from the GUI
+- Specific licensing information when using particular 3d party libraries.
 
 ********************************
