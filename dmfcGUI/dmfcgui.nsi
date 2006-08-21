@@ -35,13 +35,13 @@ Section ""
   ; add swt jars
   ;Push "$EXEDIR\lib"
   ;Call AddJarsInDir
-  Push "$EXEDIR\dmfcgui.jar"
+  Push "$EXEDIR\org.daisy.dmfc.gui.jar"
   Call AddEntry
   
   ; add dmfc libs
   ;Push "$EXEDIR\dmfc\lib"
   ;Call AddJarsInDir
-  Push "$EXEDIR\dmfc\lib\org.daisy.util-bin.jar"
+  Push "$EXEDIR\dmfc\lib\org.daisy.util.jar"
   Call AddEntry
   Push "$EXEDIR\dmfc\lib\tagsoup-1.0rc4.jar"
   Call AddEntry

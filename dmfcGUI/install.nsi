@@ -120,7 +120,7 @@ Section -AppDMFC SEC0002
 
     # util library
     SetOutPath $INSTDIR\dmfc\lib
-    File ..\dmfc\dist\org.daisy.util-bin.jar
+    File ..\dmfc\dist\org.daisy.util.jar
     
     # dmfc nsis
     SetOutPath $INSTDIR
@@ -141,10 +141,10 @@ Section -AppGUI SEC0003
 
     # gui zip
     SetOutPath $INSTDIR
-    File dist\extras.zip
-    ZipDLL::extractall $INSTDIR\extras.zip $INSTDIR
-    Delete $INSTDIR\extras.zip
-    File dist\dmfcgui.jar
+    File dist\org.daisy.dmfc.gui-extras.zip
+    ZipDLL::extractall $INSTDIR\org.daisy.dmfc.gui-extras.zip $INSTDIR
+    Delete $INSTDIR\org.daisy.dmfc.gui-extras.zip
+    File dist\org.daisy.dmfc.gui.jar
     
     # copy jars
     SetOutPath $INSTDIR\lib

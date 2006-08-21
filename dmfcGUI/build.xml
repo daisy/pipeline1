@@ -43,8 +43,8 @@
 	<target name="buildZip-NSIS" 
 			description="Creates a dmfcgui.jar and extras.jar"
 			depends="createDistributionDir">
-		<delete file="${distribution.dir}/dmfcgui.jar"/>
-		<jar jarfile="${distribution.dir}/dmfcgui.jar">
+		<delete file="${distribution.dir}/org.daisy.dmfc.gui.jar"/>
+		<jar jarfile="${distribution.dir}/org.daisy.dmfc.gui.jar">
 			<manifest>
 				<attribute name="Class-Path" value="
 					lib/org.eclipse.core.runtime_3.2.0.v20060603.jar
@@ -57,7 +57,8 @@
 				<include name="**/*.*"/>
 			</fileset>
 		</jar>
-		<zip zipfile="${distribution.dir}/extras.zip">
+		<delete file="${distribution.dir}/org.daisy.dmfc.gui-extras.zip"/>
+		<zip zipfile="${distribution.dir}/org.daisy.dmfc.gui-extras.zip">
 			<fileset dir="${base.dir}">
 				<include name="scripts/**/*.*"/>
 				<include name="dmfcgui.exe"/>
