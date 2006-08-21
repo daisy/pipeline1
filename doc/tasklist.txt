@@ -1,3 +1,48 @@
+
+------------------------- dmfc fpa tasklist --------------------------
+id			what									who			status
+----------------------------------------------------------------------		
+bugs		Remaining bugs in GUI					Laurie
+man			Short GUI manual						Laurie
+scrpts		all scripts commited 					Linus
+desc		script walkthrough 
+			(description extensions)				Markus
+scripdupe	copy scripts to dmfc/examples			Markus			
+licgui 		license folder + 
+			gpl text into daisymfcgui				Linus
+licdmfc 	license folder + 
+			lgpl text into daisymfc					Linus
+licmenu		license start menu item in installer	Linus
+relnotes	release-notes-20060825.txt				Markus		DONE
+rnmenu		release notes start menu item 
+			in nsis installer						Linus
+
+monster		monster test script provision			Linus
+monster 	release test script testrun				Laurie
+
+jdocant		fix javadoc ant targets					Linus
+jdoc 		javadoc cleanup							Markus
+jdocsite	uploading of javadocs					Markus
+
+sf.net		brushup of sourceforge site				Markus
+dorg		brushup of daisy.org site				Markus
+
+build 		Final package building using ant		Laurie
+submit		package download submissions at sf		Laurie
+(see http://sourceforge.net/docman/display_doc.php?docid=6445&group_id=1
+
+dorgdwn		installer to daisy.org upload			Laurie
+
+reltech		Release technician handbook				Laurie
+
+tracker		Establish which tracker to use			All
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------		
+
+
+
 ------------------ dmfc tasklist immediate -------------------
 id			what								who		status		
 --------------------------------------------------------------
