@@ -15,12 +15,12 @@ licdmfc 	license folder +
 licmenu		license start menu item in installer	Linus
 relnotes	release-notes-20060825.txt				Markus		DONE
 rnmenu		release notes start menu item 
-			in nsis installer						Linus
+			in nsis installer						Linus       DONE
 
 monster		monster test script provision			Linus
 monster 	release test script testrun				Laurie		DONE
 
-jdocant		fix javadoc ant targets					Linus
+jdocant		fix javadoc ant targets					Linus       DONE
 jdoc 		javadoc cleanup							Markus
 jdocsite	uploading of javadocs					Markus
 
