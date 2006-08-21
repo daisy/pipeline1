@@ -30,6 +30,13 @@ Below issues are already identified and marked for fixing til next release:
   The cause of the issue is known (#1543841) and 
   will be fixed by next release.
 
+#1543978
+  Running the int_daisy_unicodeTranscoder transformer
+  with output encoding set to other than utf-8 or utf-16
+  produces incorrect representation of certain 
+  characters. The cause of the issue is known (#1543978) and 
+  will be fixed by next release.
+
 ** Pending features **
 Below features are not yet implemented, but high on the list for the next release:
 - Access to transformer documentation from the GUI
