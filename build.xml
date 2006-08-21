@@ -18,6 +18,69 @@
 	<property name="javadoc.dir" value="${base.dir}/doc/api"/>
 	<property name="distribution.dir" value="${base.dir}/dist"/>
 	
+	<!-- Filesets definitions -->
+	<patternset id="patternset.transformers">
+		<include name="transformers/**/*.*"/>
+		<exclude name="transformers/int_daisy_exeTest/**/*.*"/>
+		<exclude name="transformers/int_daisy_helloWorld/**/*.*"/>
+		<exclude name="transformers/int_daisy_xsltTest/**/*.*"/>
+		<exclude name="transformers/se_tpb_mixedContentNormalizer/**/*.*"/>
+		<exclude name="transformers/se_tpb_pdtbCreator/**/*.*"/>		
+	</patternset>
+	
+	<patternset id="patternset.util">
+		<include name="org/daisy/util/**/*.*"/>
+	</patternset>
+	
+	<patternset id="patternset.framework">
+		<include name="**/*.*"/>
+		<exclude name="org/daisy/util/**/*.*"/>
+	</patternset>
+	
+	
+	<path id="path.classpath">
+		<dirset dir="${base.dir}">
+			<include name="transformers"/>
+			<include name="bin/org/daisy/util"/>
+		</dirset>		
+    </path>
+	
+	<path id="path.utilJars">
+		<fileset dir="${base.dir}/lib">
+			<include name="batik-css.jar"/>
+			<include name="batik-util.jar"/>
+			<include name="chardet.jar"/>
+			<include name="icu4j_3_4_4.jar"/>
+			<include name="jing.jar"/>
+			<include name="jl1.0.jar"/>
+			<include name="jsr173_1.0_api.jar"/>
+			<include name="sac.jar"/>
+			<include name="saxon.jar"/>
+			<include name="saxon8.jar"/>
+			<include name="saxon8-dom.jar"/>
+			<include name="wstx-lgpl-2.0.3.jar"/>
+			<include name="xercesImpl.jar"/>
+		</fileset>
+	</path>
+	
+	<path id="path.combined">
+		<path refid="path.classpath"/>
+		<path refid="path.utilJars"/>
+		<dirset dir="${base.dir}">
+			<include name="src"/>
+		</dirset>
+	</path>
+	
+	<pathconvert property="property.manifest.jars"
+	             pathsep=" ">
+		<path refid="path.utilJars"/>
+		<!--<chainedmapper>			
+			<flattenmapper/>		    
+			<globmapper from="*" to="lib/*"/>
+		</chainedmapper>-->
+		<flattenmapper/>
+	</pathconvert>
+	
 	<!-- general tasks -->
 	<target name="resetDistributionDir">
 		<delete dir="${distribution.dir}"/>
@@ -49,108 +112,92 @@
 	</target>
 	<!-- end of general tasks -->
 	
-	<!-- distribution build related tasks -->
-	<!-- binary distribution build -->
-	<target name="buildDMFCJar" 
-			description="Creates a dmfc.jar with class files in the distribution folder" 
-			depends="compile,createDistributionDir">
-		<delete file="${distribution.dir}/dmfc.jar"/>
-		<jar jarfile="${distribution.dir}/dmfc.jar">
-			<fileset dir="${base.dir}/bin">
-				<include name="**/*.*"/>
-			</fileset>
-			<fileset dir="${base.dir}">
-				<include name="transformers/**/*.*"/>
-				<exclude name="transformers/**/*.java"/>
-			</fileset>
-		</jar>
-	</target>
-	
-	<target name="buildDMFCZip" 
-			description="Creates a dmfc.zip with non-java files in the distribution folder"
-			depends="createDistributionDir">
-		<delete file="${distribution.dir}/dmfc.zip"/>
-		<zip zipfile="${distribution.dir}/dmfc.zip">
-			<fileset dir="${base.dir}">
-				<include name="resources/**/*.*"/>
-				<include name="dmfc.bat"/>
-				<include name="doc/**/*.*"/>
-				<exclude name="doc/api/**/*.*"/>
-				<include name="lib/**/*.jar"/>
-			</fileset>
-		</zip>
-	</target>
-	
-	
-	<!-- end of binary distribution build -->
-	
 	<!-- build the dmfc (non util) src zip dist -->
 	<target name="buildSrcZip" 
 			description="Creates a dmfc_src_${version}.zip (excluding org.daisy.util packages) in the distribution folder"
 			depends="createDistributionDir">
-		<zip zipfile="${distribution.dir}/dmfc_src_${version}.zip" >
+		<zip zipfile="${distribution.dir}/org.daisy.dmfc-src.zip" >
 			<fileset dir="${base.dir}">
 				<include name="build.xml"/>
 			</fileset>
 			<fileset dir="${base.dir}">
 				<include name="src/**/*.*"/>				
+				<include name="resources/**/*.*"/>	
 				<exclude name="**/CVS/**/*.*"/>
 				<exclude name="src/org/daisy/util/**/*.*"/>
 			</fileset>
 			<fileset dir="${base.dir}">
-				<include name="transformers/**/*.*"/>
-				<exclude name="transformers/**/*.class"/>
+				<patternset refid="patternset.transformers"/>
+				<not>
+					<filename name="transformers/**/*.class"/>
+				</not>
 			</fileset>
 		</zip>
 	</target>
 	
-	<target name="buildJavadocZip" 
+	<target name="buildJavadoc" 
 			description="Creates a dmfc_doc_${version}.zip with javadoc files in the distribution folder"
 			depends="createDistributionDir">
-		<subant target="">
-			<fileset dir="doc" includes="javadoc.xml" />
-			<property name="base.dir" value="../"/>
-		</subant>
-		<zip zipfile="${distribution.dir}/dmfc_doc_${version}.zip" >
-			<fileset dir="${javadoc.dir}" includes="**"/>
+		<javadoc destdir="${javadoc.dir}/util" 
+			     classpathref="path.combined"
+			     windowtitle="DAISY Utility Library API documentation">
+			<fileset dir="${base.dir}/src">
+				<patternset refid="patternset.util"/>
+				<and>					
+					<filename name="**/*.java"/>
+				</and>
+			</fileset>
+		</javadoc>
+		<zip zipfile="${distribution.dir}/org.daisy.util-docs.zip" >
+			<fileset dir="${javadoc.dir}/util" includes="**"/>
+		</zip>
+		
+		<javadoc destdir="${javadoc.dir}/framework" 
+			     classpathref="path.combined"
+			     windowtitle="DMFC Framework API documentation">
+			<fileset dir="${base.dir}/src">
+				<patternset refid="patternset.framework"/>
+				<and>					
+					<filename name="**/*.java"/>
+				</and>
+			</fileset>
+		</javadoc>
+		<zip zipfile="${distribution.dir}/org.daisy.dmfc-framework-docs.zip" >
+			<fileset dir="${javadoc.dir}/framework" includes="**"/>
+		</zip>
+		
+		<javadoc destdir="${javadoc.dir}/transformers" 
+			     classpathref="path.combined"
+		         windowtitle="DMFC Transformers API documentation">
+			<fileset dir="${base.dir}">
+				<patternset refid="patternset.transformers"/>
+				<and>					
+					<filename name="**/*.java"/>
+				</and>
+			</fileset>
+		</javadoc>
+		<zip zipfile="${distribution.dir}/org.daisy.dmfc-transformers-docs.zip" >
+			<fileset dir="${javadoc.dir}/transformers" includes="**"/>
 		</zip>
 	</target>
-	
-	<target name="buildDMFC"
-			description="Creates all DMFC packages"
-			depends="buildSrcZip,
-					 buildJavadocZip"/>
-	
 	
 	<target name="buildUtil"
 			description="Builds the util library in a separate JAR"
 			depends="createDistributionDir">
-		<jar jarfile="${distribution.dir}/org.daisy.util-bin.jar" >
+		<delete file="${distribution.dir}/org.daisy.util.jar"/>
+		<jar jarfile="${distribution.dir}/org.daisy.util.jar">
 			<fileset dir="${base.dir}/bin">
-				<include name="org/daisy/util/**/*.*"/>
+				<patternset refid="patternset.util"/>
 			</fileset>
 			<manifest>
-				<attribute name="Class-Path" value="
-					./batik-css.jar 
-					./batik-util.jar 
-					./chardet.jar
-					./icu4j_3_4_4.jar
-					./jing.jar 
-					./jl1.0.jar 
-					./jsr173_1.0_api.jar 
-					./sac.jar 
-					./saxon.jar
-					./saxon8.jar
-					./saxon8-dom.jar
-					./wstx-lgpl-2.0.3.jar
-					./xercesImpl.jar"/>
+				<attribute name="Class-Path" value="${property.manifest.jars}"/>
 			</manifest>
 		</jar>
-		<jar jarfile="${distribution.dir}/org.daisy.util-src.jar" >
+		<zip zipfile="${distribution.dir}/org.daisy.util-src.zip" >
 			<fileset dir="${base.dir}/src">
-				<include name="org/daisy/util/**/*.*"/>
+				<patternset refid="patternset.util"/>
 			</fileset>
-		</jar>
+		</zip>
 	</target>
 	
 	<target name="buildDMFC-NSIS" 
@@ -160,28 +207,15 @@
 		<zip zipfile="${distribution.dir}/dmfc-nsis.zip">
 			<fileset dir="${base.dir}">
 				<include name="bin/**/*.*"/>
-				<include name="transformers/**/*.*"/>
-				<exclude name="transformers/**/*.java"/>
 				<include name="resources/**/*.*"/>
 				<include name="lib/**/*.jar"/>
 				<exclude name="**/org/daisy/util/**/*.*"/>
 			</fileset>
-		</zip>
-	</target>
-
-	<target name="buildDMFC-NSIS-withExcludes" 
-			description="Creates a dmfc-nsis.zip without util library"
-			depends="createDistributionDir">
-		<delete file="${distribution.dir}/dmfc-nsis.zip"/>
-		<zip zipfile="${distribution.dir}/dmfc-nsis.zip">
 			<fileset dir="${base.dir}">
-				<include name="bin/**/*.*"/>
-				<include name="transformers/**/*.*"/>
-				<exclude name="transformers/**/*.java"/>
-				<exclude name="transformers/se_tpb_pdtbCreator/**/*.*"/>
-				<include name="resources/**/*.*"/>
-				<include name="lib/**/*.jar"/>
-				<exclude name="**/org/daisy/util/**/*.*"/>
+				<patternset refid="patternset.transformers"/>
+				<not>
+					<filename name="transformers/**/*.java"/>
+				</not>
 			</fileset>
 		</zip>
 	</target>
@@ -204,5 +238,4 @@
 		</zip>
 	</target>
 	
-	<!-- end of distribution build related tasks -->	
 </project>
