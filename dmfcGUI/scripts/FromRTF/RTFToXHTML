@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskScript version="1.0">
+	<name>RTF to XHTML</name>
+	<description>Converts an RTF document to XHTML 1.0</description>
+	
+	<property name="input" value="FIXME" type="application/rtf"/>
+	<property name="outputPath" value="FIXME" type="application/x-dtbook+xml"/>
+	
+	<task name="ca_cnib_rtf2dtbook" interactive="false">
+
+		<parameter>
+			<name>rtf</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter id="id1">
+			<name>dtbook</name>
+			<value>${input}.tmp</value>
+		</parameter>		
+				
+	</task>
+	
+	<task name="uk_rnib_dtbook2xhtml" interactive="false">
+
+		<parameter ref="id1">
+			<name>xml</name>
+			<value>${input}.tmp</value>
+		</parameter>
+					
+		<parameter id="id2">
+			<name>out</name>
+			<value>${outputPath}</value>
+		</parameter>		
+				
+	</task>
+
+</taskScript>

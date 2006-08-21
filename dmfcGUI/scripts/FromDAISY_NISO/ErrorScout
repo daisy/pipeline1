@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskScript version="1.0">
+	<name>dtbErrorScout Test</name>
+	<description>This script runs the dtbErrorScout Transformer</description>
+	
+	<task name="se_tpb_dtbErrorScout" interactive="false">
+
+		<parameter>
+			<name>manifest</name>
+			<value>C:/TPBooks/C10337/ncc.html</value>
+		</parameter>
+		
+		<parameter>
+			<name>scoutLevel</name>
+			<value>MEDIUM</value>
+		</parameter>
+						
+	</task>
+
+</taskScript>

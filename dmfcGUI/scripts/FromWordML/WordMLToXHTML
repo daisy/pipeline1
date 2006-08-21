@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskScript version="1.0">
+	<name>WordML to XHTML</name>
+	<description>Converts a WordML document to XHTML 1.0 (via DTBook)</description>
+	
+	<property name="input" value="FIXME" type="application/xml"/>
+	<property name="outputPath" value="FIXME" type="application/xhtml+xml"/>
+	
+	
+	<task name="se_tpb_wordml2dtbook" interactive="true">
+
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter id="id1">
+			<name>out</name>
+			<value>${input}.tmp</value>
+		</parameter>
+		
+	</task>
+	
+	<task name="uk_rnib_dtbook2xhtml" interactive="false">
+
+		<parameter ref="id1">
+			<name>xml</name>
+			<value>${input}.tmp</value>
+		</parameter>
+					
+		<parameter id="id2">
+			<name>out</name>
+			<value>${outputPath}</value>
+		</parameter>		
+				
+	</task>
+
+</taskScript>
