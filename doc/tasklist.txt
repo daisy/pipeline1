@@ -84,8 +84,8 @@ filetype	Output file extension exposed
 id			what								who		status		
 --------------------------------------------------------------
 zedval		add ZedVal 							MG		started
-normalizer	add a unicode normalizer			MG		started
-transcoder	add a transcoder/ucharreplacer		MG		started
+normalizer	add a unicode normalizer			MG		DONE
+transcoder	add a transcoder/ucharreplacer		MG		DONE
 filenamer	add a dtb filename handler			MG		started
 drmv1		add a DRMv1 impl (not public)		MG		started
 
