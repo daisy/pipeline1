@@ -18,7 +18,7 @@ rnmenu		release notes start menu item
 			in nsis installer						Linus
 
 monster		monster test script provision			Linus
-monster 	release test script testrun				Laurie
+monster 	release test script testrun				Laurie		DONE
 
 jdocant		fix javadoc ant targets					Linus
 jdoc 		javadoc cleanup							Markus
@@ -33,7 +33,7 @@ submit		package download submissions at sf		Laurie
 
 dorgdwn		installer to daisy.org upload			Laurie
 
-reltech		Release technician handbook				Laurie
+reltech		Release technician handbook				Laurie		DONE (awaiting finalization)
   (can be finalized after FPA)
 
 tracker		Establish which tracker(s) to use		All
@@ -57,7 +57,7 @@ fileset		finalize refactoring
 mimefix		correct mime types in the TDFs		LE		fixed
 mimereg2    make core use new mime registry		LE		fixed
 msgwingui	GUI -new window for critical and
-			warning messages for scripts 		LS
+			warning messages for scripts 		LS		DONE
 odf+bpf		add support for .odf and .bpf
 			as manifest subclasses of xmlfile	MG			
 manipulator	add a manipulation facade to
