@@ -89,7 +89,11 @@ public class Queue {
 	 * @param index
 	 */
 	public void deleteFromQueue(int index){
+		System.out.println("Prior to delete, the size in the cue is " + linkedListJobs.size());
 		linkedListJobs.remove(index);
+		System.out.println("the index to delete " + index);
+		System.out.println(" After delete, the size in the cue is " + linkedListJobs.size());
+		
 	}
 	/**
 	 * returns a job in the queue for editing in the gui
