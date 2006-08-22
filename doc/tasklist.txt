@@ -9,10 +9,10 @@ desc		script walkthrough
 			(description extensions)				Markus
 scripdupe	copy scripts to dmfc/examples			Markus			
 licgui 		license folder + 
-			gpl text into daisymfcgui				Linus
+			gpl text into daisymfcgui				Linus       DONE
 licdmfc 	license folder + 
-			lgpl text into daisymfc					Linus
-licmenu		license start menu item in installer	Linus
+			lgpl text into daisymfc					Linus       DONE
+licmenu		license start menu item in installer	Linus       DONE
 relnotes	release-notes-20060825.txt				Markus		DONE
 rnmenu		release notes start menu item 
 			in nsis installer						Linus       DONE
@@ -37,6 +37,10 @@ reltech		Release technician handbook				Laurie		DONE (awaiting finalization)
   (can be finalized after FPA)
 
 tracker		Establish which tracker(s) to use		All			DONE
+
+packages    Create ant scripts for all packages
+            and make sure they are usable. Send
+            list to Laurie                          Linus       mostly done
 
 
 ----------------------------------------------------------------------

@@ -208,7 +208,9 @@
 			<fileset dir="${base.dir}">
 				<include name="bin/**/*.*"/>
 				<include name="resources/**/*.*"/>
+				<include name="licenses/**/*.*"/>
 				<include name="lib/**/*.jar"/>
+				<include name="doc/releasenotes/*.*"/>
 				<exclude name="**/org/daisy/util/**/*.*"/>
 			</fileset>
 			<fileset dir="${base.dir}">
