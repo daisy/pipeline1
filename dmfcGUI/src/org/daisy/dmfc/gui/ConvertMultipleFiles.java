@@ -564,7 +564,7 @@ public class ConvertMultipleFiles {
 			
 			for (int k=0; k<mimePatternExtensions.length; k++){
 				String type = mimePatternExtensions[k];
-				if (type!=null && strEnd.equalsIgnoreCase(type)){
+				if (type!=null && strEnd!=null && strEnd.equalsIgnoreCase(type)){
 					alCompatibleFiles.add(compareFile);
 				}
 			}
@@ -593,7 +593,7 @@ public class ConvertMultipleFiles {
 					
 					for (int k=0; k<mimePatternExtensions.length; k++){
 						String type = mimePatternExtensions[k];
-						if (strEnd.equalsIgnoreCase(type)){
+						if (strEnd!=null && strEnd.equalsIgnoreCase(type)){
 							alCompatibleFiles.add(compareFile);
 						}
 					}
