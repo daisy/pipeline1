@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskScript version="1.0">
+	<name>ErrorScout Daisy 2.02</name>
+	<description>Performs error scouting on a Daisy 2.02 DTB.</description>
+	
+	<property name="input" value="FIXME" type="application/x-dtbd202ncc+xml"/>
+	
+	<task name="se_tpb_dtbErrorScout" interactive="false">
+
+		<parameter>
+			<name>manifest</name>
+			<value>${input}</value>
+		</parameter>
+		
+		<parameter>
+			<name>scoutLevel</name>
+			<value>MAXED</value>
+		</parameter>
+		
+		<parameter>
+			<name>filesetType</name>
+			<value>DAISY_202</value>
+		</parameter>
+						
+	</task>
+
+</taskScript>

@@ -1,0 +1,23 @@
+<taskScript version="1.0">
+	<name>DTBook to Text</name>
+	<description>This script converts a DTBook document to text</description>
+	
+	<property name="input" value="FIXME" type="application/x-dtbook+xml"/>
+	<property name="outputPath" value="FIXME" type="text/plain"/>
+	
+	
+	<task name="uk_rnib_dtbook2text" interactive="false">
+
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter id="id1">
+			<name>out</name>
+			<value>${outputPath}</value>
+		</parameter>		
+				
+	</task>
+
+</taskScript>

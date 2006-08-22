@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskScript version="1.0">
+	<name>ODF to DTBook</name>
+	<description>Converts an Open Document Format text file document to DTBook 2005-1</description>
+	
+	<property name="input" value="FIXME" type="application/xml"/>
+	<property name="outputPath" value="FIXME" type="application/xhtml+xml"/>
+	
+	
+	<task name="uk_rnib_odf2dtbook" interactive="true">
+
+		<parameter>
+			<name>odf</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter id="id1">
+			<name>dtbook</name>
+			<value>${outputPath}</value>
+		</parameter>
+		
+	</task>
+	
+</taskScript>
