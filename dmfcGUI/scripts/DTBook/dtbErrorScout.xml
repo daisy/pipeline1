@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <taskScript version="1.0">
-	<name>ErrorScout DAISY/NISO 2005</name>
-	<description>Performs error scouting on a DAISY/NISO 2005 DTB.</description>
+	<name>ErrorScout Daisy 2.02</name>
+	<description>Performs error scouting on a Daisy 2.02 DTB.</description>
 	
-	<property name="input" value="FIXME" type="text/xml"/>
+	<property name="input" value="FIXME" type="application/x-dtbd202ncc+xml"/>
 	
 	<task name="se_tpb_dtbErrorScout" interactive="false">
 
@@ -19,7 +19,7 @@
 		
 		<parameter>
 			<name>filesetType</name>
-			<value>Z3986</value>
+			<value>DAISY_202</value>
 		</parameter>
 						
 	</task>
