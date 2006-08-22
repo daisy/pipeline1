@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <taskScript version="1.0">
 	<name>Narrator (Daisy 2.02)</name>
 	<description>Converts a DTBook file to a complete Daisy 2.02 file set</description>
@@ -6,6 +5,65 @@
 	<property name="input" value="FIXME" type="application/x-dtbook+xml"/>
 	<property name="outputPath" value="FIXME" type="application/x-filesystemDirectory"/>
 	
+	<!-- *************************
+	      DTBook input validation 
+	     ************************* -->
+	<task name="se_tpb_xmlValidator" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>relaxngSchema</name>
+			<value>-//NISO//RNG dtbook 2005-1//EN</value>
+		</parameter>
+		<parameter>
+			<name>useSchematron</name>
+			<value>true</value>
+		</parameter>
+		<parameter>
+			<name>useDTD</name>
+			<value>true</value>
+		</parameter>
+	</task>
+	<task name="se_tpb_xmlValidator" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>relaxngSchema</name>
+			<value>-//TPB//RNG dtbook 2005-1 Narrator//EN</value>
+		</parameter>
+		<parameter>
+			<name>useSchematron</name>
+			<value>true</value>
+		</parameter>
+		<parameter>
+			<name>useDTD</name>
+			<value>true</value>
+		</parameter>
+	</task>
+	<!-- Just for TPB...
+	<task name="se_tpb_xmlValidator" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>relaxngSchema</name>
+			<value>-//TPB//RNG dtbook 2005-1 TPB//EN</value>
+		</parameter>
+		<parameter>
+			<name>useSchematron</name>
+			<value>true</value>
+		</parameter>
+		<parameter>
+			<name>useDTD</name>
+			<value>true</value>
+		</parameter>
+	</task>
+	-->
 	<!-- ****************************
 	      Abbr and Acronym detection 
 	     **************************** -->
@@ -174,7 +232,7 @@
 	<!-- ***************
 	      Audio encoder
 	     *************** -->
-<!--	<task name="se_tpb_dtbAudioEncoder" interactive="false">
+	<task name="se_tpb_dtbAudioEncoder" interactive="false">
 		<parameter>
 			<name>manifest</name>
 			<value>${outputPath}/z3986/06-speechgen.opf</value>
@@ -184,7 +242,7 @@
 			<value>${outputPath}/z3986-mp3</value>
 		</parameter>						
 	</task>
--->
+	
 	
 	<!-- ************************************
 	      Z3986-2005 to Daisy 2.02 Converter

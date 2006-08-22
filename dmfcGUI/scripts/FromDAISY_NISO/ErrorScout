@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <taskScript version="1.0">
-	<name>dtbErrorScout Test</name>
-	<description>This script runs the dtbErrorScout Transformer</description>
+	<name>ErrorScout DAISY/NISO 2005</name>
+	<description>Performs error scouting on a DAISY/NISO 2005 DTB.</description>
+	
+	<property name="input" value="FIXME" type="text/xml"/>
 	
 	<task name="se_tpb_dtbErrorScout" interactive="false">
 
 		<parameter>
 			<name>manifest</name>
-			<value>C:/TPBooks/C10337/ncc.html</value>
+			<value>${input}</value>
 		</parameter>
 		
 		<parameter>
 			<name>scoutLevel</name>
-			<value>MEDIUM</value>
+			<value>MAXED</value>
+		</parameter>
+		
+		<parameter>
+			<name>filesetType</name>
+			<value>Z3986</value>
 		</parameter>
 						
 	</task>
