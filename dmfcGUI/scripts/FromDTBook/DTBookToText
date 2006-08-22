@@ -2,16 +2,20 @@
 	<name>DTBook to Text</name>
 	<description>This script converts a DTBook document to text</description>
 	
+	<property name="input" value="FIXME" type="application/x-dtbook+xml"/>
+	<property name="outputPath" value="FIXME" type="text/plain"/>
+	
+	
 	<task name="uk_rnib_dtbook2text" interactive="false">
 
 		<parameter>
 			<name>xml</name>
-			<value>c:/dmfc/hauy-2005-1.xml</value>
+			<value>${input}</value>
 		</parameter>
 					
 		<parameter id="id1">
 			<name>out</name>
-			<value>c:/temp/test.txt</value>
+			<value>${outputPath}</value>
 		</parameter>		
 				
 	</task>
