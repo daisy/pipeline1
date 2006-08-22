@@ -19,7 +19,7 @@
 		
 		<parameter>
 			<name>filesetType</name>
-			<value>DAISY_202</value>
+			<value>Z3986</value>
 		</parameter>
 						
 	</task>
