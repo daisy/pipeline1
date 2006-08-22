@@ -241,7 +241,11 @@ Section -post SEC0001
     CreateDirectory "$SMPROGRAMS\$StartMenuGroup"
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\dmfcgui.exe
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Release Notes.lnk" $INSTDIR\dmfc\doc\releasenotes\release-notes.txt
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe    
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe   
+    CreateDirectory "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI"
+    CreateDirectory "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework"
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI\License.lnk" $INSTDIR\licenses\GPL\gpl.txt
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\License.lnk" $INSTDIR\dmfc\licenses\LGPL\lgpl.txt
     
     # Create uninstall registry info
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
@@ -297,6 +301,8 @@ SectionEnd
 
 Section un.post UNSEC0001
     DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI\License.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\License.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Release Notes.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk"

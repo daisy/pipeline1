@@ -61,6 +61,7 @@
 		<zip zipfile="${distribution.dir}/org.daisy.dmfc.gui-extras.zip">
 			<fileset dir="${base.dir}">
 				<include name="scripts/**/*.*"/>
+				<include name="licenses/**/*.*"/>
 				<include name="dmfcgui.exe"/>
 			</fileset>
 		</zip>
