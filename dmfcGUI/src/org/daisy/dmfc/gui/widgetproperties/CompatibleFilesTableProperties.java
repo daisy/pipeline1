@@ -46,6 +46,8 @@ public class CompatibleFilesTableProperties {
 	/**
 	 * Gets a list of all files from the directory and
 	 * all recursive directories.
+	 * 
+	 * @deprecated
 	 * @param alPatterns
 	 * @return
 	 */
