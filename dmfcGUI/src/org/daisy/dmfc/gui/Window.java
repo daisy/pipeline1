@@ -251,7 +251,11 @@ public class Window {
 	}
 	
 	
-	
+	/**
+	 * @todo   Re-enable multi file selection button
+	 * for final release.
+	 *
+	 */
 	public void createContents(){
 		
 		shell.setText("Daisy Multi Format Converter");
@@ -330,7 +334,9 @@ public class Window {
 						}
 						else{
 							btnAddSingleFile.setEnabled(true);
-							addMultipleFiles.setEnabled(true);
+						
+						//@todo uncomment below line for final release
+						//  addMultipleFiles.setEnabled(true);
 							setFileSelected(tosh);
 							getConversionDescription();
 							
@@ -408,6 +414,8 @@ public class Window {
 		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		//data.widthHint=120;
 		this.addMultipleFiles = new Button (compJobsInQueue, SWT.SHADOW_OUT);
+		
+		//this is suppose to be false, and enabled once a script is chosen
 		this.addMultipleFiles.setEnabled(false);
 		addMultipleFiles.setLayoutData(data);
 		
@@ -443,7 +451,7 @@ public class Window {
 				indices =tblJobs2.getSelectionIndices();
 				if (tblJobs2.getSelectionCount()==1){
 					index=tblJobs2.getSelectionIndex();
-					System.out.println("Listener in Window, what is the selection index? " + index);
+					//System.out.println("Listener in Window, what is the selection index? " + index);
 				}
 			}
 		});
@@ -690,7 +698,7 @@ public class Window {
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		data.horizontalSpan=2;
 		this.lblTotalConversionProgress = new Label(compDetails, SWT.NONE);
-		lblTotalConversionProgress.setText("Conversion Progress");
+		lblTotalConversionProgress.setText("Transformer Progress");
 		lblTotalConversionProgress.setLayoutData(data);
 		
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
