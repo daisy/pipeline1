@@ -1,5 +1,6 @@
 * text=auto !eol
 doc/diagram.png -text
+doc/examples/input/simple.odt -text
 lib/batik-css.jar -text
 lib/batik-parser.jar -text
 lib/batik-util.jar -text
