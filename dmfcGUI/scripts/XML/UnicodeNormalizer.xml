@@ -4,7 +4,7 @@
 	<description>Performs Unicode normalization on all XML files in a fileset</description>
 	
 	<property name="input" value="FIXME" type="application/xml"/>
-	<property name="outputPath" value="FIXME" type="application/xhtml+xml"/>
+	<property name="outputPath" value="FIXME" type="application/x-filesystemDirectory"/>
 	
 	
 	<task name="int_daisy_unicodeNormalizer" interactive="true">
