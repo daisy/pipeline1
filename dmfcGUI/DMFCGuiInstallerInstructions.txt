@@ -141,7 +141,57 @@ Start the Build
 	   After .NET is installed,  run the dmfcgui-1-0b1.exe file to install dmfc in the Start/Programs menu. 
 	   
 	   
-	   
+	[this text can become a part of the dmfc release technician handbook]
+
+** DMFC release - archives overview **
+
+This is a summary overview of the archives (and their corresponding names) 
+that need to be produced (using existing ant scripts) when a new DMFC release is made.
+
+Note that we avoid to use date strings in the filenames, except for the installer.
+Except for the installer, date strings (which are version identifiers across the board) are carried in internal Version.java classes.
+
+Numbers marked with a (*) are to be put on the sourceforge release system. The DMFC archives should be
+made available for download as a DMFC release, and the DMFCGUI archives should be made available as
+DMFCGUI releases.
+
+1. DMFC Archives
+  1.1* org.daisy.util.jar  
+    This is the binary version of the org.daisy.util package, 
+    in which Version.java has been updated to carry the cut date
+  1.2* org.daisy.util-src.zip 
+    This is the source version of the org.daisy.util package, 
+    in which Version.java has been updated to carry the cut date
+  1.3 org.daisy.util-docs.zip 
+    This is the javadoc from the org.daisy.util package, with visibility level protected. 
+    The javadocs are also published on daisymfc.sf.net/apiref/util/    
+  1.4* org.daisy.dmfc.zip 
+    This is the (non-jarred) binary version of the dmfc framework and transformers,
+    in which Version.java has been updated to carry the cut date
+  1.5* org.daisy.dmfc-src.zip
+    This is the source version of the dmfc framework and transformers,
+    in which Version.java has been updated to carry the cut date 
+  1.6 org.daisy.dmfc-framework-docs.zip
+    This is the javadoc from the org.daisy.dmfc package, with visibility level protected. 
+    The javadocs are also published on daisymfc.sf.net/apiref/dmfc/framework    
+  1.7 org.daisy.dmfc-transformers-docs.zip
+    This is the javadoc from the transformers, with visibility level protected. 
+    The javadocs are also published on daisymfc.sf.net/apiref/dmfc/transformers    
+
+
+2. DMFCGUI Archives
+  2.1* org.daisy.dmfc.gui.jar
+    Binary version, in which Version.java has been updated to carry the cut date
+  2.2* org.daisy.dmfc.gui-src.zip
+    Source versionin which Version.java has been updated to carry the cut date
+  2.3 org.daisy.dmfc.gui-docs.zip
+    Javadoc pack. If daisymfcgui has a website, javadocs published there.
+    (unsure atm whether we want to spend time on separate daisymfcgui webpages.)
+
+3. Installer
+  3.1 dmfc-install-yyyy-mm-dd.exe
+    This is the convenience installer, published in the members area of daisy.org
+       
 	  
 	   
 	   
