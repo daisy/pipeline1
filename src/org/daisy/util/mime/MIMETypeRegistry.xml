@@ -17,6 +17,11 @@
 ]>
 
 <mimeRegistry>		
+
+	<!--
+	Note: any types added here should be duplicated in MIMEConstants.
+	Call the MIMETypeRegistry.printConstants() method to autogenerate.
+	-->
 	<directory name="application">
 		<type id="rtf" name="application/rtf" namePatterns="*.rtf"/>
 		<type id="pdf" name="application/pdf" namePatterns="*.pdf"/>

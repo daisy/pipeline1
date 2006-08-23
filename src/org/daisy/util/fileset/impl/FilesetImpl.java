@@ -1,3 +1,21 @@
+/*
+ * org.daisy.util - The DAISY java utility library
+ * Copyright (C) 2005  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 package org.daisy.util.fileset.impl;
 
 import java.io.File;
@@ -56,8 +74,6 @@ public class FilesetImpl implements Fileset {
 	 * @param manifestURI the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
 	 * @param errh the FilesetErrorHandler that will recieve notification of nonfatal errors
 	 * @throws FilesetNonFatalException 
-	 * @see #FilesetImpl(URI, boolean)
-	 * @see #FilesetImpl(URI,boolean, boolean)
 	 */
 	public FilesetImpl(URI manifestURI, FilesetErrorHandler errh) throws FilesetFatalException {
 		initialize(manifestURI,errh,false,false);
@@ -69,8 +85,6 @@ public class FilesetImpl implements Fileset {
 	 * @param errh the FilesetErrorHandler that will recieve notification of nonfatal errors
 	 * @param dtdValidate sets whether XML members in the fileset will be DTD validated in the case they reference a DTD. The default value of this property is false.
 	 * @throws FilesetNonFatalException 
-	 * @see #FilesetImpl(URI)
-	 * @see #FilesetImpl(URI,boolean, boolean) 
 	 */
 	public FilesetImpl(URI manifestURI, FilesetErrorHandler errh, boolean dtdValidate) throws FilesetFatalException {
 		initialize(manifestURI,errh,dtdValidate,false);
@@ -82,10 +96,7 @@ public class FilesetImpl implements Fileset {
 	 * @param errh the FilesetErrorHandler that will recieve notification of nonfatal errors
 	 * @param dtdValidate sets whether XML members in the fileset will be DTD validated.  The default value of this property is false.
 	 * @param setReferringCollections sets whether the referringLocalMembers collection will be created on each member. Note - this is a costly procedure in terms of timeconsumption for large filesets.  The default value of this property is false.
-	 * @throws FilesetNonFatalException 
-	 * @see #FilesetImpl(URI)
-	 * @see #FilesetImpl(URI, boolean)
-	 * @see {@link org.daisy.util.fileset.interfaces.Referable} 
+	 * @throws FilesetNonFatalException  
 	 */
 	public FilesetImpl(URI manifestURI, FilesetErrorHandler errh, boolean dtdValidate, boolean setReferringCollections) throws FilesetFatalException {
 		initialize(manifestURI,errh,dtdValidate,setReferringCollections);
@@ -527,7 +538,7 @@ public class FilesetImpl implements Fileset {
 	
 	/**
 	 * @deprecated
-	 * @see org.daisy.util.FilesetFile#getRelativeURI
+	 * @see org.daisy.util.fileset.interfaces.FilesetFile#getRelativeURI
 	 */
 	public URI getRelativeURI(FilesetFile filesetFile) {
 	    ManifestFile manifest = this.getManifestMember();

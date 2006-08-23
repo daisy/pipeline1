@@ -99,10 +99,8 @@ public class FileUtils {
 	}
 
 	/**
-	 * Make sure a directory exists
-	 * 
+	 * Make sure a directory exists.
 	 * @param dir
-	 * @return
 	 * @throws IOException
 	 *             if the dir could not be created or if a regular file with the
 	 *             specified name exists.

@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+	<head>
+		<title>org.daisy.util.fileset package</title>
+	</head>
+<body>
+  A stateless strongtyped representation of a fileset.
+  <p>Can represent multiple types of filesets; currently supported types defined in {@link org.daisy.util.fileset.FilesetType}</p>
+  <p>Usage example:</p>
+  <pre><code>
+  URI opfURI = new File("D:/myPackage.opf").toURI();
+  try{
+    //instantiate with the manifest URI and this as listener
+    Fileset fileset = new FilesetImpl(opfURI, this);
+    Collection members = fileset.getLocalMembers();
+    //.... 
+  }catch (FilesetFatalException ffe) {
+    throw ffe;
+  }	
+ 
+  //recieve notifications from the FilesetErrorHandler callback
+  //All nonthrown Exceptions are reported here, using subtypes		
+  //FilesetFileFatalErrorException, FilesetFileErrorException, FilesetFileWarningException 
+  public void error(FilesetFileException ffe) throws FilesetFileException {
+   System.err.println(ffe.getCause() + " in " + ffe.getOrigin());
+   //if one file had a fatal error (such as malformedness) one may want to abort	
+   if(ffe instanceof FilesetFileFatalErrorException) throw ffe;			
+  } 
+  </code></pre>
+  <p>Uses internal heuristics to determine type of fileset, and types of individual members.</p>
+  <p>Uses interfaces to determine type identity in the FilesetFile hierarchy, therefore requires casting from the type anonymous collections:</p>
+  <pre><code>
+  Z3986OpfFile opf = (Z3986OpfFile) fileset.getLocalMember(aURI);
+  </code></pre>
+  <p>...as well as instanceof tests on interfaces to determine type:</p>
+  <pre><code>
+    if(aMember instanceof CssFile) ... ;
+  </code></pre>
+  <p>Alternatively the FilesetFile.getMimeType() method can be used, but obviously only
+  after casting to the specific subtype does methods and properties of that particular type become available.</p>
+  <p>The fileset instance exposes an unordered list of all fileset 
+  members. Each member in its turn exposes an ordered list of the members it points to itself, as well as a list of other members that points to itself.</p> 
+  <p>Written to be error tolerant; throws instantiation exceptions only under rare conditions.</p>
+</body>
+</html>

@@ -1,3 +1,22 @@
+/*
+ * org.daisy.util - The DAISY java utility library
+ * Copyright (C) 2005  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package org.daisy.util.dtb.validation.errorscout;
 
 import java.net.URI;
@@ -5,28 +24,6 @@ import java.util.Iterator;
 
 import org.daisy.util.fileset.interfaces.Fileset;
 /**
- * <p>Go scouting in a DTB for errors</p>
- * <p>Checks feasible validity of a DTB, does not claim to do full conformance checking</p>
- * <p>Only supports Single Volume DTBs (SVDTB)</p>
- * Usage example:
- *<pre><code>
- *  		DtbErrorScout errorScout = (DtbErrorScout) new DtbErrorScoutImpl(FilesetType.DAISY_202, DtbErrorScoutingLevel.MEDIUM);			
- *			if (errorScout.scout(new URI("file:/E:/mydtb/ncc.html"))) {		
- *				Iterator it = errorScout.getErrorsIterator();				
- *				while (it.hasNext()) {
- *					 Exception e = (Exception)it.next();		
- *					System.err.print(e.toString());
- *					if(e instanceof SAXParseException) {
- *						SAXParseException se = (SAXParseException) e;
- *						System.err.print(" at line: " +se.getLineNumber());
- *						System.err.print(" in entity: "+se.getSystemId());
- *					}  
- *					System.err.println("");
- *				}								
- *			}else{
- *				System.err.println("Scout found no errors");
- *			}	
- *</code></pre>
  * @author Markus Gylling
  */
 public interface DtbErrorScout {

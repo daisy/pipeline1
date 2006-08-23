@@ -1,3 +1,22 @@
+/*
+ * org.daisy.util - The DAISY java utility library
+ * Copyright (C) 2005  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package org.daisy.util.i18n;
 
 import com.ibm.icu.text.Transliterator;
@@ -191,25 +210,25 @@ public final class CharUtils {
 	 * Converts each unicode whitespace char in the incoming string with 
 	 * the given replacement char
 	 * If the given replacement char is whitespace too, fallback to the underscore char
-	 * @param string the string to replace whitespace in
+	 * @param str the string to replace whitespace in
 	 * @param replace the char to replace any found whitespace with
 	 */
-	public static String toNonWhitespace(String string, char replace) {
-		return String.valueOf(toNonWhitespace(string.toCharArray(),replace));	
+	public static String toNonWhitespace(String str, char replace) {
+		return String.valueOf(toNonWhitespace(str.toCharArray(),replace));	
 	}
 	
 	/**
 	 * Converts each unicode whitespace char in the incoming string with the replacement char underscore
-	 * @param string the string to replace whitespace in
+	 * @param str the string to replace whitespace in
 	 * @see #toNonWhitespace(String, char)
 	 */
-	public static String toNonWhitespace(String string) {
-		return String.valueOf(toNonWhitespace(string.toCharArray(),'_'));	
+	public static String toNonWhitespace(String str) {
+		return String.valueOf(toNonWhitespace(str.toCharArray(),'_'));	
 	}
 
 	/**
 	 * Converts each whitespace char in the incoming string with the replacement char underscore
-	 * @param string the string to replace whitespace in
+	 * @param ch the char array to replace whitespace in
 	 * @see #toNonWhitespace(String, char)
 	 */
 	public static char[] toNonWhitespace(char[] ch) {

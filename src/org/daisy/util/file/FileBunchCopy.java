@@ -31,18 +31,9 @@ import org.daisy.util.execution.ProgressObserver;
 import org.daisy.util.fileset.interfaces.Fileset;
 
 /**
- * Okej. Vad ska hända här?
- * 
- * Som indata ska komma dels ett Set med strängar.
- * Dessa strängar är värdet från src-attribut.
- * Dels ska det komma ett File-objekt som berättar från 
- * vilken katalog de kommer. Vidare ska det också komma
- * ett File-objekt som visar till vilken katalog dessa filer
- * ska kopieras, eventuellt med sin undermapp som finns i strängen.
- * 
- * Strängen kan alltså vara nåt i stil med: images/fp23c23.jpg
- * Då ska det på något sätt parsas så att katalogen images skapas också 
- * under den katalog som angavs som outputkatalog.
+ * Utilities to copy different collections of files.
+ * @see org.daisy.util.file.EFolder.addFileset(Fileset, boolean)
+ * @see org.daisy.util.file.EFolder.addFiles(Collection, boolean) 
  * @author Martin Blomberg
  * @author Linus Ericson
  */

@@ -1,12 +1,31 @@
+/*
+ * org.daisy.util - The DAISY java utility library
+ * Copyright (C) 2005  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package org.daisy.util.mime;
 
 /**
- * 
+ * Constants duplicating the parameterless MIME strings defined in MIMETypeRegistry.xml
+ * Call the MIMETypeRegistry.printConstants() method to autogenerate these.
  * @author Markus Gylling
  */
 public final class MIMEConstants {
-
-	//call the MIMETypeRegistry.printConstants() method to autogenerate these.
+	
 	public static final String MIME_APPLICATION_MSWORD = "application/msword";
 	public static final String MIME_APPLICATION_PDF = "application/pdf";
 	public static final String MIME_APPLICATION_POSTSCRIPT = "application/postscript";
@@ -79,6 +98,15 @@ public final class MIMEConstants {
 	public static final String MIME_APPLICATION_RELAX_NG_COMPACT_SYNTAX = "application/relax-ng-compact-syntax";
 	public static final String MIME_APPLICATION_X_SCHEMATRON_XML = "application/x-schematron+xml";
 	public static final String MIME_APPLICATION_X_XSD_XML = "application/x-xsd+xml";
+		
+	public static final String MIME_APPLICATION_OPENDOCUMENT_TEXT ="application/vnd.oasis.opendocument.text";
+	public static final String MIME_APPLICATION_OPENDOCUMENT_DRAWING ="application/vnd.oasis.opendocument.graphics";
+	public static final String MIME_APPLICATION_OPENDOCUMENT_PRESENTATION ="application/vnd.oasis.opendocument.presentation";
+	public static final String MIME_APPLICATION_OPENDOCUMENT_SPREADSHEET ="application/vnd.oasis.opendocument.spreadsheet";
+	public static final String MIME_APPLICATION_OPENDOCUMENT_CHART ="application/vnd.oasis.opendocument.chart";
+	public static final String MIME_APPLICATION_OPENDOCUMENT_FORMULA ="application/vnd.oasis.opendocument.formula";
+	public static final String MIME_APPLICATION_OPENDOCUMENT_DATABASE ="application/vnd.oasis.opendocument.database";
+	public static final String MIME_APPLICATION_OPENDOCUMENT_IMAGE ="application/vnd.oasis.opendocument.image";
 	
 	/**
 	 * some string parse utility methods

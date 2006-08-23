@@ -1,5 +1,5 @@
 /*
- * DMFC - The DAISY Multi Format Converter
+ * org.daisy.util - The DAISY java utility library
  * Copyright (C) 2005  Daisy Consortium
  *
  * This library is free software; you can redistribute it and/or
@@ -48,7 +48,7 @@ import com.thaiopensource.validate.ValidationDriver;
  * rules.
  * <p><strong>
  * Usage of this class is discouraged. It is recommended to use
- * the {@link org.daisy.util.xml.validation.jaxp} package instead.
+ * the org.daisy.util.xml.validation.jaxp package instead.
  * </strong></p>
  * 
  * @author Linus Ericson
@@ -103,7 +103,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
      * in RelaxNG and Schematron namespaces.
      * </p>
      * 
-     * @param schemaURL
+     * @param schemaUrl
      *            URL of a RELAXNG schema, possibly with embedded Schematron
      *            rules
      * @param errh
@@ -128,7 +128,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
      * This constructor assumes that the schema is compound and contains tests
      * in RelaxNG and Schematron namespaces.
      * </p>
-     * @param schemaURL
+     * @param schemaUrl
      *            URL of a RELAXNG schema, possibly with embedded Schematron
      *            rules
      * @param errh
@@ -168,10 +168,6 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
      *            an imlementation of the SAX ErrorHandler interface; if fed to
      *            constructor as null, validation errors are reported to
      *            system.err
-     * @param useSchematron
-     *            tells whether Schematron validation should be performed
-     * @param useRelaxNG
-     *            tells whether RelaxNG validation should be performed
      * @throws ValidationException
      */
     public RelaxngSchematronValidator(String schemaPublicOrSystemId,

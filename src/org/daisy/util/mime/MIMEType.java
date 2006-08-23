@@ -1,3 +1,22 @@
+/*
+ * org.daisy.util - The DAISY java utility library
+ * Copyright (C) 2005  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package org.daisy.util.mime;
 
 import java.util.Collection;
@@ -47,8 +66,8 @@ public interface MIMEType {
 	 * Asserts equalness and aliashood between this MimeType and another.
 	 * Any parameter of this or the compared MimeType is ignored
 	 * when doing the comparison.
-	 * @param
-	 *   mime a MimeType object to test aliasness for
+	 * @param mime 
+	 *   a MimeType object to test aliasness for
 	 * @return 
 	 * 	true if inparam MimeType is an alias to this MimeType,
 	 * 	false otherwise
@@ -63,7 +82,7 @@ public interface MIMEType {
 	public boolean hasAliases() throws MIMETypeException;
 			
 	/**
-	 * @param a MimeType that may or may not be a descendant of this MimeType.
+	 * @param mime a MimeType that may or may not be a descendant of this MimeType.
 	 * @return True if the inparam MimeType is a descendant of this MimeType, false otherwise. 
 	 */
 	public boolean isDescendant(MIMEType mime) throws MIMETypeException;
@@ -94,28 +113,18 @@ public interface MIMEType {
 	 * @return the full string name identifier
 	 * of this MimeType. This string - minus the optionally present parameter part - is
 	 * always present in the Mime Registry; this is a prerequisite for the objects instantiation.
-	 * @see #getContentType()
-	 * @see #getSubType()
-	 * @see #getCharset()
-	 * @see #dropParametersPart()
 	 */
 	public String getString();
 	
 	/**
 	 * @return the ID identifier of this MimeType, as specified in the MimeTypeRegistry.xml document. 
-	 * @see #getContentType()
-	 * @see #getSubType()
-	 * @see #getParametersPart()
-	 * @see #dropParametersPart()
-	 * @see #getString()
 	 */
 	public String getId();
 	
 	/**
 	 * @return a collection&lt;String&gt; of known filename patterns for this MimeType and its aliases. 
 	 * The returned collection excludes ancestor and descendant filename patterns.
-	 * The filename patterns use MS Glob format ("*.htm" etc).
-	 * @see #getFilenamePatterns(int) 
+	 * The filename patterns use MS Glob format ("*.htm" etc). 
 	 */
 	public Collection getFilenamePatterns() throws MIMETypeException ;
 			
@@ -143,18 +152,12 @@ public interface MIMEType {
 	/**
 	 * @return the content type ('top level') substring of the string identifier
 	 * of this MimeType. Example: 'text' from the MIME type "text/xml".
-	 * @see #getString()
-	 * @see #getSubType()
-	 * @see #getCharset()
 	 */
 	public String getContentTypePart();
 
 	/**
 	 * @return the subtype substring of the string identifier
 	 * of this MimeType. Example: 'xml' from the MIME type "text/xml".
-	 * @see #getString()
-	 * @see #getContentType()
-	 * @see #getCharset()
 	 */
 	public String getSubTypePart();
 	
@@ -162,9 +165,6 @@ public interface MIMEType {
 	 * @return the parameters substring of the string identifier
 	 * of this MimeType, or null if no paremeter part is specified.
 	 * Example: 'us-ascii' from the MIME type "text/plain;charset=us-ascii".
-	 * @see #getString()
-	 * @see #getSubType()
-	 * @see #getContentType()
 	 */
 	public String getParametersPart();
 	
@@ -173,9 +173,6 @@ public interface MIMEType {
 	 * of this MimeType. If no parameter part was specified during instantiation, 
 	 * this method returns a string identical to the getString() method.
 	 * Example: 'text/plain' from the MIME type "text/plain;charset=us-ascii".
-	 * @see #getString()
-	 * @see #getSubType()
-	 * @see #getContentType()
 	 */
 	public String dropParametersPart();
 	

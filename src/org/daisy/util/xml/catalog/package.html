@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+	<head>
+		<title>org.daisy.util.xml.catalog package</title>
+	</head>
+<body>
+  Threadsafe singleton implementation of a catalog entityresolver.
+  <p>
+  Focus on ease of instantiation; no runtime params (such as catalog urls)
+  needed, one exception type to catch.
+  </p>
+  <p>
+  Focus on high speed: after first request, entitites are stored in a
+  hashtable, meaning no disk access for subsequent requests of the same entity.
+  </p>
+  <p>
+  The catalog file (<code>classdir/catalog.xml</code>) used supports a
+  subset of the OASIS Catalog 1.1 specification.
+  </p>
+  <p>
+  Entities not supported by the catalog are stored in a HashSet retrievable via
+  {@link #getEntityNotSupportedExceptions()}
+  <p>
+  Use example within a SAX context:
+  </p>
+  <code><pre>
+   import org.daisy.util.xml.catalog.CatalogEntityResolver;
+   import org.daisy.util.xml.catalog.CatalogException;
+   [...]
+   
+   public InputSource resolveEntity(String arg0, String arg1) throws IOException {                        
+     try {
+       return CatalogEntityResolver.getInstance().resolveEntity(arg0, arg1);
+     } catch (CatalogException ce) {
+       //do something 
+     }
+   }
+   [...]
+  </pre></code>
+  
+  <p>
+  The CatalogException is subclassed in recoverable and irrecoverable
+  categories, meaning that if desired the exception catching can be extended
+  using for example
+  </p>
+  
+  <code><pre>
+     } catch (CatalogException ce) {
+       if (ce instanceof CatalogExceptionRecoverable) {
+         System.err.println(ce.getMessage());                      
+       }else if (ce instanceof CatalogExceptionNotRecoverable) {
+         throw new IOException(ce.getMessage());
+       }
+     }
+  </pre></code>
+  
+  <p>
+  Use example within a (JAXP) DOM context:
+  </p>
+  <code><pre>
+    [...]
+    builder = factory.newDocumentBuilder();
+    builder.setEntityResolver(CatalogEntityResolver.getInstance());  
+    Document doc = builder.parse(&quot;E:/file.xml&quot;);
+    [...]
+  </pre></code>
+  
+
+
+</body>
+</html>

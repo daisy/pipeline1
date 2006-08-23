@@ -1,5 +1,5 @@
 /*
- * DMFC - The DAISY Multi Format Converter
+ * org.daisy.util - The DAISY java utility library
  * Copyright (C) 2005  Daisy Consortium
  *
  * This library is free software; you can redistribute it and/or
