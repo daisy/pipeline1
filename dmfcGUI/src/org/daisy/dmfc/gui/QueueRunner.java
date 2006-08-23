@@ -66,7 +66,7 @@ public class QueueRunner extends Thread {
 			
 			
 			JobRunner jr = new JobRunner (this.shell, job,  window.tableViewer, tableJobViewer);
-			jr.run();
+			BusyCursor.showWhile(UIManager.display, jr);
 
 			UIManager.display.syncExec(new Runnable() {
 				public void run() {
