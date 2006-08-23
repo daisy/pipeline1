@@ -3,7 +3,7 @@
 	<name>ODF to XHTML</name>
 	<description>Converts an Open Document Format text file to XHTML 1.0</description>
 	
-	<property name="input" value="FIXME" type="application/xml"/>
+	<property name="input" value="FIXME" type="application/vnd.oasis.opendocument.text"/>
 	<property name="outputPath" value="FIXME" type="application/xhtml+xml"/>
 	
 	
