@@ -124,9 +124,9 @@ Section -AppDMFC SEC0002
     
     # dmfc nsis
     SetOutPath $INSTDIR
-    File ..\dmfc\dist\dmfc-nsis.zip
-    ZipDLL::extractall $INSTDIR\dmfc-nsis.zip $INSTDIR\dmfc
-    Delete $INSTDIR\dmfc-nsis.zip
+    File ..\dmfc\dist\org.daisy.dmfc.zip 
+    ZipDLL::extractall $INSTDIR\org.daisy.dmfc.zip  $INSTDIR\dmfc
+    Delete $INSTDIR\org.daisy.dmfc.zip 
     
     # Register section
     WriteRegStr HKLM "${REGKEY}\Components" AppDMFC 1
@@ -287,7 +287,17 @@ SectionEnd
 
 Section /o un.AppGUI UNSEC0003
     Delete $INSTDIR\lib\org.eclipse.*.jar
+    RMDir /REBOOTOK $INSTDIR\lib
+    
+    RMDir /r /REBOOTOK $INSTDIR\licenses
+    
+    RMDir /r /REBOOTOK $INSTDIR\scripts
+    
     Delete $INSTDIR\swt-win32-*.dll    
+    Delete $INSTDIR\org.daisy.dmfc.gui.jar
+    Delete $INSTDIR\dmfcgui.exe
+    
+    
 
     DeleteRegValue HKLM "${REGKEY}\Components" AppGUI
 SectionEnd
@@ -311,6 +321,9 @@ Section un.post UNSEC0001
     DeleteRegValue HKLM "${REGKEY}" Path
     DeleteRegKey /IfEmpty HKLM "${REGKEY}\Components"
     DeleteRegKey /IfEmpty HKLM "${REGKEY}"
+    RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup\Licenses\GUI
+    RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup\Licenses\Framework
+    RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup\Licenses
     RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup
     RmDir /REBOOTOK $INSTDIR
     
