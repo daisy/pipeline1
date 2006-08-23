@@ -1,5 +1,7 @@
 package org.daisy.dmfc.gui.menus;
 
+import java.io.File;
+
 import org.daisy.dmfc.gui.ConvertMultipleFiles;
 import org.daisy.dmfc.gui.UIManager;
 import org.daisy.dmfc.gui.Window;
@@ -136,7 +138,11 @@ public class MenuMultipleConvert {
 		dmfcGuiHelp.setAccelerator(SWT.MOD1 + 'H');
 		dmfcGuiHelp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				new WebLinks("http://www.daisy.org/projects/dmfc/HelpGui/index.html");
+				String curDir = System.getProperty("user.dir");
+				System.out.println("the current user dir is: "+ curDir);
+				String strHelp = new String(curDir+ File.separator + "helpFiles" + File.separator + "index.html");
+				
+				new WebLinks(strHelp);
 			}
 			});
 		

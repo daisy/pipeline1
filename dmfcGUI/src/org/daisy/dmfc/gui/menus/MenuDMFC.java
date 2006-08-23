@@ -1,5 +1,7 @@
 package org.daisy.dmfc.gui.menus;
 
+import java.io.File;
+
 import org.daisy.dmfc.gui.ConvertMultipleFiles;
 import org.daisy.dmfc.gui.UIManager;
 import org.daisy.dmfc.gui.Window;
@@ -347,7 +349,11 @@ public class MenuDMFC {
 		dmfcGuiHelp.setAccelerator(SWT.MOD1 + 'H');
 		dmfcGuiHelp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				new WebLinks("http://www.daisy.org/projects/dmfc/HelpGui/index.html");
+				String curDir = System.getProperty("user.dir");
+				System.out.println("the current user dir is: "+ curDir);
+				String strHelp = new String(curDir+ File.separator + "helpFiles" + File.separator + "index.html");
+				
+				new WebLinks(strHelp);
 				
 			}
 			});
@@ -371,15 +377,28 @@ public class MenuDMFC {
 		//about.setText("About\tCtrl+A");
 		//about.setAccelerator(SWT.MOD1 + 'A');
 		
+		/*
+		 * DAISY Multi-Format Converter 
+ Copyright [c] DAISY Consortium 2006 
+ First Public Access
+ Framework version: dmfc.getVersion()
+ GUI version: gui.getVersion()
+
+		 */
+		
+		
 		about.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("AboutScreen");
+				String version = "DAISY Multi-Format Converter \n\n" +
+				"Copyright [c] DAISY Consortium 2006 \n" +
+				"First Public Access" + "\n" +
+				"Framework version: " + org.daisy.dmfc.Version.getVersion() + "\n" + 
+				"GUI version: " + org.daisy.dmfc.gui.Version.getVersion();
+				System.out.println(version);
 				MessageBox messageBox = new MessageBox(shell, SWT.ICON_INFORMATION |
 						SWT.CANCEL);
-						messageBox.setMessage("DAISY Multi-Format Converter \n\n" +
-								"Copyright by the DAISY Consortium 2006 \n" +
-								"Version 1.0, June 2006"
-								);
+						messageBox.setMessage(version);
 						messageBox.setText("About");
 						messageBox.open();
 			}
