@@ -25,7 +25,10 @@
 		<exclude name="transformers/int_daisy_helloWorld/**/*.*"/>
 		<exclude name="transformers/int_daisy_xsltTest/**/*.*"/>
 		<exclude name="transformers/se_tpb_mixedContentNormalizer/**/*.*"/>
-		<exclude name="transformers/se_tpb_pdtbCreator/**/*.*"/>		
+		<exclude name="transformers/se_tpb_pdtbCreator/**/*.*"/>	
+		<exclude name="transformers/int_daisy_html2xhtml/**/*.*"/>
+		<exclude name="transformers/int_daisy_filesetRenamer/**/*.*"/>		
+		<exclude name="transformers/int_daisy_xmlValidator/**/*.*"/>				
 	</patternset>
 	
 	<patternset id="patternset.util">
