@@ -29,12 +29,11 @@
 		
 		<parameter required="false" type="enum">
 			<name>filesetType</name>
-			<description>The fileset type</description>			
+			<description>The input fileset type</description>			
 			<example>DAISY_202</example>
 			<enum>
 				<value>DAISY_202</value>
 				<value>Z3986</value>
-				<value>OTHER</value>
 			</enum>
 			<default>DAISY_202</default>
 		</parameter>					
