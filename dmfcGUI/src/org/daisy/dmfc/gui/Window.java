@@ -39,7 +39,6 @@ import org.daisy.dmfc.gui.widgetproperties.TransformerListTableProperties;
 import org.daisy.dmfc.qmanager.Job;
 import org.daisy.dmfc.qmanager.LocalInputListener;
 import org.daisy.dmfc.qmanager.Queue;
-import org.daisy.dmfc.qmanager.QueueRunner;
 import org.daisy.util.xml.validation.ValidationException;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -52,6 +51,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -235,9 +235,9 @@ public class Window {
 		createHashMapScriptHandlers();
 		
 		display=UIManager.display;
-		shell=new Shell (display);
+		shell=new Shell (display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
 		menu = new MenuDMFC(shell);
-		cue=cue.getInstance();
+		cue=Queue.getInstance();
 		executing=false;
 		
 		//empty logfile contents
@@ -1303,6 +1303,10 @@ public class Window {
 		
 		// Return the transformers as an array of Objects
 		public Object[] getElements(Object parent) {
+			if (transformerList == null) {
+				System.err.println("transformerList is null!");
+				return new Object[]{};
+			}
 			return transformerList.getTransformers().toArray();
 		}
 		
@@ -1471,55 +1475,8 @@ public class Window {
 //		walk through the queue and return jobs
 		LinkedList jobList = cue.getLinkedListJobs();
 		
-		/*
-		//number in queue
-		int jobNumber = 0;
-		
-		//count the transformers
-		int count = -1;
-		*/
-		Iterator it = jobList.iterator();
-		Job job=null;
-		while(it.hasNext()){
-			
-			//get the Job from the Queue
-			job = (Job)it.next();
-			job.setStatus(2);
-			tableJobViewer.refresh();
-			
-			// Update the LocalEventListener with the new job
-			this.getLocalEventListener().setJob(job);
-			
-			//set the name of the conversion running
-			//txtConversionRunning.setText(job.getScript().getName());
-			lblConversionRunning.setText(job.getScript().getName());
-			scriptHandler = job.getScript();
-			
-			//update the transformer table
-			transformerList = new TransformerList(job);
-			tableViewer.setInput(transformerList);
-			
-			
-			//add the input and output files to the script
-			//actually, this only returns if the parameters are present in the script...
-			scriptHandler.setProperty("input", job.getInputFile().getPath());
-			scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
-			
-			
-			jr = new JobRunner (this.shell, this.scriptHandler, job,  tableViewer, tableJobViewer, this.btnRun);
-			
-			this.executing=true;	
-			
-			jr.start();
-			this.executing=false;
-			
-			tableJobViewer.refresh();
-			
-		}
-		
-		
-		
-		this.btnRemoveFinishedJobs.setEnabled(true);
+		QueueRunner queueRunner = new QueueRunner(jobList, shell);
+		queueRunner.start();
 		
 	}
 	

@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-public class JobRunner extends Thread{
+public class JobRunner implements Runnable {
 	
 	
 	Shell shell;
@@ -25,14 +25,14 @@ public class JobRunner extends Thread{
 	TableViewer jobViewer;
 	Button btnRun;
 	
-	public JobRunner(Shell _shell, ScriptHandler _scriptHandler, Job job,  TableViewer _tableViewer,
-			TableViewer _jobViewer, Button _btnRun){
+	public JobRunner(Shell _shell, Job job,  TableViewer _tableViewer,
+			TableViewer _jobViewer){
 		this.shell = _shell;
-		this.scriptHandler=_scriptHandler;
+		this.scriptHandler=job.getScript();
 		this.job=job;
 		this.tableViewer=_tableViewer;
 		this.jobViewer= _jobViewer;
-		this.btnRun = _btnRun;
+		//this.btnRun = _btnRun;
 		
 	}
 	
@@ -51,7 +51,7 @@ public class JobRunner extends Thread{
 			UIManager.display.syncExec(new Runnable(){
 				public void run(){
 					jobViewer.refresh();
-					btnRun.setEnabled(true);
+					//btnRun.setEnabled(true);
 				}
 			});
 			
@@ -90,8 +90,7 @@ public class JobRunner extends Thread{
 			UIManager.display.syncExec(new Runnable(){
 				public void run(){
 					jobViewer.refresh();
-					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
-							SWT.CANCEL);
+					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR | SWT.CANCEL);
 					messageBox.setMessage(except + "\n Please copy the above message \n " +
 					" and give to your system administrator.");
 					messageBox.setText("Error");
