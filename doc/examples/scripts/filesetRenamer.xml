@@ -1,0 +1,30 @@
+<taskScript version="1.0">
+	<name>Fileset renamer</name>
+	<description>Rename the members of a fileset using a selected scheme</description>
+	
+	<task name="int_daisy_filesetRenamer" interactive="false">
+
+		<parameter>
+			<name>manifest</name>
+			<value>D:/temp/fileset_tests/202_dtb_1/ncc.html</value>
+		</parameter>
+
+		<parameter>
+			<name>renamingType</name>
+			<value>uidHex+sequential+chapter</value>
+		</parameter>	
+					
+		<parameter>
+			<name>prefix</name>
+			<value>tpb_</value>
+		</parameter>	
+					
+		<parameter>
+			<name>outDir</name>
+			<value>D:/temp/dmfc-out/</value>
+		</parameter>		
+				
+					
+	</task>
+
+</taskScript>

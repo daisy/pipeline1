@@ -6,12 +6,12 @@
 
 		<parameter>
 			<name>ncc</name>
-			<value>D:/dtbs/hauy.202.rev4.short/ncc.html</value>
+			<value>D:\\dtbs\\d202\\msconference\\ncc.html</value>
 		</parameter>
 					
 		<parameter id="id1">
 			<name>outDir</name>
-			<value>d:/out/</value>
+			<value>d:\\202-zed-out\\</value>
 		</parameter>		
 				
 	</task>

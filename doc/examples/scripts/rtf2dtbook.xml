@@ -6,12 +6,12 @@
 
 		<parameter>
 			<name>rtf</name>
-			<value>d:/books/smalltest.rtf</value>
+			<value>d:/input.rtf</value>
 		</parameter>
 					
 		<parameter id="id1">
 			<name>dtbook</name>
-			<value>d:/books/smalltest.dtb</value>
+			<value>d:/output-rtf.dtbook</value>
 		</parameter>		
 				
 	</task>
