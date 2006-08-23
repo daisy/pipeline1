@@ -18,25 +18,17 @@
  */
 package org.daisy.dmfc.transformers;
 
-import java.io.File;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
-import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
-import org.xml.sax.EntityResolver;
 
 /**
  * Transform a XML document using XSLT. The XSLTRunner class is an internal

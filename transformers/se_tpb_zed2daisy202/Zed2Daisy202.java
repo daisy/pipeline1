@@ -21,6 +21,7 @@ package se_tpb_zed2daisy202;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -57,12 +58,12 @@ import org.daisy.util.fileset.interfaces.xml.OpfFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986NcxFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986SmilFile;
-import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.TransformerCache;
 import org.daisy.util.xml.xslt.XSLTException;
+import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
 
 /**
  * Creates a Daisy 2.02 full text, full audio fileset from a Z3986-2005
@@ -291,7 +292,6 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      */
     private void createXhtml(File dtbook, OpfFile opf) throws CatalogExceptionNotRecoverable, XSLTException, IOException {
         File xhtmlOut = new File(outputDir, contentXHTML);
-        File xsltFile = new File(this.getTransformerDirectory(), "dtbook2xhtml.xsl");
         
         Iterator it = opf.getSpineItems().iterator();
         
@@ -303,8 +303,10 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         parameters.put("baseDir", inputDir.toURI());
         parameters.put("first_smil", uri);
         
+        URL url = Stylesheets.get("dtbook2xhtml.xsl");
+        
         // Step 1: Convert the DTBook to XHTML
-        Stylesheet.apply(dtbook.toURI().toString(), xsltFile.toURI().toString(), xhtmlOut.toURI().toString(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
+        Stylesheet.apply(dtbook.toURI().toString(), url, xhtmlOut.toURI().toString(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
         
         // Step 2: Insert a stylesheet
         FileUtils.copy(new File(this.getTransformerDirectory(), "default.css"), new File(outputDir, "default.css"));

@@ -22,8 +22,9 @@ package org.daisy.util.xml.xslt;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URI;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -221,6 +222,33 @@ public class Stylesheet {
         } catch (FileNotFoundException e) {
             throw new XSLTException(e.getMessage(), e);
         }
+    }
+    
+    public static void apply(String xmlFile, URL xsltUrl, String outFile, String factory, Map parameters, EntityResolver resolver) throws XSLTException {
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true);
+        try {
+            SAXParser parser = parserFactory.newSAXParser();        
+            XMLReader reader = parser.getXMLReader();
+            if (resolver != null) {
+                reader.setEntityResolver(resolver);
+            }
+            
+            Source xmlSource = new SAXSource(reader, new InputSource(new FileInputStream(FilenameOrFileURI.toFile(xmlFile))));            
+            Source xsltSource = new SAXSource(reader, new InputSource(xsltUrl.openStream()));
+            xmlSource.setSystemId(FilenameOrFileURI.toURI(xmlFile).toString());
+            xsltSource.setSystemId(xsltUrl.toString());
+	        Result outResult = new StreamResult(FilenameOrFileURI.toFile(outFile).toURI().toString());	        
+	        apply(xmlSource, xsltSource, outResult, factory, parameters);
+        } catch (SAXException e) {
+            throw new XSLTException(e.getMessage(), e);
+        } catch (ParserConfigurationException e) {
+            throw new XSLTException(e.getMessage(), e);
+        } catch (FileNotFoundException e) {
+            throw new XSLTException(e.getMessage(), e);
+        } catch (IOException e) {
+        	throw new XSLTException(e.getMessage(), e);
+		}
     }
     
     public static void apply(String xmlFile, Transformer xslt, String outFile, Map parameters, EntityResolver resolver) throws XSLTException {
