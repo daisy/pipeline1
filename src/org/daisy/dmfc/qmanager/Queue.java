@@ -17,12 +17,12 @@ public class Queue {
 	private int selectedJobIndex;
 	
 	//for singleton
-	private static Queue _instance;
+	private static Queue _instance = new Queue();
 	
 	
 	//Singleton implementation
 	public static Queue getInstance(){
-	       if (_instance == null) _instance = new Queue();
+	      // if (_instance == null) _instance = new Queue();
 	       return _instance;  
 	}
 	
