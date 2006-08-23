@@ -21,7 +21,7 @@ monster		monster test script provision			Linus
 monster 	monster test script testrun				Laurie		DONE
 
 jdocant		fix javadoc ant targets					Linus       DONE
-jdoc 		javadoc cleanup							Markus
+jdoc 		javadoc cleanup							Markus		DONE
 jdocsite	uploading of javadocs					Markus
 
 sf.net		brushup of sourceforge site				Markus
