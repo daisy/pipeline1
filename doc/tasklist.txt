@@ -1,10 +1,10 @@
-
 ------------------------- dmfc fpa tasklist --------------------------
 id			what									who			status
 ----------------------------------------------------------------------		
 bugs		Remaining bugs in GUI					Laurie
 man			Short GUI manual						Laurie
 scrpts		all scripts committed 					Linus
+samples 	sample dtbook,rtf to doc/examples		Linus
 desc		script walkthrough 
 			(description extensions)				Markus
 scripdupe	copy scripts to dmfc/examples			Markus			
