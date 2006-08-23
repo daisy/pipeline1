@@ -49,11 +49,13 @@ import org.daisy.util.xml.stax.ContextStack;
 import com.ibm.icu.text.Normalizer;
 
 /**
- * <p>Performs unicode normalization on all XML documents in a fileset using 
+ * Performs unicode normalization on all XML documents in a fileset using 
  * one of the four standard normalization forms provided by the Unicode 
- * Consortium. See http://www.w3.org/TR/charmod-norm/</p>
+ * Consortium. 
  * 
- *<p>From {@link http://www.w3.org/TR/charmod-norm/#sec-ChoiceNFC} :</p>
+ * <p>See <a href="http://www.w3.org/TR/charmod-norm">http://www.w3.org/TR/charmod-norm</a></p>
+ * 
+ *<p>From <a href="http://www.w3.org/TR/charmod-norm/#sec-ChoiceNFC>http://www.w3.org/TR/charmod-norm/#sec-ChoiceNFC</a>:</p>
  *<p>The Unicode Consortium provides four standard normalization forms 
  *(see Unicode Normalization Forms  [UTR #15]). These forms differ in 1 
  *whether they normalize towards decomposed characters (NFD, NFKD) or 

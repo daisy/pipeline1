@@ -59,7 +59,7 @@ public class FileSetCreator extends Transformer {
 	 */
 	/**
 	 * Transformer enterpoint. 
-	 * @param the parameters supplied to this transformer
+	 * @param parameters the parameters supplied to this transformer
 	 * @see org.daisy.dmfc.core.transformer.Transformer#execute(java.util.Map)
 	 */
 	protected boolean execute(Map parameters) throws TransformerRunException {

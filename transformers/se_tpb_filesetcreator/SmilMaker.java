@@ -1348,7 +1348,6 @@ public class SmilMaker implements AbortListener {
 	/**
 	 * Returns a <code>Set</code> containing .. objects representing the
 	 * encountered files in the input document, typically audio files.
-	 * @return
 	 */
 	public Set getAdditionalFiles() {
 		return otherEncounteredFiles;
