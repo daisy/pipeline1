@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- http://ant.apache.org/manual -->
-<project default="compile">
+<project default="all">
 
 	<property name="version" value="0_1_0"/>
 	
@@ -74,10 +74,6 @@
 	<pathconvert property="property.manifest.jars"
 	             pathsep=" ">
 		<path refid="path.utilJars"/>
-		<!--<chainedmapper>			
-			<flattenmapper/>		    
-			<globmapper from="*" to="lib/*"/>
-		</chainedmapper>-->
 		<flattenmapper/>
 	</pathconvert>
 	
@@ -110,11 +106,14 @@
 				debug="true"
 				/>
 	</target>
+	
+	<target name="all" description="Builds all binary and source packages" depends="buildDMFC-NSIS,buildSrcZip,buildUtil"/>
+	
 	<!-- end of general tasks -->
 	
 	<!-- build the dmfc (non util) src zip dist -->
 	<target name="buildSrcZip" 
-			description="Creates a dmfc_src_${version}.zip (excluding org.daisy.util packages) in the distribution folder"
+			description="Creates a DMFC source zip (excluding org.daisy.util packages) in the distribution folder"
 			depends="createDistributionDir">
 		<zip zipfile="${distribution.dir}/org.daisy.dmfc-src.zip" >
 			<fileset dir="${base.dir}">
@@ -201,10 +200,10 @@
 	</target>
 	
 	<target name="buildDMFC-NSIS" 
-			description="Creates a dmfc-nsis.zip without util library"
+			description="Creates a org.daisy.dmfc.zip  without util library"
 			depends="createDistributionDir">
-		<delete file="${distribution.dir}/dmfc-nsis.zip"/>
-		<zip zipfile="${distribution.dir}/dmfc-nsis.zip">
+		<delete file="${distribution.dir}/org.daisy.dmfc.zip "/>
+		<zip zipfile="${distribution.dir}/org.daisy.dmfc.zip ">
 			<fileset dir="${base.dir}">
 				<include name="bin/**/*.*"/>
 				<include name="resources/**/*.*"/>
