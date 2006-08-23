@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskScript version="1.0">
+	<name>Transcode to UTF-8</name>
+	<description>Transcodes all XML files in a fileset to UTF-8</description>
+	
+	<property name="input" value="FIXME" type="application/xml"/>
+	<property name="outputPath" value="FIXME" type="application/x-filesystemDirectory"/>
+	
+	
+	<task name="int_daisy_unicodeTranscoder" interactive="true">
+
+		<parameter>
+			<name>inXML</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter id="id1">
+			<name>outDir</name>
+			<value>${outputPath}</value>
+		</parameter>
+		
+		<parameter>
+			<name>outputEncoding</name>
+			<value>UTF-8</value>
+		</parameter>
+		
+	</task>
+	
+</taskScript>
