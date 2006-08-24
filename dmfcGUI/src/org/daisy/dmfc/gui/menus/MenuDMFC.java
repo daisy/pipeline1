@@ -371,20 +371,24 @@ public class MenuDMFC {
 			}
 			});
 		
+		MenuItem reportBug = new MenuItem(helpmenu, SWT.PUSH);
+		reportBug.setText("Report Bugs");
+		
+		reportBug.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				new WebLinks("https://sourceforge.net/tracker/?func=add&group_id=162777&atid=825121");
+				
+			}
+			});
+		
+		
+		
 		MenuItem about = new MenuItem(helpmenu, SWT.PUSH);
 		
 		about.setText("About");
 		//about.setText("About\tCtrl+A");
 		//about.setAccelerator(SWT.MOD1 + 'A');
 		
-		/*
-		 * DAISY Multi-Format Converter 
- Copyright [c] DAISY Consortium 2006 
- First Public Access
- Framework version: dmfc.getVersion()
- GUI version: gui.getVersion()
-
-		 */
 		
 		
 		about.addSelectionListener(new SelectionAdapter() {
