@@ -376,7 +376,7 @@ public class MenuDMFC {
 		
 		reportBug.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				new WebLinks("https://sourceforge.net/tracker/?func=add&group_id=162777&atid=825121");
+				new WebLinks("https://sourceforge.net/tracker/?group_id=162777&atid=825121");
 				
 			}
 			});
