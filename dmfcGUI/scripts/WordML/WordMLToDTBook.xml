@@ -4,7 +4,7 @@
 	<description>Converts a WordML document to DTBook 2005-1</description>
 	
 	<property name="input" value="FIXME" type="application/xml"/>
-	<property name="outputPath" value="FIXME" type="application/xhtml+xml"/>
+	<property name="outputPath" value="FIXME" type="application/x-dtbook+xml"/>
 	
 	
 	<task name="se_tpb_wordml2dtbook" interactive="true">
