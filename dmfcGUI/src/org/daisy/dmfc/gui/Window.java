@@ -81,7 +81,7 @@ public class Window {
 	private Display display;
 	private Shell shell;
 	private DMFCCore dmfc;
-	InputListener lil;
+	LocalInputListener lil;
 	EventListener lel;
 	
 	private static Window window;
@@ -1465,6 +1465,8 @@ public class Window {
 	 */
 	public void start(){
 		
+		// Clear abort flag
+		lil.setAborted(false);
 		
 		//enable and disable buttons
 		setRunTerminateButtons();
