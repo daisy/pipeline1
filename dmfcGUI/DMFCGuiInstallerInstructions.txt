@@ -1,3 +1,5 @@
+Release Technician Instructions
+
 
  Initial setup
  --------------
@@ -142,6 +144,8 @@ Start the Build
 	   
 	   
 	[this text can become a part of the dmfc release technician handbook]
+
+**********************************************************************************
 
 ** DMFC release - archives overview **
 
