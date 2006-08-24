@@ -90,6 +90,7 @@
 	<target name="buildLinux"
 			description="Creates a linux build"
 			depends="createDistributionDir">
+		<fail message="Not completely implemented yet. Sorry."/>
 		<delete file="${distribution.dir}/linux.tgz"/>
 		<tar destfile="${distribution.dir}/linux.tgz" compression="gzip" basedir="${base.dir}">
 			<include name="org.daisy.util.jar"/>
