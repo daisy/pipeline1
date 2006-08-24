@@ -87,6 +87,18 @@
 		</zip>
 	</target>
 		
+	<target name="buildLinux"
+			description="Creates a linux build"
+			depends="createDistributionDir">
+		<delete file="${distribution.dir}/linux.tgz"/>
+		<tar destfile="${distribution.dir}/linux.tgz" compression="gzip" basedir="${base.dir}">
+			<include name="org.daisy.util.jar"/>
+			<include name="org.daisy.dmfc.zip"/>
+			<include name="org.daisy.dmfc.gui.jar"/>
+			<include name="org.daisy.dmfc.gui-extras.zip"/>
+			<include name="jython_Release_2_2alpha1.jar"/>
+		</tar>
+	</target>
 	
 	<!-- end of binary distribution build -->
 	<!-- end of distribution build related tasks -->	
