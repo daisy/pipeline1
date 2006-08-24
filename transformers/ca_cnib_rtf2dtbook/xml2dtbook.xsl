@@ -57,9 +57,11 @@
 	</xsl:variable>
 
 	<xsl:template match="rtf:doc">
+		<!--
 		<xsl:processing-instruction name="xml-stylesheet">
 			<xsl:text>href="dtbook.2005-1.basic.css" type="text/css"</xsl:text>
 		</xsl:processing-instruction>
+		-->
 		<dtbook version="2005-1" xml:lang="{$lang}">
 			<xsl:apply-templates select="*"/>
 		</dtbook>
