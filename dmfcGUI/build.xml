@@ -38,11 +38,28 @@
 	<!-- end of general tasks -->
 	
 	<!-- distribution build related tasks -->
+	
+	<target name="buildZip-src"
+			description=""
+			depends="createDistributionDir">
+		<delete file="${distribution.dir}/org.daisy.dmfc.gui-src.zip"/>
+		<zip zipfile="${distribution.dir}/org.daisy.dmfc.gui-src.zip">
+			<fileset dir="${base.dir}">
+				<include name="src/**/*.*"/>
+				<include name="scripts/**/*.*"/>
+				<include name="licenses/**/*.*"/>
+				<include name="dmfcgui.nsi"/>
+				<include name="install.nsi"/>
+				<include name="build.xml"/>
+			</fileset>
+		</zip>
+	</target>
+	
 	<!-- binary distribution build -->
 	
 	<target name="buildZip-NSIS" 
-			description="Creates a dmfcgui.jar and extras.jar"
-			depends="createDistributionDir">
+			description="Creates a org.daisy.dmfc.gui.jar and org.daisy.dmfc.gui-extras.jar"
+			depends="createDistributionDir,buildZip-src">
 		<delete file="${distribution.dir}/org.daisy.dmfc.gui.jar"/>
 		<jar jarfile="${distribution.dir}/org.daisy.dmfc.gui.jar">
 			<manifest>
