@@ -82,6 +82,7 @@
 				<exclude name="scripts/test/*.*"/>
 				<include name="licenses/**/*.*"/>
 				<include name="dmfcgui.exe"/>
+				<include name="dmfcgui.sh"/>
 			</fileset>
 		</zip>
 	</target>
