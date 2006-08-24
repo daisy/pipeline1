@@ -3,8 +3,8 @@ id			what									who			status
 ----------------------------------------------------------------------		
 bugs		Remaining bugs in GUI					Laurie
 man			Short GUI manual						Laurie
-scrpts		all scripts committed 					Linus
-samples 	sample dtbook,rtf to doc/examples		Linus
+scrpts		all scripts committed 					Linus       DONE
+samples 	sample dtbook,rtf to doc/examples		Linus       DONE
 desc		script walkthrough 
 			(description extensions)				Markus
 scripdupe	copy scripts to dmfc/examples			Markus			
@@ -40,7 +40,7 @@ tracker		Establish which tracker(s) to use		All			DONE
 
 packages    Create ant scripts for all packages
             and make sure they are usable. Send
-            list to Laurie                          Linus       mostly done
+            list to Laurie                          Linus       DONE
 
 
 ----------------------------------------------------------------------
