@@ -125,6 +125,8 @@
 			<fileset dir="${base.dir}">
 				<include name="src/**/*.*"/>				
 				<include name="resources/**/*.*"/>	
+				<include name="doc/releasenotes/*.*"/>
+				<include name="doc/narrator/*.*"/>
 				<exclude name="**/CVS/**/*.*"/>
 				<exclude name="src/org/daisy/util/**/*.*"/>
 			</fileset>
@@ -213,6 +215,7 @@
 				<include name="licenses/**/*.*"/>
 				<include name="lib/**/*.jar"/>
 				<include name="doc/releasenotes/*.*"/>
+				<include name="doc/narrator/*.*"/>
 				<exclude name="**/org/daisy/util/**/*.*"/>
 			</fileset>
 			<fileset dir="${base.dir}">
