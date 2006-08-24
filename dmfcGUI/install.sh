@@ -5,8 +5,14 @@
 # Warning, not finished!
 #######################################################################
 
+if [ $# != 1 ] 
+then
+	echo "You must specify an output directory"
+	exit 1
+fi
+
 UTIL="org.daisy.util.jar"
-DMFC="org.daisy.dmfc.zip "
+DMFC="org.daisy.dmfc.zip"
 GUI="org.daisy.dmfc.gui.jar"
 EXTRA="org.daisy.dmfc.gui-extras.zip"
 JYTHON="jython_Release_2_2alpha1.jar"
