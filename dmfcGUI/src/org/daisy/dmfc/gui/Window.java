@@ -791,7 +791,7 @@ public class Window {
 	}
 	
 	public void getConversionDescription(){
-		String description = ((ScriptHandler)hmScriptHandlers.get(fileSelectedFromTree.getName())).getDescription();
+		String description = ((ScriptHandler)hmScriptHandlers.get(fileSelectedFromTree.getPath())).getDescription();
 		if (description !=null){
 			this.txtDescription.setText( description);
 			//System.out.println("Conversion description is "+ description);
@@ -925,7 +925,7 @@ public class Window {
 						//add to HashMap
 						//key, name of file
 						//value:  ScriptHandler object
-						hmScriptHandlers.put(toSH.getName(), sh);
+						hmScriptHandlers.put(toSH.getPath(), sh);
 						
 					}
 					catch(ValidationException ve){
@@ -1055,7 +1055,7 @@ public class Window {
 			messageBox.open();
 		}
 		else{
-			this.scriptHandler = (ScriptHandler)hmScriptHandlers.get(fileSelectedFromTree.getName());
+			this.scriptHandler = (ScriptHandler)hmScriptHandlers.get(fileSelectedFromTree.getPath());
 		}
 		
 	}

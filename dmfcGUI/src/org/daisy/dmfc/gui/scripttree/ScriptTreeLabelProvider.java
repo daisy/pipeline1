@@ -44,7 +44,7 @@ public class ScriptTreeLabelProvider implements ILabelProvider{
 	 * The most important method in this class, how each item in the tree is viewed.
 	 */
 	public String getText(Object arg){
-		String text = ((File) arg).getName();
+		String text = ((File) arg).getPath();
 		String scriptName="";
 		//if name is blank, get the path
 		
@@ -59,7 +59,7 @@ public class ScriptTreeLabelProvider implements ILabelProvider{
 		}
 		
 		else{
-			return text;
+			return ((File) arg).getName();
 		}
 	}
 	
