@@ -25,7 +25,7 @@ package org.daisy.dmfc;
  */
 public class Version {
 
-	private static final String VERSION = "2006-08-15";
+	private static final String VERSION = "2006-08-25";
 	
 	public static String getVersion() {
 		return VERSION;
