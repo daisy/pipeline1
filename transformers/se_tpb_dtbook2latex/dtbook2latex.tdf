@@ -3,9 +3,9 @@
 	<name>DTBook to LaTeX</name>
 	<description>Transforms a DTBook 2005 document to LaTeX</description>
 	<classname>org.daisy.dmfc.transformers.XSLTRunner</classname>
-	<license>unknown</license>
+	<license>LGPL</license>
 	<author>Linus Ericson</author>
-	<support>No</support>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	
 	<parameters>
 
