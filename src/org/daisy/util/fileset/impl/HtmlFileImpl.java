@@ -53,7 +53,7 @@ import org.xml.sax.SAXParseException;
  * @author Markus Gylling
  */
 
-public class HtmlFileImpl extends SgmlFileImpl implements HtmlFile, ManifestFile, ContentHandler, DTDHandler, ErrorHandler, EntityResolver, AutoDetector {
+class HtmlFileImpl extends SgmlFileImpl implements HtmlFile, ManifestFile, ContentHandler, DTDHandler, ErrorHandler, EntityResolver, AutoDetector {
 	private static Parser parser;
 	//protected ErrorHandler listeningErrorHandler = null;
 	

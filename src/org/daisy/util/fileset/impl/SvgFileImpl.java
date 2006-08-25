@@ -33,9 +33,11 @@ import org.xml.sax.SAXException;
  *
  * File implementation for SVG image files
  */
-public class SvgFileImpl extends XmlFileImpl implements SvgFile {
+class SvgFileImpl extends XmlFileImpl implements SvgFile {
+
 	public SvgFileImpl(URI uri) throws FileNotFoundException, IOException, SAXException, ParserConfigurationException {
 		super(uri, SvgFile.mimeStringConstant);
 	}
 
+	private static final long serialVersionUID = 7770131283591848886L;	
 }
