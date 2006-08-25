@@ -31,7 +31,8 @@ import org.daisy.util.fileset.interfaces.FilesetFile;
 
 
 /**
- * <p>Use to retrieve single instances from the FilesetFile hierarchy, ie a FilesetFile without a Fileset owner</p>
+ * Use to retrieve single instances from the FilesetFile hierarchy, ie a FilesetFile without a Fileset owner.
+ * 
  * <p>Usage example:</p>
  * <pre><code>
  *  FilesetFileFactory fac = FilesetFileFactory.newInstance();

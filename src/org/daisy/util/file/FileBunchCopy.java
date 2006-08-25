@@ -32,8 +32,8 @@ import org.daisy.util.fileset.interfaces.Fileset;
 
 /**
  * Utilities to copy different collections of files.
- * @see org.daisy.util.file.EFolder.addFileset(Fileset, boolean)
- * @see org.daisy.util.file.EFolder.addFiles(Collection, boolean) 
+ * @see org.daisy.util.file.EFolder#addFileset(Fileset, boolean)
+ * @see org.daisy.util.file.EFolder#addFiles(Collection, boolean) 
  * @author Martin Blomberg
  * @author Linus Ericson
  */
