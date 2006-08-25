@@ -63,6 +63,7 @@
 			<include name="saxon8-dom.jar"/>
 			<include name="wstx-lgpl-2.0.3.jar"/>
 			<include name="xercesImpl.jar"/>
+			<include name="tagsoup-1.0rc4.jar"/>			
 		</fileset>
 	</path>
 	
