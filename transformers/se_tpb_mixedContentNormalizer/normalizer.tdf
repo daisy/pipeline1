@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformer version="1.0">
 	<name>Mixed Content Normalizer</name>
-	<description>Performs mixed content normalization</description>
+	<description>Performs mixed content normalization on XML documents</description>
 	<classname>se_tpb_mixedContentNormalizer.Normalizer</classname>
-	<license>unknown</license>
+	<license>LGPL</license>
 	<author>Linus Ericson</author>
-	<support>No</support>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	
 	<parameters>
 

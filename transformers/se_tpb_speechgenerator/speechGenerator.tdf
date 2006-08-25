@@ -4,9 +4,9 @@
 		Generates audio for a DTBook dokument.
 	</description>
 	<classname>se_tpb_speechgenerator.SpeechGenerator</classname>
-	<license></license>
+	<license>LGPL</license>
 	<author>Martin Blomberg</author>
-	<support>No</support>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	
 	<parameters>
 
