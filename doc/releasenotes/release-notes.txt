@@ -37,6 +37,15 @@ Below issues are already identified and marked for fixing til next release:
   characters. The cause of the issue is known (#1543978) and 
   will be fixed by next release.
 
+#licenseinfo
+  The GUI does not yet provide information on specific licensing
+  for specific scripts&transformers.
+
+#installer
+  Running the windows installer as non admin makes it impossible to
+  uninstall using the uninstaller. Workaround is to delete the install
+  directory, and the link on the start menu.
+
 ** Pending features **
 Below features are not yet implemented, but high on the list for the next release:
 - Access to transformer documentation from the GUI
