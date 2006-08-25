@@ -272,12 +272,10 @@ public class MIMETypeImpl implements MIMEType {
 		  if(ch == '*') {
 			  regex.append('(');
 			  regex.append('\\');
-			  regex.append('\\');
 			  regex.append('w');
 			  regex.append(')');
 			  regex.append('+');
 		  }else if (ch=='.'){
-			  regex.append('\\');
 			  regex.append('\\');
 			  regex.append('.');
 		  }else{	  			  
