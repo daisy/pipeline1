@@ -64,8 +64,10 @@ public class FilesetImpl implements Fileset {
 	private ManifestFile manifestMember;	
 	private FilesetType filesetType = null;
 	private static FilesetRegex regex = FilesetRegex.getInstance();
-	//private static Peeker peeker; 
-	private static Peeker peeker = new PeekerImpl();
+	//mg 20060825: debug post manipulator run: dont instantiate here; make a new one per FilesetImpl instance instead
+	//private static Peeker peeker = new PeekerImpl();
+	private static Peeker peeker; 
+		
 	private boolean setReferringCollections; 
 	private FilesetErrorHandler errorListener = null;
 	
@@ -119,7 +121,9 @@ public class FilesetImpl implements Fileset {
 		  System.setProperty("org.daisy.util.fileset.validating", "true");
 		} 
 		
-		//peeker = new PeekerImpl();		
+		//mg 20060825: debug post manipulator run: uncommented line below
+		peeker = new PeekerImpl();		
+		
 		File f = new File(manifestURI);
 						
 		if(f.exists() && f.canRead()){
@@ -375,6 +379,9 @@ public class FilesetImpl implements Fileset {
 		}
 		
 		try{
+			//mg 20060825: debug post manipulator run: line below since this is a static
+			if(peeker==null) peeker = new PeekerImpl();
+			
 			peeker.peek(uri);
 			String rootName = peeker.getRootElementLocalName().intern();	
 			
