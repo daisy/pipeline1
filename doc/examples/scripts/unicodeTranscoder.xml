@@ -1,6 +1,6 @@
 <taskScript version="1.0">
 	<name>Unicode Transcoder</name>
-	<description>Transcode between charactersets, optionally perform unicode character to replacement string substitution using external tables.</description>
+	<description>Transcode all XML members of a fileset to UTF-8</description>
 	
 	<task name="int_daisy_unicodeTranscoder" interactive="false">
 
@@ -15,21 +15,10 @@
 		</parameter>		
 				
 		<parameter>
-			<name>translationTable</name>
-			<value>d:/UserTable.txt</value>
-		</parameter>
-
-		<parameter>
 			<name>outputEncoding</name>
-			<value>us-ascii</value>
+			<value>utf-8</value>
 		</parameter>
-
-		<parameter>
-			<name>fallbackToUCD</name>
-			<value>false</value>
-		</parameter>		
-		
-				
+						
 	</task>
 
 </taskScript>

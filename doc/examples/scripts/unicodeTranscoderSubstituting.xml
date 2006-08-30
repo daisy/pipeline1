@@ -1,0 +1,55 @@
+<taskScript version="1.0">
+	<name>Unicode Transcoder - substituting</name>
+	<description>Transcode all XML members of a fileset to utf-8, and perform unicode character-to-replacementstring substitution using external table(s) and non-spacing mark removal.</description>
+	
+	<task name="int_daisy_unicodeTranscoder" interactive="false">
+
+		<parameter>
+			<name>inXML</name>
+			<value>D:/documents/workspace/dmfc/doc/examples/input/multi-language-unicode.html</value>
+		</parameter>
+					
+		<parameter id="id1">
+			<name>outDir</name>
+			<value>d:/transcode-out/</value>
+		</parameter>		
+				
+		<parameter>
+			<name>performCharacterSubstitution</name>
+			<value>true</value>
+		</parameter>
+		
+		<parameter>
+			<name>excludeFromTranslation</name>
+			<value>us-ascii</value>
+		</parameter>
+				
+		<parameter>
+			<name>translationTables</name>
+			<value>D:/documents/workspace/dmfc/transformers/int_daisy_unicodeTranscoder/example-table.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>outputEncoding</name>
+			<value>utf-8</value>
+		</parameter>
+
+		<parameter>
+			<name>fallbackToNonSpacingMarkRemovalTransliteration</name>
+			<value>true</value>
+		</parameter>
+
+		<parameter>
+			<name>fallbackToLatinTransliteration</name>
+			<value>false</value>
+		</parameter>
+
+		<parameter>
+			<name>fallbackToUCD</name>
+			<value>false</value>
+		</parameter>		
+		
+				
+	</task>
+
+</taskScript>
