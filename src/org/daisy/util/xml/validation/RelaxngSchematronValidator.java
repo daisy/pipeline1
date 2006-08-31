@@ -27,6 +27,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -59,6 +60,8 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
     private ValidationDriver relaxngDriver = null;
 
     private ValidationDriver schematronDriver = null;
+    
+    private URIResolver uriResolver = null;
 
     /**
      * <p>
@@ -327,6 +330,9 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
                     TransformerFactory factory = TransformerFactory.newInstance();
 
                     Transformer transformer = factory.newTransformer(xslt);
+                    if(this.uriResolver==null){
+                        transformer.setURIResolver(CatalogEntityResolver.getInstance());
+                    }
                     transformer.transform(xml, new StreamResult(
                             schematronSchema.getFile().toURL().toString()));
                     schSource = new InputSource(schematronSchema.getFile()
@@ -395,7 +401,18 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
     public void error(SAXParseException e) throws SAXException {
         printMessage("Error", e);
     }
-
+    /**
+     * <p>
+     * Sets a URIResolver for the validator. If no URIResolver is set, the default URIResolver 
+     * returned by <code>{@link org.daisy.util.xml.catalog.CatalogEntityResolver#getInstance()}</code> 
+     * is used.
+     * </p> 
+     * @param resolver - URIResolver to be used by the validator
+     */
+    public void setURIResolver(URIResolver resolver){
+        this.uriResolver = resolver;
+    }
+    
     public void fatalError(SAXParseException e) throws SAXException {
         printMessage("Fatal error", e);
     }
