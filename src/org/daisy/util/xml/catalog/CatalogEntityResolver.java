@@ -153,7 +153,9 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
      * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
      */
     public InputSource resolveEntity(String publicId, String systemId) throws IOException {
-    	//System.out.println("Catalog request: publicId: " + publicId + ":: systemId:" + systemId );
+//    	if(System.getProperty("org.daisy.debug")!=null){
+//    		System.out.println("DEBUG: CatalogEntityResolver#resolveEntity: publicId: " + publicId + ":: systemId:" + systemId );
+//    	}	
         if (publicId != null) {
             try {
                 return catalog.getPublicIdEntity(publicId);
@@ -176,6 +178,9 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
                     return catalog.getSystemIdEntityFromSuffix(filename);
                 } catch (CatalogExceptionEntityNotSupported ceens2) {
                 	entityNotSupportedExceptions.add(systemId+": suffix");
+                	if(System.getProperty("org.daisy.debug")!=null){
+                		System.out.println("DEBUG: CatalogEntityResolver#resolveEntity: entity not supported: publicId: " + publicId + ":: systemId:" + systemId);
+                	}	
                 }
             } catch (Exception e) {
                 // silence
