@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+	<head>
+		<title>org.daisy.util.xml.pool package</title>
+	</head>
+<body>
+  Singleton pools of often-used XML processors. 
+  <p>The sole reason for using these is performance optimization.</p>
+  <p>The abstract use pattern is:</p>
+  <code><pre>
+
+   //get the processor from the pool
+   Processor proc = ProcessorPool.getInstance().acquire(featureMap,propertyMap);
+
+   //...use the processor...
+
+   //and lastly release it (ideally using a finally clause)
+   ProcessorPool.getInstance().release(proc,featureMap,propertyMap);
+  
+  </pre></code>
+</body>
+</html>
