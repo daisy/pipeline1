@@ -19,8 +19,22 @@
 
 package org.daisy.util.fileset.interfaces.sgml;
 
+import javax.xml.namespace.QName;
+
 import org.daisy.util.mime.MIMEConstants;
 
 public interface HtmlFile extends SgmlFile {
 	static String mimeStringConstant = MIMEConstants.MIME_TEXT_HTML;
+	
+	/**
+	 *@return true if <code>idval</code> exists as the value of an attribute named <code>id</code> in the document, false otherwise
+	 *@see #hasIDValueOnQName(String, QName)
+	 */
+	public boolean hasIDValue(String idval);
+	
+	/**
+	 *@return true if <code>idval</code> exists as the value of an attribute named <code>id</code> on an element <code>qName</code> in the document, false otherwise
+	 *@see #hasIDValue(String)
+	 */
+	public boolean hasIDValueOnQName(String idval, QName qName);
 }
