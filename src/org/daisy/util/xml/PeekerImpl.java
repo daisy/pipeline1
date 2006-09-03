@@ -72,6 +72,9 @@ public class PeekerImpl
     private String xmlVersion = "";
     private String xmlStandalone = "";
 
+    /**
+     * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead
+     */
     public PeekerImpl() {
 
         if (factory == null) {

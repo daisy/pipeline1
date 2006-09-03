@@ -28,48 +28,62 @@ import org.xml.sax.SAXException;
  * Peeks into an XML file, returns 
  * prolog and root information.
  * @author Markus Gylling
+ * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead
  */
 
 public interface Peeker {
+	/**
+ * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead
+	 */
     public void peek(URI uri) throws SAXException, IOException;
     /**
      * @return the first encountered public id while parsing the file; that of the document entity
+     * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead
      */
     public String getFirstPublicId();
     /**
      * @return the first encountered system id while parsing the file; that of the document entity
+     * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead
      */
     public String getFirstSystemId();
     
     /**
      * @return the local name of the documents root element
+     * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead
      */
     public String getRootElementLocalName();
 
     /**
      * @return the namespace URI of the root element
+     * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead
      */
     public String getRootElementNsUri();
 
     /**
      * @return the root element represented as a QName object
+     * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead
      */
     public QName getRootElementQName();
     
     /**
      * @return the XML version as stated in the XML declaration pseudoattribute
+     * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead
      */ 
     public String getXMLVersion();
     /**
      * @return the encoding if stated in prolog, null if no encoding pseudoattr
+     * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead
      */
     public String getEncoding();
     
     /**
      * @return the standalone value as stated in the XML declaration pseudoattribute
+     * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead
      */ 
     public boolean getStandalone();
     
-    
+    /**
+     * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead 
+     */
     public void reset();
 }

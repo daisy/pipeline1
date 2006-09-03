@@ -73,6 +73,7 @@ import org.xml.sax.SAXParseException;
  * Simultaneous validation using both inlined and inparam schemas is supported.
  * <p>This transformer extends (and effectively makes redundant) se_tpb_xmlValidator.</p>
  * @author Markus Gylling
+ * @deprecated use int_daisy_validator instead
  */
 public class XmlValidator extends Transformer implements ErrorHandler, FilesetErrorHandler, ContentHandler {
 	
