@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+<meta http-equiv='Content-type'
+	content='application/xhtml+xml; charset=utf-8' />
+<title>Transformer documentation: int_daisy_unicodeTranscoder</title>
+<style type="text/css">
+  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: int_daisy_validator</h1>
+<!-- doc.html contains primarily developer-centric information, 
+not end-user-centric information. However, when describing extended configuration, remember
+that end users may come in contact with that information. -->
+
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#purpose">Transformer Purpose</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>
+	</li>
+	<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+	</li>
+	<li><a href="#future">Further development</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>An input- and validation type agnostic validator, supporting multi-layered validation.</p>
+<p>The main idea is to be able to feed the transformer "any" type of content; if 
+there is a validator for the particular content type on the system, the content will be 
+validated - using standardized API common to all implementations.</p>
+
+<p>Benefits of this approach are:</p>
+<ul>
+<li>neither users nor pipelines dont have to "know" what kind of content is currently being handled,</li>
+<li>... which also allows content to be heterogenous in a particular pipeline</li>
+<li>allows (as inherited from the factory pattern) implementations to be changed without modifying code.</li>
+</ul>
+
+<p>The programmatic flow of this transformer in summary:</p>
+<ol>
+<li>Try to create a org.daisy.util.fileset.Fileset instance on the input file (with DTD validation turned on).</li>
+<li>If Fileset can represent this type of fileset, check if org.daisy.util.fileset.validator.ValidatorFactory can produce a Validator for the type of fileset.</li>
+<li>If a fileset validator can be produced, run a Fileset validation.</li>
+<li>If a fileset instance could not be created (because input type was not supported by the Fileset package), and if input is xml and has a DTD (prolog identifiers), run a standard DTD validation pass.</li>
+<li>If additional schema (RNG, XSD, SCH) resources (one or several) were supplied as inparam, or if inline (non-DTD) schemas were present, attempt an anonymous jaxp.validation run using javax.xml.validation.SchemaFactory.</li>
+<li>Inform the user on what kind of validation was actually done, and what the result was.</li>     
+</ol>		
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- contract definition: detailed requirements on input nature -->
+<p>This transformer is input agnostic; will throw an exception if it cannot validate the given content type.</p>
+
+<h2 id="output">Output</h2>
+<p>This transformers has no physical output at the moment (although its viable to consider outputting report documents).</p>
+
+<h3 id="success">On success</h3>
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+
+
+<h3 id="failure">On error</h3>
+<!-- contract definition: details on delivered output when an error occurs, either because input reqs were not satisfied, or because an exception occurs -->
+<p>On error, this transformer will send
+a fatal message, then throw an exception and abort.</p>
+
+<p>On inability to locate a validator for the input content type, 
+this transformer will send a fatal message, then throw an exception and abort.</p>
+
+<p>See further <a href="params">Parameters</a>.</p>
+
+<h2 id="config">Configuration/Customization</h2>
+
+<h3 id="params">Parameters (tdf)</h3>
+<!-- description on params as defined in tdf -->
+<dl>
+	<dt>input</dt>
+	<dd>Path to input file/fileset manifest to be validated</dd>
+	
+	<dt>schemas</dt>
+	<dd>
+				Comma separated list of schema identifiers to validate the input document against. 
+				Identifiers may be expressed as filepaths, public or system IDs.
+				RelaxNG, W3C Schema, Schematron and Compound are allowed types of schemas.
+				Schemas that occur inline in the validated document do not need to be namedropped here.
+	
+	</dd>
+	<dt>abortThreshold</dt>
+	<dd>Validation error severity level - when to perform a Transformer abort</dd>
+			
+	<dt>abortOnException</dt>
+	<dd>Whether to perform a Transformer abort when a caught exception occurs</dd>
+</dl>
+
+<h3 id="extConfig">Extended configurability</h3>
+<!-- details on additional config files, system variables etc -->
+
+<h2 id="future">Further development</h2>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+<p>The transformer is basically a wrapper around abstract factory and discovery patterns: given an arbitrary input content
+type, the transformer will use factories to attempt to produce a validator that can validate the content.</p>
+
+<p>The two main factory implementations used are:</p>
+<ul>
+<li><code>org.daisy.util.fileset.validation.ValidatoryFactory</code>, which is a content-centric producer of validators for various types of filesets (DTBs, wellknown document types, etc)</li>
+<li>The <code>org.daisy.util.xml.validation.jaxp.SchemaFactory</code> package, which contains RelaxNG and Schematron extensions to the base XSD support that the <code>javax.xml.validation</code> package of the JRE provides.</li>
+</ul>
+
+<p>These two factories can be extended to support more types of filesets, and more types of schemalanguages respectively.</p>
+
+<p>Output of Report documents to given locations is another possible enhancement.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+<!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<ul>
+	<li>zedval.jar</li>
+</ul>
+
+<h2 id="owner">Author</h2>
+<!-- name of owner/initial committer -->
+<p>Markus Gylling, Daisy Consortium</p>
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>LGPL</p>
+
+</body>
+</html>

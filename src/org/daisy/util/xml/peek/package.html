@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+	<head>
+		<title>org.daisy.util.xml.peek package</title>
+	</head>
+<body>
+   Peek into an XML document prolog and head. 
+  <p>Peeking is the activity of, in a cost-minimized way, 
+  retrieving XML document prolog and head information.</p>  
+  <p>Use PeekerPool to retrieve Peeker implementations.</p>
+  <p>For maximized system efficiency, always release (return) 
+  the peeker to the pool  when done.</p>
+    
+  <p>Usage example:</p>
+  <code><pre>
+     Peeker peeker = PeekerPool.getInstance().acquire();
+     try{
+		PeekResult result = peeker.peek(url);
+       	String rootNamespace = result.getRootElementNsUri();
+     }catch (Exception e) {
+       //wasnt an XMLFile or something else went wrong
+     }finally{
+       PeekerPool.getInstance().release(peeker);
+     }
+          
+  </pre></code>
+</body>
+</html>
