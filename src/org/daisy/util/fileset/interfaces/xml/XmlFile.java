@@ -34,6 +34,7 @@ import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.Referring;
 import org.daisy.util.mime.MIMEConstants;
 import org.w3c.dom.Document;
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
@@ -42,6 +43,51 @@ import org.xml.sax.SAXException;
 public interface XmlFile extends FilesetFile, Referring {
 	static String mimeStringConstant = MIMEConstants.MIME_APPLICATION_XML;
 
+	/**
+	 * @return the prolog doctype public id, or null if no doctype public id exists in this document
+	 */
+	public String getPrologPublicId();
+
+	/**
+	 * @return the prolog doctype system id, or null if no doctype system id exists in this document
+	 */
+	public String getPrologSystemId();
+	
+	/**
+	 * @return the prolog encoding pseudoattr, or null if not encountered
+	 */
+	public String getPrologEncoding();
+
+	/**
+	 * @return the prolog version pseudoattr, or null if not encountered
+	 */
+	public String getPrologXmlVersion();
+	
+	/**
+	 * @return the namespace uri of the root element
+	 */
+	public String getRootElementNsUri();
+	
+	/**
+	 * @return the localname of the root element
+	 */
+	public String getRootElementLocalName();
+
+	/**
+	 * @return the qname of the root element
+	 */
+	public String getRootElementqName();
+
+	/**
+	 * @return the qname of the root element
+	 */
+	public QName getRootElementQName();
+
+	/**
+	 * @return the attributes of the root element
+	 */
+	public Attributes getRootElementAttributes();
+	
 	/**
 	 *@return a collection&lt;String&gt; of all xml:lang values in this XML document. 
 	 * If no xml:lang values exist in this document, the return will
@@ -79,15 +125,7 @@ public interface XmlFile extends FilesetFile, Referring {
 	 */
 	public Map getInlineSchemaURIs();
 	
-	/**
-	 * @return the prolog doctype public id, or null if no doctype public id exists in this document
-	 */
-	public String getPrologPublicId();
 
-	/**
-	 * @return the prolog doctype system id, or null if no doctype system id exists in this document
-	 */
-	public String getPrologSystemId();
 				
 	/**
 	 *@return true if the document has been parsed and found wellformed; false if the document has been parsed and found malformed
