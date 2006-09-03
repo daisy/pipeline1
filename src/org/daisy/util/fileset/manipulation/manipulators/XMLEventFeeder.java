@@ -22,7 +22,7 @@ package org.daisy.util.fileset.manipulation.manipulators;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FileReader;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 
@@ -41,16 +41,16 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.sgml.HtmlFile;
 import org.daisy.util.fileset.manipulation.FilesetFileManipulator;
 import org.daisy.util.fileset.manipulation.FilesetManipulationException;
-import org.daisy.util.xml.Peeker;
-import org.daisy.util.xml.PeekerImpl;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.peek.PeekResult;
+import org.daisy.util.xml.peek.Peeker;
+import org.daisy.util.xml.peek.PeekerPool;
+import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.stax.ContextStack;
 import org.daisy.util.xml.stax.StaxEntityResolver;
-import org.xml.sax.SAXException;
 
 /**
  * <p>Base class for FilesetFile manipulation via javax.xml.stream.</p>
@@ -68,11 +68,11 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	protected XMLEventReader reader;
 	protected XMLEventWriter writer;
 	protected ContextStack contextStack = null;	
-	private File dest;
-	private static Peeker peeker;	
+	private File dest;	
 	private Charset requestedOutputEncoding = null;
 	private String newLocalName = null;
 		
+	private boolean mDebugMode = false;
 	/**
 	 * Default Constructor.
 	 * @throws CatalogExceptionNotRecoverable
@@ -96,7 +96,7 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	 * @param newLocalName local name to give to output file
 	 * @throws CatalogExceptionNotRecoverable
 	 */
-	public XMLEventFeeder( String newLocalName) throws CatalogExceptionNotRecoverable {
+	public XMLEventFeeder(String newLocalName) throws CatalogExceptionNotRecoverable {
 		this.newLocalName = newLocalName;
 		initialize(null);
 	}
@@ -113,6 +113,10 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	}
 		
 	private void initialize(Charset outputEncoding) throws CatalogExceptionNotRecoverable {
+		if(System.getProperty("org.daisy.debug")!=null) {
+			mDebugMode = true;
+		}
+		//TODO use pools 
 		if(xif==null){ //first access to statics
 			xif = XMLInputFactory.newInstance();
 			xof = XMLOutputFactory.newInstance();
@@ -126,9 +130,8 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 
         xif.setXMLReporter(this);
 		xif.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
-		
-		if(peeker==null)peeker = new PeekerImpl();			
-		
+        
+									
 		if(outputEncoding!=null) requestedOutputEncoding = outputEncoding;
 	}
 	
@@ -144,7 +147,9 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 		contextStack = new ContextStack(true);
 		try{
 
-			reader = xif.createXMLEventReader(new FileInputStream((File)inFile),getEncoding(inFile));			
+			//reader = xif.createXMLEventReader(new FileInputStream((File)inFile),getEncoding(inFile));			
+			//reader = xif.createXMLEventReader(new FileReader((File)inFile));
+			reader = xif.createXMLEventReader(inFile.asInputStream());
 			while(reader.hasNext()) {
 				XMLEvent xe = reader.nextEvent();				
 				//invoke separate method for each type
@@ -328,12 +333,24 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	//
 
 	
-	private String getEncoding(FilesetFile inFile) throws SAXException, IOException {
-		peeker.reset();		
-		peeker.peek(inFile.getFile().toURI());
-		String enc = peeker.getEncoding();
-		if(null!=enc) return enc;		 
-		return "utf-8";
+	private String getEncoding(FilesetFile inFile) {
+		Peeker peeker = null;
+		try{
+			peeker = PeekerPool.getInstance().acquire();
+			PeekResult result = peeker.peek((File)inFile);
+			String enc = result.getPrologEncoding();
+			return (null!=enc) ? enc : null;		
+		}catch (Exception e) {
+			return null;
+		}finally{
+			try {
+				PeekerPool.getInstance().release(peeker);
+			} catch (PoolException e) {
+				if(mDebugMode) {
+					System.out.println("XMLEventFeeder#getEncoding PoolException: " + e.getMessage());
+				}
+			}
+		}		
 	}
 	
 	/**
