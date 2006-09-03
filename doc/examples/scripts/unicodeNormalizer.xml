@@ -1,5 +1,5 @@
 <taskScript version="1.0">
-	<name>Unicode Normalizer</name>
+	<name>Unicode Normalizer NFC</name>
 	<description>
 		<p>Performs Unicode Normalization on all XML members of a fileset.</p>
 		<p>This is a useful process to perform prior to executing sorting, searching or other string-based comparisons on an XML file.</p>

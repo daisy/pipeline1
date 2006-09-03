@@ -4,13 +4,14 @@
 	
 	<task name="int_daisy_unicodeTranscoder" interactive="false">
 
-		<parameter>
-			<name>inXML</name>
+		<parameter id="input">
+			<name>input</name>
 			<value>D:/documents/workspace/dmfc/doc/examples/input/multi-language-unicode.html</value>
+			<!--  <value>D:\temp\fileset_tests\202_dtb_1\ncc.html</value> -->
 		</parameter>
 					
-		<parameter id="id1">
-			<name>outDir</name>
+		<parameter id="output">
+			<name>output</name>
 			<value>d:/transcode-out/</value>
 		</parameter>		
 				
@@ -20,12 +21,12 @@
 		</parameter>
 		
 		<parameter>
-			<name>excludeFromTranslation</name>
+			<name>excludeFromSubstitution</name>
 			<value>us-ascii</value>
 		</parameter>
 				
 		<parameter>
-			<name>translationTables</name>
+			<name>substitutionTables</name>
 			<value>D:/documents/workspace/dmfc/transformers/int_daisy_unicodeTranscoder/example-table.xml</value>
 		</parameter>
 
