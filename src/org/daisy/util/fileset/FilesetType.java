@@ -37,6 +37,10 @@ public final class FilesetType {
     public static final FilesetType PLAYLIST_PLS = new FilesetType();
     public static final FilesetType UNKNOWN = new FilesetType();
     
+    /**
+     * Returns the canonical name constant for this fileset type in string form.
+     * <p>For nicename retrieval, see toNiceNameString.</p>
+     */
     public String toString(){
     	if (this.equals(FilesetType.CSS)) {
     		return "CSS";
@@ -74,6 +78,45 @@ public final class FilesetType {
 	
     	return null;
     }
+
+    public String toNiceNameString(){
+    	if (this.equals(FilesetType.CSS)) {
+    		return "CSS document";
+    	}else
+    	if (this.equals(FilesetType.DAISY_202)) {
+    		return "DAISY 2.02 DTB";
+    	}else
+        if (this.equals(FilesetType.DTBOOK_DOCUMENT)) {
+        		return "Dtbook document";
+       	}else
+       	if (this.equals(FilesetType.HTML_DOCUMENT)) {
+        		return "HTML document";
+       	}else
+       	if (this.equals(FilesetType.NIMAS)) {
+        		return "NIMAS fileset";
+       	}else
+       	if (this.equals(FilesetType.PLAYLIST_M3U)) {
+        		return "M3U playlist";
+       	}else
+       	if (this.equals(FilesetType.PLAYLIST_PLS)) {
+        		return "PLS playlist";
+       	}else
+       	if (this.equals(FilesetType.XHTML_DOCUMENT)) {
+        		return "XHTML document";
+       	}else
+       	if (this.equals(FilesetType.Z3986)) {
+        		return "Z3986 DTB";
+       	}else 
+       	if (this.equals(FilesetType.Z3986_RESOURCEFILE)) {
+        		return "Z3986 Resourcefile";
+       	}else 
+       	if (this.equals(FilesetType.UNKNOWN)) {
+        		return "unknown";
+       	}
+	
+    	return null;
+    }
+
     
     public static FilesetType parse(String type) throws IllegalArgumentException {
         if ("DAISY_202".equals(type)) {
