@@ -39,4 +39,20 @@ public final class SchemaLanguageConstants {
 				);
 	}
 	
+	/**
+	 * @return a nice name string representation of the schema language constants.
+	 */
+	public static String toNiceNameString(String schemaLanguageConstant) {
+		if (schemaLanguageConstant == W3C_XML_SCHEMA_NS_URI) {
+			return "W3C XML Schema";
+		}else if (schemaLanguageConstant == RELAXNG_NS_URI){
+			return "RelaxNG Schema";
+		}else if (schemaLanguageConstant == SCHEMATRON_NS_URI){
+			return "Schematron Schema";
+		}else if (schemaLanguageConstant == ISO_SCHEMATRON_NS_URI){
+			return "ISO Schematron Schema";
+		}
+		return null;
+	}
+	
 }
