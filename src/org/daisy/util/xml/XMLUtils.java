@@ -18,9 +18,15 @@
  */
 package org.daisy.util.xml;
 
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
+import org.daisy.util.xml.peek.PeekResult;
+import org.daisy.util.xml.peek.PeekerPool;
+import org.daisy.util.xml.peek.Peeker;
+import org.daisy.util.xml.validation.SchemaLanguageConstants;
 import org.xml.sax.Attributes;
 
 /**
@@ -28,6 +34,44 @@ import org.xml.sax.Attributes;
  */
 public class XMLUtils {
 
+	/**
+	 * Delegate for determining the Schema language type of a resource.
+	 * <p>This method only detects schema types that are based on XML, ie you
+	 * cannot use this to find out if a resource is a DTD.</p>
+	 * @return a SchemaLanguageConstant NS URI, or null if schema type was not detected, 
+	 * meaning that the inparam resource was probably something else than an xml-based schema.
+	 * @throws Exception if something really evil occurs
+	 */
+	public static String getSchemaType(URL url) throws Exception {
+		try{
+			Peeker peeker = PeekerPool.getInstance().acquire();
+			PeekResult schemaPeekResult = peeker.peek(url);
+			PeekerPool.getInstance().release(peeker);
+			String rootName = schemaPeekResult.getRootElementLocalName();		
+			String rootNsUri = schemaPeekResult.getRootElementNsUri();
+			
+			if(rootName == "schema") {
+				if(rootNsUri == SchemaLanguageConstants.SCHEMATRON_NS_URI){
+					return SchemaLanguageConstants.SCHEMATRON_NS_URI;
+				}else if(rootNsUri == SchemaLanguageConstants.ISO_SCHEMATRON_NS_URI){
+					return SchemaLanguageConstants.ISO_SCHEMATRON_NS_URI;
+				}else if(rootNsUri == SchemaLanguageConstants.W3C_XML_SCHEMA_NS_URI){
+					return SchemaLanguageConstants.W3C_XML_SCHEMA_NS_URI;
+				}							
+			}else if(rootName == "grammar" 
+				&& rootNsUri == SchemaLanguageConstants.RELAXNG_NS_URI) {
+				return SchemaLanguageConstants.RELAXNG_NS_URI;
+			}else{				
+				//... it may be a DTD or something completey other...
+				return null;				
+			}
+		}catch (Exception e) {
+			//peeker parse failure, or peeker getters returning null
+			throw e;
+		}
+		return null;
+	}
+	
 	/**
 	 * Delegate for XSI retrieval from a SAX StartElement event.
 	 * @return a Set of Strings (equalling the unaltered xsd uris), or an empty set
