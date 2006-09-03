@@ -150,7 +150,8 @@
     <public publicId="-//DAISY//RNG smil v2.02//EN" uri="./d202/d202smil.rng" />
     <public publicId="-//DAISY//DTD msmil v2.02//EN" uri="./d202/d202msmil.dtd" />
     <public publicId="-//DAISY//RNG msmil v2.02//EN" uri="./d202/d202msmil.rng" />
-    <public publicId="-//DAISY//DTD discinfo v2.02//EN" uri="./d202/d202discinfo.dtd" />      
+    <public publicId="-//DAISY//DTD discinfo v2.02//EN" uri="./d202/d202discinfo.dtd" />
+    <system systemId="d202meta.rng" uri="./d202/d202meta.rng" />
   </group>
   
   <group> <!-- oeb -->
@@ -358,5 +359,9 @@
     <public publicId="-//W3C//DTD SYNTHESIS 1.0//EN" uri="./ssml/synthesis.dtd" />
     <system systemId="http://www.w3.org/TR/speech-synthesis/synthesis.dtd" uri="./ssml/synthesis.dtd" />
   </group>
-  
+  <!--
+  <group>  
+    <system systemId="http://java.sun.com/dtd/properties.dtd" uri="./sun/properties.dtd" />
+  </group> 
+  --> 
 </catalog>
