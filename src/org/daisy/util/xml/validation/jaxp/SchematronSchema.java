@@ -43,6 +43,10 @@ import org.daisy.util.xml.xslt.XSLTException;
 import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
 import org.xml.sax.SAXException;
 
+/**
+ * 
+ * @author Markus Gylling
+ */
 public class SchematronSchema extends AbstractSchema implements ErrorListener {
 	TransformerFactory transformerFactory = null;
 	javax.xml.transform.Transformer transformer = null;

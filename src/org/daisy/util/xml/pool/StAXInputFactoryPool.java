@@ -30,10 +30,10 @@ import javax.xml.stream.XMLInputFactory;
  */
 public class StAXInputFactoryPool extends AbstractPool {
 	
-	protected static StAXInputFactoryPool instance = new StAXInputFactoryPool();
+	protected static StAXInputFactoryPool mInstance = new StAXInputFactoryPool();
 
 	static public StAXInputFactoryPool getInstance() {
-		return instance;
+		return mInstance;
 	}
 
 	private StAXInputFactoryPool() {

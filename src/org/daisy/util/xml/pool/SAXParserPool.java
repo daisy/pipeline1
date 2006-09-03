@@ -35,19 +35,19 @@ import org.xml.sax.SAXNotSupportedException;
  * @author Markus Gylling
  */
 public class SAXParserPool extends AbstractPool {
-    private static SAXParserFactory saxParserFactory =  null;
-    protected static SAXParserPool instance = new SAXParserPool();	
+    private static SAXParserFactory mSaxParserFactory =  null;
+    protected static SAXParserPool mInstance = new SAXParserPool();	
 	
     
 	static public SAXParserPool getInstance() {
-		return instance;
+		return mInstance;
 	}
 	
 	private SAXParserPool(){
 		super();
-		saxParserFactory = SAXParserFactory.newInstance();
-		saxParserFactory.setNamespaceAware(true);
-		saxParserFactory.setValidating(false);
+		mSaxParserFactory = SAXParserFactory.newInstance();
+		mSaxParserFactory.setNamespaceAware(true);
+		mSaxParserFactory.setValidating(false);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class SAXParserPool extends AbstractPool {
 	 * Creates a brand new parser when super does not carry one in the cache
 	 */
 	private SAXParser create(Map features, Map properties) throws ParserConfigurationException, SAXException {
-	    SAXParser parser = saxParserFactory.newSAXParser();	    	    
+	    SAXParser parser = mSaxParserFactory.newSAXParser();	    	    
 	    return setFeaturesAndProperties(parser,features,properties);		
 	}
 	

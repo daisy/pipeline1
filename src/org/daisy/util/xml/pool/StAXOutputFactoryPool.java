@@ -29,10 +29,10 @@ import javax.xml.stream.XMLOutputFactory;
  */
 public class StAXOutputFactoryPool extends AbstractPool {
 	
-	protected static StAXOutputFactoryPool instance = new StAXOutputFactoryPool();
+	protected static StAXOutputFactoryPool mInstance = new StAXOutputFactoryPool();
 
 	static public StAXOutputFactoryPool getInstance() {
-		return instance;
+		return mInstance;
 	}
 
 	private StAXOutputFactoryPool() {

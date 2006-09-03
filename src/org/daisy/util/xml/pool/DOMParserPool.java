@@ -34,10 +34,10 @@ import org.xml.sax.SAXNotSupportedException;
  * @author Markus Gylling
  */
 public class DOMParserPool extends AbstractPool {
-	protected static DOMParserPool instance = new DOMParserPool();	
+	protected static DOMParserPool mInstance = new DOMParserPool();	
 		
 	static public DOMParserPool getInstance() {
-		return instance;
+		return mInstance;
 	}
 	
 	private DOMParserPool(){

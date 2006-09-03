@@ -35,6 +35,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
+/**
+ * 
+ * @author Markus Gylling
+ */
 public abstract class AbstractSchemaFactory extends javax.xml.validation.SchemaFactory {
 
 	private ErrorHandler errorHandler = null;

@@ -41,7 +41,7 @@ import com.thaiopensource.validate.ValidationDriver;
 final class JingUtils {
 	
 	/**
-	 * Performs a basic configuration of the com.thaiopensource.validate.ValidationDriver
+	 * Performs a basic configuration of the com.thaiopensource.validate.ValidationDriver.
 	 */
 	/*package*/ static ValidationDriver configDriver(AbstractValidator val, ValidationDriver driver) throws Exception {
 		PropertyMapBuilder builder = new PropertyMapBuilder();
@@ -66,7 +66,7 @@ final class JingUtils {
 	}
 	
 	/**
-	 * Loads the schema(s) carried in AbstractSchema
+	 * Loads the schema(s) carried in AbstractSchema.
 	 * @return true if all schemas were loaded successfully, false if at least one schema was not loaded sucessfully.
 	 */
 	/*package*/ static boolean loadSchemas(AbstractValidator validator, ValidationDriver driver, AbstractSchema schema) {
@@ -100,7 +100,7 @@ final class JingUtils {
 	 */
 	/*package*/ static boolean validate(ValidationDriver driver, Source source) throws SAXException, IOException{
 		boolean isValid = true;
-		if(driver!=null) {
+		if(driver!=null) {			
 			if (!driver.validate(SAXSource.sourceToInputSource(source))) {
 				isValid = false;
 			}

@@ -21,6 +21,10 @@ package org.daisy.util.xml.validation.jaxp;
 
 import org.daisy.util.xml.validation.SchemaLanguageConstants;
 
+/**
+ * 
+ * @author Markus Gylling
+ */
 public class SchematronSchemaFactory extends AbstractSchemaFactory{
 	/* 
 	 * This is for the reflection instantiation that the SchemaFactoryFinder performs.
