@@ -54,6 +54,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * @author Markus Gylling
+ * @deprecated use org.daisy.util.fileset.validation.ValidatorFactory instead
  */
 public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 	private RelaxngSchematronValidator d202NccRngSchValidator;

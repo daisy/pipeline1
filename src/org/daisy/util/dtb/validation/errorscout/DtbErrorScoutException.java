@@ -23,6 +23,7 @@ import org.daisy.util.exception.BaseException;
 
 /**
  * Wrapper for nonrecoverable exceptions raised during initialization or scouting
+ * @deprecated use org.daisy.util.fileset.validation.ValidatorFactory instead * 
  * @author Markus Gylling
  */
 public class DtbErrorScoutException extends BaseException {

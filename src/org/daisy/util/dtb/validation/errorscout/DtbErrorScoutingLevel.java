@@ -21,7 +21,8 @@ package org.daisy.util.dtb.validation.errorscout;
 
 /**
  * Constants defining various scopes of testing.
- * @author Markus Gylling
+ * @author Markus Gylling´
+ * @deprecated use org.daisy.util.fileset.validation.ValidatorFactory instead * 
  */
 public final class DtbErrorScoutingLevel {
 

@@ -25,6 +25,7 @@ import java.util.Iterator;
 import org.daisy.util.fileset.interfaces.Fileset;
 /**
  * @author Markus Gylling
+ * @deprecated use org.daisy.util.fileset.validation.ValidatorFactory instead
  */
 public interface DtbErrorScout {
 	
