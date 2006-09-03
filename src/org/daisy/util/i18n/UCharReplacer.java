@@ -21,10 +21,14 @@ package org.daisy.util.i18n;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -34,163 +38,352 @@ import com.ibm.icu.text.UCharacterIterator;
 
 /**
  * Substitute unicode characters with replacement strings.
+ * 
+ * <p>The substitution is made using different attempts in a series of preference;
+ * each successor is considered a fallback to its predecessor.</p>
+ * <ol>
+ *   <li>Locate a replacement string in one or several user provided tables;</li>
+ *   <li>Optional fallback: attempt to create a replacement using transliteration by nonspacing mark removal;</li>
+ *   <li>Optional fallback: attempt to create a replacement using transliteration to Latin characters;</li>
+ *   <li>Optional fallback: retrieve a replacement string based on UCD names</li>
+ * </ol>
+ * 
+ * <p>All fallbacks are disabled by default.</p>
+ * 
+ * <p>By setting an "exclusion reportoire" a set of characters are defined which are considered "allowed": replacement
+ * will not be attempted on a character that is a member of an excluded repertoire.</p>
+
+ * <p>The use of this class <em>may</em> result in a change in unicode character composition between input and output. 
+ * If you need a certain normalization form, normalize after the use of this class.</p>
+ * 
  * <p>Usage example:</p>
  * <code><pre>
  * 	UCharReplacer ucr = new UCharReplacer();
- *	ucr.addTranslationTable(fileURL,"us-ascii");
- *	ucr.setFallbackToUCD(true);		
- *	String ret = ucr.toReplacementString(unicodeCodepoint);
+ *	ucr.addTranslationTable(fileURL);
+ *  ucr.addTranslationTable(fileURL2);
+ *  ucr.setExclusionRepertoire(Charset.forName("ASCII"));
+ *	String ret = ucr.toReplacementString(input);
  * </pre></code>
- * 
- * The translation table file is using the same xml format as that of
+ *  
+ * <p>The translation table file is using the same xml format as that of
  * java.util.Properties [1][2], using the HEX representation (without 
  * the characteristic 0x-prefix!) of a unicode character as the <tt>key</tt> 
  * attribute and the replacement string as value of the <tt>entry</tt> 
- * element.
+ * element.</p>
  * 
+ * <p>Note - there is a significant difference between a unicode codepoint (32 bit int)
+ * and a UTF16 codeunit (=char) - a codepoint consists of one or two codeunits.</p>  
+ * <p>To make sure an int represents a codepoint and not a codeunit, use for example
+ * <code>com.ibm.icu.text.Normalizer</code> to NFC compose, followed by 
+ * <code>com.ibm.icu.text.UCharacterIterator</code> to retrieve possibly non-BMP codepoints 
+ * from a string.</p>
+ *  
  * [1] http://java.sun.com/j2se/1.5.0/docs/api/java/util/Properties.html
  * [2] http://java.sun.com/dtd/properties.dtd
+ *
  * @author Markus Gylling
  */
+
 public class UCharReplacer  {	
-	private ArrayList translationTables = new ArrayList(); //ArrayList<HashMap:<int codepoint>,<replaceString>>
-	private boolean fallbackToUCD = false;
-	String replacementText = null;
-	Integer integer = null;
-	HashMap curTable = null;
-	StringBuilder sb = new StringBuilder();
-	//collects UCD replacements (no match in user provided table) 	
-	private HashMap warnings = new HashMap(); //int, string
-
+	private ArrayList mSubstitutionTables = null; 					//ArrayList<HashMap:<int codepoint>,<replaceString>>: all loaded translationtables
+	private HashMap mSubstitutionTable = null;						//represents the currently selected translationTable
+	private Iterator mSubstitutionTablesIterator = null;			//recycled tables map iterator
+	private int mSubstitutionTableUseCount = 0;						//counter: number of replaces made using any loaded tables.
+	private HashMap mSubstitutionTableFailures = null; 				//<Integer,String>; one entry per user table char replacement failure
+	private boolean mFallbackToLatinTransliteration = false;		//whether to attempt transliteration to Latin when a user table does not provide a replacement for a codepoint
+	private boolean 
+		mFallbackToNonSpacingMarkRemovalTransliteration = false;	//as above, but nonspacing mark (accent) removal
+	private boolean mFallbackToUCD = false;							//whether to apply the ultimate resort fallback (ucd nicenames from ICU4J). 		
+	private CharsetEncoder mExclusionRepertoire = null;				//if not null, represents (the encoder of) a set of "allowed" (not to be translated) characters 
 	
+	public final int FALLBACK_TRANSLITERATE_ANY_TO_LATIN = 1;
+	public final int FALLBACK_TRANSLITERATE_REMOVE_NONSPACING_MARKS = 2;
+	public final int FALLBACK_USE_UCD_NAMES = 3;
+	
+	/**
+	 * Default constructor.
+	 */
 	public UCharReplacer() {
-		
+		mSubstitutionTables = new ArrayList();
+		mSubstitutionTableFailures = new HashMap();		
 	}
 
+	
 	/**
-	 * Translate a single Unicode codepoint to a replacement String.
-	 * <p>Note - there is a significant difference between a unicode codepoint (32 bit int)
-	 * and a UTF16 codeunit (=char) - a codepoint consists of one or two codeunits.</p>  
-	 * <p>To make sure the inparam int represents a codepoint and not a codeunit, use for example
-	 * <code>com.ibm.icu.text.Normalizer</code> to NFC compose, followed by 
-	 * <code>com.ibm.icu.text.UCharacterIterator</code> to retrieve possibly non-BMP codepoints 
-	 * from a string.</p>
-	 * @param codePoint Unicode codepoint to transform
-	 * @return The replacement text if a replacement text was found, 
-	 * null if a replacement text was not found
-	 * @see #addTranslationTable
+	 * Set the state of a certain fallback type.
+	 * @param fallbackType The type of fallback (static int on this class) to set state of.
+	 * @param state Whether the state should be active (true) or disabled (false).
+	 * @throws IllegalArgumentException if inparam type is not recognized.
 	 */
-	public String toReplacementString(int codePoint) {
-		return getReplacementString(codePoint);
-	}
-
-	/**
-	 * Replace codepoints in a string with substitute strings.
-	 * <p>Iterates over all codepoints in the inparam string, searches all added translationtables, and 
-	 * (if setFallbackToUCD is true) ultimately the UCD data file, for a replacement string.</p>
-	 * @param string the string to perform codepoint-to-replacementstring substitution on
-	 * @return a string that is guaranteed to be NFC composed, and where certain codepoints may or may not
-	 * have been replaced by replacement strings, depending on which replacement tables are loaded.
-	 * @see #getReplacementString(int)
-	 * @see #addTranslationTable
-	 */
-	public String toReplacementString(String string) {
-		int codePoint;
-		String s;
+	public void setFallbackState(int fallbackType, boolean state) throws IllegalArgumentException {
+		switch (fallbackType) {
+			case FALLBACK_TRANSLITERATE_ANY_TO_LATIN:
+				mFallbackToLatinTransliteration = state;
+				break;
+			case FALLBACK_TRANSLITERATE_REMOVE_NONSPACING_MARKS:
+				mFallbackToNonSpacingMarkRemovalTransliteration = state;
+				break;
+			case FALLBACK_USE_UCD_NAMES:
+				mFallbackToUCD = state;
+				break;
+			default:
+				throw new IllegalArgumentException(Integer.toString(fallbackType));
+		}
 		
-		sb.delete(0,sb.length());
-		Normalizer.normalize(string,Normalizer.NFC);
-		UCharacterIterator uci = UCharacterIterator.getInstance(string);					
-		while((codePoint=uci.nextCodePoint())!=UCharacterIterator.DONE){									
-			replacementText = getReplacementString(codePoint);
-			if(null!=replacementText) {
-				sb.append(replacementText);
-			}else{				
-				s = String.copyValueOf(UCharacter.toChars(codePoint));
-				Normalizer.normalize(s,Normalizer.NFC);
-				sb.append(s);
-			}
-		}//while	
-		return sb.toString();
 	}
 	
 	/**
-	 * @return an NFC normalized replacement text if a replacement 
-	 * text was found in loaded tables, 
-	 * null if a replacement text was not found
+	 * Retrieve the state of a certain fallback type.
+	 * @param fallbackType The type of fallback (static int on this class) to check state of.
+	 * @throws IllegalArgumentException if inparam type is not recognized.
 	 */
-	private String getReplacementString(int codePoint) {
-		replacementText = null;		
-		integer = Integer.valueOf(codePoint);		
-		for (Iterator iter = translationTables.iterator(); iter.hasNext();) {
-			curTable = (HashMap) iter.next();
-			replacementText = (String)curTable.get(integer);
-			if(replacementText!=null) {
-				break;
+	public boolean getFallbackState(int fallbackType) throws IllegalArgumentException {
+		switch (fallbackType) {
+			case FALLBACK_TRANSLITERATE_ANY_TO_LATIN:
+				return mFallbackToLatinTransliteration;
+			case FALLBACK_TRANSLITERATE_REMOVE_NONSPACING_MARKS:
+				return mFallbackToNonSpacingMarkRemovalTransliteration;				
+			case FALLBACK_USE_UCD_NAMES:
+				return mFallbackToUCD;			
+			default:
+				throw new IllegalArgumentException(Integer.toString(fallbackType));				
+		}		
+	}
+	
+	
+	
+	/**
+	 * Add a table for use as source for character substitution strings.	 
+	 * <p>This method can be called multiple times prior to a getReplacementString() 
+	 * call to add several tables. The  table preference order is determined by add 
+	 * order (first added, highest preference).</p>
+	 * 
+	 * @param table URL of the table to add	 
+	 * @throws IOException if the table was not successfully loaded.
+	 */
+	public void addSubstitutionTable(URL table) throws IOException {
+		try{
+			mSubstitutionTables.add(loadTable(table));
+		} catch (Exception e) {
+			throw new IOException(e.getMessage());
+		}
+	}
+	
+	/**
+	 * @return the list of loaded character substitution tables. This list is never null, but may be empty.
+	 */
+	public List getTranslationTables() {		
+		return mSubstitutionTables;		
+	}
+	
+	
+	/**
+	 * Set a repertoire of "excluded" (not to be substituted) characters.
+	 * @param charset The exclusion repertoire
+	 * @throws UnsupportedOperationException If inparam charset does not support encoding.
+	 */
+	public void setExclusionRepertoire(Charset charset) throws UnsupportedOperationException {		
+		mExclusionRepertoire = charset.newEncoder();
+	}
+	
+	
+	/**
+	 * @return the repertoire of "excluded" (not to be substituted) characters,
+	 * or null if no exclusion repertoire has been set.
+	 */
+	public Charset getExclusionRepertoire(){
+		return (mExclusionRepertoire!=null) ? mExclusionRepertoire.charset() : null;
+	}
+	
+	/**
+	 * Retrieve a count on how many times character substitution has occured using a substitution table entry.
+	 * @see #reset()
+	 */
+	public int getTranslationTableHitCount(){
+		return mSubstitutionTableUseCount;
+	}	
+	
+	/**
+	 * Retrieve a Map [Integer,String] of substitution table failures (ie substitutions that were cancelled or done using fallbacks.)
+	 * <p>The Integer represents the unicode codepoint for which substitution failed, the string (which can be null) the value that
+	 * was used instead.
+	 * @see #reset() 
+	 */
+	public Map getTranslationTableFailures() {
+		return mSubstitutionTableFailures;
+	}
+	
+	
+	/**
+	 * Retrieve a substitution character sequence for a single Unicode codepoint. 
+	 * @param codePoint Unicode codepoint to retrieve a replacement for.
+	 * @return A replacement character sequence if substitution succeeded, else null.
+	 * @see #replace(CharSequence)
+	 * @see #getTableFailureWarnings()
+	 */
+	public CharSequence replace(int codePoint) {
+		return getSubstitutionChars(codePoint);
+	}
+
+	
+	/**
+	 * Replace codepoints in a character sequence with substitute characters.	 
+	 * @param input the character sequence to perform codepoint-to-replacementchars substitution in.
+	 * @return a character sequence whose codepoints may or may not
+	 * have been replaced by substitution characters, depending on settings and substitution success.
+	 * @see #replace(int)
+	 * @see #getTableFailureWarnings()
+	 */
+	public CharSequence replace(CharSequence input) {
+		int codePoint;
+		
+		StringBuilder sb = new StringBuilder(input.length());
+		
+		//normalize to eliminate any ambiguities vis-a-vis the user tables
+		Normalizer.normalize(input.toString(),Normalizer.NFC);
+		
+		//iterate over each codepoint in the input string
+		UCharacterIterator uci = UCharacterIterator.getInstance(input.toString());							
+		while((codePoint=uci.nextCodePoint())!=UCharacterIterator.DONE){									
+			CharSequence substitution = getSubstitutionChars(codePoint);
+			if(null!=substitution && substitution.length()>0) {
+				//a replacement occured
+				sb.append(substitution);
+			}else{
+				//a replacement didnt occur
+				sb.appendCodePoint(codePoint);
+			}
+		}					
+		return sb;
+	}
+	
+	/**
+	 * Attempt to create a substitution charsequence for a given codepoint.
+	 * <p>This is the private performer method that does the job for 
+	 * the public accessors.</p>
+	 * 
+	 * @return a replacement sequence of characters if a replacement string 
+	 * was found in loaded tables or any active fallbacks, or null if a replacement 
+	 * text was not found in tables or active fallbacks, or null if the codePoint 
+	 * was represented in an exclusion repertoire.
+	 */
+	private CharSequence getSubstitutionChars(int codePoint) {			
+		CharBuffer cbCodePoint = CharBuffer.wrap(Character.toChars(codePoint));
+				
+		//Should we exclude this codepoint from translation attempts?
+		if((mExclusionRepertoire != null) && (mExclusionRepertoire.canEncode(cbCodePoint))) {
+			//... yes we should.
+			return null;
+		}
+	
+		//try to locate a substitute string		
+		String substitute = null;		
+		
+		//do we have a substitute in loaded user tables?
+		substitute = retrieveSubstituteFromUserTables(codePoint);		
+		if(substitute!=null) {			
+			mSubstitutionTableUseCount++;
+			return substitute;
+		}
+										
+		/*
+		 * the fallbacks below may generate results
+		 * that contain chars that the user actually
+		 * wants to replace. Because of the infinite loop
+		 * risks involved, we do not recurse on these values, 
+		 * but simply generate a warning.
+		 */
+		
+		if(mFallbackToNonSpacingMarkRemovalTransliteration) {
+			substitute = retrieveSubstituteFromTransliteration(codePoint, FALLBACK_TRANSLITERATE_REMOVE_NONSPACING_MARKS);
+//			if(substitute!=null && substitute.length()==0){
+//				//we substituted a standalone nonspacing mark with the empty string.
+//			}
+		}
+		
+		if(null==substitute && mFallbackToLatinTransliteration) {
+			substitute = retrieveSubstituteFromTransliteration(codePoint, FALLBACK_TRANSLITERATE_ANY_TO_LATIN);			
+		}
+				
+		if(null==substitute && mFallbackToUCD) {
+			substitute = retrieveSubstituteFromUCDNames(codePoint);
+		}
+				
+		this.addTableFailureWarning(codePoint, substitute);
+		return substitute;
+	}
+	
+	/**
+	 * @return a substite string if available in tables, or null if not available
+	 */
+	private String retrieveSubstituteFromUserTables(int codePoint) {
+		Integer integer = Integer.valueOf(codePoint);		
+		for (mSubstitutionTablesIterator = mSubstitutionTables.iterator(); mSubstitutionTablesIterator.hasNext();) {
+			mSubstitutionTable = (HashMap) mSubstitutionTablesIterator.next();
+			if(mSubstitutionTable.containsKey(integer)) {
+				return (String)mSubstitutionTable.get(integer);
 			}
 		}
-						
-		if(replacementText==null && fallbackToUCD) {
-			replacementText = UCharacter.getName(codePoint);
-			this.addWarning(codePoint);
-		}		
-		
-		if(replacementText!=null) {
-			Normalizer.normalize(replacementText,Normalizer.NFC);
-		}	
-		
-		return replacementText;
-	}
-	
-	/**
-	 * Add a table for use as source for translation strings.
-	 * <p>The table must use the syntax of the (two first fields of) UCD UnicodeData.txt (unicodeHexValue;replacementString):</p>
-	 * <code><pre>
-	 * 05DE;HEBREW LETTER MEM
-	 * </pre></code>
-	 * <p>This method can be called multiple times prior to a getReplacementString() call to add several tables. The 
-	 * table preference order is determined by add order (first added, highest preference).</p>
-	 * @param table URL of the table to add
-	 * @param encoding character set encoding of the table textfile. If null, default locale encoding is used.
-	 * @see #fallbackToUCD
-	 */
-	public void addTranslationTable(URL table, String encoding) throws IOException {
-		translationTables.add(loadTable(table, encoding));		
-	}
-	
-	/**
-	 * <p>Determines whether the translation should fallback to the UCD table 
-	 * if a replacement text was not found in the table(s) set in #addTranslationTable().</p>
-	 * <p>Except for the case when zero user tables have been added through #addTranslationTable(),
-	 * the default behavior is false, that is, if no replacement text is found in the table(s) 
-	 * set in #addTranslationTable(), fallback to UCD will not be made.</p>
-	 * @see #addTranslationTable(URL, String)
-	 */
-	public void setFallbackToUCD(boolean fallback) {
-		fallbackToUCD = fallback;
+		return null;
 	}
 
 	/**
-	 * @return true if this instance is configured to fall back to the UCD table 
-	 * if a replacement text is not found in the table(s) set in #addTranslationTable()
+	 * @return a substite string using toascii transliteration, or null if transliteration failed
 	 */
-	public boolean getFallbackToUCD() {
-		return fallbackToUCD; 
-	}
-		
-	/**
-	 * @return true if this instance has successfully loaded one or more
-	 * user replacement tables. (ie successful completion of one or several
-	 * calls to #addTranslationTable()
-	 */
-	public boolean hasUserTables() {
-		return !this.translationTables.isEmpty(); 
+	
+	private String retrieveSubstituteFromTransliteration(int codePoint, int type) {		
+		try{
+			String codePointString = UCharacter.toString(codePoint);
+			String transliterated = null;
+			if(type == FALLBACK_TRANSLITERATE_ANY_TO_LATIN) {
+				transliterated = CharUtils.transliterateAnyToLatin(codePointString);
+			}else if(type == FALLBACK_TRANSLITERATE_REMOVE_NONSPACING_MARKS) {
+				transliterated = CharUtils.transliterateNonSpacingMarkRemoval(codePointString);
+			}
+			
+			if(transliterated != null && (!transliterated.equals(codePointString))) {
+				//the transliterator returned a result, check it
+				if(mExclusionRepertoire != null){
+					if(mExclusionRepertoire.canEncode(transliterated)){
+						//translit succeeded
+						return transliterated;
+					}
+					//we know that the translit string contains unallowed chars
+					return null;
+				}
+				//no exclusion repertoire, return even though we
+				//dont know whether the chars are ok
+				return transliterated;
+			}
+		}catch (Exception e) {
+			
+		}		
+		return null;
 	}
 	
-	private HashMap loadTable(URL tableURL, String encoding) throws IOException {
+	/**
+	 * @return a substite string using character names from the unicode database, or null if name retrieval fails
+	 */
+	private String retrieveSubstituteFromUCDNames(int codePoint) {
+		try{
+			if(UCharacter.isValidCodePoint(codePoint)){
+				return UCharacter.getName(codePoint);
+			}	
+		}catch (Exception e) {
+			
+		}		
+		return null;
+	}
+	
+
+	
+	/**
+	 * Loads a table using the Properties class.
+	 */
+	private HashMap loadTable(URL tableURL) throws IOException {
 		HashMap map = new HashMap();
 		
-		// Maring Blomberg 2006-08-15:
+		// Martin Blomberg 2006-08-15:
 		Properties props = new Properties();
 		props.loadFromXML(tableURL.openStream());
 		Set keys = props.keySet();
@@ -202,32 +395,54 @@ public class UCharReplacer  {
 				System.err.println("error in translation table " 
 								+ tableURL.toString() + ": attribute key=\"" + key + "\" is not a hex number.");
 			}
-		}
-	
+		}	
 		return map;
 	}
 	
-	private void addWarning(int codePoint) {
-		StringBuilder sb = new StringBuilder(40);
-		sb.append("No user provided replacement text found for ");
-		sb.append(CharUtils.unicodeHexEscape(codePoint).toUpperCase());
-		sb.append("[");
-		sb.append(String.copyValueOf(UCharacter.toChars(codePoint)));
-		sb.append("]");
-		
-		warnings.put(Integer.valueOf(codePoint), sb.toString());
+	
+	/**
+	 * Add a warning to the warnings list. 
+	 * A warning is issued each time a codepoint to be translated had no match in loaded tables.
+	 * @param codePoint The codePoint for which table lookup failed.
+	 * @param result The string (or null) which was generated instead.
+	 */
+	private void addTableFailureWarning(int codePoint, String result) {
+		mSubstitutionTableFailures.put(Integer.valueOf(codePoint), result);
 	}
 	
 	/**
-	 * Retrieve a list of warnings issued each time
-	 * a character subtitution is made based on the UCD table
-	 * instead of user added tables.
-	 * @return a list that may or may not be empty
+	 * Resets this object to its initial state.
 	 */
-	public List getWarnings() {		
-		ArrayList list = new ArrayList(warnings.size());
-		list.addAll(warnings.values());
-		return list;
+	
+	public void reset() {
+		mSubstitutionTables.clear();
+		mSubstitutionTableFailures.clear();
+		mSubstitutionTableUseCount = 0;
+		mFallbackToLatinTransliteration = false;
+		mFallbackToNonSpacingMarkRemovalTransliteration = false;
+		mFallbackToUCD = false; 		
+		mExclusionRepertoire = null;	
 	}
-		
+	
+	/**
+	 * @deprecated use .addSubstitutionTable(URL) as we are XML now.
+	 */
+	public void addTranslationTable(URL table, String encoding) throws IOException {
+		addSubstitutionTable(table);
+	}
+	
+	/**
+	 * @deprecated use .replace(CharSequence) instead
+	 */
+	public String toReplacementString(String s) {
+		return this.replace(s).toString();
+	}
+	
+	/**
+	 * @deprecated use .replace(int) instead
+	 */
+	public String toReplacementString(int codePoint) {
+		return this.replace(codePoint).toString();
+	}
+	
 }
