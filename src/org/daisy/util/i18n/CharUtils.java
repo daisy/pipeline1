@@ -407,18 +407,42 @@ public final class CharUtils {
 
 		//if we are here, still no match
 		//try the costly version
-		char[] chars = transliterateToNonAccent(String.valueOf(c)).toCharArray();
+		char[] chars = transliterateNonSpacingMarkRemoval(String.valueOf(c)).toCharArray();
 		if((chars.length>1) || (isAsciiPrintable(chars[0]))) {
 			return "_";	
 		}
 		return Character.toString(chars[0]);						
 	}
 
-	public static String transliterateToNonAccent(String str){
-		Transliterator tl = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC;");
-		return tl.transliterate(str);
+	/**
+	 * Transliterate characters of a string to non-accented form.
+	 * @return a string where accented characters have accents (nonspacing marks) removed, or null if something bad occured.
+	 */
+	public static String transliterateNonSpacingMarkRemoval(String str){
+		try{
+			Transliterator tl = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC;");
+			return tl.transliterate(str);
+		}catch(Exception e){
+			
+		}
+		return null;
 	}
 	
+	/**
+	 * Transliterate non-Latin characters of a string to Latin characters.
+	 * @return a string where non-latin characters are transliterated 
+	 * to Latin (warning! the process does not always yield Latin result!), 
+	 * or null if something really bad occured.
+	 */
+	public static String transliterateAnyToLatin(String str){
+		try{	
+			Transliterator tl = Transliterator.getInstance("Any-Latin");
+			return tl.transliterate(str);
+		}catch(Exception e){
+			
+		}
+		return null;
+	}
 	
 	/**
 	 * converts a char to an xml character entity
