@@ -19,19 +19,38 @@
 
 package org.daisy.util.exception;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.xml.transform.TransformerException;
 
+import org.daisy.util.fileset.exception.FilesetFileErrorException;
+import org.daisy.util.fileset.exception.FilesetFileException;
+import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
+import org.daisy.util.fileset.exception.FilesetFileWarningException;
+import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;
+import org.daisy.util.fileset.validation.message.ValidatorMessage;
+import org.daisy.util.fileset.validation.message.ValidatorSevereErrorMessage;
+import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.LocatorImpl;
+
 /**
  * 
  * @author Markus Gylling
  */
 public class ExceptionTransformer {
 
+	/**
+	 * Create a new SAXParseException from an arbitrary Exception
+	 * @param e The exception to transform into a SAXException.
+	 */
 	public static SAXParseException newSAXParseException(Exception e){
-		LocatorImpl loc = new LocatorImpl();		
 		
+		if(e instanceof SAXParseException) return (SAXParseException)e;
+		
+		LocatorImpl loc = new LocatorImpl();				
 		try{
 			if(e instanceof TransformerException) {			
 				TransformerException te = (TransformerException) e;		
@@ -45,6 +64,89 @@ public class ExceptionTransformer {
 		}
 
 		return new SAXParseException(e.getMessage(), loc, e);
+	}
+	
+
+	public static final int SAX_ERRHANDLER_TYPE_WARNING = 1;
+	public static final int SAX_ERRHANDLER_TYPE_ERROR = 2;
+	public static final int SAX_ERRHANDLER_TYPE_FATALERROR = 3;
+
+	/**
+	 * Create a {@link org.daisy.util.fileset.validation.message.ValidatorMessage} from a SAXParseException.
+	 * @param spe The SAXParseException to transform
+	 * @param errHandlerType Whether the exception was recieved in ErrorHandler error, fatalerror or warning  
+	 */
+	public static ValidatorMessage newValidatorMessage(SAXParseException spe, int errHandlerType) {
+		return newValidatorMessage(spe, errHandlerType, null);
+	}
+	
+	/**
+	 * Create a {@link org.daisy.util.fileset.validation.message.ValidatorMessage} from a SAXParseException.
+	 * @param spe The SAXParseException to transform
+	 * @param errHandlerType Whether the exception was recieved in ErrorHandler error, fatalerror or warning  
+	 * @param file The URI of the file which caused the exception to be raised 
+	 * 		(this also occurs in SAXParseException.getSystemId(), but sometimes this is null). 
+	 */
+	public static ValidatorMessage newValidatorMessage(SAXParseException spe, int errHandlerType, URI file) {
+					
+		if(file==null) {
+			if(spe.getSystemId()!=null){
+				try {
+					file = new URI(spe.getSystemId());
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}	
+			}else{
+				if(System.getProperty("org.daisy.debug")!=null) {
+					System.out.println("DEBUG: URI is null in ExceptionTransformer#newValidatorMessage");
+				}
+						
+			}
+		}
+		
+				
+		Object vm;
+		switch(errHandlerType) {
+				case SAX_ERRHANDLER_TYPE_WARNING:
+					vm = new ValidatorWarningMessage(file, spe.getMessage(),spe.getLineNumber(),spe.getColumnNumber());
+					break;
+				case SAX_ERRHANDLER_TYPE_FATALERROR:
+					vm = new ValidatorSevereErrorMessage(file, spe.getMessage(),spe.getLineNumber(),spe.getColumnNumber());
+					break;
+				default:
+					vm = new ValidatorErrorMessage(file, spe.getMessage(),spe.getLineNumber(),spe.getColumnNumber());
+					break;
+		}
+		
+		return (ValidatorMessage)vm;	
+		
+	}
+
+	/**
+	 * Create an {@link org.daisy.util.fileset.validation.message.ValidatorMessage} 
+	 * from an {@link org.daisy.util.fileset.exception.FilesetFileException}.
+	 */
+	public static ValidatorMessage newValidatorMessage(FilesetFileException ffe) {
+		URI fileURI = ffe.getOrigin().getFile().toURI();
+		String message = ffe.getCause().getMessage();
+		int line = -1;
+		int column = -1;
+		
+		if(ffe.getCause() instanceof SAXParseException) {
+			SAXParseException spe = (SAXParseException) ffe.getCause();
+			line = spe.getLineNumber();
+			column = spe.getColumnNumber();			
+		}
+			
+		if(ffe instanceof FilesetFileFatalErrorException) {
+			return new ValidatorSevereErrorMessage(fileURI,message,line,column);
+		} else if (ffe instanceof FilesetFileErrorException) {
+			return new ValidatorErrorMessage(fileURI,message,line,column);
+		} else if (ffe instanceof FilesetFileWarningException) {
+			return new ValidatorWarningMessage(fileURI,message,line,column);
+		} else {
+			return new ValidatorMessage(fileURI,message,line,column);
+		}
 	}
 	
 }
