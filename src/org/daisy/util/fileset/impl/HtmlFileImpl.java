@@ -28,6 +28,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import org.ccil.cowan.tagsoup.AutoDetector;
 import org.ccil.cowan.tagsoup.Parser;
@@ -55,7 +59,7 @@ import org.xml.sax.SAXParseException;
 
 class HtmlFileImpl extends SgmlFileImpl implements HtmlFile, ManifestFile, ContentHandler, DTDHandler, ErrorHandler, EntityResolver, AutoDetector {
 	private static Parser parser;
-	//protected ErrorHandler listeningErrorHandler = null;
+	private Map mIdQNameMap = new HashMap(); 							// <idvalue>,<carrierQname>
 	
 	HtmlFileImpl(URI uri) throws IOException, FileNotFoundException {
 		super(uri,HtmlFile.mimeStringConstant);
@@ -84,9 +88,28 @@ class HtmlFileImpl extends SgmlFileImpl implements HtmlFile, ManifestFile, Conte
 		for (int i = 0; i < attrs.getLength(); i++) {
 			if(regex.matches(regex.XHTML_ATTRS_WITH_URIS,attrs.getQName(i))) {
 				putUriValue(attrs.getValue(i));
-			}						
+			}else if (attrs.getQName(i) =="id") {
+				this.putIdAndQName(attrs.getValue(i),new QName(localName));
+			} 
 		} //for (int i
 	}
+	
+    public boolean hasIDValue(String value) {
+        return mIdQNameMap.containsKey(value);
+    }
+
+    public boolean hasIDValueOnQName(String idval, QName qName) {
+    	QName test = (QName) mIdQNameMap.get(idval);
+        if (test != null) {
+        	//TODO does .equals return correct value?
+            return qName.equals(test);
+        }
+        return false;
+    }
+
+    protected void putIdAndQName(String idvalue, QName qName) {
+        mIdQNameMap.put(idvalue, qName);
+    }
 	
 	public void warning(SAXParseException spe) throws SAXException {
 		myExceptions.add(new FilesetFileWarningException(this,spe));

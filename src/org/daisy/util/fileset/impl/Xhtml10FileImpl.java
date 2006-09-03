@@ -62,7 +62,7 @@ class Xhtml10FileImpl extends XmlFileImpl implements Xhtml10File, ManifestFile {
 			}else if(regex.matches(regex.XHTML_ATTRS_WITH_URIS,attrName)) {
 				putUriValue(attrValue);
 			}else if (attrName=="xml:lang") {
-				this.xmlLangValues.add(attrValue);
+				this.mXmlLangValues.add(attrValue);
 			}						
 		} //for (int i
 	}

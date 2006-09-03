@@ -37,6 +37,7 @@ import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
+import org.daisy.util.fileset.exception.FilesetTypeNotSupportedException;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.fileset.interfaces.FilesetFile;
@@ -46,8 +47,10 @@ import org.daisy.util.fileset.interfaces.xml.d202.D202MasterSmilFile;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.mime.MIMETypeException;
-import org.daisy.util.xml.Peeker;
-import org.daisy.util.xml.PeekerImpl;
+import org.daisy.util.xml.peek.PeekResult;
+import org.daisy.util.xml.peek.Peeker;
+import org.daisy.util.xml.peek.PeekerPool;
+import org.daisy.util.xml.pool.PoolException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -56,20 +59,15 @@ import org.xml.sax.SAXParseException;
  * @author Markus Gylling
  */
 public class FilesetImpl implements Fileset {
-	private Map localMembers = new HashMap();		//<URI>, <FilesetFile>	
-	private HashSet remoteMembers = new HashSet();	//<String> 
-	//private HashSet exceptions = new HashSet();			//<FilesetFileException>	
-	private FilesetExceptionCollector exc = null; 
-	private HashSet missingURIs = new HashSet();	//<URI>
-	private ManifestFile manifestMember;	
-	private FilesetType filesetType = null;
-	private static FilesetRegex regex = FilesetRegex.getInstance();
-	//mg 20060825: debug post manipulator run: dont instantiate here; make a new one per FilesetImpl instance instead
-	//private static Peeker peeker = new PeekerImpl();
-	private static Peeker peeker; 
-		
-	private boolean setReferringCollections; 
-	private FilesetErrorHandler errorListener = null;
+	private Map mLocalMembers = new HashMap();								//<URI>, <FilesetFile>	
+	private HashSet mRemoteMembers = new HashSet();							//<String> 
+	private FilesetExceptionCollector mFilesetExceptionCollector = null; 
+	private HashSet mMissingURIs = new HashSet();							//<URI>
+	private ManifestFile mManifestMember;	
+	private FilesetType mFilesetType = null;
+	private static FilesetRegex mRegex = FilesetRegex.getInstance();		
+	private boolean mSetReferringCollections; 
+	private FilesetErrorHandler mErrorListener = null;
 	
 	/**
 	 * Default class constructor
@@ -105,139 +103,153 @@ public class FilesetImpl implements Fileset {
 	}
 		
 	private void initialize(URI manifestURI, FilesetErrorHandler errh, boolean dtdValidate, boolean setReferringCollections) throws FilesetFatalException  {
+				
+		this.mErrorListener = errh;
+		if (this.mErrorListener == null) throw new FilesetFatalException("no FilesetErrorHandler set");
 		
-		this.errorListener = errh;
-		if (this.errorListener == null) throw new FilesetFatalException("no FilesetErrorHandler set");
-		exc = new FilesetExceptionCollector(this.errorListener);
+		mFilesetExceptionCollector = new FilesetExceptionCollector(this.mErrorListener);
+				
+		this.mSetReferringCollections = setReferringCollections;
 		
-		//speed up JAXP		
-		//TODO System.getProperty("java.version") || java.vendor
-//		System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
-//		System.setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
-//		System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration","com.sun.org.apache.xerces.internal.parsers.XML11Configuration");
-		
-		this.setReferringCollections = setReferringCollections;
 		if (dtdValidate) {
 		  System.setProperty("org.daisy.util.fileset.validating", "true");
 		} 
 		
-		//mg 20060825: debug post manipulator run: uncommented line below
-		peeker = new PeekerImpl();		
-		
+		PeekResult manifestPeekResult = null;
+		Peeker peeker = null;			
 		File f = new File(manifestURI);
 						
 		if(f.exists() && f.canRead()){
 			try {
-				peeker.peek(f.toURI()); 
+				peeker = PeekerPool.getInstance().acquire();
+				manifestPeekResult = peeker.peek(manifestURI);
 			}catch (Exception e) {
-				//System.err.println("stop");
 				//it wasnt an xmlfile or something else went wrong
+				//some manifests are not XML so this is ok
 			}
 				
 			try{
-				if ((regex.matches(regex.FILE_NCC, f.getName()))&&(peeker.getRootElementLocalName().equals("html"))) {
+				if ((mRegex.matches(mRegex.FILE_NCC, f.getName()))
+						&&(manifestPeekResult!=null && manifestPeekResult.getRootElementLocalName().equals("html"))) {
 					//set the fileset type
-					this.filesetType = FilesetType.DAISY_202;
+					this.mFilesetType = FilesetType.DAISY_202;
 					//instantiate the appropriate filetype					
-					this.manifestMember = new D202NccFileImpl(f.toURI());						
+					this.mManifestMember = new D202NccFileImpl(f.toURI());						
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent((FilesetFileImpl)manifestMember);
+					this.fileInstantiatedEvent((FilesetFileImpl)mManifestMember);
 					
 					//do some obscure stuff specific to this fileset type
-					D202NccFileImpl ncc = (D202NccFileImpl)this.manifestMember;
+					D202NccFileImpl ncc = (D202NccFileImpl)this.mManifestMember;
 					ncc.buildSpineMap(this);
 					
-					File test = new File(manifestMember.getFile().getParentFile(), "master.smil");
+					File test = new File(mManifestMember.getFile().getParentFile(), "master.smil");
 					if (test.exists()){
 						D202MasterSmilFile msmil = new D202MasterSmilFileImpl(test.toURI());
 						this.fileInstantiatedEvent((FilesetFileImpl)msmil);
 					}
 										
-				}else if((regex.matches(regex.FILE_OPF, f.getName()))&&(peeker.getRootElementLocalName().equals("package"))) {		
+				}else if((mRegex.matches(mRegex.FILE_OPF, f.getName()))
+						&&(manifestPeekResult!=null && manifestPeekResult.getRootElementLocalName().equals("package"))) {		
 					//need to preparse to find out what kind of opf it is
 					OpfFileImpl temp =  new OpfFileImpl(f.toURI());
 					temp.parse();
 					//instantiate the appropriate filetype
 					if(temp.getMetaDcFormat()!=null && temp.getMetaDcFormat().indexOf("Z39.86")>=0){
-						this.filesetType = FilesetType.Z3986;
-						this.manifestMember = new Z3986OpfFileImpl(f.toURI());
+						this.mFilesetType = FilesetType.Z3986;
+						this.mManifestMember = new Z3986OpfFileImpl(f.toURI());
 					}else if(temp.getMetaDcFormat()!=null && temp.getMetaDcFormat().indexOf("NIMAS")>=0){
-						this.manifestMember = new NimasOpfFileImpl(f.toURI());
-						this.filesetType = FilesetType.NIMAS;
+						this.mManifestMember = new NimasOpfFileImpl(f.toURI());
+						this.mFilesetType = FilesetType.NIMAS;
 					}else{
 						throw new FilesetFatalException("could not detect version of opf (no dc:format)");
 					}
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);
+					this.fileInstantiatedEvent((FilesetFileImpl)this.mManifestMember);
 					//do some obscure stuff specific to this fileset type	
-					OpfFileImpl opf = (OpfFileImpl)this.manifestMember;
+					OpfFileImpl opf = (OpfFileImpl)this.mManifestMember;
 					opf.buildSpineMap(this);
 
-				}else if((regex.matches(regex.FILE_RESOURCE, f.getName()))&&(peeker.getRootElementLocalName().equals("resources"))) {
+				}else if((mRegex.matches(mRegex.FILE_RESOURCE, f.getName()))
+						&&(manifestPeekResult!=null && manifestPeekResult.getRootElementLocalName().equals("resources"))) {						
 					//set the fileset type
-					this.filesetType = FilesetType.Z3986_RESOURCEFILE;
+					this.mFilesetType = FilesetType.Z3986_RESOURCEFILE;
 					//instantiate the appropriate filetype
-					this.manifestMember = new Z3986ResourceFileImpl(f.toURI());					 						
+					this.mManifestMember = new Z3986ResourceFileImpl(f.toURI());					 						
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);		
+					this.fileInstantiatedEvent((FilesetFileImpl)this.mManifestMember);		
 
-				}else if(regex.matches(regex.FILE_CSS, f.getName())) {
+				}else if(mRegex.matches(mRegex.FILE_CSS, f.getName())) {
 					//set the fileset type
-					this.filesetType = FilesetType.CSS;
+					this.mFilesetType = FilesetType.CSS;
 					//instantiate the appropriate filetype
-					this.manifestMember = new CssFileImpl(f.toURI());
+					this.mManifestMember = new CssFileImpl(f.toURI());
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);		
+					this.fileInstantiatedEvent((FilesetFileImpl)this.mManifestMember);		
 
-				}else if(peeker.getRootElementLocalName().equals("dtbook")) {
+				}else if(manifestPeekResult!=null && manifestPeekResult.getRootElementLocalName().equals("dtbook")) {
 					//set the fileset type
-					this.filesetType = FilesetType.DTBOOK_DOCUMENT;
+					this.mFilesetType = FilesetType.DTBOOK_DOCUMENT;
 					//instantiate the appropriate filetype
-					this.manifestMember = new Z3986DtbookFileImpl(f.toURI());					 						
+					this.mManifestMember = new Z3986DtbookFileImpl(f.toURI());					 						
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);		
-
-				}else if((peeker.getRootElementLocalName().equals("html"))&&((peeker.getFirstSystemId().indexOf("x")>=0)
-						||(peeker.getFirstPublicId().indexOf("X")>=0)
-						||(peeker.getRootElementNsUri().indexOf("x")>=0))) {
-					//set the fileset type
-					this.filesetType = FilesetType.XHTML_DOCUMENT;
-					//instantiate the appropriate filetype
-					this.manifestMember = new Xhtml10FileImpl(f.toURI());					 						
-					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);	
+					this.fileInstantiatedEvent((FilesetFileImpl)this.mManifestMember);		
 					
-				}else if(regex.matches(regex.FILE_XHTML, f.getName())) {
+				}else if((manifestPeekResult!=null)
+						&&((manifestPeekResult.getRootElementLocalName() != null 
+								&& manifestPeekResult.getRootElementLocalName().equals("html"))
+								&&((manifestPeekResult.getPrologSystemId() != null 
+										&& manifestPeekResult.getPrologSystemId().indexOf("x")>=0)
+								||(manifestPeekResult.getPrologPublicId() != null 
+										&& manifestPeekResult.getPrologPublicId().indexOf("X")>=0)
+								||(manifestPeekResult.getRootElementNsUri()!= null 
+										&& manifestPeekResult.getRootElementNsUri().indexOf("x")>=0)))) {					
 					//set the fileset type
-					this.filesetType = FilesetType.HTML_DOCUMENT;
+					this.mFilesetType = FilesetType.XHTML_DOCUMENT;
 					//instantiate the appropriate filetype
-					this.manifestMember = new HtmlFileImpl(f.toURI());					 						
+					this.mManifestMember = new Xhtml10FileImpl(f.toURI());					 						
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);	
+					this.fileInstantiatedEvent((FilesetFileImpl)this.mManifestMember);	
 					
-				}else if(regex.matches(regex.FILE_M3U, f.getName())) {
+				}else if(mRegex.matches(mRegex.FILE_XHTML, f.getName())) {
 					//set the fileset type
-					this.filesetType = FilesetType.PLAYLIST_M3U;
+					this.mFilesetType = FilesetType.HTML_DOCUMENT;
 					//instantiate the appropriate filetype
-					this.manifestMember = new M3UFileImpl(f.toURI());					 						
+					this.mManifestMember = new HtmlFileImpl(f.toURI());					 						
 					//send it to the observer which handles the rest generically
-					this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);		
+					this.fileInstantiatedEvent((FilesetFileImpl)this.mManifestMember);	
 					
-				}else if(regex.matches(regex.FILE_PLS, f.getName())) {
+				}else if(mRegex.matches(mRegex.FILE_M3U, f.getName())) {
+					//set the fileset type
+					this.mFilesetType = FilesetType.PLAYLIST_M3U;
+					//instantiate the appropriate filetype
+					this.mManifestMember = new M3UFileImpl(f.toURI());					 						
+					//send it to the observer which handles the rest generically
+					this.fileInstantiatedEvent((FilesetFileImpl)this.mManifestMember);		
+					
+				}else if(mRegex.matches(mRegex.FILE_PLS, f.getName())) {
 						//set the fileset type
-						this.filesetType = FilesetType.PLAYLIST_PLS;
+						this.mFilesetType = FilesetType.PLAYLIST_PLS;
 						//instantiate the appropriate filetype with this as errorhandler
-						this.manifestMember = new PlsFileImpl(f.toURI());					 						
+						this.mManifestMember = new PlsFileImpl(f.toURI());					 						
 						//send it to the observer which handles the rest generically
-						this.fileInstantiatedEvent((FilesetFileImpl)this.manifestMember);	
+						this.fileInstantiatedEvent((FilesetFileImpl)this.mManifestMember);	
 				}else{
-					// other types
-				    throw new FilesetFatalException("Unsupported manifest type");
+					//other types
+				    //throw new FilesetFatalException("Unsupported manifest type");
+					//mg 20060830;
+					throw new FilesetTypeNotSupportedException("Unsupported manifest type: " + manifestURI.toString());
 				}
 			} catch (Exception e){
 				//thrown if the manifest could not be instantiated
 				//only throw outwards for the manifest file instantiation
 				throw new FilesetFatalException(e.getMessage(),e);				
+			}finally{
+				try {
+					System.clearProperty("org.daisy.util.fileset.validating");
+					PeekerPool.getInstance().release(peeker);					
+				} catch (PoolException e) {
+					throw new FilesetFatalException(e.getMessage(),e);
+				}
 			}
 		}else{			
 			throw new FilesetFatalException(new IOException("manifest not readable"));								 
@@ -245,16 +257,16 @@ public class FilesetImpl implements Fileset {
 		
 		//if we get here the fileset is completely populated without fatal errors
 		
-		if(this.setReferringCollections){
+		if(this.mSetReferringCollections){
 			//populate the reffering property
-			Iterator it = localMembers.keySet().iterator();
+			Iterator it = mLocalMembers.keySet().iterator();
 			while(it.hasNext()) {
-				FilesetFileImpl file = (FilesetFileImpl) localMembers.get(it.next());				
-				file.setReferringLocalMembers(localMembers);				  
+				FilesetFileImpl file = (FilesetFileImpl) mLocalMembers.get(it.next());				
+				file.setReferringLocalMembers(mLocalMembers);				  
 			}
 		}
 				
-		System.clearProperty("org.daisy.util.fileset.validating");
+		
 				
 	}
 	
@@ -263,25 +275,22 @@ public class FilesetImpl implements Fileset {
 		//but never by the instantiated member itself
 		
 		//add to this.localMembers			
-		localMembers.put(member.getFile().toURI(),member);
+		mLocalMembers.put(member.getFile().toURI(),member);
 		
 		//invoke the generic parse method
 		try {				
 			member.parse();					
 		} catch (IOException ioe) {								
-			//exceptions.add(new FilesetFileFatalErrorException(member,ioe));
-			exc.add(new FilesetFileFatalErrorException(member,ioe));			
+			mFilesetExceptionCollector.add(new FilesetFileFatalErrorException(member,ioe));			
 			return;
 		} catch (SAXParseException spe) {
 			//malformedness, dont add/return; already added by XmlFile errhandler				
 		} catch (SAXException se) {
 			//other serious sax error
-			//exceptions.add(new FilesetFileFatalErrorException(member,se));
-			exc.add(new FilesetFileFatalErrorException(member,se));
+			mFilesetExceptionCollector.add(new FilesetFileFatalErrorException(member,se));
 			return;
 		} catch (BitstreamException bse) {
-			//exceptions.add(new FilesetFileFatalErrorException(member,bse));
-			exc.add(new FilesetFileFatalErrorException(member,bse));
+			mFilesetExceptionCollector.add(new FilesetFileFatalErrorException(member,bse));
 			return;							
 		}		
 		
@@ -291,11 +300,9 @@ public class FilesetImpl implements Fileset {
 			try{
 				Exception e = (Exception) iter.next();				
 				if(e instanceof FilesetFileException) {
-					//this.exceptions.add(e);
-					exc.add((FilesetFileException)e);
+					mFilesetExceptionCollector.add((FilesetFileException)e);
 				}else{
-					//this.exceptions.add(new FilesetFileException(file,e));
-					exc.add(new FilesetFileException(member,e));
+					mFilesetExceptionCollector.add(new FilesetFileException(member,e));
 				}				
 			}catch (ClassCastException cce) {
 				throw new FilesetFatalException(cce);
@@ -311,7 +318,7 @@ public class FilesetImpl implements Fileset {
 			URI cachedURI = null;
 			while (it.hasNext()) {
 				value = (String)it.next();					
-				if(!regex.matches(regex.URI_REMOTE,value)) {
+				if(!mRegex.matches(mRegex.URI_REMOTE,value)) {
 					//strip fragment if existing
 					value = URIStringParser.stripFragment(value);					
 					//resolve the uri string
@@ -319,24 +326,24 @@ public class FilesetImpl implements Fileset {
 					if (!resolvedURI.equals(cachedURI) && !value.equals("")) {
 						cachedURI = resolvedURI; 					
      					//check if this file has already been added to main collection						
-						FilesetFileImpl newmember = (FilesetFileImpl)localMembers.get(resolvedURI);
+						FilesetFileImpl newmember = (FilesetFileImpl)mLocalMembers.get(resolvedURI);
 						if (newmember == null) {
 							//this is a member that hasnt been namedropped before													
 							try {
 								//determine what type to instantiate
-								newmember = getType(member, resolvedURI, value, this.filesetType);
+								newmember = getType(member, resolvedURI, value, this.mFilesetType);
 								if(newmember instanceof AnonymousFileImpl) {
 									//exceptions.add(new FilesetFileException(newmember, new AnonymousFileException("no matching file type found for " + value + ": this file appears as AnonymousFile")));
-									exc.add(new FilesetFileWarningException(newmember, new IOException("no matching file type found for " + value + ": this file appears as AnonymousFile")));
+									mFilesetExceptionCollector.add(new FilesetFileWarningException(newmember, new IOException("no matching file type found for " + value + ": this file appears as AnonymousFile")));
 								}
 							} catch (FileNotFoundException fnfe) {
 								//exceptions.add(new FilesetFileFatalErrorException(member,fnfe));								
-								exc.add(new FilesetFileFatalErrorException(member,fnfe));
-								missingURIs.add(resolvedURI);
+								mFilesetExceptionCollector.add(new FilesetFileFatalErrorException(member,fnfe));
+								mMissingURIs.add(resolvedURI);
 								continue;
 							} catch (IOException ioe) {
 								//exceptions.add(new FilesetFileFatalErrorException(member,ioe));
-								exc.add(new FilesetFileFatalErrorException(member,ioe));
+								mFilesetExceptionCollector.add(new FilesetFileFatalErrorException(member,ioe));
 								continue;
 							} 
 							//report fileInstantiatedEvent
@@ -347,7 +354,7 @@ public class FilesetImpl implements Fileset {
 					} //!resolvedURI.equals(cache)
 				}//if matches URI_LOCAL
 				else {
-					remoteMembers.add(value);
+					mRemoteMembers.add(value);
 				}
 			}//while (it.hasNext())			
 		}//if (member instanceof Referring) 				
@@ -370,20 +377,21 @@ public class FilesetImpl implements Fileset {
 		//(from a dtb perspective) come first
 		//this means its not beautiful, but a tad faster 		
 				
-		if (regex.matches(regex.FILE_MP3,value)){
+		if (mRegex.matches(mRegex.FILE_MP3,value)){
 			return new Mp3FileImpl(uri);
 		}
 		
-		if (regex.matches(regex.FILE_WAV,value)){
+		if (mRegex.matches(mRegex.FILE_WAV,value)){
 			return new WavFileImpl(uri);
 		}
 		
+		Peeker peeker = null;
+		
 		try{
-			//mg 20060825: debug post manipulator run: line below since this is a static
-			if(peeker==null) peeker = new PeekerImpl();
 			
-			peeker.peek(uri);
-			String rootName = peeker.getRootElementLocalName().intern();	
+			peeker = PeekerPool.getInstance().acquire();
+			PeekResult peekResult = peeker.peek(uri);
+			String rootName = peekResult.getRootElementLocalName().intern();
 			
 			//test for xml files
 			if (rootName==("smil")) {
@@ -398,13 +406,14 @@ public class FilesetImpl implements Fileset {
 			
 			if (rootName=="html") {				
 				//an (non xhtml) html file may end up here if peeker didnt crash before	root was over			
-				if (regex.matches(regex.FILE_NCC,value)) {			
+				if (mRegex.matches(mRegex.FILE_NCC,value)) {			
 					return new D202NccFileImpl(uri);			
 				}else if (filesetType == FilesetType.DAISY_202) {
 					return new D202TextualContentFileImpl(uri);
-				}else if ((peeker.getFirstSystemId().indexOf("x")>=0)
-						||(peeker.getFirstPublicId().indexOf("X")>=0)
-						||(peeker.getRootElementNsUri().indexOf("x")>=0)){
+				}else if ((peekResult!=null)&&
+						((peekResult.getPrologSystemId().indexOf("x")>=0)
+								||(peekResult.getPrologPublicId().indexOf("X")>=0)
+								||(peekResult.getRootElementNsUri().indexOf("x")>=0))){
 					//there are no x chars in the html equivalents
 					return new Xhtml10FileImpl(uri);
 				}else{
@@ -444,63 +453,68 @@ public class FilesetImpl implements Fileset {
 			}
 			
 			if(rootName== "schema"){
-				if(peeker.getRootElementNsUri().equals("http://www.ascc.net/xml/schematron")
-						||peeker.getRootElementNsUri().equals("http://purl.oclc.org/dsdl/schematron")){
+				if((peekResult!=null)&&(peekResult.getRootElementNsUri().equals("http://www.ascc.net/xml/schematron")
+						||peekResult.getRootElementNsUri().equals("http://purl.oclc.org/dsdl/schematron"))){
 					return new SchematronFileImpl(uri);
 				}
 
-				if(peeker.getRootElementNsUri().equals("http://www.w3.org/2001/XMLSchema")){
+				if((peekResult!=null)&&(peekResult.getRootElementNsUri().equals("http://www.w3.org/2001/XMLSchema"))){
 					return new XsdFileImpl(uri);
 				}
 								
 			}
 			
-			if(rootName== "grammar" && peeker.getRootElementNsUri().equals("http://relaxng.org/ns/structure/1.0")) {
+			if(rootName== "grammar" && (peekResult!=null && peekResult.getRootElementNsUri().equals("http://relaxng.org/ns/structure/1.0"))) {
 				return new RelaxngFileImpl(uri);
 			}
 			
 		} catch (Exception e) { //peeker.peek
-			//the file wasnt an xml file or something else went wrong
-//			e.printStackTrace();
-		}//peeker.peek	
+			//the file wasnt an xml file or something else went wrong			
+		}finally{
+			try {
+				PeekerPool.getInstance().release(peeker);
+			} catch (PoolException e) {
+
+			}	
+		}
 		
 		
 		//now we know its not an xml file, nor any of the common audiofilestypes mp3|wav
 						
 		//need to test for (non xhtml) html again		
-		if (regex.matches(regex.FILE_XHTML,value)){
+		if (mRegex.matches(mRegex.FILE_XHTML,value)){
 			return new HtmlFileImpl(uri);
 		}
 		
-		if (regex.matches(regex.FILE_CSS,value)){
+		if (mRegex.matches(mRegex.FILE_CSS,value)){
 			return new CssFileImpl(uri);
 		}
 	
-		if (regex.matches(regex.FILE_JPG,value)){
+		if (mRegex.matches(mRegex.FILE_JPG,value)){
 			return new JpgFileImpl(uri);
 		}
 
-		if (regex.matches(regex.FILE_GIF,value)){
+		if (mRegex.matches(mRegex.FILE_GIF,value)){
 			return new GifFileImpl(uri);
 		}
 	
-		if (regex.matches(regex.FILE_PNG,value)){
+		if (mRegex.matches(mRegex.FILE_PNG,value)){
 			return new PngFileImpl(uri);
 		}
 		
-		if (regex.matches(regex.FILE_BMP,value)){
+		if (mRegex.matches(mRegex.FILE_BMP,value)){
 			return new BmpFileImpl(uri);
 		}
 		
-		if (regex.matches(regex.FILE_MP2,value)){
+		if (mRegex.matches(mRegex.FILE_MP2,value)){
 			return new Mp2FileImpl(uri);
 		}		
 
-		if (regex.matches(regex.FILE_DTD,value)){
+		if (mRegex.matches(mRegex.FILE_DTD,value)){
 			return new DtdFileImpl(uri);
 		}
 		
-		if (regex.matches(regex.FILE_PDF,value)){
+		if (mRegex.matches(mRegex.FILE_PDF,value)){
 			return new PdfFileImpl(uri);
 		}
 		
@@ -510,37 +524,45 @@ public class FilesetImpl implements Fileset {
 	}
 		
 	public ManifestFile getManifestMember() {		
-		return manifestMember;
+		return mManifestMember;
 	}
 			
 	public Collection getLocalMembers() {
-		return localMembers.values();		
+		return mLocalMembers.values();		
 	}
 		
 	public Collection getLocalMembersURIs() {
-		return localMembers.keySet();
+		return mLocalMembers.keySet();
 	}
 	
 	public FilesetFile getLocalMember(URI absoluteURI) {
-		return (FilesetFile)localMembers.get(absoluteURI);		
+		return (FilesetFile)mLocalMembers.get(absoluteURI);		
 	}
 	
 	public boolean hadErrors() {		
 		//return (!exceptions.isEmpty());
-		return exc.hasExceptions();
+		return mFilesetExceptionCollector.hasExceptions();
 	}
 	
 	public Collection getErrors() {
 		//return this.exceptions;
-		return exc.getExceptions();
+		return mFilesetExceptionCollector.getExceptions();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.interfaces.Fileset#getFilesetType()
+	 */
 	public FilesetType getFilesetType() {
-		return this.filesetType;
+		return this.mFilesetType;
 	}
-			
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.interfaces.Fileset#getRemoteResources()
+	 */
 	public Collection getRemoteResources() {
-      return this.remoteMembers;
+      return this.mRemoteMembers;
 	}
 	
 	/**
@@ -556,7 +578,7 @@ public class FilesetImpl implements Fileset {
 	}
 	
 	public Collection getMissingMembersURIs() {
-	    return missingURIs;
+	    return mMissingURIs;
 	}
 	
 	public long getByteSize() {

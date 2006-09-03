@@ -49,14 +49,20 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	
 	private boolean inDoctitle = false;
 	private boolean inDocauthor = true;
+	private boolean mInBodyMatter = false;
 	
 	private String charCollector = "";
 	
 	Z3986DtbookFileImpl(URI uri) throws FileNotFoundException, ParserConfigurationException, SAXException, IOException {
 		super(uri,Z3986DtbookFile.mimeStringConstant);		
 	}
-			
-	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
+	
+	//private int count = 0;
+	
+	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {		
+		
+		//System.err.println(++count);
+		
 		super.startElement(namespaceURI, sName, qName, attrs);
 		for (int i = 0; i < attrs.getLength(); i++) {
 			attrName = attrs.getQName(i);
@@ -85,12 +91,12 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 			}
 			
 			if (attrName=="id") {				
-				this.putIdAndQName(attrValue,new QName(namespaceURI,sName));
+				this.putIdAndQName(attrValue,new QName(namespaceURI,sName));				
 			} else if (regex.matches(regex.DTBOOK_ATTRIBUTES_WITH_URIS,attrName)
 					||regex.matches(regex.DTBOOK_COMPOUND_ATTRIBUTES_WITH_URIS,attrName)) {
 			   putUriValue(attrValue);
 			}else if (attrName=="xml:lang") {
-				this.xmlLangValues.add(attrValue);
+				this.mXmlLangValues.add(attrValue);
 			}
 		}//for (int i
 	}//startElement

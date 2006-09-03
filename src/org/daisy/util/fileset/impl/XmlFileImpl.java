@@ -35,59 +35,83 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xerces.util.XMLGrammarPoolImpl;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.interfaces.xml.XmlFile;
+import org.daisy.util.xml.XMLUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogException;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.catalog.CatalogExceptionRecoverable;
-import org.daisy.util.xml.XMLUtils;
+import org.daisy.util.xml.pool.PoolException;
+import org.daisy.util.xml.pool.SAXParserPool;
+import org.daisy.util.xml.sax.AttributesCloner;
+import org.daisy.util.xml.sax.SAXConstants;
 import org.daisy.util.xml.validation.SchemaLanguageConstants;
 import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.EntityResolver2;
 import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.ext.Locator2;
 
 /**
  * @author Markus Gylling
  */
 
-abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
-        EntityResolver, EntityResolver2, ErrorHandler, ContentHandler, DTDHandler,
-        LexicalHandler, DeclHandler {
-    static SAXParserFactory saxFactory;
-    static SAXParser saxParser;
+abstract class XmlFileImpl 
+	extends 	FilesetFileImpl 
+	implements 	XmlFile, EntityResolver, EntityResolver2, ErrorHandler, 
+				ContentHandler, LexicalHandler { //, DTDHandler, DeclHandler {
+    
     static DocumentBuilderFactory domFactory = null;
     static DocumentBuilder domBuilder = null;    
-    private Map idMap = new HashMap(); // <idvalue>,<carrierQname>
-    protected Set xmlLangValues = new HashSet();
-    protected Set namespaces = new HashSet(); //QName
+    
+    protected Set mXmlLangValues = new HashSet();						//collected in subclasses... can change that
+    
     private boolean isWellformed = true;
     private boolean isDTDValid = true;
     private boolean isDTDValidated = false;
-    protected String attrValue;
-    protected String attrName;
-    protected boolean isRootElementReported = false;  //required subclasses to do super on StartElement
-    private String prologPublicId = null;
-    private String prologSystemId = null;
-    private Map inlinedSchemaReferences = new HashMap();  //NOT prolog refs, only in document
+    protected String attrValue = null;									//used by subclasses
+    protected String attrName = null;									//used by subclasses
+        
+    private boolean mDebugMode = false;									//system prop    
+    private static Boolean mValidating = null;							//config flag
 
+    private SAXParser mSAXParser = null;								//The parser on loan from the pool
+    private static HashMap mSAXParserFeatures = null;					//parser config map (used for pool)
+    private static HashMap mSAXParserProperties = null;					//parser config map (used for pool)
+    private static SAXParserPool mPool = null;							//static convenience pointer    
+
+    private Attributes mRootElementAttributes = null;					//caught in first startElement call    
+    private String mRootElementNsUri = null;							//caught in first startElement call
+    private String mRootElementLocalName = null;						//caught in first startElement call
+    private String mRootElementqName = null;							//caught in first startElement call
+    protected boolean mRootElementReported = false;  					//requires subclasses to do super on StartElement
+    
+    protected Set mNamespaces = new HashSet(); 							//<QName>, caught in startPrefixMapping
+    
+    private String mPrologPublicId = null;								//caught by LexicalHandler, regardless of DTD load config
+    private String mPrologSystemId = null;								//caught by LexicalHandler, regardless of DTD load config
+    private String mPrologEncoding = null;								//caught in setDocumentLocator(Locator)
+    private String mPrologXmlVersion = null;							//caught in setDocumentLocator(Locator)
+
+    private Map mIdQNameMap = new HashMap(); 							// <idvalue>,<carrierQname>, populated by subclasses
+    
+    public static XMLGrammarPoolImpl mGrammarPool = null;
+    
     XmlFileImpl(URI uri) throws ParserConfigurationException, SAXException, FileNotFoundException, IOException {
         super(uri, XmlFile.mimeStringConstant);
         initialize();
@@ -98,88 +122,270 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
         initialize();
     }
     
-    private void initialize() throws ParserConfigurationException, SAXException  {
-        if (saxFactory == null) {
-        	        	
-//    		System.setProperty("org.apache.xerces.xni.parser.Configuration", 
-//    				"org.apache.xerces.parsers.XMLGrammarCachingConfiguration");
-        	
-            saxFactory = SAXParserFactory.newInstance();
-            saxFactory.setValidating(getValidatingProperty());
-            saxFactory.setNamespaceAware(true);
-            		
-            saxParser = saxFactory.newSAXParser();
-            
-            //if string interning fails, non of the startElement algos will work, therefore throw
-            saxFactory.setFeature("http://xml.org/sax/features/string-interning", true);
-                        
-            // setFeatures if nonvalidating
-            if (!saxFactory.isValidating()) {
-                try {
-                    saxFactory.setFeature("http://xml.org/sax/features/validation", false);
-                    saxFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar",false);
-                    saxFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
-                } catch (Exception e) {
-                	//dont throw if these fails
-                	myExceptions.add(e);
-                }
-            }       
-            
-            //try to set the extended entityresolver
-            try{
-            	saxFactory.setFeature("http://xml.org/sax/features/use-entity-resolver2",true);
-            } catch (Exception e) {
-				//we are not using a parser that supports this extension
-            	//this is not an erroneous state, just unfortunate.
-            	//EntityResolver is used instead
-            	System.err.println("EntityResolver2 set failed: " + e.getMessage());
-			}	
-        }
-        
-        saxParser.getXMLReader().setContentHandler(this);
-        saxParser.getXMLReader().setEntityResolver(this);
-        saxParser.getXMLReader().setDTDHandler(this);
-        saxParser.getXMLReader().setErrorHandler(this);
-         
+    /**
+     * Configure the saxparser object, and get it from the pool.
+     */
+    private void initialize() throws ParserConfigurationException, SAXException {
+		if (System.getProperty("org.daisy.debug") != null) {
+			mDebugMode = true;			
+		}
+    	
+    	if(mSAXParserFeatures==null) {
+    		//first class load 
+    		mPool = SAXParserPool.getInstance();
+    		//configure maps for the SAXParserPool.    		
+    		mSAXParserFeatures = new HashMap();
+    		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_NAMESPACES, Boolean.TRUE);
+    		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_NAMESPACE_PREFIXES, Boolean.TRUE);
+    		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_NAMESPACES, Boolean.TRUE);
+    		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_STRING_INTERNING, Boolean.TRUE);
+    		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_LEXICAL_HANDLER_PARAMETER_ENTITIES, Boolean.TRUE);
+    		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_USE_ENTITY_RESOLVER2, Boolean.TRUE);
+    		if(mValidating == null) mValidating = Boolean.valueOf(getValidatingProperty());    		 
+    		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_VALIDATION, mValidating);
+    		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_EXTERNAL_GENERAL_ENTITIES, mValidating);
+    		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_EXTERNAL_PARAMETER_ENTITIES, mValidating);
+    		mSAXParserFeatures.put(SAXConstants.APACHE_FEATURE_LOAD_DTD_GRAMMAR, mValidating);
+    		mSAXParserFeatures.put(SAXConstants.APACHE_FEATURE_LOAD_EXTERNAL_DTD, mValidating);
+    		mSAXParserProperties = new HashMap();
+    		mSAXParserProperties.put(SAXConstants.SAX_PROPERTY_LEXICAL_HANDLER, this);
+    					
+//			try {
+//				Object o = Class.forName("org.apache.xerces.util.XMLGrammarPoolImpl").newInstance();
+//				mGrammarPool = (XMLGrammarPoolImpl)o;
+//				mGrammarPool = org.daisy.util.xml.pool.XNIGrammarPool.newInstance();
+//				
+//				Object mGrammarPool = Class.forName("org.daisy.util.xml.pool.XNIGrammarPool").newInstance();
+//				mSAXParserProperties.put(SAXConstants.APACHE_PROPERTY_GRAMMAR_POOL, mGrammarPool);
+//				//mGrammarPool = (XNIGrammarPool)o;
+//			} catch (Exception e) {				
+//				e.printStackTrace();
+//			}  		    	
+    	}	
+    	
+    	try {
+    		mSAXParser = mPool.acquire(mSAXParserFeatures, mSAXParserProperties);    		
+    	} catch (PoolException pe) {
+    		//a feature or a prop prolly threw a SAXNotSupportedException			
+    		if (mDebugMode) {
+    			System.out.println("DEBUG: XmlFileImpl#initialize PoolException, removing Apache features");
+    		}			
+    		//try a second time with only org.xml.sax features put
+    		try {
+    			mSAXParserFeatures.remove(SAXConstants.APACHE_FEATURE_LOAD_DTD_GRAMMAR);
+    			mSAXParserFeatures.remove(SAXConstants.APACHE_FEATURE_LOAD_EXTERNAL_DTD);
+    			mSAXParser = mPool.acquire(mSAXParserFeatures, mSAXParserProperties);
+    		} catch (PoolException pe2) {
+        		if (mDebugMode) {
+        			System.out.println("DEBUG: XmlFileImpl#initialize PoolException after remove Apache features");
+        		}			
+        		throw new ParserConfigurationException(pe2.getMessage());
+    		}
+    	}
+    	
+    	if(mSAXParser != null) {          
+          mSAXParser.getXMLReader().setContentHandler(this);
+          mSAXParser.getXMLReader().setEntityResolver(this);
+          mSAXParser.getXMLReader().setErrorHandler(this);
+    	}    	  
     }
-
-    private boolean getValidatingProperty() {
-        try {
-            if (System.getProperty("org.daisy.util.fileset.validating").equals("true")) {
-                return true;
-            }
-        } catch (Exception e) {
-
-        }
-        return false;
-    }
-
+     
     public void parse() throws IOException, SAXException {
-        saxParser.getXMLReader().parse(this.asInputSource());
+    	try{
+//    		Grammar[] grammars = mGrammarPool.retrieveInitialGrammarSet(org.apache.xerces.xni.grammars.XMLGrammarDescription.XML_DTD);
+//    		for (int i = 0; i < grammars.length; i++) {
+//    			System.err.println("-->" + grammars[i].getGrammarDescription().getPublicId());			    			
+//    		}	
+    		mSAXParser.getXMLReader().parse(this.asInputSource());
+    	}finally{
+    		try {
+				mPool.release(mSAXParser, mSAXParserFeatures, mSAXParserProperties);
+			} catch (PoolException e) {
+        		if (mDebugMode) {
+        			System.out.println("DEBUG: XmlFileImpl#parse PoolException");
+        		}
+			}
+    	}
         isParsed = true;
-        if (saxFactory.isValidating())isDTDValidated = true;
+        if (mValidating.booleanValue())isDTDValidated = true;
     }
 
-    public Collection getXmlLangValues(){
-    	return this.xmlLangValues;
-    }
-
-    public Collection getNamespaces(){
-    	return this.namespaces;
+    /**
+     * ContentHandler impl. Typically, subclasses override this, and are expected to use a super call
+     * This class has the responsibility of flipping the mRootElementReported bool.
+     */
+    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+    	if(!mRootElementReported){
+    		mRootElementReported = true;
+    		mRootElementAttributes = AttributesCloner.clone(atts);
+    		mRootElementLocalName = localName;
+    		mRootElementqName = qName;
+    		mRootElementNsUri = uri;    	
+    	} //if(!isRootElementReported)   	
     }
     
-	public Map getInlineSchemaURIs() {
-	  return this.inlinedSchemaReferences;	
+    /*
+     * (non-Javadoc)
+     * @see org.xml.sax.ContentHandler#startPrefixMapping(java.lang.String, java.lang.String)
+     */
+    public void startPrefixMapping(String prefix, String uri)throws SAXException {
+    	//add to the namespaces set
+    	this.mNamespaces.add(new QName(uri,"",prefix));
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void startDTD(String name, String publicId, String systemId)throws SAXException {
+//		if(mDebugMode) {
+//			System.out.println("DEBUG: XmlFileImpl#startDTD -- LexicalHandler is reporting");
+//		}  
+        mPrologPublicId = publicId;                           
+        mPrologSystemId = systemId;        
+    }
+    
+	/*
+	 * (non-Javadoc)
+	 * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+	 */    
+    public InputSource resolveEntity(String publicId, String systemId) throws IOException {
+    	//call the EntityResolver2 impl
+    	return resolveEntity(null, publicId, null, systemId);
+    }
+
+    /**
+     * EntityResolver2 impl
+     */    	
+	public InputSource resolveEntity(String name, String publicId, String baseURI, String systemId) throws IOException {		
+		//only of LexicalHandler hasnt already set, 
+		//this method isnt called if apache load dtd props are off
+		if(mPrologPublicId==null)mPrologPublicId = publicId;
+		if(mPrologSystemId==null)mPrologSystemId = systemId;
+				
+        try {
+            return CatalogEntityResolver.getInstance().resolveEntity(publicId,systemId);
+        } catch (CatalogException ce) {
+            if (ce instanceof CatalogExceptionRecoverable) {
+            	//dont throw
+            	myExceptions.add(new FilesetFileWarningException(this,ce));
+            } else if (ce instanceof CatalogExceptionNotRecoverable) {
+                throw new IOException(ce.getMessage());
+            }
+        }        
+        return null;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.xml.sax.ContentHandler#setDocumentLocator(org.xml.sax.Locator)
+	 */
+    public void setDocumentLocator(Locator locator) {
+		try{
+			Locator2 locator2 = (Locator2) locator;		  
+			mPrologEncoding = locator2.getEncoding();
+			mPrologXmlVersion = locator2.getXMLVersion();		  
+		}catch (ClassCastException cce) {
+			//we didnt have a SAXParser configured to use Locator2
+			if(mDebugMode) {
+				System.out.println("DEBUG: XmlFileImpl#setDocumentLocator(Locator) couldnt cast Locator to Locator2");
+			}
+		}
+    }
+
+    
+    public void fatalError(SAXParseException spe) throws SAXException {
+        isWellformed = false;
+        myExceptions.add(new FilesetFileFatalErrorException(this,spe));
+    }
+
+    public void error(SAXParseException spe)throws SAXException {
+        isDTDValid = false;
+        myExceptions.add(new FilesetFileErrorException(this,spe));
+    }
+
+    public void warning(SAXParseException spe) throws SAXException {
+        myExceptions.add(new FilesetFileWarningException(this,spe));
+    }
+    
 	public String getPrologPublicId(){
-		return this.prologPublicId;
+		return mPrologPublicId;
 	}
 
 	public String getPrologSystemId() {
-		return this.prologSystemId;
+		return mPrologSystemId;
 	}
     
+	public String getPrologEncoding() {
+		return mPrologEncoding;
+	}
+
+	public String getPrologXmlVersion() {
+		return mPrologXmlVersion;
+	}
+    
+	public String getRootElementNsUri() {
+		return mRootElementNsUri;
+	}
+	
+	public String getRootElementLocalName(){
+		return mRootElementLocalName;
+	}
+
+	public String getRootElementqName(){
+		return mRootElementqName;
+	}
+
+	public QName getRootElementQName(){
+		if(this.getRootElementPrefix()!=null) {
+			return new QName(this.mRootElementNsUri,this.mRootElementLocalName,this.getRootElementPrefix());
+		}
+		return new QName(this.mRootElementNsUri,this.mRootElementLocalName);
+	}
+
+	/**
+	 * @return the namespace bound prefix of the root element, which is \"\" (ie the empty string)
+	 * when the root element is in a default namespace. The return value is null if the root element is 
+	 * not namespace bound.
+	 */
+	private String getRootElementPrefix() {		
+		if(null != mRootElementNsUri) {
+			//return a 0-n length string
+			for (Iterator iter = mNamespaces.iterator(); iter.hasNext();) {
+				QName qn = (QName) iter.next();
+				if(qn.getNamespaceURI().equals(mRootElementNsUri)) {
+					return qn.getPrefix();
+				}
+			}			
+		}
+		return null; //no namespace binding
+	}
+	
+	public Attributes getRootElementAttributes(){
+		return mRootElementAttributes;
+	}
+			
+    public Collection getXmlLangValues(){
+    	return this.mXmlLangValues;
+    }
+
+    public Collection getNamespaces(){
+    	return this.mNamespaces;
+    }
+    
+	public Map getInlineSchemaURIs() {
+		//note: the fact that this is computed after the fact
+		//and not directly at startelement means that
+		//the schema uris dont end up in the uris collection
+		HashMap map = new HashMap();
+		Set xsis = XMLUtils.getXSISchemaLocationURIs(mRootElementNsUri, mRootElementLocalName, mRootElementqName, mRootElementAttributes);
+		for (Iterator iter = xsis.iterator(); iter.hasNext();) {
+			String str = (String) iter.next();
+			map.put(str, SchemaLanguageConstants.W3C_XML_SCHEMA_NS_URI);							
+		}	
+		return map;
+	}
+		
     public boolean isWellformed() throws IllegalStateException {
         if (isParsed)return isWellformed;
         throw new IllegalStateException("Property not set: file not parsed");
@@ -195,11 +401,11 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
     }
 
     public boolean hasIDValue(String value) {
-        return idMap.containsKey(value);
+        return mIdQNameMap.containsKey(value);
     }
 
     public boolean hasIDValueOnQName(String idval, QName qName) {
-    	QName test = (QName) idMap.get(idval);
+    	QName test = (QName) mIdQNameMap.get(idval);
         if (test != null) {
         	//TODO does .equals return correct value?
             return qName.equals(test);
@@ -207,81 +413,10 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
         return false;
     }
 
-    public void fatalError(SAXParseException spe) throws SAXException {
-        isWellformed = false;
-        myExceptions.add(new FilesetFileFatalErrorException(this,spe));
-    }
-
-    public void error(SAXParseException spe)throws SAXException {
-        isDTDValid = false;
-        myExceptions.add(new FilesetFileErrorException(this,spe));
-    }
-
-    public void warning(SAXParseException spe) throws SAXException {
-        myExceptions.add(new FilesetFileWarningException(this,spe));
-    }
-
     protected void putIdAndQName(String idvalue, QName qName) {
-        idMap.put(idvalue, qName);
-    }
-
-    public void startPrefixMapping(String prefix, String uri)throws SAXException {
-    	//add to the namespaces set
-    	this.namespaces.add(new QName(uri,"",prefix));
+        mIdQNameMap.put(idvalue, qName);
     }
     
-    /**
-     * EntityResolver impl
-     */
-    public InputSource resolveEntity(String publicId, String systemId) throws IOException {
-    	//call the EntityResolver2 impl
-    	return resolveEntity(null, publicId, null, systemId);
-    }
-
-    /**
-     * EntityResolver2 impl
-     */
-    private boolean isFirstResolveEntityCall = true;
-	public InputSource resolveEntity(String name, String publicId, String baseURI, String systemId) throws IOException {
-		if(isFirstResolveEntityCall && !isRootElementReported) {
-			//gather prolog basics
-			prologPublicId = publicId;
-			prologSystemId = systemId;
-		}		
-		isFirstResolveEntityCall = false;
-
-		//then continue as normal
-        try {
-            return CatalogEntityResolver.getInstance().resolveEntity(publicId,systemId);
-        } catch (CatalogException ce) {
-            if (ce instanceof CatalogExceptionRecoverable) {
-            	//dont throw
-            	myExceptions.add(new FilesetFileWarningException(this,ce));
-            } else if (ce instanceof CatalogExceptionNotRecoverable) {
-                throw new IOException(ce.getMessage());
-            }
-        }        
-        return null;
-	}
-
-    /**
-     * ContentHandler impl. Typically, subclasses override this, and are expected to use a super call
-     */
-
-    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
-    	if(!isRootElementReported){
-    		isRootElementReported = true;
-    		//check for inline (non-prolog) schema references
-    		Set xsis = XMLUtils.getXSISchemaLocationURIs(uri, localName, qName, atts);
-    		for (Iterator iter = xsis.iterator(); iter.hasNext();) {
-				String str = (String) iter.next();
-				inlinedSchemaReferences.put(str, SchemaLanguageConstants.W3C_XML_SCHEMA_NS_URI);
-				//also put to URI list
-				this.putUriValue(str);				
-			}
-    	} //if(!isRootElementReported)   	
-    }
-	
     /**
      * EntityResolver2 impl
      * Allows applications to provide an external subset for documents that don't explicitly define one. 
@@ -350,18 +485,27 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
         return ss;
     }
     
+    private boolean getValidatingProperty() {
+        try {
+            if (System.getProperty("org.daisy.util.fileset.validating").equals("true")) {
+                return true;
+            }
+        } catch (Exception e) {
+
+        }
+        return false;
+    }
+    
     //empty methods: for subclasses to implement as needed     
 	public void endDocument() throws SAXException {}
 	public void endPrefixMapping(String prefix) throws SAXException {}
 	public void endElement(String uri, String localName, String qName) throws SAXException {}
 	public void characters(char[] ch, int start, int length) throws SAXException {}
 	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {}
-    public void setDocumentLocator(Locator arg0) {}
     public void skippedEntity(String arg0) throws SAXException {}
     public void startDocument() throws SAXException {}        
     public void notationDecl(String arg0, String arg1, String arg2) throws SAXException {}
     public void unparsedEntityDecl(String arg0, String arg1, String arg2,String arg3) throws SAXException {}
-    public void startDTD(String name, String publicId, String systemId)throws SAXException {}
     public void endDTD() throws SAXException {}
     public void startEntity(String name) throws SAXException {}
     public void endEntity(String name) throws SAXException {}
@@ -369,11 +513,10 @@ abstract class XmlFileImpl extends FilesetFileImpl implements XmlFile,
     public void endCDATA() throws SAXException {}
     public void comment(char[] ch, int start, int length) throws SAXException {}
     //methods of ext.DeclHandler
-	public void attributeDecl(String eName, String aName, String type, String mode, String value) throws SAXException {}
-	public void elementDecl(String name, String model) throws SAXException {}
-	public void externalEntityDecl(String name, String publicId, String systemId) throws SAXException {}
-	public void internalEntityDecl(String name, String value) throws SAXException {}
+//	public void attributeDecl(String eName, String aName, String type, String mode, String value) throws SAXException {}
+//	public void elementDecl(String name, String model) throws SAXException {}
+//	public void externalEntityDecl(String name, String publicId, String systemId) throws SAXException {}
+//	public void internalEntityDecl(String name, String value) throws SAXException {}
     //end methods of ext.DeclHandler
-
 
 }
