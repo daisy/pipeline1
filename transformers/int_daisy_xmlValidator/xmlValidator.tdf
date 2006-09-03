@@ -1,6 +1,6 @@
 <transformer version="1.0">
-	<name>XML validator</name>
-	<description>Validates an XML document against one or several schemas (DTD, RelaxNG, XSD, Schematron).</description>
+	<name>XML validator DEPRECATED - use int_daisy_validator instead</name>
+	<description>DEPRECATED - use int_daisy_validator instead. Validates an XML document against one or several schemas (DTD, RelaxNG, XSD, Schematron).</description>
 	<classname>int_daisy_xmlValidator.XmlValidator</classname>
 	<license>LGPL</license>
 	<author>Markus Gylling</author>
