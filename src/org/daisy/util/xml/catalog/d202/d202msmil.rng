@@ -4,6 +4,15 @@ NOT DONE
 catalog:: -//DAISY//RNG msmil v2.02//EN
 -->
 <grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <a:documentation>
+    d202msmil.rng
+    This file is part of the RelaxNG/Schematron validation
+    suite for Daisy 2.02. All Schematron assertion strings
+    can be identifier by the intitial part of the string 
+    being: '[sch][dtb::d202][type::warning|error][msg::'.
+    Last edit by: mgylling 2006-09-02
+  </a:documentation>
+  
   <define name="URI">
     <data type="string" datatypeLibrary=""/>
   </define>

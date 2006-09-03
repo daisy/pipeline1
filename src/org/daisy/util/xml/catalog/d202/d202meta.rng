@@ -7,6 +7,10 @@
 >
   <a:documentation>
     d202meta.rng
+    This file is part of the RelaxNG/Schematron validation
+    suite for Daisy 2.02. All Schematron assertion strings
+    can be identifier by the intitial part of the string 
+    being: '[sch][dtb::d202][type::warning|error][msg::'.
     Last edit by: linuse 2006-03-02
   </a:documentation>
     
