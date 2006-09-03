@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+	<head>
+		<title>org.daisy.util.fileset.validation package</title>
+	</head>
+<body>
+  A factory API for Fileset validators.
+  <h2>The factory uses discovery</h2>
+  <p>The fact that a certain fileset can be represented as a {@link org.daisy.util.fileset.interfaces.Fileset} does not
+  mean that it automatically can be validated by a fileset Validator; implementations of the {@link org.daisy.util.fileset.validation.Validator}
+  must be available on the system for the particular fileset type.</p>
+  
+  <p>Note that a fileset instantiation in itself can be said to perform "basic" validation of a fileset: in XML filesets, 
+  wellformedness checking, DTD validation and URI resolvement (although not to the fragment level) is performed as an 
+  integral part of building the fileset. A Fileset Validator performs all the tests that go beyond the "basic" validation.</p>
+  
+  <h2>Registering an implementation</h2>
+  <p>The implementation discovery process is performed as follows:</p>
+  <ul>
+ 	<li>
+		<p>First, System properties are checked for identifiers. The property string use syntax :
+		 <code>org.daisy.util.fileset.validation:http://www.daisy.org/fileset/FILESETTYPE_STRING_CONSTANT</code>,
+	    where FILESETTYPE_STRING_CONSTANT equals a toString constant in {@link org.daisy.util.fileset.FilesetType}.</p>
+	    <p>Example:</p>
+	    <code><pre>
+	    	System.setProperty(
+				"org.daisy.util.fileset.validation:http://www.daisy.org/fileset/DTBOOK_DOCUMENT",
+				"org.daisy.util.fileset.validation.ValidatorImplDtbook");
+	    </pre></code>
+	</li>
+	<li>
+	    If no matching System property is found, a ValidatorNotSupportedException is thrown. 
+	    (Discovery process is intended to be extended).
+	</li>
+  </ul>
+  <h2>Usage example</h2>
+  <code><pre>
+		Fileset mInputFileset = new FilesetImpl(inputURI,this,true,false);		
+		try{
+			//get a handle to the ValidatorFactory
+		    org.daisy.util.fileset.validation.ValidatorFactory validatorFactory = 
+		    	org.daisy.util.fileset.validation.ValidatorFactory.newInstance(); 		    
+			//try to produce a Validator for the particular Fileset type
+			org.daisy.util.fileset.validation.Validator filesetValidator = 
+				validatorFactory.newValidator(mInputFileset.getFilesetType());					 
+			//register a ValidatorListener
+			filesetValidator.setReportListener(this);	
+			//validate				
+			filesetValidator.validate(mInputFileset);					
+		}catch (ValidatorNotSupportedException e) {
+			//the factory could not produce a validator for this fileset type
+		}catch (ValidatorException ve) {
+			//another error than nonsupported type occured
+		}				  
+  </pre></code>
+
+</body>
+</html>
