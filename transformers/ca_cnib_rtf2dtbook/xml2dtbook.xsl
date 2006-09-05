@@ -38,6 +38,14 @@
 				</d:revdescription>
 				<d:revremark/>
 			</d:revision>
+			<d:revision>
+				<d:revnumber>1.2</d:revnumber>
+				<d:date>2006-9-5</d:date>
+				<d:authorinitians>BrandonN</d:authorinitians>
+				<d:revdescription>
+					<d:para>Fixed a bug which resulted in invalid dtbook when the first paragraph isn't a heading. Now, a level1 wrapper tag is correctly added and subsequent headings will be increased in level number (e.g. the first "heading 1" will be at level 2).</d:para>
+				</d:revdescription>
+			</d:revision>
 		</d:revhistory>
 	</d:doc>
 
@@ -120,13 +128,13 @@
 			</frontmatter>
 			<bodymatter>
 				<xsl:choose>
-					<xsl:when test="rtf:section/rtf:section">
+					<xsl:when test="rtf:section[1]/*[1][local-name()='section']">
 						<xsl:apply-templates select="rtf:section/*"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<level>
+						<level1>
 							<xsl:apply-templates select="rtf:section/*"/>
-						</level>
+						</level1>
 					</xsl:otherwise>
 				</xsl:choose>
 			</bodymatter>
@@ -134,15 +142,33 @@
 	</xsl:template>
 
 	<xsl:template match="rtf:section">
-		<xsl:element name="level{@level}">
-			<xsl:apply-templates select="*"/>
-		</xsl:element>
+		<xsl:choose>
+			<xsl:when test="ancestor::rtf:body/rtf:section[1]/*[1][local-name()='section']">
+				<xsl:element name="level{@level}">
+					<xsl:apply-templates select="*"/>
+				</xsl:element>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="level{@level + 1}">
+					<xsl:apply-templates select="*"/>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="rtf:paragraph-definition[matches(@name, '^heading', 'i')]">
-		<xsl:element name="h{../@level}">
-			<xsl:apply-templates select="rtf:para/node()"/>
-		</xsl:element>
+		<xsl:choose>
+			<xsl:when test="ancestor::rtf:body/rtf:section[1]/*[1][local-name()='section']">
+				<xsl:element name="h{../@level}">
+					<xsl:apply-templates select="rtf:para/node()"/>
+				</xsl:element>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="h{../@level + 1}">
+					<xsl:apply-templates select="rtf:para/node()"/>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<!-- pre-formatted lists: wrap all consecutive list entries with one list tag, by matching only the first in a group (style="List", "List 2", etc). Not nested -->
