@@ -52,7 +52,9 @@ public class SchematronMessage {
 					
 			char[] array = string.toCharArray();
 			boolean open = false;
-			StringBuilder sb = new StringBuilder();
+			//StringBuilder sb = new StringBuilder();
+            //20060905 Piotr Kiernicki: org.daisy.util should still be jre_1.4 compatible
+            StringBuffer sb = new StringBuffer();
 			
 			for (int i = 0; i < array.length; i++) {
 				char c = array[i];
