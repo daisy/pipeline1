@@ -274,19 +274,26 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @throws FileNotFoundException 
 	 */
 	private void doSAXDTDValidation() {
-		try{
-	    	Map features = new HashMap();
+		
+    	Map features = new HashMap();
+    	SAXParser saxParser = null;
+	    try{
 	    	features.put(SAXConstants.SAX_FEATURE_NAMESPACES, Boolean.TRUE);
 	    	features.put(SAXConstants.SAX_FEATURE_VALIDATION, Boolean.TRUE);        	
-	    	SAXParser saxParser = SAXParserPool.getInstance().acquire(features,null);
+	    	saxParser = SAXParserPool.getInstance().acquire(features,null);
 	    	saxParser.getXMLReader().setErrorHandler(this);    	
 	    	saxParser.getXMLReader().setContentHandler(new DefaultHandler());
 	    	saxParser.getXMLReader().setEntityResolver(CatalogEntityResolver.getInstance());
-	    	saxParser.getXMLReader().parse(mInputFile.asInputSource());
-	    	SAXParserPool.getInstance().release(saxParser,features,null);
+	    	saxParser.getXMLReader().parse(mInputFile.asInputSource());	    	
 		}catch (Exception e) {
 			mStateTracker.mHadCaughtException = true;
 			this.sendMessage(Level.WARNING,i18n("DTD_VALIDATION_FAILURE", e.getMessage()));			
+		}finally{
+			try {
+				SAXParserPool.getInstance().release(saxParser,features,null);
+			} catch (PoolException e) {
+
+			}
 		}
 	}
 	
