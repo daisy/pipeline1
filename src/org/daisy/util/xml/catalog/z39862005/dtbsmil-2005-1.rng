@@ -72,6 +72,30 @@
 		<ref name="attList.meta"/>
 			<empty/>
 		</element>
+		<sch:pattern name="smil_metaDtbUidPresence" id="smil_metaDtbUidPresence">
+			<!-- dtb:uid meta element exists -->
+		    <sch:rule context="smil:head">
+	      		<sch:assert test="count(smil:meta[@name='dtb:uid'])=1"> 
+	        		[sch][zedid::smil_metaDtbUidPresence]
+	      		</sch:assert>        
+    		</sch:rule>
+	  	</sch:pattern> 
+		<sch:pattern name="smil_metaDtbTotElaPresence" id="smil_metaDtbTotElaPresence">
+			<!-- total elapsed time meta element exists -->
+		    <sch:rule context="smil:head">
+	      		<sch:assert test="count(smil:meta[@name='dtb:totalElapsedTime'])=1"> 
+	        		[sch][zedid::smil_metaDtbTotElaPresence]
+	      		</sch:assert>        
+    		</sch:rule>
+	  	</sch:pattern> 	  	
+		<sch:pattern name="smil_metaDtbGenPresence" id="smil_metaDtbGenPresence">
+			<!-- dtb:generator meta element exists -->
+		    <sch:rule context="smil:head">
+	      		<sch:assert test="count(smil:meta[@name='dtb:generator'])=1"> 
+	        		[sch][zedid::smil_metaDtbGenPresence]
+	      		</sch:assert>        
+    		</sch:rule>
+	  	</sch:pattern>	  	
 	</define>
 	
 	<define name="attList.meta">
