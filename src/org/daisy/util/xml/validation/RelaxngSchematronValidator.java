@@ -328,7 +328,11 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
                     Source xslt = new StreamSource(this.getClass()
                             .getResourceAsStream("RNG2Schtrn.xsl"));
                     TransformerFactory factory = TransformerFactory.newInstance();
-
+        			try {
+        				factory.setAttribute("http://saxon.sf.net/feature/version-warning", Boolean.FALSE);
+        			} catch (IllegalArgumentException iae) {
+        				
+        			}
                     Transformer transformer = factory.newTransformer(xslt);
                     if(this.uriResolver==null){
                         transformer.setURIResolver(CatalogEntityResolver.getInstance());
