@@ -122,18 +122,34 @@
   </sch:pattern>
 
   <sch:pattern name="dtbook_idrefNote" id="dtbook_idrefNote">
-    <sch:rule context="dtbk:noteref">
-      <sch:assert test="count(//dtbk:note[@id=current()/@idref])=1">
-		[sch][zedid::dtbook_idrefNote]
-	  </sch:assert>	
+    <sch:rule context="dtbk:noteref">	  
+	  <sch:assert test="contains(@idref, '#')">
+	    [sch][zedid::dtbook_noteFragment]
+	  </sch:assert>
+	  <sch:report test="contains(@idref, '#') and string-length(substring-before(@idref, '#'))=0 and count(//dtbk:note[@id=substring(current()/@idref,2)])!=1">
+	    [sch][zedid::dtbook_idrefNote]
+	  </sch:report>
+	  <!-- Do not perform any checks on external note references
+	       since you cannot set a URIResolver in Jing
+	  <sch:report test="string-length(substring-before(@idref, '#'))>0 and not(document(substring-before(@idref, '#')))">External document does not exist</sch:report>
+	  <sch:report test="string-length(substring-before(@idref, '#'))>0 and count(document(substring-before(@idref, '#'))//dtbk:note[@id=substring-after(current()/@idref, '#')])!=1">Incorrect external fragment identifier</sch:report>
+	  -->
     </sch:rule>
   </sch:pattern>  
 
   <sch:pattern name="dtbook_idrefAnnotation" id="dtbook_idrefAnnotation">
     <sch:rule context="dtbk:annoref">
-      <sch:assert test="count(//dtbk:annotation[@id=current()/@idref])=1">
-		[sch][zedid::dtbook_idrefAnnotation]
-	  </sch:assert>	
+      <sch:assert test="contains(@idref, '#')">
+	    [sch][zedid::dtbook_annotationFragment]
+	  </sch:assert>
+	  <sch:report test="contains(@idref, '#') and string-length(substring-before(@idref, '#'))=0 and count(//dtbk:annotation[@id=substring(current()/@idref,2)])!=1">
+	    [sch][zedid::dtbook_idrefAnnotation]
+	  </sch:report>
+	  <!-- Do not perform any checks on external note references
+	       since you cannot set a URIResolver in Jing
+	  <sch:report test="string-length(substring-before(@idref, '#'))>0 and not(document(substring-before(@idref, '#')))">External document does not exist</sch:report>
+	  <sch:report test="string-length(substring-before(@idref, '#'))>0 and count(document(substring-before(@idref, '#'))//dtbk:annotation[@id=substring-after(current()/@idref, '#')])!=1">Incorrect external fragment identifier</sch:report>
+	  -->
     </sch:rule>
   </sch:pattern>
 	          
