@@ -307,8 +307,8 @@
       <interleave>
         <oneOrMore>
           <element name="dc:Title">
-          <ref name="CommonAttributes"/>          
-             <ref name="datatype.string.non-null"/>
+            <ref name="CommonAttributes"/>          
+            <ref name="datatype.string.non-null"/>
           </element>
         </oneOrMore>
 
@@ -337,12 +337,12 @@
           </element>
         </zeroOrMore>
 
-        <zeroOrMore>
+        <oneOrMore>
           <element name="dc:Publisher">
-          <ref name="CommonAttributes"/>
-           <text/>
+            <ref name="CommonAttributes"/>
+            <ref name="datatype.string.non-null"/>  
           </element>
-        </zeroOrMore>
+        </oneOrMore>
 
         <zeroOrMore>
           <element name="dc:Contributor">
