@@ -32,7 +32,9 @@
 	</define>
 	
 	<define name="datatype.string.non-null">
-		<data type="string"/> <!-- TODO make regex for nonnull string-->
+		<data type="string">
+			<param name="pattern">.*\S.*</param>
+		</data>
 	</define>
 	
 	<define name="datatype.romannumeral">
