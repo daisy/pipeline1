@@ -95,6 +95,7 @@ public class SAXParserPool extends AbstractPool {
 			parser.reset(); 
 			super.release(setFeaturesAndProperties(parser,features, properties), features, properties);
 		} catch (Exception e) {
+			//TODO dont throw here? Creates verbose release code at user side.
 			throw new PoolException(e.getMessage(),e);
 		}
 	}

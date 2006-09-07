@@ -161,9 +161,11 @@ class ValidatorImplDtbook extends ValidatorImplAbstract implements Validator {
 	 * SchematronMessage syntax. 
 	 */	 
 	public void error(SAXParseException exception) throws SAXException {
-		//TODO this method fixed when
+		//TODO this method fixed when ZV jar is available
 		if(SchematronMessage.isMessage(exception.getMessage())) {
-			
+			//TODO it is a schematron message
+			mValidatorListener.report(this,ExceptionTransformer.newValidatorMessage
+					(exception, ExceptionTransformer.SAX_ERRHANDLER_TYPE_ERROR,mDtbookInputFile.getFile().toURI()));			
 		}else{		
 			//it is not a schematron message
 			mValidatorListener.report(this,ExceptionTransformer.newValidatorMessage
