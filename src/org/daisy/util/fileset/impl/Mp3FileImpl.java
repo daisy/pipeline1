@@ -68,7 +68,7 @@ final class Mp3FileImpl extends AudioFileImpl implements Mp3File {
 		InputStream id3in = bts.getRawID3v2();
 		this.hasID3v2 = (id3in!=null);
 		try{
-		  id3in.close();
+		  if(id3in!=null)id3in.close();
 		} catch (Exception e) {
 			
 		}
