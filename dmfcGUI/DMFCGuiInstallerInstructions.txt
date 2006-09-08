@@ -1,8 +1,8 @@
-Release Technician Instructions
+Release Technician Instructions/Manual
 
 
- Initial setup
- --------------
+ Downloads Required to Create the Install package
+ -------------------------------------------------
 
    1. Download and install NSIS from http://nsis.sourceforge.net
    
@@ -13,19 +13,19 @@ Release Technician Instructions
    
    2. Install the EclipseNSIS plugin http://eclipsensis.sourceforge.net/#download
    
-	   There are two options on this page, one to directly download and place in the eclipse directory, or to use Install Manager in Eclipse which is the preferred method.
+	There are two options on this page, one to directly download and place in the eclipse directory, or to use Install Manager in Eclipse which is the preferred method.
 
-	   To run the Install Manager, open Eclipse, choose Help/Software Updates/Find and Install/ for the first dialog box.
+	To run the Install Manager, open Eclipse, choose Help/Software Updates/Find and Install/ for the first dialog box.
 
-	   Choose the 2nd item, "Search for New Features to Install".  Choose Next.
+	Choose the 2nd item, "Search for New Features to Install".  Choose Next.
 
-	   The dialog, "Update Sites to Visit" appears.  Choose the button, "New Remote Site" for the next dialog box.
+	The dialog, "Update Sites to Visit" appears.  Choose the button, "New Remote Site" for the next dialog box.
 
-	   Complete the two lines with a name (nsisPlugin, or whatever) and url, http://eclipsensis.sf.net/update  Choose OK.
+	Complete the two lines with a name (nsisPlugin, or whatever) and url, http://eclipsensis.sf.net/update  Choose OK.
 
-	   Follow the wizard.  NSIS will be (should be?) installed as a plug-in in Eclipse. 
-	   
-	   To use the NSIS plugin, select a .nsi file.  The NSIS menu will appear between the Project and Run menus.
+	Follow the wizard.  NSIS will be (should be?) installed as a plug-in in Eclipse. 
+
+	To use the NSIS plugin, select a .nsi file.  The NSIS menu will appear between the Project and Run menus.
 
   
    
@@ -40,7 +40,7 @@ Release Technician Instructions
       Open the .nsh file in a text editor to change and fix the bug stated on the website.
       	
 
-   4.  Correct the parameters in the install.nsi file
+   4. Correct the parameters in the install.nsi file
        
      	a.   Make sure the defines in the 'Defines' part are correct. Most importantly,make sure the ECLIPSEDIR, JYTHONDIR and LAMEDIR defines are correct.
      
@@ -69,7 +69,7 @@ Release Technician Instructions
 
 
 
- Download dependencies
+ More Download Dependencies
  -----------------------
 
   1.  Lame for windows can be downloaded at http://www.rarewares.org/mp3.html. Use the latest
@@ -127,25 +127,28 @@ Start the Build
      
 
 
-   CREATE THE INSTALLER
-   ----------------------
+Create the Installer for DMFC and GUI
+-------------------------------------
    
-	   In Windows Explorer,find the installer.nsi file, right-click, and choose Compile NSIS from the menu.
+	1.   In Windows Explorer,find the installer.nsi file, right-click, and choose Compile NSIS from the menu.
 
-	   In the current script, the install file will be placed in the ECLIPSEDIR\dmfcgui\dist folder.
+	2.  In the current script, the install file will be placed in the ECLIPSEDIR\dmfcgui\dist folder.
 	   
-	   The file is named dmfcgui-1-0b1.exe
+	3.   The file is named dmfcgui-1-0b1.exe
 	   
-	   Make sure that .NET Framework 2.0 is installed on your machine.  If not, you may download it from
+	4.   Make sure that .NET Framework 2.0 is installed on your machine.  If not, you may download it from
 	   
 	   http://www.microsoft.com/downloads/details.aspx?FamilyID=0856EACB-4362-4B0D-8EDD-AAB15C5E04F5&displaylang=en
 	   
-	   After .NET is installed,  run the dmfcgui-1-0b1.exe file to install dmfc in the Start/Programs menu. 
+	5.   After .NET is installed,  run the dmfcgui-1-0b1.exe file to install dmfc in the Start/Programs menu. 
 	   
 	   
-	[this text can become a part of the dmfc release technician handbook]
+	
 
-**********************************************************************************
+Place build files on Sourceforge
+-----------------------------------
+
+The DMFC and the GUI are placed on SourceForge as a project release.  The following describes the files to be placed on each.
 
 ** DMFC release - archives overview **
 
@@ -191,13 +194,86 @@ DMFCGUI releases.
   2.3 org.daisy.dmfc.gui-docs.zip
     Javadoc pack. If daisymfcgui has a website, javadocs published there.
     (unsure atm whether we want to spend time on separate daisymfcgui webpages.)
+  2.4* org.daisy.dmfc.gui-extras.zip
+  	Includes scripts and license information
 
-3. Installer
-  3.1 dmfc-install-yyyy-mm-dd.exe
-    This is the convenience installer, published in the members area of daisy.org
-       
-	  
-	   
+
+
+
+Place Installer on the DAISY Web Site
+----------------------------------------
+
+1.  The final file to be placed on the web site will be named dmfcgui-1.0b1.exe (as of 8/25/2006)
+
+2.  Published in the tools area, add this to the tools and the downloads database.
+
+3.  The file (2006/8/25) is 16 mb, and the DAISY server times out when it tries to load. The round-about solution to this problem is as follows:
+ 
+ 	- Login to the DAISY Web Site - you must be an administrator and go to the Admin Page
+ 	- From the sidebar, choose Tools
+ 	- If necessary, Edit the record, DAISY multi-format converter and GUI. (This record should not need changes.)
+ 	-  From the sidebar, choose Downloads.
+ 	-  Create a small text file of the same name as the installer, dmfcgui-1.0b1.exe
+ 	-  Access is only available to members of the DAISY Consortium.  Select the correct access level.
+ 	-  Update the table with the incorrect file.
+ 	-  Use an ftp client to overwrite the dmfcgui-1.0b1.exe incorrect text file with the correct, 16Mb file.
+ 	
+ 4.  Future versions of the installer may be copied to the server via ftp.  
+ 
+
+Create a SourceForge Release
+----------------------------------
+
+1.  Login to sourceforge - www.sf.net
+
+2.  Choose the project to create a release from the "My Projects" menu.
+
+3.  Only administrators or release-technicians of a project may create a release.
+
+4.  From the top menu, choose "Admin".  Another menu will appear below the top menu.
+
+5.  From the lower, second menu, choose "File Releases".
+
+6.  At the bottom of the File Releases page, choose [AddRelease]
+
+7.  For creating the initial package, complete the bottom area, 
+
+	New Release Name - daiysmfcgui_FPA
+	Of which Package - daisymfcgui
+	
+8.  On a new page is the following gui:
+
+Step 1:  Edit Existing Release
+         This should be filled in.  You may add or update usernotes.
+         
+         FTP to upload.sourcefourge.net
+         username:  anonymous
+         password:  your email, in my case laurie.sherve@montana.com
+         
+Step 2 Add files to Release
+
+	Check all files that you want to add to the release.  
+	Choose the "Submit" button
+	All chosen files appear in the list below.
+	
+Step 3 Edit files in the release
+	
+	Choose the OS and other associated info for each file.
+	"Submit"
+	
+You will see the "download" link on the project home page.
+
+
+Section 211. Dealing with the generated JavaDoc.
+------------------------------------------------
+
+1.  Using the javadoc generated by the Ant scripts,
+  a) upload the non-archived files to the three respective subdirs  of http://daisymfc.sourceforge.net/api/
+  b) also upload the archives to the root of the three subdirs.
+
+2. Verify that the six links in the doc http://daisymfc.sourceforge.net/api/index.html work.
+
+	     
 	   
    
    
