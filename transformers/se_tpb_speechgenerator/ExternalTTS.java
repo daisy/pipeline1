@@ -1,9 +1,29 @@
+/*
+ * DMFC - The DAISY Multi Format Converter
+ * Copyright (C) 2006  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package se_tpb_speechgenerator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +57,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * Abstract base class for TTS implementations. 
  * @author Martin Blomberg
  *
  */
 public abstract class ExternalTTS implements TTS {
 	
-	protected boolean _DEBUG = false;
 	protected Map parameters;
 	protected RegexReplace generalReplace;
 	protected RegexReplace specificReplace;
@@ -50,7 +70,7 @@ public abstract class ExternalTTS implements TTS {
 	protected String xsltFilename;
 	protected TransformerCache cache = new TransformerCache();
 	private static final String XSLT_FACTORY = "net.sf.saxon.TransformerFactoryImpl";
-	YearAnnouncer yearAnnouncer;
+	protected YearAnnouncer yearAnnouncer;
 	
 	/**
 	 * Constructor taking a map of parameters/properties as parameter. 
@@ -191,7 +211,9 @@ public abstract class ExternalTTS implements TTS {
 	 * <li>specificRegexFilename</li>
 	 * <li>yearFilename</li>
 	 * <li>xsltFilename</li>
-	 * <li>characterTranslationTable</li>
+	 * <li>characterSubstitutionTables</li>
+	 * <li>characterExcludeFromSubstitution</li>
+	 * <li>characterFallbackStates</li>
 	 * </ol>
 	 * However, there may be other values here that are read by the
 	 * TTS implementation, such as <code>ttsProperties</code>, which
@@ -212,21 +234,57 @@ public abstract class ExternalTTS implements TTS {
 				new RegexReplace(new File((String) params.get("specificRegexFilename")));
 		}
 		
-		if (null != params.get("characterTranslationTable")) {
-			String tableEncoding = (String) params.get("translationTableEncoding");
-			String translationTable = (String)params.get("characterTranslationTable");
-			
+		
+		if (null != params.get("characterSubstitutionTables")) {
 			charReplacer = new UCharReplacer();
-			try {
-				File file = new File((String) translationTable);
-				charReplacer.addTranslationTable(file.toURL(), tableEncoding);
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			
+			// Load all substitution tables 
+			String substitutionTables = (String) params.get("characterSubstitutionTables");			
+			String[] tables = substitutionTables.split(",");
+			for (int i = 0; i < tables.length; i++) {
+				File t = new File(tables[i].trim());
+				if (t.exists()) {
+					try {
+						charReplacer.addSubstitutionTable(t.toURI().toURL());
+					} catch (Exception e) {
+						//this.sendMessage(Level.WARNING,"Translation table " + t.getPath() + " exception: " + e.getMessage());
+						//TODO: log this
+					}	
+				} else {
+					//this.sendMessage(Level.WARNING,"Translation table " + t.getPath() + " could not be found");
+					//TODO: log this
+				}
 			}
+
+
+			// Set optional exclusion repertoire
+			String excludeCharset = (String) params.get("characterExcludeFromSubstitution");
+			if (excludeCharset != null) {
+				// try and catch this one?
+				// throws runtime exceptions on "missing" charset
+				// what to do with caught exception?
+				charReplacer.setExclusionRepertoire(Charset.forName(excludeCharset));
+			}
+			
+			
+			// Set optional character fallback state(s)
+			if (null != params.get("characterFallbackStates")) {
+				String characterFallbacks = (String) params.get("characterFallbackStates");
+				String[] fallbacks = characterFallbacks.split(",");
+				for (int i = 0; i < fallbacks.length; i++) {
+					if (fallbacks[i].trim().equals("fallbackToNonSpacingMarkRemovalTransliteration")) {
+						charReplacer.setFallbackState(charReplacer.FALLBACK_TRANSLITERATE_REMOVE_NONSPACING_MARKS, true);
+					}
+					
+					if (fallbacks[i].trim().equals("fallbackToLatinTransliteration")) {
+						charReplacer.setFallbackState(charReplacer.FALLBACK_TRANSLITERATE_ANY_TO_LATIN, true);
+					}
+					
+					if (fallbacks[i].trim().equals("fallbackToUCD")) {
+						charReplacer.setFallbackState(charReplacer.FALLBACK_USE_UCD_NAMES, true);
+					}
+				}				
+			}		
 		}
 		
 		if (null != params.get("yearFilename")) {
@@ -282,20 +340,11 @@ public abstract class ExternalTTS implements TTS {
 	 * @throws FileNotFoundException
 	 */
 	protected String xsltFilter(Document document) throws CatalogExceptionNotRecoverable, XSLTException, FileNotFoundException {
-		int len = document.getDocumentElement().getTextContent().trim().length();
-		DEBUG(document);
-		DEBUG(xsltFilename);
 		if (xsltFilename != null) {
 			StringBuffer buff = new StringBuffer();
 			DOMSource source = new DOMSource(document.getDocumentElement());
 			Stylesheet.apply(source, cache.get(xsltFilename, XSLT_FACTORY), buff, null, null);
-			String result = buff.toString().trim();
-			if (len != result.length()) {
-				DEBUG(result);
-			} else {
-				DEBUG(result);
-			}
-			return result;
+			return buff.toString().trim();
 		} else {
 			return document.getDocumentElement().getTextContent().trim();
 		}
@@ -355,20 +404,21 @@ public abstract class ExternalTTS implements TTS {
 	
 	protected String replaceUChars(String line) {
 		if (charReplacer != null) {
-			return charReplacer.toReplacementString(line);
+			CharSequence cs = charReplacer.replace(line);
+			return cs.toString();
 		}
 		return line;
 	}
 	
-	protected void DEBUG(String msg) {
-		if (_DEBUG) {
-			System.err.println("ExternalTTS: " + msg);
+	private void DEBUG(String msg) {
+		if (System.getProperty("org.daisy.debug") != null) {
+			System.out.println("DEBUG: " + msg);
 		}
 	}
 	
-	protected void DEBUG(Document d) {
-		if (_DEBUG) {
-			DEBUG("DEBUG(Document):");
+	private void DEBUG(Document d) {
+		if (System.getProperty("org.daisy.debug") != null) {
+			DEBUG("ExternalTTS#DEBUG(Document):");
 			try {
 				TransformerFactory xformFactory = TransformerFactory.newInstance();  
 				javax.xml.transform.Transformer idTransform = xformFactory.newTransformer();
