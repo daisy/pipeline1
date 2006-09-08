@@ -47,29 +47,28 @@
 			
 			<tts default="true">
 				<param name="class" value="se_tpb_speechgenerator.SAPIImpl"/>
-				<param name="binary" value="${transformer_dir}/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe"/>				
+				<param name="binary" value="${transformer_dir}/tts/SimpleCommandlineTTS/SimpleCommandLineTTS.exe"/>				
 				<param name="generalRegexFilename" value="${transformer_dir}/regex/richard.xml"/>
 				<param name="xsltFilename" value="${transformer_dir}/xslt/transform.xsl"/>
 				<param name="yearFilename" value="${transformer_dir}/config/year_en.xml"/>
 				<param name="sapiVoiceSelection" value="Gender=Male"/>
-				<param name="characterTranslationTable" value="${transformer_dir}/character-translation-table.xml"/>
-				<param name="translationTableEncoding" value="utf-8"/>
 				
+				<!-- character substitution choises -->
+				<param name="characterSubstitutionTables" value="${transformer_dir}/character-translation-table.xml"/>
+				<param name="characterFallbackStates" value="fallbackToNonSpacingMarkRemovalTransliteration"/>
+				<param name="characterExcludeFromSubstitution" value="ASCII"/>
 			</tts>
 		</lang>
 		
 		<!--
 		<lang lang="sv">
-			<tts id="sv_sapi">
+			<tts>
 				<param name="class" value="se_tpb_speechgenerator.SAPIImpl"/>
-				<param name="binary" value="c:/Program/SimpleCommandLineTTS/SimpleCommandLineTTS.exe"/> 
-				
+				<param name="binary" value="${transformer_dir}/tts/SimpleCommandlineTTS/SimpleCommandLineTTS.exe"/> 
 				<param name="generalRegexFilename" value="${transformer_dir}/regex/richard.xml"/>
-				
 				<param name="xsltFilename" value="${transformer_dir}/xslt/transform.xsl"/>
 				<param name="yearFilename" value="${transformer_dir}/config/year_en.xml"/>
 				<param name="sapiVoiceSelection" value="Language=41D"/>
-				
 			</tts>
 		</lang>
 		-->
@@ -84,12 +83,17 @@
 		
 		<lang lang="en">
 			<tts default="true">
-				<param name="class" value="se_tpb_speechgenerator.LoquendoImpl"/>
+				<param name="class" value="se_tpb_speechgenerator.JLoq"/>
 				<param name="binary" value="${transformer_dir}/../../../narratorLoquendo"/>
 				<param name="generalRegexFilename" value="${transformer_dir}/regex/richard.xml"/>
 				<param name="ttsProperties" value="${transformer_dir}/config/loquendo.xml"/>
 				<param name="xsltFilename" value="${transformer_dir}/xslt/loquendo-en.xsl"/>
 				<param name="yearFilename" value="${transformer_dir}/config/year_en.xml"/>
+				
+				<!-- character substitution choises -->
+				<param name="characterSubstitutionTables" value="${transformer_dir}/character-translation-table.xml"/>
+				<param name="characterFallbackStates" value="fallbackToNonSpacingMarkRemovalTransliteration"/>
+				<param name="characterExcludeFromSubstitution" value="ASCII"/>
 			</tts>
 		</lang>
 			
