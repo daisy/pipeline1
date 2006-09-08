@@ -182,14 +182,14 @@
   <!-- Rule 26: Each note must have a noteref -->
   <sch:pattern name="dtbook_TPB_noteNoteref" id="dtbook_TPB_noteNoteref">
   	<sch:rule context="dtbk:note">
-  		<sch:assert test="count(//dtbk:noteref[@idref=current()/@id])>=1">[tpb26] Each note must have at least one noteref</sch:assert>
+  		<sch:assert test="count(//dtbk:noteref[translate(@idref, '#', '')=current()/@id])>=1">[tpb26] Each note must have at least one noteref</sch:assert>
   	</sch:rule>  	
   </sch:pattern>
   
   <!-- Rule 27: Each annotation must have an annoref -->
   <sch:pattern name="dtbook_TPB_annotationAnnoref" id="dtbook_TPB_annotationAnnoref">
   	<sch:rule context="dtbk:annotation">
-  		<sch:assert test="count(//dtbk:annoref[@idref=current()/@id])>=1">[tpb27] Each annotation must have at least one annoref</sch:assert>
+  		<sch:assert test="count(//dtbk:annoref[translate(@idref, '#', '')=current()/@id])>=1">[tpb27] Each annotation must have at least one annoref</sch:assert>
   	</sch:rule>  	
   </sch:pattern>  
   
@@ -408,5 +408,5 @@
       <sch:assert test="preceding-sibling::*[1][dtbk:dt]">[tpb62] Data terms and data definitions come in pairs</sch:assert>
     </sch:rule>
   </sch:pattern>
-  
+    
 </grammar>
