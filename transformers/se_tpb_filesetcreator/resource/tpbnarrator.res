@@ -1,6 +1,8 @@
-<?xml version='1.0' encoding='UTF-8'?><!DOCTYPE resources PUBLIC "-//NISO//DTD resource 2005-1//EN" "http://www.daisy.org/z3986/2005/resource-2005-1.dtd" []><resources xmlns="http://www.daisy.org/z3986/2005/resource/" version="2005-1">
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE resources PUBLIC "-//NISO//DTD resource 2005-1//EN" "http://www.daisy.org/z3986/2005/resource-2005-1.dtd" []>
+<resources xmlns="http://www.daisy.org/z3986/2005/resource/" version="2005-1">
   
-  <!-- SKIPPABLE -->
+  <!-- SKIPPABLE NCX -->
   
   <scope nsuri="http://www.daisy.org/z3986/2005/ncx/">
     <nodeSet id="ns001" select="//smilCustomTest[@bookStruct='LINE_NUMBER']">
@@ -62,9 +64,73 @@
 
 
 
-	<!-- ESCAPABLE: -->
+	<!-- ESCAPABLE SMIL -->
+	
+	<scope nsuri="http://www.w3.org/2001/SMIL20/">   
+   
+    <nodeSet id="esns001" select="//seq[@bookStruct='line']">
+      <resource xml:lang="en" id="esr001">
+        <text>Row</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:02.379" clipEnd="0:00:03.416" />
+      </resource>
+    </nodeSet>
+    
+    <nodeSet id="esns002" select="//seq[@class='note']">
+      <resource xml:lang="en" id="esr002">
+        <text>Note</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:03.416" clipEnd="0:00:04.668" />
+      </resource>
+    </nodeSet>
+     
+    <nodeSet id="esns003" select="//seq[@class='noteref']">
+      <resource xml:lang="en" id="esr003">
+        <text>Note reference</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:04.668" clipEnd="0:00:06.370" />
+      </resource>
+    </nodeSet>
+    
+    <nodeSet id="esns004" select="//seq[@class='annotation']">
+      <resource xml:lang="en" id="esr004">
+        <text>Annotation</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:06.370" clipEnd="0:00:07.853" />
+      </resource>
+    </nodeSet>
+    
+    <nodeSet id="esns005" select="//seq[@class='annoref']">
+      <resource xml:lang="en" id="esr005">
+        <text>Annotation reference</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:07.853" clipEnd="0:00:09.791" />
+      </resource>
+    </nodeSet>
+    
+    <nodeSet id="esns006" select="//seq[@class='pagenum']">
+      <resource xml:lang="en" id="esr006">
+        <text>Page</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:09.791" clipEnd="0:00:11.093" />
+      </resource>
+    </nodeSet>
+    
+    <nodeSet id="esns007" select="//seq[@class='sidebar']">
+      <resource xml:lang="en" id="esr007">
+        <text>Optional sidebar</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:11.093" clipEnd="0:00:12.930" />
+      </resource>
+    </nodeSet>
+    
+    <nodeSet id="esns008" select="//seq[@class='prodnote']">
+      <resource xml:lang="en" id="esr008">
+        <text>Optional producer note</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:12.930" clipEnd="0:00:15.017" />
+      </resource>
+    </nodeSet>
+    
+  </scope>
 
-  <scope nsuri="http://www.daisy.org/z3986/2005/dtbook/">
+
+	<!-- ESCAPABLE DTBOOK -->
+
+  <scope nsuri="http://www.daisy.org/z3986/2005/dtbook/"> 
+  
     <nodeSet id="ns009" select="//annotation">
       <resource xml:lang="en" id="r009">
         <text>Annotation</text>
@@ -121,7 +187,7 @@
       </resource>
     </nodeSet>
     
-	<nodeSet id="ns016" select="//table">
+		<nodeSet id="ns016" select="//table">
       <resource xml:lang="en" id="r016">
         <text>Table</text>
         <audio src="tpbnarrator_res.mp3" clipBegin="0:00:26.526" clipEnd="0:00:27.857" />
