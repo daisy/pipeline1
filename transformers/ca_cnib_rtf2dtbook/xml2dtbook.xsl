@@ -41,15 +41,23 @@
 			<d:revision>
 				<d:revnumber>1.2</d:revnumber>
 				<d:date>2006-9-5</d:date>
-				<d:authorinitians>BrandonN</d:authorinitians>
+				<d:authorinitials>BrandonN</d:authorinitials>
 				<d:revdescription>
 					<d:para>Fixed a bug which resulted in invalid dtbook when the first paragraph isn't a heading. Now, a level1 wrapper tag is correctly added and subsequent headings will be increased in level number (e.g. the first "heading 1" will be at level 2).</d:para>
+				</d:revdescription>
+			</d:revision>
+			<d:revision>
+				<d:renvumber>1.3</d:renvumber>
+				<d:date>2006-9-11</d:date>
+				<d:authorinitials>BrandonN</d:authorinitials>
+				<d:revdescription>
+					<d:para>Changed to refer to dtbook-2005-2</d:para>
 				</d:revdescription>
 			</d:revision>
 		</d:revhistory>
 	</d:doc>
 
-	<xsl:output method="xml" indent="yes" doctype-public="-//NISO//DTD dtbook 2005-1//EN" doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd"/>
+	<xsl:output method="xml" indent="yes" doctype-public="-//NISO//DTD dtbook 2005-2//EN" doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd"/>
 
 	<!-- find a language code, based on language of  first text element of document -->
 	<xsl:variable name="language" select="substring-before(/rtf:doc/rtf:body/descendant::node()[@language][1]/@language, ' ')"/>
@@ -70,7 +78,7 @@
 			<xsl:text>href="dtbook.2005-1.basic.css" type="text/css"</xsl:text>
 		</xsl:processing-instruction>
 		-->
-		<dtbook version="2005-1" xml:lang="{$lang}">
+		<dtbook version="2005-2" xml:lang="{$lang}">
 			<xsl:apply-templates select="*"/>
 		</dtbook>
 	</xsl:template>
