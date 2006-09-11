@@ -252,7 +252,7 @@ public class FilesetImpl implements Fileset {
 				}
 			}
 		}else{			
-			throw new FilesetFatalException(new IOException("manifest not readable"));								 
+			throw new FilesetFatalException(new IOException("manifest not readable: '" + f.toString() + "'"));								 
 		}  
 		
 		//if we get here the fileset is completely populated without fatal errors
