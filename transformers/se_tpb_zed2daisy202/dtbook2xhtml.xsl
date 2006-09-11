@@ -853,11 +853,21 @@
 
 	<!-- FIXME internal and external -->
    <xsl:template match="dtb:a[@href]">
-     <a>
-       <xsl:call-template name="copyCatts"/>
-       <xsl:copy-of select="@href"/>
-       <xsl:apply-templates/>
-     </a>
+     <xsl:choose>
+       <xsl:when test="ancestor::dtb:*[@smilref]">
+         <span class="anchor">
+           <xsl:call-template name="copyCncatts"/>
+           <xsl:apply-templates/>
+         </span>
+       </xsl:when>
+       <xsl:otherwise>
+         <a>
+           <xsl:call-template name="copyCatts"/>
+           <xsl:copy-of select="@href"/>
+           <xsl:apply-templates/>
+         </a>
+       </xsl:otherwise>
+     </xsl:choose>
    </xsl:template>
 
   <xsl:template match="dtb:annoref">
