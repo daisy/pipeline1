@@ -1,3 +1,22 @@
+/*
+ * DMFC - The DAISY Multi Format Converter
+ * Copyright (C) 2006  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package se_tpb_speechgenerator;
 
 import java.io.File;
@@ -6,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.execution.Command;
 import org.daisy.util.execution.ExecutionException;
 
@@ -22,11 +40,11 @@ import se_tpb_dtbAudioEncoder.EncodingException;
  */
 public class WavConcatWorker implements Runnable {
 	
-	private List inputFiles;
-	private File wavFile;
-	private File mp3File;
-	private CountDownLatch signal;
-	private int maxTempFiles = 400; // the maximum number of open files
+	private List inputFiles;		// a list of input files to concatenate.
+	private File wavFile;			// the resulting wav file.
+	private File mp3File;			// the optional mp3 encoding of wavFile.
+	private CountDownLatch signal;	// thread synchronization: signal when done!
+	private int maxTempFiles = 400; // the maximum number of open files per run. If more, divide and conquer!
 	
 	
 	/**
@@ -134,25 +152,23 @@ public class WavConcatWorker implements Runnable {
 		String lameCommand = System.getProperty("dmfc.lame.path");
 		
 		String inputFilename = inputWav.getAbsolutePath();
-		if (inputFilename.contains(" ")) {
-			inputFilename = "\"" + inputFilename + "\"";
-		}
-		
 		String outputFilename = outputMp3.getAbsolutePath();
-		if (outputFilename.contains(" ")) {
-			outputFilename = "\"" + outputFilename + "\"";
-		}
-		
+				
 		String cmd[] = {
 				lameCommand,
 				"--quiet", "-h", "-m", "m", "-a", "-cbr", "-b", "32", "--resample", "22.50",
 				inputFilename,
 				outputFilename
 				};
+		
 		int exitVal = Command.execute(cmd);
 		if (exitVal != 0) {
-			System.err.println("Unable to encode using the following command:");
-			System.err.println(cmd.toString());
+			String str = "";
+			for (int i = 0; i < cmd.length; i++) {
+				str += " " + cmd[i];
+			}
+			System.err.println("Unable to encode using lame:");
+			System.err.println(str);
 			System.err.println("Exit value: " + exitVal);
 			System.exit(1);
 		}
