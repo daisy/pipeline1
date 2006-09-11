@@ -1,3 +1,22 @@
+/*
+ * DMFC - The DAISY Multi Format Converter
+ * Copyright (C) 2006  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package se_tpb_filesetcreator;
 
 
@@ -31,26 +50,45 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+/**
+ * A class making the <tt>.opf</tt> file for a z39.86 fileset.
+ * 
+ * @author Martin Blomberg
+ *
+ */
 public class OPFMaker {
 	
-	private Map mimeTypes;
-	private Map dcElements;
-	private Map metaData;
-	private Vector smils;
-	private Set generatedFiles;
-	private Set referredFiles;
-	private Set validDCElemNames = new HashSet();
-	private File opfTemplateFile;
-	private File opfOutputFile;
-	private Vector ids = new Vector();
+	public static String DEBUG_PROPERTY = "org.daisy.debug";	// the system property used to determine if we're in debug mode or not
 	
-	private Document opf;
-	private DocumentBuilder documentBuilder;
-	private int id;
-	private boolean DEBUG = false;
-	private String doctypePublic = "+//ISBN 0-9673008-1-9//DTD OEB 1.2 Package//EN";
-	private String doctypeSystem = "http://openebook.org/dtds/oeb-1.2/oebpkg12.dtd";
+	private Map mimeTypes;							// maps filename suffix to mime type for valid file types.
+	private Map dcElements;							// a MultiHashMap containing dc elements and their values.
+	private Map metaData;							// meta data container, such as total time, media content etc.
+	private Vector smils;							// the smil files names in order.
+	private Set generatedFiles;						// files generated during file set creation.
+	private Set referredFiles;						// files referred in other ways, e.g images.
+	private Set validDCElemNames = new HashSet();	// valid dc elements for the opf.
+	private File opfTemplateFile;					// the opf template
+	private File opfOutputFile;						// output location of the generated opf
+	private Vector ids = new Vector();				// opf file ids.
 	
+	private Document opf;							// the opfd beeing costructed
+	private int id;									// id making use of a simple counter
+	private String doctypePublic = "+//ISBN 0-9673008-1-9//DTD OEB 1.2 Package//EN";	// doctype public for the generated opf
+	private String doctypeSystem = "http://openebook.org/dtds/oeb-1.2/oebpkg12.dtd";	// doctype system for the generated opf
+	
+	/**
+	 * 
+	 * @param mimeTypes	the mapping between filename suffix and mime type.
+	 * @param dcElements a mapping between dc element name and a collection of values.
+	 * @param metaData a mapping between meta data element names and their values.
+	 * @param smils the smil file names in proper sequence.
+	 * @param generatedFiles names of all files generated during file set creation.
+	 * @param referredFiles names of files referred from the dtbook.
+	 * @param opfTemplate the opf template file.
+	 * @param opfOutputFile the location for the generated opf file.
+	 * @param inputDir the directory where input dtbook and files reside.
+	 * @throws CatalogExceptionNotRecoverable
+	 */
 	public OPFMaker(
 			Map mimeTypes, 
 			Map dcElements, 
@@ -60,7 +98,7 @@ public class OPFMaker {
 			Set referredFiles, 
 			File opfTemplate, 
 			File opfOutputFile, 
-			File inputDir) throws ParserConfigurationException, CatalogExceptionNotRecoverable {
+			File inputDir) throws CatalogExceptionNotRecoverable {
 		
 		this.mimeTypes = mimeTypes;
 		this.dcElements = dcElements;
@@ -70,16 +108,9 @@ public class OPFMaker {
 		this.referredFiles = referredFiles;
 		this.opfTemplateFile = opfTemplate;
 		this.opfOutputFile = opfOutputFile;
-		//this.outputDir = opfOutputFile.getParentFile();
 	
-		DocumentBuilderFactory dfb = DocumentBuilderFactory.newInstance();
-		documentBuilder = dfb.newDocumentBuilder();
-		documentBuilder.setEntityResolver(CatalogEntityResolver.getInstance());
 		
-		for (Iterator it = this.generatedFiles.iterator(); it.hasNext(); ) {
-			DEBUG("additionalFile: " + it.next());
-		}
-		
+				
 		// as of the z39.86 spec:
 		validDCElemNames.add("dc:Title");
 		validDCElemNames.add("dc:Creator");
@@ -99,15 +130,22 @@ public class OPFMaker {
 		
 	}
 	
-	public void makeOPF() throws SAXException, IOException, TransformerException {
-		DEBUG("makeOPF");
+	/**
+	 * Starting point for making the OPF.
+	 * 
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws TransformerException
+	 * @throws ParserConfigurationException 
+	 */
+	public void makeOPF() throws SAXException, IOException, TransformerException, ParserConfigurationException {
+		DEBUG("OPFMaker#makeOPF(): starting...");
 		parseTemplate();
 		makeDCElements();
-		makeMetaElements(metaData);
+		makeMetaElements();
 		makeManifest();
 		makeSpine();
-		DEBUG(opf);
-		DEBUG("utfilen: " + opfOutputFile);
+		DEBUG("OPFMaker#makeOPF() output file: " + opfOutputFile);
 		outputOpf();
 	}
 	
@@ -137,7 +175,7 @@ public class OPFMaker {
 		// smil files, make sure IDs are saved in proper sequence
 		for (Iterator it = smils.iterator(); it.hasNext(); ) {
 			Object temp = it.next();
-			DEBUG("makeManifest: " + temp);
+			DEBUG("OPFMaker#makeManifest(): " + temp);
 			File currentFile = new File((String) temp);
 			String id = getNextId("smil-");
 			ids.add(id);
@@ -185,6 +223,7 @@ public class OPFMaker {
 		for (Iterator collIt = dcElements.keySet().iterator(); collIt.hasNext(); ) {
 			String originalStr = (String) collIt.next();
 			
+			// sort out the prefix:elemname, e.g "dc:Creator"
 			String elemName = originalStr;
 			String prefix = "";
 			String delim = "";
@@ -203,17 +242,20 @@ public class OPFMaker {
 				continue;
 			}
 			
-			// user defined default value present, discard defaults
+			
+			// get the default value (if any!) for the current dc-element (what's present in the opf template) 
 			Node tmp = XPathUtils.selectSingleNode(opf.getDocumentElement(), "/package/metadata/dc-metadata/" + elemName);
 			if (null != tmp) {
+				// user defined default value present, discard defaults
 				tmp.getParentNode().removeChild(tmp);
 			}
 			
+			// for each value for the key "dc:Something", add an element to the opf.
 			Collection dcVals = (Collection) dcElements.get(originalStr);
 			for (Iterator it = dcVals.iterator(); it.hasNext(); ) { 
 				String originalValue = (String) it.next();
 				Element elem = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/package/metadata/dc-metadata/" + elemName);
-				DEBUG(prefix + delim + elemName + "\t" + originalValue/*dcElements.get(originalStr)*/);
+				DEBUG("OPFMaker#makeDCElements() " + prefix + delim + elemName + "\t" + originalValue/*dcElements.get(originalStr)*/);
 				if (null == elem || elem.getTextContent().trim().length() != 0) {
 					elem = opf.createElement(prefix + delim + elemName);
 					Element parent = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/package/metadata/dc-metadata");
@@ -236,7 +278,7 @@ public class OPFMaker {
 	 * Adds the metadata, such as total time, media content etc.
 	 * @param metaData
 	 */
-	private void makeMetaElements(Map metaData) {
+	private void makeMetaElements() {
 		Element xMeta = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "//x-metadata");
 		for (Iterator it = metaData.keySet().iterator(); it.hasNext(); ) {
 			
@@ -259,13 +301,13 @@ public class OPFMaker {
 	 */
 	private String getMimeType(String filename) {
 		if (filename.indexOf('.') == -1) {
-			throw new IllegalArgumentException("Filnamnen måste ha ett suffix för att det ska gå att avgöra dess mime-typ: " + filename);
+			throw new IllegalArgumentException("Filenames must end with a '.' followed by a valid suffix in order to determine mime type: " + filename);
 		}
 		
 		String suffix = filename.substring(filename.lastIndexOf('.'));
 		String mime = (String) mimeTypes.get(suffix);
 		if (null == mime) {
-			throw new IllegalArgumentException("Ogiltig filändelse: " + mime);
+			throw new IllegalArgumentException("Illegal filename suffix: " + mime);
 		}
 		
 		return mime;
@@ -276,9 +318,13 @@ public class OPFMaker {
 	 * Parses the opf-template.
 	 * @throws SAXException
 	 * @throws IOException
+	 * @throws ParserConfigurationException 
 	 */
-	private void parseTemplate() throws SAXException, IOException {
-		DEBUG("parseTemplate");
+	private void parseTemplate() throws SAXException, IOException, ParserConfigurationException {
+		DEBUG("OPFMaker#parseTemplate()");
+		DocumentBuilderFactory dfb = DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilder = dfb.newDocumentBuilder();
+		documentBuilder.setEntityResolver(CatalogEntityResolver.getInstance());
 		opf = documentBuilder.parse(opfTemplateFile);
 	}
 	
@@ -322,20 +368,34 @@ public class OPFMaker {
 		fis.close();
 	}
 
+	
+	/**
+	 * Prints debug messages to System.out. The messages are prefixed with 
+	 * <tt>DEBUG:</tt>. Messages are printed out iff the system property
+	 * <tt>org.daisy.debug</tt> is defined.
+	 * @param msg The message.
+	 */
 	private void DEBUG(String msg) {
-		if (DEBUG) {
-			System.err.println("debug: " + msg);
+		if (System.getProperty(DEBUG_PROPERTY) != null) {
+			System.out.println("DEBUG: " + msg);
 		}
 	}
 	
+	
+	
+	/**
+	 * Prints the xml content of thge document <tt>d</tt> to System.out iff
+	 * the system property <tt>org.daisy.debug</tt> is defined.
+	 * @param d the document.
+	 */
 	private void DEBUG(Document d) {
-		if (DEBUG) {
+		if (System.getProperty(DEBUG_PROPERTY) != null) {
 			try {
 				TransformerFactory xformFactory = TransformerFactory.newInstance();  
 				javax.xml.transform.Transformer idTransform = xformFactory.newTransformer();
 				idTransform.setOutputProperty(OutputKeys.INDENT, "yes");
 				Source input = new DOMSource(d);
-				Result output = new StreamResult(System.err);
+				Result output = new StreamResult(System.out);
 				idTransform.transform(input, output);
 			} catch (TransformerConfigurationException e) {
 				e.printStackTrace();

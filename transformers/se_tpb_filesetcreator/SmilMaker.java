@@ -1,3 +1,22 @@
+/*
+ * DMFC - The DAISY Multi Format Converter
+ * Copyright (C) 2006  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package se_tpb_filesetcreator;
 
 import java.io.File;
@@ -54,67 +73,92 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 
-
 /**
+ * A class making <tt>.smil</tt> files given a dtbook document modified in a 
+ * certain way. 
+ * 
+ * Expected input is the dtbook document enriched with smil attributes on those 
+ * elements containing audio. The output is not considered "valid" output in any 
+ * other sense, than as input the NCXMaker.
+ * 
+ * The class is only used internaly from the class 
+ * <tt>se_tpb_filesetcreator.FileSetCreator</tt>, main class of the transformer
+ * File Set Creator
+ * 
  * @author Martin Blomberg
  *
  */
 public class SmilMaker implements AbortListener {
 	
-	private BookmarkedXMLEventReader reader;
-	private XMLEventWriter writer;
-	private XMLEventFactory eventFactory;
-	private XMLOutputFactory outputFactory;
-		
-	private Set skippable;
-	private Set ecapable;
-	private Set headings;
-	private Set forceLink = new HashSet();
-	private Set otherEncounteredFiles = new HashSet();
+	public static String DEBUG_PROPERTY = "org.daisy.debug";	// the system property used to determine if we're in debug mode or not
 	
-	private Set currentlySkipped = new HashSet();
-	private Set totalSkipped = new HashSet();
-	private Map forceLinks = new HashMap();
+	private BookmarkedXMLEventReader reader;		// reader pointed to the input document
+	private XMLEventWriter writer;					// writes the (possibly) modified input document
+	private XMLEventFactory eventFactory;			// factory for the modified stax events
+	private XMLOutputFactory outputFactory;			// factory building the stax output writer
+	private DocumentBuilder documentBuilder;		// parses the smil template over and over again
+
+	private File outputDirectory;					// directory in which to write smil files
+	private File smilTemplateFile;					// the location of the smil template file
+
+	private Vector smilTrees = new Vector();		// container of almost (link rumble may still be left) finished smil files represented as DOM.
+	private Vector smilFiles = new Vector();		// container of Files, smilFiles.get(i) represents smilTrees.get(i)
 	
-	private File outputDirectory;
-	private File smilTemplateFile;
-	private boolean DEBUG = false;
+	private int smilId;								// generator for smil file element ids making use of a simple counter
+	private int dtbid;								// generator for dtb file element ids making use of a simple counter
 	
-	private Document currentSmil;	
-	private Stack openSeqs = new Stack();
+	private Set skippable;							// names of skippable elements
+	private Set ecapable;							// names of escapable elements
+	private Set headings;							// names of heading elements
+	private Set forceLink = new HashSet();			// mapping between element names of ref->content (e.g noteref->note)
+	private Set otherEncounteredFiles = new HashSet();	// names of encountered files, such as images.
 	
-	private String smilClipBegin = "clipBegin";
-	private String smilClipEnd = "clipEnd";
-	private String smilSrc = "src";
+	private Set currentlySkipped = new HashSet();	// names of present skippable elements in the current smil
+	private Set totalSkipped = new HashSet();		// names of present skippable elements in all smils
 	
-	private String tempLinkId = "tempLinkId";
+	private Document currentSmil;					// the current smil	
+	private Stack openSeqs = new Stack();			// stack keeping track of which seq in the current smil to append children to
 	
-	private DocumentBuilder documentBuilder;
-	private int smilId;
-	private int dtbid;
+	private String smilClipBegin = "clipBegin";		// name of smil attribute
+	private String smilClipEnd = "clipEnd";			// name of smil attribute
+	private String smilSrc = "src";					// name of smil attribute
+	private String tempLinkId = "tempLinkId";		// name of temporary attribute for force link elements
 	
-	private Vector smilTrees = new Vector();
-	private Vector smilFiles = new Vector();
+	private String currentAudioFilename;			// name of the current audio file
+	private String finalDTBookFilename;				// name of the final dtbook file
+	private boolean newSmilIncoming = false;		// whether next sync point's corresponding audio is in a file other than currentAudioFilename 
+	private long totalTime;							// total duration of this book.
 	
-	private String currentAudioFilename;
-	private String finalDTBookFilename;
-	private boolean newSmilIncoming = false;
-	private long totalTime;
+	private Vector generatedFiles = new Vector();	// names of all generated (smil) files
+	private File manuscriptOutputFile;				// the location to which the modified input document should be written
+	private String uid;								// the id of this book
 	
-	private Vector generatedFiles = new Vector();
-	private File manuscriptOutputFile;
-	private String uid;
-	private String doctypePublic = "-//NISO//DTD dtbsmil 2005-1//EN";
-	private String doctypeSystem = "http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd";
-	private Object smilNamespaceURI = "http://www.w3.org/2001/SMIL20/";
-	private Map smilFileMapping = new HashMap();
-	private ProgressObserver obs;
-	private int numSmilFiles;
-	private double noteRumbleTimeProportion = 0.825;
+	private String smilDoctypePublic = "-//NISO//DTD dtbsmil 2005-1//EN";					// doctype public of output smil
+	private String smilDoctypeSystem = "http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd";// doctype system of output smil
+	private String smilNamespaceURI = "http://www.w3.org/2001/SMIL20/";						// namespace for the smil elements
 	
-	private FileSetCreator checkAbortCallBack;
+	private Map smilFileMapping = new HashMap();		// used for mapping element id to file
+	private ProgressObserver obs;						// ProgressObserver: a component to report progress to, used for ui.
+	private int numSmilFiles;							// the expected number of generated smil files, used for progress reporting
+	private double noteRumbleTimeProportion = 0.825;	// the proprtion of this program's time used for inserting extra force link targets
+	
+	private FileSetCreator checkAbortCallBack;			// component throwing an exception if the user has aborted the run
 	
 	
+	/**
+	 * @param inputManuscript the input file to read
+	 * @param outputDir	the dir in which to place generated smil files
+	 * @param smilTemplate	the smil template file
+	 * @param skippable	set of names of skippable elements
+	 * @param escapable	set of names of escapable elements
+	 * @param forceLink	set of names of elements supposed to be link to be their referrers
+	 * @param obs	a progress observer
+	 * @param fsc	a file set creator, used for polling the ui: did user interrupt?
+	 * @throws FileNotFoundException
+	 * @throws XMLStreamException
+	 * @throws ParserConfigurationException
+	 * @throws CatalogExceptionNotRecoverable
+	 */
 	SmilMaker(
 			File inputManuscript, 
 			File outputDir, 
@@ -144,7 +188,7 @@ public class SmilMaker implements AbortListener {
 			if (!outputDirectory.exists()) {
 				outputDirectory.mkdirs();
 			} else {
-				throw new IllegalArgumentException("Output directory is not a directory; \"" 
+				throw new IllegalArgumentException("Output path is not a directory; \"" 
 					+ outputDirectory.getAbsolutePath()
 					+ "\"");
 			}
@@ -154,6 +198,8 @@ public class SmilMaker implements AbortListener {
 		this.skippable = skippable;
 		this.ecapable = escapable;
 		
+		// until we have a context aware bookmarked xml event reader, 
+		// narrator will treat h1-h6 as valid headings. Not hd.
 		this.headings = new HashSet();
 		headings.add("h1");
 		headings.add("h2");
@@ -170,7 +216,11 @@ public class SmilMaker implements AbortListener {
 		this.forceLink.addAll(forceLink);
 		this.obs = obs;
 		this.checkAbortCallBack = fsc;
+		
 	}
+
+
+	
 	
 	
 	/**
@@ -224,14 +274,13 @@ public class SmilMaker implements AbortListener {
 	 * @throws XMLStreamException
 	 */
 	private Map getSmilContext(StartElement se) throws XMLStreamException {
-		DEBUG("NCXMaker:getSmilContext");
 		if (!hasSmilAttributes(se)) {
 			return null;
 		}
 		
 		Map attributes = new HashMap();
 		
-		DEBUG(se);
+		//DEBUG(se);
 		for (Iterator it = se.getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
 			attributes.put(at.getName().getLocalPart(), at.getValue());
@@ -274,10 +323,16 @@ public class SmilMaker implements AbortListener {
 	}
 	
 	
+	/**
+	 * Starting point for generating smil files.
+	 * 
+	 * @throws TransformerException
+	 * @throws TransformerRunException
+	 * @throws IOException
+	 */
 	public void makeSmils() throws TransformerException, TransformerRunException, IOException {
 		
 		try {
-			
 			uid = getUid(reader);
 			startNewSmil(reader);
 			
@@ -354,6 +409,11 @@ public class SmilMaker implements AbortListener {
 	}
 
 
+	/**
+	 * Closes the open streams.
+	 * 
+	 * @throws XMLStreamException
+	 */
 	private void closeStreams() throws XMLStreamException {
 		writer.flush();
 		writer.close();
@@ -425,6 +485,7 @@ public class SmilMaker implements AbortListener {
 	 *
 	 */
 	private void rearrangeForceLinkElems() throws TransformerAbortException {
+		Map forceLinks = new HashMap();
 		// for each genereated smil DOM
 		for (Iterator it = smilTrees.iterator(); it.hasNext(); ) {
 			Document curr = (Document) it.next();
@@ -449,7 +510,10 @@ public class SmilMaker implements AbortListener {
 			// for each reference to "linkTarget"
 			for (Iterator smilIt = smilTrees.iterator(); smilIt.hasNext(); ) {
 				Document curr = (Document) smilIt.next();
-				NodeList linkSrcs = XPathUtils.selectNodes(curr.getDocumentElement(), "//par[@idref='" + elemId + "']");
+				// Martin Blomberg 2006-09-11:
+				// handling of 2005-1 and 2005-2 different idref types.
+				String xPath = "//par[@idref=translate('" + elemId + "', '#', '')]";
+				NodeList linkSrcs = XPathUtils.selectNodes(curr.getDocumentElement(), xPath);
 				
 				for (int i = 0; i < linkSrcs.getLength(); i++) {
 					Element linkSrc = (Element) linkSrcs.item(i);
@@ -582,7 +646,7 @@ public class SmilMaker implements AbortListener {
 		String id = getLastChildTCId(elem);
 		elem.setAttribute("end", "DTBuserEscape;" + id + ".end");
 		Node nextSibling = elem.getNextSibling();
-		DEBUG("id{" + id + "}s syskon: " + nextSibling);
+		DEBUG("id{" + id + "}s sibling: " + nextSibling);
 	}
 	
 	
@@ -704,12 +768,13 @@ public class SmilMaker implements AbortListener {
 		}
 		
 		if (isSkippable(se)) {
-			skipStructure(parElement, se);
+			makeSkippable(parElement, se);
 		}
 		
 		parElement.setAttribute("id", parId);
 		// noteref -> note, annoref -> annotation
 		if (null != idRef) {
+			idRef = idRef.replaceAll("#", "");
 			parElement.setAttribute("idref", idRef);
 		}
 		parentSeqElement.appendChild(parElement);
@@ -760,7 +825,7 @@ public class SmilMaker implements AbortListener {
 	}
 
 	/**
-	 * Opens a seq in the current dom. The new seq will be a child
+	 * Opens a seq in the current smil dom. The new seq will be a child
 	 * of the last opened, but not yet closed, seq.
 	 * @param reader a reader to the input file.
 	 * @param se the start element of the structure the seq will represent.
@@ -790,7 +855,7 @@ public class SmilMaker implements AbortListener {
 		
 		// skippable structure?
 		if (isSkippable(se)) {
-			skipStructure(newSeq, se);
+			makeSkippable(newSeq, se);
 		}
 		
 		// attach the newly created seq element to the tree
@@ -823,7 +888,6 @@ public class SmilMaker implements AbortListener {
 		if (seq.getChildNodes().getLength() == 0) {
 			seq.getParentNode().removeChild(seq);
 		} else if (escapable) {
-			//seq.setAttribute("end", "DTBuserEscape;" + latestParId + ".end");
 			Element lastChild = (Element) seq.getLastChild();
 			seq.setAttribute("end", "DTBuserEscape;" + lastChild.getAttribute("id") + ".end");
 		}
@@ -908,9 +972,11 @@ public class SmilMaker implements AbortListener {
 	 * @throws XMLStreamException
 	 */
 	private void startNewSmil(BookmarkedXMLEventReader reader) throws ParserConfigurationException, SAXException, IOException, TransformerRunException, TransformerException, XMLStreamException {
-		DEBUG("startNewSmil");
+		// reporting to UI
 		obs.reportProgress(((double) smilFiles.size() / numSmilFiles) * (1 - noteRumbleTimeProportion));
+		// have we been aborted?
 		checkAbortCallBack.checkTransformerAborted();
+		
 		if (null == currentAudioFilename) {
 			String src = getNextSmilSrc(reader);
 			setCurrentAudioFile(src);
@@ -930,7 +996,6 @@ public class SmilMaker implements AbortListener {
 		smilTrees.add(currentSmil);
 		smilFiles.add(getSmilFile());
 		generatedFiles.add(getSmilFile().getName());
-		DEBUG("sparade filen: " + getSmilFile());
 	}
 
 	
@@ -999,13 +1064,13 @@ public class SmilMaker implements AbortListener {
 	
 	
 	/**
-	 * Returns <code>true</code> if the next synch point encountered in the input
+	 * Returns <code>true</code> if the next sync point encountered in the input
 	 * document is in a different level from the one last read (and hence should be 
 	 * in a different smil file), <code>false</code> otherwise.
 	 * If there is a change of audio file, the vaiable <code>currentAudioFilename</code>
 	 * will be changed to the new filename.
 	 * @param reader a for the input document
-	 * @return <code>true</code> if the next synch point encountered in the input
+	 * @return <code>true</code> if the next sync point encountered in the input
 	 * document is in a different level from the one last read (and hence should be 
 	 * in a different smil file), <code>false</code> otherwise.
 	 * @throws XMLStreamException
@@ -1045,8 +1110,8 @@ public class SmilMaker implements AbortListener {
 		TransformerFactory xformFactory = TransformerFactory.newInstance();  
 		javax.xml.transform.Transformer idTransform = xformFactory.newTransformer();
 		idTransform.setOutputProperty(OutputKeys.INDENT, "yes");
-		idTransform.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctypePublic);
-		idTransform.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctypeSystem);
+		idTransform.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, smilDoctypePublic);
+		idTransform.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, smilDoctypeSystem);
 		Source input = new DOMSource(document);
 		FileOutputStream fos = new FileOutputStream(location);
 		Result output = new StreamResult(fos);
@@ -1126,7 +1191,6 @@ public class SmilMaker implements AbortListener {
 		openSeqs.push(linkElement);
 		
 		linkElement.setAttribute("href", href);
-		DEBUG("----------handleLinkSource (" + href + ")");
 	}
 	
 	
@@ -1150,7 +1214,6 @@ public class SmilMaker implements AbortListener {
 		openSeqs.push(linkTarget);
 		linkTarget.setAttribute("id", linkTargetId);
 		smilFileMapping.put(linkTargetId, getCurrentSmilFilename());
-		DEBUG("--------handleLinkTarget(" + linkTargetId + ")");
 	}
 	
 	
@@ -1199,7 +1262,7 @@ public class SmilMaker implements AbortListener {
 	 * @param e the smil DOM element.
 	 * @param se the StartElement from the input document.
 	 */
-	private void skipStructure(Element e, StartElement se) {
+	private void makeSkippable(Element e, StartElement se) {
 		String elemName = se.getName().getLocalPart();
 		e.setAttribute("customTest", elemName);
 		currentlySkipped.add(elemName);
@@ -1304,12 +1367,14 @@ public class SmilMaker implements AbortListener {
 	
 	
 	/**
-	 * Prints debug messages on System.err if <code>DEBUG == true</code>
-	 * @param msg the message to output.
+	 * Prints debug messages on System.out iff the system property 
+	 * represented by <tt>SmilMaker.DEBUG_PROPERTY</tt> is defined.
+	 * Debug messages are prefixed with "<tt>DEBUG: </tt>".
+	 * @param msg the message.
 	 */
 	private void DEBUG(String msg) {
-		if (DEBUG) {
-			System.err.println("SmilMaker: " + msg);
+		if (System.getProperty(DEBUG_PROPERTY) != null) {
+			System.out.println("DEBUG: " + msg);
 		}
 	}
 	

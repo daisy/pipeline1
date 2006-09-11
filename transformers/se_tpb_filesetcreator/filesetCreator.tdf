@@ -1,7 +1,7 @@
 <transformer version="1.0">
 	<name>Fileset Creator</name>
 	<description>
-		Creates a z3986 fileset given input such as the output from SpeechGenerator.
+		Creates a z39.86-2005 fileset given input such as the output from se_tpb_speechgenerator.
 	</description>
 	<classname>se_tpb_filesetcreator.FileSetCreator</classname>
 	<license>LGPL</license>

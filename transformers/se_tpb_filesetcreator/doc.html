@@ -39,7 +39,7 @@ that end users may come in contact with that information. -->
 
 <h2 id="purpose">Transformer Purpose</h2>
 <!-- brief summary of purpose -->
-<p>Generates a z39.86-2005 fileset, given a dtbook-2005-1 document enriched with
+<p>Generates a z39.86-2005 fileset, given a dtbook-2005-1 or dtbook-2005-2 document enriched with
 the attributes <tt>smil:clipBegin</tt>, <tt>smil:clipEnd</tt> and <tt>smil:src</tt>, 
 namespace URI <tt>http://www.w3.org/2001/SMIL20/</tt>,
 on elements with corresponding audio.</p>
@@ -49,7 +49,7 @@ on elements with corresponding audio.</p>
 <h2 id="inputReqs">Input Requirements</h2>
 <!-- contract definition: detailed requirements on input nature -->
 	<p>This transformer is written to work with a <i>manuscript</i>, that is a
-	dtbook-2005-1 document enriched with, among others, attributes indicating 
+	dtbook-2005-1 or dtbook-2005-2 document enriched with, among others, attributes indicating 
 	corresponding audio. Those attributes, <tt>smil:clipBegin</tt>, 
 	<tt>smil:clipEnd</tt> and <tt>smil:src</tt>, namespace URI 
 		<tt>http://www.w3.org/2001/SMIL20/</tt>, point out which elements should
@@ -157,10 +157,10 @@ then throw an exception and abort.</p>
 	
 	<h3 id="extConfig">Extended configurability</h3>
 	<!-- details on additional config files, system variables etc -->
-	<p>The file pointed to by the tdf variable fscConfigFilename provides the possiblility to affect 
+	<p>The file pointed to by the tdf variable fscConfigFilename provides the possibility to affect 
 		the book structure. Things like which elements are supposed to be in the ncx <tt>navList</tt>,
 	which elements are supposed to be skippable or escapable, and so on, are configured there.
-	A description of the possiblities follows:</p>
+	A description of the possibilities follows:</p>
 	
 	<dl>
 		<dt><tt>fscConfig/navListHeading/item</tt></dt>

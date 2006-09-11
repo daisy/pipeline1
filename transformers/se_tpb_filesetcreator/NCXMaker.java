@@ -1,3 +1,22 @@
+/*
+ * DMFC - The DAISY Multi Format Converter
+ * Copyright (C) 2006  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package se_tpb_filesetcreator;
 
 import java.io.File;
@@ -56,54 +75,64 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+
+/**
+ * A class constructing the NCX file of a z39.86 fileset, given appropriate
+ * input, such as the output of SmilMaker.
+ * 
+ * @author Martin Blomberg
+ *
+ */
 public class NCXMaker implements AbortListener {
 
-	private Set navListHeadings;
-	private Set levels = new HashSet();
-	private Set customNavList = new HashSet();
-	private Map usedCustomNavLists = new HashMap();
-	private Set customTests;
+	public static String DEBUG_PROPERTY = "org.daisy.debug";	// the system property used to determine if we're in debug mode or not
+	
+	private Set navListHeadings;							// heading element names
+	private Set levels;										// level element names
+	private Set customNavList;								// names of elements which should be given a cusom navlist
+	private Map usedCustomNavLists = new HashMap();			// names of elements with a populated custom navlist
+	private Set customTests;								// names of the elements with custom test
 
-	private HashMap smilPlayorder = new HashMap();
-	private Map dcElements = new MultiHashMap(false); //HashMap();
+	private HashMap smilPlayorder = new HashMap();			// a mapping smilref->playorder
+	private Map dcElements = new MultiHashMap(false); 		// mapping dc:elementname->(collection of values)
 	
-	private Document ncxTemplate;
-	private Stack openLevels = new Stack();
-	private ContextStack contextStack = new ContextStack();
+	private Document ncxTemplate;							// the ncx template file
+	private Stack openLevels = new Stack();					// stack keeping track of the open levels, add new ones to the one on top.
+	private ContextStack contextStack = new ContextStack();	// keeping track of xml content. Mainly to recognize level/hd instead of sidebar/hd
 	
-	private BookmarkedXMLEventReader reader;
-	private XMLOutputFactory outputFactory;
-	private XMLEventFactory eventFactory;
-	private XMLEventWriter writer;
-	private File dtbookOutputFile;
-	private File ncxOutputFile;
+	private BookmarkedXMLEventReader reader;				// a reader pointed to the input document - a modified dtbook
+	private XMLEventFactory eventFactory;					// creates stax events for the otuput of the dtbook document
+	private XMLEventWriter writer;							// writes the dtbook document to file
+	private File dtbookOutputFile;							// the output location of the dtbook
+	private File ncxOutputFile;								// the output location of the ncx file
+	
+	private int playorder;									// the playorder counter
+	private int ncxId;										// ncx id making use of a simple counter
+	private int depth;										// keeps track of the deepest (xml-wise) structure in this book
+	private int pageCount;									// the number of pages
+	private String strPageMax = "0";						// the value of the greatest page number seen so far
+	private String uid;										// the dtbook uid
+	private Map bookStructs;								// mapping between element names and book structs.
+	
+	private String smilClipBegin = "clipBegin";				// smil attribute
+	private String smilClipEnd = "clipEnd";					// smil attribute
+	private String smilSrc = "src";							// smil attribute
+	private String smilRef = "smilref";						// dtbook smil reference
+	
+	private String dtbookVersion;							// the dtbook version, i.e. 2005-1 or 2005-2.
+	private String dtbookDoctypeStr_2005_1 = 				// dtbook 2005-1 version doctype
+		"<!DOCTYPE dtbook PUBLIC \"-//NISO//DTD dtbook 2005-1//EN\" \"http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd\">";
+	private String dtbookDoctypeStr_2005_2 = 				// dtbook 2005-2 version doctype
+		"<!DOCTYPE dtbook PUBLIC \"-//NISO//DTD dtbook 2005-2//EN\" \"http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd\">";
+	private String dtbookNamespaceURI = "http://www.daisy.org/z3986/2005/dtbook/";		// dtbook namespace
+	private String smilNamespaceURI = "http://www.w3.org/2001/SMIL20/";					// smil namespace
+	private String ncxDoctypePublic = "-//NISO//DTD ncx 2005-1//EN";					// ncx doctype public
+	private String ncxDoctypeSystem = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";	// ncx doctype system
 
-	private boolean DEBUG = false;
-	private int playorder;
-	private int ncxId;
-	private int depth;
-	private int pageCount;
-	private String strPageMax = "0";
-	private String uid;
-	private String author;
-	private String title;
-	private Map bookStructs;
+	private int numElements;								// number of elements to process, used for detailed progress reports
+	private ProgressObserver progressObserver;				// a component to report progress to
+	private FileSetCreator checkAbortCallBack;				// FileSetCreator, lets one know if user has aborted the run
 	
-	private String smilClipBegin = "clipBegin";
-	private String smilClipEnd = "clipEnd";
-	private String smilSrc = "src";
-	private String smilRef = "smilref";
-	
-	private String dtbookDoctypeStr = "<!DOCTYPE dtbook PUBLIC \"-//NISO//DTD dtbook 2005-1//EN\" \"http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd\">";
-	private String dtbookNamespaceURI = "http://www.daisy.org/z3986/2005/dtbook/";
-		
-	private String smilNamespaceURI = "http://www.w3.org/2001/SMIL20/";
-	
-	private String ncxDoctypePublic = "-//NISO//DTD ncx 2005-1//EN";
-	private String ncxDoctypeSystem = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
-	private int numElements;
-	private ProgressObserver progressObserver;
-	private FileSetCreator checkAbortCallBack;
 	
 	/**
 	 * @param inputFile the input document.
@@ -128,8 +157,7 @@ public class NCXMaker implements AbortListener {
 			ProgressObserver obs,
 			FileSetCreator checkAbortCallBack) throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
 				
-		outputFactory = XMLOutputFactory.newInstance();
-		outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
+		
 		eventFactory = XMLEventFactory.newInstance();
 		
 		this.navListHeadings = navListHeadings;
@@ -153,6 +181,9 @@ public class NCXMaker implements AbortListener {
 		numElements = countElements(reader);
 		reader.close();
 		reader = getBookmarkedXMLEventReader(inputFile);
+		
+		// get the dtbook version (-1/-2) to be able to output the correct doctype.
+		dtbookVersion = checkAbortCallBack.getDTBookVersion(inputFile);
 	}
 	
 	
@@ -173,6 +204,25 @@ public class NCXMaker implements AbortListener {
 	
 	
 	/**
+	 * Returns an XMLEventWriter pointed to the file <tt>outputFile</tt>. The 
+	 * writer has the property <tt>XMLOutputFactory.IS_REPAIRING_NAMESPACES</tt>
+	 * set to the value <tt>Boolean.FALSE</tt>.
+	 * 
+	 * @param outputFile the file to which content will be written.
+	 * @param encoding the preferred output encoding.
+	 * @return an XMLEventWriter pointed to the file <tt>outputFile</tt>.
+	 * @throws FileNotFoundException
+	 * @throws XMLStreamException
+	 */
+	private XMLEventWriter getXMLEventWriter(File outputFile, String encoding) throws FileNotFoundException, XMLStreamException {
+		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+		outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
+		XMLEventWriter xew = outputFactory.createXMLEventWriter(new FileOutputStream(outputFile), encoding);
+		return xew;
+	}
+	
+	
+	/**
 	 * Returns the number of <code>XMLEvents</code> raised reading the complete file.
 	 * @param reader a reader to read from.
 	 * @return the number of <code>XMLEvents</code> raised reading the complete file.
@@ -186,6 +236,7 @@ public class NCXMaker implements AbortListener {
 		}
 		return elemCounter;
 	}
+	
 	
 	/**
 	 * Creates <code>navList</code>s in the ncx for the elements pointed out as custom navlist elements.
@@ -227,8 +278,7 @@ public class NCXMaker implements AbortListener {
 		return elemName + "-navList";
 	}
 	
-	// för att undvika id-krockar 
-	// (<customTest id="sidebar"/>, <navlist id="sidebar"/> blir ju annars inte så bra..)
+	
 	/**
 	 * Returns a name for the element name <code>elemName</code> to be used as
 	 * the name of the corresponding <code>navList</code>. That is to avoid 
@@ -245,7 +295,7 @@ public class NCXMaker implements AbortListener {
 	
 	
 	/**
-	 * The main loop. Reads the manuscript file and takes different actions depending on which element is read.
+	 * The main loop. Reads the manuscript file and takes different actions depending on what element is read.
 	 * 
 	 * @throws XMLStreamException
 	 * @throws TransformerRunException
@@ -257,10 +307,10 @@ public class NCXMaker implements AbortListener {
 	public void makeNCX() throws XMLStreamException, TransformerRunException, ParserConfigurationException, SAXException, IOException, TransformerException {
 		
 		DEBUG(ncxTemplate);
-		DEBUG("docElem: " + ncxTemplate.getDocumentElement());
+		DEBUG("NCXMaker#makeNCX: docElem: " + ncxTemplate.getDocumentElement());
 		Element navMap = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//navMap[@id='navMap']");
-		DEBUG("navMap:  " + navMap);
-		DEBUG("docElem: " + ncxTemplate.getDocumentElement());
+		DEBUG("NCXMaker#makeNCX: navMap:  " + navMap);
+		DEBUG("NCXMaker#makeNCX: docElem: " + ncxTemplate.getDocumentElement());
 		openLevels.push(navMap);
 		recordMaxDepth();
 		int elemCounter = 0;
@@ -304,23 +354,27 @@ public class NCXMaker implements AbortListener {
 			} else if (event.isEndElement()) {
 				
 				if (isLevelChange(event.asEndElement())) {
-					DEBUG("Poppar stacken med levlar, från " + openLevels.size() + " till " + (openLevels.size()-1));
-					DEBUG("Elementet: " + event.asEndElement().getName().getLocalPart());
 					openLevels.pop();
 				}
 				
 			} else if (event.isStartDocument()) {
 				StartDocument sd = (StartDocument)event;
-				DEBUG("outputFile: " + dtbookOutputFile);
+				DEBUG("NCXMaker#makeNCX: outputFile: " + dtbookOutputFile);
 				if (sd.encodingSet()) {
-					writer = outputFactory.createXMLEventWriter(new FileOutputStream(dtbookOutputFile), sd.getCharacterEncodingScheme());
+					writer = getXMLEventWriter(dtbookOutputFile, sd.getCharacterEncodingScheme());
 					
 				} else {
-					writer = outputFactory.createXMLEventWriter(new FileOutputStream(dtbookOutputFile), "utf-8");
+					writer = getXMLEventWriter(dtbookOutputFile, "utf-8");
 					event = eventFactory.createStartDocument("utf-8", "1.0");             
 				}
 				writeEvent(event);
-				event = eventFactory.createDTD(dtbookDoctypeStr);
+				if ("2005-2".equals(dtbookVersion)) {
+					event = eventFactory.createDTD(dtbookDoctypeStr_2005_2);
+				} else {
+					event = eventFactory.createDTD(dtbookDoctypeStr_2005_1);
+				}
+				
+				
 			} else if (event.isProcessingInstruction()) {
 				continue;
 			}
@@ -334,7 +388,6 @@ public class NCXMaker implements AbortListener {
 		Node authorNode = XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//*[@id='author']");
 		if (authorNode != null) {
 			authorNode.getParentNode().removeChild(authorNode);
-			authorNode = XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//*[@id='author']");
 		}
 		
 		// no title found? Retreat by using the dc:Title as an only child (text)
@@ -362,6 +415,10 @@ public class NCXMaker implements AbortListener {
 		printToFile();	
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see org.daisy.util.execution.AbortListener#abortEvent()
+	 */
 	public void abortEvent() {
 		try {
 			closeStreams();
@@ -370,6 +427,11 @@ public class NCXMaker implements AbortListener {
 		}		
 	}
 	
+	
+	/**
+	 * Closes the streams.
+	 * @throws XMLStreamException
+	 */
 	public void closeStreams() throws XMLStreamException {
 		writer.flush();
 		writer.close();
@@ -457,13 +519,6 @@ public class NCXMaker implements AbortListener {
 		meta = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//meta[@name='dtb:depth']");
 		meta.setAttribute("content", String.valueOf(getDepth()));
 	
-		// check if docTitle is empty, if yes: copy the dc:Title from dtbook as text child.
-		// check if docAuthor is empty, if yes: remove docAuthor.
-		
-		// TODO
-		// a remake of this?
-		// 2006-01-24, Markus säger: spelarna kommer förmodligen inte att stödja detta
-		// rakt av, låt attributen ha sina defaultvärden.
 		if (customTests != null) {
 			Element head = 
 				(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//head");
@@ -509,9 +564,8 @@ public class NCXMaker implements AbortListener {
 		if (customElem != null) {
 			customList.appendChild(customElem);
 		} else {
-			DEBUG("OBS: Kolla upp ifall det finns en " + eventName + " utan innehåll.");
+			DEBUG("NCXMaker#handleCustomNavListElement ATT: Check to see if there is a " + eventName + " without contents.");
 		}
-		DEBUG("end: handleCustomNavListElement");
 	}
 	
 	
@@ -555,7 +609,7 @@ public class NCXMaker implements AbortListener {
 	 * @throws XMLStreamException
 	 */
 	private Map getSmilContext(StartElement se, Map attributes) throws XMLStreamException {
-		DEBUG("NCXMaker:getSmilContext");
+		DEBUG("NCXMaker#getSmilContext");
 		if (!hasSmilAttributes(se)) {
 			return null;
 		}
@@ -617,7 +671,7 @@ public class NCXMaker implements AbortListener {
 		String bookmark = "TPB Narrator.NCXMaker.getTextContent";
 		reader.setBookmark(bookmark);
 		
-		int elemCount = 1; // eftersom vi redan läst öppningstaggen
+		int elemCount = 1; // since we have already seen the start element somewhere
 		while (reader.hasNext() && elemCount > 0) {
 			XMLEvent event = reader.nextEvent();
 			
@@ -657,7 +711,7 @@ public class NCXMaker implements AbortListener {
 	 * @throws XMLStreamException
 	 */
 	private String getNextSmilContext(BookmarkedXMLEventReader reader, Map attributes) throws XMLStreamException {
-		DEBUG("getNextSmilContext(reader, Map)");
+		DEBUG("NCXMaker#getNextSmilContext(reader, Map)");
 		String bookmark = "TPB Narrator.NCXMaker.getFirstSmilAttrs";
 		reader.setBookmark(bookmark);
 		
@@ -794,7 +848,7 @@ public class NCXMaker implements AbortListener {
 	}
 	
 	private Element createNCXNode(BookmarkedXMLEventReader reader, StartElement se, String navNodeName, String classAttribute) throws XMLStreamException {		
-		DEBUG("createNCXNode(reader, " + se.getName().getLocalPart() + ", " + navNodeName + ", class=" + classAttribute);
+		DEBUG("NCXMaker#createNCXNode(reader, " + se.getName().getLocalPart() + ", " + navNodeName + ", class=" + classAttribute);
 		DEBUG(se);
 		String bookmark = "TPB Narrator.NCXMaker.createNCXNode";
 		reader.setBookmark(bookmark);
@@ -819,7 +873,6 @@ public class NCXMaker implements AbortListener {
 		navNode.setAttribute("playOrder", getStrPlayorder(currentSmilRef));
 		navNode.setAttribute("id", getNextId());
 		
-		// TODO: snygga till det här... finns page på andra ställen än på pagenum?
 		Attribute type = null;
 		for (Iterator it = se.getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
@@ -903,21 +956,39 @@ public class NCXMaker implements AbortListener {
 			System.err.println("Sätter om " + propertyName + " som var null till " + defaultFactory);
 			System.setProperty(propertyName, defaultFactory);
 		}
-		
 		System.err.println("properties:");
 		System.err.println(System.getProperties());
 		System.err.println("/properties");
 		*/
-		TransformerFactory xformFactory = TransformerFactory.newInstance();  
-		Transformer idTransform = xformFactory.newTransformer();
-		idTransform.setOutputProperty(OutputKeys.INDENT, "yes");
-		idTransform.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, ncxDoctypePublic);
-		idTransform.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, ncxDoctypeSystem);
 		
-		Source input = new DOMSource(ncxTemplate);
-		FileOutputStream fos = new FileOutputStream(ncxOutputFile);
-		Result output = new StreamResult(fos);
-		idTransform.transform(input, output);
+		FileOutputStream fos = null;
+		String currentFactory = null;
+		String defaultFactory = "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl";
+		String propertyName = "javax.xml.parsers.DocumentBuilderFactory";
+		
+		try {
+			currentFactory = System.getProperty(propertyName);
+			System.setProperty(propertyName, defaultFactory);
+			
+			TransformerFactory xformFactory = TransformerFactory.newInstance();  
+			Transformer idTransform = xformFactory.newTransformer();
+			idTransform.setOutputProperty(OutputKeys.INDENT, "yes");
+			idTransform.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, ncxDoctypePublic);
+			idTransform.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, ncxDoctypeSystem);
+			
+			Source input = new DOMSource(ncxTemplate);
+			fos = new FileOutputStream(ncxOutputFile);
+			Result output = new StreamResult(fos);
+			idTransform.transform(input, output);
+		} finally {
+			if (currentFactory != null) {
+				System.setProperty(propertyName, currentFactory);
+			}
+			
+			if (fos != null) {
+				fos.close();
+			}
+		}
 		/*
 		try {
 			idTransform.transform(input, output);
@@ -930,8 +1001,6 @@ public class NCXMaker implements AbortListener {
 			DEBUG = d;
 		}
 		*/
-		
-		fos.close();
 	}
 
 	
@@ -987,10 +1056,10 @@ public class NCXMaker implements AbortListener {
 	 * @throws XMLStreamException
 	 */
 	private void handlePageNum(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {
-		DEBUG("pagenum: " + se.getName().getLocalPart());
+		DEBUG("NCXMaker#handlePageNum: pagenum: " + se.getName().getLocalPart());
 		Element pageTarget = createNCXNode(reader, se, "pageTarget", "pagenum");
 		String pageNumber = ((Element) XPathUtils.selectSingleNode(pageTarget, "//text")).getTextContent();
-		DEBUG("text content: " + pageNumber);
+		DEBUG("NCXMaker#handlePageNum: text content: " + pageNumber);
 		try {
 			int pNumber = Integer.parseInt(pageNumber);
 			if (pNumber > 0) {
@@ -1039,7 +1108,6 @@ public class NCXMaker implements AbortListener {
 		parent.appendChild(navNode);
 		openLevels.push(navNode);
 		recordMaxDepth();
-		DEBUG("Pushar på stacken, från " + (openLevels.size()-1) + " till " + openLevels.size());
 	}
 	
 	
@@ -1099,7 +1167,7 @@ public class NCXMaker implements AbortListener {
 	 * @throws TransformerRunException
 	 */
 	private void handleNavMapElement(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException, ParserConfigurationException, SAXException, IOException, TransformerRunException {
-		DEBUG("Creates a heading: (" + se.getName().getLocalPart() + ")");
+		DEBUG("NCXMaker#handleNavMapElement: Creates a heading: (" + se.getName().getLocalPart() + ")");
 		Element navNode = (Element) openLevels.peek();
 		Map attrs = new HashMap();
 		String textContent = getNextSmilContext(reader, attrs);
@@ -1294,10 +1362,7 @@ public class NCXMaker implements AbortListener {
 				elemCount--;
 			}
 			
-			//TODO: hur blir det egentligen med ljud för dom här?
-			// här: kolla author ifrån dtbooken, lägg in i ncx.
-			//DEBUG("före if: " + frontMatterStack.getContextPath());
-			
+			// author
 			if (frontMatterStack.getContextPath().endsWith("docauthor") &&	!authorFound) {
 				Element authorElement = 
 					(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//*[@id='author']");
@@ -1306,7 +1371,7 @@ public class NCXMaker implements AbortListener {
 				authorFound = true;
 			}
 			
-			// här: kolla title.
+			// title.
 			if (frontMatterStack.getContextPath().endsWith("doctitle") && !titleFound) {
 				
 				Element titleElement = 
@@ -1333,8 +1398,7 @@ public class NCXMaker implements AbortListener {
 		return ++playorder;
 	}
 	
-	// två likadana smilrefar får samma playorder nu.
-	
+
 	/**
 	 * Returns the next playorder as a String. Time containers with 
 	 * the same smilref attribute will get the same playorder. 
@@ -1363,12 +1427,14 @@ public class NCXMaker implements AbortListener {
 	
 	
 	/**
-	 * Prints msg as a message on System.err if <code>DEBUG == true</code>.
+	 * Prints debug messages on System.out iff the system property 
+	 * represented by <tt>NCXMaker.DEBUG_PROPERTY</tt> is defined.
+	 * Debug messages are prefixed with "<tt>DEBUG: </tt>".
 	 * @param msg the message.
 	 */
 	private void DEBUG(String msg) {
-		if (DEBUG) {
-			System.err.println("NCXMaker: "  + msg);
+		if (System.getProperty(DEBUG_PROPERTY) != null) {
+			System.out.println("DEBUG: "  + msg);
 		}
 	}
 	
@@ -1378,19 +1444,19 @@ public class NCXMaker implements AbortListener {
 	 * @param se the start element.
 	 */
 	private void DEBUG(StartElement se) {
-		if (DEBUG) {
-			System.err.print("debug: <");
-			System.err.print(se.getName().getLocalPart());
+		if (System.getProperty(DEBUG_PROPERTY) != null) {
+			System.out.print("debug: <");
+			System.out.print(se.getName().getLocalPart());
 			for (Iterator it = se.getAttributes(); it.hasNext(); ) {
 				Attribute at = (Attribute) it.next();
-				System.err.print(" " + at.getName().getLocalPart() + "=\"" + at.getValue() + "\"");
+				System.out.print(" " + at.getName().getLocalPart() + "=\"" + at.getValue() + "\"");
 			}
-			System.err.println(">");
+			System.out.println(">");
 		}
 	}
 	
 	private void DEBUG(Node node) {
-		if (!DEBUG) {
+		if (!(System.getProperty(DEBUG_PROPERTY) != null)) {
 			return;
 		}
 		
@@ -1398,24 +1464,24 @@ public class NCXMaker implements AbortListener {
 			Element elem = (Element) node;
 			Document doc = elem.getOwnerDocument();
 			if (elem.equals(doc.getDocumentElement())) {
-				 System.err.println("<?xml version=\"" + 
+				 System.out.println("<?xml version=\"" + 
 						 doc.getXmlVersion() + "\" encoding=\"" + 
 						 doc.getXmlEncoding() + "\"?>"); 
 					 
 				 
 			}
-			System.err.print("<" + elem.getTagName());
+			System.out.print("<" + elem.getTagName());
 			NamedNodeMap nnm = elem.getAttributes();
 			boolean open = true;
 			for (int i = 0; i < nnm.getLength(); i++) {
 				Attr at = (Attr) nnm.item(i);
-				System.err.print(" " + at.getName() + "=\"" + at.getValue() + "\"");
+				System.out.print(" " + at.getName() + "=\"" + at.getValue() + "\"");
 			}
 			NodeList kids = elem.getChildNodes();
 			if (kids.getLength() > 0) {
-				System.err.println(">");
+				System.out.println(">");
 			} else {
-				System.err.println("/>");
+				System.out.println("/>");
 				open = false;
 			}
 			
@@ -1423,7 +1489,7 @@ public class NCXMaker implements AbortListener {
 				DEBUG(kids.item(i));
 			}
 			if (open) {
-				System.err.println("</" + elem.getTagName() + ">");				
+				System.out.println("</" + elem.getTagName() + ">");				
 			}
 
 		} else {
@@ -1432,7 +1498,7 @@ public class NCXMaker implements AbortListener {
 	}
 	
 	private void DEBUG(Document d) throws FileNotFoundException {
-		if (DEBUG) {
+		if (System.getProperty(DEBUG_PROPERTY) != null) {
 			boolean success = false;
 			try {
 				TransformerFactory xformFactory = TransformerFactory.newInstance();  
@@ -1455,7 +1521,7 @@ public class NCXMaker implements AbortListener {
 	}
 	
 	/**
-	 * Sets the two sets customTests and bookStructs so that contain
+	 * Sets the two sets customTests and bookStructs so that they contain
 	 * the names of all customTests made and all bookstructs for those.
 	 * @param allCustomTests a Set containing the names of the elements on which
 	 * customTest were performed.
@@ -1486,33 +1552,11 @@ public class NCXMaker implements AbortListener {
 	
 	
 	/**
-	 * Returns the title.
-	 * @return the title.
-	 */
-	public String getTitle() {
-		return title;
-	}
-	
-	
-	/**
-	 * Returns the author.
-	 * @return the author.
-	 */
-	public String getAuthor() {
-		return author;
-	}
-	
-	
-	/**
 	 * Returns a Map containing the dc:Elements. Note that this Map
 	 * is a MultiHashMap.
 	 * @return a Map containing the dc:Elements.
 	 */
 	public Map getDCElements() {
-		/*
-		for (Iterator it = dcElements.keySet().iterator(); it.hasNext(); ) {
-			String key = (String) it.next();
-		}*/
 		return dcElements;
 	}
 }

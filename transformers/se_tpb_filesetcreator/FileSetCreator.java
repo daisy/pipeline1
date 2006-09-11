@@ -1,6 +1,22 @@
-/**
- * 
+/*
+ * DMFC - The DAISY Multi Format Converter
+ * Copyright (C) 2006  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package se_tpb_filesetcreator;
 
 import java.io.File;
@@ -27,28 +43,34 @@ import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.execution.ProgressObserver;
 import org.daisy.util.file.FileBunchCopy;
 import org.daisy.util.xml.XPathUtils;
+import org.daisy.util.xml.peek.PeekResult;
+import org.daisy.util.xml.peek.Peeker;
+import org.daisy.util.xml.peek.PeekerPool;
+import org.daisy.util.xml.pool.PoolException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 
 /**
- * Creates a z3986-fileset given output from the transformer 
+ * Creates a z39.86-fileset given output from the transformer 
  * se_tpb_speechgenerator.SpeechGenerator.
  * 
  * @author Martin Blomberg
  *
  */
 public class FileSetCreator extends Transformer {
-
-	private static double SMILS_DONE = 0.63;
-	private static double NCX_DONE = 0.28;
-	private static double OPF_DONE = 0.09;
-	private static double COPY_DONE = 0; // may change further down
 	
-	private boolean DEBUG = false;
-	private Map mimeTypes = new HashMap();
+	public static String DEBUG_PROPERTY = "org.daisy.debug";
+
+	private static double SMILS_DONE = 0.63;	// time proportion of the smil generation.
+	private static double NCX_DONE = 0.28;		// time proportion of the ncx generation.
+	private static double OPF_DONE = 0.09;		// time proportion of the opf generation.
+	private static double COPY_DONE = 0;		// time proportion of the file copying, may change further down
+	
+	private Map mimeTypes = new HashMap();		// file name suffixes -> mime types
 
 	public FileSetCreator(InputListener inputListener, Set eventListeners, Boolean bool) {
 		super(inputListener, eventListeners, bool);
@@ -211,8 +233,7 @@ public class FileSetCreator extends Transformer {
 			addAbortListener(ncx);
 			ncx.makeNCX();
 			removeAbortListener(ncx);
-			
-			
+						
 			sendMessage(Level.FINEST, i18n("DONE"));
 			
 			generatedFiles.add(finalDTBFile.getName());
@@ -234,7 +255,7 @@ public class FileSetCreator extends Transformer {
 			mimeTypes = getMimeTypes();
 			
 			String mediaContent = "";
-			if (containsImages(references, mimeTypes, "image")) {
+			if (containsMimeType(references, mimeTypes, "image")) {
 				mediaContent = ",image";
 			}
 			
@@ -358,6 +379,13 @@ public class FileSetCreator extends Transformer {
 		getConfigItems(levels, root, "//levels");
 	}
 	
+	
+	/**
+	 * Gets the element names for a certain category of the configuration. 
+	 * @param set the container in which the element names will be stored.
+	 * @param root	the root of the DOM 
+	 * @param xPath	xpath selecting the parent element
+	 */
 	private void getConfigItems(Set set, Node root, String xPath) {
 		Set elemNames = new HashSet();
 		Node parent = XPathUtils.selectSingleNode(root, xPath);
@@ -386,7 +414,16 @@ public class FileSetCreator extends Transformer {
 		return filename.substring(0, i) + desiredSuffix;
 	}
 	
-	private boolean containsImages(Set filenames, Map mimetypes, String prefix) {
+	
+	/**
+	 * Returns <tt>true<tt> if the set of files contains a file with
+	 * a mime type that starts with <tt>prefix</tt>.
+	 * @param filenames
+	 * @param mimetypes
+	 * @param prefix
+	 * @return
+	 */
+	private boolean containsMimeType(Set filenames, Map mimetypes, String prefix) {
 		for (Iterator it = filenames.iterator(); it.hasNext(); ) {
 			String filename = (String) it.next();
 			String suffix = filename.substring(filename.lastIndexOf('.'));
@@ -402,17 +439,72 @@ public class FileSetCreator extends Transformer {
 		return false;
 	}
 	
+	
+	/**
+	 * Prints debug messages on System.out iff the system property 
+	 * represented by <tt>FileSetCreator.DEBUG_PROPERTY</tt> is defined.
+	 * Debug messages are prefixed with "<tt>DEBUG: </tt>".
+	 * @param msg the message.
+	 */
 	private void DEBUG(String msg) {
-		if (DEBUG) {
-			System.err.println("FileSetCreator: " + msg);
+		if (System.getProperty(DEBUG_PROPERTY) != null) {
+			System.err.println("DEBUG: " + msg);
 		}
 	}
 	
+	
+	/* (non-Javadoc)
+	 * @see org.daisy.dmfc.core.transformer.Transformer#progress(double)
+	 */
 	public void progress(double progressProportion) {
 		super.progress(progressProportion);
 	}
 	
+	
+	/**
+	 * Called by other parts of the program to see if the user has
+	 * aborted the program. If so, this method will throw an exception.
+	 * @throws TransformerAbortException if program has been aborted by user.
+	 */
 	public void checkTransformerAborted() throws TransformerAbortException {
 		super.checkAbort();
+	}
+	
+	
+	/** Returns the version of the dtbook document.
+	 * @param dtbook  the dtbook file.
+	 * @return  the version of the dtbook document.
+	 */
+	public String getDTBookVersion(File dtbook) {
+		// peek into the document to determine the version.
+		String version = null;
+		PeekerPool pp = PeekerPool.getInstance();
+		Peeker p = null;
+		
+		try {
+			p = pp.acquire(false);
+			PeekResult pr = p.peek(dtbook);
+			Attributes attrs = pr.getRootElementAttributes();
+			version = attrs.getValue("version");
+		} catch (SAXException e) {
+			
+		} catch (IOException e) {
+			
+		} catch (PoolException e) {
+			
+		} finally {
+			try {
+				pp.release(p);
+			} catch (PoolException e) {
+				// nada
+			}
+		}
+
+		if (null == version) {
+			sendMessage(Level.WARNING, i18n("VERSION_NOT_FOUND"));
+			sendMessage(Level.WARNING, i18n("2005-1_FALLBACK"));
+		}
+		
+		return version;
 	}
 }
