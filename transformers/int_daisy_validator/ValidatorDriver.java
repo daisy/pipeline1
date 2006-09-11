@@ -640,9 +640,9 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		boolean mHadCaughtException = false;						//whether an unexpected exception was caught
 		
 		static final String NONE = "NONE";							
-		static final String WARNING = "NONE";
-		static final String ERROR = "NONE";
-		static final String SEVERE = "NONE";
+		static final String WARNING = "WARNING";
+		static final String ERROR = "ERROR";
+		static final String SEVERE = "SEVERE";
 
 		/**
 		 * Was a ValidatorMessage of any type recieved?
@@ -660,7 +660,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		 */
 		boolean thresholdBreached(String setThreshold) {
 			if(!hadValidatorMessage()) return false;
-			if (setThreshold.equals(WARNING) && mHadValidationWarning) return true;
+			if (setThreshold.equals(WARNING) && (mHadValidationWarning||mHadValidationError||mHadValidationSevereError)) return true;
 			if (setThreshold.equals(ERROR) && (mHadValidationError||mHadValidationSevereError)) return true;
 			if (setThreshold.equals(SEVERE) && mHadValidationSevereError) return true;
 			if (setThreshold.equals(NONE)) return false;															
