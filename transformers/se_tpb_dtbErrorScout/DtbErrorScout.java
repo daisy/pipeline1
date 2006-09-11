@@ -70,8 +70,8 @@ public class DtbErrorScout extends Transformer {
                     //System.err.print(e.toString());
                     if(e instanceof SAXParseException) {
                         SAXParseException se = (SAXParseException) e;
-                        sendMessage(Level.INFO, i18n("AT_LINE", new Integer(se.getLineNumber())));
-                        sendMessage(Level.INFO, i18n("IN_ENTITY", se.getSystemId()));                        
+                        sendMessage(Level.WARNING, i18n("AT_LINE", new Integer(se.getLineNumber())));
+                        sendMessage(Level.WARNING, i18n("IN_ENTITY", se.getSystemId()));                        
                     }                    
                 }
                 return false;
