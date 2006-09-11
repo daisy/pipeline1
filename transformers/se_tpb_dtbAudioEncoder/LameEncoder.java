@@ -1,6 +1,7 @@
 package se_tpb_dtbAudioEncoder;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import org.daisy.util.execution.Command;
 import org.daisy.util.execution.ExecutionException;
@@ -23,25 +24,29 @@ public class LameEncoder extends Wav2Mp3 {
     }
 
     public void encode(File wavFile, File mp3File) throws EncodingException {
-        StringBuffer params = new StringBuffer();
-        params.append("--quiet ");
-        //params.append("-h ");        
-        params.append("-f ");
-        if (!this.getStereo()) {
-            params.append("-m m ");
-            params.append("-a ");
-        }
-        
-        params.append("--cbr ");
-        params.append("-b " + this.getBitrate() + " ");
-        
         int k = this.getSampleFrequency() / 1000;
         int h = this.getSampleFrequency() - (k*1000);
-
-        params.append("--resample " + k + "." + "000".substring(String.valueOf(h).length()) + h);
-        System.err.println("Encoding: " + lameCommand + " " + params.toString() + " \"" + wavFile.getAbsolutePath() + "\" \"" + mp3File.getAbsolutePath() + "\"");
+        
+        ArrayList arr = new ArrayList();
+        arr.add(lameCommand);
+        arr.add("--quiet");
+        arr.add("-h");
+        if (!this.getStereo()) {
+            arr.add("-m");
+            arr.add("m");
+            arr.add("-a");
+        }
+        arr.add("--cbr");
+        arr.add("-b");
+        arr.add(String.valueOf(this.getBitrate()));
+        arr.add("--resample");
+        arr.add(String.valueOf(k) + "." + "000".substring(String.valueOf(h).length()) + String.valueOf(h));
+        arr.add(wavFile.getAbsolutePath());
+        arr.add(mp3File.getAbsolutePath());
+        
         try {
-            Command.execute(lameCommand + " " + params.toString() + " \"" + wavFile.getAbsolutePath() + "\" \"" + mp3File.getAbsolutePath() + "\"");
+        	System.err.println("Encoding: " + lameCommand + " " + arr.toString());
+            Command.execute((String[])(arr.toArray(new String[arr.size()])));            
         } catch (ExecutionException e) {
             throw new EncodingException(e.getMessage());
         }
