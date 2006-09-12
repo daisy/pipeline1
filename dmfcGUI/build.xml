@@ -51,6 +51,8 @@
 				<include name="licenses/**/*.*"/>
 				<include name="dmfcgui.nsi"/>
 				<include name="install.nsi"/>
+				<include name="install.sh"/>
+				<include name="setup-header.sh"/>
 				<include name="build.xml"/>
 			</fileset>
 		</zip>
@@ -87,18 +89,46 @@
 		</zip>
 	</target>
 		
+	
+	<property name="eclipse.plugin.dir" value="/opt/eclipse-3.2/plugins"/>
+	<property name="swt.jar.dir" value="${base.dir}/dist"/>
+	<property name="jython.jar.dir" value="${base.dir}/../dmfc/dist"/>
+	<property name="dmfc.dist.dir" value="${base.dir}/../dmfc/dist"/>
 	<target name="buildLinux"
 			description="Creates a linux build"
-			depends="createDistributionDir">
-		<fail message="Not completely implemented yet. Sorry."/>
+			depends="createDistributionDir, buildZip-NSIS">
 		<delete file="${distribution.dir}/linux.tgz"/>
-		<tar destfile="${distribution.dir}/linux.tgz" compression="gzip" basedir="${base.dir}">
-			<include name="org.daisy.util.jar"/>
-			<include name="org.daisy.dmfc.zip"/>
-			<include name="org.daisy.dmfc.gui.jar"/>
-			<include name="org.daisy.dmfc.gui-extras.zip"/>
-			<include name="jython_Release_2_2alpha1.jar"/>
+		<tar destfile="${distribution.dir}/linux.tgz" compression="gzip">
+			<tarfileset dir="${base.dir}">
+				<include name="install.sh"/>
+			</tarfileset>
+			<tarfileset dir="${distribution.dir}">
+				<include name="org.daisy.dmfc.gui.jar"/>
+				<include name="org.daisy.dmfc.gui-extras.zip"/>
+			</tarfileset>
+			<tarfileset dir="${dmfc.dist.dir}">
+				<include name="org.daisy.util.jar"/>
+				<include name="org.daisy.dmfc.zip"/>
+			</tarfileset>
+			<tarfileset dir="${jython.jar.dir}">
+				<include name="jython_Release_2_2alpha1.jar"/>
+			</tarfileset>
+			<tarfileset dir="${eclipse.plugin.dir}">
+				<include name="org.eclipse.core.runtime_*.jar"/>
+				<include name="org.eclipse.swt.gtk.linux.x86_*.jar"/>
+				<include name="org.eclipse.jface_*.jar"/>
+				<include name="org.eclipse.core.commands_*.jar"/>
+				<include name="org.eclipse.equinox.common_*.jar"/>
+			</tarfileset>
+			<tarfileset dir="${swt.jar.dir}">
+				<include name="swt.jar"/>
+				<include name="lib*.so"/>
+			</tarfileset>
 		</tar>
+		<concat destfile="${distribution.dir}/dmfcgui-setup.run" binary="yes">
+			<fileset file="${base.dir}/setup-header.sh"/>
+			<fileset file="${distribution.dir}/linux.tgz"/>
+	   </concat>
 	</target>
 	
 	<!-- end of binary distribution build -->
