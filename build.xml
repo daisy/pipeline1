@@ -206,10 +206,10 @@
 	</target>
 	
 	<target name="buildDMFC-NSIS" 
-			description="Creates a org.daisy.dmfc.zip  without util library"
+			description="Creates a org.daisy.dmfc.zip without util library"
 			depends="createDistributionDir">
-		<delete file="${distribution.dir}/org.daisy.dmfc.zip "/>
-		<zip zipfile="${distribution.dir}/org.daisy.dmfc.zip ">
+		<delete file="${distribution.dir}/org.daisy.dmfc.zip"/>
+		<zip zipfile="${distribution.dir}/org.daisy.dmfc.zip">
 			<fileset dir="${base.dir}">
 				<include name="bin/**/*.*"/>
 				<include name="resources/**/*.*"/>
