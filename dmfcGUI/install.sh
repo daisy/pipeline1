@@ -6,6 +6,7 @@
 #######################################################################
 
 
+
 ###################################
 # Function fullPath
 function fullpath() {
@@ -40,6 +41,7 @@ function fullpath() {
 }
 
 
+
 ###################################
 # Beginning of install script
 if [ $# != 1 ] 
@@ -51,7 +53,7 @@ then
 fi
 if [ -e $1 ]
 then
-	echo "Directory $1 alreday exists. You must install to a new directory.";
+	echo "File or directory $1 alreday exists. You must install to a new directory.";
 	echo "Usage:"
 	echo "  $0 <install_dir>"
 	exit 1
@@ -66,13 +68,15 @@ LAME=`which lame`
 
 PREV=`pwd`
 
-mkdir "$1"
+mkdir -p "$1"
 # Set the full path
 FULLPATH=""
 fullpath $1
 
 echo "Installing to \"$FULLPATH\"..."
 echo
+
+
 
 ###################################
 # GUI
@@ -88,15 +92,27 @@ echo "  $EXTRA"
 echo
 
 
+
 ###################################
 # SWT jars + .so
 mkdir -p "$1/lib"
 echo "Installing Standard Widget Toolkit (SWT)..."
 cp -p org.eclipse.*.jar "$1/lib"
-cd "$1"
-unzip -q lib/org.eclipse.swt.*.jar 'libswt*.so'
-cd "$PREV"
+
+if [ -e "swt.jar" ]
+then
+	# An 'external' swt.jar was included in the package.
+	cp -p swt.jar "$1/lib"
+	cp -p lib*.so "$1"
+else
+	# No 'external' swt.jar.
+	cd "$1"
+	unzip -q lib/org.eclipse.swt.*.jar 'libswt*.so'
+	cd "$PREV"
+fi
+
 echo
+
 
 
 ###################################
@@ -109,6 +125,8 @@ cd "$PREV"
 echo "  $JYTHON"
 echo
 
+
+
 ###################################
 # DMFC
 mkdir "$1/dmfc"
@@ -118,6 +136,7 @@ unzip -q "$PREV/$DMFC"
 cd "$PREV"
 echo "  $DMFC"
 echo
+
 
 
 ###################################
@@ -132,6 +151,7 @@ echo "  dmfc.properties"
 echo
 
 
+
 ###################################
 # Util
 mkdir -p "$1/dmfc/lib"
@@ -139,6 +159,7 @@ echo "Installing Daisy Utility Library..."
 cp -p $UTIL "$1/dmfc/lib"
 echo "  $UTIL"
 echo
+
 
 
 ###################################
