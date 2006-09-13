@@ -68,7 +68,7 @@ Section ""
   StrCpy $7 ""
  paramsdone: 
  
-  MessageBox MB_OK "Params: $7"
+  ;MessageBox MB_OK "Params: $7"
   
   ExpandEnvStrings $1 %COMSPEC%
   IfFileExists $EXEDIR\debug.txt debug nodebug
@@ -80,7 +80,7 @@ Section ""
  exeset:
  
   ;MessageBox MB_OK "classpath: $classpath"
-  MessageBox MB_OK "java: $0"
+  ;MessageBox MB_OK "java: $0"
  
   SetOutPath $EXEDIR
   ExecWait $0 
