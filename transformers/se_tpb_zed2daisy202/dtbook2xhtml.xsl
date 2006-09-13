@@ -338,7 +338,7 @@
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:text>#</xsl:text>
-						<xsl:value-of select="@idref"/>
+						<xsl:value-of select="translate(@idref, '#', '')"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>			
@@ -880,7 +880,7 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:text>#</xsl:text>
-					<xsl:value-of select="@idref"/>
+					<xsl:value-of select="translate(@idref, '#', '')"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:attribute>			
