@@ -28,8 +28,6 @@ import java.util.concurrent.CountDownLatch;
 import org.daisy.util.execution.Command;
 import org.daisy.util.execution.ExecutionException;
 
-import se_tpb_dtbAudioEncoder.EncodingException;
-
 
 /**
  * A class providing the ability to merge and mp3-encode 
@@ -80,9 +78,6 @@ public class WavConcatWorker implements Runnable {
 		if (mp3File != null) {
 			try {
 				mp3encode(wavFile, mp3File);
-			} catch (EncodingException e) {
-				e.printStackTrace();
-				System.exit(1);
 			} catch (ExecutionException e) {
 				e.printStackTrace();
 				System.exit(1);
@@ -145,10 +140,9 @@ public class WavConcatWorker implements Runnable {
 	 * encoding is done.
 	 * @param inputWav the input wav file.
 	 * @param outputMp3 the desired output mp3 file.
-	 * @throws EncodingException
 	 * @throws ExecutionException
 	 */
-	private void mp3encode(File inputWav, File outputMp3) throws EncodingException, ExecutionException {
+	private void mp3encode(File inputWav, File outputMp3) throws  ExecutionException {
 		String lameCommand = System.getProperty("dmfc.lame.path");
 		
 		String inputFilename = inputWav.getAbsolutePath();
