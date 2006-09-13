@@ -104,6 +104,20 @@ class ValidatorImplDtbook extends ValidatorImplAbstract implements Validator {
 				schemaSources.put(sssch, SchemaLanguageConstants.SCHEMATRON_NS_URI);
 				
 								
+			} else if((versionValue.equals("2005-2"))
+					||(publicId.equals(FilesetConstants.PUBLIC_ID_DTBOOK_Z2005_2))
+					||(systemId.equals(FilesetConstants.SYSTEM_ID_DTBOOK_Z2005_2))) {
+								
+				URL url = CatalogEntityResolver.getInstance().resolveEntityToURL
+					("-//NISO//RNG dtbook 2005-2//EN","./z39862005/dtbook-2005-2.rng");
+				//todo handle catalog exc
+				StreamSource ssrng = new StreamSource(url.openStream());
+				ssrng.setSystemId(url.toExternalForm());				
+				schemaSources.put(ssrng, SchemaLanguageConstants.RELAXNG_NS_URI);
+				
+				StreamSource sssch = new StreamSource(url.openStream());
+				sssch.setSystemId(url.toExternalForm());				
+				schemaSources.put(sssch, SchemaLanguageConstants.SCHEMATRON_NS_URI);
 			}else{
 				//heres the spot for other dtbook versions
 			}

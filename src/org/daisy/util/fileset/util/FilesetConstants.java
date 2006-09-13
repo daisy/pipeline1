@@ -37,7 +37,9 @@ public final class FilesetConstants {
 		public static final String MIMETYPE_RESOURCE_Z2002 = "text/xml";
 			
 		public static final String PUBLIC_ID_DTBOOK_Z2005_1 = "-//NISO//DTD dtbook 2005-1//EN";
+		public static final String PUBLIC_ID_DTBOOK_Z2005_2 = "-//NISO//DTD dtbook 2005-2//EN";
 		public static final String SYSTEM_ID_DTBOOK_Z2005_1 = "http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd";
+		public static final String SYSTEM_ID_DTBOOK_Z2005_2 = "http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd";
 		public static final String PUBLIC_ID_DTBOOK_Z2002 = "-//NISO//DTD dtbook v1.1.0//EN";
 		public static final String NAMESPACEURI_DTBOOK_Z2005 = "http://www.daisy.org/z3986/2005/dtbook/";
 		public static final String MIMETYPE_DTBOOK_Z2005 = "application/x-dtbook+xml";
