@@ -1,4 +1,4 @@
-<!-- DTBook DTD v2005-2  2006-08-11
+<!-- DTBook DTD v2005-2  2006-09-08
 file: dtbook-2005-2.dtd   
  
 The following identifiers apply to this DTD:    
@@ -6,7 +6,7 @@ The following identifiers apply to this DTD:
   "http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd">
 -->
 
-<!--jpritchett@rfbd.org:  2006-08-11  Changes that update to version 2005-2, per committee decisions 
+<!--jpritchett@rfbd.org:  2006-09-08  Changes that update to version 2005-2, per committee decisions 
     Issue numbers noted in change log below refer to Z39.86 issue tracker at 
     http://www.daisy.org/z3986/issues/ 
 -->
@@ -54,7 +54,7 @@ The following identifiers apply to this DTD:
 
     1.1. Prior Related Work
 
-    The DAISY (Digital Audio-based Information SYstem) Consortium
+    The DAISY (Digital Accessible Information SYstem) Consortium
     contributed substantially to the development of this DTD.
     This application of XML is the next generation after several DAISY
     versions of 2.X specifications, see [DAISY202].
@@ -654,6 +654,7 @@ The following identifiers apply to this DTD:
 <!--jpritchett@rfbd.org:  2006-07-07.  (Issue 117) Created new entity %externalNamespaces; for extension namespace attributes -->
 <!--jpritchett@rfbd.org:  2006-07-07.  (Issue 117) Added %externalNamespaces; to %coreattrs;, %attrsrqd;, and dtbook -->
 <!--jpritchett@rfbd.org:  2006-08-11.  (Issue 113) Added %externalFlow; to %dtbookinline; -->
+<!--jpritchett@rfbd.org:  2006-09-08.  (Issues 50/68) Rewrote attribute lists of code and samp to prevent duplication of @xml:lang -->
 
 <!--================= Comment Classification Conventions ==================-->
 
@@ -935,11 +936,13 @@ The following identifiers apply to this DTD:
     smilref is a pointer to a [SMIL2.0] file, normally to the time container
         (SMIL <par> or <seq>) containing the media object that references this
         element. However, in a text-only DTB consisting of a sequence of
-        text media objects, smilre> points to the media object that
+        text media objects, smilref points to the media object that
         references this element. smilref allows resumption of SMIL
         presentation at the proper location after navigation via dtbook file.
         All smilref values are expected to be added to an augmented
         version of the <dtbook> during production.
+        
+    %externalnamespace; (See entity declaration)
 
     %showin; (See entity declaration.)
     -->
@@ -1003,7 +1006,7 @@ The following identifiers apply to this DTD:
 <!--Use: head contains metainformation about the book but no
     actual content of the book itself, which is placed in <book>.
     This information is consonant with the <head> information
-    in xhtml, see [XHTML11STRICT]. Other miscellaneous elements can
+    in xhtml, see [XHTML11STRICT].
     -->
 
 <!--HB: 2003-03-25 head: element drop title -->
@@ -1811,14 +1814,21 @@ Compare with <strong>.
 
 <!ELEMENT code (%inline;)* >
 
+<!-- jpritchett@rfbd.org: 2006-09-08  Expanded %attrs; to prevent duplication of @xml:space -->
 <!--Attuse: code
 
     See http://www.w3.org/TR/xml11/#sec-white-space for information on xml:space.
     -->
 
 <!ATTLIST code
-  %attrs;
-  xml:space (default | preserve) 'preserve'
+  id          ID             #IMPLIED
+  class       CDATA          #IMPLIED
+  title       %Text;         #IMPLIED 
+  xml:space 	(default|preserve) 	'preserve' 
+  %externalNamespaces;
+  %i18n;
+  smilref      CDATA       #IMPLIED
+  %showin;
   >
 
 <!--Use: samp contains a sample of work created by the author for
@@ -1828,14 +1838,21 @@ Compare with <strong>.
 
 <!ELEMENT samp (%inline;)* >
 
+<!-- jpritchett@rfbd.org: 2006-09-08  Expanded %attrs; to prevent duplication of @xml:space -->
 <!--Attuse: samp
 
     See http://www.w3.org/TR/xml11/#sec-white-space for information on xml:space.
     -->
 
 <!ATTLIST samp
-  %attrs;
-  xml:space (default | preserve) 'preserve'
+  id          ID             #IMPLIED
+  class       CDATA          #IMPLIED
+  title       %Text;         #IMPLIED 
+  xml:space 	(default|preserve) 	'preserve' 
+  %externalNamespaces;
+  %i18n;
+  smilref      CDATA       #IMPLIED
+  %showin;
   >
 
 <!--Use: cite marks a reference (or citation) to another document.
