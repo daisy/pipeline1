@@ -1,0 +1,19 @@
+<taskScript version="1.0">
+	<name>DTBook 2005-1 to 2005-2</name>
+	<description>This script converts a DTBook 2005-1 document to DTBook 2005-2</description>
+	
+	<task name="no_hks_dtbook20051to20052" interactive="false">
+
+		<parameter>
+			<name>input</name>
+			<value>C:/data/workspace/dmfc/doc/examples/input/hauy-2005-1.xml</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>C:/data/temp/dmfc-out/dtbook-migrator-output.xml</value>
+		</parameter>		
+				
+	</task>
+
+</taskScript>
