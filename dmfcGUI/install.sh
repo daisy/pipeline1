@@ -86,6 +86,7 @@ cp -p $GUI "$1"
 cd "$1"
 echo "  $GUI"
 unzip -q "$PREV/$EXTRA"
+rm -f dmfcgui.exe
 chmod a+x dmfcgui.sh
 cd "$PREV"
 echo "  $EXTRA"
