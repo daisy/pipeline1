@@ -25,6 +25,7 @@ import java.net.URL;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -37,7 +38,11 @@ import javax.xml.validation.ValidatorHandler;
 import org.daisy.util.exception.ExceptionTransformer;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
-import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.peek.PeekResult;
+import org.daisy.util.xml.peek.Peeker;
+import org.daisy.util.xml.peek.PeekerPool;
+import org.daisy.util.xml.pool.PoolException;
+import org.daisy.util.xml.validation.SchemaLanguageConstants;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
 import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
@@ -48,11 +53,12 @@ import org.xml.sax.SAXException;
  * @author Markus Gylling
  */
 public class SchematronSchema extends AbstractSchema implements ErrorListener {
-	TransformerFactory transformerFactory = null;
-	javax.xml.transform.Transformer transformer = null;
+	private TransformerFactory transformerFactory = null;
+	private Transformer mRngTransformer = null;
+	private Transformer mAnyTransformer = null;
 	
 	SchematronSchema(URL schema, SchemaFactory originator) throws 	IOException, TransformerConfigurationException, 
-																	XSLTException, CatalogExceptionNotRecoverable {
+																	XSLTException, PoolException, SAXException {
 		super(schema,originator);
 		//clean to a single namespace doc and replace the super attributes with result
 		StreamSource ss = new StreamSource(super.schemaURL.openStream(),super.schemaURL.toExternalForm());		
@@ -61,7 +67,7 @@ public class SchematronSchema extends AbstractSchema implements ErrorListener {
 	}
 	
 	SchematronSchema(Source[] sources, SchemaFactory originator) throws IOException, TransformerConfigurationException, 
-																		XSLTException, CatalogExceptionNotRecoverable {
+																		XSLTException, PoolException, SAXException {
 		super(sources,originator);
 		//clean to a single namespace doc and replace the super attributes with result
 		super.sources = transform(super.sources);
@@ -83,25 +89,41 @@ public class SchematronSchema extends AbstractSchema implements ErrorListener {
 	 * @throws IOException 
 	 * @throws TransformerConfigurationException 
 	 * @throws XSLTException 
-	 * @throws CatalogExceptionNotRecoverable 
+	 * @throws PoolException 
+	 * @throws SAXException 
 	 */
 	private Source[] transform(Source[] inSources) throws TransformerConfigurationException, IOException, 
-														XSLTException, CatalogExceptionNotRecoverable {
+														XSLTException, PoolException, SAXException {		
+		PeekerPool pool = PeekerPool.getInstance();		
+		
 		if(null==transformerFactory) {
 			transformerFactory = TransformerFactory.newInstance();
 			transformerFactory.setErrorListener(this);
 			//TODO fix below method in CatalogEntityResolver by incorporating linus code as fallback
 			transformerFactory.setURIResolver(CatalogEntityResolver.getInstance());
-			transformer = transformerFactory.newTransformer
-				(new StreamSource(Stylesheets.get("RNG2Schtrn.xsl").openStream()));			
+			mRngTransformer = transformerFactory.newTransformer
+				(new StreamSource(Stylesheets.get("RNG2Schtrn.xsl").openStream()));
+			mAnyTransformer = transformerFactory.newTransformer
+				(new StreamSource(Stylesheets.get("Any2Schtrn.xsl").openStream()));
 		}
 				
 		Source[] outSources = new Source[inSources.length];
 		for (int i = 0; i < inSources.length; i++) {
 			File fileResult = TempFile.create();
 			StreamResult streamResult = new StreamResult(fileResult);
-			Stylesheet.apply(inSources[i],transformer,streamResult,null);
-			outSources[i] = new StreamSource(fileResult);			 
+			Peeker peeker = pool.acquire();
+			PeekResult peekResult = peeker.peek(new URL(inSources[i].getSystemId()));
+			if (peekResult.getRootElementNsUri().equals(SchemaLanguageConstants.RELAXNG_NS_URI)) {
+				Stylesheet.apply(inSources[i],mRngTransformer,streamResult,null);
+				outSources[i] = new StreamSource(fileResult);
+			} else if (peekResult.getRootElementNsUri().equals(SchemaLanguageConstants.SCHEMATRON_NS_URI)) {
+				outSources[i] = inSources[i];
+			} else {
+				Stylesheet.apply(inSources[i],mAnyTransformer,streamResult,null);
+				outSources[i] = new StreamSource(fileResult);
+			}		
+			
+			pool.release(peeker);
 		}
 		return outSources;
 	}
