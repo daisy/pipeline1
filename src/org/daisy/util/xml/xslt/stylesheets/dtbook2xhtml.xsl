@@ -245,6 +245,10 @@
      <li><xsl:call-template name="pagenum"/></li>
    </xsl:template>
 
+   <xsl:template match="dtb:list/dtb:prodnote">
+     <li class="prodnote"><xsl:apply-templates/></li>
+   </xsl:template>
+
    <xsl:template match="dtb:blockquote/dtb:pagenum">
      <div class="dummy"><xsl:call-template name="pagenum"/></div>
    </xsl:template>
