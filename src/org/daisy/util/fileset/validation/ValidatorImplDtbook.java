@@ -12,7 +12,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.daisy.util.exception.ExceptionTransformer;
-import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
@@ -134,9 +133,13 @@ class ValidatorImplDtbook extends ValidatorImplAbstract implements Validator {
 					factory.setResourceResolver(CatalogEntityResolver.getInstance());
 					Schema schema = factory.newSchema(schemaSource);													
 					javax.xml.validation.Validator jaxpValidator = schema.newValidator();	
+					String filename = schemaSource.getSystemId();
+					if (filename != null && filename.lastIndexOf("/") > 0) {
+						filename = filename.substring(filename.lastIndexOf("/"));
+					}
 					mValidatorListener.inform(this, "Validating using the " 
 							+ SchemaLanguageConstants.toNiceNameString(schemaNsURI) 
-							+ " " + FilenameOrFileURI.toFile(schemaSource.getSystemId()).getName() +".");
+							+ " " + filename +".");
 					jaxpValidator.validate(new StreamSource(mDtbookInputFile.getFile().toURI().toURL().openStream()));					
 				}
 			}else{

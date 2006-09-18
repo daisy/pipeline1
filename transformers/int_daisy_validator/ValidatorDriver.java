@@ -145,15 +145,15 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					mCompletionTracker.mCompletedFilesetValidation = true;
 				}catch (ValidatorNotSupportedException e) {
 					//the factory could not produce a validator for this fileset type
-					this.sendMessage(Level.INFO, i18n("NO_FILESET_VALIDATOR", mInputFileset.getFilesetType().toNiceNameString()));					
+					this.sendMessage(Level.WARNING, i18n("NO_FILESET_VALIDATOR", mInputFileset.getFilesetType().toNiceNameString()));					
 				}catch (ValidatorException ve) {
 					//another error than nonsupported type occured
 					mStateTracker.mHadCaughtException = true;
-					this.sendMessage(Level.INFO, i18n("FILESET_VALIDATION_FAILURE", ve.getMessage()));
+					this.sendMessage(Level.WARNING, i18n("FILESET_VALIDATION_FAILURE", ve.getMessage()));
 				}
 			}catch (FilesetTypeNotSupportedException e) {
 				//org.daisy.util.fileset did not recognize the input type
-				this.sendMessage(Level.INFO, i18n("NO_FILESET_SUPPORT", mInputFile.getName()));	
+				this.sendMessage(Level.WARNING, i18n("NO_FILESET_SUPPORT", mInputFile.getName()));	
 				//since no fileset, no dtd validation yet
 				if((mInputFilePeekResult != null) 
 						&& (mInputFilePeekResult.getPrologSystemId()!=null
@@ -311,10 +311,10 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				String schemaNsURI = (String)mSchemaSources.get(source);
 				//send a message
 				String schemaType = SchemaLanguageConstants.toNiceNameString(schemaNsURI);
-				String fileName = null;
-				try{
-					fileName = FilenameOrFileURI.toFile(source.getSystemId()).getName();
-				}catch (Exception e) {}
+				String fileName = source.getSystemId();				
+				if (fileName != null && fileName.lastIndexOf("/") > 0) {
+					fileName = fileName.substring(fileName.lastIndexOf("/"));
+				}
 				this.sendMessage(Level.INFO,i18n("VALIDATING_USING_SCHEMA",schemaType, fileName));
 
 				//then do it
