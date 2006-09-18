@@ -20,6 +20,7 @@
 package org.daisy.util.dtb.validation.errorscout;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -46,8 +47,13 @@ import org.daisy.util.fileset.interfaces.xml.z3986.Z3986SmilFile;
 import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.xml.SmilClock;
+import org.daisy.util.xml.peek.PeekResult;
+import org.daisy.util.xml.peek.Peeker;
+import org.daisy.util.xml.peek.PeekerPool;
+import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.validation.RelaxngSchematronValidator;
 import org.daisy.util.xml.validation.ValidationException;
+import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -64,7 +70,8 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 	private RelaxngSchematronValidator z39SmilRngSchValidator; 
 	private RelaxngSchematronValidator z39NcxRngSchValidator; 
 	private RelaxngSchematronValidator z39ResRngSchValidator;
-	private RelaxngSchematronValidator z39DtbookRngSchValidator;
+	private RelaxngSchematronValidator z39DtbookRngSchValidator20051;
+	private RelaxngSchematronValidator z39DtbookRngSchValidator20052;
 
 	private LinkedHashSet errors = new LinkedHashSet(); //<Exception>	
 	private FilesetType filesetType;	
@@ -142,7 +149,8 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 					z39SmilRngSchValidator = new RelaxngSchematronValidator("-//NISO//RNG dtbsmil 2005-1//EN",null,this,doRelaxNgScouting,false);
 					z39NcxRngSchValidator = new RelaxngSchematronValidator("-//NISO//RNG ncx 2005-1//EN",null,this,doRelaxNgScouting,false);
 					z39ResRngSchValidator = new RelaxngSchematronValidator("-//NISO//RNG resource 2005-1//EN",null,this,doRelaxNgScouting,true);
-					z39DtbookRngSchValidator = new RelaxngSchematronValidator("-//NISO//RNG dtbook 2005-1//EN",null,this,doRelaxNgScouting,true);
+					z39DtbookRngSchValidator20051 = new RelaxngSchematronValidator("-//NISO//RNG dtbook 2005-1//EN",null,this,doRelaxNgScouting,true);
+					z39DtbookRngSchValidator20052 = new RelaxngSchematronValidator("-//NISO//RNG dtbook 2005-2//EN",null,this,doRelaxNgScouting,true);
 					
 				}catch(Exception e){						
 					throw new DtbErrorScoutException(e.getMessage());
@@ -262,9 +270,31 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 						}
 					} else if (member instanceof Z3986DtbookFile) {
 					    if (doRelaxNgScouting) {
-					        if (!z39DtbookRngSchValidator.isValid(member.getFile())) {
-					            hasErrors = true;
-					        }
+					    	try {
+						    	PeekerPool pool = PeekerPool.getInstance();
+						    	Peeker peeker = pool.acquire();
+						    	PeekResult result = peeker.peek(member.getFile());
+						    	Attributes attrs = result.getRootElementAttributes();
+						    	String version = attrs.getValue("version"); 
+						    	if (version.equals("2005-2")) {
+						    		if (!z39DtbookRngSchValidator20052.isValid(member.getFile())) {
+						    			hasErrors = true;
+						    		}
+						    	} else {
+						    		if (!z39DtbookRngSchValidator20051.isValid(member.getFile())) {
+						    			hasErrors = true;
+						    		}
+						        }
+					    	} catch (PoolException e) {
+					    		errors.add(new FilesetFatalException("Cannot create a Peeker pool", e));
+					    		hasErrors = true;
+					    	} catch (SAXException e) {
+					    		errors.add(new FilesetFatalException("Error while peeking DTBook document", e));
+					    		hasErrors = true;
+							} catch (IOException e) {
+								errors.add(new FilesetFatalException("Error while peeking DTBook document", e));
+					    		hasErrors = true;
+							}
 					    }
 					}
 				}else if (member instanceof AudioFile){
