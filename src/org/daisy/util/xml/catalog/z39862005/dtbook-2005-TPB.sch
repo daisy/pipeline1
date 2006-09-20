@@ -1,141 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<grammar ns="http://www.daisy.org/z3986/2005/dtbook/"
-		 xmlns="http://relaxng.org/ns/structure/1.0"
-		 xmlns:sch="http://www.ascc.net/xml/schematron"
-		 xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">
+<sch:schema xmlns:sch="http://www.ascc.net/xml/schematron">
+
+  <sch:title>DTBook 2005 Schematron tests for TPB</sch:title>
 
   <sch:ns prefix="dtbk" uri="http://www.daisy.org/z3986/2005/dtbook/"/>
-
-
-  <include href="../relaxngcommon/attributes.rng" />
-
-  <start>
-      <ref name="root"/>  
-  </start>
-  
-  <define name="root">
-    <element name="dtbook">
-      <ref name="dtbook.attlist"/>
-      <ref name="anyElement"/>
-      <element name="book">
-        <ref name="frontmatter"/>
-        <!-- Rule 13: All books must have bodymatter -->
-        <ref name="bodymatter"/>
-        <optional>
-          <ref name="rearmatter"/>
-        </optional>
-      </element>
-    </element>
-  </define>
-  
-  <define name="dtbook.attlist">
-    <attribute name="version">
-      <value>2005-1</value>
-    </attribute>
-    <ref name="i18n.attributes"/>
-  </define>
-  
-  <define name="i18n.attributes">
-    <ref name="attribute.xml.lang.optional"/>
-    <ref name="attribute.dir.optional"/>
-  </define>
-  
-  <define name="frontmatter">
-    <!-- Rule 12: frontmatter starts with doctitle and docauthor -->
-    <element name="frontmatter">
-      <zeroOrMore>
-        <attribute>	
-          <anyName/>	  
-        </attribute>
-      </zeroOrMore>
-      <ref name="doctitle"/>
-      <zeroOrMore>
-        <ref name="docauthor"/>
-      </zeroOrMore>
-  	  <zeroOrMore>
-        <ref name="anyElement"/>
-      </zeroOrMore>       	
-    </element>
-  </define>
-  
-  <define name="bodymatter">
-    <element name="bodymatter">
-      <zeroOrMore>
-        <attribute>	
-          <anyName/>	  
-        </attribute>
-      </zeroOrMore>
-  	  <oneOrMore>
-        <ref name="anyElement"/>
-      </oneOrMore>       	
-    </element>
-  </define>
-  
-  <define name="rearmatter">
-    <element name="rearmatter">
-      <zeroOrMore>
-        <attribute>	
-          <anyName/>	  
-        </attribute>
-      </zeroOrMore>
-  	  <oneOrMore>
-        <ref name="anyElement"/>
-      </oneOrMore>       	
-    </element>
-  </define>
-  
-  <define name="anyElement">
-    <element>
-      <anyName>
-        <!-- Rule 18: Do not allow level, only levelX -->
-        <!-- Rule 22: No cite elements -->
-        <except>
-          <name>level</name>
-          <name>cite</name>
-        </except>  
-      </anyName>
-      <zeroOrMore>
-        <choice>
-          <attribute>	
-            <anyName/>	
-          </attribute>
-          <text/>
-          <ref name="anyElement"/>
-        </choice>
-      </zeroOrMore>
-    </element>
-  </define>
-  
-  <define name="doctitle">
-    <element name="doctitle">
-      <zeroOrMore>
-        <attribute>	
-          <anyName/>	  
-        </attribute>
-      </zeroOrMore>
-      <interleave>
-        <zeroOrMore> 
-          <text/>              
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="anyElement"/>
-        </zeroOrMore>
-      </interleave>
-    </element>
-  </define>
-
-
-  <define name="docauthor">
-    <element name="docauthor">
-      <zeroOrMore>
-        <attribute>	
-          <anyName/>	  
-        </attribute>
-      </zeroOrMore>
-      <text/>
-    </element>
-  </define>  
-
 
   <!-- Rule 8: Only allow pagenum[@front] in frontmatter -->
   <sch:pattern name="dtbook_TPB_pageFront" id="dtbook_TPB_pageFront">
@@ -151,6 +19,24 @@
   	</sch:rule>  	
   </sch:pattern>
   
+  <!-- Rule 12: Frontmatter starts with doctitle and docauthor -->
+  <sch:pattern name="dtbook_TPB_frontmatterStart" id="dtbook_TPB_frontmatterStart">
+  	<sch:rule context="dtbk:frontmatter">
+  		<sch:assert test="dtbk:*[1][self::dtbk:doctitle]">[tpb12] Frontmatter must begin with a doctitle element</sch:assert>
+  	</sch:rule>
+  	<sch:rule context="dtbk:frontmatter/dtbk:docauthor">
+  		<sch:assert test="preceding-sibling::*[self::dtbk:doctitle or self::dtbk:docauthor]">[tpb12] Docauthor may only be preceded by doctitle</sch:assert>
+  	</sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 13: All documents must have frontmatter and bodymatter -->
+  <sch:pattern name="dtbook_TPB_bookParts" id="dtbook_TPB_bookParts">
+  	<sch:rule context="dtbk:book">
+  		<sch:assert test="dtbk:frontmatter">[tpb13] A document must have frontmatter</sch:assert>
+  		<sch:assert test="dtbk:bodymatter">[tpb13] A document must have bodymatter</sch:assert>
+  	</sch:rule>  	
+  </sch:pattern>  
+  
   <!-- Rule 16: Targets of internal links must exist -->
   <sch:pattern name="dtbook_TPB_internalLinks" id="dtbook_TPB_internalLinks">
   	<sch:rule context="dtbk:a[starts-with(@href, '#')]">
@@ -158,10 +44,24 @@
   	</sch:rule>  	
   </sch:pattern>  
   
+  <!-- Rule 18: Disallow level -->
+  <sch:pattern name="dtbook_TPB_noLevel" id="dtbook_TPB_noLevel">
+  	<sch:rule context="dtbk:level">
+  		<sch:report test="true()">[tpb18] Element level is not allowed</sch:report>
+  	</sch:rule>  	
+  </sch:pattern>  
+  
   <!-- Rule 21: No nested tables -->
   <sch:pattern name="dtbook_TPB_nestedTables" id="dtbook_TPB_nestedTables">
   	<sch:rule context="dtbk:table">
   		<sch:report test="ancestor::dtbk:table">[tpb21] Nested tables are not allowed</sch:report>
+  	</sch:rule>  	
+  </sch:pattern> 
+  
+  <!-- Rule 22: Disallow cite -->
+  <sch:pattern name="dtbook_TPB_noCite" id="dtbook_TPB_noCite">
+  	<sch:rule context="dtbk:cite">
+  		<sch:report test="true()">[tpb22] Element cite is not allowed</sch:report>
   	</sch:rule>  	
   </sch:pattern> 
   
@@ -339,9 +239,6 @@
   
   <!-- Rule 54: prodnote in imggoup -->
   <sch:pattern name="dtbook_TPB_prodnoteInImggroup" id="dtbook_TPB_prodnoteInImggroup">
-    <sch:rule context="dtbk:imggroup">
-    	<sch:assert test="child::*[last()][self::dtbk:prodnote]">[tpb54] last element in an imggroup should be a prodnote</sch:assert>
-    </sch:rule>
     <sch:rule context="dtbk:imggroup/dtbk:prodnote">
     	<sch:assert test=".='Bildbeskrivning'">[tpb54] Value of prodnote in imggroup should be 'Bildbeskrivning'</sch:assert>
     </sch:rule>
@@ -448,4 +345,4 @@
   	</sch:rule>
   </sch:pattern>
     
-</grammar>
+</sch:schema>
