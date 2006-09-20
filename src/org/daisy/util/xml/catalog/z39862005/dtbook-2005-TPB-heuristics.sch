@@ -5,10 +5,19 @@
 
   <sch:ns prefix="dtbk" uri="http://www.daisy.org/z3986/2005/dtbook/"/>
   
-  <!-- Rule 54: prodnote in imggoup -->
-  <sch:pattern name="dtbook_TPBprod_prodnoteInImggroup" id="dtbook_TPBprod_prodnoteInImggroup">
-    <sch:rule context="dtbk:imggroup/dtbk:prodnote">
-    	<sch:assert test=".='Bildbeskrivning'">[tpbprod54] Value of prodnote in imggroup should be 'Bildbeskrivning'</sch:assert>
+  <!-- Rule M4: empty th, td, dt, dd -->
+  <sch:pattern name="dtbook_TPBheuristic_emptyCheck" id="dtbook_TPBheuristic_emptyCheck">
+    <sch:rule context="dtbk:th">
+    	<sch:report test="normalize-space(.)=''">[tpbHeuM4] Should this th be empty?</sch:report>
+    </sch:rule>
+    <sch:rule context="dtbk:td">
+    	<sch:report test="normalize-space(.)=''">[tpbHeuM4] Should this td be empty?</sch:report>
+    </sch:rule>
+    <sch:rule context="dtbk:dt">
+    	<sch:report test="normalize-space(.)=''">[tpbHeuM4] Should this dt be empty?</sch:report>
+    </sch:rule>
+    <sch:rule context="dtbk:dd">
+    	<sch:report test="normalize-space(.)=''">[tpbHeuM4] Should this dd be empty?</sch:report>
     </sch:rule>
   </sch:pattern>
     
