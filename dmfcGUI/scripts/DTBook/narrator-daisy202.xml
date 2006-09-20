@@ -8,62 +8,21 @@
 	<!-- *************************
 	      DTBook input validation 
 	     ************************* -->
-	<task name="se_tpb_xmlValidator" interactive="false">
+	<task name="int_daisy_validator" interactive="false">
 		<parameter>
-			<name>xml</name>
+			<name>input</name>
 			<value>${input}</value>
 		</parameter>
 		<parameter>
-			<name>relaxngSchema</name>
-			<value>-//NISO//RNG dtbook 2005-1//EN</value>
+			<name>schemas</name>
+			<value>-//TPB//SCH dtbook 2005 Narrator//EN</value>
 		</parameter>
 		<parameter>
-			<name>useSchematron</name>
-			<value>true</value>
-		</parameter>
-		<parameter>
-			<name>useDTD</name>
-			<value>true</value>
+			<name>abortThreshold</name>
+			<value>WARNING</value>
 		</parameter>
 	</task>
-	<task name="se_tpb_xmlValidator" interactive="false">
-		<parameter>
-			<name>xml</name>
-			<value>${input}</value>
-		</parameter>
-		<parameter>
-			<name>relaxngSchema</name>
-			<value>-//TPB//RNG dtbook 2005-1 Narrator//EN</value>
-		</parameter>
-		<parameter>
-			<name>useSchematron</name>
-			<value>true</value>
-		</parameter>
-		<parameter>
-			<name>useDTD</name>
-			<value>true</value>
-		</parameter>
-	</task>
-	<!--
-	<task name="se_tpb_xmlValidator" interactive="false">
-		<parameter>
-			<name>xml</name>
-			<value>${input}</value>
-		</parameter>
-		<parameter>
-			<name>relaxngSchema</name>
-			<value>-//TPB//RNG dtbook 2005-1 TPB//EN</value>
-		</parameter>
-		<parameter>
-			<name>useSchematron</name>
-			<value>true</value>
-		</parameter>
-		<parameter>
-			<name>useDTD</name>
-			<value>true</value>
-		</parameter>
-	</task>
-	-->
+	
 	
 	<!-- ****************************
 	      Abbr and Acronym detection 
@@ -145,34 +104,6 @@
 		</parameter>
 	</task>
 	
-	<!-- ****************
-	      Word detection 
-	     **************** 
-	<task name="se_tpb_xmldetection" interactive="false">
-		<parameter ref="mix">
-			<name>input</name>
-			<value>${outputPath}/04-syncpoint.xml</value>
-		</parameter>		
-		<parameter id="wrd">
-			<name>output</name>
-			<value>${outputPath}/05-word.xml</value>
-		</parameter>		
-		<parameter>
-			<name>doAbbrAcronymDetection</name>
-			<value>false</value>
-		</parameter>		
-		<parameter>
-			<name>doSentenceDetection</name>
-			<value>false</value>
-		</parameter>		
-		<parameter>
-			<name>doWordDetection</name>
-			<value>true</value>
-		</parameter>
-	</task>
-	-->
-	
-
 	<!-- ******************
 	      Speech Generator
 	     ****************** -->
@@ -260,22 +191,18 @@
 	</task>
 
 	
-	<!-- *************
-	      Error Scout
-	     ************* -->
-	<task name="se_tpb_dtbErrorScout" interactive="false">
+	<!-- *************************
+	      Daisy 2.02 Validation 
+	     ************************* -->
+	<task name="int_daisy_validator" interactive="false">
 		<parameter>
-			<name>manifest</name>
+			<name>input</name>
 			<value>${outputPath}/daisy202/ncc.html</value>
 		</parameter>		
 		<parameter>
-			<name>scoutLevel</name>
-			<value>MAXED</value>
+			<name>abortThreshold</name>
+			<value>WARNING</value>
 		</parameter>
-		<parameter>
-			<name>filesetType</name>
-			<value>DAISY_202</value>
-		</parameter>						
 	</task>
 	
 </taskScript>
