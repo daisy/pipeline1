@@ -344,5 +344,37 @@
   	                    normalize-space(preceding-sibling::text())!=''">Block element as sibling to inline element</sch:report>                  
   	</sch:rule>
   </sch:pattern>
+  
+  <!-- Rule 65: No border attribute on tables -->
+  <sch:pattern name="dtbook_TPB_noTableBorder" id="dtbook_TPB_noTableBorder">
+    <sch:rule context="dtbk:table">
+    	<sch:report test="@border">[tpb65] Border attributes on tables is not allowed</sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 67: doctitle and docauthor only allowed in frontmatter -->
+  <sch:pattern name="dtbook_TPB_titleAuthorInFront" id="dtbook_TPB_titleAuthorInFront">
+    <sch:rule context="dtbk:doctitle">
+    	<sch:assert test="parent::dtbk:frontmatter">[tpb67] doctitle is only allowed in frontmatter</sch:assert>
+    </sch:rule>
+    <sch:rule context="dtbk:docauthor">
+    	<sch:assert test="parent::dtbk:frontmatter">[tpb67] docauthor is only allowed in frontmatter</sch:assert>
+    </sch:rule>    
+  </sch:pattern>
+  
+  <!-- Rule 68: No smilref attributes -->
+  <sch:pattern name="dtbook_TPB_noSmilref" id="dtbook_TPB_noSmilref">
+    <sch:rule context="dtbk:*/@smilref">
+    	<sch:assert test="false()">[tpb68] smilref attributes in a plain DTBook file is not allowed</sch:assert>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 70: Heading for the colophon -->
+  <sch:pattern name="dtbook_TPB_colophonHeading" id="dtbook_TPB_colophonHeading">
+    <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='colophon']">
+    	<sch:report test="lang('sv') and h1!='Kolofon'">[tpb70] Heading of colophon must be 'Kolofon' (swedish)</sch:report>
+    	<sch:report test="lang('en') and h1!='Colophon'">[tpb70] Heading of colophon must be 'Colophon' (english)</sch:report>
+    </sch:rule>
+  </sch:pattern>
     
 </sch:schema>
