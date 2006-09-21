@@ -7,12 +7,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.EventListener;
-import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
@@ -39,6 +37,7 @@ import org.daisy.dmfc.gui.widgetproperties.TransformerListTableProperties;
 import org.daisy.dmfc.qmanager.Job;
 import org.daisy.dmfc.qmanager.LocalInputListener;
 import org.daisy.dmfc.qmanager.Queue;
+import org.daisy.dmfc.qmanager.Status;
 import org.daisy.util.xml.validation.ValidationException;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -51,7 +50,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -828,7 +826,8 @@ public class Window {
 			messageBox.setMessage("You have just terminated " + originator);
 			messageBox.setText("Job Terminated");
 			messageBox.open();   
-			
+			((LocalEventListener)lel).getJob().setStatus(Status.FAILED);
+			tableJobViewer.refresh();
 			this.btnRun.setEnabled(true);
 		}
 		
@@ -1010,14 +1009,16 @@ public class Window {
 			int status = job.getStatus();
 			
 			//status = completed or failed
-			if (status==3 || status == 4){
+			if (status==Status.COMPLETED || status == Status.FAILED){
 				System.out.println("Delete failed or completed from cue, input: " + job.getInputFile() + " index of " + i);
-				//cue.deleteFromQueue(i);
+
+				cue.getLinkedListJobs().remove(job);
 				alJob.add(job);
 			}
 		}
 		
-		cue.getLinkedListJobs().removeAll(alJob);
+		//cue.getLinkedListJobs().removeAll(alJob);
+		//cue.getLinkedListJobs().
 		
 		
 		tableJobViewer.refresh();
@@ -1214,8 +1215,8 @@ public class Window {
 	
 	public void deleteJobs(){
 		int size=indices.length;
-		System.out.println("size of selection is " + size);
-		System.out.println("size of job que: " + cue.getSizeOfQueue());
+		//System.out.println("size of selection is " + size);
+		//System.out.println("size of job que: " + cue.getSizeOfQueue());
 		
 		for (int i=indices.length-1; i>-1;i--){
 			System.out.println("the values are " + indices[i]);

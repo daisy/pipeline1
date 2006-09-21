@@ -19,22 +19,22 @@ public class QueueRunner extends Thread {
 	private TableViewer tableJobViewer;
 	private Window window;
 	private Shell shell;
-	
+
 	Job job = null;
-	
+
 	public QueueRunner(List jobQueue, Shell sh) {
 		jobList = jobQueue;
-		
+
 		window = Window.getInstance();
 		tableJobViewer = window.tableJobViewer;
 		shell = sh;
 	}
-	
+
 	public void run() {
 		window.executing = true;
 		Iterator it = jobList.iterator();
 		while(it.hasNext()){
-			
+
 			//get the Job from the Queue
 			job = (Job)it.next();
 			job.setStatus(2);
@@ -51,20 +51,21 @@ public class QueueRunner extends Thread {
 					}
 				}
 			});			
-			
+
 			// Update the LocalEventListener with the new job
 			window.getLocalEventListener().setJob(job);
-						
+
 			ScriptHandler scriptHandler = job.getScript();
-			
+
 			//update the transformer table
 
 			//add the input and output files to the script
 			//actually, this only returns if the parameters are present in the script...
 			scriptHandler.setProperty("input", job.getInputFile().getPath());
-			scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
-			
-			
+			if (job.getOutputFile()!=null){
+				scriptHandler.setProperty("outputPath", job.getOutputFile().getPath());
+			}
+
 			JobRunner jr = new JobRunner (this.shell, job,  window.tableViewer, tableJobViewer);
 			BusyCursor.showWhile(UIManager.display, jr);
 
@@ -73,7 +74,7 @@ public class QueueRunner extends Thread {
 					tableJobViewer.refresh();
 				}
 			});	
-			
+
 		}
 		window.executing = false;
 		UIManager.display.syncExec(new Runnable() {

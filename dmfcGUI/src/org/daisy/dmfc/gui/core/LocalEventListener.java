@@ -119,6 +119,10 @@ public class LocalEventListener implements EventListener{
 		return this.messageOriginator;
 	}
 	
+	public Job getJob(){
+		return this.currentJob;
+	}
+	
 	
 	/**
 	 * 

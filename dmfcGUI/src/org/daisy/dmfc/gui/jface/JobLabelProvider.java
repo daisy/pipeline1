@@ -35,7 +35,12 @@ public class JobLabelProvider
 				result = job.getInputFile().getName();
 				break;
 			case 3 :
-				result = job.getOutputFile().getPath();
+				if (job.getOutputFile()==null){
+					result = "";
+				}
+				else
+					result = job.getOutputFile().getPath();
+				
 				break;
 			default :
 				break; 	

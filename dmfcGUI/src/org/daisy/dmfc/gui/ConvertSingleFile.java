@@ -82,6 +82,7 @@ public class ConvertSingleFile  {
 	//defaults to editFile, false.
 	boolean editFile = false;
 	boolean boolOutputIsDir = false;
+	boolean boolOutputPathExists=true;
 	
 	//Array of output mime types
 	String [] arFileOrDir = null;
@@ -195,6 +196,7 @@ public class ConvertSingleFile  {
 		this.btnBrowseInput.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				setFileSelected();
+				checkOutputExists();
 			}
 		});
 		
@@ -326,6 +328,17 @@ public class ConvertSingleFile  {
 		
 	}
 	
+	
+	public void checkOutputExists(){
+		if (this.getMimeForProperty("outputPath")==null){
+			boolOutputPathExists=false;
+			this.btnBrowseOutput.setEnabled(false);
+			this.txtOutputDoc.setEnabled(false);
+		}
+	}
+	
+	
+	
 	public void setOutputPathSelected() {
 		
 		String mimeOut = this.getMimeForProperty("outputPath");
@@ -335,6 +348,7 @@ public class ConvertSingleFile  {
 			directoryDialog.setText("Choose output directory");
 			directoryDialog.setFilterPath(FilePaths.singleOutputPath);
 			outputPath = directoryDialog.open();
+			System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 			System.out.println("outputPath Selected  " + outputPath);
 			this.txtOutputDoc.setText("");
 			if (outputPath==null ){
@@ -344,9 +358,12 @@ public class ConvertSingleFile  {
 				//add a new directory to this...
 				this.txtOutputDoc.setText(outputPath);
 				FilePaths.singleOutputPath=directoryDialog.getFilterPath();
-				//System.out.println("outpath path is " + outputPath);
+				System.out.println("outpath path is " + outputPath);
 			}
-		} else {
+		} 
+		
+		
+		else {
 			// File
 			FileDialog dlg = new FileDialog(shell, SWT.SAVE);
 			dlg.setText("Choose output file");
@@ -368,9 +385,9 @@ public class ConvertSingleFile  {
 	}
 	
 	public void sendJobInfoToMain() {
-		if (txtInputDoc.getText().equalsIgnoreCase("") || txtInputDoc == null
+		if ((txtInputDoc.getText().equalsIgnoreCase("") || txtInputDoc == null
 				|| txtOutputDoc.getText().equalsIgnoreCase("")
-				|| txtOutputDoc == null) {
+				|| txtOutputDoc == null)&& boolOutputPathExists) {
 			
 			// display an error message and return.
 			
@@ -381,7 +398,32 @@ public class ConvertSingleFile  {
 			messageBox.open();
 			
 			
-		} else {			
+		} 
+		
+		else if ((txtInputDoc.getText().equalsIgnoreCase("") || txtInputDoc == null)&& !boolOutputPathExists){
+			
+// display an error message and return.
+			
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR |
+					SWT.CANCEL);
+			messageBox.setMessage("File to Convert must be completed");
+			messageBox.setText("Error:  Complete Fields");
+			messageBox.open();
+			
+		}
+		else if((!(txtInputDoc.getText().equalsIgnoreCase("")) || txtInputDoc != null)&& !boolOutputPathExists){
+			Job job = new Job();
+			job.setInputFile(new File(fileSelected));
+			job.setOutputFile(null);
+			job.setScript(scriptHandler);
+			job.setStatus(Status.WAITING);
+			Window.getInstance().addToQueue(job);
+			
+			dispose();
+			
+		}
+		
+		else {			
 			Job job = new Job();
 			job.setInputFile(new File(fileSelected));
 			job.setOutputFile(new File(outputPath));
@@ -448,12 +490,15 @@ public class ConvertSingleFile  {
 				System.out.println("The prop type is " + prop.getType());
 				return prop.getType();
 			}
+			
 			else{
 				System.out.println("Property type equals \"\" ");
 			}
 		}
 		catch(Exception e){
-			System.out.println(e.getMessage() + "Property type is null");
+			//should never get here...
+			boolOutputPathExists=false;
+			System.out.println(e.getMessage() + " " + "Property type is null");
 		}
 		return null;		
 	}
