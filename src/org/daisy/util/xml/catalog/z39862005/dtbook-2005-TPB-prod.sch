@@ -12,10 +12,10 @@
     </sch:rule>
   </sch:pattern>
   
-  <!-- Rule 73: Only allow DTBook 2005-2 -->
+  <!-- Rule 72: Only allow DTBook 2005-2 -->
   <sch:pattern name="dtbook_TPBprod_dtbookVersion" id="dtbook_TPBprod_dtbookVersion">
     <sch:rule context="dtbk:dtbook">
-    	<sch:assert test="@version='2005-2'">[tpbprod73] DTBook version must be 2005-2.</sch:assert>
+    	<sch:assert test="@version='2005-2'">[tpbprod72] DTBook version must be 2005-2.</sch:assert>
     </sch:rule>
   </sch:pattern>
     
