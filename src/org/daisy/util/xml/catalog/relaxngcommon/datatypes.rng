@@ -4,7 +4,7 @@
 	xmlns:sch="http://www.ascc.net/xml/schematron"
 	xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">
 	
-	<a:documentation> datatatypes.rng Last edit by: linuse 2006-03-16
+	<a:documentation> datatatypes.rng Last edit by: jpritchett@rfbd.org, 22 Sep 2006
 		</a:documentation>
 	
 	<define name="datatype.idrefs">
@@ -76,8 +76,7 @@
 		<data type="string">
 			<a:documentation>when other meta elems in group must have other ns than
 				dtb</a:documentation>
-			<param name="pattern">
-				(([^d].{3})|(.[^t].{2})|(.{2}[^b].)|(.{3}[^:])).*|(.{1,3})</param>
+			<param name="pattern">(([^d].{3})|(.[^t].{2})|(.{2}[^b].)|(.{3}[^:])).*|(.{1,3})</param>
 		</data>
 	</define>
 	
@@ -303,8 +302,7 @@
 	
 	<define name="datatype.id.and.dtbook.element.names">
 		<data type="ID">
-			<param name="pattern">
-				dtbook|head|title|link|meta|style|book|frontmatter|bodymatter|rearmatter|level|level1|level2|level3|level4|level5|level6|br|linenum|address|div|author|notice|prodnote|sidebar|note|annotation|line|a|em|strong|dfn|kbd|code|samp|cite|abbr|acronym|sub|sup|span|bdo|sent|w|pagenum|noteref|annoref|q|img|imggroup|hr|p|doctitle|docauthor|levelhd|h1|h2|h3|h4|h5|h6|hd|blockquote|dl|dt|dd|list|li|lic|table|caption|thead|tfoot|tbody|colgroup|col|tr|th|td</param>
+			<param name="pattern">dtbook|head|title|link|meta|style|book|frontmatter|bodymatter|rearmatter|level|level1|level2|level3|level4|level5|level6|br|linenum|address|div|author|notice|prodnote|sidebar|note|annotation|line|a|em|strong|dfn|kbd|code|samp|cite|abbr|acronym|sub|sup|span|bdo|sent|w|pagenum|noteref|annoref|q|img|imggroup|hr|p|doctitle|docauthor|levelhd|h1|h2|h3|h4|h5|h6|hd|blockquote|dl|dt|dd|list|li|lic|table|caption|thead|tfoot|tbody|colgroup|col|tr|th|td</param>
 		</data>
 	</define>
 	
