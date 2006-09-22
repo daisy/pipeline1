@@ -427,6 +427,14 @@
 	</sch:rule>
   </sch:pattern>
         
+  <!-- Rule 79: width and height attributes of img -->
+  <sch:pattern name="dtbook_TPB_imgWidthHeight" id="dtbook_TPB_imgWidthHeight">
+    <sch:rule context="dtbk:img">
+    	<sch:report test="@width and string-length(translate(@width,'0123456789',''))!=0">[tpb79] width of images must be expressed in numbers only</sch:report>
+    	<sch:report test="@height and string-length(translate(@width,'0123456789',''))!=0">[tpb79] height of images must be expressed in numbers only</sch:report>
+    </sch:rule>
+  </sch:pattern>        
+        
   <!-- Rule 88: start attribute only on numbered lists -->
   <sch:pattern name="dtbook_TPB_startAttrInList" id="dtbook_TPB_startAttrInList">
     <sch:rule context="dtbk:list">

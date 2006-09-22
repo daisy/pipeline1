@@ -117,5 +117,13 @@
     	<sch:report test="following-sibling::*[1][self::dtbk:br] and normalize-space(following-sibling::node()[1][self::text()])=''">[tpbHeuM15] Multiple line breaks. Should this be a paragraph?</sch:report>
     </sch:rule>
   </sch:pattern> 
+  
+  <!-- Rule M16: Strange meta info -->
+  <sch:pattern name="dtbook_TPBheuristic_metaPrefix" id="dtbook_TPBheuristic_metaPrefix">
+    <sch:rule context="dtbk:meta">
+    	<sch:report test="starts-with(@name, 'cd:')">[tpbHeuM16] Misspelled meta information?</sch:report>
+    	<sch:report test="not(contains(@name, ':'))">[tpbHeuM16] Missing prefix on metadata name?</sch:report>
+    </sch:rule>
+  </sch:pattern> 
     
 </sch:schema>
