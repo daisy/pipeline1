@@ -203,6 +203,7 @@
     	<sch:assert test="@class='endnote' or @class='rearnote'">[tpb46] class attribute for note must be 'endnote' or 'rearnote'</sch:assert>
     	<sch:report test="@class='rearnote' and (not(ancestor::dtbk:rearmatter) or not(ancestor::dtbk:level1[@class='notes']))">[tpb46] Rearnotes must be in level1@class='notes' in rearmatter</sch:report>
     	<sch:report test="@class='endnote' and ancestor::dtbk:rearmatter and ancestor::dtbk:level1[@class='notes']">[tpb46] Endnotes may not be in level1@class='notes' in rearmatter</sch:report>
+    	<sch:assert test="@class='endnote' and (parent::dtbk:level1[@class='chapter'] or parent::dtbk:level2[@class='chapter'])">[tpb46] Endnotes must be placed at the end of a chapter</sch:assert>
     </sch:rule>
   </sch:pattern>
   
@@ -227,6 +228,16 @@
     <sch:rule context="dtbk:img">
     	<sch:report test="lang('sv') and @alt!='illustration'">[tpb50] image should have attribute alt="illustration"</sch:report>
     	<sch:report test="lang('en') and @alt!='image'">[tpb50] image should have attribute alt="image"</sch:report>    	
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 51 & 52: -->
+  <sch:pattern name="dtbook_TPB_imgNames" id="dtbook_TPB_imgNames">
+    <sch:rule context="dtbk:img">
+    	<sch:assert test="contains(@src,'.jpg') and substring-after(@src,'.jpg')=0">[tpb52] Images must have the .jpg file extension.</sch:assert>
+    	<sch:report test="contains(@src,'.jpg') and string-length(@src)=4">[tpb52] Images must have a base name, not just an extension.</sch:report>
+    	<sch:report test="contains(@src,'/')">[tpb51] Images must be in the same folder as the DTBook file.</sch:report>
+    	<sch:assert test="string-length(translate(substring(@src,1,string-length(@src)-4),'-_abcdefghijklmnopqrstuvwxyz0123456789',''))=0">[tpb52] Image file name contains an illegal character (should be -_a-z0-9).</sch:assert>
     </sch:rule>
   </sch:pattern>
   
@@ -376,5 +387,65 @@
     	<sch:report test="lang('en') and h1!='Colophon'">[tpb70] Heading of colophon must be 'Colophon' (english)</sch:report>
     </sch:rule>
   </sch:pattern>
-    
+ 
+  <!-- Rule 73: headers attribute on table cells -->
+  <sch:pattern name="dtbook_TPB_headersThTd" id="dtbook_TPB_headersThTd">
+    <sch:rule context="dtbk:th">
+    	<sch:report test="@headers">[tpb73] Headers attribute may only exist on 'td' cells.</sch:report>
+    </sch:rule>
+    <sch:rule context="dtbk:td[@headers]">
+    	<sch:assert test="
+    		count(
+    			ancestor::dtbk:table[1]//dtbk:th/@id[contains( concat(' ',current()/@headers,' '), concat(' ',normalize-space(),' ') )]
+			) = 
+			string-length(normalize-space(@headers)) - string-length(translate(normalize-space(@headers), ' ','')) + 1
+		">[tpb73] Not all the tokens in the headers attribute match the id attributes of 'th' elements in that table.</sch:assert>
+	</sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 74: imgref attribute on prodnote -->
+  <sch:pattern name="dtbook_TPB_imgrefProdnote" id="dtbook_TPB_imgrefProdnote">
+    <sch:rule context="dtbk:prodnote[@imgref]">
+    	<sch:assert test="
+    		count(
+    			parent::dtbk:imggroup//dtbk:img/@id[contains( concat(' ',current()/@imgref,' '), concat(' ',normalize-space(),' ') )]
+			) = 
+			string-length(normalize-space(@imgref)) - string-length(translate(normalize-space(@imgref), ' ','')) + 1
+		">[tpb74] Not all the tokens in the imgref attribute match the id attributes of 'img' elements in that imggroup.</sch:assert>
+	</sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 75: imgref attribute on caption -->
+  <sch:pattern name="dtbook_TPB_imgrefCaption" id="dtbook_TPB_imgrefCaption">
+    <sch:rule context="dtbk:caption[@imgref]">
+    	<sch:assert test="
+    		count(
+    			parent::dtbk:imggroup//dtbk:img/@id[contains( concat(' ',current()/@imgref,' '), concat(' ',normalize-space(),' ') )]
+			) = 
+			string-length(normalize-space(@imgref)) - string-length(translate(normalize-space(@imgref), ' ','')) + 1
+		">[tpb75] Not all the tokens in the imgref attribute match the id attributes of 'img' elements in that imggroup.</sch:assert>
+	</sch:rule>
+  </sch:pattern>
+        
+  <!-- Rule 88: start attribute only on numbered lists -->
+  <sch:pattern name="dtbook_TPB_startAttrInList" id="dtbook_TPB_startAttrInList">
+    <sch:rule context="dtbk:list">
+    	<sch:report test="@start and @type!='ol'">[tpb88] start attribute only allowed in numbered lists</sch:report>
+    	<sch:report test="@start='' or string-length(translate(@start,'0123456789',''))!=0">[tpb88] start attribute must be a number</sch:report>
+    </sch:rule>
+  </sch:pattern>  
+  
+  <!-- Rule 89: Verify dc-metadata names -->
+  <sch:pattern name="dtbook_TPB_dcMetadata" id="dtbook_TPB_dcMetadata">
+    <sch:rule context="dtbk:meta">
+    	<sch:report test="starts-with(@name, 'dc:') and not(@name='dc:Title' or @name='dc:Subject' or @name='dc:Description' or
+    	                                                    @name='dc:Type' or @name='dc:Source' or @name='dc:Relation' or 
+    	                                                    @name='dc:Coverage' or @name='dc:Creator' or @name='dc:Publisher' or 
+    	                                                    @name='dc:Contributor' or @name='dc:Rights' or @name='dc:Date' or 
+    	                                                    @name='dc:Format' or @name='dc:Identifier' or @name='dc:Language')"
+                          >[tpb89] Incorrect Dublin core metadata name</sch:report>
+       <sch:report test="starts-with(@name, 'DC:') or starts-with(@name, 'Dc:') or starts-with(@name, 'dC:')">[tpb89] Incorrect Dublin core metadata prefix</sch:report>
+    </sch:rule>
+  </sch:pattern>
+      
 </sch:schema>
