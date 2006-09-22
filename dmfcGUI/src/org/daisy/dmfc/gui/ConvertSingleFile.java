@@ -52,6 +52,8 @@ public class ConvertSingleFile  {
 	IProperties textProperties = new TextProperties();
 	IProperties buttonProperties = new ButtonProperties();
 	
+	private Group compOutputFields;
+	
 	
 	//Labels
 	Label lblNameConversion;
@@ -196,7 +198,6 @@ public class ConvertSingleFile  {
 		this.btnBrowseInput.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				setFileSelected();
-				checkOutputExists();
 			}
 		});
 		
@@ -204,7 +205,7 @@ public class ConvertSingleFile  {
 		
 		//Composite output
 		
-		Group compOutputFields = new Group(shell, SWT.NONE);
+		compOutputFields = new Group(shell, SWT.NONE);
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		compOutputFields.setLayoutData(data);
 		layout = new GridLayout();
@@ -282,7 +283,7 @@ public class ConvertSingleFile  {
 				dispose();
 			}
 		});
-		
+		this.checkOutputExists();
 		shell.pack();
 	}
 	
@@ -334,6 +335,8 @@ public class ConvertSingleFile  {
 			boolOutputPathExists=false;
 			this.btnBrowseOutput.setEnabled(false);
 			this.txtOutputDoc.setEnabled(false);
+			
+			this.compOutputFields.setVisible(false);
 		}
 	}
 	
