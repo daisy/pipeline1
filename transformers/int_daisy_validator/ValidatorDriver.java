@@ -195,7 +195,8 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		}
 
 		if(mStateTracker.thresholdBreached(abortThreshold)) {
-			throw new TransformerRunException(i18n("ABORTING_THRESHOLD_BREACHED"));			
+			this.sendMessage(Level.WARNING, i18n("ABORTING_THRESHOLD_BREACHED"));	
+			return false;
 		}
 		
 		//else, we are about to exit gracefully. Give some info.
