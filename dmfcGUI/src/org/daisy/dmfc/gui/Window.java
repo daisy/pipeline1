@@ -57,8 +57,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
@@ -234,6 +236,27 @@ public class Window {
 		
 		display=UIManager.display;
 		shell=new Shell (display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
+		
+		shell.addListener(SWT.Close, new Listener() {
+			public void handleEvent(Event e) {
+				e.doit = false;
+				MessageBox mb = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+	            mb.setText("Confirm Exit");
+	            mb.setMessage("Are you sure you want to exit?");
+				int close = mb.open();
+				switch (close){
+					case SWT.OK:
+						UIManager.dispose();
+						System.exit(0);
+						break;
+					case SWT.CANCEL:
+						break;
+				}
+			}
+		});
+		
+		
+		
 		menu = new MenuDMFC(shell);
 		cue=Queue.getInstance();
 		executing=false;
@@ -334,7 +357,7 @@ public class Window {
 							btnAddSingleFile.setEnabled(true);
 						
 						//@todo uncomment below line for final release
-						//  addMultipleFiles.setEnabled(true);
+						  addMultipleFiles.setEnabled(true);
 							setFileSelected(tosh);
 							getConversionDescription();
 							
@@ -771,11 +794,25 @@ public class Window {
 	public void open() {
 		shell.open();
 		
-		while (!shell.isDisposed())
-			if (!UIManager.display.readAndDispatch()) UIManager.display.sleep();
+		
+		
+		while (!shell.isDisposed()){
+			if (!UIManager.display.readAndDispatch()) 
+				
+				
+				
+				UIManager.display.sleep();
+			
+		}
+		
+		
+		
+	
 	}
 	
 	public void dispose() {
+		
+		
 		shell.dispose();
 	}
 	

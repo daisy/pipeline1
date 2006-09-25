@@ -46,8 +46,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -143,6 +145,24 @@ public class ConvertMultipleFiles {
 	public ConvertMultipleFiles(){
 		display= UIManager.display;
 		shell = new Shell(display, SWT.APPLICATION_MODAL |SWT.SHELL_TRIM);
+		
+		shell.addListener(SWT.Close, new Listener() {
+			public void handleEvent(Event e) {
+				e.doit = false;
+				MessageBox mb = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+	            mb.setText("Confirm Exit");
+	            mb.setMessage("Are you sure you want to exit this screen?");
+				int close = mb.open();
+				switch (close){
+					case SWT.OK:
+						shell.dispose();
+						break;
+					case SWT.CANCEL:
+						break;
+				}
+			}
+		});
+		
 		new MenuMultipleConvert(shell);
 		createContents();
 		shell.pack();
