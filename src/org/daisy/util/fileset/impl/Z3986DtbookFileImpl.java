@@ -48,7 +48,7 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	private Set dcLanguages= new HashSet(); //repeatable
 	
 	private boolean inDoctitle = false;
-	private boolean inDocauthor = true;
+	private boolean inDocauthor = false;
 	private boolean mInBodyMatter = false;
 	
 	private String charCollector = "";
