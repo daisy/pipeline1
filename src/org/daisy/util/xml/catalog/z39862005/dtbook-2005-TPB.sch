@@ -104,11 +104,11 @@
   <!-- Rule 35: Two letter codes in @xml:lang -->
   <sch:pattern name="dtbook_TPB_twoLetterXmlLang" id="dtbook_TPB_twoLetterXmlLang">
   	<sch:rule context="dtbk:*[@xml:lang]">
-  		<sch:assert test="string-length(@xml:lang)=2 or string-length(@xml:lang)=5">[tpb35] xml:lang should have two-letter language codes.</sch:assert>
+  		<sch:assert test="string-length(@xml:lang)=2 or string-length(@xml:lang)=5">[tpb35] xml:lang must have two-letter language codes.</sch:assert>
   		<sch:report test="string-length(@xml:lang)=2 and translate(@xml:lang, translate(@xml:lang, 'abcdefghijklmnopqrstuvwxyz', ''), '')!=@xml:lang">[tpb35] xml:lang language must be lowercase [a-z].</sch:report>
   		<sch:report test="string-length(@xml:lang)=5 and translate(substring(@xml:lang, 1, 2), translate(substring(@xml:lang, 1, 2), 'abcdefghijklmnopqrstuvwxyz', ''), '')!=substring(@xml:lang, 1, 2)">[tpb35] xml:lang language part must be lowercase [a-z].</sch:report>
   		<sch:report test="string-length(@xml:lang)=5 and translate(substring(@xml:lang, 4, 2), translate(substring(@xml:lang, 4, 2), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', ''), '')!=substring(@xml:lang, 4, 2)">[tpb35] xml:lang country part must be uppercase [A-Z].</sch:report>
-  		<sch:report test="string-length(@xml:lang)=5 and substring(@xml:lang, 3, 1)!='-'">[tpb35] Separator between language part and country part in xml:lang should be '-'.</sch:report>
+  		<sch:report test="string-length(@xml:lang)=5 and substring(@xml:lang, 3, 1)!='-'">[tpb35] Separator between language part and country part in xml:lang must be '-'.</sch:report>
   	</sch:rule>  	
   </sch:pattern>  
   
@@ -125,7 +125,7 @@
   		<sch:assert test="@class='part' or @class='chapter'">[tpb37] Class attribute must be one of: part and chapter</sch:assert>
   		<!--<sch:report test="@class!=//dtbk:bodymatter/dtbk:level1/@class">[tpb37] All level1 class attributes in bodymatter must be either part or chapter</sch:report>-->
   		<sch:report test="@class!=preceding-sibling::dtbk:level1[1]/@class">[tpb37] All level1 class attributes in bodymatter must be either part or chapter</sch:report>
-  		<sch:report test="@class='part' and dtbk:level2/@class!='chapter'">[tpb37] Level2 class attribute should be 'chapter' if level1 class attribute is 'part'</sch:report>
+  		<sch:report test="@class='part' and dtbk:level2/@class!='chapter'">[tpb37] Level2 class attribute must be 'chapter' if level1 class attribute is 'part'</sch:report>
   	</sch:rule>
   </sch:pattern>
   
@@ -158,12 +158,12 @@
   	<sch:rule context="dtbk:pagenum">
   		<!-- 41 -->
   		<sch:assert test="starts-with(@id, 'page-') or starts-with(@id, 'unnum-')">[tpb41] pagenum must have ID on the form page-[number] or unnum-[number].</sch:assert>
-  		<sch:report test="starts-with(@id, 'page-') and substring(@id, 6)!=.">[tpb41] ID should be on the form page-[number]</sch:report>
-  		<sch:report test="starts-with(@id, 'unnum-') and substring(@id, 7)!=.">[tpb41] ID should be on the form unnum-[number]</sch:report>
+  		<sch:report test="starts-with(@id, 'page-') and substring(@id, 6)!=.">[tpb41] ID must be on the form page-[number]</sch:report>
+  		<sch:report test="starts-with(@id, 'unnum-') and substring(@id, 7)!=.">[tpb41] ID must be on the form unnum-[number]</sch:report>
   		<!-- 42 -->
   		<sch:report test="starts-with(@id, 'unnum-') and @page!='special'">[tpb42] Unnumbered pages nust be of type @page="special".</sch:report>
-  		<sch:report test="starts-with(@id, 'unnum-') and lang('sv') and substring(@id, 7)!='Onumrerad sida'">[tpb42] Value of unnumbered pages should be 'Onumrerad sida' in swedish context.</sch:report>
-  		<sch:report test="starts-with(@id, 'unnum-') and lang('en') and substring(@id, 7)!='Unnumbered page'">[tpb42] Value of unnumbered pages should be 'Unnumbered page' in swedish context.</sch:report>
+  		<sch:report test="starts-with(@id, 'unnum-') and lang('sv') and substring(@id, 7)!='Onumrerad sida'">[tpb42] Value of unnumbered pages must be 'Onumrerad sida' in swedish context.</sch:report>
+  		<sch:report test="starts-with(@id, 'unnum-') and lang('en') and substring(@id, 7)!='Unnumbered page'">[tpb42] Value of unnumbered pages must be 'Unnumbered page' in swedish context.</sch:report>
   	</sch:rule>
   </sch:pattern>
   
@@ -181,11 +181,11 @@
   		<sch:assert test="count(dtbk:meta[@name='dc:Language'])>=1">[tpb44] Meta dc:Language must exist</sch:assert>
   	</sch:rule>
   	<sch:rule context="dtbk:head/dtbk:meta[@name='dc:Language']">
-  		<sch:assert test="string-length(@content)=2 or string-length(@content)=5">[tpb44] Meta dc:Language should have two-letter language code.</sch:assert>
+  		<sch:assert test="string-length(@content)=2 or string-length(@content)=5">[tpb44] Meta dc:Language must have two-letter language code.</sch:assert>
   		<sch:report test="string-length(@content)=2 and translate(@content, translate(@content, 'abcdefghijklmnopqrstuvwxyz', ''), '')!=@content">[tpb44] Meta dc:Language language must be lowercase [a-z].</sch:report>
   		<sch:report test="string-length(@content)=5 and translate(substring(@content, 1, 2), translate(substring(@content, 1, 2), 'abcdefghijklmnopqrstuvwxyz', ''), '')!=substring(@content, 1, 2)">[tpb44] Meta dc:Language language part must be lowercase [a-z].</sch:report>
   		<sch:report test="string-length(@content)=5 and translate(substring(@content, 4, 2), translate(substring(@content, 4, 2), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', ''), '')!=substring(@content, 4, 2)">[tpb44] Meta dc:Language country part must be uppercase [A-Z].</sch:report>
-  		<sch:report test="string-length(@content)=5 and substring(@content, 3, 1)!='-'">[tpb44] Separator between language part and country part in meta dc:Language should be '-'.</sch:report>
+  		<sch:report test="string-length(@content)=5 and substring(@content, 3, 1)!='-'">[tpb44] Separator between language part and country part in meta dc:Language must be '-'.</sch:report>
   	</sch:rule>  	
   </sch:pattern>
   
@@ -203,18 +203,23 @@
     	<sch:assert test="@class='endnote' or @class='rearnote'">[tpb46] class attribute for note must be 'endnote' or 'rearnote'</sch:assert>
     	<sch:report test="@class='rearnote' and (not(ancestor::dtbk:rearmatter) or not(ancestor::dtbk:level1[@class='notes']))">[tpb46] Rearnotes must be in level1@class='notes' in rearmatter</sch:report>
     	<sch:report test="@class='endnote' and ancestor::dtbk:rearmatter and ancestor::dtbk:level1[@class='notes']">[tpb46] Endnotes may not be in level1@class='notes' in rearmatter</sch:report>
-    	<sch:assert test="@class='endnote' and (parent::dtbk:level1[@class='chapter'] or parent::dtbk:level2[@class='chapter'])">[tpb46] Endnotes must be placed at the end of a chapter</sch:assert>
+    	<sch:report test="@class='endnote' and not(parent::dtbk:level1[@class='chapter'] or parent::dtbk:level2[@class='chapter'])">[tpb46] Endnotes must be placed at the end of a chapter</sch:report>
     </sch:rule>
   </sch:pattern>
   
   <!-- Rule 48: Headings in notes section in rearmatter -->
-  <!-- FIXME
   <sch:pattern name="dtbook_TPB_headingsInNotesSection" id="dtbook_TPB_headingsInNotesSection">
-    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='notes']">
-    	<sch:assert test=""></sch:assert>
+    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='notes']/dtbk:level2/dtbk:h2">    
+    	<sch:assert test="count(//dtbk:bodymatter//dtbk:level2[@class='chapter']/dtbk:h2[.=current()]) + 
+    	                  count(//dtbk:bodymatter//dtbk:level1[@class='chapter']/dtbk:h2[.=current()]) = 1"
+    	   >[tpb48] Heading in notes section does not exist in the bodymatter of the book</sch:assert>
+    </sch:rule>    
+    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='notes']/dtbk:level2/dtbk:note">    
+          <sch:assert test="count(//dtbk:level2[@class='chapter' and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h2=current()/parent::dtbk:level2/dtbk:h2]) +
+                            count(//dtbk:level1[@class='chapter' and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h1=current()/parent::dtbk:level2/dtbk:h2]) >= 1"
+           >[tpb48] There is no note reference to this note in the corresponding section in the bodymatter</sch:assert>
     </sch:rule>
   </sch:pattern>
-  -->
   
   <!-- Rule 49: Sidebar must have @render="optional" -->
   <sch:pattern name="dtbook_TPB_renderSidebar" id="dtbook_TPB_renderSidebar">
@@ -226,18 +231,18 @@
   <!-- Rule 50: imgage alt attribute -->
   <sch:pattern name="dtbook_TPB_imgAlt" id="dtbook_TPB_imgAlt">
     <sch:rule context="dtbk:img">
-    	<sch:report test="lang('sv') and @alt!='illustration'">[tpb50] image should have attribute alt="illustration"</sch:report>
-    	<sch:report test="lang('en') and @alt!='image'">[tpb50] image should have attribute alt="image"</sch:report>    	
+    	<sch:report test="lang('sv') and @alt!='illustration'">[tpb50] an image in swedish language context must have attribute alt="illustration"</sch:report>
+    	<sch:report test="lang('en') and @alt!='image'">[tpb50] an image in english language context must have attribute alt="image"</sch:report>    	
     </sch:rule>
   </sch:pattern>
   
   <!-- Rule 51 & 52: -->
   <sch:pattern name="dtbook_TPB_imgNames" id="dtbook_TPB_imgNames">
     <sch:rule context="dtbk:img">
-    	<sch:assert test="contains(@src,'.jpg') and substring-after(@src,'.jpg')=0">[tpb52] Images must have the .jpg file extension.</sch:assert>
+    	<sch:assert test="contains(@src,'.jpg') and substring-after(@src,'.jpg')=''">[tpb52] Images must have the .jpg file extension.</sch:assert>
     	<sch:report test="contains(@src,'.jpg') and string-length(@src)=4">[tpb52] Images must have a base name, not just an extension.</sch:report>
     	<sch:report test="contains(@src,'/')">[tpb51] Images must be in the same folder as the DTBook file.</sch:report>
-    	<sch:assert test="string-length(translate(substring(@src,1,string-length(@src)-4),'-_abcdefghijklmnopqrstuvwxyz0123456789',''))=0">[tpb52] Image file name contains an illegal character (should be -_a-z0-9).</sch:assert>
+    	<sch:assert test="string-length(translate(substring(@src,1,string-length(@src)-4),'-_abcdefghijklmnopqrstuvwxyz0123456789',''))=0">[tpb52] Image file name contains an illegal character (must be -_a-z0-9).</sch:assert>
     </sch:rule>
   </sch:pattern>
   
@@ -251,7 +256,7 @@
   <!-- Rule 54: prodnote in imggoup -->
   <sch:pattern name="dtbook_TPB_prodnoteInImggroup" id="dtbook_TPB_prodnoteInImggroup">
     <sch:rule context="dtbk:imggroup/dtbk:prodnote">
-    	<sch:assert test=".='Bildbeskrivning'">[tpb54] Value of prodnote in imggroup should be 'Bildbeskrivning'</sch:assert>
+    	<sch:assert test=".='Bildbeskrivning'">[tpb54] Value of prodnote in imggroup must be 'Bildbeskrivning'</sch:assert>
     </sch:rule>
   </sch:pattern>
   
@@ -380,6 +385,13 @@
     </sch:rule>
   </sch:pattern>
   
+  <!-- Rule 69: depth attribute of list elements -->
+  <sch:pattern name="dtbook_TPB_depthList" id="dtbook_TPB_depthList">
+    <sch:rule context="dtbk:list">
+    	<sch:report test="@depth and @depth!=count(ancestor-or-self::dtbk:list)">[tpb69] depth attribute on list element must contain the list wrapping level</sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
   <!-- Rule 70: Heading for the colophon -->
   <sch:pattern name="dtbook_TPB_colophonHeading" id="dtbook_TPB_colophonHeading">
     <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='colophon']">
@@ -427,13 +439,52 @@
 	</sch:rule>
   </sch:pattern>
         
+  <!-- Rule 76: accesskey and tabindex attribute on a -->
+  <sch:pattern name="dtbook_TPB_accesskeyTabindex" id="dtbook_TPB_accesskeyTabindex">
+    <sch:rule context="dtbk:a">
+    	<sch:report test="@accesskey and string-length(@accesskey)!=1">[tpb76] accesskey attribute on &lt;a&gt; elements may only be one character long</sch:report>
+    	<sch:report test="@tabindex and string-length(translate(@width,'0123456789',''))!=0">[tpb76] tabindex of &lt;a&gt; elements must be expressed in numbers only</sch:report>
+    	<sch:report test="@accesskey and count(//dtbk:a/@accesskey=@accesskey)!=1">[tpb76] accesskey attribute values must be unique within the document</sch:report>
+    	<sch:report test="@tabindex and count(//dtbk:a/@tabindex=@tabindex)!=1">[tpb76] tabindex attribute values must be unique within the document</sch:report>
+    </sch:rule>
+  </sch:pattern>      
+        
+  <!-- Rule 77: char attribute of col, colgroup, tbody, td, tfoot, th, thead, tr -->
+  <sch:pattern name="dtbook_TPB_charAttribute" id="dtbook_TPB_charAttribute">
+    <sch:rule context="dtbk:*[self::dtbk:col   or self::dtbk:colgroup or self::dtbk:tbody or self::dtbk:td or 
+                              self::dtbk:tfoot or self::dtbk:th       or self::dtbk:thead or self::dtbk:tr]">
+    	<sch:report test="@char and string-length(@char)!=1">[tpb77] length of char attribute value must be one</sch:report>
+    	<sch:report test="@char and @align!='char'">[tpb77] char attribute may only occur when align attribute value is 'char'</sch:report>
+    	<sch:report test="@charoff and not(@char)">[tpb77] char offset attribute may only occur when align attribute value is 'char'</sch:report>
+    	<sch:report test="@charoff and translate(@charoff,'0123456789','')!=''">[tpb77] char offset attribute value must be expressed in numbers</sch:report>
+    </sch:rule>
+  </sch:pattern>
+        
   <!-- Rule 79: width and height attributes of img -->
   <sch:pattern name="dtbook_TPB_imgWidthHeight" id="dtbook_TPB_imgWidthHeight">
     <sch:rule context="dtbk:img">
     	<sch:report test="@width and string-length(translate(@width,'0123456789',''))!=0">[tpb79] width of images must be expressed in numbers only</sch:report>
     	<sch:report test="@height and string-length(translate(@width,'0123456789',''))!=0">[tpb79] height of images must be expressed in numbers only</sch:report>
     </sch:rule>
-  </sch:pattern>        
+  </sch:pattern>
+  
+  <!-- Rule 80: attributes on the table element -->
+  <sch:pattern name="dtbook_TPB_tableAttributes" id="dtbook_TPB_tableAttributes">
+    <sch:rule context="dtbk:table">
+    	<sch:assert test="not(@width) or 
+    	                  string-length(translate(@width,'0123456789',''))=0 or
+    	                  (contains(@width,'%') and substring-after(@width,'%')='' and translate(@width,'%0123456789','')='' and string-length(@width)>=2 and (string-length(@width)&lt;=3 or @width='100%') )"
+    	   >[tpb80] width of tables must be expressed in pixels or percentage in interval [0%-100%]</sch:assert>
+   	 	<sch:assert test="not(@cellspacing) or 
+    	                  string-length(translate(@cellspacing,'0123456789',''))=0 or
+    	                  (contains(@cellspacing,'%') and substring-after(@cellspacing,'%')='' and translate(@cellspacing,'%0123456789','')='' and string-length(@cellspacing)>=2 and (string-length(@cellspacing)&lt;=3 or @cellspacing='100%') )"
+    	   >[tpb80] cellspacing of tables must be expressed in pixels or percentage in interval [0%-100%]</sch:assert>
+		<sch:assert test="not(@cellpadding) or 
+    	                  string-length(translate(@cellpadding,'0123456789',''))=0 or
+    	                  (contains(@cellpadding,'%') and substring-after(@cellpadding,'%')='' and translate(@cellpadding,'%0123456789','')='' and string-length(@cellpadding)>=2 and (string-length(@cellpadding)&lt;=3 or @cellpadding='100%') )"
+    	   >[tpb80] cellpadding of tables must be expressed in pixels or percentage in interval [0%-100%]</sch:assert>
+    </sch:rule>
+  </sch:pattern> 
         
   <!-- Rule 88: start attribute only on numbered lists -->
   <sch:pattern name="dtbook_TPB_startAttrInList" id="dtbook_TPB_startAttrInList">
