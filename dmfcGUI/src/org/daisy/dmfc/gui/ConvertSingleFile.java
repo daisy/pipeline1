@@ -471,7 +471,9 @@ public class ConvertSingleFile  {
 		//txtConversionName.setText(job.getScript().getName());
 		lblConversion.setText(job.getScript().getName());
 		txtInputDoc.setText(job.getInputFile().getPath());
-		txtOutputDoc.setText(job.getOutputFile().getPath());
+		if (job.getOutputFile() != null) {
+			txtOutputDoc.setText(job.getOutputFile().getPath());
+		}
 		scriptHandler = job.getScript();
 		
 	}
