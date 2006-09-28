@@ -15,8 +15,8 @@
   <!-- Rule M2: A section in bold/italics -->
   <sch:pattern name="dtbook_TPBheuristic_strongSection" id="dtbook_TPBheuristic_strongSection">
     <sch:rule context="dtbk:*[self::dtbk:p or self::dtbk:th or self::dtbk:td or self::dtbk:dt or self::dtbk:dd or self::dtbk:li]">
-    	<sch:report test="count(dtbk:*)=1 and dtbk:strong">[tpbHeuM2] A complete section is marked up as strong. Is that correct?</sch:report>
-    	<sch:report test="count(dtbk:*)=1 and dtbk:em">[tpbHeuM2] A complete section is marked up as em. Is that correct?</sch:report>
+    	<sch:report test="count(dtbk:*)=1 and dtbk:strong and dtbk:*[normalize-space(preceding-sibling::text())=''] and dtbk:*[normalize-space(following-sibling::text())='']">[tpbHeuM2] A complete section is marked up as strong. Is that correct?</sch:report>
+    	<sch:report test="count(dtbk:*)=1 and dtbk:em     and dtbk:*[normalize-space(preceding-sibling::text())=''] and dtbk:*[normalize-space(following-sibling::text())='']">[tpbHeuM2] A complete section is marked up as em. Is that correct?</sch:report>
     </sch:rule>
   </sch:pattern>
   
@@ -123,6 +123,13 @@
     <sch:rule context="dtbk:meta">
     	<sch:report test="starts-with(@name, 'cd:')">[tpbHeuM16] Misspelled meta information?</sch:report>
     	<sch:report test="not(contains(@name, ':'))">[tpbHeuM16] Missing prefix on metadata name?</sch:report>
+    </sch:rule>
+  </sch:pattern> 
+  
+  <!-- Rule M17: image groups in tables -->
+  <sch:pattern name="dtbook_TPBheuristic_imggroupInTable" id="dtbook_TPBheuristic_imggroupInTable">
+    <sch:rule context="dtbk:imggroup">
+    	<sch:report test="ancestor::dtbk:table">[tpbHeuM17] This is an image group inside a table. Would a simple image element be enough?</sch:report>
     </sch:rule>
   </sch:pattern> 
     
