@@ -50,10 +50,12 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.TransformerCache;
 import org.daisy.util.xml.xslt.XSLTException;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 /**
@@ -63,14 +65,14 @@ import org.xml.sax.SAXException;
  */
 public abstract class ExternalTTS implements TTS {
 	
-	protected Map parameters;
-	protected RegexReplace generalReplace;
-	protected RegexReplace specificReplace;
-	protected UCharReplacer charReplacer;
-	protected String xsltFilename;
-	protected TransformerCache cache = new TransformerCache();
-	private static final String XSLT_FACTORY = "net.sf.saxon.TransformerFactoryImpl";
-	protected YearAnnouncer yearAnnouncer;
+	protected Map parameters;									// custom parameters
+	protected RegexReplace specificReplace;						// regexes: optional, applied before general regexes
+	protected RegexReplace generalReplace;						// regexes: optional, applied after specific regexes
+	protected UCharReplacer charReplacer;						// replacement of characters
+	protected String xsltFilename;								// xsl transformation of each sync point
+	protected TransformerCache cache = new TransformerCache();	// for fast loading of the xslt
+	private static final String XSLT_FACTORY = "net.sf.saxon.TransformerFactoryImpl";	// choose the right transformer factory
+	protected YearAnnouncer yearAnnouncer;						//  speaking years properly
 	
 	/**
 	 * Constructor taking a map of parameters/properties as parameter. 
@@ -205,7 +207,8 @@ public abstract class ExternalTTS implements TTS {
 	
 	/**
 	 * Receives a Map with parameters. In this implementation,
-	 * the values are all filenames and the keys are:
+	 * the values are all but one - characterFallbackStates - 
+	 * filenames and the keys are:
 	 * <ol>
 	 * <li>generalRegexFilename</li>
 	 * <li>specificRegexFilename</li>
@@ -215,10 +218,20 @@ public abstract class ExternalTTS implements TTS {
 	 * <li>characterExcludeFromSubstitution</li>
 	 * <li>characterFallbackStates</li>
 	 * </ol>
+	 * characterFallbackStates is a comma separated list of fallbacks,
+	 * the following are valid:
+	 * <ol>
+	 * <li>fallbackToNonSpacingMarkRemovalTransliteration</li>
+	 * <li>fallbackToLatinTransliteration</li>
+	 * <li>fallbackToUCD</li>
+	 * </ol>
 	 * However, there may be other values here that are read by the
 	 * TTS implementation, such as <code>ttsProperties</code>, which
 	 * should be a filename for a TTS specific properties file.
 	 * @param params the parameters.
+	 * @see se_tpb_speechgenerator.TTS#setParamMap(java.util.Map)
+	 */
+	/* (non-Javadoc)
 	 * @see se_tpb_speechgenerator.TTS#setParamMap(java.util.Map)
 	 */
 	public void setParamMap(Map params) {
@@ -247,12 +260,12 @@ public abstract class ExternalTTS implements TTS {
 					try {
 						charReplacer.addSubstitutionTable(t.toURI().toURL());
 					} catch (Exception e) {
-						//this.sendMessage(Level.WARNING,"Translation table " + t.getPath() + " exception: " + e.getMessage());
-						//TODO: log this
+						String msg = "Translation table " + t.getPath() + " exception: " + e.getMessage();
+						throw new IllegalArgumentException(msg);
 					}	
 				} else {
-					//this.sendMessage(Level.WARNING,"Translation table " + t.getPath() + " could not be found");
-					//TODO: log this
+					String msg = "Translation table " + t.getPath() + " could not be found";
+					throw new IllegalArgumentException(msg);
 				}
 			}
 
@@ -260,12 +273,12 @@ public abstract class ExternalTTS implements TTS {
 			// Set optional exclusion repertoire
 			String excludeCharset = (String) params.get("characterExcludeFromSubstitution");
 			if (excludeCharset != null) {
-				// try and catch this one?
-				// throws runtime exceptions on "missing" charset
-				// what to do with caught exception?
-				charReplacer.setExclusionRepertoire(Charset.forName(excludeCharset));
+				try {
+					charReplacer.setExclusionRepertoire(Charset.forName(excludeCharset));
+				} catch (UnsupportedOperationException e) {
+					throw new IllegalArgumentException(e.getMessage(), e);
+				}
 			}
-			
 			
 			// Set optional character fallback state(s)
 			if (null != params.get("characterFallbackStates")) {
@@ -292,17 +305,25 @@ public abstract class ExternalTTS implements TTS {
 				yearAnnouncer = 
 					new YearAnnouncer(new File((String) params.get("yearFilename")).toURL());
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				String msg = "Exception occurred during creation of " + 
+					params.get(TTSBuilder.CLASS) + "\n";
+				msg += e.getMessage();
+				throw new IllegalArgumentException(msg, e);
 			} catch (ParserConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				String msg = "Exception occurred during creation of " + 
+					params.get(TTSBuilder.CLASS) + "\n";
+				msg += e.getMessage();
+				throw new IllegalArgumentException(msg, e);
 			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				String msg = "Exception occurred during creation of " + 
+					params.get(TTSBuilder.CLASS) + "\n";
+				msg += e.getMessage();
+				throw new IllegalArgumentException(msg, e);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				String msg = "Exception occurred during creation of " + 
+					params.get(TTSBuilder.CLASS) + "\n";
+				msg += e.getMessage();
+				throw new IllegalArgumentException(msg, e);
 			}
 		}
 		
@@ -310,7 +331,7 @@ public abstract class ExternalTTS implements TTS {
 			try {
 				xsltFilename = (String) params.get("xsltFilename");
 				// load the transformer
-				/*Transformer t = */cache.get(xsltFilename, XSLT_FACTORY);
+				cache.get(xsltFilename, XSLT_FACTORY);
 			} catch (IOException e) {
 				System.err.println("Could not parse " + params.get("xsltFilename"));
 				System.err.println("Continuing without XSLT, ");
@@ -408,6 +429,41 @@ public abstract class ExternalTTS implements TTS {
 			return cs.toString();
 		}
 		return line;
+	}
+	
+	/**
+	 * Character substitution in textnodes. Recursive.
+	 * @param elem The element.
+	 */
+	protected void replaceUChars(Node node) {
+		if (node instanceof Document) {
+			// just make a recursive call using the document element as parameter
+			Document doc = (Document) node;
+			replaceUChars(doc.getDocumentElement());
+		
+		} else if (node instanceof Element) {
+			// line up the children, make a call for each one of them
+			Element elem = (Element) node;
+			NodeList kids = elem.getChildNodes();
+			for (int i = 0; i < kids.getLength(); i++) {
+				replaceUChars(kids.item(i));
+			}
+
+		} else if (node instanceof Text) {
+			// base case
+			// bingo! make the substitutions
+			Text text = (Text) node;
+			String original = text.getWholeText();
+			String replacement = replaceUChars(original);
+			if (!replacement.equals(original)) {
+				try {
+					text.replaceWholeText(replacement);
+				} catch (DOMException e) {
+					// text node is read only.
+					DEBUG("ExternalTTS#replaceUChars(Node): unable to replace: " + original + " to " + replacement);
+				}
+			}
+		}
 	}
 	
 	private void DEBUG(String msg) {

@@ -111,6 +111,7 @@ public final class SAPIImpl extends ExternalTTS {
 	protected long sayImpl(Document doc, File file) throws IOException, UnsupportedAudioFileException, TransformerRunException {		
 		String content = "";
 		try {
+			replaceUChars(doc);
 			content = xsltFilter(doc);
 		} catch (CatalogExceptionNotRecoverable e) {
 			// TODO Auto-generated catch block
@@ -156,6 +157,9 @@ public final class SAPIImpl extends ExternalTTS {
 		send(line);
 		timeVal = getAudioLength(file); 
 		
+		// why do I do this? Isn't it better to just die?
+		// since the generated book won't be what the user expected, go ahead and die.
+		/*
 		if (timeVal == 0 && noSelection != null) {
 			// an error occured, 
 			// try to speak without the sapi voice selection.
@@ -173,6 +177,7 @@ public final class SAPIImpl extends ExternalTTS {
 				parameters.remove("sapiVoiceSelection");
 			}
 		}
+		*/
 		
 		if (timeVal == 0) {
 			DEBUG("SAPIImpl#say(String, File): Line = \"" + line + "\"");
