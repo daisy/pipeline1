@@ -42,7 +42,7 @@
 				(http://xtras.timehouse.fi/download/speechXtradocs.pdf)
 			-->
 			
-			<!-- this is configuration for one tts impl. the "default" attribute should be se to true 
+			<!-- this is configuration for one tts impl. the "default" attribute may be se to true 
 				for one (1) configuration for each os. -->
 			
 			<tts default="true">
@@ -55,8 +55,6 @@
 				
 				<!-- character substitution choises -->
 				<param name="characterSubstitutionTables" value="${transformer_dir}/character-translation-table.xml"/>
-				<param name="characterFallbackStates" value="fallbackToNonSpacingMarkRemovalTransliteration"/>
-				<param name="characterExcludeFromSubstitution" value="ASCII"/>
 			</tts>
 		</lang>
 		
@@ -92,8 +90,6 @@
 				
 				<!-- character substitution choises -->
 				<param name="characterSubstitutionTables" value="${transformer_dir}/character-translation-table.xml"/>
-				<param name="characterFallbackStates" value="fallbackToNonSpacingMarkRemovalTransliteration"/>
-				<param name="characterExcludeFromSubstitution" value="ASCII"/>
 			</tts>
 		</lang>
 			
