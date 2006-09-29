@@ -1,7 +1,7 @@
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:output method="text" omit-xml-declaration="yes" standalone="no" indent="no"/>
 	
-	
+	<!--
 	<xsl:template match="em">
 		<xsl:text>&lt;emph></xsl:text>
 		<xsl:apply-templates />
@@ -14,14 +14,14 @@
 		<xsl:apply-templates />
 		<xsl:text>&lt;/emph></xsl:text>
 	</xsl:template>	
-	
+	-->
 	<!--
 	<xsl:template match="text()">
 		<xsl:value-of select="replace(replace(current(), '&amp;', '&amp;amp;'), '&lt;', '&amp;lt;')"/>
 	</xsl:template>
 	-->
 	<xsl:template match="text()">
-		<xsl:value-of select="replace(current(), '&lt;', '&amp;lt;')"/>
+		<xsl:value-of select="replace(replace(current(), '&lt;', '&amp;lt;'), '&gt;', '&amp;gt')"/>
 	</xsl:template>
 	
 	<xsl:template match="br">
