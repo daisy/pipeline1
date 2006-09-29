@@ -34,68 +34,95 @@ import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
 import org.python.util.jython;
 import org.xml.sax.EntityResolver;
+import org.daisy.util.execution.Command;
+import org.daisy.util.execution.ExecutionException;
+
 
 /**
  * @author Linus Ericson
  */
 public class RTF2DTBook extends Transformer {
 
-    public RTF2DTBook(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-        super(inListener, eventListeners, isInteractive);        
-    }
+	private static String pythonCommand = "python.exe";
 
-    protected boolean execute(Map parameters) throws TransformerRunException {
-        // Read parameters
-        String rtfFile = (String)parameters.remove("rtf");
-        String dtbookFile = (String)parameters.remove("dtbook");
-        String python = (String)parameters.remove("python");
-        String stylesheet = (String)parameters.remove("stylesheet");
-        String xsltFactory = (String)parameters.remove("factory"); 
+	public RTF2DTBook(InputListener inListener, Set eventListeners, Boolean isInteractive) {
+		super(inListener, eventListeners, isInteractive);        
+	}
 
-        // Output the XML into a temporary file
-        TempFile xmlFile;
-        try {
-            xmlFile = new TempFile();
-        } catch (IOException e) {
-            throw new TransformerRunException(i18n("CANNOT_CREATE_TEMP_FILE"), e);
-        }
-        
-        // Setup jython args
-        String[] args = new String[7];
-        args[0] = FilenameOrFileURI.toFile(python).getAbsolutePath();
-        args[1] = "--headings-to-sections";
-        args[2] = "--lists";
-        args[3] = "--indent=1";
-        args[4] = "--no-empty-para";
-        args[5] = "--output=" + xmlFile.getFile().getAbsolutePath();
-        args[6] = FilenameOrFileURI.toFile(rtfFile).getAbsolutePath();;
-        
-        /*
-        System.err.println("arg0: " + args[0]);
-        System.err.println("arg1: " + args[1]);
-        System.err.println("arg2: " + args[2]);
-        System.err.println("arg3: " + args[3]);
-        */
-        
-        // Run jython
-        sendMessage(Level.FINER, i18n("RUNNING_JYTHON"));
-        this.progress(0.05);
-        jython.main(args);
-                
-        // Finish up with some XSLT
-        sendMessage(Level.FINER, i18n("APPLYING_XSLT"));
-        this.progress(0.70);
-        try {
-            EntityResolver resolver = CatalogEntityResolver.getInstance();
-            Stylesheet.apply(xmlFile.getFile().getAbsolutePath(), stylesheet, dtbookFile, xsltFactory, null, resolver);
-            this.progress(0.99);
-        } catch (XSLTException e) {
-            throw new TransformerRunException(i18n("ERROR_APPLYING_XSLT"), e);
-        } catch (CatalogExceptionNotRecoverable e) {
-            throw new TransformerRunException(i18n("ENTITY_RESOLVER_ERROR"), e);
-        }
-        
-        return true;
-    }
+	protected boolean execute(Map parameters) throws TransformerRunException {
+		// Read parameters
+		String rtfFile = (String)parameters.remove("rtf");
+		String dtbookFile = (String)parameters.remove("dtbook");
+		String python = (String)parameters.remove("python");
+		String stylesheet = (String)parameters.remove("stylesheet");
+		String xsltFactory = (String)parameters.remove("factory"); 
+
+		// Output the XML into a temporary file
+		TempFile xmlFile;
+		try {
+			xmlFile = new TempFile();
+		} catch (IOException e) {
+			throw new TransformerRunException(i18n("CANNOT_CREATE_TEMP_FILE"), e);
+		}
+
+		// Setup jython args
+		String[] args = new String[8];
+		args[0] = pythonCommand;
+		args[1] = FilenameOrFileURI.toFile(python).getAbsolutePath();
+		args[2] = "--headings-to-sections";
+		args[3] = "--lists";
+		args[4] = "--indent=1";
+		args[5] = "--no-empty-para";
+		args[6] = "--output=" + xmlFile.getFile().getAbsolutePath();
+		args[7] = FilenameOrFileURI.toFile(rtfFile).getAbsolutePath();;
+
+		/*
+		System.err.println("arg0: " + args[0]);
+		System.err.println("arg1: " + args[1]);
+		System.err.println("arg2: " + args[2]);
+		System.err.println("arg3: " + args[3]);
+		System.err.println("arg4: " + args[4]);
+		System.err.println("arg5: " + args[5]);
+		System.err.println("arg6: " + args[6]);
+		 */
+
+		// Run python
+		sendMessage(Level.FINER, i18n("RUNNING_PYTHON"));
+		this.progress(0.05);
+
+
+		try {
+			Command.execute(args);
+		} catch (ExecutionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
+
+
+		/*
+		System.out.println("The length of the temp file is: " + xmlFile.getFile().length());
+		If the transformer fails, no tempfile is being created.  The length of the file
+		is 0 and causes the Stylesheet.apply to fail.
+		 */
+		
+			// Finish up with some XSLT
+			sendMessage(Level.FINER, i18n("APPLYING_XSLT"));
+			this.progress(0.70);
+			try {
+				EntityResolver resolver = CatalogEntityResolver.getInstance();
+				Stylesheet.apply(xmlFile.getFile().getAbsolutePath(), stylesheet, dtbookFile, xsltFactory, null, resolver);
+				this.progress(0.99);
+			} catch (XSLTException e) {
+				throw new TransformerRunException(i18n("CANNOT_CREATE_TEMP_FILE"), e);
+
+			} catch (CatalogExceptionNotRecoverable e) {
+				throw new TransformerRunException(i18n("ENTITY_RESOLVER_ERROR"), e);
+			}
+
+			return true;
+		
+
+		
+	}
 
 }
