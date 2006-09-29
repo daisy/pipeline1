@@ -58,11 +58,11 @@ that end users may come in contact with that information. -->
 		
 <h2 id="inputReqs">Input Requirements</h2>
 <!-- contract definition: detailed requirements on input nature -->
-	<p>This transformer is written to work with a manuscript, that is a dtbook-2005-1 document 
-		possibly enriched with elements and attributes from other namespaces.
+	<p>This transformer is written to work with a manuscript, that is a dtbook-2005-1 or dtbook-2005-2
+	 document possibly enriched with elements and attributes from other namespaces.
 	The input document must be "synch point normalized", see
-	<a title="se_tpb_synchPointNormalizer" href="../se_tpb_synchPointNormalizer/doc.html">
-		se_tpb_synchPointNormalizer
+	<a title="se_tpb_syncPointNormalizer" href="../se_tpb_syncPointNormalizer/doc.html">
+		se_tpb_syncPointNormalizer
 	</a> for such transformation.
 	</p>
 	
@@ -323,7 +323,7 @@ then throw an exception and abort.</p>
 		
 		<li><tt>lang</tt>-siblings don't have the same <tt>lang</tt>-attribute value.</li>
 		
-		<li>For each <tt>os</tt>, there is one descendant <tt>tts</tt> which has got the
+		<li>For each <tt>os</tt>, there is not more than one descendant <tt>tts</tt> which has got the
 		attribute <tt>default="true"</tt> to be used as fallback.</li>
 		
 		<li>For each <tt>tts</tt>, there must not be two descendant <tt>param</tt>s with
@@ -344,16 +344,58 @@ then throw an exception and abort.</p>
 		what to do. This gives a developer great possibilities when it comes to creating a TTS wrapper 
 		and its configuration. If the Java wrapper extends <tt>se_tpb_speechgenerator.ExternalTTS</tt>, 
 		some functionality is available. By calling the <tt>void setParamMap(java.util.Map)</tt>
-		the super class attempts to read the following parameters, 
-		all but <tt>translationTableEncoding</tt> are filenames - use absolute paths:
+		the super class attempts to read the following parameters:
+	
 	</p>
 	<ul>
-		<li><tt>generalRegexFilename</tt> - general "always use"-re:s.</li>
-		<li><tt>specificRegexFilename</tt> - book specific re:s.</li>
-		<li><tt>characterTranslationTable</tt> 
-			- and if was not <tt>null</tt>, it'll look for <tt>translationTableEncoding</tt></li>
-		<li><tt>yearFilename</tt></li>
-		<li><tt>xsltFilename</tt></li>
+		<li>
+			<tt>generalRegexFilename</tt> 
+			- general "always use"-re:s. Absolute path to file.
+		</li>
+		
+		<li>
+			<tt>specificRegexFilename</tt> 
+			- book specific re:s. Absolute path to file.
+		</li>
+		
+		<li>
+			<tt>characterSubstitutionTables</tt> 
+			- a comma separated list of absolute file paths to character substitution tables. 
+			If this parameter is present, the program will look for the following two:
+			<ul>
+				<li>
+					<tt>characterExcludeFromSubstitution</tt> 
+					- name of character set to exclude from substitution.
+				</li>
+				
+				<li>
+					<tt>characterFallbackStates</tt>
+					- what to do if no mapping is found, the following values are valid:
+					<dl>
+						<dt>fallbackToNonSpacingMarkRemovalTransliteration</dt>
+						<dd>Determines whether a character substitution attempt should fallback 
+						to a transliteration to nonspacing mark removal (typically disaccentuation) 
+						attempt if a replacement text was not found in user provided substitution 
+						table(s).
+						</dd>
+						
+						<dt>fallbackToLatinTransliteration</dt>
+						<dd>Determines whether a character substitution attempt should fallback 
+						to a transliteration to Latin attempt if a replacement text was not 
+						found in user provided substitution table(s).
+						</dd>
+						
+						<dt>fallbackToUCD</dt>
+						<dd>Determines whether a character substitution attempt should fallback to 
+						names in the UCD table if a replacement text is not found in user provided 
+						substitution table(s).
+						</dd>
+					</dl> 
+				</li>
+			</ul>
+		</li>
+		<li><tt>yearFilename</tt>. Absolute path to file.</li>
+		<li><tt>xsltFilename</tt>. Absolute path to file.</li>
 	</ul>
 	<p>This will make calls to the following super class methods do something useful:</p>
 	<ul>
@@ -366,8 +408,8 @@ then throw an exception and abort.</p>
 		<li><tt>String yearFilter(String)</tt>
 			-Performs year specific regex search-replace, replacing numerals with text.</li>
 		
-		<li><tt>String replaceUChars(String)</tt>
-			-Replaces characters, most likely configured to filter characters your TTS can't handle.</li>
+		<li><tt>String replaceUChars(String)</tt> and <tt>void replaceUChars(Node)</tt> (recursive)
+			-Replaces characters, most likely configured (by you) to filter characters your TTS can't handle.</li>
 	</ul>
 	
 	
@@ -427,13 +469,13 @@ then throw an exception and abort.</p>
 				--&gt;
 				&lt;param name="sapiVoiceSelection" value="Gender=Male"/&gt;
 	
-				&lt;!-- An ability to filter characters and replace them with ASCII-strings. --&gt;
+				&lt;!-- An ability to filter characters and replace them with custom strings. --&gt;
 				&lt;param 
-				    name="characterTranslationTable" 
-				    value="${transformer_dir}/characterTranslationTable.txt"/&gt;
+				    name="characterSubstitutionTables" 
+				    value="${transformer_dir}/character-translation-table.xml"/&gt;
 	
 				&lt;!-- The encoding of the character translation table. --&gt;
-				&lt;param name="translationTableEncoding" value="utf-8"/&gt;		
+				&lt;param name="characterFallbackStates" value="fallbackToLatinTransliteration"/&gt;		
 			&lt;/tts&gt;
 		&lt;/lang&gt;
 		
@@ -445,8 +487,8 @@ then throw an exception and abort.</p>
 				&lt;param name="xsltFilename" value="${transformer_dir}/xslt/transform.xsl"/&gt;
 				&lt;param name="yearFilename" value="${transformer_dir}/config/year_se.xml"/&gt;
 				&lt;param name="sapiVoiceSelection" value="Language=41D"/&gt;
-				&lt;param name="characterTranslationTable" value="${transformer_dir}/characterTranslationTable.txt"/&gt;
-				&lt;param name="translationTableEncoding" value="utf-8"/&gt;
+				&lt;param name="characterSubstitutionTables" value="${transformer_dir}/character-translation-table.xml"/&gt;
+				&lt;param name="characterFallbackStates" value="fallbackToLatinTransliteration"/&gt;
 			&lt;/tts&gt;
 		&lt;/lang&gt;
 	&lt;/os&gt;
@@ -483,8 +525,8 @@ then throw an exception and abort.</p>
 		The class is abstract, leaving three methods left to implement:
 	</p>
 	<ul>
-		<li><tt>long se_tpb_speechgenerator.ExternalTTS().sayImpl(Document synchPoint, File outputFile)</tt></li>
-		<li><tt>long se_tpb_speechgenerator.ExternalTTS().sayImpl(String synchPoint, File outputFile)</tt></li>
+		<li><tt>long se_tpb_speechgenerator.ExternalTTS().sayImpl(Document syncPoint, File outputFile)</tt></li>
+		<li><tt>long se_tpb_speechgenerator.ExternalTTS().sayImpl(String syncPoint, File outputFile)</tt></li>
 		<li><tt>void se_tpb_speechgenerator.TTS.close()</tt></li>
 	</ul>
 	<p>The parameters configured in the TTS Builder Configuration will be passed to a constructor accepting a 
@@ -511,8 +553,8 @@ then throw an exception and abort.</p>
 		be present on those elements, making the synch point search trivial. 
 		Identifying synch points should only be assigned to 
 		one transformer, and a possible candidate in the Narrator transformer chain would be 
-		<a title="se_tpb_synchPointNormalizer" 
-			href="../se_tpb_synchPointNormalizer">se_tpb_synchPointNormalizer</a>.
+		<a title="se_tpb_syncPointNormalizer" 
+			href="../se_tpb_syncPointNormalizer">se_tpb_syncPointNormalizer</a>.
 	</li>
 	<li>RNG/Schematron test the Speech Generator Configuration file before running.</li>
 </ul>
