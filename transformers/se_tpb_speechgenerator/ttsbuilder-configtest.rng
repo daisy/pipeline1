@@ -110,7 +110,7 @@
 	
 	<sch:pattern name="Default TTS defined for each OS">
 		<sch:rule context="/ttsbuilder/os">
-			<sch:assert test="count(lang/tts[@default='true']) = 1">One default TTS must be defined for each operating system, no more or no less</sch:assert>
+			<sch:assert test="count(lang/tts[@default='true']) &lt;= 1">One default TTS may be defined for each operating system, no more.</sch:assert>
 		</sch:rule>
 	</sch:pattern>
 
