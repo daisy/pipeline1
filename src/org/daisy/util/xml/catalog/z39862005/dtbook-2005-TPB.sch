@@ -93,6 +93,14 @@
   	</sch:rule>  	
   </sch:pattern>  
   
+  <!-- Rule 30: paragraph cannot be sibling with div@class=pgroup -->
+  <sch:pattern name="dtbook_TPB_pgroupSibling" id="dtbook_TPB_pgroupSibling">
+  	<sch:rule context="dtbk:div[@class='pgroup']">
+  		<sch:report test="preceding-sibling::dtbk:p">[tpb30] paragraph group (&lt;div class="pgroup"&gt;) may not be sibling with a paragraph (&lt;p&gt;)</sch:report>
+  		<sch:report test="following-sibling::dtbk:p">[tpb30] paragraph group (&lt;div class="pgroup"&gt;) may not be sibling with a paragraph (&lt;p&gt;)</sch:report>
+  	</sch:rule>  	
+  </sch:pattern>  
+  
   <sch:pattern name="dtbook_TPB_IdValue" id="dtbook_TPB_IdValue">
   	<sch:rule context="*[@id]">
   		<sch:assert test="normalize-space(@id)=@id">ID attributes may not contain whitespace</sch:assert>
@@ -506,5 +514,31 @@
        <sch:report test="starts-with(@name, 'DC:') or starts-with(@name, 'Dc:') or starts-with(@name, 'dC:')">[tpb89] Incorrect Dublin core metadata prefix</sch:report>
     </sch:rule>
   </sch:pattern>
+  
+  <!-- Rule 93: Some elements may not start of end with whitespace -->
+  <sch:pattern name="dtbook_TPB_trimmedWhitespace" id="dtbook_TPB_trimmedWhitespace">
+    <sch:rule context="dtbk:*[self::dtbk:h1 or self::dtbk:h2 or self::dtbk:h3 or self::dtbk:h4 or self::dtbk:h5 or self::dtbk:h6 or self::dtbk:hd]">
+    	<sch:report test="normalize-space(substring(.,1,1))=''">[tpb93] element <name/> may not have leading whitespace</sch:report>
+    	<sch:report test="normalize-space(substring(.,string-length(.),1))=''">[tpb93] element <name/> may not have trailing whitespace</sch:report>
+    </sch:rule>
+  </sch:pattern>  
+  
+  <!-- Rule 94: span attribute on col and colgroup elements -->
+  <sch:pattern name="dtbook_TPB_spanColColgroup" id="dtbook_TPB_spanColColgroup">
+    <sch:rule context="dtbk:*[self::dtbk:col or self::dtbk:colgroup]">
+    	<sch:report test="@span and (translate(@span,'0123456789','')!='' or starts-with(@span,'0'))">[tpb94] span on <name/> element must be numeric</sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 95: rowspan and colspan on td/th elements -->
+  <sch:pattern name="dtbook_TPB_rowspanColspan" id="dtbook_TPB_rowspanColspan">
+    <sch:rule context="dtbk:*[self::dtbk:td or self::dtbk:th]">
+    	<sch:report test="@rowspan and (translate(@rowspan,'0123456789','')!='' or starts-with(@rowspan,'0'))">[tpb95] rowspan on <name/> element must be numeric</sch:report>
+    	<sch:report test="@colspan and (translate(@colspan,'0123456789','')!='' or starts-with(@colspan,'0'))">[tpb95] colspan on <name/> element must be numeric</sch:report>
+    	
+    	<sch:report test="@rowspan and number(@rowspan) > count(parent::dtbk:tr/following-sibling::dtbk:tr)+1">[tpb95] rowspan attribute value on <name/> element must not be larger than the number of rows left in the table</sch:report>
+    </sch:rule>
+  </sch:pattern>  
       
 </sch:schema>
+
