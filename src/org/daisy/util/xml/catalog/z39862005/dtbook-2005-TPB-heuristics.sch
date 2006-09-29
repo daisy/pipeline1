@@ -132,5 +132,12 @@
     	<sch:report test="ancestor::dtbk:table">[tpbHeuM17] This is an image group inside a table. Would a simple image element be enough?</sch:report>
     </sch:rule>
   </sch:pattern> 
+  
+  <!-- Rule M18: xml:lang on root element is neither swedish nor english -->
+  <sch:pattern name="dtbook_TPBheuristic_rootXmlLang" id="dtbook_TPBheuristic_rootXmlLang">
+    <sch:rule context="dtbk:dtbook">
+    	<sch:report test="not(lang('sv')) and not(lang('en'))">[tpbHeuM18] xml:lang on root element is neither english nor swedish. Is that correct?</sch:report>
+    </sch:rule>
+  </sch:pattern> 
     
 </sch:schema>
