@@ -102,13 +102,13 @@ VIAddVersionKey CompanyWebsite "${URL}"
 VIAddVersionKey FileVersion ""
 VIAddVersionKey FileDescription ""
 VIAddVersionKey LegalCopyright ""
-InstallDirRegKey HKLM "${REGKEY}" Path
+InstallDirRegKey HKCU "${REGKEY}" Path
 ShowUninstDetails show
 
 ### Installer sections ########################################################
 Section -Main SEC0000
     # Register section
-    WriteRegStr HKLM "${REGKEY}\Components" Main 1
+    WriteRegStr HKCU "${REGKEY}\Components" Main 1
 SectionEnd
 
 
@@ -129,7 +129,7 @@ Section -AppDMFC SEC0002
     Delete $INSTDIR\org.daisy.dmfc.zip 
     
     # Register section
-    WriteRegStr HKLM "${REGKEY}\Components" AppDMFC 1
+    WriteRegStr HKCU "${REGKEY}\Components" AppDMFC 1
 SectionEnd
 
 
@@ -173,7 +173,7 @@ Section -AppGUI SEC0003
     RMDir /r $INSTDIR\_swttmp_
     
     # Register section
-    WriteRegStr HKLM "${REGKEY}\Components" AppGUI 1
+    WriteRegStr HKCU "${REGKEY}\Components" AppGUI 1
 SectionEnd
 
 
@@ -225,14 +225,14 @@ Section -AppOther SEC0004
     #Call ReplaceLineStr
     
     # Register section
-    WriteRegStr HKLM "${REGKEY}\Components" AppOther 1
+    WriteRegStr HKCU "${REGKEY}\Components" AppOther 1
 SectionEnd
 
 
 Section -post SEC0001
     # Update registry
-    WriteRegStr HKLM "${REGKEY}" Path $INSTDIR
-    WriteRegStr HKLM "${REGKEY}" StartMenuGroup $StartMenuGroup
+    WriteRegStr HKCU "${REGKEY}" Path $INSTDIR
+    WriteRegStr HKCU "${REGKEY}" StartMenuGroup $StartMenuGroup
     
     WriteUninstaller $INSTDIR\uninstall.exe
     
@@ -248,23 +248,23 @@ Section -post SEC0001
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\License.lnk" $INSTDIR\dmfc\licenses\LGPL\lgpl.txt
     
     # Create uninstall registry info
-    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
-    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
-    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" Publisher "${COMPANY}"
-    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" URLInfoAbout "${URL}"
-    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayIcon $INSTDIR\uninstall.exe
-    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" UninstallString $INSTDIR\uninstall.exe
-    WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
-    WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
+    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
+    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
+    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" Publisher "${COMPANY}"
+    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" URLInfoAbout "${URL}"
+    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayIcon $INSTDIR\uninstall.exe
+    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" UninstallString $INSTDIR\uninstall.exe
+    WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
+    WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
     
     # Register section
-    WriteRegStr HKLM "${REGKEY}\Components" post 1
+    WriteRegStr HKCU "${REGKEY}\Components" post 1
 SectionEnd
 
 ### Macro for selecting uninstaller sections ##################################
 !macro SELECT_UNSECTION SECTION_NAME UNSECTION_ID
     Push $R0
-    ReadRegStr $R0 HKLM "${REGKEY}\Components" "${SECTION_NAME}"
+    ReadRegStr $R0 HKCU "${REGKEY}\Components" "${SECTION_NAME}"
     StrCmp $R0 1 0 next${UNSECTION_ID}
     !insertmacro SelectSection "${UNSECTION_ID}"
     GoTo done${UNSECTION_ID}
@@ -276,13 +276,13 @@ done${UNSECTION_ID}:
 
 ### Uninstaller sections ######################################################
 Section /o un.Main UNSEC0000
-    DeleteRegValue HKLM "${REGKEY}\Components" Main
+    DeleteRegValue HKCU "${REGKEY}\Components" Main
 SectionEnd
 
 Section /o un.AppDMFC UNSEC0002
     RMDir /r /REBOOTOK $INSTDIR\dmfc
     
-    DeleteRegValue HKLM "${REGKEY}\Components" AppDMFC
+    DeleteRegValue HKCU "${REGKEY}\Components" AppDMFC
 SectionEnd
 
 Section /o un.AppGUI UNSEC0003
@@ -299,28 +299,28 @@ Section /o un.AppGUI UNSEC0003
     
     
 
-    DeleteRegValue HKLM "${REGKEY}\Components" AppGUI
+    DeleteRegValue HKCU "${REGKEY}\Components" AppGUI
 SectionEnd
 
 Section /o un.AppOther UNSEC0004
     RMDir /r /REBOOTOK $INSTDIR\lame
     RMDir /r /REBOOTOK $INSTDIR\jython
 
-    DeleteRegValue HKLM "${REGKEY}\Components" AppOther
+    DeleteRegValue HKCU "${REGKEY}\Components" AppOther
 SectionEnd
 
 Section un.post UNSEC0001
-    DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
+    DeleteRegKey HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI\License.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\License.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Release Notes.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
-    DeleteRegValue HKLM "${REGKEY}" StartMenuGroup
-    DeleteRegValue HKLM "${REGKEY}" Path
-    DeleteRegKey /IfEmpty HKLM "${REGKEY}\Components"
-    DeleteRegKey /IfEmpty HKLM "${REGKEY}"
+    DeleteRegValue HKCU "${REGKEY}" StartMenuGroup
+    DeleteRegValue HKCU "${REGKEY}" Path
+    DeleteRegKey /IfEmpty HKCU "${REGKEY}\Components"
+    DeleteRegKey /IfEmpty HKCU "${REGKEY}"
     RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup\Licenses\GUI
     RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup\Licenses\Framework
     RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup\Licenses
@@ -371,7 +371,7 @@ Function .onInit
     
     Var /GLOBAL ALREADY_INSTALLED
     ClearErrors
-    ReadRegStr $ALREADY_INSTALLED HKLM "${REGKEY}" Path
+    ReadRegStr $ALREADY_INSTALLED HKCU "${REGKEY}" Path
     IfErrors continue
     MessageBox MB_YESNO|MB_ICONQUESTION "This software is alreay installed in$\r$\n $ALREADY_INSTALLED$\r$\n$\r$\nInstall anyway?" IDYES continue
     Abort "Installation aborted (already installed)"
@@ -381,8 +381,8 @@ FunctionEnd
 
 ### Uninstaller functions #####################################################
 Function un.onInit
-    ReadRegStr $INSTDIR HKLM "${REGKEY}" Path
-    ReadRegStr $StartMenuGroup HKLM "${REGKEY}" StartMenuGroup
+    ReadRegStr $INSTDIR HKCU "${REGKEY}" Path
+    ReadRegStr $StartMenuGroup HKCU "${REGKEY}" StartMenuGroup
     !insertmacro SELECT_UNSECTION Main ${UNSEC0000}
     !insertmacro SELECT_UNSECTION AppDMFC ${UNSEC0002}
     !insertmacro SELECT_UNSECTION AppGUI ${UNSEC0003}
