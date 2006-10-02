@@ -43,7 +43,7 @@ import org.daisy.util.execution.ExecutionException;
  */
 public class RTF2DTBook extends Transformer {
 
-	private static String pythonCommand = "python.exe";
+	private static String pythonCommand = System.getProperty("dmfc.python.path");
 
 	public RTF2DTBook(InputListener inListener, Set eventListeners, Boolean isInteractive) {
 		super(inListener, eventListeners, isInteractive);        
