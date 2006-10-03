@@ -1,3 +1,57 @@
+----------------- dmfc 3d release tasklist (future)-------------------
+id			what									who			status
+----------------------------------------------------------------------		
+jarness		ensure jar compatibility of core and
+			all transformers						
+gui			gui evaluation, future plan			
+			including Mac compatibility
+			and possible move to RCP
+installer	move to a platform independent
+			installer package
+users		build a strategy for usability
+			improvements (information packages
+			script modification, etc) 			
+doc			a stabilized, less duplicating
+			documentation strategy (doc.html
+			and tdf interaction, etc)	
+
+-- known transformer work --
+zedTo202	finalize downgrade migrator
+202ToZed	finalize upwards migrator
+dtbook		finalize dtbook migration suite			
+braille		braille-in-daisy impl
+
+
+--------------- dmfc 2nd release tasklist (20061016) -----------------
+id			what									who			status
+----------------------------------------------------------------------		
+rtf			ditch jython, move to shell,
+			use new transformer						Laurie		DONE
+jython		remove all jython related
+			stuff from installer					Linus 		
+license1	collect rudimentary license info		Laurie						
+license2	decide on approach						All
+license3	impl any changes in
+			installer or GUI relating
+			to license solution						Laurie
+svn			port to SVN, clean out
+			redundant packages and
+			transformers							LinusMarkus
+scripts		changes to all scripts
+			relating to cleanup						LinusMarkus
+zedval		include ZedVal in
+			int_daisy_validator						Markus
+woodstox	test 3.0.1								Markus			
+installer	build new installer
+			(new transformers, etc)					Laurie			
+testbuild	build rel2 and test						Laurie
+
+doc.html	access to doc.html
+			from transformer list		
+			(low prio)								Laurie 
+
+
+
 ------------------------- dmfc fpa tasklist --------------------------
 id			what									who			status
 ----------------------------------------------------------------------		
