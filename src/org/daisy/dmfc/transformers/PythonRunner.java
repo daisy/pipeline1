@@ -26,13 +26,17 @@ import java.util.regex.Pattern;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
-import org.python.util.jython;
+import org.daisy.util.execution.Command;
+import org.daisy.util.execution.ExecutionException;
 
 /**
  * 
  * @author Linus Ericson
  */
 public class PythonRunner extends Transformer {
+	
+	private static String pythonCommand = null;
+	private static boolean supported = false;
 	
 	private static Pattern variablePattern = Pattern.compile("\\$\\{(\\w+)\\}");
 
@@ -52,22 +56,22 @@ public class PythonRunner extends Transformer {
 		}
 		
 		// Create arguments array
-		String[] args = new String[argc];
+		String[] args = new String[argc + 1];
+		args[0] = pythonCommand;
 		for (int i = 0; i < argc; ++i) {
 			String argNum = "arg" + String.valueOf(i);
-			args[i] = expandCommandPattern((String)parameters.get(argNum), parameters);
+			args[i+1] = expandCommandPattern((String)parameters.get(argNum), parameters);
 			//System.err.println("Item: '" + argNum + "', '" + (String)parameters.get(argNum) + "', '" + args[i] + "'");
 		}
-		/*
-		// Read parameters
-		String commandPattern = (String)parameters.remove("python_command");   
 		
-		// Expand command pattern
-        String command = expandCommandPattern(commandPattern, parameters); 
-        
-        System.err.println("Command: " + command);*/
-        jython.main(args);
-		return false;
+		int result = -1;
+		try {
+			result = Command.execute(args);
+		} catch (ExecutionException e) {
+			throw new TransformerRunException(e.getMessage(), e);
+		}
+		
+		return result == 0;
 	}
 	
 	private String expandCommandPattern(String commandPattern, Map parameters) throws TransformerRunException {
@@ -87,5 +91,29 @@ public class PythonRunner extends Transformer {
         matcher.appendTail(sb);
         return sb.toString();
     }
+	
+	public static boolean isSupported() {
+		boolean result = supported;
+		if (pythonCommand == null) {
+			synchronized (PythonRunner.class) {
+				if (pythonCommand == null) {
+					pythonCommand = System.getProperty("dmfc.python.path");
+					String[] params = new String[2];
+					params[0] = pythonCommand;
+					params[1] = "--version";
+					
+					try {
+						if (Command.execute(params) == 0) {
+							result = true;
+						}
+					} catch (ExecutionException e) {						
+						e.printStackTrace();
+						result = false;
+					}
+				}
+			}
+		}
+		return result;
+	}
 
 }
