@@ -6,6 +6,9 @@ jarness		ensure jar compatibility of core and
 gui			gui evaluation, future plan			
 			including Mac compatibility
 			and possible move to RCP
+core		core api evaluation, review
+			of feature requests, possible
+			core api iter 2			
 installer	move to a platform independent
 			installer package
 users		build a strategy for usability
