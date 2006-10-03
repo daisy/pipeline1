@@ -49,6 +49,9 @@ testbuild	build rel2 and test						Laurie
 doc.html	access to doc.html
 			from transformer list		
 			(low prio)								Laurie 
+-- known transformer work --
+dtbook		first version of
+			dtbook migrator							Per+Markus			
 
 
 
