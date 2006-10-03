@@ -14,13 +14,14 @@ users		build a strategy for usability
 doc			a stabilized, less duplicating
 			documentation strategy (doc.html
 			and tdf interaction, etc)	
-
+			
 -- known transformer work --
 zedTo202	finalize downgrade migrator
 202ToZed	finalize upwards migrator
 dtbook		finalize dtbook migration suite			
 braille		braille-in-daisy impl
-
+narrator	implement narrator refactoring 
+			list (to be submitted)
 
 --------------- dmfc 2nd release tasklist (20061016) -----------------
 id			what									who			status
