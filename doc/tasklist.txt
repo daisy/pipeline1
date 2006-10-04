@@ -33,7 +33,7 @@ id			what									who			status
 rtf			ditch jython, move to shell,
 			use new transformer						Laurie		DONE
 jython		remove all jython related
-			stuff from installer					Linus 		
+			stuff from installer					Linus 		DONE
 license1	collect rudimentary license info		Laurie						
 license2	decide on approach						All
 license3	impl any changes in
