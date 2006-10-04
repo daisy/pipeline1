@@ -80,6 +80,7 @@ Release Technician Instructions/Manual
    	The script uses the lame3.96.1.zip file.  There is no need to unzip it.
    	   	   	
 
+Deprecated October 2, 2006 - changed to external python.
   2.  Jython can be downloaded at http://www.jython.org. Use release 2.2 or newer
    (as of august 2006 this is the development version)
    
@@ -142,7 +143,7 @@ Create the Installer for DMFC and GUI
 	   
 	5.   After .NET is installed,  run the dmfcgui-1-0b1.exe file to install dmfc in the Start/Programs menu. 
 	   
-	   
+	6.  Install python from http://www.python.org/download/ to download and install python. 
 	
 
 Place build files on Sourceforge
