@@ -6,9 +6,6 @@ jarness		ensure jar compatibility of core and
 gui			gui evaluation, future plan			
 			including Mac compatibility
 			and possible move to RCP
-core		core api evaluation, review
-			of feature requests, possible
-			core api iter 2			
 installer	move to a platform independent
 			installer package
 users		build a strategy for usability
@@ -17,6 +14,10 @@ users		build a strategy for usability
 doc			a stabilized, less duplicating
 			documentation strategy (doc.html
 			and tdf interaction, etc)	
+logo		design and include new logo				KK LS
+websites	update dmfc and gui websites			KK LS
+			to use DAISY css and php
+
 			
 -- known transformer work --
 zedTo202	finalize downgrade migrator
@@ -62,8 +63,8 @@ dtbook		first version of
 ------------------------- dmfc fpa tasklist --------------------------
 id			what									who			status
 ----------------------------------------------------------------------		
-bugs		Remaining bugs in GUI					Laurie
-man			Short GUI manual						Laurie
+bugs		Remaining bugs in GUI					Laurie		DONE
+man			Short GUI manual						Laurie		DONE
 scrpts		all scripts committed 					Linus       DONE
 samples 	sample dtbook,rtf to doc/examples		Linus       DONE
 desc		script walkthrough 
@@ -88,13 +89,13 @@ jdocsite	uploading of javadocs					Markus
 sf.net		brushup of sourceforge site				Markus
 dorg		brushup of daisy.org site				Markus
 
-build 		Final package building using ant		Laurie
-submit		package download submissions at sf		Laurie
+build 		Final package building using ant		Laurie		DONE
+submit		package download submissions at sf		Laurie		DONE
 (see http://sourceforge.net/docman/display_doc.php?docid=6445&group_id=1
 
-dorgdwn		installer to daisy.org upload			Laurie
+dorgdwn		installer to daisy.org upload			Laurie		DONE
 
-reltech		Release technician handbook				Laurie		DONE (awaiting finalization)
+reltech		Release technician handbook				Laurie		DONE (But added to as needed)
   (can be finalized after FPA)
 
 tracker		Establish which tracker(s) to use		All			DONE
