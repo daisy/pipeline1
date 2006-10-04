@@ -20,9 +20,6 @@
 ;   Lame for windows can be downloaded at http://www.rarewares.org/mp3.html. Use the latest
 ;   stable release.
 ;
-;   Jython can be downloaded at http://www.jython.org. Use release 2.2 or newer
-;   (as of august 2006 this is the development version)
-
 
 ; Usage
 ;   
@@ -39,7 +36,7 @@
 ;
 ;   NSIS
 ;     Make sure the defines in the 'Defines' part are correct. Most importantly,
-;     make sure the ECLIPSEDIR, JYTHONDIR and LAMEDIR defines are correct.
+;     make sure the ECLIPSEDIR and LAMEDIR defines are correct.
 ;
 ;     (optionally) Change the value of the 'OutFile' command in the 
 ;     'Installer attributes' part.
@@ -57,10 +54,6 @@ Name "DMFC GUI"
 ; Path to Eclipse directory
 !define ECLIPSEDIR "C:\Program Files\eclipse-3.2"
 
-; Path to and name of the Jython install JAR
-!define JYTHONDIR "C:\Documents and Settings\LINUSE.TPBAD\workspace\dmfc\dist"
-!define JYTHONNAME "jython_Release_2_2alpha1.jar"
-
 ; Path to and name of the LAME install ZIP
 !define LAMEDIR "C:\Documents and Settings\LINUSE.TPBAD\workspace\dmfc\dist"
 !define LAMENAME "lame3.96.1.zip"
@@ -69,17 +62,27 @@ Name "DMFC GUI"
 !define DOT_MAJOR 2
 !define DOT_MINOR 0
 
+; Major and minor version of Python
+!define PYTHON_MAJOR 2
+!define PYTHON_MINOR 2
+
 ; Version of Java required
 !define JRE_VERSION "1.5.0"
 
 ### Included files ############################################################
 !include Sections.nsh
 !include ZipDLL.nsh
+!include WordFunc.nsh
+
+!insertmacro VersionCompare
+
 
 ### Reserved Files ############################################################
 
 ### Variables #################################################################
 Var StartMenuGroup
+
+Var /GLOBAL PythonInstallPath
 
 ### Installer pages ###########################################################
 Page directory
@@ -201,20 +204,20 @@ Section -AppOther SEC0004
     Push "dmfc.lame.path = $MY_PATH"
     Call ReplaceLineStr
     
-    ### install Jython
-    SetOutPath $INSTDIR
-    File "${JYTHONDIR}\${JYTHONNAME}"
-    ZipDLL::extractall "$INSTDIR\${JYTHONNAME}" "$INSTDIR\jython"
-    Delete "$INSTDIR\${JYTHONNAME}"
-    # update jython.home in dmfc.properties
-    Push "$INSTDIR\jython"
+    # update dmfc.python.path in dmfc.properties    
+    StrCmp $PythonInstallPath "" +1 pythonDirSet
+    Push "python.exe"
+    goto pythonDirDone
+  pythonDirSet:
+    Push "$PythonInstallPath\python.exe"
+  pythonDirDone:
     Push "\"
     Push "\\"
     Call StrRep
     Pop "$MY_PATH"    
     Push $INSTDIR\dmfc\bin\dmfc.properties
-    Push "python.home"
-    Push "python.home = $MY_PATH"
+    Push "dmfc.python.path"
+    Push "dmfc.python.path = $MY_PATH"
     Call ReplaceLineStr
     
     # update dmfcgui.bat
@@ -304,7 +307,6 @@ SectionEnd
 
 Section /o un.AppOther UNSEC0004
     RMDir /r /REBOOTOK $INSTDIR\lame
-    RMDir /r /REBOOTOK $INSTDIR\jython
 
     DeleteRegValue HKCU "${REGKEY}\Components" AppOther
 SectionEnd
@@ -366,6 +368,27 @@ Function .onInit
     StrCmp $R3 1 +3    
     MessageBox MB_OK "You need to have v${DOT_MAJOR}.${DOT_MINOR} or greater of the .NET Framework installed. Aborting."
     Abort "Installation aborted (no .NET)"
+    
+    ; Check for Python
+    Call IsPythonInstalled
+    Pop $R3
+    StrCmp $R3 "" +1 pythonFinished
+    MessageBox MB_YESNO|MB_ICONEXCLAMATION "Python version ${PYTHON_MAJOR}.${PYTHON_MINOR} or later is required to run \
+                                            some of the conversions (e.g. the RTF to DTBook conversion).$\r$\n$\r$\n\
+                                            If you continue the installation now and wish to run conversions using Python \
+                                            you have to install that afterwards and make sure python.exe is in your system \
+                                            path.$\r$\n$\r$\n\
+                                            Press 'Yes' to continue the installation.$\r$\n\
+                                            Press 'No' to abort the installation." IDYES pythonFinished
+
+    MessageBox MB_YESNO|MB_ICONQUESTION "Would you like your browser to be directed to the Python download site?" IDYES pythonDownload IDNO pythonDontDownload
+  pythonDownload:
+    ExecShell open "http://www.python.org/download/"
+    Abort "Installation aborted (python missing, starting browser)"
+  pythonDontDownload:
+    Abort "Installation aborted (python missing)"
+  pythonFinished:  
+    StrCpy $PythonInstallPath $R3
     
     StrCpy $StartMenuGroup "DMFC GUI"
     
@@ -496,6 +519,70 @@ done:
   Exch $R3
 FunctionEnd
 
+### IsPythonInstalled ###
+; Usage
+;   Define two constants
+;   PYTHON_MAJOR "Major Python version required"
+;   PYTHON_MINOR "Minor Python version required"
+;   
+;   Call IsPythonInstalled
+Function IsPythonInstalled
+  Push $0 ; Return value
+  Push $2 ; Reg key counter
+  Push $3 ; Reg key value
+  Push $4 ; Version comparison result
+
+  ; Return value
+  StrCpy $0 ""
+  
+  ; Reg key counter
+  StrCpy $2 0
+
+  StartEnum:
+    ; Enumerate the versions installed
+    EnumRegKey $3 HKLM "SOFTWARE\Python\PythonCore" $2
+    
+    ; If we don't find any versions installed, it's not here
+    StrCmp $3 "" noPython notEmpty
+    
+  notEmpty:
+    ; Check if version matched the requirement. Otherwise goto next.
+    
+    ${VersionCompare} $3 "${PYTHON_MAJOR}.${PYTHON_MINOR}" $4
+    ; 0 - same version
+    ; 1 - newer version found
+    ; 2 - older version found    
+    IntCmp $4 1 yesPython yesPython goNext
+  
+  goNext:
+    ; Go to the next RegKey.
+    IntOp $2 $2 + 1
+    goto StartEnum
+  
+  noPython:
+    ; Python was not detected.
+    
+    ; Set return value
+    StrCpy $0 ""
+    goto done
+  
+  yesPython:  
+    ; Python was deteted. Not get the install path
+    
+    ReadRegStr $2 HKLM "SOFTWARE\Python\PythonCore\$3\InstallPath" ""
+    StrCmp $2 "" noPython
+  
+    ; Set return value
+    StrCpy $0 $2
+    goto done
+    
+  done:
+    MessageBox MB_OK "Python result is $0"
+    Pop $4
+    Pop $3
+    Pop $2
+    Exch $0
+FunctionEnd
 
 ### IsDotNetInstalled ###
 # Source:

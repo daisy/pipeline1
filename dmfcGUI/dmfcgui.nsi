@@ -44,10 +44,6 @@ Section ""
   Push "$EXEDIR\dmfc\lib\org.daisy.util.jar"
   Call AddEntry
   
-  ; add jython jar
-  Push "$EXEDIR\jython"
-  Call AddJarsInDir
-  
   ; add dmfcgui classpath
   ;Push "$EXEDIR\bin"
   ;Call AddEntry
@@ -87,28 +83,6 @@ Section ""
   
   ;MessageBox MB_OK "Done!"
 SectionEnd
-
-
-Function AddJarsInDir
-    Exch $R1
-    
-    Push $0
-    Push $1
-    
-    FindFirst $0 $1 $R1\*.jar
-  loop:
-    StrCmp $1 "" done
-    Push "$R1\$1"
-    Call AddEntry
-    FindNext $0 $1
-    Goto loop
-  done:
-    
-    Pop $1
-    Pop $0
-    
-    Pop $R1
-FunctionEnd
 
 
 Function AddEntry

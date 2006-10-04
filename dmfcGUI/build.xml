@@ -90,9 +90,8 @@
 	</target>
 		
 	
-	<property name="eclipse.plugin.dir" value="/opt/eclipse-3.2/plugins"/>
-	<property name="swt.jar.dir" value="${base.dir}/dist"/>
-	<property name="jython.jar.dir" value="${base.dir}/../dmfc/dist"/>
+	<property name="eclipse.plugin.dir" value="C:\Program Files\eclipse-3.2\plugins"/>
+	<property name="swt.jar.dir" value="${base.dir}/dist/swt-linux"/>
 	<property name="dmfc.dist.dir" value="${base.dir}/../dmfc/dist"/>
 	<target name="buildLinux"
 			description="Creates a linux build"
@@ -109,9 +108,6 @@
 			<tarfileset dir="${dmfc.dist.dir}">
 				<include name="org.daisy.util.jar"/>
 				<include name="org.daisy.dmfc.zip"/>
-			</tarfileset>
-			<tarfileset dir="${jython.jar.dir}">
-				<include name="jython_Release_2_2alpha1.jar"/>
 			</tarfileset>
 			<tarfileset dir="${eclipse.plugin.dir}">
 				<include name="org.eclipse.core.runtime_*.jar"/>
