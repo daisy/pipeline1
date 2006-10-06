@@ -24,6 +24,11 @@ Applicable Licenses
 _____________________
 
 DMFC is built upon a number of other open source technologies and products.  Third party Java software binary archives that are bundled with the the DMFC application are listed below:
+	
+	The DAISY Java Utility Library
+	Lesser Greater Public License
+	http://www.gnu.org/licenses/lgpl.html
+
 
 	jing.jar
 	Relax NG Schema Validator
