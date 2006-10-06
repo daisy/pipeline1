@@ -23,15 +23,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Applicable Licenses
 _____________________
 
-
-Publicly Available Software is used internally by the contributors, but the source code is not integrated in any way with the DMFC. This includes, but is not limited to, development tools (including, but not limited to, text editors, compilers, and bug trackers) and personal productivity tools.
-
-	Eclipse
-	IDE
-	Eclipse Public License
-	http://www.eclipse.org/legal/epl-v10.html
-
-
 DMFC is built upon a number of other open source technologies and products.  Third party Java software binary archives that are bundled with the the DMFC application are listed below:
 
 	jing.jar
@@ -81,7 +72,6 @@ DMFC is built upon a number of other open source technologies and products.  Thi
 	The Academic Free License
 	http://www.opensource.org/licenses/afl-3.0.php
 	
-	
 	xercesImpl.jar
 	Java Parser for SAX and DOM
 	http://xerces.apache.org/xerces-j/api.html
@@ -99,7 +89,6 @@ DMFC is built upon a number of other open source technologies and products.  Thi
 	High-performance validating namespace-aware StAX-compliant (JSR-173) Open Source XML-processor
 	GNU General Public License
 	http://www.gnu.org/licenses/licenses.html
-
 
 	jl1.0.jar
 	mp3 decoding (http://www.javazoom.net/javalayer/javalayer.html). 
