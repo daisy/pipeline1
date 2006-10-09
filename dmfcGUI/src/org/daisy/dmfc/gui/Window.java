@@ -26,6 +26,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.daisy.dmfc.core.DMFCCore;
@@ -1066,16 +1067,23 @@ public class Window {
 			
 			//status = completed or failed
 			if (status==Status.COMPLETED || status == Status.FAILED){
-				System.out.println("Delete failed or completed from cue, input: " + job.getInputFile() + " index of " + i);
-
-				cue.getLinkedListJobs().remove(job);
+				//System.out.println("Delete these from cue: " + job.getInputFile() + " index of " + i);
 				alJob.add(job);
 			}
 		}
 		
-		//cue.getLinkedListJobs().removeAll(alJob);
-		//cue.getLinkedListJobs().
+		/*
+		Iterator it = alJob.iterator();
+		while (it.hasNext()){
+			Job job = (Job)it.next();
+			System.out.println("In the al of jobs to be removed, the job is " + job.getInputFile().getName());
+		}
+		*/
 		
+		//System.out.println("The size of the cue is: " + cue.getSizeOfQueue());
+		cue.getLinkedListJobs().removeAll(alJob);
+		//System.out.println("After removing jobs in array list, the size is: " + cue.getSizeOfQueue());
+			
 		
 		tableJobViewer.refresh();
 		btnRun.setEnabled(true);
