@@ -93,6 +93,110 @@
   	</sch:rule>  	
   </sch:pattern>  
   
+  <!-- Rule 29: No block elements in inline context -->
+  <sch:pattern id="dtbook_noBlockInInline" name="dtbook_noBlockInInline">
+  	<sch:rule context="dtbk:*[self::dtbk:address    or self::dtbk:annotation or self::dtbk:author   or 
+  	                          self::dtbk:blockquote or self::dtbk:bridgehead or self::dtbk:caption  or 
+  	                          self::dtbk:dateline   or self::dtbk:div        or self::dtbk:dl       or
+  	                          self::dtbk:docauthor  or self::dtbk:doctitle   or
+  	                          self::dtbk:epigraph   or self::dtbk:hd         or self::dtbk:line     or 
+  	                          self::dtbk:linegroup  or
+  	                          self::dtbk:list       or self::dtbk:note       or self::dtbk:p        or 
+  	                          self::dtbk:poem       or self::dtbk:sidebar    or self::dtbk:table    or 
+  	                          self::dtbk:title]">
+  	  <sch:report test="ancestor::dtbk:a      or ancestor::dtbk:abbr or ancestor::dtbk:acronym or ancestor::dtbk:annoref or 
+  	                    ancestor::dtbk:bdo    or ancestor::dtbk:code or ancestor::dtbk:dfn     or ancestor::dtbk:em      or 
+  	                    ancestor::dtbk:kbd or ancestor::dtbk:linenum or ancestor::dtbk:noteref or 
+  	                    ancestor::dtbk:q      or ancestor::dtbk:samp or ancestor::dtbk:sent    or ancestor::dtbk:span    or 
+  	                    ancestor::dtbk:strong or ancestor::dtbk:sub  or ancestor::dtbk:sup     or ancestor::dtbk:w"
+  	  >[tpb29] Block element <name/> used in inline context</sch:report>
+  	</sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 29: No block elements in inline context - continued -->
+  <sch:pattern id="dtbook_noBlockSiblingWithInline" name="dtbook_noBlockSiblingWithInline">
+  	<sch:rule context="dtbk:*[self::dtbk:address    or self::dtbk:annotation or self::dtbk:author   or 
+  	                          self::dtbk:blockquote or self::dtbk:bridgehead or self::dtbk:caption  or 
+  	                          self::dtbk:dateline   or self::dtbk:div        or self::dtbk:dl       or
+  	                          self::dtbk:epigraph   or self::dtbk:hd         or self::dtbk:linegoup or 
+  	                          self::dtbk:list       or self::dtbk:note       or self::dtbk:p        or 
+  	                          self::dtbk:poem       or self::dtbk:sidebar    or self::dtbk:table    or 
+  	                          self::dtbk:title      or self::dtbk:level      or self::dtbk:level1   or
+  	                          self::dtbk:level2     or self::dtbk:level3     or self::dtbk:level4    or
+  	                          self::dtbk:level5     or self::dtbk:level6]">
+  	  <sch:report test="following-sibling::dtbk:a      or following-sibling::dtbk:abbr or following-sibling::dtbk:acronym or following-sibling::dtbk:annoref or 
+  	                    following-sibling::dtbk:bdo    or following-sibling::dtbk:code or following-sibling::dtbk:dfn     or following-sibling::dtbk:em      or 
+  	                    following-sibling::dtbk:kbd or following-sibling::dtbk:linenum or following-sibling::dtbk:noteref or 
+  	                    following-sibling::dtbk:q      or following-sibling::dtbk:samp or following-sibling::dtbk:sent    or following-sibling::dtbk:span    or 
+  	                    following-sibling::dtbk:strong or following-sibling::dtbk:sub  or following-sibling::dtbk:sup     or following-sibling::dtbk:w       or
+  	                    normalize-space(following-sibling::text())!=''">Block element as sibling to inline element</sch:report>
+  	  <sch:report test="preceding-sibling::dtbk:a      or preceding-sibling::dtbk:abbr or preceding-sibling::dtbk:acronym or preceding-sibling::dtbk:annoref or 
+  	                    preceding-sibling::dtbk:bdo    or preceding-sibling::dtbk:code or preceding-sibling::dtbk:dfn     or preceding-sibling::dtbk:em      or 
+  	                    preceding-sibling::dtbk:kbd or preceding-sibling::dtbk:linenum or preceding-sibling::dtbk:noteref or 
+  	                    preceding-sibling::dtbk:q      or preceding-sibling::dtbk:samp or preceding-sibling::dtbk:sent    or preceding-sibling::dtbk:span    or 
+  	                    preceding-sibling::dtbk:strong or preceding-sibling::dtbk:sub  or preceding-sibling::dtbk:sup     or preceding-sibling::dtbk:w       or
+  	                    normalize-space(preceding-sibling::text())!=''">[tpb29] Block element <name/> as sibling to inline element</sch:report>                  
+  	</sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 29: No block elements in inline context - continued -->
+  <sch:pattern id="dtbook_prodnoteImggroupCheck" name="dtbook_prodnoteImggroupCheck">
+    <sch:rule context="dtbk:prodnote[ancestor::dtbk:a        or ancestor::dtbk:abbr       or ancestor::dtbk:acronym    or ancestor::dtbk:annoref   or 
+                                     ancestor::dtbk:bdo      or ancestor::dtbk:code       or ancestor::dtbk:dfn        or ancestor::dtbk:em        or 
+                                     ancestor::dtbk:kbd      or ancestor::dtbk:linenum    or ancestor::dtbk:noteref    or                                      
+                                     ancestor::dtbk:q        or ancestor::dtbk:samp       or ancestor::dtbk:sent       or ancestor::dtbk:span      or 
+                                     ancestor::dtbk:strong   or ancestor::dtbk:sub        or ancestor::dtbk:sup        or ancestor::dtbk:w         or 
+                                     ancestor::dtbk:address  or ancestor::dtbk:author     or ancestor::dtbk:bridgehead or ancestor::dtbk:byline    or
+                                     ancestor::dtbk:cite     or ancestor::dtbk:covertitle or ancestor::dtbk:dateline   or ancestor::dtbk:docauthor or
+                                     ancestor::dtbk:doctitle or ancestor::dtbk:dt         or ancestor::dtbk:h1         or ancestor::dtbk:h2        or
+                                     ancestor::dtbk:h3       or ancestor::dtbk:h4         or ancestor::dtbk:h5         or ancestor::dtbk:h6        or
+                                     ancestor::dtbk:hd       or ancestor::dtbk:line       or ancestor::dtbk:p]">
+      <sch:report test="descendant::dtbk:*[self::dtbk:address    or self::dtbk:annotation or self::dtbk:author   or 
+  	                                       self::dtbk:blockquote or self::dtbk:bridgehead or self::dtbk:caption  or 
+                                           self::dtbk:dateline   or self::dtbk:div        or self::dtbk:dl       or
+                                           self::dtbk:docauthor  or self::dtbk:doctitle   or
+                                           self::dtbk:epigraph   or self::dtbk:hd         or self::dtbk:line     or 
+  	                                       self::dtbk:linegroup  or
+                                           self::dtbk:list       or self::dtbk:note       or self::dtbk:p        or 
+                                           self::dtbk:poem       or self::dtbk:sidebar    or self::dtbk:table    or 
+                                           self::dtbk:title]">Prodnote in inline context used as block element</sch:report>
+    </sch:rule>
+    <sch:rule context="dtbk:imggroup">
+    	<sch:report test="ancestor::dtbk:a        or ancestor::dtbk:abbr       or ancestor::dtbk:acronym    or ancestor::dtbk:annoref   or 
+                          ancestor::dtbk:bdo      or ancestor::dtbk:code       or ancestor::dtbk:dfn        or ancestor::dtbk:em        or 
+                          ancestor::dtbk:kbd      or ancestor::dtbk:linenum    or ancestor::dtbk:noteref    or                                      
+                          ancestor::dtbk:q        or ancestor::dtbk:samp       or ancestor::dtbk:sent       or ancestor::dtbk:span      or 
+                          ancestor::dtbk:strong   or ancestor::dtbk:sub        or ancestor::dtbk:sup        or ancestor::dtbk:w         or 
+                          ancestor::dtbk:address  or ancestor::dtbk:author     or ancestor::dtbk:bridgehead or ancestor::dtbk:byline    or
+                          ancestor::dtbk:cite     or ancestor::dtbk:covertitle or ancestor::dtbk:dateline   or ancestor::dtbk:docauthor or
+                          ancestor::dtbk:doctitle or ancestor::dtbk:dt         or ancestor::dtbk:h1         or ancestor::dtbk:h2        or
+                          ancestor::dtbk:h3       or ancestor::dtbk:h4         or ancestor::dtbk:h5         or ancestor::dtbk:h6        or
+                          ancestor::dtbk:hd       or ancestor::dtbk:line       or ancestor::dtbk:p">[tpb29] Image groups are not allowed in inline context</sch:report>
+    </sch:rule>
+    <!--
+    <sch:rule context="dtbk:imggroup[ancestor::dtbk:a        or ancestor::dtbk:abbr       or ancestor::dtbk:acronym    or ancestor::dtbk:annoref   or 
+                                       ancestor::dtbk:bdo      or ancestor::dtbk:code       or ancestor::dtbk:dfn        or ancestor::dtbk:em        or 
+                                       ancestor::dtbk:kbd      or ancestor::dtbk:linenum    or ancestor::dtbk:noteref    or                                      
+                                       ancestor::dtbk:q        or ancestor::dtbk:samp       or ancestor::dtbk:sent       or ancestor::dtbk:span      or 
+                                       ancestor::dtbk:strong   or ancestor::dtbk:sub        or ancestor::dtbk:sup        or ancestor::dtbk:w         or 
+                                       ancestor::dtbk:address  or ancestor::dtbk:author     or ancestor::dtbk:bridgehead or ancestor::dtbk:byline    or
+                                       ancestor::dtbk:cite     or ancestor::dtbk:covertitle or ancestor::dtbk:dateline   or ancestor::dtbk:docauthor or
+                                       ancestor::dtbk:doctitle or ancestor::dtbk:dt         or ancestor::dtbk:h1         or ancestor::dtbk:h2        or
+                                       ancestor::dtbk:h3       or ancestor::dtbk:h4         or ancestor::dtbk:h5         or ancestor::dtbk:h6        or
+                                       ancestor::dtbk:hd       or ancestor::dtbk:line       or ancestor::dtbk:p]">
+      <sch:report test="descendant::dtbk:*[self::dtbk:address    or self::dtbk:annotation or self::dtbk:author   or 
+  	                                       self::dtbk:blockquote or self::dtbk:bridgehead or 
+                                           self::dtbk:dateline   or self::dtbk:div        or self::dtbk:dl       or
+                                           self::dtbk:docauthor  or self::dtbk:doctitle   or
+                                           self::dtbk:epigraph   or self::dtbk:hd         or self::dtbk:line     or 
+  	                                       self::dtbk:linegroup  or
+                                           self::dtbk:list       or self::dtbk:note       or self::dtbk:p        or 
+                                           self::dtbk:poem       or self::dtbk:sidebar    or self::dtbk:table    or 
+                                           self::dtbk:title]">[tpb29] Prodnote in inline context used as block element</sch:report>
+    </sch:rule>  
+    -->
+  </sch:pattern>
+  
   <!-- Rule 30: paragraph cannot be sibling with div@class=pgroup -->
   <sch:pattern name="dtbook_TPB_pgroupSibling" id="dtbook_TPB_pgroupSibling">
   	<sch:rule context="dtbk:div[@class='pgroup']">
@@ -130,9 +234,8 @@
   <!-- Rule 37: Class attributes of level1 and level2 in bodymatter -->  
   <sch:pattern name="dtbook_TPB_bodymatterLevel1Level2Class" id="dtbook_TPB_bodymatterLevel1Level2Class">
   	<sch:rule context="dtbk:bodymatter/dtbk:level1">
-  		<sch:assert test="@class='part' or @class='chapter'">[tpb37] Class attribute must be one of: part and chapter</sch:assert>
-  		<!--<sch:report test="@class!=//dtbk:bodymatter/dtbk:level1/@class">[tpb37] All level1 class attributes in bodymatter must be either part or chapter</sch:report>-->
-  		<sch:report test="@class!=preceding-sibling::dtbk:level1[1]/@class">[tpb37] All level1 class attributes in bodymatter must be either part or chapter</sch:report>
+  		<sch:assert test="@class='part' or @class='chapter' or @class='other'">[tpb37] Class attribute must be one of: part, chapter or other</sch:assert>
+  		<sch:report test="@class='part' and (preceding-sibling::dtbk:level1/@class='chapter' or following-sibling::dtbk:level1/@class='chapter')">[tpb37] All level1 class attributes in bodymatter must be either part or chapter (mixed with 'other')</sch:report>
   		<sch:report test="@class='part' and dtbk:level2/@class!='chapter'">[tpb37] Level2 class attribute must be 'chapter' if level1 class attribute is 'part'</sch:report>
   	</sch:rule>
   </sch:pattern>
@@ -140,7 +243,7 @@
   <!-- Rule 38: Class attributes of level1 in rearmatter -->
   <sch:pattern name="dtbook_TPB_rearmatterLevel1Class" id="dtbook_TPB_rearmatterLevel1Class">
   	<sch:rule context="dtbk:rearmatter/dtbk:level1">
-  		<sch:assert test="@class='bibliography' or @class='index' or @class='notes' or @class='glossary' or @class='appendix' or @class='backCovertext' or @class='other'">[tpb38] Class attribute must be one of: bibliography, index, notes, glossary, appendix, backCovertext and other</sch:assert>
+  		<sch:assert test="@class='bibliography' or @class='index' or @class='notes' or @class='glossary' or @class='appendix' or @class='backCoverText' or @class='other'">[tpb38] Class attribute must be one of: bibliography, index, notes, glossary, appendix, backCoverText and other</sch:assert>
   	</sch:rule>
   </sch:pattern>
   
@@ -211,7 +314,7 @@
     	<sch:assert test="@class='endnote' or @class='rearnote'">[tpb46] class attribute for note must be 'endnote' or 'rearnote'</sch:assert>
     	<sch:report test="@class='rearnote' and (not(ancestor::dtbk:rearmatter) or not(ancestor::dtbk:level1[@class='notes']))">[tpb46] Rearnotes must be in level1@class='notes' in rearmatter</sch:report>
     	<sch:report test="@class='endnote' and ancestor::dtbk:rearmatter and ancestor::dtbk:level1[@class='notes']">[tpb46] Endnotes may not be in level1@class='notes' in rearmatter</sch:report>
-    	<sch:report test="@class='endnote' and not(parent::dtbk:level1[@class='chapter'] or parent::dtbk:level2[@class='chapter'])">[tpb46] Endnotes must be placed at the end of a chapter</sch:report>
+    	<sch:report test="@class='endnote' and not(ancestor::dtbk:level1[@class='chapter'] or ancestor::dtbk:level2[@class='chapter']) or following::dtbk:*[not(self::dtbk:note)]">[tpb46] Endnotes must be placed at the end of a chapter</sch:report>
     </sch:rule>
   </sch:pattern>
   
@@ -261,10 +364,10 @@
     </sch:rule>
   </sch:pattern>
   
-  <!-- Rule 54: prodnote in imggoup -->
+  <!-- Rule 54: prodnote last element in imggoup -->
   <sch:pattern name="dtbook_TPB_prodnoteInImggroup" id="dtbook_TPB_prodnoteInImggroup">
-    <sch:rule context="dtbk:imggroup/dtbk:prodnote">
-    	<sch:assert test=".='Bildbeskrivning'">[tpb54] Value of prodnote in imggroup must be 'Bildbeskrivning'</sch:assert>
+    <sch:rule context="dtbk:imggroup">
+    	<sch:assert test="*[last()][self::dtbk:prodnote]">[tpb54] The production note must be the last element in an image group</sch:assert>
     </sch:rule>
   </sch:pattern>
   
@@ -328,45 +431,6 @@
     <sch:rule context="dtbk:dl/dtbk:dd">
       <sch:assert test="preceding-sibling::*[1][self::dtbk:dt]">[tpb62] Data terms and data definitions come in pairs</sch:assert>
     </sch:rule>
-  </sch:pattern>
-  
-  <sch:pattern id="dtbook_noBlockInInline" name="dtbook_noBlockInInline">
-  	<sch:rule context="dtbk:*[self::dtbk:address    or self::dtbk:annotation or self::dtbk:author   or 
-  	                          self::dtbk:blockquote or self::dtbk:bridgehead or self::dtbk:caption  or 
-  	                          self::dtbk:dateline   or self::dtbk:div        or self::dtbk:dl       or
-  	                          self::dtbk:epigraph   or self::dtbk:hd         or self::dtbk:linegoup or 
-  	                          self::dtbk:list       or self::dtbk:note       or self::dtbk:p        or 
-  	                          self::dtbk:poem       or self::dtbk:sidebar    or self::dtbk:table    or 
-  	                          self::dtbk:title]">
-  	  <sch:report test="ancestor::dtbk:a      or ancestor::dtbk:abbr or ancestor::dtbk:acronym or ancestor::dtbk:annoref or 
-  	                    ancestor::dtbk:bdo    or ancestor::dtbk:code or ancestor::dtbk:dfn     or ancestor::dtbk:em      or 
-  	                    ancestor::dtbk:kbd or ancestor::dtbk:linenum or ancestor::dtbk:noteref or 
-  	                    ancestor::dtbk:q      or ancestor::dtbk:samp or ancestor::dtbk:sent    or ancestor::dtbk:span    or 
-  	                    ancestor::dtbk:strong or ancestor::dtbk:sub  or ancestor::dtbk:sup     or ancestor::dtbk:w">Block element used in inline context</sch:report>
-  	</sch:rule>
-  </sch:pattern>
-  
-  <sch:pattern id="dtbook_noBlockSiblingWithInline" name="dtbook_noBlockSiblingWithInline">
-  	<sch:rule context="dtbk:*[self::dtbk:address    or self::dtbk:annotation or self::dtbk:author   or 
-  	                          self::dtbk:blockquote or self::dtbk:bridgehead or self::dtbk:caption  or 
-  	                          self::dtbk:dateline   or self::dtbk:div        or self::dtbk:dl       or
-  	                          self::dtbk:epigraph   or self::dtbk:hd         or self::dtbk:linegoup or 
-  	                          self::dtbk:list       or self::dtbk:note       or self::dtbk:p        or 
-  	                          self::dtbk:poem       or self::dtbk:sidebar    or self::dtbk:table    or 
-  	                          self::dtbk:title]">
-  	  <sch:report test="following-sibling::dtbk:a      or following-sibling::dtbk:abbr or following-sibling::dtbk:acronym or following-sibling::dtbk:annoref or 
-  	                    following-sibling::dtbk:bdo    or following-sibling::dtbk:code or following-sibling::dtbk:dfn     or following-sibling::dtbk:em      or 
-  	                    following-sibling::dtbk:kbd or following-sibling::dtbk:linenum or following-sibling::dtbk:noteref or 
-  	                    following-sibling::dtbk:q      or following-sibling::dtbk:samp or following-sibling::dtbk:sent    or following-sibling::dtbk:span    or 
-  	                    following-sibling::dtbk:strong or following-sibling::dtbk:sub  or following-sibling::dtbk:sup     or following-sibling::dtbk:w       or
-  	                    normalize-space(following-sibling::text())!=''">Block element as sibling to inline element</sch:report>
-  	  <sch:report test="preceding-sibling::dtbk:a      or preceding-sibling::dtbk:abbr or preceding-sibling::dtbk:acronym or preceding-sibling::dtbk:annoref or 
-  	                    preceding-sibling::dtbk:bdo    or preceding-sibling::dtbk:code or preceding-sibling::dtbk:dfn     or preceding-sibling::dtbk:em      or 
-  	                    preceding-sibling::dtbk:kbd or preceding-sibling::dtbk:linenum or preceding-sibling::dtbk:noteref or 
-  	                    preceding-sibling::dtbk:q      or preceding-sibling::dtbk:samp or preceding-sibling::dtbk:sent    or preceding-sibling::dtbk:span    or 
-  	                    preceding-sibling::dtbk:strong or preceding-sibling::dtbk:sub  or preceding-sibling::dtbk:sup     or preceding-sibling::dtbk:w       or
-  	                    normalize-space(preceding-sibling::text())!=''">Block element as sibling to inline element</sch:report>                  
-  	</sch:rule>
   </sch:pattern>
   
   <!-- Rule 65: No border attribute on tables -->
@@ -518,8 +582,8 @@
   <!-- Rule 93: Some elements may not start of end with whitespace -->
   <sch:pattern name="dtbook_TPB_trimmedWhitespace" id="dtbook_TPB_trimmedWhitespace">
     <sch:rule context="dtbk:*[self::dtbk:h1 or self::dtbk:h2 or self::dtbk:h3 or self::dtbk:h4 or self::dtbk:h5 or self::dtbk:h6 or self::dtbk:hd]">
-    	<sch:report test="normalize-space(substring(.,1,1))=''">[tpb93] element <name/> may not have leading whitespace</sch:report>
-    	<sch:report test="normalize-space(substring(.,string-length(.),1))=''">[tpb93] element <name/> may not have trailing whitespace</sch:report>
+    	<sch:report test="normalize-space(substring(.,1,1))=''">[tpb93] heading may not have leading whitespace</sch:report>
+    	<sch:report test="normalize-space(substring(.,string-length(.),1))=''">[tpb93] heading may not have trailing whitespace</sch:report>
     </sch:rule>
   </sch:pattern>  
   
