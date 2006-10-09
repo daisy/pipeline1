@@ -365,9 +365,20 @@ Function .onInit
     ; Check for .NET
     Call IsDotNetInstalled
     Pop $R3
-    StrCmp $R3 1 +3    
-    MessageBox MB_OK "You need to have v${DOT_MAJOR}.${DOT_MINOR} or greater of the .NET Framework installed. Aborting."
+    StrCmp $R3 1 dotNetFinished
+    MessageBox MB_YESNO|MB_ICONQUESTION "You need to have v${DOT_MAJOR}.${DOT_MINOR} or greater of the .NET Framework \
+                      installed to run some of the conversion (e.g. the Narrator chain).$\r$\n$\r$\n\
+                      If you continue the installation and wish to run conversions using .NET you have to install that \
+                      at a later time.$\r$\n$\r$\n\
+                      Press 'Yes' to continue the installation.$\r$\n\
+                      Press 'No' to abort the installation." IDYES dotNetFinished
+    MessageBox MB_YESNO|MB_ICONQUESTION "Would you like your browser to be directed to the .NET 2.0 download site?" IDYES dotNetDownload IDNO dotNetDontDownload
+  dotNetDownload:
+    ExecShell open "http://msdn2.microsoft.com/en-us/netframework/aa731542.aspx"
+    Abort "Installation aborted (.NET missing, starting browser)"
+  dotNetDontDownload:
     Abort "Installation aborted (no .NET)"
+  dotNetFinished:
     
     ; Check for Python
     Call IsPythonInstalled
@@ -577,7 +588,7 @@ Function IsPythonInstalled
     goto done
     
   done:
-    MessageBox MB_OK "Python result is $0"
+    ;MessageBox MB_OK "Python result is $0"
     Pop $4
     Pop $3
     Pop $2
