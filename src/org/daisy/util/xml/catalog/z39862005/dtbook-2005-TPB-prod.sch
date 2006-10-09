@@ -8,7 +8,7 @@
   <!-- Rule 54: prodnote in imggoup -->
   <sch:pattern name="dtbook_TPBprod_prodnoteInImggroup" id="dtbook_TPBprod_prodnoteInImggroup">
     <sch:rule context="dtbk:imggroup/dtbk:prodnote">
-    	<sch:assert test=".='Bildbeskrivning'">[tpbprod54] Value of prodnote in imggroup should be 'Bildbeskrivning'</sch:assert>
+    	<sch:assert test=".='Bildbeskrivning'">[tpbprod54] Value of prodnote in imggroup must be 'Bildbeskrivning'</sch:assert>
     </sch:rule>
   </sch:pattern>
   
