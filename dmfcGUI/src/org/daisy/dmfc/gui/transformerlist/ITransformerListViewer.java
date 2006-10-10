@@ -22,6 +22,13 @@ package org.daisy.dmfc.gui.transformerlist;
 
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 
+/**
+ * Functionality for list of transformers.  Jface
+ * @author Laurie
+ *
+ */
+
+
 public interface ITransformerListViewer {
 
 	/**

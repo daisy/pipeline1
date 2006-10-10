@@ -29,6 +29,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * Provides links to internal and external files.
+ * Files open in a browser window.
+ * @author Laurie
+ *
+ */
 
 public class WebLinks {
 

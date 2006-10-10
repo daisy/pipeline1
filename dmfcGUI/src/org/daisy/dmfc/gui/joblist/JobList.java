@@ -15,6 +15,7 @@ import org.daisy.dmfc.qmanager.Queue;
  * the Jobs table.
  * Information may come from a data store, in this
  * case, the list is the Queue of jobs
+ * @author Laurie Sherve
  
  */
 

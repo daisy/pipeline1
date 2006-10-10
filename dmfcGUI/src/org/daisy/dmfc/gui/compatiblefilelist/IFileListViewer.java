@@ -21,6 +21,12 @@ package org.daisy.dmfc.gui.compatiblefilelist;
 
 import java.io.File;
 
+/**
+ * File List functionality - jface
+ * @author Laurie Sherve
+ *
+ */
+
 public interface IFileListViewer {
 
 		/**

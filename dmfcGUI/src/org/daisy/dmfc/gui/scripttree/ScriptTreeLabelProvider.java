@@ -29,6 +29,12 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * Labels for each item in the tree. jFace
+ * @author Laurie
+ *
+ */
+
 public class ScriptTreeLabelProvider implements ILabelProvider{
 	
 	private List listeners;

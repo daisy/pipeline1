@@ -36,6 +36,12 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * Menu for Multiple Source Conversion
+ * @author Laurie Sherve
+ *
+ */
+
 public class MenuMultipleConvert {
 	
 	ConvertMultipleFiles cmf;

@@ -486,7 +486,7 @@ public class ConvertSingleFile  {
 	public void editConversion(Job job){
 		this.editJob=job;
 		editFile= true;
-		shell.setText("Daisy Multi-Format Converter, Edit Conversion");
+		shell.setText("DAISY Pipeline, Edit Conversion");
 		//txtConversionName.setText(job.getScript().getName());
 		lblConversion.setText(job.getScript().getName());
 		txtInputDoc.setText(job.getInputFile().getPath());

@@ -299,7 +299,7 @@ public class Window {
 	 */
 	public void createContents(){
 		
-		shell.setText("Daisy Multi Format Converter");
+		shell.setText("Daisy Pipeline");
 		//shell.setMaximized(true);
 		//shell.setSize(800, 600);
 		

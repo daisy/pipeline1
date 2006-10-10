@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 /**
  * Used with a checkbox table 
- * @author Laurie
+ * @author Laurie Sherve
  *
  */
 

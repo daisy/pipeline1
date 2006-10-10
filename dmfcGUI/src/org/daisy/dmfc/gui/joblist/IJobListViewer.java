@@ -7,9 +7,7 @@ import org.daisy.dmfc.qmanager.Job;
 
 
 /*
- * (c) Copyright Mirasol Op'nWorks Inc. 2002, 2003. 
- * http://www.opnworks.com
- * Created on Jun 11, 2003 by lgauthier@opnworks.com
+ * Job list functionality - jface
  *
  */
 

@@ -26,6 +26,13 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * Labels for transformers list.
+ * @author Laurie Sherve
+ *
+ */
+
+
 public class TransformerLabelProvider extends LabelProvider
 	implements ITableLabelProvider {
 

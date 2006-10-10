@@ -33,6 +33,12 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * Menu for Single Source Conversion
+ * @author Laurie
+ *
+ */
+
 public class MenuSingleConvert {
 
 	Window window;

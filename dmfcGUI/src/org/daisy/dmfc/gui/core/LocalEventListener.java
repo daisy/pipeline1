@@ -34,6 +34,13 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Text;
 
+/** 
+ * Class receives messages from Framework and Transformers
+ * @author Laurie Sherve/Linus Ericson
+ *
+ */
+
+
 public class LocalEventListener implements EventListener{
 	
 	String message;

@@ -38,7 +38,8 @@ import org.daisy.dmfc.gui.transformerlist.ITransformerListViewer;
  * to place items into a Vector, Array, whatever.
  * In this case, the compatible file list is generated
  * after a user chooses a directory in the gui.
- * 
+ * JFace implementation
+ * @author Laurie Sherve
  */
 
 public class FileList {

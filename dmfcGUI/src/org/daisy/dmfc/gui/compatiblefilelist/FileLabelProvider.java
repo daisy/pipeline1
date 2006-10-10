@@ -19,7 +19,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package org.daisy.dmfc.gui.compatiblefilelist;
 
-
+/**
+ * Label displayed in the File box
+ * @author Laurie Sherve
+ */
 
 import java.io.File;
 import org.eclipse.jface.viewers.ITableLabelProvider;

@@ -33,6 +33,7 @@ import org.daisy.dmfc.qmanager.Job;
  * to place items into a Vector, Array, whatever.
  * In this case, the List has already been created in the 
  * framework.
+ * @author Laurie Sherve
  * 
  */
 

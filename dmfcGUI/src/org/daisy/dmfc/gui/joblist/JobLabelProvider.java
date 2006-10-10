@@ -10,6 +10,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * Label provider for the TableViewerExample
  * 
+ * @author Laurie Sherve
  * @see org.eclipse.jface.viewers.LabelProvider 
  */
 public class JobLabelProvider 

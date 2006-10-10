@@ -34,6 +34,13 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * Main menu for the application
+ * @author Laurie Sherve
+ *
+ */
+
+
 public class MenuDMFC {
 	
 	Window window;
@@ -413,9 +420,9 @@ public class MenuDMFC {
 		about.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("AboutScreen");
-				String version = "DAISY Multi-Format Converter \n\n" +
+				String version = "DAISY Pipeline\n\n" +
 				"Copyright [c] DAISY Consortium 2006 \n" +
-				"First Public Access" + "\n" +
+				"Release One" + "\n" +
 				"Framework version: " + org.daisy.dmfc.Version.getVersion() + "\n" + 
 				"GUI version: " + org.daisy.dmfc.gui.Version.getVersion();
 				System.out.println(version);
