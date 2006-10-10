@@ -56,7 +56,7 @@
 <xsl:template match="w:wordDocument">
 	<xsl:call-template name="insertProcessingInstruction"/>
 	<xsl:call-template name="insertVersion"/>
-	<dtbook>
+	<dtbook version="2005-1">
 		<xsl:call-template name="insertHeader"/>
 		<book>
 			<xsl:apply-templates select="w:body"/>

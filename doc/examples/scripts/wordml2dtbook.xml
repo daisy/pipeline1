@@ -6,7 +6,7 @@
 	<task name="se_tpb_wordml2dtbook" interactive="false">
 		<parameter>
 			<name>xml</name>
-			<value>./transformers/se_tpb_wordml2dtbook/wml-sample.xml</value>
+			<value>./doc/examples/input/wml-sample.xml</value>
 		</parameter>
 
 		<parameter>
