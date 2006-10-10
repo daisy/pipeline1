@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="history.xsl"?>
+<history xmlns="rnib.org.uk/tbs#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="rnib.org.uk/tbs# history.xsd">
+	<purpose>
+		<para>This stylesheet uses WordML to produce DTBook</para>
+	</purpose>
+	<revision>
+		<version>1.0</version>
+		<date>30 August 2005</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Initial issue with DMFC in mind</para>
+		</description>
+		<remark>
+			<para>Only flat lists work</para>
+			<para>No bold or italic other than characterstyles</para>
+			<para>Tables don't come out right if they include rowspanning</para>
+		</remark>
+	</revision>
+	<revision>
+		<version>1.1</version>
+		<date>28 October 2005</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Added support for standard footnotes</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.1.01</version>
+		<date>7 November 2005</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Removed XE-data</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.1.1</version>
+		<date>28 December 2005</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Removed spaces in pagenum id's</para>
+			<para>Fixed a problem with smartTags</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.1.11</version>
+		<date>28 March 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Fixed a problem with lists.</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.2</version>
+		<date>28 April 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Externalized tag set definitions and created an XML schema for them.</para>
+			<para>Fixed a precedence problem.</para>
+			<para>Added attribute "merge" to wrap element (tag set definitions). The effect is that all consecutive paras using the same style will be included in the same outer element.</para>
+			<para>Added element "attribute" to wrap element (tag set definitions).</para>
+			<para>Added support for rowspan in tables</para>
+			<para>Added support for image alt-text</para>
+			<para>Changed naming convention for images</para>
+			<para>Added page-attribute: normal (for arabic numerals), front (for roman numerals), special (otherwise)</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.2.1</version>
+		<date>17 May 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Added support for hierarchical lists.</para>
+			<para>Added meta-elements containing info on this conversion (version and date)</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.2.1.1</version>
+		<date>12 June 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Changed namespace url</para>
+			<para>Removed an unused namespace</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.3</version>
+		<date>26 June 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Extended support for attributes</para>
+			<para>Removed imggroup element from image rule (this can be added through a paragraph style).</para>
+			<para>Added support for "list style" headings</para>
+			<para>Removed unused constructs from the schema</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.3.01</version>
+		<date>22 August 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Changed the class-attribute for the first level1 to colophon. 
+				Added class="chapter" to all other level1</para>
+		</description>
+		<remark/>
+	</revision>
+	<revision>
+		<version>1.4</version>
+		<date>8 September 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Made processing more general in several places</para>
+			<para>Fixed numbering of real footnotes.</para>
+			<para>Added frontmatter. Now, everything preceding the first 
+				heading will become part of frontmatter.</para>
+			<para>Externalized revision history and generated a schema definition for it.</para>
+			<para>Modularized the stylesheet according to task.</para>
+			<para>Changed the name of some input parameters and added one called "stylesheet". 
+				This one sets the assigned stylesheet in the output, or none if '' is specified.
+				The default value is 'dtbook2xhtml.xsl'</para>
+			<para>Added param for using original extension for image files.</para>
+			<para>Changed the pattern for @id on pagenum to "page-[no]"</para>
+			<!-- Kvar att göra.. 
+Kolla hur det nya systemet fungerar med smarttags, och se till att ingen text försvinner.
+Fotnotsreferenser som är explicit satta får referensen två gånger. Kolla med exempeldokumentet.
+Bryt ut olika delar i separata dokument för överskådlighet. Försök att kartlägga brister och luckor.
+-->
+		</description>
+		<remark/>
+	</revision>
+</history>

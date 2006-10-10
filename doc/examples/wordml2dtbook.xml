@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskScript version="1.0">
+	<name>WordML2DTbook</name>
+	<description>...</description>
+	
+	<task name="se_tpb_wordml2dtbook" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>./transformers/se_tpb_wordml2dtbook/wml-sample.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>out</name>
+			<value>./transformers/se_tpb_wordml2dtbook/newdir</value>
+		</parameter>
+	</task>
+
+</taskScript>

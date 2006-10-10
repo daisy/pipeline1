@@ -24,6 +24,9 @@
 		<style type="text/css">
 			.revision-060410 {
 				background-color: #FFFF80;
+			}
+			.revision-060908 {
+				background-color: #80FF80;
 				text-decoration: underline;
 			}
 			body, table {
@@ -53,7 +56,7 @@
 			<p>
 				<span class="revision-060410">First revision: June 12, 2006.</span>
 			</p>
-			<p><span class="revision-060621">Second revision: Pending</span></p>
+			<p><span class="revision-060908">Second revision: Pending</span></p>
 			<p class="revision-060410">This XSLT convert documents from WordML to DTBook - either from within Word 2003 using the "Save as..." feature (selecting this stylesheet when saving as xml) or using other XML/XSLT enviorments.</p>
 			<h2>General assumptions</h2>
 			<p class="revision-060410">The conversion has been designed for and tested with documents using a single text flow. Anchored or free floating objects should be avoided entierly (however this does not apply to footnotes).</p>
@@ -193,7 +196,7 @@
 		not an option, it is possible to use the "footnote reference" character style and the "footnote text" 
 		paragraph style. However, a link between the two is not created using this method.</p>
 			<h2>Images</h2>
-			<p>An imagegroup and an img-tag is created for an image, but the image is not extracted (this is beyond
+			<p>img-tags are created for images<span class="revision-060908">, but the images are extracted only if run through the DMFC wrapper</span> (since <span class="revision-060908">extracting images</span> is beyond
 		the limitations of XSLT 1.0). <span class="revision-060410">The naming convention matches the naming convention used when saving as HTML from Word, thereby simplifying the conversion process. The syntax is: imagexxx.jpg. If an alternative text has been specified for the image, this is preserved in the alt-attribute.</span>
 			</p>
 			<h2>Formatting</h2>
@@ -202,32 +205,59 @@
 			<div class="revision-060410">
 				<h2 id="custom">Customizing</h2>
 				<h3>Tag set</h3>
-				<p>The conversion process can to a large extent be changed by editing the tag set rules in the file "custom-tagset.xml". An XML Schema definition of this tag set is supplied to aid customization, see the <a href="docs/index.html">schema documentation</a> for more information.</p>
+				<p>The conversion process can to a large extent be changed by editing the tag set rules in the file "custom-tagset.xml". An XML Schema definition of this tag set is supplied to aid customization, see the <a href="./tagset/index.html">schema documentation</a> for more information.</p>
 				<h3 id="params">Parameters</h3>
 				<p>The following parameters can be used with this stylesheet</p>
 				<table border="1">
 					<tr>
 						<th>name</th>
 						<th>meaning</th>
+						<th class="revision-060908">default value</th>
+					</tr>
+					<tr class="revision-060908">
+						<td>defaultTagset</td>
+						<td>Path to the default tagset</td>
+						<td class="revision-060908">'./tagsets/default-tagset.xml'</td>
+					</tr>
+					<tr>
+						<td><span class="revision-060908">defaultStyle</span></td>
+						<td>WordML version number. No other values <span class="revision-060908">than the default value</span> are supported</td>
+						<td class="revision-060908">'4'</td>
+					</tr>
+					<tr class="revision-060908">
+						<td>customTagset</td>
+						<td>Path to the custom tagset</td>
+						<td class="revision-060908">'./tagsets/custom-tagset.xml'</td>
 					</tr>
 					<tr>
 						<td>customStyle</td>
 						<td>The custom style identifier. Should match the desired style-id in the custom tag set.</td>
+						<td class="revision-060908">'tpb'</td>
 					</tr>
-					<tr>
-						<td>mapset</td>
-						<td>The definitions used when converting. Default value is "document('custom-tagset.xml')|document('default-tagset.xml')"</td>
+					<tr class="revision-060908">
+						<td>stylesheet</td>
+						<td>Sets the name of the assigned stylesheet in the output, or none if '' is specified</td>
+						<td>'dtbook2xhtml.xsl'</td>
 					</tr>
-					<tr>
-						<td>tagSet</td>
-						<td>WordML version number. Default value is "'4'", no other values are currently supported.</td>
+					<tr class="revision-060908">
+						<td>forceJPEG</td>
+						<td>When not set to 'true' the transform will use the original extension</td>
+						<td>'true'</td>
 					</tr>
 				</table>
 			</div>
+			<h2 class="revision-060908">Known limitations</h2>
+			<ul class="revision-060908">
+				<li>The recursive algorithm for list processing sets a limit to the number of list-items in one list. The actual value depends on the XSLT-processor used.</li>
+			</ul>
 			<h2>Future improvements</h2>
 			<ul>
 				<li>Auto connect footnotes that were created using styles.</li>
-				<li>Optimize recursive calls. The current solution has a limit to the number of list-items in a list. The actual limit depends on the XSLT-processor used.</li>
+			</ul>
+			<h2 class="revision-060908">See also...</h2>
+			<ul>
+				<li><a href="revision-history.xml">Version history</a></li>
+				<li><a href="./tagset/index.html">Schema documentation</a></li>
 			</ul>
 		</div>
 	</body>

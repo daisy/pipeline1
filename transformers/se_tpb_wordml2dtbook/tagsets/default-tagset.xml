@@ -26,6 +26,11 @@
 			</tag>
 			<!-- Kommentarer -->
 			<tag name="annotation text"><comment/></tag>
+			<tag name="caption">
+				<wrap value="imggroup" addId="false" merge="true">
+					<using value="caption"/>
+				</wrap>
+			</tag>
 		</paragraphs>
 		<character>
 			<tag name="Strong"><map value="strong"/></tag>
