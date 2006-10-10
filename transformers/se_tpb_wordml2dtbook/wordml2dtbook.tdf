@@ -19,9 +19,9 @@
 <transformer version="1.0">
 	<name>WordML to DTBook</name>
 	<description>Transforms WordML from Microsoft Office Word 2003 to DTBook 2005-1</description>
-	<classname>org.daisy.dmfc.transformers.XSLTRunner</classname>
+	<classname>se_tpb_wordml2dtbook.WordML2DTBook</classname>
 	<license>LGPL</license>
-	<author>Joel Hakansson</author>
+	<author>Joel Håkansson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	
 	<parameters>
@@ -42,10 +42,35 @@
 			<value>com.icl.saxon.TransformerFactoryImpl</value>
 		</parameter>
 
-		<parameter required="true" direction="out" type="application/x-dtbook+xml">
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
 			<name>out</name>
 			<description>The output DTBook 2005-1 XML file</description>
 			<example>file:///path/to/outFile.xml</example>
+		</parameter>
+		
+		<parameter required="false" type="application/xml">
+			<name>filename</name>
+			<description>Optional file name for the dtbook file</description>
+			<example>dtbook.xml</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>images</name>
+			<description>Extract images?</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+
+		<parameter required="false" type="string">
+			<name>stylesheet</name>
+			<description>Assign a stylesheet to the output</description>
+			<example>dtbook2xhtml.xsl</example>
+			<default></default>
 		</parameter>
 
 	</parameters>
