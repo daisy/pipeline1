@@ -325,7 +325,7 @@
 				<xsl:when test="$tag/d:noteref">
 					<xsl:choose>
 						<xsl:when test="count(w:footnote)&gt;0"><xsl:apply-templates/></xsl:when>
-						<xsl:otherwise><noteref idref=""><xsl:apply-templates/></noteref></xsl:otherwise>
+						<xsl:otherwise><noteref idref="#"><xsl:apply-templates/></noteref></xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
 			</xsl:choose>
@@ -352,7 +352,7 @@
 </xsl:template>
 
 <xsl:template match="w:footnote">
-	<noteref idref="note-{count(preceding::w:footnote[ancestor::w:body])+1}"><xsl:value-of select="count(preceding::w:footnote[ancestor::w:body])+1"/></noteref>
+	<noteref idref="#note-{count(preceding::w:footnote[ancestor::w:body])+1}"><xsl:value-of select="count(preceding::w:footnote[ancestor::w:body])+1"/></noteref>
 </xsl:template>
 
 <xsl:template match="w:footnote" mode="rearmatter">

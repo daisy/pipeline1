@@ -128,12 +128,23 @@
 				The default value is 'dtbook2xhtml.xsl'</para>
 			<para>Added param for using original extension for image files.</para>
 			<para>Changed the pattern for @id on pagenum to "page-[no]"</para>
-			<!-- Kvar att göra.. 
-Kolla hur det nya systemet fungerar med smarttags, och se till att ingen text försvinner.
-Fotnotsreferenser som är explicit satta får referensen två gånger. Kolla med exempeldokumentet.
-Bryt ut olika delar i separata dokument för överskådlighet. Försök att kartlägga brister och luckor.
--->
 		</description>
 		<remark/>
 	</revision>
+	<revision>
+		<version>1.4.1</version>
+		<date>10 October 2006</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Added @version="2005-1" to dtbook element</para>
+			<para>Added meta elements for "dc:Title" and "dtb:uid"</para>
+			<para>Removed dependency on sun-package</para>
+			<para>Added "#" to @idref on noteref</para>
+		</description>
+		<remark/>
+	</revision>
+				<!-- Kvar att göra.. 
+Kolla hur det nya systemet fungerar med smarttags, och se till att ingen text försvinner.
+Fotnotsreferenser som är explicit satta får referensen två gånger. Kolla med exempeldokumentet.
+-->
 </history>

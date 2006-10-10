@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:rev="rnib.org.uk/tbs#" xmlns:d="http://www.tpb.se/ns/2006/wml2dtbook" xmlns="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="d rev">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:rev="rnib.org.uk/tbs#" xmlns:d="http://www.tpb.se/ns/2006/wml2dtbook" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="d rev o">
 
 <!-- Input parameters -->
 <xsl:param name="stylesheet" select="'dtbook2xhtml.xsl'"/>
@@ -32,6 +32,8 @@
 
 <xsl:template name="insertHeader">
 	<head>
+		<meta name="dtb:uid" content=""/>
+		<meta name="dc:Title" content="{o:DocumentProperties/o:Title}"/>
 		<meta name="wml2dtbook:version" content="{$version}"/>
 		<meta name="wml2dtbook:date" content="{$date}"/>
 	</head>
