@@ -54,6 +54,7 @@ testbuild	build rel2 and test						Laurie
 doc.html	access to doc.html
 			from transformer list		
 			(low prio)								Laurie 
+rtf2xml     use an unmodified version of rtf2xml
 -- known transformer work --
 dtbook		first version of
 			dtbook migrator							Per+Markus			
