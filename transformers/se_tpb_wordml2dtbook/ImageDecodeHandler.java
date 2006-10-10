@@ -20,7 +20,7 @@ import com.sun.imageio.plugins.common.I18N;
  */
 public class ImageDecodeHandler extends DefaultHandler2 {
 	private boolean openPict;
-	private sun.misc.BASE64Decoder decoder;
+	//private sun.misc.BASE64Decoder decoder;
 	private FileOutputStream output;
 	private StringBuffer buffer;
 	private int imgcount;
@@ -38,7 +38,7 @@ public class ImageDecodeHandler extends DefaultHandler2 {
 		this.imgcount = 0;
 		this.output = null;
 		this.openPict = false;
-		this.decoder = new sun.misc.BASE64Decoder();
+		//this.decoder = new sun.misc.BASE64Decoder();
 	}
 	
 	
@@ -64,7 +64,8 @@ public class ImageDecodeHandler extends DefaultHandler2 {
 			openPict = false;
 			try {
 				output = new FileOutputStream(new File(dir, filename));
-				output.write(decoder.decodeBuffer(buffer.toString()));
+				//output.write(decoder.decodeBuffer(buffer.toString()));
+				output.write(Base64.decode(buffer.toString()));
 				output.close();
 			} catch (Exception e) { e.printStackTrace(); }
 		}
