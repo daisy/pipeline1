@@ -18,17 +18,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-
+A copy of the Lesser General Public License may be found at
+http://www.gnu.org/licenses/lgpl.html
 
 Applicable Licenses
 _____________________
 
-DMFC is built upon a number of other open source technologies and products.  Third party Java software binary archives that are bundled with the the DMFC application are listed below:
+DMFC is built upon a number of other open source technologies and products.  
+Third party Java software binary archives that are bundled with the the 
+DMFC application are listed below:
 	
 	The DAISY Java Utility Library
-	Lesser Greater Public License
+	Lesser General Public License
 	http://www.gnu.org/licenses/lgpl.html
-
 
 	jing.jar
 	Relax NG Schema Validator
@@ -71,7 +73,7 @@ DMFC is built upon a number of other open source technologies and products.  Thi
 	http://www.mozilla.org/MPL/MPL-1.0.html
 
 	tagsoup.jar
-	SAX-compliant parser of Java/HTML found in the wild
+	SAX-compliant parser in Java/HTML found in the wild
 	http://home.ccil.org/~cowan/XML/tagsoup/
 	Licensed under both the GNU GPL version 2.0 and 
 	The Academic Free License
@@ -92,25 +94,58 @@ DMFC is built upon a number of other open source technologies and products.  Thi
 	Woodstox XML processor
 	http://woodstox.codehaus.org/
 	High-performance validating namespace-aware StAX-compliant (JSR-173) Open Source XML-processor
-	GNU General Public License
-	http://www.gnu.org/licenses/licenses.html
+	GNU Lesser General Public License
+	http://www.gnu.org/licenses/lgpl.html
 
 	jl1.0.jar
 	mp3 decoding (http://www.javazoom.net/javalayer/javalayer.html). 
 	GNU Lesser General Public License
 	http://www.gnu.org/licenses/lgpl.html
+	
+	rtf2xml
+	Converts a Microsoft RTF file to XML
+	http://rtf2xml.sourceforge.net/docs/index.html
+	General Public License
+	http://www.gnu.org/licenses/licenses.html
+	
+	jsr173.jar
+	Java based API for pull-parsing XML
+	This jar file may be downloaded from: http://jcp.org/en/jsr/detail?id=173
+	BEA Streaming API for XML Specification Reference Implementation License Agreement
+	http://www.bea.com/
+	A copy of this license is included in the distributable in the following directory:
+	dmfc/licenses/StreamingAPIForXMLStax.
+	
+	DAISY (i) effectively disclaims on behalf of all Contributors 
+	all warranties and conditions, express and implied, including warranties or conditions 
+	of title and non-infringement, and implied warranties or conditions of merchantability 
+	and fitness for a particular purpose; (ii)  effectively excludes on behalf of all 
+	Contributors all liability for damages, including direct, indirect, special, incidental 
+	and consequential damages, such as lost profits; (iii) states that any provisions which 
+	differ from this Agreement are offered by that Contributor alone and not by any other 
+	party; and (iv)  states that Source Code for the Covered Code is available from such 
+	Contributor, and informs licensees how to obtain it in a reasonable manner on or 
+	through a medium customarily used for software exchange.
 
-The following software is required to run specific transformers, but the source code is not integrated in any way with the DMFC.  LAME and Python are included in the Windows installer and automatically installed.
+	ZipDLL
+	Plugin providing basic zip file extraction ability for NSIS scripts.
+	http://nsis.sourceforge.net/wiki/ZipDLL
+	GNU General Public License
+	http://www.gnu.org/licenses/gpl.html
+	ZipDLL uses the ZipArchive library from http://www.artpol-software.com/index_zip.html. 
+	Please read the file ZipArchive\license.txt for details.
+	
+	
+The following software is required to run specific transformers, 
+but the source code is not integrated in any way with the DMFC.  
+LAME is included in the Windows installer and automatically installed.
 	
 	LAME
 	mp3 encoding (http://www.mp3dev.org)
 	GNU Lesser General Public License 
 	http://www.gnu.org/licenses/lgpl.html. 
 
-	Python
-	Object Oriented Programming Language
-	The Python License
-	http://www.python.org/psf/license.html
 
 
-IT IS YOUR OBLIGATION TO READ AND ACCEPT ALL SUCH TERMS AND CONDITIONS PRIOR TO USE OF THIS CONTENT. 
+IT IS YOUR OBLIGATION TO READ AND ACCEPT ALL SUCH TERMS AND CONDITIONS PRIOR TO USE 
+OF THIS CONTENT. 
