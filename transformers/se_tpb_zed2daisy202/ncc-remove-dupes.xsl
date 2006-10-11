@@ -14,7 +14,7 @@
   <c:config>
   	<c:generator>DMFC z3986-2005 to Daisy 2.02</c:generator>
     <c:name>ncc-remove-dupes</c:name>
-    <c:version>0.2</c:version>
+    <c:version>0.3</c:version>
     
     <c:author>Linus Ericson</c:author>
     <c:description>Remove duplicates in the Daisy 2.02 ncc.html file.</c:description>    
@@ -22,6 +22,10 @@
   
   <xsl:param name="date"/>
   <xsl:param name="baseDir"/>
+  
+  <xsl:key name="xhtmlID" match="x:*[@id]" use="@id"/>
+  
+  <xsl:variable name="xhtmlDoc" select="document(concat($baseDir, 'content.html'))"/>
 
   <!-- Don't add doctype yet. Let the ncc-clean.xsl handle that. -->
   <xsl:output method="xml" 
@@ -136,8 +140,10 @@
 			<xsl:variable name="content" select="substring-before($contentUri, '#')"/>
 			<xsl:variable name="contFrag" select="substring-after($contentUri, '#')"/>
 			
-			<xsl:for-each select="document(concat($baseDir,$content))//*[@id=$contFrag]">
+			<xsl:for-each select="$xhtmlDoc">	
+				<xsl:for-each select="key('xhtmlID', $contFrag)">
 					<xsl:value-of select="generate-id(ancestor-or-self::x:*[@class=$className][1])"/>
+				</xsl:for-each>
 			</xsl:for-each>
 		</xsl:if>
 	</xsl:template>

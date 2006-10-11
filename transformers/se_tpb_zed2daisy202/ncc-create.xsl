@@ -13,7 +13,7 @@
   <c:config>
   	<c:generator>DMFC z3986-2005 to Daisy 2.02</c:generator>
     <c:name>createNcc</c:name>
-    <c:version>0.2</c:version>
+    <c:version>0.3</c:version>
     
     <c:author>Linus Ericson</c:author>
     <c:description>Creates the Daisy 2.02 ncc.html file.</c:description>    
@@ -21,6 +21,28 @@
   
   <xsl:param name="date"/>
   <xsl:param name="baseDir"/>
+  
+  <xsl:key name="xhtmlH1" match="x:*[@id and ancestor-or-self::x:h1]" use="@id"/>
+  <xsl:key name="xhtmlH2" match="x:*[@id and ancestor-or-self::x:h2]" use="@id"/>
+  <xsl:key name="xhtmlH3" match="x:*[@id and ancestor-or-self::x:h3]" use="@id"/>
+  <xsl:key name="xhtmlH4" match="x:*[@id and ancestor-or-self::x:h4]" use="@id"/>
+  <xsl:key name="xhtmlH5" match="x:*[@id and ancestor-or-self::x:h5]" use="@id"/>
+  <xsl:key name="xhtmlH6" match="x:*[@id and ancestor-or-self::x:h6]" use="@id"/>
+  <xsl:key name="xhtmlHD" match="x:*[@id and ancestor-or-self::x:hd]" use="@id"/>
+  
+  <xsl:key name="xhtmlHeading" match="x:*[@id and (ancestor-or-self::x:h1 or
+                                                  ancestor-or-self::x:h2 or
+                                                  ancestor-or-self::x:h3 or
+                                                  ancestor-or-self::x:h4 or
+                                                  ancestor-or-self::x:h5 or
+                                                  ancestor-or-self::x:h6 or
+                                                  ancestor-or-self::x:hd)]" use="@id"/>
+                                                  
+  <xsl:key name="xhtmlID" match="x:*[@id]" use="@id"/>
+                                                  
+                                                  
+  
+  <xsl:variable name="xhtmlDoc" select="document(concat($baseDir, 'content.html'))"/>
 
   <!-- Don't add doctype yet. Let the ncc-clean.xsl handle that. -->
   <xsl:output method="xml" 
@@ -137,64 +159,103 @@
 	  		</xsl:call-template>
   </xsl:template>
   
+  
+  <!-- ****************************************************************
+       Get the value of the element in the content document with the
+       ID specified by the fragement identifier of the uri parameter.
+       **************************************************************** -->
   <xsl:template name="get_content_value_of">
   	<xsl:param name="uri"/>
-  	<xsl:variable name="content" select="substring-before($uri, '#')"/>
-		<xsl:variable name="fragment" select="substring-after($uri, '#')"/>		
-		<xsl:value-of select="document(concat($baseDir,$content))//*[@id=$fragment]"/>
+	<xsl:variable name="fragment" select="substring-after($uri, '#')"/>	
+	
+	<xsl:for-each select="$xhtmlDoc">	
+		<xsl:value-of select="key('xhtmlID', $fragment)"/>
+	</xsl:for-each>
   </xsl:template>
   
+  
+  <!-- ****************************************************************
+       Get the class value of the element in the content document with
+       the ID specified by the fragement identifier of the uri
+       parameter.
+       **************************************************************** -->
   <xsl:template name="get_class_value_of">
   	<xsl:param name="uri"/>
-  	<xsl:variable name="content" select="substring-before($uri, '#')"/>
-		<xsl:variable name="fragment" select="substring-after($uri, '#')"/>		
-		<xsl:value-of select="document(concat($baseDir,$content))//*[@id=$fragment]/@class"/>
+	<xsl:variable name="fragment" select="substring-after($uri, '#')"/>		
+	
+	<xsl:for-each select="$xhtmlDoc">	
+		<xsl:value-of select="key('xhtmlID', $fragment)/@class"/>
+	</xsl:for-each>
   </xsl:template>
   
+  
+  <!-- ****************************************************************
+       Generate a (partial) heading if the element in the content
+       document with ID equal to the fragment identifier of the uri
+       parameter is a child of (or is) a heading element.
+       
+       The partial heading elements (when a heading consists of several
+       par elements in smil) are merged by a later stylesheet.
+       **************************************************************** -->
   <xsl:template name="maybeGenerateHeading">
   	<xsl:param name="uri"/>
   	<xsl:param name="doc"/>
-  	<xsl:variable name="content" select="substring-before($uri, '#')"/>
-		<xsl:variable name="fragment" select="substring-after($uri, '#')"/>
-		<xsl:for-each select="document(concat($baseDir,$content))//*[@id=$fragment]">
-			<xsl:choose>
-				<xsl:when test="ancestor-or-self::x:h1">					
-					<ncc:h1 headingid="{generate-id(ancestor-or-self::x:h1)}">
+	<xsl:variable name="fragment" select="substring-after($uri, '#')"/>		
+	
+	<xsl:for-each select="$xhtmlDoc">
+	 	<xsl:choose>
+	    	<xsl:when test="not(key('xhtmlHeading', $fragment))"></xsl:when>
+	    	<xsl:when test="key('xhtmlH1', $fragment)">
+	    		<xsl:for-each select="key('xhtmlID', $fragment)">
+	    			<ncc:h1 headingid="{generate-id(ancestor-or-self::x:h1)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:h1>
-				</xsl:when>
-				<xsl:when test="ancestor-or-self::x:h2">
-					<ncc:h2 headingid="{generate-id(ancestor-or-self::x:h2)}">
+	    		</xsl:for-each>
+	    	</xsl:when>
+	    	<xsl:when test="key('xhtmlH2', $fragment)">
+	    		<xsl:for-each select="key('xhtmlID', $fragment)">
+	    			<ncc:h2 headingid="{generate-id(ancestor-or-self::x:h2)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:h2>
-				</xsl:when>
-				<xsl:when test="ancestor-or-self::x:h3">
-					<ncc:h3 headingid="{generate-id(ancestor-or-self::x:h3)}">
+	    		</xsl:for-each>
+	    	</xsl:when>
+	    	<xsl:when test="key('xhtmlH3', $fragment)">
+	    		<xsl:for-each select="key('xhtmlID', $fragment)">
+	    			<ncc:h3 headingid="{generate-id(ancestor-or-self::x:h3)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:h3>
-				</xsl:when>
-				<xsl:when test="ancestor-or-self::x:h4">
-					<ncc:h4 headingid="{generate-id(ancestor-or-self::x:h4)}">
+	    		</xsl:for-each>
+	    	</xsl:when>
+	    	<xsl:when test="key('xhtmlH4', $fragment)">
+	    		<xsl:for-each select="key('xhtmlID', $fragment)">
+	    			<ncc:h4 headingid="{generate-id(ancestor-or-self::x:h4)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:h4>
-				</xsl:when>
-				<xsl:when test="ancestor-or-self::x:h5">
-					<ncc:h5 headingid="{generate-id(ancestor-or-self::x:h5)}">
+	    		</xsl:for-each>
+	    	</xsl:when>
+	    	<xsl:when test="key('xhtmlH5', $fragment)">
+	    		<xsl:for-each select="key('xhtmlID', $fragment)">
+	    			<ncc:h5 headingid="{generate-id(ancestor-or-self::x:h5)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:h5>
-				</xsl:when>
-				<xsl:when test="ancestor-or-self::x:h6">
-					<ncc:h6 headingid="{generate-id(ancestor-or-self::x:h6)}">
+	    		</xsl:for-each>
+	    	</xsl:when>
+	    	<xsl:when test="key('xhtmlH6', $fragment)">
+	    		<xsl:for-each select="key('xhtmlID', $fragment)">
+	    			<ncc:h6 headingid="{generate-id(ancestor-or-self::x:h6)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:h6>
-				</xsl:when>
-				<xsl:when test="ancestor-or-self::x:hd">
-					<ncc:hd headingid="{generate-id(ancestor-or-self::x:hd)}">
+	    		</xsl:for-each>
+	    	</xsl:when>
+	    	<xsl:when test="key('xhtmlHD', $fragment)">
+	    		<xsl:for-each select="key('xhtmlID', $fragment)">
+	    			<ncc:hd headingid="{generate-id(ancestor-or-self::x:hd)}">
 						<xsl:call-template name="create_link"><xsl:with-param name="doc" select="$doc"/></xsl:call-template>
 					</ncc:hd>
-				</xsl:when>
-			</xsl:choose>
-		</xsl:for-each>		
+	    		</xsl:for-each>
+	    	</xsl:when>
+	    </xsl:choose>
+	 </xsl:for-each>	    
   </xsl:template>
   
   <xsl:template name="create_link">
