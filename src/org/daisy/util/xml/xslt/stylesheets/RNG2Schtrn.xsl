@@ -63,6 +63,7 @@ xmlns:sch="http://www.ascc.net/xml/schematron" xmlns:rng="http://relaxng.org/ns/
 					<xsl:copy-of select="."/>
 				</xsl:if>
 			</xsl:for-each>
+			<xsl:copy-of select="$schemas//sch:key[not(ancestor::sch:rule)]"/>
 			<xsl:copy-of select="$schemas//sch:phase"/>
 			<xsl:copy-of select="$schemas//sch:pattern"/>
 			<sch:diagnostics>

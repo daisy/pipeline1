@@ -25,6 +25,9 @@
   
   <include href="../relaxngcommon/attributes.rng" />
 
+  <sch:key name="notes" match="dtbk:note[@id]" path="@id"/>
+  <sch:key name="annotations" match="dtbk:annotation[@id]" path="@id"/>
+
   <start>
       <ref name="root"/>  
   </start>
@@ -126,7 +129,7 @@
 	  <sch:assert test="contains(@idref, '#')">
 	    [sch][zedid::dtbook_noteFragment]
 	  </sch:assert>
-	  <sch:report test="contains(@idref, '#') and string-length(substring-before(@idref, '#'))=0 and count(//dtbk:note[@id=substring(current()/@idref,2)])!=1">
+	  <sch:report test="contains(@idref, '#') and string-length(substring-before(@idref, '#'))=0 and count(key('notes',substring(current()/@idref,2)))!=1">
 	    [sch][zedid::dtbook_idrefNote]
 	  </sch:report>
 	  <!-- Do not perform any checks on external note references
@@ -142,7 +145,7 @@
       <sch:assert test="contains(@idref, '#')">
 	    [sch][zedid::dtbook_annotationFragment]
 	  </sch:assert>
-	  <sch:report test="contains(@idref, '#') and string-length(substring-before(@idref, '#'))=0 and count(//dtbk:annotation[@id=substring(current()/@idref,2)])!=1">
+	  <sch:report test="contains(@idref, '#') and string-length(substring-before(@idref, '#'))=0 and count(key('annotations',substring(current()/@idref,2)))!=1">
 	    [sch][zedid::dtbook_idrefAnnotation]
 	  </sch:report>
 	  <!-- Do not perform any checks on external note references
