@@ -24,7 +24,7 @@ Below two sections: Known Issues and Pending Features
 ** Known Issues **
 Below issues are already identified and marked for fixing til next release:
 
-#1543841
+#1543841 - Resolved
   Running the RTF-to-Dtbook script more than once 
   during one session will make the application freeze.
   The cause of the issue is known (#1543841) and 
@@ -37,11 +37,11 @@ Below issues are already identified and marked for fixing til next release:
   characters. The cause of the issue is known (#1543978) and 
   will be fixed by next release.
 
-#licenseinfo
+#licenseinfo - Resolved
   The GUI does not yet provide information on specific licensing
   for specific scripts&transformers.
 
-#installer
+#installer - Resolved
   Running the windows installer as non admin makes it impossible to
   uninstall using the uninstaller. Workaround is to delete the install
   directory, and the link on the start menu.
@@ -52,3 +52,32 @@ Below features are not yet implemented, but high on the list for the next releas
 - Specific licensing information when using particular 3d party libraries.
 
 ********************************
+Version/Date: 2006-10-17
+
+This is the ????????  release of DMFC.
+Below three sections: Resolved issues from the FPA, Known Issues, and
+Pending Features.
+
+** Resolved issues from the FPA **
+
+#1543841 - Resolved
+  Running the RTF-to-Dtbook script more than once 
+  during one session will make the application freeze.
+  The transformer was changed to call python directly, instead of using
+  jython, a java-python bridge.  This allows the RTF-to-DTBook script
+  to run more than once.
+  
+#licenseinfo - Resolved
+  The GUI does not yet provide information on specific licensing
+  for specific scripts&transformers. 
+  A Software User Agreement for both the DMFC and GUI enumerates
+  specific licensing for all transformers.  The Software Agreement 
+  must be accepted prior to installation of the program. 
+  
+#installer - Resolved
+  Running the windows installer as non admin makes it impossible to
+  uninstall using the uninstaller. 
+  The windows installer may be run by admin or non-admin users,
+  and the uninstaller works for both user types.
+  
+  
