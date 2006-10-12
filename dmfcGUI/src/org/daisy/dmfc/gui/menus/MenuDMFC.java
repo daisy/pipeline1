@@ -121,7 +121,8 @@ public class MenuDMFC {
 			}
 			});
 		
-		
+	/*	@todo - for release 3 - add back in
+	 * 
 		convertMultipleFile = new MenuItem(actionmenu, SWT.PUSH);
 		
 		convertMultipleFile.setText("Add Multiple Sources\tCtrl+M");
@@ -146,6 +147,8 @@ public class MenuDMFC {
 				}
 			}
 		});
+		
+		*/
 		
 		convertSingleFile = new MenuItem(actionmenu, SWT.PUSH);
 		convertSingleFile.setText("Add Single Source\tCtrl+S");
