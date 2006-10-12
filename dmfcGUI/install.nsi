@@ -52,10 +52,10 @@ Name "DMFC GUI"
 !define URL http://www.daisy.org/projects/dmfc
 
 ; Path to Eclipse directory
-!define ECLIPSEDIR "C:\Program Files\eclipse-3.2"
+!define ECLIPSEDIR "C:\Program Files\eclipse"
 
 ; Path to and name of the LAME install ZIP
-!define LAMEDIR "C:\Documents and Settings\LINUSE.TPBAD\workspace\dmfc\dist"
+!define LAMEDIR "C:\lame3.96.1"
 !define LAMENAME "lame3.96.1.zip"
 
 ; Major and minor version of .NET required
@@ -63,8 +63,8 @@ Name "DMFC GUI"
 !define DOT_MINOR 0
 
 ; Major and minor version of Python
-!define PYTHON_MAJOR 2
-!define PYTHON_MINOR 2
+!define PYTHON_MAJOR 2 
+!define PYTHON_MINOR 3 
 
 ; Version of Java required
 !define JRE_VERSION "1.5.0"
@@ -73,6 +73,7 @@ Name "DMFC GUI"
 !include Sections.nsh
 !include ZipDLL.nsh
 !include WordFunc.nsh
+!include LogicLib.nsh
 
 !insertmacro VersionCompare
 
@@ -91,7 +92,7 @@ UninstPage uninstConfirm
 UninstPage instfiles
 
 ### Installer attributes ######################################################
-OutFile dist\dmfcgui-1.0b1.exe
+OutFile dist\dmfcgui-nextmessage.exe
 InstallDir "$PROGRAMFILES\DMFC GUI"
 CRCCheck on
 XPStyle on
@@ -204,12 +205,26 @@ Section -AppOther SEC0004
     Push "dmfc.lame.path = $MY_PATH"
     Call ReplaceLineStr
     
-    # update dmfc.python.path in dmfc.properties    
-    StrCmp $PythonInstallPath "" +1 pythonDirSet
-    Push "python.exe"
+    
+    
+    # update dmfc.python.path in dmfc.properties  
+    #value of last character of $PythonInstallPath in $2 register
+    StrCpy $2 $PythonInstallPath 1 -1     
+    
+    ${If} $2 == '\'
+      #MessageBox MB_OK '$$2 is a slash'
+      StrCpy $0 $PythonInstallPath -1 
+      Push "$0\python.exe"
+    ${Else}
+      #MessageBox MB_OK '$$2 is "$2"'
+      Push "$PythonInstallPath\python.exe"
+    ${EndIf}
+    
     goto pythonDirDone
-  pythonDirSet:
-    Push "$PythonInstallPath\python.exe"
+  
+  #pythonDirSet:
+  #   Push "$0\python.exe"
+   
   pythonDirDone:
     Push "\"
     Push "\\"
@@ -218,6 +233,7 @@ Section -AppOther SEC0004
     Push $INSTDIR\dmfc\bin\dmfc.properties
     Push "dmfc.python.path"
     Push "dmfc.python.path = $MY_PATH"
+    #messageBox MB_OK $MY_PATH
     Call ReplaceLineStr
     
     # update dmfcgui.bat
