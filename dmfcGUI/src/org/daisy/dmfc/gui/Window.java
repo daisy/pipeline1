@@ -377,7 +377,7 @@ public class Window {
 							btnAddSingleFile.setEnabled(true);
 						
 						//@todo uncomment below line for final release
-						  addMultipleFiles.setEnabled(true);
+						  //addMultipleFiles.setEnabled(true);
 							setFileSelected(tosh);
 							getConversionDescription();
 							
