@@ -1,10 +1,11 @@
 ###############################################################################
-## DMFC GUI install script                                                   ##
-##  - using Nullsoft Scriptable Install System (NSIS)                        ##
-##                                                                           ##
-## Linus Ericson 2006                                                        ##
-##                                                                           ##
-## Depends on ZipDLL, http://nsis.sourceforge.net/wiki/ZipDLL                ##
+## DMFC GUI install script                                                       ##
+##  - using Nullsoft Scriptable Install System (NSIS)                            ##
+##                                                                               ##
+## Linus Ericson 2006                                                            ##
+##                                                                               ##
+## Depends on ZipDLL, http://nsis.sourceforge.net/wiki/ZipDLL   
+## Depends on ScrollLicense.DLL  http://nsis.sourceforge.net/ScrollLicense_plug-in
 ###############################################################################
 
 ; Initial setup
@@ -86,13 +87,14 @@ Var StartMenuGroup
 Var /GLOBAL PythonInstallPath
 
 ### Installer pages ###########################################################
+Page License "" LicenseShow
 Page directory
 Page instfiles
 UninstPage uninstConfirm
 UninstPage instfiles
 
 ### Installer attributes ######################################################
-OutFile dist\dmfcgui-nextmessage.exe
+OutFile dist\dmfcgui-workrelease.exe
 InstallDir "$PROGRAMFILES\DMFC GUI"
 CRCCheck on
 XPStyle on
@@ -109,11 +111,41 @@ VIAddVersionKey LegalCopyright ""
 InstallDirRegKey HKCU "${REGKEY}" Path
 ShowUninstDetails show
 
+
+
+########################################
+###License Agreement
+###Acceptance
+#######################################
+
+LicenseData PipelineSoftwareUserAgreement.txt
+#LicenseData DMFCAgreement.txt
+
+LicenseForceSelection checkbox
+
+Function LicenseShow
+ ScrollLicense::Set /NOUNLOAD /CHECKBOX
+FunctionEnd
+
+Function .onGUIEnd
+ ScrollLicense::Unload
+FunctionEnd
+
+
+
+
+############################################################################
 ### Installer sections ########################################################
 Section -Main SEC0000
     # Register section
     WriteRegStr HKCU "${REGKEY}\Components" Main 1
 SectionEnd
+
+
+
+
+
+
 
 
 #########################
