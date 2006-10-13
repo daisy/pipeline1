@@ -56,7 +56,11 @@
 			<p>
 				<span class="revision-060410">First revision: June 12, 2006.</span>
 			</p>
-			<p><span class="revision-060908">Second revision: Pending</span></p>
+			<p><span class="revision-060908">Second revision: October 13, 2006</span></p>
+			<p class="revision-060908">This documentation reflects the functionality of 
+			the XSLT used in the WordML2DTBook DAISY Pipeline component. It does not 
+			reflect the functionality of the component itself. The documentation will 
+			be extended to cover this in the next release.</p>
 			<p class="revision-060410">This XSLT convert documents from WordML to DTBook - either from within Word 2003 using the "Save as..." feature (selecting this stylesheet when saving as xml) or using other XML/XSLT enviorments.</p>
 			<h2>General assumptions</h2>
 			<p class="revision-060410">The conversion has been designed for and tested with documents using a single text flow. Anchored or free floating objects should be avoided entierly (however this does not apply to footnotes).</p>
@@ -196,7 +200,7 @@
 		not an option, it is possible to use the "footnote reference" character style and the "footnote text" 
 		paragraph style. However, a link between the two is not created using this method.</p>
 			<h2>Images</h2>
-			<p>img-tags are created for images<span class="revision-060908">, but the images are extracted only if run through the DMFC wrapper</span> (since <span class="revision-060908">extracting images</span> is beyond
+			<p>img-tags are created for images<span class="revision-060908">, but the images are extracted only if run through the WordML2DTBook DAISY Pipeline component</span> (since <span class="revision-060908">extracting images</span> is beyond
 		the limitations of XSLT 1.0). <span class="revision-060410">The naming convention matches the naming convention used when saving as HTML from Word, thereby simplifying the conversion process. The syntax is: imagexxx.jpg. If an alternative text has been specified for the image, this is preserved in the alt-attribute.</span>
 			</p>
 			<h2>Formatting</h2>
@@ -255,7 +259,7 @@
 				<li>Auto connect footnotes that were created using styles.</li>
 			</ul>
 			<h2 class="revision-060908">See also...</h2>
-			<ul>
+			<ul class="revision-060908">
 				<li><a href="./docs/revision-history.xml">Version history</a></li>
 				<li><a href="./docs/tagset/index.html">Schema documentation</a></li>
 			</ul>
