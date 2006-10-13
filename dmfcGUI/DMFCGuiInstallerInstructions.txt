@@ -38,8 +38,14 @@ Release Technician Instructions/Manual
         Extract ZipDLL.nsh to directory Include in your NSIS installation 
       
       Open the .nsh file in a text editor to change and fix the bug stated on the website.
-      	
-
+   
+   3a.  Download and install the InstallLicense plugin from 
+        http://nsis.sourceforge.net/ScrollLicense_plug-in
+   
+   		Unzip the file, and copy the ScrollLicense.dll to the NSIS plugins in your
+   		NSIS installation (Probably c:\program files\nsis\plugins)
+   
+   
    4. Correct the parameters in the install.nsi file
        
      	a.   Make sure the defines in the 'Defines' part are correct. Most importantly,make sure the ECLIPSEDIR, JYTHONDIR and LAMEDIR defines are correct.
