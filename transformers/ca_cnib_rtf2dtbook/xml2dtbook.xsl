@@ -421,7 +421,7 @@
 	<!-- notes. Watch for duplicated IDs of notes -->
 
 	<xsl:template match="rtf:inline[@character-style='footnote reference']" priority="10">
-		<noteref idref="note{.}">
+		<noteref idref="#note{.}">
 			<xsl:apply-templates/>
 		</noteref>
 	</xsl:template>
