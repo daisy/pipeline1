@@ -10,12 +10,12 @@
 	<task name="int_daisy_unicodeTranscoder" interactive="true">
 
 		<parameter>
-			<name>inXML</name>
+			<name>input</name>
 			<value>${input}</value>
 		</parameter>
 
 		<parameter id="id1">
-			<name>outDir</name>
+			<name>output</name>
 			<value>${outputPath}</value>
 		</parameter>
 		
