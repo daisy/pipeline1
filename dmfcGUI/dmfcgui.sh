@@ -18,7 +18,7 @@ for jar in `ls $BASE/lib/*.jar`; do
     CP="$jar":$CP
 done
 
-CP=${CP}$BASE/org.daisy.dmfc.gui.jar:$BASE/dmfc/lib/org.daisy.util.jar:$BASE/dmfc/bin:$BASE/jython/jython.jar
+CP=${CP}$BASE/org.daisy.dmfc.gui.jar:$BASE/dmfc/lib/org.daisy.util.jar:$BASE/dmfc/bin
 
 #echo $JAVA -Djava.library.path=$BASE -classpath $CP org.daisy.dmfc.gui.DMFCMain
 $JAVA -Djava.library.path=$BASE -classpath $CP org.daisy.dmfc.gui.DMFCMain
