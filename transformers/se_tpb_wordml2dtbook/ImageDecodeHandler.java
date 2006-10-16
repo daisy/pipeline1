@@ -3,12 +3,9 @@ package se_tpb_wordml2dtbook;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import org.daisy.dmfc.core.transformer.Transformer;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
-
-import com.sun.imageio.plugins.common.I18N;
 
 /**
  * 
