@@ -26,40 +26,18 @@
 	<!-- *************************
 	      DTBook input validation 
 	     ************************* -->
-	<task name="se_tpb_xmlValidator" interactive="false">
+	<task name="int_daisy_validator" interactive="false">
 		<parameter>
-			<name>xml</name>
+			<name>input</name>
 			<value>${outputPath}/00-dtbook.xml</value>
 		</parameter>
 		<parameter>
-			<name>relaxngSchema</name>
-			<value>-//NISO//RNG dtbook 2005-1//EN</value>
+			<name>schemas</name>
+			<value>-//TPB//SCH dtbook 2005 Narrator//EN</value>
 		</parameter>
 		<parameter>
-			<name>useSchematron</name>
-			<value>true</value>
-		</parameter>
-		<parameter>
-			<name>useDTD</name>
-			<value>true</value>
-		</parameter>
-	</task>
-	<task name="se_tpb_xmlValidator" interactive="false">
-		<parameter>
-			<name>xml</name>
-			<value>${outputPath}/00-dtbook.xml</value>
-		</parameter>
-		<parameter>
-			<name>relaxngSchema</name>
-			<value>-//TPB//RNG dtbook 2005-1 Narrator//EN</value>
-		</parameter>
-		<parameter>
-			<name>useSchematron</name>
-			<value>true</value>
-		</parameter>
-		<parameter>
-			<name>useDTD</name>
-			<value>true</value>
+			<name>abortThreshold</name>
+			<value>WARNING</value>
 		</parameter>
 	</task>
 	
@@ -275,31 +253,27 @@
 	<!-- *************
 	      Error Scout
 	     ************* -->
-	<task name="se_tpb_dtbErrorScout" interactive="false">
+	<task name="int_daisy_validator" interactive="false">
 		<parameter>
-			<name>manifest</name>
+			<name>input</name>
 			<value>${outputPath}/daisy202/ncc.html</value>
 		</parameter>		
 		<parameter>
-			<name>scoutLevel</name>
-			<value>MAXED</value>
+			<name>abortThreshold</name>
+			<value>WARNING</value>
 		</parameter>
-		<parameter>
-			<name>filesetType</name>
-			<value>DAISY_202</value>
-		</parameter>						
-	</task>	
+	</task>
 	
 	<!-- ************************************
 	      Unicode transcoding to UTF-8
 	     ************************************ -->
 	<task name="int_daisy_unicodeTranscoder" interactive="true">
 		<parameter>
-			<name>inXML</name>
+			<name>input</name>
 			<value>${outputPath}/daisy202/ncc.html</value>
 		</parameter>
 		<parameter>
-			<name>outDir</name>
+			<name>output</name>
 			<value>${outputPath}/daisy202-trans</value>
 		</parameter>		
 		<parameter>
@@ -311,20 +285,16 @@
 	<!-- *************
 	      Error Scout
 	     ************* -->
-	<task name="se_tpb_dtbErrorScout" interactive="false">
+	<task name="int_daisy_validator" interactive="false">
 		<parameter>
-			<name>manifest</name>
+			<name>input</name>
 			<value>${outputPath}/daisy202/ncc.html</value>
 		</parameter>		
 		<parameter>
-			<name>scoutLevel</name>
-			<value>MAXED</value>
+			<name>abortThreshold</name>
+			<value>WARNING</value>
 		</parameter>
-		<parameter>
-			<name>filesetType</name>
-			<value>DAISY_202</value>
-		</parameter>						
-	</task>	
+	</task>
 
 	<!-- ************************************
 	      Unicode normalization
@@ -343,19 +313,15 @@
 	<!-- *************
 	      Error Scout
 	     ************* -->
-	<task name="se_tpb_dtbErrorScout" interactive="false">
+	<task name="int_daisy_validator" interactive="false">
 		<parameter>
-			<name>manifest</name>
+			<name>input</name>
 			<value>${outputPath}/daisy202/ncc.html</value>
 		</parameter>		
 		<parameter>
-			<name>scoutLevel</name>
-			<value>MAXED</value>
+			<name>abortThreshold</name>
+			<value>WARNING</value>
 		</parameter>
-		<parameter>
-			<name>filesetType</name>
-			<value>DAISY_202</value>
-		</parameter>						
 	</task>
 	
 </taskScript>
