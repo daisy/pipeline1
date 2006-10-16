@@ -527,6 +527,7 @@ public class SmilMaker implements AbortListener {
 					boolean isEqualNode = (nextSibling != null) && (nextSibling.isEqualNode(linkTarget));
 					if (null == nextSibling) {
 						parent.appendChild(newLinkTarget);
+						updateDTBUserEscape(parent);
 					} else if (!isEqualNode) {
 						parent.insertBefore(newLinkTarget, nextSibling);
 					} else {
@@ -637,16 +638,16 @@ public class SmilMaker implements AbortListener {
 	
 	
 	/**
-	 * Updates DTBuserEscape;-values, good to de when e.g. note
-	 * bodies have been inserted on new places.
+	 * Updates DTBuserEscape;-values, good to do when e.g. note
+	 * bodies have been inserted in new places.
 	 * @param elem the <code>seq</code> containing
 	 * a, e.g. note body.
 	 */
 	private void updateDTBUserEscape(Element elem) {
-		String id = getLastChildTCId(elem);
-		elem.setAttribute("end", "DTBuserEscape;" + id + ".end");
-		Node nextSibling = elem.getNextSibling();
-		DEBUG("id{" + id + "}s sibling: " + nextSibling);
+		if (elem.getAttribute("end").length() > 0) {
+			String id = getLastChildTCId(elem);
+			elem.setAttribute("end", "DTBuserEscape;" + id + ".end");
+		}
 	}
 	
 	
