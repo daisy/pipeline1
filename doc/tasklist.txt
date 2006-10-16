@@ -34,7 +34,7 @@ rtf			ditch jython, move to shell,
 			use new transformer						Laurie		DONE
 jython		remove all jython related
 			stuff from installer					Linus 		DONE
-license1	collect rudimentary license info		Laurie						
+license1	collect rudimentary license info		Laurie      DONE		
 license2	decide on approach						All
 license3	impl any changes in
 			installer or GUI relating
@@ -140,12 +140,12 @@ id          what                                who     status
 ----------------------------------------------------------------
 scripts		Add all scripts to the GUI			LS & LE	 nearly complete
 threading	change so that JobRunner runs in
-            only one thread.					LS
-output		Remove output for validators		LS
+            only one thread.					LS  Linux fixed
+output		Remove output for validators		LS  DONE
 filetype	Output file extension exposed
-			on output files						LS
+			on output files						LS   
 closeprog   Make it harder to accidentally close
-            the GUI while a script is running   LS
+            the GUI while a script is running   LS   DONE
 
 
 

@@ -25,13 +25,9 @@ Applicable Licenses
 _____________________
 
 DMFC is built upon a number of other open source technologies and products.  
-Third party Java software binary archives that are bundled with the the 
+Third party Java software binary archives that are bundled with the  
 DMFC application are listed below:
 	
-	The DAISY Java Utility Library
-	Lesser General Public License
-	http://www.gnu.org/licenses/lgpl.html
-
 	jing.jar
 	Relax NG Schema Validator
 	Jing Copying Conditions
@@ -101,12 +97,7 @@ DMFC application are listed below:
 	mp3 decoding (http://www.javazoom.net/javalayer/javalayer.html). 
 	GNU Lesser General Public License
 	http://www.gnu.org/licenses/lgpl.html
-	
-	rtf2xml
-	Converts a Microsoft RTF file to XML
-	http://rtf2xml.sourceforge.net/docs/index.html
-	General Public License
-	http://www.gnu.org/licenses/licenses.html
+
 	
 	jsr173.jar
 	Java based API for pull-parsing XML
@@ -134,8 +125,17 @@ DMFC application are listed below:
 	http://www.gnu.org/licenses/gpl.html
 	ZipDLL uses the ZipArchive library from http://www.artpol-software.com/index_zip.html. 
 	Please read the file ZipArchive\license.txt for details.
-	
-	
+
+Third party python software archives are bundled with the  
+DMFC application. The following software is required to run specific 
+transformers:
+
+rtf2xml
+	Converts a Microsoft RTF file to XML
+	http://rtf2xml.sourceforge.net/docs/index.html
+	General Public License
+	http://www.gnu.org/licenses/licenses.html
+
 The following software is required to run specific transformers, 
 but the source code is not integrated in any way with the DMFC.  
 LAME is included in the Windows installer and automatically installed.

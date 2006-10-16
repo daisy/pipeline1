@@ -54,9 +54,44 @@ Below features are not yet implemented, but high on the list for the next releas
 ********************************
 Version/Date: 2006-10-17
 
-This is the ????????  release of DMFC.
-Below three sections: Resolved issues from the FPA, Known Issues, and
-Pending Features.
+This is the Second, Work Centric Release release of DAISY Pipeline.  Some notable 
+updates to the software is listed below:
+
+#Licensing
+
+Software User Agreements for the DAISY Pipeline(both the DMFC and the GUI)
+provide specific licensing information regarding 3rd party software. As in all 
+agreements, it is the obligation of the user to read and accept all such terms 
+and conditions of all third party software packages prior to the use of the 
+DAISY Pipeline.
+
+
+#WordML2DTBook
+Version 1.4.1 (10 October 2006)
+ 
+The most significant new feature in this release is that the converter 
+now extracts images embedded in Word documents. Other enhancements include:
+ 
+* Automatic frontmatter creation - everything preceding the first heading 
+  will be part of the frontmatter.
+* Attributes - several attributes have been added or changed.
+* Customization - two new input parameters have been added: 'stylesheet' 
+  and 'images'.
+* Footnotes - The numbering of native footnotes have been improved
+
+See the documentation for further information.
+
+#rtf2dtbook
+Version 1.1 (13 October 2006)
+
+The converter uses command-line python and not jython (the java-python bridge) to complete the rtf-to-xml transformation.
+The switch has increased the speed and reliablity of the transformer.  In particular:
+
+*  The rtf-to-dtbook transformer may be run more than once/session (resolution of issue #1543841)
+*  The installation of the DAISY Pipeline does not terminate without notice (resolution of issue #1551549  )
+*  The rtf-to-dtbook transformer using python performs at many times the speed of the same 
+   transformer using jython.
+
 
 ** Resolved issues from the FPA **
 
@@ -81,3 +116,6 @@ Pending Features.
   and the uninstaller works for both user types.
   
   
+** Pending features **
+Below features are not yet implemented, but high on the list for the next release:
+- Access to transformer documentation from the GUI
