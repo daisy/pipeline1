@@ -2,37 +2,41 @@
 <taskScript version="1.0">
 	<name>WordML to XHTML</name>
 	<description>Converts a WordML document to XHTML 1.0 (via DTBook)</description>
-	
+ 
 	<property name="input" value="FIXME" type="application/xml"/>
-	<property name="outputPath" value="FIXME" type="application/xhtml+xml"/>
-	
-	
-	<task name="se_tpb_wordml2dtbook" interactive="true">
-
-		<parameter>
+	<property name="outputPath" value="FIXME" type="application/x-filesystemDirectory"/>
+ 
+	<task name="se_tpb_wordml2dtbook" interactive="false">
+ 
+ 		<parameter>
 			<name>xml</name>
 			<value>${input}</value>
 		</parameter>
-
-		<parameter id="id1">
-			<name>out</name>
-			<value>${input}.tmp</value>
+ 
+		<parameter>
+			<name>filename</name>
+			<value>dtbook.xml</value>
 		</parameter>
-		
-	</task>
-	
-	<task name="uk_rnib_dtbook2xhtml" interactive="false">
-
-		<parameter ref="id1">
-			<name>xml</name>
-			<value>${input}.tmp</value>
-		</parameter>
-					
-		<parameter id="id2">
+ 
+		<parameter>
 			<name>out</name>
 			<value>${outputPath}</value>
-		</parameter>		
-				
+		</parameter>
+  
 	</task>
-
+ 
+	<task name="uk_rnib_dtbook2xhtml" interactive="false">
+ 
+		<parameter>
+			<name>xml</name>
+			<value>${outputPath}/dtbook.xml</value>
+		</parameter>
+ 
+		<parameter>
+			<name>out</name>
+			<value>${outputPath}/result.html</value>
+		</parameter>  
+ 
+	</task>
+ 
 </taskScript>
