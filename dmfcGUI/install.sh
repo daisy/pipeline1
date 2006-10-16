@@ -63,7 +63,6 @@ UTIL="org.daisy.util.jar"
 DMFC="org.daisy.dmfc.zip"
 GUI="org.daisy.dmfc.gui.jar"
 EXTRA="org.daisy.dmfc.gui-extras.zip"
-JYTHON="jython_Release_2_2alpha1.jar"
 LAME=`which lame`
 
 PREV=`pwd`
@@ -117,18 +116,6 @@ echo
 
 
 ###################################
-# Jython
-mkdir "$1/jython"
-echo "Installing Jython..."
-cd "$1/jython"
-unzip -q "$PREV/$JYTHON"
-cd "$PREV"
-echo "  $JYTHON"
-echo
-
-
-
-###################################
 # DMFC
 mkdir "$1/dmfc"
 cd "$1/dmfc"
@@ -143,10 +130,9 @@ echo
 ###################################
 # Update dmfc.properties
 echo "Updating property files..."
-JYTH=$FULLPATH/jython
 cd "$1/dmfc/bin"
 sed -e "s/^dmfc\.lame\.path.*/dmfc.lame.path = lame/" < dmfc.properties > dmfc.properties.bak
-sed -e "s:^python\.home.*:python.home = ${JYTH}:" < dmfc.properties.bak > dmfc.properties
+sed -e "s:^dmfc\.python\.path.*:dmfc.python.path = python:" < dmfc.properties.bak > dmfc.properties
 cd "$PREV"
 echo "  dmfc.properties"
 echo
@@ -189,6 +175,37 @@ else
   echo "Warning: Java was not found on your system path. Make sure Java is"
   echo "         installed on the system and edit the dmfcgui.sh to insert"
   echo "         the path to the 'java' command."  
+  echo
+fi
+
+###################################
+# Check Python installation
+echo "Checking for Python version..."
+PYTHONPATH=`which python 2> /dev/null`
+if [ -n "$PYTHONPATH" ]
+then
+  PYTHONVERSION=`python -V 2>&1 | grep Python | cut -d ' ' -f 2`
+  PYTHONMAJOR=`echo $PYTHONVERSION | cut -d '.' -f 1`
+  PYTHONMINOR=`echo $PYTHONVERSION | cut -d '.' -f 2`
+  if [ $PYTHONMAJOR > 2 -a $PYTHONMINOR -ge 3 ]
+  then
+    echo "  Python $PYTHONVERSION found: OK"
+    echo  
+  else
+    echo
+    echo "Warning: This application requires Python 2.3 to run. Only version $PYTHONVERSION"
+    echo "         was found on your system path. Make sure Python 2.3 is"
+    echo "         installed on the system to run transformers using python."
+    echo "         You may need to update the dmfc.python.path property in"  
+    echo "         the file $0/dmfc/bin/dmfc.properties."  
+    echo
+  fi
+else
+  echo
+  echo "Warning: Python was not found on your system path. Make sure Python 2.3 is"
+  echo "         installed on the system to run transformers using python."
+  echo "         You may need to update the dmfc.python.path property in"  
+  echo "         the file $0/dmfc/bin/dmfc.properties."  
   echo
 fi
 
