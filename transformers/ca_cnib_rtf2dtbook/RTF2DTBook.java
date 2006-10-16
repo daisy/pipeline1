@@ -26,16 +26,15 @@ import java.util.logging.Level;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.util.execution.Command;
+import org.daisy.util.execution.ExecutionException;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
-import org.python.util.jython;
 import org.xml.sax.EntityResolver;
-import org.daisy.util.execution.Command;
-import org.daisy.util.execution.ExecutionException;
 
 
 /**
@@ -65,7 +64,7 @@ public class RTF2DTBook extends Transformer {
 			throw new TransformerRunException(i18n("CANNOT_CREATE_TEMP_FILE"), e);
 		}
 
-		// Setup jython args
+		// Setup python args
 		String[] args = new String[8];
 		args[0] = pythonCommand;
 		args[1] = FilenameOrFileURI.toFile(python).getAbsolutePath();
@@ -92,10 +91,11 @@ public class RTF2DTBook extends Transformer {
 
 
 		try {
-			Command.execute(args);
+			if (Command.execute(args) != 0) {
+				throw new TransformerRunException(i18n("PYTHON_FAILED"));
+			}
 		} catch (ExecutionException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			throw new TransformerRunException(i18n("CANNOT_RUN_PYTHON"), e1);
 		} 
 
 

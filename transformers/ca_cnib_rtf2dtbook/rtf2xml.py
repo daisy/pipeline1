@@ -44,8 +44,8 @@ if os.path.basename(sys.argv[0]) == 'rtf2xml.py':
     current_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
     #  determine if current dir in sys.path
     current_in_path = 0
-   # if current_dir in current_dir:
-    #    current_in_path = 1
+    if current_dir in current_dir:
+        current_in_path = 1
     temp = []
     # copy all of sys.path to temp except for current dir
     for path in sys.path:
