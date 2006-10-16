@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <taskScript version="1.0">
-	<name>ErrorScout Daisy 2.02</name>
-	<description>Performs error scouting on a Daisy 2.02 DTB.</description>
+	<name>Daisy 2.02 Validation</name>
+	<description>Performs error scouting on a Daisy 2.02 DTB. This is not an official validator.</description>
 	
 	<property name="input" value="FIXME" type="application/x-dtbd202ncc+xml"/>
 	
-	<task name="se_tpb_dtbErrorScout" interactive="false">
+	<task name="int_daisy_validator" interactive="false">
 
 		<parameter>
-			<name>manifest</name>
+			<name>input</name>
 			<value>${input}</value>
-		</parameter>
-		
+		</parameter>		
 		<parameter>
-			<name>scoutLevel</name>
-			<value>MAXED</value>
-		</parameter>
-		
-		<parameter>
-			<name>filesetType</name>
-			<value>DAISY_202</value>
+			<name>abortThreshold</name>
+			<value>WARNING</value>
 		</parameter>
 						
 	</task>
