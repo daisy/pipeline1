@@ -1,0 +1,27 @@
+<taskScript version="1.0">
+	<name>DTBook upgrade to DTBook 2005-2</name>
+	<description>Converts a DTBook document of version 1.1.0 or 2005-1 to version 2005-2</description>
+	
+	<property name="input" value="FIXME" type="application/x-dtbook+xml"/>
+	<property name="outputPath" value="FIXME" type="application/x-filesystemDirectory"/>
+	
+	<task name="int_daisy_dtbookMigrator" interactive="false">
+
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}</value>
+		</parameter>		
+		
+	 	<parameter>
+			<name>outputVersion</name>
+			<value>2005-2</value>
+		</parameter>
+				
+	</task>
+
+</taskScript>
