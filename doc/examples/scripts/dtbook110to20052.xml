@@ -1,30 +1,24 @@
 <taskScript version="1.0">
-	<name>DTBook 110 to 2005-2</name>
-	<description>This script converts a DTBook 110 document to DTBook 2005-2</description>
+	<name>DTBook 2005-1 to 2005-2</name>
+	<description>Converts a DTBook version 2005-1 document to version 2005-2</description>
 	
-	<property name="input" value="C:/data/workspace/dmfc/doc/examples/input/hauy-2005-1.xml" type="application/x-dtbook+xml"/>
-	<property name="outputPath" value="C:/data/temp/dmfc-out/" type="application/x-filesystemDirectory"/>
-	
-	<task name="no_hks_dtbook110to20051" interactive="false">
+	<task name="int_daisy_dtbookMigrator" interactive="false">
+
 		<parameter>
 			<name>input</name>
-			<value>${input}</value>
-		</parameter>					
-		<parameter id="temp">
+			<value>C:/data/workspace/dmfc/doc/examples/input/hauy-2005-1.xml</value>
+		</parameter>
+					
+		<parameter>
 			<name>output</name>
-			<value>${outputPath}/temp/temp.xml</value>
-		</parameter>						
+			<value>C:/data/temp/dmfc-out</value>
+		</parameter>		
+		
+	 	<parameter>
+			<name>outputVersion</name>
+			<value>2005-2</value>
+		</parameter>
+				
 	</task>
-
-    <task name="no_hks_dtbook20051to20052" interactive="false">
-    	<parameter ref="temp">
-			<name>input</name>
-			<value>${outputPath}/temp/temp.xml</value>
-		</parameter>
-   		<parameter>
-			<name>output</name>
-			<value>${outputPath}/result.xml</value>
-		</parameter>
-    </task>
 
 </taskScript>
