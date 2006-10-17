@@ -391,12 +391,12 @@
     <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='toc']">
     	<sch:assert test="dtbk:list">[tpb57] table of contents must have a list</sch:assert>
     </sch:rule>
-    <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='toc']/dtbk:list/dtbk:li">
+    <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='toc']/dtbk:list//dtbk:li">
     	<sch:assert test="child::*[self::dtbk:lic and (@class='entry' or @class='pagenum')]">[tpb57] list items in table of contents must only have lic children having class attribute 'entry' or 'pagenum'</sch:assert>
     	<sch:assert test="normalize-space(text())=''">[tpb57] list items in table of contents must only contain lic elements</sch:assert>
     </sch:rule>
     <!-- 58 -->
-    <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='toc']/dtbk:list/dtbk:li/dtbk:lic[@class='pagenum']">
+    <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='toc']/dtbk:list//dtbk:lic[@class='pagenum']">
     	<sch:assert test=".=//dtbk:pagenum">[tpb58] there must exist a pagenum element for each lic@class="pagenum"</sch:assert>
     </sch:rule>
   </sch:pattern>
@@ -603,6 +603,23 @@
     	<sch:report test="@rowspan and number(@rowspan) > count(parent::dtbk:tr/following-sibling::dtbk:tr)+1">[tpb95] rowspan attribute value on <name/> element must not be larger than the number of rows left in the table</sch:report>
     </sch:rule>
   </sch:pattern>  
+  
+  <!-- Rule 96: no nested prodnotes or image groups -->
+  <sch:pattern name="dtbook_TPB_nestedProdnoteImggroup" id="dtbook_TPB_nestedProdnoteImggroup">
+    <sch:rule context="dtbk:prodnote">
+    	<sch:report test="descendant::dtbk:prodnote">[tpb96] nested production notes are not allowed</sch:report>
+    </sch:rule>
+    <sch:rule context="dtbk:imggroup">
+    	<sch:report test="descendant::dtbk:imggroup">[tpb96] nested image groups are not allowed</sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 99: dc:Identifier and dtb:uid must have the same value -->
+  <sch:pattern name="dtbook_TPB_IdentifierUid" id="dtbook_TPB_IdentifierUid">
+    <sch:rule context="dtbk:head">
+    	<sch:report test="dtbk:meta[@name='dc:Identifier'] and dtbk:meta[@name='dc:Identifier']/@content!=dtbk:meta[@name='dtb:uid']/@content">[tpb99] dc:Identifier must (if present) have the same value as dtb:uid</sch:report>
+    </sch:rule>
+  </sch:pattern>
       
 </sch:schema>
 
