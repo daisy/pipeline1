@@ -3,6 +3,11 @@ DMFC Release Notes
 This document contains joint release notes
 for DMFC and DMFC GUI.
 
+***********************************
+First Public Access Release, 2006/08/25
+Second Release, 2006/10/17
+***********************************
+
 DMFC (http://daisymfc.sourceforge.net/) is 
 a DTB- and XML oriented transformation pipeline 
 designed to be used in both serverside and 
@@ -24,7 +29,7 @@ Below two sections: Known Issues and Pending Features
 ** Known Issues **
 Below issues are already identified and marked for fixing til next release:
 
-#1543841 - Resolved
+#1543841 
   Running the RTF-to-Dtbook script more than once 
   during one session will make the application freeze.
   The cause of the issue is known (#1543841) and 
@@ -37,11 +42,11 @@ Below issues are already identified and marked for fixing til next release:
   characters. The cause of the issue is known (#1543978) and 
   will be fixed by next release.
 
-#licenseinfo - Resolved
+#licenseinfo 
   The GUI does not yet provide information on specific licensing
   for specific scripts&transformers.
 
-#installer - Resolved
+#installer 
   Running the windows installer as non admin makes it impossible to
   uninstall using the uninstaller. Workaround is to delete the install
   directory, and the link on the start menu.
@@ -54,7 +59,7 @@ Below features are not yet implemented, but high on the list for the next releas
 ********************************
 Version/Date: 2006-10-17
 
-This is the Second, Work Centric Release release of DAISY Pipeline.  Some notable 
+This is the second release of DAISY Pipeline.  Some notable 
 updates to the software is listed below:
 
 #Licensing
@@ -84,16 +89,22 @@ See the documentation for further information.
 #rtf2dtbook
 Version 1.1 (13 October 2006)
 
-The converter uses command-line python and not jython (the java-python bridge) to complete the rtf-to-xml transformation.
-The switch has increased the speed and reliablity of the transformer.  In particular:
+The converter uses command-line python and not jython (the java-python bridge) 
+to complete the rtf-to-xml transformation. The switch has increased the speed 
+and reliablity of the transformer.  In particular:
 
 *  The rtf-to-dtbook transformer may be run more than once/session (resolution of issue #1543841)
 *  The installation of the DAISY Pipeline does not terminate without notice (resolution of issue #1551549  )
 *  The rtf-to-dtbook transformer using python performs at many times the speed of the same 
    transformer using jython.
 
+#Java Virtual Machine parameters
+The default heap size is set to 128 MB (-Xms128m -Xmx128m). To set it to
+a different value, create a file named params.cfg in the installation 
+directory containing a single line describing any parameters that should 
+be sent to the Java virtual machine.
 
-** Resolved issues from the FPA **
+** Resolved issues from the FPA Release**
 
 #1543841 - Resolved
   Running the RTF-to-Dtbook script more than once 
