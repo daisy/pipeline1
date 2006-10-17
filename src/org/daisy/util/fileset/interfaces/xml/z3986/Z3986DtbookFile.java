@@ -47,6 +47,11 @@ public interface Z3986DtbookFile extends TextualContentFile{
 	public String getDtbUid();
 	
 	/**
+	 * @return the value of the root version attribute
+	 */
+	public String getRootVersion();
+	
+	/**
 	 *@return a collection&lt;String&gt; of all dc:language values in this Dtbook document. 
 	 * If no dc:language values exist in this document, the return will
 	 * be an emtpy collection, not null. The collection contains only unique items, and

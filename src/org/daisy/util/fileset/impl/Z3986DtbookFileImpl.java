@@ -46,6 +46,7 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	private String dcCreator= null;
 	private String dcPublisher= null;
 	private Set dcLanguages= new HashSet(); //repeatable
+	private String mRootVersion = null;
 	
 	private boolean inDoctitle = false;
 	private boolean inDocauthor = false;
@@ -60,9 +61,7 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	//private int count = 0;
 	
 	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {		
-		
-		//System.err.println(++count);
-		
+						
 		super.startElement(namespaceURI, sName, qName, attrs);
 		for (int i = 0; i < attrs.getLength(); i++) {
 			attrName = attrs.getQName(i);
@@ -88,6 +87,10 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 				inDoctitle = true;
 			}else if (sName == "docauthor") {
 				inDoctitle = true;
+			}else if (sName == "dtbook") {
+				if(attrName == "version") {
+				  mRootVersion = attrValue;	
+				}
 			}
 			
 			if (attrName=="id") {				
@@ -119,6 +122,10 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 		}
 	}
 
+	public String getRootVersion() {
+		return mRootVersion;
+	}
+	
 	public String getDcIdentifier() {
 		return dcIdentifier;
 	}
