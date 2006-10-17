@@ -61,7 +61,7 @@ Section ""
   Pop $7
   Goto paramsdone
  noparams:
-  StrCpy $7 ""
+  StrCpy $7 "-Xms128m -Xmx128m"
  paramsdone: 
  
   ;MessageBox MB_OK "Params: $7"
