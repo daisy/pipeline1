@@ -44,12 +44,13 @@
 ;
 ;     Apply any changes to the 'DMFC', 'GUI', and 'Other' sections.
 
-Name "DMFC GUI"
+
+Name "DAISY Pipeline"
 
 ### Defines ###################################################################
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 1.0FPA
-!define COMPANY "Daisy Consortium"
+!define VERSION October 17, 2006
+!define COMPANY "DAISY Consortium"
 !define URL http://www.daisy.org/projects/dmfc
 
 ; Path to Eclipse directory
@@ -94,14 +95,14 @@ UninstPage uninstConfirm
 UninstPage instfiles
 
 ### Installer attributes ######################################################
-OutFile dist\dmfcgui-workrelease.exe
-InstallDir "$PROGRAMFILES\DMFC GUI"
+OutFile dist\dmfcgui-oct17.exe
+InstallDir "$PROGRAMFILES\DAISY Pipeline"
 CRCCheck on
 XPStyle on
 ShowInstDetails show
 AutoCloseWindow false
 VIProductVersion 1.0.0.0
-VIAddVersionKey ProductName "DMFC GUI"
+VIAddVersionKey ProductName "DAISY Pipeline"
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey CompanyName "${COMPANY}"
 VIAddVersionKey CompanyWebsite "${URL}"
@@ -124,7 +125,8 @@ LicenseData PipelineSoftwareUserAgreement.txt
 LicenseForceSelection checkbox
 
 Function LicenseShow
- ScrollLicense::Set /NOUNLOAD /CHECKBOX
+ #ScrollLicense::Set /NOUNLOAD /CHECKBOX
+ ScrollLicense::Set /NOUNLOAD 
 FunctionEnd
 
 Function .onGUIEnd
@@ -295,8 +297,12 @@ Section -post SEC0001
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe   
     CreateDirectory "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI"
     CreateDirectory "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework"
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI\License.lnk" $INSTDIR\licenses\GPL\gpl.txt
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\License.lnk" $INSTDIR\dmfc\licenses\LGPL\lgpl.txt
+   # CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI\License.lnk" $INSTDIR\licenses\GPL\gpl.txt
+   # CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\User Agreement.lnk" $INSTDIR\dmfc\licenses\LGPL\lgpl.txt
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI\License\UserAgreement.lnk" $INSTDIR\licenses\GPL\gpl.txt
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\User Agreement.lnk" $INSTDIR\dmfc\licenses\LGPL\lgpl.txt
+    
+    
     
     # Create uninstall registry info
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
@@ -347,6 +353,8 @@ Section /o un.AppGUI UNSEC0003
     Delete $INSTDIR\swt-win32-*.dll    
     Delete $INSTDIR\org.daisy.dmfc.gui.jar
     Delete $INSTDIR\dmfcgui.exe
+    Delete $INSTDIR\*.*
+   
     
     
 
@@ -361,8 +369,11 @@ SectionEnd
 
 Section un.post UNSEC0001
     DeleteRegKey HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI\License.lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\License.lnk"
+    #Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI\License.lnk"
+    #Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\License.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI\User Agreement.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\User Agreement.lnk"
+    
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Release Notes.lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk"
@@ -449,7 +460,8 @@ Function .onInit
   pythonFinished:  
     StrCpy $PythonInstallPath $R3
     
-    StrCpy $StartMenuGroup "DMFC GUI"
+    StrCpy $StartMenuGroup "DAISY Pipeline"
+   # StrCpy $StartMenuGroup "DAISY Pipeline"
     
     Var /GLOBAL ALREADY_INSTALLED
     ClearErrors

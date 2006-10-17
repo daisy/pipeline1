@@ -13,7 +13,7 @@
 ; a file named debug.txt in the same directory as the dmfcgui.exe) stdout and
 ; stderr will be written to stdout.log and stderr.log, respectively.
 
-!define APPNAME "DMFC GUI"
+!define APPNAME "DAISY Pipeline"
 
 Name "${APPNAME}"
 Caption "${APPNAME}"
