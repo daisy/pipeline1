@@ -103,7 +103,7 @@ public final class FilesetFileFactory {
 			if(filesetType==null) throw new NullPointerException("filesetType is null");				
 			if(!file.exists()) throw new FileNotFoundException();
 			if(!file.canRead()) throw new IOException();										
-			return FilesetImpl.getType(null,file.toURI(),file.toString(),filesetType);
+			return FilesetImpl.getType(null,file.toURI(),file.getName(),filesetType);
 		} catch (Exception e) {
 			throw new FilesetFatalException(e);
 		} 		
