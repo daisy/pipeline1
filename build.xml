@@ -21,14 +21,16 @@
 	<!-- Filesets definitions -->
 	<patternset id="patternset.transformers">
 		<include name="transformers/**/*.*"/>
+		<exclude name="transformers/int_daisy_daisy2022Zed2005/**/*.*"/>
 		<exclude name="transformers/int_daisy_exeTest/**/*.*"/>
+		<exclude name="transformers/int_daisy_filesetRenamer/**/*.*"/>
 		<exclude name="transformers/int_daisy_helloWorld/**/*.*"/>
+		<exclude name="transformers/int_daisy_html2xhtml/**/*.*"/>
+		<exclude name="transformers/int_daisy_xmlValidator/**/*.*"/>
 		<exclude name="transformers/int_daisy_xsltTest/**/*.*"/>
 		<exclude name="transformers/se_tpb_mixedContentNormalizer/**/*.*"/>
 		<exclude name="transformers/se_tpb_pdtbCreator/**/*.*"/>	
-		<exclude name="transformers/int_daisy_html2xhtml/**/*.*"/>
-		<exclude name="transformers/int_daisy_filesetRenamer/**/*.*"/>		
-		<exclude name="transformers/int_daisy_xmlValidator/**/*.*"/>				
+		<exclude name="transformers/se_tpb_xmlValidator/**/*.*"/>	
 	</patternset>
 	
 	<patternset id="patternset.util">
@@ -122,12 +124,16 @@
 		<zip zipfile="${distribution.dir}/org.daisy.dmfc-src.zip" >
 			<fileset dir="${base.dir}">
 				<include name="build.xml"/>
+				<include name="dmfc.bat"/>
+				<include name="dmfc.sh"/>
 			</fileset>
 			<fileset dir="${base.dir}">
 				<include name="src/**/*.*"/>				
 				<include name="resources/**/*.*"/>	
 				<include name="doc/releasenotes/*.*"/>
 				<include name="doc/narrator/*.*"/>
+				<include name="doc/examples/scripts/*.*"/>
+				<include name="licenses/**/*.*"/>
 				<exclude name="**/CVS/**/*.*"/>
 				<exclude name="src/org/daisy/util/**/*.*"/>
 			</fileset>
@@ -135,6 +141,9 @@
 				<patternset refid="patternset.transformers"/>
 				<not>
 					<filename name="transformers/**/*.class"/>
+				</not>
+				<not>
+					<filename name="transformers/**/*.exe"/>
 				</not>
 			</fileset>
 		</zip>
@@ -217,6 +226,7 @@
 				<include name="lib/**/*.jar"/>
 				<include name="doc/releasenotes/*.*"/>
 				<include name="doc/narrator/*.*"/>
+				<include name="doc/examples/scripts/*.*"/>
 				<exclude name="**/org/daisy/util/**/*.*"/>
 			</fileset>
 			<fileset dir="${base.dir}">
