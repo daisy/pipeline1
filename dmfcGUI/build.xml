@@ -54,6 +54,7 @@
 				<include name="install.sh"/>
 				<include name="setup-header.sh"/>
 				<include name="build.xml"/>
+				<include name="PipelineSoftwareUserAgreement.txt"/>
 			</fileset>
 		</zip>
 	</target>
@@ -85,6 +86,7 @@
 				<include name="licenses/**/*.*"/>
 				<include name="dmfcgui.exe"/>
 				<include name="dmfcgui.sh"/>
+				<include name="PipelineSoftwareUserAgreement.txt"/>
 			</fileset>
 		</zip>
 	</target>
