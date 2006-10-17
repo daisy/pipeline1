@@ -1,0 +1,35 @@
+<transformer version="1.0">
+	<name>Dtbook Migrator</name>
+	<description>Upgrades a Dtbook document to a later version</description>
+	<classname>int_daisy_dtbookMigrator.DtbookMigrator</classname>
+	<license>LGPL</license>
+	<author>Markus Gylling</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>	
+	<parameters>	
+		<parameter required="true" direction="in" type="application/xml">
+			<name>input</name>
+			<description>The input Dtbook file</description>
+			<example>D:/path/to/inputFile.xml</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>output</name>			
+			<description>The output directory</description>
+			<example>D:/path/to/outputDir/</example>
+		</parameter>
+						
+		<parameter required="false" direction="in" type="enum">
+			<name>outputVersion</name>
+			<description>
+			  The desired version of the output Dtbook document. 
+			  If this parameter is not set, the output version will be the latest available.
+			</description>			
+			<example>2005-2</example>
+			<enum>
+				<value>2005-1</value>
+				<value>2005-2</value>
+			</enum>
+			<default>2005-2</default>
+		</parameter>														
+	</parameters>	
+</transformer>
