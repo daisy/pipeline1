@@ -4,7 +4,7 @@
 	<description>Performs sentence detection on a DTBook 2005-1 document</description>
 	
 	<property name="input" value="FIXME" type="application/xml"/>
-	<property name="outputPath" value="FIXME" type="application/xhtml+xml"/>
+	<property name="outputPath" value="FIXME" type="application/xml"/>
 	
 	
 	<task name="se_tpb_xmldetection" interactive="false">
