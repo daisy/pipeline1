@@ -49,6 +49,7 @@
 				<include name="scripts/**/*.*"/>
 				<exclude name="scripts/test/*.*"/>
 				<include name="licenses/**/*.*"/>
+			    <include name="helpFiles/*.*"/>
 				<include name="dmfcgui.nsi"/>
 				<include name="install.nsi"/>
 				<include name="install.sh"/>
@@ -84,6 +85,7 @@
 				<include name="scripts/**/*.*"/>
 				<exclude name="scripts/test/*.*"/>
 				<include name="licenses/**/*.*"/>
+                <include name="helpFiles/*.*"/>
 				<include name="dmfcgui.exe"/>
 				<include name="dmfcgui.sh"/>
 				<include name="PipelineSoftwareUserAgreement.txt"/>
