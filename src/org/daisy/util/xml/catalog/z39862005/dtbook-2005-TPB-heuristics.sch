@@ -139,5 +139,21 @@
     	<sch:report test="not(lang('sv')) and not(lang('en'))">[tpbHeuM18] xml:lang on root element is neither english nor swedish. Is that correct?</sch:report>
     </sch:rule>
   </sch:pattern> 
+  
+  <!-- Rule M20: Missing metadata -->
+  <sch:pattern name="dtbook_TPBheuristic_missingMetadata" id="dtbook_TPBheuristic_missingMetadata">
+    <sch:rule context="dtb:head">
+    	<sch:assert test="meta[@name='dc:Creator']">[tpbHeuM20] This document has no dc:Creator metadata. Is that correct?</sch:assert>
+    </sch:rule>
+  </sch:pattern> 
+  
+  <!-- Rule M22 & M23: lists of type ul or ol have list items starting with a bullet -->
+  <sch:pattern name="dtbook_TPBheuristic_listUlwithBullet" id="dtbook_TPBheuristic_listUlwithBullet">
+    <sch:rule context="dtbk:list[@type='ul' or @type='ol']/dtbk:li">
+    	<!-- 2022 BULLET, 25A0 BLACK SQUARE, 25C6 BLACK DIAMOND, 25E6 WHITE BULLET, 2713 CHECK MARK, 25A1 WHITE SQUARE-->
+    	<sch:report test="string-length(translate(substring(normalize-space(.),1,1),'&#x2022;&#x25a0;&#x25c6;&#x25e6;&#x2713;&#x25a1;',''))=0">[tpbHeuM22] This list item starts with a bullet. Shouldn't that be removed, or is this a list of type="pl"?</sch:report>
+    	<sch:report test="string-length(translate(substring(normalize-space(.),1,1),'0123456789',''))=0">[tpbHeuM23] This list item starts with a number. Shouldn't that be removed, or is this a list of type="pl"?</sch:report>
+    </sch:rule>
+  </sch:pattern> 
     
 </sch:schema>
