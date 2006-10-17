@@ -89,7 +89,8 @@ Var /GLOBAL PythonInstallPath
 
 ### Installer pages ###########################################################
 Page License "" LicenseShow
-Page directory
+#Page directory
+Page directory "" "" directoryLeave
 Page instfiles
 UninstPage uninstConfirm
 UninstPage instfiles
@@ -299,8 +300,8 @@ Section -post SEC0001
     CreateDirectory "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework"
    # CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI\License.lnk" $INSTDIR\licenses\GPL\gpl.txt
    # CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\User Agreement.lnk" $INSTDIR\dmfc\licenses\LGPL\lgpl.txt
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI\License\UserAgreement.lnk" $INSTDIR\licenses\GPL\gpl.txt
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\User Agreement.lnk" $INSTDIR\dmfc\licenses\LGPL\lgpl.txt
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\GUI\UserAgreement.lnk" $INSTDIR\licenses\DAISYPipelineSoftwareUserAgreement.txt
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Licenses\Framework\User Agreement.lnk" $INSTDIR\dmfc\licenses\DMFCUser\DMFCSoftwareUserAgreement.txt
     
     
     
@@ -472,6 +473,17 @@ Function .onInit
     
   continue:    
 FunctionEnd
+
+
+Function directoryLeave
+  IfFileExists $INSTDIR\*.* direxists
+  goto dirfinished
+ direxists:
+  MessageBox MB_OK "The installation directory is not empty. Please choose another one."
+  Abort 
+ dirfinished:
+FunctionEnd
+
 
 ### Uninstaller functions #####################################################
 Function un.onInit
