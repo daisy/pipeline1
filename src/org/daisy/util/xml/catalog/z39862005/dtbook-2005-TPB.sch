@@ -275,11 +275,10 @@
   		<!-- 41 -->
   		<sch:assert test="starts-with(@id, 'page-') or starts-with(@id, 'unnum-')">[tpb41] pagenum must have ID on the form page-[number] or unnum-[number].</sch:assert>
   		<sch:report test="starts-with(@id, 'page-') and substring(@id, 6)!=.">[tpb41] ID must be on the form page-[number]</sch:report>
-  		<sch:report test="starts-with(@id, 'unnum-') and substring(@id, 7)!=.">[tpb41] ID must be on the form unnum-[number]</sch:report>
   		<!-- 42 -->
   		<sch:report test="starts-with(@id, 'unnum-') and @page!='special'">[tpb42] Unnumbered pages nust be of type @page="special".</sch:report>
-  		<sch:report test="starts-with(@id, 'unnum-') and lang('sv') and substring(@id, 7)!='Onumrerad sida'">[tpb42] Value of unnumbered pages must be 'Onumrerad sida' in swedish context.</sch:report>
-  		<sch:report test="starts-with(@id, 'unnum-') and lang('en') and substring(@id, 7)!='Unnumbered page'">[tpb42] Value of unnumbered pages must be 'Unnumbered page' in swedish context.</sch:report>
+  		<sch:report test="starts-with(@id, 'unnum-') and lang('sv') and .!='Onumrerad sida'">[tpb42] Value of unnumbered pages must be 'Onumrerad sida' in swedish context.</sch:report>
+  		<sch:report test="starts-with(@id, 'unnum-') and lang('en') and .!='Unnumbered page'">[tpb42] Value of unnumbered pages must be 'Unnumbered page' in english context.</sch:report>
   	</sch:rule>
   </sch:pattern>
   
