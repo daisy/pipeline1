@@ -51,6 +51,22 @@
   	</sch:rule>  	
   </sch:pattern>  
   
+  <!-- Rule 20: No imggroup in inline context -->
+  <sch:pattern name="dtbook_TPB_imggroupInline" id="dtbook_TPB_imggroupInline">
+    <sch:rule context="dtbk:imggroup">
+    	<sch:report test="ancestor::dtbk:a        or ancestor::dtbk:abbr       or ancestor::dtbk:acronym    or ancestor::dtbk:annoref   or 
+                          ancestor::dtbk:bdo      or ancestor::dtbk:code       or ancestor::dtbk:dfn        or ancestor::dtbk:em        or 
+                          ancestor::dtbk:kbd      or ancestor::dtbk:linenum    or ancestor::dtbk:noteref    or                                      
+                          ancestor::dtbk:q        or ancestor::dtbk:samp       or ancestor::dtbk:sent       or ancestor::dtbk:span      or 
+                          ancestor::dtbk:strong   or ancestor::dtbk:sub        or ancestor::dtbk:sup        or ancestor::dtbk:w         or 
+                          ancestor::dtbk:address  or ancestor::dtbk:author     or ancestor::dtbk:bridgehead or ancestor::dtbk:byline    or
+                          ancestor::dtbk:cite     or ancestor::dtbk:covertitle or ancestor::dtbk:dateline   or ancestor::dtbk:docauthor or
+                          ancestor::dtbk:doctitle or ancestor::dtbk:dt         or ancestor::dtbk:h1         or ancestor::dtbk:h2        or
+                          ancestor::dtbk:h3       or ancestor::dtbk:h4         or ancestor::dtbk:h5         or ancestor::dtbk:h6        or
+                          ancestor::dtbk:hd       or ancestor::dtbk:line       or ancestor::dtbk:p">[tpb20] Image groups are not allowed in inline context</sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
   <!-- Rule 21: No nested tables -->
   <sch:pattern name="dtbook_TPB_nestedTables" id="dtbook_TPB_nestedTables">
   	<sch:rule context="dtbk:table">
@@ -159,20 +175,9 @@
   	                                       self::dtbk:linegroup  or
                                            self::dtbk:list       or self::dtbk:note       or self::dtbk:p        or 
                                            self::dtbk:poem       or self::dtbk:sidebar    or self::dtbk:table    or 
-                                           self::dtbk:title]">Prodnote in inline context used as block element</sch:report>
+                                           self::dtbk:title]">[tpb29] Prodnote in inline context used as block element</sch:report>
     </sch:rule>
-    <sch:rule context="dtbk:imggroup">
-    	<sch:report test="ancestor::dtbk:a        or ancestor::dtbk:abbr       or ancestor::dtbk:acronym    or ancestor::dtbk:annoref   or 
-                          ancestor::dtbk:bdo      or ancestor::dtbk:code       or ancestor::dtbk:dfn        or ancestor::dtbk:em        or 
-                          ancestor::dtbk:kbd      or ancestor::dtbk:linenum    or ancestor::dtbk:noteref    or                                      
-                          ancestor::dtbk:q        or ancestor::dtbk:samp       or ancestor::dtbk:sent       or ancestor::dtbk:span      or 
-                          ancestor::dtbk:strong   or ancestor::dtbk:sub        or ancestor::dtbk:sup        or ancestor::dtbk:w         or 
-                          ancestor::dtbk:address  or ancestor::dtbk:author     or ancestor::dtbk:bridgehead or ancestor::dtbk:byline    or
-                          ancestor::dtbk:cite     or ancestor::dtbk:covertitle or ancestor::dtbk:dateline   or ancestor::dtbk:docauthor or
-                          ancestor::dtbk:doctitle or ancestor::dtbk:dt         or ancestor::dtbk:h1         or ancestor::dtbk:h2        or
-                          ancestor::dtbk:h3       or ancestor::dtbk:h4         or ancestor::dtbk:h5         or ancestor::dtbk:h6        or
-                          ancestor::dtbk:hd       or ancestor::dtbk:line       or ancestor::dtbk:p">[tpb29] Image groups are not allowed in inline context</sch:report>
-    </sch:rule>
+    
     <!--
     <sch:rule context="dtbk:imggroup[ancestor::dtbk:a        or ancestor::dtbk:abbr       or ancestor::dtbk:acronym    or ancestor::dtbk:annoref   or 
                                        ancestor::dtbk:bdo      or ancestor::dtbk:code       or ancestor::dtbk:dfn        or ancestor::dtbk:em        or 
@@ -192,7 +197,7 @@
   	                                       self::dtbk:linegroup  or
                                            self::dtbk:list       or self::dtbk:note       or self::dtbk:p        or 
                                            self::dtbk:poem       or self::dtbk:sidebar    or self::dtbk:table    or 
-                                           self::dtbk:title]">[tpb29] Prodnote in inline context used as block element</sch:report>
+                                           self::dtbk:title]">[tpb29] Image group in inline context used as block element</sch:report>
     </sch:rule>  
     -->
   </sch:pattern>
@@ -243,7 +248,7 @@
   <!-- Rule 38: Class attributes of level1 in rearmatter -->
   <sch:pattern name="dtbook_TPB_rearmatterLevel1Class" id="dtbook_TPB_rearmatterLevel1Class">
   	<sch:rule context="dtbk:rearmatter/dtbk:level1">
-  		<sch:assert test="@class='bibliography' or @class='index' or @class='notes' or @class='glossary' or @class='appendix' or @class='backCoverText' or @class='other'">[tpb38] Class attribute must be one of: bibliography, index, notes, glossary, appendix, backCoverText and other</sch:assert>
+  		<sch:assert test="@class='bibliography' or @class='index' or @class='footnotes' or @class='rearnotes' or @class='glossary' or @class='appendix' or @class='backCoverText' or @class='other'">[tpb38] Class attribute must be one of: bibliography, index, footnotes, rearnotes, glossary, appendix, backCoverText and other</sch:assert>
   	</sch:rule>
   </sch:pattern>
   
@@ -312,20 +317,20 @@
   <sch:pattern name="dtbook_TPB_allowedNoteClass" id="dtbook_TPB_allowedNoteClass">
     <sch:rule context="dtbk:note">
     	<sch:assert test="@class='endnote' or @class='rearnote'">[tpb46] class attribute for note must be 'endnote' or 'rearnote'</sch:assert>
-    	<sch:report test="@class='rearnote' and (not(ancestor::dtbk:rearmatter) or not(ancestor::dtbk:level1[@class='notes']))">[tpb46] Rearnotes must be in level1@class='notes' in rearmatter</sch:report>
-    	<sch:report test="@class='endnote' and ancestor::dtbk:rearmatter and ancestor::dtbk:level1[@class='notes']">[tpb46] Endnotes may not be in level1@class='notes' in rearmatter</sch:report>
+    	<sch:report test="@class='rearnote' and (not(ancestor::dtbk:rearmatter) or not(ancestor::dtbk:level1[@class='rearnotes']))">[tpb46] Rearnotes must be in level1@class='rearnotes' in rearmatter</sch:report>
+    	<sch:report test="@class='endnote' and ancestor::dtbk:rearmatter and ancestor::dtbk:level1[@class='rearnotes']">[tpb46] Endnotes may not be in level1@class='rearnotes' in rearmatter</sch:report>
     	<sch:report test="@class='endnote' and not(ancestor::dtbk:level1[@class='chapter'] or ancestor::dtbk:level2[@class='chapter']) or following::dtbk:*[not(self::dtbk:note)]">[tpb46] Endnotes must be placed at the end of a chapter</sch:report>
     </sch:rule>
   </sch:pattern>
   
   <!-- Rule 48: Headings in notes section in rearmatter -->
   <sch:pattern name="dtbook_TPB_headingsInNotesSection" id="dtbook_TPB_headingsInNotesSection">
-    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='notes']/dtbk:level2/dtbk:h2">    
+    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='rearnotes']/dtbk:level2/dtbk:h2">    
     	<sch:assert test="count(//dtbk:bodymatter//dtbk:level2[@class='chapter']/dtbk:h2[.=current()]) + 
     	                  count(//dtbk:bodymatter//dtbk:level1[@class='chapter']/dtbk:h2[.=current()]) = 1"
     	   >[tpb48] Heading in notes section does not exist in the bodymatter of the book</sch:assert>
     </sch:rule>    
-    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='notes']/dtbk:level2/dtbk:note">    
+    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='rearnotes']/dtbk:level2/dtbk:note">    
           <sch:assert test="count(//dtbk:level2[@class='chapter' and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h2=current()/parent::dtbk:level2/dtbk:h2]) +
                             count(//dtbk:level1[@class='chapter' and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h1=current()/parent::dtbk:level2/dtbk:h2]) >= 1"
            >[tpb48] There is no note reference to this note in the corresponding section in the bodymatter</sch:assert>
@@ -417,7 +422,7 @@
   
   <!-- Rule 61: Heading for the notes section -->
   <sch:pattern name="dtbook_TPB_h1NotesSection" id="dtbook_TPB_h1NotesSection">
-    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='notes']">
+    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='rearnotes' or @class='footnotes']">
     	<sch:report test="lang('sv') and h1!='Noter'">[tpb61] Heading of notes section must be 'Noter' (swedish)</sch:report>
     	<sch:report test="lang('en') and h1!='Notes'">[tpb61] Heading of notes section must be 'Notes' (english)</sch:report>
     </sch:rule>
@@ -618,6 +623,13 @@
   <sch:pattern name="dtbook_TPB_IdentifierUid" id="dtbook_TPB_IdentifierUid">
     <sch:rule context="dtbk:head">
     	<sch:report test="dtbk:meta[@name='dc:Identifier'] and dtbk:meta[@name='dc:Identifier']/@content!=dtbk:meta[@name='dtb:uid']/@content">[tpb99] dc:Identifier must (if present) have the same value as dtb:uid</sch:report>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 101: All imggroup elements must have a img element -->
+  <sch:pattern name="dtbook_TPB_imgInImggroup" id="dtbook_TPB_imgInImggroup">
+    <sch:rule context="dtbk:imggroup">
+    	<sch:assert test="dtbk:img">[tpb101] There must be an img element in every imggroup</sch:assert>
     </sch:rule>
   </sch:pattern>
       
