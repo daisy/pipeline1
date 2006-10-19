@@ -9,7 +9,7 @@
 
   <a:documentation>
       RelaxNg schema for Z39.86 Dtbook version 2005-2  
-      Last edit by: mgylling 2006-03-15
+      Last edit by: linuse 2006-10-19
 	  Original version: mgylling 2005-07-01
 	  
 	  This schema only tests for things beyond the 
@@ -21,139 +21,18 @@
       Version/change history:
 	    mg20060204: added schtests
 		mg20060315: added pagenum and more schtests	        
+		le20061019: moved common tests to dtbook-2005.rng	        
   </a:documentation>
   
-  <include href="../relaxngcommon/attributes.rng" />
+  <include href="dtbook-2005.rng">
 
-  <sch:key name="notes" match="dtbk:note[@id]" path="@id"/>
-  <sch:key name="annotations" match="dtbk:annotation[@id]" path="@id"/>
-
-  <start>
-      <ref name="root"/>  
-  </start>
+    <define name="dtbook.attlist">
+      <attribute name="version">
+        <value>2005-2</value>
+      </attribute>
+      <ref name="i18n.attributes"/>
+    </define>
   
-  <define name="root">
-    <element name="dtbook">
-      <ref name="dtbook.attlist"/>
-      <oneOrMore>
-        <ref name="anyElement"/>
-      </oneOrMore>  
-    </element>
-  </define>
-  
-  <define name="dtbook.attlist">
-    <attribute name="version">
-      <value>2005-2</value>
-    </attribute>
-    <ref name="i18n.attributes"/>
-  </define>
-  
-  <define name="i18n.attributes">
-    <ref name="attribute.xml.lang.optional"/>
-    <ref name="attribute.dir.optional"/>
-  </define>
-  
-  <define name="anyElement">
-    <element>
-      <anyName>
-	    <except>
-	      <name>pagenum</name>
-	    </except>
-      </anyName>
-      <zeroOrMore>
-	    <choice>
-	      <attribute>
-		      <anyName/>  
-	      </attribute>
-	      <text/>
-	      <ref name="anyElement"/>
-	      <ref name="pagenum"/>
-	    </choice>
-      </zeroOrMore>
-    </element>
-  </define>
-  
-  <define name="pagenum">
-  	<element name="pagenum">
-		<zeroOrMore>
-	  		<attribute>	
-	  			<anyName>
-	  				<except>
-	  					<name ns="">page</name>
-	  				</except>
-	  			</anyName>	
-	  		</attribute>
-		</zeroOrMore>
-  		<choice>
-  			<group>
-  				<attribute name="page">
-  					<value type="string">front</value>
-  				</attribute>
-  				<ref name="datatype.romannumeral"/>
-  			</group>
-  			<group>
-  				<attribute name="page">
-  					<value type="string">normal</value>
-  				</attribute>
-  				<ref name="datatype.positiveInteger"/>
-  			</group>
-  			<group>
-  				<attribute name="page">
-  					<value type="string">special</value>
-  				</attribute>
-  				<text/>
-  			</group>
-  		</choice>
-  	</element>
-  </define>
-		
-  <sch:pattern name="dtbook_MetaUid" id="dtbook_MetaUid">
-    <!-- dtb:uid meta element exists -->
-    <sch:rule context="dtbk:head">
-      <sch:assert test="count(dtbk:meta[@name='dtb:uid'])=1"> 
-        [sch][zedid::dtbook_MetaUid]
-      </sch:assert>        
-    </sch:rule>
-  </sch:pattern> 
-
-  <sch:pattern name="dtbook_MetaTitle" id="dtbook_MetaTitle">
-    <sch:rule context="dtbk:head">
-      <sch:assert test="count(dtbk:meta[@name='dc:Title'])=1"> 
-        [sch][zedid::dtbook_MetaTitle]
-      </sch:assert>  
-    </sch:rule>
-  </sch:pattern>
-
-  <sch:pattern name="dtbook_idrefNote" id="dtbook_idrefNote">
-    <sch:rule context="dtbk:noteref">	  
-	  <sch:assert test="contains(@idref, '#')">
-	    [sch][zedid::dtbook_noteFragment]
-	  </sch:assert>
-	  <sch:report test="contains(@idref, '#') and string-length(substring-before(@idref, '#'))=0 and count(key('notes',substring(current()/@idref,2)))!=1">
-	    [sch][zedid::dtbook_idrefNote]
-	  </sch:report>
-	  <!-- Do not perform any checks on external note references
-	       since you cannot set a URIResolver in Jing
-	  <sch:report test="string-length(substring-before(@idref, '#'))>0 and not(document(substring-before(@idref, '#')))">External document does not exist</sch:report>
-	  <sch:report test="string-length(substring-before(@idref, '#'))>0 and count(document(substring-before(@idref, '#'))//dtbk:note[@id=substring-after(current()/@idref, '#')])!=1">Incorrect external fragment identifier</sch:report>
-	  -->
-    </sch:rule>
-  </sch:pattern>  
-
-  <sch:pattern name="dtbook_idrefAnnotation" id="dtbook_idrefAnnotation">
-    <sch:rule context="dtbk:annoref">
-      <sch:assert test="contains(@idref, '#')">
-	    [sch][zedid::dtbook_annotationFragment]
-	  </sch:assert>
-	  <sch:report test="contains(@idref, '#') and string-length(substring-before(@idref, '#'))=0 and count(key('annotations',substring(current()/@idref,2)))!=1">
-	    [sch][zedid::dtbook_idrefAnnotation]
-	  </sch:report>
-	  <!-- Do not perform any checks on external note references
-	       since you cannot set a URIResolver in Jing
-	  <sch:report test="string-length(substring-before(@idref, '#'))>0 and not(document(substring-before(@idref, '#')))">External document does not exist</sch:report>
-	  <sch:report test="string-length(substring-before(@idref, '#'))>0 and count(document(substring-before(@idref, '#'))//dtbk:annotation[@id=substring-after(current()/@idref, '#')])!=1">Incorrect external fragment identifier</sch:report>
-	  -->
-    </sch:rule>
-  </sch:pattern>
+  </include>
 	          
 </grammar>
