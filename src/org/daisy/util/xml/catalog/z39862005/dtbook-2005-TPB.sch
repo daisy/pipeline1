@@ -84,7 +84,7 @@
   <!-- Rule 23: Increasing pagenum[@page='normal'] values -->
   <sch:pattern name="dtbook_TPB_pagenumIncrease" id="dtbook_TPB_pagenumIncrease">
   	<sch:rule context="dtbk:pagenum[@page='normal' and preceding::dtbk:pagenum[@page='normal']]">
-  		<sch:assert test="number(current()) > number(preceding::dtbk:pagenum[@page='normal' and position()=1])">[tpb23] pagenum[@page='normal'] values must increase</sch:assert>
+  		<sch:assert test="number(current()) > number(preceding::dtbk:pagenum[@page='normal'][1])">[tpb23] pagenum[@page='normal'] values must increase</sch:assert>
   	</sch:rule>  	
   </sch:pattern>
   
@@ -316,9 +316,9 @@
   <sch:pattern name="dtbook_TPB_allowedNoteClass" id="dtbook_TPB_allowedNoteClass">
     <sch:rule context="dtbk:note">
     	<sch:assert test="@class='endnote' or @class='rearnote'">[tpb46] class attribute for note must be 'endnote' or 'rearnote'</sch:assert>
-    	<sch:report test="@class='rearnote' and (not(ancestor::dtbk:rearmatter) or not(ancestor::dtbk:level1[@class='rearnotes']))">[tpb46] Rearnotes must be in level1@class='rearnotes' in rearmatter</sch:report>
+    	<sch:report test="@class='rearnote' and (not(ancestor::dtbk:level1[@class='footnotes']) and not(ancestor::dtbk:level1[@class='rearnotes']))">[tpb46] Rearnotes must be in level1@class='rearnotes' in rearmatter</sch:report>
     	<sch:report test="@class='endnote' and ancestor::dtbk:rearmatter and ancestor::dtbk:level1[@class='rearnotes']">[tpb46] Endnotes may not be in level1@class='rearnotes' in rearmatter</sch:report>
-    	<sch:report test="@class='endnote' and not(ancestor::dtbk:level1[@class='chapter'] or ancestor::dtbk:level2[@class='chapter']) or following::dtbk:*[not(self::dtbk:note)]">[tpb46] Endnotes must be placed at the end of a chapter</sch:report>
+    	<sch:report test="@class='endnote' and (not(ancestor::dtbk:level1[@class='chapter'] or ancestor::dtbk:level2[@class='chapter']) or following::dtbk:*[not(self::dtbk:note)])">[tpb46] Endnotes must be placed at the end of a chapter</sch:report>
     </sch:rule>
   </sch:pattern>
   
