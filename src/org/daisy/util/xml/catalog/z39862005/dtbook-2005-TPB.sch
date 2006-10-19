@@ -37,13 +37,6 @@
   	</sch:rule>  	
   </sch:pattern>  
   
-  <!-- Rule 16: Targets of internal links must exist -->
-  <sch:pattern name="dtbook_TPB_internalLinks" id="dtbook_TPB_internalLinks">
-  	<sch:rule context="dtbk:a[starts-with(@href, '#')]">
-  		<sch:assert test="count(//dtbk:*[@id=substring(current()/@href, 2)])=1">[tpb16] Targets of internal links must exist</sch:assert>
-  	</sch:rule>  	
-  </sch:pattern>  
-  
   <!-- Rule 18: Disallow level -->
   <sch:pattern name="dtbook_TPB_noLevel" id="dtbook_TPB_noLevel">
   	<sch:rule context="dtbk:level">
@@ -382,13 +375,6 @@
     </sch:rule>
   </sch:pattern>
   
-  <!-- Rule 56: enum attribute only on numbered lists -->
-  <sch:pattern name="dtbook_TPB_enumAttrInList" id="dtbook_TPB_enumAttrInList">
-    <sch:rule context="dtbk:list">
-    	<sch:report test="@enum and @type!='ol'">[tpb56] enum attribute only allowed in numbered lists</sch:report>
-    </sch:rule>
-  </sch:pattern>
-  
   <!-- Rule 57 & 58: lic in table of contents -->
   <sch:pattern name="dtbook_TPB_licInToc" id="dtbook_TPB_licInToc">
     <!-- 57 -->
@@ -461,125 +447,11 @@
     </sch:rule>
   </sch:pattern>
   
-  <!-- Rule 69: depth attribute of list elements -->
-  <sch:pattern name="dtbook_TPB_depthList" id="dtbook_TPB_depthList">
-    <sch:rule context="dtbk:list">
-    	<sch:report test="@depth and @depth!=count(ancestor-or-self::dtbk:list)">[tpb69] depth attribute on list element must contain the list wrapping level</sch:report>
-    </sch:rule>
-  </sch:pattern>
-  
   <!-- Rule 70: Heading for the colophon -->
   <sch:pattern name="dtbook_TPB_colophonHeading" id="dtbook_TPB_colophonHeading">
     <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='colophon']">
     	<sch:report test="lang('sv') and h1!='Kolofon'">[tpb70] Heading of colophon must be 'Kolofon' (swedish)</sch:report>
     	<sch:report test="lang('en') and h1!='Colophon'">[tpb70] Heading of colophon must be 'Colophon' (english)</sch:report>
-    </sch:rule>
-  </sch:pattern>
- 
-  <!-- Rule 73: headers attribute on table cells -->
-  <sch:pattern name="dtbook_TPB_headersThTd" id="dtbook_TPB_headersThTd">
-    <sch:rule context="dtbk:th">
-    	<sch:report test="@headers">[tpb73] Headers attribute may only exist on 'td' cells.</sch:report>
-    </sch:rule>
-    <sch:rule context="dtbk:td[@headers]">
-    	<sch:assert test="
-    		count(
-    			ancestor::dtbk:table[1]//dtbk:th/@id[contains( concat(' ',current()/@headers,' '), concat(' ',normalize-space(),' ') )]
-			) = 
-			string-length(normalize-space(@headers)) - string-length(translate(normalize-space(@headers), ' ','')) + 1
-		">[tpb73] Not all the tokens in the headers attribute match the id attributes of 'th' elements in that table.</sch:assert>
-	</sch:rule>
-  </sch:pattern>
-  
-  <!-- Rule 74: imgref attribute on prodnote -->
-  <sch:pattern name="dtbook_TPB_imgrefProdnote" id="dtbook_TPB_imgrefProdnote">
-    <sch:rule context="dtbk:prodnote[@imgref]">
-    	<sch:assert test="
-    		count(
-    			parent::dtbk:imggroup//dtbk:img/@id[contains( concat(' ',current()/@imgref,' '), concat(' ',normalize-space(),' ') )]
-			) = 
-			string-length(normalize-space(@imgref)) - string-length(translate(normalize-space(@imgref), ' ','')) + 1
-		">[tpb74] Not all the tokens in the imgref attribute match the id attributes of 'img' elements in that imggroup.</sch:assert>
-	</sch:rule>
-  </sch:pattern>
-  
-  <!-- Rule 75: imgref attribute on caption -->
-  <sch:pattern name="dtbook_TPB_imgrefCaption" id="dtbook_TPB_imgrefCaption">
-    <sch:rule context="dtbk:caption[@imgref]">
-    	<sch:assert test="
-    		count(
-    			parent::dtbk:imggroup//dtbk:img/@id[contains( concat(' ',current()/@imgref,' '), concat(' ',normalize-space(),' ') )]
-			) = 
-			string-length(normalize-space(@imgref)) - string-length(translate(normalize-space(@imgref), ' ','')) + 1
-		">[tpb75] Not all the tokens in the imgref attribute match the id attributes of 'img' elements in that imggroup.</sch:assert>
-	</sch:rule>
-  </sch:pattern>
-        
-  <!-- Rule 76: accesskey and tabindex attribute on a -->
-  <sch:pattern name="dtbook_TPB_accesskeyTabindex" id="dtbook_TPB_accesskeyTabindex">
-    <sch:rule context="dtbk:a">
-    	<sch:report test="@accesskey and string-length(@accesskey)!=1">[tpb76] accesskey attribute on &lt;a&gt; elements may only be one character long</sch:report>
-    	<sch:report test="@tabindex and string-length(translate(@width,'0123456789',''))!=0">[tpb76] tabindex of &lt;a&gt; elements must be expressed in numbers only</sch:report>
-    	<sch:report test="@accesskey and count(//dtbk:a/@accesskey=@accesskey)!=1">[tpb76] accesskey attribute values must be unique within the document</sch:report>
-    	<sch:report test="@tabindex and count(//dtbk:a/@tabindex=@tabindex)!=1">[tpb76] tabindex attribute values must be unique within the document</sch:report>
-    </sch:rule>
-  </sch:pattern>      
-        
-  <!-- Rule 77: char attribute of col, colgroup, tbody, td, tfoot, th, thead, tr -->
-  <sch:pattern name="dtbook_TPB_charAttribute" id="dtbook_TPB_charAttribute">
-    <sch:rule context="dtbk:*[self::dtbk:col   or self::dtbk:colgroup or self::dtbk:tbody or self::dtbk:td or 
-                              self::dtbk:tfoot or self::dtbk:th       or self::dtbk:thead or self::dtbk:tr]">
-    	<sch:report test="@char and string-length(@char)!=1">[tpb77] length of char attribute value must be one</sch:report>
-    	<sch:report test="@char and @align!='char'">[tpb77] char attribute may only occur when align attribute value is 'char'</sch:report>
-    	<sch:report test="@charoff and not(@char)">[tpb77] char offset attribute may only occur when align attribute value is 'char'</sch:report>
-    	<sch:report test="@charoff and translate(@charoff,'0123456789','')!=''">[tpb77] char offset attribute value must be expressed in numbers</sch:report>
-    </sch:rule>
-  </sch:pattern>
-        
-  <!-- Rule 79: width and height attributes of img -->
-  <sch:pattern name="dtbook_TPB_imgWidthHeight" id="dtbook_TPB_imgWidthHeight">
-    <sch:rule context="dtbk:img">
-    	<sch:report test="@width and string-length(translate(@width,'0123456789',''))!=0">[tpb79] width of images must be expressed in numbers only</sch:report>
-    	<sch:report test="@height and string-length(translate(@width,'0123456789',''))!=0">[tpb79] height of images must be expressed in numbers only</sch:report>
-    </sch:rule>
-  </sch:pattern>
-  
-  <!-- Rule 80: attributes on the table element -->
-  <sch:pattern name="dtbook_TPB_tableAttributes" id="dtbook_TPB_tableAttributes">
-    <sch:rule context="dtbk:table">
-    	<sch:assert test="not(@width) or 
-    	                  string-length(translate(@width,'0123456789',''))=0 or
-    	                  (contains(@width,'%') and substring-after(@width,'%')='' and translate(@width,'%0123456789','')='' and string-length(@width)>=2 and (string-length(@width)&lt;=3 or @width='100%') )"
-    	   >[tpb80] width of tables must be expressed in pixels or percentage in interval [0%-100%]</sch:assert>
-   	 	<sch:assert test="not(@cellspacing) or 
-    	                  string-length(translate(@cellspacing,'0123456789',''))=0 or
-    	                  (contains(@cellspacing,'%') and substring-after(@cellspacing,'%')='' and translate(@cellspacing,'%0123456789','')='' and string-length(@cellspacing)>=2 and (string-length(@cellspacing)&lt;=3 or @cellspacing='100%') )"
-    	   >[tpb80] cellspacing of tables must be expressed in pixels or percentage in interval [0%-100%]</sch:assert>
-		<sch:assert test="not(@cellpadding) or 
-    	                  string-length(translate(@cellpadding,'0123456789',''))=0 or
-    	                  (contains(@cellpadding,'%') and substring-after(@cellpadding,'%')='' and translate(@cellpadding,'%0123456789','')='' and string-length(@cellpadding)>=2 and (string-length(@cellpadding)&lt;=3 or @cellpadding='100%') )"
-    	   >[tpb80] cellpadding of tables must be expressed in pixels or percentage in interval [0%-100%]</sch:assert>
-    </sch:rule>
-  </sch:pattern> 
-        
-  <!-- Rule 88: start attribute only on numbered lists -->
-  <sch:pattern name="dtbook_TPB_startAttrInList" id="dtbook_TPB_startAttrInList">
-    <sch:rule context="dtbk:list">
-    	<sch:report test="@start and @type!='ol'">[tpb88] start attribute only allowed in numbered lists</sch:report>
-    	<sch:report test="@start='' or string-length(translate(@start,'0123456789',''))!=0">[tpb88] start attribute must be a number</sch:report>
-    </sch:rule>
-  </sch:pattern>  
-  
-  <!-- Rule 89: Verify dc-metadata names -->
-  <sch:pattern name="dtbook_TPB_dcMetadata" id="dtbook_TPB_dcMetadata">
-    <sch:rule context="dtbk:meta">
-    	<sch:report test="starts-with(@name, 'dc:') and not(@name='dc:Title' or @name='dc:Subject' or @name='dc:Description' or
-    	                                                    @name='dc:Type' or @name='dc:Source' or @name='dc:Relation' or 
-    	                                                    @name='dc:Coverage' or @name='dc:Creator' or @name='dc:Publisher' or 
-    	                                                    @name='dc:Contributor' or @name='dc:Rights' or @name='dc:Date' or 
-    	                                                    @name='dc:Format' or @name='dc:Identifier' or @name='dc:Language')"
-                          >[tpb89] Incorrect Dublin core metadata name</sch:report>
-       <sch:report test="starts-with(@name, 'DC:') or starts-with(@name, 'Dc:') or starts-with(@name, 'dC:')">[tpb89] Incorrect Dublin core metadata prefix</sch:report>
     </sch:rule>
   </sch:pattern>
   
@@ -588,23 +460,6 @@
     <sch:rule context="dtbk:*[self::dtbk:h1 or self::dtbk:h2 or self::dtbk:h3 or self::dtbk:h4 or self::dtbk:h5 or self::dtbk:h6 or self::dtbk:hd]">
     	<sch:report test="normalize-space(substring(.,1,1))=''">[tpb93] heading may not have leading whitespace</sch:report>
     	<sch:report test="normalize-space(substring(.,string-length(.),1))=''">[tpb93] heading may not have trailing whitespace</sch:report>
-    </sch:rule>
-  </sch:pattern>  
-  
-  <!-- Rule 94: span attribute on col and colgroup elements -->
-  <sch:pattern name="dtbook_TPB_spanColColgroup" id="dtbook_TPB_spanColColgroup">
-    <sch:rule context="dtbk:*[self::dtbk:col or self::dtbk:colgroup]">
-    	<sch:report test="@span and (translate(@span,'0123456789','')!='' or starts-with(@span,'0'))">[tpb94] span on <name/> element must be numeric</sch:report>
-    </sch:rule>
-  </sch:pattern>
-  
-  <!-- Rule 95: rowspan and colspan on td/th elements -->
-  <sch:pattern name="dtbook_TPB_rowspanColspan" id="dtbook_TPB_rowspanColspan">
-    <sch:rule context="dtbk:*[self::dtbk:td or self::dtbk:th]">
-    	<sch:report test="@rowspan and (translate(@rowspan,'0123456789','')!='' or starts-with(@rowspan,'0'))">[tpb95] rowspan on <name/> element must be numeric</sch:report>
-    	<sch:report test="@colspan and (translate(@colspan,'0123456789','')!='' or starts-with(@colspan,'0'))">[tpb95] colspan on <name/> element must be numeric</sch:report>
-    	
-    	<sch:report test="@rowspan and number(@rowspan) > count(parent::dtbk:tr/following-sibling::dtbk:tr)+1">[tpb95] rowspan attribute value on <name/> element must not be larger than the number of rows left in the table</sch:report>
     </sch:rule>
   </sch:pattern>  
   
