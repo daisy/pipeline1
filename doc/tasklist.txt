@@ -14,7 +14,7 @@ users		build a strategy for usability
 doc			a stabilized, less duplicating
 			documentation strategy (doc.html
 			and tdf interaction, etc)	
-logo		design and include new logo				KK LS
+logo		design and include new logo				KK 
 websites	update dmfc and gui websites			KK LS
 			to use DAISY css and php
 
@@ -35,10 +35,10 @@ rtf			ditch jython, move to shell,
 jython		remove all jython related
 			stuff from installer					Linus 		DONE
 license1	collect rudimentary license info		Laurie      DONE		
-license2	decide on approach						All
+license2	decide on approach						All			DONE
 license3	impl any changes in
 			installer or GUI relating
-			to license solution						Laurie
+			to license solution						Laurie		DONE
 svn			port to SVN, clean out
 			redundant packages and
 			transformers							LinusMarkus
@@ -48,8 +48,8 @@ zedval		include ZedVal in
 			int_daisy_validator						Markus
 woodstox	test 3.0.1								Markus			
 installer	build new installer
-			(new transformers, etc)					Laurie			
-testbuild	build rel2 and test						Laurie
+			(new transformers, etc)					Laurie		DONE
+testbuild	build rel2 and test						Laurie		DONE
 
 doc.html	access to doc.html
 			from transformer list		
@@ -138,12 +138,10 @@ xml:lang	add xml:lang list collection
 --------------- dmfc GUI tasklist immediate ---------------
 id          what                                who     status
 ----------------------------------------------------------------
-scripts		Add all scripts to the GUI			LS & LE	 nearly complete
+scripts		Add all scripts to the GUI			LS & LE	DONE
 threading	change so that JobRunner runs in
             only one thread.					LS  Linux fixed
 output		Remove output for validators		LS  DONE
-filetype	Output file extension exposed
-			on output files						LS   
 closeprog   Make it harder to accidentally close
             the GUI while a script is running   LS   DONE
 
