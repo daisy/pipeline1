@@ -251,7 +251,7 @@
   		<sch:report test="parent::dtbk:level1/@class!='part' and @class">[tpb39] Class attribute on level2 not allowed unless level1 class attribute is 'part'</sch:report>
   	</sch:rule>
   	<sch:rule context="dtbk:*[self::dtbk:level3 or self::dtbk:level4 or self::dtbk:level5 or self::dtbk:level6]">
-  		<sch:assert test="not(@class)">[tpb39] No class attributes on level2-level6</sch:assert>
+  		<sch:assert test="not(@class)">[tpb39] No class attributes are allowed on level3 to level6</sch:assert>
   	</sch:rule>
   </sch:pattern>
   
@@ -311,7 +311,7 @@
     	<sch:assert test="@class='endnote' or @class='rearnote'">[tpb46] class attribute for note must be 'endnote' or 'rearnote'</sch:assert>
     	<sch:report test="@class='rearnote' and (not(ancestor::dtbk:level1[@class='footnotes']) and not(ancestor::dtbk:level1[@class='rearnotes']))">[tpb46] Rearnotes must be in level1@class='rearnotes' in rearmatter</sch:report>
     	<sch:report test="@class='endnote' and ancestor::dtbk:rearmatter and ancestor::dtbk:level1[@class='rearnotes']">[tpb46] Endnotes may not be in level1@class='rearnotes' in rearmatter</sch:report>
-    	<sch:report test="@class='endnote' and (not(ancestor::dtbk:level1[@class='chapter'] or ancestor::dtbk:level2[@class='chapter']) or following::dtbk:*[not(self::dtbk:note)])">[tpb46] Endnotes must be placed at the end of a chapter</sch:report>
+    	<sch:report test="@class='endnote' and (not(ancestor::dtbk:level1[@class='chapter'] or ancestor::dtbk:level2[@class='chapter']) or following-sibling::dtbk:*[not(self::dtbk:note)])">[tpb46] Endnotes must be placed at the end of a chapter</sch:report>
     </sch:rule>
   </sch:pattern>
   
