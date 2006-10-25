@@ -24,9 +24,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.daisy.dmfc.core.DMFCCore;
@@ -219,6 +221,7 @@ public class Window {
 	ConvertMultipleFiles cmv;
 	ConvertSingleFile convertSingleFile;
 	LogFile logFile;
+	File logFileName;
 	String strViewRunDetails="";
 	
 	//tableViewer
@@ -246,9 +249,13 @@ public class Window {
 	
 	private Window(){
 		
+		DateFormat format = new SimpleDateFormat("yyyyMMdd-HHmmss.S");
+		logFileName = new File(System.getProperty("user.dir"), "logFile-" + format.format(new Date()) + ".txt");
+		System.err.println("Log file name: " + logFileName);
+		
 		//instantiates DMFCCore
 		//sets the scripts home directory
-		setScriptDirectory();
+		setScriptDirectory(logFileName);
 		
 		//creates scripthandler objects for all scripts
 		//and places in a hashmap
@@ -281,8 +288,8 @@ public class Window {
 		cue=Queue.getInstance();
 		executing=false;
 		
-		//empty logfile contents
-		deleteOldLogFile();
+		//empty logfile contents		
+		//deleteOldLogFile();
 		
 		createContents();
 		createViewDetails();
@@ -904,10 +911,10 @@ public class Window {
 	 * sets home directory for scripts
 	 * @return
 	 */
-	public void setScriptDirectory(){
+	public void setScriptDirectory(File logFile){
 		
 		lil = new LocalInputListener();
-		lel = new LocalEventListener();
+		lel = new LocalEventListener(logFile);
 		try {
 			dmfc = new DMFCCore(lil, lel);
 		} catch (DMFCConfigurationException e) {
@@ -1167,20 +1174,19 @@ public class Window {
 	}
 	
 	public String getLogFileContents(){
-		String logFileContents="";
-		//String logFileName = System.getProperty("user.dir")+ File.separator + "dmfc_lastrun.log";
-		String logFileName = System.getProperty("user.dir")+ File.separator + "logFile.txt";
+		StringBuffer logFileContents = new StringBuffer();
 		
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(logFileName));
+			
 			String str;
 			while ((str = in.readLine()) != null) {
-				logFileContents = logFileContents+ str + "\n";
+				logFileContents = logFileContents.append(str + "\n");
 			}
 			in.close();
 		} catch (IOException e) {
 		}
-		return logFileContents;
+		return logFileContents.toString();
 	}
 	
 	public void getLogFile(){
@@ -1193,9 +1199,7 @@ public class Window {
 	}
 	
 	public void deleteOldLogFile(){
-		String logFileName = System.getProperty("user.dir")+ File.separator + "logFile.txt";
-		
-	    boolean success = (new File(logFileName)).delete();
+	    boolean success = logFileName.delete();
 	    if (!success) {
 	        System.out.println("It's going to be a long file");
 	    }
