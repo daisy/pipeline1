@@ -242,8 +242,22 @@
 	</xsl:template>
 	
    <xsl:template match="dtb:list/dtb:pagenum" priority="1">
-     <li><xsl:call-template name="pagenum"/></li>
+     <xsl:choose>
+       <xsl:when test="not(preceding-sibling::*)">
+         <li><xsl:call-template name="pagenum"/></li>
+       </xsl:when>
+       <xsl:otherwise>
+         <xsl:message>Skipping pagenum element <xsl:value-of select="@id"/></xsl:message>
+       </xsl:otherwise>
+     </xsl:choose>
    </xsl:template>
+   
+   <xsl:template match="dtb:list/dtb:pagenum" mode="pagenumInLi">
+     <xsl:call-template name="pagenum"/>
+     <xsl:apply-templates select="following-sibling::*[1][self::dtb:pagenum]" mode="pagenumInLi"/>
+   </xsl:template>
+   
+   
 
    <xsl:template match="dtb:list/dtb:prodnote">
      <li class="prodnote"><xsl:apply-templates/></li>
@@ -556,6 +570,7 @@
      <li>
        <xsl:call-template name="copyCatts"/>
        <xsl:apply-templates/>
+       <xsl:apply-templates select="following-sibling::*[1][self::dtb:pagenum]" mode="pagenumInLi"/>
      </li>
    </xsl:template>
 
