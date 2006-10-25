@@ -55,15 +55,10 @@ public class LocalEventListener implements EventListener{
 	Prompt prompt;
 	TableViewer tableViewer;
 	Job currentJob;
-	
-	BufferedWriter out = null;
+	File logFile;
 	
 	public LocalEventListener(File logFile) {
-		try {
-			out = new BufferedWriter(new FileWriter(logFile));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.logFile = logFile;		
 	}
 	
 	public void message(Prompt _prompt) {
@@ -165,9 +160,12 @@ public class LocalEventListener implements EventListener{
 	 */
 	public void appendMessageToFile(String message){
 		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(logFile, true));
 			out.write(message);
 			out.write("\n");
+			out.close();
 		} catch (IOException e) {
+			e.printStackTrace();
 		}		
 	}
 }
