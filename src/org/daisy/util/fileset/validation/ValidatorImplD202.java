@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.xml.validation.SchemaFactory;
 
-import org.daisy.util.exception.ExceptionTransformer;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
@@ -149,7 +148,7 @@ class ValidatorImplD202 extends ValidatorImplAbstract implements Validator, Erro
 							}
 							
 							//interdocument link validity
-							ValidatorDelegate.isInterDocFragmentLinkValid(xmlFile, this);	
+							ValidatorUtils.isInterDocFragmentLinkValid(xmlFile, this);	
 							
 							//specific tests on XmlFile subclasses
 							if(xmlFile instanceof D202NccFile) {						
