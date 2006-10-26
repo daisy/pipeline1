@@ -121,10 +121,3 @@ final class CssFileImpl extends FilesetFileImpl implements DocumentHandler, Erro
 	
 	private static final long serialVersionUID = -9074302258050588711L;
 }
-
-
-//CssFileImpl(URI uri, org.w3c.css.sac.ErrorHandler errh) throws CSSException, FileNotFoundException, IOException, MIMETypeException {
-//super(uri,CssFile.mimeStringConstant);		
-//this.listeningErrorHandler = errh;
-//initialize();
-//}
