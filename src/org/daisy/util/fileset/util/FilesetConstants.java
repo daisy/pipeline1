@@ -94,6 +94,7 @@ public final class FilesetConstants {
 		public static final String MIMETYPE_XSL = "text/xml";
 		
 		public static final String MIMETYPE_XHTML10 = "application/xhtml+xml";
+		public static final String NAMESPACEURI_XHTML10 = "http://www.w3.org/1999/xhtml";
 		
 		public static final String MIMETYPE_PLAYLIST_M3U = "audio/x-mpegurl";
 		public static final String MIMETYPE_PLAYLIST_PLS = "audio/x-scpls";
