@@ -2,6 +2,7 @@ package org.daisy.util.fileset.validation;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.daisy.util.exception.ExceptionTransformer;
@@ -11,6 +12,7 @@ import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
+import org.daisy.util.fileset.validation.delegate.ValidatorDelegate;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotRecognizedException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
@@ -27,6 +29,7 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 	protected ValidatorListener mValidatorListener = null;			//message handler
 	protected Fileset mFileset = null;								//fileset to validate		
 	protected boolean mDebugMode = false;
+	private ArrayList mDelegates = new ArrayList();					//registered ValidatorDelegates
 	
 	ValidatorImplAbstract(ArrayList supportedFilesetTypes) {
 		if(System.getProperty("org.daisy.debug")!=null) mDebugMode = true;
@@ -46,7 +49,9 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 		mFileset = fileset;
 		checkSupport();
 		checkState();
+		executeDelegates();
 	}
+
 
 	/*
 	 * (non-Javadoc)
@@ -60,6 +65,14 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 		}		
 		checkSupport();
 		checkState();
+		executeDelegates();
+	}
+
+	private void executeDelegates() throws ValidatorNotSupportedException, ValidatorException {
+		for (Iterator iter = mDelegates.iterator(); iter.hasNext();) {
+			ValidatorDelegate vd = (ValidatorDelegate) iter.next();
+			vd.execute();			
+		} 		
 	}
 	
 	/**
@@ -96,6 +109,7 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 	public void reset() {
 		mFileset = null;
 		mValidatorListener = null;
+		mDelegates.clear();
 	}
 	
 	/*
@@ -116,7 +130,7 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.Validator#setValidatorListener(org.daisy.util.fileset.validation.ValidatorListener)
 	 */
-	public void setReportListener(ValidatorListener listener) {
+	public void setListener(ValidatorListener listener) {
 		mValidatorListener = listener;		
 	}
 	
@@ -124,7 +138,7 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.Validator#getValidatorListener()
 	 */
-	public ValidatorListener getValidatorListener() {
+	public ValidatorListener getListener() {
 		return mValidatorListener;
 	}
 	
@@ -180,6 +194,51 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 	public void warning(SAXParseException exception) throws SAXException {
 		mValidatorListener.report(this,ExceptionTransformer.newValidatorMessage
 				(exception, ExceptionTransformer.SAX_ERRHANDLER_TYPE_WARNING));		
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.validation.Validator#setDelegate(org.daisy.util.fileset.validation.ValidatorUtils)
+	 */
+	public void setDelegate(ValidatorDelegate delegate) throws ValidatorException, ValidatorNotSupportedException {		
+		addDelegate(delegate);
+	}
+
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.validation.Validator#setDelegate(java.lang.String)
+	 */
+	public void setDelegate(String delegateClassName) throws ValidatorException, ValidatorNotSupportedException {
+		ValidatorDelegate delegate = null;
+		//we dont use listener.exception to report here, 
+		//since we are still in configuration time. 
+		try {
+			Class klass = Class.forName(delegateClassName);
+			Object o = klass.newInstance();
+            if(o instanceof ValidatorDelegate) {
+            	delegate = (ValidatorDelegate)o;
+            } else{
+            	throw new ValidatorException(o.getClass().getSimpleName() + " is not a ValidatorDelegate");         	
+            }
+		} catch (Throwable t) {
+			throw new ValidatorException(t.getMessage(),t);
+		} 		
+		addDelegate(delegate);				
+	}
+
+	/**
+	 * Check prereqs for registering a delegate, and register it if prereqs are met.
+	 */
+	private void addDelegate(ValidatorDelegate delegate) throws ValidatorException, ValidatorNotSupportedException {
+		if(mFileset==null) throw new ValidatorException("cannot register delegates without a registered fileset");
+		if(!delegate.isFilesetTypeSupported(mFileset.getFilesetType())) {
+			throw new ValidatorNotSupportedException("Fileset type " 
+					+ mFileset.getFilesetType().toNiceNameString() 
+					+ " is not supported by " + delegate.getClass().getSimpleName());
+		}
+		delegate.setValidator(this);
+		mDelegates.add(delegate);
 	}
 	
 	public void setFeature(String name, boolean value) throws ValidatorNotRecognizedException, ValidatorNotSupportedException {
