@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+	<head>
+		<title>org.daisy.util.fileset.validation.delegate package</title>
+	</head>
+<body>
+  An package for performing delegated fileset validation tasks.
+  
+  <p>A ValidatorDelegate typically performs <strong>one</strong> validation task on the Fileset
+  instance registered with its owner Validator.</p>
+  
+  <p>Uses of <code>ValidatorDelegate</code>s are typically called for when schemas (which is 
+  a Validators default modus operandi) can not perform the task at hand.</p>
+
+  <p>A concrete implementation of <code>org.daisy.util.fileset.validation.Validator</code> may
+  use statically assigned <code>ValidatorDelegate</code>s. It is also possible to attach additional
+  delegates to a Validator at runtime using the setDelegate methods of the Validator. <br/>
+  Given this, it is possible to extend a Validators behavior for localization and customization purposes.</p>
+    
+  <p>In the case several delegates are attached to a validator, no guarantees are given on the order of execution.</p>
+  
+  <p>Usage example:</p>
+  	<code><pre>  	    
+  		validator.setDelegate(myValidatorDelegateImpl);
+  		validator.setDelegate("com.acme.myValidatorDelegateImpl");
+  		validator.validate();
+	</pre></code>
+	
+  <p>The abstract Validator base class (org.daisy.util.fileset.validation.ValidatorImplAbstract) encapsulates all the
+  code for registering and executing Delegates, so a concrete Validator implementation does not need any code to support this feature, apart
+  from making sure to make a super call on the validate method, and to register any statically assigned <code>ValidatorDelegate</code>s at instantiation time.</p>	
+	
+</body>
+</html>
