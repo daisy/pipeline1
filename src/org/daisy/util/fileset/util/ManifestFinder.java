@@ -12,20 +12,18 @@ import org.daisy.util.file.EFolder;
  * @author Markus Gylling
  */
 public class ManifestFinder {
-	private EFolder mBaseFolder = null;	  				 //folder to start recursing from
-			 	
-	public ManifestFinder(EFolder baseFolder) throws IOException {	
-		if(!baseFolder.exists()) throw new IOException();
-		this.mBaseFolder = baseFolder;
-	}
 	
 	/**
 	 * @return a Collection of File containing all files within set basefolder whose filename
 	 * patterns indicate that they implement the 
 	 * {@link org.daisy.util.fileset.interfaces.ManifestFile} interface.
 	 * @param deep whether to recurse subfolders.
+	 * @param baseFolder filessystem directory to search within
+	 * @throws IOException 
 	 */
-	public Collection getManifests(boolean deep) {
+	public static Collection getManifests(boolean deep, EFolder baseFolder) throws IOException {
+		if(!baseFolder.exists()) throw new IOException(baseFolder.getPath() + " does not exist");
+		
 		FilesetRegex rgx = FilesetRegex.getInstance();
 		StringBuilder sb = new StringBuilder();
 		sb.append('(');		
@@ -43,10 +41,14 @@ public class ManifestFinder {
 		sb.append(")|(");
 		sb.append(rgx.FILE_RESOURCE.toString());
 		sb.append(")|(");
+		sb.append(rgx.FILE_NCC.toString());
+		sb.append(")|(");
 		sb.append(rgx.FILE_XHTML.toString());
 		sb.append(')');
 		
-		return mBaseFolder.getFiles(deep, sb.toString(), false);
+		return baseFolder.getFiles(deep, sb.toString(), false);
+		
+		//TODO could peek on the result of .getFiles to filter nonmanifests (eg *.xml) out.
 	}
 	
 }
