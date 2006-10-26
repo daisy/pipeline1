@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.validation.delegate.ValidatorDelegate;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotRecognizedException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
@@ -24,12 +25,12 @@ public interface Validator {
 	/**
 	 * Register a ValidatorListener with this validator.	 
 	 */
-	public void setReportListener(ValidatorListener listener);
+	public void setListener(ValidatorListener listener);
 	
 	/**
 	 * @return a registered ValidatorListener, or null if none is registered.
 	 */
-	public ValidatorListener getValidatorListener();
+	public ValidatorListener getListener();
 	
 	/**
 	 * Validate a fileset.
@@ -73,5 +74,20 @@ public interface Validator {
 
 	public Object getProperty(String name) throws ValidatorNotRecognizedException, ValidatorNotSupportedException;
 
+	/**
+	 * Register a {@link org.daisy.util.fileset.validation.delegate.ValidatorDelegate} instance with this Validator. 
+	 * <p>This method can be called several times to register multiple delegates.</p> 
+	 * <p>Note: a Fileset must be registered with this Validator before this method is called, or a ValidatorException is thrown.</p>
+	 * <p>Note: at {@link #reset()}, the list of registered delegates is also reset.</p>
+	 */
+	public void setDelegate(ValidatorDelegate delegate) throws ValidatorException, ValidatorNotSupportedException;
+	
+	/**
+	 * Register a {@link org.daisy.util.fileset.validation.delegate.ValidatorDelegate} instance with this Validator by reffering to its qualified name. 
+	 * <p>This method can be called several times to register multiple delegates.</p> 
+	 * <p>Note: a Fileset must be registered with this Validator before this method is called, or a ValidatorException is thrown.</p>
+	 * <p>Note: at {@link #reset()}, the list of registered delegates is also reset.</p>
+	 */
+	public void setDelegate(String delegateClassName) throws ValidatorException, ValidatorNotSupportedException;
 	
 }
