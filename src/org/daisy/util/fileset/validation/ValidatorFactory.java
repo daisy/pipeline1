@@ -68,7 +68,7 @@ public class ValidatorFactory {
 		//after discovery, polish and return
 		if(null!=val) {
 			//propagate any features and properties to the produced instance
-			val.setReportListener(mValidatorListener);
+			val.setListener(mValidatorListener);
 			return val;
 		}
 		
