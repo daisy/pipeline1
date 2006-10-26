@@ -139,7 +139,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				try{
 					org.daisy.util.fileset.validation.Validator filesetValidator = 
 						validatorFactory.newValidator(mInputFileset.getFilesetType());					
-					filesetValidator.setReportListener(this);					
+					filesetValidator.setListener(this);					
 					this.sendMessage(Level.INFO, i18n("VALIDATING_FILESET", mInputFileset.getFilesetType().toNiceNameString()));
 					filesetValidator.validate(mInputFileset);	
 					mCompletionTracker.mCompletedFilesetValidation = true;
