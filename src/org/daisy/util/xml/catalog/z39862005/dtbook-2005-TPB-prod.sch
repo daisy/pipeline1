@@ -5,8 +5,11 @@
 
   <sch:ns prefix="dtbk" uri="http://www.daisy.org/z3986/2005/dtbook/"/>
   
-  <!-- Rule 54: prodnote in imggoup -->
+  <!-- Rule 54: prodnote in imggroup -->
   <sch:pattern name="dtbook_TPBprod_prodnoteInImggroup" id="dtbook_TPBprod_prodnoteInImggroup">
+    <sch:rule context="dtbk:imggroup">
+    	<sch:assert test="*[last()][self::dtbk:prodnote]">[tpbprod54] The production note must be the last element in an image group</sch:assert>
+    </sch:rule>
     <sch:rule context="dtbk:imggroup/dtbk:prodnote">
     	<sch:assert test=".='Bildbeskrivning'">[tpbprod54] Value of prodnote in imggroup must be 'Bildbeskrivning'</sch:assert>
     </sch:rule>
