@@ -155,5 +155,21 @@
     	<sch:report test="string-length(translate(substring(normalize-space(.),1,1),'0123456789',''))=0">[tpbHeuM23] This list item starts with a number. Shouldn't that be removed, or is this a list of type="pl"?</sch:report>
     </sch:rule>
   </sch:pattern> 
+  
+  <!-- Rule M28: Pagenum element incorrectly breaks a paragraph into two -->
+  <sch:pattern name="dtbook_TPBheuristic_pagenumBreaksP" id="dtbook_TPBheuristic_pagenumBreaksP">
+    <sch:rule context="dtbk:pagenum[preceding-sibling::*[1][self::dtbk:p] and following-sibling::*[1][self::dtbk:p]]">
+    	<sch:report test="string-length(
+    	                     translate(
+    	                         substring( 
+    	                            normalize-space(preceding-sibling::*[1]/descendant::text()[last()]),
+    	                            string-length(normalize-space(preceding-sibling::*[1]/descendant::text()[last()]))
+    	                         ),
+    	                         '.?!',
+    	                         ''
+    	                      )
+    	                   )>0">[tpbHeuM28] Does this pagenum element incorrectly break one paragraph into two?</sch:report>
+    </sch:rule>
+  </sch:pattern> 
     
 </sch:schema>
