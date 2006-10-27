@@ -4,6 +4,11 @@
   <sch:title>DTBook 2005 Schematron tests for TPB</sch:title>
 
   <sch:ns prefix="dtbk" uri="http://www.daisy.org/z3986/2005/dtbook/"/>
+  
+  <sch:key name="noterefs" match="dtbk:noteref[@idref]" path="substring-after(@idref,'#')"/>
+  <sch:key name="annorefs" match="dtbk:annoref[@idref]" path="substring-after(@idref,'#')"/>
+  <sch:key name="pageFrontValues" match="dtbk:pagenum[@page='front']" path="."/>
+  <sch:key name="notes" match="dtbk:note[@id]" path="@id"/>
 
   <!-- Rule 8: Only allow pagenum[@front] in frontmatter -->
   <sch:pattern name="dtbook_TPB_pageFront" id="dtbook_TPB_pageFront">
@@ -84,21 +89,24 @@
   <!-- Rule 24: Values of pagenum[@page='front'] must be unique -->
   <sch:pattern name="dtbook_TPB_pagenumUnique" id="dtbook_TPB_pagenumUnique">
   	<sch:rule context="dtbk:pagenum[@page='front']">
-  		<sch:assert test="count(//dtbk:pagenum[@page='front' and string(.)=string(current())])=1">[tpb24] pagenum[@page='front'] values must be unique</sch:assert>
+  		<sch:assert test="count(key('pageFrontValues', .))=1">[tpb24] pagenum[@page='front'] values must be unique</sch:assert>
+  		<!--<sch:assert test="count(//dtbk:pagenum[@page='front' and string(.)=string(current())])=1">[tpb24] pagenum[@page='front'] values must be unique</sch:assert>-->
   	</sch:rule>  	
   </sch:pattern>
   
   <!-- Rule 26: Each note must have a noteref -->
   <sch:pattern name="dtbook_TPB_noteNoteref" id="dtbook_TPB_noteNoteref">
   	<sch:rule context="dtbk:note">
-  		<sch:assert test="count(//dtbk:noteref[translate(@idref, '#', '')=current()/@id])>=1">[tpb26] Each note must have at least one noteref</sch:assert>
+  		<sch:assert test="count(key('noterefs', @id))>=1">[tpb26] XEach note must have at least one noteref</sch:assert>
+  		<!--<sch:assert test="count(//dtbk:noteref[translate(@idref, '#', '')=current()/@id])>=1">[tpb26] Each note must have at least one noteref</sch:assert>-->
   	</sch:rule>  	
   </sch:pattern>
   
   <!-- Rule 27: Each annotation must have an annoref -->
   <sch:pattern name="dtbook_TPB_annotationAnnoref" id="dtbook_TPB_annotationAnnoref">
   	<sch:rule context="dtbk:annotation">
-  		<sch:assert test="count(//dtbk:annoref[translate(@idref, '#', '')=current()/@id])>=1">[tpb27] Each annotation must have at least one annoref</sch:assert>
+  		<sch:assert test="count(key('annorefs', @id))>=1">[tpb26] XEach annotation must have at least one annoref</sch:assert>
+  		<!--<sch:assert test="count(//dtbk:annoref[translate(@idref, '#', '')=current()/@id])>=1">[tpb27] Each annotation must have at least one annoref</sch:assert>-->
   	</sch:rule>  	
   </sch:pattern>  
   
@@ -301,7 +309,8 @@
   <sch:pattern name="dtbook_TPB_noterefNoteClass" id="noterefNoteClass">
     <sch:rule context="dtbk:noteref">
     	<!-- Support both IDREF and URI specification of @idref -->
-    	<sch:report test="@class!=//dtbk:note[@id=translate(current()/@idref, '#', '')]/@class">[tpb45] note and noteref must have the same class attribute</sch:report>
+    	<sch:report test="@class!=key('notes', translate(current()/@idref, '#', ''))/@class">[tpb45] note and noteref must have the same class attribute</sch:report>
+    	<!--<sch:report test="@class!=//dtbk:note[@id=translate(current()/@idref, '#', '')]/@class">[tpb45] note and noteref must have the same class attribute</sch:report>-->
     </sch:rule>
   </sch:pattern>
   
@@ -318,8 +327,8 @@
   <!-- Rule 48: Headings in notes section in rearmatter -->
   <sch:pattern name="dtbook_TPB_headingsInNotesSection" id="dtbook_TPB_headingsInNotesSection">
     <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='rearnotes']/dtbk:level2/dtbk:h2">    
-    	<sch:assert test="count(//dtbk:bodymatter//dtbk:level2[@class='chapter']/dtbk:h2[.=current()]) + 
-    	                  count(//dtbk:bodymatter//dtbk:level1[@class='chapter']/dtbk:h2[.=current()]) = 1"
+    	<sch:assert test="count(/dtbk:dtbook/dtbk:book/dtbk:bodymatter/dtbk:level1/dtbk:level2[@class='chapter']/dtbk:h2[.=current()]) + 
+    	                  count(/dtbk:dtbook/dtbk:book/dtbk:bodymatter/dtbk:level1[@class='chapter']/dtbk:h2[.=current()]) = 1"
     	   >[tpb48] Heading in notes section does not exist in the bodymatter of the book</sch:assert>
     </sch:rule>    
     <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='rearnotes']/dtbk:level2/dtbk:note">    
@@ -360,14 +369,7 @@
     	<sch:assert test="preceding-sibling::*[1][self::dtbk:img]">[tpb53] caption must immediately follow an img element</sch:assert>
     </sch:rule>
   </sch:pattern>
-  
-  <!-- Rule 54: prodnote last element in imggoup -->
-  <sch:pattern name="dtbook_TPB_prodnoteInImggroup" id="dtbook_TPB_prodnoteInImggroup">
-    <sch:rule context="dtbk:imggroup">
-    	<sch:assert test="*[last()][self::dtbk:prodnote]">[tpb54] The production note must be the last element in an image group</sch:assert>
-    </sch:rule>
-  </sch:pattern>
-  
+   
   <!-- Rule 55: no prodnotes as direct children of list -->
   <sch:pattern name="dtbook_TPB_prodnoteInList" id="dtbook_TPB_prodnoteInList">
     <sch:rule context="dtbk:list">
@@ -466,10 +468,10 @@
   <!-- Rule 96: no nested prodnotes or image groups -->
   <sch:pattern name="dtbook_TPB_nestedProdnoteImggroup" id="dtbook_TPB_nestedProdnoteImggroup">
     <sch:rule context="dtbk:prodnote">
-    	<sch:report test="descendant::dtbk:prodnote">[tpb96] nested production notes are not allowed</sch:report>
+    	<sch:report test="ancestor::dtbk:prodnote">[tpb96] nested production notes are not allowed</sch:report>
     </sch:rule>
     <sch:rule context="dtbk:imggroup">
-    	<sch:report test="descendant::dtbk:imggroup">[tpb96] nested image groups are not allowed</sch:report>
+    	<sch:report test="ancestor::dtbk:imggroup">[tpb96] nested image groups are not allowed</sch:report>
     </sch:rule>
   </sch:pattern>
   
