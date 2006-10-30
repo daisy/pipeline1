@@ -30,6 +30,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.daisy.util.fileset.interfaces.ManifestFile;
+import org.daisy.util.fileset.interfaces.UIDCarrier;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -37,7 +38,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Markus Gylling
  */
-final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, ManifestFile {
+final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, ManifestFile, UIDCarrier {
 	private String dcTitle = null;
 	private String dcIdentifier = null;
 	private String dtbUid = null;
@@ -130,6 +131,10 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 		return dcIdentifier;
 	}
 
+	public String getUID() {		
+		return getDcIdentifier();
+	}
+	
 	public String getDcTitle() {
 		return dcTitle;
 	}
@@ -159,4 +164,5 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	}
 	
 	private static final long serialVersionUID = -4975394410229229129L;
+
 }

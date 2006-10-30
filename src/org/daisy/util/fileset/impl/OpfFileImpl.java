@@ -33,6 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.interfaces.UIDCarrier;
 import org.daisy.util.fileset.interfaces.xml.OpfFile;
 import org.daisy.util.xml.SmilClock;
 import org.xml.sax.Attributes;
@@ -45,7 +46,7 @@ import org.xml.sax.SAXException;
  * @author Markus Gylling
  */
 
-class OpfFileImpl extends XmlFileImpl implements OpfFile {
+class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 	private boolean inManifest = false;
 	private boolean inSpine = false;
 	private boolean inDcFormat = false;

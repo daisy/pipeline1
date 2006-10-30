@@ -31,6 +31,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.interfaces.UIDCarrier;
 import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
 import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.xml.SmilClock;
@@ -42,7 +43,7 @@ import org.xml.sax.SAXException;
  * Represents the Navigation Control Center (NCC) file in a Daisy 2.02 fileset
  * @author Markus Gylling
  */
-final class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile {
+final class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile, UIDCarrier {
 	private SmilClock myStatedDuration = null;
 	private String myDcIdentifier = null;
 	private String myDcTitle = null;	
@@ -110,6 +111,10 @@ final class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile {
 	public String getDcIdentifier() {
 		return myDcIdentifier;
 	}
+
+	public String getUID() {		
+		return getDcIdentifier();
+	}
 	
 	public String getDcTitle() {
 		return myDcTitle;
@@ -148,4 +153,5 @@ final class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile {
 	}
 	
 	private static final long serialVersionUID = 1009746859210460470L;
+
 }
