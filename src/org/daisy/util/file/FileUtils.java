@@ -22,8 +22,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.WritableByteChannel;
 
 /**
  * Basic file functions.
@@ -141,4 +144,53 @@ public class FileUtils {
 		return file;
 	}
 
+	public static File writeInputStreamToFile(InputStream input, File output) throws IOException{
+
+        // Obtain a channel
+        WritableByteChannel channel = new FileOutputStream(output).getChannel();
+    
+        // Create a direct ByteBuffer;
+        ByteBuffer buf = ByteBuffer.allocateDirect(10);
+    
+        byte[] bytes = new byte[1024];
+        int count = 0;
+        int index = 0;
+    
+        // Continue writing bytes until there are no more
+        while (count >= 0) {
+            if (index == count) {
+                count = input.read(bytes);
+                index = 0;
+            }
+            // Fill ByteBuffer
+            while (index < count && buf.hasRemaining()) {
+                buf.put(bytes[index++]);
+            }
+    
+            // Set the limit to the current position and the position to 0
+            // making the new bytes visible for write()
+            buf.flip();
+    
+            // Write the bytes to the channel
+            int numWritten = channel.write(buf);
+    
+            // Check if all bytes were written
+            if (buf.hasRemaining()) {
+                // If not all bytes were written, move the unwritten bytes
+                // to the beginning and set position just after the last
+                // unwritten byte; also set limit to the capacity
+                buf.compact();
+            } else {
+                // Set the position to 0 and the limit to capacity
+                buf.clear();
+            }
+        }
+    
+        // Close the file
+        channel.close();
+        
+        return output;
+
+}
+	
 }
