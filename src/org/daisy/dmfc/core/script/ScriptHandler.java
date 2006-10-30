@@ -232,6 +232,10 @@ public class ScriptHandler extends EventSender {
 		} catch (TransformerRunException e) {
 		    this.sendMessage(Level.SEVERE, e.getClass().getName() + ": " + e.getLocalizedMessage());
 		    this.sendStackTrace(e.getStackTrace());
+		    if (e.getRootCauseMessages() != null) {
+		    	this.sendMessage(Level.WARNING, "Caused by:");
+		    	this.sendRootCauseMessages(e.getRootCauseMessages());
+		    }
 		    throw new ScriptException(i18n("ERROR_RUNNING_TASK"), e);
 		}
 		
@@ -241,6 +245,13 @@ public class ScriptHandler extends EventSender {
 	private void sendStackTrace(StackTraceElement[] elements) {
 		for (int i = 0; i < elements.length; ++i) {
 			StackTraceElement element = elements[i];
+			this.sendMessage(Level.WARNING, "\tat " + element.toString());
+		}
+	}
+	
+	private void sendRootCauseMessages(String[] elements) {
+		for (int i = 0; i < elements.length; ++i) {
+			String element = elements[i];
 			this.sendMessage(Level.WARNING, "\tat " + element.toString());
 		}
 	}
