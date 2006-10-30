@@ -21,6 +21,7 @@ package org.daisy.util.fileset.interfaces.xml.z3986;
 
 import java.util.Collection;
 
+import org.daisy.util.fileset.interfaces.ManifestFile;
 import org.daisy.util.fileset.interfaces.xml.TextualContentFile;
 import org.daisy.util.mime.MIMEConstants;
 
@@ -28,7 +29,7 @@ import org.daisy.util.mime.MIMEConstants;
  * Represents a Dtbook file in a Z3986 fileset, irrespective of Z3986 subversion
  * @author Markus Gylling
  */
-public interface Z3986DtbookFile extends TextualContentFile{
+public interface Z3986DtbookFile extends TextualContentFile, ManifestFile {
 
 	static String mimeStringConstant = MIMEConstants.MIME_APPLICATION_X_DTBOOK_XML;
 	
