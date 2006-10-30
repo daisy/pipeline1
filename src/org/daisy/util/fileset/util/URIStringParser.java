@@ -53,5 +53,22 @@ public class URIStringParser {
 		}
 		return sb.toString();								
 	}
+
+	/**
+	 * Strip any path specifiers in incoming string, and returns resource local name and possible fragment.
+	 */
+	public static String stripPath(String uri) {
+		
+		//if the very last char is a slash
+		if(uri.lastIndexOf("/") == uri.length()-1) return "";
+							
+		//get all chars following the last slash.				
+		if(uri.indexOf("/")>-1) {
+			return uri.substring(uri.lastIndexOf("/")+1,uri.length());		
+		}
+		//if no slash, return input value
+		return uri;
+			
+	}
 	
 }
