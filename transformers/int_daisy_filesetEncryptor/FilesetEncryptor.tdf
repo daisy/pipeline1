@@ -1,0 +1,48 @@
+<transformer version="1.0">
+	<name>Fileset encryptor</name>
+	<description>Encrypts filesets using selectable algorithms</description>
+	<classname>int_daisy_filesetEncryptor.EncryptionDriver</classname>
+	<license>LGPL</license>
+	<author>Markus Gylling</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	
+	<parameters>	
+	    <parameter required="true" direction="in" type="application/x-filesystemDirectory">
+			<name>input</name>
+			<description>Folder containing one or several filesets to be encrypted</description>
+			<example>D:/path/to/inputdir/</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>output</name>
+			<description>The output directory</description>
+			<example>D:/path/to/outputdir/</example>
+		</parameter>		
+		
+		<parameter required="true" type="enum">
+			<name>encryptionType</name>
+			<description>The encryption type to apply</description>
+			<example>PDTB_1_0_0</example>
+			<enum>
+				<value>PDTB_1_0_0</value>
+				<value>PDTB_2_0_0</value>
+			</enum>
+		</parameter>
+
+		<parameter required="false" direction="in" type="text/xml">
+			<name>properties</name>
+			<description>URL to a configuration file in Java XML Properties format (supports in-jar URLs)</description>
+			<example>file:/D:/path/to/my.properties</example>
+			<default/>
+		</parameter>
+
+		<parameter required="false" direction="in" type="text/xml">
+			<name>accept</name>
+			<description>comma separated list of manifest types to accept as input for encryption</description>
+			<example>D202NccFile, OpfFile</example>
+			<default/>
+		</parameter>
+						
+	</parameters>	
+
+</transformer>
