@@ -6,61 +6,40 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 
-import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 
 /**
- * <p>Interface that any renaming strategy must implement.</p>
- * <p>AbstractStrategy.java provides a base abstract convenience class for implementations.</p>
+ * A base interface for fileset renaming strategies.
  * @author Markus Gylling
  */
 public interface RenamingStrategy {
-
-	/**
-	 * set the input fileset to create a strategy for
-	 */
-	public void setInputFileset(Fileset fileset);
-
-	/**
-	 * get the input fileset 
-	 */
-	public Fileset getInputFileset();
 	
 	/**
-	 * create the renaming strategy (oldname&lt;URI&gt;/newname&lt;URI&gt; table).
+	 * Create a renaming strategy (a list of old and new names).
 	 */
-	public void createStrategy();
-	
+	public void create() throws FilesetRenamingException;
+		
 	/**
-	 * Create a single new name within the strategy
-	 */
-	public String createNewName(FilesetFile f);
-	
-	/**
-	 * Enable one or several specific FilesetFile interface Classes for renaming.
-	 * This equals disabling all FilesetFile interface Classes not registered here.
+	 * Disable one or several specific FilesetFile interface Classes for renaming.
+	 * This equals enabling all FilesetFile interface Classes not registered here.
 	 * However, if this method is never called on an instance, all members are enabled.  
 	 */
-	public void setTypeRestriction(Class filesetFileInterface);
+	public void setTypeExclusion(Class filesetFileInterface);
 
 	/**
-	 * Enable one or several specific FilesetFile interface Classes for renaming.
-	 * This equals disabling all FilesetFile interface Classes not registered here.
+	 * Disable one or several specific FilesetFile interface Classes for renaming.
+	 * This equals enabling all FilesetFile interface Classes not registered here.
 	 * However, if this method is never called on an instance, all members are enabled.  
 	 */
-	public void setTypeRestriction(List filesetFileInterfaces);
-	
-	/**
-	 * Set an optional default prefix to use in new names.
-	 */
-	public void setDefaultPrefix(String prefix);
+	public void setTypeExclusion(List filesetFileInterfaces);
 	
 	/**
 	 * Checks whether there are name collisions in naming strategy;
 	 * two output files with same path+name, or the case where a new name 
 	 * is created that happens to coincide with the old name of another member.
 	 * @return true if no naming collisions exist
-	 * @throws FilesetRenamingException if collisions do exist
+	 * @throws FilesetFileFatalErrorException if collisions do exist
 	 */
 	public boolean validate() throws FilesetRenamingException;	
 	
@@ -73,11 +52,12 @@ public interface RenamingStrategy {
 	/**
 	 * @param  filesetFileURI an input fileset URI that may or may not have been given a new name in the renaming strategy
 	 * @return the local name of the output FilesetFile - this may be the same name as the inparam file name, depending on strategy 
-	 */
+	 */	
 	public String getNewLocalName(URI filesetFileURI);
+
 	
 	/**
-	 * get an iterator for the keyset of the URI(old),URI(new) HashMap
+	 * Get an iterator for the keyset of the URI(old),URI(new) HashMap
 	 */
 	public Iterator getIterator();
 	
