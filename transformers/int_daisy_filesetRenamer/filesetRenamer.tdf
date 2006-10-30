@@ -1,6 +1,6 @@
 <transformer version="1.0">
 	<name>Fileset Renamer</name>
-	<description>Renames select members of a fileset using namedroppable algorithms.</description>
+	<description>Rename select members of a fileset using customizable token-based name patterns.</description>
 	<classname>int_daisy_filesetRenamer.FilesetRenamer</classname>
 	<license>LGPL</license>
 	<author>Markus Gylling</author>
@@ -8,59 +8,50 @@
 	<parameters>
 	
 		<parameter required="true" direction="in" type="application/xml">
-			<name>manifest</name>
-			<description>The input fileset main file (ncc, opf, etc)</description>
+			<name>input</name>
+			<description>The input fileset manifest file (ncc, opf, etc)</description>
 			<example>D:/path/to/inputFile.xml</example>
 		</parameter>
 		
-		<parameter required="true" direction="in" type="enum">
-			<name>renamingType</name>
-			<description>The type of renaming to apply. More info in doc.html</description>			
-			<example>scramble</example>
-			<enum>
-				<value>scramble</value>
-				<value>unique</value>	
-				<!-- recognized tokens within the token group are uid,uidHex,chapter,sequential -->
-				<value>uid+sequential</value>
-				<value>uidHex+sequential</value>
-				<value>uid+chapter</value>
-				<value>sequential+chapter</value>
-				<value>uid+sequential+chapter</value>
-				<value>uidHex+sequential+chapter</value>
-				<value>chapter</value>
-			</enum>
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>output</name>			
+			<description>The output directory</description>
+			<example>D:/path/to/outputDir/</example>
 		</parameter>
 		
-		<parameter required="false" direction="in" type="enum">
-			<name>exclude</name>
-			<description>File types to exclude from the renaming process</description>			
-			<example>ImageFile</example>
-			<enum>
-				<value>None</value>
-				<value>AudioFile</value>
-				<value>ImageFile</value>	
-				<value>XmlFile</value>
-				<value>Xhtml10File</value>
-				<value>SmilFile</value>
-				<value>DtbookFile</value>
-				<value>CssFile</value>
-			</enum>
-			<default>None</default>
+		<parameter required="true" direction="in" type="string">
+			<name>renamingPattern</name>
+		    <description>
+		    	The type of renaming to apply, described as a series of plus-separated tokens.
+		    	The token list (described in documentation) includes: 
+		    	'uid', 'rnd(n)', 'fixed(string)', 'label', 'seq', 'copy' (see doc.html)
+		    </description>
+		    <example>uid+rnd(2)</example>
 		</parameter>
 		
 		<parameter required="false" direction="in" type="string">
-			<name>prefix</name>
-			<description>Prefix to set on all new names</description>			
-			<example>acme_</example>
-			<default/>
+			<name>exclude</name>
+			<description>
+				A comma separated list of File types to exclude from the renaming process.
+				Recognized values include 'None', 'AudioFile', 'ImageFile', 'XmlFile', 'Xhtml10File', 'SmilFile', 'Z3986DtbookFile', 'CssFile'				
+			</description>
+			<example>ImageFile, CssFile</example>
+			<default>None</default>
 		</parameter>
 		
-		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
-			<name>outDir</name>			
-			<description>The output directory</description>
-			<example>D:/path/to/outputDir/</example>
-		</parameter>		
-											
+		<parameter required="false" direction="in" type="enum">
+			<name>filesystemSafe</name>
+			<description>
+				Whether output names should only include filesystem (and DAISY DTB) safe characters: A-Z, a-z, 0-9, hyphen, underscore.
+			</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>				
+															
 	</parameters>	
 
 </transformer>
