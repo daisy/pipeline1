@@ -25,6 +25,15 @@
 			<example>D:/example.sch, http://www.example.com/example.rng, -//TPB//RNG dtbook 2005-1 Narrator//EN</example>
 			<default/>
 		</parameter>
+		
+		<parameter required="false" direction="in" type="string">
+			<name>delegates</name>
+			<description>
+				Comma separated list of delegates
+			</description>
+			<example>org.daisy.util.fileset.validation.delegate.impl.XMLEncodingDelegate</example>
+			<default/>
+		</parameter>
 
 		<parameter required="false" direction="in" type="enum">
 			<name>abortThreshold</name>

@@ -71,7 +71,7 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 	private void executeDelegates() throws ValidatorNotSupportedException, ValidatorException {
 		for (Iterator iter = mDelegates.iterator(); iter.hasNext();) {
 			ValidatorDelegate vd = (ValidatorDelegate) iter.next();
-			vd.execute();			
+			vd.execute(mFileset);
 		} 		
 	}
 	
@@ -97,6 +97,13 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 				throw new ValidatorNotSupportedException("This validator does not support validation of " 
 						+ mFileset.getFilesetType().toNiceNameString() + " filesets.");
 			}
+			for (Iterator iter = mDelegates.iterator(); iter.hasNext(); ) {
+				ValidatorDelegate delegate = (ValidatorDelegate) iter.next();
+				if (!delegate.isFilesetTypeSupported(mFileset.getFilesetType())) {
+					throw new ValidatorNotSupportedException("The validator delegate does not support validation of "
+							+ mFileset.getFilesetType().toNiceNameString() + " filesets.");
+				}
+			}			
 		}else{
 			throw new ValidatorException("No registered fileset");
 		}
@@ -231,12 +238,14 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 	 * Check prereqs for registering a delegate, and register it if prereqs are met.
 	 */
 	private void addDelegate(ValidatorDelegate delegate) throws ValidatorException, ValidatorNotSupportedException {
+		/*
 		if(mFileset==null) throw new ValidatorException("cannot register delegates without a registered fileset");
 		if(!delegate.isFilesetTypeSupported(mFileset.getFilesetType())) {
 			throw new ValidatorNotSupportedException("Fileset type " 
 					+ mFileset.getFilesetType().toNiceNameString() 
 					+ " is not supported by " + delegate.getClass().getSimpleName());
 		}
+		*/		
 		delegate.setValidator(this);
 		mDelegates.add(delegate);
 	}

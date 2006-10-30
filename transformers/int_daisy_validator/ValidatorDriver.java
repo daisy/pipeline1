@@ -137,9 +137,12 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				mCompletionTracker.mCompletedFilesetInstantiation = true;
 				ValidatorFactory validatorFactory = ValidatorFactory.newInstance(); 
 				try{
-					org.daisy.util.fileset.validation.Validator filesetValidator = 
-						validatorFactory.newValidator(mInputFileset.getFilesetType());					
-					filesetValidator.setListener(this);					
+					Validator filesetValidator = validatorFactory.newValidator(mInputFileset.getFilesetType());
+					filesetValidator.setListener(this);	
+					
+					String delegates = (String)parameters.remove("delegates");
+					this.setDelegates(filesetValidator, delegates);
+					
 					this.sendMessage(Level.INFO, i18n("VALIDATING_FILESET", mInputFileset.getFilesetType().toNiceNameString()));
 					filesetValidator.validate(mInputFileset);	
 					mCompletionTracker.mCompletedFilesetValidation = true;
@@ -223,6 +226,30 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		return true;
 	}
 
+	/**
+	 * Adds all specified delegates to the validator. 
+	 * @param validator the Validator to add the delegates to.
+	 * @param delegates the String containing the names of the delegates.
+	 */
+	private void setDelegates(Validator validator, String delegates) {		
+		if (delegates!=null && !"".equals(delegates)) {
+			String[] array = delegates.split(",");
+			for (int i = 0; i < array.length; i++) {
+				String delegate = array[i].trim();
+				try {
+					validator.setDelegate(delegate);
+				} catch (ValidatorNotSupportedException e) {
+					mStateTracker.mHadCaughtException = true;
+					this.sendMessage(Level.WARNING,i18n("DELEGATE_INSTANTIATION_FAILURE", array[i]));
+				} catch (ValidatorException e) {
+					mStateTracker.mHadCaughtException = true;
+					this.sendMessage(Level.WARNING,i18n("DELEGATE_INSTANTIATION_FAILURE", array[i]));
+				}
+			}			
+		}
+	}
+	
+	
 	/**
 	 * Collects all schemas that the input document should be validated against;
 	 * the schemas may occur inlined in input document, or in the schemas inparam.

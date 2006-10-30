@@ -1,6 +1,7 @@
 package org.daisy.util.fileset.validation.delegate;
 
 import org.daisy.util.fileset.FilesetType;
+import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.validation.Validator;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
@@ -22,7 +23,7 @@ public interface ValidatorDelegate {
 	 * the content to execute the task on, and it will use the ValidatorListener
 	 * registered with the Validator to report any findings. 
 	 */
-	public void execute() throws ValidatorNotSupportedException, ValidatorException;
+	public void execute(Fileset fileset) throws ValidatorNotSupportedException, ValidatorException;
 	
 	/**
 	 * Is inparam fileset supported by this ValidatorDelegate?
