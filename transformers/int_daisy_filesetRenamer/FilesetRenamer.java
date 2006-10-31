@@ -142,7 +142,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			
 			//clean up the temp traces if utilized
 			if(mRoundtripOutputDir!=null) {
-				mRoundtripOutputDir.deleteContents();
+				mRoundtripOutputDir.deleteContents(true);
 				mRoundtripOutputDir.delete();
 			}
 		
@@ -265,7 +265,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 				//and may refer to other members that may have new names
 				if(file instanceof XmlFile) {
 					//use the constructor of xmleventfeeder that allows localname change				
-					XMLEventValueExposer xeve = new XMLEventValueExposer(this,flatten(mStrategy.getNewLocalName(file)));					
+					XMLEventValueExposer xeve = new XMLEventValueExposer(this,mStrategy.getNewLocalName(file));					
 					//default is to only replace in attributes (they typically carry URIs)
 					xeve.setEventTypeRestriction(XMLEvent.ATTRIBUTE);				
 					return xeve;
@@ -274,21 +274,12 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			}
 			//else, this file does not refer to other members
 			//but may still have a new name
-			return new RenamingCopier(flatten(mStrategy.getNewLocalName(file)));			
+			return new RenamingCopier(mStrategy.getNewLocalName(file));			
 		}catch (Exception e) {
 			throw new FilesetManipulationException(e.getMessage(),e);
 		}
 	}
 
-		
-	/**
-	 * Tries to assure that the name contains only ascii characters [A-Za-z0-9_-]
-	 */
-	private String flatten(String newLocalName) {
-		//TODO implement
-		//TODO make defeatable via inparam
-		return newLocalName;
-	}
 
 	/**
 	 * XMLEventValueConsumer impl

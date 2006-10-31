@@ -2,15 +2,20 @@ package int_daisy_filesetRenamer.segment;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
+import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.ManifestFile;
 import org.daisy.util.fileset.interfaces.Referring;
+import org.daisy.util.fileset.interfaces.xml.OpfFile;
+import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
 
 /**
  * Represents a sequential segment of a filename, ie 
@@ -20,7 +25,7 @@ import org.daisy.util.fileset.interfaces.Referring;
 
 public class SequenceSegment extends Segment {
 	private static Map mFilesetTypeCounter = new HashMap(); 			//fileset, Map<ClassName, Long> (number of files of a certain class in a certain fileset
-	private static Map mOuterCounterCache = new HashMap(); 				//<fileset,HashSet<abspath>>, store identity of members already counted
+	private static Map mFormatCache = new HashMap();
 	
 	private SequenceSegment(String content) {
 		super(content);		
@@ -51,7 +56,7 @@ public class SequenceSegment extends Segment {
 		Map countMap = (Map)mFilesetTypeCounter.get(fileset);
 				
 		if(countMap==null) {		
-			//this fileset has not been counted before, so do it
+			//this fileset has not been counted before, so do it			
 			countMap = new HashMap(); //(<ClassName>, <Long>)
 			for (Iterator iter = fileset.getLocalMembers().iterator(); iter.hasNext();) {
 				Object member = iter.next();
@@ -76,71 +81,104 @@ public class SequenceSegment extends Segment {
 	 * Loop through a fileset in serial order and up a counter each time a file
 	 * of same type as inparam occurs. Return counter at identity match.
 	 */
-	private static long getPosition(FilesetFile file, Fileset fileset) {
-		long counter = 0;
-		//start from manifest
-		ManifestFile manifest = fileset.getManifestMember();
+	private static long getPosition(FilesetFile toFind, Fileset fileset) {
 		
-		//TODO if input file is manifest
 		
-		for (Iterator iter = manifest.getReferencedLocalMembers().iterator(); iter.hasNext();) {
-			FilesetFile member = (FilesetFile)iter.next();			
-			HashSet counterCache = (HashSet)mOuterCounterCache.get(fileset);
-			if(counterCache == null) {
-				counterCache = new HashSet();
-				mOuterCounterCache.put(fileset, counterCache);
+		try{
+			//deal with the case where inparam file is manifest first
+			ManifestFile manifest = fileset.getManifestMember();			
+			if(manifest.getFile().getCanonicalPath().equals(toFind.getFile().getCanonicalPath())) {
+				return 0;
 			}
-			FilesetFile found = search(member,file,counter,counterCache);
-			if(found!=null)break;
-		}						
-		return counter;
+			
+			//then deal with discovery using manifest as the starting point
+			Collection loop = null;		
+			//if input fileset is a DTB, us the spine collection as a starting point.		
+			if(fileset.getFilesetType()==FilesetType.DAISY_202) {
+				loop = ((D202NccFile)manifest).getSpineItems();
+			}else if(fileset.getFilesetType()==FilesetType.Z3986) {
+				loop = ((OpfFile)manifest).getSpineItems();
+			}else{
+				//if not a DTB, use the manifest as a starting point	
+				loop = manifest.getReferencedLocalMembers();
+			}
+			
+			//loop through the FilesetFile collection
+			//break the loop when inparam file is found,
+			//return the postincremented counter
+			long counter = 0;
+			for (Iterator iter = loop.iterator(); iter.hasNext();) {
+				Set counterCache = new HashSet(); 
+				Set alreadySearchedCache = new HashSet();
+				FilesetFile toCheck = (FilesetFile)iter.next();	
+				counter = search(toCheck,toFind,counterCache,alreadySearchedCache);
+				if(counter>-1) break;
+			}
+			return counter;
+		}catch (Exception e) {
+			return 0;
+		}
 	}
 	
 	/**
-	 *@return null if toFind was not found among the referenced member within toSearch  
+	 * Call exhaustively and recursively until toFind is found. Up the type counter in the counterCache
+	 * each time a file of the same type as toFind is found, including toFind itself. 
+	 * @return counterCache value when toFind is found, or -1 if toFind was not found within toCheck nor among the referenced members within toCheck  
 	 */
-	private static FilesetFile search(FilesetFile toSearch, FilesetFile toFind, long typeCounter, HashSet counterCache) {
-		
-		try {
-			//if toSearch is of our current type and not already counted, up the counter
-			if(toSearch.getClass().getName().equals(toFind.getClass().getName())) {
-				String value = toSearch.getFile().getCanonicalPath();
+	private static long search(FilesetFile toCheck, FilesetFile toFind, Set counterCache, Set alreadySearchedCache) {
+		try{
+			//if toCheck is of our current type and not already counted, up the counter
+			if(toCheck.getClass().getName().equals(toFind.getClass().getName())) {
+				String value = toCheck.getFile().getCanonicalPath();
 				if (!counterCache.contains(value)){
-					counterCache.add(value);
-					typeCounter++;	
+					counterCache.add(value);						
 				}
+			}		
+			
+			//if toCheck has the identify we are looking for
+			if (toCheck.getFile().getCanonicalPath().equals(toFind.getFile().getCanonicalPath())) { 				
+				return counterCache.size();
 			}
-				
-			//if toSearch has the identify we are looking for
-			if (toSearch.getFile().getCanonicalPath().equals(toFind.getFile().getCanonicalPath())) {
-				//we found the one we are looking for directly				
-				return toSearch;
-			}
-			//else, go through the files referenced within toSearch and recurse
-			if(toSearch instanceof Referring) {
-				Referring referer = (Referring) toSearch;
+			
+			if(toCheck instanceof Referring) {
+				Referring referer = (Referring) toCheck;
 				for (Iterator iter = referer.getReferencedLocalMembers().iterator(); iter.hasNext();) {
 					FilesetFile ffile = (FilesetFile) iter.next();
-					FilesetFile found = search(ffile,toFind,typeCounter,counterCache);
-					if(found!=null) return found;
-				}
-			}//toSearch instanceof Referring
-		} catch (IOException e) {
-
+					if(!alreadySearchedCache.contains(ffile.getFile().getCanonicalPath())){
+						alreadySearchedCache.add(ffile.getFile().getCanonicalPath());
+						long found = search(ffile,toFind,counterCache,alreadySearchedCache);
+						if(found>-1) {
+							return counterCache.size();
+						}			
+					}
+				}//for
+			}else{
+				//this is a leaf
+			}			
+		}catch (Throwable e) {
+			System.err.println("SequenceSegment.search: " + e.getMessage());
 		}
-		return null;		
-	}
+		return -1;
+	}	
+	
 	
 	private static String format(long value, long count) {
 		/*
-		 * if there are 999 files, we want 00n syntax, etc
+		 * if there are 9999 files, we want 000n syntax, etc
+		 * a minimum of three digits
 		 */
-		StringBuilder sb = new StringBuilder();
-		String length = Long.toString(count);
-		for (int i = 0; i < length.length()+1; i++) {
-			sb.append('0');
-		}
-		DecimalFormat df = new DecimalFormat(sb.toString());
+
+		String format = Long.toString(count);
+		if(format.length()<3)format="999";
+		DecimalFormat df =  (DecimalFormat)mFormatCache.get(format);
+		if(df==null){
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < format.length(); ++i) {
+				sb.append('0');
+			}		
+			df = new DecimalFormat(sb.toString());
+			mFormatCache.put(format, df);
+		}				
 		return df.format(value);
 	}
 }
