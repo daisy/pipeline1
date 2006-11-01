@@ -240,7 +240,7 @@
   <!-- Rule 37: Class attributes of level1 and level2 in bodymatter -->  
   <sch:pattern name="dtbook_TPB_bodymatterLevel1Level2Class" id="dtbook_TPB_bodymatterLevel1Level2Class">
   	<sch:rule context="dtbk:bodymatter/dtbk:level1">
-  		<sch:assert test="@class='part' or @class='chapter' or @class='other'">[tpb37] Class attribute must be one of: part, chapter or other</sch:assert>
+  		<sch:assert test="@class='part' or @class='chapter' or @class='other' or @class='introduction'">[tpb37] Class attribute must be one of: part, chapter, introduction or other</sch:assert>
   		<sch:report test="@class='part' and (preceding-sibling::dtbk:level1/@class='chapter' or following-sibling::dtbk:level1/@class='chapter')">[tpb37] All level1 class attributes in bodymatter must be either part or chapter (mixed with 'other')</sch:report>
   		<sch:report test="@class='part' and dtbk:level2/@class!='chapter'">[tpb37] Level2 class attribute must be 'chapter' if level1 class attribute is 'part'</sch:report>
   	</sch:rule>
@@ -320,20 +320,21 @@
     	<sch:assert test="@class='endnote' or @class='rearnote'">[tpb46] class attribute for note must be 'endnote' or 'rearnote'</sch:assert>
     	<sch:report test="@class='rearnote' and (not(ancestor::dtbk:level1[@class='footnotes']) and not(ancestor::dtbk:level1[@class='rearnotes']))">[tpb46] Rearnotes must be in level1@class='rearnotes' in rearmatter</sch:report>
     	<sch:report test="@class='endnote' and ancestor::dtbk:rearmatter and ancestor::dtbk:level1[@class='rearnotes']">[tpb46] Endnotes may not be in level1@class='rearnotes' in rearmatter</sch:report>
-    	<sch:report test="@class='endnote' and (not(ancestor::dtbk:level1[@class='chapter'] or ancestor::dtbk:level2[@class='chapter']) or following-sibling::dtbk:*[not(self::dtbk:note)])">[tpb46] Endnotes must be placed at the end of a chapter</sch:report>
     </sch:rule>
   </sch:pattern>
   
   <!-- Rule 48: Headings in notes section in rearmatter -->
   <sch:pattern name="dtbook_TPB_headingsInNotesSection" id="dtbook_TPB_headingsInNotesSection">
-    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='rearnotes']/dtbk:level2/dtbk:h2">    
-    	<sch:assert test="count(/dtbk:dtbook/dtbk:book/dtbk:bodymatter/dtbk:level1/dtbk:level2[@class='chapter']/dtbk:h2[.=current()]) + 
-    	                  count(/dtbk:dtbook/dtbk:book/dtbk:bodymatter/dtbk:level1[@class='chapter']/dtbk:h2[.=current()]) = 1"
+    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:h2">    
+    	<sch:assert test="count(/dtbk:dtbook/dtbk:book/dtbk:*/dtbk:level1/dtbk:level2[@class='chapter']/dtbk:h2[.=current()]) + 
+    	                  count(/dtbk:dtbook/dtbk:book/dtbk:*/dtbk:level1[@class='chapter']/dtbk:h1[.=current()]) +
+    	                  count(/dtbk:dtbook/dtbk:book/dtbk:*/dtbk:level1[@class='introduction']/dtbk:h1[.=current()]) +
+    	                  count(/dtbk:dtbook/dtbk:book/dtbk:*/dtbk:level1[@class='other']/dtbk:h1[.=current()]) >= 1"
     	   >[tpb48] Heading in notes section does not exist in the bodymatter of the book</sch:assert>
     </sch:rule>    
-    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='rearnotes']/dtbk:level2/dtbk:note">    
+    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:note">    
           <sch:assert test="count(//dtbk:level2[@class='chapter' and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h2=current()/parent::dtbk:level2/dtbk:h2]) +
-                            count(//dtbk:level1[@class='chapter' and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h1=current()/parent::dtbk:level2/dtbk:h2]) >= 1"
+                            count(//dtbk:level1[(@class='chapter' or @class='introduction' or @class='other') and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h1=current()/parent::dtbk:level2/dtbk:h2]) >= 1"
            >[tpb48] There is no note reference to this note in the corresponding section in the bodymatter</sch:assert>
     </sch:rule>
   </sch:pattern>
@@ -377,20 +378,11 @@
     </sch:rule>
   </sch:pattern>
   
-  <!-- Rule 57 & 58: lic in table of contents -->
-  <sch:pattern name="dtbook_TPB_licInToc" id="dtbook_TPB_licInToc">
-    <!-- 57 -->
+  <!-- Rule 57: table of contents -->
+  <sch:pattern name="dtbook_TPB_listIntoc" id="dtbook_TPB_listIntoc">
     <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='toc']">
     	<sch:assert test="dtbk:list">[tpb57] table of contents must have a list</sch:assert>
-    </sch:rule>
-    <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='toc']/dtbk:list//dtbk:li">
-    	<sch:assert test="child::*[self::dtbk:lic and (@class='entry' or @class='pagenum')]">[tpb57] list items in table of contents must only have lic children having class attribute 'entry' or 'pagenum'</sch:assert>
-    	<sch:assert test="normalize-space(text())=''">[tpb57] list items in table of contents must only contain lic elements</sch:assert>
-    </sch:rule>
-    <!-- 58 -->
-    <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='toc']/dtbk:list//dtbk:lic[@class='pagenum']">
-    	<sch:assert test=".=//dtbk:pagenum">[tpb58] there must exist a pagenum element for each lic@class="pagenum"</sch:assert>
-    </sch:rule>
+    </sch:rule>      
   </sch:pattern>
   
   <!-- Rule 59: No pagegenum between a term and a definition in definition lists -->
@@ -459,9 +451,9 @@
   
   <!-- Rule 93: Some elements may not start of end with whitespace -->
   <sch:pattern name="dtbook_TPB_trimmedWhitespace" id="dtbook_TPB_trimmedWhitespace">
-    <sch:rule context="dtbk:*[self::dtbk:h1 or self::dtbk:h2 or self::dtbk:h3 or self::dtbk:h4 or self::dtbk:h5 or self::dtbk:h6 or self::dtbk:hd]">
-    	<sch:report test="normalize-space(substring(.,1,1))=''">[tpb93] heading may not have leading whitespace</sch:report>
-    	<sch:report test="normalize-space(substring(.,string-length(.),1))=''">[tpb93] heading may not have trailing whitespace</sch:report>
+    <sch:rule context="dtbk:*[self::dtbk:h1 or self::dtbk:h2 or self::dtbk:h3 or self::dtbk:h4 or self::dtbk:h5 or self::dtbk:h6 or self::dtbk:hd or self::dtbk:lic]">
+    	<sch:report test="normalize-space(substring(.,1,1))=''">[tpb93] element <name/> may not have leading whitespace</sch:report>
+    	<sch:report test="normalize-space(substring(.,string-length(.),1))=''">[tpb93] element <name/> may not have trailing whitespace</sch:report>
     </sch:rule>
   </sch:pattern>  
   
@@ -486,6 +478,13 @@
   <sch:pattern name="dtbook_TPB_imgInImggroup" id="dtbook_TPB_imgInImggroup">
     <sch:rule context="dtbk:imggroup">
     	<sch:assert test="dtbk:img">[tpb101] There must be an img element in every imggroup</sch:assert>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 103: No img without imggroup -->
+  <sch:pattern name="dtbook_TPB_imgWithoutImggroup" id="dtbook_TPB_imgWithoutImggroup">
+    <sch:rule context="dtbk:img">
+    	<sch:assert test="parent::dtbk:imggroup">[tpb103] There must be an imggroup element wrapping every img</sch:assert>
     </sch:rule>
   </sch:pattern>
       
