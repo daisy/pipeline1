@@ -45,6 +45,7 @@ import org.xml.sax.SAXParseException;
  * This class can validate an XML docuemnt against a RelaxNG schema with
  * optional schematron rules, and optionally against the DTD declared
  * in the XML file itself. Support for XML schema is planned.
+ * @deprecated use int_daisy_validator instead
  * @author Linus Ericson
  */
 public class XmlValidator extends Transformer implements ErrorHandler {

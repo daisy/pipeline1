@@ -37,6 +37,7 @@ import org.xml.sax.SAXParseException;
  * Transformer wrapper for the DtbErrorScout in the util library.
  * @author Linus Ericson
  * @see org.daisy.util.dtb.validation.errorscout.DtbErrorScout
+ * @deprecated use int_daisy_validator instead
  */
 public class DtbErrorScout extends Transformer {
     
