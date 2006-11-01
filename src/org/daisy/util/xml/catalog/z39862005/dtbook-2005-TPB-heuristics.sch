@@ -171,5 +171,16 @@
     	                   )>0">[tpbHeuM28] Does this pagenum element incorrectly break one paragraph into two?</sch:report>
     </sch:rule>
   </sch:pattern> 
+  
+  <!-- Rule M30: lic in table of contents -->
+  <sch:pattern name="dtbook_TPBheuristic_licInToc" id="dtbook_TPB_licInToc">
+    <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='toc']/dtbk:list//dtbk:li">
+    	<sch:assert test="child::*[self::dtbk:lic and (@class='entry' or @class='pagenum')]">[tpbHeuM30] Should this list item in table of contents only have lic children having class attribute 'entry' or 'pagenum'?</sch:assert>
+    	<sch:assert test="normalize-space(text())=''">[tpbHeuM30] Should there really be a list item having text outside a lic here?</sch:assert>
+    </sch:rule>
+    <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='toc']/dtbk:list//dtbk:lic[@class='pagenum']">
+    	<sch:assert test=".=//dtbk:pagenum">[tpbHeuM30] The pagenum element referenced by this lic does not exist. Is that really OK?</sch:assert>
+    </sch:rule>
+  </sch:pattern>
     
 </sch:schema>
