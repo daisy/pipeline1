@@ -65,8 +65,8 @@ public class FileSetCreator extends Transformer {
 	
 	public static String DEBUG_PROPERTY = "org.daisy.debug";
 
-	private static double SMILS_DONE = 0.63;	// time proportion of the smil generation.
-	private static double NCX_DONE = 0.28;		// time proportion of the ncx generation.
+	private static double SMILS_DONE = 0.43;	// time proportion of the smil generation.
+	private static double NCX_DONE = 0.48;		// time proportion of the ncx generation.
 	private static double OPF_DONE = 0.09;		// time proportion of the opf generation.
 	private static double COPY_DONE = 0;		// time proportion of the file copying, may change further down
 	
