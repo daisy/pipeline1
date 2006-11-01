@@ -241,7 +241,6 @@
   <sch:pattern name="dtbook_TPB_bodymatterLevel1Level2Class" id="dtbook_TPB_bodymatterLevel1Level2Class">
   	<sch:rule context="dtbk:bodymatter/dtbk:level1">
   		<sch:assert test="@class='part' or @class='chapter' or @class='other' or @class='introduction'">[tpb37] Class attribute must be one of: part, chapter, introduction or other</sch:assert>
-  		<sch:report test="@class='part' and (preceding-sibling::dtbk:level1/@class='chapter' or following-sibling::dtbk:level1/@class='chapter')">[tpb37] All level1 class attributes in bodymatter must be either part or chapter (mixed with 'other')</sch:report>
   		<sch:report test="@class='part' and dtbk:level2/@class!='chapter'">[tpb37] Level2 class attribute must be 'chapter' if level1 class attribute is 'part'</sch:report>
   	</sch:rule>
   </sch:pattern>
