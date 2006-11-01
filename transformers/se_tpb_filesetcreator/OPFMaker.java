@@ -175,7 +175,6 @@ public class OPFMaker {
 		// smil files, make sure IDs are saved in proper sequence
 		for (Iterator it = smils.iterator(); it.hasNext(); ) {
 			Object temp = it.next();
-			DEBUG("OPFMaker#makeManifest(): " + temp);
 			File currentFile = new File((String) temp);
 			String id = getNextId("smil-");
 			ids.add(id);
@@ -255,7 +254,6 @@ public class OPFMaker {
 			for (Iterator it = dcVals.iterator(); it.hasNext(); ) { 
 				String originalValue = (String) it.next();
 				Element elem = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/package/metadata/dc-metadata/" + elemName);
-				DEBUG("OPFMaker#makeDCElements() " + prefix + delim + elemName + "\t" + originalValue/*dcElements.get(originalStr)*/);
 				if (null == elem || elem.getTextContent().trim().length() != 0) {
 					elem = opf.createElement(prefix + delim + elemName);
 					Element parent = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/package/metadata/dc-metadata");
@@ -321,7 +319,6 @@ public class OPFMaker {
 	 * @throws ParserConfigurationException 
 	 */
 	private void parseTemplate() throws SAXException, IOException, ParserConfigurationException {
-		DEBUG("OPFMaker#parseTemplate()");
 		DocumentBuilderFactory dfb = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder = dfb.newDocumentBuilder();
 		documentBuilder.setEntityResolver(CatalogEntityResolver.getInstance());
