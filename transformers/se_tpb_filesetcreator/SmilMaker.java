@@ -58,6 +58,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.util.collection.MultiHashMap;
 import org.daisy.util.execution.AbortListener;
 import org.daisy.util.execution.ProgressObserver;
 import org.daisy.util.xml.SmilClock;
@@ -138,9 +139,11 @@ public class SmilMaker implements AbortListener {
 	private String smilNamespaceURI = "http://www.w3.org/2001/SMIL20/";						// namespace for the smil elements
 	
 	private Map smilFileMapping = new HashMap();		// used for mapping element id to file
+	private MultiHashMap forceLinkMap = new MultiHashMap(false);
 	private ProgressObserver obs;						// ProgressObserver: a component to report progress to, used for ui.
 	private int numSmilFiles;							// the expected number of generated smil files, used for progress reporting
-	private double noteRumbleTimeProportion = 0.825;	// the proprtion of this program's time used for inserting extra force link targets
+	private double noteRumbleTimeProportion = 0.15;		// the proprtion of this program's time used for inserting extra force link targets
+	private double domFinalizeTimeProportion = 0.15;	// the proprtion of this program's time used for finalizing the doms (time calcs.) before output to file
 	
 	private FileSetCreator checkAbortCallBack;			// component throwing an exception if the user has aborted the run
 	
@@ -198,6 +201,7 @@ public class SmilMaker implements AbortListener {
 		this.skippable = skippable;
 		this.ecapable = escapable;
 		
+		// TODO
 		// until we have a context aware bookmarked xml event reader, 
 		// narrator will treat h1-h6 as valid headings. Not hd.
 		this.headings = new HashSet();
@@ -429,13 +433,16 @@ public class SmilMaker implements AbortListener {
 	 */
 	private void outputResult() throws TransformerException, IOException {
 		long millis = 0;
-		for (int i = 0; i < smilTrees.size(); i++) {
+		int i = 0;
+		int size = smilTrees.size();
+		for (; i < size; i++) {
 			
 			Document doc = (Document) smilTrees.get(i);
 			File file = (File) smilFiles.get(i);
 			
 			millis = finishSmil(millis, doc);
 			outputDocument(doc, file);
+			this.obs.reportProgress(1 - domFinalizeTimeProportion * ((size - (i+1)) / size));
 		}
 	}
 	
@@ -485,8 +492,18 @@ public class SmilMaker implements AbortListener {
 	 *
 	 */
 	private void rearrangeForceLinkElems() throws TransformerAbortException {
+		
+		// exec time
+		long forEachGeneratedDom = 0;
+		long forEachLinkTarget = 0;
+		long forEachReference = 0;
+		long tmpFer = 0;
+		
+		
+		// fetch all link targets. note elements, and such
 		Map forceLinks = new HashMap();
 		// for each genereated smil DOM
+		forEachGeneratedDom = System.currentTimeMillis();
 		for (Iterator it = smilTrees.iterator(); it.hasNext(); ) {
 			Document curr = (Document) it.next();
 			
@@ -498,15 +515,49 @@ public class SmilMaker implements AbortListener {
 				forceLinks.put(elem.getAttribute(tempLinkId), elem);
 			}
 		}
+		forEachGeneratedDom = System.currentTimeMillis() - forEachGeneratedDom;
 		
-		// for each element as "linkTarget"
+		// for each link target
 		int numLaps = forceLinks.keySet().size();
 		int counter = 0;
+		forEachLinkTarget = System.currentTimeMillis();
 		for (Iterator elemIt = forceLinks.keySet().iterator(); elemIt.hasNext(); ) {
+			
 			String elemId = (String) elemIt.next();
 			Node linkTarget = (Node) forceLinks.get(elemId);
-			((Element) linkTarget).removeAttribute(tempLinkId);
+			((Element) linkTarget).removeAttribute(tempLinkId);			
+			Collection srcs = forceLinkMap.getCollection(elemId);
+			if (null == srcs) {
+				// note (or something) without any reference
+				continue;
+			}
+		
+			tmpFer = System.currentTimeMillis();
+			for (Iterator srcIt = srcs.iterator(); srcIt.hasNext(); ) {
+				
+				Element linkSrc = (Element) srcIt.next();
+				linkSrc.removeAttribute("idref");
+				Element nextSibling = (Element) linkSrc.getNextSibling();
+				Element parent = (Element) linkSrc.getParentNode();
+				
+				Node newLinkTarget = parent.getOwnerDocument().importNode(linkTarget, true);
+				updateSubtreeIds(newLinkTarget);
+				
+				boolean isEqualNode = (nextSibling != null) && (nextSibling.isEqualNode(linkTarget));
+				if (null == nextSibling) {
+					parent.appendChild(newLinkTarget);
+					updateDTBUserEscape(parent);
+				} else if (!isEqualNode) {
+					parent.insertBefore(newLinkTarget, nextSibling);
+				} else {
+					newLinkTarget = linkTarget;
+				}
+								
+				addLink(getAudioChild(linkSrc), ((Element) newLinkTarget).getAttribute("id"));
+			}
 			
+			
+			/*
 			// for each reference to "linkTarget"
 			for (Iterator smilIt = smilTrees.iterator(); smilIt.hasNext(); ) {
 				Document curr = (Document) smilIt.next();
@@ -515,6 +566,7 @@ public class SmilMaker implements AbortListener {
 				String xPath = "//par[@idref=translate('" + elemId + "', '#', '')]";
 				NodeList linkSrcs = XPathUtils.selectNodes(curr.getDocumentElement(), xPath);
 				
+				tmpFeri = System.currentTimeMillis();
 				for (int i = 0; i < linkSrcs.getLength(); i++) {
 					Element linkSrc = (Element) linkSrcs.item(i);
 					linkSrc.removeAttribute("idref");
@@ -536,11 +588,39 @@ public class SmilMaker implements AbortListener {
 									
 					addLink(getAudioChild(linkSrc), ((Element) newLinkTarget).getAttribute("id"));
 				}
+				forEachReferenceInner += System.currentTimeMillis() - tmpFeri;
 			}
+			*/
+			
+			forEachReference += System.currentTimeMillis() - tmpFer;
 			counter++;
 			checkAbortCallBack.checkTransformerAborted();
-			obs.reportProgress((1 - noteRumbleTimeProportion) + noteRumbleTimeProportion * counter / numLaps);
+			obs.reportProgress((1 - noteRumbleTimeProportion - domFinalizeTimeProportion) + noteRumbleTimeProportion * counter / numLaps);
 		}
+		forEachLinkTarget = System.currentTimeMillis() - forEachLinkTarget;
+		
+//		System.err.println("foreach generated dom: " + formatTime(forEachGeneratedDom));
+//		System.err.println("foreach link target:   " + formatTime(forEachLinkTarget));
+//		System.err.println("foreach reference: " + formatTime(forEachReference));
+	}
+	
+	
+	private String formatTime(long timestamp) {
+		String val = "";
+		
+		long ms = timestamp % 1000;
+		timestamp /= 1000;
+		long s = timestamp % 60;
+		timestamp /= 60;
+		long m = timestamp % 60;
+		timestamp /= 60;
+		long h = timestamp % 60;
+		
+		val = h + ":" +
+			(m > 9 ? "" : "0") + m + ":" +
+			(s > 9 ? "" : "0") + s + "." + ms;
+		
+		return val;
 	}
 	
 	
@@ -777,6 +857,7 @@ public class SmilMaker implements AbortListener {
 		if (null != idRef) {
 			idRef = idRef.replaceAll("#", "");
 			parElement.setAttribute("idref", idRef);
+			forceLinkMap.put(idRef, parElement);
 		}
 		parentSeqElement.appendChild(parElement);
 		
@@ -974,7 +1055,7 @@ public class SmilMaker implements AbortListener {
 	 */
 	private void startNewSmil(BookmarkedXMLEventReader reader) throws ParserConfigurationException, SAXException, IOException, TransformerRunException, TransformerException, XMLStreamException {
 		// reporting to UI
-		obs.reportProgress(((double) smilFiles.size() / numSmilFiles) * (1 - noteRumbleTimeProportion));
+		obs.reportProgress(((double) smilFiles.size() / numSmilFiles) * (1 - noteRumbleTimeProportion - domFinalizeTimeProportion));
 		// have we been aborted?
 		checkAbortCallBack.checkTransformerAborted();
 		
