@@ -80,4 +80,11 @@
   	</sch:rule>
   </sch:pattern>
   
+  <!-- Rule 104: Headings may not be empty elements -->
+  <sch:pattern name="dtbook_narrator_emptyElements" id="dtbook_TPB_emptyElements">
+  	<sch:rule context="dtbk:*[self::dtbk:h1 or self::dtbk:h2 or self::dtbk:h3 or self::dtbk:h4 or self::dtbk:h5 or self::dtbk:h6 or self::dtbk:hd[parent::dtbk:level]]">
+  		<sch:report test="normalize-space(.)=''">[narrator104] Heading <name/> may not be empty</sch:report>
+  	</sch:rule>  	
+  </sch:pattern>
+  
 </sch:schema>
