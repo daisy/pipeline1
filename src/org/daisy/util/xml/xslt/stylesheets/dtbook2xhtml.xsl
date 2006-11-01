@@ -242,8 +242,9 @@
 	</xsl:template>
 	
    <xsl:template match="dtb:list/dtb:pagenum" priority="1">
+     <xsl:param name="inlineFix"/>
      <xsl:choose>
-       <xsl:when test="not(preceding-sibling::*)">
+       <xsl:when test="not(preceding-sibling::*) or $inlineFix='true'">
          <li><xsl:call-template name="pagenum"/></li>
        </xsl:when>
        <xsl:otherwise>
@@ -950,7 +951,9 @@
 					<xsl:text> is inline</xsl:text>
 				</xsl:message>
 				-->
-				<xsl:apply-templates select="."/>
+				<xsl:apply-templates select=".">
+					<xsl:with-param name="inlineFix" select="'true'"/>
+				</xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
 				<span>					
