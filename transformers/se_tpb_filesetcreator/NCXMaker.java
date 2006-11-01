@@ -307,10 +307,10 @@ public class NCXMaker implements AbortListener {
 	public void makeNCX() throws XMLStreamException, TransformerRunException, ParserConfigurationException, SAXException, IOException, TransformerException {
 		
 		DEBUG(ncxTemplate);
-		DEBUG("NCXMaker#makeNCX: docElem: " + ncxTemplate.getDocumentElement());
+		//DEBUG("NCXMaker#makeNCX: docElem: " + ncxTemplate.getDocumentElement());
 		Element navMap = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//navMap[@id='navMap']");
-		DEBUG("NCXMaker#makeNCX: navMap:  " + navMap);
-		DEBUG("NCXMaker#makeNCX: docElem: " + ncxTemplate.getDocumentElement());
+		//DEBUG("NCXMaker#makeNCX: navMap:  " + navMap);
+		//DEBUG("NCXMaker#makeNCX: docElem: " + ncxTemplate.getDocumentElement());
 		openLevels.push(navMap);
 		recordMaxDepth();
 		int elemCounter = 0;
@@ -320,11 +320,10 @@ public class NCXMaker implements AbortListener {
 			
 			if (event.isStartElement()) {
 				
-				/* <meta name="dc:Language".../> is required in TPB's books, no need to do this.
 				if (isDTBookRoot(event.asStartElement())) {
-					handleBookRoot(event.asStartElement());
+					handleDTBookRoot(event.asStartElement());
 				}
-				*/
+				
 				
 				if (isFrontMatter(event.asStartElement())) {
 					handleFrontMatter(reader, event.asStartElement());
@@ -416,6 +415,34 @@ public class NCXMaker implements AbortListener {
 	}
 
 	
+	/**
+	 * Handles the dtbook root element, e.g fetching the xml:lang.
+	 * @param element the dtbook root start element.
+	 */
+	private void handleDTBookRoot(StartElement element) {
+		String namespaceURI = "http://www.w3.org/XML/1998/namespace";
+		QName qn =  new QName(namespaceURI, "lang");
+		Attribute attr = element.getAttributeByName(qn);
+		if (attr != null) {
+			String xmlLang = attr.getValue();
+			Element ncxRoot = ncxTemplate.getDocumentElement();
+			ncxRoot.setAttributeNS(namespaceURI, "xml:lang", xmlLang);
+		}
+	}
+
+
+	/**
+	 * Returns <code>true</code> if the start element <code>element</code>
+	 * is the root element of the dtbook document, <code>false</code> otherwise.
+	 * @param element the start element
+	 * @return <code>true</code> if the start element <code>element</code>
+	 * is the root element of the dtbook document, <code>false</code> otherwise.
+	 */
+	private boolean isDTBookRoot(StartElement element) {
+		return element.getName().getLocalPart().equals("dtbook");
+	}
+
+
 	/* (non-Javadoc)
 	 * @see org.daisy.util.execution.AbortListener#abortEvent()
 	 */
@@ -560,8 +587,9 @@ public class NCXMaker implements AbortListener {
 	private void handleCustomNavListElement(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {
 		String eventName = se.getName().getLocalPart();
 		Element customElem = createNCXNode(reader, se, "navTarget", eventName);
-		Element customList = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//navList[@id='" + navListName(eventName, true) + "']");
+		
 		if (customElem != null) {
+			Element customList = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//navList[@id='" + navListName(eventName, true) + "']");
 			customList.appendChild(customElem);
 		} else {
 			DEBUG("NCXMaker#handleCustomNavListElement ATT: Check to see if there is a " + eventName + " without contents.");
@@ -609,7 +637,6 @@ public class NCXMaker implements AbortListener {
 	 * @throws XMLStreamException
 	 */
 	private Map getSmilContext(StartElement se, Map attributes) throws XMLStreamException {
-		DEBUG("NCXMaker#getSmilContext");
 		if (!hasSmilAttributes(se)) {
 			return null;
 		}
@@ -618,7 +645,6 @@ public class NCXMaker implements AbortListener {
 			attributes = new HashMap();
 		}
 		
-		DEBUG(se);
 		for (Iterator it = se.getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
 			QName name = at.getName();
@@ -667,7 +693,7 @@ public class NCXMaker implements AbortListener {
 	 * @throws XMLStreamException
 	 */
 	private String getTextContent(BookmarkedXMLEventReader reader) throws XMLStreamException {
-		String content = "";
+		StringBuilder contentBuilder = new StringBuilder();
 		String bookmark = "TPB Narrator.NCXMaker.getTextContent";
 		reader.setBookmark(bookmark);
 		
@@ -684,12 +710,13 @@ public class NCXMaker implements AbortListener {
 			}
 			
 			if (event.getEventType() == XMLEvent.CHARACTERS) {
-				content += event.asCharacters().getData();
+				String data = event.asCharacters().getData();
+				contentBuilder.append(data != null ? data : "");
 			}
 		}
 		
 		reader.gotoAndRemoveBookmark(bookmark);
-		return content;
+		return contentBuilder.toString();
 	}
 	
 	
@@ -711,26 +738,44 @@ public class NCXMaker implements AbortListener {
 	 * @throws XMLStreamException
 	 */
 	private String getNextSmilContext(BookmarkedXMLEventReader reader, Map attributes) throws XMLStreamException {
-		DEBUG("NCXMaker#getNextSmilContext(reader, Map)");
 		String bookmark = "TPB Narrator.NCXMaker.getFirstSmilAttrs";
 		reader.setBookmark(bookmark);
 		
+		StringBuilder errMsg = new StringBuilder();	// prepare for a desent error message
 		String textContent = "";
 		XMLEvent e = null;
+		QName qn;
 		int elemCount = 1;
 		while (elemCount > 0 && !hasSmilAttributes((e = reader.nextEvent()))) {			
 			if (e.isStartElement()) {
+				qn = e.asStartElement().getName();
+				errMsg.append("<");
+				if (qn.getPrefix() != null && qn.getPrefix().length() > 0) {
+					errMsg.append(qn.getPrefix());
+					errMsg.append(':');	
+				}
+				errMsg.append(qn.getLocalPart());
+				errMsg.append(">");
 				elemCount++;
 			}
 			
 			if (e.isEndElement()) {
+				qn = e.asEndElement().getName();
+				errMsg.append("</");
+				if (qn.getPrefix() != null && qn.getPrefix().length() > 0) {
+					errMsg.append(qn.getPrefix());
+					errMsg.append(':');	
+				}
+				errMsg.append(qn.getLocalPart());
+				errMsg.append(">");
 				elemCount--;
 			}
 		}
 		
 		if (elemCount == 0) {
 			reader.gotoAndRemoveBookmark(bookmark);
-			return null;
+			String msg = "No content (smil attributes) found in section ending with: " + errMsg.toString();
+			throw new IllegalArgumentException(msg);
 		}
 		
 		getSmilContext(e.asStartElement(), attributes);
@@ -847,9 +892,11 @@ public class NCXMaker implements AbortListener {
 		return null;
 	}
 	
+	
+	/*
+	 * return null in the case of no smil content. Make sure to include this in the javadoc.
+	 */
 	private Element createNCXNode(BookmarkedXMLEventReader reader, StartElement se, String navNodeName, String classAttribute) throws XMLStreamException {		
-		DEBUG("NCXMaker#createNCXNode(reader, " + se.getName().getLocalPart() + ", " + navNodeName + ", class=" + classAttribute);
-		DEBUG(se);
 		String bookmark = "TPB Narrator.NCXMaker.createNCXNode";
 		reader.setBookmark(bookmark);
 			
@@ -859,7 +906,13 @@ public class NCXMaker implements AbortListener {
 			smilAttrs = getSmilContext(se);
 			contentBuffer = getTextContent(reader);
 		} else {
-			contentBuffer = getNextSmilContext(reader, smilAttrs);
+			// in the case of a smil-less xml contex, return null, 
+			// there is no point creating an empty nav list entry.
+			try {
+				contentBuffer = getNextSmilContext(reader, smilAttrs);
+			} catch (Exception e) {
+				return null;
+			}
 		}
 		
 		if (null == contentBuffer || smilAttrs.size() == 0) {
@@ -948,28 +1001,9 @@ public class NCXMaker implements AbortListener {
 	 * @throws IOException
 	 */
 	public void printToFile() throws TransformerException, IOException {
-		/*
-		String defaultFactory = "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl";
-		String propertyName = "javax.xml.parsers.DocumentBuilderFactory";
-		System.err.println(propertyName + " -> " + System.getProperty(propertyName));
-		if (true || null == System.getProperty(propertyName)) {
-			System.err.println("Sätter om " + propertyName + " som var null till " + defaultFactory);
-			System.setProperty(propertyName, defaultFactory);
-		}
-		System.err.println("properties:");
-		System.err.println(System.getProperties());
-		System.err.println("/properties");
-		*/
-		
 		FileOutputStream fos = null;
-		String currentFactory = null;
-		String defaultFactory = "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl";
-		String propertyName = "javax.xml.parsers.DocumentBuilderFactory";
 		
 		try {
-			currentFactory = System.getProperty(propertyName);
-			System.setProperty(propertyName, defaultFactory);
-			
 			TransformerFactory xformFactory = TransformerFactory.newInstance();  
 			Transformer idTransform = xformFactory.newTransformer();
 			idTransform.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -980,31 +1014,17 @@ public class NCXMaker implements AbortListener {
 			fos = new FileOutputStream(ncxOutputFile);
 			Result output = new StreamResult(fos);
 			idTransform.transform(input, output);
+		} catch (TransformerException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			throw e;
 		} finally {
-			if (currentFactory != null) {
-				System.setProperty(propertyName, currentFactory);
-			}
-			
 			if (fos != null) {
 				fos.close();
 			}
 		}
-		/*
-		try {
-			idTransform.transform(input, output);
-		} catch (Throwable t) {
-			System.err.println("getMessage(): " + t.getMessage());
-			t.printStackTrace();
-			boolean d = DEBUG;
-			DEBUG = true;
-			DEBUG(ncxTemplate.getDocumentElement());
-			DEBUG = d;
-		}
-		*/
 	}
-
-	
-	
+		
 	/**
 	 * Records the max depth of the ncx level structure.
 	 */
@@ -1016,6 +1036,7 @@ public class NCXMaker implements AbortListener {
 	
 	/**
 	 * Returns the depth of the ncx level structure.
+	 * 
 	 * @return the depth of the ncx level structure.
 	 */
 	private int getDepth() {
@@ -1025,7 +1046,9 @@ public class NCXMaker implements AbortListener {
 	
 	/**
 	 * Writes <code>e</code> to the output file.
-	 * @param e the <code>XMLEvent</code> to write.
+	 * 
+	 * @param e
+	 *            the <code>XMLEvent</code> to write.
 	 * @throws XMLStreamException
 	 */
 	private void writeEvent(XMLEvent e) throws XMLStreamException {
@@ -1037,11 +1060,13 @@ public class NCXMaker implements AbortListener {
 	
 	
 	/**
-	 * Returns <code>true</code> if <code>se</code> represents
-	 * a pagenum element, <code>false</code> otherwise.
-	 * @param se the start element.
-	 * @return <code>true</code> if <code>se</code> represents
-	 * a pagenum element, <code>false</code> otherwise.
+	 * Returns <code>true</code> if <code>se</code> represents a pagenum
+	 * element, <code>false</code> otherwise.
+	 * 
+	 * @param se
+	 *            the start element.
+	 * @return <code>true</code> if <code>se</code> represents a pagenum
+	 *         element, <code>false</code> otherwise.
 	 */
 	private boolean isPageNum(StartElement se) {
 		return se.getName().getLocalPart().equals("pagenum");
@@ -1058,6 +1083,11 @@ public class NCXMaker implements AbortListener {
 	private void handlePageNum(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {
 		DEBUG("NCXMaker#handlePageNum: pagenum: " + se.getName().getLocalPart());
 		Element pageTarget = createNCXNode(reader, se, "pageTarget", "pagenum");
+		if (null == pageTarget) {
+			// no ncx node could be created due to no smil attributes.
+			// continue, just pretend we never saw this pagenum element.
+			return;
+		}
 		String pageNumber = ((Element) XPathUtils.selectSingleNode(pageTarget, "//text")).getTextContent();
 		DEBUG("NCXMaker#handlePageNum: text content: " + pageNumber);
 		try {
@@ -1440,12 +1470,14 @@ public class NCXMaker implements AbortListener {
 	
 	
 	/**
-	 * Prints <code>se</code> on System.err if <code>DEBUG == true</code>.
+	 * Prints debug messages on System.out iff the system property 
+	 * represented by <tt>NCXMaker.DEBUG_PROPERTY</tt> is defined.
+	 * Debug messages are prefixed with "<tt>DEBUG: </tt>".
 	 * @param se the start element.
 	 */
 	private void DEBUG(StartElement se) {
 		if (System.getProperty(DEBUG_PROPERTY) != null) {
-			System.out.print("debug: <");
+			System.out.print("DEBUG: <");
 			System.out.print(se.getName().getLocalPart());
 			for (Iterator it = se.getAttributes(); it.hasNext(); ) {
 				Attribute at = (Attribute) it.next();
@@ -1493,7 +1525,7 @@ public class NCXMaker implements AbortListener {
 			}
 
 		} else {
-			System.err.print(node.getTextContent());
+			System.out.print(node.getTextContent());
 		}
 	}
 	
@@ -1505,7 +1537,7 @@ public class NCXMaker implements AbortListener {
 				javax.xml.transform.Transformer idTransform = xformFactory.newTransformer();
 				idTransform.setOutputProperty(OutputKeys.INDENT, "yes");
 				Source input = new DOMSource(d);
-				Result output = new StreamResult(System.err);
+				Result output = new StreamResult(System.out);
 				idTransform.transform(input, output);
 				success = true;
 			} catch (TransformerConfigurationException e) {
