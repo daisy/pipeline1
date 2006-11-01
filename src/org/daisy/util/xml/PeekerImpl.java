@@ -47,6 +47,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
+ * @deprecated Use org.daisy.util.xml.peek.PeekerPool instead
  * @author Markus Gylling
  */
 public class PeekerImpl
