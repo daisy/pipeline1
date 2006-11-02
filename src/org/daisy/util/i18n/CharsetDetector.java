@@ -61,6 +61,7 @@ public class CharsetDetector implements nsICharsetDetectionObserver {
 
 	private String detectedCharset;
 	private String[] probableCharsets;
+	private boolean isAscii = true ;
 	
 	public CharsetDetector() {
 		
@@ -97,8 +98,7 @@ public class CharsetDetector implements nsICharsetDetectionObserver {
 		BufferedInputStream imp = new BufferedInputStream(url.openStream());
 		byte[] buf = new byte[1024] ;
         int len;
-        boolean done = false ;
-        boolean isAscii = true ;
+        boolean done = false;        
 
         while((len=imp.read(buf,0,buf.length)) != -1) {
                 // Check if the stream is only ascii.
@@ -106,8 +106,8 @@ public class CharsetDetector implements nsICharsetDetectionObserver {
                     isAscii = det.isAscii(buf,len);
                 }    
 
-                // DoIt if non-ascii and not done yet.
-                if (!isAscii && !done) {
+                // DoIt if not done yet.
+                if (!done) {
                     done = det.DoIt(buf,len, false);
                 }
                 
@@ -115,9 +115,6 @@ public class CharsetDetector implements nsICharsetDetectionObserver {
         }
         det.DataEnd();
 
-        if (isAscii) {
-        	detectedCharset = "us-ascii";
-        }		
         probableCharsets = det.getProbableCharsets();
         imp.close();
 		return detectedCharset;
@@ -144,6 +141,15 @@ public class CharsetDetector implements nsICharsetDetectionObserver {
 
 	public String[] getProbableCharsets() {
 		return probableCharsets;
+	}
+	
+	/**
+	 * Use this method if getDetectedCharset() returns null and you want to know
+	 * if only ascii characters were detected in the document.
+	 * @return true if only ascii characters were detected, false otherwise
+	 */
+	public boolean isAscii() {
+		return isAscii;
 	}
 	
 	/**

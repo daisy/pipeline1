@@ -19,10 +19,10 @@
 
 package org.daisy.util.exception;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
@@ -58,6 +58,12 @@ public class ExceptionTransformer {
 				loc.setColumnNumber(te.getLocator().getColumnNumber());
 				loc.setPublicId(te.getLocator().getPublicId());
 				loc.setSystemId(te.getLocator().getSystemId());			
+			} else if (e instanceof XMLStreamException) {
+				XMLStreamException se = (XMLStreamException)e;
+				loc.setLineNumber(se.getLocation().getLineNumber());
+				loc.setColumnNumber(se.getLocation().getColumnNumber());
+				loc.setPublicId(se.getLocation().getPublicId());
+				loc.setSystemId(se.getLocation().getSystemId());
 			}
 		}catch (Exception e2) {
 			//silence

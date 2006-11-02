@@ -1,21 +1,23 @@
+/*
+ * org.daisy.util - The DAISY java utility library
+ * Copyright (C) 2006  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 package org.daisy.util.fileset.validation.delegate.impl;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Iterator;
-
-import org.daisy.util.fileset.FilesetType;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.xml.XmlFile;
-import org.daisy.util.fileset.validation.delegate.ValidatorDelegateImplAbstract;
-import org.daisy.util.fileset.validation.exception.ValidatorException;
-import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
-import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;
-import org.daisy.util.i18n.CharsetDetector;
 
 /**
  * Makes sure all XML files in a file set use a specific
@@ -24,61 +26,14 @@ import org.daisy.util.i18n.CharsetDetector;
  * default.
  * @author Linus Ericson
  */
-public class XMLEncodingDelegate extends ValidatorDelegateImplAbstract {
-	
-	private String mEncoding;
+public class XMLEncodingDelegate extends AbstractXMLDeclarationDelegate {
 	
 	public XMLEncodingDelegate() {
-		this("utf-8");
+		super("1.0", "utf-8", null, true, true, true, false);
 	}
 	
 	public XMLEncodingDelegate(String encoding) {
-		if (encoding == null) {
-			encoding = "utf-8";
-		}
-		mEncoding = encoding;
-	}
-	
-	public boolean isFilesetTypeSupported(FilesetType type) {	
-		return true;		
-	}
-
-	public void execute(Fileset fileset) throws ValidatorNotSupportedException, ValidatorException {		
-		super.execute(fileset);
-		
-		Collection members = fileset.getLocalMembers();
-		for (Iterator it = members.iterator(); it.hasNext(); ) {
-			FilesetFile filesetFile = (FilesetFile)it.next();
-			if (filesetFile instanceof XmlFile) {
-				try {
-					this.checkEncoding(filesetFile.getFile().toURL());
-				} catch (MalformedURLException e) {
-					throw new ValidatorException(e.getMessage(), e);
-				} catch (IOException e) {
-					throw new ValidatorException(e.getMessage(), e);
-				} catch (URISyntaxException e) {
-					throw new ValidatorException(e.getMessage(), e);
-				}
-			} else {
-				//System.err.println("Skipping: " + filesetFile.toString());
-			}
-		}		
-	}
-	
-	private void checkEncoding(URL url) throws IOException, URISyntaxException {
-		CharsetDetector detector = new CharsetDetector();		
-		detector.detect(url);
-		String[] charsets = detector.getProbableCharsets();
-		boolean found = false;
-		for (int i = 0; i < charsets.length; ++i) {
-			if (charsets[i].equalsIgnoreCase(mEncoding)) {
-				found = true;
-			}
-		}
-		if (!found) {
-			report(new ValidatorErrorMessage(url.toURI(), "File is not encoded in '" + 
-					mEncoding + "'."));
-		}
+		super("1.0", encoding, null, true, true, true, false);
 	}
 
 }
