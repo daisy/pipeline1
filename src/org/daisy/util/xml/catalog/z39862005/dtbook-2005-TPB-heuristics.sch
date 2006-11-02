@@ -143,7 +143,7 @@
   <!-- Rule M20: Missing metadata -->
   <sch:pattern name="dtbook_TPBheuristic_missingMetadata" id="dtbook_TPBheuristic_missingMetadata">
     <sch:rule context="dtbk:head">
-    	<sch:assert test="meta[@name='dc:Creator']">[tpbHeuM20] This document has no dc:Creator metadata. Is that correct?</sch:assert>
+    	<sch:assert test="dtbk:meta[@name='dc:Creator']">[tpbHeuM20] This document has no dc:Creator metadata. Is that correct?</sch:assert>
     </sch:rule>
   </sch:pattern> 
   
