@@ -19,9 +19,9 @@ public interface ValidatorDelegate {
 	
 	/**
 	 * Execute the task delegated by the Validator. The delegate
-	 * will use the Fileset instance registered with the Validator as
-	 * the content to execute the task on, and it will use the ValidatorListener
-	 * registered with the Validator to report any findings. 
+	 * will use the ValidatorListener registered with the Validator
+	 * to report any findings.
+	 * @param fileset the fileset to perform validation on 
 	 */
 	public void execute(Fileset fileset) throws ValidatorNotSupportedException, ValidatorException;
 	
