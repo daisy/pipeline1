@@ -87,7 +87,7 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 			}else if (sName == "doctitle") {
 				inDoctitle = true;
 			}else if (sName == "docauthor") {
-				inDoctitle = true;
+				inDocauthor = true;
 			}else if (sName == "dtbook") {
 				if(attrName == "version") {
 				  mRootVersion = attrValue;	
