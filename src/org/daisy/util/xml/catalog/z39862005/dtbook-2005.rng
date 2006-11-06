@@ -153,7 +153,7 @@
     </sch:rule>
   </sch:pattern>
   
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->
   <sch:pattern name="dtbook_internalLinks" id="dtbook_internalLinks">
   	<sch:rule context="dtbk:a[starts-with(@href, '#')]">
   		<sch:assert test="count(//dtbk:*[@id=substring(current()/@href, 2)])=1">
@@ -162,7 +162,7 @@
   	</sch:rule>  	
   </sch:pattern>  
   
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->
   <sch:pattern name="dtbook_enumAttrInList" id="dtbook_enumAttrInList">
     <sch:rule context="dtbk:list">
     	<sch:report test="@enum and @type!='ol'">
@@ -171,7 +171,7 @@
     </sch:rule>
   </sch:pattern>
   
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->
   <sch:pattern name="dtbook_depthList" id="dtbook_depthList">
     <sch:rule context="dtbk:list">
     	<sch:report test="@depth and @depth!=count(ancestor-or-self::dtbk:list)">
@@ -180,7 +180,7 @@
     </sch:rule>
   </sch:pattern>
   
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->
   <sch:pattern name="dtbook_headersThTd" id="dtbook_headersThTd">
     <sch:rule context="dtbk:*[@headers and (self::dtbk:th or self::dtbk:td)]">
     	<sch:assert test="
@@ -194,7 +194,7 @@
 	</sch:rule>
   </sch:pattern>
   
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->
   <sch:pattern name="dtbook_imgrefProdnote" id="dtbook_imgrefProdnote">
     <sch:rule context="dtbk:prodnote[@imgref]">
     	<sch:assert test="
@@ -208,7 +208,7 @@
 	</sch:rule>
   </sch:pattern>
 
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->  
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->  
   <sch:pattern name="dtbook_imgrefCaption" id="dtbook_imgrefCaption">
     <sch:rule context="dtbk:caption[@imgref]">
     	<sch:assert test="
@@ -222,7 +222,7 @@
 	</sch:rule>
   </sch:pattern>
   
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->
   <sch:pattern name="dtbook_accesskeyTabindex" id="dtbook_accesskeyTabindex">
     <sch:rule context="dtbk:a">
     	<sch:report test="@accesskey and string-length(@accesskey)!=1">[sch][zedid::dtbook_accesskeyLength]</sch:report>
@@ -232,7 +232,7 @@
     </sch:rule>
   </sch:pattern>    
 
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->
   <sch:pattern name="dtbook_charAttribute" id="dtbook_charAttribute">
     <sch:rule context="dtbk:*[self::dtbk:col   or self::dtbk:colgroup or self::dtbk:tbody or self::dtbk:td or 
                               self::dtbk:tfoot or self::dtbk:th       or self::dtbk:thead or self::dtbk:tr]">
@@ -241,7 +241,7 @@
     </sch:rule>
   </sch:pattern>
   
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->
   <sch:pattern name="dtbook_imgWidthHeight" id="dtbook_imgWidthHeight">
     <sch:rule context="dtbk:img">
     	<sch:assert test="not(@width) or 
@@ -255,7 +255,7 @@
     </sch:rule>
   </sch:pattern>
   
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->
   <sch:pattern name="dtbook_tableAttributes" id="dtbook_tableAttributes">
     <sch:rule context="dtbk:table">
     	<sch:assert test="not(@width) or 
@@ -273,7 +273,7 @@
     </sch:rule>
   </sch:pattern>
   
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->
   <sch:pattern name="dtbook_startAttrInList" id="dtbook_startAttrInList">
     <sch:rule context="dtbk:list">
     	<sch:report test="@start and @type!='ol'">[sch][zedid::dtbook_startAttrInList]</sch:report>
@@ -281,7 +281,7 @@
     </sch:rule>
   </sch:pattern> 
 
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->
   <sch:pattern name="dtbook_dcMetadata" id="dtbook_dcMetadata">
     <sch:rule context="dtbk:meta">
     	<sch:report test="starts-with(@name, 'dc:') and not(@name='dc:Title' or @name='dc:Subject' or @name='dc:Description' or
@@ -294,14 +294,14 @@
     </sch:rule>
   </sch:pattern>
 
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->
   <sch:pattern name="dtbook_spanColColgroup" id="dtbook_spanColColgroup">
     <sch:rule context="dtbk:*[self::dtbk:col or self::dtbk:colgroup]">
     	<sch:report test="@span and (translate(@span,'0123456789','')!='' or starts-with(@span,'0'))">[sch][zedid::dtbook_spanColColgroup]</sch:report>
     </sch:rule>
   </sch:pattern>
 
-  <-- MG20061101: added as a consequence of zedval feature request #1565049 -->  
+  <!-- MG20061101: added as a consequence of zedval feature request #1565049 -->  
   <sch:pattern name="dtbook_rowspanColspan" id="dtbook_rowspanColspan">
     <sch:rule context="dtbk:*[self::dtbk:td or self::dtbk:th]">
     	<sch:report test="@rowspan and (translate(@rowspan,'0123456789','')!='' or starts-with(@rowspan,'0'))">[sch][zedid::dtbook_rowSpanValue]</sch:report>
