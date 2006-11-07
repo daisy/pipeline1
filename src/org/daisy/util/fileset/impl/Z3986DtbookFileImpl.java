@@ -43,8 +43,8 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	private String dcIdentifier = null;
 	private String dtbUid = null;
 	private String doctitle = null;
-	private String docauthor = null;
-	private String dcCreator= null;
+	private Set docauthors = new HashSet();
+	private Set dcCreators = new HashSet();
 	private String dcPublisher= null;
 	private Set dcLanguages= new HashSet(); //repeatable
 	private String mRootVersion = null;
@@ -61,38 +61,40 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	
 	//private int count = 0;
 	
-	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {		
-						
+	public void startElement (String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {	
 		super.startElement(namespaceURI, sName, qName, attrs);
+		
+		if (sName=="meta") {
+			String name = attrs.getValue("name");
+			if (name != null){
+				if (name.toLowerCase().equals("dc:title")) {				
+					this.dcTitle = attrs.getValue("content");
+				}else if(name.toLowerCase().equals("dc:identifier")){
+					this.dcIdentifier = attrs.getValue("content");
+				}else if(name.toLowerCase().equals("dc:creator")){
+						this.dcCreators.add(attrs.getValue("content"));	
+				}else if(name.toLowerCase().equals("dc:publisher")){
+					this.dcPublisher = attrs.getValue("content");		
+				}else if(name.toLowerCase().equals("dtb:uid")){
+					this.dtbUid = attrs.getValue("content");
+				}else if(name.toLowerCase().equals("dc:language")){
+					this.dcLanguages.add(attrs.getValue("content"));
+				}		
+			}
+		}else if (sName == "doctitle") {
+			inDoctitle = true;
+		}else if (sName == "docauthor") {
+			inDocauthor = true;
+		}else if (sName == "dtbook") {
+			String version = attrs.getValue("version");
+			if(version != null) {
+			  mRootVersion = version;	
+			}
+		}
+		
 		for (int i = 0; i < attrs.getLength(); i++) {
 			attrName = attrs.getQName(i);
 			attrValue = attrs.getValue(i).intern();
-			
-			if (sName=="meta") {
-				if (attrName=="name"){
-					if (attrValue.toLowerCase().equals("dc:title")) {				
-						this.dcTitle = attrs.getValue("content");
-					}else if(attrValue.toLowerCase().equals("dc:identifier")){
-						this.dcIdentifier = attrs.getValue("content");
-					}else if(attrValue.toLowerCase().equals("dc:creator")){
-							this.dcCreator = attrs.getValue("content");	
-					}else if(attrValue.toLowerCase().equals("dc:publisher")){
-						this.dcPublisher = attrs.getValue("content");		
-					}else if(attrValue.toLowerCase().equals("dtb:uid")){
-						this.dtbUid = attrs.getValue("content");
-					}else if(attrValue.toLowerCase().equals("dc:language")){
-						this.dcLanguages.add(attrs.getValue("content"));
-					}		
-				}
-			}else if (sName == "doctitle") {
-				inDoctitle = true;
-			}else if (sName == "docauthor") {
-				inDocauthor = true;
-			}else if (sName == "dtbook") {
-				if(attrName == "version") {
-				  mRootVersion = attrValue;	
-				}
-			}
 			
 			if (attrName=="id") {				
 				this.putIdAndQName(attrValue,new QName(namespaceURI,sName));				
@@ -111,7 +113,7 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 			charCollector="";
 			inDoctitle = false;
 		}else if (sName == "docauthor") {
-			this.docauthor = charCollector;
+			this.docauthors.add(charCollector);
 			charCollector="";
 			inDocauthor = false;
 		}
@@ -140,7 +142,14 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	}
 
 	public String getDcCreator() {
-		return dcCreator;
+		if (!dcCreators.isEmpty()) {
+			return (String)dcCreators.iterator().next();
+		}
+		return null;
+	}
+	
+	public Collection getDcCreators() {
+		return dcCreators;
 	}
 	
 	public String getDcPublisher() {
@@ -148,7 +157,14 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	}
 	
 	public String getDocauthor() {
-		return docauthor;
+		if (!docauthors.isEmpty()) {
+			return (String)docauthors.iterator().next();
+		}
+		return null;
+	}
+	
+	public Collection getDocauthors() {
+		return docauthors;
 	}
 
 	public String getDoctitle() {

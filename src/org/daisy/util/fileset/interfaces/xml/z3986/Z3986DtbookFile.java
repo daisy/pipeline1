@@ -37,11 +37,21 @@ public interface Z3986DtbookFile extends TextualContentFile, ManifestFile {
 
 	public String getDcTitle();
 	
+	/**
+	 * @deprecated use getDcCreators() instead.
+	 */
 	public String getDcCreator();
+	
+	public Collection getDcCreators();
 	
 	public String getDcPublisher();
 
+	/**
+	 * @deprecated use getDocauthors() instead.
+	 */
 	public String getDocauthor();
+	
+	public Collection getDocauthors();
 
 	public String getDoctitle();
 
