@@ -18,6 +18,7 @@
  */
 package org.daisy.util.xml;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -49,6 +50,8 @@ import java.util.regex.Pattern;
  * - Fixed locale bug in toString: now using DecimalFormat instead of NumberFormat
  * 1.0.5 (20/06/2006 Laurie
  * - Added HUMAN_READABLE static int toString(int)
+ * 1.1.0 (14/11/2006) Linus
+ * - Use BigDecimal instead of double to avoid rounding errors
  * </pre>
  * @author James Pritchett
  */
@@ -64,7 +67,7 @@ public class SmilClock implements Comparable {
 	 */
 	public SmilClock(String s) throws NumberFormatException {		
 		Matcher m;
-		double d;
+		BigDecimal bd;
 		
 		/*
 		 This uses regular expressions to parse the given string.  It tries each of the three
@@ -76,21 +79,21 @@ public class SmilClock implements Comparable {
 		//test for timecount clock value
 		m = timecountClockPattern.matcher(s.trim());
 		if (m.matches()) {
-			d = Double.parseDouble(m.group(2));         // Save the number (with fraction)
+			bd = new BigDecimal(m.group(2));            // Save the number (with fraction)
 			if (m.group(4) == null) {
-				this.msecValue = (long)(d * 1000);
+				this.msecValue = (long)(bd.longValue() * 1000);
 			}
 			else if (m.group(4).equals("ms")) {
-				this.msecValue = (long)d;               // NOTE:  This will truncate fraction
+				this.msecValue = bd.longValue();        // NOTE:  This will truncate fraction
 			}
 			else if (m.group(4).equals("s")) {
-				this.msecValue = (long)(d * 1000);
+				this.msecValue = bd.multiply(new BigDecimal((long)1000)).longValue();
 			}
 			else if (m.group(4).equals("min")) {
-				this.msecValue = (long)(d * 60000);
+				this.msecValue = bd.multiply(new BigDecimal((long)60000)).longValue();
 			}
 			else if (m.group(4).equals("h")) {
-				this.msecValue = (long)(d * 3600000);
+				this.msecValue = bd.multiply(new BigDecimal((long)3600000)).longValue();
 			}
 			return;
 		}
@@ -103,7 +106,7 @@ public class SmilClock implements Comparable {
 				(Long.parseLong(m.group(2)) * 3600000) +
 				(Long.parseLong(m.group(3)) * 60000) +
 				(Long.parseLong(m.group(4)) * 1000) +
-				((m.group(6) != null) ? Math.round(Double.parseDouble(m.group(5)) * 1000) : 0);
+				((m.group(6) != null) ? Math.round(new BigDecimal(m.group(5)).multiply(BigDecimal.valueOf(1000)).doubleValue()) : 0);
 			return;
 		}
 		
@@ -113,7 +116,7 @@ public class SmilClock implements Comparable {
 			this.msecValue =
 				(Long.parseLong(m.group(2)) * 60000) +
 				(Long.parseLong(m.group(3)) * 1000) +
-				((m.group(5) != null) ? Math.round(Double.parseDouble(m.group(4)) * 1000) : 0);
+				((m.group(5) != null) ? Math.round(new BigDecimal(m.group(4)).multiply(BigDecimal.valueOf(1000)).doubleValue()) : 0);
 			return;
 		}
 				
@@ -164,6 +167,7 @@ public class SmilClock implements Comparable {
 		DecimalFormatSymbols dfSymbols = new DecimalFormatSymbols();
 		dfSymbols.setDecimalSeparator('.');
 		DecimalFormat dfDouble = new DecimalFormat("0.000", dfSymbols);
+		dfDouble.setParseBigDecimal(true);
 		dfDouble.setMaximumFractionDigits(3);
 		dfDouble.setGroupingUsed(false);
 		
@@ -195,19 +199,19 @@ public class SmilClock implements Comparable {
 			}
 			break;
 		case TIMECOUNT:
-			s = dfDouble.format((double)this.msecValue / 1000);
+			s = dfDouble.format(BigDecimal.valueOf(this.msecValue).divide(BigDecimal.valueOf(1000)));
 			break;
 		case TIMECOUNT_MSEC:
-			s = dfDouble.format((double)this.msecValue) + "ms";
+			s = dfDouble.format(BigDecimal.valueOf(this.msecValue)) + "ms";
 			break;
 		case TIMECOUNT_SEC:
-			s = dfDouble.format((double)this.msecValue / 1000) + "s";
+			s = dfDouble.format(BigDecimal.valueOf(this.msecValue).divide(BigDecimal.valueOf(1000))) + "s";
 			break;
 		case TIMECOUNT_MIN:
-			s = dfDouble.format((double)this.msecValue / 60000) + "min";
+			s = dfDouble.format(BigDecimal.valueOf(this.msecValue).divide(BigDecimal.valueOf(60000))) + "min";
 			break;
 		case TIMECOUNT_HR:
-			s = dfDouble.format((double)this.msecValue / 3600000) + "h";
+			s = dfDouble.format(BigDecimal.valueOf(this.msecValue).divide(BigDecimal.valueOf(360000))) + "h";
 			break;
 		case HUMAN_READABLE:
 			if (msec > 0) {
@@ -236,7 +240,7 @@ public class SmilClock implements Comparable {
 	 @return clock value in seconds
 	 */
 	public double secondsValue() {
-		return (double) this.msecValue / 1000;
+		return new BigDecimal(this.msecValue).divide(BigDecimal.valueOf(1000)).doubleValue();
 	}
 	
 	/**
@@ -244,7 +248,7 @@ public class SmilClock implements Comparable {
 	 @return clock value in seconds, rounded to full seconds
 	 */
 	public long secondsValueRounded() {
-		return Math.round((double) this.msecValue / 1000);
+		return Math.round(this.secondsValue());
 	}
 	
 	// implement equals() so we can test values for equality
