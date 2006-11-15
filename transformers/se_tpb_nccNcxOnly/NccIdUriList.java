@@ -144,11 +144,15 @@ class NccIdUriList {
 	
 	public void advance() {
 		mCurrentNccId = mNextIdUri.getId();
-		if (mListIterator.hasNext()) {
+		if (this.canAdvance()) {
 			mNextIdUri = (NccIdUri)mListIterator.next();
 		} else {
 			mNextIdUri = null;
 		}
+	}
+	
+	public boolean canAdvance() {
+		return mListIterator.hasNext();
 	}
 		
 }

@@ -149,6 +149,11 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
 	        this.progress(SMIL_DONE);
 	        this.checkAbort();
 	        
+	        // Oops, there are unmatched NCC items. Not good.
+	        if (idUri.canAdvance()) {
+	        	throw new TransformerRunException(i18n("NCC_ITEMS_LEFT", idUri.getCurrentUriToNcc()));
+	        }
+	        
 	        // Update the NCC meta data (ncc:files, ncc:kByteSize, ncc:multimediaType)
 	        File inputFile = fileset.getManifestMember().getFile();
 	        File outputFile = new File(outputDir, "ncc.html");
