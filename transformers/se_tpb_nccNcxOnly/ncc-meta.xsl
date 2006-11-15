@@ -9,7 +9,7 @@
 
 	<xsl:output method="xml" 
 	      encoding="utf-8" 
-	      indent="yes" 
+	      indent="no" 
 	      doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" 
 	      doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
 	/>
@@ -36,5 +36,9 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<!-- ...except the shape attribute of the a element -->
+	<xsl:template match="h:a/@shape">
+		<!-- Remove attribute... -->
+	</xsl:template>
 	
 </xsl:transform>
