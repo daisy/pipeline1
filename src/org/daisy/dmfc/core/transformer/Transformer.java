@@ -88,11 +88,13 @@ public abstract class Transformer extends EventSender {
 	    boolean ret;
 	    transformerDirectory = dir;
 	    status(true);
+	    this.progress(0);
         startTime = System.currentTimeMillis();
 	    ret = execute(parameters);
 	    if (inputListener.isAborted()) {
 	        throw new TransformerAbortException(messageOriginator + " aborted.");
 	    }
+	    this.progress(1);
 	    status(false);
 	    return ret;
 	}
