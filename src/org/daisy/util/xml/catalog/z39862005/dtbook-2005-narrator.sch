@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sch:schema xmlns:sch="http://www.ascc.net/xml/schematron">
-<xxx>hepp</xxx>
+
   <sch:title>DTBook 2005 Schematron tests for Narrator</sch:title>
 
   <sch:ns prefix="dtbk" uri="http://www.daisy.org/z3986/2005/dtbook/"/>
