@@ -97,7 +97,7 @@
   <!-- Rule 26: Each note must have a noteref -->
   <sch:pattern name="dtbook_TPB_noteNoteref" id="dtbook_TPB_noteNoteref">
   	<sch:rule context="dtbk:note">
-  		<sch:assert test="count(key('noterefs', @id))>=1">[tpb26] XEach note must have at least one noteref</sch:assert>
+  		<sch:assert test="count(key('noterefs', @id))>=1">[tpb26] Each note must have at least one noteref</sch:assert>
   		<!--<sch:assert test="count(//dtbk:noteref[translate(@idref, '#', '')=current()/@id])>=1">[tpb26] Each note must have at least one noteref</sch:assert>-->
   	</sch:rule>  	
   </sch:pattern>
@@ -308,7 +308,7 @@
   <sch:pattern name="dtbook_TPB_noterefNoteClass" id="noterefNoteClass">
     <sch:rule context="dtbk:noteref">
     	<!-- Support both IDREF and URI specification of @idref -->
-    	<sch:report test="@class!=key('notes', translate(current()/@idref, '#', ''))/@class">[tpb45] note and noteref must have the same class attribute</sch:report>
+    	<sch:assert test="@class=key('notes', translate(current()/@idref, '#', ''))/@class">[tpb45] note and noteref must have the same class attribute</sch:assert>
     	<!--<sch:report test="@class!=//dtbk:note[@id=translate(current()/@idref, '#', '')]/@class">[tpb45] note and noteref must have the same class attribute</sch:report>-->
     </sch:rule>
   </sch:pattern>
@@ -437,14 +437,6 @@
   <sch:pattern name="dtbook_TPB_noSmilref" id="dtbook_TPB_noSmilref">
     <sch:rule context="dtbk:*/@smilref">
     	<sch:assert test="false()">[tpb68] smilref attributes in a plain DTBook file is not allowed</sch:assert>
-    </sch:rule>
-  </sch:pattern>
-  
-  <!-- Rule 70: Heading for the colophon -->
-  <sch:pattern name="dtbook_TPB_colophonHeading" id="dtbook_TPB_colophonHeading">
-    <sch:rule context="dtbk:frontmatter/dtbk:level1[@class='colophon']">
-    	<sch:report test="lang('sv') and h1!='Kolofon'">[tpb70] Heading of colophon must be 'Kolofon' (swedish)</sch:report>
-    	<sch:report test="lang('en') and h1!='Colophon'">[tpb70] Heading of colophon must be 'Colophon' (english)</sch:report>
     </sch:rule>
   </sch:pattern>
   
