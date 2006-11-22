@@ -80,10 +80,10 @@
   
   <!-- Rule M11: Missing colophon -->
   <sch:pattern name="dtbook_TPBheuristic_missingColophon" id="dtbook_TPBheuristic_missingColophon">
-    <sch:rule context="dtbk:frontmatter">
-    	<sch:assert test="dtbk:level1[@class='colophon']">[tpbHeuM11] No colophon found. Is that correct?</sch:assert>
+    <sch:rule context="dtbk:book">
+    	<sch:assert test="dtbk:*[self::dtbk:frontmatter or self::dtbk:rearmatter]/dtbk:level1[@class='colophon']">[tpbHeuM11] No colophon found. Is that correct?</sch:assert>
     </sch:rule>
-  </sch:pattern> 
+  </sch:pattern>
   
   <!-- Rule M12: Table headings on rows other than the first -->
   <sch:pattern name="dtbook_TPBheuristic_thNotOnFirstRow" id="dtbook_TPBheuristic_thNotOnFirstRow">
@@ -147,6 +147,13 @@
     </sch:rule>
   </sch:pattern> 
   
+  <!-- Rule M21: comments -->
+  <sch:pattern name="dtbook_TPBheuristic_comments" id="dtbook_TPBheuristic_comments">
+    <sch:rule context="comment()">
+    	<sch:assert test="false()">[tpbHeuM21] Should this comment be here?</sch:assert>
+    </sch:rule>
+  </sch:pattern> 
+  
   <!-- Rule M22 & M23: lists of type ul or ol have list items starting with a bullet -->
   <sch:pattern name="dtbook_TPBheuristic_listUlwithBullet" id="dtbook_TPBheuristic_listUlwithBullet">
     <sch:rule context="dtbk:list[@type='ul' or @type='ol']/dtbk:li">
@@ -155,6 +162,23 @@
     	<sch:report test="string-length(translate(substring(normalize-space(.),1,1),'0123456789',''))=0">[tpbHeuM23] This list item starts with a number. Shouldn't that be removed, or is this a list of type="pl"?</sch:report>
     </sch:rule>
   </sch:pattern> 
+  
+  <!-- Rule M25: pagenum before list items in a lists -->
+  <sch:pattern name="dtbook_TPBheuristic_pagenumBeforeLi" id="dtbook_TPBheuristic_pagenumBeforeLi">
+    <sch:rule context="dtbk:list/dtbk:pagenum">
+    	<sch:assert test="preceding-sibling::dtbk:li">[tpbHeuM25] This pagenum element inside a list has no list items before it. Shouldn't the pagenum element be placed before the list?</sch:assert>
+    </sch:rule>
+  </sch:pattern> 
+  
+  <!-- Rule M27: 'and' or 'och' in dc:Creator/docauthor -->
+  <sch:pattern name="dtbook_TPBheuristic_andOch" id="dtbook_TPBheuristic_andOch">
+    <sch:rule context="dtbk:docauthor">
+    	<sch:report test="contains(.,' and ') or contains(.,' och ')">[tpbHeuM27] Does this <name/> element list two authors that should be marked up as separate elements?</sch:report>
+    </sch:rule>
+    <sch:rule context="dtbk:meta[@name='dc:Creator']">
+    	<sch:report test="contains(@content,' and ') or contains(@content,' och ')">[tpbHeuM27] Does this <name/> element list two creators that should be marked up as separate meta data elements?</sch:report>
+    </sch:rule>
+  </sch:pattern>
   
   <!-- Rule M28: Pagenum element incorrectly breaks a paragraph into two -->
   <sch:pattern name="dtbook_TPBheuristic_pagenumBreaksP" id="dtbook_TPBheuristic_pagenumBreaksP">
