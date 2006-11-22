@@ -147,13 +147,12 @@
     <system systemId="bookmark-2005-1.dtd" uri="./z39862005/bookmark-2005-1.dtd" />  
     
     <!-- TPB -->  
-    <public publicId="-//TPB//RNG dtbook 2005-1 TPB//EN" uri="./z39862005/dtbook-2005-1-TPB.rng" />
     <public publicId="-//TPB//SCH dtbook 2005 TPB//EN" uri="./z39862005/dtbook-2005-TPB.sch" />
     <public publicId="-//TPB//SCH dtbook 2005 TPB-prod//EN" uri="./z39862005/dtbook-2005-TPB-prod.sch" />
     <public publicId="-//TPB//SCH dtbook 2005 TPB-heuristics//EN" uri="./z39862005/dtbook-2005-TPB-heuristics.sch" />
     <!-- Narrator -->  
-    <public publicId="-//TPB//RNG dtbook 2005-1 Narrator//EN" uri="./z39862005/dtbook-2005-1-narrator.rng" />
     <public publicId="-//TPB//SCH dtbook 2005 Narrator//EN" uri="./z39862005/dtbook-2005-narrator.sch" />
+    <public publicId="-//TPB//SCH dtbook 2005 TPB-Narrator//EN" uri="./z39862005/dtbook-2005-TPB-narrator.sch" />
   </group>
   
   <group> <!-- Daisy 2.02 --> 
