@@ -127,11 +127,14 @@
     <public publicId="-//NISO//DTD dtbsmil 2005-1//EN" uri="./z39862005/dtbsmil-2005-1.dtd" />
     <public publicId="-//NISO//DTD dtbsmil 2005-2//EN" uri="./z39862005/dtbsmil-2005-2.dtd" />
     <public publicId="-//NISO//RNG dtbsmil 2005-1//EN" uri="./z39862005/dtbsmil-2005-1.rng" />
+    <public publicId="-//NISO//RNG dtbsmil 2005-2//EN" uri="./z39862005/dtbsmil-2005-2.rng" />    
     <system systemId="http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd" uri="./z39862005/dtbsmil-2005-1.dtd" />
     <system systemId="http://www.daisy.org/z3986/2005/dtbsmil-2005-2.dtd" uri="./z39862005/dtbsmil-2005-2.dtd" />
     <system systemId="dtbsmil-2005-1.dtd" uri="./z39862005/dtbsmil-2005-1.dtd" />
     <system systemId="dtbsmil-2005-2.dtd" uri="./z39862005/dtbsmil-2005-2.dtd" />
     <system systemId="dtbsmil-2005-1.rng" uri="./z39862005/dtbsmil-2005-1.rng" />  
+    <system systemId="dtbsmil-2005-2.rng" uri="./z39862005/dtbsmil-2005-2.rng" />    
+    <system systemId="dtbsmil-2005.rng" uri="./z39862005/dtbsmil-2005.rng" />    
     
     <public publicId="-//NISO//DTD resource 2005-1//EN" uri="./z39862005/resource-2005-1.dtd" />
     <public publicId="-//NISO//RNG resource 2005-1//EN" uri="./z39862005/resource-2005-1.rng" />
