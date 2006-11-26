@@ -9,8 +9,8 @@
   <sch:ns prefix="smil" uri="http://www.w3.org/2001/SMIL20/"/>
 
   <a:documentation>
-      RelaxNg schema for Z39.86 SMIL version 2005-1.
-      This is the 2005-1 minor-version schema, which extends the 
+      RelaxNg schema for Z39.86 SMIL version 2005-2.
+      This is the 2005-2 minor-version schema, which extends the 
       minor version agnostic dtbsmil-2005.rng
       Last edit by: mgylling 2006-11-26
 	  Original version: mgylling 2005-07-01	  		
@@ -25,6 +25,7 @@
 			<ref name="attribute.src.required.z3986-2005.subset">
 				<zed:test id="smil_textSrcValue"/>
 			</ref>
+			<ref name="attribute.type.optional"/>
 		</element>
 	</define>
 
@@ -41,6 +42,7 @@
 			<ref name="attribute.clipEnd.required">
 				<zed:test id="smil_clipEndValue"/>
 			</ref>
+			<ref name="attribute.type.optional"/>			
 		</element>
 	</define>
 
@@ -51,7 +53,16 @@
 			<ref name="attribute.src.required.z3986-2005.subset">
 				<zed:test id="smil_imgSrcValue"/>
 			</ref>
+			<ref name="attribute.type.optional"/>			
 		</element>
+	</define>
+
+	<define name="attribute.type.optional">
+	    <optional>
+			<attribute name="type">
+				<ref name="datatype.mime"/>
+			</attribute>
+		</optional>
 	</define>
 
            
