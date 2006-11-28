@@ -81,19 +81,23 @@ public class SmilClock implements Comparable {
 		if (m.matches()) {
 			bd = new BigDecimal(m.group(2));            // Save the number (with fraction)
 			if (m.group(4) == null) {
-				this.msecValue = (long)(bd.longValue() * 1000);
+				//this.msecValue = (long)(bd.longValue() * 1000); //(28/11/2006)Piotr: this one truncates fraction
+                this.msecValue = bd.multiply(BigDecimal.valueOf((long)1000)).longValue();
 			}
 			else if (m.group(4).equals("ms")) {
 				this.msecValue = bd.longValue();        // NOTE:  This will truncate fraction
 			}
 			else if (m.group(4).equals("s")) {
-				this.msecValue = bd.multiply(new BigDecimal((long)1000)).longValue();
+				//this.msecValue = bd.multiply(new BigDecimal((long)1000)).longValue(); //(28/11/2006)Piotr: the construcor BigDecimal(long l) missing in java 1.4; ZedVal feature
+                this.msecValue = bd.multiply(BigDecimal.valueOf((long)1000)).longValue();
 			}
 			else if (m.group(4).equals("min")) {
-				this.msecValue = bd.multiply(new BigDecimal((long)60000)).longValue();
+			    //this.msecValue = bd.multiply(new BigDecimal((long)60000)).longValue(); //(28/11/2006)Piotr: as above
+				this.msecValue = bd.multiply(BigDecimal.valueOf((long)60000)).longValue(); 
 			}
 			else if (m.group(4).equals("h")) {
-				this.msecValue = bd.multiply(new BigDecimal((long)3600000)).longValue();
+                //this.msecValue = bd.multiply(new BigDecimal((long)3600000)).longValue(); //(28/11/2006)Piotr: as above
+                this.msecValue = bd.multiply(BigDecimal.valueOf((long)3600000)).longValue();
 			}
 			return;
 		}
@@ -239,7 +243,8 @@ public class SmilClock implements Comparable {
 	 @return clock value in seconds
 	 */
 	public double secondsValue() {
-		return new BigDecimal(this.msecValue).divide(BigDecimal.valueOf(1000)).doubleValue();
+		//return new BigDecimal(this.msecValue).divide(BigDecimal.valueOf(1000)).doubleValue(); //(28/11/2006)PK: BigDecimal#divide(BigDecimal bd) not in java 1.4; ZedVal feature
+        return (double)this.msecValue/1000;
 	}
 	
 	/**
