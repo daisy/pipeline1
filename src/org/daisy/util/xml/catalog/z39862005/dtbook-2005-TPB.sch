@@ -105,7 +105,7 @@
   <!-- Rule 27: Each annotation must have an annoref -->
   <sch:pattern name="dtbook_TPB_annotationAnnoref" id="dtbook_TPB_annotationAnnoref">
   	<sch:rule context="dtbk:annotation">
-  		<sch:assert test="count(key('annorefs', @id))>=1">[tpb26] XEach annotation must have at least one annoref</sch:assert>
+  		<sch:assert test="count(key('annorefs', @id))>=1">[tpb27] Each annotation must have at least one annoref</sch:assert>
   		<!--<sch:assert test="count(//dtbk:annoref[translate(@idref, '#', '')=current()/@id])>=1">[tpb27] Each annotation must have at least one annoref</sch:assert>-->
   	</sch:rule>  	
   </sch:pattern>  
@@ -478,6 +478,13 @@
     	<sch:assert test="parent::dtbk:imggroup">[tpb103] There must be an imggroup element wrapping every img</sch:assert>
     </sch:rule>
   </sch:pattern>
+  
+  <!-- Rule 105: Page attribute must appear on all pagenum elements -->
+  <sch:pattern name="dtbook_TPB_pagenumPage" id="dtbook_TPB_pagenumPage">
+  	<sch:rule context="dtbk:pagenum">
+  		<sch:assert test="@page">[tpb105] Page attribute must appear on pagenum elements</sch:assert>
+  	</sch:rule>  	
+  </sch:pattern>  
       
 </sch:schema>
 

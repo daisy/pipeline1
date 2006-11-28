@@ -99,7 +99,9 @@
   					<value type="string">special</value>
   				</attribute>
   				<text/>
-  			</group>
+  			</group>  			
+  			<!-- LE20061128: Missing page attribute equals page="normal" -->
+  			<ref name="datatype.positiveInteger"/>
   		</choice>
   	</element>
   </define>
