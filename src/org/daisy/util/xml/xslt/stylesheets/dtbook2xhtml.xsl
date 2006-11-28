@@ -248,7 +248,7 @@
          <li><xsl:call-template name="pagenum"/></li>
        </xsl:when>
        <xsl:otherwise>
-         <xsl:message>Skipping pagenum element <xsl:value-of select="@id"/></xsl:message>
+         <!--<xsl:message>Skipping pagenum element <xsl:value-of select="@id"/></xsl:message>-->
        </xsl:otherwise>
      </xsl:choose>
    </xsl:template>
