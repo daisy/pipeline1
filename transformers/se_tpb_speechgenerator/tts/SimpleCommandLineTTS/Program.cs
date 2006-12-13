@@ -15,6 +15,7 @@ namespace SimpleCommandLineTTS
             int inputCounter = 0;
             string input = "";
             string filename = "";
+            SpVoice voice = new SpVoice();
             while ((input = Console.ReadLine()) != null)
             {
                 input = input.Trim();
@@ -26,7 +27,7 @@ namespace SimpleCommandLineTTS
                 inputCounter++;
                 if ((inputCounter % 2) == 0)
                 {
-                    if (say(filename, input))
+                    if (say(filename, input, voice))
                     {
                         Console.Out.WriteLine("OK");
                         Console.Out.Flush();
@@ -43,7 +44,7 @@ namespace SimpleCommandLineTTS
             }
         }
 
-        static bool say(string filename, string sent)
+        static bool say(string filename, string sent, SpVoice voice)
         {
             SpFileStream fileStream = null;
             bool success = true;
@@ -51,7 +52,7 @@ namespace SimpleCommandLineTTS
             {
                 SpeechVoiceSpeakFlags flags = SpeechVoiceSpeakFlags.SVSFIsXML;
                 //SpeechVoiceSpeakFlags flags = SpeechVoiceSpeakFlags.SVSFIsNotXML;
-                SpVoice voice = new SpVoice();
+                //SpVoice voice = new SpVoice();
                 SpeechStreamFileMode fileMode = SpeechStreamFileMode.SSFMCreateForWrite;
 
                 fileStream = new SpFileStream();
