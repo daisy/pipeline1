@@ -83,7 +83,7 @@ that end users may come in contact with that information. -->
 <h3 id="success">On success</h3>
 <!-- contract definition: details on delivered output given that input reqs are satisfied
 and no exception occurs -->
-	<p>Given the expected input the transformer outputs a manuscript, that is a dtbook-2005-1 
+	<p>Given the expected input the transformer outputs a manuscript, that is a dtbook-2005-1/2
 		document enriched with, among others, attributes indicating corresponding audio.
 		Those attributes, <tt>smil:clipBegin</tt>, <tt>smil:clipEnd</tt> and <tt>smil:src</tt>, namespace URI 
 		<tt>http://www.w3.org/2001/SMIL20/</tt>, point out which elements should be represented 
@@ -189,13 +189,13 @@ then throw an exception and abort.</p>
 </p>
 	<dl>
 		<dt>/sgConfig/absoluteSynch/item</dt>
-		<dd>The names the the elements that should be synch points, no matter where they are.</dd>
+		<dd>The names of the the elements that should be synch points, no matter where they are.</dd>
 		
 		<dt>/sgConfig/containsSynch/item</dt>
 		<dd>The name of the element for synch point level.</dd>
 		
 		<dt>/sgConfig/announceAttributes/item</dt>
-		<dd>Elements of this type represent which attributes contain
+		<dd>Elements of this type show which attributes contain
 			announcements. Two elements of this kind is allowed, with id values <tt>before</tt> 
 			(which tells us about which attributes contains "say-before" content) and
 		<tt>after</tt> (which tells us about which attributes contains "say-after" content). 
@@ -287,7 +287,7 @@ then throw an exception and abort.</p>
 	
 	<p><tt>se_tpb_speechgenerator</tt> uses a simple factory to get hold of TTS implementations.
 	The factory must be configured properly since it is not able to locate TTS systems on its own.
-	The configuration consists of sections that are operating system dependant. As subsections, 
+	The configuration consists of sections that are operating system specific. As subsections, 
 		there are language specific sections. Each language must contain no more than
 		one TTS system. During runtime, the TTS Builder configuration file is validated using
 		relaxng and schematron, but since a DTD is a compact way of showing a document's structure, 
