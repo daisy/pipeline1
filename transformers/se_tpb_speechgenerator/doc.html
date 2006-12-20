@@ -557,6 +557,9 @@ then throw an exception and abort.</p>
 			href="../se_tpb_syncPointNormalizer">se_tpb_syncPointNormalizer</a>.
 	</li>
 	<li>RNG/Schematron test the Speech Generator Configuration file before running.</li>
+	<li>Generate audio for non-empty <tt>dc:Creator</tt> and <tt>dc:Title</tt>. Since the fileset creator
+	uses those elements in the absence of <tt>docAuthor</tt> and <tt>docTitle</tt> it would be nice to
+	be able to supply audio as well.</li>
 </ul>
 	
 <h2 id="dependencies">Dependencies</h2>
