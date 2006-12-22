@@ -524,6 +524,7 @@
       <li class="hd">
         <xsl:call-template name="copyCncatts"/>
         <xsl:apply-templates/>
+        <xsl:apply-templates select="following-sibling::*[1][self::dtb:pagenum]" mode="pagenumInLi"/>
       </li>
    </xsl:template>
 
