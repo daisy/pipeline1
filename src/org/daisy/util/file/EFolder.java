@@ -21,6 +21,7 @@ package org.daisy.util.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
@@ -547,6 +548,10 @@ public class EFolder extends File {
 			byte[] toWrite)
 			throws IOException {		
 		return FileUtils.writeBytesToFile(new File(this, fileLocalName),toWrite);
+	}
+	
+	public File writeToFile(String fileLocalName, InputStream inputStream) throws IOException {
+		return FileUtils.writeInputStreamToFile(inputStream, new File(this, fileLocalName));
 	}
 	
 	/**
