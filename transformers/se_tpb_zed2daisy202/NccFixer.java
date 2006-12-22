@@ -276,7 +276,7 @@ class NccFixer {
                 }
             } else if (event.isCharacters()) {
                 if (!event.asCharacters().getData().matches("\\s+")) {
-                    text = event.asCharacters().getData();
+                    text = event.asCharacters().getData().trim();
                 }
             }
             
