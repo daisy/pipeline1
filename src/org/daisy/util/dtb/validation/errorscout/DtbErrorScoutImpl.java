@@ -187,7 +187,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 				errors.addAll(fileset.getErrors());  
 			}
 		}catch(FilesetFatalException fse) {
-			throw new DtbErrorScoutException(fse);
+			throw new DtbErrorScoutException("Cannot build a fileset", fse);
 		}
 		
 		//System.err.println("fileset built");
@@ -323,7 +323,7 @@ public class DtbErrorScoutImpl implements DtbErrorScout, ErrorHandler {
 					}
 				}					
 			} catch (ValidationException ve) {
-				throw new DtbErrorScoutException(ve);
+				throw new DtbErrorScoutException("Validation problem", ve);
 			}
 		}//iter.hasNext
 		
