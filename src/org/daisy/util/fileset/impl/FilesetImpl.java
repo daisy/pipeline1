@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -322,36 +323,41 @@ public class FilesetImpl implements Fileset {
 					//strip fragment if existing
 					value = URIStringParser.stripFragment(value);					
 					//resolve the uri string
-					resolvedURI = referer.getFile().toURI().resolve(value);										
-					if (!resolvedURI.equals(cachedURI) && !value.equals("")) {
-						cachedURI = resolvedURI; 					
-     					//check if this file has already been added to main collection						
-						FilesetFileImpl newmember = (FilesetFileImpl)mLocalMembers.get(resolvedURI);
-						if (newmember == null) {
-							//this is a member that hasnt been namedropped before													
-							try {
-								//determine what type to instantiate
-								newmember = getType(member, resolvedURI, value, this.mFilesetType);
-								if(newmember instanceof AnonymousFileImpl) {
-									//exceptions.add(new FilesetFileException(newmember, new AnonymousFileException("no matching file type found for " + value + ": this file appears as AnonymousFile")));
-									mFilesetExceptionCollector.add(new FilesetFileWarningException(newmember, new IOException("no matching file type found for " + value + ": this file appears as AnonymousFile")));
-								}
-							} catch (FileNotFoundException fnfe) {
-								//exceptions.add(new FilesetFileFatalErrorException(member,fnfe));								
-								mFilesetExceptionCollector.add(new FilesetFileFatalErrorException(member,fnfe));
-								mMissingURIs.add(resolvedURI);
-								continue;
-							} catch (IOException ioe) {
-								//exceptions.add(new FilesetFileFatalErrorException(member,ioe));
-								mFilesetExceptionCollector.add(new FilesetFileFatalErrorException(member,ioe));
-								continue;
-							} 
-							//report fileInstantiatedEvent
-							this.fileInstantiatedEvent(newmember);						
-						} //if (newmember == null)
-						//put in the incoming members references list
-						referer.putReferencedMember(newmember);
-					} //!resolvedURI.equals(cache)
+					try {
+						resolvedURI = referer.getFile().toURI().resolve(new URI(value));										
+						if (!resolvedURI.equals(cachedURI) && !value.equals("")) {
+							cachedURI = resolvedURI; 					
+	     					//check if this file has already been added to main collection						
+							FilesetFileImpl newmember = (FilesetFileImpl)mLocalMembers.get(resolvedURI);
+							if (newmember == null) {
+								//this is a member that hasnt been namedropped before													
+								try {
+									//determine what type to instantiate
+									newmember = getType(member, resolvedURI, value, this.mFilesetType);
+									if(newmember instanceof AnonymousFileImpl) {
+										//exceptions.add(new FilesetFileException(newmember, new AnonymousFileException("no matching file type found for " + value + ": this file appears as AnonymousFile")));
+										mFilesetExceptionCollector.add(new FilesetFileWarningException(newmember, new IOException("no matching file type found for " + value + ": this file appears as AnonymousFile")));
+									}
+								} catch (FileNotFoundException fnfe) {
+									//exceptions.add(new FilesetFileFatalErrorException(member,fnfe));								
+									mFilesetExceptionCollector.add(new FilesetFileFatalErrorException(member,fnfe));
+									mMissingURIs.add(resolvedURI);
+									continue;
+								} catch (IOException ioe) {
+									//exceptions.add(new FilesetFileFatalErrorException(member,ioe));
+									mFilesetExceptionCollector.add(new FilesetFileFatalErrorException(member,ioe));
+									continue;
+								} 
+								//report fileInstantiatedEvent
+								this.fileInstantiatedEvent(newmember);						
+							} //if (newmember == null)
+							//put in the incoming members references list
+							referer.putReferencedMember(newmember);
+						} //!resolvedURI.equals(cache)
+					} catch (URISyntaxException use) {
+						mFilesetExceptionCollector.add(new FilesetFileFatalErrorException(member, use));
+						continue;
+					}
 				}//if matches URI_LOCAL
 				else {
 					mRemoteMembers.add(value);
