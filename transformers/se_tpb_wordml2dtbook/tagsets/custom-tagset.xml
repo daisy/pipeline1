@@ -86,6 +86,12 @@
 					<attribute name="idref" value=""/>
 				</map>
 			</tag>
+			<tag name="Sub">
+				<map value="sub"/>
+			</tag>
+			<tag name="Sup">
+				<map value="sup"/>
+			</tag>
 			<tag name="Sidnummer-TPB"><pagenum/></tag>
 			<!-- / DTBookmallen -->
 			<tag name="TPB-Sidnummer"><pagenum/></tag>
