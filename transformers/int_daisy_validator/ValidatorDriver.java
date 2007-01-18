@@ -143,7 +143,6 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			
 			try{				
 				mInputFileset = new FilesetImpl(mInputFile.toURI(),this,true,false);
-				System.err.println("hepp1");
 				this.progress(PROGRESS_FILESET_INSTANTIATION);
 				this.checkAbort();
 				mCompletionTracker.mCompletedFilesetInstantiation = true;

@@ -8,18 +8,12 @@
   	indent="no" 
   	encoding="windows-1252"/>
   
-<!--  <xsl:param name="public">-//W3C//DTD XHTML 1.0 Strict//EN</xsl:param>
-  <xsl:param name="system">http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd</xsl:param>
-  <xsl:param name="root">html</xsl:param>
--->
   <xsl:param name="public"/>
   <xsl:param name="system"/>
   <xsl:param name="root"/>
   <xsl:param name="internal"/>
   
   <xsl:template match="/">
-  	<xsl:message>Internal:</xsl:message>
-  	<xsl:message><xsl:value-of select="$internal"/></xsl:message>
     <xsl:choose>
       <xsl:when test="$public!='' and $system!='' and $root!=''">  	
 	    <xsl:text disable-output-escaping="yes">
