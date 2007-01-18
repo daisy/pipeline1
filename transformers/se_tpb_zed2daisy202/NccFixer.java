@@ -138,7 +138,13 @@ class NccFixer {
                         attrs.add(eventFactory.createAttribute("content", new SmilClock((totalElapsedTime+500)-((totalElapsedTime+500)%1000)).toString(SmilClock.FULL)));
                         writer.add(eventFactory.createStartElement(new QName(null, "meta", ""), attrs.iterator(), null));                        
                     } else {
-                        writer.add(se);
+                    	Collection attrs = new ArrayList();
+                    	this.addAttribute(attrs, se, "name");
+                    	this.addAttribute(attrs, se, "http-equiv");
+                    	this.addAttribute(attrs, se, "content");
+                    	this.addAttribute(attrs, se, "scheme");
+                    	writer.add(eventFactory.createStartElement(new QName(null, "meta", ""), attrs.iterator(), se.getNamespaces()));
+                        //writer.add(se);
                     }                    
                 } else if ("body".equals(se.getName().getLocalPart())) {
                     writer.add(se);
@@ -165,6 +171,15 @@ class NccFixer {
                 writer.add(event);
             }
         }
+    }
+    
+    private void addAttribute(Collection coll, StartElement se, String attribute) {
+    	for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+    		Attribute attr = (Attribute)it.next();
+    		if (attribute.equals(attr.getName().getLocalPart())) {
+    			coll.add(attr);
+    		}
+    	}
     }
     
     /**
