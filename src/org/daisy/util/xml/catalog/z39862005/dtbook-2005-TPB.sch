@@ -126,7 +126,7 @@
   	                    ancestor::dtbk:kbd or ancestor::dtbk:linenum or ancestor::dtbk:noteref or 
   	                    ancestor::dtbk:q      or ancestor::dtbk:samp or ancestor::dtbk:sent    or ancestor::dtbk:span    or 
   	                    ancestor::dtbk:strong or ancestor::dtbk:sub  or ancestor::dtbk:sup     or ancestor::dtbk:w"
-  	  >[tpb29] Block element <name/> used in inline context</sch:report>
+  	  >[tpb29] Block element <sch:name/> used in inline context</sch:report>
   	</sch:rule>
   </sch:pattern>
   
@@ -152,7 +152,7 @@
   	                    preceding-sibling::dtbk:kbd or preceding-sibling::dtbk:linenum or preceding-sibling::dtbk:noteref or 
   	                    preceding-sibling::dtbk:q      or preceding-sibling::dtbk:samp or preceding-sibling::dtbk:sent    or preceding-sibling::dtbk:span    or 
   	                    preceding-sibling::dtbk:strong or preceding-sibling::dtbk:sub  or preceding-sibling::dtbk:sup     or preceding-sibling::dtbk:w       or
-  	                    normalize-space(preceding-sibling::text())!=''">[tpb29] Block element <name/> as sibling to inline element</sch:report>                  
+  	                    normalize-space(preceding-sibling::text())!=''">[tpb29] Block element <sch:name/> as sibling to inline element</sch:report>                  
   	</sch:rule>
   </sch:pattern>
   
@@ -443,8 +443,8 @@
   <!-- Rule 93: Some elements may not start of end with whitespace -->
   <sch:pattern name="dtbook_TPB_trimmedWhitespace" id="dtbook_TPB_trimmedWhitespace">
     <sch:rule context="dtbk:*[self::dtbk:h1 or self::dtbk:h2 or self::dtbk:h3 or self::dtbk:h4 or self::dtbk:h5 or self::dtbk:h6 or self::dtbk:hd or self::dtbk:lic]">
-    	<sch:report test="normalize-space(substring(.,1,1))=''">[tpb93] element <name/> may not have leading whitespace</sch:report>
-    	<sch:report test="normalize-space(substring(.,string-length(.),1))=''">[tpb93] element <name/> may not have trailing whitespace</sch:report>
+    	<sch:report test="normalize-space(substring(.,1,1))=''">[tpb93] element <sch:name/> may not have leading whitespace</sch:report>
+    	<sch:report test="normalize-space(substring(.,string-length(.),1))=''">[tpb93] element <sch:name/> may not have trailing whitespace</sch:report>
     </sch:rule>
   </sch:pattern>  
   
@@ -483,6 +483,13 @@
   <sch:pattern name="dtbook_TPB_pagenumPage" id="dtbook_TPB_pagenumPage">
   	<sch:rule context="dtbk:pagenum">
   		<sch:assert test="@page">[tpb105] Page attribute must appear on pagenum elements</sch:assert>
+  	</sch:rule>  	
+  </sch:pattern>  
+  
+  <!-- Rule 106: All documents must have at least one pagenum[@page='normal'] -->
+  <sch:pattern name="dtbook_TPB_pagenumNormal" id="dtbook_TPB_pagenumNormal">
+  	<sch:rule context="dtbk:book">
+  		<sch:assert test="count(//dtbk:pagenum[@page='normal'])>=1">[tpb106] All documents must contain normal page numbers (&lt;pagenum page="normal" ...&gt;)</sch:assert>
   	</sch:rule>  	
   </sch:pattern>  
       
