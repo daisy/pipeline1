@@ -76,6 +76,13 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Markus Gylling
  */
 public class ValidatorDriver extends Transformer implements FilesetErrorHandler, ValidatorListener, ErrorHandler {
+	
+	private static final double PROGRESS_PEEK = 0.01;
+	private static final double PROGRESS_FILESET_INSTANTIATION = 0.10;
+	private static final double PROGRESS_FILESET_VALIDATION = 0.20;
+	private static final double PROGRESS_SAX_VALIDATION = 0.95;
+	private static final double PROGRESS_JAXP_VALIDATION = 0.95;
+	
 	private EFile mInputFile = null;									//from paramaters
 	private Fileset mInputFileset = null;								//based in inputfile
 	private PeekResult mInputFilePeekResult = null;						//a global peek on inputfile
@@ -125,6 +132,8 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			try{
 				peeker = PeekerPool.getInstance().acquire();
 				mInputFilePeekResult = peeker.peek(mInputFile);
+				this.progress(PROGRESS_PEEK);
+				this.checkAbort();
 			}catch (Exception e) {
 				//input isnt XML, malformed at root, or something else went wrong
 				//A fileset manifest can be non-XML so be silent, try to continue
@@ -132,8 +141,11 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				PeekerPool.getInstance().release(peeker);
 			}
 			
-			try{
+			try{				
 				mInputFileset = new FilesetImpl(mInputFile.toURI(),this,true,false);
+				System.err.println("hepp1");
+				this.progress(PROGRESS_FILESET_INSTANTIATION);
+				this.checkAbort();
 				mCompletionTracker.mCompletedFilesetInstantiation = true;
 				ValidatorFactory validatorFactory = ValidatorFactory.newInstance(); 
 				try{
@@ -144,7 +156,9 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					this.setDelegates(filesetValidator, delegates);
 					
 					this.sendMessage(Level.INFO, i18n("VALIDATING_FILESET", mInputFileset.getFilesetType().toNiceNameString()));
-					filesetValidator.validate(mInputFileset);	
+					filesetValidator.validate(mInputFileset);
+					this.progress(PROGRESS_FILESET_VALIDATION);
+					this.checkAbort();
 					mCompletionTracker.mCompletedFilesetValidation = true;
 				}catch (ValidatorNotSupportedException e) {
 					//the factory could not produce a validator for this fileset type
@@ -162,7 +176,9 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 						&& (mInputFilePeekResult.getPrologSystemId()!=null
 								||mInputFilePeekResult.getPrologPublicId()!=null)){
 					    this.sendMessage(Level.INFO, i18n("SAX_DTD_VAL"));
-						doSAXDTDValidation();		
+						doSAXDTDValidation();	
+						this.progress(PROGRESS_SAX_VALIDATION);
+						this.checkAbort();
 						mCompletionTracker.mCompletedInlineDTDValidation = true;
 				}
 			}	
@@ -171,6 +187,8 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					&& (mInputFilePeekResult != null)) {
 				this.sendMessage(Level.INFO, i18n("JAXP_SCHEMA_VAL", Integer.toString(mSchemaSources.size())));
 				doJAXPSchemaValidation();
+				this.progress(PROGRESS_JAXP_VALIDATION);
+				this.checkAbort();
 				mCompletionTracker.mCompletedJAXPSchemaValidation = true;
 			}
 			
@@ -333,8 +351,11 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		HashMap factoryMap = new HashMap();		//cache to not create multiple identical factories     	     	 
     	SchemaFactory anySchemaFactory = null;	//Schema language neutral jaxp.validation driver
 
+    	double count = mSchemaSources.keySet().size();
+    	double num = 0;
 		for (Iterator iter = mSchemaSources.keySet().iterator(); iter.hasNext();) {
 			Source source = (Source)iter.next();
+			num++;
 			try{				
 				String schemaNsURI = (String)mSchemaSources.get(source);
 				//send a message
@@ -355,6 +376,8 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				Schema schema = anySchemaFactory.newSchema(source);													
 				javax.xml.validation.Validator jaxpValidator = schema.newValidator();																
 				jaxpValidator.validate(new StreamSource(mInputFile.toURI().toURL().openStream()));
+				this.progress(PROGRESS_FILESET_VALIDATION + (PROGRESS_JAXP_VALIDATION - PROGRESS_FILESET_VALIDATION) * (num / count));
+				this.checkAbort();
 			}catch (Exception e) {
 				mStateTracker.mHadCaughtException = true;
 				this.sendMessage(Level.WARNING,i18n("SCHEMA_VALIDATION_FAILURE",source.getSystemId()) + " " +e.getMessage());
