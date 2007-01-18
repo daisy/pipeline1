@@ -291,6 +291,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      * @throws FilesetException 
      */
     private void createXhtml(File dtbook, OpfFile opf) throws CatalogExceptionNotRecoverable, XSLTException, IOException {
+    	String cssName = "default.css";
         File xhtmlOut = new File(outputDir, contentXHTML);
         
         Iterator it = opf.getSpineItems().iterator();
@@ -302,6 +303,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         parameters.put("filter_word", "yes");
         parameters.put("baseDir", inputDir.toURI());
         parameters.put("first_smil", uri);
+        parameters.put("css_path", cssName);
         
         URL url = Stylesheets.get("dtbook2xhtml.xsl");
         
@@ -309,7 +311,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         Stylesheet.apply(dtbook.toURI().toString(), url, xhtmlOut.toURI().toString(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
         
         // Step 2: Insert a stylesheet
-        FileUtils.copy(new File(this.getTransformerDirectory(), "default.css"), new File(outputDir, "default.css"));
+        FileUtils.copy(new File(this.getTransformerDirectory(), cssName), new File(outputDir, cssName));
     }
         
     
