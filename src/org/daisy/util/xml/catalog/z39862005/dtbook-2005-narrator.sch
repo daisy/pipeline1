@@ -81,9 +81,16 @@
   </sch:pattern>
   
   <!-- Rule 104: Headings may not be empty elements -->
-  <sch:pattern name="dtbook_narrator_emptyElements" id="dtbook_TPB_emptyElements">
+  <sch:pattern name="dtbook_narrator_emptyElements" id="dtbook_narrator_emptyElements">
   	<sch:rule context="dtbk:*[self::dtbk:h1 or self::dtbk:h2 or self::dtbk:h3 or self::dtbk:h4 or self::dtbk:h5 or self::dtbk:h6 or self::dtbk:hd[parent::dtbk:level]]">
   		<sch:report test="normalize-space(.)=''">[narrator104] Heading <name/> may not be empty</sch:report>
+  	</sch:rule>  	
+  </sch:pattern>
+  
+  <!-- Rule 107: doctitle in frontmatter must exist (for Daisy 2.02) -->
+  <sch:pattern name="dtbook_narrator_frontmatterDoctitle" id="dtbook_narrator_frontmatterDoctitle">
+  	<sch:rule context="dtbk:book">
+  		<sch:assert test="count(dtbk:frontmatter/dtbk:doctitle)>=1">[narrator107] There must be a frontmatter/doctitle element</sch:assert>
   	</sch:rule>  	
   </sch:pattern>
   
