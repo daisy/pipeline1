@@ -18,20 +18,36 @@
  */
 package uk_rnib_dtbook2xhtml;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.util.file.EFile;
+import org.daisy.util.file.EFolder;
+import org.daisy.util.fileset.exception.FilesetFatalException;
+import org.daisy.util.fileset.exception.FilesetFileErrorException;
+import org.daisy.util.fileset.exception.FilesetFileException;
+import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
+import org.daisy.util.fileset.exception.FilesetFileWarningException;
+import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
+import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.interfaces.image.ImageFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
 import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
 
-public class DTBook2Xhtml extends Transformer {
+public class DTBook2Xhtml extends Transformer implements FilesetErrorHandler {
 
 	public DTBook2Xhtml(InputListener inListener, Set eventListeners, Boolean isInteractive) {
 		super(inListener, eventListeners, isInteractive);
@@ -41,18 +57,74 @@ public class DTBook2Xhtml extends Transformer {
 		String xml = (String)parameters.remove("xml");
 		String factory = (String)parameters.remove("factory");
 		String out = (String)parameters.remove("out");
+		String copyReferring = (String)parameters.remove("copyReferring");				
 		
 		URL url = Stylesheets.get("dtbook2xhtml.xsl");
 		
-		try {			
-		    Stylesheet.apply(xml, url, out, factory, parameters, CatalogEntityResolver.getInstance());
+		try {	
+			File outFile = new File(out);
+			File inFile = new File(xml);
+			if ("true".equals(copyReferring)) {				
+				EFile eInFile = new EFile(inFile);
+				String outFileName;
+				EFolder folder;
+				if (outFile.toString().endsWith(".html") || outFile.toString().endsWith(".htm")) {
+					folder = new EFolder(outFile.getParentFile());
+					outFileName = outFile.getName();					
+				} else {
+					folder = new EFolder(outFile);
+					outFileName = eInFile.getNameMinusExtension() + ".html";
+				}
+				
+				if (inFile.getParentFile().equals(folder)) {
+					throw new TransformerRunException("Output directory may not be same as input directory");
+				}
+				Fileset fileset = this.buildFileSet(new File(xml));								
+				if (!parameters.containsKey("css_path")) {
+					parameters.put("css_path", "default.css");
+				}
+				Stylesheet.apply(xml, url, new File(folder, outFileName).toString(), factory, parameters, CatalogEntityResolver.getInstance());
+				folder.addFile(new File(this.getTransformerDirectory(), (String)parameters.get("css_path")));
+				for (Iterator it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
+					FilesetFile fsf = (FilesetFile)it.next();
+					if (fsf instanceof ImageFile) {
+						folder.addFile(fsf.getFile());
+					}
+				}
+			} else {
+				Stylesheet.apply(xml, url, out, factory, parameters, CatalogEntityResolver.getInstance());
+			}
         } catch (XSLTException e) {
             throw new TransformerRunException(e.getMessage(), e);
 		} catch (CatalogExceptionNotRecoverable e) {
 			throw new TransformerRunException(e.getMessage(), e);
+		} catch (FilesetFatalException e) {
+			throw new TransformerRunException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new TransformerRunException(e.getMessage(), e);
 		}
 		
 		return true;
+	}
+	
+	private Fileset buildFileSet(File manifest) throws FilesetFatalException {
+        return new FilesetImpl(manifest.toURI(), this, false, true);
+    }
+
+	public void error(FilesetFileException ffe) throws FilesetFileException {		
+		if(ffe instanceof FilesetFileFatalErrorException) {
+			this.sendMessage(Level.WARNING, "Serious error in "	+ ffe.getOrigin().getName() + ": " 
+					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
+		}else if (ffe instanceof FilesetFileErrorException) {
+			this.sendMessage(Level.WARNING, "Error in " + ffe.getOrigin().getName() + ": " 
+					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
+		}else if (ffe instanceof FilesetFileWarningException) {
+			this.sendMessage(Level.WARNING, "Warning in " + ffe.getOrigin().getName() + ": " 
+					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
+		}else{
+			this.sendMessage(Level.WARNING, "Exception with unknown severity in " + ffe.getOrigin().getName() + ": "
+					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
+		}		
 	}
 
 }

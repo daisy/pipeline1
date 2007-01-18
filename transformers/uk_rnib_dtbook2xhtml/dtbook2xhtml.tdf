@@ -28,7 +28,29 @@
 			<name>out</name>
 			<description>The output XHTML document</description>
 			<example>file:///path/to/outFile.html</example>
-		</parameter>		
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>copyReferring</name>
+			<description>Copy referring files</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>			
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>daisy_noteref</name>
+			<description>Use daisy style noterefs</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
 				
 	</parameters>	
 
