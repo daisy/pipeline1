@@ -14,13 +14,24 @@
 	<xsl:param name="filter_word"/>
 	<xsl:param name="baseDir"/>
 	<xsl:param name="first_smil"/>
+	<xsl:param name="css_path"/>
+	<xsl:param name="daisy_noteref"/>
 
-	<xsl:output method="xml" encoding="utf-8" indent="no"
+<!--	<xsl:output method="xml" encoding="utf-8" indent="no"
 		doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
-
+		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>-->
+    <xsl:output method="xml" encoding="utf-8" indent="no"/>
 
 	<xsl:template match="/">
+	    <xsl:text disable-output-escaping="yes">
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"</xsl:text>
+        <xsl:if test="$daisy_noteref='true'">
+  	      <xsl:text disable-output-escaping="yes"> [
+  	      &lt;!ATTLIST span bodyref CDATA #IMPLIED&gt;
+  	      ]</xsl:text>
+  	    </xsl:if>
+        <xsl:text disable-output-escaping="yes">&gt;
+</xsl:text>        
 		<xsl:apply-templates/>
 	</xsl:template>
 
@@ -75,7 +86,13 @@
          <xsl:value-of select="dtb:meta[@name='dc:Title']/@content"/>
        </title>
       <xsl:apply-templates/>
-      <link rel="stylesheet" href="default.css" type="text/css"/>
+      <xsl:if test="$css_path!=''">
+        <link rel="stylesheet" type="text/css">
+          <xsl:attribute name="href">
+            <xsl:value-of select="$css_path"/>
+      	  </xsl:attribute>
+        </link>
+      </xsl:if>
     </head>
    </xsl:template>
 
@@ -348,10 +365,24 @@
 
 
 	<xsl:template match="dtb:noteref">
-		<a class="noteref">
-			<xsl:call-template name="copyCncatts"/>
-			<xsl:attribute name="href">
-				<xsl:choose>
+		<xsl:choose>
+			<xsl:when test="$daisy_noteref='true'">
+			  <span class="noteref">
+			    <xsl:call-template name="copyCncatts"/>
+			    <xsl:attribute name="bodyref">
+			      <xsl:if test="not(contains(@idref,'#'))">
+			        <xsl:text>#</xsl:text>
+			      </xsl:if>
+			      <xsl:value-of select="@idref"/>
+			    </xsl:attribute>
+			    <xsl:apply-templates/>
+			  </span>
+			</xsl:when>
+			<xsl:otherwise>
+			  <a class="noteref">
+			    <xsl:call-template name="copyCncatts"/>
+			    <xsl:attribute name="href">
+				  <xsl:choose>
 					<xsl:when test="@smilref">
 						<xsl:value-of select="@smilref"/>
 					</xsl:when>
@@ -359,10 +390,12 @@
 						<xsl:text>#</xsl:text>
 						<xsl:value-of select="translate(@idref, '#', '')"/>
 					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>			
-			<xsl:apply-templates/>
-		</a>
+				  </xsl:choose>
+			    </xsl:attribute>			
+			    <xsl:apply-templates/>
+		      </a>
+			</xsl:otherwise>
+		</xsl:choose>		
 	</xsl:template>
 
 
