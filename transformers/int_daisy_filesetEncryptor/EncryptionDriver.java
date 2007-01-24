@@ -15,6 +15,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 
+import javax.crypto.SecretKey;
+
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
@@ -33,6 +35,7 @@ import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
 import org.daisy.util.fileset.util.ManifestFinder;
 
 /**
@@ -42,7 +45,9 @@ import org.daisy.util.fileset.util.ManifestFinder;
  */
 
 public class EncryptionDriver extends Transformer implements FilesetErrorHandler {
-				
+	
+	private static final double FILESET_DONE = 0.1;
+	private static final double ENCRYPTION_DONE = 1;
 	 	
 	public EncryptionDriver(InputListener inListener, Set eventListeners, Boolean isInteractive) {
 		super(inListener, eventListeners, isInteractive);
@@ -94,15 +99,21 @@ public class EncryptionDriver extends Transformer implements FilesetErrorHandler
 				//create the base output dir
 				EFolder outputBaseDir = (EFolder)FileUtils.createDirectory(new EFolder(FilenameOrFileURI.toFile((String)parameters.remove("output"))));
 				
+				SecretKey secretKey = null;
+				
 				//go through each manifest item in the input collection
+				int count = 0;
 				for (Iterator i = manifests.iterator(); i.hasNext();) {												 																								
 					FilesetFile manifest = (FilesetFile)i.next();
 					//create input fileset
-					Fileset inputFileset = new FilesetImpl(manifest.getFile().toURI(), this, false, false);								
+					Fileset inputFileset = new FilesetImpl(manifest.getFile().toURI(), this, false, false);
+					this.sendMessage(Level.INFO, i18n("INPUT_FILESET", inputFileset.getManifestMember().getFile()));
+					this.progress((double)count/manifests.size() + FILESET_DONE/manifests.size());
+					this.checkAbort();
 					//locate an impl that can encrypt this fileset				
 					Encryptor encryptor = null;
 					try{
-						encryptor = EncryptorFactory.newInstance().newEncryptor(encType, inputFileset.getFilesetType());
+						encryptor = EncryptorFactory.newInstance().newEncryptor(encType, inputFileset.getFilesetType());						
 					}catch (EncryptorNotSupportedException e) {
 						//no encryptor could be produced for this fileset type and set encryption type
 						sendMessage(Level.WARNING, i18n("NOTSUPPORTED", e.getMessage()));
@@ -120,17 +131,33 @@ public class EncryptionDriver extends Transformer implements FilesetErrorHandler
 					}else{
 						outputDir = outputBaseDir;
 					}
+					this.sendMessage(Level.INFO, i18n("OUTPUT_DIR", outputDir));
 					
 					//do the encryption		
 					encryptor.setInputFileset(inputFileset);
-					encryptor.setOutputDir(outputDir);
-					encryptor.setParameters(getEncryptorParams(parameters));
+					encryptor.setOutputDir(outputDir);					
+					encryptor.setParameters(getEncryptorParams(parameters, encryptor));
 					try{
-						encryptor.encrypt();
+						boolean multiVolume = false;
+						if (inputFileset.getManifestMember() instanceof D202NccFile) {
+							D202NccFile d202 = (D202NccFile)inputFileset.getManifestMember();
+							multiVolume = d202.hasMultiVolumeIndicators();
+						}
+						if (multiVolume) {
+							this.sendMessage(Level.FINE, i18n("MULTI_VOLUME"));
+							secretKey = encryptor.encrypt(secretKey);
+						} else {
+							this.sendMessage(Level.FINE, i18n("SINGLE_VOLUME"));
+							encryptor.encrypt();
+						}
+						this.sendMessage(Level.INFO, i18n("ENCRYPTED"));						
 					}catch (EncryptionException e) {
 						sendMessage(Level.SEVERE, i18n("EXCEPTION", e.getMessage()));
 						totalSuccess = false;
-					}								
+					}
+					this.progress((double)count/manifests.size() + ENCRYPTION_DONE/manifests.size());
+					this.checkAbort();
+					count++;					
 				}//for i
 			}else{//if(manifests.size() > 0){
 				this.sendMessage(Level.WARNING, i18n("ZERO_MANIFESTS"));
@@ -143,15 +170,22 @@ public class EncryptionDriver extends Transformer implements FilesetErrorHandler
 		throw new TransformerRunException("encryption not successfully completed");
 	}
 	
-	private Map getEncryptorParams(Map inParams) throws InvalidPropertiesFormatException, MalformedURLException, IOException {				
+	private Map getEncryptorParams(Map inParams, Encryptor encryptor) throws InvalidPropertiesFormatException, MalformedURLException, IOException {				
 		//this string is in URL form so that we can take jar inparams
-		String param = (String)inParams.remove("properties");				
+		String param = (String)inParams.get("properties");				
 		if(param != null|param.length()<1) {
-			URL paramURL = new URL(param);
-			Properties props = new Properties();
-			props.loadFromXML(paramURL.openStream());
-			return props;			
+			Map params = null;
+			try {			
+				URL paramURL = new URL(param);
+				Properties props = new Properties();
+				props.loadFromXML(paramURL.openStream());
+				params = props;
+			} catch (IOException e) {
+				params = encryptor.loadParameters(param);
+			}
+			return params;			
 		}
+		
 		//else, no properties file explicitly set in script.	
 		return null;			
 	}

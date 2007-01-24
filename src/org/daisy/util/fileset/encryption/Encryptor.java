@@ -1,6 +1,9 @@
 package org.daisy.util.fileset.encryption;
 
+import java.io.IOException;
 import java.util.Map;
+
+import javax.crypto.SecretKey;
 
 import org.daisy.util.file.EFolder;
 import org.daisy.util.fileset.FilesetType;
@@ -21,7 +24,9 @@ public interface Encryptor {
 	public void setOutputDir(EFolder outputDir) throws EncryptionException;
 	public EFolder getOutputDir();			
 	public void setParameters(Map parameters) throws EncryptorNotSupportedException; 
+	public Map loadParameters(String name) throws IOException;
 	public Map getParameters(); 
 	public void encrypt() throws EncryptionException;
+	public SecretKey encrypt(SecretKey secretKey) throws EncryptionException;
 	
-}
+} 
