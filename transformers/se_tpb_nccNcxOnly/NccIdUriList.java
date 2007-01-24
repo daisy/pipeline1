@@ -95,8 +95,11 @@ class NccIdUriList {
 				StartElement se = event.asStartElement();
 				if ("a".equals(se.getName().getLocalPart())) {
 					Attribute href = se.getAttributeByName(new QName("href"));	
-					idUriList.add(id, new URI(href.getValue()));
-					id = null;
+					Attribute rel = se.getAttributeByName(new QName("rel"));
+					if (rel == null) {
+						idUriList.add(id, new URI(href.getValue()));
+						id = null;
+					}
 				} else if ("h1".equals(se.getName().getLocalPart()) ||
 						   "h2".equals(se.getName().getLocalPart()) ||
 						   "h3".equals(se.getName().getLocalPart()) ||

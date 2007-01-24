@@ -41,6 +41,7 @@ import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.exception.FilesetFatalException;
@@ -48,15 +49,18 @@ import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
+import org.daisy.util.fileset.impl.FilesetFileFactory;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.ManifestFile;
+import org.daisy.util.fileset.interfaces.image.ImageFile;
 import org.daisy.util.fileset.interfaces.xml.d202.D202MasterSmilFile;
 import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
 import org.daisy.util.fileset.interfaces.xml.d202.D202SmilFile;
 import org.daisy.util.fileset.interfaces.xml.d202.D202TextualContentFile;
+import org.daisy.util.fileset.util.ManifestFinder;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
@@ -84,6 +88,9 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
     private static final double COPY_DONE = 0.99;
     
     private XMLInputFactory mFactory;
+    
+    private int total = 1;
+    private int count = 0;
 	
     /**
      * Constructor.
@@ -112,60 +119,46 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
 	 * @see org.daisy.dmfc.core.transformer.Transformer#execute(java.util.Map)
 	 */
 	protected boolean execute(Map parameters) throws TransformerRunException {
-		String manifest = (String)parameters.remove("manifest");
+		String input = (String)parameters.remove("manifest");
         String outDir = (String)parameters.remove("outDir");
 
-        File outputDir = new File(outDir);
+        File outputBaseDir = new File(outDir);
         
         try {
-	        // Build a fileset
-	        this.sendMessage(Level.INFO, i18n("BUILDING_FILESET"));
-	        Fileset fileset = this.buildFileSet(manifest);   
-	        if (fileset.hadErrors()) {
-	        	throw new TransformerRunException(i18n("FILESET_HAD_ERRORS"));
-	        }
-	        D202NccFile nccFile = (D202NccFile)fileset.getManifestMember();
-	        this.progress(FILESET_DONE);
-	        this.checkAbort();
-	        
-	        // Create output directory
-            outputDir = FileUtils.createDirectory(new File(outDir)); 
-	        
-	        // Collect smil URIs from the NCC            
-            NccIdUriList idUri = NccIdUriList.parseNcc(nccFile.getFile());
-            this.progress(NCCURI_DONE);
-	        this.checkAbort();
-	        
-	        // Loop through smil files and change links
-	        Collection spineItems = nccFile.getSpineItems();
-	        int i = 0;
-	        for (Iterator it = spineItems.iterator(); it.hasNext(); ) {
-	        	D202SmilFile smilFile = (D202SmilFile)it.next();
-	        	i++;
-	        	this.updateSmil(smilFile, outputDir, idUri);
-	        	this.progress(NCCURI_DONE + (SMIL_DONE-NCCURI_DONE)*((double)i/spineItems.size()));	        	
-	            this.checkAbort();
-	        }
-	        this.progress(SMIL_DONE);
-	        this.checkAbort();
-	        
-	        // Oops, there are unmatched NCC items. Not good.
-	        if (idUri.canAdvance()) {
-	        	throw new TransformerRunException(i18n("NCC_ITEMS_LEFT", idUri.getCurrentUriToNcc()));
-	        }
-	        
-	        // Update the NCC meta data (ncc:files, ncc:kByteSize, ncc:multimediaType)
-	        File inputFile = fileset.getManifestMember().getFile();
-	        File outputFile = new File(outputDir, "ncc.html");
-	        File sheet = new File(this.getTransformerDirectory(), "ncc-meta.xsl");	        
-	        Stylesheet.apply(inputFile.getAbsolutePath(), sheet.getAbsolutePath(), outputFile.getAbsolutePath(), XSLT_FACTORY, null, CatalogEntityResolver.getInstance());
-	        this.progress(NCC_DONE);
-	        this.checkAbort();
-	        
-	        // Copy other fileset members (mp3s)	        
-	        this.copyFiles(nccFile, fileset, outputDir);
-	        this.progress(COPY_DONE);
-	        this.checkAbort();
+        	File manifestFile = FilenameOrFileURI.toFile(input);
+        	if (manifestFile.isDirectory()) {
+        		EFolder inputBaseDir = new EFolder(manifestFile);
+        		Collection inputFiles = ManifestFinder.getManifests(true, inputBaseDir);
+        		Collection manifests = new ArrayList();
+        		for (Iterator i = inputFiles.iterator(); i.hasNext();) {
+    				FilesetFile manifest = FilesetFileFactory.newInstance().newFilesetFile((File)i.next());    				
+    				//if this is a file we should work on given acceptedTypes inparam
+    				if("D202NccFileImpl".equals((manifest.getClass().getSimpleName()))) {
+    					manifests.add(manifest);
+    				}
+    			}
+        		
+        		total = manifests.size();
+        		for (Iterator it = manifests.iterator(); it.hasNext(); ) {   
+        			FilesetFile manifest = (FilesetFile)it.next();
+        			File outputDir;
+        			Fileset inputFileset = new FilesetImpl(manifest.getFile().toURI(), this, false, false);	
+					if(!inputBaseDir.getCanonicalPath().equals(inputFileset.getManifestMember().getParentFolder().getCanonicalPath())){
+						URI relative = inputBaseDir.toURI().relativize(inputFileset.getManifestMember().getFile().toURI());
+						File hypo = new File(outputBaseDir, relative.getPath());
+						outputDir = FileUtils.createDirectory(hypo.getParentFile());
+					}else{
+						outputDir = outputBaseDir;
+					}
+					this.sendMessage(Level.INFO, i18n("OUTPUT_DIR", outputDir));
+					
+					this.nccNcxOnly(manifest.getFile().getAbsolutePath(), outputDir);					
+					count++;
+        		}
+        		
+        	} else {        	
+        		this.nccNcxOnly(input, outputBaseDir);
+        	}
         } catch (FilesetFatalException e) {
         	throw new TransformerRunException(e.getMessage(), e);
         } catch (IOException e) {
@@ -181,6 +174,57 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
 		}
         
 		return true;
+	}
+	
+	private void nccNcxOnly(String manifest, File outputDir) throws FilesetFatalException, TransformerRunException, IOException, CatalogExceptionNotRecoverable, URISyntaxException, XMLStreamException, XSLTException {
+		// Build a fileset
+        this.sendMessage(Level.INFO, i18n("BUILDING_FILESET"));
+        Fileset fileset = this.buildFileSet(manifest);   
+        if (fileset.hadErrors()) {
+        	throw new TransformerRunException(i18n("FILESET_HAD_ERRORS"));
+        }
+        D202NccFile nccFile = (D202NccFile)fileset.getManifestMember();
+        this.progress((double)count/total + FILESET_DONE/total);
+        this.checkAbort();
+        
+        // Create output directory
+        outputDir = FileUtils.createDirectory(outputDir); 
+        
+        // Collect smil URIs from the NCC            
+        NccIdUriList idUri = NccIdUriList.parseNcc(nccFile.getFile());
+        this.progress((double)count/total + NCCURI_DONE/total);
+        this.checkAbort();
+        
+        // Loop through smil files and change links
+        Collection spineItems = nccFile.getSpineItems();
+        int i = 0;
+        for (Iterator it = spineItems.iterator(); it.hasNext(); ) {
+        	D202SmilFile smilFile = (D202SmilFile)it.next();
+        	i++;
+        	this.updateSmil(smilFile, outputDir, idUri);
+        	this.progress((double)count/total + (NCCURI_DONE + (SMIL_DONE-NCCURI_DONE)*((double)i/spineItems.size()))/total);	        	
+            this.checkAbort();
+        }
+        this.progress((double)count/total + SMIL_DONE/total);
+        this.checkAbort();
+        
+        // Oops, there are unmatched NCC items. Not good.
+        if (!nccFile.hasMultiVolumeIndicators() && idUri.canAdvance()) {
+        	throw new TransformerRunException(i18n("NCC_ITEMS_LEFT", idUri.getCurrentUriToNcc()));
+        }
+        
+        // Update the NCC meta data (ncc:files, ncc:kByteSize, ncc:multimediaType)
+        File inputFile = fileset.getManifestMember().getFile();
+        File outputFile = new File(outputDir, "ncc.html");
+        File sheet = new File(this.getTransformerDirectory(), "ncc-meta.xsl");	        
+        Stylesheet.apply(inputFile.getAbsolutePath(), sheet.getAbsolutePath(), outputFile.getAbsolutePath(), XSLT_FACTORY, null, CatalogEntityResolver.getInstance());
+        this.progress((double)count/total + NCC_DONE/total);
+        this.checkAbort();
+        
+        // Copy other fileset members (mp3s)	        
+        this.copyFiles(nccFile, fileset, outputDir);
+        this.progress((double)count/total + COPY_DONE/total);
+        this.checkAbort();
 	}
 	
 	/**
@@ -217,7 +261,8 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
         	if (fsf instanceof D202TextualContentFile ||
         		fsf instanceof D202NccFile ||
         		fsf instanceof D202SmilFile ||
-        		fsf instanceof D202MasterSmilFile) {
+        		fsf instanceof D202MasterSmilFile ||
+        		fsf instanceof ImageFile) {
         		// ignore
         	} else {
         		toCopy.add(fsf);
@@ -230,7 +275,7 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
         	URI relative = manifest.getRelativeURI(fsf);
     		File out = new File(outputDir.toURI().resolve(relative));
     		FileUtils.copy(fsf.getFile(), out);
-    		this.progress(NCC_DONE + (COPY_DONE-NCC_DONE)*((double)currentSize/totalSize));
+    		this.progress((double)count/total + (NCC_DONE + (COPY_DONE-NCC_DONE)*((double)currentSize/totalSize))/total);
             this.checkAbort();
         }
 	}
