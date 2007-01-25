@@ -252,7 +252,9 @@ public class ScriptHandler extends EventSender {
 	private void sendRootCauseMessages(String[] elements) {
 		for (int i = 0; i < elements.length; ++i) {
 			String element = elements[i];
-			this.sendMessage(Level.WARNING, "\tat " + element.toString());
+			if (element != null) {
+				this.sendMessage(Level.WARNING, "\tat " + element.toString());
+			}			
 		}
 	}
 	
