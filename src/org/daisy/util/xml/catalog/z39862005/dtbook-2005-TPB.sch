@@ -248,7 +248,7 @@
   <!-- Rule 38: Class attributes of level1 in rearmatter -->
   <sch:pattern name="dtbook_TPB_rearmatterLevel1Class" id="dtbook_TPB_rearmatterLevel1Class">
   	<sch:rule context="dtbk:rearmatter/dtbk:level1">
-  		<sch:assert test="@class='bibliography' or @class='index' or @class='footnotes' or @class='rearnotes' or @class='glossary' or @class='appendix' or @class='backCoverText' or @class='other'">[tpb38] Class attribute must be one of: bibliography, index, footnotes, rearnotes, glossary, appendix, backCoverText and other</sch:assert>
+  		<sch:assert test="@class='colophon' or @class='bibliography' or @class='index' or @class='footnotes' or @class='rearnotes' or @class='glossary' or @class='appendix' or @class='backCoverText' or @class='other'">[tpb38] Class attribute must be one of: bibliography, index, footnotes, rearnotes, glossary, appendix, backCoverText and other</sch:assert>
   	</sch:rule>
   </sch:pattern>
   
@@ -437,6 +437,13 @@
   <sch:pattern name="dtbook_TPB_noSmilref" id="dtbook_TPB_noSmilref">
     <sch:rule context="dtbk:*/@smilref">
     	<sch:assert test="false()">[tpb68] smilref attributes in a plain DTBook file is not allowed</sch:assert>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 72: Only allow DTBook 2005-2 -->
+  <sch:pattern name="dtbook_TPB_dtbookVersion" id="dtbook_TPB_dtbookVersion">
+    <sch:rule context="dtbk:dtbook">
+    	<sch:assert test="@version='2005-2'">[tpb72] DTBook version must be 2005-2.</sch:assert>
     </sch:rule>
   </sch:pattern>
   
