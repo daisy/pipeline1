@@ -11,15 +11,11 @@
     	<sch:assert test="*[last()][self::dtbk:prodnote]">[tpbprod54] The production note must be the last element in an image group</sch:assert>
     </sch:rule>
     <sch:rule context="dtbk:imggroup/dtbk:prodnote">
-    	<sch:assert test=".='Bildbeskrivning'">[tpbprod54] Value of prodnote in imggroup must be 'Bildbeskrivning'</sch:assert>
+    	<sch:assert test=".='Bildbeskrivning' or .='Image description'">[tpbprod54] Value of prodnote in imggroup must be 'Bildbeskrivning' or 'Image description'</sch:assert>
+    	<sch:report test="lang('en') and .='Bildbeskrivning'">[tpbprod54] Value of prodnote in imggroup must be 'Image description' in english context</sch:report>
+    	<sch:report test="lang('sv') and .='Image description'">[tpbprod54] Value of prodnote in imggroup must be 'Bildbeskrivning' in swedish context</sch:report>
+    	<sch:assert test="@render='optional'">[tpbprod54] The value of the render attribute must be 'optional'</sch:assert>
     </sch:rule>
-  </sch:pattern>
-  
-  <!-- Rule 72: Only allow DTBook 2005-2 -->
-  <sch:pattern name="dtbook_TPBprod_dtbookVersion" id="dtbook_TPBprod_dtbookVersion">
-    <sch:rule context="dtbk:dtbook">
-    	<sch:assert test="@version='2005-2'">[tpbprod72] DTBook version must be 2005-2.</sch:assert>
-    </sch:rule>
-  </sch:pattern>
+  </sch:pattern>  
     
 </sch:schema>
