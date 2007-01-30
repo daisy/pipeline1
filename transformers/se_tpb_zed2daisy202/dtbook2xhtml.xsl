@@ -278,7 +278,7 @@
    
 
    <xsl:template match="dtb:list/dtb:prodnote">
-     <li class="prodnote"><xsl:apply-templates/></li>
+     <li class="optional-prodnote"><xsl:apply-templates/></li>
    </xsl:template>
 
    <xsl:template match="dtb:blockquote/dtb:pagenum">
@@ -437,7 +437,7 @@
    
 	<xsl:template match="dtb:prodnote">
 	   <xsl:call-template name="inlineParent">
-		   <xsl:with-param name="class" select="'prodnote'"/>
+		   <xsl:with-param name="class" select="'optional-prodnote'"/>
 	   </xsl:call-template> 
    </xsl:template>
 
