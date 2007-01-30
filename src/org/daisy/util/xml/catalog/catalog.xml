@@ -152,6 +152,7 @@
     <!-- TPB -->  
     <public publicId="-//TPB//SCH dtbook 2005 TPB//EN" uri="./z39862005/dtbook-2005-TPB.sch" />
     <public publicId="-//TPB//SCH dtbook 2005 TPB-prod//EN" uri="./z39862005/dtbook-2005-TPB-prod.sch" />
+    <public publicId="-//TPB//SCH dtbook 2005 TPB-imgdesc//EN" uri="./z39862005/dtbook-2005-TPB-imgdesc.sch" />
     <public publicId="-//TPB//SCH dtbook 2005 TPB-heuristics//EN" uri="./z39862005/dtbook-2005-TPB-heuristics.sch" />
     <!-- Narrator -->  
     <public publicId="-//TPB//SCH dtbook 2005 Narrator//EN" uri="./z39862005/dtbook-2005-narrator.sch" />
