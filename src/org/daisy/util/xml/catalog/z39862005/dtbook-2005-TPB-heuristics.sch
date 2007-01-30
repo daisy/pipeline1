@@ -206,5 +206,13 @@
     	<sch:assert test=".=//dtbk:pagenum">[tpbHeuM30] The pagenum element referenced by this lic does not exist. Is that really OK?</sch:assert>
     </sch:rule>
   </sch:pattern>
+  
+  <!-- Rule M32: only items with bullets or only items with numbers in a list of type 'pl' -->
+  <sch:pattern name="dtbook_TPBheuristic_listPlBullet" id="dtbook_TPBheuristic_listPlBullet">
+    <sch:rule context="dtbk:list[@type='pl']">
+    	<sch:report test="not(string-length(translate(substring(normalize-space(dtbk:li),1,1),'&#x2022;&#x25a0;&#x25c6;&#x25e6;&#x2713;&#x25a1;',''))!=0)">[tpbHeuM32] Should this be a list of type 'ul'?</sch:report>
+    	<sch:report test="not(string-length(translate(substring(normalize-space(dtbk:li),1,1),'0123456789',''))!=0)">[tpbHeuM32] Should this be a list of type 'ol'?</sch:report>
+    </sch:rule>
+  </sch:pattern> 
     
 </sch:schema>
