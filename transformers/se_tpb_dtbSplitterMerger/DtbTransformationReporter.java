@@ -1,0 +1,33 @@
+/*
+ * DMFC - The DAISY Multi Format Converter
+ * Copyright (C) 2006  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+package se_tpb_dtbSplitterMerger;
+
+import java.util.logging.Level;
+
+/**
+ * @author Piotr Kiernicki
+ *
+ */
+public interface DtbTransformationReporter {
+    public void sendTransformationMessage(Level l, String msgKey);
+    public void sendTransformationMessage(Level l, String msgKey, Object param);
+    public void sendTransformationMessage(Level l, String msgKey, Object param1, Object param2);
+    public String getTransformationUserInput(Level l, String msgKey, String value);
+    public void reportCopiedFile(long size);
+}

@@ -21,6 +21,26 @@ lib/wstx-lgpl-2.0.6.jar -text
 lib/xercesImpl.jar -text
 resources/transformer.rng -text svneol=unset#application/octet-stream
 src/org/daisy/util/xml/catalog/svg/svg11-flat.dtd -text svneol=unset#application/octet-stream
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_1.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_10.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_2.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_3.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_4.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_5.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_6.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_7.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_8.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_9.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_1.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_10.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_2.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_3.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_4.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_5.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_6.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_7.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_8.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_9.mp3 -text
 transformers/se_tpb_filesetcreator/resource/tpbnarrator_res.mp3 -text
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/Interop.SpeechLib.dll -text
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.application -text svneol=unset#application/octet-stream
