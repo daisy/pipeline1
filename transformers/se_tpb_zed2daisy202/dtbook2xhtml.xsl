@@ -99,13 +99,32 @@
 
    <xsl:template match="dtb:meta">
      <meta>
-       <xsl:copy-of select="@*"/>
-     </meta>
-   </xsl:template>
-
-	 <xsl:template match="dtb:meta[@name='dtb:uid']">
-     <meta name="dc:identifier">
+       <xsl:if test="@name">
+         <xsl:attribute name="name">
+           <xsl:choose>
+             <xsl:when test="@name='dtb:uid'"><xsl:value-of select="'dc:identifier'"/></xsl:when>
+             <xsl:when test="@name='dc:Title'"><xsl:value-of select="'dc:title'"/></xsl:when>
+             <xsl:when test="@name='dc:Subject'"><xsl:value-of select="'dc:subject'"/></xsl:when>
+             <xsl:when test="@name='dc:Description'"><xsl:value-of select="'dc:description'"/></xsl:when>
+             <xsl:when test="@name='dc:Type'"><xsl:value-of select="'dc:type'"/></xsl:when>
+             <xsl:when test="@name='dc:Source'"><xsl:value-of select="'dc:source'"/></xsl:when>
+             <xsl:when test="@name='dc:Relation'"><xsl:value-of select="'dc:relation'"/></xsl:when>
+             <xsl:when test="@name='dc:Coverage'"><xsl:value-of select="'dc:coverage'"/></xsl:when>
+             <xsl:when test="@name='dc:Creator'"><xsl:value-of select="'dc:creator'"/></xsl:when>
+             <xsl:when test="@name='dc:Publisher'"><xsl:value-of select="'dc:publisher'"/></xsl:when>
+             <xsl:when test="@name='dc:Contributor'"><xsl:value-of select="'dc:contributor'"/></xsl:when>
+             <xsl:when test="@name='dc:Rights'"><xsl:value-of select="'dc:rights'"/></xsl:when>
+             <xsl:when test="@name='dc:Date'"><xsl:value-of select="'dc:date'"/></xsl:when>
+             <xsl:when test="@name='dc:Format'"><xsl:value-of select="'dc:format'"/></xsl:when>
+             <xsl:when test="@name='dc:Identifier'"><xsl:value-of select="'dc:identifier'"/></xsl:when>
+             <xsl:when test="@name='dc:Language'"><xsl:value-of select="'dc:language'"/></xsl:when>
+             <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+           </xsl:choose>
+         </xsl:attribute>
+       </xsl:if>	
+       <xsl:copy-of select="@http-equiv"/>
        <xsl:copy-of select="@content"/>
+       <xsl:copy-of select="@scheme"/>       
      </meta>
    </xsl:template>
 
