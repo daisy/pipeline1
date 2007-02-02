@@ -7,7 +7,7 @@
   
   <!-- Rule 70: Heading for the colophon -->
   <sch:pattern name="dtbook_TPBnarrator_colophonHeading" id="dtbook_TPBnarrator_colophonHeading">
-    <sch:rule context="dtbk:*[self::dtbk:frontmatter or self::dtbk:rearmatter]/dtbk:level1[@class='colophon']">
+    <sch:rule context="dtbk:level1[@class='colophon']">
     	<sch:report test="lang('sv') and dtbk:h1!='Kolofon'">[tpbnarrator70] Heading of colophon must be 'Kolofon' (swedish)</sch:report>
     	<sch:report test="lang('en') and dtbk:h1!='Colophon'">[tpbnarrator70] Heading of colophon must be 'Colophon' (english)</sch:report>
     </sch:rule>

@@ -10,6 +10,14 @@
   <sch:key name="pageFrontValues" match="dtbk:pagenum[@page='front']" path="."/>
   <sch:key name="notes" match="dtbk:note[@id]" path="@id"/>
 
+  <!-- Rule 7: No <list> or <dl> inside <p> -->
+  <sch:pattern name="dtbook_TPB_noListOrDlinP" id="dtbook_TPB_noListOrDlinP">
+    <sch:rule context="dtbk:p">
+      <sch:report test="dtbk:list">[tpb07] Lists are not allowed inside paragraphs.</sch:report>
+      <sch:report test="dtbk:dl">[tpb07] Definition lists are not allowed inside paragraphs.</sch:report>
+    </sch:rule>
+  </sch:pattern>
+
   <!-- Rule 8: Only allow pagenum[@front] in frontmatter -->
   <sch:pattern name="dtbook_TPB_pageFront" id="dtbook_TPB_pageFront">
   	<sch:rule context="dtbk:pagenum[@page='front']">
@@ -22,6 +30,26 @@
   	<sch:rule context="dtbk:*">
   		<sch:report test="normalize-space(.)='' and not(*) and not(self::dtbk:img or self::dtbk:br or self::dtbk:meta or self::dtbk:link or self::dtbk:col or self::dtbk:th or self::dtbk:td or self::dtbk:dd)">[tpb09] Element may not be empty</sch:report>
   	</sch:rule>  	
+  </sch:pattern>
+  
+  <!-- Rule 10: Metadata for dc:Language, dc:Date and dc:Publisher must exist -->
+  <sch:pattern name="dtbook_TPB_meta" id="dtbook_TPB_meta">
+    <sch:rule context="dtbk:head">
+      <!-- dc:Language -->
+      <sch:assert test="count(dtbk:meta[@name='dc:Language'])>=1">[tpb10] Meta dc:Language must occur at least once</sch:assert>  
+      <!-- dc:Date -->
+      <sch:assert test="count(dtbk:meta[@name='dc:Date'])=1">[tpb10] Meta dc:Date=YYYY-MM-DD must occur once</sch:assert>
+      <sch:report test="dtbk:meta[@name='dc:Date' and translate(@content, '0123456789', '0000000000')!='0000-00-00']">[tpb10] Meta dc:Date must have format YYYY-MM-DD</sch:report>
+      <!-- dc:Publisher -->
+      <sch:assert test="count(dtbk:meta[@name='dc:Publisher'])=1">[tpb10] Meta dc:Publisher must occur once</sch:assert>
+    </sch:rule>
+  </sch:pattern>
+  
+  <!-- Rule 11: Root element must have @xml:lang -->
+  <sch:pattern name="dtbook_TPB_xmlLang" id="dtbook_TPB_xmlLang">
+  	<sch:rule context="dtbk:dtbook">
+  		<sch:assert test="@xml:lang">[tpb11] Root element must have an xml:lang attribute</sch:assert>
+  	</sch:rule>
   </sch:pattern>
   
   <!-- Rule 12: Frontmatter starts with doctitle and docauthor -->
@@ -216,9 +244,7 @@
   		<sch:assert test="normalize-space(@id)=@id">ID attributes may not contain whitespace</sch:assert>
   	</sch:rule>
   </sch:pattern>
-  
-  <!-- TPB Structure Guidelines Validation -->
-  
+    
   <!-- Rule 35: Two letter codes in @xml:lang -->
   <sch:pattern name="dtbook_TPB_twoLetterXmlLang" id="dtbook_TPB_twoLetterXmlLang">
   	<sch:rule context="dtbk:*[@xml:lang]">
@@ -325,6 +351,46 @@
   <!-- Rule 48: Headings in notes section in rearmatter -->
   <sch:pattern name="dtbook_TPB_headingsInNotesSection" id="dtbook_TPB_headingsInNotesSection">
     <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:h2">    
+    	<sch:assert test="count(//dtbk:level1/dtbk:h1[.=current()]) +
+    	                  count(//dtbk:level2[@class='chapter']/dtbk:h2[.=current()]) >= 1"
+    	   >[tpb48] Heading in notes section does not exist in the bodymatter of the book</sch:assert>
+    </sch:rule>    
+    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:note">    
+          <sch:assert test="count(//dtbk:level2[@class='chapter' and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h2=current()/parent::dtbk:level2/dtbk:h2]) +
+                            count(//dtbk:level1[descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h1=current()/parent::dtbk:level2/dtbk:h2]) >= 1"
+           >[tpb48] There is no note reference to this note in the corresponding section in the bodymatter</sch:assert>
+    </sch:rule>
+  </sch:pattern>
+  <!--
+  <sch:pattern name="dtbook_TPB_headingsInNotesSection" id="dtbook_TPB_headingsInNotesSection">
+    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:h2">    
+    	<sch:assert test="count(//dtbk:level1[@class='colophon' or @class='dedication' or @class='toc' or
+    	                                      @class='briefToc' or @class='preface'    or @class='introduction' or
+    	                                      @class='glossary' or @class='other'      or @class='bibliography' or
+    	                                      @class='index'    or @class='footnotes'  or @class='rearnotes' or
+    	                                      @class='glossary' or @class='appendix'   or @class='backCoverText' or
+    	                                      @class='chapter']/dtbk:h1[.=current()]) +
+    	                   count(//dtbk:level2[@class='chapter']/dtbk:h2[.=current()]) >= 1"
+    	   >[tpb48] Heading in notes section does not exist in the bodymatter of the book</sch:assert>
+    </sch:rule>    
+    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:note">    
+          <sch:assert test="count(//dtbk:level2[@class='chapter' and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h2=current()/parent::dtbk:level2/dtbk:h2]) +
+                            count(//dtbk:level1[(@class='colophon' or @class='dedication' or @class='toc' or
+    	                                         @class='briefToc' or @class='preface'    or @class='introduction' or
+    	                                         @class='glossary' or @class='other'      or @class='bibliography' or
+    	                                         @class='index'    or @class='footnotes'  or @class='rearnotes' or
+    	                                         @class='glossary' or @class='appendix'   or @class='backCoverText' or
+    	                                         @class='chapter') 
+                                                and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h1=current()/parent::dtbk:level2/dtbk:h2]) >= 1"
+           >[tpb48] There is no note reference to this note in the corresponding section in the bodymatter</sch:assert>
+    </sch:rule>
+  </sch:pattern>
+  -->
+  <!--
+  descendant::text()[not(ancestor::noteref)]
+  
+  <sch:pattern name="dtbook_TPB_headingsInNotesSection" id="dtbook_TPB_headingsInNotesSection">
+    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:h2">    
     	<sch:assert test="count(/dtbk:dtbook/dtbk:book/dtbk:*/dtbk:level1/dtbk:level2[@class='chapter']/dtbk:h2[.=current()]) + 
     	                  count(/dtbk:dtbook/dtbk:book/dtbk:*/dtbk:level1[@class='chapter']/dtbk:h1[.=current()]) +
     	                  count(/dtbk:dtbook/dtbk:book/dtbk:*/dtbk:level1[@class='introduction']/dtbk:h1[.=current()]) +
@@ -337,6 +403,7 @@
            >[tpb48] There is no note reference to this note in the corresponding section in the bodymatter</sch:assert>
     </sch:rule>
   </sch:pattern>
+  -->
   
   <!-- Rule 49: Sidebar must have @render="optional" -->
   <sch:pattern name="dtbook_TPB_renderSidebar" id="dtbook_TPB_renderSidebar">
@@ -467,8 +534,8 @@
   
   <!-- Rule 99: dc:Identifier and dtb:uid must have the same value -->
   <sch:pattern name="dtbook_TPB_IdentifierUid" id="dtbook_TPB_IdentifierUid">
-    <sch:rule context="dtbk:head">
-    	<sch:report test="dtbk:meta[@name='dc:Identifier'] and dtbk:meta[@name='dc:Identifier']/@content!=dtbk:meta[@name='dtb:uid']/@content">[tpb99] dc:Identifier must (if present) have the same value as dtb:uid</sch:report>
+    <sch:rule context="dtbk:head[dtbk:meta[@name='dc:Identifier']]">
+    	<sch:report test="dtbk:meta[@name='dc:Identifier']/@content!=dtbk:meta[@name='dtb:uid']/@content">[tpb99] dc:Identifier must (if present) have the same value as dtb:uid</sch:report>
     </sch:rule>
   </sch:pattern>
   
