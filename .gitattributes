@@ -42,11 +42,6 @@ transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_7.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_8.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_9.mp3 -text
 transformers/se_tpb_filesetcreator/resource/tpbnarrator_res.mp3 -text
-transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/Interop.SpeechLib.dll -text
-transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.application -text svneol=unset#application/octet-stream
-transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe -text
-transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe.manifest -text svneol=unset#application/octet-stream
-transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.pdb -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p1.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p10.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p11.png -text
