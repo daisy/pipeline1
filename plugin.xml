@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.daisy.pipeline.gui.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Jobs Perspective"
+            class="org.daisy.pipeline.gui.JobsPerspective"
+            id="org.daisy.pipeline.gui.perspectives.jobs">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Jobs"
+            class="org.daisy.pipeline.gui.JobsView"
+            id="org.daisy.pipeline.gui.views.jobs">
+      </view>
+      <view
+            class="org.daisy.pipeline.gui.LogView"
+            id="org.daisy.pipeline.gui.views.log"
+            name="Log"/>
+      <view
+            class="org.daisy.pipeline.gui.ProgressView"
+            id="org.daisy.pipeline.gui.views.progress"
+            name="Progress"/>
+   </extension>
+
+</plugin>
