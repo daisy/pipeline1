@@ -2,6 +2,7 @@ package org.daisy.pipeline.gui.jobs;
 
 import java.io.File;
 
+import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.qmanager.Job;
 import org.daisy.dmfc.qmanager.Queue;
 import org.eclipse.jface.viewers.TableViewer;
@@ -21,11 +22,11 @@ public class JobsView extends ViewPart {
     private static final String[] columnNames = { "Status", "Conversion Type",
             "Source", "Destination" };
 
-    private static final int[] columnWidth = { 100,175,200,200};
+    private static final int[] columnWidth = { 100, 175, 200, 200 };
 
     @Override
     public void createPartControl(Composite parent) {
-        //TODO remove after the pipeline core is added
+        // TODO remove after the pipeline core is added
         populateFakeQueue();
         // Create the jobs table
         jobsTable = new Table(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
@@ -52,8 +53,14 @@ public class JobsView extends ViewPart {
 
     private void populateFakeQueue() {
         Queue cue = Queue.getInstance();
-        Job job = new Job(new File("",""),new File("",""),null);
-        cue.addJobToQueue(job);
+        Job job;
+        for (int i = 0; i < 10; i++) {
+            job = new Job(
+                    new File(System.getProperty("user.dir"), "source"+i+".src"),
+                    new File(System.getProperty("user.dir"), "dest"+i+".dst"), 1,
+                    new ScriptHandler());
+            cue.addJobToQueue(job);
+        }
     }
 
     /**

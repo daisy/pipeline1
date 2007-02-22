@@ -6,6 +6,5 @@ Bundle-Version: 0.0.1
 Bundle-Vendor: The DAISY Consortium
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.daisy.pipeline
+ org.eclipse.core.runtime
 Eclipse-LazyStart: false
