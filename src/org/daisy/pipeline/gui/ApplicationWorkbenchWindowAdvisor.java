@@ -19,10 +19,11 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-		configurer.setInitialSize(new Point(400, 300));
+		configurer.setInitialSize(new Point(800, 600));
 		configurer.setShowCoolBar(true);
 		configurer.setShowStatusLine(true);
         configurer.setShowMenuBar(true);
+        configurer.setShowFastViewBars(true);
 		configurer.setTitle("DAISY Pipeline");
 	}
 }
