@@ -1,4 +1,5 @@
 * text=auto !eol
+META-INF/MANIFEST.MF -text
 doc/diagram.png -text
 doc/examples/input/RTF2dtbook.rtf -text svneol=unset#application/octet-stream
 doc/examples/input/simple.odt -text
