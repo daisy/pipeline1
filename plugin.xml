@@ -23,7 +23,7 @@
          point="org.eclipse.ui.views">
       <view
             name="Jobs"
-            class="org.daisy.pipeline.gui.JobsView"
+            class="org.daisy.pipeline.gui.jobs.JobsView"
             id="org.daisy.pipeline.gui.views.jobs">
       </view>
       <view

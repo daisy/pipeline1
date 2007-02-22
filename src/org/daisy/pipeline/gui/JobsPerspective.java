@@ -1,5 +1,6 @@
 package org.daisy.pipeline.gui;
 
+import org.daisy.pipeline.gui.jobs.JobsView;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
