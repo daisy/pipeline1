@@ -13,14 +13,15 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
 public class JobsView extends ViewPart {
-    public static final String ID = "org.daisy.pipeline.gui.views.jobs";
+    public static final String ID = "org.daisy.pipeline.gui.views.jobs"; //$NON-NLS-1$
 
     private TableViewer jobsViewer;
 
     private Table jobsTable;
 
-    private static final String[] columnNames = { "Status", "Conversion Type",
-            "Source", "Destination" };
+    private static final String[] columnNames = {
+            Messages.getString("JobsView.column.status"), Messages.getString("JobsView.column.type"), //$NON-NLS-1$ //$NON-NLS-2$
+            Messages.getString("JobsView.column.source"), Messages.getString("JobsView.column.destination") }; //$NON-NLS-1$ //$NON-NLS-2$
 
     private static final int[] columnWidth = { 100, 175, 200, 200 };
 
@@ -55,10 +56,9 @@ public class JobsView extends ViewPart {
         Queue cue = Queue.getInstance();
         Job job;
         for (int i = 0; i < 10; i++) {
-            job = new Job(
-                    new File(System.getProperty("user.dir"), "source"+i+".src"),
-                    new File(System.getProperty("user.dir"), "dest"+i+".dst"), 1,
-                    new ScriptHandler());
+            job = new Job(new File(System.getProperty("user.dir"), "source" + i
+                    + ".src"), new File(System.getProperty("user.dir"), "dest"
+                    + i + ".dst"), 1, new ScriptHandler());
             cue.addJobToQueue(job);
         }
     }
