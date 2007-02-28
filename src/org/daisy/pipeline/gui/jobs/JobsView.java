@@ -5,11 +5,18 @@ import java.io.File;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.dmfc.qmanager.Job;
 import org.daisy.dmfc.qmanager.Queue;
+import org.eclipse.core.commands.operations.IUndoContext;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.operations.RedoActionHandler;
+import org.eclipse.ui.operations.UndoActionHandler;
 import org.eclipse.ui.part.ViewPart;
 
 public class JobsView extends ViewPart {
@@ -30,8 +37,7 @@ public class JobsView extends ViewPart {
         // TODO remove after the pipeline core is added
         populateFakeQueue();
         // Create the jobs table
-        jobsTable = new Table(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.MULTI | SWT.FULL_SELECTION);
+        jobsTable = new Table(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
         jobsTable.setHeaderVisible(true);
         jobsTable.setLinesVisible(true);
         for (int i = 0; i < columnNames.length; i++) {
@@ -50,15 +56,19 @@ public class JobsView extends ViewPart {
         jobsViewer.setLabelProvider(new JobsLabelProvider());
         jobsViewer.setInput(Queue.getInstance());
         getSite().setSelectionProvider(jobsViewer);
+
+        // create actions
+        IAction moveUpAction = new MoveUpAction(getSite().getWorkbenchWindow());
+        getViewSite().getActionBars()
+        .setGlobalActionHandler("org.daisy.pipeline.gui.action.table.moveUp",moveUpAction);
     }
 
     private void populateFakeQueue() {
         Queue cue = Queue.getInstance();
         Job job;
         for (int i = 0; i < 10; i++) {
-            job = new Job(new File(System.getProperty("user.dir"), "source" + i
-                    + ".src"), new File(System.getProperty("user.dir"), "dest"
-                    + i + ".dst"), 1, new ScriptHandler());
+            job = new Job(new File(System.getProperty("user.dir"), "source" + i + ".src"), new File(System
+                    .getProperty("user.dir"), "dest" + i + ".dst"), 1, new ScriptHandler());
             cue.addJobToQueue(job);
         }
     }

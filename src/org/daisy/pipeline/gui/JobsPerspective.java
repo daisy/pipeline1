@@ -13,7 +13,7 @@ public class JobsPerspective implements IPerspectiveFactory {
 		layout.setEditorAreaVisible(false);
 		layout.setFixed(false);
 		
-		layout.addStandaloneView(JobsView.ID,  false, IPageLayout.LEFT, 1.0f, editorArea);
+		layout.addStandaloneView(JobsView.ID,  true, IPageLayout.LEFT, 1.0f, editorArea);
     }
 
 }

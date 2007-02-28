@@ -35,5 +35,64 @@
             id="org.daisy.pipeline.gui.views.progress"
             name="Progress"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.daisy.pipeline.gui.viewContribution.jobs"
+            targetID="org.daisy.pipeline.gui.views.jobs">
+         <action
+               class="org.daisy.pipeline.gui.jobs.MoveUpActionDelegate"
+               enablesFor="1"
+               icon="icons/tango/16x16/actions/go-up.png"
+               id="org.daisy.pipeline.gui.action.jobs.moveUp"
+               label="Move Up"
+               style="push"
+               toolbarPath="additions"
+               tooltip="Move Up Selection"/>
+      </viewContribution>
+         <!--
+      <viewContribution
+            id="org.daisy.pipeline.gui.viewContribution.jobs"
+            targetID="org.daisy.pipeline.gui.views.jobs">
+         <action
+               class="org.daisy.pipeline.gui.jobs.MoveUpAction"
+               enablesFor="1"
+               icon="icons/tango/16x16/actions/go-up.png"
+               id="org.daisy.pipeline.gui.action.jobs.moveUp"
+               label="Move Up"
+               style="push"
+               toolbarPath="Normal/additions">
+         </action>
+      </viewContribution>
+      -->
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation targetID="pipeline.gui.actionSet.jobs">
+         <part id="org.daisy.pipeline.gui.views.jobs"/>
+      </actionSetPartAssociation>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.daisy.pipeline.gui.actionSet.tableEdition"
+            label="Table Edition"
+            visible="true">
+         <action
+               allowLabelUpdate="true"
+               enablesFor="1"
+               icon="icons/tango/16x16/actions/go-up.png"
+               id="org.daisy.pipeline.gui.action.table.moveUp"
+               label="Move Up"
+               menubarPath="edit/additions"
+               retarget="true"
+               style="push"
+               toolbarPath="Normal/additions"
+               tooltip="Move Up Selection"/>
+      </actionSet>
+      <actionSet
+            id="org.daisy.pipeline.gui.actionSet.jobs"
+            label="Conversion Jobs"/>
+   </extension>
 
 </plugin>
