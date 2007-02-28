@@ -46,8 +46,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         showViewAction = ActionFactory.SHOW_VIEW_MENU.create(window);
         register(showViewAction);
         undoAction = ActionFactory.UNDO.create(window);
+        undoAction.setImageDescriptor(ApplicationIcons.getImageDescriptor(ApplicationIcons.UNDO));
         register(undoAction);
         redoAction = ActionFactory.REDO.create(window);
+        redoAction.setImageDescriptor(ApplicationIcons.getImageDescriptor(ApplicationIcons.REDO));
         register(redoAction);
     }
 

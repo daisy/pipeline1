@@ -14,7 +14,8 @@ public final class ApplicationIcons {
         return AbstractUIPlugin.imageDescriptorFromPlugin(Application.PLUGIN_ID, key);
     }
 
-    public ApplicationIcons() {
+    // Singleton
+    private ApplicationIcons() {
     }
     
     

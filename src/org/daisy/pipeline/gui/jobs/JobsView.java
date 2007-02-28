@@ -7,7 +7,6 @@ import org.daisy.dmfc.qmanager.Job;
 import org.daisy.dmfc.qmanager.Queue;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -60,7 +59,14 @@ public class JobsView extends ViewPart {
         // create actions
         IAction moveUpAction = new MoveUpAction(getSite().getWorkbenchWindow());
         getViewSite().getActionBars()
-        .setGlobalActionHandler("org.daisy.pipeline.gui.action.table.moveUp",moveUpAction);
+                .setGlobalActionHandler("org.daisy.pipeline.gui.action.table.moveUp", moveUpAction);
+        // Hook into Undo/Redo
+        IUndoContext undoContext = PlatformUI.getWorkbench().getOperationSupport().getUndoContext();
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.UNDO.getId(),
+                new UndoActionHandler(getSite(), undoContext));
+
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REDO.getId(),
+                new RedoActionHandler(getSite(), undoContext));
     }
 
     private void populateFakeQueue() {
