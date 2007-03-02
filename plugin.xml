@@ -67,12 +67,6 @@
       -->
    </extension>
    <extension
-         point="org.eclipse.ui.actionSetPartAssociations">
-      <actionSetPartAssociation targetID="pipeline.gui.actionSet.jobs">
-         <part id="org.daisy.pipeline.gui.views.jobs"/>
-      </actionSetPartAssociation>
-   </extension>
-   <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
             id="org.daisy.pipeline.gui.actionSet.tableEdition"
@@ -93,6 +87,13 @@
       <actionSet
             id="org.daisy.pipeline.gui.actionSet.jobs"
             label="Conversion Jobs"/>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.daisy.pipeline.gui.application"
+            name="DAISY Pipeline"/>
    </extension>
 
 </plugin>
