@@ -19,9 +19,9 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
     @Override
     public void initialize(IWorkbenchConfigurer configurer) {
         configurer.setSaveAndRestore(true);
-        configurer.declareImage(ISharedImages.IMG_TOOL_UNDO,
-                ApplicationIcons.getImageDescriptor(ApplicationIcons.UNDO), true);
-        configurer.declareImage(ISharedImages.IMG_TOOL_REDO,
-                ApplicationIcons.getImageDescriptor(ApplicationIcons.REDO), true);
+        configurer.declareImage(ISharedImages.IMG_TOOL_UNDO, PipelineGuiPlugin.getImageDescriptor(IIconsKeys.UNDO),
+                true);
+        configurer.declareImage(ISharedImages.IMG_TOOL_REDO, PipelineGuiPlugin.getImageDescriptor(IIconsKeys.REDO),
+                true);
     }
 }
