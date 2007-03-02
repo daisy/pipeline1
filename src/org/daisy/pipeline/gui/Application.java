@@ -9,8 +9,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class Application implements IPlatformRunnable {
 
-    public static final String PLUGIN_ID = "org.daisy.pipeline.gui";
-
     /*
      * (non-Javadoc)
      * 
