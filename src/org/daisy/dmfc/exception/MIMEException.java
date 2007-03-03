@@ -22,6 +22,7 @@ import org.daisy.util.exception.BaseException;
 
 /**
  * @author Linus Ericson
+ * @deprecated org.daisy.util.mime is used instead.
  */
 public class MIMEException extends BaseException {
 
