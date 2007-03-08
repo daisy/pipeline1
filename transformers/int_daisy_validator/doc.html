@@ -23,6 +23,7 @@ that end users may come in contact with that information. -->
 	<ul>
 		<li><a href="#success">On success</a></li>
 		<li><a href="#failure">On error</a></li>
+		<li><a href="#xmloutput">XML Output</a></li>
 	</ul>
 	</li>
 	<li><a href="#config">Configuration/Customization</a>
@@ -70,7 +71,7 @@ and then also to application- and organization specific subset rules. All using 
 <p>This transformer is input agnostic; will throw an exception if it cannot validate the given content type.</p>
 
 <h2 id="output">Output</h2>
-<p>This transformers has no physical output at the moment (although its viable to consider outputting report documents).</p>
+<!-- <p>This transformers has no physical output at the moment (although its viable to consider outputting report documents).</p> -->
 
 <h3 id="success">On success</h3>
 <!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
@@ -84,7 +85,86 @@ a fatal message, then throw an exception and abort.</p>
 <p>On inability to locate a validator for the input content type, 
 this transformer will send a fatal message, then throw an exception and abort.</p>
 
-<p>See further <a href="params">Parameters</a>.</p>
+<p>See further <a href="#params">Parameters</a>.</p>
+
+<!-- Section on XML Output added my Martin Blomberg 2007-03-08 -->
+<h3 id="xmloutput">XML Output</h3>
+<p>This transformer can be configured to output the validation results to an xml file. 
+The xml report follows a simple scheme and is divided into three parts: head, body and foot.
+
+<h4>Head</h4>
+The file starts with a <tt>head</tt> section containing the elements 
+<tt>dmfcVersion</tt> and <tt>javaVersion</tt>. They hold information about
+which versions of DMFC (Daisy Pipeline) and Java that are being used. The
+DMFC version seen there is the result of the call <tt>org.daisy.dmfc.Version.getVersion()</tt>,
+the Java version is fetched from Java's system properties.
+
+<h4>Body</h4>
+The <tt>body</tt> section contains all messages reported from the transformer, both
+validation errors and possible exceptions thrown. The <tt>message</tt> element - used for validation errors - has no
+child text node, but instead four attributes containing the information:
+<dl>
+<dt>level</dt>
+<dd>Indicates the error level, possible values are <tt>SEVERE</tt>, <tt>WARNING</tt> and <tt>ALL</tt> from
+	<a title="http://java.sun.com/j2se/1.5.0/docs/api/java/util/logging/Level.html" alt="Link to Java's Level class" href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/logging/Level.html"><tt>java.util.logger.Level</tt></a>.</dd>
+
+<dt>msg</dt>
+<dd>A message describing the error.</dd>
+
+<dt>line</dt>
+<dd>The line number of the end of the text where the error occurred.</dd>
+
+<dt>col</dt>
+<dd>The column number of the end of the text where the error occurred.</dd>
+</dl>
+
+<p>The <tt>exception</tt> element is used in a similar way to indicate that an exception 
+was thrown during validation. No child text node, instead the following attributes:</p>
+<dl>
+<dt>level</dt>
+<dd>Indicates the error level, always <tt>SEVERE</tt> when it comes to exceptions.</dd>
+
+<dt>msg</dt>
+<dd>The exception message.</dd>
+
+<dt>str</dt>
+<dd>The exception stacktrace.</dd>
+
+</dl>
+
+<p>Those two elements may occur in any order inside the <tt>body</tt> element.</p>
+
+<h4>Foot</h4>
+The <tt>foot</tt> section contains the element <tt>executionTime</tt>
+which shows the validator execution time using <tt>a h:mm:ss.ms</tt> format.
+
+<h4>Short Example</h4>
+And putting the three parts together gives us the following example:
+
+<pre>
+&lt;?xml version='1.0' encoding='UTF-8'?>
+&lt;?xml-stylesheet type="text/xsl" href="validator.xsl"?>
+&lt;val:validator xmlns:val="http://www.tpb.se/validator/">
+    &lt;val:head xmlns:val="http://www.tpb.se/validator/">
+        &lt;val:dmfcVersion xmlns:val="http://www.tpb.se/validator/">2006-10-17&lt;/val:dmfcVersion>
+        &lt;val:javaVersion xmlns:val="http://www.tpb.se/validator/">1.5.0_05&lt;/val:javaVersion>
+    &lt;/val:head>
+    
+    &lt;val:body xmlns:val="http://www.tpb.se/validator/">
+        &lt;val:message xmlns:val="http://www.tpb.se/validator/" line="-1" col="-1" msg="File not found: dinewfeat02.jpg" level="SEVERE" />
+        &lt;val:message xmlns:val="http://www.tpb.se/validator/" msg="File not found: dicd01.jpg" col="-1" line="-1" level="SEVERE" />
+        &lt;val:message xmlns:val="http://www.tpb.se/validator/" col="41" level="SEVERE" msg="bad character content for element" line="49526" />
+    &lt;/val:body>
+    
+    &lt;val:foot xmlns:val="http://www.tpb.se/validator/">
+        &lt;val:executionTime xmlns:val="http://www.tpb.se/validator/">0:00:16.141&lt;/val:executionTime>
+    &lt;/val:foot>
+&lt;/val:validator>
+</pre>
+
+
+<p>See further <a href="#params">Parameters</a>.</p>
+
 
 <h2 id="config">Configuration/Customization</h2>
 
@@ -107,6 +187,12 @@ this transformer will send a fatal message, then throw an exception and abort.</
 			
 	<dt>abortOnException</dt>
 	<dd>Whether to perform a Transformer abort when a caught exception occurs</dd>
+	
+	<dt>xmlReport</dt>
+	<dd>The destination of the generated xml report/output.</dd>
+	
+	<dt>xmlStylesheet</dt>
+	<dd>The value of the <tt>xml-stylesheet</tt> processing instruction in the generated xml output.</dd>
 </dl>
 
 <h3 id="extConfig">Extended configurability</h3>

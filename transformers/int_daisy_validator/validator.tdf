@@ -59,7 +59,27 @@
 			<default>true</default>
 		</parameter>
 		
+		<!-- 
+			2007-03-07 Martin Blomberg: 
+			adding two parameters for enabling xml output.			
+		-->
+		<parameter required="false" direction="in" type="application/xml">
+			<name>xmlReport</name>
+			<description>Path to xml output</description>
+			<example>/home/user/reports/myreport.xml</example>
+			<default/>
+		</parameter>
 		
+		<parameter required="false" direction="in" type="string">
+			<name>xmlStylesheet</name>
+			<description>
+				The value of the xml-stylesheet processing instruction in the 
+				generated xml output. If absent, no xml-stylesheet will be inserted
+				in the output. Only looked at if xmlReport is not null.
+			</description>
+			<example>validator.xsl</example>
+			<default/>
+		</parameter>
 		
 		<!-- 
 		<parameter required="false" direction="in" type="enum">
