@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskScript version="1.0">
+	<name>Acronym detection</name>
+	<description>Performs abbreviation and acronym detection on a DTBook 2005-1 document</description>
+	
+	<property name="input" value="FIXME" type="application/xml"/>
+	<property name="outputPath" value="FIXME" type="application/xml"/>
+	
+	
+	<task name="se_tpb_xmldetection" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>		
+		<parameter id="abbr">
+			<name>output</name>
+			<value>${outputPath}</value>
+		</parameter>		
+		<parameter>
+			<name>doAbbrAcronymDetection</name>
+			<value>true</value>
+		</parameter>		
+		<parameter>
+			<name>doSentenceDetection</name>
+			<value>false</value>
+		</parameter>		
+		<parameter>
+			<name>doWordDetection</name>
+			<value>false</value>
+		</parameter>
+	</task>
+	
+</taskScript>

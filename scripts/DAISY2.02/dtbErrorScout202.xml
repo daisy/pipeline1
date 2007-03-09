@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskScript version="1.0">
+	<name>Daisy 2.02 Validation</name>
+	<description>Performs error scouting on a Daisy 2.02 DTB. This is not an official validator.</description>
+	
+	<property name="input" value="FIXME" type="application/x-dtbd202ncc+xml"/>
+	
+	<task name="int_daisy_validator" interactive="false">
+
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>WARNING</value>
+		</parameter>
+						
+	</task>
+
+</taskScript>

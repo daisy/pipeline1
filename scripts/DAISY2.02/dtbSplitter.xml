@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskScript version="1.0">
+	<name>DTB Splitter</name>
+	<description>This script splits a Digital Talking Book into volumes of 680MB</description>
+	
+	<property name="input" value="FIXME" type="application/x-dtbd202ncc+xml"/>
+	<property name="outputPath" value="FIXME" type="application/x-filesystemDirectory"/>
+	
+	<task name="se_tpb_dtbSplitterMerger.split" interactive="false">
+
+		<parameter>
+			<name>inputFilePath</name>
+			<value>${input}</value> 
+		</parameter>
+
+		<parameter>
+			<name>volumeSizeInMB</name>
+			<value>680</value>
+		</parameter>		
+	
+		<parameter>
+			<name>outDirPath</name>
+			<value>${outputPath}</value>
+		</parameter>	
+	</task>
+
+</taskScript>
