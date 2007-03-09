@@ -19,8 +19,11 @@ public class ScriptHandler {
 
     private int currentTaskIndex = 0;
 
+    @SuppressWarnings("unchecked")
     public ScriptHandler() {
         super();
+        properties.put("input", new Property("input","FXIME","application/xml"));
+        properties.put("outputPath", new Property("outputPath","FXIME","application/xml"));
     }
 
     public String getDescription() {
