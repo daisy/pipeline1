@@ -13,20 +13,21 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
-public class SelectConvWizardPage extends WizardPage {
+public class SelectScriptWizardPage extends WizardPage {
 
-    public static final String NAME = "selectConv";
+    public static final String NAME = "selectScript";
     private ScriptManager scriptMan;
     private Text descriptionText;
     private IStructuredSelection selection;
 
-    protected SelectConvWizardPage() {
+    protected SelectScriptWizardPage() {
         super(NAME);
         setTitle("Select Conversion");
         setDescription("Select a conversion script for the new job.");
@@ -34,20 +35,24 @@ public class SelectConvWizardPage extends WizardPage {
     }
 
     public void createControl(Composite parent) {
-        // Container composite with 2 columns
-        Composite container = new Composite(parent, SWT.NULL);
-        container.setLayoutData(new GridData(GridData.FILL_BOTH));
-        container.setLayout(new GridLayout(2, false));
+        // Container: SashForm with two Groups (script tree & description)
+        SashForm container = new SashForm(parent,SWT.HORIZONTAL);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        Group scriptGroup = new Group(container,SWT.SHADOW_NONE);
+        scriptGroup.setLayout(layout);
+        scriptGroup.setText("Conversion Scripts");
+        Group descrGroup = new Group(container,SWT.SHADOW_NONE);
+        descrGroup.setLayout (layout);
+        descrGroup.setText("Description");
+        container.setWeights(new int[] {2, 1});
         setControl(container);
 
         // Tree of script files
-        TreeViewer scriptTreeViewer = new TreeViewer(container, SWT.SINGLE
+        TreeViewer scriptTreeViewer = new TreeViewer(scriptGroup, SWT.SINGLE
                 | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-        GridData data = new GridData(GridData.FILL_BOTH);
-        data.horizontalSpan = 1;
-        data.heightHint = 180;
-        data.widthHint = 180;
-        scriptTreeViewer.getTree().setLayoutData(data);
+        scriptTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
         scriptTreeViewer.setContentProvider(new FileTreeContentProvider(
                 scriptMan.getScriptDir()));
         scriptTreeViewer.setLabelProvider(new ScriptsLabelProvider());
@@ -65,19 +70,10 @@ public class SelectConvWizardPage extends WizardPage {
                     }
                 });
 
-        // Container for the 2nd column: label+description
-        Composite descriptionComp = new Composite(container, SWT.NONE);
-        descriptionComp.setLayout(new GridLayout(1, false));
-        // Label of the text area
-        Label descriptionLabel = new Label(descriptionComp, SWT.NONE);
-        descriptionLabel.setText("Converter Description");
         // Descriptive text are
-        final GridData textData = new GridData(GridData.GRAB_VERTICAL);
-        textData.widthHint = 200;
-        textData.heightHint = 210;
-        descriptionText = new Text(descriptionComp, SWT.MULTI | SWT.BORDER
+        descriptionText = new Text(descrGroup, SWT.MULTI | SWT.BORDER
                 | SWT.WRAP | SWT.V_SCROLL);
-        descriptionText.setLayoutData(textData);
+        descriptionText.setLayoutData(new GridData(GridData.FILL_BOTH));
         descriptionText.setEditable(false);
 
         // Init the page contents

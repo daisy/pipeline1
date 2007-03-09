@@ -52,7 +52,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
     public void addPages() {
         super.addPages();
         setWindowTitle("New Job Wizard");
-        addPage(new SelectConvWizardPage());
+        addPage(new SelectScriptWizardPage());
         addPage(new SelectSourceWizardPage());
     }
 
