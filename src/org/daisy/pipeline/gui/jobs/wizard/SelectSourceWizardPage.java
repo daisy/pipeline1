@@ -34,7 +34,6 @@ public class SelectSourceWizardPage extends WizardPage {
         containerLayout.marginLeft = 20;
         containerLayout.marginRight = 20;
         container.setLayout(containerLayout);
-        container.setLayoutData(new GridData(GridData.FILL_BOTH));
         setControl(container);
 
         // Source Field Label
@@ -48,10 +47,8 @@ public class SelectSourceWizardPage extends WizardPage {
                 updatePageComplete();
             }
         });
-        final GridData sourceFieldData = new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_CENTER
-                | GridData.FILL_HORIZONTAL);
-        sourceFileField.setLayoutData(sourceFieldData);
+        sourceFileField.setLayoutData(new GridData(GridData.GRAB_VERTICAL
+                | GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         // Browse button
         final Button browseButton = new Button(container, SWT.NONE);
@@ -76,7 +73,7 @@ public class SelectSourceWizardPage extends WizardPage {
     private void browse() {
         File file = new File(sourceFileField.getText());
         String path = DialogHelper.browseFile(getShell(), file, SWT.OPEN, null);
-        if (path!=null) {
+        if (path != null) {
             sourceFileField.setText(path);
         }
     }

@@ -25,6 +25,7 @@ public class SelectDestWizardPage extends WizardPage {
         super(NAME);
         setTitle("Select Destination");
         setDescription("Select a destination file for the new job.");
+        setPageComplete(false);
     }
 
     public void createControl(Composite parent) {
@@ -34,7 +35,6 @@ public class SelectDestWizardPage extends WizardPage {
         containerLayout.marginLeft = 20;
         containerLayout.marginRight = 20;
         container.setLayout(containerLayout);
-        container.setLayoutData(new GridData(GridData.FILL_BOTH));
         setControl(container);
 
         // Source Field Label
@@ -48,10 +48,8 @@ public class SelectDestWizardPage extends WizardPage {
                 updatePageComplete();
             }
         });
-        final GridData sourceFieldData = new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_CENTER
-                | GridData.FILL_HORIZONTAL);
-        sourceFileField.setLayoutData(sourceFieldData);
+        sourceFileField.setLayoutData(new GridData(GridData.GRAB_VERTICAL
+                | GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         // Browse button
         final Button browseButton = new Button(container, SWT.NONE);
@@ -75,8 +73,9 @@ public class SelectDestWizardPage extends WizardPage {
 
     private void browse() {
         File file = new File(sourceFileField.getText());
-        String path = DialogHelper.browseFile(getShell(), file, SWT.CLOSE, null);
-        if (path!=null) {
+        String path = DialogHelper
+                .browseFile(getShell(), file, SWT.CLOSE, null);
+        if (path != null) {
             sourceFileField.setText(path);
         }
     }
