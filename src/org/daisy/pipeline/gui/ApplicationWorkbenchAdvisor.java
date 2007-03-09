@@ -8,10 +8,13 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+    @Override
+    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
+            IWorkbenchWindowConfigurer configurer) {
         return new ApplicationWorkbenchWindowAdvisor(configurer);
     }
 
+    @Override
     public String getInitialWindowPerspectiveId() {
         return JobsPerspective.ID;
     }
@@ -19,9 +22,9 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
     @Override
     public void initialize(IWorkbenchConfigurer configurer) {
         configurer.setSaveAndRestore(true);
-        configurer.declareImage(ISharedImages.IMG_TOOL_UNDO, PipelineGuiPlugin.getImageDescriptor(IIconsKeys.UNDO),
-                true);
-        configurer.declareImage(ISharedImages.IMG_TOOL_REDO, PipelineGuiPlugin.getImageDescriptor(IIconsKeys.REDO),
-                true);
+        configurer.declareImage(ISharedImages.IMG_TOOL_UNDO, PipelineGuiPlugin
+                .getIcon(IIconsKeys.EDIT_UNDO), true);
+        configurer.declareImage(ISharedImages.IMG_TOOL_REDO, PipelineGuiPlugin
+                .getIcon(IIconsKeys.EDIT_REDO), true);
     }
 }
