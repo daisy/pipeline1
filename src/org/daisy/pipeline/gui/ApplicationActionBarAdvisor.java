@@ -3,6 +3,7 @@ package org.daisy.pipeline.gui;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
@@ -26,11 +27,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction showViewAction;
     private IWorkbenchAction undoAction;
     private IWorkbenchAction redoAction;
+    private IWorkbenchAction newAction;
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
     }
 
+    @Override
     protected void makeActions(final IWorkbenchWindow window) {
         // Creates the actions and registers them.
         // Registering is needed to ensure that key bindings work.
@@ -49,8 +52,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(undoAction);
         redoAction = ActionFactory.REDO.create(window);
         register(redoAction);
+        newAction = ActionFactory.NEW.create(window);
+        register(newAction);
     }
 
+    @Override
     protected void fillMenuBar(IMenuManager menuBar) {
         // Menu Managers
         MenuManager fileMenu = new MenuManager("&File", IWorkbenchActionConstants.M_FILE);
@@ -66,6 +72,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         menuBar.add(helpMenu);
 
         // File menu
+        MenuManager newSubMenu = new MenuManager("&New", ActionFactory.NEW.getId());
+        newSubMenu.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
+        newSubMenu.add(new Separator());
+        newSubMenu.add(newAction);
+        fileMenu.add(newSubMenu);
+        fileMenu.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
+        fileMenu.add(new Separator());
         fileMenu.add(exitAction);
 
         // Edit menu

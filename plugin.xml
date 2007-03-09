@@ -86,7 +86,17 @@
       </actionSet>
       <actionSet
             id="org.daisy.pipeline.gui.actionSet.jobs"
-            label="Conversion Jobs"/>
+            label="Conversion Jobs"
+            visible="true">
+         <action
+               class="org.daisy.pipeline.gui.jobs.NewJobAction"
+               icon="icons/tango/16x16/actions/document-new.png"
+               id="org.daisy.pipeline.gui.action.newJob"
+               label="Job"
+               menubarPath="file/new/new.ext "
+               style="push"
+               toolbarPath="additions"/>
+      </actionSet>
    </extension>
    <extension
          id="product"
@@ -94,6 +104,13 @@
       <product
             application="org.daisy.pipeline.gui.application"
             name="DAISY Pipeline"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="org.daisy.pipeline.gui.jobs.wizard.NewJobWizard"
+            id="org.daisy.pipeline.gui.wizard.newJob"
+            name="New Job Wizard"/>
    </extension>
 
 </plugin>
