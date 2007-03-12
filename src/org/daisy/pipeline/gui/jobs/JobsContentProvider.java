@@ -1,6 +1,6 @@
 package org.daisy.pipeline.gui.jobs;
 
-import org.daisy.dmfc.qmanager.Queue;
+import org.daisy.pipeline.gui.jobs.model.Queue;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 

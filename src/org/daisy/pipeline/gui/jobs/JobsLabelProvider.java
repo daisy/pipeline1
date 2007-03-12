@@ -1,7 +1,7 @@
 package org.daisy.pipeline.gui.jobs;
 
-import org.daisy.dmfc.qmanager.Job;
-import org.daisy.dmfc.qmanager.Status;
+import org.daisy.pipeline.gui.jobs.model.Job;
+import org.daisy.pipeline.gui.jobs.model.Status;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;

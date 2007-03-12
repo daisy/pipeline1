@@ -1,4 +1,4 @@
-package org.daisy.dmfc.qmanager;
+package org.daisy.pipeline.gui.jobs.model;
 
 import java.io.File;
 

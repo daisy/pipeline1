@@ -3,8 +3,8 @@ package org.daisy.pipeline.gui.jobs;
 import java.io.File;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
-import org.daisy.dmfc.qmanager.Job;
-import org.daisy.dmfc.qmanager.Queue;
+import org.daisy.pipeline.gui.jobs.model.Job;
+import org.daisy.pipeline.gui.jobs.model.Queue;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.TableViewer;

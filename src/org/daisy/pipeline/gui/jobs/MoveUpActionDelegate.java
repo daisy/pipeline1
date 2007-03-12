@@ -1,6 +1,6 @@
 package org.daisy.pipeline.gui.jobs;
 
-import org.daisy.dmfc.qmanager.Job;
+import org.daisy.pipeline.gui.jobs.model.Job;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.IUndoContext;
