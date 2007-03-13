@@ -1,7 +1,6 @@
 package org.daisy.pipeline.gui.jobs;
 
 import org.daisy.pipeline.gui.jobs.model.Job;
-import org.daisy.pipeline.gui.jobs.model.Status;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -22,7 +21,7 @@ public class JobsLabelProvider extends LabelProvider implements
         Job job = (Job) element;
         switch (columnIndex) {
         case 0: // COMPLETED_COLUMN - checked or not
-            result = Status.getStatusString(job.getStatus());
+            result = job.getStatus().getLocalizedString();
             break;
         case 1:
             result = job.getScript().getName();
