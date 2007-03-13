@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.daisy.dmfc.exception.ScriptException;
+
 public class ScriptHandler {
 
     private String description = "This is a script";
@@ -52,5 +54,11 @@ public class ScriptHandler {
 
     public int getCurrentTaskIndex() {
         return currentTaskIndex;
+    }
+    
+    public void execute() throws ScriptException {
+        for (int i = 0; i < 10000; i++) {
+            //Nothing
+        }
     }
 }
