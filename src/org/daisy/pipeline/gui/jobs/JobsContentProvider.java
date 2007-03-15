@@ -43,7 +43,7 @@ public class JobsContentProvider implements IStructuredContentProvider,
                 viewer.add(event.getJobs());
             } else {
                 for (Job job : event.getJobs()) {
-                    viewer.insert(job, ++index);
+                    viewer.insert(job,index++);
                 }
             }
             break;
