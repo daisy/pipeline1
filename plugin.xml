@@ -46,6 +46,24 @@
             visible="true">
          <action
                allowLabelUpdate="true"
+               icon="icons/tango/16x16/actions/go-bottom.png"
+               id="org.daisy.pipeline.gui.action.table.moveToBottom"
+               label="Move to Bottom"
+               menubarPath="edit/additions"
+               retarget="true"
+               style="push"
+               tooltip="Move Selection to Bottom"/>
+         <action
+               allowLabelUpdate="true"
+               icon="icons/tango/16x16/actions/go-down.png"
+               id="org.daisy.pipeline.gui.action.table.moveDown"
+               label="Move Down"
+               menubarPath="edit/additions"
+               retarget="true"
+               style="push"
+               tooltip="Move Down Selection"/>
+         <action
+               allowLabelUpdate="true"
                icon="icons/tango/16x16/actions/go-up.png"
                id="org.daisy.pipeline.gui.action.table.moveUp"
                label="Move Up"
@@ -53,6 +71,15 @@
                retarget="true"
                style="push"
                tooltip="Move Up Selection"/>
+         <action
+               allowLabelUpdate="true"
+               icon="icons/tango/16x16/actions/go-top.png"
+               id="org.daisy.pipeline.gui.action.table.moveToTop"
+               label="Move to Top"
+               menubarPath="edit/additions"
+               retarget="true"
+               style="push"
+               tooltip="Move Selection to Top"/>
       </actionSet>
       <actionSet
             id="org.daisy.pipeline.gui.actionSet.jobs"
