@@ -1,56 +1,72 @@
 package org.daisy.pipeline.gui.jobs;
 
+import org.daisy.pipeline.gui.IIconsKeys;
+import org.daisy.pipeline.gui.PipelineGuiPlugin;
 import org.daisy.pipeline.gui.jobs.model.Job;
+import org.daisy.pipeline.gui.jobs.model.JobManager;
+import org.daisy.pipeline.gui.util.DefaultSelectionEnabler;
+import org.daisy.pipeline.gui.util.ISelectionEnabler;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.operations.IOperationHistory;
-import org.eclipse.core.commands.operations.IUndoContext;
+import org.eclipse.core.commands.operations.AbstractOperation;
 import org.eclipse.core.commands.operations.IUndoableOperation;
-import org.eclipse.core.commands.operations.OperationHistoryFactory;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.IViewPart;
 
-public class MoveUpAction extends Action implements ISelectionListener, ActionFactory.IWorkbenchAction {
-    private final IWorkbenchWindow window;
-    private IStructuredSelection selection;
+public class MoveUpAction extends AbstractJobAction {
 
-    public MoveUpAction(final IWorkbenchWindow window) {
-        super();
-        this.window = window;
-        window.getSelectionService().addSelectionListener(this);
+    public MoveUpAction(IViewPart view) {
+        super(view, "Move Up", PipelineGuiPlugin.getIcon(IIconsKeys.GO_UP));
     }
 
     @Override
-    public void run() {
-        IOperationHistory operationHistory = OperationHistoryFactory.getOperationHistory();
-        IUndoContext undoContext = PlatformUI.getWorkbench().getOperationSupport().getUndoContext();
-        IUndoableOperation operation = new MoveUpOperation("Move Up");
-        operation.addContext(undoContext);
-        try {
-            operationHistory.execute(operation, null, null);
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    protected ISelectionEnabler getEnabler() {
+        return new DefaultSelectionEnabler(ISelectionEnabler.Mode.SINGLE,
+                new Class[] { Job.class }) {
+
+            @Override
+            protected boolean checkContent(IStructuredSelection selection) {
+                Job job = (Job) selection.getFirstElement();
+                return JobManager.getInstance().indexOf(job) > 0;
+            }
+
+        };
     }
 
-    public void selectionChanged(IWorkbenchPart part, ISelection incoming) {
-        // Selection containing elements
-        if (incoming instanceof IStructuredSelection) {
-            selection = (IStructuredSelection) incoming;
-            setEnabled(selection.size() == 1 && (selection.getFirstElement()) instanceof Job);
-        } else {
-            // Other selections, for example containing text or of other kinds.
-            setEnabled(false);
-        }
+    @Override
+    protected IUndoableOperation getOperation() {
+        return new AbstractOperation(getText()) {
+            private Job job = MoveUpAction.this.selectedJobs.get(0);
+            private JobManager jobManager = JobManager.getInstance();
+
+            @Override
+            public IStatus execute(IProgressMonitor monitor, IAdaptable info)
+                    throws ExecutionException {
+                redo(monitor, info);
+                return Status.OK_STATUS;
+            }
+
+            @Override
+            public IStatus redo(IProgressMonitor monitor, IAdaptable info)
+                    throws ExecutionException {
+                jobManager.moveUp(job);
+                if (jobManager.indexOf(job) == 0) {
+                    MoveUpAction.this.setEnabled(false);
+                }
+                return Status.OK_STATUS;
+            }
+
+            @Override
+            public IStatus undo(IProgressMonitor monitor, IAdaptable info)
+                    throws ExecutionException {
+                jobManager.moveDown(job);
+                return Status.OK_STATUS;
+            }
+
+        };
     }
 
-    public void dispose() {
-        window.getSelectionService().removeSelectionListener(this);
-    }
 }

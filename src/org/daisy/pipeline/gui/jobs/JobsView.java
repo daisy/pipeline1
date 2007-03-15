@@ -4,9 +4,10 @@ import java.io.File;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.pipeline.gui.jobs.model.Job;
-import org.daisy.pipeline.gui.jobs.model.Queue;
+import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -36,7 +37,8 @@ public class JobsView extends ViewPart {
         // TODO remove after the pipeline core is added
         populateFakeQueue();
         // Create the jobs table
-        jobsTable = new Table(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
+        jobsTable = new Table(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
+                | SWT.MULTI | SWT.FULL_SELECTION);
         jobsTable.setHeaderVisible(true);
         jobsTable.setLinesVisible(true);
         for (int i = 0; i < columnNames.length; i++) {
@@ -53,29 +55,47 @@ public class JobsView extends ViewPart {
         jobsViewer = new TableViewer(jobsTable);
         jobsViewer.setContentProvider(new JobsContentProvider());
         jobsViewer.setLabelProvider(new JobsLabelProvider());
-        jobsViewer.setInput(Queue.getInstance());
+        jobsViewer.setInput(JobManager.getInstance());
         getSite().setSelectionProvider(jobsViewer);
 
-        // create actions
-        IAction moveUpAction = new MoveUpAction(getSite().getWorkbenchWindow());
-        getViewSite().getActionBars()
-                .setGlobalActionHandler("org.daisy.pipeline.gui.action.table.moveUp", moveUpAction);
-        // Hook into Undo/Redo
-        IUndoContext undoContext = PlatformUI.getWorkbench().getOperationSupport().getUndoContext();
-        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.UNDO.getId(),
-                new UndoActionHandler(getSite(), undoContext));
+        // add actions
+        createActions();
+    }
 
-        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REDO.getId(),
+    private void createActions() {
+        // Create actions
+        IAction moveUpAction = new MoveUpAction(this);
+        
+        // Configure the tool bar
+        IToolBarManager toolBar = getViewSite().getActionBars().getToolBarManager();
+        toolBar.add(moveUpAction);
+        
+        // Configure the retargetable actions
+        getViewSite().getActionBars().setGlobalActionHandler(
+                "org.daisy.pipeline.gui.action.table.moveUp", moveUpAction);
+        
+        // Hook into Undo/Redo
+        IUndoContext undoContext = PlatformUI.getWorkbench()
+                .getOperationSupport().getUndoContext();
+        getViewSite().getActionBars().setGlobalActionHandler(
+                ActionFactory.UNDO.getId(),
+                new UndoActionHandler(getSite(), undoContext));
+        getViewSite().getActionBars().setGlobalActionHandler(
+                ActionFactory.REDO.getId(),
                 new RedoActionHandler(getSite(), undoContext));
+        
     }
 
     private void populateFakeQueue() {
-        Queue cue = Queue.getInstance();
+        JobManager jobMan = JobManager.getInstance();
         Job job;
         for (int i = 0; i < 10; i++) {
-            job = new Job(new File(System.getProperty("user.dir"), "source" + i + ".src"), new File(System
-                    .getProperty("user.dir"), "dest" + i + ".dst"), 1, new ScriptHandler());
-            cue.addJobToQueue(job);
+            job = new Job(new ScriptHandler());
+            job.setInputFile(new File(System.getProperty("user.dir"), "source"
+                    + i + ".src"));
+            job.setOutputFile(new File(System.getProperty("user.dir"), "dest"
+                    + i + ".dst"));
+            jobMan.add(job);
         }
     }
 
