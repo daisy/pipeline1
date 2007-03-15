@@ -65,24 +65,30 @@ public class JobsView extends ViewPart {
 
     private void createActions() {
         // Create actions
-        // IAction moveToTopAction = new MoveTopAction(this);
+        IAction moveToTopAction = new MoveToTopAction(this);
         IAction moveUpAction = new MoveUpAction(this);
-        // IAction moveDownAction = new MoveDownAction(this);
-        // IAction moveToBottomAction = new MoveBottomAction(this);
+        IAction moveDownAction = new MoveDownAction(this);
+        IAction moveToBottomAction = new MoveToBottomAction(this);
         // IAction deleteAction = new DeleteAction(this);
 
         // Configure the tool bar
         IToolBarManager toolBar = getViewSite().getActionBars()
                 .getToolBarManager();
-        // toolBar.add(moveToTopAction);
+        toolBar.add(moveToTopAction);
         toolBar.add(moveUpAction);
-        // toolBar.add(moveDownAction);
-        // toolBar.add(moveToBottomAction);
+        toolBar.add(moveDownAction);
+        toolBar.add(moveToBottomAction);
         // toolBar.add(deleteAction);
 
         // Configure the retargetable actions
         getViewSite().getActionBars().setGlobalActionHandler(
+                IActionConstants.MOVE_TO_TOP, moveToTopAction);
+        getViewSite().getActionBars().setGlobalActionHandler(
                 IActionConstants.MOVE_UP, moveUpAction);
+        getViewSite().getActionBars().setGlobalActionHandler(
+                IActionConstants.MOVE_DOWN, moveDownAction);
+        getViewSite().getActionBars().setGlobalActionHandler(
+                IActionConstants.MOVE_TO_BOTTOM, moveToBottomAction);
         // getViewSite().getActionBars().setGlobalActionHandler(
         // ActionFactory.DELETE.getId(), deleteAction);
 
