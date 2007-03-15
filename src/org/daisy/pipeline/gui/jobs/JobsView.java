@@ -69,7 +69,7 @@ public class JobsView extends ViewPart {
         IAction moveUpAction = new MoveUpAction(this);
         IAction moveDownAction = new MoveDownAction(this);
         IAction moveToBottomAction = new MoveToBottomAction(this);
-        // IAction deleteAction = new DeleteAction(this);
+        IAction deleteAction = new DeleteAction(this);
 
         // Configure the tool bar
         IToolBarManager toolBar = getViewSite().getActionBars()
@@ -78,7 +78,7 @@ public class JobsView extends ViewPart {
         toolBar.add(moveUpAction);
         toolBar.add(moveDownAction);
         toolBar.add(moveToBottomAction);
-        // toolBar.add(deleteAction);
+        toolBar.add(deleteAction);
 
         // Configure the retargetable actions
         getViewSite().getActionBars().setGlobalActionHandler(
@@ -89,8 +89,8 @@ public class JobsView extends ViewPart {
                 IActionConstants.MOVE_DOWN, moveDownAction);
         getViewSite().getActionBars().setGlobalActionHandler(
                 IActionConstants.MOVE_TO_BOTTOM, moveToBottomAction);
-        // getViewSite().getActionBars().setGlobalActionHandler(
-        // ActionFactory.DELETE.getId(), deleteAction);
+        getViewSite().getActionBars().setGlobalActionHandler(
+                ActionFactory.DELETE.getId(), deleteAction);
 
         // Hook into Undo/Redo
         IUndoContext undoContext = PlatformUI.getWorkbench()
