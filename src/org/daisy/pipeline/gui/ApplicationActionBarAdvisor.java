@@ -22,12 +22,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     // them
     // in the fill methods. This ensures that the actions aren't recreated
     // when fillActionBars is called with FILL_PROXY.
-    private IWorkbenchAction exitAction;
     private IWorkbenchAction aboutAction;
+    private IWorkbenchAction deleteAction;
+    private IWorkbenchAction exitAction;
+    private IWorkbenchAction newAction;
+    private IWorkbenchAction redoAction;
     private IWorkbenchAction showViewAction;
     private IWorkbenchAction undoAction;
-    private IWorkbenchAction redoAction;
-    private IWorkbenchAction newAction;
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -42,18 +43,20 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         // Registering also provides automatic disposal of the actions when
         // the window is closed.
 
-        exitAction = ActionFactory.QUIT.create(window);
-        register(exitAction);
         aboutAction = ActionFactory.ABOUT.create(window);
         register(aboutAction);
+        deleteAction = ActionFactory.DELETE.create(window);
+        register(deleteAction);
+        exitAction = ActionFactory.QUIT.create(window);
+        register(exitAction);
+        newAction = ActionFactory.NEW.create(window);
+        register(newAction);
+        redoAction = ActionFactory.REDO.create(window);
+        register(redoAction);
         showViewAction = ActionFactory.SHOW_VIEW_MENU.create(window);
         register(showViewAction);
         undoAction = ActionFactory.UNDO.create(window);
         register(undoAction);
-        redoAction = ActionFactory.REDO.create(window);
-        register(redoAction);
-        newAction = ActionFactory.NEW.create(window);
-        register(newAction);
     }
 
     @Override
@@ -84,7 +87,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         // Edit menu
         editMenu.add(undoAction);
         editMenu.add(redoAction);
-
+        //TODO add cut/copy/paste actions
+        editMenu.add(new Separator());
+        editMenu.add(deleteAction);
+        //TODO add selectAll action
+        editMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        editMenu.add(new Separator());
+        //TODO add find/replace action
+        
         // Window menu
         windowMenu.add(showViewAction);
 

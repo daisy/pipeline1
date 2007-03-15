@@ -26,5 +26,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
                 .getIcon(IIconsKeys.EDIT_UNDO), true);
         configurer.declareImage(ISharedImages.IMG_TOOL_REDO, PipelineGuiPlugin
                 .getIcon(IIconsKeys.EDIT_REDO), true);
+        configurer.declareImage(ISharedImages.IMG_TOOL_DELETE, PipelineGuiPlugin
+                .getIcon(IIconsKeys.EDIT_DELETE), true);
     }
 }
