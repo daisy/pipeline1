@@ -21,16 +21,16 @@ import org.eclipse.ui.part.ViewPart;
 
 public class JobsView extends ViewPart {
     public static final String ID = "org.daisy.pipeline.gui.views.jobs"; //$NON-NLS-1$
-
-    private TableViewer jobsViewer;
-
-    private Table jobsTable;
+    public static final int PROP_SEL_JOB_INDEX = 1;
 
     private static final String[] columnNames = {
             Messages.getString("JobsView.column.status"), Messages.getString("JobsView.column.type"), //$NON-NLS-1$ //$NON-NLS-2$
             Messages.getString("JobsView.column.source"), Messages.getString("JobsView.column.destination") }; //$NON-NLS-1$ //$NON-NLS-2$
 
     private static final int[] columnWidth = { 100, 175, 200, 200 };
+
+    private TableViewer jobsViewer;
+    private Table jobsTable;
 
     @Override
     public void createPartControl(Composite parent) {
@@ -64,16 +64,27 @@ public class JobsView extends ViewPart {
 
     private void createActions() {
         // Create actions
+//        IAction moveToTopAction = new MoveTopAction(this);
         IAction moveUpAction = new MoveUpAction(this);
-        
+//        IAction moveDownAction = new MoveDownAction(this);
+//        IAction moveToBottomAction = new MoveBottomAction(this);
+//        IAction deleteAction = new DeleteAction(this);
+
         // Configure the tool bar
-        IToolBarManager toolBar = getViewSite().getActionBars().getToolBarManager();
+        IToolBarManager toolBar = getViewSite().getActionBars()
+                .getToolBarManager();
+//        toolBar.add(moveToTopAction);
         toolBar.add(moveUpAction);
-        
+//        toolBar.add(moveDownAction);
+//        toolBar.add(moveToBottomAction);
+//        toolBar.add(deleteAction);
+
         // Configure the retargetable actions
         getViewSite().getActionBars().setGlobalActionHandler(
                 "org.daisy.pipeline.gui.action.table.moveUp", moveUpAction);
-        
+//        getViewSite().getActionBars().setGlobalActionHandler(
+//                ActionFactory.DELETE.getId(), deleteAction);
+
         // Hook into Undo/Redo
         IUndoContext undoContext = PlatformUI.getWorkbench()
                 .getOperationSupport().getUndoContext();
@@ -83,7 +94,16 @@ public class JobsView extends ViewPart {
         getViewSite().getActionBars().setGlobalActionHandler(
                 ActionFactory.REDO.getId(),
                 new RedoActionHandler(getSite(), undoContext));
-        
+    }
+
+    public TableViewer getViewer() {
+        return jobsViewer;
+    }
+
+    @Override
+    // made public so that action can invoke it
+    public void firePropertyChange(int id) {
+        super.firePropertyChange(id);
     }
 
     private void populateFakeQueue() {
