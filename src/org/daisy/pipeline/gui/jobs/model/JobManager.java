@@ -25,7 +25,7 @@ public class JobManager implements Iterable {
 
     public void add(int index, Job job) {
         jobs.add(index, job);
-        fireJobsChanged(new Job[] { job }, JobManagerEvent.Type.ADD);
+        fireJobsChanged(new Job[] { job }, JobManagerEvent.Type.ADD, index);
     }
 
     public boolean add(Job job) {
@@ -47,7 +47,7 @@ public class JobManager implements Iterable {
         boolean res = jobs.addAll(index, c);
         if (res) {
             fireJobsChanged(c.toArray(new Job[c.size()]),
-                    JobManagerEvent.Type.ADD);
+                    JobManagerEvent.Type.ADD, index);
         }
         return res;
     }
@@ -136,7 +136,7 @@ public class JobManager implements Iterable {
     public int size() {
         return jobs.size();
     }
-    
+
     public Job[] toArray() {
         return jobs.toArray(new Job[jobs.size()]);
     }
@@ -151,7 +151,12 @@ public class JobManager implements Iterable {
     }
 
     private void fireJobsChanged(Job[] jobs, JobManagerEvent.Type type) {
-        JobManagerEvent event = new JobManagerEvent(this, jobs, type);
+        fireJobsChanged(jobs, type, -1);
+    }
+
+    private void fireJobsChanged(Job[] jobs, JobManagerEvent.Type type,
+            int index) {
+        JobManagerEvent event = new JobManagerEvent(this, jobs, index, type);
         for (IJobManagerListener listener : listeners) {
             listener.jobManagerChanged(event);
         }
