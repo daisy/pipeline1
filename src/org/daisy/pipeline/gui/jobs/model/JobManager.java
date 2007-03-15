@@ -76,23 +76,14 @@ public class JobManager implements Iterable {
 
     public void moveDown(Job job) {
         int index = jobs.indexOf(job);
-        if (index > 0) {
+        if (index != -1 && index != jobs.size() - 1) {
             jobs.remove(index);
-            jobs.add(index - 1, job);
+            jobs.add(index + 1, job);
         }
         fireJobsChanged(new Job[] { job }, JobManagerEvent.Type.UPDATE);
     }
 
     public void moveToBottom(Job job) {
-        int index = jobs.indexOf(job);
-        if (index > 0) {
-            jobs.remove(index);
-            jobs.add(0, job);
-        }
-        fireJobsChanged(new Job[] { job }, JobManagerEvent.Type.UPDATE);
-    }
-
-    public void moveToTop(Job job) {
         int index = jobs.indexOf(job);
         if (index != -1 && index != jobs.size() - 1) {
             jobs.remove(index);
@@ -101,11 +92,20 @@ public class JobManager implements Iterable {
         fireJobsChanged(new Job[] { job }, JobManagerEvent.Type.UPDATE);
     }
 
+    public void moveToTop(Job job) {
+        int index = jobs.indexOf(job);
+        if (index > 0) {
+            jobs.remove(index);
+            jobs.add(0, job);
+        }
+        fireJobsChanged(new Job[] { job }, JobManagerEvent.Type.UPDATE);
+    }
+
     public void moveUp(Job job) {
         int index = jobs.indexOf(job);
-        if (index != -1 && index != jobs.size() - 1) {
+        if (index > 0) {
             jobs.remove(index);
-            jobs.add(index + 1, job);
+            jobs.add(index - 1, job);
         }
         fireJobsChanged(new Job[] { job }, JobManagerEvent.Type.UPDATE);
     }
@@ -135,6 +135,10 @@ public class JobManager implements Iterable {
 
     public int size() {
         return jobs.size();
+    }
+    
+    public Job[] toArray() {
+        return jobs.toArray(new Job[jobs.size()]);
     }
 
     public void addJobsManagerListener(IJobManagerListener listener) {
