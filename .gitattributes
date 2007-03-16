@@ -22,6 +22,7 @@ lib/wstx-lgpl-2.0.6.jar -text
 lib/xercesImpl.jar -text
 resources/transformer.rng -text svneol=unset#application/octet-stream
 src/org/daisy/util/xml/catalog/svg/svg11-flat.dtd -text svneol=unset#application/octet-stream
+src/org/daisy/util/xml/validation/SimpleValidator.java -text
 transformers/int_daisy_validator/XMLReporter.java -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_1.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_10.mp3 -text
