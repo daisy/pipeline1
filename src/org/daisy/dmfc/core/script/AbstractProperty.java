@@ -70,7 +70,7 @@ public abstract class AbstractProperty {
             String propName = matcher.group(1);
             // FIXME make sure property exists
             String propValue = mProperties.get(propName).getValue();            
-            matcher.appendReplacement(sb, propValue);
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(propValue));
         }
         matcher.appendTail(sb);
         return sb.toString();
@@ -97,7 +97,7 @@ public abstract class AbstractProperty {
             } else {
             	propValue = mProperties.get(propName).getValue(runnerProperties);  
             }
-            matcher.appendReplacement(sb, propValue);
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(propValue));
         }
         matcher.appendTail(sb);
         return sb.toString();
