@@ -1,6 +1,6 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
+ * Daisy Pipeline
+ * Copyright (C) 2007  Daisy Consortium
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,58 +18,78 @@
  */
 package org.daisy.dmfc.core.script;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
-import org.daisy.util.xml.XPathUtils;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.daisy.dmfc.core.transformer.TransformerHandler;
 
 /**
- * A task in a script file.
+ * A class representing a task in the script file.
  * @author Linus Ericson
  */
 public class Task {
-	
 	private String name;
 	private boolean interactive;
-	private Map parameters = new LinkedHashMap();
+	private Map<String,TaskParameter> parameters;
+	private TransformerHandler handler;
 	
 	/**
-	 * Creates a new <code>Task</code>
-	 * @param element the element to create the <code>Task</code> from
-	 * @param properties any properties that have been set in the script file
+	 * Constructor.
+	 * @param name the name of the task
+	 * @param interactive
 	 */
-	public Task(Element element, Map properties) {
-	    name = XPathUtils.valueOf(element, "@name");		
-		interactive = Boolean.valueOf(XPathUtils.valueOf(element, "@interactive")).booleanValue();
-		
-		NodeList nodeList = XPathUtils.selectNodes(element, "parameter");
-		for (int i = 0; i < nodeList.getLength(); ++i) {
-		    Element parameter = (Element)nodeList.item(i);
-		    Parameter param = new Parameter(parameter, properties);
-		    parameters.put(param.getName(), param);
-		}		
+	Task(String name, boolean interactive) {
+		this.name = name;
+		this.interactive = interactive;
+		this.parameters = new HashMap<String, TaskParameter>();
 	}
+
 	/**
-	 * @return Returns the interactive.
+	 * Can the transformer be run in interactive mode?
+	 * @return
 	 */
 	public boolean isInteractive() {
 		return interactive;
 	}
 
 	/**
-	 * @return Returns the name.
+	 * Gets the name of the task
+	 * @return
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @return Returns the parameters.
+	 * Gets a Map containing all task parameters
+	 * @return
 	 */
-	public Map getParameters() {
+	public Map<String, TaskParameter> getParameters() {
 		return parameters;
 	}
-
+	
+	/**
+	 * Adds a task parameter
+	 * @param name the name if the parameter to add
+	 * @param parameter the parameter itself
+	 */
+	void addParameter(String name, TaskParameter parameter) {
+		this.parameters.put(name, parameter);
+	}
+	
+	/**
+	 * Sets the Transformerhandler to be associated with this task.
+	 * @param handler
+	 */
+	void setTransformerHandler(TransformerHandler handler) {
+		this.handler = handler;
+	}
+	
+	/**
+	 * Gets the TransformerHandler associated with this task.
+	 * @return
+	 */
+	TransformerHandler getTransformerHandler() {
+		return this.handler;
+	}
 }

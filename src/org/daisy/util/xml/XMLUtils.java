@@ -21,11 +21,10 @@ package org.daisy.util.xml;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 
 import org.daisy.util.xml.peek.PeekResult;
-import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.peek.Peeker;
+import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.validation.SchemaLanguageConstants;
 import org.xml.sax.Attributes;
 

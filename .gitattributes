@@ -21,6 +21,28 @@ lib/tagsoup-1.0rc4.jar -text
 lib/wstx-lgpl-2.0.6.jar -text
 lib/xercesImpl.jar -text
 resources/transformer.rng -text svneol=unset#application/octet-stream
+src/org/daisy/dmfc/core/script/AbstractProperty.java -text
+src/org/daisy/dmfc/core/script/Creator.java -text
+src/org/daisy/dmfc/core/script/Parser.java -text
+src/org/daisy/dmfc/core/script/Runner.java -text
+src/org/daisy/dmfc/core/script/Script.java -text
+src/org/daisy/dmfc/core/script/ScriptParameter.java -text
+src/org/daisy/dmfc/core/script/ScriptProperty.java -text
+src/org/daisy/dmfc/core/script/ScriptRunner.java -text
+src/org/daisy/dmfc/core/script/ScriptValidationException.java -text
+src/org/daisy/dmfc/core/script/StringProperty.java -text
+src/org/daisy/dmfc/core/script/TaskParameter.java -text
+src/org/daisy/dmfc/core/script/datatype/BooleanDatatype.java -text
+src/org/daisy/dmfc/core/script/datatype/Datatype.java -text
+src/org/daisy/dmfc/core/script/datatype/DatatypeException.java -text
+src/org/daisy/dmfc/core/script/datatype/EnumDatatype.java -text
+src/org/daisy/dmfc/core/script/datatype/EnumItem.java -text
+src/org/daisy/dmfc/core/script/datatype/FileDatatype.java -text
+src/org/daisy/dmfc/core/script/datatype/IntegerDatatype.java -text
+src/org/daisy/dmfc/core/script/datatype/StringDatatype.java -text
+src/org/daisy/dmfc/core/script/script-1.0.rng -text
+src/org/daisy/dmfc/core/script/script-2.0.rng -text
+src/org/daisy/dmfc/core/script/script10to20.xsl -text
 src/org/daisy/util/xml/catalog/svg/svg11-flat.dtd -text svneol=unset#application/octet-stream
 src/org/daisy/util/xml/validation/SimpleValidator.java -text
 transformers/int_daisy_validator/XMLReporter.java -text

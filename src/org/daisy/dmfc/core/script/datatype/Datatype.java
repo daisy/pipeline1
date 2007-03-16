@@ -1,6 +1,6 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
+ * Daisy Pipeline
+ * Copyright (C) 2007  Daisy Consortium
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,37 +16,37 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.daisy.dmfc.core.script;
+package org.daisy.dmfc.core.script.datatype;
 
-public class Property {
-	private String name;
-	private String value;
-	private String type;
+/**
+ * Abstract base class for all script parameter data types.
+ * @author Linus Ericson
+ */
+public abstract class Datatype {	
+	public static enum Type {BOOLEAN, ENUM, STRING, INTEGER, FILE};
 	
-	public Property(String propName, String propValue, String propType) {
-		name = propName;
-		value = propValue;
-		type = propType;
+	private Type type;
+	
+	/**
+	 * Constructor.
+	 * @param type the type of created datatype
+	 */
+	public Datatype(Type type) {
+		this.type = type;
 	}
 	
-	public Property(String propName, String propValue) {
-		this(propName, propValue, null);
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getType() {
+	/**
+	 * Gets the type
+	 * @return the type
+	 */
+	public Type getType() {
 		return type;
 	}
 	
+	/**
+	 * Validate the supplied value against this datatype.
+	 * @param value the value to validate
+	 * @throws DatatypeException if the supplied value isn't valid
+	 */
+	public abstract void validate(String value) throws DatatypeException;
 }

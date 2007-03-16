@@ -1,6 +1,6 @@
 /*
  * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
+ * Copyright (C) 2005-2007  Daisy Consortium
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,12 +36,14 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.dmfc.core.script.Creator;
+import org.daisy.dmfc.core.script.Runner;
+import org.daisy.dmfc.core.script.Script;
+import org.daisy.dmfc.core.script.ScriptRunner;
+import org.daisy.dmfc.core.script.ScriptValidationException;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.core.transformer.TransformerInfo;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
-import org.daisy.dmfc.exception.MIMEException;
-import org.daisy.dmfc.exception.ScriptAbortException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.dmfc.logging.LoggingPropertiesReader;
@@ -68,7 +70,10 @@ public class DMFCCore extends EventSender {
     private static File homeDirectory = null;
     
 	private InputListener inputListener;
-	private Map transformerHandlers = new HashMap();	
+	private Map transformerHandlers = new HashMap();
+	
+	private Creator mCreator;
+	private Runner mRunner;	
 	
 	/**
 	 * Create an instance of DMFC using the default locale.
@@ -127,6 +132,9 @@ public class DMFCCore extends EventSender {
 		if (!reloadTransformers()) {
 		    throw new DMFCConfigurationException("Cannot load the transformers");
 		}
+		
+		mCreator = new Creator(transformerHandlers, this.getEventListeners());
+		mRunner = new Runner(this.getEventListeners());
 	}	
 
 	/**
@@ -261,74 +269,48 @@ public class DMFCCore extends EventSender {
 	    return transformerHandlers.values();
 	}
 	
+	public Map getTransformerHandlers() {
+	    return transformerHandlers;
+	}
+	
 	public TransformerInfo getTransformerInfo(String name) {
 		return (TransformerInfo)transformerHandlers.get(name);
 	}
 	
 	/**
-	 * Executes a task script.
-	 * @param script the script to execute
-	 * @return true if the exeution was successful, false otherwise.
+	 * Creates a new Script object from a script file
+	 * @param url
+	 * @return
+	 * @throws ScriptValidationException
 	 */
-	public boolean executeScript(File script) {		
-		boolean ret = false;
-		try {
-			Validator validator = new RelaxngSchematronValidator(new File(getHomeDirectory().getPath() + File.separator + "resources", "script.rng"), null,true,false);
-			ScriptHandler handler = new ScriptHandler(script, transformerHandlers, getEventListeners(), validator);
-			handler.execute();
-			ret = true;
-		} catch (ScriptAbortException e) {
-				sendMessage(Level.SEVERE, "Script aborted");			
-		} catch (ScriptException e) {
-		    sendMessage(Level.SEVERE, i18n("SCRIPT_EXCEPTION", e.getMessage()));
-			if (e.getRootCause() != null) {
-			    String msg = "";
-			    String[] msgs = e.getRootCauseMessages();			    
-			    for (int i = 0; i < msgs.length; ++i) {
-			        msg = msgs[i] + "\n";
-			    }
-				sendMessage(Level.SEVERE, i18n("ROOT_CAUSE", msg));				
-			}
-		} catch (ValidationException e) {
-		    sendMessage(Level.SEVERE, i18n("SCRIPT_VALIDATION_PROBLEM", e.getMessage()));
-			if (e.getRootCause() != null) {
-				sendMessage(Level.SEVERE, i18n("ROOT_CAUSE", e.getRootCause().getMessage()));
-			}
-		} catch (MIMEException e) {
-			if (e.getRootCause() != null) {
-			    String msg = "";
-			    String[] msgs = e.getRootCauseMessages();			    
-			    for (int i = 0; i < msgs.length; ++i) {
-			        if (msgs[i] != null) { 
-			            msg = msgs[i] + "\n";
-			        }
-			    }
-				sendMessage(Level.SEVERE, i18n("ROOT_CAUSE", msg));
-			}
-        }
-		return ret;
+	public Script newScript(URL url) throws ScriptValidationException {
+		return mCreator.newScript(url);
 	}
 	
 	/**
-	 * Validates a task script
-	 * @param script the script to validate
-	 * @throws ValidationException
+	 * Execute a script contained in a ScriptRunner object.
+	 * @param scriptRunner
 	 * @throws ScriptException
-	 * @throws MIMEException
 	 */
-	public void validateScript(File script) throws ValidationException, ScriptException, MIMEException {
-		Validator validator = new RelaxngSchematronValidator(new File(getHomeDirectory().getPath() + File.separator + "resources", "script.rng"), null,true,false);
-		new ScriptHandler(script, transformerHandlers, getEventListeners(), validator);
+	public void execute(ScriptRunner scriptRunner) throws ScriptException {
+		this.mRunner.execute(scriptRunner);
 	}
-    
-    public ScriptHandler createScript(File templateScript) throws ValidationException, ScriptException, MIMEException {
-        Validator validator = new RelaxngSchematronValidator(new File(getHomeDirectory().getPath() + File.separator + "resources", "script.rng"), null,true,false);
-        ScriptHandler handler = new ScriptHandler(templateScript, transformerHandlers, getEventListeners(), validator);
-        return handler;
-    }
-    
-    public void executeScript(ScriptHandler handler) throws ScriptException {
-        handler.execute();
-    }
-    
+	
+	/**
+	 * Gets the number of completed tasks in the current script.
+	 * If no script is currently being executed, 0 is returned.
+	 * @return
+	 */
+	public int getCompletedTasks() {
+		return mRunner.getCompletedTasks();
+	}
+	
+	/**
+	 * Is a script currently being run?
+	 * @return
+	 */
+	public boolean isRunning() {
+		return mRunner.isRunning();
+	}
+	
 }

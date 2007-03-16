@@ -179,7 +179,7 @@ abstract class FilesetFileImpl extends EFile implements FilesetFile, IEFile {
     	return myExceptions;
     }
 
-	public int compareTo(Object arg0) {
+	public int compareTo(Comparable<Object> arg0) {
 		if(arg0.equals(this)){
 			return 0;
 		}

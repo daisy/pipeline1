@@ -26,10 +26,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -168,77 +166,14 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		}		
 		
 		// Turn the parameters to a simple key->value string map
-		Map params = new LinkedHashMap();
+		/*Map params = new LinkedHashMap();
 		for (Iterator it = runParameters.entrySet().iterator(); it.hasNext(); ) {
 		    Map.Entry entry = (Map.Entry)it.next();
 		    params.put(entry.getKey(), ((org.daisy.dmfc.core.script.Parameter)entry.getValue()).getValue());
 		}
-				
-		return transformer.executeWrapper(params, transformerDirectory);
-	}
-	
-	/**
-	 * Checks if the parameters in a task script are valid for this Transformer.
-	 * Also add any hard-coded parameters. 
-	 * @param params a collection of parameters
-	 */
-	public void validateParameters(Map params) throws ValidationException {
-		HashMap map = new HashMap();
-
-		// Add all hard-coded parameters in the TDF to the script parameters
-		for (Iterator it = parameters.iterator(); it.hasNext(); ) {
-		    Parameter param = (Parameter)it.next();
-			if (param.getValue() != null) {
-			    if (params.containsKey(param.getName())) {			        
-			        throw new ValidationException(i18n("PARAM_NOT_BY_USER", param.getName()));
-			    }
-			    org.daisy.dmfc.core.script.Parameter scriptParameter = new org.daisy.dmfc.core.script.Parameter(param.getName(), param.getValue()); 
-			    params.put(param.getName(), scriptParameter);
-			}
-		}
-		
-		// Make sure there are no parameters in the script file that is not in the TDF.
-		for (Iterator it = parameters.iterator(); it.hasNext(); ) {
-			Parameter transformerParam = (Parameter)it.next();			
-			map.put(transformerParam.getName(), transformerParam);
-		}		
-		for (Iterator it = params.values().iterator(); it.hasNext(); ) {
-			org.daisy.dmfc.core.script.Parameter scriptParameter = (org.daisy.dmfc.core.script.Parameter)it.next();
-			Parameter transformerParameter = (Parameter)map.get(scriptParameter.getName());
-			if (transformerParameter == null) {
-			    throw new ValidationException(i18n("PARAMETER_NOT_RECOGNIZED", scriptParameter.getName(), getName()));
-			}
-		}		
-		
-		// Make sure there are no required parameters in the TDF that are not present in the script file
-		for (Iterator it = parameters.iterator(); it.hasNext(); ) {
-			Parameter transformerParam = (Parameter)it.next();
-			if (transformerParam.isRequired()) {
-				org.daisy.dmfc.core.script.Parameter scriptParam = (org.daisy.dmfc.core.script.Parameter)params.get(transformerParam.getName());
-				if (scriptParam == null) {
-				    throw new ValidationException(i18n("PARAMETER_REQUIRED", transformerParam.getName(), getName()));
-				}
-			} else {
-			    org.daisy.dmfc.core.script.Parameter scriptParam = (org.daisy.dmfc.core.script.Parameter)params.get(transformerParam.getName());
-				if (scriptParam == null) {
-					params.put(transformerParam.getName(), new org.daisy.dmfc.core.script.Parameter(transformerParam.getName(), transformerParam.getDefaultValue()));
-				}
-			}
-		}
-		
-		// Make sure values of enum parameters matches a valid enum value
-		for (Iterator it = parameters.iterator(); it.hasNext(); ) {
-		    Parameter transformerParam = (Parameter)it.next();
-		    // Find paramters eith enum values
-		    if (transformerParam.getEnumValues() != null) {
-		        // Find the matching script file parameter value
-		        String scriptParamValue = ((org.daisy.dmfc.core.script.Parameter)params.get(transformerParam.getName())).getValue();		        
-		        Collection enumValues = transformerParam.getEnumValues();
-		        if (!enumValues.contains(scriptParamValue)) {
-		            throw new ValidationException(i18n("PARAMETER_NOT_IN_ENUM_VALUES", transformerParam.getName(), scriptParamValue));
-		        }
-		    }
-		}
+		*/		
+		//return transformer.executeWrapper(params, transformerDirectory);
+		return transformer.executeWrapper(runParameters, transformerDirectory);
 	}
 	
 	/**
