@@ -20,7 +20,6 @@ lib/saxon8.jar -text
 lib/tagsoup-1.0rc4.jar -text
 lib/wstx-lgpl-2.0.6.jar -text
 lib/xercesImpl.jar -text
-resources/transformer.rng -text svneol=unset#application/octet-stream
 src/org/daisy/dmfc/core/script/AbstractProperty.java -text
 src/org/daisy/dmfc/core/script/Creator.java -text
 src/org/daisy/dmfc/core/script/Parser.java -text
@@ -43,6 +42,7 @@ src/org/daisy/dmfc/core/script/datatype/StringDatatype.java -text
 src/org/daisy/dmfc/core/script/script-1.0.rng -text
 src/org/daisy/dmfc/core/script/script-2.0.rng -text
 src/org/daisy/dmfc/core/script/script10to20.xsl -text
+src/org/daisy/dmfc/core/transformer/transformer.rng -text svneol=unset#application/octet-stream
 src/org/daisy/util/xml/catalog/svg/svg11-flat.dtd -text svneol=unset#application/octet-stream
 src/org/daisy/util/xml/validation/SimpleValidator.java -text
 transformers/int_daisy_validator/XMLReporter.java -text
