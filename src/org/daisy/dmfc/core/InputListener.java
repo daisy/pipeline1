@@ -18,6 +18,8 @@
  */
 package org.daisy.dmfc.core;
 
+import org.daisy.dmfc.core.message.TransformerMessage;
+
 /**
  * A user interface implementing this interface will get requests 
  * of user input from Transformers (provided the Transformers are
@@ -31,9 +33,20 @@ public interface InputListener {
 	 * Get (interactive) input from the user.
 	 * @param prompt
 	 * @return the input from the user
+	 * @deprecated 
 	 */
 	public String getInputAsString(Prompt prompt);
+
+	/**
+	 * Get (interactive) input from the user.
+	 * @param message
+	 * @return the input from the user
+	 */
+	public String getInputAsString(TransformerMessage message);
 	
+	/**
+	 * This method reflects a user request on process abortion.
+	 */
 	public boolean isAborted();
 	
 }

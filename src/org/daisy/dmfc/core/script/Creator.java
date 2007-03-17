@@ -62,10 +62,11 @@ public class Creator extends EventSender implements ErrorHandler {
 	 * @param handlers a set of TransformerHandlers
 	 * @param eventListeners a set of EventListeners
 	 */
-	public Creator(Map<String,TransformerHandler> handlers, Set<EventListener> eventListeners) {
+	public Creator(Map<String,TransformerHandler> handlers, Set eventListeners) {
 		super(eventListeners);
 		this.mHandlers = handlers;
 	}
+
 	
 	/**
 	 * Create a new Script from a URL to a script file. A version 1.0

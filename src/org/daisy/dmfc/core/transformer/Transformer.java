@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */package org.daisy.dmfc.core.transformer;
+ */
+package org.daisy.dmfc.core.transformer;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -29,6 +31,7 @@ import java.util.logging.Level;
 import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.Prompt;
+import org.daisy.dmfc.core.listener.TransformerProgressListener;
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.execution.AbortListener;
@@ -87,7 +90,9 @@ public abstract class Transformer extends EventSender {
 	    }
 	    boolean ret;
 	    transformerDirectory = dir;
-	    status(true);
+	    //status(true);
+	    //mg 20070316: instead of deprecated status(bool):
+	    sendTransformerStatusMessage(true);
 	    this.progress(0);
         startTime = System.currentTimeMillis();
 	    ret = execute(parameters);
@@ -95,11 +100,27 @@ public abstract class Transformer extends EventSender {
 	        throw new TransformerAbortException(messageOriginator + " aborted.");
 	    }
 	    this.progress(1);
-	    status(false);
+	    //status(false);
+	    //mg 20070316: instead of deprecated status(bool):
+	    sendTransformerStatusMessage(false);
 	    return ret;
 	}
 	
-    /**
+    private void sendTransformerStatusMessage(boolean running) {
+		for (Iterator iter = this.getEventListeners().iterator(); iter.hasNext();) {
+			Object listener = iter.next();
+			if(listener instanceof TransformerProgressListener) {
+				if(running) {
+					((TransformerProgressListener)listener).transformerStart(this);
+				}else{
+					((TransformerProgressListener)listener).transformerEnd(this);
+				}
+			}
+			
+		}		
+	}
+
+	/**
      * Sends a progress report to all listeners.
      * @param progress the progress
      */

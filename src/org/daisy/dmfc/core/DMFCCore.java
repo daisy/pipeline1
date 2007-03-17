@@ -26,6 +26,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -36,6 +37,9 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.daisy.dmfc.core.listener.MessageListener;
+import org.daisy.dmfc.core.listener.ScriptProgressListener;
+import org.daisy.dmfc.core.listener.TransformerProgressListener;
 import org.daisy.dmfc.core.script.Creator;
 import org.daisy.dmfc.core.script.Runner;
 import org.daisy.dmfc.core.script.Script;
@@ -51,6 +55,7 @@ import org.daisy.dmfc.logging.MessageLogger;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.i18n.I18n;
 import org.daisy.util.xml.validation.RelaxngSchematronValidator;
+import org.daisy.util.xml.validation.SimpleValidator;
 import org.daisy.util.xml.validation.ValidationException;
 import org.daisy.util.xml.validation.Validator;
 
@@ -75,33 +80,55 @@ public class DMFCCore extends EventSender {
 	private Creator mCreator;
 	private Runner mRunner;	
 	
+
+	/**
+	 * Default constructor. Create an instance of DMFC.
+	 * @param inListener a listener of (user) input events
+	 * @param MessageListener
+	 * @param TransformerProgressListener
+	 * @param ScriptProgressListener
+	 * @param locale the locale to use
+	 * @throws DMFCConfigurationException
+	 */
+	public DMFCCore(InputListener inListener, MessageListener msgListener, TransformerProgressListener tpListener, ScriptProgressListener spListener, Locale locale) throws DMFCConfigurationException {
+		super(msgListener, tpListener, spListener);
+		inputListener = inListener;
+		initialize(locale);
+	}
+
+			
 	/**
 	 * Create an instance of DMFC using the default locale.
 	 * This is the same as <code>new DMFCCore(a_inputListener, a_eventListener, new Locale("en"))</code>. 
 	 * @param inListener
 	 * @param evListener
 	 * @throws DMFCConfigurationException
+	 * @deprecated This constructor uses the old listener implementation
 	 */
 	public DMFCCore(InputListener inListener, EventListener evListener) throws DMFCConfigurationException {
 	    this(inListener, evListener, new Locale("en"));
 	}
-	
+
+
 	/**
 	 * Create an instance of DMFC.
 	 * @param inListener a listener of (user) input events
 	 * @param evListener a listener of events
 	 * @param locale the locale to use
 	 * @throws DMFCConfigurationException
+	 * @deprecated This constructor uses the old listener implementation
 	 */
 	public DMFCCore(InputListener inListener, EventListener evListener, Locale locale) throws DMFCConfigurationException {
 		super(evListener);
 		inputListener = inListener;
+		initialize(locale);
+	}
+
+
+	
+	private void initialize(Locale locale) throws DMFCConfigurationException, SecurityException {
 		Locale.setDefault(locale);
 		
-		/*System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
-		System.setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
-		System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration","com.sun.org.apache.xerces.internal.parsers.XML11Configuration");
-			*/	
 		// Set DMFC home dir
 		homeDirectory = getHomeDir();
 		System.setProperty("dmfc.home", getHomeDirectory().getAbsolutePath());
@@ -117,7 +144,8 @@ public class DMFCCore extends EventSender {
 		I18n.setDefaultBundle(bundle);				
 
 		TempFile.setTempDir(new File(System.getProperty("dmfc.tempDir")));
-			
+	
+//mg: logging disabled for now		
 		// Setup logging
 		Logger lg = Logger.getLogger("");
         Handler[] handlers = lg.getHandlers();
@@ -189,7 +217,10 @@ public class DMFCCore extends EventSender {
 	 */
 	public boolean reloadTransformers() {
 		try {
-			Validator validator = new RelaxngSchematronValidator(new File(getHomeDirectory().getPath() + File.separator + "resources", "transformer.rng"), null,true,true);
+			//Validator validator = new RelaxngSchematronValidator(new File(getHomeDirectory().getPath() + File.separator + "resources", "transformer.rng"), null,true,true);
+			//after moving the transformer rng
+			Validator validator = new RelaxngSchematronValidator(this.getClass().getResource("./transformer/transformer.rng"), null,true,true);
+    					
 			sendMessage(Level.CONFIG, i18n("RELOADING_TRANSFORMERS"));
 			transformerHandlers.clear();		
 			addTransformers(new File(getHomeDirectory(), "transformers"), validator);			
@@ -293,7 +324,9 @@ public class DMFCCore extends EventSender {
 	 * @throws ScriptException
 	 */
 	public void execute(ScriptRunner scriptRunner) throws ScriptException {
+		sendScriptStatusMessage(true,scriptRunner.getScript());
 		this.mRunner.execute(scriptRunner);
+		sendScriptStatusMessage(false,scriptRunner.getScript());
 	}
 	
 	/**
@@ -313,4 +346,17 @@ public class DMFCCore extends EventSender {
 		return mRunner.isRunning();
 	}
 	
+    private void sendScriptStatusMessage(boolean running, Script script) {
+		for (Iterator iter = this.getEventListeners().iterator(); iter.hasNext();) {
+			Object listener = iter.next();
+			if(listener instanceof ScriptProgressListener) {
+				if(running) {
+					((ScriptProgressListener)listener).scriptStart(script);					
+				}else{
+					((ScriptProgressListener)listener).scriptEnd(script);
+				}
+			}			
+		}		
+	}
+
 }

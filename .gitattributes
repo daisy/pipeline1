@@ -20,6 +20,15 @@ lib/saxon8.jar -text
 lib/tagsoup-1.0rc4.jar -text
 lib/wstx-lgpl-2.0.6.jar -text
 lib/xercesImpl.jar -text
+src/org/daisy/dmfc/core/listener/MessageListener.java -text
+src/org/daisy/dmfc/core/listener/ScriptProgressListener.java -text
+src/org/daisy/dmfc/core/listener/TransformerProgressListener.java -text
+src/org/daisy/dmfc/core/listener/package.html -text
+src/org/daisy/dmfc/core/message/CoreMessage.java -text
+src/org/daisy/dmfc/core/message/Message.java -text
+src/org/daisy/dmfc/core/message/TransformerMessage.java -text
+src/org/daisy/dmfc/core/message/property/Cause.java -text
+src/org/daisy/dmfc/core/message/property/Type.java -text
 src/org/daisy/dmfc/core/script/AbstractProperty.java -text
 src/org/daisy/dmfc/core/script/Creator.java -text
 src/org/daisy/dmfc/core/script/Parser.java -text

@@ -62,7 +62,8 @@ public class Runner extends EventSender {
 		try {
 			this.mRunning = true;
 			this.mCompletedTasks = 0;
-			this.sendMessage(Level.CONFIG, i18n("RUNNING_SCRIPT", scriptRunner.getScript().getNicename()));
+			//mg 20070316: this message replaced by scriptprogresslistener which is called from DMFCCore
+			//this.sendMessage(Level.CONFIG, i18n("RUNNING_SCRIPT", scriptRunner.getScript().getNicename()));
 			for (Task task : scriptRunner.getScript().getTasks()) {
 				// Get transformer handler
 				TransformerHandler handler = task.getTransformerHandler();
@@ -76,14 +77,16 @@ public class Runner extends EventSender {
 				this.addTransformerParameters(parameters, handler);				
 				
 				// Execute transformer
-				this.sendMessage(Level.CONFIG, i18n("RUNNING_TASK", handler.getName()));
+				//mg 20070316: this message replaced by transformerprogresslistener which is called from Transformer
+				//this.sendMessage(Level.CONFIG, i18n("RUNNING_TASK", handler.getName()));
 				boolean success = handler.run(parameters, task.isInteractive());
 				if (!success) {
 					throw new ScriptException(i18n("TASK_FAILED", handler.getName()));
 				}
 				
 				this.mCompletedTasks++;
-				this.sendMessage(Level.CONFIG, i18n("END_OF_SCRIPT"));
+				//mg 20070316: this message replaced by scriptprogresslistener which is called from DMFCCore
+				//this.sendMessage(Level.CONFIG, i18n("END_OF_SCRIPT"));
 			}
 		} catch (TransformerAbortException e) {
 			throw new ScriptAbortException("Script aborted", e);

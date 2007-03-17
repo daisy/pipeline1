@@ -23,6 +23,7 @@ package org.daisy.dmfc.core;
  * from the framework and the transformers.
  * 
  * @author Linus Ericson
+ * @deprecated use the dmfc.core.listener interfaces instead.
  */
 public interface EventListener {
 	

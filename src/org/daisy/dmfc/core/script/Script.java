@@ -19,10 +19,13 @@
 package org.daisy.dmfc.core.script;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.daisy.dmfc.core.listener.TransformerProgressListener;
 
 /**
  * A class representing the contents of a task script.
@@ -151,5 +154,5 @@ public class Script {
 	void addTask(Task task) {
 		this.tasks.add(task);
 	}
-	
+		
 }
