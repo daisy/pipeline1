@@ -26,14 +26,17 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.daisy.dmfc.core.DMFCCore;
-import org.daisy.dmfc.core.EventListener;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.Prompt;
+import org.daisy.dmfc.core.listener.MessageListener;
+import org.daisy.dmfc.core.listener.ScriptProgressListener;
+import org.daisy.dmfc.core.listener.TransformerProgressListener;
+import org.daisy.dmfc.core.message.Message;
+import org.daisy.dmfc.core.message.TransformerMessage;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.dmfc.core.script.ScriptParameter;
 import org.daisy.dmfc.core.script.ScriptRunner;
@@ -46,24 +49,35 @@ import org.daisy.dmfc.core.script.datatype.EnumItem;
 import org.daisy.dmfc.core.script.datatype.FileDatatype;
 import org.daisy.dmfc.core.script.datatype.IntegerDatatype;
 import org.daisy.dmfc.core.script.datatype.StringDatatype;
+import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.ScriptException;
 
 /**
  * A simple command line UI for running DMFC.
  * @author Linus Ericson
+ * @author Markus Gylling
  */
-public class CommandLineUI implements InputListener, EventListener {
+//public class CommandLineUI implements InputListener, EventListener {
+public class CommandLineUI implements InputListener, MessageListener, TransformerProgressListener, ScriptProgressListener {
 	
 	private static Pattern optionPattern = Pattern.compile("-(.*)");
 	private static Pattern paramPattern = Pattern.compile("--(\\w+)=(.+)");
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.dmfc.core.InputListener#isAborted()
+	 */
     public boolean isAborted() {
         return false;
     }
-    
-	public String getInputAsString(Prompt prompt) {
-		System.err.println("[" + prompt.getMessageOriginator() + "] Prompt: " + prompt.getMessage());
+
+    /*
+     * (non-Javadoc)
+     * @see org.daisy.dmfc.core.InputListener#getInputAsString(org.daisy.dmfc.core.message.TransformerMessage)
+     */
+	public String getInputAsString(TransformerMessage message) {
+		System.err.println("[" + message.getSource().getClass().getSimpleName() + "] Prompt: " + message.getText()); //TODO Transformer.getName()
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String line = null;
 		try {
@@ -73,16 +87,19 @@ public class CommandLineUI implements InputListener, EventListener {
 		return line;
 	}
 
-	public void message(Prompt prompt) {
-	    if (prompt.getType() == Prompt.MESSAGE && prompt.getLevel().intValue() >= Level.ALL.intValue()) {
-	        System.out.println("[" + prompt.getMessageOriginator() + ", " + prompt.getLevel().getName() + "] " + prompt.getMessage());
-	    }
-	    if (prompt.getType() == Prompt.TRANSFORMER_START) {
-	        System.out.println("Transformer " + prompt.getMessageOriginator() + " has just been started");
-	    }
-	    if (prompt.getType() == Prompt.TRANSFORMER_END) {
-	        System.out.println("Transformer " + prompt.getMessageOriginator() + " has just finished running");
-	    }
+    
+    /**
+     * @deprecated
+     */
+	public String getInputAsString(Prompt prompt) {
+		System.err.println("[" + prompt.getMessageOriginator() + "] Prompt: " + prompt.getMessage());
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String line = null;
+		try {
+		    line = br.readLine();
+        } catch (IOException e) {
+        }
+		return line;
 	}
 
 	/**
@@ -165,7 +182,9 @@ public class CommandLineUI implements InputListener, EventListener {
 		}		
 		try {
 			CommandLineUI ui = new CommandLineUI();
-        	DMFCCore dmfc = new DMFCCore(ui, ui, new Locale("en"));
+        	//DMFCCore dmfc = new DMFCCore(ui, ui, new Locale("en"));
+			//mg: after listener refactoring:
+			DMFCCore dmfc = new DMFCCore(ui,ui,ui,ui, new Locale("en"));
         	Script script = dmfc.newScript(scriptFile.toURL());
         	ScriptRunner runner = new ScriptRunner(script);
         	
@@ -291,5 +310,55 @@ public class CommandLineUI implements InputListener, EventListener {
 		System.out.println("  -f\n\tForce run. Run the script even though all required parameters are\n\tnot specified.");
 		System.out.println("  scriptfile\n\tThe scriptfile to run.");
 		System.out.println("  --name=value\n\tAll parameters required (and possibly any optional ones) parameters");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.dmfc.core.listener.MessageListener#message(org.daisy.dmfc.core.message.Message)
+	 */
+	public void message(Message message) {
+		// TODO Auto-generated method stub
+		System.out.println(message.getText());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.dmfc.core.listener.TransformerProgressListener#transformerEnd(org.daisy.dmfc.core.transformer.Transformer)
+	 */
+	public void transformerEnd(Transformer transformer) {
+		// TODO Auto-generated method stub		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.dmfc.core.listener.TransformerProgressListener#transformerProgress(double, org.daisy.dmfc.core.transformer.Transformer)
+	 */
+	public void transformerProgress(double progress, Transformer transformer) {
+		// TODO Auto-generated method stub		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.dmfc.core.listener.TransformerProgressListener#transformerStart(org.daisy.dmfc.core.transformer.Transformer)
+	 */
+	public void transformerStart(Transformer transformer) {
+		// TODO Auto-generated method stub		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.dmfc.core.listener.ScriptProgressListener#scriptEnd(org.daisy.dmfc.core.script.Script)
+	 */
+	public void scriptEnd(Script script) {
+		// TODO Auto-generated method stub
+		System.out.println("Script " + script.getNicename() + " just finished runnning.");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.dmfc.core.listener.ScriptProgressListener#scriptStart(org.daisy.dmfc.core.script.Script)
+	 */
+	public void scriptStart(Script script) {
+		System.out.println("Script " + script.getNicename() + " just started runnning.");		
 	}
 }
