@@ -24,6 +24,7 @@ import org.daisy.util.xml.SmilClock;
 
 /**
  * @author Linus Ericson
+ * @deprecated
  */
 public class Prompt {
     public static final int MESSAGE = 0;

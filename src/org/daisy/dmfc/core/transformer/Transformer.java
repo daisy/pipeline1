@@ -125,8 +125,15 @@ public abstract class Transformer extends EventSender {
      * @param progress the progress
      */
     protected void progress(double progress) {
-        Prompt prompt = new Prompt(progress, startTime, messageOriginator);
-        send(prompt);
+		for (Iterator iter = this.getEventListeners().iterator(); iter.hasNext();) {
+			Object listener = iter.next();
+			if(listener instanceof TransformerProgressListener) {				
+				((TransformerProgressListener)listener).transformerProgress(progress, this);				
+			}else if(listener instanceof org.daisy.dmfc.core.EventListener) {
+		        Prompt prompt = new Prompt(progress, startTime, messageOriginator);
+		        ((org.daisy.dmfc.core.EventListener)listener).message(prompt);		
+			}			
+		}
     }
     
     protected void abortEvent() {

@@ -144,8 +144,7 @@ public class DMFCCore extends EventSender {
 		I18n.setDefaultBundle(bundle);				
 
 		TempFile.setTempDir(new File(System.getProperty("dmfc.tempDir")));
-	
-//mg: logging disabled for now		
+			
 		// Setup logging
 		Logger lg = Logger.getLogger("");
         Handler[] handlers = lg.getHandlers();
