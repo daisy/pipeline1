@@ -231,8 +231,12 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			 * based primarily on inparams, select an appropriate exit strategy.
 			 */
 
-			boolean abortOnException = ((String)parameters.remove("abortOnException")).equals("true");
+			String abortOnExceptionParam = ((String)parameters.remove("abortOnException"));
+			if(abortOnExceptionParam==null)abortOnExceptionParam="true";
+			boolean abortOnException = abortOnExceptionParam.equals("true");
+			
 			String abortThreshold = (String)parameters.remove("abortThreshold");
+			if(abortThreshold == null) abortThreshold = "NONE";
 
 			if(abortOnException && mStateTracker.mHadCaughtException) {
 				throw new TransformerRunException(i18n("ABORTING_EXCEPTIONS_OCCURED"));
