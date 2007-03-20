@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.UIDCarrier;
+import org.daisy.util.fileset.util.FilesetLabelProvider;
 
 /**
  * Represents a collective identifier (UID) segment of a filename. The UID represents the fileset, not the file.
@@ -38,16 +38,15 @@ public class FilesetUIDSegment extends Segment {
 	}
 
 	private static String getUID(Fileset fileset) {
-		//if we cant find a uid in the fileset, create a fallback name
-		String uid = "uid";
+		//if we cant find a uid in the fileset, create a fallback name		
 		try{
-			//we assume for now that manifestmember implements uidcarrier
-			UIDCarrier carrier = (UIDCarrier)fileset.getManifestMember();
-			if(carrier.getUID()!=null) uid = carrier.getUID();
+			FilesetLabelProvider flp = new FilesetLabelProvider(fileset);
+			String uid = flp.getFilesetIdentifier();
+			if(uid!=null)return uid;
 		}catch (Exception e) {
 			if(mDebugMode) System.err.println("DEBUG: FilesetUIDSegment#getUID exception"); 
 		}
-		return uid;			
+		return "uid";			
 	}
 	
 }

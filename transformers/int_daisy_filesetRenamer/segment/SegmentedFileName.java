@@ -56,7 +56,7 @@ public class SegmentedFileName {
 			i++;
 			Segment s = (Segment) iter.next();
 			sb.append(s.getChars());
-			//dont append separator to two last segments (before and after extension)
+			//dont append separator to two last segments (before and after extension)			
 			if(length>i+1)sb.append(mSegmentSeparator);
 		}
 		return sb.toString();		

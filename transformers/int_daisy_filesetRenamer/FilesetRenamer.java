@@ -2,8 +2,8 @@ package int_daisy_filesetRenamer;
 
 import int_daisy_filesetRenamer.segment.EchoSegment;
 import int_daisy_filesetRenamer.segment.FilesetUIDSegment;
-import int_daisy_filesetRenamer.segment.LabelSegment;
 import int_daisy_filesetRenamer.segment.FixedSegment;
+import int_daisy_filesetRenamer.segment.LabelSegment;
 import int_daisy_filesetRenamer.segment.RandomUniqueSegment;
 import int_daisy_filesetRenamer.segment.SegmentedFileName;
 import int_daisy_filesetRenamer.segment.SequenceSegment;
@@ -19,11 +19,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.core.message.TransformerMessage;
+import org.daisy.dmfc.core.message.property.Cause;
+import org.daisy.dmfc.core.message.property.Type;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
@@ -52,9 +54,10 @@ import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.xml.stax.ContextStack;
 
 /**
- * Renames select members of a fileset using a combined-token algorithm.
+ * Rename select members of a fileset using a pattern based token algorithm. See Pipeline doc/transformers.
  * @author Markus Gylling
  */
+
 public class FilesetRenamer extends Transformer implements FilesetManipulatorListener, XMLEventValueConsumer {
    
 	private FilesetManipulator mFilesetManipulator = null;
@@ -66,7 +69,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	private RenamingStrategy mStrategy = null;
 	private List mTypeExclusions = null;
 	private boolean mFilesystemSafe = true;
-	private FilesetFile currentFile = null;
+	private FilesetFile mCurrentFile = null;
 	private String oldName = null;	
 	private FilesetRegex rgx = null;
 			
@@ -93,14 +96,14 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 		 */
 		
 		FilesetManipulator fman = null;
-		try {  
+		try {  				
 			//set the input manifest
 			mInputManifest = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("input")));
 			//set input fileset
 			mInputFileset = new FilesetImpl(mInputManifest.toURI(),this,false,false);			
 			//parse the renamingPattern param, create a template filename
 			//to use while creating the new names
-			mTemplateName = parsePatternTokens((String)parameters.remove("renamingPattern"));
+			mTemplateName = parsePatternTokens((String)parameters.remove("renamingPattern"));			
 			//create the type exclusion list
 			mTypeExclusions = setExclusions((String)parameters.remove("exclude"));
 			//whether to force ascii subset in output
@@ -109,10 +112,14 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			mOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(FilenameOrFileURI.toFile((String)parameters.remove("output"))));
 			//if input and output dir are the same, skip and return true
 			if(mOutputDir.getCanonicalPath().equals(mInputFileset.getManifestMember().getFile().getParentFile().getCanonicalPath())) {
-				this.sendMessage(Level.SEVERE, i18n("IN_OUT_SAME_SKIPPING", mOutputDir.getCanonicalPath()));
+				this.sendMessage(new TransformerMessage(this,i18n("IN_OUT_SAME_SKIPPING", mOutputDir.getCanonicalPath()),Type.ERROR,Cause.INPUT));				
 				return true;
 			}
-					
+			
+			this.progress(0.1);
+			this.checkAbort();
+			this.sendMessage(new TransformerMessage(this,i18n("ANALYZING_INPUT_FILESET", mInputFileset.getFilesetType().toNiceNameString()),Type.INFO,Cause.SYSTEM));
+								
 			try{		
 				//create a renaming strategy using the template name
 				mStrategy = createStrategy(mInputFileset, mTemplateName, mTypeExclusions);
@@ -128,8 +135,11 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 				mStrategy = createStrategy(mInputFileset, randomizedName, mTypeExclusions);				
 				//render the randomized fileset to a subfolder of user output folder
 				mRoundtripOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(new File(mOutputDir,"dmfc_temp")));
-				this.sendMessage(Level.WARNING, i18n("RENDER_ROUNDTRIP", e.getMessage(), mRoundtripOutputDir.getAbsolutePath()));
-				renderStrategy(mInputFileset,mRoundtripOutputDir);				
+				this.sendMessage(new TransformerMessage(this,i18n("RENDER_ROUNDTRIP", e.getMessage(), mRoundtripOutputDir.getAbsolutePath()),Type.INFO,Cause.SYSTEM));
+				renderStrategy(mInputFileset,mRoundtripOutputDir);
+				
+				this.progress(0.15);
+				this.checkAbort();
 
 				//reset the inputfileset to the randomized output
 				mInputFileset = new FilesetImpl(getTempManifest(),this,false,false); 
@@ -137,21 +147,28 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 				mStrategy = createStrategy(mInputFileset, mTemplateName, mTypeExclusions);
 			}
 			
-			//render the final output
-			renderStrategy(mInputFileset,mOutputDir);
+
+			this.progress(0.2);
+			this.checkAbort();
 			
+			//render the final output
+			this.sendMessage(new TransformerMessage(this,i18n("RENDERING_RESULT", mOutputDir.getCanonicalPath()),Type.INFO,Cause.SYSTEM));
+			renderStrategy(mInputFileset,mOutputDir);
+												
 			//clean up the temp traces if utilized
 			if(mRoundtripOutputDir!=null) {
 				mRoundtripOutputDir.deleteContents(true);
 				mRoundtripOutputDir.delete();
 			}
-		
+					
+			this.checkAbort();
+			
 		} catch (Exception e) {			
-			this.sendMessage(Level.SEVERE, i18n("ERROR_COPYING_UNRENAMED", e.getMessage()));
+			this.sendMessage(new TransformerMessage(this,i18n("ERROR_COPYING_UNRENAMED", e.getMessage()),Type.ERROR,Cause.SYSTEM));
 			try {		
 				fman.getOutputFolder().addFileset(fman.getInputFileset(),true);
 			} catch (IOException ioe) {
-				this.sendMessage(Level.SEVERE, i18n("ERROR_ABORTING", ioe.getMessage()));
+				this.sendMessage(new TransformerMessage(this,i18n("ERROR_ABORTING", ioe.getMessage()),Type.ERROR,Cause.SYSTEM));
 				throw new TransformerRunException(ioe.getMessage(), ioe);
 			}
 		}	
@@ -191,6 +208,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	/**
 	 * Create a List&lt;Class&gt; of excluded file types using an inparam.
 	 */
+	@SuppressWarnings("unchecked")
 	private List setExclusions(String param) {
 		mTypeExclusions = new ArrayList();
 		String[] types = param.split(",");
@@ -202,8 +220,8 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 				try {
 					Class implClass = Class.forName(implName);
 					mTypeExclusions.add(implClass);
-				} catch (ClassNotFoundException e) {
-					this.sendMessage(Level.WARNING, i18n("EXCLUDE_CLASS_NOT_FOUND", interfaceName));
+				} catch (ClassNotFoundException e) {	
+					this.sendMessage(new TransformerMessage(this,i18n("EXCLUDE_CLASS_NOT_FOUND", interfaceName),Type.WARNING,Cause.INPUT));
 				}			
 			}
 		}
@@ -228,7 +246,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	 * <p>Note - template does not include the extension segment.</p>
 	 */
 	private SegmentedFileName parsePatternTokens(String tokenstring) throws TransformerRunException {		
-		SegmentedFileName smf = new SegmentedFileName();		
+		SegmentedFileName smf = new SegmentedFileName();
 		String[] tokens = tokenstring.split("\\+");
 		for (int i = 0; i < tokens.length; i++) {
 			String token = tokens[i].trim();
@@ -257,8 +275,15 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.manipulation.FilesetManipulatorListener#nextFile(org.daisy.util.fileset.interfaces.FilesetFile)
 	 */
+	private int nextFileCallCount = 0;
+	private double filesetSize = -1.0; 
+	
 	public FilesetFileManipulator nextFile(FilesetFile file) throws FilesetManipulationException {
-		currentFile = file; //for checking filetype in nextValue() below
+		if(filesetSize == -1.0) filesetSize = Double.parseDouble(Integer.toString(mInputFileset.getLocalMembers().size())+".0");
+		nextFileCallCount++;				
+		this.progress(0.2 + ((nextFileCallCount/filesetSize)*0.8)); //assumes that progress 0.2 was called before first nextFile call 
+		
+		mCurrentFile = file; //for checking filetype in nextValue() below
 		try{
 			if (file instanceof Referring) {
 				//this file may have a new name
@@ -281,13 +306,14 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	}
 
 
-	/**
-	 * XMLEventValueConsumer impl
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.manipulation.manipulators.XMLEventValueConsumer#nextValue(java.lang.String, org.daisy.util.xml.stax.ContextStack)
 	 */
 	public String nextValue(String value, ContextStack context) {
 		//by default we get attribute values only here
 		
-		if(isUriCarrier(context, currentFile)) {
+		if(isUriCarrier(context, mCurrentFile)) {
 			int start = -1;
 			StringBuilder sb = new StringBuilder();
 			//replace oldNames with newNames and return
@@ -306,7 +332,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 						break; //REVISIT are we sure first found is enough? values may contain several references...
 					}	
 				}catch (Exception e) {
-					this.sendMessage(Level.WARNING,"exception when replacing values with new name: " + e.getMessage());
+					this.sendMessage(new TransformerMessage(this,"exception when replacing values with new name: " + e.getMessage(),Type.WARNING,Cause.SYSTEM));
 					return value;
 				}
 			}				
@@ -339,17 +365,16 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 		return true;
 	}
 
-	/**
-	 * FilesetErrorHandler impl
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */
+	@SuppressWarnings("unused")
 	public void error(FilesetFileException ffe) throws FilesetFileException {
-		if (ffe instanceof FilesetFileFatalErrorException
-				&& !(ffe.getCause() instanceof FileNotFoundException)) {
-			this.sendMessage(Level.SEVERE, ffe.getCause()
-					+ " in " + ffe.getOrigin());
+		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {
+			this.sendMessage(new TransformerMessage(this,ffe.getCause() + " in " + ffe.getOrigin(),Type.ERROR,Cause.INPUT));
 		} else {
-			this.sendMessage(Level.WARNING, ffe.getCause()
-					+ " in " + ffe.getOrigin());
+			this.sendMessage(new TransformerMessage(this,ffe.getCause() + " in " + ffe.getOrigin(),Type.WARNING,Cause.INPUT));
 		}
 	}
 }

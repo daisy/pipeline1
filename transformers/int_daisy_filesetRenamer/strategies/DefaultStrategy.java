@@ -22,6 +22,7 @@ import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.xml.d202.D202MasterSmilFile;
 import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
+import org.daisy.util.fileset.util.FilesetLabelProvider;
 import org.daisy.util.i18n.CharUtils;
 
 /**
@@ -36,11 +37,14 @@ public class DefaultStrategy implements RenamingStrategy {
 	private String mSegmentSeparator = "_";				//default, may wanna enable changing this
 	private boolean mForceAsciiSubset = false;
 	private boolean isValidated = false;
+	private FilesetLabelProvider mLabelProvider = null;
 	
 	public DefaultStrategy(Fileset fileset, SegmentedFileName templateName, boolean forceAsciiSubset) {
 		mInputFileset = fileset;
 		mTemplateName = templateName;
 		mForceAsciiSubset = forceAsciiSubset;
+		mLabelProvider = new FilesetLabelProvider(mInputFileset);
+		
 		//set some omnipresent hardcoded type exclusions (never rename these)
 		setTypeExclusion(D202NccFile.class);
 		setTypeExclusion(D202MasterSmilFile.class);
@@ -66,6 +70,7 @@ public class DefaultStrategy implements RenamingStrategy {
 				this.namingStrategy.put(uri,uri);
 			}			
 		}
+		//System.err.println("stop");
 	}
 	
 	/**
@@ -94,7 +99,7 @@ public class DefaultStrategy implements RenamingStrategy {
 							parseTokenParam(templateSegment.getChars())));
 				}else if(templateSegment instanceof LabelSegment) {
 					//template value should be 'label' 
-					newName.addSegment(LabelSegment.create(f,mInputFileset));
+					newName.addSegment(LabelSegment.create(f,mLabelProvider));
 				}else if(templateSegment instanceof SequenceSegment) {
 					//template value should be 'label' 
 					newName.addSegment(SequenceSegment.create(f,mInputFileset));
@@ -107,6 +112,7 @@ public class DefaultStrategy implements RenamingStrategy {
 			newName.addSegment(ExtensionSegment.create(f.getExtension()));
 			
 			//TODO if we have zero segments or just the extension segment, do something.			
+			//if (newName.getSegments().size()<2) return f.getName();
 			
 			//check whether we should force ascii subset
 			if(mForceAsciiSubset) {
