@@ -34,9 +34,8 @@
 		<optional>
 			<element name="documentation">
 				<attribute name="uri">
-		    		<!--  the uri is relative to the pipeline root folder,
-		    		NOT the transformer TDF document,
-		    		and thus typically looks (./doc/transformers/transformerdoc.html)
+		    		<!--  the uri is relative to transformer TDF document,
+		    		and thus typically looks (../../doc/transformers/transformerdoc.html)
 		    		 -->
 					<data type="anyURI"/>
 				</attribute>
