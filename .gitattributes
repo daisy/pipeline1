@@ -4,6 +4,7 @@ doc/dev/diagram.png -text
 doc/examples/input/RTF2dtbook.rtf -text svneol=unset#application/octet-stream
 doc/examples/input/simple.odt -text
 doc/examples/input/valentin.jpg -text
+doc/scripts/int_daisy_filesetRenamer.html -text
 lib/batik-css.jar -text
 lib/batik-parser.jar -text
 lib/batik-util.jar -text
@@ -20,6 +21,7 @@ lib/saxon8.jar -text
 lib/tagsoup-1.0rc4.jar -text
 lib/wstx-lgpl-2.0.6.jar -text
 lib/xercesImpl.jar -text
+scripts/_dev/filesetRenamer.xml -text
 src/org/daisy/dmfc/core/listener/MessageListener.java -text
 src/org/daisy/dmfc/core/listener/ScriptProgressListener.java -text
 src/org/daisy/dmfc/core/listener/TransformerProgressListener.java -text
