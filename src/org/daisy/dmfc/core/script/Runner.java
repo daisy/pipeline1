@@ -108,6 +108,8 @@ public class Runner extends EventSender {
 		for (Parameter param : params) {
 			if (param.getValue() != null) {
 				parameters.put(param.getName(), param.getValue());
+			} else if (param.isRequired() == false && !parameters.containsKey(param.getName())) {
+				parameters.put(param.getName(), param.getDefaultValue());
 			}
 		}
 	}
