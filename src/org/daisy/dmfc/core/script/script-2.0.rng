@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	RelaxNG schema for version 2.0 task scripts
-	in the Daisy Pipeline.
-	
+	RelaxNG schema for version 2.0 task scripts in the Daisy Pipeline.
+	For a tutorial on the script syntax, see Script Authoring for the Daisy Pipeline in /doc/script/
 	Linus Ericson 2007
 -->
 <grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
@@ -28,6 +27,25 @@
 	<define name="details">
 		<element name="nicename"><text/></element>
 		<element name="description"><text/></element>
+	    <interleave>		
+			<optional>
+				<element name="documentation">
+					<attribute name="uri">
+			    		<!--  the uri is relative to the pipeline root folder,
+			    		NOT the script XML document,
+			    		and thus typically looks (./doc/scripts/scriptdoc.html)
+			    		 -->
+						<data type="anyURI"/>
+					</attribute>
+				    <empty/>		
+				</element>
+			</optional>
+			<optional>
+				<element name="comment">
+					<text/>				
+				</element>
+			</optional>			
+		</interleave>
 	</define>
 
 	<define name="properties">
