@@ -141,7 +141,9 @@ public class EFile extends java.io.File  {
 	}
 
     public InputSource asInputSource() throws FileNotFoundException {    	
-    	InputSource is = new InputSource(new FileReader(this));
+    	//InputSource is = new InputSource(new FileReader(this));
+    	//use this instead to avoid charset decoding probs
+    	InputSource is = new InputSource(this.toString());
     	is.setSystemId(this.toString());
         return is;
     }
