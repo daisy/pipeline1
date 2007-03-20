@@ -218,7 +218,7 @@ public class DMFCCore extends EventSender {
 		try {
 			//Validator validator = new RelaxngSchematronValidator(new File(getHomeDirectory().getPath() + File.separator + "resources", "transformer.rng"), null,true,true);
 			//after moving the transformer rng
-			Validator validator = new RelaxngSchematronValidator(this.getClass().getResource("./transformer/transformer.rng"), null,true,true);
+			Validator validator = new RelaxngSchematronValidator(this.getClass().getResource("./transformer/transformer-2.0.rng"), null,true,true);
     					
 			sendMessage(Level.CONFIG, i18n("RELOADING_TRANSFORMERS"));
 			transformerHandlers.clear();		
