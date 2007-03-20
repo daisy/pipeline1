@@ -19,6 +19,8 @@
 package org.daisy.dmfc.core.script;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -57,9 +59,12 @@ class Parser {
 	// Singleton instance
 	private static Parser sInstance = null;
 	
+	private static URL mCurrentScriptURL = null;
+	
 	private static String SCRIPT = "taskScript";
 	private static String SCRIPT_NICENAME = "nicename";
 	private static String SCRIPT_DESCRIPTION = "description";
+	private static String SCRIPT_DOCUMENTATION = "documentation";
 	
 	private static String TASK = "task";
 	
@@ -118,6 +123,7 @@ class Parser {
 	 * @throws IOException
 	 */
 	public Script newScript(URL url) throws XMLStreamException, IOException {
+		mCurrentScriptURL = url;
 		Script script = null;
 
 		// Open reader
@@ -164,6 +170,14 @@ class Parser {
 					characterData.setLength(0);
 				} else if (SCRIPT_DESCRIPTION.equals(local)) {
 					characterData.setLength(0);
+				} else if (SCRIPT_DOCUMENTATION.equals(local)) {
+					Attribute uri = se.getAttributeByName(new QName("uri"));
+					try {
+						script.setDocumentation(mCurrentScriptURL.toURI().resolve(new URI(uri.getValue())));
+					} catch (URISyntaxException e) {
+						//non-terminating, alas no contact with listeners here
+						System.err.println("URISyntaxException when parsing script documentation URI: " + uri.getValue());
+					}
 				} else if ("property".equals(local)) {
 					// Add a property
 					Attribute attrName = se.getAttributeByName(new QName("name"));

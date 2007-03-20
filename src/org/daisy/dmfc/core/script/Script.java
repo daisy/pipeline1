@@ -18,14 +18,13 @@
  */
 package org.daisy.dmfc.core.script;
 
+import java.io.File;
+import java.net.URI;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import org.daisy.dmfc.core.listener.TransformerProgressListener;
 
 /**
  * A class representing the contents of a task script.
@@ -35,6 +34,7 @@ public class Script {
 	private String mName;
 	private String mNicename;
 	private String mDescription;
+	private URI mDocumentation;
 	
 	private Map<String,AbstractProperty> mProperties;	
 	
@@ -57,6 +57,14 @@ public class Script {
 		return mDescription;
 	}
 
+	/**
+	 * Gets the documentation URI of this script.
+	 * @return 
+	 */
+	public URI getDocumentation() {
+		return  mDocumentation;
+	}
+	
 	/**
 	 * Gets the name of the script
 	 * @return
@@ -120,6 +128,18 @@ public class Script {
 	 */
 	void setDescription(String description) {
 		this.mDescription = description;
+	}
+	
+	/**
+	 * Sets the URI of the documentation of this script.
+	 * @param description
+	 */
+	void setDocumentation(URI uri) {
+		File test = new File(uri);
+		if(!test.exists()||!test.canRead()) {
+			System.err.println("Warning [in Script#setDocumentation]: Script documentation URI " + uri.toString() + " seems not to resolve");
+		}
+		this.mDocumentation = uri;
 	}
 
 	/**

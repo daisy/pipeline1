@@ -31,9 +31,9 @@
 			<optional>
 				<element name="documentation">
 					<attribute name="uri">
-			    		<!--  the uri is relative to the pipeline root folder,
-			    		NOT the script XML document,
-			    		and thus typically looks (./doc/scripts/scriptdoc.html)
+			    		<!--  the uri is relative to the script XML document representation,
+			    		and thus typically looks '../../doc/scripts/scriptdoc.html'
+			    		depending on the subfolder depth of the script file inside the scripts folder
 			    		 -->
 						<data type="anyURI"/>
 					</attribute>

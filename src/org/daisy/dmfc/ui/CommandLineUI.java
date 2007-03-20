@@ -247,6 +247,9 @@ public class CommandLineUI implements InputListener, MessageListener, Transforme
 		builder.append("------------------\n");
 		builder.append("Name:        ").append(script.getNicename()).append("\n");
 		builder.append("Description: ").append(script.getDescription()).append("\n\n");
+		if(script.getDocumentation()!=null) {
+			builder.append("Documentation: ").append(script.getDocumentation().toString()).append("\n\n");
+		}
 		
 		builder.append("Parameters:\n");
 		for (ScriptParameter param : script.getParameters().values()) {
