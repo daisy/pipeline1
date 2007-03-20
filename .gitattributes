@@ -53,6 +53,8 @@ src/org/daisy/dmfc/core/script/script-2.0.rng -text
 src/org/daisy/dmfc/core/script/script10to20.xsl -text
 src/org/daisy/dmfc/core/transformer/transformer-2.0.rng -text
 src/org/daisy/dmfc/core/transformer/transformer.rng -text svneol=unset#application/octet-stream
+src/org/daisy/util/fileset/util/FilesetLabelProvider.java -text
+src/org/daisy/util/fileset/util/FilesetSpineProvider.java -text
 src/org/daisy/util/xml/catalog/svg/svg11-flat.dtd -text svneol=unset#application/octet-stream
 src/org/daisy/util/xml/validation/SimpleValidator.java -text
 transformers/int_daisy_filesetRenamer/transformer.tdf -text
