@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar 
+	xmlns="http://relaxng.org/ns/structure/1.0" 
+	datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+>
+    <!-- RelaxNG schema for Transformer Description Files (*.tdf) -->
+
+	<start>
+		<ref name="transformer"/>
+	</start>
+
+	<define name="transformer">
+		<element name="transformer">
+			<attribute name="version">
+				<data type="normalizedString"/>
+			</attribute>
+			
+			<ref name="details"/>
+			<ref name="parameters"/>
+			<ref name="platforms"/>
+		</element>
+	</define>
+	
+	<define name="details">
+		<element name="name"><text/></element>
+		<element name="description"><text/></element>
+		<element name="classname"><text/></element>
+		<zeroOrMore>
+			<element name="jar"><text/></element>
+		</zeroOrMore>
+		<element name="license"><text/></element>
+		<element name="author"><text/></element>
+		<element name="support"><text/></element>		
+		<optional>
+			<element name="documentation">
+				<attribute name="uri">
+		    		<!--  the uri is relative to the pipeline root folder,
+		    		NOT the transformer TDF document,
+		    		and thus typically looks (./doc/transformers/transformerdoc.html)
+		    		 -->
+					<data type="anyURI"/>
+				</attribute>
+			    <empty/>		
+			</element>
+		</optional>
+	</define>
+
+	<define name="parameters">
+		<element name="parameters">
+			<zeroOrMore>				
+				<element name="parameter">
+					<choice>
+						<ref name="parameter_normal"/>
+						<ref name="parameter_hard"/>
+					</choice>									
+				</element>
+			</zeroOrMore>
+		</element>
+	</define>
+	
+	<define name="platforms">
+		<optional>
+			<element name="platforms">
+				<oneOrMore>
+					<element name="platform">
+						<oneOrMore>
+							<element name="property">
+								<element name="name"><text/></element>
+								<element name="value"><text/></element>
+							</element>
+						</oneOrMore>
+					</element>
+				</oneOrMore>
+			</element>
+		</optional>
+	</define>
+
+	<define name="parameter_normal">
+		<sch:pattern name="Required attribute test" xmlns:sch="http://www.ascc.net/xml/schematron">
+		    <sch:rule context="transformer/parameters/parameter">
+				<sch:report test="@required='false' and not(default)">A non-required parameter must have a default value</sch:report>
+		    </sch:rule>
+		</sch:pattern>
+		<sch:pattern name="Enum test" xmlns:sch="http://www.ascc.net/xml/schematron">
+		    <sch:rule context="transformer/parameters/parameter">
+				<sch:report test="@type='enum' and not(enum)">Enum type must be defined</sch:report>
+				<sch:report test="enum and not(@type='enum')">Type is not enum</sch:report>
+				<sch:report test="enum and default and not(default=enum/value)">Default value must be of enum type</sch:report>
+		    </sch:rule>
+		</sch:pattern>
+		<attribute name="required">
+			<data type="boolean"/>
+		</attribute>
+		<attribute name="type">
+			<data type="normalizedString"/>
+		</attribute>
+		<optional>
+			<attribute name="direction">
+				<choice>
+					<value>in</value>
+					<value>out</value>
+				</choice>
+			</attribute>
+		</optional>
+		<element name="name"><text/></element>
+		<element name="description"><text/></element>
+		<element name="example"><text/></element>
+		<optional>
+			<element name="enum">
+				<oneOrMore>
+					<element name="value"><text/></element>
+				</oneOrMore>
+			</element>
+		</optional>
+		<optional>
+			<element name="default"><text/></element>
+		</optional>
+	</define>
+	
+	<define name="parameter_hard">
+		<attribute name="type">
+			<data type="normalizedString"/>
+		</attribute>
+		<element name="name"><text/></element>
+		<element name="value"><text/></element>
+	</define>
+
+</grammar>
