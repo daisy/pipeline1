@@ -40,10 +40,9 @@ import org.xml.sax.SAXParseException;
 class SmilFileImpl extends XmlFileImpl implements SmilFile {
 	private SmilClock myStatedDuration = null;
 	protected SmilClock myStatedTotalElapsedTime = null;
-	//does not gather anything outside startelement; here for optim
-	private SmilClock audioClipBegin = null; 
-	//does not gather anything outside startelement; here for optim	
-	private SmilClock audioClipEnd = null; 
+	protected String myMetaTitle = null;	
+	private SmilClock audioClipBegin = null; //does not gather anything outside startelement; here for optim 	
+	private SmilClock audioClipEnd = null; //does not gather anything outside startelement; here for optim	 
 	private long myCalculatedDuration = 0;
 
 	SmilFileImpl(URI uri, String mimeStringConstant) throws ParserConfigurationException, SAXException, IOException {
@@ -75,6 +74,9 @@ class SmilFileImpl extends XmlFileImpl implements SmilFile {
 					} else if (attrValue == "ncc:totalElapsedTime"
 							|| attrValue == "dtb:totalElapsedTime") {
 						myStatedTotalElapsedTime = new SmilClock(attrs.getValue("content"));
+					} else if (attrName == "name" && attrValue == "title") {						
+						myMetaTitle = attrs.getValue("content");
+						//System.err.println(myMetaTitle);
 					}
 				}
 				if (sName == "audio") {

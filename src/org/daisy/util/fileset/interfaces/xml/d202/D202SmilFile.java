@@ -29,9 +29,16 @@ import org.daisy.util.xml.SmilClock;
  */
 public interface D202SmilFile extends SmilFile {
 	static String mimeStringConstant = MIMEConstants.MIME_APPLICATION_X_DTBD202SMIL_XML;
+	
 	/**
 	 * DTB specific SMIL phenomenon.
 	 * @return if given, the stated value for TotalElapsedTime (==time prior to onset of this smil file).
 	 */
 	public SmilClock getStatedTotalElapsedTime();
+	
+	/**
+	 * DTB specific SMIL phenomenon.
+	 * @return if given, the stated value for the meta element with name title.
+	 */
+	public String getMetaTitle();
 }

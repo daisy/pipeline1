@@ -30,24 +30,44 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
+ * Implementation of the Daisy 2.02 Smil file.
  * @author Markus Gylling
-  */
+ */
 final class D202SmilFileImpl extends SmilFileImpl implements D202SmilFile {
 
 	public D202SmilFileImpl(URI uri) throws ParserConfigurationException, SAXException, IOException {
 		super(uri, D202SmilFile.mimeStringConstant);		
 	}
-			
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.impl.XmlFileImpl#resolveEntity(java.lang.String, java.lang.String)
+	 */
 	public InputSource resolveEntity(String publicId, String systemId) throws IOException {
 		//override the XmlFileImpl method in order to substitute DTDs
 		//from w3c smil to the subset one					
 		publicId = "-//DAISY//DTD smil v2.02//EN";			
 		return super.resolveEntity(publicId,systemId);
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.interfaces.xml.d202.D202SmilFile#getStatedTotalElapsedTime()
+	 */
 	public SmilClock getStatedTotalElapsedTime() {
 		return myStatedTotalElapsedTime;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.interfaces.xml.d202.D202SmilFile#getMetaTitle()
+	 */
+	public String getMetaTitle() {
+		if (myMetaTitle == null || myMetaTitle.trim().length()<1) return null; 
+		return myMetaTitle;
+	}
 	
 	private static final long serialVersionUID = -4124499324926116684L;
+
+
 }
