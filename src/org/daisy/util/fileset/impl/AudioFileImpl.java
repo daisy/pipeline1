@@ -23,14 +23,20 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
+import org.daisy.util.xml.SmilClock;
+
 /**
  * @author Markus Gylling
  */
 
 abstract class AudioFileImpl extends FilesetFileImpl {
-
+    protected SmilClock mLength = null;
+    
     AudioFileImpl(URI uri, String mimeStringConstant) throws FileNotFoundException, IOException {
         super(uri,mimeStringConstant);
     }
     
+    public SmilClock getLength() {
+    	return mLength;
+    }
 }

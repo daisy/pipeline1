@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.xml.SmilClock;
 
 
 
@@ -38,5 +39,10 @@ public interface AudioFile extends FilesetFile {
 	public int getSampleFrequency();
 	
 	public boolean isMono();
+	
+	/**
+	 * @return the length (temporal duration) of this AudioFile encapsulated in a SmilClock object for convenience
+	 */
+	public SmilClock getLength();
 
 }

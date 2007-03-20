@@ -26,6 +26,9 @@ import org.daisy.util.mime.MIMEConstants;
 public interface WavFile extends AudioFile {
 	static String mimeStringConstant = MIMEConstants.MIME_AUDIO_X_WAV;
     public boolean isMono();
+    /**
+	 * @deprecated use AudioFile.getDuration instead
+	 */
     public long getDuration();
     public int getSampleSize();
 }

@@ -43,6 +43,10 @@ public interface Mp2File extends AudioFile {
 	
 	public boolean hasID3v2();
 	
+	/**
+	 * @deprecated use AudioFile.getLength instead
+	 */
+
 	public long getCalculatedDurationMillis();
 	
 }

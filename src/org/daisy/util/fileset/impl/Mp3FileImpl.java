@@ -30,6 +30,7 @@ import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Header;
 
 import org.daisy.util.fileset.interfaces.audio.Mp3File;
+import org.daisy.util.xml.SmilClock;
 
 /**
  * @author Markus Gylling
@@ -64,7 +65,9 @@ final class Mp3FileImpl extends AudioFileImpl implements Mp3File {
 		this.sampleFrequency = header.frequency();
 		this.isMono = (header.mode()==3);
 		this.isVbr = header.vbr();
-		this.duration = header.total_ms(fis.available());		
+		this.duration = header.total_ms(fis.available());
+		//this.mLength = new SmilClock(this.duration);
+		this.mLength = new SmilClock(new Float(duration).longValue());
 		InputStream id3in = bts.getRawID3v2();
 		this.hasID3v2 = (id3in!=null);
 		try{
@@ -97,6 +100,9 @@ final class Mp3FileImpl extends AudioFileImpl implements Mp3File {
 		return this.isVbr;
 	}
 
+	/**
+	 * @deprecated use AudioFile.getLength instead
+	 */
 	public long getCalculatedDurationMillis() {
 		return new Float(duration).longValue();
 	}

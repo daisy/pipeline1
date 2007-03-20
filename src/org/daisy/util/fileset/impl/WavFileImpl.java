@@ -29,6 +29,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.interfaces.audio.WavFile;
+import org.daisy.util.xml.SmilClock;
 
 /**
  * @author Linus Ericson
@@ -55,6 +56,7 @@ final class WavFileImpl extends AudioFileImpl implements WavFile {
             this.channels = format.getChannels();
             this.sampleSize = format.getSampleSizeInBits();
             this.duration = (int)(1000.0 * aff.getFrameLength() / format.getFrameRate());
+            this.mLength = new SmilClock(this.duration); 
         } catch (UnsupportedAudioFileException e) {
         	myExceptions.add(new FilesetFileFatalErrorException(this,e));
             // FIXME throw better exception
@@ -70,6 +72,9 @@ final class WavFileImpl extends AudioFileImpl implements WavFile {
         return (this.channels == 1);
     }
 
+    /**
+	 * @deprecated use AudioFile.getLength instead
+	 */
     public long getDuration() {
         return this.duration;
     }
