@@ -1,0 +1,14 @@
+- [end user] For all scripts (doc/scripts/*.html)
+- [end user] Downloading the Pipeline RCP GUI installer and running it
+- [end user] RCP GUI manual
+- [end user] Download the Pipeline non-GUI installer and running it
+- [end user advanced] Script authoring tutorial
+
+- [end user: special theme] Validating in the Pipeline
+- [end user: special theme] Creating Dtbook with the Pipeline (rtf, wordml, odf, intro)
+- [end user: special theme] Narrator - TTS production within the pipeline
+
+- [developer + end user] For all active transformers (doc/transformers/*.html)
+- [developer] Running the pipeline from the sourcecode in Eclipse (developer snapshot mode) (already exists on shell, but needs update)
+- [developer] Transformer authoring tutorial (already exists on shell, but needs update)
+

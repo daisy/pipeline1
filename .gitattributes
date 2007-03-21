@@ -4,6 +4,7 @@ doc/dev/diagram.png -text
 doc/examples/input/RTF2dtbook.rtf -text svneol=unset#application/octet-stream
 doc/examples/input/simple.odt -text
 doc/examples/input/valentin.jpg -text
+doc/needed.documentation.txt -text
 doc/scripts/int_daisy_filesetRenamer.html -text
 lib/batik-css.jar -text
 lib/batik-parser.jar -text
