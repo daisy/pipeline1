@@ -44,6 +44,7 @@ import org.daisy.dmfc.core.script.ScriptValidationException;
 import org.daisy.dmfc.core.script.datatype.BooleanDatatype;
 import org.daisy.dmfc.core.script.datatype.Datatype;
 import org.daisy.dmfc.core.script.datatype.DatatypeException;
+import org.daisy.dmfc.core.script.datatype.DirectoryDatatype;
 import org.daisy.dmfc.core.script.datatype.EnumDatatype;
 import org.daisy.dmfc.core.script.datatype.EnumItem;
 import org.daisy.dmfc.core.script.datatype.FileDatatype;
@@ -281,6 +282,14 @@ public class CommandLineUI implements InputListener, MessageListener, Transforme
 				} else {
 					builder.append("file (").append(((FileDatatype)datatype).getMime()).append(")\n");
 				}
+				break;
+			case DIRECTORY:
+				if (((DirectoryDatatype)datatype).isInput()) {
+					builder.append("input ");
+				} else {
+					builder.append("output ");
+				}
+				builder.append("directory\n");				
 				break;
 			case INTEGER:
 				builder.append("integer [").append(((IntegerDatatype)datatype).getMin());

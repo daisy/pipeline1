@@ -23,7 +23,7 @@ package org.daisy.dmfc.core.script.datatype;
  * @author Linus Ericson
  */
 public abstract class Datatype {	
-	public static enum Type {BOOLEAN, ENUM, STRING, INTEGER, FILE};
+	public static enum Type {BOOLEAN, ENUM, STRING, INTEGER, FILE, DIRECTORY};
 	
 	private Type type;
 	

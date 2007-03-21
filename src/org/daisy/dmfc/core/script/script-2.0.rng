@@ -4,7 +4,11 @@
 	For a tutorial on the script syntax, see Script Authoring for the Daisy Pipeline in /doc/script/
 	Linus Ericson 2007
 -->
-<grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<grammar 
+	xmlns="http://relaxng.org/ns/structure/1.0" 
+	xmlns:sch="http://www.ascc.net/xml/schematron"
+	datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
 	<start>
 		<ref name="taskScript"/>
 	</start>
@@ -88,6 +92,7 @@
 		<element name="datatype">
 			<choice>
 				<ref name="datatype.file"/>
+				<ref name="datatype.directory"/>
 				<ref name="datatype.boolean"/>
 				<ref name="datatype.enum"/>
 				<ref name="datatype.string"/>
@@ -101,6 +106,17 @@
 			<attribute name="mime">
 				<data type="normalizedString"/>
 			</attribute>
+			<attribute name="type">
+				<choice>
+					<value>input</value>
+					<value>output</value>
+				</choice>
+			</attribute>
+		</element>
+	</define>
+	
+	<define name="datatype.directory">
+		<element name="directory">
 			<attribute name="type">
 				<choice>
 					<value>input</value>
@@ -184,5 +200,16 @@
 			</element>
 		</oneOrMore>
 	</define>
+	
+	
+	<!-- ******************** SCHEMATRON TESTS ******************** -->
+	
+	<!-- Disallow the use of file datatypes with 
+	     application/x-filesystemDirectory mime type -->
+	<sch:pattern name="script_fileMime" id="script_fileMime">
+	    <sch:rule context="file">
+			<sch:report test="@mime='application/x-filesystemDirectory'">Use of 'application/x-filesystemDirectory' mime type not allowed in script 2.0 syntax. Use &lt;directory/&gt; instead.</sch:report>
+		</sch:rule>
+	</sch:pattern> 
 
 </grammar>

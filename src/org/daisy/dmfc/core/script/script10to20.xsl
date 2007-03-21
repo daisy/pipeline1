@@ -48,7 +48,14 @@
 			<nicename>Input file</nicename>
 			<description>The input file</description>
 			<datatype>
-				<file mime="{@type}" type="input"/>
+				<xsl:choose>
+					<xsl:when test="@type='application/x-filesystemDirectory'">
+						<directory type="input"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<file mime="{@type}" type="input"/>
+					</xsl:otherwise>
+				</xsl:choose>				
 			</datatype>
 		</parameter>
 	</xsl:template>
@@ -59,7 +66,14 @@
 			<nicename>Output path</nicename>
 			<description>The output path</description>
 			<datatype>
-				<file mime="{@type}" type="output"/>
+				<xsl:choose>
+					<xsl:when test="@type='application/x-filesystemDirectory'">
+						<directory type="output"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<file mime="{@type}" type="output"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</datatype>
 		</parameter>
 	</xsl:template>

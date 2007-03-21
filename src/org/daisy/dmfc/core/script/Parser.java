@@ -39,8 +39,8 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-
 import org.daisy.dmfc.core.script.datatype.BooleanDatatype;
+import org.daisy.dmfc.core.script.datatype.DirectoryDatatype;
 import org.daisy.dmfc.core.script.datatype.EnumDatatype;
 import org.daisy.dmfc.core.script.datatype.EnumItem;
 import org.daisy.dmfc.core.script.datatype.FileDatatype;
@@ -70,6 +70,7 @@ class Parser {
 	
 	private static String DATATYPE = "datatype";
 	private static String DATATYPE_FILE = "file";
+	private static String DATATYPE_DIRECTORY = "directory";
 	private static String DATATYPE_STRING = "string";
 	private static String DATATYPE_INTEGER = "integer";
 	private static String DATATYPE_ENUM = "enum";
@@ -343,6 +344,11 @@ class Parser {
 					Attribute attrType = se.getAttributeByName(new QName("type"));					
 					if (attrMime != null && attrType != null) {
 						parameter.setDatatype(new FileDatatype(attrMime.getValue(), attrType.getValue()));
+					}
+				} else if (DATATYPE_DIRECTORY.equals(local)) {
+					Attribute attrType = se.getAttributeByName(new QName("type"));					
+					if (attrType != null) {
+						parameter.setDatatype(new DirectoryDatatype(attrType.getValue()));
 					}
 				} else if (DATATYPE_BOOLEAN.equals(local)) {
 					Attribute attrTrue = se.getAttributeByName(new QName("true"));

@@ -48,6 +48,7 @@ src/org/daisy/dmfc/core/script/TaskParameter.java -text
 src/org/daisy/dmfc/core/script/datatype/BooleanDatatype.java -text
 src/org/daisy/dmfc/core/script/datatype/Datatype.java -text
 src/org/daisy/dmfc/core/script/datatype/DatatypeException.java -text
+src/org/daisy/dmfc/core/script/datatype/DirectoryDatatype.java -text
 src/org/daisy/dmfc/core/script/datatype/EnumDatatype.java -text
 src/org/daisy/dmfc/core/script/datatype/EnumItem.java -text
 src/org/daisy/dmfc/core/script/datatype/FileDatatype.java -text
