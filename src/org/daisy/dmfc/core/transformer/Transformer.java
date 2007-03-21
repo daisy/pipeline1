@@ -55,6 +55,8 @@ public abstract class Transformer extends EventSender {
 	private File transformerDirectory = null;
 	private Vector abortListeners = new Vector();
 	
+	private TransformerInfo transformerInfo = null;
+	
 	/**
 	 * Creates a new Transformer.
 	 * @param eventListeners a set of  event listeners
@@ -204,5 +206,21 @@ public abstract class Transformer extends EventSender {
 	 */
 	final protected File getTransformerDirectory() {
 	    return transformerDirectory;
+	}
+	
+	/**
+	 * Sets the transformer information.
+	 * @param tInfo the transformer information
+	 */
+	/*package*/ void setTransformerInfo(TransformerInfo tInfo) {
+		this.transformerInfo = tInfo;
+	}
+	
+	/**
+	 * Gets some information about the transformer, such as name and description.
+	 * @return the TransformerInfo
+	 */
+	public TransformerInfo getTransformerInfo() {
+		return this.transformerInfo;
 	}
 }

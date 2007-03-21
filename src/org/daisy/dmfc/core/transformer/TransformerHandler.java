@@ -206,6 +206,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 		Object params[] = {inputListener, this.getEventListeners(), Boolean.valueOf(interactive)};
 		Transformer trans = (Transformer)transformerConstructor.newInstance(params);
 		trans.setMessageOriginator(name);
+		trans.setTransformerInfo(this);
 		return trans;
 	}	
 	
