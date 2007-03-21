@@ -56,6 +56,7 @@ import org.xml.sax.SAXParseException;
 public class Creator extends EventSender implements ErrorHandler {
 	
 	private Map<String,TransformerHandler> mHandlers;
+	private boolean mValidationError = false;
 	
 	/**
 	 * Constructor.
@@ -86,7 +87,7 @@ public class Creator extends EventSender implements ErrorHandler {
 			}
 			
 			// Validate XML document
-			if (!this.isXMLValid(url)) {
+			if (!this.isXMLValid(url, "script-2.0.rng")) {
 				throw new ScriptValidationException("System error: Chain not XML valid");
 			}
 			
@@ -131,9 +132,7 @@ public class Creator extends EventSender implements ErrorHandler {
 	    	if ("1.0".equals(attrs.getValue("", "version"))) {
 	    		
 	    		// Make sure this is a valid version 1.0 script
-	    		SimpleValidator validator = new SimpleValidator(this.getClass().getResource("script-1.0.rng").toExternalForm(), this);
-				boolean valid = validator.validate(url);
-				if (!valid) {
+				if (!this.isXMLValid(url, "script-1.0.rng")) {
 					throw new ScriptValidationException("Invalid version 1.0 script");
 				}
 				
@@ -151,7 +150,7 @@ public class Creator extends EventSender implements ErrorHandler {
 		} catch (IOException e) {
 			throw new ScriptValidationException(e.getMessage(), e);
 		} catch (SAXException e) {
-			throw new ScriptValidationException("Invalid version 1.0 script", e);
+			throw new ScriptValidationException(e.getMessage(), e);
 		} catch (PoolException e) {
 			throw new ScriptValidationException(e.getMessage(), e);
 		} catch (XSLTException e) {
@@ -183,15 +182,16 @@ public class Creator extends EventSender implements ErrorHandler {
 	}
 		
 	/**
-	 * Check if this is a valid version 2.0 script file
+	 * Check if this is a valid version script file
 	 * @param url and URL to the script file to check
+	 * @param schemaName name of the schema resource
 	 * @return true if the script file is valid, false otherwise
 	 * @throws ScriptValidationException
 	 */
-	private boolean isXMLValid(URL url) throws ScriptValidationException {
+	private boolean isXMLValid(URL url, String schemaName) throws ScriptValidationException {
 		try {
-			SimpleValidator validator = new SimpleValidator(this.getClass().getResource("script-2.0.rng").toExternalForm(), this);
-			return validator.validate(url);
+			SimpleValidator validator = new SimpleValidator(this.getClass().getResource(schemaName).toExternalForm(), this);
+			return validator.validate(url) && !mValidationError;
 		} catch (IOException e) {			
 			throw new ScriptValidationException(e.getMessage(), e);
 		} catch (SAXException e) {			
@@ -303,6 +303,7 @@ public class Creator extends EventSender implements ErrorHandler {
 	 */
 	public void error(SAXParseException e) throws SAXException {
 		this.sendMessage(Level.WARNING, "User error at line " + e.getLineNumber() + ": " + e);
+		mValidationError = true;
 	}
 
 	/*
@@ -311,6 +312,7 @@ public class Creator extends EventSender implements ErrorHandler {
 	 */
 	public void fatalError(SAXParseException e) throws SAXException {
 		this.sendMessage(Level.WARNING, "User error at line " + e.getLineNumber() + ": " + e);
+		mValidationError = true;
 	}
 
 	/*
@@ -319,6 +321,7 @@ public class Creator extends EventSender implements ErrorHandler {
 	 */
 	public void warning(SAXParseException e) throws SAXException {
 		this.sendMessage(Level.WARNING, "User error at line " + e.getLineNumber() + ": " + e);
+		mValidationError = true;
 	}
 	
 }
