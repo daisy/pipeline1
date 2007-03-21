@@ -7,6 +7,7 @@ doc/examples/input/valentin.jpg -text
 doc/needed.documentation.txt -text
 doc/scripts/int_daisy_filesetRenamer.html -text
 doc/templates/script-doc-template.html -text
+doc/transformers/int_daisy_filesetRenamer.html -text
 lib/batik-css.jar -text
 lib/batik-parser.jar -text
 lib/batik-util.jar -text
