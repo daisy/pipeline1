@@ -6,6 +6,7 @@ doc/examples/input/simple.odt -text
 doc/examples/input/valentin.jpg -text
 doc/needed.documentation.txt -text
 doc/scripts/int_daisy_filesetRenamer.html -text
+doc/templates/script-doc-template.html -text
 lib/batik-css.jar -text
 lib/batik-parser.jar -text
 lib/batik-util.jar -text
