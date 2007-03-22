@@ -5,6 +5,7 @@ doc/examples/input/RTF2dtbook.rtf -text svneol=unset#application/octet-stream
 doc/examples/input/simple.odt -text
 doc/examples/input/valentin.jpg -text
 doc/needed.documentation.txt -text
+doc/script/scriptgrammar.html -text
 doc/scripts/int_daisy_filesetRenamer.html -text
 doc/templates/script-doc-template.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
