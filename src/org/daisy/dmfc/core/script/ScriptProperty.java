@@ -31,8 +31,9 @@ public class ScriptProperty extends AbstractProperty {
 	 * @param name the name of the property
 	 * @param value the value of the property
 	 * @param properties a Map of properties containing all properties defined in this script.
+	 * @throws ScriptValidationException 
 	 */
-	ScriptProperty(String name, String value, Map<String, AbstractProperty> properties) {
+	ScriptProperty(String name, String value, Map<String, AbstractProperty> properties) throws ScriptValidationException {
 		super(name, value, properties);
 	}
 

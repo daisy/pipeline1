@@ -39,11 +39,12 @@ public class ScriptParameter extends AbstractProperty {
 	 * @param value the value of the parameter
 	 * @param properties a Map of properties
 	 * @param required
+	 * @throws ScriptValidationException 
 	 */
 	ScriptParameter(String name, 
             	   String value, 
             	   Map<String, AbstractProperty> properties, 
-            	   boolean required) {
+            	   boolean required) throws ScriptValidationException {
 		super(name, value, properties);
 		this.required = required;
 	}

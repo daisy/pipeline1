@@ -22,6 +22,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.daisy.dmfc.core.script.function.Function;
+import org.daisy.dmfc.core.script.function.FunctionRegistry;
+
 /**
  * Abstract base class for different property types. 
  * @author Linus Ericson
@@ -29,7 +32,7 @@ import java.util.regex.Pattern;
 public abstract class AbstractProperty {
 	
 	// The regex used to find properties to expand
-	protected static Pattern sPropertyPattern = Pattern.compile("\\$\\{(\\w+)\\}");
+	protected static Pattern sPropertyPattern = Pattern.compile("\\$(\\w*)\\{(\\w+)\\}");
 		
 	protected String mName;	
 	protected String mValue;	
@@ -41,10 +44,11 @@ public abstract class AbstractProperty {
 	 * @param value the value of the property
 	 * @param properties a set of known propertis in this script
 	 */
-	public AbstractProperty(String name, String value, Map<String,AbstractProperty> properties) {
+	public AbstractProperty(String name, String value, Map<String,AbstractProperty> properties) throws ScriptValidationException {
 		this.mName = name;
 		this.mValue = value;
 		this.mProperties = properties;
+		validate();
 	}
 	
 	/**
@@ -61,19 +65,7 @@ public abstract class AbstractProperty {
 	 * @return the expanded property value
 	 */
 	public String getValue() {
-		assert(mValue != null);
-		assert(mProperties != null);				        
-	    // Expand properties in the value string     
-        Matcher matcher = sPropertyPattern.matcher(mValue);
-        StringBuffer sb = new StringBuffer();
-        while (matcher.find()) {
-            String propName = matcher.group(1);
-            // FIXME make sure property exists
-            String propValue = mProperties.get(propName).getValue();            
-            matcher.appendReplacement(sb, Matcher.quoteReplacement(propValue));
-        }
-        matcher.appendTail(sb);
-        return sb.toString();
+		return getValue(null);
 	}
 	
 	/** 
@@ -89,18 +81,50 @@ public abstract class AbstractProperty {
         Matcher matcher = sPropertyPattern.matcher(mValue);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
-            String propName = matcher.group(1);
-            // FIXME make sure property exists
+            String propName = matcher.group(2);
             String propValue = null;  
-            if (runnerProperties.containsKey(propName)) {
+            if (runnerProperties != null && runnerProperties.containsKey(propName)) {
             	propValue = runnerProperties.get(propName).getValue(runnerProperties);
             } else {
             	propValue = mProperties.get(propName).getValue(runnerProperties);  
+            }
+            
+            String funcName = matcher.group(1);
+            if (funcName != null && !"".equals(funcName)) {
+            	Function func = FunctionRegistry.lookup(funcName);
+            	propValue = func.apply(propValue);
             }
             matcher.appendReplacement(sb, Matcher.quoteReplacement(propValue));
         }
         matcher.appendTail(sb);
         return sb.toString();
+	}
+	
+	/**
+	 * Validate the value string of the property.
+	 * Make sure all referenced properties and functions exist.
+	 * @throws ScriptValidationException
+	 */
+	protected void validate() throws ScriptValidationException {
+		assert(mValue != null);
+		assert(mProperties != null);
+		Matcher matcher = sPropertyPattern.matcher(mValue);
+		// Loop through value string
+		while (matcher.find()) {
+			// Make sure property exists
+			String propName = matcher.group(2);
+			if (!mProperties.containsKey(propName)) {
+				throw new ScriptValidationException("Property '" + propName + "' is undefined in '" + mValue + "'");
+			}
+			// Make sure function exists
+			String funcName = matcher.group(1);
+			if (funcName != null && !"".equals(funcName)) {
+				Function func = FunctionRegistry.lookup(funcName);
+				if (func == null) {
+					throw new ScriptValidationException("Undefined function '" + funcName + "' in '" + mValue + "'");
+				}
+			}
+		}		
 	}
 	
 }

@@ -16,25 +16,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.daisy.dmfc.core.script;
-
-import java.util.Map;
+package org.daisy.dmfc.core.script.function;
 
 /**
- * A task parameter.
+ * Base class for script functions.
  * @author Linus Ericson
  */
-public class TaskParameter extends AbstractProperty {
-
+public abstract class Function {
 	/**
-	 * Constructor.
-	 * @param name the name of the task parameter
-	 * @param value the value of the task parameter
-	 * @param properties
-	 * @throws ScriptValidationException 
+	 * Apply the function
+	 * @param value the property value to apply the function on
+	 * @return
 	 */
-	public TaskParameter(String name, String value, Map<String, AbstractProperty> properties) throws ScriptValidationException {		
-		super(name, value, properties);
-	}
-	
+	public abstract String apply(String value);
 }

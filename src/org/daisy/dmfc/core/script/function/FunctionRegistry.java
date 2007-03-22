@@ -16,25 +16,30 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.daisy.dmfc.core.script;
+package org.daisy.dmfc.core.script.function;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A task parameter.
+ * Script function registry.
  * @author Linus Ericson
  */
-public class TaskParameter extends AbstractProperty {
+public class FunctionRegistry {
 
-	/**
-	 * Constructor.
-	 * @param name the name of the task parameter
-	 * @param value the value of the task parameter
-	 * @param properties
-	 * @throws ScriptValidationException 
-	 */
-	public TaskParameter(String name, String value, Map<String, AbstractProperty> properties) throws ScriptValidationException {		
-		super(name, value, properties);
+	private static Map<String,Function> sFunctions = new HashMap<String, Function>();
+	
+	static {
+		sFunctions.put("filename", new FilenameFunction());
+		sFunctions.put("parent", new ParentFunction());
 	}
 	
+	/**
+	 * Lookup a function in the registry.
+	 * @param name the name of the function
+	 * @return a Function, or null a function with the specified name is not found
+	 */
+	public static Function lookup(String name) {
+		return sFunctions.get(name);
+	}
 }

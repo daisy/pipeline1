@@ -186,7 +186,11 @@ class Parser {
 					if (attrName != null && attrValue != null) {
 						String name = attrName.getValue();
 						String value = attrValue.getValue();
-						script.addProperty(name, new ScriptProperty(name, value, script.getProperties()));
+						try {
+							script.addProperty(name, new ScriptProperty(name, value, script.getProperties()));
+						} catch (ScriptValidationException e) {
+							throw new XMLStreamException(e.getMessage(), attrValue.getLocation(), e);
+						}
 					}
 				} else if ("parameter".equals(local)) {
 					// Add a parameter
@@ -199,7 +203,12 @@ class Parser {
 						boolean required = attrRequired!=null?attrRequired.getValue().equals("true"):false;
 						
 						// Create the parameter...
-						ScriptParameter parameter = new ScriptParameter(name, value, script.getProperties(), required);
+						ScriptParameter parameter;
+						try {
+							parameter = new ScriptParameter(name, value, script.getProperties(), required);
+						} catch (ScriptValidationException e) {
+							throw new XMLStreamException(e.getMessage(), attrValue.getLocation(), e);
+						}
 						script.addProperty(name, parameter);
 						// ...but create the content of the parameter in a separate method.
 						this.buildScriptParameter(parameter, reader);
@@ -269,7 +278,11 @@ class Parser {
 				} else if ("value".equals(local)) {
 					paramValue = characterData.toString();
 				} else if ("parameter".equals(local)) {					
-					task.addParameter(paramName, new TaskParameter(paramName, paramValue, properties));
+					try {
+						task.addParameter(paramName, new TaskParameter(paramName, paramValue, properties));
+					} catch (ScriptValidationException e) {
+						throw new XMLStreamException(e.getMessage(), ee.getLocation(), e);
+					}
 				} else if (TASK.equals(local)) {
 					// End task tag found. Our work here is done.
 					return;

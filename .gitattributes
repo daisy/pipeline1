@@ -54,6 +54,10 @@ src/org/daisy/dmfc/core/script/datatype/EnumItem.java -text
 src/org/daisy/dmfc/core/script/datatype/FileDatatype.java -text
 src/org/daisy/dmfc/core/script/datatype/IntegerDatatype.java -text
 src/org/daisy/dmfc/core/script/datatype/StringDatatype.java -text
+src/org/daisy/dmfc/core/script/function/FilenameFunction.java -text
+src/org/daisy/dmfc/core/script/function/Function.java -text
+src/org/daisy/dmfc/core/script/function/FunctionRegistry.java -text
+src/org/daisy/dmfc/core/script/function/ParentFunction.java -text
 src/org/daisy/dmfc/core/script/script-1.0.rng -text
 src/org/daisy/dmfc/core/script/script-2.0.rng -text
 src/org/daisy/dmfc/core/script/script10to20.xsl -text

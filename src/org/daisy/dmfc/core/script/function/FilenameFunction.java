@@ -16,25 +16,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.daisy.dmfc.core.script;
+package org.daisy.dmfc.core.script.function;
 
-import java.util.Map;
+import java.io.File;
 
 /**
- * A task parameter.
+ * Script function for extracting the filename part of a path.
  * @author Linus Ericson
  */
-public class TaskParameter extends AbstractProperty {
+public class FilenameFunction extends Function {
 
-	/**
-	 * Constructor.
-	 * @param name the name of the task parameter
-	 * @param value the value of the task parameter
-	 * @param properties
-	 * @throws ScriptValidationException 
-	 */
-	public TaskParameter(String name, String value, Map<String, AbstractProperty> properties) throws ScriptValidationException {		
-		super(name, value, properties);
+	@Override
+	public String apply(String value) {
+		File file = new File(value);
+		return file.getName();
 	}
-	
+
 }
