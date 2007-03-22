@@ -27,17 +27,21 @@ import org.daisy.dmfc.core.script.datatype.DatatypeException;
  * A class used for setting parameters before running a script.
  * @author Linus Ericson
  */
-public class ScriptRunner {
+public class Job {
 
+	public static enum State {IDLE, RUNNING, FINISHED, FAILED, ABORTED};
+	
 	private Script mScript;
 	private Map<String,AbstractProperty> mParameters = new HashMap<String,AbstractProperty>();
+	private State mState;
 	
 	/**
 	 * Creates a new ScriptRunner object from a Script.
 	 * @param script
 	 */
-	public ScriptRunner(Script script) {
+	public Job(Script script) {
 		this.mScript = script;
+		this.mState = State.IDLE;
 	}
 	
 	/**
@@ -105,11 +109,27 @@ public class ScriptRunner {
 	 */
 	public boolean allRequiredParametersSet() {
 		boolean result = true;
-		for (ScriptParameter parameter : mScript.getParameters().values()) {
-			if (parameter.isRequired() && !mParameters.containsKey(parameter.getName())) {
+		for (ScriptParameter parameter : mScript.getRequiredParameters().values()) {
+			if (!mParameters.containsKey(parameter.getName())) {
 				result = false;
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * Gets the state of this job.
+	 * @return the State of this job
+	 */
+	public State getState() {
+		return mState;
+	}
+	
+	/**
+	 * Sets the state of this job
+	 * @param state the State to set
+	 */
+	/*package*/ void setState(State state) {
+		this.mState = state; 
 	}
 }

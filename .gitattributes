@@ -37,12 +37,12 @@ src/org/daisy/dmfc/core/message/property/Cause.java -text
 src/org/daisy/dmfc/core/message/property/Type.java -text
 src/org/daisy/dmfc/core/script/AbstractProperty.java -text
 src/org/daisy/dmfc/core/script/Creator.java -text
+src/org/daisy/dmfc/core/script/Job.java -text
 src/org/daisy/dmfc/core/script/Parser.java -text
 src/org/daisy/dmfc/core/script/Runner.java -text
 src/org/daisy/dmfc/core/script/Script.java -text
 src/org/daisy/dmfc/core/script/ScriptParameter.java -text
 src/org/daisy/dmfc/core/script/ScriptProperty.java -text
-src/org/daisy/dmfc/core/script/ScriptRunner.java -text
 src/org/daisy/dmfc/core/script/ScriptValidationException.java -text
 src/org/daisy/dmfc/core/script/StringProperty.java -text
 src/org/daisy/dmfc/core/script/TaskParameter.java -text

@@ -43,7 +43,7 @@ import org.daisy.dmfc.core.listener.TransformerProgressListener;
 import org.daisy.dmfc.core.script.Creator;
 import org.daisy.dmfc.core.script.Runner;
 import org.daisy.dmfc.core.script.Script;
-import org.daisy.dmfc.core.script.ScriptRunner;
+import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.ScriptValidationException;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.core.transformer.TransformerInfo;
@@ -319,13 +319,13 @@ public class DMFCCore extends EventSender {
 	
 	/**
 	 * Execute a script contained in a ScriptRunner object.
-	 * @param scriptRunner
+	 * @param job
 	 * @throws ScriptException
 	 */
-	public void execute(ScriptRunner scriptRunner) throws ScriptException {
-		sendScriptStatusMessage(true,scriptRunner.getScript());
-		this.mRunner.execute(scriptRunner);
-		sendScriptStatusMessage(false,scriptRunner.getScript());
+	public void execute(Job job) throws ScriptException {
+		sendScriptStatusMessage(true,job.getScript());
+		this.mRunner.execute(job);
+		sendScriptStatusMessage(false,job.getScript());
 	}
 	
 	/**

@@ -20,7 +20,6 @@ package org.daisy.dmfc.core.script;
 
 import java.io.File;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -95,7 +94,7 @@ public class Script {
 	 * @return
 	 */
 	public Map<String, ScriptParameter> getParameters() {
-		Map <String,ScriptParameter> parameters = new HashMap<String, ScriptParameter>();
+		Map <String,ScriptParameter> parameters = new LinkedHashMap<String, ScriptParameter>();
 		for (AbstractProperty property : mProperties.values()) {
 			if (property instanceof ScriptParameter) {
 				ScriptParameter param = (ScriptParameter)property;
@@ -103,6 +102,34 @@ public class Script {
 			}
 		}
 		return parameters;
+	}
+	
+	/**
+	 * Gets a Map containing all required parameters in this script.
+	 * @return
+	 */
+	public Map<String,ScriptParameter> getRequiredParameters() {
+		Map <String,ScriptParameter> required = new LinkedHashMap<String, ScriptParameter>();
+		for (ScriptParameter parameter : this.getParameters().values()) {
+			if (parameter.isRequired()) {
+				required.put(parameter.getName(), parameter);
+			}
+		}
+		return required;
+	}
+	
+	/**
+	 * Gets a Map containing all optional parameters in this script.
+	 * @return
+	 */
+	public Map<String,ScriptParameter> getOptionalParameters() {
+		Map <String,ScriptParameter> required = new LinkedHashMap<String, ScriptParameter>();
+		for (ScriptParameter parameter : this.getParameters().values()) {
+			if (!parameter.isRequired()) {
+				required.put(parameter.getName(), parameter);
+			}
+		}
+		return required;
 	}
 	
 	/**

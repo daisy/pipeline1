@@ -39,7 +39,7 @@ import org.daisy.dmfc.core.message.Message;
 import org.daisy.dmfc.core.message.TransformerMessage;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.dmfc.core.script.ScriptParameter;
-import org.daisy.dmfc.core.script.ScriptRunner;
+import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.ScriptValidationException;
 import org.daisy.dmfc.core.script.datatype.BooleanDatatype;
 import org.daisy.dmfc.core.script.datatype.Datatype;
@@ -187,7 +187,7 @@ public class CommandLineUI implements InputListener, MessageListener, Transforme
 			//mg: after listener refactoring:
 			DMFCCore dmfc = new DMFCCore(ui,ui,ui,ui, new Locale("en"));
         	Script script = dmfc.newScript(scriptFile.toURL());
-        	ScriptRunner runner = new ScriptRunner(script);
+        	Job job = new Job(script);
         	
         	// Only print information?
         	if (information) {
@@ -198,23 +198,23 @@ public class CommandLineUI implements InputListener, MessageListener, Transforme
         	// Force?
         	if (force) {
         		// Loop through required parameters, set default value
-        		setDefaultValues(script, runner);
+        		setDefaultValues(script, job);
         	}
         	
         	// Set parameters
         	for (String name : parameters.keySet()) {
         		String value = parameters.get(name);
-        		ScriptParameter param = runner.getScriptParameter(name);
+        		ScriptParameter param = job.getScriptParameter(name);
         		if (param == null) {
         			System.out.println("Error: Unknown parameter '" + name + "'\n");
         			System.out.println(getScriptInfo(script));
         			System.exit(1);
         		}
-        		runner.setParameterValue(name, value);
+        		job.setParameterValue(name, value);
         	}
 			
         	// Execute script
-        	dmfc.execute(runner);
+        	dmfc.execute(job);
         	
         } catch (DMFCConfigurationException e) {            
             e.printStackTrace();
@@ -229,7 +229,7 @@ public class CommandLineUI implements InputListener, MessageListener, Transforme
 		} 
 	}
 	
-	private static void setDefaultValues(Script script, ScriptRunner runner) throws DatatypeException {
+	private static void setDefaultValues(Script script, Job runner) throws DatatypeException {
 		for (ScriptParameter param : script.getParameters().values()) {
 			if (param.isRequired()) {
 				runner.setParameterValue(param.getName(), param.getValue());

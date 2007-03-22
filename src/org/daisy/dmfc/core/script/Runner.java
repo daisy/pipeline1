@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import org.daisy.dmfc.core.EventListener;
 import org.daisy.dmfc.core.EventSender;
@@ -52,11 +51,11 @@ public class Runner extends EventSender {
 	
 	/**
 	 * Execute a task script.
-	 * @param scriptRunner the script to execute
+	 * @param job the script to execute
 	 * @throws ScriptException
 	 */
-	public void execute(ScriptRunner scriptRunner) throws ScriptException {
-		if (!scriptRunner.allRequiredParametersSet()) {
+	public void execute(Job job) throws ScriptException {
+		if (!job.allRequiredParametersSet()) {
 			throw new ScriptException("Not all required parameters have been set");
 		}
 		try {
@@ -64,14 +63,14 @@ public class Runner extends EventSender {
 			this.mCompletedTasks = 0;
 			//mg 20070316: this message replaced by scriptprogresslistener which is called from DMFCCore
 			//this.sendMessage(Level.CONFIG, i18n("RUNNING_SCRIPT", scriptRunner.getScript().getNicename()));
-			for (Task task : scriptRunner.getScript().getTasks()) {
+			for (Task task : job.getScript().getTasks()) {
 				// Get transformer handler
 				TransformerHandler handler = task.getTransformerHandler();
 								
 				Map<String, String> parameters = new HashMap<String, String>();
 				
 				// Add parameters specified by task
-				this.addTaskParameters(parameters, task, scriptRunner.getParameters());
+				this.addTaskParameters(parameters, task, job.getParameters());
 								
 				// Add hard-coded transformer parameters
 				this.addTransformerParameters(parameters, handler);				
@@ -79,18 +78,22 @@ public class Runner extends EventSender {
 				// Execute transformer
 				//mg 20070316: this message replaced by transformerprogresslistener which is called from Transformer
 				//this.sendMessage(Level.CONFIG, i18n("RUNNING_TASK", handler.getName()));
+				job.setState(Job.State.RUNNING);
 				boolean success = handler.run(parameters, task.isInteractive());
 				if (!success) {
+					job.setState(Job.State.FAILED);
 					throw new ScriptException(i18n("TASK_FAILED", handler.getName()));
 				}
-				
+				job.setState(Job.State.FINISHED);
 				this.mCompletedTasks++;
 				//mg 20070316: this message replaced by scriptprogresslistener which is called from DMFCCore
 				//this.sendMessage(Level.CONFIG, i18n("END_OF_SCRIPT"));
 			}
 		} catch (TransformerAbortException e) {
+			job.setState(Job.State.ABORTED);
 			throw new ScriptAbortException("Script aborted", e);
 		} catch (TransformerRunException e) {
+			job.setState(Job.State.FAILED);
 			throw new ScriptException(i18n("ERROR_RUNNING_TASK"), e);
 		} finally {
 			this.mRunning = false;
