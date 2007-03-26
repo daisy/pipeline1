@@ -5,6 +5,7 @@ doc/examples/input/RTF2dtbook.rtf -text svneol=unset#application/octet-stream
 doc/examples/input/simple.odt -text
 doc/examples/input/valentin.jpg -text
 doc/needed.documentation.txt -text
+doc/pipeline.css -text
 doc/script/scriptgrammar.html -text
 doc/scripts/AudioTagger.html -text
 doc/scripts/ConfigurableValidator.html -text
