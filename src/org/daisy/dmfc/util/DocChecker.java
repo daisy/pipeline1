@@ -21,12 +21,12 @@ import org.daisy.util.file.EFolder;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
-import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
+import org.xml.sax.SAXParseException;
 
 /**
  * Util class (with main) to check the transformer and script documentation packages within a Pipeline 
@@ -60,7 +60,7 @@ public class DocChecker implements FilesetErrorHandler {
 		Map<File,String> scriptAndTransformerFiles = new HashMap<File,String>();
 		
 		scriptAndTransformerFiles.putAll(getDocuments(transformersDir,"transformer","tdf"));
-		scriptAndTransformerFiles.putAll(getDocuments(scriptsDir,"taskScript","xml"));
+		scriptAndTransformerFiles.putAll(getDocuments(scriptsDir,"taskScript","taskScript"));
 				
 		//get all existing transformer and script documentation files
 		Collection<URI> documentationFiles = parseScriptAndTransformerFiles(scriptAndTransformerFiles);
@@ -154,9 +154,14 @@ public class DocChecker implements FilesetErrorHandler {
 	}
 
 	public void error(FilesetFileException ffe) throws FilesetFileException {
-		System.err.println("[DocChecker Warning] Fileset exception in: " 
+		String line = "";
+		if(ffe.getCause() instanceof SAXParseException) {
+			SAXParseException spe = (SAXParseException) ffe.getCause();
+			line = Integer.toString(spe.getLineNumber());
+		}
+		System.err.println("[DocChecker Warning] FilesetFileException in: " 
 				+ ffe.getOrigin().getFile().getParentFile().getName() + "/" 
-				+ ffe.getOrigin().getName() + ": "
+				+ ffe.getOrigin().getName() + "[" + line +  "]: "
 				+ ffe.getCause().getMessage()
 				);		
 	}
