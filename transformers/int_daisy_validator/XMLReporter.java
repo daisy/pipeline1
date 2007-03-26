@@ -6,10 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
-import java.util.logging.Level;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
@@ -44,14 +44,14 @@ public class XMLReporter {
 	private Stack mPendingEvents = new Stack();			// stack containing pending elements: write all of these before finishing.
 	public final Set NAMESPACES = new HashSet();		// container of (the single) namespace
 
-	public static final String NAMESPACE_PREFIX = "val";												// validator abbr.
-	public static final String NAMESPACE_URI = "http://www.tpb.se/validator/";							// unique string
+	public static final String NAMESPACE_PREFIX = "";												// validator abbr.
+	public static final String NAMESPACE_URI = "http://www.daisy.org/ns/pipeline/validator/";			// unique string
 	
-	public static final QName MESSAGE_QNAME = new QName(NAMESPACE_URI, "message", NAMESPACE_PREFIX);	// qname for frequent element
-	public static final QName EXCEPTION_QNAME = new QName(NAMESPACE_URI, "exception", NAMESPACE_PREFIX);// qname for frequent element
-	
-		
-	
+	//public static final QName MESSAGE_QNAME = new QName(NAMESPACE_URI, "message", NAMESPACE_PREFIX);	// qname for frequent element
+	public static final QName MESSAGE_QNAME = new QName("message");										// qname for frequent element
+	//public static final QName EXCEPTION_QNAME = new QName(NAMESPACE_URI, "exception", NAMESPACE_PREFIX);// qname for frequent element
+	public static final QName EXCEPTION_QNAME = new QName("exception");// qname for frequent element
+			
 	/**
 	 * Constructs an XMLReporter to report errors to the file <code>outputFile</code>.
 	 * 
@@ -168,57 +168,42 @@ public class XMLReporter {
 		mEventWriter.close();
 	}
 	
-	
 	/**
-	 * Reports a message <code>validatorMessage</code> from the validator 
-	 * <code>validator</code> using the message level <code>messageLevel</code>.
-	 * 
-	 * @param validator
-	 * @param validatorMessage
-	 * @param messageLevel
-	 * @throws XMLStreamException
-	 */
-	public void report(Validator validator, ValidatorMessage validatorMessage, Level messageLevel) throws XMLStreamException {
-		if (null == messageLevel) {
-			messageLevel = Level.ALL;
-		}
-		
-		String message = validatorMessage.getMessage();
-
-		Set attributes = new HashSet();
-		
-		attributes.add(mEventFactory.createAttribute(
-				"level", messageLevel.toString()));
-		attributes.add(mEventFactory.createAttribute(
-				"line", String.valueOf(validatorMessage.getLine())));
-		attributes.add(mEventFactory.createAttribute(
-				"col", String.valueOf(validatorMessage.getColumn())));
-		attributes.add(mEventFactory.createAttribute(
-				"msg", message));
-		
-		writeEvent(mEventFactory.createStartElement(MESSAGE_QNAME, attributes.iterator(), NAMESPACES.iterator()));
-		writeEvent(mEventFactory.createEndElement(MESSAGE_QNAME, NAMESPACES.iterator()));
-	}
-	
-	/**
-	 * Reports an error of any kind.
+	 * Add a ValidatorMessage to the report.
 	 *
 	 * @param validator the validator that reported the error
 	 * @param validatorMessage the validator message
 	 * @throws XMLStreamException 
 	 */
 	public void report(Validator validator, ValidatorMessage validatorMessage) throws XMLStreamException {
-		Level level = Level.ALL;
+		String severity = null;
 		if (validatorMessage instanceof ValidatorErrorMessage) {
-			level = Level.SEVERE;
+			severity = "Error";
 		} else if (validatorMessage instanceof ValidatorSevereErrorMessage) {
-			level = Level.SEVERE;
+			severity = "Severe error";
 		} else if (validatorMessage instanceof ValidatorWarningMessage) {
-			level = Level.WARNING;
+			severity = "Warning";
 		}
 		
-		report(validator, validatorMessage, level);
+		String message = validatorMessage.getMessage();		
+		Set attributes = new HashSet();
+		
+		String file = "";
+		URI uri = validatorMessage.getFile();
+		if(uri!=null) file=uri.toString();
+						
+		attributes.add(mEventFactory.createAttribute("level", severity));
+		attributes.add(mEventFactory.createAttribute("file", file));
+		attributes.add(mEventFactory.createAttribute("line", String.valueOf(validatorMessage.getLine())));
+		attributes.add(mEventFactory.createAttribute("col", String.valueOf(validatorMessage.getColumn())));
+		attributes.add(mEventFactory.createAttribute("msg", message));
+			
+		writeEvent(mEventFactory.createStartElement(MESSAGE_QNAME, attributes.iterator(), NAMESPACES.iterator()));
+		writeEvent(mEventFactory.createEndElement(MESSAGE_QNAME, NAMESPACES.iterator()));
+		
+		
 	}
+	
 	
 	/**
 	 * Reports an exception thrown during validation.
@@ -241,19 +226,15 @@ public class XMLReporter {
 		Set attributes = new HashSet();
 		
 		// level - Exceptions are always SEVERE 
-		attributes.add(mEventFactory.createAttribute(
-				"level", Level.SEVERE.toString()));
-		
+		attributes.add(mEventFactory.createAttribute("level", "Severe error"));		
 		// message
-		attributes.add(mEventFactory.createAttribute(
-				"msg", String.valueOf(message)));
-		
+		attributes.add(mEventFactory.createAttribute("msg", String.valueOf(message)));		
 		// stacktrace
-		attributes.add(mEventFactory.createAttribute(
-				"str", String.valueOf(stackTrace + System.getProperty("line.separator") + stackTrace)));
+		attributes.add(mEventFactory.createAttribute("str", String.valueOf(stackTrace + System.getProperty("line.separator") + stackTrace)));
 
 		writeEvent(mEventFactory.createStartElement(EXCEPTION_QNAME, attributes.iterator(), NAMESPACES.iterator()));
 		writeEvent(mEventFactory.createEndElement(EXCEPTION_QNAME, NAMESPACES.iterator()));
+		
 	}
 	
 	
@@ -270,6 +251,7 @@ public class XMLReporter {
 		// start document
 		event = mEventFactory.createStartDocument("UTF-8", "1.0");
 		writeEvent(event);
+		mEventWriter.add(mNewLine);
 		mPendingEvents.push(mEventFactory.createEndDocument());
 		
 		// xml-stylesheet
@@ -277,19 +259,23 @@ public class XMLReporter {
 			String value = "type=\"text/xsl\" href=\""+ mXmlStylesheet + "\"";
 			event = mEventFactory.createProcessingInstruction("xml-stylesheet", value);
 			writeEvent(event);
+			
 		}
 		
 		// docelem
 		event = mEventFactory.createStartElement(documentQName, null, NAMESPACES.iterator());
 		writeEvent(event);
+		mEventWriter.add(mNewLine);
 		mPendingEvents.push(mEventFactory.createEndElement(documentQName, NAMESPACES.iterator()));
-		
+				
 		printHeadSection();
 		
 		// body
 		event = mEventFactory.createStartElement(bodyQName, null, NAMESPACES.iterator());
 		writeEvent(event);
+		mEventWriter.add(mNewLine);
 		mPendingEvents.push(mEventFactory.createEndElement(bodyQName, NAMESPACES.iterator()));
+		
 	}
 	
 
@@ -298,31 +284,32 @@ public class XMLReporter {
 	 * @throws XMLStreamException
 	 */
 	private void printHeadSection() throws XMLStreamException {
-		QName headQName = new QName(NAMESPACE_URI, "head", NAMESPACE_PREFIX);
+		QName headQName = new QName("head");
 		QName tmpQName = null;
-		
-		
+				
 		XMLEvent event = mEventFactory.createStartElement(headQName, null, NAMESPACES.iterator());
 		writeEvent(event);
+		mEventWriter.add(mNewLine);
 		
-		tmpQName = new QName(NAMESPACE_URI, "dmfcVersion", NAMESPACE_PREFIX);
+		tmpQName = new QName("pipelineVersion");
 		event = mEventFactory.createStartElement(tmpQName, null, NAMESPACES.iterator());
 		writeEvent(event);
 		event = mEventFactory.createCharacters(org.daisy.dmfc.Version.getVersion());
 		writeEvent(event);
 		event = mEventFactory.createEndElement(tmpQName, NAMESPACES.iterator());
 		writeEvent(event);
-		
-		tmpQName = new QName(NAMESPACE_URI, "javaVersion", NAMESPACE_PREFIX);
+				
+		tmpQName = new QName("javaVersion");
 		event = mEventFactory.createStartElement(tmpQName, null, NAMESPACES.iterator());
 		writeEvent(event);
 		event = mEventFactory.createCharacters(System.getProperty("java.version"));
 		writeEvent(event);
 		event = mEventFactory.createEndElement(tmpQName, NAMESPACES.iterator());
 		writeEvent(event);
-		
+				
 		event = mEventFactory.createEndElement(headQName, NAMESPACES.iterator());
 		writeEvent(event);
+		
 	}
 	
 	
@@ -331,17 +318,19 @@ public class XMLReporter {
 	 * @throws XMLStreamException
 	 */
 	private void printFootSection() throws XMLStreamException {
-		QName footQName = new QName(NAMESPACE_URI, "foot", NAMESPACE_PREFIX);
+		QName footQName = new QName("foot");
 		QName tmpQName = null;
 		
 		XMLEvent event = mEventFactory.createStartElement(footQName, null, NAMESPACES.iterator());
 		writeEvent(event);
+		mEventWriter.add(mNewLine);
+		
 		
 		// execution time
-		tmpQName = new QName(NAMESPACE_URI, "executionTime", NAMESPACE_PREFIX);
+		tmpQName = new QName("executionTime");
 		event = mEventFactory.createStartElement(tmpQName, null, NAMESPACES.iterator());
 		writeEvent(event);
-		
+				
 		mExecutionTime = System.currentTimeMillis() - mExecutionTime;
 		long ms = mExecutionTime % 1000;
 		mExecutionTime /= 1000;
@@ -360,8 +349,10 @@ public class XMLReporter {
 		writeEvent(event);
 		event = mEventFactory.createEndElement(tmpQName, NAMESPACES.iterator());
 		writeEvent(event);
+		
 
 		event = mEventFactory.createEndElement(footQName, NAMESPACES.iterator());
 		writeEvent(event);
+		
 	}
 }

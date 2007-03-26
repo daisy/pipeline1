@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import javax.xml.parsers.SAXParser;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -40,6 +41,9 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.core.message.TransformerMessage;
+import org.daisy.dmfc.core.message.property.Cause;
+import org.daisy.dmfc.core.message.property.Type;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.exception.ExceptionTransformer;
@@ -59,6 +63,7 @@ import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedExceptio
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorSevereErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
+import org.daisy.util.xml.LocusTransformer;
 import org.daisy.util.xml.XMLUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.peek.PeekResult;
@@ -74,27 +79,31 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
+ * An input type agnostic multi schema type multi layered validator.
  * @author Markus Gylling
  */
+
+@SuppressWarnings("unused")
 public class ValidatorDriver extends Transformer implements FilesetErrorHandler, ValidatorListener, ErrorHandler {
 
 	private static final double PROGRESS_PEEK = 0.01;
 	private static final double PROGRESS_FILESET_INSTANTIATION = 0.10;
 	private static final double PROGRESS_FILESET_VALIDATION = 0.20;
-	private static final double PROGRESS_SAX_VALIDATION = 0.95;
+	private static final double PROGRESS_SAX_VALIDATION = 0.90;
 	private static final double PROGRESS_JAXP_VALIDATION = 0.95;
 
-	private EFile mInputFile = null;									//from paramaters
-	private Fileset mInputFileset = null;								//based in inputfile
-	private PeekResult mInputFilePeekResult = null;						//a global peek on inputfile
-	private Map mSchemaSources = new HashMap();  						//<Source>,<SchemaNSURI> 
-	private HashSet mValidatorMessageCache = new HashSet();				//to avoid identical messages
-	private FilesetRegex mRegex = FilesetRegex.getInstance();			//convenience shortcut
-	private StateTracker mStateTracker = new StateTracker();			//inner class
-	private CompletionTracker mCompletionTracker 
-	= new CompletionTracker();										//inner class
-
+	private EFile mInputFile = null;												//from paramaters
+	private String mRequiredInputType = null;										//whether to abort if not a certain type of fileset
+	private Fileset mInputFileset = null;											//based in inputfile
+	private PeekResult mInputFilePeekResult = null;									//a global peek on inputfile
+	private Map mSchemaSources = new HashMap();  									//<Source>,<SchemaNSURI> 
+	private HashSet mValidatorMessageCache = new HashSet();							//to avoid identical messages
+	private FilesetRegex mRegex = FilesetRegex.getInstance();						//convenience shortcut
+	private StateTracker mStateTracker = new StateTracker();						//inner class
+	private CompletionTracker mCompletionTracker = new CompletionTracker();			//inner class
 	private XMLReporter mXmlReporter = null;										// validator xml output
+	private String mForcedValidatorImpl = null;										//whether user overrides default impl
+	
 	/**
 	 * Constructor.
 	 */
@@ -133,7 +142,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			// initialize the optional xml reporter
 			try {
 				String outputPath = (String) parameters.remove("xmlReport");
-				if (outputPath != null) {
+				if (outputPath != null && outputPath.length()>0 ) {
 					File reportFile = new File(outputPath);
 					
 					String xmlStylesheet = (String) parameters.remove("xmlStylesheet");
@@ -150,6 +159,9 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			try{			
 				mInputFile = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("input")));			
 
+				String type = (String)parameters.remove("requireInputType");
+				if(!type.toLowerCase().equals("off"))mRequiredInputType = type; //else leave as null
+				
 				Peeker peeker = null;
 				try{
 					peeker = PeekerPool.getInstance().acquire();
@@ -165,9 +177,31 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 
 				try{				
 					mInputFileset = new FilesetImpl(mInputFile.toURI(),this,true,false);
+															
+					if(mRequiredInputType!=null) {
+						//the user has specified that an error+abort should be thrownn if
+						//input fileset is not of the given type
+						if (!mInputFileset.getFilesetType().toNiceNameString().equals(mRequiredInputType)) {
+							String message = i18n("NOT_REQUIRED_INPUT_TYPE",mRequiredInputType);
+							this.sendMessage(new TransformerMessage(this,message,Type.ERROR,Cause.INPUT));
+							throw new TransformerRunException(message);
+						}
+					}
+					
+					mForcedValidatorImpl = (String) parameters.remove("forceImplementation");
+					if (mForcedValidatorImpl != null && mForcedValidatorImpl.length()>0 ) {
+						//set the system property for the ValidatorFactory to access later
+						String key = "org.daisy.util.fileset.validation:http://www.daisy.org/fileset/"
+							+ mInputFileset.getFilesetType().toString();						
+						System.setProperty(key,mForcedValidatorImpl);
+						
+					}
+					
+										
 					this.progress(PROGRESS_FILESET_INSTANTIATION);
 					this.checkAbort();
 					mCompletionTracker.mCompletedFilesetInstantiation = true;
+					
 					ValidatorFactory validatorFactory = ValidatorFactory.newInstance(); 
 					try{
 						Validator filesetValidator = validatorFactory.newValidator(mInputFileset.getFilesetType());
@@ -175,34 +209,46 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 
 						String delegates = (String)parameters.remove("delegates");
 						this.setDelegates(filesetValidator, delegates);
-
-						this.sendMessage(Level.INFO, i18n("VALIDATING_FILESET", mInputFileset.getFilesetType().toNiceNameString()));
+						
+						//TODO set schemas on validator
+						
+						this.sendMessage(new TransformerMessage(this,i18n("VALIDATING_FILESET", mInputFileset.getFilesetType().toNiceNameString()),Type.INFO,Cause.SYSTEM));
 						filesetValidator.validate(mInputFileset);
+						
 						this.progress(PROGRESS_FILESET_VALIDATION);
 						this.checkAbort();
 						mCompletionTracker.mCompletedFilesetValidation = true;
 					}catch (ValidatorNotSupportedException e) {
-						//the factory could not produce a validator for this fileset type
-						this.sendMessage(Level.WARNING, i18n("NO_FILESET_VALIDATOR", mInputFileset.getFilesetType().toNiceNameString()));					
+						//the factory could not produce a validator for this fileset type											
+						this.sendMessage(new TransformerMessage(this,i18n("NO_FILESET_VALIDATOR", mInputFileset.getFilesetType().toNiceNameString()),Type.WARNING,Cause.SYSTEM));
 						// add exception to xml report
 						xmlReport(e);
 					}catch (ValidatorException ve) {
 						//another error than nonsupported type occured
 						mStateTracker.mHadCaughtException = true;
-						this.sendMessage(Level.WARNING, i18n("FILESET_VALIDATION_FAILURE", ve.getMessage()));
+						this.sendMessage(new TransformerMessage(this,i18n("FILESET_VALIDATION_FAILURE", ve.getMessage()),Type.ERROR,Cause.SYSTEM));						
 						// add exception to xml report
 						xmlReport(ve);
 					}
 				}catch (FilesetTypeNotSupportedException e) {
-					//org.daisy.util.fileset did not recognize the input type
-					this.sendMessage(Level.WARNING, i18n("NO_FILESET_SUPPORT", mInputFile.getName()));	
+					//org.daisy.util.fileset did not recognize the input type					
+					
+					if(mRequiredInputType!=null) {
+						//the user has specified that an error+abort should be thrownn if
+						//input is not of the given Fileset type
+						// Since we got this exception, its not a fileset at all
+						String message = i18n("NOT_REQUIRED_INPUT_TYPE",mRequiredInputType);
+						this.sendMessage(new TransformerMessage(this,message,Type.ERROR,Cause.INPUT));
+						throw new TransformerRunException(message);						
+					}
+										
 					// add exception to xml report
 					xmlReport(e);
 					//since no fileset, no dtd validation yet
 					if((mInputFilePeekResult != null) 
 							&& (mInputFilePeekResult.getPrologSystemId()!=null
 									||mInputFilePeekResult.getPrologPublicId()!=null)){
-						this.sendMessage(Level.INFO, i18n("SAX_DTD_VAL"));
+						this.sendMessage(new TransformerMessage(this,i18n("SAX_DTD_VAL"),Type.INFO,Cause.SYSTEM));
 						doSAXDTDValidation();	
 						this.progress(PROGRESS_SAX_VALIDATION);
 						this.checkAbort();
@@ -212,7 +258,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 
 				if((!(mSchemaSources = setSchemaSources(parameters)).isEmpty()) 
 						&& (mInputFilePeekResult != null)) {
-					this.sendMessage(Level.INFO, i18n("JAXP_SCHEMA_VAL", Integer.toString(mSchemaSources.size())));
+					this.sendMessage(new TransformerMessage(this,i18n("JAXP_SCHEMA_VAL", Integer.toString(mSchemaSources.size())),Type.INFO,Cause.SYSTEM));
 					doJAXPSchemaValidation();
 					this.progress(PROGRESS_JAXP_VALIDATION);
 					this.checkAbort();
@@ -246,32 +292,40 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				throw new TransformerRunException(i18n("ABORTING_NO_VALIDATION_PERFORMED"));
 			}
 
-			if(mStateTracker.thresholdBreached(abortThreshold)) {
-				this.sendMessage(Level.WARNING, i18n("ABORTING_THRESHOLD_BREACHED"));	
+			if(mStateTracker.thresholdBreached(abortThreshold)) {					
+				this.sendMessage(new TransformerMessage(this,i18n("ABORTING_THRESHOLD_BREACHED"),Type.WARNING,Cause.INPUT));
 				return false;
 			}
 
 			//else, we are about to exit gracefully. Give some info.
 
 			if(mCompletionTracker.mCompletedFilesetValidation) {
-				this.sendMessage(Level.INFO,i18n("COMPLETED_FILESET_VALIDATION"));	
+				this.sendMessage(new TransformerMessage(this,i18n("COMPLETED_FILESET_VALIDATION"),Type.INFO,Cause.SYSTEM));				
 			}else{
 				if(mCompletionTracker.mCompletedFilesetInstantiation) {
-					this.sendMessage(Level.INFO,i18n("COMPLETED_FILESET_INSTANTIATION"));
+					this.sendMessage(new TransformerMessage(this,i18n("COMPLETED_FILESET_INSTANTIATION"),Type.INFO,Cause.SYSTEM));
 				}else{
 					if(mCompletionTracker.mCompletedInlineDTDValidation) {
-						this.sendMessage(Level.INFO,i18n("COMPLETED_DTD_VALIDATION"));	
+						this.sendMessage(new TransformerMessage(this,i18n("COMPLETED_DTD_VALIDATION"),Type.INFO,Cause.SYSTEM));
 					}
 				}
 			}
 
 			if(mCompletionTracker.mCompletedJAXPSchemaValidation) {
-				this.sendMessage(Level.INFO,i18n("COMPLETED_JAXP_VALIDATION"));
+				this.sendMessage(new TransformerMessage(this,i18n("COMPLETED_JAXP_VALIDATION"),Type.INFO,Cause.SYSTEM));				
 			}
 
-			this.sendMessage(Level.INFO,i18n("DURATION", Double.toString((end-start)/1000000000)));
-			this.sendMessage(Level.INFO,i18n("MESSAGES_FROM_VALIDATOR",Integer.toString(mValidatorMessageCache.size())));
-			if(mValidatorMessageCache.size()==0) this.sendMessage(Level.INFO,i18n("CONGRATS"));		
+			this.sendMessage(new TransformerMessage(this,i18n("DURATION", Double.toString((end-start)/1000000000)),Type.INFO,Cause.SYSTEM));
+			this.sendMessage(new TransformerMessage(this,i18n("MESSAGES_FROM_VALIDATOR",Integer.toString(mValidatorMessageCache.size())),Type.INFO,Cause.SYSTEM));
+			if(mValidatorMessageCache.size()==0) this.sendMessage(new TransformerMessage(this,i18n("CONGRATS"),Type.INFO,Cause.SYSTEM));
+			
+			
+			if (mForcedValidatorImpl  != null && mForcedValidatorImpl.length()>0 && mInputFileset!=null ) {
+				//we reset the system property so that default impl is used next time
+				System.clearProperty("org.daisy.util.fileset.validation:http://www.daisy.org/fileset/"
+							+ mInputFileset.getFilesetType().toString());
+			}
+			
 			return true;
 
 		} finally {
@@ -300,10 +354,10 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					validator.setDelegate(delegate);
 				} catch (ValidatorNotSupportedException e) {
 					mStateTracker.mHadCaughtException = true;
-					this.sendMessage(Level.WARNING,i18n("DELEGATE_INSTANTIATION_FAILURE", array[i]));
+					this.sendMessage(new TransformerMessage(this,i18n("DELEGATE_INSTANTIATION_FAILURE", array[i]),Type.ERROR,Cause.SYSTEM));					
 				} catch (ValidatorException e) {
 					mStateTracker.mHadCaughtException = true;
-					this.sendMessage(Level.WARNING,i18n("DELEGATE_INSTANTIATION_FAILURE", array[i]));
+					this.sendMessage(new TransformerMessage(this,i18n("DELEGATE_INSTANTIATION_FAILURE", array[i]),Type.ERROR,Cause.SYSTEM));
 				}
 			}			
 		}
@@ -317,6 +371,8 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @throws SAXException 
 	 * @throws IOException 
 	 */
+	
+	@SuppressWarnings("unchecked")
 	private Map setSchemaSources(Map parameters) throws IOException, SAXException {
 
 		//get schemas from inparams
@@ -328,12 +384,12 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					Map aSchema = toSchemaSource(array[i],null);
 					if(aSchema!=null) {
 						mSchemaSources.putAll(aSchema);
-					}else{
-						this.sendMessage(Level.WARNING,i18n("SCHEMA_INSTANTIATION_FAILURE", array[i]));							
+					}else{						
+						this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_INSTANTIATION_FAILURE", array[i]),Type.ERROR,Cause.SYSTEM));
 					}
 				}catch (Exception e) {
 					mStateTracker.mHadCaughtException = true;
-					this.sendMessage(Level.WARNING, i18n("SCHEMA_INSTANTIATION_FAILURE", array[i]) + e.getMessage());
+					this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_INSTANTIATION_FAILURE", array[i]+ e.getMessage()),Type.ERROR,Cause.SYSTEM));					
 				}
 			}						
 		}//if(schemas!=null && schemas.length()>0)
@@ -347,7 +403,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				if (map!=null){
 					mSchemaSources.putAll(map);
 				}else{
-					this.sendMessage(Level.WARNING,i18n("SCHEMA_INSTANTIATION_FAILURE", str));
+					this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_INSTANTIATION_FAILURE", str),Type.ERROR,Cause.SYSTEM));
 				}																	
 			}//for
 		}
@@ -361,6 +417,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
 	 */
+	@SuppressWarnings("unchecked")
 	private void doSAXDTDValidation() {
 
 		Map features = new HashMap();
@@ -375,12 +432,12 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			saxParser.getXMLReader().parse(mInputFile.asInputSource());	    	
 		}catch (Exception e) {
 			mStateTracker.mHadCaughtException = true;
-			this.sendMessage(Level.WARNING,i18n("DTD_VALIDATION_FAILURE", e.getMessage()));			
+			this.sendMessage(new TransformerMessage(this,i18n("DTD_VALIDATION_FAILURE", e.getMessage()),Type.ERROR,Cause.SYSTEM));
 		}finally{
 			try {
 				SAXParserPool.getInstance().release(saxParser,features,null);
 			} catch (PoolException e) {
-
+				e.printStackTrace();
 			}
 		}
 	}
@@ -388,6 +445,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	/**
 	 * Attempt to validate the input file using javax.xml.validation against a set of schema Sources
 	 */
+	@SuppressWarnings("unchecked")
 	private void doJAXPSchemaValidation() {
 
 		HashMap factoryMap = new HashMap();		//cache to not create multiple identical factories     	     	 
@@ -406,7 +464,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				if (fileName != null && fileName.lastIndexOf("/") > 0) {
 					fileName = fileName.substring(fileName.lastIndexOf("/"));
 				}
-				this.sendMessage(Level.INFO,i18n("VALIDATING_USING_SCHEMA",schemaType, fileName));
+				this.sendMessage(new TransformerMessage(this,i18n("VALIDATING_USING_SCHEMA",schemaType, fileName),Type.INFO,Cause.SYSTEM));
 
 				//then do it
 				if(!factoryMap.containsKey(schemaNsURI)) {
@@ -422,7 +480,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				this.checkAbort();
 			}catch (Exception e) {
 				mStateTracker.mHadCaughtException = true;
-				this.sendMessage(Level.WARNING,i18n("SCHEMA_VALIDATION_FAILURE",source.getSystemId()) + " " +e.getMessage());
+				this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_VALIDATION_FAILURE",source.getSystemId()) + " " +e.getMessage(),Type.ERROR,Cause.SYSTEM));				
 			}        
 		}		
 	}
@@ -431,6 +489,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */
+	
 	public void error(FilesetFileException ffe) throws FilesetFileException {
 		//we redirect anything recoverable that is reported during 
 		//fileset instantiation to ValidatorListener#message just to
@@ -473,6 +532,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#report(org.daisy.util.fileset.validation.message.ValidatorMessage)
 	 */
+	@SuppressWarnings("unchecked")
 	public void report(Validator validator, ValidatorMessage message) {
 		/*
 		 * Everything reported regarding validity from 
@@ -489,15 +549,20 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		}else{
 			xmlReport(validator, message);
 			mValidatorMessageCache.add(message);
+			
+			Type type = null;
 			if(message instanceof ValidatorWarningMessage) {
 				mStateTracker.mHadValidationWarning = true;
+				type = Type.WARNING;
 			}else if (message instanceof ValidatorSevereErrorMessage) {
 				mStateTracker.mHadValidationSevereError = true;
+				type = Type.ERROR;
 			}else {
 				mStateTracker.mHadValidationError = true;
+				type = Type.ERROR;
 			}		
-			//TODO, logger level must be fixed
-			this.sendMessage(Level.WARNING, message.toString());	
+			Location loc = LocusTransformer.newLocation(message);
+			this.sendMessage(new TransformerMessage(this,message.toString(),type,Cause.INPUT,loc));
 		}
 	}
 
@@ -515,7 +580,8 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 */
 	public void exception(Validator validator, Exception e) {
 		mStateTracker.mHadCaughtException = true;
-		this.sendMessage(Level.INFO, i18n("FILESET_VALIDATION_ERROR", e.getMessage()));		
+		xmlReport(e);
+		this.sendMessage(new TransformerMessage(this,i18n("FILESET_VALIDATION_ERROR", e.getMessage()),Type.ERROR,Cause.SYSTEM));
 	}
 
 	/*
@@ -523,11 +589,11 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#inform(org.daisy.util.fileset.validation.Validator, java.lang.String)
 	 */
 	public void inform(Validator validator, String information) {
-		this.sendMessage(Level.INFO, information);		
+		this.sendMessage(new TransformerMessage(this,information,Type.INFO,Cause.SYSTEM));		
 	}
 
 	/**
-	 * Verify that we have system properties that identify impls for
+	 * Verify that we have system properties that identify default impls for
 	 * retrieval by javax.xml.validation.SchemaFactory and 
 	 * org.daisy.util.fileset.validation.ValidatorFactory.
 	 */
@@ -557,6 +623,12 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			System.setProperty(
 					"org.daisy.util.fileset.validation:http://www.daisy.org/fileset/Z3986",
 			"org.daisy.util.fileset.validation.ValidatorImplZedVal");
+			/*
+			 * The basic (non-ZedVal) validator would be
+			 * System.setProperty(
+			 * "org.daisy.util.fileset.validation:http://www.daisy.org/fileset/Z3986",
+			 * "org.daisy.util.fileset.validation.impl.ValidatorImplZedBasic");
+			 */
 		}
 
 		test = System.getProperty(
@@ -588,6 +660,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @throws IOException 
 	 * @throws SAXException 
 	 */
+	@SuppressWarnings("unchecked")
 	private Map toSchemaSource(String identifier, String schemaLanguageConstant) throws IOException, SAXException {
 		/*
 		 * examples of inparams here:
@@ -641,12 +714,12 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		//if catalog didnt work
 		if(schemaURL == null) {
 			if(isRemote){
-				this.sendMessage(Level.WARNING, i18n("SCHEMA_IDENTIFIER_ONLINE", identifier));
+				this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_IDENTIFIER_ONLINE"),Type.WARNING,Cause.INPUT));
 			}	
 			try{
 				schemaURL = new URL(identifier);
 			}catch (Exception e) {
-				this.sendMessage(Level.WARNING, i18n("SCHEMA_INSTANTIATION_FAILURE", identifier));
+				this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_INSTANTIATION_FAILURE", identifier),Type.ERROR,Cause.INPUT));
 				return null;
 			}	
 		}
@@ -664,11 +737,11 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				try{
 					nsuri = XMLUtils.getSchemaType(schemaURL);
 					if(nsuri==null) {
-						this.sendMessage(Level.WARNING, i18n("SCHEMA_TYPE_NOT_SUPPORTED", schemaURL.toString()));
+						this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_TYPE_NOT_SUPPORTED", schemaURL.toString()),Type.ERROR,Cause.INPUT));
 					}
 				}catch (Exception e) {
 					mStateTracker.mHadCaughtException = true;
-					this.sendMessage(Level.WARNING, i18n("SCHEMA_IDENTIFICATION_FAILURE", schemaURL.toString()));
+					this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_IDENTIFICATION_FAILURE", schemaURL.toString()),Type.ERROR,Cause.INPUT));
 				}			    	
 			}else{
 				//it came as inparam
@@ -725,38 +798,6 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			}
 		}
 	}
-
-//	/**
-//	* @return a SchemaLanguageConstant NS URI, or null if schema type was not detected
-//	*/
-//	private String getSchemaType(URL url) {
-//	try{
-//	PeekResult schemaPeekResult = PeekerPool.getInstance().acquire().peek(url); 
-//	String rootName = schemaPeekResult.getRootElementLocalName();		
-//	String rootNsUri = schemaPeekResult.getRootElementNsUri();
-
-//	if(rootName == "schema") {
-//	if(rootNsUri == SchemaLanguageConstants.SCHEMATRON_NS_URI){
-//	return SchemaLanguageConstants.SCHEMATRON_NS_URI;
-//	}else if(rootNsUri == SchemaLanguageConstants.ISO_SCHEMATRON_NS_URI){
-//	return SchemaLanguageConstants.ISO_SCHEMATRON_NS_URI;
-//	}else if(rootNsUri == SchemaLanguageConstants.W3C_XML_SCHEMA_NS_URI){
-//	return SchemaLanguageConstants.W3C_XML_SCHEMA_NS_URI;
-//	}							
-//	}else if(rootName == "grammar" 
-//	&& rootNsUri == SchemaLanguageConstants.RELAXNG_NS_URI) {
-//	return SchemaLanguageConstants.RELAXNG_NS_URI;
-//	}else{				
-//	//... it may be a DTD or something completey other...
-//	this.sendMessage(Level.WARNING, i18n("SCHEMA_TYPE_NOT_SUPPORTED", url.toString()));
-//	}
-//	}catch (Exception e) {
-//	//peeker parse failure, or peeker getters returning null
-//	mStateTracker.mHadCaughtException = true;
-//	this.sendMessage(Level.WARNING, i18n("SCHEMA_IDENTIFICATION_FAILURE", url.toString()));
-//	}
-//	return null;
-//	}
 
 	/**
 	 * Track the state of the validation process.
