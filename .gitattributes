@@ -13,7 +13,6 @@ doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/FilesetRenamer.html -text
 doc/scripts/RenamerTaggerValidator.html -text
 doc/scripts/Z3986DTBValidator.html -text
-doc/scripts/int_daisy_filesetRenamer.html -text
 doc/templates/script-doc-template.html -text
 doc/transformers/int_daisy_filesetAudioTagger.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
