@@ -69,10 +69,10 @@ public class FilesetLabelProvider {
 		if(mFilesetIdentifier==null){
 	        if(mFileset.getFilesetType()== FilesetType.Z3986) {
 	        	Z3986OpfFile opf = (Z3986OpfFile) mFileset.getManifestMember();
-	        	mFilesetTitle = opf.getUID();        	
+	        	mFilesetIdentifier = opf.getUID();        	
 	        }else if(mFileset.getFilesetType()== FilesetType.DAISY_202) {
 	        	D202NccFile ncc = (D202NccFile) mFileset.getManifestMember();
-	        	mFilesetTitle = ncc.getDcIdentifier();        	
+	        	mFilesetIdentifier = ncc.getDcIdentifier();        	
 	        }
 		}
 		return mFilesetIdentifier;
@@ -100,7 +100,7 @@ public class FilesetLabelProvider {
 	 * Fileset registered with this instance, or null if none can be found.
 	 */
 	public String getFilesetCreator() {
-		
+		//TODO
 		return null;
 	}
 	
@@ -157,7 +157,7 @@ public class FilesetLabelProvider {
 			if(null!=referer){
 				label = getInherentLabel(referer);
 				if(null==label) {
-					getExherentLabel(referer);
+					label = getExherentLabel(referer);
 				}
 			}	
 			return label;
