@@ -55,7 +55,7 @@ public class MIMETypeRegistry implements XMLReporter {
 			XMLStreamReader reader;
 			XMLInputFactory xif = XMLInputFactory.newInstance();				
 	        xif.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
-	        xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.FALSE);
+	        xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
 	        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);                
 	        xif.setProperty(XMLInputFactory.IS_VALIDATING, Boolean.TRUE);
 	        xif.setXMLReporter(this);
