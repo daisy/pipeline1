@@ -75,6 +75,9 @@ src/org/daisy/dmfc/core/transformer/transformer.rng -text svneol=unset#applicati
 src/org/daisy/dmfc/util/DocChecker.java -text
 src/org/daisy/util/fileset/util/FilesetLabelProvider.java -text
 src/org/daisy/util/fileset/util/FilesetSpineProvider.java -text
+src/org/daisy/util/fileset/validation/delegate/impl/FilesetFileTypeRestrictionDelegate.java -text
+src/org/daisy/util/fileset/validation/delegate/impl/InterDocURICheckerD202Delegate.java -text
+src/org/daisy/util/fileset/validation/delegate/impl/InterDocURICheckerDelegate.java -text
 src/org/daisy/util/xml/LocusTransformer.java -text
 src/org/daisy/util/xml/NamespaceReporter.java -text
 src/org/daisy/util/xml/catalog/svg/svg11-flat.dtd -text svneol=unset#application/octet-stream
