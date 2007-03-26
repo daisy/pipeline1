@@ -22,6 +22,7 @@ package org.daisy.util.fileset.impl;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
@@ -407,8 +408,11 @@ abstract class XmlFileImpl
     public boolean hasIDValueOnQName(String idval, QName qName) {
     	QName test = (QName) mIdQNameMap.get(idval);
         if (test != null) {
-        	//TODO does .equals return correct value?
-            return qName.equals(test);
+        	if(test.getLocalPart().equals(qName.getLocalPart()) 
+        			&& test.getNamespaceURI().equals(qName.getNamespaceURI())
+        			&& test.getPrefix().equals(qName.getPrefix())) {
+        		return true;
+        	}
         }
         return false;
     }
@@ -480,7 +484,13 @@ abstract class XmlFileImpl
     }
 
     public StreamSource asStreamSource() throws FileNotFoundException {
-    	StreamSource ss =  new StreamSource(new FileReader(this));
+    	//StreamSource ss =  new StreamSource(new FileReader(this));
+    	StreamSource ss = null;
+		try {
+			ss = new StreamSource(this.getFile().toURI().toURL().openStream());
+		} catch (Exception e) {
+			throw new FileNotFoundException(e.getMessage());
+		}     	
     	ss.setSystemId(this);
         return ss;
     }
