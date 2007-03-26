@@ -37,6 +37,9 @@ public class XMLUtils {
 	 * Delegate for determining the Schema language type of a resource.
 	 * <p>This method only detects schema types that are based on XML, ie you
 	 * cannot use this to find out if a resource is a DTD.</p>
+	 * <p>Note - this method will not report compound schemas, only the root schema type, 
+	 * based on the default ns uri of the input document. For compound schema detection, 
+	 * use {@link org.daisy.util.xml.NamespaceReporter}.</p>
 	 * @return a SchemaLanguageConstant NS URI, or null if schema type was not detected, 
 	 * meaning that the inparam resource was probably something else than an xml-based schema.
 	 * @throws Exception if something really evil occurs
