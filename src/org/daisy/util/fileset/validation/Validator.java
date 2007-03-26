@@ -1,6 +1,7 @@
 package org.daisy.util.fileset.validation;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 import org.daisy.util.fileset.FilesetType;
@@ -89,5 +90,12 @@ public interface Validator {
 	 * <p>Note: at {@link #reset()}, the list of registered delegates is also reset.</p>
 	 */
 	public void setDelegate(String delegateClassName) throws ValidatorException, ValidatorNotSupportedException;
-	
+
+	/**
+	 * Add a Schema Source (RelaxNG, Schematron, WXS, compound) to apply to certain members of the Fileset.
+	 * @param schema the URL of the schema
+	 * @param filesetFileType the particular FilesetFile subclass to apply the Schema on, expressed as a fully qualified class name.  
+	 */
+	public void setSchema(URL schema, String filesetFileType) throws ValidatorException, ValidatorNotSupportedException;
+
 }

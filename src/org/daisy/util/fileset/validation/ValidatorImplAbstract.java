@@ -1,9 +1,21 @@
 package org.daisy.util.fileset.validation;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.daisy.util.exception.ExceptionTransformer;
 import org.daisy.util.fileset.FilesetType;
@@ -12,10 +24,15 @@ import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
+import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.interfaces.xml.XmlFile;
 import org.daisy.util.fileset.validation.delegate.ValidatorDelegate;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotRecognizedException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
+import org.daisy.util.xml.NamespaceReporter;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.validation.SchemaLanguageConstants;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -24,21 +41,28 @@ import org.xml.sax.SAXParseException;
  * Abstract base that a concrete impl of org.daisy.util.fileset.validation.Validator may or may not extend
  * @author Markus Gylling
  */
-abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, ErrorHandler {
-	protected ArrayList mSupportedFilesetTypes = new ArrayList();	//<FilesetType>	
-	protected ValidatorListener mValidatorListener = null;			//message handler
-	protected Fileset mFileset = null;								//fileset to validate		
-	protected boolean mDebugMode = false;
-	private ArrayList mDelegates = new ArrayList();					//registered ValidatorDelegates
+abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validation.Validator, FilesetErrorHandler, ErrorHandler {
+	protected ArrayList<FilesetType> mSupportedFilesetTypes = null; 						//<FilesetType>	
+	protected ValidatorListener mValidatorListener = null;									//message handler
+	protected Fileset mFileset = null;														//fileset to validate		
+	protected boolean mDebugMode = false;													//system property
+	private ArrayList<ValidatorDelegate> mDelegates = null; 								//registered ValidatorDelegates
+	private Map<URL,String> mSchemas = null;	
 	
-	ValidatorImplAbstract(ArrayList supportedFilesetTypes) {
-		if(System.getProperty("org.daisy.debug")!=null) mDebugMode = true;
-		mSupportedFilesetTypes.addAll(supportedFilesetTypes);
+	ValidatorImplAbstract(ArrayList<FilesetType> supportedFilesetTypes ) {
+		initialize(supportedFilesetTypes);		
 	}
 	
 	ValidatorImplAbstract(FilesetType supportedFilesetType) {
+		List<FilesetType> list = new ArrayList<FilesetType>();
+		list.add(supportedFilesetType);
+		initialize(list);
+	}
+	
+	private void initialize(List<FilesetType> supportedFilesetTypes) {
 		if(System.getProperty("org.daisy.debug")!=null) mDebugMode = true;
-		mSupportedFilesetTypes.add(supportedFilesetType);
+		mSupportedFilesetTypes = new ArrayList<FilesetType>();	
+		mSupportedFilesetTypes.addAll(supportedFilesetTypes);
 	}
 	
 	/*
@@ -47,9 +71,7 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 	 */
 	public void validate(Fileset fileset) throws ValidatorException, ValidatorNotSupportedException {
 		mFileset = fileset;
-		checkSupport();
-		checkState();
-		executeDelegates();
+		validate();
 	}
 
 
@@ -63,18 +85,104 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 		} catch (FilesetFatalException e) {
 			throw new ValidatorException("Could not create input fileset: " + e.getMessage(),e);
 		}		
-		checkSupport();
-		checkState();
-		executeDelegates();
+		validate();
 	}
 
-	private void executeDelegates() throws ValidatorNotSupportedException, ValidatorException {
-		for (Iterator iter = mDelegates.iterator(); iter.hasNext();) {
-			ValidatorDelegate vd = (ValidatorDelegate) iter.next();
-			vd.execute(mFileset);
-		} 		
+	
+	private void validate() throws ValidatorException, ValidatorNotSupportedException {
+		checkSupport();
+		checkState();
+		executeSchemas();
+		executeDelegates();		
 	}
 	
+	private void executeDelegates() throws ValidatorNotSupportedException, ValidatorException {
+		if(mDelegates!=null) {
+			for (Iterator iter = mDelegates.iterator(); iter.hasNext();) {
+				ValidatorDelegate vd = (ValidatorDelegate) iter.next();
+				if(vd.isFilesetTypeSupported(mFileset.getFilesetType())) {
+					vd.execute(mFileset);
+				}else{
+					throw new ValidatorNotSupportedException("Fileset type " 
+							+ mFileset.getFilesetType().toNiceNameString() 
+							+ " is not supported by " + vd.getClass().getSimpleName());
+				}
+			} 		
+		}
+	}
+	
+	private void executeSchemas() throws ValidatorNotSupportedException, ValidatorException {
+		/*
+		 * mSchemas = <SchemaURL, FilesetFileClassTypeToApplySchemaOn)
+		 * find out what kind of schema it is, get its canonical NS URI
+		 * get a factory for that kind of schema
+		 * create a validator with that schema
+		 * then loop through fileset to validate all type matches
+		 */
+		
+			if(mSchemas!=null) {
+				for (Iterator iter = mSchemas.keySet().iterator(); iter.hasNext();) {
+					URL schemaURL = (URL) iter.next();
+					try {						
+						//instead of Peeker to be sure we dont miss non-root decls:
+						NamespaceReporter nsr = new NamespaceReporter();				
+						Set<String> nsURIs = nsr.getNamespaceURIs(schemaURL);
+						//since schemas may be compound, cover all possibilities.
+						int nsURIsFound = 0;
+						for (String uri : nsURIs) {
+							if(SchemaLanguageConstants.hasEntry(uri)) {
+								++nsURIsFound;
+								try{
+									SchemaFactory factory = SchemaFactory.newInstance(uri);
+									factory.setErrorHandler(this);
+									factory.setResourceResolver(CatalogEntityResolver.getInstance());
+									//go via StreamSource and explicitly set the system id to be safe
+									StreamSource ss = new StreamSource(schemaURL.openStream());
+									ss.setSystemId(schemaURL.toExternalForm());									
+									Schema schema = factory.newSchema(ss);
+									if(mDebugMode){
+										//inform a little
+										File schemaFile = new File(schemaURL.toURI());									
+										mValidatorListener.inform(this, "Validating using the " 
+											+ SchemaLanguageConstants.toNiceNameString(uri) 
+											+ " " + schemaFile.getName() +".");
+									}
+									//and continue
+									javax.xml.validation.Validator validator = schema.newValidator();
+									validate(validator,mSchemas.get(schemaURL));
+									//and clean up
+									if(ss.getReader()!=null) ss.getReader().close();
+									if(ss.getInputStream()!=null) ss.getInputStream().close();					
+								}catch (Exception e) {
+									mValidatorListener.exception(this, e);
+								}														
+							}							
+						}
+						if(nsURIsFound==0) {
+							throw new ValidatorNotSupportedException("no recognized schema type in " + schemaURL);
+						}
+					}catch (Exception e) {
+						mValidatorListener.exception(this, e);
+					}
+				} 		
+			}		
+	}
+	
+	private void validate(javax.xml.validation.Validator validator, String filesetFileType) throws FileNotFoundException, SAXException, IOException {
+		for (Iterator iter = mFileset.getLocalMembers().iterator(); iter.hasNext();) {
+			FilesetFile ffile = (FilesetFile) iter.next();
+			if(ffile.getClass().getName().equals(filesetFileType)) { 
+				XmlFile xf = (XmlFile)ffile;
+				if(xf.isWellformed()) {	
+					StreamSource ss = xf.asStreamSource();					
+					validator.validate(ss);
+					if(ss.getReader()!=null) ss.getReader().close();
+					if(ss.getInputStream()!=null) ss.getInputStream().close();					
+				}
+			}			
+		}		
+	}
+
 	/**
 	 * Verifies that the current configuration meets minimal requirements.
 	 * @throws ValidatorException if the current configuration does not meet minimal requirements.
@@ -97,13 +205,15 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 				throw new ValidatorNotSupportedException("This validator does not support validation of " 
 						+ mFileset.getFilesetType().toNiceNameString() + " filesets.");
 			}
-			for (Iterator iter = mDelegates.iterator(); iter.hasNext(); ) {
-				ValidatorDelegate delegate = (ValidatorDelegate) iter.next();
-				if (!delegate.isFilesetTypeSupported(mFileset.getFilesetType())) {
-					throw new ValidatorNotSupportedException("The validator delegate does not support validation of "
-							+ mFileset.getFilesetType().toNiceNameString() + " filesets.");
+			if(mDelegates!=null) {
+				for (Iterator iter = mDelegates.iterator(); iter.hasNext(); ) {
+					ValidatorDelegate delegate = (ValidatorDelegate) iter.next();
+					if (!delegate.isFilesetTypeSupported(mFileset.getFilesetType())) {
+						throw new ValidatorNotSupportedException("The validator delegate does not support validation of "
+								+ mFileset.getFilesetType().toNiceNameString() + " filesets.");
+					}
 				}
-			}			
+			}
 		}else{
 			throw new ValidatorException("No registered fileset");
 		}
@@ -115,7 +225,7 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 	 */
 	public void reset() {
 		mFileset = null;
-		mValidatorListener = null;
+		mSchemas.clear();
 		mDelegates.clear();
 	}
 	
@@ -233,22 +343,22 @@ abstract class ValidatorImplAbstract implements Validator, FilesetErrorHandler, 
 		} 		
 		addDelegate(delegate);				
 	}
-
-	/**
-	 * Check prereqs for registering a delegate, and register it if prereqs are met.
-	 */
-	private void addDelegate(ValidatorDelegate delegate) throws ValidatorException, ValidatorNotSupportedException {
-		/*
-		if(mFileset==null) throw new ValidatorException("cannot register delegates without a registered fileset");
-		if(!delegate.isFilesetTypeSupported(mFileset.getFilesetType())) {
-			throw new ValidatorNotSupportedException("Fileset type " 
-					+ mFileset.getFilesetType().toNiceNameString() 
-					+ " is not supported by " + delegate.getClass().getSimpleName());
-		}
-		*/		
+	
+	private void addDelegate(ValidatorDelegate delegate) throws ValidatorException, ValidatorNotSupportedException {		
+		if (mDelegates == null) mDelegates = new ArrayList<ValidatorDelegate>();
 		delegate.setValidator(this);
 		mDelegates.add(delegate);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.validation.Validator#setSchema(java.net.URL, java.lang.String)
+	 */
+	public void setSchema(URL schema, String filesetFileType) throws ValidatorException, ValidatorNotSupportedException {
+		if(mSchemas==null) mSchemas = new HashMap<URL,String>();
+		mSchemas.put(schema, filesetFileType);
+	}
+	
 	
 	public void setFeature(String name, boolean value) throws ValidatorNotRecognizedException, ValidatorNotSupportedException {
         if (name == null) throw new NullPointerException("the name parameter is null");
