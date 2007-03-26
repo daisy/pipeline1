@@ -20,6 +20,7 @@ package org.daisy.dmfc.core.script;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class Script {
 	private String mNicename;
 	private String mDescription;
 	private URI mDocumentation;
+	private URL mScriptURL;
 	
 	private Map<String,AbstractProperty> mProperties;	
 	
@@ -43,9 +45,10 @@ public class Script {
 	 * Constructor. The script is initially empty and needs to be filled with
 	 * properties and tasks.
 	 */
-	Script() {
+	Script(URL url) {
 		this.mProperties = new LinkedHashMap<String,AbstractProperty>();
 		this.tasks = new LinkedList<Task>();
+		this.mScriptURL = url;
 	}
 
 	/**
@@ -62,6 +65,14 @@ public class Script {
 	 */
 	public URI getDocumentation() {
 		return  mDocumentation;
+	}
+	
+	/**
+	 * Get the URL of this script.
+	 * @return 
+	 */
+	public URL getScriptURL() {
+		return  mScriptURL;
 	}
 	
 	/**
