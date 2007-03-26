@@ -27,7 +27,9 @@ import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.SAXParserPool;
 import org.daisy.util.xml.sax.SAXConstants;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -39,22 +41,40 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SimpleValidator {
 
-	private Map<Source, String> schemaSources;
-	private ErrorHandler errorHandler;
+	private Map<Source, String> mSchemaSources;
+	private ErrorHandler mErrorHandler;
+	private EntityResolver mResolver = null;
+	private LSResourceResolver mLSResolver = null;
+	
 	
 	public SimpleValidator(Collection<String> schemas, ErrorHandler handler) throws IOException, SAXException {
-		schemaSources = new HashMap<Source, String>();
-		errorHandler = handler;
-		
+		mSchemaSources = new HashMap<Source, String>();
+		mErrorHandler = handler;
+		mResolver = CatalogEntityResolver.getInstance();
+		mLSResolver = CatalogEntityResolver.getInstance();
 		// Loop through supplied schemas
 		for (String schema : schemas) {
 			Map<Source,String> aSchema = this.toSchemaSource(schema, null);
 			if (aSchema != null) {
-				schemaSources.putAll(aSchema);
+				mSchemaSources.putAll(aSchema);
 			} else {
 				// FIXME throw could not instantiate schema
 			}
 		}
+	}
+	
+	/**
+	 * Set an EntityResolver. If this method not called, defaults to CatalogEntityResolver
+	 */
+	public void setResolver(LSResourceResolver resolver) {
+		this.mLSResolver = resolver;
+	}
+
+	/**
+	 * Set an EntityResolver. If this method not called, defaults to CatalogEntityResolver
+	 */
+	public void setResolver(EntityResolver resolver) {
+		this.mResolver = resolver;
 	}
 	
 	public SimpleValidator(String schema, ErrorHandler handler) throws IOException, SAXException {		
@@ -94,7 +114,7 @@ public class SimpleValidator {
 				for (String str : xsis) {			
 					Map<Source,String> map = toSchemaSource(str,SchemaLanguageConstants.W3C_XML_SCHEMA_NS_URI);
 					if (map!=null){
-						schemaSources.putAll(map);
+						mSchemaSources.putAll(map);
 					}//else{
 						//this.sendMessage(Level.WARNING,i18n("SCHEMA_INSTANTIATION_FAILURE", str));
 					//}																	
@@ -134,9 +154,9 @@ public class SimpleValidator {
 	    	features.put(SAXConstants.SAX_FEATURE_NAMESPACES, Boolean.TRUE);
 	    	features.put(SAXConstants.SAX_FEATURE_VALIDATION, Boolean.TRUE);        	
 	    	saxParser = SAXParserPool.getInstance().acquire(features,null);
-	    	saxParser.getXMLReader().setErrorHandler(errorHandler);    	
+	    	saxParser.getXMLReader().setErrorHandler(mErrorHandler);    	
 	    	saxParser.getXMLReader().setContentHandler(new DefaultHandler());
-	    	saxParser.getXMLReader().setEntityResolver(CatalogEntityResolver.getInstance());
+	    	saxParser.getXMLReader().setEntityResolver((EntityResolver)mResolver);
 	    	saxParser.getXMLReader().parse(new InputSource(url.openStream()));	    	
 		}catch (Exception e) {
 			//this.sendMessage(Level.WARNING,i18n("DTD_VALIDATION_FAILURE", e.getMessage()));	
@@ -159,20 +179,22 @@ public class SimpleValidator {
 		HashMap<String,SchemaFactory> factoryMap = new HashMap<String,SchemaFactory>();		//cache to not create multiple identical factories     	     	 
     	SchemaFactory anySchemaFactory = null;	//Schema language neutral jaxp.validation driver
 
-    	for (Source source : schemaSources.keySet()) {
+    	for (Source source : mSchemaSources.keySet()) {
 			try{				
-				String schemaNsURI = schemaSources.get(source);
+				String schemaNsURI = mSchemaSources.get(source);
 				
 				//then do it
 				if(!factoryMap.containsKey(schemaNsURI)) {
 					factoryMap.put(schemaNsURI,SchemaFactory.newInstance(schemaNsURI));
 				}
 				anySchemaFactory = factoryMap.get(schemaNsURI);
-				anySchemaFactory.setErrorHandler(errorHandler);
-				anySchemaFactory.setResourceResolver(CatalogEntityResolver.getInstance());
+				anySchemaFactory.setErrorHandler(mErrorHandler);
+				anySchemaFactory.setResourceResolver(mLSResolver);
 				Schema schema = anySchemaFactory.newSchema(source);													
-				Validator jaxpValidator = schema.newValidator();																
-				jaxpValidator.validate(new StreamSource(url.openStream()));
+				Validator jaxpValidator = schema.newValidator();		
+				StreamSource ss = new StreamSource(url.openStream());
+				ss.setSystemId(url.toExternalForm());
+				jaxpValidator.validate(ss);
 			} catch (Exception e) {
 				result = false;
 				e.printStackTrace();
