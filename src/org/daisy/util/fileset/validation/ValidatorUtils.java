@@ -27,6 +27,7 @@ public class ValidatorUtils {
 	 * doesnt exist. (This is because missing members are reported natively during Fileset instantiation.)</p> 
 	 * @param referer The filesetfile whose links to other members should be checked for resolvement
 	 * @param validator The validator using this delegate
+	 * @deprecated use InterDocURIFragmentCheckerDelegate instead
 	 */
 	public static boolean isInterDocFragmentLinkValid(Referring referer, Validator validator) throws Exception {
 		FilesetRegex regex = FilesetRegex.getInstance();
