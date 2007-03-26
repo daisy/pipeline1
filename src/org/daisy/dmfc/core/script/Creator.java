@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -35,6 +34,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.transformer.Parameter;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
+import org.daisy.dmfc.core.transformer.TransformerHandlerLoader;
+import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
@@ -56,7 +57,7 @@ import org.xml.sax.SAXParseException;
  */
 public class Creator extends EventSender implements ErrorHandler, EntityResolver { //, LSResourceResolver {
 	
-	private Map<String,TransformerHandler> mHandlers;
+	private TransformerHandlerLoader mHandlerLoader;
 	private boolean mValidationError = false;
 	private URL mCurrentScriptURL = null;
 	/**
@@ -64,9 +65,9 @@ public class Creator extends EventSender implements ErrorHandler, EntityResolver
 	 * @param handlers a set of TransformerHandlers
 	 * @param eventListeners a set of EventListeners
 	 */
-	public Creator(Map<String,TransformerHandler> handlers, Set eventListeners) {
+	public Creator(TransformerHandlerLoader loader, Set eventListeners) {
 		super(eventListeners);
-		this.mHandlers = handlers;
+		mHandlerLoader = loader;
 	}
 
 	
@@ -175,10 +176,15 @@ public class Creator extends EventSender implements ErrorHandler, EntityResolver
 	 */
 	private void setTransformerHandlers(Script script) throws ScriptValidationException {
 		for (Task task : script.getTasks()) {
-			if (!mHandlers.containsKey(task.getName())) {
-				throw new ScriptValidationException("System error: No transformer found for task " + task.getName());
-			} else {
-				task.setTransformerHandler(mHandlers.get(task.getName()));
+			try {
+				TransformerHandler handler = mHandlerLoader.getTransformerHandler(task.getName());
+				if (handler != null) {
+					task.setTransformerHandler(handler);
+				} else {
+					throw new ScriptValidationException("System error: No transformer found for task " + task.getName());
+				}
+			} catch (TransformerDisabledException e) {
+				throw new ScriptValidationException("System error: Transformer " + task.getName() + " is disabled", e);
 			}
 		}
 	}

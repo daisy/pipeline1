@@ -19,12 +19,12 @@
 package org.daisy.dmfc.core;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -34,19 +34,17 @@ import java.util.ResourceBundle;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.daisy.dmfc.core.listener.MessageListener;
 import org.daisy.dmfc.core.listener.ScriptProgressListener;
 import org.daisy.dmfc.core.listener.TransformerProgressListener;
 import org.daisy.dmfc.core.script.Creator;
+import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Runner;
 import org.daisy.dmfc.core.script.Script;
-import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.ScriptValidationException;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
-import org.daisy.dmfc.core.transformer.TransformerInfo;
+import org.daisy.dmfc.core.transformer.TransformerHandlerLoader;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
@@ -55,7 +53,6 @@ import org.daisy.dmfc.logging.MessageLogger;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.i18n.I18n;
 import org.daisy.util.xml.validation.RelaxngSchematronValidator;
-import org.daisy.util.xml.validation.SimpleValidator;
 import org.daisy.util.xml.validation.ValidationException;
 import org.daisy.util.xml.validation.Validator;
 
@@ -69,13 +66,12 @@ import org.daisy.util.xml.validation.Validator;
  * </pre>
  * @author Linus Ericson
  */
-public class DMFCCore extends EventSender {
+public class DMFCCore extends EventSender implements TransformerHandlerLoader {
 
-    private static Pattern tdfFolderPattern = Pattern.compile(".*[^a-z]([a-z]+)_([a-z]+)_(.*)");
     private static File homeDirectory = null;
     
 	private InputListener inputListener;
-	private Map transformerHandlers = new HashMap();
+	private Map<String,TransformerHandler> transformerHandlers = new HashMap<String, TransformerHandler>();
 	
 	private Creator mCreator;
 	private Runner mRunner;	
@@ -154,13 +150,8 @@ public class DMFCCore extends EventSender {
 		MessageLogger logger = new MessageLogger();
 		addEventListener(logger);
 		LoggingPropertiesReader.addHandlers(logger, System.getProperty("dmfc.logging"));
-
-		// Load the transformers
-		if (!reloadTransformers()) {
-		    throw new DMFCConfigurationException("Cannot load the transformers");
-		}
 		
-		mCreator = new Creator(transformerHandlers, this.getEventListeners());
+		mCreator = new Creator(this, this.getEventListeners());
 		mRunner = new Runner(this.getEventListeners());
 	}	
 
@@ -209,102 +200,33 @@ public class DMFCCore extends EventSender {
 	    return true;
 	}
 	
-	/**
-	 * Iterate over all Transformer Description Files (TDF) and
-	 * load each Transformer.
-	 * @return <code>true</code> if the reloading was successful, <code>false</code> otherwise.
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.dmfc.core.transformer.TransformerHandlerLoader#getTransformerHandler(java.lang.String)
 	 */
-	public boolean reloadTransformers() {
+	public TransformerHandler getTransformerHandler(String transformerName) throws TransformerDisabledException {
+		if (transformerHandlers.containsKey(transformerName)) {
+		    return (TransformerHandler)transformerHandlers.get(transformerName);						
+		}
+		Validator validator;
 		try {
-			//Validator validator = new RelaxngSchematronValidator(new File(getHomeDirectory().getPath() + File.separator + "resources", "transformer.rng"), null,true,true);
-			//after moving the transformer rng
-			Validator validator = new RelaxngSchematronValidator(this.getClass().getResource("./transformer/transformer-2.0.rng"), null,true,true);
-    					
-			sendMessage(Level.CONFIG, i18n("RELOADING_TRANSFORMERS"));
-			transformerHandlers.clear();		
-			addTransformers(new File(getHomeDirectory(), "transformers"), validator);			
-			sendMessage(Level.CONFIG, i18n("RELOADING_TRANSFORMERS_DONE"));
+			validator = new RelaxngSchematronValidator(this.getClass().getResource("./transformer/transformer-2.0.rng"), null,true,true);
 		} catch (ValidationException e) {
-			sendMessage(Level.SEVERE, i18n("RELOADING_TRANSFORMERS_FAILED", e.getMessage()));
-			e.printStackTrace();
-			return false;
+			sendMessage(Level.WARNING, "Error! Cannot create TDF validator for transformer " + transformerName);
+			return null;
 		}
-		return true;
-	}
-		
-	/**
-	 * Recursively add transformers as the transformer description files (TDFs) are found
-	 * @param dir the directory to start searching in
-	 * @param validator a Validator of TDFs
-	 */
-	private void addTransformers(File dir, Validator validator) {
-		if (!dir.isDirectory()) {
-		    sendMessage(Level.SEVERE, i18n("ADD_TRANSFORMER_NOT_DIRECTORY", dir.getAbsolutePath()));
-			return;
+		File[] files = new File(new File(getHomeDirectory(), "transformers"), transformerName).listFiles(new FileFilter() {
+			public boolean accept(File file) {
+				return file.getName().endsWith(".tdf");
+			}			
+		});
+		if (files.length != 1) {
+			sendMessage(Level.WARNING, "Error! Incorrect number of TDFs for transformer " + transformerName);
+			return null;
 		}
-		File[] children = dir.listFiles();
-		for (int i = 0; i < children.length; ++i) {
-			File current = children[i];
-			
-			// Process subdirectories
-			if (current.isDirectory()) {
-				addTransformers(current, validator);
-			}
-			else if (current.getName().matches(".*\\.tdf")) {
-			    String transformerName = getTransformerNameFromPath(current.getAbsolutePath());			    
-			    if (transformerName != null) {
-			        try {
-						TransformerHandler th = new TransformerHandler(current, inputListener, getEventListeners(), validator);					
-						if (transformerHandlers.containsKey(transformerName)) {
-						    throw new TransformerDisabledException(i18n("TRANSFORMER_ALREADY_EXISTS", transformerName));						
-						}
-						transformerHandlers.put(transformerName, th);
-					} catch (TransformerDisabledException e) {
-					    sendMessage(Level.WARNING, i18n("TRANSFORMER_DISABLED", current.getAbsolutePath(), e.getMessage()));					
-						if (e.getRootCause() != null) {
-							sendMessage(Level.WARNING, i18n("ROOT_CAUSE", e.getRootCauseMessagesAsString()));
-						}
-					}
-			    } else {
-			        sendMessage(Level.WARNING, "TDF has incorrect folder pattern! " + current.getAbsolutePath());
-			    }
-			}
-		}
-	}
-	
-	/**
-	 * Convert a TDF path to a transformer name. The nam created is the name
-	 * scripts use to refer to the transformer.
-	 * @param path path to a TDF.
-	 * @return a transformer name.
-	 */
-	private String getTransformerNameFromPath(String path) {
-	    Matcher tdfFolderMatcher = tdfFolderPattern.matcher(path);
-	    if (tdfFolderMatcher.matches()) {	        
-	        String countryCode = tdfFolderMatcher.group(1);
-	        String organization = tdfFolderMatcher.group(2);
-	        String localname = tdfFolderMatcher.group(3);
-	        localname = localname.substring(0, localname.lastIndexOf(File.separator));
-	        localname = localname.replace(File.separatorChar, '.');
-	        return countryCode + "_" + organization + "_" + localname;
-	    }
-	    return null;
-	}
-	
-	/**
-	 * Gets a collection of the current <code>TransformerInfo</code> objects.
-	 * @return a collection of <code>TransformerInfo</code> objects.
-	 */
-	public Collection getTransformerInfoCollection() {
-	    return transformerHandlers.values();
-	}
-	
-	public Map getTransformerHandlers() {
-	    return transformerHandlers;
-	}
-	
-	public TransformerInfo getTransformerInfo(String name) {
-		return (TransformerInfo)transformerHandlers.get(name);
+		TransformerHandler th = new TransformerHandler(files[0], inputListener, getEventListeners(), validator);		
+		transformerHandlers.put(transformerName, th);		
+		return th;
 	}
 	
 	/**
