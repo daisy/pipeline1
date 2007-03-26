@@ -6,6 +6,13 @@ doc/examples/input/simple.odt -text
 doc/examples/input/valentin.jpg -text
 doc/needed.documentation.txt -text
 doc/script/scriptgrammar.html -text
+doc/scripts/AudioTagger.html -text
+doc/scripts/ConfigurableValidator.html -text
+doc/scripts/DTBookValidator.html -text
+doc/scripts/Daisy202DTBValidator.html -text
+doc/scripts/FilesetRenamer.html -text
+doc/scripts/RenamerTaggerValidator.html -text
+doc/scripts/Z3986DTBValidator.html -text
 doc/scripts/int_daisy_filesetRenamer.html -text
 doc/templates/script-doc-template.html -text
 doc/transformers/int_daisy_filesetAudioTagger.html -text
