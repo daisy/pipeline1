@@ -38,6 +38,7 @@ import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.dmfc.core.script.datatype.BooleanDatatype;
 import org.daisy.dmfc.core.script.datatype.DirectoryDatatype;
@@ -58,9 +59,7 @@ class Parser {
 
 	// Singleton instance
 	private static Parser sInstance = null;
-	
-	private static URL mCurrentScriptURL = null;
-	
+			
 	private static String SCRIPT = "taskScript";
 	private static String SCRIPT_NICENAME = "nicename";
 	private static String SCRIPT_DESCRIPTION = "description";
@@ -77,7 +76,7 @@ class Parser {
 	private static String DATATYPE_BOOLEAN = "boolean";
 	private static String DATATYPE_ENUMITEM = "item";
 	
-	private Map<String, Boolean> mXifProperties = null;
+	private Map<String, Object> mXifProperties = null;
 	private XMLInputFactory mFactory;
 	
 	/**
@@ -85,7 +84,7 @@ class Parser {
 	 * @throws XMLStreamException
 	 */
 	private Parser() throws XMLStreamException {
-		mXifProperties = new HashMap<String, Boolean>();
+		mXifProperties = new HashMap<String, Object>();
 		mXifProperties.put(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
 		mXifProperties.put(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
 		mXifProperties.put(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);
@@ -124,11 +123,14 @@ class Parser {
 	 * @throws IOException
 	 */
 	public Script newScript(URL url) throws XMLStreamException, IOException {
-		mCurrentScriptURL = url;
+		
 		Script script = null;
 
 		// Open reader
-		XMLEventReader reader = mFactory.createXMLEventReader(url.openStream());
+		StreamSource ss = new StreamSource(url.openStream());
+		ss.setSystemId(url.toExternalForm());
+		
+		XMLEventReader reader = mFactory.createXMLEventReader(ss);
 		while (reader.hasNext()) {
 			XMLEvent event = reader.nextEvent();
 			
@@ -136,7 +138,7 @@ class Parser {
 				StartElement se = event.asStartElement();
 				if (SCRIPT.equals(se.getName().getLocalPart())) {
 					// Script start tag found. Create the script object.
-					script = new Script();
+					script = new Script(url);
 					Attribute attrName = se.getAttributeByName(new QName("name"));
 					if (attrName != null) {
 						script.setName(attrName.getValue());
@@ -174,7 +176,7 @@ class Parser {
 				} else if (SCRIPT_DOCUMENTATION.equals(local)) {
 					Attribute uri = se.getAttributeByName(new QName("uri"));
 					try {
-						script.setDocumentation(mCurrentScriptURL.toURI().resolve(new URI(uri.getValue())));
+						script.setDocumentation(script.getScriptURL().toURI().resolve(new URI(uri.getValue())));
 					} catch (URISyntaxException e) {
 						//non-terminating, alas no contact with listeners here
 						System.err.println("URISyntaxException when parsing script documentation URI: " + uri.getValue());
@@ -200,6 +202,7 @@ class Parser {
 					if (attrName != null) {
 						String name = attrName.getValue();
 						String value = attrValue!=null?attrValue.getValue():null;
+													
 						boolean required = attrRequired!=null?attrRequired.getValue().equals("true"):false;
 						
 						// Create the parameter...
@@ -227,7 +230,8 @@ class Parser {
 						// ...but create the content of the task in a separate method.
 						this.buildTask(task, reader, script.getProperties());
 					}
-				}
+				} 
+				
 			} else if (event.isEndElement()) {
 				EndElement ee = event.asEndElement();
 				String local = ee.getName().getLocalPart();
@@ -269,7 +273,7 @@ class Parser {
 					characterData.setLength(0);
 				} else if ("value".equals(local)) {
 					characterData.setLength(0);
-				}  
+				}   
 			} else if (event.isEndElement()) {
 				EndElement ee = event.asEndElement();
 				String local = ee.getName().getLocalPart();
@@ -410,6 +414,6 @@ class Parser {
 			}			
 		}
 		throw new NotSupposedToHappenException("We should have found the end datatype tag, but didn't");
-	}	
+	}
 	
 }
