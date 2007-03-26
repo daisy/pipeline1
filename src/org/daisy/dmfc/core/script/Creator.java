@@ -32,7 +32,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.daisy.dmfc.core.EventListener;
 import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.transformer.Parameter;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
@@ -45,7 +44,9 @@ import org.daisy.util.xml.validation.SimpleValidator;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
 import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -53,11 +54,11 @@ import org.xml.sax.SAXParseException;
  * A class responsible for for building and validating Script objects. 
  * @author Linus Ericson
  */
-public class Creator extends EventSender implements ErrorHandler {
+public class Creator extends EventSender implements ErrorHandler, EntityResolver { //, LSResourceResolver {
 	
 	private Map<String,TransformerHandler> mHandlers;
 	private boolean mValidationError = false;
-	
+	private URL mCurrentScriptURL = null;
 	/**
 	 * Constructor.
 	 * @param handlers a set of TransformerHandlers
@@ -79,6 +80,7 @@ public class Creator extends EventSender implements ErrorHandler {
 	 */
 	public Script newScript(URL url) throws ScriptValidationException {
 		Script script = null;
+		mCurrentScriptURL = url;
 		try {
 			// Peek and convert from old script format if needed
 			TempFile upgraded = this.upgrade(url);
@@ -191,6 +193,7 @@ public class Creator extends EventSender implements ErrorHandler {
 	private boolean isXMLValid(URL url, String schemaName) throws ScriptValidationException {
 		try {
 			SimpleValidator validator = new SimpleValidator(this.getClass().getResource(schemaName).toExternalForm(), this);
+			validator.setResolver((EntityResolver)this);			
 			return validator.validate(url) && !mValidationError;
 		} catch (IOException e) {			
 			throw new ScriptValidationException(e.getMessage(), e);
@@ -302,7 +305,7 @@ public class Creator extends EventSender implements ErrorHandler {
 	 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
 	 */
 	public void error(SAXParseException e) throws SAXException {
-		this.sendMessage(Level.WARNING, "User error at line " + e.getLineNumber() + ": " + e);
+		this.sendMessage(Level.WARNING, "User error in " + e.getSystemId() +  " at line " + e.getLineNumber() + ": " + e);
 		mValidationError = true;
 	}
 
@@ -311,7 +314,7 @@ public class Creator extends EventSender implements ErrorHandler {
 	 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
 	 */
 	public void fatalError(SAXParseException e) throws SAXException {
-		this.sendMessage(Level.WARNING, "User error at line " + e.getLineNumber() + ": " + e);
+		this.sendMessage(Level.WARNING, "User error in " + e.getSystemId() +  " at line " + e.getLineNumber() + ": " + e);
 		mValidationError = true;
 	}
 
@@ -320,8 +323,25 @@ public class Creator extends EventSender implements ErrorHandler {
 	 * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
 	 */
 	public void warning(SAXParseException e) throws SAXException {
-		this.sendMessage(Level.WARNING, "User error at line " + e.getLineNumber() + ": " + e);
+		this.sendMessage(Level.WARNING, "User error in " + e.getSystemId() +  " at line " + e.getLineNumber() + ": " + e);
 		mValidationError = true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+	 */
+	public InputSource resolveEntity(String systemId, String publicId) throws SAXException, IOException {
+		try {
+			String id = systemId; 
+			if(id==null)id=publicId;
+			URL url = mCurrentScriptURL.toURI().resolve(id).toURL();
+			return new InputSource(url.openStream());
+		} catch (Exception e) {
+		
+		}
+		
+		return null;
 	}
 	
 }
