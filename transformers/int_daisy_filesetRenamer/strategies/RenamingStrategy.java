@@ -60,5 +60,10 @@ public interface RenamingStrategy {
 	 * Get an iterator for the keyset of the URI(old),URI(new) HashMap
 	 */
 	public Iterator getIterator();
+
+	/**
+	 * Set the maximum numbers of characters in generated filenames.
+	 */
+	public void setMaxFilenameLength(int maxFilenameLength);
 	
 }

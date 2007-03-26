@@ -27,21 +27,20 @@ public class FilesetUIDSegment extends Segment {
 	/**
 	 * Create a new segment, using the inparam as source to build the segment
 	 */
-	public static FilesetUIDSegment create(Fileset fileset) {
-		String uid = (String)mUidCache.get(fileset);
+	public static FilesetUIDSegment create(FilesetLabelProvider labelProvider) {
+		String uid = (String)mUidCache.get(labelProvider);
 		if(uid==null) {
 			//a uid has not been stored for this fileset
-			uid = getUID(fileset);
-			mUidCache.put(fileset, uid);
+			uid = getUID(labelProvider);
+			mUidCache.put(labelProvider, uid);
 		}			
 		return new FilesetUIDSegment(uid);					
 	}
 
-	private static String getUID(Fileset fileset) {
+	private static String getUID(FilesetLabelProvider labelProvider) {
 		//if we cant find a uid in the fileset, create a fallback name		
-		try{
-			FilesetLabelProvider flp = new FilesetLabelProvider(fileset);
-			String uid = flp.getFilesetIdentifier();
+		try{			
+			String uid = labelProvider.getFilesetIdentifier();
 			if(uid!=null)return uid;
 		}catch (Exception e) {
 			if(mDebugMode) System.err.println("DEBUG: FilesetUIDSegment#getUID exception"); 

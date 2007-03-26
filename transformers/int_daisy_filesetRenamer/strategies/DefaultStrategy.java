@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.daisy.util.file.EFile;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.xml.d202.D202MasterSmilFile;
@@ -34,6 +35,7 @@ public class DefaultStrategy implements RenamingStrategy {
 	private SegmentedFileName mTemplateName = null;
 	private HashMap namingStrategy = new HashMap(); 	// <URI>,<URI>
 	private List typeExclusions = new ArrayList();		// Interface names
+	private int mMaxFilenameLength = 64;				
 	private String mSegmentSeparator = "_";				//default, may wanna enable changing this
 	private boolean mForceAsciiSubset = false;
 	private boolean isValidated = false;
@@ -87,7 +89,7 @@ public class DefaultStrategy implements RenamingStrategy {
 				Segment templateSegment = (Segment) iter.next();
 				if(templateSegment instanceof FilesetUIDSegment) {
 					//template value should be 'uid'
-					newName.addSegment(FilesetUIDSegment.create(mInputFileset));
+					newName.addSegment(FilesetUIDSegment.create(mLabelProvider));
 				}else if(templateSegment instanceof RandomUniqueSegment) {
 					//template value should be 'rnd(n)' where n is a positive integer
 					newName.addSegment(RandomUniqueSegment.create(
@@ -121,6 +123,16 @@ public class DefaultStrategy implements RenamingStrategy {
 			}else{
 				returnName = newName.getFileName();
 			}
+			
+			EFile efile = new EFile(returnName);
+			if(efile.getNameMinusExtension().length()>mMaxFilenameLength){
+				try{				
+					returnName = efile.getNameMinusExtension().substring(0, mMaxFilenameLength)+"."+efile.getExtension();
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
 		}catch (Exception e) {
 			throw new FilesetRenamingException(e.getMessage(),e);
 		}
@@ -246,5 +258,9 @@ public class DefaultStrategy implements RenamingStrategy {
 	 */
 	public Iterator getIterator(){
 		return this.namingStrategy.keySet().iterator();
+	}
+
+	public void setMaxFilenameLength(int maxFilenameLength) {
+		mMaxFilenameLength = maxFilenameLength;		
 	}
 }

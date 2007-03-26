@@ -72,6 +72,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	private FilesetFile mCurrentFile = null;
 	private String oldName = null;	
 	private FilesetRegex rgx = null;
+	private int mMaxFilenameLength = -1;
 			
 	public FilesetRenamer(InputListener inListener, Set eventListeners, Boolean isInteractive) {
 		super(inListener, eventListeners, isInteractive);
@@ -108,6 +109,8 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			mTypeExclusions = setExclusions((String)parameters.remove("exclude"));
 			//whether to force ascii subset in output
 			mFilesystemSafe = Boolean.parseBoolean((String)parameters.remove("filesystemSafe"));
+			//max filename length
+			mMaxFilenameLength = Integer.parseInt((String)parameters.remove("maxFilenameLength"));
 			//set/create output dir
 			mOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(FilenameOrFileURI.toFile((String)parameters.remove("output"))));
 			//if input and output dir are the same, skip and return true
@@ -122,7 +125,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 								
 			try{		
 				//create a renaming strategy using the template name
-				mStrategy = createStrategy(mInputFileset, mTemplateName, mTypeExclusions);
+				mStrategy = createStrategy(mInputFileset, mTemplateName, mTypeExclusions,mMaxFilenameLength);
 			}catch (FilesetRenamingException e) {
 				//do a roundtrip
 				//TODO analyze the exception to find out if a roundtrip helps at all
@@ -132,7 +135,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 				SegmentedFileName randomizedName = new SegmentedFileName();
 				randomizedName.addSegment(FixedSegment.create("temp"));
 				randomizedName.addSegment(RandomUniqueSegment.create(mInputFileset, 6));				
-				mStrategy = createStrategy(mInputFileset, randomizedName, mTypeExclusions);				
+				mStrategy = createStrategy(mInputFileset, randomizedName, mTypeExclusions, 96);				
 				//render the randomized fileset to a subfolder of user output folder
 				mRoundtripOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(new File(mOutputDir,"dmfc_temp")));
 				this.sendMessage(new TransformerMessage(this,i18n("RENDER_ROUNDTRIP", e.getMessage(), mRoundtripOutputDir.getAbsolutePath()),Type.INFO,Cause.SYSTEM));
@@ -144,7 +147,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 				//reset the inputfileset to the randomized output
 				mInputFileset = new FilesetImpl(getTempManifest(),this,false,false); 
 				//redo strategy with original template, using the randomized output				
-				mStrategy = createStrategy(mInputFileset, mTemplateName, mTypeExclusions);
+				mStrategy = createStrategy(mInputFileset, mTemplateName, mTypeExclusions, mMaxFilenameLength);
 			}
 			
 
@@ -179,9 +182,10 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	/**
 	 * @throws FilesetRenamingException if resulting strategy is not valid or something else went wrong.
 	 */
-	private RenamingStrategy createStrategy(Fileset fileset, SegmentedFileName templateName, List typeExclusions) throws FilesetRenamingException {
+	private RenamingStrategy createStrategy(Fileset fileset, SegmentedFileName templateName, List typeExclusions, int maxFilenameLength) throws FilesetRenamingException {
 		RenamingStrategy rs = new DefaultStrategy(fileset,templateName,mFilesystemSafe);
 		rs.setTypeExclusion(typeExclusions);
+		rs.setMaxFilenameLength(maxFilenameLength);
 		rs.create();
 		rs.validate();
 		return rs;

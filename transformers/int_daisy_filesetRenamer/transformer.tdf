@@ -54,7 +54,15 @@
 			</enum>
 			<default>true</default>
 		</parameter>			
-															
+
+		<parameter required="false" direction="in" type="string">
+			<name>maxFilenameLength</name>
+			<description>
+				The maximum number of characters in the output filename, excluding extension. Default is 60.
+			</description>
+			<example>24</example>
+			<default>60</default>	
+		</parameter>															
 	</parameters>	
 
 </transformer>
