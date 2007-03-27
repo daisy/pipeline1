@@ -50,6 +50,17 @@ scripts/validation/advanced/ConfigurableValidator.taskScript -text
 scripts/validation/simple/DTBookValidator.taskScript -text
 scripts/validation/simple/Daisy202DTBValidator.taskScript -text
 scripts/validation/simple/Z3986DTBValidator.taskScript -text
+src/org/daisy/dmfc/core/event/BusListener.java -text
+src/org/daisy/dmfc/core/event/Event.java -text
+src/org/daisy/dmfc/core/event/EventBus.java -text
+src/org/daisy/dmfc/core/event/SystemEvent.java -text
+src/org/daisy/dmfc/core/event/SystemMessageEvent.java -text
+src/org/daisy/dmfc/core/event/SystemProgressChangeEvent.java -text
+src/org/daisy/dmfc/core/event/SystemRequestEvent.java -text
+src/org/daisy/dmfc/core/event/SystemStateChangeEvent.java -text
+src/org/daisy/dmfc/core/event/UserAbortEvent.java -text
+src/org/daisy/dmfc/core/event/UserEvent.java -text
+src/org/daisy/dmfc/core/event/UserReplyEvent.java -text
 src/org/daisy/dmfc/core/listener/MessageListener.java -text
 src/org/daisy/dmfc/core/listener/ScriptProgressListener.java -text
 src/org/daisy/dmfc/core/listener/TransformerProgressListener.java -text
