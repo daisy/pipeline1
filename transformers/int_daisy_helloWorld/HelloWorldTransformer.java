@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.core.event.UserReplyEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 
 /*
@@ -47,9 +48,10 @@ public class HelloWorldTransformer extends Transformer {
 		TestClass t = new TestClass();
 		t.test();
 		progress(0.3);
-		String _ret = getUserInput(Level.INFO, i18n("WHAT_IS_YOUR_NAME"), "default value");
+		//String _ret = getUserInput(Level.INFO, i18n("WHAT_IS_YOUR_NAME"), "default value");
+		UserReplyEvent reply = getUserInput(i18n("WHAT_IS_YOUR_NAME"),"default value");
 		progress(0.5);
-		sendMessage(Level.INFO, "User says: " + _ret);
+		sendMessage(Level.INFO, "User says: " + reply.getReply());
 		progress(0.7);
 		
 		for (Iterator it = a_parameters.entrySet().iterator(); it.hasNext(); ) {
