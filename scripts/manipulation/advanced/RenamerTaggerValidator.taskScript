@@ -59,7 +59,7 @@
 	<task name="int_daisy_filesetAudioTagger" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${userOutput}$filename{userInput}</value>
+			<value>${userOutput}/$filename{userInput}</value>
 		</parameter>
 					
 		<parameter>
@@ -75,6 +75,11 @@
 		<parameter>
 			<name>input</name>
 			<value>${userOutput}/$filename{userInput}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
 		</parameter>
 		
 		&ValidatorTaskParamsSimpleStatic;
