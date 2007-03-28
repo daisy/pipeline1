@@ -226,10 +226,15 @@ public class DtbMergerTransformer extends Transformer implements DtbTransformati
         
     }
     
-    public String getTransformationUserInput(Level l, String msgId, String value){
-        return super.getUserInput(l,super.i18n(msgId),value);
-        
-    }
+//    public String getTransformationUserInput(Level l, String msgId, String value){
+//        return super.getUserInput(l,super.i18n(msgId),value);        
+//    }
+  /*
+   * mg 20070327: use new event api
+   */
+  public String getTransformationUserInput(Level l, String msgId, String value){
+	  return super.getUserInput(super.i18n(msgId),value).getReply();        
+  }
     
     public void reportCopiedFile(long size){
         this.copiedFilesSize = this.copiedFilesSize + size;
