@@ -18,7 +18,8 @@
  */
 package org.daisy.dmfc.core;
 
-import org.daisy.dmfc.core.message.TransformerMessage;
+import org.daisy.dmfc.core.event.RequestEvent;
+import org.daisy.dmfc.core.event.UserReplyEvent;
 
 /**
  * A user interface implementing this interface will get requests 
@@ -28,25 +29,13 @@ import org.daisy.dmfc.core.message.TransformerMessage;
  * @author Linus Ericson
  */
 public interface InputListener {
-	
+		
 	/**
-	 * Get (interactive) input from the user.
-	 * @param prompt
-	 * @return the input from the user
-	 * @deprecated 
+	 * Recieve a request for user input from the Pipeline core, 
+	 * most probably from a Transformer
+	 * @param event The system request
+	 * @return a user reply
 	 */
-	public String getInputAsString(Prompt prompt);
-
-	/**
-	 * Get (interactive) input from the user.
-	 * @param message
-	 * @return the input from the user
-	 */
-	public String getInputAsString(TransformerMessage message);
-	
-	/**
-	 * This method reflects a user request on process abortion.
-	 */
-	public boolean isAborted();
+	public UserReplyEvent getUserReply(RequestEvent event);
 	
 }
