@@ -1,26 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlnO="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+	
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
   <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
-  <title>Daisy Pipeline Script Grammar version 2.0</title>
-  <style type="text/css">
-    body {margin-left:15%; margin-right:20%; font-family: arial, verdana, sans-serif;}
-    h1 {margin-top: 3em;}
-    h2 {border-bottom: 1px solid #000088; margin-top: 3em;}
-    hr {width: 9em; border:none; border-top: 1px dashed #880000; margin-top: 1.5em;}
-    p.summary {border: 1px solid #aaaaaa; padding: 1em 1.5em 1em 1.5em; margin-top: 3em; background-color: #eeeeee; }
-    pre {border: 1px solid #aaaaaa; padding: 1em 1.5em 1em 1.5em; background-color: #eeeeee;}
-    .fixme {border-left: 3px solid #ff0000;}
-    dt {font-weight: bold;}
-    dd {margin-bottom: 0.5em;}    
-  </style>
+  <title>Daisy Pipeline Taskscript Grammar version 2.0</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css"/>
 </head>
 
 <body>
 
-  <h1>Daisy Pipeline Script Grammar version 2.0</h1>
+  <h1>Daisy Pipeline Taskscript Grammar version 2.0</h1>
 
   <p class="author">Linus Ericson</p>
   <p class="updated">Latest update: 2007-03-22</p>
@@ -30,8 +22,9 @@
 
   <h2 class="toc">Contents</h2>
   <ul>
+   	<li><a href="#introduction">Introduction</a></li>
   	<li><a href="#identification">Identification</a></li>
-  	<li><a href="#name">Name and description</a></li>
+  	<li><a href="#name">Name, description and documentation</a></li>
   	<li><a href="#properties">Properties</a>
   	<ul>
   		<li><a href="#using">Using properties</a></li>
@@ -56,10 +49,19 @@
   	<li><a href="#tasks">Tasks</a></li>
   	<li><a href="#documentation">Full documentation</a></li>
   	<li><a href="#example">Example</a></li>
+  	<li><a href="#notes">Notes</a></li>  	
   </ul>
 
   <!-- ************************************************** -->
 
+  <h2 id="introduction">Introduction</h2>
+  <p>The Daisy Pipeline executes <em>Tasks</em>. Each task in its turn is defined in a taskscript file. The taskscript
+  defines what Transformers are executed in what order, and it defines what parameters are sent to the Transformers as
+  they execute.</p>
+  
+  <p>The Taskscript is an XML grammar. A compound RelaxNG+Schematron Schema<a class="note" href="note1"><sup>1</sup></a> exists to validate it. The Taskscript file is parsed (and validated) 
+  by the Pipeline core at initialization time.</p>
+  
   <h2 id="identification">Identification</h2>
   <p>The <code>version</code> attribute on the <code>taskScript</code> root element
      has the value <code>2.0</code> indicating that this is a version 2.0 task script.</p>
@@ -74,14 +76,21 @@
 
   <!-- ************************************************** -->
 
-  <h2 id="name">Name and description</h2>
+  <h2 id="name">Name, description and documentation</h2>
   <p>The <code>nicename</code> element contains the human readable name of the script.
      The name is normally up to five words long.</p>
   <p>The <code>description</code> element contains a longer description of the script,
      perhaps up to five sentences long.</p>
+     <p>The <code>documentation</code> element carries a uri attribute that contains a relative link to end user documentation of the task. 
+     	Normally, the destination of the URI is an XHTML document in the <code>/doc/scripts</code> subfolder.
+     	A template for this XHTML document exists in the <code>/doc/templates</code> folder.</p>
 
   <pre>&lt;nicename&gt;Script Nicename&lt;/nicename&gt;
-&lt;description&gt;Script Description&lt;/description&gt;</pre>
+&lt;description&gt;Script Description&lt;/description&gt;
+&lt;documentation uri="../../doc/scripts/doc.html" /&gt;</pre>
+
+
+
 
   <hr/>
 
@@ -293,6 +302,13 @@
 &lt;/taskScript&gt;</pre>
 
   <hr/>
+
+<h2 id="rng">Appendix. RelaxNG+Schematron grammar for taskScript</h2>
+
+<h2 id="notes">Notes</h2>
+<p id="note1">1. The schema lives in the <code>org.daisy.dmfc.core.script</code> package. If you do not have access to the source code, <a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/src/org/daisy/dmfc/core/script/">browse the SVN online</a>.</p>
+
+</div>
 
 </body>
 
