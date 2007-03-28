@@ -19,6 +19,7 @@
 package org.daisy.dmfc.logging;
 
 import java.io.IOException;
+import java.util.EventObject;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
@@ -26,15 +27,17 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.daisy.dmfc.core.EventListener;
-import org.daisy.dmfc.core.Prompt;
+import org.daisy.dmfc.core.event.Event;
+import org.daisy.dmfc.core.event.BusListener;
+import org.daisy.dmfc.core.event.StateChangeEvent;
 
 /**
  * @author Linus Ericson
  */
-public class MessageLogger implements EventListener {
+public class MessageLogger implements BusListener {
     
     private static Logger logger = Logger.getLogger("dmfc.logger");
+    private Class<? extends EventObject> eventLevel = Event.class;
     
     static {
         logger.setUseParentHandlers(false);
@@ -46,23 +49,24 @@ public class MessageLogger implements EventListener {
      * Creates a logger without any handlers.
      */
     public MessageLogger() {
-        
+    	
     }
 
     /**
      * Adds a FileHandler to this logger.
-     * @param level only log messages at level <code>a_level</code> or above.
+     * @param level only log messages of the given EventObject level in the Pipeline event inheritance hierarchy.
      * @param fileNamePattern the pattern of the filename. The pattern syntax is
      * described in the <code>FileHandler</code> documentation. 
      * @return <code>true</code> if the operation was successful, <code>false</code> otherwise
      * @see java.util.logging.FileHandler
      */
-    public boolean addFileHandler(Level level, String fileNamePattern) {
+    public boolean addFileHandler(Class<? extends EventObject> level, String fileNamePattern) {
 	    try {
 	        Handler handler = new FileHandler(fileNamePattern);
 	        Formatter formatter = new LineFormatter();
+	        eventLevel = level;
 	        handler.setFormatter(formatter);
-	        handler.setLevel(level);
+	        handler.setLevel(Level.ALL);
 	        logger.addHandler(handler);
 	    } catch (IOException e) {
 	        return false;
@@ -94,12 +98,9 @@ public class MessageLogger implements EventListener {
         logger.addHandler(handler);
 	}
         
-    public void message(Prompt prompt) {
-        if (prompt.getType() == Prompt.PROGRESS) {
-            logger.info("Progress: " + prompt.getProgress());
-        } else if (prompt.getType() == Prompt.MESSAGE) {            
-            logger.log(prompt.getLevel(), prompt.getMessage());
-        }
-    }
+	public void recieved(EventObject event) {
+		//TODO
+		logger.info(event.toString());		
+	}
 
 }

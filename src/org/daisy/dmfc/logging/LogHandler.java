@@ -21,7 +21,8 @@ package org.daisy.dmfc.logging;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-import org.daisy.dmfc.core.EventSender;
+import org.daisy.dmfc.core.event.EventBus;
+import org.daisy.dmfc.core.event.MessageEvent;
 
 /**
  * A log handler that writes the log events into dmfc.
@@ -29,16 +30,17 @@ import org.daisy.dmfc.core.EventSender;
  */
 public class LogHandler extends Handler {
 
-    EventSender eventSender;
     
-    public LogHandler(EventSender sender) {
-        eventSender = sender;
+    
+    public LogHandler() {
+        
     }
     
     public void publish(LogRecord record) {
-        if (this.getLevel().intValue() <= record.getLevel().intValue()) {
-            eventSender.sendMessage(record.getLevel(), record.getMessage());
-        } 
+       EventBus.getInstance().publish(
+    		   new MessageEvent(
+    				   this,"[LogHandler] " + record.getMessage(),MessageEvent.Type.ERROR));
+                     
     }
 
     public void flush() {
