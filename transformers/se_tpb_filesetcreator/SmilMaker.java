@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -56,6 +57,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.daisy.dmfc.core.event.BusListener;
+import org.daisy.dmfc.core.event.UserAbortEvent;
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.collection.MultiHashMap;
@@ -89,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Martin Blomberg
  *
  */
-public class SmilMaker implements AbortListener {
+public class SmilMaker implements AbortListener, BusListener {
 	
 	public static String DEBUG_PROPERTY = "org.daisy.debug";	// the system property used to determine if we're in debug mode or not
 	
@@ -1516,6 +1519,24 @@ public class SmilMaker implements AbortListener {
 		} catch (XMLStreamException e) {
 			e.printStackTrace();
 		}
+	}
+
+
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.dmfc.core.event.BusListener#recieved(java.util.EventObject)
+	 */
+	public void recieved(EventObject event) {
+		/*
+		 * mg20070327:
+		 * we are registered to listen to UserAbortEvent
+		 */ 
+		
+		if(event instanceof UserAbortEvent) {
+			abortEvent();
+		}		
 	}
 	
 }

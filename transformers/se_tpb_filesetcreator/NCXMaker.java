@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,6 +60,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.daisy.dmfc.core.event.BusListener;
+import org.daisy.dmfc.core.event.UserAbortEvent;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.collection.MultiHashMap;
 import org.daisy.util.execution.AbortListener;
@@ -83,8 +86,13 @@ import org.xml.sax.SAXException;
  * @author Martin Blomberg
  *
  */
-public class NCXMaker implements AbortListener {
 
+/*
+ * mg20070327: use the new event api
+ */
+public class NCXMaker implements BusListener {
+//	public class NCXMaker implements AbortListener, BusListener {
+	
 	public static String DEBUG_PROPERTY = "org.daisy.debug";	// the system property used to determine if we're in debug mode or not
 	
 	private Set navListHeadings;							// heading element names
@@ -1590,5 +1598,21 @@ public class NCXMaker implements AbortListener {
 	 */
 	public Map getDCElements() {
 		return dcElements;
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.dmfc.core.event.BusListener#recieved(java.util.EventObject)
+	 */
+	public void recieved(EventObject event) {
+		/*
+		 * mg20070327:
+		 * we are registered to listen to UserAbortEvent
+		 */ 
+		
+		if(event instanceof UserAbortEvent) {
+			abortEvent();
+		}		
 	}
 }

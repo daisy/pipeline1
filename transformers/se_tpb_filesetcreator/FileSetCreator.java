@@ -37,6 +37,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.core.event.EventBus;
+import org.daisy.dmfc.core.event.UserAbortEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
@@ -192,10 +194,14 @@ public class FileSetCreator extends Transformer {
 					pr,
 					this);
 		
-			addAbortListener(sm);
+			//addAbortListener(sm);
+			//mg20070327: use the new event api
+			EventBus.getInstance().subscribe(sm, UserAbortEvent.class);
 			sm.setFinalDTBookFilename(finalDTBFile.getName());
 			sm.makeSmils();
-			removeAbortListener(sm);
+			//removeAbortListener(sm);
+			EventBus.getInstance().unsubscribe(sm, UserAbortEvent.class);
+			
 						
 			// collect usable data from the smilmaker
 			Set allCustomTests = sm.getAllCustomTests();
@@ -230,9 +236,12 @@ public class FileSetCreator extends Transformer {
 			
 			ncx.setCustomTests(allCustomTests, getBookStructs());
 			ncx.setNCXOutputFile(new File(outputDir, ncxFilename));
-			addAbortListener(ncx);
+			//addAbortListener(ncx);
+			//mg 20070327: use the new event api
+			EventBus.getInstance().subscribe(ncx, UserAbortEvent.class);
 			ncx.makeNCX();
-			removeAbortListener(ncx);
+			//removeAbortListener(ncx);
+			EventBus.getInstance().unsubscribe(ncx, UserAbortEvent.class);
 						
 			sendMessage(Level.FINEST, i18n("DONE"));
 			
