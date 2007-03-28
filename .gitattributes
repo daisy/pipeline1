@@ -66,15 +66,6 @@ src/org/daisy/dmfc/core/event/TransformerStateChangeEvent.java -text
 src/org/daisy/dmfc/core/event/UserAbortEvent.java -text
 src/org/daisy/dmfc/core/event/UserEvent.java -text
 src/org/daisy/dmfc/core/event/UserReplyEvent.java -text
-src/org/daisy/dmfc/core/listener/MessageListener.java -text
-src/org/daisy/dmfc/core/listener/ScriptProgressListener.java -text
-src/org/daisy/dmfc/core/listener/TransformerProgressListener.java -text
-src/org/daisy/dmfc/core/listener/package.html -text
-src/org/daisy/dmfc/core/message/CoreMessage.java -text
-src/org/daisy/dmfc/core/message/Message.java -text
-src/org/daisy/dmfc/core/message/TransformerMessage.java -text
-src/org/daisy/dmfc/core/message/property/Cause.java -text
-src/org/daisy/dmfc/core/message/property/Type.java -text
 src/org/daisy/dmfc/core/script/AbstractProperty.java -text
 src/org/daisy/dmfc/core/script/Creator.java -text
 src/org/daisy/dmfc/core/script/Job.java -text
