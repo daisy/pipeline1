@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -31,15 +32,21 @@ import java.util.regex.Pattern;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.core.Prompt;
-import org.daisy.dmfc.core.listener.MessageListener;
-import org.daisy.dmfc.core.listener.ScriptProgressListener;
-import org.daisy.dmfc.core.listener.TransformerProgressListener;
-import org.daisy.dmfc.core.message.Message;
-import org.daisy.dmfc.core.message.TransformerMessage;
+import org.daisy.dmfc.core.event.CoreMessageEvent;
+import org.daisy.dmfc.core.event.EventBus;
+import org.daisy.dmfc.core.event.BusListener;
+import org.daisy.dmfc.core.event.ScriptStateChangeEvent;
+import org.daisy.dmfc.core.event.SystemEvent;
+import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.dmfc.core.event.ProgressChangeEvent;
+import org.daisy.dmfc.core.event.RequestEvent;
+import org.daisy.dmfc.core.event.StateChangeEvent;
+import org.daisy.dmfc.core.event.TransformerMessageEvent;
+import org.daisy.dmfc.core.event.TransformerStateChangeEvent;
+import org.daisy.dmfc.core.event.UserReplyEvent;
+import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.dmfc.core.script.ScriptParameter;
-import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.ScriptValidationException;
 import org.daisy.dmfc.core.script.datatype.BooleanDatatype;
 import org.daisy.dmfc.core.script.datatype.Datatype;
@@ -59,49 +66,11 @@ import org.daisy.dmfc.exception.ScriptException;
  * @author Linus Ericson
  * @author Markus Gylling
  */
-//public class CommandLineUI implements InputListener, EventListener {
-public class CommandLineUI implements InputListener, MessageListener, TransformerProgressListener, ScriptProgressListener {
+
+public class CommandLineUI implements InputListener, BusListener {
 	
 	private static Pattern optionPattern = Pattern.compile("-(.*)");
 	private static Pattern paramPattern = Pattern.compile("--(\\w+)=(.+)");
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.daisy.dmfc.core.InputListener#isAborted()
-	 */
-    public boolean isAborted() {
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.daisy.dmfc.core.InputListener#getInputAsString(org.daisy.dmfc.core.message.TransformerMessage)
-     */
-	public String getInputAsString(TransformerMessage message) {
-		System.err.println("[" + message.getSource().getClass().getSimpleName() + "] Prompt: " + message.getText()); //TODO Transformer.getName()
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String line = null;
-		try {
-		    line = br.readLine();
-        } catch (IOException e) {
-        }
-		return line;
-	}
-
-    
-    /**
-     * @deprecated
-     */
-	public String getInputAsString(Prompt prompt) {
-		System.err.println("[" + prompt.getMessageOriginator() + "] Prompt: " + prompt.getMessage());
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String line = null;
-		try {
-		    line = br.readLine();
-        } catch (IOException e) {
-        }
-		return line;
-	}
 
 	/**
 	 * Main method to start DMFC from the command line.
@@ -181,11 +150,16 @@ public class CommandLineUI implements InputListener, MessageListener, Transforme
 				System.exit(1);
 			}
 		}		
+		
+		CommandLineUI ui = null;		
 		try {
-			CommandLineUI ui = new CommandLineUI();
-        	//DMFCCore dmfc = new DMFCCore(ui, ui, new Locale("en"));
-			//mg: after listener refactoring:
-			DMFCCore dmfc = new DMFCCore(ui,ui,ui,ui, new Locale("en"));
+			ui = new CommandLineUI();
+			
+			//subscribe to all message and state change events.
+			EventBus.getInstance().subscribe(ui, MessageEvent.class);
+			EventBus.getInstance().subscribe(ui, StateChangeEvent.class);
+			
+			DMFCCore dmfc = new DMFCCore(ui, new Locale("en"));
         	Script script = dmfc.newScript(scriptFile.toURL());
         	Job job = new Job(script);
         	
@@ -215,7 +189,7 @@ public class CommandLineUI implements InputListener, MessageListener, Transforme
 			
         	// Execute script
         	dmfc.execute(job);
-        	
+        	        	
         } catch (DMFCConfigurationException e) {            
             e.printStackTrace();
         } catch (MalformedURLException e) {
@@ -225,6 +199,64 @@ public class CommandLineUI implements InputListener, MessageListener, Transforme
 		} catch (ScriptException e) {
 			e.printStackTrace();
 		} catch (DatatypeException e) {
+			e.printStackTrace();
+		} finally {
+			EventBus.getInstance().unsubscribe(ui, SystemEvent.class);
+		}
+	}
+	
+	public void recieved(EventObject event) {
+		//we are subscribing to MessageEvent and StateChangeEvent
+		
+		try{
+			if(event instanceof MessageEvent) {
+				MessageEvent sme = (MessageEvent)event;
+				String type = null;
+				switch (sme.getType()) {
+					case INFO: type= "INFO"; break;
+					case WARNING: type= "WARNING"; break;
+					case ERROR: type= "ERROR"; break;
+					case DEBUG: type= "DEBUG"; break;
+				}
+				
+				String who = null;
+				if(sme instanceof CoreMessageEvent) {
+					who = "Pipeline Core";
+				}else if (sme instanceof TransformerMessageEvent) {
+					Transformer transformer = (Transformer) sme.getSource();
+					who = transformer.getTransformerInfo().getName();
+				}else{
+					who="???";
+				}
+				
+				System.out.println("[" + type +", " + who + "] " + sme.getMessage());
+				
+			}else if(event instanceof StateChangeEvent) {
+				StateChangeEvent sce = (StateChangeEvent) event;
+				
+				String type = null;
+				String name = null;
+				String state = (sce.getState() == StateChangeEvent.Status.STARTED) 
+					? "started" : "stopped";
+				
+				if(event instanceof ScriptStateChangeEvent) {
+					type = "Task"; //we refer to scripts as "tasks" to users.					 					
+					Script script = (Script) sce.getSource();
+					name = script.getNicename();					
+				}else if (event instanceof TransformerStateChangeEvent){
+					type = "Transformer";					 					
+					Transformer transformer = (Transformer) sce.getSource();
+					name = transformer.getTransformerInfo().getName();															
+				}else{
+					System.err.println(event.getClass().getSimpleName());
+				}
+				
+				System.out.println("[STATE] " + type + " " + name + " just " + state);
+				
+			}else{
+				System.err.println(event.getClass().getSimpleName());
+			}
+		}catch (Exception e) {
 			e.printStackTrace();
 		} 
 	}
@@ -324,53 +356,24 @@ public class CommandLineUI implements InputListener, MessageListener, Transforme
 		System.out.println("  --name=value\n\tAll parameters required (and possibly any optional ones) parameters");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.daisy.dmfc.core.listener.MessageListener#message(org.daisy.dmfc.core.message.Message)
-	 */
-	public void message(Message message) {
-		// TODO Auto-generated method stub
-		System.out.println(message.getText());
+
+	public UserReplyEvent getUserReply(RequestEvent event) {
+		String source;
+		if(event.getSource() instanceof Transformer) {
+			source = ((Transformer)event.getSource()).getTransformerInfo().getName();
+		}else{
+			source = event.getSource().getClass().getSimpleName();
+		}
+				
+		System.err.println("[" + source + "] Prompt: " + event.getRequest()); 
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String line = null;
+		try {
+		    line = br.readLine();
+        } catch (IOException e) {
+        }
+		return new UserReplyEvent(this,line);
+
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.daisy.dmfc.core.listener.TransformerProgressListener#transformerEnd(org.daisy.dmfc.core.transformer.Transformer)
-	 */
-	public void transformerEnd(Transformer transformer) {
-		// TODO Auto-generated method stub		
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.daisy.dmfc.core.listener.TransformerProgressListener#transformerProgress(double, org.daisy.dmfc.core.transformer.Transformer)
-	 */
-	public void transformerProgress(double progress, Transformer transformer) {
-		// TODO Auto-generated method stub		
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.daisy.dmfc.core.listener.TransformerProgressListener#transformerStart(org.daisy.dmfc.core.transformer.Transformer)
-	 */
-	public void transformerStart(Transformer transformer) {
-		// TODO Auto-generated method stub		
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.daisy.dmfc.core.listener.ScriptProgressListener#scriptEnd(org.daisy.dmfc.core.script.Script)
-	 */
-	public void scriptEnd(Script script) {
-		// TODO Auto-generated method stub
-		System.out.println("Script " + script.getNicename() + " just finished runnning.");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.daisy.dmfc.core.listener.ScriptProgressListener#scriptStart(org.daisy.dmfc.core.script.Script)
-	 */
-	public void scriptStart(Script script) {
-		System.out.println("Script " + script.getNicename() + " just started runnning.");		
-	}
 }
