@@ -112,7 +112,7 @@ public class XMLDetection extends Transformer {
         
         try {            
             if (!hasLogHandler) {
-                LogHandler handler = new LogHandler(this);
+                LogHandler handler = new LogHandler();
                 handler.setLevel(Level.WARNING);
                 logger.addHandler(handler);
             }
