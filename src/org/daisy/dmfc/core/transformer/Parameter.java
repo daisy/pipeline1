@@ -33,8 +33,9 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.daisy.dmfc.exception.MIMEException;
+
 import org.daisy.dmfc.exception.NotSupposedToHappenException;
+import org.daisy.util.mime.MIMEException;
 import org.daisy.util.mime.MIMEType;
 import org.daisy.util.mime.MIMETypeRegistry;
 import org.daisy.util.mime.MIMETypeRegistryException;

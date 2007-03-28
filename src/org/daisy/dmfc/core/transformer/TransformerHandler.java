@@ -28,10 +28,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Level;
 import java.util.regex.PatternSyntaxException;
 
 import javax.xml.namespace.QName;
@@ -46,12 +47,15 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.DirClassLoader;
-import org.daisy.dmfc.core.EventSender;
 import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.exception.MIMEException;
+import org.daisy.dmfc.core.event.CoreMessageEvent;
+import org.daisy.dmfc.core.event.EventBus;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.exception.NotSupposedToHappenException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.util.i18n.I18n;
+import org.daisy.util.mime.MIMEException;
 import org.daisy.util.mime.MIMETypeRegistryException;
 import org.daisy.util.xml.validation.ValidationException;
 import org.daisy.util.xml.validation.Validator;
@@ -65,7 +69,7 @@ import org.daisy.util.xml.validation.Validator;
  *   
  * @author Linus Ericson
  */
-public class TransformerHandler extends EventSender implements TransformerInfo {
+public class TransformerHandler implements TransformerInfo {
 
 	private String name;
 	private String description;
@@ -74,6 +78,8 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	private String version;
 	private Vector parameters = new Vector();
 	private boolean platformSupported = true;
+	
+	private I18n mInternationalization;
 	
 	private InputListener inputListener;
 		
@@ -87,12 +93,12 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * Creates a Transformer handler.
 	 * @param transformerDescription a transformer description file
 	 * @param inListener an input listener
-	 * @param eventListeners an event listener
 	 * @throws TransformerDisabledException
 	 */
-	public TransformerHandler(File transformerDescription, InputListener inListener, Set eventListeners, Validator validator) throws TransformerDisabledException {
-		super(eventListeners);
-		inputListener = inListener;
+	public TransformerHandler(File transformerDescription, InputListener inListener, Validator validator) throws TransformerDisabledException {
+		
+		mInternationalization = new I18n();
+		inputListener = inListener;		
 		transformerDirectory = transformerDescription.getParentFile();
 		
 		/*
@@ -140,9 +146,7 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
             throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
         } catch (XMLStreamException e) {
             throw new TransformerDisabledException(i18n("PROBLEMS_PARSING_TDF"), e);            
-        } catch (MIMETypeRegistryException e) {
-        	throw new TransformerDisabledException("MIME exception", e);
-		}	
+        } 
 	}
 	
 	
@@ -181,8 +185,8 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @param transformerDescription
 	 * @throws ClassNotFoundException
 	 */
-	private void createTransformerClass(File transformerDescription) throws ClassNotFoundException {
-	    sendMessage(Level.FINE, i18n("LOADING_TRANSFORMER", name, classname));
+	private void createTransformerClass(File transformerDescription) throws ClassNotFoundException {	    
+	    EventBus.getInstance().publish(new CoreMessageEvent(this,i18n("LOADING_TRANSFORMER", name, classname),MessageEvent.Type.INFO));
 		File dir = transformerDescription.getAbsoluteFile();
 		dir = dir.getParentFile();
 		transformerClassLoader = new DirClassLoader(new File(DMFCCore.getHomeDirectory(), "transformers"), dir);
@@ -203,13 +207,28 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @throws InvocationTargetException
 	 */
 	private Transformer createTransformerObject(boolean interactive) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {		
-		Object params[] = {inputListener, this.getEventListeners(), Boolean.valueOf(interactive)};
-		Transformer trans = (Transformer)transformerConstructor.newInstance(params);
-		trans.setMessageOriginator(name);
+		 
+		/*
+		 * mg20070327; we check which constructor (old with listener set, or new without)
+		 * this transformer supports. 
+		 */
+		
+		List<Object> params = new LinkedList<Object>();
+		if(transformerConstructor.getParameterTypes().length == 2) {
+			params.add(inputListener);
+			params.add(Boolean.valueOf(interactive));
+		}else{
+			params.add(inputListener);
+			params.add(new HashSet());	//this is the dummy no longer used but kept for Transformer backwards compatibility
+			params.add(Boolean.valueOf(interactive));
+		}
+		
+		Transformer trans = (Transformer)transformerConstructor.newInstance(params.toArray());
 		trans.setTransformerInfo(this);
 		return trans;
 	}	
 	
+
 	/**
 	 * Loop over all &lt;parameter&gt; elements. This method assumes the
 	 * &lt;parameters&gt; start tag has just been read from the XML event reader.
@@ -301,8 +320,19 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	 * @throws NoSuchMethodException
 	 */
 	private void checkForTransformerConstructor() throws NoSuchMethodException {
-		Class[] params = {InputListener.class, Set.class, Boolean.class};
-		transformerConstructor = transformerClass.getConstructor(params);
+		/*
+		 * mg20070327: first we check for the 'new' constructor that doesnt
+		 * take the deprecated set of EventListener
+		 */
+		Class[] params = {InputListener.class, Boolean.class};
+		try{
+			transformerConstructor = transformerClass.getConstructor(params);
+		}catch (NoSuchMethodException nsme) {
+			Class[] params2 = {InputListener.class, Set.class, Boolean.class};
+			transformerConstructor = transformerClass.getConstructor(params2);
+		}	
+		
+		
 	}
 	
 	/**
@@ -471,14 +501,14 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 	        	     */
 	        	    String realValue = System.getProperty(propertyName);
 	        	    try {
-						if (realValue == null) {						
-							sendMessage(Level.WARNING, i18n("UNKNOWN_PROPERTY", propertyName));
+						if (realValue == null) {													
+							EventBus.getInstance().publish(new CoreMessageEvent(this,i18n("UNKNOWN_PROPERTY", propertyName),MessageEvent.Type.WARNING));
 							result = false;
 						} else if (!realValue.matches(propertyValue)) {						    
 						    result = false;
 						}
 	        	    } catch (PatternSyntaxException e) {
-	        	        sendMessage(Level.WARNING, i18n("INCORRECT_PROPERTY_VALUE", propertyName));
+	        	    	EventBus.getInstance().publish(new CoreMessageEvent(this,i18n("INCORRECT_PROPERTY_VALUE", propertyName),MessageEvent.Type.WARNING));	        	        
 	        	        result = false;
 	        	    }
 	        	} else if (eeName.equals("platform")) {
@@ -499,5 +529,24 @@ public class TransformerHandler extends EventSender implements TransformerInfo {
 			}
 		}
 		return null;
+	}
+	
+	/*
+	 * i18n convenience methods
+	 */
+	private String i18n(String msgId) {
+		return mInternationalization.format(msgId);
+	}
+
+	private String i18n(String msgId, Object[] params) {
+		return mInternationalization.format(msgId, params);
+	}
+
+	private String i18n(String msgId, Object param) {
+		return i18n(msgId, new Object[]{param});
+	}
+
+	private String i18n(String msgId, Object param1, Object param2) {
+		return i18n(msgId, new Object[]{param1, param2});
 	}
 }

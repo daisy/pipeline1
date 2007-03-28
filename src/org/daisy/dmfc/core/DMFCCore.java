@@ -26,18 +26,16 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.daisy.dmfc.core.listener.MessageListener;
-import org.daisy.dmfc.core.listener.ScriptProgressListener;
-import org.daisy.dmfc.core.listener.TransformerProgressListener;
+import org.daisy.dmfc.core.event.CoreMessageEvent;
+import org.daisy.dmfc.core.event.EventBus;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.script.Creator;
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Runner;
@@ -61,12 +59,12 @@ import org.daisy.util.xml.validation.Validator;
  * This is the class users of DMFC should instantiate.
  * A common usage of DMFC would include the following:
  * <pre>
- * DMFCCore dmfc = new DMFCCore(inputListener, eventListener);
+ * DMFCCore dmfc = new DMFCCore(inputListener, locale);
  * dmfc.executeScript(scriptFile);
  * </pre>
  * @author Linus Ericson
  */
-public class DMFCCore extends EventSender implements TransformerHandlerLoader {
+public class DMFCCore implements TransformerHandlerLoader {
 
     private static File homeDirectory = null;
     
@@ -78,49 +76,24 @@ public class DMFCCore extends EventSender implements TransformerHandlerLoader {
 	
 
 	/**
-	 * Default constructor. Create an instance of DMFC.
+	 * Create an instance of the Daisy Pipeline.
 	 * @param inListener a listener of (user) input events
-	 * @param MessageListener
-	 * @param TransformerProgressListener
-	 * @param ScriptProgressListener
-	 * @param locale the locale to use
-	 * @throws DMFCConfigurationException
 	 */
-	public DMFCCore(InputListener inListener, MessageListener msgListener, TransformerProgressListener tpListener, ScriptProgressListener spListener, Locale locale) throws DMFCConfigurationException {
-		super(msgListener, tpListener, spListener);
+
+	public DMFCCore(InputListener inListener) throws DMFCConfigurationException {
+	    this(inListener, new Locale("en"));
+	}
+
+	/**
+	 * Create an instance of the Daisy Pipeline.
+	 * @param inListener a listener of (user) input events
+	 * @param locale the locale to use
+	 */
+	public DMFCCore(InputListener inListener, Locale locale) throws DMFCConfigurationException {
+		super();
 		inputListener = inListener;
 		initialize(locale);
 	}
-
-			
-	/**
-	 * Create an instance of DMFC using the default locale.
-	 * This is the same as <code>new DMFCCore(a_inputListener, a_eventListener, new Locale("en"))</code>. 
-	 * @param inListener
-	 * @param evListener
-	 * @throws DMFCConfigurationException
-	 * @deprecated This constructor uses the old listener implementation
-	 */
-	public DMFCCore(InputListener inListener, EventListener evListener) throws DMFCConfigurationException {
-	    this(inListener, evListener, new Locale("en"));
-	}
-
-
-	/**
-	 * Create an instance of DMFC.
-	 * @param inListener a listener of (user) input events
-	 * @param evListener a listener of events
-	 * @param locale the locale to use
-	 * @throws DMFCConfigurationException
-	 * @deprecated This constructor uses the old listener implementation
-	 */
-	public DMFCCore(InputListener inListener, EventListener evListener, Locale locale) throws DMFCConfigurationException {
-		super(evListener);
-		inputListener = inListener;
-		initialize(locale);
-	}
-
-
 	
 	private void initialize(Locale locale) throws DMFCConfigurationException, SecurityException {
 		Locale.setDefault(locale);
@@ -140,19 +113,18 @@ public class DMFCCore extends EventSender implements TransformerHandlerLoader {
 		I18n.setDefaultBundle(bundle);				
 
 		TempFile.setTempDir(new File(System.getProperty("dmfc.tempDir")));
-			
+
 		// Setup logging
 		Logger lg = Logger.getLogger("");
         Handler[] handlers = lg.getHandlers();
         for (int i = 0; i < handlers.length; ++i) {
             lg.removeHandler(handlers[i]);
         }		
-		MessageLogger logger = new MessageLogger();
-		addEventListener(logger);
+		MessageLogger logger = new MessageLogger();		
 		LoggingPropertiesReader.addHandlers(logger, System.getProperty("dmfc.logging"));
 		
-		mCreator = new Creator(this, this.getEventListeners());
-		mRunner = new Runner(this.getEventListeners());
+		mCreator = new Creator(this);
+		mRunner = new Runner();
 	}	
 
 	/**
@@ -206,13 +178,13 @@ public class DMFCCore extends EventSender implements TransformerHandlerLoader {
 	 */
 	public TransformerHandler getTransformerHandler(String transformerName) throws TransformerDisabledException {
 		if (transformerHandlers.containsKey(transformerName)) {
-		    return (TransformerHandler)transformerHandlers.get(transformerName);						
+		    return transformerHandlers.get(transformerName);						
 		}
 		Validator validator;
 		try {
 			validator = new RelaxngSchematronValidator(this.getClass().getResource("./transformer/transformer-2.0.rng"), null,true,true);
 		} catch (ValidationException e) {
-			sendMessage(Level.WARNING, "Error! Cannot create TDF validator for transformer " + transformerName);
+			EventBus.getInstance().publish(new CoreMessageEvent(this,"Error! Cannot create TDF validator for transformer " + transformerName,MessageEvent.Type.WARNING));
 			return null;
 		}
 		File[] files = new File(new File(getHomeDirectory(), "transformers"), transformerName).listFiles(new FileFilter() {
@@ -221,10 +193,10 @@ public class DMFCCore extends EventSender implements TransformerHandlerLoader {
 			}			
 		});
 		if (files.length != 1) {
-			sendMessage(Level.WARNING, "Error! Incorrect number of TDFs for transformer " + transformerName);
+			EventBus.getInstance().publish(new CoreMessageEvent(this,"Error! Incorrect number of TDFs for transformer " + transformerName,MessageEvent.Type.WARNING));
 			return null;
 		}
-		TransformerHandler th = new TransformerHandler(files[0], inputListener, getEventListeners(), validator);		
+		TransformerHandler th = new TransformerHandler(files[0], inputListener, validator);		
 		transformerHandlers.put(transformerName, th);		
 		return th;
 	}
@@ -244,10 +216,8 @@ public class DMFCCore extends EventSender implements TransformerHandlerLoader {
 	 * @param job
 	 * @throws ScriptException
 	 */
-	public void execute(Job job) throws ScriptException {
-		sendScriptStatusMessage(true,job.getScript());
-		this.mRunner.execute(job);
-		sendScriptStatusMessage(false,job.getScript());
+	public void execute(Job job) throws ScriptException {		
+		this.mRunner.execute(job);		
 	}
 	
 	/**
@@ -267,17 +237,5 @@ public class DMFCCore extends EventSender implements TransformerHandlerLoader {
 		return mRunner.isRunning();
 	}
 	
-    private void sendScriptStatusMessage(boolean running, Script script) {
-		for (Iterator iter = this.getEventListeners().iterator(); iter.hasNext();) {
-			Object listener = iter.next();
-			if(listener instanceof ScriptProgressListener) {
-				if(running) {
-					((ScriptProgressListener)listener).scriptStart(script);					
-				}else{
-					((ScriptProgressListener)listener).scriptEnd(script);
-				}
-			}			
-		}		
-	}
 
 }

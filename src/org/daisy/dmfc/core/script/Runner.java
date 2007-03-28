@@ -21,32 +21,35 @@ package org.daisy.dmfc.core.script;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-import org.daisy.dmfc.core.EventListener;
-import org.daisy.dmfc.core.EventSender;
+import org.daisy.dmfc.core.event.CoreMessageEvent;
+import org.daisy.dmfc.core.event.EventBus;
+import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.dmfc.core.event.ScriptStateChangeEvent;
+import org.daisy.dmfc.core.event.StateChangeEvent;
 import org.daisy.dmfc.core.transformer.Parameter;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.exception.ScriptAbortException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.util.i18n.I18n;
 
 /**
  * Runs a task script. 
  * @author Linus Ericson
  */
-public class Runner extends EventSender {
+public class Runner  {
 
 	private boolean mRunning;
 	private int mCompletedTasks;
+	private I18n mInternationalization;
 	
 	/**
 	 * Constructor.
-	 * @param listeners a set of EventListeners
 	 */
-	public Runner(Set<EventListener> listeners) {
-		super(listeners);
+	public Runner() {
+		mInternationalization = new I18n();
 	}
 	
 	/**
@@ -61,8 +64,9 @@ public class Runner extends EventSender {
 		try {
 			this.mRunning = true;
 			this.mCompletedTasks = 0;
-			//mg 20070316: this message replaced by scriptprogresslistener which is called from DMFCCore
-			//this.sendMessage(Level.CONFIG, i18n("RUNNING_SCRIPT", scriptRunner.getScript().getNicename()));
+									
+			EventBus.getInstance().publish(new ScriptStateChangeEvent(job.getScript(),StateChangeEvent.Status.STARTED));
+									
 			for (Task task : job.getScript().getTasks()) {
 				// Get transformer handler
 				TransformerHandler handler = task.getTransformerHandler();
@@ -75,9 +79,6 @@ public class Runner extends EventSender {
 				// Add hard-coded transformer parameters
 				this.addTransformerParameters(parameters, handler);				
 				
-				// Execute transformer
-				//mg 20070316: this message replaced by transformerprogresslistener which is called from Transformer
-				//this.sendMessage(Level.CONFIG, i18n("RUNNING_TASK", handler.getName()));
 				job.setState(Job.State.RUNNING);
 				boolean success = handler.run(parameters, task.isInteractive());
 				if (!success) {
@@ -85,13 +86,14 @@ public class Runner extends EventSender {
 					throw new ScriptException(i18n("TASK_FAILED", handler.getName()));
 				}
 				job.setState(Job.State.FINISHED);
-				this.mCompletedTasks++;
-				//mg 20070316: this message replaced by scriptprogresslistener which is called from DMFCCore
-				//this.sendMessage(Level.CONFIG, i18n("END_OF_SCRIPT"));
+				this.mCompletedTasks++;				
+				
+				EventBus.getInstance().publish(new ScriptStateChangeEvent(job.getScript(),StateChangeEvent.Status.STOPPED));
+
 			}
 		} catch (TransformerAbortException e) {
 			job.setState(Job.State.ABORTED);
-			throw new ScriptAbortException("Script aborted", e);
+			throw new ScriptAbortException("Task aborted", e);
 		} catch (TransformerRunException e) {
 			job.setState(Job.State.FAILED);
 			throw new ScriptException(i18n("ERROR_RUNNING_TASK"), e);
@@ -127,8 +129,7 @@ public class Runner extends EventSender {
 			parameters.put(param.getName(), param.getValue(runnerProperties));
 		}
 	}
-	
-	
+		
 	/**
 	 * Checks whether the Runner is currently running a script
 	 * @return
@@ -143,4 +144,25 @@ public class Runner extends EventSender {
 	public int getCompletedTasks() {
 		return mCompletedTasks;
 	}
+	
+	/*
+	 * i18n convenience methods
+	 */
+	private String i18n(String msgId) {
+		return mInternationalization.format(msgId);
+	}
+
+	private String i18n(String msgId, Object[] params) {
+		return mInternationalization.format(msgId, params);
+	}
+
+	private String i18n(String msgId, Object param) {
+		return i18n(msgId, new Object[]{param});
+	}
+
+	private String i18n(String msgId, Object param1, Object param2) {
+		return i18n(msgId, new Object[]{param1, param2});
+	}
+	
+
 }

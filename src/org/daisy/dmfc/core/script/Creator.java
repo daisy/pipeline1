@@ -23,7 +23,6 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Result;
@@ -31,7 +30,9 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.daisy.dmfc.core.EventSender;
+import org.daisy.dmfc.core.event.CoreMessageEvent;
+import org.daisy.dmfc.core.event.EventBus;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.transformer.Parameter;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.core.transformer.TransformerHandlerLoader;
@@ -55,22 +56,21 @@ import org.xml.sax.SAXParseException;
  * A class responsible for for building and validating Script objects. 
  * @author Linus Ericson
  */
-public class Creator extends EventSender implements ErrorHandler, EntityResolver { //, LSResourceResolver {
+public class Creator implements ErrorHandler, EntityResolver { 
 	
 	private TransformerHandlerLoader mHandlerLoader;
 	private boolean mValidationError = false;
 	private URL mCurrentScriptURL = null;
+
 	/**
 	 * Constructor.
-	 * @param handlers a set of TransformerHandlers
-	 * @param eventListeners a set of EventListeners
+	 * @param loader a TransformerHandlerLoader
 	 */
-	public Creator(TransformerHandlerLoader loader, Set eventListeners) {
-		super(eventListeners);
+	public Creator(TransformerHandlerLoader loader) {
 		mHandlerLoader = loader;
 	}
 
-	
+
 	/**
 	 * Create a new Script from a URL to a script file. A version 1.0
 	 * script file will automatically be transformed into version 2.0
@@ -139,8 +139,8 @@ public class Creator extends EventSender implements ErrorHandler, EntityResolver
 					throw new ScriptValidationException("Invalid version 1.0 script");
 				}
 				
-				// Upgrade the script to version 2.0
-				this.sendMessage(Level.FINE, "Upgrading version 1.0 script file to 2.0");
+				// Upgrade the script to version 2.0				
+				EventBus.getInstance().publish(new CoreMessageEvent(this,"Upgrading version 1.0 script file to 2.0",MessageEvent.Type.INFO));
 				TempFile temp = new TempFile();
 				Source input = new StreamSource(url.openStream());
 				Source sheet = new StreamSource(this.getClass().getResourceAsStream("script10to20.xsl"));
@@ -199,7 +199,7 @@ public class Creator extends EventSender implements ErrorHandler, EntityResolver
 	private boolean isXMLValid(URL url, String schemaName) throws ScriptValidationException {
 		try {
 			SimpleValidator validator = new SimpleValidator(this.getClass().getResource(schemaName).toExternalForm(), this);
-			validator.setResolver((EntityResolver)this);			
+			validator.setResolver(this);			
 			return validator.validate(url) && !mValidationError;
 		} catch (IOException e) {			
 			throw new ScriptValidationException(e.getMessage(), e);
@@ -232,8 +232,8 @@ public class Creator extends EventSender implements ErrorHandler, EntityResolver
 		Set<String> names = new HashSet<String>();
 		for (AbstractProperty property : script.getProperties().values()) {
 			String name = property.getName();
-			if (names.contains(name)) {
-				this.sendMessage(Level.WARNING, "System error: Property name " + name + " is not unique.");
+			if (names.contains(name)) {				
+				EventBus.getInstance().publish(new CoreMessageEvent(this,"System error: Property name " + name + " is not unique.",MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT));
 				result = false;
 			}
 			names.add(name);
@@ -258,7 +258,7 @@ public class Creator extends EventSender implements ErrorHandler, EntityResolver
 				// Loop over all transformer parameters
 				for (Parameter param : parameters) {
 					if (param.isRequired() && !task.getParameters().containsKey(param.getName())) {
-						this.sendMessage(Level.WARNING, "System error: Required parameter " + param.getName() + " not specified by chain");
+						EventBus.getInstance().publish(new CoreMessageEvent(this,"System error: Required parameter " + param.getName() + " not specified by chain",MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT));
 						result = false;
 					}
 				}
@@ -290,14 +290,14 @@ public class Creator extends EventSender implements ErrorHandler, EntityResolver
 							matchingParam = true;
 							// Is this a hard-coded transformer param?
 							if (param.getValue() != null) {
-								this.sendMessage(Level.WARNING, "System error: Parameter " + param.getName() + " is hard-coded in the TDF and may not be specified in a script.");
+								EventBus.getInstance().publish(new CoreMessageEvent(this,"System error: Parameter " + param.getName() + " is hard-coded in the TDF and may not be specified in a script.",MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT));
 								result = false;
 							}
 							break;
 						}
 					}
 					if (!matchingParam) {
-						this.sendMessage(Level.WARNING, "System error: Parameter " + taskParamName + " is not defined in the TDF.");
+						EventBus.getInstance().publish(new CoreMessageEvent(this,"System error: Parameter " + taskParamName + " is not defined in the TDF.",MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT));
 						result = false;
 					}
 				}
@@ -311,7 +311,7 @@ public class Creator extends EventSender implements ErrorHandler, EntityResolver
 	 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
 	 */
 	public void error(SAXParseException e) throws SAXException {
-		this.sendMessage(Level.WARNING, "User error in " + e.getSystemId() +  " at line " + e.getLineNumber() + ": " + e);
+		saxWarn(e);
 		mValidationError = true;
 	}
 
@@ -320,7 +320,7 @@ public class Creator extends EventSender implements ErrorHandler, EntityResolver
 	 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
 	 */
 	public void fatalError(SAXParseException e) throws SAXException {
-		this.sendMessage(Level.WARNING, "User error in " + e.getSystemId() +  " at line " + e.getLineNumber() + ": " + e);
+		saxWarn(e);
 		mValidationError = true;
 	}
 
@@ -329,10 +329,16 @@ public class Creator extends EventSender implements ErrorHandler, EntityResolver
 	 * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
 	 */
 	public void warning(SAXParseException e) throws SAXException {
-		this.sendMessage(Level.WARNING, "User error in " + e.getSystemId() +  " at line " + e.getLineNumber() + ": " + e);
+		saxWarn(e);
 		mValidationError = true;
 	}
 
+	private void saxWarn(SAXParseException e) {
+		EventBus.getInstance().publish(new MessageEvent(this,"User error in " 
+				+ e.getSystemId() +  " at line " + e.getLineNumber() + ": " + e, 
+				MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT));	
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
