@@ -182,7 +182,7 @@ public class DMFCCore implements TransformerHandlerLoader {
 		}
 		Validator validator;
 		try {
-			validator = new RelaxngSchematronValidator(this.getClass().getResource("./transformer/transformer-2.0.rng"), null,true,true);
+			validator = new RelaxngSchematronValidator(this.getClass().getResource("./transformer/transformer-1.1.rng"), null,true,true);
 		} catch (ValidationException e) {
 			EventBus.getInstance().publish(new CoreMessageEvent(this,"Error! Cannot create TDF validator for transformer " + transformerName,MessageEvent.Type.WARNING));
 			return null;

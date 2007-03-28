@@ -1,4 +1,4 @@
-<transformer version="2.0">
+<transformer version="1.1">
 	<name>Validator</name>
 	<description>Validate filesets and XML documents of various types</description>
 	<classname>int_daisy_validator.ValidatorDriver</classname>
@@ -15,7 +15,7 @@
 			<example>C:/myDocuments/myDocument.opf</example>
 		</parameter>
 
-		<parameter required="false" direction="in" type="enum">
+		<parameter required="false" type="enum">
 			<name>requireInputType</name>
 			<description>A string describing one input type that is required, else an error will be generated. (These are from FilesetType.getNiceName)</description>
 			<example>Dtbook</example>
@@ -29,7 +29,7 @@
 			<default>off</default>
 		</parameter>
 
-		<parameter required="false" direction="in" type="string">
+		<parameter required="false" type="string">
 			<name>schemas</name>
 			<description>
 				Comma separated list of schema identifiers to validate the input document against. 
@@ -41,7 +41,7 @@
 			<default/>
 		</parameter>
 		
-		<parameter required="false" direction="in" type="string">
+		<parameter required="false" type="string">
 			<name>delegates</name>
 			<description>
 				Comma separated list of delegates (implementations of org.daisy.util.fileset.validation.ValidatorDelegate)
@@ -50,7 +50,7 @@
 			<default/>
 		</parameter>
 
-		<parameter required="false" direction="in" type="string">
+		<parameter required="false" type="string">
 			<name>forceImplementation</name>
 			<description>
 				A fully qualified name of an implementation of a org.daisy.util.fileset.validation.Validator. 
@@ -60,7 +60,7 @@
 			<default/>
 		</parameter>
 
-		<parameter required="false" direction="in" type="enum">
+		<parameter required="false" type="enum">
 			<name>abortThreshold</name>
 			<description>Validation error severity level - when to perform a Transformer abort</description>
 			<example>WARNING</example>
@@ -73,7 +73,7 @@
 			<default>ERROR</default>
 		</parameter>
 
-		<parameter required="false" direction="in" type="enum">
+		<parameter required="false" type="enum">
 			<name>abortOnException</name>
 			<description>Whether to perform a Transformer abort when a caught exception occurs</description>
 			<example>false</example>
@@ -88,14 +88,14 @@
 			2007-03-07 Martin Blomberg: 
 			adding two parameters for enabling xml output.			
 		-->
-		<parameter required="false" direction="in" type="application/xml">
+		<parameter required="false" direction="out" type="application/xml">
 			<name>xmlReport</name>
 			<description>Path to xml output</description>
 			<example>/home/user/reports/myreport.xml</example>
 			<default/>
 		</parameter>
 		
-		<parameter required="false" direction="in" type="string">
+		<parameter required="false" type="string">
 			<name>xmlStylesheet</name>
 			<description>
 				The value of the xml-stylesheet processing instruction in the 

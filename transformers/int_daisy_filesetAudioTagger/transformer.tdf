@@ -1,4 +1,4 @@
-<transformer version="1.0">
+<transformer version="1.1">
 	<name>Fileset Audio Tagger</name>
 	<description>Generate audio playlists, and ID3 tags on mp3 files.</description>
 	<classname>int_daisy_filesetAudioTagger.FilesetAudioTagger</classname>

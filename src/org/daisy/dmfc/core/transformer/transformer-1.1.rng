@@ -4,6 +4,7 @@
 	datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
 >
     <!-- RelaxNG schema for Transformer Description Files (*.tdf) -->
+    <!-- v1.1: added the optional documentation element -->
 
 	<start>
 		<ref name="transformer"/>

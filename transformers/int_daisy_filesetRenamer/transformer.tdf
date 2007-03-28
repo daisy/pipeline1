@@ -1,4 +1,4 @@
-<transformer version="2.0">
+<transformer version="1.1">
 	<name>Fileset Renamer</name>
 	<description>Rename select members of a fileset using customizable token-based name patterns.</description>
 	<classname>int_daisy_filesetRenamer.FilesetRenamer</classname>

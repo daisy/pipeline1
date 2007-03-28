@@ -95,8 +95,8 @@ src/org/daisy/dmfc/core/script/script-1.0.rng -text
 src/org/daisy/dmfc/core/script/script-2.0.rng -text
 src/org/daisy/dmfc/core/script/script10to20.xsl -text
 src/org/daisy/dmfc/core/transformer/TransformerHandlerLoader.java -text
-src/org/daisy/dmfc/core/transformer/transformer-2.0.rng -text
-src/org/daisy/dmfc/core/transformer/transformer.rng -text svneol=unset#application/octet-stream
+src/org/daisy/dmfc/core/transformer/transformer-1.0.rng -text svneol=unset#application/octet-stream
+src/org/daisy/dmfc/core/transformer/transformer-1.1.rng -text
 src/org/daisy/dmfc/util/DocChecker.java -text
 src/org/daisy/util/fileset/util/FilesetLabelProvider.java -text
 src/org/daisy/util/fileset/util/FilesetSpineProvider.java -text
