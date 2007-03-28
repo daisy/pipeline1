@@ -4,21 +4,22 @@ package org.daisy.dmfc.core.event;
  * An event raised when an object within the Pipeline has started or stopped.
  * @author Markus Gylling
  */
-public class SystemStateChangeEvent extends SystemEvent {
+public class StateChangeEvent extends SystemEvent {
 
-	private Status mStatus;
+	private Status mState;
 	
-	public SystemStateChangeEvent(Object source, Status status) {
+	public StateChangeEvent(Object source, Status state) {
 		super(source);
-		mStatus = status;
+		mState = state;
 	}
 
 	public static enum Status {
-		STARTING, STARTED, STOPPING, STOPPED
+		//STARTING, STARTED, STOPPING, STOPPED
+		STARTED, STOPPED
 	}
 	
 	public Status getState() {
-		return mStatus;
+		return mState;
 	}
 
 	private static final long serialVersionUID = -4672109252993604750L;

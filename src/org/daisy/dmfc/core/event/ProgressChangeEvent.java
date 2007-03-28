@@ -1,16 +1,17 @@
 package org.daisy.dmfc.core.event;
+
 /**
  * An event raised when an object within the Pipeline changes its progress.
  * @author Markus Gylling
  */
-public class SystemProgressChangeEvent extends SystemEvent {
+public class ProgressChangeEvent extends SystemEvent {
 	private double mProgress;
 	
 	/**
 	 * @param progress A value between 0 and 1 inclusive.
 	 * @throws IllegalArgumentException if progress is not between 0 and 1 inclusive. 
 	 */
-	public SystemProgressChangeEvent(Object source, double progress) {
+	public ProgressChangeEvent(Object source, double progress) {
 		super(source);
 		if(progress<0.0||progress>1.0) {
 			throw new IllegalArgumentException(

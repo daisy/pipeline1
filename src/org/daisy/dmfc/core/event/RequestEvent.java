@@ -5,11 +5,11 @@ package org.daisy.dmfc.core.event;
  * @see {@link org.daisy.dmfc.core.event.UserReplyEvent}
  * @author Markus Gylling
  */
-public class SystemRequestEvent extends SystemEvent {
+public class RequestEvent extends SystemEvent {
 	
 	private String mRequest;
 
-	public SystemRequestEvent(Object source, String request) {
+	public RequestEvent(Object source, String request) {
 		super(source);
 		mRequest = request;
 	}

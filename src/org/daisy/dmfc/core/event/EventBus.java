@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class EventBus {
 
-	//use class-level instantiation to avoid the dreaded thread probs	
+	//use class-level instantiation to avoid the dreaded singleton thread probs	
     private Map<Class<? extends EventObject>, Set<BusListener>> mListenersMap 
     	= new HashMap<Class<? extends EventObject>, Set<BusListener>>();
     
@@ -49,14 +49,14 @@ public class EventBus {
         }
         listeners.add(subscriber);
                 
-        //add the subscriber to any sets that represent subclasses of the event 
-        for (Iterator iter = mListenersMap.keySet().iterator(); iter.hasNext();) {
-			Class klass = (Class) iter.next();
-			if (isSubclass(type, klass)) {
-				Set<BusListener> set = mListenersMap.get(klass);
-				set.add(subscriber);
-			}
-		}
+//        //add the subscriber to any sets that represent subclasses of the event 
+//        for (Iterator iter = mListenersMap.keySet().iterator(); iter.hasNext();) {
+//			Class klass = (Class) iter.next();
+//			if (isSubclass(type, klass)) {
+//				Set<BusListener> set = mListenersMap.get(klass);
+//				set.add(subscriber);
+//			}
+//		}
         
     }
 
@@ -72,14 +72,14 @@ public class EventBus {
     	Set<BusListener> listeners = mListenersMap.get(type);
     	if(listeners!=null)listeners.remove(subscriber);
     	
-    	//unsubscribe from any subclasses of the event
-        for (Iterator iter = mListenersMap.keySet().iterator(); iter.hasNext();) {
-			Class klass = (Class) iter.next();
-			if (isSubclass(klass,type)) {
-				Set<BusListener> set = mListenersMap.get(klass);
-				set.remove(subscriber);
-			}
-		}
+//    	//unsubscribe from any subclasses of the event
+//        for (Iterator iter = mListenersMap.keySet().iterator(); iter.hasNext();) {
+//			Class klass = (Class) iter.next();
+//			if (isSubclass(klass,type)) {
+//				Set<BusListener> set = mListenersMap.get(klass);
+//				set.remove(subscriber);
+//			}
+//		}
     	
     }
     
@@ -94,8 +94,7 @@ public class EventBus {
         publish(listeners,event);
         
         //publish to subscribers of superclasses of the event
-        for (Iterator iter = mListenersMap.keySet().iterator(); iter.hasNext();) {
-			Class klass = (Class) iter.next();
+        for (Class klass : mListenersMap.keySet())  {			
 			if (isSubclass(event.getClass(),klass)) {
 				Set<BusListener> set = mListenersMap.get(klass);
 				publish(set,event);				

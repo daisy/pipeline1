@@ -2,7 +2,7 @@ package org.daisy.dmfc.core.event;
 
 /**
  * Event raised when a user provides input to the system during exection time (preceeded by a system prompt event).
- * @see {@link org.daisy.dmfc.core.event.SystemRequestEvent}
+ * @see {@link org.daisy.dmfc.core.event.RequestEvent}
  * @author Markus Gylling
  */
 public class UserReplyEvent extends UserEvent {
