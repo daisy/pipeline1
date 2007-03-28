@@ -18,14 +18,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.core.message.TransformerMessage;
-import org.daisy.dmfc.core.message.property.Cause;
-import org.daisy.dmfc.core.message.property.Type;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
@@ -74,11 +71,18 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	private FilesetRegex rgx = null;
 	private int mMaxFilenameLength = -1;
 			
-	public FilesetRenamer(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-		super(inListener, eventListeners, isInteractive);
+	
+	/**
+	 * Constructor.
+	 * @param inListener
+	 * @param isInteractive
+	 */
+	public FilesetRenamer(InputListener inListener, Boolean isInteractive) {
+		super(inListener,  isInteractive);
 		rgx = FilesetRegex.getInstance();
 	}
-
+	
+	
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		/*
 		 * First, create the renaming strategy using the input tokens.
@@ -115,13 +119,15 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			mOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(FilenameOrFileURI.toFile((String)parameters.remove("output"))));
 			//if input and output dir are the same, skip and return true
 			if(mOutputDir.getCanonicalPath().equals(mInputFileset.getManifestMember().getFile().getParentFile().getCanonicalPath())) {
-				this.sendMessage(new TransformerMessage(this,i18n("IN_OUT_SAME_SKIPPING", mOutputDir.getCanonicalPath()),Type.ERROR,Cause.INPUT));				
+				String message = i18n("IN_OUT_SAME_SKIPPING", mOutputDir.getCanonicalPath());
+				this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
 				return true;
 			}
 			
-			this.progress(0.1);
-			this.checkAbort();
-			this.sendMessage(new TransformerMessage(this,i18n("ANALYZING_INPUT_FILESET", mInputFileset.getFilesetType().toNiceNameString()),Type.INFO,Cause.SYSTEM));
+			this.sendMessage(0.1);
+			this.checkAbort();			
+			String message = i18n("ANALYZING_INPUT_FILESET", mInputFileset.getFilesetType().toNiceNameString());
+			this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 								
 			try{		
 				//create a renaming strategy using the template name
@@ -138,10 +144,14 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 				mStrategy = createStrategy(mInputFileset, randomizedName, mTypeExclusions, 96);				
 				//render the randomized fileset to a subfolder of user output folder
 				mRoundtripOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(new File(mOutputDir,"dmfc_temp")));
-				this.sendMessage(new TransformerMessage(this,i18n("RENDER_ROUNDTRIP", e.getMessage(), mRoundtripOutputDir.getAbsolutePath()),Type.INFO,Cause.SYSTEM));
+								
+				message = i18n("RENDER_ROUNDTRIP", e.getMessage(), mRoundtripOutputDir.getAbsolutePath());
+				this.sendMessage(message, MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
+
+				
 				renderStrategy(mInputFileset,mRoundtripOutputDir);
 				
-				this.progress(0.15);
+				this.sendMessage(0.15);
 				this.checkAbort();
 
 				//reset the inputfileset to the randomized output
@@ -151,11 +161,12 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			}
 			
 
-			this.progress(0.2);
+			this.sendMessage(0.2);
 			this.checkAbort();
 			
-			//render the final output
-			this.sendMessage(new TransformerMessage(this,i18n("RENDERING_RESULT", mOutputDir.getCanonicalPath()),Type.INFO,Cause.SYSTEM));
+			//render the final output			
+			message = i18n("RENDERING_RESULT", mOutputDir.getCanonicalPath());
+			this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 			renderStrategy(mInputFileset,mOutputDir);
 												
 			//clean up the temp traces if utilized
@@ -166,12 +177,15 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 					
 			this.checkAbort();
 			
-		} catch (Exception e) {			
-			this.sendMessage(new TransformerMessage(this,i18n("ERROR_COPYING_UNRENAMED", e.getMessage()),Type.ERROR,Cause.SYSTEM));
+		} catch (Exception e) {						
+			String message = i18n("RENDERING_RESULT", i18n("ERROR_COPYING_UNRENAMED", e.getMessage()));
+			this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
+
 			try {		
 				fman.getOutputFolder().addFileset(fman.getInputFileset(),true);
-			} catch (IOException ioe) {
-				this.sendMessage(new TransformerMessage(this,i18n("ERROR_ABORTING", ioe.getMessage()),Type.ERROR,Cause.SYSTEM));
+			} catch (IOException ioe) {				
+				message = i18n("ERROR_ABORTING", ioe.getMessage());
+				this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 				throw new TransformerRunException(ioe.getMessage(), ioe);
 			}
 		}	
@@ -224,8 +238,8 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 				try {
 					Class implClass = Class.forName(implName);
 					mTypeExclusions.add(implClass);
-				} catch (ClassNotFoundException e) {	
-					this.sendMessage(new TransformerMessage(this,i18n("EXCLUDE_CLASS_NOT_FOUND", interfaceName),Type.WARNING,Cause.INPUT));
+				} catch (ClassNotFoundException e) {						
+					this.sendMessage(i18n("EXCLUDE_CLASS_NOT_FOUND", interfaceName), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
 				}			
 			}
 		}
@@ -285,7 +299,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	public FilesetFileManipulator nextFile(FilesetFile file) throws FilesetManipulationException {
 		if(filesetSize == -1.0) filesetSize = Double.parseDouble(Integer.toString(mInputFileset.getLocalMembers().size())+".0");
 		nextFileCallCount++;				
-		this.progress(0.2 + ((nextFileCallCount/filesetSize)*0.8)); //assumes that progress 0.2 was called before first nextFile call 
+		this.sendMessage(0.2 + ((nextFileCallCount/filesetSize)*0.8)); //assumes that progress 0.2 was called before first nextFile call 
 		
 		mCurrentFile = file; //for checking filetype in nextValue() below
 		try{
@@ -335,8 +349,8 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 						sb.replace(start,start+oldName.length(),mStrategy.getNewLocalName(oldNameURI));
 						break; //REVISIT are we sure first found is enough? values may contain several references...
 					}	
-				}catch (Exception e) {
-					this.sendMessage(new TransformerMessage(this,"exception when replacing values with new name: " + e.getMessage(),Type.WARNING,Cause.SYSTEM));
+				}catch (Exception e) {					
+					this.sendMessage("exception when replacing values with new name: " + e.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
 					return value;
 				}
 			}				
@@ -376,9 +390,9 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	@SuppressWarnings("unused")
 	public void error(FilesetFileException ffe) throws FilesetFileException {
 		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {
-			this.sendMessage(new TransformerMessage(this,ffe.getCause() + " in " + ffe.getOrigin(),Type.ERROR,Cause.INPUT));
+			this.sendMessage(ffe.getCause() + " in " + ffe.getOrigin(), MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT);
 		} else {
-			this.sendMessage(new TransformerMessage(this,ffe.getCause() + " in " + ffe.getOrigin(),Type.WARNING,Cause.INPUT));
+			this.sendMessage(ffe.getCause() + " in " + ffe.getOrigin(), MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT);
 		}
 	}
 }

@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.stream.Location;
@@ -41,9 +40,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.core.message.TransformerMessage;
-import org.daisy.dmfc.core.message.property.Cause;
-import org.daisy.dmfc.core.message.property.Type;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.exception.ExceptionTransformer;
@@ -107,13 +104,14 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	/**
 	 * Constructor.
 	 */
-	public ValidatorDriver(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-		super(inListener, eventListeners, isInteractive);        
+	public ValidatorDriver(InputListener inListener,  Boolean isInteractive) {
+		super(inListener, isInteractive);        
 		//System.setProperty("org.daisy.debug", "true");
 		//System.clearProperty("org.daisy.debug");
 		checkSystemProperties();        
 	}
-
+	
+		
 	protected boolean execute(Map parameters) throws TransformerRunException {
 
 		/*
@@ -166,7 +164,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				try{
 					peeker = PeekerPool.getInstance().acquire();
 					mInputFilePeekResult = peeker.peek(mInputFile);
-					this.progress(PROGRESS_PEEK);
+					this.sendMessage(PROGRESS_PEEK);
 					this.checkAbort();
 				}catch (Exception e) {
 					//input isnt XML, malformed at root, or something else went wrong
@@ -183,7 +181,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 						//input fileset is not of the given type
 						if (!mInputFileset.getFilesetType().toNiceNameString().equals(mRequiredInputType)) {
 							String message = i18n("NOT_REQUIRED_INPUT_TYPE",mRequiredInputType);
-							this.sendMessage(new TransformerMessage(this,message,Type.ERROR,Cause.INPUT));
+							this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
 							throw new TransformerRunException(message);
 						}
 					}
@@ -198,7 +196,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					}
 					
 										
-					this.progress(PROGRESS_FILESET_INSTANTIATION);
+					this.sendMessage(PROGRESS_FILESET_INSTANTIATION);
 					this.checkAbort();
 					mCompletionTracker.mCompletedFilesetInstantiation = true;
 					
@@ -212,21 +210,24 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 						
 						//TODO set schemas on validator
 						
-						this.sendMessage(new TransformerMessage(this,i18n("VALIDATING_FILESET", mInputFileset.getFilesetType().toNiceNameString()),Type.INFO,Cause.SYSTEM));
+						String message = i18n("VALIDATING_FILESET", mInputFileset.getFilesetType().toNiceNameString());
+						this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 						filesetValidator.validate(mInputFileset);
 						
-						this.progress(PROGRESS_FILESET_VALIDATION);
+						this.sendMessage(PROGRESS_FILESET_VALIDATION);
 						this.checkAbort();
 						mCompletionTracker.mCompletedFilesetValidation = true;
 					}catch (ValidatorNotSupportedException e) {
 						//the factory could not produce a validator for this fileset type											
-						this.sendMessage(new TransformerMessage(this,i18n("NO_FILESET_VALIDATOR", mInputFileset.getFilesetType().toNiceNameString()),Type.WARNING,Cause.SYSTEM));
+						String message = i18n("NO_FILESET_VALIDATOR", mInputFileset.getFilesetType().toNiceNameString());
+						this.sendMessage(message, MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
 						// add exception to xml report
 						xmlReport(e);
 					}catch (ValidatorException ve) {
 						//another error than nonsupported type occured
 						mStateTracker.mHadCaughtException = true;
-						this.sendMessage(new TransformerMessage(this,i18n("FILESET_VALIDATION_FAILURE", ve.getMessage()),Type.ERROR,Cause.SYSTEM));						
+						String message = i18n("FILESET_VALIDATION_FAILURE", ve.getMessage());		
+						this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 						// add exception to xml report
 						xmlReport(ve);
 					}
@@ -237,8 +238,8 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 						//the user has specified that an error+abort should be thrownn if
 						//input is not of the given Fileset type
 						// Since we got this exception, its not a fileset at all
-						String message = i18n("NOT_REQUIRED_INPUT_TYPE",mRequiredInputType);
-						this.sendMessage(new TransformerMessage(this,message,Type.ERROR,Cause.INPUT));
+						String message = i18n("NOT_REQUIRED_INPUT_TYPE",mRequiredInputType);												
+						this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
 						throw new TransformerRunException(message);						
 					}
 										
@@ -248,9 +249,10 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					if((mInputFilePeekResult != null) 
 							&& (mInputFilePeekResult.getPrologSystemId()!=null
 									||mInputFilePeekResult.getPrologPublicId()!=null)){
-						this.sendMessage(new TransformerMessage(this,i18n("SAX_DTD_VAL"),Type.INFO,Cause.SYSTEM));
+						String message = i18n("SAX_DTD_VAL");
+						this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 						doSAXDTDValidation();	
-						this.progress(PROGRESS_SAX_VALIDATION);
+						this.sendMessage(PROGRESS_SAX_VALIDATION);
 						this.checkAbort();
 						mCompletionTracker.mCompletedInlineDTDValidation = true;
 					}
@@ -258,9 +260,10 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 
 				if((!(mSchemaSources = setSchemaSources(parameters)).isEmpty()) 
 						&& (mInputFilePeekResult != null)) {
-					this.sendMessage(new TransformerMessage(this,i18n("JAXP_SCHEMA_VAL", Integer.toString(mSchemaSources.size())),Type.INFO,Cause.SYSTEM));
+					String message = i18n("JAXP_SCHEMA_VAL", Integer.toString(mSchemaSources.size()));
+					this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 					doJAXPSchemaValidation();
-					this.progress(PROGRESS_JAXP_VALIDATION);
+					this.sendMessage(PROGRESS_JAXP_VALIDATION);
 					this.checkAbort();
 					mCompletionTracker.mCompletedJAXPSchemaValidation = true;
 				}
@@ -293,31 +296,44 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			}
 
 			if(mStateTracker.thresholdBreached(abortThreshold)) {					
-				this.sendMessage(new TransformerMessage(this,i18n("ABORTING_THRESHOLD_BREACHED"),Type.WARNING,Cause.INPUT));
+				String message = i18n("ABORTING_THRESHOLD_BREACHED");
+				this.sendMessage(message, MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
 				return false;
 			}
 
 			//else, we are about to exit gracefully. Give some info.
 
 			if(mCompletionTracker.mCompletedFilesetValidation) {
-				this.sendMessage(new TransformerMessage(this,i18n("COMPLETED_FILESET_VALIDATION"),Type.INFO,Cause.SYSTEM));				
+				String message = i18n("COMPLETED_FILESET_VALIDATION");		
+				this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 			}else{
-				if(mCompletionTracker.mCompletedFilesetInstantiation) {
-					this.sendMessage(new TransformerMessage(this,i18n("COMPLETED_FILESET_INSTANTIATION"),Type.INFO,Cause.SYSTEM));
+				if(mCompletionTracker.mCompletedFilesetInstantiation) {					
+					String message = i18n("COMPLETED_FILESET_INSTANTIATION");		
+					this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+
 				}else{
-					if(mCompletionTracker.mCompletedInlineDTDValidation) {
-						this.sendMessage(new TransformerMessage(this,i18n("COMPLETED_DTD_VALIDATION"),Type.INFO,Cause.SYSTEM));
+					if(mCompletionTracker.mCompletedInlineDTDValidation) {						
+						String message = i18n("COMPLETED_DTD_VALIDATION");		
+						this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 					}
 				}
 			}
 
 			if(mCompletionTracker.mCompletedJAXPSchemaValidation) {
-				this.sendMessage(new TransformerMessage(this,i18n("COMPLETED_JAXP_VALIDATION"),Type.INFO,Cause.SYSTEM));				
+				String message = i18n("COMPLETED_JAXP_VALIDATION");		
+				this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 			}
+			
+			String message = i18n("DURATION", Double.toString((end-start)/1000000000));		
+			this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 
-			this.sendMessage(new TransformerMessage(this,i18n("DURATION", Double.toString((end-start)/1000000000)),Type.INFO,Cause.SYSTEM));
-			this.sendMessage(new TransformerMessage(this,i18n("MESSAGES_FROM_VALIDATOR",Integer.toString(mValidatorMessageCache.size())),Type.INFO,Cause.SYSTEM));
-			if(mValidatorMessageCache.size()==0) this.sendMessage(new TransformerMessage(this,i18n("CONGRATS"),Type.INFO,Cause.SYSTEM));
+			message = i18n("MESSAGES_FROM_VALIDATOR",Integer.toString(mValidatorMessageCache.size()));		
+			this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+			
+			if(mValidatorMessageCache.size()==0) {				
+				message = i18n("CONGRATS");		
+				this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+			}
 			
 			
 			if (mForcedValidatorImpl  != null && mForcedValidatorImpl.length()>0 && mInputFileset!=null ) {
@@ -353,11 +369,13 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				try {
 					validator.setDelegate(delegate);
 				} catch (ValidatorNotSupportedException e) {
-					mStateTracker.mHadCaughtException = true;
-					this.sendMessage(new TransformerMessage(this,i18n("DELEGATE_INSTANTIATION_FAILURE", array[i]),Type.ERROR,Cause.SYSTEM));					
+					mStateTracker.mHadCaughtException = true;					
+					String message = i18n("DELEGATE_INSTANTIATION_FAILURE", array[i]);
+					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 				} catch (ValidatorException e) {
 					mStateTracker.mHadCaughtException = true;
-					this.sendMessage(new TransformerMessage(this,i18n("DELEGATE_INSTANTIATION_FAILURE", array[i]),Type.ERROR,Cause.SYSTEM));
+					String message = i18n("DELEGATE_INSTANTIATION_FAILURE", array[i]);
+					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 				}
 			}			
 		}
@@ -384,12 +402,15 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					Map aSchema = toSchemaSource(array[i],null);
 					if(aSchema!=null) {
 						mSchemaSources.putAll(aSchema);
-					}else{						
-						this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_INSTANTIATION_FAILURE", array[i]),Type.ERROR,Cause.SYSTEM));
+					}else{												
+						String message =i18n("SCHEMA_INSTANTIATION_FAILURE", array[i]);
+						this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 					}
 				}catch (Exception e) {
-					mStateTracker.mHadCaughtException = true;
-					this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_INSTANTIATION_FAILURE", array[i]+ e.getMessage()),Type.ERROR,Cause.SYSTEM));					
+					mStateTracker.mHadCaughtException = true;					
+					String message =i18n("SCHEMA_INSTANTIATION_FAILURE", array[i]+ e.getMessage());
+					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
+
 				}
 			}						
 		}//if(schemas!=null && schemas.length()>0)
@@ -402,8 +423,9 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				Map map = toSchemaSource(str,SchemaLanguageConstants.W3C_XML_SCHEMA_NS_URI);
 				if (map!=null){
 					mSchemaSources.putAll(map);
-				}else{
-					this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_INSTANTIATION_FAILURE", str),Type.ERROR,Cause.SYSTEM));
+				}else{					
+					String message = i18n("SCHEMA_INSTANTIATION_FAILURE", str);
+					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 				}																	
 			}//for
 		}
@@ -431,8 +453,9 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			saxParser.getXMLReader().setEntityResolver(CatalogEntityResolver.getInstance());
 			saxParser.getXMLReader().parse(mInputFile.asInputSource());	    	
 		}catch (Exception e) {
-			mStateTracker.mHadCaughtException = true;
-			this.sendMessage(new TransformerMessage(this,i18n("DTD_VALIDATION_FAILURE", e.getMessage()),Type.ERROR,Cause.SYSTEM));
+			mStateTracker.mHadCaughtException = true;			
+			String message = i18n("DTD_VALIDATION_FAILURE", e.getMessage());
+			this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 		}finally{
 			try {
 				SAXParserPool.getInstance().release(saxParser,features,null);
@@ -463,8 +486,9 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				String fileName = source.getSystemId();				
 				if (fileName != null && fileName.lastIndexOf("/") > 0) {
 					fileName = fileName.substring(fileName.lastIndexOf("/"));
-				}
-				this.sendMessage(new TransformerMessage(this,i18n("VALIDATING_USING_SCHEMA",schemaType, fileName),Type.INFO,Cause.SYSTEM));
+				}				
+				String message = i18n("VALIDATING_USING_SCHEMA",schemaType, fileName);
+				this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 
 				//then do it
 				if(!factoryMap.containsKey(schemaNsURI)) {
@@ -476,11 +500,12 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				Schema schema = anySchemaFactory.newSchema(source);													
 				javax.xml.validation.Validator jaxpValidator = schema.newValidator();																
 				jaxpValidator.validate(new StreamSource(mInputFile.toURI().toURL().openStream()));
-				this.progress(PROGRESS_FILESET_VALIDATION + (PROGRESS_JAXP_VALIDATION - PROGRESS_FILESET_VALIDATION) * (num / count));
+				this.sendMessage(PROGRESS_FILESET_VALIDATION + (PROGRESS_JAXP_VALIDATION - PROGRESS_FILESET_VALIDATION) * (num / count));
 				this.checkAbort();
 			}catch (Exception e) {
-				mStateTracker.mHadCaughtException = true;
-				this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_VALIDATION_FAILURE",source.getSystemId()) + " " +e.getMessage(),Type.ERROR,Cause.SYSTEM));				
+				mStateTracker.mHadCaughtException = true;				
+				String message = i18n("SCHEMA_VALIDATION_FAILURE",source.getSystemId());
+				this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 			}        
 		}		
 	}
@@ -550,19 +575,19 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			xmlReport(validator, message);
 			mValidatorMessageCache.add(message);
 			
-			Type type = null;
+			MessageEvent.Type type = null;
 			if(message instanceof ValidatorWarningMessage) {
 				mStateTracker.mHadValidationWarning = true;
-				type = Type.WARNING;
+				type = MessageEvent.Type.WARNING;
 			}else if (message instanceof ValidatorSevereErrorMessage) {
 				mStateTracker.mHadValidationSevereError = true;
-				type = Type.ERROR;
+				type = MessageEvent.Type.ERROR;
 			}else {
 				mStateTracker.mHadValidationError = true;
-				type = Type.ERROR;
+				type = MessageEvent.Type.ERROR;
 			}		
 			Location loc = LocusTransformer.newLocation(message);
-			this.sendMessage(new TransformerMessage(this,message.toString(),type,Cause.INPUT,loc));
+			this.sendMessage(message.toString(), type, MessageEvent.Cause.INPUT,loc);
 		}
 	}
 
@@ -571,7 +596,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#progress(org.daisy.util.fileset.validation.Validator, double)
 	 */
 	public void progress(Validator validator, double progress) {
-		this.progress(progress);		
+		//cant do much here since the validators progres is not equal to the transformers progress..		
 	}	
 
 	/*
@@ -580,8 +605,9 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 */
 	public void exception(Validator validator, Exception e) {
 		mStateTracker.mHadCaughtException = true;
-		xmlReport(e);
-		this.sendMessage(new TransformerMessage(this,i18n("FILESET_VALIDATION_ERROR", e.getMessage()),Type.ERROR,Cause.SYSTEM));
+		xmlReport(e);		
+		String message = i18n("FILESET_VALIDATION_ERROR", e.getMessage());
+		this.sendMessage(message, MessageEvent.Type.ERROR);
 	}
 
 	/*
@@ -589,7 +615,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#inform(org.daisy.util.fileset.validation.Validator, java.lang.String)
 	 */
 	public void inform(Validator validator, String information) {
-		this.sendMessage(new TransformerMessage(this,information,Type.INFO,Cause.SYSTEM));		
+		this.sendMessage(information, MessageEvent.Type.INFO);
 	}
 
 	/**
@@ -713,13 +739,16 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 
 		//if catalog didnt work
 		if(schemaURL == null) {
-			if(isRemote){
-				this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_IDENTIFIER_ONLINE"),Type.WARNING,Cause.INPUT));
+			if(isRemote){				
+				String message = i18n("SCHEMA_IDENTIFIER_ONLINE");
+				this.sendMessage(message, MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT);
 			}	
 			try{
 				schemaURL = new URL(identifier);
-			}catch (Exception e) {
-				this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_INSTANTIATION_FAILURE", identifier),Type.ERROR,Cause.INPUT));
+			}catch (Exception e) {				
+				String message = i18n("SCHEMA_INSTANTIATION_FAILURE", identifier);
+				this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT);
+
 				return null;
 			}	
 		}
@@ -736,12 +765,14 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				//it didnt come as inparam
 				try{
 					nsuri = XMLUtils.getSchemaType(schemaURL);
-					if(nsuri==null) {
-						this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_TYPE_NOT_SUPPORTED", schemaURL.toString()),Type.ERROR,Cause.INPUT));
+					if(nsuri==null) {						
+						String message = i18n("SCHEMA_TYPE_NOT_SUPPORTED", schemaURL.toString());
+						this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
 					}
 				}catch (Exception e) {
-					mStateTracker.mHadCaughtException = true;
-					this.sendMessage(new TransformerMessage(this,i18n("SCHEMA_IDENTIFICATION_FAILURE", schemaURL.toString()),Type.ERROR,Cause.INPUT));
+					mStateTracker.mHadCaughtException = true;					
+					String message = i18n("SCHEMA_IDENTIFICATION_FAILURE", schemaURL.toString());
+					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
 				}			    	
 			}else{
 				//it came as inparam

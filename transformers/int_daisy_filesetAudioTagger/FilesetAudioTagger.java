@@ -14,12 +14,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.core.message.TransformerMessage;
-import org.daisy.dmfc.core.message.property.Cause;
-import org.daisy.dmfc.core.message.property.Type;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
@@ -53,10 +50,12 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 	private FilesetManipulator fm = null;
 	private Collection mAudioSpine = null;
 	private FilesetLabelProvider mLabelProvider = null;
-	
-	public FilesetAudioTagger(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-		super(inListener, eventListeners, isInteractive);		
+		
+	public FilesetAudioTagger(InputListener inListener, Boolean isInteractive) {
+		super(inListener, isInteractive);		
 	}
+	
+	
 	
 	@Override
 	protected boolean execute(Map parameters) throws TransformerRunException {
@@ -78,28 +77,28 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 			//set/create output dir
 			mOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(FilenameOrFileURI.toFile((String)parameters.remove("output"))));
 			//find out if inparam in and out directories are the same 
-			boolean inputDirEqualsOutputDir = mOutputDir.getCanonicalPath().equals(mInputFileset.getManifestMember().getFile().getParentFile().getCanonicalPath());
+			//boolean inputDirEqualsOutputDir = mOutputDir.getCanonicalPath().equals(mInputFileset.getManifestMember().getFile().getParentFile().getCanonicalPath());
 			//create the audioSpine ArrayList
 			mAudioSpine = FilesetSpineProvider.getAudioSpine(mInputFileset);			
 			//create the label provider
 			mLabelProvider = new FilesetLabelProvider(mInputFileset);			
 //			debugPrintAudioSpine();
 			
-			this.progress(0.05);
+			this.sendMessage(0.05);
 			this.checkAbort();
 			
-			if(doID3tags) {
-				sendMessage(new TransformerMessage(this,i18n("GENERATING_ID3TAGS"),Type.INFO, Cause.SYSTEM));
+			if(doID3tags) {				
+				this.sendMessage(i18n("GENERATING_ID3TAGS"), MessageEvent.Type.INFO);
 				fm = new FilesetManipulator();
 				fm.setInputFileset(mInputFileset);
 				fm.setOutputFolder(mOutputDir);
 				fm.setListener(this);
 				fm.setFileTypeRestriction(Mp3File.class);
 				fm.iterate();				
-			}
-			sendMessage(new TransformerMessage(this,i18n("GENERATED_ID3TAGS",mAudioSpine.size()),Type.INFO, Cause.SYSTEM));
-						
-			this.progress(0.95);
+			}			
+			this.sendMessage(i18n("GENERATED_ID3TAGS",mAudioSpine.size()), MessageEvent.Type.INFO);
+			
+			this.sendMessage(0.95);
 			this.checkAbort();
 			
 			if(doPlaylists) {
@@ -123,15 +122,15 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 						plwr.initialize();
 						plwr.render(new File(mOutputDir,filename));
 						generatedPlaylists++;
-					}catch(Exception e) {
-						sendMessage(new TransformerMessage(this,i18n("ERROR_GENERATING_PLAYLIST",filename),Type.ERROR, Cause.SYSTEM));
+					}catch(Exception e) {						
+						this.sendMessage(i18n("ERROR_GENERATING_PLAYLIST",filename), MessageEvent.Type.ERROR);
 					}
-				}
-				sendMessage(new TransformerMessage(this,i18n("GENERATED_PLAYLISTS",generatedPlaylists),Type.INFO, Cause.SYSTEM));
+				}				
+				this.sendMessage(i18n("GENERATED_PLAYLISTS",generatedPlaylists), MessageEvent.Type.INFO);
 			}
 			
-		} catch (Exception e) {
-			sendMessage(new TransformerMessage(this,i18n("ERROR_ABORTING"),Type.ERROR, Cause.SYSTEM));
+		} catch (Exception e) {			
+			this.sendMessage(i18n("ERROR_ABORTING"), MessageEvent.Type.ERROR);
 			throw new TransformerRunException(e.getMessage(),e);
 		}
 		
@@ -144,10 +143,10 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */
 	public void error(FilesetFileException ffe) throws FilesetFileException {
-		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {
-			this.sendMessage(new TransformerMessage(this,ffe.getCause() + " in " + ffe.getOrigin(),Type.ERROR,Cause.INPUT));
-		} else {
-			this.sendMessage(new TransformerMessage(this,ffe.getCause() + " in " + ffe.getOrigin(),Type.WARNING,Cause.INPUT));
+		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {			
+			this.sendMessage(ffe.getCause() + " in " + ffe.getOrigin(), MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT);
+		} else {			
+			this.sendMessage(ffe.getCause() + " in " + ffe.getOrigin(), MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT);
 		}
 	}
 
@@ -165,7 +164,7 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 		
 		if(spineSize == -1.0) spineSize = Double.parseDouble(Integer.toString(mAudioSpine.size())+".0");
 		nextFileCallCount++;				
-		this.progress(0.05 + ((nextFileCallCount/spineSize)*0.9)); //assumes that progress 0.05 was called before first nextFile call
+		this.sendMessage(0.05 + ((nextFileCallCount/spineSize)*0.9)); //assumes that progress 0.05 was called before first nextFile call
 		
 		if (mAudioSpine.contains(file)) {	
 			//String titleFrame, String artistFrame, String albumFrame, String trackNumberFrame
