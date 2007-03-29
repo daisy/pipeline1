@@ -7,6 +7,7 @@ doc/examples/input/valentin.jpg -text
 doc/needed.documentation.txt -text
 doc/pipeline.css -text
 doc/script/script-grammar.html -text
+doc/scripts.html -text
 doc/scripts/AudioTagger.html -text
 doc/scripts/ConfigurableValidator.html -text
 doc/scripts/DTBookValidator.html -text
@@ -19,6 +20,7 @@ doc/transformer/tdf-grammar.html -text
 doc/transformers/int_daisy_filesetAudioTagger.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
 doc/transformers/int_daisy_validator.html -text
+doc/user.vocabulary.txt -text
 lib/batik-css.jar -text
 lib/batik-parser.jar -text
 lib/batik-util.jar -text
@@ -98,6 +100,7 @@ src/org/daisy/dmfc/core/transformer/TransformerHandlerLoader.java -text
 src/org/daisy/dmfc/core/transformer/transformer-1.0.rng -text svneol=unset#application/octet-stream
 src/org/daisy/dmfc/core/transformer/transformer-1.1.rng -text
 src/org/daisy/dmfc/util/DocChecker.java -text
+src/org/daisy/dmfc/util/DocIndexGenerator.java -text
 src/org/daisy/util/fileset/util/FilesetLabelProvider.java -text
 src/org/daisy/util/fileset/util/FilesetSpineProvider.java -text
 src/org/daisy/util/fileset/validation/ValidatorImplAbstract.java -text

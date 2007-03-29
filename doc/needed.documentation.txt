@@ -11,4 +11,3 @@
 - [developer + end user] For all active transformers (doc/transformers/*.html)
 - [developer] Running the pipeline from the sourcecode in Eclipse (developer snapshot mode) (already exists on shell, but needs update)
 - [developer] Transformer authoring tutorial (already exists on shell, but needs update)
-
