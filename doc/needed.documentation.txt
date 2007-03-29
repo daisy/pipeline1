@@ -9,5 +9,8 @@
 - [end user: special theme] Narrator - TTS production within the pipeline
 
 - [developer + end user] For all active transformers (doc/transformers/*.html)
+- [developer] Running the pipeline from the sourcecode (trunk snapshot mode)
 - [developer] Running the pipeline from the sourcecode in Eclipse (developer snapshot mode) (already exists on shell, but needs update)
 - [developer] Transformer authoring tutorial (already exists on shell, but needs update)
+- [developer] tdf grammar tutorial
+- [developer] taskScript grammar tutorial

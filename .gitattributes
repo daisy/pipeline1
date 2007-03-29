@@ -1,13 +1,26 @@
 * text=auto !eol
 META-INF/MANIFEST.MF -text
-doc/dev/diagram.png -text
+doc/dev_old/diagram.png -text
+doc/developer/java-coding-conventions.html -text
+doc/developer/localizing-and-customizing-pipeline-narrator.html -text
+doc/developer/pipeline-from-svn.html -text
+doc/developer/pipeline-overview.html -text
+doc/developer/script-authoring-guide.html -text
+doc/developer/script-grammar-v2.0.html -text
+doc/developer/tdf-grammar-v1.1.html -text
+doc/developer/transformer-authoring-guide.html -text
+doc/enduser/dtbook-production.html -text
+doc/enduser/installation.html -text
+doc/enduser/narrator.html -text
+doc/enduser/validation.html -text
 doc/examples/input/RTF2dtbook.rtf -text svneol=unset#application/octet-stream
 doc/examples/input/simple.odt -text
 doc/examples/input/valentin.jpg -text
+doc/index-all.html -text
+doc/index-developer.html -text
+doc/index-enduser.html -text
 doc/needed.documentation.txt -text
 doc/pipeline.css -text
-doc/script/script-grammar.html -text
-doc/scripts.html -text
 doc/scripts/AudioTagger.html -text
 doc/scripts/ConfigurableValidator.html -text
 doc/scripts/DTBookValidator.html -text
@@ -16,7 +29,6 @@ doc/scripts/FilesetRenamer.html -text
 doc/scripts/RenamerTaggerValidator.html -text
 doc/scripts/Z3986DTBValidator.html -text
 doc/templates/script-doc-template.html -text
-doc/transformer/tdf-grammar.html -text
 doc/transformers/int_daisy_filesetAudioTagger.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
 doc/transformers/int_daisy_validator.html -text
