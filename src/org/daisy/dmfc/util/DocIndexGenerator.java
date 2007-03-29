@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,32 +39,69 @@ import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
- * Autogenerate content for the /doc/index.html file, and the doc/scripts.html file.
+ * Autogenerate content for /doc/ indices.
  * @author Markus Gylling
  */
 public class DocIndexGenerator implements ErrorHandler {
-
+	Map<File,String> mFilesWithTitles = null;
+	
 	DocIndexGenerator(EFolder docFolder) throws Exception {
 		
+		mFilesWithTitles = new HashMap();
 		/*
 		 * We assume that the name of doc/subfolder and the id
 		 * of the wrapper div element in the destination file 
 		 * is the same.
 		 */
 		
-		EFile indexFile = new EFile(docFolder, "index.html");		
-		Document indexDoc = parse(indexFile);						
-		populate(indexDoc, docFolder, "scripts", "Pipeline Task: ");
-		populate(indexDoc, docFolder, "transformers", "Transformer documentation: ");		
-		serialize(indexDoc, indexFile);
-				
-		EFile scriptsFile = new EFile(docFolder, "scripts.html");		
-		Document scriptsDoc = parse(scriptsFile);								
-		populate(scriptsDoc, docFolder, "scripts", "Pipeline Task: ");
-		serialize(scriptsDoc, scriptsFile);        
+		//the index-all file
+		System.err.println("Generating index-all...");
+		EFile file = new EFile(docFolder, "index-all.html");		
+		Document doc = parse(file);						
+		populate(doc, docFolder, "scripts", "Pipeline Task: ");
+		populate(doc, docFolder, "transformers", "Transformer documentation: ");		
+		populate(doc, docFolder, "developer", "");
+		populate(doc, docFolder, "enduser", "");
+		createTOC(doc);
+		serialize(doc, file);
+		
+		//the index-developer file
+		System.err.println("Generating index-developer...");
+		file = new EFile(docFolder, "index-developer.html");			
+		doc = parse(file);						
+		populate(doc, docFolder, "developer", "");
+		populate(doc, docFolder, "scripts", "Pipeline Task: ");
+		populate(doc, docFolder, "transformers", "Transformer documentation: ");		
+		createTOC(doc);
+		serialize(doc, file);
+		
+		//the index-enduser file
+		System.err.println("Generating index-enduser...");
+		file = new EFile(docFolder, "index-enduser.html");			
+		doc = parse(file);						
+		populate(doc, docFolder, "scripts", "Pipeline Task: ");		
+		populate(doc, docFolder, "enduser", "");
+		createTOC(doc);
+		serialize(doc, file);
+
 	}
 	
 	
+	private void createTOC(Document doc) {
+		Element tocDiv = doc.getElementById("toc");
+		deleteChildren(tocDiv);
+		NodeList catList = XPathUtils.selectNodes(doc.getDocumentElement(), "//div[@class='cat']");
+	
+		for (int i = 0; i < catList.getLength(); i++) {
+			Element cat = (Element)catList.item(i);
+			String id = cat.getAttribute("id");
+			Element hd = (Element)XPathUtils.selectSingleNode(cat, "h2");
+			String title = hd.getTextContent();			
+			tocDiv = appendAnchorWithHref(tocDiv, "#"+id, title, "");			
+		}		
+	}
+
+
 	private Document parse(EFile file) throws ParserConfigurationException, SAXException, IOException{
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance(); 
 		DocumentBuilder db = dbf.newDocumentBuilder();		
@@ -73,6 +111,7 @@ public class DocIndexGenerator implements ErrorHandler {
 	}
 	
 	private void serialize(Document doc, EFile file) throws IOException {
+		doc = addMetaData(doc);
         OutputFormat outputFormat = new OutputFormat(doc);
         outputFormat.setPreserveSpace(false);
         outputFormat.setIndenting(true);
@@ -84,39 +123,71 @@ public class DocIndexGenerator implements ErrorHandler {
 	}
 
 
+	private Document addMetaData(Document doc) {
+		Element head = (Element)XPathUtils.selectSingleNode(doc.getDocumentElement(), "head");
+		
+		Element meta = doc.createElement("meta");
+		meta.setAttribute("name", "generator");
+		meta.setAttribute("content", this.getClass().getName());
+		
+		head.appendChild(meta);
+		
+		meta = doc.createElement("meta");
+		meta.setAttribute("name", "date");
+		meta.setAttribute("content", getDate());
+		head.appendChild(meta);
+		
+		return doc;
+	}
+
+
+	private String getDate() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		return format.format(new java.util.Date());
+	}
+
+
 	private void populate(Document indexDoc, EFolder docFolder, String name, String deleteInLabels) throws IOException, CatalogExceptionNotRecoverable, PoolException, XMLStreamException {
 		EFolder subDocFolder = new EFolder(docFolder, name);
 		Element subDocListParent = indexDoc.getElementById(name);
 		subDocListParent = (Element)deleteChildren(subDocListParent);
-		Map<File,String> filesWithTitles = getFilesWithTitles(subDocFolder);
-		addRefs(filesWithTitles, subDocListParent, name, deleteInLabels);
+		getFilesWithTitles(subDocFolder);
+		addRefs(subDocListParent, name, deleteInLabels);
 	}
 
-	private void addRefs(Map<File, String> filesWithTitles, Element parent, String parentFolder, String deleteInLabels) {
-		for (Iterator iter = filesWithTitles.keySet().iterator(); iter.hasNext();) {
+	private void addRefs(Element parent, String parentFolder, String deleteInLabels) {
+		for (Iterator iter = mFilesWithTitles.keySet().iterator(); iter.hasNext();) {
 			File file = (File) iter.next();
-			String title = filesWithTitles.get(file);			
-			Element p = parent.getOwnerDocument().createElement("p");			
-			Element anchor = parent.getOwnerDocument().createElement("a");
-			anchor.setAttribute("href", "./"+parentFolder+"/"+file.getName());
-			anchor.setTextContent(title.replace(deleteInLabels, ""));			
-			p.appendChild(anchor);
-			parent.appendChild(p);			
+			if(file.getParentFile().getName().equals(parentFolder)){
+				String title = mFilesWithTitles.get(file);
+				String hrefValue = "./"+parentFolder+"/"+file.getName();
+				parent = appendAnchorWithHref(parent, hrefValue, title,deleteInLabels);
+			}	
 		}							
 	}
 
+	private Element appendAnchorWithHref(Element parent, String hrefValue, String text, String deleteInLabels) {
+		Element p = parent.getOwnerDocument().createElement("p");
+		Element anchor = parent.getOwnerDocument().createElement("a");
+		anchor.setAttribute("href", hrefValue);
+		anchor.setTextContent(text.replace(deleteInLabels, ""));			
+		p.appendChild(anchor);
+		parent.appendChild(p);	
+		return parent;
+	}
 	
-	private Map<File, String> getFilesWithTitles(EFolder transformersDocFolder) throws PoolException, FileNotFoundException, XMLStreamException, CatalogExceptionNotRecoverable {
-		Map<File, String> map = new HashMap<File, String>();
+	private void getFilesWithTitles(EFolder transformersDocFolder) throws PoolException, FileNotFoundException, XMLStreamException, CatalogExceptionNotRecoverable {
+		
 		Collection<File> files = transformersDocFolder.getFiles(false, ".+\\.[Xx]?[Hh][Tt][Mm][Ll]?$");
 		for (File file : files) {
-			System.err.println("parsing " + file.getName());
-			map.put(file, getTitle(new EFile(file)));						
-		}		
-		return map;		
+			if(!mFilesWithTitles.containsKey(file)) {
+				//System.err.println("parsing " + file.getName());
+				mFilesWithTitles.put(file, getTitle(new EFile(file)));
+			}
+		}				
 	}
 
-	
+		
 	private String getTitle(EFile file) throws PoolException, FileNotFoundException, XMLStreamException, CatalogExceptionNotRecoverable {
 		Map props = new HashMap();
 		props.put(XMLInputFactory.RESOLVER, new StaxEntityResolver(CatalogEntityResolver.getInstance()));
@@ -167,7 +238,7 @@ public class DocIndexGenerator implements ErrorHandler {
 	 * @param absolute path to the /doc/ folder
 	 */
 	public static void main(String[] args) {		
-		System.err.println("Running DocIndexGenerator.");
+		System.err.println("Running DocIndexGenerator...");
 		try {
 			EFolder docFolder = new EFolder(args[0]);
 			if(!docFolder.exists()) {
@@ -179,7 +250,7 @@ public class DocIndexGenerator implements ErrorHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.err.println("DocIndexGenerator done");
+		System.err.println("DocIndexGenerator done.");
 	}
 
 
