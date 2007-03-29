@@ -20,6 +20,7 @@ doc/transformer/tdf-grammar.html -text
 doc/transformers/int_daisy_filesetAudioTagger.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
 doc/transformers/int_daisy_validator.html -text
+doc/transformers/uk_rnib_odf2dtbook.html -text
 doc/user.vocabulary.txt -text
 lib/batik-css.jar -text
 lib/batik-parser.jar -text
