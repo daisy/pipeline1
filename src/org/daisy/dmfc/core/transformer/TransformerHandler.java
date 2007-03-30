@@ -19,11 +19,12 @@
 package org.daisy.dmfc.core.transformer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -48,6 +49,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.DirClassLoader;
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.core.MyURLClassLoader;
 import org.daisy.dmfc.core.event.CoreMessageEvent;
 import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.MessageEvent;
@@ -57,8 +59,8 @@ import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.i18n.I18n;
 import org.daisy.util.mime.MIMEException;
 import org.daisy.util.mime.MIMETypeRegistryException;
-import org.daisy.util.xml.validation.ValidationException;
-import org.daisy.util.xml.validation.Validator;
+import org.daisy.util.xml.validation.SimpleValidator;
+import org.xml.sax.SAXException;
 
 /**
  * Handles descriptions of and initiates the execution of Transformers.
@@ -88,14 +90,15 @@ public class TransformerHandler implements TransformerInfo {
 	private Constructor transformerConstructor;
 	
 	private File transformerDirectory;
+	private boolean mLoadedFromJar = false;
 	
 	/**
-	 * Creates a Transformer handler.
+	 * Creates a Transformer handler. This is the directory version.
 	 * @param transformerDescription a transformer description file
 	 * @param inListener an input listener
 	 * @throws TransformerDisabledException
 	 */
-	public TransformerHandler(File transformerDescription, InputListener inListener, Validator validator) throws TransformerDisabledException {
+	public TransformerHandler(File transformerDescription, InputListener inListener) throws TransformerDisabledException {
 		
 		mInternationalization = new I18n();
 		inputListener = inListener;		
@@ -105,22 +108,7 @@ public class TransformerHandler implements TransformerInfo {
 		 * If any validation or dependency check fails, disable this Transformer 
 		 */
 		try {						
-			// Validate the transformer description file
-			if (!validator.isValid(transformerDescription)) {
-			    throw new TransformerDisabledException(i18n("TDF_NOT_VALID"));
-			}
-						
-			// Read properties using StAX
-			XMLInputFactory factory = XMLInputFactory.newInstance();
-	        factory.setProperty("javax.xml.stream.isCoalescing", Boolean.TRUE);
-	        factory.setProperty("javax.xml.stream.supportDTD", Boolean.FALSE);
-	        XMLEventReader er = factory.createXMLEventReader(new FileInputStream(transformerDescription));
-	        
-	        readProperties(er);
-	        
-	        if (!platformSupported) {
-	            throw new TransformerDisabledException(i18n("PLATFORM_CHECK_FAILED"));
-	        }        
+			initialize(transformerDescription.toURL());        
 			
 			// Create the class loader and Transformer class (not object)
 			createTransformerClass(transformerDescription);
@@ -138,17 +126,86 @@ public class TransformerHandler implements TransformerInfo {
 		    throw new TransformerDisabledException(i18n("NOSUCHMETHOD_IN_TRANSFORMER"), e);
 		} catch (TransformerRunException e) {
 			throw new TransformerDisabledException("Cannot run static isSupported method of Transformer", e);
-		} catch (ValidationException e) {
-			throw new TransformerDisabledException(i18n("TDF_VALIDATION_EXCEPTION"), e);
 		} catch (MIMEException e) {
 		    throw new TransformerDisabledException("MIME exception", e);
         } catch (IOException e) {
             throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
         } catch (XMLStreamException e) {
             throw new TransformerDisabledException(i18n("PROBLEMS_PARSING_TDF"), e);            
-        } 
+        } catch (SAXException e) {
+			throw new TransformerDisabledException(e.getMessage(), e);
+		}	
 	}
 	
+	/**
+	 * Creates a Transformer handler. This is the JAR version.
+	 * @param jarFile
+	 * @param transformerName
+	 * @param inListener
+	 * @param isJar
+	 * @throws TransformerDisabledException
+	 */
+	public TransformerHandler(File jarFile, String transformerName, InputListener inListener, boolean isJar) throws TransformerDisabledException {
+		mInternationalization = new I18n();
+		inputListener = inListener;
+		transformerDirectory = null;
+		mLoadedFromJar = true;
+		/*
+		 * If any validation or dependency check fails, disable this Transformer 
+		 */
+		try {
+			URL tdfUrl = new URL("jar:" + jarFile.toURL() + "!/" + transformerName + "/transformer.tdf");
+			//URLClassLoader urlClassLoader = new MyURLClassLoader(new URL[]{jarFile.toURL()}, this.getClass().getClassLoader());	
+			URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{jarFile.toURL()}, this.getClass().getClassLoader());
+			
+			initialize(tdfUrl);        
+			
+			// Create the class loader and Transformer class (not object)
+			createTransformerClass(urlClassLoader);
+			
+			// Make sure the right constructor is present
+			checkForTransformerConstructor();
+			
+			// Do dependency checks in the class associated with the Transformer
+			if (!transformerSupported()) {
+			    throw new TransformerDisabledException(i18n("TRANSFORMER_NOT_SUPPORTED"));
+			}
+		} catch (ClassNotFoundException e) {
+			throw new TransformerDisabledException(i18n("CANNOT_CREATE_TRANSFORMER_CLASS"), e);
+		} catch (NoSuchMethodException e) {
+		    throw new TransformerDisabledException(i18n("NOSUCHMETHOD_IN_TRANSFORMER"), e);
+		} catch (TransformerRunException e) {
+			throw new TransformerDisabledException("Cannot run static isSupported method of Transformer", e);
+		} catch (MIMEException e) {
+		    throw new TransformerDisabledException("MIME exception", e);
+        } catch (IOException e) {
+            throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
+        } catch (XMLStreamException e) {
+            throw new TransformerDisabledException(i18n("PROBLEMS_PARSING_TDF"), e);            
+        } catch (SAXException e) {
+			throw new TransformerDisabledException(e.getMessage(), e);
+		}
+	}
+	
+	private void initialize(URL url) throws IOException, SAXException, TransformerDisabledException, XMLStreamException, MIMETypeRegistryException, MIMEException {
+		// Validate the transformer description file
+		SimpleValidator sv = new SimpleValidator(this.getClass().getResource("transformer-1.1.rng").toExternalForm(), null);
+		if (!sv.validate(url)) {
+			throw new TransformerDisabledException(i18n("TDF_NOT_VALID"));
+		}
+					
+		// Read properties using StAX
+		XMLInputFactory factory = XMLInputFactory.newInstance();
+        factory.setProperty("javax.xml.stream.isCoalescing", Boolean.TRUE);
+        factory.setProperty("javax.xml.stream.supportDTD", Boolean.FALSE);
+        XMLEventReader er = factory.createXMLEventReader(url.openStream());
+        
+        readProperties(er);
+        
+        if (!platformSupported) {
+            throw new TransformerDisabledException(i18n("PLATFORM_CHECK_FAILED"));
+        }
+	}
 	
 	/**
 	 * Run the Transformer associated with this handler.
@@ -169,14 +226,6 @@ public class TransformerHandler implements TransformerInfo {
 		    throw new TransformerRunException(i18n("TRANSFORMER_INVOCATION_PROBLEM"), e);
 		}		
 		
-		// Turn the parameters to a simple key->value string map
-		/*Map params = new LinkedHashMap();
-		for (Iterator it = runParameters.entrySet().iterator(); it.hasNext(); ) {
-		    Map.Entry entry = (Map.Entry)it.next();
-		    params.put(entry.getKey(), ((org.daisy.dmfc.core.script.Parameter)entry.getValue()).getValue());
-		}
-		*/		
-		//return transformer.executeWrapper(params, transformerDirectory);
 		return transformer.executeWrapper(runParameters, transformerDirectory);
 	}
 	
@@ -189,12 +238,28 @@ public class TransformerHandler implements TransformerInfo {
 	    EventBus.getInstance().publish(new CoreMessageEvent(this,i18n("LOADING_TRANSFORMER", name, classname),MessageEvent.Type.INFO));
 		File dir = transformerDescription.getAbsoluteFile();
 		dir = dir.getParentFile();
-		transformerClassLoader = new DirClassLoader(new File(DMFCCore.getHomeDirectory(), "transformers"), dir);
+		transformerClassLoader = new DirClassLoader(new File(DMFCCore.getHomeDirectory(), "transformers"), new File(DMFCCore.getHomeDirectory(), "transformers"));
 		for (Iterator it = jars.iterator(); it.hasNext(); ) {
 		    String jar = (String)it.next();
 		    transformerClassLoader.addJar(new File(dir, jar));
 		}		
 		transformerClass = Class.forName(classname, true, transformerClassLoader);
+		URL codeSourceLocation = transformerClass.getProtectionDomain().getCodeSource().getLocation();		
+		EventBus.getInstance().publish(new CoreMessageEvent(this, "Transformer loaded from " + codeSourceLocation,MessageEvent.Type.DEBUG));		
+	}
+	
+	/**
+	 * Tries to find and load the Java class associated with this Transformer.
+	 * @throws ClassNotFoundException
+	 */
+	private void createTransformerClass(ClassLoader cl) throws ClassNotFoundException {
+		EventBus.getInstance().publish(new CoreMessageEvent(this,i18n("LOADING_TRANSFORMER", name, classname),MessageEvent.Type.INFO));
+		transformerClass = Class.forName(classname, true, cl);
+		URL codeSourceLocation = transformerClass.getProtectionDomain().getCodeSource().getLocation();		
+		EventBus.getInstance().publish(new CoreMessageEvent(this, "Transformer loaded from " + codeSourceLocation,MessageEvent.Type.DEBUG));
+		if (!codeSourceLocation.toExternalForm().endsWith(".jar") && mLoadedFromJar) {
+			System.err.println("System error: JAR and directory mixup!");
+		}
 	}
 	
 	/**
@@ -225,6 +290,7 @@ public class TransformerHandler implements TransformerInfo {
 		
 		Transformer trans = (Transformer)transformerConstructor.newInstance(params.toArray());
 		trans.setTransformerInfo(this);
+		trans.setLoadedFromJar(mLoadedFromJar);
 		return trans;
 	}	
 	
@@ -343,10 +409,10 @@ public class TransformerHandler implements TransformerInfo {
 	 * @throws TransformerRunException
 	 */
 	private boolean transformerSupported() throws NoSuchMethodException, TransformerRunException {
-		Method isSupportedMethod = transformerClass.getMethod("isSupported", null);
+		Method isSupportedMethod = transformerClass.getMethod("isSupported", (Class[])null);
 		Boolean result;
 		try {
-			result = (Boolean)isSupportedMethod.invoke(null, null);
+			result = (Boolean)isSupportedMethod.invoke(null, (Object[])null);
 		} catch (IllegalArgumentException e) {
 			throw new TransformerRunException(i18n("TRANSFORMER_ILLEGAL_ARGUMENT"), e);
 		} catch (IllegalAccessException e) {

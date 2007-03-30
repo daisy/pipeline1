@@ -214,6 +214,33 @@
 		</zip>
 	</target>
 	
+	<target name="buildTransformers"
+			description="Builds the transformers">
+		<mkdir dir="${distribution.dir}/transformers"/>
+		
+		<!-- uk_rnib_dtbook2xhtml -->
+		<jar jarfile="${distribution.dir}/transformers/uk_rnib_dtbook2xhtml.jar">
+			<fileset dir="${base.dir}/transformers">
+				<include name="uk_rnib_dtbook2xhtml/**/*.*"/>
+				<not>
+					<filename name="**/*.java"/>
+				</not>
+			</fileset>
+		</jar>
+		
+		<!-- int_daisy_validator -->
+		<jar jarfile="${distribution.dir}/transformers/int_daisy_validator.jar">
+			<fileset dir="${base.dir}/transformers">
+				<include name="int_daisy_validator/**/*.*"/>
+				<not>
+					<filename name="**/*.java"/>
+				</not>
+			</fileset>
+		</jar>
+				
+	</target>
+	
+	
 	<target name="buildDMFC-NSIS" 
 			description="Creates a org.daisy.dmfc.zip without util library"
 			depends="createDistributionDir">

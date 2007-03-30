@@ -66,6 +66,7 @@ scripts/validation/advanced/ConfigurableValidator.taskScript -text
 scripts/validation/simple/DTBookValidator.taskScript -text
 scripts/validation/simple/Daisy202DTBValidator.taskScript -text
 scripts/validation/simple/Z3986DTBValidator.taskScript -text
+src/org/daisy/dmfc/core/MyURLClassLoader.java -text
 src/org/daisy/dmfc/core/event/BusListener.java -text
 src/org/daisy/dmfc/core/event/CoreMessageEvent.java -text
 src/org/daisy/dmfc/core/event/Event.java -text
@@ -176,3 +177,4 @@ transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p6.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p7.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p8.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p9.png -text
+transformers/uk_rnib_dtbook2xhtml/transformer.tdf -text

@@ -22,9 +22,11 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -50,9 +52,6 @@ import org.daisy.dmfc.logging.LoggingPropertiesReader;
 import org.daisy.dmfc.logging.MessageLogger;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.i18n.I18n;
-import org.daisy.util.xml.validation.RelaxngSchematronValidator;
-import org.daisy.util.xml.validation.ValidationException;
-import org.daisy.util.xml.validation.Validator;
 
 
 /**
@@ -180,26 +179,34 @@ public class DMFCCore implements TransformerHandlerLoader {
 		if (transformerHandlers.containsKey(transformerName)) {
 		    return transformerHandlers.get(transformerName);						
 		}
-		Validator validator;
-		try {
-			validator = new RelaxngSchematronValidator(this.getClass().getResource("./transformer/transformer-1.1.rng"), null,true,true);
-		} catch (ValidationException e) {
-			EventBus.getInstance().publish(new CoreMessageEvent(this,"Error! Cannot create TDF validator for transformer " + transformerName,MessageEvent.Type.WARNING));
-			return null;
-		}
+		// Try to load TDF from directory
 		File[] files = new File(new File(getHomeDirectory(), "transformers"), transformerName).listFiles(new FileFilter() {
 			public boolean accept(File file) {
 				return file.getName().endsWith(".tdf");
 			}			
-		});
-		if (files.length != 1) {
+		});		
+		if (files.length > 1) {
 			EventBus.getInstance().publish(new CoreMessageEvent(this,"Error! Incorrect number of TDFs for transformer " + transformerName,MessageEvent.Type.WARNING));
-			return null;
+		} else if (files.length == 1) {
+			TransformerHandler th = new TransformerHandler(files[0], inputListener);		
+			transformerHandlers.put(transformerName, th);		
+			return th;
+		} else {
+			// Trying JAR instead
+			//System.err.println("trying jar...");
+			File jarFile = new File(getHomeDirectory(), "transformers/" + transformerName + ".jar");
+			if (jarFile.exists()) {
+				TransformerHandler th = new TransformerHandler(jarFile, transformerName, inputListener, true);
+				transformerHandlers.put(transformerName, th);
+				return th;
+			} else {
+				//System.err.println("jar doesn't exist");
+			}
 		}
-		TransformerHandler th = new TransformerHandler(files[0], inputListener, validator);		
-		transformerHandlers.put(transformerName, th);		
-		return th;
+		return null;		
 	}
+	
+	
 	
 	/**
 	 * Creates a new Script object from a script file

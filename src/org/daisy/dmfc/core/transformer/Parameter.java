@@ -189,8 +189,9 @@ public class Parameter implements ParameterInfo {
 	 * </dl>
 	 * @param a_valueWithPattern a string to expand
 	 * @return the expanded string
+	 * @throws XMLStreamException 
 	 */
-	private String expandPatterns(String a_valueWithPattern) {
+	private String expandPatterns(String a_valueWithPattern) throws XMLStreamException {
         if (a_valueWithPattern == null) {
             return null;
         }
@@ -199,6 +200,9 @@ public class Parameter implements ParameterInfo {
         while (_matcher.find()) {
             String _variable = _matcher.group(1);            
             if (_variable.equals("transformer_dir")) {
+            	if (tdfDir == null) {
+            		throw new XMLStreamException("Using property ${transformer_dir} is not allowed when running from a JAR");
+            	}
                 String _dir = tdfDir.getPath();
                 _dir = _dir.replaceAll("\\\\", "\\\\\\\\");       // Replace one backslash with two
                 _matcher.appendReplacement(_sb, _dir);

@@ -67,6 +67,7 @@ public abstract class Transformer implements BusListener {
 	private InputListener mInputListener = null;
 	private I18n mInternationalization;
 	
+	private boolean mLoadedFromJar = false;
 	
 	/**
 	 * Creates a new Transformer.
@@ -89,10 +90,15 @@ public abstract class Transformer implements BusListener {
 		mInputListener = inListener;
 		//subscribe to user events
 		EventBus.getInstance().subscribe(this, UserEvent.class);
-		try {
-			ResourceBundle bundle = ResourceBundle.getBundle("messages", Locale.ENGLISH, this.getClass().getClassLoader());
+		try {			
+			//System.err.println("cl: "+this.getClass().getClassLoader());
+			//System.err.println("package: " + this.getClass().getPackage().getName());
+			ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getPackage().getName() + ".messages");
 			addI18nBundle(bundle);
-		} catch (MissingResourceException e) {				
+		} catch (MissingResourceException e) {			
+			//System.err.println("key: " + e.getKey());
+			//System.err.println("class: " + e.getClassName());
+			//e.printStackTrace();
 			sendMessage("No resource bundle found for " + this.getClass().getName());
 		}
 	}
@@ -179,8 +185,9 @@ public abstract class Transformer implements BusListener {
 	 * @return the directory of the transformer
 	 */
 	final protected File getTransformerDirectory() {
-		//TODO find out if in jar, throw exception
-		
+		if (mLoadedFromJar) {
+			throw new IllegalStateException("This method may not be called from a transformer within a JAR");
+		}
 	    return transformerDirectory;
 	}
 	
@@ -197,7 +204,7 @@ public abstract class Transformer implements BusListener {
 	    	String qualifiedPath = this.getClass().getPackage().getName().replace('.','/') + "/";	    	
 	    	url = this.getClass().getClassLoader().getResource(qualifiedPath+subPath);
 	    }
-	    if(url==null) throw new IllegalArgumentException(subPath + "in " + this.getName());
+	    if(url==null) throw new IllegalArgumentException(subPath + " in " + this.getName());
 	    return url;
 	}
 	
@@ -209,6 +216,11 @@ public abstract class Transformer implements BusListener {
 		this.transformerInfo = tInfo;
 	}
 	
+	
+	/*package*/ void setLoadedFromJar(boolean loadedFromJar) {
+		mLoadedFromJar = loadedFromJar;
+	}
+	
 	/**
 	 * Gets some information about the transformer, such as name and description.
 	 * @return the TransformerInfo
@@ -216,6 +228,7 @@ public abstract class Transformer implements BusListener {
 	public TransformerInfo getTransformerInfo() {
 		return this.transformerInfo;
 	}
+	
 
 	/*
 	 * Convenience methods for EventBus 

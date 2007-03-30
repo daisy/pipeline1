@@ -84,7 +84,11 @@ public class DTBook2Xhtml extends Transformer implements FilesetErrorHandler {
 					parameters.put("css_path", "default.css");
 				}
 				Stylesheet.apply(xml, url, new File(folder, outFileName).toString(), factory, parameters, CatalogEntityResolver.getInstance());
-				folder.addFile(new File(this.getTransformerDirectory(), (String)parameters.get("css_path")));
+				//folder.addFile(new File(this.getTransformerDirectory(), (String)parameters.get("css_path")));				
+				//System.err.println("cl: " + this.getClass().getClassLoader());
+				URL url2 = this.getClass().getResource("default.css");
+				folder.writeToFile((String)parameters.get("css_path"), url2.openStream());
+				
 				for (Iterator it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
 					FilesetFile fsf = (FilesetFile)it.next();
 					if (fsf instanceof ImageFile) {

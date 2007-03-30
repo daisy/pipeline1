@@ -16,7 +16,7 @@
 		
 		<parameter type="application/xml">
 			<name>xslt</name>			
-			<value>${transformer_dir}/dtbook2xhtml.xsl</value>
+			<value>dtbook2xhtml.xsl</value>
 		</parameter>		
 		
 		<parameter type="string">
