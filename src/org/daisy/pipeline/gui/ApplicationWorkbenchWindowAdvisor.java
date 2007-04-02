@@ -26,6 +26,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.setShowStatusLine(true);
         configurer.setShowMenuBar(true);
         configurer.setShowFastViewBars(true);
+        configurer.setShowProgressIndicator(true);
 		configurer.setTitle("DAISY Pipeline");
 	}
 }
