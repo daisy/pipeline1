@@ -5,7 +5,7 @@ import java.io.File;
 import org.daisy.dmfc.core.script.ScriptHandler;
 import org.daisy.pipeline.gui.scripts.ScriptManager;
 import org.daisy.pipeline.gui.scripts.ScriptsLabelProvider;
-import org.daisy.pipeline.gui.util.FileTreeContentProvider;
+import org.daisy.pipeline.gui.util.jface.FileTreeContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
