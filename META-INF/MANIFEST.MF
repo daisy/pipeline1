@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DAISY Pipeline
 Bundle-SymbolicName: org.daisy.pipeline
-Bundle-Version: 1.0.0
+Bundle-Version: 0.0.1
 Bundle-ClassPath: dmfc.jar,
  lib/jing.jar,
  lib/saxon8.jar,
@@ -185,11 +185,13 @@ Export-Package: .,
  org.codehaus.stax2.evt,
  org.daisy.dmfc,
  org.daisy.dmfc.core,
+ org.daisy.dmfc.core.event,
  org.daisy.dmfc.core.script,
+ org.daisy.dmfc.core.script.datatype,
+ org.daisy.dmfc.core.script.function,
  org.daisy.dmfc.core.transformer,
  org.daisy.dmfc.exception,
  org.daisy.dmfc.logging,
- org.daisy.dmfc.qmanager,
  org.daisy.dmfc.transformers,
  org.daisy.dmfc.ui,
  org.daisy.util,
