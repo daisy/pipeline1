@@ -1,4 +1,4 @@
-package org.daisy.pipeline.gui.util;
+package org.daisy.pipeline.gui.util.jface;
 
 import java.io.File;
 
