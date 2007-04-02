@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.daisy.dmfc.core.transformer.TransformerHandler;
+import org.daisy.dmfc.core.transformer.TransformerInfo;
 
 /**
  * A class representing a task in the script file.
@@ -73,7 +74,7 @@ public class Task {
 	 * @param name the name if the parameter to add
 	 * @param parameter the parameter itself
 	 */
-	void addParameter(String name, TaskParameter parameter) {
+	/*package*/ void addParameter(String name, TaskParameter parameter) {
 		this.parameters.put(name, parameter);
 	}
 	
@@ -81,7 +82,7 @@ public class Task {
 	 * Sets the Transformerhandler to be associated with this task.
 	 * @param handler
 	 */
-	void setTransformerHandler(TransformerHandler handler) {
+	/*package*/ void setTransformerHandler(TransformerHandler handler) {
 		this.handler = handler;
 	}
 	
@@ -89,7 +90,15 @@ public class Task {
 	 * Gets the TransformerHandler associated with this task.
 	 * @return
 	 */
-	TransformerHandler getTransformerHandler() {
+	/*package*/ TransformerHandler getTransformerHandler() {
+		return this.handler;
+	}
+	
+	/**
+	 * Gets the TransformerInfo associated with the tranformer this task refers to.
+	 * @return
+	 */
+	public TransformerInfo getTransformerInfo() {
 		return this.handler;
 	}
 }
