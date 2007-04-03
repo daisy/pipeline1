@@ -14,10 +14,14 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Jobs Perspective"
+            name="Pipeline Jobs"
             class="org.daisy.pipeline.gui.JobsPerspective"
             id="org.daisy.pipeline.gui.perspectives.jobs">
       </perspective>
+      <perspective
+            class="org.daisy.pipeline.gui.doc.DocPerspective"
+            id="org.daisy.pipeline.gui.perspectives.doc"
+            name="Documentation"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -31,9 +35,17 @@
             id="org.daisy.pipeline.gui.views.log"
             name="Log"/>
       <view
-            class="org.daisy.pipeline.gui.ProgressView"
-            id="org.daisy.pipeline.gui.views.progress"
+            class="org.daisy.pipeline.gui.jobs.JobDetailsView"
+            id="org.daisy.pipeline.gui.views.jobDetails"
             name="Progress"/>
+      <view
+            class="org.daisy.pipeline.gui.scripts.ScriptsView"
+            id="org.daisy.pipeline.gui.views.scripts"
+            name="Scripts"/>
+      <view
+            class="org.daisy.pipeline.gui.doc.DocView"
+            id="org.daisy.pipeline.gui.views.doc"
+            name="Documentation"/>       
    </extension>
    <extension
          point="org.eclipse.ui.viewActions">
@@ -83,16 +95,22 @@
       </actionSet>
       <actionSet
             id="org.daisy.pipeline.gui.actionSet.jobs"
-            label="Conversion Jobs"
+            label="Pipeline Jobs"
             visible="true">
          <action
                class="org.daisy.pipeline.gui.jobs.NewJobAction"
                icon="icons/tango/16x16/actions/document-new.png"
                id="org.daisy.pipeline.gui.action.newJob"
                label="Job"
-               menubarPath="file/new/new.ext "
                style="push"
                toolbarPath="additions"/>
+         <!--action
+               class="org.daisy.pipeline.gui.jobs.RunAction"
+               icon="icons/tango/16x16/actions/media-playback-start.png"
+               id="org.daisy.pipeline.gui.action.run"
+               label="Run Job"
+               style="push"
+               toolbarPath="additions"/-->
       </actionSet>
    </extension>
    <extension
@@ -107,7 +125,7 @@
       <wizard
             class="org.daisy.pipeline.gui.jobs.wizard.NewJobWizard"
             id="org.daisy.pipeline.gui.wizard.newJob"
-            name="New Job Wizard"/>
+            name="Pipeline Job"/>
    </extension>
 
 </plugin>
