@@ -1,10 +1,7 @@
 package org.daisy.pipeline.gui.jobs;
 
-import java.io.File;
-
-import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.pipeline.gui.Fake;
 import org.daisy.pipeline.gui.IActionConstants;
-import org.daisy.pipeline.gui.jobs.model.Job;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.jface.action.IAction;
@@ -115,14 +112,8 @@ public class JobsView extends ViewPart {
 
     private void populateFakeQueue() {
         JobManager jobMan = JobManager.getInstance();
-        Job job;
         for (int i = 0; i < 10; i++) {
-            job = new Job(new ScriptHandler());
-            job.setInputFile(new File(System.getProperty("user.dir"), "source"
-                    + i + ".src"));
-            job.setOutputFile(new File(System.getProperty("user.dir"), "dest"
-                    + i + ".dst"));
-            jobMan.add(job);
+            jobMan.add(Fake.getJob());
         }
     }
 

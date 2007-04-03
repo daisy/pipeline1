@@ -2,6 +2,8 @@ package org.daisy.pipeline.gui.jobs.model;
 
 import java.util.EventObject;
 
+import org.daisy.dmfc.core.script.Job;
+
 public class JobManagerEvent extends EventObject {
 
     private static final long serialVersionUID = 19477162373305880L;

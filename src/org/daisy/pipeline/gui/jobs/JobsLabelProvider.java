@@ -1,6 +1,6 @@
 package org.daisy.pipeline.gui.jobs;
 
-import org.daisy.pipeline.gui.jobs.model.Job;
+import org.daisy.dmfc.core.script.Job;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -17,24 +17,28 @@ public class JobsLabelProvider extends LabelProvider implements
     }
 
     public String getColumnText(Object element, int columnIndex) {
-        String result;
+        String result = "";
         Job job = (Job) element;
         switch (columnIndex) {
-        case 0: // COMPLETED_COLUMN - checked or not
-            result = job.getStatus().getLocalizedString();
+        case 0:
+            // FXIME get status
+            // result = job.getStatus().getLocalizedString();
             break;
         case 1:
             result = job.getScript().getName();
             break;
         case 2:
-            result = job.getInputFile().getName();
+            // FIXME get input file name
+            // result = job.getInputFile().getName();
             break;
         case 3:
-            result = (job.getOutputFile() != null)?job.getOutputFile().getPath():"";
+            // FIXME get input file name
+            // result = (job.getOutputFile() != null) ? job.getOutputFile()
+            // .getPath() : "";
             break;
         default:
             // this shouldn't happen
-            result="err!";
+            result = "err!";
             break;
         }
         return result;

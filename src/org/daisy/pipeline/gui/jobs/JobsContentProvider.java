@@ -1,7 +1,7 @@
 package org.daisy.pipeline.gui.jobs;
 
+import org.daisy.dmfc.core.script.Job;
 import org.daisy.pipeline.gui.jobs.model.IJobManagerListener;
-import org.daisy.pipeline.gui.jobs.model.Job;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.jobs.model.JobManagerEvent;
 import org.eclipse.jface.viewers.IStructuredContentProvider;

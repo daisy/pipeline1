@@ -4,9 +4,9 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.daisy.dmfc.core.script.Job;
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.PipelineGuiPlugin;
-import org.daisy.pipeline.gui.jobs.model.Job;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.util.DefaultSelectionEnabler;
 import org.daisy.pipeline.gui.util.ISelectionEnabler;

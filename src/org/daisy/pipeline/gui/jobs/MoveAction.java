@@ -1,6 +1,6 @@
 package org.daisy.pipeline.gui.jobs;
 
-import org.daisy.pipeline.gui.jobs.model.Job;
+import org.daisy.dmfc.core.script.Job;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.util.DefaultSelectionEnabler;
 import org.daisy.pipeline.gui.util.ISelectionEnabler;
