@@ -1,22 +1,29 @@
 package org.daisy.pipeline.gui.jobs.wizard;
 
 import java.io.File;
+import java.net.URL;
 
 import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.pipeline.gui.PipelineGuiPlugin;
 import org.daisy.pipeline.gui.scripts.ScriptManager;
 import org.daisy.pipeline.gui.scripts.ScriptsLabelProvider;
 import org.daisy.pipeline.gui.util.jface.FileTreeContentProvider;
+import org.eclipse.jface.dialogs.DialogTray;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
@@ -119,6 +126,30 @@ public class SelectScriptWizardPage extends WizardPage {
     public IWizardPage getNextPage() {
         // TODO Auto-generated method stub
         return super.getNextPage();
+    }
+
+    @Override
+    public void performHelp() {
+        IWizardContainer container = getContainer();
+        if (container instanceof WizardDialog) {
+            WizardDialog dialog = (WizardDialog) container;
+            dialog.openTray(new DialogTray() {
+                @Override
+                protected Control createContents(Composite parent) {
+                    Composite control = new Composite(parent, SWT.NONE);
+                    control.setLayout(new GridLayout(1,true));
+                    GridData data = new GridData(GridData.FILL_BOTH);
+                    data.widthHint = (int) (getShell().getClientArea().width*0.6);
+                    Browser browser = new Browser(control,SWT.NONE);
+                    browser.setLayoutData(new GridData(GridData.FILL_BOTH));
+                    URL url = PipelineGuiPlugin.getResourceURL("./index.html");
+                    browser.setUrl(url.toString());
+                    browser.setLayoutData(data);
+                    return control;
+                    
+                }              
+            });
+        }
     }
 
 }

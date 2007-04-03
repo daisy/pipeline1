@@ -5,13 +5,16 @@ import org.daisy.pipeline.gui.PipelineGuiPlugin;
 import org.daisy.pipeline.gui.scripts.ScriptHelper;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
 public class NewJobWizard extends Wizard implements INewWizard {
 
     public static final String SETTINGS_SECTION = "NewJobWizard";
+    public static final String ID = "org.daisy.pipeline.gui.wizard.newJob";
     private ScriptHandler script;
 
     public NewJobWizard() {
@@ -24,6 +27,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
             wizardSettings = dialogSettings.addNewSection(SETTINGS_SECTION);
         }
         setDialogSettings(dialogSettings);
+        setHelpAvailable(true);
     }
 
     @Override
@@ -55,5 +59,12 @@ public class NewJobWizard extends Wizard implements INewWizard {
         addPage(new SelectScriptWizardPage());
         addPage(new SelectSourceWizardPage());
     }
-
+    
+    @Override
+    public void setContainer(IWizardContainer wizardContainer) {
+        if (wizardContainer != null) {
+            ((WizardDialog) wizardContainer).setHelpAvailable(true);
+        }
+        super.setContainer(wizardContainer);
+    }
 }

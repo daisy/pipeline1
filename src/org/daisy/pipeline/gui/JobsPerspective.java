@@ -19,6 +19,8 @@ public class JobsPerspective implements IPerspectiveFactory {
                 editorArea);
         // layout.setFixed(false);
         layout.addView(JobDetailsView.ID, IPageLayout.RIGHT, 0.8f, JobsView.ID);
+
+        PerspectiveHelper.addCommonShortcuts(layout);
     }
 
 }
