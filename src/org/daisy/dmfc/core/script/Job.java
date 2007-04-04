@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.daisy.dmfc.core.script.datatype.DatatypeException;
+import org.daisy.util.execution.State;
 
 /**
  * A class used for setting parameters before running a script.
@@ -29,8 +30,6 @@ import org.daisy.dmfc.core.script.datatype.DatatypeException;
  */
 public class Job {
 
-	public static enum State {IDLE, RUNNING, FINISHED, FAILED, ABORTED};
-	
 	private Script mScript;
 	private Map<String,AbstractProperty> mParameters = new HashMap<String,AbstractProperty>();
 	private State mState;
