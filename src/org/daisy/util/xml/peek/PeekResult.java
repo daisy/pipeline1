@@ -102,7 +102,9 @@ public class PeekResult {
 	/**
 	 * @return boolean value of the standalone property of the peeked document. 
 	 * The value is true if the document specified standalone="yes" in its XML 
-	 * declaration, and otherwise is false.
+	 * declaration, and otherwise is false. If the underlying parser does not 
+	 * recognize the SAX feature <code>http://xml.org/sax/features/is-standalone</code>
+	 * the return value will be false. 
 	 */
 	public boolean getIsStandalone() {
 		return this.mPrologIsStandalone;

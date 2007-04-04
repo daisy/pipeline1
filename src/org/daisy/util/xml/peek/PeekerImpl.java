@@ -25,6 +25,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.ext.Locator2;
@@ -146,7 +147,11 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
         mPeekResult.setRootElementLocalName(localName);
         mPeekResult.setRootElementNsUri(uri);
         mPeekResult.setRootElementAttributes(AttributesCloner.clone(atts)); 
-        mPeekResult.setIsStandalone(mSAXParser.getXMLReader().getFeature(SAXConstants.SAX_FEATURE_IS_STANDALONE));
+        try{
+        	mPeekResult.setIsStandalone(mSAXParser.getXMLReader().getFeature(SAXConstants.SAX_FEATURE_IS_STANDALONE));
+        }catch (SAXNotRecognizedException snre){
+        	if(mDebugMode) System.out.println("DEBUG: peek.PeekerImpl#startElement SAXNotRecognizedException");
+        }
         mPeekResult.setXSISchemaLocationURIs(XMLUtils.getXSISchemaLocationURIs(uri, localName, qName, atts));
         throw new SAXStopParsingException("");		
 	}
