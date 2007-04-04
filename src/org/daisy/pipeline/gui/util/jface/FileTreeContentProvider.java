@@ -1,24 +1,33 @@
 package org.daisy.pipeline.gui.util.jface;
 
 import java.io.File;
+import java.io.FileFilter;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 public class FileTreeContentProvider implements ITreeContentProvider {
-    
-    private File file;
 
-    public FileTreeContentProvider(File file) {
+    private FileFilter filter;
+
+    public FileTreeContentProvider(FileFilter filter) {
         super();
-        this.file = file;
+        this.filter = filter;
     }
 
+    @SuppressWarnings("unchecked")
     public Object[] getChildren(Object parentElement) {
-        return ((File) parentElement).listFiles();
+        if (!(parentElement instanceof File)) {
+            throw new IllegalArgumentException("Given element is not a file");
+        }
+        File file = (File) parentElement;
+        return file.listFiles(filter);
     }
 
     public Object getParent(Object element) {
+        if (!(element instanceof File)) {
+            throw new IllegalArgumentException("Given element is not a file");
+        }
         return ((File) element).getParentFile();
     }
 
@@ -28,7 +37,7 @@ public class FileTreeContentProvider implements ITreeContentProvider {
     }
 
     public Object[] getElements(Object inputElement) {
-        return file.listFiles();
+        return getChildren(inputElement);
     }
 
     public void dispose() {
