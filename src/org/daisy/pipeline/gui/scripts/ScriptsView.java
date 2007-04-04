@@ -28,8 +28,8 @@ public class ScriptsView extends ViewPart {
         scriptViewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL
                 | SWT.V_SCROLL | SWT.BORDER);
         scriptViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-        scriptViewer.setContentProvider(new FileTreeContentProvider(scriptMan
-                .getScriptDir()));
+        scriptViewer.setContentProvider(new FileTreeContentProvider(
+                new ScriptFileFilter()));
         scriptViewer.setLabelProvider(new ScriptsLabelProvider());
         scriptViewer.setInput(scriptMan.getScriptDir());
         // TODO remove comment

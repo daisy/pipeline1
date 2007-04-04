@@ -1,22 +1,43 @@
 package org.daisy.pipeline.gui.scripts;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-import org.daisy.dmfc.core.script.ScriptHandler;
-import org.daisy.pipeline.gui.PipelineGuiPlugin;
+import org.daisy.dmfc.core.FakeDMFCCore;
+import org.daisy.dmfc.core.script.Script;
+import org.daisy.dmfc.core.script.ScriptValidationException;
+import org.daisy.pipeline.gui.Fake;
+import org.daisy.util.file.EFolder;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 
 public class ScriptManager {
-    public static final String SCRIPT_DIR = "scripts";
     private static ScriptManager instance;
-    private File scriptDir;
-    private Map<String, ScriptHandler> scriptHandlerMap;
+    private EFolder scriptDir;
+    private Map<String, Script> scriptMap;
 
     private ScriptManager() {
-        scriptDir = PipelineGuiPlugin.getResourceFile(SCRIPT_DIR);
-        scriptHandlerMap = new HashMap<String, ScriptHandler>();
-        populateScriptHandlerMap();
+        Bundle coreBundle = Platform.getBundle("org.daisy.pipeline");
+        try {
+            URL url = FileLocator.toFileURL(coreBundle.getEntry("/scripts"));
+            scriptDir = new EFolder(url.toURI());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        scriptMap = new HashMap<String, Script>();
+        populateScriptMap();
     }
 
     public static ScriptManager getDefault() {
@@ -26,91 +47,32 @@ public class ScriptManager {
         return instance;
     }
 
-    public File getScriptDir() {
+    public EFolder getScriptDir() {
         return scriptDir;
     }
-    
-    public ScriptHandler getScript(String path) {
-        return scriptHandlerMap.get(path);
+
+    public Script getScript(String path) {
+        return scriptMap.get(path);
     }
 
-    // TODO old GUI code
-    private void populateScriptHandlerMap() {
-        // mg: this is not recursive, ie only allows one level subdirs
-        // nor supports scripts as direct descendants of main scriptdir
-        // remember that users may add their own scrips so this needs
-        // improvement
-        // if we dont need the categories sort here, we can just use EFolder
-        // Collection scripts = scriptDirAsEFolder.getFiles((deep=true,
-        // ".*\.xml", false);
-        // also to avoid getting most of those 999 exceptions from createScript
-        // in developer mode
-        // when the file is not a script
-
-        // For each file in the subdirectory, create a ScriptHandler object.
-        // create an hashMap to hold the script handlers
-        // key = filename
-        // value = scripthandler of the file
-
-        File[] arrayFiles = null;
-
-        // System.out.println("is scriptdir set? " + scriptDirectory.getPath());
-
-        if (scriptDir.isDirectory()) {
-            // Find list of files in directory
-            arrayFiles = scriptDir.listFiles();
-        }
-        // for each directory, again list files.
-        // create a scripthandler object from file (not directory)
-        // add to the script handler hashmap
-
-        for (int i = 0; i < arrayFiles.length; i++) {
-            File categoryDir = (File) arrayFiles[i];
-            // System.out.println("Name of category " + categoryDir.getName());
-
-            if (categoryDir.isDirectory()) {
-                File[] arCatFiles = categoryDir.listFiles();
-
-                // create script handlers for each file in subdirectory
-                for (int j = 0; j < arCatFiles.length; j++) {
-                    File toSH = (File) arCatFiles[j];
-                    // System.out.println(" Name of file in category " +
-                    // toSH.getName());
-
-                    // mg: all System.out.println statements should be
-                    // surrounded by a
-                    // debug test clause, will make the app snappier
-                    // I have started using:
-                    // if(System.getProperty("org.daisy.debug")!=null) {
-                    // System.out.println("blah");
-                    // }
-                    // so its easily switched on/off without excessive code
-
-                    try {
-                        // TODO fake method
-                        ScriptHandler sh = new ScriptHandler();
-                        // ScriptHandler sh = dmfc.createScript(toSH);
-                        // add to HashMap
-                        // key, name of file
-                        // value: ScriptHandler object
-                        scriptHandlerMap.put(toSH.getPath(), sh);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    // catch(ValidationException ve){
-                    // ve.getMessage();
-                    // ve.printStackTrace();
-                    // }
-                    // catch(MIMEException me){
-                    // me.getMessage();
-                    // me.printStackTrace();
-                    // }
-                    // catch(ScriptException se){
-                    // //add error messages to be thrown to GUI
-                    // se.printStackTrace();
-                    // }
-                }
+    private void populateScriptMap() {
+        Collection scripts = scriptDir.getFiles(true, ".+\\.taskScript");
+        for (Iterator iter = scripts.iterator(); iter.hasNext();) {
+            File file = (File) iter.next();
+            Script script = null;
+            // TODO fake code
+            FakeDMFCCore core = Fake.getCore();
+            try {
+                script = core.newScript(file.toURL());
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ScriptValidationException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            if (script != null) {
+                scriptMap.put(file.getPath(), script);
             }
         }
     }

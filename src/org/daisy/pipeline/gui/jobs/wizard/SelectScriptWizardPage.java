@@ -3,8 +3,9 @@ package org.daisy.pipeline.gui.jobs.wizard;
 import java.io.File;
 import java.net.URL;
 
-import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.dmfc.core.script.Script;
 import org.daisy.pipeline.gui.PipelineGuiPlugin;
+import org.daisy.pipeline.gui.scripts.ScriptFileFilter;
 import org.daisy.pipeline.gui.scripts.ScriptManager;
 import org.daisy.pipeline.gui.scripts.ScriptsLabelProvider;
 import org.daisy.pipeline.gui.util.jface.FileTreeContentProvider;
@@ -43,25 +44,26 @@ public class SelectScriptWizardPage extends WizardPage {
 
     public void createControl(Composite parent) {
         // Container: SashForm with two Groups (script tree & description)
-        SashForm container = new SashForm(parent,SWT.HORIZONTAL);
+        SashForm container = new SashForm(parent, SWT.HORIZONTAL);
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 0;
-        Group scriptGroup = new Group(container,SWT.SHADOW_NONE);
+        Group scriptGroup = new Group(container, SWT.SHADOW_NONE);
         scriptGroup.setLayout(layout);
         scriptGroup.setText("Conversion Scripts");
-        Group descrGroup = new Group(container,SWT.SHADOW_NONE);
-        descrGroup.setLayout (layout);
+        Group descrGroup = new Group(container, SWT.SHADOW_NONE);
+        descrGroup.setLayout(layout);
         descrGroup.setText("Description");
-        container.setWeights(new int[] {2, 1});
+        container.setWeights(new int[] { 2, 1 });
         setControl(container);
 
         // Tree of script files
         TreeViewer scriptTreeViewer = new TreeViewer(scriptGroup, SWT.SINGLE
                 | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-        scriptTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+        scriptTreeViewer.getTree().setLayoutData(
+                new GridData(GridData.FILL_BOTH));
         scriptTreeViewer.setContentProvider(new FileTreeContentProvider(
-                scriptMan.getScriptDir()));
+                new ScriptFileFilter()));
         scriptTreeViewer.setLabelProvider(new ScriptsLabelProvider());
         scriptTreeViewer.setInput(scriptMan.getScriptDir());
         scriptTreeViewer.getTree().deselectAll();
@@ -105,7 +107,7 @@ public class SelectScriptWizardPage extends WizardPage {
             setErrorMessage("Please select a script file.");
             return;
         }
-        ScriptHandler script = scriptMan.getScript(file.getPath());
+        Script script = scriptMan.getScript(file.getPath());
         if (script == null) {
             setMessage(null);
             setErrorMessage("Unhandled script file. Please select another file.");
@@ -137,17 +139,17 @@ public class SelectScriptWizardPage extends WizardPage {
                 @Override
                 protected Control createContents(Composite parent) {
                     Composite control = new Composite(parent, SWT.NONE);
-                    control.setLayout(new GridLayout(1,true));
+                    control.setLayout(new GridLayout(1, true));
                     GridData data = new GridData(GridData.FILL_BOTH);
-                    data.widthHint = (int) (getShell().getClientArea().width*0.6);
-                    Browser browser = new Browser(control,SWT.NONE);
+                    data.widthHint = (int) (getShell().getClientArea().width * 0.6);
+                    Browser browser = new Browser(control, SWT.NONE);
                     browser.setLayoutData(new GridData(GridData.FILL_BOTH));
                     URL url = PipelineGuiPlugin.getResourceURL("./index.html");
                     browser.setUrl(url.toString());
                     browser.setLayoutData(data);
                     return control;
-                    
-                }              
+
+                }
             });
         }
     }

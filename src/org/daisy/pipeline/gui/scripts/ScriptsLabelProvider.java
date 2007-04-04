@@ -2,7 +2,7 @@ package org.daisy.pipeline.gui.scripts;
 
 import java.io.File;
 
-import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.dmfc.core.script.Script;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 
@@ -32,7 +32,7 @@ public class ScriptsLabelProvider extends LabelProvider implements ILabelProvide
     public String getText(Object file) {
         String text;
         String path = ((File) file).getPath();
-        ScriptHandler script = scriptMan.getScript(path);
+        Script script = scriptMan.getScript(path);
         if (script != null) {
             text = script.getName();
         } else {

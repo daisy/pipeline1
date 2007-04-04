@@ -1,6 +1,6 @@
 package org.daisy.pipeline.gui.jobs.wizard;
 
-import org.daisy.dmfc.core.script.ScriptHandler;
+import org.daisy.dmfc.core.script.Script;
 import org.daisy.pipeline.gui.PipelineGuiPlugin;
 import org.daisy.pipeline.gui.scripts.ScriptHelper;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -15,7 +15,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
 
     public static final String SETTINGS_SECTION = "NewJobWizard";
     public static final String ID = "org.daisy.pipeline.gui.wizard.newJob";
-    private ScriptHandler script;
+    private Script script;
 
     public NewJobWizard() {
         // Retrieve the dialog settings
@@ -41,7 +41,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
         // initial selection.
     }
 
-    public void setScript(ScriptHandler ascript) {
+    public void setScript(Script ascript) {
         script = ascript;
         updateWizard();
     }
@@ -59,7 +59,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
         addPage(new SelectScriptWizardPage());
         addPage(new SelectSourceWizardPage());
     }
-    
+
     @Override
     public void setContainer(IWizardContainer wizardContainer) {
         if (wizardContainer != null) {
