@@ -10,10 +10,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.daisy.dmfc.core.FakeDMFCCore;
+import org.daisy.dmfc.core.FakeCore;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.dmfc.core.script.ScriptValidationException;
-import org.daisy.pipeline.gui.Fake;
+import org.daisy.pipeline.gui.PipelineGuiPlugin;
 import org.daisy.util.file.EFolder;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
@@ -25,7 +25,7 @@ public class ScriptManager {
     private Map<String, Script> scriptMap;
 
     private ScriptManager() {
-        Bundle coreBundle = Platform.getBundle("org.daisy.pipeline");
+        Bundle coreBundle = Platform.getBundle(PipelineGuiPlugin.CORE_ID);
         try {
             URL url = FileLocator.toFileURL(coreBundle.getEntry("/scripts"));
             scriptDir = new EFolder(url.toURI());
@@ -56,12 +56,13 @@ public class ScriptManager {
     }
 
     private void populateScriptMap() {
+        // TODO implem lazy loading of scripts instead
         Collection scripts = scriptDir.getFiles(true, ".+\\.taskScript");
         for (Iterator iter = scripts.iterator(); iter.hasNext();) {
             File file = (File) iter.next();
             Script script = null;
             // TODO fake code
-            FakeDMFCCore core = Fake.getCore();
+            FakeCore core = PipelineGuiPlugin.getDefault().getCore();
             try {
                 script = core.newScript(file.toURL());
             } catch (MalformedURLException e) {
@@ -69,7 +70,10 @@ public class ScriptManager {
                 e.printStackTrace();
             } catch (ScriptValidationException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                System.err.println("unable to create script at "
+                        + file.toString());
+                System.err.println("caused by: " + e.getMessage());
+                // e.printStackTrace();
             }
             if (script != null) {
                 scriptMap.put(file.getPath(), script);

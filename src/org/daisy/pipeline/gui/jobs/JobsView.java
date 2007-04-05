@@ -1,6 +1,5 @@
 package org.daisy.pipeline.gui.jobs;
 
-import org.daisy.pipeline.gui.Fake;
 import org.daisy.pipeline.gui.IActionConstants;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.eclipse.core.commands.operations.IUndoContext;
@@ -32,7 +31,7 @@ public class JobsView extends ViewPart {
 
     @Override
     public void createPartControl(Composite parent) {
-        // TODO remove after the pipeline core is added
+        // TODO fake code
         populateFakeQueue();
         // Create the jobs table
         jobsTable = new Table(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
@@ -111,10 +110,6 @@ public class JobsView extends ViewPart {
     }
 
     private void populateFakeQueue() {
-        JobManager jobMan = JobManager.getInstance();
-        for (int i = 0; i < 10; i++) {
-            jobMan.add(Fake.getJob());
-        }
     }
 
     /**

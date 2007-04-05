@@ -1,6 +1,5 @@
 package org.daisy.pipeline.gui.jobs;
 
-import org.daisy.pipeline.gui.Fake;
 import org.daisy.pipeline.gui.tasks.TaskListContentProvider;
 import org.daisy.pipeline.gui.tasks.TaskListViewer;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -22,7 +21,7 @@ public class JobDetailsView extends ViewPart {
     public void createPartControl(Composite parent) {
         viewer = new TaskListViewer(parent, SWT.SINGLE);
         viewer.setContentProvider(new TaskListContentProvider());
-        viewer.setInput(Fake.getJob());
+        // TODO viewer.setInput(selected job);
         getSite().setSelectionProvider(viewer);
     }
 

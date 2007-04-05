@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.daisy.dmfc.core.FakeCore;
+import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -14,7 +16,9 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
 
     // The shared instance.
     private static PipelineGuiPlugin plugin;
-    public static final String PLUGIN_ID = "org.daisy.pipeline.gui";
+    public static final String ID = "org.daisy.pipeline.gui";
+    public static final String CORE_ID = "org.daisy.pipeline";
+    private FakeCore core;
 
     /**
      * The constructor.
@@ -43,6 +47,18 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
         plugin = null;
     }
 
+    public FakeCore getCore() {
+        if (core == null) {
+            try {
+                core = new FakeCore(null);
+            } catch (DMFCConfigurationException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return core;
+    }
+
     /**
      * Returns the shared instance.
      */
@@ -54,12 +70,11 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
      * Returns an image descriptor for the image file at the given plug-in
      * relative path.
      * 
-     * @param path
-     *            the path
+     * @param path the path
      * @return the image descriptor
      */
     public static ImageDescriptor getImageDescriptor(String path) {
-        return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
+        return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
     }
 
     public static ImageDescriptor getIcon(String key) {
@@ -80,7 +95,7 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
         }
         return getImageDescriptor(sizeDir + key);
     }
-    
+
     public static URL getResourceURL(String name) {
         try {
             return FileLocator.resolve(getDefault().getBundle().getEntry(name));
@@ -90,10 +105,11 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
         }
         return null;
     }
-    
+
     public static File getResourceFile(String name) {
         try {
-            URL url = FileLocator.toFileURL(getDefault().getBundle().getEntry(name));
+            URL url = FileLocator.toFileURL(getDefault().getBundle().getEntry(
+                    name));
             return new File(url.toURI());
         } catch (IOException e) {
             // TODO Auto-generated catch block
