@@ -12,6 +12,7 @@ import org.daisy.dmfc.core.event.TransformerStateChangeEvent;
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Task;
 import org.daisy.dmfc.core.transformer.Transformer;
+import org.daisy.util.execution.State;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -75,7 +76,7 @@ public class TaskListContentProvider implements IStructuredContentProvider,
         Job job = (Job) newInput;
         List<Task> tasks = job.getScript().getTasks();
         for (Task task : tasks) {
-            infos.add(new TaskInfo(task.getTransInfo()));
+            infos.add(new TaskInfo(task.getTransformerInfo()));
         }
         refresher = new Refresher((StructuredViewer) viewer);
     }
@@ -94,10 +95,10 @@ public class TaskListContentProvider implements IStructuredContentProvider,
             if (info != null) {
                 switch (tce.getState()) {
                 case STARTED:
-                    info.setState(Job.State.RUNNING);
+                    info.setState(State.RUNNING);
                     break;
                 case STOPPED:
-                    info.setState(Job.State.FINISHED);
+                    info.setState(State.FINISHED);
                     break;
                 default:
                     break;

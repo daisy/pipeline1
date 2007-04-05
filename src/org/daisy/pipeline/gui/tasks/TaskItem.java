@@ -1,10 +1,10 @@
 package org.daisy.pipeline.gui.tasks;
 
-import org.daisy.dmfc.core.script.Job;
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.PipelineGuiPlugin;
 import org.daisy.pipeline.gui.util.swt.CompositeItem;
 import org.daisy.pipeline.gui.util.swt.CompositeList;
+import org.daisy.util.execution.State;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -48,7 +48,7 @@ public class TaskItem extends CompositeItem {
     private ProgressBar progressBar;
     private ToolBar toolBar;
     private ToolItem docButton;
-    private Job.State lastState;
+    private State lastState;
 
     public TaskItem(CompositeList<TaskItem> parent, int style, int index) {
         super(parent, style, index);
@@ -68,7 +68,7 @@ public class TaskItem extends CompositeItem {
         progressBar.setSelection(((Double) (info.getProgress() * 100))
                 .intValue());
         timeLabel.setText(getTimeText(info));
-        Job.State state = info.getSate();
+        State state = info.getSate();
         if (state != lastState) {
             lastState = state;
             iconLabel.setImage(getImage(state));
@@ -94,7 +94,7 @@ public class TaskItem extends CompositeItem {
     /**
      * @return
      */
-    private Image getImage(Job.State state) {
+    private Image getImage(State state) {
         Image image = null;
         switch (state) {
         case IDLE:

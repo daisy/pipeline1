@@ -3,8 +3,8 @@ package org.daisy.pipeline.gui.tasks;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.transformer.TransformerInfo;
+import org.daisy.util.execution.State;
 
 /**
  * @author Romain Deltour
@@ -15,7 +15,7 @@ public class TaskInfo {
     private String name;
     private String description;
     private double progress;
-    private Job.State state;
+    private State state;
     private long totalTime;
     private long startTime;
     private long elapsedTime;
@@ -28,7 +28,7 @@ public class TaskInfo {
         this.name = info.getName();
         this.description = info.getDescription();
         this.progress = 0;
-        this.state = Job.State.IDLE;
+        this.state = State.IDLE;
     }
 
     public String getDescription() {
@@ -47,7 +47,7 @@ public class TaskInfo {
         return progress;
     }
 
-    public Job.State getSate() {
+    public State getSate() {
         return state;
     }
 
@@ -56,7 +56,7 @@ public class TaskInfo {
         setTimes();
     }
 
-    public void setState(Job.State state) {
+    public void setState(State state) {
         switch (state) {
         case RUNNING: 
             startTime = System.nanoTime();
