@@ -22,11 +22,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -52,6 +50,8 @@ import org.daisy.dmfc.logging.LoggingPropertiesReader;
 import org.daisy.dmfc.logging.MessageLogger;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.i18n.I18n;
+import org.daisy.util.i18n.XMLProperties;
+import org.daisy.util.i18n.XMLPropertyResourceBundle;
 
 
 /**
@@ -102,13 +102,18 @@ public class DMFCCore implements TransformerHandlerLoader {
 		System.setProperty("dmfc.home", getHomeDirectory().getAbsolutePath());
 		
 		// Load properties from file
-		if (!loadProperties(ClassLoader.getSystemResourceAsStream("dmfc.properties"))) {
-		    throw new DMFCConfigurationException("Can't read dmfc.properties!");
+		if (!loadProperties(ClassLoader.getSystemResourceAsStream("pipeline.properties"))) {
+		    throw new DMFCConfigurationException("Can't read pipeline.properties!");
 		}
 
-		// Load messages
-		DirClassLoader resourceLoader = new DirClassLoader(new File(getHomeDirectory(), "resources"), new File(getHomeDirectory(), "resources"));
-		ResourceBundle bundle = ResourceBundle.getBundle("dmfc_messages", Locale.ENGLISH, resourceLoader);
+		// Load messages		
+		ResourceBundle bundle = XMLPropertyResourceBundle.getBundle(
+				(this.getClass().getPackage().getName()).replace('.', '/') 
+				+ "/pipeline.messages", Locale.ENGLISH, this.getClass().getClassLoader());
+		//alternatively:
+		//ResourceBundle bundle = XMLPropertyResourceBundle.getBundle(
+		//this.getClass().getResource("pipeline.messages"), Locale.ENGLISH);
+				
 		I18n.setDefaultBundle(bundle);				
 
 		TempFile.setTempDir(new File(System.getProperty("dmfc.tempDir")));
@@ -155,14 +160,14 @@ public class DMFCCore implements TransformerHandlerLoader {
 	}
 	
 	/**
-	 * Adds a set properties to the system properties.
+	 * Adds a set of properties to the system properties.
 	 * @param propertiesStream an InputStream
 	 * @return <code>true</code> if the loading was successful, <code>false</code> otherwise
 	 */
 	public boolean loadProperties(InputStream propertiesStream) {
 	    try {
-	        Properties properties = new Properties(System.getProperties());
-            properties.load(propertiesStream);         
+	        XMLProperties properties = new XMLProperties(System.getProperties());
+            properties.loadFromXML(propertiesStream);         
             System.setProperties(properties);
         } catch (IOException e) {            
             e.printStackTrace();

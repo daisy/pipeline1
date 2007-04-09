@@ -45,6 +45,7 @@ import org.daisy.dmfc.core.event.UserReplyEvent;
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.i18n.I18n;
+import org.daisy.util.i18n.XMLPropertyResourceBundle;
 
 /**
  * Base class for all Transformers. Every Transformer extending this base class
@@ -62,7 +63,7 @@ public abstract class Transformer implements BusListener {
 	private boolean mIsInteractive;	  
     private long startTime = 0;	
 	private File transformerDirectory = null;	
-	private TransformerInfo transformerInfo = null;
+	private TransformerInfo mTransformerInfo = null;
 	private boolean mIsAborted = false;
 	private InputListener mInputListener = null;
 	private I18n mInternationalization;
@@ -88,28 +89,41 @@ public abstract class Transformer implements BusListener {
 		mInternationalization = new I18n();
 		mIsInteractive = isInteractive.booleanValue();
 		mInputListener = inListener;
+		
 		//subscribe to user events
 		EventBus.getInstance().subscribe(this, UserEvent.class);
-		try {			
-			//System.err.println("cl: "+this.getClass().getClassLoader());
-			//System.err.println("package: " + this.getClass().getPackage().getName());
-			ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getPackage().getName() + ".messages");
+		
+		//load local messages file
+		try {
+			/*
+			 * The expectancy on message files is hardcoded to "int_org_example.messages"
+			 * DMFCCore has set the default locale to context desired locale
+			 */			
+			ResourceBundle bundle = null;
+			String packagePath = (this.getClass().getPackage().getName()).replace('.', '/');
+			try{
+				bundle = XMLPropertyResourceBundle.getBundle(packagePath+"/"+packagePath+".messages", Locale.getDefault(), this.getClass().getClassLoader());
+				//alternatively:
+				//bundle = XMLPropertyResourceBundle.getBundle(this.getClass().getResource(packagePath+".messages"), Locale.getDefault());
+			} catch (MissingResourceException e) {
+				//try deprecated name
+				bundle = XMLPropertyResourceBundle.getBundle(packagePath+"/messages.properties", Locale.getDefault(), this.getClass().getClassLoader());
+				//alternatively:
+				//bundle = XMLPropertyResourceBundle.getBundle(this.getClass().getResource("messages.properties"), Locale.getDefault());
+			}	
 			addI18nBundle(bundle);
 		} catch (MissingResourceException e) {			
-			//System.err.println("key: " + e.getKey());
-			//System.err.println("class: " + e.getClassName());
-			//e.printStackTrace();
-			sendMessage("No resource bundle found for " + this.getClass().getName());
+			sendMessage("No resource bundle found for " + this.getClass().getName(), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 		}
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.daisy.dmfc.core.event.BusListener#recieved(java.util.EventObject)
 	 */
 	public void recieved(EventObject event) {
 		if(event instanceof UserAbortEvent) {
-			sendMessage(getName() + " aborting...");
+			sendMessage(getName() + " " + i18n("ABORTING"));
 			mIsAborted  = true;
 		}
 	}
@@ -121,7 +135,7 @@ public abstract class Transformer implements BusListener {
 	 */
 	protected void checkAbort() throws TransformerAbortException {
 		if(mIsAborted) {
-			throw new TransformerAbortException(getName() + " aborted.");
+			throw new TransformerAbortException(getName() + ' ' + i18n("ABORTED"));
 		}
 	}
 	
@@ -213,7 +227,7 @@ public abstract class Transformer implements BusListener {
 	 * @param tInfo the transformer information
 	 */
 	/*package*/ void setTransformerInfo(TransformerInfo tInfo) {
-		this.transformerInfo = tInfo;
+		this.mTransformerInfo = tInfo;
 	}
 	
 	
@@ -226,7 +240,7 @@ public abstract class Transformer implements BusListener {
 	 * @return the TransformerInfo
 	 */
 	public TransformerInfo getTransformerInfo() {
-		return this.transformerInfo;
+		return this.mTransformerInfo;
 	}
 	
 
@@ -277,18 +291,32 @@ public abstract class Transformer implements BusListener {
 	 * Convenience method to send a progress event.
 	 * @param progress A double between 0.0 and 1.0 inclusive
 	 * @see #sendMessage(double)
-	 */	protected void progress(double progress) {
+	 */	
+	protected void progress(double progress) {
 		sendMessage(progress);   
 	}
 	
+	 
+	/**
+	 * Convenience method to send a atate change event.
+	 * @param started true of state is started, false if state is stopped
+	 * @see #sendMessage(StateChangeEvent.Status)
+	 * @deprecated use sendMessage(StateChangeEvent.Status) instead
+	 */ 
     protected void sendMessage(boolean started) {
     	StateChangeEvent.Status state = !started 
     		? StateChangeEvent.Status.STOPPED 
     		: StateChangeEvent.Status.STARTED;   	
-    	
+    	sendMessage(state);    	
+	}
+
+	/**
+	 * Convenience method to send a atate change event.
+	 */ 
+    protected void sendMessage(StateChangeEvent.Status state) {    	    	
     	EventBus.getInstance().publish(new TransformerStateChangeEvent(this,state));
 	}
-		
+    
 	/**
 	 * Bridge for the 'old' messaging API, deprecated as of 200703.
 	 * @deprecated
