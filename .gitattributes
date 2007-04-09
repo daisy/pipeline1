@@ -83,6 +83,7 @@ src/org/daisy/dmfc/core/event/TransformerStateChangeEvent.java -text
 src/org/daisy/dmfc/core/event/UserAbortEvent.java -text
 src/org/daisy/dmfc/core/event/UserEvent.java -text
 src/org/daisy/dmfc/core/event/UserReplyEvent.java -text
+src/org/daisy/dmfc/core/pipeline.messages -text
 src/org/daisy/dmfc/core/script/AbstractProperty.java -text
 src/org/daisy/dmfc/core/script/Creator.java -text
 src/org/daisy/dmfc/core/script/Job.java -text
