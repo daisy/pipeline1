@@ -124,6 +124,8 @@ src/org/daisy/util/fileset/validation/ValidatorImplDtbook.java -text
 src/org/daisy/util/fileset/validation/delegate/impl/FilesetFileTypeRestrictionDelegate.java -text
 src/org/daisy/util/fileset/validation/delegate/impl/InterDocURICheckerD202Delegate.java -text
 src/org/daisy/util/fileset/validation/delegate/impl/InterDocURICheckerDelegate.java -text
+src/org/daisy/util/i18n/XMLProperties.java -text
+src/org/daisy/util/i18n/XMLPropertyResourceBundle.java -text
 src/org/daisy/util/xml/LocusTransformer.java -text
 src/org/daisy/util/xml/NamespaceReporter.java -text
 src/org/daisy/util/xml/catalog/svg/svg11-flat.dtd -text svneol=unset#application/octet-stream
