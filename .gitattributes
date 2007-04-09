@@ -131,6 +131,7 @@ src/org/daisy/util/xml/LocusTransformer.java -text
 src/org/daisy/util/xml/NamespaceReporter.java -text
 src/org/daisy/util/xml/catalog/svg/svg11-flat.dtd -text svneol=unset#application/octet-stream
 src/org/daisy/util/xml/validation/SimpleValidator.java -text
+src/pipeline.properties -text
 transformers/int_daisy_filesetAudioTagger/FilesetAudioTagger.java -text
 transformers/int_daisy_filesetAudioTagger/id3/ID3Tagger.java -text
 transformers/int_daisy_filesetAudioTagger/messages.properties -text
