@@ -33,6 +33,7 @@ import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorSevereErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.LocatorImpl;
 
@@ -153,6 +154,10 @@ public class ExceptionTransformer {
 		} else {
 			return new ValidatorMessage(fileURI,message,line,column);
 		}
+	}
+
+	public static SAXException newSAXException(Exception e) {
+		return ExceptionTransformer.newSAXParseException(e);
 	}
 	
 }
