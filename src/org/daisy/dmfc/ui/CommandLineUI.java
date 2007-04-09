@@ -32,15 +32,14 @@ import java.util.regex.Pattern;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.core.event.BusListener;
 import org.daisy.dmfc.core.event.CoreMessageEvent;
 import org.daisy.dmfc.core.event.EventBus;
-import org.daisy.dmfc.core.event.BusListener;
-import org.daisy.dmfc.core.event.ScriptStateChangeEvent;
-import org.daisy.dmfc.core.event.SystemEvent;
 import org.daisy.dmfc.core.event.MessageEvent;
-import org.daisy.dmfc.core.event.ProgressChangeEvent;
 import org.daisy.dmfc.core.event.RequestEvent;
+import org.daisy.dmfc.core.event.ScriptStateChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
+import org.daisy.dmfc.core.event.SystemEvent;
 import org.daisy.dmfc.core.event.TransformerMessageEvent;
 import org.daisy.dmfc.core.event.TransformerStateChangeEvent;
 import org.daisy.dmfc.core.event.UserReplyEvent;
@@ -224,7 +223,11 @@ public class CommandLineUI implements InputListener, BusListener {
 					who = "Pipeline Core";
 				}else if (sme instanceof TransformerMessageEvent) {
 					Transformer transformer = (Transformer) sme.getSource();
-					who = transformer.getTransformerInfo().getName();
+					if(transformer.getTransformerInfo()!=null){
+						who = transformer.getTransformerInfo().getName();
+					}else{
+						who = transformer.getClass().getCanonicalName();
+					}
 				}else{
 					who="???";
 				}
