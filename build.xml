@@ -55,17 +55,23 @@
 			<include name="batik-css.jar"/>
 			<include name="batik-util.jar"/>
 			<include name="chardet.jar"/>
-			<include name="icu4j_3_4_4.jar"/>
+			<include name="icu4j-3_6.jar"/>
+			<include name="icu4j-charsets-3_6.jar"/>			
 			<include name="jing.jar"/>
 			<include name="jl1.0.jar"/>
-			<include name="jsr173_1.0_api.jar"/>
+			<include name="stax-api-1.0.1.jar"/>
 			<include name="sac.jar"/>
 			<include name="saxon.jar"/>
 			<include name="saxon8.jar"/>
 			<include name="saxon8-dom.jar"/>
-			<include name="wstx-lgpl-2.0.6.jar"/>
+			<include name="wstx-lgpl-3.2.1.jar"/>
+			<include name="tagsoup-1.1.jar"/>			
 			<include name="xercesImpl.jar"/>
-			<include name="tagsoup-1.0rc4.jar"/>			
+			<include name="xalan.jar"/>			
+			<include name="jaudiotagger.jar"/>			
+			<include name="ZedVal.jar"/>			
+			<include name="commons-cli-1.0.jar"/>			
+			<include name="serializer.jar"/>			
 		</fileset>
 	</path>
 	

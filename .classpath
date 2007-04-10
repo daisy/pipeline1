@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry output="transformers" kind="src" path="transformers"/>
+	<classpathentry kind="src" output="transformers" path="transformers"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jing.jar"/>
 	<classpathentry kind="lib" path="lib/saxon8.jar"/>
@@ -13,9 +13,15 @@
 	<classpathentry kind="lib" path="lib/jl1.0.jar"/>
 	<classpathentry kind="lib" path="lib/chardet.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="lib/icu4j_3_4_4.jar"/>
-	<classpathentry kind="lib" path="lib/jsr173_1.0_api.jar"/>
-	<classpathentry kind="lib" path="lib/tagsoup-1.0rc4.jar"/>
-	<classpathentry kind="lib" path="lib/wstx-lgpl-2.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/jaudiotagger.jar"/>
+	<classpathentry kind="lib" path="lib/ZedVal.jar"/>
+	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/icu4j-3_6.jar"/>
+	<classpathentry kind="lib" path="lib/icu4j-charsets-3_6.jar"/>
+	<classpathentry kind="lib" path="lib/tagsoup-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/wstx-lgpl-3.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/xalan.jar"/>
+	<classpathentry kind="lib" path="lib/commons-cli-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/serializer.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
