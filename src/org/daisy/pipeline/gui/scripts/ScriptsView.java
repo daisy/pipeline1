@@ -32,17 +32,13 @@ public class ScriptsView extends ViewPart {
                 new ScriptFileFilter()));
         scriptViewer.setLabelProvider(new ScriptsLabelProvider());
         scriptViewer.setInput(scriptMan.getScriptDir());
-        // TODO remove comment
-        // scriptTreeViewer.getTree().deselectAll();
         // Make the script tree the selection provider
         getSite().setSelectionProvider(scriptViewer);
-
     }
 
     @Override
     public void setFocus() {
         scriptViewer.getControl().setFocus();
-
     }
 
 }
