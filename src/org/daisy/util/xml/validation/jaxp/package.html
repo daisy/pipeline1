@@ -5,18 +5,18 @@
 </head>
 <body>
 
-This package constitutes the org.daisy.util extension implementation of 
+This package constitutes the org.daisy.util extension implementations of 
 the <a href="http://java.sun.com/j2se/1.5.0/docs/api/javax/xml/validation/package-summary.html">
 JAXP <code>javax.xml.validation</code> package</a>.
  
-<p>The primary feature of this implementation is extension to support for RelaxNG and Schematron. 
+<p>The primary feature of this implementation is extension to support for RelaxNG, ISO Schematron and Schematron 1.5. 
 Assuming that Xerces2.6 and JRE 1.5 or later are installed on the system, this means that
 usage of the javax.xml.validation package for XSD, RNG and SCH is possible in an implementation anonymous, 
 opaque and orthogonal way.</p>
 
-<p>Further validation languages (such as NVDL and ISO Schematron) are planned.</p>
+<!-- <p>Further validation languages (such as NVDL and ISO Schematron) are planned.</p> -->
 
-<p>The JRE shipped {@link javax.xml.validation.SchemaFactoryFinder} is used to locate the factories, still 
+<p>The JRE shipped {@link javax.xml.validation.SchemaFactoryFinder} is used to locate the factories, still
 the following system properties <strong>must</strong> be set in order for the implementations in this package to be discovered:</p>
 
 <code><pre>
@@ -26,6 +26,9 @@ the following system properties <strong>must</strong> be set in order for the im
 		System.setProperty(
 				"javax.xml.validation.SchemaFactory:http://www.ascc.net/xml/schematron",
 				"org.daisy.util.xml.validation.jaxp.SchematronSchemaFactory");
+		System.setProperty(
+				"javax.xml.validation.SchemaFactory:http://purl.oclc.org/dsdl/schematron",
+				"org.daisy.util.xml.validation.jaxp.ISOSchematronSchemaFactory");				
 </pre></code>
 
 <p>Usage Example:</p>
