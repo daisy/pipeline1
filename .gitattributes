@@ -135,6 +135,10 @@ src/org/daisy/util/xml/validation/jaxp/ISOSchematronSVRLHandler.java -text
 src/org/daisy/util/xml/validation/jaxp/ISOSchematronSchema.java -text
 src/org/daisy/util/xml/validation/jaxp/ISOSchematronSchemaFactory.java -text
 src/org/daisy/util/xml/validation/jaxp/ISOSchematronValidator.java -text
+src/org/daisy/util/xml/xslt/stylesheets/Any2ISOSchtrn.xsl -text
+src/org/daisy/util/xml/xslt/stylesheets/RNG2ISOSchtrn.xsl -text
+src/org/daisy/util/xml/xslt/stylesheets/iso_schematron_skeleton.xsl -text
+src/org/daisy/util/xml/xslt/stylesheets/iso_svrl.xsl -text
 src/pipeline.properties -text
 transformers/int_daisy_filesetAudioTagger/FilesetAudioTagger.java -text
 transformers/int_daisy_filesetAudioTagger/id3/ID3Tagger.java -text
