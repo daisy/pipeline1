@@ -20,9 +20,8 @@
 package org.daisy.util.fileset.manipulation.manipulators;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 
@@ -65,20 +64,22 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	private static XMLInputFactory xif;
 	private static XMLOutputFactory xof;
 	protected static XMLEventFactory xef;
-	protected XMLEventReader reader;
-	protected XMLEventWriter writer;
-	protected ContextStack contextStack = null;	
+	protected XMLEventReader mReader;
+	protected XMLEventWriter mWriter;
+	private FileOutputStream mFos = null;
+	protected ContextStack mContextStack = null;	
 	private File dest;	
-	private Charset requestedOutputEncoding = null;
+	private Charset mRequestedOutputEncoding = null;
 	private String newLocalName = null;
 		
 	private boolean mDebugMode = false;
+	private boolean mSeparateWriteAttributes = true;
 	/**
 	 * Default Constructor.
 	 * @throws CatalogExceptionNotRecoverable
 	 */
 	public XMLEventFeeder() throws CatalogExceptionNotRecoverable{
-		initialize(null);
+		initialize(null, false,false);
 	}
 	
 
@@ -88,7 +89,7 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	 * @throws CatalogExceptionNotRecoverable
 	 */
 	public XMLEventFeeder(Charset outputEncoding) throws CatalogExceptionNotRecoverable {
-		initialize(outputEncoding);
+		initialize(outputEncoding, false,false);
 	}
 
 	/**
@@ -98,7 +99,7 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	 */
 	public XMLEventFeeder(String newLocalName) throws CatalogExceptionNotRecoverable {
 		this.newLocalName = newLocalName;
-		initialize(null);
+		initialize(null, false,false);
 	}
 	
 	/**
@@ -109,10 +110,24 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	 */
 	public XMLEventFeeder(Charset outputEncoding, String newLocalName) throws CatalogExceptionNotRecoverable {
 		this.newLocalName = newLocalName;
-		initialize(outputEncoding);
+		initialize(outputEncoding, false,false);
 	}
-		
-	private void initialize(Charset outputEncoding) throws CatalogExceptionNotRecoverable {
+
+	/**
+	 * Extended Constructor.
+	 * @param newLocalName name to give to output file
+	 * @param supportDTD whether to configure the reader to support DTD (defaulting etc), default is false
+	 * @param validating whether to configure the reader to validate against DTD, default is false
+	 * @param separateWriteAttributes whether to report attributes separated from StartElement events, needed for attribute inclusion in XPath getters. Default is true. Note - If false, attributes will be included in both StartElement iterator and separate attribute events.
+	 * @throws CatalogExceptionNotRecoverable
+	 */
+	public XMLEventFeeder(Charset outputEncoding, String newLocalName, boolean supportDTD, boolean validating, boolean separateWriteAttributes) throws CatalogExceptionNotRecoverable {
+		this.newLocalName = newLocalName;
+		mSeparateWriteAttributes   = separateWriteAttributes;
+		initialize(outputEncoding,supportDTD, validating);
+	}
+	
+	private void initialize(Charset outputEncoding, boolean supportDTD, boolean validating) throws CatalogExceptionNotRecoverable {
 		if(System.getProperty("org.daisy.debug")!=null) {
 			mDebugMode = true;
 		}
@@ -124,15 +139,23 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	        xif.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
 	        xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
 	        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.TRUE);
-	        xif.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);
-	        xif.setProperty(XMLInputFactory.IS_VALIDATING, Boolean.FALSE);
+	        xif.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);	        
+	        if(validating) {
+	        	xif.setProperty(XMLInputFactory.IS_VALIDATING, Boolean.TRUE);
+	        }else{
+	        	xif.setProperty(XMLInputFactory.IS_VALIDATING, Boolean.FALSE);
+	        }	        
+	        if(supportDTD) {
+	        	xif.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
+	        }else{
+	        	xif.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+	        }
 		}
 
         xif.setXMLReporter(this);
 		xif.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
         
-									
-		if(outputEncoding!=null) requestedOutputEncoding = outputEncoding;
+		if(outputEncoding!=null) mRequestedOutputEncoding = outputEncoding;
 	}
 	
 	public File manipulate(FilesetFile inFile, File destination, boolean allowDestinationOverwrite) throws FilesetManipulationException {
@@ -144,97 +167,97 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 			dest = new File(destination.getParentFile(),newLocalName);
 		}
 		
-		contextStack = new ContextStack(true);
+		mContextStack = new ContextStack(true);
 		try{
-
-			//reader = xif.createXMLEventReader(new FileInputStream((File)inFile),getEncoding(inFile));			
-			//reader = xif.createXMLEventReader(new FileReader((File)inFile));
-			reader = xif.createXMLEventReader(inFile.asInputStream());
-			while(reader.hasNext()) {
-				XMLEvent xe = reader.nextEvent();				
+			InputStream is = inFile.asInputStream();			
+			mReader = xif.createXMLEventReader(is);
+			while(mReader.hasNext()) {
+				XMLEvent xe = mReader.nextEvent();				
 				//invoke separate method for each type
 				//in order to allow finely grained overrides
 				switch (xe.getEventType()) {
 					case XMLEvent.ATTRIBUTE:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeAttribute((Attribute)xe);
 						break;
 					case XMLEvent.CDATA:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeCDATA(xe);
 						break;
 					case XMLEvent.CHARACTERS:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeCharacters(xe.asCharacters());
 						break;
 					case XMLEvent.COMMENT:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeComment(xe);
 						break;
 					case XMLEvent.DTD:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeDTD(xe);
 						break;
 					case XMLEvent.END_DOCUMENT:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeEndDocument(xe);
 						break;
 					case XMLEvent.END_ELEMENT:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeEndElement(xe);
 						break;
 					case XMLEvent.ENTITY_DECLARATION:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeEntityDeclaration(xe);
 						break;
 					case XMLEvent.ENTITY_REFERENCE:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeEntityReference(xe);
 						break;
 					case XMLEvent.NAMESPACE:	
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeNamespace(xe);
 						break;
 					case XMLEvent.NOTATION_DECLARATION:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeNotationDeclaration(xe);
 						break;
 					case XMLEvent.PROCESSING_INSTRUCTION:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeProcessingInstruction(xe);
 						break;
 					case XMLEvent.SPACE:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeSpace(xe);
 						break;
 					case XMLEvent.START_DOCUMENT:
-						contextStack.addEvent(xe);
+						mContextStack.addEvent(xe);
 						writeStartDocument((StartDocument)xe);
 						break;
 					case XMLEvent.START_ELEMENT:
-						//break the startelement up
-						//and report all separately
-						StartElement se = xe.asStartElement();
-						contextStack.addEvent(se);
-						writeStartElement(xef.createStartElement(se.getName(),null,se.getNamespaces()));
-						for (Iterator iter = se.getAttributes(); iter.hasNext();) {
-							Attribute a = (Attribute)iter.next();
-							contextStack.addEvent(a);
-							writeAttribute(a);							
-						}
-						//this causes a classcastexception in woodstox 203
-//						for (Iterator iter = se.getNamespaces(); iter.hasNext();) {
-//							Namespace n = (Namespace)iter.next();	
-//							Namespace newn = xef.createNamespace("",n.getNamespaceURI());
-//							System.err.println(newn.getNamespaceURI());
-//							writeNamespace(newn);							
-//						}																		
+							//mSeparateWriteAttributes
+							//break the startelement up
+							//and report all separately
+							//!mSeparateWriteAttributes is a little weird and not default.
+							StartElement se = xe.asStartElement();
+							mContextStack.addEvent(se);
+							if(mSeparateWriteAttributes){
+								writeStartElement(xef.createStartElement(se.getName(),null,se.getNamespaces()));
+							}else{
+								writeStartElement((StartElement)xe);
+							}	
+							//report the attributes separately in both cases
+							for (Iterator iter = se.getAttributes(); iter.hasNext();) {
+								Attribute a = (Attribute)iter.next();
+								mContextStack.addEvent(a);
+								writeAttribute(a);							
+							}
 						break;
 				} //switch		
 			}
-			writer.flush();
-			writer.close();
-			reader.close();
+			mWriter.flush();
+			mWriter.close();
+			mReader.close();
+			is.close();
+			if(mFos!=null)mFos.close();
 		}catch (Exception e) {
 			throw new FilesetManipulationException(e.getMessage(),e);
 		}
@@ -249,7 +272,7 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	//
 	
 	protected void writeStartElement(StartElement xe) throws XMLStreamException {
-		writer.add(xe);				
+		mWriter.add(xe);				
 	}
 
 	/**
@@ -257,8 +280,8 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	 */
 	protected void writeStartDocument(StartDocument xe) throws XMLStreamException {		
 		String enc;
-		if(this.requestedOutputEncoding!=null) {
-			enc = requestedOutputEncoding.name();
+		if(this.mRequestedOutputEncoding!=null) {
+			enc = mRequestedOutputEncoding.name();
 		}else{
 			enc = xe.getCharacterEncodingScheme();
 		}	
@@ -266,64 +289,64 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 		if(null==enc||enc.length()<1)enc="utf-8";
 		
 		try{
-			writer = xof.createXMLEventWriter(new FileOutputStream(dest),enc); 
+			mFos = new FileOutputStream(dest);
+			mWriter = xof.createXMLEventWriter(mFos,enc);			
 		}catch (Exception e) {
 			throw new  XMLStreamException(e.getMessage(),e);
 		}	
-		writer.add(xef.createStartDocument(enc));
+		mWriter.add(xef.createStartDocument(enc));
 	}
 
 	protected void writeSpace(XMLEvent xe) throws XMLStreamException {
-		writer.add(xe);		
+		mWriter.add(xe);		
 	}
 
 	protected void writeProcessingInstruction(XMLEvent xe) throws XMLStreamException  {
-		writer.add(xe);	
+		mWriter.add(xe);	
 	}
 
 	protected void writeNotationDeclaration(XMLEvent xe) throws XMLStreamException  {
-		writer.add(xe);	
+		mWriter.add(xe);	
 	}
 
 	protected void writeNamespace(XMLEvent xe)  throws XMLStreamException {
-		writer.add(xe);		
+		mWriter.add(xe);		
 	}
 
 	protected void writeEntityReference(XMLEvent xe) throws XMLStreamException  {
-		writer.add(xe);	
+		mWriter.add(xe);	
 	}
 
 	protected void writeEntityDeclaration(XMLEvent xe)  throws XMLStreamException {
-		writer.add(xe);	
+		mWriter.add(xe);	
 	}
 
 	protected void writeEndElement(XMLEvent xe) throws XMLStreamException  {
-		writer.add(xe);			
+		mWriter.add(xe);			
 	}
 
 	protected void writeEndDocument(XMLEvent xe)  throws XMLStreamException {
-		writer.add(xe);	
+		mWriter.add(xe);	
 	}
 
 	protected void writeDTD(XMLEvent xe) throws XMLStreamException  {
-		writer.add(xe);		
+		mWriter.add(xe);		
 	}
 
 	protected void writeComment(XMLEvent xe) throws XMLStreamException  {
-		writer.add(xe);
+		mWriter.add(xe);
 	}
 
 	protected void writeCharacters(Characters xe) throws XMLStreamException  {
-		writer.add(xe);
+		mWriter.add(xe);
 	}
 
 	protected void writeCDATA(XMLEvent xe)  throws XMLStreamException {
-		writer.add(xe);
+		mWriter.add(xe);
 	}
 	
 	protected void writeAttribute(Attribute xe) throws XMLStreamException {		
-		writer.add(xe);		
-		
+		mWriter.add(xe);				
 	}
 
 	//

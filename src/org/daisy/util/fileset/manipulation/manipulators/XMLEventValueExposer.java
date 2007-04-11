@@ -91,7 +91,7 @@ public class XMLEventValueExposer extends XMLEventFeeder {
 	
 	protected void writeAttribute(Attribute xe) throws XMLStreamException {
 		if(eventTypeRestrictions.isEmpty()||eventTypeRestrictions.contains(Integer.valueOf(XMLEvent.ATTRIBUTE))) {
-			retval = listener.nextValue(xe.getValue(),this.contextStack);
+			retval = listener.nextValue(xe.getValue(),this.mContextStack);
 			if(retval!=null) {
 				super.writeAttribute(xef.createAttribute(xe.getName(),retval));
 			}else{
@@ -109,7 +109,7 @@ public class XMLEventValueExposer extends XMLEventFeeder {
 			if(ignoreSpace && (xe.isIgnorableWhiteSpace()||CharUtils.isXMLWhiteSpace(xe.getData()))) {
 				super.writeCharacters(xe);
 			}else{			
-				retval = listener.nextValue(xe.getData(),this.contextStack);				
+				retval = listener.nextValue(xe.getData(),this.mContextStack);				
 				if(retval!=null) {
 					super.writeCharacters(xef.createCharacters(retval));
 				}else{
