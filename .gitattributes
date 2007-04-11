@@ -27,11 +27,13 @@ doc/scripts/ConfigurableValidator.html -text
 doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/FilesetRenamer.html -text
+doc/scripts/PrettyPrinter.html -text
 doc/scripts/RenamerTaggerValidator.html -text
 doc/scripts/Z3986DTBValidator.html -text
 doc/templates/script-doc-template.html -text
 doc/transformers/int_daisy_filesetAudioTagger.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
+doc/transformers/int_daisy_prettyPrinter.html -text
 doc/transformers/int_daisy_validator.html -text
 doc/transformers/uk_rnib_odf2dtbook.html -text
 doc/user.vocabulary.txt -text
@@ -62,6 +64,7 @@ scripts/manipulation/FilesetRenamerTaskParamsStatic.paramGroup -text
 scripts/manipulation/advanced/RenamerTaggerValidator.taskScript -text
 scripts/manipulation/simple/AudioTagger.taskScript -text
 scripts/manipulation/simple/FilesetRenamer.taskScript -text
+scripts/manipulation/simple/PrettyPrinter.taskScript -text
 scripts/validation/ValidatorScriptParamsAdvancedStatic.paramGroup -text
 scripts/validation/ValidatorScriptParamsSimpleStatic.paramGroup -text
 scripts/validation/ValidatorTaskParamsAdvancedStatic.paramGroup -text
@@ -155,6 +158,9 @@ transformers/int_daisy_filesetAudioTagger/playlist/PlaylistWriter.java -text
 transformers/int_daisy_filesetAudioTagger/playlist/XSPFWriter.java -text
 transformers/int_daisy_filesetAudioTagger/transformer.tdf -text
 transformers/int_daisy_filesetRenamer/transformer.tdf -text
+transformers/int_daisy_prettyPrinter/PrettyPrinter.java -text
+transformers/int_daisy_prettyPrinter/int_daisy_prettyPrinter.messages -text
+transformers/int_daisy_prettyPrinter/transformer.tdf -text
 transformers/int_daisy_validator/XMLReporter.java -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_1.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_10.mp3 -text
