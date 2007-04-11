@@ -1,5 +1,6 @@
 * text=auto !eol
 META-INF/MANIFEST.MF -text
+/build.properties -text
 doc/dev_old/diagram.png -text
 doc/developer/java-coding-conventions.html -text
 doc/developer/localizing-and-customizing-pipeline-narrator.html -text
