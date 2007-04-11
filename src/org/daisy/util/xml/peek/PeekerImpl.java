@@ -76,7 +76,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	public PeekResult peek(URI document) throws SAXException, IOException {
 		//redirect to this.peek(InputSource)
 		StreamSource ss = new StreamSource(document.toURL().openStream());
-		ss.setSystemId(document.toString());
+		ss.setSystemId(document.toString());		
 		return peek(SAXSource.sourceToInputSource(ss));						
 	}
 
@@ -136,6 +136,8 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 		}catch (SAXStopParsingException sspe) {
 			//expected: everything went fine			
 		}
+		if(document.getByteStream()!=null)document.getByteStream().close();
+		if(document.getCharacterStream()!=null)document.getCharacterStream().close();
 		return mPeekResult;
 	}
 	
