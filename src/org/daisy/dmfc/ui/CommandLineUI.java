@@ -39,7 +39,6 @@ import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.event.RequestEvent;
 import org.daisy.dmfc.core.event.ScriptStateChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
-import org.daisy.dmfc.core.event.SystemEvent;
 import org.daisy.dmfc.core.event.TransformerMessageEvent;
 import org.daisy.dmfc.core.event.TransformerStateChangeEvent;
 import org.daisy.dmfc.core.event.UserReplyEvent;
@@ -95,6 +94,7 @@ public class CommandLineUI implements InputListener, BusListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
 		File scriptFile = null;
 		boolean information = false;
 		boolean force = false;
@@ -200,7 +200,8 @@ public class CommandLineUI implements InputListener, BusListener {
 		} catch (DatatypeException e) {
 			e.printStackTrace();
 		} finally {
-			EventBus.getInstance().unsubscribe(ui, SystemEvent.class);
+			EventBus.getInstance().unsubscribe(ui, MessageEvent.class);
+			EventBus.getInstance().unsubscribe(ui, StateChangeEvent.class);
 		}
 	}
 	
@@ -378,5 +379,5 @@ public class CommandLineUI implements InputListener, BusListener {
 		return new UserReplyEvent(this,line);
 
 	}
-
+	
 }
