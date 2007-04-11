@@ -236,17 +236,26 @@ public class SimpleValidator {
 		identifier = identifier.trim();
 		FilesetRegex regex = FilesetRegex.getInstance();
 		
-		//first try to resolve a physical file		
-		boolean isRemote = regex.matches(regex.URI_REMOTE, identifier);
-		try{			
-			if(!isRemote){
-				localSchemaFile = FilenameOrFileURI.toFile(identifier);
-				if(localSchemaFile!=null && localSchemaFile.exists()) {
-					schemaURL = localSchemaFile.toURI().toURL();
+		// look inside jar
+		boolean isInJar = regex.matches(regex.URL_JAR, identifier);
+		if (isInJar) {
+			// FIXME make sure resource exists!
+			schemaURL = new URL(identifier);
+		}
+		
+		// try to resolve a physical file
+		if (schemaURL == null) {
+			boolean isRemote = regex.matches(regex.URI_REMOTE, identifier);
+			try{			
+				if(!isRemote){
+					localSchemaFile = FilenameOrFileURI.toFile(identifier);
+					if(localSchemaFile!=null && localSchemaFile.exists()) {
+						schemaURL = localSchemaFile.toURI().toURL();
+					}
 				}
+			}catch (Exception e) {
+				//carry on
 			}
-		}catch (Exception e) {
-			//carry on
 		}
 				
 		//if physical file resolve didnt work, or isRemote, try catalog

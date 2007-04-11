@@ -39,6 +39,8 @@ public class FilesetRegex {
 		URI_SMIL_FILE_WITH_FRAGMENT = Pattern.compile(".+\\.[Ss][Mm][Ii][Ll]#.+");
 		URI_WITH_FRAGMENT = Pattern.compile(".+\\..+#.+");  
 		
+		URL_JAR = Pattern.compile("^jar:.+");
+		
 		FILE_SMIL = Pattern.compile(".+\\.[Ss][Mm][Ii][Ll]$");  
 		FILE_CSS = Pattern.compile(".+\\.[Cc][Ss][Ss]$");
 		FILE_XSL = Pattern.compile(".+\\.[Xx][Ss][Ll][Tt]?$");
@@ -89,6 +91,7 @@ public class FilesetRegex {
 	public Pattern URI_REMOTE;	
 	public Pattern URI_SMIL_FILE_WITH_FRAGMENT;
 	public Pattern URI_WITH_FRAGMENT;  
+	public Pattern URL_JAR;
 	
 	public Pattern FILE_SMIL;  
 	public Pattern FILE_CSS;
