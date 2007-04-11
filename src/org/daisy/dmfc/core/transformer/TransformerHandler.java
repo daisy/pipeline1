@@ -94,24 +94,24 @@ public class TransformerHandler implements TransformerInfo {
 	
 	/**
 	 * Creates a Transformer handler. This is the directory version.
-	 * @param transformerDescription a transformer description file
+	 * @param tdfFile a transformer description file
 	 * @param inListener an input listener
 	 * @throws TransformerDisabledException
 	 */
-	public TransformerHandler(File transformerDescription, InputListener inListener) throws TransformerDisabledException {
+	public TransformerHandler(File tdfFile, File transformersDir, InputListener inListener) throws TransformerDisabledException {
 		
 		mInternationalization = new I18n();
 		inputListener = inListener;		
-		transformerDirectory = transformerDescription.getParentFile();
+		transformerDirectory = tdfFile.getParentFile();
 		
 		/*
 		 * If any validation or dependency check fails, disable this Transformer 
 		 */
 		try {						
-			initialize(transformerDescription.toURL());        
+			initialize(tdfFile.toURL());        
 			
 			// Create the class loader and Transformer class (not object)
-			createTransformerClass(transformerDescription);
+			createTransformerClass(tdfFile, transformersDir);
 			
 			// Make sure the right constructor is present
 			checkForTransformerConstructor();
@@ -231,14 +231,14 @@ public class TransformerHandler implements TransformerInfo {
 	
 	/**
 	 * Tries to find and load the Java class associated with this Transformer.
-	 * @param transformerDescription
+	 * @param tdfFile
 	 * @throws ClassNotFoundException
 	 */
-	private void createTransformerClass(File transformerDescription) throws ClassNotFoundException {	    
+	private void createTransformerClass(File tdfFile, File transformersDir) throws ClassNotFoundException {	    
 	    EventBus.getInstance().publish(new CoreMessageEvent(this,i18n("LOADING_TRANSFORMER", name, classname),MessageEvent.Type.INFO));
-		File dir = transformerDescription.getAbsoluteFile();
+		File dir = tdfFile.getAbsoluteFile();
 		dir = dir.getParentFile();
-		transformerClassLoader = new DirClassLoader(new File(DMFCCore.getHomeDirectory(), "transformers"), new File(DMFCCore.getHomeDirectory(), "transformers"));
+		transformerClassLoader = new DirClassLoader(transformersDir, transformersDir);
 		for (Iterator it = jars.iterator(); it.hasNext(); ) {
 		    String jar = (String)it.next();
 		    transformerClassLoader.addJar(new File(dir, jar));

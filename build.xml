@@ -17,6 +17,7 @@
 	<property name="lib.dir" value="${base.dir}/lib"/>
 	<property name="javadoc.dir" value="${base.dir}/doc/api"/>
 	<property name="distribution.dir" value="${base.dir}/dist"/>
+	<property name="deploy.dir" value="${distribution.dir}/deploy"/>
 	
 	<!-- Filesets definitions -->
 	<patternset id="patternset.transformers">
@@ -51,14 +52,14 @@
     </path>
 	
 	<path id="path.utilJars">
-		<fileset dir="${base.dir}/lib">
+		<fileset dir="${base.dir}/lib" id="fileset.utilJars">
 			<include name="batik-css.jar"/>
 			<include name="batik-util.jar"/>
 			<include name="chardet.jar"/>
 			<include name="icu4j-3_6.jar"/>
 			<include name="icu4j-charsets-3_6.jar"/>			
 			<include name="jing.jar"/>
-			<include name="jl1.0.jar"/>
+			<include name="jl1.0.jar"/>			
 			<include name="stax-api-1.0.1.jar"/>
 			<include name="sac.jar"/>
 			<include name="saxon.jar"/>
@@ -119,7 +120,7 @@
 				/>
 	</target>
 	
-	<target name="all" description="Builds all binary and source packages" depends="buildDMFC-NSIS,buildSrcZip,buildUtil"/>
+	<target name="all" description="Builds all binary packages" depends="buildCore, buildMisc, buildUtil, buildTransformers, buildTransformersPack"/>
 	
 	<!-- end of general tasks -->
 	
@@ -155,6 +156,9 @@
 		</zip>
 	</target>
 	
+	<!-- ================================= 
+		  target: buildJavadoc
+		 ================================= -->
 	<target name="buildJavadoc" 
 			description="Creates a dmfc_doc_${version}.zip with javadoc files in the distribution folder"
 			depends="createDistributionDir">
@@ -201,6 +205,14 @@
 		</zip>
 	</target>
 	
+	
+	<!-- ================================= 
+		  target: buildUtil
+		  
+		  Builds the org.daisy.util.jar utility library
+		  into a separate JAR. The sources are built
+		  into a zip archive.		  
+	     ================================= -->
 	<target name="buildUtil"
 			description="Builds the util library in a separate JAR"
 			depends="createDistributionDir">
@@ -220,19 +232,16 @@
 		</zip>
 	</target>
 	
+	
+	<!-- ================================= 
+	      target: buildTransformers
+	      
+	      Builds the jarable transformers into separate
+	      JARs.
+	     ================================= -->
 	<target name="buildTransformers"
-			description="Builds the transformers">
+				description="Builds the jarable transformers">
 		<mkdir dir="${distribution.dir}/transformers"/>
-		
-		<!-- uk_rnib_dtbook2xhtml -->
-		<jar jarfile="${distribution.dir}/transformers/uk_rnib_dtbook2xhtml.jar">
-			<fileset dir="${base.dir}/transformers">
-				<include name="uk_rnib_dtbook2xhtml/**/*.*"/>
-				<not>
-					<filename name="**/*.java"/>
-				</not>
-			</fileset>
-		</jar>
 		
 		<!-- int_daisy_validator -->
 		<jar jarfile="${distribution.dir}/transformers/int_daisy_validator.jar">
@@ -242,51 +251,130 @@
 					<filename name="**/*.java"/>
 				</not>
 			</fileset>
-		</jar>
-				
-	</target>
-	
-	
-	<target name="buildDMFC-NSIS" 
-			description="Creates a org.daisy.dmfc.zip without util library"
-			depends="createDistributionDir">
-		<delete file="${distribution.dir}/org.daisy.dmfc.zip"/>
-		<zip zipfile="${distribution.dir}/org.daisy.dmfc.zip">
-			<fileset dir="${base.dir}">
-				<include name="bin/**/*.*"/>
-				<include name="resources/**/*.*"/>
-				<include name="licenses/**/*.*"/>
-				<include name="lib/**/*.jar"/>
-				<include name="doc/releasenotes/*.*"/>
-				<include name="doc/narrator/*.*"/>
-				<include name="doc/examples/scripts/*.*"/>
-				<exclude name="**/org/daisy/util/**/*.*"/>
-			</fileset>
-			<fileset dir="${base.dir}">
-				<patternset refid="patternset.transformers"/>
+		</jar>		
+
+		<!-- uk_rnib_dtbook2xhtml -->
+		<jar jarfile="${distribution.dir}/transformers/uk_rnib_dtbook2xhtml.jar">
+			<fileset dir="${base.dir}/transformers">
+				<include name="uk_rnib_dtbook2xhtml/**/*.*"/>
 				<not>
-					<filename name="transformers/**/*.java"/>
+					<filename name="**/*.java"/>
 				</not>
 			</fileset>
-		</zip>
+		</jar>
+						
 	</target>
 	
-	<target name="buildDMFCFatZip" 
-			description="Creates a dmfc-fat.zip"
-			depends="createDistributionDir">
-		<delete file="${distribution.dir}/dmfc-fat.zip"/>
-		<zip zipfile="${distribution.dir}/dmfc-fat.zip">
-			<fileset dir="${base.dir}">
-				<include name="bin/**/*.*"/>
-				<include name="transformers/**/*.*"/>
-				<include name="resources/**/*.*"/>
-				<include name="dmfc.bat"/>
-				<include name="dmfc.sh"/>
-				<include name="doc/**/*.*"/>
-				<exclude name="doc/api/**/*.*"/>
-				<include name="lib/**/*.jar"/>
+	
+	<!-- ================================= 
+          target: buildTransformersPack
+          
+          Creates a zip archive containing all the
+          transformers that are not jarable.
+         ================================= -->
+    <target name="buildTransformersPack"
+    		description="Builds the pack of unjarable transformers">
+        <zip zipfile="${distribution.dir}/transformers.zip">
+        	<fileset dir="${transformers.dir}">
+        		<include name="**/*.*"/>
+        		<exclude name="**/*.java"/>
+        		<exclude name="*.jar"/> 
+        		
+        		<!-- Jarable... -->
+        		<exclude name="int_daisy_validator/**/*.*"/>
+        		<exclude name="uk_rnib_dtbook2xhtml/**/*.*"/>        		
+        		
+        		<!-- Undesired -->
+        		<exclude name="int_daisy_daisy2022Zed2005/**/*.*"/>
+				<exclude name="int_daisy_exeTest/**/*.*"/>
+				<exclude name="int_daisy_filesetRenamer/**/*.*"/>
+				<exclude name="int_daisy_helloWorld/**/*.*"/>
+				<exclude name="int_daisy_html2xhtml/**/*.*"/>
+				<exclude name="int_daisy_xmlValidator/**/*.*"/>
+				<exclude name="int_daisy_xsltTest/**/*.*"/>
+				<exclude name="se_tpb_mixedContentNormalizer/**/*.*"/>
+				<exclude name="se_tpb_pdtbCreator/**/*.*"/>	
+				<exclude name="se_tpb_xmlValidator/**/*.*"/>
 			</fileset>
-		</zip>
+    	</zip>
+    </target>
+	
+	
+	<!-- ================================= 
+	      target: buildCore
+	      
+	      Builds a jar file containing the pipeline core.
+	     ================================= -->
+	<target name="buildCore"
+			description="Builds the core JAR">
+		<jar jarfile="${distribution.dir}/pipeline.jar">
+			<fileset dir="${base.dir}/bin">
+				<include name="org/daisy/dmfc/**/*.*"/>
+				<exclude name="**/*.java"/>
+			</fileset>
+			<manifest>
+				<attribute name="Class-Path" value="lib/org.daisy.util.jar"/>
+			</manifest>
+		</jar>
+	</target>
+	
+	
+	<!-- ================================= 
+          target: buildMisc
+          
+          Creates a zip file containing all other resources
+          required to run the pipeline that don't fit inside
+          another jar or zip.
+         ================================= -->
+    <target name="buildMisc" 
+    		description="Builds any misc files">
+        <zip zipfile="${distribution.dir}/misc.zip">
+        	<fileset dir="${base.dir}/bin">
+        		<include name="pipeline.properties"/>
+        		<include name="logging.properties"/>
+        	</fileset>
+    	</zip>
+    </target>
+
+	
+	
+	<!-- ================================= 
+	      target: deploy
+	      
+	      Test task to deploy the pipeline.
+	     ================================= -->
+	<target name="deploy"
+			depends="buildCore, buildMisc, buildUtil, buildTransformers, buildTransformersPack">
+		<delete>
+			<fileset dir="${deploy.dir}">
+			    <include name="**/*.*"/>
+			</fileset>
+		</delete>
+
+		<mkdir dir="${deploy.dir}"/>
+		<mkdir dir="${deploy.dir}/lib"/>
+		<mkdir dir="${deploy.dir}/transformers"/>
+		
+		<copy file="${distribution.dir}/pipeline.jar" todir="${deploy.dir}"/>
+		<copy file="${base.dir}/pipeline.sh" todir="${deploy.dir}"/>
+		
+		<copy todir="${deploy.dir}/lib">
+			<fileset dir="${distribution.dir}">
+				<include name="*.jar"/>
+				<exclude name="pipeline.jar"/>
+			</fileset>
+			<fileset refid="fileset.utilJars"/>
+		</copy>
+		
+		<copy todir="${deploy.dir}/transformers">
+			<fileset dir="${distribution.dir}/transformers">
+				<include name="*.jar"/>
+			</fileset>
+		</copy>
+		
+		<unzip src="${distribution.dir}/transformers.zip" dest="${deploy.dir}/transformers"/>
+		
+		<unzip src="${distribution.dir}/misc.zip" dest="${deploy.dir}"/>
 	</target>
 	
 </project>

@@ -21,14 +21,11 @@ package org.daisy.dmfc.core;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
@@ -65,10 +62,10 @@ import org.daisy.util.i18n.XMLPropertyResourceBundle;
  */
 public class DMFCCore implements TransformerHandlerLoader {
 
-    private static File homeDirectory = null;
+    private File mHomeDirectory = null;
     
-	private InputListener inputListener;
-	private Map<String,TransformerHandler> transformerHandlers = new HashMap<String, TransformerHandler>();
+	private InputListener mInputListener;
+	private Map<String,TransformerHandler> mTransformerHandlers = new HashMap<String, TransformerHandler>();
 	
 	private Creator mCreator;
 	private Runner mRunner;	
@@ -80,7 +77,7 @@ public class DMFCCore implements TransformerHandlerLoader {
 	 */
 
 	public DMFCCore(InputListener inListener) throws DMFCConfigurationException {
-	    this(inListener, new Locale("en"));
+	    initialize(inListener);
 	}
 
 	/**
@@ -89,27 +86,28 @@ public class DMFCCore implements TransformerHandlerLoader {
 	 * @param locale the locale to use
 	 */
 	public DMFCCore(InputListener inListener, Locale locale) throws DMFCConfigurationException {
-		super();
-		inputListener = inListener;
-		initialize(locale);
+		Locale.setDefault(locale);
+		initialize(inListener);		
 	}
 	
-	private void initialize(Locale locale) throws DMFCConfigurationException, SecurityException {
-		Locale.setDefault(locale);
+	private void initialize(InputListener inListener) throws DMFCConfigurationException, SecurityException {
+		this.mInputListener = inListener;		
 		
-		// Set DMFC home dir
-		homeDirectory = getHomeDir();
-		System.setProperty("dmfc.home", getHomeDirectory().getAbsolutePath());
+		URL propertiesURL = this.getClass().getClassLoader().getResource("pipeline.properties");
 		
 		// Load properties from file
-		if (!loadProperties(ClassLoader.getSystemResourceAsStream("pipeline.properties"))) {
+		if (!loadProperties(propertiesURL)) {
 		    throw new DMFCConfigurationException("Can't read pipeline.properties!");
 		}
+		
+		// Set pipeline home dir
+		mHomeDirectory = findHomeDirectory(propertiesURL);
 
 		// Load messages		
 		ResourceBundle bundle = XMLPropertyResourceBundle.getBundle(
 				(this.getClass().getPackage().getName()).replace('.', '/') 
 				+ "/pipeline.messages", Locale.ENGLISH, this.getClass().getClassLoader());
+		//ResourceBundle bundle = XMLPropertyResourceBundle.getBundle(this.getClass().getPackage().getName() + ".pipeline.messages", Locale.getDefault(), this.getClass().getClassLoader());
 		//alternatively:
 		//ResourceBundle bundle = XMLPropertyResourceBundle.getBundle(
 		//this.getClass().getResource("pipeline.messages"), Locale.ENGLISH);
@@ -130,44 +128,68 @@ public class DMFCCore implements TransformerHandlerLoader {
 		mCreator = new Creator(this);
 		mRunner = new Runner();
 	}	
-
+	
+	
 	/**
-	 * Find the home directory of DMFC.
-	 * @return the home directory of DMFC.
+	 * Finds the pipeline home directory.
+	 * @param propertiesURL
+	 * @return
 	 * @throws DMFCConfigurationException
 	 */
-	private static File getHomeDir() throws DMFCConfigurationException {
-	    URL url = ClassLoader.getSystemResource("dmfc.properties");
-	    if (url == null) {
-	        System.err.println("Can't find dmfc.properties");
-	        throw new DMFCConfigurationException("Can't find dmfc.properties");
-	    }
-	    File dir;
-        try {
-            dir = new File(new URI(url.toExternalForm())).getParentFile().getParentFile();
-        } catch (URISyntaxException e) {
-            throw new DMFCConfigurationException("Can't create file object");
-        }        
-	    return dir;
+	private File findHomeDirectory(URL propertiesURL) throws DMFCConfigurationException {
+		File propertiesFile = null;
+		try {
+			propertiesFile = new File(propertiesURL.toURI());			
+		} catch (URISyntaxException e) {
+			throw new DMFCConfigurationException(e.getMessage(), e);
+		}
+		// Is this the home dir?
+		File folder = propertiesFile.getParentFile();
+		if (testHomeDirectory(folder)) {
+			return folder;
+		}		
+		// Test parent
+		folder = folder.getParentFile();
+		if (testHomeDirectory(folder)) {
+			return folder;
+		}
+		throw new DMFCConfigurationException("Cannot locate the Daisy Pipeline home directory");
 	}
+	
+	
+	/**
+	 * Tests if a given directory is the home directory.
+	 * @param folder
+	 * @return
+	 */
+	private boolean testHomeDirectory(File folder) {
+		File[] files = folder.listFiles(new FileFilter() {
+			public boolean accept(File file) {
+				return ("transformers".equals(file.getName()) && file.isDirectory());					
+			}
+		});	
+		return files!=null && files.length == 1;
+	}
+	
 	
 	/**
 	 * Gets the home directory of DMFC.
 	 * @return the home directory of DMFC or <code>null</code> if it has not yet been set.
 	 */
-	public static File getHomeDirectory() {
-	    return homeDirectory;
+	public File getHomeDirectory() {		
+	    return mHomeDirectory;
 	}
+	
 	
 	/**
 	 * Adds a set of properties to the system properties.
-	 * @param propertiesStream an InputStream
+	 * @param propertiesURL an URL
 	 * @return <code>true</code> if the loading was successful, <code>false</code> otherwise
 	 */
-	public boolean loadProperties(InputStream propertiesStream) {
+	public boolean loadProperties(URL propertiesURL) {
 	    try {
 	        XMLProperties properties = new XMLProperties(System.getProperties());
-            properties.loadFromXML(propertiesStream);         
+            properties.loadFromXML(propertiesURL.openStream());         
             System.setProperties(properties);
         } catch (IOException e) {            
             e.printStackTrace();
@@ -176,33 +198,35 @@ public class DMFCCore implements TransformerHandlerLoader {
 	    return true;
 	}
 	
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.daisy.dmfc.core.transformer.TransformerHandlerLoader#getTransformerHandler(java.lang.String)
 	 */
 	public TransformerHandler getTransformerHandler(String transformerName) throws TransformerDisabledException {
-		if (transformerHandlers.containsKey(transformerName)) {
-		    return transformerHandlers.get(transformerName);						
+		if (mTransformerHandlers.containsKey(transformerName)) {
+		    return mTransformerHandlers.get(transformerName);						
 		}
+		File transformersDir = new File(getHomeDirectory(), "transformers");
 		// Try to load TDF from directory
-		File[] files = new File(new File(getHomeDirectory(), "transformers"), transformerName).listFiles(new FileFilter() {
+		File[] files = new File(transformersDir, transformerName).listFiles(new FileFilter() {
 			public boolean accept(File file) {
 				return file.getName().endsWith(".tdf");
 			}			
-		});		
-		if (files.length > 1) {
+		});	
+		if (files!=null && files.length > 1) {
 			EventBus.getInstance().publish(new CoreMessageEvent(this,"Error! Incorrect number of TDFs for transformer " + transformerName,MessageEvent.Type.WARNING));
-		} else if (files.length == 1) {
-			TransformerHandler th = new TransformerHandler(files[0], inputListener);		
-			transformerHandlers.put(transformerName, th);		
+		} else if (files!=null && files.length == 1) {
+			TransformerHandler th = new TransformerHandler(files[0], transformersDir, mInputListener);		
+			mTransformerHandlers.put(transformerName, th);		
 			return th;
 		} else {
 			// Trying JAR instead
 			//System.err.println("trying jar...");
 			File jarFile = new File(getHomeDirectory(), "transformers/" + transformerName + ".jar");
 			if (jarFile.exists()) {
-				TransformerHandler th = new TransformerHandler(jarFile, transformerName, inputListener, true);
-				transformerHandlers.put(transformerName, th);
+				TransformerHandler th = new TransformerHandler(jarFile, transformerName, mInputListener, true);
+				mTransformerHandlers.put(transformerName, th);
 				return th;
 			} else {
 				//System.err.println("jar doesn't exist");
@@ -210,7 +234,6 @@ public class DMFCCore implements TransformerHandlerLoader {
 		}
 		return null;		
 	}
-	
 	
 	
 	/**
