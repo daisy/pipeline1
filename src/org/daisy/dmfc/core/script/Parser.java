@@ -375,24 +375,23 @@ class Parser {
 					parameter.setDatatype(new BooleanDatatype(trueVal, falseVal));
 										
 				} else if (DATATYPE_STRING.equals(local)) {
-					Attribute attrRegex = se.getAttributeByName(new QName("regex"));										
-					if (attrRegex != null) {						
-						try {
-							parameter.setDatatype(new StringDatatype(Pattern.compile(attrRegex.getValue())));
-						} catch (PatternSyntaxException e) {
-							throw new XMLStreamException(e.getMessage(), e);
-						}						
-					}
+					Attribute attrRegex = se.getAttributeByName(new QName("regex"));					
+					try {
+						Pattern regex = attrRegex!=null ? Pattern.compile(attrRegex.getValue()) : null;
+						parameter.setDatatype(new StringDatatype(regex));
+					} catch (PatternSyntaxException e) {
+						throw new XMLStreamException(e.getMessage(), e);
+					}						
 				} else if (DATATYPE_INTEGER.equals(local)) {
 					Attribute attrMin = se.getAttributeByName(new QName("min"));
-					Attribute attrMax = se.getAttributeByName(new QName("max"));					
-					if (attrMin != null && attrMax != null) {
-						try {
-							parameter.setDatatype(new IntegerDatatype(Integer.valueOf(attrMin.getValue()), Integer.valueOf(attrMax.getValue())));
-						} catch (NumberFormatException e) {
-							throw new XMLStreamException(e.getMessage(), e);
-						}
-					}	
+					Attribute attrMax = se.getAttributeByName(new QName("max"));
+					try {
+						Integer min = attrMin!=null ? Integer.valueOf(attrMin.getValue()) : null;
+						Integer max = attrMax!=null ? Integer.valueOf(attrMax.getValue()) : null;
+						parameter.setDatatype(new IntegerDatatype(min, max));
+					} catch (NumberFormatException e) {
+						throw new XMLStreamException(e.getMessage(), e);
+					}
 				} else if (DATATYPE_ENUM.equals(local)) {
 					items = new LinkedList<EnumItem>();
 				} else if (DATATYPE_ENUMITEM.equals(local)) {
