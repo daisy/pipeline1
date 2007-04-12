@@ -13,9 +13,10 @@
 						
 					}
 					div.revision {
-						border-bottom: solid;
+						border: solid;
 						border-width: 1px;
 						margin-bottom: 1em;
+						padding: 2em;
 					}
 					div.description {
 						padding: 1em;
@@ -28,6 +29,9 @@
 					div.purpose {
 						font-size: 200%;
 					}
+					div.bugs {
+						color: #A02020;
+					}
 					p {
 						margin: 0em;
 						padding: 0em;
@@ -36,7 +40,9 @@
 			</head>
 		<body>
 			<xsl:apply-templates select="//doc:purpose"/>
-			<xsl:apply-templates select="//doc:revision"/>
+			<xsl:apply-templates select="//doc:revision">
+				<xsl:sort select="version" order="descending"/>
+			</xsl:apply-templates>
 		</body>
 		</html>
 	</xsl:template>
@@ -52,11 +58,17 @@
 			<p>
 				<xsl:value-of select="concat('Version ', doc:version, ' (', doc:date, ')')"/><br />
 				<xsl:value-of select="doc:author"/></p>
-			<xsl:apply-templates select="doc:description|doc:remark"/>
+			<xsl:apply-templates select="doc:description|doc:remark|doc:bugs"/>
 		</div>
 	</xsl:template>
 	
-	<xsl:template match="doc:description|doc:remark">
+	<xsl:template match="doc:remark">
+		<div class="{name()}">
+			<xsl:apply-templates/>
+		</div>
+	</xsl:template>
+	
+	<xsl:template match="doc:description">
 		<div class="{name()}">
 			<xsl:apply-templates/>
 		</div>

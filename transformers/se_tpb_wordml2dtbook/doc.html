@@ -23,11 +23,15 @@
 		<title>WordML2DTBook</title>
 		<style type="text/css">
 			.revision-060410 {
-				background-color: #FFFF80;
+				background-color: #FFFFe0;
 			}
 			.revision-060908 {
-				background-color: #80FF80;
+				background-color: #c0FFc0;
 				text-decoration: underline;
+			}
+			.revision-070201 {
+				background-color: #80FFFF;
+				text-decoration: underline;				
 			}
 			body, table {
 				font-family: helvetica, arial, sans-serif;
@@ -53,10 +57,9 @@
 		<div class="main">
 			<h1>WordML2DTBook</h1>
 			<p>Original version: November 21, 2005</p>
-			<p>
-				<span class="revision-060410">First revision: June 12, 2006.</span>
-			</p>
+			<p><span class="revision-060410">First revision: June 12, 2006.</span></p>
 			<p><span class="revision-060908">Second revision: October 13, 2006</span></p>
+			<p><span class="revision-070201">Third revision: February 6, 2007</span></p>
 			<p class="revision-060908">This documentation reflects the functionality of 
 			the XSLT used in the WordML2DTBook DAISY Pipeline component. It does not 
 			reflect the functionality of the component itself. The documentation will 
@@ -66,34 +69,26 @@
 			<p class="revision-060410">The conversion has been designed for and tested with documents using a single text flow. Anchored or free floating objects should be avoided entierly (however this does not apply to footnotes).</p>
 			<p class="revision-060410">Word has a more flexible view on structure than DTBook does. Rather than trying to force these odd structures into DTBook - e.g. by adding empty elements - the user is expected to follow a few simple restrictions when creating the documents in Word.</p>
 			<p>
-				<span class="revision-060410">For example, the user must make sure that t</span>he nesting of headings <span class="revision-060410">are</span> in accordance with DTBook-structure <span class="">and that no headings are empty (a heading that contains other headings is not empty).</span>
+				<span class="revision-070201">For example, the user must make sure that no headings are empty (a heading that contains other headings is not empty).</span>
 			</p>
 			<div class="example">
 				<h3>Example</h3>
 				<p>The sequence</p>
-				<ul>
-					<li>h<span class="revision-060410">eading </span>2</li>
+				<ul class="revision-070201">
+					<li>heading 1</li>
+					<li>heading 1</li>
 					<li>text</li>
-					<li>h<span class="revision-060410">eading </span>4</li>
+					<li>heading 2</li>
 				</ul>
 				<p>will produce an invalid DTBook. <span class="revision-060410">To produce a valid DTBook, the sequence must be changed to</span>
 				</p>
-				<div class="revision-060410">
-				<ul>
+				<ul class="revision-070201">
+					<li>heading 1</li>
+					<li>Text, or empty paragraph</li>
+					<li>heading 1</li>
+					<li>text</li>
 					<li>heading 2</li>
-					<li>text</li>
-					<li>heading 3</li>
-					<li>text</li>
 				</ul>
-				<p class="r">or to</p>
-				<ul>
-					<li>heading 2</li>
-					<li>text</li>
-					<li>heading 3</li>
-					<li>heading 4</li>
-					<li>text</li>
-				</ul>
-				</div>
 			</div>
 			<h2 class="revision-060410">Objects addressed</h2>
 			<p class="revision-060410">The following objects are adressed in the conversion.</p>
@@ -200,9 +195,12 @@
 		not an option, it is possible to use the "footnote reference" character style and the "footnote text" 
 		paragraph style. However, a link between the two is not created using this method.</p>
 			<h2>Images</h2>
-			<p>img-tags are created for images<span class="revision-060908">, but the images are extracted only if run through the WordML2DTBook DAISY Pipeline component</span> (since <span class="revision-060908">extracting images</span> is beyond
-		the limitations of XSLT 1.0). <span class="revision-060410">The naming convention matches the naming convention used when saving as HTML from Word, thereby simplifying the conversion process. The syntax is: imagexxx.jpg. If an alternative text has been specified for the image, this is preserved in the alt-attribute.</span>
+			<p>img-tags are created for images<span class="revision-060908">, but the images are only extracted if <span class="revision-070201">they are embedded into the document and converted using</span> the DAISY Pipeline component</span>. <span class="revision-060410">The naming convention matches the naming convention used when saving as HTML from Word, thereby simplifying the conversion process. The syntax is: imagexxx.jpg. If an alternative text has been specified for the image, this is preserved in the alt-attribute.</span>
 			</p>
+			<div class="revision-070201">
+				<h2>Language</h2>
+				<p>The principal language of the document is determined using the language of the default template. This property is not detected automatically in Word, but must be set explicitly by altering the default template for that document.</p>
+			</div>
 			<h2>Formatting</h2>
 			<p>No formatting is taken into account in this transform, thus e.g. bold or italic is <em>not</em>
 		converted. Bold or italics that should be retained must be tagged using the strong or emphasis character style, respectively.</p>
@@ -256,7 +254,8 @@
 			</ul>
 			<h2>Future improvements</h2>
 			<ul>
-				<li>Auto connect footnotes that were created using styles.</li>
+				<li>Auto connect footnotes that were created using styles</li>
+				<li class="revision-070201">Convert linked images</li>
 			</ul>
 			<h2 class="revision-060908">See also...</h2>
 			<ul class="revision-060908">

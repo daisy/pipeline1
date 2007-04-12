@@ -3,14 +3,12 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="rnib.org.uk/tbs#" targetNamespace="rnib.org.uk/tbs#" elementFormDefault="qualified">
 	<xs:element name="author">
 		<xs:simpleType>
-			<xs:restriction base="xs:string">
-			</xs:restriction>
+			<xs:restriction base="xs:string"/>
 		</xs:simpleType>
 	</xs:element>
 	<xs:element name="date">
 		<xs:simpleType>
-			<xs:restriction base="xs:string">
-			</xs:restriction>
+			<xs:restriction base="xs:string"/>
 		</xs:simpleType>
 	</xs:element>
 	<xs:element name="description">
@@ -50,14 +48,13 @@
 				<xs:element ref="date"/>
 				<xs:element ref="author"/>
 				<xs:element ref="description"/>
-				<xs:element ref="remark"/>
+				<xs:element ref="remark" minOccurs="0"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="version">
 		<xs:simpleType>
-			<xs:restriction base="xs:string">
-			</xs:restriction>
+			<xs:restriction base="xs:string"/>
 		</xs:simpleType>
 	</xs:element>
 </xs:schema>

@@ -4,12 +4,11 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.parsers.SAXParserFactory;
 
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
@@ -19,8 +18,11 @@ import org.daisy.util.xml.xslt.Stylesheet;
  * 
  * Transforms a Microsoft Office 2003 WordML document into DTBook.
  * 
+ * Version 2007-april-11 
+ * Changed a few constructs to reflect changes in the Pipeline core API.
+ * 
  * @author  Joel Håkansson
- * @version 2006-aug-25
+ * @version 2007-april-11
  * @since 1.0
  */
 public class WordML2DTBook extends Transformer implements MessageInterface {
@@ -32,9 +34,8 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
 	 * @param eventListeners
 	 * @param isInteractive
 	 */
-	public WordML2DTBook(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-		super(inListener, eventListeners, isInteractive);
-		// TODO Auto-generated constructor stub
+	public WordML2DTBook(InputListener inListener, Boolean isInteractive) {
+		super(inListener, isInteractive);
 	}
 
 	protected boolean execute(Map parameters) throws TransformerRunException {
@@ -48,8 +49,8 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
         	filename = new File(input).getName() + ".dtbook.xml";
         String images = (String)parameters.remove("images");
         if (!outdir.exists()) outdir.mkdirs();
-        progress(0.05);
         File result = new File(outdir, filename);
+        progress(0.3);
 		if (images.equals("true")) {
 			decodeImages(new File(input), outdir);
 			// put parameter for xslt
@@ -75,15 +76,14 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
 	  	} catch (Exception e) {
 	  		throw new TransformerRunException(e.getMessage(), e);
 	  	}
-	  	System.out.println();
-	  	System.out.println("Completion time: " + (new Date().getTime()-start.getTime())+ " ms");
+	  	sendMessage("Time to decode images: " + (new Date().getTime()-start.getTime())+ " ms");
 	}
-	
-	public void sendMessage(Level level, String idstr, Object[] params) {
+
+	public void sendMessage(MessageEvent.Type type, String idstr, Object[] params) {
 		if (params!=null && params.length>0) {
-			super.sendMessage(level, new MessageFormat(i18n(idstr)).format(params));
+			super.sendMessage(new MessageFormat(i18n(idstr)).format(params), type);
 		} else {
-			super.sendMessage(level, i18n(idstr));
+			super.sendMessage(i18n(idstr), type);
 		}
 	}
 }

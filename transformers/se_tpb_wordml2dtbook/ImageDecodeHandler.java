@@ -3,6 +3,7 @@ package se_tpb_wordml2dtbook;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
@@ -46,7 +47,7 @@ public class ImageDecodeHandler extends DefaultHandler2 {
 			String name = atts.getValue(uri, "name");
 			String post = name.substring(name.lastIndexOf("."));
 			if (!(post.equals(".png") || post.equals(".jpg") || post.equals(".jpeg"))) {
-				msg.sendMessage(java.util.logging.Level.WARNING, "IMAGE_FORMAT_WARNING", new Object[]{post});
+				msg.sendMessage(MessageEvent.Type.WARNING, "IMAGE_FORMAT_WARNING", new Object[]{post});
 			}
 			filename = "image";
 			if (imgcount<10) filename += "00";

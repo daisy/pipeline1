@@ -31,17 +31,6 @@
 	xmlns="http://www.daisy.org/z3986/2005/dtbook/"
 	exclude-result-prefixes="w v w10 sl aml wx o st1 d rev">
 
-<xsl:output method="xml" indent="no" encoding="UTF-8" 
-	doctype-public="-//NISO//DTD dtbook 2005-1//EN"
-	doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd"/>
-
-<!-- Input parameters -->
-<xsl:param name="defaultTagset" select="'./tagsets/default-tagset.xml'"/>
-<xsl:param name="defaultStyle" select="'4'"/>
-<xsl:param name="customTagset" select="'./tagsets/custom-tagset.xml'"/>
-<xsl:param name="customStyle" select="'tpb'"/>
-<xsl:param name="forceJPEG" select="'true'"/>
-
 <!-- Global variables -->
 <xsl:variable name="mapset" select="document($customTagset)|document($defaultTagset)"/>
 
@@ -52,11 +41,13 @@
 <xsl:include href="./modules/named_templates.xsl"/>
 <xsl:include href="./modules/characters.xsl"/>
 <xsl:include href="./modules/tables.xsl"/>
+<xsl:include href="./modules/output.xsl"/>
+<xsl:include href="./modules/parameters.xsl"/>
 
 <xsl:template match="w:wordDocument">
 	<xsl:call-template name="insertProcessingInstruction"/>
 	<xsl:call-template name="insertVersion"/>
-	<dtbook version="2005-1" xml:lang="{//w:style[w:name/@w:val='Normal']//w:lang/@w:val}">
+	<dtbook version="{$dtbook-version}" xml:lang="{//w:style[w:name/@w:val='Normal']//w:lang/@w:val}">
 		<xsl:call-template name="insertHeader"/>
 		<book>
 			<xsl:apply-templates select="w:body"/>
@@ -72,20 +63,56 @@
 </xsl:template>
 
 <xsl:template match="w:body">
-	<xsl:apply-templates/> <!-- select="wx:sect" -->
+	<xsl:choose>
+		<xsl:when test="count(wx:sect)=1">
+			<xsl:for-each select="node()">
+				<xsl:choose>
+					<xsl:when test="self::wx:sect">
+						<xsl:if test="count(*[not(self::wx:sub-section)])&gt;0">
+							<xsl:choose>
+								<xsl:when test="wx:sub-section">
+									<frontmatter>
+										<level1 class="colophon">
+											<xsl:apply-templates select="*[not(self::wx:sub-section)]"/>
+										</level1>
+									</frontmatter>
+								</xsl:when>
+								<xsl:otherwise>
+									<bodymatter>
+										<level1>
+											<xsl:apply-templates select="*"/>
+										</level1>
+									</bodymatter>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:if>
+						<xsl:if test="wx:sub-section">
+							<bodymatter>
+								<xsl:apply-templates select="wx:sub-section"/>
+							</bodymatter>
+						</xsl:if>
+					</xsl:when>
+					<xsl:otherwise><xsl:apply-templates select="."/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>
+		</xsl:when>
+		<xsl:otherwise>
+			<bodymatter>
+				<xsl:apply-templates/>
+			</bodymatter>
+		</xsl:otherwise>
+	</xsl:choose>
 </xsl:template>
 
 <xsl:template match="wx:sect">
 	<xsl:if test="count(*[not(self::wx:sub-section)])&gt;0">
-		<frontmatter>
-			<level1 class="colophon">
-				<xsl:apply-templates select="*[not(self::wx:sub-section)]"/>
-			</level1>
-		</frontmatter>
+		<level1>
+			<xsl:apply-templates select="*[not(self::wx:sub-section)]"/>
+		</level1>
 	</xsl:if>
-	<bodymatter>
+	<xsl:if test="wx:sub-section">
 		<xsl:apply-templates select="wx:sub-section"/>
-	</bodymatter>
+	</xsl:if>
 </xsl:template>
 
 <xsl:template match="wx:sub-section">
@@ -93,6 +120,7 @@
 	<xsl:element name="{$ename}">
 		<xsl:if test="parent::wx:sect"><xsl:attribute name="class">chapter</xsl:attribute></xsl:if>
 		<xsl:apply-templates/>
+		<xsl:if test="count(w:p)=1 and not(wx:sub-section)"><p/></xsl:if>
 	</xsl:element>
 </xsl:template>
 
@@ -364,6 +392,11 @@
 			<p><xsl:value-of select="."/></p>
 		</xsl:for-each>
 	</note>
+</xsl:template>
+
+<xsl:template match="w:hdr|w:ftr">
+	<xsl:comment>Section header/footer removed:</xsl:comment>
+	<xsl:comment><xsl:value-of select="."/></xsl:comment>
 </xsl:template>
 
 <!-- Continue to process children when element nodes are unknown -->

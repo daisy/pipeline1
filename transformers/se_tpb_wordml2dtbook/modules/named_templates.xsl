@@ -7,9 +7,6 @@
 	xmlns:w="http://schemas.microsoft.com/office/word/2003/wordml"
 	xmlns="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="w d rev o">
 
-<!-- Input parameters -->
-<xsl:param name="stylesheet" select="'dtbook2xhtml.xsl'"/>
-
 <!-- Global variables -->
 <xsl:variable name="revision-history" select="document('../docs/revision-history.xml')"/>
 <xsl:variable name="revision" select="$revision-history/rev:history/rev:revision[last()]"/>
