@@ -18,7 +18,7 @@
  */
 package org.daisy.dmfc.core.script;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.daisy.dmfc.core.script.datatype.DatatypeException;
@@ -31,16 +31,26 @@ import org.daisy.util.execution.State;
 public class Job {
 
 	private Script mScript;
-	private Map<String,AbstractProperty> mParameters = new HashMap<String,AbstractProperty>();
+	private Map<String,JobParameter> mParameters; 
 	private State mState;
 	
 	/**
-	 * Creates a new ScriptRunner object from a Script.
+	 * Creates a new Job object from a Script.
 	 * @param script
 	 */
 	public Job(Script script) {
 		this.mScript = script;
 		this.mState = State.IDLE;
+		this.mParameters = new LinkedHashMap<String,JobParameter>();
+		for (ScriptParameter param : script.getParameters().values()) {
+			try {
+				mParameters.put(param.getName(), new JobParameter(param.getName(), param.getValue(), this, param));
+			} catch (ScriptValidationException e) {
+				// This should not happen since StringProperty has
+				// an empty validation method.
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
@@ -68,21 +78,12 @@ public class Job {
 	 * @throws DatatypeException
 	 */
 	public void setParameterValue(String name, String value) throws DatatypeException {
-		ScriptParameter parameter = mScript.getParameter(name);
-		if (parameter != null) {
-			parameter.getDatatype().validate(value);
-			try {
-				mParameters.put(name, new StringProperty(name, value));
-			} catch (ScriptValidationException e) {
-				// This should not happen since StringProperty has
-				// an empty validation method.
-				e.printStackTrace();
-			}
-		}
+		JobParameter jobParameter = this.getJobParameter(name);
+		jobParameter.setValue(value);		
 	}
 	
 	/**
-	 * Gets the parameter value previously set in this ScriptRunner.
+	 * Gets the value of a parameter.
 	 * @param name the name of the parameter
 	 * @return the value of the parameter or null if the parameter was not set
 	 */
@@ -95,21 +96,30 @@ public class Job {
 	}
 	
 	/**
-	 * Gets a map containing all parameters set in this ScriptRunner
+	 * Gets the JobParameter for a specified parameter.
+	 * @param name the name of the parameter
+	 * @return a JobParameter, or null if no parameter with the specified name exists
+	 */
+	public JobParameter getJobParameter(String name) {
+		return mParameters.get(name);
+	}
+	
+	/**
+	 * Gets a map containing all parameters in this Job
 	 * @return
 	 */
-	/*package*/ Map<String,AbstractProperty> getParameters() {
+	public Map<String,JobParameter> getJobParameters() {
 		return mParameters;
 	}
 	
 	/**
-	 * Have all required script parameters been set in this ScriptRunner?
+	 * Have all required script parameters been set in this Job?
 	 * @return
 	 */
 	public boolean allRequiredParametersSet() {
 		boolean result = true;
 		for (ScriptParameter parameter : mScript.getRequiredParameters().values()) {
-			if (!mParameters.containsKey(parameter.getName())) {
+			if (!this.getJobParameter(parameter.getName()).hasChanged()) {
 				result = false;
 			}
 		}

@@ -50,7 +50,7 @@ public class StringProperty extends AbstractProperty {
 	 * @see org.daisy.dmfc.core.script.AbstractProperty#getValue(java.util.Map)
 	 */
 	@Override
-	public String getValue(Map<String, AbstractProperty> runnerProperties) {		
+	public String getValue(Map<String, ? extends AbstractProperty> runnerProperties) {		
 		return mValue;
 	}
 

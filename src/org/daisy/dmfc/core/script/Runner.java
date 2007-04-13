@@ -22,9 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.daisy.dmfc.core.event.CoreMessageEvent;
 import org.daisy.dmfc.core.event.EventBus;
-import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.event.ScriptStateChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
 import org.daisy.dmfc.core.transformer.Parameter;
@@ -75,7 +73,7 @@ public class Runner  {
 				Map<String, String> parameters = new HashMap<String, String>();
 				
 				// Add parameters specified by task
-				this.addTaskParameters(parameters, task, job.getParameters());
+				this.addTaskParameters(parameters, task, job.getJobParameters());
 								
 				// Add hard-coded transformer parameters
 				this.addTransformerParameters(parameters, handler);				
@@ -125,7 +123,7 @@ public class Runner  {
 	 * @param parameters the (to be) script parameters
 	 * @param task the task to add parameters from
 	 */
-	private void addTaskParameters(Map<String,String> parameters, Task task, Map<String,AbstractProperty> runnerProperties) {
+	private void addTaskParameters(Map<String,String> parameters, Task task, Map<String,JobParameter> runnerProperties) {
 		for (TaskParameter param : task.getParameters().values()) {
 			parameters.put(param.getName(), param.getValue(runnerProperties));
 		}

@@ -74,7 +74,7 @@ public abstract class AbstractProperty {
 	 * @param runnerProperties an extra set of properties to be used in the expansion
 	 * @return the expanded property value
 	 */
-	public String getValue(Map<String, AbstractProperty> runnerProperties) {
+	public String getValue(Map<String, ? extends AbstractProperty> runnerProperties) {
 		assert(mValue != null);
 		assert(mProperties != null);				        
 	    // Expand properties in the value string     

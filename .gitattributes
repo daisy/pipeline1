@@ -95,6 +95,7 @@ src/org/daisy/dmfc/core/pipeline.messages -text
 src/org/daisy/dmfc/core/script/AbstractProperty.java -text
 src/org/daisy/dmfc/core/script/Creator.java -text
 src/org/daisy/dmfc/core/script/Job.java -text
+src/org/daisy/dmfc/core/script/JobParameter.java -text
 src/org/daisy/dmfc/core/script/Parser.java -text
 src/org/daisy/dmfc/core/script/Runner.java -text
 src/org/daisy/dmfc/core/script/Script.java -text
