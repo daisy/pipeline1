@@ -95,7 +95,7 @@ public class Task {
 	}
 	
 	/**
-	 * Gets the TransformerInfo associated with the tranformer this task refers to.
+	 * Gets the TransformerInfo associated with the transformer this task refers to.
 	 * @return
 	 */
 	public TransformerInfo getTransformerInfo() {
