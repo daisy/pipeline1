@@ -61,6 +61,8 @@ exclude-result-prefixes="xs xdt office style text table draw fo xlink dc meta nu
 
   <xsl:import href="identity2.xsl"/>
 
+  <xsl:param name="headingsfile" select="'none'"/>
+
 <d:doc xmlns:d="rnib.org.uk/ns#">
  <revhistory>
    <purpose><para>Remove lists from around text:h headings </para></purpose>
@@ -71,6 +73,16 @@ exclude-result-prefixes="xs xdt office style text table draw fo xlink dc meta nu
     <authorinitials>DaveP</authorinitials>
     <revdescription>
      <para>Clean up headings to the top level</para>
+    </revdescription>
+    <revremark></revremark>
+   </revision>
+
+   <revision>
+    <revnumber>1.1</revnumber>
+    <date>2007-04-17T12:34:37.0Z</date>
+    <authorinitials>DaveP</authorinitials>
+    <revdescription>
+     <para>Added check for first child of office:text, must be a heading level 1</para>
     </revdescription>
     <revremark></revremark>
    </revision>
@@ -87,12 +99,30 @@ exclude-result-prefixes="xs xdt office style text table draw fo xlink dc meta nu
 <xsl:variable name="debug" select="false()"/>
 
 
-
 <xsl:template match="/" name="initial">
+  <xsl:if test="$headingsfile='none'">
+       <xsl:message terminate="yes">
+         odf2.cleanHeadings. Unable to find headings file, Quitting
+       </xsl:message>
+     </xsl:if>
   <xsl:apply-templates />
 </xsl:template>
 
 
+
+<xsl:template match="office:text">
+<xsl:variable name="headings" select="document($headingsfile)"/>
+
+  <xsl:if test="not(*[1]/@text:style-name = ($headings/headings/level[1]/h))">
+    <xsl:message terminate="yes">
+      odf2.cleanHeadings.xsl. First child of office:text is not a heading level 1.
+      Found <xsl:value-of select="name(*[1])"/> with content "<xsl:value-of select="*[1]/text()"/>"
+    </xsl:message>
+  </xsl:if>
+
+
+
+</xsl:template>
 
 
   <xsl:template match="text:list[.//text:h[not(@text:is-list-header)]]">

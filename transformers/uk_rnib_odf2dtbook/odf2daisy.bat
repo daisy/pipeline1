@@ -21,7 +21,7 @@ java  -mx120m -ms120m -cp .;/myjava/saxon8.jar;/myjava/xercesImpl.jar -Dorg.apac
 
 
 echo Remove list wrappers from heading X elements, declarations and forms
-java  -mx120m -ms120m -cp .;/myjava/saxon8.jar;/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o op.xml content.xml odf2.cleanHeadings.xsl 
+java  -mx120m -ms120m -cp .;/myjava/saxon8.jar;/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o op.xml content.xml odf2.cleanHeadings.xsl  "headingsfile=_headings.xml"
 
 if  errorlevel 1 goto :structureerror
 
