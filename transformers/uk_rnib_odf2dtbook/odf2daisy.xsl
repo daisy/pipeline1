@@ -64,8 +64,13 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
                          script form math dr3d chart svg 
                          number meta dc xlink fo draw table 
                          text style office xdt xs"
-                version="1.0">
+                version="2.0">
 
+
+<!-- input parameter is the name of the file holding style information -->
+  <xsl:param name="stylefile" select="'none'"/>
+ <!-- input parameter is the name of the file holding the heading names -->
+ <xsl:param name="headingsfile" select="'none'"/>
  <!-- Using include rather than import simply to facilitate debug. -->
  <!-- Probably better to import if overrides are of benefit -->
 
@@ -92,19 +97,93 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
     </revdescription>
     <revremark>&#xA9;Copyright Dave Pawson, RNIB, 2006</revremark>
    </revision>
+
+   <revision>
+    <revnumber>1.1</revnumber>
+    <date>2006-11-01T10:08:21Z</date>
+    <authorinitials>DaveP</authorinitials>
+    <revdescription>
+     <para>Updated. Added 1.1 accessibility markup, change bar material.</para>
+    </revdescription>
+    <revremark>&#xA9;Copyright Dave Pawson, RNIB, 2006</revremark>
+   </revision>
+
+   <revision>
+    <revnumber>1.2</revnumber>
+    <date>2007-03-17T09:51:56Z</date>
+    <authorinitials>DaveP</authorinitials>
+    <revdescription>
+     <para>Updated. Added mandatory metadata processing</para>
+    </revdescription>
+    <revremark>&#xA9;Copyright Dave Pawson, RNIB, 2006,2007</revremark>
+   </revision>
+
+
+
+
   </revhistory>
   </d:doc>
   <xsl:output method="xml" indent="yes" 
-doctype-public=  "-//NISO//DTD dtbook 2005-1//EN"
-doctype-system=  "http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd"
+doctype-public=  "-//NISO//DTD dtbook 2005-2//EN"
+
+doctype-system = "dtbook-2005-2.dtd"
 />
 
-
+ <!-- doctype-system = "http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd" -->
  <!-- Debug dump to terminal -->
 <xsl:variable name="debug" select="false()"/>
 
   <xsl:template match="/">
-    <dtbook  version='2005-1' xmlns='http://www.daisy.org/z3986/2005/dtbook/'>
+
+<!-- check that styles are available. -->
+<xsl:if test="$stylefile ='none'">
+  <xsl:message terminate="yes">
+    Parameter stylefile not set[<xsl:value-of select="$stylefile"/>]. Terminating
+  </xsl:message>
+</xsl:if>
+<xsl:if test="not(doc-available($stylefile))">
+  <xsl:message terminate="yes">
+    Unable to open stylefile <xsl:value-of select="$stylefile"/>. Terminating
+  </xsl:message>
+</xsl:if>
+
+<!-- check that headings are available. -->
+<xsl:if test="$headingsfile ='none'">
+  <xsl:message terminate="yes">
+    Parameter headingsfile not set[<xsl:value-of select="$headingsfile"/>]. Terminating
+  </xsl:message>
+</xsl:if>
+<xsl:if test="not(doc-available($headingsfile))">
+  <xsl:message terminate="yes">
+    Unable to open headingsfile <xsl:value-of select="$headingsfile"/>. Terminating
+  </xsl:message>
+</xsl:if>
+
+
+
+
+
+
+
+
+    <xsl:variable name='lang'>
+    <xsl:choose>
+      <xsl:when test="document('meta.xml')/office:document-meta/office:meta[dc:language]">
+        <xsl:value-of select="substring-before(document('meta.xml')//office:document-meta/office:meta/dc:language,'-')"/>
+      </xsl:when>
+
+      <xsl:otherwise>
+        <xsl:value-of select="'en'"/>
+        <xsl:message>
+Warning          dc:language not found, using 'en'
+        </xsl:message>
+
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+
+    <dtbook  version='2005-2' xmlns='http://www.daisy.org/z3986/2005/dtbook/' xml:lang='{$lang}'>
       <head>
     <xsl:if test="$debug">
       <xsl:message>
@@ -121,12 +200,7 @@ doctype-system=  "http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd"
              [contains(@text:style-name,'Heading')][1]"/></doctitle>
     </frontmatter>
     <bodymatter>
-      <level>
-        <hd>
-          <xsl:comment>Created empty  </xsl:comment>
-        </hd>
       <xsl:apply-templates select="/office:document-content/office:body"/>
-    </level>
     </bodymatter>
   </book>
 </dtbook>
@@ -144,6 +218,9 @@ doctype-system=  "http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd"
 <xsl:template match="*" >
   <xsl:message>
     *****<xsl:value-of select="name(..)"/>/<xsl:value-of select="name()"/>******
+  <xsl:if test="@text:style-name"> 
+ (<xsl:value-of select="@text:style-name"/>)
+</xsl:if>
     </xsl:message>
 </xsl:template>
 

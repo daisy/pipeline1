@@ -62,14 +62,16 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
 xmlns:xalan="http://xml.apache.org/xalan"
 xmlns:exslt="http://exslt.org/common"
-             
+  xmlns:dp="http://www.dpawson.co.uk/ns#"             
 exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo 
                          script form math dr3d chart svg 
                          number meta dc xlink fo draw table 
                          text style office xdt xs
-                         xalan exslt d"
+                         xalan exslt d dp"
 
-                version="1.0">
+                version="2.0">
+
+
 
   <xsl:preserve-space elements="Preformatted_20_Text"/>
 
@@ -96,21 +98,6 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
   <xsl:output method="xml"/>
 
 
- <!-- Style transformations. -->
-
- <xsl:variable name="styles">
-    <xsl:for-each 
-      select="/office:document-content/office:automatic-styles/style:style
-                         [@style:family='text']/
-                         style:text-properties[@style:text-underline-style]
-                         [not(@style:text-underline-style='none')] | 
-                         /office:document-content/office:automatic-styles/style:style
-                         [@style:family='text']/style:text-properties[@fo:font-weight='bold']|
-                         /office:document-content/office:automatic-styles/style:style
-                         [@style:family='text']/style:text-properties[@fo:font-style='italic']">
-       <d:name><xsl:value-of select="../@style:name"/></d:name>
-   </xsl:for-each>
-</xsl:variable>
 
  
 
@@ -125,24 +112,101 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
 
 
 
+  <xsl:template match="text:sequence-decl"/>
 
+
+
+<!-- Set up a variable holding the style information -->
+<xsl:variable name="styles" select="document($stylefile)/*" as="item()*"/>
+
+ <!-- Set up a variable holding the heading information,  -->
+<xsl:variable name="headings" select="document($headingsfile)" as="item()*"/>
 
 
 
 <xsl:template match="office:text">
-  <xsl:apply-templates/>
+  <xsl:call-template name="group">
+    <xsl:with-param name="elementGroup" select="*"/>
+    <xsl:with-param name="level" select="1"/>
+  </xsl:call-template>
 </xsl:template>
 
-<xsl:template match="text:h[string(.)]" priority="0.4">
-  <bridgehead>
-    <xsl:if test="@text:outline-level">
-      <xsl:attribute name="style">
-        <xsl:value-of select="concat('h',@text:outline-level)"/>
-      </xsl:attribute>
-    </xsl:if>
-    <xsl:apply-templates/>
-  </bridgehead>
+ 
+
+ <!-- General grouping template -->
+ <!-- elementGroup is the group requiring structure -->
+ <!-- level is the numeric level, 1-6 only -->
+ <!--  -->
+<xsl:template name="group">
+  <xsl:param name="elementGroup" as="element()*"/>
+  <xsl:param name="level" as="xs:integer" />
+
+  <!--  -->
+  <xsl:variable name="key" as="item()*">
+    <xsl:sequence select="$headings/headings/level[@n = $level]/h"/>
+  </xsl:variable>
+  <xsl:if test="$debug">
+    <xsl:message terminate="no">
+      element: <xsl:value-of select="name($elementGroup[1])"/>
+      level: <xsl:value-of select="$level"/>
+      style | []: [<xsl:value-of select="$elementGroup[1]/@text:style-name"/>]
+      headerStyles:  <xsl:copy-of select="$key"/> 
+    </xsl:message>
+  </xsl:if>
+  <xsl:for-each-group select="$elementGroup" group-starting-with="text:h[@text:style-name = ($key)]">
+      <xsl:choose>
+        <xsl:when test="@text:style-name = ($key)"> <!-- was $elementGroup[1]/@text:style-name = ($key) -->
+        <xsl:element name="{concat('level',string($level))}">
+            <xsl:element name="{concat('h',(string($level)))}">
+              <xsl:apply-templates select="current-group()[1]"/>
+            </xsl:element>
+            <xsl:variable name="this" select="generate-id(current-group()[1])"/>
+            <xsl:if test="not(following-sibling::*[local-name()=('p', 'list')]/text()
+                          [generate-id(preceding-sibling::text:h[1]) = $this ])">
+              <p/>
+            </xsl:if>
+            <xsl:choose>              
+              <xsl:when test="$level &lt; 6">
+                <xsl:call-template name="group">
+                  <xsl:with-param name="elementGroup" select="remove(current-group(), 1)"/>
+                  <xsl:with-param name="level" select="$level + 1"/>
+                </xsl:call-template>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:apply-templates select="current-group()"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          
+          </xsl:element>
+        </xsl:when>
+        <xsl:otherwise>
+           <xsl:apply-templates select="current-group()"/>
+        </xsl:otherwise>
+      </xsl:choose>    
+    </xsl:for-each-group>
 </xsl:template>
+
+
+
+<xsl:template match="text:h">
+  <xsl:variable name="name" select="('h6',$styles[//style[@name]=current()/@text:style-name]/mapsTo)[last()]"/>
+    <xsl:apply-templates/>
+</xsl:template>
+
+
+<xsl:variable name="headingName" select="'text:h'"/>
+
+
+
+
+
+
+<xsl:template match="text:section">
+  <div>
+    <xsl:apply-templates/>
+  </div>
+</xsl:template>
+
 
 
 <xsl:template match="text:h[not(string(.))]" priority="0.4"/>
@@ -166,7 +230,7 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
  <!--  -->
  <!-- List processing -->
  <!-- Note: text:p @text:style-name='List' treated as para -->
- <xsl:template match="text:list">
+ <xsl:template match="text:list[text:list-item]" >
    <list>
      <xsl:choose>
        <xsl:when test="key('bulletedLists',@text:style-name)">
@@ -189,27 +253,33 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
    </list>
  </xsl:template>
 
+
+<!-- Ignore empty lists -->
+ <xsl:template match="text:list[not(text:list-item)]"  />
+
+
  <!-- List item -->
  <!-- Needed li markup here, to cater for nested lists -->
-<xsl:template match="text:list/text:list-item">
+<xsl:template match="text:list/text:list-item" >
   <li>  <xsl:apply-templates/></li>
 </xsl:template>
 
- <xsl:template match="text:list/text:list-item/text:p" priority="0.6">
+ <xsl:template match="text:p[parent::list-item]" priority="0.6"  >
    <xsl:apply-templates/>
  </xsl:template>
 
 
-
-
-
  <!-- Default text. Processed lower priority for overrides -->
-<xsl:template match="text:p" priority="0.4">
-   <p><xsl:apply-templates/></p>
+<xsl:template match="text:p[string(.)]"  priority="0.1">
+   <p><xsl:apply-templates /></p>
 </xsl:template>
 
+
+<xsl:template match="text:p[not(string(.))]" />
+
+
  <!-- Fixed format, respect ws -->
-<xsl:template match="text:p[@text:style-name='Preformatted_20_Text']" priority="0.6">
+<xsl:template match="text:p[@text:style-name='Preformatted_20_Text']" priority="0.6"  >
   <samp>
     <xsl:apply-templates/>
 </samp>
@@ -220,7 +290,7 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
 
 
  <!-- Annotations Parent may be a para -->
- <xsl:template match="text:p[office:annotation]">
+ <xsl:template match="text:p[office:annotation][not(ancestor::table:table-row)]"  >
    <p>
    <xsl:apply-templates  mode="note"/>
  </p>
@@ -232,6 +302,10 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
    <xsl:value-of select="."/>
  </xsl:template>
 
+
+ 
+
+
  <xsl:template match="office:annotation" mode="note">
    <noteref idref="{generate-id()}" class="annotation">
      <xsl:text>note </xsl:text>
@@ -241,23 +315,32 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
 
  <!-- Date should not produce metadata -->
  <xsl:template match="office:annotation/dc:date"  >
-   <dateline><xsl:apply-templates/></dateline>
+   <p>Date.
+<xsl:apply-templates/>
+</p>
  </xsl:template>
 
- 
+   <xsl:template match="office:annotation/dc:creator">
+     <p>Creator: <xsl:apply-templates/></p>
+  </xsl:template>
 
 
- <xsl:template match="office:annotation">
+<xsl:template match="office:annotation">
    <note id="{generate-id()}" class="annotation">
      <xsl:apply-templates/>
    </note>
  </xsl:template>
 
 
+
+ 
+
+
+
  <!--  -->
  <!-- Footnotes  -->
  <!--  -->
- <xsl:template match="text:p[text:note]">
+ <xsl:template match="text:p[text:note]"  priority="0.6">
    <p>
 <xsl:apply-templates  mode="footnote"/>
    </p>
@@ -285,12 +368,69 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
  </xsl:template>
 
 
+<!--  -->
+<!-- Change information  -->
+<!--  -->
+
+
+<xsl:template match="text:tracked-changes"  >
+  <div class="trackedChanges">
+    <xsl:apply-templates/>    
+  </div>
+</xsl:template>
+
+
+<xsl:template match="text:changed-region" >
+  <div >
+    <p> <a href="#{@text:id}">Change</a> </p>
+    
+    <xsl:apply-templates/>
+  </div>
+</xsl:template>
+
+<xsl:template match="text:deletion">
+  <p>Deletion: <xsl:apply-templates select="office:change-info" mode="change"/></p>
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="text:insertion">
+  <p>Insertion: <xsl:apply-templates select="office:change-info" mode="change"/></p>
+  <xsl:apply-templates/>
+</xsl:template>
+
+
+
+<xsl:template match="office:change-info"/>
+
+<xsl:template match="office:change-info" mode="change">
+  <span><xsl:value-of select="dc:creator"/> <xsl:text> </xsl:text> <xsl:value-of select="dc:date"/></span>
+</xsl:template>
+
+
+
+<xsl:template match="text:change">
+  <a class="change" id="{@text:change-id}"/>
+</xsl:template>
+
+<xsl:template match="text:change-start">
+  <a class="changeStart" rel="{@text:change-id}"/>
+</xsl:template>
+
+<xsl:template match="text:change-end">
+  <a class="changeStart" rev="{@text:change-id}"/>
+</xsl:template>
+
+
+
+
+
+
 
  <!--  -->
  <!-- Images. All assumed to be block progression direction.  -->
  <!-- Does not process text:p in draw:text-box -->
 
-<xsl:template match="text:p [draw:frame][not(ancestor::draw:text-box)]">
+<xsl:template match="text:p [draw:frame][not(ancestor::draw:text-box)]"  priority="1">
   <p>
     <xsl:apply-templates/>
   </p>
@@ -306,12 +446,26 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
 </imggroup>
 </xsl:template>
 
+<xsl:template match="draw:frame/draw:text-box"/>
+
+<xsl:template match="draw:frame" priority="0.1">
+  <xsl:apply-templates/>
+</xsl:template>
+
+
+
  <!--The wrapping text-box is processed by the ancestor.   -->
- <xsl:template match="draw:text-box/text:p">
+ <xsl:template match="text:p[parent::draw:text-box]" priority="1">
    <xsl:for-each select="text()|text:sequence">
      <xsl:value-of select="."/>
    </xsl:for-each>
  </xsl:template>
+
+
+<!-- sequence references. Reference to an inserted object -->
+<xsl:template match="text:sequence-ref">
+  <span class="reference"><xsl:apply-templates/></span>
+</xsl:template>
 
 
  <!-- The actual image -->
@@ -331,18 +485,31 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
  </xsl:template>
 
 
-
+ <xsl:template match="draw:plugin"/>
 
  <!-- Bookmarks. Converted to an anchor element -->
  <xsl:template match="text:bookmark[string(@text:name)]">
    <a id="{@text:name}"/>
  </xsl:template>
 
- 
+  <xsl:template match="text:bookmark-start[string(@text:name)]">
+    <a id="{@text:name}"/>
+  </xsl:template>
+
+
+  <xsl:template match="text:bookmark-end"/>
+
+
+<!-- Reference marks -->
+<xsl:template match="text:reference-mark">
+  <a id="{@text:name}"/>
+</xsl:template>
+
+
 
  <!--  bookmark references to links. No hot text. FIXME-->
  <xsl:template match="text:bookmark-ref">
-   <a href="{@text:ref-name}">
+   <a href="{translate(@text:ref-name,' ()','___')}">
      <xsl:text> link </xsl:text>
    </a>
  </xsl:template>
@@ -363,7 +530,7 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
  <!-- Inline elements -->
  <!--                 -->
 
- <xsl:template match="text:span" priority="0.4">
+ <xsl:template match="text:span" priority="0.4"  >
    <span>
      <xsl:choose>
        <xsl:when test="@text:style-name = exslt:node-set($styles)/d:name ">
@@ -418,14 +585,11 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
    match="style:paragraph-properties[@fo:break-before='page']"
    use ="@fo:break-before"/>
 
-   <xsl:template match="text:p [@text:style-name=key('pageBreaks','page')/../@style:name]">
 
-     <xsl:if test="$debug">
-     <xsl:message>
-       Found page number, <xsl:value-of select="count(preceding::text:p[@text:style-name=
-                             key('pageBreaks','page')/../@style:name]) + 1"/>
-     </xsl:message>
-   </xsl:if>
+
+   <xsl:template match="text:p [@text:style-name=key('pageBreaks','page')/../@style:name]"  >
+
+  
    <p>
      <pagenum id="{generate-id()}"
        page='normal'>
@@ -496,10 +660,18 @@ text:ref-name="x" -->
    <xsl:comment> Note that  id value [<xsl:value-of select="@text:ref-name"/>] is not  unique to the document.   </xsl:comment>
    </xsl:when>
    <xsl:otherwise>
-      <a id="{@text:ref-name}"/>
+      <a id="{translate(@text:ref-name,' ()','___')}"/>
    </xsl:otherwise>
    </xsl:choose>
  </xsl:template>
+
+ <xsl:template match="text:user-field-get">
+   <xsl:apply-templates/>
+
+ </xsl:template>
+
+
+
 
 
  <!--  -->
@@ -541,14 +713,58 @@ text:ref-name="x" -->
  <xsl:template match="office:automatic-styles|office:forms "/>
 
 
- <!--
-<xsl:template match="*" priority="-1">
+
+
+
+
+<!-- Look up the level from the stylename -->
+ <xsl:function name="dp:levelFromName" as="xs:string">
+   <xsl:param name="sname" as="xs:string"/>
+     <xsl:choose>
+       <xsl:when test="$styles/style[$sname=@name]/mapsTo">
+         <xsl:variable name="elName" select="$styles/style[$sname=@name][1]/mapsTo"/>
+         <xsl:choose>
+           <xsl:when test="contains($elName,'level')">
+             <xsl:value-of select="substring($elName,string-length($elName),1)"/>
+           </xsl:when>
+           <xsl:otherwise>
+             <xsl:message terminate="yes">
+               Unable to generate a level from style <xsl:value-of select="$sname"/>. No mapping provided by styles.
+             </xsl:message>
+           </xsl:otherwise>
+         </xsl:choose>
+       </xsl:when>
+       <xsl:otherwise>
+         <xsl:message terminate="yes">
+           Unable to generate a level from style <xsl:value-of select="$sname"/>
+         </xsl:message>
+       </xsl:otherwise>
+     </xsl:choose>
+ </xsl:function>
+
+<!-- find the name of a style, given a daisy 'levelX' element name -->
+
+<xsl:function name="dp:getStyleName" as="xs:string">
+  <xsl:param name="level" as="xs:string"/>
+
+  <xsl:choose>
+    <xsl:when test="$styles/style[mapsTo=$level]">
+      <xsl:value-of select="$styles/style[mapsTo=$level]/@name"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:message terminate="yes">
+        Unable to find a style matching "<xsl:value-of select="$level"/>" in the styles file
+      </xsl:message>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:function>
+
+
+<xsl:template match="*">
   <xsl:message>
-    *****<xsl:value-of select="name(..)"/>/<xsl:value-of select="name()"/>******
-  (<xsl:value-of select="."/>)
-    </xsl:message>
-</xsl:template> 
--->
+    <xsl:value-of select="name(..)"/>/<xsl:value-of select="name()"/> not processed
+  </xsl:message>
+</xsl:template>
 
 
 </xsl:stylesheet>
