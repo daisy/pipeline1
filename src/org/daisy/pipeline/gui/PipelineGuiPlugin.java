@@ -36,6 +36,7 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
+        getCore();
     }
 
     /**
@@ -51,6 +52,8 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
         if (core == null) {
             try {
                 core = new FakeCore(null);
+                core.populateFakeJobs();
+                core.populateFakeMessages();
             } catch (DMFCConfigurationException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
