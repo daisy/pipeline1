@@ -2,6 +2,7 @@ package org.daisy.pipeline.gui;
 
 import org.daisy.pipeline.gui.jobs.JobDetailsView;
 import org.daisy.pipeline.gui.jobs.JobsView;
+import org.daisy.pipeline.gui.messages.MessagesView;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
@@ -12,13 +13,12 @@ public class JobsPerspective implements IPerspectiveFactory {
     public void createInitialLayout(IPageLayout layout) {
         String editorArea = layout.getEditorArea();
         layout.setEditorAreaVisible(false);
-        layout.setFixed(false);
-
-        // layout.setFixed(true);
+        layout.setFixed(true);
         layout.addStandaloneView(JobsView.ID, true, IPageLayout.LEFT, 1.0f,
                 editorArea);
-        // layout.setFixed(false);
-        layout.addView(JobDetailsView.ID, IPageLayout.RIGHT, 0.8f, JobsView.ID);
+        layout.setFixed(false);
+        layout.addView(MessagesView.ID, IPageLayout.BOTTOM, 0.7f, JobsView.ID);
+        layout.addView(JobDetailsView.ID, IPageLayout.RIGHT, 0.7f, JobsView.ID);
 
         PerspectiveHelper.addCommonShortcuts(layout);
     }

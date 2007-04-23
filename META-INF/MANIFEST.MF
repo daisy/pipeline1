@@ -7,6 +7,19 @@ Bundle-Vendor: The DAISY Consortium
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.daisy.pipeline
+ org.daisy.pipeline,
+ org.eclipse.pde.runtime
 Eclipse-LazyStart: true
 Bundle-Activator: org.daisy.pipeline.gui.PipelineGuiPlugin
+Export-Package: org.daisy.dmfc.core,
+ org.daisy.pipeline.gui,
+ org.daisy.pipeline.gui.doc,
+ org.daisy.pipeline.gui.jobs,
+ org.daisy.pipeline.gui.jobs.model,
+ org.daisy.pipeline.gui.jobs.wizard,
+ org.daisy.pipeline.gui.messages,
+ org.daisy.pipeline.gui.scripts,
+ org.daisy.pipeline.gui.tasks,
+ org.daisy.pipeline.gui.util,
+ org.daisy.pipeline.gui.util.swt,
+ org.daisy.pipeline.gui.util.viewers

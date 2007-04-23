@@ -26,14 +26,23 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            class="org.daisy.pipeline.gui.doc.DocView"
+            id="org.daisy.pipeline.gui.views.doc"
+            name="Documentation"/>  
+     <view
+            name="Error Log"
+            class="org.eclipse.pde.internal.runtime.logview.LogView"
+            id="org.eclipse.pde.runtime.LogView">
+      </view>    
+      <view
             name="Jobs"
             class="org.daisy.pipeline.gui.jobs.JobsView"
             id="org.daisy.pipeline.gui.views.jobs">
       </view>
       <view
-            class="org.daisy.pipeline.gui.LogView"
-            id="org.daisy.pipeline.gui.views.log"
-            name="Log"/>
+            class="org.daisy.pipeline.gui.messages.MessagesView"
+            id="org.daisy.pipeline.gui.views.messages"
+            name="Messages"/>
       <view
             class="org.daisy.pipeline.gui.jobs.JobDetailsView"
             id="org.daisy.pipeline.gui.views.jobDetails"
@@ -42,10 +51,6 @@
             class="org.daisy.pipeline.gui.scripts.ScriptsView"
             id="org.daisy.pipeline.gui.views.scripts"
             name="Scripts"/>
-      <view
-            class="org.daisy.pipeline.gui.doc.DocView"
-            id="org.daisy.pipeline.gui.views.doc"
-            name="Documentation"/>       
    </extension>
    <extension
          point="org.eclipse.ui.viewActions">
