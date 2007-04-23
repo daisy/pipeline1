@@ -1,8 +1,8 @@
 package org.daisy.pipeline.gui.jobs;
 
-import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.JobParameter;
 import org.daisy.pipeline.gui.PipelineGuiPlugin;
+import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -31,7 +31,7 @@ public class JobsLabelProvider extends LabelProvider implements
     }
 
     public Image getColumnImage(Object element, int columnIndex) {
-        if (element instanceof Job && columnIndex == 0) {
+        if (element instanceof JobInfo && columnIndex == 0) {
             return PipelineGuiPlugin.getDefault().getImageRegistry().get(
                     IK_IDLE);
         }
@@ -39,8 +39,8 @@ public class JobsLabelProvider extends LabelProvider implements
     }
 
     public String getColumnText(Object element, int columnIndex) {
-        if (element instanceof Job) {
-            return getText((Job) element, columnIndex);
+        if (element instanceof JobInfo) {
+            return getText((JobInfo) element, columnIndex);
         }
         if (element instanceof JobParameter) {
             return getText((JobParameter) element, columnIndex);
@@ -48,11 +48,11 @@ public class JobsLabelProvider extends LabelProvider implements
         return "err!";
     }
 
-    private String getText(Job job, int columnIndex) {
+    private String getText(JobInfo job, int columnIndex) {
         String text;
         switch (columnIndex) {
         case 0:
-            text = job.getScript().getNicename();
+            text = job.getJob().getScript().getNicename();
             break;
         default:
             text = "";

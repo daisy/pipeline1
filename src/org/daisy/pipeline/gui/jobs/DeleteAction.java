@@ -4,9 +4,9 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.daisy.dmfc.core.script.Job;
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.PipelineGuiPlugin;
+import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.util.viewers.DefaultSelectionEnabler;
 import org.daisy.pipeline.gui.util.viewers.ISelectionEnabler;
@@ -39,7 +39,7 @@ public class DeleteAction extends Action implements ISelectionChangedListener {
         this.view = view;
         this.jobManager = JobManager.getInstance();
         this.enabler = new DefaultSelectionEnabler(
-                ISelectionEnabler.Mode.ONE_OR_MORE, new Class[] { Job.class });
+                ISelectionEnabler.Mode.ONE_OR_MORE, new Class[] { JobInfo.class });
         setEnabled(false);
         this.view.getViewer().addSelectionChangedListener(this);
     }
@@ -74,14 +74,14 @@ public class DeleteAction extends Action implements ISelectionChangedListener {
     protected class DeleteOperation extends AbstractOperation {
 
         private IStructuredSelection sel;
-        private SortedMap<Integer, Job> map;
+        private SortedMap<Integer, JobInfo> map;
 
         public DeleteOperation(IStructuredSelection selection) {
             super(getText());
             sel = selection;
-            map = new TreeMap<Integer, Job>();
+            map = new TreeMap<Integer, JobInfo>();
             for (Iterator iter = selection.iterator(); iter.hasNext();) {
-                Job job = (Job) iter.next();
+                JobInfo job = (JobInfo) iter.next();
                 map.put(jobManager.indexOf(job), job);
             }
         }

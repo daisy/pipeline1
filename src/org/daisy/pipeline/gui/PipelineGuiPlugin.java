@@ -7,6 +7,7 @@ import java.net.URL;
 
 import org.daisy.dmfc.core.FakeCore;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
+import org.daisy.pipeline.gui.jobs.StateManager;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -37,6 +38,7 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         getCore();
+        StateManager.getInstance().init();
     }
 
     /**

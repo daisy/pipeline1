@@ -1,8 +1,8 @@
 package org.daisy.pipeline.gui.jobs;
 
-import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.JobParameter;
 import org.daisy.pipeline.gui.jobs.model.IJobManagerListener;
+import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.jobs.model.JobManagerEvent;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -43,7 +43,7 @@ public class JobsContentProvider implements ITreeContentProvider,
             if (index == -1) {
                 viewer.add(manager, event.getJobs());
             } else {
-                for (Job job : event.getJobs()) {
+                for (JobInfo job : event.getJobs()) {
                     viewer.insert(manager, job, index++);
                 }
             }
@@ -66,9 +66,9 @@ public class JobsContentProvider implements ITreeContentProvider,
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
      */
     public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof Job) {
-            Job job = (Job) parentElement;
-            return job.getJobParameters().values().toArray();
+        if (parentElement instanceof JobInfo) {
+            JobInfo info = (JobInfo) parentElement;
+            return info.getJob().getJobParameters().values().toArray();
         }
         return new Object[0];
     }

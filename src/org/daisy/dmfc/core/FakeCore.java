@@ -49,9 +49,10 @@ public class FakeCore {
     }
 
     public void execute(Job job) throws ScriptException {
-        EventBus.getInstance().publish(
-                new ScriptStateChangeEvent(job.getScript(),
-                        StateChangeEvent.Status.STARTED));
+        EventBus.getInstance()
+                .publish(
+                        new ScriptStateChangeEvent(job,
+                                StateChangeEvent.Status.STARTED));
         setState(job, State.RUNNING);
         for (Task task : job.getScript().getTasks()) {
             Transformer trans = new FakeTrans(task.getName());
@@ -85,9 +86,10 @@ public class FakeCore {
         }
         setState(job, State.FINISHED);
 
-        EventBus.getInstance().publish(
-                new ScriptStateChangeEvent(job.getScript(),
-                        StateChangeEvent.Status.STOPPED));
+        EventBus.getInstance()
+                .publish(
+                        new ScriptStateChangeEvent(job,
+                                StateChangeEvent.Status.STOPPED));
 
         // } catch (TransformerAbortException e) {
         // setState(job, State.ABORTED);

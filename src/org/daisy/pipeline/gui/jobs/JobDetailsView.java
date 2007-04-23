@@ -6,8 +6,9 @@ import org.daisy.dmfc.core.event.BusListener;
 import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.ScriptStateChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
-import org.daisy.dmfc.core.script.Script;
 import org.daisy.dmfc.core.script.Job;
+import org.daisy.pipeline.gui.jobs.model.JobInfo;
+import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.tasks.TaskListContentProvider;
 import org.daisy.pipeline.gui.tasks.TaskListViewer;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -40,7 +41,6 @@ public class JobDetailsView extends ViewPart implements ISelectionListener,
     public void createPartControl(Composite parent) {
         viewer = new TaskListViewer(parent, SWT.SINGLE);
         viewer.setContentProvider(new TaskListContentProvider());
-        // TODO init input from viewer
         getSite().setSelectionProvider(viewer);
     }
 
@@ -69,14 +69,17 @@ public class JobDetailsView extends ViewPart implements ISelectionListener,
     public void recieved(EventObject event) {
         if (event instanceof ScriptStateChangeEvent) {
             ScriptStateChangeEvent ssce = (ScriptStateChangeEvent) event;
-            final Script script = (Script) ssce.getSource();
-            if (ssce.getState() == StateChangeEvent.Status.STARTED) {
+            Job job = (Job) ssce.getSource();
+            final JobInfo info = JobManager.getInstance().get(job);
+            if (!viewer.getInput().equals(info)
+                    && ssce.getState() == StateChangeEvent.Status.STARTED) {
+
                 // TODO set ui job family
                 org.eclipse.core.runtime.jobs.Job uiJob = new WorkbenchJob(
                         "Task Detail Update Job") {
                     @Override
                     public IStatus runInUIThread(IProgressMonitor monitor) {
-                        viewer.setInput(script);
+                        viewer.setInput(info);
                         return Status.OK_STATUS;
                     }
 
@@ -96,9 +99,8 @@ public class JobDetailsView extends ViewPart implements ISelectionListener,
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
         if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
             Object obj = ((IStructuredSelection) selection).getFirstElement();
-            if (obj instanceof Job) {
-                Job job = (Job) obj;
-                viewer.setInput(job.getScript());
+            if (obj instanceof JobInfo) {
+                viewer.setInput(obj);
                 // TODO refresh the viewer layout
                 // viewer.refresh();
                 ((Composite) viewer.getControl()).layout();

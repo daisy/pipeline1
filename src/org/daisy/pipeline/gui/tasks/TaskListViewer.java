@@ -1,7 +1,7 @@
 package org.daisy.pipeline.gui.tasks;
 
-import org.daisy.pipeline.gui.util.jface.CompositeListViewer;
 import org.daisy.pipeline.gui.util.swt.CompositeList;
+import org.daisy.pipeline.gui.util.viewers.CompositeListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 

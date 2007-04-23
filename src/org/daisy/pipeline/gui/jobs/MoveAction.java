@@ -1,6 +1,6 @@
 package org.daisy.pipeline.gui.jobs;
 
-import org.daisy.dmfc.core.script.Job;
+import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.util.actions.OperationUtil;
 import org.daisy.pipeline.gui.util.viewers.DefaultSelectionEnabler;
@@ -23,7 +23,7 @@ import org.eclipse.ui.IPropertyListener;
 public abstract class MoveAction extends Action implements
         ISelectionChangedListener, IPropertyListener {
     protected final JobsView view;
-    protected Job selectedJob;
+    protected Object selectedElem;
     protected ISelection selection;
     protected JobManager jobManager;
     private ISelectionEnabler enabler;
@@ -33,7 +33,7 @@ public abstract class MoveAction extends Action implements
         this.view = view;
         this.jobManager = JobManager.getInstance();
         this.enabler = new DefaultSelectionEnabler(
-                ISelectionEnabler.Mode.SINGLE, new Class[] { Job.class });
+                ISelectionEnabler.Mode.SINGLE, new Class[] { JobInfo.class });
         setEnabled(false);
         this.view.getViewer().addSelectionChangedListener(this);
         this.view.addPropertyListener(this);
@@ -49,7 +49,7 @@ public abstract class MoveAction extends Action implements
         setEnabled(enabler.isEnabledFor(incoming));
         if (isEnabled()) {
             selection = incoming;
-            selectedJob = (Job) ((IStructuredSelection) incoming)
+            selectedElem = ((IStructuredSelection) incoming)
                     .getFirstElement();
         }
 

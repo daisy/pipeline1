@@ -2,6 +2,7 @@ package org.daisy.pipeline.gui.tasks;
 
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.PipelineGuiPlugin;
+import org.daisy.pipeline.gui.util.StateObject;
 import org.daisy.pipeline.gui.util.swt.CompositeItem;
 import org.daisy.pipeline.gui.util.swt.CompositeList;
 import org.daisy.util.execution.State;
@@ -79,13 +80,14 @@ public class TaskItem extends CompositeItem {
         String text;
         switch (info.getSate()) {
         case RUNNING:
-            text = info.getLeftTime()+" ms left";
+            text = StateObject.format(info.getLeftTime()) + " ms left";
             break;
         case FINISHED:
-            text = "Done in "+info.getTotalTime()+" ms";
+            text = "Done in " + StateObject.format(info.getTotalTime())
+                    + " ms";
             break;
         default:
-            text="";
+            text = "";
             break;
         }
         return text;
@@ -155,15 +157,15 @@ public class TaskItem extends CompositeItem {
                 showDoc();
             }
         });
-        
+
         // Create time info label
-        timeLabel = new Label(this,SWT.NONE);
+        timeLabel = new Label(this, SWT.NONE);
         formData = new FormData();
         formData.top = new FormAttachment(nameLabel, 5);
         formData.left = new FormAttachment(0, 5);
         formData.right = new FormAttachment(100, -5);
         timeLabel.setLayoutData(formData);
-        
+
         // Create Progress Bar
         progressBar = new ProgressBar(this, SWT.HORIZONTAL);
         progressBar.setMinimum(0);

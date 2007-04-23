@@ -13,13 +13,13 @@ public class MoveToTopAction extends MoveAction {
     @Override
     public void propertyChanged(Object source, int propId) {
         if (propId == JobsView.PROP_SEL_JOB_INDEX) {
-            setEnabled(jobManager.indexOf(selectedJob) > 0);
+            setEnabled(jobManager.indexOf(selectedElem) > 0);
         }
     }
 
     @Override
     protected IUndoableOperation getOperation() {
-        int index = jobManager.indexOf(selectedJob);
+        int index = jobManager.indexOf(selectedElem);
         return new MoveOperation(index, 0, selection);
     }
 }

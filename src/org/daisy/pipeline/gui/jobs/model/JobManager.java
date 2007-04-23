@@ -11,11 +11,11 @@ import org.daisy.dmfc.core.script.Job;
 public class JobManager implements Iterable {
     private static JobManager instance;
 
-    private final List<Job> jobs;
+    private final List<JobInfo> jobs;
     private List<IJobManagerListener> listeners = new ArrayList<IJobManagerListener>();
 
     private JobManager() {
-        jobs = new LinkedList<Job>();
+        jobs = new LinkedList<JobInfo>();
     }
 
     public static JobManager getInstance() {
@@ -26,46 +26,68 @@ public class JobManager implements Iterable {
     }
 
     public void add(int index, Job job) {
-        jobs.add(index, job);
-        fireJobsChanged(new Job[] { job }, JobManagerEvent.Type.ADD, index);
+        add(index, new JobInfo(job));
+    }
+
+    public void add(int index, JobInfo info) {
+        jobs.add(index, info);
+        fireJobsChanged(new JobInfo[] { info }, JobManagerEvent.Type.ADD, index);
     }
 
     public boolean add(Job job) {
-        boolean res = jobs.add(job);
-        fireJobsChanged(new Job[] { job }, JobManagerEvent.Type.ADD);
+        return add(new JobInfo(job));
+    }
+
+    public boolean add(JobInfo info) {
+        boolean res = jobs.add(info);
+        fireJobsChanged(new JobInfo[] { info }, JobManagerEvent.Type.ADD);
         return res;
     }
 
-    public boolean addAll(Collection<? extends Job> c) {
-        boolean res = jobs.addAll(c);
-        if (res) {
-            fireJobsChanged(c.toArray(new Job[c.size()]),
-                    JobManagerEvent.Type.ADD);
-        }
-        return res;
+    public boolean addAll(Collection<? extends JobInfo> c) {
+        return addAll(-1, c);
     }
 
-    public boolean addAll(int index, Collection<? extends Job> c) {
-        boolean res = jobs.addAll(index, c);
-        if (res) {
-            fireJobsChanged(c.toArray(new Job[c.size()]),
+    public boolean addAll(int index, Collection<? extends JobInfo> c) {
+        boolean modified = jobs.addAll((index == -1) ? jobs.size() : index, c);
+        if (modified) {
+            fireJobsChanged(c.toArray(new JobInfo[c.size()]),
                     JobManagerEvent.Type.ADD, index);
         }
-        return res;
+        return modified;
     }
 
     public void clear() {
         jobs.clear();
-        fireJobsChanged(jobs.toArray(new Job[jobs.size()]),
+        fireJobsChanged(jobs.toArray(new JobInfo[jobs.size()]),
                 JobManagerEvent.Type.REMOVE);
     }
 
-    public Job get(int index) {
+    public JobInfo get(int index) {
         return jobs.get(index);
     }
 
-    public int indexOf(Job job) {
-        return jobs.indexOf(job);
+    public JobInfo get(Job job) {
+        int index = indexOf(job);
+        if (index != -1) {
+            return get(index);
+        }
+        return null;
+    }
+
+    public int indexOf(Object object) {
+        if (object instanceof Job) {
+            int index = 0;
+            for (JobInfo info : jobs) {
+                if (info.getJob().equals(object)) {
+                    return index;
+                }
+                index++;
+            }
+            return -1;
+        } else {
+            return jobs.indexOf(object);
+        }
     }
 
     public boolean isEmpty() {
@@ -76,36 +98,36 @@ public class JobManager implements Iterable {
         return jobs.listIterator();
     }
 
-    public void moveDown(Job job) {
-        int index = jobs.indexOf(job);
+    public void moveDown(Object job) {
+        int index = indexOf(job);
         if (index != -1 && index != jobs.size() - 1) {
             move(index, index + 1);
         }
     }
 
-    public void moveToBottom(Job job) {
-        int index = jobs.indexOf(job);
+    public void moveToBottom(Object job) {
+        int index = indexOf(job);
         if (index != -1 && index != jobs.size() - 1) {
             move(index, jobs.size() - 1);
         }
     }
 
-    public void moveToTop(Job job) {
-        int index = jobs.indexOf(job);
+    public void moveToTop(Object job) {
+        int index = indexOf(job);
         if (index > 0) {
             move(index, 0);
         }
     }
 
-    public void moveUp(Job job) {
-        int index = jobs.indexOf(job);
+    public void moveUp(Object job) {
+        int index = indexOf(job);
         if (index > 0) {
             move(index, index - 1);
         }
     }
 
-    public void moveTo(Job job, int newIndex) {
-        int oldIndex = jobs.indexOf(job);
+    public void moveTo(Object job, int newIndex) {
+        int oldIndex = indexOf(job);
         if (oldIndex != -1) {
             move(oldIndex, newIndex);
         }
@@ -113,42 +135,62 @@ public class JobManager implements Iterable {
 
     public void move(int oldIndex, int newIndex) {
         if (oldIndex != newIndex) {
-            Job job = jobs.get(oldIndex);
+            JobInfo jobInfo = jobs.get(oldIndex);
             jobs.remove(oldIndex);
-            jobs.add(newIndex, job);
-            fireJobsChanged(new Job[] { job }, JobManagerEvent.Type.UPDATE);
+            jobs.add(newIndex, jobInfo);
+            fireJobsChanged(new JobInfo[] { jobInfo },
+                    JobManagerEvent.Type.UPDATE);
         }
     }
 
-    public Job remove(int index) {
-        Job job = jobs.remove(index);
-        fireJobsChanged(new Job[] { job }, JobManagerEvent.Type.REMOVE);
-        return job;
+    public JobInfo remove(int index) {
+        JobInfo info = jobs.remove(index);
+        fireJobsChanged(new JobInfo[] { info }, JobManagerEvent.Type.REMOVE);
+        return info;
     }
 
-    public boolean remove(Job job) {
-        boolean res = jobs.remove(job);
-        if (res) {
-            fireJobsChanged(new Job[] { job }, JobManagerEvent.Type.REMOVE);
+    public boolean remove(Object job) {
+        int index = indexOf(job);
+        if (index != -1) {
+            JobInfo info = jobs.remove(index);
+            fireJobsChanged(new JobInfo[] { info }, JobManagerEvent.Type.REMOVE);
         }
-        return res;
+        return (index != -1);
     }
 
-    public boolean removeAll(Collection<? extends Job> c) {
-        boolean res = jobs.removeAll(c);
-        if (res) {
-            fireJobsChanged(c.toArray(new Job[c.size()]),
+    public boolean removeAll(Collection<?> c) {
+        boolean modified = false;
+        List<JobInfo> removed = new ArrayList<JobInfo>(c.size());
+        for (Object object : c) {
+            int index = indexOf(object);
+            if (index != -1) {
+                JobInfo info = jobs.remove(index);
+                removed.add(info);
+                modified = true;
+            }
+        }
+        if (modified) {
+            fireJobsChanged(removed.toArray(new JobInfo[removed.size()]),
                     JobManagerEvent.Type.REMOVE);
         }
-        return res;
+        return modified;
     }
 
     public int size() {
         return jobs.size();
     }
 
-    public Job[] toArray() {
-        return jobs.toArray(new Job[jobs.size()]);
+    public JobInfo[] toArray() {
+        return jobs.toArray(new JobInfo[jobs.size()]);
+    }
+
+    public Job[] toJobArray() {
+        Job[] res = new Job[jobs.size()];
+        int i = 0;
+        for (JobInfo info : jobs) {
+            res[i++] = info.getJob();
+        }
+        return res;
     }
 
     public void addJobsManagerListener(IJobManagerListener listener) {
@@ -160,11 +202,11 @@ public class JobManager implements Iterable {
         listeners.remove(listener);
     }
 
-    private void fireJobsChanged(Job[] jobs, JobManagerEvent.Type type) {
+    private void fireJobsChanged(JobInfo[] jobs, JobManagerEvent.Type type) {
         fireJobsChanged(jobs, type, -1);
     }
 
-    private void fireJobsChanged(Job[] jobs, JobManagerEvent.Type type,
+    private void fireJobsChanged(JobInfo[] jobs, JobManagerEvent.Type type,
             int index) {
         JobManagerEvent event = new JobManagerEvent(this, jobs, index, type);
         for (IJobManagerListener listener : listeners) {

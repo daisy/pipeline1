@@ -109,13 +109,13 @@
                label="Job"
                style="push"
                toolbarPath="additions"/>
-         <!--action
+         <action
                class="org.daisy.pipeline.gui.jobs.RunAction"
                icon="icons/tango/16x16/actions/media-playback-start.png"
                id="org.daisy.pipeline.gui.action.run"
                label="Run Job"
                style="push"
-               toolbarPath="additions"/-->
+               toolbarPath="additions"/>
       </actionSet>
    </extension>
    <extension
