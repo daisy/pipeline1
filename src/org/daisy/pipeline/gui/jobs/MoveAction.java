@@ -2,27 +2,23 @@ package org.daisy.pipeline.gui.jobs;
 
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
-import org.daisy.pipeline.gui.util.DefaultSelectionEnabler;
-import org.daisy.pipeline.gui.util.ISelectionEnabler;
+import org.daisy.pipeline.gui.util.actions.OperationUtil;
+import org.daisy.pipeline.gui.util.viewers.DefaultSelectionEnabler;
+import org.daisy.pipeline.gui.util.viewers.ISelectionEnabler;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;
-import org.eclipse.core.commands.operations.IOperationHistory;
-import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.IUndoableOperation;
-import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.ui.IPropertyListener;
-import org.eclipse.ui.PlatformUI;
 
 public abstract class MoveAction extends Action implements
         ISelectionChangedListener, IPropertyListener {
@@ -45,21 +41,7 @@ public abstract class MoveAction extends Action implements
 
     @Override
     public void run() {
-        IOperationHistory operationHistory = OperationHistoryFactory
-                .getOperationHistory();
-        IUndoContext undoContext = PlatformUI.getWorkbench()
-                .getOperationSupport().getUndoContext();
-        IUndoableOperation operation = getOperation();
-        operation.addContext(undoContext);
-        try {
-            // No need to provide monitor or GUI context
-            operationHistory.execute(operation, null, null);
-        } catch (ExecutionException e) {
-            // TODO implement better exception dialog
-            MessageDialog.openError(view.getSite().getShell(),
-                    "Move Job Error", "Exception while moving job: "
-                            + e.getMessage());
-        }
+        OperationUtil.execute(getOperation(), view.getSite().getShell());
     }
 
     public void selectionChanged(SelectionChangedEvent event) {

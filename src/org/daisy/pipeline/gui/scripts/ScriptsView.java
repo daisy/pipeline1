@@ -1,6 +1,6 @@
 package org.daisy.pipeline.gui.scripts;
 
-import org.daisy.pipeline.gui.util.jface.FileTreeContentProvider;
+import org.daisy.pipeline.gui.util.viewers.FileTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

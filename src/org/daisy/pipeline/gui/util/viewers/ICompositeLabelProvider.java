@@ -1,4 +1,4 @@
-package org.daisy.pipeline.gui.util.jface;
+package org.daisy.pipeline.gui.util.viewers;
 
 import java.util.Set;
 

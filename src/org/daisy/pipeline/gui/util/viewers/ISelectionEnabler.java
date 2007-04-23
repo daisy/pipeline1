@@ -1,4 +1,4 @@
-package org.daisy.pipeline.gui.util;
+package org.daisy.pipeline.gui.util.viewers;
 
 import org.eclipse.jface.viewers.ISelection;
 

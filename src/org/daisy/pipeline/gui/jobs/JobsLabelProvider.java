@@ -1,6 +1,8 @@
 package org.daisy.pipeline.gui.jobs;
 
 import org.daisy.dmfc.core.script.Job;
+import org.daisy.dmfc.core.script.JobParameter;
+import org.daisy.pipeline.gui.PipelineGuiPlugin;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -11,36 +13,67 @@ import org.eclipse.swt.graphics.Image;
  */
 public class JobsLabelProvider extends LabelProvider implements
         ITableLabelProvider {
+    private static String IK_IDLE = "org.daisy.pipeline.gui.jobs.IDLE";
+    private static String IK_RUNNING = "org.daisy.pipeline.gui.jobs.RUNNING";
+    private static String IK_FINISHED = "org.daisy.pipeline.gui.jobs.FINISHED";
+    static {
+        PipelineGuiPlugin.getDefault().getImageRegistry()
+                .put(
+                        IK_IDLE,
+                        PipelineGuiPlugin
+                                .getImageDescriptor("icons/progress_task.gif"));
+        PipelineGuiPlugin.getDefault().getImageRegistry().put(
+                IK_RUNNING,
+                PipelineGuiPlugin
+                        .getImageDescriptor("icons/progress-indicator.gif"));
+        PipelineGuiPlugin.getDefault().getImageRegistry().put(IK_FINISHED,
+                PipelineGuiPlugin.getImageDescriptor("icons/tick.png"));
+    }
 
     public Image getColumnImage(Object element, int columnIndex) {
+        if (element instanceof Job && columnIndex == 0) {
+            return PipelineGuiPlugin.getDefault().getImageRegistry().get(
+                    IK_IDLE);
+        }
         return null;
     }
 
     public String getColumnText(Object element, int columnIndex) {
-        String result = "";
-        Job job = (Job) element;
+        if (element instanceof Job) {
+            return getText((Job) element, columnIndex);
+        }
+        if (element instanceof JobParameter) {
+            return getText((JobParameter) element, columnIndex);
+        }
+        return "err!";
+    }
+
+    private String getText(Job job, int columnIndex) {
+        String text;
         switch (columnIndex) {
         case 0:
-            // FXIME get status
-            // result = job.getStatus().getLocalizedString();
-            break;
-        case 1:
-            result = job.getScript().getName();
-            break;
-        case 2:
-            // FIXME get input file name
-            // result = job.getInputFile().getName();
-            break;
-        case 3:
-            // FIXME get input file name
-            // result = (job.getOutputFile() != null) ? job.getOutputFile()
-            // .getPath() : "";
+            text = job.getScript().getNicename();
             break;
         default:
-            // this shouldn't happen
-            result = "err!";
+            text = "";
             break;
         }
-        return result;
+        return text;
+    }
+
+    private String getText(JobParameter param, int columnIndex) {
+        String text;
+        switch (columnIndex) {
+        case 0:
+            text = param.getScriptParameter().getNicename();
+            break;
+        case 1:
+            text = param.getValue();
+            break;
+        default:
+            text = "";
+            break;
+        }
+        return text;
     }
 }

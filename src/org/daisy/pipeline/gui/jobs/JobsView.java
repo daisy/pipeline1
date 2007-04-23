@@ -5,11 +5,13 @@ import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.TableLayout;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.operations.RedoActionHandler;
@@ -20,36 +22,36 @@ public class JobsView extends ViewPart {
     public static final String ID = "org.daisy.pipeline.gui.views.jobs"; //$NON-NLS-1$
     public static final int PROP_SEL_JOB_INDEX = 1;
 
-    private static final String[] columnNames = {
-            Messages.getString("JobsView.column.status"), Messages.getString("JobsView.column.type"), //$NON-NLS-1$ //$NON-NLS-2$
-            Messages.getString("JobsView.column.source"), Messages.getString("JobsView.column.destination") }; //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String[] columnNames = { "Jobs", "Param Value",
+            "Status" };
 
-    private static final int[] columnWidth = { 100, 175, 200, 200 };
+    private static final int[] columnWeight = { 3, 3, 1 };
 
-    private TableViewer jobsViewer;
-    private Table jobsTable;
+    private TreeViewer jobsViewer;
 
     @Override
     public void createPartControl(Composite parent) {
-        // TODO fake code
-        populateFakeQueue();
-        // Create the jobs table
-        jobsTable = new Table(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
+        // Create the tree
+        Tree jobsTree = new Tree(parent, SWT.H_SCROLL | SWT.V_SCROLL
                 | SWT.MULTI | SWT.FULL_SELECTION);
-        jobsTable.setHeaderVisible(true);
-        jobsTable.setLinesVisible(true);
+        jobsTree.setHeaderVisible(true);
+        jobsTree.setLinesVisible(true);
+
+        // Configure the columns
+        TableLayout layout = new TableLayout();
+        jobsTree.setLayout(layout);
         for (int i = 0; i < columnNames.length; i++) {
-            TableColumn column = new TableColumn(jobsTable, SWT.NONE);
-            column.setText(columnNames[i]);
-            column.setWidth(columnWidth[i]);
-            column.setResizable(true);
-            column.setMoveable(true);
+            layout.addColumnData(new ColumnWeightData(columnWeight[i], true));
+            TreeColumn tc = new TreeColumn(jobsTree, SWT.NONE, i);
+            tc.setText(columnNames[i]);
+            tc.setMoveable(true);
         }
+
         // TODO add popup menu to jobs table
         // jobsTable.setMenu(createPopUpMenu());
 
-        // Configure the jobs table viewer
-        jobsViewer = new TableViewer(jobsTable);
+        // Configure the viewer
+        jobsViewer = new TreeViewer(jobsTree);
         jobsViewer.setContentProvider(new JobsContentProvider());
         jobsViewer.setLabelProvider(new JobsLabelProvider());
         jobsViewer.setInput(JobManager.getInstance());
@@ -99,7 +101,7 @@ public class JobsView extends ViewPart {
                 new RedoActionHandler(getSite(), undoContext));
     }
 
-    public TableViewer getViewer() {
+    public TreeViewer getViewer() {
         return jobsViewer;
     }
 
@@ -107,9 +109,6 @@ public class JobsView extends ViewPart {
     // made public so that action can invoke it
     public void firePropertyChange(int id) {
         super.firePropertyChange(id);
-    }
-
-    private void populateFakeQueue() {
     }
 
     /**
