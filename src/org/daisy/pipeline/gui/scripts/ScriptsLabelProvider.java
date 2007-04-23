@@ -34,7 +34,7 @@ public class ScriptsLabelProvider extends LabelProvider implements ILabelProvide
         String path = ((File) file).getPath();
         Script script = scriptMan.getScript(path);
         if (script != null) {
-            text = script.getName();
+            text = script.getNicename();
         } else {
             text = ((File) file).getName();
         }

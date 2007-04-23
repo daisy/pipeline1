@@ -1,6 +1,5 @@
 package org.daisy.pipeline.gui;
 
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -22,13 +21,12 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     @Override
     public void preWindowOpen() {
         IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-        configurer.setInitialSize(new Point(800, 600));
         configurer.setShowCoolBar(true);
-        configurer.setShowStatusLine(true);
+        configurer.setShowFastViewBars(false);
         configurer.setShowMenuBar(true);
-        configurer.setShowFastViewBars(true);
         configurer.setShowPerspectiveBar(true);
-        configurer.setShowProgressIndicator(true);
+        configurer.setShowProgressIndicator(false);
+        configurer.setShowStatusLine(true);
         configurer.setTitle("DAISY Pipeline");
         PerspectiveHelper.configurePerspectiveBar();
     }

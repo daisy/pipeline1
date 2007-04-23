@@ -56,7 +56,7 @@ public class ScriptManager {
     }
 
     private void populateScriptMap() {
-        // TODO implem lazy loading of scripts instead
+        // TODO lazy load scripts ?
         Collection scripts = scriptDir.getFiles(true, ".+\\.taskScript");
         for (Iterator iter = scripts.iterator(); iter.hasNext();) {
             File file = (File) iter.next();
@@ -70,10 +70,10 @@ public class ScriptManager {
                 e.printStackTrace();
             } catch (ScriptValidationException e) {
                 // TODO Auto-generated catch block
-                System.err.println("unable to create script at "
-                        + file.toString());
+                System.err.println("unable to create script "
+                        + file.getName());
                 System.err.println("caused by: " + e.getMessage());
-                // e.printStackTrace();
+                 e.printStackTrace();
             }
             if (script != null) {
                 scriptMap.put(file.getPath(), script);
