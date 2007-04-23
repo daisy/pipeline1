@@ -29,7 +29,8 @@ public class NewJobAction implements IWorkbenchWindowActionDelegate {
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
-        this.selection = selection instanceof IStructuredSelection ? (IStructuredSelection) selection : null;
+        this.selection = selection instanceof IStructuredSelection ? (IStructuredSelection) selection
+                : null;
     }
 
 }

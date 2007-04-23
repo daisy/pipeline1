@@ -6,7 +6,8 @@ import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.pipeline.gui.JobsPerspective;
 import org.daisy.pipeline.gui.PipelineGuiPlugin;
-import org.daisy.pipeline.gui.jobs.model.JobManager;
+import org.daisy.pipeline.gui.jobs.NewJobOperation;
+import org.daisy.pipeline.gui.util.actions.OperationUtil;
 import org.eclipse.jface.dialogs.DialogTray;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -84,7 +85,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
 
     @Override
     public boolean performFinish() {
-        JobManager.getInstance().add(job);
+        OperationUtil.execute(new NewJobOperation(job), getShell());
         try {
             // TODO show dialog before switching to the jobs perspective
             workbench.showPerspective(JobsPerspective.ID, workbench
