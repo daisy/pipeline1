@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paramGroup>
 
-	&ValidatorScriptParamsSimple;	 
+	&ValidatorScriptParamsSimpleStatic;	 
 	
 	<parameter name="validatorAbortOnException" value="true" required="false">
 		<nicename>Abort on Exception</nicename>

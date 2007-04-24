@@ -10,7 +10,7 @@
    	<documentation uri="../../../doc/scripts/Z3986DTBValidator.html"/>
      <comment>
 	     Commandline template (dont forget to modify paths):
-	         D:\data\workspace\dmfc\scripts\validation\simple\Z3986DTBValidator.xml 
+	         D:\data\workspace\dmfc\scripts\validation\simple\Z3986DTBValidator.taskScript 
 	                --validatorInputFile=D:\dtbs\z2005\hauy\hauy_z2005\06-speechgen.opf
      </comment>
      	

@@ -9,12 +9,12 @@
 	<description>Validate a DTBook document against its DTD and additional schemas</description>
    	<documentation uri="../../../doc/scripts/DTBookValidator.html"/>
      <comment>
-	     Commandline template (dont forget to modify paths):
-	         D:\data\workspace\dmfc\scripts\validation\simple\DtbookValidator.xml 
-	                --validatorInputFile=D:\dtbs\z2005\hauy\hauy_z2005\07-dtbook.xml
+	     Commandline template:
+	         ${workspace_loc}/dmfc/scripts/validation/simple/DTBookValidator.taskScript
+			--input=${workspace_loc}/pipeline_testsuite/testdata/input/dtbook/dontworrybehappy.xml
      </comment>
      	
-	<parameter name="validatorInputFile" value="" required="true">
+	<parameter name="input" value="" required="true">
 		<nicename>Input DTBook</nicename>
 		<description>Select the input DTBook document</description>
 		<datatype>
@@ -28,7 +28,7 @@
 	
 		<parameter>
 			<name>input</name>
-			<value>${validatorInputFile}</value>
+			<value>${input}</value>
 		</parameter>
 
  	    &ValidatorTaskParamsSimpleStatic;
