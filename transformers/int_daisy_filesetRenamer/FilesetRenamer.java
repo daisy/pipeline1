@@ -126,7 +126,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			
 			this.sendMessage(0.1);
 			this.checkAbort();			
-			String message = i18n("ANALYZING_INPUT_FILESET", mInputFileset.getFilesetType().toNiceNameString());
+			String message = i18n("ANALYZING_INPUT", mInputFileset.getFilesetType().toNiceNameString());
 			this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 								
 			try{		
@@ -178,7 +178,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			this.checkAbort();
 			
 		} catch (Exception e) {						
-			String message = i18n("RENDERING_RESULT", i18n("ERROR_COPYING_UNRENAMED", e.getMessage()));
+			String message = i18n("RENDERING_RESULT_TO", i18n("ERROR_COPYING_UNRENAMED", e.getMessage()));
 			this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 
 			try {		
