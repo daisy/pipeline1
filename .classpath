@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" output="transformers" path="transformers"/>
+	<classpathentry kind="src" path="transformers"/>
+	<classpathentry exported="true" kind="lib" path="lib/stax-api-1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ZedVal.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xalan.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/wstx-lgpl-3.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/tagsoup-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/serializer.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/saxon8-dom.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/saxon8.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/saxon.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/sac.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jl1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jing.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaudiotagger.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/icu4j-charsets-3_6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/icu4j-3_6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-cli-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/chardet.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/batik-util.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/batik-css.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/jing.jar"/>
-	<classpathentry kind="lib" path="lib/saxon8.jar"/>
-	<classpathentry kind="lib" path="lib/saxon.jar"/>
-	<classpathentry kind="lib" path="lib/saxon8-dom.jar"/>
-	<classpathentry kind="lib" path="lib/batik-css.jar"/>
-	<classpathentry kind="lib" path="lib/batik-util.jar"/>
-	<classpathentry kind="lib" path="lib/sac.jar"/>
-	<classpathentry kind="lib" path="lib/jl1.0.jar"/>
-	<classpathentry kind="lib" path="lib/chardet.jar"/>
-	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="lib/jaudiotagger.jar"/>
-	<classpathentry kind="lib" path="lib/ZedVal.jar"/>
-	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
-	<classpathentry kind="lib" path="lib/icu4j-3_6.jar"/>
-	<classpathentry kind="lib" path="lib/icu4j-charsets-3_6.jar"/>
-	<classpathentry kind="lib" path="lib/tagsoup-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/wstx-lgpl-3.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/xalan.jar"/>
-	<classpathentry kind="lib" path="lib/commons-cli-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/serializer.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
