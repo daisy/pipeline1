@@ -5,15 +5,13 @@
 	</head>
 <body>
   A factory API for Fileset validators.
-  <h2>The factory uses discovery</h2>
+  <h2>Discovery</h2>
   <p>The fact that a certain fileset can be represented as a {@link org.daisy.util.fileset.interfaces.Fileset} does not
   mean that it automatically can be validated by a fileset Validator; implementations of the {@link org.daisy.util.fileset.validation.Validator}
-  must be available on the system for the particular fileset type.</p>
-  
-  <p>Note that a fileset instantiation in itself can be said to perform "basic" validation of a fileset: in XML filesets, 
-  wellformedness checking, DTD validation and URI resolvement (although not to the fragment level) is performed as an 
-  integral part of building the fileset. A Fileset Validator performs all the tests that go beyond the "basic" validation.</p>
-  
+  must be available on the system for the particular fileset type, and be registered so that a org.daisy.util.fileset.validation.ValidatorFactory
+  can discover it.
+  </p>
+    
   <h2>Registering an implementation</h2>
   <p>The implementation discovery process is performed as follows:</p>
   <ul>
@@ -33,6 +31,12 @@
 	    (Discovery process is intended to be extended).
 	</li>
   </ul>
+  
+  <p>Note that a fileset instantiation in itself can be said to perform "basic" validation of a fileset: in XML filesets, 
+  wellformedness checking, DTD validation and URI resolvement (although not to the fragment level) is performed as an 
+  integral part of building the fileset. A Fileset Validator performs all the tests that go beyond the "basic" validation.</p>
+  
+  
   <h2>Usage example</h2>
   <code><pre>
 		Fileset mInputFileset = new FilesetImpl(inputURI,this,true,false);		
