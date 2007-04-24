@@ -45,6 +45,7 @@ import org.daisy.util.fileset.manipulation.manipulators.XMLEventConsumer;
 import org.daisy.util.fileset.manipulation.manipulators.XMLEventExposer;
 import org.daisy.util.i18n.CharUtils;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.stax.ContextStack;
 
@@ -112,7 +113,13 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 			
 			this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 			throw new TransformerRunException(e.getMessage(), e);
-		}	
+		}finally{
+			try {
+				StAXEventFactoryPool.getInstance().release(mEventFactory);
+			} catch (PoolException e) {			
+				e.printStackTrace();
+			}
+		}
 		return true;
 	}
 	
@@ -120,7 +127,7 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 	
 
 	/**
-	 * Settle filenames to final state. All files that have been prettyPrinted exist as '*.*.prettyPrinted' in the same dir
+	 * Settle filenames to final state. All files that have been prettyPrinted exist as '*.*.prettyPrinted' and may be in the same dir
 	 * as the originals.
 	 */
 	private void realize() throws IOException {
