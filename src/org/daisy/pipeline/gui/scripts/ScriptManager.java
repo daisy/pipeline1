@@ -60,23 +60,24 @@ public class ScriptManager {
         Collection scripts = scriptDir.getFiles(true, ".+\\.taskScript");
         for (Iterator iter = scripts.iterator(); iter.hasNext();) {
             File file = (File) iter.next();
+            String path = null;
             Script script = null;
             // TODO fake code
             FakeCore core = PipelineGuiPlugin.getDefault().getCore();
             try {
-                script = core.newScript(file.toURL());
+                path = file.toURI().getPath();
+                script = core.newScript(file.toURI().toURL());
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (ScriptValidationException e) {
                 // TODO Auto-generated catch block
-                System.err.println("unable to create script "
-                        + file.getName());
+                System.err.println("unable to create script " + file.getName());
                 System.err.println("caused by: " + e.getMessage());
-                 e.printStackTrace();
+                e.printStackTrace();
             }
-            if (script != null) {
-                scriptMap.put(file.getPath(), script);
+            if (script != null && path != null) {
+                scriptMap.put(path, script);
             }
         }
     }
