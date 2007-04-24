@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -125,38 +124,40 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 					URL schemaURL = (URL) iter.next();
 					try {						
 						//instead of Peeker to be sure we dont miss non-root decls:
-						NamespaceReporter nsr = new NamespaceReporter();				
-						Set<String> nsURIs = nsr.getNamespaceURIs(schemaURL);
+						NamespaceReporter nsr = new NamespaceReporter(schemaURL);				
+						Set<String> nsURIs = nsr.getNamespaceURIs();
 						//since schemas may be compound, cover all possibilities.
 						int nsURIsFound = 0;
-						for (String uri : nsURIs) {
-							if(SchemaLanguageConstants.hasEntry(uri)) {
-								++nsURIsFound;
-								try{
-									SchemaFactory factory = SchemaFactory.newInstance(uri);
-									factory.setErrorHandler(this);
-									factory.setResourceResolver(CatalogEntityResolver.getInstance());
-									//go via StreamSource and explicitly set the system id to be safe
-									StreamSource ss = new StreamSource(schemaURL.openStream());
-									ss.setSystemId(schemaURL.toExternalForm());									
-									Schema schema = factory.newSchema(ss);
-									if(mDebugMode){
-										//inform a little
-										File schemaFile = new File(schemaURL.toURI());									
-										mValidatorListener.inform(this, "Validating using the " 
-											+ SchemaLanguageConstants.toNiceNameString(uri) 
-											+ " " + schemaFile.getName() +".");
-									}
-									//and continue
-									javax.xml.validation.Validator validator = schema.newValidator();
-									validate(validator,mSchemas.get(schemaURL));
-									//and clean up
-									if(ss.getReader()!=null) ss.getReader().close();
-									if(ss.getInputStream()!=null) ss.getInputStream().close();					
-								}catch (Exception e) {
-									mValidatorListener.exception(this, e);
-								}														
-							}							
+						if(nsURIs!=null){
+							for (String uri : nsURIs) {
+								if(SchemaLanguageConstants.hasEntry(uri)) {
+									++nsURIsFound;
+									try{
+										SchemaFactory factory = SchemaFactory.newInstance(uri);
+										factory.setErrorHandler(this);
+										factory.setResourceResolver(CatalogEntityResolver.getInstance());
+										//go via StreamSource and explicitly set the system id to be safe
+										StreamSource ss = new StreamSource(schemaURL.openStream());
+										ss.setSystemId(schemaURL.toExternalForm());									
+										Schema schema = factory.newSchema(ss);
+										if(mDebugMode){
+											//inform a little
+											File schemaFile = new File(schemaURL.toURI());									
+											mValidatorListener.inform(this, "Validating using the " 
+												+ SchemaLanguageConstants.toNiceNameString(uri) 
+												+ " " + schemaFile.getName() +".");
+										}
+										//and continue
+										javax.xml.validation.Validator validator = schema.newValidator();
+										validate(validator,mSchemas.get(schemaURL));
+										//and clean up
+										if(ss.getReader()!=null) ss.getReader().close();
+										if(ss.getInputStream()!=null) ss.getInputStream().close();					
+									}catch (Exception e) {
+										mValidatorListener.exception(this, e);
+									}														
+								}							
+							}
 						}
 						if(nsURIsFound==0) {
 							throw new ValidatorNotSupportedException("no recognized schema type in " + schemaURL);
