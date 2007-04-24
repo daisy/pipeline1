@@ -11,7 +11,7 @@ import java.util.Properties;
 import org.daisy.dmfc.core.event.CoreMessageEvent;
 import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.MessageEvent;
-import org.daisy.dmfc.core.event.ScriptStateChangeEvent;
+import org.daisy.dmfc.core.event.JobStateChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
 import org.daisy.dmfc.core.event.TransformerMessageEvent;
 import org.daisy.dmfc.core.event.TransformerProgressChangeEvent;
@@ -51,7 +51,7 @@ public class FakeCore {
     public void execute(Job job) throws ScriptException {
         EventBus.getInstance()
                 .publish(
-                        new ScriptStateChangeEvent(job,
+                        new JobStateChangeEvent(job,
                                 StateChangeEvent.Status.STARTED));
         setState(job, State.RUNNING);
         for (Task task : job.getScript().getTasks()) {
@@ -88,7 +88,7 @@ public class FakeCore {
 
         EventBus.getInstance()
                 .publish(
-                        new ScriptStateChangeEvent(job,
+                        new JobStateChangeEvent(job,
                                 StateChangeEvent.Status.STOPPED));
 
         // } catch (TransformerAbortException e) {

@@ -10,7 +10,7 @@ import java.util.Map;
 import org.daisy.dmfc.core.event.BusListener;
 import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.ProgressChangeEvent;
-import org.daisy.dmfc.core.event.ScriptStateChangeEvent;
+import org.daisy.dmfc.core.event.JobStateChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
 import org.daisy.dmfc.core.event.TransformerProgressChangeEvent;
 import org.daisy.dmfc.core.event.TransformerStateChangeEvent;
@@ -70,8 +70,8 @@ public class StateManager implements BusListener {
             TransformerStateChangeEvent tce = (TransformerStateChangeEvent) event;
             stateChanged((Transformer) tce.getSource(), tce.getState());
         }
-        if (event instanceof ScriptStateChangeEvent) {
-            ScriptStateChangeEvent ssce = (ScriptStateChangeEvent) event;
+        if (event instanceof JobStateChangeEvent) {
+            JobStateChangeEvent ssce = (JobStateChangeEvent) event;
             stateChanged((Job) ssce.getSource(), ssce.getState());
         }
     }
