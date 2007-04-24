@@ -3,6 +3,7 @@ package org.daisy.pipeline.gui.doc;
 import java.io.File;
 
 import org.daisy.dmfc.core.script.Script;
+import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.daisy.pipeline.gui.scripts.ScriptManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -12,7 +13,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
@@ -25,7 +25,6 @@ public class DocView extends ViewPart implements ISelectionListener {
     public static final String ID = "org.daisy.pipeline.gui.views.doc";
 
     private Browser browser;
-    private IWorkbenchWindow window;
 
     public DocView() {
         super();
@@ -34,16 +33,13 @@ public class DocView extends ViewPart implements ISelectionListener {
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
-        window = site.getWorkbenchWindow();
-        window.getSelectionService().addSelectionListener(this);
+        getSite().getPage().addPostSelectionListener(this);
     }
 
     @Override
     public void dispose() {
         super.dispose();
-        if (window != null) {
-            window.getSelectionService().removeSelectionListener(this);
-        }
+        getSite().getPage().removePostSelectionListener(this);
     }
 
     @Override
@@ -72,6 +68,11 @@ public class DocView extends ViewPart implements ISelectionListener {
                             file.getPath());
                     browser.setUrl(script.getDocumentation().toString());
                 }
+            }
+            if (obj instanceof JobInfo) {
+                JobInfo job = (JobInfo) obj;
+                browser.setUrl(job.getJob().getScript().getDocumentation()
+                        .toString());
             }
         }
 

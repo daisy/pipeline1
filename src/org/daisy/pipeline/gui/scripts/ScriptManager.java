@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.daisy.dmfc.core.FakeCore;
+import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.dmfc.core.script.ScriptValidationException;
 import org.daisy.pipeline.gui.PipelineGuiPlugin;
@@ -58,12 +58,12 @@ public class ScriptManager {
     private void populateScriptMap() {
         // TODO lazy load scripts ?
         Collection scripts = scriptDir.getFiles(true, ".+\\.taskScript");
+        DMFCCore core = PipelineGuiPlugin.getDefault().getCore();
         for (Iterator iter = scripts.iterator(); iter.hasNext();) {
             File file = (File) iter.next();
             String path = null;
             Script script = null;
             // TODO fake code
-            FakeCore core = PipelineGuiPlugin.getDefault().getCore();
             try {
                 path = file.toURI().getPath();
                 script = core.newScript(file.toURI().toURL());
