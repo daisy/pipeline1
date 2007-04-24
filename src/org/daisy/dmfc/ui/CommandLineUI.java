@@ -37,7 +37,7 @@ import org.daisy.dmfc.core.event.CoreMessageEvent;
 import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.event.RequestEvent;
-import org.daisy.dmfc.core.event.ScriptStateChangeEvent;
+import org.daisy.dmfc.core.event.JobStateChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
 import org.daisy.dmfc.core.event.TransformerMessageEvent;
 import org.daisy.dmfc.core.event.TransformerStateChangeEvent;
@@ -243,10 +243,10 @@ public class CommandLineUI implements InputListener, BusListener {
 				String state = (sce.getState() == StateChangeEvent.Status.STARTED) 
 					? "started" : "stopped";
 				
-				if(event instanceof ScriptStateChangeEvent) {
+				if(event instanceof JobStateChangeEvent) {
 					type = "Task"; //we refer to scripts as "tasks" to users.					 					
-					Script script = (Script) sce.getSource();
-					name = script.getNicename();					
+					Job job = (Job) sce.getSource();
+					name = job.getScript().getNicename();					
 				}else if (event instanceof TransformerStateChangeEvent){
 					type = "Transformer";					 					
 					Transformer transformer = (Transformer) sce.getSource();

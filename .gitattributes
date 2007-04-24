@@ -79,10 +79,10 @@ src/org/daisy/dmfc/core/event/BusListener.java -text
 src/org/daisy/dmfc/core/event/CoreMessageEvent.java -text
 src/org/daisy/dmfc/core/event/Event.java -text
 src/org/daisy/dmfc/core/event/EventBus.java -text
+src/org/daisy/dmfc/core/event/JobStateChangeEvent.java -text
 src/org/daisy/dmfc/core/event/MessageEvent.java -text
 src/org/daisy/dmfc/core/event/ProgressChangeEvent.java -text
 src/org/daisy/dmfc/core/event/RequestEvent.java -text
-src/org/daisy/dmfc/core/event/ScriptStateChangeEvent.java -text
 src/org/daisy/dmfc/core/event/StateChangeEvent.java -text
 src/org/daisy/dmfc/core/event/SystemEvent.java -text
 src/org/daisy/dmfc/core/event/TransformerMessageEvent.java -text
