@@ -1,6 +1,11 @@
 package org.daisy.pipeline.gui.jobs;
 
+import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.daisy.dmfc.core.event.BusListener;
 import org.daisy.dmfc.core.event.EventBus;
@@ -25,10 +30,16 @@ public class StateManager implements BusListener {
     private static StateManager instance = new StateManager();
     // TODO check null/thread safety
     // private Object lock = new Object();
-    private JobInfo runningJob;
-    private TaskInfo runningTask;
+    private Map<JobsRunner, JobInfo> runningJobs;
+    private Map<JobsRunner, TaskInfo> runningTasks;
+    private List<IJobChangeListener> jobListeners;
+    private List<ITaskChangeListener> taskListeners;
 
     private StateManager() {
+        runningJobs = new HashMap<JobsRunner, JobInfo>();
+        runningTasks = new HashMap<JobsRunner, TaskInfo>();
+        jobListeners = new ArrayList<IJobChangeListener>();
+        taskListeners = new ArrayList<ITaskChangeListener>();
     }
 
     public static StateManager getInstance() {
@@ -70,7 +81,13 @@ public class StateManager implements BusListener {
      * @param progress
      */
     private void progressChanged(Transformer transformer, double progress) {
-        runningTask.setProgress(progress);
+        JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
+                .currentJob();
+        TaskInfo runningTask = runningTasks.get(runner);
+        if (runningTask != null) {
+            runningTask.setProgress(progress);
+            fireChanged(runningTask);
+        }
     }
 
     /**
@@ -78,14 +95,36 @@ public class StateManager implements BusListener {
      * @param state
      */
     private void stateChanged(Transformer transformer, Status status) {
+        JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
+                .currentJob();
+        TaskInfo runningTask = null;
         switch (status) {
         case STARTED:
-            runningTask = getTask(transformer);
-            runningTask.setState(State.RUNNING);
+            JobInfo runningJob = runningJobs.get(runner);
+            if (runningJob != null) {
+                String transName = transformer.getTransformerInfo().getName();
+                Iterator<TaskInfo> iter = runningJob.getTasks().iterator();
+                while (iter.hasNext() && runningTask == null) {
+                    TaskInfo info = iter.next();
+                    if (info.getName().equals(transName)) {
+                        runningTask = info;
+                    }
+                }
+            }
+            if (runningTask != null) {
+                runningTasks.put(runner, runningTask);
+                runningTask.setState(State.RUNNING);
+                fireChanged(runningTask);
+            }
             break;
         case STOPPED:
-            runningTask.setState(State.FINISHED);
-            runningTask = null;
+            runningTask = runningTasks.get(runner);
+            if (runningTask != null) {
+                runningTasks.remove(runningTask);
+                runningTask.setProgress(1.0);
+                runningTask.setState(State.FINISHED);
+                fireChanged(runningTask);
+            }
             break;
         default:
             break;
@@ -93,33 +132,84 @@ public class StateManager implements BusListener {
     }
 
     private void stateChanged(Job job, Status state) {
-        // TODO handle abort/failure
+        JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
+                .currentJob();
+        JobInfo runningJob;
         switch (state) {
         case STARTED:
             runningJob = JobManager.getInstance().get(job);
-            runningJob.setState(State.RUNNING);
+            if (runningJob != null) {
+                runningJobs.put(runner, runningJob);
+                runningJob.setState(State.RUNNING);
+                fireChanged(runningJob);
+            }
             break;
         case STOPPED:
-            runningJob.setState(State.FINISHED);
-            runningJob = null;
-            runningTask = null;
+            runningJob = runningJobs.get(runner);
+            if (runningJob != null) {
+                runningJobs.remove(runner);
+                runningJob.setState(State.FINISHED);
+                fireChanged(runningJob);
+            }
             break;
         default:
             break;
         }
     }
 
-    private TaskInfo getTask(Transformer trans) {
-        String name = trans.getTransformerInfo().getName();
-        if (runningTask != null && runningTask.getName().equals(name)) {
-            return runningTask;
+    private void fireChanged(TaskInfo task) {
+        for (ITaskChangeListener listener : taskListeners) {
+            listener.taskChanged(task);
         }
-        for (TaskInfo info : runningJob.getTasks()) {
-            if (info.getName().equals(name)) {
-                return info;
-            }
+    }
+
+    private void fireChanged(JobInfo job) {
+        for (IJobChangeListener listener : jobListeners) {
+            listener.jobChanged(job);
         }
-        return null;
+    }
+
+    public void aborted(Job job) {
+        JobInfo info = JobManager.getInstance().get(job);
+        info.setState(State.ABORTED);
+    }
+
+    public void failed(Job job) {
+        JobInfo info = JobManager.getInstance().get(job);
+        info.setState(State.FAILED);
+    }
+
+    /**
+     * @param provider
+     */
+    public void addTaskChangeListener(ITaskChangeListener listener) {
+        if (!taskListeners.contains(listener)) {
+            taskListeners.add(listener);
+        }
+    }
+
+    /**
+     * @param provider
+     */
+    public void removeTaskChangeListener(ITaskChangeListener listener) {
+        taskListeners.remove(listener);
+    }
+
+    /**
+     * @param view
+     */
+    public void addJobChangeListener(IJobChangeListener listener) {
+        if (!jobListeners.contains(listener)) {
+            jobListeners.add(listener);
+        }
+
+    }
+
+    /**
+     * @param view
+     */
+    public void removeJobChangeListener(IJobChangeListener listener) {
+        jobListeners.remove(listener);
     }
 
 }

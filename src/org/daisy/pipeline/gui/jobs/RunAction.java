@@ -29,11 +29,27 @@ public class RunAction extends AbstractActionDelegate {
         while (iter.hasNext()) {
             Object element = iter.next();
             if (element instanceof JobInfo) {
-                jobs.add(((JobInfo) element).getJob());
+                JobInfo jobInfo = (JobInfo) element;
+                if (checkState(jobInfo)) {
+                    jobs.add(jobInfo.getJob());
+                }
             }
         }
         JobsRunner runner = new JobsRunner(jobs);
         runner.schedule();
+    }
+
+    private boolean checkState(JobInfo jobInfo) {
+        //TODO check runnability of failed/aborted jobs
+        switch (jobInfo.getSate()) {
+        case IDLE:
+            return true;
+        case RUNNING:
+            return false;
+        default:
+            return false;
+        }
+
     }
 
     @Override

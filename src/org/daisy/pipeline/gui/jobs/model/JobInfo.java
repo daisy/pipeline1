@@ -34,7 +34,7 @@ public class JobInfo extends StateObject{
 
     private void createTaskInfos() {
         for (Task task : job.getScript().getTasks()) {
-            tasks.add(new TaskInfo(task));
+            tasks.add(new TaskInfo(this,task));
         }
     }
 }

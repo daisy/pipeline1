@@ -181,11 +181,10 @@ public class FakeCore {
             try {
                 URL url = FileLocator
                         .toFileURL(coreBundle
-                                .getEntry("/scripts/validation/simple/Daisy202DTBValidator.taskScript"));
+                                .getEntry("/scripts/manipulation/advanced/RenamerTaggerValidator.taskScript"));
                 ScriptManager scriptMan = ScriptManager.getDefault();
                 Script script = scriptMan.getScript(url.getPath());
                 Job job = new Job(script);
-                // job.setParameterValue(param.getName(), value);
                 JobManager.getInstance().add(job);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,16 +1,9 @@
 package org.daisy.pipeline.gui.jobs;
 
-import java.util.EventObject;
-
-import org.daisy.dmfc.core.event.BusListener;
-import org.daisy.dmfc.core.event.EventBus;
-import org.daisy.dmfc.core.event.ScriptStateChangeEvent;
-import org.daisy.dmfc.core.event.StateChangeEvent;
-import org.daisy.dmfc.core.script.Job;
 import org.daisy.pipeline.gui.jobs.model.JobInfo;
-import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.tasks.TaskListContentProvider;
 import org.daisy.pipeline.gui.tasks.TaskListViewer;
+import org.daisy.util.execution.State;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -18,7 +11,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
@@ -27,19 +23,27 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.WorkbenchJob;
 
 public class JobDetailsView extends ViewPart implements ISelectionListener,
-        BusListener {
+        IJobChangeListener {
     // TODO add possibility to un-synchronize
     public static final String ID = "org.daisy.pipeline.gui.views.jobDetails";
 
     private StructuredViewer viewer;
+    private Label label;
 
     public JobDetailsView() {
-        EventBus.getInstance().subscribe(this, ScriptStateChangeEvent.class);
+        StateManager.getInstance().addJobChangeListener(this);
     }
 
     @Override
     public void createPartControl(Composite parent) {
+        GridLayout layout = new GridLayout(1, true);
+        parent.setLayout(layout);
+        label = new Label(parent, SWT.NONE);
+        label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        Label separator = new Label(parent, SWT.HORIZONTAL | SWT.SEPARATOR);
+        separator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         viewer = new TaskListViewer(parent, SWT.SINGLE);
+        viewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         viewer.setContentProvider(new TaskListContentProvider());
         getSite().setSelectionProvider(viewer);
     }
@@ -47,6 +51,7 @@ public class JobDetailsView extends ViewPart implements ISelectionListener,
     @Override
     public void dispose() {
         getSite().getPage().removePostSelectionListener(this);
+        StateManager.getInstance().removeJobChangeListener(this);
         super.dispose();
     }
 
@@ -64,35 +69,6 @@ public class JobDetailsView extends ViewPart implements ISelectionListener,
     /*
      * (non-Javadoc)
      * 
-     * @see org.daisy.dmfc.core.event.BusListener#recieved(java.util.EventObject)
-     */
-    public void recieved(EventObject event) {
-        if (event instanceof ScriptStateChangeEvent) {
-            ScriptStateChangeEvent ssce = (ScriptStateChangeEvent) event;
-            Job job = (Job) ssce.getSource();
-            final JobInfo info = JobManager.getInstance().get(job);
-            if (!viewer.getInput().equals(info)
-                    && ssce.getState() == StateChangeEvent.Status.STARTED) {
-
-                // TODO set ui job family
-                org.eclipse.core.runtime.jobs.Job uiJob = new WorkbenchJob(
-                        "Task Detail Update Job") {
-                    @Override
-                    public IStatus runInUIThread(IProgressMonitor monitor) {
-                        viewer.setInput(info);
-                        return Status.OK_STATUS;
-                    }
-
-                };
-                uiJob.setSystem(true);
-                uiJob.schedule();
-            }
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart,
      *      org.eclipse.jface.viewers.ISelection)
      */
@@ -100,11 +76,36 @@ public class JobDetailsView extends ViewPart implements ISelectionListener,
         if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
             Object obj = ((IStructuredSelection) selection).getFirstElement();
             if (obj instanceof JobInfo) {
+                label.setText(((JobInfo) obj).getName());
                 viewer.setInput(obj);
                 // TODO refresh the viewer layout
                 // viewer.refresh();
                 ((Composite) viewer.getControl()).layout();
             }
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.daisy.pipeline.gui.jobs.IJobChangeListener#jobChanged(org.daisy.pipeline.gui.jobs.model.JobInfo)
+     */
+    public void jobChanged(final JobInfo job) {
+        if (!viewer.getInput().equals(job) && job.getSate() == State.RUNNING) {
+
+            // TODO set ui job family
+            org.eclipse.core.runtime.jobs.Job uiJob = new WorkbenchJob(
+                    "Task Detail Update Job") {
+                @Override
+                public IStatus runInUIThread(IProgressMonitor monitor) {
+                    viewer.setInput(job);
+                    return Status.OK_STATUS;
+                }
+
+            };
+            uiJob.setSystem(true);
+            uiJob.schedule();
+        }
+
     }
 }

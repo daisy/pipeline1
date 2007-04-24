@@ -3,6 +3,7 @@ package org.daisy.pipeline.gui.jobs;
 import java.util.List;
 
 import org.daisy.dmfc.core.script.Job;
+import org.daisy.dmfc.exception.ScriptAbortException;
 import org.daisy.dmfc.exception.ScriptException;
 import org.daisy.pipeline.gui.PipelineGuiPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -31,6 +32,11 @@ public class JobsRunner extends org.eclipse.core.runtime.jobs.Job {
                 PipelineGuiPlugin.getDefault().getCore().execute(job);
                 monitor.worked(1);
             } catch (ScriptException e) {
+                if (e instanceof ScriptAbortException) {
+                    StateManager.getInstance().aborted(job);
+                }else {
+                    
+                }
                 // TODO check aborted/failed status
                 // TODO Auto-generated catch block
                 e.printStackTrace();
