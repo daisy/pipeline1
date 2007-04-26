@@ -6,38 +6,39 @@ import org.daisy.dmfc.core.script.Script;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 
-public class ScriptsLabelProvider extends LabelProvider implements ILabelProvider {
+public class ScriptsLabelProvider extends LabelProvider implements
+		ILabelProvider {
 
-    private ScriptManager scriptMan;
+	private ScriptManager scriptMan;
 
-    public ScriptsLabelProvider() {
-        scriptMan = ScriptManager.getDefault();
-    }
+	public ScriptsLabelProvider() {
+		scriptMan = ScriptManager.getDefault();
+	}
 
-    /**
-     * Returns the text for the label of the given script file.
-     * 
-     * There is a hierarchy in the file structure that organises the.
-     * transformers by type:
-     * <ul>
-     * <li>Directories does not have associated script handler objects, they
-     * must be labelled by their name.</li>
-     * <li>Script file does have an associated script handler, they are
-     * labelled with teh script name retrieved from the handler. </li>
-     * </ul>
-     * 
-     * @param file A File in the script file tree.
-     */
-    @Override
-    public String getText(Object file) {
-        String text;
-        String path = ((File) file).getPath();
-        Script script = scriptMan.getScript(path);
-        if (script != null) {
-            text = script.getNicename();
-        } else {
-            text = ((File) file).getName();
-        }
-        return text;
-    }
+	/**
+	 * Returns the text for the label of the given script file.
+	 * 
+	 * There is a hierarchy in the file structure that organises the.
+	 * transformers by type:
+	 * <ul>
+	 * <li>Directories does not have associated script handler objects, they
+	 * must be labelled by their name.</li>
+	 * <li>Script file does have an associated script handler, they are
+	 * labelled with teh script name retrieved from the handler. </li>
+	 * </ul>
+	 * 
+	 * @param file
+	 *            A File in the script file tree.
+	 */
+	@Override
+	public String getText(Object file) {
+		String text;
+		Script script = scriptMan.getScript(((File) file).toURI());
+		if (script != null) {
+			text = script.getNicename();
+		} else {
+			text = ((File) file).getName();
+		}
+		return text;
+	}
 }

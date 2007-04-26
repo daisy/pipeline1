@@ -3,7 +3,7 @@ package org.daisy.pipeline.gui.scripts;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,65 +20,63 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 public class ScriptManager {
-    private static ScriptManager instance;
-    private EFolder scriptDir;
-    private Map<String, Script> scriptMap;
+	private static ScriptManager instance;
 
-    private ScriptManager() {
-        Bundle coreBundle = Platform.getBundle(PipelineGuiPlugin.CORE_ID);
-        try {
-            URL url = FileLocator.toFileURL(coreBundle.getEntry("/scripts"));
-            scriptDir = new EFolder(url.toURI());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        scriptMap = new HashMap<String, Script>();
-        populateScriptMap();
-    }
+	private EFolder scriptDir;
 
-    public static ScriptManager getDefault() {
-        if (instance == null) {
-            instance = new ScriptManager();
-        }
-        return instance;
-    }
+	private Map<URI, Script> scriptMap;
 
-    public EFolder getScriptDir() {
-        return scriptDir;
-    }
+	private ScriptManager() {
+		Bundle coreBundle = Platform.getBundle(PipelineGuiPlugin.CORE_ID);
+		try {
+			URL url = FileLocator.toFileURL(coreBundle.getEntry("/scripts"));
 
-    public Script getScript(String path) {
-        return scriptMap.get(path);
-    }
+			scriptDir = new EFolder(url.getPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		scriptMap = new HashMap<URI, Script>();
+		populateScriptMap();
+	}
 
-    private void populateScriptMap() {
-        // TODO lazy load scripts ?
-        Collection scripts = scriptDir.getFiles(true, ".+\\.taskScript");
-        DMFCCore core = PipelineGuiPlugin.getDefault().getCore();
-        for (Iterator iter = scripts.iterator(); iter.hasNext();) {
-            File file = (File) iter.next();
-            String path = null;
-            Script script = null;
-            // TODO fake code
-            try {
-                path = file.toURI().getPath();
-                script = core.newScript(file.toURI().toURL());
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ScriptValidationException e) {
-                // TODO Auto-generated catch block
-                System.err.println("unable to create script " + file.getName());
-                System.err.println("caused by: " + e.getMessage());
-                e.printStackTrace();
-            }
-            if (script != null && path != null) {
-                scriptMap.put(path, script);
-            }
-        }
-    }
+	public static ScriptManager getDefault() {
+		if (instance == null) {
+			instance = new ScriptManager();
+		}
+		return instance;
+	}
+
+	public EFolder getScriptDir() {
+		return scriptDir;
+	}
+
+	public Script getScript(URI uri) {
+		return scriptMap.get(uri);
+	}
+
+	private void populateScriptMap() {
+		// TODO lazy load scripts ?
+		Collection scripts = scriptDir.getFiles(true, ".+\\.taskScript");
+		DMFCCore core = PipelineGuiPlugin.getDefault().getCore();
+		for (Iterator iter = scripts.iterator(); iter.hasNext();) {
+			File file = (File) iter.next();
+			Script script = null;
+			// TODO fake code
+			try {
+				script = core.newScript(file.toURI().toURL());
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ScriptValidationException e) {
+				// TODO Auto-generated catch block
+				System.err.println("unable to create script " + file.getName());
+				System.err.println("caused by: " + e.getMessage());
+				e.printStackTrace();
+			}
+			if (script != null) {
+				scriptMap.put(file.toURI(), script);
+			}
+		}
+	}
 }

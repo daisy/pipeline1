@@ -22,60 +22,60 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class DocView extends ViewPart implements ISelectionListener {
 
-    public static final String ID = "org.daisy.pipeline.gui.views.doc";
+	public static final String ID = "org.daisy.pipeline.gui.views.doc";
 
-    private Browser browser;
+	private Browser browser;
 
-    public DocView() {
-        super();
-    }
+	public DocView() {
+		super();
+	}
 
-    @Override
-    public void init(IViewSite site) throws PartInitException {
-        super.init(site);
-        getSite().getPage().addPostSelectionListener(this);
-    }
+	@Override
+	public void init(IViewSite site) throws PartInitException {
+		super.init(site);
+		getSite().getPage().addPostSelectionListener(this);
+	}
 
-    @Override
-    public void dispose() {
-        super.dispose();
-        getSite().getPage().removePostSelectionListener(this);
-    }
+	@Override
+	public void dispose() {
+		super.dispose();
+		getSite().getPage().removePostSelectionListener(this);
+	}
 
-    @Override
-    public void createPartControl(Composite parent) {
-        browser = new Browser(parent, SWT.NONE);
-    }
+	@Override
+	public void createPartControl(Composite parent) {
+		browser = new Browser(parent, SWT.NONE);
+	}
 
-    @Override
-    public void setFocus() {
-        // TODO set the focus
-    }
+	@Override
+	public void setFocus() {
+		// TODO set the focus
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart,
-     *      org.eclipse.jface.viewers.ISelection)
-     */
-    public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-        if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-            Object obj = ((IStructuredSelection) selection).getFirstElement();
-            if (obj instanceof File) {
-                File file = (File) obj;
-                if (file.isFile()) {
-                    Script script = ScriptManager.getDefault().getScript(
-                            file.getPath());
-                    browser.setUrl(script.getDocumentation().toString());
-                }
-            }
-            if (obj instanceof JobInfo) {
-                JobInfo job = (JobInfo) obj;
-                browser.setUrl(job.getJob().getScript().getDocumentation()
-                        .toString());
-            }
-        }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart,
+	 *      org.eclipse.jface.viewers.ISelection)
+	 */
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
+			Object obj = ((IStructuredSelection) selection).getFirstElement();
+			if (obj instanceof File) {
+				File file = (File) obj;
+				if (file.isFile()) {
+					Script script = ScriptManager.getDefault().getScript(
+							file.toURI());
+					browser.setUrl(script.getDocumentation().toString());
+				}
+			}
+			if (obj instanceof JobInfo) {
+				JobInfo job = (JobInfo) obj;
+				browser.setUrl(job.getJob().getScript().getDocumentation()
+						.toString());
+			}
+		}
 
-    }
+	}
 
 }

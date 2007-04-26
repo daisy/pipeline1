@@ -173,23 +173,6 @@ public class FakeCore {
         }
     }
 
-    public void populateFakeJobs() {
-        for (int i = 0; i < 10; i++) {
-
-            try {
-                URL url = FileLocator
-                        .toFileURL(coreBundle
-                                .getEntry("/scripts/manipulation/advanced/RenamerTaggerValidator.taskScript"));
-                ScriptManager scriptMan = ScriptManager.getDefault();
-                Script script = scriptMan.getScript(url.getPath());
-                Job job = new Job(script);
-                JobManager.getInstance().add(job);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public static void populateTestJobs() {
         try {
             DMFCCore core = PipelineGuiPlugin.getDefault().getCore();
@@ -203,7 +186,7 @@ public class FakeCore {
             for (Iterator iter = devScripts.iterator(); iter.hasNext();) {
                 File file = (File) iter.next();
                 ScriptManager scriptMan = ScriptManager.getDefault();
-                Script script = scriptMan.getScript(file.toURI().getPath());
+                Script script = scriptMan.getScript(file.toURI());
                 Job job = new Job(script);
                 JobManager.getInstance().add(job);
             }
