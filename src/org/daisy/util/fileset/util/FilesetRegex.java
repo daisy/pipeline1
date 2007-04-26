@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 public class FilesetRegex {
 	
 	private FilesetRegex(){
-		URI_REMOTE = Pattern.compile("(^http:.+)|(^https:.+)|(^ftp:.+)|(^mailto:.+)|(^gopher:.+)|(^news:.+)|(^nntp:.+)|(^rtsp:.+)");		
+		URI_REMOTE = Pattern.compile("(^http:.+)|(^https:.+)|(^ftp:.+)|(^mailto:.+)|(^gopher:.+)|(^news:.+)|(^nntp:.+)|(^rtsp:.+)|(^bundleresource:.+)");		
 		URI_SMIL_FILE_WITH_FRAGMENT = Pattern.compile(".+\\.[Ss][Mm][Ii][Ll]#.+");
 		URI_WITH_FRAGMENT = Pattern.compile(".+\\..+#.+");  
 		

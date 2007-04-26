@@ -28,10 +28,22 @@ import java.util.Collection;
 public interface TransformerInfo {
     
 	/**
-	 * Gets the name of the Transformer.
-	 * @return the name of the Transformer
+	 * Gets the nice name of the Transformer.
+	 * @return the nice name of the Transformer
+	 * @deprecated Use TransformerInfo#getNiceName() instead
 	 */
 	public String getName();
+    
+    /**
+     * Gets the nice name of the Transformer.
+     * @return the nice name of the Transformer
+     */
+    public String getNiceName();
+    /**
+     * Gets the name of the Transformer package (i.e. the Transformer ID).
+     * @return the name of the Transformer package
+     */
+    public String getPackageName();
 
 	/**
 	 * Gets the description of the Transformer.

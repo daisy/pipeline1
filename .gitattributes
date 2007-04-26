@@ -58,6 +58,7 @@ lib/wstx-lgpl-3.2.1.jar -text
 lib/xalan.jar -text
 lib/xercesImpl.jar -text
 /pipeline.sh -text
+scripts/_dev/dtbook2html.taskScript -text
 scripts/manipulation/AudioTaggerScriptParamsStatic.paramGroup -text
 scripts/manipulation/AudioTaggerTaskParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerScriptParamsStatic.paramGroup -text

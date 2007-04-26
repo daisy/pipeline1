@@ -1,27 +1,25 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util - The DAISY java utility library Copyright (C) 2005 Daisy
+ * Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package org.daisy.util.xml.catalog;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
@@ -102,13 +100,16 @@ import org.xml.sax.SAXException;
  * @author markusg
  */
 
-public class CatalogEntityResolver implements EntityResolver, LSResourceResolver, URIResolver {
+public class CatalogEntityResolver implements EntityResolver,
+        LSResourceResolver, URIResolver {
     private static CatalogFile catalog;
     private EntityNotSupportedExceptions entityNotSupportedExceptions = null;
     static private CatalogEntityResolver _instance = null;
-    //static private CatalogEntityResolver _instance = new CatalogEntityResolver();
-    
-    //private HashSet EntityNotSupportedExceptions = new HashSet(); // <String>
+
+    // static private CatalogEntityResolver _instance = new
+    // CatalogEntityResolver();
+
+    // private HashSet EntityNotSupportedExceptions = new HashSet(); // <String>
 
     private CatalogEntityResolver() throws CatalogExceptionNotRecoverable {
         URL catalogURL = this.getClass().getResource("catalog.xml");
@@ -120,17 +121,17 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
         } catch (SAXException se) {
             throw new CatalogExceptionNotRecoverable(se);
         } catch (URISyntaxException e) {
-        	throw new CatalogExceptionNotRecoverable(e);
-		}
+            throw new CatalogExceptionNotRecoverable(e);
+        }
     }
 
-    
-
     /**
-     * Singleton retrieval 
+     * Singleton retrieval
+     * 
      * @return The catalog entity resolver instance
      */
-    static public CatalogEntityResolver getInstance() throws CatalogExceptionNotRecoverable {
+    static public CatalogEntityResolver getInstance()
+            throws CatalogExceptionNotRecoverable {
         if (null == _instance) {
             synchronized (CatalogEntityResolver.class) {
                 if (null == _instance) {
@@ -141,50 +142,57 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
         return _instance;
     }
 
-//    static public void reload() throws CatalogExceptionNotRecoverable{
-//    	_instance = new CatalogEntityResolver();
-//    }
-    
+    // static public void reload() throws CatalogExceptionNotRecoverable{
+    // _instance = new CatalogEntityResolver();
+    // }
+
     /**
      * Catalog aware implementation of the SAX resolveEntity method.
-     * <p>The public id is always preferred, ie the value of the OASIS Catalog 1.1</p>
+     * <p>
+     * The public id is always preferred, ie the value of the OASIS Catalog 1.1
+     * </p>
      * <code>prefer</code> attribute is hardcoded to <code>public</code>
      * 
-     * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+     * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String,
+     *      java.lang.String)
      */
-    public InputSource resolveEntity(String publicId, String systemId) throws IOException {
-//    	if(System.getProperty("org.daisy.debug")!=null){
-//    		System.out.println("DEBUG: CatalogEntityResolver#resolveEntity: publicId: " + publicId + ":: systemId:" + systemId );
-//    	}	
+    public InputSource resolveEntity(String publicId, String systemId)
+            throws IOException {
+        // if(System.getProperty("org.daisy.debug")!=null){
+        // System.out.println("DEBUG: CatalogEntityResolver#resolveEntity:
+        // publicId: " + publicId + ":: systemId:" + systemId );
+        // }
         if (publicId != null) {
             try {
                 return catalog.getPublicIdEntity(publicId);
             } catch (CatalogExceptionEntityNotSupported ceens) {
                 // no match in catalog for inparam public id
-            	entityNotSupportedExceptions.add(publicId);
+                entityNotSupportedExceptions.add(publicId);
                 // try systemId before giving up
             }
         }
-        
+
         try {
             return catalog.getSystemIdEntity(systemId);
         } catch (CatalogExceptionEntityNotSupported ceens) {
             // no match in catalog for inparam system id either
-        	entityNotSupportedExceptions.add(systemId);
+            entityNotSupportedExceptions.add(systemId);
             // try to match on filename alone (suffix)
             try {
-                String filename = new File(new URI(systemId)).getName();
+                String filename = systemId.substring(systemId.lastIndexOf('/'));
                 try {
                     return catalog.getSystemIdEntityFromSuffix(filename);
                 } catch (CatalogExceptionEntityNotSupported ceens2) {
-                	entityNotSupportedExceptions.add(systemId+": suffix");
-                	if(System.getProperty("org.daisy.debug")!=null){
-                		System.out.println("DEBUG: CatalogEntityResolver#resolveEntity: entity not supported: publicId: " + publicId + ":: systemId:" + systemId);
-                	}	
+                    entityNotSupportedExceptions.add(systemId + ": suffix");
+                    if (System.getProperty("org.daisy.debug") != null) {
+                        System.out
+                                .println("DEBUG: CatalogEntityResolver#resolveEntity: entity not supported: publicId: "
+                                        + publicId + ":: systemId:" + systemId);
+                    }
                 }
             } catch (Exception e) {
                 // silence
-            }                                   
+            }
             return null;
         }
     }
@@ -192,13 +200,14 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
     /**
      * @return the URL of the local resolved entity resource
      */
-    public URL resolveEntityToURL(String publicId, String systemId) throws IOException {
+    public URL resolveEntityToURL(String publicId, String systemId)
+            throws IOException {
         if (publicId != null) {
             try {
                 return catalog.getEntityLocalURL(publicId);
             } catch (CatalogExceptionEntityNotSupported ceens) {
                 // there was no match in catalog for inparam public id
-            	entityNotSupportedExceptions.add(publicId);
+                entityNotSupportedExceptions.add(publicId);
                 // try systemId before giving up
             }
         }
@@ -208,7 +217,7 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
             // there was no match in catalog for inparam system id either
             entityNotSupportedExceptions.add(systemId);
             return null;
-        }                        
+        }
     }
 
     /**
@@ -219,7 +228,7 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
         try {
             return catalog.getEntityLocalURL(publicOrSystemId);
         } catch (CatalogExceptionEntityNotSupported ceens) {
-        	entityNotSupportedExceptions.add(publicOrSystemId);
+            entityNotSupportedExceptions.add(publicOrSystemId);
         }
         return null;
     }
@@ -227,16 +236,17 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
     /**
      * LSResourceResolver impl (jaxp 1.3)
      */
-	public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
-		try {
-			URL url = resolveEntityToURL(publicId,systemId);
-			return (LSInput)url.openStream();
-		} catch (IOException e) {
-		
-		}
-		return null;
-	}
-    
+    public LSInput resolveResource(String type, String namespaceURI,
+            String publicId, String systemId, String baseURI) {
+        try {
+            URL url = resolveEntityToURL(publicId, systemId);
+            return (LSInput) url.openStream();
+        } catch (IOException e) {
+
+        }
+        return null;
+    }
+
     /**
      * Overrides and refuses clone since this is a singleton
      * 
@@ -264,45 +274,46 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
     }
 
     /**
-     * URIResolver impl. Note: only use this
-     * if you want to resolve URIs in schemas when
-     * the URI destinations are in the Catalog. 
-     * For all other use cases, use CatalogURIResolver.
+     * URIResolver impl. Note: only use this if you want to resolve URIs in
+     * schemas when the URI destinations are in the Catalog. For all other use
+     * cases, use CatalogURIResolver.
      */
-	public Source resolve(String href, String base) throws TransformerException {
-		//href is a reference inside the schema
-		//to a sub schema, for example ../relaxngcommon/attributes.rng
-		try {
-			URL url = this.resolveEntityToURL(href);
-			if(url==null) {
-				
-			}
-			StreamSource ss = new StreamSource(url.openStream());
-			ss.setSystemId(url.toExternalForm());
-			return ss;
-		} catch (IOException e) {
-			
-		}
-		
-		return null;
-	}
+    public Source resolve(String href, String base) throws TransformerException {
+        // href is a reference inside the schema
+        // to a sub schema, for example ../relaxngcommon/attributes.rng
+        try {
+            URL url = this.resolveEntityToURL(href);
+            if (url == null) {
 
-	class EntityNotSupportedExceptions {
-		private HashSet exceptions = null; //String
-		
-		EntityNotSupportedExceptions(){
-			exceptions = new HashSet(); 
-		}
-		
-		void add(String describer) {
-            if(System.getProperty("org.daisy.debug")!=null) {
-            	System.err.println("DEBUG org.daisy.util.xml.catalag.CatalogEntityResolver: entity not supported: " + describer);
             }
-			exceptions.add(describer);
-		}
-		
-		HashSet getSet(){
-			return exceptions;
-		}
-	}
+            StreamSource ss = new StreamSource(url.openStream());
+            ss.setSystemId(url.toExternalForm());
+            return ss;
+        } catch (IOException e) {
+
+        }
+
+        return null;
+    }
+
+    class EntityNotSupportedExceptions {
+        private HashSet exceptions = null; // String
+
+        EntityNotSupportedExceptions() {
+            exceptions = new HashSet();
+        }
+
+        void add(String describer) {
+            if (System.getProperty("org.daisy.debug") != null) {
+                System.err
+                        .println("DEBUG org.daisy.util.xml.catalag.CatalogEntityResolver: entity not supported: "
+                                + describer);
+            }
+            exceptions.add(describer);
+        }
+
+        HashSet getSet() {
+            return exceptions;
+        }
+    }
 }

@@ -98,7 +98,7 @@ public class DirClassLoader extends URLClassLoader {
 		try {
 			foundClass = findClass(className);			
 		} catch (ClassNotFoundException e) {		    
-			foundClass = super.loadClass(className);
+			foundClass = this.getClass().getClassLoader().loadClass(className);
 		}		
 		return foundClass;
 	}
