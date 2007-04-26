@@ -9,12 +9,12 @@ import org.daisy.dmfc.ui.CommandLineUI;
 import org.daisy.pipeline.test.impl.D202dtbValidator1;
 import org.daisy.pipeline.test.impl.DTBookValidator1;
 import org.daisy.pipeline.test.impl.DTBookValidator2;
-import org.daisy.pipeline.test.impl.DateDisplay;
 import org.daisy.pipeline.test.impl.Narrator1;
 import org.daisy.pipeline.test.impl.Odf2dtbook1;
 import org.daisy.pipeline.test.impl.PrettyPrinter1;
 import org.daisy.pipeline.test.impl.UnicodeNormalizer1;
 import org.daisy.util.file.EFolder;
+import org.daisy.util.file.FileUtils;
 
 /**
  * A test runner for the Daisy Pipeline
@@ -39,6 +39,7 @@ public class PipelineTestDriver {
 		EFolder scriptsDirectory = new EFolder(args[1]);		
 		inputDir = new EFolder(testdataDirectory, "input");
 		outputDir = new EFolder(testdataDirectory, "output");
+		FileUtils.createDirectory(outputDir);
 		
 		assert(scriptsDirectory.exists() && testdataDirectory.exists() && outputDir.exists() && inputDir.exists());
 		
