@@ -527,7 +527,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
 	 */
 	public void error(SAXParseException exception) throws SAXException {
-		//we redirect anything recieved here to ValidatorListener#message just to be consistent.
+		//we redirect anything received here to ValidatorListener#message just to be consistent.
 		this.report(null,ExceptionTransformer.newValidatorMessage
 				(exception, ExceptionTransformer.SAX_ERRHANDLER_TYPE_ERROR));				
 	}
@@ -537,7 +537,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
 	 */
 	public void fatalError(SAXParseException exception) throws SAXException {
-		//we redirect anything recieved here to ValidatorListener#message just to be consistent.
+		//we redirect anything received here to ValidatorListener#message just to be consistent.
 		this.report(null,ExceptionTransformer.newValidatorMessage
 				(exception, ExceptionTransformer.SAX_ERRHANDLER_TYPE_FATALERROR));		
 	}
@@ -547,7 +547,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
 	 */
 	public void warning(SAXParseException exception) throws SAXException {
-		//we redirect anything recieved here to ValidatorListener#message just to be consistent.
+		//we redirect anything received here to ValidatorListener#message just to be consistent.
 		this.report(null,ExceptionTransformer.newValidatorMessage
 				(exception, ExceptionTransformer.SAX_ERRHANDLER_TYPE_WARNING));		
 
@@ -846,7 +846,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		static final String SEVERE = "SEVERE";
 
 		/**
-		 * Was a ValidatorMessage of any type recieved?
+		 * Was a ValidatorMessage of any type received?
 		 * If not, the input is valid, assuming that CompletionTracker reports that
 		 * the intended processes were actually run.
 		 */

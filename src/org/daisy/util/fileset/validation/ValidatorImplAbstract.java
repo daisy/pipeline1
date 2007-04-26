@@ -285,7 +285,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	}
 	
 	/**
-	 * javax.xml.validation uses ErrorHandler so we recieve here if 
+	 * javax.xml.validation uses ErrorHandler so we receive here if 
 	 * a subclass happens to use javax.xml.validation and doesnt override. 
 	 * We redirect to ValidatorListener.report.
 	 */
@@ -295,7 +295,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	}
 
 	/**
-	 * javax.xml.validation uses ErrorHandler so we recieve here if 
+	 * javax.xml.validation uses ErrorHandler so we receive here if 
 	 * a subclass happens to use javax.xml.validation and doesnt override. 
 	 * We redirect to ValidatorListener.report.
 	 */
@@ -305,7 +305,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	}
 
 	/**
-	 * javax.xml.validation uses ErrorHandler so we recieve here if 
+	 * javax.xml.validation uses ErrorHandler so we receive here if 
 	 * a subclass happens to use javax.xml.validation and doesnt override. 
 	 * We redirect to ValidatorListener.report.
 	 */

@@ -39,7 +39,7 @@ import org.daisy.util.fileset.FilesetType;
  *   throw ffe;
  * }	
  *
- * //recieve notifications from the FilesetErrorHandler callback
+ * //receive notifications from the FilesetErrorHandler callback
  * //All nonthrown Exceptions are reported here, using subtypes		
  * //FilesetFileFatalErrorException, FilesetFileErrorException, FilesetFileWarningException 
  * public void error(FilesetFileException ffe) throws FilesetFileException {

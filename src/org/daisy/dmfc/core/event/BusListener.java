@@ -9,7 +9,7 @@ import java.util.EventObject;
 public interface BusListener extends EventListener {
 	
 	/**
-	 * Recieve an EventObject from the EventBus.
+	 * Receive an EventObject from the EventBus.
 	 */
-    void recieved(EventObject event);
+    void received(EventObject event);
 }

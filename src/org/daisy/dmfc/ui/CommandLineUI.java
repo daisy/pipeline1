@@ -214,7 +214,7 @@ public class CommandLineUI implements InputListener, BusListener {
         }
     }
 
-    public void recieved(EventObject event) {
+    public void received(EventObject event) {
         // we are subscribing to MessageEvent and StateChangeEvent
 
         try {

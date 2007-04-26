@@ -1526,9 +1526,9 @@ public class SmilMaker implements AbortListener, BusListener {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.daisy.dmfc.core.event.BusListener#recieved(java.util.EventObject)
+	 * @see org.daisy.dmfc.core.event.BusListener#received(java.util.EventObject)
 	 */
-	public void recieved(EventObject event) {
+	public void received(EventObject event) {
 		/*
 		 * mg20070327:
 		 * we are registered to listen to UserAbortEvent

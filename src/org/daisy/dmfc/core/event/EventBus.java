@@ -62,7 +62,7 @@ public class EventBus {
 
     
     /**
-     * Unsubscribe as a reciever of events from the EventBus.
+     * Unsubscribe as a receiver of events from the EventBus.
      * @param subscriber The object that will stop recieving events.
      * @param type The of Event object to unsubscribe from. Unsubscribing 
      * a class that has subclasses infers unsubscription from these subclasses as well.
@@ -105,7 +105,7 @@ public class EventBus {
     private void publish(Set<BusListener>listeners,EventObject event) {
         if(listeners!=null){
 	        for (BusListener listener : listeners) {        	
-	            listener.recieved(event);
+	            listener.received(event);
 	        }
         }
     	

@@ -31,7 +31,7 @@ import org.daisy.dmfc.core.event.UserReplyEvent;
 public interface InputListener {
 		
 	/**
-	 * Recieve a request for user input from the Pipeline core, 
+	 * Receive a request for user input from the Pipeline core, 
 	 * most probably from a Transformer
 	 * @param event The system request
 	 * @return a user reply

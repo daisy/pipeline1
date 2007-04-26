@@ -111,7 +111,7 @@ public abstract class AbstractValidator extends javax.xml.validation.Validator i
 	/**
 	 * Extension to javax.xml.validation.Validator.
 	 * This is the org.xml.sax.ErrorHandler impl
-	 * that will recieve error notifications if the
+	 * that will receive error notifications if the
 	 * user has not registered another errorhandler.
 	 */
 	public void warning(SAXParseException spe) throws SAXException {
@@ -121,7 +121,7 @@ public abstract class AbstractValidator extends javax.xml.validation.Validator i
 	/**
 	 * Extension to javax.xml.validation.Validator.
 	 * This is the org.xml.sax.ErrorHandler impl
-	 * that will recieve error notifications if the
+	 * that will receive error notifications if the
 	 * user has not registered another errorhandler.
 	 */	
 	public void error(SAXParseException spe) throws SAXException {
@@ -131,7 +131,7 @@ public abstract class AbstractValidator extends javax.xml.validation.Validator i
 	/**
 	 * Extension to javax.xml.validation.Validator.
 	 * This is the org.xml.sax.ErrorHandler impl
-	 * that will recieve error notifications if the
+	 * that will receive error notifications if the
 	 * user has not registered another errorhandler.
 	 */
 	public void fatalError(SAXParseException spe) throws SAXException {

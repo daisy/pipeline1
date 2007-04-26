@@ -73,7 +73,7 @@ public class FilesetImpl implements Fileset {
 	/**
 	 * Default class constructor
 	 * @param manifestURI the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
-	 * @param errh the FilesetErrorHandler that will recieve notification of nonfatal errors
+	 * @param errh the FilesetErrorHandler that will receive notification of nonfatal errors
 	 * @throws FilesetNonFatalException 
 	 */
 	public FilesetImpl(URI manifestURI, FilesetErrorHandler errh) throws FilesetFatalException {
@@ -83,7 +83,7 @@ public class FilesetImpl implements Fileset {
 	/**
 	 * Extended class constructor
 	 * @param manifestURI the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
-	 * @param errh the FilesetErrorHandler that will recieve notification of nonfatal errors
+	 * @param errh the FilesetErrorHandler that will receive notification of nonfatal errors
 	 * @param dtdValidate sets whether XML members in the fileset will be DTD validated in the case they reference a DTD. The default value of this property is false.
 	 * @throws FilesetNonFatalException 
 	 */
@@ -94,7 +94,7 @@ public class FilesetImpl implements Fileset {
 	/**
 	 * Extended class constructor. 	 
 	 * @param manifestURI the URI of the object being input port for fileset retrieval (ncc, opf, playlist, etc)
-	 * @param errh the FilesetErrorHandler that will recieve notification of nonfatal errors
+	 * @param errh the FilesetErrorHandler that will receive notification of nonfatal errors
 	 * @param dtdValidate sets whether XML members in the fileset will be DTD validated.  The default value of this property is false.
 	 * @param setReferringCollections sets whether the referringLocalMembers collection will be created on each member. Note - this is a costly procedure in terms of timeconsumption for large filesets.  The default value of this property is false.
 	 * @throws FilesetNonFatalException  

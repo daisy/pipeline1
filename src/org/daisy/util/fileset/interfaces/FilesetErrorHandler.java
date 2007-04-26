@@ -29,7 +29,7 @@ public interface FilesetErrorHandler {
 	/**
 	 * <p>This interface defines a singular method through
 	 * which notification of the following types of Exceptions 
-	 * can be recieved.</p>
+	 * can be received.</p>
 	 * <ul>
 	 * <li>FilesetFileFatalErrorException -  extends FilesetFileException - severity fatal for this file (example XML malformedness)</li>
 	 * <li>FilesetFileErrorException -  extends FilesetFileException - severity nonfatal but critical for this file (example XML invalidity when validation is on)</li>
