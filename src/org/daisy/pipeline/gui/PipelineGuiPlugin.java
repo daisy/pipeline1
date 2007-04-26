@@ -6,8 +6,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.daisy.dmfc.core.DMFCCore;
+import org.daisy.dmfc.core.FakeCore;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.pipeline.gui.jobs.StateManager;
+import org.daisy.pipeline.gui.messages.MessageManager;
+import org.daisy.pipeline.gui.scripts.ScriptManager;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -40,7 +43,10 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         initPipelineCore();
+        MessageManager.getDefault().init();
         StateManager.getInstance().init();
+        ScriptManager.getDefault();
+        FakeCore.populateTestJobs();
     }
 
     /**
