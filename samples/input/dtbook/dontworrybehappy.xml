@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dtbook PUBLIC "-//NISO//DTD dtbook 2005-2//EN" "http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd">
+<dtbook version="2005-2" xml:lang="en" xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+   <head>
+      <meta content="Don't Worry, Be Happy Lyrics" name="dc:Title"/>
+      <meta content="Bobby McFerrin" name="dc:Creator"/>      
+      <meta content="Ferrin press" name="dc:Publisher"/>
+      <meta content="en-US" name="dc:Language"/>
+      <meta content="1992-03-23" name="dc:Date"/>
+      <meta content="F00000" name="dtb:uid"/>
+   </head>
+   <book>
+         <frontmatter>
+	         <doctitle>Don't Worry, Be Happy</doctitle>
+	         <docauthor>Bobby McFerrin</docauthor>
+	         <level1>
+				<p>From the Movie "Cocktails".</p>
+				<p>originally Performed by Bobby McFerrin.</p>
+				<p>With commentary by Professor S. Boork Boork, Oxford Cambridge.</p>
+			 </level1>
+		 </frontmatter>
+		<bodymatter>
+		<level1>
+		<h1>Introductio</h1>
+		<linegroup>
+			<line>Here is a little song I wrote</line>
+			<line>You might want to sing it note<noteref class="footnote" idref="#fn1">1</noteref> for note </line>
+			<line>Don't worry be happy</line>
+			<line>In every life we have some trouble</line>
+			<line>When you worry you make it double</line>
+			<line>Don't worry, be happy......</line>
+		</linegroup>
+		</level1>
+		<level1>
+		<h1>Versa media, pre peripetum</h1>
+		<linegroup>
+			<line>Ain't got no place to lay your head</line>
+			<line>Somebody came and took your bed</line>
+			<line>Don't worry, be happy</line>
+			<line>The land lord say your rent is late<noteref class="footnote" idref="#fn2">2</noteref></line>
+			<line>He may have to litigate</line>
+			<line>Don't worry, be happy</line>
+			<line>Lood at me I am happy</line>
+			<line>Don't worry, be happy</line>
+			<line>Here I give you my phone number</line>
+			<line>When you worry call me</line>
+			<line>I make you happy</line>
+			<line>Don't worry, be happy</line>
+		</linegroup>
+		<level2>
+			<h2>Culmen interludiaris</h2>
+			<linegroup>
+			<line>Ain't got no cash, ain't got no style</line>
+			<line>Ain't got not girl to make you smile</line>
+			<line>But don't worry be happy</line>
+			<line>Cause when you worry</line>
+			<line>Your face will frown</line>
+			<line>And that will bring everybody down</line>
+			<line>So don't worry, be happy (now).....</line>		
+			</linegroup>
+			</level2>
+		</level1>
+		<level1>
+		<h1>Concludio</h1>
+		<linegroup>
+			<line>There is this little song I wrote</line>
+			<line>I hope you learn it note for note</line>
+			<line>Like good little children</line>
+			<line>Don't worry, be happy</line>
+			<line>Listen to what I say</line>
+			<line>In your life expect some trouble</line>
+			<line>But when you worry</line>
+			<line>You make it double</line>		
+		</linegroup>	
+		<level2>
+		<h2>Repetitio ad nauseam</h2>
+			<linegroup>
+			<line>Don't worry, be happy......</line>
+			<line>Don't worry don't do it, be happy</line>
+			<line>Put a smile on your face</line>
+			<line>Don't bring everybody down like this</line>
+			<line>Don't worry, it will soon past</line>
+			<line>Whatever it is</line>
+			<line>Don't worry, be happy</line>
+			</linegroup>
+		</level2>
+		</level1>
+		</bodymatter>
+		<rearmatter>
+			<level1>
+				<h1>Notes</h1>
+				<note class="endnote" id="fn1"><p>The author makes a plump reference to Homeros, Iliad, book 4 Chapter 4, verse 3.</p></note>
+				<note class="endnote" id="fn2"><p>This was initially expressed in T.S. Eliot, The Wasteland, and in Hugh Selwyn Mauberley, stanza 4, line 3.</p></note>			
+			</level1>		
+		</rearmatter>
+		
+   </book>
+</dtbook>
+
+
