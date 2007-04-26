@@ -22,12 +22,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.EFolder;
@@ -78,10 +77,10 @@ public class UCNormalizer extends Transformer implements FilesetManipulatorListe
 	private int processedCount = 0; //for progress
 	private boolean textnodesOnly = false; 
 	
-    public  UCNormalizer (InputListener inListener, Set eventListeners, Boolean isInteractive) {
-        super(inListener, eventListeners, isInteractive);        
+    public  UCNormalizer (InputListener inListener,  Boolean isInteractive) {
+        super(inListener,  isInteractive);        
     }
-	
+    
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		
 		try{
@@ -89,13 +88,13 @@ public class UCNormalizer extends Transformer implements FilesetManipulatorListe
 			//implement FilesetManipulatorListener
 			fm.setListener(this);
 			//set input fileset
-			fm.setInputFileset(new File((String)parameters.remove("inXML")).toURI());
+			fm.setInputFileset(new File((String)parameters.remove("input")).toURI());
 			//set destination
-			fm.setOutputFolder((EFolder)FileUtils.createDirectory(new EFolder((String)parameters.remove("outDir"))));
+			fm.setOutputFolder((EFolder)FileUtils.createDirectory(new EFolder((String)parameters.remove("output"))));
 			//set restriction, only listen to XmlFile
 			fm.setFileTypeRestriction(XmlFile.class);
 			//set normalization form
-			this.mode = setNormalizationForm((String)parameters.remove("normalizationForm"));
+			this.mode = setNormalizationForm((String)parameters.remove("normalizationForm"));			
 			//set a counter for progress sake
 			this.xmlFileCount = getXmlFileCount(fm.getInputFileset());
 			//check user settable node restriction
@@ -103,9 +102,9 @@ public class UCNormalizer extends Transformer implements FilesetManipulatorListe
 			//run...
 			fm.iterate();
 			//done.
-			this.sendMessage(Level.FINE, "Completed normalization of " + processedCount + " files.");
+			sendMessage(i18n("COMPLETED_NORM", processedCount));
 		} catch (Exception e) {
-			this.sendMessage(Level.SEVERE, e.getMessage());
+			this.sendMessage(i18n("ERROR_ABORTING"), MessageEvent.Type.ERROR);			
 			throw new TransformerRunException(e.getMessage(),e);
 		}			
 		return true;
@@ -139,11 +138,11 @@ public class UCNormalizer extends Transformer implements FilesetManipulatorListe
 	 * FilesetManipulatorListener impl
 	 */
 	public void error(FilesetFileException ffe) throws FilesetFileException {
-		if(ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {			
-			this.sendMessage(Level.SEVERE,ffe.getCause() + " in " + ffe.getOrigin());
-		}else{
-			this.sendMessage(Level.WARNING,ffe.getCause() + " in " + ffe.getOrigin());
-		}		
+		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {			
+			this.sendMessage(ffe.getCause() + " in " + ffe.getOrigin(), MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT);
+		} else {			
+			this.sendMessage(ffe.getCause() + " in " + ffe.getOrigin(), MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT);
+		}	
 	}
 
 	/**
@@ -154,7 +153,7 @@ public class UCNormalizer extends Transformer implements FilesetManipulatorListe
 		try{
 			return Normalizer.normalize(value,this.mode);			
 		}catch (Exception e) {
-			this.sendMessage(Level.WARNING,e.getMessage());
+			this.sendMessage(i18n("ERROR", e.getMessage()), MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
 			return null;
 		}
 	}
@@ -162,16 +161,21 @@ public class UCNormalizer extends Transformer implements FilesetManipulatorListe
 	private Normalizer.Mode setNormalizationForm(String name) {
 		name = name.intern();
 		if (name == "NFC") {
+			sendMessage(i18n("USING_FORM", "NFC"));
 			return Normalizer.NFC; 
 		}else if (name == "NFD") {
+			sendMessage(i18n("USING_FORM", "NFD"));
 			return Normalizer.NFD; 
 		}else if (name == "NFKC") {
+			sendMessage(i18n("USING_FORM", "NFKC"));
 			return Normalizer.NFKC; 
 		}else if (name == "NFKD") {
+			sendMessage(i18n("USING_FORM", "NFKD"));
 			return Normalizer.NFKD; 
 		}
-		
-		this.sendMessage(Level.WARNING,"could not parse normalizationMode inparam, using default NFC");
+		//fallback
+		this.sendMessage(i18n("ERROR", "Unrecognized normalization form: " + name), MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT);
+		sendMessage(i18n("USING_FORM", "NFC"));
 		return Normalizer.NFC;
 	}
 	
