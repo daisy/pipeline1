@@ -47,18 +47,23 @@ import org.xml.sax.SAXException;
             } else {
                 //System.err.println("cl");
             }
-            Class cls = Class.forName(this.getClass().getPackage().getName() + ".DummyClass", true, cl);
-            URL catalogURL = cls.getResource("lang.xml");
-            catalog = new CatalogFile(catalogURL, cls);            
+//            Class cls = Class.forName(this.getClass().getPackage().getName() + ".DummyClass", true, cl);
+//            URL catalogURL = cls.getResource("lang.xml");
+//            catalog = new CatalogFile(catalogURL, cls);            
+            //mg20070411:
+            URL catalogURL = this.getClass().getResource("lang.xml"); 
+            catalog = new CatalogFile(catalogURL, this.getClass());
+            
+                        
         } catch (URISyntaxException use) {
             throw new CatalogExceptionNotRecoverable(use);
         } catch (IOException ioe) {
         	throw new CatalogExceptionNotRecoverable(ioe);
 		} catch (SAXException se) {
         	throw new CatalogExceptionNotRecoverable(se);
-		} catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+//		} catch (ClassNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
         }
     }
     

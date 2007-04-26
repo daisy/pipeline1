@@ -27,8 +27,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -49,10 +49,10 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 /*package*/ class DefaultAbbrBreakFinder extends BreakFinder {
     
-    private static Logger logger = Logger.getLogger(DefaultAbbrBreakFinder.class.getName());
-    static {        
-        logger.setLevel(Level.ALL);
-    }
+//    private static Logger logger = Logger.getLogger(DefaultAbbrBreakFinder.class.getName());
+//    static {        
+//        logger.setLevel(Level.ALL);
+//    }
         
     private LangSettingsResolver resolver = null;
     private LangSettings langSettings = null; 
@@ -74,7 +74,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
     public DefaultAbbrBreakFinder(Set xmllang, URL customLang, boolean overrideLang) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
         resolver = LangSettingsResolver.getInstance();
         
-        logger.info("Loading language: common");
+        //logger.info("Loading language: common");
         LangSettings lscommon = new LangSettings(null, resolver.resolve("common"), null);
         langSettingsMap.put("common", lscommon);
         baseInitialisms.putAll(lscommon.getInitialisms());
@@ -82,7 +82,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         baseAbbrs.putAll(lscommon.getAbbrs());		// jwpritchett@rfbd.org:  added to support global abbreviations
         
         if (customLang != null) {
-            logger.info("Loading language: custom");
+            //logger.info("Loading language: custom");
             LangSettings lscustom = new LangSettings("custom", customLang, null);
             langSettingsMap.put("custom", lscustom);
             baseInitialisms.putAll(lscustom.getInitialisms());
@@ -96,11 +96,11 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
             Locale loc = LocaleUtils.string2locale(lang);
             lang = loc.toString();
             if (!loc.getCountry().equals("")) {
-                logger.info("Preloading language: " + loc.getLanguage());
+                //logger.info("Preloading language: " + loc.getLanguage());
                 loadLanguage(loc.getLanguage(), lscommon);
             }
             
-            logger.info("Loading language: " + lang);
+            //logger.info("Loading language: " + lang);
             loadLanguage(lang, lscommon);
         }
         switchToLang("common");
@@ -114,7 +114,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 	        Locale loc = LocaleUtils.string2locale(locale);
 	        if (!loc.getCountry().equals("")) {
 	            if (langSettingsMap.containsKey(loc.getLanguage())) {
-	                logger.info("Using " + loc.getLanguage() + " as base language for " + loc.toString());
+	                //logger.info("Using " + loc.getLanguage() + " as base language for " + loc.toString());
 	                defaultLS = (LangSettings)langSettingsMap.get(loc.getLanguage());
 	            }
 	        }
@@ -123,7 +123,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 	        if (langURL != null) {
 	            ls = new LangSettings(locale, langURL, defaultLS);
 	        } else {
-	            logger.warning("No language settings found for " + locale);
+	            //logger.warning("No language settings found for " + locale);
 	            ls = new LangSettings(locale, defaultLS);
 	        }
 	        baseInitialisms.putAll(ls.getInitialisms());
@@ -199,7 +199,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
             if (type != Abbr.INITIALISM && type != Abbr.ACRONYM && type != Abbr.ABBREVIATION && type != Abbr.FIX) {
                 // Not a single type. Not much to do really since different types are
                 // allowed in different contexts. Let's skip this match.
-                logger.finer("Not a single match (text=" + text.substring(m.getStart(), m.getEnd()) + ", type=" + type + "). Skipping...");
+                //logger.finer("Not a single match (text=" + text.substring(m.getStart(), m.getEnd()) + ", type=" + type + "). Skipping...");
             } else {
 	            // Is that allowed in this context? 
 	            if (langSettings.allowedContext(text, m.getStart(), m.getEnd(), type)) {
@@ -208,9 +208,9 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 	                String expAttr = item==null?null:item.getExp();
 	                Abbr abbr = new Abbr(match, expansion, expAttr, type, m.getStart(), m.getEnd());
 	                result.add(abbr);
-	                logger.finer(abbr + "\t" + current);	                
+	                //logger.finer(abbr + "\t" + current);	                
 	            } else {
-	                logger.finer("Not allowed in context: ..." + text.substring(Math.max(0,m.getStart()-5), Math.min(m.getEnd()+5, text.length())) + "... [" + text.substring(m.getStart(), m.getEnd()) + "]");	                
+	                //logger.finer("Not allowed in context: ..." + text.substring(Math.max(0,m.getStart()-5), Math.min(m.getEnd()+5, text.length())) + "... [" + text.substring(m.getStart(), m.getEnd()) + "]");	                
 	            }
             }
         }        

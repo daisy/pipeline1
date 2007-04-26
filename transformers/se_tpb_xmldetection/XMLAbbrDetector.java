@@ -26,12 +26,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -149,19 +143,8 @@ public class XMLAbbrDetector extends XMLWordDetector {
     
     public static void main(String[] args) throws CatalogExceptionNotRecoverable, UnsupportedDocumentTypeException, FileNotFoundException, XMLStreamException {
         XMLAbbrDetector detector;
-        LogManager lm = LogManager.getLogManager();
-        Logger lg = lm.getLogger("");
-        Handler[] handlers = lg.getHandlers();
-        for (int i = 0; i < handlers.length; ++i) {
-            lg.removeHandler(handlers[i]);
-        }
+
         try {
-            Handler newHandler = new FileHandler("AbbrDetection.log");
-            newHandler.setFormatter(new Formatter(){
-                public String format(LogRecord record) {
-                    return record.getLevel() + ": " + record.getMessage() + "\n";
-                }});
-            lg.addHandler(newHandler);
             detector = new XMLAbbrDetector(new File(args[0]), new File(args[1]));
             detector.detect(null);
         } catch (CatalogExceptionNotRecoverable e) {

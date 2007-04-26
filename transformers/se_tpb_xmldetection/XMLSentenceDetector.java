@@ -30,8 +30,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
@@ -53,10 +51,10 @@ import org.daisy.util.xml.stax.ContextStack;
  */
 public class XMLSentenceDetector extends XMLBreakDetector {
 
-    private static Logger logger = Logger.getLogger(XMLSentenceDetector.class.getName());
-    static {        
-        logger.setLevel(Level.ALL);
-    }
+//    private static Logger logger = Logger.getLogger(XMLSentenceDetector.class.getName());
+//    static {        
+//        logger.setLevel(Level.ALL);
+//    }
     
     protected final static String LAST_EVENT = "last event";
     protected final static String LATEST_BREAKING = "latest breaking";    
@@ -247,7 +245,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                                 elementName.equals(breakSettings.getInitialismElement())) {
                             abbrAcronym = new Abbr(buffer.substring(abbrAcronym.getStart(), buffer.length()), abbrAcronym.getExpansion(), abbrAcronym.getExpAttr(), abbrAcronym.getType(), abbrAcronym.getStart(), buffer.length());
                             abbrAcronymList.add(abbrAcronym);
-                            logger.finer(abbrAcronym.toString());
+                            //logger.finer(abbrAcronym.toString());
                         }                        
                     }
                 }
@@ -304,7 +302,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                     return false;
                 }
             } else {
-                logger.info("Missing attribute " + key);
+                //logger.info("Missing attribute " + key);
                 return false;
             }
         }
@@ -430,7 +428,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
 	        writeEvent(ee);
 	        writeEvent(se);
         } catch (IllegalArgumentException e) {
-            logger.warning("XML is unsuitable for sentence tagging...");
+            //logger.warning("XML is unsuitable for sentence tagging...");
             throw e;
         }
     }

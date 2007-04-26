@@ -28,8 +28,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamException;
@@ -43,10 +43,10 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
  */
 /*package*/ class DefaultSentenceBreakFinder extends BreakFinder {
 
-    private static Logger logger = Logger.getLogger(DefaultSentenceBreakFinder.class.getName());
-    static {        
-        logger.setLevel(Level.ALL);
-    }
+//    private static Logger logger = Logger.getLogger(DefaultSentenceBreakFinder.class.getName());
+//    static {        
+//        logger.setLevel(Level.ALL);
+//    }
     
     protected BreakIterator iterator = BreakIterator.getSentenceInstance();
     
@@ -62,14 +62,14 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
     public DefaultSentenceBreakFinder(Set xmllang, URL customLang, boolean overrideLang) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
         resolver = LangSettingsResolver.getInstance();
         
-        logger.info("Loading language: common");
+        //logger.info("Loading language: common");
         LangSettings lscommon = new LangSettings(null, resolver.resolve("common"), null);
         langSettingsMap.put("common", lscommon);
         baseInitialisms.putAll(lscommon.getInitialisms());
         baseAcronyms.putAll(lscommon.getAcronyms());
         
         if (customLang != null) {
-            logger.info("Loading language: custom");
+            //logger.info("Loading language: custom");
             LangSettings lscustom = new LangSettings("custom", customLang, null);
             langSettingsMap.put("custom", lscustom);
             baseInitialisms.putAll(lscustom.getInitialisms());
@@ -82,11 +82,11 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
             Locale loc = LocaleUtils.string2locale(lang);
             lang = loc.toString();
             if (!loc.getCountry().equals("")) {
-                logger.info("Preloading language: " + loc.getLanguage());
+                //logger.info("Preloading language: " + loc.getLanguage());
                 loadLanguage(loc.getLanguage(), lscommon);
             }
             
-            logger.info("Loading language: " + lang);
+            //logger.info("Loading language: " + lang);
             loadLanguage(lang, lscommon);            
         }
         switchToLang("common");
@@ -100,7 +100,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 	        Locale loc = LocaleUtils.string2locale(locale);
 	        if (!loc.getCountry().equals("")) {
 	            if (langSettingsMap.containsKey(loc.getLanguage())) {
-	                logger.info("Using " + loc.getLanguage() + " as base language for " + loc.toString());
+	                //logger.info("Using " + loc.getLanguage() + " as base language for " + loc.toString());
 	                defaultLS = (LangSettings)langSettingsMap.get(loc.getLanguage());
 	            }
 	        }
@@ -109,7 +109,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 	        if (langURL != null) {
 	            ls = new LangSettings(locale, langURL, defaultLS);
 	        } else {
-	            logger.warning("No language settings found for " + locale);
+	            //logger.warning("No language settings found for " + locale);
 	            ls = new LangSettings(locale, defaultLS);
 	        }
 	        baseInitialisms.putAll(ls.getInitialisms());
@@ -154,7 +154,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
                 (newLocale == null && current != null)) {
             current = newLocale;
             if (current == null) {
-                logger.info("No language specified. Using default BreakIterator instance.");
+                //logger.info("No language specified. Using default BreakIterator instance.");
                 iterator = BreakIterator.getSentenceInstance();
                 current = new Locale("common");
             } else {
@@ -180,7 +180,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
                     // There is an Abbr in the current sentence
                     if (Pattern.compile(".*" + Pattern.quote(abbr.getKey()) + "\\s*", Pattern.DOTALL).matcher(text.substring(start, end)).matches()) {
                         // The Abbr is the last thing in this sentence. Is that allowed or is this a false positive
-                        logger.finer("abbr inside last: " + abbr.getKey());
+                        //logger.finer("abbr inside last: " + abbr.getKey());
                         if (langSettings.mayNotEndSentence(langSettings.removeSuffix(abbr.getKey(), abbr.getExpansion(), abbr.getType()), abbr.getExpansion(), abbr.getType())) {
                             // It was a false positive. Don't add it.
                             noBreak = true;                                

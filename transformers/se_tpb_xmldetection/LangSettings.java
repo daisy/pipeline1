@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,10 +51,10 @@ import org.daisy.util.i18n.LocaleUtils;
  */
 public class LangSettings {
     
-    private static Logger logger = Logger.getLogger(LangSettings.class.getName());
-    static {        
-        logger.setLevel(Level.ALL);
-    }
+//    private static Logger logger = Logger.getLogger(LangSettings.class.getName());
+//    static {        
+//        logger.setLevel(Level.ALL);
+//    }
     
     protected String language = null;
     
@@ -346,13 +346,13 @@ public class LangSettings {
 	        	}
                 break;
             default:
-                logger.warning("Unknown type: " + key);
+                //logger.warning("Unknown type: " + key);
             	return null;
             }
-            logger.warning("Not found in word list: " + key);
+            //logger.warning("Not found in word list: " + key);
             return null;
         }
-        logger.warning("No match found for: " + key);
+        //logger.warning("No match found for: " + key);
         return null;
     }
     
@@ -438,7 +438,7 @@ public class LangSettings {
             //System.err.println("Found lang: " + item.getLang());
             if (language!=null && language.equals(item.getLang())) {
                 result = item;
-                logger.finer("Found match in current language [" + language + "]: " + item.getValue());
+                //logger.finer("Found match in current language [" + language + "]: " + item.getValue());
                 return result;
             } else if (loc!=null && loc.getLanguage().equals(item.getLang())) {
                 result = item;
@@ -448,9 +448,9 @@ public class LangSettings {
             }
         }
         if (foundParentLang) {
-            logger.finer("Found match in language [" + loc.getLanguage() + "]: " + result);
+            //logger.finer("Found match in language [" + loc.getLanguage() + "]: " + result);
         } else if (result != null) {
-            logger.finer("Found match in language [common]: " + result);
+            //logger.finer("Found match in language [common]: " + result);
         }
         return result;
     }
@@ -465,10 +465,10 @@ public class LangSettings {
                 coll = acronyms.getCollection(key);
             }
             if (coll == null) {
-                logger.warning("No expansion found for " + key);
+                //logger.warning("No expansion found for " + key);
         	    return null;
         	} else if (coll.size() != 1) {
-        	    logger.finer("Multiple choices for " + key + ": " + coll);
+        	    //logger.finer("Multiple choices for " + key + ": " + coll);
         	    Item result = null;
         	    if (sameId(coll)) {
         	        //System.err.println("Same ID!");
@@ -481,10 +481,10 @@ public class LangSettings {
         } else if (type == Abbr.ABBREVIATION) {
             coll = abbrs.getCollection(key);
 	    	if (coll == null) {
-	    	    logger.warning("No abbr expansion found for " + key);
+	    	    //logger.warning("No abbr expansion found for " + key);
 	    	    return null;
 	    	} else if (coll.size() != 1) {
-	    	    logger.finer("Multiple abbr choices for " + key + ": " + coll);
+	    	    //logger.finer("Multiple abbr choices for " + key + ": " + coll);
 	    	    Item result = null;
 	    	    if (sameId(coll)) {
 	    	        result = getFromBestLanguage(coll);
