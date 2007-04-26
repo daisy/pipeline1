@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
 import org.daisy.dmfc.core.event.CoreMessageEvent;
 import org.daisy.dmfc.core.event.EventBus;
-import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.event.JobStateChangeEvent;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
 import org.daisy.dmfc.core.event.TransformerMessageEvent;
 import org.daisy.dmfc.core.event.TransformerProgressChangeEvent;
@@ -31,6 +32,7 @@ import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.messages.MessageManager;
 import org.daisy.pipeline.gui.scripts.ScriptManager;
 import org.daisy.util.execution.State;
+import org.daisy.util.file.EFolder;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
@@ -49,10 +51,8 @@ public class FakeCore {
     }
 
     public void execute(Job job) throws ScriptException {
-        EventBus.getInstance()
-                .publish(
-                        new JobStateChangeEvent(job,
-                                StateChangeEvent.Status.STARTED));
+        EventBus.getInstance().publish(
+                new JobStateChangeEvent(job, StateChangeEvent.Status.STARTED));
         setState(job, State.RUNNING);
         for (Task task : job.getScript().getTasks()) {
             Transformer trans = new FakeTrans(task.getName());
@@ -86,10 +86,8 @@ public class FakeCore {
         }
         setState(job, State.FINISHED);
 
-        EventBus.getInstance()
-                .publish(
-                        new JobStateChangeEvent(job,
-                                StateChangeEvent.Status.STOPPED));
+        EventBus.getInstance().publish(
+                new JobStateChangeEvent(job, StateChangeEvent.Status.STOPPED));
 
         // } catch (TransformerAbortException e) {
         // setState(job, State.ABORTED);
@@ -192,6 +190,40 @@ public class FakeCore {
         }
     }
 
+    public static void populateTestJobs() {
+        try {
+            DMFCCore core = PipelineGuiPlugin.getDefault().getCore();
+            core.newScript(DMFCCore.class.getResource("/../scripts/_dev/dtbook2html.taskScript"));
+            
+            
+            URL url = FileLocator.toFileURL(Platform.getBundle(
+                    PipelineGuiPlugin.CORE_ID).getEntry("/scripts/_dev"));
+            EFolder devDir = new EFolder(url.toURI());
+            Collection devScripts = devDir.getFiles(true, ".+\\.taskScript");
+            for (Iterator iter = devScripts.iterator(); iter.hasNext();) {
+                File file = (File) iter.next();
+                ScriptManager scriptMan = ScriptManager.getDefault();
+                Script script = scriptMan.getScript(file.toURI().getPath());
+                Job job = new Job(script);
+                JobManager.getInstance().add(job);
+            }
+
+            // URL url = FileLocator
+            // .toFileURL(Platform
+            // .getBundle(PipelineGuiPlugin.CORE_ID)
+            // .getEntry(
+            // "/scripts/validation/simple/Daisy202DTBValidator.taskScript"));
+            // ScriptManager scriptMan = ScriptManager.getDefault();
+            // Script script = scriptMan.getScript(url.getPath());
+            // Job job = new Job(script);
+            // job.setParameterValue("validatorInputFile",
+            // "/Users/Romain/Documents/DAISY/Misc/202dtb/ncc.html");
+            // JobManager.getInstance().add(job);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private class FakeTransInfo implements TransformerInfo {
 
         private String name;
@@ -218,6 +250,14 @@ public class FakeCore {
 
         public File getTransformerDir() {
             return null;
+        }
+
+        public String getNiceName() {
+            return name;
+        }
+
+        public String getPackageName() {
+            return name;
         }
 
     }
