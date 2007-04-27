@@ -98,6 +98,12 @@ public class ISOSchematronSchema extends AbstractSchema implements ErrorListener
 		
 		if(null==transformerFactory) {
 			transformerFactory = TransformerFactory.newInstance();
+			//if saxon is used:
+			try {
+				transformerFactory.setAttribute("http://saxon.sf.net/feature/version-warning", Boolean.FALSE);
+			} catch (IllegalArgumentException iae) {
+				
+			}
 			transformerFactory.setErrorListener(this);
 			//TODO fix below method in CatalogEntityResolver by incorporating linus code as fallback
 			transformerFactory.setURIResolver(CatalogEntityResolver.getInstance());
