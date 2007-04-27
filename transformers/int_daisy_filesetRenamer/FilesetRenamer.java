@@ -165,7 +165,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			this.checkAbort();
 			
 			//render the final output			
-			message = i18n("RENDERING_RESULT", mOutputDir.getCanonicalPath());
+			message = i18n("RENDERING_RESULT_TO", mOutputDir.getCanonicalPath());
 			this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 			renderStrategy(mInputFileset,mOutputDir);
 												
