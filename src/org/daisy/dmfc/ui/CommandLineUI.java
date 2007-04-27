@@ -48,6 +48,7 @@ import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.dmfc.core.script.ScriptParameter;
 import org.daisy.dmfc.core.script.ScriptValidationException;
+import org.daisy.dmfc.core.script.Task;
 import org.daisy.dmfc.core.script.datatype.BooleanDatatype;
 import org.daisy.dmfc.core.script.datatype.Datatype;
 import org.daisy.dmfc.core.script.datatype.DatatypeException;
@@ -267,8 +268,8 @@ public class CommandLineUI implements InputListener, BusListener {
                     name = job.getScript().getNicename();
                 } else if (event instanceof TaskStateChangeEvent) {
                     type = "Transformer";
-                    Transformer transformer = (Transformer) sce.getSource();
-                    name = transformer.getTransformerInfo().getName();
+                    Task task = (Task) sce.getSource();
+                    name = task.getTransformerInfo().getName();
                 } else {
                     System.err.println(event.getClass().getSimpleName());
                 }
