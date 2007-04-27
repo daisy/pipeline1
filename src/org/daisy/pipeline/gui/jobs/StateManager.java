@@ -12,10 +12,11 @@ import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.ProgressChangeEvent;
 import org.daisy.dmfc.core.event.JobStateChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
-import org.daisy.dmfc.core.event.TransformerProgressChangeEvent;
-import org.daisy.dmfc.core.event.TransformerStateChangeEvent;
+import org.daisy.dmfc.core.event.TaskProgressChangeEvent;
+import org.daisy.dmfc.core.event.TaskStateChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent.Status;
 import org.daisy.dmfc.core.script.Job;
+import org.daisy.dmfc.core.script.Task;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
@@ -62,13 +63,13 @@ public class StateManager implements BusListener {
      * @see org.daisy.dmfc.core.event.BusListener#received(java.util.EventObject)
      */
     public void received(EventObject event) {
-        if (event instanceof TransformerProgressChangeEvent) {
-            TransformerProgressChangeEvent tpce = (TransformerProgressChangeEvent) event;
-            progressChanged((Transformer) tpce.getSource(), tpce.getProgress());
+        if (event instanceof TaskProgressChangeEvent) {
+            TaskProgressChangeEvent tpce = (TaskProgressChangeEvent) event;
+            progressChanged((Task) tpce.getSource(), tpce.getProgress());
         }
-        if (event instanceof TransformerStateChangeEvent) {
-            TransformerStateChangeEvent tce = (TransformerStateChangeEvent) event;
-            stateChanged((Transformer) tce.getSource(), tce.getState());
+        if (event instanceof TaskStateChangeEvent) {
+            TaskStateChangeEvent tce = (TaskStateChangeEvent) event;
+            stateChanged((Task) tce.getSource(), tce.getState());
         }
         if (event instanceof JobStateChangeEvent) {
             JobStateChangeEvent ssce = (JobStateChangeEvent) event;
@@ -80,7 +81,7 @@ public class StateManager implements BusListener {
      * @param transformer
      * @param progress
      */
-    private void progressChanged(Transformer transformer, double progress) {
+    private void progressChanged(Task task, double progress) {
         JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
                 .currentJob();
         TaskInfo runningTask = runningTasks.get(runner);
@@ -94,7 +95,7 @@ public class StateManager implements BusListener {
      * @param transformer
      * @param state
      */
-    private void stateChanged(Transformer transformer, Status status) {
+    private void stateChanged(Task task, Status status) {
         JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
                 .currentJob();
         TaskInfo runningTask = null;
@@ -102,7 +103,7 @@ public class StateManager implements BusListener {
         case STARTED:
             JobInfo runningJob = runningJobs.get(runner);
             if (runningJob != null) {
-                String transName = transformer.getTransformerInfo().getPackageName();
+                String transName = task.getTransformerInfo().getPackageName();
                 Iterator<TaskInfo> iter = runningJob.getTasks().iterator();
                 while (iter.hasNext() && runningTask == null) {
                     TaskInfo info = iter.next();

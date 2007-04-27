@@ -14,9 +14,9 @@ import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.JobStateChangeEvent;
 import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
-import org.daisy.dmfc.core.event.TransformerMessageEvent;
-import org.daisy.dmfc.core.event.TransformerProgressChangeEvent;
-import org.daisy.dmfc.core.event.TransformerStateChangeEvent;
+import org.daisy.dmfc.core.event.TaskMessageEvent;
+import org.daisy.dmfc.core.event.TaskProgressChangeEvent;
+import org.daisy.dmfc.core.event.TaskStateChangeEvent;
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.dmfc.core.script.ScriptParameter;
@@ -57,7 +57,7 @@ public class FakeCore {
         for (Task task : job.getScript().getTasks()) {
             Transformer trans = new FakeTrans(task.getName());
             EventBus.getInstance().publish(
-                    new TransformerStateChangeEvent(trans,
+                    new TaskStateChangeEvent(task,
                             StateChangeEvent.Status.STARTED));
             for (int i = 0; i < 100; i++) {
                 try {
@@ -66,13 +66,13 @@ public class FakeCore {
                     e.printStackTrace();
                 }
                 EventBus.getInstance().publish(
-                        new TransformerProgressChangeEvent(trans,
+                        new TaskProgressChangeEvent(task,
                                 ((double) i) / 100));
             }
             // EventBus.getInstance().publish(
-            // new TransformerProgressChangeEvent(trans, 1.0));
+            // new TaskProgressChangeEvent(trans, 1.0));
             EventBus.getInstance().publish(
-                    new TransformerStateChangeEvent(trans,
+                    new TaskStateChangeEvent(task,
                             StateChangeEvent.Status.STOPPED));
 
             // boolean success = handler.run(parameters,
@@ -161,11 +161,11 @@ public class FakeCore {
         MessageManager.getDefault().init();
         for (MessageEvent.Type type : MessageEvent.Type.values()) {
             for (MessageEvent.Cause cause : MessageEvent.Cause.values()) {
-                EventBus.getInstance().publish(
-                        new TransformerMessageEvent(
-                                new FakeTrans("fake trans"), "this is a "
-                                        + cause + " " + type + " message",
-                                type, cause, null));
+                //EventBus.getInstance().publish(
+                //        new TaskMessageEvent(
+                //                new FakeTrans("fake trans"), "this is a "
+                //                        + cause + " " + type + " message",
+                //                type, cause, null));
                 EventBus.getInstance().publish(
                         new CoreMessageEvent(this, "this is a " + cause + " "
                                 + type + " message", type, cause, null));
