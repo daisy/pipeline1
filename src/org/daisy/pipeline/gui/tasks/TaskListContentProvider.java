@@ -27,7 +27,7 @@ public class TaskListContentProvider implements IStructuredContentProvider,
 
     public TaskListContentProvider() {
         refreshJob = new RefreshJob();
-        StateManager.getInstance().addTaskChangeListener(this);
+        StateManager.getDefault().addTaskChangeListener(this);
     }
 
     /*
@@ -36,7 +36,7 @@ public class TaskListContentProvider implements IStructuredContentProvider,
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */
     public void dispose() {
-        StateManager.getInstance().removeTaskChangeListener(this);
+        StateManager.getDefault().removeTaskChangeListener(this);
     }
 
     /*

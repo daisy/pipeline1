@@ -1,7 +1,7 @@
 package org.daisy.pipeline.gui.jobs;
 
 import org.daisy.dmfc.core.script.JobParameter;
-import org.daisy.pipeline.gui.PipelineGuiPlugin;
+import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -17,22 +17,22 @@ public class JobsLabelProvider extends LabelProvider implements
     private static String IK_RUNNING = "org.daisy.pipeline.gui.jobs.RUNNING";
     private static String IK_FINISHED = "org.daisy.pipeline.gui.jobs.FINISHED";
     static {
-        PipelineGuiPlugin.getDefault().getImageRegistry()
+        GuiPlugin.get().getImageRegistry()
                 .put(
                         IK_IDLE,
-                        PipelineGuiPlugin
+                        GuiPlugin
                                 .getImageDescriptor("icons/progress_task.gif"));
-        PipelineGuiPlugin.getDefault().getImageRegistry().put(
+        GuiPlugin.get().getImageRegistry().put(
                 IK_RUNNING,
-                PipelineGuiPlugin
+                GuiPlugin
                         .getImageDescriptor("icons/progress-indicator.gif"));
-        PipelineGuiPlugin.getDefault().getImageRegistry().put(IK_FINISHED,
-                PipelineGuiPlugin.getImageDescriptor("icons/tick.png"));
+        GuiPlugin.get().getImageRegistry().put(IK_FINISHED,
+                GuiPlugin.getImageDescriptor("icons/tick.png"));
     }
 
     public Image getColumnImage(Object element, int columnIndex) {
         if (element instanceof JobInfo && columnIndex == 0) {
-            return PipelineGuiPlugin.getDefault().getImageRegistry().get(
+            return GuiPlugin.get().getImageRegistry().get(
                     IK_IDLE);
         }
         return null;

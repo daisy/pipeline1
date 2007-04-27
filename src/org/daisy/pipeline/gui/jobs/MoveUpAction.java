@@ -1,13 +1,13 @@
 package org.daisy.pipeline.gui.jobs;
 
 import org.daisy.pipeline.gui.IIconsKeys;
-import org.daisy.pipeline.gui.PipelineGuiPlugin;
+import org.daisy.pipeline.gui.GuiPlugin;
 import org.eclipse.core.commands.operations.IUndoableOperation;
 
 public class MoveUpAction extends MoveAction {
 
     public MoveUpAction(JobsView view) {
-        super(view, "Move Up", PipelineGuiPlugin.getIcon(IIconsKeys.GO_UP));
+        super(view, "Move Up", GuiPlugin.getIcon(IIconsKeys.GO_UP));
     }
 
     @Override

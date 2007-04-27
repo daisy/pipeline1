@@ -5,7 +5,7 @@ import java.net.URI;
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.pipeline.gui.JobsPerspective;
-import org.daisy.pipeline.gui.PipelineGuiPlugin;
+import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.jobs.NewJobOperation;
 import org.daisy.pipeline.gui.util.actions.OperationUtil;
 import org.eclipse.jface.dialogs.DialogTray;
@@ -36,7 +36,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
 
     public NewJobWizard() {
         // Retrieve the dialog settings
-        IDialogSettings dialogSettings = PipelineGuiPlugin.getDefault()
+        IDialogSettings dialogSettings = GuiPlugin.get()
                 .getDialogSettings();
         IDialogSettings wizardSettings = dialogSettings
                 .getSection(SETTINGS_SECTION);

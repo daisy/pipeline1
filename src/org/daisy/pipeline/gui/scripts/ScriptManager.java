@@ -2,7 +2,6 @@ package org.daisy.pipeline.gui.scripts;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
@@ -11,72 +10,72 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.daisy.dmfc.core.DMFCCore;
+import org.daisy.dmfc.core.event.CoreMessageEvent;
+import org.daisy.dmfc.core.event.EventBus;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.script.Script;
-import org.daisy.dmfc.core.script.ScriptValidationException;
-import org.daisy.pipeline.gui.PipelineGuiPlugin;
+import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.util.file.EFolder;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 public class ScriptManager {
-	private static ScriptManager instance;
+    private static ScriptManager _default = new ScriptManager();
 
-	private EFolder scriptDir;
+    private EFolder scriptDir;
 
-	private Map<URI, Script> scriptMap;
+    private Map<URI, Script> scriptMap;
 
-	private ScriptManager() {
-		Bundle coreBundle = Platform.getBundle(PipelineGuiPlugin.CORE_ID);
-		try {
-			URL url = FileLocator.toFileURL(coreBundle.getEntry("/scripts"));
+    public ScriptManager() {
+        Bundle coreBundle = Platform.getBundle(GuiPlugin.CORE_ID);
+        try {
+            URL url = FileLocator.toFileURL(coreBundle.getEntry("/scripts"));
 
-			scriptDir = new EFolder(url.getPath());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		scriptMap = new HashMap<URI, Script>();
-		populateScriptMap();
-	}
+            scriptDir = new EFolder(url.getPath());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        scriptMap = new HashMap<URI, Script>();
+        populateScripts();
+    }
 
-	public static ScriptManager getDefault() {
-		if (instance == null) {
-			instance = new ScriptManager();
-		}
-		return instance;
-	}
+    public static ScriptManager getDefault() {
+        return _default;
+    }
 
-	public EFolder getScriptDir() {
-		return scriptDir;
-	}
+    public void init() {
+        populateScripts();
+    }
 
-	public Script getScript(URI uri) {
-		return scriptMap.get(uri);
-	}
+    public void dispose() {
+        // Nothing
+    }
 
-	private void populateScriptMap() {
-		// TODO lazy load scripts ?
-		Collection scripts = scriptDir.getFiles(true, ".+\\.taskScript");
-		DMFCCore core = PipelineGuiPlugin.getDefault().getCore();
-		for (Iterator iter = scripts.iterator(); iter.hasNext();) {
-			File file = (File) iter.next();
-			Script script = null;
-			// TODO fake code
-			try {
-				script = core.newScript(file.toURI().toURL());
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ScriptValidationException e) {
-				// TODO Auto-generated catch block
-				System.err.println("unable to create script " + file.getName());
-				System.err.println("caused by: " + e.getMessage());
-				e.printStackTrace();
-			}
-			if (script != null) {
-				scriptMap.put(file.toURI(), script);
-			}
-		}
-	}
+    public EFolder getScriptDir() {
+        return scriptDir;
+    }
+
+    public Script getScript(URI uri) {
+        return scriptMap.get(uri);
+    }
+
+    private void populateScripts() {
+        Collection scripts = scriptDir.getFiles(true, ".+\\.taskScript");
+        DMFCCore core = GuiPlugin.get().getCore();
+        for (Iterator iter = scripts.iterator(); iter.hasNext();) {
+            File file = (File) iter.next();
+            Script script = null;
+            try {
+                script = core.newScript(file.toURI().toURL());
+                scriptMap.put(file.toURI(), script);
+            } catch (Exception e) {
+                EventBus.getInstance().publish(
+                        new CoreMessageEvent(this, "Unable to load script "
+                                + file.getName(), MessageEvent.Type.WARNING));
+                GuiPlugin.get().error(e.getLocalizedMessage(), e);
+            }
+        }
+    }
 }

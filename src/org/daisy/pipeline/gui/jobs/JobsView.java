@@ -54,7 +54,7 @@ public class JobsView extends ViewPart {
         jobsViewer = new TreeViewer(jobsTree);
         jobsViewer.setContentProvider(new JobsContentProvider());
         jobsViewer.setLabelProvider(new JobsLabelProvider());
-        jobsViewer.setInput(JobManager.getInstance());
+        jobsViewer.setInput(JobManager.getDefault());
         getSite().setSelectionProvider(jobsViewer);
 
         // add actions

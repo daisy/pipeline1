@@ -4,24 +4,31 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Iterator;
 
 import org.daisy.dmfc.core.DMFCCore;
-import org.daisy.dmfc.core.FakeCore;
+import org.daisy.dmfc.core.script.Job;
+import org.daisy.dmfc.core.script.Script;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.pipeline.gui.jobs.StateManager;
+import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.messages.MessageManager;
 import org.daisy.pipeline.gui.scripts.ScriptManager;
+import org.daisy.util.file.EFolder;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-public class PipelineGuiPlugin extends AbstractUIPlugin {
+public class GuiPlugin extends AbstractUIPlugin {
 
     // The shared instance.
-    private static PipelineGuiPlugin plugin;
+    private static GuiPlugin plugin;
 
     public static final String ID = "org.daisy.pipeline.gui";
 
@@ -32,10 +39,8 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
     /**
      * The constructor.
      */
-    public PipelineGuiPlugin() {
-        if (plugin != null) {
-            throw new IllegalStateException("Plug-in class already exists");
-        }
+    public GuiPlugin() {
+        super();
         plugin = this;
     }
 
@@ -45,11 +50,15 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        initPipelineCore();
-        MessageManager.getDefault().init();
-        StateManager.getInstance().init();
-        ScriptManager.getDefault();
-        FakeCore.populateTestJobs();
+        try {
+            initCore();
+            MessageManager.getDefault().init();
+            ScriptManager.getDefault().init();
+            StateManager.getDefault().init();
+            populateTestJobs();
+        } catch (Exception e) {
+            error("an error ocurred", e);
+        }
     }
 
     /**
@@ -68,7 +77,7 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
     /**
      * Returns the shared instance.
      */
-    public static PipelineGuiPlugin getDefault() {
+    public static GuiPlugin get() {
         return plugin;
     }
 
@@ -104,7 +113,7 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
 
     public static URL getResourceURL(String name) {
         try {
-            return FileLocator.resolve(getDefault().getBundle().getEntry(name));
+            return FileLocator.resolve(get().getBundle().getEntry(name));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -114,8 +123,7 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
 
     public static File getResourceFile(String name) {
         try {
-            URL url = FileLocator.toFileURL(getDefault().getBundle().getEntry(
-                    name));
+            URL url = FileLocator.toFileURL(get().getBundle().getEntry(name));
             return new File(url.toURI());
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -127,22 +135,43 @@ public class PipelineGuiPlugin extends AbstractUIPlugin {
         return null;
     }
 
-    private void initPipelineCore() {
+    private void initCore() throws IOException, DMFCConfigurationException {
+        Bundle coreBundle = Platform.getBundle(GuiPlugin.CORE_ID);
+        URL url = FileLocator.toFileURL(coreBundle.getEntry("/"));
+        File homeDir = new File(url.getPath());
+        if (!DMFCCore.testHomeDirectory(homeDir)) {
+            throw new DMFCConfigurationException(
+                    "Cannot locate the Daisy Pipeline home directory");
+        }
+        core = new DMFCCore(null, homeDir);
+    }
 
-        Bundle coreBundle = Platform.getBundle(PipelineGuiPlugin.CORE_ID);
+    public void error(String message, Throwable t) {
+        getLog().log(new Status(IStatus.ERROR, ID, 0, message, t));
+    }
+
+    public void info(String message, Throwable t) {
+        getLog().log(new Status(IStatus.INFO, ID, 0, message, t));
+    }
+
+    public void warn(String message, Throwable t) {
+        getLog().log(new Status(IStatus.WARNING, ID, 0, message, t));
+    }
+
+    public static void populateTestJobs() {
         try {
-            URL url = FileLocator.toFileURL(coreBundle.getEntry("/"));
-            File homeDir = new File(url.getPath());
-            if (!DMFCCore.testHomeDirectory(homeDir)) {
-                throw new DMFCConfigurationException(
-                        "Cannot locate the Daisy Pipeline home directory");
+            URL url = FileLocator.toFileURL(Platform.getBundle(
+                    GuiPlugin.CORE_ID).getEntry("/scripts/_dev"));
+            EFolder devDir = new EFolder(url.toURI());
+            Collection devScripts = devDir.getFiles(true, ".+\\.taskScript");
+            for (Iterator iter = devScripts.iterator(); iter.hasNext();) {
+                File file = (File) iter.next();
+                ScriptManager scriptMan = ScriptManager.getDefault();
+                Script script = scriptMan.getScript(file.toURI());
+                Job job = new Job(script);
+                JobManager.getDefault().add(job);
             }
-            core = new DMFCCore(null, homeDir);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (DMFCConfigurationException e) {
-            // TODO Auto-generated catch block
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

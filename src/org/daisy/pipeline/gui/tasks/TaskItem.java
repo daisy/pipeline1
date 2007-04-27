@@ -1,7 +1,7 @@
 package org.daisy.pipeline.gui.tasks;
 
 import org.daisy.pipeline.gui.IIconsKeys;
-import org.daisy.pipeline.gui.PipelineGuiPlugin;
+import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.util.StateObject;
 import org.daisy.pipeline.gui.util.swt.CompositeItem;
 import org.daisy.pipeline.gui.util.swt.CompositeList;
@@ -29,19 +29,19 @@ public class TaskItem extends CompositeItem {
     private static String IK_RUNNING = "org.daisy.pipeline.gui.jobdetails.RUNNING";
     private static String IK_FINISHED = "org.daisy.pipeline.gui.jobdetails.FINISHED";
     static {
-        PipelineGuiPlugin.getDefault().getImageRegistry().put(IK_DOC_BUTTON,
-                PipelineGuiPlugin.getIcon(IIconsKeys.HELP_BROWSER));
-        PipelineGuiPlugin.getDefault().getImageRegistry()
+        GuiPlugin.get().getImageRegistry().put(IK_DOC_BUTTON,
+                GuiPlugin.getIcon(IIconsKeys.HELP_BROWSER));
+        GuiPlugin.get().getImageRegistry()
                 .put(
                         IK_IDLE,
-                        PipelineGuiPlugin
+                        GuiPlugin
                                 .getImageDescriptor("icons/progress_task.gif"));
-        PipelineGuiPlugin.getDefault().getImageRegistry().put(
+        GuiPlugin.get().getImageRegistry().put(
                 IK_RUNNING,
-                PipelineGuiPlugin
+                GuiPlugin
                         .getImageDescriptor("icons/progress-indicator.gif"));
-        PipelineGuiPlugin.getDefault().getImageRegistry().put(IK_FINISHED,
-                PipelineGuiPlugin.getImageDescriptor("icons/tick.png"));
+        GuiPlugin.get().getImageRegistry().put(IK_FINISHED,
+                GuiPlugin.getImageDescriptor("icons/tick.png"));
     }
     private Label iconLabel;
     private Label nameLabel;
@@ -100,15 +100,15 @@ public class TaskItem extends CompositeItem {
         Image image = null;
         switch (state) {
         case IDLE:
-            image = PipelineGuiPlugin.getDefault().getImageRegistry().get(
+            image = GuiPlugin.get().getImageRegistry().get(
                     IK_IDLE);
             break;
         case RUNNING:
-            image = PipelineGuiPlugin.getDefault().getImageRegistry().get(
+            image = GuiPlugin.get().getImageRegistry().get(
                     IK_RUNNING);
             break;
         case FINISHED:
-            image = PipelineGuiPlugin.getDefault().getImageRegistry().get(
+            image = GuiPlugin.get().getImageRegistry().get(
                     IK_FINISHED);
             break;
         default:
@@ -149,7 +149,7 @@ public class TaskItem extends CompositeItem {
         // Create doc button
         docButton = new ToolItem(toolBar, SWT.PUSH);
         docButton.setToolTipText("Show documentation");
-        docButton.setImage(PipelineGuiPlugin.getDefault().getImageRegistry()
+        docButton.setImage(GuiPlugin.get().getImageRegistry()
                 .get(IK_DOC_BUTTON));
         docButton.addSelectionListener(new SelectionAdapter() {
             @Override

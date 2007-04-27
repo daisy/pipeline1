@@ -31,14 +31,14 @@ public class NewJobOperation extends AbstractOperation {
     @Override
     public IStatus redo(IProgressMonitor monitor, IAdaptable info)
             throws ExecutionException {
-        JobManager.getInstance().add(job);
+        JobManager.getDefault().add(job);
         return Status.OK_STATUS;
     }
 
     @Override
     public IStatus undo(IProgressMonitor monitor, IAdaptable info)
             throws ExecutionException {
-        JobManager.getInstance().remove(job);
+        JobManager.getDefault().remove(job);
         return Status.OK_STATUS;
     }
 

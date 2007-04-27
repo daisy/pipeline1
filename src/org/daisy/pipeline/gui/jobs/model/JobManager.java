@@ -9,20 +9,17 @@ import java.util.List;
 import org.daisy.dmfc.core.script.Job;
 
 public class JobManager implements Iterable {
-    private static JobManager instance;
+    private static JobManager _default = new JobManager();
 
     private final List<JobInfo> jobs;
     private List<IJobManagerListener> listeners = new ArrayList<IJobManagerListener>();
 
-    private JobManager() {
+    public JobManager() {
         jobs = new LinkedList<JobInfo>();
     }
 
-    public static JobManager getInstance() {
-        if (instance == null) {
-            instance = new JobManager();
-        }
-        return instance;
+    public static JobManager getDefault() {
+        return _default;
     }
 
     public void add(int index, Job job) {

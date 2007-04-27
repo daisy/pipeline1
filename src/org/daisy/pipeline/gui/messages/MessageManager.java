@@ -30,6 +30,10 @@ public class MessageManager implements BusListener {
         return _default;
     }
 
+    public void dipose() {
+        EventBus.getInstance().unsubscribe(this, MessageEvent.class);
+    }
+
     public void init() {
         EventBus.getInstance().subscribe(this, MessageEvent.class);
     }

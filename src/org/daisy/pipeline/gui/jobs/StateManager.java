@@ -9,15 +9,14 @@ import java.util.Map;
 
 import org.daisy.dmfc.core.event.BusListener;
 import org.daisy.dmfc.core.event.EventBus;
-import org.daisy.dmfc.core.event.ProgressChangeEvent;
 import org.daisy.dmfc.core.event.JobStateChangeEvent;
+import org.daisy.dmfc.core.event.ProgressChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
 import org.daisy.dmfc.core.event.TaskProgressChangeEvent;
 import org.daisy.dmfc.core.event.TaskStateChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent.Status;
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Task;
-import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.tasks.TaskInfo;
@@ -28,7 +27,7 @@ import org.daisy.util.execution.State;
  * 
  */
 public class StateManager implements BusListener {
-    private static StateManager instance = new StateManager();
+    private static StateManager _default = new StateManager();
     // TODO check null/thread safety
     // private Object lock = new Object();
     private Map<JobsRunner, JobInfo> runningJobs;
@@ -36,15 +35,15 @@ public class StateManager implements BusListener {
     private List<IJobChangeListener> jobListeners;
     private List<ITaskChangeListener> taskListeners;
 
-    private StateManager() {
+    public StateManager() {
         runningJobs = new HashMap<JobsRunner, JobInfo>();
         runningTasks = new HashMap<JobsRunner, TaskInfo>();
         jobListeners = new ArrayList<IJobChangeListener>();
         taskListeners = new ArrayList<ITaskChangeListener>();
     }
 
-    public static StateManager getInstance() {
-        return instance;
+    public static StateManager getDefault() {
+        return _default;
     }
 
     public void init() {
@@ -138,7 +137,7 @@ public class StateManager implements BusListener {
         JobInfo runningJob;
         switch (state) {
         case STARTED:
-            runningJob = JobManager.getInstance().get(job);
+            runningJob = JobManager.getDefault().get(job);
             if (runningJob != null) {
                 runningJobs.put(runner, runningJob);
                 runningJob.setState(State.RUNNING);
@@ -171,12 +170,12 @@ public class StateManager implements BusListener {
     }
 
     public void aborted(Job job) {
-        JobInfo info = JobManager.getInstance().get(job);
+        JobInfo info = JobManager.getDefault().get(job);
         info.setState(State.ABORTED);
     }
 
     public void failed(Job job) {
-        JobInfo info = JobManager.getInstance().get(job);
+        JobInfo info = JobManager.getDefault().get(job);
         info.setState(State.FAILED);
     }
 

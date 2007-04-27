@@ -31,7 +31,7 @@ public abstract class MoveAction extends Action implements
     public MoveAction(JobsView view, String text, ImageDescriptor icon) {
         super(text, icon);
         this.view = view;
-        this.jobManager = JobManager.getInstance();
+        this.jobManager = JobManager.getDefault();
         this.enabler = new DefaultSelectionEnabler(
                 ISelectionEnabler.Mode.SINGLE, new Class[] { JobInfo.class });
         setEnabled(false);

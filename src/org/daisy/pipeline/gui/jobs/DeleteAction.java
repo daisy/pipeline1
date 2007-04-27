@@ -5,7 +5,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.daisy.pipeline.gui.IIconsKeys;
-import org.daisy.pipeline.gui.PipelineGuiPlugin;
+import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.util.viewers.DefaultSelectionEnabler;
@@ -35,9 +35,9 @@ public class DeleteAction extends Action implements ISelectionChangedListener {
     private IStructuredSelection selection;
 
     public DeleteAction(JobsView view) {
-        super("Delete", PipelineGuiPlugin.getIcon(IIconsKeys.EDIT_DELETE));
+        super("Delete", GuiPlugin.getIcon(IIconsKeys.EDIT_DELETE));
         this.view = view;
-        this.jobManager = JobManager.getInstance();
+        this.jobManager = JobManager.getDefault();
         this.enabler = new DefaultSelectionEnabler(
                 ISelectionEnabler.Mode.ONE_OR_MORE, new Class[] { JobInfo.class });
         setEnabled(false);

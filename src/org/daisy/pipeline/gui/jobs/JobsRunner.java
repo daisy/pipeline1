@@ -5,7 +5,7 @@ import java.util.List;
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.exception.ScriptAbortException;
 import org.daisy.dmfc.exception.ScriptException;
-import org.daisy.pipeline.gui.PipelineGuiPlugin;
+import org.daisy.pipeline.gui.GuiPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -29,11 +29,11 @@ public class JobsRunner extends org.eclipse.core.runtime.jobs.Job {
         for (Job job : jobs) {
             try {
                 monitor.subTask("Running " + job.getScript().getNicename());
-                PipelineGuiPlugin.getDefault().getCore().execute(job);
+                GuiPlugin.get().getCore().execute(job);
                 monitor.worked(1);
             } catch (ScriptException e) {
                 if (e instanceof ScriptAbortException) {
-                    StateManager.getInstance().aborted(job);
+                    StateManager.getDefault().aborted(job);
                 }else {
                     
                 }

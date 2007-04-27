@@ -31,7 +31,7 @@ public class JobDetailsView extends ViewPart implements ISelectionListener,
     private Label label;
 
     public JobDetailsView() {
-        StateManager.getInstance().addJobChangeListener(this);
+        StateManager.getDefault().addJobChangeListener(this);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class JobDetailsView extends ViewPart implements ISelectionListener,
     @Override
     public void dispose() {
         getSite().getPage().removePostSelectionListener(this);
-        StateManager.getInstance().removeJobChangeListener(this);
+        StateManager.getDefault().removeJobChangeListener(this);
         super.dispose();
     }
 
