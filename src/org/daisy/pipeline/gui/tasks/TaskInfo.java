@@ -11,6 +11,7 @@ import org.daisy.pipeline.gui.util.StateObject;
 public class TaskInfo extends StateObject {
 
     private JobInfo parent;
+    private Task task;
 
     /**
      * @param transInfo
@@ -19,10 +20,15 @@ public class TaskInfo extends StateObject {
         // TODO set description
         super(task.getName(), task.getTransformerInfo().getNiceName());
         this.parent = parent;
+        this.task = task;
     }
 
     public JobInfo getParentJob() {
         return parent;
+    }
+
+    public Task getTask() {
+        return task;
     }
 
 }

@@ -102,11 +102,10 @@ public class StateManager implements BusListener {
         case STARTED:
             JobInfo runningJob = runningJobs.get(runner);
             if (runningJob != null) {
-                String transName = task.getTransformerInfo().getPackageName();
                 Iterator<TaskInfo> iter = runningJob.getTasks().iterator();
                 while (iter.hasNext() && runningTask == null) {
                     TaskInfo info = iter.next();
-                    if (info.getName().equals(transName)) {
+                    if (info.getTask() == task) {
                         runningTask = info;
                     }
                 }
