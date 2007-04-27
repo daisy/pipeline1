@@ -91,14 +91,14 @@ public class Runner {
                     throw new ScriptException(i18n("TASK_FAILED", handler
                             .getName()));
                 }
-                job.setState(State.FINISHED);
                 this.mCompletedTasks++;
 
-                EventBus.getInstance().publish(
-                        new JobStateChangeEvent(job,
-                                StateChangeEvent.Status.STOPPED));
 
             }
+            job.setState(State.FINISHED);
+            EventBus.getInstance().publish(
+                    new JobStateChangeEvent(job,
+                            StateChangeEvent.Status.STOPPED));
         } catch (TransformerAbortException e) {
             job.setState(State.ABORTED);
             throw new ScriptAbortException("Task aborted", e);
