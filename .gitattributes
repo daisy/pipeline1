@@ -131,9 +131,9 @@ src/org/daisy/dmfc/core/event/ProgressChangeEvent.java -text
 src/org/daisy/dmfc/core/event/RequestEvent.java -text
 src/org/daisy/dmfc/core/event/StateChangeEvent.java -text
 src/org/daisy/dmfc/core/event/SystemEvent.java -text
-src/org/daisy/dmfc/core/event/TransformerMessageEvent.java -text
-src/org/daisy/dmfc/core/event/TransformerProgressChangeEvent.java -text
-src/org/daisy/dmfc/core/event/TransformerStateChangeEvent.java -text
+src/org/daisy/dmfc/core/event/TaskMessageEvent.java -text
+src/org/daisy/dmfc/core/event/TaskProgressChangeEvent.java -text
+src/org/daisy/dmfc/core/event/TaskStateChangeEvent.java -text
 src/org/daisy/dmfc/core/event/UserAbortEvent.java -text
 src/org/daisy/dmfc/core/event/UserEvent.java -text
 src/org/daisy/dmfc/core/event/UserReplyEvent.java -text

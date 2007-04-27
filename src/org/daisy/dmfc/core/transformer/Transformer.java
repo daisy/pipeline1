@@ -32,16 +32,18 @@ import javax.xml.stream.Location;
 
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.event.BusListener;
+import org.daisy.dmfc.core.event.CoreMessageEvent;
 import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.event.RequestEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
-import org.daisy.dmfc.core.event.TransformerMessageEvent;
-import org.daisy.dmfc.core.event.TransformerProgressChangeEvent;
-import org.daisy.dmfc.core.event.TransformerStateChangeEvent;
+import org.daisy.dmfc.core.event.TaskMessageEvent;
+import org.daisy.dmfc.core.event.TaskProgressChangeEvent;
+import org.daisy.dmfc.core.event.TaskStateChangeEvent;
 import org.daisy.dmfc.core.event.UserAbortEvent;
 import org.daisy.dmfc.core.event.UserEvent;
 import org.daisy.dmfc.core.event.UserReplyEvent;
+import org.daisy.dmfc.core.script.Task;
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.i18n.I18n;
@@ -69,6 +71,7 @@ public abstract class Transformer implements BusListener {
 	private I18n mInternationalization;
 	
 	private boolean mLoadedFromJar = false;
+	private Task mTask;
 	
 	/**
 	 * Creates a new Transformer.
@@ -112,8 +115,8 @@ public abstract class Transformer implements BusListener {
 				//bundle = XMLPropertyResourceBundle.getBundle(this.getClass().getResource("messages.properties"), Locale.getDefault());
 			}	
 			addI18nBundle(bundle);
-		} catch (MissingResourceException e) {			
-			sendMessage("No resource bundle found for " + this.getClass().getName(), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
+		} catch (MissingResourceException e) {	
+			EventBus.getInstance().publish(new CoreMessageEvent(this, "No resource bundle found for " + this.getClass().getName(), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM));			
 		}
 	}
 	
@@ -235,6 +238,10 @@ public abstract class Transformer implements BusListener {
 		mLoadedFromJar = loadedFromJar;
 	}
 	
+	/*package*/ void setTask(Task task) {
+		mTask = task;
+	}
+	
 	/**
 	 * Gets some information about the transformer, such as name and description.
 	 * @return the TransformerInfo
@@ -275,8 +282,8 @@ public abstract class Transformer implements BusListener {
 	/**
 	 * Convenience method to emit a message.
 	 */
-	protected void sendMessage(String message, MessageEvent.Type type, MessageEvent.Cause cause, Location location) {		
-		EventBus.getInstance().publish(new TransformerMessageEvent(this,message,type,cause,location));
+	protected void sendMessage(String message, MessageEvent.Type type, MessageEvent.Cause cause, Location location) {
+		EventBus.getInstance().publish(new TaskMessageEvent(this.mTask,message,type,cause,location));
 	}
 	
 	/**
@@ -284,7 +291,7 @@ public abstract class Transformer implements BusListener {
 	 * @param progress A double between 0.0 and 1.0 inclusive
 	 */
 	protected void sendMessage(double progress) {
-		EventBus.getInstance().publish(new TransformerProgressChangeEvent(this,progress));   
+		EventBus.getInstance().publish(new TaskProgressChangeEvent(this.mTask,progress));   
 	}
 	
 	/**
@@ -314,7 +321,7 @@ public abstract class Transformer implements BusListener {
 	 * Convenience method to send a atate change event.
 	 */ 
     protected void sendMessage(StateChangeEvent.Status state) {    	    	
-    	EventBus.getInstance().publish(new TransformerStateChangeEvent(this,state));
+    	EventBus.getInstance().publish(new TaskStateChangeEvent(this.mTask,state));
 	}
     
 	/**

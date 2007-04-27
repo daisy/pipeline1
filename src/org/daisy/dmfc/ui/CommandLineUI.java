@@ -41,8 +41,8 @@ import org.daisy.dmfc.core.event.JobStateChangeEvent;
 import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.event.RequestEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
-import org.daisy.dmfc.core.event.TransformerMessageEvent;
-import org.daisy.dmfc.core.event.TransformerStateChangeEvent;
+import org.daisy.dmfc.core.event.TaskMessageEvent;
+import org.daisy.dmfc.core.event.TaskStateChangeEvent;
 import org.daisy.dmfc.core.event.UserReplyEvent;
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Script;
@@ -239,7 +239,7 @@ public class CommandLineUI implements InputListener, BusListener {
                 String who = null;
                 if (sme instanceof CoreMessageEvent) {
                     who = "Pipeline Core";
-                } else if (sme instanceof TransformerMessageEvent) {
+                } else if (sme instanceof TaskMessageEvent) {
                     Transformer transformer = (Transformer) sme.getSource();
                     if (transformer.getTransformerInfo() != null) {
                         who = transformer.getTransformerInfo().getName();
@@ -265,7 +265,7 @@ public class CommandLineUI implements InputListener, BusListener {
                     type = "Task"; // we refer to scripts as "tasks" to users.
                     Job job = (Job) sce.getSource();
                     name = job.getScript().getNicename();
-                } else if (event instanceof TransformerStateChangeEvent) {
+                } else if (event instanceof TaskStateChangeEvent) {
                     type = "Transformer";
                     Transformer transformer = (Transformer) sce.getSource();
                     name = transformer.getTransformerInfo().getName();

@@ -85,7 +85,7 @@ public class Runner {
                 this.addTransformerParameters(parameters, handler);
 
                 job.setState(State.RUNNING);
-                boolean success = handler.run(parameters, task.isInteractive());
+                boolean success = handler.run(parameters, task.isInteractive(), task);
                 if (!success) {
                     job.setState(State.FAILED);
                     throw new ScriptException(i18n("TASK_FAILED", handler

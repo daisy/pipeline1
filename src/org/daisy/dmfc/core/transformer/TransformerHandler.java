@@ -50,6 +50,7 @@ import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.event.CoreMessageEvent;
 import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.dmfc.core.script.Task;
 import org.daisy.dmfc.exception.NotSupposedToHappenException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.dmfc.exception.TransformerRunException;
@@ -237,11 +238,11 @@ public class TransformerHandler implements TransformerInfo {
      * @return <code>true</code> if the run was successful, <code>false</code>
      *         otherwise
      */
-    public boolean run(Map runParameters, boolean interactive)
+    public boolean run(Map runParameters, boolean interactive, Task task)
             throws TransformerRunException {
         Transformer transformer = null;
         try {
-            transformer = createTransformerObject(interactive);
+            transformer = createTransformerObject(interactive, task);
         } catch (IllegalArgumentException e) {
             throw new TransformerRunException(
                     i18n("TRANSFORMER_ILLEGAL_ARGUMENT"), e);
@@ -318,7 +319,7 @@ public class TransformerHandler implements TransformerInfo {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    private Transformer createTransformerObject(boolean interactive)
+    private Transformer createTransformerObject(boolean interactive, Task task)
             throws IllegalArgumentException, InstantiationException,
             IllegalAccessException, InvocationTargetException {
 
@@ -343,6 +344,7 @@ public class TransformerHandler implements TransformerInfo {
                 .newInstance(params.toArray());
         trans.setTransformerInfo(this);
         trans.setLoadedFromJar(mLoadedFromJar);
+        trans.setTask(task);
         return trans;
     }
 
