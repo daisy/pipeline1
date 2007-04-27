@@ -65,7 +65,7 @@ public class TaskItem extends CompositeItem {
             return;
         }
         TaskInfo info = (TaskInfo) getData();
-        nameLabel.setText(info.getDescription());
+        nameLabel.setText(info.getNiceName());
         progressBar.setSelection(((Double) (info.getProgress() * 100))
                 .intValue());
         timeLabel.setText(getTimeText(info));

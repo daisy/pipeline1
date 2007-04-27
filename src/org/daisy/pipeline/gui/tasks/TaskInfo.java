@@ -17,7 +17,7 @@ public class TaskInfo extends StateObject {
      */
     public TaskInfo(JobInfo parent, Task task) {
         // TODO set description
-        super(task.getName(), "description");
+        super(task.getName(), task.getTransformerInfo().getNiceName());
         this.parent = parent;
     }
 

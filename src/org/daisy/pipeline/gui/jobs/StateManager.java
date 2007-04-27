@@ -59,9 +59,9 @@ public class StateManager implements BusListener {
     /*
      * (non-Javadoc)
      * 
-     * @see org.daisy.dmfc.core.event.BusListener#recieved(java.util.EventObject)
+     * @see org.daisy.dmfc.core.event.BusListener#received(java.util.EventObject)
      */
-    public void recieved(EventObject event) {
+    public void received(EventObject event) {
         if (event instanceof TransformerProgressChangeEvent) {
             TransformerProgressChangeEvent tpce = (TransformerProgressChangeEvent) event;
             progressChanged((Transformer) tpce.getSource(), tpce.getProgress());

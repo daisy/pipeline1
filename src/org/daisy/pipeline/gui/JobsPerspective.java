@@ -13,10 +13,9 @@ public class JobsPerspective implements IPerspectiveFactory {
     public void createInitialLayout(IPageLayout layout) {
         String editorArea = layout.getEditorArea();
         layout.setEditorAreaVisible(false);
-        layout.setFixed(true);
-        layout.addStandaloneView(JobsView.ID, true, IPageLayout.LEFT, 1.0f,
-                editorArea);
-        layout.setFixed(false);
+        // layout.setFixed(true);
+        layout.addView(JobsView.ID, IPageLayout.LEFT, 1.0f, editorArea);
+        // layout.setFixed(false);
         layout.addView(MessagesView.ID, IPageLayout.BOTTOM, 0.7f, JobsView.ID);
         layout.addView(JobDetailsView.ID, IPageLayout.RIGHT, 0.7f, JobsView.ID);
 

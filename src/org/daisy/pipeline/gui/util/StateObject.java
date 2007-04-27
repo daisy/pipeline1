@@ -9,7 +9,7 @@ import org.daisy.util.execution.State;
 public class StateObject {
 
     private String name;
-    private String description;
+    private String nicename;
     private double progress;
     private State state;
     private long totalTime;
@@ -20,15 +20,15 @@ public class StateObject {
     /**
      * @param transInfo
      */
-    public StateObject(String name, String description) {
+    public StateObject(String name, String nicename) {
         this.name = name;
-        this.description = description;
+        this.nicename = nicename;
         this.progress = 0;
         this.state = State.IDLE;
     }
 
-    public String getDescription() {
-        return description;
+    public String getNiceName() {
+        return nicename;
     }
 
     public String getName() {
