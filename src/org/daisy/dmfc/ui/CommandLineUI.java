@@ -241,11 +241,11 @@ public class CommandLineUI implements InputListener, BusListener {
                 if (sme instanceof CoreMessageEvent) {
                     who = "Pipeline Core";
                 } else if (sme instanceof TaskMessageEvent) {
-                    Transformer transformer = (Transformer) sme.getSource();
-                    if (transformer.getTransformerInfo() != null) {
-                        who = transformer.getTransformerInfo().getName();
+                    Task task = (Task) sme.getSource();
+                    if (task.getTransformerInfo() != null) {
+                        who = task.getTransformerInfo().getNiceName();
                     } else {
-                        who = transformer.getClass().getCanonicalName();
+                        who = task.getName();
                     }
                 } else {
                     who = "???";
@@ -269,7 +269,7 @@ public class CommandLineUI implements InputListener, BusListener {
                 } else if (event instanceof TaskStateChangeEvent) {
                     type = "Transformer";
                     Task task = (Task) sce.getSource();
-                    name = task.getTransformerInfo().getName();
+                    name = task.getTransformerInfo().getNiceName();
                 } else {
                     System.err.println(event.getClass().getSimpleName());
                 }
