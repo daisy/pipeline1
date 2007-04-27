@@ -120,7 +120,7 @@ public class StateManager implements BusListener {
         case STOPPED:
             runningTask = runningTasks.get(runner);
             if (runningTask != null) {
-                runningTasks.remove(runningTask);
+                runningTasks.remove(runner);
                 runningTask.setProgress(1.0);
                 runningTask.setState(State.FINISHED);
                 fireChanged(runningTask);
