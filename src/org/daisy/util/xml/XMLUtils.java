@@ -32,7 +32,7 @@ import org.xml.sax.Attributes;
  * @author Markus Gylling
  */
 public class XMLUtils {
-
+	
 	/**
 	 * Delegate for determining the Schema language type of a resource.
 	 * <p>This method only detects schema types that are based on XML, ie you

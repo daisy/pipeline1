@@ -9,6 +9,7 @@
 	<entry key="ABORTED"						>aborted.</entry>
 	<entry key="ABORTING"						>aborting...</entry>
 	<entry key="ERROR_ABORTING"					>An error occurred: {0}. Aborting.</entry>
+	<entry key="ERROR"							>An error occurred: {0}.</entry>	
 	<entry key="ILLEGAL_PARAM_VALUE"			>Parameter value {0} is not allowed.</entry>
 	<entry key="ANALYZING_INPUT" 				>Analyzing the input {0} ...</entry>
 	<entry key="RENDERING_RESULT_TO"  			>Rendering the result to {0}...</entry>

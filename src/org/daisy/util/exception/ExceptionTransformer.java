@@ -55,10 +55,12 @@ public class ExceptionTransformer {
 		try{
 			if(e instanceof TransformerException) {			
 				TransformerException te = (TransformerException) e;		
-				loc.setLineNumber(te.getLocator().getLineNumber());
-				loc.setColumnNumber(te.getLocator().getColumnNumber());
-				loc.setPublicId(te.getLocator().getPublicId());
-				loc.setSystemId(te.getLocator().getSystemId());			
+				if(te.getLocator()!=null){
+					loc.setLineNumber(te.getLocator().getLineNumber());
+					loc.setColumnNumber(te.getLocator().getColumnNumber());
+					loc.setPublicId(te.getLocator().getPublicId());
+					loc.setSystemId(te.getLocator().getSystemId());
+				}
 			} else if (e instanceof XMLStreamException) {
 				XMLStreamException se = (XMLStreamException)e;
 				loc.setLineNumber(se.getLocation().getLineNumber());
@@ -81,7 +83,7 @@ public class ExceptionTransformer {
 	/**
 	 * Create a {@link org.daisy.util.fileset.validation.message.ValidatorMessage} from a SAXParseException.
 	 * @param spe The SAXParseException to transform
-	 * @param errHandlerType Whether the exception was received in ErrorHandler error, fatalerror or warning  
+	 * @param errHandlerType Whether the exception was recieved in ErrorHandler error, fatalerror or warning  
 	 */
 	public static ValidatorMessage newValidatorMessage(SAXParseException spe, int errHandlerType) {
 		return newValidatorMessage(spe, errHandlerType, null);
@@ -90,7 +92,7 @@ public class ExceptionTransformer {
 	/**
 	 * Create a {@link org.daisy.util.fileset.validation.message.ValidatorMessage} from a SAXParseException.
 	 * @param spe The SAXParseException to transform
-	 * @param errHandlerType Whether the exception was received in ErrorHandler error, fatalerror or warning  
+	 * @param errHandlerType Whether the exception was recieved in ErrorHandler error, fatalerror or warning  
 	 * @param file The URI of the file which caused the exception to be raised 
 	 * 		(this also occurs in SAXParseException.getSystemId(), but sometimes this is null). 
 	 */

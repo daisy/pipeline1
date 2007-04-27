@@ -217,15 +217,13 @@ public class Creator implements ErrorHandler, EntityResolver {
     private boolean isXMLValid(URL url, String schemaName)
             throws ScriptValidationException {
         try {
-            SimpleValidator validator = new SimpleValidator(getClass()
-                    .getResource(schemaName).toExternalForm(), this);
+            SimpleValidator validator = new SimpleValidator(
+            		getClass().getResource(schemaName), this);
             validator.setResolver(this);
             return validator.validate(url) && !mValidationError;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ScriptValidationException(e.getMessage(), e);
-        } catch (SAXException e) {
-            throw new ScriptValidationException(e.getMessage(), e);
-        }
+        } 
     }
 
     /**

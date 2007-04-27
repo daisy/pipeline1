@@ -61,8 +61,10 @@ import org.daisy.util.fileset.validation.message.ValidatorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorSevereErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
 import org.daisy.util.xml.LocusTransformer;
+import org.daisy.util.xml.NamespaceReporter;
 import org.daisy.util.xml.XMLUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
@@ -70,6 +72,7 @@ import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.SAXParserPool;
 import org.daisy.util.xml.sax.SAXConstants;
 import org.daisy.util.xml.validation.SchemaLanguageConstants;
+import org.daisy.util.xml.validation.ValidationUtils;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -93,7 +96,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	private String mRequiredInputType = null;										//whether to abort if not a certain type of fileset
 	private Fileset mInputFileset = null;											//based in inputfile
 	private PeekResult mInputFilePeekResult = null;									//a global peek on inputfile
-	private Map mSchemaSources = new HashMap();  									//<Source>,<SchemaNSURI> 
+	private Map<Source, String> mSchemaSources = new HashMap<Source, String>();		//<Source>,<SchemaNSURI> 
 	private HashSet mValidatorMessageCache = new HashSet();							//to avoid identical messages
 	private FilesetRegex mRegex = FilesetRegex.getInstance();						//convenience shortcut
 	private StateTracker mStateTracker = new StateTracker();						//inner class
@@ -235,9 +238,9 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					//org.daisy.util.fileset did not recognize the input type					
 					
 					if(mRequiredInputType!=null) {
-						//the user has specified that an error+abort should be thrownn if
+						//the user has specified that an error+abort should be thrown if
 						//input is not of the given Fileset type
-						// Since we got this exception, its not a fileset at all
+						//Since we got this exception, its not a fileset at all
 						String message = i18n("NOT_REQUIRED_INPUT_TYPE",mRequiredInputType);												
 						this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
 						throw new TransformerRunException(message);						
@@ -390,8 +393,8 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @throws IOException 
 	 */
 	
-	@SuppressWarnings("unchecked")
-	private Map setSchemaSources(Map parameters) throws IOException, SAXException {
+	
+	private Map<Source,String> setSchemaSources(Map parameters) throws IOException, SAXException {
 
 		//get schemas from inparams
 		String schemas = (String)parameters.remove("schemas");
@@ -399,18 +402,12 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			String[] array = schemas.split(",");
 			for (int i = 0; i < array.length; i++) {
 				try{
-					Map aSchema = toSchemaSource(array[i],null);
-					if(aSchema!=null) {
-						mSchemaSources.putAll(aSchema);
-					}else{												
-						String message =i18n("SCHEMA_INSTANTIATION_FAILURE", array[i]);
-						this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
-					}
+					Map<Source,String> map = ValidationUtils.toSchemaSources(array[i]);
+					mSchemaSources.putAll(map);
 				}catch (Exception e) {
 					mStateTracker.mHadCaughtException = true;					
-					String message =i18n("SCHEMA_INSTANTIATION_FAILURE", array[i]+ e.getMessage());
+					String message =i18n("SCHEMA_INSTANTIATION_FAILURE", array[i]+ " " + e.getMessage());
 					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
-
 				}
 			}						
 		}//if(schemas!=null && schemas.length()>0)
@@ -420,10 +417,10 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			Set xsis = mInputFilePeekResult.getXSISchemaLocationURIs();
 			for (Iterator iter = xsis.iterator(); iter.hasNext();) {
 				String str = (String) iter.next();						
-				Map map = toSchemaSource(str,SchemaLanguageConstants.W3C_XML_SCHEMA_NS_URI);
-				if (map!=null){
+				try{
+					Map<Source,String> map = ValidationUtils.toSchemaSources(str);
 					mSchemaSources.putAll(map);
-				}else{					
+				}catch (Exception e) {
 					String message = i18n("SCHEMA_INSTANTIATION_FAILURE", str);
 					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 				}																	
@@ -480,7 +477,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			Source source = (Source)iter.next();
 			num++;
 			try{				
-				String schemaNsURI = (String)mSchemaSources.get(source);
+				String schemaNsURI = mSchemaSources.get(source);
 				//send a message
 				String schemaType = SchemaLanguageConstants.toNiceNameString(schemaNsURI);
 				String fileName = source.getSystemId();				
@@ -644,7 +641,15 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		}
 
 		test = System.getProperty(
-		"org.daisy.util.fileset.validation:http://www.daisy.org/fileset/Z3986");
+		"javax.xml.validation.SchemaFactory:http://purl.oclc.org/dsdl/schematron");
+		if(test==null){
+			System.setProperty(
+					"javax.xml.validation.SchemaFactory:http://purl.oclc.org/dsdl/schematron",
+			"org.daisy.util.xml.validation.jaxp.ISOSchematronSchemaFactory");
+		}
+		
+		test = System.getProperty(
+			"org.daisy.util.fileset.validation:http://www.daisy.org/fileset/Z3986");
 		if(test==null){
 			System.setProperty(
 					"org.daisy.util.fileset.validation:http://www.daisy.org/fileset/Z3986",
@@ -676,125 +681,6 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 
 	}
 
-	/**
-	 * Converts an identifier string into one or several Source objects
-	 * @param 
-	 * 		identifier a resource identifier consisting of an absolute or relative filespec, or a prolog Public or System Id.
-	 * @param
-	 * 		schemaLanguageConstant the schema NS URI identifier, if null, this method will attempt to set the value 
-	 * @return a Map (Source, NSURI) representing the input resource, null if identification failed
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	@SuppressWarnings("unchecked")
-	private Map toSchemaSource(String identifier, String schemaLanguageConstant) throws IOException, SAXException {
-		/*
-		 * examples of inparams here:
-		 *   http://www.example.com/example.dtd
-		 *   http://www.example.com/example.rng
-		 *   http://www.example.com/example.xsd
-		 *   example.dtd 
-		 *   example.rng 
-		 *   ../stuff/example.rng
-		 *   ./stuff/example.rng
-		 *   D:/example.sch
-		 *   file://D:/example.sch
-		 *   -//NISO//DTD dtbook 2005-1//EN
-		 */
-
-		Map map = new HashMap();		
-		File localSchemaFile = null; 
-		URL schemaURL = null;
-		identifier = identifier.trim();
-
-		//first try to resolve a physical file		
-		boolean isRemote = mRegex.matches(mRegex.URI_REMOTE, identifier);
-		try{			
-			if(!isRemote){
-				localSchemaFile = FilenameOrFileURI.toFile(identifier);
-				if(localSchemaFile==null||!localSchemaFile.exists()) {
-					//we couldnt find an absolute file, try relative to input document					    
-					URI u = mInputFile.getParentFolder().toURI().resolve(identifier);
-					localSchemaFile = new File(u);
-					if(localSchemaFile.exists()) {
-						schemaURL = localSchemaFile.toURI().toURL();
-					}					    
-				} //if(!localSchemaFile.exists()) 
-				else{
-					schemaURL = localSchemaFile.toURI().toURL();
-				}
-			}
-		}catch (Exception e) {
-			//carry on
-		}
-
-		//if physical file resolve didnt work, or isRemote, try catalog
-		if(schemaURL == null) {
-			//file resolve didnt work above, or its remote try catalog
-			URL url = CatalogEntityResolver.getInstance().resolveEntityToURL(identifier);
-			if(url!=null){
-				schemaURL = url;											
-			}
-		}
-
-		//if catalog didnt work
-		if(schemaURL == null) {
-			if(isRemote){				
-				String message = i18n("SCHEMA_IDENTIFIER_ONLINE");
-				this.sendMessage(message, MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT);
-			}	
-			try{
-				schemaURL = new URL(identifier);
-			}catch (Exception e) {				
-				String message = i18n("SCHEMA_INSTANTIATION_FAILURE", identifier);
-				this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT);
-
-				return null;
-			}	
-		}
-
-		if(schemaURL != null) {
-			//prepare return
-			//set Source
-			StreamSource ss = new StreamSource(schemaURL.openStream());
-			ss.setSystemId(schemaURL.toExternalForm());
-
-			//set schematype
-			String nsuri = null;; 
-			if(schemaLanguageConstant==null) {
-				//it didnt come as inparam
-				try{
-					nsuri = XMLUtils.getSchemaType(schemaURL);
-					if(nsuri==null) {						
-						String message = i18n("SCHEMA_TYPE_NOT_SUPPORTED", schemaURL.toString());
-						this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
-					}
-				}catch (Exception e) {
-					mStateTracker.mHadCaughtException = true;					
-					String message = i18n("SCHEMA_IDENTIFICATION_FAILURE", schemaURL.toString());
-					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
-				}			    	
-			}else{
-				//it came as inparam
-				nsuri = schemaLanguageConstant;
-			}
-
-			if(nsuri!=null) {
-				if(nsuri.equals(SchemaLanguageConstants.RELAXNG_NS_URI)) {
-					//need to check for schematron islands FIXME may occur in XSD as well
-					//FIXME check first, or make sure this doesnt break when no sch in rng
-					StreamSource schss = new StreamSource(schemaURL.openStream());
-					schss.setSystemId(schemaURL.toExternalForm());
-					//FIXME may be ISO schematron, have to check first
-					map.put(schss,SchemaLanguageConstants.SCHEMATRON_NS_URI);	    		
-				}	    		    	
-				map.put(ss,nsuri);
-				return map;
-			}
-		}
-		return null;
-	}
-	
 	// martin blomberg 2006-12-22
 	/**
 	 * Adds the exception to the xml output if the XMLReporter instance

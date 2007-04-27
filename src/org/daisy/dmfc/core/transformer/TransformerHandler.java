@@ -44,6 +44,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.TransformerException;
 
 import org.daisy.dmfc.core.DirClassLoader;
 import org.daisy.dmfc.core.InputListener;
@@ -58,6 +59,7 @@ import org.daisy.util.i18n.I18n;
 import org.daisy.util.mime.MIMEException;
 import org.daisy.util.mime.MIMETypeRegistryException;
 import org.daisy.util.xml.validation.SimpleValidator;
+import org.daisy.util.xml.validation.ValidationException;
 import org.xml.sax.SAXException;
 
 /**
@@ -138,11 +140,16 @@ public class TransformerHandler implements TransformerInfo {
         } catch (IOException e) {
             throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
         } catch (XMLStreamException e) {
-            throw new TransformerDisabledException(
-                    i18n("PROBLEMS_PARSING_TDF"), e);
+            throw new TransformerDisabledException(i18n("PROBLEMS_PARSING_TDF"), e);
         } catch (SAXException e) {
             throw new TransformerDisabledException(e.getMessage(), e);
-        }
+        } catch (ValidationException e) {
+			//tdf validation
+        	throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
+		} catch (TransformerException e) {
+			//tdf validation
+			throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
+		}
     }
 
     /**
@@ -204,15 +211,18 @@ public class TransformerHandler implements TransformerInfo {
                     i18n("PROBLEMS_PARSING_TDF"), e);
         } catch (SAXException e) {
             throw new TransformerDisabledException(e.getMessage(), e);
-        }
+        } catch (ValidationException e) {
+        	throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
+		} catch (TransformerException e) {
+			throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
+		}
     }
 
     private void initialize(URL url) throws IOException, SAXException,
             TransformerDisabledException, XMLStreamException,
-            MIMETypeRegistryException, MIMEException {
+            MIMETypeRegistryException, MIMEException, TransformerException, ValidationException {
         // Validate the transformer description file
-        SimpleValidator sv = new SimpleValidator(getClass().getResource("transformer-1.1.rng").toExternalForm(),
-                null);
+        SimpleValidator sv = new SimpleValidator(getClass().getResource("transformer-1.1.rng"), null);
         if (!sv.validate(url)) {
             throw new TransformerDisabledException(i18n("TDF_NOT_VALID"));
         }
@@ -269,7 +279,7 @@ public class TransformerHandler implements TransformerInfo {
             throws ClassNotFoundException {
         EventBus.getInstance().publish(
                 new CoreMessageEvent(this, i18n("LOADING_TRANSFORMER", name,
-                        classname), MessageEvent.Type.INFO));
+                        classname), MessageEvent.Type.DEBUG));
         File dir = tdfFile.getAbsoluteFile();
         dir = dir.getParentFile();
         transformerClassLoader = new DirClassLoader(transformersDir,

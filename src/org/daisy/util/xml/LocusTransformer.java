@@ -13,10 +13,12 @@ import org.daisy.util.fileset.validation.message.ValidatorMessage;
 public class LocusTransformer  {
 	
 	public static Location newLocation(ValidatorMessage message) {		
-		LocationImpl loc =  new LocusTransformer().new LocationImpl();		
-		loc.setColumnNumber(message.getColumn());
-		loc.setLineNumber(message.getLine());
-		loc.setSystemId(message.getFile().toString());		
+		LocationImpl loc =  new LocusTransformer().new LocationImpl();	
+		try{
+			loc.setColumnNumber(message.getColumn());
+			loc.setLineNumber(message.getLine());
+			loc.setSystemId(message.getFile().toString());
+		}catch (Exception e) {}
 		return loc;
 	}
 	
