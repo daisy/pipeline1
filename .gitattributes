@@ -37,6 +37,7 @@ doc/transformers/int_daisy_filesetRenamer.html -text
 doc/transformers/int_daisy_prettyPrinter.html -text
 doc/transformers/int_daisy_unicodeNormalizer.html -text
 doc/transformers/int_daisy_validator.html -text
+doc/transformers/pipeline_system_deleter.html -text
 doc/transformers/uk_rnib_odf2dtbook.html -text
 doc/user.vocabulary.txt -text
 lib/ZedVal.jar -text
@@ -227,6 +228,9 @@ transformers/int_daisy_prettyPrinter/transformer.tdf -text
 transformers/int_daisy_unicodeNormalizer/messages.properties -text
 transformers/int_daisy_unicodeNormalizer/transformer.tdf -text
 transformers/int_daisy_validator/XMLReporter.java -text
+transformers/pipeline_system_deleter/Deleter.java -text
+transformers/pipeline_system_deleter/messages.properties -text
+transformers/pipeline_system_deleter/transformer.tdf -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_1.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_10.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_2.mp3 -text
