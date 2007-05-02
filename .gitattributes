@@ -212,6 +212,7 @@ src/org/daisy/util/xml/validation/jaxp/ISOSchematronSVRLHandler.java -text
 src/org/daisy/util/xml/validation/jaxp/ISOSchematronSchema.java -text
 src/org/daisy/util/xml/validation/jaxp/ISOSchematronSchemaFactory.java -text
 src/org/daisy/util/xml/validation/jaxp/ISOSchematronValidator.java -text
+src/org/daisy/util/xml/xslt/TransformerFactoryConstants.java -text
 src/org/daisy/util/xml/xslt/stylesheets/Any2ISOSchtrn.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/RNG2ISOSchtrn.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/iso_schematron_skeleton.xsl -text
