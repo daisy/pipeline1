@@ -539,17 +539,34 @@ public final class CharUtils {
      * Tests whether the given character is usable as the
      * first character of an XML name.
      */
-    public static boolean isXMLNameFirstCharacter(char c) {
-    	return (NAME_FIRST_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+    public static boolean isXMLNameFirstCharacter(char c) {   
+    	int n = c;
+    	return isXMLNameFirstCharacter(n);
+    }
+    
+    /**
+     * Tests whether the given character is usable as the
+     * first character of an XML name.
+     */
+    public static boolean isXMLNameFirstCharacter(int ch) {    	
+    	return org.apache.xerces.util.XMLChar.isNameStart(ch);    	
     }
     
     /**
      * Tests whether the given character is a valid XML name character.
      */
     public static boolean isXMLNameCharacter(char c) {
-    	return (NAME_CHARACTER[c / 32] & (1 << (c % 32))) != 0;
+    	int n = c;
+    	return isXMLNameCharacter(n);
     }
     
+    /**
+     * Tests whether the given character is a valid XML name character.
+     */
+    public static boolean isXMLNameCharacter(int ch) {
+    	return org.apache.xerces.util.XMLChar.isName(ch);	
+    }
+            
     /**
      * Tests whether each character in the array is a valid XML name character.
      */
