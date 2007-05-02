@@ -99,20 +99,20 @@ public abstract class Transformer implements BusListener {
 		//load local messages file
 		try {
 			/*
-			 * The expectancy on message files is hardcoded to "int_org_example.messages"
+			 * The expectancy on message files is hardcoded to "messages.properties"
 			 * DMFCCore has set the default locale to context desired locale
 			 */			
 			ResourceBundle bundle = null;
 			String packagePath = (this.getClass().getPackage().getName()).replace('.', '/');
-			try{
+			try{				
+				bundle = XMLPropertyResourceBundle.getBundle(packagePath+"/messages.properties", Locale.getDefault(), this.getClass().getClassLoader());
+				//alternatively:
+				//bundle = XMLPropertyResourceBundle.getBundle(this.getClass().getResource("messages.properties"), Locale.getDefault());				
+			} catch (MissingResourceException e) {
+				//try name variant
 				bundle = XMLPropertyResourceBundle.getBundle(packagePath+"/"+packagePath+".messages", Locale.getDefault(), this.getClass().getClassLoader());
 				//alternatively:
 				//bundle = XMLPropertyResourceBundle.getBundle(this.getClass().getResource(packagePath+".messages"), Locale.getDefault());
-			} catch (MissingResourceException e) {
-				//try deprecated name
-				bundle = XMLPropertyResourceBundle.getBundle(packagePath+"/messages.properties", Locale.getDefault(), this.getClass().getClassLoader());
-				//alternatively:
-				//bundle = XMLPropertyResourceBundle.getBundle(this.getClass().getResource("messages.properties"), Locale.getDefault());
 			}	
 			addI18nBundle(bundle);
 		} catch (MissingResourceException e) {	
@@ -282,7 +282,7 @@ public abstract class Transformer implements BusListener {
 	/**
 	 * Convenience method to emit a message.
 	 */
-	protected void sendMessage(String message, MessageEvent.Type type, MessageEvent.Cause cause, Location location) {
+	public void sendMessage(String message, MessageEvent.Type type, MessageEvent.Cause cause, Location location) {
 		EventBus.getInstance().publish(new TaskMessageEvent(this.mTask,message,type,cause,location));
 	}
 	
