@@ -31,19 +31,19 @@ public class IDGenerator {
 	private String prefix = "id_";
 	private int counter = 0;
 	
-	IDGenerator () {
+	public IDGenerator () {
 		
 	}
 	
-	IDGenerator (String prefix) throws Exception {
+	public IDGenerator (String prefix) throws Exception {
 		
 		for (int i = 0; i < prefix.length(); i++) {
 			if(i==0) {
-				if(CharUtils.isXMLNameFirstCharacter(prefix.charAt(i))){
+				if(!CharUtils.isXMLNameFirstCharacter(prefix.charAt(i))){
 					  throw new Exception("first character is not valid in an xml name");	
 				}
 			}else{
-				if(CharUtils.isXMLNameCharacter(prefix.charAt(i))){
+				if(!CharUtils.isXMLNameCharacter(prefix.charAt(i))){
 					  throw new Exception("character is not valid in an xml name");	
 				}				
 			}
