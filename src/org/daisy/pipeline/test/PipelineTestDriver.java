@@ -6,11 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.dmfc.ui.CommandLineUI;
+import org.daisy.pipeline.test.impl.ConfigurableValidator1;
 import org.daisy.pipeline.test.impl.D202dtbValidator1;
 import org.daisy.pipeline.test.impl.DTBookValidator1;
 import org.daisy.pipeline.test.impl.DTBookValidator2;
 import org.daisy.pipeline.test.impl.Narrator1;
+import org.daisy.pipeline.test.impl.OcfCreator1;
 import org.daisy.pipeline.test.impl.Odf2dtbook1;
+import org.daisy.pipeline.test.impl.OpsCreator1;
 import org.daisy.pipeline.test.impl.PrettyPrinter1;
 import org.daisy.pipeline.test.impl.UnicodeNormalizer1;
 import org.daisy.util.file.EFolder;
@@ -29,21 +32,21 @@ public class PipelineTestDriver {
 	 * Run a series of instantiations of CommandLineGUI.
 	 * Use scripts from the pipeline canonical script collection, use local input data.
 	 * Main runnable with Eclipse run profile params '${project_loc}/samples ${project_loc}/scripts'
-	 * @param args[0] full path to the testdata directory
+	 * @param args[0] full path to the pipeline samples directory
 	 * @param args[1] full path to the pipeline scripts directory
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
 				
-		EFolder testdataDirectory = new EFolder(args[0]);		
+		EFolder samplesDirectory = new EFolder(args[0]);		
 		EFolder scriptsDirectory = new EFolder(args[1]);		
-		inputDir = new EFolder(testdataDirectory, "input");
-		outputDir = new EFolder(testdataDirectory, "output");
+		inputDir = new EFolder(samplesDirectory, "input");
+		outputDir = new EFolder(samplesDirectory, "output");
 		FileUtils.createDirectory(outputDir);
 		
-		assert(scriptsDirectory.exists() && testdataDirectory.exists() && outputDir.exists() && inputDir.exists());
+		assert(scriptsDirectory.exists() && samplesDirectory.exists() && outputDir.exists() && inputDir.exists());
 		
-		System.out.println("Using testdata directory " + testdataDirectory.getAbsolutePath());
+		System.out.println("Using testdata directory " + samplesDirectory.getAbsolutePath());
 		System.out.println("Using scripts directory " + scriptsDirectory.getAbsolutePath());
 
 		System.out.print("Deleting output directory contents...");
@@ -55,7 +58,7 @@ public class PipelineTestDriver {
 		System.out.println("found " + scripts.size() + ".");
 		
 		System.out.print("Collecting tests... ");
-		Collection<PipelineTest> tests = gatherTests(); 
+		Collection<PipelineTest> tests = getTests(); 
 		System.out.println("found " + tests.size() + ".");
 		System.out.println("-----------------------");
 		
@@ -84,7 +87,7 @@ public class PipelineTestDriver {
 		System.out.println("Pipeline test drive done.");
 	}
 
-	private static Collection<PipelineTest> gatherTests() {
+	public static Collection<PipelineTest> getTests() {
 		List<PipelineTest> tests = new LinkedList<PipelineTest>(); 
 				
 		tests.add(new DTBookValidator1(inputDir, outputDir));
@@ -94,6 +97,9 @@ public class PipelineTestDriver {
 		tests.add(new D202dtbValidator1(inputDir, outputDir));
 		tests.add(new Odf2dtbook1(inputDir, outputDir));
 		tests.add(new UnicodeNormalizer1(inputDir, outputDir));
+		tests.add(new ConfigurableValidator1(inputDir, outputDir));
+		tests.add(new OpsCreator1(inputDir, outputDir));
+		tests.add(new OcfCreator1(inputDir, outputDir));
 		
 		return tests;
 	}
