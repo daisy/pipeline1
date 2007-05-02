@@ -158,6 +158,7 @@ src/org/daisy/dmfc/core/script/datatype/DirectoryDatatype.java -text
 src/org/daisy/dmfc/core/script/datatype/EnumDatatype.java -text
 src/org/daisy/dmfc/core/script/datatype/EnumItem.java -text
 src/org/daisy/dmfc/core/script/datatype/FileDatatype.java -text
+src/org/daisy/dmfc/core/script/datatype/FilesDatatype.java -text
 src/org/daisy/dmfc/core/script/datatype/IntegerDatatype.java -text
 src/org/daisy/dmfc/core/script/datatype/StringDatatype.java -text
 src/org/daisy/dmfc/core/script/function/FilenameFunction.java -text

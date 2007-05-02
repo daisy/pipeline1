@@ -111,6 +111,7 @@
 		<element name="datatype">
 			<choice>
 				<ref name="datatype.file"/>
+				<ref name="datatype.files"/>
 				<ref name="datatype.directory"/>
 				<ref name="datatype.boolean"/>
 				<ref name="datatype.enum"/>
@@ -122,6 +123,20 @@
 	
 	<define name="datatype.file">
 		<element name="file">
+			<attribute name="mime">
+				<data type="normalizedString"/>
+			</attribute>
+			<attribute name="type">
+				<choice>
+					<value>input</value>
+					<value>output</value>
+				</choice>
+			</attribute>
+		</element>
+	</define>
+
+	<define name="datatype.files">
+		<element name="files">
 			<attribute name="mime">
 				<data type="normalizedString"/>
 			</attribute>

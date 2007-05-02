@@ -45,6 +45,7 @@ import org.daisy.dmfc.core.script.datatype.DirectoryDatatype;
 import org.daisy.dmfc.core.script.datatype.EnumDatatype;
 import org.daisy.dmfc.core.script.datatype.EnumItem;
 import org.daisy.dmfc.core.script.datatype.FileDatatype;
+import org.daisy.dmfc.core.script.datatype.FilesDatatype;
 import org.daisy.dmfc.core.script.datatype.IntegerDatatype;
 import org.daisy.dmfc.core.script.datatype.StringDatatype;
 import org.daisy.dmfc.exception.NotSupposedToHappenException;
@@ -69,6 +70,7 @@ class Parser {
 	
 	private static String DATATYPE = "datatype";
 	private static String DATATYPE_FILE = "file";
+	private static String DATATYPE_FILES = "files";
 	private static String DATATYPE_DIRECTORY = "directory";
 	private static String DATATYPE_STRING = "string";
 	private static String DATATYPE_INTEGER = "integer";
@@ -362,6 +364,12 @@ class Parser {
 					if (attrMime != null && attrType != null) {
 						parameter.setDatatype(new FileDatatype(attrMime.getValue(), attrType.getValue()));
 					}
+				} else if (DATATYPE_FILES.equals(local)) {
+					Attribute attrMime = se.getAttributeByName(new QName("mime"));
+					Attribute attrType = se.getAttributeByName(new QName("type"));					
+					if (attrMime != null && attrType != null) {
+						parameter.setDatatype(new FilesDatatype(attrMime.getValue(), attrType.getValue()));
+					} 	
 				} else if (DATATYPE_DIRECTORY.equals(local)) {
 					Attribute attrType = se.getAttributeByName(new QName("type"));					
 					if (attrType != null) {
