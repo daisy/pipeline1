@@ -102,5 +102,7 @@ public final class FilesetConstants {
 		
 		public static final String Z3986_VERSION_2002 = "ANSI/NISO Z39.86-2002";
 		public static final String Z3986_VERSION_2005 = "ANSI/NISO Z39.86-2005";
+		
+		public static final String NAMESPACEURI_OPF_20 = "http://www.idpf.org/2007/opf";
 
 }

@@ -183,6 +183,8 @@ src/org/daisy/pipeline/test/impl/Odf2dtbook1.java -text
 src/org/daisy/pipeline/test/impl/PrettyPrinter1.java -text
 src/org/daisy/pipeline/test/impl/UnicodeNormalizer1.java -text
 src/org/daisy/util/execution/State.java -text
+src/org/daisy/util/fileset/impl/Opf20FileImpl.java -text
+src/org/daisy/util/fileset/interfaces/xml/ops20/OPF20File.java -text
 src/org/daisy/util/fileset/manipulation/manipulators/XMLEventConsumer.java -text
 src/org/daisy/util/fileset/manipulation/manipulators/XMLEventExposer.java -text
 src/org/daisy/util/fileset/util/FilesetLabelProvider.java -text

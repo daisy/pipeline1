@@ -45,6 +45,7 @@ import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.ManifestFile;
 import org.daisy.util.fileset.interfaces.Referring;
 import org.daisy.util.fileset.interfaces.xml.d202.D202MasterSmilFile;
+import org.daisy.util.fileset.util.FilesetConstants;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.mime.MIMETypeException;
@@ -161,8 +162,12 @@ public class FilesetImpl implements Fileset {
 					}else if(temp.getMetaDcFormat()!=null && temp.getMetaDcFormat().indexOf("NIMAS")>=0){
 						this.mManifestMember = new NimasOpfFileImpl(f.toURI());
 						this.mFilesetType = FilesetType.NIMAS;
+					}else if(manifestPeekResult.getRootElementNsUri().equals(FilesetConstants.NAMESPACEURI_OPF_20) 
+							&& manifestPeekResult.getRootElementAttributes().getValue("version").equals("2.0")){						
+						this.mManifestMember = new Opf20FileImpl(f.toURI());
+						this.mFilesetType = FilesetType.OPS_20;
 					}else{
-						throw new FilesetFatalException("could not detect version of opf (no dc:format)");
+						throw new FilesetFatalException("could not detect version of package file");
 					}
 					//send it to the observer which handles the rest generically
 					this.fileInstantiatedEvent((FilesetFileImpl)this.mManifestMember);

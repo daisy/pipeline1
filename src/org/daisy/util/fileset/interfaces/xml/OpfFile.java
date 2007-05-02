@@ -56,15 +56,3 @@ public interface OpfFile extends XmlFile, ManifestFile {
 	 */
 	public String getUID();
 }
-
-
-
-
-//public Iterator getSpineIterator();
-
-///**
-// * @return a FilesetFile subclass corresponding to inparam URI.
-// * The particular subclass of FilesetFile returned will vary depending on
-// * whether this class has been subclassed (NimasOpfFile, Z3986OpfFile).
-// */
-//public FilesetFile getSpineItem(URI uri) throws FilesetException;
