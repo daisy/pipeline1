@@ -176,11 +176,14 @@ src/org/daisy/dmfc/util/DocIndexGenerator.java -text
 src/org/daisy/pipeline/test/PipelineTest.java -text
 src/org/daisy/pipeline/test/PipelineTestDriver.java -text
 src/org/daisy/pipeline/test/PipelineTestException.java -text
+src/org/daisy/pipeline/test/impl/ConfigurableValidator1.java -text
 src/org/daisy/pipeline/test/impl/D202dtbValidator1.java -text
 src/org/daisy/pipeline/test/impl/DTBookValidator1.java -text
 src/org/daisy/pipeline/test/impl/DTBookValidator2.java -text
 src/org/daisy/pipeline/test/impl/Narrator1.java -text
+src/org/daisy/pipeline/test/impl/OcfCreator1.java -text
 src/org/daisy/pipeline/test/impl/Odf2dtbook1.java -text
+src/org/daisy/pipeline/test/impl/OpsCreator1.java -text
 src/org/daisy/pipeline/test/impl/PrettyPrinter1.java -text
 src/org/daisy/pipeline/test/impl/UnicodeNormalizer1.java -text
 src/org/daisy/util/execution/State.java -text

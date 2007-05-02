@@ -5,27 +5,27 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class Narrator1 extends PipelineTest {
+public class OcfCreator1 extends PipelineTest {
 
-	public Narrator1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public OcfCreator1(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
-	public List<String> getParameters() {		
-		mParameters.add("--input=" + mDataInputDir + "/dtbook/dontworrybehappy.xml");
-		mParameters.add("--outputPath=" + mDataOutputDir + "/Narrator1/");
+	public List<String> getParameters() {
+		mParameters.add("--input=" + mDataInputDir + "/ops/package.opf,"+mDataInputDir + "/txt/wasteland.txt");
+		mParameters.add("--output=" + mDataOutputDir + "/OcfCreator1/ocf.epub");				
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "";
+		return "Create an epub with OEBPS and TXT entries";
 	}
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("Narrator-DtbookToDaisy202.taskScript".equals(scriptName)) {
+		if("OCFCreator.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;

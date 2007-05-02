@@ -14,7 +14,7 @@ public class UnicodeNormalizer1 extends PipelineTest {
 	@Override
 	public List<String> getParameters() {		
 		mParameters.add("--input=" + mDataInputDir + "/dtbook/dontworrybehappy.xml");
-		mParameters.add("--output=" + mDataOutputDir + "/normalizer/");
+		mParameters.add("--output=" + mDataOutputDir + "/UnicodeNormalizer1/");
 		return mParameters;
 	}
 

@@ -14,7 +14,7 @@ public class Odf2dtbook1 extends PipelineTest {
 	@Override
 	public List<String> getParameters() {
 		mParameters.add("--odf=" + mDataInputDir + "/odf/simple.odt");
-		mParameters.add("--dtbook=" + mDataOutputDir + "/odf/fromOdf.xml");				
+		mParameters.add("--dtbook=" + mDataOutputDir + "/Odf2dtbook1/fromOdf.xml");				
 		return mParameters;
 	}
 
