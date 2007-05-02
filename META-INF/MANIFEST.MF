@@ -18,6 +18,7 @@ Export-Package:
  org.daisy.pipeline.gui.jobs.model,
  org.daisy.pipeline.gui.jobs.wizard,
  org.daisy.pipeline.gui.messages,
+ org.daisy.pipeline.gui.parameters,
  org.daisy.pipeline.gui.scripts,
  org.daisy.pipeline.gui.tasks,
  org.daisy.pipeline.gui.util,

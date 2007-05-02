@@ -44,6 +44,10 @@
             id="org.daisy.pipeline.gui.views.messages"
             name="Messages"/>
       <view
+            class="org.daisy.pipeline.gui.parameters.ParametersView"
+            id="org.daisy.pipeline.gui.views.parameters"
+            name="Job Parameters"/>
+      <view
             class="org.daisy.pipeline.gui.jobs.JobDetailsView"
             id="org.daisy.pipeline.gui.views.jobDetails"
             name="Progress"/>

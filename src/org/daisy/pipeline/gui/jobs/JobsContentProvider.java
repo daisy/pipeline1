@@ -1,5 +1,9 @@
 package org.daisy.pipeline.gui.jobs;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.daisy.dmfc.core.script.JobParameter;
 import org.daisy.pipeline.gui.jobs.model.IJobManagerListener;
 import org.daisy.pipeline.gui.jobs.model.JobInfo;
@@ -10,7 +14,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
 public class JobsContentProvider implements ITreeContentProvider,
-        IJobManagerListener {
+        IJobManagerListener, IJobChangeListener {
     private TreeViewer viewer;
     private JobManager manager;
 
@@ -68,7 +72,16 @@ public class JobsContentProvider implements ITreeContentProvider,
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof JobInfo) {
             JobInfo info = (JobInfo) parentElement;
-            return info.getJob().getJobParameters().values().toArray();
+            Collection<JobParameter> params = info.getJob().getJobParameters()
+                    .values();
+            List<JobParameter> valuedParams = new ArrayList<JobParameter>(
+                    params.size());
+            for (JobParameter param : params) {
+                if (param.getValue() != null && param.getValue().length() > 0) {
+                    valuedParams.add(param);
+                }
+            }
+            return valuedParams.toArray();
         }
         return new Object[0];
     }
@@ -92,6 +105,15 @@ public class JobsContentProvider implements ITreeContentProvider,
      */
     public boolean hasChildren(Object element) {
         return getChildren(element).length > 0;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.daisy.pipeline.gui.jobs.IJobChangeListener#jobChanged(org.daisy.pipeline.gui.jobs.model.JobInfo)
+     */
+    public void jobChanged(JobInfo job) {
+        viewer.refresh(job);
     }
 
 }

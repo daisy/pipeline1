@@ -1,5 +1,10 @@
 package org.daisy.pipeline.gui.jobs;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.daisy.dmfc.core.script.Job;
+import org.daisy.dmfc.core.script.JobParameter;
 import org.daisy.pipeline.gui.IActionConstants;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.eclipse.core.commands.operations.IUndoContext;
@@ -9,7 +14,11 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
@@ -22,12 +31,14 @@ public class JobsView extends ViewPart {
     public static final String ID = "org.daisy.pipeline.gui.views.jobs"; //$NON-NLS-1$
     public static final int PROP_SEL_JOB_INDEX = 1;
 
-    private static final String[] columnNames = { "Jobs", "Param Value",
-            "Status" };
+    private static final String[] columnNames = { "Jobs", "Status" };
 
-    private static final int[] columnWeight = { 3, 3, 1 };
+    private static final int[] columnWeight = { 4, 1 };
 
     private TreeViewer jobsViewer;
+
+    private Map<Job, Integer> paramNameLength = new HashMap<Job, Integer>();
+    private Font paramFont;
 
     @Override
     public void createPartControl(Composite parent) {
@@ -35,7 +46,7 @@ public class JobsView extends ViewPart {
         Tree jobsTree = new Tree(parent, SWT.H_SCROLL | SWT.V_SCROLL
                 | SWT.MULTI | SWT.FULL_SELECTION);
         jobsTree.setHeaderVisible(true);
-        jobsTree.setLinesVisible(true);
+        // jobsTree.setLinesVisible(true);
 
         // Configure the columns
         TableLayout layout = new TableLayout();
@@ -46,6 +57,15 @@ public class JobsView extends ViewPart {
             tc.setText(columnNames[i]);
             tc.setMoveable(true);
         }
+
+        // Hook painting of parameters to vertically align values
+        jobsTree.addListener(SWT.PaintItem, new Listener() {
+            public void handleEvent(Event e) {
+                if (e.index == 0 && e.item.getData() instanceof JobParameter) {
+                    paintParam((JobParameter) e.item.getData(), e);
+                }
+            }
+        });
 
         // TODO add popup menu to jobs table
         // jobsTable.setMenu(createPopUpMenu());
@@ -59,6 +79,30 @@ public class JobsView extends ViewPart {
 
         // add actions
         createActions();
+    }
+
+    @Override
+    public void dispose() {
+        paramFont.dispose();
+        super.dispose();
+    }
+
+    @Override
+    // made public so that action can invoke it
+    public void firePropertyChange(int id) {
+        super.firePropertyChange(id);
+    }
+
+    public TreeViewer getViewer() {
+        return jobsViewer;
+    }
+
+    /**
+     * Passes the focus request to the viewer's control.
+     */
+    @Override
+    public void setFocus() {
+        jobsViewer.getControl().setFocus();
     }
 
     private void createActions() {
@@ -101,21 +145,28 @@ public class JobsView extends ViewPart {
                 new RedoActionHandler(getSite(), undoContext));
     }
 
-    public TreeViewer getViewer() {
-        return jobsViewer;
-    }
+    private void paintParam(JobParameter param, Event e) {
+        if (paramFont == null) {
+            FontData[] fd = e.gc.getFont().getFontData();
+            for (int i = 0; i < fd.length; i++) {
+                fd[i].setHeight(fd[i].height - 1);
+            }
+            paramFont = new Font(getSite().getShell().getDisplay(), fd);
+        }
+        e.gc.setFont(paramFont);
+        Integer nameLength = paramNameLength.get(param.getJob());
+        if (nameLength == null) {
+            nameLength = 0;
+            for (JobParameter p : param.getJob().getJobParameters().values()) {
+                nameLength = Math.max(nameLength, e.gc.textExtent(p
+                        .getScriptParameter().getNicename()).x);
+            }
+            nameLength += e.gc.getCharWidth(':');
+            nameLength += e.gc.getCharWidth(' ');
+            paramNameLength.put(param.getJob(), nameLength);
+        }
+        e.gc.drawText(param.getScriptParameter().getNicename() + ':', e.x, e.y);
+        e.gc.drawText(param.getValue(), e.x + nameLength, e.y);
 
-    @Override
-    // made public so that action can invoke it
-    public void firePropertyChange(int id) {
-        super.firePropertyChange(id);
-    }
-
-    /**
-     * Passes the focus request to the viewer's control.
-     */
-    @Override
-    public void setFocus() {
-        jobsViewer.getControl().setFocus();
     }
 }
