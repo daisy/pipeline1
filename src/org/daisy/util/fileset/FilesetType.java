@@ -28,6 +28,7 @@ public final class FilesetType {
     public static final FilesetType DAISY_202 = new FilesetType();
     public static final FilesetType Z3986 = new FilesetType();
     public static final FilesetType NIMAS = new FilesetType();
+    public static final FilesetType OPS_20 = new FilesetType();
     public static final FilesetType Z3986_RESOURCEFILE = new FilesetType();
     public static final FilesetType XHTML_DOCUMENT = new FilesetType();
     public static final FilesetType HTML_DOCUMENT = new FilesetType();
@@ -56,6 +57,9 @@ public final class FilesetType {
        	}else
        	if (this.equals(FilesetType.NIMAS)) {
         		return "NIMAS";
+       	}else
+           	if (this.equals(FilesetType.OPS_20)) {
+            		return "OPS_20";		
        	}else
        	if (this.equals(FilesetType.PLAYLIST_M3U)) {
         		return "PLAYLIST_M3U";
@@ -95,6 +99,9 @@ public final class FilesetType {
        	if (this.equals(FilesetType.NIMAS)) {
         		return "NIMAS fileset";
        	}else
+        if (this.equals(FilesetType.OPS_20)) {
+        	return "OPS 2.0 fileset";        		
+       	}else
        	if (this.equals(FilesetType.PLAYLIST_M3U)) {
         		return "M3U playlist";
        	}else
@@ -128,6 +135,9 @@ public final class FilesetType {
         if ("NIMAS".equals(type)) {
             return NIMAS;
         }else
+        if ("OPS_20".equals(type)) {
+            return OPS_20;    
+        }else
         if ("Z3986_RESOURCEFILE".equals(type)) {
             return Z3986_RESOURCEFILE;
         }else
@@ -153,7 +163,7 @@ public final class FilesetType {
             if ("UNKNOWN".equals(type)) {
                 return UNKNOWN;
             }
-        throw new IllegalArgumentException("FileSet type must be one of DAISY_202, Z3986, NIMAS, Z3986_RESOURCEFILE, HTML_DOCUMENT, XHTML_DOCUMENT, DTBOOK_DOCUMENT, CSS, PLAYLIST_M3U, PLAYLIST_PLS, UNKNOWN");
+        throw new IllegalArgumentException("FileSet type must be one of DAISY_202, Z3986, NIMAS, OPS_20, Z3986_RESOURCEFILE, HTML_DOCUMENT, XHTML_DOCUMENT, DTBOOK_DOCUMENT, CSS, PLAYLIST_M3U, PLAYLIST_PLS, UNKNOWN");
     }
 	
 }
