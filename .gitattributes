@@ -27,6 +27,7 @@ doc/scripts/ConfigurableValidator.html -text
 doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/FilesetRenamer.html -text
+doc/scripts/OCFCreator.html -text
 doc/scripts/PrettyPrinter.html -text
 doc/scripts/RenamerTaggerValidator.html -text
 doc/scripts/UnicodeNormalizer.html -text
@@ -34,6 +35,7 @@ doc/scripts/Z3986DTBValidator.html -text
 doc/templates/script-doc-template.html -text
 doc/transformers/int_daisy_filesetAudioTagger.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
+doc/transformers/int_daisy_ocfCreator.html -text
 doc/transformers/int_daisy_prettyPrinter.html -text
 doc/transformers/int_daisy_unicodeNormalizer.html -text
 doc/transformers/int_daisy_validator.html -text
@@ -229,6 +231,9 @@ transformers/int_daisy_filesetAudioTagger/playlist/PlaylistWriter.java -text
 transformers/int_daisy_filesetAudioTagger/playlist/XSPFWriter.java -text
 transformers/int_daisy_filesetAudioTagger/transformer.tdf -text
 transformers/int_daisy_filesetRenamer/transformer.tdf -text
+transformers/int_daisy_ocfCreator/OcfCreator.java -text
+transformers/int_daisy_ocfCreator/messages.properties -text
+transformers/int_daisy_ocfCreator/transformer.tdf -text
 transformers/int_daisy_prettyPrinter/PrettyPrinter.java -text
 transformers/int_daisy_prettyPrinter/int_daisy_prettyPrinter.messages -text
 transformers/int_daisy_prettyPrinter/transformer.tdf -text
