@@ -106,6 +106,7 @@ samples/input/dtbook/valentin.jpg -text
 samples/input/odf/simple.odt -text
 scripts/_dev/dtbook2html.taskScript -text
 scripts/creation/simple/Narrator-DtbookToDaisy202.taskScript -text
+scripts/creation/simple/OCFCreator.taskScript -text
 scripts/manipulation/AudioTaggerScriptParamsStatic.paramGroup -text
 scripts/manipulation/AudioTaggerTaskParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerScriptParamsStatic.paramGroup -text
