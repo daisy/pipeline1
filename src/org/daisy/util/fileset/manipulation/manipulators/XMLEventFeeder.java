@@ -326,7 +326,13 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	}
 
 	protected void writeEndDocument(XMLEvent xe)  throws XMLStreamException {
-		mWriter.add(xe);	
+		mWriter.add(xe);			
+		try {
+			mWriter.close();
+			mFos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	protected void writeDTD(XMLEvent xe) throws XMLStreamException  {
