@@ -3,6 +3,7 @@ package org.daisy.util.xml;
 import javax.xml.stream.Location;
 
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
+import org.xml.sax.SAXParseException;
 
 /**
  *  Translate between different API expressions of an XML event locus.
@@ -18,6 +19,16 @@ public class LocusTransformer  {
 			loc.setColumnNumber(message.getColumn());
 			loc.setLineNumber(message.getLine());
 			loc.setSystemId(message.getFile().toString());
+		}catch (Exception e) {}
+		return loc;
+	}
+	
+	public static Location newLocation(SAXParseException spe) {		
+		LocationImpl loc =  new LocusTransformer().new LocationImpl();	
+		try{
+			loc.setColumnNumber(spe.getColumnNumber());
+			loc.setLineNumber(spe.getLineNumber());
+			loc.setSystemId(spe.getSystemId());
 		}catch (Exception e) {}
 		return loc;
 	}
