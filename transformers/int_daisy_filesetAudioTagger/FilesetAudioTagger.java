@@ -130,7 +130,7 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 			}
 			
 		} catch (Exception e) {			
-			this.sendMessage(i18n("ERROR_ABORTING"), MessageEvent.Type.ERROR);
+			this.sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			throw new TransformerRunException(e.getMessage(),e);
 		}
 		
