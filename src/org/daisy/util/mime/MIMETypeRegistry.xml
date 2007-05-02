@@ -77,12 +77,17 @@
 		<type id="rngc" name="application/relax-ng-compact-syntax" parentTypes="rng" aliasTypes="rngx" namePatterns="*.rnc" />		
 		<type id="sch" name="application/x-schematron+xml" parentTypes="xml" namePatterns="*.sch" />
 		<type id="xsd" name="application/x-xsd+xml" parentTypes="xml" namePatterns="*.xsd" />		
+		<!-- OPS 2.0 -->
+		<type id="opf20" name="application/oebps-package+xml" parentTypes="xml" namePatterns="*.opf" />		
+		<!-- OCF 1.0 -->
+		<type id="ocf10" name="application/epub+zip" parentTypes="zip" namePatterns="*.epub" />				
+
 		
 	</directory>
 
 	<directory name="audio">
-		<type id="m3u" name="audio/x-mpegurl"/>
-		<type id="pls" name="audio/x-scpls"/>
+		<type id="m3u" name="audio/x-mpegurl" namePatterns="*.m3u*"/>
+		<type id="pls" name="audio/x-scpls" namePatterns="*.pls"/>
 		<type id="mp4" name="audio/mpeg4-generic" definition="used for AAC in z3986-2005" aliasTypes="mp4a"/>		
 		<type id="mp4a" name="audio/MP4A-LATM" definition="used for AAC in z3986-2002" aliasTypes="mp4"/>		
 		<type id="a3gpp" name="audio/3gpp"/>					

@@ -107,6 +107,9 @@ public final class MIMEConstants {
 	public static final String MIME_APPLICATION_OPENDOCUMENT_FORMULA ="application/vnd.oasis.opendocument.formula";
 	public static final String MIME_APPLICATION_OPENDOCUMENT_DATABASE ="application/vnd.oasis.opendocument.database";
 	public static final String MIME_APPLICATION_OPENDOCUMENT_IMAGE ="application/vnd.oasis.opendocument.image";
+		
+	public static final String MIME_APPLICATION_OEBPS_PACKAGE_XML = "application/oebps-package+xml";
+	public static final String MIME_APPLICATION_EPUB_ZIP = "application/epub+zip";
 	
 	/**
 	 * some string parse utility methods

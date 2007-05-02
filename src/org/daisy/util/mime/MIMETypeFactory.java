@@ -20,10 +20,7 @@
 package org.daisy.util.mime;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URL;
-
-import org.daisy.util.file.EFolder;
 
 
 /**
@@ -33,7 +30,7 @@ import org.daisy.util.file.EFolder;
  * @author Markus Gylling
  */
 public class MIMETypeFactory {
-	private boolean usingLooseHeuristics = false;
+	private boolean mUsingLooseHeuristics = false;
 	
 	public static MIMETypeFactory newInstance() {
 		return new MIMETypeFactory();
@@ -74,56 +71,68 @@ public class MIMETypeFactory {
 	 * @param
 	 * 	file an object for which a MIME type should be detected.
 	 * @return a MimeType object corresponding to
-	 * the input File, or MimeTypeFactoryException if MimeTypeRegistry retrieval failed. 
+	 * the input File, or null if MimeTypeRegistry retrieval failed. 
 	 * @throws MIMETypeFactoryException
 	 */
-	public MIMEType newMimeType(File file) throws MIMETypeFactoryException {		
-		throw new MIMETypeFactoryException("not implemented yet");			
+	public MIMEType newMimeType(File file) throws MIMETypeFactoryException {
+		MIMEType m = null;
+		try {
+			m = MIMETypeRegistry.getInstance().detect(file.toURI().toURL(),mUsingLooseHeuristics);
+		} catch (Exception e) {
+			throw new MIMETypeFactoryException(e.getMessage(),e);			
+		} 
+		return m;					
 	}
 	
 	/**
-	 * Attempts to heuristically identify
+	 * Attempt to heuristically identify
 	 * a MIME type for the inparam resource. Note - this
 	 * method may fail even if the MIME type
 	 * is represented in the MimeTypeRegistry.
 	 * @param
 	 * 	url an object for which a MIME type should be detected.
 	 * @return a MimeType object corresponding to
-	 * the input resource, or MimeTypeFactoryException if MimeTypeRegistry retrieval failed. 
+	 * the input resource, or null if MimeTypeRegistry retrieval failed. 
 	 * @throws MIMETypeFactoryException
 	 */
 	public MIMEType newMimeType(URL url) throws MIMETypeFactoryException {
-		throw new MIMETypeFactoryException("not implemented yet");	
+		MIMEType m = null;
+		try {
+			m = MIMETypeRegistry.getInstance().detect(url,mUsingLooseHeuristics);
+		} catch (Exception e) {
+			throw new MIMETypeFactoryException(e.getMessage(),e);			
+		} 
+		return m;
 	}
 
-	/**
-	 * Attempts to heuristically identify
-	 * a collective "fileset" MIME type for the children (or a subset of the chldren)of the inparam Folder.
-	 * Note - fileset MIME types are not the same as IANA Multipart MIME. 
-	 * Note - this method may fail even if the MIME type
-	 * is represented in the MimeTypeRegistry.
-	 * @param
-	 * 	folder a directory for whose children a "fileset" MIME type should be detected.
-	 * @return a MimeType object corresponding to
-	 * the input resource, or MimeTypeFactoryException if MimeTypeRegistry retrieval failed. 
-	 * @throws MIMETypeFactoryException
-	 */
-	public MIMEType newMimeType(EFolder folder) throws MIMETypeFactoryException {
-		throw new MIMETypeFactoryException("not implemented yet");
-	}
+//	/**
+//	 * Attempts to heuristically identify
+//	 * a collective "fileset" MIME type for the children (or a subset of the chldren)of the inparam Folder.
+//	 * Note - fileset MIME types are not the same as IANA Multipart MIME. 
+//	 * Note - this method may fail even if the MIME type
+//	 * is represented in the MimeTypeRegistry.
+//	 * @param
+//	 * 	folder a directory for whose children a "fileset" MIME type should be detected.
+//	 * @return a MimeType object corresponding to
+//	 * the input resource, or MimeTypeFactoryException if MimeTypeRegistry retrieval failed. 
+//	 * @throws MIMETypeFactoryException
+//	 */
+//	public MIMEType newMimeType(EFolder folder) throws MIMETypeFactoryException {
+//		throw new MIMETypeFactoryException("not implemented yet");
+//	}
 
 	/**
 	 * Specifies whether the MIME type detection should be permissive (loose heuristics) or hardnose academic.
 	 */
 	public void setUseLooseHeuristics(boolean loose) {
-		usingLooseHeuristics = loose;		
+		mUsingLooseHeuristics = loose;		
 	}
 
 	/**
 	 * Indicates whether the MIME type detection is permissive (loose heuristics) or hardnose academic.
 	 */
 	public boolean isUsingLooseHeuristics() {
-		return usingLooseHeuristics;
+		return mUsingLooseHeuristics;
 	}
 
 }

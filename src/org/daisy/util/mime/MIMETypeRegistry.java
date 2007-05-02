@@ -35,7 +35,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.daisy.util.file.EFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 
 /**
@@ -47,24 +49,27 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
  */
 public class MIMETypeRegistry implements XMLReporter {
 	private static MIMETypeRegistry _instance = null;
-	private Map entries = new HashMap();
+	private Map<String,MIMEType> entries = new HashMap<String,MIMEType>();
 
 	private MIMETypeRegistry() throws MIMETypeRegistryException {
+		XMLInputFactory xif = null;
 		try {
 			URL docURL = this.getClass().getResource("MIMETypeRegistry.xml");
 			XMLStreamReader reader;
-			XMLInputFactory xif = XMLInputFactory.newInstance();				
-	        xif.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
-	        xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
-	        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);                
-	        xif.setProperty(XMLInputFactory.IS_VALIDATING, Boolean.TRUE);
+			xif = StAXInputFactoryPool.getInstance().acquire(StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false));				
 	        xif.setXMLReporter(this);
 			xif.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));        
 			reader = xif.createXMLStreamReader(docURL.openStream());
-			buildMap(reader);
+			buildMap(reader);			
 		} catch (Exception e) {
 			throw new MIMETypeRegistryException(e.getMessage(),e);		
-		}                        		
+		} finally {
+			try{
+				StAXInputFactoryPool.getInstance().release(xif, StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false));
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -128,7 +133,7 @@ public class MIMETypeRegistry implements XMLReporter {
 	 * @return a MimeType if represented in the map, null otherwise.
 	 */
 	public MIMEType getEntryById(String key) {
-		return (MIMEType)entries.get(key);
+		return entries.get(key);
 	}
 	
 	/**
@@ -194,5 +199,42 @@ public class MIMETypeRegistry implements XMLReporter {
   	  	      System.err.println(errorType + " in " + location.getSystemId());
       	      System.err.println("[line " + location.getLineNumber() + "] [column " + location.getColumnNumber() + "]");
       	      System.err.println(message);      
+	}
+	
+	/**
+	 * Attempt to detect a MIMEType for the inparam resource locator
+	 * @return the MIMEType if detection suceeded, else null.
+	 * @throws MIMETypeRegistryException 
+	 */
+	public MIMEType detect(URL url, boolean looseHeuristics) throws MIMETypeRegistryException {
+		//TODO improve, dont assume file URLs
+		//TODO improve, dont rely on filenames alone; peek etc
+		//TODO use XML file for detection patterns (xmlroot, byte signature)
+		//will be:
+		
+//		Signature sig = SignatureRegistry.getInstance().detect(url, looseHeuristics);
+//		if(sig==null) return null;
+//		return entries.get(sig.getMIMEType().getId();
+		
+		//temporary:
+		try{
+			String filename = url.getFile();
+			if(filename.length()>0) {
+				EFile file = new EFile(filename);
+				String pattern = "*." + file.getExtension();
+				
+				Collection c = entries.values();
+				Iterator i = c.iterator();
+				while(i.hasNext()) {
+					MIMEType m = (MIMEType) i.next();
+					if(m.getFilenamePatterns().contains(pattern)) {
+						return m;
+					}
+				}
+			}
+		}catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		return null;
 	}  	      
 }
