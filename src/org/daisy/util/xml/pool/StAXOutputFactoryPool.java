@@ -19,8 +19,10 @@
 
 package org.daisy.util.xml.pool;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import javax.xml.stream.XMLOutputFactory;
 
 /**
@@ -30,6 +32,7 @@ import javax.xml.stream.XMLOutputFactory;
 public class StAXOutputFactoryPool extends AbstractPool {
 	
 	protected static StAXOutputFactoryPool mInstance = new StAXOutputFactoryPool();
+	private static Map<String, Object> mDefaultPropertyMap = null;
 
 	static public StAXOutputFactoryPool getInstance() {
 		return mInstance;
@@ -57,7 +60,7 @@ public class StAXOutputFactoryPool extends AbstractPool {
 	}
 	
 	/**
-	 * Return the XMLInputFactory back to the pool
+	 * Return the XMLOutputFactory back to the pool
 	 * @param xof The factory that is to be returned
 	 * @param properties The property map used as inparam to the acquire method
 	 */
@@ -92,6 +95,15 @@ public class StAXOutputFactoryPool extends AbstractPool {
 	    return xof;
 	}
 	
+	/**
+	 * Convenience method to get a standard property map
+	 */
+	public Map<String, Object> getDefaultPropertyMap(){
+		if(null== mDefaultPropertyMap) {
+			mDefaultPropertyMap = new HashMap<String, Object>();
+			mDefaultPropertyMap.put(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);	
+		}		
+		return mDefaultPropertyMap;
+	}
+		
 }
-
-//defaultProperties.put("javax.xml.stream.isRepairingNamespaces", xmlOutputFactory.getProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES));

@@ -19,6 +19,7 @@
 
 package org.daisy.util.xml.pool;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ import javax.xml.stream.XMLInputFactory;
 public class StAXInputFactoryPool extends AbstractPool {
 	
 	protected static StAXInputFactoryPool mInstance = new StAXInputFactoryPool();
+	private static Map<String, Object> mDefaultPropertyMap = null;
 
 	static public StAXInputFactoryPool getInstance() {
 		return mInstance;
@@ -97,6 +99,21 @@ public class StAXInputFactoryPool extends AbstractPool {
 	    return xif;
 	}
 	
+	/**
+	 * Convenience method to get a standard layout property map
+	 */
+	public Map<String, Object> getDefaultPropertyMap(Boolean dtdValidating){
+		if(null==mDefaultPropertyMap) {
+			mDefaultPropertyMap = new HashMap<String, Object>();
+			mDefaultPropertyMap.put(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
+			mDefaultPropertyMap.put(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
+			mDefaultPropertyMap.put(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);
+			mDefaultPropertyMap.put(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.TRUE);					
+		}
+		mDefaultPropertyMap.put(XMLInputFactory.IS_VALIDATING, dtdValidating);
+		mDefaultPropertyMap.put(XMLInputFactory.SUPPORT_DTD, dtdValidating);
+		return mDefaultPropertyMap;
+	}
 }
 
 
