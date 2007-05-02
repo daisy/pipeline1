@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="uid">&#xd;
+	<metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">&#xd;
+		<dc:identifier id="uid">identifiervalue</dc:identifier>&#xd;
+	</metadata>&#xd;
+	<manifest>&#xd;
+		<item id="ops1" href="valentin.jpg" media-type="image/jpeg" />&#xd;
+		<item id="ops2" href="hauy-2005-1.xml" media-type="application/x-dtbook+xml" />&#xd;
+		<item id="ncx" href="navigation.ncx" media-type="application/x-dtbncx+xml" />&#xd;
+	</manifest>&#xd;
+	<spine toc="ncx">&#xd;
+		<itemref idref="ops2" />&#xd;
+	</spine>&#xd;
+</package>
