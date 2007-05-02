@@ -58,19 +58,4 @@
 			</datatype>
 	</parameter>
 
-	<!--
-	<parameter name="validatorInputAbortThreshold" value="NONE" required="false">
-		<nicename>Abort Threshold</nicename>
-		<description>What kinds of validation errors shall trigger a script abort?</description>
-		<datatype>
-			<enum>
-			  <item nicename="Never abort" value="NONE" />
-			  <item nicename="Abort on warnings or worse" value="WARNING" />
-			  <item nicename="Abort on errors or worse" value="ERROR" />
-			  <item nicename="Abort only on severe errors" value="SEVERE" />
-			</enum>
-		</datatype>
-	</parameter>
-	-->
-
 </paramGroup>	

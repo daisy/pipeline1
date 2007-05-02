@@ -14,7 +14,7 @@
 	                --validatorInputFile=D:\dtbs\d202\hauy.202.rev4\ncc.html
      </comment>
           	
-	<parameter name="validatorInputFile" value="" required="true">
+	<parameter name="input" value="" required="true">
 		<nicename>Input NCC</nicename>
 		<description>Select the input NCC document</description>
 		<datatype>
@@ -28,7 +28,7 @@
 	
 		<parameter>
 			<name>input</name>
-			<value>${validatorInputFile}</value>
+			<value>${input}</value>
 		</parameter>
 	
  	    &ValidatorTaskParamsSimpleStatic;

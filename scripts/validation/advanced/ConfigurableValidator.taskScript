@@ -14,7 +14,7 @@
      <comment>
 	     Commandline template (dont forget to modify paths):
 	         D:\data\workspace\dmfc\scripts\validation\advanced\ConfigurableValidator.taskScript 
-	                --validatorInputFile=D:\dtbs\d202\hauy.202.rev4\ncc.html
+	                --inputFile=D:\dtbs\d202\hauy.202.rev4\ncc.html
      </comment>
           	
 	<parameter name="validatorInputFile" value="" required="true">
