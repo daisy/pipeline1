@@ -120,6 +120,12 @@
                label="Run Job"
                style="push"
                toolbarPath="additions"/>
+         <action
+               class="org.daisy.pipeline.gui.jobs.RunAllAction"
+               id="org.daisy.pipeline.gui.action.runAll"
+               label="Runn All Jobs"
+               style="push"
+               toolbarPath="additions"/>
       </actionSet>
    </extension>
    <extension
