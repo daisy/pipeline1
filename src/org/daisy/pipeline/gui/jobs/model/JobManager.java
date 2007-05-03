@@ -23,7 +23,7 @@ public class JobManager implements Iterable {
     }
 
     public void add(int index, Job job) {
-        add(index, new JobInfo(job));
+        add(index, new JobInfo(getNumberedName(job), job));
     }
 
     public void add(int index, JobInfo info) {
@@ -32,7 +32,7 @@ public class JobManager implements Iterable {
     }
 
     public boolean add(Job job) {
-        return add(new JobInfo(job));
+        return add(new JobInfo(getNumberedName(job), job));
     }
 
     public boolean add(JobInfo info) {
@@ -209,5 +209,19 @@ public class JobManager implements Iterable {
         for (IJobManagerListener listener : listeners) {
             listener.jobManagerChanged(event);
         }
+    }
+
+    private String getNumberedName(Job job) {
+        String name = job.getScript().getNicename();
+        int count = 1;
+        for (JobInfo info : jobs) {
+            if (info.getJob().getScript().equals(job.getScript())) {
+                count++;
+            }
+        }
+        if (count > 1) {
+            name += ' ' + '(' + count + ')';
+        }
+        return name;
     }
 }
