@@ -6,6 +6,7 @@ import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
@@ -110,7 +111,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         // TODO add find/replace action
 
         // Window menu
-        // TODO externalize string and IDs
         MenuManager perspSubMenu = new MenuManager("Open Perspective",
                 "openPerspective");
         MenuManager viewSubMenu = new MenuManager("Show View", "showView");
@@ -126,6 +126,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
     @Override
     protected void fillCoolBar(ICoolBarManager coolBar) {
+        // Edit tool bar
+        ToolBarManager editBar = new ToolBarManager();
+        editBar.add(deleteAction);
+        coolBar.add(editBar);
+        
         // Clean up "new" button
         // ToolBarManager toolBar = new ToolBarManager();
         // coolBar.add(toolBar);

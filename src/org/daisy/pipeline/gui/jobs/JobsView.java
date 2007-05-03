@@ -120,7 +120,6 @@ public class JobsView extends ViewPart {
         toolBar.add(moveUpAction);
         toolBar.add(moveDownAction);
         toolBar.add(moveToBottomAction);
-        toolBar.add(deleteAction);
 
         // Configure the retargetable actions
         getViewSite().getActionBars().setGlobalActionHandler(
