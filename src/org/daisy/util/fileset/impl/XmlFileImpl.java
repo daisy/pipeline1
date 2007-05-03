@@ -495,9 +495,10 @@ abstract class XmlFileImpl
         return ss;
     }
     
-    private boolean getValidatingProperty() {
+    private boolean getValidatingProperty() {    	
         try {
-            if (System.getProperty("org.daisy.util.fileset.validating").equals("true")) {
+        	String s = System.getProperty("org.daisy.util.fileset.validating");
+            if (s != null && s.equals("true")) {
                 return true;
             }
         } catch (Exception e) {
