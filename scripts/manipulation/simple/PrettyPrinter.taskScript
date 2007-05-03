@@ -20,7 +20,7 @@
 		</datatype>
 	</parameter>
 
-	<parameter name="output" value="$parent{input}" required="true">
+	<parameter name="output" value="" required="true"> <!-- value="$parent{input} -->
 		<nicename>Output directory</nicename>
 		<description>Select the output directory</description>
 		<datatype>
