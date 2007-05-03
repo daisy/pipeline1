@@ -12,8 +12,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Widget;
@@ -25,8 +25,6 @@ import org.eclipse.swt.widgets.Widget;
 public class ParamsWizardPage extends WizardPage implements Listener {
 
     public static final String NAME = "parameters";
-
-    private Composite control;
 
     /**
      * @param pageName
@@ -45,8 +43,20 @@ public class ParamsWizardPage extends WizardPage implements Listener {
      * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
      */
     public void createControl(Composite parent) {
-        control = new Composite(parent, SWT.NULL);
+        Composite control = new Composite(parent, SWT.NULL);
+        control.setLayout(new GridLayout(1, true));
         setControl(control);
+        Script script = ((NewJobWizard) getWizard()).getJob().getScript();
+        // Create group of required parameters
+        Group reqGroup = new Group(control, SWT.SHADOW_NONE);
+        reqGroup.setText("Required Parameters");
+        reqGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+        createParamControls(reqGroup, script, true);
+        // Create group of optional parameters
+        Group optGroup = new Group(control, SWT.SHADOW_NONE);
+        optGroup.setText("Optional Parameters");
+        optGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+        createParamControls(optGroup, script, false);
     }
 
     /*
@@ -82,34 +92,32 @@ public class ParamsWizardPage extends WizardPage implements Listener {
 
     @Override
     public void setVisible(boolean visible) {
-        if (visible) {
-            Script script = ((NewJobWizard) getWizard()).getJob().getScript();
-            createParamControls(control, script);
-        } else {
-            Control[] children = control.getChildren();
-            for (int i = 0; i < children.length; i++) {
-                children[i].dispose();
-            }
+        if (!visible) {
+            getControl().dispose();
+            setControl(null);
         }
         super.setVisible(visible);
     }
 
-    private void createParamControls(Composite parent, Script script) {
-        Collection<ScriptParameter> params = script.getParameters().values();
+    private void createParamControls(Composite parent, Script script,
+            boolean required) {
+        Collection<ScriptParameter> params;
+        if (required) {
+            params = script.getRequiredParameters().values();
+        } else {
+            params = script.getOptionalParameters().values();
+        }
         // Compute the number of columns
         int numCol = 0;
         for (ScriptParameter param : params) {
             numCol = Math.max(numCol, DatatypeHelper.getNumColumns(param
                     .getDatatype()));
         }
-        // Set the parent layout
-        GridLayout layout = new GridLayout(numCol + 1, false);
-        parent.setLayout(layout);
+        parent.setLayout(new GridLayout(numCol + 1, false));
         // Create controls for each param
         for (ScriptParameter param : params) {
             Label label = new Label(parent, SWT.NONE);
-            String reqFlag = (param.isRequired()) ? " (*)" : "";
-            label.setText(param.getNicename() + reqFlag);
+            label.setText(param.getNicename());
             label.setToolTipText(param.getDescription());
             GridData data = new GridData();
             data.grabExcessVerticalSpace = true;
@@ -118,7 +126,6 @@ public class ParamsWizardPage extends WizardPage implements Listener {
             label.setLayoutData(data);
             DatatypeHelper.createControl(parent, param, this, numCol);
         }
-        parent.layout();
     }
 
     void updatePageComplete(boolean showError) {

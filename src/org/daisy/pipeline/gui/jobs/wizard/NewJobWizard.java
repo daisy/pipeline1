@@ -4,12 +4,13 @@ import java.net.URI;
 
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Script;
-import org.daisy.pipeline.gui.JobsPerspective;
 import org.daisy.pipeline.gui.GuiPlugin;
+import org.daisy.pipeline.gui.JobsPerspective;
 import org.daisy.pipeline.gui.jobs.NewJobOperation;
 import org.daisy.pipeline.gui.util.actions.OperationUtil;
 import org.eclipse.jface.dialogs.DialogTray;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.Wizard;
@@ -36,8 +37,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
 
     public NewJobWizard() {
         // Retrieve the dialog settings
-        IDialogSettings dialogSettings = GuiPlugin.get()
-                .getDialogSettings();
+        IDialogSettings dialogSettings = GuiPlugin.get().getDialogSettings();
         IDialogSettings wizardSettings = dialogSettings
                 .getSection(SETTINGS_SECTION);
         if (wizardSettings == null) {
@@ -133,5 +133,13 @@ public class NewJobWizard extends Wizard implements INewWizard {
         if (wizardContainer != null && wizardContainer instanceof WizardDialog) {
             ((WizardDialog) wizardContainer).setHelpAvailable(true);
         }
+    }
+
+    @Override
+    public void createPageControls(Composite pageContainer) {
+        // We only pre-create the script selection page controls
+        // Paramaeters configuration page controls are lazy created
+        scriptPage.createControl(pageContainer);
+        Assert.isNotNull(scriptPage.getControl());
     }
 }

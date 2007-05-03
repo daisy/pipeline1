@@ -83,7 +83,9 @@ public class JobsView extends ViewPart {
 
     @Override
     public void dispose() {
-        paramFont.dispose();
+        if (paramFont != null) {
+            paramFont.dispose();
+        }
         super.dispose();
     }
 

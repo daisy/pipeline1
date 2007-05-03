@@ -74,8 +74,7 @@ public class ScriptsWizardPage extends WizardPage {
 		File file = (selection == null) ? null : (File) selection
 				.getFirstElement();
 		if (file == null || file.isDirectory()) {
-			setMessage(null);
-			setErrorMessage((showError) ? "Please select a script file." : null);
+            setMessage(null);
 			return;
 		}
 		Script script = scriptMan.getScript(file.toURI());
