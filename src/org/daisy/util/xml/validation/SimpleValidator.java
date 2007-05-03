@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,24 +25,28 @@ import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.SAXParserPool;
 import org.daisy.util.xml.sax.SAXConstants;
+import org.daisy.util.xml.sax.SAXParseExceptionMessageFormatter;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * A simple validator using the <code>org.daisy.util.xml.validation.jaxp</code> APIs.
+ * <p>An instance of SimpleValidator can be reused to validate multiple files.</p>
  * @author Linus Ericson
  * @author Markus Gylling
  */
-public class SimpleValidator {
+public class SimpleValidator implements ErrorHandler {
 
-	private Map<Source, String> mSchemaSources;
-	private ErrorHandler mErrorHandler;
+	private Map<Source, String> mSchemaSources = null;
+	private ErrorHandler mErrorHandler = this;
 	private EntityResolver mResolver = null;
 	private LSResourceResolver mLSResolver = null;
+	private Set<Validator> mJaxpValidators = null;
 	
 	/**
 	 * Constructor. Use this to validate resources against inline schemas and additional schema resources given as param.
@@ -124,12 +129,16 @@ public class SimpleValidator {
 	
 	/**
 	 * Validate a resource.
-	 * <p>Validation will include inline DTD and XSD schemas if available, and any schemas set in constructor.</p>
+	 * <p>Validation will include inline DTD if available, and any schemas set in constructor.</p>
+	 * <p>Note - inline XSDs must be set using constructor as well.</p>
+	 * @return true if validation was performed without exceptions. Note - a return of true does not indicate validity: implement ErrorHandler to determine this. 
 	 */
 	public boolean validate(URL url) throws ValidationException {
-		boolean result = false;
+		boolean jaxpResult = true;
+		boolean dtdResult = true;
 		PeekResult inputFilePeekResult;	
 		Peeker peeker = null;
+		
 		try {
 			try {
 				peeker = PeekerPool.getInstance().acquire();
@@ -142,37 +151,25 @@ public class SimpleValidator {
 			if ((inputFilePeekResult != null) 
 					&& (inputFilePeekResult.getPrologSystemId()!=null
 							||inputFilePeekResult.getPrologPublicId()!=null)){
-					doSAXDTDValidation(url);	
+					dtdResult = doSAXDTDValidation(url);	
 			}
-						
-			// Do inline XSD validation?
-			if (inputFilePeekResult!=null){
-				Set<String> xsis = inputFilePeekResult.getXSISchemaLocationURIs();
-				for (String str : xsis) {			
-					Map<Source,String> map = ValidationUtils.toSchemaSources(str);					
-					mSchemaSources.putAll(map);
-				}
-			}
-		
-			// Apply schemas	
-			result = doJAXPSchemaValidation(url);
+								
+			// Apply schemas set in constructor	
+			jaxpResult = doJAXPSchemaValidation(url);
 		
 		} catch (Exception e) {
 			throw new ValidationException(e.getMessage(),e);
 		} 
 		
-		return result;
+		return jaxpResult && dtdResult;
 	}
 		
 	
 	/**
-	 * Run a SAXParse with DTD validation turned on.
-	 * @throws PoolException 
-	 * @throws SAXException 
-	 * @throws IOException 
-	 * @throws FileNotFoundException 
+	 * Run a SAXParse with DTD validation turned on. 
+	 * @throws SAXException  
 	 */
-	private boolean doSAXDTDValidation(URL url) {
+	private boolean doSAXDTDValidation(URL url) throws SAXException {
 		boolean result = true;
     	Map<String, Boolean> features = new HashMap<String, Boolean>();
     	SAXParser saxParser = null;
@@ -184,7 +181,8 @@ public class SimpleValidator {
 	    	saxParser.getXMLReader().setContentHandler(new DefaultHandler());
 	    	saxParser.getXMLReader().setEntityResolver(mResolver);
 	    	saxParser.getXMLReader().parse(new InputSource(url.openStream()));	    	
-		}catch (Exception e) {
+		}catch (Exception e) {						
+			this.fatalError(e);			
 			result = false;
 		}finally{
 			try {
@@ -198,33 +196,50 @@ public class SimpleValidator {
 	
 	/**
 	 * Attempt to validate the input file using javax.xml.validation against a set of schema Sources
+	 * @throws SAXException 
 	 */
-	private boolean doJAXPSchemaValidation(URL url) {
+	private boolean doJAXPSchemaValidation(URL url) throws SAXException {
 		boolean result = true;		
 		if(mSchemaSources==null||mSchemaSources.isEmpty()) return result;
 		
-		HashMap<String,SchemaFactory> factoryMap = new HashMap<String,SchemaFactory>();		//cache to not create multiple identical factories     	     	 
-    	SchemaFactory anySchemaFactory = null;												//Schema language neutral jaxp.validation driver
+		if(mJaxpValidators==null) {
+			//this is the first validate call on this instance
+			//create the validators	set
+			mJaxpValidators = new HashSet<Validator>();
+			HashMap<String,SchemaFactory> factoryMap = new HashMap<String,SchemaFactory>();		//cache to not create multiple identical factories     	     	 
+	    	SchemaFactory anySchemaFactory = null;												//Schema language neutral jaxp.validation driver
 
-    	for (Source source : mSchemaSources.keySet()) {
-			try{				
-				String schemaNsURI = mSchemaSources.get(source);				
-				if(!factoryMap.containsKey(schemaNsURI)) {
-					factoryMap.put(schemaNsURI,SchemaFactory.newInstance(schemaNsURI));
-				}
-				anySchemaFactory = factoryMap.get(schemaNsURI);
-				anySchemaFactory.setErrorHandler(mErrorHandler);
-				anySchemaFactory.setResourceResolver(mLSResolver);
-				Schema schema = anySchemaFactory.newSchema(source);													
-				Validator jaxpValidator = schema.newValidator();		
+	    	for (Source source : mSchemaSources.keySet()) {
+				try{				
+					String schemaNsURI = mSchemaSources.get(source);				
+					if(!factoryMap.containsKey(schemaNsURI)) {
+						factoryMap.put(schemaNsURI,SchemaFactory.newInstance(schemaNsURI));
+					}
+					anySchemaFactory = factoryMap.get(schemaNsURI);
+					anySchemaFactory.setErrorHandler(mErrorHandler);
+					anySchemaFactory.setResourceResolver(mLSResolver);
+					Schema schema = anySchemaFactory.newSchema(source);													
+					Validator jaxpValidator = schema.newValidator();	
+					mJaxpValidators.add(jaxpValidator);
+				} catch (Exception e) {
+					this.fatalError(e);
+					result = false;				
+				}        
+			}			
+		}
+		
+		for (Validator validator : mJaxpValidators) {
+			try{
 				StreamSource ss = new StreamSource(url.openStream());
 				ss.setSystemId(url.toExternalForm());
-				jaxpValidator.validate(ss);
+				validator.validate(ss);
+				if(ss.getInputStream()!=null) ss.getInputStream().close();
 			} catch (Exception e) {
-				result = false;
-				e.printStackTrace();
-			}        
+				this.fatalError(e);
+				result = false;				
+			}
 		}
+		
     	return result;
 	}
 		
@@ -253,4 +268,50 @@ public class SimpleValidator {
 		coll.add(url);
 		return coll;
 	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
+	 */
+	public void error(SAXParseException exception) throws SAXException {
+		System.err.println(SAXParseExceptionMessageFormatter.formatMessage("Error ", exception));		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
+	 */
+	public void fatalError(SAXParseException exception) throws SAXException {
+		System.err.println(SAXParseExceptionMessageFormatter.formatMessage("Fatal error ", exception));		
+	}
+
+	
+	private void fatalError(Exception e) throws SAXException {
+		SAXParseException spe;
+		if(e instanceof SAXParseException) {
+			spe = (SAXParseException)e;
+		}else{
+			spe = new SAXParseException(e.getMessage(),null,e); 
+		}
+		this.mErrorHandler.fatalError(spe);		
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
+	 */
+	public void warning(SAXParseException exception) throws SAXException {
+		System.err.println(SAXParseExceptionMessageFormatter.formatMessage("Warning ", exception));		
+	}
+	
+//	// Has inline XSDs?
+//	if (inputFilePeekResult!=null){
+//		Set<String> xsis = inputFilePeekResult.getXSISchemaLocationURIs();
+//		for (String str : xsis) {			
+//			Map<Source,String> map = ValidationUtils.toSchemaSources(str);					
+//			mSchemaSources.putAll(map);
+//		}
+//	}
+
 }
