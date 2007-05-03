@@ -94,13 +94,11 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
     private Constructor mTransformerConstructor;
     private File mTransformerDirectory;
     private boolean mLoadedFromJar = false;
-    private Map<String,Object> xifProperties = null;
+    private static Map<String,Object> xifProperties = null;
     private URL mTdfUrl = null;
     private URI mDocumentationURI = null;
     
-    private static SimpleValidator mTdfValidator = null;
-    private boolean mTdfValid = true;
-    private String mTdfValidationErrors = null;
+    private static SimpleValidator mTdfValidator = null;        
 	private boolean mValidationError = false;
 
     /**
