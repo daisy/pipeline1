@@ -1,11 +1,9 @@
 package org.daisy.pipeline.gui.jobs;
 
-import java.util.List;
-
-import org.daisy.dmfc.core.script.Job;
-import org.daisy.dmfc.exception.ScriptAbortException;
-import org.daisy.dmfc.exception.ScriptException;
+import org.daisy.dmfc.exception.JobAbortedException;
+import org.daisy.dmfc.exception.JobFailedException;
 import org.daisy.pipeline.gui.GuiPlugin;
+import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -15,31 +13,29 @@ import org.eclipse.core.runtime.Status;
  * 
  */
 public class JobsRunner extends org.eclipse.core.runtime.jobs.Job {
-    List<Job> jobs;
+    JobInfo[] jobs;
 
-    public JobsRunner(List<Job> jobs) {
-        super("run job");
+    public JobsRunner(JobInfo[] jobs) {
+        super("Pipeline Jobs Runner");
         this.jobs = jobs;
         setUser(true);
     }
 
     @Override
     protected IStatus run(IProgressMonitor monitor) {
-        monitor.beginTask("Run Pipeline Jobs", jobs.size());
-        for (Job job : jobs) {
+        monitor.beginTask("Run Pipeline Jobs", jobs.length);
+        for (JobInfo jobInfo : jobs) {
             try {
-                monitor.subTask("Running " + job.getScript().getNicename());
-                GuiPlugin.get().getCore().execute(job);
+                monitor.subTask("Running " + jobInfo.getName());
+                GuiPlugin.get().getCore().execute(jobInfo.getJob());
                 monitor.worked(1);
-            } catch (ScriptException e) {
-                if (e instanceof ScriptAbortException) {
-                    StateManager.getDefault().aborted(job);
-                }else {
-                    
+            } catch (JobFailedException e) {
+                if (e instanceof JobAbortedException) {
+                    StateManager.getDefault().aborted(jobInfo);
+                } else {
+                    StateManager.getDefault().failed(jobInfo);
+                    GuiPlugin.get().error(e.getLocalizedMessage(), e);
                 }
-                // TODO check aborted/failed status
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
         }
         monitor.done();

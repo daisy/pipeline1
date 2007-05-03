@@ -117,9 +117,8 @@ public class StateManager implements BusListener {
             }
             break;
         case STOPPED:
-            runningTask = runningTasks.get(runner);
+            runningTask = runningTasks.remove(runner);
             if (runningTask != null) {
-                runningTasks.remove(runner);
                 runningTask.setProgress(1.0);
                 runningTask.setState(State.FINISHED);
                 fireChanged(runningTask);
@@ -144,9 +143,8 @@ public class StateManager implements BusListener {
             }
             break;
         case STOPPED:
-            runningJob = runningJobs.get(runner);
+            runningJob = runningJobs.remove(runner);
             if (runningJob != null) {
-                runningJobs.remove(runner);
                 runningJob.setState(State.FINISHED);
                 fireChanged(runningJob);
             }
@@ -168,14 +166,25 @@ public class StateManager implements BusListener {
         }
     }
 
-    public void aborted(Job job) {
-        JobInfo info = JobManager.getDefault().get(job);
-        info.setState(State.ABORTED);
+    public void aborted(JobInfo jobInfo) {
+        JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
+                .currentJob();
+        runningJobs.remove(runner);
+        jobInfo.setState(State.ABORTED);
+        fireChanged(jobInfo);
     }
 
-    public void failed(Job job) {
-        JobInfo info = JobManager.getDefault().get(job);
-        info.setState(State.FAILED);
+    public void failed(JobInfo jobInfo) {
+        JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
+                .currentJob();
+        runningJobs.remove(runner);
+        jobInfo.setState(State.FAILED);
+        fireChanged(jobInfo);
+    }
+
+    public void scheduled(JobInfo jobInfo) {
+        jobInfo.setState(State.WAITING);
+        fireChanged(jobInfo);
     }
 
     /**

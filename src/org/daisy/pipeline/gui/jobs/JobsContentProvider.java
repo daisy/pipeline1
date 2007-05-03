@@ -9,14 +9,22 @@ import org.daisy.pipeline.gui.jobs.model.IJobManagerListener;
 import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.daisy.pipeline.gui.jobs.model.JobManager;
 import org.daisy.pipeline.gui.jobs.model.JobManagerEvent;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.ui.progress.WorkbenchJob;
 
 public class JobsContentProvider implements ITreeContentProvider,
         IJobManagerListener, IJobChangeListener {
     private TreeViewer viewer;
     private JobManager manager;
+
+    public JobsContentProvider() {
+        StateManager.getDefault().addJobChangeListener(this);
+    }
 
     public Object[] getElements(Object inputElement) {
         return manager.toArray();
@@ -26,6 +34,7 @@ public class JobsContentProvider implements ITreeContentProvider,
         if (manager != null) {
             manager.removeJobsManagerListener(this);
         }
+        StateManager.getDefault().removeJobChangeListener(this);
     }
 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -112,8 +121,19 @@ public class JobsContentProvider implements ITreeContentProvider,
      * 
      * @see org.daisy.pipeline.gui.jobs.IJobChangeListener#jobChanged(org.daisy.pipeline.gui.jobs.model.JobInfo)
      */
-    public void jobChanged(JobInfo job) {
-        viewer.refresh(job);
+    public void jobChanged(final JobInfo job) {
+        // TODO set ui job family
+        org.eclipse.core.runtime.jobs.Job uiJob = new WorkbenchJob(
+                "Job List Update Job") {
+            @Override
+            public IStatus runInUIThread(IProgressMonitor monitor) {
+                viewer.refresh(job);
+                return Status.OK_STATUS;
+            }
+
+        };
+        uiJob.setSystem(true);
+        uiJob.schedule();
     }
 
 }

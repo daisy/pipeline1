@@ -26,6 +26,20 @@ public class JobsLabelProvider extends LabelProvider implements
 
     public Image getColumnImage(Object element, int columnIndex) {
         if (element instanceof JobInfo && columnIndex == 0) {
+            switch (((JobInfo) element).getSate()) {
+            // case ABORTED:
+            // return GuiPlugin.get().getImageRegistry().get(IK_);
+            // case FAILED:
+            // return GuiPlugin.get().getImageRegistry().get(IK_IDLE);
+            case FINISHED:
+                return GuiPlugin.get().getImageRegistry().get(IK_FINISHED);
+            case IDLE:
+                return GuiPlugin.get().getImageRegistry().get(IK_IDLE);
+            case RUNNING:
+                return GuiPlugin.get().getImageRegistry().get(IK_RUNNING);
+                // case WAITING:
+                // return GuiPlugin.get().getImageRegistry().get(IK_IDLE);
+            }
             return GuiPlugin.get().getImageRegistry().get(IK_IDLE);
         }
         return null;
@@ -37,9 +51,9 @@ public class JobsLabelProvider extends LabelProvider implements
             JobInfo job = (JobInfo) element;
             switch (columnIndex) {
             case 0:
-                return job.getJob().getScript().getNicename();
+                return job.getName();
             case 1:
-                return job.getJob().getState().toString();
+                return job.getSate().toString();
             }
         }
         return null;
