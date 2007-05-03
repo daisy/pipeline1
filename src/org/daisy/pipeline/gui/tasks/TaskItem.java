@@ -1,8 +1,8 @@
 package org.daisy.pipeline.gui.tasks;
 
-import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.GuiPlugin;
-import org.daisy.pipeline.gui.util.StateObject;
+import org.daisy.pipeline.gui.IIconsKeys;
+import org.daisy.pipeline.gui.util.Timer;
 import org.daisy.pipeline.gui.util.swt.CompositeItem;
 import org.daisy.pipeline.gui.util.swt.CompositeList;
 import org.daisy.util.execution.State;
@@ -31,15 +31,10 @@ public class TaskItem extends CompositeItem {
     static {
         GuiPlugin.get().getImageRegistry().put(IK_DOC_BUTTON,
                 GuiPlugin.getIcon(IIconsKeys.HELP_BROWSER));
-        GuiPlugin.get().getImageRegistry()
-                .put(
-                        IK_IDLE,
-                        GuiPlugin
-                                .getImageDescriptor("icons/progress_task.gif"));
-        GuiPlugin.get().getImageRegistry().put(
-                IK_RUNNING,
-                GuiPlugin
-                        .getImageDescriptor("icons/progress-indicator.gif"));
+        GuiPlugin.get().getImageRegistry().put(IK_IDLE,
+                GuiPlugin.getImageDescriptor("icons/progress_task.gif"));
+        GuiPlugin.get().getImageRegistry().put(IK_RUNNING,
+                GuiPlugin.getImageDescriptor("icons/progress-indicator.gif"));
         GuiPlugin.get().getImageRegistry().put(IK_FINISHED,
                 GuiPlugin.getImageDescriptor("icons/tick.png"));
     }
@@ -65,7 +60,7 @@ public class TaskItem extends CompositeItem {
             return;
         }
         TaskInfo info = (TaskInfo) getData();
-        nameLabel.setText(info.getNiceName());
+        nameLabel.setText(info.getName());
         progressBar.setSelection(((Double) (info.getProgress() * 100))
                 .intValue());
         timeLabel.setText(getTimeText(info));
@@ -80,10 +75,10 @@ public class TaskItem extends CompositeItem {
         String text;
         switch (info.getSate()) {
         case RUNNING:
-            text = StateObject.format(info.getLeftTime()) + " ms left";
+            text = Timer.format(info.getTimer().getLeftTime()) + " ms left";
             break;
         case FINISHED:
-            text = "Done in " + StateObject.format(info.getTotalTime())
+            text = "Done in " + Timer.format(info.getTimer().getTotalTime())
                     + " ms";
             break;
         default:
@@ -100,16 +95,13 @@ public class TaskItem extends CompositeItem {
         Image image = null;
         switch (state) {
         case IDLE:
-            image = GuiPlugin.get().getImageRegistry().get(
-                    IK_IDLE);
+            image = GuiPlugin.get().getImageRegistry().get(IK_IDLE);
             break;
         case RUNNING:
-            image = GuiPlugin.get().getImageRegistry().get(
-                    IK_RUNNING);
+            image = GuiPlugin.get().getImageRegistry().get(IK_RUNNING);
             break;
         case FINISHED:
-            image = GuiPlugin.get().getImageRegistry().get(
-                    IK_FINISHED);
+            image = GuiPlugin.get().getImageRegistry().get(IK_FINISHED);
             break;
         default:
             break;

@@ -2,13 +2,13 @@ package org.daisy.pipeline.gui.tasks;
 
 import org.daisy.dmfc.core.script.Task;
 import org.daisy.pipeline.gui.jobs.model.JobInfo;
-import org.daisy.pipeline.gui.util.StateObject;
+import org.daisy.pipeline.gui.util.StateTracker;
 
 /**
  * @author Romain Deltour
  * 
  */
-public class TaskInfo extends StateObject {
+public class TaskInfo extends StateTracker {
 
     private JobInfo parent;
     private Task task;
@@ -17,8 +17,7 @@ public class TaskInfo extends StateObject {
      * @param transInfo
      */
     public TaskInfo(JobInfo parent, Task task) {
-        // TODO set description
-        super(task.getName(), task.getTransformerInfo().getNiceName());
+        super(task.getTransformerInfo().getNiceName());
         this.parent = parent;
         this.task = task;
     }
