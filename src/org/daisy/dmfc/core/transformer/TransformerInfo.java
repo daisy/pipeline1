@@ -19,6 +19,7 @@
 package org.daisy.dmfc.core.transformer;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Collection;
 
 /**
@@ -64,9 +65,8 @@ public interface TransformerInfo {
 	public File getTransformerDir();
 	
 	/**
-	 * Gets a collection of documentation for the transformer, or an empty
-	 * collection if no documentation exists.
-	 * @return a collection of documentation.
+	 * Gets a URI of the documentation for the transformer, or null if no documentation exists.
+	 * @return a URI to documentation.
 	 */
-	public Collection getDocumentation();
+	public URI getDocumentation();
 }

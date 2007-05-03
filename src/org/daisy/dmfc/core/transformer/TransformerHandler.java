@@ -22,10 +22,11 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -58,9 +59,13 @@ import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.i18n.I18n;
 import org.daisy.util.mime.MIMEException;
 import org.daisy.util.mime.MIMETypeRegistryException;
+import org.daisy.util.xml.pool.PoolException;
+import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.validation.SimpleValidator;
 import org.daisy.util.xml.validation.ValidationException;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Handles descriptions of and initiates the execution of Transformers. The
@@ -72,27 +77,31 @@ import org.xml.sax.SAXException;
  * 
  * @author Linus Ericson
  */
-public class TransformerHandler implements TransformerInfo {
+public class TransformerHandler implements TransformerInfo, ErrorHandler {
 
-    private String name;
-    private String description;
-    private String classname;
-    private Set jars = new HashSet();
-    private String version;
-    private Vector parameters = new Vector();
-    private boolean platformSupported = true;
-    private File homeDir;
-
+    private String mNiceName;
+    private String mDescription;
+    private String mClassname;
+    private Set mJars = new HashSet();
+    private Vector mParameters = new Vector();
+    private boolean mPlatformSupported = true;
+    private File mHomeDir = null;
+    private String mVersion = null;
     private I18n mInternationalization;
-
-    private InputListener inputListener;
-
-    private DirClassLoader transformerClassLoader;
-    private Class transformerClass;
-    private Constructor transformerConstructor;
-
-    private File transformerDirectory;
+    private InputListener mInputListener;
+    private DirClassLoader mTransformerClassLoader;
+    private Class mTransformerClass;
+    private Constructor mTransformerConstructor;
+    private File mTransformerDirectory;
     private boolean mLoadedFromJar = false;
+    private Map<String,Object> xifProperties = null;
+    private URL mTdfUrl = null;
+    private URI mDocumentationURI = null;
+    
+    private static SimpleValidator mTdfValidator = null;
+    private boolean mTdfValid = true;
+    private String mTdfValidationErrors = null;
+	private boolean mValidationError = false;
 
     /**
      * Creates a Transformer handler. This is the directory version.
@@ -105,9 +114,9 @@ public class TransformerHandler implements TransformerInfo {
             InputListener inListener) throws TransformerDisabledException {
 
         mInternationalization = new I18n();
-        inputListener = inListener;
-        transformerDirectory = tdfFile.getParentFile();
-        homeDir = transformersDir.getParentFile();
+        mInputListener = inListener;
+        mTransformerDirectory = tdfFile.getParentFile();
+        mHomeDir = transformersDir.getParentFile();
 
         /*
          * If any validation or dependency check fails, disable this Transformer
@@ -127,14 +136,11 @@ public class TransformerHandler implements TransformerInfo {
                         i18n("TRANSFORMER_NOT_SUPPORTED"));
             }
         } catch (ClassNotFoundException e) {
-            throw new TransformerDisabledException(
-                    i18n("CANNOT_CREATE_TRANSFORMER_CLASS"), e);
+            throw new TransformerDisabledException(i18n("CANNOT_CREATE_TRANSFORMER_CLASS"), e);
         } catch (NoSuchMethodException e) {
-            throw new TransformerDisabledException(
-                    i18n("NOSUCHMETHOD_IN_TRANSFORMER"), e);
+            throw new TransformerDisabledException(i18n("NOSUCHMETHOD_IN_TRANSFORMER"), e);
         } catch (TransformerRunException e) {
-            throw new TransformerDisabledException(
-                    "Cannot run static isSupported method of Transformer", e);
+            throw new TransformerDisabledException("Cannot run static isSupported method of Transformer", e);
         } catch (MIMEException e) {
             throw new TransformerDisabledException("MIME exception", e);
         } catch (IOException e) {
@@ -148,6 +154,8 @@ public class TransformerHandler implements TransformerInfo {
         	throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
 		} catch (TransformerException e) {
 			//tdf validation
+			throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
+		}catch (PoolException e) {
 			throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
 		}
     }
@@ -165,79 +173,84 @@ public class TransformerHandler implements TransformerInfo {
             InputListener inListener, boolean isJar)
             throws TransformerDisabledException {
         mInternationalization = new I18n();
-        inputListener = inListener;
-        transformerDirectory = null;
+        mInputListener = inListener;
+        mTransformerDirectory = null;
         mLoadedFromJar = true;
         /*
          * If any validation or dependency check fails, disable this Transformer
          */
         try {
-            URL tdfUrl = new URL("jar:" + jarFile.toURL() + "!/"
-                    + transformerName + "/transformer.tdf");
-            // URLClassLoader urlClassLoader = new MyURLClassLoader(new
-            // URL[]{jarFile.toURL()}, this.getClass().getClassLoader());
-            URLClassLoader urlClassLoader = new URLClassLoader(
-                    new URL[] { jarFile.toURL() }, this.getClass()
-                            .getClassLoader());
-
+            URL tdfUrl = new URL("jar:" + jarFile.toURL() + "!/" + transformerName + "/transformer.tdf");
+            URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { jarFile.toURL() }, this.getClass().getClassLoader());
             initialize(tdfUrl);
-
             // Create the class loader and Transformer class (not object)
             createTransformerClass(urlClassLoader);
-
             // Make sure the right constructor is present
             checkForTransformerConstructor();
-
             // Do dependency checks in the class associated with the Transformer
             if (!transformerSupported()) {
-                throw new TransformerDisabledException(
-                        i18n("TRANSFORMER_NOT_SUPPORTED"));
+                throw new TransformerDisabledException(i18n("TRANSFORMER_NOT_SUPPORTED"));
             }
         } catch (ClassNotFoundException e) {
-            throw new TransformerDisabledException(
-                    i18n("CANNOT_CREATE_TRANSFORMER_CLASS"), e);
+            throw new TransformerDisabledException(i18n("CANNOT_CREATE_TRANSFORMER_CLASS"), e);
         } catch (NoSuchMethodException e) {
-            throw new TransformerDisabledException(
-                    i18n("NOSUCHMETHOD_IN_TRANSFORMER"), e);
+            throw new TransformerDisabledException(i18n("NOSUCHMETHOD_IN_TRANSFORMER"), e);
         } catch (TransformerRunException e) {
-            throw new TransformerDisabledException(
-                    "Cannot run static isSupported method of Transformer", e);
+            throw new TransformerDisabledException("Cannot run static isSupported method of Transformer", e);
         } catch (MIMEException e) {
             throw new TransformerDisabledException("MIME exception", e);
         } catch (IOException e) {
             throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
         } catch (XMLStreamException e) {
-            throw new TransformerDisabledException(
-                    i18n("PROBLEMS_PARSING_TDF"), e);
+            throw new TransformerDisabledException(i18n("PROBLEMS_PARSING_TDF"), e);
         } catch (SAXException e) {
             throw new TransformerDisabledException(e.getMessage(), e);
         } catch (ValidationException e) {
         	throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
 		} catch (TransformerException e) {
 			throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
+		}catch (PoolException e) {
+			throw new TransformerDisabledException(i18n("TDF_IO_EXCEPTION"), e);
 		}
     }
 
+    
+    
     private void initialize(URL url) throws IOException, SAXException,
             TransformerDisabledException, XMLStreamException,
-            MIMETypeRegistryException, MIMEException, TransformerException, ValidationException {
-        // Validate the transformer description file
-        SimpleValidator sv = new SimpleValidator(getClass().getResource("transformer-1.1.rng"), null);
-        if (!sv.validate(url)) {
+            MIMETypeRegistryException, MIMEException, TransformerException, ValidationException, PoolException {
+    	
+    	mTdfUrl = url;
+    	
+        //initialize the TDF validator    	
+    	if(mTdfValidator==null){
+    		mTdfValidator = new SimpleValidator(getClass().getResource("transformer-1.1.rng"), this);
+    	}
+    	//Validate the transformer description file
+    	if (!mTdfValidator.validate(mTdfUrl) || mValidationError) {
             throw new TransformerDisabledException(i18n("TDF_NOT_VALID"));
         }
 
         // Read properties using StAX
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-        factory.setProperty("javax.xml.stream.isCoalescing", Boolean.TRUE);
-        factory.setProperty("javax.xml.stream.supportDTD", Boolean.FALSE);
-        XMLEventReader er = factory.createXMLEventReader(url.openStream());
-
-        readProperties(er);
-
-        if (!platformSupported) {
-            throw new TransformerDisabledException(
-                    i18n("PLATFORM_CHECK_FAILED"));
+    	if(xifProperties==null) {
+    		xifProperties = new HashMap<String,Object>();
+    		xifProperties.put(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
+    		xifProperties.put(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+    		xifProperties.put(XMLInputFactory.IS_VALIDATING, Boolean.FALSE);
+    	}
+    	
+    	XMLInputFactory factory = null;
+    	
+    	try{
+	    	factory = StAXInputFactoryPool.getInstance().acquire(xifProperties);         
+	        XMLEventReader er = factory.createXMLEventReader(mTdfUrl.openStream());
+	        readProperties(er);
+		}finally{
+			StAXInputFactoryPool.getInstance().release(factory, xifProperties);
+		}
+		
+        if (!mPlatformSupported) {
+            throw new TransformerDisabledException(i18n("PLATFORM_CHECK_FAILED"));
         }
     }
 
@@ -248,25 +261,21 @@ public class TransformerHandler implements TransformerInfo {
      * @return <code>true</code> if the run was successful, <code>false</code>
      *         otherwise
      */
-    public boolean run(Map runParameters, boolean interactive, Task task)
-            throws TransformerRunException {
+    public boolean run(Map runParameters, boolean interactive, Task task) throws TransformerRunException {
         Transformer transformer = null;
         try {
             transformer = createTransformerObject(interactive, task);
         } catch (IllegalArgumentException e) {
-            throw new TransformerRunException(
-                    i18n("TRANSFORMER_ILLEGAL_ARGUMENT"), e);
+            throw new TransformerRunException(i18n("TRANSFORMER_ILLEGAL_ARGUMENT"), e);
         } catch (InstantiationException e) {
             throw new TransformerRunException("Instantiation problems", e);
         } catch (IllegalAccessException e) {
-            throw new TransformerRunException(
-                    i18n("TRANSFORMER_ILLEGAL_ACCESS"), e);
+            throw new TransformerRunException(i18n("TRANSFORMER_ILLEGAL_ACCESS"), e);
         } catch (InvocationTargetException e) {
-            throw new TransformerRunException(
-                    i18n("TRANSFORMER_INVOCATION_PROBLEM"), e);
+            throw new TransformerRunException(i18n("TRANSFORMER_INVOCATION_PROBLEM"), e);
         }
 
-        return transformer.executeWrapper(runParameters, transformerDirectory);
+        return transformer.executeWrapper(runParameters, mTransformerDirectory);
     }
 
     /**
@@ -275,23 +284,27 @@ public class TransformerHandler implements TransformerInfo {
      * @param tdfFile
      * @throws ClassNotFoundException
      */
-    private void createTransformerClass(File tdfFile, File transformersDir)
-            throws ClassNotFoundException {
+    private void createTransformerClass(File tdfFile, File transformersDir) throws ClassNotFoundException {
+    	
         EventBus.getInstance().publish(
-                new CoreMessageEvent(this, i18n("LOADING_TRANSFORMER", name,
-                        classname), MessageEvent.Type.DEBUG));
+                new CoreMessageEvent(this, i18n("LOADING_TRANSFORMER", mNiceName,
+                        mClassname), MessageEvent.Type.DEBUG));
+        
         File dir = tdfFile.getAbsoluteFile();
         dir = dir.getParentFile();
-        transformerClassLoader = new DirClassLoader(transformersDir,
-                transformersDir);
-        for (Iterator it = jars.iterator(); it.hasNext();) {
+        mTransformerClassLoader = new DirClassLoader(transformersDir, transformersDir);
+        
+        for (Iterator it = mJars.iterator(); it.hasNext();) {
             String jar = (String) it.next();
-            transformerClassLoader.addJar(new File(dir, jar));
+            mTransformerClassLoader.addJar(new File(dir, jar));
         }
-        transformerClass = Class.forName(classname, true,
-                transformerClassLoader);
-        URL codeSourceLocation = transformerClass.getProtectionDomain()
+        
+        mTransformerClass = Class.forName(mClassname, true,
+                mTransformerClassLoader);
+        
+        URL codeSourceLocation = mTransformerClass.getProtectionDomain()
                 .getCodeSource().getLocation();
+        
         EventBus.getInstance().publish(
                 new CoreMessageEvent(this, "Transformer loaded from "
                         + codeSourceLocation, MessageEvent.Type.DEBUG));
@@ -302,19 +315,21 @@ public class TransformerHandler implements TransformerInfo {
      * 
      * @throws ClassNotFoundException
      */
-    private void createTransformerClass(ClassLoader cl)
-            throws ClassNotFoundException {
+    private void createTransformerClass(ClassLoader cl) throws ClassNotFoundException {
+    	
         EventBus.getInstance().publish(
-                new CoreMessageEvent(this, i18n("LOADING_TRANSFORMER", name,
-                        classname), MessageEvent.Type.INFO));
-        transformerClass = Class.forName(classname, true, cl);
-        URL codeSourceLocation = transformerClass.getProtectionDomain()
-                .getCodeSource().getLocation();
+                new CoreMessageEvent(this, i18n("LOADING_TRANSFORMER", mNiceName,
+                        mClassname), MessageEvent.Type.INFO));
+        
+        mTransformerClass = Class.forName(mClassname, true, cl);
+        
+        URL codeSourceLocation = mTransformerClass.getProtectionDomain().getCodeSource().getLocation();
+        
         EventBus.getInstance().publish(
                 new CoreMessageEvent(this, "Transformer loaded from "
                         + codeSourceLocation, MessageEvent.Type.DEBUG));
-        if (!codeSourceLocation.toExternalForm().endsWith(".jar")
-                && mLoadedFromJar) {
+        
+        if (!codeSourceLocation.toExternalForm().endsWith(".jar") && mLoadedFromJar) {
             System.err.println("System error: JAR and directory mixup!");
         }
     }
@@ -339,18 +354,18 @@ public class TransformerHandler implements TransformerInfo {
          */
 
         List<Object> params = new LinkedList<Object>();
-        if (transformerConstructor.getParameterTypes().length == 2) {
-            params.add(inputListener);
+        if (mTransformerConstructor.getParameterTypes().length == 2) {
+            params.add(mInputListener);
             params.add(Boolean.valueOf(interactive));
         } else {
-            params.add(inputListener);
+            params.add(mInputListener);
             params.add(new HashSet()); // this is the dummy no longer used but
                                         // kept for Transformer backwards
                                         // compatibility
             params.add(Boolean.valueOf(interactive));
         }
 
-        Transformer trans = (Transformer) transformerConstructor
+        Transformer trans = (Transformer) mTransformerConstructor
                 .newInstance(params.toArray());
         trans.setTransformerInfo(this);
         trans.setLoadedFromJar(mLoadedFromJar);
@@ -376,9 +391,8 @@ public class TransformerHandler implements TransformerInfo {
             case XMLStreamConstants.START_ELEMENT:
                 StartElement se = event.asStartElement();
                 if (se.getName().getLocalPart().equals("parameter")) {
-                    Parameter param = new Parameter(se, er,
-                            transformerDirectory);
-                    parameters.add(param);
+                    Parameter param = new Parameter(se, er, mTransformerDirectory);
+                    mParameters.add(param);
                 }
                 break;
             case XMLStreamConstants.END_ELEMENT:
@@ -414,19 +428,28 @@ public class TransformerHandler implements TransformerInfo {
                 if (seName.equals("transformer")) {
                     current = "transformer";
                     Attribute att = se.getAttributeByName(new QName("version"));
-                    version = att.getValue();
+                    mVersion = att.getValue();
                 } else if (seName.equals("name")) {
                     current = "name";
                 } else if (seName.equals("description")) {
                     current = "description";
                 } else if (seName.equals("classname")) {
                     current = "classname";
+                } else if (seName.equals("documentation")) {
+                	Attribute att = se.getAttributeByName(new QName("uri"));
+                    try {
+						mDocumentationURI = mTdfUrl.toURI().resolve(att.getValue());
+					} catch (Exception e) {
+					      EventBus.getInstance().publish(
+					                new CoreMessageEvent(this, i18n("DOCUMENTATION_URI_FAILURE", mNiceName,
+					                        att.getValue()), MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
+					}
                 } else if (seName.equals("jar")) {
                     current = "jar";
                 } else if (seName.equals("parameters")) {
                     loopParameters(er);
                 } else if (seName.equals("platforms")) {
-                    platformSupported = isPlatformOk(er);
+                    mPlatformSupported = isPlatformOk(er);
                 }
                 break;
             case XMLStreamConstants.CHARACTERS:
@@ -435,13 +458,13 @@ public class TransformerHandler implements TransformerInfo {
                     break;
                 }
                 if (current.equals("name")) {
-                    name = data;
+                    mNiceName = data;
                 } else if (current.equals("description")) {
-                    description = data;
+                    mDescription = data;
                 } else if (current.equals("classname")) {
-                    classname = data;
+                    mClassname = data;
                 } else if (current.equals("jar")) {
-                    jars.add(data);
+                    mJars.add(data);
                 }
                 break;
             case XMLStreamConstants.END_ELEMENT:
@@ -463,10 +486,10 @@ public class TransformerHandler implements TransformerInfo {
          */
         Class[] params = { InputListener.class, Boolean.class };
         try {
-            transformerConstructor = transformerClass.getConstructor(params);
+            mTransformerConstructor = mTransformerClass.getConstructor(params);
         } catch (NoSuchMethodException nsme) {
             Class[] params2 = { InputListener.class, Set.class, Boolean.class };
-            transformerConstructor = transformerClass.getConstructor(params2);
+            mTransformerConstructor = mTransformerClass.getConstructor(params2);
         }
 
     }
@@ -481,7 +504,7 @@ public class TransformerHandler implements TransformerInfo {
      */
     private boolean transformerSupported() throws NoSuchMethodException,
             TransformerRunException {
-        Method isSupportedMethod = transformerClass.getMethod("isSupported",
+        Method isSupportedMethod = mTransformerClass.getMethod("isSupported",
                 (Class[]) null);
         Boolean result;
         try {
@@ -504,28 +527,23 @@ public class TransformerHandler implements TransformerInfo {
     }
 
     public String getNiceName() {
-        return name;
+        return mNiceName;
     }
 
     public String getPackageName() {
-        return classname.substring(0, classname.lastIndexOf('.'));
+        return mClassname.substring(0, mClassname.lastIndexOf('.'));
     }
 
     public String getDescription() {
-        return description;
+        return mDescription;
     }
 
     public File getTransformerDir() {
-        return transformerDirectory;
+        return mTransformerDirectory;
     }
 
-    public Collection getDocumentation() {
-        Collection coll = new ArrayList();
-        File doc = new File(getTransformerDir(), "doc.html");
-        if (doc.canRead()) {
-            coll.add(new Documentation(doc.toURI(), "Documentation"));
-        }
-        return coll;
+    public URI getDocumentation() {
+    	return mDocumentationURI;
     }
 
     /**
@@ -534,10 +552,10 @@ public class TransformerHandler implements TransformerInfo {
      * Any hard coded parameters that cannot be changed will not be returned.
      */
     public Collection getParameters() {
-        Vector params = (Vector) parameters.clone();
+        Vector params = (Vector) mParameters.clone();
         // Remove all hard coded parameters
-        for (int i = 0; i < parameters.size(); ++i) {
-            ParameterInfo param = (ParameterInfo) parameters.elementAt(i);
+        for (int i = 0; i < mParameters.size(); ++i) {
+            ParameterInfo param = (ParameterInfo) mParameters.elementAt(i);
             if (param.getValue() != null) {
                 // System.err.println("Removing hard coded param " +
                 // _param.getName());
@@ -685,7 +703,7 @@ public class TransformerHandler implements TransformerInfo {
     }
 
     public String getParameterType(String parameterName) {
-        for (Iterator it = parameters.iterator(); it.hasNext();) {
+        for (Iterator it = mParameters.iterator(); it.hasNext();) {
             Parameter param = (Parameter) it.next();
             if (parameterName.equals(param.getName())) {
                 return param.getType();
@@ -711,5 +729,45 @@ public class TransformerHandler implements TransformerInfo {
 
     private String i18n(String msgId, Object param1, Object param2) {
         return i18n(msgId, new Object[] { param1, param2 });
+    }
+
+    private String i18n(String msgId, Object param1, Object param2, Object param3) {
+        return i18n(msgId, new Object[] { param1, param2, param3 });
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
+     */
+    public void error(SAXParseException e) throws SAXException {
+        saxWarn(e);
+        mValidationError = true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
+     */
+    public void fatalError(SAXParseException e) throws SAXException {
+        saxWarn(e);
+        mValidationError  = true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
+     */
+    public void warning(SAXParseException e) throws SAXException {
+        saxWarn(e);
+        // mValidationError = true;
+    }
+
+    private void saxWarn(SAXParseException e) {
+        EventBus.getInstance().publish(
+        		new CoreMessageEvent(this, i18n("SAX_VALIDATION_EXCEPTION",e.getSystemId(),e.getLineNumber(),e.getMessage()),
+                MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT));
     }
 }

@@ -62,14 +62,12 @@ import org.daisy.util.i18n.XMLPropertyResourceBundle;
 
 public abstract class Transformer implements BusListener { 
 	
-	private boolean mIsInteractive;	  
-    private long startTime = 0;	
-	private File transformerDirectory = null;	
+	private boolean mIsInteractive;	  	
+	private File mTransformerDirectory = null;	
 	private TransformerInfo mTransformerInfo = null;
 	private boolean mIsAborted = false;
 	private InputListener mInputListener = null;
-	private I18n mInternationalization;
-	
+	private I18n mInternationalization;	
 	private boolean mLoadedFromJar = false;
 	private Task mTask;
 	
@@ -153,7 +151,7 @@ public abstract class Transformer implements BusListener {
 	}
 	
 	private String getName() {
-		return this.getTransformerInfo().getName();
+		return this.getTransformerInfo().getNiceName();
 	}
 	
 		
@@ -166,14 +164,13 @@ public abstract class Transformer implements BusListener {
 	
 	final public boolean executeWrapper(Map parameters, File dir) throws TransformerRunException {
 	    checkAbort();
-	    transformerDirectory = dir;
-	    sendMessage(true);
+	    mTransformerDirectory = dir;
+	    sendMessage(StateChangeEvent.Status.STARTED);	    
 	    sendMessage(0);
-        startTime = System.currentTimeMillis();
         boolean ret = execute(parameters);
 	    checkAbort();
 	    sendMessage(1);
-	    sendMessage(false);
+	    sendMessage(StateChangeEvent.Status.STOPPED);
 	    return ret;
 	}
 	    
@@ -205,7 +202,7 @@ public abstract class Transformer implements BusListener {
 		if (mLoadedFromJar) {
 			throw new IllegalStateException("This method may not be called from a transformer within a JAR");
 		}
-	    return transformerDirectory;
+	    return mTransformerDirectory;
 	}
 	
 	/**

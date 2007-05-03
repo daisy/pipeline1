@@ -14,7 +14,7 @@
 	<entry key="ANALYZING_INPUT" 				>Analyzing the input {0} ...</entry>
 	<entry key="RENDERING_RESULT_TO"  			>Rendering the result to {0}...</entry>
 	<entry key="MIMETYPE_DETECTION_FAILED"  	>Failed detecting a MIME type for {0}</entry>
-
+	<entry key="SAX_VALIDATION_EXCEPTION"		>Error in {0} at line {1}: {2}</entry>
 
 
 	<!-- org.daisy.dmfc.core.DMFCCore -->
@@ -48,6 +48,7 @@
 	<entry key="TRANSFORMER_ILLEGAL_ARGUMENT"    >Illegal argument</entry>
 	<entry key="TRANSFORMER_ILLEGAL_ACCESS"      >Illegal access</entry>
 	<entry key="TRANSFORMER_INVOCATION_PROBLEM"  >Invocation problem</entry>
+
 
 	<!-- org.daisy.dmfc.core.script.ScriptHandler -->
 	<entry key="SCRIPT_NOT_VALID"              >Script file is not valid</entry>
