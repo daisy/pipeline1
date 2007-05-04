@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.UUID;
 
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.script.Job;
@@ -35,6 +36,7 @@ public class GuiPlugin extends AbstractUIPlugin {
     public static final String CORE_ID = "org.daisy.pipeline";
 
     private DMFCCore core;
+    private UUID uuid;
 
     /**
      * The constructor.
@@ -42,6 +44,7 @@ public class GuiPlugin extends AbstractUIPlugin {
     public GuiPlugin() {
         super();
         plugin = this;
+        uuid = UUID.randomUUID();
     }
 
     /**
@@ -74,6 +77,10 @@ public class GuiPlugin extends AbstractUIPlugin {
         return core;
     }
 
+    public UUID getUUID() {
+        return uuid;
+    }
+    
     /**
      * Returns the shared instance.
      */

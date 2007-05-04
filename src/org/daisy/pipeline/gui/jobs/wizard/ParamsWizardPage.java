@@ -1,17 +1,20 @@
 package org.daisy.pipeline.gui.jobs.wizard;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.dmfc.core.script.ScriptParameter;
 import org.daisy.dmfc.core.script.datatype.DatatypeException;
 import org.daisy.pipeline.gui.scripts.DatatypeHelper;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -25,6 +28,8 @@ import org.eclipse.swt.widgets.Widget;
 public class ParamsWizardPage extends WizardPage implements Listener {
 
     public static final String NAME = "parameters";
+    private List<Control> paramControls;
+    private boolean isInitializing;
 
     /**
      * @param pageName
@@ -33,8 +38,7 @@ public class ParamsWizardPage extends WizardPage implements Listener {
      */
     protected ParamsWizardPage() {
         super(NAME);
-        setTitle("Configure Job");
-        setDescription("Configure the parameters of the new job.");
+        // Note: title & message are set in #createControl
     }
 
     /*
@@ -47,16 +51,37 @@ public class ParamsWizardPage extends WizardPage implements Listener {
         control.setLayout(new GridLayout(1, true));
         setControl(control);
         Script script = ((NewJobWizard) getWizard()).getJob().getScript();
-        // Create group of required parameters
-        Group reqGroup = new Group(control, SWT.SHADOW_NONE);
-        reqGroup.setText("Required Parameters");
-        reqGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-        createParamControls(reqGroup, script, true);
-        // Create group of optional parameters
-        Group optGroup = new Group(control, SWT.SHADOW_NONE);
-        optGroup.setText("Optional Parameters");
-        optGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-        createParamControls(optGroup, script, false);
+        // Set page title and message
+        setTitle("Configure the " + script.getNicename());
+        setDescription("Configure the parameters of the "
+                + script.getNicename());
+        // Create controls for required and optional parameters
+        ScriptParameter[] reqParams = script.getRequiredParameters().values()
+                .toArray(new ScriptParameter[0]);
+        ScriptParameter[] optParams = script.getOptionalParameters().values()
+                .toArray(new ScriptParameter[0]);
+        paramControls = new ArrayList<Control>(reqParams.length
+                + optParams.length);
+        if (reqParams.length > 0) {
+            Group reqGroup = new Group(control, SWT.SHADOW_NONE);
+            reqGroup.setText("Required Parameters");
+            reqGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+            paramControls.addAll(createParamControls(reqGroup, reqParams));
+        }
+        if (optParams.length > 0) {
+            Group optGroup = new Group(control, SWT.SHADOW_NONE);
+            optGroup.setText("Optional Parameters");
+            optGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+            paramControls.addAll(createParamControls(optGroup, optParams));
+        }
+        // Listen to controls modification
+        for (Control ctrl : paramControls) {
+            ctrl.addListener(SWT.Modify, this);
+            ctrl.addListener(SWT.FocusIn, this);
+            ctrl.addListener(SWT.FocusOut, this);
+        }
+        // Init content
+        initContent();
     }
 
     /*
@@ -65,15 +90,18 @@ public class ParamsWizardPage extends WizardPage implements Listener {
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
     public void handleEvent(Event event) {
-        // TODO queue wizard messages for better user experience
+        if (isInitializing) {
+            return;
+        }
         Widget widget = event.widget;
         ScriptParameter param = (ScriptParameter) widget.getData();
         switch (event.type) {
         case SWT.Modify:
             Job job = ((NewJobWizard) getWizard()).getJob();
-            String value = DatatypeHelper.getValue(widget, param);
+            String value = DatatypeHelper.getValue(widget);
             try {
                 job.setParameterValue(param.getName(), value);
+                updateSettings(param, value);
             } catch (DatatypeException e) {
                 setErrorMessage("Invalid parameter: " + e.getLocalizedMessage());
             }
@@ -99,14 +127,9 @@ public class ParamsWizardPage extends WizardPage implements Listener {
         super.setVisible(visible);
     }
 
-    private void createParamControls(Composite parent, Script script,
-            boolean required) {
-        Collection<ScriptParameter> params;
-        if (required) {
-            params = script.getRequiredParameters().values();
-        } else {
-            params = script.getOptionalParameters().values();
-        }
+    private List<Control> createParamControls(Composite parent,
+            ScriptParameter[] params) {
+        List<Control> controls = new ArrayList<Control>(params.length);
         // Compute the number of columns
         int numCol = 0;
         for (ScriptParameter param : params) {
@@ -124,8 +147,42 @@ public class ParamsWizardPage extends WizardPage implements Listener {
             data.verticalAlignment = GridData.CENTER;
             data.horizontalAlignment = GridData.END;
             label.setLayoutData(data);
-            DatatypeHelper.createControl(parent, param, this, numCol);
+            controls.add(DatatypeHelper.createControl(parent, param, numCol));
         }
+        return controls;
+    }
+
+    private void initContent() {
+        isInitializing = true;
+        String scriptName = ((NewJobWizard) getWizard()).getJob().getScript()
+                .getName();
+        IDialogSettings scriptSettings = getDialogSettings().getSection(
+                scriptName);
+        if (scriptSettings == null) {
+            scriptSettings = getDialogSettings().addNewSection(scriptName);
+        }
+        // Init from default values
+        for (Control control : paramControls) {
+            ScriptParameter param = (ScriptParameter) control.getData();
+            String value;
+            if (((NewJobWizard) getWizard()).isFirstInSession()) {
+                // init settings with default values
+                updateSettings(param, param.getValue());
+            }
+            value = scriptSettings.get(param.getName());
+            if (value != null) {
+                DatatypeHelper.setValue(control, value);
+            }
+        }
+        isInitializing = false;
+    }
+
+    private void updateSettings(ScriptParameter param, String value) {
+        String scriptName = ((NewJobWizard) getWizard()).getJob().getScript()
+                .getName();
+        IDialogSettings scriptSettings = getDialogSettings().getSection(
+                scriptName);
+        scriptSettings.put(param.getName(), value);
     }
 
     void updatePageComplete(boolean showError) {

@@ -24,21 +24,24 @@ public class JobsRunner extends org.eclipse.core.runtime.jobs.Job {
     @Override
     protected IStatus run(IProgressMonitor monitor) {
         monitor.beginTask("Run Pipeline Jobs", jobs.length);
-        for (JobInfo jobInfo : jobs) {
-            try {
-                monitor.subTask("Running " + jobInfo.getName());
-                GuiPlugin.get().getCore().execute(jobInfo.getJob());
-                monitor.worked(1);
-            } catch (JobFailedException e) {
-                if (e instanceof JobAbortedException) {
-                    StateManager.getDefault().aborted(jobInfo);
-                } else {
-                    StateManager.getDefault().failed(jobInfo);
-                    GuiPlugin.get().error(e.getLocalizedMessage(), e);
+        try {
+            for (JobInfo jobInfo : jobs) {
+                try {
+                    monitor.subTask("Running " + jobInfo.getName());
+                    GuiPlugin.get().getCore().execute(jobInfo.getJob());
+                    monitor.worked(1);
+                } catch (JobFailedException e) {
+                    if (e instanceof JobAbortedException) {
+                        StateManager.getDefault().aborted(jobInfo);
+                    } else {
+                        StateManager.getDefault().failed(jobInfo);
+                        GuiPlugin.get().error(e.getLocalizedMessage(), e);
+                    }
                 }
             }
+        } finally {
+            monitor.done();
         }
-        monitor.done();
         return Status.OK_STATUS;
     }
 }

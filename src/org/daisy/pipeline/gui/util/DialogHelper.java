@@ -69,6 +69,17 @@ public final class DialogHelper {
             }
         }
         dialog.setFilterExtensions(extensions);
-        return dialog.open();
+        if (dialog.open() != null) {
+            String path = dialog.getFilterPath();
+            String[] names = dialog.getFileNames();
+            StringBuilder sb = new StringBuilder();
+            for (String name : names) {
+                sb.append(path).append(File.separatorChar).append(name).append(
+                        ',');
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            return sb.toString();
+        }
+        return null;
     }
 }

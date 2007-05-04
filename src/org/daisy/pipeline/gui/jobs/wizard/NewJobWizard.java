@@ -28,14 +28,24 @@ import org.eclipse.ui.WorkbenchException;
 public class NewJobWizard extends Wizard implements INewWizard {
 
     public static final String SETTINGS_SECTION = "NewJobWizard";
+    public static final String SETTINGS_SESSION_ID = "SessionID";
     public static final String ID = "org.daisy.pipeline.gui.wizard.newJob";
     private Job job;
+    private boolean isFirstInSession;
     private Browser browser;
     private ScriptsWizardPage scriptPage;
     private ParamsWizardPage paramPage;
     private IWorkbench workbench;
 
     public NewJobWizard() {
+        initDialogSettings();
+        setNeedsProgressMonitor(false);
+    }
+
+    /**
+     * 
+     */
+    private void initDialogSettings() {
         // Retrieve the dialog settings
         IDialogSettings dialogSettings = GuiPlugin.get().getDialogSettings();
         IDialogSettings wizardSettings = dialogSettings
@@ -43,8 +53,16 @@ public class NewJobWizard extends Wizard implements INewWizard {
         if (wizardSettings == null) {
             wizardSettings = dialogSettings.addNewSection(SETTINGS_SECTION);
         }
-        setDialogSettings(dialogSettings);
-        setNeedsProgressMonitor(false);
+        // Check whether the wizard is invoked for the 1st time in this session
+        String sessionID = GuiPlugin.get().getUUID().toString();
+        if (!sessionID.equals(wizardSettings.get(SETTINGS_SESSION_ID))) {
+            wizardSettings.put(SETTINGS_SESSION_ID, sessionID);
+            isFirstInSession = true;
+        } else {
+            isFirstInSession = false;
+        }
+        // Set the settings to the dialog
+        setDialogSettings(wizardSettings);
     }
 
     public void performHelp() {
@@ -99,7 +117,10 @@ public class NewJobWizard extends Wizard implements INewWizard {
 
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.workbench = workbench;
-        // TODO pre-select script from workbench selection
+    }
+
+    public boolean isFirstInSession() {
+        return isFirstInSession;
     }
 
     public Job getJob() {
