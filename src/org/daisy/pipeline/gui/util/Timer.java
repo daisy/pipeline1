@@ -1,5 +1,7 @@
 package org.daisy.pipeline.gui.util;
 
+import org.daisy.util.xml.SmilClock;
+
 /**
  * @author Romain Deltour
  * 
@@ -16,17 +18,9 @@ public class Timer {
         running = false;
     }
 
-    public static String format(long ns) {
-        long tmp;
-        tmp = ns / 1000000;
-        long ms = (tmp) % 1000;
-        tmp = tmp / 1000;
-        long s = tmp % 60;
-        tmp = s / 60;
-        long m = tmp % 60;
-        long h = m / 60;
-
-        return "" + h + ':' + m + ':' + s + '.' + ms;
+    public static String format(long ns) {    	
+    	SmilClock sc = new SmilClock(ns/1000000);
+    	return sc.toString(SmilClock.FULL);
     }
 
     public long getLeftTime() {
