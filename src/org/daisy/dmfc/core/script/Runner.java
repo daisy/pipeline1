@@ -30,7 +30,6 @@ import org.daisy.dmfc.exception.JobAbortedException;
 import org.daisy.dmfc.exception.JobFailedException;
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
-import org.daisy.util.execution.State;
 import org.daisy.util.i18n.I18n;
 
 /**
@@ -84,26 +83,21 @@ public class Runner {
                 // Add hard-coded transformer parameters
                 this.addTransformerParameters(parameters, handler);
 
-                job.setState(State.RUNNING);
-                boolean success = handler.run(parameters, task.isInteractive(), task);
+                boolean success = handler.run(parameters, task.isInteractive(),
+                        task);
                 if (!success) {
-                    job.setState(State.FAILED);
                     throw new JobFailedException(i18n("TASK_FAILED", handler
                             .getName()));
                 }
                 this.mCompletedTasks++;
 
-
             }
-            job.setState(State.FINISHED);
             EventBus.getInstance().publish(
                     new JobStateChangeEvent(job,
                             StateChangeEvent.Status.STOPPED));
         } catch (TransformerAbortException e) {
-            job.setState(State.ABORTED);
             throw new JobAbortedException("Task aborted", e);
         } catch (TransformerRunException e) {
-            job.setState(State.FAILED);
             throw new JobFailedException(i18n("ERROR_RUNNING_TASK"), e);
         } finally {
             this.mRunning = false;

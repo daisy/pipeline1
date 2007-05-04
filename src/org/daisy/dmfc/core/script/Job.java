@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.daisy.dmfc.core.script.datatype.DatatypeException;
-import org.daisy.util.execution.State;
 
 /**
  * A class used for setting parameters before running a script.
@@ -32,7 +31,6 @@ public class Job {
 
 	private Script mScript;
 	private Map<String,JobParameter> mParameters; 
-	private State mState;
 	
 	/**
 	 * Creates a new Job object from a Script.
@@ -40,7 +38,6 @@ public class Job {
 	 */
 	public Job(Script script) {
 		this.mScript = script;
-		this.mState = State.IDLE;
 		this.mParameters = new LinkedHashMap<String,JobParameter>();
 		for (ScriptParameter param : script.getParameters().values()) {
 			try {
@@ -126,19 +123,4 @@ public class Job {
 		return result;
 	}
 	
-	/**
-	 * Gets the state of this job.
-	 * @return the State of this job
-	 */
-	public State getState() {
-		return mState;
-	}
-	
-	/**
-	 * Sets the state of this job
-	 * @param state the State to set
-	 */
-	/*package*/ void setState(State state) {
-		this.mState = state; 
-	}
 }
