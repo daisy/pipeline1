@@ -40,7 +40,7 @@ import org.daisy.dmfc.core.script.ScriptValidationException;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
 import org.daisy.dmfc.core.transformer.TransformerHandlerLoader;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
-import org.daisy.dmfc.exception.ScriptException;
+import org.daisy.dmfc.exception.JobFailedException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.i18n.I18n;
@@ -225,9 +225,9 @@ public class DMFCCore implements TransformerHandlerLoader {
      * Execute a script contained in a ScriptRunner object.
      * 
      * @param job
-     * @throws ScriptException
+     * @throws JobFailedException
      */
-    public void execute(Job job) throws ScriptException {
+    public void execute(Job job) throws JobFailedException {
         this.mRunner.execute(job);
     }
 

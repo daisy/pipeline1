@@ -60,7 +60,7 @@ import org.daisy.dmfc.core.script.datatype.IntegerDatatype;
 import org.daisy.dmfc.core.script.datatype.StringDatatype;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
-import org.daisy.dmfc.exception.ScriptException;
+import org.daisy.dmfc.exception.JobFailedException;
 
 /**
  * A simple command line UI for running DMFC.
@@ -205,7 +205,7 @@ public class CommandLineUI implements InputListener, BusListener {
             e.printStackTrace();
         } catch (ScriptValidationException e) {
             e.printStackTrace();
-        } catch (ScriptException e) {
+        } catch (JobFailedException e) {
             e.printStackTrace();
         } catch (DatatypeException e) {
             e.printStackTrace();

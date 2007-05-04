@@ -26,8 +26,8 @@ import org.daisy.dmfc.core.event.JobStateChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
 import org.daisy.dmfc.core.transformer.Parameter;
 import org.daisy.dmfc.core.transformer.TransformerHandler;
-import org.daisy.dmfc.exception.ScriptAbortException;
-import org.daisy.dmfc.exception.ScriptException;
+import org.daisy.dmfc.exception.JobAbortedException;
+import org.daisy.dmfc.exception.JobFailedException;
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.execution.State;
@@ -55,11 +55,11 @@ public class Runner {
      * Execute a task script.
      * 
      * @param job the script to execute
-     * @throws ScriptException
+     * @throws JobFailedException
      */
-    public void execute(Job job) throws ScriptException {
+    public void execute(Job job) throws JobFailedException {
         if (!job.allRequiredParametersSet()) {
-            throw new ScriptException(
+            throw new JobFailedException(
                     "Not all required parameters have been set");
         }
         try {
@@ -88,7 +88,7 @@ public class Runner {
                 boolean success = handler.run(parameters, task.isInteractive(), task);
                 if (!success) {
                     job.setState(State.FAILED);
-                    throw new ScriptException(i18n("TASK_FAILED", handler
+                    throw new JobFailedException(i18n("TASK_FAILED", handler
                             .getName()));
                 }
                 this.mCompletedTasks++;
@@ -101,10 +101,10 @@ public class Runner {
                             StateChangeEvent.Status.STOPPED));
         } catch (TransformerAbortException e) {
             job.setState(State.ABORTED);
-            throw new ScriptAbortException("Task aborted", e);
+            throw new JobAbortedException("Task aborted", e);
         } catch (TransformerRunException e) {
             job.setState(State.FAILED);
-            throw new ScriptException(i18n("ERROR_RUNNING_TASK"), e);
+            throw new JobFailedException(i18n("ERROR_RUNNING_TASK"), e);
         } finally {
             this.mRunning = false;
             this.mCompletedTasks = 0;

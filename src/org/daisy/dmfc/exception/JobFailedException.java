@@ -23,13 +23,13 @@ import org.daisy.util.exception.*;
 /**
  * @author Linus Ericson
  */
-public class ScriptException extends BaseException {
+public class JobFailedException extends BaseException {
 
-	public ScriptException(String message) {
+	public JobFailedException(String message) {
 		super(message);
 	}
 
-	public ScriptException(String message, Throwable cause) {
+	public JobFailedException(String message, Throwable cause) {
 		super(message, cause);
 	}
 

@@ -21,12 +21,12 @@ package org.daisy.dmfc.exception;
 /**
  * @author Linus Ericson
  */
-public class ScriptAbortException extends ScriptException {
+public class JobAbortedException extends JobFailedException {
 
     /**
      * @param message
      */
-    public ScriptAbortException(String message) {
+    public JobAbortedException(String message) {
         super(message);
     }
 
@@ -34,7 +34,7 @@ public class ScriptAbortException extends ScriptException {
      * @param message
      * @param cause
      */
-    public ScriptAbortException(String message, Throwable cause) {
+    public JobAbortedException(String message, Throwable cause) {
         super(message, cause);
     }
 
