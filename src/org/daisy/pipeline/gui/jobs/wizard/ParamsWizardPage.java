@@ -101,6 +101,7 @@ public class ParamsWizardPage extends WizardPage implements Listener {
             String value = DatatypeHelper.getValue(widget);
             try {
                 job.setParameterValue(param.getName(), value);
+                setErrorMessage(null);
                 updateSettings(param, value);
             } catch (DatatypeException e) {
                 setErrorMessage("Invalid parameter: " + e.getLocalizedMessage());
@@ -186,12 +187,10 @@ public class ParamsWizardPage extends WizardPage implements Listener {
     }
 
     void updatePageComplete(boolean showError) {
-        setPageComplete(false);
-
         // Check that all required parameters are set
+        setPageComplete(false);
         Job job = ((NewJobWizard) getWizard()).getJob();
         if (job.allRequiredParametersSet()) {
-            setErrorMessage(null);
             setPageComplete(true);
         }
     }
