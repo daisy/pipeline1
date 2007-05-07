@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<taskScript version="2.0" name="WordMLtoDTBook">
+	<nicename>Word 2003 xml to DTBook</nicename>
+	<description>Transforms WordML from Microsoft Office Word 2003 to DTBook 2005-1</description>
+   	<documentation uri="../../../doc/scripts/WordMLtoDTBook.html"/>
+    <comment></comment>
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select input xml file</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="images" value="true" required="false">
+		<nicename>Extract images</nicename>
+		<description>Extract images?</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="title" value="" required="false">
+		<nicename>Title</nicename>
+		<description>The title of the publication. If no value is supplied, the information is extracted from the file properties</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="author" value="" required="false">
+		<nicename>Author</nicename>
+		<description>The author of the publication. If no value is supplied, the information is extracted from the file properties</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+						
+	<task name="se_tpb_wordml2dtbook" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>out</name>
+			<value>${output}</value>
+		</parameter>
+
+		<parameter>
+			<name>images</name>
+			<value>${images}</value>
+		</parameter>
+		
+		<parameter>
+			<name>title</name>
+			<value>${title}</value>
+		</parameter>
+		
+		<parameter>
+			<name>author</name>
+			<value>${author}</value>
+		</parameter>
+	</task>
+
+	<!-- Add validation! -->
+
+</taskScript>

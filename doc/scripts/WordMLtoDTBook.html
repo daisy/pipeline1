@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+
+  
+  <meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8" />
+
+  
+
+
+  
+  <title>Pipeline Task: WordML to DTBook</title>
+  <link rel="stylesheet" type="text/css" href="../pipeline.css" />
+</head>
+
+
+<body>
+
+
+<h1 class="title">Pipeline Task:&nbsp;<em>WordML
+to DTBook</em></h1>
+
+
+<!-- script documentation contains primarily end-user-centric information -->
+<div id="toc" class="toc">
+<ul>
+
+
+  <li><a href="#overview">Overview</a></li>
+
+
+  <li><a href="#inputReqs">Input Requirements</a></li>
+
+
+  <li><a href="#output">Output</a></li>
+
+
+  <li><a href="#config">Configuration</a></li>
+
+
+  <li><a href="#transformers">Appendix: List of
+Transformers used</a></li>
+
+
+</ul>
+
+
+</div>
+
+
+<h2 id="overview">Overview</h2>
+
+
+<!-- brief summary of purpose and whats going on. What does this script do really? -->
+<p>This script converts Word documents saved as XML
+from&nbsp;within
+Word 2003 into DTBook. The purpose&nbsp;is to provide an automatic
+conversion process from structured Word&nbsp;files into DTBook. The
+output&nbsp;can be used for further processing by other scripts in
+the Daisy Pipeline, e.g. to produce a Daisy book.</p>
+
+
+<h2 id="inputReqs">Input Requirements</h2>
+
+
+<!-- detailed requirements on input nature -->
+<p>This script accepts Word documents saved as XML from within
+Word 2003 as input. To ensure that the output is error free, the
+following restrictions apply.</p>
+
+
+<h3>Text flows</h3>
+
+
+<p>Only use a single flow of text. Most people only use one text
+flow, you would have to put some effort into your layout before
+breaking this rule by accident.</p>
+
+
+<h3>Floating objects</h3>
+
+
+Never use floating objects. This applies to images as well as to text
+and other objects. A floating object is an object that is positioned on
+a page without reference to surrounding text.&nbsp;To test if an
+object is floating, insert about a page of&nbsp;text on any page
+preceding the object. If the object remains on the same page and
+position as before but the text is different, then it is a floating
+object.<br />
+
+
+<h3>Footnotes</h3>
+
+
+<p>To create high quality output containing footnotes, use the
+footnotes feature in Word.</p>
+
+
+<p style="font-style: italic;">Note: A&nbsp;production
+facility with knowledge in DTBook markup might benefit more from semi
+automatic footnote creation, especially when working with OCR material.
+Refer to the transformer documentation for further details.</p>
+
+<h3>Paragraph styles</h3>
+
+<p>The following built-in paragraph styles can be used to structure the
+document: heading 1, heading 2, heading 3, heading 4, heading 5,
+heading 6, block text.</p>
+
+<p>The style names given here are in English, the actual names as they
+appear in Word may be different depending on which version of Word you
+have purchased. The localized style names will work as described.</p>
+
+<p>Using styles not defined in this list will not cause an error, but will not enhance the result in any way.</p>
+
+<p><span style="font-style: italic;">Note: The script can be customized to accept other styles. Refer to the transformer documentation for further details.</span></p>
+
+<p>It is recommended, although not an absolute requirement, that the
+first heading in a document is a heading 1 and that following headings
+never have a greater number than the preceding heading plus
+one.&nbsp;Not following this recommendation will still create an error
+free output, but might cause subsequent scrips that use it to fail.</p>
+
+<p><span style="font-style: italic;">Note: Never use a paragraph style
+on a section of a paragraph. This is a very common mistake and can be
+very hard to spot. The most common mistake is to select the entire
+paragraph </span>except<span style="font-style: italic;"> the
+paragraph marker, thus appearing perfectly fine upon visual inspection.
+The output will be error free, but it will not reflect the authors
+intention. This is not a malfunction of the script, but a
+design&nbsp;flaw/feature in Word.</span></p>
+
+<h3>Character styles</h3>
+
+<p>The following built-in character styles can
+be used to structure the document: strong,&nbsp;emphasis, page number.</p>
+
+<p>The style names given here are in English, the actual names as they
+appear in Word may be different depending on which version of Word you
+have purchased. The localized style names will work as described.</p>
+
+<p>Using styles not defined in this list will not cause an error, but will not enhance the result in any way.</p>
+
+<p><span style="font-style: italic;">Note: The script can be customized to accept other styles. Refer to the transformer documentation for further details.<br />
+
+</span></p>
+
+<h3>Manual formatting</h3>
+
+<p>Formatting done directly on, or close to, a group of characters
+cannot be used to enhance the result and should only be used for layout
+that does not communicate anything important to the reader. Perhaps you
+are asking: what might the purpose of a layout be if not to communicate
+something important to the user? I don't know, and that is exactly the
+point: don't use it. If the layout is important to the reader (as it
+should be), try to find another way of expressing it.<span style="font-style: italic;"></span></p>
+
+<h3>Lists</h3>
+
+<p>Use list nesting on list styles only (identified by a list icon next to the name in the&nbsp;Styles and Formatting Pane).</p>
+
+<p>Keep list nesting neat by using the same principle that applies to headings:&nbsp;the
+first list item in a list
+must&nbsp;not&nbsp;be&nbsp;indented&nbsp;and&nbsp;following list items
+must never have a greater indentation&nbsp;than the preceding list item
+plus one(use tab to indent). </p>
+
+<p style="font-style: italic;">Note: Never use list nesting on
+paragraph styles with list formatting (identified by a paragraph icon
+next to the name in the&nbsp;Styles and Formatting Pane). Using tab to
+indent a paragraph style list will appear correct, but the result will
+be wrong.</p>
+<h3>Images</h3>
+<p>All images that are to be part of the result must be embedded in the
+original document. To ensure that images are embedded, do the following:</p>
+<ol>
+  <li>On the Edit menu, click Links. If this item is not
+selectable,&nbsp;all images are&nbsp;embedded, and no further steps are
+needed.</li>
+  <li>Select all links. To select multiple linked objects, hold down CTRL and click each linked object.</li>
+  <li>Click Break Links.</li>
+</ol>
+
+<h2 id="output">Output</h2>
+<p>The output of the script is a DTBook document including&nbsp;images.</p>
+
+
+<h2 id="config">Configuration</h2>
+
+
+<!-- description on params exposed in script -->
+<!-- Although not recommended, possiblity to reference one or several transformer docs here instead of duplicating. Remember though that the transformer doc is developer centric and this doc is end user centric. Here, use the nicenames for parameters! Explain consequence of default values. -->
+<br />
+<br />
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+
+
+<p>The documents linked below are parts of the <em>Transformer
+technical documentation</em>. These are developer and
+systems-administrator centric documents.</p>
+
+
+<ol>
+
+
+  <li><a href="../transformers/transformerDoc1.html">transformer
+1</a></li>
+
+
+  <li><a href="../transformers/transformerDoc2.html">transformer
+2</a></li>
+
+
+  <li><a href="../transformers/transformerDoc3.html">transformer
+3</a></li>
+
+
+</ol>
+
+
+</body>
+</html>
