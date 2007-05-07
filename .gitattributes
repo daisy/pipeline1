@@ -106,8 +106,6 @@ samples/input/dtbook/hauy-2005-1.xml -text
 samples/input/dtbook/hauy_invalid.xml -text
 samples/input/dtbook/hauy_valid.xml -text
 samples/input/dtbook/valentin.jpg -text
-samples/input/ocf/TwoYearsBeforeTheMast.epub -text
-samples/input/ocf/hauy.epub -text
 samples/input/odf/simple.odt -text
 samples/input/ops/hauy-2005-1.xml -text
 samples/input/ops/navigation.ncx -text
