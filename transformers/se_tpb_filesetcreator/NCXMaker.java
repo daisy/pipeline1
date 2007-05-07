@@ -1303,9 +1303,13 @@ public class NCXMaker implements BusListener {
 			}
 		}
 		
+		dcElements.put("uid", uid);
+		
+		/*
 		if (null == dcElements.get("dc:Identifiler")) {
 			dcElements.put("dc:Identifier", uid);
 		}
+		*/
 		reader.gotoAndRemoveBookmark(bookmark);
 	}
 	

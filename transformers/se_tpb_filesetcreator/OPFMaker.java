@@ -264,9 +264,27 @@ public class OPFMaker {
 					elem.appendChild(opf.createTextNode(originalValue));
 				}
 				
+				/* Martin Blomberg 7/5 2007
 				if ("dc:Identifier".equals(prefix + delim + elemName)) {
 					elem.setAttribute("id", "uid");
 				}
+				*/
+			}
+		}
+		
+		/* Martin Blomberg 7/5 2007 */
+		/* here goes the real id element */
+		Collection singleValue = (Collection) dcElements.get("uid");
+		if (null != singleValue) {
+			if (singleValue.size() == 1) {
+
+				Node node = XPathUtils.selectSingleNode(opf, "/package/metadata/dc-metadata");
+				Element elem = opf.createElement("dc:Identifier");
+				node.appendChild(elem);
+				elem.setAttribute("id", "uid");
+				for (Iterator it = singleValue.iterator(); it.hasNext(); ) {
+					elem.appendChild(opf.createTextNode((String) it.next()));	
+				}			
 			}
 		}
 	}
