@@ -124,31 +124,6 @@
 	</xsl:element>
 </xsl:template>
 
-<!-- Begin list -->
-<xsl:template match="w:p[w:pPr/w:listPr and count(preceding-sibling::w:p[1][w:pPr/w:listPr])=0]" priority="10">
-	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
-	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
-	<xsl:variable name="sTags" select="$mapset//d:standardWord[@version=$defaultStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
-	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
-	<xsl:choose>
-		<xsl:when test="$tag/@listOverride='true'">
-			<xsl:call-template name="processParagraph"/>
-		</xsl:when>
-		<xsl:otherwise><list type="pl"><xsl:apply-templates select="." mode="processList"/></list></xsl:otherwise>
-	</xsl:choose>
-</xsl:template>
-
-<!-- Not the beginning of the list. Do nothing if this is processed as a list, but process if it is not. -->
-<xsl:template match="w:p[w:pPr/w:listPr]" priority="5">
-	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
-	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
-	<xsl:variable name="sTags" select="$mapset//d:standardWord[@version=$defaultStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
-	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
-	<xsl:if test="$tag/@listOverride='true'">
-		<xsl:call-template name="processParagraph"/>
-	</xsl:if>
-</xsl:template>
-
 <xsl:template match="w:p[w:pPr/w:listPr]" mode="getLevel">
 	<xsl:choose>
 		<xsl:when test="w:pPr/w:listPr/w:ilvl/@w:val"><xsl:value-of select="w:pPr/w:listPr/w:ilvl/@w:val"/></xsl:when>
@@ -237,84 +212,148 @@
 
 <!-- override the default rule for this mode, needed for the last call below -->
 <xsl:template match="*" mode="processBlock"/>
+
 <xsl:template match="w:p" mode="processBlock">
 	<xsl:param name="pStyleName"/>
 	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
 	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
 	<xsl:variable name="sTags" select="$mapset//d:standardWord[@version=$defaultStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
 	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
-	
 	<xsl:if test="$styleName=$pStyleName">
-		<xsl:element name="{$tag/d:wrap/d:using/@value}">
-			<xsl:call-template name="addAttributes">
-				<xsl:with-param name="node" select="$tag/d:wrap/d:using"/>
-			</xsl:call-template>
-			<xsl:call-template name="getListSymbol"/>
-			<xsl:apply-templates/> <!-- descendant::w:r -->
-		</xsl:element>
-		<xsl:apply-templates select="following::w:p[1]" mode="processBlock">
+		<xsl:choose>
+			<xsl:when test="w:pPr/w:listPr and not($tag/@listOverride='true')">
+				<xsl:choose>
+					<xsl:when test="count(preceding-sibling::w:p[1][w:pPr/w:listPr])=0">
+						<xsl:call-template name="startList">
+							<xsl:with-param name="tag" select="$tag"/>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:otherwise><!-- do nothing --></xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="{$tag/d:wrap/d:using/@value}">
+					<xsl:call-template name="addAttributes">
+						<xsl:with-param name="node" select="$tag/d:wrap/d:using"/>
+					</xsl:call-template>
+					<xsl:call-template name="getListSymbol"/>
+					<xsl:apply-templates/>
+				</xsl:element>			
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:apply-templates select="following-sibling::w:p[1]" mode="processBlock">
 			<xsl:with-param name="pStyleName" select="$styleName"/>
 		</xsl:apply-templates>
 	</xsl:if>
 </xsl:template>
 
-<xsl:template match="w:p">
-	<xsl:call-template name="processParagraph"/>
+<xsl:template name="startList">
+	<xsl:param name="tag"/>
+	<xsl:choose>
+		<xsl:when test="$tag/@listOverride='true'">
+			<xsl:call-template name="processParagraph">
+				<xsl:with-param name="tag" select="$tag"/>
+			</xsl:call-template>
+		</xsl:when>
+		<xsl:otherwise><list type="pl"><xsl:apply-templates select="." mode="processList"/></list></xsl:otherwise>
+	</xsl:choose>
 </xsl:template>
 
-<xsl:template name="processParagraph">
-	<!-- <xsl:variable name="style" select="key('matchStyle', w:pPr/w:pStyle/@w:val)"/> -->
+<xsl:template name="startBlock">
+	<xsl:param name="tag"/>
 	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
+	<xsl:variable name="pStyleName" select="string(key('matchStyle', preceding-sibling::w:p[1]/w:pPr/w:pStyle/@w:val)/w:name/@w:val)"/>
+	<xsl:if test="$tag/d:wrap/@merge='false' or $pStyleName!=$styleName">
+		<xsl:element name="{$tag/d:wrap/@value}">
+			<xsl:if test="$tag/d:wrap/@addId='true'">
+				<xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
+			</xsl:if>
+			<xsl:call-template name="addAttributes"><xsl:with-param name="node" select="$tag/d:wrap"/></xsl:call-template>
+			<xsl:element name="{$tag/d:wrap/d:using/@value}">
+				<xsl:call-template name="addAttributes">
+					<xsl:with-param name="node" select="$tag/d:wrap/d:using"/>
+				</xsl:call-template>
+				<xsl:choose>
+					<xsl:when test="w:pPr/w:listPr and not($tag/@listOverride='true') and count(preceding-sibling::w:p[1][w:pPr/w:listPr])=0">
+						<xsl:call-template name="startList">
+							<xsl:with-param name="tag" select="$tag"/>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="getListSymbol"/>
+						<xsl:apply-templates/>					
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:element>
+			<xsl:if test="$tag/d:wrap/@merge='true'">
+				<xsl:apply-templates select="following-sibling::w:p[1]" mode="processBlock">
+					<xsl:with-param name="pStyleName" select="$styleName"/>
+				</xsl:apply-templates>
+			</xsl:if>
+		</xsl:element>
+	</xsl:if>
+</xsl:template>
+
+<xsl:template match="w:p">
+	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
+	<xsl:variable name="pStyleName" select="string(key('matchStyle', preceding-sibling::w:p[1]/w:pPr/w:pStyle/@w:val)/w:name/@w:val)"/>
 	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
 	<xsl:variable name="sTags" select="$mapset//d:standardWord[@version=$defaultStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
 	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
-	
 	<xsl:choose>
-		<!-- found a matching action -->
+		<xsl:when test="not(w:pPr/w:listPr and not($tag/@listOverride='true'))">
+			<xsl:call-template name="processParagraph">
+				<xsl:with-param name="tag" select="$tag"/>
+			</xsl:call-template>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:choose>
+				<xsl:when test="count(preceding-sibling::w:p[1][w:pPr/w:listPr])=0">
+					<xsl:choose>
+						<xsl:when test="$tag/d:wrap">
+							<xsl:call-template name="startBlock">
+								<xsl:with-param name="tag" select="$tag"/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:call-template name="startList">
+								<xsl:with-param name="tag" select="$tag"/>
+							</xsl:call-template>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise><!-- ??? --></xsl:otherwise>
+			</xsl:choose>
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
+<xsl:template name="processParagraph">
+	<xsl:param name="tag"/>
+	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
+	<xsl:choose>
 		<xsl:when test="count($tag)&gt;0">
 			<xsl:choose>
 				<xsl:when test="$tag/d:map">
 					<xsl:element name="{$tag/d:map/@value}">
-						<xsl:call-template name="addAttributes"><xsl:with-param name="node" select="$tag/d:map"/></xsl:call-template>
+						<xsl:call-template name="addAttributes">
+							<xsl:with-param name="node" select="$tag/d:map"/>
+						</xsl:call-template>
 						<xsl:call-template name="getListSymbol"/>
-						<xsl:apply-templates/> <!-- descendant::w:r -->
+						<xsl:apply-templates/>
 					</xsl:element>
 				</xsl:when>
-				<!-- wrap, but only if merge=false or if merge=true and this style name is different from the preceding -->
 				<xsl:when test="$tag/d:wrap">
-					<xsl:variable name="pStyleName" select="string(key('matchStyle', preceding::w:p[1]/w:pPr/w:pStyle/@w:val)/w:name/@w:val)"/>
-					<xsl:if test="$tag/d:wrap/@merge='false' or $pStyleName!=$styleName">
-						<!--
-						<xsl:comment>¤¤Merge:<xsl:value-of select="$tag/d:wrap/@merge"/>:¤¤</xsl:comment>
-						<xsl:comment>¤¤pStyleName:<xsl:value-of select="$pStyleName"/>:¤¤</xsl:comment>
-						<xsl:comment>¤¤styleName:<xsl:value-of select="$styleName"/>:¤¤</xsl:comment>-->
-						<xsl:element name="{$tag/d:wrap/@value}">
-							<xsl:if test="$tag/d:wrap/@addId='true'">
-								<xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
-							</xsl:if>
-							<xsl:call-template name="addAttributes"><xsl:with-param name="node" select="$tag/d:wrap"/></xsl:call-template>
-							<xsl:element name="{$tag/d:wrap/d:using/@value}">
-								<xsl:call-template name="addAttributes">
-									<xsl:with-param name="node" select="$tag/d:wrap/d:using"/>
-								</xsl:call-template>
-								<xsl:call-template name="getListSymbol"/>
-								<xsl:apply-templates/> <!-- descendant::w:r -->
-							</xsl:element>
-							<xsl:if test="$tag/d:wrap/@merge='true'">
-								<xsl:apply-templates select="following::w:p[1]" mode="processBlock">
-									<xsl:with-param name="pStyleName" select="$styleName"/>
-								</xsl:apply-templates>
-							</xsl:if>
-						</xsl:element>
-					</xsl:if>
+					<xsl:call-template name="startBlock">
+						<xsl:with-param name="tag" select="$tag"/>
+					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="$tag/d:comment">
 					<xsl:comment><xsl:call-template name="getListSymbol"/><xsl:value-of select="."/></xsl:comment>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:when>
-		<!-- no matching action found for this paragraph style -->
-		<xsl:otherwise><p><xsl:call-template name="getListSymbol"/><xsl:apply-templates/><!-- descendant::w:r --></p></xsl:otherwise>
+		<xsl:otherwise><p><xsl:call-template name="getListSymbol"/><xsl:apply-templates/></p></xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
 
@@ -323,6 +362,7 @@
 	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:character/d:tag[@name=$styleName]"/>
 	<xsl:variable name="sTags" select="$mapset//d:standardWord[@version=$defaultStyle]/d:character/d:tag[@name=$styleName]"/>
 	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
+	<xsl:variable name="tagSet" select="$mapset//d:custom[@style=$customStyle]/d:character[1] | ($mapset//d:standardWord[@version=$defaultStyle]/d:character[count(mapset//d:custom[@style=$customStyle]/d:character)=0])[1]"/>
 	
 	<xsl:choose>
 		<!-- found a matching action -->
@@ -359,7 +399,21 @@
 			</xsl:choose>
 		</xsl:when>
 		<!-- no matching action found for this paragrap style -->
-		<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
+		<xsl:otherwise>
+			<xsl:if test="$tagSet/@useInlineFormatting='true'">
+				<xsl:if test="w:rPr/w:vertAlign/@w:val='subscript'"><xsl:text disable-output-escaping="yes">&lt;sub&gt;</xsl:text></xsl:if>
+				<xsl:if test="w:rPr/w:vertAlign/@w:val='superscript'"><xsl:text disable-output-escaping="yes">&lt;sup&gt;</xsl:text></xsl:if>
+				<xsl:if test="w:rPr/w:i"><xsl:text disable-output-escaping="yes">&lt;em&gt;</xsl:text></xsl:if>
+				<xsl:if test="w:rPr/w:b"><xsl:text disable-output-escaping="yes">&lt;strong&gt;</xsl:text></xsl:if>
+			</xsl:if>
+			<xsl:apply-templates/>
+			<xsl:if test="$tagSet/@useInlineFormatting='true'">
+				<xsl:if test="w:rPr/w:b"><xsl:text disable-output-escaping="yes">&lt;/strong&gt;</xsl:text></xsl:if>
+				<xsl:if test="w:rPr/w:i"><xsl:text disable-output-escaping="yes">&lt;/em&gt;</xsl:text></xsl:if>
+				<xsl:if test="w:rPr/w:vertAlign/@w:val='superscript'"><xsl:text disable-output-escaping="yes">&lt;/sup&gt;</xsl:text></xsl:if>
+				<xsl:if test="w:rPr/w:vertAlign/@w:val='subscript'"><xsl:text disable-output-escaping="yes">&lt;/sub&gt;</xsl:text></xsl:if>
+			</xsl:if>
+		</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
 

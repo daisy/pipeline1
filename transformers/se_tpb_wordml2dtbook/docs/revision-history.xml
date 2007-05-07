@@ -2,7 +2,7 @@
 <?xml-stylesheet type="text/xsl" href="history.xsl"?>
 <history xmlns="rnib.org.uk/tbs#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="rnib.org.uk/tbs# history.xsd">
 	<purpose>
-		<para>This stylesheet uses WordML to produce DTBook</para>
+		<para>This transformer produces DTBook from WordML</para>
 	</purpose>
 	<revision>
 		<version>1.0</version>
@@ -184,6 +184,35 @@
 			<para>Mixing several different list styles consecutively in Word may generate duplicate list items if at least one of them have been defined in the customization files.</para>
 			<para>* Fragmentation of inline elements</para>
 			<para>Inline elements are sometimes rendered as several consecutive elements, e.g. &lt;em&gt;wo&lt;/em&gt;&lt;em&gt;rd&lt;/em&gt;. The extent of this problem depends on the fragmentation of the original file. It can be mended somewhat by unchecking the "Store random number to improve merge accuracy" box under "Privacy options" in the Options pane in Word before authoring the document.</para>
+		</remark>
+	</revision>
+	<revision>
+		<version>1.5.0 beta</version>
+		<date>7 May 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>--- Resolved bugs ---</para>
+			<para>The condition for the wrapper operation was changed to prevent duplication of text when used together with footnotes.</para>
+			<para>Handling of lists togehter the with wrapper operation was changed to prevent duplication of text and to improve list output accuracy.</para>
+			<para>Added postprocessing of inline elements to prevent fragmentation of consecutive elements such as em and strong. For example, &lt;em&gt;wo&lt;/em&gt;&lt;em&gt;rd&lt;/em&gt; will now be rendered as &lt;em&gt;word&lt;/em&gt;.</para>
+			<para>--- Other changes ---</para>
+			<para>Added ability to convert emphasis, strong, subscript and superscript inline formatting into tags.</para>
+			<para>Added some postprocessing touch-up, e.g. removal of empty p, moving of pagenums inside h[x] and docauthor/doctitle completion.</para>
+			<para>Changed tdf to include all defined stylesheet parameters.</para>
+			<para>Updated code to reflect changes in the Pipeline API.</para>
+			<para>Code restructuring.</para>
+			<para>Added restriction on the tagset: xs:NMTOKEN instead of xs:string on element names and attribute names.</para>
+			<para>Added parameters author and title.</para>
+			<!-- 
+Notes:
+1. Defragmenter kanske också bör ta bort <em>hej</em> <em>då</em>?
+2. Ta bort lokal customizing (rk)
+3. Validera default and custom tagset. Input=wordML
+-->
+		</description>
+		<remark>
+			<para>--- Known bugs ---</para>
+			<para>Lists, Footnote references. For description, see previous version.</para>
 		</remark>
 	</revision>
 </history>

@@ -72,10 +72,10 @@
 					<using value="p"/>
 				</wrap>
 			</tag>
-			<tag name="List">
+			<tag name="List" listOverride="false">
 				<wrap value="list" addId="false" merge="true">
 					<using value="li"/>
-					<attribute name="type" value="pl"/>
+					<attribute name="type" value="ol"/>
 				</wrap>
 			</tag>
 		</paragraphs>
@@ -96,5 +96,17 @@
 			<!-- / DTBookmallen -->
 			<tag name="TPB-Sidnummer"><pagenum/></tag>
 		</character>
+	</custom>
+	<custom style="rk">
+		<paragraphs>
+			<tag name="Body Text Indent"><map value="p"/></tag>
+			<tag name="Rubrik 1 utan numrering" listOverride="true"><map value="h1"/></tag>
+			<tag name="Rubrik 2 utan numrering" listOverride="true"><map value="h2"/></tag>
+			<tag name="Rubrik 3 utan numrering" listOverride="true"><map value="h3"/></tag>
+			<tag name="Rubrik 4 utan numrering" listOverride="true"><map value="h4"/></tag>
+			<!--<tag name="Rubrik 5 utan numrering" listOverride="true"><map value="h5"/></tag>
+			<tag name="Rubrik 6 utan numrering" listOverride="true"><map value="h6"/></tag>-->
+		</paragraphs>
+		<character useInlineFormatting="true"/>
 	</custom>
 </mappings>

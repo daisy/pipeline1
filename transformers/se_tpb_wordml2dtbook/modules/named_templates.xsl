@@ -36,7 +36,22 @@
 <xsl:template name="insertHeader">
 	<head>
 		<meta name="dtb:uid" content=""/>
-		<meta name="dc:Title" content="{o:DocumentProperties/o:Title}"/>
+		<xsl:choose>
+			<xsl:when test="$title!=''">
+				<meta name="dc:Title" content="{$title}"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<meta name="dc:Title" content="{o:DocumentProperties/o:Title}"/>
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:choose>
+			<xsl:when test="$author!=''">
+				<meta name="dc:Creator" content="{$author}"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<meta name="dc:Creator" content="{o:DocumentProperties/o:Author}"/>
+			</xsl:otherwise>
+		</xsl:choose>
 		<meta name="dc:Language" content="{//w:style[w:name/@w:val='Normal']//w:lang/@w:val}"/>
 		<meta name="dc:Date" content="{substring-before(o:DocumentProperties/o:LastSaved, 'T')}"/>
 		<meta name="dc:Publisher" content="{o:DocumentProperties/o:Company}"/>

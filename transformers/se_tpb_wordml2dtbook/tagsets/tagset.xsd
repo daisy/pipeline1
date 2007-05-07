@@ -7,7 +7,7 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="tag" maxOccurs="unbounded">
+				<xs:element name="tag" minOccurs="0" maxOccurs="unbounded">
 					<xs:annotation>
 						<xs:documentation>Defines a style</xs:documentation>
 					</xs:annotation>
@@ -21,6 +21,7 @@
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>
+			<xs:attribute name="useInlineFormatting" type="xs:boolean" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="comment" type="xs:string">
@@ -88,7 +89,7 @@
 								<xs:documentation>Defines the style name</xs:documentation>
 							</xs:annotation>
 						</xs:attribute>
-						<xs:attribute name="listOverride" type="xs:boolean" default="false" use="optional"/>
+						<xs:attribute name="listOverride" type="xs:boolean" use="optional" default="false"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>
@@ -123,7 +124,7 @@
 			<xs:element ref="comment"/>
 		</xs:choice>
 	</xs:group>
-		<xs:group name="pTagChoice">
+	<xs:group name="pTagChoice">
 		<xs:choice>
 			<xs:element ref="map"/>
 			<xs:element ref="wrap"/>
@@ -140,7 +141,7 @@
 					<xs:element ref="attribute"/>
 				</xs:sequence>
 			</xs:sequence>
-			<xs:attribute name="value" type="xs:string" use="required">
+			<xs:attribute name="value" type="xs:NMTOKEN" use="required">
 				<xs:annotation>
 					<xs:documentation>Defines the tag to wrap with</xs:documentation>
 				</xs:annotation>
@@ -168,10 +169,14 @@
 			<xs:documentation>Defines attributes that should be added to the wrapping tag</xs:documentation>
 		</xs:annotation>
 		<xs:complexType>
-			<xs:attributeGroup ref="value"/>
+			<xs:attribute name="value" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>Defines the value</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
 			<xs:attribute name="name" type="xs:NMTOKEN" use="required">
 				<xs:annotation>
-					<xs:documentation>Defines the attribute name</xs:documentation>
+					<xs:documentation>Defines the name</xs:documentation>
 				</xs:annotation>
 			</xs:attribute>
 		</xs:complexType>
@@ -185,7 +190,7 @@
 		</xs:complexType>
 	</xs:element>
 	<xs:attributeGroup name="value">
-		<xs:attribute name="value" type="xs:string" use="required">
+		<xs:attribute name="value" type="xs:NMTOKEN" use="required">
 			<xs:annotation>
 				<xs:documentation>Defines the value</xs:documentation>
 			</xs:annotation>

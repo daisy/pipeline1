@@ -31,6 +31,18 @@
 					<using value="caption"/>
 				</wrap>
 			</tag>
+			<tag name="List Number" listOverride="true">
+				<wrap value="list" addId="false" merge="true">
+					<using value="li"/>
+					<attribute name="type" value="ol"/>
+				</wrap>
+			</tag>
+			<tag name="List Bullet" listOverride="true">
+				<wrap value="list" addId="false" merge="true">
+					<using value="li"/>
+					<attribute name="type" value="ul"/>
+				</wrap>
+			</tag>
 		</paragraphs>
 		<character>
 			<tag name="Strong"><map value="strong"/></tag>
