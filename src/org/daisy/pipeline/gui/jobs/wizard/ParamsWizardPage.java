@@ -7,10 +7,11 @@ import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.dmfc.core.script.ScriptParameter;
 import org.daisy.dmfc.core.script.datatype.DatatypeException;
-import org.daisy.pipeline.gui.scripts.DatatypeHelper;
+import org.daisy.pipeline.gui.scripts.datatype.DatatypeAdapter;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -47,7 +48,7 @@ public class ParamsWizardPage extends WizardPage implements Listener {
      * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
      */
     public void createControl(Composite parent) {
-        Composite control = new Composite(parent, SWT.NULL);
+        Composite control = new PageControl(parent, SWT.NULL);
         control.setLayout(new GridLayout(1, true));
         setControl(control);
         Script script = ((NewJobWizard) getWizard()).getJob().getScript();
@@ -98,7 +99,9 @@ public class ParamsWizardPage extends WizardPage implements Listener {
         switch (event.type) {
         case SWT.Modify:
             Job job = ((NewJobWizard) getWizard()).getJob();
-            String value = DatatypeHelper.getValue(widget);
+            DatatypeAdapter adapter = DatatypeAdapter.getAdapter(param
+                    .getDatatype());
+            String value = adapter.getValue(widget);
             try {
                 job.setParameterValue(param.getName(), value);
                 setErrorMessage(null);
@@ -121,25 +124,27 @@ public class ParamsWizardPage extends WizardPage implements Listener {
 
     @Override
     public void setVisible(boolean visible) {
+        super.setVisible(visible);
         if (!visible) {
             getControl().dispose();
             setControl(null);
         }
-        super.setVisible(visible);
     }
 
     private List<Control> createParamControls(Composite parent,
             ScriptParameter[] params) {
         List<Control> controls = new ArrayList<Control>(params.length);
+        DatatypeAdapter adapter;
         // Compute the number of columns
         int numCol = 0;
         for (ScriptParameter param : params) {
-            numCol = Math.max(numCol, DatatypeHelper.getNumColumns(param
-                    .getDatatype()));
+            adapter = DatatypeAdapter.getAdapter(param.getDatatype());
+            numCol = Math.max(numCol, adapter.getNumCol());
         }
         parent.setLayout(new GridLayout(numCol + 1, false));
         // Create controls for each param
         for (ScriptParameter param : params) {
+            adapter = DatatypeAdapter.getAdapter(param.getDatatype());
             Label label = new Label(parent, SWT.NONE);
             label.setText(param.getNicename());
             label.setToolTipText(param.getDescription());
@@ -148,7 +153,7 @@ public class ParamsWizardPage extends WizardPage implements Listener {
             data.verticalAlignment = GridData.CENTER;
             data.horizontalAlignment = GridData.END;
             label.setLayoutData(data);
-            controls.add(DatatypeHelper.createControl(parent, param, numCol));
+            controls.add(adapter.createControl(parent, param, numCol));
         }
         return controls;
     }
@@ -172,7 +177,9 @@ public class ParamsWizardPage extends WizardPage implements Listener {
             }
             value = scriptSettings.get(param.getName());
             if (value != null) {
-                DatatypeHelper.setValue(control, value);
+                DatatypeAdapter adapter = DatatypeAdapter.getAdapter(param
+                        .getDatatype());
+                adapter.setValue(control, value);
             }
         }
         isInitializing = false;
@@ -198,5 +205,22 @@ public class ParamsWizardPage extends WizardPage implements Listener {
     @Override
     public void performHelp() {
         ((NewJobWizard) getWizard()).performHelp();
+    }
+
+    public class PageControl extends Composite {
+
+        public PageControl(Composite parent, int style) {
+            super(parent, style);
+        }
+
+        @Override
+        public Point computeSize(int wHint, int hHint, boolean changed) {
+            Point size = super.computeSize(wHint, hHint, changed);
+            Point firstSize = getWizard().getStartingPage().getControl()
+                    .getSize();
+            size.x = firstSize.x;
+            return size;
+        }
+
     }
 }

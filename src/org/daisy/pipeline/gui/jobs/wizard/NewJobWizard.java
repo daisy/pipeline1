@@ -163,4 +163,5 @@ public class NewJobWizard extends Wizard implements INewWizard {
         scriptPage.createControl(pageContainer);
         Assert.isNotNull(scriptPage.getControl());
     }
+
 }
