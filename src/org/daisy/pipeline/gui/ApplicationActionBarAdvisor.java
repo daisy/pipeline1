@@ -29,9 +29,18 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction aboutAction;
     private IWorkbenchAction deleteAction;
     private IWorkbenchAction exitAction;
+    private IWorkbenchAction maximizeAction;
+    private IWorkbenchAction minimizeAction;
     private IWorkbenchAction newAction;
+    private IWorkbenchAction nextPartAction;
+    private IWorkbenchAction nextPerspAction;
+    private IWorkbenchAction prevPartAction;
+    private IWorkbenchAction prevPerspAction;
     private IWorkbenchAction redoAction;
+    private IWorkbenchAction showPaneMenuAction;
+    private IWorkbenchAction showViewMenuAction;
     private IWorkbenchAction undoAction;
+    // Contribution Items
     private IContributionItem perspListItem;
     private IContributionItem viewListItem;
     private IContributionItem wizardListItem;
@@ -56,10 +65,28 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(deleteAction);
         exitAction = ActionFactory.QUIT.create(window);
         register(exitAction);
+        maximizeAction = ActionFactory.MAXIMIZE.create(window);
+        register(maximizeAction);
+        minimizeAction = ActionFactory.MINIMIZE.create(window);
+        register(minimizeAction);
         newAction = ActionFactory.NEW_WIZARD_DROP_DOWN.create(window);
         register(newAction);
+        nextPartAction = ActionFactory.NEXT_PART.create(window);
+        register(nextPartAction);
+        nextPerspAction = ActionFactory.NEXT_PERSPECTIVE.create(window);
+        register(nextPerspAction);
+        prevPartAction = ActionFactory.PREVIOUS_PART.create(window);
+        register(nextPartAction);
+        prevPerspAction = ActionFactory.PREVIOUS_PERSPECTIVE.create(window);
+        register(nextPartAction);
         redoAction = ActionFactory.REDO.create(window);
         register(redoAction);
+        showPaneMenuAction = ActionFactory.SHOW_PART_PANE_MENU.create(window);
+        register(showPaneMenuAction);
+        showViewMenuAction = ActionFactory.SHOW_VIEW_MENU.create(window);
+        register(showViewMenuAction);
+        undoAction = ActionFactory.UNDO.create(window);
+        register(undoAction);
         undoAction = ActionFactory.UNDO.create(window);
         register(undoAction);
 
@@ -113,11 +140,27 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         // Window menu
         MenuManager perspSubMenu = new MenuManager("Open Perspective",
                 "openPerspective");
-        MenuManager viewSubMenu = new MenuManager("Show View", "showView");
         perspSubMenu.add(perspListItem);
+        MenuManager viewSubMenu = new MenuManager("Show View", "showView");
         viewSubMenu.add(viewListItem);
+        MenuManager navSubMenu = new MenuManager("Navigation", "navigation");
+        navSubMenu.add(showPaneMenuAction);
+        navSubMenu.add(showViewMenuAction);
+        navSubMenu.add(new Separator());
+        navSubMenu.add(maximizeAction);
+        navSubMenu.add(minimizeAction);
+        navSubMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        navSubMenu.add(new Separator());
+        navSubMenu.add(nextPartAction);
+        navSubMenu.add(prevPartAction);
+        navSubMenu.add(new Separator());
+        navSubMenu.add(nextPerspAction);
+        navSubMenu.add(prevPerspAction);
         windowMenu.add(perspSubMenu);
         windowMenu.add(viewSubMenu);
+        windowMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        windowMenu.add(new Separator());
+        windowMenu.add(navSubMenu);
         //
 
         // Help menu
