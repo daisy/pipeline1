@@ -495,8 +495,10 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				anySchemaFactory.setErrorHandler(this);
 				anySchemaFactory.setResourceResolver(CatalogEntityResolver.getInstance());
 				Schema schema = anySchemaFactory.newSchema(source);													
-				javax.xml.validation.Validator jaxpValidator = schema.newValidator();																
-				jaxpValidator.validate(new StreamSource(mInputFile.toURI().toURL().openStream()));
+				javax.xml.validation.Validator jaxpValidator = schema.newValidator();
+				StreamSource ss = new StreamSource(mInputFile.toURI().toURL().openStream());
+				jaxpValidator.validate(ss);
+				if(ss.getInputStream()!=null) ss.getInputStream().close();
 				this.sendMessage(PROGRESS_FILESET_VALIDATION + (PROGRESS_JAXP_VALIDATION - PROGRESS_FILESET_VALIDATION) * (num / count));
 				this.checkAbort();
 			}catch (Exception e) {
@@ -678,6 +680,14 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			"org.daisy.util.fileset.validation.ValidatorImplDtbook");
 		}
 
+		test = System.getProperty(
+		"org.daisy.util.fileset.validation:http://www.daisy.org/fileset/OPS_20");
+		if(test==null){
+			System.setProperty(
+					"org.daisy.util.fileset.validation:http://www.daisy.org/fileset/OPS_20",
+			"org.daisy.util.fileset.validation.ValidatorImplOPS2x");
+		}
+		
 
 	}
 
