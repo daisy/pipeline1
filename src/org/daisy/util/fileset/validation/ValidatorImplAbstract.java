@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.stream.events.Attribute;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -32,6 +33,7 @@ import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedExceptio
 import org.daisy.util.xml.NamespaceReporter;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.validation.SchemaLanguageConstants;
+import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -46,7 +48,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	protected Fileset mFileset = null;														//fileset to validate		
 	protected boolean mDebugMode = false;													//system property
 	private ArrayList<ValidatorDelegate> mDelegates = null; 								//registered ValidatorDelegates
-	private Map<URL,String> mSchemas = null;	
+	private Map<URL,TypeRestriction> mSchemas = null;	
 	
 	ValidatorImplAbstract(ArrayList<FilesetType> supportedFilesetTypes ) {
 		initialize(supportedFilesetTypes);		
@@ -169,19 +171,38 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 			}		
 	}
 	
-	private void validate(javax.xml.validation.Validator validator, String filesetFileType) throws FileNotFoundException, SAXException, IOException {
+	private void validate(javax.xml.validation.Validator validator, TypeRestriction restriction) throws FileNotFoundException, SAXException, IOException {
 		for (Iterator iter = mFileset.getLocalMembers().iterator(); iter.hasNext();) {
 			FilesetFile ffile = (FilesetFile) iter.next();
-			if(ffile.getClass().getName().equals(filesetFileType)) { 
+			if(ffile.getClass().getName().equals(restriction.mFilesetFileType)) { 
 				XmlFile xf = (XmlFile)ffile;
 				if(xf.isWellformed()) {	
-					StreamSource ss = xf.asStreamSource();					
-					validator.validate(ss);
-					if(ss.getReader()!=null) ss.getReader().close();
-					if(ss.getInputStream()!=null) ss.getInputStream().close();					
+					if(restriction.mRootAttributes==null || matchesRootAttributes(xf,restriction.mRootAttributes)){
+						StreamSource ss = xf.asStreamSource();					
+						validator.validate(ss);
+						if(ss.getReader()!=null) ss.getReader().close();
+						if(ss.getInputStream()!=null) ss.getInputStream().close();
+					}					
 				}
 			}			
 		}		
+	}
+
+	/**
+	 * @return true if all attributes in the rootAttributes set occur on xf root, else false.
+	 */
+	private boolean matchesRootAttributes(XmlFile xf, Set<Attribute> rootAttributes) {
+		Attributes instanceAttrs = xf.getRootElementAttributes();
+		for (Attribute shouldExist : rootAttributes) {
+			String shouldExistLocalName = shouldExist.getName().getLocalPart();
+			String shouldExistValue = shouldExist.getValue();
+			String shouldExistNSURI = shouldExist.getName().getNamespaceURI();			
+			String value = instanceAttrs.getValue(shouldExistNSURI, shouldExistLocalName);
+			if(value==null || !value.equals(shouldExistValue)) {
+				return false;	
+			}						
+		}
+		return true;
 	}
 
 	/**
@@ -356,10 +377,18 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	 * @see org.daisy.util.fileset.validation.Validator#setSchema(java.net.URL, java.lang.String)
 	 */
 	public void setSchema(URL schema, String filesetFileType) throws ValidatorException, ValidatorNotSupportedException {
-		if(mSchemas==null) mSchemas = new HashMap<URL,String>();
-		mSchemas.put(schema, filesetFileType);
+		this.setSchema(schema, filesetFileType, null);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.validation.Validator#setSchema(java.net.URL, java.lang.String)
+	 */
+	public void setSchema(URL schema, String filesetFileType, Set<Attribute> rootAttributes) throws ValidatorException, ValidatorNotSupportedException {
+		if(mSchemas==null) mSchemas = new HashMap<URL,TypeRestriction>();
+		TypeRestriction restriction = new TypeRestriction(filesetFileType,rootAttributes);
+		mSchemas.put(schema, restriction);
+	}
 	
 	public void setFeature(String name, boolean value) throws ValidatorNotRecognizedException, ValidatorNotSupportedException {
         if (name == null) throw new NullPointerException("the name parameter is null");
@@ -380,4 +409,14 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
         if (name == null) throw new NullPointerException("the name parameter is null");
         throw new ValidatorNotRecognizedException(name);
     }
+	
+	class TypeRestriction {
+		String mFilesetFileType = null;
+		Set<Attribute> mRootAttributes = null;
+		
+		TypeRestriction(String filesetFileType, Set<Attribute> rootAttributes) {
+			mFilesetFileType = filesetFileType;
+			mRootAttributes = rootAttributes; 
+		}
+	}
 }
