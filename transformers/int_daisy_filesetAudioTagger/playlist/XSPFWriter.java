@@ -115,14 +115,16 @@ public class XSPFWriter extends AbstractWriter {
 
 		
 		try {			
-			mXMLOutputFactory =  StAXOutputFactoryPool.getInstance().acquire(properties);		
-			XMLEventWriter writer = mXMLOutputFactory.createXMLEventWriter(new FileOutputStream(destination), "utf-8");
+			mXMLOutputFactory =  StAXOutputFactoryPool.getInstance().acquire(properties);
+			FileOutputStream fos = new FileOutputStream(destination);
+			XMLEventWriter writer = mXMLOutputFactory.createXMLEventWriter(fos, "utf-8");
 			
 			for (XMLEvent xev : mXMLEventList) {
 				writer.add(xev);
 			}
 			writer.flush();
 			writer.close();
+			fos.close();
 			
 		} catch (Exception e) {
 			throw new IOException(e.getMessage());
