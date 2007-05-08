@@ -20,9 +20,7 @@
 package org.daisy.util.fileset.impl;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,6 +48,9 @@ import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogException;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.catalog.CatalogExceptionRecoverable;
+import org.daisy.util.xml.peek.PeekResult;
+import org.daisy.util.xml.peek.Peeker;
+import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.SAXParserPool;
 import org.daisy.util.xml.sax.AttributesCloner;
@@ -89,7 +90,7 @@ abstract class XmlFileImpl
     protected String attrName = null;									//used by subclasses
         
     private boolean mDebugMode = false;									//system prop    
-    private static Boolean mValidating = null;							//config flag
+    private static Boolean mDTDValidating = null;							//config flag
 
     private SAXParser mSAXParser = null;								//The parser on loan from the pool
     private static HashMap mSAXParserFeatures = null;					//parser config map (used for pool)
@@ -142,27 +143,19 @@ abstract class XmlFileImpl
     		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_STRING_INTERNING, Boolean.TRUE);
     		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_LEXICAL_HANDLER_PARAMETER_ENTITIES, Boolean.TRUE);
     		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_USE_ENTITY_RESOLVER2, Boolean.TRUE);
-    		if(mValidating == null) mValidating = Boolean.valueOf(getValidatingProperty());    		 
-    		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_VALIDATION, mValidating);
-    		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_EXTERNAL_GENERAL_ENTITIES, mValidating);
-    		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_EXTERNAL_PARAMETER_ENTITIES, mValidating);
-    		mSAXParserFeatures.put(SAXConstants.APACHE_FEATURE_LOAD_DTD_GRAMMAR, mValidating);
-    		mSAXParserFeatures.put(SAXConstants.APACHE_FEATURE_LOAD_EXTERNAL_DTD, mValidating);
+    		//if(mValidating == null) mValidating = Boolean.valueOf(getValidatingProperty());    		 
     		mSAXParserProperties = new HashMap();
     		mSAXParserProperties.put(SAXConstants.SAX_PROPERTY_LEXICAL_HANDLER, this);
-    					
-//			try {
-//				Object o = Class.forName("org.apache.xerces.util.XMLGrammarPoolImpl").newInstance();
-//				mGrammarPool = (XMLGrammarPoolImpl)o;
-//				mGrammarPool = org.daisy.util.xml.pool.XNIGrammarPool.newInstance();
-//				
-//				Object mGrammarPool = Class.forName("org.daisy.util.xml.pool.XNIGrammarPool").newInstance();
-//				mSAXParserProperties.put(SAXConstants.APACHE_PROPERTY_GRAMMAR_POOL, mGrammarPool);
-//				//mGrammarPool = (XNIGrammarPool)o;
-//			} catch (Exception e) {				
-//				e.printStackTrace();
-//			}  		    	
+    							    	
     	}	
+		
+		mDTDValidating = Boolean.valueOf(getValidatingProperty());
+		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_VALIDATION, mDTDValidating);
+		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_EXTERNAL_GENERAL_ENTITIES, mDTDValidating);
+		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_EXTERNAL_PARAMETER_ENTITIES, mDTDValidating);
+		mSAXParserFeatures.put(SAXConstants.APACHE_FEATURE_LOAD_DTD_GRAMMAR, mDTDValidating);
+		mSAXParserFeatures.put(SAXConstants.APACHE_FEATURE_LOAD_EXTERNAL_DTD, mDTDValidating);
+
     	
     	try {
     		mSAXParser = mPool.acquire(mSAXParserFeatures, mSAXParserProperties);    		
@@ -193,10 +186,7 @@ abstract class XmlFileImpl
      
     public void parse() throws IOException, SAXException {
     	try{
-//    		Grammar[] grammars = mGrammarPool.retrieveInitialGrammarSet(org.apache.xerces.xni.grammars.XMLGrammarDescription.XML_DTD);
-//    		for (int i = 0; i < grammars.length; i++) {
-//    			System.err.println("-->" + grammars[i].getGrammarDescription().getPublicId());			    			
-//    		}	
+	
     		mSAXParser.getXMLReader().parse(this.asInputSource());
     	}finally{
     		try {
@@ -208,7 +198,7 @@ abstract class XmlFileImpl
 			}
     	}
         isParsed = true;
-        if (mValidating.booleanValue())isDTDValidated = true;
+        if (mDTDValidating.booleanValue())isDTDValidated = true;
     }
 
     /**
@@ -496,15 +486,38 @@ abstract class XmlFileImpl
     }
     
     private boolean getValidatingProperty() {    	
+    	/*
+    	 * return true if 
+    	 *  - we have the system property
+    	 *  - the instance has dtd identifiers
+    	 */
+    	
+    	boolean systemProperty = false;
+    	boolean hasDTD = false;
+    	
         try {
         	String s = System.getProperty("org.daisy.util.fileset.validating");
             if (s != null && s.equals("true")) {
-                return true;
+            	systemProperty = true;
             }
         } catch (Exception e) {
 
         }
-        return false;
+        
+        Peeker peeker = null;
+        try{
+        	peeker = PeekerPool.getInstance().acquire();
+        	PeekResult result = peeker.peek(this);
+        	if(result.getPrologSystemId()!=null || result.getPrologPublicId()!=null){
+        		hasDTD = true;
+        	}
+        }catch (Exception e) {
+			System.err.println("XmlFileImpl#getValidatingProperty(): " + e.getMessage());		        
+        }finally{
+        	PeekerPool.getInstance().release(peeker);
+        }
+                
+        return systemProperty && hasDTD;
     }
     
     //empty methods: for subclasses to implement as needed     
