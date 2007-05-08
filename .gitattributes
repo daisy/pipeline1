@@ -212,6 +212,7 @@ src/org/daisy/util/fileset/util/FilesetSpineProvider.java -text
 src/org/daisy/util/fileset/validation/ValidatorImplAbstract.java -text
 src/org/daisy/util/fileset/validation/ValidatorImplD202.java -text
 src/org/daisy/util/fileset/validation/ValidatorImplDtbook.java -text
+src/org/daisy/util/fileset/validation/ValidatorImplOPS2x.java -text
 src/org/daisy/util/fileset/validation/ValidatorImplZedVal.java -text
 src/org/daisy/util/fileset/validation/delegate/impl/FilesetFileTypeRestrictionDelegate.java -text
 src/org/daisy/util/fileset/validation/delegate/impl/InterDocURICheckerD202Delegate.java -text
