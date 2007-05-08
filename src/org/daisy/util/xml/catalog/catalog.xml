@@ -193,6 +193,11 @@
     <system systemId="http://openebook.org/dtds/oeb-1.2/oebdoc12.dtd" uri="./oeb/oebdoc12.dtd" />
     
   </group>
+  
+  <group> <!-- idpf -->
+  		<system systemId="opf20.rng" uri="./idpf/opf20.rng" />  
+  </group>
+  
   <group> <!-- smil 1.0 -->
     <public publicId="-//W3C//DTD SMIL 1.0//EN" uri="./smil1/SMIL10.dtd" />
     <system systemId="http://www.w3.org/TR/REC-smil/SMIL10.dtd" uri="./smil1/SMIL10.dtd" />          
