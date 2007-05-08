@@ -1,7 +1,6 @@
 package org.daisy.util.fileset.validation;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -24,7 +23,6 @@ import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.validation.SchematronMessage;
-import org.daisy.util.xml.validation.ValidationException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -104,7 +102,6 @@ class ValidatorImplD202 extends ValidatorImplAbstract implements Validator, Erro
 		}catch (Exception e) {
 			throw new ValidatorException(e.getMessage(),e);
 		}
-							
 	}
 
 	/**
