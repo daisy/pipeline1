@@ -3,7 +3,7 @@ package org.daisy.pipeline.gui.scripts.datatype;
 import java.io.File;
 
 import org.daisy.dmfc.core.script.ScriptParameter;
-import org.daisy.dmfc.core.script.datatype.FileDatatype;
+import org.daisy.dmfc.core.script.datatype.DirectoryDatatype;
 import org.daisy.pipeline.gui.util.DialogHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -16,14 +16,14 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Romain Deltour
- *
+ * 
  */
 public class DirectoryAdapter extends DefaultAdapter {
 
     @Override
     public Control createControl(final Composite parent, ScriptParameter param,
             int numCol) {
-        final FileDatatype type = (FileDatatype) param.getDatatype();
+        final DirectoryDatatype type = (DirectoryDatatype) param.getDatatype();
         final Text field = new Text(parent, SWT.SINGLE | SWT.BORDER);
         Button button = new Button(parent, SWT.PUSH | SWT.CENTER);
         button.setText("Browse...");
@@ -32,8 +32,8 @@ public class DirectoryAdapter extends DefaultAdapter {
             public void widgetSelected(SelectionEvent e) {
                 File file = new File(field.getText());
                 int style = (type.isInput()) ? SWT.OPEN : SWT.SAVE;
-                String path = DialogHelper.browseDir(parent.getShell(),
-                        file, style);
+                String path = DialogHelper.browseDir(parent.getShell(), file,
+                        style);
                 if (path != null) {
                     field.setText(path);
                 }
