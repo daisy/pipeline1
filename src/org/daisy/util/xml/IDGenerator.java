@@ -35,16 +35,16 @@ public class IDGenerator {
 		
 	}
 	
-	public IDGenerator (String prefix) throws Exception {
+	public IDGenerator (String prefix) {
 		
 		for (int i = 0; i < prefix.length(); i++) {
 			if(i==0) {
 				if(!CharUtils.isXMLNameFirstCharacter(prefix.charAt(i))){
-					  throw new Exception("first character is not valid in an xml name");	
+					  throw new IllegalArgumentException("first character is not valid in an xml name");	
 				}
 			}else{
 				if(!CharUtils.isXMLNameCharacter(prefix.charAt(i))){
-					  throw new Exception("character is not valid in an xml name");	
+					  throw new IllegalArgumentException("character is not valid in an xml name");	
 				}				
 			}
 		}
