@@ -76,18 +76,14 @@ public class Runner {
                 Map<String, String> parameters = new HashMap<String, String>();
 
                 // Add parameters specified by task
-                this
-                        .addTaskParameters(parameters, task, job
-                                .getJobParameters());
+                this.addTaskParameters(parameters, task, job.getJobParameters());
 
                 // Add hard-coded transformer parameters
                 this.addTransformerParameters(parameters, handler);
 
-                boolean success = handler.run(parameters, task.isInteractive(),
-                        task);
+                boolean success = handler.run(parameters, task.isInteractive(), task);
                 if (!success) {
-                    throw new JobFailedException(i18n("TASK_FAILED", handler
-                            .getName()));
+                    throw new JobFailedException(i18n("TASK_FAILED", handler.getName()));
                 }
                 this.mCompletedTasks++;
 

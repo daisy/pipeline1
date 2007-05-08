@@ -545,22 +545,10 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
     }
 
     /**
-     * Gets a collection of the parameters of the Transformer. Only the
-     * parameters that are of interest to a user of a Transformer is returned.
-     * Any hard coded parameters that cannot be changed will not be returned.
+     * Gets a collection of the parameters of the Transformer. 
      */
     public Collection getParameters() {
-        Vector params = (Vector) mParameters.clone();
-        // Remove all hard coded parameters
-        for (int i = 0; i < mParameters.size(); ++i) {
-            ParameterInfo param = (ParameterInfo) mParameters.elementAt(i);
-            if (param.getValue() != null) {
-                // System.err.println("Removing hard coded param " +
-                // _param.getName());
-                params.remove(param);
-            }
-        }
-        return params;
+        return mParameters;
     }
 
     /**
