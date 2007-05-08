@@ -40,8 +40,10 @@ public abstract class AbstractWriter implements PlaylistWriter {
 	 * @see int_daisy_filesetDecorator.playlist.PlaylistWriter#render()
 	 */
 	public void render(File destination) throws IOException {
+		FileOutputStream fos = null;
 		try{ 
-			mOutputWriter = new OutputStreamWriter(new FileOutputStream(destination), mOutputCharset);
+			fos = new FileOutputStream(destination);
+			mOutputWriter = new OutputStreamWriter(fos, mOutputCharset);
 			if(!mOutputCharset.newEncoder().canEncode(mOutputBuilder)) {				
 				System.err.println("playlist.AbstractWriter found unencodable characters when creating " + destination.getName());
 			}
@@ -49,6 +51,7 @@ public abstract class AbstractWriter implements PlaylistWriter {
 			mOutputWriter.flush();
 		}finally{
 			mOutputWriter.close();
+			fos.close();
 		}
 	}
 	
