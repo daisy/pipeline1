@@ -109,7 +109,7 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 			int line = (int)fm.getLine();
 			int col = (int)fm.getColumn();
 			
-			if(fm.getTest().getType() == ZedTest.RECOMMENDATION) {
+			if(fm.getTest()!=null && fm.getTest().getType() == ZedTest.RECOMMENDATION) {
 				mValidatorListener.report(this, new ValidatorWarningMessage(f,msg,line,col));
 			}else{
 				mValidatorListener.report(this, new ValidatorErrorMessage(f,msg,line,col));
