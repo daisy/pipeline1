@@ -98,11 +98,9 @@
     <optional>
       <attribute name="idRef"/>
     </optional>
-    <optional>
-      <ref name="attribute.lang">
-        <zed:test id="res_langAttr"/>
-      </ref>
-    </optional>
+    <ref name="attribute.lang.optional">
+      <zed:test id="res_langAttr"/>
+    </ref>
   </define>
 
   <!-- version of the above that doesnt certify elementref value depending on type value
@@ -192,6 +190,27 @@
     <optional>
       <attribute name="scheme"/>
     </optional>
+  </define>
+
+  <define name="datatype.ncx.element.names">
+    <choice>
+		<value>ncx</value> 
+		<value>head</value>
+		<value>docTitle</value>
+		<value>docAuthor</value>
+		<value>navMap</value>
+		<value>navList</value>
+		<value>smilCustomTest</value>
+		<value>meta</value>
+		<value>navPoint</value>
+		<value>navLabel</value>
+		<value>content</value>
+		<value>navList</value>
+		<value>navTarget</value>
+		<value>text</value>
+		<value>audio</value>
+		<value>img</value>
+    </choice>	  
   </define>
 
 </grammar>
