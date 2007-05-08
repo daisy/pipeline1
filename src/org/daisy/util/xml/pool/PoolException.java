@@ -19,9 +19,7 @@
 
 package org.daisy.util.xml.pool;
 
-import org.daisy.util.exception.BaseException;
-
-public class PoolException extends BaseException {
+public class PoolException extends IllegalStateException {
 	
 	public PoolException(String message) {
 		super(message);	
