@@ -300,9 +300,20 @@
     <ncc:meta name="dc:format" content="Daisy 2.02"/>
     <ncc:meta name="dc:identifier">
       <xsl:attribute name="content">
-        <xsl:value-of select="//dc:Identifier"/>
+        <xsl:value-of select="//dc:Identifier[@id=/o:package/@unique-identifier]"/>
       </xsl:attribute>
-    </ncc:meta>        
+    </ncc:meta>
+    <xsl:for-each select="//dc:Identifier[not(@id=/o:package/@unique-identifier)]">
+  		<ncc:meta>
+  			<xsl:attribute name="name">
+  				<xsl:value-of select="'prod:identifier'"/>
+  			</xsl:attribute>
+  			<xsl:attribute name="content">
+  				<xsl:value-of select="."/>
+  			</xsl:attribute>
+  			<xsl:copy-of select="@scheme"/>
+  		</ncc:meta>
+  	</xsl:for-each>          
     <xsl:call-template name="opf_dc_metadata">
     	<xsl:with-param name="name" select="'dc:Language'"/>
     	<xsl:with-param name="meta" select="'dc:language'"/>

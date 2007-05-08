@@ -62,16 +62,18 @@
 	<rule match="dtb:note">
 		<lang lang="sv">
 			<before>Not.</before>
+			<after>Slut på noten.</after>
 		</lang>
 		<lang lang="en">
 			<before>Note.</before>
+			<after>End of note.</after>
 		</lang>
 	</rule>
 	
 	<rule match="dtb:prodnote">
 		<lang lang="sv">
-			<before>Produktionsnot.</before>
-			<after>Slut på produktionsnot.</after>
+			<before>Kommentar.</before>
+			<after>Slut kommentar.</after>
 		</lang>
 		<lang lang="en">
 			<before>Production note.</before>
@@ -82,18 +84,29 @@
 	<rule match="dtb:imggroup/dtb:prodnote">
 		<lang lang="sv">
 			<before>Bildbeskrivning.</before>
-			<after>Slut på bildbeskrivning.</after>
+			<after>Slut bildbeskrivning.</after>
 		</lang>
 		<lang lang="en">
 			<before>Image description.</before>
 			<after>End of image description.</after>
 		</lang>
 	</rule>
+	
+	<rule match="dtb:imggroup/dtb:caption">
+		<lang lang="sv">
+			<before>Bildtext.</before>
+			<after>Slut bildtext.</after>
+		</lang>
+		<lang lang="en">
+			<before>Caption.</before>
+			<after>End of caption.</after>
+		</lang>
+	</rule>
 
 	<rule match="dtb:sidebar">
 		<lang lang="sv">
 			<before>Parallell text.</before>
-			<after>Slut på parallell text.</after>
+			<after>Slut parallell text.</after>
 		</lang>
 		<lang lang="en">
 			<before>Side bar.</before>
@@ -114,11 +127,11 @@
 
 	<rule match="dtb:blockquote">
 		<lang lang="sv">
-			<before>Ett citat följer:</before>
-			<after>Slut på citat.</after>
+			<before>Citat:</before>
+			<after>Slut citat.</after>
 		</lang>
 		<lang lang="en">
-			<before>A quote follows:</before>
+			<before>Quote:</before>
 			<after>End of quote.</after>
 		</lang>
 	</rule>
@@ -127,7 +140,7 @@
 	<rule match="dtb:table">
 		<lang lang="sv">
 			<before>Tabell.</before>
-			<after>Slut på tabell.</after>
+			<after>Slut tabell.</after>
 		</lang>
 		<lang lang="en">
 			<before>Table.</before>
@@ -137,8 +150,8 @@
 
 	<rule match="dtb:code">
 		<lang lang="sv">
-			<before>Kodstycke.</before>
-			<after>Slut på kodstycke.</after>
+			<before>Kod.</before>
+			<after>Slut kod.</after>
 		</lang>
 		<lang lang="en">
 			<before>Code.</before>

@@ -116,7 +116,7 @@
              <xsl:when test="@name='dc:Rights'"><xsl:value-of select="'dc:rights'"/></xsl:when>
              <xsl:when test="@name='dc:Date'"><xsl:value-of select="'dc:date'"/></xsl:when>
              <xsl:when test="@name='dc:Format'"><xsl:value-of select="'dc:format'"/></xsl:when>
-             <xsl:when test="@name='dc:Identifier'"><xsl:value-of select="'dc:identifier'"/></xsl:when>
+             <!--<xsl:when test="@name='dc:Identifier'"><xsl:value-of select="'dc:identifier'"/></xsl:when>-->
              <xsl:when test="@name='dc:Language'"><xsl:value-of select="'dc:language'"/></xsl:when>
              <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
            </xsl:choose>
