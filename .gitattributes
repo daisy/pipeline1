@@ -102,6 +102,7 @@ samples/input/dtb/d202/dontworrybehappy/speechgen0007.mp3 -text
 samples/input/dtb/d202/dontworrybehappy/speechgen0007.smil -text
 samples/input/dtb/d202/dontworrybehappy/tpbnarrator_res.mp3 -text
 samples/input/dtbook/dontworrybehappy.xml -text
+samples/input/dtbook/dtbook.2005.basic.css -text
 samples/input/dtbook/hauy-2005-1.xml -text
 samples/input/dtbook/hauy_invalid.xml -text
 samples/input/dtbook/hauy_valid.xml -text
