@@ -27,6 +27,7 @@ doc/scripts/ConfigurableValidator.html -text
 doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/FilesetRenamer.html -text
+doc/scripts/Narrator-DtbookToDaisy202.html -text
 doc/scripts/OCFCreator.html -text
 doc/scripts/PrettyPrinter.html -text
 doc/scripts/RenamerTaggerValidator.html -text

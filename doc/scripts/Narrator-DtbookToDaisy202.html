@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: Narrator (Daisy 2.02)</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>Narrator (Daisy 2.02)</em></h1>
+<!-- script documentation contains primarily end-user-centric information -->
+
+<div id="toc" class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#inputReqs">Input Requirements</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<!-- brief summary of purpose and whats going on. What does this script do really? -->
+<p>This script creates a Daisy 2.02 DTB from a DTBook 2005 document. A TTS is used to create
+   the audio for the book. <code>xml:lang</code> attributes in the DTBook input document are used
+   to switch language of the TTS.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<!-- detailed requirements on input nature -->
+<p>Any valid DTBook 2005 document with the following restrictions:</p>
+<ul>
+  <li>Lists (<code>&lt;list&gt;</code>) and definition lists (<code>&lt;dl&gt;</code>) are
+      not allowed inside paragraphs (<code>&lt;p&gt;</code>).</li>
+  <li>The <code>dc:Language</code>, <code>dc:Date</code> and <code>dc:Publisher</code> metadata
+      must exist.</li>
+  <li>The DTBook root element must have a <code>xml:lang</code> attribute.</li>
+  <li>If there is a heading on level x, there must also be a heading on level x-1.</li>
+  <li>Note references and annotation references are only allowed within the same DTBook document.</li>
+  <li>The DTBook document needs at least one heading on level 1</li>
+  <li>Headings must contain some textual content (i.e. may not be empty elements).</li>
+  <li>A <code>doctitle</code> element must exist in the front matter of the DTBook document.</li>
+</ul>
+
+<p>The input document is validated to make sure it complies to the above rules when this script is
+   run.</p>
+
+<h2 id="output">Output</h2>
+<p>A valid Daisy 2.02 full text full audio book with full skipabillity (page numbers, sidebars,
+   production notes and foot notes). The book is synchronized on sentence level and the audio
+   is encoded in MP3 format.</p>
+
+<h2 id="config">Configuration</h2>
+<!-- description on params exposed in script -->
+<!-- Although not recommended, possiblity to reference one or several
+	transformer docs here instead of duplicating. Remember though that the
+	transformer doc is developer centric and this doc is end user centric.
+	Here, use the nicenames for parameters! Explain consequence of default values.
+-->
+	<dl id="paramslist">
+	<dt>Input document</dt>
+	<dd><strong>Required.</strong> A DTBook 2005 document valid against to the rules described in the <a href="#inputReqs">input
+	    requirements</a> section.</dd>
+	<dt>Output directory</dt>
+	<dd><strong>Required.</strong> The base directory of the output. Since Narrator stores some intermediate files in this directory,
+	    the resulting Daisy 2.02 book is located in the <code>daisy202</code> subdirectory.</dd>
+	<dt>Bitrate</dt>
+	<dd><strong>Optional.</strong> The bitrate of the generated MP3 files. A higher value will result in better sound quality
+	    but the audio files will be larger.</dd>
+	</dl>
+
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+
+<ol>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>
+	<li><a href="../transformers/se_tpb_xmldetection.html">Abbreviation, acronym and sentence detection</a></li>
+	<li><a href="../transformers/se_tpb_annonsator.html">Structure announcer</a></li>
+	<li><a href="../transformers/se_tpb_syncPointNormalizer.html">Synchronization point normalization</a></li>
+	<li><a href="../transformers/se_tpb_speechgenerator.html">Speech Generator</a></li>
+	<li><a href="../transformers/se_tpb_filesetcreator.html">File Set Creator</a></li>
+	<li><a href="../transformers/se_tpb_dtbAudioEncoder.html">Audio encoder</a></li>
+	<li><a href="../transformers/se_tpb_zed2daisy202.html">Z3986-2005 to Daisy 2.02 Converter</a></li>
+</ol>
+
+</body>
+</html>
