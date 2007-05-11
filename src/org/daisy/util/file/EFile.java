@@ -22,7 +22,6 @@ package org.daisy.util.file;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -30,8 +29,8 @@ import java.nio.ByteBuffer;
 
 import org.daisy.util.mime.MIMEType;
 import org.daisy.util.mime.MIMETypeException;
-import org.daisy.util.mime.MIMETypeFactoryException;
 import org.daisy.util.mime.MIMETypeFactory;
+import org.daisy.util.mime.MIMETypeFactoryException;
 import org.xml.sax.InputSource;
 
 /**
@@ -74,8 +73,11 @@ public class EFile extends java.io.File  {
 	}
 	
 	public boolean isSymLink() throws IOException {
-		return this.getCanonicalFile().equals
-				(this.getAbsoluteFile());
+		boolean isEqual = this.getAbsolutePath().equals(this.getCanonicalPath());
+		if(!isEqual) {
+			return true;
+		}
+		return false;
 	}
 
 	public MIMEType getMimeType() {
