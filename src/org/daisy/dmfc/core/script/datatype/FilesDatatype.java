@@ -64,8 +64,8 @@ public class FilesDatatype extends Datatype {
 
 	@Override
 	public void validate(String value) throws DatatypeException {
-		if (isInput()) {
-			String[] values = value.split(",");
+		if (isInput()) {			
+			String[] values = value.split(File.pathSeparator);
 			for (String string : values) {
 				File file = new File(string.trim());
 				if (!file.exists()) {
