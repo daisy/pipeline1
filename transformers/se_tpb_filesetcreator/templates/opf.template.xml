@@ -4,12 +4,7 @@
 	<metadata>
 	
 		<dc-metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oebpackage="http://openebook.org/namespaces/oeb-package/1.0/">
-			<dc:Title></dc:Title>	
-			<dc:Publisher>Talboks och punktskriftsbiblioteket</dc:Publisher>
-			<dc:Date></dc:Date>
 			<dc:Format>ANSI/NISO Z39.86-2005</dc:Format>
-			<dc:Identifier id="uid"></dc:Identifier>
-			<dc:Language></dc:Language>
 		</dc-metadata>
 	
 		<x-metadata>

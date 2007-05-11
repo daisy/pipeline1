@@ -64,6 +64,7 @@ import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.collection.MultiHashMap;
 import org.daisy.util.execution.AbortListener;
 import org.daisy.util.execution.ProgressObserver;
+import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
@@ -143,13 +144,13 @@ public class SmilMaker implements AbortListener, BusListener {
 	
 	private Map smilFileMapping = new HashMap();		// used for mapping element id to file
 	private MultiHashMap forceLinkMap = new MultiHashMap(false);
-	private ProgressObserver obs;						// ProgressObserver: a component to report progress to, used for ui.
+	private ProgressObserver mProgressObserver;						// ProgressObserver: a component to report progress to, used for ui.
 	private int numSmilFiles;							// the expected number of generated smil files, used for progress reporting
 	private double noteRumbleTimeProportion = 0.15;		// the proprtion of this program's time used for inserting extra force link targets
 	private double domFinalizeTimeProportion = 0.15;	// the proprtion of this program's time used for finalizing the doms (time calcs.) before output to file
 	
-	private FileSetCreator checkAbortCallBack;			// component throwing an exception if the user has aborted the run
-	
+	private boolean mTransformerAborted = false;		// tracks abort events
+	private SimpleNamespaceContext mNsc;				// custom namespace contex for xpath queries
 	
 	/**
 	 * @param inputManuscript the input file to read
@@ -172,8 +173,7 @@ public class SmilMaker implements AbortListener, BusListener {
 			Set skippable, 
 			Set escapable, 
 			Set forceLink,
-			ProgressObserver obs, 
-			FileSetCreator fsc) 
+			ProgressObserver obs) 
 			throws 
 			FileNotFoundException, 
 			XMLStreamException, 
@@ -216,14 +216,16 @@ public class SmilMaker implements AbortListener, BusListener {
 		headings.add("h6");
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setNamespaceAware(true);
 		documentBuilder = dbf.newDocumentBuilder();
 		documentBuilder.setEntityResolver(CatalogEntityResolver.getInstance());
 		
 		eventFactory = XMLEventFactory.newInstance();
 		this.forceLink.addAll(forceLink);
-		this.obs = obs;
-		this.checkAbortCallBack = fsc;
+		this.mProgressObserver = obs;	
 		
+		mNsc = new SimpleNamespaceContext();
+		mNsc.declareNamespace("smil", smilNamespaceURI);
 	}
 
 
@@ -445,7 +447,7 @@ public class SmilMaker implements AbortListener, BusListener {
 			
 			millis = finishSmil(millis, doc);
 			outputDocument(doc, file);
-			this.obs.reportProgress(1 - domFinalizeTimeProportion * ((size - (i+1)) / size));
+			this.mProgressObserver.reportProgress(1 - domFinalizeTimeProportion * ((size - (i+1)) / size));
 		}
 	}
 	
@@ -470,8 +472,8 @@ public class SmilMaker implements AbortListener, BusListener {
 					filenamePart = linkTargetFilename;
 				}
 				
-				String xPath = "//a[@href='" + linkTargetId + "']";
-				NodeList linkSources = XPathUtils.selectNodes(dom.getDocumentElement(), xPath);
+				String xPath = "//smil:a[@href='" + linkTargetId + "']";
+				NodeList linkSources = XPathUtils.selectNodes(dom.getDocumentElement(), xPath, mNsc);
 				
 				for (int j = 0; j < linkSources.getLength(); j++) {
 					Element linkSource = (Element) linkSources.item(j);
@@ -512,7 +514,7 @@ public class SmilMaker implements AbortListener, BusListener {
 			
 			// select every node with attribute tempLinkId
 			// store them in a hashmap using the id as key
-			NodeList elementList = XPathUtils.selectNodes(curr.getDocumentElement(), "//*[@" + tempLinkId + "]");
+			NodeList elementList = XPathUtils.selectNodes(curr.getDocumentElement(), "//smil:*[@" + tempLinkId + "]", mNsc);
 			for (int i = 0; i < elementList.getLength(); i++) {
 				Element elem = (Element) elementList.item(i);
 				forceLinks.put(elem.getAttribute(tempLinkId), elem);
@@ -597,8 +599,8 @@ public class SmilMaker implements AbortListener, BusListener {
 			
 			forEachReference += System.currentTimeMillis() - tmpFer;
 			counter++;
-			checkAbortCallBack.checkTransformerAborted();
-			obs.reportProgress((1 - noteRumbleTimeProportion - domFinalizeTimeProportion) + noteRumbleTimeProportion * counter / numLaps);
+			checkTransformerAborted();
+			mProgressObserver.reportProgress((1 - noteRumbleTimeProportion - domFinalizeTimeProportion) + noteRumbleTimeProportion * counter / numLaps);
 		}
 		forEachLinkTarget = System.currentTimeMillis() - forEachLinkTarget;
 		
@@ -658,7 +660,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		linkFrom = (Element) parent.removeChild(linkFrom);		
 		
 		Document owner = linkFrom.getOwnerDocument();
-		Element link = owner.createElement("a");
+		Element link = owner.createElementNS(smilNamespaceURI, "a");
 		link.setAttribute("href", filename + "#" + linkToId);
 
 		link.appendChild(linkFrom);		
@@ -844,7 +846,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		
 		// Create a new par-element, add it to the seq on the stack.
 		Element parentSeqElement = (Element) openSeqs.peek();
-		Element parElement = parentSeqElement.getOwnerDocument().createElement("par");
+		Element parElement = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "par");
 		
 		String parId = getNextSmilId("tcp");
 		if (null == dtbId) {
@@ -865,13 +867,13 @@ public class SmilMaker implements AbortListener, BusListener {
 		parentSeqElement.appendChild(parElement);
 		
 		// create the right <text> element and a ref to the dtbook
-		Element textElement = parentSeqElement.getOwnerDocument().createElement("text");
+		Element textElement = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "text");
 		textElement.setAttribute("src", finalDTBookFilename + "#" + dtbId);
 		parElement.appendChild(textElement);
 		
 		
 		// .. and the corresponding <audio>
-		Element audioElement = parentSeqElement.getOwnerDocument().createElement("audio");
+		Element audioElement = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "audio");
 		audioElement.setAttribute(smilClipBegin, currentSmilClipBegin);
 		audioElement.setAttribute(smilClipEnd, currentSmilClipEnd);
 		audioElement.setAttribute(smilSrc, currentSmilClipSrc);
@@ -927,7 +929,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		String dtbId = null == dtbIdAtt ? this.getNextDTBId() : dtbIdAtt.getValue();
 		
 		Element parentSeqElement = (Element) openSeqs.peek();
-		Element newSeq = parentSeqElement.getOwnerDocument().createElement("seq");
+		Element newSeq = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "seq");
 		newSeq.setAttribute("class", se.getName().getLocalPart());
 		newSeq.setAttribute("id", tcsId);
 		
@@ -998,9 +1000,9 @@ public class SmilMaker implements AbortListener, BusListener {
 		//--------------------------------------------------------------------------------------------------
 		// which customTest are made?
 		//
-		NodeList customTestNodes = XPathUtils.selectNodes(smilDom.getDocumentElement(), "//*[@customTest]");
+		NodeList customTestNodes = XPathUtils.selectNodes(smilDom.getDocumentElement(), "//smil:*[@customTest]", mNsc);
 		Element customAttributes = 
-			(Element) XPathUtils.selectSingleNode(smilDom.getDocumentElement(), "//customAttributes");
+			(Element) XPathUtils.selectSingleNode(smilDom.getDocumentElement(), "//smil:customAttributes", mNsc);
 		
 		if (customTestNodes.getLength() > 0) {	
 			Set customTestNames = new HashSet();
@@ -1010,7 +1012,7 @@ public class SmilMaker implements AbortListener, BusListener {
 			}
 		
 			for (Iterator it = customTestNames.iterator(); it.hasNext(); ) {
-				Element customTest = smilDom.createElement("customTest");
+				Element customTest = smilDom.createElementNS(smilNamespaceURI, "customTest");
 				customTest.setAttribute("id", (String) it.next());
 				customTest.setAttribute("override", "visible");
 				customAttributes.appendChild(customTest);
@@ -1022,7 +1024,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		//---------------------------------------------------------------------------------------------------
 		// what is the duration?
 		//
-		NodeList timeContainers = XPathUtils.selectNodes(smilDom.getDocumentElement(), "//audio");
+		NodeList timeContainers = XPathUtils.selectNodes(smilDom.getDocumentElement(), "//smil:audio", mNsc);
 		long currentDuration = 0;
 		for (int i = 0; i < timeContainers.getLength(); i++) {
 			Element tc = (Element) timeContainers.item(i);
@@ -1033,11 +1035,11 @@ public class SmilMaker implements AbortListener, BusListener {
 		
 		// put the sum of the time in the first seq, attribute "dur"
 		String elapsedTime = new SmilClock(currentDuration).toString(SmilClock.FULL);
-		Element duration = (Element) XPathUtils.selectSingleNode(smilDom.getDocumentElement(), "//*[@dur]");
+		Element duration = (Element) XPathUtils.selectSingleNode(smilDom.getDocumentElement(), "//smil:*[@dur]", mNsc);
 		duration.setAttribute("dur", elapsedTime);
 		
 		// add the time with the time value found in 'dtb:totalElapsedTime', this sum will be returned.
-		Element elapsed = (Element) XPathUtils.selectSingleNode(smilDom.getDocumentElement(), "//meta[@name='dtb:totalElapsedTime']");
+		Element elapsed = (Element) XPathUtils.selectSingleNode(smilDom.getDocumentElement(), "//smil:meta[@name='dtb:totalElapsedTime']", mNsc);
 		SmilClock smilClockElapsed = new SmilClock(elapsedMillis);
 		elapsed.setAttribute("content", smilClockElapsed.toString(SmilClock.FULL));
 		
@@ -1058,9 +1060,9 @@ public class SmilMaker implements AbortListener, BusListener {
 	 */
 	private void startNewSmil(BookmarkedXMLEventReader reader) throws ParserConfigurationException, SAXException, IOException, TransformerRunException, TransformerException, XMLStreamException {
 		// reporting to UI
-		obs.reportProgress(((double) smilFiles.size() / numSmilFiles) * (1 - noteRumbleTimeProportion - domFinalizeTimeProportion));
+		mProgressObserver.reportProgress(((double) smilFiles.size() / numSmilFiles) * (1 - noteRumbleTimeProportion - domFinalizeTimeProportion));
 		// have we been aborted?
-		checkAbortCallBack.checkTransformerAborted();
+		checkTransformerAborted();
 		
 		if (null == currentAudioFilename) {
 			String src = getNextSmilSrc(reader);
@@ -1069,11 +1071,11 @@ public class SmilMaker implements AbortListener, BusListener {
 		
 		// create a new smil DOM by reading the template
 		currentSmil = documentBuilder.parse(smilTemplateFile);
-		Element metaUid = (Element) XPathUtils.selectSingleNode(currentSmil.getDocumentElement(), "//meta[@name='dtb:uid']");
+		Element metaUid = (Element) XPathUtils.selectSingleNode(currentSmil.getDocumentElement(), "//smil:meta[@name='dtb:uid']", mNsc);
 		metaUid.setAttribute("content", uid);
 		
 		// put the first seq on the stack, which will be empty
-		Element rootSeq = (Element) XPathUtils.selectSingleNode(currentSmil.getDocumentElement(), "//*[@id='mseq']");
+		Element rootSeq = (Element) XPathUtils.selectSingleNode(currentSmil.getDocumentElement(), "//smil:*[@id='mseq']", mNsc);
 		openSeqs.clear();
 		openSeqs.push(rootSeq);
 		
@@ -1202,7 +1204,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		Result output = new StreamResult(fos);
 		idTransform.transform(input, output);
 		fos.close();
-		DEBUG("Filen \"" + location + "\" genererad.");
+		DEBUG("file \"" + location + "\" generated.");
 	}
 	
 	
@@ -1271,7 +1273,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		}
 		
 		Element parentSeqElement = (Element) openSeqs.peek();
-		Element linkElement = parentSeqElement.getOwnerDocument().createElement("a"); 
+		Element linkElement = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "a"); 
 		parentSeqElement.appendChild(linkElement);
 		openSeqs.push(linkElement);
 		
@@ -1535,8 +1537,20 @@ public class SmilMaker implements AbortListener, BusListener {
 		 */ 
 		
 		if(event instanceof UserAbortEvent) {
-			abortEvent();
+			mTransformerAborted = true;
 		}		
 	}
 	
+	private void checkTransformerAborted() throws TransformerAbortException {
+		if (mTransformerAborted) {
+			try {
+				closeStreams();
+			} catch (XMLStreamException e) {
+				e.printStackTrace();
+			}
+			
+			throw new TransformerAbortException("User aborted execution!");
+		}
+	}
 }
+

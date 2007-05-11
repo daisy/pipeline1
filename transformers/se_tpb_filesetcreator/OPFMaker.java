@@ -42,6 +42,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
@@ -75,7 +76,10 @@ public class OPFMaker {
 	private int id;									// id making use of a simple counter
 	private String doctypePublic = "+//ISBN 0-9673008-1-9//DTD OEB 1.2 Package//EN";	// doctype public for the generated opf
 	private String doctypeSystem = "http://openebook.org/dtds/oeb-1.2/oebpkg12.dtd";	// doctype system for the generated opf
-	
+	private static final String opfNamespaceURI = "http://openebook.org/namespaces/oeb-package/1.0/";
+	private static final String dcNamespaceURI = "http://purl.org/dc/elements/1.1/";
+	private SimpleNamespaceContext mNsc;			// custom namespace contex for xpath queries
+
 	/**
 	 * 
 	 * @param mimeTypes	the mapping between filename suffix and mime type.
@@ -127,8 +131,11 @@ public class OPFMaker {
 		validDCElemNames.add("dc:Relation");
 		validDCElemNames.add("dc:Coverage");
 		validDCElemNames.add("dc:Rights");
-		
+
+		mNsc = new SimpleNamespaceContext();
+		mNsc.declareNamespace("opf", opfNamespaceURI);
 	}
+	
 	
 	/**
 	 * Starting point for making the OPF.
@@ -155,10 +162,10 @@ public class OPFMaker {
 	 *
 	 */
 	private void makeSpine() {
-		Element spine = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/package/spine");
+		Element spine = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/opf:package/opf:spine", mNsc);
 		
 		for (Iterator it = ids.iterator(); it.hasNext(); ) {
-			Element itemref = opf.createElement("itemref");
+			Element itemref = opf.createElementNS(opfNamespaceURI, "itemref");
 			itemref.setAttribute("idref", (String) it.next());
 			spine.appendChild(itemref);
 		}
@@ -170,7 +177,7 @@ public class OPFMaker {
 	 *
 	 */
 	private void makeManifest() {
-		Element manifest = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/package/manifest");
+		Element manifest = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/opf:package/opf:manifest", mNsc);
 		
 		// smil files, make sure IDs are saved in proper sequence
 		for (Iterator it = smils.iterator(); it.hasNext(); ) {
@@ -179,7 +186,7 @@ public class OPFMaker {
 			String id = getNextId("smil-");
 			ids.add(id);
 			
-			Element elem = opf.createElement("item");
+			Element elem = opf.createElementNS(opfNamespaceURI, "item");
 			elem.setAttribute("href", currentFile.getName());
 			elem.setAttribute("id", id);
 			elem.setAttribute("media-type", getMimeType(currentFile.getName()));
@@ -205,7 +212,7 @@ public class OPFMaker {
 				id = getNextId();
 			}
 			
-			Element elem = (Element) opf.createElement("item");
+			Element elem = (Element) opf.createElementNS(opfNamespaceURI, "item");
 			elem.setAttribute("href", filename);
 			elem.setAttribute("id", id);
 			elem.setAttribute("media-type", getMimeType(filename));
@@ -253,10 +260,10 @@ public class OPFMaker {
 			Collection dcVals = (Collection) dcElements.get(originalStr);
 			for (Iterator it = dcVals.iterator(); it.hasNext(); ) { 
 				String originalValue = (String) it.next();
-				Element elem = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/package/metadata/dc-metadata/" + elemName);
+				Element elem = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/opf:package/opf:metadata/opf:dc-metadata/" + elemName, mNsc);
 				if (null == elem || elem.getTextContent().trim().length() != 0) {
-					elem = opf.createElement(prefix + delim + elemName);
-					Element parent = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/package/metadata/dc-metadata");
+					elem = opf.createElementNS(dcNamespaceURI, prefix + delim + elemName);
+					Element parent = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/opf:package/opf:metadata/opf:dc-metadata", mNsc);
 					parent.appendChild(elem);
 				}
 				
@@ -278,8 +285,8 @@ public class OPFMaker {
 		if (null != singleValue) {
 			if (singleValue.size() == 1) {
 
-				Node node = XPathUtils.selectSingleNode(opf, "/package/metadata/dc-metadata");
-				Element elem = opf.createElement("dc:Identifier");
+				Node node = XPathUtils.selectSingleNode(opf, "/opf:package/opf:metadata/opf:dc-metadata", mNsc);
+				Element elem = opf.createElementNS(dcNamespaceURI, "dc:Identifier");
 				node.appendChild(elem);
 				elem.setAttribute("id", "uid");
 				for (Iterator it = singleValue.iterator(); it.hasNext(); ) {
@@ -295,13 +302,13 @@ public class OPFMaker {
 	 * @param metaData
 	 */
 	private void makeMetaElements() {
-		Element xMeta = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "//x-metadata");
+		Element xMeta = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "//opf:x-metadata", mNsc);
 		for (Iterator it = metaData.keySet().iterator(); it.hasNext(); ) {
 			
 			String metaName = (String) it.next();
 			String metaContent = (String) metaData.get(metaName);
 			
-			Element newMeta = opf.createElement("meta");
+			Element newMeta = opf.createElementNS(opfNamespaceURI, "meta");
 			newMeta.setAttribute("name", metaName);
 			newMeta.setAttribute("content", metaContent);
 		
@@ -338,6 +345,7 @@ public class OPFMaker {
 	 */
 	private void parseTemplate() throws SAXException, IOException, ParserConfigurationException {
 		DocumentBuilderFactory dfb = DocumentBuilderFactory.newInstance();
+		dfb.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = dfb.newDocumentBuilder();
 		documentBuilder.setEntityResolver(CatalogEntityResolver.getInstance());
 		opf = documentBuilder.parse(opfTemplateFile);

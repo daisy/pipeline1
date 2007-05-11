@@ -62,10 +62,11 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.daisy.dmfc.core.event.BusListener;
 import org.daisy.dmfc.core.event.UserAbortEvent;
+import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.collection.MultiHashMap;
-import org.daisy.util.execution.AbortListener;
 import org.daisy.util.execution.ProgressObserver;
+import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
@@ -134,12 +135,14 @@ public class NCXMaker implements BusListener {
 		"<!DOCTYPE dtbook PUBLIC \"-//NISO//DTD dtbook 2005-2//EN\" \"http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd\">";
 	private String dtbookNamespaceURI = "http://www.daisy.org/z3986/2005/dtbook/";		// dtbook namespace
 	private String smilNamespaceURI = "http://www.w3.org/2001/SMIL20/";					// smil namespace
+	private String ncxNamespaceURI = "http://www.daisy.org/z3986/2005/ncx/";			// ncx namespace
 	private String ncxDoctypePublic = "-//NISO//DTD ncx 2005-1//EN";					// ncx doctype public
 	private String ncxDoctypeSystem = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";	// ncx doctype system
 
 	private int numElements;								// number of elements to process, used for detailed progress reports
 	private ProgressObserver progressObserver;				// a component to report progress to
-	private FileSetCreator checkAbortCallBack;				// FileSetCreator, lets one know if user has aborted the run
+	private boolean mTransformerAborted = false;			// tracks abort events
+	private SimpleNamespaceContext mNsc;					// custom namespace contex for xpath queries
 	
 	
 	/**
@@ -163,7 +166,7 @@ public class NCXMaker implements BusListener {
 			File dtbookOutputFile, 
 			File ncxTemplateFile,
 			ProgressObserver obs,
-			FileSetCreator checkAbortCallBack) throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
+			FileSetCreator filesetCreator) throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
 				
 		
 		eventFactory = XMLEventFactory.newInstance();
@@ -172,6 +175,7 @@ public class NCXMaker implements BusListener {
 		this.dtbookOutputFile = dtbookOutputFile;
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
 		documentBuilder.setEntityResolver(CatalogEntityResolver.getInstance());
 		
@@ -183,7 +187,6 @@ public class NCXMaker implements BusListener {
 		prepareCustomNavLists();
 		
 		progressObserver = obs;
-		this.checkAbortCallBack = checkAbortCallBack;
 		
 		reader = getBookmarkedXMLEventReader(inputFile);
 		numElements = countElements(reader);
@@ -191,7 +194,11 @@ public class NCXMaker implements BusListener {
 		reader = getBookmarkedXMLEventReader(inputFile);
 		
 		// get the dtbook version (-1/-2) to be able to output the correct doctype.
-		dtbookVersion = checkAbortCallBack.getDTBookVersion(inputFile);
+		dtbookVersion = filesetCreator.getDTBookVersion(inputFile);
+		
+		// prepare for namespace-aware dom handling
+		mNsc = new SimpleNamespaceContext();
+		mNsc.declareNamespace("ncx", ncxNamespaceURI);
 	}
 	
 	
@@ -254,11 +261,11 @@ public class NCXMaker implements BusListener {
 		Element root = (Element) ncxTemplate.getDocumentElement();
 		for (Iterator it = customNavList.iterator(); it.hasNext(); ) {
 			String elemName = (String) it.next();
-			Element listHead = ncxTemplate.createElement("navList");
+			Element listHead = ncxTemplate.createElementNS(ncxNamespaceURI, "navList");
 			listHead.setAttribute("class", elemName);
 			listHead.setAttribute("id", navListName(elemName));
-			Element navLabel = ncxTemplate.createElement("navLabel");
-			Element text = ncxTemplate.createElement("text");
+			Element navLabel = ncxTemplate.createElementNS(ncxNamespaceURI, "navLabel");
+			Element text = ncxTemplate.createElementNS(ncxNamespaceURI, "text");
 			text.appendChild(ncxTemplate.createTextNode(elemName));
 			navLabel.appendChild(text);
 			listHead.appendChild(navLabel);
@@ -316,7 +323,7 @@ public class NCXMaker implements BusListener {
 		
 		DEBUG(ncxTemplate);
 		//DEBUG("NCXMaker#makeNCX: docElem: " + ncxTemplate.getDocumentElement());
-		Element navMap = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//navMap[@id='navMap']");
+		Element navMap = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:navMap[@id='navMap']", mNsc);
 		//DEBUG("NCXMaker#makeNCX: navMap:  " + navMap);
 		//DEBUG("NCXMaker#makeNCX: docElem: " + ncxTemplate.getDocumentElement());
 		openLevels.push(navMap);
@@ -386,24 +393,24 @@ public class NCXMaker implements BusListener {
 				continue;
 			}
 			
-			checkAbortCallBack.checkTransformerAborted();
+			checkTransformerAborted();
 			progressObserver.reportProgress((double) ++elemCounter / numElements);
 			writeEvent(event);
 		}
 		
 		// no author found? Remove the docauthor-template element.
-		Node authorNode = XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//*[@id='author']");
+		Node authorNode = XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:*[@id='author']", mNsc);
 		if (authorNode != null) {
 			authorNode.getParentNode().removeChild(authorNode);
 		}
 		
 		// no title found? Retreat by using the dc:Title as an only child (text)
-		Node titleNode = XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//*[@id='title']");
+		Node titleNode = XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:*[@id='title']", mNsc);
 		if (titleNode != null) {
 			Element titleElement = 
-				(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//*[@id='title']");
+				(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:*[@id='title']", mNsc);
 			titleElement.removeAttribute("id");
-			Element text = ncxTemplate.createElement("text");
+			Element text = ncxTemplate.createElementNS(ncxNamespaceURI, "text");
 			titleElement.appendChild(text);
 			Collection titles = (Collection) dcElements.get("dc:Title");
 			String strText = "";
@@ -462,7 +469,6 @@ public class NCXMaker implements BusListener {
 		}		
 	}
 	
-	
 	/**
 	 * Closes the streams.
 	 * @throws XMLStreamException
@@ -480,7 +486,7 @@ public class NCXMaker implements BusListener {
 	 * a heading. 
 	 */
 	private void removeEmptyNavPoints() {
-		NodeList emptyNodes = XPathUtils.selectNodes(ncxTemplate.getDocumentElement(), "//navPoint[@class='empty']");
+		NodeList emptyNodes = XPathUtils.selectNodes(ncxTemplate.getDocumentElement(), "//ncx:navPoint[@class='empty']", mNsc);
 		for (int i = 0; i < emptyNodes.getLength(); i++) {
 			Vector navPointChildren = getNavPointChildren((Element) emptyNodes.item(i));
 			Node reference = emptyNodes.item(i);
@@ -493,7 +499,7 @@ public class NCXMaker implements BusListener {
 		
 		// remove pageList if empty
 		if (0 == pageCount) {
-			Element pageList = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//pageList");
+			Element pageList = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:pageList", mNsc);
 			pageList.getParentNode().removeChild(pageList);
 		}
 	}
@@ -530,7 +536,7 @@ public class NCXMaker implements BusListener {
 			String elemName = (String) it.next();
 			if (usedCustomNavLists.get(elemName) == null) {
 				Node customNavList =
-					XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//navList[@id='" + navListName(elemName, true) + "']");
+					XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:navList[@id='" + navListName(elemName, true) + "']", mNsc);
 				customNavList.getParentNode().removeChild(customNavList);
 			}
 		}
@@ -542,23 +548,23 @@ public class NCXMaker implements BusListener {
 	private void makeNCXHead() {
 		Element meta;
 		
-		meta = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//meta[@name='dtb:totalPageCount']");
+		meta = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:meta[@name='dtb:totalPageCount']", mNsc);
 		meta.setAttribute("content", String.valueOf(pageCount));
 		
-		meta = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//meta[@name='dtb:maxPageNumber']");
+		meta = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:meta[@name='dtb:maxPageNumber']", mNsc);
 		meta.setAttribute("content", strPageMax);
 	
-		meta = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//meta[@name='dtb:uid']");
+		meta = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:meta[@name='dtb:uid']", mNsc);
 		meta.setAttribute("content", getUid());
 
-		meta = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//meta[@name='dtb:depth']");
+		meta = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:meta[@name='dtb:depth']", mNsc);
 		meta.setAttribute("content", String.valueOf(getDepth()));
 	
 		if (customTests != null) {
 			Element head = 
-				(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//head");
+				(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:head", mNsc);
 			for (Iterator it = customTests.iterator(); it.hasNext(); ) {
-				Element customTest = ncxTemplate.createElement("smilCustomTest");
+				Element customTest = ncxTemplate.createElementNS(ncxNamespaceURI, "smilCustomTest");
 				customTest.setAttribute("override", "visible");
 				String elemName = (String) it.next();
 				String bookStruct = (String) bookStructs.get(elemName);
@@ -597,7 +603,7 @@ public class NCXMaker implements BusListener {
 		Element customElem = createNCXNode(reader, se, "navTarget", eventName);
 		
 		if (customElem != null) {
-			Element customList = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//navList[@id='" + navListName(eventName, true) + "']");
+			Element customList = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:navList[@id='" + navListName(eventName, true) + "']", mNsc);
 			customList.appendChild(customElem);
 		} else {
 			DEBUG("NCXMaker#handleCustomNavListElement ATT: Check to see if there is a " + eventName + " without contents.");
@@ -814,12 +820,12 @@ public class NCXMaker implements BusListener {
 	private Element createNCXNode(String navNodeName) {
 		Document owner = ncxTemplate;
 	
-		Element navNode = owner.createElement(navNodeName);
+		Element navNode = owner.createElementNS(ncxNamespaceURI, navNodeName);
 		navNode.setAttribute("class", "empty");
-		Element navLabel = owner.createElement("navLabel");
-		Element text = owner.createElement("text");
-		Element audio = owner.createElement("audio");
-		Element content = owner.createElement("content");
+		Element navLabel = owner.createElementNS(ncxNamespaceURI, "navLabel");
+		Element text = owner.createElementNS(ncxNamespaceURI, "text");
+		Element audio = owner.createElementNS(ncxNamespaceURI, "audio");
+		Element content = owner.createElementNS(ncxNamespaceURI, "content");
 		
 		navNode.appendChild(navLabel);
 		navNode.appendChild(content);
@@ -929,7 +935,7 @@ public class NCXMaker implements BusListener {
 			
 		String currentSmilRef = (String) smilAttrs.get(smilRef);
 		Document owner = ncxTemplate;
-		Element navNode = owner.createElement(navNodeName);
+		Element navNode = owner.createElementNS(ncxNamespaceURI, navNodeName);
 		navNode.setAttribute("class", classAttribute);
 		navNode.setAttribute("playOrder", getStrPlayorder(currentSmilRef));
 		navNode.setAttribute("id", getNextId());
@@ -948,18 +954,18 @@ public class NCXMaker implements BusListener {
 			navNode.setAttribute("type", "normal");
 		}
 		
-		Element navLabel = owner.createElement("navLabel");
+		Element navLabel = owner.createElementNS(ncxNamespaceURI, "navLabel");
 
-		Element audio = owner.createElement("audio");
+		Element audio = owner.createElementNS(ncxNamespaceURI, "audio");
 		audio.setAttribute(smilSrc, (String) smilAttrs.get(smilSrc));
 		audio.setAttribute(smilClipBegin, (String) smilAttrs.get(smilClipBegin));
 		audio.setAttribute(smilClipEnd, (String) smilAttrs.get(smilClipEnd));
 		
-		Element text = owner.createElement("text");
+		Element text = owner.createElementNS(ncxNamespaceURI, "text");
 		Node textContent = owner.createTextNode(contentBuffer.toString());
 		text.appendChild(textContent);
 		
-		Element content = owner.createElement("content");
+		Element content = owner.createElementNS(ncxNamespaceURI, "content");
 		content.setAttribute("src", currentSmilRef);
 		
 		navLabel.appendChild(text);
@@ -1096,7 +1102,7 @@ public class NCXMaker implements BusListener {
 			// continue, just pretend we never saw this pagenum element.
 			return;
 		}
-		String pageNumber = ((Element) XPathUtils.selectSingleNode(pageTarget, "//text")).getTextContent();
+		String pageNumber = ((Element) XPathUtils.selectSingleNode(pageTarget, "//ncx:text", mNsc)).getTextContent();
 		DEBUG("NCXMaker#handlePageNum: text content: " + pageNumber);
 		try {
 			int pNumber = Integer.parseInt(pageNumber);
@@ -1108,7 +1114,7 @@ public class NCXMaker implements BusListener {
 			// nada, pageNumber wasn't numeric
 		}
 		
-		Element pageList = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//pageList");
+		Element pageList = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:pageList", mNsc);
 		pageList.appendChild(pageTarget);
 		
 		pageCount++;
@@ -1335,7 +1341,7 @@ public class NCXMaker implements BusListener {
 		
 		int elemCount = 1;
 		String textContent = getTextContent(reader);
-		Element textElement = parent.getOwnerDocument().createElement("text");
+		Element textElement = parent.getOwnerDocument().createElementNS(ncxNamespaceURI, "text");
 		textElement.appendChild(parent.getOwnerDocument().createTextNode(textContent));
 		parent.appendChild(textElement);
 		Map attrs = new HashMap();
@@ -1363,7 +1369,7 @@ public class NCXMaker implements BusListener {
 			}
 		}
 		
-		Element audio = ncxTemplate.createElement("audio");
+		Element audio = ncxTemplate.createElementNS(ncxNamespaceURI, "audio");
 		audio.setAttribute(smilClipBegin, begin);
 		for (Iterator it = attrs.keySet().iterator(); it.hasNext(); ) {
 			String key = (String) it.next();
@@ -1407,7 +1413,7 @@ public class NCXMaker implements BusListener {
 			// author
 			if (frontMatterStack.getContextPath().endsWith("docauthor") &&	!authorFound) {
 				Element authorElement = 
-					(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//*[@id='author']");
+					(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:*[@id='author']", mNsc);
 				authorElement.removeAttribute("id");
 				handleDocMisc(reader, authorElement);
 				authorFound = true;
@@ -1417,14 +1423,14 @@ public class NCXMaker implements BusListener {
 			if (frontMatterStack.getContextPath().endsWith("doctitle") && !titleFound) {
 				
 				Element titleElement = 
-					(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//*[@id='title']");
+					(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:*[@id='title']", mNsc);
 				titleElement.removeAttribute("id");
 				handleDocMisc(reader, titleElement);				
 				titleFound = true;
 			}
 		}
 		
-		Element metaUid = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//meta[@name='dtb:uid']");
+		Element metaUid = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:meta[@name='dtb:uid']", mNsc);
 		DEBUG(ncxTemplate.getDocumentElement());
 		metaUid.setAttribute("content", uid);
 		
@@ -1616,7 +1622,19 @@ public class NCXMaker implements BusListener {
 		 */ 
 		
 		if(event instanceof UserAbortEvent) {
-			abortEvent();
+			mTransformerAborted = true;
 		}		
+	}
+	
+	private void checkTransformerAborted() throws TransformerAbortException {
+		if (mTransformerAborted) {
+				try {
+					closeStreams();
+				} catch (XMLStreamException e) {
+					e.printStackTrace();
+				}
+			
+			throw new TransformerAbortException("User aborted execution!");
+		}
 	}
 }

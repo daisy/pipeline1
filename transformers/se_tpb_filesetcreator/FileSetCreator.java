@@ -191,8 +191,7 @@ public class FileSetCreator extends Transformer {
 					skippable, 
 					escapable,
 					forceLink,
-					pr,
-					this);
+					pr);
 		
 			//addAbortListener(sm);
 			//mg20070327: use the new event api
@@ -467,18 +466,7 @@ public class FileSetCreator extends Transformer {
 	 */
 	public void progress(double progressProportion) {
 		super.progress(progressProportion);
-	}
-	
-	
-	/**
-	 * Called by other parts of the program to see if the user has
-	 * aborted the program. If so, this method will throw an exception.
-	 * @throws TransformerAbortException if program has been aborted by user.
-	 */
-	public void checkTransformerAborted() throws TransformerAbortException {
-		super.checkAbort();
-	}
-	
+	}	
 	
 	/** Returns the version of the dtbook document.
 	 * @param dtbook  the dtbook file.
