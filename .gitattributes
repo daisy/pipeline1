@@ -249,6 +249,7 @@ transformers/int_daisy_filesetAudioTagger/playlist/M3U8Writer.java -text
 transformers/int_daisy_filesetAudioTagger/playlist/M3UWriter.java -text
 transformers/int_daisy_filesetAudioTagger/playlist/PLSWriter.java -text
 transformers/int_daisy_filesetAudioTagger/playlist/PlaylistWriter.java -text
+transformers/int_daisy_filesetAudioTagger/playlist/WPLWriter.java -text
 transformers/int_daisy_filesetAudioTagger/playlist/XSPFWriter.java -text
 transformers/int_daisy_filesetAudioTagger/transformer.tdf -text
 transformers/int_daisy_filesetRenamer/transformer.tdf -text

@@ -5,10 +5,10 @@ import int_daisy_filesetAudioTagger.playlist.AbstractWriter;
 import int_daisy_filesetAudioTagger.playlist.M3U8Writer;
 import int_daisy_filesetAudioTagger.playlist.M3UWriter;
 import int_daisy_filesetAudioTagger.playlist.PLSWriter;
+import int_daisy_filesetAudioTagger.playlist.WPLWriter;
 import int_daisy_filesetAudioTagger.playlist.XSPFWriter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,7 +24,6 @@ import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
@@ -110,6 +109,7 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 				writers.put(name+".m3u", M3UWriter.class);
 				writers.put(name+".m3u8", M3U8Writer.class);
 				writers.put(name+".xspf", XSPFWriter.class);
+				writers.put(name+".wpl", WPLWriter.class);
 
 				int generatedPlaylists = 0;				
 				for (Iterator iter = writers.keySet().iterator(); iter.hasNext();) {
@@ -143,11 +143,7 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */
 	public void error(FilesetFileException ffe) throws FilesetFileException {
-		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {			
-			this.sendMessage(ffe.getCause() + " in " + ffe.getOrigin(), MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT);
-		} else {			
-			this.sendMessage(ffe.getCause() + " in " + ffe.getOrigin(), MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT);
-		}
+		this.sendMessage(ffe);
 	}
 
 	/*
