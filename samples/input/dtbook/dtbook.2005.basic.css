@@ -599,11 +599,11 @@ imggroup {
  display: inline;
 }
 
-
+/*
 img:before {
   content: url(attr(src));
 }
-
+*/
 
 imggroup > caption {
   font-size: 80%;
