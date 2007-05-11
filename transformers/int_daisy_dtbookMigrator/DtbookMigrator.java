@@ -1,12 +1,10 @@
 package int_daisy_dtbookMigrator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import javazoom.jl.decoder.BitstreamException;
 
@@ -19,7 +17,6 @@ import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.impl.FilesetFileFactory;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
@@ -88,14 +85,7 @@ public class DtbookMigrator extends Transformer implements FilesetErrorHandler{
 	 * FilesetErrorHandler impl
 	 */
 	public void error(FilesetFileException ffe) throws FilesetFileException {
-		if (ffe instanceof FilesetFileFatalErrorException
-				&& !(ffe.getCause() instanceof FileNotFoundException)) {
-			this.sendMessage(Level.SEVERE, ffe.getCause()
-					+ " in " + ffe.getOrigin());
-		} else {
-			this.sendMessage(Level.WARNING, ffe.getCause()
-					+ " in " + ffe.getOrigin());
-		}
+		this.sendMessage(ffe);
 	}
 
 }

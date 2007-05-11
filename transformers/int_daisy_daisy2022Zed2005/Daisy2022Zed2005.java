@@ -559,6 +559,7 @@ public class Daisy2022Zed2005 extends Transformer implements FilesetErrorHandler
 
 	//impl of the FilesetErrorHandler interface
 	public void error(FilesetFileException ffe) throws FilesetFileException {
-		System.err.println(ffe.getCause() + " in " + ffe.getOrigin());		
-	}		
+		this.sendMessage(ffe);
+	}
+
 }

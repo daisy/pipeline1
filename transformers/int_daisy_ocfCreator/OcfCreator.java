@@ -37,7 +37,6 @@ import org.daisy.util.file.TempFile;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.exception.FilesetTypeNotSupportedException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
@@ -128,9 +127,9 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 	 */
 	private Set<Publication> getPublications(String inputParam) throws FilesetFatalException, MalformedURLException, TransformerRunException, MIMETypeException, FileNotFoundException {
 		Set<Publication> publications = new HashSet<Publication>();
-		String[] array = inputParam.split(",");
+		String[] array = inputParam.split(File.pathSeparator);
 		for (String string : array) {
-			EFile file = new EFile(FilenameOrFileURI.toFile(string));
+			EFile file = new EFile(FilenameOrFileURI.toFile(string.trim()));
 			if(!file.exists()) throw new FileNotFoundException(file.getAbsolutePath());
 			
 			try {
@@ -165,10 +164,12 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 	private File buildContainerFile(Set<Publication> publications) throws IOException, PoolException, XMLStreamException {
 		File container = TempFile.create();				
 		XMLOutputFactory xof = null;
-		XMLEventFactory xef = null;		
+		XMLEventFactory xef = null;				
+		Map xofProperties = null;
 		
 		try{
-			xof = StAXOutputFactoryPool.getInstance().acquire(StAXOutputFactoryPool.getInstance().getDefaultPropertyMap());
+			StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
+			xof = StAXOutputFactoryPool.getInstance().acquire(xofProperties);
 			xef = StAXEventFactoryPool.getInstance().acquire();
 			FileOutputStream fos = new FileOutputStream(container);
 			XMLEventWriter xew = xof.createXMLEventWriter(fos);
@@ -213,7 +214,7 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 			fos.close();
 			
 		}finally {
-			StAXOutputFactoryPool.getInstance().release(xof, StAXOutputFactoryPool.getInstance().getDefaultPropertyMap());
+			StAXOutputFactoryPool.getInstance().release(xof, xofProperties);
 			StAXEventFactoryPool.getInstance().release(xef);
 		}
 						
@@ -237,16 +238,15 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */
 	public void error(FilesetFileException ffe) throws FilesetFileException {		
-		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {			
-			this.sendMessage(ffe.getCause() + " in " + ffe.getOrigin(), MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT);
-		} else {			
-			this.sendMessage(ffe.getCause() + " in " + ffe.getOrigin(), MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT);
-		}	
+		this.sendMessage(ffe);
 	}
 
 	private String getTypeLabel(EFile file) {
 		String label = file.getExtension();
-		return label.toUpperCase();
+		if(label!=null && label.length()>0) {
+			return label.toUpperCase();
+		}
+		return "EXT";
 	}
 
 	private String getTypeLabel(Fileset fileset) {
@@ -255,6 +255,9 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 		}else
 		if(fileset.getFilesetType() == FilesetType.Z3986){
 			return "Z3986";
+		}else
+		if(fileset.getFilesetType() == FilesetType.DAISY_202){
+				return "D202";
 		}else
 		if(fileset.getFilesetType() == FilesetType.DTBOOK_DOCUMENT){
 			return "DTBOOK";

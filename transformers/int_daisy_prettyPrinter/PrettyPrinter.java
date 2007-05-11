@@ -1,7 +1,6 @@
 package int_daisy_prettyPrinter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -29,7 +28,6 @@ import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
@@ -48,6 +46,8 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.stax.ContextStack;
+
+import com.ctc.wstx.api.WstxOutputProperties;
 
 /**
  * Main transformer class. Pretty print a fileset with special care taking for DTB player compatilibility.
@@ -86,7 +86,7 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 			mOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(FilenameOrFileURI.toFile((String)parameters.remove("output")))); 
 			//linebreak style
 			String lb = (String)parameters.remove("linebreak");
-			if(lb.equals("UNIX")) mLineBreak = mEventFactory.createSpace("\n");
+			if(lb.equals("UNIX")) mLineBreak = mEventFactory.createSpace("\n");									
 			this.sendMessage(0.10);
 			//get a FilesetManipulator instance
 			mFilesetManipulator = new FilesetManipulator();
@@ -166,10 +166,6 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 		
 	}
 
-
-
-
-
 	private int mPrettyPrintedFileCount = 0;
 	private double filesetSize = -1.0; 
 	
@@ -205,7 +201,10 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 			retEvents.add(mLineBreak);
 			retEvents.add(dtd);
 			previousEvent = XMLEvent.DTD;
-									
+		}else if (xe.getEventType() == XMLEvent.PROCESSING_INSTRUCTION) {
+			retEvents.add(mLineBreak);
+			retEvents.add(xe);
+			previousEvent = XMLEvent.PROCESSING_INSTRUCTION;			
 		}else if (xe.getEventType() == XMLEvent.CHARACTERS) {
 			Characters chars = (Characters) xe;			
 			if(CharUtils.isXMLWhiteSpace(chars.getData())) { //chars.isIgnorableWhiteSpace()||
@@ -363,16 +362,9 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */
-	@SuppressWarnings("unused")
+	
 	public void error(FilesetFileException ffe) throws FilesetFileException {
-		if (ffe instanceof FilesetFileFatalErrorException
-				&& !(ffe.getCause() instanceof FileNotFoundException)) {
-			this.sendMessage(ffe.getCause()
-					+ " in " + ffe.getOrigin(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
-		} else {
-			this.sendMessage(ffe.getCause()
-					+ " in " + ffe.getOrigin(), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
-		}
+		this.sendMessage(ffe);	
 	}
 
 	private static Set<Integer> mEventTypeRestrictions = null;
@@ -386,6 +378,7 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 			mEventTypeRestrictions.add(Integer.valueOf(XMLEvent.DTD));
 			mEventTypeRestrictions.add(Integer.valueOf(XMLEvent.CHARACTERS));
 			mEventTypeRestrictions.add(Integer.valueOf(XMLEvent.SPACE));
+			mEventTypeRestrictions.add(Integer.valueOf(XMLEvent.PROCESSING_INSTRUCTION));
 		}	
 				
 		return mEventTypeRestrictions;

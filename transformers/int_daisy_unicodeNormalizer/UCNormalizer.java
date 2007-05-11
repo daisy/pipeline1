@@ -19,7 +19,6 @@
 package int_daisy_unicodeNormalizer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -32,7 +31,6 @@ import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.xml.SmilFile;
@@ -137,12 +135,8 @@ public class UCNormalizer extends Transformer implements FilesetManipulatorListe
 	/**
 	 * FilesetManipulatorListener impl
 	 */
-	public void error(FilesetFileException ffe) throws FilesetFileException {
-		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {			
-			this.sendMessage(ffe.getCause() + " in " + ffe.getOrigin(), MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT);
-		} else {			
-			this.sendMessage(ffe.getCause() + " in " + ffe.getOrigin(), MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT);
-		}	
+	public void error(FilesetFileException ffe) throws FilesetFileException {		
+		this.sendMessage(ffe);
 	}
 
 	/**

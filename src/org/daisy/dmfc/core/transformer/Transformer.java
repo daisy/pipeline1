@@ -19,6 +19,7 @@
 package org.daisy.dmfc.core.transformer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.EventObject;
 import java.util.Locale;
@@ -46,8 +47,11 @@ import org.daisy.dmfc.core.event.UserReplyEvent;
 import org.daisy.dmfc.core.script.Task;
 import org.daisy.dmfc.exception.TransformerAbortException;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.util.fileset.exception.FilesetFileException;
+import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.i18n.I18n;
 import org.daisy.util.i18n.XMLPropertyResourceBundle;
+import org.daisy.util.xml.LocusTransformer;
 
 /**
  * Base class for all Transformers. Every Transformer extending this base class
@@ -341,6 +345,20 @@ public abstract class Transformer implements BusListener {
 		MessageEvent.Cause cause = MessageEvent.Cause.SYSTEM;
 								
 		sendMessage(message,type,cause);
+	}
+	
+	/**
+	 * Convenience method to send a message about a FilesetFileException. 
+	 */
+	protected void sendMessage(FilesetFileException ffe) throws FilesetFileException {
+		Location loc = LocusTransformer.newLocation(ffe);
+		Throwable root =ffe.getRootCause();
+		if(root==null) root = ffe.getCause();		
+		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {			
+			this.sendMessage(root.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, loc);
+		} else {			
+			this.sendMessage(root.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT, loc);
+		}		
 	}
 	
 	/*

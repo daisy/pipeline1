@@ -195,9 +195,10 @@ public class EncryptionDriver extends Transformer implements FilesetErrorHandler
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */
 	public void error(FilesetFileException ffe) throws FilesetFileException {
+		this.sendMessage(ffe);
 		if(ffe instanceof FilesetFileFatalErrorException) {
 			throw ffe;
 		} 
-		this.sendMessage(Level.WARNING,ffe.getCause() + " in " + ffe.getOrigin());		
+				
 	}		
 }

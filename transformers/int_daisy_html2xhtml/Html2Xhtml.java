@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
@@ -27,6 +26,7 @@ import org.daisy.util.file.TempFile;
 import org.daisy.util.i18n.CharsetDetector;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.xslt.Chain;
+import org.daisy.util.xml.xslt.TransformerFactoryConstants;
 import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
 import org.xml.sax.InputSource;
 
@@ -39,32 +39,28 @@ public class Html2Xhtml extends Transformer implements AutoDetector {
 	//TODO write the medium and maxed stylesheets
 	//TODO bring inline styles to an external stylesheet?
 	//TODO bring auxilliary files along somehow (fileset with html manifestmember)
-	
-	private static final String XSLT_FACTORY = "net.sf.saxon.TransformerFactoryImpl";
-	EFile inputFile = null;
+		
+	EFile mInputFile = null;
 
-	public Html2Xhtml(InputListener inListener,
-			Set eventListeners,
-			Boolean isInteractive) {
-		super(inListener, eventListeners, isInteractive);
+	public Html2Xhtml(InputListener inListener, Boolean isInteractive) {
+		super(inListener, isInteractive);
 	}
 
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		
-
 		try {
 			//create the input fileset
-			inputFile = new EFile((String) parameters.remove("input"));
-			InputSource is = new InputSource(new FileInputStream(inputFile));
+			mInputFile = new EFile((String) parameters.remove("input"));
+			InputSource is = new InputSource(new FileInputStream(mInputFile));
 
 			//create the xslt chain (always one or more XSLTs, where the first is always echo.xsl)
-			Chain chain = new Chain(XSLT_FACTORY,CatalogEntityResolver.getInstance());
+			Chain chain = new Chain(TransformerFactoryConstants.SAXON8,CatalogEntityResolver.getInstance());
 			chain.addStylesheet(new StreamSource(Stylesheets.get("echo.xsl").openStream()));
 
 			String xslparam = (String) parameters.remove("xsl");
-			if (xslparam != null) {
+			if (xslparam != null && xslparam.length()>0) {
 				//add stylesheets to follow echo.xsl in the user-customized transform chain
-				String[] xsls = xslparam.split(",");
+				String[] xsls = xslparam.split(File.pathSeparator);
 				for (int i = 0; i < xsls.length; i++) {
 					EFile xslf = new EFile(xsls[i]);
 					if (!xslf.exists()) {
@@ -104,7 +100,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector {
 			//create the output dir and move result there
 			EFolder outDir = (EFolder) FileUtils.createDirectory(new EFolder((String) parameters.remove("outDir")));
 			File outFile = outDir.addFile(tempOutFile.getFile());
-			outFile.renameTo(new java.io.File(outFile.getParentFile(),inputFile.getName()));
+			outFile.renameTo(new java.io.File(outFile.getParentFile(),mInputFile.getName()));
 
 		} catch (Exception e) {
 			throw new TransformerRunException(e.getMessage(), e);
@@ -123,7 +119,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector {
 		Charset cs = null;
 
 		try {
-			charset = det.detect(inputFile.toURL());
+			charset = det.detect(mInputFile.toURL());
 			if (null == charset) {
 				charset = det.getProbableCharsetUsingLocale();
 			}
@@ -132,7 +128,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector {
 					cs = Charset.forName(charset);
 				}
 			}
-			return new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), cs));
+			return new BufferedReader(new InputStreamReader(new FileInputStream(mInputFile), cs));
 		} catch (Exception e) {
 
 		}

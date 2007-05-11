@@ -285,19 +285,7 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
     }
 
 	public void error(FilesetFileException ffe) throws FilesetFileException {		
-		if(ffe instanceof FilesetFileFatalErrorException) {
-			this.sendMessage(Level.WARNING, "Serious error in "	+ ffe.getOrigin().getName() + ": " 
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}else if (ffe instanceof FilesetFileErrorException) {
-			this.sendMessage(Level.WARNING, "Error in " + ffe.getOrigin().getName() + ": " 
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}else if (ffe instanceof FilesetFileWarningException) {
-			this.sendMessage(Level.WARNING, "Warning in " + ffe.getOrigin().getName() + ": " 
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}else{
-			this.sendMessage(Level.WARNING, "Exception with unknown severity in " + ffe.getOrigin().getName() + ": "
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}		
+		this.sendMessage(ffe);		
 	}
 
 }

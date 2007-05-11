@@ -399,7 +399,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		//get schemas from inparams
 		String schemas = (String)parameters.remove("schemas");
 		if(schemas!=null && schemas.length()>0) {
-			String[] array = schemas.split(",");
+			String[] array = schemas.split(File.pathSeparator);
 			for (int i = 0; i < array.length; i++) {
 				try{
 					Map<Source,String> map = ValidationUtils.toSchemaSources(array[i]);
@@ -586,7 +586,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				type = MessageEvent.Type.ERROR;
 			}		
 			Location loc = LocusTransformer.newLocation(message);
-			this.sendMessage(message.toString(), type, MessageEvent.Cause.INPUT,loc);
+			this.sendMessage(message.getMessage(), type, MessageEvent.Cause.INPUT,loc);
 		}
 	}
 

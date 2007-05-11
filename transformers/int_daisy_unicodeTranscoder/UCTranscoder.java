@@ -20,7 +20,6 @@
 package int_daisy_unicodeTranscoder;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
@@ -37,7 +36,6 @@ import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.interfaces.xml.SmilFile;
@@ -162,7 +160,7 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 		String param = ((String)parameters.remove("substitutionTables"));
 		if(param!=null){
 			mUCharReplacer = new UCharReplacer();
-			String[] tables = param.split(",");
+			String[] tables = param.split(File.pathSeparator);
 			for (int i = 0; i < tables.length; i++) {
 				File t = new File(tables[i].trim());
 				if(t.exists()) {
@@ -239,11 +237,7 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 	 * FilesetManipulatorListener impl
 	 */
 	public void error(FilesetFileException ffe) throws FilesetFileException {
-		if(ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {			
-			this.sendMessage(Level.SEVERE,ffe.getCause() + " in " + ffe.getOrigin());
-		}else{
-			this.sendMessage(Level.WARNING,ffe.getCause() + " in " + ffe.getOrigin());
-		}		
+		this.sendMessage(ffe);	
 	}
 
 	/**
