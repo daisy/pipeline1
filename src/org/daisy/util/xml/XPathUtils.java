@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */package org.daisy.util.xml;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -77,6 +78,46 @@ public class XPathUtils {
     public static Node selectSingleNode(Node node, String xpath) {
         try {
             return (Node)xpathObj.evaluate(xpath, node, XPathConstants.NODE);
+        } catch (XPathExpressionException e) {            
+            return null;
+        }
+    }
+    
+    // Martin Blomberg 2007-05-11
+    /**
+     * Evaluates an XPath expression given a namespace context, and returns the result as a {@link NodeList}.
+     * @param node the {@link Node} to evaluate the expression on
+     * @param xpath the XPath expression to evaluate
+     * @return a {@link NodeList}, or <code>null</code> if there is an
+     * error in the XPath expression.
+     */
+    public static NodeList selectNodes(Node node, String xpath, NamespaceContext context) {        
+        try {
+        	xpathObj.setNamespaceContext(context);
+            NodeList list = (NodeList) xpathObj.evaluate(xpath, node, XPathConstants.NODESET);
+        	xpathObj.reset();
+            return list;
+        } catch (XPathExpressionException e) {            
+            return null;
+        }
+    }
+    
+    // Martin Blomberg 2007-05-11
+    /**
+     * Evaluates an XPath expression given a namespace context, and returns the result as a {@link Node}.
+     * Only a single <code>Node</code> will be returned.
+     * @param node the {@link Node} to evaluate the expression on
+     * @param xpath the XPath expression to evaluate
+     * @param context the namespace context
+     * @return a single {@link Node}, or <code>null</code> if there is an
+     * error in the XPath expression.
+     */
+    public static Node selectSingleNode(Node node, String xpath, NamespaceContext context) {
+        try {
+        	xpathObj.setNamespaceContext(context);
+        	Node result = (Node) xpathObj.evaluate(xpath, node, XPathConstants.NODE);
+            xpathObj.reset();
+        	return result;
         } catch (XPathExpressionException e) {            
             return null;
         }
