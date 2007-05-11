@@ -16,8 +16,17 @@ namespace SimpleCommandLineTTS
             string input = "";
             string filename = "";
             SpVoice voice = new SpVoice();
+
+
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.InputEncoding = Encoding.UTF8;
+    
+            DEBUG("SimpleCommandLine#Main(string[]): Using input encoding:  " + Console.InputEncoding.BodyName);
+            DEBUG("SimpleCommandLine#Main(string[]): Using output encoding: " + Console.OutputEncoding.BodyName);
+
             while ((input = Console.ReadLine()) != null)
             {
+                DEBUG("SimpleCommandLine#Main(string[]): Read: " + input);
                 input = input.Trim();
                 if (input.Length == 0)
                 {
@@ -77,7 +86,7 @@ namespace SimpleCommandLineTTS
             }
             finally
             {
-                if (fileStream != null) 
+                if (fileStream != null)
                 {
                     fileStream.Close();
                 }
@@ -87,7 +96,7 @@ namespace SimpleCommandLineTTS
 
         private static void DEBUG(string msg)
         {
-            if (debug) 
+            if (debug)
             {
                 Console.Error.WriteLine(msg);
             }
