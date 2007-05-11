@@ -29,6 +29,7 @@ doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/FilesetRenamer.html -text
 doc/scripts/Narrator-DtbookToDaisy202.html -text
 doc/scripts/OCFCreator.html -text
+doc/scripts/OPSCreator.html -text
 doc/scripts/PrettyPrinter.html -text
 doc/scripts/RenamerTaggerValidator.html -text
 doc/scripts/UnicodeNormalizer.html -text
@@ -38,6 +39,7 @@ doc/templates/script-doc-template.html -text
 doc/transformers/int_daisy_filesetAudioTagger.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
 doc/transformers/int_daisy_ocfCreator.html -text
+doc/transformers/int_daisy_opsCreator.html -text
 doc/transformers/int_daisy_prettyPrinter.html -text
 doc/transformers/int_daisy_unicodeNormalizer.html -text
 doc/transformers/int_daisy_validator.html -text
@@ -122,6 +124,7 @@ scripts/_dev/dtbook2html.taskScript -text
 scripts/conversion/simple/WordMLtoDTBook.taskScript -text
 scripts/creation/simple/Narrator-DtbookToDaisy202.taskScript -text
 scripts/creation/simple/OCFCreator.taskScript -text
+scripts/creation/simple/OPSCreator.taskScript -text
 scripts/manipulation/AudioTaggerScriptParamsStatic.paramGroup -text
 scripts/manipulation/AudioTaggerTaskParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerScriptParamsStatic.paramGroup -text
@@ -252,6 +255,17 @@ transformers/int_daisy_filesetRenamer/transformer.tdf -text
 transformers/int_daisy_ocfCreator/OcfCreator.java -text
 transformers/int_daisy_ocfCreator/messages.properties -text
 transformers/int_daisy_ocfCreator/transformer.tdf -text
+transformers/int_daisy_opsCreator/Builder.java -text
+transformers/int_daisy_opsCreator/NcxBuilder.java -text
+transformers/int_daisy_opsCreator/NcxBuilderConfiguration.java -text
+transformers/int_daisy_opsCreator/OpfBuilder.java -text
+transformers/int_daisy_opsCreator/OpsCreator.java -text
+transformers/int_daisy_opsCreator/messages.properties -text
+transformers/int_daisy_opsCreator/metadata/MetadataItem.java -text
+transformers/int_daisy_opsCreator/metadata/MetadataList.java -text
+transformers/int_daisy_opsCreator/ncx-config-default.xml -text
+transformers/int_daisy_opsCreator/ncx-config.rng -text
+transformers/int_daisy_opsCreator/transformer.tdf -text
 transformers/int_daisy_prettyPrinter/PrettyPrinter.java -text
 transformers/int_daisy_prettyPrinter/int_daisy_prettyPrinter.messages -text
 transformers/int_daisy_prettyPrinter/transformer.tdf -text
