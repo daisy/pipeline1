@@ -33,6 +33,7 @@ import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorSevereErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
+import org.w3c.css.sac.CSSParseException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.LocatorImpl;
@@ -145,6 +146,10 @@ public class ExceptionTransformer {
 			SAXParseException spe = (SAXParseException) ffe.getCause();
 			line = spe.getLineNumber();
 			column = spe.getColumnNumber();			
+		}else if(ffe.getCause() instanceof CSSParseException) {
+			CSSParseException cpe = (CSSParseException) ffe.getCause();
+			line = cpe.getLineNumber();
+			column = cpe.getColumnNumber();			
 		}
 			
 		if(ffe instanceof FilesetFileFatalErrorException) {
