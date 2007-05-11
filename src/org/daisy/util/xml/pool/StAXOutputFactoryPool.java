@@ -99,9 +99,24 @@ public class StAXOutputFactoryPool extends AbstractPool {
 	 * Convenience method to get a standard property map
 	 */
 	public Map<String, Object> getDefaultPropertyMap(){
+		
 		if(null== mDefaultPropertyMap) {
 			mDefaultPropertyMap = new HashMap<String, Object>();
-			mDefaultPropertyMap.put(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);	
+			mDefaultPropertyMap.put(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+			//need to ballet a bit to find out if we have woodstox
+			XMLOutputFactory xof = null;
+			try{
+				xof = getInstance().acquire(null);
+				if(xof.isPropertySupported("com.ctc.wstx.outputEscapeCr")) {
+					try{
+						mDefaultPropertyMap.put("com.ctc.wstx.outputEscapeCr", Boolean.FALSE);
+					}catch (IllegalArgumentException e) {
+						
+					}	
+				}	
+			}finally{
+				getInstance().release(xof, null);
+			}
 		}		
 		return mDefaultPropertyMap;
 	}
