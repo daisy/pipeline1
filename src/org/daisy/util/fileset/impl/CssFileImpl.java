@@ -62,7 +62,14 @@ final class CssFileImpl extends FilesetFileImpl implements DocumentHandler, Erro
 	}	
 	
 	public void parse() throws CSSException, IOException {
-		parser.parseStyleSheet(this.asSacInputSource());		
+		InputSource is = null;
+		try{
+			is = this.asSacInputSource();			
+			parser.parseStyleSheet(is);
+		}finally{
+			if(is.getByteStream()!=null)is.getByteStream().close();
+			if(is.getCharacterStream()!=null)is.getCharacterStream().close();
+		}
 	}
 	
 	public void property(String name, LexicalUnit value, boolean important) throws CSSException {
