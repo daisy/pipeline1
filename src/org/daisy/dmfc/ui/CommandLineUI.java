@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.stream.Location;
+
 import org.daisy.dmfc.core.DMFCCore;
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.event.BusListener;
@@ -221,6 +223,8 @@ public class CommandLineUI implements InputListener, BusListener {
         try {
             if (event instanceof MessageEvent) {
                 MessageEvent sme = (MessageEvent) event;
+                StringBuilder message = new StringBuilder();
+                
                 String type = null;
                 switch (sme.getType()) {
                 case INFO:
@@ -251,8 +255,34 @@ public class CommandLineUI implements InputListener, BusListener {
                     who = "???";
                 }
 
-                System.out.println("[" + type + ", " + who + "] "
-                        + sme.getMessage());
+                StringBuilder location = new StringBuilder();
+                if(sme.getLocation() !=null) {
+                	Location loc = sme.getLocation();
+                	String sysId = loc.getSystemId();
+                	if(sysId!=null && sysId.length()>0){
+	                	File file = new File(sysId);       
+	                	location.append(" Location: ");
+	                	location.append(file.getPath());	                	
+	                	if(loc.getLineNumber()> -1 ) {
+	                		location.append(' ');
+	                		location.append(loc.getLineNumber());
+	                		if(loc.getColumnNumber()> -1 ) {
+	                			location.append(':');
+	                			location.append(loc.getColumnNumber());
+	                		}
+	                	}	                		                	
+                	}
+                }
+                
+                message.append('[');
+                message.append(type);
+                message.append(',').append(' ');
+                message.append(who);
+                message.append(']').append(' ');
+                message.append(sme.getMessage());                                
+                message.append(location.toString());
+                
+                System.out.println(message.toString());
 
             } else if (event instanceof StateChangeEvent) {
                 StateChangeEvent sce = (StateChangeEvent) event;
