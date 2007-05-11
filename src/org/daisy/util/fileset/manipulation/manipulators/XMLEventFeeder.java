@@ -134,8 +134,17 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 		//TODO use pools 
 		if(xif==null){ //first access to statics
 			xif = XMLInputFactory.newInstance();
-			xof = XMLOutputFactory.newInstance();
+			xof = XMLOutputFactory.newInstance();			
 			xef = XMLEventFactory.newInstance();
+						
+			if(xof.isPropertySupported("com.ctc.wstx.outputEscapeCr")) {
+				try{
+					xof.setProperty("com.ctc.wstx.outputEscapeCr", Boolean.TRUE);
+				}catch (IllegalArgumentException e) {
+					
+				}	
+			}	
+						
 	        xif.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
 	        xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
 	        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.TRUE);

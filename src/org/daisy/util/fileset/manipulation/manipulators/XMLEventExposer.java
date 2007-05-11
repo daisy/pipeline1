@@ -34,9 +34,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 /**
- * Exposes XML Stream Events to a registered listener
- * listener.
- * 
+ * Exposes XML Stream Events to a registered listener.
  * @author Markus Gylling
  */
 public class XMLEventExposer extends XMLEventFeeder {
