@@ -27,7 +27,7 @@ public abstract class PipelineTest {
 	public abstract String getResultDescription();
 	
 	/**
-	 * Get parametrs for commandlinegui, excluding script name
+	 * Get parameters for commandlinegui, excluding script name
 	 */
 	public abstract List<String> getParameters();
 	
