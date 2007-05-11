@@ -270,7 +270,7 @@ transformers/int_daisy_opsCreator/ncx-config-default.xml -text
 transformers/int_daisy_opsCreator/ncx-config.rng -text
 transformers/int_daisy_opsCreator/transformer.tdf -text
 transformers/int_daisy_prettyPrinter/PrettyPrinter.java -text
-transformers/int_daisy_prettyPrinter/int_daisy_prettyPrinter.messages -text
+transformers/int_daisy_prettyPrinter/messages.properties -text
 transformers/int_daisy_prettyPrinter/transformer.tdf -text
 transformers/int_daisy_unicodeNormalizer/messages.properties -text
 transformers/int_daisy_unicodeNormalizer/transformer.tdf -text
