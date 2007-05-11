@@ -7,6 +7,7 @@ import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.util.file.EFile;
 import org.daisy.util.file.EFolder;
 
 /**
@@ -26,15 +27,15 @@ public class Deleter extends Transformer {
 			String active = (String)parameters.remove("active");
 			if(active.equals("true")){
 				String toDelete = (String)parameters.remove("delete");
-				File resource = new File(toDelete);				
+				EFile resource = new EFile(toDelete);				
 				if(!resource.exists()) return true;
 				
-				if(resource.isFile()) {
+				if(resource.isFile() && !resource.isSymLink()) {
 					boolean result = resource.delete();
 					if(!result) {
 						this.sendMessage(i18n("DELETER_FAILURE", resource.getAbsolutePath()), MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
 					}
-				}else if (resource.isDirectory()) {
+				}else if (resource.isDirectory() && !resource.isSymLink()) {
 					EFolder folder = new EFolder(resource);
 					boolean result = folder.deleteContents(true);
 					if(result) {

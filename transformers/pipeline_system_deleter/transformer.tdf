@@ -1,5 +1,5 @@
 <transformer version="1.1">
-	<name>Deleter</name>
+	<name>System cleanup</name>
 	<description>Delete resources on the filesystem</description>
 	<classname>pipeline_system_deleter.Deleter</classname>
 	<license>LGPL</license>
