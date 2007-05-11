@@ -9,5 +9,5 @@ hr {width: 9em; border:none; border-top: 1px dashed #880000; margin-top: 1.5em;}
 *.summary {border: 1px solid #aaaaaa; padding: 1em 1.5em 1em 1.5em; margin-top: 3em; background-color: #eeeeee; }
 pre {border: 1px solid #aaaaaa; padding: 1em 1.5em 1em 1.5em; background-color: #eeeeee;}
 .fixme {border-left: 3px solid #ff0000;}
-.alert {border: 3px solid #ff0000;}
+.alert {border: 1px solid #ff0000;}
 
