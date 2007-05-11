@@ -246,6 +246,7 @@ transformers/int_daisy_filesetAudioTagger/FilesetAudioTagger.java -text
 transformers/int_daisy_filesetAudioTagger/id3/ID3Tagger.java -text
 transformers/int_daisy_filesetAudioTagger/messages.properties -text
 transformers/int_daisy_filesetAudioTagger/playlist/AbstractWriter.java -text
+transformers/int_daisy_filesetAudioTagger/playlist/AbstractXMLWriter.java -text
 transformers/int_daisy_filesetAudioTagger/playlist/M3U8Writer.java -text
 transformers/int_daisy_filesetAudioTagger/playlist/M3UWriter.java -text
 transformers/int_daisy_filesetAudioTagger/playlist/PLSWriter.java -text
