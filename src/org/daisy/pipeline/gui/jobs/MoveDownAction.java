@@ -7,7 +7,7 @@ import org.eclipse.core.commands.operations.IUndoableOperation;
 public class MoveDownAction extends MoveAction {
 
     public MoveDownAction(JobsView view) {
-        super(view, "Move Down", GuiPlugin.getIcon(IIconsKeys.GO_DOWN));
+        super(view, "Move Down", GuiPlugin.createDescriptor(IIconsKeys.MOVE_DOWN));
     }
 
     @Override

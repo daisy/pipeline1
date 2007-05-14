@@ -14,12 +14,14 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Pipeline Jobs"
             class="org.daisy.pipeline.gui.JobsPerspective"
-            id="org.daisy.pipeline.gui.perspectives.jobs">
+            icon="icons/pers-jobs.gif"
+            id="org.daisy.pipeline.gui.perspectives.jobs"
+            name="Pipeline Jobs">
       </perspective>
       <perspective
             class="org.daisy.pipeline.gui.doc.DocPerspective"
+            icon="icons/persp-doc.gif"
             id="org.daisy.pipeline.gui.perspectives.doc"
             name="Documentation"/>
    </extension>
@@ -27,34 +29,36 @@
          point="org.eclipse.ui.views">
       <view
             class="org.daisy.pipeline.gui.doc.DocView"
+            icon="icons/view-doc.gif"
             id="org.daisy.pipeline.gui.views.doc"
             name="Documentation"/>  
      <view
-            name="Error Log"
-            class="org.eclipse.pde.internal.runtime.logview.LogView"
-            id="org.eclipse.pde.runtime.LogView">
+           class="org.eclipse.pde.internal.runtime.logview.LogView"
+           icon="icons/view-error-log.gif"
+           id="org.eclipse.pde.runtime.LogView"
+           name="Error Log">
       </view>    
       <view
-            name="Jobs"
             class="org.daisy.pipeline.gui.jobs.JobsView"
-            id="org.daisy.pipeline.gui.views.jobs">
+            icon="icons/view-jobs.gif"
+            id="org.daisy.pipeline.gui.views.jobs"
+            name="Jobs">
       </view>
       <view
             class="org.daisy.pipeline.gui.messages.MessagesView"
+            icon="icons/view-messages.gif"
             id="org.daisy.pipeline.gui.views.messages"
             name="Messages"/>
       <view
             class="org.daisy.pipeline.gui.parameters.ParametersView"
+            icon="icons/view-parameters.gif"
             id="org.daisy.pipeline.gui.views.parameters"
             name="Job Parameters"/>
       <view
             class="org.daisy.pipeline.gui.jobs.JobDetailsView"
+            icon="icons/view-progress.gif"
             id="org.daisy.pipeline.gui.views.jobDetails"
             name="Progress"/>
-      <view
-            class="org.daisy.pipeline.gui.scripts.ScriptsView"
-            id="org.daisy.pipeline.gui.views.scripts"
-            name="Scripts"/>
    </extension>
    <extension
          point="org.eclipse.ui.viewActions">
@@ -67,7 +71,7 @@
             visible="true">
          <action
                allowLabelUpdate="true"
-               icon="icons/tango/16x16/actions/go-bottom.png"
+               icon="icons/move-bottom.gif"
                id="org.daisy.pipeline.gui.action.table.moveToBottom"
                label="Move to Bottom"
                menubarPath="edit/additions"
@@ -76,7 +80,7 @@
                tooltip="Move Selection to Bottom"/>
          <action
                allowLabelUpdate="true"
-               icon="icons/tango/16x16/actions/go-down.png"
+               icon="icons/move-down.gif"
                id="org.daisy.pipeline.gui.action.table.moveDown"
                label="Move Down"
                menubarPath="edit/additions"
@@ -85,7 +89,7 @@
                tooltip="Move Down Selection"/>
          <action
                allowLabelUpdate="true"
-               icon="icons/tango/16x16/actions/go-up.png"
+               icon="icons/move-up.gif"
                id="org.daisy.pipeline.gui.action.table.moveUp"
                label="Move Up"
                menubarPath="edit/additions"
@@ -94,7 +98,7 @@
                tooltip="Move Up Selection"/>
          <action
                allowLabelUpdate="true"
-               icon="icons/tango/16x16/actions/go-top.png"
+               icon="icons/move-top.gif"
                id="org.daisy.pipeline.gui.action.table.moveToTop"
                label="Move to Top"
                menubarPath="edit/additions"
@@ -110,7 +114,7 @@
                class="org.daisy.pipeline.gui.jobs.NewJobAction"
                icon="icons/tango/16x16/actions/document-new.png"
                id="org.daisy.pipeline.gui.action.newJob"
-               label="Job"
+               label="New Job"
                style="push"
                toolbarPath="additions"/>
          <action

@@ -7,8 +7,6 @@ import org.daisy.pipeline.gui.util.swt.CompositeItem;
 import org.daisy.pipeline.gui.util.swt.CompositeList;
 import org.daisy.util.execution.State;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -17,33 +15,23 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 
 /**
  * @author Romain Deltour
  * 
  */
 public class TaskItem extends CompositeItem {
-    private static String IK_DOC_BUTTON = "org.daisy.pipeline.gui.jobdetails.DOC_BUTTON";
-    private static String IK_IDLE = "org.daisy.pipeline.gui.jobdetails.IDLE";
-    private static String IK_RUNNING = "org.daisy.pipeline.gui.jobdetails.RUNNING";
-    private static String IK_FINISHED = "org.daisy.pipeline.gui.jobdetails.FINISHED";
-    static {
-        GuiPlugin.get().getImageRegistry().put(IK_DOC_BUTTON,
-                GuiPlugin.getIcon(IIconsKeys.HELP_BROWSER));
-        GuiPlugin.get().getImageRegistry().put(IK_IDLE,
-                GuiPlugin.getImageDescriptor("icons/progress_task.gif"));
-        GuiPlugin.get().getImageRegistry().put(IK_RUNNING,
-                GuiPlugin.getImageDescriptor("icons/progress-indicator.gif"));
-        GuiPlugin.get().getImageRegistry().put(IK_FINISHED,
-                GuiPlugin.getImageDescriptor("icons/tick.png"));
-    }
+
     private Label iconLabel;
+
     private Label nameLabel;
+
     private Label timeLabel;
+
     private ProgressBar progressBar;
+
     private ToolBar toolBar;
-    private ToolItem docButton;
+
     private State lastState;
 
     public TaskItem(CompositeList<TaskItem> parent, int style, int index) {
@@ -95,13 +83,13 @@ public class TaskItem extends CompositeItem {
         Image image = null;
         switch (state) {
         case IDLE:
-            image = GuiPlugin.get().getImageRegistry().get(IK_IDLE);
+            image = GuiPlugin.getImage(IIconsKeys.STATE_IDLE);
             break;
         case RUNNING:
-            image = GuiPlugin.get().getImageRegistry().get(IK_RUNNING);
+            image = GuiPlugin.getImage(IIconsKeys.STATE_RUNNING);
             break;
         case FINISHED:
-            image = GuiPlugin.get().getImageRegistry().get(IK_FINISHED);
+            image = GuiPlugin.getImage(IIconsKeys.STATE_FINISHED);
             break;
         default:
             break;
@@ -139,16 +127,16 @@ public class TaskItem extends CompositeItem {
         nameLabel.setLayoutData(formData);
 
         // Create doc button
-        docButton = new ToolItem(toolBar, SWT.PUSH);
-        docButton.setToolTipText("Show documentation");
-        docButton.setImage(GuiPlugin.get().getImageRegistry()
-                .get(IK_DOC_BUTTON));
-        docButton.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                showDoc();
-            }
-        });
+        // docButton = new ToolItem(toolBar, SWT.PUSH);
+        // docButton.setToolTipText("Show documentation");
+        // docButton.setImage(GuiPlugin.get().getImageRegistry()
+        // .get(IK_DOC_BUTTON));
+        // docButton.addSelectionListener(new SelectionAdapter() {
+        // @Override
+        // public void widgetSelected(SelectionEvent e) {
+        // showDoc();
+        // }
+        // });
 
         // Create time info label
         timeLabel = new Label(this, SWT.NONE);
@@ -171,10 +159,5 @@ public class TaskItem extends CompositeItem {
 
     private void setLayoutsForNoProgress() {
 
-    }
-
-    private void showDoc() {
-        // TODO implem showDoc()
-        System.out.println("show doc");
     }
 }

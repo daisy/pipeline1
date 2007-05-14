@@ -8,7 +8,7 @@ public class MoveToBottomAction extends MoveAction {
 
     public MoveToBottomAction(JobsView view) {
         super(view, "Move To Bottom", GuiPlugin
-                .getIcon(IIconsKeys.GO_BOTTOM));
+                .createDescriptor(IIconsKeys.MOVE_BOTTOM));
     }
 
     @Override

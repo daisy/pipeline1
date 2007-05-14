@@ -1,6 +1,5 @@
 package org.daisy.pipeline.gui;
 
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
@@ -24,13 +23,6 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
     @Override
     public void initialize(IWorkbenchConfigurer configurer) {
         configurer.setSaveAndRestore(true);
-        configurer.declareImage(ISharedImages.IMG_TOOL_UNDO, GuiPlugin
-                .getIcon(IIconsKeys.EDIT_UNDO), true);
-        configurer.declareImage(ISharedImages.IMG_TOOL_REDO, GuiPlugin
-                .getIcon(IIconsKeys.EDIT_REDO), true);
-        configurer.declareImage(ISharedImages.IMG_TOOL_DELETE,
-                GuiPlugin.getIcon(IIconsKeys.EDIT_DELETE), true);
-
         PlatformUI.getPreferenceStore().setValue(
                 IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
                 false);

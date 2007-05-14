@@ -1,6 +1,7 @@
 package org.daisy.pipeline.gui.jobs;
 
 import org.daisy.pipeline.gui.GuiPlugin;
+import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -12,35 +13,23 @@ import org.eclipse.swt.graphics.Image;
  */
 public class JobsLabelProvider extends LabelProvider implements
         ITableLabelProvider {
-    private static String IK_IDLE = "org.daisy.pipeline.gui.jobs.IDLE";
-    private static String IK_RUNNING = "org.daisy.pipeline.gui.jobs.RUNNING";
-    private static String IK_FINISHED = "org.daisy.pipeline.gui.jobs.FINISHED";
-    static {
-        GuiPlugin.get().getImageRegistry().put(IK_IDLE,
-                GuiPlugin.getImageDescriptor("icons/progress_task.gif"));
-        GuiPlugin.get().getImageRegistry().put(IK_RUNNING,
-                GuiPlugin.getImageDescriptor("icons/progress-indicator.gif"));
-        GuiPlugin.get().getImageRegistry().put(IK_FINISHED,
-                GuiPlugin.getImageDescriptor("icons/tick.png"));
-    }
 
     public Image getColumnImage(Object element, int columnIndex) {
         if (element instanceof JobInfo && columnIndex == 0) {
             switch (((JobInfo) element).getSate()) {
-            // case ABORTED:
-            // return GuiPlugin.get().getImageRegistry().get(IK_);
-            // case FAILED:
-            // return GuiPlugin.get().getImageRegistry().get(IK_IDLE);
+            case ABORTED:
+                return GuiPlugin.getImage(IIconsKeys.STATE_CANCELED);
+            case FAILED:
+                return GuiPlugin.getImage(IIconsKeys.STATE_FAILED);
             case FINISHED:
-                return GuiPlugin.get().getImageRegistry().get(IK_FINISHED);
+                return GuiPlugin.getImage(IIconsKeys.STATE_FINISHED);
             case IDLE:
-                return GuiPlugin.get().getImageRegistry().get(IK_IDLE);
+                return GuiPlugin.getImage(IIconsKeys.STATE_IDLE);
             case RUNNING:
-                return GuiPlugin.get().getImageRegistry().get(IK_RUNNING);
-                // case WAITING:
-                // return GuiPlugin.get().getImageRegistry().get(IK_IDLE);
+                return GuiPlugin.getImage(IIconsKeys.STATE_RUNNING);
+            case WAITING:
+                return GuiPlugin.getImage(IIconsKeys.STATE_WAITING);
             }
-            return GuiPlugin.get().getImageRegistry().get(IK_IDLE);
         }
         return null;
     }

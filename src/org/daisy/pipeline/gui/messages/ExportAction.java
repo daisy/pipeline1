@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.gui.GuiPlugin;
+import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.util.DialogHelper;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -20,7 +22,7 @@ public class ExportAction extends Action {
     private String lineSeparator = System.getProperty("line.separator");
 
     public ExportAction() {
-        super("Export Messages");
+        super("Export Messages",GuiPlugin.createDescriptor(IIconsKeys.MESSAGE_EXPORT));
     }
 
     @Override

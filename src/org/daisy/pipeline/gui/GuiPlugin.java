@@ -24,6 +24,9 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -91,6 +94,23 @@ public class GuiPlugin extends AbstractUIPlugin {
         return plugin;
     }
 
+    public static ImageDescriptor getDescriptor(String key) {
+        return get().getImageRegistry().getDescriptor(key);
+    }
+
+    public static Image getImage(String key) {
+        return get().getImageRegistry().get(key);
+    }
+
+    public static Image getSharedImage(String key) {
+        return PlatformUI.getWorkbench().getSharedImages().getImage(key);
+    }
+
+    public static ImageDescriptor getSharedDescriptor(String key) {
+        return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
+                key);
+    }
+
     /**
      * Returns an image descriptor for the image file at the given plug-in
      * relative path.
@@ -98,27 +118,8 @@ public class GuiPlugin extends AbstractUIPlugin {
      * @param path the path
      * @return the image descriptor
      */
-    public static ImageDescriptor getImageDescriptor(String path) {
+    public static ImageDescriptor createDescriptor(String path) {
         return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
-    }
-
-    public static ImageDescriptor getIcon(String key) {
-        return getImageDescriptor(IIconsKeys.SIZE_DEFAULT_DIR + key);
-    }
-
-    public static ImageDescriptor getIcon(String key, int size) {
-        String sizeDir;
-        switch (size) {
-        case IIconsKeys.SIZE_16:
-            sizeDir = IIconsKeys.SIZE_16_DIR;
-            break;
-        case IIconsKeys.SIZE_22:
-            sizeDir = IIconsKeys.SIZE_22_DIR;
-            break;
-        default:
-            return null;
-        }
-        return getImageDescriptor(sizeDir + key);
     }
 
     public static URL getResourceURL(String name) {
@@ -194,4 +195,26 @@ public class GuiPlugin extends AbstractUIPlugin {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void initializeImageRegistry(ImageRegistry reg) {
+        super.initializeImageRegistry(reg);
+        reg.put(IIconsKeys.MESSAGE_DEBUG, createDescriptor(IIconsKeys.MESSAGE_DEBUG));
+        reg.put(IIconsKeys.MESSAGE_ERROR, createDescriptor(IIconsKeys.MESSAGE_ERROR));
+        reg.put(IIconsKeys.MESSAGE_INFO, createDescriptor(IIconsKeys.MESSAGE_INFO));
+        reg.put(IIconsKeys.MESSAGE_WARNING, createDescriptor(IIconsKeys.MESSAGE_WARNING));
+        reg.put(IIconsKeys.STATE_CANCELED,
+                createDescriptor(IIconsKeys.STATE_CANCELED));
+        reg.put(IIconsKeys.STATE_FAILED,
+                createDescriptor(IIconsKeys.STATE_FAILED));
+        reg.put(IIconsKeys.STATE_FINISHED,
+                createDescriptor(IIconsKeys.STATE_FINISHED));
+        reg.put(IIconsKeys.STATE_IDLE, createDescriptor(IIconsKeys.STATE_IDLE));
+        reg.put(IIconsKeys.STATE_RUNNING,
+                createDescriptor(IIconsKeys.STATE_RUNNING));
+        reg.put(IIconsKeys.STATE_RUNNING,
+                createDescriptor(IIconsKeys.STATE_WAITING));
+        reg.put(IIconsKeys.TREE_CATEGORY, createDescriptor(IIconsKeys.TREE_CATEGORY));
+    }
+
 }

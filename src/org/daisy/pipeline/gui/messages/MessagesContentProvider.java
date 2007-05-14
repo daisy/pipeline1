@@ -20,8 +20,14 @@ import org.eclipse.ui.progress.WorkbenchJob;
 public class MessagesContentProvider extends CategorizedContentProvider
         implements IMessageManagerListener {
 
+    private MessagesView view;
     private TreeViewer viewer;
     private MessageManager manager;
+
+    public MessagesContentProvider(MessagesView view) {
+        super();
+        this.view = view;
+    }
 
     @Override
     public void dispose() {
@@ -44,7 +50,6 @@ public class MessagesContentProvider extends CategorizedContentProvider
     @Override
     public Object getParent(Object element) {
         if (element instanceof Location) {
-            Location loc = (Location) element;
             // TODO return parent
         }
         return super.getParent(element);
@@ -89,7 +94,9 @@ public class MessagesContentProvider extends CategorizedContentProvider
                 } else {
                     viewer.add(viewer.getInput(), message);
                 }
-                viewer.reveal(message);
+                if (!view.isLocked()) {
+                    viewer.reveal(message);
+                }
                 return Status.OK_STATUS;
             }
 

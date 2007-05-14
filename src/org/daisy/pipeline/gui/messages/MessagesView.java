@@ -5,6 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.dmfc.core.event.MessageEvent.Cause;
+import org.daisy.dmfc.core.event.MessageEvent.Type;
+import org.daisy.pipeline.gui.GuiPlugin;
+import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.util.CategorySet;
 import org.daisy.pipeline.gui.util.ITableField;
 import org.daisy.pipeline.gui.util.TableView;
@@ -16,7 +20,9 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -26,33 +32,11 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 
 public class MessagesView extends TableView {
-    public static final String ID = "org.daisy.pipeline.gui.views.messages"; //$NON-NLS-1$
-    private MessageFilter filter;
-    private List<FilterToggleAction> filterToggleActions;
-    private List<IAction> groupByActions;
-    private IAction filterDialogAction;
-    private IAction expandAllAction;
-    private IAction collapseAllAction;
-    private IAction clearAction;
-    private IAction exportAction;
-    private static IMemento memento;
-
-    @Override
-    public void init(IViewSite site, IMemento memento) throws PartInitException {
-        super.init(site, memento);
-        MessagesView.memento = memento;
-    }
-
-    @Override
-    public void saveState(IMemento memento) {
-        super.saveState(memento);
-        filter.saveState(memento);
-    }
-
     private class ClearAction extends Action {
 
         public ClearAction() {
-            super("Clear Messages");
+            super("Clear Messages", GuiPlugin
+                    .createDescriptor(IIconsKeys.MESSAGE_CLEAR));
         }
 
         @Override
@@ -75,7 +59,8 @@ public class MessagesView extends TableView {
     private class FilterDialogAction extends Action {
 
         public FilterDialogAction() {
-            super("Filter...");
+            super("Filter...", GuiPlugin
+                    .createDescriptor(IIconsKeys.TREE_FILTER));
         }
 
         @Override
@@ -84,7 +69,10 @@ public class MessagesView extends TableView {
 
             if (dialog.open() == IDialogConstants.OK_ID) {
                 getViewer().refresh();
-                for (FilterToggleAction action : filterToggleActions) {
+                for (FilterToggleAction action : filterTypeActions) {
+                    action.refresh();
+                }
+                for (FilterToggleAction action : filterCauseActions) {
                     action.refresh();
                 }
             }
@@ -98,38 +86,126 @@ public class MessagesView extends TableView {
         private MessageEvent.Cause cause;
         private MessageEvent.Type type;
 
-        public FilterToggleAction(MessageEvent.Cause cause) {
+        public FilterToggleAction(MessageEvent.Cause cause, ImageDescriptor icon) {
             // TODO localize
             super(cause.toString(), IAction.AS_CHECK_BOX);
+            setImageDescriptor(icon);
             this.cause = cause;
             refresh();
         }
 
-        public FilterToggleAction(MessageEvent.Type type) {
+        public FilterToggleAction(MessageEvent.Type type, ImageDescriptor icon) {
             // TODO localize
             super(type.toString(), IAction.AS_CHECK_BOX);
+            setImageDescriptor(icon);
             this.type = type;
             refresh();
+        }
+
+        public void refresh() {
+            if (cause != null) {
+                setChecked(!filter.isAccepted(cause));
+            } else if (type != null) {
+                setChecked(!filter.isAccepted(type));
+            }
+            this.checked = isChecked();
         }
 
         @Override
         public void run() {
             checked = !checked;
             if (cause != null) {
-                filter.configure(cause, checked);
+                filter.configure(cause, !checked);
             } else if (type != null) {
-                filter.configure(type, checked);
+                filter.configure(type, !checked);
             }
             getViewer().refresh();
         }
+    }
 
-        public void refresh() {
-            if (cause != null) {
-                setChecked(filter.isAccepted(cause));
-            } else if (type != null) {
-                setChecked(filter.isAccepted(type));
-            }
-            this.checked = isChecked();
+    private class ScrollLockAction extends Action {
+
+        public ScrollLockAction() {
+            super("Scroll Lock", GuiPlugin
+                    .createDescriptor(IIconsKeys.MESSAGE_SCROLL_LOCK));
+        }
+
+        @Override
+        public void run() {
+            locked = !locked;
+        }
+    }
+
+    public static final String ID = "org.daisy.pipeline.gui.views.messages"; //$NON-NLS-1$
+    private static IMemento memento;
+    private MessageFilter filter;
+    private List<FilterToggleAction> filterTypeActions;
+    private List<FilterToggleAction> filterCauseActions;
+    private List<IAction> groupByActions;
+    private IAction filterDialogAction;
+    private IAction expandAllAction;
+    private IAction scrollLockAction;
+
+    private IAction collapseAllAction;
+
+    private IAction clearAction;
+
+    private IAction exportAction;
+    private boolean locked;
+
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException {
+        super.init(site, memento);
+        MessagesView.memento = memento;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    @Override
+    public void saveState(IMemento memento) {
+        super.saveState(memento);
+        filter.saveState(memento);
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    private List<CategorySet> createCategorySets() {
+        List<CategorySet> cats = new ArrayList<CategorySet>();
+        cats.add(new CauseCategorySet());
+        cats.add(new TypeCategorySet());
+        cats.add(new JobCategorySet());
+        cats.add(CategorySet.NONE);
+        return cats;
+    }
+
+    private ImageDescriptor getIcon(Cause cause) {
+        switch (cause) {
+        case INPUT:
+            return GuiPlugin.createDescriptor(IIconsKeys.MESSAGE_FILTER_INPUT);
+        case SYSTEM:
+            return GuiPlugin.createDescriptor(IIconsKeys.MESSAGE_FILTER_SYSTEM);
+        default:
+            return null;
+        }
+    }
+
+    private ImageDescriptor getIcon(Type type) {
+        switch (type) {
+        case DEBUG:
+            return GuiPlugin.createDescriptor(IIconsKeys.MESSAGE_FILTER_DEBUG);
+        case ERROR:
+            return GuiPlugin.createDescriptor(IIconsKeys.MESSAGE_FILTER_ERROR);
+        case INFO:
+            return GuiPlugin.createDescriptor(IIconsKeys.MESSAGE_FILTER_INFO);
+        case WARNING:
+            return GuiPlugin
+                    .createDescriptor(IIconsKeys.MESSAGE_FILTER_WARNING);
+        default:
+            return null;
         }
     }
 
@@ -138,12 +214,14 @@ public class MessagesView extends TableView {
         super.createActions();
         // Filter actions
         filterDialogAction = new FilterDialogAction();
-        filterToggleActions = new LinkedList<FilterToggleAction>();
+        filterTypeActions = new LinkedList<FilterToggleAction>();
         for (MessageEvent.Type type : MessageEvent.Type.values()) {
-            filterToggleActions.add(new FilterToggleAction(type));
+            filterTypeActions.add(new FilterToggleAction(type, getIcon(type)));
         }
+        filterCauseActions = new LinkedList<FilterToggleAction>();
         for (MessageEvent.Cause cause : MessageEvent.Cause.values()) {
-            filterToggleActions.add(new FilterToggleAction(cause));
+            filterCauseActions
+                    .add(new FilterToggleAction(cause, getIcon(cause)));
         }
         // Group by actions
         List<CategorySet> cats = createCategorySets();
@@ -157,11 +235,12 @@ public class MessagesView extends TableView {
         // Clear/Export Action
         clearAction = new ClearAction();
         exportAction = new ExportAction();
+        scrollLockAction = new ScrollLockAction();
     }
 
     @Override
     protected ITreeContentProvider createContentProvider() {
-        return new MessagesContentProvider();
+        return new MessagesContentProvider(this);
     }
 
     @Override
@@ -199,21 +278,18 @@ public class MessagesView extends TableView {
     @Override
     protected void initToolBar(IToolBarManager toolbar) {
         super.initToolBar(toolbar);
-        for (FilterToggleAction action : filterToggleActions) {
-            toolbar.add(action);
-        }
         toolbar.add(expandAllAction);
         toolbar.add(collapseAllAction);
-        toolbar.add(clearAction);
+        toolbar.add(new Separator());
+        for (FilterToggleAction action : filterTypeActions) {
+            toolbar.add(action);
+        }
+        for (FilterToggleAction action : filterCauseActions) {
+            toolbar.add(action);
+        }
+        toolbar.add(new Separator());
         toolbar.add(exportAction);
-    }
-
-    private List<CategorySet> createCategorySets() {
-        List<CategorySet> cats = new ArrayList<CategorySet>();
-        cats.add(new CauseCategorySet());
-        cats.add(new TypeCategorySet());
-        cats.add(new JobCategorySet());
-        cats.add(CategorySet.NONE);
-        return cats;
+        toolbar.add(clearAction);
+        toolbar.add(scrollLockAction);
     }
 }
