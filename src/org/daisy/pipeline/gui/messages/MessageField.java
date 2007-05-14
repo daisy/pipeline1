@@ -1,21 +1,20 @@
 package org.daisy.pipeline.gui.messages;
 
+import javax.xml.stream.Location;
+
 import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.gui.util.AbstractTableField;
 import org.daisy.pipeline.gui.util.Category;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Romain Deltour
  * 
  */
-public class MessagesLabelProvider extends LabelProvider implements
-        ILabelProvider {
+class MessageField extends AbstractTableField {
 
     @Override
-    public Image getImage(Object element) {
-        return super.getImage(element);
+    public String getHeaderText() {
+        return "Message";
     }
 
     @Override
@@ -26,7 +25,16 @@ public class MessagesLabelProvider extends LabelProvider implements
         if (element instanceof Category) {
             return ((Category) element).getName();
         }
+        if (element instanceof Location) {
+            Location loc = (Location) element;
+            return loc.toString();
+        }
         return super.getText(element);
+    }
+
+    @Override
+    public int getWeight() {
+        return 5;
     }
 
 }

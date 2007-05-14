@@ -1,6 +1,9 @@
 package org.daisy.pipeline.gui.messages;
 
+import javax.xml.stream.Location;
+
 import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.gui.util.Category;
 import org.daisy.pipeline.gui.util.viewers.CategorizedContentProvider;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -28,6 +31,34 @@ public class MessagesContentProvider extends CategorizedContentProvider
     }
 
     @Override
+    public Object[] getChildren(Object parentElement) {
+        if (parentElement instanceof MessageEvent) {
+            Location loc = ((MessageEvent) parentElement).getLocation();
+            if (loc != null) {
+                return new Location[] { loc };
+            }
+        }
+        return super.getChildren(parentElement);
+    }
+
+    @Override
+    public Object getParent(Object element) {
+        if (element instanceof Location) {
+            Location loc = (Location) element;
+            // TODO return parent
+        }
+        return super.getParent(element);
+    }
+
+    @Override
+    public boolean hasChildren(Object element) {
+        if (element instanceof MessageEvent) {
+            return ((MessageEvent) element).getLocation() != null;
+        }
+        return super.hasChildren(element);
+    }
+
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         this.viewer = (TreeViewer) viewer;
         if (manager != null) {
@@ -45,15 +76,20 @@ public class MessagesContentProvider extends CategorizedContentProvider
      * @see org.daisy.pipeline.gui.messages.IMessageManagerListener#messageAdded(org.daisy.dmfc.core.event.MessageEvent)
      */
     public void messageAdded(final MessageEvent message) {
-        //TODO set ui job family
+        // TODO set ui job family
         Job uiJob = new WorkbenchJob("Add Message") {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                 if (isCategorized()) {
-                    viewer.add(findCategory(message), message);
+                    Category category = findCategory(message);
+                    if (!category.isVisible()) {
+                        viewer.add(viewer.getInput(), category);
+                    }
+                    viewer.add(category, message);
                 } else {
-                    viewer.add(MessagesContentProvider.this.manager, message);
+                    viewer.add(viewer.getInput(), message);
                 }
+                viewer.reveal(message);
                 return Status.OK_STATUS;
             }
 

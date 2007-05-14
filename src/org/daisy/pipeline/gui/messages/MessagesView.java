@@ -1,12 +1,15 @@
 package org.daisy.pipeline.gui.messages;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.daisy.dmfc.core.event.MessageEvent;
-import org.daisy.pipeline.gui.util.Category;
+import org.daisy.pipeline.gui.util.CategorySet;
+import org.daisy.pipeline.gui.util.ITableField;
+import org.daisy.pipeline.gui.util.TableView;
+import org.daisy.pipeline.gui.util.actions.CollapseAllAction;
+import org.daisy.pipeline.gui.util.actions.ExpandAllAction;
 import org.daisy.pipeline.gui.util.actions.GroupByAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -14,93 +17,59 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.part.ViewPart;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 
-public class MessagesView extends ViewPart {
+public class MessagesView extends TableView {
     public static final String ID = "org.daisy.pipeline.gui.views.messages"; //$NON-NLS-1$
-
-    private TreeViewer viewer;
     private MessageFilter filter;
     private List<FilterToggleAction> filterToggleActions;
+    private List<IAction> groupByActions;
+    private IAction filterDialogAction;
+    private IAction expandAllAction;
+    private IAction collapseAllAction;
+    private IAction clearAction;
+    private IAction exportAction;
+    private static IMemento memento;
 
     @Override
-    public void createPartControl(Composite parent) {
-        // Create the tree
-        Tree messagesTree = new Tree(parent, SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.MULTI | SWT.FULL_SELECTION);
-        messagesTree.setHeaderVisible(true);
-        messagesTree.setLinesVisible(true);
-
-        // Create the viewer
-        viewer = new TreeViewer(messagesTree);
-        viewer.setContentProvider(new MessagesContentProvider());
-        viewer.setLabelProvider(new MessagesLabelProvider());
-        viewer.setInput(MessageManager.getDefault());
-        getSite().setSelectionProvider(viewer);
-
-        // Create filter
-        filter = new MessageFilter();
-        viewer.addFilter(filter);
-
-        // Create actions
-        createActions();
-    }
-
-    private void createActions() {
-        IAction filterDialogAction = new FilterDialogAction();
-        filterToggleActions = new LinkedList<FilterToggleAction>();
-        for (MessageEvent.Type type : MessageEvent.Type.values()) {
-            filterToggleActions.add(new FilterToggleAction(type));
-        }
-        for (MessageEvent.Cause cause : MessageEvent.Cause.values()) {
-            filterToggleActions.add(new FilterToggleAction(cause));
-        }
-
-        // Configure the drop down menu
-        IMenuManager menu = getViewSite().getActionBars().getMenuManager();
-        menu.add(filterDialogAction);
-        IMenuManager groupByMenu = new MenuManager("Group By");
-        menu.add(groupByMenu);
-        Map<String, List<Category>> catMap = createCategories();
-        for (String key : catMap.keySet()) {
-            groupByMenu.add(new GroupByAction(key, viewer, catMap.get(key)));
-        }
-        // groupByMenu.add(action);
-
-        // Configure the tool bar
-        IToolBarManager toolbar = getViewSite().getActionBars()
-                .getToolBarManager();
-        for (FilterToggleAction action : filterToggleActions) {
-            toolbar.add(action);
-        }
-    }
-
-    private Map<String, List<Category>> createCategories() {
-        Map<String, List<Category>> map = new LinkedHashMap<String, List<Category>>();
-        // Severity category
-        List<Category> typeCat = new LinkedList<Category>();
-        for (MessageEvent.Type type : MessageEvent.Type.values()) {
-            typeCat.add(new CategoryType(type));
-        }
-        map.put("Severity", typeCat);
-        // Type category
-        List<Category> causeCat = new LinkedList<Category>();
-        for (MessageEvent.Cause cause : MessageEvent.Cause.values()) {
-            causeCat.add(new CategoryCause(cause));
-        }
-        map.put("Type", causeCat);
-        // No category
-        map.put("None", null);
-        return map;
+    public void init(IViewSite site, IMemento memento) throws PartInitException {
+        super.init(site, memento);
+        MessagesView.memento = memento;
     }
 
     @Override
-    public void setFocus() {
-        viewer.getControl().setFocus();
+    public void saveState(IMemento memento) {
+        super.saveState(memento);
+        filter.saveState(memento);
+    }
+
+    private class ClearAction extends Action {
+
+        public ClearAction() {
+            super("Clear Messages");
+        }
+
+        @Override
+        public void run() {
+            final Display display = getViewer().getTree().getDisplay();
+            BusyIndicator.showWhile(display, new Runnable() {
+                public void run() {
+                    MessageManager.getDefault().clear();
+                    display.asyncExec(new Runnable() {
+                        public void run() {
+                            getViewer().refresh();
+                        }
+                    });
+                }
+            });
+        }
+
     }
 
     private class FilterDialogAction extends Action {
@@ -114,7 +83,7 @@ public class MessagesView extends ViewPart {
             FilterDialog dialog = new FilterDialog(getSite().getShell(), filter);
 
             if (dialog.open() == IDialogConstants.OK_ID) {
-                viewer.refresh();
+                getViewer().refresh();
                 for (FilterToggleAction action : filterToggleActions) {
                     action.refresh();
                 }
@@ -151,7 +120,7 @@ public class MessagesView extends ViewPart {
             } else if (type != null) {
                 filter.configure(type, checked);
             }
-            viewer.refresh();
+            getViewer().refresh();
         }
 
         public void refresh() {
@@ -164,43 +133,87 @@ public class MessagesView extends ViewPart {
         }
     }
 
-    private class CategoryCause extends Category {
-
-        private MessageEvent.Cause cause;
-
-        public CategoryCause(MessageEvent.Cause cause) {
-            // TODO localize
-            super(cause.toString());
-            this.cause = cause;
+    @Override
+    protected void createActions() {
+        super.createActions();
+        // Filter actions
+        filterDialogAction = new FilterDialogAction();
+        filterToggleActions = new LinkedList<FilterToggleAction>();
+        for (MessageEvent.Type type : MessageEvent.Type.values()) {
+            filterToggleActions.add(new FilterToggleAction(type));
         }
-
-        @Override
-        public boolean contains(Object obj) {
-            if (obj instanceof MessageEvent) {
-                return ((MessageEvent) obj).getCause() == cause;
-            }
-            return false;
+        for (MessageEvent.Cause cause : MessageEvent.Cause.values()) {
+            filterToggleActions.add(new FilterToggleAction(cause));
         }
-
+        // Group by actions
+        List<CategorySet> cats = createCategorySets();
+        groupByActions = new LinkedList<IAction>();
+        for (CategorySet cat : cats) {
+            groupByActions.add(new GroupByAction(cat, getViewer()));
+        }
+        // Expand/Collpase Action
+        expandAllAction = new ExpandAllAction(getViewer());
+        collapseAllAction = new CollapseAllAction(getViewer());
+        // Clear/Export Action
+        clearAction = new ClearAction();
+        exportAction = new ExportAction();
     }
 
-    private class CategoryType extends Category {
+    @Override
+    protected ITreeContentProvider createContentProvider() {
+        return new MessagesContentProvider();
+    }
 
-        private MessageEvent.Type type;
+    @Override
+    protected ViewerFilter[] createFilters() {
+        ViewerFilter[] superFilters = super.createFilters();
+        filter = new MessageFilter();
+        filter.init(memento);
+        ViewerFilter[] filters = new ViewerFilter[superFilters.length + 1];
+        System.arraycopy(superFilters, 0, filters, 0, superFilters.length);
+        filters[filters.length - 1] = filter;
+        return filters;
+    }
 
-        public CategoryType(MessageEvent.Type type) {
-            // TODO localize
-            super(type.toString());
-            this.type = type;
+    @Override
+    protected Object createViewerInput() {
+        return MessageManager.getDefault();
+    }
+
+    @Override
+    protected ITableField[] getFields() {
+        return new ITableField[] { new MessageField(), new TypeField() };
+    }
+
+    @Override
+    protected void initMenu(IMenuManager menu) {
+        super.initMenu(menu);
+        menu.add(filterDialogAction);
+        IMenuManager groupByMenu = new MenuManager("Group By");
+        menu.add(groupByMenu);
+        for (IAction action : groupByActions) {
+            groupByMenu.add(action);
         }
+    }
 
-        @Override
-        public boolean contains(Object obj) {
-            if (obj instanceof MessageEvent) {
-                return ((MessageEvent) obj).getType() == type;
-            }
-            return false;
+    @Override
+    protected void initToolBar(IToolBarManager toolbar) {
+        super.initToolBar(toolbar);
+        for (FilterToggleAction action : filterToggleActions) {
+            toolbar.add(action);
         }
+        toolbar.add(expandAllAction);
+        toolbar.add(collapseAllAction);
+        toolbar.add(clearAction);
+        toolbar.add(exportAction);
+    }
 
+    private List<CategorySet> createCategorySets() {
+        List<CategorySet> cats = new ArrayList<CategorySet>();
+        cats.add(new CauseCategorySet());
+        cats.add(new TypeCategorySet());
+        cats.add(new JobCategorySet());
+        cats.add(CategorySet.NONE);
+        return cats;
     }
 }
