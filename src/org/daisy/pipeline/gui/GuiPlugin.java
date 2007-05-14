@@ -18,7 +18,9 @@ import org.daisy.pipeline.gui.messages.MessageManager;
 import org.daisy.pipeline.gui.scripts.ScriptManager;
 import org.daisy.util.file.EFolder;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -54,6 +56,7 @@ public class GuiPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         try {
+            initLog();
             initCore();
             MessageManager.getDefault().init();
             ScriptManager.getDefault().init();
@@ -80,7 +83,7 @@ public class GuiPlugin extends AbstractUIPlugin {
     public UUID getUUID() {
         return uuid;
     }
-    
+
     /**
      * Returns the shared instance.
      */
@@ -151,6 +154,15 @@ public class GuiPlugin extends AbstractUIPlugin {
                     "Cannot locate the Daisy Pipeline home directory");
         }
         core = new DMFCCore(null, homeDir);
+    }
+
+    private void initLog() {
+        IPath logPath = Platform.getLocation().append(
+                new Path("./.metadata/.log"));
+        File logFile = logPath.toFile();
+        if (logFile != null && logFile.exists()) {
+            logFile.delete();
+        }
     }
 
     public void error(String message, Throwable t) {
