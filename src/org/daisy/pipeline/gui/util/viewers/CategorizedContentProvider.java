@@ -1,5 +1,6 @@
 package org.daisy.pipeline.gui.util.viewers;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -66,7 +67,15 @@ public abstract class CategorizedContentProvider implements
      * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
      */
     public boolean hasChildren(Object element) {
-        return element instanceof Category;
+        if (element instanceof Category) {
+            Category category = (Category) element;
+            for (Object obj : getAllElements()) {
+                if (category.contains(obj)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /*
@@ -76,7 +85,16 @@ public abstract class CategorizedContentProvider implements
      */
     public Object[] getElements(Object inputElement) {
         if (categories != null) {
-            return categories.toArray();
+            List<Category> cats = new ArrayList<Category>(categories.size());
+            for (Category category : categories) {
+             if(hasChildren(category)) {
+                 cats.add(category);
+                 category.setVisible(true);
+             } else {
+                 category.setVisible(false);
+             }
+            }
+            return cats.toArray();
         } else {
             return getAllElements();
         }
