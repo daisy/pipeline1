@@ -7,26 +7,29 @@ import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 
 /**
  * @author Romain Deltour
  * 
  */
-public class JobsRunner extends org.eclipse.core.runtime.jobs.Job {
-    JobInfo[] jobs;
+public class JobsRunner extends Job {
+    JobInfo[] jobInfos;
+    JobInfo currJobInfo;
 
-    public JobsRunner(JobInfo[] jobs) {
+    public JobsRunner(JobInfo[] jobInfos) {
         super("Pipeline Jobs Runner");
-        this.jobs = jobs;
+        this.jobInfos = jobInfos;
         setUser(true);
     }
 
     @Override
     protected IStatus run(IProgressMonitor monitor) {
-        monitor.beginTask("Run Pipeline Jobs", jobs.length);
+        monitor.beginTask("Run Pipeline Jobs", jobInfos.length);
         try {
-            for (JobInfo jobInfo : jobs) {
+            for (JobInfo jobInfo : jobInfos) {
                 try {
+                    currJobInfo = jobInfo;
                     monitor.subTask("Running " + jobInfo.getName());
                     GuiPlugin.get().getCore().execute(jobInfo.getJob());
                     monitor.worked(1);
@@ -37,11 +40,17 @@ public class JobsRunner extends org.eclipse.core.runtime.jobs.Job {
                         StateManager.getDefault().failed(jobInfo);
                         GuiPlugin.get().error(e.getLocalizedMessage(), e);
                     }
+                } finally {
+                    currJobInfo = null;
                 }
             }
         } finally {
             monitor.done();
         }
         return Status.OK_STATUS;
+    }
+    
+    public JobInfo currentJobInfo(){
+        return currJobInfo;
     }
 }

@@ -9,6 +9,8 @@ import java.util.Queue;
 import org.daisy.dmfc.core.event.BusListener;
 import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.gui.jobs.JobsRunner;
+import org.daisy.pipeline.gui.jobs.model.JobInfo;
 
 /**
  * @author Romain Deltour
@@ -46,6 +48,14 @@ public class MessageManager implements BusListener {
     public void received(EventObject event) {
         if (event instanceof MessageEvent) {
             MessageEvent me = (MessageEvent) event;
+            JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
+                    .currentJob();
+            if (runner != null) {
+                JobInfo jobInfo = runner.currentJobInfo();
+                if (jobInfo != null) {
+                    me = new JobMessageEvent(me,jobInfo);
+                }
+            }
             if (messages.size() == capacity) {
                 messages.poll();
             }
@@ -82,5 +92,9 @@ public class MessageManager implements BusListener {
         for (IMessageManagerListener listener : listeners) {
             listener.messageAdded(message);
         }
+    }
+
+    public void clear() {
+        messages.clear();
     }
 }

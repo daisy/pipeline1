@@ -105,7 +105,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
     public boolean performFinish() {
         OperationUtil.execute(new NewJobOperation(job), getShell());
         try {
-            // TODO show dialog before switching to the jobs perspective
+            // TODO show dialog before switching to the jobInfos perspective
             workbench.showPerspective(JobsPerspective.ID, workbench
                     .getActiveWorkbenchWindow());
         } catch (WorkbenchException e) {

@@ -25,13 +25,13 @@ public class RunAllAction extends AbstractActionDelegate {
                 jobs.remove(jobInfo);
             }
         }
-        // Run the jobs
+        // Run the jobInfos
         JobsRunner runner = new JobsRunner(jobs.toArray(new JobInfo[0]));
         runner.schedule();
     }
 
     private boolean checkState(JobInfo jobInfo) {
-        // TODO check runnability of failed/aborted jobs
+        // TODO check runnability of failed/aborted jobInfos
         switch (jobInfo.getSate()) {
         case IDLE:
             return true;

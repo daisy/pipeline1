@@ -25,7 +25,7 @@ public class RunAction extends AbstractActionDelegate {
         if (selection == null) {
             return;
         }
-        // Extract the selected jobs
+        // Extract the selected jobInfos
         List<JobInfo> jobs = new LinkedList<JobInfo>();
         Iterator iter = selection.iterator();
         while (iter.hasNext()) {
@@ -52,7 +52,7 @@ public class RunAction extends AbstractActionDelegate {
     }
 
     private boolean checkState(JobInfo jobInfo) {
-        // TODO check runnability of failed/aborted jobs
+        // TODO check runnability of failed/aborted jobInfos
         switch (jobInfo.getSate()) {
         case IDLE:
             return true;

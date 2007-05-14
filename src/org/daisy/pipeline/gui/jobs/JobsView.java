@@ -67,7 +67,7 @@ public class JobsView extends ViewPart {
             }
         });
 
-        // TODO add popup menu to jobs table
+        // TODO add popup menu to jobInfos table
         // jobsTable.setMenu(createPopUpMenu());
 
         // Configure the viewer

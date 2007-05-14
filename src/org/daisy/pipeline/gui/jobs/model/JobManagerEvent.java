@@ -29,7 +29,7 @@ public class JobManagerEvent extends EventObject {
     }
 
     /**
-     * @return the jobs that changed
+     * @return the jobInfos that changed
      */
     public JobInfo[] getJobs() {
         return jobs;
