@@ -69,17 +69,17 @@ public final class DialogHelper {
             }
         }
         dialog.setFilterExtensions(extensions);
-        if (dialog.open() != null) {
+        String res = dialog.open();
+        if (res != null && dialog.getFileNames().length>1) {
             String path = dialog.getFilterPath();
-            String[] names = dialog.getFileNames();
             StringBuilder sb = new StringBuilder();
-            for (String name : names) {
+            for (String name : dialog.getFileNames()) {
                 sb.append(path).append(File.separatorChar).append(name).append(
-                        ',');
+                        File.pathSeparatorChar);
             }
             sb.deleteCharAt(sb.length() - 1);
-            return sb.toString();
+            res = sb.toString();
         }
-        return null;
+        return res;
     }
 }
