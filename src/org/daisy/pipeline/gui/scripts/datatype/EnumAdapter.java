@@ -35,11 +35,34 @@ public class EnumAdapter extends DefaultAdapter {
 
     @Override
     public String getValue(Widget widget) {
-        return ((Combo) widget).getText();
+        String name = ((Combo) widget).getText();
+        EnumDatatype type = (EnumDatatype) ((ScriptParameter) widget.getData())
+                .getDatatype();
+        return getValueFromNiceName(type, name);
     }
 
     @Override
     public void setValue(Widget widget, String value) {
-        ((Combo) widget).setText(value);
+        EnumDatatype type = (EnumDatatype) ((ScriptParameter) widget.getData())
+                .getDatatype();
+        ((Combo) widget).setText(getNiceNameFromValue(type, value));
+    }
+
+    private String getValueFromNiceName(EnumDatatype type, String name) {
+        for (EnumItem item : type.getItems()) {
+            if (name.equals(item.getNiceName())) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
+
+    private String getNiceNameFromValue(EnumDatatype type, String value) {
+        for (EnumItem item : type.getItems()) {
+            if (value.equals(item.getValue())) {
+                return item.getNiceName();
+            }
+        }
+        return null;
     }
 }
