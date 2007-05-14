@@ -2,8 +2,11 @@ package org.daisy.pipeline.gui;
 
 import org.daisy.pipeline.gui.doc.DocPerspective;
 import org.daisy.pipeline.gui.doc.DocView;
+import org.daisy.pipeline.gui.jobs.JobDetailsView;
+import org.daisy.pipeline.gui.jobs.JobsView;
 import org.daisy.pipeline.gui.jobs.wizard.NewJobWizard;
 import org.daisy.pipeline.gui.messages.MessagesView;
+import org.daisy.pipeline.gui.parameters.ParametersView;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
@@ -22,7 +25,10 @@ public final class PerspectiveHelper {
         layout.addPerspectiveShortcut(DocPerspective.ID);
         // View shortcuts
         layout.addShowViewShortcut(DocView.ID);
+        layout.addShowViewShortcut(JobsView.ID);
         layout.addShowViewShortcut(MessagesView.ID);
+        layout.addShowViewShortcut(ParametersView.ID);
+        layout.addShowViewShortcut(JobDetailsView.ID);
         layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
         // Wizard shortcuts
         layout.addNewWizardShortcut(NewJobWizard.ID);
