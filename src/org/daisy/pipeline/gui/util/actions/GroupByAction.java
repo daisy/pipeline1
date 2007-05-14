@@ -1,8 +1,6 @@
 package org.daisy.pipeline.gui.util.actions;
 
-import java.util.List;
-
-import org.daisy.pipeline.gui.util.Category;
+import org.daisy.pipeline.gui.util.CategorySet;
 import org.daisy.pipeline.gui.util.viewers.CategorizedContentProvider;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -15,25 +13,25 @@ import org.eclipse.jface.viewers.ContentViewer;
 public class GroupByAction extends Action {
 
     private ContentViewer viewer;
-    private List<Category> categories;
+    private CategorySet categorySet;
     private CategorizedContentProvider contentProvider;
     private boolean wasCheched;
 
-    public GroupByAction(String name, ContentViewer viewer,
-            List<Category> categories) {
-        super(name, IAction.AS_RADIO_BUTTON);
+    public GroupByAction(CategorySet categorySet, ContentViewer viewer) {
+        super(categorySet.getName(), IAction.AS_RADIO_BUTTON);
         this.viewer = viewer;
         this.contentProvider = (CategorizedContentProvider) viewer
                 .getContentProvider();
-        this.categories = categories;
-        setChecked(contentProvider.getCategories() == categories);
+        this.categorySet = categorySet;
+        setChecked(contentProvider.getCategories() == categorySet
+                .getCategories());
         this.wasCheched = isChecked();
     }
 
     @Override
     public void run() {
         if (isChecked() && !wasCheched) {
-            contentProvider.setCategories(categories);
+            contentProvider.setCategories(categorySet.getCategories());
             viewer.refresh();
         }
         wasCheched = isChecked();
