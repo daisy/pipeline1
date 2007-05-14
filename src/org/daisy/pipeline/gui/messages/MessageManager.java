@@ -11,6 +11,7 @@ import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.pipeline.gui.jobs.JobsRunner;
 import org.daisy.pipeline.gui.jobs.model.JobInfo;
+import org.eclipse.core.runtime.jobs.Job;
 
 /**
  * @author Romain Deltour
@@ -48,12 +49,12 @@ public class MessageManager implements BusListener {
     public void received(EventObject event) {
         if (event instanceof MessageEvent) {
             MessageEvent me = (MessageEvent) event;
-            JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
-                    .currentJob();
-            if (runner != null) {
-                JobInfo jobInfo = runner.currentJobInfo();
+            // TODO shouldn't rely on threading here
+            Job thread = JobsRunner.getJobManager().currentJob();
+            if (thread != null && thread instanceof JobsRunner) {
+                JobInfo jobInfo = ((JobsRunner) thread).currentJobInfo();
                 if (jobInfo != null) {
-                    me = new JobMessageEvent(me,jobInfo);
+                    me = new JobMessageEvent(me, jobInfo);
                 }
             }
             if (messages.size() == capacity) {
