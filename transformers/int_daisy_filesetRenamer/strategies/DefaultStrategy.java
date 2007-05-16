@@ -40,6 +40,7 @@ public class DefaultStrategy implements RenamingStrategy {
 	private boolean mForceAsciiSubset = false;
 	private boolean isValidated = false;
 	private FilesetLabelProvider mLabelProvider = null;
+	private int mFileCount = 0;
 	
 	public DefaultStrategy(Fileset fileset, SegmentedFileName templateName, boolean forceAsciiSubset) {
 		mInputFileset = fileset;
@@ -79,11 +80,13 @@ public class DefaultStrategy implements RenamingStrategy {
 	 * Create a new name using the template that was provided in the constructor.
 	 */
 	private String createNewName(FilesetFile f) throws FilesetRenamingException {
-
+		
 		String returnName = null;
 		List templateSegments = mTemplateName.getSegments();
 		SegmentedFileName newName = new SegmentedFileName();
-		newName.setSegmentSeparator(mSegmentSeparator); 
+		newName.setSegmentSeparator(mSegmentSeparator);
+		
+		mFileCount++;
 		try{			
 			for (Iterator iter = templateSegments.iterator(); iter.hasNext();) {
 				Segment templateSegment = (Segment) iter.next();
@@ -116,12 +119,39 @@ public class DefaultStrategy implements RenamingStrategy {
 			//TODO if we have zero segments or just the extension segment, do something.			
 			//if (newName.getSegments().size()<2) return f.getName();
 			
-			//check whether we should force ascii subset
+			//check whether we should go filename safe; TODO use ISO 9660 which in level 1 is a subset of the z3986 restriction
 			if(mForceAsciiSubset) {
 				returnName = CharUtils.toNonWhitespace(newName.getFileName(), '_');
 				returnName = CharUtils.toPrintableAscii(returnName);
+				
+				if(!CharUtils.isFilenameCompatible(returnName, CharUtils.FilenameRestriction.Z3986)) {
+					StringBuilder truncName = new StringBuilder();
+					char prevChar = ' ';
+					for (int i = 0; i < returnName.length(); i++) {
+						//remove any nonallowed chars
+						//remove dual underscores
+						char ch = returnName.charAt(i);
+						if(!CharUtils.isFilenameCompatible(ch, CharUtils.FilenameRestriction.Z3986)) {
+							//System.err.println("ignoring filenameincompatible: " + ch);
+						}else{
+							if(!(ch=='_' && prevChar == '_')) {
+								truncName.append(ch);
+							}	
+						}	
+						prevChar = ch;
+					}
+					returnName = truncName.toString();
+				}
+								
 			}else{
 				returnName = newName.getFileName();
+			}
+			
+			
+			//make sure we have something usable
+			String test = returnName.replace("_", "");
+			if(test.length()<1) {
+				returnName = "file" + mFileCount;
 			}
 			
 			EFile efile = new EFile(returnName);

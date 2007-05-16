@@ -1,6 +1,5 @@
 package int_daisy_filesetRenamer.segment;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.HashMap;

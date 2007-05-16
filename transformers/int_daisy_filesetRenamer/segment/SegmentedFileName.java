@@ -8,7 +8,7 @@ import java.util.LinkedList;
  * @author Markus Gylling
  */
 public class SegmentedFileName {
-	private LinkedList mSegments = null;  //<Segment>*	
+	private LinkedList<Segment> mSegments = null; 	
 	private String mSegmentSeparator = null;
 	
 	public static final int POSITION_FIRST = 1;
@@ -20,7 +20,7 @@ public class SegmentedFileName {
 	 * Instantiator.
 	 */
 	public SegmentedFileName(){
-		mSegments = new LinkedList();
+		mSegments = new LinkedList<Segment>();
 		mSegmentSeparator = "";		
 	}
 	
@@ -84,7 +84,7 @@ public class SegmentedFileName {
 				break;
 			case POSITION_BEFORE_EXTENSION_SEGMENT:
 				if(!mSegments.isEmpty()){
-					Segment s = (Segment) mSegments.getLast();
+					Segment s = mSegments.getLast();
 					if(s!=null && s instanceof ExtensionSegment) {
 						ExtensionSegment extension = (ExtensionSegment)mSegments.removeLast();
 						mSegments.addLast(segment);
@@ -98,7 +98,7 @@ public class SegmentedFileName {
 				break;
 			case POSITION_AFTER_PREFIX_SEGMENT:	
 				if(!mSegments.isEmpty()){
-					Segment sg = (Segment) mSegments.getFirst();				
+					Segment sg = mSegments.getFirst();				
 					if(sg!=null && sg instanceof FixedSegment) {
 						FixedSegment pfx = (FixedSegment)mSegments.removeFirst();
 						mSegments.addFirst(segment);

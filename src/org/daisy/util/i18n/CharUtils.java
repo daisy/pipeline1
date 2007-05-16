@@ -114,6 +114,44 @@ public final class CharUtils {
 	}
 
 	/**
+	 * @return true if the char is among the
+	 * chars allowed by inparam FilenameRestriction
+	 */
+	public static boolean isFilenameCompatible(char ch, FilenameRestriction rule) {
+		//48-57 = 0-9, 65-90 = A-Z, 97-122 = a-z, 45 = -, 95 = _, 46 = .
+		if(rule == FilenameRestriction.Z3986) {
+			return ((ch>47&&ch<58)||ch==45||ch==46||ch==95||(ch>64&&ch<91)||(ch>96&&ch<123));
+		}
+		return ((ch>47&&ch<58)||ch==45||ch==95||(ch>64&&ch<91)||(ch>96&&ch<123));
+	}
+	
+	/**
+	 * @return true if all characters in the string are among the
+	 * chars allowed by inparam FilenameRestriction
+	 */
+	public static boolean isFilenameCompatible(String string, FilenameRestriction rule) {
+		return isFilenameCompatible(string.toCharArray(), rule);
+	}
+	
+	/**
+	 * @return true if all chars in the array are among the
+	 * chars allowed by inparam FilenameRestriction
+	 */
+	public static boolean isFilenameCompatible(char[] ch, FilenameRestriction rule) {
+		for (int i = 0; i < ch.length; i++) {
+			if (!isFilenameCompatible(ch[i], rule)) {
+				return false;
+			}
+		}
+		return true;				
+	}
+	
+	public enum FilenameRestriction {
+		ISO_9660_LEVEL1,
+		Z3986
+	}
+	
+	/**
 	 * @return true if the char is within the control character (non
 	 *         printable) range of 7bit ascii, false otherwise
 	 */
@@ -407,11 +445,20 @@ public final class CharUtils {
 
 		//if we are here, still no match
 		//try the costly version
-		char[] chars = transliterateNonSpacingMarkRemoval(String.valueOf(c)).toCharArray();
-		if((chars.length>1) || (isAsciiPrintable(chars[0]))) {
-			return "_";	
+		String icu = transliterateNonSpacingMarkRemoval(String.valueOf(c));
+		if(icu==null || (!isAsciiPrintable(icu))) {
+			icu = transliterateAnyToLatin(String.valueOf(c));
+			if(icu==null || (!isAsciiPrintable(icu))) {
+				return "_";
+			}
 		}
-		return Character.toString(chars[0]);						
+		return icu;
+		
+//		char[] chars = transliterateNonSpacingMarkRemoval(String.valueOf(c)).toCharArray();
+//		if((chars.length>1) || (isAsciiPrintable(chars[0]))) {
+//			return "_";	
+//		}		
+//		return Character.toString(chars[0]);						
 	}
 
 	/**
