@@ -10,12 +10,14 @@ import org.daisy.pipeline.test.impl.ConfigurableValidator1;
 import org.daisy.pipeline.test.impl.D202dtbValidator1;
 import org.daisy.pipeline.test.impl.DTBookValidator1;
 import org.daisy.pipeline.test.impl.DTBookValidator2;
+import org.daisy.pipeline.test.impl.FilesetRenamer1;
 import org.daisy.pipeline.test.impl.Narrator1;
 import org.daisy.pipeline.test.impl.OcfCreator1;
 import org.daisy.pipeline.test.impl.Odf2dtbook1;
 import org.daisy.pipeline.test.impl.OpsCreator1;
 import org.daisy.pipeline.test.impl.PrettyPrinter1;
 import org.daisy.pipeline.test.impl.RenamerTaggerValidator1;
+import org.daisy.pipeline.test.impl.Rtf2dtbook1;
 import org.daisy.pipeline.test.impl.UnicodeNormalizer1;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
@@ -90,18 +92,22 @@ public class PipelineTestDriver {
 
 	public static Collection<PipelineTest> getTests() {
 		List<PipelineTest> tests = new LinkedList<PipelineTest>(); 
-				
+
+//		tests.add(new ConfigurableValidator1(inputDir, outputDir));
+//		tests.add(new D202dtbValidator1(inputDir, outputDir));
 //		tests.add(new DTBookValidator1(inputDir, outputDir));
 //		tests.add(new DTBookValidator2(inputDir, outputDir));
+//		tests.add(new FilesetRenamer1(inputDir, outputDir));
 //		tests.add(new Narrator1(inputDir, outputDir));
-//		tests.add(new PrettyPrinter1(inputDir, outputDir));
-//		tests.add(new D202dtbValidator1(inputDir, outputDir));
-//		tests.add(new Odf2dtbook1(inputDir, outputDir));
-//		tests.add(new UnicodeNormalizer1(inputDir, outputDir));
-//		tests.add(new ConfigurableValidator1(inputDir, outputDir));
 //		tests.add(new OcfCreator1(inputDir, outputDir));
-		tests.add(new OpsCreator1(inputDir, outputDir));
-//		tests.add(new RenamerTaggerValidator1(inputDir, outputDir));
+//		tests.add(new OpsCreator1(inputDir, outputDir));
+//		tests.add(new Odf2dtbook1(inputDir, outputDir));
+//		tests.add(new PrettyPrinter1(inputDir, outputDir));
+//		tests.add(new RenamerTaggerValidator1(inputDir, outputDir));		
+//		tests.add(new UnicodeNormalizer1(inputDir, outputDir));
+		tests.add(new Rtf2dtbook1(inputDir, outputDir));
+
+
 		
 		return tests;
 	}
