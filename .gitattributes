@@ -261,6 +261,7 @@ transformers/int_daisy_filesetAudioTagger/playlist/PlaylistWriter.java -text
 transformers/int_daisy_filesetAudioTagger/playlist/WPLWriter.java -text
 transformers/int_daisy_filesetAudioTagger/playlist/XSPFWriter.java -text
 transformers/int_daisy_filesetAudioTagger/transformer.tdf -text
+transformers/int_daisy_filesetEncryptor/transformer.tdf -text
 transformers/int_daisy_filesetRenamer/transformer.tdf -text
 transformers/int_daisy_ocfCreator/OcfCreator.java -text
 transformers/int_daisy_ocfCreator/messages.properties -text
