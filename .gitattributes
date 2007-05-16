@@ -281,6 +281,7 @@ transformers/int_daisy_prettyPrinter/messages.properties -text
 transformers/int_daisy_prettyPrinter/transformer.tdf -text
 transformers/int_daisy_unicodeNormalizer/messages.properties -text
 transformers/int_daisy_unicodeNormalizer/transformer.tdf -text
+transformers/int_daisy_unicodeTranscoder/transformer.tdf -text
 transformers/int_daisy_validator/XMLReporter.java -text
 transformers/int_daisy_validator/validator.css -text
 transformers/int_daisy_validator/validator.xsl -text
