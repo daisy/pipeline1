@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Widget;
 
@@ -141,18 +140,10 @@ public class ParamsWizardPage extends WizardPage implements Listener {
             adapter = DatatypeAdapter.getAdapter(param.getDatatype());
             numCol = Math.max(numCol, adapter.getNumCol());
         }
-        parent.setLayout(new GridLayout(numCol + 1, false));
+        parent.setLayout(new GridLayout(numCol, false));
         // Create controls for each param
         for (ScriptParameter param : params) {
             adapter = DatatypeAdapter.getAdapter(param.getDatatype());
-            Label label = new Label(parent, SWT.NONE);
-            label.setText(param.getNicename());
-            label.setToolTipText(param.getDescription());
-            GridData data = new GridData();
-            data.grabExcessVerticalSpace = true;
-            data.verticalAlignment = GridData.CENTER;
-            data.horizontalAlignment = GridData.END;
-            label.setLayoutData(data);
             controls.add(adapter.createControl(parent, param, numCol));
         }
         return controls;

@@ -23,6 +23,7 @@ public class DirectoryAdapter extends DefaultAdapter {
     @Override
     public Control createControl(final Composite parent, ScriptParameter param,
             int numCol) {
+        createLabel(parent, param);
         final DirectoryDatatype type = (DirectoryDatatype) param.getDatatype();
         final Text field = new Text(parent, SWT.SINGLE | SWT.BORDER);
         Button button = new Button(parent, SWT.PUSH | SWT.CENTER);
@@ -41,7 +42,7 @@ public class DirectoryAdapter extends DefaultAdapter {
         });
         field.setData(param);
         final GridData data = new GridData();
-        data.horizontalSpan = numCol - 1;
+        data.horizontalSpan = numCol - 2;
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
         field.setLayoutData(data);
@@ -50,6 +51,6 @@ public class DirectoryAdapter extends DefaultAdapter {
 
     @Override
     public int getNumCol() {
-        return 2;
+        return 3;
     }
 }

@@ -18,13 +18,14 @@ public class IntegerAdapter extends DefaultAdapter {
     @Override
     public Control createControl(Composite parent, ScriptParameter param,
             int numCol) {
+        createLabel(parent, param);
         IntegerDatatype type = (IntegerDatatype) param.getDatatype();
         Spinner spin = new Spinner(parent, SWT.NONE);
         spin.setMinimum(type.getMin());
         spin.setMaximum(type.getMax());
         spin.setData(param);
         final GridData data = new GridData();
-        data.horizontalSpan = numCol;
+        data.horizontalSpan = numCol-1;
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
         spin.setLayoutData(data);

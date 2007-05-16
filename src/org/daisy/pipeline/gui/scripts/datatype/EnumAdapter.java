@@ -19,6 +19,7 @@ public class EnumAdapter extends DefaultAdapter {
     @Override
     public Control createControl(Composite parent, ScriptParameter param,
             int numCol) {
+        createLabel(parent, param);
         EnumDatatype type = (EnumDatatype) param.getDatatype();
         Combo combo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
         for (EnumItem item : type.getItems()) {
@@ -26,7 +27,7 @@ public class EnumAdapter extends DefaultAdapter {
         }
         combo.setData(param);
         final GridData data = new GridData();
-        data.horizontalSpan = numCol;
+        data.horizontalSpan = numCol-1;
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
         combo.setLayoutData(data);
