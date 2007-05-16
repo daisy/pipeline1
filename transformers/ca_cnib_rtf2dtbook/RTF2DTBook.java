@@ -16,14 +16,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package ca_cnib_rtf2dtbook;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.execution.Command;
@@ -38,24 +40,39 @@ import org.xml.sax.EntityResolver;
 
 
 /**
+ * @author Brandon Nelson
  * @author Linus Ericson
+ * @author Markus Gylling
  */
 public class RTF2DTBook extends Transformer {
 
-	private static String pythonCommand = System.getProperty("dmfc.python.path");
+	private static String pythonCommand = System.getProperty("pipeline.python.path");
 
-	public RTF2DTBook(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-		super(inListener, eventListeners, isInteractive);        
+	public RTF2DTBook(InputListener inListener,  Boolean isInteractive) {
+		super(inListener, isInteractive);        
 	}
-
+	
 	protected boolean execute(Map parameters) throws TransformerRunException {
+		
+		
+		//first check if python is installed and identified
+		File test = new File(pythonCommand);
+		if(!test.exists() || !test.canRead()) {
+			String message = i18n("PYTHON_INSTALL_PROBLEM");
+			this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
+			throw new TransformerRunException(message);
+		}
+		
 		// Read parameters
+		// Dynamic ones
 		String rtfFile = (String)parameters.remove("rtf");
 		String dtbookFile = (String)parameters.remove("dtbook");
+
+		// Static ones
 		String python = (String)parameters.remove("python");
 		String stylesheet = (String)parameters.remove("stylesheet");
-		String xsltFactory = (String)parameters.remove("factory"); 
-
+		String xsltFactory = (String)parameters.remove("factory");
+		
 		// Output the XML into a temporary file
 		TempFile xmlFile;
 		try {
@@ -75,18 +92,10 @@ public class RTF2DTBook extends Transformer {
 		args[6] = "--output=" + xmlFile.getFile().getAbsolutePath();
 		args[7] = FilenameOrFileURI.toFile(rtfFile).getAbsolutePath();;
 
-		/*
-		System.err.println("arg0: " + args[0]);
-		System.err.println("arg1: " + args[1]);
-		System.err.println("arg2: " + args[2]);
-		System.err.println("arg3: " + args[3]);
-		System.err.println("arg4: " + args[4]);
-		System.err.println("arg5: " + args[5]);
-		System.err.println("arg6: " + args[6]);
-		 */
+		//printArgs(args);
 
 		// Run python
-		sendMessage(Level.FINER, i18n("RUNNING_PYTHON"));
+		sendMessage(i18n("RUNNING_PYTHON"));
 		this.progress(0.05);
 
 
@@ -105,24 +114,34 @@ public class RTF2DTBook extends Transformer {
 		is 0 and causes the Stylesheet.apply to fail.
 		 */
 		
-			// Finish up with some XSLT
-			sendMessage(Level.FINER, i18n("APPLYING_XSLT"));
-			this.progress(0.70);
-			try {
-				EntityResolver resolver = CatalogEntityResolver.getInstance();
-				Stylesheet.apply(xmlFile.getFile().getAbsolutePath(), stylesheet, dtbookFile, xsltFactory, null, resolver);
-				this.progress(0.99);
-			} catch (XSLTException e) {
-				throw new TransformerRunException(i18n("CANNOT_CREATE_TEMP_FILE"), e);
+		// Finish up with some XSLT
+		sendMessage(i18n("APPLYING_XSLT"));
+		this.progress(0.70);
+		try {
+			File outputFile = new File(dtbookFile);
+			outputFile.getParentFile().mkdirs();
+			EntityResolver resolver = CatalogEntityResolver.getInstance();
+			Stylesheet.apply(xmlFile.getFile().getAbsolutePath(), stylesheet, outputFile.getAbsolutePath(), xsltFactory, null, resolver);
+			this.progress(0.99);
+		} catch (XSLTException e) {
+			throw new TransformerRunException(i18n("CANNOT_CREATE_TEMP_FILE"), e);
 
-			} catch (CatalogExceptionNotRecoverable e) {
-				throw new TransformerRunException(i18n("ENTITY_RESOLVER_ERROR"), e);
-			}
+		} catch (CatalogExceptionNotRecoverable e) {
+			throw new TransformerRunException(i18n("ENTITY_RESOLVER_ERROR"), e);
+		}
 
-			return true;
+		return true;
 		
+	}
 
-		
+	private void printArgs(String[] args) {
+		System.err.println("arg0: " + args[0]);
+		System.err.println("arg1: " + args[1]);
+		System.err.println("arg2: " + args[2]);
+		System.err.println("arg3: " + args[3]);
+		System.err.println("arg4: " + args[4]);
+		System.err.println("arg5: " + args[5]);
+		System.err.println("arg6: " + args[6]);
 	}
 
 }
