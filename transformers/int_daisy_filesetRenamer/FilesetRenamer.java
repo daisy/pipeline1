@@ -119,7 +119,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			if(mOutputDir.getCanonicalPath().equals(mInputFileset.getManifestMember().getFile().getParentFile().getCanonicalPath())) {
 				String message = i18n("IN_OUT_SAME_SKIPPING", mOutputDir.getCanonicalPath());
 				this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
-				return true;
+				throw new TransformerRunException(message);
 			}
 			
 			this.sendMessage(0.1);
