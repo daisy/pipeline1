@@ -2,8 +2,6 @@ package int_daisy_filesetAudioTagger.playlist;
 
 import java.util.Collection;
 
-import javax.xml.stream.XMLEventFactory;
-
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.interfaces.audio.AudioFile;
 import org.daisy.util.fileset.util.FilesetLabelProvider;
