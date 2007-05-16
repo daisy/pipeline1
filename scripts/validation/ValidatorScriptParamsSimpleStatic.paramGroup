@@ -2,8 +2,8 @@
 <paramGroup>
 
 	<parameter name="validatorOutputXMLReport" value="" required="false">
-		<nicename>XML Report</nicename>
-		<description>Select a file to store an XML report in</description>
+		<nicename>XML Validation Report</nicename>
+		<description>Select a file to store a Validation XML report in</description>
 		<datatype>
 			<file mime="application/xml" type="output"/>
 		</datatype>
