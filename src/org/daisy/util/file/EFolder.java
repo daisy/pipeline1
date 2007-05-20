@@ -574,38 +574,40 @@ public class EFolder extends File {
 		HashSet set = new HashSet();
 
 		File[] files = this.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			if ((type == TYPE_FILE_OR_FOLDER)
-					|| (files[i].isFile() && type == TYPE_FILE)
-					|| (files[i].isDirectory() && type == TYPE_FOLDER)) {
-				if (!files[i].isHidden()
-						|| hidden) {
-					if (regex == null
-							|| files[i].getName().matches(regex)) {
-						if (files[i].isFile()) {
-							set.add(files[i]);
-						} else {
-							EFolder f;
-							try {
-								f = new EFolder(files[i].getAbsolutePath());
-							} catch (IOException e) {
-								System.err.println(e.getMessage());
-								continue;
+		if(null!=files){
+			for (int i = 0; i < files.length; i++) {
+				if ((type == TYPE_FILE_OR_FOLDER)
+						|| (files[i].isFile() && type == TYPE_FILE)
+						|| (files[i].isDirectory() && type == TYPE_FOLDER)) {
+					if (!files[i].isHidden()
+							|| hidden) {
+						if (regex == null
+								|| files[i].getName().matches(regex)) {
+							if (files[i].isFile()) {
+								set.add(files[i]);
+							} else {
+								EFolder f;
+								try {
+									f = new EFolder(files[i].getAbsolutePath());
+								} catch (IOException e) {
+									System.err.println(e.getMessage());
+									continue;
+								}
+								set.add(f);
 							}
-							set.add(f);
 						}
 					}
 				}
-			}
-			if (deep && files[i].isDirectory()) {
-				try {
-					EFolder fldr = new EFolder(files[i].getAbsolutePath());
-					set.addAll(fldr.list(type, hidden, regex, deep));
-				} catch (IOException e) {
-					System.err.println(e.getMessage());
+				if (deep && files[i].isDirectory()) {
+					try {
+						EFolder fldr = new EFolder(files[i].getAbsolutePath());
+						set.addAll(fldr.list(type, hidden, regex, deep));
+					} catch (IOException e) {
+						System.err.println(e.getMessage());
+					}
 				}
-			}
-		} // for int i files.length
+			} // for int i files.length
+		}//if(null!=files)
 		return set;
 	}
 
