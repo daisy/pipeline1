@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -42,6 +43,7 @@ import org.daisy.dmfc.core.transformer.TransformerHandlerLoader;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.JobFailedException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
+import org.daisy.util.file.EFolder;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.i18n.I18n;
 import org.daisy.util.i18n.XMLProperties;
@@ -175,6 +177,10 @@ public class DMFCCore implements TransformerHandlerLoader {
             return mTransformerHandlers.get(transformerName);
         }
         File transformersDir = new File(getHomeDirectory(), "transformers");
+        
+        //mg20070520: if subdir (such as se_tpb_dtbSplitterMerger.split)
+        transformerName = transformerName.replace('.', '/');
+        
         // Try to load TDF from directory
         File[] files = new File(transformersDir, transformerName)
                 .listFiles(new FileFilter() {
@@ -182,6 +188,7 @@ public class DMFCCore implements TransformerHandlerLoader {
                         return file.getName().endsWith(".tdf");
                     }
                 });
+                
         if (files != null && files.length > 1) {
             EventBus.getInstance().publish(
                     new CoreMessageEvent(this,
