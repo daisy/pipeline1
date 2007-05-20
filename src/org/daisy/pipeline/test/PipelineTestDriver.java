@@ -8,6 +8,7 @@ import java.util.List;
 import org.daisy.dmfc.ui.CommandLineUI;
 import org.daisy.pipeline.test.impl.ConfigurableValidator1;
 import org.daisy.pipeline.test.impl.D202dtbValidator1;
+import org.daisy.pipeline.test.impl.DTBSplitter1;
 import org.daisy.pipeline.test.impl.DTBookValidator1;
 import org.daisy.pipeline.test.impl.DTBookValidator2;
 import org.daisy.pipeline.test.impl.FilesetRenamer1;
@@ -105,7 +106,8 @@ public class PipelineTestDriver {
 //		tests.add(new PrettyPrinter1(inputDir, outputDir));
 //		tests.add(new RenamerTaggerValidator1(inputDir, outputDir));		
 //		tests.add(new UnicodeNormalizer1(inputDir, outputDir));
-		tests.add(new Rtf2dtbook1(inputDir, outputDir));
+//		tests.add(new Rtf2dtbook1(inputDir, outputDir));
+		tests.add(new DTBSplitter1(inputDir, outputDir));
 
 
 		

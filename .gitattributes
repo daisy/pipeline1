@@ -24,6 +24,8 @@ doc/needed.documentation.txt -text
 doc/pipeline.css -text
 doc/scripts/AudioTagger.html -text
 doc/scripts/ConfigurableValidator.html -text
+doc/scripts/DTBMerger.html -text
+doc/scripts/DTBSplitter.html -text
 doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/FilesetRenamer.html -text
@@ -46,6 +48,8 @@ doc/transformers/int_daisy_prettyPrinter.html -text
 doc/transformers/int_daisy_unicodeNormalizer.html -text
 doc/transformers/int_daisy_validator.html -text
 doc/transformers/pipeline_system_deleter.html -text
+doc/transformers/se_tpb_dtbMerger.html -text
+doc/transformers/se_tpb_dtbSplitter.html -text
 doc/transformers/tpb_se_wordml2dtbook.html -text
 doc/transformers/uk_rnib_odf2dtbook.html -text
 doc/user.vocabulary.txt -text
@@ -132,9 +136,11 @@ scripts/manipulation/AudioTaggerScriptParamsStatic.paramGroup -text
 scripts/manipulation/AudioTaggerTaskParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerScriptParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerTaskParamsStatic.paramGroup -text
+scripts/manipulation/advanced/DTBMerger.taskScript -text
 scripts/manipulation/advanced/RenamerTaggerValidator.taskScript -text
 scripts/manipulation/advanced/UnicodeNormalizer.taskScript -text
 scripts/manipulation/simple/AudioTagger.taskScript -text
+scripts/manipulation/simple/DTBSplitter.taskScript -text
 scripts/manipulation/simple/FilesetRenamer.taskScript -text
 scripts/manipulation/simple/PrettyPrinter.taskScript -text
 scripts/validation/ValidatorScriptParamsAdvancedStatic.paramGroup -text
@@ -202,6 +208,7 @@ src/org/daisy/pipeline/test/PipelineTestDriver.java -text
 src/org/daisy/pipeline/test/PipelineTestException.java -text
 src/org/daisy/pipeline/test/impl/ConfigurableValidator1.java -text
 src/org/daisy/pipeline/test/impl/D202dtbValidator1.java -text
+src/org/daisy/pipeline/test/impl/DTBSplitter1.java -text
 src/org/daisy/pipeline/test/impl/DTBookValidator1.java -text
 src/org/daisy/pipeline/test/impl/DTBookValidator2.java -text
 src/org/daisy/pipeline/test/impl/FilesetRenamer1.java -text
@@ -289,6 +296,7 @@ transformers/int_daisy_validator/validator.xsl -text
 transformers/pipeline_system_deleter/Deleter.java -text
 transformers/pipeline_system_deleter/messages.properties -text
 transformers/pipeline_system_deleter/transformer.tdf -text
+transformers/se_tpb_dtbSplitterMerger/merge/transformer.tdf -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_1.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_10.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_2.mp3 -text
@@ -309,6 +317,7 @@ transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_6.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_7.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_8.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_9.mp3 -text
+transformers/se_tpb_dtbSplitterMerger/split/transformer.tdf -text
 transformers/se_tpb_filesetcreator/resource/tpbnarrator_res.mp3 -text
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/Interop.SpeechLib.dll -text
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.application -text svneol=unset#application/octet-stream

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taskScript version="2.0" name="DTBSplitter">
+	<nicename>DTB Splitter</nicename>
+	<description>Split a Single Volume DTB into a Multiple Volume DTB</description>
+   	<documentation uri="../../../doc/scripts/DTBSplitter.html"/>
+    <comment/>     	
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select the input NCC or OPF</description>
+		<datatype>
+			<file mime="application/anonymous" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output directory</nicename>
+		<description>Select the directory where the output subvolumes will be saved.</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="maxSize" value="680" required="false">
+		<nicename>Volume size</nicename>
+		<description>Select the maximum size of output volumes, in megabytes.</description>
+		<datatype>
+			<integer/>
+		</datatype>	
+	</parameter>
+			
+	<parameter name="maxLevel" value="2" required="false">
+		<nicename>Split heading depth</nicename>
+		<description>Select the maximal header level in the navigation control document (ncc/ncx) at which splitting shall be allowed.</description>
+		<datatype>		
+			<enum>
+			  <item nicename="1" value="1" />
+			  <item nicename="2" value="2" />
+			  <item nicename="3" value="3" />
+			  <item nicename="4" value="4" />
+			  <item nicename="5" value="5" />
+			  <item nicename="6" value="6" />			  			  
+			</enum>
+		</datatype>
+	</parameter>
+	
+	
+	<task name="se_tpb_dtbSplitterMerger.split" interactive="false">
+		<parameter>
+			<name>inputFilePath</name>
+			<value>${input}</value>
+		</parameter>
+					
+		<parameter>
+			<name>outDirPath</name>
+			<value>${output}</value>
+		</parameter>
+
+		<parameter>
+			<name>volumeSizeInMB</name>
+			<value>${maxSize}</value>
+		</parameter>				
+					
+		<parameter>
+			<name>maxSplitLevel</name>
+			<value>${maxLevel}</value>
+		</parameter>									
+	</task>
+
+</taskScript>
