@@ -10,12 +10,16 @@ unzip -o -j %1 content.xml styles.xml
 echo Abstract the style information from content.xml and styles.xml, to _styles.xml and _headings.xml
 
 
-java  -mx120m -ms120m -cp .;/myjava/saxon8.jar;/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o _styles.xml   -it initial  odfGetStyles.xsl
+java  -mx120m -ms120m -cp .;/myjava/saxon8.jar;/myjava/xercesImpl.jar 
+-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  
+-x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o _styles.xml   -it initial  odfGetStyles.xsl
 
 if exist op.xml del op.xml
 
 rem now generate all heading styles
-java  -mx120m -ms120m -cp .;/myjava/saxon8.jar;/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o _headings.xml  _styles.xml  odfHeadings.xsl
+java  -mx120m -ms120m -cp .;/myjava/saxon8.jar;/myjava/xercesImpl.jar 
+-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  
+-x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o _headings.xml  _styles.xml  odfHeadings.xsl
 
 
 

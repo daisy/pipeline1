@@ -77,26 +77,17 @@ version="2.0"
     <revremark></revremark>
    </revision>
   </revhistory>
-  </d:doc>
+</d:doc>
+  
   <xsl:output method="xml" indent="yes"/>
-
-
-
   <xsl:key name="headings" match="style" use="@parentStyle"/>
 
   <xsl:template match="/" name="initial">
-
-  
-
-
-
-<headings>
-  <xsl:call-template name="oneLevel">
-    <xsl:with-param name="level" select="1"/>
-  </xsl:call-template>
-</headings>
-
-
+  	<headings>
+  		<xsl:call-template name="oneLevel">
+    		<xsl:with-param name="level" select="1"/>
+  		</xsl:call-template>
+	</headings>
   </xsl:template>
 
   <xsl:template name="oneLevel">
@@ -104,13 +95,13 @@ version="2.0"
     <xsl:variable name="headingName" select="concat('Heading_20_',string($level))"/>
     <xsl:variable name="nextHeading" select="concat('Heading_20_',string($level+1))"/>
     <xsl:if test="key('headings', $headingName)[not(@name=$nextHeading)]">
-    <level n="{$level}">
-      <h><xsl:value-of select="$headingName"/></h>
-         <xsl:for-each select="key('headings', $headingName)[not(@name=$nextHeading)]/@name">
-      <h><xsl:value-of select="."/></h>
-    </xsl:for-each>
-    </level>
-  </xsl:if>
+	    <level n="{$level}">
+	      	<h><xsl:value-of select="$headingName"/></h>
+	      	<xsl:for-each select="key('headings', $headingName)[not(@name=$nextHeading)]/@name">
+	      		<h><xsl:value-of select="."/></h>
+	    	</xsl:for-each>
+	    </level>
+  	</xsl:if>
 
     <xsl:choose>
       <xsl:when test="$level &lt; 6">
@@ -123,15 +114,10 @@ version="2.0"
 
   </xsl:template>
 
-
-
-
-
-  <xsl:template match="*" >
-  <xsl:message>
-    *****<xsl:value-of select="name(..)"/>/{<xsl:value-of select="namespace-uri()"/>}<xsl:value-of select="name()"/>******
-    </xsl:message>
-</xsl:template>
-
+  	<xsl:template match="*" >
+  		<xsl:message>
+    		*****<xsl:value-of select="name(..)"/>/{<xsl:value-of select="namespace-uri()"/>}<xsl:value-of select="name()"/>******
+    	</xsl:message>
+	</xsl:template>
 
 </xsl:stylesheet>

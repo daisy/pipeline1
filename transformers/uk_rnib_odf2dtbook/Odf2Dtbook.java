@@ -26,76 +26,137 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
+import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import net.sf.saxon.Controller;
+import net.sf.saxon.event.MessageEmitter;
 
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.util.file.EFile;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
-import org.daisy.util.xml.catalog.CatalogEntityResolver;
-import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
-import org.daisy.util.xml.xslt.Stylesheet;
-import org.daisy.util.xml.xslt.XSLTException;
+import org.daisy.util.xml.xslt.TransformerFactoryConstants;
+
 
 /**
- * Transforms an Open Document Format text file to DTBook.
- * @author Linus Ericson
+ * Transforms an Open Document Format Text file to DTBook.
+ * @author Dave Pawson (the XSLT)
+ * @author Linus Ericson (the Transformer wrapper)
+ * @author Markus Gylling (the Transformer wrapper)
  */
-public class Odf2Dtbook extends Transformer {
-
+public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListener {
+	private File mTempDir = null;
+	
     private static final int BUFFER = 2048;
-    private static final String FACTORY = "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl";
-    
-    public Odf2Dtbook(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-        super(inListener, eventListeners, isInteractive);
-    }
 
+    private static final String FACTORY = TransformerFactoryConstants.SAXON8;
+    
+    public Odf2Dtbook(InputListener inListener, Boolean isInteractive) {
+        super(inListener, isInteractive);        
+    }
+    
     protected boolean execute(Map parameters) throws TransformerRunException {
-        String odf = (String)parameters.remove("odf");
-        String dtbook = (String)parameters.remove("dtbook");
-        
-        File odfFile = FilenameOrFileURI.toFile(odf);
-        File dtbookFile = FilenameOrFileURI.toFile(dtbook);        
-        File stylesheet = new File(this.getTransformerDirectory(), "odf2daisy.xsl");
-        File dtbookDir = dtbookFile.getParentFile();
+        String systemTransformerFactory = null;
+    	
+        EFile odfInput = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("odf")));
+        EFile dtbookOutput = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("dtbook")));           
+        File dtbookDir = dtbookOutput.getParentFile();
         
         try {
-            // Create temporary directory
-            File tempDir = TempFile.createDir();
+        	systemTransformerFactory = System.getProperty("javax.xml.transform.TransformerFactory");
+        	System.setProperty("javax.xml.transform.TransformerFactory",FACTORY);
+        	
+        	// Create temporary directory
+            mTempDir = TempFile.createDir();            
+            System.err.println("tempDir is: " + mTempDir.getAbsolutePath());
             
             // Extract needed zip contents
-            ZipFile zipFile = new ZipFile(odfFile);
-            File content = new File(tempDir, "content.xml");
-            File meta = new File(tempDir, "meta.xml");
+            ZipFile zipFile = new ZipFile(odfInput);
+            File content = new File(mTempDir, "content.xml");
+            File meta = new File(mTempDir, "meta.xml");
+            File styles = new File(mTempDir, "styles.xml");
             this.extractFromZip(zipFile, "content.xml", content);
             this.extractFromZip(zipFile, "meta.xml", meta);
+            this.extractFromZip(zipFile, "styles.xml", styles);
             this.extractImages(zipFile, dtbookDir);
             zipFile.close();
+        
+            //a map holding all XSLTs for convenience 
+            Map<String,URL> stylesheets = new HashMap<String,URL>(); 
+            stylesheets.put("odfGetStyles", this.getClass().getResource("odfGetStyles.xsl"));
+            stylesheets.put("odfHeadings", this.getClass().getResource("odfHeadings.xsl"));
+            stylesheets.put("odfCleanHeadings", this.getClass().getResource("odf2.cleanHeadings.xsl"));
+
+        	MessageEmitter me = new MessageEmitter();
+        	me.setWriter(new MessageEmitterWriter()); // output redirection
             
-            // Apply transformation
-            Stylesheet.apply(content.toString(), stylesheet.toString(), dtbookFile.toString(),
-                    FACTORY, null, CatalogEntityResolver.getInstance());
+            //get an instance of saxon and ask it to be reasonably quiet
+            TransformerFactory tfac = TransformerFactory.newInstance();
+            tfac.setAttribute("http://saxon.sf.net/feature/version-warning", Boolean.FALSE);
+            tfac.setURIResolver(this);
+            tfac.setErrorListener(this);
+
+            //step 1: create _styles.xml
+            //odfGetStyles makes inline document() calls to content.xml and styles.xml,
+            //which are in the tempdir, we implement URIResolver to redirect
+            StreamSource ss = new StreamSource(stylesheets.get("odfGetStyles").openStream());
+            javax.xml.transform.Transformer saxon = tfac.newTransformer(ss); 
+            saxon.setURIResolver(this);
+            ((Controller)saxon).setMessageEmitter(me);
+            File _styles = new File(mTempDir, "_styles.xml");            
+            URL dummy = this.getClass().getResource("dummy.xml");
+            StreamSource dummySource = new StreamSource(dummy.openStream());            
+            saxon.transform(dummySource, new StreamResult(_styles));
             
-            // Remove temporary directory
-            content.delete();
-            meta.delete();
-            tempDir.delete();            
+            //Step 2. Create _headings.xml by applying odfHeadings.xsl to _styles.xml
+            File _headings = new File(mTempDir, "_headings.xml");
+            StreamSource ss2 = new StreamSource(stylesheets.get("odfHeadings").openStream());
+            saxon = tfac.newTransformer(ss2);
+            ((Controller)saxon).setMessageEmitter(me);
+            saxon.transform(new StreamSource(_styles), new StreamResult(_headings));
+                        
+            //Step 3. Remove list wrappers from heading X elements, remove declarations
+            //op.xml content.xml odf2.cleanHeadings.xsl  "headingsfile=_headings.xml"            
+            StreamSource ss3 = new StreamSource(stylesheets.get("odfCleanHeadings").openStream());
+            ss3.setSystemId(stylesheets.get("odfCleanHeadings").toExternalForm());
+            saxon = tfac.newTransformer(ss3);
+            ((Controller)saxon).setMessageEmitter(me);
+            saxon.setParameter("headingsfile", _headings.toURI().toASCIIString());
+            File op = new File(mTempDir,"op.xml");
+            saxon.transform(new StreamSource(content), new StreamResult(op));
             
-        } catch (ZipException e) {
+
+            
+            System.err.println("done");
+
+            
+//            // Remove temporary directory
+//            content.delete();
+//            meta.delete();
+//            tempDir.delete();
+            
+        } catch (Exception e) {
+        	//TODO message
             throw new TransformerRunException(e.getMessage(), e);
-        } catch (IOException e) {
-            throw new TransformerRunException(e.getMessage(), e);
-        } catch (CatalogExceptionNotRecoverable e) {
-            throw new TransformerRunException(e.getMessage(), e);
-        } catch (XSLTException e) {
-            throw new TransformerRunException(e.getMessage(), e);
+		}finally{
+        	System.setProperty("javax.xml.transform.TransformerFactory",systemTransformerFactory);        	
         }
         return true;
     }
@@ -143,5 +204,58 @@ public class Odf2Dtbook extends Transformer {
     		}
     	}
     }
+
+    /**
+     * 
+     */
+	public Source resolve(String href, String base) throws TransformerException {
+		System.err.println("resolve: " + href);
+		if(href.equals("content.xml")||href.equals("styles.xml")) {			
+			return new StreamSource(new File(mTempDir,href));
+		}
+		return null;
+	}
+
+	public void error(TransformerException exception) throws TransformerException {
+		// TODO Auto-generated method stub
+		System.err.println("stop");		
+	}
+
+	public void fatalError(TransformerException exception) throws TransformerException {
+		// TODO Auto-generated method stub
+		System.err.println("stop");
+	}
+
+	public void warning(TransformerException exception) throws TransformerException {
+		// TODO Auto-generated method stub
+		System.err.println("stop");
+	}
     
+//  MessageEmitter me = new MessageEmitter();
+//  me.setWriter(messagesWriter = new StringWriter()); // output redirection
+//  Controller transformer = (Controller) factory.newTransformer(xslSource);
+//  transformer.setMessageEmitter(me); // set my own message emitter to get
+//  output the way i need it
+	
+	class MessageEmitterWriter extends Writer {
+
+		@Override
+		public void close() throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void flush() throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void write(char[] cbuf, int off, int len) throws IOException {
+			String s = new String(cbuf);
+			System.err.println( "MessageEmitterWriter" + s);
+		}
+		 
+	}
 }

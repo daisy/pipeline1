@@ -88,45 +88,25 @@ from odf2daisy.xsl </para></purpose>
  
  <!-- Table of Contents handling. Main toc -->
  <xsl:template match="text:table-of-content">
-   <xsl:apply-templates/>
+   <level style="toc">
+     <xsl:apply-templates/>
+   </level>
  </xsl:template>
-
-
-
- <xsl:template match="text:index-body[text:p/text:a]" priority="2">
-   <div class='toc'>
-     <xsl:choose>
-    <xsl:when test="not(text:index-title)">
-      <bridgehead>Table of contents</bridgehead>
-     </xsl:when>
-     <xsl:otherwise>
-       <xsl:apply-templates select="text:index-title"/>
-     </xsl:otherwise>
-   </xsl:choose>
-
-   <list type="pl">
-     <xsl:for-each select="//text:h">
-       <li>
-         <a href="#{generate-id()}">
-           <xsl:value-of select="."/>
-         </a>
-       </li>
-     </xsl:for-each>
-   </list>
- </div>
- </xsl:template>
-
- <!-- Title, if available  -->
- <xsl:template match="text:index-title">
-   <brideghead><xsl:apply-templates /></brideghead>
- </xsl:template>
-
 
  <!-- No content in this element. Layout only -->
  <xsl:template match="text:table-of-content-source"/>
 
 
+ <xsl:template match="text:index-body">
+   <list type="ul">
+      <xsl:apply-templates/>
+   </list>
+ </xsl:template>
 
+
+ <xsl:template match="text:index-title">
+   <hd><xsl:apply-templates /></hd>
+ </xsl:template>
 
  <!-- No p element wrapper -->
  <xsl:template match="text:index-title/text:p" priority="0.6">
@@ -144,7 +124,7 @@ from odf2daisy.xsl </para></purpose>
 
  <!-- Index of Tables -->
  <xsl:template match="text:table-index">
-   <level class="tableToc">
+   <level style="tableToc">
      <xsl:apply-templates/>
    </level>
  </xsl:template>
@@ -155,7 +135,7 @@ from odf2daisy.xsl </para></purpose>
 
  <!-- Table of Illustrations -->
  <xsl:template match="text:illustration-index">
-  <level class="tableToc">
+  <level style="tableToc">
      <xsl:apply-templates/>
    </level>   
  </xsl:template>
@@ -182,43 +162,20 @@ from odf2daisy.xsl </para></purpose>
  <xsl:template match="text:alphabetical-index-source"/>
 
 
- <!-- Index body Note, this is not (necessarily) the toc index-body -->
-
+ <!-- Index body -->
  <xsl:template match="text:index-body">
-  <list type="pl">
-    <xsl:apply-templates/>
-  </list>
+   <list type="pl">
+     <xsl:apply-templates/>
+   </list>
  </xsl:template>
-
-
- <xsl:template match="text:index-title">
-  <hd><xsl:apply-templates /></hd>
- </xsl:template>
-
- <!-- No p element wrapper -->
- <xsl:template match="text:index-title/text:p" >
-  <xsl:apply-templates />
- </xsl:template>
-
-
-
-
- <xsl:template match="text:index-body/text:p[not(text:a)]" priority="2">
-  <li>
-     <lic class="entry"><xsl:value-of select="text()[1]"/></lic>
-  <lic class="pagenum"><xsl:value-of select="text()[2]"/></lic>
-  </li>
- </xsl:template>
-
 
  <xsl:template match="text:index-title">
    <hd><xsl:apply-templates/></hd>
  </xsl:template>
 
  <xsl:template match="text:index-body/text:p" priority="0.6">
-   <li><xsl:apply-templates mode="toc"/></li>
+   <li><xsl:apply-templates/></li>
  </xsl:template>
-
 
 
 </xsl:stylesheet>

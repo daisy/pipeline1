@@ -36,9 +36,37 @@ Process sequence for X.odt. See odf2daisy, odf2daisy.bat scripts
 4. Determine document structure from the content and the style information. (op to X.struct.xml)
 5. If valid, convert content.xml to X.xml (a daisy file)
 
+=====================================
+-w1 -l -o op.xml   content.xml  clean2.xsl
+Done. Abstract the style information from content.xml and styles.xml, to _styles.xml and _headings.xml
 
+-w1 -l -o _styles.xml   -it initial  odfGetStyles.xsl
 
+Now generate all heading styles
 
+-w1 -l -o _headings.xml  _styles.xml  odfHeadings.xsl
+
+echo Remove list wrappers from heading X elements, remove declarations
+
+-w1 -l -o op.xml content.xml odf2.cleanHeadings.xsl  "headingsfile=_headings.xml"
+
+mv op.xml content.xml
+
+echo Determine the document structure, using styles
+
+ -w1 -l -o $1.struct.xml  content.xml odfStructure.xsl "stylefile=_styles.xml" "headingsfile=_headings.xml"
+
+echo Structure available in $1.struct.xml
+
+echo check structure
+
+ -w1 -l -o $1.report.xml  $1.struct.xml odfNestCheck.xsl "stylefile=_styles.xml"
+
+echo Now build the Daisy file.
+
+echo convert to daisy format.
+
+ -w1 -l -o %1.xml content.xml odf2daisy.xsl "stylefile=_styles.xml" "headingsfile=_headings.xml"
 
 =======
 Issues list. 
