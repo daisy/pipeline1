@@ -168,7 +168,7 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 		Map xofProperties = null;
 		
 		try{
-			StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
+			xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
 			xof = StAXOutputFactoryPool.getInstance().acquire(xofProperties);
 			xef = StAXEventFactoryPool.getInstance().acquire();
 			FileOutputStream fos = new FileOutputStream(container);
