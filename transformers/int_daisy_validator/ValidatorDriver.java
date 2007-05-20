@@ -22,8 +22,6 @@ package int_daisy_validator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,7 +49,6 @@ import org.daisy.util.fileset.exception.FilesetTypeNotSupportedException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
-import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.fileset.validation.Validator;
 import org.daisy.util.fileset.validation.ValidatorFactory;
 import org.daisy.util.fileset.validation.ValidatorListener;
@@ -61,10 +58,7 @@ import org.daisy.util.fileset.validation.message.ValidatorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorSevereErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
 import org.daisy.util.xml.LocusTransformer;
-import org.daisy.util.xml.NamespaceReporter;
-import org.daisy.util.xml.XMLUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
-import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
@@ -83,7 +77,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Markus Gylling
  */
 
-@SuppressWarnings("unused")
+//@SuppressWarnings("unused")
 public class ValidatorDriver extends Transformer implements FilesetErrorHandler, ValidatorListener, ErrorHandler {
 
 	private static final double PROGRESS_PEEK = 0.01;
@@ -98,7 +92,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	private PeekResult mInputFilePeekResult = null;									//a global peek on inputfile
 	private Map<Source, String> mSchemaSources = new HashMap<Source, String>();		//<Source>,<SchemaNSURI> 
 	private HashSet mValidatorMessageCache = new HashSet();							//to avoid identical messages
-	private FilesetRegex mRegex = FilesetRegex.getInstance();						//convenience shortcut
+	//private FilesetRegex mRegex = FilesetRegex.getInstance();						//convenience shortcut
 	private StateTracker mStateTracker = new StateTracker();						//inner class
 	private CompletionTracker mCompletionTracker = new CompletionTracker();			//inner class
 	private XMLReporter mXmlReporter = null;										// validator xml output
@@ -394,7 +388,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 */
 	
 	
-	private Map<Source,String> setSchemaSources(Map parameters) throws IOException, SAXException {
+	private Map<Source,String> setSchemaSources(Map parameters)  {
 
 		//get schemas from inparams
 		String schemas = (String)parameters.remove("schemas");
@@ -512,8 +506,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	/*
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
-	 */
-	
+	 */	
 	public void error(FilesetFileException ffe) throws FilesetFileException {
 		//we redirect anything recoverable that is reported during 
 		//fileset instantiation to ValidatorListener#message just to
