@@ -71,15 +71,27 @@ public class FileBunchCopy {
         }
     }
 	
-	public static void copyFiles(File inputBaseDir, File outputBaseDir, Set paths, ProgressObserver observer, boolean createDummies) throws IOException {
+	/**
+	 * Copy a collection of files from some place to some other place. Input 
+	 * to this method is basically a "from base directory" and a "to base directory",
+	 * and to complement those also a set<String> of paths relative to both
+	 * base directories.
+	 * 
+	 * @param inputBaseDir the input base directory
+	 * @param outputBaseDir the output base directory
+	 * @param paths set of paths relative the base directories
+	 * @param observer a progress observer used to report the copying progress. May be <tt>null</tt>.
+	 * @param createDummies create dummy files for missing input files
+	 * @throws IOException
+	 */
+	public static void copyFiles(File inputBaseDir, File outputBaseDir, Set<String> paths, ProgressObserver observer, boolean createDummies) throws IOException {
 		int i = 0;
-		for (Iterator it = paths.iterator(); it.hasNext(); ) {
-			String pathFragment = (String) it.next();
+		for (Iterator<String> it = paths.iterator(); it.hasNext(); ) {
+			String pathFragment = it.next();
 			File source = new File(inputBaseDir, pathFragment);
 			File target = new File(outputBaseDir, pathFragment);
 			if (!source.exists()) {
 				if (!createDummies) {
-					//continue; // eller ska man dö här?
 					throw new IOException(source + " not found");
 				}
 				
@@ -106,7 +118,7 @@ public class FileBunchCopy {
 		}
 	}
 	
-	public static void copyFiles(File inputBaseDir, File outputBaseDir, Set paths) throws IOException {
+	public static void copyFiles(File inputBaseDir, File outputBaseDir, Set<String> paths) throws IOException {
 		copyFiles(inputBaseDir, outputBaseDir, paths, null, false);
 	}
 	
