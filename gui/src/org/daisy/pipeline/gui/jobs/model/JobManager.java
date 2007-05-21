@@ -1,7 +1,9 @@
 package org.daisy.pipeline.gui.jobs.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,6 +60,22 @@ public class JobManager implements Iterable {
         jobs.clear();
         fireJobsChanged(jobs.toArray(new JobInfo[jobs.size()]),
                 JobManagerEvent.Type.REMOVE);
+    }
+
+    /**
+     * Note: this comparator imposes orderings that are inconsistent with
+     * equals.
+     * 
+     * @return
+     */
+    public Comparator<JobInfo> createComparator() {
+        return new Comparator<JobInfo>() {
+            public int compare(JobInfo o1, JobInfo o2) {
+                int i1 = jobs.indexOf(o1);
+                int i2 = jobs.indexOf(o2);
+                return i1 - i2;
+            }
+        };
     }
 
     public JobInfo get(int index) {
@@ -181,6 +199,10 @@ public class JobManager implements Iterable {
         return jobs.toArray(new JobInfo[jobs.size()]);
     }
 
+    public List<JobInfo> toList() {
+        return Arrays.asList(toArray());
+    }
+
     public Job[] toJobArray() {
         Job[] res = new Job[jobs.size()];
         int i = 0;
@@ -188,6 +210,10 @@ public class JobManager implements Iterable {
             res[i++] = info.getJob();
         }
         return res;
+    }
+
+    public List<Job> toJobList() {
+        return Arrays.asList(toJobArray());
     }
 
     public void addJobsManagerListener(IJobManagerListener listener) {
