@@ -31,6 +31,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction exitAction;
     private IWorkbenchAction maximizeAction;
     private IWorkbenchAction minimizeAction;
+    private IWorkbenchAction navBackAction;
+    private IWorkbenchAction navForwardAction;
     private IWorkbenchAction newAction;
     private IWorkbenchAction nextPartAction;
     private IWorkbenchAction nextPerspAction;
@@ -69,6 +71,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(maximizeAction);
         minimizeAction = ActionFactory.MINIMIZE.create(window);
         register(minimizeAction);
+        navBackAction = ActionFactory.BACK.create(window);
+        register(navBackAction);
+        navForwardAction = ActionFactory.FORWARD.create(window);
+        register(navForwardAction);
         newAction = ActionFactory.NEW_WIZARD_DROP_DOWN.create(window);
         register(newAction);
         nextPartAction = ActionFactory.NEXT_PART.create(window);
@@ -173,11 +179,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         ToolBarManager editBar = new ToolBarManager();
         editBar.add(deleteAction);
         coolBar.add(editBar);
-        
-        // Clean up "new" button
-        // ToolBarManager toolBar = new ToolBarManager();
-        // coolBar.add(toolBar);
-        // toolBar.add(newAction);
     }
 
 }

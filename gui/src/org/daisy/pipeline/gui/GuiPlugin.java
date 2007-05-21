@@ -199,10 +199,22 @@ public class GuiPlugin extends AbstractUIPlugin {
     @Override
     protected void initializeImageRegistry(ImageRegistry reg) {
         super.initializeImageRegistry(reg);
-        reg.put(IIconsKeys.MESSAGE_DEBUG, createDescriptor(IIconsKeys.MESSAGE_DEBUG));
-        reg.put(IIconsKeys.MESSAGE_ERROR, createDescriptor(IIconsKeys.MESSAGE_ERROR));
-        reg.put(IIconsKeys.MESSAGE_INFO, createDescriptor(IIconsKeys.MESSAGE_INFO));
-        reg.put(IIconsKeys.MESSAGE_WARNING, createDescriptor(IIconsKeys.MESSAGE_WARNING));
+        reg.put(IIconsKeys.ACTION_STOP,
+                createDescriptor(IIconsKeys.ACTION_STOP));
+        reg.put(IIconsKeys.HELP_TOC_ITEM,
+                createDescriptor(IIconsKeys.HELP_TOC_ITEM));
+        reg.put(IIconsKeys.HELP_TOC_SECTION,
+                createDescriptor(IIconsKeys.HELP_TOC_SECTION));
+        reg.put(IIconsKeys.HELP_TOC_SUBSECTION,
+                createDescriptor(IIconsKeys.HELP_TOC_SUBSECTION));
+        reg.put(IIconsKeys.MESSAGE_DEBUG,
+                createDescriptor(IIconsKeys.MESSAGE_DEBUG));
+        reg.put(IIconsKeys.MESSAGE_ERROR,
+                createDescriptor(IIconsKeys.MESSAGE_ERROR));
+        reg.put(IIconsKeys.MESSAGE_INFO,
+                createDescriptor(IIconsKeys.MESSAGE_INFO));
+        reg.put(IIconsKeys.MESSAGE_WARNING,
+                createDescriptor(IIconsKeys.MESSAGE_WARNING));
         reg.put(IIconsKeys.STATE_CANCELED,
                 createDescriptor(IIconsKeys.STATE_CANCELED));
         reg.put(IIconsKeys.STATE_FAILED,
@@ -214,7 +226,8 @@ public class GuiPlugin extends AbstractUIPlugin {
                 createDescriptor(IIconsKeys.STATE_RUNNING));
         reg.put(IIconsKeys.STATE_RUNNING,
                 createDescriptor(IIconsKeys.STATE_WAITING));
-        reg.put(IIconsKeys.TREE_CATEGORY, createDescriptor(IIconsKeys.TREE_CATEGORY));
+        reg.put(IIconsKeys.TREE_CATEGORY,
+                createDescriptor(IIconsKeys.TREE_CATEGORY));
     }
 
 }

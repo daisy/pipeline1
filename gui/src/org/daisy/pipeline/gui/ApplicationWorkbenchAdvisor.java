@@ -1,5 +1,6 @@
 package org.daisy.pipeline.gui;
 
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
@@ -26,5 +27,6 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
         PlatformUI.getPreferenceStore().setValue(
                 IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS,
                 false);
+        TrayDialog.setDialogHelpAvailable(true);
     }
 }
