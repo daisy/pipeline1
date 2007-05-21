@@ -54,28 +54,22 @@ public class StateTracker {
     public synchronized void setState(State state) {
         switch (state) {
         case ABORTED:
-            checkState(this.state == State.RUNNING, state);
-            timer.stop();
+            setAborted();
             break;
         case FAILED:
-            checkState(this.state == State.RUNNING, state);
-            timer.stop();
+            setFailed();
             break;
         case FINISHED:
-            checkState(this.state == State.RUNNING, state);
-            progress = 1.0;
-            timer.stop();
+            setFinished();
             break;
         case IDLE:
-            checkState(this.state != State.RUNNING, state);
-            timer.reset();
+            setIdle();
             break;
         case RUNNING:
-            checkState(this.state == State.WAITING, state);
-            timer.start();
+            setRunning();
             break;
         case WAITING:
-            checkState(this.state == State.IDLE, state);
+            setWaiting();
             break;
         default:
             checkState(false, null);
@@ -86,7 +80,41 @@ public class StateTracker {
     private void checkState(boolean ok, State state) {
         if (!ok) {
             throw new IllegalStateException("Try to make " + state + " a "
-                    + this.state +' '+ this.getClass().getName());
+                    + this.state + ' ' + this.getClass().getName());
         }
+    }
+
+    protected void setAborted() {
+        checkState(this.state == State.RUNNING, state);
+        stoppedRunning();
+    }
+
+    protected void setFailed() {
+        checkState(this.state == State.RUNNING, state);
+        stoppedRunning();
+    }
+
+    protected void setFinished() {
+        checkState(this.state == State.RUNNING, state);
+        progress = 1.0;
+        stoppedRunning();
+    }
+
+    protected void setIdle() {
+        checkState(this.state != State.RUNNING, state);
+        timer.reset();
+    }
+
+    protected void setRunning() {
+        checkState(this.state == State.WAITING, state);
+        timer.start();
+    }
+
+    protected void setWaiting() {
+        checkState(this.state == State.IDLE, state);
+    }
+
+    protected void stoppedRunning() {
+        timer.stop();
     }
 }
