@@ -49,10 +49,13 @@ doc/transformers/int_daisy_unicodeNormalizer.html -text
 doc/transformers/int_daisy_validator.html -text
 doc/transformers/pipeline_system_deleter.html -text
 doc/transformers/se_tpb_annonsator.html -text
+doc/transformers/se_tpb_charsetSwitcher.html -text
 doc/transformers/se_tpb_dtbMerger.html -text
 doc/transformers/se_tpb_dtbSplitter.html -text
 doc/transformers/se_tpb_filesetcreator.html -text
+doc/transformers/se_tpb_nccNcxOnly.html -text
 doc/transformers/se_tpb_speechgenerator.html -text
+doc/transformers/se_tpb_zed2daisy202.html -text
 doc/transformers/tpb_se_wordml2dtbook.html -text
 doc/transformers/uk_rnib_odf2dtbook.html -text
 doc/user.vocabulary.txt -text

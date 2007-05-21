@@ -12,10 +12,20 @@
 <body>
 
   <h1>Daisy Pipeline Transformer authoring guide</h1>
-  <p class="author">Markus Gylling</p>
-  <p class="updated">Latest update: 2007-03-22</p>
+  <p class="author">Markus Gylling &amp; Linus Ericson</p>
+  <p class="updated">Latest update: 2007-05-21</p>
   <p class="summary">This document is a step-by-step introduction to Pipeline Transformer authoring.</p>
   <p class="alert">This document remains to be written</p>
+  
+  <h2>Ground rules for creating jarifiable transformers</h2>
+  <dl>
+  	<dt>TDF file name</dt>
+  	<dd>The name of the .tdf file must be <code>transformer.tdf</code> in order to be found
+  	    inside the JAR file.</dd>
+  	<dt>Do not use <code>getTransformerDirectory()</code></dt>
+  	<dd>Calling <code>getTransformerDirectory()</code> when running a transformer from a JAR
+  	    file will throw an IllegalStateException.</dd>  	
+  </dl>
 </body>
 
 </html>

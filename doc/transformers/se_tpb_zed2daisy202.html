@@ -3,13 +3,11 @@
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
 <head>
 <meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
-<title>Transformer documentation: se_tpb_nccNcxOnly</title>
-<style type="text/css">
-  body {margin: 2em; font-family: arial, verdana, sans-serif;}
-</style>
+<title>Transformer documentation: se_tpb_zed2daisy202</title>
+<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
 </head>
 <body>
-<h1 class="title">Transformer documentation: <em>se_tpb_nccNcxOnly</em></h1>
+<h1 class="title">Transformer documentation: <em>se_tpb_zed2daisy202</em></h1>
 <!-- doc.html contains primarily developer-centric information, 
 not end-user-centric information. However, when describing extended configuration, remember
 that end users may come in contact with that information. -->
@@ -27,7 +25,6 @@ that end users may come in contact with that information. -->
 <li><a href="#config">Configuration/Customization</a>
 	<ul>
 		<li><a href="#params">Parameters (tdf)</a></li>
-		<li><a href="#extConfig">Extended configurability</a></li>
 	</ul>
 </li>	
 <li><a href="#future">Further development</a></li>
@@ -39,27 +36,35 @@ that end users may come in contact with that information. -->
 
 <h2 id="purpose">Transformer Purpose</h2>
 <!-- brief summary of purpose -->
-<p>Creates an NCC/NCX only fileset from a Daisy 2.02 or z3986-2005 fileset.</p>
+<p>This transformer converts a z3986 2005 (type 4) DTB fileset to a Daisy 2.02
+(type 4) DTB fileset. It is typically used as one of the last transformers
+of a Narrator transformer chain.</p>
 
 <h2 id="inputReqs">Input Requirements</h2>
 <!-- contract definition: detailed requirements on input nature -->
-<p>Any valid Daisy 2.02 or z3986-2005 fileset should do.</p>
+<p>The transformer has only been tested with z3986 DTBs created by the Narrator
+transfomer chain. The current known limitations are:</p>
+<ul>
+  <li>The first par of each zed smil file must be a heading (daisy 2.02 style)</li>
+  <li>The smil clip of a note must immediately follow the smil clip of the noteref</li>
+  <li>No parts of the book may reside in subfolders</li>
+  <li>Only one DTBook document (per book) may be used</li>
+  <li>The docTitle element in the NCX must have an audio clip</li>
+  <li>Only type 4 (full text, full audio) DTBs are supported</li>
+</ul>
 
 <h2 id="output">Output</h2>
-<p>If the input is a Daisy 2.02 fileset, the output will be a NCC-only (i.e. no textual content
-document) Daisy 2.02 fileset.</p>
-<p>If the input is a z3986-2005 fileset, the output will be a NCX-only (i.e. no DTBook document) 
-z3986-2005 fileset.</p>
 
 <h3 id="success">On success</h3>
 <!-- contract definition: details on delivered output given that input reqs are satisfied
 and no exception occurs -->
-<p>A valid Daisy 2.02 or z3986-2005 fileset is created.</p>
+<p>A valid type 4 Daisy 2.02 DTB with full skippability (page numbers, sidebars, production notes and foot notes).</p>
 
 <h3 id="failure">On error</h3>
 <!-- contract definition: details on delivered output when an error occurs, either because
 input reqs were not satisfied, or because an exception occurs -->
-<p>On error, this transformer will throw an exception and abort.</p>
+<p>No specific recovery scheme. On error, this transformer will send
+a fatal message, then throw an exception and abort.</p>
 
 
 <h2 id="config">Configuration/Customization</h2>
@@ -68,24 +73,18 @@ input reqs were not satisfied, or because an exception occurs -->
 	<!-- description on params as defined in tdf, please use the below definition list -->
 	<dl id="paramslist">
 	<dt>manifest</dt>
-	<dd>The manifest file of the input fileset (i.e. the ncc.html of a Daisy 2.02 fileset,
-	    and the .opf file of a z3986-2205 fileset.</dd>
-	
+	<dd>The manifest file of the input fileset (i.e. the .opf file of the z3986-2005 fileset.</dd>
 	<dt>outDir</dt>
-	<dd>The directory to write the NCC/NCX-only fileset to.</dd>
+	<dd>The directory where the Daisy 2.02 output should be placed</dd>	
 	</dl>
-	
-	<h3 id="extConfig">Extended configurability</h3>
-	<!-- details on additional config files, system variables etc -->
-	<p>None.</p>
 	
 <h2 id="future">Further development</h2>
 <!-- notes on refactoring; TODOs and MAYDOs -->
-<p>Support for z3986-2005 filesets has not been implemented yet.</p>
+<p>Support for any z3986 2005 book, not just the ones created by Narrator.</p>
 
 <h2 id="dependencies">Dependencies</h2>
 <!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
-<p>None.</p>
+<p>Saxon8 is used for the XSLT based steps of this transformer.</p>
 
 <h2 id="owner">Author</h2>
 <!-- name of owner/initial committer -->

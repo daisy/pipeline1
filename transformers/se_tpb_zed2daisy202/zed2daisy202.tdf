@@ -1,10 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
 <transformer version="1.0">
 	<name>Zed 2005 to Daisy 2.02</name>
 	<description>Transforms a Z3986 2005 fileset to a Daisy 2.02 fileset</description>
 	<classname>se_tpb_zed2daisy202.Zed2Daisy202</classname>
-	<license>unknown</license>
+	<license>LGPL</license>
 	<author>Linus Ericson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/se_tpb_zed2daisy202.html"/>
 	
 	<parameters>
 
