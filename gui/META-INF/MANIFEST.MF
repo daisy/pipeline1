@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DAISY Pipeline GUI
+Bundle-SymbolicName: org.daisy.pipeline.gui;singleton:=true
+Bundle-Version: 0.0.1
+Bundle-Vendor: The DAISY Consortium
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.daisy.pipeline,
+ org.eclipse.pde.runtime
+Eclipse-LazyStart: true
+Bundle-Activator: org.daisy.pipeline.gui.GuiPlugin
+Export-Package: 
+ org.daisy.pipeline.gui,
+ org.daisy.pipeline.gui.doc,
+ org.daisy.pipeline.gui.jobs,
+ org.daisy.pipeline.gui.jobs.model,
+ org.daisy.pipeline.gui.jobs.wizard,
+ org.daisy.pipeline.gui.messages,
+ org.daisy.pipeline.gui.parameters,
+ org.daisy.pipeline.gui.scripts,
+ org.daisy.pipeline.gui.tasks,
+ org.daisy.pipeline.gui.util,
+ org.daisy.pipeline.gui.util.actions,
+ org.daisy.pipeline.gui.util.swt,
+ org.daisy.pipeline.gui.util.viewers
