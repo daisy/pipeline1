@@ -53,11 +53,11 @@
             class="org.daisy.pipeline.gui.parameters.ParametersView"
             icon="icons/view-parameters.gif"
             id="org.daisy.pipeline.gui.views.parameters"
-            name="Job Parameters"/>
+            name="Job Parameters (in development)"/>
       <view
-            class="org.daisy.pipeline.gui.jobs.JobDetailsView"
+            class="org.daisy.pipeline.gui.jobs.JobProgressView"
             icon="icons/view-progress.gif"
-            id="org.daisy.pipeline.gui.views.jobDetails"
+            id="org.daisy.pipeline.gui.views.progress"
             name="Progress"/>
    </extension>
    <extension
@@ -110,26 +110,63 @@
             id="org.daisy.pipeline.gui.actionSet.jobs"
             label="Pipeline Jobs"
             visible="true">
+         <menu
+               id="org.daisy.pipeline.gui.menu.run"
+               label="Run"
+               path="additions">
+            <groupMarker name="run"/>
+            <separator name="additions"/>
+         </menu>
+         <action
+               class="org.daisy.pipeline.gui.jobs.CancelAllAction"
+               icon="icons/action-stop-all.gif"
+               id="org.daisy.pipeline.gui.action.cancelAll"
+               label="Cancel All"
+               menubarPath="org.daisy.pipeline.gui.menu.run/run"
+               style="push"/>
+         <action
+               class="org.daisy.pipeline.gui.jobs.CancelAction"
+               icon="icons/action-stop.gif"
+               id="org.daisy.pipeline.gui.action.cancel"
+               label="Cancel"
+               menubarPath="org.daisy.pipeline.gui.menu.run/run"
+               style="push"/>
+         <action
+               class="org.daisy.pipeline.gui.jobs.RunAllAction"
+               icon="icons/action-run-all.gif"
+               id="org.daisy.pipeline.gui.action.runAll"
+               label="Run All"
+               menubarPath="org.daisy.pipeline.gui.menu.run/run"
+               style="push"/>
+         <action
+               class="org.daisy.pipeline.gui.jobs.RunAction"
+               icon="icons/action-run.gif"
+               id="org.daisy.pipeline.gui.action.run"
+               label="Run"
+               menubarPath="org.daisy.pipeline.gui.menu.run/run"
+               style="push"/>
+         <action
+               class="org.daisy.pipeline.gui.jobs.CancelPullDownAction"
+               icon="icons/action-stop.gif"
+               id="org.daisy.pipeline.gui.action.cancelPullDown"
+               label="Cancel"
+               style="pulldown"
+               toolbarPath="additions"/>
+         <action
+               class="org.daisy.pipeline.gui.jobs.RunPullDownAction"
+               icon="icons/action-run.gif"
+               id="org.daisy.pipeline.gui.action.runPullDown"
+               label="Run"
+               style="pulldown"
+               toolbarPath="additions"/>
          <action
                class="org.daisy.pipeline.gui.jobs.NewJobAction"
-               icon="icons/tango/16x16/actions/document-new.png"
+               icon="icons/action-new-job.gif"
                id="org.daisy.pipeline.gui.action.newJob"
                label="New Job"
                style="push"
-               toolbarPath="additions"/>
-         <action
-               class="org.daisy.pipeline.gui.jobs.RunAction"
-               icon="icons/tango/16x16/actions/media-playback-start.png"
-               id="org.daisy.pipeline.gui.action.run"
-               label="Run Job"
-               style="push"
-               toolbarPath="additions"/>
-         <action
-               class="org.daisy.pipeline.gui.jobs.RunAllAction"
-               id="org.daisy.pipeline.gui.action.runAll"
-               label="Runn All Jobs"
-               style="push"
-               toolbarPath="additions"/>
+               toolbarPath="new"
+               tooltip="Launch the new job wizard"/>
       </actionSet>
    </extension>
    <extension
@@ -143,6 +180,8 @@
          point="org.eclipse.ui.newWizards">
       <wizard
             class="org.daisy.pipeline.gui.jobs.wizard.NewJobWizard"
+            hasPages="true"
+            icon="icons/action-new-job.gif"
             id="org.daisy.pipeline.gui.wizard.newJob"
             name="Pipeline Job"/>
    </extension>
