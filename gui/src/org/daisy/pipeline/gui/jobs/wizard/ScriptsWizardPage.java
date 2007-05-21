@@ -7,9 +7,11 @@ import java.net.URISyntaxException;
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.pipeline.gui.GuiPlugin;
+import org.daisy.pipeline.gui.PipelineUtil;
 import org.daisy.pipeline.gui.scripts.ScriptFileFilter;
 import org.daisy.pipeline.gui.scripts.ScriptManager;
 import org.daisy.pipeline.gui.scripts.ScriptsLabelProvider;
+import org.daisy.pipeline.gui.util.viewers.ExpandTreeDoubleClickListener;
 import org.daisy.pipeline.gui.util.viewers.FileTreeContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -29,7 +31,6 @@ public class ScriptsWizardPage extends WizardPage {
     public static final String NAME = "selectScript";
     public static final String SETTINGS_LAST_SCRIPT_URI = "lastScriptURI";
 
-
     private ScriptManager scriptMan;
     private IStructuredSelection selection;
     private TreeViewer scriptTreeViewer;
@@ -41,7 +42,6 @@ public class ScriptsWizardPage extends WizardPage {
         scriptMan = ScriptManager.getDefault();
     }
 
-
     public void createControl(Composite parent) {
         // Tree of script files
         scriptTreeViewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL
@@ -49,9 +49,9 @@ public class ScriptsWizardPage extends WizardPage {
         scriptTreeViewer.getTree().setLayoutData(
                 new GridData(GridData.FILL_BOTH));
         scriptTreeViewer.setContentProvider(new FileTreeContentProvider(
-                new ScriptFileFilter()));
+                new ScriptFileFilter(true)));
         scriptTreeViewer.setLabelProvider(new ScriptsLabelProvider());
-        scriptTreeViewer.setInput(scriptMan.getScriptDir());
+        scriptTreeViewer.setInput(PipelineUtil.getScriptDir());
         scriptTreeViewer.getTree().deselectAll();
         scriptTreeViewer
                 .addSelectionChangedListener(new ISelectionChangedListener() {
@@ -75,6 +75,8 @@ public class ScriptsWizardPage extends WizardPage {
                 }
             }
         });
+        scriptTreeViewer
+                .addDoubleClickListener(new ExpandTreeDoubleClickListener());
         setControl(scriptTreeViewer.getControl());
         initContent();
     }
