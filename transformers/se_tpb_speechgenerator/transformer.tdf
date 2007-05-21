@@ -1,4 +1,4 @@
-<transformer version="1.0">
+<transformer version="1.1">
 	<name>Speech Generator</name>
 	<description>
 		Generates audio for a DTBook dokument.
@@ -7,28 +7,29 @@
 	<license>LGPL</license>
 	<author>Martin Blomberg</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/se_tpb_speechgenerator.html"/>
 	
 	<parameters>
 
-		<parameter required="true" direction="in" type="text/plain">
+		<parameter required="true" direction="in" type="application/xml">
 			<name>inputFilename</name>
 			<description>file://path/to/file.xml</description>
 			<example>c:/books/manuscript.xml</example>
 		</parameter>
 
-		<parameter required="true" direction="in" type="text/plain">
+		<parameter required="true" direction="in" type="application/x-filesystemDirectory">
 			<name>outputDirectory</name>
 			<description>file://path/to/directory/</description>
 			<example>c:/books/</example>
 		</parameter>
 
-		<parameter required="true" direction="in" type="text/plain">
+		<parameter required="true" direction="in" type="application/xml">
 			<name>outputFilename</name>
 			<description>file://path/to/file.xml</description>
 			<example>c:/books/file.xml</example>
 		</parameter>
 				
-		<parameter required="false" direction="in" type="text/plain">
+		<parameter required="false" direction="in" type="application/xml">
 			<name>sgConfigFilename</name>
 			<description>/path/to/configfile.xml</description>
 			<example>${transformer_dir}/config/sgConfig.xml</example>
@@ -57,14 +58,14 @@
 			<default>false</default>
 		</parameter>
 		
-		<parameter required="false" direction="in" type="text/plain">
+		<parameter required="false" direction="in" type="application/xml">
 			<name>ttsBuilderConfig</name>
 			<description>/path/to/file.xml</description>
 			<example>${transformer_dir}/ttsbuilder.xml</example>
 			<default>${transformer_dir}/ttsbuilder.xml</default>
 		</parameter>
 		
-		<parameter required="false" direction="in" type="application/xml">
+		<parameter required="false" direction="in" type="application/x-relax-ng">
 			<name>ttsBuilderRNG</name>
 			<description>Path to a RelaxNG schema</description>
 			<example>c:/schema.rng</example>

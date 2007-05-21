@@ -322,6 +322,7 @@ transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_8.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_9.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/transformer.tdf -text
 transformers/se_tpb_filesetcreator/resource/tpbnarrator_res.mp3 -text
+transformers/se_tpb_filesetcreator/transformer.tdf -text
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/Interop.SpeechLib.dll -text
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.application -text svneol=unset#application/octet-stream
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe -text
