@@ -15,6 +15,9 @@
 		<lang lang="en">
 			<before>By</before>
 		</lang>
+		<lang lang="fr">
+			<before>Par</before>
+		</lang>
 	</rule>
 	
 	<rule match="dtb:docauthor[position()=last() and last()!=1]">
@@ -23,6 +26,9 @@
 		</lang>
 		<lang lang="en">
 			<before>and</before>
+		</lang>
+		<lang lang="fr">
+			<before>et</before>
 		</lang>
 	</rule>
 
@@ -68,6 +74,9 @@
 			<before>Note.</before>
 			<after>End of note.</after>
 		</lang>
+		<lang lang="fr">
+			<before>Note.</before>
+		</lang>
 	</rule>
 	
 	<rule match="dtb:prodnote">
@@ -79,6 +88,10 @@
 			<before>Production note.</before>
 			<after>End of production note.</after>
 		</lang>
+		<lang lang="fr">
+			<before>Note de Production.</before>
+			<after>Fin de la note de production.</after>
+		</lang>
 	</rule>
 
 	<rule match="dtb:imggroup/dtb:prodnote">
@@ -89,6 +102,10 @@
 		<lang lang="en">
 			<before>Image description.</before>
 			<after>End of image description.</after>
+		</lang>
+		<lang lang="fr">
+			<before>Description d'image.</before>
+			<after>Fin de la description d'image.</after>
 		</lang>
 	</rule>
 	
@@ -112,6 +129,10 @@
 			<before>Side bar.</before>
 			<after>End of side bar.</after>
 		</lang>
+		<lang lang="en">
+			<before>Encadré.</before>
+			<after>Fin de l'encadré.</after>
+		</lang>
 	</rule>
 
 	<rule match="dtb:poem">
@@ -123,6 +144,10 @@
 			<before>A poem follows.</before>
 			<after>End of poem.</after>
 		</lang>
+		<lang lang="fr">
+			<before>Un poème suit.</before>
+			<after>Fin du poème.</after>
+		</lang>
 	</rule>
 
 	<rule match="dtb:blockquote">
@@ -133,6 +158,10 @@
 		<lang lang="en">
 			<before>Quote:</before>
 			<after>End of quote.</after>
+		</lang>
+		<lang lang="fr">
+			<before>Une citation suit:</before>
+			<after>Fin de la citation.</after>
 		</lang>
 	</rule>
 
@@ -146,6 +175,10 @@
 			<before>Table.</before>
 			<after>End of table.</after>
 		</lang>
+		<lang lang="fr">
+			<before>Tableau.</before>
+			<after>Fin du tableau.</after>
+		</lang>
 	</rule>
 
 	<rule match="dtb:code">
@@ -157,6 +190,10 @@
 			<before>Code.</before>
 			<after>End of code.</after>
 		</lang>
+		<lang lang="fr">
+			<before>Code.</before>
+			<after>Fin du code.</after>
+		</lang>
 	</rule>
 
 	<rule match="dtb:kbd">
@@ -165,6 +202,9 @@
 		</lang>
 		<lang lang="en">
 			<before>Keyborad instruction.</before>
+		</lang>
+		<lang lang="fr">
+			<before>Instructions clavier.</before>
 		</lang>
 	</rule>
 

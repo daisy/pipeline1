@@ -346,6 +346,7 @@ transformers/se_tpb_wordml2dtbook/modules/output.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/parameters.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/recursive-copy.xsl -text
 transformers/se_tpb_wordml2dtbook/pagenum-fix.xsl -text
+transformers/se_tpb_xmldetection/lang/fr.xml -text
 transformers/se_tpb_xmldetection/transformer.tdf -text
 transformers/uk_rnib_dtbook2xhtml/transformer.tdf -text
 transformers/uk_rnib_odf2dtbook/analyseStyles.xsl -text
