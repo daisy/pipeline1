@@ -1,7 +1,14 @@
 package org.daisy.pipeline.gui.util.swt;
 
+import java.util.Arrays;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
@@ -13,22 +20,17 @@ public class CompositeList<I extends CompositeItem> extends Composite {
 
     public CompositeList(Composite parent, int style) {
         super(parent, style);
-
         GridLayout layout = new GridLayout(1, true);
         layout.marginHeight = 0;
         layout.marginWidth = 0;
-        // TODO layout the children
-        // RowLayout layout = new RowLayout();
-        // layout.wrap = false;
-        // layout.pack = false;
-        // layout.justify = true;
-        // layout.type = SWT.VERTICAL;
-        // layout.marginLeft = 0;
-        // layout.marginTop = 0;
-        // layout.marginRight = 0;
-        // layout.marginBottom = 0;
-        // layout.spacing = 0;
+        layout.marginTop = 0;
+        layout.marginBottom = 0;
+        layout.verticalSpacing = 0;
+
+        setBackground(parent.getDisplay().getSystemColor(
+                SWT.COLOR_LIST_BACKGROUND));
         setLayout(layout);
+        hookListeners();
     }
 
     /**
@@ -310,7 +312,7 @@ public class CompositeList<I extends CompositeItem> extends Composite {
         for (int i = 0; i < length; i++) {
             int index = indices[length - i - 1];
             if (index >= 0 && index < itemCount) {
-                ids[count++] = index + 1;
+                ids[count++] = index;
             }
         }
         if (count > 0) {
@@ -380,7 +382,24 @@ public class CompositeList<I extends CompositeItem> extends Composite {
     }
 
     private void deselect(int[] indexes) {
-        // TODO implem deselect
+        int[] deselected = (indexes != null) ? indexes : selection;
+        if (indexes == null) {
+            selection = new int[4];
+        } else {
+            int[] newSelection = new int[selection.length - indexes.length];
+            int i = 0;
+            for (int j : selection) {
+                if (Arrays.binarySearch(indexes, selection[j]) < 0) {
+                    newSelection[i] = selection[j];
+                }
+            }
+            selection = newSelection;
+        }
+        for (int i : deselected) {
+            if (items[i] != null) {
+                items[i].setSelected(false);
+            }
+        }
     }
 
     private void fixSelection(int index, boolean add) {
@@ -407,11 +426,82 @@ public class CompositeList<I extends CompositeItem> extends Composite {
     }
 
     private void select(int[] ids) {
-        // TODO implem select
+        deselect(null);
+        if (ids != null) {
+            selection = ids;
+        }
+        for (int i : selection) {
+            items[i].setSelected(true);
+        }
+    }
+
+    protected void selectPrevious() {
+        int index = selection[0];
+        if (index == 0 || !items[index].isSelected()) {
+            select(new int[] { itemCount - 1 });
+        } else {
+            select(new int[] { index - 1 });
+        }
+        showSelection();
+    }
+
+    protected void selectNext() {
+        int index = selection[0];
+        if (index == itemCount - 1 || !items[index].isSelected()) {
+            select(new int[] { 0 });
+        } else {
+            select(new int[] { index + 1 });
+        }
+        showSelection();
     }
 
     private void showIndex(int index) {
-        // TODO implem showIndex
+        if (index < 0 || index >= itemCount) {
+            return;
+        }
+        if (getParent() instanceof ScrolledComposite) {
+            ScrolledComposite sc = (ScrolledComposite) getParent();
+            Rectangle bounds = items[index].getBounds();
+            Rectangle area = sc.getClientArea();
+            Point origin = sc.getOrigin();
+            if (origin.x > bounds.x) {
+                origin.x = Math.max(0, bounds.x);
+            }
+            if (origin.y > bounds.y) {
+                origin.y = Math.max(0, bounds.y);
+            }
+            if (origin.x + area.width < bounds.x + bounds.width) {
+                origin.x = Math.max(0, bounds.x + bounds.width - area.width);
+            }
+            if (origin.y + area.height < bounds.y + bounds.height) {
+                origin.y = Math.max(0, bounds.y + bounds.height - area.height);
+            }
+            sc.setOrigin(origin);
+        }
+    }
+
+    protected void hookListeners() {
+
+        addTraverseListener(new TraverseListener() {
+            public void keyTraversed(TraverseEvent event) {
+                switch (event.detail) {
+                case SWT.TRAVERSE_ARROW_NEXT:
+                    selectNext();
+                    break;
+                case SWT.TRAVERSE_ARROW_PREVIOUS:
+                    selectPrevious();
+                case SWT.TRAVERSE_ESCAPE:
+                case SWT.TRAVERSE_RETURN:
+                case SWT.TRAVERSE_TAB_NEXT:
+                case SWT.TRAVERSE_TAB_PREVIOUS:
+                case SWT.TRAVERSE_PAGE_NEXT:
+                case SWT.TRAVERSE_PAGE_PREVIOUS:
+                default:
+                    event.doit = true;
+                    break;
+                }
+            }
+        });
     }
 
     void itemCreated(I item, int index) {

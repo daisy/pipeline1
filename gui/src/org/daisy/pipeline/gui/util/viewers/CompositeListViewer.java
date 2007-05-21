@@ -251,13 +251,14 @@ public abstract class CompositeListViewer<I extends CompositeItem> extends
 
     @Override
     protected void inputChanged(Object input, Object oldInput) {
-        getControl().setRedraw(false);
-        try {
-            // refresh() attempts to preserve selection, which we want here
-            refresh();
-        } finally {
-            getControl().setRedraw(true);
-        }
+        preservingSelection(new Runnable() {
+            public void run() {
+                control.setRedraw(false);
+                control.removeAll();
+                internalRefreshAll(true);
+                control.setRedraw(true);
+            }
+        });
     }
 
     @Override
