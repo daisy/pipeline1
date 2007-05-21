@@ -1,6 +1,7 @@
 package org.daisy.pipeline.gui.jobs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -121,19 +122,36 @@ public class JobsContentProvider implements ITreeContentProvider,
      * 
      * @see org.daisy.pipeline.gui.jobs.IJobChangeListener#jobChanged(org.daisy.pipeline.gui.jobs.model.JobInfo)
      */
-    public void jobChanged(final JobInfo job) {
-        // TODO set ui job family
-        org.eclipse.core.runtime.jobs.Job uiJob = new WorkbenchJob(
-                "Job List Update Job") {
-            @Override
-            public IStatus runInUIThread(IProgressMonitor monitor) {
-                viewer.refresh(job);
-                return Status.OK_STATUS;
-            }
-
-        };
-        uiJob.setSystem(true);
-        uiJob.schedule();
+    public void jobChanged(final JobInfo jobInfo) {
+        new RefreshUIJob(Arrays.asList(new JobInfo[] { jobInfo })).schedule();
     }
 
+    public void jobsChanged(final List<JobInfo> jobInfos) {
+        new RefreshUIJob(jobInfos).schedule();
+    }
+
+    private class RefreshUIJob extends WorkbenchJob {
+        private List<JobInfo> jobInfos;
+
+        public RefreshUIJob(List<JobInfo> jobInfos) {
+            super("Job List Update Job");
+            this.jobInfos = jobInfos;
+            setSystem(true);
+        }
+
+        @Override
+        public IStatus runInUIThread(IProgressMonitor monitor) {
+            try {
+                monitor.beginTask("Updating Job List", jobInfos.size());
+                for (JobInfo jobInfo : jobInfos) {
+                    monitor.subTask("Udating Job " + jobInfo.getName());
+                    viewer.refresh(jobInfo);
+                    monitor.worked(1);
+                }
+            } finally {
+                monitor.done();
+            }
+            return Status.OK_STATUS;
+        }
+    }
 }

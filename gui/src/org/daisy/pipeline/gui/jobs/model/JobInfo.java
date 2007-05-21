@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Task;
+import org.daisy.pipeline.gui.jobs.JobRunnerJob;
 import org.daisy.pipeline.gui.tasks.TaskInfo;
 import org.daisy.pipeline.gui.util.StateTracker;
 import org.daisy.util.execution.State;
@@ -15,6 +16,7 @@ import org.daisy.util.execution.State;
  */
 public class JobInfo extends StateTracker {
     private Job job;
+    private JobRunnerJob runnerJob;
     private List<TaskInfo> tasks;
 
     public JobInfo(Job job) {
@@ -32,18 +34,16 @@ public class JobInfo extends StateTracker {
         return job;
     }
 
+    public JobRunnerJob getRunnerJob() {
+        return runnerJob;
+    }
+
     public List<TaskInfo> getTasks() {
         return tasks;
     }
 
-    @Override
-    public synchronized void setState(State state) {
-        super.setState(state);
-        if (state == State.WAITING) {
-            for (TaskInfo task : tasks) {
-                task.setState(State.WAITING);
-            }
-        }
+    public void setRunnerJob(JobRunnerJob runnerJob) {
+        this.runnerJob = runnerJob;
     }
 
     private void createTaskInfos() {
@@ -51,4 +51,27 @@ public class JobInfo extends StateTracker {
             tasks.add(new TaskInfo(this, task));
         }
     }
+
+    @Override
+    protected void setIdle() {
+        super.setIdle();
+        for (TaskInfo task : tasks) {
+            task.setState(State.IDLE);
+        }
+    }
+
+    @Override
+    protected void setWaiting() {
+        super.setWaiting();
+        for (TaskInfo task : tasks) {
+            task.setState(State.WAITING);
+        }
+    }
+
+    @Override
+    protected void stoppedRunning() {
+        super.stoppedRunning();
+        runnerJob = null;
+    }
+
 }

@@ -14,6 +14,7 @@ import org.daisy.dmfc.core.event.ProgressChangeEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent;
 import org.daisy.dmfc.core.event.TaskProgressChangeEvent;
 import org.daisy.dmfc.core.event.TaskStateChangeEvent;
+import org.daisy.dmfc.core.event.UserAbortEvent;
 import org.daisy.dmfc.core.event.StateChangeEvent.Status;
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Task;
@@ -30,14 +31,14 @@ public class StateManager implements BusListener {
     private static StateManager _default = new StateManager();
     // TODO check null/thread safety
     // private Object lock = new Object();
-    private Map<JobsRunner, JobInfo> runningJobs;
-    private Map<JobsRunner, TaskInfo> runningTasks;
+    private Map<JobRunnerJob, JobInfo> runningJobs;
+    private Map<JobRunnerJob, TaskInfo> runningTasks;
     private List<IJobChangeListener> jobListeners;
     private List<ITaskChangeListener> taskListeners;
 
     public StateManager() {
-        runningJobs = new HashMap<JobsRunner, JobInfo>();
-        runningTasks = new HashMap<JobsRunner, TaskInfo>();
+        runningJobs = new HashMap<JobRunnerJob, JobInfo>();
+        runningTasks = new HashMap<JobRunnerJob, TaskInfo>();
         jobListeners = new ArrayList<IJobChangeListener>();
         taskListeners = new ArrayList<ITaskChangeListener>();
     }
@@ -80,8 +81,11 @@ public class StateManager implements BusListener {
      * @param transformer
      * @param progress
      */
-    private void progressChanged(Task task, double progress) {
-        JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
+    protected void progressChanged(Task task, double progress) {
+        // [Hack] We get the current job runner as a key to the running jobs
+        // map,
+        // since we can't acces the Pipeline job from the task
+        JobRunnerJob runner = (JobRunnerJob) JobRunnerJob.getJobManager()
                 .currentJob();
         TaskInfo runningTask = runningTasks.get(runner);
         if (runningTask != null) {
@@ -94,8 +98,11 @@ public class StateManager implements BusListener {
      * @param transformer
      * @param state
      */
-    private void stateChanged(Task task, Status status) {
-        JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
+    protected void stateChanged(Task task, Status status) {
+        // [Hack] We get the current job runner as a key to the running jobs
+        // map,
+        // since we can't acces the Pipeline job from the task
+        JobRunnerJob runner = (JobRunnerJob) JobRunnerJob.getJobManager()
                 .currentJob();
         TaskInfo runningTask = null;
         switch (status) {
@@ -129,25 +136,23 @@ public class StateManager implements BusListener {
         }
     }
 
-    private void stateChanged(Job job, Status state) {
-        JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
-                .currentJob();
-        JobInfo runningJob;
+    protected void stateChanged(Job job, Status state) {
+        JobInfo jobInfo = JobManager.getDefault().get(job);
+        JobRunnerJob runner = jobInfo.getRunnerJob();
+        if (runner == null) {
+            throw new IllegalStateException("Can't find the runner job of "
+                    + jobInfo.getName());
+        }
         switch (state) {
         case STARTED:
-            runningJob = JobManager.getDefault().get(job);
-            if (runningJob != null) {
-                runningJobs.put(runner, runningJob);
-                runningJob.setState(State.RUNNING);
-                fireChanged(runningJob);
-            }
+            runningJobs.put(runner, jobInfo);
+            jobInfo.setState(State.RUNNING);
+            fireChanged(jobInfo);
             break;
         case STOPPED:
-            runningJob = runningJobs.remove(runner);
-            if (runningJob != null) {
-                runningJob.setState(State.FINISHED);
-                fireChanged(runningJob);
-            }
+            runningJobs.remove(runner);
+            jobInfo.setState(State.FINISHED);
+            fireChanged(jobInfo);
             break;
         default:
             break;
@@ -166,25 +171,77 @@ public class StateManager implements BusListener {
         }
     }
 
+    private void fireChanged(List<JobInfo> jobInfos) {
+        for (IJobChangeListener listener : jobListeners) {
+            listener.jobsChanged(jobInfos);
+        }
+    }
+
     public void aborted(JobInfo jobInfo) {
-        JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
-                .currentJob();
+        JobRunnerJob runner = jobInfo.getRunnerJob();
+        if (runner == null) {
+            throw new IllegalStateException("Can't find the runner job of "
+                    + jobInfo.getName());
+        }
+        // Set the job state
         runningJobs.remove(runner);
         jobInfo.setState(State.ABORTED);
+        // Set the running task state
+        TaskInfo runningTask = runningTasks.remove(runner);
+        if (runningTask != null) {
+            runningTask.setState(State.ABORTED);
+            fireChanged(runningTask);
+        }
         fireChanged(jobInfo);
+    }
+
+    public void cancel(List<JobInfo> jobInfos) {
+        for (JobInfo jobInfo : jobInfos) {
+            if (jobInfo.getSate() == State.RUNNING) {
+                EventBus.getInstance().publish(new UserAbortEvent(this));
+            } else {
+                JobRunnerJob runner = jobInfo.getRunnerJob();
+                if (runner == null) {
+                    throw new IllegalStateException(
+                            "Can't find the runner job of " + jobInfo.getName());
+                }
+                jobInfo.getRunnerJob().cancel();
+                jobInfo.setState(State.IDLE);
+            }
+        }
+        fireChanged(jobInfos);
     }
 
     public void failed(JobInfo jobInfo) {
-        JobsRunner runner = (JobsRunner) JobsRunner.getJobManager()
-                .currentJob();
+        JobRunnerJob runner = jobInfo.getRunnerJob();
+        if (runner == null) {
+            throw new IllegalStateException("Can't find the runner job of "
+                    + jobInfo.getName());
+        }
+        // Set the job state
         runningJobs.remove(runner);
         jobInfo.setState(State.FAILED);
+        // Set the running task state
+        TaskInfo runningTask = runningTasks.remove(runner);
+        if (runningTask != null) {
+            runningTask.setState(State.FAILED);
+            fireChanged(runningTask);
+        }
         fireChanged(jobInfo);
     }
 
-    public void scheduled(JobInfo jobInfo) {
-        jobInfo.setState(State.WAITING);
-        fireChanged(jobInfo);
+    public void reset(List<JobInfo> jobInfos) {
+        for (JobInfo jobInfo : jobInfos) {
+            jobInfo.setState(State.IDLE);
+        }
+        fireChanged(jobInfos);
+    }
+
+    public void scheduled(List<JobInfo> jobInfos) {
+        for (JobInfo jobInfo : jobInfos) {
+            jobInfo.setState(State.WAITING);
+        }
+        fireChanged(jobInfos);
     }
 
     /**

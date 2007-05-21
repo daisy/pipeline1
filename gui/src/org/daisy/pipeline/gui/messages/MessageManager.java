@@ -9,7 +9,7 @@ import java.util.Queue;
 import org.daisy.dmfc.core.event.BusListener;
 import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.MessageEvent;
-import org.daisy.pipeline.gui.jobs.JobsRunner;
+import org.daisy.pipeline.gui.jobs.JobRunnerJob;
 import org.daisy.pipeline.gui.jobs.model.JobInfo;
 import org.eclipse.core.runtime.jobs.Job;
 
@@ -50,9 +50,9 @@ public class MessageManager implements BusListener {
         if (event instanceof MessageEvent) {
             MessageEvent me = (MessageEvent) event;
             // TODO shouldn't rely on threading here
-            Job thread = JobsRunner.getJobManager().currentJob();
-            if (thread != null && thread instanceof JobsRunner) {
-                JobInfo jobInfo = ((JobsRunner) thread).currentJobInfo();
+            Job thread = JobRunnerJob.getJobManager().currentJob();
+            if (thread != null && thread instanceof JobRunnerJob) {
+                JobInfo jobInfo = ((JobRunnerJob) thread).getJobInfo();
                 if (jobInfo != null) {
                     me = new JobMessageEvent(me, jobInfo);
                 }

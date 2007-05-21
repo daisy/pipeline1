@@ -6,10 +6,10 @@ import org.daisy.pipeline.gui.jobs.model.JobInfo;
 
 /**
  * @author Romain Deltour
- * 
+ *
  */
-public interface IJobChangeListener {
-    public void jobChanged(JobInfo jobInfo);
+public interface IJobsFilter {
 
-    public void jobsChanged(List<JobInfo> jobInfos);
+    public List<JobInfo> filter(List<JobInfo> jobInfos);
+
 }

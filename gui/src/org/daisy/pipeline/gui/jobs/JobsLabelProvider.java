@@ -47,4 +47,10 @@ public class JobsLabelProvider extends LabelProvider implements
         }
         return null;
     }
+
+    @Override
+    public String getText(Object element) {
+        return getColumnText(element, 0);
+    }
+    
 }
