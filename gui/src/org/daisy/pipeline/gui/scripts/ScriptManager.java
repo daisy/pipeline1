@@ -1,9 +1,7 @@
 package org.daisy.pipeline.gui.scripts;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,28 +13,15 @@ import org.daisy.dmfc.core.event.EventBus;
 import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.pipeline.gui.GuiPlugin;
+import org.daisy.pipeline.gui.PipelineUtil;
 import org.daisy.util.file.EFolder;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
 
 public class ScriptManager {
     private static ScriptManager _default = new ScriptManager();
 
-    private EFolder scriptDir;
-
     private Map<URI, Script> scriptMap;
 
     public ScriptManager() {
-        Bundle coreBundle = Platform.getBundle(GuiPlugin.CORE_ID);
-        try {
-            URL url = FileLocator.toFileURL(coreBundle.getEntry("/scripts"));
-
-            scriptDir = new EFolder(url.getPath());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         scriptMap = new HashMap<URI, Script>();
         populateScripts();
     }
@@ -53,15 +38,28 @@ public class ScriptManager {
         // Nothing
     }
 
-    public EFolder getScriptDir() {
-        return scriptDir;
-    }
-
     public Script getScript(URI uri) {
         return scriptMap.get(uri);
     }
 
+    public Collection<Script> getScripts() {
+        return scriptMap.values();
+    }
+
+    public URI getURI(Script script) {
+        if (script != null) {
+            for (URI uri : scriptMap.keySet()) {
+                if (script.equals(scriptMap.get(uri))) {
+                    return uri;
+                }
+            }
+        }
+        return null;
+    }
+
     private void populateScripts() {
+        EFolder scriptDir = PipelineUtil.getScriptDir();
+        // TODO set a better script filter with peeker
         Collection scripts = scriptDir.getFiles(true, ".+\\.taskScript");
         DMFCCore core = GuiPlugin.get().getCore();
         for (Iterator iter = scripts.iterator(); iter.hasNext();) {
