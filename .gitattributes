@@ -48,6 +48,7 @@ doc/transformers/int_daisy_prettyPrinter.html -text
 doc/transformers/int_daisy_unicodeNormalizer.html -text
 doc/transformers/int_daisy_validator.html -text
 doc/transformers/pipeline_system_deleter.html -text
+doc/transformers/se_tpb_annonsator.html -text
 doc/transformers/se_tpb_dtbMerger.html -text
 doc/transformers/se_tpb_dtbSplitter.html -text
 doc/transformers/se_tpb_filesetcreator.html -text
