@@ -1,7 +1,6 @@
 package org.daisy.pipeline.gui.doc;
 
 import org.daisy.pipeline.gui.PerspectiveHelper;
-import org.daisy.pipeline.gui.scripts.ScriptsView;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
@@ -14,8 +13,7 @@ public class DocPerspective implements IPerspectiveFactory {
         layout.setEditorAreaVisible(false);
         layout.setFixed(false);
 
-        layout.addView(ScriptsView.ID, IPageLayout.LEFT, 1.0f, editorArea);
-        layout.addView(DocView.ID, IPageLayout.RIGHT, 0.3f, ScriptsView.ID);
+        layout.addView(DocView.ID, IPageLayout.LEFT, 1.0f, editorArea);
 
         PerspectiveHelper.addCommonShortcuts(layout);
     }
