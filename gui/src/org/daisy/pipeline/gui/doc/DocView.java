@@ -17,6 +17,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
@@ -26,6 +27,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
@@ -115,17 +117,25 @@ public class DocView extends ViewPart implements ISelectionListener,
             tab.createTabItem(tocFolder);
         }
 
-        // Create the browser
-        browser = new Browser(sashForm, SWT.NONE);
-        browser.setLayoutData(new GridData(GridData.FILL_BOTH));
-        browser.addLocationListener(this);
-
-        // Create the actions
-        createActions();
-        IActionBars actionBars = getViewSite().getActionBars();
-        registerGlobalActions(actionBars);
-        initMenu(actionBars.getMenuManager());
-        initToolBar(actionBars.getToolBarManager());
+        
+        try {
+        	// Create the browser
+        	browser = new Browser(sashForm, SWT.NONE);
+        	browser.setLayoutData(new GridData(GridData.FILL_BOTH));
+        	browser.addLocationListener(this);
+        	
+        	// Create the actions
+        	createActions();
+        	IActionBars actionBars = getViewSite().getActionBars();
+        	registerGlobalActions(actionBars);
+        	initMenu(actionBars.getMenuManager());
+        	initToolBar(actionBars.getToolBarManager());
+        } catch (SWTError e) {
+        	GuiPlugin.get().error("Couldn't instantiate browser widget", e);
+        	Label label = new Label(sashForm, SWT.NONE);
+        	label.setLayoutData(new GridData(GridData.FILL_BOTH));
+        	label.setText("Couldn't create browser widget:\n\n" + e.getLocalizedMessage());
+        }
 
         // Finalize
         sashForm.setWeights(new int[] { 1, 3 });
@@ -162,7 +172,7 @@ public class DocView extends ViewPart implements ISelectionListener,
             selectedFromToc = true;
             // get the selected URI from the toc
             URI uri = visibleToc.getURI();
-            if (uri != null) {
+            if (uri != null && browser != null) {
                 browser.setUrl(uri.toString());
             }
             return;
@@ -176,7 +186,7 @@ public class DocView extends ViewPart implements ISelectionListener,
             // update the browser if required
             if (toc.select(element)) {
                 URI uri = toc.getURI();
-                if (uri != null) {
+                if (uri != null && browser != null) {
                     browser.setUrl(toc.toString());
                 }
             }
@@ -234,7 +244,7 @@ public class DocView extends ViewPart implements ISelectionListener,
 
     void setSyncToc(boolean syncToc) {
         this.syncToc = syncToc;
-        if (syncToc) {
+        if (syncToc && browser != null) {
             syncToc(browser.getUrl());
         }
     }

@@ -13,6 +13,7 @@ import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -53,7 +54,9 @@ public class HelpDialogTray extends DialogTray implements IPageChangedListener {
     }
 
     public void setUrl(String string) {
-        browser.setUrl(string);
+    	if (browser != null) {
+    		browser.setUrl(string);
+    	}
     }
 
     /**
@@ -122,27 +125,31 @@ public class HelpDialogTray extends DialogTray implements IPageChangedListener {
         gd.heightHint = 1;
         separator.setLayoutData(gd);
 
-        // Create the browser
-        browser = new Browser(container, SWT.NONE);
-        GridData data = new GridData(GridData.FILL_BOTH);
-        data.widthHint = this.widthHint;
-        browser.setLayoutData(data);
+        try {
+        	// Create the browser
+        	browser = new Browser(container, SWT.NONE);
+        	GridData data = new GridData(GridData.FILL_BOTH);
+        	data.widthHint = this.widthHint;
+        	browser.setLayoutData(data);
 
-        // Create the actions
-        createActions();
-        tbm.add(backAction);
-        tbm.add(forwardAction);
-        tbm.add(closeAction);
-        tbm.update(true);
-
-        // Hook itself as a IPageChangeListener
-        shell = parent.getShell();
-        hookPageChangeListener(shell);
-        browser.addListener(SWT.Dispose, new Listener() {
-            public void handleEvent(Event event) {
-                unhookPageChangeListener(shell);
-            }
-        });
+        	// Create the actions
+        	createActions();
+        	tbm.add(backAction);
+        	tbm.add(forwardAction);
+        	tbm.add(closeAction);
+        	tbm.update(true);
+        	
+        	// Hook itself as a IPageChangeListener
+            shell = parent.getShell();
+            hookPageChangeListener(shell);        
+            browser.addListener(SWT.Dispose, new Listener() {
+                public void handleEvent(Event event) {
+                    unhookPageChangeListener(shell);
+                }
+            });
+        } catch (SWTError e) {
+        	GuiPlugin.get().error("Couldn't instantiate browser widget", e);
+        }
 
         return container;
     }
