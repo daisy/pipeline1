@@ -16,11 +16,11 @@ public class TransformersTocTab extends TocTab {
 
     @Override
     protected String getTitle() {
-        return "Transformers";
+        return Messages.tab_transformers;
     }
 
     @Override
     protected String getToolTipText() {
-        return "Transformers documentation contents";
+        return Messages.tab_transformers_tooltip;
     }
 }

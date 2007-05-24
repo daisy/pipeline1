@@ -9,6 +9,7 @@ import org.daisy.dmfc.core.event.MessageEvent.Cause;
 import org.daisy.dmfc.core.event.MessageEvent.Type;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
+import org.daisy.pipeline.gui.model.MessageManager;
 import org.daisy.pipeline.gui.util.CategorySet;
 import org.daisy.pipeline.gui.util.ITableField;
 import org.daisy.pipeline.gui.util.TableView;
@@ -35,7 +36,7 @@ public class MessagesView extends TableView {
     private class ClearAction extends Action {
 
         public ClearAction() {
-            super("Clear Messages", GuiPlugin
+            super(Messages.action_clearMessages, GuiPlugin
                     .createDescriptor(IIconsKeys.MESSAGE_CLEAR));
         }
 
@@ -59,7 +60,7 @@ public class MessagesView extends TableView {
     private class FilterDialogAction extends Action {
 
         public FilterDialogAction() {
-            super("Filter...", GuiPlugin
+            super(Messages.action_filter, GuiPlugin
                     .createDescriptor(IIconsKeys.TREE_FILTER));
         }
 
@@ -126,7 +127,7 @@ public class MessagesView extends TableView {
     private class ScrollLockAction extends Action {
 
         public ScrollLockAction() {
-            super("Scroll Lock", GuiPlugin
+            super(Messages.action_scrollLock, GuiPlugin
                     .createDescriptor(IIconsKeys.MESSAGE_SCROLL_LOCK));
         }
 
@@ -268,7 +269,7 @@ public class MessagesView extends TableView {
     protected void initMenu(IMenuManager menu) {
         super.initMenu(menu);
         menu.add(filterDialogAction);
-        IMenuManager groupByMenu = new MenuManager("Group By");
+        IMenuManager groupByMenu = new MenuManager(Messages.menu_groupBy);
         menu.add(groupByMenu);
         for (IAction action : groupByActions) {
             groupByMenu.add(action);

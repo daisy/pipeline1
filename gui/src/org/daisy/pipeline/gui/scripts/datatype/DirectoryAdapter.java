@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.daisy.dmfc.core.script.ScriptParameter;
 import org.daisy.dmfc.core.script.datatype.DirectoryDatatype;
+import org.daisy.pipeline.gui.util.Messages;
 import org.daisy.pipeline.gui.util.DialogHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,7 +28,7 @@ public class DirectoryAdapter extends DefaultAdapter {
         final DirectoryDatatype type = (DirectoryDatatype) param.getDatatype();
         final Text field = new Text(parent, SWT.SINGLE | SWT.BORDER);
         Button button = new Button(parent, SWT.PUSH | SWT.CENTER);
-        button.setText("Browse...");
+        button.setText(Messages.button_browse);
         button.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {

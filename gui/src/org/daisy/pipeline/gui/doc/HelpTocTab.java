@@ -17,11 +17,11 @@ public class HelpTocTab extends TocTab {
 
     @Override
     protected String getTitle() {
-        return "Help";
+        return Messages.tab_help;
     }
 
     @Override
     protected String getToolTipText() {
-        return "Help contents";
+        return Messages.tab_help_tooltip;
     }
 }

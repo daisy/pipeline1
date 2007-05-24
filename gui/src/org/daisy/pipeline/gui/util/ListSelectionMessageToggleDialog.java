@@ -27,9 +27,9 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ListSelectionMessageToggleDialog extends MessageDialogWithToggle {
 
-    private static final String SELECT_ALL_LABEL = "Select All";
+    private static final String SELECT_ALL_LABEL = Messages.button_selectAll;
 
-    private static final String DESELECT_ALL_LABEL = "Deselect All";
+    private static final String DESELECT_ALL_LABEL = Messages.button_deselectAll;
     // sizing constants
     private final static int SIZING_SELECTION_WIDGET_HEIGHT = 150;
 
@@ -94,7 +94,7 @@ public class ListSelectionMessageToggleDialog extends MessageDialogWithToggle {
      * 
      * @param selectedElements the array of elements to select
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void setInitialSelections(Object[] selectedElements) {
         initialSelections = new ArrayList(selectedElements.length);
         for (int i = 0; i < selectedElements.length; i++) {

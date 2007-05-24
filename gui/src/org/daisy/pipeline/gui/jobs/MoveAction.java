@@ -1,7 +1,7 @@
 package org.daisy.pipeline.gui.jobs;
 
-import org.daisy.pipeline.gui.jobs.model.JobInfo;
-import org.daisy.pipeline.gui.jobs.model.JobManager;
+import org.daisy.pipeline.gui.model.JobInfo;
+import org.daisy.pipeline.gui.model.JobManager;
 import org.daisy.pipeline.gui.util.actions.OperationUtil;
 import org.daisy.pipeline.gui.util.viewers.DefaultSelectionEnabler;
 import org.daisy.pipeline.gui.util.viewers.ISelectionEnabler;

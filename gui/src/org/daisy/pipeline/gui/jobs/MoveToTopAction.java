@@ -7,7 +7,7 @@ import org.eclipse.core.commands.operations.IUndoableOperation;
 public class MoveToTopAction extends MoveAction {
 
     public MoveToTopAction(JobsView view) {
-        super(view, "Move To Top", GuiPlugin
+        super(view, Messages.action_moveToTop, GuiPlugin
                 .createDescriptor(IIconsKeys.MOVE_TOP));
     }
 

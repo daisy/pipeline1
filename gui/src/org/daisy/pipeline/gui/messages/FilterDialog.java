@@ -37,7 +37,7 @@ public class FilterDialog extends TrayDialog {
     @Override
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText("Filter");
+        newShell.setText(Messages.dialog_filter_title);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class FilterDialog extends TrayDialog {
 
     private void createTypeGroup(Composite parent) {
         Label label = new Label(parent, SWT.NONE);
-        label.setText("Severity:");
+        label.setText(Messages.dialog_filter_severityGroup);
         types = CheckboxTableViewer.newCheckList(parent, SWT.BORDER);
         types.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         types.setContentProvider(new ArrayContentProvider());
@@ -89,7 +89,7 @@ public class FilterDialog extends TrayDialog {
     private void createCauseGroup(Composite parent) {
 
         Label label = new Label(parent, SWT.NONE);
-        label.setText("Types:");
+        label.setText(Messages.dialog_filter_typesGroup);
         causes = CheckboxTableViewer.newCheckList(parent, SWT.BORDER);
         causes.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         causes.setContentProvider(new ArrayContentProvider());
@@ -146,7 +146,7 @@ public class FilterDialog extends TrayDialog {
         Composite buttons = new Composite(parent, SWT.NONE);
         buttons.setLayout(new GridLayout(2, true));
         Button selectAll = new Button(buttons, SWT.PUSH);
-        selectAll.setText("Select All");
+        selectAll.setText(Messages.dialog_filter_button_selectAll);
         selectAll.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -154,7 +154,7 @@ public class FilterDialog extends TrayDialog {
             }
         });
         Button deselectAll = new Button(buttons, SWT.PUSH);
-        deselectAll.setText("Deselect All");
+        deselectAll.setText(Messages.dialog_filter_button_deselectAll);
         deselectAll.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {

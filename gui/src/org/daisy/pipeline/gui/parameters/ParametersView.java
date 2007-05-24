@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.JobParameter;
-import org.daisy.pipeline.gui.jobs.model.JobInfo;
-import org.daisy.pipeline.gui.jobs.model.JobManager;
+import org.daisy.pipeline.gui.model.JobInfo;
+import org.daisy.pipeline.gui.model.JobManager;
 import org.daisy.pipeline.gui.util.actions.FilterToggleAction;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
@@ -25,7 +25,8 @@ import org.eclipse.ui.part.ViewPart;
 public class ParametersView extends ViewPart implements ISelectionListener {
     public static final String ID = "org.daisy.pipeline.gui.views.parameters"; //$NON-NLS-1$
 
-    private static final String[] columnNames = { "Name", "Value" };
+    private static final String[] columnNames = { Messages.heading_name,
+            Messages.heading_value };
     private static final int[] columnWeight = { 2, 3 };
 
     private TreeViewer viewer;

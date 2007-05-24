@@ -11,7 +11,7 @@ public class TypeField extends AbstractTableField {
 
     @Override
     public String getHeaderText() {
-        return "Type";
+        return Messages.heading_type;
     }
 
     @Override

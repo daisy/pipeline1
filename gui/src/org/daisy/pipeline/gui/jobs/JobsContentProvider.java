@@ -6,16 +6,19 @@ import java.util.Collection;
 import java.util.List;
 
 import org.daisy.dmfc.core.script.JobParameter;
-import org.daisy.pipeline.gui.jobs.model.IJobManagerListener;
-import org.daisy.pipeline.gui.jobs.model.JobInfo;
-import org.daisy.pipeline.gui.jobs.model.JobManager;
-import org.daisy.pipeline.gui.jobs.model.JobManagerEvent;
+import org.daisy.pipeline.gui.model.IJobChangeListener;
+import org.daisy.pipeline.gui.model.IJobManagerListener;
+import org.daisy.pipeline.gui.model.JobInfo;
+import org.daisy.pipeline.gui.model.JobManager;
+import org.daisy.pipeline.gui.model.JobManagerEvent;
+import org.daisy.pipeline.gui.model.StateManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.progress.WorkbenchJob;
 
 public class JobsContentProvider implements ITreeContentProvider,
@@ -120,7 +123,7 @@ public class JobsContentProvider implements ITreeContentProvider,
     /*
      * (non-Javadoc)
      * 
-     * @see org.daisy.pipeline.gui.jobs.IJobChangeListener#jobChanged(org.daisy.pipeline.gui.jobs.model.JobInfo)
+     * @see org.daisy.pipeline.gui.jobs.IJobChangeListener#jobChanged(org.daisy.pipeline.gui.model.JobInfo)
      */
     public void jobChanged(final JobInfo jobInfo) {
         new RefreshUIJob(Arrays.asList(new JobInfo[] { jobInfo })).schedule();
@@ -134,7 +137,7 @@ public class JobsContentProvider implements ITreeContentProvider,
         private List<JobInfo> jobInfos;
 
         public RefreshUIJob(List<JobInfo> jobInfos) {
-            super("Job List Update Job");
+            super(Messages.uiJob_updateJobs);
             this.jobInfos = jobInfos;
             setSystem(true);
         }
@@ -142,9 +145,11 @@ public class JobsContentProvider implements ITreeContentProvider,
         @Override
         public IStatus runInUIThread(IProgressMonitor monitor) {
             try {
-                monitor.beginTask("Updating Job List", jobInfos.size());
+                monitor.beginTask(Messages.uiJob_updateJobs_task, jobInfos
+                        .size());
                 for (JobInfo jobInfo : jobInfos) {
-                    monitor.subTask("Udating Job " + jobInfo.getName());
+                    monitor.subTask(NLS.bind(Messages.uiJob_updateJobs_subtask,
+                            jobInfo.getName()));
                     viewer.refresh(jobInfo);
                     monitor.worked(1);
                 }

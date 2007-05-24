@@ -22,9 +22,9 @@ import org.eclipse.ui.WorkbenchException;
 
 public class NewJobWizard extends Wizard implements INewWizard {
 
-    public static final String SETTINGS_SECTION = "NewJobWizard";
-    public static final String SETTINGS_SESSION_ID = "SessionID";
-    public static final String ID = "org.daisy.pipeline.gui.wizard.newJob";
+    public static final String SETTINGS_SECTION = "NewJobWizard"; //$NON-NLS-1$
+    public static final String SETTINGS_SESSION_ID = "SessionID"; //$NON-NLS-1$
+    public static final String ID = "org.daisy.pipeline.gui.wizard.newJob"; //$NON-NLS-1$
     private Job job;
     private boolean isFirstInSession;
     private ScriptsWizardPage scriptPage;
@@ -87,7 +87,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
             helpTray.setUrl(doc.toString());
         } else {
             // TODO set default URL if doc not found
-            helpTray.setUrl("");
+            helpTray.setUrl(""); //$NON-NLS-1$
         }
     }
 
@@ -130,7 +130,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
     @Override
     public void addPages() {
         super.addPages();
-        setWindowTitle("New Job Wizard");
+        setWindowTitle(Messages.wizard_title);
         scriptPage = new ScriptsWizardPage();
         addPage(scriptPage);
         paramPage = new ParamsWizardPage();

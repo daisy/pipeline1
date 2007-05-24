@@ -45,7 +45,7 @@ import org.eclipse.ui.part.ViewPart;
 public class DocView extends ViewPart implements ISelectionListener,
         LocationListener {
 
-    public static final String ID = "org.daisy.pipeline.gui.views.doc";
+    public static final String ID = "org.daisy.pipeline.gui.views.doc"; //$NON-NLS-1$
 
     private Browser browser;
     private List<ITocTab> tocList;
@@ -131,10 +131,10 @@ public class DocView extends ViewPart implements ISelectionListener,
         	initMenu(actionBars.getMenuManager());
         	initToolBar(actionBars.getToolBarManager());
         } catch (SWTError e) {
-        	GuiPlugin.get().error("Couldn't instantiate browser widget", e);
+        	GuiPlugin.get().error("Couldn't instantiate browser widget", e); //$NON-NLS-1$
         	Label label = new Label(sashForm, SWT.NONE);
         	label.setLayoutData(new GridData(GridData.FILL_BOTH));
-        	label.setText("Couldn't create browser widget:\n\n" + e.getLocalizedMessage());
+        	label.setText(Messages.error_noBrowser + e.getLocalizedMessage());
         }
 
         // Finalize
@@ -259,7 +259,7 @@ public class DocView extends ViewPart implements ISelectionListener,
             file = new File(uri);
         } catch (Exception e) {
             GuiPlugin.get()
-                    .error("Couldn't retrieve File from toc URI spec", e);
+                    .error("Couldn't retrieve File from toc URI spec", e); //$NON-NLS-1$
             return;
         }
         for (ITocTab toc : tocList) {

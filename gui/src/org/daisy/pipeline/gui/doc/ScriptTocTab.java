@@ -7,9 +7,9 @@ import java.net.URI;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.PipelineUtil;
-import org.daisy.pipeline.gui.jobs.model.JobInfo;
+import org.daisy.pipeline.gui.model.JobInfo;
+import org.daisy.pipeline.gui.model.ScriptManager;
 import org.daisy.pipeline.gui.scripts.ScriptFileFilter;
-import org.daisy.pipeline.gui.scripts.ScriptManager;
 import org.daisy.util.file.EFolder;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -54,7 +54,7 @@ public class ScriptTocTab extends TocTab {
                 return new File(uri);
             } catch (Exception e) {
                 GuiPlugin.get().error(
-                        "Couldn't fetch the script file for "
+                        "Couldn't fetch the script file for " //$NON-NLS-1$
                                 + script.getNicename(), e);
             }
         }
@@ -77,7 +77,7 @@ public class ScriptTocTab extends TocTab {
                     return new File(ScriptManager.getDefault().getURI(script));
                 } catch (IllegalArgumentException e) {
                     GuiPlugin.get().error(
-                            "Couldn't create File from script URI", e);
+                            "Couldn't create File from script URI", e); //$NON-NLS-1$
                     break;
                 }
             }
@@ -102,12 +102,12 @@ public class ScriptTocTab extends TocTab {
 
     @Override
     protected String getTitle() {
-        return "Scripts";
+        return Messages.tab_script;
     }
 
     @Override
     protected String getToolTipText() {
-        return "Scripts documentation contents";
+        return Messages.tab_script_tooltip;
     }
 
 }

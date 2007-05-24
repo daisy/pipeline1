@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.daisy.pipeline.gui.jobs.model.JobInfo;
-import org.daisy.pipeline.gui.jobs.model.JobManager;
+import org.daisy.pipeline.gui.model.JobInfo;
+import org.daisy.pipeline.gui.model.JobManager;
 import org.daisy.pipeline.gui.util.viewers.DefaultSelectionEnabler;
 import org.daisy.pipeline.gui.util.viewers.ISelectionEnabler;
 import org.eclipse.core.commands.ExecutionException;
@@ -33,7 +33,7 @@ public class DeleteAction extends Action implements ISelectionChangedListener {
     private IStructuredSelection selection;
 
     public DeleteAction(JobsView view) {
-        super("Delete Job");
+        super(Messages.action_delete);
         this.view = view;
         this.jobManager = JobManager.getDefault();
         this.enabler = new DefaultSelectionEnabler(
@@ -56,8 +56,8 @@ public class DeleteAction extends Action implements ISelectionChangedListener {
             operationHistory.execute(operation, null, null);
         } catch (ExecutionException e) {
             // TODO implement better exception dialog
-            MessageDialog.openError(view.getSite().getShell(), "Delete Error",
-                    "Exception while moving job: " + e.getMessage());
+            MessageDialog.openError(view.getSite().getShell(), Messages.error_delete_title,
+                    Messages.error_delete_message + e.getMessage());
         }
     }
 

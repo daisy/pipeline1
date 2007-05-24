@@ -7,7 +7,7 @@ import org.eclipse.core.commands.operations.IUndoableOperation;
 public class MoveToBottomAction extends MoveAction {
 
     public MoveToBottomAction(JobsView view) {
-        super(view, "Move To Bottom", GuiPlugin
+        super(view, Messages.action_moveToBottom, GuiPlugin
                 .createDescriptor(IIconsKeys.MOVE_BOTTOM));
     }
 

@@ -1,6 +1,7 @@
 package org.daisy.pipeline.gui.util.actions;
 
 import org.daisy.pipeline.gui.GuiPlugin;
+import org.daisy.pipeline.gui.util.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationAdapter;
@@ -21,8 +22,8 @@ public class BrowserBackAction extends Action {
                 .getSharedDescriptor(ISharedImages.IMG_TOOL_BACK));
         setDisabledImageDescriptor(GuiPlugin
                 .getSharedDescriptor(ISharedImages.IMG_TOOL_BACK_DISABLED));
-        setText("Back");
-        setToolTipText("Go to the previous page");
+        setText(Messages.action_browseBack);
+        setToolTipText(Messages.action_browseBack_tooltip);
         setEnabled(browser.isBackEnabled());
         this.browser.addLocationListener(new LocationAdapter() {
             @Override

@@ -3,8 +3,9 @@ package org.daisy.pipeline.gui.messages;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.pipeline.gui.jobs.model.JobInfo;
-import org.daisy.pipeline.gui.jobs.model.JobManager;
+import org.daisy.pipeline.gui.model.JobInfo;
+import org.daisy.pipeline.gui.model.JobManager;
+import org.daisy.pipeline.gui.model.JobMessageEvent;
 import org.daisy.pipeline.gui.util.CategorySet;
 import org.daisy.pipeline.gui.util.Category;
 
@@ -15,7 +16,7 @@ import org.daisy.pipeline.gui.util.Category;
 class JobCategorySet extends CategorySet {
 
     public JobCategorySet() {
-        super("Job");
+        super(Messages.groupBy_categorySet_job);
     }
 
     @Override
@@ -50,7 +51,7 @@ class JobCategorySet extends CategorySet {
     class CoreCategory extends Category {
 
         public CoreCategory() {
-            super("Core");
+            super(Messages.groupBy_category_core);
         }
 
         @Override

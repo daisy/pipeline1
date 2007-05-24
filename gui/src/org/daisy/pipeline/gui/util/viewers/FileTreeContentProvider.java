@@ -15,10 +15,10 @@ public class FileTreeContentProvider implements ITreeContentProvider {
         this.filter = filter;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public Object[] getChildren(Object parentElement) {
         if (!(parentElement instanceof File)) {
-            throw new IllegalArgumentException("Given element is not a file");
+            throw new IllegalArgumentException("Given element is not a file"); //$NON-NLS-1$
         }
         File file = (File) parentElement;
         return file.listFiles(filter);
@@ -26,7 +26,7 @@ public class FileTreeContentProvider implements ITreeContentProvider {
 
     public Object getParent(Object element) {
         if (!(element instanceof File)) {
-            throw new IllegalArgumentException("Given element is not a file");
+            throw new IllegalArgumentException("Given element is not a file"); //$NON-NLS-1$
         }
         return ((File) element).getParentFile();
     }

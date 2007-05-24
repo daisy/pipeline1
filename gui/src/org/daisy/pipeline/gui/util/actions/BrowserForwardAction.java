@@ -1,6 +1,7 @@
 package org.daisy.pipeline.gui.util.actions;
 
 import org.daisy.pipeline.gui.GuiPlugin;
+import org.daisy.pipeline.gui.util.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationAdapter;
@@ -21,8 +22,8 @@ public class BrowserForwardAction extends Action {
                 .getSharedDescriptor(ISharedImages.IMG_TOOL_FORWARD));
         setDisabledImageDescriptor(GuiPlugin
                 .getSharedDescriptor(ISharedImages.IMG_TOOL_FORWARD_DISABLED));
-        setText("Forward");
-        setToolTipText("Go to the next page");
+        setText(Messages.action_forward);
+        setToolTipText(Messages.action_forward_tooltip);
         setEnabled(browser.isForwardEnabled());
         this.browser.addLocationListener(new LocationAdapter() {
             @Override

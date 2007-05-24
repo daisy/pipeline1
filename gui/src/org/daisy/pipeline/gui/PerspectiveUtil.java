@@ -1,11 +1,10 @@
 package org.daisy.pipeline.gui;
 
-import org.daisy.pipeline.gui.doc.DocPerspective;
 import org.daisy.pipeline.gui.doc.DocView;
-import org.daisy.pipeline.gui.jobs.JobProgressView;
 import org.daisy.pipeline.gui.jobs.JobsView;
 import org.daisy.pipeline.gui.jobs.wizard.NewJobWizard;
 import org.daisy.pipeline.gui.messages.MessagesView;
+import org.daisy.pipeline.gui.progress.JobProgressView;
 import org.eclipse.ui.IPageLayout;
 
 /**
@@ -26,7 +25,7 @@ public final class PerspectiveUtil {
         layout.addShowViewShortcut(MessagesView.ID);
         // layout.addShowViewShortcut(ParametersView.ID);
         layout.addShowViewShortcut(JobProgressView.ID);
-        layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
+        layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView"); //$NON-NLS-1$
         // Wizard shortcuts
         layout.addNewWizardShortcut(NewJobWizard.ID);
     }

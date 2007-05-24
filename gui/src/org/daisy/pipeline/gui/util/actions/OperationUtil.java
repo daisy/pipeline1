@@ -1,5 +1,6 @@
 package org.daisy.pipeline.gui.util.actions;
 
+import org.daisy.pipeline.gui.util.Messages;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.IUndoContext;
@@ -8,6 +9,7 @@ import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
@@ -55,7 +57,8 @@ public final class OperationUtil {
             history.execute(operation, null, info);
         } catch (ExecutionException e) {
             // TODO implement better exception dialog
-            MessageDialog.openError(shell, operation.getLabel() + " Error", e
+            MessageDialog.openError(shell, NLS.bind(
+                    Messages.dialog_operationError, operation.getLabel()), e
                     .getMessage());
         }
     }

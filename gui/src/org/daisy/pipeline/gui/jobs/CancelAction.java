@@ -5,7 +5,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.pipeline.gui.jobs.model.JobInfo;
+import org.daisy.pipeline.gui.model.IJobsFilter;
+import org.daisy.pipeline.gui.model.JobInfo;
+import org.daisy.pipeline.gui.model.JobStateFilter;
+import org.daisy.pipeline.gui.model.StateManager;
 import org.daisy.pipeline.gui.util.actions.AbstractActionDelegate;
 import org.daisy.util.execution.State;
 import org.eclipse.jface.action.IAction;

@@ -36,7 +36,7 @@ public final class DialogHelper {
         return browseFile(shell, file, style, (String[]) null);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public static String browseFile(Shell shell, File file, int style,
             String mime) {
         String[] ext = null;

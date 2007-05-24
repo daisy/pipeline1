@@ -20,7 +20,7 @@ public abstract class CompositeItem extends Composite {
         this(parent, style, checkNull(parent).getItemCount());
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     // subclasses are responsible for creating themselves on compatible lists
     public CompositeItem(CompositeList parent, int style, int index) {
         super(parent, style);

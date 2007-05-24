@@ -148,7 +148,7 @@ public class HelpDialogTray extends DialogTray implements IPageChangedListener {
                 }
             });
         } catch (SWTError e) {
-        	GuiPlugin.get().error("Couldn't instantiate browser widget", e);
+        	GuiPlugin.get().error("Couldn't instantiate browser widget", e); //$NON-NLS-1$
         }
 
         return container;
@@ -158,8 +158,8 @@ public class HelpDialogTray extends DialogTray implements IPageChangedListener {
 
         public CloseAction() {
             super();
-            setText("Close");
-            setToolTipText("Close the help tray");
+            setText(Messages.helpTray_close);
+            setToolTipText(Messages.helpTray_close_tooltip);
             setImageDescriptor(GuiPlugin
                     .createDescriptor(IIconsKeys.ACTION_CLOSE));
             setHoverImageDescriptor(GuiPlugin

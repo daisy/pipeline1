@@ -4,7 +4,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.pipeline.gui.jobs.model.JobInfo;
+import org.daisy.pipeline.gui.jobs.runner.IJobsRunner;
+import org.daisy.pipeline.gui.jobs.runner.SequentialJobsRunner;
+import org.daisy.pipeline.gui.model.JobInfo;
 import org.daisy.pipeline.gui.util.actions.AbstractActionDelegate;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;

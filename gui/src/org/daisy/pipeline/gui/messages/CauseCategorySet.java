@@ -11,7 +11,7 @@ class CauseCategorySet extends CategorySet {
     private List<Category> categories;
 
     public CauseCategorySet() {
-        super("Cause");
+        super(Messages.groupBy_categorySet_cause);
         categories = new LinkedList<Category>();
         for (MessageEvent.Cause cause : MessageEvent.Cause.values()) {
             categories.add(new CauseCategory(cause));

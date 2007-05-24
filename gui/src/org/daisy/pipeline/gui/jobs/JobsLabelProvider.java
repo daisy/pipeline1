@@ -2,7 +2,7 @@ package org.daisy.pipeline.gui.jobs;
 
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
-import org.daisy.pipeline.gui.jobs.model.JobInfo;
+import org.daisy.pipeline.gui.model.JobInfo;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;

@@ -359,7 +359,7 @@
             name="%perspective.jobs">
       </perspective>
       <perspective
-            class="org.daisy.pipeline.gui.doc.DocPerspective"
+            class="org.daisy.pipeline.gui.DocPerspective"
             icon="icons/persp-doc.gif"
             id="org.daisy.pipeline.gui.perspectives.doc"
             name="%perspective.documentation"/>
@@ -409,7 +409,7 @@
             id="org.daisy.pipeline.gui.views.parameters"
             name="%view.parameters"/>
       <view
-            class="org.daisy.pipeline.gui.jobs.JobProgressView"
+            class="org.daisy.pipeline.gui.progress.JobProgressView"
             icon="icons/view-progress.gif"
             id="org.daisy.pipeline.gui.views.progress"
             name="%view.progress"/>

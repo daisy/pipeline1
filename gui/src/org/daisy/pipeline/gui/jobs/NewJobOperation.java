@@ -1,7 +1,7 @@
 package org.daisy.pipeline.gui.jobs;
 
 import org.daisy.dmfc.core.script.Job;
-import org.daisy.pipeline.gui.jobs.model.JobManager;
+import org.daisy.pipeline.gui.model.JobManager;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;
 import org.eclipse.core.runtime.IAdaptable;
@@ -18,7 +18,7 @@ public class NewJobOperation extends AbstractOperation {
     private Job job;
 
     public NewJobOperation(Job job) {
-        super("Create Job");
+        super(Messages.operation_newJob);
         this.job = job;
     }
 

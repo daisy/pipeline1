@@ -15,7 +15,7 @@ public abstract class FileFileFilter implements FileFilter {
 
     private boolean acceptDir;
     private Set<String> filteredDirNames;
-    private static final String SVN_DIR = ".svn";
+    private static final String SVN_DIR = ".svn"; //$NON-NLS-1$
 
     public FileFileFilter(boolean acceptDir) {
         super();

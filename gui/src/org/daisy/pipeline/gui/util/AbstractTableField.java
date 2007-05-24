@@ -23,7 +23,7 @@ public class AbstractTableField implements ITableField {
      * @see org.daisy.pipeline.gui.util.ITableField#getHeaderText()
      */
     public String getHeaderText() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /*
@@ -41,7 +41,7 @@ public class AbstractTableField implements ITableField {
      * @see org.daisy.pipeline.gui.util.ITableField#getText(java.lang.Object)
      */
     public String getText(Object element) {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /*

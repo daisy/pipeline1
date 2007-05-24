@@ -22,10 +22,10 @@ public class HtmlFileFilter extends FileFileFilter {
         try {
             peeker = PeekerPool.getInstance().acquire();
             PeekResult result = peeker.peek(file);
-            return "html".equals(result.getRootElementLocalName());
+            return "html".equals(result.getRootElementLocalName()); //$NON-NLS-1$
         } catch (Exception e) {
             GuiPlugin.get().error(
-                    "Couldn't peek in file " + file.getAbsolutePath(), e);
+                    "Couldn't peek in file " + file.getAbsolutePath(), e); //$NON-NLS-1$
         }
         return false;
     }

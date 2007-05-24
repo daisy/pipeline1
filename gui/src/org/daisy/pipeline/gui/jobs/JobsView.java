@@ -6,7 +6,7 @@ import java.util.Map;
 import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.JobParameter;
 import org.daisy.pipeline.gui.IActionConstants;
-import org.daisy.pipeline.gui.jobs.model.JobManager;
+import org.daisy.pipeline.gui.model.JobManager;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -31,7 +31,7 @@ public class JobsView extends ViewPart {
     public static final String ID = "org.daisy.pipeline.gui.views.jobs"; //$NON-NLS-1$
     public static final int PROP_SEL_JOB_INDEX = 1;
 
-    private static final String[] columnNames = { "Jobs", "Status" };
+    private static final String[] columnNames = { Messages.heading_jobs, Messages.heading_status };
 
     private static final int[] columnWeight = { 4, 1 };
 

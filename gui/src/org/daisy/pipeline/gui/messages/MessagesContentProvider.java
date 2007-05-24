@@ -3,6 +3,8 @@ package org.daisy.pipeline.gui.messages;
 import javax.xml.stream.Location;
 
 import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.gui.model.IMessageManagerListener;
+import org.daisy.pipeline.gui.model.MessageManager;
 import org.daisy.pipeline.gui.util.Category;
 import org.daisy.pipeline.gui.util.viewers.CategorizedContentProvider;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -82,7 +84,7 @@ public class MessagesContentProvider extends CategorizedContentProvider
      */
     public void messageAdded(final MessageEvent message) {
         // TODO set ui job family
-        Job uiJob = new WorkbenchJob("Add Message") {
+        Job uiJob = new WorkbenchJob(Messages.uiJob_addMessage_name) {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                 if (isCategorized()) {

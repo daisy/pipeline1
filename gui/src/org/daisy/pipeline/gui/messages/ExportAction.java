@@ -7,9 +7,11 @@ import java.io.IOException;
 import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
+import org.daisy.pipeline.gui.model.MessageManager;
 import org.daisy.pipeline.gui.util.DialogHelper;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -19,10 +21,11 @@ import org.eclipse.ui.PlatformUI;
  * 
  */
 public class ExportAction extends Action {
-    private String lineSeparator = System.getProperty("line.separator");
+    private String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
 
     public ExportAction() {
-        super("Export Messages",GuiPlugin.createDescriptor(IIconsKeys.MESSAGE_EXPORT));
+        super(Messages.action_export, GuiPlugin
+                .createDescriptor(IIconsKeys.MESSAGE_EXPORT));
     }
 
     @Override
@@ -37,9 +40,9 @@ public class ExportAction extends Action {
                 path += ".log"; //$NON-NLS-1$
             File file = new File(path);
             if (file.exists()) {
-                // TODO useless on Mac OS X (don't know for other OS)
-                String question = "File " + file.toString()
-                        + " already exists.  Would you like to overwrite it?";
+                // useless on Mac OS X (don't know for other OS)
+                String question = NLS
+                        .bind(Messages.action_export_confirm, file);
                 if (!MessageDialog.openQuestion(shell, getText(), question)) {
                     return;
                 }
@@ -61,18 +64,15 @@ public class ExportAction extends Action {
                 sb.append(" - ");//$NON-NLS-1$
                 sb.append(message.getMessage());
                 sb.append(lineSeparator);
-                System.out.println("");
                 writer.write(sb.toString());
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            GuiPlugin.get().error("I/O Error while exporting messages", e);//$NON-NLS-1$
         } finally {
             if (writer != null) {
                 try {
                     writer.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
         }

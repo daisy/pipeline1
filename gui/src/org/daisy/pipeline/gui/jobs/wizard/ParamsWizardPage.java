@@ -10,6 +10,7 @@ import org.daisy.dmfc.core.script.datatype.DatatypeException;
 import org.daisy.pipeline.gui.scripts.datatype.DatatypeAdapter;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -27,7 +28,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public class ParamsWizardPage extends WizardPage implements Listener {
 
-    public static final String NAME = "parameters";
+    public static final String NAME = "parameters"; //$NON-NLS-1$
     private List<Control> paramControls;
     private boolean isInitializing;
 
@@ -52,9 +53,9 @@ public class ParamsWizardPage extends WizardPage implements Listener {
         setControl(control);
         Script script = ((NewJobWizard) getWizard()).getJob().getScript();
         // Set page title and message
-        setTitle("Configure the " + script.getNicename());
-        setDescription("Configure the parameters of the "
-                + script.getNicename());
+        setTitle(NLS.bind(Messages.page_param_title, script.getNicename()));
+        setDescription(NLS.bind(Messages.page_param_description, script
+                .getNicename()));
         // Create controls for required and optional parameters
         ScriptParameter[] reqParams = script.getRequiredParameters().values()
                 .toArray(new ScriptParameter[0]);
@@ -64,13 +65,13 @@ public class ParamsWizardPage extends WizardPage implements Listener {
                 + optParams.length);
         if (reqParams.length > 0) {
             Group reqGroup = new Group(control, SWT.SHADOW_NONE);
-            reqGroup.setText("Required Parameters");
+            reqGroup.setText(Messages.page_param_requiredGroup);
             reqGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
             paramControls.addAll(createParamControls(reqGroup, reqParams));
         }
         if (optParams.length > 0) {
             Group optGroup = new Group(control, SWT.SHADOW_NONE);
-            optGroup.setText("Optional Parameters");
+            optGroup.setText(Messages.page_param_optionalGroup);
             optGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
             paramControls.addAll(createParamControls(optGroup, optParams));
         }
@@ -106,7 +107,8 @@ public class ParamsWizardPage extends WizardPage implements Listener {
                 setErrorMessage(null);
                 updateSettings(param, value);
             } catch (DatatypeException e) {
-                setErrorMessage("Invalid parameter: " + e.getLocalizedMessage());
+                setErrorMessage(NLS.bind(Messages.page_param_error_invalid, e
+                        .getLocalizedMessage()));
             }
             updatePageComplete(true);
             break;

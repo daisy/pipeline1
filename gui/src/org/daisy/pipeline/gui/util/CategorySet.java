@@ -19,7 +19,7 @@ public abstract class CategorySet {
     
     public abstract List<Category> getCategories();
     
-    public static CategorySet NONE = new CategorySet("None") {
+    public static CategorySet NONE = new CategorySet(Messages.groupBy_categorySet_none) {
         @Override
         public List<Category> getCategories() {
             return null;

@@ -27,6 +27,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setShowPerspectiveBar(true);
         configurer.setShowProgressIndicator(false);
         configurer.setShowStatusLine(true);
-        configurer.setTitle("DAISY Pipeline");
+        configurer.setTitle(Messages.window_title);
     }
 }

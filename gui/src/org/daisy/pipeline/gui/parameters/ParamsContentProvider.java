@@ -1,6 +1,6 @@
 package org.daisy.pipeline.gui.parameters;
 
-import org.daisy.pipeline.gui.jobs.model.JobInfo;
+import org.daisy.pipeline.gui.model.JobInfo;
 import org.daisy.pipeline.gui.util.viewers.CategorizedContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 

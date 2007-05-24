@@ -15,7 +15,7 @@ import org.eclipse.ui.XMLMemento;
  * 
  */
 public class MessageFilter extends ViewerFilter {
-    private static final String TAG_SECTION = "FilterInfo";
+    private static final String TAG_SECTION = "FilterInfo"; //$NON-NLS-1$
     EnumSet<MessageEvent.Cause> causes;
     EnumSet<MessageEvent.Type> types;
 

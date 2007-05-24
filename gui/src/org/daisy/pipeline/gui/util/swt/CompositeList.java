@@ -12,7 +12,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings("unchecked") //$NON-NLS-1$
 public class CompositeList<I extends CompositeItem> extends Composite {
     private int itemCount = 0;
     private int[] selection = new int[4];
@@ -297,7 +297,7 @@ public class CompositeList<I extends CompositeItem> extends Composite {
      * 
      * @see CompositeList#deselectAll()
      */
-    @SuppressWarnings("null")
+    @SuppressWarnings("null") //$NON-NLS-1$
     public void setSelection(int[] indices) {
         checkWidget();
         if (indices == null) {
@@ -344,7 +344,7 @@ public class CompositeList<I extends CompositeItem> extends Composite {
      * 
      * @see CompositeList#showSelection()
      */
-    @SuppressWarnings("null")
+    @SuppressWarnings("null") //$NON-NLS-1$
     public void showItem(CompositeItem item) {
         checkWidget();
         if (item == null) {

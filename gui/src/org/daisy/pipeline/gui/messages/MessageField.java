@@ -11,6 +11,7 @@ import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.util.AbstractTableField;
 import org.daisy.pipeline.gui.util.Category;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -41,7 +42,7 @@ class MessageField extends AbstractTableField {
 
     @Override
     public String getHeaderText() {
-        return "Message";
+        return Messages.heading_message;
     }
 
     @Override
@@ -54,31 +55,32 @@ class MessageField extends AbstractTableField {
         }
         if (element instanceof Location) {
             Location loc = (Location) element;
-            StringBuilder locString = new StringBuilder();
             String sysId = loc.getSystemId();
             try {
                 URI uri = new URI(sysId);
                 File path = new File(uri.getPath());
                 if (sysId != null && sysId.length() > 0) {
                     if (loc.getLineNumber() > -1) {
-                        locString.append("At line ");
-                        locString.append(loc.getLineNumber());
                         if (loc.getColumnNumber() > -1) {
-                            locString.append(", column ");
-                            locString.append(loc.getColumnNumber());
+                            return NLS.bind(
+                                    Messages.location_fileAndColumnAndLine,
+                                    new Object[] { path.getName(), sysId,
+                                            loc.getLineNumber(),
+                                            loc.getColumnNumber() });
+                        } else {
+                            return NLS.bind(Messages.location_fileAndLine,
+                                    new Object[] { path.getName(), sysId,
+                                            loc.getLineNumber() });
                         }
+                    } else {
+                        return NLS.bind(Messages.location_file, path.getName(),
+                                sysId);
                     }
-                    locString.append(" in file '");
-                    locString.append(path.getName());
-                    locString.append("' [");
-                    locString.append(sysId);
-                    locString.append(']');
                 }
             } catch (URISyntaxException e) {
-                GuiPlugin.get().error("Couldn't create URI from SystemID", e);
-                locString.append("!err!");
+                GuiPlugin.get().error("Couldn't create URI from SystemID", e); //$NON-NLS-1$
+                return "!err!"; //$NON-NLS-1$
             }
-            return locString.toString();
         }
         return super.getText(element);
     }

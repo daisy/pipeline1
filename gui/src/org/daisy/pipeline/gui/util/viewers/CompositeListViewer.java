@@ -230,7 +230,7 @@ public abstract class CompositeListViewer<I extends CompositeItem> extends
             }
             for (String key : cprov.getTextKeys()) {
                 String text = cprov.getText(key, element);
-                item.setText(key, text != null ? text : "");
+                item.setText(key, text != null ? text : ""); //$NON-NLS-1$
             }
         }
         item.refresh();

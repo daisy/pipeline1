@@ -11,7 +11,7 @@ class TypeCategorySet extends CategorySet {
     private List<Category> categories;
 
     public TypeCategorySet() {
-        super("Type");
+        super(Messages.groupBy_categorySet_type);
         categories = new LinkedList<Category>();
         for (MessageEvent.Type type : MessageEvent.Type.values()) {
             categories.add(new TypeCategory(type));

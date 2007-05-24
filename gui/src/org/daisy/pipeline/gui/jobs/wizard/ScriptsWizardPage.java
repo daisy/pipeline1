@@ -8,8 +8,8 @@ import org.daisy.dmfc.core.script.Job;
 import org.daisy.dmfc.core.script.Script;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.PipelineUtil;
+import org.daisy.pipeline.gui.model.ScriptManager;
 import org.daisy.pipeline.gui.scripts.ScriptFileFilter;
-import org.daisy.pipeline.gui.scripts.ScriptManager;
 import org.daisy.pipeline.gui.scripts.ScriptsLabelProvider;
 import org.daisy.pipeline.gui.util.viewers.ExpandTreeDoubleClickListener;
 import org.daisy.pipeline.gui.util.viewers.FileTreeContentProvider;
@@ -28,8 +28,8 @@ import org.eclipse.swt.widgets.Composite;
 
 public class ScriptsWizardPage extends WizardPage {
 
-    public static final String NAME = "selectScript";
-    public static final String SETTINGS_LAST_SCRIPT_URI = "lastScriptURI";
+    public static final String NAME = "selectScript"; //$NON-NLS-1$
+    public static final String SETTINGS_LAST_SCRIPT_URI = "lastScriptURI"; //$NON-NLS-1$
 
     private ScriptManager scriptMan;
     private IStructuredSelection selection;
@@ -37,8 +37,8 @@ public class ScriptsWizardPage extends WizardPage {
 
     protected ScriptsWizardPage() {
         super(NAME);
-        setTitle("Select Script");
-        setDescription("Select the script the new job will be based on.");
+        setTitle(Messages.page_script_title);
+        setDescription(Messages.page_script_description);
         scriptMan = ScriptManager.getDefault();
     }
 
@@ -93,7 +93,7 @@ public class ScriptsWizardPage extends WizardPage {
                             scriptFile), true);
                 } catch (URISyntaxException e) {
                     GuiPlugin.get().error(
-                            "Couldn't create script URI from wizard settings",
+                            "Couldn't create script URI from wizard settings", //$NON-NLS-1$
                             e);
                 }
             }
@@ -123,8 +123,7 @@ public class ScriptsWizardPage extends WizardPage {
         Script script = scriptMan.getScript(file.toURI());
         if (script == null) {
             setMessage(null);
-            setErrorMessage((showError) ? "Unhandled script file." : null);
-            setErrorMessage("Unhandled script file.");
+            setErrorMessage((showError) ? Messages.page_script_error_unhandledScript : null);
             return;
         }
 

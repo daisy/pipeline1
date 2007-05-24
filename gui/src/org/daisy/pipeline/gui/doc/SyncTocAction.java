@@ -14,9 +14,9 @@ public class SyncTocAction extends Action implements IAction {
     private DocView view;
 
     public SyncTocAction(DocView view) {
-        super("Synchronize", IAction.AS_CHECK_BOX);
-        setText("Synchronize");
-        setToolTipText("Show in table of contents");
+        super(Messages.action_synchronize, IAction.AS_CHECK_BOX);
+        setText(Messages.action_synchronize);
+        setToolTipText(Messages.action_synchronize_tooltip);
         setImageDescriptor(GuiPlugin
                 .createDescriptor(IIconsKeys.HELP_SYNCHRONIZE));
         this.view = view;

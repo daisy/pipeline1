@@ -26,13 +26,13 @@ public abstract class DatatypeAdapter {
             String typeName = type.getType().name();
             sb.append(typeName.charAt(0));
             sb.append(typeName.substring(1).toLowerCase());
-            sb.append("Adapter");
+            sb.append("Adapter"); //$NON-NLS-1$
             try {
                 Class clazz = Class.forName(sb.toString());
                 adapter = (DatatypeAdapter) clazz.newInstance();
             } catch (Exception e) {
                 GuiPlugin.get().error(
-                        "Cannot instantiate adapter for datatype " + type, e);
+                        "Cannot instantiate adapter for datatype " + type, e); //$NON-NLS-1$
             }
             if (adapter == null) {
                 adapter = new DefaultAdapter();

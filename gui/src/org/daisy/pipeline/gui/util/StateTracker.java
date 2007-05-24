@@ -42,10 +42,10 @@ public class StateTracker {
     public void setProgress(double progress) {
         if (state != State.RUNNING) {
             throw new IllegalStateException(
-                    "Cannot set progress: state is not RUNNING");
+                    "Cannot set progress: state is not RUNNING"); //$NON-NLS-1$
         }
         if (progress < 0 || progress > 1) {
-            throw new IllegalArgumentException("Progress out of bounds");
+            throw new IllegalArgumentException("Progress out of bounds"); //$NON-NLS-1$
         }
         this.progress = progress;
         timer.update(progress);
@@ -79,7 +79,7 @@ public class StateTracker {
 
     private void checkState(boolean ok, State state) {
         if (!ok) {
-            throw new IllegalStateException("Try to make " + state + " a "
+            throw new IllegalStateException("Try to make " + state + " a " //$NON-NLS-1$ //$NON-NLS-2$
                     + this.state + ' ' + this.getClass().getName());
         }
     }

@@ -59,7 +59,7 @@ public class CompositeLabelProvider extends EventManager implements
      * Subclasses may override.
      */
     public String getText(String key, Object element) {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**

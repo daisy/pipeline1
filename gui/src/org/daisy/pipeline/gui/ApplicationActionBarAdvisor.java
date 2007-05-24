@@ -109,13 +109,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     @Override
     protected void fillMenuBar(IMenuManager menuBar) {
         // Menu Managers
-        MenuManager fileMenu = new MenuManager("&File",
+        MenuManager fileMenu = new MenuManager(Messages.menu_file,
                 IWorkbenchActionConstants.M_FILE);
-        MenuManager editMenu = new MenuManager("&Edit",
+        MenuManager editMenu = new MenuManager(Messages.menu_edit,
                 IWorkbenchActionConstants.M_EDIT);
-        MenuManager windowMenu = new MenuManager("&Window",
+        MenuManager windowMenu = new MenuManager(Messages.menu_window,
                 IWorkbenchActionConstants.M_WINDOW);
-        MenuManager helpMenu = new MenuManager("&Help",
+        MenuManager helpMenu = new MenuManager(Messages.menu_help,
                 IWorkbenchActionConstants.M_HELP);
 
         // Menu Bar
@@ -126,7 +126,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         menuBar.add(helpMenu);
 
         // File menu
-        MenuManager newSubMenu = new MenuManager("&New", ActionFactory.NEW
+        MenuManager newSubMenu = new MenuManager(Messages.menu_new, ActionFactory.NEW
                 .getId());
         newSubMenu.add(wizardListItem);
         fileMenu.add(newSubMenu);
@@ -146,12 +146,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         // TODO add find/replace action
 
         // Window menu
-        MenuManager perspSubMenu = new MenuManager("Open &Perspective",
-                "openPerspective");
+        MenuManager perspSubMenu = new MenuManager(Messages.menu_window_openPerspective,
+                "openPerspective"); //$NON-NLS-1$
         perspSubMenu.add(perspListItem);
-        MenuManager viewSubMenu = new MenuManager("Show &View", "showView");
+        MenuManager viewSubMenu = new MenuManager(Messages.menu_window_showView, "showView"); //$NON-NLS-1$
         viewSubMenu.add(viewListItem);
-        MenuManager navSubMenu = new MenuManager("&Navigation", "navigation");
+        MenuManager navSubMenu = new MenuManager(Messages.menu_window_navigation, "navigation"); //$NON-NLS-1$
         navSubMenu.add(showPaneMenuAction);
         navSubMenu.add(showViewMenuAction);
         navSubMenu.add(new Separator());
