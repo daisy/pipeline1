@@ -47,7 +47,7 @@ public class DirClassLoader extends URLClassLoader {
 	
 	private static URL fileToURL(File file) {
 	    try {
-            return file.toURL();
+            return file.toURI().toURL();
         } catch (MalformedURLException e) {
             // Nothing
         }
@@ -73,7 +73,7 @@ public class DirClassLoader extends URLClassLoader {
 		if (resourceFile.canRead()) {
 			try {
 				//System.err.println("Found resource at " + resourceFile.getAbsolutePath());
-				return resourceFile.toURL();
+				return resourceFile.toURI().toURL();
 			} catch (MalformedURLException e) {
 				return null;
 			}

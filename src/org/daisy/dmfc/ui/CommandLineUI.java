@@ -170,7 +170,7 @@ public class CommandLineUI implements InputListener, BusListener {
 
             DMFCCore dmfc = new DMFCCore(ui, findHomeDirectory(), new Locale(
                     "en"));
-            Script script = dmfc.newScript(scriptFile.toURL());
+            Script script = dmfc.newScript(scriptFile.toURI().toURL());
             Job job = new Job(script);
 
             // Only print information?

@@ -120,7 +120,7 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
          * If any validation or dependency check fails, disable this Transformer
          */
         try {
-            initialize(tdfFile.toURL());
+            initialize(tdfFile.toURI().toURL());
 
             // Create the class loader and Transformer class (not object)
             createTransformerClass(tdfFile, transformersDir);
@@ -178,8 +178,8 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
          * If any validation or dependency check fails, disable this Transformer
          */
         try {
-            URL tdfUrl = new URL("jar:" + jarFile.toURL() + "!/" + transformerName + "/transformer.tdf");
-            URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { jarFile.toURL() }, this.getClass().getClassLoader());
+            URL tdfUrl = new URL("jar:" + jarFile.toURI().toURL() + "!/" + transformerName + "/transformer.tdf");
+            URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { jarFile.toURI().toURL() }, this.getClass().getClassLoader());
             initialize(tdfUrl);
             // Create the class loader and Transformer class (not object)
             createTransformerClass(urlClassLoader);
@@ -436,7 +436,7 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
                 } else if (seName.equals("documentation")) {
                 	Attribute att = se.getAttributeByName(new QName("uri"));
                     try {
-						mDocumentationURI = mTdfUrl.toURI().resolve(att.getValue());
+						mDocumentationURI = mTdfUrl.toURI().resolve(att.getValue());						
 					} catch (Exception e) {
 					      EventBus.getInstance().publish(
 					                new CoreMessageEvent(this, i18n("DOCUMENTATION_URI_FAILURE", mNiceName,

@@ -87,7 +87,7 @@ public class Creator implements ErrorHandler, EntityResolver {
             // Peek and convert from old script format if needed
             TempFile upgraded = this.upgrade(url);
             if (upgraded != null) {
-                url = upgraded.getFile().toURL();
+                url = upgraded.getFile().toURI().toURL();
             }
 
             // Validate XML document
