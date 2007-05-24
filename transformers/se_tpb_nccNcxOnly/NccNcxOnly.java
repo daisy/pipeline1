@@ -63,6 +63,7 @@ import org.daisy.util.fileset.interfaces.xml.d202.D202TextualContentFile;
 import org.daisy.util.fileset.util.ManifestFinder;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 import org.daisy.util.xml.xslt.Stylesheet;
@@ -87,7 +88,7 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
     private static final double NCC_DONE = 0.37;
     private static final double COPY_DONE = 0.99;
     
-    private XMLInputFactory mFactory;
+    private StAXInputFactoryPool mInputFactoryPool = null;
     
     private int total = 1;
     private int count = 0;
@@ -95,23 +96,11 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
     /**
      * Constructor.
      * @param inListener
-     * @param eventListeners
      * @param isInteractive
      */
-	public NccNcxOnly(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-		super(inListener, eventListeners, isInteractive);		
-        try {
-        	mFactory = XMLInputFactory.newInstance();
-            mFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
-            mFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
-            //mFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
-            mFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.TRUE);
-			mFactory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
-			mFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);
-		} catch (CatalogExceptionNotRecoverable e) {
-			e.printStackTrace();
-		}
-        
+	public NccNcxOnly(InputListener inListener,  Boolean isInteractive) {
+		super(inListener, isInteractive);	
+		mInputFactoryPool = StAXInputFactoryPool.getInstance();        
 	}
 
 	/*
@@ -234,14 +223,24 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
 	 * @param idUriList
 	 * @throws FileNotFoundException
 	 * @throws XMLStreamException
+	 * @throws CatalogExceptionNotRecoverable 
 	 */
-	private void updateSmil(D202SmilFile smilFile, File outDir, NccIdUriList idUriList) throws FileNotFoundException, XMLStreamException {
-		XMLEventReader reader = mFactory.createXMLEventReader(new FileInputStream(smilFile.getFile()));
-		BookmarkedXMLEventReader bookmarked = new BookmarkedXMLEventReader(reader);
-		File outFile = new File(outDir, smilFile.getName());
-		OutputStream os = new FileOutputStream(outFile);
-		SmilUpdater updater = new SmilUpdater(bookmarked, os, idUriList, smilFile.getName());
-		updater.filter();
+	private void updateSmil(D202SmilFile smilFile, File outDir, NccIdUriList idUriList) throws FileNotFoundException, XMLStreamException, CatalogExceptionNotRecoverable {
+		Map properties = null;
+		XMLInputFactory xif = null;
+		try{
+			properties = mInputFactoryPool.getDefaultPropertyMap(false);			
+			xif = mInputFactoryPool.acquire(properties);
+			xif.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
+			XMLEventReader reader = xif.createXMLEventReader(new FileInputStream(smilFile.getFile()));
+			BookmarkedXMLEventReader bookmarked = new BookmarkedXMLEventReader(reader);
+			File outFile = new File(outDir, smilFile.getName());
+			OutputStream os = new FileOutputStream(outFile);
+			SmilUpdater updater = new SmilUpdater(bookmarked, os, idUriList, smilFile.getName());
+			updater.filter();
+		}finally{
+			mInputFactoryPool.release(xif, properties);
+		}
 	}
 	
 	/**

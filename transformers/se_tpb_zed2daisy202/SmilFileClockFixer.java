@@ -55,7 +55,7 @@ class SmilFileClockFixer {
         factory = XMLInputFactory.newInstance();
         factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
         factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
-        //factory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
+        factory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
         factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.TRUE);
         factory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
         factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);        
