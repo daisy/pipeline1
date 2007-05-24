@@ -312,5 +312,11 @@
     </sch:rule>
   </sch:pattern>  
   
+  <!--  MG20070522: added as a consequence of zedval feature request #1593192 -->
+  <sch:pattern name="dtbook_levelDepth" id="dtbook_levelDepth">
+	<sch:rule context="dtbk:level[@depth]">
+		<sch:assert test="@depth=count(ancestor-or-self::dtbk:level)">[sch][zedid::dtbook_levelDepth]</sch:assert>
+	</sch:rule>
+  </sch:pattern>
 	          
 </grammar>
