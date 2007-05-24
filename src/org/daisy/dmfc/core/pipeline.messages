@@ -48,6 +48,7 @@
 	<entry key="TRANSFORMER_ILLEGAL_ARGUMENT"    >Illegal argument</entry>
 	<entry key="TRANSFORMER_ILLEGAL_ACCESS"      >Illegal access</entry>
 	<entry key="TRANSFORMER_INVOCATION_PROBLEM"  >Invocation problem</entry>
+	<entry key="DOCUMENTATION_URI_FAILURE"       >Documentation problem in transformer {0}: {1} cannot be resolved</entry>
 
 
 	<!-- org.daisy.dmfc.core.script.ScriptHandler -->
