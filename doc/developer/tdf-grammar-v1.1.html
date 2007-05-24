@@ -19,7 +19,7 @@
   
     <h2 class="toc">Contents</h2>
   <ul>
-   	<li><a href="#introduction">Introduction</a></li>
+   	<!-- <li><a href="#introduction">Introduction</a></li> -->
    	<li><a href="#grammar">The grammar</a></li>
   	<li><a href="#example">Example</a></li>
   	<li><a href="#notes">Notes</a></li>  	
@@ -27,20 +27,6 @@
 
   </ul>
   
-  
-  <h2 id="introduction">Introduction</h2>
-  <p>Each Daisy Pipeline Transformer has a Transformer Description File (henceforth 'TDF') associated with it. The TDF file can be seen as a
-  manifest of the transformer; in this file, the contract of the Transformer is defined. The contract includes what type of
-  content it accepts as input, and what type of content it will give as output. Further, the TDF defines additional input parameters
-  that the Transformer can take to customize its behavior.  
-  </p>
-
-  <p>The TDF is an XML grammar. A compound RelaxNG+Schematron Schema<a class="note" href="#note1"><sup>1</sup></a> exists to validate it. 
-  Each TDF file is parsed (and validated) by the Pipeline core at initialization time.</p>
-  
-  <p>The filename of the TDF files is fixed to <code>transformer.tdf</code>. Previously, the filename restriction was <code>*.tdf</code>, 
-  but this has been deprecated in order to support locating TDF files inside Jars.</p>
-
   <h2 id="grammar">The grammar</h2>
 
   <p>The Transformer Description file (TDF) is divided into three main parts, the general information part, the parameters part and the platforms part.</p>
@@ -280,7 +266,6 @@
 
 
   <h2 id="notes">Notes</h2>
-  <p id="note1">1. The schema lives in the <code>org.daisy.dmfc.core.transformer</code> package. If you do not have access to the source code, <a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/src/org/daisy/dmfc/core/transformer/">browse the SVN online</a>.</p>
   <p id="note2">2. The Pipeline uses more MIME types than those defined by IANA. The Pipeline MIME registry (MIMETypeRegistry.xml) lives in the <code>org.daisy.util.mime.</code> package. If you do not have access to the source code, <a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/src/org/daisy/util/mime/MIMETypeRegistry.xml?view=markup">browse the registry online</a>.</p>
 
 </div>
