@@ -22,7 +22,7 @@ public class JobsPerspective implements IPerspectiveFactory {
         // folder.addView(ParametersView.ID);
         folder.addView(JobProgressView.ID);
 
-        PerspectiveHelper.addCommonShortcuts(layout);
+        PerspectiveUtil.addCommonShortcuts(layout);
     }
 
 }

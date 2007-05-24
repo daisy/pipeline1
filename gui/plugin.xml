@@ -3,7 +3,7 @@
 <plugin>
 
    <extension
-         id="application"
+         id="org.daisy.pipeline.gui.application"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
@@ -12,18 +12,372 @@
       </application>
    </extension>
    <extension
+         id="org.daisy.pipeline.gui.product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.daisy.pipeline.gui.application"
+            description="%product.description"
+            name="%product.name">
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="%actionSet.tableEdition.description"
+            id="org.daisy.pipeline.gui.actionSet.tableEdition"
+            label="%actionSet.tableEdition"
+            visible="true">
+         <action
+               allowLabelUpdate="true"
+               definitionId=" org.daisy.pipeline.gui.command.moveToBottom"
+               icon="icons/move-bottom.gif"
+               id="org.daisy.pipeline.gui.action.table.moveToBottom"
+               label="%action.moveToBottom"
+               menubarPath="edit/additions"
+               retarget="true"
+               style="push"
+               tooltip="%action.moveToBottom.tooltip"/>
+         <action
+               allowLabelUpdate="true"
+               definitionId=" org.daisy.pipeline.gui.command.moveDown"
+               icon="icons/move-down.gif"
+               id="org.daisy.pipeline.gui.action.table.moveDown"
+               label="%action.moveDown"
+               menubarPath="edit/additions"
+               retarget="true"
+               style="push"
+               tooltip="%action.moveDown.tooltip"/>
+         <action
+               allowLabelUpdate="true"
+               definitionId=" org.daisy.pipeline.gui.command.moveUp"
+               icon="icons/move-up.gif"
+               id="org.daisy.pipeline.gui.action.table.moveUp"
+               label="%action.moveUp"
+               menubarPath="edit/additions"
+               retarget="true"
+               style="push"
+               tooltip="%action.moveUp.tooltip"/>
+         <action
+               allowLabelUpdate="true"
+               definitionId=" org.daisy.pipeline.gui.command.moveToTop"
+               icon="icons/move-top.gif"
+               id="org.daisy.pipeline.gui.action.table.moveToTop"
+               label="%action.moveToTop"
+               menubarPath="edit/additions"
+               retarget="true"
+               style="push"
+               tooltip="%action.moveToTop.tooltip"/>
+      </actionSet>
+      <actionSet
+            description="%actionSet.jobs.description"
+            id="org.daisy.pipeline.gui.actionSet.jobs"
+            label="%actionSet.jobs"
+            visible="true">
+         <menu
+               id="org.daisy.pipeline.gui.menu.run"
+               label="%menu.run"
+               path="additions">
+            <groupMarker name="run"/>
+            <separator name="additions"/>
+         </menu>
+         <action
+               class="org.daisy.pipeline.gui.jobs.CancelAllAction"
+               definitionId="org.daisy.pipeline.gui.command.cancelAll"
+               icon="icons/action-stop-all.gif"
+               id="org.daisy.pipeline.gui.action.cancelAll"
+               label="%action.cancelAll"
+               menubarPath="org.daisy.pipeline.gui.menu.run/run"
+               style="push"
+               tooltip="%action.cancelAll.tooltip"/>
+         <action
+               class="org.daisy.pipeline.gui.jobs.CancelAction"
+               definitionId="org.daisy.pipeline.gui.command.cancel"
+               icon="icons/action-stop.gif"
+               id="org.daisy.pipeline.gui.action.cancel"
+               label="%action.cancel"
+               menubarPath="org.daisy.pipeline.gui.menu.run/run"
+               style="push"
+               tooltip="%action.cancel.tooltip"/>
+         <action
+               class="org.daisy.pipeline.gui.jobs.RunAllAction"
+               definitionId="org.daisy.pipeline.gui.command.runAll"
+               icon="icons/action-run-all.gif"
+               id="org.daisy.pipeline.gui.action.runAll"
+               label="%action.runAll"
+               menubarPath="org.daisy.pipeline.gui.menu.run/run"
+               style="push"
+               tooltip="%action.runAll.tooltip"/>
+         <action
+               class="org.daisy.pipeline.gui.jobs.RunAction"
+               definitionId="org.daisy.pipeline.gui.command.run"
+               icon="icons/action-run.gif"
+               id="org.daisy.pipeline.gui.action.run"
+               label="%action.run"
+               menubarPath="org.daisy.pipeline.gui.menu.run/run"
+               style="push"
+               tooltip="%action.run.tooltip"/>
+         <action
+               class="org.daisy.pipeline.gui.jobs.CancelPullDownAction"
+               definitionId="org.daisy.pipeline.gui.command.cancelDropDown"
+               icon="icons/action-stop.gif"
+               id="org.daisy.pipeline.gui.action.cancelPullDown"
+               label="%action.cancel"
+               style="pulldown"
+               toolbarPath="Normal/additions"
+               tooltip="%action.cancel.tooltip"/>
+         <action
+               class="org.daisy.pipeline.gui.jobs.RunPullDownAction"
+               definitionId="org.daisy.pipeline.gui.command.runDropDown"
+               icon="icons/action-run.gif"
+               id="org.daisy.pipeline.gui.action.runPullDown"
+               label="%action.run"
+               style="pulldown"
+               toolbarPath="Normal/additions"
+               tooltip="%action.run.tooltip"/>
+         <action
+               class="org.daisy.pipeline.gui.jobs.NewJobAction"
+               definitionId="org.daisy.pipeline.gui.command.newItem"
+               icon="icons/action-new-job.gif"
+               id="org.daisy.pipeline.gui.action.newJob"
+               label="%action.newJob"
+               style="push"
+               toolbarPath="org.eclipse.ui.workbench.file"
+               tooltip="%action.newJob.tooltip"/>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <scheme
+            id="org.daisy.pipeline.gui.bindings.defaultScheme"
+            name="%binding.scheme.default"/>
+      <key
+            commandId="org.eclipse.ui.file.close"
+            sequence="M1+W"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.file.close"
+            sequence="M1+F4"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.file.closeAll"
+            sequence="M1+M2+W"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.file.closeAll"
+            sequence="M1+M2+F4"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.paste"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M1+V"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.selectAll"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M1+A"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.undo"
+            sequence="M1+Z"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.redo"
+            sequence="M1+Y"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.copy"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M1+C"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.cut"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M1+X"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.delete"
+            sequence="DEL"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.newWizard"
+            sequence="M1+M2+N"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.window.showSystemMenu"
+            sequence="M3+-"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.window.showViewMenu"
+            sequence="M1+F10"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.window.maximizePart"
+            sequence="M1+M"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.window.nextView"
+            sequence="M1+F7"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.window.previousView"
+            sequence="M1+M2+F7"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.window.nextPerspective"
+            sequence="M1+F8"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.eclipse.ui.window.previousPerspective"
+            sequence="M1+M2+F8"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
+      <key
+            commandId="org.daisy.pipeline.gui.command.newItem"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+N"/>
+      <key
+            commandId="org.daisy.pipeline.gui.command.cancel"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+F2"/>
+      <key
+            commandId="org.daisy.pipeline.gui.command.cancelAll"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+M2+F2"/>
+      <key
+            commandId="org.daisy.pipeline.gui.command.run"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+F1"/>
+      <key
+            commandId="org.daisy.pipeline.gui.command.runAll"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+M2+F1"/>
+      <key
+            commandId="org.eclipse.ui.navigate.back"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+ARROW_LEFT"/>
+      <key
+            commandId="org.eclipse.ui.navigate.forward"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+ARROW_RIGHT"/>
+   </extension>
+  
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="%command.category.edit"
+            description="%command.category.edit.description"
+            id="org.eclipse.ui.category.edit" />
+      <category
+            name="%command.category.file"
+            description="%command.category.file.description"
+            id="org.eclipse.ui.category.file" />
+      <category
+            name="%command.category.help"
+            description="%command.category.help.description"
+            id="org.eclipse.ui.category.help" />
+      <category
+            name="%command.category.navigate"
+            description="%command.category.navigate.description"
+            id="org.eclipse.ui.category.navigate" />
+      <category
+            description="%command.category.run.description"
+            id="org.daisy.pipeline.gui.command.category.run"
+            name="%command.category.run"/>
+      <category
+            name="%command.category.window"
+            description="%command.category.window.description"
+            id="org.eclipse.ui.category.window" />
+      <command
+            categoryId="org.daisy.pipeline.gui.command.category.run"
+            description="%command.cancel.description"
+            id="org.daisy.pipeline.gui.command.cancel"
+            name="%command.cancel"/>
+      <command
+            categoryId="org.daisy.pipeline.gui.command.category.run"
+            description="%command.cancel.description"
+            id="org.daisy.pipeline.gui.command.cancelDropDown"
+            name="%command.cancel"/>
+      <command
+            categoryId="org.daisy.pipeline.gui.command.category.run"
+            description="%command.cancelAll.description"
+            id="org.daisy.pipeline.gui.command.cancelAll"
+            name="%command.cancelAll"/>
+      <command
+            categoryId="org.eclipse.ui.category.edit"
+            description="%command.moveDown.description"
+            id="org.daisy.pipeline.gui.command.moveDown"
+            name="%command.moveDown"/>
+      <command
+            categoryId="org.eclipse.ui.category.edit"
+            description="%command.moveToBottom.description"
+            id="org.daisy.pipeline.gui.command.moveToBottom"
+            name="%command.moveToBottom"/>
+      <command
+            categoryId="org.eclipse.ui.category.edit"
+            description="%command.moveToTop.description"
+            id="org.daisy.pipeline.gui.command.moveToTop"
+            name="%command.moveToTop"/>
+      <command
+            categoryId="org.eclipse.ui.category.edit"
+            description="%command.moveUp.description"
+            id="org.daisy.pipeline.gui.command.moveUp"
+            name="%command.moveUp"/>
+      <command
+            categoryId="org.eclipse.ui.category.file"
+            description="%command.newItem.description"
+            id="org.daisy.pipeline.gui.command.newItem"
+            name="%command.newItem"/>
+      <command
+            categoryId="org.daisy.pipeline.gui.command.category.run"
+            description="%command.run.description"
+            id="org.daisy.pipeline.gui.command.run"
+            name="%command.run"/>
+      <command
+            categoryId="org.daisy.pipeline.gui.command.category.run"
+            description="%command.run.description"
+            id="org.daisy.pipeline.gui.command.runDropDown"
+            name="%command.run"/>
+      <command
+            categoryId="org.daisy.pipeline.gui.command.category.run"
+            description="%command.runAll.description"
+            id="org.daisy.pipeline.gui.command.runAll"
+            name="%command.runAll"/>
+   </extension> <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="org.daisy.pipeline.gui.jobs.wizard.NewJobWizard"
+            hasPages="true"
+            icon="icons/action-new-job.gif"
+            id="org.daisy.pipeline.gui.wizard.newJob"
+            name="%wizard.newJob"/>
+   </extension>
+   <extension
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.daisy.pipeline.gui.JobsPerspective"
             icon="icons/pers-jobs.gif"
             id="org.daisy.pipeline.gui.perspectives.jobs"
-            name="Pipeline Jobs">
+            name="%perspective.jobs">
       </perspective>
       <perspective
             class="org.daisy.pipeline.gui.doc.DocPerspective"
             icon="icons/persp-doc.gif"
             id="org.daisy.pipeline.gui.perspectives.doc"
-            name="Documentation"/>
+            name="%perspective.documentation"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.eclipse.ui.ExtensionFactory:keysPreferencePage"
+            id="org.daisy.pipeline.gui.preferences.keys"
+            name="%prefPage.keys"/>
+      <page
+            class="org.eclipse.ui.ExtensionFactory:perspectivesPreferencePage"
+            id="org.daisy.pipeline.gui.preferences.perspectives"
+            name="%prefPage.perspectives"/>
+      <page
+            class="org.eclipse.ui.ExtensionFactory:appearancePreferencePage"
+            id="org.daisy.pipeline.gui.preferences.appearance"
+            name="%prefPage.appearance"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -31,159 +385,41 @@
             class="org.daisy.pipeline.gui.doc.DocView"
             icon="icons/view-doc.gif"
             id="org.daisy.pipeline.gui.views.doc"
-            name="Documentation"/>  
+            name="%view.documentation"/>  
      <view
            class="org.eclipse.pde.internal.runtime.logview.LogView"
            icon="icons/view-error-log.gif"
            id="org.eclipse.pde.runtime.LogView"
-           name="Error Log">
+           name="%view.errorLog">
       </view>    
       <view
             class="org.daisy.pipeline.gui.jobs.JobsView"
             icon="icons/view-jobs.gif"
             id="org.daisy.pipeline.gui.views.jobs"
-            name="Jobs">
+            name="%view.jobs">
       </view>
       <view
             class="org.daisy.pipeline.gui.messages.MessagesView"
             icon="icons/view-messages.gif"
             id="org.daisy.pipeline.gui.views.messages"
-            name="Messages"/>
+            name="%view.messages"/>
       <view
             class="org.daisy.pipeline.gui.parameters.ParametersView"
             icon="icons/view-parameters.gif"
             id="org.daisy.pipeline.gui.views.parameters"
-            name="Job Parameters (in development)"/>
+            name="%view.parameters"/>
       <view
             class="org.daisy.pipeline.gui.jobs.JobProgressView"
             icon="icons/view-progress.gif"
             id="org.daisy.pipeline.gui.views.progress"
-            name="Progress"/>
-   </extension>
-   <extension
-         point="org.eclipse.ui.viewActions">
-   </extension>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.daisy.pipeline.gui.actionSet.tableEdition"
-            label="Table Edition"
-            visible="true">
-         <action
-               allowLabelUpdate="true"
-               icon="icons/move-bottom.gif"
-               id="org.daisy.pipeline.gui.action.table.moveToBottom"
-               label="Move to Bottom"
-               menubarPath="edit/additions"
-               retarget="true"
-               style="push"
-               tooltip="Move Selection to Bottom"/>
-         <action
-               allowLabelUpdate="true"
-               icon="icons/move-down.gif"
-               id="org.daisy.pipeline.gui.action.table.moveDown"
-               label="Move Down"
-               menubarPath="edit/additions"
-               retarget="true"
-               style="push"
-               tooltip="Move Down Selection"/>
-         <action
-               allowLabelUpdate="true"
-               icon="icons/move-up.gif"
-               id="org.daisy.pipeline.gui.action.table.moveUp"
-               label="Move Up"
-               menubarPath="edit/additions"
-               retarget="true"
-               style="push"
-               tooltip="Move Up Selection"/>
-         <action
-               allowLabelUpdate="true"
-               icon="icons/move-top.gif"
-               id="org.daisy.pipeline.gui.action.table.moveToTop"
-               label="Move to Top"
-               menubarPath="edit/additions"
-               retarget="true"
-               style="push"
-               tooltip="Move Selection to Top"/>
-      </actionSet>
-      <actionSet
-            id="org.daisy.pipeline.gui.actionSet.jobs"
-            label="Pipeline Jobs"
-            visible="true">
-         <menu
-               id="org.daisy.pipeline.gui.menu.run"
-               label="Run"
-               path="additions">
-            <groupMarker name="run"/>
-            <separator name="additions"/>
-         </menu>
-         <action
-               class="org.daisy.pipeline.gui.jobs.CancelAllAction"
-               icon="icons/action-stop-all.gif"
-               id="org.daisy.pipeline.gui.action.cancelAll"
-               label="Cancel All"
-               menubarPath="org.daisy.pipeline.gui.menu.run/run"
-               style="push"/>
-         <action
-               class="org.daisy.pipeline.gui.jobs.CancelAction"
-               icon="icons/action-stop.gif"
-               id="org.daisy.pipeline.gui.action.cancel"
-               label="Cancel"
-               menubarPath="org.daisy.pipeline.gui.menu.run/run"
-               style="push"/>
-         <action
-               class="org.daisy.pipeline.gui.jobs.RunAllAction"
-               icon="icons/action-run-all.gif"
-               id="org.daisy.pipeline.gui.action.runAll"
-               label="Run All"
-               menubarPath="org.daisy.pipeline.gui.menu.run/run"
-               style="push"/>
-         <action
-               class="org.daisy.pipeline.gui.jobs.RunAction"
-               icon="icons/action-run.gif"
-               id="org.daisy.pipeline.gui.action.run"
-               label="Run"
-               menubarPath="org.daisy.pipeline.gui.menu.run/run"
-               style="push"/>
-         <action
-               class="org.daisy.pipeline.gui.jobs.CancelPullDownAction"
-               icon="icons/action-stop.gif"
-               id="org.daisy.pipeline.gui.action.cancelPullDown"
-               label="Cancel"
-               style="pulldown"
-               toolbarPath="additions"/>
-         <action
-               class="org.daisy.pipeline.gui.jobs.RunPullDownAction"
-               icon="icons/action-run.gif"
-               id="org.daisy.pipeline.gui.action.runPullDown"
-               label="Run"
-               style="pulldown"
-               toolbarPath="additions"/>
-         <action
-               class="org.daisy.pipeline.gui.jobs.NewJobAction"
-               icon="icons/action-new-job.gif"
-               id="org.daisy.pipeline.gui.action.newJob"
-               label="New Job"
-               style="push"
-               toolbarPath="new"
-               tooltip="Launch the new job wizard"/>
-      </actionSet>
+            name="%view.progress"/>
    </extension>
    <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.daisy.pipeline.gui.application"
+            application="org.daisy.pipeline.gui.org.daisy.pipeline.gui.application"
             name="DAISY Pipeline"/>
-   </extension>
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <wizard
-            class="org.daisy.pipeline.gui.jobs.wizard.NewJobWizard"
-            hasPages="true"
-            icon="icons/action-new-job.gif"
-            id="org.daisy.pipeline.gui.wizard.newJob"
-            name="Pipeline Job"/>
    </extension>
 
 </plugin>

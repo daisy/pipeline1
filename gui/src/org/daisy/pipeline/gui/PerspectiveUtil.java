@@ -7,15 +7,13 @@ import org.daisy.pipeline.gui.jobs.JobsView;
 import org.daisy.pipeline.gui.jobs.wizard.NewJobWizard;
 import org.daisy.pipeline.gui.messages.MessagesView;
 import org.eclipse.ui.IPageLayout;
-import org.eclipse.ui.IWorkbenchPreferenceConstants;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Romain Deltour
  * 
  */
-public final class PerspectiveHelper {
-    private PerspectiveHelper() {
+public final class PerspectiveUtil {
+    private PerspectiveUtil() {
     }
 
     public static void addCommonShortcuts(IPageLayout layout) {
@@ -31,19 +29,5 @@ public final class PerspectiveHelper {
         layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
         // Wizard shortcuts
         layout.addNewWizardShortcut(NewJobWizard.ID);
-    }
-
-    public static void configurePerspectiveBar() {
-        // TODO use product configuration file instead
-        PlatformUI.getPreferenceStore().setValue(
-                IWorkbenchPreferenceConstants.DOCK_PERSPECTIVE_BAR,
-                IWorkbenchPreferenceConstants.TOP_RIGHT);
-        PlatformUI.getPreferenceStore().setValue(
-                IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR,
-                false);
-        PlatformUI.getPreferenceStore().setValue(
-                IWorkbenchPreferenceConstants.PERSPECTIVE_BAR_EXTRAS,
-                JobsPerspective.ID + "," + DocPerspective.ID);
-
     }
 }

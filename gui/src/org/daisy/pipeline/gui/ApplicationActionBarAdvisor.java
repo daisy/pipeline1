@@ -6,7 +6,6 @@ import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
@@ -36,6 +35,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction newAction;
     private IWorkbenchAction nextPartAction;
     private IWorkbenchAction nextPerspAction;
+    private IWorkbenchAction preferencesAction;
     private IWorkbenchAction prevPartAction;
     private IWorkbenchAction prevPerspAction;
     private IWorkbenchAction redoAction;
@@ -81,6 +81,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(nextPartAction);
         nextPerspAction = ActionFactory.NEXT_PERSPECTIVE.create(window);
         register(nextPerspAction);
+        preferencesAction = ActionFactory.PREFERENCES.create(window);
+        register(preferencesAction);
         prevPartAction = ActionFactory.PREVIOUS_PART.create(window);
         register(nextPartAction);
         prevPerspAction = ActionFactory.PREVIOUS_PERSPECTIVE.create(window);
@@ -144,12 +146,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         // TODO add find/replace action
 
         // Window menu
-        MenuManager perspSubMenu = new MenuManager("Open Perspective",
+        MenuManager perspSubMenu = new MenuManager("Open &Perspective",
                 "openPerspective");
         perspSubMenu.add(perspListItem);
-        MenuManager viewSubMenu = new MenuManager("Show View", "showView");
+        MenuManager viewSubMenu = new MenuManager("Show &View", "showView");
         viewSubMenu.add(viewListItem);
-        MenuManager navSubMenu = new MenuManager("Navigation", "navigation");
+        MenuManager navSubMenu = new MenuManager("&Navigation", "navigation");
         navSubMenu.add(showPaneMenuAction);
         navSubMenu.add(showViewMenuAction);
         navSubMenu.add(new Separator());
@@ -167,6 +169,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         windowMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         windowMenu.add(new Separator());
         windowMenu.add(navSubMenu);
+        windowMenu.add(new Separator());
+        windowMenu.add(preferencesAction);
         //
 
         // Help menu
@@ -175,10 +179,17 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
     @Override
     protected void fillCoolBar(ICoolBarManager coolBar) {
+        coolBar.add(new GroupMarker(IWorkbenchActionConstants.TOOLBAR_FILE));
+        coolBar.appendToGroup(IWorkbenchActionConstants.TOOLBAR_FILE,
+                deleteAction);
+        // ToolBarManager fileBar = new ToolBarManager();
+        // fileBar.
+        // fileBar.add(new Separator("file"));
+        // coolBar.add(fileBar);
         // Edit tool bar
-        ToolBarManager editBar = new ToolBarManager();
-        editBar.add(deleteAction);
-        coolBar.add(editBar);
+        // ToolBarManager editBar = new ToolBarManager();
+        // editBar.add(deleteAction);
+        // coolBar.add(editBar);
     }
 
 }

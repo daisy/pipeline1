@@ -1,6 +1,6 @@
 package org.daisy.pipeline.gui.doc;
 
-import org.daisy.pipeline.gui.PerspectiveHelper;
+import org.daisy.pipeline.gui.PerspectiveUtil;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
@@ -15,7 +15,7 @@ public class DocPerspective implements IPerspectiveFactory {
 
         layout.addView(DocView.ID, IPageLayout.LEFT, 1.0f, editorArea);
 
-        PerspectiveHelper.addCommonShortcuts(layout);
+        PerspectiveUtil.addCommonShortcuts(layout);
     }
 
 }
