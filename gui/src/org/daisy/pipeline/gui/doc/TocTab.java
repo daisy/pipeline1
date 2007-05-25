@@ -98,7 +98,7 @@ public abstract class TocTab extends TreeTabItemProvider implements ITocTab {
     }
 
     protected FileFilter createFileFilter() {
-        return new HtmlFileFilter(true);
+        return new HtmlFileFilter();
     }
 
     @Override
