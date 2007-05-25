@@ -136,7 +136,7 @@ class SmilFileClockFixer {
                     }
                     SmilClock sc = new SmilClock(timeInSmil);                    
                     Attribute content = this.getEventFactory().createAttribute("content", sc.toString());
-                    Collection coll = new ArrayList();
+                    Collection<Attribute> coll = new ArrayList<Attribute>();
                     coll.add(name);
                     coll.add(content);
                     StartElement result = this.getEventFactory().createStartElement(se.getName(), coll.iterator(), se.getNamespaces());
@@ -151,7 +151,7 @@ class SmilFileClockFixer {
                     }
                     SmilClock sc = new SmilClock(totalTime);
                     Attribute content = this.getEventFactory().createAttribute("content", sc.toString());
-                    Collection coll = new ArrayList();
+                    Collection<Attribute> coll = new ArrayList<Attribute>();
                     coll.add(name);
                     coll.add(content);
                     StartElement result = this.getEventFactory().createStartElement(se.getName(), coll.iterator(), se.getNamespaces());
@@ -162,7 +162,7 @@ class SmilFileClockFixer {
                     firstSeq = false;
                     SmilClock sc = new SmilClock(timeInThisSmil);
                     Attribute dur = this.getEventFactory().createAttribute("dur", sc.toString(SmilClock.TIMECOUNT_SEC));
-                    Collection coll = new ArrayList();
+                    Collection<Attribute> coll = new ArrayList<Attribute>();
                     coll.add(dur);
                     StartElement result = this.getEventFactory().createStartElement(se.getName(), coll.iterator(), se.getNamespaces());
                     return result;
@@ -179,7 +179,7 @@ class SmilFileClockFixer {
                 Attribute clipEnd = se.getAttributeByName(new QName("clip-end"));
                 String begin = "npt=" + new SmilClock(clipBegin.getValue()).toString(SmilClock.TIMECOUNT_SEC);
                 String end = "npt=" + new SmilClock(clipEnd.getValue()).toString(SmilClock.TIMECOUNT_SEC);
-                Collection coll = new ArrayList();                
+                Collection<Attribute> coll = new ArrayList<Attribute>();                
                 coll.add(se.getAttributeByName(new QName("src")));
                 coll.add(se.getAttributeByName(new QName("id")));
                 coll.add(this.getEventFactory().createAttribute("clip-begin", begin));
@@ -189,6 +189,7 @@ class SmilFileClockFixer {
             }
             return se;
         }
+                
     }
     
 }
