@@ -58,7 +58,7 @@ public class DocIndexGenerator implements ErrorHandler {
 		System.err.println("Generating index-all...");
 		EFile file = new EFile(docFolder, "index-all.html");		
 		Document doc = parse(file);						
-		populate(doc, docFolder, "scripts", "Pipeline Task: ");
+		populate(doc, docFolder, "scripts", "Pipeline Script: ");
 		populate(doc, docFolder, "transformers", "Transformer documentation: ");		
 		populate(doc, docFolder, "developer", "");
 		populate(doc, docFolder, "enduser", "");
@@ -70,7 +70,7 @@ public class DocIndexGenerator implements ErrorHandler {
 		file = new EFile(docFolder, "index-developer.html");			
 		doc = parse(file);						
 		populate(doc, docFolder, "developer", "");
-		populate(doc, docFolder, "scripts", "Pipeline Task: ");
+		populate(doc, docFolder, "scripts", "Pipeline Script: ");
 		populate(doc, docFolder, "transformers", "Transformer documentation: ");		
 		createTOC(doc);
 		serialize(doc, file);
@@ -79,7 +79,7 @@ public class DocIndexGenerator implements ErrorHandler {
 		System.err.println("Generating index-enduser...");
 		file = new EFile(docFolder, "index-enduser.html");			
 		doc = parse(file);						
-		populate(doc, docFolder, "scripts", "Pipeline Task: ");		
+		populate(doc, docFolder, "scripts", "Pipeline Script: ");		
 		populate(doc, docFolder, "enduser", "");
 		createTOC(doc);
 		serialize(doc, file);

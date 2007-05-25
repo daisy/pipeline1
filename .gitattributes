@@ -218,6 +218,7 @@ src/org/daisy/dmfc/core/transformer/transformer-1.0.rng -text svneol=unset#appli
 src/org/daisy/dmfc/core/transformer/transformer-1.1.rng -text
 src/org/daisy/dmfc/util/DocChecker.java -text
 src/org/daisy/dmfc/util/DocIndexGenerator.java -text
+src/org/daisy/dmfc/util/PropertiesConverter.java -text
 src/org/daisy/pipeline/test/PipelineTest.java -text
 src/org/daisy/pipeline/test/PipelineTestDriver.java -text
 src/org/daisy/pipeline/test/PipelineTestException.java -text
