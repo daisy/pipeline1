@@ -12,7 +12,22 @@
       <div class="summary">
          <p>This document describes how to get and install the Daisy Pipeline on your system</p>
       </div>
-      <p class="alert">This document remains to be written</p>
-      
-   </body>
+      <h2>Installation</h2>
+      <ol>
+      <li><p>Download the zip release on the <a href="http://sourceforge.net/project/showfiles.php?group_id=162777">Pipeline GUI download page</a>.</p>
+      <p>Note: you have to select the zip archive corresponding to your environment.</p></li>
+      <li><p>Create a directory on your local file system where you want to install the application.</p></li>
+      <li><p>Extract the content of the zip archive to the newly created directory.</p></li>
+      <li><p>Run the 'DAISY Pipeline' launcher.</p></li>
+      </ol>
+
+      <h2>Configuration</h2>
+      <p>The DAISY Pipeline can be configured by manually editing the <code>pipeline.properties</code> located in the <code>$INSTALL_DIR/plugins/org.daisy.pipeline_0.0.1/src/</code> directory (where <code>$INSTALL_DIR</code> is the application directory).</p>
+      <p>Amongst the interesting properties are:</p>
+      <dl>
+      <dt><code>dmfc.tempDir</code></dt><dd>The directory to store temporary files in.</dd>
+      <dt><code>dmfc.lame.path</code></dt><dd>The path to the <a href="http://lame.sourceforge.net/index.php">LAME</a> executable.</dd>
+      <dt><code>pipeline.python.path</code></dt><dd>The path to <a href="http://www.python.org/">Python</a> executable.</dd>
+      </dl>
+      </body>
 </html>
