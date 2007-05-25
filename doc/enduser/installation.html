@@ -8,23 +8,40 @@
       <link href="../pipeline.css" rel="stylesheet" type="text/css"/>
    </head>
    <body>
-      <h1>Daisy Pipeline Installation</h1>
+
+
+    <h1>Daisy Pipeline Installation</h1>
       <div class="summary">
          <p>This document describes how to get and install the Daisy Pipeline on your system</p>
       </div>
-      <h2>Installation</h2>
+      
+   	<div id="toc" class="toc">
+		<ul>
+			<li><a href="#prereqs">Prerequisites</a></li>
+			<li><a href="#install">Installation</a></li>
+		</ul>
+	</div>
+      
+      
+      <h2 id="prereqs">Prerequisites</h2>
+      <p>In order to run the Daisy Pipeline, you need to have the Java Runtime Environment (JRE) version 5 or later installed on your system.</p>
+      <p>The Java Runtime Environment can be downloaded from <a href="http://www.java.com">http://www.java.com</a>.</p>
+           
+      <h2 id="install">Installation</h2>
       <ol>
       <li><p>Download the zip release on the <a href="http://sourceforge.net/project/showfiles.php?group_id=162777">Pipeline GUI download page</a>.</p>
       <p>Note: you have to select the zip archive corresponding to your environment.</p></li>
       <li><p>Create a directory on your local file system where you want to install the application.</p></li>
       <li><p>Extract the content of the zip archive to the newly created directory.</p></li>
       <li><p>Run the 'DAISY Pipeline' executable:</p>
-      <ul>
-      <li><code>DAISY Pipeline.exe</code> on Windows</li>
-      <li><code>DAISY Pipeline.app</code> on Mac OS X</li>
-      <li><code>DAISY Pipeline</code> on Linux</li>
-      </ul></li>
+	      <ul>
+	      <li><code>DAISY Pipeline.exe</code> on Windows</li>
+	      <li><code>DAISY Pipeline.app</code> on Mac OS X</li>
+	      <li><code>DAISY Pipeline</code> on Linux</li>
+	      </ul>
+      </li>
       </ol>
+      <p>(Note that you probably want to create a shortcut to the Pipeline executable and put that on a convenient place (such as your desktop) for convenient access later on.)</p>
 
       <h2>Configuration</h2>
       <p>The DAISY Pipeline can be configured by manually editing the <code>pipeline.properties</code> located in the <code>$INSTALL_DIR/plugins/org.daisy.pipeline_0.0.1/src/</code> directory (where <code>$INSTALL_DIR</code> is the application directory).</p>
