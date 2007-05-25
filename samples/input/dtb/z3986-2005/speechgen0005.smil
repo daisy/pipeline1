@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE smil PUBLIC "-//NISO//DTD dtbsmil 2005-1//EN" "http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd" []>
+<smil xmlns="http://www.w3.org/2001/SMIL20/">
+	  <head>
+		    <meta content="F00000" name="dtb:uid" />
+		    <meta content="TPB Narrator" name="dtb:generator" />
+		    <meta content="0:01:54.449" name="dtb:totalElapsedTime" />
+		
+	  </head>
+	  <body>
+		    <seq dur="0:00:20.630" fill="remove" id="mseq">
+		       <par id="tcp38">
+            <text src="07-dtbook.xml#dtb38" />
+            <audio clipBegin="0:00:00" clipEnd="0:00:02.105" src="speechgen0005.mp3" />
+         </par>
+         <par id="tcp39">
+            <text src="07-dtbook.xml#dtb39" />
+            <audio clipBegin="0:00:02.105" clipEnd="0:00:04.471" src="speechgen0005.mp3" />
+         </par>
+         <par id="tcp40">
+            <text src="07-dtbook.xml#dtb40" />
+            <audio clipBegin="0:00:04.471" clipEnd="0:00:06.978" src="speechgen0005.mp3" />
+         </par>
+         <par id="tcp41">
+            <text src="07-dtbook.xml#dtb41" />
+            <audio clipBegin="0:00:06.978" clipEnd="0:00:08.996" src="speechgen0005.mp3" />
+         </par>
+         <par id="tcp42">
+            <text src="07-dtbook.xml#dtb42" />
+            <audio clipBegin="0:00:08.996" clipEnd="0:00:11.054" src="speechgen0005.mp3" />
+         </par>
+         <par id="tcp43">
+            <text src="07-dtbook.xml#dtb43" />
+            <audio clipBegin="0:00:11.054" clipEnd="0:00:13.211" src="speechgen0005.mp3" />
+         </par>
+         <par id="tcp44">
+            <text src="07-dtbook.xml#dtb44" />
+            <audio clipBegin="0:00:13.211" clipEnd="0:00:15.661" src="speechgen0005.mp3" />
+         </par>
+         <par id="tcp45">
+            <text src="07-dtbook.xml#dtb45" />
+            <audio clipBegin="0:00:15.661" clipEnd="0:00:17.158" src="speechgen0005.mp3" />
+         </par>
+         <par id="tcp46">
+            <text src="07-dtbook.xml#dtb46" />
+            <audio clipBegin="0:00:17.158" clipEnd="0:00:20.630" src="speechgen0005.mp3" />
+         </par>
+      </seq>
+	  </body>
+</smil>
