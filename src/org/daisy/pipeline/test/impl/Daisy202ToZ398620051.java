@@ -5,17 +5,16 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class Odf2dtbook1 extends PipelineTest {
+public class Daisy202ToZ398620051 extends PipelineTest {
 
-	public Odf2dtbook1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public Daisy202ToZ398620051(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
-	public List<String> getParameters() {
-		mParameters.add("--odf=" + mDataInputDir + "/odf/simple2.odt");
-		//mParameters.add("--odf=" + mDataInputDir + "/odf/simple.odt");
-		mParameters.add("--dtbook=" + mDataOutputDir + "/Odf2dtbook1/fromOdf.xml");				
+	public List<String> getParameters() {		
+		mParameters.add("--inputNcc=" + mDataInputDir + "/dtb/d202/dontworrybehappy/ncc.html");
+		mParameters.add("--outputOpf=" + mDataOutputDir + "/Daisy202ToZ398620051/testing.opf");
 		return mParameters;
 	}
 
@@ -26,7 +25,7 @@ public class Odf2dtbook1 extends PipelineTest {
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("OdfToDtbook.taskScript".equals(scriptName)) {
+		if("Daisy202toZ3986-2005.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;
@@ -34,8 +33,7 @@ public class Odf2dtbook1 extends PipelineTest {
 
 	@Override
 	public void confirm() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
 }

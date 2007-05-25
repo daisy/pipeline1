@@ -33,8 +33,7 @@ public class Narrator1 extends PipelineTest {
 
 	@Override
 	public void confirm() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
 }
