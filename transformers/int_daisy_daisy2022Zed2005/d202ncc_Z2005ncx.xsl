@@ -17,8 +17,7 @@
 <c:config>
 	<c:generator>DMFC Daisy 2.02 to z3986-2005</c:generator>
 	<c:name>d202ncc_Z2005ncx</c:name>
-	<c:version>0.1</c:version>
-	
+	<c:version>0.1</c:version>	
 	<c:author>Brandon Nelson</c:author>
 	<c:description>Creates the Z2005 ncx file.</c:description>    
 </c:config>
@@ -41,9 +40,16 @@
 		<meta name="dtb:uid" content="{html:meta[@name='dc:identifier']/@content}" />
 		<meta name="dtb:depth" content="{html:meta[@name='ncc:depth']/@content}" />
 		<meta name="dtb:generator" content="DMFC Daisy 2.02 to z39.86-2005" />
-		<meta name="dtb:totalPageCount" content="{html:meta[@name='ncc:pageFront']/@content + html:meta[@name='ncc:pageNormal']/@content + html:meta[@name='ncc:pageSpecial']/@content}" />
-		<meta name="dtb:maxPageNumber" content="{max(//html:span[@class='page-normal'])}" />
-		<smilCustomTest />
+		<meta name="dtb:totalPageCount" content="{html:meta[@name='ncc:pageFront']/@content + html:meta[@name='ncc:pageNormal']/@content + html:meta[@name='ncc:pageSpecial']/@content}" />	
+		<xsl:choose>
+			<xsl:when test="html:span[@class='page-normal']">
+				<meta name="dtb:maxPageNumber" content="{max(//html:span[@class='page-normal'])}" />
+			</xsl:when>
+			<xsl:otherwise>
+				<meta name="dtb:maxPageNumber" content="0" />
+			</xsl:otherwise>
+		</xsl:choose>
+		<!-- <smilCustomTest /> -->
 	</head>
 	<docTitle>
 		<text><xsl:value-of select="html:title" /></text>

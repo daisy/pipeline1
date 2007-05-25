@@ -292,6 +292,10 @@ src/org/daisy/util/xml/xslt/stylesheets/iso_schematron_skeleton.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/iso_svrl.xsl -text
 src/pipeline.properties -text
 transformers/ca_cnib_rtf2dtbook/transformer.tdf -text
+transformers/int_daisy_daisy2022Zed2005/resources/ResourceProvider.java -text
+transformers/int_daisy_daisy2022Zed2005/resources/dtbook.2005.basic.css -text
+transformers/int_daisy_daisy2022Zed2005/resources/pipeline.res -text
+transformers/int_daisy_daisy2022Zed2005/transformer.tdf -text
 transformers/int_daisy_filesetAudioTagger/FilesetAudioTagger.java -text
 transformers/int_daisy_filesetAudioTagger/id3/ID3Tagger.java -text
 transformers/int_daisy_filesetAudioTagger/messages.properties -text

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="2.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:html="http://www.w3.org/1999/xhtml"	
 	xmlns:c="http://daisymfc.sf.net/xslt/config"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
 	xmlns="http://openebook.org/namespaces/oeb-package/1.0/"
 	exclude-result-prefixes="html c">
 
 	<!-- issue: xmlns:dc declaration not appearing in dc-metadata element, but 
-			appears in xml declaration. Does it matter? -->
+			appears in xml declaration. Does it matter? 
+			
+			-->
 
 <c:config>
 	<c:generator>DMFC Daisy 2.02 to z39.86-2005</c:generator>
@@ -27,9 +29,10 @@
 
 <xsl:param name="dtbTotalTime" />
 <xsl:param name="dtbMultimediaContent" />
+<xsl:param name="uid" />
 
 <xsl:template match="/html:html">
-	<package unique-identifier="{html:head/html:meta[@name='dc:identifier']/@content}">
+	<package unique-identifier="uid">
 		<xsl:apply-templates select="html:head" />
 		<xsl:call-template name="manifest" />
 		<xsl:call-template name="spine" />
@@ -55,7 +58,7 @@
 			<xsl:value-of select="substring(html:meta[@name='dc:date']/@content, 1, 10)" />
 		</dc:Date>
 		<dc:Format>ANSI/NISO Z39.86-2005</dc:Format>
-		<dc:Identifier><xsl:if test="html:meta[@name='dc:identifier']/@scheme"><xsl:attribute name="scheme"><xsl:value-of select="html:meta[@name='dc:identifier']/@scheme" /></xsl:attribute></xsl:if><xsl:value-of select="html:meta[@name='dc:identifier']/@content" /></dc:Identifier>
+		<dc:Identifier id="uid"><xsl:value-of select="$uid"/></dc:Identifier>
 		<dc:Language><xsl:value-of select="html:meta[@name='dc:language']/@content" /></dc:Language>
 		<xsl:apply-templates select="*/@name" mode="dc-metadata" />
 	</dc-metadata>
@@ -63,7 +66,7 @@
 
 <xsl:template name="x-metadata">
 	<x-metadata>
-		<meta name="dtb:TotalTime" content="{$dtbTotalTime}" />
+		<meta name="dtb:totalTime" content="{$dtbTotalTime}" />
 		<meta name="dtb:multimediaContent" content="{$dtbMultimediaContent}" />
 		<meta name="dtb:multimediaType" content="{replace(html:meta[@name='ncc:multimediaType']/@content, 'Ncc', 'NCX', 'i')}" />
 		<xsl:apply-templates select="*/@name" mode="x-metadata" />
