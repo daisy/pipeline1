@@ -1,7 +1,38 @@
-DMFC Release Notes
+Daisy Pipeline Release Notes
 
-This document contains joint release notes
-for DMFC and DMFC GUI.
+This document contains joint release notes for Pipeline Core and Pipeline GUI.
+
+The Daisy Pipeline (http://daisymfc.sourceforge.net/) is  a DTB- and XML oriented 
+transformation framework designed to be used in both serverside and desktop environments.
+
+To facilitate desktop usage, a Graphical User Interface (GUI) is provided. 
+The GUI is hosted on a separate sourceforge project 
+(http://sourceforge.net/projects/daisymfcgui).
+
+Report bugs and issues to:
+http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
+
+
+***********************************
+Pipeline GUI beta, 2007-05-25
+***********************************
+The primary purpose of this release is to enable testing and evaluation of a new GUI. 
+This release will be followed by a fully equipped release in mid June 2007.
+
+Changes in GUI:
+This release contains the first public access to a new and redesigned cross-platform GUI, that runs
+on Windows, Mac and Linux platforms. Bug reports and and usability improvements are welcome. To 
+provide your input, please use the Pipeline GUI feature request and bug report trackers on [1] and [2].
+
+Changes in Core:
+Provisions of script-level (end-user oriented) documentation.
+Support for jarness.
+Miscellaneous refactorings and new transformers. Note - not all functionality is exposed
+in scripts shipping with this release.
+
+[1] http://sourceforge.net/tracker/?group_id=162777&atid=951927
+[2] http://sourceforge.net/tracker/?group_id=162777&atid=951926
+
 
 ***********************************
 First Public Access Release, 2006/08/25
