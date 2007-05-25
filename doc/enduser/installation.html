@@ -18,7 +18,12 @@
       <p>Note: you have to select the zip archive corresponding to your environment.</p></li>
       <li><p>Create a directory on your local file system where you want to install the application.</p></li>
       <li><p>Extract the content of the zip archive to the newly created directory.</p></li>
-      <li><p>Run the 'DAISY Pipeline' launcher.</p></li>
+      <li><p>Run the 'DAISY Pipeline' executable:</p>
+      <ul>
+      <li><code>DAISY Pipeline.exe</code> on Windows</li>
+      <li><code>DAISY Pipeline.app</code> on Mac OS X</li>
+      <li><code>DAISY Pipeline</code> on Linux</li>
+      </ul></li>
       </ol>
 
       <h2>Configuration</h2>
@@ -26,8 +31,8 @@
       <p>Amongst the interesting properties are:</p>
       <dl>
       <dt><code>dmfc.tempDir</code></dt><dd>The directory to store temporary files in.</dd>
-      <dt><code>dmfc.lame.path</code></dt><dd>The path to the <a href="http://lame.sourceforge.net/index.php">LAME</a> executable.</dd>
-      <dt><code>pipeline.python.path</code></dt><dd>The path to <a href="http://www.python.org/">Python</a> executable.</dd>
+      <dt><code>dmfc.lame.path</code></dt><dd>The path to the <a href="http://lame.sourceforge.net/index.php">LAME</a> executable (Needed if you intend to run a script that includes MP3 encoding).</dd>
+      <dt><code>pipeline.python.path</code></dt><dd>The path to <a href="http://www.python.org/">Python</a> executable (Needed if you intend to run the RTF to DTBook script).</dd>
       </dl>
       </body>
 </html>
