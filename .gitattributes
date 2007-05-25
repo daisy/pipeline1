@@ -16,9 +16,6 @@ doc/enduser/installing-lame.html -text
 doc/enduser/installing-python.html -text
 doc/enduser/narrator.html -text
 doc/enduser/validation.html -text
-doc/examples/input/RTF2dtbook.rtf -text svneol=unset#application/octet-stream
-doc/examples/input/simple.odt -text
-doc/examples/input/valentin.jpg -text
 doc/index-all.html -text
 doc/index-developer.html -text
 doc/index-enduser.html -text
