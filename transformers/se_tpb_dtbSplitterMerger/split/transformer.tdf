@@ -5,7 +5,7 @@
 	<license>LGPL</license>
 	<author>Piotr Kiernicki</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
-	<documentation uri="../../doc/transformers/se_tpb_dtbSplitter.html"/>
+	<documentation uri="../../../doc/transformers/se_tpb_dtbSplitter.html"/>
 	
 	<parameters>
 	    <parameter required="true" direction="in" type="application/xml">
