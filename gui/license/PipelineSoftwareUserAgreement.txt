@@ -1,4 +1,4 @@
-DMFC Software User Agreement
+DAISY Pipeline GUI Software User Agreement
 October 2006
 
 Copyright 2006, The DAISY Consortium
@@ -24,9 +24,9 @@ http://www.gnu.org/licenses/lgpl.html
 Applicable Licenses
 _____________________
 
-DMFC is built upon a number of other open source technologies and products.  
+DAISY Pipeline is built upon a number of other open source technologies and products.  
 Third party Java software binary archives that are bundled with the  
-DMFC application are listed below:
+DAISY Pipeline application are listed below:
 	
 	jing.jar
 	Relax NG Schema Validator
@@ -105,7 +105,7 @@ DMFC application are listed below:
 	BEA Streaming API for XML Specification Reference Implementation License Agreement
 	http://www.bea.com/
 	A copy of this license is included in the distributable in the following directory:
-	dmfc/licenses/StreamingAPIForXMLStax.
+	DAISY Pipeline/licenses/StreamingAPIForXMLStax.
 	
 	DAISY (i) effectively disclaims on behalf of all Contributors 
 	all warranties and conditions, express and implied, including warranties or conditions 
@@ -127,7 +127,7 @@ DMFC application are listed below:
 	Please read the file ZipArchive\license.txt for details.
 
 Third party python software archives are bundled with the  
-DMFC application. The following software is required to run specific 
+DAISY Pipeline application. The following software is required to run specific 
 transformers:
 
 rtf2xml
@@ -137,7 +137,7 @@ rtf2xml
 	http://www.gnu.org/licenses/licenses.html
 
 The following software is required to run specific transformers, 
-but the source code is not integrated in any way with the DMFC.  
+but the source code is not integrated in any way with the DAISY Pipeline.  
 LAME is included in the Windows installer and automatically installed.
 	
 	LAME
