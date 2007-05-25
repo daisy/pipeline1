@@ -44,7 +44,7 @@
 
 <h2 id="output">Output</h2>
 <h3 id="success">On success</h3>
-<p>An OPS 2.0 publication containing an NCX. The NCX contents id defined by the <a href="extConfig">NCX Configuration</a> file.
+<p>An OPS 2.0 publication containing an NCX. The NCX contents id defined by the <a href="#extConfig">NCX Configuration</a> file.</p>
 
 <h3 id="failure">On error</h3>
 <p>No specific recovery scheme. On error, this transformer will send a fatal message, then throw an exception and abort.</p>
@@ -105,7 +105,7 @@
 <h2 id="ncxConfigExample">Example of NCX Configuration File</h2>
 <p>This is example is the default NCX confguration file, which is used if
 the user does not specify an explicit alternative.</p>
-<code><pre>
+<pre><code>
 &lt;?xml version="1.0" encoding="utf-8" ?&gt;
 &lt;ncx:ncx-include xmlns:ncx="http://www.daisy.org/pipeline/ncxconfig#"&gt;
 	&lt;!-- Default configuration for OPS NCX. Schema: see ncx-config.rng --&gt;
@@ -152,13 +152,12 @@ the user does not specify an explicit alternative.</p>
 	&lt;/ncx:navListLabels&gt;
 	
 &lt;/ncx:ncx-include&gt;
-</pre></code>
+</code></pre>
 
 
 <h2 id="ncxConfigRng">NCX Configuration RelaxNG Schema</h2>
 <p><code>File: transformers/int_daisy_opsCreator/ncx-config.rng</code></p>
-<code><pre>
-<?xml version="1.0" encoding="utf-8" ?>
+<pre><code>
 
 <!-- 
 
@@ -275,6 +274,6 @@ The navListLabels element defines explicit language-dependent labels to use for 
 	
 &lt;/grammar&gt;
 
-</pre></code>
+</code></pre>
 </body>
 </html>

@@ -20,11 +20,11 @@
 </div>
 
 <h2 id="overview">Overview</h2>
-<p>This script will try to convert an RTF file to DTBook XML, and then validate the result.</p>
+<p>This script convert an RTF file to DTBook XML, and then validate the result.</p>
 
 <div class="alert">
 	<p>This script requires that you have Python installed, and that the Pipeline properties file of your Pipeline installation identifies the location of the Python executable.</p>
-	<p>See <a href="#python">Python Configuration</a></p>
+	<p>See <a href="../enduser/installing-python.html">Installing Python</a></p>
 </div>
 
 <h2 id="inputReqs">Input Requirements</h2>
@@ -43,30 +43,11 @@
 	<dd>Select a file to store the DTBook validation XML report in. Note that information on the validation result is always shown in the user interface; regardless of whether you activate this option or not.</dd>	
 	</dl>
 
-<h2 id="python">Python Configuration</h2>
-	<h3>Installing and configuring Python on Windows</h3>
-	<p>1. Download the Python installer for Windows from <a href="http://www.python.org/download/"> the download section of the Python website</a>.</p>
-	<p>2. Install the Python runtime by double clicking on the installer (.msi) file that you downloaded in step 1.</p>
-	<p>3. When the installer asks you for a destination directory, make a note of it for use in step 4.</p>
-	<p>When the installer has finished, Python is installed on your system, and all that remains is to make the pipeline aware of the installation path as selected and noted during step three.</p>
-	<p>4.Locate the <code>pipeline.properties</code> file. This can either be accessed from your user interface, or via Explorer. If the latter, navigate to the Pipeline installation path (e.g. C:\Program Files\Daisy Pipeline\) and find pipeline.properties within that directory.
-	<p>Open pipeline.properties in a text editor, and make sure that the entry with the key "pipeline.python.path" points to the python.exe file within the python installation directory.</p>
-	<p>For example, if you installed Python to <code>C:\Python25\</code>, the resulting element in pipeline.properties should read:</p>
-	<pre><code>
-		&lt;entry key="pipeline.python.path"&gt;C:\Python25\python.exe&lt;/entry&gt;
-	</code></pre>
-	<p>Save the pipeline properties file. All done.</p>
-	
-	
-	<h3>Installing and configuring Python on Mac</h3>
-	<p>TODO</p>
-	<h3>Installing and configuring Python on Linux</h3>	
-	<p>TODO</p>	
 
 
 <h2 id="rtf-formatting">RTF authoring guidelines</h2>
 			   <p>The following mapping between RTF styles and DTBook elements is explicitly supported.</p>
-               <p>RTF  style names appear in bold; opening DTBook tags and attributes in HTML code.</p>
+               <p>RTF  style names appear in bold; opening DTBook tags and attributes in HTML code.</p>               
                <table>
                   <tr>
                      <td rowspan="1" colspan="1">
@@ -81,7 +62,8 @@
                         <strong>Heading 1</strong> through<strong> Heading 6</strong>
                      </td>
                      <td rowspan="1" colspan="1">
-                        <code>&lt;h1&gt;</code> through <code>&lt;h6&gt;</code>, with relevant <code>&lt;levelx&gt;</code> section wrappers added. Nesting must proceed in natural DTBook order.</td>
+                        <code>&lt;h1&gt;</code> through <code>&lt;h6&gt;</code>, with relevant <code>&lt;levelx&gt;</code> section wrappers added. Nesting must proceed in natural DTBook order.
+                     </td>
                   </tr>
                   <tr>
                      <td rowspan="1" colspan="1">
@@ -162,8 +144,7 @@
                      <td rowspan="1" colspan="1">If beside an image, an <code>&lt;imggroup&gt;</code> is created, with a dummy <code>&lt;img&gt;</code> tag and <code>&lt;caption&gt;</code> tag for the text.</td>
                   </tr>
                </table>
-            </div>
-            <div class="level2">
+
                <h2>Character styles</h2>
                <table>
                   <tr>

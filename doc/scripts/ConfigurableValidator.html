@@ -23,11 +23,11 @@
 
 <h2 id="overview">Overview</h2>
 <!-- brief summary of purpose and whats going on. What does this script do really? -->
-<p>This advanced task validates input of varying types, and allows you to customize what validation
+<p>This advanced script validates input of varying types, and allows you to customize what validation
 is actually performed by allowing you to attach additional validation resources to the process.</p>
 
-<p>Note that the task may or may not be able to perform a validation - if the task is not able
-to identiy the type of the input file, or if it cannot locate any (built-in or added) validation resources, it will
+<p>Note that the script may or may not be able to perform a validation - if the script is not able
+to identify the type of the input file, or if it cannot locate any (built-in or added) validation resources, it will
 issue an error message and fail.</p>
 
 <h2 id="inputReqs">Input Requirements</h2>
@@ -35,7 +35,7 @@ issue an error message and fail.</p>
 <p>The input file of the document or fileset to be validated.</p>
 
 <h2 id="output">Output</h2>
-<p>By default, this task does not render any physical output; instead, messages are displayed 
+<p>By default, this script does not render any physical output; instead, messages are displayed 
 in the user interface. However, by configuring the <a href="#report">XML Report setting</a>, 
 you can have the validation result stored in an XML document.</p>
 
@@ -58,7 +58,7 @@ you can have the validation result stored in an XML document.</p>
 	<dd><strong>Optional.</strong> Add a reference to a specific XSLT stylesheet to include in the XSL processing instruction in the generated XML output. This will override (not complement) the stylesheet that is used as default. This setting only has meaning if the XML Report setting has been activated.</dd>
 	
 	<dt>Abort on Exception</dt>
-	<dd><strong>Optional.</strong> Whether to perform a Task abort when a caught exception occurs. Default is true.</dd>
+	<dd><strong>Optional.</strong> Whether to perform a Job abort when a caught exception occurs. Default is true.</dd>
 		
 	<dt>Additional schemas</dt>
 	<dd><strong>Optional.</strong> Comma separated list of additional schemas to apply while validating. The schemas can be of Schematron, RelaxNG or WXS types.</dd>

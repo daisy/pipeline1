@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Installing Python for use within the Daisy Pipeline</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+	<h1>Installing Python for use within the Daisy Pipeline</h1>
+	
+	<div id="toc" class="toc">
+	<ul>
+		<li><a href="#win">Installing and configuring Python on Windows</a></li>
+		<li><a href="#mac">Installing and configuring Python on Mac</a></li>
+		<li><a href="#linux">Installing and configuring Python on Linux</a></li>
+	</ul>
+	</div>
+	
+	<h2 id="win">Installing and configuring Python on Windows</h2>
+	<p>1. Download the Python installer for Windows from <a href="http://www.python.org/download/"> the download section of the Python website</a>.</p>
+	<p>2. Install the Python runtime by double clicking on the installer (.msi) file that you downloaded in step 1.</p>
+	<p>3. When the installer asks you for a destination directory, make a note of it for use in step 4.</p>
+	<p>When the installer has finished, Python is installed on your system, and all that remains is to make the pipeline aware of the installation path as selected and noted during step three.</p>
+	<p>4.Locate the <code>pipeline.properties</code> file. This can either be accessed from your user interface, or via Explorer. If the latter, navigate to the Pipeline installation path (e.g. C:\Program Files\Daisy Pipeline\) and find pipeline.properties within that directory.</p>
+	<p>Open pipeline.properties in an XML or text editor, and make sure that the entry with the key "pipeline.python.path" points to the python.exe file within the python installation directory.</p>
+	<p>For example, if you installed Python to <code>C:\Python25\</code>, the resulting element in pipeline.properties should read:</p>
+	<pre><code>
+&lt;entry key="pipeline.python.path"&gt;C:\Python25\python.exe&lt;/entry&gt;
+	</code></pre>
+	<p>Save the pipeline properties file. All done.</p>
+	
+	
+	<h2 id="mac">Installing and configuring Python on Mac</h2>
+	<p>This section remains to be written. For now, please refer to the process as described in the section <a href="#win">Installing and configuring Python on Windows</a>.</p>
+	
+	<h2 id="linux">Installing and configuring Python on Linux</h2>	
+	<p>This section remains to be written. For now, please refer to the process as described in the section <a href="#win">Installing and configuring Python on Windows</a>.</p>
+	
+	</body>
+</html>
