@@ -312,6 +312,7 @@ transformers/int_daisy_validator/validator.xsl -text
 transformers/pipeline_system_deleter/Deleter.java -text
 transformers/pipeline_system_deleter/messages.properties -text
 transformers/pipeline_system_deleter/transformer.tdf -text
+transformers/se_tpb_dtbAudioEncoder/transformer.tdf -text
 transformers/se_tpb_dtbSplitterMerger/merge/transformer.tdf -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_1.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/en/cd_10.mp3 -text
@@ -341,6 +342,7 @@ transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTT
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe -text
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe.manifest -text svneol=unset#application/octet-stream
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.pdb -text
+transformers/se_tpb_syncPointNormalizer/transformer.tdf -text
 transformers/se_tpb_wordml2dtbook/add-author-title.xsl -text
 transformers/se_tpb_wordml2dtbook/defragment-em.xsl -text
 transformers/se_tpb_wordml2dtbook/defragment-strong.xsl -text
