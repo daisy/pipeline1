@@ -149,7 +149,7 @@ public class Annonsator extends Transformer implements ErrorListener {
     public URL getResource(String resource) {
         URL url = null;
         try {
-            url = new URL(getTransformerDirectory().toURL(), resource);
+            url = new URL(getTransformerDirectory().toURI().toURL(), resource);
         } catch (MalformedURLException e) {
             sendMessage(Level.WARNING, "Malformed resource URL to resource: " + resource);
         }

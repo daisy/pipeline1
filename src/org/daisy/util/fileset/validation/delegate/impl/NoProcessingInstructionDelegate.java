@@ -72,7 +72,7 @@ public class NoProcessingInstructionDelegate extends
 			FilesetFile filesetFile = (FilesetFile)it.next();
 			if (filesetFile instanceof XmlFile) {
 				try {
-					this.checkForProcessingInstruction(filesetFile.getFile().toURL());
+					this.checkForProcessingInstruction(filesetFile.getFile().toURI().toURL());
 				} catch (MalformedURLException e) {
 					throw new ValidatorException(e.getMessage(), e);
 				} catch (IllegalCharsetNameException e) {

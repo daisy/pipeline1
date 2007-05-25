@@ -96,7 +96,7 @@ public class XMLDetection extends Transformer {
 	            sendMessage(Level.FINER, "Temp abbr: " + temp.getFile());
 	            URL customLangFileURL = null;
 	            if (customLang != null) {
-	                customLangFileURL = new File(customLang).toURL(); 
+	                customLangFileURL = new File(customLang).toURI().toURL(); 
 	            }
 	            XMLAbbrDetector abbrDetector = new XMLAbbrDetector(currentInput, temp.getFile(), customLangFileURL, Boolean.parseBoolean(doOverride));                
 	            abbrDetector.detect(null);
@@ -111,7 +111,7 @@ public class XMLDetection extends Transformer {
                 sendMessage(Level.FINER, "Temp sent: " + temp.getFile());
                 URL customLangFileURL = null;
 	            if (customLang != null) {
-	                customLangFileURL = new File(customLang).toURL(); 
+	                customLangFileURL = new File(customLang).toURI().toURL(); 
 	            }
                 XMLSentenceDetector sentDetector = new XMLSentenceDetector(currentInput, temp.getFile(), customLangFileURL, Boolean.parseBoolean(doOverride));                
                 sentDetector.detect(null);
