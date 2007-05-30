@@ -96,16 +96,19 @@ public class DMFCCore implements TransformerHandlerLoader {
     private void initialize(InputListener inListener, File homeDir)
             throws DMFCConfigurationException, SecurityException {
         this.mInputListener = inListener;
-
-        URL propertiesURL = this.getClass().getClassLoader().getResource(
-                "pipeline.properties");
-
-        // Load properties from file
+        
+        //mg 20070530: we use two properties files; one with likelihood of user access and one less likely 
+        URL propertiesURL = this.getClass().getClassLoader().getResource("pipeline.properties");
         if (!loadProperties(propertiesURL)) {
             throw new DMFCConfigurationException(
                     "Can't read pipeline.properties!");
         }
-
+        propertiesURL = this.getClass().getClassLoader().getResource("pipeline.user.properties");
+        if (!loadProperties(propertiesURL)) {
+            throw new DMFCConfigurationException(
+                    "Can't read pipeline.user.properties!");
+        }
+        
         // Set pipeline home dir
         mHomeDirectory = homeDir;
 

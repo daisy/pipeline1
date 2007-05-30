@@ -288,6 +288,7 @@ src/org/daisy/util/xml/xslt/stylesheets/RNG2ISOSchtrn.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/iso_schematron_skeleton.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/iso_svrl.xsl -text
 src/pipeline.properties -text
+src/pipeline.user.properties -text
 transformers/ca_cnib_rtf2dtbook/transformer.tdf -text
 transformers/int_daisy_daisy2022Zed2005/resources/ResourceProvider.java -text
 transformers/int_daisy_daisy2022Zed2005/resources/dtbook.2005.basic.css -text
