@@ -422,9 +422,9 @@ public class FilesetImpl implements Fileset {
 				}else if (filesetType == FilesetType.DAISY_202) {
 					return new D202TextualContentFileImpl(uri);
 				}else if ((peekResult!=null)&&
-						((peekResult.getPrologSystemId().indexOf("x")>=0)
-								||(peekResult.getPrologPublicId().indexOf("X")>=0)
-								||(peekResult.getRootElementNsUri().indexOf("x")>=0))){
+						((peekResult.getPrologSystemId()!= null && peekResult.getPrologSystemId().indexOf("x")>=0)
+								||(peekResult.getPrologPublicId()!= null && peekResult.getPrologPublicId().indexOf("X")>=0)
+								||(peekResult.getRootElementNsUri()!= null && peekResult.getRootElementNsUri().indexOf("x")>=0))){
 					//there are no x chars in the html equivalents
 					return new Xhtml10FileImpl(uri);
 				}else{
