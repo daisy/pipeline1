@@ -142,6 +142,9 @@ public class FilesetImpl implements Fileset {
 					
 					//do some obscure stuff specific to this fileset type
 					D202NccFileImpl ncc = (D202NccFileImpl)this.mManifestMember;
+					if(!ncc.isWellformed()) {						
+						throw new FilesetFatalException("ncc is not wellformed");
+					}
 					ncc.buildSpineMap(this);
 					
 					File test = new File(mManifestMember.getFile().getParentFile(), "master.smil");
@@ -149,6 +152,8 @@ public class FilesetImpl implements Fileset {
 						D202MasterSmilFile msmil = new D202MasterSmilFileImpl(test.toURI());
 						this.fileInstantiatedEvent((FilesetFileImpl)msmil);
 					}
+					
+					//System.err.println("stop");
 										
 				}else if((mRegex.matches(mRegex.FILE_OPF, f.getName()))
 						&&(manifestPeekResult!=null && manifestPeekResult.getRootElementLocalName().equals("package"))) {		
@@ -173,6 +178,9 @@ public class FilesetImpl implements Fileset {
 					this.fileInstantiatedEvent((FilesetFileImpl)this.mManifestMember);
 					//do some obscure stuff specific to this fileset type	
 					OpfFileImpl opf = (OpfFileImpl)this.mManifestMember;
+					if(!opf.isWellformed()) {						
+						throw new FilesetFatalException("opf is not wellformed");
+					}
 					opf.buildSpineMap(this);
 
 				}else if((mRegex.matches(mRegex.FILE_RESOURCE, f.getName()))
