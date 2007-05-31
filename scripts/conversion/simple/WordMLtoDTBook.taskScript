@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <taskScript version="2.0" name="WordMLtoDTBook">
-	<nicename>Word 2003 xml to DTBook</nicename>
+	<nicename>Word 2003 XML to DTBook</nicename>
 	<description>Transforms WordML from Microsoft Office Word 2003 to DTBook 2005-1</description>
    	<documentation uri="../../../doc/scripts/WordMLtoDTBook.html"/>
     <comment></comment>
