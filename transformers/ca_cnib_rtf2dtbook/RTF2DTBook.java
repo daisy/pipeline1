@@ -22,7 +22,6 @@ package ca_cnib_rtf2dtbook;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.event.MessageEvent;
