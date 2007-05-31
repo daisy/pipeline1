@@ -45,7 +45,7 @@ public class LameEncoder extends Wav2Mp3 {
         arr.add(mp3File.getAbsolutePath());
         
         try {
-        	System.err.println("Encoding: " + lameCommand + " " + arr.toString());
+        	//System.err.println("Encoding: " + lameCommand + " " + arr.toString());
             Command.execute((String[])(arr.toArray(new String[arr.size()])));            
         } catch (ExecutionException e) {
             throw new EncodingException(e.getMessage());

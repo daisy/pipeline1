@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.FileUtils;
@@ -52,8 +53,8 @@ public class DtbAudioEncoder extends Transformer {
     private LinkChanger linkChanger = null;
     private Wav2Mp3 wav2Mp3 = null;
 
-    public DtbAudioEncoder(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-        super(inListener, eventListeners, isInteractive);        
+    public DtbAudioEncoder(InputListener inListener,  Boolean isInteractive) {
+        super(inListener, isInteractive);        
     }
     
     protected boolean execute(Map parameters) throws TransformerRunException {
@@ -64,19 +65,27 @@ public class DtbAudioEncoder extends Transformer {
         String stereo = (String)parameters.remove("stereo");
         String freq = (String)parameters.remove("freq");        
         
-        sendMessage(Level.FINER, i18n("USING_MANIFEST", manifest));
-        sendMessage(Level.FINER, i18n("USING_OUTDIR", outDir));
-        sendMessage(Level.FINER, i18n("USING_FILESET_TYPE", filesetType));
-        sendMessage(Level.FINER, i18n("USING_BITRATE", bitrate));
-        sendMessage(Level.FINER, i18n("USING_STEREO", stereo));
-        sendMessage(Level.FINER, i18n("USING_FREQ", freq));
+        String lamePath = System.getProperty("dmfc.lame.path");
+        File test = new File(lamePath);
+		if(!test.exists() || !test.canRead()) {
+			String message = i18n("LAME_INSTALL_PROBLEM");
+			this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
+			throw new TransformerRunException(message);
+		}
+        
+        sendMessage(i18n("USING_MANIFEST", manifest), MessageEvent.Type.DEBUG);
+        sendMessage(i18n("USING_OUTDIR", outDir), MessageEvent.Type.DEBUG);
+        sendMessage(i18n("USING_FILESET_TYPE", filesetType), MessageEvent.Type.DEBUG);
+        sendMessage(i18n("USING_BITRATE", bitrate), MessageEvent.Type.DEBUG);
+        sendMessage(i18n("USING_STEREO", stereo), MessageEvent.Type.DEBUG);
+        sendMessage(i18n("USING_FREQ", freq), MessageEvent.Type.DEBUG);
         
         try {
             linkChanger = new LinkChanger();
             wav2Mp3 = new LameEncoder(Integer.parseInt(bitrate), Integer.parseInt(freq), "stereo".equals(stereo));
             
             // Build fileset
-            sendMessage(Level.FINER, "Building fileset...");        
+            //sendMessage(Level.FINER, "Building fileset...");        
             Fileset fileset = this.buildFileSet(manifest);
             
             this.progress(0.02);
@@ -86,7 +95,7 @@ public class DtbAudioEncoder extends Transformer {
             File outputDirectory = FileUtils.createDirectory(new File(outDir));
             
             // Identify audio files and files that need to be updated
-            sendMessage(Level.FINER, "Identifying files to encode or update...");
+            //sendMessage(Level.FINER, "Identifying files to encode or update...");
             Set alreadyDone = new HashSet();
             
             // Calculate total size of and number of wav files
@@ -110,7 +119,7 @@ public class DtbAudioEncoder extends Transformer {
                     // Encode audio files
                     ++currentNum;
                     Object[] params = {new Integer(totalNum), new Integer(currentNum), fsf.getFile().getName()};
-                    this.sendMessage(Level.FINER, i18n("ENCODING", params));
+                    this.sendMessage(i18n("ENCODING", params), MessageEvent.Type.DEBUG);
                     this.encodeFile(fsf.getFile(), outputDirectory, fileset.getRelativeURI(fsf));
                     alreadyDone.add(fsf.getFile().getName());
                     currentSize += fsf.getFile().length();
@@ -183,7 +192,7 @@ public class DtbAudioEncoder extends Transformer {
     private void relinkFile(FilesetFile fsf, File outDir, URI relativeURI) throws FileNotFoundException, XMLStreamException {
         File in = fsf.getFile();
         File out = new File(outDir.toURI().resolve(relativeURI));
-        System.err.println("Relinking " + fsf.getFile());        
+        //System.err.println("Relinking " + fsf.getFile());        
         if (fsf instanceof OpfFile) {
             linkChanger.changeLinksOpf(in, out, "[Ww][Aa][Vv]", "mp3", "audio/mpeg");
         } else {
