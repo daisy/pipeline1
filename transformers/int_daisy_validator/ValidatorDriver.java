@@ -217,7 +217,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					}catch (ValidatorNotSupportedException e) {
 						//the factory could not produce a validator for this fileset type											
 						String message = i18n("NO_FILESET_VALIDATOR", mInputFileset.getFilesetType().toNiceNameString());
-						this.sendMessage(message, MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
+						this.sendMessage(message, MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 						// add exception to xml report
 						xmlReport(e);
 					}catch (ValidatorException ve) {
@@ -302,23 +302,23 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 
 			if(mCompletionTracker.mCompletedFilesetValidation) {
 				String message = i18n("COMPLETED_FILESET_VALIDATION");		
-				this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+				this.sendMessage(message, MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 			}else{
 				if(mCompletionTracker.mCompletedFilesetInstantiation) {					
 					String message = i18n("COMPLETED_FILESET_INSTANTIATION");		
-					this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+					this.sendMessage(message, MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 
 				}else{
 					if(mCompletionTracker.mCompletedInlineDTDValidation) {						
 						String message = i18n("COMPLETED_DTD_VALIDATION");		
-						this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+						this.sendMessage(message, MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 					}
 				}
 			}
 
 			if(mCompletionTracker.mCompletedJAXPSchemaValidation) {
 				String message = i18n("COMPLETED_JAXP_VALIDATION");		
-				this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+				this.sendMessage(message, MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 			}
 			
 			String message = i18n("DURATION", Double.toString((end-start)/1000000000));		
