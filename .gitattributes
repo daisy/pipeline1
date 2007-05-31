@@ -24,6 +24,8 @@ doc/pipeline.css -text
 doc/scripts/AudioTagger.html -text
 doc/scripts/CharsetSwitcher.html -text
 doc/scripts/ConfigurableValidator.html -text
+doc/scripts/DTBAudioEncoder.html -text
+doc/scripts/DTBAudioEncoderSplitter.html -text
 doc/scripts/DTBMerger.html -text
 doc/scripts/DTBSplitter.html -text
 doc/scripts/DTBookToXhtml.html -text
@@ -175,6 +177,8 @@ scripts/creation/simple/OPSCreator.taskScript -text
 scripts/manipulation/AudioTaggerScriptParamsStatic.paramGroup -text
 scripts/manipulation/AudioTaggerTaskParamsStatic.paramGroup -text
 scripts/manipulation/CharsetSwitcherScriptParamsStatic.paramGroup -text
+scripts/manipulation/DTBSplitterScriptParamsStatic.paramGroup -text
+scripts/manipulation/DTBSplitterTaskParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerScriptParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerTaskParamsStatic.paramGroup -text
 scripts/manipulation/advanced/CharsetSwitcher.taskScript -text
@@ -182,6 +186,8 @@ scripts/manipulation/advanced/DTBMerger.taskScript -text
 scripts/manipulation/advanced/RenamerTaggerValidator.taskScript -text
 scripts/manipulation/advanced/UnicodeNormalizer.taskScript -text
 scripts/manipulation/simple/AudioTagger.taskScript -text
+scripts/manipulation/simple/DTBAudioEncoder.taskScript -text
+scripts/manipulation/simple/DTBAudioEncoderSplitter.taskScript -text
 scripts/manipulation/simple/DTBSplitter.taskScript -text
 scripts/manipulation/simple/FilesetRenamer.taskScript -text
 scripts/manipulation/simple/PrettyPrinter.taskScript -text
@@ -252,6 +258,8 @@ src/org/daisy/pipeline/test/PipelineTestException.java -text
 src/org/daisy/pipeline/test/impl/CharsetSwitcher1.java -text
 src/org/daisy/pipeline/test/impl/ConfigurableValidator1.java -text
 src/org/daisy/pipeline/test/impl/D202dtbValidator1.java -text
+src/org/daisy/pipeline/test/impl/DTBAudioEncoder1.java -text
+src/org/daisy/pipeline/test/impl/DTBAudioEncoderSplitter1.java -text
 src/org/daisy/pipeline/test/impl/DTBSplitter1.java -text
 src/org/daisy/pipeline/test/impl/DTBook2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/DTBookValidator1.java -text

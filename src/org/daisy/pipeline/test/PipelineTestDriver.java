@@ -7,9 +7,10 @@ import java.util.List;
 
 import org.daisy.dmfc.ui.CommandLineUI;
 import org.daisy.pipeline.test.impl.CharsetSwitcher1;
-import org.daisy.pipeline.test.impl.CharsetTranscoder1;
 import org.daisy.pipeline.test.impl.ConfigurableValidator1;
 import org.daisy.pipeline.test.impl.D202dtbValidator1;
+import org.daisy.pipeline.test.impl.DTBAudioEncoder1;
+import org.daisy.pipeline.test.impl.DTBAudioEncoderSplitter1;
 import org.daisy.pipeline.test.impl.DTBSplitter1;
 import org.daisy.pipeline.test.impl.DTBook2Xhtml1;
 import org.daisy.pipeline.test.impl.DTBookValidator1;
@@ -91,9 +92,7 @@ public class PipelineTestDriver {
 				System.err.println("No test for script " + script.getName());
 			}
 		}
-		
-		
-		
+						
 		System.out.println("Pipeline test drive done.");
 	}
 
@@ -115,12 +114,19 @@ public class PipelineTestDriver {
 //		tests.add(new Rtf2dtbook1(inputDir, outputDir));
 //		tests.add(new DTBSplitter1(inputDir, outputDir));
 //		tests.add(new Daisy202ToZ398620051(inputDir, outputDir));
-		tests.add(new CharsetSwitcher1(inputDir, outputDir));
+//		tests.add(new CharsetSwitcher1(inputDir, outputDir));
 //		tests.add(new WordML2Xhtml1(inputDir, outputDir));
 //		tests.add(new DTBook2Xhtml1(inputDir, outputDir));		
 //		tests.add(new Rtf2Xhtml1(inputDir, outputDir));
 
-
+		
+////////// tests with input data not in samples dir 
+		
+		//tests.add(new DTBAudioEncoder1(inputDir, outputDir));
+		tests.add(new DTBAudioEncoderSplitter1(inputDir, outputDir));
+		
+		
+////////// end tests with input data not in samples dir 
 		
 		return tests;
 	}
