@@ -24,6 +24,10 @@ public class Deleter extends Transformer {
 	@Override
 	protected boolean execute(Map parameters) throws TransformerRunException {		
 		try{
+			// le20070531: If we don't call System.gc() there might be some old trailing 
+			// file locks and the delete will fail.
+			System.gc();
+			
 			String active = (String)parameters.remove("active");
 			if(active.equals("true")){
 				String toDelete = (String)parameters.remove("delete");
