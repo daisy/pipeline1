@@ -1,4 +1,4 @@
-<transformer version="1.0">
+<transformer version="1.1">
 	<name>Unicode Transcoder</name>
 	<description>Performs character set transcoding on all XML documents in a fileset, 
 	roundtripping through a Unicode representation. Can optionally substitute characters 
@@ -7,6 +7,7 @@
 	<license>LGPL</license>
 	<author>Markus Gylling</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/int_daisy_unicodeTranscoder.html"/>
 	
 	<parameters>
 

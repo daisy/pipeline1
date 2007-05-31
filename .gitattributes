@@ -51,6 +51,7 @@ doc/transformers/int_daisy_ocfCreator.html -text
 doc/transformers/int_daisy_opsCreator.html -text
 doc/transformers/int_daisy_prettyPrinter.html -text
 doc/transformers/int_daisy_unicodeNormalizer.html -text
+doc/transformers/int_daisy_unicodeTranscoder.html -text
 doc/transformers/int_daisy_validator.html -text
 doc/transformers/pipeline_system_deleter.html -text
 doc/transformers/se_tpb_annonsator.html -text
