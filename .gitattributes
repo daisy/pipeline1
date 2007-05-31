@@ -22,6 +22,7 @@ doc/index-enduser.html -text
 doc/needed.documentation.txt -text
 doc/pipeline.css -text
 doc/scripts/AudioTagger.html -text
+doc/scripts/CharsetSwitcher.html -text
 doc/scripts/ConfigurableValidator.html -text
 doc/scripts/DTBMerger.html -text
 doc/scripts/DTBSplitter.html -text
@@ -176,6 +177,7 @@ scripts/manipulation/AudioTaggerTaskParamsStatic.paramGroup -text
 scripts/manipulation/CharsetSwitcherScriptParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerScriptParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerTaskParamsStatic.paramGroup -text
+scripts/manipulation/advanced/CharsetSwitcher.taskScript -text
 scripts/manipulation/advanced/DTBMerger.taskScript -text
 scripts/manipulation/advanced/RenamerTaggerValidator.taskScript -text
 scripts/manipulation/advanced/UnicodeNormalizer.taskScript -text
@@ -247,6 +249,7 @@ src/org/daisy/dmfc/util/PropertiesConverter.java -text
 src/org/daisy/pipeline/test/PipelineTest.java -text
 src/org/daisy/pipeline/test/PipelineTestDriver.java -text
 src/org/daisy/pipeline/test/PipelineTestException.java -text
+src/org/daisy/pipeline/test/impl/CharsetSwitcher1.java -text
 src/org/daisy/pipeline/test/impl/ConfigurableValidator1.java -text
 src/org/daisy/pipeline/test/impl/D202dtbValidator1.java -text
 src/org/daisy/pipeline/test/impl/DTBSplitter1.java -text

@@ -115,11 +115,10 @@ public class PipelineTestDriver {
 //		tests.add(new Rtf2dtbook1(inputDir, outputDir));
 //		tests.add(new DTBSplitter1(inputDir, outputDir));
 //		tests.add(new Daisy202ToZ398620051(inputDir, outputDir));
-//		tests.add(new CharsetSwitcher1(inputDir, outputDir));
-//		tests.add(new Rtf2Xhtml1(inputDir, outputDir));
+		tests.add(new CharsetSwitcher1(inputDir, outputDir));
 //		tests.add(new WordML2Xhtml1(inputDir, outputDir));
-		tests.add(new DTBook2Xhtml1(inputDir, outputDir));		
-
+//		tests.add(new DTBook2Xhtml1(inputDir, outputDir));		
+//		tests.add(new Rtf2Xhtml1(inputDir, outputDir));
 
 
 		

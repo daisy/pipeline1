@@ -20,7 +20,6 @@ package se_tpb_charsetSwitcher;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +30,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -39,6 +37,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.DTD;
 import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.stream.StreamSource;
 
 import javazoom.jl.decoder.BitstreamException;
 
@@ -50,10 +49,7 @@ import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
-import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
-import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.impl.FilesetFileFactory;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
@@ -68,6 +64,7 @@ import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.stax.DoctypeParser;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 import org.daisy.util.xml.xslt.Stylesheet;
+import org.daisy.util.xml.xslt.TransformerFactoryConstants;
 import org.daisy.util.xml.xslt.XSLTException;
 import org.xml.sax.SAXException;
 
@@ -76,8 +73,10 @@ import org.xml.sax.SAXException;
  * @author Linus Ericson
  */
 public class CharsetSwitcher extends Transformer implements FilesetErrorHandler {
-
-	private static final String XSLT_FACTORY = "net.sf.saxon.TransformerFactoryImpl";
+	
+	//mg 20070530: using saxon8 causes file locks
+	private static final String XSLT_FACTORY = TransformerFactoryConstants.SAXON8;
+	//private static final String XSLT_FACTORY = TransformerFactoryConstants.XALAN_XSLTC_INTERNAL;	
 	private static final double FILESET_DONE = 0.05;
 	private static final double TRANSFORM_DONE = 0.97;
 	
@@ -100,6 +99,7 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 		mXifProperties.put(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);
 		mXifProperties.put(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.TRUE);
 		mXifProperties.put(XMLInputFactory.IS_VALIDATING, Boolean.FALSE);
+		mXifProperties.put(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
 	}
 
 	/*
@@ -156,6 +156,7 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 					// Handle XML files
 					TempFile tempFile = new TempFile();
 					this.switchCharset(fsf, tempFile.getFile());
+					//outputFolder.addFile(tempFile.getFile(),true,"fromRtf.html");
 					this.switchLineBreak(tempFile.getFile(), new File(FilenameOrFileURI.toFile(output), fsf.getName()), breaks);
 					tempFile.delete();
 				} else {
@@ -186,7 +187,7 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 		return true;
 	}
 	
-	private void switchCharset(FilesetFile inputFile, File outputFile) throws CatalogExceptionNotRecoverable, XSLTException, PoolException, FileNotFoundException, XMLStreamException {
+	private void switchCharset(FilesetFile inputFile, File outputFile) throws CatalogExceptionNotRecoverable, XSLTException, PoolException, XMLStreamException, IOException {
 		
 		// Detect public ID, system ID and root element name
 		String publicId = null;
@@ -196,7 +197,10 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 		StAXInputFactoryPool pool = StAXInputFactoryPool.getInstance();		
 		XMLInputFactory factory = pool.acquire(mXifProperties);
 		factory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
-		XMLEventReader reader = factory.createXMLEventReader(new FileInputStream(inputFile.getFile()));		
+		
+		StreamSource ss = new StreamSource(inputFile.getFile());
+		ss.setSystemId(inputFile.getFile());		
+		XMLEventReader reader = factory.createXMLEventReader(ss);		
 		while (reader.hasNext()) {
 			XMLEvent event = reader.nextEvent();
 			if (event.getEventType() == XMLStreamConstants.DTD) {
@@ -211,6 +215,8 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 				break;
 			}
 		}		
+		if(ss.getInputStream()!=null) ss.getInputStream().close();
+		if(ss.getReader()!=null) ss.getReader().close();
 		reader.close();
 		pool.release(factory, mXifProperties);
 		
@@ -228,8 +234,9 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 		if (root != null) {
 			properties.put("root", root);
 		}
-		
+				
 		// Transform
+		// mg20070530: this is where the filelock occurs on inputFile when using saxon8
 		Stylesheet.apply(inputFile.toString(), stylesheet.toString(), outputFile.toString(), XSLT_FACTORY, properties, CatalogEntityResolver.getInstance());
 	}
 	
@@ -259,7 +266,8 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 	 * @throws IOException
 	 */
 	private void switchLineBreak(File inputFile, File outputFile, String eol) throws IOException {
-		InputStream is = new UnixInputSteam(new FileInputStream(inputFile));
+		FileInputStream fis = new FileInputStream(inputFile);
+		InputStream is = new UnixInputSteam(fis);
 		OutputStream os = new FileOutputStream(outputFile);
 		int b = is.read();
 		while (b != -1) {						
@@ -270,8 +278,11 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 			}
 			b = is.read();
 		}
+		os.flush();
 		os.close();
 		is.close();
+		fis.close();
+		
 	}
 	
 	/**

@@ -55,4 +55,10 @@ class UnixInputSteam extends InputStream {
 	      return mCurrent;
 	}
 
+	@Override
+	public void close() throws IOException {
+		mIs.close();
+		super.close();
+	}
+
 }

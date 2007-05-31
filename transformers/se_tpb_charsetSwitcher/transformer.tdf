@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<transformer version="1.0">
+<transformer version="1.1">
 	<name>Charset Switcher</name>
-	<description>Switches character set on all XML files in a fileset to the,
+	<description>Switches character set on all XML files in a fileset to the
 	 desired encoding. It is also possible to specify if the XML documents
 	 shall use unix, dos or mac line breaks.</description>
 	<classname>se_tpb_charsetSwitcher.CharsetSwitcher</classname>
