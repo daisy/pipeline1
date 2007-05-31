@@ -11,7 +11,7 @@
 		
 		<parameter required="true" direction="in" type="application/anonymous">
 			<name>input</name>
-			<description>Comma separated list of publications to include; manifests (such as OPF) or standalone files.</description>
+			<description>List of publications to include; manifests (such as OPF) or standalone files.</description>
 			<example>D:/path/to/inputFile.opf, D:/path/to/inputFile.pdf</example>
 		</parameter>
 		
