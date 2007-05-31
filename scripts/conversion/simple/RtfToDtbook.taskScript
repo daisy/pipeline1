@@ -4,7 +4,7 @@
 <!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../validation/ValidatorScriptParamsSimpleStatic.paramGroup">
 <!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../validation/ValidatorTaskParamsSimpleStatic.paramGroup">
 ]>
-<taskScript version="2.0" name="OdfToDtbook">
+<taskScript version="2.0" name="RtfToDtbook">
 	<nicename>RTF To DTBook</nicename>
 	<description>Convert an RTF document to DTBook</description>
    	<documentation uri="../../../doc/scripts/RtfToDtbook.html"/>

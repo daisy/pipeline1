@@ -25,6 +25,7 @@ doc/scripts/AudioTagger.html -text
 doc/scripts/ConfigurableValidator.html -text
 doc/scripts/DTBMerger.html -text
 doc/scripts/DTBSplitter.html -text
+doc/scripts/DTBookToXhtml.html -text
 doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/Daisy202ToZ39862005.html -text
@@ -36,7 +37,9 @@ doc/scripts/OdfToDtbook.html -text
 doc/scripts/PrettyPrinter.html -text
 doc/scripts/RenamerTaggerValidator.html -text
 doc/scripts/RtfToDtbook.html -text
+doc/scripts/RtfToXhtml.html -text
 doc/scripts/UnicodeNormalizer.html -text
+doc/scripts/WordMLToXhtml.html -text
 doc/scripts/WordMLtoDTBook.html -text
 doc/scripts/Z3986DTBValidator.html -text
 doc/templates/script-doc-template.html -text
@@ -158,13 +161,18 @@ samples/input/txt/wasteland.txt -text
 samples/input/word/wml-sample.xml -text
 samples/input/xhtml/multi-language-unicode.html -text
 scripts/_dev/dtbook2html.taskScript -text
+scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
+scripts/conversion/simple/DtbookToXhtml.taskScript -text
 scripts/conversion/simple/RtfToDtbook.taskScript -text
+scripts/conversion/simple/RtfToXhtml.taskScript -text
 scripts/conversion/simple/WordMLtoDTBook.taskScript -text
+scripts/conversion/simple/WordMLtoXhtml.taskScript -text
 scripts/creation/simple/Narrator-DtbookToDaisy202.taskScript -text
 scripts/creation/simple/OCFCreator.taskScript -text
 scripts/creation/simple/OPSCreator.taskScript -text
 scripts/manipulation/AudioTaggerScriptParamsStatic.paramGroup -text
 scripts/manipulation/AudioTaggerTaskParamsStatic.paramGroup -text
+scripts/manipulation/CharsetSwitcherScriptParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerScriptParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerTaskParamsStatic.paramGroup -text
 scripts/manipulation/advanced/DTBMerger.taskScript -text
@@ -241,6 +249,7 @@ src/org/daisy/pipeline/test/PipelineTestException.java -text
 src/org/daisy/pipeline/test/impl/ConfigurableValidator1.java -text
 src/org/daisy/pipeline/test/impl/D202dtbValidator1.java -text
 src/org/daisy/pipeline/test/impl/DTBSplitter1.java -text
+src/org/daisy/pipeline/test/impl/DTBook2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/DTBookValidator1.java -text
 src/org/daisy/pipeline/test/impl/DTBookValidator2.java -text
 src/org/daisy/pipeline/test/impl/Daisy202ToZ398620051.java -text
@@ -251,8 +260,10 @@ src/org/daisy/pipeline/test/impl/Odf2dtbook1.java -text
 src/org/daisy/pipeline/test/impl/OpsCreator1.java -text
 src/org/daisy/pipeline/test/impl/PrettyPrinter1.java -text
 src/org/daisy/pipeline/test/impl/RenamerTaggerValidator1.java -text
+src/org/daisy/pipeline/test/impl/Rtf2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/Rtf2dtbook1.java -text
 src/org/daisy/pipeline/test/impl/UnicodeNormalizer1.java -text
+src/org/daisy/pipeline/test/impl/WordML2Xhtml1.java -text
 src/org/daisy/util/execution/State.java -text
 src/org/daisy/util/fileset/impl/Opf20FileImpl.java -text
 src/org/daisy/util/fileset/interfaces/xml/ops20/OPF20File.java -text

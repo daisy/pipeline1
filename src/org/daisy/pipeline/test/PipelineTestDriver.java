@@ -6,9 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.dmfc.ui.CommandLineUI;
+import org.daisy.pipeline.test.impl.CharsetSwitcher1;
+import org.daisy.pipeline.test.impl.CharsetTranscoder1;
 import org.daisy.pipeline.test.impl.ConfigurableValidator1;
 import org.daisy.pipeline.test.impl.D202dtbValidator1;
 import org.daisy.pipeline.test.impl.DTBSplitter1;
+import org.daisy.pipeline.test.impl.DTBook2Xhtml1;
 import org.daisy.pipeline.test.impl.DTBookValidator1;
 import org.daisy.pipeline.test.impl.DTBookValidator2;
 import org.daisy.pipeline.test.impl.Daisy202ToZ398620051;
@@ -19,8 +22,10 @@ import org.daisy.pipeline.test.impl.Odf2dtbook1;
 import org.daisy.pipeline.test.impl.OpsCreator1;
 import org.daisy.pipeline.test.impl.PrettyPrinter1;
 import org.daisy.pipeline.test.impl.RenamerTaggerValidator1;
+import org.daisy.pipeline.test.impl.Rtf2Xhtml1;
 import org.daisy.pipeline.test.impl.Rtf2dtbook1;
 import org.daisy.pipeline.test.impl.UnicodeNormalizer1;
+import org.daisy.pipeline.test.impl.WordML2Xhtml1;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 
@@ -109,11 +114,18 @@ public class PipelineTestDriver {
 //		tests.add(new UnicodeNormalizer1(inputDir, outputDir));
 //		tests.add(new Rtf2dtbook1(inputDir, outputDir));
 //		tests.add(new DTBSplitter1(inputDir, outputDir));
-		tests.add(new Daisy202ToZ398620051(inputDir, outputDir));
+//		tests.add(new Daisy202ToZ398620051(inputDir, outputDir));
+//		tests.add(new CharsetSwitcher1(inputDir, outputDir));
+//		tests.add(new Rtf2Xhtml1(inputDir, outputDir));
+//		tests.add(new WordML2Xhtml1(inputDir, outputDir));
+		tests.add(new DTBook2Xhtml1(inputDir, outputDir));		
+
 
 
 		
 		return tests;
 	}
 
+	
+//	tests.add(new CharsetTranscoder1(inputDir, outputDir));
 }

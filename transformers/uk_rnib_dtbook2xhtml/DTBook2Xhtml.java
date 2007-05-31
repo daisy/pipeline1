@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import org.daisy.dmfc.core.InputListener;
 import org.daisy.dmfc.core.transformer.Transformer;
@@ -32,10 +31,7 @@ import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.fileset.exception.FilesetFatalException;
-import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
-import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
@@ -49,8 +45,8 @@ import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
 
 public class DTBook2Xhtml extends Transformer implements FilesetErrorHandler {
 
-	public DTBook2Xhtml(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-		super(inListener, eventListeners, isInteractive);
+	public DTBook2Xhtml(InputListener inListener, Boolean isInteractive) {
+		super(inListener,  isInteractive);
 	}
 
 	protected boolean execute(Map parameters) throws TransformerRunException {
@@ -115,20 +111,8 @@ public class DTBook2Xhtml extends Transformer implements FilesetErrorHandler {
         return new FilesetImpl(manifest.toURI(), this, false, true);
     }
 
-	public void error(FilesetFileException ffe) throws FilesetFileException {		
-		if(ffe instanceof FilesetFileFatalErrorException) {
-			this.sendMessage(Level.WARNING, "Serious error in "	+ ffe.getOrigin().getName() + ": " 
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}else if (ffe instanceof FilesetFileErrorException) {
-			this.sendMessage(Level.WARNING, "Error in " + ffe.getOrigin().getName() + ": " 
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}else if (ffe instanceof FilesetFileWarningException) {
-			this.sendMessage(Level.WARNING, "Warning in " + ffe.getOrigin().getName() + ": " 
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}else{
-			this.sendMessage(Level.WARNING, "Exception with unknown severity in " + ffe.getOrigin().getName() + ": "
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}		
+	public void error(FilesetFileException ffe) throws FilesetFileException {	
+		this.sendMessage(ffe);
 	}
 
 }

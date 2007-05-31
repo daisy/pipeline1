@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+
+	<parameter name="daisyNoterefs" value="false" required="false">
+		<nicename>DAISY 2.02 style noterefs</nicename>
+		<description>Put bodyref attributes on note references (required by Daisy 2.02 skippability recommendation)</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+</paramGroup>	
