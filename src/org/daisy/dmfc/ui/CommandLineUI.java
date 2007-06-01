@@ -168,8 +168,7 @@ public class CommandLineUI implements InputListener, BusListener {
             EventBus.getInstance().subscribe(ui, MessageEvent.class);
             EventBus.getInstance().subscribe(ui, StateChangeEvent.class);
 
-            DMFCCore dmfc = new DMFCCore(ui, findHomeDirectory(), new Locale(
-                    "en"));
+            DMFCCore dmfc = new DMFCCore(ui, findHomeDirectory());
             Script script = dmfc.newScript(scriptFile.toURI().toURL());
             Job job = new Job(script);
 

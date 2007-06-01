@@ -20,9 +20,8 @@ package org.daisy.dmfc.core;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -43,7 +42,6 @@ import org.daisy.dmfc.core.transformer.TransformerHandlerLoader;
 import org.daisy.dmfc.exception.DMFCConfigurationException;
 import org.daisy.dmfc.exception.JobFailedException;
 import org.daisy.dmfc.exception.TransformerDisabledException;
-import org.daisy.util.file.EFolder;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.i18n.I18n;
 import org.daisy.util.i18n.XMLProperties;
@@ -71,46 +69,41 @@ public class DMFCCore implements TransformerHandlerLoader {
     private Runner mRunner;
 
     /**
-     * Create an instance of the Daisy Pipeline.
+     * Create an instance of the Daisy Pipeline. This constructor will fetch the
+     * Pipeline properties files in the <code>bin/</code> sub-directory of
+     * <code>homeDir</code>.
      * 
      * @param inListener a listener of (user) input events
+     * @param homeDir the home directory
      */
-
     public DMFCCore(InputListener inListener, File homeDir)
             throws DMFCConfigurationException {
-        initialize(inListener, homeDir);
+        this(inListener, homeDir, homeDir.toURI().resolve("bin/"));
     }
 
     /**
      * Create an instance of the Daisy Pipeline.
      * 
      * @param inListener a listener of (user) input events
-     * @param locale the locale to use
+     * @param homeDir the home directory
+     * @param propsDir the location of the pipeline properties file
      */
-    public DMFCCore(InputListener inListener, File homeDir, Locale locale)
+    public DMFCCore(InputListener inListener, File homeDir, URI propsDir)
             throws DMFCConfigurationException {
-        Locale.setDefault(locale);
-        initialize(inListener, homeDir);
+        mInputListener = inListener;
+        mHomeDirectory = homeDir;
+        mCreator = new Creator(this);
+        mRunner = new Runner();
+        initialize(propsDir);
     }
 
-    private void initialize(InputListener inListener, File homeDir)
-            throws DMFCConfigurationException, SecurityException {
-        this.mInputListener = inListener;
-        
-        //mg 20070530: we use two properties files; one with likelihood of user access and one less likely 
-        URL propertiesURL = this.getClass().getClassLoader().getResource("pipeline.properties");
-        if (!loadProperties(propertiesURL)) {
-            throw new DMFCConfigurationException(
-                    "Can't read pipeline.properties!");
-        }
-        propertiesURL = this.getClass().getClassLoader().getResource("pipeline.user.properties");
-        if (!loadProperties(propertiesURL)) {
-            throw new DMFCConfigurationException(
-                    "Can't read pipeline.user.properties!");
-        }
-        
-        // Set pipeline home dir
-        mHomeDirectory = homeDir;
+    private void initialize(URI propsDir) throws DMFCConfigurationException,
+            SecurityException {
+        // Load properties
+        // mg 20070530: we use two properties files; one with likelihood of user
+        // access and one less likely
+        loadProperties(propsDir, "pipeline.properties");
+        loadProperties(propsDir, "pipeline.user.properties");
 
         // Load messages
         ResourceBundle bundle = XMLPropertyResourceBundle.getBundle((this
@@ -136,8 +129,6 @@ public class DMFCCore implements TransformerHandlerLoader {
             lg.removeHandler(handlers[i]);
         }
 
-        mCreator = new Creator(this);
-        mRunner = new Runner();
     }
 
     /**
@@ -153,20 +144,20 @@ public class DMFCCore implements TransformerHandlerLoader {
     /**
      * Adds a set of properties to the system properties.
      * 
-     * @param propertiesURL an URL
-     * @return <code>true</code> if the loading was successful,
-     *         <code>false</code> otherwise
+     * @param propsLoc the URI of the properties file parent directory
+     * @param propsName the name of the properties file
+     * @throws DMFCConfigurationException if the properties couldn't be loaded
      */
-    public boolean loadProperties(URL propertiesURL) {
+    private void loadProperties(URI propsLoc, String propsName)
+            throws DMFCConfigurationException {
         try {
+            URL propsURL = propsLoc.resolve(propsName).toURL();
             XMLProperties properties = new XMLProperties(System.getProperties());
-            properties.loadFromXML(propertiesURL.openStream());
+            properties.loadFromXML(propsURL.openStream());
             System.setProperties(properties);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        } catch (Exception e) {
+            throw new DMFCConfigurationException("Can't read " + propsName, e);
         }
-        return true;
     }
 
     /*
@@ -180,10 +171,10 @@ public class DMFCCore implements TransformerHandlerLoader {
             return mTransformerHandlers.get(transformerName);
         }
         File transformersDir = new File(getHomeDirectory(), "transformers");
-        
-        //mg20070520: if subdir (such as se_tpb_dtbSplitterMerger.split)
+
+        // mg20070520: if subdir (such as se_tpb_dtbSplitterMerger.split)
         transformerName = transformerName.replace('.', '/');
-        
+
         // Try to load TDF from directory
         File[] files = new File(transformersDir, transformerName)
                 .listFiles(new FileFilter() {
@@ -191,7 +182,7 @@ public class DMFCCore implements TransformerHandlerLoader {
                         return file.getName().endsWith(".tdf");
                     }
                 });
-                
+
         if (files != null && files.length > 1) {
             EventBus.getInstance().publish(
                     new CoreMessageEvent(this,
