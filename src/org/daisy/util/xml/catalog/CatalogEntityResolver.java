@@ -156,13 +156,9 @@ public class CatalogEntityResolver implements EntityResolver,
      * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String,
      *      java.lang.String)
      */
-    public InputSource resolveEntity(String publicId, String systemId)
-            throws IOException {
-        // if(System.getProperty("org.daisy.debug")!=null){
-        // System.out.println("DEBUG: CatalogEntityResolver#resolveEntity:
-        // publicId: " + publicId + ":: systemId:" + systemId );
-        // }
-        if (publicId != null) {
+    public InputSource resolveEntity(String publicId, String systemId) throws IOException {
+
+    	if (publicId != null) {
             try {
                 return catalog.getPublicIdEntity(publicId);
             } catch (CatalogExceptionEntityNotSupported ceens) {
@@ -172,29 +168,32 @@ public class CatalogEntityResolver implements EntityResolver,
             }
         }
 
-        try {
-            return catalog.getSystemIdEntity(systemId);
-        } catch (CatalogExceptionEntityNotSupported ceens) {
-            // no match in catalog for inparam system id either
-            entityNotSupportedExceptions.add(systemId);
-            // try to match on filename alone (suffix)
-            try {
-                String filename = systemId.substring(systemId.lastIndexOf('/'));
-                try {
-                    return catalog.getSystemIdEntityFromSuffix(filename);
-                } catch (CatalogExceptionEntityNotSupported ceens2) {
-                    entityNotSupportedExceptions.add(systemId + ": suffix");
-                    if (System.getProperty("org.daisy.debug") != null) {
-                        System.out
-                                .println("DEBUG: CatalogEntityResolver#resolveEntity: entity not supported: publicId: "
-                                        + publicId + ":: systemId:" + systemId);
-                    }
-                }
-            } catch (Exception e) {
-                // silence
-            }
-            return null;
-        }
+    	if (systemId != null) {
+	        try {
+	            return catalog.getSystemIdEntity(systemId);
+	        } catch (CatalogExceptionEntityNotSupported ceens) {
+	            // no match in catalog for inparam system id either
+	            entityNotSupportedExceptions.add(systemId);
+	            // try to match on filename alone (suffix)
+	            try {
+	                String filename = systemId.substring(systemId.lastIndexOf('/'));
+	                try {
+	                    return catalog.getSystemIdEntityFromSuffix(filename);
+	                } catch (CatalogExceptionEntityNotSupported ceens2) {
+	                    entityNotSupportedExceptions.add(systemId + ": suffix");
+	                    if (System.getProperty("org.daisy.debug") != null) {
+	                        System.out
+	                                .println("DEBUG: CatalogEntityResolver#resolveEntity: entity not supported: publicId: "
+	                                        + publicId + ":: systemId:" + systemId);
+	                    }
+	                }
+	            } catch (Exception e) {
+	                // silence
+	            }
+	            
+	        }
+    	}
+    	return null;
     }
 
     /**
