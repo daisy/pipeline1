@@ -130,7 +130,11 @@ public class Chain {
 		        System.setProperty(property, factoryImpl);
 		    }
             SAXTransformerFactory transformerFactory = (SAXTransformerFactory)TransformerFactory.newInstance();
-            
+			try {
+				transformerFactory.setAttribute("http://saxon.sf.net/feature/version-warning", Boolean.FALSE);
+			} catch (IllegalArgumentException iae) {
+				
+			}
             // Reset old transformer factory property
 			System.setProperty(property, (oldFactory==null?"":oldFactory));	
             
