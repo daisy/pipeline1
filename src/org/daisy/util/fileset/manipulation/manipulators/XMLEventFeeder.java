@@ -139,7 +139,7 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 						
 			if(xof.isPropertySupported("com.ctc.wstx.outputEscapeCr")) {
 				try{
-					xof.setProperty("com.ctc.wstx.outputEscapeCr", Boolean.TRUE);
+					xof.setProperty("com.ctc.wstx.outputEscapeCr", Boolean.FALSE);
 				}catch (IllegalArgumentException e) {
 					
 				}	
