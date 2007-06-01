@@ -62,14 +62,14 @@ exclude-result-prefixes="xs xdt office style text table draw fo xlink dc meta nu
 
 <d:doc xmlns:d="rnib.org.uk/ns#">
  <revhistory>
-   <purpose><para>Abstract style info from  ODT  file - content.xml and </para></purpose>
+   <purpose><para>Abstract style info from  ODT  file</para></purpose>
 
    <revision>
     <revnumber>1.0</revnumber>
     <date>2007-03-22T09:37:58.0Z</date>
     <authorinitials>DaveP</authorinitials>
     <revdescription>
-     <para>Abstract style info from content.xml and style.xml and content.xml</para>
+     <para>Abstract style info from content.xml and style.xml</para>
     </revdescription>
     <revremark></revremark>
    </revision>
@@ -113,6 +113,7 @@ exclude-result-prefixes="xs xdt office style text table draw fo xlink dc meta nu
    <xsl:if test="$debug">
        <xsl:message>
     <xsl:value-of select="count($styles/style)"/> styles found
+    <xsl:copy-of select="$styles"/>
   </xsl:message>
    </xsl:if>
 

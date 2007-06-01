@@ -85,7 +85,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema"
    <xsl:variable name='nextHead' select="($thisHead,following-sibling::heading[1]/@level)[last()]" as="xs:integer"/>
 
    <xsl:choose>
-     <xsl:when test="(($nextHead - $thisHead) le 1  ) or ($nextHead lt $thisHead)">
+     <xsl:when test="(max(($thisHead,$nextHead)) - min(($thisHead,$nextHead))) le 1">
        <xsl:if test="$debug">
        <xsl:message>
          Yes. OK

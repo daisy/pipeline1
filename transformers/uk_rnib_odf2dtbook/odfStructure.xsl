@@ -69,7 +69,6 @@
   >
 
   <xsl:param name="stylefile" select="'none'"/>
-  <xsl:param name="headingsfile" select="'none'"/>
 
 <xsl:output method="xml" indent="yes" encoding="utf-8"/>
 
@@ -81,13 +80,7 @@
    <xsl:template match="/">
      <xsl:if test="$stylefile='none'">
        <xsl:message terminate="yes">
-         Unable to find style file, Quitting
-       </xsl:message>
-     </xsl:if>
-
-     <xsl:if test="$headingsfile='none'">
-       <xsl:message terminate="yes">
-         Unable to find headings file, Quitting
+         Unable to file style file, Quitting
        </xsl:message>
      </xsl:if>
 
@@ -331,7 +324,7 @@
    <xsl:template match="text:h">
      <heading >
        <xsl:attribute name="level">
-         <xsl:value-of select="dp:level2(@text:style-name)"/>
+         <xsl:value-of select="dp:level(@text:style-name)"/>
        </xsl:attribute>
        <xsl:value-of select="."/>
      </heading>
@@ -359,7 +352,6 @@
    <xsl:template match="table:table">
      <table/>
        <xsl:if test=".//text:h">
-         <error>************Structure error, Heading in table.heading is "<xsl:value-of select=".//text:h"/>"***************</error>
        <xsl:message terminate="yes">
          Heading found within table. Invalid structure
          Heading is "<xsl:value-of select=".//text:h"/>"
@@ -458,44 +450,10 @@
    <xsl:param name="stylename" as="xs:string"/>
    <xsl:if test="$debug">
    <xsl:message>
-     <xsl:value-of select="$stylename"/> -   [<xsl:value-of select="$styles/styles/style[@name=$stylename][1]/@name"/>]   
+     <xsl:value-of select="$stylename"/> -   [<xsl:value-of select="$styles/styles/style[@name=$stylename]/@name"/>]   
    </xsl:message>
  </xsl:if>
    <xsl:sequence select="dp:last-char-as-int($stylename)"/>
- </xsl:function>
-
-
- <!-- Determine the level from style name, using file $headingsfile -->
- <xsl:variable name="headings" select="document($headingsfile)"/>
-
- <xsl:function name="dp:level2" as="xs:integer">
-   <xsl:param name="style" as="xs:string"/>
-   <xsl:if test="$debug">
-     <xsl:message>
-       dp:level2, processing style <xsl:value-of select="$style"/>
-
-     [<xsl:value-of select="$headings/headings/level[2]/h[1]"/>]
-     </xsl:message>
-   </xsl:if>
-
-   <xsl:choose>
-     <xsl:when test="$headings/headings/level[h = $style]">
-       <xsl:if test="$debug">
-       <xsl:message>
-         dp:level2 
-         in <xsl:value-of select="$style"/>
-         out <xsl:value-of select="$headings/headings/level[h = $style]/@n"/>
-       </xsl:message>
-     </xsl:if>
-       <xsl:sequence select="$headings/headings/level[h = $style]/@n"/>
-     </xsl:when>
-     <xsl:otherwise>
-       <xsl:message terminate="yes">
-         odfStructure.xsl
-         Unable to determine level from style <xsl:value-of select="$style"/>
-       </xsl:message>
-     </xsl:otherwise>
-   </xsl:choose>
  </xsl:function>
 
 

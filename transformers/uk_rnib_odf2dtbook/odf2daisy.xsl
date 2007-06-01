@@ -69,8 +69,8 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
 
 <!-- input parameter is the name of the file holding style information -->
   <xsl:param name="stylefile" select="'none'"/>
- <!-- input parameter is the name of the file holding the heading names -->
- <xsl:param name="headingsfile" select="'none'"/>
+
+
  <!-- Using include rather than import simply to facilitate debug. -->
  <!-- Probably better to import if overrides are of benefit -->
 
@@ -131,7 +131,7 @@ doctype-system = "dtbook-2005-2.dtd"
 
  <!-- doctype-system = "http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd" -->
  <!-- Debug dump to terminal -->
-<xsl:variable name="debug" select="false()"/>
+<xsl:variable name="debug" select="true()"/>
 
   <xsl:template match="/">
 
@@ -143,28 +143,9 @@ doctype-system = "dtbook-2005-2.dtd"
 </xsl:if>
 <xsl:if test="not(doc-available($stylefile))">
   <xsl:message terminate="yes">
-    Unable to open stylefile <xsl:value-of select="$stylefile"/>. Terminating
+    odf2daisy.xsl: Unable to open stylefile <xsl:value-of select="$stylefile"/>. Terminating
   </xsl:message>
 </xsl:if>
-
-<!-- check that headings are available. -->
-<xsl:if test="$headingsfile ='none'">
-  <xsl:message terminate="yes">
-    Parameter headingsfile not set[<xsl:value-of select="$headingsfile"/>]. Terminating
-  </xsl:message>
-</xsl:if>
-<xsl:if test="not(doc-available($headingsfile))">
-  <xsl:message terminate="yes">
-    Unable to open headingsfile <xsl:value-of select="$headingsfile"/>. Terminating
-  </xsl:message>
-</xsl:if>
-
-
-
-
-
-
-
 
     <xsl:variable name='lang'>
     <xsl:choose>
@@ -200,7 +181,9 @@ Warning          dc:language not found, using 'en'
              [contains(@text:style-name,'Heading')][1]"/></doctitle>
     </frontmatter>
     <bodymatter>
+
       <xsl:apply-templates select="/office:document-content/office:body"/>
+
     </bodymatter>
   </book>
 </dtbook>
@@ -218,9 +201,7 @@ Warning          dc:language not found, using 'en'
 <xsl:template match="*" >
   <xsl:message>
     *****<xsl:value-of select="name(..)"/>/<xsl:value-of select="name()"/>******
-  <xsl:if test="@text:style-name"> 
- (<xsl:value-of select="@text:style-name"/>)
-</xsl:if>
+  (<xsl:value-of select="@text:style-name"/>)
     </xsl:message>
 </xsl:template>
 

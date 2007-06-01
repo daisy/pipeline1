@@ -13,16 +13,7 @@ fi
 
 unzip -o -j $1 content.xml styles.xml
 
-echo For debug, clean up content.xml
-java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o op.xml   content.xml  clean2.xsl
-if [ -e content.xml ]
-  then
-   rm content.xml
-fi
-
-mv op.xml content.xml
-
-echo Done. Abstract the style information from content.xml and styles.xml, to _styles.xml and _headings.xml
+echo Get the style information from content.xml and styles.xml, to _styles.xml
 
 
 java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o _styles.xml   -it initial  odfGetStyles.xsl
@@ -33,24 +24,9 @@ if [ $? -ne 0 ]
   exit 2
 fi
 
-echo now generate all heading styles
-
-java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o _headings.xml  _styles.xml  odfHeadings.xsl
-
-echo Remove list wrappers from heading X elements, remove declarations
-
-java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o op.xml content.xml odf2.cleanHeadings.xsl  "headingsfile=_headings.xml"
-if [ -e content.xml ]
-  then
-   rm content.xml
-fi
-
-mv op.xml content.xml
-
-
 echo Determine the document structure, using styles
 
-java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o $1.struct.xml  content.xml odfStructure.xsl "stylefile=_styles.xml" "headingsfile=_headings.xml"
+java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o $1.struct.xml  content.xml odfStructure.xsl "stylefile=_styles.xml"
 
 if [ $? -ne 0 ]
  then
@@ -75,13 +51,7 @@ fi
 
 echo Now build the Daisy file.
 
-echo convert to daisy format.
 
-java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o %1.xml content.xml odf2daisy.xsl "stylefile=_styles.xml" "headingsfile=_headings.xml"
+java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o $1.daisy.xml  content.xml odf2daisy.xsl "stylefile=_styles.xml"
 
-
-if [ $? -ne 0 ]
- then
-  echo Error in daisy transform. Processing terminated
-  exit 2
-fi
+echo now validate the daisy file.
