@@ -17,6 +17,7 @@ import org.daisy.pipeline.test.impl.DTBookValidator1;
 import org.daisy.pipeline.test.impl.DTBookValidator2;
 import org.daisy.pipeline.test.impl.Daisy202ToZ398620051;
 import org.daisy.pipeline.test.impl.FilesetRenamer1;
+import org.daisy.pipeline.test.impl.Html2Xhtml1;
 import org.daisy.pipeline.test.impl.Narrator1;
 import org.daisy.pipeline.test.impl.OcfCreator1;
 import org.daisy.pipeline.test.impl.Odf2dtbook1;
@@ -118,12 +119,14 @@ public class PipelineTestDriver {
 //		tests.add(new WordML2Xhtml1(inputDir, outputDir));
 //		tests.add(new DTBook2Xhtml1(inputDir, outputDir));		
 //		tests.add(new Rtf2Xhtml1(inputDir, outputDir));
-
+//		tests.add(new PrettyPrinter1(inputDir, outputDir));
+//		tests.add(new Html2Xhtml1(inputDir, outputDir));
+		tests.add(new Odf2dtbook1(inputDir, outputDir));
 		
 ////////// tests with input data not in samples dir 
 		
 		//tests.add(new DTBAudioEncoder1(inputDir, outputDir));
-		tests.add(new DTBAudioEncoderSplitter1(inputDir, outputDir));
+		//tests.add(new DTBAudioEncoderSplitter1(inputDir, outputDir));
 		
 		
 ////////// end tests with input data not in samples dir 

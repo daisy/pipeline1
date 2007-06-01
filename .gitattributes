@@ -33,6 +33,7 @@ doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/Daisy202ToZ39862005.html -text
 doc/scripts/FilesetRenamer.html -text
+doc/scripts/HtmlToXhtml.html -text
 doc/scripts/Narrator-DtbookToDaisy202.html -text
 doc/scripts/OCFCreator.html -text
 doc/scripts/OPSCreator.html -text
@@ -153,6 +154,9 @@ samples/input/dtbook/hauy-2005-1.xml -text
 samples/input/dtbook/hauy_invalid.xml -text
 samples/input/dtbook/hauy_valid.xml -text
 samples/input/dtbook/valentin.jpg -text
+samples/input/html/img/nor02.jpg -text
+samples/input/html/nor01.jpg -text
+samples/input/html/nor1.html -text
 samples/input/odf/simple.odt -text
 samples/input/odf/simple2.odt -text
 samples/input/ops/hauy-2005-1.xml -text
@@ -167,6 +171,7 @@ samples/input/xhtml/multi-language-unicode.html -text
 scripts/_dev/dtbook2html.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
 scripts/conversion/simple/DtbookToXhtml.taskScript -text
+scripts/conversion/simple/HtmlToXhtml.taskScript -text
 scripts/conversion/simple/RtfToDtbook.taskScript -text
 scripts/conversion/simple/RtfToXhtml.taskScript -text
 scripts/conversion/simple/WordMLtoDTBook.taskScript -text
@@ -266,6 +271,7 @@ src/org/daisy/pipeline/test/impl/DTBookValidator1.java -text
 src/org/daisy/pipeline/test/impl/DTBookValidator2.java -text
 src/org/daisy/pipeline/test/impl/Daisy202ToZ398620051.java -text
 src/org/daisy/pipeline/test/impl/FilesetRenamer1.java -text
+src/org/daisy/pipeline/test/impl/Html2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/Narrator1.java -text
 src/org/daisy/pipeline/test/impl/OcfCreator1.java -text
 src/org/daisy/pipeline/test/impl/Odf2dtbook1.java -text
@@ -331,6 +337,9 @@ transformers/int_daisy_filesetAudioTagger/playlist/XSPFWriter.java -text
 transformers/int_daisy_filesetAudioTagger/transformer.tdf -text
 transformers/int_daisy_filesetEncryptor/transformer.tdf -text
 transformers/int_daisy_filesetRenamer/transformer.tdf -text
+transformers/int_daisy_html2xhtml/messages.properties -text
+transformers/int_daisy_html2xhtml/transformer.tdf -text
+transformers/int_daisy_html2xhtml/xhtml-clean-minimum.xsl -text
 transformers/int_daisy_ocfCreator/OcfCreator.java -text
 transformers/int_daisy_ocfCreator/messages.properties -text
 transformers/int_daisy_ocfCreator/transformer.tdf -text
