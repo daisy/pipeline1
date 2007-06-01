@@ -101,9 +101,10 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
             //a map holding all XSLTs for convenience 
             Map<String,URL> stylesheets = new HashMap<String,URL>(); 
             stylesheets.put("odfGetStyles", this.getClass().getResource("odfGetStyles.xsl"));
-            stylesheets.put("odfHeadings", this.getClass().getResource("odfHeadings.xsl"));
-            stylesheets.put("odfCleanHeadings", this.getClass().getResource("odf2.cleanHeadings.xsl"));
-
+            stylesheets.put("odfStructure", this.getClass().getResource("odfStructure.xsl"));
+            stylesheets.put("odfNestCheck", this.getClass().getResource("odfNestCheck.xsl"));
+            stylesheets.put("odf2daisy", this.getClass().getResource("odf2daisy.xsl"));
+            
         	MessageEmitter me = new MessageEmitter();
         	me.setWriter(new MessageEmitterWriter()); // output redirection
             
@@ -124,26 +125,32 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
             URL dummy = this.getClass().getResource("dummy.xml");
             StreamSource dummySource = new StreamSource(dummy.openStream());            
             saxon.transform(dummySource, new StreamResult(_styles));
-            
-            //Step 2. Create _headings.xml by applying odfHeadings.xsl to _styles.xml
-            File _headings = new File(mTempDir, "_headings.xml");
-            StreamSource ss2 = new StreamSource(stylesheets.get("odfHeadings").openStream());
+                        
+            // Step 2. Create struct file by applying odfStructure.xsl to content.xml
+            File _struct = new File(mTempDir, odfInput.getNameMinusExtension() + ".struct.xml");
+            StreamSource ss2 = new StreamSource(stylesheets.get("odfStructure").openStream());
             saxon = tfac.newTransformer(ss2);
+            saxon.setURIResolver(this);
             ((Controller)saxon).setMessageEmitter(me);
-            saxon.transform(new StreamSource(_styles), new StreamResult(_headings));
-            //mg: the line above is what renders an empty _headings.xml file for me.
+            saxon.setParameter("stylefile", "_styles.xml");
+            saxon.transform(new StreamSource(content), new StreamResult(_struct));
             
-            //Step 3. Remove list wrappers from heading X elements, remove declarations
-            //op.xml content.xml odf2.cleanHeadings.xsl  "headingsfile=_headings.xml"            
-            StreamSource ss3 = new StreamSource(stylesheets.get("odfCleanHeadings").openStream());
-            ss3.setSystemId(stylesheets.get("odfCleanHeadings").toExternalForm());
+            // Step 3. Create the report file by applying odfNestCheck.xsl to the struct file
+            File _report = new File(mTempDir, odfInput.getNameMinusExtension() + ".report.xml");
+            StreamSource ss3 = new StreamSource(stylesheets.get("odfNestCheck").openStream());
             saxon = tfac.newTransformer(ss3);
+            saxon.setURIResolver(this);
             ((Controller)saxon).setMessageEmitter(me);
-            saxon.setParameter("headingsfile", _headings.toURI().toASCIIString());
-            File op = new File(mTempDir,"op.xml");
-            saxon.transform(new StreamSource(content), new StreamResult(op));
+            saxon.setParameter("stylefile", "_styles.xml");
+            saxon.transform(new StreamSource(_struct), new StreamResult(_report));
             
-            //TODO more steps remaning as per the bash script
+            // Step 4. Create the dtbook file
+            StreamSource ss4 = new StreamSource(stylesheets.get("odf2daisy").openStream());
+            saxon = tfac.newTransformer(ss4);
+            saxon.setURIResolver(this);
+            ((Controller)saxon).setMessageEmitter(me);
+            saxon.setParameter("stylefile", "_styles.xml");
+            saxon.transform(new StreamSource(content), new StreamResult(dtbookOutput));            
             
             System.err.println("done");
 
@@ -211,9 +218,13 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
      */
 	public Source resolve(String href, String base) throws TransformerException {
 		System.err.println("resolve: " + href);
-		if(href.equals("content.xml")||href.equals("styles.xml")) {			
+		if(href.equals("content.xml")||href.equals("styles.xml")||href.equals("_styles.xml")) {			
 			return new StreamSource(new File(mTempDir,href));
 		}
+		if (href.endsWith(".xsl")) {
+			return new StreamSource(new File(this.getTransformerDirectory(), href));
+		}
+		System.err.println("This is bad!");
 		return null;
 	}
 
@@ -254,8 +265,8 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
 
 		@Override
 		public void write(char[] cbuf, int off, int len) throws IOException {
-			String s = new String(cbuf);
-			System.err.println( "MessageEmitterWriter" + s);
+			String s = new String(cbuf, off, len);
+			System.err.println( ": " + s);
 		}
 		 
 	}
