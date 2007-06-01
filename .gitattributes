@@ -87,7 +87,7 @@ lib/saxon8-dom.jar -text
 lib/saxon8.jar -text
 lib/serializer.jar -text
 lib/stax-api-1.0.1.jar -text
-lib/tagsoup-1.1.jar -text
+lib/tagsoup-1.1.3.jar -text
 lib/wstx-lgpl-3.2.1.jar -text
 lib/xalan.jar -text
 lib/xercesImpl.jar -text

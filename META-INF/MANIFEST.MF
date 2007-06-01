@@ -9,7 +9,6 @@ Bundle-ClassPath: dmfc.jar,
  lib/xercesImpl.jar,
  lib/xalan.jar,
  lib/wstx-lgpl-3.2.1.jar,
- lib/tagsoup-1.1.jar,
  lib/serializer.jar,
  lib/saxon8-dom.jar,
  lib/saxon8.jar,
@@ -23,7 +22,8 @@ Bundle-ClassPath: dmfc.jar,
  lib/commons-cli-1.0.jar,
  lib/chardet.jar,
  lib/batik-util.jar,
- lib/batik-css.jar
+ lib/batik-css.jar,
+ lib/tagsoup-1.1.3.jar
 Bundle-Localization: plugin
 Export-Package: 
  META-INF,
