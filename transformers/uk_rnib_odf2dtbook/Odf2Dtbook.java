@@ -131,7 +131,8 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
             saxon = tfac.newTransformer(ss2);
             ((Controller)saxon).setMessageEmitter(me);
             saxon.transform(new StreamSource(_styles), new StreamResult(_headings));
-                        
+            //mg: the line above is what renders an empty _headings.xml file for me.
+            
             //Step 3. Remove list wrappers from heading X elements, remove declarations
             //op.xml content.xml odf2.cleanHeadings.xsl  "headingsfile=_headings.xml"            
             StreamSource ss3 = new StreamSource(stylesheets.get("odfCleanHeadings").openStream());
@@ -142,7 +143,7 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
             File op = new File(mTempDir,"op.xml");
             saxon.transform(new StreamSource(content), new StreamResult(op));
             
-
+            //TODO more steps remaning as per the bash script
             
             System.err.println("done");
 
