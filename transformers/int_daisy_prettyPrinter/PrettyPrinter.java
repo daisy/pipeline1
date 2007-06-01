@@ -47,8 +47,6 @@ import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.stax.ContextStack;
 
-import com.ctc.wstx.api.WstxOutputProperties;
-
 /**
  * Main transformer class. Pretty print a fileset with special care taking for DTB player compatilibility.
  * @author Markus Gylling
@@ -219,6 +217,7 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 			
 		}else if (xe.getEventType() == XMLEvent.START_ELEMENT) {
 			StartElement se = (StartElement) xe;
+			//System.err.println(se.getName().getLocalPart());
 			if(previousEvent!=XMLEvent.CHARACTERS) {
 				if((!(mCurrentInputFile instanceof D202NccFile)) || (!se.getName().getLocalPart().equals("a"))) {
 					retEvents.add(mLineBreak);							
@@ -246,8 +245,10 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 			
 			
 		}else if (xe.getEventType() == XMLEvent.END_ELEMENT) {
+			
 			--depth;
-			if(previousEvent!=XMLEvent.CHARACTERS && previousEvent!=XMLEvent.ATTRIBUTE) {				
+			//if(previousEvent!=XMLEvent.CHARACTERS && previousEvent!=XMLEvent.ATTRIBUTE) {
+			if(previousEvent!=XMLEvent.CHARACTERS && previousEvent!=XMLEvent.ATTRIBUTE && previousEvent!=XMLEvent.START_ELEMENT) {
 				if 	((!(mCurrentInputFile instanceof D202NccFile)) || (!previousStartOrEndElementQName.getLocalPart().equals("a"))) {
 					if(previousEvent==XMLEvent.SPACE||previousEvent==XMLEvent.END_ELEMENT) {				
 						retEvents.add(mLineBreak);
@@ -255,6 +256,7 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 					retEvents = addIndent(retEvents, depth);
 				}
 			}
+
 			retEvents.add(xe);			
 			if(previousEvent==XMLEvent.START_ELEMENT) {	
 				retEvents.add(mLineBreak);
