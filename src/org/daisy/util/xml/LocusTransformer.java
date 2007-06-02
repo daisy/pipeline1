@@ -1,6 +1,8 @@
 package org.daisy.util.xml;
 
 import javax.xml.stream.Location;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
@@ -69,6 +71,18 @@ public class LocusTransformer  {
 		return loc;
 	}
 	
+	public static Location newLocation(TransformerException te) {
+		LocationImpl loc =  new LocusTransformer().new LocationImpl();
+		SourceLocator sl = te.getLocator();
+		try{
+			loc.setColumnNumber(sl.getColumnNumber());
+			loc.setLineNumber(sl.getLineNumber());
+			loc.setSystemId(sl.getSystemId());
+			loc.setPublicId(sl.getPublicId());
+		}catch (Exception e) {}
+		return loc;
+	}
+	
 	private LocusTransformer() {
 		
 	}
@@ -126,5 +140,8 @@ public class LocusTransformer  {
 		}
 
 	}
+
+
+
 
 }
