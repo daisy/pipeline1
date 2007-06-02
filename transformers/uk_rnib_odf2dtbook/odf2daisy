@@ -11,7 +11,7 @@ else
    exit 2
 fi
 
-unzip -o -j $1 content.xml styles.xml
+unzip -o -j $1 content.xml styles.xml meta.xml
 
 echo Get the style information from content.xml and styles.xml, to _styles.xml
 
@@ -33,7 +33,6 @@ if [ $? -ne 0 ]
   echo Error in transform of content.xml
   exit 2
 fi
-
 echo Structure available in $1.struct.xml
 
 echo check structure
@@ -41,17 +40,36 @@ echo check structure
 java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o $1.report.xml  $1.struct.xml odfNestCheck.xsl "stylefile=_styles.xml"
 
 
-echo see file $1.report.xml
+
 
 if [ $? -ne 0 ]
  then
   echo Error in document structure. Processing terminated
   exit 2
 fi
+echo see file $1.report.xml
 
 echo Now build the Daisy file.
 
 
 java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o $1.daisy.xml  content.xml odf2daisy.xsl "stylefile=_styles.xml"
+if [ $? -ne 0 ]
+ then
+  echo Error in transformation to Daisy. Processing terminated
+  exit 2
+fi
+
 
 echo now validate the daisy file.
+
+xmlvalid $1.daisy.xml
+
+echo delete intermediate files.
+
+rm $1.report.xml
+#rm $1.struct.xml
+rm _styles.xml
+rm styles.xml
+rm meta.xml
+rm content.xml
+

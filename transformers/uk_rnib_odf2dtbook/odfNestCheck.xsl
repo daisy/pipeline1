@@ -75,6 +75,11 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema"
   </xsl:template>
 
  <xsl:template match="body">
+   <xsl:if test="not(heading/@level = '1') ">
+     <xsl:message terminate="yes">
+       First heading must be a heading level 1
+     </xsl:message>
+   </xsl:if>
    <xsl:apply-templates/>
  </xsl:template>
 
