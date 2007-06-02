@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.xml.stream.Location;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
@@ -46,12 +47,14 @@ import net.sf.saxon.Controller;
 import net.sf.saxon.event.MessageEmitter;
 
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
+import org.daisy.util.xml.LocusTransformer;
 import org.daisy.util.xml.xslt.TransformerFactoryConstants;
 
 
@@ -75,27 +78,27 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
     protected boolean execute(Map parameters) throws TransformerRunException {
         String systemTransformerFactory = null;
     	
-        EFile odfInput = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("odf")));
-        EFile dtbookOutput = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("dtbook")));           
-        File dtbookDir = dtbookOutput.getParentFile();
+        EFile inputOdf = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("odf")));
+        EFile outputDtbook = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("dtbook")));           
+        File outputDir = outputDtbook.getParentFile();
         
         try {
         	systemTransformerFactory = System.getProperty("javax.xml.transform.TransformerFactory");
         	System.setProperty("javax.xml.transform.TransformerFactory",FACTORY);
         	
         	// Create temporary directory
-            mTempDir = TempFile.createDir();            
-            System.err.println("tempDir is: " + mTempDir.getAbsolutePath());
-            
+            mTempDir = TempFile.createDir();  
+            this.sendMessage(i18n("USING_TEMPDIR",mTempDir.getAbsolutePath()), MessageEvent.Type.DEBUG);
+                        
             // Extract needed zip contents
-            ZipFile zipFile = new ZipFile(odfInput);
+            ZipFile zipFile = new ZipFile(inputOdf);
             File content = new File(mTempDir, "content.xml");
             File meta = new File(mTempDir, "meta.xml");
             File styles = new File(mTempDir, "styles.xml");
             this.extractFromZip(zipFile, "content.xml", content);
             this.extractFromZip(zipFile, "meta.xml", meta);
             this.extractFromZip(zipFile, "styles.xml", styles);
-            this.extractImages(zipFile, dtbookDir);
+            this.extractImages(zipFile, outputDir);
             zipFile.close();
         
             //a map holding all XSLTs for convenience 
@@ -106,7 +109,7 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
             stylesheets.put("odf2daisy", this.getClass().getResource("odf2daisy.xsl"));
             
         	MessageEmitter me = new MessageEmitter();
-        	me.setWriter(new MessageEmitterWriter()); // output redirection
+        	me.setWriter(new MessageEmitterWriter(this)); // output redirection
             
             //get an instance of saxon and ask it to be reasonably quiet
             TransformerFactory tfac = TransformerFactory.newInstance();
@@ -127,7 +130,7 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
             saxon.transform(dummySource, new StreamResult(_styles));
                         
             // Step 2. Create struct file by applying odfStructure.xsl to content.xml
-            File _struct = new File(mTempDir, odfInput.getNameMinusExtension() + ".struct.xml");
+            File _struct = new File(mTempDir, inputOdf.getNameMinusExtension() + ".struct.xml");
             StreamSource ss2 = new StreamSource(stylesheets.get("odfStructure").openStream());
             saxon = tfac.newTransformer(ss2);
             saxon.setURIResolver(this);
@@ -136,7 +139,7 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
             saxon.transform(new StreamSource(content), new StreamResult(_struct));
             
             // Step 3. Create the report file by applying odfNestCheck.xsl to the struct file
-            File _report = new File(mTempDir, odfInput.getNameMinusExtension() + ".report.xml");
+            File _report = new File(mTempDir, inputOdf.getNameMinusExtension() + ".report.xml");
             StreamSource ss3 = new StreamSource(stylesheets.get("odfNestCheck").openStream());
             saxon = tfac.newTransformer(ss3);
             saxon.setURIResolver(this);
@@ -150,18 +153,17 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
             saxon.setURIResolver(this);
             ((Controller)saxon).setMessageEmitter(me);
             saxon.setParameter("stylefile", "_styles.xml");
-            saxon.transform(new StreamSource(content), new StreamResult(dtbookOutput));            
-            
-            System.err.println("done");
-
-            
-//            // Remove temporary directory
-//            content.delete();
-//            meta.delete();
-//            tempDir.delete();
+            FileUtils.createDirectory(outputDir);
+            saxon.transform(new StreamSource(content), new StreamResult(outputDtbook));            
+                        
+            // Remove temporary directory
+            content.delete();
+            meta.delete();
+            styles.delete();
+            mTempDir.delete();
             
         } catch (Exception e) {
-        	//TODO message
+        	this.sendMessage(e.getMessage(),MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
             throw new TransformerRunException(e.getMessage(), e);
 		}finally{
         	System.setProperty("javax.xml.transform.TransformerFactory",systemTransformerFactory);        	
@@ -217,40 +219,42 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
      * 
      */
 	public Source resolve(String href, String base) throws TransformerException {
-		System.err.println("resolve: " + href);
-		if(href.equals("content.xml")||href.equals("styles.xml")||href.equals("_styles.xml")) {			
+		//System.err.println("resolve: " + href);
+		if(href.equals("content.xml")||href.equals("styles.xml")||href.equals("_styles.xml")||href.equals("meta.xml")) {			
 			return new StreamSource(new File(mTempDir,href));
 		}
 		if (href.endsWith(".xsl")) {
 			return new StreamSource(new File(this.getTransformerDirectory(), href));
 		}
-		System.err.println("This is bad!");
+		if(href.length()>0){
+			this.sendMessage(i18n("UNRESOLVED",href),MessageEvent.Type.WARNING,MessageEvent.Cause.SYSTEM);
+		}else{
+			System.err.println("href with length 0 in Odf2Dtbook#resolve");
+		}
 		return null;
 	}
 
-	public void error(TransformerException exception) throws TransformerException {
-		// TODO Auto-generated method stub
-		System.err.println("stop");		
+	public void error(TransformerException e) throws TransformerException {
+		Location loc = LocusTransformer.newLocation(e);
+		this.sendMessage(e.getMessage(),MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT,loc);	
 	}
 
-	public void fatalError(TransformerException exception) throws TransformerException {
-		// TODO Auto-generated method stub
-		System.err.println("stop");
+	public void fatalError(TransformerException e) throws TransformerException {
+		Location loc = LocusTransformer.newLocation(e);
+		this.sendMessage(e.getMessage(),MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT,loc);
 	}
 
-	public void warning(TransformerException exception) throws TransformerException {
-		// TODO Auto-generated method stub
-		System.err.println("stop");
+	public void warning(TransformerException e) throws TransformerException {
+		Location loc = LocusTransformer.newLocation(e);
+		this.sendMessage(e.getMessage(),MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT,loc);
 	}
-    
-//  MessageEmitter me = new MessageEmitter();
-//  me.setWriter(messagesWriter = new StringWriter()); // output redirection
-//  Controller transformer = (Controller) factory.newTransformer(xslSource);
-//  transformer.setMessageEmitter(me); // set my own message emitter to get
-//  output the way i need it
-	
+    	
 	class MessageEmitterWriter extends Writer {
-
+		Transformer mT = null;
+		MessageEmitterWriter(Transformer t) {
+			mT = t;
+		}
+		
 		@Override
 		public void close() throws IOException {
 			// TODO Auto-generated method stub
@@ -265,8 +269,10 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
 
 		@Override
 		public void write(char[] cbuf, int off, int len) throws IOException {
-			String s = new String(cbuf, off, len);
-			System.err.println( ": " + s);
+			String s = new String(cbuf, off, len).trim();
+			if(s.length()>0){
+				mT.sendMessage(s,MessageEvent.Type.INFO,MessageEvent.Cause.SYSTEM,null);
+			}
 		}
 		 
 	}

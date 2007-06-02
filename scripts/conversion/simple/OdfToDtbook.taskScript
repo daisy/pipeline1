@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taskScript version="2.0" name="OdfToDtbook">
+	<nicename>ODF To DTBook</nicename>
+	<description>Convert an ODF Text document to DTBook</description>
+   	<documentation uri="../../../doc/scripts/OdfToDtbook.html"/>
+    <comment/>
+			
+	<parameter name="odf" value="" required="true">
+		<nicename>Input ODF file</nicename>
+		<description>Select the input ODF file</description>
+		<datatype>
+			<file mime="application/vnd.oasis.opendocument.text" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="dtbook" value="" required="true">
+		<nicename>Output DTBook file</nicename>
+		<description>Select the output DTBook file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="output"/>
+		</datatype>
+	</parameter>		
+			
+	<task name="uk_rnib_odf2dtbook" interactive="false">
+		<parameter>
+			<name>odf</name>
+			<value>${odf}</value>
+		</parameter>
+					
+		<parameter>
+			<name>dtbook</name>
+			<value>${dtbook}</value>
+		</parameter>		
+				
+	</task>		
+			
+</taskScript>

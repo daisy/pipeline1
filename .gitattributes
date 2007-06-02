@@ -172,6 +172,7 @@ scripts/_dev/dtbook2html.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
 scripts/conversion/simple/DtbookToXhtml.taskScript -text
 scripts/conversion/simple/HtmlToXhtml.taskScript -text
+scripts/conversion/simple/OdfToDtbook.taskScript -text
 scripts/conversion/simple/RtfToDtbook.taskScript -text
 scripts/conversion/simple/RtfToXhtml.taskScript -text
 scripts/conversion/simple/WordMLtoDTBook.taskScript -text
@@ -426,6 +427,7 @@ transformers/uk_rnib_dtbook2xhtml/transformer.tdf -text
 transformers/uk_rnib_odf2dtbook/analyseStyles.xsl -text
 transformers/uk_rnib_odf2dtbook/dummy.xml -text
 transformers/uk_rnib_odf2dtbook/identity2.xsl -text
+transformers/uk_rnib_odf2dtbook/messages.properties -text
 transformers/uk_rnib_odf2dtbook/odf2.cleanHeadings.xsl -text
 transformers/uk_rnib_odf2dtbook/odf2daisy -text
 transformers/uk_rnib_odf2dtbook/odf2daisy.bat -text
