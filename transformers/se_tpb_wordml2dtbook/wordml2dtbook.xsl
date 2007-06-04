@@ -1,6 +1,6 @@
 <!--
  * WordML2DTBook
- * Copyright © 2006 The Swedish Library of Talking Books and Braille, TPB (www.tpb.se)
+ * Copyright © 2006-2007 The Swedish Library of Talking Books and Braille, TPB (www.tpb.se)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,8 +41,10 @@
 <xsl:include href="./modules/named_templates.xsl"/>
 <xsl:include href="./modules/characters.xsl"/>
 <xsl:include href="./modules/tables.xsl"/>
-<xsl:include href="./modules/output.xsl"/>
+<xsl:include href="./modules/paragraphs.xsl"/>
 <xsl:include href="./modules/parameters.xsl"/>
+
+<xsl:include href="./custom/output.xsl"/>
 
 <xsl:template match="w:wordDocument">
 	<xsl:call-template name="insertProcessingInstruction"/>
@@ -92,7 +94,7 @@
 							</bodymatter>
 						</xsl:if>
 					</xsl:when>
-					<xsl:otherwise><xsl:apply-templates select="."/></xsl:otherwise>
+					<xsl:otherwise><xsl:apply-templates select="."/></xsl:otherwise> <!-- ??? -->
 				</xsl:choose>
 			</xsl:for-each>
 		</xsl:when>
@@ -124,176 +126,6 @@
 	</xsl:element>
 </xsl:template>
 
-<xsl:template match="w:p[w:pPr/w:listPr]" mode="getLevel">
-	<xsl:choose>
-		<xsl:when test="w:pPr/w:listPr/w:ilvl/@w:val"><xsl:value-of select="w:pPr/w:listPr/w:ilvl/@w:val"/></xsl:when>
-		<xsl:otherwise>0</xsl:otherwise>
-	</xsl:choose>
-</xsl:template>
-
-<xsl:template name="getListSymbol">
-	<xsl:if test="w:pPr/w:listPr/wx:t">
-		<xsl:value-of select="concat(w:pPr/w:listPr/wx:t/@wx:val, ' ')"/>
-	</xsl:if>
-</xsl:template>
-
-<!-- process next list-item -->
-<xsl:template match="w:p[w:pPr/w:listPr]" mode="processList">
-	<xsl:param name="level" select="0"/>
-	<xsl:variable name="fLevel">
-		<xsl:apply-templates select="following-sibling::w:p[1]" mode="getLevel"/>
-	</xsl:variable>
-	<li>
-		<xsl:call-template name="getListSymbol"/>
-		<!-- <xsl:apply-templates select="w:r"/> -->
-		<xsl:apply-templates/>
-		<xsl:if test="$fLevel&gt;$level">
-			<xsl:call-template name="listWrap">
-				<xsl:with-param name="level" select="$level"/>
-				<xsl:with-param name="fLevel" select="$fLevel"/>
-			</xsl:call-template>
-		</xsl:if>
-	</li>
-	<xsl:apply-templates select="following-sibling::w:p[1]" mode="findNextItem">
-		<xsl:with-param name="level" select="$level"/>
-	</xsl:apply-templates>
-</xsl:template>
-
-<xsl:template name="listWrap">
-	<xsl:param name="level"/>
-	<xsl:param name="fLevel"/>
-	<xsl:choose>
-		<xsl:when test="$fLevel&gt;$level">
-			<list type="pl">
-				<xsl:call-template name="listWrap">
-					<xsl:with-param name="level" select="$level +1"/>
-					<xsl:with-param name="fLevel" select="$fLevel"/>
-				</xsl:call-template>
-				<xsl:if test="($fLevel - $level)&gt;1">
-					<xsl:apply-templates select="following-sibling::w:p[1]" mode="findNextItem">
-						<xsl:with-param name="level" select="$level +1"/>
-					</xsl:apply-templates>
-				</xsl:if>
-			</list>
-		</xsl:when>
-		<xsl:otherwise>
-			<xsl:apply-templates select="following-sibling::w:p[1]" mode="processList">
-				<xsl:with-param name="level" select="$level"/>
-			</xsl:apply-templates>
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:template>
-
-<!-- Find next list-item on the same level -->
-<xsl:template match="w:p[w:pPr/w:listPr]" mode="findNextItem">
-	<xsl:param name="level" select="0"/>
-	<xsl:variable name="cLevel">
-		<xsl:apply-templates select="." mode="getLevel"/>
-	</xsl:variable>
-	<xsl:choose>
-		<xsl:when test="$level=$cLevel">
-			<xsl:apply-templates select="." mode="processList">
-				<xsl:with-param name="level" select="$level"/>
-			</xsl:apply-templates>
-		</xsl:when>
-		<xsl:when test="$level&gt;$cLevel"></xsl:when> <!-- Do nothing -->
-		<xsl:otherwise>
-			<xsl:apply-templates select="following-sibling::w:p[1]" mode="findNextItem">
-				<xsl:with-param name="level" select="$level"/>
-			</xsl:apply-templates>
-		</xsl:otherwise>
-	</xsl:choose>
-</xsl:template>
-
-<!-- override the default rule for this mode, needed for the last call above -->
-<xsl:template match="*" mode="processList"/>
-<xsl:template match="*" mode="findNextItem"/>
-<xsl:template match="*" mode="getLevel">0</xsl:template>
-
-<!-- override the default rule for this mode, needed for the last call below -->
-<xsl:template match="*" mode="processBlock"/>
-
-<xsl:template match="w:p" mode="processBlock">
-	<xsl:param name="pStyleName"/>
-	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
-	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
-	<xsl:variable name="sTags" select="$mapset//d:standardWord[@version=$defaultStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
-	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
-	<xsl:if test="$styleName=$pStyleName">
-		<xsl:choose>
-			<xsl:when test="w:pPr/w:listPr and not($tag/@listOverride='true')">
-				<xsl:choose>
-					<xsl:when test="count(preceding-sibling::w:p[1][w:pPr/w:listPr])=0">
-						<xsl:call-template name="startList">
-							<xsl:with-param name="tag" select="$tag"/>
-						</xsl:call-template>
-					</xsl:when>
-					<xsl:otherwise><!-- do nothing --></xsl:otherwise>
-				</xsl:choose>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:element name="{$tag/d:wrap/d:using/@value}">
-					<xsl:call-template name="addAttributes">
-						<xsl:with-param name="node" select="$tag/d:wrap/d:using"/>
-					</xsl:call-template>
-					<xsl:call-template name="getListSymbol"/>
-					<xsl:apply-templates/>
-				</xsl:element>			
-			</xsl:otherwise>
-		</xsl:choose>
-		<xsl:apply-templates select="following-sibling::w:p[1]" mode="processBlock">
-			<xsl:with-param name="pStyleName" select="$styleName"/>
-		</xsl:apply-templates>
-	</xsl:if>
-</xsl:template>
-
-<xsl:template name="startList">
-	<xsl:param name="tag"/>
-	<xsl:choose>
-		<xsl:when test="$tag/@listOverride='true'">
-			<xsl:call-template name="processParagraph">
-				<xsl:with-param name="tag" select="$tag"/>
-			</xsl:call-template>
-		</xsl:when>
-		<xsl:otherwise><list type="pl"><xsl:apply-templates select="." mode="processList"/></list></xsl:otherwise>
-	</xsl:choose>
-</xsl:template>
-
-<xsl:template name="startBlock">
-	<xsl:param name="tag"/>
-	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
-	<xsl:variable name="pStyleName" select="string(key('matchStyle', preceding-sibling::w:p[1]/w:pPr/w:pStyle/@w:val)/w:name/@w:val)"/>
-	<xsl:if test="$tag/d:wrap/@merge='false' or $pStyleName!=$styleName">
-		<xsl:element name="{$tag/d:wrap/@value}">
-			<xsl:if test="$tag/d:wrap/@addId='true'">
-				<xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
-			</xsl:if>
-			<xsl:call-template name="addAttributes"><xsl:with-param name="node" select="$tag/d:wrap"/></xsl:call-template>
-			<xsl:element name="{$tag/d:wrap/d:using/@value}">
-				<xsl:call-template name="addAttributes">
-					<xsl:with-param name="node" select="$tag/d:wrap/d:using"/>
-				</xsl:call-template>
-				<xsl:choose>
-					<xsl:when test="w:pPr/w:listPr and not($tag/@listOverride='true') and count(preceding-sibling::w:p[1][w:pPr/w:listPr])=0">
-						<xsl:call-template name="startList">
-							<xsl:with-param name="tag" select="$tag"/>
-						</xsl:call-template>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:call-template name="getListSymbol"/>
-						<xsl:apply-templates/>					
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:element>
-			<xsl:if test="$tag/d:wrap/@merge='true'">
-				<xsl:apply-templates select="following-sibling::w:p[1]" mode="processBlock">
-					<xsl:with-param name="pStyleName" select="$styleName"/>
-				</xsl:apply-templates>
-			</xsl:if>
-		</xsl:element>
-	</xsl:if>
-</xsl:template>
-
 <xsl:template match="w:p">
 	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
 	<xsl:variable name="pStyleName" select="string(key('matchStyle', preceding-sibling::w:p[1]/w:pPr/w:pStyle/@w:val)/w:name/@w:val)"/>
@@ -303,6 +135,7 @@
 	<xsl:choose>
 		<xsl:when test="not(w:pPr/w:listPr and not($tag/@listOverride='true'))">
 			<xsl:call-template name="processParagraph">
+				<xsl:with-param name="node" select="."/>
 				<xsl:with-param name="tag" select="$tag"/>
 			</xsl:call-template>
 		</xsl:when>
@@ -312,11 +145,13 @@
 					<xsl:choose>
 						<xsl:when test="$tag/d:wrap">
 							<xsl:call-template name="startBlock">
+								<xsl:with-param name="node" select="."/>
 								<xsl:with-param name="tag" select="$tag"/>
 							</xsl:call-template>
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:call-template name="startList">
+								<xsl:with-param name="node" select="."/>
 								<xsl:with-param name="tag" select="$tag"/>
 							</xsl:call-template>
 						</xsl:otherwise>
@@ -325,35 +160,6 @@
 				<xsl:otherwise><!-- ??? --></xsl:otherwise>
 			</xsl:choose>
 		</xsl:otherwise>
-	</xsl:choose>
-</xsl:template>
-
-<xsl:template name="processParagraph">
-	<xsl:param name="tag"/>
-	<xsl:variable name="styleName" select="key('matchStyle', w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
-	<xsl:choose>
-		<xsl:when test="count($tag)&gt;0">
-			<xsl:choose>
-				<xsl:when test="$tag/d:map">
-					<xsl:element name="{$tag/d:map/@value}">
-						<xsl:call-template name="addAttributes">
-							<xsl:with-param name="node" select="$tag/d:map"/>
-						</xsl:call-template>
-						<xsl:call-template name="getListSymbol"/>
-						<xsl:apply-templates/>
-					</xsl:element>
-				</xsl:when>
-				<xsl:when test="$tag/d:wrap">
-					<xsl:call-template name="startBlock">
-						<xsl:with-param name="tag" select="$tag"/>
-					</xsl:call-template>
-				</xsl:when>
-				<xsl:when test="$tag/d:comment">
-					<xsl:comment><xsl:call-template name="getListSymbol"/><xsl:value-of select="."/></xsl:comment>
-				</xsl:when>
-			</xsl:choose>
-		</xsl:when>
-		<xsl:otherwise><p><xsl:call-template name="getListSymbol"/><xsl:apply-templates/></p></xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
 
@@ -440,7 +246,7 @@
 <xsl:template match="w:footnote" mode="rearmatter">
 	<note id="note-{count(preceding::w:footnote[ancestor::w:body])+1}">
 		<xsl:for-each select="w:p[position()=1]">
-			<p><xsl:if test="../@w:suppressRef!='on' or not(../@w:suppressRef)"><xsl:value-of select="count(preceding::w:footnote[ancestor::w:body])+1"/></xsl:if><xsl:value-of select="."/></p>
+			<p><xsl:if test="../@w:suppressRef!='on' or not(../@w:suppressRef)"><xsl:element name="span"><xsl:attribute name="class">listSymbol</xsl:attribute><xsl:value-of select="count(preceding::w:footnote[ancestor::w:body])+1"/></xsl:element></xsl:if><xsl:value-of select="."/></p>
 		</xsl:for-each>
 		<xsl:for-each select="w:p[position()&gt;1]">
 			<p><xsl:value-of select="."/></p>

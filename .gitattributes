@@ -410,7 +410,6 @@ transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p6.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p7.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p8.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p9.png -text
-transformers/se_tpb_wordml2dtbook/modules/output.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/parameters.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/recursive-copy.xsl -text
 transformers/se_tpb_wordml2dtbook/transformer.tdf -text

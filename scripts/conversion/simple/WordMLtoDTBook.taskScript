@@ -21,14 +21,6 @@
 			<directory type="output"/>
 		</datatype>
 	</parameter>
-
-	<parameter name="images" value="true" required="false">
-		<nicename>Extract images</nicename>
-		<description>Extract images?</description>
-		<datatype>
-			<boolean/>
-		</datatype>
-	</parameter>
 	
 	<parameter name="title" value="" required="false">
 		<nicename>Title</nicename>
@@ -45,7 +37,31 @@
 			<string/>
 		</datatype>
 	</parameter>
-						
+
+	<parameter name="stylesheet" value="dtbook2xhtml.xsl" required="false">
+		<nicename>XHTML stylesheet</nicename>
+		<description>Check box to include XHTML stylesheet for display in a browser.</description>
+		<datatype>
+			<boolean true="dtbook2xhtml.xsl" false=""/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="images" value="true" required="false">
+		<nicename>Extract images</nicename>
+		<description>Extract images?</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="uid" value="" required="false">
+		<nicename>dtb:uid</nicename>
+		<description>UID</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
 	<task name="se_tpb_wordml2dtbook" interactive="false">
 		<parameter>
 			<name>xml</name>
@@ -63,6 +79,11 @@
 		</parameter>
 		
 		<parameter>
+			<name>stylesheet</name>
+			<value>${stylesheet}</value>
+		</parameter>
+		
+		<parameter>
 			<name>title</name>
 			<value>${title}</value>
 		</parameter>
@@ -71,8 +92,25 @@
 			<name>author</name>
 			<value>${author}</value>
 		</parameter>
+		
+		<parameter>
+			<name>uid</name>
+			<value>${uid}</value>
+		</parameter>
+		
 	</task>
 
-	<!-- Add validation! -->
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}/dtbook.xml</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>WARNING</value>
+		</parameter>
+		
+	</task>
 
 </taskScript>

@@ -12,5 +12,6 @@
 <xsl:param name="title"/>
 <xsl:param name="author"/>
 <xsl:param name="stylesheet" select="'dtbook2xhtml.xsl'"/>
+<xsl:param name="uid"/>
 
 </xsl:stylesheet>

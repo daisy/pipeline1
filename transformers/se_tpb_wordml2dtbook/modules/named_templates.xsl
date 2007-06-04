@@ -35,7 +35,7 @@
 
 <xsl:template name="insertHeader">
 	<head>
-		<meta name="dtb:uid" content=""/>
+		<meta name="dtb:uid" content="{$uid}"/>
 		<xsl:choose>
 			<xsl:when test="$title!=''">
 				<meta name="dc:Title" content="{$title}"/>

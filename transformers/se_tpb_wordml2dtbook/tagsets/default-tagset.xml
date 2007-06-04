@@ -48,7 +48,6 @@
 			<tag name="Strong"><map value="strong"/></tag>
 			<tag name="Emphasis"><map value="em"/></tag>
 			<tag name="page number"><pagenum/></tag>
-			<tag name="footnote reference"><noteref/></tag>
 		</character>
 	</standardWord>
 </mappings>

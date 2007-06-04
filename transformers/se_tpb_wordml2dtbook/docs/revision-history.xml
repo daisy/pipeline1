@@ -187,7 +187,7 @@
 		</remark>
 	</revision>
 	<revision>
-		<version>1.5.0 beta</version>
+		<version>1.5.0</version>
 		<date>7 May 2007</date>
 		<author>Joel Håkansson</author>
 		<description>
@@ -203,11 +203,13 @@
 			<para>Code restructuring.</para>
 			<para>Added restriction on the tagset: xs:NMTOKEN instead of xs:string on element names and attribute names.</para>
 			<para>Added parameters author and title.</para>
+			<para>Added some validation and warnings.</para>
+			<para>Changed list processing to avoid recursive processing</para>
 			<!-- 
 Notes:
 1. Defragmenter kanske också bör ta bort <em>hej</em> <em>då</em>?
 2. Ta bort lokal customizing (rk)
-3. Validera default and custom tagset. Input=wordML
+3. Validera default and custom tagset.
 -->
 		</description>
 		<remark>
