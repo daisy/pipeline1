@@ -51,6 +51,7 @@ import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
+import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
@@ -157,9 +158,8 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
             saxon.transform(new StreamSource(content), new StreamResult(outputDtbook));            
                         
             // Remove temporary directory
-            content.delete();
-            meta.delete();
-            styles.delete();
+            EFolder eTemp = new EFolder(mTempDir);
+            eTemp.deleteContents();
             mTempDir.delete();
             
         } catch (Exception e) {
