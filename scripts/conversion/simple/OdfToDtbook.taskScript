@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../validation/ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../validation/ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
 <taskScript version="2.0" name="OdfToDtbook">
 	<nicename>ODF To DTBook</nicename>
 	<description>Convert an ODF Text document to DTBook</description>
@@ -21,6 +26,8 @@
 		</datatype>
 	</parameter>		
 			
+	&ValidatorScriptParamsSimpleStatic;			
+			
 	<task name="uk_rnib_odf2dtbook" interactive="false">
 		<parameter>
 			<name>odf</name>
@@ -30,8 +37,21 @@
 		<parameter>
 			<name>dtbook</name>
 			<value>${dtbook}</value>
-		</parameter>		
-				
+		</parameter>						
+	</task>		
+			
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${dtbook}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>	
+		
+		&ValidatorTaskParamsSimpleStatic;												
 	</task>		
 			
 </taskScript>
