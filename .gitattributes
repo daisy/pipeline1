@@ -430,7 +430,6 @@ transformers/uk_rnib_odf2dtbook/identity2.xsl -text
 transformers/uk_rnib_odf2dtbook/messages.properties -text
 transformers/uk_rnib_odf2dtbook/odf2.cleanHeadings.xsl -text
 transformers/uk_rnib_odf2dtbook/odf2daisy -text
-transformers/uk_rnib_odf2dtbook/odf2daisy.bat -text
 transformers/uk_rnib_odf2dtbook/odf2daisy.body.xsl -text
 transformers/uk_rnib_odf2dtbook/odf2daisy.meta.xsl -text
 transformers/uk_rnib_odf2dtbook/odf2daisy.table.xsl -text
