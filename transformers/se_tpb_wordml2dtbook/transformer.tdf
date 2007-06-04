@@ -60,6 +60,17 @@
 			<default>true</default>
 		</parameter>
 
+		<parameter required="false" type="enum">
+			<name>overwrite</name>
+			<description>Overwrite existing files in output directory?</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+
 <!-- XSLT parameters -->
 		<parameter type="string" required="false">
 			<name>uid</name>

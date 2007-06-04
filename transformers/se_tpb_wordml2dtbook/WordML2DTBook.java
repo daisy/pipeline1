@@ -83,15 +83,19 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
         	filename = new File(input).getName() + ".dtbook.xml";
         
         if (!outdir.exists()) outdir.mkdirs();
-        if (outdir.list(new FilenameFilter() {
+        else if (outdir.list(new FilenameFilter() {
         	public boolean accept(File f, String s) {
         		return !(new File(f, s).isDirectory());
         	}
         }).length>0) {
-        	sendMessage("Directory is not empty. Files could be overwritten!", MessageEvent.Type.WARNING);
+        	if ("true".equals(overwrite)) sendMessage("Directory is not empty. Files could be overwritten!", MessageEvent.Type.WARNING);
+        	else {
+        		sendMessage("Directory is not empty. Aborting process.", MessageEvent.Type.ERROR);
+        		return false;
+        	}
         }
         File result = new File(outdir, filename);
-		if (images.equals("true")) {
+		if ("true".equals(images)) {
 			decodeImages(new File(input), outdir);
 			// put parameter for xslt
 			parameters.put("forceJPEG", "false");

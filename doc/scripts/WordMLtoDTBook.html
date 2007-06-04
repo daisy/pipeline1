@@ -1,13 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<<<<<<< .mine
 	<head>
 		<meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8"></meta>
-		<title>Pipeline Task: WordML to DTBook</title>
+		<title>Pipeline Script: WordML to DTBook</title>
 		<link rel="stylesheet" type="text/css" href="../pipeline.css"></link>
 	</head>
 	<body>
-		<h1 class="title">Pipeline Task: <em>WordML
+		<h1 class="title">Pipeline Script: <em>WordML
 to DTBook</em>
 		</h1>
 		<!-- script documentation contains primarily end-user-centric information -->
@@ -41,82 +40,6 @@ Transformers used</a>
 		<p>Only use a single flow of text. Most people only use one text flow, you would have to put some effort into your layout before breaking this rule by accident.</p>
 		<h3>Floating objects</h3>
 		<p>Never use floating objects. This applies to images as well as to text
-=======
-<head>
-  <meta http-equiv="Content-type" content="application/xhtml+xml; charset=utf-8" />
-  <title>Pipeline Script: WordML to DTBook</title>
-  <link rel="stylesheet" type="text/css" href="../pipeline.css" />
-</head>
-
-
-<body>
-
-
-<h1 class="title">Pipeline Script:&nbsp;<em>WordML
-to DTBook</em></h1>
-
-
-<!-- script documentation contains primarily end-user-centric information -->
-<div id="toc" class="toc">
-<ul>
-
-
-  <li><a href="#overview">Overview</a></li>
-
-
-  <li><a href="#inputReqs">Input Requirements</a></li>
-
-
-  <li><a href="#output">Output</a></li>
-
-
-  <li><a href="#config">Configuration</a></li>
-
-
-  <li><a href="#transformers">Appendix: List of
-Transformers used</a></li>
-
-
-</ul>
-
-
-</div>
-
-
-<h2 id="overview">Overview</h2>
-
-
-<!-- brief summary of purpose and whats going on. What does this script do really? -->
-<p>This script converts Word documents saved as XML
-from&nbsp;within
-Word 2003 into DTBook. The purpose&nbsp;is to provide an automatic
-conversion process from structured Word&nbsp;files into DTBook. The
-output&nbsp;can be used for further processing by other scripts in
-the Daisy Pipeline, e.g. to produce a Daisy book.</p>
-
-
-<h2 id="inputReqs">Input Requirements</h2>
-
-
-<!-- detailed requirements on input nature -->
-<p>This script accepts Word documents saved as XML from within
-Word 2003 as input. To ensure that the output is error free, the
-following restrictions apply.</p>
-
-
-<h3>Text flows</h3>
-
-
-<p>Only use a single flow of text. Most people only use one text
-flow, you would have to put some effort into your layout before
-breaking this rule by accident.</p>
-
-
-<h3>Floating objects</h3>
-
-
-Never use floating objects. This applies to images as well as to text
->>>>>>> .r1271
 and other objects. A floating object is an object that is positioned on
 a page without reference to surrounding text. To test if an
 object is floating, insert about a page of text on any page
@@ -125,7 +48,7 @@ position as before but the text is different, then it is a floating
 object.</p>
 		<h3>Footnotes</h3>
 		<p>To create high quality output containing footnotes, use the footnotes feature in Word.</p>
-		<p style="font-style: italic;">Note: A production facility with knowledge in DTBook markup might benefit more from semi automatic footnote creation, especially when working with OCR material. Refer to the transformer documentation for further details.</p>
+		<p><em>Note: A production facility with knowledge in DTBook markup might benefit more from semi automatic footnote creation, especially when working with OCR material. Refer to the transformer documentation for further details.</em></p>
 		<h3>Paragraph styles</h3>
 		<p>The following built-in paragraph styles can be used to structure the document: heading 1, heading 2, heading 3, heading 4, heading 5, heading 6, block text.</p>
 		<p>The style names given here are in English, the actual names as they appear in Word may be different depending on which version of Word you have purchased. The localized style names will work as described.</p>
@@ -165,7 +88,6 @@ be wrong.</em></p>
 		<p>The documents linked below are parts of the <em>Transformer
 technical documentation</em>. These are developer and
 systems-administrator centric documents.</p>
-<<<<<<< .mine
 		<ol>
 			<li>
 				<a href="../transformers/se_tpb_wordml2dtbook.html">se_tpb_wordml2dtbook</a>
@@ -175,14 +97,4 @@ systems-administrator centric documents.</p>
 			</li>
 		</ol>
 	</body>
-=======
-
-
-<ol>
-  <li><a href="../transformers/se_tpb_wordml2dtbook.html">WordML to DTBook</a></li>
-</ol>
-
-
-</body>
->>>>>>> .r1271
 </html>

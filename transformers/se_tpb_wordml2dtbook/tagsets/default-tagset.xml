@@ -8,24 +8,11 @@
 			<tag name="heading 4" listOverride="true"><map value="h4"/></tag>
 			<tag name="heading 5" listOverride="true"><map value="h5"/></tag>
 			<tag name="heading 6" listOverride="true"><map value="h6"/></tag>
-			<tag name="footnote text">
-				<wrap value="note" addId="true" merge="false">
-					<using value="p"/>
-				</wrap>
-			</tag>
-			<!-- Indraget Stycke -->
 			<tag name="Block Text">
 				<wrap value="blockquote" addId="false" merge="true">
 					<using value="p"/>
 				</wrap>
 			</tag>
-			<tag name="Body Text Indent">
-				<wrap value="blockquote" addId="false" merge="false">
-					<using value="p"/>
-				</wrap>
-			</tag>
-			<!-- Kommentarer -->
-			<tag name="annotation text"><comment/></tag>
 			<tag name="caption">
 				<wrap value="imggroup" addId="false" merge="true">
 					<using value="caption"/>

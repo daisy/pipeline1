@@ -170,6 +170,7 @@ samples/input/word/wml-sample.xml -text
 samples/input/xhtml/multi-language-unicode.html -text
 scripts/_dev/dtbook2html.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
+scripts/conversion/advanced/WordMLtoDTBook.taskScript -text
 scripts/conversion/simple/DtbookToXhtml.taskScript -text
 scripts/conversion/simple/HtmlToXhtml.taskScript -text
 scripts/conversion/simple/OdfToDtbook.taskScript -text

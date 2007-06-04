@@ -8,4 +8,27 @@
 		</paragraphs>
 		<character useInlineFormatting="true"/>
 	</custom>
+	<custom style="native">
+		<paragraphs>
+			<tag name="example">
+				<map value="p"/>
+			</tag>
+		</paragraphs>
+		<character useInlineFormatting="true"/>
+	</custom>
+	<custom style="scanned">
+		<paragraphs>
+			<tag name="example">
+				<map value="p"/>
+			</tag>
+			<tag name="footnote text">
+				<wrap value="note" addId="true" merge="false">
+					<using value="p"/>
+				</wrap>
+			</tag>
+		</paragraphs>
+		<character useInlineFormatting="true">
+			<tag name="footnote reference"><noteref/></tag>
+		</character>
+	</custom>
 </mappings>
