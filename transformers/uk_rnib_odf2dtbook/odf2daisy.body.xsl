@@ -164,43 +164,6 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
 
 
 
- <!-- Heading 3 
- <xsl:template match="text:h[@text:style-name=$level3]" >
-   <xsl:variable name="level" select="dp:levelFromName(@text:style-name)" as="xs:string"/>
-
-  <xsl:message>
-    Found level 3, with <xsl:value-of select="count(current-group())"/> members.
-Next heading is:    [<xsl:value-of select="name(current-group()[name() = 'text:h'][2])"/> ="<xsl:value-of select="current-group()[name() ='text:h'] except ."/>"]
-
-Children are:
-  <xsl:for-each select="current-group()">
-    <xsl:value-of select="name()"/> "<xsl:value-of select="."/>"
-  </xsl:for-each>
-  </xsl:message>
-
-   <xsl:element name="{concat('level',$level)}">
-     <xsl:element name="{concat('h',$level)}">
-       <xsl:apply-templates />
-       </xsl:element>
-       <p/>
-       <xsl:choose>
-         <xsl:when test="current-group()/self::text:h[@text:style-name = $level4]">
-           <xsl:for-each-group select="current-group() except ."
-                 group-starting-with="text:h[@text:style-name=$level4]">
-             <xsl:message>
-               Processing L4 group(<xsl:value-of select="name(.)"/>)
-             </xsl:message>
-         <xsl:apply-templates select="."/>
-       </xsl:for-each-group>
-         </xsl:when>
-         <xsl:otherwise>
-         <xsl:apply-templates select="*[not(self::text:h)]"/>
-         </xsl:otherwise>
-       </xsl:choose>
-     </xsl:element>
-   </xsl:template>
-
--->
 
 
 <!-- Named template does all the grouping work. -->
