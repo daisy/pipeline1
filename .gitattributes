@@ -421,7 +421,6 @@ transformers/se_tpb_wordml2dtbook/modules/recursive-copy.xsl -text
 transformers/se_tpb_wordml2dtbook/templates/native.dot -text
 transformers/se_tpb_wordml2dtbook/templates/scanned.dot -text
 transformers/se_tpb_wordml2dtbook/transformer.tdf -text
-transformers/se_tpb_wordml2dtbook/wordml2dtbook.tdf -text
 transformers/se_tpb_wordml2dtbook/xslt/post-add-author-title.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-count-characters-dtbook.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-count-characters-wml.xsl -text

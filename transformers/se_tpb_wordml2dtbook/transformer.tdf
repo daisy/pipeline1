@@ -26,7 +26,7 @@
 			<name>filename</name>
 			<description>Optional file name for the dtbook file</description>
 			<example>dtbook.xml</example>
-			<default></default>
+			<default>dtbook.xml</default>
 		</parameter>
 		
 		<!--
@@ -61,6 +61,13 @@
 		</parameter>
 
 <!-- XSLT parameters -->
+		<parameter type="string" required="false">
+			<name>uid</name>
+			<description>Set dtb:uid. Leave blank to generate a random uid.</description>
+			<example>DTB00000</example>
+			<default></default>
+		</parameter>
+		
 		<parameter required="false" type="string">
 			<name>stylesheet</name>
 			<description>Sets the name of the assigned stylesheet in the output, or none if '' is specified</description>
