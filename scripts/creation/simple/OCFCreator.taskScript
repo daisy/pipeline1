@@ -9,7 +9,7 @@
 			
 	<parameter name="input" value="" required="true">
 		<nicename>Input file(s)</nicename>
-		<description>Select the input document(s) (comma separated)</description>
+		<description>Select the input document(s)</description>
 		<datatype>
 			<files mime="application/anonymous" type="input"/>
 		</datatype>
