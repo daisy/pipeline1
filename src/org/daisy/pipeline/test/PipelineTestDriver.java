@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.dmfc.ui.CommandLineUI;
+import org.daisy.pipeline.test.impl.CharacterRepertoireManipulator1;
 import org.daisy.pipeline.test.impl.CharsetSwitcher1;
 import org.daisy.pipeline.test.impl.ConfigurableValidator1;
 import org.daisy.pipeline.test.impl.D202dtbValidator1;
@@ -21,6 +22,7 @@ import org.daisy.pipeline.test.impl.Html2Xhtml1;
 import org.daisy.pipeline.test.impl.Narrator1;
 import org.daisy.pipeline.test.impl.OcfCreator1;
 import org.daisy.pipeline.test.impl.Odf2dtbook1;
+import org.daisy.pipeline.test.impl.Odf2xhtml1;
 import org.daisy.pipeline.test.impl.OpsCreator1;
 import org.daisy.pipeline.test.impl.PrettyPrinter1;
 import org.daisy.pipeline.test.impl.RenamerTaggerValidator1;
@@ -121,14 +123,14 @@ public class PipelineTestDriver {
 //		tests.add(new Rtf2Xhtml1(inputDir, outputDir));
 //		tests.add(new PrettyPrinter1(inputDir, outputDir));
 //		tests.add(new Html2Xhtml1(inputDir, outputDir));
-		tests.add(new Odf2dtbook1(inputDir, outputDir));
+//		tests.add(new Odf2dtbook1(inputDir, outputDir));
+//		tests.add(new CharacterRepertoireManipulator1(inputDir, outputDir));
+		tests.add(new Odf2xhtml1(inputDir, outputDir));
 		
-////////// tests with input data not in samples dir 
 		
+////////// tests with input data not in samples dir: 		
 		//tests.add(new DTBAudioEncoder1(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoderSplitter1(inputDir, outputDir));
-		
-		
 ////////// end tests with input data not in samples dir 
 		
 		return tests;

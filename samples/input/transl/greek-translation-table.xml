@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>	
+	
+	<comment>
+		Greek
+	</comment>
+	<entry key="0391">A</entry>
+	<entry key="03B1">a</entry>
+	<entry key="03AC">á</entry>
+	<entry key="0386">Á</entry>
+	<entry key="03B2">b</entry>
+	<entry key="0392">B</entry>
+	<entry key="03B3">g</entry>
+	<entry key="0393">G</entry>
+	<entry key="03B4">d</entry>
+	<entry key="0394">D</entry>
+	<entry key="03B5">e</entry>
+	<entry key="0395">E</entry>
+	<entry key="03AD">é</entry>
+	<entry key="0388">É</entry>
+	<entry key="03B6">z</entry>
+	<entry key="0396">Z</entry>
+	<entry key="03B7">e:</entry>
+	<entry key="0397">E:</entry>
+	<entry key="03AE">é:</entry>
+	<entry key="0389">É:</entry>
+	<entry key="03B8">þ</entry>
+	<entry key="0398">Þ</entry>
+	<entry key="03B9">i</entry>
+	<entry key="0399">I</entry>
+	<entry key="03AF">í</entry>
+	<entry key="038A">Í</entry>
+	<entry key="03BA">k</entry>
+	<entry key="039A">K</entry>
+	<entry key="03BB">l</entry>
+	<entry key="039B">L</entry>
+	<entry key="03BC">m</entry>
+	<entry key="039C">M</entry>
+	<entry key="03BD">n</entry>
+	<entry key="039D">N</entry>
+	<entry key="03BE">x</entry>
+	<entry key="039E">X</entry>
+	<entry key="03BF">o</entry>
+	<entry key="039F">O</entry>
+	<entry key="03CC">ó</entry>
+	<entry key="038C">Ó</entry>
+	<entry key="03C0">p</entry>
+	<entry key="03A0">P</entry>
+	<entry key="03C1">r</entry>
+	<entry key="03A1">R</entry>
+	<entry key="03C2">s</entry>
+	<entry key="03A3">S</entry>
+	<entry key="03C3">s</entry>
+	<entry key="03C4">t</entry>
+	<entry key="03A4">T</entry>
+	<entry key="03C5">u</entry>
+	<entry key="03A5">U</entry>
+	<entry key="03CD">ú</entry>
+	<entry key="038E">Ú</entry>
+	<entry key="03C6">f</entry>
+	<entry key="03A6">F</entry>
+	<entry key="03C7">ç</entry>
+	<entry key="03A7">Ç</entry>
+	<entry key="03C8">p-s</entry>
+	<entry key="03A8">P-S</entry>
+	<entry key="03C9">o:</entry>
+	<entry key="03A9">O:</entry>
+	<entry key="03CE">ó:</entry>
+	<entry key="038F">Ó:</entry>
+	<entry key="03DD">w</entry>
+	<entry key="03DC">W</entry>
+</properties>

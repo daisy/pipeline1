@@ -22,6 +22,7 @@ doc/index-enduser.html -text
 doc/needed.documentation.txt -text
 doc/pipeline.css -text
 doc/scripts/AudioTagger.html -text
+doc/scripts/CharacterRepertoireManipulator.html -text
 doc/scripts/CharsetSwitcher.html -text
 doc/scripts/ConfigurableValidator.html -text
 doc/scripts/DTBAudioEncoder.html -text
@@ -165,6 +166,11 @@ samples/input/ops/package.opf -text
 samples/input/ops/valentin.jpg -text
 samples/input/rtf/RTF2dtbook.rtf -text
 samples/input/schema/foobar.sch -text
+samples/input/transl/character-translation-table.xml -text
+samples/input/transl/diakrit-translation-table.xml -text
+samples/input/transl/example-table.xml -text
+samples/input/transl/greek-translation-table.xml -text
+samples/input/transl/phon-translation-table.xml -text
 samples/input/txt/wasteland.txt -text
 samples/input/word/wml-sample.xml -text
 samples/input/xhtml/multi-language-unicode.html -text
@@ -188,6 +194,7 @@ scripts/manipulation/DTBSplitterScriptParamsStatic.paramGroup -text
 scripts/manipulation/DTBSplitterTaskParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerScriptParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerTaskParamsStatic.paramGroup -text
+scripts/manipulation/advanced/CharacterRepertoireManipulator.taskScript -text
 scripts/manipulation/advanced/CharsetSwitcher.taskScript -text
 scripts/manipulation/advanced/DTBMerger.taskScript -text
 scripts/manipulation/advanced/RenamerTaggerValidator.taskScript -text
@@ -262,6 +269,7 @@ src/org/daisy/dmfc/util/PropertiesConverter.java -text
 src/org/daisy/pipeline/test/PipelineTest.java -text
 src/org/daisy/pipeline/test/PipelineTestDriver.java -text
 src/org/daisy/pipeline/test/PipelineTestException.java -text
+src/org/daisy/pipeline/test/impl/CharacterRepertoireManipulator1.java -text
 src/org/daisy/pipeline/test/impl/CharsetSwitcher1.java -text
 src/org/daisy/pipeline/test/impl/ConfigurableValidator1.java -text
 src/org/daisy/pipeline/test/impl/D202dtbValidator1.java -text
@@ -361,6 +369,7 @@ transformers/int_daisy_prettyPrinter/messages.properties -text
 transformers/int_daisy_prettyPrinter/transformer.tdf -text
 transformers/int_daisy_unicodeNormalizer/messages.properties -text
 transformers/int_daisy_unicodeNormalizer/transformer.tdf -text
+transformers/int_daisy_unicodeTranscoder/messages.properties -text
 transformers/int_daisy_unicodeTranscoder/transformer.tdf -text
 transformers/int_daisy_validator/XMLReporter.java -text
 transformers/int_daisy_validator/validator.css -text

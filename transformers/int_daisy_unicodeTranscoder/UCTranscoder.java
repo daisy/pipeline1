@@ -25,12 +25,11 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.dmfc.core.InputListener;
+import org.daisy.dmfc.core.event.MessageEvent;
 import org.daisy.dmfc.core.transformer.Transformer;
 import org.daisy.dmfc.exception.TransformerRunException;
 import org.daisy.util.file.EFolder;
@@ -66,8 +65,8 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 	private boolean mSubstituteInAttributeValues = false; 		//perform UCharReplacement on textnodes only					
 	private Charset mOutputEncoding = null;  					//if null at access, maintain input file encoding
 		
-    public  UCTranscoder (InputListener inListener, Set eventListeners, Boolean isInteractive) {
-        super(inListener, eventListeners, isInteractive);        
+    public  UCTranscoder (InputListener inListener, Boolean isInteractive) {
+        super(inListener, isInteractive);        
     }
 	
 	protected boolean execute(Map parameters) throws TransformerRunException {
@@ -109,42 +108,41 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 			fm.iterate();
 			
 			//done.
-			this.sendMessage(Level.FINE, "Completed transcoding of " + mProcessedCount + " files.");
 			
 			//print any transliteration info and warnings
 			if(mUCharReplacer!=null) {
 				//number of successful table hits
 				if(!mUCharReplacer.getTranslationTables().isEmpty()) {
-					this.sendMessage(Level.INFO, "Performed " 
-							+ mUCharReplacer.getTranslationTableHitCount() 
-							+ " character substitions using loaded tables");
+					this.sendMessage(i18n("SUBSTITUTION_COUNT",mUCharReplacer.getTranslationTableHitCount()), MessageEvent.Type.INFO, MessageEvent.Cause.INPUT);
 				}
 				
 				//warnings (table failures)
-				Integer codePoint;
-				String value;
-				Map map = mUCharReplacer.getTranslationTableFailures();
-				for (Iterator iter = map.keySet().iterator(); iter.hasNext();) {
-					codePoint = (Integer) iter.next();					
-					value = (String)map.get(codePoint);
-					StringBuilder sb = new StringBuilder(127);
-					sb.append("No user provided replacement text found for ");
-					sb.append(CharUtils.unicodeHexEscape(codePoint.intValue()));
-					sb.append(" [");
-					sb.append(String.copyValueOf(Character.toChars(codePoint.intValue())));
-					sb.append(']');
-				    if(value!=null) {
-				    	sb.append(". Using fallback '").append(value).append("' instead.");
-				    }else{
-				    	sb.append(". Input character forwarded to output.");
-				    }						
-				    this.sendMessage(Level.WARNING, sb.toString());
-				}
-							
+				//only issue this warning if an exclude charset is set
+				if(mUCharReplacer.getExclusionRepertoire()!=null) {
+					Integer codePoint;
+					String value;
+					Map map = mUCharReplacer.getTranslationTableFailures();
+					for (Iterator iter = map.keySet().iterator(); iter.hasNext();) {
+						codePoint = (Integer) iter.next();					
+						value = (String)map.get(codePoint);
+						StringBuilder sb = new StringBuilder(127);
+						sb.append("No user provided replacement text found for ");
+						sb.append(CharUtils.unicodeHexEscape(codePoint.intValue()));
+						sb.append(" [");
+						sb.append(String.copyValueOf(Character.toChars(codePoint.intValue())));
+						sb.append(']');
+					    if(value!=null) {
+					    	sb.append(". Using fallback '").append(value).append("' instead.");
+					    }else{
+					    	sb.append(". Input character forwarded to output.");
+					    }						
+					    this.sendMessage(sb.toString(),MessageEvent.Type.WARNING);
+					}
+				}			
 			}
 			
 		} catch (Exception e) {
-			this.sendMessage(Level.SEVERE, e.getMessage());
+			this.sendMessage(e.getMessage(),MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
 			throw new TransformerRunException(e.getMessage(),e);
 		} finally {
 			//TODO reset system properties: StAX Writer
@@ -167,10 +165,10 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 					try{
 						mUCharReplacer.addSubstitutionTable(t.toURI().toURL());
 					}catch (Exception e) {
-						this.sendMessage(Level.WARNING,"Translation table " + t.getPath() + " exception: " + e.getMessage());
+						this.sendMessage("Translation table " + t.getPath() + " exception: " + e.getMessage(), MessageEvent.Type.WARNING);
 					}	
 				}else{
-					this.sendMessage(Level.WARNING,"Translation table " + t.getPath() + " could not be found");
+					this.sendMessage("Translation table " + t.getPath() + " could not be found", MessageEvent.Type.WARNING);
 				}				
 			} //for				
 		} //if param != null
@@ -185,9 +183,14 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 		mUCharReplacer.setFallbackState(mUCharReplacer.FALLBACK_TRANSLITERATE_REMOVE_NONSPACING_MARKS, param.equals("true"));
 		
 		param = (String)parameters.remove("excludeFromSubstitution");
-		if(param!=null) {			
-			Charset chrs = Charset.forName(param);
-			mUCharReplacer.setExclusionRepertoire(chrs);			
+		if(param!=null&&!param.toLowerCase().equals("none")) {	
+			try{
+				Charset chrs = Charset.forName(param);
+				this.sendMessage(i18n("USING_EXCLUDE_CHARSET",chrs.displayName()), MessageEvent.Type.INFO);
+				mUCharReplacer.setExclusionRepertoire(chrs);
+			}catch (Exception e) {
+				this.sendMessage(i18n("EXCLUDE_CHARSET_FAIL",param), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
+			}
 		}
 				
 		//if we havent got an ok configuration of UCharReplacer
@@ -196,7 +199,7 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 						&&!mUCharReplacer.getFallbackState(mUCharReplacer.FALLBACK_TRANSLITERATE_ANY_TO_LATIN)
 						&&!mUCharReplacer.getFallbackState(mUCharReplacer.FALLBACK_TRANSLITERATE_REMOVE_NONSPACING_MARKS)
 						)) {
-			this.sendMessage(Level.WARNING,"No translation tables loaded, and no fallbacks enabled");
+			this.sendMessage("No translation tables loaded, and no fallbacks enabled", MessageEvent.Type.WARNING);
 			mUCharReplacer=null;
 		}
 
@@ -247,7 +250,7 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 		try{						
 			return mUCharReplacer.replace(value).toString();			
 		}catch (Exception e) {
-			this.sendMessage(Level.WARNING,e.getMessage());
+			this.sendMessage(e.getMessage(), MessageEvent.Type.WARNING);
 			return null;
 		}
 	}

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>	
+	<comment>
+		Fonetik enligt SAMPA 
+	</comment>
+	<entry key="0251">A</entry>
+	<entry key="00E6">{</entry>
+	<entry key="0250">6</entry>
+	<entry key="0252">Q</entry>
+	<entry key="025B">E</entry>
+	<entry key="0259">@</entry>
+	<entry key="025C">3</entry>
+	<entry key="026A">I</entry>
+	<entry key="0254">O</entry>
+	<entry key="00F8">2</entry>
+	<entry key="0153">9</entry>
+	<entry key="0276">&amp;</entry>
+	<entry key="028A">U</entry>
+	<entry key="0289">}</entry>
+	<entry key="028C">V</entry>
+	<entry key="028F">Y</entry>
+	<entry key="03B2">B</entry>
+	<entry key="00E7">C</entry>
+	<entry key="00F0">D</entry>
+	<entry key="0263">G</entry>
+	<entry key="028E">L</entry>
+	<entry key="0272">J</entry>
+	<entry key="014B">N</entry>
+	<entry key="0281">R</entry>
+	<entry key="0283">S</entry>
+	<entry key="03B8">T</entry>
+	<entry key="0265">H</entry>
+	<entry key="0292">Z</entry>
+	<entry key="0294">?</entry>
+	<entry key="02D0">:</entry>
+	<entry key="02C8">"</entry>
+	<entry key="02CC">%</entry>
+
+	<!-- Diakriter (bör utökas): -->
+
+	<entry key="0329">=n</entry>
+	<entry key="0303">O~</entry>
+</properties>
