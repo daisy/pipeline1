@@ -398,11 +398,6 @@ transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTT
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe.manifest -text svneol=unset#application/octet-stream
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.pdb -text
 transformers/se_tpb_syncPointNormalizer/transformer.tdf -text
-transformers/se_tpb_wordml2dtbook/add-author-title.xsl -text
-transformers/se_tpb_wordml2dtbook/defragment-em.xsl -text
-transformers/se_tpb_wordml2dtbook/defragment-strong.xsl -text
-transformers/se_tpb_wordml2dtbook/defragment-sub.xsl -text
-transformers/se_tpb_wordml2dtbook/defragment-sup.xsl -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p1.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p10.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p11.png -text
@@ -415,11 +410,9 @@ transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p6.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p7.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p8.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/docs_p9.png -text
-transformers/se_tpb_wordml2dtbook/input-validator.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/output.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/parameters.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/recursive-copy.xsl -text
-transformers/se_tpb_wordml2dtbook/pagenum-fix.xsl -text
 transformers/se_tpb_wordml2dtbook/transformer.tdf -text
 transformers/se_tpb_xmldetection/lang/fr.xml -text
 transformers/se_tpb_xmldetection/transformer.tdf -text
