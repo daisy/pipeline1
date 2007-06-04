@@ -39,6 +39,7 @@ doc/scripts/Narrator-DtbookToDaisy202.html -text
 doc/scripts/OCFCreator.html -text
 doc/scripts/OPSCreator.html -text
 doc/scripts/OdfToDtbook.html -text
+doc/scripts/OdfToXhtml.html -text
 doc/scripts/PrettyPrinter.html -text
 doc/scripts/RenamerTaggerValidator.html -text
 doc/scripts/RtfToDtbook.html -text
@@ -180,6 +181,7 @@ scripts/conversion/advanced/WordMLtoDTBook.taskScript -text
 scripts/conversion/simple/DtbookToXhtml.taskScript -text
 scripts/conversion/simple/HtmlToXhtml.taskScript -text
 scripts/conversion/simple/OdfToDtbook.taskScript -text
+scripts/conversion/simple/OdfToXhtml.taskScript -text
 scripts/conversion/simple/RtfToDtbook.taskScript -text
 scripts/conversion/simple/RtfToXhtml.taskScript -text
 scripts/conversion/simple/WordMLtoDTBook.taskScript -text
@@ -285,6 +287,7 @@ src/org/daisy/pipeline/test/impl/Html2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/Narrator1.java -text
 src/org/daisy/pipeline/test/impl/OcfCreator1.java -text
 src/org/daisy/pipeline/test/impl/Odf2dtbook1.java -text
+src/org/daisy/pipeline/test/impl/Odf2xhtml1.java -text
 src/org/daisy/pipeline/test/impl/OpsCreator1.java -text
 src/org/daisy/pipeline/test/impl/PrettyPrinter1.java -text
 src/org/daisy/pipeline/test/impl/RenamerTaggerValidator1.java -text
