@@ -18,7 +18,7 @@
  */
 package org.daisy.pipeline.gui.messages;
 
-import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.gui.util.AbstractTableField;
 
 /**

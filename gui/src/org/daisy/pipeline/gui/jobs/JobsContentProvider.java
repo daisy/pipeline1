@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.daisy.dmfc.core.script.JobParameter;
+import org.daisy.pipeline.core.script.JobParameter;
 import org.daisy.pipeline.gui.model.IJobChangeListener;
 import org.daisy.pipeline.gui.model.IJobManagerListener;
 import org.daisy.pipeline.gui.model.JobInfo;

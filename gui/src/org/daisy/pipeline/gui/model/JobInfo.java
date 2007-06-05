@@ -21,8 +21,8 @@ package org.daisy.pipeline.gui.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.daisy.dmfc.core.script.Job;
-import org.daisy.dmfc.core.script.Task;
+import org.daisy.pipeline.core.script.Job;
+import org.daisy.pipeline.core.script.Task;
 import org.daisy.pipeline.gui.jobs.runner.JobRunnerJob;
 import org.daisy.pipeline.gui.util.StateTracker;
 import org.daisy.util.execution.State;

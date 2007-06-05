@@ -20,8 +20,8 @@ package org.daisy.pipeline.gui.jobs.wizard;
 
 import java.net.URI;
 
-import org.daisy.dmfc.core.script.Job;
-import org.daisy.dmfc.core.script.Script;
+import org.daisy.pipeline.core.script.Job;
+import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.JobsPerspective;

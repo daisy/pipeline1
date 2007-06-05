@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.dmfc.core.script.Job;
+import org.daisy.pipeline.core.script.Job;
 
 public class JobManager implements Iterable {
     private static JobManager _default = new JobManager();

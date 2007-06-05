@@ -20,8 +20,8 @@ package org.daisy.pipeline.gui.parameters;
 
 import java.util.List;
 
-import org.daisy.dmfc.core.script.Job;
-import org.daisy.dmfc.core.script.JobParameter;
+import org.daisy.pipeline.core.script.Job;
+import org.daisy.pipeline.core.script.JobParameter;
 import org.daisy.pipeline.gui.model.JobInfo;
 import org.daisy.pipeline.gui.model.JobManager;
 import org.daisy.pipeline.gui.util.actions.FilterToggleAction;

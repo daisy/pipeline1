@@ -18,7 +18,7 @@
  */
 package org.daisy.pipeline.gui.jobs;
 
-import org.daisy.dmfc.core.script.Job;
+import org.daisy.pipeline.core.script.Job;
 import org.daisy.pipeline.gui.model.JobManager;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;

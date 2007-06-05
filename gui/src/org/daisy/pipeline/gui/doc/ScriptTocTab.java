@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.net.URI;
 
-import org.daisy.dmfc.core.script.Script;
+import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.PipelineUtil;
 import org.daisy.pipeline.gui.model.JobInfo;

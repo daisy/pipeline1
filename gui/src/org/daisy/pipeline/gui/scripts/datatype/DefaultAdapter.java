@@ -18,7 +18,7 @@
  */
 package org.daisy.pipeline.gui.scripts.datatype;
 
-import org.daisy.dmfc.core.script.ScriptParameter;
+import org.daisy.pipeline.core.script.ScriptParameter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;

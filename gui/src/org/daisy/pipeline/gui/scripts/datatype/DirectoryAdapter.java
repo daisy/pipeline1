@@ -20,8 +20,8 @@ package org.daisy.pipeline.gui.scripts.datatype;
 
 import java.io.File;
 
-import org.daisy.dmfc.core.script.ScriptParameter;
-import org.daisy.dmfc.core.script.datatype.DirectoryDatatype;
+import org.daisy.pipeline.core.script.ScriptParameter;
+import org.daisy.pipeline.core.script.datatype.DirectoryDatatype;
 import org.daisy.pipeline.gui.util.Messages;
 import org.daisy.pipeline.gui.util.DialogHelper;
 import org.eclipse.swt.SWT;

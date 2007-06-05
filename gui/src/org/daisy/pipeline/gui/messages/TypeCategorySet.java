@@ -21,7 +21,7 @@ package org.daisy.pipeline.gui.messages;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.gui.util.CategorySet;
 import org.daisy.pipeline.gui.util.Category;
 

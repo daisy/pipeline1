@@ -24,9 +24,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.daisy.dmfc.core.event.BusListener;
-import org.daisy.dmfc.core.event.EventBus;
-import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.BusListener;
+import org.daisy.pipeline.core.event.EventBus;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.gui.jobs.runner.JobRunnerJob;
 import org.eclipse.core.runtime.jobs.Job;
 
@@ -61,7 +61,7 @@ public class MessageManager implements BusListener {
     /*
      * (non-Javadoc)
      * 
-     * @see org.daisy.dmfc.core.event.BusListener#received(java.util.EventObject)
+     * @see org.daisy.pipeline.core.event.BusListener#received(java.util.EventObject)
      */
     public void received(EventObject event) {
         if (event instanceof MessageEvent) {

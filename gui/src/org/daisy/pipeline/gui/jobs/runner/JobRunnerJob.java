@@ -18,8 +18,8 @@
  */
 package org.daisy.pipeline.gui.jobs.runner;
 
-import org.daisy.dmfc.exception.JobAbortedException;
-import org.daisy.dmfc.exception.JobFailedException;
+import org.daisy.pipeline.exception.JobAbortedException;
+import org.daisy.pipeline.exception.JobFailedException;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.jobs.Messages;
 import org.daisy.pipeline.gui.model.JobInfo;

@@ -18,7 +18,7 @@
  */
 package org.daisy.pipeline.gui.messages;
 
-import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckboxTableViewer;

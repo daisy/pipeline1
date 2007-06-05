@@ -24,8 +24,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.UUID;
 
-import org.daisy.dmfc.core.DMFCCore;
-import org.daisy.dmfc.exception.DMFCConfigurationException;
+import org.daisy.pipeline.core.DMFCCore;
+import org.daisy.pipeline.exception.DMFCConfigurationException;
 import org.daisy.pipeline.gui.model.MessageManager;
 import org.daisy.pipeline.gui.model.ScriptManager;
 import org.daisy.pipeline.gui.model.StateManager;

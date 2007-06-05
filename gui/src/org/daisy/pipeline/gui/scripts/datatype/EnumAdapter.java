@@ -18,9 +18,9 @@
  */
 package org.daisy.pipeline.gui.scripts.datatype;
 
-import org.daisy.dmfc.core.script.ScriptParameter;
-import org.daisy.dmfc.core.script.datatype.EnumDatatype;
-import org.daisy.dmfc.core.script.datatype.EnumItem;
+import org.daisy.pipeline.core.script.ScriptParameter;
+import org.daisy.pipeline.core.script.datatype.EnumDatatype;
+import org.daisy.pipeline.core.script.datatype.EnumItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;

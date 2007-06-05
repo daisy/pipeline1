@@ -20,7 +20,7 @@ package org.daisy.pipeline.gui.scripts;
 
 import java.io.File;
 
-import org.daisy.dmfc.core.script.Script;
+import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.gui.model.ScriptManager;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;

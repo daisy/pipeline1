@@ -24,11 +24,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.daisy.dmfc.core.DMFCCore;
-import org.daisy.dmfc.core.event.CoreMessageEvent;
-import org.daisy.dmfc.core.event.EventBus;
-import org.daisy.dmfc.core.event.MessageEvent;
-import org.daisy.dmfc.core.script.Script;
+import org.daisy.pipeline.core.DMFCCore;
+import org.daisy.pipeline.core.event.CoreMessageEvent;
+import org.daisy.pipeline.core.event.EventBus;
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.PipelineUtil;
 import org.daisy.pipeline.gui.scripts.ScriptFileFilter;

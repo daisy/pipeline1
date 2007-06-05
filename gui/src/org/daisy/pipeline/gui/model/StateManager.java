@@ -25,17 +25,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.daisy.dmfc.core.event.BusListener;
-import org.daisy.dmfc.core.event.EventBus;
-import org.daisy.dmfc.core.event.JobStateChangeEvent;
-import org.daisy.dmfc.core.event.ProgressChangeEvent;
-import org.daisy.dmfc.core.event.StateChangeEvent;
-import org.daisy.dmfc.core.event.TaskProgressChangeEvent;
-import org.daisy.dmfc.core.event.TaskStateChangeEvent;
-import org.daisy.dmfc.core.event.UserAbortEvent;
-import org.daisy.dmfc.core.event.StateChangeEvent.Status;
-import org.daisy.dmfc.core.script.Job;
-import org.daisy.dmfc.core.script.Task;
+import org.daisy.pipeline.core.event.BusListener;
+import org.daisy.pipeline.core.event.EventBus;
+import org.daisy.pipeline.core.event.JobStateChangeEvent;
+import org.daisy.pipeline.core.event.ProgressChangeEvent;
+import org.daisy.pipeline.core.event.StateChangeEvent;
+import org.daisy.pipeline.core.event.TaskProgressChangeEvent;
+import org.daisy.pipeline.core.event.TaskStateChangeEvent;
+import org.daisy.pipeline.core.event.UserAbortEvent;
+import org.daisy.pipeline.core.event.StateChangeEvent.Status;
+import org.daisy.pipeline.core.script.Job;
+import org.daisy.pipeline.core.script.Task;
 import org.daisy.pipeline.gui.jobs.runner.JobRunnerJob;
 import org.daisy.util.execution.State;
 
@@ -76,7 +76,7 @@ public class StateManager implements BusListener {
     /*
      * (non-Javadoc)
      * 
-     * @see org.daisy.dmfc.core.event.BusListener#received(java.util.EventObject)
+     * @see org.daisy.pipeline.core.event.BusListener#received(java.util.EventObject)
      */
     public void received(EventObject event) {
         if (event instanceof TaskProgressChangeEvent) {

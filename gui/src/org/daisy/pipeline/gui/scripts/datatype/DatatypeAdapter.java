@@ -21,8 +21,8 @@ package org.daisy.pipeline.gui.scripts.datatype;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.daisy.dmfc.core.script.ScriptParameter;
-import org.daisy.dmfc.core.script.datatype.Datatype;
+import org.daisy.pipeline.core.script.ScriptParameter;
+import org.daisy.pipeline.core.script.datatype.Datatype;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;

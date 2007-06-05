@@ -20,7 +20,7 @@ package org.daisy.pipeline.gui.messages;
 
 import javax.xml.stream.Location;
 
-import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.gui.model.IMessageManagerListener;
 import org.daisy.pipeline.gui.model.MessageManager;
 import org.daisy.pipeline.gui.util.Category;
@@ -98,7 +98,7 @@ public class MessagesContentProvider extends CategorizedContentProvider
     /*
      * (non-Javadoc)
      * 
-     * @see org.daisy.pipeline.gui.messages.IMessageManagerListener#messageAdded(org.daisy.dmfc.core.event.MessageEvent)
+     * @see org.daisy.pipeline.gui.messages.IMessageManagerListener#messageAdded(org.daisy.pipeline.core.event.MessageEvent)
      */
     public void messageAdded(final MessageEvent message) {
         // TODO set ui job family

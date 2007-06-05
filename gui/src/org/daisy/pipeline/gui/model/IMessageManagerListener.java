@@ -18,7 +18,7 @@
  */
 package org.daisy.pipeline.gui.model;
 
-import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent;
 
 /**
  * @author Romain Deltour

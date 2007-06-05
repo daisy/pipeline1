@@ -20,7 +20,7 @@ package org.daisy.pipeline.gui.messages;
 
 import java.util.EnumSet;
 
-import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.gui.messages.CauseCategorySet.CauseCategory;
 import org.daisy.pipeline.gui.messages.TypeCategorySet.TypeCategory;
 import org.eclipse.jface.viewers.Viewer;

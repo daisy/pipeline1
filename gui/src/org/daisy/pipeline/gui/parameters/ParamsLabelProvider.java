@@ -18,7 +18,7 @@
  */
 package org.daisy.pipeline.gui.parameters;
 
-import org.daisy.dmfc.core.script.JobParameter;
+import org.daisy.pipeline.core.script.JobParameter;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;

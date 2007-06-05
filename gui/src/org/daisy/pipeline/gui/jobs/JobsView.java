@@ -21,8 +21,8 @@ package org.daisy.pipeline.gui.jobs;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.daisy.dmfc.core.script.Job;
-import org.daisy.dmfc.core.script.JobParameter;
+import org.daisy.pipeline.core.script.Job;
+import org.daisy.pipeline.core.script.JobParameter;
 import org.daisy.pipeline.gui.IActionConstants;
 import org.daisy.pipeline.gui.model.JobManager;
 import org.eclipse.core.commands.operations.IUndoContext;

@@ -18,7 +18,7 @@
  */
 package org.daisy.pipeline.gui.model;
 
-import org.daisy.dmfc.core.script.Task;
+import org.daisy.pipeline.core.script.Task;
 import org.daisy.pipeline.gui.util.StateTracker;
 
 /**

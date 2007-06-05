@@ -21,10 +21,10 @@ package org.daisy.pipeline.gui.jobs.wizard;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.daisy.dmfc.core.script.Job;
-import org.daisy.dmfc.core.script.Script;
-import org.daisy.dmfc.core.script.ScriptParameter;
-import org.daisy.dmfc.core.script.datatype.DatatypeException;
+import org.daisy.pipeline.core.script.Job;
+import org.daisy.pipeline.core.script.Script;
+import org.daisy.pipeline.core.script.ScriptParameter;
+import org.daisy.pipeline.core.script.datatype.DatatypeException;
 import org.daisy.pipeline.gui.scripts.datatype.DatatypeAdapter;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardPage;

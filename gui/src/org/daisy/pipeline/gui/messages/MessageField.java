@@ -24,7 +24,7 @@ import java.net.URISyntaxException;
 
 import javax.xml.stream.Location;
 
-import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.util.AbstractTableField;

@@ -22,8 +22,8 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.daisy.dmfc.core.script.Job;
-import org.daisy.dmfc.core.script.Script;
+import org.daisy.pipeline.core.script.Job;
+import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.PipelineUtil;
 import org.daisy.pipeline.gui.model.ScriptManager;

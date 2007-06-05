@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.dmfc.core.event.MessageEvent;
-import org.daisy.dmfc.core.event.MessageEvent.Cause;
-import org.daisy.dmfc.core.event.MessageEvent.Type;
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent.Cause;
+import org.daisy.pipeline.core.event.MessageEvent.Type;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.model.MessageManager;
