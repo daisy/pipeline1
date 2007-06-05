@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- this is the place to put additional parameters to your own tts wrapper impl. -->
+<!-- the class parameter must be supplied, though. -->
+<!-- ${transformer_dir} represents the directory where se_tpb_speechgenerator resides. -->
+
+
+<ttsbuilder>
+	<!--******************************************************************************
+	Windows
+	*******************************************************************************-->
+	<os>
+		<!-- all properties must match java's System.getProperties()-properties.
+			Standard regex match for an os to be usable in this program. -->
+		<property name="os.name" match="[Ww]indows.*" />
+		
+		<lang lang="en">
+			<!-- since xml:lang determines the tts use in this program, provide only one tts per language! -->
+			<!-- 
+								
+				<param name="sapiVoiceSelection" value="Gender=Female;Age!=Child;Language=409"/>
+				
+				would result in a 
+					<voice optional="Gender=Female;Age!=Child;Language=409">bla bla</voice>
+				around every phrase produced using this tts. More on sapi xml control tags here:
+				http://msdn.microsoft.com/library/default.asp?url=/library/en-us/SAPI51sr/Whitepapers/WP_XML_TTS_Tutorial.asp
+				
+				Language Code for Swedish voice: 41D
+					
+				On language codes:
+				note: sapi language codes are in hex notation, without the characteristic "0x"...
+				The parameter:
+				A language ID is a 16 bit value which is the combination of a primary language ID 
+				and a secondary language ID. The bits are allocated as follows:
+				+- - - - - - - - - - - - - - - - - - - -+
+				| Sublanguage ID |  Primary Language ID |
+				+- - - - - - - - - - - - - - - - - - - -+
+				15            10 9                    0 bit
+				Please note that to get primary language from language Id, you must AND the Id 
+				with number 0x3FF (1023 in decimal).
+				
+				(http://xtras.timehouse.fi/download/speechXtradocs.pdf)
+			-->
+			
+			<!-- this is configuration for one tts impl. the "default" attribute may be se to true 
+				for one (1) configuration for each os. -->
+			
+			<tts default="true">
+				<param name="class" value="se_tpb_speechgen2.tts.adapters.LocalStreamTTS"/>
+				<param name="command" value="${transformer_dir}/external/SimpleCommandLineTTS/SimpleCommandLineTTS.exe"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				
+				<!-- character substitution choises -->
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				
+			</tts>
+		</lang>
+		
+	</os>
+	
+	
+	<!--******************************************************************************
+	Linux
+	*******************************************************************************-->
+	<os>
+		<property name="os.name" match="[Ll]inux.*" />
+		
+		<lang lang="en">
+			<tts default="true">
+				<param name="class" value="se_tpb_speechgen2.tts.adapters.JLoq"/>
+				<param name="regex" value="${transformer_dir}/regex/loquendo-general.xml"/>
+				<param name="ttsProperties" value="${transformer_dir}/conf/loquendo.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/loquendo-en.xsl"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+			</tts>
+		</lang>
+	
+	</os>
+	
+</ttsbuilder>
