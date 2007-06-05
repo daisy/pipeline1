@@ -240,28 +240,29 @@
 	      JARs.
 	     ================================= -->
 	<target name="buildTransformers"
-				description="Builds the jarable transformers">
+				description="Builds the jarable transformers"
+				depends="createDistributionDir">
 		<mkdir dir="${distribution.dir}/transformers"/>
 		
 		<!-- int_daisy_validator -->
-		<jar jarfile="${distribution.dir}/transformers/int_daisy_validator.jar">
+		<!--jar jarfile="${distribution.dir}/transformers/int_daisy_validator.jar">
 			<fileset dir="${base.dir}/transformers">
 				<include name="int_daisy_validator/**/*.*"/>
 				<not>
 					<filename name="**/*.java"/>
 				</not>
 			</fileset>
-		</jar>		
+		</jar-->		
 
 		<!-- uk_rnib_dtbook2xhtml -->
-		<jar jarfile="${distribution.dir}/transformers/uk_rnib_dtbook2xhtml.jar">
+		<!--jar jarfile="${distribution.dir}/transformers/uk_rnib_dtbook2xhtml.jar">
 			<fileset dir="${base.dir}/transformers">
 				<include name="uk_rnib_dtbook2xhtml/**/*.*"/>
 				<not>
 					<filename name="**/*.java"/>
 				</not>
 			</fileset>
-		</jar>
+		</jar-->
 						
 	</target>
 	
@@ -273,7 +274,8 @@
           transformers that are not jarable.
          ================================= -->
     <target name="buildTransformersPack"
-    		description="Builds the pack of unjarable transformers">
+    		description="Builds the pack of unjarable transformers"
+	    	depends="createDistributionDir">
         <zip zipfile="${distribution.dir}/transformers.zip">
         	<fileset dir="${transformers.dir}">
         		<include name="**/*.*"/>
@@ -281,8 +283,8 @@
         		<exclude name="*.jar"/> 
         		
         		<!-- Jarable... -->
-        		<exclude name="int_daisy_validator/**/*.*"/>
-        		<exclude name="uk_rnib_dtbook2xhtml/**/*.*"/>        		
+        		<!--exclude name="int_daisy_validator/**/*.*"/>
+        		<exclude name="uk_rnib_dtbook2xhtml/**/*.*"/-->        		
         		
         		<!-- Undesired -->
         		<exclude name="int_daisy_daisy2022Zed2005/**/*.*"/>
@@ -306,10 +308,11 @@
 	      Builds a jar file containing the pipeline core.
 	     ================================= -->
 	<target name="buildCore"
-			description="Builds the core JAR">
+			description="Builds the core JAR"
+			depends="createDistributionDir">
 		<jar jarfile="${distribution.dir}/pipeline.jar">
 			<fileset dir="${base.dir}/bin">
-				<include name="org/daisy/dmfc/**/*.*"/>
+				<include name="org/daisy/pipeline/**/*.*"/>
 				<exclude name="**/*.java"/>
 			</fileset>
 			<manifest>
@@ -327,11 +330,16 @@
           another jar or zip.
          ================================= -->
     <target name="buildMisc" 
-    		description="Builds any misc files">
+    		description="Builds any misc files"
+	    	depends="createDistributionDir">
         <zip zipfile="${distribution.dir}/misc.zip">
         	<fileset dir="${base.dir}/bin">
-        		<include name="pipeline.properties"/>
-        		<include name="logging.properties"/>
+        		<include name="pipeline.properties"/>        		
+        		<include name="pipeline.user.properties"/>
+        	</fileset>
+        	<fileset dir="${base.dir}">
+				<include name="pipeline.sh"/>        		
+        	    <include name="dmfc.bat"/>
         	</fileset>
     	</zip>
     </target>
@@ -345,7 +353,7 @@
 	     ================================= -->
 	<target name="deploy"
 			depends="buildCore, buildMisc, buildUtil, buildTransformers, buildTransformersPack">
-		<delete>
+		<delete failonerror="false">
 			<fileset dir="${deploy.dir}">
 			    <include name="**/*.*"/>
 			</fileset>
@@ -356,7 +364,6 @@
 		<mkdir dir="${deploy.dir}/transformers"/>
 		
 		<copy file="${distribution.dir}/pipeline.jar" todir="${deploy.dir}"/>
-		<copy file="${base.dir}/pipeline.sh" todir="${deploy.dir}"/>
 		
 		<copy todir="${deploy.dir}/lib">
 			<fileset dir="${distribution.dir}">

@@ -294,7 +294,7 @@ public class XMLReporter {
 		tmpQName = new QName("pipelineVersion");
 		event = mEventFactory.createStartElement(tmpQName, null, NAMESPACES.iterator());
 		writeEvent(event);
-		event = mEventFactory.createCharacters(org.daisy.dmfc.Version.getVersion());
+		event = mEventFactory.createCharacters(org.daisy.pipeline.Version.getVersion());
 		writeEvent(event);
 		event = mEventFactory.createEndElement(tmpQName, NAMESPACES.iterator());
 		writeEvent(event);

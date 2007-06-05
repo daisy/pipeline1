@@ -36,12 +36,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.core.event.EventBus;
-import org.daisy.dmfc.core.event.UserAbortEvent;
-import org.daisy.dmfc.core.transformer.Transformer;
-import org.daisy.dmfc.exception.TransformerAbortException;
-import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.EventBus;
+import org.daisy.pipeline.core.event.UserAbortEvent;
+import org.daisy.pipeline.core.transformer.Transformer;
+import org.daisy.pipeline.exception.TransformerAbortException;
+import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.execution.ProgressObserver;
 import org.daisy.util.file.FileBunchCopy;
 import org.daisy.util.xml.XPathUtils;
@@ -79,12 +79,12 @@ public class FileSetCreator extends Transformer {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.daisy.dmfc.core.transformer.Transformer#execute(java.util.Map)
+	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
 	 */
 	/**
 	 * Transformer enterpoint. 
 	 * @param parameters the parameters supplied to this transformer
-	 * @see org.daisy.dmfc.core.transformer.Transformer#execute(java.util.Map)
+	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
 	 */
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		
@@ -462,7 +462,7 @@ public class FileSetCreator extends Transformer {
 	
 	
 	/* (non-Javadoc)
-	 * @see org.daisy.dmfc.core.transformer.Transformer#progress(double)
+	 * @see org.daisy.pipeline.core.transformer.Transformer#progress(double)
 	 */
 	public void progress(double progressProportion) {
 		super.progress(progressProportion);

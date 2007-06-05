@@ -45,9 +45,9 @@ import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.core.transformer.Transformer;
-import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.transformer.Transformer;
+import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.settings.SettingsResolver;

@@ -1,6 +1,6 @@
 package se_tpb_wordml2dtbook;
 
-import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent;
 
 /**
  * 

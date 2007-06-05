@@ -57,10 +57,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.daisy.dmfc.core.event.BusListener;
-import org.daisy.dmfc.core.event.UserAbortEvent;
-import org.daisy.dmfc.exception.TransformerAbortException;
-import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.pipeline.core.event.BusListener;
+import org.daisy.pipeline.core.event.UserAbortEvent;
+import org.daisy.pipeline.exception.TransformerAbortException;
+import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.collection.MultiHashMap;
 import org.daisy.util.execution.AbortListener;
 import org.daisy.util.execution.ProgressObserver;
@@ -1528,7 +1528,7 @@ public class SmilMaker implements AbortListener, BusListener {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.daisy.dmfc.core.event.BusListener#received(java.util.EventObject)
+	 * @see org.daisy.pipeline.core.event.BusListener#received(java.util.EventObject)
 	 */
 	public void received(EventObject event) {
 		/*

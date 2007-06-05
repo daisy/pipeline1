@@ -31,8 +31,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.daisy.dmfc.core.event.MessageEvent;
-import org.daisy.dmfc.core.transformer.Transformer;
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.i18n.CharUtils;

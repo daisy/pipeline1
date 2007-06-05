@@ -27,9 +27,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.core.transformer.Transformer;
-import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.transformer.Transformer;
+import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetImpl;
@@ -65,7 +65,7 @@ public class DtbSplitterTransformer extends Transformer implements DtbTransforma
 	}
 
 	/* (non-Javadoc)
-	 * @see org.daisy.dmfc.core.transformer.Transformer#execute(java.util.Map)
+	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
 	 */
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		//obligatory params

@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.dmfc.ui.CommandLineUI;
 import org.daisy.pipeline.test.impl.CharacterRepertoireManipulator1;
 import org.daisy.pipeline.test.impl.CharsetSwitcher1;
 import org.daisy.pipeline.test.impl.ConfigurableValidator1;
@@ -30,6 +29,7 @@ import org.daisy.pipeline.test.impl.Rtf2Xhtml1;
 import org.daisy.pipeline.test.impl.Rtf2dtbook1;
 import org.daisy.pipeline.test.impl.UnicodeNormalizer1;
 import org.daisy.pipeline.test.impl.WordML2Xhtml1;
+import org.daisy.pipeline.ui.CommandLineUI;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 

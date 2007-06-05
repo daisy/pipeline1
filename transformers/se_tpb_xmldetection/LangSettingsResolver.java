@@ -23,7 +23,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Locale;
 
-import org.daisy.dmfc.core.DirClassLoader;
+import org.daisy.pipeline.core.DirClassLoader;
 import org.daisy.util.xml.catalog.CatalogExceptionEntityNotSupported;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.catalog.CatalogFile;

@@ -37,10 +37,10 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.core.event.MessageEvent;
-import org.daisy.dmfc.core.transformer.Transformer;
-import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.transformer.Transformer;
+import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.exception.ExceptionTransformer;
 import org.daisy.util.file.EFile;
 import org.daisy.util.file.FilenameOrFileURI;

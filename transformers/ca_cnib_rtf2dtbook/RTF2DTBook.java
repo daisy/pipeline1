@@ -23,10 +23,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.core.event.MessageEvent;
-import org.daisy.dmfc.core.transformer.Transformer;
-import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.transformer.Transformer;
+import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.execution.Command;
 import org.daisy.util.execution.ExecutionException;
 import org.daisy.util.file.FilenameOrFileURI;

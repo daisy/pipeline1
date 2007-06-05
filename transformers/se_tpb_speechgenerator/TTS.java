@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.xml.namespace.QName;
 
-import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.pipeline.exception.TransformerRunException;
 import org.w3c.dom.Document;
 
 /* Interface for a narrator tts-implementation. */

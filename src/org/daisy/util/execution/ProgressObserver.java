@@ -22,7 +22,7 @@ package org.daisy.util.execution;
 /**
  * Observer of progress.
  * This interface is typically implemented by subclasses of the
- * <code>org.daisy.dmfc.core.transformer.Transformer</code> class and used by
+ * <code>org.daisy.pipeline.core.transformer.Transformer</code> class and used by
  * other classes to report progress back to the transformer.
  * @author Linus Ericson
  */

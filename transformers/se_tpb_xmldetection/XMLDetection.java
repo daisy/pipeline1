@@ -29,9 +29,9 @@ import java.util.logging.Level;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.core.transformer.Transformer;
-import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.transformer.Transformer;
+import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileBunchCopy;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;

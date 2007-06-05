@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.i18n.UCharReplacer;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;

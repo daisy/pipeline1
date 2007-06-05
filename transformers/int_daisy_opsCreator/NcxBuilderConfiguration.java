@@ -20,8 +20,8 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.TransformerException;
 
-import org.daisy.dmfc.core.event.MessageEvent;
-import org.daisy.dmfc.core.transformer.Transformer;
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.util.xml.LocusTransformer;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;

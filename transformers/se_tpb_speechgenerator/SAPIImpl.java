@@ -33,7 +33,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.StreamRedirector;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.XSLTException;

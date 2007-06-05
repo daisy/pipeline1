@@ -3,10 +3,10 @@ package pipeline_system_deleter;
 import java.io.File;
 import java.util.Map;
 
-import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.core.event.MessageEvent;
-import org.daisy.dmfc.core.transformer.Transformer;
-import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.transformer.Transformer;
+import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
 import org.daisy.util.file.EFolder;
 

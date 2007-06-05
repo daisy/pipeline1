@@ -65,10 +65,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.daisy.dmfc.core.InputListener;
-import org.daisy.dmfc.core.transformer.Transformer;
-import org.daisy.dmfc.exception.TransformerAbortException;
-import org.daisy.dmfc.exception.TransformerRunException;
+import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.transformer.Transformer;
+import org.daisy.pipeline.exception.TransformerAbortException;
+import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileBunchCopy;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;
@@ -165,7 +165,7 @@ public class SpeechGenerator extends Transformer {
 	
 	
 	/* (non-Javadoc)
-	 * @see org.daisy.dmfc.core.transformer.Transformer#execute(java.util.Map)
+	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
 	 */
 	public boolean execute(Map parameters) throws TransformerRunException {
 		

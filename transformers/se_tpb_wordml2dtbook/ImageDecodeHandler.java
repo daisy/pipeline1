@@ -3,7 +3,7 @@ package se_tpb_wordml2dtbook;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import org.daisy.dmfc.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.DefaultHandler2;
