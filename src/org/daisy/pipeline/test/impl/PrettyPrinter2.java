@@ -5,16 +5,16 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class PrettyPrinter1 extends PipelineTest {
+public class PrettyPrinter2 extends PipelineTest {
 
-	public PrettyPrinter1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public PrettyPrinter2(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
 	public List<String> getParameters() {		
-		mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy_valid.xml");
-		mParameters.add("--output=" + mDataOutputDir + "/PrettyPrinter2/");
+		mParameters.add("--input=" + mDataInputDir + "/dtb/d202/dontworrybehappy/ncc.html");
+		mParameters.add("--output=" + mDataOutputDir + "/PrettyPrinter1/");
 		return mParameters;
 	}
 

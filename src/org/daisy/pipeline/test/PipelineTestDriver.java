@@ -21,9 +21,11 @@ import org.daisy.pipeline.test.impl.Html2Xhtml1;
 import org.daisy.pipeline.test.impl.Narrator1;
 import org.daisy.pipeline.test.impl.OcfCreator1;
 import org.daisy.pipeline.test.impl.Odf2dtbook1;
+import org.daisy.pipeline.test.impl.Odf2dtbook2;
 import org.daisy.pipeline.test.impl.Odf2xhtml1;
 import org.daisy.pipeline.test.impl.OpsCreator1;
 import org.daisy.pipeline.test.impl.PrettyPrinter1;
+import org.daisy.pipeline.test.impl.PrettyPrinter2;
 import org.daisy.pipeline.test.impl.RenamerTaggerValidator1;
 import org.daisy.pipeline.test.impl.Rtf2Xhtml1;
 import org.daisy.pipeline.test.impl.Rtf2dtbook1;
@@ -112,6 +114,7 @@ public class PipelineTestDriver {
 //		tests.add(new OpsCreator1(inputDir, outputDir));
 //		tests.add(new Odf2dtbook1(inputDir, outputDir));
 //		tests.add(new PrettyPrinter1(inputDir, outputDir));
+//		tests.add(new PrettyPrinter2(inputDir, outputDir));
 //		tests.add(new RenamerTaggerValidator1(inputDir, outputDir));		
 //		tests.add(new UnicodeNormalizer1(inputDir, outputDir));
 //		tests.add(new Rtf2dtbook1(inputDir, outputDir));
@@ -125,8 +128,9 @@ public class PipelineTestDriver {
 //		tests.add(new Html2Xhtml1(inputDir, outputDir));
 //		tests.add(new Odf2dtbook1(inputDir, outputDir));
 //		tests.add(new CharacterRepertoireManipulator1(inputDir, outputDir));
-		tests.add(new Odf2xhtml1(inputDir, outputDir));
-		
+//		tests.add(new Odf2xhtml1(inputDir, outputDir));
+		tests.add(new Odf2dtbook1(inputDir, outputDir));
+//		tests.add(new Odf2dtbook2(inputDir, outputDir));
 		
 ////////// tests with input data not in samples dir: 		
 		//tests.add(new DTBAudioEncoder1(inputDir, outputDir));
