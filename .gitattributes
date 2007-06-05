@@ -161,6 +161,7 @@ samples/input/dtbook/valentin.jpg -text
 samples/input/html/img/nor02.jpg -text
 samples/input/html/nor01.jpg -text
 samples/input/html/nor1.html -text
+samples/input/odf/error.odf.odt -text
 samples/input/odf/simple.odt -text
 samples/input/odf/simple2.odt -text
 samples/input/ops/hauy-2005-1.xml -text

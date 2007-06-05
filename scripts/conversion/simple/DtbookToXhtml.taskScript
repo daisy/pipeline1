@@ -13,7 +13,7 @@
     <comment/>
 						
 	<parameter name="input" value="" required="true">
-		<nicename>Input file</nicename>
+		<nicename>Input DTBook</nicename>
 		<description>Select input DTBook file</description>
 		<datatype>
 			<file mime="application/x-dtbook+xml" type="input"/>
@@ -21,7 +21,7 @@
 	</parameter>
 	
 	<parameter name="output" value="" required="true">
-		<nicename>Output XHTML file</nicename>
+		<nicename>Output XHTML</nicename>
 		<description>Select the output XHTML file</description>
 		<datatype>
 			<file mime="application/xhtml+xml" type="output"/>

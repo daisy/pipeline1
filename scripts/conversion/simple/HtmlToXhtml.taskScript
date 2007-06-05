@@ -26,7 +26,7 @@
 		</datatype>
 	</parameter>		
 
-	<parameter name="ignoreBogons" value="" required="false">
+	<parameter name="ignoreBogons" value="true" required="false">
 		<nicename>Strip unknown elements</nicename>
 		<description>Select whether to remove elements that are not recognized as being part of the XHTML grammar.</description>
 		<datatype>
