@@ -9,28 +9,34 @@
 </head>
 <body>
 <h1 class="title">Pipeline Script: <em>Charset Switcher</em></h1>
-<!-- script documentation contains primarily end-user-centric information -->
-<p class="alert">This document remains to be written</p>
+
 <div id="toc" class="toc">
-<ul>
-<li><a href="#overview">Overview</a></li>
-<li><a href="#config">Configuration</a></li>
-<li><a href="#transformers">Appendix: List of Transformers used</a></li>
-</ul>
+	<ul>
+		<li><a href="#overview">Overview</a></li>
+		<li><a href="#config">Configuration</a></li>
+		<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+	</ul>
 </div>
 
 <h2 id="overview">Overview</h2>
-<!-- brief summary of purpose and whats going on. What does this script do really? -->
+<p>This script lets you change the character set encoding used in the XML members of a fileset.</p>
+<p class="alert">It is not guaranteed that the input encoding and/or the desired output encoding is 
+supported by the system. Therefore, be sure to check and verify the output result carefully before continuing with other processing.</p>
 
 <h2 id="config">Configuration</h2>
 
 <dl id="paramslist">	
 		<dt>Input file</dt>
-		<dd>The manifest member of the input fileset (NCC, OPF, DTBook file, etc)</dd>
+		<dd><strong>Required.</strong>The manifest member of the input fileset (NCC, OPF, DTBook file, etc)</dd>
 
 		<dt>Output directory</dt>
-		<dd>Directory to store the result in. This can not be same directory as the input directory.</dd>
+		<dd><strong>Required.</strong> Directory to store the result in. This can not be same directory as the input directory.</dd>
 
+		<dt>Output encoding</dt>
+		<dd><strong>Optional.</strong> Select the output characterset encoding. If not set, the output encoding will be the default <strong>utf-8</strong>.</dd>
+		
+		<dt>Linebreaks</dt>
+		<dd><strong>Optional.</strong>Select the type of linebreak to use; values are UNIX, Mac, Dos or System default. The default is the system default.</dd>
 </dl>
 		
 <h2 id="transformers">Appendix: List of Transformers used</h2>

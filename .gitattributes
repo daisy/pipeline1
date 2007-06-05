@@ -53,6 +53,7 @@ doc/transformers/ca_cnib_rtf2dtbook.html -text
 doc/transformers/int_daisy_daisy2022Zed2005.html -text
 doc/transformers/int_daisy_filesetAudioTagger.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
+doc/transformers/int_daisy_html2xhtml.html -text
 doc/transformers/int_daisy_ocfCreator.html -text
 doc/transformers/int_daisy_opsCreator.html -text
 doc/transformers/int_daisy_prettyPrinter.html -text
@@ -72,6 +73,7 @@ doc/transformers/se_tpb_syncpointNormalizer.html -text
 doc/transformers/se_tpb_wordml2dtbook.html -text
 doc/transformers/se_tpb_xmldetection.html -text
 doc/transformers/se_tpb_zed2daisy202.html -text
+doc/transformers/uk_rnib_dtbook2xhtml.html -text
 doc/transformers/uk_rnib_odf2dtbook.html -text
 doc/user.vocabulary.txt -text
 lib/ZedVal.jar -text
