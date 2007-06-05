@@ -133,7 +133,7 @@
 	
 	<!-- ******************
 	      Speech Generator
-	     ****************** -->
+	     ******************
 	<task name="se_tpb_speechgenerator" interactive="false">
 		<parameter>
 			<name>inputFilename</name>
@@ -147,6 +147,43 @@
 			<name>outputFilename</name>
 			<value>${outputPath}/z3986/06-speechgen.xml</value>
 		</parameter>
+		<parameter>
+			<name>mp3Output</name>
+			<value>true</value>
+		</parameter>
+		<parameter>
+			<name>concurrentAudioMerge</name>
+			<value>true</value>
+		</parameter>
+	</task>
+	-->
+	
+	
+	<!-- ******************
+	      SpeechGen2
+	     ****************** -->
+	<task name="se_tpb_speechgen2" interactive="false">
+		<parameter>
+			<name>inputFilename</name>
+			<value>${outputPath}/04-syncpoint.xml</value>
+		</parameter>
+		<parameter>
+			<name>outputDirectory</name>
+			<value>${outputPath}/z3986/</value>
+		</parameter>
+		<parameter>
+			<name>outputFilename</name>
+			<value>${outputPath}/z3986/06-speechgen.xml</value>
+		</parameter>
+		
+		<parameter>
+			<name>mp3Output</name>
+			<value>true</value>
+		</parameter>
+		<parameter>
+			<name>concurrentAudioMerge</name>
+			<value>true</value>
+		</parameter>	
 	</task>
 
 
@@ -204,7 +241,7 @@
 		</parameter>
 	</task>
 	
-	
+
 	<!-- ************************************
 	      Z3986-2005 to Daisy 2.02 Converter
 	     ************************************ -->
