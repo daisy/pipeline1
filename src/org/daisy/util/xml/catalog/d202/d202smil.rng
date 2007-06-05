@@ -8,7 +8,7 @@
     d202smil.rng
     This file is part of the RelaxNG/Schematron validation
     suite for Daisy 2.02. All Schematron assertion strings
-    can be identifier by the intitial part of the string 
+    can be identified by the intitial part of the string 
     being: '[sch][dtb::d202][type::warning|error][msg::'.
     Last edit by: linuse 2006-08-07
     catalog-mapped by the PID '-//DAISY//RNG smil v2.02//EN'
@@ -40,12 +40,15 @@
           </oneOrMore> 
           <element name="layout">
             <ref name="attribute.id.optional"/>
+			<!-- DTD defaulting stuff:
             <optional>
               <attribute name="type" a:defaultValue="text/smil-basic-layout"/>
             </optional>
+            -->
             <element name="region">
               <empty/>
               <ref name="attribute.id.required"/>
+			  <!-- DTD defaulting stuff:              
               <optional>
                 <attribute name="left" a:defaultValue="0"/>
                 <attribute name="top" a:defaultValue="0"/>
@@ -53,7 +56,9 @@
                 <attribute name="fit" a:defaultValue="hidden"/>              
                 <attribute name="skip-content" a:defaultValue="true"/>              
               </optional>
+              -->
             </element>
+
           </element>  
         </interleave>
       </group>
@@ -102,11 +107,13 @@
 
   <define name="par">
     <element name="par">
-      <ref name="attribute.id.optional"/>      
-      <ref name="attribute.repeat.optional"/>
+      <ref name="attribute.id.optional"/>            
       <attribute name="endsync">
          <value type="string">last</value>
       </attribute>
+      <!-- DTD defaulting stuff:
+      <ref name="attribute.repeat.optional"/>
+      -->
       <optional>
         <attribute name="system-required">
           <choice>
@@ -212,8 +219,10 @@
   
   <define name="attlist.mo">
     <ref name="attribute.id.required"/>
+    <!-- DTD defaulting stuff:
     <ref name="attribute.fill.optional"/>
     <ref name="attribute.repeat.optional"/> 
+    -->
   </define>  
   
       <define name="smil.meta">
