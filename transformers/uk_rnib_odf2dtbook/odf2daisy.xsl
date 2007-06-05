@@ -131,7 +131,7 @@ doctype-system = "dtbook-2005-2.dtd"
 
  <!-- doctype-system = "http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd" -->
  <!-- Debug dump to terminal -->
-<xsl:variable name="debug" select="true()"/>
+<xsl:variable name="debug" select="false()"/>
 
   <xsl:template match="/">
 
