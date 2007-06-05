@@ -5,6 +5,12 @@
 
 	<property name="version" value="0_1_0"/>
 	
+	<tstamp>
+		<format property="ISO-TODAY" pattern="yyyy-MM-dd"/>
+	</tstamp>
+	
+	<property name="release.name" value="pipeline-${ISO-TODAY}"/>
+	
 	<!--project directories -->
 	<!-- ${base.dir} should point to the DMFC project root directory.-->
 	<property name="base.dir" value="."/>
@@ -223,7 +229,8 @@
 			</fileset>
 			<manifest>
 				<attribute name="Class-Path" value="${property.manifest.jars}"/>
-			</manifest>
+				<attribute name="Build-Date" value="${ISO-TODAY}"/>
+			</manifest>			
 		</jar>
 		<zip zipfile="${distribution.dir}/org.daisy.util-src.zip" >
 			<fileset dir="${base.dir}/src">
@@ -277,7 +284,7 @@
     		description="Builds the pack of unjarable transformers"
 	    	depends="createDistributionDir">
         <zip zipfile="${distribution.dir}/transformers.zip">
-        	<fileset dir="${transformers.dir}">
+        	<fileset dir="${transformers.dir}" id="fileset.transformers">
         		<include name="**/*.*"/>
         		<exclude name="**/*.java"/>
         		<exclude name="*.jar"/> 
@@ -317,7 +324,8 @@
 			</fileset>
 			<manifest>
 				<attribute name="Class-Path" value="lib/org.daisy.util.jar"/>
-			</manifest>
+				<attribute name="Build-Date" value="${ISO-TODAY}"/>
+			</manifest>			
 		</jar>
 	</target>
 	
@@ -383,5 +391,53 @@
 		
 		<unzip src="${distribution.dir}/misc.zip" dest="${deploy.dir}"/>
 	</target>
+	
+	<!-- =====================================================================
+      target: buildRealeaseZip
+      
+      Builds a zipfile containing everything needed in a command line release
+     ========================================================================= -->
+	<target name="buildReleaseZip"
+			depends="buildCore,buildUtil,createDistributionDir">
+		<zip destfile="${distribution.dir}/${release.name}.zip">
+			<!-- Pipeline core -->
+			<zipfileset dir="${distribution.dir}" prefix="${release.name}">
+				<include name="pipeline.jar"/>				
+			</zipfileset>
+			<!-- Util library -->
+			<zipfileset dir="${distribution.dir}" prefix="${release.name}/lib">
+				<include name="org.daisy.util.jar"/>				
+			</zipfileset>
+			<!-- Required JARs -->
+			<zipfileset refid="fileset.utilJars" prefix="${release.name}/lib"/>
+			<!-- Transformers -->
+			<zipfileset refid="fileset.transformers" prefix="${release.name}/transformers"/>
+			<!-- Property files -->
+			<zipfileset dir="${base.dir}/bin" prefix="${release.name}">
+				<include name="pipeline.properties"/>
+				<include name="pipeline.user.properties"/>
+			</zipfileset>
+			<!-- Shell scripts -->
+			<zipfileset dir="${base.dir}" prefix="${release.name}">
+				<include name="pipeline.sh"/>
+				<include name="dmfc.bat"/>
+			</zipfileset>
+			<!-- Scripts -->
+			<zipfileset dir="${base.dir}/scripts" prefix="${release.name}/scripts">
+				<include name="**/*.*"/>
+				<exclude name="_dev/**/*.*"/>
+			</zipfileset>
+			<!-- Documentation -->
+			<zipfileset dir="${base.dir}/doc" prefix="${release.name}/doc">
+				<include name="developer/**/*.*"/>
+				<include name="enduser/**/*.*"/>
+				<include name="scripts/**/*.*"/>
+				<include name="transformers/**/*.*"/>
+				<include name="*.html"/>
+				<include name="*.css"/>
+			</zipfileset>
+		</zip>
+	</target>
+		
 	
 </project>
