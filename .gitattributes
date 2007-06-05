@@ -463,3 +463,4 @@ transformers/uk_rnib_odf2dtbook/odfNestCheck.xsl -text
 transformers/uk_rnib_odf2dtbook/odfNesting.xsl -text
 transformers/uk_rnib_odf2dtbook/odfStructure.xsl -text
 transformers/uk_rnib_odf2dtbook/readme.txt -text
+transformers/uk_rnib_odf2dtbook/usage.html -text
