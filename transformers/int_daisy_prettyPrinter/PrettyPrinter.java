@@ -48,7 +48,7 @@ import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.stax.ContextStack;
 
 /**
- * Main transformer class. Pretty print a fileset with special care taking for DTB player compatilibility.
+ * Main transformer class. Pretty print a fileset with special care taking for DTB player compatibility.
  * @author Markus Gylling
  */
 public class PrettyPrinter extends Transformer implements FilesetErrorHandler, FilesetManipulatorListener, XMLEventConsumer {
