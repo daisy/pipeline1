@@ -8,7 +8,8 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.daisy.pipeline,
- org.eclipse.pde.runtime
+ org.eclipse.pde.runtime,
+ org.eclipse.ui.intro.universal
 Eclipse-LazyStart: true
 Bundle-Activator: org.daisy.pipeline.gui.GuiPlugin
 Export-Package: 

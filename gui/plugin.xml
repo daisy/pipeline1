@@ -21,7 +21,15 @@
       <product
             application="org.daisy.pipeline.gui.application"
             description="%product.description"
-            name="%product.name">
+            name="DAISY Pipeline">      <property
+            name="introTitle"
+            value="%intro.title"/>
+      <property
+            name="introBrandingImage"
+            value="product:pipeline.png"/>
+      <property
+            name="introBrandingImageText"
+            value="%intro.brandingImageText"/>
       </product>
    </extension>
    <extension
@@ -345,6 +353,12 @@
             description="%command.runAll.description"
             id="org.daisy.pipeline.gui.command.runAll"
             name="%command.runAll"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <introProductBinding
+            introId="org.eclipse.ui.intro.universal"
+            productId="org.daisy.pipeline.gui.product"/>
    </extension> <extension
          point="org.eclipse.ui.newWizards">
       <wizard
