@@ -3,7 +3,7 @@
 <plugin>
 
    <extension
-         id="org.daisy.pipeline.gui.application"
+         id="application"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
@@ -12,7 +12,11 @@
       </application>
    </extension>
    <extension
-         id="org.daisy.pipeline.gui.product"
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.daisy.pipeline.gui.PreferenceInitializer"/>
+   </extension>
+   <extension
+         id="product"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.daisy.pipeline.gui.application"
@@ -367,17 +371,21 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
+            class="org.eclipse.ui.ExtensionFactory:appearancePreferencePage"
+            id="org.daisy.pipeline.gui.prefPage.appearance"
+            name="%prefPage.appearance"/>
+      <page
             class="org.eclipse.ui.ExtensionFactory:keysPreferencePage"
-            id="org.daisy.pipeline.gui.preferences.keys"
+            id="org.daisy.pipeline.gui.prefPage.keys"
             name="%prefPage.keys"/>
       <page
-            class="org.eclipse.ui.ExtensionFactory:perspectivesPreferencePage"
-            id="org.daisy.pipeline.gui.preferences.perspectives"
-            name="%prefPage.perspectives"/>
+            class="org.daisy.pipeline.gui.PathsPrefPage"
+            id="org.daisy.pipeline.gui.prefPage.paths"
+            name="%prefPage.paths"/>
       <page
-            class="org.eclipse.ui.ExtensionFactory:appearancePreferencePage"
-            id="org.daisy.pipeline.gui.preferences.appearance"
-            name="%prefPage.appearance"/>
+            class="org.eclipse.ui.ExtensionFactory:perspectivesPreferencePage"
+            id="org.daisy.pipeline.gui.prefPage.perspectives"
+            name="%prefPage.perspectives"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -413,13 +421,6 @@
             icon="icons/view-progress.gif"
             id="org.daisy.pipeline.gui.views.progress"
             name="%view.progress"/>
-   </extension>
-   <extension
-         id="product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.daisy.pipeline.gui.org.daisy.pipeline.gui.application"
-            name="DAISY Pipeline"/>
    </extension>
 
 </plugin>
