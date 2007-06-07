@@ -29,7 +29,7 @@ public class TransformersTocTab extends TocTab {
 
     @Override
     protected EFolder getRootDir() {
-        return PipelineUtil.getDir(PipelineUtil.TRANS_DOC_DIR_PATH);
+        return PipelineUtil.getDir(PipelineUtil.TRANS_DOC_DIR);
     }
 
     @Override

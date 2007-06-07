@@ -48,7 +48,7 @@ public class ScriptManager {
     }
 
     public void init() {
-        populateScripts(PipelineUtil.getScriptDir());
+        populateScripts(PipelineUtil.getDir(PipelineUtil.SCRIPT_DIR));
     }
 
     public void dispose() {

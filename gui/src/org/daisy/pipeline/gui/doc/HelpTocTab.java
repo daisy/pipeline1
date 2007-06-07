@@ -30,7 +30,7 @@ public class HelpTocTab extends TocTab {
 
     @Override
     protected EFolder getRootDir() {
-        return PipelineUtil.getDir(PipelineUtil.USER_DOC_DIR_PATH);
+        return PipelineUtil.getDir(PipelineUtil.USER_DOC_DIR);
     }
 
     @Override

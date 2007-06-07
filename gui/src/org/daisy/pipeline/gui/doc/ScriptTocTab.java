@@ -113,7 +113,7 @@ public class ScriptTocTab extends TocTab {
 
     @Override
     protected EFolder getRootDir() {
-        return PipelineUtil.getScriptDir();
+        return PipelineUtil.getDir(PipelineUtil.SCRIPT_DIR);
     }
 
     @Override

@@ -69,7 +69,7 @@ public class ScriptsWizardPage extends WizardPage {
         scriptTreeViewer.setContentProvider(new FileTreeContentProvider(
                 new ScriptFileFilter(true)));
         scriptTreeViewer.setLabelProvider(new ScriptsLabelProvider());
-        scriptTreeViewer.setInput(PipelineUtil.getScriptDir());
+        scriptTreeViewer.setInput(PipelineUtil.getDir(PipelineUtil.SCRIPT_DIR));
         scriptTreeViewer.getTree().deselectAll();
         scriptTreeViewer
                 .addSelectionChangedListener(new ISelectionChangedListener() {
