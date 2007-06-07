@@ -20,9 +20,9 @@ then
   if [ $JAVAMAJOR -lt 1 -o $JAVAMINOR -lt 5 ]
   then    
     echo
-    echo "Error: This application requires Java 5 (or later) to run. Only 
-    echo "       version $JAVAVERSION was found on your system path. Make sure 
-    echo "       Java 5 (or later) is installed on the system and edit this
+    echo "Error: This application requires Java 5 (or later) to run. Only" 
+    echo "       version $JAVAVERSION was found on your system path. Make sure" 
+    echo "       Java 5 (or later) is installed on the system and edit this"
     echo "       pipeline.sh script to insert the path to the 'java' command."  
     echo
     echo "       Current (incorrect) java path: $JAVA"
@@ -31,8 +31,8 @@ then
   fi
 else
   echo
-  echo "Error: Java 5 was not found on your system path. Make sure Java 5
-  echo "       (or later) is installed on the system and edit this
+  echo "Error: Java 5 was not found on your system path. Make sure Java 5"
+  echo "       (or later) is installed on the system and edit this"
   echo "       pipelins.sh script to insert the path to the 'java' command."  
   echo
   exit 1
