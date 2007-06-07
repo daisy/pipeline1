@@ -37,7 +37,6 @@ public class ScriptFileFilter extends EFileFilter {
     public ScriptFileFilter(boolean acceptDir) {
         super();
         this.acceptDir = acceptDir;
-        rejectDir("_dev");
     }
 
     @Override
