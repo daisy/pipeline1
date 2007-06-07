@@ -179,19 +179,19 @@ public class GuiPlugin extends AbstractUIPlugin {
 
     private void logSystemInfo() {
         // Log location info
-        info("Plugin State Location: "
+        info("Plugin State Location: " //$NON-NLS-1$
                 + Platform.getStateLocation(getBundle()).toString(), null);
-        info("User Location: " + Platform.getUserLocation().getURL(), null);
-        info("Instance Location: " + Platform.getInstanceLocation().getURL(),
+        info("User Location: " + Platform.getUserLocation().getURL(), null); //$NON-NLS-1$
+        info("Instance Location: " + Platform.getInstanceLocation().getURL(), //$NON-NLS-1$
                 null);
-        info("Install Location: " + Platform.getInstallLocation().getURL(),
+        info("Install Location: " + Platform.getInstallLocation().getURL(), //$NON-NLS-1$
                 null);
-        info("Configuration Location: "
+        info("Configuration Location: " //$NON-NLS-1$
                 + Platform.getConfigurationLocation().getURL(), null);
         // Log system properties
         Properties properties = System.getProperties();
         for (Object key : properties.keySet()) {
-            info(key + "= " + properties.getProperty((String) key), null);
+            info(key + "= " + properties.getProperty((String) key), null); //$NON-NLS-1$
         }
     }
 

@@ -42,5 +42,11 @@ public class Messages extends NLS {
     public static String menu_window_navigation;
     public static String menu_window_openPerspective;
     public static String menu_window_showView;
+    public static String pref_lamePath_label;
+    public static String pref_lamePath_tooltip;
+    public static String pref_pythonPath_label;
+    public static String pref_pythonPath_tooltip;
+    public static String pref_tempDirPath_label;
+    public static String pref_tempDirPath_tooltip;
     public static String window_title;
 }

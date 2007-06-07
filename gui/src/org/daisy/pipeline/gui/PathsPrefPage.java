@@ -43,21 +43,21 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
         Composite parent = getFieldEditorParent();
         // Lame Path
         FileFieldEditor lameEditor = new FileFieldEditor(
-                PipelineUtil.PATH_TO_LAME, "LAME executable:", parent);
+                PipelineUtil.PATH_TO_LAME, Messages.pref_lamePath_label, parent);
         lameEditor.getTextControl(parent).setToolTipText(
-                "Path to the LAME MP3 encoder executable");
+                Messages.pref_lamePath_tooltip);
         addField(lameEditor);
         // Python Path
         FileFieldEditor pythonEditor = new FileFieldEditor(
-                PipelineUtil.PATH_TO_PYTHON, "Python executable:", parent);
+                PipelineUtil.PATH_TO_PYTHON, Messages.pref_pythonPath_label, parent);
         pythonEditor.getTextControl(parent).setToolTipText(
-                "Path to the Python executable");
+                Messages.pref_pythonPath_tooltip);
         addField(pythonEditor);
         // Temp Dir Path
         DirectoryFieldEditor tempDirEditor = new DirectoryFieldEditor(
-                PipelineUtil.PATH_TO_TEMP_DIR, "Temporary Directory:", parent);
+                PipelineUtil.PATH_TO_TEMP_DIR, Messages.pref_tempDirPath_label, parent);
         tempDirEditor.getTextControl(parent).setToolTipText(
-                "Path to the temporary directory");
+                Messages.pref_tempDirPath_tooltip);
         addField(tempDirEditor);
     }
 

@@ -54,7 +54,7 @@ public abstract class EFileFilter implements FileFilter {
                 return acceptEFolder(new EFolder(file));
             } catch (IOException e) {
                 GuiPlugin.get().error(
-                        "Couldn't create EFolder from file " + file, e);
+                        "Couldn't create EFolder from file " + file, e); //$NON-NLS-1$
                 return false;
             }
         } else {

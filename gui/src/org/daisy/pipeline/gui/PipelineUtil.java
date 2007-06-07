@@ -43,12 +43,12 @@ public final class PipelineUtil {
     public static final String TRANS_DOC_DIR = DOC_DIR + "/transformers"; //$NON-NLS-1$
     public static final String USER_DOC_DIR = DOC_DIR + "/enduser"; //$NON-NLS-1$
     // Preferences Keys
-    public static final String PATH_TO_LAME = "PATH_TO_LAME";
-    public static final String PATH_TO_LAME_DEFAULT = "/path/to/lame.exe";
-    public static final String PATH_TO_PYTHON = "PATH_TO_PYTHON";
-    public static final String PATH_TO_PYTHON_DEFAULT = "/path/to/python.exe";
-    public static final String PATH_TO_TEMP_DIR = "PATH_TO_TEMP_DIR";
-    public static final String PATH_TO_TEMP_DIR_DEFAULT = "/path/to/tmp";
+    public static final String PATH_TO_LAME = "PATH_TO_LAME"; //$NON-NLS-1$
+    public static final String PATH_TO_LAME_DEFAULT = "/path/to/lame.exe"; //$NON-NLS-1$
+    public static final String PATH_TO_PYTHON = "PATH_TO_PYTHON"; //$NON-NLS-1$
+    public static final String PATH_TO_PYTHON_DEFAULT = "/path/to/python.exe"; //$NON-NLS-1$
+    public static final String PATH_TO_TEMP_DIR = "PATH_TO_TEMP_DIR"; //$NON-NLS-1$
+    public static final String PATH_TO_TEMP_DIR_DEFAULT = "/path/to/tmp"; //$NON-NLS-1$
 
     private PipelineUtil() {
     }
@@ -64,11 +64,11 @@ public final class PipelineUtil {
 
     public static Properties convPrefToProperties() {
         Properties properties = new Properties();
-        properties.setProperty("dmfc.lame.path", PreferencesUtil.get(
+        properties.setProperty("dmfc.lame.path", PreferencesUtil.get( //$NON-NLS-1$
                 PATH_TO_LAME, PATH_TO_LAME_DEFAULT));
-        properties.setProperty("pipeline.python.path", PreferencesUtil.get(
+        properties.setProperty("pipeline.python.path", PreferencesUtil.get( //$NON-NLS-1$
                 PATH_TO_PYTHON, PATH_TO_PYTHON_DEFAULT));
-        properties.setProperty("dmfc.tempDir", PreferencesUtil.get(
+        properties.setProperty("dmfc.tempDir", PreferencesUtil.get( //$NON-NLS-1$
                 PATH_TO_TEMP_DIR, PATH_TO_TEMP_DIR_DEFAULT));
         return properties;
     }

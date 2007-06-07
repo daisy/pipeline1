@@ -36,7 +36,7 @@ public class XhtmlTitleProvider {
 			while(xsr.hasNext()) {
 				xsr.next();
 				if(xsr.isStartElement()) {
-					if(xsr.getLocalName().equals("title")||xsr.getLocalName().matches("h1|h2|h3|h4|h5|h6")) {
+					if(xsr.getLocalName().equals("title")||xsr.getLocalName().matches("h1|h2|h3|h4|h5|h6")) { //$NON-NLS-1$ //$NON-NLS-2$
 						return xsr.getElementText();
 					}					
 				}

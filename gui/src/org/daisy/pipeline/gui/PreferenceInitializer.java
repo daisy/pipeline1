@@ -16,10 +16,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     public void initializeDefaultPreferences() {
         try {
             PreferencesUtil.put(PipelineUtil.PATH_TO_TEMP_DIR, File
-                    .createTempFile("dont", "care").getParent(),
+                    .createTempFile("dont", "care").getParent(), //$NON-NLS-1$ //$NON-NLS-2$
                     new DefaultScope());
         } catch (IOException e) {
-            GuiPlugin.get().warn("Couldn't find the default temp directory", e);
+            GuiPlugin.get().warn("Couldn't find the default temp directory", e); //$NON-NLS-1$
         }
     }
 
