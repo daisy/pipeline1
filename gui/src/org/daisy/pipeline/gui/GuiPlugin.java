@@ -19,9 +19,8 @@ package org.daisy.pipeline.gui;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.daisy.pipeline.core.DMFCCore;
@@ -44,11 +43,11 @@ import org.osgi.framework.BundleContext;
 
 public class GuiPlugin extends AbstractUIPlugin {
 
+    public static final String ID = "org.daisy.pipeline.gui"; //$NON-NLS-1$
+    public static final String CORE_ID = "org.daisy.pipeline"; //$NON-NLS-1$
+
     // The shared instance.
     private static GuiPlugin plugin;
-    public static final String ID = "org.daisy.pipeline.gui"; //$NON-NLS-1$
-
-    public static final String CORE_ID = "org.daisy.pipeline"; //$NON-NLS-1$
 
     private DMFCCore core;
     private UUID uuid;
@@ -63,37 +62,14 @@ public class GuiPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * This method is called upon plug-in activation.
+     * Returns an image descriptor for the image file at the given plug-in
+     * relative path.
+     * 
+     * @param path the path
+     * @return the image descriptor
      */
-    @Override
-    public void start(BundleContext context) throws Exception {
-        super.start(context);
-        try {
-            initLog();
-            initCore();
-            MessageManager.getDefault().init();
-            ScriptManager.getDefault().init();
-            StateManager.getDefault().init();
-        } catch (Exception e) {
-            error("an error ocurred", e); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * This method is called when the plug-in is stopped.
-     */
-    @Override
-    public void stop(BundleContext context) throws Exception {
-        super.stop(context);
-        plugin = null;
-    }
-
-    public DMFCCore getCore() {
-        return core;
-    }
-
-    public UUID getUUID() {
-        return uuid;
+    public static ImageDescriptor createDescriptor(String path) {
+        return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
     }
 
     /**
@@ -111,24 +87,14 @@ public class GuiPlugin extends AbstractUIPlugin {
         return get().getImageRegistry().get(key);
     }
 
-    public static Image getSharedImage(String key) {
-        return PlatformUI.getWorkbench().getSharedImages().getImage(key);
-    }
-
-    public static ImageDescriptor getSharedDescriptor(String key) {
-        return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-                key);
-    }
-
-    /**
-     * Returns an image descriptor for the image file at the given plug-in
-     * relative path.
-     * 
-     * @param path the path
-     * @return the image descriptor
-     */
-    public static ImageDescriptor createDescriptor(String path) {
-        return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
+    public static File getResourceFile(String name) {
+        try {
+            URL url = FileLocator.toFileURL(get().getBundle().getEntry(name));
+            return new File(url.toURI());
+        } catch (Exception e) {
+            plugin.error("Couldn't fetch resource " + name, e); //$NON-NLS-1$
+        }
+        return null;
     }
 
     public static URL getResourceURL(String name) {
@@ -140,24 +106,66 @@ public class GuiPlugin extends AbstractUIPlugin {
         return null;
     }
 
-    public static File getResourceFile(String name) {
+    public static ImageDescriptor getSharedDescriptor(String key) {
+        return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
+                key);
+    }
+
+    public static Image getSharedImage(String key) {
+        return PlatformUI.getWorkbench().getSharedImages().getImage(key);
+    }
+
+    public void error(String message, Throwable t) {
+        getLog().log(new Status(IStatus.ERROR, ID, 0, message, t));
+    }
+
+    public DMFCCore getCore() {
+        return core;
+    }
+
+    public UUID getUUID() {
+        return uuid;
+    }
+
+    public void info(String message, Throwable t) {
+        getLog().log(new Status(IStatus.INFO, ID, 0, message, t));
+    }
+
+    /**
+     * This method is called upon plug-in activation.
+     */
+    @Override
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
         try {
-            URL url = FileLocator.toFileURL(get().getBundle().getEntry(name));
-            return new File(url.toURI());
+            initLog();
+            initCore();
+            MessageManager.getDefault().init();
+            ScriptManager.getDefault().init();
+            StateManager.getDefault().init();
+            logSystemInfo();
         } catch (Exception e) {
-            plugin.error("Couldn't fetch resource " + name, e); //$NON-NLS-1$
+            error("an error ocurred", e); //$NON-NLS-1$
         }
-        return null;
+    }
+
+    /**
+     * This method is called when the plug-in is stopped.
+     */
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        super.stop(context);
+        plugin = null;
+    }
+
+    public void warn(String message, Throwable t) {
+        getLog().log(new Status(IStatus.WARNING, ID, 0, message, t));
     }
 
     private void initCore() throws IOException, DMFCConfigurationException {
-        try {
-            URI propsDir = Platform.getConfigurationLocation().getURL().toURI();
-            core = new DMFCCore(null, PipelineUtil
-                    .getDir(PipelineUtil.HOME_DIR), propsDir);
-        } catch (URISyntaxException e) {
-            error("Unexpected exception", e);//$NON-NLS-1$
-        }
+        File homeDir = PipelineUtil.getDir(PipelineUtil.HOME_DIR);
+        Properties userProps = PipelineUtil.convPrefToProperties();
+        core = new DMFCCore(null, homeDir, userProps);
     }
 
     private void initLog() {
@@ -169,16 +177,22 @@ public class GuiPlugin extends AbstractUIPlugin {
         }
     }
 
-    public void error(String message, Throwable t) {
-        getLog().log(new Status(IStatus.ERROR, ID, 0, message, t));
-    }
-
-    public void info(String message, Throwable t) {
-        getLog().log(new Status(IStatus.INFO, ID, 0, message, t));
-    }
-
-    public void warn(String message, Throwable t) {
-        getLog().log(new Status(IStatus.WARNING, ID, 0, message, t));
+    private void logSystemInfo() {
+        // Log location info
+        info("Plugin State Location: "
+                + Platform.getStateLocation(getBundle()).toString(), null);
+        info("User Location: " + Platform.getUserLocation().getURL(), null);
+        info("Instance Location: " + Platform.getInstanceLocation().getURL(),
+                null);
+        info("Install Location: " + Platform.getInstallLocation().getURL(),
+                null);
+        info("Configuration Location: "
+                + Platform.getConfigurationLocation().getURL(), null);
+        // Log system properties
+        Properties properties = System.getProperties();
+        for (Object key : properties.keySet()) {
+            info(key + "= " + properties.getProperty((String) key), null);
+        }
     }
 
     @Override
