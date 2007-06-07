@@ -20,11 +20,12 @@ package org.daisy.pipeline.core;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.net.URI;
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
@@ -88,22 +89,33 @@ public class DMFCCore implements TransformerHandlerLoader {
      * @param homeDir the home directory
      * @param propsDir the location of the pipeline properties file
      */
-    public DMFCCore(InputListener inListener, File homeDir, URI propsDir)
+    public DMFCCore(InputListener inListener, File homeDir, Properties userProps)
             throws DMFCConfigurationException {
         mInputListener = inListener;
         mHomeDirectory = homeDir;
         mCreator = new Creator(this);
         mRunner = new Runner();
-        initialize(propsDir);
+        initialize(userProps);
     }
 
-    private void initialize(URI propsDir) throws DMFCConfigurationException,
-            SecurityException {
+    private void initialize(Properties userProps)
+            throws DMFCConfigurationException, SecurityException {
         // Load properties
         // mg 20070530: we use two properties files; one with likelihood of user
         // access and one less likely
-        loadProperties(propsDir, "pipeline.properties");
-        loadProperties(propsDir, "pipeline.user.properties");
+        // Init system properties
+        URL propsURL = getClass().getClassLoader().getResource(
+                "pipeline.properties");
+        XMLProperties properties = new XMLProperties(System.getProperties());
+        try {
+            properties.loadFromXML(propsURL.openStream());
+        } catch (IOException e) {
+            throw new DMFCConfigurationException(
+                    "Can't read pipeline.properties", e);
+        }
+        System.setProperties(properties);
+        // Init user properties
+        setUserProperties(userProps);
 
         // Load messages
         ResourceBundle bundle = XMLPropertyResourceBundle.getBundle((this
@@ -120,8 +132,6 @@ public class DMFCCore implements TransformerHandlerLoader {
 
         I18n.setDefaultBundle(bundle);
 
-        TempFile.setTempDir(new File(System.getProperty("dmfc.tempDir")));
-
         // Setup logging
         Logger lg = Logger.getLogger("");
         Handler[] handlers = lg.getHandlers();
@@ -132,6 +142,22 @@ public class DMFCCore implements TransformerHandlerLoader {
     }
 
     /**
+     * Configure the Pipeline with the given user properties. This
+     * implementation adds the given properties to the System properties.
+     * 
+     * @param properties the user properties used to configure the Pipeline
+     */
+    public void setUserProperties(Properties properties) {
+        // Set system properties
+        for (Object key : properties.keySet()) {
+            String name = (String) key;
+            System.setProperty(name, properties.getProperty(name));
+        }
+        // Apply new properties if possible
+        TempFile.setTempDir(new File(System.getProperty("dmfc.tempDir")));
+    }
+
+    /**
      * Gets the home directory of DMFC.
      * 
      * @return the home directory of DMFC or <code>null</code> if it has not
@@ -139,30 +165,6 @@ public class DMFCCore implements TransformerHandlerLoader {
      */
     public File getHomeDirectory() {
         return mHomeDirectory;
-    }
-
-    /**
-     * Adds a set of properties to the system properties.
-     * 
-     * @param propsLoc the URI of the properties file parent directory
-     * @param propsName the name of the properties file
-     * @throws DMFCConfigurationException if the properties couldn't be loaded
-     */
-    private void loadProperties(URI propsLoc, String propsName)
-            throws DMFCConfigurationException {
-        try {
-            URL propsURL = null; 
-            if (propsLoc == null) {
-            	propsURL = this.getClass().getClassLoader().getResource(propsName);
-            } else {
-            	propsURL = propsLoc.resolve(propsName).toURL();
-            }
-            XMLProperties properties = new XMLProperties(System.getProperties());
-            properties.loadFromXML(propsURL.openStream());
-            System.setProperties(properties);
-        } catch (Exception e) {
-            throw new DMFCConfigurationException("Can't read " + propsName, e);
-        }
     }
 
     /*

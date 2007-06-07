@@ -27,7 +27,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.EventObject;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,6 +62,7 @@ import org.daisy.pipeline.core.script.datatype.StringDatatype;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.DMFCConfigurationException;
 import org.daisy.pipeline.exception.JobFailedException;
+import org.daisy.util.i18n.XMLProperties;
 
 /**
  * A simple command line UI for running DMFC.
@@ -168,7 +168,18 @@ public class CommandLineUI implements InputListener, BusListener {
             EventBus.getInstance().subscribe(ui, MessageEvent.class);
             EventBus.getInstance().subscribe(ui, StateChangeEvent.class);
 
-            DMFCCore dmfc = new DMFCCore(ui, findHomeDirectory());
+            // Load user properties
+            URL propsURL = CommandLineUI.class.getClassLoader().getResource(
+                    "pipeline.user.properties");
+            XMLProperties properties = new XMLProperties();
+            try {
+                properties.loadFromXML(propsURL.openStream());
+            } catch (IOException e) {
+                throw new DMFCConfigurationException(
+                        "Can't read pipeline.user.properties", e);
+            }
+
+            DMFCCore dmfc = new DMFCCore(ui, findHomeDirectory(),properties);
             Script script = dmfc.newScript(scriptFile.toURI().toURL());
             Job job = new Job(script);
 
@@ -223,7 +234,7 @@ public class CommandLineUI implements InputListener, BusListener {
             if (event instanceof MessageEvent) {
                 MessageEvent sme = (MessageEvent) event;
                 StringBuilder message = new StringBuilder();
-                
+
                 String type = null;
                 switch (sme.getType()) {
                 case INFO:
@@ -255,32 +266,32 @@ public class CommandLineUI implements InputListener, BusListener {
                 }
 
                 StringBuilder location = new StringBuilder();
-                if(sme.getLocation() !=null) {
-                	Location loc = sme.getLocation();
-                	String sysId = loc.getSystemId();
-                	if(sysId!=null && sysId.length()>0){
-	                	File file = new File(sysId);       
-	                	location.append(" Location: ");
-	                	location.append(file.getPath());	                	
-	                	if(loc.getLineNumber()> -1 ) {
-	                		location.append(' ');
-	                		location.append(loc.getLineNumber());
-	                		if(loc.getColumnNumber()> -1 ) {
-	                			location.append(':');
-	                			location.append(loc.getColumnNumber());
-	                		}
-	                	}	                		                	
-                	}
+                if (sme.getLocation() != null) {
+                    Location loc = sme.getLocation();
+                    String sysId = loc.getSystemId();
+                    if (sysId != null && sysId.length() > 0) {
+                        File file = new File(sysId);
+                        location.append(" Location: ");
+                        location.append(file.getPath());
+                        if (loc.getLineNumber() > -1) {
+                            location.append(' ');
+                            location.append(loc.getLineNumber());
+                            if (loc.getColumnNumber() > -1) {
+                                location.append(':');
+                                location.append(loc.getColumnNumber());
+                            }
+                        }
+                    }
                 }
-                
+
                 message.append('[');
                 message.append(type);
                 message.append(',').append(' ');
                 message.append(who);
                 message.append(']').append(' ');
-                message.append(sme.getMessage());                                
+                message.append(sme.getMessage());
                 message.append(location.toString());
-                
+
                 System.out.println(message.toString());
 
             } else if (event instanceof StateChangeEvent) {
