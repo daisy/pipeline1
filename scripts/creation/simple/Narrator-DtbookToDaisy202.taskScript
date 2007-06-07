@@ -1,6 +1,6 @@
 <taskScript version="2.0" name="dtbook2daisy202">
-	<nicename>Narrator (Daisy 2.02)</nicename>
-	<description>Converts a DTBook 2005 file to a complete Daisy 2.02 file set</description>
+	<nicename>Narrator</nicename>
+	<description>Converts a DTBook 2005 file to a complete DAISY/NISO 2005 and a Daisy 2.02 file set</description>
 	<documentation uri="../../../doc/scripts/Narrator-DtbookToDaisy202.html"/>
 		
 	<parameter name="input" value="" required="true">
@@ -13,7 +13,7 @@
 	
 	<parameter name="outputPath" value="" required="true">
 		<nicename>Output folder</nicename>
-		<description>Base folder for the narrator output</description>
+		<description>Base folder for the Narrator output</description>
 		<datatype>
 			<directory type="output"/>
 		</datatype>

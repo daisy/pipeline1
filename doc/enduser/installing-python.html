@@ -35,7 +35,16 @@
 	<p>This section remains to be written. For now, please refer to the process as described in the section <a href="#win">Installing and configuring Python on Windows</a>.</p>
 	
 	<h2 id="linux">Installing and configuring Python on Linux</h2>	
-	<p>This section remains to be written. For now, please refer to the process as described in the section <a href="#win">Installing and configuring Python on Windows</a>.</p>
+	<p>Python is most likely already installed on your system. If not, you need to install it manually. This process is out of scope for thsi document since the method differs for each Linux distribution,
+	   but Ubuntu users will probably use the <code>Synaptic</code> package manager, Fedora users can simply type <code>yum install python</code> with root privileges while Debian users need to type
+	   <code>apt-get install python</code>. Refer to the documentation of your Linux distribution for details.</p>
 	
+	<p>To find the path to your python interpreter, type <code>which python</code> in a terminal window. If you run the GUI version of the Daisy Pipeline,
+	you need to add this path to the 'Paths' page in the preferences. If you run the command line version of the Daisy Pipeline you need to edit the
+	<code>pipeline.user.properties</code> file in the root folder of the Daisy Pipeline installation and edit the <code>pipeline.python.path</code> property.</p>
+	<p>For example, if Python is installed in <code>/usr/bin/python</code>, the resulting element in pipeline.properties should read:</p>
+	<pre><code>
+&lt;entry key="pipeline.python.path"&gt;/usr/bin/python&lt;/entry&gt;
+	</code></pre>
 	</body>
 </html>

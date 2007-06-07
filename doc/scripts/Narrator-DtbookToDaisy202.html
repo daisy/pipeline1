@@ -3,11 +3,11 @@
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
 <head>
 	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
-	<title>Pipeline Script: Narrator (Daisy 2.02)</title>
+	<title>Pipeline Script: Narrator</title>
 	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
 </head>
 <body>
-<h1 class="title">Pipeline Script: <em>Narrator (Daisy 2.02)</em></h1>
+<h1 class="title">Pipeline Script: <em>Narrator</em></h1>
 <!-- script documentation contains primarily end-user-centric information -->
 
 <div id="toc" class="toc">
@@ -22,14 +22,14 @@
 
 <h2 id="overview">Overview</h2>
 <!-- brief summary of purpose and whats going on. What does this script do really? -->
-<p>This script creates a Daisy 2.02 DTB from a DTBook 2005 document. A TTS is used to create
+<p>This script creates a DAISY/NISO 2005 DTB and a Daisy 2.02 DTB from a DTBook 2005 document. A <acronym title="Text To Speech">TTS</acronym> system is used to create
    the audio for the book. <code>xml:lang</code> attributes in the DTBook input document are used
    to switch language of the TTS.</p>
    
 <p class="alert">Note - at the time of writing, the default distribution of the Daisy Pipeline only
 supports running the Narrator script on the Windows&trade; operating system.</p>   
 
-<p class="alert">Note - this script requires that you have the <strong>Lame MP3 encoder</strong> installed on your system. Please refer to the <a href="../enduser/installing-lame.html">LAME installation instrcuctions</a>.</p>   
+<p class="alert">Note - this script requires that you have the <strong>Lame MP3 encoder</strong> installed on your system. Please refer to the <a href="../enduser/installing-lame.html">LAME installation instructions</a>.</p>   
 
 
 <h2 id="inputReqs">Input Requirements</h2>
@@ -55,6 +55,9 @@ supports running the Narrator script on the Windows&trade; operating system.</p>
 <p>A valid Daisy 2.02 full text full audio book with full skipabillity (page numbers, sidebars,
    production notes and foot notes). The book is synchronized on sentence level and the audio
    is encoded in MP3 format.</p>
+<p>A valid DAISY/NISO 2005 full text full audio book with full skipabillity and escapability.
+   As a part of the Narrator chain, the book is validated using ZedVal.</p>
+
 
 <h2 id="config">Configuration</h2>
 <!-- description on params exposed in script -->
@@ -69,7 +72,7 @@ supports running the Narrator script on the Windows&trade; operating system.</p>
 	    requirements</a> section.</dd>
 	<dt>Output directory</dt>
 	<dd><strong>Required.</strong> The base directory of the output. Since Narrator stores some intermediate files in this directory,
-	    the resulting Daisy 2.02 book is located in the <code>daisy202</code> subdirectory.</dd>
+	    the resulting DAISY/NISO 2005 book will be located in the z3986 subdirectory while the Daisy 2.02 book will be located in the <code>daisy202</code> subdirectory.</dd>
 	<dt>Bitrate</dt>
 	<dd><strong>Optional.</strong> The bitrate of the generated MP3 files. A higher value will result in better sound quality
 	    but the audio files will be larger.</dd>
