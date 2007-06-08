@@ -30,6 +30,9 @@
       <property
             name="introBrandingImageText"
             value="%intro.brandingImageText"/>
+      <property
+            name="aboutImage"
+            value="branding/about.gif"/>
       </product>
    </extension>
    <extension
@@ -263,6 +266,11 @@
             schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
             sequence="M1+M2+F1"/>
       <key
+            commandId="org.daisy.pipeline.gui.command.toggleBrowser"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="F6"/>
+      <key
             commandId="org.eclipse.ui.navigate.back"
             schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
             sequence="M1+ARROW_LEFT"/>
@@ -353,6 +361,11 @@
             description="%command.runAll.description"
             id="org.daisy.pipeline.gui.command.runAll"
             name="%command.runAll"/>
+      <command
+            categoryId="org.eclipse.ui.category.navigate"
+            description="%command.toggleBrowser.description"
+            id="org.daisy.pipeline.gui.command.toggleBrowser"
+            name="%command.toggleBrowser"/>
    </extension>
    <extension
          point="org.eclipse.ui.intro">
