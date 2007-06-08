@@ -14,6 +14,38 @@ http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
 
 ***********************************
+Pipeline release candidate 1, 2007-06-08
+***********************************
+The development team initially intended to release a fully public release today,
+but due to an underestimated workload to get the Pipeline GUI and Core co-
+operating as desired, we have decided to delay the public release approximately 
+two to three weeks.
+
+Nevertheless, todays release is 100% feature complete, give or take some percents, 
+and a still not finalized introductory first-launch welcome screen. Further, some 
+bugs remain, and some documents remain to be written. 
+
+This release will be followed by a fully equipped release in late June 2007.
+
+Changes in GUI:
+- Fixed several bugs and accessibility issues. Many thanks to Avneesh for providing screen reader usage input.
+- Added preferences dialog
+- Added branding features (note - branding is not 100% complete.)
+- Developer oriented changes: substantial changes to build process
+
+Bug reports and and usability improvements are welcome. 
+To provide your input, please use the Pipeline GUI feature request and bug report trackers on [1] and [2].
+
+[1] http://sourceforge.net/tracker/?group_id=162777&atid=951927
+[2] http://sourceforge.net/tracker/?group_id=162777&atid=951926
+
+Changes in Core:
+- Complete set of scripts for this release committed. Special thanks to Dave Pawson for helping to finalize the ODF to DTBook transform.
+- Added documentation (note - documentation suite is not 100% complete)
+ 
+
+
+***********************************
 Pipeline GUI beta, 2007-05-25
 ***********************************
 The primary purpose of this release is to enable testing and evaluation of a new GUI. 
