@@ -122,12 +122,17 @@
          <action
                class="org.daisy.pipeline.gui.jobs.CancelAction"
                definitionId="org.daisy.pipeline.gui.command.cancel"
+               enablesFor="+"
                icon="icons/action-stop.gif"
                id="org.daisy.pipeline.gui.action.cancel"
                label="%action.cancel"
                menubarPath="org.daisy.pipeline.gui.menu.run/run"
                style="push"
-               tooltip="%action.cancel.tooltip"/>
+               tooltip="%action.cancel.tooltip">
+            <enablement>
+               <objectClass name="org.daisy.pipeline.gui.model.JobInfo"/>
+            </enablement>
+         </action>
          <action
                class="org.daisy.pipeline.gui.jobs.RunAllAction"
                definitionId="org.daisy.pipeline.gui.command.runAll"
@@ -140,30 +145,45 @@
          <action
                class="org.daisy.pipeline.gui.jobs.RunAction"
                definitionId="org.daisy.pipeline.gui.command.run"
+               enablesFor="+"
                icon="icons/action-run.gif"
                id="org.daisy.pipeline.gui.action.run"
                label="%action.run"
                menubarPath="org.daisy.pipeline.gui.menu.run/run"
                style="push"
-               tooltip="%action.run.tooltip"/>
+               tooltip="%action.run.tooltip">
+            <enablement>
+               <objectClass name="org.daisy.pipeline.gui.model.JobInfo"/>
+            </enablement>
+         </action>
          <action
                class="org.daisy.pipeline.gui.jobs.CancelPullDownAction"
                definitionId="org.daisy.pipeline.gui.command.cancelDropDown"
+               enablesFor="+"
                icon="icons/action-stop.gif"
                id="org.daisy.pipeline.gui.action.cancelPullDown"
                label="%action.cancel"
                style="pulldown"
                toolbarPath="Normal/additions"
-               tooltip="%action.cancel.tooltip"/>
+               tooltip="%action.cancel.tooltip">
+            <enablement>
+               <objectClass name="org.daisy.pipeline.gui.model.JobInfo"/>
+            </enablement>
+         </action>
          <action
                class="org.daisy.pipeline.gui.jobs.RunPullDownAction"
                definitionId="org.daisy.pipeline.gui.command.runDropDown"
+               enablesFor="+"
                icon="icons/action-run.gif"
                id="org.daisy.pipeline.gui.action.runPullDown"
                label="%action.run"
                style="pulldown"
                toolbarPath="Normal/additions"
-               tooltip="%action.run.tooltip"/>
+               tooltip="%action.run.tooltip">
+            <enablement>
+               <objectClass name="org.daisy.pipeline.gui.model.JobInfo"/>
+            </enablement>
+         </action>
          <action
                class="org.daisy.pipeline.gui.jobs.NewJobAction"
                definitionId="org.daisy.pipeline.gui.command.newItem"
