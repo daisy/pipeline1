@@ -1,20 +1,19 @@
 /*
- * DAISY Pipeline GUI
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * DAISY Pipeline GUI Copyright (C) 2006 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.pipeline.gui;
 
@@ -46,6 +45,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction aboutAction;
     private IWorkbenchAction deleteAction;
     private IWorkbenchAction exitAction;
+    private IWorkbenchAction introAction;
     private IWorkbenchAction maximizeAction;
     private IWorkbenchAction minimizeAction;
     private IWorkbenchAction navBackAction;
@@ -85,6 +85,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(deleteAction);
         exitAction = ActionFactory.QUIT.create(window);
         register(exitAction);
+        introAction = ActionFactory.INTRO.create(window);
+        register(introAction);
         maximizeAction = ActionFactory.MAXIMIZE.create(window);
         register(maximizeAction);
         minimizeAction = ActionFactory.MINIMIZE.create(window);
@@ -144,8 +146,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         menuBar.add(helpMenu);
 
         // File menu
-        MenuManager newSubMenu = new MenuManager(Messages.menu_new, ActionFactory.NEW
-                .getId());
+        MenuManager newSubMenu = new MenuManager(Messages.menu_new,
+                ActionFactory.NEW.getId());
         newSubMenu.add(wizardListItem);
         fileMenu.add(newSubMenu);
         fileMenu.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
@@ -164,12 +166,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         // TODO add find/replace action
 
         // Window menu
-        MenuManager perspSubMenu = new MenuManager(Messages.menu_window_openPerspective,
-                "openPerspective"); //$NON-NLS-1$
+        MenuManager perspSubMenu = new MenuManager(
+                Messages.menu_window_openPerspective, "openPerspective"); //$NON-NLS-1$
         perspSubMenu.add(perspListItem);
-        MenuManager viewSubMenu = new MenuManager(Messages.menu_window_showView, "showView"); //$NON-NLS-1$
+        MenuManager viewSubMenu = new MenuManager(
+                Messages.menu_window_showView, "showView"); //$NON-NLS-1$
         viewSubMenu.add(viewListItem);
-        MenuManager navSubMenu = new MenuManager(Messages.menu_window_navigation, "navigation"); //$NON-NLS-1$
+        MenuManager navSubMenu = new MenuManager(
+                Messages.menu_window_navigation, "navigation"); //$NON-NLS-1$
         navSubMenu.add(showPaneMenuAction);
         navSubMenu.add(showViewMenuAction);
         navSubMenu.add(new Separator());
@@ -192,6 +196,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         //
 
         // Help menu
+        helpMenu.add(introAction);
+        helpMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        helpMenu.add(new Separator());
         helpMenu.add(aboutAction);
     }
 
