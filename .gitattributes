@@ -2,6 +2,7 @@
 META-INF/MANIFEST.MF -text
 /build.properties -text
 /custom.xml -text
+doc/404.html -text
 doc/dev_old/diagram.png -text
 doc/developer/java-coding-conventions.html -text
 doc/developer/localizing-and-customizing-pipeline-narrator.html -text
