@@ -223,7 +223,7 @@ public class GuiPlugin extends AbstractUIPlugin {
         reg.put(IIconsKeys.STATE_IDLE, createDescriptor(IIconsKeys.STATE_IDLE));
         reg.put(IIconsKeys.STATE_RUNNING,
                 createDescriptor(IIconsKeys.STATE_RUNNING));
-        reg.put(IIconsKeys.STATE_RUNNING,
+        reg.put(IIconsKeys.STATE_WAITING,
                 createDescriptor(IIconsKeys.STATE_WAITING));
         reg.put(IIconsKeys.TREE_CATEGORY,
                 createDescriptor(IIconsKeys.TREE_CATEGORY));
