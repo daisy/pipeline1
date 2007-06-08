@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
 <taskScript version="2.0" name="dtbook2daisy202">
 	<nicename>Narrator</nicename>
 	<description>Converts a DTBook 2005 file to a complete DAISY/NISO 2005 and a Daisy 2.02 file set</description>
@@ -43,6 +44,10 @@
 		<parameter>
 			<name>schemas</name>
 			<value>-//TPB//SCH dtbook 2005 Narrator//EN</value>
+		</parameter>
+		<parameter>
+			<name>requireInputType</name>
+			<value>Dtbook document</value>
 		</parameter>
 		<parameter>
 			<name>abortThreshold</name>
@@ -178,7 +183,7 @@
 		
 		<parameter>
 			<name>mp3Output</name>
-			<value>true</value>
+			<value>false</value>
 		</parameter>
 		<parameter>
 			<name>concurrentAudioMerge</name>
@@ -209,7 +214,6 @@
 	<!-- *************************
 	      z3986 Validation (zedval)
 	     ************************* -->
-
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>
