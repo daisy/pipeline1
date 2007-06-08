@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DAISY Pipeline
 Bundle-SymbolicName: org.daisy.pipeline
-Bundle-Version: 0.0.1
+Bundle-Version: 1.0.0
 Bundle-ClassPath: 
  daisy-pipeline.jar,
  daisy-util.jar,
