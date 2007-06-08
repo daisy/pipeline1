@@ -55,11 +55,11 @@
   <!-- ************************************************** -->
 
   <h2 id="introduction">Introduction</h2>
-  <p>The Daisy Pipeline executes <em>Tasks</em>. Each task in its turn is defined in a taskscript file. The taskscript
+  <p>The Daisy Pipeline executes <em>Jobs</em>. Each Job in its turn is defined in a taskScript (or Script, for short) file. The taskScript
   defines what Transformers are executed in what order, and it defines what parameters are sent to the Transformers as
   they execute.</p>
   
-  <p>The Taskscript is an XML grammar. A compound RelaxNG+Schematron Schema<a class="note" href="note1"><sup>1</sup></a> exists to validate it. The Taskscript file is parsed (and validated) 
+  <p>The taskscript is an XML grammar. A compound RelaxNG+Schematron Schema<a class="note" href="note1"><sup>1</sup></a> exists to validate it. The Taskscript file is parsed (and validated) 
   by the Pipeline core at initialization time.</p>
   
   <h2 id="identification">Identification</h2>
