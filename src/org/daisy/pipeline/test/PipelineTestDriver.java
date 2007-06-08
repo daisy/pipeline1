@@ -9,6 +9,7 @@ import org.daisy.pipeline.test.impl.CharacterRepertoireManipulator1;
 import org.daisy.pipeline.test.impl.CharsetSwitcher1;
 import org.daisy.pipeline.test.impl.ConfigurableValidator1;
 import org.daisy.pipeline.test.impl.D202dtbValidator1;
+import org.daisy.pipeline.test.impl.D202dtbValidator2;
 import org.daisy.pipeline.test.impl.DTBAudioEncoder1;
 import org.daisy.pipeline.test.impl.DTBAudioEncoderSplitter1;
 import org.daisy.pipeline.test.impl.DTBSplitter1;
@@ -105,7 +106,8 @@ public class PipelineTestDriver {
 		List<PipelineTest> tests = new LinkedList<PipelineTest>(); 
 
 //		tests.add(new ConfigurableValidator1(inputDir, outputDir));
-//		tests.add(new D202dtbValidator1(inputDir, outputDir));
+		tests.add(new D202dtbValidator1(inputDir, outputDir));
+//		tests.add(new D202dtbValidator2(inputDir, outputDir));
 //		tests.add(new DTBookValidator1(inputDir, outputDir));
 //		tests.add(new DTBookValidator2(inputDir, outputDir));
 //		tests.add(new FilesetRenamer1(inputDir, outputDir));
@@ -129,7 +131,7 @@ public class PipelineTestDriver {
 //		tests.add(new Odf2dtbook1(inputDir, outputDir));
 //		tests.add(new CharacterRepertoireManipulator1(inputDir, outputDir));
 //		tests.add(new Odf2xhtml1(inputDir, outputDir));
-		tests.add(new Odf2dtbook1(inputDir, outputDir));
+//		tests.add(new Odf2dtbook1(inputDir, outputDir));
 //		tests.add(new Odf2dtbook2(inputDir, outputDir));
 		
 ////////// tests with input data not in samples dir: 		

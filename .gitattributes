@@ -276,6 +276,7 @@ src/org/daisy/pipeline/test/impl/CharacterRepertoireManipulator1.java -text
 src/org/daisy/pipeline/test/impl/CharsetSwitcher1.java -text
 src/org/daisy/pipeline/test/impl/ConfigurableValidator1.java -text
 src/org/daisy/pipeline/test/impl/D202dtbValidator1.java -text
+src/org/daisy/pipeline/test/impl/D202dtbValidator2.java -text
 src/org/daisy/pipeline/test/impl/DTBAudioEncoder1.java -text
 src/org/daisy/pipeline/test/impl/DTBAudioEncoderSplitter1.java -text
 src/org/daisy/pipeline/test/impl/DTBSplitter1.java -text
