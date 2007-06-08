@@ -1,7 +1,0 @@
-Mapping between vocabulary exposed to users and internal terminology
-
-User term				Pipeline term		
-
-Task					taskScript, script
-Transformer				Transformer
-Task Configuration		Script parameter(s)

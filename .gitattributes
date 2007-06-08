@@ -17,7 +17,6 @@ doc/enduser/installing-python.html -text
 doc/index-all.html -text
 doc/index-developer.html -text
 doc/index-enduser.html -text
-doc/needed.documentation.txt -text
 doc/pipeline.css -text
 doc/scripts/AudioTagger.html -text
 doc/scripts/CharacterRepertoireManipulator.html -text
@@ -73,7 +72,6 @@ doc/transformers/se_tpb_xmldetection.html -text
 doc/transformers/se_tpb_zed2daisy202.html -text
 doc/transformers/uk_rnib_dtbook2xhtml.html -text
 doc/transformers/uk_rnib_odf2dtbook.html -text
-doc/user.vocabulary.txt -text
 lib/ZedVal.jar -text
 lib/batik-css.jar -text
 lib/batik-util.jar -text
