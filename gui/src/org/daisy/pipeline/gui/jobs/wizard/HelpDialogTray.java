@@ -1,30 +1,35 @@
 /*
- * DAISY Pipeline GUI
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * DAISY Pipeline GUI Copyright (C) 2006 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.pipeline.gui.jobs.wizard;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.daisy.pipeline.gui.GuiPlugin;
+import org.daisy.pipeline.gui.ICommandConstants;
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.util.actions.BrowserBackAction;
 import org.daisy.pipeline.gui.util.actions.BrowserForwardAction;
+import org.daisy.pipeline.gui.util.actions.ToggleBrowserAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.jface.dialogs.DialogTray;
 import org.eclipse.jface.dialogs.IPageChangeProvider;
 import org.eclipse.jface.dialogs.IPageChangedListener;
@@ -41,6 +46,9 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.ActiveShellExpression;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.IHandlerService;
 
 /**
  * @author Romain Deltour
@@ -72,9 +80,9 @@ public class HelpDialogTray extends DialogTray implements IPageChangedListener {
     }
 
     public void setUrl(String string) {
-    	if (browser != null) {
-    		browser.setUrl(string);
-    	}
+        if (browser != null) {
+            browser.setUrl(string);
+        }
     }
 
     /**
@@ -144,29 +152,47 @@ public class HelpDialogTray extends DialogTray implements IPageChangedListener {
         separator.setLayoutData(gd);
 
         try {
-        	// Create the browser
-        	browser = new Browser(container, SWT.NONE);
-        	GridData data = new GridData(GridData.FILL_BOTH);
-        	data.widthHint = this.widthHint;
-        	browser.setLayoutData(data);
+            // Create the browser
+            browser = new Browser(container, SWT.NONE);
+            GridData data = new GridData(GridData.FILL_BOTH);
+            data.widthHint = this.widthHint;
+            browser.setLayoutData(data);
 
-        	// Create the actions
-        	createActions();
-        	tbm.add(backAction);
-        	tbm.add(forwardAction);
-        	tbm.add(closeAction);
-        	tbm.update(true);
-        	
-        	// Hook itself as a IPageChangeListener
+            // Create the actions
+            createActions();
+            tbm.add(backAction);
+            tbm.add(forwardAction);
+            tbm.add(closeAction);
+            tbm.update(true);
+
+            // Hook itself as a IPageChangeListener
             shell = parent.getShell();
-            hookPageChangeListener(shell);        
+            hookPageChangeListener(shell);
             browser.addListener(SWT.Dispose, new Listener() {
                 public void handleEvent(Event event) {
                     unhookPageChangeListener(shell);
                 }
             });
+
+            // Remove the browser from the tablist
+            List<Control> newTabList = new ArrayList<Control>();
+            Control[] oldTabList = container.getTabList();
+            for (Control control : oldTabList) {
+                if (!(control instanceof Browser)) {
+                    newTabList.add(control);
+                }
+            }
+            container.setTabList(newTabList.toArray(new Control[0]));
+
+            // Create the toggle browser action
+            ToggleBrowserAction tba = new ToggleBrowserAction(shell, browser);
+            // Register with the keybinding service
+            IHandlerService handlerService = (IHandlerService) PlatformUI
+                    .getWorkbench().getService(IHandlerService.class);
+            handlerService.activateHandler(ICommandConstants.TOGGLE_BROWSER,
+                    new ActionHandler(tba), new ActiveShellExpression(shell));
         } catch (SWTError e) {
-        	GuiPlugin.get().error("Couldn't instantiate browser widget", e); //$NON-NLS-1$
+            GuiPlugin.get().error("Couldn't instantiate the browser widget", e); //$NON-NLS-1$
         }
 
         return container;
@@ -193,20 +219,5 @@ public class HelpDialogTray extends DialogTray implements IPageChangedListener {
             shell.setFocus();
         }
 
-    }
-
-    public void setFocus() {
-        // browser.addFocusListener(new FocusListener() {
-        //
-        // public void focusGained(FocusEvent e) {
-        // System.out.println("browser gained focus");
-        // }
-        //
-        // public void focusLost(FocusEvent e) {
-        // System.out.println("browser lost focus");
-        // }
-        //
-        // });
-        // browser.forceFocus();
     }
 }
