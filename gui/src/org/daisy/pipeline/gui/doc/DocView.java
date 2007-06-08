@@ -1,20 +1,19 @@
 /*
- * DAISY Pipeline GUI
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * DAISY Pipeline GUI Copyright (C) 2006 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.pipeline.gui.doc;
 
@@ -24,14 +23,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.daisy.pipeline.gui.GuiPlugin;
+import org.daisy.pipeline.gui.ICommandConstants;
 import org.daisy.pipeline.gui.util.DelegatingSelectionProvider;
 import org.daisy.pipeline.gui.util.actions.BrowserBackAction;
 import org.daisy.pipeline.gui.util.actions.BrowserForwardAction;
+import org.daisy.pipeline.gui.util.actions.ToggleBrowserAction;
 import org.daisy.pipeline.gui.util.swt.ITabItemProvider;
+import org.daisy.pipeline.gui.util.swt.TabFolderTraverseListener;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -45,6 +48,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.ui.IActionBars;
@@ -54,6 +58,7 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -77,6 +82,7 @@ public class DocView extends ViewPart implements ISelectionListener,
     private IAction backAction;
     private IAction forwardAction;
     private IAction syncTocAction;
+    private IAction toggleBrowserAction;
 
     public DocView() {
         super();
@@ -134,25 +140,25 @@ public class DocView extends ViewPart implements ISelectionListener,
         for (ITabItemProvider tab : tocList) {
             tab.createTabItem(tocFolder);
         }
+        TabFolderTraverseListener.addNewTo(tocFolder);
 
-        
         try {
-        	// Create the browser
-        	browser = new Browser(sashForm, SWT.NONE);
-        	browser.setLayoutData(new GridData(GridData.FILL_BOTH));
-        	browser.addLocationListener(this);
-        	
-        	// Create the actions
-        	createActions();
-        	IActionBars actionBars = getViewSite().getActionBars();
-        	registerGlobalActions(actionBars);
-        	initMenu(actionBars.getMenuManager());
-        	initToolBar(actionBars.getToolBarManager());
+            // Create the browser
+            browser = new Browser(sashForm, SWT.NONE);
+            browser.setLayoutData(new GridData(GridData.FILL_BOTH));
+            browser.addLocationListener(this);
+
+            // Create the actions
+            createActions();
+            IActionBars actionBars = getViewSite().getActionBars();
+            registerGlobalActions(actionBars);
+            initMenu(actionBars.getMenuManager());
+            initToolBar(actionBars.getToolBarManager());
         } catch (SWTError e) {
-        	GuiPlugin.get().error("Couldn't instantiate browser widget", e); //$NON-NLS-1$
-        	Label label = new Label(sashForm, SWT.NONE);
-        	label.setLayoutData(new GridData(GridData.FILL_BOTH));
-        	label.setText(Messages.error_noBrowser + e.getLocalizedMessage());
+            GuiPlugin.get().error("Couldn't instantiate browser widget", e); //$NON-NLS-1$
+            Label label = new Label(sashForm, SWT.NONE);
+            label.setLayoutData(new GridData(GridData.FILL_BOTH));
+            label.setText(Messages.error_noBrowser + e.getLocalizedMessage());
         }
 
         // Finalize
@@ -160,6 +166,15 @@ public class DocView extends ViewPart implements ISelectionListener,
         selectionProvider = new DelegatingSelectionProvider();
         getSite().setSelectionProvider(selectionProvider);
         tocSelected(visibleToc);
+        // Remove browser from the tablist
+        List<Control> newTabList = new ArrayList<Control>();
+        Control[] oldTabList = sashForm.getTabList();
+        for (Control control : oldTabList) {
+            if (!(control instanceof Browser)) {
+                newTabList.add(control);
+            }
+        }
+        sashForm.setTabList(newTabList.toArray(new Control[0]));
     }
 
     @Override
@@ -220,6 +235,8 @@ public class DocView extends ViewPart implements ISelectionListener,
         backAction = new BrowserBackAction(browser);
         forwardAction = new BrowserForwardAction(browser);
         syncTocAction = new SyncTocAction(this);
+        toggleBrowserAction = new ToggleBrowserAction(getSite().getShell(),
+                browser);
     }
 
     protected List<ITocTab> createTocTabs() {
@@ -248,6 +265,10 @@ public class DocView extends ViewPart implements ISelectionListener,
                 backAction);
         actionBars.setGlobalActionHandler(ActionFactory.FORWARD.getId(),
                 forwardAction);
+        IHandlerService handlerService = (IHandlerService) getSite()
+                .getService(IHandlerService.class);
+        handlerService.activateHandler(ICommandConstants.TOGGLE_BROWSER,
+                new ActionHandler(toggleBrowserAction));
     }
 
     protected void tocSelected(ITocTab toc) {
