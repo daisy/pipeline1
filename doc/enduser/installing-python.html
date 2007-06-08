@@ -22,20 +22,30 @@
 	<p>2. Install the Python runtime by double clicking on the installer (.msi) file that you downloaded in step 1.</p>
 	<p>3. When the installer asks you for a destination directory, make a note of it for use in step 4.</p>
 	<p>When the installer has finished, Python is installed on your system, and all that remains is to make the pipeline aware of the installation path as selected and noted during step three.</p>
-	<p>4.Locate the <code>pipeline.properties</code> file. This can either be accessed from your user interface, or via Explorer. If the latter, navigate to the Pipeline installation path (e.g. C:\Program Files\Daisy Pipeline\) and find pipeline.properties within that directory.</p>
-	<p>Open pipeline.properties in an XML or text editor, and make sure that the entry with the key "pipeline.python.path" points to the python.exe file within the python installation directory.</p>
-	<p>For example, if you installed Python to <code>C:\Python25\</code>, the resulting element in pipeline.properties should read:</p>
-	<pre><code>
+	<ul>
+		<li>If you are using the Pipeline GUI, go to <code>Windows</code>&rarr;<code>Preferences</code>&rarr;<code>Paths</code> 
+				and make sure that the Python path entry points to the Python executable (e.g. <code>C:\Python25\python.exe</code>)</li>
+		<li>If you are using the Pipeline CommandLine version or have embedded the Pipeline as a component in another system, do the following:
+			<ul>
+				<li>Locate the <code>pipeline.user.properties</code> file by navigating to the Pipeline installation path (e.g. C:\Program Files\Daisy Pipeline\) and find pipeline.user.properties within that directory.</li>
+				<li>Open pipeline.user.properties in an XML or text editor, and make sure that the entry with the key <code>pipeline.python.path</code> points to the python.exe file.<br/>
+				<p>For example, if you installed Python to <code>C:\Python25\</code>, the resulting element in pipeline.user.properties should read:</p>
+				<pre><code>
 &lt;entry key="pipeline.python.path"&gt;C:\Python25\python.exe&lt;/entry&gt;
-	</code></pre>
-	<p>Save the pipeline properties file. All done.</p>
+				</code></pre>
+				</li>
+				</ul>
+				</li>
+				</ul>
+
+	<p>4. Save the pipeline properties file. All done.</p>
 	
 	
 	<h2 id="mac">Installing and configuring Python on Mac</h2>
 	<p>This section remains to be written. For now, please refer to the process as described in the section <a href="#win">Installing and configuring Python on Windows</a>.</p>
 	
 	<h2 id="linux">Installing and configuring Python on Linux</h2>	
-	<p>Python is most likely already installed on your system. If not, you need to install it manually. This process is out of scope for thsi document since the method differs for each Linux distribution,
+	<p>Python is most likely already installed on your system. If not, you need to install it manually. This process is out of scope for this document since the method differs for each Linux distribution,
 	   but Ubuntu users will probably use the <code>Synaptic</code> package manager, Fedora users can simply type <code>yum install python</code> with root privileges while Debian users need to type
 	   <code>apt-get install python</code>. Refer to the documentation of your Linux distribution for details.</p>
 	

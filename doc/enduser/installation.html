@@ -19,10 +19,11 @@
 		<ul>
 			<li><a href="#prereqs">Prerequisites</a></li>
 			<li><a href="#install">Installation</a></li>
+			<li><a href="#config">Configuration</a></li>
+      		<li <a href="#uninstall">Uninstalling the Pipeline</a></li>
 		</ul>
 	</div>
-      
-      
+            
       <h2 id="prereqs">Prerequisites</h2>
       <p>In order to run the Daisy Pipeline, you need to have the Java Runtime Environment (JRE) version 5 or later installed on your system.</p>
       <p>The Java Runtime Environment can be downloaded from <a href="http://www.java.com">http://www.java.com</a>.</p>
@@ -43,13 +44,18 @@
       </ol>
       <p>(Note that you probably want to create a shortcut to the Pipeline executable and put that on a convenient place (such as your desktop) for convenient access later on.)</p>
 
-      <h2>Configuration</h2>
-      <p>The DAISY Pipeline can be configured by manually editing the <code>pipeline.properties</code> located in the <code>$INSTALL_DIR/plugins/org.daisy.pipeline_0.0.1/src/</code> directory (where <code>$INSTALL_DIR</code> is the application directory).</p>
-      <p>Amongst the interesting properties are:</p>
+      <h2 id="config">Configuration</h2>
+      <p>Upon first launch of the Pipeline, you should take a moment to look over <code>Paths</code> in the Pipeline Preferences dialog. The Preferences dialog can be reached from the <code>Window</code> menu item.</p>
+      <p>The paths that <em>must</em> or <em>may</em> be set are:</p>
       <dl>
-      <dt><code>dmfc.tempDir</code></dt><dd>The directory to store temporary files in.</dd>
-      <dt><code>dmfc.lame.path</code></dt><dd>The path to the <a href="http://lame.sourceforge.net/index.php">LAME</a> executable (Needed if you intend to run a script that includes MP3 encoding).</dd>
-      <dt><code>pipeline.python.path</code></dt><dd>The path to <a href="http://www.python.org/">Python</a> executable (Needed if you intend to run the RTF to DTBook script).</dd>
+      <dt><code>Temporary Directory</code></dt><dd>Directory to store temporary files in. This directory <em>must</em> be set, and write access to it must be enabled.</dd>
+      <dt><code>LAME executable</code></dt><dd>Path to the <a href="http://lame.sourceforge.net/index.php">LAME</a> executable (Must be set if you intend to run a script that includes MP3 encoding).</dd>
+      <dt><code>Python executable</code></dt><dd>Path to <a href="http://www.python.org/">Python</a> executable (Must be set if you intend to run the RTF to DTBook or RTF to XHTML scripts).</dd>
       </dl>
+
+      <h2 id="uninstall">Uninstalling the Pipeline</h2>
+	  <p>To uninstall the Pipeline, simply delete the directory to which you extracted the Pipeline application archive during the installation process.</p>	
+
+
       </body>
 </html>

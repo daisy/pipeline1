@@ -17,14 +17,34 @@
 	</div>	
 	<h2 id="win">Installing and configuring Lame on Windows</h2>
 	<p>1. Download the Lame installer from <a href="http://www-users.york.ac.uk/~raa110/audacity/lame.html">one of the Lame executable download sites</a>.</p>
-	<p>2. Extract the files of the archive you downloaded in step 1 to a directory of your choice, for example to <code>C:\Program Files\lame\</code>.</p>	
-	<p>3.Locate the <code>pipeline.properties</code> file. This can either be accessed from your user interface, or via Explorer. If the latter, navigate to the Pipeline installation path (e.g. C:\Program Files\Daisy Pipeline\) and find pipeline.properties within that directory.</p>
-	<p>Open pipeline.properties in an XML or text editor, and make sure that the entry with the key dmfc.lame.path" points to the lame.exe file.</p>
-	<p>For example, if you installed Lame to <code>C:\Program Files\lame\</code>, the resulting element in pipeline.properties should read:</p>
+	<p>2. Extract the files of the archive you downloaded in step 1 to a directory of your choice, for example to <code>C:\lame\</code>.</p>	
+	<p>3. Make the Pipeline application aware of the location that you created in step two:</p>
+	<ul>
+		<li>If you are using the Pipeline GUI, go to <code>Windows</code>&rarr;<code>Preferences</code>&rarr;<code>Paths</code> and make sure that the LAME path entry points to the LAME executable (e.g. <code>C:\lame\lame.exe</code>)</li>
+		<li>If you are using the Pipeline CommandLine version or have embedded the Pipeline as a component in another system, do the following:
+			<ul>
+	<li>Locate the <code>pipeline.user.properties</code> file by navigating to the Pipeline installation path (e.g. C:\Program Files\Daisy Pipeline\) and find pipeline.user.properties within that directory.</li>
+	<li>Open pipeline.user.properties in an XML or text editor, and make sure that the entry with the key <code>dmfc.lame.path</code> points to the lame.exe file.<br/>
+	<p>For example, if you installed Lame to <code>C:\lame\</code>, the resulting element in pipeline.user.properties should read:</p>
 	<pre><code>
-&lt;entry key="dmfc.lame.path"&gt;C:\Program Files\lame\lame.exe&lt;/entry&gt;
+&lt;entry key="dmfc.lame.path"&gt;C:\lame\lame.exe&lt;/entry&gt;
 	</code></pre>
-	<p>Save the pipeline properties file. All done.</p>
+	</li>
+	</ul>
+	</li>
+	</ul>
+	<p>4. Save the pipeline properties file. All done.</p>
+	
+	
+	
+
+		
+		
+		
+		
+		
+		
+		
 		
 	<h2 id="mac">Installing and configuring Lame on Mac</h2>
 	<p>This section remains to be written. For now, please refer to the process as described in the section <a href="#win">Installing Lame on Windows</a>.</p>
