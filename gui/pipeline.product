@@ -3,6 +3,10 @@
 
 <product name="DAISY Pipeline" id="org.daisy.pipeline.gui.product" application="org.daisy.pipeline.gui.application" useFeatures="true">
 
+   <aboutInfo>
+      <image path="branding/about.gif"/>
+   </aboutInfo>
+
    <configIni use="default"/>
 
    <launcherArgs>
@@ -10,12 +14,17 @@
 
    <windowImages/>
 
+   <splash
+      location="org.daisy.pipeline.gui" />
    <launcher name="DAISY Pipeline">
       <solaris/>
       <win useIco="false">
-         <bmp/>
+         <bmp
+            winLargeHigh="/org.daisy.pipeline.gui/branding/pipeline-logo-48x48-32bit.bmp"/>
       </win>
    </launcher>
+
+   <intro introId="org.eclipse.ui.intro.universal"/>
 
    <plugins>
       <plugin id="com.ibm.icu"/>
