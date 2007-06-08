@@ -138,7 +138,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
             job = null;
         } else {
             job = new Job(script);
-            paramPage.updatePageComplete(false);
+            paramPage.setPageComplete(false);
         }
         refreshDoc();
     }

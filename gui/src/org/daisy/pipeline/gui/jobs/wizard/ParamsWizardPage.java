@@ -1,20 +1,19 @@
 /*
- * DAISY Pipeline GUI
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * DAISY Pipeline GUI Copyright (C) 2006 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.pipeline.gui.jobs.wizard;
 
@@ -101,6 +100,7 @@ public class ParamsWizardPage extends WizardPage implements Listener {
         }
         // Init content
         initContent();
+        updatePageComplete();
     }
 
     /*
@@ -128,7 +128,7 @@ public class ParamsWizardPage extends WizardPage implements Listener {
                 setErrorMessage(NLS.bind(Messages.page_param_error_invalid, e
                         .getLocalizedMessage()));
             }
-            updatePageComplete(true);
+            updatePageComplete();
             break;
         case SWT.FocusIn:
             setMessage(param.getDescription(), INFORMATION);
@@ -191,6 +191,12 @@ public class ParamsWizardPage extends WizardPage implements Listener {
                 DatatypeAdapter adapter = DatatypeAdapter.getAdapter(param
                         .getDatatype());
                 adapter.setValue(control, value);
+                try {
+                    ((NewJobWizard) getWizard()).getJob().setParameterValue(
+                            param.getName(), value);
+                } catch (DatatypeException e) {
+                    // Nothing to do
+                }
             }
         }
         isInitializing = false;
@@ -204,7 +210,7 @@ public class ParamsWizardPage extends WizardPage implements Listener {
         scriptSettings.put(param.getName(), value);
     }
 
-    void updatePageComplete(boolean showError) {
+    void updatePageComplete() {
         // Check that all required parameters are set
         setPageComplete(false);
         Job job = ((NewJobWizard) getWizard()).getJob();
