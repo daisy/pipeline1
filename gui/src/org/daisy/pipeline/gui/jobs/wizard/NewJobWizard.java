@@ -116,7 +116,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
                     .getActiveWorkbenchWindow());
         } catch (WorkbenchException e) {
             GuiPlugin.get().error(
-                    "Couldn't switch to the Documentation perspective", e);
+                    "Couldn't switch to the Documentation perspective", e); //$NON-NLS-1$
         }
         return true;
     }

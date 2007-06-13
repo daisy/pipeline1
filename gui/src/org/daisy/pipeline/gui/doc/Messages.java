@@ -28,6 +28,9 @@ public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.daisy.pipeline.gui.doc.messages"; //$NON-NLS-1$
     public static String action_synchronize;
     public static String action_synchronize_tooltip;
+    public static String dialog_showDoc_message;
+    public static String dialog_showDoc_title;
+    public static String dialog_showDoc_toggle;
     public static String error_noBrowser;
     public static String tab_help;
     public static String tab_help_tooltip;

@@ -110,7 +110,7 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
                     public void run(IProgressMonitor monitor)
                             throws InvocationTargetException,
                             InterruptedException {
-                        monitor.beginTask(Messages.core_reload,
+                        monitor.beginTask(Messages.message_coreReload,
                                 IProgressMonitor.UNKNOWN);
                         GuiPlugin.get().reloadCore();
                         monitor.done();

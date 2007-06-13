@@ -289,7 +289,7 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
                         .format(currJobInfo.getTimer().getElapsedTime())));
                 break;
             default:
-                stateLabel.setText("");
+                stateLabel.setText(""); //$NON-NLS-1$
                 break;
             }
             jobLabel.setText(currJobInfo.getName());

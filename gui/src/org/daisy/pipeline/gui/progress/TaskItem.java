@@ -24,6 +24,7 @@ import org.daisy.pipeline.gui.util.Timer;
 import org.daisy.pipeline.gui.util.swt.CompositeItem;
 import org.daisy.pipeline.gui.util.swt.CompositeList;
 import org.daisy.util.execution.State;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -174,13 +175,15 @@ public class TaskItem extends CompositeItem {
         String text;
         switch (info.getSate()) {
         case RUNNING:
-            text = Timer.format(info.getTimer().getLeftTime()) + " left";
+            text = NLS.bind(Messages.state_timeRunning, Timer.format(info
+                    .getTimer().getLeftTime()));
             break;
         case FINISHED:
-            text = "Done in " + Timer.format(info.getTimer().getTotalTime());
+            text = NLS.bind(Messages.state_timeDone, Timer.format(info
+                    .getTimer().getTotalTime()));
             break;
         default:
-            text = "";
+            text = ""; //$NON-NLS-1$
             break;
         }
         return text;
@@ -191,7 +194,7 @@ public class TaskItem extends CompositeItem {
         super.setData(data);
         taskInfo = (TaskInfo) data;
         nameLabel.setText(taskInfo.getName());
-        numLabel.setText(taskInfo.getTaskPosition() + 1 + "/"
+        numLabel.setText(taskInfo.getTaskPosition() + 1 + "/" //$NON-NLS-1$
                 + taskInfo.getParentJob().getTaskNumber());
     }
 

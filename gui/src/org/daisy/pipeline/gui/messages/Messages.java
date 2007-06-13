@@ -75,7 +75,7 @@ public class Messages extends NLS {
         case SYSTEM:
             return cause_system;
         default:
-            return "!err!";
+            return "!err!"; //$NON-NLS-1$
         }
     }
 
@@ -90,7 +90,7 @@ public class Messages extends NLS {
         case WARNING:
             return type_warning;
         default:
-            return "!err!";
+            return "!err!"; //$NON-NLS-1$
         }
     }
     public static String getFilterTip(Cause cause) {
@@ -100,7 +100,7 @@ public class Messages extends NLS {
         case SYSTEM:
             return cause_system_filter;
         default:
-            return "!err!";
+            return "!err!"; //$NON-NLS-1$
         }
     }
     
@@ -115,7 +115,7 @@ public class Messages extends NLS {
         case WARNING:
             return type_warning_filter;
         default:
-            return "!err!";
+            return "!err!"; //$NON-NLS-1$
         }
     }
 }

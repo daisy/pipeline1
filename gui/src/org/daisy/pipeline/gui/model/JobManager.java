@@ -263,7 +263,7 @@ public class JobManager implements Iterable {
             }
         }
         if (count > 1) {
-            name += " (" + count + ")";
+            name += " (" + count + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return name;
     }

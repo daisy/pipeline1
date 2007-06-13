@@ -52,7 +52,7 @@ public class DocFileLabelProvider extends LabelProvider {
                                 .toURL());
                     } catch (Exception e) {
                         GuiPlugin.get().error(
-                                "Couldn't fetch xhtml title of " + file, e);
+                                "Couldn't fetch xhtml title of " + file, e); //$NON-NLS-1$
                     }
                 }
                 if (title == null || title.length() == 0) {

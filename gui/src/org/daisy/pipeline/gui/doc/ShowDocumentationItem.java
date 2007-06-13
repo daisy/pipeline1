@@ -38,7 +38,7 @@ public class ShowDocumentationItem extends PerspectiveMenu {
     private IWorkbenchWindow window;
 
     public ShowDocumentationItem(IWorkbenchWindow window) {
-        super(window, "showDocumentation");
+        super(window, "showDocumentation"); //$NON-NLS-1$
         this.window = window;
         showActive(false);
     }
@@ -61,9 +61,9 @@ public class ShowDocumentationItem extends PerspectiveMenu {
             MessageDialogWithToggle
                     .openInformation(
                             window.getShell(),
-                            "Show the Documentation",
-                            "You are about to switch to the Documentaton perspective, which will change the layout of the application.\n\nTo go back to the main perspective, use Window -> Open Perspective -> Pipeline Jobs",
-                            "Never show this dialog again", false, prefStore,
+                            Messages.dialog_showDoc_title,
+                            Messages.dialog_showDoc_message,
+                            Messages.dialog_showDoc_toggle, false, prefStore,
                             dontShowDocSwitchWarningKey);
         }
 
@@ -72,7 +72,7 @@ public class ShowDocumentationItem extends PerspectiveMenu {
             window.getWorkbench().showPerspective(DocPerspective.ID, window);
         } catch (WorkbenchException e) {
             GuiPlugin.get().error(
-                    "Couldn't switch to the Documentation perspective", e);
+                    "Couldn't switch to the Documentation perspective", e); //$NON-NLS-1$
         }
     }
 
