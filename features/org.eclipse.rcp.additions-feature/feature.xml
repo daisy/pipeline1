@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rcp.additions"
       label="%featureName"
-      version="3.2.0"
+      version="3.2.2"
       provider-name="%providerName"
       plugin="org.eclipse.rcp">
 
@@ -19,7 +19,7 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.rcp" version="3.2.0.v20060609m-SVDNgVrNoh-MeGG"/>
+      <import feature="org.eclipse.rcp" version="3.2.2" match="compatible"/>
    </requires>
 
    <plugin
