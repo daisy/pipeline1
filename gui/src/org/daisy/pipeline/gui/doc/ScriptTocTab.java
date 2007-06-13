@@ -45,7 +45,8 @@ public class ScriptTocTab extends TocTab {
         if (file != null && file.isFile()) {
             Script script = ScriptManager.getDefault().getScript(file.toURI());
             if (script != null) {
-                return script.getDocumentation();
+                URI uri = script.getDocumentation();
+                return (uri != null) ? uri : PipelineUtil.DOC_404;
             }
         }
         return null;

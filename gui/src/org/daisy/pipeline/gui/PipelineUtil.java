@@ -17,6 +17,8 @@
  */
 package org.daisy.pipeline.gui;
 
+import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +51,9 @@ public final class PipelineUtil {
     public static final String PATH_TO_PYTHON_DEFAULT = "/path/to/python.exe"; //$NON-NLS-1$
     public static final String PATH_TO_TEMP_DIR = "PATH_TO_TEMP_DIR"; //$NON-NLS-1$
     public static final String PATH_TO_TEMP_DIR_DEFAULT = "/path/to/tmp"; //$NON-NLS-1$
+    // Default doc
+    public static final URI DOC_404 = new File(getDir(DOC_DIR), "404.html") //$NON-NLS-1$
+            .toURI();//$NON-NLS-1$
 
     private PipelineUtil() {
     }

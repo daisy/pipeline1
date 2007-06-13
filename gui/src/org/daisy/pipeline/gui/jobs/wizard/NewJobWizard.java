@@ -24,6 +24,7 @@ import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.JobsPerspective;
+import org.daisy.pipeline.gui.PipelineUtil;
 import org.daisy.pipeline.gui.jobs.NewJobOperation;
 import org.daisy.pipeline.gui.util.actions.OperationUtil;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -102,8 +103,7 @@ public class NewJobWizard extends Wizard implements INewWizard {
         if (doc != null) {
             helpTray.setUrl(doc.toString());
         } else {
-            // TODO set default URL if doc not found
-            helpTray.setUrl(""); //$NON-NLS-1$
+            helpTray.setUrl(PipelineUtil.DOC_404.toString()); //$NON-NLS-1$
         }
     }
 
