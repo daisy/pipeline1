@@ -17,6 +17,7 @@
  */
 package org.daisy.pipeline.gui;
 
+import org.daisy.pipeline.gui.doc.ShowDocumentationItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
@@ -62,6 +63,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction undoAction;
     // Contribution Items
     private IContributionItem perspListItem;
+    private IContributionItem showDocItem;
     private IContributionItem viewListItem;
     private IContributionItem wizardListItem;
 
@@ -121,6 +123,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         // Create Contribution Items
         perspListItem = ContributionItemFactory.PERSPECTIVES_SHORTLIST
                 .create(window);
+        showDocItem = new ShowDocumentationItem(window);
         viewListItem = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
         wizardListItem = ContributionItemFactory.NEW_WIZARD_SHORTLIST
                 .create(window);
@@ -197,6 +200,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
         // Help menu
         helpMenu.add(introAction);
+        helpMenu.add(new Separator());
+        helpMenu.add(showDocItem);
         helpMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         helpMenu.add(new Separator());
         helpMenu.add(aboutAction);
