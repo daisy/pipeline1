@@ -1,20 +1,19 @@
 /*
- * DAISY Pipeline GUI
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * DAISY Pipeline GUI Copyright (C) 2006 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.pipeline.gui.messages;
 
@@ -94,7 +93,7 @@ public class FilterDialog extends TrayDialog {
         types.setLabelProvider(new LabelProvider() {
             @Override
             public String getText(Object element) {
-                return element.toString();
+                return Messages.getName((MessageEvent.Type) element);
             }
         });
         types.setInput(MessageEvent.Type.values());
@@ -114,7 +113,7 @@ public class FilterDialog extends TrayDialog {
         causes.setLabelProvider(new LabelProvider() {
             @Override
             public String getText(Object element) {
-                return element.toString();
+                return Messages.getName((MessageEvent.Cause) element);
             }
         });
         causes.setInput(MessageEvent.Cause.values());
@@ -122,41 +121,6 @@ public class FilterDialog extends TrayDialog {
             causes.setChecked(cause, filter.isAccepted(cause));
         }
         createSelectButtons(parent, causes);
-
-        // TODO remove after design decision
-        // Group group = new Group(parent, SWT.SHADOW_NONE);
-        // group.setText("Severity");
-        // group.setLayout(new GridLayout(2, true));
-        // final List<Button> buttons = new ArrayList<Button>();
-        // for (MessageEvent.Type type : MessageEvent.Type.values()) {
-        // Button button = new Button(group, SWT.CHECK);
-        // button.setText(type.toString());
-        // buttons.add(button);
-        // GridData data = new GridData();
-        // data.horizontalSpan = 2;
-        // button.setLayoutData(data);
-        // }
-        // // createButton(group, SELECT_ALL_CAUSE_ID, "select all", false);
-        // Button selectAll = new Button(group, SWT.PUSH);
-        // selectAll.setText("Select All");
-        // selectAll.addSelectionListener(new SelectionAdapter() {
-        // @Override
-        // public void widgetSelected(SelectionEvent e) {
-        // for (Button button : buttons) {
-        // button.setSelection(true);
-        // }
-        // }
-        // });
-        // Button deselectAll = new Button(group, SWT.PUSH);
-        // deselectAll.setText("Deselect All");
-        // deselectAll.addSelectionListener(new SelectionAdapter() {
-        // @Override
-        // public void widgetSelected(SelectionEvent e) {
-        // for (Button button : buttons) {
-        // button.setSelection(false);
-        // }
-        // }
-        // });
     }
 
     private void createSelectButtons(Composite parent,

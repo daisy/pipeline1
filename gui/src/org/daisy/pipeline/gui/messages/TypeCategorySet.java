@@ -46,8 +46,7 @@ class TypeCategorySet extends CategorySet {
         private MessageEvent.Type type;
 
         public TypeCategory(MessageEvent.Type type) {
-            // TODO localize
-            super(type.toString());
+            super(Messages.getName(type));
             this.type = type;
         }
 
