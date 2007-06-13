@@ -17,6 +17,7 @@
  */
 package org.daisy.pipeline.gui.progress;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.daisy.pipeline.gui.GuiPlugin;
@@ -34,6 +35,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -73,6 +75,7 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
     private StructuredViewer tasksViewer;
     private JobInfo currJobInfo;
     private ScrolledComposite scrolled;
+    private ToolItem cancelButton;
 
     public JobProgressView() {
         StateManager.getDefault().addJobChangeListener(this);
@@ -121,20 +124,20 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
      * @see org.daisy.pipeline.gui.jobs.IJobChangeListener#jobChanged(org.daisy.pipeline.gui.model.JobInfo)
      */
     public void jobChanged(final JobInfo jobInfo) {
-        if (!jobInfo.equals(currJobInfo) && jobInfo.getSate() == State.RUNNING) {
-
-            // TODO set ui job family
-            Job uiJob = new WorkbenchJob(Messages.uiJob_progressUpdate) {
-                @Override
-                public IStatus runInUIThread(IProgressMonitor monitor) {
-                    refresh();
-                    return Status.OK_STATUS;
-                }
-
-            };
-            uiJob.setSystem(true);
-            uiJob.schedule();
+        if (!jobInfo.equals(currJobInfo)) {
+            return;
         }
+
+        Job uiJob = new WorkbenchJob(Messages.uiJob_progressUpdate) {
+            @Override
+            public IStatus runInUIThread(IProgressMonitor monitor) {
+                refresh();
+                return Status.OK_STATUS;
+            }
+
+        };
+        uiJob.setSystem(true);
+        uiJob.schedule();
 
     }
 
@@ -176,8 +179,8 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
     }
 
     private void cancelPressed() {
-        // implement cancelPressed()
-        System.out.println("cancel");
+        StateManager.getDefault().cancel(
+                Arrays.asList(new JobInfo[] { currJobInfo }));
     }
 
     private Composite createJobArea(Composite parent) {
@@ -218,7 +221,7 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
         stateLabel.setFont(getSmallerFont(stateLabel.getFont()));
 
         // Create the buttons
-        ToolItem cancelButton = new ToolItem(toolbar, SWT.PUSH);
+        cancelButton = new ToolItem(toolbar, SWT.PUSH);
         cancelButton.setToolTipText(Messages.button_cancel_tooltip);
         cancelButton.setImage(GuiPlugin.getImage(IIconsKeys.ACTION_STOP));
         cancelButton.addSelectionListener(new SelectionAdapter() {
@@ -274,9 +277,24 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 
     private void refresh() {
         if (currJobInfo != null) {
+            switch (currJobInfo.getSate()) {
+            case ABORTED:
+            case FAILED:
+            case FINISHED:
+                stateLabel.setText(NLS.bind(Messages.label_state_done, Timer
+                        .format(currJobInfo.getTimer().getTotalTime())));
+                break;
+            case RUNNING:
+                stateLabel.setText(NLS.bind(Messages.label_state_running, Timer
+                        .format(currJobInfo.getTimer().getElapsedTime())));
+                break;
+            default:
+                stateLabel.setText("");
+                break;
+            }
             jobLabel.setText(currJobInfo.getName());
-            stateLabel.setText(Messages.label_state
-                    + Timer.format(currJobInfo.getTimer().getElapsedTime()));
+            cancelButton
+                    .setEnabled(currJobInfo.getSate().equals(State.RUNNING));
             ((Composite) tasksViewer.getControl()).layout();
         }
     }

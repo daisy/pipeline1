@@ -40,6 +40,8 @@ import org.eclipse.swt.widgets.ProgressBar;
  */
 public class TaskItem extends CompositeItem {
 
+    private TaskInfo taskInfo;
+
     private Label iconLabel;
 
     private Label nameLabel;
@@ -81,7 +83,6 @@ public class TaskItem extends CompositeItem {
         if (state == State.ABORTED || state == State.FAILED) {
             // progressBar.setEnabled(false);
         }
-        nameLabel.setText(info.getName());
         progressBar.setSelection(((Double) (info.getProgress() * 100))
                 .intValue());
         timeLabel.setText(getTimeText(info));
@@ -173,17 +174,25 @@ public class TaskItem extends CompositeItem {
         String text;
         switch (info.getSate()) {
         case RUNNING:
-            text = Timer.format(info.getTimer().getLeftTime()) + " ms left";
+            text = Timer.format(info.getTimer().getLeftTime()) + " left";
             break;
         case FINISHED:
-            text = "Done in " + Timer.format(info.getTimer().getTotalTime())
-                    + " ms";
+            text = "Done in " + Timer.format(info.getTimer().getTotalTime());
             break;
         default:
             text = "";
             break;
         }
         return text;
+    }
+
+    @Override
+    public void setData(Object data) {
+        super.setData(data);
+        taskInfo = (TaskInfo) data;
+        nameLabel.setText(taskInfo.getName());
+        numLabel.setText(taskInfo.getTaskPosition() + 1 + "/"
+                + taskInfo.getParentJob().getTaskNumber());
     }
 
 }
