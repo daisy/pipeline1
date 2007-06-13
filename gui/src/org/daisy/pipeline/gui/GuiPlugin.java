@@ -18,13 +18,11 @@
 package org.daisy.pipeline.gui;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.UUID;
 
 import org.daisy.pipeline.core.DMFCCore;
-import org.daisy.pipeline.exception.DMFCConfigurationException;
 import org.daisy.pipeline.gui.model.MessageManager;
 import org.daisy.pipeline.gui.model.ScriptManager;
 import org.daisy.pipeline.gui.model.StateManager;
@@ -131,22 +129,24 @@ public class GuiPlugin extends AbstractUIPlugin {
         getLog().log(new Status(IStatus.INFO, ID, 0, message, t));
     }
 
+    public void reloadCore() {
+        initCore();
+        ScriptManager.getDefault().clear();
+        ScriptManager.getDefault().init();
+    }
+
     /**
      * This method is called upon plug-in activation.
      */
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        try {
-            initLog();
-            initCore();
-            MessageManager.getDefault().init();
-            ScriptManager.getDefault().init();
-            StateManager.getDefault().init();
-            logSystemInfo();
-        } catch (Exception e) {
-            error("an error ocurred", e); //$NON-NLS-1$
-        }
+        initLog();
+        initCore();
+        MessageManager.getDefault().init();
+        ScriptManager.getDefault().init();
+        StateManager.getDefault().init();
+        logSystemInfo();
     }
 
     /**
@@ -162,10 +162,14 @@ public class GuiPlugin extends AbstractUIPlugin {
         getLog().log(new Status(IStatus.WARNING, ID, 0, message, t));
     }
 
-    private void initCore() throws IOException, DMFCConfigurationException {
+    private void initCore() {
         File homeDir = PipelineUtil.getDir(PipelineUtil.HOME_DIR);
         Properties userProps = PipelineUtil.convPrefToProperties();
-        core = new DMFCCore(null, homeDir, userProps);
+        try {
+            core = new DMFCCore(null, homeDir, userProps);
+        } catch (Exception e) {
+            error("Error while intializing the Pipeline core", e); //$NON-NLS-1$
+        }
     }
 
     private void initLog() {
