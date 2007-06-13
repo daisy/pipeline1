@@ -68,9 +68,9 @@
 
    <features>
       <feature id="org.daisy.pipeline.gui" version="1.0.0"/>
-      <feature id="org.eclipse.platform.launchers" version="3.2.0.v3232m"/>
-      <feature id="org.eclipse.rcp" version="3.2.0.v20060609m-SVDNgVrNoh-MeGG"/>
-      <feature id="org.eclipse.rcp.additions" version="3.2.0"/>
+      <feature id="org.eclipse.platform.launchers" version="3.2.1.v3236"/>
+      <feature id="org.eclipse.rcp" version="3.2.2.r322_v20070104-8pcviKVqd8J7C1U"/>
+      <feature id="org.eclipse.rcp.additions" version="3.2.2"/>
    </features>
 
 </product>
