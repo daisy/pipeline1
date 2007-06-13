@@ -5,8 +5,11 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IScopeContext;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
+
+    private IScopeContext defaultScope = new DefaultScope();
 
     public PreferenceInitializer() {
         super();
@@ -14,13 +17,47 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
     @Override
     public void initializeDefaultPreferences() {
+        initCommonDefaults();
+        if (System.getProperty("os.name").startsWith("Windows")) { //$NON-NLS-1$ //$NON-NLS-2$
+            initWindowsDefaults();
+        } else if (System.getProperty("os.name").startsWith("Mac OS X")) { //$NON-NLS-1$ //$NON-NLS-2$
+            initMacDefaults();
+        } else if (System.getProperty("os.name").startsWith("Linux") //$NON-NLS-1$ //$NON-NLS-2$
+                || System.getProperty("os.name").startsWith("LINUX")) { //$NON-NLS-1$ //$NON-NLS-2$
+            initLinuxDefaults();
+        }
+
+    }
+
+    private void initCommonDefaults() {
+        // set the default temp dir
         try {
             PreferencesUtil.put(PipelineUtil.PATH_TO_TEMP_DIR, File
                     .createTempFile("dont", "care").getParent(), //$NON-NLS-1$ //$NON-NLS-2$
-                    new DefaultScope());
+                    defaultScope);
         } catch (IOException e) {
             GuiPlugin.get().warn("Couldn't find the default temp directory", e); //$NON-NLS-1$
         }
     }
 
+    private void initLinuxDefaults() {
+        PreferencesUtil.put(PipelineUtil.PATH_TO_LAME, "/usr/bin/lame", //$NON-NLS-1$
+                defaultScope);
+        PreferencesUtil.put(PipelineUtil.PATH_TO_PYTHON, "/usr/bin/python", //$NON-NLS-1$
+                defaultScope);
+    }
+
+    private void initMacDefaults() {
+        PreferencesUtil.put(PipelineUtil.PATH_TO_LAME, "/sw/bin/lame", //$NON-NLS-1$
+                defaultScope);
+        PreferencesUtil.put(PipelineUtil.PATH_TO_PYTHON, "/usr/bin/python", //$NON-NLS-1$
+                defaultScope);
+    }
+
+    private void initWindowsDefaults() {
+        PreferencesUtil.put(PipelineUtil.PATH_TO_LAME, "C:\\lame\\lame.exe", //$NON-NLS-1$
+                defaultScope);
+        PreferencesUtil.put(PipelineUtil.PATH_TO_PYTHON,
+                "C:\\Python25\\python.exe", defaultScope); //$NON-NLS-1$
+    }
 }
