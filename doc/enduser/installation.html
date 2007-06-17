@@ -12,7 +12,7 @@
 
     <h1>Daisy Pipeline Installation</h1>
       <div class="summary">
-         <p>This document describes how to get and install the Daisy Pipeline on your system</p>
+         <p>This document describes how to get and install the Daisy Pipeline (GUI version) on your system</p>
       </div>
       
    	<div id="toc" class="toc">
@@ -20,7 +20,7 @@
 			<li><a href="#prereqs">Prerequisites</a></li>
 			<li><a href="#install">Installation</a></li>
 			<li><a href="#config">Configuration</a></li>
-      		<li <a href="#uninstall">Uninstalling the Pipeline</a></li>
+      		<li><a href="#uninstall">Uninstalling the Pipeline</a></li>
 		</ul>
 	</div>
             
@@ -30,8 +30,15 @@
            
       <h2 id="install">Installation</h2>
       <ol>
-      <li><p>Download the zip release on the <a href="http://sourceforge.net/project/showfiles.php?group_id=162777">Pipeline GUI download page</a>.</p>
-      <p>Note: you have to select the zip archive corresponding to your environment.</p></li>
+      <li><p>Download the zip release on the <a href="http://sourceforge.net/project/showfiles.php?group_id=162777">Pipeline GUI download page</a>. Select the zip archive corresponding to your environment:</p>
+      <ul>
+      <li>If using Windows, select <code>pipeline-gui-[date].win32.win32.x86.zip</code></li>
+      <li>If using Linux, select <code>pipeline-gui-[date].linux.gtk.x86.zip</code></li>
+      <li>If using Mac (Intel), select <code>pipeline-gui-[date].macosx.carbon.x86.zip</code></li>
+      <li>If using Mac (PPC), select <code>pipeline-gui-[date].macosx.carbon.ppc.zip</code></li>
+      </ul>
+      
+      </li>
       <li><p>Create a directory on your local file system where you want to install the application.</p></li>
       <li><p>Extract the content of the zip archive to the newly created directory.</p></li>
       <li><p>Run the 'DAISY Pipeline' executable:</p>
@@ -52,10 +59,11 @@
       <dt><code>LAME executable</code></dt><dd>Path to the <a href="http://lame.sourceforge.net/index.php">LAME</a> executable (Must be set if you intend to run a script that includes MP3 encoding).</dd>
       <dt><code>Python executable</code></dt><dd>Path to <a href="http://www.python.org/">Python</a> executable (Must be set if you intend to run the RTF to DTBook or RTF to XHTML scripts).</dd>
       </dl>
+      <p>Information on how to install LAME and Python is available in <a href="./installing-lame.html">Installing the Lame MP3 Encoder for use within the Daisy Pipeline</a> and <a href="./installing-python.html">Installing Python for use within the Daisy Pipeline</a>.</p>
+	  <p>Note: When starting the Pipeline, you may get warnings that certain scripts could not be loaded; this is most likely due to the fact that the settings discussed above have not been set.</p>
 
       <h2 id="uninstall">Uninstalling the Pipeline</h2>
 	  <p>To uninstall the Pipeline, simply delete the directory to which you extracted the Pipeline application archive during the installation process.</p>	
-
 
       </body>
 </html>
