@@ -12,6 +12,7 @@ doc/developer/script-authoring-guide.html -text
 doc/developer/script-grammar-v2.0.html -text
 doc/developer/tdf-grammar-v1.1.html -text
 doc/developer/transformer-authoring-guide.html -text
+doc/enduser/01-gui-user-guide.html -text
 doc/enduser/installation.html -text
 doc/enduser/installing-lame.html -text
 doc/enduser/installing-python.html -text
