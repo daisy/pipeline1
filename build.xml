@@ -48,7 +48,9 @@
 		<include name="jaudiotagger.jar"/>			
 		<include name="ZedVal.jar"/>			
 		<include name="commons-cli-1.0.jar"/>			
-		<include name="serializer.jar"/>			
+		<include name="serializer.jar"/>	
+		<include name="tritonus_remaining-0.3.6.jar"/>			
+		<include name="tritonus_share-0.3.6.jar"/>	
 	</fileset>
 	
 	<!-- Transformers -->
