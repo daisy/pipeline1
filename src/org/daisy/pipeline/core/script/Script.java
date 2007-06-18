@@ -53,7 +53,7 @@ public class Script {
 
 	/**
 	 * Gets the description of the script
-	 * @return
+	 * @return the script description
 	 */
 	public String getDescription() {
 		return mDescription;
@@ -61,7 +61,7 @@ public class Script {
 
 	/**
 	 * Gets the documentation URI of this script.
-	 * @return 
+	 * @return the documentation URI
 	 */
 	public URI getDocumentation() {
 		return  mDocumentation;
@@ -69,7 +69,7 @@ public class Script {
 	
 	/**
 	 * Get the URL of this script.
-	 * @return 
+	 * @return the script URL
 	 */
 	public URL getScriptURL() {
 		return  mScriptURL;
@@ -77,7 +77,7 @@ public class Script {
 	
 	/**
 	 * Gets the name of the script
-	 * @return
+	 * @return the script name
 	 */
 	public String getName() {
 		return mName;
@@ -85,7 +85,7 @@ public class Script {
 
 	/**
 	 * Gets the nicename of the script. This could be presended in a GUI.
-	 * @return
+	 * @return the script nicename
 	 */
 	public String getNicename() {
 		return mNicename;
@@ -93,7 +93,7 @@ public class Script {
 
 	/**
 	 * Gets a Map containing all properties defined in this script.
-	 * @return
+	 * @return a Map of all the properties in the script
 	 */
 	public Map<String, AbstractProperty> getProperties() {
 		return mProperties;
@@ -102,7 +102,7 @@ public class Script {
 	/**
 	 * Gets a Map containing all parameters defined in this script.
 	 * This is a subset of all the properties.
-	 * @return
+	 * @return a Map of all the parameters in the script
 	 */
 	public Map<String, ScriptParameter> getParameters() {
 		Map <String,ScriptParameter> parameters = new LinkedHashMap<String, ScriptParameter>();
@@ -117,7 +117,7 @@ public class Script {
 	
 	/**
 	 * Gets a Map containing all required parameters in this script.
-	 * @return
+	 * @return a Map of all the required parameters in the script
 	 */
 	public Map<String,ScriptParameter> getRequiredParameters() {
 		Map <String,ScriptParameter> required = new LinkedHashMap<String, ScriptParameter>();
@@ -131,7 +131,7 @@ public class Script {
 	
 	/**
 	 * Gets a Map containing all optional parameters in this script.
-	 * @return
+	 * @return a Map of all the optional parameters in the script
 	 */
 	public Map<String,ScriptParameter> getOptionalParameters() {
 		Map <String,ScriptParameter> required = new LinkedHashMap<String, ScriptParameter>();
@@ -154,7 +154,7 @@ public class Script {
 
 	/**
 	 * Gets a list of all tasks in the script.
-	 * @return
+	 * @return a list of Tasks
 	 */
 	public List<Task> getTasks() {
 		return tasks;

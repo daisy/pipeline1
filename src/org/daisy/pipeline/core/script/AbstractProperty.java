@@ -53,7 +53,7 @@ public abstract class AbstractProperty {
 	
 	/**
 	 * Gets the name of this property
-	 * @return
+	 * @return the property name
 	 */
 	public String getName() {
 		return mName;

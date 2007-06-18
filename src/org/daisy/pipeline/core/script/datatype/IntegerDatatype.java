@@ -49,7 +49,7 @@ public class IntegerDatatype extends Datatype {
 
 	/**
 	 * Gets the maximum integer for this datatype
-	 * @return
+	 * @return the maximum value
 	 */
 	public int getMax() {
 		return max;
@@ -57,7 +57,7 @@ public class IntegerDatatype extends Datatype {
 
 	/**
 	 * Gets the minimum integer for this datatype
-	 * @return
+	 * @return the minimum value
 	 */
 	public int getMin() {
 		return min;

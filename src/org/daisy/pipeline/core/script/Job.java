@@ -51,8 +51,8 @@ public class Job {
 	}
 	
 	/**
-	 * Gets the script object
-	 * @return
+	 * Gets the script object associated with this Job
+	 * @return a Script object
 	 */
 	public Script getScript() {
 		return mScript;
@@ -103,7 +103,7 @@ public class Job {
 	
 	/**
 	 * Gets a map containing all parameters in this Job
-	 * @return
+	 * @return a map containing all job parameters
 	 */
 	public Map<String,JobParameter> getJobParameters() {
 		return mParameters;
@@ -111,7 +111,7 @@ public class Job {
 	
 	/**
 	 * Have all required script parameters been set in this Job?
-	 * @return
+	 * @return true if all required script parameters have been set, false otherwise
 	 */
 	public boolean allRequiredParametersSet() {
 		boolean result = true;

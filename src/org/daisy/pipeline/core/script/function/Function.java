@@ -26,7 +26,7 @@ public abstract class Function {
 	/**
 	 * Apply the function
 	 * @param value the property value to apply the function on
-	 * @return
+	 * @return the result of the function call
 	 */
 	public abstract String apply(String value);
 }

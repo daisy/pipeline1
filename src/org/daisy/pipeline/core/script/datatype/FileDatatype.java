@@ -42,7 +42,7 @@ public class FileDatatype extends Datatype {
 
 	/**
 	 * Gets the mime type
-	 * @return
+	 * @return the mime type
 	 */
 	public String getMime() {
 		return mime;

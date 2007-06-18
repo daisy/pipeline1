@@ -49,7 +49,7 @@ public class BooleanDatatype extends Datatype {
 
 	/**
 	 * Gets the value representing 'false'
-	 * @return
+	 * @return the value reporesenting false
 	 */
 	public String getFalseValue() {
 		return falseValue;
@@ -57,7 +57,7 @@ public class BooleanDatatype extends Datatype {
 
 	/**
 	 * Gets the value representing 'true'
-	 * @return
+	 * @return the value representing true
 	 */
 	public String getTrueValue() {
 		return trueValue;

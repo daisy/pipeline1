@@ -134,16 +134,16 @@ public class Runner {
     }
 
     /**
-     * Checks whether the Runner is currently running a script
+     * Checks whether the Runner is currently running a job
      * 
-     * @return
+     * @return true if a job is currently running, false otherwise
      */
     public boolean isRunning() {
         return mRunning;
     }
 
     /**
-     * @return the number of completed tasks in the current script, if any
+     * @return the number of completed tasks in the current job, if any
      */
     public int getCompletedTasks() {
         return mCompletedTasks;

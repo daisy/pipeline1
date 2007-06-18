@@ -87,7 +87,7 @@ public class DMFCCore implements TransformerHandlerLoader {
      * 
      * @param inListener a listener of (user) input events
      * @param homeDir the home directory
-     * @param propsDir the location of the pipeline properties file
+     * @param userProps a set of user properties
      */
     public DMFCCore(InputListener inListener, File homeDir, Properties userProps)
             throws DMFCConfigurationException {
@@ -222,7 +222,7 @@ public class DMFCCore implements TransformerHandlerLoader {
      * Creates a new Script object from a script file
      * 
      * @param url
-     * @return
+     * @return a Script
      * @throws ScriptValidationException
      */
     public Script newScript(URL url) throws ScriptValidationException {
@@ -243,7 +243,7 @@ public class DMFCCore implements TransformerHandlerLoader {
      * Gets the number of completed tasks in the current script. If no script is
      * currently being executed, 0 is returned.
      * 
-     * @return
+     * @return the number of completed tasks
      */
     public int getCompletedTasks() {
         return mRunner.getCompletedTasks();
@@ -252,7 +252,7 @@ public class DMFCCore implements TransformerHandlerLoader {
     /**
      * Is a script currently being run?
      * 
-     * @return
+     * @return true if a script is currently running, false otherwise
      */
     public boolean isRunning() {
         return mRunner.isRunning();
@@ -261,8 +261,8 @@ public class DMFCCore implements TransformerHandlerLoader {
     /**
      * Tests if a given directory is the home directory.
      * 
-     * @param folder
-     * @return
+     * @param folder a possible home directory
+     * @return true if the given folder is the home directory, false otherwise
      */
     public static boolean testHomeDirectory(File folder) {
         File[] files = folder.listFiles(new FileFilter() {

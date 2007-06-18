@@ -19,9 +19,9 @@
 	<property name="build.dir" value="${base.dir}/bin"/>
 	
 	<property name="transformers.dir" value="${base.dir}/transformers"/>
-		
-	<property name="javadoc.dir" value="${distribution.dir}/api"/>
+	
 	<property name="distribution.dir" value="${base.dir}/dist"/>
+	<property name="javadoc.dir" value="${base.dir}/doc/api"/>
 	
 	<!-- ================================================================== -->
 	<!-- Fileset definitions                                                -->
@@ -219,8 +219,9 @@
 		  target: buildJavadoc
 		 ================================= -->
 	<target name="buildJavadoc" 
-			description="Creates a dmfc_doc.zip with javadoc files in the distribution folder"
+			description="Creates three javadoc archives in the distribution folder"
 			depends="createDistributionDir">
+		
 		<javadoc destdir="${javadoc.dir}/util" 
 			     classpathref="path.combined"
 			     windowtitle="DAISY Utility Library API documentation">
@@ -233,11 +234,11 @@
 		</javadoc>
 		<zip zipfile="${distribution.dir}/org.daisy.util-docs.zip" >
 			<fileset dir="${javadoc.dir}/util" includes="**"/>
-		</zip>
+		</zip>		
 		
 		<javadoc destdir="${javadoc.dir}/framework" 
 			     classpathref="path.combined"
-			     windowtitle="DMFC Framework API documentation">
+			     windowtitle="Daisy Pipeline Framework API documentation">
 			<fileset dir="${base.dir}/src">
 				<patternset refid="patternset.framework"/>
 				<and>					
@@ -245,23 +246,24 @@
 				</and>
 			</fileset>
 		</javadoc>
-		<zip zipfile="${distribution.dir}/org.daisy.dmfc-framework-docs.zip" >
+		<zip zipfile="${distribution.dir}/org.daisy.pipeline-framework-docs.zip" >
 			<fileset dir="${javadoc.dir}/framework" includes="**"/>
 		</zip>
-		
+				
 		<javadoc destdir="${javadoc.dir}/transformers" 
 			     classpathref="path.combined"
-		         windowtitle="DMFC Transformers API documentation">
-			<fileset dir="${base.dir}">
+		         windowtitle="Daisy Pipeline Transformer API documentation">
+			<fileset dir="${base.dir}/transformers">
 				<patternset refid="patternset.transformers"/>
 				<and>					
 					<filename name="**/*.java"/>
 				</and>
 			</fileset>
 		</javadoc>
-		<zip zipfile="${distribution.dir}/org.daisy.dmfc-transformers-docs.zip" >
+		<zip zipfile="${distribution.dir}/org.daisy.pipeline-transformers-docs.zip" >
 			<fileset dir="${javadoc.dir}/transformers" includes="**"/>
 		</zip>
+		
 	</target>
 	
 	

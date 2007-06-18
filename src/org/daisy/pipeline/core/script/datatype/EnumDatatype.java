@@ -38,8 +38,8 @@ public class EnumDatatype extends Datatype {
 	}
 
 	/**
-	 * Gets the list of enum items
-	 * @return
+	 * Gets the list of enum items.
+	 * @return a list of enum items contained in this EnumDatatype
 	 */
 	public List<EnumItem> getItems() {
 		return items;

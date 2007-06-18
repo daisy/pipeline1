@@ -40,7 +40,7 @@ public class PropertiesConverter {
 	}
 
 	/**
-	 * @param pathspec of dir to recursively search
+	 * @param args[0] pathspec of dir to recursively search
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {		

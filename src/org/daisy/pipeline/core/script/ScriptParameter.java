@@ -52,7 +52,7 @@ public class ScriptParameter extends AbstractProperty {
 	/**
 	 * Should the user be required to specify a value for this parameter when the
 	 * script is run?
-	 * @return
+	 * @return true if this parameter is required, false otherwise
 	 */
 	public boolean isRequired() {
 		return required;
@@ -60,7 +60,7 @@ public class ScriptParameter extends AbstractProperty {
 
 	/**
 	 * Gets the Datatype for this parameter
-	 * @return
+	 * @return the Datatype of this parameter
 	 */
 	public Datatype getDatatype() {
 		return datatype;
@@ -68,7 +68,7 @@ public class ScriptParameter extends AbstractProperty {
 
 	/**
 	 * Gets the description of this parameter
-	 * @return
+	 * @return a description of the parameter
 	 */
 	public String getDescription() {
 		return description;
@@ -76,7 +76,7 @@ public class ScriptParameter extends AbstractProperty {
 
 	/**
 	 * Gets the nicename of this parameter
-	 * @return
+	 * @return the nicename of the parameter
 	 */
 	public String getNicename() {
 		return nicename;

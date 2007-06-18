@@ -47,7 +47,7 @@ public class Task {
 
 	/**
 	 * Can the transformer be run in interactive mode?
-	 * @return
+	 * @return true if the transformer should be run in interactive mode, false otherwise
 	 */
 	public boolean isInteractive() {
 		return interactive;
@@ -55,7 +55,7 @@ public class Task {
 
 	/**
 	 * Gets the name of the task
-	 * @return
+	 * @return the name of the task
 	 */
 	public String getName() {
 		return name;
@@ -63,7 +63,7 @@ public class Task {
 
 	/**
 	 * Gets a Map containing all task parameters
-	 * @return
+	 * @return a Map containing the task parameters
 	 */
 	public Map<String, TaskParameter> getParameters() {
 		return parameters;
@@ -88,7 +88,7 @@ public class Task {
 	
 	/**
 	 * Gets the TransformerHandler associated with this task.
-	 * @return
+	 * @return the Transformerhandler for this task
 	 */
 	/*package*/ TransformerHandler getTransformerHandler() {
 		return this.handler;
@@ -96,7 +96,7 @@ public class Task {
 	
 	/**
 	 * Gets the TransformerInfo associated with the transformer this task refers to.
-	 * @return
+	 * @return the TransformerInfo for this task
 	 */
 	public TransformerInfo getTransformerInfo() {
 		return this.handler;
