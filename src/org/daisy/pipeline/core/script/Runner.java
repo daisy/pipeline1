@@ -21,8 +21,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.daisy.pipeline.core.event.CoreMessageEvent;
 import org.daisy.pipeline.core.event.EventBus;
 import org.daisy.pipeline.core.event.JobStateChangeEvent;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.event.StateChangeEvent;
 import org.daisy.pipeline.core.transformer.Parameter;
 import org.daisy.pipeline.core.transformer.TransformerHandler;
@@ -92,9 +94,16 @@ public class Runner {
                     new JobStateChangeEvent(job,
                             StateChangeEvent.Status.STOPPED));
         } catch (TransformerAbortException e) {
-            throw new JobAbortedException("Task aborted", e);
+        	String message = i18n("SCRIPT_ABORTED");
+        	EventBus.getInstance().publish(new CoreMessageEvent(this,message, MessageEvent.Type.INFO,MessageEvent.Cause.INPUT));
+            throw new JobAbortedException(message, e);
         } catch (TransformerRunException e) {
-            throw new JobFailedException(i18n("ERROR_RUNNING_TASK"), e);
+        	//mg 20070619: The transformer authors are responsible for localization        	
+        	EventBus.getInstance().publish(new CoreMessageEvent(this,e.getMessage(), MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
+        	throw new JobFailedException(e.getMessage(),e);
+        }catch (Exception e) {        	
+        	EventBus.getInstance().publish(new CoreMessageEvent(this,e.getMessage(), MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
+        	throw new JobFailedException(i18n("ERROR_RUNNING_SCRIPT",e.getMessage()),e);
         } finally {
             this.mRunning = false;
             this.mCompletedTasks = 0;

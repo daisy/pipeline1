@@ -16,8 +16,11 @@
 	<entry key="MIMETYPE_DETECTION_FAILED"  	>Failed detecting a MIME type for {0}</entry>
 	<entry key="SAX_VALIDATION_EXCEPTION"		>Error in {0} at line {1}: {2}</entry>
 
+	<!-- org.daisy.pipeline.core.script.Runner-->
+	<entry key="SCRIPT_ABORTED"					>Script aborted.</entry>
+	<entry key="ERROR_RUNNING_SCRIPT"			>Error running script: {0}.</entry>
 
-	<!-- org.daisy.dmfc.core.DMFCCore -->
+	<!-- org.daisy.pipeline.core.DMFCCore -->
 	<entry key="RELOADING_TRANSFORMERS"        >Reloading Transformers</entry>
 	<entry key="RELOADING_TRANSFORMERS_DONE"   >Reloading of Transformers done</entry>
 	<entry key="RELOADING_TRANSFORMERS_FAILED" >Reloading of Transformers failed, {0}</entry>
@@ -29,7 +32,7 @@
 	<entry key="SCRIPT_VALIDATION_PROBLEM"     >Problems parsing script file ''{0}''</entry>
 
 
-	<!-- org.daisy.dmfc.core.transformer.TransformerHandler -->
+	<!-- org.daisy.pipeline.core.transformer.TransformerHandler -->
 	<entry key="TDF_NOT_VALID"                   >Transformer description file is not valid</entry>
 	<entry key="PLATFORM_CHECK_FAILED"           >Platform dependency check failed</entry>
 	<entry key="TRANSFORMER_NOT_SUPPORTED"       >Transformer not supported</entry>
@@ -51,7 +54,7 @@
 	<entry key="DOCUMENTATION_URI_FAILURE"       >Documentation problem in transformer {0}: {1} cannot be resolved</entry>
 
 
-	<!-- org.daisy.dmfc.core.script.ScriptHandler -->
+	<!-- org.daisy.pipeline.core.script.ScriptHandler -->
 	<entry key="SCRIPT_NOT_VALID"              >Script file is not valid</entry>
 	<entry key="TRANSFORMER_NOT_KNOWN"         >Transformer {0} is not a known Transformer</entry>
 	<entry key="ID_ATTRIBUTES_MUST_BE_UNIQUE"  >id attributes must be unique</entry>
@@ -67,14 +70,14 @@
 	<entry key="RUNNING_TASK"                  >Running task ''{0}''</entry>
 
 
-	<!-- org.daisy.dmfc.Transformers.ExeRunner -->
+	<!-- org.daisy.pipeline.Transformers.ExeRunner -->
 	<entry key="INVALID_SUCCESS_REGEX"               >Invalid regex pattern for success</entry>
 	<entry key="POLL_INTERVAL_TO_SMALL"              >Poll interval must be at least 10ms. Setting default (500ms).</entry>
 	<entry key="RUNNING_COMMAND"                     >Running ''{0}''</entry>
 	<entry key="PROGRAM_RAN_FOR"                     >Program ''{0}'' ran {1,choice,0#really fast|1#for one second|1<for {1,number,integer} seconds}</entry>
 	<entry key="UNRECOGIZED_COMMAD_PATTERN_VARIABLE" >Unrecognized variable in command pattern string: {0}</entry>
 
-	<!-- org.daisy.dmfc.Transformers.XSLTRunner -->
+	<!-- org.daisy.pipeline.Transformers.XSLTRunner -->
 	<entry key="XSLT_READING_XML"   >Reading input document from ''{0}''</entry>
 	<entry key="XSLT_READING_XSLT"  >Reading XSLT document from ''{0}''</entry>
 	<entry key="XSLT_USING_FACTORY" >Using factory {0}</entry>
