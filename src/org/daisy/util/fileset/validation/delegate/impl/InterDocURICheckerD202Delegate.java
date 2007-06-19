@@ -28,7 +28,7 @@ public class InterDocURICheckerD202Delegate extends InterDocURICheckerDelegate {
 	 * @param source The FilesetFile in which the URI occurs
 	 * @param uriString The URI value as it appears unresolved in the source
 	 * @param destination The FilesetFile to which the URI path refers
-	 * @param fragment, the fragment identifier of the URI, may be null
+	 * @param fragment the fragment identifier of the URI, may be null
 	 */
 	@Override
 	protected void checkTarget(FilesetFile source, String uriString, FilesetFile destination, String fragment) {			

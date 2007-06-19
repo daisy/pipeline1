@@ -2,7 +2,7 @@ package org.daisy.pipeline.core.event;
 
 /**
  * Event raised when the system requests input from the user of the system during exection time (followed by a user reply event).
- * @see {@link org.daisy.pipeline.core.event.UserReplyEvent}
+ * @see org.daisy.pipeline.core.event.UserReplyEvent
  * @author Markus Gylling
  */
 public class RequestEvent extends SystemEvent {

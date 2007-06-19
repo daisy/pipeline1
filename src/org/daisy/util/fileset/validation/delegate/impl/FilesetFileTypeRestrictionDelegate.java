@@ -21,7 +21,7 @@ public class FilesetFileTypeRestrictionDelegate extends ValidatorDelegateImplAbs
 	
 	 /**
 	  * Constructor.
-	  * @param restrictions A set of fully qualified FilesetFile classnames
+	  * @param allowedTypes A set of fully qualified FilesetFile classnames
 	  */
 	public FilesetFileTypeRestrictionDelegate(Set<String> allowedTypes) {
 		mAllowedFilesetFileTypes = new HashSet<String>();

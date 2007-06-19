@@ -115,7 +115,6 @@ public class SimpleValidator implements ErrorHandler {
 	
 	/**
 	 * Constructor. Use this to validate resources against inline schemas only.
-	 * @param schema A schema identifier (PID, SID, pathspec, URL)
 	 * @param handler ErrorHandler to report validation errors to
 	 * @throws IOException
 	 * @throws SAXException

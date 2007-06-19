@@ -433,7 +433,7 @@ public abstract class ExternalTTS implements TTS {
 	
 	/**
 	 * Character substitution in textnodes. Recursive.
-	 * @param elem The element.
+	 * @param node the node
 	 */
 	protected void replaceUChars(Node node) {
 		if (node instanceof Document) {

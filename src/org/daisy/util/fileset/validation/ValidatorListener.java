@@ -14,7 +14,7 @@ public interface ValidatorListener {
 	 * messages are always instances of {@link org.daisy.util.fileset.validation.message.ValidatorMessage} but are typically 
 	 * subclassed to {@link org.daisy.util.fileset.validation.message.ValidatorWarningMessage}, 
 	 * {@link org.daisy.util.fileset.validation.message.ValidatorErrorMessage} or 
-	 * {@link org.daisy.util.fileset.validation.message.ValidatorFatalErrorMessage}.
+	 * {@link org.daisy.util.fileset.validation.message.ValidatorSevereErrorMessage}.
 	 * </p>
 	 * <p>Messages on failures-to-validate states are not issued here but in the <code>exception</code> method. 
 	 * The <code>report</code> method issues only messages that are unambigous indicators of an invalid state in a fileset.</p>

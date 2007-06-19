@@ -2,7 +2,7 @@ package org.daisy.pipeline.core.event;
 
 /**
  * Base class for all Pipeline events raised by the system.
- * @see {@link org.daisy.pipeline.core.event.UserEvent}
+ * @see org.daisy.pipeline.core.event.UserEvent
  * @author Markus Gylling
  */
 public class SystemEvent extends Event {

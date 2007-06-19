@@ -41,11 +41,11 @@ import org.xml.sax.InputSource;
 /**
  * A convenience class that can be used for parsing xml files. 
  * <br><br>
- * The default <code>org.xml.sax.EntityResolver</code> for <code>org.daisy.dtbsm.util.DtbParsingInitializer</code> 
+ * The default <code>org.xml.sax.EntityResolver</code> for <code>se_tpb_dtbSplitterMerger.DtbParsingInitializer</code> 
  * is <code>org.daisy.util.xml.catalog.CatalogEntityResolver</code> that holds the pathways to the local copies of 
  * the dtd files for Daisy 2.02 and Daisy 3 books.
  * <br><br>
- * The default <code>org.xml.sax.ErrorHandler</code> is the {@link org.daisy.dtbsm.DtbErrorHandler}.
+ * The default <code>org.xml.sax.ErrorHandler</code> is the {@link se_tpb_dtbSplitterMerger.DtbErrorHandler}.
  * 
  * @see CatalogEntityResolver
  * @see DtbErrorHandler 
@@ -83,11 +83,11 @@ public class DtbParsingInitializer {
 	 * </p>
 	 * <p>
 	 * Sets the default {@link org.daisy.util.xml.catalog.CatalogEntityResolver} 
-	 * and {@link org.daisy.dtbsm.util.DtbErrorHandler} for the parser.
+	 * and {@link se_tpb_dtbSplitterMerger.DtbErrorHandler} for the parser.
 	 * </p>
 	 * @throws XmlParsingException 
-     * @see  {@link org.daisy.util.xml.catalog.CatalogEntityResolver} 
-     * @see  {@link org.daisy.dtbsm.util.DtbErrorHandler}
+     * @see  org.daisy.util.xml.catalog.CatalogEntityResolver
+     * @see  DtbErrorHandler
 	 */
  	public Document parseDocWithDOM(File docFile) throws XmlParsingException{
  		Document doc = null;

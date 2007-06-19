@@ -17,7 +17,6 @@ public class MessageEvent extends SystemEvent {
 	 * @param source
 	 * @param message
 	 * @param type
-	 * @param cause
 	 */
 	public MessageEvent(Object source, String message, Type type) {
 		this(source,message,type,MessageEvent.Cause.SYSTEM,null);

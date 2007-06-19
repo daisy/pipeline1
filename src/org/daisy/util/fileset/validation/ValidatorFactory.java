@@ -24,7 +24,7 @@ public class ValidatorFactory {
 	
 	
 	/**
-	 * Produce an implementation of a {@linkorg.daisy.util.fileset.validation.Validator} for the inparam fileset type.
+	 * Produce an implementation of a {@link org.daisy.util.fileset.validation.Validator} for the inparam fileset type.
 	 * <p>The implementation discovery process is performed as follows:</p>
 	 * <ul>
 	 * <li>

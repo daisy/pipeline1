@@ -34,7 +34,6 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
 	/**
 	 * 
 	 * @param inListener
-	 * @param eventListeners
 	 * @param isInteractive
 	 */
 	public WordML2DTBook(InputListener inListener, Boolean isInteractive) {

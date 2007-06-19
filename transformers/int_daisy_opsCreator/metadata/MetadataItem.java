@@ -34,7 +34,7 @@ public class MetadataItem {
 	
 	/**
 	 * Constructor.
-	 * @param qName the unqualified XML name of this metadata item
+	 * @param name the unqualified XML name of this metadata item
 	 */
 	public MetadataItem(String name) {
 		this(new QName(name),null);

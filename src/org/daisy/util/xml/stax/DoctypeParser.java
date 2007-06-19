@@ -80,7 +80,7 @@ public class DoctypeParser {
 	
 	/**
 	 * Get the PUBLIC ID
-	 * @return
+	 * @return the public identifier
 	 */
 	public String getPublicId() {
 		return mPublicId;
@@ -88,7 +88,7 @@ public class DoctypeParser {
 	
 	/**
 	 * Get the SYSTEM ID
-	 * @return
+	 * @return the system identifier
 	 */
 	public String getSystemId() {
 		return mSystemId;
@@ -96,15 +96,15 @@ public class DoctypeParser {
 	
 	/**
 	 * Get the internal subset
-	 * @return
+	 * @return the internal subset
 	 */
 	public String getInternalSubset() {
 		return mInternal;
 	}
 	
 	/**
-	 * Get the root element name
-	 * @return
+	 * Get the root element name as defined by the doctype declaration
+	 * @return the root element name
 	 */
 	public String getRootElem() {
 		return mRootElem;

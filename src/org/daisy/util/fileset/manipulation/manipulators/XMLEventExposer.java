@@ -242,7 +242,7 @@ public class XMLEventExposer extends XMLEventFeeder {
 	 * <p>If no restrictions are set, all XMLEvent 
 	 * types will be exposed.</p>
 	 * <p>This method can be called several times to add more than one restriction.</p>
-	 * @param xmlEventType an event constant from javax.xml.stream.events.XMLEvent that should be exposed to the ValueConsumer.
+	 * @param xmlEventTypes a set of event constants from javax.xml.stream.events.XMLEvent that should be exposed to the ValueConsumer.
 	 */
 	public void setEventTypeRestrictions(Set<Integer> xmlEventTypes) {
 		mEventTypeRestrictions.addAll(xmlEventTypes);		

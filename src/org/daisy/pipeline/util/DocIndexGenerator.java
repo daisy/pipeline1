@@ -235,7 +235,7 @@ public class DocIndexGenerator implements ErrorHandler {
 	
 	/**
 	 * Main class
-	 * @param args[0] absolute path to the /doc/ folder
+	 * @param args first argument contains absolute path to the /doc/ folder
 	 */
 	public static void main(String[] args) {		
 		System.err.println("Running DocIndexGenerator...");

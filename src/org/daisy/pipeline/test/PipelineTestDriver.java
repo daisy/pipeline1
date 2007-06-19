@@ -48,9 +48,12 @@ public class PipelineTestDriver {
 	/**
 	 * Run a series of instantiations of CommandLineGUI.
 	 * Use scripts from the pipeline canonical script collection, use local input data.
-	 * Main runnable with Eclipse run profile params '${project_loc}/samples ${project_loc}/scripts'
-	 * @param args[0] full path to the pipeline samples directory
-	 * @param args[1] full path to the pipeline scripts directory
+	 * Main runnable with Eclipse run profile params '${project_loc}/samples ${project_loc}/scripts'.
+	 * <p>
+	 * When running the test driver, args[0] shall contain the full path to the pipeline
+	 * samples directory and args[1] shall contain full path to the pipeline scripts directory.
+	 * </p>
+	 * @param args command line arguments
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {

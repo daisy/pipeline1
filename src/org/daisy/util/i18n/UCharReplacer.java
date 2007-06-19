@@ -219,7 +219,7 @@ public class UCharReplacer  {
 	 * @param codePoint Unicode codepoint to retrieve a replacement for.
 	 * @return A replacement character sequence if substitution succeeded, else null.
 	 * @see #replace(CharSequence)
-	 * @see #getTableFailureWarnings()
+	 * @see #getTranslationTableFailures()
 	 */
 	public CharSequence replace(int codePoint) {
 		return getSubstitutionChars(codePoint);
@@ -232,7 +232,7 @@ public class UCharReplacer  {
 	 * @return a character sequence whose codepoints may or may not
 	 * have been replaced by substitution characters, depending on settings and substitution success.
 	 * @see #replace(int)
-	 * @see #getTableFailureWarnings()
+	 * @see #getTranslationTableFailures()
 	 */
 	public CharSequence replace(CharSequence input) {
 		int codePoint;

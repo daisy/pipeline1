@@ -118,8 +118,6 @@ public class TTSUtils {
 	/**
 	 * A DOM containing text to read.
 	 * @param doc A part of the manuscript identified as a point of synchronization.
-	 * @param outputFile the audio file to generate.
-	 * @return the time of the speach generated in milliseconds.
 	 * @throws UnsupportedAudioFileException 
 	 * @throws TransformerRunException 
 	 */
@@ -473,7 +471,7 @@ public class TTSUtils {
 	/**
 	 * Returns <tt>true</tt> iff the string contains any digits or
 	 * letters apart from the optional xml.
-	 * @param line the text, ssml included.
+	 * @param input the input
 	 * @return <tt>true</tt> iff the string contains any digits or
 	 * letters apart from the optional xml, <tt>false</tt> otherwise.
 	 */
