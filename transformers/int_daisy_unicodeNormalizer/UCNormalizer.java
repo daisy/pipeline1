@@ -102,8 +102,9 @@ public class UCNormalizer extends Transformer implements FilesetManipulatorListe
 			//done.
 			sendMessage(i18n("COMPLETED_NORM", processedCount));
 		} catch (Exception e) {
-			this.sendMessage(i18n("ERROR_ABORTING"), MessageEvent.Type.ERROR);			
-			throw new TransformerRunException(e.getMessage(),e);
+			//this.sendMessage(i18n("ERROR_ABORTING",e.getMessage()), MessageEvent.Type.ERROR);			
+			String message = i18n("ERROR_ABORTING",e.getMessage());
+			throw new TransformerRunException(message,e);
 		}			
 		return true;
 	}

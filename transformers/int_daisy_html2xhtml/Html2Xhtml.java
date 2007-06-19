@@ -181,8 +181,9 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 				this.sendMessage(e.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
 			}
 		} catch (Exception e) {
-			this.sendMessage(e.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
-			throw new TransformerRunException(e.getMessage(), e);
+			String message = i18n("ERROR_ABORTING", e.getMessage());
+			//this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
+			throw new TransformerRunException(message, e);
 		}
 
 		return true;

@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import javax.crypto.SecretKey;
 
 import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFolder;
@@ -164,7 +165,9 @@ public class EncryptionDriver extends Transformer implements FilesetErrorHandler
 			}
 								
 		} catch (Exception e) {
-			throw new TransformerRunException(e.getMessage(), e);
+			//this.sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
+			String message = i18n("ERROR_ABORTING", e.getMessage());
+			throw new TransformerRunException(message, e);
 		} 
 		if (totalSuccess) return true;  
 		throw new TransformerRunException("encryption not successfully completed");

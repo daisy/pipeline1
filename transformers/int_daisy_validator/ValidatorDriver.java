@@ -267,7 +267,9 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 
 			}catch (Exception e) {
 				//something happened that we are not yet handling gracefully
-				throw new TransformerRunException(e.getMessage(),e);
+				//this.sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
+				String message = i18n("ERROR_ABORTING", e.getMessage());
+				throw new TransformerRunException(message,e);
 			}
 
 			long end = System.nanoTime();
@@ -347,7 +349,9 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				try {
 					mXmlReporter.finishReport();
 				} catch (XMLStreamException e) {
-					throw new TransformerRunException(e.getMessage(), e);
+					//this.sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
+					String message = i18n("ERROR_ABORTING", e.getMessage());
+					throw new TransformerRunException(message,e);			
 				}
 			}
 		}

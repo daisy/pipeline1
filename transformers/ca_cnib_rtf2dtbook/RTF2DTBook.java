@@ -77,7 +77,9 @@ public class RTF2DTBook extends Transformer {
 		try {
 			xmlFile = new TempFile();
 		} catch (IOException e) {
-			throw new TransformerRunException(i18n("CANNOT_CREATE_TEMP_FILE"), e);
+			String message = i18n("CANNOT_CREATE_TEMP_FILE");
+			//this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
+			throw new TransformerRunException(message, e);
 		}
 
 		// Setup python args
@@ -100,10 +102,14 @@ public class RTF2DTBook extends Transformer {
 
 		try {
 			if (Command.execute(args) != 0) {
-				throw new TransformerRunException(i18n("PYTHON_FAILED"));
+				String message = i18n("PYTHON_FAILED");
+				//this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
+				throw new TransformerRunException(message);				
 			}
 		} catch (ExecutionException e1) {
-			throw new TransformerRunException(i18n("CANNOT_RUN_PYTHON"), e1);
+			String message = i18n("CANNOT_RUN_PYTHON");
+			//this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
+			throw new TransformerRunException(message, e1);			
 		} 
 
 
@@ -123,14 +129,15 @@ public class RTF2DTBook extends Transformer {
 			Stylesheet.apply(xmlFile.getFile().getAbsolutePath(), stylesheet, outputFile.getAbsolutePath(), xsltFactory, null, resolver);
 			this.progress(0.99);
 		} catch (XSLTException e) {
-			throw new TransformerRunException(i18n("CANNOT_CREATE_TEMP_FILE"), e);
-
+			String message = i18n("CANNOT_CREATE_TEMP_FILE");
+			//this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
+			throw new TransformerRunException(message, e);			
 		} catch (CatalogExceptionNotRecoverable e) {
-			throw new TransformerRunException(i18n("ENTITY_RESOLVER_ERROR"), e);
+			String message = i18n("ENTITY_RESOLVER_ERROR");
+			//this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
+			throw new TransformerRunException(message, e);
 		}
-
 		return true;
-		
 	}
 
 	private void printArgs(String[] args) {

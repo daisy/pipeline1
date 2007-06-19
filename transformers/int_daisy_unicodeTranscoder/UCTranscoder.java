@@ -142,8 +142,9 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 			}
 			
 		} catch (Exception e) {
-			this.sendMessage(e.getMessage(),MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
-			throw new TransformerRunException(e.getMessage(),e);
+			//this.sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
+			String message = (i18n("ERROR_ABORTING", e.getMessage()));
+			throw new TransformerRunException(message,e);			
 		} finally {
 			//TODO reset system properties: StAX Writer
 		}
