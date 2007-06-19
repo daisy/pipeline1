@@ -12,7 +12,7 @@
 
   <h1>Daisy Pipeline Transformer authoring guide</h1>
   <p class="author">Markus Gylling &amp; Linus Ericson</p>
-  <p class="updated">Latest update: 2007-05-21</p>
+  <p class="updated">Latest update: 2007-07-19</p>
               
 
   <h2 id="identity">Identity</h2>
@@ -46,6 +46,16 @@
 	  <p>Transformer authors are encouraged to use the XML form of Java properties (see <a href="http://java.sun.com/dtd/properties.dtd">http://java.sun.com/dtd/properties.dtd</a>).</p>
   
   <h2 id="eventbus">Runtime events</h2>
+
+  <h2 id="exceptions">Exception handling</h2>
+  <p>Normally, you should notify the eventbus (with types WARNING or ERROR )when catching an exception.</p>
+  <p>Non-caught exceptions are by contract thrown as TransformerRunExceptions. The recommended handling pattern is:</p>
+<pre><code>
+}catch (SomeFatalException fe) {
+ String message=i18n("ERROR_ABORTING",fe.getLocalizedMessage());
+ throw new TransformerRunException(message,fe);
+}
+</code></pre>
 
  <h2 id="jarness">Ground rules for creating jarifiable transformers</h2>
   <dl>
