@@ -12,6 +12,7 @@ import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
 import org.daisy.util.fileset.util.FilesetConstants;
+import org.daisy.util.fileset.validation.delegate.impl.InnerDocURICheckerDelegate;
 import org.daisy.util.fileset.validation.delegate.impl.InterDocURICheckerDelegate;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
@@ -55,34 +56,6 @@ public class ValidatorImplOPS2x extends ValidatorImplAbstract implements Validat
 	 */
 	private void validate() throws ValidatorException, ValidatorNotSupportedException {
 
-//		FilesetFile mCurrentlyValidatedMember = null;
-//		for (Iterator iter = mFileset.getLocalMembers().iterator(); iter.hasNext();) {
-//			try{
-//				mCurrentlyValidatedMember = (FilesetFile) iter.next();
-//				
-//				if(mCurrentlyValidatedMember instanceof Z3986DtbookFile) {						
-//					dtbookFile((Z3986DtbookFile)mCurrentlyValidatedMember);								
-//				}
-//			}catch (Exception e) {
-//				mValidatorListener.exception(this, e);
-//				//we had an exception on a specific file in the loop
-//				//we want to try to continue
-//				//TODO maybe catch more specifically than Exception 					
-//				this.mValidatorListener.report(this,new ValidatorErrorMessage(
-//						mCurrentlyValidatedMember.getFile().toURI(),
-//						"Exception: " + e.getClass().getSimpleName() +": " + e.getMessage()));
-//			}	
-//		}//for mFileset.getLocalMembers()
-	}
-
-	/**
-	 * Performs tests pertaining specifically to dtbook docs
-	 */
-	private void dtbookFile(Z3986DtbookFile contentFile) {
-		
-//		if (!contentFile.hasHierarchicalHeadingSequence()){
-//			this.mValidatorListener.report(this,new ValidatorErrorMessage(contentFile.getFile().toURI(),"incorrect heading hierarchy"));
-//		}				
 	}
 	
 	/**
@@ -98,8 +71,8 @@ public class ValidatorImplOPS2x extends ValidatorImplAbstract implements Validat
 			
 			//delegates:								
 			setDelegate(new InterDocURICheckerDelegate());									
-			
-						 
+			setDelegate(new InnerDocURICheckerDelegate());
+									 
 		}catch (Exception e) {
 			throw new ValidatorException(e.getMessage(),e);
 		}
