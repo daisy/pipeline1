@@ -325,6 +325,7 @@ src/org/daisy/util/fileset/validation/ValidatorImplAbstract.java -text
 src/org/daisy/util/fileset/validation/ValidatorImplD202.java -text
 src/org/daisy/util/fileset/validation/ValidatorImplDtbook.java -text
 src/org/daisy/util/fileset/validation/ValidatorImplOPS2x.java -text
+src/org/daisy/util/fileset/validation/ValidatorImplXhtml10.java -text
 src/org/daisy/util/fileset/validation/ValidatorImplZedVal.java -text
 src/org/daisy/util/fileset/validation/delegate/impl/FilesetFileTypeRestrictionDelegate.java -text
 src/org/daisy/util/fileset/validation/delegate/impl/InnerDocURICheckerDelegate.java -text
