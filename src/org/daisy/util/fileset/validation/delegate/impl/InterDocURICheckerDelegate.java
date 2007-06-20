@@ -46,12 +46,12 @@ public class InterDocURICheckerDelegate extends ValidatorDelegateImplAbstract {
 
 		for (Iterator iter = fileset.getLocalMembers().iterator(); iter.hasNext();) {
 			FilesetFile ffile = (FilesetFile) iter.next();
-			if (ffile instanceof Referring) {
+			if (ffile instanceof Referring) {				
 				Referring referer = (Referring) ffile;
 				Iterator uriator = referer.getUriStrings().iterator();
 				while (uriator.hasNext()) {
 					String uriString = (String) uriator.next();
-					if (!regex.matches(regex.URI_REMOTE, uriString)) {
+					if (!regex.matches(regex.URI_REMOTE, uriString) && !uriString.startsWith("#")) {
 						String path = URIStringParser.stripFragment(uriString);
 						String fragment = URIStringParser.getFragment(uriString);
 						if (fragment.length()<1)fragment=null;
