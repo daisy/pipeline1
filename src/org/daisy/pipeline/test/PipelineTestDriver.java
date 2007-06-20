@@ -25,6 +25,8 @@ import org.daisy.pipeline.test.impl.Odf2dtbook1;
 import org.daisy.pipeline.test.impl.Odf2dtbook2;
 import org.daisy.pipeline.test.impl.Odf2xhtml1;
 import org.daisy.pipeline.test.impl.OpsCreator1;
+import org.daisy.pipeline.test.impl.OpsCreator2;
+import org.daisy.pipeline.test.impl.OpsCreator3;
 import org.daisy.pipeline.test.impl.PrettyPrinter1;
 import org.daisy.pipeline.test.impl.PrettyPrinter2;
 import org.daisy.pipeline.test.impl.RenamerTaggerValidator1;
@@ -109,14 +111,13 @@ public class PipelineTestDriver {
 		List<PipelineTest> tests = new LinkedList<PipelineTest>(); 
 
 //		tests.add(new ConfigurableValidator1(inputDir, outputDir));
-		tests.add(new D202dtbValidator1(inputDir, outputDir));
+//		tests.add(new D202dtbValidator1(inputDir, outputDir));
 //		tests.add(new D202dtbValidator2(inputDir, outputDir));
 //		tests.add(new DTBookValidator1(inputDir, outputDir));
 //		tests.add(new DTBookValidator2(inputDir, outputDir));
 //		tests.add(new FilesetRenamer1(inputDir, outputDir));
 //		tests.add(new Narrator1(inputDir, outputDir));
 //		tests.add(new OcfCreator1(inputDir, outputDir));
-//		tests.add(new OpsCreator1(inputDir, outputDir));
 //		tests.add(new Odf2dtbook1(inputDir, outputDir));
 //		tests.add(new PrettyPrinter1(inputDir, outputDir));
 //		tests.add(new PrettyPrinter2(inputDir, outputDir));
@@ -135,7 +136,11 @@ public class PipelineTestDriver {
 //		tests.add(new CharacterRepertoireManipulator1(inputDir, outputDir));
 //		tests.add(new Odf2xhtml1(inputDir, outputDir));
 //		tests.add(new Odf2dtbook1(inputDir, outputDir));
-//		tests.add(new Odf2dtbook2(inputDir, outputDir));
+//		tests.add(new Odf2dtbook2(inputDir, outputDir));		
+//		tests.add(new OpsCreator1(inputDir, outputDir));
+//		tests.add(new OpsCreator2(inputDir, outputDir));
+		tests.add(new OpsCreator3(inputDir, outputDir));		
+		
 		
 ////////// tests with input data not in samples dir: 		
 		//tests.add(new DTBAudioEncoder1(inputDir, outputDir));
