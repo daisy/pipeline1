@@ -155,14 +155,14 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 		mEventList.add(xef.createStartElement("", mNcxNamespace, "docTitle"));		
 		mEventList.add(xef.createStartElement(mQNameNcxText,null,null));
 		MetadataItem m = mMetaData.get(dcTitle);
-		if(m!=null)mEventList.add(xef.createCharacters(m.getValue()));				
+		if(m!=null && m.getValue()!=null)mEventList.add(xef.createCharacters(m.getValue()));				
 		mEventList.add(xef.createEndElement(mQNameNcxText,null));
 		mEventList.add(xef.createEndElement("", mNcxNamespace, "docTitle"));
 
 		mEventList.add(xef.createStartElement("", mNcxNamespace, "docAuthor"));				
 		mEventList.add(xef.createStartElement(mQNameNcxText,null,null));
 		m = mMetaData.get(dcCreator);
-		if(m!=null)mEventList.add(xef.createCharacters(m.getValue()));
+		if(m!=null && m.getValue()!=null)mEventList.add(xef.createCharacters(m.getValue()));
 		mEventList.add(xef.createEndElement(mQNameNcxText,null));
 		mEventList.add(xef.createEndElement("", mNcxNamespace, "docAuthor"));
 		
@@ -307,13 +307,15 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 				  
 				  //close events on the stack until
 				  //no longer parent relation between next and the stack top
-				  relation rel2;
+				  relation rel2 = null;
 				  do {	  					  
-					  NavPointSource nps2 = openPointStack.pop();					  
-					  //System.err.println("close:: " + nps2.mStartElement.getName().getLocalPart() + "::" + nps2.mLabel);
-					  mEventList.add(xef.createEndElement(mQNameNcxNavPoint, null));
-					  rel2 = getRelation(next, nps2);
-				  } while (rel2 != relation.SIBLING);  //?? what if bad h seqence? then remove hx as relation and do only xpath
+					  if(!openPointStack.empty()){
+						  NavPointSource nps2 = openPointStack.pop();
+						  //System.err.println("close:: " + nps2.mStartElement.getName().getLocalPart() + "::" + nps2.mLabel);
+						  mEventList.add(xef.createEndElement(mQNameNcxNavPoint, null));
+						  rel2 = getRelation(next, nps2);
+					  }
+				  } while (rel2!=null && rel2 != relation.SIBLING);
 			  }	
 		  }
 		}

@@ -331,7 +331,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 		
 		//restriction is set to only recieve XmlFile here 		
 		try {
-			XMLEventExposer xee = new XMLEventExposer (this,null,null,false,false,false);
+			XMLEventExposer xee = new XMLEventExposer (this,null,null,true,false,false);
 			xee.setEventTypeRestriction(XMLEvent.START_ELEMENT);
 			xee.setEventTypeRestriction(XMLEvent.ATTRIBUTE);
 			return xee;

@@ -5,6 +5,8 @@ import int_daisy_opsCreator.metadata.MetadataList;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,12 +44,17 @@ public abstract class Builder {
 	abstract void build() throws PoolException, FileNotFoundException, XMLStreamException;
 	
 	void render(File destination) throws PoolException, XMLStreamException, FileNotFoundException {
-
 		XMLOutputFactory xof = null;
 		try{
 			xof = StAXOutputFactoryPool.getInstance().acquire(xofProperties);
 			XMLEventWriter xev = xof.createXMLEventWriter(new FileOutputStream(destination));
 			for (XMLEvent event : mEventList) {
+				
+//				PrintWriter dosOut = new PrintWriter(new OutputStreamWriter(System.out));
+//				event.writeAsEncodedUnicode(dosOut);
+//				System.err.println("\n");
+//				dosOut.flush();
+							
 				xev.add(event);
 			}
 			xev.flush();
