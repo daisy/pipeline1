@@ -190,6 +190,9 @@ samples/input/transl/greek-translation-table.xml -text
 samples/input/transl/phon-translation-table.xml -text
 samples/input/txt/wasteland.txt -text
 samples/input/word/wml-sample.xml -text
+samples/input/xhtml/d202.css -text
+samples/input/xhtml/daisy_202.html -text
+samples/input/xhtml/daisylog.jpg -text
 samples/input/xhtml/multi-language-unicode.html -text
 scripts/_dev/dtbook2html.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text

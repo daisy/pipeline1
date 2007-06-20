@@ -12,6 +12,7 @@
       <meta content="C00000" name="dtb:uid"/>
    </head>
    <book>
+	   <!-- note- this evil document has an h2 as its first hx-->	
       <frontmatter>
          <doctitle>
             <sent id="dtb1">Valentin Haüy. </sent>
