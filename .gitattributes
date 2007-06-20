@@ -1,5 +1,6 @@
 * text=auto !eol
 META-INF/MANIFEST.MF -text
+META-INF/services/javax.xml.validation.SchemaFactory -text
 /build.properties -text
 /custom.xml -text
 doc/404.html -text

@@ -1,0 +1,3 @@
+org.daisy.util.xml.validation.jaxp.RelaxNGSchemaFactory
+org.daisy.util.xml.validation.jaxp.ISOSchematronSchemaFactory
+org.daisy.util.xml.validation.jaxp.SchematronSchemaFactory
