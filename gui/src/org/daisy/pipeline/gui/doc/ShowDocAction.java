@@ -37,7 +37,7 @@ public class ShowDocAction extends Action implements IWorkbenchAction {
     }
 
     /**
-     * @param window2
+     * @param window
      */
     public ShowDocAction(IWorkbenchWindow window) {
         super();
