@@ -46,7 +46,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction aboutAction;
     private IWorkbenchAction deleteAction;
     private IWorkbenchAction exitAction;
-//    private IWorkbenchAction introAction;
+    private IWorkbenchAction introAction;
     private IWorkbenchAction maximizeAction;
     private IWorkbenchAction minimizeAction;
     private IWorkbenchAction navBackAction;
@@ -87,8 +87,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(deleteAction);
         exitAction = ActionFactory.QUIT.create(window);
         register(exitAction);
-//        introAction = ActionFactory.INTRO.create(window);
-//        register(introAction);
+        introAction = ActionFactory.INTRO.create(window);
+        register(introAction);
         maximizeAction = ActionFactory.MAXIMIZE.create(window);
         register(maximizeAction);
         minimizeAction = ActionFactory.MINIMIZE.create(window);
@@ -199,7 +199,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         //
 
         // Help menu
-        // helpMenu.add(introAction);
+        helpMenu.add(introAction);
         helpMenu.add(new Separator());
         helpMenu.add(showDocItem);
         helpMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
