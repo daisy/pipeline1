@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+    <page id="root" content="root.html">
+      <title>Cannot display the welcome page (browser not supported)</title>
+      <link label="Close" url="http://org.eclipse.ui.intro/close"/>
+    </page>
+    <page id="overview" content="overview.html"/>
+    <page id="postinstall" content="postinstall.html"/>
+    <page id="whatsnew" content="whatsnew.html"/>
+    <page id="tutorials" content="tutorials.html"/>
+    <page id="common" content="common.html"/>
+</introContent>

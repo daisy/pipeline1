@@ -405,9 +405,32 @@
    <extension
          point="org.eclipse.ui.intro">
       <introProductBinding
-            introId="org.eclipse.ui.intro.universal"
+            introId="org.daisy.pipeline.gui.intro"
             productId="org.daisy.pipeline.gui.product"/>
-   </extension> <extension
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            id="org.daisy.pipeline.gui.intro"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.config">
+      <config
+            introId="org.daisy.pipeline.gui.intro"
+            content="intro/content.xml"
+            id="org.daisy.pipeline.gui.intro.config">
+         <presentation
+               home-page-id="root">
+            <implementation
+                  kind="html"
+                  os="win32,linux,macosx">
+            </implementation>
+            <implementation kind="swt"/>
+            <launchBar
+                  computed="false"
+                  location="fastview"/>
+         </presentation>
+      </config>
+   </extension>
+   <extension
          point="org.eclipse.ui.newWizards">
       <wizard
             class="org.daisy.pipeline.gui.jobs.wizard.NewJobWizard"

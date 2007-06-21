@@ -34,7 +34,7 @@ public class Messages extends NLS {
     private Messages() {
     }
 
-    public static String message_coreReload;
+    public static String message_reloadCore;
     public static String menu_edit;
     public static String menu_file;
     public static String menu_help;

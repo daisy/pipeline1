@@ -40,7 +40,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  */
 public class PathsPrefPage extends FieldEditorPreferencePage implements
         IWorkbenchPreferencePage {
-
+public static final String ID = "org.daisy.pipeline.gui.prefPage.paths"; //$NON-NLS-1$
     private boolean mustReloadCore;
 
     public PathsPrefPage() {
@@ -110,7 +110,7 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
                     public void run(IProgressMonitor monitor)
                             throws InvocationTargetException,
                             InterruptedException {
-                        monitor.beginTask(Messages.message_coreReload,
+                        monitor.beginTask(Messages.message_reloadCore,
                                 IProgressMonitor.UNKNOWN);
                         GuiPlugin.get().reloadCore();
                         monitor.done();

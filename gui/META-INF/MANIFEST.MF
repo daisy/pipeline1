@@ -9,8 +9,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.daisy.pipeline,
  org.eclipse.pde.runtime,
- org.eclipse.ui.intro.universal,
- org.eclipse.core.expressions
+ org.eclipse.core.expressions,
+ org.eclipse.ui.intro
 Eclipse-LazyStart: true
 Bundle-Activator: org.daisy.pipeline.gui.GuiPlugin
 Export-Package: 

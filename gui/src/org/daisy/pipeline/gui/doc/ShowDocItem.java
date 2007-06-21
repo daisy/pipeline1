@@ -25,22 +25,29 @@ import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.PerspectiveMenu;
 
 /**
  * @author Romain Deltour
  * 
  */
-public class ShowDocumentationItem extends PerspectiveMenu {
+public class ShowDocItem extends PerspectiveMenu {
 
     private static final String dontShowDocSwitchWarningKey = "dontShowDocSwitchWarningKey"; //$NON-NLS-1$
     private IWorkbenchWindow window;
+    private ShowDocAction showDocAction;
 
-    public ShowDocumentationItem(IWorkbenchWindow window) {
+    public ShowDocItem(IWorkbenchWindow window) {
         super(window, "showDocumentation"); //$NON-NLS-1$
         this.window = window;
+        this.showDocAction = new ShowDocAction(window);
         showActive(false);
+    }
+
+    @Override
+    public void dispose() {
+        showDocAction.dispose();
+        super.dispose();
     }
 
     @Override
@@ -58,22 +65,15 @@ public class ShowDocumentationItem extends PerspectiveMenu {
         boolean skipWarning = prefStore.getString(dontShowDocSwitchWarningKey)
                 .equals(MessageDialogWithToggle.ALWAYS);
         if (!skipWarning) {
-            MessageDialogWithToggle
-                    .openInformation(
-                            window.getShell(),
-                            Messages.dialog_showDoc_title,
-                            Messages.dialog_showDoc_message,
-                            Messages.dialog_showDoc_toggle, false, prefStore,
-                            dontShowDocSwitchWarningKey);
+            MessageDialogWithToggle.openInformation(window.getShell(),
+                    Messages.dialog_showDoc_title,
+                    Messages.dialog_showDoc_message,
+                    Messages.dialog_showDoc_toggle, false, prefStore,
+                    dontShowDocSwitchWarningKey);
         }
 
         // Do go to the Documentation perspective
-        try {
-            window.getWorkbench().showPerspective(DocPerspective.ID, window);
-        } catch (WorkbenchException e) {
-            GuiPlugin.get().error(
-                    "Couldn't switch to the Documentation perspective", e); //$NON-NLS-1$
-        }
+        showDocAction.run();
     }
 
     @Override
