@@ -29,7 +29,7 @@ public class DocPerspective implements IPerspectiveFactory {
     public void createInitialLayout(IPageLayout layout) {
         String editorArea = layout.getEditorArea();
         layout.setEditorAreaVisible(false);
-        layout.setFixed(false);
+        layout.setFixed(true);
 
         layout.addView(DocView.ID, IPageLayout.LEFT, 1.0f, editorArea);
 
