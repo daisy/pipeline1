@@ -62,16 +62,16 @@ public abstract class EFileFilter implements FileFilter {
         }
     }
 
+    public void rejectDir(String name) {
+        filteredDirNames.add(name);
+    }
+
     protected boolean acceptEFile(EFile file) {
         return true;
     }
 
     protected boolean acceptEFolder(EFolder dir) {
         return !filteredDirNames.contains(dir.getName());
-    }
-
-    protected void rejectDir(String name) {
-        filteredDirNames.add(name);
     }
 
 }
