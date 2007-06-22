@@ -41,13 +41,13 @@ public class ShowDocIntroAction implements IIntroAction {
      * @see org.eclipse.ui.intro.config.IIntroAction#run(org.eclipse.ui.intro.IIntroSite,
      *      java.util.Properties)
      */
-    @SuppressWarnings("restriction")
+    @SuppressWarnings("restriction") //$NON-NLS-1$
     public void run(IIntroSite site, Properties params) {
         // IIntroManager introMan = site.getWorkbenchWindow().getWorkbench()
         // .getIntroManager();
         // introMan.closeIntro(introMan.getIntro());
         org.eclipse.ui.internal.intro.impl.model.url.IntroURLParser parser = new org.eclipse.ui.internal.intro.impl.model.url.IntroURLParser(
-                "http://org.eclipse.ui.intro/switchToLaunchBar");
+                "http://org.eclipse.ui.intro/switchToLaunchBar"); //$NON-NLS-1$
         parser.getIntroURL().execute();
         showDocAction.run();
     }
