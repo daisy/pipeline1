@@ -21,7 +21,7 @@
       <product
             application="org.daisy.pipeline.gui.application"
             description="%product.description"
-            name="DAISY Pipeline">      <property
+            name="%product.name">      <property
             name="introTitle"
             value="%intro.title"/>
       <property
@@ -471,6 +471,10 @@
             class="org.eclipse.ui.ExtensionFactory:perspectivesPreferencePage"
             id="org.daisy.pipeline.gui.prefPage.perspectives"
             name="%prefPage.perspectives"/>
+      <page
+            class="org.daisy.pipeline.gui.jobs.runner.RunPrefPage"
+            id="org.daisy.pipeline.gui.prefPage.run"
+            name="%prefPage.run"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">

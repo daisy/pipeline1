@@ -52,6 +52,11 @@ public class Messages extends NLS {
     public static String heading_jobs;
     public static String heading_status;
     public static String operation_newJob;
+    public static String prefPage_run_aborted_label;
+    public static String prefPage_run_always;
+    public static String prefPage_run_failed_label;
+    public static String prefPage_run_finished_label;
+    public static String prefPage_run_prompt;
     public static String runnerJob_message;
     public static String runnerJob_name;
     public static String uiJob_updateJobs;

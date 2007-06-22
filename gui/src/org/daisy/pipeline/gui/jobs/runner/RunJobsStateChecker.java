@@ -1,20 +1,19 @@
 /*
- * DAISY Pipeline GUI
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * DAISY Pipeline GUI Copyright (C) 2006 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.pipeline.gui.jobs.runner;
 
@@ -45,9 +44,9 @@ public class RunJobsStateChecker extends JobsStateGroupFilter {
 
     private Shell shell;
     private static final List<JobInfo> empyJobList = new ArrayList<JobInfo>(0);
-    private static final String alwaysRunAbortedKey = "alwaysRunFinishedKey"; //$NON-NLS-1$
-    private static final String alwaysRunFailedKey = "alwaysRunFinishedKey"; //$NON-NLS-1$
-    private static final String alwaysRunFinishedKey = "alwaysRunFinishedKey"; //$NON-NLS-1$
+    public static final String ALWAYS_RUN_ABORTED_PREF = "ALWAYS_RUN_FINISHED_PREF"; //$NON-NLS-1$
+    public static final String ALWAYS_RUN_FAILED_PREF = "ALWAYS_RUN_FINISHED_PREF"; //$NON-NLS-1$
+    public static final String ALWAYS_RUN_FINISHED_PREF = "ALWAYS_RUN_FINISHED_PREF"; //$NON-NLS-1$
 
     public RunJobsStateChecker() {
         this(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
@@ -93,32 +92,25 @@ public class RunJobsStateChecker extends JobsStateGroupFilter {
 
     @Override
     protected List<JobInfo> filterAborted(List<JobInfo> jobInfos) {
-        return filterListWithDialog(
-                jobInfos,
+        return filterListWithDialog(jobInfos,
                 Messages.dialog_abortedJobs_title,
-                Messages.dialog_abortedJobs_message,
-                MessageDialog.WARNING, Messages.dialog_abortedJobs_toggle,
-                alwaysRunAbortedKey);
+                Messages.dialog_abortedJobs_message, MessageDialog.WARNING,
+                Messages.dialog_abortedJobs_toggle, ALWAYS_RUN_ABORTED_PREF);
     }
 
     @Override
     protected List<JobInfo> filterFailed(List<JobInfo> jobInfos) {
-        return filterListWithDialog(
-                jobInfos,
-                Messages.dialog_failedJobs_title,
-                Messages.dialog_failedJobs_message,
-                MessageDialog.WARNING, Messages.dialog_failedJobs_toggle,
-                alwaysRunFailedKey);
+        return filterListWithDialog(jobInfos, Messages.dialog_failedJobs_title,
+                Messages.dialog_failedJobs_message, MessageDialog.WARNING,
+                Messages.dialog_failedJobs_toggle, ALWAYS_RUN_FAILED_PREF);
     }
 
     @Override
     protected List<JobInfo> filterFinished(List<JobInfo> jobInfos) {
-        return filterListWithDialog(
-                jobInfos,
+        return filterListWithDialog(jobInfos,
                 Messages.dialog_finishedJobs_title,
-                Messages.dialog_finishedJobs_message,
-                MessageDialog.WARNING, Messages.dialog_finishedJobs_toggle,
-                alwaysRunFinishedKey);
+                Messages.dialog_finishedJobs_message, MessageDialog.WARNING,
+                Messages.dialog_finishedJobs_toggle, ALWAYS_RUN_FINISHED_PREF);
     }
 
     @Override
@@ -132,8 +124,7 @@ public class RunJobsStateChecker extends JobsStateGroupFilter {
         if (jobInfos != null && jobInfos.size() > 0) {
             ListDialog dialog = new ListDialog(shell);
             dialog.setTitle(Messages.dialog_scheduledJobs_title);
-            dialog
-                    .setMessage(Messages.dialog_scheduledJobs_message);
+            dialog.setMessage(Messages.dialog_scheduledJobs_message);
             dialog.setInput(jobInfos);
             dialog.setContentProvider(new ArrayContentProvider());
             dialog.setLabelProvider(new JobsLabelProvider());
