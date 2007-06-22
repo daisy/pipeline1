@@ -64,12 +64,12 @@ public class DTBook2Xhtml extends Transformer implements FilesetErrorHandler {
 				EFile eInFile = new EFile(inFile);
 				String outFileName;
 				EFolder folder;
-				if (outFile.toString().endsWith(".html") || outFile.toString().endsWith(".htm")) {
-					folder = new EFolder(outFile.getParentFile());
-					outFileName = outFile.getName();					
-				} else {
+				if (outFile.isDirectory()) {
 					folder = new EFolder(outFile);
 					outFileName = eInFile.getNameMinusExtension() + ".html";
+				} else {
+					folder = new EFolder(outFile.getParentFile());
+					outFileName = outFile.getName();					
 				}
 				
 				if (inFile.getParentFile().equals(folder)) {
