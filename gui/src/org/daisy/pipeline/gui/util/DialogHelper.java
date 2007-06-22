@@ -1,24 +1,24 @@
 /*
- * DAISY Pipeline GUI
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * DAISY Pipeline GUI Copyright (C) 2006 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.pipeline.gui.util;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.daisy.util.mime.MIMEType;
 import org.daisy.util.mime.MIMETypeException;
@@ -54,7 +54,7 @@ public final class DialogHelper {
         return browseFile(shell, file, style, (String[]) null);
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static String browseFile(Shell shell, File file, int style,
             String mime) {
         String[] ext = null;
@@ -62,8 +62,9 @@ public final class DialogHelper {
             try {
                 MIMETypeRegistry registry = MIMETypeRegistry.getInstance();
                 MIMEType type = registry.getEntryByName(mime);
-                ext = (String[]) type.getFilenamePatterns().toArray(
-                        new String[0]);
+                Collection patterns = type.getFilenamePatterns();
+                patterns.add("*.*"); //$NON-NLS-1$
+                ext = (String[]) patterns.toArray(new String[0]);
             } catch (MIMETypeRegistryException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -88,7 +89,7 @@ public final class DialogHelper {
         }
         dialog.setFilterExtensions(extensions);
         String res = dialog.open();
-        if (res != null && dialog.getFileNames().length>1) {
+        if (res != null && dialog.getFileNames().length > 1) {
             String path = dialog.getFilterPath();
             StringBuilder sb = new StringBuilder();
             for (String name : dialog.getFileNames()) {
