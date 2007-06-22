@@ -40,7 +40,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  */
 public class PathsPrefPage extends FieldEditorPreferencePage implements
         IWorkbenchPreferencePage {
-public static final String ID = "org.daisy.pipeline.gui.prefPage.paths"; //$NON-NLS-1$
+    public static final String ID = "org.daisy.pipeline.gui.prefPage.paths"; //$NON-NLS-1$
     private boolean mustReloadCore;
 
     public PathsPrefPage() {
@@ -49,14 +49,16 @@ public static final String ID = "org.daisy.pipeline.gui.prefPage.paths"; //$NON-
 
     @Override
     protected void createFieldEditors() {
-        Composite parent = getFieldEditorParent();
+        Composite parent;
         // Lame Path
+        parent = getFieldEditorParent();
         FileFieldEditor lameEditor = new FileFieldEditor(
                 PipelineUtil.PATH_TO_LAME, Messages.pref_lamePath_label, parent);
         lameEditor.getTextControl(parent).setToolTipText(
                 Messages.pref_lamePath_tooltip);
         addField(lameEditor);
         // Python Path
+        parent = getFieldEditorParent();
         FileFieldEditor pythonEditor = new FileFieldEditor(
                 PipelineUtil.PATH_TO_PYTHON, Messages.pref_pythonPath_label,
                 parent);
@@ -64,6 +66,7 @@ public static final String ID = "org.daisy.pipeline.gui.prefPage.paths"; //$NON-
                 Messages.pref_pythonPath_tooltip);
         addField(pythonEditor);
         // Temp Dir Path
+        parent = getFieldEditorParent();
         DirectoryFieldEditor tempDirEditor = new DirectoryFieldEditor(
                 PipelineUtil.PATH_TO_TEMP_DIR, Messages.pref_tempDirPath_label,
                 parent);
