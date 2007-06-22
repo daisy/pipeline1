@@ -1,20 +1,19 @@
 /*
- * DAISY Pipeline GUI
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * DAISY Pipeline GUI Copyright (C) 2006 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.pipeline.gui.util;
 
@@ -112,7 +111,7 @@ public class ListSelectionMessageToggleDialog extends MessageDialogWithToggle {
      * 
      * @param selectedElements the array of elements to select
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void setInitialSelections(Object[] selectedElements) {
         initialSelections = new ArrayList(selectedElements.length);
         for (int i = 0; i < selectedElements.length; i++) {
@@ -196,6 +195,7 @@ public class ListSelectionMessageToggleDialog extends MessageDialogWithToggle {
             return;
         case IDialogConstants.OK_ID:
             okPressed();
+            break;
         default:
             super.buttonPressed(buttonId);
             break;
@@ -241,7 +241,6 @@ public class ListSelectionMessageToggleDialog extends MessageDialogWithToggle {
      */
     @Override
     protected void okPressed() {
-
         // Get the input children.
         Object[] children = contentProvider.getElements(input);
 
@@ -256,6 +255,8 @@ public class ListSelectionMessageToggleDialog extends MessageDialogWithToggle {
             }
             setResult(list);
         }
+        // Don't forget to set the pref by calling:
+        super.buttonPressed(IDialogConstants.OK_ID);
     }
 
     /**
