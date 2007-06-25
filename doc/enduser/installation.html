@@ -19,7 +19,11 @@
 		<ul>
 			<li><a href="#prereqs">Prerequisites</a></li>
 			<li><a href="#install">Installation</a></li>
-			<li><a href="#config">Configuration</a></li>
+			<li><a href="#config">Configuration</a>
+			<ul>
+				<li><a href="#advancedconfig">Advanced configuration</a></li>
+			</ul>
+			</li>
       		<li><a href="#uninstall">Uninstalling the Pipeline</a></li>
 		</ul>
 	</div>
@@ -61,6 +65,12 @@
       </dl>
       <p>Information on how to install LAME and Python is available in <a href="./installing-lame.html">Installing the Lame MP3 Encoder for use within the Daisy Pipeline</a> and <a href="./installing-python.html">Installing Python for use within the Daisy Pipeline</a>.</p>
 	  <p>Note: When starting the Pipeline, you may get warnings that certain scripts could not be loaded; this is most likely due to the fact that the settings discussed above have not been set.</p>
+	  
+	  <h3 id="advancedconfig">Advanced configuration</h3>
+	  <h4>Using a non-default Java virtual machine</h4>
+	  <p>In order to run the Daisy Pipeline using a non-default (not the one found on the system path) Java virutal machine (JRE), use the <code>-vm [JRE path]</code> command line parameter when starting the GUI.</p>
+	  <h4>Displaying the browser widget on Linux</h4>
+	  <p>If the browser widget used by for example the documentation perspective in the Daisy Pipeline GUI doesn't work, it can be configured by following the <a href="http://www.eclipse.org/swt/faq.php#browserlinuxrcp">instructions at eclipse.org</a>.</p>
 
       <h2 id="uninstall">Uninstalling the Pipeline</h2>
 	  <p>To uninstall the Pipeline, simply delete the directory to which you extracted the Pipeline application archive during the installation process.</p>	
