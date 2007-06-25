@@ -521,6 +521,7 @@ transformers/se_tpb_wordml2dtbook/xslt/post-defragment-strong.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-defragment-sub.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-defragment-sup.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-fix-heading-level.xsl -text
+transformers/se_tpb_wordml2dtbook/xslt/post-indent.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-pagenum-fix.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/pre-input-validator.xsl -text
 transformers/se_tpb_xmldetection/lang/fr.xml -text

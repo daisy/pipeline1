@@ -65,6 +65,7 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
         final File defragmentEm = new File(this.getTransformerDirectory(), "./xslt/post-defragment-em.xsl");
         final File defragmentStrong = new File(this.getTransformerDirectory(), "./xslt/post-defragment-strong.xsl");
         final File addAuthorTitle = new File(this.getTransformerDirectory(), "./xslt/post-add-author-title.xsl");
+        final File indent = new File(this.getTransformerDirectory(), "./xslt/post-indent.xsl");
         
 //      validate input
 		try {
@@ -117,6 +118,7 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
 			TempFile t4 = new TempFile();
 			TempFile t5 = new TempFile();
 			TempFile t6 = new TempFile();
+			TempFile t7 = new TempFile();
 			
 			sendMessage("Tempfolder: " + t1.getFile().getParent(), MessageEvent.Type.DEBUG);
 			
@@ -134,8 +136,7 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
 				sendMessage("The text size has changed (" + tc1.getFile().length() + "/" + tc2.getFile().length() + "). Check the result for errors.", MessageEvent.Type.WARNING);
 			} else {
 				sendMessage("Text size ok.");
-			}
-			
+			}			
 			// Must match the order in wordml2dtbook.xsl
 			Stylesheet.apply(t1.getFile().getAbsolutePath(), pagenumFix.getAbsolutePath(), t2.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
 			progress(0.6);
@@ -144,12 +145,12 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
 			Stylesheet.apply(t3.getFile().getAbsolutePath(), defragmentSup.getAbsolutePath(), t4.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
 			progress(0.8);
 			Stylesheet.apply(t4.getFile().getAbsolutePath(), defragmentEm.getAbsolutePath(), t5.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			progress(0.9);
+			progress(0.85);
 			Stylesheet.apply(t5.getFile().getAbsolutePath(), defragmentStrong.getAbsolutePath(), t6.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			progress(0.90);
+			Stylesheet.apply(t6.getFile().getAbsolutePath(), addAuthorTitle.getAbsolutePath(), t7.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
 			progress(0.95);
-			Stylesheet.apply(t6.getFile().getAbsolutePath(), addAuthorTitle.getAbsolutePath(), result.getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-
-			
+			Stylesheet.apply(t7.getFile().getAbsolutePath(), indent.getAbsolutePath(), result.getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());			
         } catch (Exception e) {
             throw new TransformerRunException(e.getMessage(), e);
 		}

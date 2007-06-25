@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:doc="rnib.org.uk/tbs#" exclude-result-prefixes="doc">
-	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes"/>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:doc="rnib.org.uk/tbs#" exclude-result-prefixes="doc" xmlns="http://www.w3.org/1999/xhtml">
+	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
 	
 	<xsl:template match="/">
-		<html>
+		<html xmlns="http://www.w3.org/1999/xhtml">
 			<head>
+				<title>Revision history</title>
 				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 				<meta http-equiv="Content-Style-Type" content="text/css" />
 				<style type="text/css">
@@ -41,7 +42,7 @@
 		<body>
 			<xsl:apply-templates select="//doc:purpose"/>
 			<xsl:apply-templates select="//doc:revision">
-				<xsl:sort select="version" order="descending"/>
+				<xsl:sort select="doc:version" order="descending"/>
 			</xsl:apply-templates>
 		</body>
 		</html>
