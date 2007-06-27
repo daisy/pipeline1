@@ -29,12 +29,12 @@
     <p>The filename of the TDF files is fixed to <code>transformer.tdf</code>. Previously, the filename restriction was <code>*.tdf</code>, but this has been deprecated in order to support locating TDF files inside JARs.</p>
   
   <h2 id="class">Transformer execution</h2>
-  <p>Typically, the main entrypoint to Transformer execution is a local extension of the abstract <code>org.daisy.dmfc.core.transformer.Transformer</code> class. The qualified name of this class is namedropped in the <code>classname</code> field of the <a href="tdf-grammar-v1.1.html">Transformer Description File</a>.</p>
+  <p>Typically, the main entrypoint to Transformer execution is a local extension of the abstract <code>org.daisy.pipeline.core.transformer.Transformer</code> class. The qualified name of this class is namedropped in the <code>classname</code> field of the <a href="tdf-grammar-v1.1.html">Transformer Description File</a>.</p>
   <p>The main point of action is the <code>Transformer#execute</code> method. The Pipeline Core provides all parameters (as defined in the <a href="tdf-grammar-v1.1.html">Transformer Description File</a>) as inparameters (Map parameters) to the execute method.</p>
   <p>If a transformer succeeds in fullfilling its contract, it must return true in the execute method. If a transformer fails in fullfilling its contract, it must throw a TransformerRunException and abort.</p>
   
   <h3 id="generic">Generic executors</h3>
-  <p>In some cases (such as then the whole Transformer contract can be covered with plain vanilla XSLT implementation), the generic Transformer executors available in the <code>org.daisy.dmfc.transformers</code> package suffice to execute the Transformer. In these cases, no local subclass is needed. (At the time of writing, the Transformer <code>se_tpb_dtbook2latex</code> is an example of genericized execution.)</p>
+  <p>In some cases (such as then the whole Transformer contract can be covered with plain vanilla XSLT implementation), the generic Transformer executors available in the <code>org.daisy.pipeline.transformers</code> package suffice to execute the Transformer. In these cases, no local subclass is needed. (At the time of writing, the Transformer <code>se_tpb_dtbook2latex</code> is an example of genericized execution.)</p>
     
   <h2 id=l12n"">Localization</h2>
       <p>Transformer authors are expected to <strong>externalize all strings that carry information intended for consumption by users</strong>.</p>
@@ -42,7 +42,7 @@
 	  <p>The message bundle must reside in the same directory/at the same package level as the local Transformer subclass and/or the Transformer Description File.</p>
 	  <p>The base message bundle name must be in the form <code><em>identity</em>.messages</code>, where <code><em>identity</em></code> is the <a href="#identity">three-part package name</a> discussed above. Example: <code>int_org_example.messages</code>.</p>
 	  <p>Localized bundles follow the country code append convention (<code>int_org_example_fr.messages</code>) as defined by Java ResourceBundle.</p>
-	  <p>The abstract Transformer superclass already has a generic message bundle registered (<code>org.daisy.dmfc.core/pipeline.messages</code>). In some instances, it may be enough to utilize the messages in the generic bundle, in which case no local message bundle is needed.</p>
+	  <p>The abstract Transformer superclass already has a generic message bundle registered (<code>org.daisy.pipeline.core/pipeline.messages</code>). In some instances, it may be enough to utilize the messages in the generic bundle, in which case no local message bundle is needed.</p>
 	  <p>Transformer authors are encouraged to use the XML form of Java properties (see <a href="http://java.sun.com/dtd/properties.dtd">http://java.sun.com/dtd/properties.dtd</a>).</p>
   
   <h2 id="eventbus">Runtime events</h2>
@@ -71,7 +71,7 @@
  <p>See separate document <a href="java-coding-conventions.html">Java coding conventions</a>.</p>
     
  <h2 id="notes">Notes</h2>
- <p id="note1">1. The TDF schema lives in the <code>org.daisy.dmfc.core.transformer</code> package. If you do not have local access to the source code, <a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/src/org/daisy/dmfc/core/transformer/">browse the SVN online</a>.</p>
+ <p id="note1">1. The TDF schema lives in the <code>org.daisy.pipeline.core.transformer</code> package. If you do not have local access to the source code, <a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/src/org/daisy/pipeline/core/transformer/">browse the SVN online</a>.</p>
     
 
 </body>
