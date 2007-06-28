@@ -1,20 +1,19 @@
 /*
- * DAISY Pipeline GUI
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * DAISY Pipeline GUI Copyright (C) 2006 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.pipeline.gui.jobs;
 
@@ -49,7 +48,8 @@ public class JobsView extends ViewPart {
     public static final String ID = "org.daisy.pipeline.gui.views.jobs"; //$NON-NLS-1$
     public static final int PROP_SEL_JOB_INDEX = 1;
 
-    private static final String[] columnNames = { Messages.heading_jobs, Messages.heading_status };
+    private static final String[] columnNames = { Messages.heading_jobs,
+            Messages.heading_status };
 
     private static final int[] columnWeight = { 4, 1 };
 
@@ -127,11 +127,12 @@ public class JobsView extends ViewPart {
 
     private void createActions() {
         // Create actions
+        IAction clearFinishedAction = new ClearFinishedAction(this);
+        IAction deleteAction = new DeleteAction(this);
         IAction moveToTopAction = new MoveToTopAction(this);
         IAction moveUpAction = new MoveUpAction(this);
         IAction moveDownAction = new MoveDownAction(this);
         IAction moveToBottomAction = new MoveToBottomAction(this);
-        IAction deleteAction = new DeleteAction(this);
 
         // Configure the tool bar
         IToolBarManager toolBar = getViewSite().getActionBars()
@@ -140,6 +141,8 @@ public class JobsView extends ViewPart {
         toolBar.add(moveUpAction);
         toolBar.add(moveDownAction);
         toolBar.add(moveToBottomAction);
+        toolBar.add(deleteAction);
+        toolBar.add(clearFinishedAction);
 
         // Configure the retargetable actions
         getViewSite().getActionBars().setGlobalActionHandler(

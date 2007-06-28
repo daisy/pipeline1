@@ -31,6 +31,7 @@ public class Messages extends NLS {
     private Messages() {
     }
 
+    public static String action_clearFinished;
     public static String action_delete;
     public static String action_moveDown;
     public static String action_moveToBottom;

@@ -21,11 +21,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.pipeline.core.script.Job;
+import org.daisy.util.execution.State;
 
 public class JobManager implements Iterable {
     private static JobManager _default = new JobManager();
@@ -105,6 +107,16 @@ public class JobManager implements Iterable {
             return get(index);
         }
         return null;
+    }
+
+    public List<JobInfo> getJobsByState(EnumSet<State> states) {
+        ArrayList<JobInfo> res = new ArrayList<JobInfo>();
+        for (JobInfo jobInfo : jobs) {
+            if (states.contains(jobInfo.getSate())) {
+                res.add(jobInfo);
+            }
+        }
+        return res;
     }
 
     public int indexOf(Object object) {
