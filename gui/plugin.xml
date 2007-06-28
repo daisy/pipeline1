@@ -418,6 +418,7 @@
             productId="org.daisy.pipeline.gui.product"/>
       <intro
             class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            icon="icons/welcome.gif"
             id="org.daisy.pipeline.gui.intro"/>
    </extension>
    <extension
