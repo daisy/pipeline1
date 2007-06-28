@@ -21,7 +21,6 @@
 	  <p>Examples: <code>int_daisy_validator</code>, <code>uk_rnib_odf2dtbook</code>, <code>int_org_example</code></p>
 	  <p>When the Transformer is distributed as a JAR, the identitity is expressed in the JAR file name (<code>int_org_example.jar</code>). When the transformer is not JARred, the identity is expressed in the name of the filesystem directory in which the Transformers files reside (<code>/transformers/int_org_example/*</code>).</p>
 
-
   <h2 id="tdf">Transformer Description File</h2>
   	<p>Each Daisy Pipeline Transformer has a <a href="tdf-grammar-v1.1.html">Transformer Description File</a> (henceforth 'TDF') associated with it.</p> 
   	<p>The TDF file can be seen as a manifest of the transformer; in this file, the contract of the Transformer is defined. The contract includes what type of content the Transformer accepts as input, and what type of content it will give as output. Further, the TDF defines additional input parameters that the Transformer can take to customize its behavior.</p>
@@ -36,7 +35,7 @@
   <h3 id="generic">Generic executors</h3>
   <p>In some cases (such as then the whole Transformer contract can be covered with plain vanilla XSLT implementation), the generic Transformer executors available in the <code>org.daisy.pipeline.transformers</code> package suffice to execute the Transformer. In these cases, no local subclass is needed. (At the time of writing, the Transformer <code>se_tpb_dtbook2latex</code> is an example of genericized execution.)</p>
     
-  <h2 id=l12n"">Localization</h2>
+  <h2 id="l12n">Localization</h2>
       <p>Transformer authors are expected to <strong>externalize all strings that carry information intended for consumption by users</strong>.</p>
 	  <p>For this reason, each transformer may include an external message bundle for localization. This bundle must comply with one of the the formats defined by <code>java.util.Properties</code>.</p>
 	  <p>The message bundle must reside in the same directory/at the same package level as the local Transformer subclass and/or the Transformer Description File.</p>
@@ -48,8 +47,8 @@
   <h2 id="eventbus">Runtime events</h2>
 
   <h2 id="exceptions">Exception handling</h2>
-  <p>Normally, you should notify the eventbus (with types WARNING or ERROR )when catching an exception.</p>
-  <p>Non-caught exceptions are by contract thrown as TransformerRunExceptions. The recommended handling pattern is:</p>
+  <p>Normally, you should notify the eventbus (with types WARNING or ERROR) when catching an exception.</p>
+  <p>Thrown exceptions are by contract thrown as <code>TransformerRunException</code>s. The recommended handling pattern is:</p>
 <pre><code>
 }catch (SomeFatalException fe) {
  String message=i18n("ERROR_ABORTING",fe.getLocalizedMessage());
@@ -69,6 +68,14 @@
  
  <h2 id="style">Coding style</h2>
  <p>See separate document <a href="java-coding-conventions.html">Java coding conventions</a>.</p>
+
+ <h2 id="test">Contributing to the test package</h2>
+ <p>It is strongly recommended that your delivered transformer includes an
+ implementation of the <code>org.daisy.pipeline.test.PipelineTest</code> class, 
+ coupled with appropriate input sample(s), placed in the svn: /samples/*/ directory.</p>
+
+ <p>Tests live in the <code>org.daisy.pipeline.test.impl</code> package.</p>
+  
     
  <h2 id="notes">Notes</h2>
  <p id="note1">1. The TDF schema lives in the <code>org.daisy.pipeline.core.transformer</code> package. If you do not have local access to the source code, <a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/src/org/daisy/pipeline/core/transformer/">browse the SVN online</a>.</p>

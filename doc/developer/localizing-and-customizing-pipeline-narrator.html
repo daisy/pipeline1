@@ -27,11 +27,10 @@
 			<li><a href="#se_tpb_xmldetection_s">Sentence Detection</a></li>
 			<li><a href="#se_tpb_syncPointNormalizer">Synchronization Point Normalizer</a></li>
 			<li><a href="#se_tpb_speechgenerator">Speech Generator</a></li>
-			<li><a href="#se_tpb_filesetcreator">File Set Creator</a></li>
-			<li><a href="#se_tpb_dtbErrorScout_1">Error Scout</a></li>
+			<li><a href="#se_tpb_filesetcreator">File Set Creator</a></li>			
 			<li><a href="#se_tpb_dtbAudioEncoder">Audio Encoder</a></li>
 			<li><a href="#se_tpb_zed2daisy202">Z3986-2005 to Daisy 2.02 converter</a></li>
-			<li><a href="#se_tpb_dtbErrorScout_2">Error Scout</a></li>
+
 		</ul>
 	</li>
 	<li><a href="#uil">User Interface Localization</a>
@@ -72,8 +71,8 @@
 	
 	<p>
 		Note: This document is not transformer documentation - to learn more about each 
-		one of the transformers, please read doc.html which should be found in every 
-		transformer directory.
+		one of the transformers, please read the respective transformer documentation 
+		which should be found in in the <code>doc/transformers/</code> directory.
 	</p>
 	
 	
@@ -104,7 +103,7 @@
 	     **************************** -->
 	<!--
 	<h3 id="int_daisy_xmlValidator">Input validation (int_daisy_xmlValidator)</h3>
-	<p><a href="../../transformers/int_daisy_xmlValidator/doc.html">Transformer documentation</a>.</p>
+	<p><a href="../transformers/int_daisy_validator.html">Transformer documentation</a>.</p>
 	<p>
 		This transformer is not yet in use, but will be soon.
 	</p>
@@ -114,7 +113,7 @@
 	      Abbr and Acronym detection 
 	     **************************** -->
 	<h3 id="se_tpb_xmldetection">Abbreviation and Acronym Detection (se_tpb_xmldetection)</h3>
-	<p><a href="../../transformers/se_tpb_xmldetection/doc.html">Transformer documentation</a>.</p>
+	<p><a href="../transformers/se_tpb_xmldetection.html">Transformer documentation</a>.</p>
 	
 	<!-- intro -->
 	<p>
@@ -135,7 +134,7 @@
 		If you are using Narrator to produce digital talking books in a language not yet
 		covered by Narrator, you probably want to write your own language file. 
 		A short example follows, but you may want to consult the 
-		<a href="../../transformers/se_tpb_xmldetection/doc.html">transformer documentation</a> 
+		<a href="../transformers/se_tpb_xmldetection.html">transformer documentation</a> 
 		for a more thorough description on how to write such files.
 	</p>
 	
@@ -206,14 +205,14 @@
 	      Structure announcer 
 	     ********************* -->
 	<h3 id="se_tpb_annonsator">Structure Announcer (se_tpb_annonsator)</h3>
-	<p><a href="../../transformers/se_tpb_annonsator/doc.html">Transformer documentation</a>.</p>
+	<p><a href="../transformers/se_tpb_annonsator.html">Transformer documentation</a>.</p>
 	<p>
 		Structure announcer adds spoken introductions and/or terminations of structures,
 		such as tables, sidebars and notes. The announcements are read by the TTS and needs a rewrite if a language
 		not yet covered by Narrator is being used. The announcements are found in
 		<a href="../../transformers/se_tpb_annonsator/type">../../transformers/se_tpb_annonsator/type</a>
-		directory. The file <a href="../../transformers/se_tpb_annonsator/type/dtbook-2005-1.xml">dtbook-2005-1.xml</a>
-		contains the announcements made in a book that complies to the dtbook 2005-1 standard.
+		directory. The file <a href="../../transformers/se_tpb_annonsator/type/dtbook-2005.xml">dtbook-2005.xml</a>
+		contains the announcements made in a book that complies to the DTBook 2005 standard.
 	</p>
 	
 	<p>
@@ -243,7 +242,7 @@
 	      Sentence detection 
 	     ******************** -->
 	<h3 id="se_tpb_xmldetection_s">Sentence Detection (se_tpb_xmldetection)</h3>
-	<p><a href="../../transformers/se_tpb_xmldetection/doc.html">Transformer documentation</a>.</p>
+	<p><a href="../transformers/se_tpb_xmldetection.html">Transformer documentation</a>.</p>
 	<p>
 		The sentence detection uses Java's <tt>java.text.BreakIterator</tt> to find sentence
 		boundaries. All localization is done automagically by Java using the document's current locale.
@@ -254,7 +253,7 @@
 	      Synchronization point normalization 
 	     ***************************** -->
 	<h3 id="se_tpb_syncPointNormalizer">Synchronization Point Normalization (se_tpb_syncPointNormalizer)</h3>
-	<p><a href="../../transformers/se_tpb_syncPointNormalizer/doc.html">Transformer documentation</a>.</p>
+	<p><a href="../transformers/se_tpb_syncPointNormalizer.html">Transformer documentation</a>.</p>
 	<p>
 		Language agnostic.
 	</p>
@@ -267,7 +266,7 @@
 	<h3 id="se_tpb_speechgenerator">Speech Generator (se_tpb_speechgenerator)</h3>
 	
 	<p>
-		<a href="../../transformers/se_tpb_speechgenerator/doc.html">
+		<a href="../transformers/se_tpb_speechgenerator.html">
 			Transformer documentation</a>.
 	</p>
 	
@@ -286,7 +285,7 @@
 					ttsbuilder.xml</a>. That is the file to edit to change file names for
 				the following features.
 				Please refer to the 
-				<a href="../../transformers/se_tpb_speechgenerator/doc.html">
+				<a href="../transformers/se_tpb_speechgenerator.html">
 					transformer documentation</a> for a more thorough description
 				of the transformer configuration.
 			</p>
@@ -372,26 +371,20 @@
 	      File Set Creator
 	     ****************** -->
 	<h3 id="se_tpb_filesetcreator">File Set Creator (se_tpb_filesetcreator)</h3>
-	<p><a href="../../transformers/se_tpb_filesetcreator/doc.html">Transformer documentation</a>.</p>
+	<p><a href="../transformers/se_tpb_filesetcreator.html">Transformer documentation</a>.</p>
 	<p>
 		A Z39.86 fileset contains a resource file. To add more languages, just extend the 
 		existing file by adding more resources with another xml:lang. Note that audio must be 
 		supplied. 
 	</p>
 	
-	<!-- ******************
-	      Error Scout
-	     ****************** -->
-	<h3 id="se_tpb_dtbErrorScout_1">Error Scout (se_tpb_dtbErrorScout)</h3>
-	<p><a href="../../transformers/se_tpb_dtbErrorScout/doc.html">Transformer documentation</a>.</p>
-	<p>Language agnostic.</p>
 	
 	
 	<!-- ******************
 	      Audio Encoder
 	     ****************** -->
 	<h3 id="se_tpb_dtbAudioEncoder">Audio Encoder (se_tpb_dtbAudioEncoder)</h3>
-	<p><a href="../../transformers/se_tpb_dtbAudioEncoder/doc.html">Transformer documentation</a>.</p>
+	<p><a href="../transformers/se_tpb_dtbAudioEncoder.html">Transformer documentation</a>.</p>
 	<p>Language agnostic.</p>
 	
 	
@@ -400,16 +393,9 @@
 		Z3986-2005 to Daisy 2.02 Converter
 	     ****************** -->
 	<h3 id="se_tpb_zed2daisy202">Z3986-2005 to Daisy 2.02 Converter (se_tpb_zed2daisy202)</h3>
-	<p><a href="../../transformers/se_tpb_zed2daisy202/doc.html">Transformer documentation</a>.</p>
+	<p><a href="../transformers/se_tpb_zed2daisy202.html">Transformer documentation</a>.</p>
 	<p>Language agnostic.</p>
-	
-<!-- ******************
-	      Error Scout
-	     ****************** -->
-	<h3 id="se_tpb_dtbErrorScout_2">Error Scout (se_tpb_dtbErrorScout)</h3>
-	<p><a href="../../transformers/se_tpb_dtbErrorScout/doc.html">Transformer documentation</a>.</p>
-	<p>Language agnostic.</p>
-		
+			
 	
 		<h2 id="uil">User Interface Localization</h2>
 	<p>
@@ -430,7 +416,7 @@
 	</p>
 	<p>
 		The following example of a <code>messages.properties</code> file comes from the 
-		<a href="../../transformers/se_tpb_filesetcreator/doc.html">se_tpb_filesetcreator</a>-transformer.
+		<a href="../transformers/se_tpb_filesetcreator.html">se_tpb_filesetcreator</a>-transformer.
 		Lines starting with <code>#</code> are considered comments. The left hand side of the 
 		equals sign is the key (the message name) and the right hand side the value (message text).
 		The curly braces in the message text denote parameters sent 

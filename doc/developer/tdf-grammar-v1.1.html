@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -69,14 +69,15 @@
 
 	 <p> To create parameters with enumerated values, the <code>type</code> parameter shall be set to 'enum'. After the <code>example</code> element, an <code>enum</code>
 	 element must be defined having the following syntax:</p>
- <pre>
+ 
+ <pre><code>
 
  &lt;enum&gt;
    &lt;value&gt;ONE&lt;/value&gt;
    &lt;value&gt;TWO&lt;/value&gt;
    &lt;value&gt;THREE&lt;/value&gt;
  &lt;/enum&gt;
- </pre>
+</code></pre>
 
  <p>
  The <code>parameter</code> element has three sub elements, the <code>name</code>,
@@ -92,13 +93,13 @@
  In the example below, the required input parameter <code>ncc</code> should be of type
  <code>application/x-ncc-2.02+xml</code>.
  </p>
- <pre>
+ <pre><code>
  &lt;parameter required="true" direction="in" type="application/x-ncc-2.02+xml"&gt;
    &lt;name&gt;ncc&lt;/name&gt;
    &lt;description&gt;The navigation control center file&lt;/description&gt;
    &lt;example&gt;file:///path/to/ncc.html&lt;/example&gt;
  &lt;/parameter&gt;
- </pre>
+</code></pre>
 
  <h3 id="tdfplatforms">Platforms</h3>
  <p>
@@ -124,7 +125,7 @@
  example below, Windows systems of version 5 and any Linux system are supported:
  </p>
 
- <pre>
+ <pre><code>
 &lt;platforms&gt;
   &lt;platform&gt;
     &lt;property&gt;
@@ -147,10 +148,10 @@
     &lt;/property&gt;
   &lt;/platform&gt;
 &lt;/platforms&gt;
- </pre>
+ </code></pre>
 
   <h2 id="example">Example</h2>
-<code><pre>
+<pre><code>
 &lt;transformer version="1.1"&gt;
   &lt;name&gt;Validator&lt;/name&gt;
   &lt;description&gt;Validate filesets and XML documents of various types&lt;/description&gt;
@@ -261,18 +262,21 @@
   &lt;/parameters&gt;
 
 &lt;/transformer&gt;
-</pre></code>
+</code></pre>
 
 
 
   <h2 id="notes">Notes</h2>
-  <p id="note2">2. The Pipeline uses more MIME types than those defined by IANA. The Pipeline MIME registry (MIMETypeRegistry.xml) lives in the <code>org.daisy.util.mime.</code> package. If you do not have access to the source code, <a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/src/org/daisy/util/mime/MIMETypeRegistry.xml?view=markup">browse the registry online</a>.</p>
+  <p id="note2">2. The Pipeline uses more MIME types than those defined by IANA. 
+  The Pipeline MIME registry (MIMETypeRegistry.xml) lives in the <code>org.daisy.util.mime.</code> package. 
+  If you do not have access to the source code, 
+  <a href="http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/src/org/daisy/util/mime/MIMETypeRegistry.xml?view=markup">browse the registry online</a>.</p>
 
-</div>
+<!-- </div> -->
 
 <h2 id="rng">Appendix. RelaxNG+Schematron grammar for tdf v1.1</h2>
 
-<code><pre>
+<pre><code>
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;grammar 
   xmlns="http://relaxng.org/ns/structure/1.0" 
@@ -406,7 +410,7 @@
   &lt;/define&gt;
 
 &lt;/grammar&gt;
-</pre></code>
+</code></pre>
 
 </body>
 
