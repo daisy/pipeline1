@@ -374,7 +374,7 @@
 			<!-- Shell scripts -->
 			<zipfileset dir="${base.dir}" prefix="${release.name}">
 				<include name="pipeline.sh"/>
-				<include name="dmfc.bat"/>
+				<include name="pipeline.bat"/>
 			</zipfileset>
 			<!-- Scripts -->
 			<zipfileset dir="${base.dir}/scripts" prefix="${release.name}/scripts">
