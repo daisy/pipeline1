@@ -94,7 +94,6 @@
 	<!-- The set of transformers to be included -->
 	<patternset id="patternset.transformers">
 		<include name="**/*.*"/>
-		<exclude name="int_daisy_daisy2022Zed2005/**/*.*"/>
 	</patternset>
 	
 	<!-- Util library patternset -->
