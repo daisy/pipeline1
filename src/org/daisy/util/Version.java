@@ -25,7 +25,7 @@ package org.daisy.util;
  */
 public class Version {
 
-	private static final String VERSION = "2007-07-08";
+	private static final String VERSION = "2007-06-29";
 	
 	public static String getVersion() {
 		return VERSION;
