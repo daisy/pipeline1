@@ -40,8 +40,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.LocationAdapter;
 import org.eclipse.swt.browser.LocationEvent;
-import org.eclipse.swt.browser.LocationListener;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -65,8 +65,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author Romain Deltour
  * 
  */
-public class DocView extends ViewPart implements ISelectionListener,
-        LocationListener {
+public class DocView extends ViewPart implements ISelectionListener {
 
     public static final String ID = "org.daisy.pipeline.gui.views.doc"; //$NON-NLS-1$
 
@@ -75,9 +74,9 @@ public class DocView extends ViewPart implements ISelectionListener,
     private ITocTab visibleToc;
     private TabFolder tocFolder;
     private DelegatingSelectionProvider selectionProvider;
-    private boolean syncToc = false;
+    private boolean shouldSynchronizeToc = false;
     private boolean selectedFromToc = false;
-    private boolean isSync = false;
+    private boolean tocIsSynchronized = false;
 
     private IAction backAction;
     private IAction forwardAction;
@@ -86,32 +85,6 @@ public class DocView extends ViewPart implements ISelectionListener,
 
     public DocView() {
         super();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.swt.browser.LocationListener#changed(org.eclipse.swt.browser.LocationEvent)
-     */
-    public void changed(LocationEvent event) {
-        if (selectedFromToc) {// avoid round tripping
-            selectedFromToc = false;
-            isSync = true;
-            return;
-        }
-        isSync = false;
-        if (syncToc) {
-            syncToc(event.location);
-            isSync = true;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.swt.browser.LocationListener#changing(org.eclipse.swt.browser.LocationEvent)
-     */
-    public void changing(LocationEvent event) {
     }
 
     @Override
@@ -146,7 +119,23 @@ public class DocView extends ViewPart implements ISelectionListener,
             // Create the browser
             browser = new Browser(sashForm, SWT.NONE);
             browser.setLayoutData(new GridData(GridData.FILL_BOTH));
-            browser.addLocationListener(this);
+            browser.addLocationListener(new LocationAdapter() {
+
+                @Override
+                public void changed(LocationEvent event) {
+                    if (selectedFromToc) {// avoid round tripping
+                        selectedFromToc = false;// reset the flag
+                        tocIsSynchronized = true;// we are obviously in sync
+                        return;
+                    }
+                    tocIsSynchronized = false;
+                    if (shouldSynchronizeToc) {
+                        synchronizeToc(event.location);
+                        tocIsSynchronized = true;
+                    }
+                }
+
+            });
 
             // Create the actions
             createActions();
@@ -277,24 +266,33 @@ public class DocView extends ViewPart implements ISelectionListener,
         }
     }
 
-    boolean shouldSyncToc() {
-        return syncToc;
+    boolean shouldSynchronizeToc() {
+        return shouldSynchronizeToc;
     }
 
-    void setSyncToc(boolean syncToc) {
-        this.syncToc = syncToc;
-        if (syncToc && browser != null) {
-            syncToc(browser.getUrl());
+    void setTocSynchronization(boolean shouldSynchronizeToc) {
+        this.shouldSynchronizeToc = shouldSynchronizeToc;
+        if (shouldSynchronizeToc && browser != null) {
+            synchronizeToc(browser.getUrl());
         }
     }
 
-    private void syncToc(String location) {
-        if (isSync) {
+    private void synchronizeToc(String location) {
+        if (tocIsSynchronized) {
             return;
         }
         File file;
         try {
             URI uri = new URI(location);
+            if (!"file".equals(uri.getScheme())) {//$NON-NLS-1$
+                // Can't be the URI of a toc item
+                return;
+            }
+            if (uri.getFragment() != null || uri.getQuery() != null) {
+                // remove the fragment and query
+                uri = new URI(uri.getScheme(), uri.getHost(), uri.getPath(),
+                        null);
+            }
             file = new File(uri);
         } catch (Exception e) {
             GuiPlugin.get()

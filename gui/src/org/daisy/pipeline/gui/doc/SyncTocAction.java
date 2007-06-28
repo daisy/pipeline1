@@ -38,12 +38,12 @@ public class SyncTocAction extends Action implements IAction {
         setImageDescriptor(GuiPlugin
                 .createDescriptor(IIconsKeys.HELP_SYNCHRONIZE));
         this.view = view;
-        setChecked(view.shouldSyncToc());
+        setChecked(view.shouldSynchronizeToc());
     }
 
     @Override
     public void run() {
-        view.setSyncToc(isChecked());
+        view.setTocSynchronization(isChecked());
     }
 
 }
