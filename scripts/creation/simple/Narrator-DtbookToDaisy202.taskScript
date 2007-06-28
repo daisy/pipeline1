@@ -5,7 +5,7 @@
 	<documentation uri="../../../doc/scripts/Narrator-DtbookToDaisy202.html"/>
 		
 	<parameter name="input" value="" required="true">
-		<nicename>Input file</nicename>
+		<nicename>Input DTBook file</nicename>
 		<description>A DTBook 2005 file</description>
 		<datatype>
 			<file mime="application/x-dtbook+xml" type="input"/>
