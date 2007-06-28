@@ -173,7 +173,7 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 		try {
 			mCurrentInputFile  = inFile;			
 			this.sendMessage(0.1 + ((mPrettyPrintedFileCount/mInputFileset.getLocalMembers().size())*0.9)); 
-			XMLEventExposer xee = new XMLEventExposer(this, null, inFile.getName()+".prettyPrinted", false, false, false);
+			XMLEventExposer xee = new XMLEventExposer(this, null, inFile.getName()+".prettyPrinted", true, false, false);
 			xee.setEventTypeRestrictions(getEventTypeRestrictions());			
 			return xee;
 		} catch (CatalogExceptionNotRecoverable e) {
