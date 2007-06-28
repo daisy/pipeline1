@@ -41,23 +41,26 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     }
 
     private void initLinuxDefaults() {
-        PreferencesUtil.put(PipelineUtil.PATH_TO_LAME, "/usr/bin/lame", //$NON-NLS-1$
-                defaultScope);
-        PreferencesUtil.put(PipelineUtil.PATH_TO_PYTHON, "/usr/bin/python", //$NON-NLS-1$
-                defaultScope);
+        setPrefPath(PipelineUtil.PATH_TO_LAME, "/usr/bin/lame");//$NON-NLS-1$
+        setPrefPath(PipelineUtil.PATH_TO_PYTHON, "/usr/bin/python");//$NON-NLS-1$
     }
 
     private void initMacDefaults() {
-        PreferencesUtil.put(PipelineUtil.PATH_TO_LAME, "/sw/bin/lame", //$NON-NLS-1$
-                defaultScope);
-        PreferencesUtil.put(PipelineUtil.PATH_TO_PYTHON, "/usr/bin/python", //$NON-NLS-1$
-                defaultScope);
+        setPrefPath(PipelineUtil.PATH_TO_LAME, "/sw/bin/lame");//$NON-NLS-1$
+        setPrefPath(PipelineUtil.PATH_TO_PYTHON, "/usr/bin/python");//$NON-NLS-1$
     }
 
     private void initWindowsDefaults() {
-        PreferencesUtil.put(PipelineUtil.PATH_TO_LAME, "C:\\lame\\lame.exe", //$NON-NLS-1$
-                defaultScope);
-        PreferencesUtil.put(PipelineUtil.PATH_TO_PYTHON,
-                "C:\\Python25\\python.exe", defaultScope); //$NON-NLS-1$
+        setPrefPath(PipelineUtil.PATH_TO_LAME, "C:\\lame\\lame.exe");//$NON-NLS-1$
+        setPrefPath(PipelineUtil.PATH_TO_PYTHON, "C:\\Python25\\python.exe");//$NON-NLS-1$
+    }
+
+    private void setPrefPath(String pref, String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            PreferencesUtil.put(pref, path, defaultScope);
+        } else {
+            PreferencesUtil.put(pref, "", defaultScope);//$NON-NLS-1$
+        }
     }
 }
