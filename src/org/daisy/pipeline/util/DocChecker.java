@@ -29,7 +29,7 @@ import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.xml.sax.SAXParseException;
 
 /**
- * Util class (with main) to check the transformer and script documentation packages within a Pipeline 
+ * Util class (with main) to check the documentation package within a Pipeline 
  * distribution and report inexistance, invalidity, broken links, etc.
  * <p>This class is typically run at build stage.<p>  
  * <p>This class assumes that documentation resources are not jarred.</p>
@@ -56,6 +56,9 @@ public class DocChecker implements FilesetErrorHandler {
 		
 		EFolder scriptsDir = new EFolder(rootDir,"scripts");
 		EFolder transformersDir = new EFolder(rootDir,"transformers");
+		EFolder docDir = new EFolder(rootDir,"doc");
+		EFolder endUserDocDir = new EFolder(docDir,"enduser");
+		EFolder devDocDir = new EFolder(docDir,"developer");
 				
 		Map<File,String> scriptAndTransformerFiles = new HashMap<File,String>();
 		
@@ -65,7 +68,21 @@ public class DocChecker implements FilesetErrorHandler {
 		//get all existing transformer and script documentation files
 		Collection<URI> documentationFiles = parseScriptAndTransformerFiles(scriptAndTransformerFiles);
 		
-		//since the documentation files are XHTML, we run a Fileset instance on each and validate that way.
+		//add end user docs
+		Collection<File> c = endUserDocDir.getFiles(true, ".+\\.[Hh][Tt][Mm][Ll]?");
+		for (File f : c) {
+			documentationFiles.add(f.toURI());
+		}
+						
+		//add developer docs
+		c = devDocDir.getFiles(true, ".+\\.[Hh][Tt][Mm][Ll]?");
+		for (File f : c) {
+			documentationFiles.add(f.toURI());
+		}
+		
+		//since the documentation files are XHTML, we run a Fileset instance on each 
+		//and validate that way.
+		System.err.println("[DocChecker info] Found " + documentationFiles.size() + " existing documentation files");
 		for (URI uri : documentationFiles) {
 			try{
 				new FilesetImpl(uri,this,true,false);
@@ -103,9 +120,8 @@ public class DocChecker implements FilesetErrorHandler {
 			}
 			
 		}
-		System.err.println("[DocChecker info] Found " + existingDocumentationFiles.size() + " existing documentation files"); 								
-		return existingDocumentationFiles;
-		
+		 								
+		return existingDocumentationFiles;		
 	}
 
 	private String parseForDocURI(File file) throws Exception {
