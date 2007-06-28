@@ -7,6 +7,6 @@
     <page id="overview" content="overview.html"/>
     <page id="postinstall" content="postinstall.html"/>
     <page id="whatsnew" content="whatsnew.html"/>
-    <page id="tutorials" content="tutorials.html"/>
+    <!-- <page id="tutorials" content="tutorials.html"/> -->
     <page id="common" content="common.html"/>
 </introContent>

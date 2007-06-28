@@ -1,32 +1,39 @@
 body {
-  background-image:url("images/background.jpg");
+  	background-image:url("images/background.jpg");	
 	background-repeat : no-repeat;	background-position : bottom right;
 	background-attachment : fixed;
 	overflow : hidden;
 	overflow-clip: rect(0, auto, auto, 0);
-	background-color : #5995c9;  margin-left:10%;
-  margin-right:30%;
-  font-family: arial, verdana, sans-serif;
+	background-color : #5995c9;  	margin-left:10%;
+  	margin-right:30%;
+  	font-family: arial, verdana, sans-serif;
+  	color: white;
   }
-h1 {
-  }  
+
+div.textBox {
+	padding: 1em 1em 1em 1em;
+	background-color: #5995c9;
+	color: white;
+}  
   
 h1.root-title {
   margin-top: 3em;
   margin-bottom: 3em;
   text-align: center;
+  color: #000080;  
   }
   
 h1.page-title {
-  border-bottom: 1px solid #000088;
+  border-bottom: 1px solid rgb(190,190,190);
   margin-top: 3em;
   }
-  
+    
 .page-links{
   font-size:x-large;
   font-weight:bold;
   line-height:2;
   text-align:center;
+
   }
   
 .page-links ul{
@@ -34,8 +41,13 @@ h1.page-title {
   }
 
 .page-links a:link {
-  color: #000080
+  /* color: white */
+  color: #000080;
   }
+  
+a:link {
+  color:white;
+}  
   
 #switchToPipeline{
 	position: absolute;
