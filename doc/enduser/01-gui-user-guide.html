@@ -59,7 +59,7 @@
 	contributions are open source, and reside at <a href="http://DAISYmfc.sf.net">the DAISY Pipeline Sourceforge project</a>.</p>	
 	
 	<h3><em>You can contribute!</em></h3>
-	<p>The DAISY Pipeline fully depends on the spirit of sharing within the DAISY community. Remember, you can contribute to the future of the Pipeline in many ways:</p> 
+	<p>The DAISY Pipeline fully depends on the spirit of collaborative sharing. Remember, you can contribute to the future of the Pipeline in many ways:</p> 
 	<ul>
 		<li>by developing new functionality</li> 
 		<li>by writing or reviewing documentation</li> 
@@ -81,6 +81,8 @@
 	<p>The first time you launch the Pipeline GUI, a <em>Welcome Screen</em> is opened.</p> 
 	<p>The welcome screen contains links to subpages which contain introductory information, and is intended primarily as a help for first time users.</p>
 	<p>The second time you launch the Pipeline GUI, the welcome screen is not automatically shown. If you want to get back to this screen, you can use the <kbd>Welcome</kbd> menu item in the <kbd>Help</kbd> menu.</p>
+	<p>To close the Welcome Screen, select the <kbd>Navigation</kbd> item in the <kbd>Window</kbd> Menu, select <kbd>Show System Menu</kbd>, and then select close. Alternatively, click on the close button in the top left corner of the Welcome screen.</p>
+
 
 	<p>As you launch the Pipeline the first time, you should follow the links given in the welcome screen, and read the information given there. 
 	In particular, you should go to the <a href="#prefDialog">Preferences Dialog</a> to set the paths for temporary file storage, and the location of external executables. 
@@ -90,7 +92,7 @@
 
 	<h2 id="perspView">On Perspectives and Views</h2>
 	<p>The Pipeline Graphical User Interface (GUI) uses the terms <em>Perspective</em> and <em>View</em> to refer to different parts of the interface.</p>
-	<p>A Perspective is more or less synonomous to a main window; this main window contains subsections, referred to as Views.</p>
+	<p>A Perspective is more or less synonomous to a <em>main window</em>. This main window contains subsections, referred to as Views.</p>
 	<p>The DAISY Pipeline GUI contains two Perspectives; the <a href="#jobsPersp">Job (main) Perspective</a>, and the <a href="#docsPersp">Documentation perspective</a>. The Job Perspective in its turn contains several views, which you can read more about below in the <a href="#jobsPersp">Jobs Perspective</a> section.</p>	
 
 	<h3>Navigating between Perspectives and Views</h3>
@@ -144,7 +146,7 @@
 
 	<h4 id="deleteJob">Deleting jobs</h4>
 	<p>To delete one or several jobs in the queue, select the job(s), and use the <kbd>delete</kbd> key on your keyboard, or the delete button at the top right part of the Jobs View.</p>
-	<p>You can also clear all finished jobs by using the clear all finsihed jobs button at the at the top right part of the Jobs View.</p>
+	<p>You can also clear all finished jobs by using the clear all finished jobs button at the at the top right part of the Jobs View.</p>
 	<img alt="The delete selected and delete finished jobs buttons at the top right part of the Jobs View" src="./img/dp-004b.png" />
 		
 	<h3 id="jobsPerspNewJobWizard">The New Job Wizard</h3>
@@ -158,7 +160,8 @@
 	
 	<p>The first page of the Wizard provides a tree view of the available scripts. When you select a script, a tooltip (also provided in the top bar of the page) will give a brief description of the Script functionality.</p> 
 	<img alt="The Job Wizard Script selector page, with a script selected" src="./img/dp-006.png" />
-	<p>In the lower left of each of the first Wizard pages, a link to Script Resource Information is provided. Detailed information about the Scripts, file requirements, outputs and so on is provided. This information is also available in the "Scripts" section of the <a href="#docsPersp">Documentation Perspective</a>.</p> 		
+	<p>In the lower left of each of the first Wizard pages, a link to Script Help is provided. Detailed information about the Scripts, file requirements, outputs and so on is provided. This information is also available in the "Scripts" section of the <a href="#docsPersp">Documentation Perspective</a>.</p> 		
+	<p>To toggle between the script selector and the browser view, use the <kbd>F6</kbd> key.</p>
 	<p>When you have found the script you want to run, press the <kbd>next</kbd> button.</p>
 	
 	<h4>Wizard page 2: configure script</h4>
@@ -195,13 +198,13 @@
 	<ul>
 		<li>
 			<p><em>Failed deleting temporary resource</em></p>		
-			<p>The Pipeline uses temporary directories to store data during job execution. Generally, the temporary directory that is set in the Paths dialog is used.</p>
+			<p>The Pipeline uses temporary directories to store data during job execution. Generally, the temporary directory that is set in the Paths section of the <a href="#prefDialog">Preferences dialog</a> is used.</p>
 			<p>However, some scripts use <em>a temporary subdirectory of your output directory</em> to store temporary data. In some instances (such as when this directory is in use by another application), the Pipeline can not delete these files.</p>
 			<p>The files are typically stored in a subdirectory of your output directory called "pipeline__temp". If the "Failed deleting temporary resource" message has appeared, you can manually delete this folder after the job has finished.</p>
 		</li>
 		<li>
 			<p><em>null</em></p>		
-			<p>An admittedly weird message that, if it is of type ERROR, indicates that you have encountered a bug.</p>
+			<p>An admittedly nihilistic message that, if it is of type ERROR, indicates that you have encountered a bug.</p>
 			<p>If the problem is confirmed to be a bug, you should open the <a href="#jobsPerspErrorLog">Error Log</a>, save the information there to a log file, and report the bug to the <a href="#bugs">Pipeline bugtracking system</a>, providing the log file as an attachment.</p>
 		</li>
 	</ul>
@@ -209,8 +212,8 @@
 
 	<h4 id="filterMessage">Filtering and grouping messages</h4>
 	<p>Messages can be <em>filtered</em> (meaning: to show or not to show messages of a certain <a href="#messageType">type</a>). Messages can also be <em>grouped</em> by type and per Job.</p>
-	<p>The filtering and grouping options are available in the right top corner of the Messages View. There is a dedicated icon for filtering each message type. 
-	You can also access this functionailty via the View menu in the Messages Tool Bar (appearing as a downwards white triangle icon).</p>
+	<p>The filtering and grouping options are available in the right top corner of the Messages View. There is a dedicated icon for filtering each message type.</p>
+	<p>You can also access this functionality via the View menu in the Messages Tool Bar (appearing as a downwards white triangle icon). Alternatively, in the <kbd>Window</kbd> menu's <kbd>Navigation</kbd> entry, select the <kbd>Show View Menu</kbd> command while the Messages View has focus.</p>
 	<img alt="the filtering and grouping options dialog" src="./img/dp-009.png" />
 	
 	<h4 id="storeMessage">Storing messages</h4>
@@ -236,7 +239,8 @@
 		<dd>Documentation on Transformers (which are what the scripts actually use to do their job). Transformer documentation is primarily developer oriented. If you are not creating your own script, you probably will not need to read the documents in this category.</dd>
 	</dl>
 	<img alt="The three document category tabs in the Documentation Perspective" src="./img/dp-013.png" />
-	<p>As you select a document in one of the tabs in the documentation tree view, the document will load in the browser window in the right part of the screen.</p>
+	<p>As you select a document in one of the tabs in the document list, the document will load in the browser window in the right part of the screen.</p>
+	<p>To toggle between the documentation tree view and the browser view, use the <kbd>F6</kbd> key.</p>
 
 
 
@@ -244,7 +248,7 @@
 	<p>The Preferences Dialog can be accessed via the <kbd>Preferences</kbd> entry in the <kbd>Window</kbd> menu item.</p>
 	<p>This dialog contains various settings for configuring the appearance of the GUI. You can also modify keyboard shortcuts here.</p>
 	<p>The most important part of this dialog is the <em>Paths</em> section. You can read about what the different entries here	mean in the <a href="installation.html#config">Installation document</a>.</p>
-	<img alt="The Paths section of the preferences dialog" src="./img/dp-011.png" />
+	<img alt="The Paths section of the Preferences dialog" src="./img/dp-011.png" />
 
 	
 
@@ -257,7 +261,7 @@
 	<a href="http://sourceforge.net/tracker/?group_id=162777&amp;atid=951926">DAISY Pipeline GUI Bug tracker</a>. If you are in doubt, use any of the trackers, and the administrators will make sure the bug ends up in the right place.</p>
 	
 	<h2 id="help">Getting further help</h2>
-	<p>If you need help or have some other type of question, you should primarily use the DAISY Consortium Training and Technical Support emailing list. Information on how to subscribe to this list is available on <a href="http://www.daisy.org/get_involved/join-lists.asp">http://www.DAISY.org/get_involved/join-lists.asp</a>.</p>
+	<p>If you need help or have some other type of question, you should primarily use the DAISY Consortium Training and Technical Support emailing list. Information on how to subscribe to this list is available on <a href="http://www.daisy.org/get_involved/join-lists.asp">http://www.daisy.org/get_involved/join-lists.asp</a>.</p>
 
 </body>
 </html>
