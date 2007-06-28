@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import javax.xml.stream.Location;
+
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
@@ -80,6 +82,26 @@ public class ExportAction extends Action {
                 sb.append('!').append(message.getType()).append('!');
                 sb.append(" - ");//$NON-NLS-1$
                 sb.append(message.getMessage());
+                Location loc = message.getLocation();
+                if (loc != null) {
+                    sb.append(" - ");//$NON-NLS-1$
+                    String sysId = loc.getSystemId();
+                    if (sysId != null && sysId.length() > 0) {
+                        if (loc.getLineNumber() > -1) {
+                            if (loc.getColumnNumber() > -1) {
+                                sb.append(sysId).append('[').append(
+                                        loc.getLineNumber()).append(',')
+                                        .append(loc.getColumnNumber()).append(
+                                                ']');
+                            } else {
+                                sb.append(sysId).append('[').append(
+                                        loc.getLineNumber()).append(']');
+                            }
+                        } else {
+                            sb.append(sysId);
+                        }
+                    }
+                }
                 sb.append(lineSeparator);
                 writer.write(sb.toString());
             }
