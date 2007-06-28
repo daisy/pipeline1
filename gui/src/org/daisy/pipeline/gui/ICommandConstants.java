@@ -23,4 +23,5 @@ package org.daisy.pipeline.gui;
  */
 public interface ICommandConstants {
     public static final String TOGGLE_BROWSER = "org.daisy.pipeline.gui.command.toggleBrowser";//$NON-NLS-1$
+    public static final String CLEAR_FINISHED = "org.daisy.pipeline.gui.command.clearFinished";//$NON-NLS-1$
 }

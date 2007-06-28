@@ -25,6 +25,7 @@ public interface IIconsKeys {
 
     public static final String ACTION_CLOSE = ICON_DIR + "action-close.gif"; //$NON-NLS-1$
     public static final String ACTION_STOP = ICON_DIR + "action-stop.gif"; //$NON-NLS-1$
+    public static final String CLEAR_FINISHED = ICON_DIR + "action-clear-finished.gif"; //$NON-NLS-1$
 
     public static final String HELP_SYNCHRONIZE = ICON_DIR
             + "help-synchronize.gif"; //$NON-NLS-1$
