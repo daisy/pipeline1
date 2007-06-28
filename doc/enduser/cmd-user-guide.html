@@ -35,11 +35,16 @@
 	<p>See also the <a href="#request">Making a feature request</a> and <a href="#bugs">Reporting a bug</a> sections below.</p>
 	
 	<h2 id="config">Configuration</h2>
-	<p>Before running the Pipeline, follow the <a href="installation.html#config">configuration instructions</a> in the installation guide.</p>
+	<p>Before running the Pipeline, open <code>pipeline.user.properties</code> located in the pipeline installation directory and edit the following properties:</p>
+	<dl>
+		<dt>dmfc.tempDir</dt><dd>Directory to store temporary files in. This directory must be set, and write access to it must be enabled.</dd>
+		<dt>dmfc.lame.path</dt><dd>Path to the <a href="http://lame.sourceforge.net">LAME</a> executable (Must be set if you intend to run a script that includes MP3 encoding). Further information is available in the <a href="installing-lame.html">LAME installation instructions</a>.</dd>
+		<dt>pipeline.python.path</dt><dd>Path to the <a href="http://www.python.org/">Python</a> executable (Must be set if you intend to run the RTF to DTBook or RTF to XHTML scripts). Further information is available in the <a href="installing-python.html">Python installation instructions</a>.</dd>
+	</dl>	
 	
 	<h2 id="execute">Executing Daisy Pipeline</h2>
 	<h3 id="executeWin">Windows</h3>
-	<p>To run Daisy Pipeline, open a command shell and run the <code>pipeline.bat</code> file in the Daisy Pipeline installation directory. Since a few comamnd line paramaters need to be supplied, it is <strong>not</strong> possible to double click on the <code>.bat</code> file from Windows Explorer.</p>
+	<p>To run Daisy Pipeline, open a command shell and run the <code>pipeline.bat</code> file in the Daisy Pipeline installation directory. Since a few command line paramaters need to be supplied, it is <strong>not</strong> possible to double click on the <code>.bat</code> file from Windows Explorer.</p>
 	<p>If your Java 5 (or later) isn't found on your system path, you need to edit the <code>pipeline.bat</code> file and supply a full path to the java.exe on the line that starts with <code>set JAVA=</code>.</p>
 	<h3 id="executeUnix">Linux/MacOSX/Unix</h3>
 	<p>To run Daisy Pipeline, execute the <code>pipeline.sh</code> shell script. The executable bit must be set on the file in order to be executable, run <code>chmod u+x pipeline.sh</code> to achieve that.</p>
