@@ -137,6 +137,7 @@
 		<type id="folder" name="application/x-filesystemDirectory"/>
 		<type id="enum" name="enum" parentTypes="string"/>
 		<type id="anon" name="application/anonymous" namePatterns="*.*"/>
+		<type id="anon2" name="anonymous" namePatterns="*.*"/>
 	</directory>
 	
 </mimeRegistry>
