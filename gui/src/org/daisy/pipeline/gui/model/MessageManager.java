@@ -42,7 +42,7 @@ public class MessageManager implements BusListener {
 
     public MessageManager() {
         messages = new LinkedList<MessageEvent>();
-        capacity = 100;// TODO retrieve capacity from prefs
+        capacity = 1000;// TODO retrieve capacity from prefs
         listeners = new ArrayList<IMessageManagerListener>();
     }
 
