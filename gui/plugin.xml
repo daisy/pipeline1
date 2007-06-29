@@ -194,6 +194,21 @@
                toolbarPath="org.eclipse.ui.workbench.file"
                tooltip="%action.newJob.tooltip"/>
       </actionSet>
+      <actionSet
+            description="%actionSet.navigation.description"
+            id="org.daisy.pipeline.gui.actionSet.navigation"
+            label="%actionSet.navigation"
+            visible="true">
+         <action
+               allowLabelUpdate="true"
+               definitionId="org.daisy.pipeline.gui.command.toggleBrowser"
+               id="org.daisy.pipeline.gui.action.toggleBrowser"
+               label="%action.toggleBrowser"
+               menubarPath="window/navigation/additions"
+               retarget="true"
+               style="push"
+               tooltip="%action.toggleBrowser.tooltip"/>
+      </actionSet>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">

@@ -27,4 +27,5 @@ public interface IActionConstants {
     public static final String MOVE_UP = "org.daisy.pipeline.gui.action.table.moveUp"; //$NON-NLS-1$
     public static final String RUN_ALL = "org.daisy.pipeline.gui.action.runAll"; //$NON-NLS-1$
     public static final String RUN = "org.daisy.pipeline.gui.action.run"; //$NON-NLS-1$
+    public static final String TOGGLE_BROWSER = "org.daisy.pipeline.gui.action.toggleBrowser"; //$NON-NLS-1$
 }

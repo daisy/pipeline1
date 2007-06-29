@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.daisy.pipeline.gui.GuiPlugin;
-import org.daisy.pipeline.gui.ICommandConstants;
+import org.daisy.pipeline.gui.IActionConstants;
 import org.daisy.pipeline.gui.util.DelegatingSelectionProvider;
 import org.daisy.pipeline.gui.util.actions.BrowserBackAction;
 import org.daisy.pipeline.gui.util.actions.BrowserForwardAction;
@@ -34,7 +34,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -58,7 +57,6 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -254,10 +252,8 @@ public class DocView extends ViewPart implements ISelectionListener {
                 backAction);
         actionBars.setGlobalActionHandler(ActionFactory.FORWARD.getId(),
                 forwardAction);
-        IHandlerService handlerService = (IHandlerService) getSite()
-                .getService(IHandlerService.class);
-        handlerService.activateHandler(ICommandConstants.TOGGLE_BROWSER,
-                new ActionHandler(toggleBrowserAction));
+        actionBars.setGlobalActionHandler(IActionConstants.TOGGLE_BROWSER,
+                toggleBrowserAction);
     }
 
     protected void tocSelected(ITocTab toc) {
