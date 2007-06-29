@@ -296,6 +296,11 @@
             sequence="M1+M2+F8"
             schemeId="org.daisy.pipeline.gui.bindings.defaultScheme" />
       <key
+            commandId="org.eclipse.ui.window.preferences"
+            platform="carbon"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+,"/>
+      <key
             commandId="org.daisy.pipeline.gui.command.newItem"
             schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
             sequence="M1+N"/>
