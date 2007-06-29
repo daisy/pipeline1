@@ -14,6 +14,29 @@ http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
 
 ***********************************
+Pipeline Final Release, 2007-06-29
+***********************************
+
+This is the final public release of the DAISY Pipeline, with full documentation.
+
+Changes in GUI:
+- Fixed several bugs.
+- Added preferences dialog for re-execution of jobs
+- Finalized branding
+- Added a full-blown welcome screen
+- Added a complete documentation
+
+Bug reports and and usability improvements are welcome. 
+To provide your input, please use the Pipeline GUI feature request and bug report trackers on [1] and [2].
+
+[1] http://sourceforge.net/tracker/?group_id=162777&atid=951927
+[2] http://sourceforge.net/tracker/?group_id=162777&atid=951926
+
+Changes in Core:
+- Minor bugfixes
+- Complete documentation
+
+***********************************
 Pipeline release candidate 1, 2007-06-08
 ***********************************
 The development team initially intended to release a fully public release today,
