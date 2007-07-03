@@ -5,21 +5,118 @@
 
 <head>
   <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
-  <title>Getting and running the latest code</title>
+  <title>DAISY Pipeline developer setup</title>
   <link rel="stylesheet" type="text/css" href="../pipeline.css"/>
 </head>
 
 <body>
 
-  <h1>Daisy Pipeline - Getting and running the latest code</h1>
+  <h1>DAISY Pipeline developer setup</h1>
   <p class="author">Markus Gylling</p>
-  <p class="updated">Latest update: 2007-03-22</p>
+  <p class="updated">Latest update: 2007-07-02</p>
   <div class="summary">
   	<p>This document summarizes the steps needed to get and run the Daisy Pipeline code.</p>
-  	<p>As such, this document is primarily intended for developers or others who for some reason
-  		wants to use the latest code from the trunk or another branch, instead of using the compiled end-user installers.</p>
+  	<p>As such, this document is primarily intended for developers who want to run (and develop on) the latest code from the Pipeline trunk, or another branch.</p>
+    <p>The guide uses <a href="http://www.eclipse.org">Eclipse</a> (3.3) as the IDE of choice.</p>
   </div>	
-  <p class="alert">This document remains to be written</p>
+  
+  
+  <h1 id="core">The Pipeline Core</h1>
+  <p>This section describes how to get and configure the DAISY Pipeline "Core", i.e. the Pipeline <em xml:lang="fr">sans</em> its <a href="#gui">RCP GUI</a>.</p>
+
+    
+  <h2 id="getEclipse">1. Install Eclipse</h2>
+  <p>Get the Eclipse IDE from <a href="http://www.eclipse.org/downloads">Eclipse Downloads section</a>.</p>
+  <p>Since version 3.3 (Europa) of Eclipse, there are several different versions to choose from; this guide uses the "Eclipse Classic" version.</p> 
+  <p>Install Eclipse by extracting it to a folder of your choice.</p>  
+  
+  <h2 id="getSubversion">2. Install and Configure Subversion</h2>
+  <p>The Pipeline Sourceforge project uses Subversion (SVN) as the repository format.</p>
+  <p>Since Eclipse (at least at the time of writing) only supports CVS natively, an SVN plugin must be installed in order to communicate with the Pipeline repository.</p>
+
+  <h3>Install the Subclipse plugin</h3>
+  <p>Use the software update mechanism in Eclipse and create a new update site.</p> 
+  <img src="./img/devsetup01.png" alt="the software update entry in the Eclipse help menu item." />
+  
+  <p>Set the URL to http://subclipse.tigris.org/update_1.2.x (This value at time of writing, may have changed since then, check <a href="http://subclipse.tigris.org/">subclipse.tigris.org</a>).</p>
+  <img src="./img/devsetup02.png" alt="a new remote site with the URL set to http://subclipse.tigris.org/update_1.2.x" />
+  <p>If you are behind a proxy, you need to set the proxy values in the <code>Network Connections</code> page in the Eclipse Preferences (Window menu, Preferences item, filter on "proxy").</p>
+  
+  <p>The update manager will search for plugins at subclipse.tigris.org, and return a list of choices. Select the subclipse plugin. You can safely uncheck the <code>Integrations (optional)</code> item.</p>
+  <img src="./img/devsetup03.png" alt="	subclipse installation list, with optional integration items unchecked" />
+  <p>The update manager will download all needed libraries, and ask you to restart.</p>
+  <p>Confirm that the SVN plugin is now installed by selecting <code>Window</code> menu, <code>Open Perspective</code>, <code>Other...</code>, and then assuring that "SVN Repository Exploring" is available in the list.</p>
+  <img src="./img/devsetup04.png" alt="SVN Perspective in the Open Perspective list" />
+  
+  <h2 id="createProject">3. Create the project</h2>  
+  <p>Move to the SVN Perspective (<code>Window</code>, <code>Open Perspective...</code>) and create a <em>new repository location</em>.</p>  
+  <img src="./img/devsetup05.png" alt="New repository location in the SVN perspective." />    
+  <p>The URL is <code>https://daisymfc.svn.sourceforge.net/svnroot/daisymfc</code>.</p> 
+  <p>If you get a <code>RA layer request failed</code> message, you are probably behind a proxy, and need to set the <a href="http://subclipse.tigris.org/faq.html#http-proxy">Subversion proxy settings</a>.</p>
+
+  <p>Open the branch you would like to checkout (such as branches/stable), select the module (i.e. 'dmfc') and choose "Checkout..." from the context menu.(Note: the name <code>DMFC</code> is the former name of DAISY Pipeline.)</p>
+
+  <p>If you just want to run the pipeline, use the 'branches/stable' branch. More active (= possibly unstable) development occurs in the 'trunk'. Decidedly unstable work happens in experimental branches, so normally the trunk should be ok. If in doubt, ask your nearest Pipeline Core Team Representative&trade;.</p>
+  <img src="./img/devsetup06.png" alt="Checking out the DMFC module from the trunk branch." />    
+
+  <p>Select "Check out as a project configured using the New Project Wizard" in the Checkout dialog.</p> 
+  <p>In the first page of the New Project wizard, select "Java Project".</p>  
+  
+  <p>In the second page, give the project the name "pipeline". Select separate folders for source and class files.</p>    
+  <img src="./img/devsetup07.png" alt="Java project configuration" />      
+  <p>Select <code>finish</code> and wait for the download to complete.</p>
+  
+      
+  <h2 id="confirmInstall">Confirm installation</h2>
+  <p>The SVN checkout includes the Eclipse <code>.project</code> file that Eclipse uses to set classpath and 3d party library dependencies. So the project should be pretty much ready to go once the SVN dump is complete.</p>
+  <p>The Java Perspective Package Explorer should have the <code>src</code> and <code>transformers</code> directories shown as source containers (a special icon for these folder items). There shold be a bunch of 3d party libraries in the "Referenced libraries" item.</p>
+  <img src="./img/devsetup08.png" alt="The Java Perspective Package Explorer directly after SVN dump." />      
+  
+  <h3>A Run Configuration for the test suite</h3>
+  <p>You can confirm that your Pipeline environment works by creating a Run Profile for the bundled Pipeline test suite.</p>
+  <p>Create a new Run Configuration (<code>Run</code> menu, <code>Open Run Dialog</code>).</p>  
+  <p>Select the Java Application type. Call it "Pipeline Test Suite". Select PipelineTestDriver as the main class.</p>
+  <img src="./img/devsetup09.png" alt="The setup of a Java Application Run Configuration for the test suite" />
+  <p>In the arguments tab, add the following string as Program Arguments: <code>${project_loc}/samples ${project_loc}/scripts</code></p>
+  <img src="./img/devsetup10.png" alt="Program Arguments: <code>${project_loc}/samples ${project_loc}/scripts" />
+
+  <p>Click apply and close, dont run yet.</p>
+  <p>Instead, open the <code>org.daisy.pipeline.test.PipelineTestDriver</code> class and make sure that one test is decommented in the <code>getTests()</code> method. Select for example OPSCreator1. (It will take a bit too long to run all the tests at this time.)</p>
+  <p>Now go back to Run and run the Pipeline Test Suite configuration. If you are set up correctly, the Console View will report a succesful run (and also a series of "No test for script" messages, which should be ignored.)</p>
+  <p>When you are developing a Transformer, it is recommended to do so against tests in the test suite. You are all set up for this now.</p>
+  
+  <h3 id="createRunConfig">Creating a Run Configuration for Pipeline CommandLineUI</h3>
+  <p>Similarly to what you did in the test suite run above, create a Run Configuration for the Pipeline CommandLineUI class.</p>
+  <p>Create a new Java Application Run Profile called Pipeline. Set <code>org.daisy.pipeline.ui.CommandLineUI</code> as the main class.</p>
+  <p>The Arguments tab now needs to be changed everytime you want to run a new script or run a script against new input.</p>
+  <p>The following program arguments runs the DTBookValidator Script against an item in the /samples/ folder:
+  
+ <code>${workspace_loc}/pipeline/scripts/validation/simple/DTBookValidator.taskScript
+--input=${workspace_loc}/pipeline/samples/input/dtbook/dontworrybehappy.xml
+  </code>
+</p>
+  <img src="./img/devsetup11.png" alt="Program Arguments for CommandLineGUI" />
+  
+  <p>If you setup and run the CommandLineUI Configuration exactly as above, you should get the following message in the console:</p>
+<pre><code>  
+[DEBUG, Pipeline Core] Loading Transformer Validator (class int_daisy_validator.ValidatorDriver)
+[DEBUG, Pipeline Core] Transformer loaded from file:/D:/workspace/pipeline/transformers/
+[STATE] Task DTBook Validator just started
+[STATE] Transformer Validator just started
+[INFO, Validator] Validating a Dtbook document.
+[DEBUG, Validator] Completed full validation of input fileset.
+[INFO, Validator] Validation completed in 0.0 seconds.
+[INFO, Validator] 0 issues were reported by validators.
+[INFO, Validator] Congratulations!
+[STATE] Transformer Validator just stopped
+[STATE] Task DTBook Validator just stopped
+</code></pre>  
+  
+  
+  <h1 id="gui">The Pipeline RCP GUI</h1>
+  <p>This section describes how to get and configure the RCP Pipeline GUI and run it as a front end for the <a href="#core">Pipeline Core</a>.</p>
+  <p class="alert">This section remains to be written.</p>  
+  
   
 </body>
 </html>

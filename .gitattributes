@@ -5,6 +5,17 @@ META-INF/services/javax.xml.validation.SchemaFactory -text
 /custom.xml -text
 doc/404.html -text
 doc/dev_old/diagram.png -text
+doc/developer/img/devsetup01.png -text
+doc/developer/img/devsetup02.png -text
+doc/developer/img/devsetup03.png -text
+doc/developer/img/devsetup04.png -text
+doc/developer/img/devsetup05.png -text
+doc/developer/img/devsetup06.png -text
+doc/developer/img/devsetup07.png -text
+doc/developer/img/devsetup08.png -text
+doc/developer/img/devsetup09.png -text
+doc/developer/img/devsetup10.png -text
+doc/developer/img/devsetup11.png -text
 doc/developer/java-coding-conventions.html -text
 doc/developer/localizing-and-customizing-pipeline-narrator.html -text
 doc/developer/pipeline-from-svn.html -text
