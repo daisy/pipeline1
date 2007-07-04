@@ -79,6 +79,7 @@ be wrong.</p>
 			<li>Select all links. To select multiple linked objects, hold down CTRL and click each linked object.</li>
 			<li>Click Break Links.</li>
 		</ol>
+		<p>Images can be converted to JPEG by checking the "Convert images to JPEG" checkbox.</p>
 		<h3>Word templates</h3>
 		<p>Two document templates are available in the <a href="../../transformers/se_tpb_wordml2dtbook/templates/">transformer directory</a>. Both include macros to prepare a document for input into pipeline and should be run when the document is finished. To run the pipeline preparation macro:</p>
 		<ol>
@@ -118,6 +119,8 @@ be wrong.</p>
 			<dd>Select output directory</dd>
 			<dt>Extract images</dt>
 			<dd>Check box to extract images</dd>
+			<dt>Convert images to JPEG</dt>
+			<dd>Check box to convert all images into JPEG format. Note that if the "Extract images" checkbox is unchecked, this box will have no effect. The conversion is done using an external software called ImageMagick which must be installed on your system. Refer to the <a href="#transformers">transformer</a> documentation for more information on how to set it up.</dd>
 			<dt>Overwrite existing files</dt>
 			<dd>Check box to overwrite existing files in the output directory</dd>
 			<dt>Append XHTML stylesheet</dt>

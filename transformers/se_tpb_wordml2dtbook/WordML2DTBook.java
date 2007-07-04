@@ -12,10 +12,13 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.execution.ExecutionException;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.xslt.Stylesheet;
+
+import se_tpb_dtbAudioEncoder.EncodingException;
 
 /**
  * 
@@ -28,7 +31,7 @@ import org.daisy.util.xml.xslt.Stylesheet;
  * @version 2007-april-11
  * @since 1.0
  */
-public class WordML2DTBook extends Transformer implements MessageInterface {
+public class WordML2DTBook extends Transformer {
 
 
 	/**
@@ -50,6 +53,8 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
         String filename = (String)parameters.remove("filename");
         String images = (String)parameters.remove("images");
         String overwrite = (String)parameters.remove("overwrite");
+        
+        String forceJPEG = (String)parameters.get("forceJPEG");
         
         // xslt parameters
         String uid = (String)parameters.get("uid");
@@ -96,10 +101,10 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
         }
         File result = new File(outdir, filename);
 		if ("true".equals(images)) {
-			decodeImages(new File(input), outdir);
-			// put parameter for xslt
-			parameters.put("forceJPEG", "false");
-		}
+			sendMessage("Extracting images...");
+			decodeImages(new File(input), outdir, forceJPEG);
+		} 
+		progress(0.4);
 		if (uid==null || "".equals(uid)) {
 			String s = (new Long((Math.round(Math.random() * 1000000000)))).toString();
 			char[] chars = s.toCharArray();
@@ -107,7 +112,6 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
 			System.arraycopy(chars, 0, dest, 9-chars.length, chars.length);
 			parameters.put("uid", "AUTO-UID-" + new String(dest));
 		}
-		progress(0.1);
 		try {
 			if ("dtbook2xhtml.xsl".equals(stylesheet)) {
 				FileUtils.copy(dtbook2xthml, new File(outdir, "dtbook2xhtml.xsl"));
@@ -121,35 +125,39 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
 			TempFile t7 = new TempFile();
 			
 			sendMessage("Tempfolder: " + t1.getFile().getParent(), MessageEvent.Type.DEBUG);
-			
-			progress(0.4);
+
+			sendMessage("Converting to DTBook...");
 			Stylesheet.apply(input, xslt, t1.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			progress(0.5);
+			progress(0.6);
 			
 			// check character count
 			TempFile tc1 = new TempFile();
 			TempFile tc2 = new TempFile();
+			sendMessage("Verifying result...");
 			Stylesheet.apply(input, countCharsWml.getAbsolutePath(), tc1.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			progress(0.7);
 			Stylesheet.apply(t1.getFile().getAbsolutePath(), countCharsDTBook.getAbsolutePath(), tc2.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
 			
 			if (tc1.getFile().length()!=tc2.getFile().length()) {
 				sendMessage("The text size has changed (" + tc1.getFile().length() + "/" + tc2.getFile().length() + "). Check the result for errors.", MessageEvent.Type.WARNING);
 			} else {
 				sendMessage("Text size ok.");
-			}			
+			}
+			progress(0.79);
+			sendMessage("Post processing...");
 			// Must match the order in wordml2dtbook.xsl
 			Stylesheet.apply(t1.getFile().getAbsolutePath(), pagenumFix.getAbsolutePath(), t2.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			progress(0.6);
+			progress(0.82);
 			Stylesheet.apply(t2.getFile().getAbsolutePath(), defragmentSub.getAbsolutePath(), t3.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			progress(0.7);
-			Stylesheet.apply(t3.getFile().getAbsolutePath(), defragmentSup.getAbsolutePath(), t4.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			progress(0.8);
-			Stylesheet.apply(t4.getFile().getAbsolutePath(), defragmentEm.getAbsolutePath(), t5.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
 			progress(0.85);
+			Stylesheet.apply(t3.getFile().getAbsolutePath(), defragmentSup.getAbsolutePath(), t4.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			progress(0.88);
+			Stylesheet.apply(t4.getFile().getAbsolutePath(), defragmentEm.getAbsolutePath(), t5.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			progress(0.91);
 			Stylesheet.apply(t5.getFile().getAbsolutePath(), defragmentStrong.getAbsolutePath(), t6.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			progress(0.90);
+			progress(0.94);
 			Stylesheet.apply(t6.getFile().getAbsolutePath(), addAuthorTitle.getAbsolutePath(), t7.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			progress(0.95);
+			progress(0.97);
 			Stylesheet.apply(t7.getFile().getAbsolutePath(), indent.getAbsolutePath(), result.getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());			
         } catch (Exception e) {
             throw new TransformerRunException(e.getMessage(), e);
@@ -158,17 +166,47 @@ public class WordML2DTBook extends Transformer implements MessageInterface {
 		return true;
 	}
 
-	private void decodeImages(File input, File outdir) throws TransformerRunException {
+	private void decodeImages(File input, File outdir, String forceJPEG) throws TransformerRunException {
 		Date start = new Date();
 	  	try {
 			SAXParserFactory spf = SAXParserFactory.newInstance();
 			spf.setNamespaceAware(true);
-			ImageDecodeHandler handler = new ImageDecodeHandler(outdir, this);
+			ImageDecodeHandler handler = new ImageDecodeHandler(input.getParentFile(), outdir);
 			spf.newSAXParser().parse(input, handler);
+			progress(0.2);
+			if ("true".equals(forceJPEG)) {
+				convertToJPEG(handler.getFilesToConvert(), outdir);
+			}
 	  	} catch (Exception e) {
 	  		throw new TransformerRunException(e.getMessage(), e);
 	  	}
-	  	sendMessage("Time to decode images: " + (new Date().getTime()-start.getTime())+ " ms");
+	  	sendMessage("Time to decode (and convert) images: " + (new Date().getTime()-start.getTime())+ " ms");
+	}
+	
+	private void convertToJPEG(File[] imageFiles, File outdir) throws TransformerRunException {
+		if (imageFiles.length>0) {
+			sendMessage("Converting images...");
+		}
+		int i = 0;
+		for (File f : imageFiles) {
+			String name;
+			int index;
+			ImageConverter ic = new ImageConverter();
+			name = f.getName();
+			index = name.lastIndexOf('.');
+			try {
+				ic.convert(f, new File(outdir, name.substring(0, index) + ".jpg"));
+				while (!f.delete()) {
+					try { Thread.sleep(200); } catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			} catch (ExecutionException e) {
+				sendMessage("Error: Could not convert image " + f, MessageEvent.Type.ERROR);
+			}
+			i++;
+			progress(0.2 + ((float)i/imageFiles.length) * 0.2);
+		}
 	}
 
 	public void sendMessage(MessageEvent.Type type, String idstr, Object[] params) {

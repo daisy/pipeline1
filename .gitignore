@@ -51,3 +51,4 @@ transformers/ca_cnib_rtf2dtbook/rtf2xml/styles$py.class
 transformers/ca_cnib_rtf2dtbook/rtf2xml/table$py.class
 transformers/ca_cnib_rtf2dtbook/rtf2xml/table_info$py.class
 transformers/ca_cnib_rtf2dtbook/rtf2xml/tokenize$py.class
+transformers/se_tpb_imageConverter

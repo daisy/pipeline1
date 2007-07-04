@@ -225,9 +225,18 @@
 
 <xsl:template match="w:pict">
   <xsl:if test="v:shape/v:imagedata">
-	  <xsl:variable name="img-no"><xsl:call-template name="addZeros">
-			  <xsl:with-param name="value" select="count(preceding::v:shape/v:imagedata)+1"/>
-		</xsl:call-template></xsl:variable>
+	  <xsl:variable name="src" select="v:shape/v:imagedata/@src"/>
+	  <xsl:variable name="img-no"><xsl:choose>
+			  <xsl:when test="w:binData"><xsl:call-template name="addZeros">
+			  <xsl:with-param name="value" select="count(preceding::w:pict)+1"/>
+		</xsl:call-template></xsl:when>
+				<xsl:when test="not(//w:pict[w:binData/@w:name=$src])"><xsl:call-template name="addZeros">
+			  <xsl:with-param name="value" select="count(preceding::w:pict)+1"/>
+		</xsl:call-template></xsl:when>
+				<xsl:otherwise><xsl:for-each select="//w:pict[w:binData/@w:name=$src][1]"><xsl:call-template name="addZeros">
+				<xsl:with-param name="value" select="count(preceding::w:pict)+1"/></xsl:call-template>
+	  </xsl:for-each></xsl:otherwise>
+			</xsl:choose></xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$forceJPEG='true'">
 				<img src="image{$img-no}.jpg" alt="{v:shape/@alt}"/>

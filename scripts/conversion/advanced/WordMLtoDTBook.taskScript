@@ -30,6 +30,14 @@
 		</datatype>
 	</parameter>
 	
+	<parameter name="convertImages" value="true" required="false">
+		<nicename>Convert images to JPEG</nicename>
+		<description>Check box to convert all images into JPEG format (requires ImageMagick)</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
 	<parameter name="overwrite" value="true" required="false">
 		<nicename>Overwrite existing files</nicename>
 		<description>Check box to overwrite existing files in the output directory.</description>
@@ -85,6 +93,11 @@
 			<name>images</name>
 			<value>${images}</value>
 		</parameter>
+		
+		<parameter>
+			<name>forceJPEG</name>
+			<value>${convertImages}</value>
+		</parameter>
 
 		<parameter>
 			<name>overwrite</name>
@@ -110,12 +123,12 @@
 			<name>uid</name>
 			<value>${uid}</value>
 		</parameter>
-		
+
 		<parameter>
 			<name>customStyle</name>
 			<value>scanned</value>
 		</parameter>
-		
+
 	</task>
 
 	<task name="int_daisy_validator" interactive="false">
