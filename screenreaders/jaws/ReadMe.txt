@@ -1,10 +1,12 @@
 JAWS scripts for Daisy pipeline
 Scripts are written for DAISY pipeline 29 june 2007 release.
 Compatible with JAWS version 7.0+ 
+Updated on July 12, 2007
 
 
 The current release of scripts is for assisting users in interacting with DAISY pipeline's new user interface.
 They currently do not add any additional feature, instead they improve reported accessibility issues in existing features being  provided by user interface.
+
 
 
 Instructions for manual installations:
