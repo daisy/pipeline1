@@ -89,7 +89,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
             throws ValidationException {
 
         try {
-            initialize(schemaFile.toURL(), errh, useRelaxNG, useSchematron, true);
+            initialize(schemaFile.toURI().toURL(), errh, useRelaxNG, useSchematron, true);
         } catch (ValidationException e) {
             throw e;
         } catch (IOException e) {
