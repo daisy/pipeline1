@@ -45,4 +45,4 @@ DIR=`dirname $0`
 CP=$DIR/pipeline.jar:$DIR
 
 # Execute Daisy Pipeline
-$JAVA -classpath $CP org.daisy.pipeline.ui.CommandLineUI $@
+$JAVA -classpath $CP org.daisy.pipeline.ui.CommandLineUI "$@"
