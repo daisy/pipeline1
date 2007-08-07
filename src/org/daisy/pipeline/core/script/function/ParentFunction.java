@@ -28,7 +28,7 @@ public class ParentFunction extends Function {
 
 	@Override
 	public String apply(String value) {
-		File file = new File(value);
+		File file = new File(value).getAbsoluteFile();
 		return file.getParent();
 	}
 
