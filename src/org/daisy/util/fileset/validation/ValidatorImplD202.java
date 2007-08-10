@@ -168,17 +168,23 @@ class ValidatorImplD202 extends ValidatorImplAbstract implements Validator, Erro
 		//test ncc stated totaltime against calculated spine totaltime
 		SmilClock calculatedTotalTime = new SmilClock(calculatedTotalTimeMillis);
 		//recommended syntax: hh:mm:ss, so round to whole seconds
-		if(calculatedTotalTime.secondsValueRounded() != ncc.getStatedDuration().secondsValueRounded()) {					
-			this.mValidatorListener.report(this,new ValidatorErrorMessage(ncc.getFile().toURI(),
+
+		//#1770791 NPE if ncc.getStatedDuration() is null
+		if(ncc.getStatedDuration()!=null) {
+			if(calculatedTotalTime.secondsValueRounded() != ncc.getStatedDuration().secondsValueRounded()) {					
+				this.mValidatorListener.report(this,new ValidatorErrorMessage(ncc.getFile().toURI(),
 					"expected total time " + calculatedTotalTime.toString() 
 					+" but found "+ ncc.getStatedDuration().toString()));						
+			}
+		}else{
+			//we couldnt compare calculated to stated since ncc.getStatedDuration() is null
+			//the absence of this meta element is reported elsewhere so be silent on that
+			this.mValidatorListener.report(this,new ValidatorWarningMessage(ncc.getFile().toURI(), 
+					"Could not compare calculated duration to stated duration since this information is missing in the NCC"));									
 		}
-
 		
 	}
 	
-
-
 	private void masterSmilFile(D202MasterSmilFile file) {
 		// TODO 
 		
