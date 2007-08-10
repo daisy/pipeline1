@@ -14,6 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedInputStream;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -72,10 +74,9 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 						
 			FileUtils.createDirectory(outputEpubFile.getParentFile());
 			ZipOutputStream outputOcf = new ZipOutputStream(new FileOutputStream(outputEpubFile));
-			outputOcf.setLevel(Deflater.BEST_COMPRESSION);
 			
 			List<OcfEntry> entries = new LinkedList<OcfEntry>();			
-			entries.add(new OcfEntry(getMimeTypeFile(),"mimetype"));			
+			entries.add(new OcfEntry(getMimeTypeFile(),"mimetype"));
 			entries.add(new OcfEntry(buildContainerFile(publications),"META-INF/container.xml"));
 			this.sendMessage(0.3);			
 			
@@ -93,13 +94,31 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 					entries.add(new OcfEntry(file,pub.mTypeLabel+"/"+file.getName()));
 				}
 			}
-			this.sendMessage(0.5);	
+			this.sendMessage(0.5);
+			int count = 0;
 			for (OcfEntry entry : entries) {
-				File file = entry.mFile;
+				count++;
+				//#1770771 The mimetype file should not be compressed 
+				if(count==1) {
+					outputOcf.setMethod(ZipEntry.STORED);
+				}else{
+					outputOcf.setMethod(ZipEntry.DEFLATED);
+					outputOcf.setLevel(Deflater.BEST_COMPRESSION);
+				}
+								
+				File file = entry.mFile;								
 				byte[] buffer = new byte[18024];
 				FileInputStream in = new FileInputStream(file);
-				outputOcf.putNextEntry(new ZipEntry(entry.mPath));	
-		        int len;
+				
+				ZipEntry ze = new ZipEntry(entry.mPath);
+				if(count==1) {
+					ze.setSize(entry.mFile.length());
+					ze.setCrc(getCRC(entry.mFile));
+				}
+				
+				outputOcf.putNextEntry(ze);	
+		        
+				int len;
 		        while ((len = in.read(buffer)) > 0){
 		        	outputOcf.write(buffer, 0, len);
 		        }
@@ -116,6 +135,14 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 		return true;				
 	}
 
+
+	private long getCRC(File file) throws IOException {
+		CheckedInputStream cis = new CheckedInputStream(new FileInputStream(file), new CRC32());
+        byte[] buf = new byte[128];
+        while(cis.read(buf) >= 0) {        	
+        }
+        return cis.getChecksum().getValue();
+	}
 
 	/**
 	 * Create a set of Publication objects to include in OCF. A Publication is either a Fileset or a single file, represented as a URL
