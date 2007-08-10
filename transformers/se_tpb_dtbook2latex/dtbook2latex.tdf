@@ -2,7 +2,7 @@
 <transformer version="1.0">
 	<name>DTBook to LaTeX</name>
 	<description>Transforms a DTBook 2005 document to LaTeX</description>
-	<classname>org.daisy.dmfc.transformers.XSLTRunner</classname>
+	<classname>org.daisy.pipeline.transformers.XSLTRunner</classname>
 	<license>LGPL</license>
 	<author>Linus Ericson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>

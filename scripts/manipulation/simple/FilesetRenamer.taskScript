@@ -10,7 +10,7 @@
    	<documentation uri="../../../doc/scripts/FilesetRenamer.html"/>
      <comment>
 	     Commandline template (dont forget to modify paths):
-	     		org.daisy.dmfc.ui.CommandLineUI
+	     		org.daisy.pipeline.ui.CommandLineUI
 				D:\data\workspace\dmfc\scripts\manipulation\simple\FilesetRenamer.taskScript
 	                --filesetRenamerInputFile=E:\dmfctest\hauy.202.rev4\ncc.html 
 	                --filesetRenamerOutputPath=E:\dmfctest\hauy.202.rev4\out\
