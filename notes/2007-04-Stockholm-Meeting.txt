@@ -1,0 +1,167 @@
+Notes Pipeline F2F Stockholm 20070424-27
+
+**** DAY ONE ****
+Status update
+Milestone 1: 
+	all refactorings done except tempfile handling
+Romain: 
+	There may be some remaining problems with the classloading stuff.
+	Events: when a job starts a script change event is raised, cant differentiate
+
+Target for this week: 
+  [romain] reach the bulk part of milestone 2 by friday, some minor additions remaining until milestone date May 4
+  [markus] continue with script and script documentation authoring
+  [markus,linus] clean out deprecated transformers, change of package names
+  [romain] way forward for branding, graphics
+  [markus] testsuite
+  [markus] ODF
+  [romain] way forward for comment and bugtracking system for GUI
+  
+  
+ Short discussion about installers (Milestone 6)
+  - investigate izpack (http://izpack.org/start)
+  - another option is to have a zipfile, and the gui exposes relevant entries in the dmfc.properties file.
+  Note: the RCP online update is a nice-to-have feature, but not to be included in upcoming release.
+  
+
+Walkthrough of GUI
+Wizard: 
+  -->parameters window should sort params, have required first, optional later, in framed groups
+  -->parameter descriptions as ballon tips or similar
+  --> a save to script method in the wizard, or preferably done silently by remembering last set values
+  
+MessageView
+  column for severity
+  
+Error Log
+ --> auto open when error is logged
+ --> if already open, blink when new error is added
+   --> in both cases, write something to status bar
+
+
+WORKITEM 1 :: attaching the Core to the GUI
+Problem 1: When Core is instantiated as an Eclipse plugin, Eclipses own classloader is used.
+Solution:
+
+**** DAY 2 ****
+Dedicated to solving the classloader problems
+
+**** DAY 3 ****
+Romain: custom dynamic classloading is now working.
+After that, two problems remain:
+  loading resources such as RNG schemas within core [SOLVED]
+  remains: unknown problems. Did a quick search for getResource, seems to be used only on XSLT, and in Catalog package - pretty narrow
+Approach for the remaining weak spots: dont look actively now, but allow the testsuite to locate these during May.
+
+Clarification on upcoming releases:
+  - next: run only within Eclipse
+  - May 18th release: run outside Eclipse, but no installer
+  - final public June 8th: with installer
+
+Agenda for today:
+ - fix simplevalidator regex thing
+ - merge back to trunk
+ - GUI, finalize list of remaining items (see ******* [GUI] ******** section below)
+ Then
+   Romain:
+	 -->start implementing remaining GUI items
+   Markus+Linus	
+	 --> core and transformer refactorings
+	   Markus+Linus: testsuite intro
+	   Linus: create Narrator 2.0 Script + documentation file	   
+	   Linus: some transformer documentation
+	   Linus: se_tpb_xhtml2dtbook
+	   Linus: merge changes from stabel to trunk
+	   [DONE] Markus: delete logger
+	   [DONE] Markus+Linus: delete transformers+packages
+	   [DONE] Markus: commit testsuite
+	   Markus: scripts+docs+testsuite
+	   Linus: update saxon8 to 8.9
+	   Markus: revert .messages priority order
+	   
+	   
+	   
+	   
+******** [todo tank] **********
+define list of prio1 and prio2 remaining items for GUI
+clean up simplevalidator, fix code duplication
+user vocabulary
+delete deprecated transformers
+delete logger
+delete errorscout
+[markus] create uk_rnib_odf2dtbook
+[markus] create int_daisy_idpfGenerator
+[linus] create se_tpb_xhtml2dtbook
+add Guillaumes l12ns to narrator
+create narrator 2.0 script
+write narrator main user documentation
+commit testsuite
+extend testsuite
+rename org.daisy.dmfc package to org.daisy.pipeline
+   
+******** [issues] **********
+  to support multithreading:
+    either transformerevents have a link to the task - or all transformers only sends messages from the thread that called the execute method
+  
+  cancelaction:
+    userabortevent doesnt specify the job we want to cancel, so it will cancel every currently running job
+	when a transformer is cancelled it raises a transformeraborterexception: it should also send a transformerabortedevent
+
+
+******* [GUI] ********
+** The Jobs View **
+1. Get rid of the param value column
+1. The job column contains noneditable strings of set values only (when job tree node is expanded, as now)
+0. A new View called Job Parameter Editor, which is a two column table, synchronized with currently selected job in jobs column
+4. Add inline editing  
+3. The Job Parameter Editor is ideally filterable and sortable
+2. Keep status column, manipulate the icon in the job column
+0. Note - need an efficient way to move between views (prev and next + show view shortcuts is prolly enough)
+0. Ability to re-run a job
+ If jobs have the same name, started from the second, the are given a trailing number
+ 
+** Toolbars ** 
+1. Keep the four "move job" actions in the job toolbar
+2. Move the delete button to the main toolbar
+ Main toolbar:  
+0.	Eclipse-style button with dropdown for run(all, selected) cancel(all,selected)
+2.	Add a "waiting" state for jobs so thats its possible to diff between jobs that will be run and jobs that wont.
+ Possibly a cancel button at the progress bar as well.
+
+** Actions ** 
+3. In all views, add context menus being a mix of local and global actions
+1. Add mnemonics
+
+** The messages view **
+2. Right aligned column with message Type (error, warning, info, debug) 
+2. Icon for type as well.
+2. Save messages to file.
+2. Debug off by default.
+FIX: Filtered out elements shouldnt appear in group by view
+3. One single child for those messages that have location which is a cleverly formatted string 
+3. Support expand all, collapse all
+2. Clear messages
+3. Filter dialog: a checklist show messages for jobs
+
+** The Progress View **
+2. Add "1/5" etc in front of description
+0. Each task item needs to be selectable and tabbable in order
+2. Remove the link to transformer documentation, move status icon to that location
+
+** The Documentation View **
+0. A single view for table of contents and browser
+ At the left, there are several tabs in a view, where each tab reflects a documentation type
+ There is one documentation perspective, with one browser view 
+1. Add browse back/forward/refresh buttons
+TAB: "Scripts": source: doc/scripts/*.html
+TAB: "Transformers": source: doc/transformers/*.html
+TAB: "Help": source: /doc/enduser/*.html + GUI manual (grouped)
+
+** Wizard **
+Group required and optional params (instead of using the star)
+Selected script in tree: remember. 
+Parameters: Remember last input value, not persisted between sessions
+
+** Scrolling issues **
+FIX in Wizard
+FIX in Progress View

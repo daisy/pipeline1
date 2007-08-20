@@ -1,0 +1,48 @@
+Spring 2007 refactoring: event and message framework.
+
+This email describes a refactoring of the event and message framework core.
+Followups and status reports will be made in this thread.
+Responsible for implementation: Markus
+Implementation should be done by: end March.
+
+
+1. Problems
+1.1 Current logger cannot separate between system messages and user messages
+1.2 Current messages are plain text, cannot distringuish submessage info such as line, column
+	
+2. Solution
+Break the old Prompt class up into several listener interfaces. Add two type dimensions (== a type matrix) for message objects.
+(A general note on non-end user logs/messages: pipeline core itself logs nothing, it only emits messages to listeners).
+
+Results:
+The RCP GUI should be able to display PipelineMessages in GUI in multiple views/streams; where user information, debug information and system logging are separated. A user information view should be able to sort messages along type and severity axes.
+
+The Command line GUI should be able to distinguish types enough to be able to cleary identify their nature to the user
+
+3. Strawman design
+The old Prompt and PromptListener implementation are deprecated but remain so that we dont have to port all transformers before making the trunk runnable.
+However, all actively used transformers need to be upgraded before the next major release.
+
+A initial napkin/strawman design is as follows. Comments welcome.
+
+Listener/Handler interfaces that an UI would implement:
+  MessageListener:
+    public void message(Message);
+  ScriptProgressListener:
+    public void scriptStart(Script);
+	public void scriptEnd(Script);
+  TransformerProgressListener:
+    public void transformerStart(Transformer);
+	public void transformerEnd(Transformer);
+	public void transformerProgress(double progress, Transformer transformer);
+  
+Message Hierarchy:
+   abstract class Message extends EventObject
+   public class CoreMessage extends Message
+   public class TransformerMessage extends Message
+   
+   Messages have accessors to the following common properties:
+   	String messageText
+	Type (enum: ERROR, WARNING, INFO, DEBUG)
+	Cause (enum: INPUT, SYSTEM)
+	javax.xml.stream.Location.Location  (used when message refers to a location within an XML document)

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink" version="-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN">
+  <head profile="">
+    <!-- Processed by MultiMarkdown -->
+    <meta name="Author" content="Romain Deltour"/>
+    <link type="text/css" rel="stylesheet" href="notes.css"/>
+    <meta name="Date" content="2007-08-20"/>
+    <meta name="Format" content="complete"/>
+    <title>Accessibility Issues in the DAISY Pipeline</title>
+  </head>
+  <body>
+    <h1 id="accessibilityissuesinthedaisypipeline">Accessibility Issues in the DAISY Pipeline</h1>
+    <div class="summary">
+      <p><em>The following document lists the current accessibility issues of the DAISY Pipeline GUI</em>.</p>
+      <p><em>The GUI has been tested on Windows XP with both JAWS (by Avneesh and Dipendra) and Windows Eyes (by George)</em>.</p>
+      <p><em>Author: </em>Romain Deltour<br/><em>Last Revision: </em>2007-08-20</p>
+    </div>
+    <h2>Table of Contents</h2>
+    <ul>
+      <li>
+        <a href="#generalcomments">General comments</a>
+        <ul>
+          <li>
+            <a href="#viewsandperspectives">Views and Perspectives</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#detailedguiwalkthrough">Detailed GUI walkthrough</a>
+        <ul>
+          <li>
+            <a href="#common">Common</a>
+          </li>
+          <li>
+            <a href="#documentationview">Documentation view</a>
+          </li>
+          <li>
+            <a href="#jobsview">Jobs View</a>
+          </li>
+          <li>
+            <a href="#progressview">Progress View</a>
+          </li>
+          <li>
+            <a href="#messagesview">Messages View</a>
+          </li>
+          <li>
+            <a href="#jobswizard">Jobs Wizard</a>
+          </li>
+          <li>
+            <a href="#preferences">Preferences</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#toppriorityrequirements">Top priority requirements</a>
+      </li>
+      <li>
+        <a href="#listofrpcswtproblematicwidgets">List of RPC/SWT problematic widgets</a>
+      </li>
+    </ul>
+    <h2 id="generalcomments">
+      <a name="General">General comments</a>
+    </h2>
+    <p>The Pipeline GUI is <strong>in general accessible</strong>, yet it’s sometimes a bit awkward and is <strong>far from providing a native feel and perfect usability to screen reader users</strong>.</p>
+    <p>The main source of problems are <strong>custom widgets</strong> coming from the RCP framework, such as the custom tab controls for views and drop down buttons in toolbars. The integration of the heavy weight browser widget sometimes create some funky issues as well. The standard, simple native widget don’t seem to be problematic though.</p>
+    <p>Paradoxically, the sources of inconveniences  for screen reader users are usually the exact features that aim at improving the efficiency of sighted users (e.g. customizable perspectives, complex custom widgets). While sighted users have access to the information provided by several views at once, screen reader users are <strong>focused on a single view at once</strong>, and sometimes lack the information provided by other views. The overall usability should be greatly improved by:</p>
+    <ul>
+      <li>improving the navigability between views</li>
+      <li>make the scope of the information obvious (i.e. without having to switch to another view), this can be achieved by duplicating the information hold by a view to any other related views (e.g. the message view should display some info on which job each message relates to)</li>
+    </ul>
+    <p>Note: some issues are fixed for JAWS by the scripts developed by Avneesh. These scripts are written for JAWS 7.0 and should be compatible with newer versions</p>
+    <h3 id="viewsandperspectives">
+      <a name="Views">Views and Perspectives</a>
+    </h3>
+    <dl>
+      <dt>View</dt>
+      <dd>
+        <p>a modular piece of the GUI with dedicated functionality (e.g. in the Pipeline GUI the <em>Jobs</em> view displays the jobs queue and has edition functionality,  while the <em>Documentation</em> view consists in a whole documentation browser with table of content and html rendering). </p>
+      </dd>
+      <dt>Perspective</dt>
+      <dd>
+        <p>defines the set and layout of views in the application window.</p>
+      </dd>
+    </dl>
+    <p>In a perspective, a view might appear by itself or stacked with other views in a tabbed area. A user can change the layout of a perspective by opening and closing views and by docking them in different positions in the Workbench window.</p>
+    <p>In RPC, each view is embedded in a custom tab control: this tab control displays the view title (and a “close view” button), helps the sighted users to directly identify the view, and allows to select the view when it is stacked amongst other views in a tabbed area.</p>
+    <p>The trouble is <strong>it’s not clear for screen reader how to navigate between views</strong>. Cycling through tab controls only cycle through the views stacked in the same tabbed area. Additionally, the key binding used to navigate between the views (Ctrl+F7) is <strong>based on a custom widget</strong> showing a pop-up list of the existing views and <strong>only cycles through the 2 most recently used views</strong>.</p>
+    <p>Action items:</p>
+    <ul>
+      <li><span class="todo">[TODO]</span> Write a doc targeting screen reader users and describing the views and perspectives concepts, the reason why its used and how to navigate between views (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1777472&amp;group_id=162777&amp;atid=951927" shape="rect">request #1777472</a>)</li>
+      <li><span class="todo">[TODO]</span> Fix the <em>switch to next view</em> (Ctrl+F7) action: it should cycle through all the existing views (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1777477&amp;group_id=162777&amp;atid=951926" shape="rect">bug #1777477</a>)</li>
+      <li><span class="done">[DONE]</span> Add a way to assign a keyboard shortcut per view for direct navigation (already possible in the <em>keys</em> preference pane)</li>
+    </ul>
+    <h2 id="detailedguiwalkthrough">
+      <a name="Detailed">Detailed GUI walkthrough</a>
+    </h2>
+    <h3 id="common">
+      <a name="Common">Common</a>
+    </h3>
+    <ul>
+      <li><span class="todo">[TODO]</span> rename the startup.jar launcher to something like ‘daisy-pipeline.jar’ (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1752454&amp;group_id=162777&amp;atid=951927" shape="rect">request #1752454</a>).
+<ul><li>the name of the launcher is used by some screen readers (e.g. JAWS) to persist application-specific settings (<strong>TO BE CONFIRMED</strong>)</li><li>the launcher mechanism has changed in Eclipse 3.3 (aka Europa) which will be the target platform of the next Pipeline version, the launcher will use a dedicated name</li></ul></li>
+    </ul>
+    <h3 id="documentationview">
+      <a name="Documentation">Documentation view</a>
+    </h3>
+    <ul>
+      <li>
+        <p>When using Ctrl+TAB to cycle through the documentation tabs (<em>Help</em>, <em>Scripts</em> and <em>Transformers</em> table of contents), the tab title is not spoken by the screen reader, making it non-obvious to the user that the focus changed and what the new ToC is.</p>
+        <ul>
+          <li>this is fixed by JAWS scripts</li>
+          <li>there is currently no workaround for Window Eyes</li>
+        </ul>
+        <p><span class="todo">[TODO]</span> Explicitly call the Accessibility API to speak the ToC title after a Ctrl+TAB access to a ToC (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1777483&amp;group_id=162777&amp;atid=951926" shape="rect">bug #1777483</a>) </p>
+      </li>
+      <li>
+        <p><span class="todo">[TODO]</span> Fix the browser refresh after a Ctrl+TAB access to a ToC (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1751023&amp;group_id=162777&amp;atid=951926" shape="rect">bug #1751023</a>)</p>
+        <ul>
+          <li>After using Ctrl+TAB to cycle through the documentation tabs, the browser is no longer refreshed when a new toc item is selected.</li>
+          <li>A workaround is to navigate between ToC by tabbing through the tab controls:
+<ul><li>SHIFT+TAB : move the focus from the ToC pane to the corresponding tab control</li><li>LEFT/RIGHT ARROW : navigate between the tab controls (i.e. the ToC headers)</li><li>TAB: move the focus to the newly selected ToC pane</li></ul></li>
+        </ul>
+      </li>
+      <li>
+        <p><span class="todo">[TODO]</span> Directly set the focus to the browser widget after moving to the doc pane with F6 (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1751017&amp;group_id=162777&amp;atid=951926" shape="rect">bug #1751017</a>)</p>
+        <ul>
+          <li>currently an additional TAB press is required</li>
+        </ul>
+      </li>
+    </ul>
+    <h3 id="jobsview">
+      <a name="Jobs">Jobs View</a>
+    </h3>
+    <ul>
+      <li><span class="todo">[TODO]</span> assign a default key binding (e.g. SHIFT+ARROW) to the move up/down/top/bottom actions (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1777487&amp;group_id=162777&amp;atid=951927" shape="rect">request #1777487</a>)</li>
+      <li>
+        <p>The screen reader does not speak the parameter children of a job. The custom code written to use smaller fonts may override the accessibility calls.</p>
+        <p><span class="todo">[TODO]</span> investigate on where the accessibility info is set and fix the issue (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1752458&amp;group_id=162777&amp;atid=951926" shape="rect">bug #1752458</a>)</p>
+      </li>
+    </ul>
+    <h3 id="progressview">
+      <a name="Progress">Progress View</a>
+    </h3>
+    <ul>
+      <li><span class="todo">[TODO]</span> set the accessibility info on the header widget (screen reader currently say “custom control”) (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1777494&amp;group_id=162777&amp;atid=951926" shape="rect">bug #1777494</a>)</li>
+      <li><span class="todo">[TODO]</span> change the behavior of the left/down arrows in the task list: it shouldn’t cycle (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1777497&amp;group_id=162777&amp;atid=951926" shape="rect">bug #1777497</a>)</li>
+      <li><span class="todo">[TODO]</span> add a textual information on the status of each task (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1777498&amp;group_id=162777&amp;atid=951927" shape="rect">request #1777498</a>)
+<ul><li>currently an icon is used for sighted users</li><li>the icon should have accessible tooltip, but invoking the tooltip is not the natural way to show the info to screen reader users</li><li><strong>the GUI must be particularly explicit when a job/task failed</strong></li><li>percentage of completion should be available as textual info</li></ul></li>
+      <li><span class="todo">[TODO]</span> improve the refresh of the progress view (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1777504&amp;group_id=162777&amp;atid=951927" shape="rect">request #1777504</a>)
+<ul><li>it’s not updated when a parameter is selected in the job view</li><li>when no job is selected, it should show the progress of the most recently run job by default</li></ul></li>
+    </ul>
+    <h3 id="messagesview">
+      <a name="Messages">Messages View</a>
+    </h3>
+    <ul>
+      <li><span class="todo">[TODO]</span> add a hint/info on which task a message refers to (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1777506&amp;group_id=162777&amp;atid=951927" shape="rect">request #1777506</a>)
+<ul><li>currently it’s possible to group the messages by Job</li><li>this information is not accessible otherwise</li></ul></li>
+    </ul>
+    <h3 id="jobswizard">
+      <a name="JobsWizard">Jobs Wizard</a>
+    </h3>
+    <ul>
+      <li>the wizard banner does not seem to always be spoken to screen reader users <strong>[TO BE CONFIRMED]</strong></li>
+      <li><span class="todo">[TODO]</span> Investigate on the best way to pass the parameter information to the screen reader users (using the tooltips is not the most natural way) (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1777521&amp;group_id=162777&amp;atid=951927" shape="rect">request #1777521</a>)</li>
+      <li>
+        <p>the browser widget in the help pane of the wizard steal the focus: up/down keys do not read the content but scrolls the browser content. This is not top priority though, as the help files are already available in the documentation perspective.</p>
+        <p><span class="todo">[TODO]</span> Investigate and report the bug to Eclipse (see [eclipse bug #][])</p>
+      </li>
+      <li>
+        <p>it seems that “End Help” is spoken when the <em>help</em> link is activate.</p>
+        <p><span class="todo">[TODO]</span> Investigate and report the bug to Eclipse (see [eclipse bug #][])</p>
+      </li>
+    </ul>
+    <h3 id="preferences">
+      <a name="Preferences">Preferences</a>
+    </h3>
+    <ul>
+      <li><span class="todo">[TODO]</span> The <em>keys</em> preference dialog (coming from RCP) is poorly designed, it should be replaced by the new 3.3 dialog (see <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1777526&amp;group_id=162777&amp;atid=951927" shape="rect">request #1777526</a>).</li>
+    </ul>
+    <h2 id="toppriorityrequirements">
+      <a name="Top">Top priority requirements</a>
+    </h2>
+    <ol>
+      <li>Improve the way to navigate between the views (fix the <em>show next/previous view</em> action)</li>
+      <li>add more textual information in the progress view
+<ul><li>status: complete / failed</li><li>percentage of completion</li></ul></li>
+      <li>fix the usability annoyances (e.g. in the documentation view)</li>
+    </ol>
+    <h2 id="listofrpcswtproblematicwidgets">
+      <a name="List">List of RPC/SWT problematic widgets</a>
+    </h2>
+    <ul>
+      <li>Browser:
+<ul><li>steal the focus in the wizard, doesn’t seem to be problematic in the documentation view though.</li></ul></li>
+      <li>Drop-down buttons for the view menu:
+<ul><li>spoken as “custom control”</li><li>there’s a keyboard shortcut to access it, it’s a bit hidden in the menu bar though</li><li><span class="todo">[TODO]</span> try to manually set the accessible information, and report to Eclipse anyway (see [eclipse bug #][])</li></ul></li>
+      <li>
+        <em>to be continued…</em>
+      </li>
+    </ul>
+  </body>
+</html>

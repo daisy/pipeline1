@@ -1,0 +1,16 @@
+Spring 2007 refactoring: taskscript tempfile handling
+This email describes a refactoring towards script-defined temporary file handling.
+Followups and status reports will be made in this thread.
+Responsible for implementation: Linus
+Implementation should be done by: end March. 
+
+1. Problem 
+There is currently no way to define in the taskscript how the taskscript deals with intermediary files created during multi-transformer script execution.
+  
+2. Solution  
+	Extend the script file syntax by defining two new property types:
+	
+	 <tempFile name="file1" path="tempfile.xml" basedir="${outputPath}"/>
+	 <tempDir name="dir1" path="tempdir" basedir="${outputPath}"/>
+	 
+	When a script finishes successfully, temporary files and/or directories are deleted.

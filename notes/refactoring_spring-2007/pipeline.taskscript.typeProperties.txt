@@ -1,0 +1,21 @@
+Spring 2007 refactoring: taskscript type properties
+This email describes a refactoring towards extended strong typing in taskscripts.
+Followups and status reports will be made in this thread.
+Responsible for implementation: Linus
+Implementation should be done by: end March. 
+
+1. Problem 	
+Currently, only input and output are defined properties for the GUI to expose to user. For configurability we need more properties such enum (dropdown/radio) and boolean (checkbox).
+  
+2. Solution  
+	Extend the script file syntax to make it possible to define data types for the
+	script parameters. Expose the data types through the API.
+	
+	Possible initial set of data types:
+	 - file (browse button)
+	 - string (text input box)
+	 - boolean (checkbox)
+	 - enum (dropdown/radio button)
+	 - integer (spinner/scale)
+	 
+	
