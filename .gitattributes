@@ -236,6 +236,7 @@ scripts/manipulation/advanced/RenamerTaggerValidator.taskScript -text
 scripts/manipulation/advanced/UnicodeNormalizer.taskScript -text
 scripts/manipulation/simple/AudioTagger.taskScript -text
 scripts/manipulation/simple/DTBAudioEncoder.taskScript -text
+scripts/manipulation/simple/DTBAudioEncoderRenamer.taskScript -text
 scripts/manipulation/simple/DTBAudioEncoderSplitter.taskScript -text
 scripts/manipulation/simple/DTBSplitter.taskScript -text
 scripts/manipulation/simple/FilesetRenamer.taskScript -text
@@ -307,6 +308,7 @@ src/org/daisy/pipeline/test/impl/ConfigurableValidator1.java -text
 src/org/daisy/pipeline/test/impl/D202dtbValidator1.java -text
 src/org/daisy/pipeline/test/impl/D202dtbValidator2.java -text
 src/org/daisy/pipeline/test/impl/DTBAudioEncoder1.java -text
+src/org/daisy/pipeline/test/impl/DTBAudioEncoderRenamer1.java -text
 src/org/daisy/pipeline/test/impl/DTBAudioEncoderSplitter1.java -text
 src/org/daisy/pipeline/test/impl/DTBSplitter1.java -text
 src/org/daisy/pipeline/test/impl/DTBook2Xhtml1.java -text

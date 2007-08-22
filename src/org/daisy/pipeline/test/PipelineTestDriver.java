@@ -9,11 +9,12 @@ import org.daisy.pipeline.test.impl.CharacterRepertoireManipulator1;
 import org.daisy.pipeline.test.impl.CharsetSwitcher1;
 import org.daisy.pipeline.test.impl.ConfigurableValidator1;
 import org.daisy.pipeline.test.impl.D202dtbValidator1;
-import org.daisy.pipeline.test.impl.D202dtbValidator2;
 import org.daisy.pipeline.test.impl.DTBAudioEncoder1;
 import org.daisy.pipeline.test.impl.DTBAudioEncoderSplitter1;
+import org.daisy.pipeline.test.impl.DTBAudioEncoderRenamer1;
 import org.daisy.pipeline.test.impl.DTBSplitter1;
 import org.daisy.pipeline.test.impl.DTBook2Xhtml1;
+import org.daisy.pipeline.test.impl.DTBook2rtf1;
 import org.daisy.pipeline.test.impl.DTBookValidator1;
 import org.daisy.pipeline.test.impl.DTBookValidator2;
 import org.daisy.pipeline.test.impl.Daisy202ToZ398620051;
@@ -29,6 +30,7 @@ import org.daisy.pipeline.test.impl.OpsCreator2;
 import org.daisy.pipeline.test.impl.OpsCreator3;
 import org.daisy.pipeline.test.impl.PrettyPrinter1;
 import org.daisy.pipeline.test.impl.PrettyPrinter2;
+import org.daisy.pipeline.test.impl.PrettyPrinter3;
 import org.daisy.pipeline.test.impl.RenamerTaggerValidator1;
 import org.daisy.pipeline.test.impl.Rtf2Xhtml1;
 import org.daisy.pipeline.test.impl.Rtf2dtbook1;
@@ -139,12 +141,15 @@ public class PipelineTestDriver {
 //		tests.add(new Odf2dtbook2(inputDir, outputDir));		
 //		tests.add(new OpsCreator1(inputDir, outputDir));
 //		tests.add(new OpsCreator2(inputDir, outputDir));
-		tests.add(new OpsCreator3(inputDir, outputDir));		
+//		tests.add(new OpsCreator3(inputDir, outputDir));		
+//		tests.add(new DTBook2rtf1(inputDir, outputDir));
 		
 		
 ////////// tests with input data not in samples dir: 		
 		//tests.add(new DTBAudioEncoder1(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoderSplitter1(inputDir, outputDir));
+		//tests.add(new PrettyPrinter3(inputDir, outputDir));
+		//tests.add(new DTBAudioEncoderRenamer1(inputDir, outputDir));
 ////////// end tests with input data not in samples dir 
 		
 		return tests;
