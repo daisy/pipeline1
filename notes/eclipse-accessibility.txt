@@ -1,0 +1,96 @@
+Accessibility in Eclipse RCP
+============================
+%CSS: notes.css  
+%Author: Romain Deltour  
+%Date: 2007-08-23
+
+This document groups notes and bookmarks on accessibility and Eclipse (SWT/RCP) technologies.
+
+## Setting the accessible information
+
+Following list is taken from IBM's [accessibility guidelines](http://www-03.ibm.com/able/guidelines/software/swuiobject.html "IBM Human Ability and Accessibility Center | Developer guidelines") for software developers
+
+*  In Eclipse, all widgets provided by the SWT toolkit support Active Accessibility. For text components the accessible name of the control will be set properly and no additional action is required by the application.
+* For non-text controls created using the org.eclipse.swt.widget.control the name must be explicitly established. This is done by creating an AccessibleListener and using the getName() method.
+* In Eclipse 3.1 or later, for non-text controls created using org.eclipse.swt.widget.item you must explicitly set the tooltip for each item.
+* All SWT controls must have and accessible:
+	* Name, role and state
+	* Must inherit the system setting for font and size, and system colors.
+* If the application wishes to override the default behavior, it can choose to implement the org.eclipse.swt.accessibility.AccessibleListener. This can be used to override Name, Help, Description and Keyboard Shortcut information.
+* In Eclipse, when implementing a custom control you should also implement some or all of (as they apply to your control) org.eclipse.swt.accessibility.AccessibleListener, org.eclipse.swt.accessibility.AccessibleControlListener and org.eclipse.swt.accessibility.AccessibleTextListener. Also, the custom control can notify Active Accessibility of changes within the control using org.eclipse.swt.accessibility.Accessible methods such as setFocus(), selectionChanged(), textCaretMoved(), textChanged() and textSelectionChanged(). For additional information see section 7.3. When an image represents a program element, make the information conveyed by the image available in text.
+
+## SWT.Label and accessibility
+
+_An intersting quote form Carolyn MacLeod (IBM), seen on `news.eclipse.platform.swt`:_
+
+The reason is that screen readers only speak the text of items that have 
+focus. And Labels can't take focus.
+
+If, however, the Label happens to be "labelling" (i.e. preceding in the 
+z-order) something that can take focus, and that does not have a name 
+itself, such as: Combo, CCombo, List, Spinner, Text, StyledText, Table, or 
+Slider, then the screen reader will speak the Label.
+
+Also, if a Label is the first Label in a Dialog (i.e. at the top of the 
+Dialog, and not embedded in more than 1 or maybe 2 composites - I can't 
+remember how deep) then the screen reader will speak it.
+
+Any other label, then yes you have to use some kind of trick to have it 
+spoken. One trick, as you mentioned, is to turn it into a read-only Text. 
+Another trick is to add an accessible listener to the thing that will be 
+taking focus, perhaps the shell. Here's a snippet to use as an example:
+
+	
+	import org.eclipse.swt.*;
+	import org.eclipse.swt.widgets.*;
+	import org.eclipse.swt.layout.*;
+	import org.eclipse.swt.accessibility.*;
+
+	public class LabelExampleSpeak {
+	 static Display display;
+	 static Shell shell;
+
+	 public static void main(String[] args) {
+	  display = new Display();
+	  shell = new Shell(display);
+	  shell.setLayout(new GridLayout());
+
+	  Label label = new Label(shell, SWT.NONE);
+	  label.setText("This is the label's text.");
+
+	  shell.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+	   public void getName(AccessibleEvent event) {
+	    event.result = "This is the string that you want the screen reader to 
+	speak when the shell gets focus.";
+	   }
+	  });
+
+	  shell.pack();
+	  shell.open();
+	  while (!shell.isDisposed()) {
+	   if (!display.readAndDispatch()) display.sleep();
+	  }
+	 }
+	}
+
+
+## Links
+
+### Guidelines and APIs
+
+* [IBM Accessibility Guidelines](http://www-03.ibm.com/able/guidelines/index.html "IBM Human Ability and Accessibility Center | Developer guidelines")
+* [Section 508 website](http://www.section508.gov/ "Section 508: The Road to Accessibility")
+* [Microsoft Active Accessibility](http://msdn.microsoft.com/library/default.asp?url=/library/en-us/msaa/msaastart_9w2t.asp?frame=true%29 "Microsoft Active Accessibility") (MSAA)
+* [IAccessible2 page](http://www.linux-foundation.org/en/Accessibility/IAccessible2 "Accessibility/IAccessible2 - The Linux Foundation") of the Linux Foundation
+
+### Articles, Blogs, Wiki
+
+* [Designing Accessible Plugins in Eclipse](http://www.eclipse.org/articles/article.php?file=Article-Accessibility/index.html) (Eclipse corner article, May 2003 - updated for Eclipse 3.2 in July 2006)
+* [Test GUI accessibility the Eclipse RAVEN way](http://www.ibm.com/developerworks/library/os-eclipse-raven/index.html "Test GUI accessibility the Eclipse RAVEN way") (IBM Article, May 2007)
+* [Creating accessible applications with Eclipse: An introduction](http://www-128.ibm.com/developerworks/rational/library/dec05/pilgrim/ "Creating accessible applications with Eclipse:  An introduction") (IBM Article, December 2005)
+* [Platform UI - Accessibility Features](http://wiki.eclipse.org/Platform_UI/Accessibility_Features "Platform UI/Accessibility Features - Eclipsepedia") (Eclipsepedia Wiki)
+
+### Tools and Projects
+
+* [IBM Rule-based Accessibility Validation Environment](http://www.alphaworks.ibm.com/tech/raven "alphaWorks : IBM Rule-based Accessibility Validation Environment : Overview") (RAVEN)
+* [Microsoft Active Accessibility 2.0 SDK Tools](http://www.microsoft.com/downloads/details.aspx?familyid=3755582A-A707-460A-BF21-1373316E13F0&amp;displaylang=en "Active Accessibility 2.0 Software Development Kit Tools") (including Inspect32 for inspecting widgets accessible information)
