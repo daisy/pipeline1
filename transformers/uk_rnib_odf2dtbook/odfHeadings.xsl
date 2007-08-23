@@ -66,7 +66,7 @@ version="2.0"
 
 <d:doc xmlns:d="rnib.org.uk/ns#">
  <revhistory>
-   <purpose><para>Obtain a list of heading styles, from styles.xml</para></purpose>
+   <purpose><para>Obtain a list of heading styles, from _styles.xml</para></purpose>
    <revision>
     <revnumber>1.0</revnumber>
     <date>2007-04-11T11:21:10.0Z</date>
@@ -77,32 +77,48 @@ version="2.0"
     <revremark></revremark>
    </revision>
   </revhistory>
-</d:doc>
-  
+  </d:doc>
   <xsl:output method="xml" indent="yes"/>
-  <xsl:key name="headings" match="style" use="@parentStyle"/>
+
+  <xsl:variable name="debug" select="false()"/>
 
   <xsl:template match="/" name="initial">
-  	<headings>
-  		<xsl:call-template name="oneLevel">
-    		<xsl:with-param name="level" select="1"/>
-  		</xsl:call-template>
-	</headings>
+    <headings>
+      <xsl:call-template name="oneLevel">
+        <xsl:with-param name="level" select="1"/>
+      </xsl:call-template>
+    </headings>
   </xsl:template>
+
+
+ <xsl:key name="headings" match="style" use="@name"/>
+<!--  -->
+
 
   <xsl:template name="oneLevel">
     <xsl:param name="level" as="xs:integer"/>
     <xsl:variable name="headingName" select="concat('Heading_20_',string($level))"/>
     <xsl:variable name="nextHeading" select="concat('Heading_20_',string($level+1))"/>
-    <xsl:if test="key('headings', $headingName)[not(@name=$nextHeading)]">
-	    <level n="{$level}">
-	      	<h><xsl:value-of select="$headingName"/></h>
-	      	<xsl:for-each select="key('headings', $headingName)[not(@name=$nextHeading)]/@name">
-	      		<h><xsl:value-of select="."/></h>
-	    	</xsl:for-each>
-	    </level>
-  	</xsl:if>
+    
+    <xsl:if test="$debug">
+     <xsl:choose>
+       <xsl:when test="key('headings', $headingName)"/>
+       <xsl:otherwise>
+         <xsl:message>
+           No heading found at level <xsl:value-of select="$level"/>
+         </xsl:message>
+       </xsl:otherwise>
+     </xsl:choose>
+    </xsl:if>
 
+    <!-- output a level if matched. -->
+    <xsl:if test="key('headings', $headingName)[not(@name=$nextHeading)]">
+      <level n="{$level}">
+        <h><xsl:value-of select="$headingName"/></h>
+      <!-- Also captured styles based on. No longer does -->
+      </level>
+    </xsl:if>
+    <!-- Recurse up to level 6 -->
     <xsl:choose>
       <xsl:when test="$level &lt; 6">
           <xsl:call-template name="oneLevel">
@@ -111,13 +127,17 @@ version="2.0"
       </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
-
   </xsl:template>
 
-  	<xsl:template match="*" >
-  		<xsl:message>
-    		*****<xsl:value-of select="name(..)"/>/{<xsl:value-of select="namespace-uri()"/>}<xsl:value-of select="name()"/>******
-    	</xsl:message>
-	</xsl:template>
+
+
+
+
+  <xsl:template match="*" >
+  <xsl:message>
+    *****<xsl:value-of select="name(..)"/>/{<xsl:value-of select="namespace-uri()"/>}<xsl:value-of select="name()"/>******
+    </xsl:message>
+</xsl:template>
+
 
 </xsl:stylesheet>

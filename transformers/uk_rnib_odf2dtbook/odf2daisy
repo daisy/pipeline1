@@ -14,10 +14,17 @@ fi
 unzip -o -j $1 content.xml styles.xml meta.xml
 
 echo Get the style information from content.xml and styles.xml, to _styles.xml
-
-
 java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o _styles.xml   -it initial  odfGetStyles.xsl
 
+if [ $? -ne 0 ]
+ then
+  echo Error in transform
+  exit 2
+fi
+
+
+#echo now generate heading information  _headings.xml 
+java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o _headings.xml  _styles.xml  odfHeadings.xsl
 if [ $? -ne 0 ]
  then
   echo Error in transform
@@ -52,7 +59,7 @@ echo see file $1.report.xml
 echo Now build the Daisy file.
 
 
-java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o $1.daisy.xml  content.xml odf2daisy.xsl "stylefile=_styles.xml"
+java  -mx120m -ms120m -cp .:/myjava/saxon8.jar:/myjava/xercesImpl.jar -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration net.sf.saxon.Transform  -x org.apache.xerces.parsers.SAXParser -y org.apache.xerces.parsers.SAXParser   -w1 -l -o $1.daisy.xml  content.xml odf2daisy.xsl "stylefile=_styles.xml" "headingsfile=_headings.xml"
 if [ $? -ne 0 ]
  then
   echo Error in transformation to Daisy. Processing terminated
@@ -69,6 +76,7 @@ echo delete intermediate files.
 rm $1.report.xml
 #rm $1.struct.xml
 rm _styles.xml
+rm _headings.xml
 rm styles.xml
 rm meta.xml
 rm content.xml
