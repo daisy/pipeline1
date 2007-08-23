@@ -1,18 +1,12 @@
-Title: Accessibility Issues in the DAISY Pipeline  
-CSS: notes.css  
-Author: Romain Deltour  
-Date: 2007-08-20  
-
 Accessibility Issues in the DAISY Pipeline
 ==========================================
+%CSS: notes.css  
+%Author: Romain Deltour  
+%Date:  2007-08-20
 
-<div markdown="1" class="summary">
 _The following document lists the current accessibility issues of the DAISY Pipeline GUI_.
 
 _The GUI has been tested on Windows XP with both JAWS (by Avneesh and Dipendra) and Windows Eyes (by George)_.
-</div>
-
-<!--toc-->
 
 ## General comments
 
