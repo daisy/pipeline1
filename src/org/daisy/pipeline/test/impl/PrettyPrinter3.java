@@ -5,27 +5,27 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class OcfCreator1 extends PipelineTest {
+public class PrettyPrinter3 extends PipelineTest {
 
-	public OcfCreator1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public PrettyPrinter3(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
-	public List<String> getParameters() {
-		mParameters.add("--input=" + mDataInputDir + "/ops/package.opf;"+mDataInputDir + "/txt/wasteland.txt");
-		mParameters.add("--output=" + mDataOutputDir + "/OcfCreator1/ocf.epub");				
+	public List<String> getParameters() {		
+		mParameters.add("--input=" + "D:\\data\\documents\\daisyware\\dmfc\\sourceforge.webpages\\index.html");
+		mParameters.add("--output=" + "D:\\data\\documents\\daisyware\\dmfc\\sourceforge.webpages\\ppout\\");
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "Create an epub with OEBPS and TXT entries";
+		return "pretty printer";
 	}
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("OCFCreator.taskScript".equals(scriptName)) {
+		if("PrettyPrinter.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;

@@ -5,27 +5,27 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class OcfCreator1 extends PipelineTest {
+public class DTBook2rtf1 extends PipelineTest {
 
-	public OcfCreator1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public DTBook2rtf1(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
 	public List<String> getParameters() {
-		mParameters.add("--input=" + mDataInputDir + "/ops/package.opf;"+mDataInputDir + "/txt/wasteland.txt");
-		mParameters.add("--output=" + mDataOutputDir + "/OcfCreator1/ocf.epub");				
+		mParameters.add("--xml=" + mDataInputDir + "/dtbook/hauy_valid.xml");
+		mParameters.add("--out=" + mDataOutputDir + "/DTBook2RTF1/fromDtbook.rtf");				
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "Create an epub with OEBPS and TXT entries";
+		return "";
 	}
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("OCFCreator.taskScript".equals(scriptName)) {
+		if("DtbookToRtf.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;
