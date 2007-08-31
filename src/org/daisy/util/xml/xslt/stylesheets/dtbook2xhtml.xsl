@@ -814,10 +814,10 @@
 
 
    <xsl:template match="dtb:line">
-   <div class="line">
+   <p class="line">
        <xsl:call-template name="copyCncatts"/>  
       <xsl:apply-templates/>
-    </div>
+    </p>
    </xsl:template>
 
    <xsl:template match="dtb:linenum">
