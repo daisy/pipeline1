@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rcp.additions"
       label="%featureName"
-      version="3.2.2"
+      version="3.3.0"
       provider-name="%providerName"
       plugin="org.eclipse.rcp">
 
@@ -19,7 +19,20 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.rcp" version="3.2.2" match="compatible"/>
+      <import plugin="org.apache.lucene" version="1.9.1" match="compatible"/>
+      <import plugin="org.apache.lucene.analysis" version="1.9.1" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help" version="3.3.0" match="compatible"/>
+      <import plugin="com.ibm.icu"/>
+      <import plugin="org.eclipse.equinox.http.jetty"/>
+      <import plugin="org.eclipse.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.help" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.forms" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.jface" version="3.2.0" match="compatible"/>
+      <import feature="org.eclipse.rcp" version="3.3.0.v20070607-8y8eE8NEbsN3X_fjWS8HPNG" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.1.0" match="compatible"/>
    </requires>
 
    <plugin
@@ -47,7 +60,8 @@
          id="org.apache.lucene"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.help.appserver"
