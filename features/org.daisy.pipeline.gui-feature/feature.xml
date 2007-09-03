@@ -23,8 +23,13 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.rcp.additions" version="3.2.0" match="compatible"/>
-      <import feature="org.eclipse.rcp" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.pde.runtime"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.ui.intro"/>
+      <import feature="org.eclipse.rcp" version="3.3.0.v20070607-8y8eE8NEbsN3X_fjWS8HPNG" match="compatible"/>
+      <import feature="org.eclipse.rcp.additions" version="3.3.0"/>
    </requires>
 
    <plugin
