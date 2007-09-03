@@ -17,57 +17,169 @@
  */
 package org.daisy.pipeline.gui.scripts.datatype;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.daisy.pipeline.core.script.ScriptParameter;
-import org.daisy.pipeline.core.script.datatype.Datatype;
-import org.daisy.pipeline.gui.GuiPlugin;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Widget;
 
 /**
+ * Holds the widgets used to edit a script parameter with a particular data
+ * type.
+ * <p>
+ * This is the abstract base class for all data type adapters:
+ * <ul>
+ * <li>{@link BooleanAdapter} - to edit boolean values</li>
+ * <li>{@link DirectoryAdapter} - to edit directory selection</li>
+ * <li>{@link EnumAdapter} - to edit choice enumeration</li>
+ * <li>{@link FileAdapter} - to edit single file selection</li>
+ * <li>{@link FilesAdapter} - to edit multiple file selection</li>
+ * <li>{@link IntegerAdapter} - to edit integer values</li>
+ * <li>{@link StringAdapter} - to edit strings</li>
+ * </ul>
+ * </p>
+ * 
  * @author Romain Deltour
  * 
  */
 public abstract class DatatypeAdapter {
-    public static final String LAST_SELECTED_INPUT = "LAST_SELECTED_INPUT"; //$NON-NLS-1$
-    public static final String LAST_SELECTED_OUTPUT = "LAST_SELECTED_OUTPUT"; //$NON-NLS-1$
+	/**
+	 * The name of the preference holding the last file path used as input
+	 * parameter.
+	 */
+	public static final String LAST_SELECTED_INPUT = "LAST_SELECTED_INPUT"; //$NON-NLS-1$
+	/**
+	 * The name of the preference holding the last file path used as output
+	 * parameter.
+	 */
+	public static final String LAST_SELECTED_OUTPUT = "LAST_SELECTED_OUTPUT"; //$NON-NLS-1$
 
-    private static Map<Datatype.Type, DatatypeAdapter> adapterMap = new HashMap<Datatype.Type, DatatypeAdapter>();
+	/**
+	 * The main control used to edit the parameter
+	 */
+	protected Control control;
+	/**
+	 * The script parameter edited by this adapter
+	 */
+	protected ScriptParameter param;
+	/**
+	 * The set of listeners to the parameter value
+	 */
+	protected final Set<DatatypeAdapterValueListener> valueListeners;
 
-    public static DatatypeAdapter getAdapter(Datatype type) {
-        DatatypeAdapter adapter = adapterMap.get(type.getType());
-        if (adapter == null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(DatatypeAdapter.class.getPackage().getName());
-            sb.append('.');
-            String typeName = type.getType().name();
-            sb.append(typeName.charAt(0));
-            sb.append(typeName.substring(1).toLowerCase());
-            sb.append("Adapter"); //$NON-NLS-1$
-            try {
-                Class clazz = Class.forName(sb.toString());
-                adapter = (DatatypeAdapter) clazz.newInstance();
-            } catch (Exception e) {
-                GuiPlugin.get().error(
-                        "Cannot instantiate adapter for datatype " + type, e); //$NON-NLS-1$
-            }
-            if (adapter == null) {
-                adapter = new DefaultAdapter();
-            }
-            adapterMap.put(type.getType(), adapter);
-        }
-        return adapter;
-    }
+	/**
+	 * Creates the adapter.
+	 * <p>
+	 * This constructor hooks the value change notification to the appropriate
+	 * SWT event.
+	 * </p>
+	 * 
+	 * @param parent
+	 *            The parent composite of the adapter widgets.
+	 * @param param
+	 *            The parameter to edit.
+	 */
+	public DatatypeAdapter(Composite parent, ScriptParameter param) {
+		this.param = param;
+		this.control = createControl(parent);
+		this.valueListeners = new HashSet<DatatypeAdapterValueListener>();
+		hookValueListener();
+	}
 
-    public abstract Control createControl(Composite parent,
-            ScriptParameter param, int numCol);
+	/**
+	 * Adds the listener to the collection of listeners who will be notified
+	 * when the receiver's value is modified, by sending it one of the messages
+	 * defined in the {@link DatatypeAdapterValueListener} interface.
+	 * 
+	 * @param listener
+	 *            The listener which should be notified.
+	 */
+	public void addValueListener(DatatypeAdapterValueListener listener) {
+		valueListeners.add(listener);
+	}
 
-    public abstract int getNumCol();
+	/**
+	 * Adjust the layout of the internal widgets to the number of columns in the
+	 * GridLayout of the parent widget.
+	 * 
+	 * @param numCol
+	 *            The number of columns in the parent GridLayout.
+	 */
+	public abstract void adjustLayout(int numCol);
 
-    public abstract String getValue(Widget widget);
+	/**
+	 * Create the internal widgets and returns the main control.
+	 * 
+	 * @param parent
+	 *            The parent composite of this adapter's widgets.
+	 * @return The main control used to edit the parameter.
+	 */
+	protected abstract Control createControl(Composite parent);
 
-    public abstract void setValue(Widget widget, String value);
+	/**
+	 * Notifies the {@link DatatypeAdapterValueListener}s that the value of the
+	 * main control changed.
+	 */
+	protected final void fireValueChanged() {
+		for (DatatypeAdapterValueListener listener : valueListeners) {
+			listener.valueChanged(this);
+		}
+	}
+
+	/**
+	 * Returns the main control used to edit the underlying parameter.
+	 * 
+	 * @return the main control used to edit the underlying parameter.
+	 */
+	public Control getControl() {
+		return control;
+	}
+
+	/**
+	 * Return the number of internal widgets used in this adapter.
+	 * 
+	 * @return the number of internal widgets used in this adapter.
+	 */
+	public abstract int getNumberOfControls();
+
+	/**
+	 * Returns the script parameter to be edited by this adapter.
+	 * 
+	 * @return the script parameter to be edited by this adapter.
+	 */
+	public ScriptParameter getParameter() {
+		return param;
+	}
+
+	/**
+	 * Returns the current value of the main control.
+	 * 
+	 * @return the current value of the main control.
+	 */
+	public abstract String getValue();
+
+	/**
+	 * Hooks the value change notification to the appropriate SWT event.
+	 */
+	protected abstract void hookValueListener();
+
+	/**
+	 * Removes the listener from the collection of listeners who will be
+	 * notified when the receiver's value is modified.
+	 * 
+	 * @param listener
+	 *            the listener which should no longer be notified.
+	 */
+	public void removeValueListener(DatatypeAdapterValueListener listener) {
+		valueListeners.remove(listener);
+	}
+
+	/**
+	 * Sets the value of the main control to <code>value</code>.
+	 * 
+	 * @param value
+	 *            The new value to set to the main control.)
+	 */
+	public abstract void setValue(String value);
 }

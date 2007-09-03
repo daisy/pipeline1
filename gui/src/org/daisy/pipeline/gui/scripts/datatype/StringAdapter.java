@@ -18,10 +18,35 @@
  */
 package org.daisy.pipeline.gui.scripts.datatype;
 
+import org.daisy.pipeline.core.script.ScriptParameter;
+import org.daisy.pipeline.core.script.datatype.StringDatatype;
+import org.daisy.pipeline.gui.util.CheckUtil;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+
 /**
+ * Used to edit script parameters of type {@link StringDatatype}. Uses a
+ * {@link Text} widget.
+ * 
  * @author Romain Deltour
- *
+ * 
  */
 public class StringAdapter extends DefaultAdapter {
-    //Nothing to override
+
+	/**
+	 * Create the adapter for <code>param</code> and adds the widgets to
+	 * <code>parent</code>.
+	 * 
+	 * @param parent
+	 *            The parent composite of the adapter widgets.
+	 * @param param
+	 *            The parameter to edit.
+	 */
+	public StringAdapter(Composite parent, ScriptParameter param) {
+		super(parent, (param.getDatatype() instanceof StringDatatype) ? param
+				: CheckUtil.illegalArgument(param,
+						"Invalid parameter type: the type of "
+								+ param.getName() + " is "
+								+ param.getDatatype()));
+	}
 }

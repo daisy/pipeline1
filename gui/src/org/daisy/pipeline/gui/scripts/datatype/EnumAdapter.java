@@ -21,67 +21,75 @@ package org.daisy.pipeline.gui.scripts.datatype;
 import org.daisy.pipeline.core.script.ScriptParameter;
 import org.daisy.pipeline.core.script.datatype.EnumDatatype;
 import org.daisy.pipeline.core.script.datatype.EnumItem;
+import org.daisy.pipeline.gui.util.CheckUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Widget;
 
 /**
+ * Used to edit script parameters of type {@link EnumDatatype}. Uses a
+ * {@link Combo} widget.
+ * 
  * @author Romain Deltour
  * 
  */
 public class EnumAdapter extends DefaultAdapter {
+	/**
+	 * Create the adapter for <code>param</code> and adds the widgets to
+	 * <code>parent</code>.
+	 * 
+	 * @param parent
+	 *            The parent composite of the adapter widgets.
+	 * @param param
+	 *            The parameter to edit.
+	 */
+	public EnumAdapter(Composite parent, ScriptParameter param) {
+		super(parent, (param.getDatatype() instanceof EnumDatatype) ? param
+				: CheckUtil.illegalArgument(param,
+						"Invalid parameter type: the type of "
+								+ param.getName() + " is "
+								+ param.getDatatype()));
+	}
 
-    @Override
-    public Control createControl(Composite parent, ScriptParameter param,
-            int numCol) {
-        createLabel(parent, param);
-        EnumDatatype type = (EnumDatatype) param.getDatatype();
-        Combo combo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-        for (EnumItem item : type.getItems()) {
-            combo.add(item.getNiceName());
-        }
-        combo.setData(param);
-        final GridData data = new GridData();
-        data.horizontalSpan = numCol-1;
-        data.horizontalAlignment = GridData.FILL;
-        data.grabExcessHorizontalSpace = true;
-        combo.setLayoutData(data);
-        return combo;
-    }
+	@Override
+	protected Control doCreateControl(Composite parent) {
+		EnumDatatype type = (EnumDatatype) param.getDatatype();
+		Combo combo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+		for (EnumItem item : type.getItems()) {
+			combo.add(item.getNiceName());
+		}
+		return combo;
+	}
 
-    @Override
-    public String getValue(Widget widget) {
-        String name = ((Combo) widget).getText();
-        EnumDatatype type = (EnumDatatype) ((ScriptParameter) widget.getData())
-                .getDatatype();
-        return getValueFromNiceName(type, name);
-    }
+	private String getNiceNameFromValue(EnumDatatype type, String value) {
+		for (EnumItem item : type.getItems()) {
+			if (value.equals(item.getValue())) {
+				return item.getNiceName();
+			}
+		}
+		return null;
+	}
 
-    @Override
-    public void setValue(Widget widget, String value) {
-        EnumDatatype type = (EnumDatatype) ((ScriptParameter) widget.getData())
-                .getDatatype();
-        ((Combo) widget).setText(getNiceNameFromValue(type, value));
-    }
+	@Override
+	public String getValue() {
+		String name = ((Combo) control).getText();
+		EnumDatatype type = (EnumDatatype) param.getDatatype();
+		return getValueFromNiceName(type, name);
+	}
 
-    private String getValueFromNiceName(EnumDatatype type, String name) {
-        for (EnumItem item : type.getItems()) {
-            if (name.equals(item.getNiceName())) {
-                return item.getValue();
-            }
-        }
-        return null;
-    }
+	private String getValueFromNiceName(EnumDatatype type, String name) {
+		for (EnumItem item : type.getItems()) {
+			if (name.equals(item.getNiceName())) {
+				return item.getValue();
+			}
+		}
+		return null;
+	}
 
-    private String getNiceNameFromValue(EnumDatatype type, String value) {
-        for (EnumItem item : type.getItems()) {
-            if (value.equals(item.getValue())) {
-                return item.getNiceName();
-            }
-        }
-        return null;
-    }
+	@Override
+	public void setValue(String value) {
+		EnumDatatype type = (EnumDatatype) param.getDatatype();
+		((Combo) control).setText(getNiceNameFromValue(type, value));
+	}
 }

@@ -20,44 +20,54 @@ package org.daisy.pipeline.gui.scripts.datatype;
 
 import org.daisy.pipeline.core.script.ScriptParameter;
 import org.daisy.pipeline.core.script.datatype.IntegerDatatype;
+import org.daisy.pipeline.gui.util.CheckUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.widgets.Widget;
 
 /**
+ * Used to edit script parameters of type {@link IntegerDatatype}. Uses a
+ * {@link Spinner} widget.
+ * 
  * @author Romain Deltour
  * 
  */
 public class IntegerAdapter extends DefaultAdapter {
+	/**
+	 * Create the adapter for <code>param</code> and adds the widgets to
+	 * <code>parent</code>.
+	 * 
+	 * @param parent
+	 *            The parent composite of the adapter widgets.
+	 * @param param
+	 *            The parameter to edit.
+	 */
+	public IntegerAdapter(Composite parent, ScriptParameter param) {
+		super(parent, (param.getDatatype() instanceof IntegerDatatype) ? param
+				: CheckUtil.illegalArgument(param,
+						"Invalid parameter type: the type of "
+								+ param.getName() + " is "
+								+ param.getDatatype()));
+	}
 
-    @Override
-    public Control createControl(Composite parent, ScriptParameter param,
-            int numCol) {
-        createLabel(parent, param);
-        IntegerDatatype type = (IntegerDatatype) param.getDatatype();
-        Spinner spin = new Spinner(parent, SWT.NONE);
-        spin.setMinimum(type.getMin());
-        spin.setMaximum(type.getMax());
-        spin.setData(param);
-        final GridData data = new GridData();
-        data.horizontalSpan = numCol-1;
-        data.horizontalAlignment = GridData.FILL;
-        data.grabExcessHorizontalSpace = true;
-        spin.setLayoutData(data);
-        return spin;
-    }
+	@Override
+	public Control doCreateControl(Composite parent) {
+		IntegerDatatype type = (IntegerDatatype) param.getDatatype();
+		Spinner spin = new Spinner(parent, SWT.NONE);
+		spin.setMinimum(type.getMin());
+		spin.setMaximum(type.getMax());
+		return spin;
+	}
 
-    @Override
-    public String getValue(Widget widget) {
-        return Integer.toString(((Spinner) widget).getSelection());
-    }
+	@Override
+	public String getValue() {
+		return Integer.toString(((Spinner) control).getSelection());
+	}
 
-    @Override
-    public void setValue(Widget widget, String value) {
-        ((Spinner) widget).setSelection(Integer.parseInt(value));
-    }
+	@Override
+	public void setValue(String value) {
+		((Spinner) control).setSelection(Integer.parseInt(value));
+	}
 
 }
