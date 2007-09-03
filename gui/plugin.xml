@@ -48,6 +48,14 @@
       <property
             name="startupProgressRect"
             value="0,255,455,20"/>
+      <property
+            name="appName"
+            value="DAISY Pipeline">
+      </property>
+      <property
+            name="preferenceCustomization"
+            value="plugin_customization.ini">
+      </property>
       </product>
    </extension>
    <extension

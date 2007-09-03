@@ -13,6 +13,7 @@
    <configIni use="default"/>
 
    <launcherArgs>
+      <vmArgs>-Dorg.osgi.framework.bootdelegation=javax.*</vmArgs>
    </launcherArgs>
 
    <windowImages i16="/org.daisy.pipeline.gui/branding/pipeline-logo-16x16.gif" i32="/org.daisy.pipeline.gui/branding/pipeline-logo-32x32.gif" i48="/org.daisy.pipeline.gui/branding/pipeline-logo-48x48.gif" i64="/org.daisy.pipeline.gui/branding/pipeline-logo-64x64.gif" i128="/org.daisy.pipeline.gui/branding/pipeline-logo-128x128.gif"/>
@@ -53,14 +54,14 @@
       <plugin id="org.eclipse.pde.runtime"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.ppc"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86_64"/>
-      <plugin id="org.eclipse.swt.gtk.solaris.sparc"/>
-      <plugin id="org.eclipse.swt.motif.aix.ppc"/>
+      <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.swt.motif.aix.ppc" fragment="true"/>
       <plugin id="org.eclipse.swt.motif.hpux.PA_RISC"/>
       <plugin id="org.eclipse.swt.motif.linux.x86"/>
-      <plugin id="org.eclipse.swt.win32.win32.x86"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.carbon" fragment="true"/>
       <plugin id="org.eclipse.ui.workbench"/>
@@ -68,9 +69,8 @@
 
    <features>
       <feature id="org.daisy.pipeline.gui" version="1.0.0"/>
-      <feature id="org.eclipse.platform.launchers" version="3.2.1.v3236"/>
-      <feature id="org.eclipse.rcp" version="3.2.2.r322_v20070104-8pcviKVqd8J7C1U"/>
-      <feature id="org.eclipse.rcp.additions" version="3.2.2"/>
+      <feature id="org.eclipse.rcp" version="3.3.0.v20070607-8y8eE8NEbsN3X_fjWS8HPNG"/>
+      <feature id="org.eclipse.rcp.additions" version="3.3.0"/>
    </features>
 
 </product>
