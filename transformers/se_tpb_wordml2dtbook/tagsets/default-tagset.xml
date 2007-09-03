@@ -18,6 +18,7 @@
 					<using value="caption"/>
 				</wrap>
 			</tag>
+			<!--
 			<tag name="List Number" listOverride="true">
 				<wrap value="list" addId="false" merge="true">
 					<using value="li"/>
@@ -29,7 +30,7 @@
 					<using value="li"/>
 					<attribute name="type" value="ul"/>
 				</wrap>
-			</tag>
+			</tag>-->
 		</paragraphs>
 		<character>
 			<tag name="Strong"><map value="strong"/></tag>

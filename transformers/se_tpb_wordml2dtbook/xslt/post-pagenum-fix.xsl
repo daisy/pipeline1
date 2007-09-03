@@ -21,13 +21,16 @@
 		Pagenum fix
 		Removes
 			* empty (or nested) p
-			* otherwise empty p or li around pagenum
+			* otherwise empty p or li around pagenum (except p in td)
 		Moves
 			* pagenum inside h[x] before h[x]
 			* pagenum inside a word after the word
+		Adds an empty p-tag back(?) if: 
+				- levelx is empty or contains nothing but empty p-tags
+				- hx is the last element or followed by nothing but empty p-tags
 
 		Joel Håkansson, TPB
-		Version 2007-02-20
+		Version 2007-09-03
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
 
@@ -35,10 +38,29 @@
 	<xsl:include href="../custom/output.xsl"/>
 
  <!-- pagenum-fix -->
-	<xsl:template match="dtb:p[count(text())=0 and 
-						((count(descendant::dtb:pagenum)=count(descendant::*)) or 
-						 (count(descendant::dtb:p)=      count(descendant::*)))]">
-		<xsl:apply-templates/>
+	<xsl:template match="dtb:p[
+						count(text())=0 and ( 
+							(	count(descendant::dtb:pagenum)=count(descendant::*) 
+								and not(parent::dtb:td)
+							) or (	
+								count(descendant::dtb:p)=count(descendant::*)
+							)
+						)
+						]">
+			<xsl:apply-templates/>
+	</xsl:template>
+
+	<xsl:template match="dtb:level1|dtb:level2|dtb:level3|dtb:level4|dtb:level5|dtb:level6|dtb:level">
+		<xsl:choose>
+			<xsl:when test="count(*)=count(dtb:p[count(descendant::node())=0])">
+				<xsl:copy>
+					<xsl:copy-of select="@*"/>
+					<xsl:apply-templates/>
+					<xsl:element name="p" namespace="http://www.daisy.org/z3986/2005/dtbook/"/>
+				</xsl:copy>
+			</xsl:when>
+			<xsl:otherwise><xsl:call-template name="copy"/></xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="dtb:li[count(text())=0 and 
@@ -54,6 +76,11 @@
 			<xsl:copy-of select="."/>
 		</xsl:for-each>
 		<xsl:call-template name="copy"/>
+		<!-- belongs to pagenum-fix -->
+		<xsl:if test="count(following-sibling::*)=count(following-sibling::dtb:p[count(descendant::node())=0])">
+			<xsl:element name="p" namespace="http://www.daisy.org/z3986/2005/dtbook/"/>
+		</xsl:if>
+		<!-- / belongs to pagenum-fix -->
 	</xsl:template>
 	
 	<!-- Ignore pagenums inside hx, they are processed above -->

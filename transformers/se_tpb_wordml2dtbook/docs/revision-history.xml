@@ -241,4 +241,16 @@ Notes:
 		<remark>
 		</remark>
 	</revision>
+	<revision>
+		<version>1.5.3</version>
+		<date>3 September 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Removed the extended list processing from default tag set</para>
+			<para>Changed to a less tidy post processing. An empty p-tag in levelx is restored if empty or if hx is the last element. A p-tag around a pagenum is retained if inside a td.</para>
+			<para></para>
+		</description>
+		<remark>
+		</remark>
+	</revision>
 </history>
