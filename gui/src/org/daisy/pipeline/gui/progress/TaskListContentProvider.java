@@ -34,90 +34,114 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.progress.WorkbenchJob;
 
 /**
+ * The content provider for the list of tasks of a Pipeline job displayed in the
+ * progress view.
+ * 
  * @author Romain Deltour
  * 
  */
 public class TaskListContentProvider implements IStructuredContentProvider,
-        ITaskChangeListener {
+		ITaskChangeListener {
 
-    private JobInfo jobInfo;
-    private RefreshJob refreshJob;
-    private StructuredViewer viewer;
+	/**
+	 * An Eclipse Job (i.e. Thread) that refreshes the task list.
+	 */
+	private class RefreshJob extends WorkbenchJob {
+		/** The list of tasks to refresh */
+		private List<TaskInfo> refreshInfos;
 
-    public TaskListContentProvider() {
-        refreshJob = new RefreshJob();
-        StateManager.getDefault().addTaskChangeListener(this);
-    }
+		/** Create this refresh job */
+		public RefreshJob() {
+			super(Messages.uiJob_taskUpdate_name);
+			refreshInfos = new LinkedList<TaskInfo>();
+			setSystem(true);
+		}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-     */
-    public void dispose() {
-        StateManager.getDefault().removeTaskChangeListener(this);
-    }
+		/**
+		 * Adds the given task to the list of tasks to be refreshed.
+		 * 
+		 * @param info
+		 *            A task to refresh
+		 */
+		public void add(TaskInfo info) {
+			synchronized (refreshInfos) {
+				refreshInfos.add(info);
+			}
+		}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-     */
-    public Object[] getElements(Object inputElement) {
-        return jobInfo.getTasks().toArray();
-    }
+		/**
+		 * Refreshes the viewer for each task in the list.
+		 */
+		@Override
+		public IStatus runInUIThread(IProgressMonitor monitor) {
+			synchronized (refreshInfos) {
+				for (TaskInfo info : refreshInfos) {
+					viewer.refresh(info);
+				}
+				refreshInfos.clear();
+			}
+			return Status.OK_STATUS;
+		}
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
-     *      java.lang.Object, java.lang.Object)
-     */
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        if (newInput == null || !(newInput instanceof JobInfo)) {
-            return;
-        }
-        jobInfo = (JobInfo) newInput;
-        this.viewer = (StructuredViewer) viewer;
-    }
+	/** The Pipeline job the tasks of which are managed by this content provider */
+	private JobInfo jobInfo;
+	/** The Eclipse job to refresh the task list */
+	private RefreshJob refreshJob;
+	/** A reference to the viewer using this content provider */
+	private StructuredViewer viewer;
 
-    private class RefreshJob extends WorkbenchJob {
-        TaskInfo info;
-        private List<TaskInfo> refreshInfos;
+	/**
+	 * Creates the content provider and listens to the state manager.
+	 * 
+	 * @see StateManager
+	 */
+	public TaskListContentProvider() {
+		refreshJob = new RefreshJob();
+		StateManager.getDefault().addTaskChangeListener(this);
+	}
 
-        public RefreshJob() {
-            super(Messages.uiJob_taskUpdate_name);
-            refreshInfos = new LinkedList<TaskInfo>();
-            setSystem(true);
-        }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+	 */
+	public void dispose() {
+		StateManager.getDefault().removeTaskChangeListener(this);
+	}
 
-        public void add(TaskInfo info) {
-            synchronized (refreshInfos) {
-                refreshInfos.add(info);
-            }
-        }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+	 */
+	public Object[] getElements(Object inputElement) {
+		return jobInfo.getTasks().toArray();
+	}
 
-        @Override
-        public IStatus runInUIThread(IProgressMonitor monitor) {
-            synchronized (refreshInfos) {
-                for (TaskInfo info : refreshInfos) {
-                    viewer.refresh(info);
-                }
-                refreshInfos.clear();
-            }
-            return Status.OK_STATUS;
-        }
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
+	 *      java.lang.Object, java.lang.Object)
+	 */
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		if ((newInput == null) || !(newInput instanceof JobInfo)) {
+			return;
+		}
+		jobInfo = (JobInfo) newInput;
+		this.viewer = (StructuredViewer) viewer;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.daisy.pipeline.gui.jobs.ITaskChangeListener#taskChanged(org.daisy.pipeline.gui.progress.TaskInfo)
-     */
-    public void taskChanged(TaskInfo task) {
-        if (task != null && task.getParentJob() == jobInfo) {
-            refreshJob.add(task);
-            refreshJob.schedule();
-        }
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.daisy.pipeline.gui.jobs.ITaskChangeListener#taskChanged(org.daisy.pipeline.gui.progress.TaskInfo)
+	 */
+	public void taskChanged(TaskInfo task) {
+		if ((task != null) && (task.getParentJob() == jobInfo)) {
+			refreshJob.add(task);
+			refreshJob.schedule();
+		}
+	}
 }

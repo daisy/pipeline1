@@ -24,20 +24,33 @@ import org.eclipse.osgi.util.NLS;
  * 
  */
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.daisy.pipeline.gui.progress.messages"; //$NON-NLS-1$
-    public static String button_cancel_tooltip;
-    public static String label_noJob;
-    public static String label_state_running;
-    public static String label_state_done;
-    public static String state_timeDone;
-    public static String state_timeRunning;
-    public static String uiJob_progressUpdate;
-    public static String uiJob_taskUpdate_name;
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
+	private static final String BUNDLE_NAME = "org.daisy.pipeline.gui.progress.messages"; //$NON-NLS-1$
+	/**
+	 * The tooltip of the button to cancel the job displayed in the progress
+	 * view
+	 */
+	public static String button_cancel_tooltip;
+	/**
+	 * The text to display in the progress view when no job is selected.
+	 */
+	public static String label_noJob;
+	/** The label for the "running" state */
+	public static String label_state_running;
+	/** The label for the "done" state */
+	public static String label_state_done;
+	/** The label for the timing information when the job is finished */
+	public static String state_timeDone;
+	/** The label for the timing information when the job is running */
+	public static String state_timeRunning;
+	/** The title of the progress refresh thread */
+	public static String uiJob_progressUpdate;
+	/** The title of the task refresh thread */
+	public static String uiJob_taskUpdate_name;
+	static {
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+	}
 
-    private Messages() {
-    }
+	private Messages() {
+	}
 }
