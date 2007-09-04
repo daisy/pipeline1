@@ -112,7 +112,6 @@ public class NewJobWizard extends Wizard implements INewWizard {
 	 */
 	@Override
 	public void createPageControls(Composite pageContainer) {
-		super.createPageControls(pageContainer);
 		scriptPage.createControl(pageContainer);
 		Assert.isNotNull(scriptPage.getControl());
 	}
