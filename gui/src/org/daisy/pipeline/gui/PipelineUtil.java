@@ -28,66 +28,126 @@ import org.daisy.util.file.EFolder;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
+import org.osgi.service.prefs.Preferences;
 
 /**
+ * A set of utility methods and constants to handle the Pipeline core paths and
+ * properties.
+ * 
  * @author Romain Deltour
  * 
  */
 public final class PipelineUtil {
 
-    private static final Map<String, EFolder> dirMap = new HashMap<String, EFolder>();
-    // Directory Paths
-    public static final String DOC_DIR = "/doc"; //$NON-NLS-1$
-    public static final String HOME_DIR = "/"; //$NON-NLS-1$
-    public static final String SCRIPT_DIR = "/scripts"; //$NON-NLS-1$
-    public static final String SCRIPT_DOC_DIR = DOC_DIR + "/scripts"; //$NON-NLS-1$
-    public static final String TRANS_DIR = "/transformers"; //$NON-NLS-1$
-    public static final String TRANS_DOC_DIR = DOC_DIR + "/transformers"; //$NON-NLS-1$
-    public static final String USER_DOC_DIR = DOC_DIR + "/enduser"; //$NON-NLS-1$
-    // Preferences Keys
-    public static final String PATH_TO_LAME = "PATH_TO_LAME"; //$NON-NLS-1$
-    public static final String PATH_TO_LAME_DEFAULT = "/path/to/lame.exe"; //$NON-NLS-1$
-    public static final String PATH_TO_PYTHON = "PATH_TO_PYTHON"; //$NON-NLS-1$
-    public static final String PATH_TO_PYTHON_DEFAULT = "/path/to/python.exe"; //$NON-NLS-1$
-    public static final String PATH_TO_TEMP_DIR = "PATH_TO_TEMP_DIR"; //$NON-NLS-1$
-    public static final String PATH_TO_TEMP_DIR_DEFAULT = "/path/to/tmp"; //$NON-NLS-1$
-    // Default doc
-    public static final URI DOC_404 = new File(getDir(DOC_DIR), "404.html") //$NON-NLS-1$
-            .toURI();//$NON-NLS-1$
+	/** A cache of fetched Pipeline core directories */
+	private static final Map<String, EFolder> dirMap = new HashMap<String, EFolder>();
+	// Directory Paths
+	/** The path to the documentation directory */
+	public static final String DOC_DIR = "/doc"; //$NON-NLS-1$
+	/** The path to the home directory */
+	public static final String HOME_DIR = "/"; //$NON-NLS-1$
+	/** The path to the scripts directory */
+	public static final String SCRIPT_DIR = "/scripts"; //$NON-NLS-1$
+	/** The path to the scripts documentation directory */
+	public static final String SCRIPT_DOC_DIR = DOC_DIR + "/scripts"; //$NON-NLS-1$
+	/** The path to the transformers directory */
+	public static final String TRANS_DIR = "/transformers"; //$NON-NLS-1$
+	/** The path to the transformers documentation directory */
+	public static final String TRANS_DOC_DIR = DOC_DIR + "/transformers"; //$NON-NLS-1$
+	/** The path to the user documentation directory */
+	public static final String USER_DOC_DIR = DOC_DIR + "/enduser"; //$NON-NLS-1$
+	// Preferences Keys
+	/** The name of the preference holding the path to ImageMagick */
+	public static final String PATH_TO_IMAGEMAGICK = "PATH_TO_IMAGEMAGICK"; //$NON-NLS-1$
+	/** The name of the preference holding the default path to ImageMagick */
+	public static final String PATH_TO_IMAGEMAGICK_DEFAULT = "/path/to/convert.exe"; //$NON-NLS-1$
+	/** The name of the System properties used for the path to ImageMagick */
+	public static final String PATH_TO_IMAGEMAGICK_PROP = "pipeline.imageMagick.converter.path"; //$NON-NLS-1$
+	/** The name of the preference holding the path to lame */
+	public static final String PATH_TO_LAME = "PATH_TO_LAME"; //$NON-NLS-1$
+	/** The name of the preference holding the default path to lame */
+	public static final String PATH_TO_LAME_DEFAULT = "/path/to/lame.exe"; //$NON-NLS-1$
+	/** The name of the System properties used for the path to Lame */
+	public static final String PATH_TO_LAME_PROP = "dmfc.lame.path"; //$NON-NLS-1$
+	/** The name of the preference holding the path to python */
+	public static final String PATH_TO_PYTHON = "PATH_TO_PYTHON"; //$NON-NLS-1$
+	/** The name of the preference holding the default path to python */
+	public static final String PATH_TO_PYTHON_DEFAULT = "/path/to/python.exe"; //$NON-NLS-1$
+	/** The name of the System properties used for the path to Python */
+	public static final String PATH_TO_PYTHON_PROP = "pipeline.python.path"; //$NON-NLS-1$
+	/** The name of the preference holding the path to the temporary directory */
+	public static final String PATH_TO_TEMP_DIR = "PATH_TO_TEMP_DIR"; //$NON-NLS-1$
+	/**
+	 * The name of the preference holding the default path to the temporary
+	 * directory
+	 */
+	public static final String PATH_TO_TEMP_DIR_DEFAULT = "/path/to/tmp"; //$NON-NLS-1$
+	/**
+	 * The name of the System properties used for the path to the temporary
+	 * directory
+	 */
+	public static final String PATH_TO_TEMP_DIR_PROP = "dmfc.tempDir"; //$NON-NLS-1$
+	/** The URI to the page to show when a doc has not been found */
+	public static final URI DOC_404 = new File(getDir(DOC_DIR), "404.html") //$NON-NLS-1$
+			.toURI();
 
-    private PipelineUtil() {
-    }
+	/**
+	 * Converts the {@link Preferences} used by the Pipeline GUI in
+	 * {@link Properties} used by the Pipeline core.
+	 * 
+	 * @return The set of properties converted from the GUI-set preference.
+	 */
+	public static Properties convPrefToProperties() {
+		Properties properties = new Properties();
+		properties.setProperty(PATH_TO_IMAGEMAGICK_PROP, PreferencesUtil.get(
+				PATH_TO_IMAGEMAGICK, PATH_TO_IMAGEMAGICK_DEFAULT));
+		properties.setProperty(PATH_TO_LAME_PROP, PreferencesUtil.get(
+				PATH_TO_LAME, PATH_TO_LAME_DEFAULT));
+		properties.setProperty(PATH_TO_PYTHON_PROP, PreferencesUtil.get(
+				PATH_TO_PYTHON, PATH_TO_PYTHON_DEFAULT));
+		properties.setProperty(PATH_TO_TEMP_DIR_PROP, PreferencesUtil.get(
+				PATH_TO_TEMP_DIR, PATH_TO_TEMP_DIR_DEFAULT));
+		return properties;
+	}
 
-    public static EFolder getDir(String path) {
-        EFolder dir = dirMap.get(path);
-        if (dir == null) {
-            dir = fetchDir(path);
-            dirMap.put(path, dir);
-        }
-        return dir;
-    }
+	/**
+	 * Fetch the folder corresponding to the given path from the bundle context
+	 * using the {@link FileLocator} API.
+	 * 
+	 * @param path
+	 *            A path rooting in the Pipeline core bundle.
+	 * @return the folder object corresponding to <code>path</code>.
+	 */
+	private static EFolder fetchDir(String path) {
+		EFolder dir = null;
+		Bundle coreBundle = Platform.getBundle(GuiPlugin.CORE_ID);
+		try {
+			URL url = FileLocator.toFileURL(coreBundle.getEntry(path));
+			dir = new EFolder(url.getPath());
+		} catch (Exception e) {
+			GuiPlugin.get().error("Couldn't find the " + path + " directory", //$NON-NLS-1$ //$NON-NLS-2$
+					e);
+		}
+		return dir;
+	}
 
-    public static Properties convPrefToProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("dmfc.lame.path", PreferencesUtil.get( //$NON-NLS-1$
-                PATH_TO_LAME, PATH_TO_LAME_DEFAULT));
-        properties.setProperty("pipeline.python.path", PreferencesUtil.get( //$NON-NLS-1$
-                PATH_TO_PYTHON, PATH_TO_PYTHON_DEFAULT));
-        properties.setProperty("dmfc.tempDir", PreferencesUtil.get( //$NON-NLS-1$
-                PATH_TO_TEMP_DIR, PATH_TO_TEMP_DIR_DEFAULT));
-        return properties;
-    }
+	/**
+	 * Returns the folder object corresponding to the given path description.
+	 * 
+	 * @param path
+	 *            A path rooting in the Pipeline core bundle.
+	 * @return the folder object corresponding to <code>path</code>.
+	 */
+	public static EFolder getDir(String path) {
+		EFolder dir = dirMap.get(path);
+		if (dir == null) {
+			dir = fetchDir(path);
+			dirMap.put(path, dir);
+		}
+		return dir;
+	}
 
-    private static EFolder fetchDir(String path) {
-        EFolder dir = null;
-        Bundle coreBundle = Platform.getBundle(GuiPlugin.CORE_ID);
-        try {
-            URL url = FileLocator.toFileURL(coreBundle.getEntry(path));
-            dir = new EFolder(url.getPath());
-        } catch (Exception e) {
-            GuiPlugin.get().error("Couldn't find the " + path + " directory", //$NON-NLS-1$ //$NON-NLS-2$
-                    e);
-        }
-        return dir;
-    }
+	// Prevents from instantiating this static utility
+	private PipelineUtil() {
+	}
 }
