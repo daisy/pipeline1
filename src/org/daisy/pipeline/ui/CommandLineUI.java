@@ -18,6 +18,7 @@
  */
 package org.daisy.pipeline.ui;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +64,7 @@ import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.DMFCConfigurationException;
 import org.daisy.pipeline.exception.JobFailedException;
 import org.daisy.util.i18n.XMLProperties;
+import org.daisy.util.xml.stax.ExtendedLocationImpl;
 
 /**
  * A simple command line UI for running DMFC.
@@ -282,7 +284,20 @@ public class CommandLineUI implements InputListener, BusListener {
                             }
                         }
                     }
-                }
+                                   
+                    //mg20070904: printing extended location info
+                    if(loc instanceof ExtendedLocationImpl) {                    		                        
+                    	ExtendedLocationImpl eLoc = (ExtendedLocationImpl)loc;                    	
+                    	ExtendedLocationImpl.InformationType[] types = ExtendedLocationImpl.InformationType.values();                    	                    	
+                    	for (int i = 0; i < types.length; i++) {                    		
+                    		location.append("\n\t");
+                    		location.append(types[i].toString()).append(':').append(' ');
+                    		String value = eLoc.getExtendedLocationInfo(types[i]);
+                    		location.append(value==null?"N/A":value);                            		
+						}                    	
+                    }
+                    
+                }//if (sme.getLocation() != null)
 
                 message.append('[');
                 message.append(type);
@@ -325,7 +340,7 @@ public class CommandLineUI implements InputListener, BusListener {
         }
     }
 
-    private static void setDefaultValues(Script script, Job runner)
+	private static void setDefaultValues(Script script, Job runner)
             throws DatatypeException {
         for (ScriptParameter param : script.getParameters().values()) {
             if (param.isRequired()) {

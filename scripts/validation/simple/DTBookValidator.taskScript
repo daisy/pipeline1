@@ -24,6 +24,15 @@
 
 	&ValidatorScriptParamsSimpleStatic;
 
+	<parameter name="validatorGenerateContextInfo" value="false" required="false">
+		<nicename>Generate Context Info</nicename>
+		<description>Show additional hints on the location of the error</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	
 	<task name="int_daisy_validator" interactive="false">
 	
 		<parameter>
@@ -32,6 +41,11 @@
 		</parameter>
 
  	    &ValidatorTaskParamsSimpleStatic;
+
+		<parameter>		
+			<name>generateContextInfo</name>
+			<value>${validatorGenerateContextInfo}</value>		
+		</parameter>
 
 		<parameter>
 			<name>requireInputType</name>

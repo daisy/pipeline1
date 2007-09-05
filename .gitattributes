@@ -306,7 +306,6 @@ src/org/daisy/pipeline/test/impl/CharacterRepertoireManipulator1.java -text
 src/org/daisy/pipeline/test/impl/CharsetSwitcher1.java -text
 src/org/daisy/pipeline/test/impl/ConfigurableValidator1.java -text
 src/org/daisy/pipeline/test/impl/D202dtbValidator1.java -text
-src/org/daisy/pipeline/test/impl/D202dtbValidator2.java -text
 src/org/daisy/pipeline/test/impl/DTBAudioEncoder1.java -text
 src/org/daisy/pipeline/test/impl/DTBAudioEncoderRenamer1.java -text
 src/org/daisy/pipeline/test/impl/DTBAudioEncoderSplitter1.java -text
@@ -357,11 +356,17 @@ src/org/daisy/util/fileset/validation/delegate/impl/InterDocURICheckerDelegate.j
 src/org/daisy/util/i18n/XMLProperties.java -text
 src/org/daisy/util/i18n/XMLPropertyResourceBundle.java -text
 src/org/daisy/util/location/LocationUtils.java -text
+src/org/daisy/util/text/CircularFifoStringBuilder.java -text
 src/org/daisy/util/xml/LocusTransformer.java -text
 src/org/daisy/util/xml/NamespaceReporter.java -text
 src/org/daisy/util/xml/SimpleNamespaceContext.java -text
 src/org/daisy/util/xml/catalog/idpf/opf20.rng -text
 src/org/daisy/util/xml/catalog/svg/svg11-flat.dtd -text svneol=unset#application/octet-stream
+src/org/daisy/util/xml/stax/ConvenientXMLEventReader.java -text
+src/org/daisy/util/xml/stax/ExtendedLocationImpl.java -text
+src/org/daisy/util/xml/stax/ExtendedLocationProvider.java -text
+src/org/daisy/util/xml/stax/ExtendedLocationTokens.xml -text
+src/org/daisy/util/xml/stax/LocationImpl.java -text
 src/org/daisy/util/xml/validation/SimpleValidator.java -text
 src/org/daisy/util/xml/validation/ValidationUtils.java -text
 src/org/daisy/util/xml/validation/jaxp/ISOSchematronSVRLHandler.java -text

@@ -14,12 +14,13 @@ public class DTBookValidator2 extends PipelineTest {
 	@Override
 	public List<String> getParameters() {		
 		mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy_invalid.xml");
+		mParameters.add("--validatorGenerateContextInfo=true");
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "Test should validate a dtbook document and return 2x invalid";
+		return "Test should validate a dtbook document and return 2x invalid, context info added";
 	}
 
 	@Override

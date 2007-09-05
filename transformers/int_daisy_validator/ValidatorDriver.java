@@ -22,6 +22,7 @@ package int_daisy_validator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,6 +66,7 @@ import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.SAXParserPool;
 import org.daisy.util.xml.sax.SAXConstants;
+import org.daisy.util.xml.stax.ExtendedLocationProvider;
 import org.daisy.util.xml.validation.SchemaLanguageConstants;
 import org.daisy.util.xml.validation.ValidationUtils;
 import org.xml.sax.ErrorHandler;
@@ -97,6 +99,8 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	private CompletionTracker mCompletionTracker = new CompletionTracker();			//inner class
 	private XMLReporter mXmlReporter = null;										// validator xml output
 	private String mForcedValidatorImpl = null;										//whether user overrides default impl
+	private boolean mGenerateContextInfo = false;									//whether to create Location extensions see #report
+	private ExtendedLocationProvider mDocumentContextInfoProvider = null;		//Location extension builder delegate
 	
 	/**
 	 * Constructor.
@@ -150,6 +154,20 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			} catch (Exception e) {
 				throw new TransformerRunException(e.getMessage(), e);
 			}
+			
+			//Check whether we should attempt to generate contextual info for errors
+			mGenerateContextInfo = parameters.remove("generateContextInfo").equals("true");
+			if(mGenerateContextInfo) {
+				try {
+					mDocumentContextInfoProvider = new ExtendedLocationProvider();
+				} catch (Exception e) {
+					String message = i18n("FAILURE_INITIALIZING_CONTEXT_INFO",e.getMessage());
+					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
+					mDocumentContextInfoProvider = null;
+					mGenerateContextInfo = false;
+				}
+			}
+			
 			
 			try{			
 				mInputFile = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("input")));			
@@ -352,6 +370,16 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					//this.sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 					String message = i18n("ERROR_ABORTING", e.getMessage());
 					throw new TransformerRunException(message,e);			
+				}
+			}
+			
+			
+			//if we had the context info generation active, clear the traces
+			if(mGenerateContextInfo) {
+				try {
+					mDocumentContextInfoProvider.reset();
+				} catch (XMLStreamException e) {
+					this.sendMessage(i18n("COULDNT_CLEAR_READER_CACHE", e.getMessage()), MessageEvent.Type.WARNING);					
 				}
 			}
 		}
@@ -582,10 +610,41 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				mStateTracker.mHadValidationError = true;
 				type = MessageEvent.Type.ERROR;
 			}		
+			
+			//create the Locator
 			Location loc = LocusTransformer.newLocation(message);
+			
+			if(mGenerateContextInfo && isXMLFile(message.getFile())){
+				//try creating a locator subclass				
+				try {
+					loc = mDocumentContextInfoProvider.generate(loc);
+				} catch (Exception e) {
+					this.sendMessage(i18n("FAILURE_GETTING_CONTEXT_INFO", e.getMessage()), MessageEvent.Type.WARNING);
+				}
+			}
+			
+			//and fire off
 			this.sendMessage(message.getMessage(), type, MessageEvent.Cause.INPUT,loc);
 		}
 	}
+
+	/**
+	 * Ascertain that an arbitrary resource is an XML file.
+	 */
+	private boolean isXMLFile(URI file) {
+		Peeker peeker = null;
+		try{
+			peeker = PeekerPool.getInstance().acquire();
+			peeker.peek(file);
+			return true;
+		}catch (Exception e) {
+			
+		}finally{
+			PeekerPool.getInstance().release(peeker);
+		}
+		return false;
+	}
+
 
 	/*
 	 * (non-Javadoc)

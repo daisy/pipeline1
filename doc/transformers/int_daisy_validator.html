@@ -208,6 +208,13 @@ this transformer will send a fatal message, then throw an exception and abort.</
 	Use this parameter to force the validator to use the named implementation (overriding default assignment)
 	</dd>
 	
+	<dt>generateContextInfo</dt>
+	<dd>
+	Sets whether to attempt generating additional information than that provided in a standard javax.xml.stream.Location.
+	This a grammar specific process in some parts. New grammars are added by modifying org.daisy.util.xml.stax.ExtendedLocationTokens.xml.
+	New types of information can be added by extending the InformationType enum in org.daisy.util.xml.stax.ExtendedLocationProvider.
+	</dd>
+	
 	<dt>abortThreshold</dt>
 	<dd>Validation error severity level - when to perform a Transformer abort</dd>
 			

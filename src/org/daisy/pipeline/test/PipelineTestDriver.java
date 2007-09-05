@@ -102,7 +102,7 @@ public class PipelineTestDriver {
 				}				
 			}
 			if(!testExistsForScript) {
-				System.err.println("No test for script " + script.getName());
+				//System.err.println("No test for script " + script.getName());
 			}
 		}
 						
@@ -116,7 +116,7 @@ public class PipelineTestDriver {
 //		tests.add(new D202dtbValidator1(inputDir, outputDir));
 //		tests.add(new D202dtbValidator2(inputDir, outputDir));
 //		tests.add(new DTBookValidator1(inputDir, outputDir));
-//		tests.add(new DTBookValidator2(inputDir, outputDir));
+		tests.add(new DTBookValidator2(inputDir, outputDir));
 //		tests.add(new FilesetRenamer1(inputDir, outputDir));
 //		tests.add(new Narrator1(inputDir, outputDir));
 //		tests.add(new OcfCreator1(inputDir, outputDir));

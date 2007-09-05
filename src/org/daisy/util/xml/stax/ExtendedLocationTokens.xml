@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<documentContextInfo version='1.0'>
+	
+	<!-- 
+	The category elements have as children 
+	empty elements in any namespace with any number of attributes.
+	
+	Upon parse, these are turned into a set of StartElement objects,
+	which then are compared to real world occurences.
+	
+	New categories will not be turned into objects without modifying 
+	the code of the parsing routine.	
+	-->
+	
+	<category theme="heading">	
+	    <!-- dtbook -->
+		<h1 xmlns='http://www.daisy.org/z3986/2005/dtbook/'/>
+		<h2 xmlns='http://www.daisy.org/z3986/2005/dtbook/'/>
+		<h3 xmlns='http://www.daisy.org/z3986/2005/dtbook/'/>
+		<h4 xmlns='http://www.daisy.org/z3986/2005/dtbook/'/>
+		<h5 xmlns='http://www.daisy.org/z3986/2005/dtbook/'/>
+		<h6 xmlns='http://www.daisy.org/z3986/2005/dtbook/'/>
+		<hd xmlns='http://www.daisy.org/z3986/2005/dtbook/'/>
+	    <!-- xhtml -->	
+		<h1 xmlns='http://www.w3.org/1999/xhtml'/>
+		<h2 xmlns='http://www.w3.org/1999/xhtml'/>
+		<h3 xmlns='http://www.w3.org/1999/xhtml'/>
+		<h4 xmlns='http://www.w3.org/1999/xhtml'/>
+		<h5 xmlns='http://www.w3.org/1999/xhtml'/>
+		<h6 xmlns='http://www.w3.org/1999/xhtml'/>
+	 
+	</category>
+
+	<category theme="page">
+	    <!-- dtbook -->
+		<pagenum xmlns='http://www.daisy.org/z3986/2005/dtbook/'/>
+	    <!-- xhtml -->			
+	    <span xmlns='http://www.w3.org/1999/xhtml' class='page-normal'/>
+	    <span xmlns='http://www.w3.org/1999/xhtml' class='page-front'/>
+	    <span xmlns='http://www.w3.org/1999/xhtml' class='page-special'/>	    	    
+	
+	</category>
+
+</documentContextInfo>

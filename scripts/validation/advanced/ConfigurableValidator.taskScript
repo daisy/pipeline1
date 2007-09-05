@@ -26,6 +26,14 @@
 	</parameter>
 
 	&ValidatorScriptParamsAdvancedStatic;
+	
+	<parameter name="validatorGenerateContextInfo" value="false" required="false">
+		<nicename>Generate Context Info</nicename>
+		<description>Show additional hints on the location of the error. Does not work on all document types!</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
 
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
@@ -36,6 +44,11 @@
 		<parameter>
 			<name>abortThreshold</name>
 			<value>NONE</value>
+		</parameter>
+
+		<parameter>		
+			<name>generateContextInfo</name>
+			<value>${validatorGenerateContextInfo}</value>		
 		</parameter>
 
 		&ValidatorTaskParamsAdvancedStatic;				

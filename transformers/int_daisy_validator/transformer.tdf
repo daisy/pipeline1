@@ -29,6 +29,17 @@
 			<default>off</default>
 		</parameter>
 
+		<parameter required="false" type="enum">
+			<name>generateContextInfo</name>
+			<description>Whether to attempt to generate contextual info for validation errors (nearest preceeding heading, etc). Does not work on all document types!</description>
+			<example>true</example>
+			<enum>
+				<value>true</value> 
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+
 		<parameter required="false" type="string">
 			<name>schemas</name>
 			<description>
