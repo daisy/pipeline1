@@ -18,10 +18,21 @@
       <h2>Table of Contents</h2>
       <ul>
         <li>
-          <a href="#settingtheaccessibleinformation">Setting the accessible information</a>
+          <a href="#guidelines">Guidelines</a>
         </li>
         <li>
-          <a href="#swt.labelandaccessibility">SWT.Label and accessibility</a>
+          <a href="#interestingcomments">Interesting Comments</a>
+          <ul>
+            <li>
+              <a href="#swt.labelandaccessibility">SWT.Label and accessibility</a>
+            </li>
+            <li>
+              <a href="#workaroundstrategy">Workaround strategy</a>
+            </li>
+            <li>
+              <a href="#accessibleinformationontreeandmenuitems">Accessible Information on Tree and Menu Items</a>
+            </li>
+          </ul>
         </li>
         <li>
           <a href="#links">Links</a>
@@ -39,7 +50,7 @@
         </li>
       </ul>
     </div>
-    <h2 id="settingtheaccessibleinformation">Setting the accessible information</h2>
+    <h2 id="guidelines">Guidelines</h2>
     <p>Following list is taken from IBM's <a href="http://www-03.ibm.com/able/guidelines/software/swuiobject.html" title="IBM Human Ability and Accessibility Center | Developer guidelines">accessibility guidelines</a> for software developers</p>
     <ul>
       <li>In Eclipse, all widgets provided by the SWT toolkit support Active Accessibility. For text components the accessible name of the control will be set properly and no additional action is required by the application.</li>
@@ -50,9 +61,10 @@
       <li>If the application wishes to override the default behavior, it can choose to implement the org.eclipse.swt.accessibility.AccessibleListener. This can be used to override Name, Help, Description and Keyboard Shortcut information.</li>
       <li>In Eclipse, when implementing a custom control you should also implement some or all of (as they apply to your control) org.eclipse.swt.accessibility.AccessibleListener, org.eclipse.swt.accessibility.AccessibleControlListener and org.eclipse.swt.accessibility.AccessibleTextListener. Also, the custom control can notify Active Accessibility of changes within the control using org.eclipse.swt.accessibility.Accessible methods such as setFocus(), selectionChanged(), textCaretMoved(), textChanged() and textSelectionChanged(). For additional information see section 7.3. When an image represents a program element, make the information conveyed by the image available in text.</li>
     </ul>
-    <h2 id="swt.labelandaccessibility">SWT.Label and accessibility</h2>
+    <h2 id="interestingcomments">Interesting Comments</h2>
+    <h3 id="swt.labelandaccessibility">SWT.Label and accessibility</h3>
     <p>
-      <em>An intersting quote form Carolyn MacLeod (IBM), seen on <code>news.eclipse.platform.swt</code>:</em>
+      <em>A quote form Carolyn MacLeod (IBM), seen on <code>news.eclipse.platform.swt</code>:</em>
     </p>
     <p>The reason is that screen readers only speak the text of items that have 
 focus. And Labels can't take focus.</p>
@@ -100,6 +112,54 @@ speak when the shell gets focus.";
  }
 }</code>
     </pre>
+    <h3 id="workaroundstrategy">Workaround strategy</h3>
+    <p>
+      <em>A quote form Tod Creasey (IBM), seen on <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=115947#c16">Eclipse Buzilla</a>:</em>
+    </p>
+    <p>When you cannot make an image accessible (like in a label) the usual method is
+to make sure that the information is available otherwise</p>
+    <p>Either:</p>
+    <ol>
+      <li>some different accessibility affordance (such as implementing an IAccessible
+on the widget or a properties dialog)</li>
+      <li>making sure that the information is conveyed elsewhere. For instance the
+error image in the error dialog is not enough - the title should make it clear
+it is an error.</li>
+    </ol>
+    <p>Generally using an IAccessible is the best solution as you can convey exactly
+what you want.</p>
+    <h3 id="accessibleinformationontreeandmenuitems">Accessible Information on Tree and Menu Items</h3>
+    <p>
+      <em>A quote form Carolyn MacLeod (IBM), seen on <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=66036#c2">Eclipse Buzilla</a>:</em>
+    </p>
+    <p>In accessibility, "items" are called "children" and they are referenced by 
+a "childID", which is typically a 0-based index. The appropriate Accessible 
+object to use if you want to override the default behavior is the Accessible 
+object of the parent. For example, to override the default accessible name or 
+description for a TableItem, simply add an AccessibleListener to the 
+Accessible object for the parent Table, eg:</p>
+    <pre>
+      <code>table.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+    public void getName(AccessibleEvent e) {
+        if (e.childID == ACC.CHILDID_SELF) {
+            e.result = "The Table itself";
+        } else {
+            e.result = "The TableItem with childID=" + e.childID;
+        }
+    }
+});</code>
+    </pre>
+    <p>Note that TreeItems are a little bit different from other items in that the 
+childID for a TreeItem is in fact the TreeItem's handle, and not a 0-based 
+index (because TreeItems do not have an index). The above code would still 
+work fine for a Tree with TreeItem "children", but if you were doing any kind 
+of lookup using the childID, you might need to know what the childID 
+represented.</p>
+    <p>As for MenuItem, you are correct that there is currently no SWT API to access 
+the IAccessible for a Menu. What do you need it for? The default behavior is 
+what one would typically expect. The only use I can think of would be if you 
+have a menu that only contains icons - no text. How important is this feature 
+to you? We will not be adding anything like this for 3.0.</p>
     <h2 id="links">Links</h2>
     <h3 id="guidelinesandapis">Guidelines and APIs</h3>
     <ul>
