@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import no_hks_xhtml2dtbook.Xhtml2DTBook;
+
 import org.daisy.pipeline.test.impl.CharacterRepertoireManipulator1;
 import org.daisy.pipeline.test.impl.CharsetSwitcher1;
 import org.daisy.pipeline.test.impl.ConfigurableValidator1;
@@ -36,6 +38,7 @@ import org.daisy.pipeline.test.impl.Rtf2Xhtml1;
 import org.daisy.pipeline.test.impl.Rtf2dtbook1;
 import org.daisy.pipeline.test.impl.UnicodeNormalizer1;
 import org.daisy.pipeline.test.impl.WordML2Xhtml1;
+import org.daisy.pipeline.test.impl.Xhtml2DTBook1;
 import org.daisy.pipeline.ui.CommandLineUI;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
@@ -116,7 +119,7 @@ public class PipelineTestDriver {
 //		tests.add(new D202dtbValidator1(inputDir, outputDir));
 //		tests.add(new D202dtbValidator2(inputDir, outputDir));
 //		tests.add(new DTBookValidator1(inputDir, outputDir));
-		tests.add(new DTBookValidator2(inputDir, outputDir));
+//		tests.add(new DTBookValidator2(inputDir, outputDir));
 //		tests.add(new FilesetRenamer1(inputDir, outputDir));
 //		tests.add(new Narrator1(inputDir, outputDir));
 //		tests.add(new OcfCreator1(inputDir, outputDir));
@@ -143,6 +146,7 @@ public class PipelineTestDriver {
 //		tests.add(new OpsCreator2(inputDir, outputDir));
 //		tests.add(new OpsCreator3(inputDir, outputDir));		
 //		tests.add(new DTBook2rtf1(inputDir, outputDir));
+		tests.add(new Xhtml2DTBook1(inputDir, outputDir));
 		
 		
 ////////// tests with input data not in samples dir: 		

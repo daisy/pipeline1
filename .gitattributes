@@ -208,6 +208,7 @@ samples/input/xhtml/d202.css -text
 samples/input/xhtml/daisy_202.html -text
 samples/input/xhtml/daisylog.jpg -text
 samples/input/xhtml/multi-language-unicode.html -text
+scripts/_dev/Xhtml2Dtbook.taskScript -text
 scripts/_dev/dtbook2html.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
 scripts/conversion/advanced/WordMLtoDTBook.taskScript -text
@@ -333,6 +334,7 @@ src/org/daisy/pipeline/test/impl/Rtf2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/Rtf2dtbook1.java -text
 src/org/daisy/pipeline/test/impl/UnicodeNormalizer1.java -text
 src/org/daisy/pipeline/test/impl/WordML2Xhtml1.java -text
+src/org/daisy/pipeline/test/impl/Xhtml2DTBook1.java -text
 src/org/daisy/pipeline/util/DocChecker.java -text
 src/org/daisy/pipeline/util/DocIndexGenerator.java -text
 src/org/daisy/pipeline/util/PropertiesConverter.java -text
@@ -426,6 +428,9 @@ transformers/int_daisy_unicodeTranscoder/transformer.tdf -text
 transformers/int_daisy_validator/XMLReporter.java -text
 transformers/int_daisy_validator/validator.css -text
 transformers/int_daisy_validator/validator.xsl -text
+transformers/no_hks_xhtml2dtbook/Xhtml2DTBook.java -text
+transformers/no_hks_xhtml2dtbook/transformer.tdf -text
+transformers/no_hks_xhtml2dtbook/xhtml2dtbook.xsl -text
 transformers/pipeline_system_deleter/Deleter.java -text
 transformers/pipeline_system_deleter/messages.properties -text
 transformers/pipeline_system_deleter/transformer.tdf -text
