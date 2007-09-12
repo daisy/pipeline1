@@ -94,6 +94,7 @@ doc/transformers/se_tpb_dtbMerger.html -text
 doc/transformers/se_tpb_dtbSplitter.html -text
 doc/transformers/se_tpb_filesetcreator.html -text
 doc/transformers/se_tpb_nccNcxOnly.html -text
+doc/transformers/se_tpb_speechgen2.html -text
 doc/transformers/se_tpb_speechgenerator.html -text
 doc/transformers/se_tpb_syncpointNormalizer.html -text
 doc/transformers/se_tpb_wordml2dtbook.html -text
