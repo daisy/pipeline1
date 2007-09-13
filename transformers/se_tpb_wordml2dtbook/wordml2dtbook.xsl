@@ -44,7 +44,7 @@
 <xsl:include href="./modules/paragraphs.xsl"/>
 <xsl:include href="./modules/parameters.xsl"/>
 
-<xsl:include href="./custom/output.xsl"/>
+<xsl:include href="./modules/output.xsl"/>
 
 <xsl:template match="w:wordDocument">
 	<xsl:call-template name="insertProcessingInstruction"/>
@@ -185,7 +185,17 @@
 				</xsl:when>
 				<xsl:when test="$tag/d:pagenum">
 					<xsl:variable name="p-no" select="translate(.,' ','')"/>
-					<pagenum id="page-{$p-no}">
+					<pagenum>
+						<xsl:attribute name="id">
+							<xsl:choose>
+								<xsl:when test="$uniquePageID='true'">
+									<xsl:value-of select="concat('page-', generate-id())"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="concat('page-', $p-no)"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
 						<xsl:attribute name="page">
 							<xsl:choose>
 								<xsl:when test="string($p-no)=string(number($p-no))">normal</xsl:when>
@@ -224,7 +234,7 @@
 </xsl:template>
 
 <xsl:template match="w:pict">
-  <xsl:if test="v:shape/v:imagedata">
+  <xsl:if test="v:shape/v:imagedata/@src">
 	  <xsl:variable name="src" select="v:shape/v:imagedata/@src"/>
 	  <xsl:variable name="img-no"><xsl:choose>
 			  <xsl:when test="w:binData"><xsl:call-template name="addZeros">
@@ -233,7 +243,7 @@
 				<xsl:when test="not(//w:pict[w:binData/@w:name=$src])"><xsl:call-template name="addZeros">
 			  <xsl:with-param name="value" select="count(preceding::w:pict)+1"/>
 		</xsl:call-template></xsl:when>
-				<xsl:otherwise><xsl:for-each select="//w:pict[w:binData/@w:name=$src][1]"><xsl:call-template name="addZeros">
+				<xsl:otherwise><xsl:for-each select="(//w:pict[w:binData/@w:name=$src])[1]"><xsl:call-template name="addZeros">
 				<xsl:with-param name="value" select="count(preceding::w:pict)+1"/></xsl:call-template>
 	  </xsl:for-each></xsl:otherwise>
 			</xsl:choose></xsl:variable>
@@ -242,7 +252,11 @@
 				<img src="image{$img-no}.jpg" alt="{v:shape/@alt}"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<img src="image{$img-no}.{substring-after(v:shape/v:imagedata/@src, '.')}" alt="{v:shape/@alt}"/>
+				<xsl:variable name="ext"><xsl:call-template name="lastIndexOf">
+					<xsl:with-param name="str" select="substring-after(v:shape/v:imagedata/@src, '.')"/>
+					<xsl:with-param name="char" select="'.'"/>
+				</xsl:call-template></xsl:variable>
+				<img src="image{$img-no}.{$ext}" alt="{v:shape/@alt}"/>
 			</xsl:otherwise>
 		</xsl:choose>
   </xsl:if>
@@ -263,9 +277,9 @@
 	</note>
 </xsl:template>
 
-<xsl:template match="w:hdr|w:ftr">
+<xsl:template match="w:hdr|w:ftr"><!--
 	<xsl:comment>Section header/footer removed:</xsl:comment>
-	<xsl:comment><xsl:value-of select="."/></xsl:comment>
+	<xsl:comment><xsl:value-of select="."/></xsl:comment>-->
 </xsl:template>
 
 <!-- Continue to process children when element nodes are unknown -->

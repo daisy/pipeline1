@@ -72,7 +72,7 @@
 	
 	<parameter name="uid" value="" required="false">
 		<nicename>dtb:uid</nicename>
-		<description>UID</description>
+		<description>The publications unique identifier. If no value is supplied, it will be a generated.</description>
 		<datatype>
 			<string/>
 		</datatype>

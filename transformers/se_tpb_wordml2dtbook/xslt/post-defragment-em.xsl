@@ -27,7 +27,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
 
 	<xsl:include href="../modules/recursive-copy.xsl"/>
-	<xsl:include href="../custom/output.xsl"/>
+	<xsl:include href="../modules/output.xsl"/>
 
 	<xsl:template match="dtb:em">
 		<xsl:choose>

@@ -516,7 +516,6 @@ transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTT
 transformers/se_tpb_syncPointNormalizer/transformer.tdf -text
 transformers/se_tpb_wordml2dtbook/ImageConverter.java -text
 transformers/se_tpb_wordml2dtbook/custom/new-custom-tagset.xml -text
-transformers/se_tpb_wordml2dtbook/custom/output.xsl -text
 transformers/se_tpb_wordml2dtbook/custom/se_rk_custom-tagset.xml -text
 transformers/se_tpb_wordml2dtbook/custom/se_tpb_custom-tagset.xml -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/index_p1.png -text
@@ -535,13 +534,17 @@ transformers/se_tpb_wordml2dtbook/docs/tagset/index_p6.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/index_p7.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/index_p8.png -text
 transformers/se_tpb_wordml2dtbook/docs/tagset/index_p9.png -text
+transformers/se_tpb_wordml2dtbook/lib/default.css -text
 transformers/se_tpb_wordml2dtbook/lib/dtbook2xhtml.xsl -text
+transformers/se_tpb_wordml2dtbook/modules/output.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/paragraphs.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/parameters.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/recursive-copy.xsl -text
 transformers/se_tpb_wordml2dtbook/templates/native.dot -text
 transformers/se_tpb_wordml2dtbook/templates/scanned.dot -text
 transformers/se_tpb_wordml2dtbook/transformer.tdf -text
+transformers/se_tpb_wordml2dtbook/xslt/dtbook-2005-1.xsl -text
+transformers/se_tpb_wordml2dtbook/xslt/dtbook-2005-2.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-add-author-title.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-count-characters-dtbook.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-count-characters-wml.xsl -text
@@ -549,7 +552,6 @@ transformers/se_tpb_wordml2dtbook/xslt/post-defragment-em.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-defragment-strong.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-defragment-sub.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-defragment-sup.xsl -text
-transformers/se_tpb_wordml2dtbook/xslt/post-fix-heading-level.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-indent.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-pagenum-fix.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/pre-input-validator.xsl -text

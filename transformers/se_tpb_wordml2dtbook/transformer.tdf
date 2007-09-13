@@ -29,6 +29,17 @@
 			<default>dtbook.xml</default>
 		</parameter>
 		
+		<parameter required="false" type="enum">
+			<name>dtbook-version</name>
+			<description>Sets the dtbook version</description>
+			<example>2005-1</example>
+			<enum>
+				<value>2005-1</value> 
+				<value>2005-2</value>
+			</enum>
+			<default>2005-1</default>
+		</parameter>
+		
 		<!--
 		<parameter type="application/xslt+xml">
 			<name>xslt</name>
@@ -133,6 +144,13 @@
 			<description>When set to 'true' the transform will use a ".jpg" file extension regardless of what the original extension was. Otherwise, the original file extension will be preserved.</description>
 			<example>true</example>
 			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>uniquePageID</name>
+			<description>When set to 'true' the transform will use a unique string as id. Otherwise, the page number will be used as id.</description>
+			<example>true</example>
+			<default>true</default>
 		</parameter>
 
 	</parameters>

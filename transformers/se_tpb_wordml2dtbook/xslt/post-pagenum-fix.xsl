@@ -22,6 +22,7 @@
 		Removes
 			* empty (or nested) p
 			* otherwise empty p or li around pagenum (except p in td)
+			* empty em, strong, sub, sup
 		Moves
 			* pagenum inside h[x] before h[x]
 			* pagenum inside a word after the word
@@ -30,16 +31,17 @@
 				- hx is the last element or followed by nothing but empty p-tags
 
 		Joel Håkansson, TPB
-		Version 2007-09-03
+		Version 2007-09-11
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
 
 	<xsl:include href="../modules/recursive-copy.xsl"/>
-	<xsl:include href="../custom/output.xsl"/>
+	<xsl:include href="../modules/output.xsl"/>
 
  <!-- pagenum-fix -->
 	<xsl:template match="dtb:p[
-						count(text())=0 and ( 
+						count(text()[normalize-space()!='']|comment()|processing-instruction())=0 and
+						( 
 							(	count(descendant::dtb:pagenum)=count(descendant::*) 
 								and not(parent::dtb:td)
 							) or (	
@@ -128,8 +130,26 @@ not(ancestor::dtb:h1|ancestor::dtb:h2|ancestor::dtb:h3|ancestor::dtb:h4|ancestor
 	</xsl:template>
  <!-- /move pagenum -->
  
+ <!-- for text counting -->
  <xsl:template match="dtb:span[@class='listSymbol']">
 	 <xsl:value-of select="."/>
  </xsl:template>
+ <!-- /for text counting -->
  
+ <xsl:template match="dtb:strong[text() and count(node())=1 and normalize-space()='']">
+	 <xsl:apply-templates/>
+ </xsl:template>
+ 
+ <xsl:template match="dtb:em[text() and count(node())=1 and normalize-space()='']">
+	 <xsl:apply-templates/>
+ </xsl:template>
+
+ <xsl:template match="dtb:sub[text() and count(node())=1 and normalize-space()='']">
+	 <xsl:apply-templates/>
+ </xsl:template>
+
+ <xsl:template match="dtb:sup[text() and count(node())=1 and normalize-space()='']">
+	 <xsl:apply-templates/>
+ </xsl:template>
+  
 </xsl:stylesheet>

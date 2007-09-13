@@ -7,6 +7,7 @@
 <xsl:param name="customTagset" select="'tagsets/custom-tagset.xml'"/>
 <xsl:param name="customStyle" select="'rk'"/>
 <xsl:param name="forceJPEG" select="'true'"/>
+<xsl:param name="uniquePageID" select="'true'"/>
 
 <!-- Input parameters, named_templates.xsl -->
 <xsl:param name="title"/>

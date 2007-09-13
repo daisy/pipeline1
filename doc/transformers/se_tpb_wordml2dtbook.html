@@ -84,7 +84,7 @@ input reqs were not satisfied, or because an exception occurs -->
 			<dt>images</dt>
 			<dd>Set to true to extract images or false to only extract the DTBook file</dd>
 			<dt>convertImages</dt>
-			<dd>Set to true to convert all images into JPEG format. ImageMagick must be installed and the path to the conversion program must be included in a pipeline property named "pipeline.imageMagick.converter.path". E.g. &lt;entry key="pipeline.imageMagick.converter.path"&gt;C:\\Program\\ImageMagick-6.3.4-Q16\\convert.exe&lt;/entry&gt;</dd>
+			<dd>Set to true to convert all images into JPEG format. ImageMagick must be installed and the path to the conversion program must be set in the paths dialog (under preferences) if run using the Daisy Pipeline GUI or included in a pipeline property named "pipeline.imageMagick.converter.path" if run from the command prompt. E.g. &lt;entry key="pipeline.imageMagick.converter.path"&gt;C:\\Program\\ImageMagick-6.3.4-Q16\\convert.exe&lt;/entry&gt;</dd>
 			<dt>overwrite</dt>
 			<dd>Set to true to overwrite existing files or false to abort processing</dd>
 			<dt>uid</dt>
@@ -105,13 +105,15 @@ input reqs were not satisfied, or because an exception occurs -->
 			<dd>Path to the default tagset</dd>
 			<dt>forceJPEG</dt>
 			<dd>When set to 'true' the transform will use a ".jpg" file extension regardless of what the original extension was. Otherwise, the original file extension will be preserved.</dd>
+			<dt>uniquePageID</dt>
+			<dd>When set to 'true' the transform will use a unique string as id. Otherwise, the page number will be used as id.</dd>
+			<dt>dtbook-version</dt>
+			<dd>Sets the dtbook doctype and value of the version attribute. Selectable values are 2005-1 or 2005-2.</dd>
 		</dl>
 		<h3 id="extConfig">Extended configurability</h3>
 		<!-- details on additional config files, system variables etc -->
 		<h4>/custom/new-custom-tagset.xsl</h4>
 		<p>Modify a copy of this file to support other styles in Word or to change the behaviour of a supported style. Description of grammar is provided <a href="../../transformers/se_tpb_wordml2dtbook/docs/tagset/index.html">here</a>. To use the edited file, change the parameters <strong>customTagset</strong> and <strong>customStyle</strong></p>
-		<h4>/custom/output.xsl</h4>
-		<p>Change this to output to a different version of DTBook, e.g. 2005-2. Useful for semi automated production facilities who work with 2005-2.</p>
 		<h2 id="future">Further development</h2>
 		<!-- notes on refactoring; TODOs and MAYDOs -->
 		<h2 id="dependencies">Dependencies</h2>

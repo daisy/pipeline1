@@ -253,4 +253,25 @@ Notes:
 		<remark>
 		</remark>
 	</revision>
+	<revision>
+		<version>1.5.4</version>
+		<date>12 September 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>Added support for relaxed pagenum id generation to allow multiple pages with the same value.</para>
+			<para>Added ImageMagick path check</para>
+			<para>Added option to switch dtbook version</para>
+			<para>Stylesheet option now includes default.css</para>
+			<para>Removed outputing of header/footer comments</para>
+			<para>Included removal of empty em, strong, sub and sup</para>
+			<para>Updated transformer documentation</para>
+			<para>Changed a few prompts</para>
+			<para>Updated document templates</para>
+			<para>Fixed a flaw in pagenum-fix</para>
+			<para>Fixed a problem with duplicate img-tag generation</para>
+			<para>Fixed a problem with link extensions</para>
+		</description>
+		<remark>
+		</remark>
+	</revision>
 </history>

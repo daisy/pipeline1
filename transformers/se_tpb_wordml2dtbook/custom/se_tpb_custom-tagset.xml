@@ -79,7 +79,7 @@
 				</wrap>
 			</tag>
 		</paragraphs>
-		<character>
+		<character useInlineFormatting="true">
 			<tag name="footnote reference"><noteref/></tag>
 			<!-- DTBookmallen -->
 			<tag name="Annotationsreferens">

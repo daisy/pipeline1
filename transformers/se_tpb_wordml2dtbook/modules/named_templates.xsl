@@ -33,6 +33,20 @@
 	</xsl:choose>
 </xsl:template>
 
+<xsl:template name="lastIndexOf">
+	<xsl:param name="str"/>
+	<xsl:param name="char"/>
+	<xsl:choose>
+		<xsl:when test="not(contains($str, $char))"><xsl:value-of select="$str"/></xsl:when>
+		<xsl:otherwise>
+			<xsl:call-template name="lastIndexOf">
+				<xsl:with-param name="str" select="substring-after($str, $char)"/>
+				<xsl:with-param name="char" select="$char"/>
+			</xsl:call-template>
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
 <xsl:template name="insertHeader">
 	<head>
 		<meta name="dtb:uid" content="{$uid}"/>

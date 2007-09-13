@@ -61,7 +61,11 @@ public class ImageDecodeHandler extends DefaultHandler2 {
 			String src = atts.getValue("src");
 			if (src!=null && !src.startsWith("wordml://")) {
 				try {
-					File f = new File(inputdir, URLDecoder.decode(src, "utf-8"));
+					File f;
+					f = new File(URLDecoder.decode(src, "utf-8"));
+					if (!f.exists()) {
+						f = new File(inputdir, URLDecoder.decode(src, "utf-8"));
+					}
 					FileUtils.copy(f, new File(outputdir, buildFileName(src)));
 					String post = src.substring(src.lastIndexOf(".")).toLowerCase();
 					if (!(post.equals(".jpg"))) { //  || post.equals(".jpeg") || post.equals(".png")  
