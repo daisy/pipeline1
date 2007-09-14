@@ -146,7 +146,7 @@ public class EFile extends java.io.File  {
     	//InputSource is = new InputSource(new FileReader(this));
     	//use this instead to avoid charset decoding probs
     	InputSource is = new InputSource(this.toString());
-    	is.setSystemId(this.toString());
+    	is.setSystemId(this.toURI().toString());
         return is;
     }
     

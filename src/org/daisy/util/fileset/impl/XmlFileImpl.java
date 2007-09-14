@@ -465,7 +465,7 @@ abstract class XmlFileImpl
 
     public DOMSource asDOMSource() throws ParserConfigurationException, SAXException, IOException {
     	DOMSource ds = new DOMSource(this.asDocument(true));
-    	ds.setSystemId(this.toString());
+    	ds.setSystemId(this.toURI().toString());
         return ds;
     }
 

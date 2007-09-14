@@ -199,7 +199,7 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 		factory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
 		
 		StreamSource ss = new StreamSource(inputFile.getFile());
-		ss.setSystemId(inputFile.getFile());		
+		ss.setSystemId(inputFile.getFile().toURI().toString());		
 		XMLEventReader reader = factory.createXMLEventReader(ss);		
 		while (reader.hasNext()) {
 			XMLEvent event = reader.nextEvent();

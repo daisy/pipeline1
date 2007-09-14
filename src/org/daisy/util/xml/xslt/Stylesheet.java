@@ -404,7 +404,7 @@ public class Stylesheet {
             reader.setEntityResolver(resolver);
         }
         Source xmlSource = new SAXSource(reader, new InputSource(xml.toString()));
-        xmlSource.setSystemId(xml.toString());
+        xmlSource.setSystemId(xml.toURI().toString());
         return xmlSource;
     }
     

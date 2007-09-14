@@ -96,7 +96,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	public PeekResult peek(File document) throws SAXException, IOException {
 		//redirect to this.peek(InputSource)		
     	InputSource is = new InputSource(new FileReader(document));
-    	is.setSystemId(document.toString());
+    	is.setSystemId(document.toURI().toString());
     	return peek(is);	
 	}
 	
