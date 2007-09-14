@@ -14,7 +14,7 @@
 	<xsl:param name="filter_word"/>
 	<xsl:param name="baseDir"/>
 	<xsl:param name="first_smil"/>
-	<xsl:param name="css_path"/>
+	<xsl:param name="css_path" select="'default.css'"/>
 	<xsl:param name="daisy_noteref"/>
 
 <!--	<xsl:output method="xml" encoding="utf-8" indent="no"
@@ -116,7 +116,7 @@
              <xsl:when test="@name='dc:Rights'"><xsl:value-of select="'dc:rights'"/></xsl:when>
              <xsl:when test="@name='dc:Date'"><xsl:value-of select="'dc:date'"/></xsl:when>
              <xsl:when test="@name='dc:Format'"><xsl:value-of select="'dc:format'"/></xsl:when>
-             <xsl:when test="@name='dc:Identifier'"><xsl:value-of select="'dc:identifier'"/></xsl:when>
+             <!--<xsl:when test="@name='dc:Identifier'"><xsl:value-of select="'dc:identifier'"/></xsl:when>-->
              <xsl:when test="@name='dc:Language'"><xsl:value-of select="'dc:language'"/></xsl:when>
              <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
            </xsl:choose>
