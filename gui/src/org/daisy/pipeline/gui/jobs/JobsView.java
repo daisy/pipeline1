@@ -31,11 +31,16 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.accessibility.ACC;
+import org.eclipse.swt.accessibility.AccessibleAdapter;
+import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.operations.RedoActionHandler;
@@ -136,17 +141,9 @@ public class JobsView extends ViewPart {
 		}
 
 		// Hook painting of parameters to vertically align values
-		jobsTree.addListener(SWT.PaintItem, new Listener() {
-			public void handleEvent(Event e) {
-				if ((e.index == 0)
-						&& (e.item.getData() instanceof JobParameter)) {
-					paintParam((JobParameter) e.item.getData(), e);
-				}
-			}
-		});
-
-		// TODO add popup menu to jobInfos table
-		// jobsTable.setMenu(createPopUpMenu());
+		hookParamsPainting(jobsTree);
+		// Hook the Accessible object to provide information for parameters
+		hookParamsAccessibility(jobsTree);
 
 		// Configure the viewer
 		jobsViewer = new TreeViewer(jobsTree);
@@ -176,34 +173,70 @@ public class JobsView extends ViewPart {
 	}
 
 	/**
-	 * Pretty prints the given parameter using the graphic context of the given
-	 * event.
+	 * Hooks the Accessible object of the jobs tree to return an accessible name
+	 * to the custom-painted job parameters.
 	 * <p>
-	 * This method is used to print the parameters of a job with the pattern
-	 * "name:value" and to align all the values from the left.
+	 * Using the Accessibility API is required here as we do not provide a label
+	 * for parameters in the JFace label provider but use custom painting
+	 * mechanism.
 	 * </p>
 	 * 
-	 * @param param
-	 *            A Job parameter.
-	 * @param e
-	 *            An SWT event
+	 * @param tree
+	 *            the jobs tree
 	 */
-	private void paintParam(JobParameter param, Event e) {
-		// TODO make this RTL/LTR agnostic
-		Integer nameLength = paramNameLength.get(param.getJob());
-		if (nameLength == null) {
-			nameLength = 0;
-			for (JobParameter p : param.getJob().getJobParameters().values()) {
-				nameLength = Math.max(nameLength, e.gc.textExtent(p
-						.getScriptParameter().getNicename()).x);
+	private void hookParamsAccessibility(final Tree tree) {
+		final Display display = tree.getDisplay();
+		tree.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+			@Override
+			public void getName(AccessibleEvent e) {
+				if (e.childID > ACC.CHILDID_SELF) {
+					TreeItem item = (TreeItem) display.findWidget(tree,
+							e.childID);
+					if ((item != null)
+							&& (item.getData() instanceof JobParameter)) {
+						JobParameter param = (JobParameter) item.getData();
+						e.result = param.getScriptParameter().getNicename()
+								+ ": " + param.getValue();
+					}
+				}
 			}
-			nameLength += e.gc.getCharWidth(':');
-			nameLength += e.gc.getCharWidth(' ');
-			paramNameLength.put(param.getJob(), nameLength);
-		}
-		e.gc.drawText(param.getScriptParameter().getNicename() + ':', e.x, e.y);
-		e.gc.drawText(param.getValue(), e.x + nameLength, e.y);
+		});
 
+	}
+
+	/**
+	 * Adds a paint listener to the jobs tree to pretty prints the jobs
+	 * parameters (parameters are displayed as "name:value" values are
+	 * left-aligned).
+	 * 
+	 * @param jobsTree
+	 *            the jobs tree
+	 */
+	private void hookParamsPainting(Tree jobsTree) {
+		jobsTree.addListener(SWT.PaintItem, new Listener() {
+			public void handleEvent(Event e) {
+				if ((e.index == 0)
+						&& (e.item.getData() instanceof JobParameter)) {
+					JobParameter param = (JobParameter) e.item.getData();
+					// TODO make this RTL/LTR agnostic
+					Integer nameLength = paramNameLength.get(param.getJob());
+					if (nameLength == null) {
+						nameLength = 0;
+						for (JobParameter p : param.getJob().getJobParameters()
+								.values()) {
+							nameLength = Math.max(nameLength, e.gc.textExtent(p
+									.getScriptParameter().getNicename()).x);
+						}
+						nameLength += e.gc.textExtent(": ").x;
+						paramNameLength.put(param.getJob(), nameLength);
+					}
+					e.gc.drawText(
+							param.getScriptParameter().getNicename() + ':',
+							e.x, e.y);
+					e.gc.drawText(param.getValue(), e.x + nameLength, e.y);
+				}
+			}
+		});
 	}
 
 	/**
