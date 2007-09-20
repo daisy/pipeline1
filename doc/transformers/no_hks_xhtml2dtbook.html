@@ -1,0 +1,411 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type'	content='application/xhtml+xml; charset=utf-8' />
+	<title>no_hks_xhtml2dtbook</title>
+	<style type="text/css">
+	  body {margin: 2em; font-family: arial, verdana, sans-serif;}
+      table {border-collapse:collapse;font-size:small;}
+        td,th {border:1pt solid rgb(220,220,220);padding:2pt;}
+        th {background-color:rgb(255,255,230);}
+      span.text {font-style:italic;color:rgb(170,120,120);}
+      pre, code {font-family:monospace; color:rgb(120,120,170);}
+      code {font-size:100%;}
+      pre {font-size:small;}
+	</style>
+</head>
+<body>
+<h1 class="title">Transformer documentation: no_hks_xhtml2dtbook</h1>
+<div id="toc" class="toc">
+<ul>
+	<li><a href="#purpose">Transformer Purpose</a></li>
+	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#output">Output</a>
+	<ul>
+		<li><a href="#success">On success</a></li>
+		<li><a href="#failure">On error</a></li>
+	</ul>
+	</li>
+<!-- 	<li><a href="#config">Configuration/Customization</a>
+	<ul>
+		<li><a href="#params">Parameters (tdf)</a></li>
+		<li><a href="#extConfig">Extended configurability</a></li>
+	</ul>
+	</li> -->
+ 	<li><a href="#future">Further development</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#owner">Author</a></li>
+	<li><a href="#licensing">Licensing</a></li>
+</ul>
+</div>
+
+<h2 id="purpose">Transformer Purpose</h2>
+<!-- brief summary of purpose -->
+<p>To transform a valid XHTML file into a valid DTBook file.</p>
+
+
+<h2 id="inputReqs">Input Requirements</h2>
+<ul>
+    <li>Input must be a valid XHTML Transitional or XHTML Strict document.</li>
+    <li>The document <em>must</em> containt at least one <code>h1</code> element.</li>
+    <li>Alle heading elements (<code>h1</code> to <code>h6</code>) <em>must</em> be child elements (in the XML sense of the term) of the
+        <code>body</code> element.<br />
+        This excludes markup such as:
+<pre>
+&lt;body&gt;
+    &lt;div class="start-of-book"&gt;
+        &lt;h1&gt;The title&lt;/h1&gt;
+        :
+        :
+        &lt;h1&gt;Content&lt;/h1&gt;
+        :
+        :
+    &lt;/div&gt;
+    &lt;div class="main-stuff"&gt;
+        &lt;h1&gt;Chapter 1 How it all began&lt;/h1&gt;
+        :
+        :
+        &lt;h1&gt;Chapter 2 How it continued&lt;/h1&gt;
+        :
+        :
+    &lt;/div&gt;
+&lt;/body&gt;
+    </pre>
+    </li>
+    <li>
+        Heading levels must not be skipped. That is, the next heading after a <code>h3</code> can <em>not</em> be a <code>h5</code> heading.
+        It must be a <code>h4</code> heading, or one of <code>h1</code>, <code>h2</code> or <code>h3</code>.
+    </li>
+    <li>A heading can <em>not</em> have another heading of the same type as a first <em>following sibling</em> (in the XML sense of the term).<br />
+        This excludes markup such as:
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;h3&gt;A heading on level 3&lt;/h3&gt;
+&lt;h3&gt;Another heading on level 3&lt;/h3&gt;
+&lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+    Note that the following is perfectly okay (and makes sense):
+<pre>
+:
+.... some text in a paragraph.&lt;/p&gt;
+&lt;h3&gt;A heading on level 3&lt;/h3&gt;
+&lt;h4&gt;A subheading on level 4&lt;/h4&gt;
+&lt;p&gt;Some more text in a paragraph ....
+:
+</pre>
+    </li>
+    <li>The <code>div</code> element <em>may not</em> have <code>br</code>
+        or <code>span</code> as child elements (in the XML sense of the term).</li>
+    <li>The <code>div</code> element <em>may not</em> have text content.
+        This excludes markup such as:
+<pre>
+&lt;div&gt;
+    This is some text before the picture.
+    &lt;img src="fig01.png" alt="Map over Norway" /&gt;
+    This is some text after the picture.
+&lt;/div&gt;
+</pre>
+    Instead you should use:
+<pre>
+&lt;div&gt;
+    &lt;p&gt;This is some text before the picture.&lt;/p&gt;
+    &lt;img src="fig01.png" alt="Map over Norway" /&gt;
+    &lt;p&gt;This is some text after the picture.&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+    or, perhaps better, skip the <code>div</code> element:
+<pre>
+&lt;p&gt;This is some text before the picture.&lt;/p&gt;
+&lt;img src="fig01.png" alt="Map over Norway" /&gt;
+&lt;p&gt;This is some text after the picture.&lt;/p&gt;
+</pre>
+    </li>
+</ul>
+
+<p>It is generally recommended to have a markup with a very "flat"
+structure. One should especially avoid having block elements inside
+block elements, as in the following example:
+</p>
+<pre>
+&lt;p&gt;This is some text before the list.
+    &lt;ul&gt;
+        &lt;li&gt;The first list item.&lt;/li&gt;
+        &lt;li&gt;This is the second and last item.&lt;/li&gt;
+    &lt;/ul&gt;
+And this is the text after the list.&lt;/p&gt;
+</pre>
+Proper markup should rather be as follows:
+<pre>
+&lt;p&gt;This is some text before the list.&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;The first list item.&lt;/li&gt;
+    &lt;li&gt;This is the second and last item.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And this is the text after the list.&lt;/p&gt;
+</pre>
+
+<!-- contract definition: detailed requirements on input nature -->
+
+<h2 id="output">Output</h2>
+
+<h3 id="success">On success</h3>
+<table width="100%">
+    <tr valign="bottom">
+        <th>XHTML element</th>
+        <th>Generated DTBook element</th>
+        <th>Comments</th>
+    </tr>
+    <tr valign="top">
+        <td><code>head/meta</code></td>
+        <td><code>head/meta</code></td>
+        <td>
+            <ul>
+                <li>The <code>name</code>, <code>content</code> and <code>scheme</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>head/link</code>, where the value for the <code>rel</code> attribute equals <span class="text">stylesheet</span>.
+        </td>
+        <td><code>head/link</code></td>
+        <td>
+            <ul>
+                <li>The name of the style sheet, taken from the <code>href</code> attribute, is appended to the string <span class="text">dtbook_</span>.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>body</code></td>
+        <td><code>book</code></td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>h1</code> to <code>h6</code></td>
+        <td><pre>
+&lt;levelx&gt;
+    &lt;hx&gt;....&lt;/hx&gt;
+    :
+    :
+&lt;/levelx&gt;
+</pre></td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>If the <code>hx</code> element carries a <code>class</code> attribute, it is transferred to the corresponding
+                <code>levelx</code> element.</li>
+            </ul>
+            Specifically for the <code>h1</code> elements, the following rules apply:
+            <ul>
+                <li>If the <code>class</code> attribute equals the string <span class="text">frontmatter</span>, the
+                    generated <code>level1</code> element will be a child of the <code>frontmatter</code> element.
+                </li>
+                <li>If the <code>class</code> attribute equals the string <span class="text">rearmatter</span>, the
+                    generated <code>level1</code> element will be a child of the <code>rearmatter</code> element.
+                </li>
+                <li>If the <code>class</code> attribute has any other value, or is absent, the
+                    generated <code>level1</code> element will be a child of the <code>bodymatter</code> element.
+                </li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>span</code>, with a value for the <code>class</code>            attribute equal to
+            <span class="text">sentence</span>.</td>
+        <td><code>sent</code></td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td>
+            <code>span</code>, where the value for the <code>class</code> attribute starts
+            with
+            the string <span class="text">page-</span>
+<!--            attribute equal to <span class="text">page-front</span>,
+            <span class="text">page-normal</span> or
+            <span class="text">page-special</span> -->
+        </td>
+        <td><code>pagenum</code></td>
+        <td>
+            <ul>
+                <li>The <code>page</code> attribute gets its value from the <code>class</code> attribute,
+                    so that if this attribute has a value equal to the string
+                    <span class="text">page-normal</span>, the <code>page</code> attribute  gets
+                    the value <span class="text">normal</span>.
+                    Note that, for the generated DTBook file to be valid, the only other possible values for the
+                    <code>class</code> attribute, are the strings
+                    <span class="text">page-front</span> and <span class="text">page-special</span>.
+                    <!-- value from the <code>class</code>. -->
+                </li>
+                <li>The <code>id</code> attribute gets a value constructed by adding the string
+                    <span class="text">page-</span> to the content of the <code>span</code> element.</li>
+                <li>The <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>span</code>, where the value for the <code>class</code>  attribute ends with
+            the string             <span class="text">-prodnote</span>.</td>
+        <td><code>prodnote</code></td>
+        <td>
+            <ul>
+                <li>The <code>render</code> attribute gets its value from the <code>class</code> attribute,
+                    so that if this attribute has a value equal to the string
+                    <span class="text">optional-prodnote</span>, the <code>render</code> attribute gets
+                    the value <span class="text">optional</span>.
+                    Note that, for the generated DTBook file to be valid, the only other possible value for the
+                    <code>class</code> attribute, is the string
+                    <span class="text">required-prodnote</span>.
+                </li>
+                <li>The <code>id</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>span</code>, with a value for the <code>class</code>            attribute equal to
+            <span class="text">noteref</span>.</td>
+        <td><code>noteref</code></td>
+        <td>
+            <ul>
+                <li>The <code>idref</code> attribute for the <code>noteref</code> element gets a value based on the value of
+                    the <code>bodyref</code> attribute for the <code>span</code> element.</li>
+                <li>The <code>id</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>span</code>, with no <code>class</code>
+            attribute, or a value for the <code>class</code>            attribute different from any the ones mentioned above.</td>
+        <td><code>span</code></td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>div</code>, with a value for the <code>class</code>            attribute equal to
+            <span class="text">notebody</span>.</td>
+        <td><code>note</code></td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>div</code>, with no <code>class</code>
+            attribute, or a value for the <code>class</code>            attribute different from the one mentioned above.</td>
+        <td><code>div</code></td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>img</code></td>
+        <td><code>img</code></td>
+        <td>
+            <ul>
+                <li>The <code>alt</code>, <code>src</code>, <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>ol</code></td>
+        <td><code>list</code></td>
+        <td>
+            <ul>
+                <li>The <code>type</code> attribute will have the value <span class="text">ol</span>.</li>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>ul</code></td>
+        <td><code>list</code></td>
+        <td>
+            <ul>
+                <li>The <code>type</code> attribute will have the value <span class="text">ul</span>.</li>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code>table</code>, <code>tr</code>, <code>td</code>, <code>th</code> and <code>col</code></td>
+        <td><code>table</code>, <code>tr</code>, <code>td</code>, <code>th</code> and <code>col</code> respectively</td>
+        <td>
+            <ul>
+                <li>The <code>rowspan</code>, <code>colspan</code>, <code>valign</code>, <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td>
+            <code>p</code>, <code>li</code>, <code>dl</code>, <code>dt</code>, <code>dd</code>,
+            <code>strong</code>, <code>em</code>, <code>sub</code>, <code>sup</code> and
+            <code>br</code>
+        </td>
+        <td>            <code>p</code>, <code>li</code>, <code>dl</code>, <code>dt</code>, <code>dd</code>,
+            <code>strong</code>, <code>em</code>, <code>sub</code>, <code>sup</code> and
+            <code>br</code> respectively</td>
+        <td>
+            <ul>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td><code></code></td>
+        <td><code></code></td>
+        <td></td>
+    </tr>
+</table>
+
+<p>Other elements than the ones listed above will result in a comment in the DTBook file.</p>
+
+<!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+
+<h3 id="failure">On error</h3>
+<p>????????????????</p>
+<!-- <p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
+<p>See further <a href="#params">Parameters</a>.</p> -->
+
+<!-- <h2 id="config">Configuration/Customization</h2>
+
+<h3 id="params">Parameters (tdf)</h3> -->
+<!-- description on params as defined in tdf -->
+
+<!-- <h3 id="extConfig">Extended configurability</h3> -->
+<!-- details on additional config files, system variables etc -->
+<!-- <p>None.</p> -->
+
+<h2 id="future">Further development</h2>
+<p>Extend the transformation rules to handle more elements in the XHTML document.</p>
+<!-- notes on refactoring; TODOs and MAYDOs -->
+
+
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+	<li>XSLT 2.0 processor</li>
+</ul>
+
+<h2 id="owner">Author</h2>
+Per Sennels, Huseby kompetansesenter, Norway
+
+<h2 id="licensing">Licensing</h2>
+<!-- Licensing information -->
+<p>????????</p>
+
+</body>
+</html>
