@@ -1,8 +1,10 @@
 package no_hks_xhtml2dtbook;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Map;
 
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.pipeline.core.InputListener;
@@ -12,6 +14,7 @@ import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.xslt.Chain;
+import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.TransformerFactoryConstants;
 
 /**
@@ -38,20 +41,24 @@ public class Xhtml2DTBook extends Transformer {
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		try{
 		
-			Chain chain = new Chain(TransformerFactoryConstants.SAXON8, CatalogEntityResolver.getInstance());
-			//TODO add any pre-tweak (xhtml-xhtml) XSLTs using inparams
+//			Chain chain = new Chain(TransformerFactoryConstants.SAXON8, CatalogEntityResolver.getInstance());
+//			//TODO add any pre-tweak (xhtml-xhtml) XSLTs using inparams			
+//			// add the static canonical XSLT 
+//			chain.addStylesheet(new StreamSource(this.getClass().getResource("xhtml2dtbook.xsl").openStream()));
+	
+			//get xslt
+			URL xslt = this.getClass().getResource("xhtml2dtbook.xsl");
 			
-			// add the static canonical XSLT 
-			chain.addStylesheet(new StreamSource(this.getClass().getResource("xhtml2dtbook.xsl").openStream()));
-		
 			//get input file
 			File input = FilenameOrFileURI.toFile((String) parameters.remove("input"));
 
 			//prep output dir 
-			File output = FilenameOrFileURI.toFile((String) parameters.remove("output"));
+			File output = FilenameOrFileURI.toFile((String) parameters.remove("output"));			
 			FileUtils.createDirectory(output.getParentFile());
 						
-			chain.applyChain(input, output);
+			Stylesheet.apply(input.getAbsolutePath(), xslt, output.getAbsolutePath(), TransformerFactoryConstants.SAXON8, null, CatalogEntityResolver.getInstance());
+			
+//			chain.applyChain(input, output);
 					
 		} catch (Exception e) {
 			String message = i18n("ERROR_ABORTING", e.getMessage());
