@@ -45,7 +45,7 @@ public class Script {
 	 * Constructor. The script is initially empty and needs to be filled with
 	 * properties and tasks.
 	 */
-	Script(URL url) {
+	public Script(URL url) {
 		this.mProperties = new LinkedHashMap<String,AbstractProperty>();
 		this.tasks = new LinkedList<Task>();
 		this.mScriptURL = url;
