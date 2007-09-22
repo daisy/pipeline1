@@ -186,10 +186,12 @@ samples/input/dtbook/dtbook.2005.basic.css -text
 samples/input/dtbook/hauy-2005-1.xml -text
 samples/input/dtbook/hauy_invalid.xml -text
 samples/input/dtbook/hauy_valid.xml -text
+samples/input/dtbook/the_waste_land.xml -text
 samples/input/dtbook/valentin.jpg -text
 samples/input/html/img/nor02.jpg -text
 samples/input/html/nor01.jpg -text
 samples/input/html/nor1.html -text
+samples/input/jpg/daisylog.jpg -text
 samples/input/odf/error.odf.odt -text
 samples/input/odf/simple.odt -text
 samples/input/odf/simple2.odt -text
