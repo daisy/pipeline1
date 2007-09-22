@@ -7,8 +7,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -101,7 +104,6 @@ public class DocIndexGenerator implements ErrorHandler {
 		}		
 	}
 
-
 	private Document parse(EFile file) throws ParserConfigurationException, SAXException, IOException{
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance(); 
 		DocumentBuilder db = dbf.newDocumentBuilder();		
@@ -156,6 +158,25 @@ public class DocIndexGenerator implements ErrorHandler {
 	}
 
 	private void addRefs(Element parent, String parentFolder, String deleteInLabels) {
+		List<File> list = new LinkedList<File>();
+		for (Iterator iter = mFilesWithTitles.keySet().iterator(); iter.hasNext();) {
+			File file = (File) iter.next();
+			if(file.getParentFile().getName().equals(parentFolder)){
+				list.add(file);
+			}	
+		}
+		
+		Collections.sort(list);
+		
+		for(File f : list) {
+			String title = mFilesWithTitles.get(f);
+			String hrefValue = "./"+parentFolder+"/"+f.getName();
+			parent = appendAnchorWithHref(parent, hrefValue, title,deleteInLabels);	
+		}
+				
+	}
+	
+	private void addRefsOld(Element parent, String parentFolder, String deleteInLabels) {
 		for (Iterator iter = mFilesWithTitles.keySet().iterator(); iter.hasNext();) {
 			File file = (File) iter.next();
 			if(file.getParentFile().getName().equals(parentFolder)){
@@ -184,7 +205,7 @@ public class DocIndexGenerator implements ErrorHandler {
 				//System.err.println("parsing " + file.getName());
 				mFilesWithTitles.put(file, getTitle(new EFile(file)));
 			}
-		}				
+		}			
 	}
 
 		
