@@ -13,7 +13,7 @@ public class Xhtml2DTBook1 extends PipelineTest {
 	
 	@Override
 	public List<String> getParameters() {
-		mParameters.add("--inputFile=" + mDataInputDir + "/xhtml/input01.html");
+		mParameters.add("--inputFile=" + mDataInputDir + "/xhtml/daisy_202.html");
 		mParameters.add("--outputFile=" + mDataOutputDir + "/Xhtml2Dtbook/output01.xml");		
 		return mParameters;
 	}

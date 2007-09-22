@@ -13,8 +13,9 @@ public class OpsCreator3 extends PipelineTest {
 	
 	@Override
 	public List<String> getParameters() {
-		mParameters.add("--input=" + mDataInputDir + "/xhtml/multi-language-unicode.html;" + mDataInputDir + "/xhtml/daisy_202.html");
-		mParameters.add("--output=" + mDataOutputDir + "/OpsCreator2/hauy.epub");				
+		//mParameters.add("--input=" + mDataInputDir + "/xhtml/multi-language-unicode.html;" + mDataInputDir + "/xhtml/daisy_202.html");
+		mParameters.add("--input=" + mDataInputDir + "/xhtml/daisy_202.html");
+		mParameters.add("--output=" + mDataOutputDir + "/OpsCreator3/hauy.epub");				
 		return mParameters;
 	}
 

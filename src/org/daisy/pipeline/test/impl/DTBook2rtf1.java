@@ -13,8 +13,9 @@ public class DTBook2rtf1 extends PipelineTest {
 	
 	@Override
 	public List<String> getParameters() {
-		mParameters.add("--xml=" + mDataInputDir + "/dtbook/hauy_valid.xml");
-		mParameters.add("--out=" + mDataOutputDir + "/DTBook2RTF1/fromDtbook.rtf");				
+		//mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy_valid.xml");
+		mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy-2005-1.xml");
+		mParameters.add("--output=" + mDataOutputDir + "/DTBook2RTF1/fromDtbook.rtf");				
 		return mParameters;
 	}
 
