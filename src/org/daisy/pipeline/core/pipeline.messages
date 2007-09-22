@@ -74,7 +74,7 @@
 	<entry key="INVALID_SUCCESS_REGEX"               >Invalid regex pattern for success</entry>
 	<entry key="POLL_INTERVAL_TO_SMALL"              >Poll interval must be at least 10ms. Setting default (500ms).</entry>
 	<entry key="RUNNING_COMMAND"                     >Running ''{0}''</entry>
-	<entry key="PROGRAM_RAN_FOR"                     >Program ''{0}'' ran {1,choice,0#really fast|1#for one second|1<for {1,number,integer} seconds}</entry>
+	<entry key="PROGRAM_RAN_FOR"                     >Program ''{0}'' ran {1,choice,0#really fast|1#for one second|1&lt;for {1,number,integer} seconds}</entry>
 	<entry key="UNRECOGIZED_COMMAD_PATTERN_VARIABLE" >Unrecognized variable in command pattern string: {0}</entry>
 
 	<!-- org.daisy.pipeline.Transformers.XSLTRunner -->
