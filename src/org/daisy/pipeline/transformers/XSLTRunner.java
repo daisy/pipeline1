@@ -18,11 +18,11 @@
  */
 package org.daisy.pipeline.transformers;
 
+import java.io.File;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 
 import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
@@ -57,8 +57,8 @@ public class XSLTRunner extends Transformer {
      * @param eventListeners a set of event listeners
      * @param interactive specified whether the Transformer should be run in interactive mode
      */
-    public XSLTRunner(InputListener inputListener, Set eventListeners, Boolean interactive) {
-        super(inputListener, eventListeners, interactive);
+    public XSLTRunner(InputListener inputListener, Boolean interactive) {
+        super(inputListener,  interactive);
     }
 
     protected boolean execute(Map parameters) throws TransformerRunException {
@@ -67,21 +67,26 @@ public class XSLTRunner extends Transformer {
         String outFileName = (String)parameters.remove("out");
         String factory = (String)parameters.remove("factory");
         
-        // xml
-        sendMessage(Level.FINE, i18n("XSLT_READING_XML", xmlFileName));
+        // xml        
+        sendMessage(i18n("XSLT_READING_XML", xmlFileName), MessageEvent.Type.INFO , MessageEvent.Cause.SYSTEM); 
         
-        // xslt
-        sendMessage(Level.FINE, i18n("XSLT_READING_XSLT", xsltFileName));
+        // xslt        
+        sendMessage(i18n("XSLT_READING_XSLT", xsltFileName), MessageEvent.Type.INFO , MessageEvent.Cause.SYSTEM);
         
         // factory
-        if (factory != null) {
-	        sendMessage(Level.FINER, i18n("XSLT_USING_FACTORY", factory));
+        if (factory != null) {	        
+	        sendMessage(i18n("XSLT_USING_FACTORY", factory), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 	    }
         
         // result
-        sendMessage(Level.FINE, i18n("XSLT_WRITING_OUT", outFileName));
+        sendMessage( i18n("XSLT_WRITING_OUT", outFileName), MessageEvent.Type.INFO , MessageEvent.Cause.SYSTEM);        
 		
 		try {			
+			//mg20070905 assure the dir path exists 
+			//(net.sf.saxon.Transformer for example doesnt create dirs)
+			File out = new File(outFileName);
+			out.getParentFile().mkdirs();
+			
 		    Stylesheet.apply(xmlFileName, xsltFileName, outFileName, factory, parameters, CatalogEntityResolver.getInstance());
         } catch (XSLTException e) {
             throw new TransformerRunException(e.getMessage(), e);
