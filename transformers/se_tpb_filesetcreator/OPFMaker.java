@@ -124,7 +124,9 @@ public class OPFMaker {
 		validDCElemNames.add("dc:Contributor");
 		validDCElemNames.add("dc:Date");
 		validDCElemNames.add("dc:Type");
-		validDCElemNames.add("dc:Format");
+		// Martin Blomberg: Do not permit dc:Format other than from template.
+		// http://sourceforge.net/tracker/index.php?func=detail&aid=1782459&group_id=134191&atid=729299
+		//validDCElemNames.add("dc:Format");
 		validDCElemNames.add("dc:Identifier");
 		validDCElemNames.add("dc:Source");
 		validDCElemNames.add("dc:Language");
