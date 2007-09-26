@@ -20,63 +20,91 @@ package org.daisy.pipeline.gui.util.swt;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
 /**
+ * Traversal listener that hooks {@link SWT#TRAVERSE_TAB_NEXT} and
+ * {@link SWT#TRAVERSE_TAB_PREVIOUS} events on a {@link TabFolder} and children
+ * controls to cycle through the {@link TabItem}s.
+ * 
  * @author Romain Deltour
  * 
  */
 public class TabFolderTraverseListener implements TraverseListener {
 
-    TabFolder folder;
+	/**
+	 * Adds a new instance of <code>TabFolderTraverseListener</code> to the
+	 * given tab folder and its children.
+	 * 
+	 * @param folder
+	 *            a tab folder
+	 */
+	public static void addNewTo(TabFolder folder) {
+		TraverseListener listener = new TabFolderTraverseListener(folder);
+		folder.addTraverseListener(listener);
+		for (TabItem item : folder.getItems()) {
+			item.getControl().addTraverseListener(listener);
+		}
+	}
 
-    public TabFolderTraverseListener(TabFolder folder) {
-        super();
-        this.folder = folder;
-    }
+	TabFolder folder;
 
-    public static void addNewTo(TabFolder folder) {
-        TraverseListener listener = new TabFolderTraverseListener(folder);
-        folder.addTraverseListener(listener);
-        for (TabItem item : folder.getItems()) {
-            item.getControl().addTraverseListener(listener);
-        }
-    }
+	/**
+	 * Creates a new instance of this listener that will cycle through the tab
+	 * items of the given folder.
+	 * 
+	 * @param folder
+	 *            a tab folder
+	 */
+	public TabFolderTraverseListener(TabFolder folder) {
+		super();
+		this.folder = folder;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.swt.events.TraverseListener#keyTraversed(org.eclipse.swt.events.TraverseEvent)
-     */
-    public void keyTraversed(TraverseEvent e) {
-        switch (e.detail) {
-        case SWT.TRAVERSE_TAB_NEXT:
-            if (e.stateMask == SWT.CONTROL) {
-                int sel = folder.getSelectionIndex();
-                int next = (sel == folder.getItemCount() - 1) ? 0 : sel + 1;
-                TabItem item = folder.getItem(next);
-                folder.setSelection(item);
-                item.getControl().setFocus();
-            } else {
-                e.doit = true;
-            }
-            break;
-        case SWT.TRAVERSE_TAB_PREVIOUS:
-            if (e.stateMask == (SWT.CONTROL | SWT.SHIFT)) {
-                int sel = folder.getSelectionIndex();
-                int prev = (sel == 0) ? folder.getItemCount() - 1 : sel - 1;
-                TabItem item = folder.getItem(prev);
-                folder.setSelection(item);
-                item.getControl().setFocus();
-            } else {
-                e.doit = true;
-            }
-        default:
-            e.doit = true;
-            break;
-        }
+	/**
+	 * Hooks {@link SWT#TRAVERSE_TAB_NEXT} and {@link SWT#TRAVERSE_TAB_PREVIOUS}
+	 * events on a {@link TabFolder} and children controls to cycle through the
+	 * {@link TabItem}s.
+	 */
+	public void keyTraversed(TraverseEvent e) {
+		switch (e.detail) {
+		case SWT.TRAVERSE_TAB_NEXT:
+			if (e.stateMask == SWT.CONTROL) {
+				e.doit = false;
+				int sel = folder.getSelectionIndex();
+				int next = (sel == folder.getItemCount() - 1) ? 0 : sel + 1;
+				folder.setSelection(next);
+				folder.setFocus();
+				Event event = new Event();
+				event.item = folder.getItem(next);
+				folder.notifyListeners(SWT.Selection, event);
+				// boolean res = folder.traverse(SWT.TRAVERSE_PAGE_NEXT);
+				// folder.setFocus();
+			} else {
+				e.doit = true;
+			}
+			break;
+		case SWT.TRAVERSE_TAB_PREVIOUS:
+			if (e.stateMask == (SWT.CONTROL | SWT.SHIFT)) {
+				e.doit = false;
+				int sel = folder.getSelectionIndex();
+				int prev = (sel == 0) ? folder.getItemCount() - 1 : sel - 1;
+				folder.setSelection(prev);
+				folder.setFocus();
+				Event event = new Event();
+				event.item = folder.getItem(prev);
+				folder.notifyListeners(SWT.Selection, event);
+				// boolean res = folder.traverse(SWT.TRAVERSE_PAGE_NEXT);
+				// folder.setFocus();
+			} else {
+				e.doit = true;
+			}
+		default:
+			e.doit = true;
+			break;
+		}
 
-    }
-
+	}
 }
