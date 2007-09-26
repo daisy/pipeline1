@@ -23,28 +23,46 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
+/**
+ * Configures the workbench window.
+ * <p>
+ * The workbench window advisor object is created in response to a workbench
+ * window being created (one per window), and is used to configure the window.
+ * </p>
+ * 
+ * @author Romain Deltour
+ * @see WorkbenchWindowAdvisor
+ * 
+ */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
-    public ApplicationWorkbenchWindowAdvisor(
-            IWorkbenchWindowConfigurer configurer) {
-        super(configurer);
-    }
+	/**
+	 * Creates a new workbench window advisor for configuring a workbench window
+	 * via the given workbench window configurer.
+	 * 
+	 * @param configurer
+	 *            an object for configuring the workbench window
+	 */
+	public ApplicationWorkbenchWindowAdvisor(
+			IWorkbenchWindowConfigurer configurer) {
+		super(configurer);
+	}
 
-    @Override
-    public ActionBarAdvisor createActionBarAdvisor(
-            IActionBarConfigurer configurer) {
-        return new ApplicationActionBarAdvisor(configurer);
-    }
+	@Override
+	public ActionBarAdvisor createActionBarAdvisor(
+			IActionBarConfigurer configurer) {
+		return new ApplicationActionBarAdvisor(configurer);
+	}
 
-    @Override
-    public void preWindowOpen() {
-        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-        configurer.setShowCoolBar(true);
-        configurer.setShowFastViewBars(false);
-        configurer.setShowMenuBar(true);
-        configurer.setShowPerspectiveBar(true);
-        configurer.setShowProgressIndicator(false);
-        configurer.setShowStatusLine(true);
-        configurer.setTitle(Messages.window_title);
-    }
+	@Override
+	public void preWindowOpen() {
+		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+		configurer.setShowCoolBar(true);
+		configurer.setShowFastViewBars(false);
+		configurer.setShowMenuBar(true);
+		configurer.setShowPerspectiveBar(true);
+		configurer.setShowProgressIndicator(false);
+		configurer.setShowStatusLine(true);
+		configurer.setTitle(Messages.window_title);
+	}
 }

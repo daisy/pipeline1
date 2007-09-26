@@ -24,22 +24,35 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
+/**
+ * 
+ * Configures the workbench.
+ * <p>
+ * Note that the workbench advisor object is created in advance of creating the
+ * workbench. However, by the time the workbench starts calling methods on this
+ * class, <code>PlatformUI.getWorkbench</code> is guaranteed to have been
+ * properly initialized.
+ * 
+ * @author Romain Deltour
+ * @see WorkbenchAdvisor
+ * 
+ */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-    @Override
-    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
-            IWorkbenchWindowConfigurer configurer) {
-        return new ApplicationWorkbenchWindowAdvisor(configurer);
-    }
+	@Override
+	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
+			IWorkbenchWindowConfigurer configurer) {
+		return new ApplicationWorkbenchWindowAdvisor(configurer);
+	}
 
-    @Override
-    public String getInitialWindowPerspectiveId() {
-        return JobsPerspective.ID;
-    }
+	@Override
+	public String getInitialWindowPerspectiveId() {
+		return JobsPerspective.ID;
+	}
 
-    @Override
-    public void initialize(IWorkbenchConfigurer configurer) {
-        configurer.setSaveAndRestore(true);
-        TrayDialog.setDialogHelpAvailable(true);
-    }
+	@Override
+	public void initialize(IWorkbenchConfigurer configurer) {
+		configurer.setSaveAndRestore(true);
+		TrayDialog.setDialogHelpAvailable(true);
+	}
 }
