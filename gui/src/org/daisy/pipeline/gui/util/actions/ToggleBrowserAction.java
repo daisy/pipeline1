@@ -18,39 +18,60 @@
 package org.daisy.pipeline.gui.util.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * Action used to toggle the focus in/out a Browser widget.
+ * 
+ * @author Romain Deltour
+ * 
+ */
 public class ToggleBrowserAction extends Action {
-    private Shell shell;
-    private Browser browser;
-    private Control lastFocusOwner;
+	/** The shell hosting the Browser widget */
+	private Shell shell;
+	/** The Browser widget we toggle the focus in/out */
+	private Browser browser;
+	/** The Control that previously had focus before using the action */
+	private Control lastFocusOwner;
 
-    public ToggleBrowserAction(Shell shell, Browser browser) {
-        super();
-        this.browser = browser;
-        this.shell = shell;
-    }
+	/**
+	 * Creates an instance of this action for the given shell and the given
+	 * browser.
+	 * 
+	 * @param shell
+	 *            a Shell that will get the focus in last resort
+	 * @param browser
+	 *            The Browser widget we want the focus to move in/out
+	 */
+	public ToggleBrowserAction(Shell shell, Browser browser) {
+		super();
+		this.browser = browser;
+		this.shell = shell;
+	}
 
-    @Override
-    public void run() {
-        if (browser.isDisposed()) {
-            return;
-        }
-        if (!browser.isFocusControl()) {
-            Control control = shell.getDisplay().getFocusControl();
-            if (browser.forceFocus()) {
-                lastFocusOwner = control;
-            }
-        } else {
-            if (lastFocusOwner != null && !lastFocusOwner.isDisposed()) {
-                lastFocusOwner.forceFocus();
-            } else {
-                shell.setFocus();
-            }
-            lastFocusOwner = null;
-        }
-    }
+	@Override
+	public void run() {
+		if (browser.isDisposed()) {
+			return;
+		}
+		if (!browser.isFocusControl()) {
+			Control control = shell.getDisplay().getFocusControl();
+			if (browser.forceFocus()) {
+				lastFocusOwner = control;
+				// an additional TAB is required to focus the browser content:
+				browser.traverse(SWT.TRAVERSE_TAB_NEXT);
+			}
+		} else {
+			if ((lastFocusOwner != null) && !lastFocusOwner.isDisposed()) {
+				lastFocusOwner.forceFocus();
+			} else {
+				shell.setFocus();
+			}
+			lastFocusOwner = null;
+		}
+	}
 
 }
