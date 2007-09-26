@@ -41,7 +41,6 @@ public class HackingPresentationFactory extends WorkbenchPresentationFactory_33 
 	public StackPresentation createViewPresentation(Composite parent,
 			IStackPresentationSite site) {
 		StackPresentation sp = super.createViewPresentation(parent, site);
-		System.err.println("created view presentation: ");
 		for (Control control : ((Composite) sp.getControl()).getChildren()) {
 			if (control instanceof ToolBar) {
 				control.getAccessible().addAccessibleListener(
