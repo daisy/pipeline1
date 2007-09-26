@@ -40,6 +40,7 @@ public class Application implements IApplication {
 		Thread current = Thread.currentThread();
 		ClassLoader oldLoader = current.getContextClassLoader();
 		Display display = PlatformUI.createDisplay();
+		// DebugUtil.traceEvents(display);
 		try {
 			current.setContextClassLoader(getClass().getClassLoader());
 			int returnCode = PlatformUI.createAndRunWorkbench(display,

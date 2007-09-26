@@ -549,5 +549,13 @@
             id="org.daisy.pipeline.gui.views.progress"
             name="%view.progress"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.presentationFactories">
+      <factory
+            class="org.daisy.pipeline.gui.HackingPresentationFactory"
+            id="org.daisy.pipeline.gui.presentationFactory"
+            name="Hacking Factory">
+      </factory>
+   </extension>
 
 </plugin>
