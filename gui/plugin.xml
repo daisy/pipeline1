@@ -498,7 +498,7 @@
             id="org.daisy.pipeline.gui.prefPage.appearance"
             name="%prefPage.appearance"/>
       <page
-            class="org.eclipse.ui.ExtensionFactory:keysPreferencePage"
+            class="org.eclipse.ui.ExtensionFactory:newKeysPreferencePage"
             id="org.daisy.pipeline.gui.prefPage.keys"
             name="%prefPage.keys"/>
       <page
