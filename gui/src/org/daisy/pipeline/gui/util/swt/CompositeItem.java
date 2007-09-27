@@ -21,15 +21,23 @@ package org.daisy.pipeline.gui.util.swt;
 import org.daisy.pipeline.gui.util.viewers.CompositeListViewer;
 import org.daisy.pipeline.gui.util.viewers.ICompositeLabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.accessibility.ACC;
+import org.eclipse.swt.accessibility.Accessible;
+import org.eclipse.swt.accessibility.AccessibleControlAdapter;
+import org.eclipse.swt.accessibility.AccessibleControlEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 /**
  * The abstract superclass of composite widgets representing items of
@@ -97,7 +105,7 @@ public abstract class CompositeItem extends Composite {
 	 * 
 	 */
 	public CompositeItem(CompositeList parent, int style, int index) {
-		super(parent, style);
+		super(parent.content, style);
 		parentList = parent;
 		selected = false;
 		setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
@@ -105,6 +113,7 @@ public abstract class CompositeItem extends Composite {
 		parent.itemCreated(this, index);
 		hookListeners();
 		refreshColors();
+		initAccessible();
 	}
 
 	/**
@@ -123,7 +132,7 @@ public abstract class CompositeItem extends Composite {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				parentList.setSelection(new int[] { parentList
-						.indexOf(CompositeItem.this) });
+						.indexOf(CompositeItem.this) }, true);
 			}
 		};
 		addMouseListener(mouseListener);
@@ -132,25 +141,113 @@ public abstract class CompositeItem extends Composite {
 		}
 		addTraverseListener(new TraverseListener() {
 			public void keyTraversed(TraverseEvent event) {
-				switch (event.detail) {
-				case SWT.TRAVERSE_ARROW_NEXT:
-					parentList.selectNext();
-					break;
-				case SWT.TRAVERSE_ARROW_PREVIOUS:
-					parentList.selectPrevious();
-					break;
-				case SWT.TRAVERSE_ESCAPE:
-				case SWT.TRAVERSE_RETURN:
-				case SWT.TRAVERSE_TAB_NEXT:
-				case SWT.TRAVERSE_TAB_PREVIOUS:
-				case SWT.TRAVERSE_PAGE_NEXT:
-				case SWT.TRAVERSE_PAGE_PREVIOUS:
-				default:
-					event.doit = true;
-					break;
-				}
+				parentList.traverse(event.detail);
+				event.doit = false;
 			}
 		});
+	}
+
+	/**
+	 * Initializes the accessible object of this custom control
+	 */
+	private void initAccessible() {
+		final Accessible accessible = getAccessible();
+		accessible.addAccessibleControlListener(new AccessibleControlAdapter() {
+
+			@Override
+			public void getChild(AccessibleControlEvent e) {
+				if (e.childID == ACC.CHILDID_SELF) {
+					e.accessible = accessible;
+				}
+			}
+
+			@Override
+			public void getChildAtPoint(AccessibleControlEvent e) {
+				Point testPoint = toControl(e.x, e.y);
+				int childID = ACC.CHILDID_NONE;
+				Rectangle location = getBounds();
+				location.height = location.height - getClientArea().height;
+				if (location.contains(testPoint)) {
+					childID = ACC.CHILDID_SELF;
+				}
+				e.childID = childID;
+			}
+
+			@Override
+			public void getChildCount(AccessibleControlEvent e) {
+				e.detail = 0;
+			}
+
+			@Override
+			public void getChildren(AccessibleControlEvent e) {
+				e.children = new Object[0];
+			}
+
+			@Override
+			public void getFocus(AccessibleControlEvent e) {
+				int childID = ACC.CHILDID_NONE;
+				if (isFocusControl()) {
+					e.childID = ACC.CHILDID_SELF;
+				}
+				e.childID = childID;
+			}
+
+			@Override
+			public void getLocation(AccessibleControlEvent e) {
+				Rectangle location = null;
+				int childID = e.childID;
+				if (childID == ACC.CHILDID_SELF) {
+					location = getBounds();
+				}
+				if (location != null) {
+					Point pt = getParent().toDisplay(location.x, location.y);
+					e.x = pt.x;
+					e.y = pt.y;
+					e.width = location.width;
+					e.height = location.height;
+				}
+
+			}
+
+			@Override
+			public void getRole(AccessibleControlEvent e) {
+				int role = 0;
+				int childID = e.childID;
+				if (childID == ACC.CHILDID_SELF) {
+					role = ACC.ROLE_LISTITEM;
+				}
+				e.detail = role;
+			}
+
+			@Override
+			public void getSelection(AccessibleControlEvent e) {
+				e.childID = ACC.CHILDID_NONE;
+			}
+
+			@Override
+			public void getState(AccessibleControlEvent e) {
+
+				int state = ACC.STATE_NORMAL;
+				int childID = e.childID;
+				if (childID == ACC.CHILDID_SELF) {
+					state = ACC.STATE_SELECTABLE;
+					if (isFocusControl()) {
+						state |= ACC.STATE_FOCUSED;
+					}
+					if (isSelected()) {
+						state |= ACC.STATE_SELECTED;
+					}
+				}
+				e.detail = state;
+			}
+		});
+
+		addListener(SWT.FocusIn, new Listener() {
+			public void handleEvent(Event event) {
+				accessible.setFocus(ACC.CHILDID_SELF);
+			}
+		});
+
 	}
 
 	/**
