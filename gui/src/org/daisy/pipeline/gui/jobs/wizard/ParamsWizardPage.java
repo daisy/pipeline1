@@ -231,7 +231,7 @@ public class ParamsWizardPage extends WizardPage implements
 				updateSettings(param, param.getValue());
 			}
 			value = scriptSettings.get(param.getName());
-			if (value != null) {
+			if ((value != null) && (value.length() > 0)) {
 				adapter.setValue(value);
 				try {
 					((NewJobWizard) getWizard()).getJob().setParameterValue(
