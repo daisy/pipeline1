@@ -1,0 +1,45 @@
+<transformer version="1.1">
+	<name>DTBook Fix</name>
+	<description>desc...</description>
+	<classname>se_tpb_dtbookFix.DTBookFix</classname>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/se_tpb_wordml2dtbook.html"/>	
+	
+	<parameters>
+
+<!-- Main parameters -->
+		<parameter required="true" direction="in" type="application/xml">
+			<name>input</name>
+			<description>DTBook file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/xml">
+			<name>output</name>
+			<description>The output DTBook 2005-1 XML file</description>
+			<example>file:///path/to/outFile.xml</example>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>factory</name>
+			<description>Factory</description>
+			<example>com.icl.saxon.TransformerFactoryImpl</example>
+			<default>com.icl.saxon.TransformerFactoryImpl</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>clean</name>
+			<description>Clean structure?</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+
+	</parameters>
+
+</transformer>
