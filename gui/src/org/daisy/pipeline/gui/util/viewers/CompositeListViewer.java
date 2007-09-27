@@ -231,6 +231,7 @@ public abstract class CompositeListViewer<I extends CompositeItem> extends
 				control.setRedraw(false);
 				control.removeAll();
 				internalRefreshAll(true);
+				control.layout(true, true);
 				control.setRedraw(true);
 			}
 		});
