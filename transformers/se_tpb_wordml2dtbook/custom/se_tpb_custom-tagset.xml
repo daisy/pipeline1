@@ -78,6 +78,11 @@
 					<attribute name="type" value="ol"/>
 				</wrap>
 			</tag>
+			<tag name="Definitionslista">
+				<wrap value="dl" addId="false" merge="true">
+					<using value="dd"/>
+				</wrap>
+			</tag>
 		</paragraphs>
 		<character useInlineFormatting="true">
 			<tag name="footnote reference"><noteref/></tag>

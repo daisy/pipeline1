@@ -219,20 +219,24 @@ public class WordML2DTBook extends Transformer {
 		}
 		int i = 0;
 		for (File f : imageFiles) {
-			String name;
-			int index;
-			ImageConverter ic = new ImageConverter();
-			name = f.getName();
-			index = name.lastIndexOf('.');
-			try {
-				ic.convert(f, new File(outdir, name.substring(0, index) + ".jpg"));
-				while (!f.delete()) {
-					try { Thread.sleep(200); } catch (Exception e) {
-						e.printStackTrace();
+			if (f.exists()) {
+				String name;
+				int index;
+				ImageConverter ic = new ImageConverter();
+				name = f.getName();
+				index = name.lastIndexOf('.');
+				try {
+					ic.convert(f, new File(outdir, name.substring(0, index) + ".jpg"));
+					while (!f.delete()) {
+						try { Thread.sleep(200); } catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
+				} catch (ExecutionException e) {
+					sendMessage("Error: Could not convert image " + f, MessageEvent.Type.ERROR);
 				}
-			} catch (ExecutionException e) {
-				sendMessage("Error: Could not convert image " + f, MessageEvent.Type.ERROR);
+			} else {
+				sendMessage("Warning: Could not find image " +f, MessageEvent.Type.WARNING);
 			}
 			i++;
 			progress(0.2 + ((float)i/imageFiles.length) * 0.2);
