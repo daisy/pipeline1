@@ -22,59 +22,58 @@ import org.daisy.pipeline.core.script.datatype.DatatypeException;
 
 /**
  * A class representing a parameter in a Job.
+ * 
  * @author Linus Ericson
  */
 public class JobParameter extends StringProperty {
 
 	private Job mJob;
 	private ScriptParameter mParameter;
-	private boolean mHasChanged;
-	
+
 	/**
 	 * Constructor
-	 * @param name the name of the parameter
-	 * @param value the initial value of the parameter
-	 * @param job the Job the JobParameter belongs to
-	 * @param parameter the ScriptParameter this JobParameter is associated with
+	 * 
+	 * @param name
+	 *            the name of the parameter
+	 * @param value
+	 *            the initial value of the parameter
+	 * @param job
+	 *            the Job the JobParameter belongs to
+	 * @param parameter
+	 *            the ScriptParameter this JobParameter is associated with
 	 * @throws ScriptValidationException
 	 */
-	public JobParameter(String name, String value, Job job, ScriptParameter parameter) throws ScriptValidationException {
-		super(name, value);	
+	public JobParameter(String name, String value, Job job,
+			ScriptParameter parameter) throws ScriptValidationException {
+		super(name, value);
 		mJob = job;
 		mParameter = parameter;
-		mHasChanged = false;
 	}
-	
+
 	/**
 	 * @return the Job this JobParameter belongs to
 	 */
 	public Job getJob() {
 		return mJob;
 	}
-	
+
 	/**
 	 * @return the ScriptParamater this Job parameter is associated with
 	 */
 	public ScriptParameter getScriptParameter() {
 		return mParameter;
 	}
-	
+
 	/**
 	 * Sets the value of the JobParameter
-	 * @param value the new value
+	 * 
+	 * @param value
+	 *            the new value
 	 * @throws DatatypeException
 	 */
 	public void setValue(String value) throws DatatypeException {
 		this.getScriptParameter().getDatatype().validate(value);
 		mValue = value;
-		mHasChanged = true;
 	}
-	
-	/**
-	 * @return true if the value of this JobParamter has been changed since it was created, false otherwise
-	 */
-	public boolean hasChanged() {
-		return mHasChanged;
-	}
-	
+
 }

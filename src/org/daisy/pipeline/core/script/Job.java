@@ -25,23 +25,26 @@ import org.daisy.pipeline.core.script.datatype.DatatypeException;
 
 /**
  * A class used for setting parameters before running a script.
+ * 
  * @author Linus Ericson
  */
 public class Job {
 
 	private Script mScript;
-	private Map<String,JobParameter> mParameters; 
-	
+	private Map<String, JobParameter> mParameters;
+
 	/**
 	 * Creates a new Job object from a Script.
+	 * 
 	 * @param script
 	 */
 	public Job(Script script) {
 		this.mScript = script;
-		this.mParameters = new LinkedHashMap<String,JobParameter>();
+		this.mParameters = new LinkedHashMap<String, JobParameter>();
 		for (ScriptParameter param : script.getParameters().values()) {
 			try {
-				mParameters.put(param.getName(), new JobParameter(param.getName(), param.getValue(), this, param));
+				mParameters.put(param.getName(), new JobParameter(param
+						.getName(), param.getValue(), this, param));
 			} catch (ScriptValidationException e) {
 				// This should not happen since StringProperty has
 				// an empty validation method.
@@ -49,39 +52,51 @@ public class Job {
 			}
 		}
 	}
-	
+
 	/**
-	 * Gets the script object associated with this Job
-	 * @return a Script object
+	 * Have all required script parameters been set in this Job?
+	 * 
+	 * @return true if all required script parameters have been set, false
+	 *         otherwise
 	 */
-	public Script getScript() {
-		return mScript;
+	public boolean allRequiredParametersSet() {
+		boolean result = true;
+		for (ScriptParameter parameter : mScript.getRequiredParameters()
+				.values()) {
+			String value = this.getJobParameter(parameter.getName()).getValue();
+			if ((value == null) || (value.trim().length() == 0)) {
+				result = false;
+			}
+		}
+		return result;
 	}
-	
+
 	/**
-	 * Gets a specific ScriptParameter. If the specified ScriptParameter is
-	 * not found, null is returned.
-	 * @param name the name of the ScriptParameter to get
-	 * @return a ScriptParameter, or null
+	 * Gets the JobParameter for a specified parameter.
+	 * 
+	 * @param name
+	 *            the name of the parameter
+	 * @return a JobParameter, or null if no parameter with the specified name
+	 *         exists
 	 */
-	public ScriptParameter getScriptParameter(String name) {
-		return mScript.getParameter(name);
+	public JobParameter getJobParameter(String name) {
+		return mParameters.get(name);
 	}
-	
+
 	/**
-	 * Sets a parameter value.
-	 * @param name the name of the parameter
-	 * @param value the value of the parameter
-	 * @throws DatatypeException
+	 * Gets a map containing all parameters in this Job
+	 * 
+	 * @return a map containing all job parameters
 	 */
-	public void setParameterValue(String name, String value) throws DatatypeException {
-		JobParameter jobParameter = this.getJobParameter(name);
-		jobParameter.setValue(value);		
+	public Map<String, JobParameter> getJobParameters() {
+		return mParameters;
 	}
-	
+
 	/**
 	 * Gets the value of a parameter.
-	 * @param name the name of the parameter
+	 * 
+	 * @param name
+	 *            the name of the parameter
 	 * @return the value of the parameter or null if the parameter was not set
 	 */
 	public String getParameterValue(String name) {
@@ -91,36 +106,41 @@ public class Job {
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Gets the JobParameter for a specified parameter.
-	 * @param name the name of the parameter
-	 * @return a JobParameter, or null if no parameter with the specified name exists
+	 * Gets the script object associated with this Job
+	 * 
+	 * @return a Script object
 	 */
-	public JobParameter getJobParameter(String name) {
-		return mParameters.get(name);
+	public Script getScript() {
+		return mScript;
 	}
-	
+
 	/**
-	 * Gets a map containing all parameters in this Job
-	 * @return a map containing all job parameters
+	 * Gets a specific ScriptParameter. If the specified ScriptParameter is not
+	 * found, null is returned.
+	 * 
+	 * @param name
+	 *            the name of the ScriptParameter to get
+	 * @return a ScriptParameter, or null
 	 */
-	public Map<String,JobParameter> getJobParameters() {
-		return mParameters;
+	public ScriptParameter getScriptParameter(String name) {
+		return mScript.getParameter(name);
 	}
-	
+
 	/**
-	 * Have all required script parameters been set in this Job?
-	 * @return true if all required script parameters have been set, false otherwise
+	 * Sets a parameter value.
+	 * 
+	 * @param name
+	 *            the name of the parameter
+	 * @param value
+	 *            the value of the parameter
+	 * @throws DatatypeException
 	 */
-	public boolean allRequiredParametersSet() {
-		boolean result = true;
-		for (ScriptParameter parameter : mScript.getRequiredParameters().values()) {
-			if (!this.getJobParameter(parameter.getName()).hasChanged()) {
-				result = false;
-			}
-		}
-		return result;
+	public void setParameterValue(String name, String value)
+			throws DatatypeException {
+		JobParameter jobParameter = this.getJobParameter(name);
+		jobParameter.setValue(value);
 	}
-	
+
 }
