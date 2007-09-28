@@ -18,6 +18,7 @@
  */
 package org.daisy.util.xml.stax;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.xml.stream.XMLEventFactory;
@@ -73,6 +74,10 @@ public abstract class StaxFilter {
     
     public StaxFilter(XMLEventReader xer, OutputStream outStream) throws XMLStreamException {
         this(xer, XMLEventFactory.newInstance(), XMLOutputFactory.newInstance(), outStream);
+    }
+    
+    public void close() throws IOException {
+    	outputStream.close();
     }
     
     public final void filter() throws XMLStreamException {
@@ -240,7 +245,6 @@ public abstract class StaxFilter {
      */
     protected StartElement startElement(StartElement event) {
         return event;
-    }
-    
+    }    
     
 }
