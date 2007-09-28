@@ -73,20 +73,21 @@ public class ImageConverterReader extends StaxFilter {
     		while (i.hasNext()) {
     			Attribute a = (Attribute)i.next();
     			if (a.getName().getLocalPart().equals(att)) {
-    				String filename = a.getValue();
+    				String srcValue = a.getValue().trim();
+    				String filename = srcValue;
     				if (filename.length()>0) {
 	    				if (filename.indexOf('.')>-1) {
-	    					filename = a.getValue().substring(0, a.getValue().lastIndexOf(".")).toLowerCase();
+	    					filename = srcValue.substring(0, srcValue.lastIndexOf(".")).toLowerCase();
 	    				}
 	    				filename += ext;
 	    				// convert [options ...] file [ [options ...] file ...] [options ...] file
 	    				
-	    				File img = new File(a.getValue());
+	    				File img = new File(srcValue);
 	    				if (img.isAbsolute()) {
 	    					t.sendMessage("Cannot convert an absolute path", MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM, null);
 	    				} else {
 		    				// If image path is not absolute it should be relative to the input file
-	    					img = new File(input.getParentFile(), a.getValue());
+	    					img = new File(input.getParentFile(), srcValue);
 	    				}
 	    				if (img.exists()) {
 	    					File outImg = new File(output.getParentFile(), filename);
@@ -101,11 +102,11 @@ public class ImageConverterReader extends StaxFilter {
 			    				t.setProgress((double)(len-filesToCopy.size())/len);
 							} catch (ExecutionException e) {
 								atts.add(a);
-								t.sendMessage("Cannot convert file " + a.getValue(), MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM, null);
+								t.sendMessage("Cannot convert file " + srcValue, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM, null);
 							}
 	    				} else {
 	    					atts.add(a);
-	    					t.sendMessage("Cannot find file " + a.getValue(), MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM, null);
+	    					t.sendMessage("Cannot find file " + srcValue, MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM, null);
 	    				}
     				}
     			} else {
