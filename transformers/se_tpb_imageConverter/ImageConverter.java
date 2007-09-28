@@ -95,7 +95,7 @@ public class ImageConverter extends Transformer {
 	}
 	
 	public void setProgress(double value) {
-		progress(value);
+		progress(value<1 ? value : 1);
 	}
 
 }
