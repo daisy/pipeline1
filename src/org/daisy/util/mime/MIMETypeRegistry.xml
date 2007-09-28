@@ -36,7 +36,8 @@
 		<type id="plucker" name="application/prs.plucker"/>
 		<type id="latex" name="application/x-latex" namePatterns="*.latex *.tex"/>
 		<type id="ex" name="application/x-tex" namePatterns="*.tex"/>
-		<type id="texi" name="application/x-texinfo" namePatterns="*.texi *.texinfo"/>		
+		<type id="texi" name="application/x-texinfo" namePatterns="*.texi *.texinfo"/>
+		
 		<!-- archives -->
 		<type id="zip" name="application/zip" namePatterns="*.zip"/>
 		<type id="zcmp" name="application/x-compress" namePatterns="*.z"/>
@@ -118,7 +119,7 @@
 	<directory name="multipart"></directory>
 
 	<directory name="text">
-		<type id="plain" name="text/plain"/>
+		<type id="plain" name="text/plain" namePatterns="*.txt"/>
 		<type id="texthtml" name="text/html" namePatterns="*.htm *.html *.stm" aliasTypes="xhtml" parentTypes="xml sgml"/>
 		<type id="textxml" name="text/xml" aliasTypes="xml"/>
 		<type id="css" name="text/css" namePatterns="*.css"/>
