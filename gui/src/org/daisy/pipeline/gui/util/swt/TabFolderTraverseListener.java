@@ -17,6 +17,7 @@
  */
 package org.daisy.pipeline.gui.util.swt;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
@@ -74,37 +75,43 @@ public class TabFolderTraverseListener implements TraverseListener {
 			if (e.stateMask == SWT.CONTROL) {
 				e.doit = false;
 				int sel = folder.getSelectionIndex();
-				int next = (sel == folder.getItemCount() - 1) ? 0 : sel + 1;
-				folder.setSelection(next);
-				folder.setFocus();
-				Event event = new Event();
-				event.item = folder.getItem(next);
-				folder.notifyListeners(SWT.Selection, event);
-				// boolean res = folder.traverse(SWT.TRAVERSE_PAGE_NEXT);
-				// folder.setFocus();
-			} else {
-				e.doit = true;
+				switchToTab((sel == folder.getItemCount() - 1) ? 0 : sel + 1);
 			}
 			break;
 		case SWT.TRAVERSE_TAB_PREVIOUS:
 			if (e.stateMask == (SWT.CONTROL | SWT.SHIFT)) {
 				e.doit = false;
 				int sel = folder.getSelectionIndex();
-				int prev = (sel == 0) ? folder.getItemCount() - 1 : sel - 1;
-				folder.setSelection(prev);
-				folder.setFocus();
-				Event event = new Event();
-				event.item = folder.getItem(prev);
-				folder.notifyListeners(SWT.Selection, event);
-				// boolean res = folder.traverse(SWT.TRAVERSE_PAGE_NEXT);
-				// folder.setFocus();
-			} else {
-				e.doit = true;
+				switchToTab((sel == 0) ? folder.getItemCount() - 1 : sel - 1);
 			}
+			break;
 		default:
 			e.doit = true;
 			break;
 		}
+
+	}
+
+	/**
+	 * Set the tab folder page selection to the given index and send a
+	 * <code>SWT.selection</code> event.
+	 * 
+	 * @param index
+	 *            the index of the new selected tab page
+	 */
+	private void switchToTab(int index) {
+		folder.setSelection(index);
+		TabItem item = folder.getItem(index);
+		if (Platform.OS_MACOSX.equals(Platform.getOS())) {
+			item.getControl().forceFocus();
+			item.getControl().traverse(SWT.TRAVERSE_TAB_PREVIOUS);
+		} else {
+			folder.forceFocus();
+		}
+		// Notify listeners
+		Event event = new Event();
+		event.item = item;
+		folder.notifyListeners(SWT.Selection, event);
 
 	}
 }
