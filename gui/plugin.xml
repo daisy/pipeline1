@@ -325,6 +325,26 @@
             schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
             sequence="M2+DEL"/>
       <key
+            commandId="org.daisy.pipeline.gui.command.moveDown"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+ARROW_DOWN">
+      </key>
+      <key
+            commandId="org.daisy.pipeline.gui.command.moveToBottom"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+M2+ARROW_DOWN">
+      </key>
+      <key
+            commandId="org.daisy.pipeline.gui.command.moveToTop"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+M2+ARROW_UP">
+      </key>
+      <key
+            commandId="org.daisy.pipeline.gui.command.moveUp"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+ARROW_UP">
+      </key>
+      <key
             commandId="org.daisy.pipeline.gui.command.run"
             schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
             sequence="M1+F1"/>
