@@ -61,6 +61,7 @@ doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/Daisy202ToZ39862005.html -text
 doc/scripts/FilesetRenamer.html -text
 doc/scripts/HtmlToXhtml.html -text
+doc/scripts/ImageConverter.html -text
 doc/scripts/Narrator-DtbookToDaisy202.html -text
 doc/scripts/OCFCreator.html -text
 doc/scripts/OPSCreator.html -text
@@ -95,6 +96,7 @@ doc/transformers/se_tpb_dtbAudioEncoder.html -text
 doc/transformers/se_tpb_dtbMerger.html -text
 doc/transformers/se_tpb_dtbSplitter.html -text
 doc/transformers/se_tpb_filesetcreator.html -text
+doc/transformers/se_tpb_imageConverter.html -text
 doc/transformers/se_tpb_nccNcxOnly.html -text
 doc/transformers/se_tpb_speechgen2.html -text
 doc/transformers/se_tpb_speechgenerator.html -text
@@ -246,6 +248,7 @@ scripts/manipulation/simple/DTBAudioEncoderRenamer.taskScript -text
 scripts/manipulation/simple/DTBAudioEncoderSplitter.taskScript -text
 scripts/manipulation/simple/DTBSplitter.taskScript -text
 scripts/manipulation/simple/FilesetRenamer.taskScript -text
+scripts/manipulation/simple/ImageConverter.taskScript -text
 scripts/manipulation/simple/PrettyPrinter.taskScript -text
 scripts/validation/ValidatorScriptParamsAdvancedStatic.paramGroup -text
 scripts/validation/ValidatorScriptParamsSimpleStatic.paramGroup -text
@@ -482,6 +485,9 @@ transformers/se_tpb_dtbookFix/xslt/recursive-copy.xsl -text
 transformers/se_tpb_dtbookFix/xslt/remove-illegal-headings.xsl -text
 transformers/se_tpb_filesetcreator/resource/tpbnarrator_res.mp3 -text
 transformers/se_tpb_filesetcreator/transformer.tdf -text
+transformers/se_tpb_imageConverter/ImageConverter.java -text
+transformers/se_tpb_imageConverter/ImageConverterReader.java -text
+transformers/se_tpb_imageConverter/transformer.tdf -text
 transformers/se_tpb_speechgen2/SpeechGen2.java -text
 transformers/se_tpb_speechgen2/audio/AudioConcat.java -text
 transformers/se_tpb_speechgen2/audio/AudioFiles.java -text
