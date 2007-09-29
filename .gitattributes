@@ -441,6 +441,9 @@ transformers/int_daisy_validator/validator.xsl -text
 transformers/no_hks_xhtml2dtbook/Xhtml2DTBook.java -text
 transformers/no_hks_xhtml2dtbook/transformer.tdf -text
 transformers/no_hks_xhtml2dtbook/xhtml2dtbook.xsl -text
+transformers/pipeline_system_copyer/Copyer.java -text
+transformers/pipeline_system_copyer/messages.properties -text
+transformers/pipeline_system_copyer/transformer.tdf -text
 transformers/pipeline_system_deleter/Deleter.java -text
 transformers/pipeline_system_deleter/messages.properties -text
 transformers/pipeline_system_deleter/transformer.tdf -text
