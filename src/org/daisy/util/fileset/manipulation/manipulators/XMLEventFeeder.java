@@ -23,7 +23,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLEventFactory;
@@ -48,6 +50,9 @@ import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.pool.PoolException;
+import org.daisy.util.xml.pool.StAXEventFactoryPool;
+import org.daisy.util.xml.pool.StAXInputFactoryPool;
+import org.daisy.util.xml.pool.StAXOutputFactoryPool;
 import org.daisy.util.xml.stax.ContextStack;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 
@@ -61,9 +66,11 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
  */
 public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 
-	private static XMLInputFactory xif;
-	private static XMLOutputFactory xof;
-	protected static XMLEventFactory xef;
+	private XMLInputFactory xif;
+	private Map<String, Object> xifProperties;
+	private XMLOutputFactory xof;
+	private Map<String, Object> xofProperties;
+	protected XMLEventFactory xef;
 	protected XMLEventReader mReader;
 	protected XMLEventWriter mWriter;
 	private FileOutputStream mFos = null;
@@ -131,39 +138,33 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 		if(System.getProperty("org.daisy.debug")!=null) {
 			mDebugMode = true;
 		}
-		//TODO use pools 
-		if(xif==null){ //first access to statics
-			xif = XMLInputFactory.newInstance();
-			xof = XMLOutputFactory.newInstance();			
-			xef = XMLEventFactory.newInstance();
-						
-			if(xof.isPropertySupported("com.ctc.wstx.outputEscapeCr")) {
-				try{
-					xof.setProperty("com.ctc.wstx.outputEscapeCr", Boolean.FALSE);
-				}catch (IllegalArgumentException e) {
-					
-				}	
-			}	
-						
-	        xif.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
-	        xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
-	        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.TRUE);
-	        xif.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);	        
-	        if(validating) {
-	        	xif.setProperty(XMLInputFactory.IS_VALIDATING, Boolean.TRUE);
-	        }else{
-	        	xif.setProperty(XMLInputFactory.IS_VALIDATING, Boolean.FALSE);
-	        }	        
-	        if(supportDTD) {
-	        	xif.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
-	        }else{
-	        	xif.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
-	        }
-		}
-
+			
+		
+		xifProperties = new HashMap<String, Object>();	
+		xifProperties.put(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
+		xifProperties.put(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
+		xifProperties.put(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.TRUE);
+		xifProperties.put(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);	        
+        if(validating) {
+        	xifProperties.put(XMLInputFactory.IS_VALIDATING, Boolean.TRUE);
+        }else{
+        	xifProperties.put(XMLInputFactory.IS_VALIDATING, Boolean.FALSE);
+        }	        
+        if(supportDTD) {
+        	xifProperties.put(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
+        }else{
+        	xifProperties.put(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+        }
+		xif = StAXInputFactoryPool.getInstance().acquire(xifProperties);
+		
+		xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
+		xof = StAXOutputFactoryPool.getInstance().acquire(xofProperties);
+		
+		xef = StAXEventFactoryPool.getInstance().acquire();
+		
         xif.setXMLReporter(this);
 		xif.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
-        
+        		
 		if(outputEncoding!=null) mRequestedOutputEncoding = outputEncoding;
 	}
 	
@@ -267,6 +268,9 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 			mReader.close();
 			is.close();
 			if(mFos!=null)mFos.close();
+			StAXInputFactoryPool.getInstance().release(xif, xifProperties);
+			StAXOutputFactoryPool.getInstance().release(xof, xofProperties);
+			StAXEventFactoryPool.getInstance().release(xef);
 		}catch (Exception e) {
 			throw new FilesetManipulationException(e.getMessage(),e);
 		}
