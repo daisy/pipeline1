@@ -52,6 +52,7 @@ doc/scripts/CharacterRepertoireManipulator.html -text
 doc/scripts/CharsetSwitcher.html -text
 doc/scripts/ConfigurableValidator.html -text
 doc/scripts/DTBAudioEncoder.html -text
+doc/scripts/DTBAudioEncoderRenamerSplitter.html -text
 doc/scripts/DTBAudioEncoderSplitter.html -text
 doc/scripts/DTBMerger.html -text
 doc/scripts/DTBSplitter.html -text
