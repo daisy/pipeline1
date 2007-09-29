@@ -26,6 +26,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 
 import org.daisy.util.fileset.interfaces.Fileset;
 
@@ -490,17 +491,39 @@ public class EFolder extends File {
 	}
 	
 	/**
-	 * Copies the contents of this folder to a destination Folder
+	 * Copies the contents of this folder to a destination Folder. Deep recursion is used.
 	 * @param destination 
 	 * 		The Folder to which the contents of this folder should be copied
 	 * @param overwrite
 	 * 		whether a prexisting equal object in the destination folder should be overwritten
 	 * @return 
 	 * 		True if all objects of this folder were successfully copied to destination, false otherwise
+	 * @throws IOException
 	 */
 	public boolean copyChildrenTo(EFolder destination, boolean overwrite) throws IOException {
+		return copyChildrenTo(destination,overwrite,true,".+");
+	}
+
+	
+	/**
+	 * Copies the contents of this folder to a destination Folder. 
+	 * @param destination 
+	 * 		The Folder to which the contents of this folder should be copied
+	 * @param overwrite
+	 * 		whether a prexisting equal object in the destination folder should be overwritten
+	 * @param 
+	 * 		deep
+	 * 		whether subdirectories and their children should be included in copy
+	 * @param regex
+	 * 		regex string describing patterns of files (not dirs) to exlude from copy, if null, no exclusions are made 
+	 * @return 
+	 * 		True if all objects of this folder were successfully copied to destination, false otherwise
+	 * @throws IOException
+	 */
+	public boolean copyChildrenTo(EFolder destination, boolean overwrite, boolean deep, String regex) throws IOException {
 		boolean result = true;
 		boolean cur;
+		
 		
 		if(!destination.exists()) { 
 			cur = destination.mkdirs();
@@ -520,18 +543,27 @@ public class EFolder extends File {
 			if (children[i].getCanonicalFile().equals(children[i].getAbsoluteFile())){
 				//TODO its not a symlink?
 				if(children[i].isFile()){
-					if(destination.addFile(children[i],overwrite) == null) result = false;			
+					if((regex==null)||!children[i].getName().matches(regex)){
+						if(destination.addFile(children[i],overwrite) == null) result = false;
+					}else{
+						//System.err.println("not copying " + children[i].getName() + " because matches " + regex);
+					}
 				}else{ //isDirectory
-					EFolder srcDir = new EFolder(children[i].getAbsolutePath());
-					EFolder destDir = new EFolder(destination,srcDir.getName()); 
-					cur = srcDir.copyChildrenTo(destDir,overwrite); 
-					if(!cur) result = cur;
+					if(deep){
+						EFolder srcDir = new EFolder(children[i].getAbsolutePath());
+						EFolder destDir = new EFolder(destination,srcDir.getName()); 
+						cur = srcDir.copyChildrenTo(destDir,overwrite,deep,regex); 
+						if(!cur) result = cur;
+					}
 				}
+			}else{
+				System.err.println("May have hit a symlink in EFolder#copyChildrenTo");
 			}
 		}
-		return result;
+		return result;	
 	}
-
+	
+	
 	public File writeToFile(String fileLocalName,
 			String toWrite, String encoding)
 			throws IOException {		
