@@ -15,7 +15,7 @@
 		</datatype>
 	</parameter>
 
-	<parameter name="filesetRenamerExclude" value="XmlFile, CssFile, ImageFile" required="false">
+	<parameter name="filesetRenamerExclude" value="Z3986DtbookFile, Xhtml10File, CssFile, ImageFile" required="false">
 		<nicename>File types to exclude</nicename>
 		<description>comma separated list of file types to exclude from renaming, see documentation</description>
 		<datatype>
