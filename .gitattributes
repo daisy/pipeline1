@@ -186,6 +186,7 @@ samples/input/dtb/z3986-2005/tpbnarrator.res -text
 samples/input/dtb/z3986-2005/tpbnarrator_res.mp3 -text
 samples/input/dtbook/dontworrybehappy.xml -text
 samples/input/dtbook/dtbook.2005.basic.css -text
+samples/input/dtbook/hauy-2005-1-short.xml -text
 samples/input/dtbook/hauy-2005-1.xml -text
 samples/input/dtbook/hauy_invalid.xml -text
 samples/input/dtbook/hauy_valid.xml -text
