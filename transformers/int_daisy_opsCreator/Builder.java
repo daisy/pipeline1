@@ -5,6 +5,7 @@ import int_daisy_opsCreator.metadata.MetadataList;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -35,28 +36,24 @@ public abstract class Builder {
 		mMetaData  = metadata;
 		
 		if(xofProperties==null){
-			xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();			
+			xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();		
 		}		
 	}
 	
 	abstract void build() throws PoolException, FileNotFoundException, XMLStreamException;
 	
-	void render(File destination) throws PoolException, XMLStreamException, FileNotFoundException {
+	void render(File destination) throws PoolException, XMLStreamException, IOException {
 		XMLOutputFactory xof = null;
 		try{
 			xof = StAXOutputFactoryPool.getInstance().acquire(xofProperties);
-			XMLEventWriter xev = xof.createXMLEventWriter(new FileOutputStream(destination));
+			FileOutputStream fos = new FileOutputStream(destination);
+			XMLEventWriter xev = xof.createXMLEventWriter(fos);
 			for (XMLEvent event : mEventList) {
-				
-//				PrintWriter dosOut = new PrintWriter(new OutputStreamWriter(System.out));
-//				event.writeAsEncodedUnicode(dosOut);
-//				System.err.println("\n");
-//				dosOut.flush();
-							
 				xev.add(event);
-			}
+			}			
 			xev.flush();
 			xev.close();
+			fos.close();
 		}finally{
 			StAXOutputFactoryPool.getInstance().release(xof,xofProperties);
 		}

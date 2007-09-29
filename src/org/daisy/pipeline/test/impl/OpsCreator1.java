@@ -13,8 +13,8 @@ public class OpsCreator1 extends PipelineTest {
 	
 	@Override
 	public List<String> getParameters() {
-		mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy-2005-1.xml");
-		mParameters.add("--output=" + mDataOutputDir + "/OpsCreator1/hauy.epub");				
+		mParameters.add("--input=" + mDataInputDir + "/xhtml/multi-language-unicode.html");
+		mParameters.add("--output=" + mDataOutputDir + "/OpsCreator1/multi-language-unicode.epub");				
 		return mParameters;
 	}
 

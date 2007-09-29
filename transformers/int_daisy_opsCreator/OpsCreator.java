@@ -362,7 +362,9 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 			//check if this element needs an id attribute
 			if(mNcxConfiguration.matchesNavMapFilter(se)||mNcxConfiguration.matchesNavListFilter(se)) {				
 				if(!hasIdAttribute(se)) {
-					list.add(mXMLEventFactory.createAttribute(new QName(se.getName().getNamespaceURI(),"id"), mIdGenerator.generateId()));
+					//list.add(mXMLEventFactory.createAttribute(new QName(se.getName().getNamespaceURI(),"id",null), mIdGenerator.generateId()));
+					list.add(mXMLEventFactory.createAttribute("id", mIdGenerator.generateId()));
+					
 				}
 			}
 			if(mIteratorIsFirstManifest) {
