@@ -216,9 +216,10 @@ samples/input/xhtml/d202.css -text
 samples/input/xhtml/daisy_202.html -text
 samples/input/xhtml/daisylog.jpg -text
 samples/input/xhtml/multi-language-unicode.html -text
+scripts/_dev/Daisy202toZ3986-2005.taskScript -text
+scripts/_dev/DtbookToRtf.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
 scripts/_dev/Xhtml2Dtbook.taskScript -text
-scripts/_dev/dtbook2html.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
 scripts/conversion/advanced/WordMLtoDTBook.taskScript -text
 scripts/conversion/simple/DtbookToXhtml.taskScript -text

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../validation/ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../validation/ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+<taskScript version="2.0" name="Daisy202ToZ39862005">
+	<nicename>[BETA] Daisy 2.02 to Z39.86-2005</nicename>
+	<description>Convert a Daisy 2.02 DTB to a Z39.86-2005 DTB. Note - this is an early beta - work in progress.</description>
+   	<documentation uri="../../../doc/scripts/Daisy202ToZ39862005.html"/>
+    <comment/>
+			
+	<parameter name="inputNcc" value="" required="true">
+		<nicename>Input NCC</nicename>
+		<description>Select the input NCC file</description>
+		<datatype>
+			<file mime="application/x-dtbd202ncc+xml" type="input"/>
+		</datatype>
+	</parameter>
+		
+	<parameter name="outputOpf" value="" required="true">
+		<nicename>Output OPF</nicename>
+		<description>Create and select the output package file</description>
+		<datatype>
+			<file mime="application/oebps-package+xml" type="output"/>
+		</datatype>
+	</parameter>		
+
+	<parameter name="inputCss" value="" required="false">
+		<nicename>Optional CSS</nicename>
+		<description>Select a CSS to append to output DTBook document</description>
+		<datatype>
+			<file mime="text/css" type="input"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="inputRes" value="" required="false">
+		<nicename>Optional Resource File</nicename>
+		<description>Select a Resource file to append to output fileset</description>
+		<datatype>
+			<file mime="application/x-dtbresource+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	&ValidatorScriptParamsSimpleStatic;				
+	
+	<task name="se_tpb_nccNcxOnly" interactive="false">
+		<parameter>
+			<name>manifest</name>
+			<value>${inputNcc}</value>
+		</parameter>
+
+		<parameter>
+			<name>outDir</name>
+			<value>$parent{outputOpf}/pipeline__temp/</value>
+		</parameter>					
+	</task>
+									
+	<task name="int_daisy_daisy2022Zed2005" interactive="false">
+		<parameter>
+			<name>ncc</name>
+			<value>$parent{outputOpf}/pipeline__temp/ncc.html</value>
+		</parameter>
+					
+		<parameter>
+			<name>opf</name>
+			<value>${outputOpf}</value>
+		</parameter>		
+
+		<parameter>
+			<name>css</name>
+			<value>${inputCss}</value>
+		</parameter>
+					
+		<parameter>
+			<name>resource</name>
+			<value>${inputRes}</value>
+		</parameter>				
+	</task>		
+<!--		
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>$parent{outputOpf}/pipeline__temp/</value>
+		</parameter>					
+	</task>	
+-->		
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputOpf}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>	
+		
+		&ValidatorTaskParamsSimpleStatic;
+														
+	</task>		
+			
+</taskScript>
