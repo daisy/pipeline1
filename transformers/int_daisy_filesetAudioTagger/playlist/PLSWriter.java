@@ -31,7 +31,9 @@ public class PLSWriter extends AbstractWriter implements PlaylistWriter {
 		//build the output as a string
 		mOutputBuilder.append("[playlist]");
 		mOutputBuilder.append(mNewLine);
-
+		mOutputBuilder.append("NumberOfEntries="+Integer.toString(mAudioSpine.size()));
+		mOutputBuilder.append(mNewLine);
+		
 		int i = 0;
 		for (Object object : mAudioSpine) {
 			try{
@@ -62,8 +64,7 @@ public class PLSWriter extends AbstractWriter implements PlaylistWriter {
 			}
 		}
 		
-		mOutputBuilder.append("NumberOfEntries="+Integer.toString(mAudioSpine.size()));
-		mOutputBuilder.append(mNewLine);
+
 		mOutputBuilder.append("Version=2");
 	}	
 }
