@@ -249,6 +249,7 @@ scripts/manipulation/advanced/UnicodeNormalizer.taskScript -text
 scripts/manipulation/simple/AudioTagger.taskScript -text
 scripts/manipulation/simple/DTBAudioEncoder.taskScript -text
 scripts/manipulation/simple/DTBAudioEncoderRenamer.taskScript -text
+scripts/manipulation/simple/DTBAudioEncoderRenamerSplitter.taskScript -text
 scripts/manipulation/simple/DTBAudioEncoderSplitter.taskScript -text
 scripts/manipulation/simple/DTBSplitter.taskScript -text
 scripts/manipulation/simple/FilesetRenamer.taskScript -text
