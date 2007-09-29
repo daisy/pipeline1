@@ -19,6 +19,7 @@ import org.daisy.util.fileset.interfaces.xml.SmilFile;
 import org.daisy.util.fileset.interfaces.xml.XmlFile;
 import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
 import org.daisy.util.fileset.interfaces.xml.d202.D202SmilFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986NcxFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986OpfFile;
 import org.daisy.util.xml.XPathUtils;
 import org.w3c.dom.Document;
@@ -242,7 +243,11 @@ public class FilesetLabelProvider {
 		if(mFileset.getFilesetType() == FilesetType.DAISY_202) {			
 			node = XPathUtils.selectSingleNode(mNavigationDOM.getDocumentElement(), "./body/*/a[contains(@href,'"+ sf.getName() +"')]");			
 		}else if(mFileset.getFilesetType() == FilesetType.Z3986) {
-			node = XPathUtils.selectSingleNode(mNavigationDOM.getDocumentElement(), "./navMap[contains(/content/@src,'"+ sf.getName() +"')]/navLabel/text");
+			Node contentElem = XPathUtils.selectSingleNode(mNavigationDOM.getDocumentElement(), "./navMap/navPoint/content[contains(@src,'"+ sf.getName() +"')]");
+			if(contentElem!=null){
+				Node navPoint = contentElem.getParentNode(); 
+				node = XPathUtils.selectSingleNode(navPoint, "./navLabel/text");
+			}
 		}	 	
 				
 		if(node!=null) return node.getTextContent();
@@ -253,7 +258,7 @@ public class FilesetLabelProvider {
 	private XmlFile getDTBNavigationMember() {
 		for (Iterator iter = mFileset.getLocalMembers().iterator(); iter.hasNext();) {
 			FilesetFile f = (FilesetFile) iter.next();
-			if(f instanceof D202NccFile||f instanceof Z3986OpfFile) {
+			if(f instanceof D202NccFile||f instanceof Z3986NcxFile) {
 				return (XmlFile)f;
 			}			
 		}
