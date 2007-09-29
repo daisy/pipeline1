@@ -22,6 +22,7 @@ import org.daisy.pipeline.test.impl.DTBookValidator2;
 import org.daisy.pipeline.test.impl.Daisy202ToZ398620051;
 import org.daisy.pipeline.test.impl.FilesetRenamer1;
 import org.daisy.pipeline.test.impl.Html2Xhtml1;
+import org.daisy.pipeline.test.impl.MultiFormatMedia1;
 import org.daisy.pipeline.test.impl.Narrator1;
 import org.daisy.pipeline.test.impl.OcfCreator1;
 import org.daisy.pipeline.test.impl.Odf2dtbook1;
@@ -146,7 +147,10 @@ public class PipelineTestDriver {
 //		tests.add(new OpsCreator2(inputDir, outputDir));
 //		tests.add(new OpsCreator3(inputDir, outputDir));		
 //		tests.add(new DTBook2rtf1(inputDir, outputDir));
-		tests.add(new Xhtml2DTBook1(inputDir, outputDir));
+//		tests.add(new Xhtml2DTBook1(inputDir, outputDir));		
+//		tests.add(new MultiFormatMedia1(inputDir, outputDir));
+		
+		
 		
 		
 ////////// tests with input data not in samples dir: 		
