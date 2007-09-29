@@ -10,9 +10,11 @@ import int_daisy_filesetAudioTagger.playlist.XSPFWriter;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.daisy.pipeline.core.InputListener;
@@ -78,7 +80,8 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 			//find out if inparam in and out directories are the same 
 			//boolean inputDirEqualsOutputDir = mOutputDir.getCanonicalPath().equals(mInputFileset.getManifestMember().getFile().getParentFile().getCanonicalPath());
 			//create the audioSpine ArrayList
-			mAudioSpine = FilesetSpineProvider.getAudioSpine(mInputFileset);			
+			mAudioSpine = FilesetSpineProvider.getAudioSpine(mInputFileset);
+			mAudioSpine = deleteDupes(mAudioSpine);
 			//create the label provider
 			mLabelProvider = new FilesetLabelProvider(mInputFileset);			
 //			debugPrintAudioSpine();
@@ -136,6 +139,20 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 		
 		return true;
 	}
+
+	/**
+	 * A temporary solution dealing with audioSpine haveing dupe entries because of 
+	 * skippabiliy crossrefs.
+	 */
+	private Collection deleteDupes(Collection audioSpine) {
+		List list = new ArrayList();
+		for (Iterator iterator = audioSpine.iterator(); iterator.hasNext();) {
+			FilesetFile f = (FilesetFile) iterator.next();
+			if(!list.contains(f)) list.add(f);			
+		}
+		return list;
+	}
+
 
 
 	/*
