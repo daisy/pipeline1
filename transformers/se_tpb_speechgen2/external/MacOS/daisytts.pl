@@ -44,9 +44,9 @@ while ($results eq 'OK') {
 	
 	#recording using say. The voice is choosen in the MacOS Speech preferences.
 
-	`$say $voice_cmd -o $filename "$phrase"; $sox $filename $wav3file`;
+	`$say $voice_cmd -o "$filename" "$phrase"; $sox "$filename" "$wav3file"`;
 	
-	unlink($filename); #remove the aiff file.
+	unlink("$filename"); #remove the aiff file.
 	
 	if (-e $wav3file) {
 		#return OK
