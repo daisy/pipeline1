@@ -128,6 +128,7 @@
 	<!--   target.folder - destination folder                                  -->
 	<!-- ===================================================================== -->
 	<target name="post.gather.bin.parts">
+		<chmod perm="755" file="${target.folder}/transformers/se_tpb_speechgen2/external/MacOS/daisytts.pl"/>
 	</target>
 
 	<!-- ===================================================================== -->
