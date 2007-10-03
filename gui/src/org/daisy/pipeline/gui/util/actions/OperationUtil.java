@@ -18,6 +18,7 @@
  */
 package org.daisy.pipeline.gui.util.actions;
 
+import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.util.Messages;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
@@ -32,52 +33,95 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 /**
+ * A set of utility methods to use the RCP undo/redo framework. Contains method
+ * to execute undoable operations with default context and undo history.
+ * 
  * @author Romain Deltour
  * 
  */
 public final class OperationUtil {
 
-    private OperationUtil() {
-        super();
-    }
+	/**
+	 * Executes the given undoable operation in the contxt of the shell of the
+	 * active workbench window and within the default operation history and with
+	 * no progress
+	 * 
+	 * @param operation
+	 *            the undoable operation to execute
+	 * @see OperationUtil#execute(IUndoableOperation, Shell)
+	 * @see IOperationHistory#execute(IUndoableOperation, IProgressMonitor,
+	 *      IAdaptable)
+	 */
+	public static void execute(IUndoableOperation operation) {
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getShell();
+		execute(operation, shell);
 
-    public static void execute(IUndoableOperation operation) {
-        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                .getShell();
-        execute(operation, shell);
+	}
 
-    }
+	/**
+	 * Executes the given undoable operation in the context of the given shell
+	 * and within the default operation history and with no progress
+	 * 
+	 * @param operation
+	 *            the undoable operation to execute
+	 * @param shell
+	 *            the UI context for the operation
+	 * @see IOperationHistory#execute(IUndoableOperation, IProgressMonitor,
+	 *      IAdaptable)
+	 */
+	public static void execute(IUndoableOperation operation, Shell shell) {
+		execute(operation, shell, null);
+	}
 
-    public static void execute(IUndoableOperation operation, Shell shell) {
-        execute(operation, shell, null);
-    }
+	/**
+	 * Executes the given undoable operation in the context of the given shell
+	 * and within the default operation history and tracked by the given
+	 * progress monitor
+	 * 
+	 * @param operation
+	 *            the undoable operation to execute
+	 * @param shell
+	 *            the UI context for the operation
+	 * @param monitor
+	 *            the progress monitor
+	 * @see IOperationHistory#execute(IUndoableOperation, IProgressMonitor,
+	 *      IAdaptable)
+	 */
+	public static void execute(IUndoableOperation operation, final Shell shell,
+			IProgressMonitor monitor) {
 
-    public static void execute(IUndoableOperation operation, final Shell shell,
-            IProgressMonitor monitor) {
+		// Get undo/redo history and context
+		IOperationHistory history = OperationHistoryFactory
+				.getOperationHistory();
+		IUndoContext context = PlatformUI.getWorkbench().getOperationSupport()
+				.getUndoContext();
+		operation.addContext(context);
 
-        // Get undo/redo history and context
-        IOperationHistory history = OperationHistoryFactory
-                .getOperationHistory();
-        IUndoContext context = PlatformUI.getWorkbench().getOperationSupport()
-                .getUndoContext();
-        operation.addContext(context);
+		// Create an adapter for providing UI context to the operation.
+		IAdaptable info = new IAdaptable() {
+			@SuppressWarnings("unchecked")
+			public Object getAdapter(Class adapter) {
+				if (Shell.class.equals(adapter)) {
+					return shell;
+				}
+				return null;
+			}
+		};
 
-        // Create an adapter for providing UI context to the operation.
-        IAdaptable info = new IAdaptable() {
-            public Object getAdapter(Class adapter) {
-                if (Shell.class.equals(adapter))
-                    return shell;
-                return null;
-            }
-        };
+		try {
+			history.execute(operation, null, info);
+		} catch (ExecutionException e) {
+			// TODO implement better exception dialog
+			MessageDialog.openError(shell, NLS.bind(
+					Messages.dialog_operationError, operation.getLabel()), e
+					.getMessage());
+			GuiPlugin.get().error(e.getMessage(), e);
+		}
+	}
 
-        try {
-            history.execute(operation, null, info);
-        } catch (ExecutionException e) {
-            // TODO implement better exception dialog
-            MessageDialog.openError(shell, NLS.bind(
-                    Messages.dialog_operationError, operation.getLabel()), e
-                    .getMessage());
-        }
-    }
+	// Not instantiable static utility
+	private OperationUtil() {
+		super();
+	}
 }
