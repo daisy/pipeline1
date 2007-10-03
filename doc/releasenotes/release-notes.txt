@@ -12,6 +12,61 @@ The GUI is hosted on a separate sourceforge project
 Report bugs and issues to:
 http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
+***************************************
+Pipeline Maintenance Release, 2007-10-3
+***************************************
+
+This is a maintenance release of the first public version of the Pipeline.
+
+Changes in the Core:
+-------------------
+
+- Narrator now works on Mac OS X (many thanks to Greg Kearney!)
+- Added context information for validation error messages
+- Added new transformer for image conversion (se_tpb_imageConverter)
+- Added new script "Image Converter"
+- Many enhancements to the WordML to DTBook transformer
+- Added a new script "DTB Audio Encoder Renamer Splitter" (requested by Einar Lee, BBI, Iceland)
+
+Several bug fixes:
+- Fixed Bug 1804731: OPSCreator creates ids in foreign namespace
+- Fixed Bug 1804664: NumberOfEntries field misplaced in PLS playlist
+- Fixed Bug 1802128: Error in validation of dtbook files
+- Fixed Bug 1779266: odf2dtbook, header chain changed
+- Fixed Bug 1770791: NPE in Daisy202Validator
+- Fixed Bug 1770771: bug in OCFCreator
+- Fixed Bug 1770770: XSLTRunner reference wrong
+
+Changes in the GUI:
+------------------
+
+Request fixes:
+
+- Fixed Request 1777526: Replace the old keys preference pane with the new 3.3/Europa one
+- Fixed Request 1751028: add a "reset perpective" action
+- Fixed Request 1751027: Add a preference for the path to ImageMagick
+- Fixed Request 1752454: sartup.jar should be renamed to a more unique name
+- Fixed Request 1777504: Improve the refresh of the Progress view
+  The progress view now shows the last selected Job. A newly created job is automatically selected.
+- Fixed Request 1777498: Add more textual info to the Progress view items
+  The Task list in the progress view should be recognized as a list control by accessible tools. Each task has a custom accessible text.
+
+Bug fixes, mostly for improving accessibility
+- Fixed Bug 1751017: Need a TAB after F6 to set the focus to the Browser
+- Fixed Bug  1751023: Doc is not updated if ToC is changed via Ctrl+TAB
+  The user must now press the Enter key to update the documentation pane.
+- Fixed Bug 1752458: parameter nodes don't have right Accessible label (in the Job view)
+- Fixed Bug 1777477: Show next view action doesn't cycle the views
+  To cycle through the view, the user must hold the Ctrl key while pressing F7. 
+  (Note that it's the same behaviour in Microsoft Visual Studio, where Ctrl+TAB only cycle the two latest tabs but Ctrl(Hold)+TAB cycles the whole list)
+- Fixed Bug 1777483: ToC title is not spoken by SR after Ctrl+TAB
+  The focus is now set the the Tab header control after a Ctrl+TAB switch so that the screen reader speaks the ToC page title.
+- Fixed Bug 1777494: Header widget of progress view isn't spoken by SR
+  The header of the progress view is now a read-only text that can take the focus and has a custom accessible name.
+- Fixed Bug 1777497: Arrow Up/Down cycle the tasks in the Progress view
+- Fixed Bug 1747754: Cannot change the value of a boolean script parameter in GUI
+- Fixed Bug 1738845: Problem opening Windows ZIP archive
+- Fixed several bugs in the Move Job actions
 
 ***********************************
 Pipeline Final Release, 2007-06-29
