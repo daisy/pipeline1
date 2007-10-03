@@ -11,7 +11,10 @@ while ($results eq 'OK') {
 	        
 	my $phrase = <STDIN>; #the phase to say.
 	chomp($phrase);
-	if ($phrase eq "") {exit;} 
+	if ($phrase eq "") {exit;}
+	if ($phrase eq ".") {exit;}
+	$phrase =~ s/"/\\"/gi;
+	$phrase =~ s/'/\\'/gi;
 	
 	
 	my $say = "/usr/bin/say"; #path to the say application.
