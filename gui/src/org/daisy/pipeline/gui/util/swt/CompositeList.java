@@ -63,7 +63,7 @@ public class CompositeList<I extends CompositeItem> extends ScrolledComposite {
 	/** The number of items represented in this list */
 	private int itemCount = 0;
 	/** The indexes of the currently selected items */
-	private int[] selection = new int[4];
+	private int[] selection = new int[0];
 	/** The array storing the items represented in this list */
 	private I[] items = (I[]) new CompositeItem[4];
 
@@ -143,7 +143,7 @@ public class CompositeList<I extends CompositeItem> extends ScrolledComposite {
 	private void deselect(int[] indexes) {
 		int[] deselected = (indexes != null) ? indexes : selection;
 		if (indexes == null) {
-			selection = new int[4];
+			selection = new int[0];
 		} else {
 			int[] newSelection = new int[selection.length - indexes.length];
 			int i = 0;
@@ -672,7 +672,7 @@ public class CompositeList<I extends CompositeItem> extends ScrolledComposite {
 		}
 		itemCount = 0;
 		items = (I[]) new CompositeItem[4];
-		selection = new int[4];
+		selection = new int[0];
 		itemsChanged();
 	}
 

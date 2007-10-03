@@ -26,6 +26,11 @@ import org.daisy.pipeline.gui.util.swt.CompositeList;
 import org.daisy.util.execution.State;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.accessibility.Accessible;
+import org.eclipse.swt.accessibility.AccessibleAdapter;
+import org.eclipse.swt.accessibility.AccessibleControlAdapter;
+import org.eclipse.swt.accessibility.AccessibleControlEvent;
+import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -73,15 +78,19 @@ public class TaskItem extends CompositeItem {
 	}
 
 	/**
-	 * Returns the textual timing information for given task.
+	 * Returns the textual state information for given task.
 	 * 
 	 * @param info
 	 *            A Pipeline task
-	 * @return the timing information on the given task.
+	 * @return the state information on the given task.
 	 */
-	private static String getTimeText(TaskInfo info) {
+	private static String getStateText(TaskInfo info) {
 		String text;
 		switch (info.getSate()) {
+		case ABORTED:
+		case FAILED:
+			text = info.getSate().toString();
+			break;
 		case RUNNING:
 			text = NLS.bind(Messages.state_timeRunning, Timer.format(info
 					.getTimer().getLeftTime()));
@@ -105,8 +114,8 @@ public class TaskItem extends CompositeItem {
 	private Label nameLabel;
 	/** The label presenting the position of the task in the job */
 	private Label numLabel;
-	/** The label presenting the timing information */
-	private Label timeLabel;
+	/** The label presenting the state information */
+	private Label stateLabel;
 
 	/** The progress bar showing the execution state */
 	private ProgressBar progressBar;
@@ -126,6 +135,7 @@ public class TaskItem extends CompositeItem {
 	 */
 	public TaskItem(CompositeList<TaskItem> parent, int style, int index) {
 		super(parent, style, index);
+		initAccessible();
 	}
 
 	@Override
@@ -157,30 +167,60 @@ public class TaskItem extends CompositeItem {
 		nameLabel.setLayoutData(formData);
 
 		// Create time info label
-		timeLabel = new Label(this, SWT.NONE);
+		stateLabel = new Label(this, SWT.NONE);
 		formData = new FormData();
 		formData.top = new FormAttachment(nameLabel, 5);
 		formData.left = new FormAttachment(iconLabel, 5);
 		formData.right = new FormAttachment(100, -5);
-		timeLabel.setLayoutData(formData);
+		stateLabel.setLayoutData(formData);
 
 		// Create Progress Bar
 		progressBar = new ProgressBar(this, SWT.HORIZONTAL);
 		progressBar.setMinimum(0);
 		progressBar.setMaximum(100);
 		formData = new FormData();
-		formData.top = new FormAttachment(timeLabel, 5);
+		formData.top = new FormAttachment(stateLabel, 5);
 		formData.left = new FormAttachment(iconLabel, 5);
 		formData.right = new FormAttachment(100, -15);
 		formData.bottom = new FormAttachment(100, -5);
 		progressBar.setLayoutData(formData);
 	}
 
+	private void initAccessible() {
+		final Accessible accessible = getAccessible();
+		accessible.addAccessibleListener(new AccessibleAdapter() {
+
+			@Override
+			public void getName(AccessibleEvent e) {
+				// TODO add % of completion info
+				StringBuilder sb = new StringBuilder();
+				sb.append(numLabel.getText()).append(' ');
+				sb.append(nameLabel.getText()).append(' ');
+				if (stateLabel.getText().length() > 0) {
+					sb.append(stateLabel.getText());
+				} else {
+					sb.append(taskInfo.getSate().toString());
+				}
+				e.result = sb.toString();
+			}
+		});
+		accessible.addAccessibleControlListener(new AccessibleControlAdapter() {
+
+			@Override
+			public void getValue(AccessibleControlEvent e) {
+				if (taskInfo.getSate() == State.RUNNING) {
+					e.detail = progressBar.getSelection();
+				}
+			}
+
+		});
+	}
+
 	/**
 	 * Updates this widget with the latest progress information:
 	 * <ul>
 	 * <li>Updates the timing information</li>
-	 * <li>Updates the progressbar</li>
+	 * <li>Updates the progress bar</li>
 	 * <li>Update the state label and icon if required</li>
 	 * </ul>
 	 */
@@ -201,7 +241,7 @@ public class TaskItem extends CompositeItem {
 		}
 		progressBar.setSelection(((Double) (info.getProgress() * 100))
 				.intValue());
-		timeLabel.setText(getTimeText(info));
+		stateLabel.setText(getStateText(info));
 	}
 
 	@Override

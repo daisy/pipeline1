@@ -20,16 +20,19 @@ package org.daisy.pipeline.gui.progress;
 import java.util.Arrays;
 import java.util.List;
 
+import org.daisy.pipeline.core.script.JobParameter;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.jobs.JobsView;
 import org.daisy.pipeline.gui.model.IJobChangeListener;
 import org.daisy.pipeline.gui.model.JobInfo;
+import org.daisy.pipeline.gui.model.JobManager;
 import org.daisy.pipeline.gui.model.StateManager;
 import org.daisy.pipeline.gui.util.Timer;
 import org.daisy.util.execution.State;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
@@ -37,9 +40,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.accessibility.AccessibleAdapter;
+import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -48,6 +56,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.ISelectionListener;
@@ -65,8 +74,7 @@ import org.eclipse.ui.progress.WorkbenchJob;
  */
 public class JobProgressView extends ViewPart implements ISelectionListener,
 		IJobChangeListener {
-	// TODO add possibility to un-synchronize
-	/** Th ID of this view (as used in the plugin.xml file) */
+	/** The ID of this view (as used in the plugin.xml file) */
 	public static final String ID = "org.daisy.pipeline.gui.views.progress"; //$NON-NLS-1$
 	/**
 	 * The top-level composite of this view (it's a scrolled composite so that
@@ -77,8 +85,11 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 	private Composite noJobArea;
 	/** The parent composite to display when a job is selected */
 	private Composite jobArea;
-	/** The label presenting the title of the currently displayed job */
-	private Label jobLabel;
+	/**
+	 * The label presenting the title of the currently displayed job. Note: this
+	 * is a read-only Text for accessibility purpose
+	 */
+	private Text jobLabel;
 	/** The icon presenting the status of the currently displayed job */
 	private Label iconLabel;
 	/** The label presenting the status of the currently displayed job */
@@ -87,9 +98,7 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 	private StructuredViewer tasksViewer;
 	/** The currently displayed Job */
 	private JobInfo currJobInfo;
-	/** The scroll pane embedding the task list */
-	private ScrolledComposite scrolled;
-	/** The button for cancelling the currently displayed job */
+	/** The button for canceling the currently displayed job */
 	private ToolItem cancelButton;
 
 	/**
@@ -122,7 +131,7 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 	 */
 	private Composite createJobArea(Composite parent) {
 		FormData formData;
-		// Creare the composite
+		// Create the composite
 		Composite container = new Composite(parent, SWT.NONE);
 		FormLayout layout = new FormLayout();
 		container.setLayout(layout);
@@ -142,7 +151,9 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 		formData.top = new FormAttachment(0, 10);
 		toolbar.setLayoutData(formData);
 		// - job label
-		jobLabel = new Label(container, SWT.NONE);
+		jobLabel = new Text(container, SWT.READ_ONLY);
+		jobLabel.setBackground(jobLabel.getDisplay().getSystemColor(
+				SWT.COLOR_WIDGET_BACKGROUND));
 		formData = new FormData();
 		formData.left = new FormAttachment(iconLabel, 5);
 		formData.right = new FormAttachment(toolbar, 5);
@@ -155,8 +166,7 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 		formData.left = new FormAttachment(iconLabel, 5);
 		formData.right = new FormAttachment(100, -10);
 		stateLabel.setLayoutData(formData);
-
-		// Create the buttons
+		// Create the cancel buttons
 		cancelButton = new ToolItem(toolbar, SWT.PUSH);
 		cancelButton.setToolTipText(Messages.button_cancel_tooltip);
 		cancelButton.setImage(GuiPlugin.getImage(IIconsKeys.ACTION_STOP));
@@ -164,6 +174,28 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				cancelPressed();
+			}
+		});
+
+		// Hack for Mac OS X background color
+		if (Platform.OS_MACOSX.equals(Platform.getOS())) {
+			// TODO remove when Eclipse bug #204915 is fixed
+			Color bgcolor = container.getDisplay().getSystemColor(
+					SWT.COLOR_WIDGET_BACKGROUND);
+			container.setBackground(bgcolor);
+			iconLabel.setBackground(bgcolor);
+			stateLabel.setBackground(bgcolor);
+			toolbar.setBackground(bgcolor);
+		}
+
+		// Add accessibility to Job label
+		jobLabel.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+			@Override
+			public void getName(AccessibleEvent e) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(jobLabel.getText()).append(' ');
+				sb.append(stateLabel.getText());
+				e.result = sb.toString();
 			}
 		});
 
@@ -176,19 +208,21 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 		separator.setLayoutData(formData);
 
 		// Create the task viewer
-		scrolled = new ScrolledComposite(container, SWT.V_SCROLL);
-		tasksViewer = new TaskListViewer(scrolled, SWT.SINGLE);
+		tasksViewer = new TaskListViewer(container, SWT.SINGLE | SWT.V_SCROLL);
 		tasksViewer.setContentProvider(new TaskListContentProvider());
 		Control taskList = tasksViewer.getControl();
-		scrolled.setContent(taskList);
-		scrolled.setExpandHorizontal(true);
-		scrolled.setExpandVertical(true);
 		formData = new FormData();
 		formData.top = new FormAttachment(separator);
 		formData.bottom = new FormAttachment(100);
 		formData.left = new FormAttachment(0);
 		formData.right = new FormAttachment(100);
-		scrolled.setLayoutData(formData);
+		taskList.setLayoutData(formData);
+		container.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				System.err.println(e.widget);
+			}
+		});
 		return container;
 	}
 
@@ -202,8 +236,15 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 	private Composite createNoJobArea(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new GridLayout());
-		Label label = new Label(container, SWT.NONE);
-		label.setText(Messages.label_noJob);
+		Text text = new Text(container, SWT.READ_ONLY);
+		text.setText(Messages.label_noJob);
+		if (Platform.OS_MACOSX.equals(Platform.getOS())) {
+			// TODO remove when Eclipse bug #204915 is fixed
+			container.setBackground(text.getDisplay().getSystemColor(
+					SWT.COLOR_WIDGET_BACKGROUND));
+			text.setBackground(text.getDisplay().getSystemColor(
+					SWT.COLOR_WIDGET_BACKGROUND));
+		}
 		return container;
 	}
 
@@ -230,7 +271,7 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 
 	@Override
 	public void dispose() {
-		getSite().getPage().removePostSelectionListener(this);
+		getSite().getPage().removeSelectionListener(this);
 		StateManager.getDefault().removeJobChangeListener(this);
 		super.dispose();
 	}
@@ -238,7 +279,7 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 	@Override
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
-		getSite().getPage().addPostSelectionListener(this);
+		getSite().getPage().addSelectionListener(this);
 	}
 
 	/*
@@ -281,9 +322,16 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 	 */
 	private void refresh() {
 		if (currJobInfo != null) {
-			switch (currJobInfo.getSate()) {
+			State state = currJobInfo.getSate();
+			switch (state) {
 			case ABORTED:
+				stateLabel.setText(NLS.bind(Messages.label_state_aborted, Timer
+						.format(currJobInfo.getTimer().getTotalTime())));
+				break;
 			case FAILED:
+				stateLabel.setText(NLS.bind(Messages.label_state_failed, Timer
+						.format(currJobInfo.getTimer().getTotalTime())));
+				break;
 			case FINISHED:
 				stateLabel.setText(NLS.bind(Messages.label_state_done, Timer
 						.format(currJobInfo.getTimer().getTotalTime())));
@@ -292,14 +340,15 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 				stateLabel.setText(NLS.bind(Messages.label_state_running, Timer
 						.format(currJobInfo.getTimer().getElapsedTime())));
 				break;
+			case IDLE:
+			case WAITING:
 			default:
-				stateLabel.setText(""); //$NON-NLS-1$
+				stateLabel.setText(state.toString());
 				break;
 			}
 			jobLabel.setText(currJobInfo.getName());
 			cancelButton
 					.setEnabled(currJobInfo.getSate().equals(State.RUNNING));
-			((Composite) tasksViewer.getControl()).layout();
 		}
 	}
 
@@ -311,7 +360,8 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 	 */
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		if (selection.isEmpty()) {
-			if (JobsView.ID.equals(part.getSite().getId())) {
+			if (JobsView.ID.equals(part.getSite().getId())
+					&& (JobManager.getDefault().indexOf(currJobInfo) == -1)) {
 				showNoJob();
 			}
 		} else if (selection instanceof IStructuredSelection) {
@@ -319,15 +369,20 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 			if (obj instanceof JobInfo) {
 				showJob((JobInfo) obj);
 			}
+			if (obj instanceof JobParameter) {
+				showJob(JobManager.getDefault().get(
+						((JobParameter) obj).getJob()));
+			}
 		}
 	}
 
 	@Override
 	public void setFocus() {
-		if ((currJobInfo != null) && (tasksViewer != null)) {
-			tasksViewer.getControl().setFocus();
+		if (currJobInfo != null) {
+			jobLabel.setFocus();
+		} else {
+			noJobArea.setFocus();
 		}
-		// TODO else set the focus to the empty area
 	}
 
 	/**
@@ -341,8 +396,6 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 			currJobInfo = jobInfo;
 			control.setContent(jobArea);
 			tasksViewer.setInput(jobInfo);
-			scrolled.setMinSize(tasksViewer.getControl().computeSize(
-					SWT.DEFAULT, SWT.DEFAULT));
 			refresh();
 		}
 	}

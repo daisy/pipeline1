@@ -34,10 +34,14 @@ public class Messages extends NLS {
 	 * The text to display in the progress view when no job is selected.
 	 */
 	public static String label_noJob;
-	/** The label for the "running" state */
-	public static String label_state_running;
-	/** The label for the "done" state */
+	/** The state info of an aborted job */
+	public static String label_state_aborted;
+	/** The state info of a finished job */
 	public static String label_state_done;
+	/** The state info of a failed job */
+	public static String label_state_failed;
+	/** The state info of a running job */
+	public static String label_state_running;
 	/** The label for the timing information when the job is finished */
 	public static String state_timeDone;
 	/** The label for the timing information when the job is running */
