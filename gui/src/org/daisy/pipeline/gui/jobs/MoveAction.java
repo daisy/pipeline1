@@ -33,86 +33,122 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.ui.IPropertyListener;
 
-public abstract class MoveAction extends Action implements
-        ISelectionChangedListener, IPropertyListener {
-    protected final JobsView view;
-    protected Object selectedElem;
-    protected ISelection selection;
-    protected JobManager jobManager;
-    private ISelectionEnabler enabler;
+/**
+ * Abstract base class for the actions that move jobs in the the jobs view.
+ * 
+ * @author Romain Deltour
+ * 
+ */
+public abstract class MoveAction extends Action implements IPropertyListener {
+	/**
+	 * An undoable operation that is used internally by move actions. This
+	 * operation saves the selection in the view.
+	 * 
+	 * @author Romain Deltour
+	 * 
+	 */
+	protected class MoveOperation extends AbstractOperation {
 
-    public MoveAction(JobsView view, String text, ImageDescriptor icon) {
-        super(text, icon);
-        this.view = view;
-        this.jobManager = JobManager.getDefault();
-        this.enabler = new DefaultSelectionEnabler(
-                ISelectionEnabler.Mode.SINGLE, new Class[] { JobInfo.class });
-        setEnabled(false);
-        this.view.getViewer().addSelectionChangedListener(this);
-        this.view.addPropertyListener(this);
-    }
+		private final int oldIndex;
+		private final int newIndex;
+		private final ISelection sel;
 
-    @Override
-    public void run() {
-        OperationUtil.execute(getOperation(), view.getSite().getShell());
-    }
+		/**
+		 * Creates a new operation representing a job move in the jobs view.
+		 * 
+		 * @param oldIndex
+		 *            the old index of the job that is moved
+		 * @param newIndex
+		 *            the new index of the job that is moved
+		 * @param sel
+		 *            the selection in the view before the move
+		 */
+		public MoveOperation(int oldIndex, int newIndex, ISelection sel) {
+			super(getText());
+			this.oldIndex = oldIndex;
+			this.newIndex = newIndex;
+			this.sel = sel;
+		}
 
-    public void selectionChanged(SelectionChangedEvent event) {
-        ISelection incoming = event.getSelection();
-        setEnabled(enabler.isEnabledFor(incoming));
-        if (isEnabled()) {
-            selection = incoming;
-            selectedElem = ((IStructuredSelection) incoming)
-                    .getFirstElement();
-        }
+		@Override
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info)
+				throws ExecutionException {
+			redo(monitor, info);
+			return Status.OK_STATUS;
+		}
 
-    }
+		@Override
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info)
+				throws ExecutionException {
+			jobManager.move(oldIndex, newIndex);
+			view.firePropertyChange(JobsView.PROP_SEL_JOB_INDEX);
+			return Status.OK_STATUS;
+		}
 
-    protected abstract IUndoableOperation getOperation();
+		@Override
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info)
+				throws ExecutionException {
+			jobManager.move(newIndex, oldIndex);
+			view.firePropertyChange(JobsView.PROP_SEL_JOB_INDEX);
+			view.getViewer().setSelection(sel);
+			return Status.OK_STATUS;
+		}
 
-    public abstract void propertyChanged(Object source, int propId);
+	}
 
-    protected class MoveOperation extends AbstractOperation {
+	/** A reference to the Jobs view this action is used in */
+	protected final JobsView view;
+	/** The currently selected element */
+	protected Object selectedElem;
+	/** The current selection */
+	protected ISelection selection;
+	/** A reference to the pipeline job manager */
+	protected JobManager jobManager;
+	/** The object that controls the enablement state of this aciton */
+	private ISelectionEnabler enabler;
 
-        private final int oldIndex;
-        private final int newIndex;
-        private final ISelection sel;
+	/**
+	 * Creates a new move action.
+	 * 
+	 * @param view
+	 *            the jobs view this action is used with
+	 * @param name
+	 *            the name of this action
+	 * @param icon
+	 *            the icon used to represent this action
+	 */
+	public MoveAction(JobsView view, String name, ImageDescriptor icon) {
+		super(name, icon);
+		this.view = view;
+		this.jobManager = JobManager.getDefault();
+		this.enabler = new DefaultSelectionEnabler(
+				ISelectionEnabler.Mode.SINGLE, new Class[] { JobInfo.class });
+		setEnabled(false);
+		this.view.addPropertyListener(this);
+	}
 
-        public MoveOperation(int oldIndex, int newIndex, ISelection sel) {
-            super(getText());
-            this.oldIndex = oldIndex;
-            this.newIndex = newIndex;
-            this.sel = sel;
-        }
+	/**
+	 * Returns the undoable operation used to execute this action.
+	 * 
+	 * @return the underlying undoable operation used by this action
+	 */
+	protected abstract IUndoableOperation getOperation();
 
-        @Override
-        public IStatus execute(IProgressMonitor monitor, IAdaptable info)
-                throws ExecutionException {
-            redo(monitor, info);
-            return Status.OK_STATUS;
-        }
+	public void propertyChanged(Object source, int propId) {
+		if (propId != JobsView.PROP_SEL_JOB_INDEX) {
+			return;
+		}
+		ISelection incoming = view.getViewer().getSelection();
+		setEnabled(enabler.isEnabledFor(incoming));
+		selection = incoming;
+		selectedElem = ((IStructuredSelection) incoming).getFirstElement();
+	}
 
-        @Override
-        public IStatus redo(IProgressMonitor monitor, IAdaptable info)
-                throws ExecutionException {
-            jobManager.move(oldIndex, newIndex);
-            view.firePropertyChange(JobsView.PROP_SEL_JOB_INDEX);
-            return Status.OK_STATUS;
-        }
-
-        @Override
-        public IStatus undo(IProgressMonitor monitor, IAdaptable info)
-                throws ExecutionException {
-            jobManager.move(newIndex, oldIndex);
-            view.firePropertyChange(JobsView.PROP_SEL_JOB_INDEX);
-            view.getViewer().setSelection(sel);
-            return Status.OK_STATUS;
-        }
-
-    }
+	@Override
+	public void run() {
+		OperationUtil.execute(getOperation(), view.getSite().getShell());
+	}
 }

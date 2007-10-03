@@ -22,23 +22,38 @@ import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.eclipse.core.commands.operations.IUndoableOperation;
 
+/**
+ * An action used to move a job to the bottom of the jobs view.
+ * 
+ * @author Romain Deltour
+ * 
+ */
 public class MoveToBottomAction extends MoveAction {
 
-    public MoveToBottomAction(JobsView view) {
-        super(view, Messages.action_moveToBottom, GuiPlugin
-                .createDescriptor(IIconsKeys.MOVE_BOTTOM));
-    }
+	/**
+	 * Creates a move to bottom action for the given jobs view.
+	 * 
+	 * @param view
+	 *            a jobs view
+	 */
+	public MoveToBottomAction(JobsView view) {
+		super(view, Messages.action_moveToBottom, GuiPlugin
+				.createDescriptor(IIconsKeys.MOVE_BOTTOM));
+	}
 
-    @Override
-    public void propertyChanged(Object source, int propId) {
-        if (propId == JobsView.PROP_SEL_JOB_INDEX) {
-            setEnabled(jobManager.indexOf(selectedElem) < jobManager.size() - 1);
-        }
-    }
+	@Override
+	protected IUndoableOperation getOperation() {
+		int index = jobManager.indexOf(selectedElem);
+		return new MoveOperation(index, jobManager.size() - 1, selection);
+	}
 
-    @Override
-    protected IUndoableOperation getOperation() {
-        int index = jobManager.indexOf(selectedElem);
-        return new MoveOperation(index, jobManager.size() - 1, selection);
-    }
+	@Override
+	public void propertyChanged(Object source, int propId) {
+		super.propertyChanged(source, propId);
+		if (propId == JobsView.PROP_SEL_JOB_INDEX) {
+			setEnabled(isEnabled()
+					&& (selectedElem != null)
+					&& (jobManager.indexOf(selectedElem) < jobManager.size() - 1));
+		}
+	}
 }

@@ -22,23 +22,37 @@ import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.eclipse.core.commands.operations.IUndoableOperation;
 
+/**
+ * An action used to move a job to the top of the jobs view.
+ * 
+ * @author Romain Deltour
+ * 
+ */
 public class MoveToTopAction extends MoveAction {
 
-    public MoveToTopAction(JobsView view) {
-        super(view, Messages.action_moveToTop, GuiPlugin
-                .createDescriptor(IIconsKeys.MOVE_TOP));
-    }
+	/**
+	 * Creates a move to top action for the given jobs view.
+	 * 
+	 * @param view
+	 *            a jobs view
+	 */
+	public MoveToTopAction(JobsView view) {
+		super(view, Messages.action_moveToTop, GuiPlugin
+				.createDescriptor(IIconsKeys.MOVE_TOP));
+	}
 
-    @Override
-    public void propertyChanged(Object source, int propId) {
-        if (propId == JobsView.PROP_SEL_JOB_INDEX) {
-            setEnabled(jobManager.indexOf(selectedElem) > 0);
-        }
-    }
+	@Override
+	protected IUndoableOperation getOperation() {
+		int index = jobManager.indexOf(selectedElem);
+		return new MoveOperation(index, 0, selection);
+	}
 
-    @Override
-    protected IUndoableOperation getOperation() {
-        int index = jobManager.indexOf(selectedElem);
-        return new MoveOperation(index, 0, selection);
-    }
+	@Override
+	public void propertyChanged(Object source, int propId) {
+		super.propertyChanged(source, propId);
+		if (propId == JobsView.PROP_SEL_JOB_INDEX) {
+			setEnabled(isEnabled() && (selectedElem != null)
+					&& (jobManager.indexOf(selectedElem) > 0));
+		}
+	}
 }

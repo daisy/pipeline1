@@ -28,6 +28,8 @@ import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -150,6 +152,12 @@ public class JobsView extends ViewPart {
 		jobsViewer.setContentProvider(new JobsContentProvider());
 		jobsViewer.setLabelProvider(new JobsLabelProvider());
 		jobsViewer.setInput(JobManager.getDefault());
+		jobsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				// To update the move actions enable state
+				JobsView.this.firePropertyChange(JobsView.PROP_SEL_JOB_INDEX);
+			}
+		});
 		getSite().setSelectionProvider(jobsViewer);
 
 		// add actions
