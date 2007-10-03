@@ -28,50 +28,101 @@ import org.daisy.util.file.EFile;
 import org.daisy.util.file.EFolder;
 
 /**
+ * A file filter designed to be use with {@link EFile}s and {@link EFolder}s.
+ * 
  * @author Romain Deltour
  * 
  */
 public abstract class EFileFilter implements FileFilter {
 
-    private Set<String> filteredDirNames;
-    private static final String SVN_DIR = ".svn"; //$NON-NLS-1$
+	private static final String SVN_DIR = ".svn"; //$NON-NLS-1$
+	private static final String DS_STORE = ".DS_Store"; //$NON-NLS-1$
+	/** A set of automatically filtered directory names */
+	private Set<String> filteredDirNames;
+	/** A set of automatically filtered file names */
+	private Set<String> filteredFileNames;
 
-    public EFileFilter() {
-        super();
-        filteredDirNames = new HashSet<String>();
-        filteredDirNames.add(SVN_DIR);
-    }
+	/**
+	 * Constructs the filter and adds default values to the names filtered by
+	 * default (e.g. .DS_Store, .svn)
+	 */
+	public EFileFilter() {
+		super();
+		filteredDirNames = new HashSet<String>();
+		filteredDirNames.add(SVN_DIR);
+		filteredFileNames = new HashSet<String>();
+		filteredFileNames.add(DS_STORE);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.io.FileFilter#accept(java.io.File)
-     */
-    public boolean accept(File file) {
+	/**
+	 * Tests whether or not the specified abstract pathname should be included
+	 * in a pathname list.
+	 * <p>
+	 * The <code>EFileFilter</code> implementation of this interface
+	 * dispatches to the {@link #acceptEFile(EFile)} and
+	 * {@link #acceptEFolder(EFolder)} methods.
+	 * </p>
+	 * 
+	 * @param file
+	 *            The abstract pathname to be tested
+	 * @return <code>true</code> if and only if <code>pathname</code> should
+	 *         be included
+	 */
+	public boolean accept(File file) {
 
-        if (file.isDirectory()) {
-            try {
-                return acceptEFolder(new EFolder(file));
-            } catch (IOException e) {
-                GuiPlugin.get().error(
-                        "Couldn't create EFolder from file " + file, e); //$NON-NLS-1$
-                return false;
-            }
-        } else {
-            return acceptEFile(new EFile(file));
-        }
-    }
+		if (file.isDirectory()) {
+			try {
+				return acceptEFolder(new EFolder(file));
+			} catch (IOException e) {
+				GuiPlugin.get().error(
+						"Couldn't create EFolder from file " + file, e); //$NON-NLS-1$
+				return false;
+			}
+		} else {
+			return acceptEFile(new EFile(file));
+		}
+	}
 
-    public void rejectDir(String name) {
-        filteredDirNames.add(name);
-    }
+	/**
+	 * Tests whether or not the specified abstract file pathname should be
+	 * included in a pathname list.
+	 * <p>
+	 * This default implementation filters out ".DS_Store" files.
+	 * </p>
+	 * 
+	 * @param file
+	 *            The abstract pathname to be tested
+	 * @return <code>true</code> if and only if <code>pathname</code> should
+	 *         be included
+	 */
+	protected boolean acceptEFile(EFile file) {
+		return !filteredFileNames.contains(file.getName());
+	}
 
-    protected boolean acceptEFile(EFile file) {
-        return true;
-    }
+	/**
+	 * Tests whether or not the specified abstract directory pathname should be
+	 * included in a pathname list.
+	 * <p>
+	 * This default implementation filters out ".svn" directories.
+	 * </p>
+	 * 
+	 * @param dir
+	 *            The abstract pathname to be tested
+	 * @return <code>true</code> if and only if <code>pathname</code> should
+	 *         be included
+	 */
+	protected boolean acceptEFolder(EFolder dir) {
+		return !filteredDirNames.contains(dir.getName());
+	}
 
-    protected boolean acceptEFolder(EFolder dir) {
-        return !filteredDirNames.contains(dir.getName());
-    }
+	/**
+	 * Configures this filter to reject the directories of the given name.
+	 * 
+	 * @param name
+	 *            the name of directories to filter out
+	 */
+	public void rejectDir(String name) {
+		filteredDirNames.add(name);
+	}
 
 }
