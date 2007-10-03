@@ -28,48 +28,59 @@ import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
 
 /**
+ * A file filter that selects only Pipeline scripts.
+ * 
  * @author Romain Deltour
  * 
  */
 public class ScriptFileFilter extends EFileFilter {
-    private boolean acceptDir;
+	private boolean acceptDir;
 
-    public ScriptFileFilter(boolean acceptDir) {
-        super();
-        this.acceptDir = acceptDir;
-    }
+	/**
+	 * Creates an instance on this filter that accept directories if and only if
+	 * <code>acceptDir</code> is <code>true</code>.
+	 * 
+	 * @param acceptDir
+	 */
+	public ScriptFileFilter(boolean acceptDir) {
+		super();
+		this.acceptDir = acceptDir;
+	}
 
-    @Override
-    protected boolean acceptEFile(EFile file) {
-        Peeker peeker = null;
-        try {
-            peeker = PeekerPool.getInstance().acquire();
-            PeekResult result = peeker.peek(file);
-            return "taskScript".equals(result.getRootElementLocalName()); //$NON-NLS-1$
-        } catch (Exception e) {
-            GuiPlugin.get().error(
-                    "Couldn't peek in file " + file.getAbsolutePath(), e); //$NON-NLS-1$
-        }
-        return false;
-    }
+	@Override
+	protected boolean acceptEFile(EFile file) {
+		if (!super.acceptEFile(file)) {
+			return false;
+		}
+		Peeker peeker = null;
+		try {
+			peeker = PeekerPool.getInstance().acquire();
+			PeekResult result = peeker.peek(file);
+			return "taskScript".equals(result.getRootElementLocalName());
+		} catch (Exception e) {
+			GuiPlugin.get().error(
+					"Couldn't peek in file " + file.getAbsolutePath(), e);
+		}
+		return false;
+	}
 
-    @Override
-    protected boolean acceptEFolder(EFolder dir) {
-        if (!acceptDir || !super.acceptEFolder(dir)) {
-            return false;
-        }
-        return containsScript(dir);
-    }
+	@Override
+	protected boolean acceptEFolder(EFolder dir) {
+		if (!acceptDir || !super.acceptEFolder(dir)) {
+			return false;
+		}
+		return containsScript(dir);
+	}
 
-    private boolean containsScript(File dir) {
-        for (File file : dir.listFiles(new ScriptFileFilter(true))) {
-            if (file.isFile()) {
-                return true;
-            } else {
-                return containsScript(file);
-            }
-        }
-        return false;
-    }
+	private boolean containsScript(File dir) {
+		for (File file : dir.listFiles(new ScriptFileFilter(true))) {
+			if (file.isFile()) {
+				return true;
+			} else {
+				return containsScript(file);
+			}
+		}
+		return false;
+	}
 
 }
