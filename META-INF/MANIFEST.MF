@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DAISY Pipeline
 Bundle-SymbolicName: org.daisy.pipeline
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Bundle-ClassPath: 
  daisy-pipeline.jar,
  daisy-util.jar,
@@ -28,7 +28,6 @@ Bundle-ClassPath:
  lib/tagsoup-1.1.3.jar,
  lib/tritonus_share-0.3.6.jar,
  lib/tritonus_remaining-0.3.6.jar
-Bundle-Localization: plugin
 Export-Package: 
  com.ctc.wstx.api,
  com.ctc.wstx.cfg,
