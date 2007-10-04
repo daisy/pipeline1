@@ -4,6 +4,10 @@
   <sch:title>DTBook 2005 Schematron tests for Narrator</sch:title>
 
   <sch:ns prefix="dtbk" uri="http://www.daisy.org/z3986/2005/dtbook/"/>
+  
+  <sch:key name="pageFrontValues" match="dtbk:pagenum[@page='front']" path="."/>
+  <sch:key name="pageNormalValues" match="dtbk:pagenum[@page='normal' or not(@page)]" path="."/>
+  <sch:key name="pageSpecialValues" match="dtbk:pagenum[@page='special']" path="."/>
 
   <!-- Rule 7: No <list> or <dl> inside <p> -->
   <sch:pattern name="dtbook_narrator_noListOrDlinP" id="dtbook_narrator_noListOrDlinP">
@@ -92,6 +96,19 @@
   	<sch:rule context="dtbk:book">
   		<sch:assert test="count(dtbk:frontmatter/dtbk:doctitle)>=1">[narrator107] There must be a frontmatter/doctitle element</sch:assert>
   	</sch:rule>  	
+  </sch:pattern>
+  
+  <!-- Rule 113: pagenum value must be unique for each page type -->  
+  <sch:pattern name="dtbook_narrator_pagenumValueUnique" id="dtbook_narrator_pagenumValueUnique">
+  	<sch:rule context="dtbk:pagenum[@page='front']">
+  		<sch:assert test="count(key('pageFrontValues', .))=1">[narrator113] pagenum value must be unique for each page type</sch:assert>
+  	</sch:rule>
+  	<sch:rule context="dtbk:pagenum[@page='normal' or not(@page)]">
+  		<sch:assert test="count(key('pageNormalValues', .))=1">[narrator113] pagenum value must be unique for each page type</sch:assert>
+  	</sch:rule>
+  	<sch:rule context="dtbk:pagenum[@page='special']">
+  		<sch:assert test="count(key('pageSpecialValues', .))=1">[narrator113] pagenum value must be unique for each page type</sch:assert>
+  	</sch:rule>
   </sch:pattern>
   
 </sch:schema>
