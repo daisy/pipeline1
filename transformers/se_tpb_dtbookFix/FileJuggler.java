@@ -61,24 +61,27 @@ public class FileJuggler {
 	
 	/**
 	 * Swap the input and output file before writing to the output again
+	 * @throws FileNotFoundException 
 	 */
-	public void swap() {
-		toggle = !toggle;
-		getOutput().delete();
+	public void swap() throws FileNotFoundException {
+		// Check that the soon to be input file exists
+		if (getOutput().exists()) {
+			toggle = !toggle;
+			getOutput().delete();
+		} else {
+			throw new FileNotFoundException("Cannot swap to a non-existing file.");
+		}
 	}
 	
 	/**
 	 * Must be called when done
 	 * Closes the temporary files and copies the result to the output file
+	 * @throws IOException 
 	 */
-	public void close() {
-		try {
-			if (getOutput().exists()) FileUtils.copy(getOutput(), output);
-			else if (getInput().exists()) FileUtils.copy(getInput(), output);
-			else FileUtils.copy(input, output);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void close() throws IOException {
+		if (getOutput().exists()) FileUtils.copy(getOutput(), output);
+		else if (getInput().exists()) FileUtils.copy(getInput(), output);
+		else FileUtils.copy(input, output);
 		t1.delete();
 		t2.delete();
 	}

@@ -91,10 +91,10 @@ public class ImageDecodeHandler extends DefaultHandler2 {
 		if (openPict) {
 			openPict = false;
 			try {
-				output = new FileOutputStream(outputFile);
-				//output.write(decoder.decodeBuffer(buffer.toString()));
-				output.write(Base64.decode(buffer.toString()));
-				output.close();
+				Base64.decodeToFile(buffer.toString(), outputFile.getAbsolutePath());
+				//output = new FileOutputStream(outputFile);
+				//output.write(Base64.decode(buffer.toString()));
+				//output.close();
 			} catch (Exception e) { e.printStackTrace(); }
 		}
 	}

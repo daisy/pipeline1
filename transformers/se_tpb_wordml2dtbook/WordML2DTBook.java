@@ -161,7 +161,7 @@ public class WordML2DTBook extends Transformer {
 			Stylesheet.apply(t1.getFile().getAbsolutePath(), countCharsDTBook.getAbsolutePath(), tc2.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
 			
 			if (tc1.getFile().length()!=tc2.getFile().length()) {
-				long diff = (tc1.getFile().length() - tc2.getFile().length());
+				long diff = (tc2.getFile().length() - tc1.getFile().length());
 				String sign = "";
 				if (diff>0) sign = "+";
 				sendMessage("The text size has changed (" + sign + diff + "). Check the result for errors.", MessageEvent.Type.WARNING);
