@@ -13,7 +13,7 @@ Report bugs and issues to:
 http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
 ***************************************
-Pipeline Maintenance Release, 2007-10-3
+Pipeline Maintenance Release, 2007-10-03
 ***************************************
 
 This is a maintenance release of the first public version of the Pipeline.

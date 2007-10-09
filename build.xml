@@ -13,6 +13,7 @@
 	</tstamp>
 		
 	<property name="release.name" value="pipeline-${ISO-TODAY}"/>
+	
 	<property name="base.dir" value="."/>
 		
 	<property name="dmfc.src.dir" value="${base.dir}/src"/>
@@ -32,25 +33,24 @@
 		<include name="batik-css.jar"/>
 		<include name="batik-util.jar"/>
 		<include name="chardet.jar"/>
-		<include name="icu4j-3_6.jar"/>
-		<include name="icu4j-charsets-3_6.jar"/>			
+		<include name="commons-cli-1.0.jar"/>
+		<include name="icu4j-3_6.jar"/>		
+		<include name="jaudiotagger.jar"/>
 		<include name="jing.jar"/>
-		<include name="jl1.0.jar"/>			
-		<include name="stax-api-1.0.1.jar"/>
+		<include name="jl1.0.jar"/>					
 		<include name="sac.jar"/>
-		<include name="saxon.jar"/>
 		<include name="saxon8.jar"/>
 		<include name="saxon8-dom.jar"/>
-		<include name="wstx-lgpl-3.2.1.jar"/>
-		<include name="tagsoup-1.1.3.jar"/>			
-		<include name="xercesImpl.jar"/>
-		<include name="xalan.jar"/>			
-		<include name="jaudiotagger.jar"/>			
-		<include name="ZedVal.jar"/>			
-		<include name="commons-cli-1.0.jar"/>			
-		<include name="serializer.jar"/>	
+		<include name="saxon.jar"/>
+		<include name="serializer.jar"/>
+		<include name="stax-api-1.0.1.jar"/>
+		<include name="tagsoup-1.1.3.jar"/>	
 		<include name="tritonus_remaining-0.3.6.jar"/>			
-		<include name="tritonus_share-0.3.6.jar"/>	
+		<include name="tritonus_share-0.3.6.jar"/>
+		<include name="wstx-lgpl-3.2.1.jar"/>
+		<include name="xalan.jar"/>
+		<include name="xercesImpl.jar"/>			
+		<include name="ZedVal.jar"/>													
 	</fileset>
 	
 	<!-- Transformers -->
@@ -94,6 +94,9 @@
 	<!-- The set of transformers to be included -->
 	<patternset id="patternset.transformers">
 		<include name="**/*.*"/>
+		<exclude name="dk_dbb_dtbook2rtf/**/*.*"/>
+		<exclude name="int_daisy_daisy2022Zed2005/**/*.*"/>
+		<exclude name="se_tpb_aligner/**/*.*"/>
 	</patternset>
 	
 	<!-- Util library patternset -->
@@ -219,7 +222,7 @@
 			description="Creates three javadoc archives in the distribution folder"
 			depends="createDistributionDir">
 		
-		<javadoc destdir="${javadoc.dir}/util" 
+		<javadoc destdir="${javadoc.dir}/util" 			     
 			     classpathref="path.combined"
 			     windowtitle="DAISY Utility Library API documentation">
 			<fileset dir="${base.dir}/src">
@@ -229,11 +232,11 @@
 				</and>
 			</fileset>
 		</javadoc>
-		<zip zipfile="${distribution.dir}/org.daisy.util-docs.zip" >
+		<zip zipfile="${distribution.dir}/org.daisy.util-docs-${ISO-TODAY}.zip" >
 			<fileset dir="${javadoc.dir}/util" includes="**"/>
 		</zip>		
 		
-		<javadoc destdir="${javadoc.dir}/framework" 
+		<javadoc destdir="${javadoc.dir}/framework" 			     
 			     classpathref="path.combined"
 			     windowtitle="Daisy Pipeline Framework API documentation">
 			<fileset dir="${base.dir}/src">
@@ -243,7 +246,7 @@
 				</and>
 			</fileset>
 		</javadoc>
-		<zip zipfile="${distribution.dir}/org.daisy.pipeline-framework-docs.zip" >
+		<zip zipfile="${distribution.dir}/org.daisy.pipeline-framework-docs-${ISO-TODAY}.zip" >
 			<fileset dir="${javadoc.dir}/framework" includes="**"/>
 		</zip>
 				
@@ -257,7 +260,7 @@
 				</and>
 			</fileset>
 		</javadoc>
-		<zip zipfile="${distribution.dir}/org.daisy.pipeline-transformers-docs.zip" >
+		<zip zipfile="${distribution.dir}/org.daisy.pipeline-transformers-docs-${ISO-TODAY}.zip" >
 			<fileset dir="${javadoc.dir}/transformers" includes="**"/>
 		</zip>
 		
