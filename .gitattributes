@@ -5,6 +5,7 @@ META-INF/services/javax.xml.validation.SchemaFactory -text
 /custom.xml -text
 doc/404.html -text
 doc/dev_old/diagram.png -text
+doc/developer/core-build-process.html -text
 doc/developer/img/devsetup01.png -text
 doc/developer/img/devsetup02.png -text
 doc/developer/img/devsetup03.png -text
