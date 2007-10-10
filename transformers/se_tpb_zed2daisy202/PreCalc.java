@@ -41,15 +41,15 @@ class PreCalc {
     private XMLEventReader xer = null;    
     private XMLEventWriter xew = null;
     
-    private Map preCalcHeadings = new HashMap();
-    private Map preCalcNotes = new HashMap();
+    private Map<String,PreCalcHeading> preCalcHeadings = new HashMap<String,PreCalcHeading>();
+    private Map<String,Collection<String>> preCalcNotes = new HashMap<String,Collection<String>>();
     private String doctitleId = null;
     
     private String ncxTitle = null;
     private String ncxClipBegin = null;
     private String ncxClipEnd = null;
     private String ncxClipSrc = null;
-    private Map smilCustomTests = new HashMap();
+    private Map<String,String> smilCustomTests = new HashMap<String,String>();
     
     private File dtbookFile = null;
     private File ncxFile = null;
@@ -58,7 +58,7 @@ class PreCalc {
     
     private class PreCalcHeading {
         private StringBuffer heading = new StringBuffer();
-        private Collection ids = new ArrayList();
+        private Collection<String> ids = new ArrayList<String>();
         public void append(String str) {
             heading.append(str);
         }
@@ -68,7 +68,7 @@ class PreCalc {
         public String getHeading() {
             return heading.toString();
         }
-        public Collection getIds() {
+        public Collection<String> getIds() {
             return ids;
         }
     }
@@ -100,26 +100,26 @@ class PreCalc {
         xew.add(ef.createStartDocument());
         
         // Root element start
-        Collection coll = new ArrayList();
+        Collection<Attribute> coll = new ArrayList<Attribute>();
         if (doctitleId != null) {
-            coll.add(ef.createAttribute("id", doctitleId));
+            //coll.add(ef.createAttribute("id", doctitleId));
         }
         xew.add(ef.createStartElement("", null, "doc", coll.iterator(), null));
         
         // Headings
         xew.add(ef.createStartElement("", null, "headings"));
-        for (Iterator it = preCalcHeadings.keySet().iterator(); it.hasNext(); ) {
-            String key = (String)it.next();    
+        for (Iterator<String> it = preCalcHeadings.keySet().iterator(); it.hasNext(); ) {
+            String key = it.next();    
             PreCalcHeading pch = (PreCalcHeading)preCalcHeadings.get(key);
             Attribute attId = ef.createAttribute("id", key);
             Attribute attTitle = ef.createAttribute("title", pch.getHeading());
-            coll = new ArrayList();
+            coll = new ArrayList<Attribute>();
             coll.add(attId);
             coll.add(attTitle);
             xew.add(ef.createStartElement("", null, "heading", coll.iterator(), null));
-            for (Iterator it2 = pch.getIds().iterator(); it2.hasNext(); ) {
-                String id = (String)it2.next();
-                coll = new ArrayList();
+            for (Iterator<String> it2 = pch.getIds().iterator(); it2.hasNext(); ) {
+                String id = it2.next();
+                coll = new ArrayList<Attribute>();
                 coll.add(ef.createAttribute("id", id));
                 xew.add(ef.createStartElement("", null, "item", coll.iterator(), null));
                 xew.add(ef.createEndElement("", null, "item"));
@@ -130,16 +130,16 @@ class PreCalc {
         
         // Notes
         xew.add(ef.createStartElement("", null, "notes"));
-        for (Iterator it = preCalcNotes.keySet().iterator(); it.hasNext(); ) {
-            String key = (String)it.next();    
-            Collection noteIds = (Collection)preCalcNotes.get(key);
+        for (Iterator<String> it = preCalcNotes.keySet().iterator(); it.hasNext(); ) {
+            String key = it.next();    
+            Collection<String> noteIds = preCalcNotes.get(key);
             Attribute attId = ef.createAttribute("id", key);
-            coll = new ArrayList();
+            coll = new ArrayList<Attribute>();
             coll.add(attId);
             xew.add(ef.createStartElement("", null, "note", coll.iterator(), null));
-            for (Iterator it2 = noteIds.iterator(); it2.hasNext(); ) {
-                String id = (String)it2.next();
-                coll = new ArrayList();
+            for (Iterator<String> it2 = noteIds.iterator(); it2.hasNext(); ) {
+                String id = it2.next();
+                coll = new ArrayList<Attribute>();
                 coll.add(ef.createAttribute("id", id));
                 xew.add(ef.createStartElement("", null, "item", coll.iterator(), null));
                 xew.add(ef.createEndElement("", null, "item"));
@@ -149,16 +149,16 @@ class PreCalc {
         xew.add(ef.createEndElement("", null, "notes"));
         
         // NCX stuff
-        coll = new ArrayList();
+        coll = new ArrayList<Attribute>();
         coll.add(ef.createAttribute("src", ncxClipSrc));
         coll.add(ef.createAttribute("clipBegin", ncxClipBegin));
         coll.add(ef.createAttribute("clipEnd", ncxClipEnd));
         coll.add(ef.createAttribute("title", ncxTitle));
         xew.add(ef.createStartElement("", null, "ncx", coll.iterator(), null));
-        for (Iterator it = smilCustomTests.keySet().iterator(); it.hasNext(); ) {
-            String id = (String)it.next();
-            String bookStruct = (String)smilCustomTests.get(id);
-            coll = new ArrayList();
+        for (Iterator<String> it = smilCustomTests.keySet().iterator(); it.hasNext(); ) {
+            String id = it.next();
+            String bookStruct = smilCustomTests.get(id);
+            coll = new ArrayList<Attribute>();
             coll.add(ef.createAttribute("id", id));
             coll.add(ef.createAttribute("bookStruct", bookStruct));
             xew.add(ef.createStartElement("", null, "customTest", coll.iterator(), null));
@@ -226,7 +226,7 @@ class PreCalc {
         boolean inNote = false;
         String currentId = null;
         PreCalcHeading pch = null;
-        Collection noteIds = null;
+        Collection<String> noteIds = null;
         xer = factory.createXMLEventReader(new FileInputStream(dtbookFile));
         while (xer.hasNext()) {
             XMLEvent ev = xer.nextEvent();
@@ -245,7 +245,7 @@ class PreCalc {
                 }
                 if (isNote(se.getName())) {
                     currentId = this.getId(se);
-                    noteIds = new ArrayList();
+                    noteIds = new ArrayList<String>();
                     //noteIds.add(currentId);
                     preCalcNotes.put(currentId, noteIds);
                     inNote = true;
@@ -282,7 +282,7 @@ class PreCalc {
                 }
             }
         }
-        System.err.println("done!");
+        //System.err.println("done!");
     }
     
     private String getId(StartElement se) {
