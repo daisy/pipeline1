@@ -141,7 +141,7 @@
    <xsl:template match="dtb:book">
      <body>
      
-			<xsl:for-each select="//dtb:doctitle[1]">
+			<xsl:for-each select="(//dtb:doctitle)[1]">
 				<h1 class="title" id="h1classtitle">
 					<xsl:choose>
 						<xsl:when test="$first_smil">
