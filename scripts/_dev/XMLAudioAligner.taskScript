@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='utf-8'?>
+<taskScript version="2.0" name="dtbook2daisy202">
+	<nicename>XML Audio Aligner</nicename>
+	<description>Aligns XML text with audio files, and generates a DTB of the result.</description>
+	<documentation uri="../../../doc/scripts/XMLAudioAligner.html"/>
+		
+	<parameter name="inputXML" value="" required="true">
+		<nicename>Input DTBook file</nicename>
+		<description>A DTBook 2005 file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="inputAudio" value="" required="true">
+		<nicename>Input AudioFile Directory</nicename>
+		<description>Select a directory with audio files (sequentially named) to align against the text</description>
+		<datatype>
+			<directory type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="outputPath" value="" required="true">
+		<nicename>Output Directory</nicename>
+		<description>Select a directory for the final DTB output</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+		
+		<!-- ********************
+	      Sentence detection 
+	      TODO remove once we have a more generic syncpointnormalizer 
+	     ******************** -->
+	<task name="se_tpb_xmldetection" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${inputXML}</value>
+		</parameter>		
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/pipeline__temp/02-sent.xml</value>
+		</parameter>		
+		<parameter>
+			<name>doAbbrAcronymDetection</name>
+			<value>false</value>
+		</parameter>		
+		<parameter>
+			<name>doSentenceDetection</name>
+			<value>true</value>
+		</parameter>		
+		<parameter>
+			<name>doWordDetection</name>
+			<value>false</value>
+		</parameter>
+	</task>
+	
+	<!-- *****************************
+	      Synchronization point normalization 
+	     ***************************** -->
+	<task name="se_tpb_syncPointNormalizer" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/pipeline__temp/02-sent.xml</value>
+		</parameter>		
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/pipeline__temp/03-syncpoint.xml</value>
+		</parameter>
+	</task>
+	
+
+	
+	<!-- *****************************
+	      Aligner 
+	     ***************************** -->
+	<task name="se_tpb_aligner" interactive="false">
+		<parameter>
+			<name>inputXML</name>
+			<value>${outputPath}/pipeline__temp/03-syncpoint.xml</value>
+		</parameter>		
+		<parameter>
+			<name>inputAudioDir</name>
+			<value>${inputAudio}</value>
+		</parameter>
+		<parameter>
+			<name>divider</name>
+			<value>pages</value>
+		</parameter>
+		<parameter>
+			<name>outputXML</name>
+			<value>${outputPath}/pipeline__temp/04-aligned.xml</value>
+		</parameter>
+	</task>
+	
+	
+
+
+
+
+
+
+	<!-- ******************
+	      File Set Creator
+	     ****************** 
+	<task name="se_tpb_filesetcreator" interactive="false">
+		<parameter>
+			<name>outputDirectory</name>
+			<value>${outputPath}</value>
+		</parameter>
+		<parameter>
+			<name>manuscriptFilename</name>
+			<value>${outputPath}/pipeline__temp/04-aligned.xml</value>
+		</parameter>
+		<parameter>
+			<name>outputDTBFilename</name>
+			<value>${outputPath}/05-dtbook.xml</value>
+		</parameter>		
+	</task>	
+	-->
+	
+	<!-- *************************
+	      z3986 Validation (zedval)
+	     ************************* 
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/z3986/06-speechgen.opf</value>
+		</parameter>		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>WARNING</value>
+		</parameter>
+	</task>
+	-->
+	
+	
+</taskScript>

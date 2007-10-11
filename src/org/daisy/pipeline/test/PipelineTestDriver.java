@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.daisy.pipeline.test.impl.Aligner1;
 import org.daisy.pipeline.test.impl.CharacterRepertoireManipulator1;
 import org.daisy.pipeline.test.impl.CharsetSwitcher1;
 import org.daisy.pipeline.test.impl.ConfigurableValidator1;
@@ -141,17 +142,18 @@ public class PipelineTestDriver {
 //		tests.add(new Odf2xhtml1(inputDir, outputDir));
 //		tests.add(new Odf2dtbook1(inputDir, outputDir));
 //		tests.add(new Odf2dtbook2(inputDir, outputDir));		
-		tests.add(new OpsCreator1(inputDir, outputDir));
-		tests.add(new OpsCreator2(inputDir, outputDir));
+//		tests.add(new OpsCreator1(inputDir, outputDir));
+//		tests.add(new OpsCreator2(inputDir, outputDir));
 //		tests.add(new OpsCreator3(inputDir, outputDir));		
 //		tests.add(new DTBook2rtf1(inputDir, outputDir));
 //		tests.add(new Xhtml2DTBook1(inputDir, outputDir));		
 //		tests.add(new MultiFormatMedia1(inputDir, outputDir));
-		
-		
+
+	
 		
 		
 ////////// tests with input data not in samples dir: 		
+		tests.add(new Aligner1(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoder1(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoderSplitter1(inputDir, outputDir));
 		//tests.add(new PrettyPrinter3(inputDir, outputDir));

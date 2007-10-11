@@ -1,0 +1,43 @@
+<transformer version="1.1">
+	<name>XML Audio Aligner</name>
+	<description>Align audio and XML text temporally</description>
+	<classname>se_tpb_aligner.AlignerDriver</classname>
+	<license>LGPL</license>
+	<author>Kåre Sjölander, Christina Ericsson, Markus Gylling</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/se_tpb_aligner.html"/>
+	
+	<parameters>
+
+		<parameter required="true" direction="in" type="application/x-dtbook+xml">
+			<name>inputXML</name>
+			<description>Path to input XML document</description>
+			<example>C:/inputDTBook.xml</example>
+		</parameter>
+		
+		<parameter required="true" direction="in" type="application/x-filesystemDirectory">
+			<name>inputAudioDir</name>
+			<description>Path to directory with audio files</description>
+			<example>C:/inputAudioFileDirectory/</example>
+		</parameter>
+
+		<parameter required="true" type="enum">
+			<name>divider</name>
+			<description>The segmentation scheme used for input XML and audiofiles</description>
+			<example>levels</example>
+			<enum>
+				<value>levels</value> 
+				<value>pages</value>
+			</enum>
+			<default>pages</default>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-dtbook+xml">
+			<name>outputXML</name>
+			<description>Path to output DTBook file (with SMIL namespace added)</description>
+			<example>C:/myOutputDTBookDocument.xml</example>
+		</parameter>
+				 
+	</parameters>
+
+</transformer>
