@@ -26,7 +26,7 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
  */
 public class NamespaceReporter {
 
-	private static Map<String, Object> mProperties = null;
+	private Map<String, Object> mProperties = null;
 	private Map<String, String> mUriPrefixCollector = null; //<nsuri, prefix>
 	private boolean mHasUnqualifiedElements = false;
 	
@@ -36,10 +36,10 @@ public class NamespaceReporter {
 	 * @throws IOException 
 	 * @throws XMLStreamException 
 	 */
-	public NamespaceReporter(URL document) throws PoolException, IOException, XMLStreamException {
+	public NamespaceReporter(URL document) throws IOException, XMLStreamException {
 		
 		mUriPrefixCollector = new HashMap<String, String>();
-		if (mProperties == null) setProperties();
+		setProperties();
 
 		StAXInputFactoryPool pool = StAXInputFactoryPool.getInstance();
 		XMLInputFactory xif = pool.acquire(mProperties);
@@ -130,7 +130,7 @@ public class NamespaceReporter {
 	}
 	
 	
-	private synchronized void setProperties() {
+	private void setProperties() {
 		mProperties = new HashMap<String, Object>();
 		mProperties.put(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
 		mProperties.put(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
