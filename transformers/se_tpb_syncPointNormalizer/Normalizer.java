@@ -170,16 +170,18 @@ public class Normalizer extends Transformer {
                 cache.writeEvent(ee, false);
             } else if (event.isCharacters()) {
                 Characters ch = event.asCharacters();
-                int currentNumber = context.peek().number; 
-                if (currentNumber > 0) {
-	                ContextInfo contextInfo = (ContextInfo)elementInfo.get(new Integer(currentNumber));
-	                String name = contextInfo.name.getLocalPart();
-	                
-	                if ((synchronize.contains(name) || contextInfo.childOfWantElement)  && contextInfo.hasMustElement) {
-	                    if (!context.peek().spanOpen && !ch.getData().matches("\\s*")) {
-		                    cache.writeEvent(this.getStartElement(), true);
-		                    context.peek().spanOpen = true;
-	                    }
+                if(!context.isEmpty()){ //mg20071011
+	                int currentNumber = context.peek().number; 
+	                if (currentNumber > 0) {
+		                ContextInfo contextInfo = (ContextInfo)elementInfo.get(new Integer(currentNumber));
+		                String name = contextInfo.name.getLocalPart();
+		                
+		                if ((synchronize.contains(name) || contextInfo.childOfWantElement)  && contextInfo.hasMustElement) {
+		                    if (!context.peek().spanOpen && !ch.getData().matches("\\s*")) {
+			                    cache.writeEvent(this.getStartElement(), true);
+			                    context.peek().spanOpen = true;
+		                    }
+		                }
 	                }
                 }
                 
