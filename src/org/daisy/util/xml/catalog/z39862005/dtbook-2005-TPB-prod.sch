@@ -16,6 +16,18 @@
     	<sch:report test="lang('sv') and .='Image description'">[tpbprod54] Value of prodnote in imggroup must be 'Bildbeskrivning' in swedish context</sch:report>
     	<sch:assert test="@render='optional'">[tpbprod54] The value of the render attribute must be 'optional'</sch:assert>
     </sch:rule>
-  </sch:pattern>  
+  </sch:pattern> 
+  
+  <!-- Rule 108: Check the value of dc:Identifier for SIT -->
+  <!--
+  <sch:pattern name="dtbook_TPBprod_id" id="dtbook_TPBprod_id">
+    <sch:rule context="dtbk:head[dtbk:meta[@name='dc:Publisher' and @content='SIT']]">    	
+    	<sch:assert test="translate(dtbk:meta[@name='dc:Identifier' and @scheme='SIT']/@content,'0123456789','0000000000')='X00000A' or
+    	                  translate(dtbk:meta[@name='dc:Identifier' and @scheme='SIT']/@content,'0123456789','0000000000')='X00000C'
+    	                 ">[tpbprod108] The dc:Identifier for SIT must be on the form 'X00000A' or 'X00000C'.</sch:assert>
+    	<sch:assert test="count(//dtbk:imggroup)=0 or translate(dtbk:meta[@name='dc:Identifier' and @scheme='SIT']/@content,'0123456789','0000000000')='X00000A'">[tpbprod108] The dc:Identifier for SIT must be on the form 'X00000A'.</sch:assert>
+    </sch:rule>
+  </sch:pattern> 
+  -->
     
 </sch:schema>

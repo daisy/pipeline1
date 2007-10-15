@@ -70,6 +70,28 @@
   	</sch:rule>  	
   </sch:pattern>  
   
+  <!-- Rule 14:  Don't allow <h x+1> in <level x+1> unless <h x> in <level x> is present -->
+  <sch:pattern name="dtbook_TPB_levelHeading" id="dtbook_TPB_levelHeading">
+    <sch:rule context="dtbk:level1[dtbk:level2/dtbk:h2]">
+      <sch:assert test="dtbk:h1">[tpb14] level1 with no h1 when level2 is present</sch:assert>  
+    </sch:rule>
+    <sch:rule context="dtbk:level2[dtbk:level3/dtbk:h3]">
+      <sch:assert test="dtbk:h2">[tpb14] level2 with no h2 when level3 is present</sch:assert>  
+    </sch:rule>
+    <sch:rule context="dtbk:level3[dtbk:level4/dtbk:h4]">
+      <sch:assert test="dtbk:h3">[tpb14] level3 with no h3 when level4 is present</sch:assert>  
+    </sch:rule>
+    <sch:rule context="dtbk:level4[dtbk:level5/dtbk:h5]">
+      <sch:assert test="dtbk:h4">[tpb14] level4 with no h4 when level5 is present</sch:assert>  
+    </sch:rule>
+    <sch:rule context="dtbk:level5[dtbk:level6/dtbk:h6]">
+      <sch:assert test="dtbk:h5">[tpb14] level5 with no h5 when level6 is present</sch:assert>  
+    </sch:rule>
+    <sch:rule context="dtbk:level[dtbk:level/dtbk:hd]">
+      <sch:assert test="dtbk:hd">[tpb14] level with no hd when level is present</sch:assert>  
+    </sch:rule>
+  </sch:pattern>
+  
   <!-- Rule 18: Disallow level -->
   <sch:pattern name="dtbook_TPB_noLevel" id="dtbook_TPB_noLevel">
   	<sch:rule context="dtbk:level">
@@ -82,7 +104,7 @@
     <sch:rule context="dtbk:imggroup">
     	<sch:report test="ancestor::dtbk:a        or ancestor::dtbk:abbr       or ancestor::dtbk:acronym    or ancestor::dtbk:annoref   or 
                           ancestor::dtbk:bdo      or ancestor::dtbk:code       or ancestor::dtbk:dfn        or ancestor::dtbk:em        or 
-                          ancestor::dtbk:kbd      or ancestor::dtbk:linenum    or ancestor::dtbk:noteref    or                                      
+                          ancestor::dtbk:kbd      or ancestor::dtbk:linenum    or ancestor::dtbk:noteref    or ancestor::dtbk:lic       or                                     
                           ancestor::dtbk:q        or ancestor::dtbk:samp       or ancestor::dtbk:sent       or ancestor::dtbk:span      or 
                           ancestor::dtbk:strong   or ancestor::dtbk:sub        or ancestor::dtbk:sup        or ancestor::dtbk:w         or 
                           ancestor::dtbk:address  or ancestor::dtbk:author     or ancestor::dtbk:bridgehead or ancestor::dtbk:byline    or
@@ -274,7 +296,7 @@
   <!-- Rule 38: Class attributes of level1 in rearmatter -->
   <sch:pattern name="dtbook_TPB_rearmatterLevel1Class" id="dtbook_TPB_rearmatterLevel1Class">
   	<sch:rule context="dtbk:rearmatter/dtbk:level1">
-  		<sch:assert test="@class='colophon' or @class='bibliography' or @class='index' or @class='footnotes' or @class='rearnotes' or @class='glossary' or @class='appendix' or @class='backCoverText' or @class='other'">[tpb38] Class attribute must be one of: bibliography, index, footnotes, rearnotes, glossary, appendix, backCoverText and other</sch:assert>
+  		<sch:assert test="@class='colophon' or @class='bibliography' or @class='index' or @class='footnotes' or @class='rearnotes' or @class='glossary' or @class='appendix' or @class='backCoverText' or @class='other' or @class='toc'">[tpb38] Class attribute must be one of: bibliography, index, footnotes, rearnotes, glossary, appendix, backCoverText, other and toc</sch:assert>
   	</sch:rule>
   </sch:pattern>
   
@@ -302,17 +324,17 @@
   		<sch:assert test="starts-with(@id, 'page-') or starts-with(@id, 'unnum-')">[tpb41] pagenum must have ID on the form page-[number] or unnum-[number].</sch:assert>
   		<sch:report test="starts-with(@id, 'page-') and substring(@id, 6)!=.">[tpb41] ID must be on the form page-[number]</sch:report>
   		<!-- 42 -->
-  		<sch:report test="starts-with(@id, 'unnum-') and @page!='special'">[tpb42] Unnumbered pages nust be of type @page="special".</sch:report>
+  		<sch:report test="starts-with(@id, 'unnum-') and @page!='special'">[tpb42] Unnumbered pages must be of type @page="special".</sch:report>
   		<sch:report test="starts-with(@id, 'unnum-') and lang('sv') and .!='Onumrerad sida'">[tpb42] Value of unnumbered pages must be 'Onumrerad sida' in swedish context.</sch:report>
   		<sch:report test="starts-with(@id, 'unnum-') and lang('en') and .!='Unnumbered page'">[tpb42] Value of unnumbered pages must be 'Unnumbered page' in english context.</sch:report>
   	</sch:rule>
   </sch:pattern>
   
-  <!-- Rule 43: dc:Publisher must be 'TPB' -->
+  <!-- Rule 43: dc:Publisher must be 'TPB' or 'SIT' -->
   <sch:pattern name="dtbook_TPB_metaDcublisher" id="dtbook_TPB_metaDcublisher">
     <sch:rule context="dtbk:head">      
       <!-- dc:Publisher -->
-      <sch:assert test="count(dtbk:meta[@name='dc:Publisher' and @content='TPB'])=1">[tpb43] Meta dc:Publisher must exist and have value 'TPB'</sch:assert>
+      <sch:assert test="count(dtbk:meta[@name='dc:Publisher' and (@content='TPB' or @content='SIT')])=1">[tpb43] Meta dc:Publisher must exist and have value 'TPB' or 'SIT'</sch:assert>
     </sch:rule>
   </sch:pattern>
   
@@ -343,67 +365,10 @@
   <sch:pattern name="dtbook_TPB_allowedNoteClass" id="dtbook_TPB_allowedNoteClass">
     <sch:rule context="dtbk:note">
     	<sch:assert test="@class='endnote' or @class='rearnote'">[tpb46] class attribute for note must be 'endnote' or 'rearnote'</sch:assert>
-    	<sch:report test="@class='rearnote' and (not(ancestor::dtbk:level1[@class='footnotes']) and not(ancestor::dtbk:level1[@class='rearnotes']))">[tpb46] Rearnotes must be in level1@class='rearnotes' in rearmatter</sch:report>
+    	<sch:report test="@class='rearnote' and (not(ancestor::dtbk:level1[@class='footnotes']) and not(ancestor::dtbk:level1[@class='rearnotes']))">[tpb46] Rearnotes must be in level1@class='footnotes' or level1@class='rearnotes' in rearmatter</sch:report>
     	<sch:report test="@class='endnote' and ancestor::dtbk:rearmatter and ancestor::dtbk:level1[@class='rearnotes']">[tpb46] Endnotes may not be in level1@class='rearnotes' in rearmatter</sch:report>
     </sch:rule>
   </sch:pattern>
-  
-  <!-- Rule 48: Headings in notes section in rearmatter -->
-  <sch:pattern name="dtbook_TPB_headingsInNotesSection" id="dtbook_TPB_headingsInNotesSection">
-    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:h2">    
-    	<sch:assert test="count(//dtbk:level1/dtbk:h1[.=current()]) +
-    	                  count(//dtbk:level2[@class='chapter']/dtbk:h2[.=current()]) >= 1"
-    	   >[tpb48] Heading in notes section does not exist in the bodymatter of the book</sch:assert>
-    </sch:rule>    
-    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:note">    
-          <sch:assert test="count(//dtbk:level2[@class='chapter' and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h2=current()/parent::dtbk:level2/dtbk:h2]) +
-                            count(//dtbk:level1[descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h1=current()/parent::dtbk:level2/dtbk:h2]) >= 1"
-           >[tpb48] There is no note reference to this note in the corresponding section in the bodymatter</sch:assert>
-    </sch:rule>
-  </sch:pattern>
-  <!--
-  <sch:pattern name="dtbook_TPB_headingsInNotesSection" id="dtbook_TPB_headingsInNotesSection">
-    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:h2">    
-    	<sch:assert test="count(//dtbk:level1[@class='colophon' or @class='dedication' or @class='toc' or
-    	                                      @class='briefToc' or @class='preface'    or @class='introduction' or
-    	                                      @class='glossary' or @class='other'      or @class='bibliography' or
-    	                                      @class='index'    or @class='footnotes'  or @class='rearnotes' or
-    	                                      @class='glossary' or @class='appendix'   or @class='backCoverText' or
-    	                                      @class='chapter']/dtbk:h1[.=current()]) +
-    	                   count(//dtbk:level2[@class='chapter']/dtbk:h2[.=current()]) >= 1"
-    	   >[tpb48] Heading in notes section does not exist in the bodymatter of the book</sch:assert>
-    </sch:rule>    
-    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:note">    
-          <sch:assert test="count(//dtbk:level2[@class='chapter' and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h2=current()/parent::dtbk:level2/dtbk:h2]) +
-                            count(//dtbk:level1[(@class='colophon' or @class='dedication' or @class='toc' or
-    	                                         @class='briefToc' or @class='preface'    or @class='introduction' or
-    	                                         @class='glossary' or @class='other'      or @class='bibliography' or
-    	                                         @class='index'    or @class='footnotes'  or @class='rearnotes' or
-    	                                         @class='glossary' or @class='appendix'   or @class='backCoverText' or
-    	                                         @class='chapter') 
-                                                and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h1=current()/parent::dtbk:level2/dtbk:h2]) >= 1"
-           >[tpb48] There is no note reference to this note in the corresponding section in the bodymatter</sch:assert>
-    </sch:rule>
-  </sch:pattern>
-  -->
-  <!--
-  descendant::text()[not(ancestor::noteref)]
-  
-  <sch:pattern name="dtbook_TPB_headingsInNotesSection" id="dtbook_TPB_headingsInNotesSection">
-    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:h2">    
-    	<sch:assert test="count(/dtbk:dtbook/dtbk:book/dtbk:*/dtbk:level1/dtbk:level2[@class='chapter']/dtbk:h2[.=current()]) + 
-    	                  count(/dtbk:dtbook/dtbk:book/dtbk:*/dtbk:level1[@class='chapter']/dtbk:h1[.=current()]) +
-    	                  count(/dtbk:dtbook/dtbk:book/dtbk:*/dtbk:level1[@class='introduction']/dtbk:h1[.=current()]) +
-    	                  count(/dtbk:dtbook/dtbk:book/dtbk:*/dtbk:level1[@class='other']/dtbk:h1[.=current()]) >= 1"
-    	   >[tpb48] Heading in notes section does not exist in the bodymatter of the book</sch:assert>
-    </sch:rule>    
-    <sch:rule context="dtbk:rearmatter/dtbk:level1[@class='footnotes']/dtbk:level2/dtbk:note">    
-          <sch:assert test="count(//dtbk:level2[@class='chapter' and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h2=current()/parent::dtbk:level2/dtbk:h2]) +
-                            count(//dtbk:level1[(@class='chapter' or @class='introduction' or @class='other') and descendant::dtbk:noteref[translate(@idref,'#','')=current()/@id] and dtbk:h1=current()/parent::dtbk:level2/dtbk:h2]) >= 1"
-           >[tpb48] There is no note reference to this note in the corresponding section in the bodymatter</sch:assert>
-    </sch:rule>
-  </sch:pattern>
-  -->
   
   <!-- Rule 49: Sidebar must have @render="optional" -->
   <sch:pattern name="dtbook_TPB_renderSidebar" id="dtbook_TPB_renderSidebar">
@@ -426,7 +391,7 @@
     	<sch:assert test="contains(@src,'.jpg') and substring-after(@src,'.jpg')=''">[tpb52] Images must have the .jpg file extension.</sch:assert>
     	<sch:report test="contains(@src,'.jpg') and string-length(@src)=4">[tpb52] Images must have a base name, not just an extension.</sch:report>
     	<sch:report test="contains(@src,'/')">[tpb51] Images must be in the same folder as the DTBook file.</sch:report>
-    	<sch:assert test="string-length(translate(substring(@src,1,string-length(@src)-4),'-_abcdefghijklmnopqrstuvwxyz0123456789',''))=0">[tpb52] Image file name contains an illegal character (must be -_a-z0-9).</sch:assert>
+    	<sch:assert test="string-length(translate(substring(@src,1,string-length(@src)-4),'-_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',''))=0">[tpb52] Image file name contains an illegal character (must be -_a-zA-Z0-9).</sch:assert>
     </sch:rule>
   </sch:pattern>
   
@@ -516,9 +481,9 @@
   
   <!-- Rule 93: Some elements may not start of end with whitespace -->
   <sch:pattern name="dtbook_TPB_trimmedWhitespace" id="dtbook_TPB_trimmedWhitespace">
-    <sch:rule context="dtbk:*[self::dtbk:h1 or self::dtbk:h2 or self::dtbk:h3 or self::dtbk:h4 or self::dtbk:h5 or self::dtbk:h6 or self::dtbk:hd or self::dtbk:lic]">
+    <sch:rule context="dtbk:*[self::dtbk:h1 or self::dtbk:h2 or self::dtbk:h3 or self::dtbk:h4 or self::dtbk:h5 or self::dtbk:h6 or self::dtbk:hd]">
     	<sch:report test="normalize-space(substring(.,1,1))=''">[tpb93] element <sch:name/> may not have leading whitespace</sch:report>
-    	<sch:report test="normalize-space(substring(.,string-length(.),1))=''">[tpb93] element <sch:name/> may not have trailing whitespace</sch:report>
+    	<sch:report test="normalize-space(substring(.,string-length(.),1))='' and not(dtbk:* and normalize-space(dtbk:*[last()]/following-sibling::text())='')">[tpb93] element <sch:name/> may not have trailing whitespace</sch:report>
     </sch:rule>
   </sch:pattern>  
   
@@ -533,11 +498,13 @@
   </sch:pattern>
   
   <!-- Rule 99: dc:Identifier and dtb:uid must have the same value -->
+  <!--
   <sch:pattern name="dtbook_TPB_IdentifierUid" id="dtbook_TPB_IdentifierUid">
     <sch:rule context="dtbk:head[dtbk:meta[@name='dc:Identifier']]">
     	<sch:report test="dtbk:meta[@name='dc:Identifier']/@content!=dtbk:meta[@name='dtb:uid']/@content">[tpb99] dc:Identifier must (if present) have the same value as dtb:uid</sch:report>
     </sch:rule>
   </sch:pattern>
+  -->
   
   <!-- Rule 101: All imggroup elements must have a img element -->
   <sch:pattern name="dtbook_TPB_imgInImggroup" id="dtbook_TPB_imgInImggroup">
@@ -566,6 +533,32 @@
   		<sch:assert test="count(//dtbk:pagenum[@page='normal'])>=1">[tpb106] All documents must contain normal page numbers (&lt;pagenum page="normal" ...&gt;)</sch:assert>
   	</sch:rule>  	
   </sch:pattern>  
-      
+  
+  <!-- Rule 110: pagenum in headings -->
+  <sch:pattern name="dtbook_TPB_pagenumHeadings" id="dtbook_TPB_pagenumHeadings">
+  	<sch:rule context="dtbk:pagenum">
+  		<sch:report test="ancestor::*[self::dtbk:h1 or self::dtbk:h2 or self::dtbk:h3 or self::dtbk:h4 or self::dtbk:h5 or self::dtbk:h6 or self::dtbk:hd]">[tpb110] pagenum elements are not allowed in headings</sch:report>
+  	</sch:rule>  	
+  </sch:pattern>
+  
+  <!-- Rule 111: Content of level1/@class="footnotes" -->
+  <sch:pattern name="dtbook_TPB_level1classFootnotes" id="dtbook_TPB_level1classFootnotes">
+  	<sch:rule context="dtbk:level1[@class='footnotes']/dtbk:*[not(self::dtbk:note)]">
+  		<sch:assert test="false()">[tpb111] Only note elements are allowed in the footnotes section</sch:assert>
+  	</sch:rule>  	
+  </sch:pattern>
+  
+  <!-- Rule 112: tpb:Supplier, tpb:SuppliedDate -->
+  <!-- tpb productions don't comply to this. 
+  <sch:pattern name="dtbook_TPB_supplierSuppliedDate" id="dtbook_TPB_supplierSuppliedDate">
+  	<sch:rule context="dtbk:head">
+      <!- - tpb:SuppliedDate - ->
+      <sch:assert test="count(dtbk:meta[@name='tpb:SuppliedDate'])&gt;=1">[tpb112] Meta tpb:SuppliedDate=YYYY-MM-DD must occur at least once</sch:assert>
+      <sch:report test="dtbk:meta[@name='tpb:SuppliedDate' and translate(@content, '0123456789', '0000000000')!='0000-00-00']">[tpb112] Meta tpb:SuppliedDate must have format YYYY-MM-DD</sch:report>
+      <!- - tpb:Supplier - ->
+      <sch:assert test="count(dtbk:meta[@name='tpb:Supplier'])=1">[tpb112] Meta tpb:Supplier must occur once</sch:assert>
+    </sch:rule>	
+  </sch:pattern>
+  -->    
 </sch:schema>
 

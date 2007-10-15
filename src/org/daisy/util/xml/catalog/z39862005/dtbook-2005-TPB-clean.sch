@@ -18,5 +18,25 @@
     	<sch:report test="@id='notice'">[tpbclean98] The 'notice' ID is reserved for "Information about the talking book" which is not allowed at this point.</sch:report>
     </sch:rule>
   </sch:pattern>
-    
+  
+  <!-- Rule 108: Check the values of the dtb:uid (and dc:Identifier for SIT) -->
+  <sch:pattern name="dtbook_TPBclean_id" id="dtbook_TPBclean_id">
+    <sch:rule context="dtbk:head[dtbk:meta[@name='dc:Publisher' and @content='TPB']]">
+    	<sch:assert test="translate(dtbk:meta[@name='dtb:uid']/@content,'0123456789','0000000000')='DTB00000' or
+    					  translate(dtbk:meta[@name='dtb:uid']/@content,'0123456789','0000000000')='C00000'
+    	                  ">[tpbclean108] The dtb:uid must be on the form C00000/DTB00000 for TPB</sch:assert>
+    </sch:rule>     
+    <sch:rule context="dtbk:head[dtbk:meta[@name='dc:Publisher' and @content='SIT']]">
+    	<sch:assert test="translate(dtbk:meta[@name='dtb:uid']/@content,'0123456789','0000000000')='DTB00000'    	                  
+    	                  ">[tpbclean108] The dtb:uid must be on the form DTB00000</sch:assert>
+    	<sch:assert test="dtbk:meta[@name='dc:Identifier' and @scheme='SIT']">[tpbclean108] There must be a dc:Identifier specifying the identification number for SIT.</sch:assert>
+    </sch:rule>      
+  </sch:pattern>    
+  <sch:pattern name="dtbook_TPBclean_id2" id="dtbook_TPBclean_id2">
+    <sch:rule context="dtbk:head[dtbk:meta[@name='dc:Identifier' and @scheme='SIT']]">
+    	<sch:assert test="dtbk:meta[@name='dc:Publisher']/@content='SIT'">[tpbclean108] The dc:Publisher must be 'SIT' when there is a SIT specific dc:Identifier.</sch:assert>
+    </sch:rule>
+  </sch:pattern>
+  
+
 </sch:schema>

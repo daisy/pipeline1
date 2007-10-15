@@ -13,5 +13,21 @@
     	<sch:assert test="@render='optional'">[tpbimg54] The value of the render attribute must be 'optional'</sch:assert>
     </sch:rule>
   </sch:pattern>
+  
+  <!-- Rule 108: Check the value of dc:Identifier for SIT -->
+  <!--
+  <sch:pattern name="dtbook_TPBimgdesc_id" id="dtbook_TPBimgdesc_id">
+    <sch:rule context="dtbk:head[dtbk:meta[@name='dc:Publisher' and @content='SIT']]">    	
+    	<sch:report test="count(//dtbk:imggroup)!=0 and 
+    	                  (translate(dtbk:meta[@name='dc:Identifier' and @scheme='SIT']/@content,'0123456789','0000000000')!='X00000B' and
+    	                   translate(dtbk:meta[@name='dc:Identifier' and @scheme='SIT']/@content,'0123456789','0000000000')!='X00000C'
+    	                  )">[tpbimg108] The dc:Identifier for SIT must be on the form 'X00000B' or 'X00000C' when there are images without dummy descriptions.</sch:report>
+    	<sch:report test="count(//dtbk:imggroup)=0 and 
+    	                  (translate(dtbk:meta[@name='dc:Identifier' and @scheme='SIT']/@content,'0123456789','0000000000')!='X00000A' and
+    	                   translate(dtbk:meta[@name='dc:Identifier' and @scheme='SIT']/@content,'0123456789','0000000000')!='X00000C'
+    	                  )">[tpbimg108] The dc:Identifier for SIT must be on the form 'X00000A' or 'X00000C' when there are no images.</sch:report>                  
+    </sch:rule>
+  </sch:pattern> 
+  -->
     
 </sch:schema>

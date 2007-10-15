@@ -98,6 +98,16 @@
   	</sch:rule>  	
   </sch:pattern>
   
+  <!-- Rule 109: Only allow images in JPG, PNG or SVG format -->
+  <sch:pattern name="dtbook_narrator_imageFormat" id="dtbook_narrator_imageFormat">
+  	<sch:rule context="dtbk:img">
+  		<sch:assert test="string-length(@src)>=5">[narrator109] Invalid image filename.</sch:assert>
+  		<sch:assert test="substring(@src,string-length(@src) - 3, 4)='.jpg' or
+  		                  substring(@src,string-length(@src) - 3, 4)='.png' or
+  		                  substring(@src,string-length(@src) - 3, 4)='.svg'">[narrator109] Images must be in JPG, PNG or SVG format.</sch:assert>
+  	</sch:rule>  	
+  </sch:pattern>
+  
   <!-- Rule 113: pagenum value must be unique for each page type -->  
   <sch:pattern name="dtbook_narrator_pagenumValueUnique" id="dtbook_narrator_pagenumValueUnique">
   	<sch:rule context="dtbk:pagenum[@page='front']">
