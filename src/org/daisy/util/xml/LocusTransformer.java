@@ -7,6 +7,7 @@ import javax.xml.transform.TransformerException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
 import org.w3c.css.sac.CSSParseException;
+import org.w3c.dom.DOMLocator;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -83,6 +84,16 @@ public class LocusTransformer  {
 		return loc;
 	}
 	
+	public static Location newLocation(DOMLocator location) {		
+		LocationImpl loc =  new LocusTransformer().new LocationImpl();		
+		try{
+			loc.setColumnNumber(location.getColumnNumber());
+			loc.setLineNumber(location.getLineNumber());
+			loc.setSystemId(location.getUri());
+		}catch (Exception e) {}
+		return loc;
+	}
+	
 	private LocusTransformer() {
 		
 	}
@@ -140,6 +151,9 @@ public class LocusTransformer  {
 		}
 
 	}
+
+
+
 
 
 
