@@ -121,4 +121,12 @@
   	</sch:rule>
   </sch:pattern>
   
+  <!-- Rule 114: disallow title element in 2005-1 and 2005-2 documents -->  
+  <sch:pattern name="dtbook_narrator_titleElement" id="dtbook_narrator_titleElement">
+  	<sch:rule context="dtbk:title">
+  		<sch:report test="/dtbk:dtbook/@version='2005-1'">[narrator114] title element is not allowed (due to a bug in the 2005-1 DTD)</sch:report>
+  		<sch:report test="/dtbk:dtbook/@version='2005-2'">[narrator114] title element is not allowed (due to a bug in the 2005-2 DTD)</sch:report>
+  	</sch:rule>
+  </sch:pattern>
+  
 </sch:schema>
