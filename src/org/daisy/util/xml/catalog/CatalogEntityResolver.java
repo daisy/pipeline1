@@ -29,6 +29,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.EntityResolver;
@@ -104,6 +107,7 @@ public class CatalogEntityResolver implements EntityResolver,
         LSResourceResolver, URIResolver {
     private static CatalogFile catalog;
     private EntityNotSupportedExceptions entityNotSupportedExceptions = null;
+    private static DOMImplementationLS mDOMImplementationLS = null;
     static private CatalogEntityResolver _instance = null;
 
     // static private CatalogEntityResolver _instance = new
@@ -233,15 +237,28 @@ public class CatalogEntityResolver implements EntityResolver,
     }
 
     /**
-     * LSResourceResolver impl (jaxp 1.3)
+     * LSResourceResolver impl 
      */
     public LSInput resolveResource(String type, String namespaceURI,
             String publicId, String systemId, String baseURI) {
         try {
             URL url = resolveEntityToURL(publicId, systemId);
-            return (LSInput) url.openStream();
+            if(mDOMImplementationLS==null){
+	    		DOMImplementationRegistry registry = null;
+	    		try {
+	    			registry = DOMImplementationRegistry.newInstance();
+	    		} catch (Exception e) {
+	    			e.printStackTrace();
+	    			return null;
+	    		} 		
+	    		DOMImplementation domImpl = registry.getDOMImplementation("LS 3.0");
+	    		mDOMImplementationLS = (DOMImplementationLS) domImpl;
+            }
+            LSInput lsi = mDOMImplementationLS.createLSInput();            
+            lsi.setByteStream(url.openStream());
+            return lsi;
         } catch (IOException e) {
-
+        	e.printStackTrace();
         }
         return null;
     }
