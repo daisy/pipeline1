@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<taskScript version="2.0" name="dtbook2daisy202">
+	<nicename>Mixed Content Normalizer</nicename>
+	<description>Normalize mixed content models by inserting elements wrapping text</description>
+	<documentation uri="../../../doc/scripts/MixedContentNormalizer.html"/>
+		
+	<parameter name="inputXML" value="" required="true">
+		<nicename>Input XML file</nicename>
+		<description>An XML file</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="outputXML" value="" required="true">
+		<nicename>Output XML file</nicename>
+		<description>An XML file</description>
+		<datatype>
+			<file mime="application/xml" type="output"/>
+		</datatype>
+	</parameter>
+	
+
+	<task name="int_daisy_mixedContentNormalizer" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${inputXML}</value>
+		</parameter>
+		<parameter>
+			<name>output</name>
+			<value>${outputXML}</value>
+		</parameter>
+	</task>	
+
+	
+	
+	
+</taskScript>

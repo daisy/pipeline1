@@ -84,6 +84,7 @@ doc/transformers/int_daisy_daisy2022Zed2005.html -text
 doc/transformers/int_daisy_filesetAudioTagger.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
 doc/transformers/int_daisy_html2xhtml.html -text
+doc/transformers/int_daisy_mixedContentNormalizer.html -text
 doc/transformers/int_daisy_ocfCreator.html -text
 doc/transformers/int_daisy_opsCreator.html -text
 doc/transformers/int_daisy_prettyPrinter.html -text
@@ -220,6 +221,7 @@ samples/input/xhtml/daisylog.jpg -text
 samples/input/xhtml/multi-language-unicode.html -text
 scripts/_dev/Daisy202toZ3986-2005.taskScript -text
 scripts/_dev/DtbookToRtf.taskScript -text
+scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
 scripts/_dev/XMLAudioAligner.taskScript -text
 scripts/_dev/Xhtml2Dtbook.taskScript -text
@@ -429,6 +431,19 @@ transformers/int_daisy_filesetRenamer/transformer.tdf -text
 transformers/int_daisy_html2xhtml/messages.properties -text
 transformers/int_daisy_html2xhtml/transformer.tdf -text
 transformers/int_daisy_html2xhtml/xhtml-clean-minimum.xsl -text
+transformers/int_daisy_mixedContentNormalizer/AbstractNormalizer.java -text
+transformers/int_daisy_mixedContentNormalizer/AbstractSyncPointLocator.java -text
+transformers/int_daisy_mixedContentNormalizer/InputDocInfoProvider.java -text
+transformers/int_daisy_mixedContentNormalizer/MixedContentNormalizer.java -text
+transformers/int_daisy_mixedContentNormalizer/SiblingState.java -text
+transformers/int_daisy_mixedContentNormalizer/config.xml -text
+transformers/int_daisy_mixedContentNormalizer/dom/DOMConfig.java -text
+transformers/int_daisy_mixedContentNormalizer/dom/DOMConfigLoader.java -text
+transformers/int_daisy_mixedContentNormalizer/dom/DOMNormalizer.java -text
+transformers/int_daisy_mixedContentNormalizer/dom/DOMSyncPointLocator.java -text
+transformers/int_daisy_mixedContentNormalizer/dom/DOMUtil.java -text
+transformers/int_daisy_mixedContentNormalizer/messages.properties -text
+transformers/int_daisy_mixedContentNormalizer/transformer.tdf -text
 transformers/int_daisy_ocfCreator/OcfCreator.java -text
 transformers/int_daisy_ocfCreator/messages.properties -text
 transformers/int_daisy_ocfCreator/transformer.tdf -text

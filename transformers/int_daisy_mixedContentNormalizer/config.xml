@@ -1,0 +1,71 @@
+<normalizerConfig xmlns="http://www.daisy.org/pipeline/ns#">
+
+<!--
+Per-namespace customization of the behavior of the mixed content normalizer
+and the sync point locator.
+
+Element ignore:
+Treat these elements as equal to text nodes
+
+Element wrapper:
+Defines the qualified name to use when inserting elements during normalization. 
+
+Element syncMarkerAttribute:
+Defines the qualified name of the attribute to add at sync point locations.
+For example,
+<smil:sync xmlns:smil="http://www.w3.org/2001/SMIL20/" />
+will create the following attribute:
+<any:name smil:sync="true">
+
+
+Element syncScope:
+Defines a one per document element scope outside of which the sync point locator will not be active.
+
+-->
+
+	<namespace uri="http://www.daisy.org/z3986/2005/dtbook/" xmlns:dtbook="http://www.daisy.org/z3986/2005/dtbook/">
+		<ignore>
+			<dtbook:em />
+			<dtbook:strong />	
+			<dtbook:br />
+		</ignore>
+
+		<wrapper>
+			<dtbook:span dtbook:class="normalized"/>		
+		</wrapper>		
+		
+		<syncScope>
+			<dtbook:book />
+		</syncScope>
+		
+		<syncMarkerAttribute>
+		    <smil:sync xmlns:smil="http://www.w3.org/2001/SMIL20/" />
+		</syncMarkerAttribute>
+
+	</namespace>
+
+	<namespace uri="http://www.w3.org/1999/xhtml" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+		<ignore>
+			<xhtml:em />
+			<xhtml:strong />
+			<xhtml:b />
+			<xhtml:i />
+			<xhtml:br />	
+			<xhtml:hr />
+			<xhtml:img />
+		</ignore>
+
+		<wrapper>
+			<xhtml:span xhtml:class="normalized"/>		
+		</wrapper>
+		
+		<syncScope>
+			<xhtml:body/>
+		</syncScope>
+		
+		<syncMarkerAttribute>
+		    <smil:sync xmlns:smil="http://www.w3.org/2001/SMIL20/" />
+		</syncMarkerAttribute>		
+	</namespace>
+				
+</normalizerConfig>
