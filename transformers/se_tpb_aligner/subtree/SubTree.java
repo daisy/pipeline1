@@ -1,16 +1,13 @@
 package se_tpb_aligner.subtree;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
@@ -18,7 +15,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.util.xml.pool.StAXEventFactoryPool;

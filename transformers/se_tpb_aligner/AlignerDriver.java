@@ -189,9 +189,9 @@ public class AlignerDriver extends Transformer {
 			/*
 			 * delete the contents of the internal temp dir
 			 */
-			System.gc();
-			mTempDir.deleteContents(true);
-			mTempDir.delete();
+//			System.gc();
+//			mTempDir.deleteContents(true);
+//			mTempDir.delete();
 			
 //			System.out.println("input doc has " + countElements(mInputDoc) + " elements.");
 //			System.out.println("input doc has " + countElements(mFinalOutputDoc) + " elements.");

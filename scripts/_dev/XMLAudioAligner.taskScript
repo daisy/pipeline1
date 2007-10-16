@@ -13,7 +13,7 @@
 	</parameter>
 	
 	<parameter name="inputAudio" value="" required="true">
-		<nicename>Input AudioFile Directory</nicename>
+		<nicename>Input Audio File Directory</nicename>
 		<description>Select a directory with audio files (sequentially named) to align against the text</description>
 		<datatype>
 			<directory type="input"/>
@@ -27,49 +27,33 @@
 			<directory type="output"/>
 		</datatype>
 	</parameter>
+
+	<parameter name="divider" value="" required="true">
+		<nicename>Audio file segmentation</nicename>
+		<description>Select the type of segmentation used for audiofiles</description>
+		<datatype>
+			<enum>
+				<item nicename="pages" value="pages"/>
+				<item nicename="headings" value="levels"/>
+			</enum>
+		</datatype>
+	</parameter>
 		
-		<!-- ********************
-	      Sentence detection 
-	      TODO remove once we have a more generic syncpointnormalizer 
-	     ******************** -->
-	<task name="se_tpb_xmldetection" interactive="false">
+		
+	<!-- *****************************
+	      Mixed Content Normalizer, adding syncpoints
+	     ***************************** -->		
+	<task name="int_daisy_mixedContentNormalizer" interactive="false">
 		<parameter>
 			<name>input</name>
 			<value>${inputXML}</value>
 		</parameter>		
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/pipeline__temp/02-sent.xml</value>
-		</parameter>		
-		<parameter>
-			<name>doAbbrAcronymDetection</name>
-			<value>false</value>
-		</parameter>		
-		<parameter>
-			<name>doSentenceDetection</name>
-			<value>true</value>
-		</parameter>		
-		<parameter>
-			<name>doWordDetection</name>
-			<value>false</value>
+			<value>${outputPath}/pipeline__temp/01-normalized.xml</value>
 		</parameter>
 	</task>
 	
-	<!-- *****************************
-	      Synchronization point normalization 
-	     ***************************** -->
-	<task name="se_tpb_syncPointNormalizer" interactive="false">
-		<parameter>
-			<name>input</name>
-			<value>${outputPath}/pipeline__temp/02-sent.xml</value>
-		</parameter>		
-		<parameter>
-			<name>output</name>
-			<value>${outputPath}/pipeline__temp/03-syncpoint.xml</value>
-		</parameter>
-	</task>
-	
-
 	
 	<!-- *****************************
 	      Aligner 
@@ -77,7 +61,7 @@
 	<task name="se_tpb_aligner" interactive="false">
 		<parameter>
 			<name>inputXML</name>
-			<value>${outputPath}/pipeline__temp/03-syncpoint.xml</value>
+			<value>${outputPath}/pipeline__temp/01-normalized.xml</value>
 		</parameter>		
 		<parameter>
 			<name>inputAudioDir</name>
@@ -85,21 +69,14 @@
 		</parameter>
 		<parameter>
 			<name>divider</name>
-			<value>pages</value>
+			<value>${divider}</value>
 		</parameter>
 		<parameter>
 			<name>outputXML</name>
-			<value>${outputPath}/pipeline__temp/04-aligned.xml</value>
+			<value>${outputPath}/pipeline__temp/02-aligned.xml</value>
 		</parameter>
 	</task>
 	
-	
-
-
-
-
-
-
 	<!-- ******************
 	      File Set Creator
 	     ****************** 
@@ -110,11 +87,11 @@
 		</parameter>
 		<parameter>
 			<name>manuscriptFilename</name>
-			<value>${outputPath}/pipeline__temp/04-aligned.xml</value>
+			<value>${outputPath}/pipeline__temp/02-aligned.xml</value>
 		</parameter>
 		<parameter>
 			<name>outputDTBFilename</name>
-			<value>${outputPath}/05-dtbook.xml</value>
+			<value>${outputPath}/03-dtbook.xml</value>
 		</parameter>		
 	</task>	
 	-->
@@ -125,7 +102,7 @@
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/z3986/06-speechgen.opf</value>
+			<value>${outputPath}/z3986/03-speechgen.opf</value>
 		</parameter>		
 		<parameter>
 			<name>abortThreshold</name>

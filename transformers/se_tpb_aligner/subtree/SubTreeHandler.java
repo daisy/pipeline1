@@ -15,6 +15,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
+import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamResult;
@@ -46,6 +47,7 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 	static final String IGNORE_LOCALNAME = "ignore";
 	
 	protected static final String DTBOOK_NSURI = "http://www.daisy.org/z3986/2005/dtbook/";
+	protected static final String SMIL_NSURI = "http://www.w3.org/2001/SMIL20/";
 	static QName ignoreQName = null;
  
 	static Attribute ignoreAttribute = null;
@@ -119,12 +121,13 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 		 */
 		Map properties = null;		
 		XMLOutputFactory xof = null;
-		
+		XMLEventFactory xef = null;
 		XMLEventWriter wrt = null;
 		FileOutputStream fos = null;
 		StreamResult sr = null;
 		try{
 			xof = StAXOutputFactoryPool.getInstance().acquire(properties);
+			xef = StAXEventFactoryPool.getInstance().acquire();
 			fos = new FileOutputStream(destination);
 			sr = new StreamResult(fos);			
 			wrt = xof.createXMLEventWriter(sr);
@@ -132,11 +135,11 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 			for(XMLEvent x : mProlog) {
 				wrt.add(x);
 			}	
+			boolean firstSubTree = true;
+			boolean firstSubTreeFirstElement = true;
 			for(SubTree subtree : this) {
 				EndElement previousEndElement = null;
 				List<XMLEvent> list = subtree.getContent();
-				//System.out.println(list.toString());
-				//subtree.print(System.out);
 				for(XMLEvent e : list){
 					/*
 					 * Watch for start tags with the ignore attribute,
@@ -147,8 +150,13 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 						if(!e.asStartElement().getName().equals(ignoreQName)) {
 							if(e.asStartElement().getAttributeByName(ignoreQName)==null) {
 								wrt.add(e);
+								if(firstSubTree && firstSubTreeFirstElement){
+									Namespace ns = xef.createNamespace("smil",SMIL_NSURI);
+									wrt.add(ns);
+									firstSubTreeFirstElement = false;
+								}
 							}
-						}
+						}						
 					}else if (e.isEndElement()) {
 						if(previousEndElement!=null) {
 							if(!previousEndElement.getName().equals(ignoreQName)) {						
@@ -162,15 +170,23 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 							}
 						}
 						previousEndElement = e.asEndElement();
+					}else if(e.getEventType() == XMLEvent.NAMESPACE) {
+						//strip redundant smil ns decls						
+						Namespace ns = (Namespace) e;
+						if(!ns.getNamespaceURI().equals(SMIL_NSURI)) {
+							wrt.add(e);
+						}
 					}else{
 						wrt.add(e);
 					}										
-				}				
+				}	
+				firstSubTree = false;
 			}					
 		}finally{
 			wrt.flush();
 			wrt.close();			
 			StAXOutputFactoryPool.getInstance().release(xof,properties);
+			StAXEventFactoryPool.getInstance().release(xef);
 		}
 	}
 
@@ -194,14 +210,18 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 			
 	@Override
     public boolean add(SubTree subtree) {		
-		//add a counter attribute to the root element
-		//for use when reassembling
 		XMLEventFactory xef = null;		
 		try{
 			xef=StAXEventFactoryPool.getInstance().acquire();
+			//add a counter attribute to the root element
+			//for use when reassembling
 			Attribute counter = xef.createAttribute
 				(IGNORE_NSPREFIX, IGNORE_NSURI,"seq", Integer.toString(this.size()+1));
-			subtree.getContent().add(1, counter);			
+			subtree.getContent().add(1, counter);
+			
+			//add the smil namespace to the root
+			Namespace ns = xef.createNamespace("smil", SMIL_NSURI);
+			subtree.getContent().add(1, ns);
 		}finally{
 			StAXEventFactoryPool.getInstance().release(xef);
 		}		
