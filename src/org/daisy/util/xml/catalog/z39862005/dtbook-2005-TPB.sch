@@ -560,5 +560,13 @@
     </sch:rule>	
   </sch:pattern>
   -->    
+  
+  <!-- Rule 115: Only allow hd, linegroup and line inside poem -->
+  <sch:pattern name="dtbook_TPB_poemContents" id="dtbook_TPB_poemContents">
+  	<sch:rule context="dtbk:poem/dtbk:*">
+      <sch:assert test="self::dtbk:hd or self::dtbk:linegroup or self::dtbk:line">[tpb115] Only hd, linegroup and line are allowed inside poem</sch:assert>
+    </sch:rule>	
+  </sch:pattern>
+    
 </sch:schema>
 
