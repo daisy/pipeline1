@@ -523,6 +523,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				Schema schema = anySchemaFactory.newSchema(source);													
 				javax.xml.validation.Validator jaxpValidator = schema.newValidator();
 				StreamSource ss = new StreamSource(mInputFile.toURI().toURL().openStream());
+				ss.setSystemId(mInputFile.toURI().toString());
 				jaxpValidator.validate(ss);
 				if(ss.getInputStream()!=null) ss.getInputStream().close();
 				this.sendMessage(PROGRESS_FILESET_VALIDATION + (PROGRESS_JAXP_VALIDATION - PROGRESS_FILESET_VALIDATION) * (num / count));
