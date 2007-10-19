@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<taskScript version="2.0" name="WordMLtoDTBook">
+	<nicename>DTBook fix</nicename>
+	<description>Fixes common DTBook conversion errors and problems</description>
+   	<documentation uri="../../../doc/scripts/DTBookFix.html"/>
+    <comment></comment>
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>Select input DTBook file</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output file</nicename>
+		<description>Select output file</description>
+		<datatype>
+			<file mime="application/xml" type="output"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="indent" value="true" required="false">
+		<nicename>Indent output</nicename>
+		<description>Check box to indent (pretty print) output</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	<parameter name="simplifyHeadingLayout" value="false" required="false">
+		<nicename>Simplify heading layout</nicename>
+		<description>Check box to simplify heading layout by moving headings upward where possible</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>
+
+		<parameter>
+			<name>simplifyHeadingLayout</name>
+			<value>${simplifyHeadingLayout}</value>
+		</parameter>
+		
+		<parameter>
+			<name>indent</name>
+			<value>${indent}</value>
+		</parameter>
+				
+	</task>
+
+</taskScript>

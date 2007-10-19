@@ -5,22 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLEventFactory;
-import javax.xml.stream.XMLEventWriter;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.XMLEvent;
-
 import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.EventBus;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.FileUtils;
-import org.daisy.util.file.TempFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
-import org.daisy.util.xml.stax.StaxEntityResolver;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
 
@@ -43,17 +34,33 @@ import org.daisy.util.xml.xslt.XSLTException;
  *   
  *  6. Moves structure upwards where possible
  *  
+ *  (7. Tidy description todo)
+ *  
  *  Limitations:
  *   - Cannot handle reversed structure: e.g. level3/level2/level1
  *   - Does not structure frontmatter
+ *   - Validation not implemented yet!
  *   
+ *  Note:
+ *   - The current version of post-pagenum-fix.xsl contains one repairing operation
+ *     that will never be used since the program will stop if the file is invalid at
+ *     that point. If needed, it should be moved to the repairing section of dtbook-fix.
+ *     
+ *  Further development:
+ *   - Tidy:
+ *   	<levelx><h1>Heading</h1><p/></levelx><levelx><p>text</p>...
+ *      to
+ *      <levelx><h1>Heading</h1><p>text</p>...
+ *   - Implement input and intermediate validation
+ *   - Option to skip repairing and fail if input is invalid
+ *   - Add documentation
  *   
  * @author  Joel Hakansson, TPB
- * @version 17 sep 2007
+ * @version 19 October 2007
  * @since 1.0
  */
 public class DTBookFix extends Transformer {
-	private static final float PROGRESS_INCS = 12;
+	private static final float PROGRESS_INCS = 14;
 	private int currentInc = 0;
 
 	public DTBookFix(InputListener inListener, Boolean isInteractive) {
@@ -65,64 +72,36 @@ public class DTBookFix extends Transformer {
 		String factory = (String)parameters.remove("factory");
 		File input = new File((String)parameters.get("input"));
 		File output = new File((String)parameters.get("output"));
-		String clean = (String)parameters.get("clean");
+		String forceRepair = (String)parameters.get("forceRepair");
+		String tidy = (String)parameters.get("tidy");
+		String indent = (String)parameters.get("indent");
 
 		// tomma p i table läggs till om hx pga... pagenumfix?
 		// ändra hx i tabell till p
 		
 		try {
 			FileJuggler files = new FileJuggler(input, output);
+		    if ("true".equals(forceRepair) || /*!*/ isValid(files.getInput())) {
+				EventBus.getInstance().publish(new MessageEvent(this, "Reparing...", MessageEvent.Type.INFO));
+				repair(files, factory, parameters);
+			} else { advance(10); }
+		    if (!isValid(files.getInput())) {
+		    	EventBus.getInstance().publish(new MessageEvent(this, "Reparing failed!", MessageEvent.Type.ERROR));
+		    	return false;
+		    }
+		    if ("true".equals(tidy)) {
+				EventBus.getInstance().publish(new MessageEvent(this, "Tidying...", MessageEvent.Type.INFO));
+				tidy(files, factory, parameters);
+			} else { advance(3); }
 			
-			// Complete structure
-			Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/levelnormalizer.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			next();
-			files.swap();
-			
-			Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/levelsplitter.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			next();
-			files.swap();
-			
-			Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/level1.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			next();
-			files.swap();
-			
-			Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/level2.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			next();
-			files.swap();
-			
-			Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/level3.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			next();
-			files.swap();
-						
-			Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/level4.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			next();
-			files.swap();
-						
-			Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/level5.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			next();
-			files.swap();
-			
-			Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/level6.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			next();
-			files.swap();
-			/*
-			completeStructure(files.getInput(), files.getOutput());
-			files.swap();
-			next();*/
-			Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/remove-illegal-headings.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			next();
-			files.swap();
-
-			Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/list-fix.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			next();
-			
-			if ("true".equals(clean)) {
+		    if ("true".equals(indent)) {
+				Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/tidy-indent.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
 				files.swap();
-				Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/level-cleaner.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-				next();	
-			}
-			files.close();
+		    }
 			next();
+
+			files.close();
+			EventBus.getInstance().publish(new MessageEvent(this, "Done!", MessageEvent.Type.INFO));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -136,13 +115,83 @@ public class DTBookFix extends Transformer {
 		return true;
 	}
 	
+	private boolean isValid(File f) {
+		return true;
+	}
+	
 	private String getPath(String path) {
 		return new File(this.getTransformerDirectory(), path).getAbsolutePath();
 	}
-
+	
 	private void next() {
 		currentInc++;
 		progress(currentInc/PROGRESS_INCS<=1?currentInc/PROGRESS_INCS:1);
+	}
+	
+	private void advance(int steps) {
+		for (int i=0;i<steps;i++) {
+			next();
+		}
+	}
+	
+	private void repair(FileJuggler files, String factory, Map parameters) throws CatalogExceptionNotRecoverable, XSLTException, FileNotFoundException {
+		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-levelnormalizer.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+		files.swap();
+		next();
+		
+		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-levelsplitter.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+		files.swap();
+		next();
+		
+		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-level1.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+		files.swap();
+		next();
+		
+		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-level2.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+		files.swap();
+		next();
+		
+		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-level3.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+		files.swap();
+		next();
+					
+		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-level4.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+		files.swap();
+		next();
+					
+		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-level5.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+		files.swap();
+		next();
+		
+		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-level6.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+		files.swap();
+		next();
+
+		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-remove-illegal-headings.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+		files.swap();
+		next();
+
+		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-lists.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+		files.swap();
+		next();
+	}
+	
+	private void tidy(FileJuggler files, String factory, Map parameters) throws FileNotFoundException, CatalogExceptionNotRecoverable, XSLTException {
+		String simplifyHeadingLayout = (String)parameters.get("simplifyHeadingLayout");
+		if ("true".equals(simplifyHeadingLayout)) {
+			Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/tidy-level-cleaner.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			files.swap();
+		}
+		next();
+
+		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/tidy-pagenum-fix.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+		files.swap();
+		next();
+		
+		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/tidy-add-author-title.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+		files.swap();
+		next();
+
 	}
 
 }

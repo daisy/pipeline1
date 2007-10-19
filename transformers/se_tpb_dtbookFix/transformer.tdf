@@ -5,7 +5,7 @@
 	<license>LGPL</license>
 	<author>Joel Håkansson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
-	<documentation uri="../../doc/transformers/se_tpb_wordml2dtbook.html"/>	
+	<documentation uri="../../doc/transformers/se_tpb_dtbookfix.html"/>	
 	
 	<parameters>
 
@@ -30,8 +30,41 @@
 		</parameter>
 		
 		<parameter required="false" type="enum">
-			<name>clean</name>
-			<description>Clean structure?</description>
+			<name>tidy</name>
+			<description>Tweak dtbook appearence</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>forceRepair</name>
+			<description>Force repair when input is valid</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>indent</name>
+			<description>Indent (pretty print) output</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>simplifyHeadingLayout</name>
+			<description>Simplify heading layout by moving headings upward where possible</description>
 			<example>true</example>
 			<enum>
 				<value>true</value>
