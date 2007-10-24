@@ -10,6 +10,16 @@ import org.daisy.pipeline.core.event.EventBus;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.fileset.FilesetType;
+import org.daisy.util.fileset.exception.FilesetFileException;
+import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
+import org.daisy.util.fileset.validation.Validator;
+import org.daisy.util.fileset.validation.ValidatorFactory;
+import org.daisy.util.fileset.validation.ValidatorListener;
+import org.daisy.util.fileset.validation.exception.ValidatorException;
+import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
+import org.daisy.util.fileset.validation.message.ValidatorMessage;
+import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
@@ -59,9 +69,10 @@ import org.daisy.util.xml.xslt.XSLTException;
  * @version 19 October 2007
  * @since 1.0
  */
-public class DTBookFix extends Transformer {
+public class DTBookFix extends Transformer implements ValidatorListener {
 	private static final float PROGRESS_INCS = 14;
 	private int currentInc = 0;
+	private boolean mHadValidationErrors = false;
 
 	public DTBookFix(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);
@@ -111,12 +122,33 @@ public class DTBookFix extends Transformer {
 		} catch (XSLTException e) {
 			e.printStackTrace();
 			return false;
-		}
+		} 
 		return true;
 	}
 	
 	private boolean isValid(File f) {
-		return true;
+		ValidatorFactory vfac = ValidatorFactory.newInstance();		
+		mHadValidationErrors = false;
+		try{
+			Validator validator = vfac.newValidator(FilesetType.DTBOOK_DOCUMENT);
+			validator.setListener(this);
+			
+			/*
+			 * If adding extra schemas beyond the canonical ones, do:
+			 * URL url = CatalogEntityResolver.getInstance().resolveEntityToURL(catalogID);
+			 * String type = "org.daisy.util.fileset.impl.Z3986DtbookFileImpl";
+			 * validator.setSchema(url,type);
+			 */
+
+			validator.validate(f.toURI());
+		}catch (ValidatorNotSupportedException  e) {
+			// TODO: inform or throw
+			e.printStackTrace();
+		} catch (ValidatorException e) {
+			// TODO: inform or throw
+			e.printStackTrace();
+		}	
+		return !mHadValidationErrors;
 	}
 	
 	private String getPath(String path) {
@@ -193,5 +225,43 @@ public class DTBookFix extends Transformer {
 		next();
 
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.validation.ValidatorListener#exception(org.daisy.util.fileset.validation.Validator, java.lang.Exception)
+	 */
+	public void exception(Validator validator, Exception e) {
+		// TODO: inform? See Transformer#sendMessage(FilesetFileException ffe)
+		mHadValidationErrors = true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.validation.ValidatorListener#report(org.daisy.util.fileset.validation.Validator, org.daisy.util.fileset.validation.message.ValidatorMessage)
+	 */
+	public void report(Validator validator, ValidatorMessage message) {
+		if(!(message instanceof ValidatorWarningMessage)) {			
+			mHadValidationErrors = true;
+		}
+		// TODO: inform? See int_daisy_validator.ValidatorDriver
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.validation.ValidatorListener#inform(org.daisy.util.fileset.validation.Validator, java.lang.String)
+	 */
+	public void inform(Validator validator, String information) {
+		// TODO: inform? See int_daisy_validator.ValidatorDriver
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.validation.ValidatorListener#progress(org.daisy.util.fileset.validation.Validator, double)
+	 */
+	public void progress(Validator validator, double progress) {
+		// TODO Auto-generated method stub		
+	}
+
+
 
 }
