@@ -4,7 +4,7 @@
 	xmlns:sch="http://www.ascc.net/xml/schematron"
 	xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">
 	
-	<a:documentation> datatatypes.rng Last edit by: jpritchett@rfbd.org, 22 Sep 2006
+	<a:documentation> datatatypes.rng Last edit by: jpritchett@rfbd.org, 25 October 2007
 		</a:documentation>
 	
 	<define name="datatype.idrefs">
@@ -38,8 +38,9 @@
 	</define>
 	
 	<define name="datatype.romannumeral">
+		<!-- jpritchett (2007-10-25):  Added leading/trailing whitespace to the pattern -->
 		<data type="string">
-			<param name="pattern">[Mm]*([Dd]?[Cc]{0,3}|[Cc][DdMm])([Ll]?[Xx]{0,3}|[Xx][LlCc])([Vv]?[Ii]{0,3}|[Ii][VvXx])</param>
+			<param name="pattern">\s*[Mm]*([Dd]?[Cc]{0,3}|[Cc][DdMm])([Ll]?[Xx]{0,3}|[Xx][LlCc])([Vv]?[Ii]{0,3}|[Ii][VvXx])\s*</param>
 		</data>
 		<!-- 
 		^(?i:(?=[MDCLXVI])((M{0,3})((C[DM])|(D?C{0,3}))?((X[LC])|(L?XX{0,2}))?((I[VX])|(V?(II{0,2}))|V)?))$
