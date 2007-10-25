@@ -30,11 +30,17 @@ public class InputDocInfoProvider {
 			properties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
 			xif = StAXInputFactoryPool.getInstance().acquire(properties);
 			XMLStreamReader reader = xif.createXMLStreamReader(doc);
-			while(reader.hasNext()) {				
-				if(reader.next()==XMLStreamReader.START_ELEMENT) {
+			while(reader.hasNext()) {
+				reader.next();
+				int type = reader.getEventType();
+				if(type==XMLStreamReader.START_ELEMENT) {
 					mInputDocNSURIs.add(reader.getNamespaceURI());
-					mElementCount++;					
+					mElementCount++;						
 				}
+//				else
+//				if(type==XMLStreamReader.ATTRIBUTE) {
+//						mInputDocNSURIs.add(reader.getNamespaceURI());			
+//				}
 			}
 			reader.close();
 		}finally{

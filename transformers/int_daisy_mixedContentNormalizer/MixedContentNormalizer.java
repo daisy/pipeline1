@@ -124,8 +124,9 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 					 */
 					Map<String,Object> props = new HashMap<String,Object>();
 					props.put("namespaces", Boolean.FALSE); //temp because of attributeNS bug(?) in Xerces DOM3LS					
-					props.put("error-handler", this);					
-					Serializer.serialize((Document)result.getNode(), output, "utf-8",props);					
+					props.put("error-handler", this);	
+					//props.put("format-pretty-print", Boolean.TRUE);					
+					Serializer.serialize((Document)result.getNode(), output, "utf-8", props);					
 									
 				}finally{
 					LSParserPool.getInstance().release(parser, domConfigMap);
@@ -199,7 +200,6 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 	 */
 	public void delegateMessage(Object delegate, String message, Type type, Cause cause, Location location) {
 		this.sendMessage(message, type, cause, location);
-		
 	}
 
 	/*
@@ -209,12 +209,10 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 	public void delegateProgress(Object delegate, double progress) {
 		if(delegate instanceof AbstractNormalizer) {
 			this.sendMessage(progress/2);
-			//System.out.println(progress/2);
 		}else{
 			double p = 0.5+(progress/2);
-			if(p>1.0) p = 1.0;
+			if(p>1.0) p = 1.0; //hmm
 			this.sendMessage(p);
-			//System.out.println(p);
 		}						
 	}
 
@@ -228,6 +226,10 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 		return i18n(message,param);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
+	 */
 	public void error(FilesetFileException ffe) throws FilesetFileException {
 		this.sendMessage(ffe);		
 	}

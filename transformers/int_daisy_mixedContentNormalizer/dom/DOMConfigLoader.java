@@ -27,8 +27,9 @@ public class DOMConfigLoader {
 		QName ignore = new QName(pipelineNS,"ignore");
 		QName wrapper = new QName(pipelineNS,"wrapper");	
 		QName syncScope = new QName(pipelineNS,"syncScope");
-		QName syncAttr = new QName(pipelineNS,"syncMarkerAttribute");
-		
+		QName syncAttr = new QName(pipelineNS,"syncMarkerAttribute");		
+		QName whitespaceAttr = new QName("asWhitespace");
+		QName scrubAttr = new QName("scrubWhitespace");
 		DOMConfig dnc = new DOMConfig();
 	
 		XMLInputFactory xif = null;
@@ -55,9 +56,19 @@ public class DOMConfigLoader {
 								currentNS = a.getValue();
 							}							
 						}						
-					} else if(se.getName().equals(ignore)) {
+					}else if(se.getName().equals(ignore)) {
+						Attribute ws = se.getAttributeByName(whitespaceAttr);
+						if (ws!=null) {
+								dnc.addWhitespaceCharacters(currentNS, ws.getValue());
+						}
 						inIgnore = true; continue;
 					}else if (se.getName().equals(wrapper)) {
+						Attribute scrub = se.getAttributeByName(scrubAttr);
+						if (scrub!=null) {
+							if(scrub.getValue().equals("true")) {
+								dnc.setIsScrubbingWrappers(currentNS);	
+							}
+						}
 						inWrapper = true; continue;
 					}else if (se.getName().equals(syncScope)) {
 						inSyncScope = true; continue;

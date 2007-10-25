@@ -2,6 +2,7 @@ package int_daisy_mixedContentNormalizer.dom;
 
 import int_daisy_mixedContentNormalizer.AbstractNormalizer;
 import int_daisy_mixedContentNormalizer.SiblingState;
+import int_daisy_mixedContentNormalizer.dom.DOMConfig.TextNodeType;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,42 +61,19 @@ public class DOMNormalizer extends AbstractNormalizer {
             TreeWalker walker = dt.createTreeWalker(doc.getDocumentElement(),
             		NodeFilter.SHOW_ELEMENT, new NodeFilterImpl(), true); 
             
-            Element e = null;
-                        
+            Element e = null;                        
 		    while ((e=(Element)walker.nextNode())!=null) {					    			    	
-		    	mTransformer.delegateProgress(this, ((double)mCurrentElementCount/(mInputDocElementCount+mModCount)));
-		    	if(mUserAbort) throw new TransformerRunException ("user abort");			    	
+		    	mTransformer.delegateProgress(this, 
+		    			((double)mCurrentElementCount/(mInputDocElementCount+mModCount)));
+		    	if(mUserAbort) throw new TransformerRunException ("user abort");	
+		    	
 		    	NodeList children = e.getChildNodes();		
 		    	SiblingState state = getSiblingState(children);
 		    	if(state==SiblingState.UNBALANCED) normalizeChildren(e);
+		    	
 		    	mCurrentElementCount++;
 		    }
-		    
-//		    //TEST*************************************************************
-//            TreeWalker cleaner = dt.createTreeWalker(doc.getDocumentElement(),
-//            		NodeFilter.SHOW_ELEMENT, null, true);
-//		    
-//		    e = null;
-//            cur = 0;            
-//		    while ((e=(Element)cleaner.nextNode())!=null) {					    			    					
-//		    	if(e.getUserData("isWrapper")!=null){
-//					Element unwantedWrapper = hasWrapperAncestor(e);
-//					if(unwantedWrapper!=null) {
-//						Element unwantedWrappersParent = (Element)unwantedWrapper.getParentNode(); 
-//						NodeList unwantedWrappersChildren = unwantedWrapper.getChildNodes();
-//						for (int i = 0; i < unwantedWrappersChildren.getLength(); i++) {
-//							Node unwantedWrappersChild = unwantedWrapper.removeChild(unwantedWrappersChildren.item(i));
-//							unwantedWrappersParent.insertBefore(unwantedWrappersChild, unwantedWrapper);
-//						}
-//						unwantedWrappersParent.removeChild(unwantedWrapper);
-//						mModCount--;
-//						cleaner.setCurrentNode(cleaner.previousNode());
-//					}
-//		    	}
-//		    }
-//		  //END TEST*************************************************************
-		    
-		    
+			    
 		    /*
 		     * Done.
 		     */
@@ -105,11 +83,7 @@ public class DOMNormalizer extends AbstractNormalizer {
 			throw new TransformerRunException(e.getMessage(),e);
 		}	
 	}
-	
-	public void setInputDocElementCount(int count) {
-		mInputDocElementCount = count;
-	}
-	
+		
 	private SiblingState getSiblingState(NodeList siblings) {
 		boolean hasNonWhiteSpaceText = false;
 		boolean hasIgnorableElems = false;
@@ -118,20 +92,30 @@ public class DOMNormalizer extends AbstractNormalizer {
 		for (int i = 0; i < siblings.getLength(); i++) {
 			Node child = siblings.item(i);
 			if(child.getNodeType() == Node.TEXT_NODE) {
-				if(!CharUtils.isXMLWhiteSpace(child.getNodeValue())) {
-					hasNonWhiteSpaceText = true;		
-				}				
+//				orig::				
+//				if(!CharUtils.isXMLWhiteSpace(child.getNodeValue())) {
+//					hasNonXMLWhiteSpaceText = true;		
+//				}		
+//				end orig::
+//				alt::				
+				TextNodeType tnt = mConfig.getTextNodeType(child.getNodeValue(), 
+						child.getParentNode().getNamespaceURI());
+				if(tnt == TextNodeType.TEXT) hasNonWhiteSpaceText = true;
+//				end alt::				
 			}
 			else
-			if(child.getNodeType() == Node.ELEMENT_NODE) {				
-				if (!mConfig.isIgnorable((Element)child)) {
-					hasNonIgnorableElems = true;	
+			if(child.getNodeType() == Node.ELEMENT_NODE) {
+				Element elm = (Element)child;
+				if (!mConfig.isIgnorable(elm)) {
+					if(elm.getFirstChild()!=null){ //empty, is ignorable even if not in config
+						hasNonIgnorableElems = true;
+					}	
 				}else{
 					hasIgnorableElems = true;
 				}
 			}	
 			else {
-				System.err.println("unexpected nodetype in getSiblingDescription");
+				//System.err.println("unexpected nodetype in getSiblingDescription");
 			}
 		}	
 		
@@ -140,24 +124,8 @@ public class DOMNormalizer extends AbstractNormalizer {
 		if(hasNonIgnorableElems && !hasIgnorableElems && !hasNonWhiteSpaceText) return SiblingState.BALANCED;
 		return SiblingState.UNBALANCED;		
 	}
-	
-	class NodeFilterImpl implements NodeFilter{
-		public short acceptNode(Node n) {
-			Element e = (Element)n;			
-			if(e.getUserData("isWrapper")!=null){
-				//System.err.println("walker skipping: wrapper encountered " + e.getNodeName());
-				return NodeFilter.FILTER_SKIP;
-			}
+		
 
-			if(e.getFirstChild()==null){
-				//System.err.println("walker skipping: empty element " + e.getNodeName());
-				return NodeFilter.FILTER_SKIP;
-			}
-		    				    
-			return NodeFilter.FILTER_ACCEPT;
-		}		
-	}
-	
 	/**
 	 * Iterate over a list of siblings and normalize.
 	 * <p>assumes coalescing</p>
@@ -192,42 +160,102 @@ public class DOMNormalizer extends AbstractNormalizer {
 		//if(loops>1) System.err.println("did the do loop " + loops +" times");		
 	}
 
+	
 	private List<Node> evaluate(List<Node> ignorables) {
 		//remove leading and trailing whitespace					
 		ignorables = trim(ignorables);		
 		//if we after trim have exactly one non-ws textnode 
 		//or if length (regardless of type) > 1, then wrap		
-		if(ignorables.size()>1 || 
-				(ignorables.size()==1 
-						&& ignorables.get(0).getNodeType() == Node.TEXT_NODE )) { 						
-			Element wrapper = wrap(ignorables);		
+		if(ignorables.size()>1 || (ignorables.size()==1 && ignorables.get(0).getNodeType() == Node.TEXT_NODE )) { 						
+			Element wrapper = wrap(ignorables);								  
+			if(mConfig.isScrubbingWrappers(wrapper.getNamespaceURI())) {
+				scrub(wrapper); 
+			}
 		}	
 		ignorables.clear();
 		return ignorables;
 	}
 	
 	/**
-	 * Return a wrapper parent of inparam wrapper, or null if one does not exist
+	 * If first and/or last child of wrapper are textnodes, 
+	 * and these begin with whitespace chars,
+	 * lift those outside the wrapper
 	 */
-	private Element hasWrapperAncestor(Element wrapper) {		
-		Node parent = wrapper.getParentNode();		
-		if(parent==null || parent.getNodeType()!= Node.ELEMENT_NODE) return null;
-		if(((Element)parent).getUserData("isWrapper")!=null) return (Element)parent;
-		return hasWrapperAncestor((Element)parent);
+	
+	private void scrub(Element wrapper) {
+		Node child = wrapper.getFirstChild();				
+		if(child.getNodeType() == Node.TEXT_NODE) {
+			scrub(child,Direction.BEFORE);
+		}
+		
+		child = wrapper.getLastChild();
+		if(child.getNodeType() == Node.TEXT_NODE) {
+			scrub(child,Direction.AFTER);
+		}
+		
 	}
 
+	private void scrub(Node textNode, Direction dir) {
+		String value = textNode.getNodeValue();
+		StringBuilder movedChars = new StringBuilder();
+				
+		for (int i = 0; i < value.length(); i++) {
+			char c = value.charAt(i);
+			if(mConfig.isWhitespace(c,textNode.getParentNode().getNamespaceURI())) {
+				movedChars.append(c);								
+			}
+			else{
+				break;
+			}
+		}
+		
+		if(movedChars.length()>0) {
+			//change the inner value
+			textNode.setNodeValue(value.substring(movedChars.length()));
+			//add a new text node outside wrapper, given direction
+			Node newTextNode = textNode.getOwnerDocument().createTextNode(movedChars.toString());
+			Element wrapper = (Element)textNode.getParentNode();
+			Node inserted = null;
+			if(dir==Direction.BEFORE) {
+				inserted = wrapper.getParentNode().insertBefore(newTextNode, wrapper);				
+			}else{
+				Node wrappersNextSibling = wrapper.getNextSibling();
+				if(wrappersNextSibling!=null) {
+					inserted = wrapper.getParentNode().insertBefore(newTextNode, wrappersNextSibling);
+				}else{
+					inserted = wrapper.getParentNode().appendChild(newTextNode);
+				}
+			}
+			//System.err.println("Moved " + dir.toString() +": [" + inserted.getNodeValue() + "]");
+		}			
+		
+	}
+	
+	private enum Direction {
+		BEFORE,
+		AFTER;
+	}
+	
 	/**
 	 * Remove leading and trailing whitespace nodes. Remove leading and trailing empty elements.
 	 */
 	private List<Node> trim(List<Node> nodes) {						
 		while(!nodes.isEmpty()) {
 			Node n = nodes.get(0);
-			if(n.getNodeType()==Node.TEXT_NODE){
-				if(CharUtils.isXMLWhiteSpace(n.getNodeValue())){
+			if(n.getNodeType()==Node.TEXT_NODE){				
+//				if(CharUtils.isXMLWhiteSpace(n.getNodeValue())){
+//					nodes.remove(0);	
+//				}else{
+//					break;
+//				}		
+//				alt::
+				TextNodeType tnt = mConfig.getTextNodeType(n.getNodeValue(), n.getParentNode().getNamespaceURI());
+				if(!(tnt==TextNodeType.TEXT)){
 					nodes.remove(0);	
 				}else{
 					break;
 				}
+//				end alt::
 			} else if(n.getNodeType()==Node.ELEMENT_NODE){
 				Element e = (Element) n;
 				if(e.getFirstChild()==null) {
@@ -243,11 +271,19 @@ public class DOMNormalizer extends AbstractNormalizer {
 		while(!nodes.isEmpty()) {
 			Node n = nodes.get(nodes.size()-1);
 			if(n.getNodeType()==Node.TEXT_NODE){
-				if(CharUtils.isXMLWhiteSpace(n.getNodeValue())){
+//				if(CharUtils.isXMLWhiteSpace(n.getNodeValue())){
+//					nodes.remove(nodes.size()-1);	
+//				}else{
+//					break;
+//				}
+//				alt::
+				TextNodeType tnt = mConfig.getTextNodeType(n.getNodeValue(), n.getParentNode().getNamespaceURI());
+				if(!(tnt==TextNodeType.TEXT)){
 					nodes.remove(nodes.size()-1);	
 				}else{
 					break;
 				}
+//				end alt::
 			} else if(n.getNodeType()==Node.ELEMENT_NODE){
 				Element e = (Element) n;
 				if(e.getFirstChild()==null) {
@@ -305,6 +341,33 @@ public class DOMNormalizer extends AbstractNormalizer {
 		return (Element)newElem.cloneNode(true);
 	}
 
+	class NodeFilterImpl implements NodeFilter{
+		public short acceptNode(Node n) {
+			Element e = (Element)n;			
+			if(e.getUserData("isWrapper")!=null){
+				//System.err.println("walker skipping: wrapper encountered " + e.getNodeName());
+				return NodeFilter.FILTER_SKIP;
+			}
+
+			if(e.getFirstChild()==null){
+				//System.err.println("walker skipping: empty element " + e.getNodeName());
+				return NodeFilter.FILTER_SKIP;
+			}
+		    				    
+			return NodeFilter.FILTER_ACCEPT;
+		}		
+	}
+	
+	/**
+	 * Return a wrapper parent of inparam wrapper, or null if one does not exist
+	 */
+	private Element hasWrapperAncestor(Element wrapper) {		
+		Node parent = wrapper.getParentNode();		
+		if(parent==null || parent.getNodeType()!= Node.ELEMENT_NODE) return null;
+		if(((Element)parent).getUserData("isWrapper")!=null) return (Element)parent;
+		return hasWrapperAncestor((Element)parent);
+	}
+	
 	/**
 	 * Retrieve the number of elements in input document after normalization has been completed.
 	 * <p>If this method is called prior to calling {@link #normalize(Source)}, it will return
@@ -314,4 +377,33 @@ public class DOMNormalizer extends AbstractNormalizer {
 		return mInputDocElementCount + mModCount;
 	}
 
+	public void setInputDocElementCount(int count) {
+		mInputDocElementCount = count;
+	}
+
 }
+
+
+////TEST*************************************************************
+//TreeWalker cleaner = dt.createTreeWalker(doc.getDocumentElement(),
+//		NodeFilter.SHOW_ELEMENT, null, true);
+//
+//e = null;
+//cur = 0;            
+//while ((e=(Element)cleaner.nextNode())!=null) {					    			    					
+//	if(e.getUserData("isWrapper")!=null){
+//		Element unwantedWrapper = hasWrapperAncestor(e);
+//		if(unwantedWrapper!=null) {
+//			Element unwantedWrappersParent = (Element)unwantedWrapper.getParentNode(); 
+//			NodeList unwantedWrappersChildren = unwantedWrapper.getChildNodes();
+//			for (int i = 0; i < unwantedWrappersChildren.getLength(); i++) {
+//				Node unwantedWrappersChild = unwantedWrapper.removeChild(unwantedWrappersChildren.item(i));
+//				unwantedWrappersParent.insertBefore(unwantedWrappersChild, unwantedWrapper);
+//			}
+//			unwantedWrappersParent.removeChild(unwantedWrapper);
+//			mModCount--;
+//			cleaner.setCurrentNode(cleaner.previousNode());
+//		}
+//	}
+//}
+////END TEST*************************************************************

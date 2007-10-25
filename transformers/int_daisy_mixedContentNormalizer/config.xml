@@ -5,10 +5,25 @@ Per-namespace customization of the behavior of the mixed content normalizer
 and the sync point locator.
 
 Element ignore:
-Treat these elements as equal to text nodes
+Treat its child elements as equal to text nodes. Typically, elements mentioned
+here are elements whose content model is text-only, such as xhtml:strong and xhtml:em.
+Empty elements are automatically ignored.
+
+Attribute asWhitespace on element ignore:
+A space separated list of chars that are added to the list of 
+XML-defined whitespace characters within the namespace scope. 
+This can be used to avoid creating a syncpoint on, for example, 
+the text node ". ". Note - for now, we do not support supplemental characters.
 
 Element wrapper:
 Defines the qualified name to use when inserting elements during normalization. 
+
+Attribute scrubWhitespace on wrapper element:
+Can have values true or false. Absence of the attribute is the same as presence
+with value false.
+If true, means that leading and trailing whitespace in wrapper elements is moved
+outside the wrapper. The definition of what is whitespace includes XML whitespace
+and any additional chars added via the asWhitespace attribute on the ignore element.
 
 Element syncMarkerAttribute:
 Defines the qualified name of the attribute to add at sync point locations.
@@ -17,20 +32,18 @@ For example,
 will create the following attribute:
 <any:name smil:sync="true">
 
-
 Element syncScope:
 Defines a one per document element scope outside of which the sync point locator will not be active.
 
 -->
 
 	<namespace uri="http://www.daisy.org/z3986/2005/dtbook/" xmlns:dtbook="http://www.daisy.org/z3986/2005/dtbook/">
-		<ignore>
+		<ignore asWhitespace=".">
 			<dtbook:em />
 			<dtbook:strong />	
-			<dtbook:br />
 		</ignore>
 
-		<wrapper>
+		<wrapper scrubWhitespace="true">
 			<dtbook:span dtbook:class="normalized"/>		
 		</wrapper>		
 		
@@ -45,17 +58,16 @@ Defines a one per document element scope outside of which the sync point locator
 	</namespace>
 
 	<namespace uri="http://www.w3.org/1999/xhtml" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-		<ignore>
+		<ignore asWhitespace="."> 
 			<xhtml:em />
 			<xhtml:strong />
 			<xhtml:b />
 			<xhtml:i />
-			<xhtml:br />	
+			<xhtml:br />
 			<xhtml:hr />
-			<xhtml:img />
 		</ignore>
 
-		<wrapper>
+		<wrapper scrubWhitespace="true">
 			<xhtml:span xhtml:class="normalized"/>		
 		</wrapper>
 		

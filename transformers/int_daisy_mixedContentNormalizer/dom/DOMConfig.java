@@ -27,6 +27,9 @@ public class DOMConfig {
 	private Set<String> mSupportedNamespaces = null;
 	private Map<String, QName> mSyncPointScopes = null;
 	private Map<String, Attribute> mSyncPointAttributes = null;
+	private Map<String, char[]> mExtraWhitespaceCharacters = null;
+	private Set<String> mWrapperScrubbingNamespaces = null; //namespaces for which wrapper scrubbing is activated
+	
 	
 	public DOMConfig() {
 		mIgnorables = new HashSet<StartElement>(); 
@@ -34,6 +37,8 @@ public class DOMConfig {
 		mSupportedNamespaces = new HashSet<String>();
 		mSyncPointScopes = new HashMap<String, QName>();
 		mSyncPointAttributes = new HashMap<String, Attribute>();
+		mExtraWhitespaceCharacters = new HashMap<String, char[]>();
+		mWrapperScrubbingNamespaces = new HashSet<String>(); 
 	}
 	
 	/*package*/ void addIgnorable(StartElement se) {
@@ -52,6 +57,18 @@ public class DOMConfig {
 		mSyncPointScopes.put(namespaceuri, scope);
 	}
 
+	/*package*/ void addWhitespaceCharacters(String namespaceuri, String characters) throws IllegalArgumentException {
+		//support only bmp so 1-char representation all the time
+		String[] tmp = characters.split(" ");
+		char[] ret = new char[tmp.length];
+		
+		for (int i = 0; i < tmp.length; i++) {
+			if(tmp[i].length()>1) throw new IllegalArgumentException(tmp[i]);
+			ret[i] = tmp[i].charAt(0);
+		}
+		mExtraWhitespaceCharacters.put(namespaceuri, ret);
+	}
+	
 	/*package*/ void addSyncPointAttribute(String namespaceuri, QName name, String value) {
 		XMLEventFactory xef = null;
 		try{
@@ -119,15 +136,19 @@ public class DOMConfig {
 	}
 
 	/**
-	 * @return true if inparam sibling list is only ignorable elements and/or whitespace
+	 * @return true if inparam sibling list is only ignorable elements and/or XML whitespace
 	 */
 	public boolean isIgnorableElementsAndWhitespaceOnly(NodeList childNodes) {
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			Node n = childNodes.item(i);
 			if(n.getNodeType()==Node.TEXT_NODE) {
-				if(!CharUtils.isXMLWhiteSpace(n.getNodeValue())) {
-					return false;
-				}
+//				if(!CharUtils.isXMLWhiteSpace(n.getNodeValue())) {
+//					return false;
+//				}
+//				alt:
+				TextNodeType tnt = getTextNodeType(n.getNodeValue(), n.getParentNode().getNamespaceURI());
+				if(tnt==TextNodeType.TEXT) return false;
+//				end alt:				
 			}else if(n.getNodeType()==Node.ELEMENT_NODE) {
 				Element e = (Element)n;
 				if(!isIgnorable(e)) return false;
@@ -135,4 +156,94 @@ public class DOMConfig {
 		}		
 		return true;
 	}
+	
+		
+	public static enum TextNodeType {
+		XML_WHITESPACE,			//ignorable
+		NAMESPACE_WHITESPACE,   //ignorable; xml ws + any chars added in config 
+		TEXT;					//non-ignorable
+	}
+	
+	public TextNodeType getTextNodeType(String text, String namespaceuri) {
+		//System.err.println("input: " + text );
+		
+		char[] chars = text.toCharArray();
+		boolean hasXMLWhitespace = false;
+		boolean hasNamespaceWhitespace = false;
+		
+		for (int i = 0; i < chars.length; i++) {			
+			char c = chars[i];		
+			boolean isXMLWhitespace = CharUtils.isXMLWhiteSpace(c); 
+			boolean isNamespaceWhitespace = isNamespaceWhitespace(c, namespaceuri);
+			
+			if(!isXMLWhitespace && !isNamespaceWhitespace) {		
+				return TextNodeType.TEXT;
+			}
+			
+			if(isXMLWhitespace) hasXMLWhitespace = true;
+			if(isNamespaceWhitespace) hasNamespaceWhitespace = true;
+		}
+		
+		if (hasNamespaceWhitespace) return TextNodeType.NAMESPACE_WHITESPACE;
+				
+		return TextNodeType.XML_WHITESPACE;
+	}
+	
+	/**
+	 * Check only for namespace-specific addons, not the XML whitespace set.
+	 */
+	private boolean isNamespaceWhitespace(char c, String nsURI) {
+		//TODO support non BMP
+		char[] extraWS = mExtraWhitespaceCharacters.get(nsURI);
+		if(extraWS!=null) {
+			for (int i = 0; i < extraWS.length; i++) {
+				if(extraWS[i]==c) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Determine whether inparam char is XML or Config whitespace.
+	 */
+	public boolean isWhitespace(char c, String nsURI) {
+		//TODO support non BMP
+		if(CharUtils.isXMLWhiteSpace(c)) return true;
+		if(isNamespaceWhitespace(c, nsURI)) return true;
+		return false;
+	}
+
+	/**
+	 * @return true if element has a text node child that is not XML whitespace nor namespace whitespace
+	 */
+	public boolean hasTextChild(Element e) {
+		if(e.hasChildNodes()) {
+			for (int i = 0; i < e.getChildNodes().getLength(); i++) {
+				Node c = e.getChildNodes().item(i);
+				if(c.getNodeType() == Node.TEXT_NODE){
+					TextNodeType tnt = getTextNodeType(c.getNodeValue(), e.getNamespaceURI());
+					if(tnt == TextNodeType.TEXT) return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Return true if wrappers added in given namespace should have leading and trailing
+	 * whitespace scrubbed (i.e. moved outside the wrapper).
+	 */
+	public boolean isScrubbingWrappers(String namespaceURI) {
+		if(mWrapperScrubbingNamespaces.contains(namespaceURI)) {
+			return true;
+		}
+		return false;
+	}
+
+	/*package*/ void setIsScrubbingWrappers(String ns) {
+		mWrapperScrubbingNamespaces.add(ns);		
+	}
+	
 }

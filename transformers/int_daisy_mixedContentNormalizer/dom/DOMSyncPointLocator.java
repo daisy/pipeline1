@@ -25,7 +25,7 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.TreeWalker;
 
 /**
- * A sync point locator using DOM.
+ * A sync point locator using DOM. This locator assumes that the Source has passed through DOMNormalizer.
  * @author Markus Gylling
  */
 public class DOMSyncPointLocator extends AbstractSyncPointLocator  {
@@ -68,7 +68,11 @@ public class DOMSyncPointLocator extends AbstractSyncPointLocator  {
 			    	}
 			    	else if(e.getUserData("isWrapper")!=null  && !hasSyncedAncestor(e)){ //TODO && !hasSyncedAncestor(e) only for nested wrapper bug
 			    		addSyncPoint(e);
-			    	}else if (!hasSyncedAncestor(e) && DOMUtil.hasTextChild(e)) {
+			    	}
+			    	//else if (!hasSyncedAncestor(e) && DOMUtil.hasTextChild(e)) {
+			    	//alt::
+			    	else if (!hasSyncedAncestor(e) && mConfig.hasTextChild(e)) {
+			    	//end alt::
 			    		addSyncPoint(e);
 			    	}
 		    	}

@@ -16,18 +16,20 @@ public class DOMUtil {
 	static boolean isDescendant(Node test, Node target) {
 		Node parent = test.getParentNode();
 		if(parent==null)return false;
-		else if(parent.equals(target)) return true;
+		else if(parent.equals(target)) return true; //TODO equality, sb == in DOM?
 		return isDescendant(parent,target);
 	}
 	
 	/**
-	 * return true if e has at least on child of type NODE_TEXT
+	 * return true if e has at least on child of type NODE_TEXT which 
+	 * is not only XML whitespace
 	 */
 	static boolean hasTextChild(Element e) {
 		if(e.hasChildNodes()) {
 			for (int i = 0; i < e.getChildNodes().getLength(); i++) {
 				Node c = e.getChildNodes().item(i);
-				if(c.getNodeType() == Node.TEXT_NODE && !CharUtils.isXMLWhiteSpace(c.getNodeValue())) return true;
+				if(c.getNodeType() == Node.TEXT_NODE 
+						&& !CharUtils.isXMLWhiteSpace(c.getNodeValue())) return true;
 			}
 		}
 		return false;
