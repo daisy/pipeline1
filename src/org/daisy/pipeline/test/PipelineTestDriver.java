@@ -15,12 +15,14 @@ import org.daisy.pipeline.test.impl.DTBAudioEncoderSplitter1;
 import org.daisy.pipeline.test.impl.DTBAudioEncoderRenamer1;
 import org.daisy.pipeline.test.impl.DTBSplitter1;
 import org.daisy.pipeline.test.impl.DTBook2Xhtml1;
+import org.daisy.pipeline.test.impl.DTBook2Xhtml2MathML;
 import org.daisy.pipeline.test.impl.DTBook2rtf1;
 import org.daisy.pipeline.test.impl.DTBookValidator1;
 import org.daisy.pipeline.test.impl.DTBookValidator2;
 import org.daisy.pipeline.test.impl.Daisy202ToZ398620051;
 import org.daisy.pipeline.test.impl.FilesetRenamer1;
 import org.daisy.pipeline.test.impl.Html2Xhtml1;
+import org.daisy.pipeline.test.impl.MixedContentNormalizer1;
 import org.daisy.pipeline.test.impl.MultiFormatMedia1;
 import org.daisy.pipeline.test.impl.Narrator1;
 import org.daisy.pipeline.test.impl.OcfCreator1;
@@ -37,6 +39,7 @@ import org.daisy.pipeline.test.impl.RenamerTaggerValidator1;
 import org.daisy.pipeline.test.impl.Rtf2Xhtml1;
 import org.daisy.pipeline.test.impl.Rtf2dtbook1;
 import org.daisy.pipeline.test.impl.UnicodeNormalizer1;
+import org.daisy.pipeline.test.impl.ValidatorNVDL1;
 import org.daisy.pipeline.test.impl.WordML2Xhtml1;
 import org.daisy.pipeline.test.impl.Xhtml2DTBook1;
 import org.daisy.pipeline.ui.CommandLineUI;
@@ -134,6 +137,7 @@ public class PipelineTestDriver {
 //		tests.add(new CharsetSwitcher1(inputDir, outputDir));
 //		tests.add(new WordML2Xhtml1(inputDir, outputDir));
 //		tests.add(new DTBook2Xhtml1(inputDir, outputDir));		
+//		tests.add(new DTBook2Xhtml2MathML(inputDir, outputDir));
 //		tests.add(new Rtf2Xhtml1(inputDir, outputDir));
 //		tests.add(new PrettyPrinter1(inputDir, outputDir));
 //		tests.add(new Html2Xhtml1(inputDir, outputDir));
@@ -148,12 +152,13 @@ public class PipelineTestDriver {
 //		tests.add(new DTBook2rtf1(inputDir, outputDir));
 //		tests.add(new Xhtml2DTBook1(inputDir, outputDir));		
 //		tests.add(new MultiFormatMedia1(inputDir, outputDir));
-
+//		tests.add(new MixedContentNormalizer1(inputDir, outputDir));
+//		tests.add(new ValidatorNVDL1(inputDir, outputDir));
 	
 		
 		
 ////////// tests with input data not in samples dir: 		
-		tests.add(new Aligner1(inputDir, outputDir));
+		//tests.add(new Aligner1(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoder1(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoderSplitter1(inputDir, outputDir));
 		//tests.add(new PrettyPrinter3(inputDir, outputDir));
