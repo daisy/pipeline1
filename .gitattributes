@@ -116,11 +116,11 @@ lib/batik-css.jar -text
 lib/batik-util.jar -text
 lib/chardet.jar -text
 lib/commons-cli-1.0.jar -text
-lib/icu4j-3_6.jar -text
-lib/icu4j-charsets-3_6.jar -text
+lib/icu4j-3_8.jar -text
+lib/icu4j-charsets-3_8.jar -text
 lib/jaudiotagger.jar -text
-lib/jing.jar -text
 lib/jl1.0.jar -text
+lib/onvdl.jar -text
 lib/sac.jar -text
 lib/saxon.jar -text
 lib/saxon8-dom.jar -text
