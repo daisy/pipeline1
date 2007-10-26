@@ -57,8 +57,15 @@ final class JingUtils {
 		 * AbstractValidator instantiator sets CatalogEntityResolver as default,
 		 * so no need to check for null.
 		 */
+						
+		/* 
+		 * Note - when using oNVDL instead of Jing, the above should be fixed,
+		 * so the below is not really necessary
+		 */
 		builder.put(ValidateProperty.XML_READER_CREATOR, new XmlReaderCreatorImpl(false, val.getEntityResolver()));
-
+		
+		builder.put(ValidateProperty.ENTITY_RESOLVER, val.getEntityResolver());
+		
 		/*
 		 * initialize the driver
 		 */
@@ -71,7 +78,7 @@ final class JingUtils {
 	 */
 	/*package*/ static boolean loadSchemas(AbstractValidator validator, ValidationDriver driver, AbstractSchema schema) {
 		boolean loadSuccess = true;
-		try {
+		try {			
 			InputSource[] schemaSources = schema.asInputSources();
 			for (int i = 0; i < schemaSources.length; i++) {
 				if (!driver.loadSchema(schemaSources[i])) {

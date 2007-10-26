@@ -98,6 +98,8 @@ public abstract class AbstractSchemaFactory extends javax.xml.validation.SchemaF
 				ret = new SchematronSchema(schemas, this);
 			}else if(this.schemaLanguage == SchemaLanguageConstants.ISO_SCHEMATRON_NS_URI){
 				ret = new ISOSchematronSchema(schemas, this);
+			}else if(this.schemaLanguage == SchemaLanguageConstants.NVDL_NS_URI){
+				ret = new NVDLSchema(schemas, this);	
 			}	
 		} catch (Exception e) {
 			throw ExceptionTransformer.newSAXParseException(e);

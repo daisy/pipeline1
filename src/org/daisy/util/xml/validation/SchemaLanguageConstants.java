@@ -25,6 +25,7 @@ public final class SchemaLanguageConstants {
 	public static final String RELAXNG_NS_URI  = "http://relaxng.org/ns/structure/1.0".intern();
 	public static final String SCHEMATRON_NS_URI  = "http://www.ascc.net/xml/schematron".intern();
 	public static final String ISO_SCHEMATRON_NS_URI  = "http://purl.oclc.org/dsdl/schematron".intern();
+	public static final String NVDL_NS_URI  = "http://purl.oclc.org/dsdl/nvdl/ns/structure/1.0".intern();
 	
 	/**
 	 * @param string A string that may or may or may not match one of the SchemaLanguage constants
@@ -36,6 +37,7 @@ public final class SchemaLanguageConstants {
 				|| string == RELAXNG_NS_URI
 				|| string == SCHEMATRON_NS_URI
 				|| string == ISO_SCHEMATRON_NS_URI
+				|| string == NVDL_NS_URI
 				);
 	}
 	
@@ -51,6 +53,8 @@ public final class SchemaLanguageConstants {
 			return "Schematron Schema";
 		}else if (schemaLanguageConstant == ISO_SCHEMATRON_NS_URI){
 			return "ISO Schematron Schema";
+		}else if (schemaLanguageConstant == NVDL_NS_URI){
+			return "NVDL Schema";
 		}
 		return null;
 	}

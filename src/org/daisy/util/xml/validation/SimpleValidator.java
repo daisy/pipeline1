@@ -130,7 +130,8 @@ public class SimpleValidator implements ErrorHandler {
 	 * Validate a resource.
 	 * <p>Validation will include inline DTD if available, and any schemas set in constructor.</p>
 	 * <p>Note - inline XSDs must be set using constructor as well.</p>
-	 * @return true if validation was performed without exceptions. Note - a return of true does not indicate validity: implement ErrorHandler to determine this. 
+	 * <p>Note - a return of true does not indicate validity: implement ErrorHandler to determine this.</p>
+	 * @return true if validation was performed without exceptions. 	 
 	 */
 	public boolean validate(URL url) throws ValidationException {
 		boolean jaxpResult = true;
