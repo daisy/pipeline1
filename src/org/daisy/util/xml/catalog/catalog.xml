@@ -43,8 +43,7 @@
     <public publicId="-//W3C//ELEMENTS XHTML Block Phrasal 1.0//EN" uri="./xhtml11/xhtml-blkphras-1.mod"/>
     <public publicId="-//W3C//ELEMENTS XHTML Inline Presentation 1.0//EN" uri="./xhtml11/xhtml-inlpres-1.mod"/>
     <public publicId="-//W3C//ELEMENTS XHTML Block Presentation 1.0//EN" uri="./xhtml11/xhtml-blkpres-1.mod"/>
-    
-    
+        
     <public publicId="-//W3C//DTD XHTML 1.1//EN" uri="./xhtml11/xhtml11.dtd" />
     <system systemId="http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd" uri="./xhtml11/xhtml11.dtd" />  
     <public publicId="-//W3C//ELEMENTS XHTML Inline Style 1.0//EN" uri="./xhtml11/xhtml-inlstyle-1.mod" />
@@ -134,8 +133,7 @@
   <group> <!-- James Clark's XHTML schemas --> 
 	  <system systemId="./xhtml.rng" uri="./xhtml10/xhtml.rng" />
 	  <system systemId="./xhtml-basic.rng" uri="./xhtml10/xhtml-basic.rng" />
-	  <system systemId="./xhtml-strict.rng" uri="./xhtml10/xhtml-strict.rng" />
-	  
+	  <system systemId="./xhtml-strict.rng" uri="./xhtml10/xhtml-strict.rng" />	  
 	  <system systemId="modules/applet.rng" uri="./xhtml10/modules/applet.rng" />
 	  <system systemId="modules/attribs.rng" uri="./xhtml10/modules/attribs.rng" />
 	  <system systemId="modules/base.rng" uri="./xhtml10/modules/base.rng" />
@@ -143,7 +141,7 @@
 	  <system systemId="modules/basic-table.rng" uri="./xhtml10/modules/basic-table.rng" />
 	  <system systemId="modules/bdo.rng" uri="./xhtml10/modules/bdo.rng" />
 	  <system systemId="modules/csismap.rng" uri="./xhtml10/modules/csismap.rng" />
-	  <system systemId="modules/datatypes.rng" uri="./xhtml10/modules/datatypes.rng" />
+	  <system systemId="modules/datatypes-xhtml.rng" uri="./xhtml10/modules/datatypes-xhtml.rng" />
 	  <system systemId="modules/edit.rng" uri="./xhtml10/modules/edit.rng" />
 	  <system systemId="modules/events.rng" uri="./xhtml10/modules/events.rng" />
 	  <system systemId="modules/form.rng" uri="./xhtml10/modules/form.rng" />
@@ -167,8 +165,7 @@
 	  <system systemId="modules/style.rng" uri="./xhtml10/modules/style.rng" />
 	  <system systemId="modules/table.rng" uri="./xhtml10/modules/table.rng" />
 	  <system systemId="modules/target.rng" uri="./xhtml10/modules/target.rng" />
-	  <system systemId="modules/text.rng" uri="./xhtml10/modules/text.rng" />
-	  
+	  <system systemId="modules/text.rng" uri="./xhtml10/modules/text.rng" />	  
 	  <system systemId="./exclude-basic.rng" uri="./xhtml10/exclude/exclude-basic.rng" />
 	  <system systemId="exclude/exclude-basic.rng" uri="./xhtml10/exclude/exclude-basic.rng" />
 	  <system systemId="./exclude-basic-table.rng" uri="./xhtml10/exclude/exclude-basic-table.rng" />

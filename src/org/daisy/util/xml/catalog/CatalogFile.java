@@ -182,13 +182,16 @@ public final class CatalogFile {
         return (new InputSource(new StringReader((String) entity)));
     }
 
-    public InputSource getSystemIdEntityFromSuffix(String suffix)
-            throws IOException, CatalogExceptionEntityNotSupported {
+    public InputSource getSystemIdEntityFromSuffix(String filename) throws IOException, CatalogExceptionEntityNotSupported {
         // typically: check the filename only in an unmatched URI/Path
         for (Iterator iter = sIdTable.keySet().iterator(); iter.hasNext();) {
-            String key = (String) iter.next();
-            if (key.endsWith(suffix)) {
-                return this.getSystemIdEntity(key);
+            String key = (String) iter.next();  
+            int last = key.lastIndexOf('/');          
+            if(last > -1 && last < key.length()) {
+            	String cmp = key.substring(key.lastIndexOf('/')+1);	            	            
+	            if (cmp.equals(filename)) {
+	                return this.getSystemIdEntity(key);
+	            }
             }
         }
         return null;

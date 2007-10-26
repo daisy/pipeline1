@@ -179,8 +179,13 @@ public class CatalogEntityResolver implements EntityResolver,
 	            // no match in catalog for inparam system id either
 	            entityNotSupportedExceptions.add(systemId);
 	            // try to match on filename alone (suffix)
+	            
 	            try {
-	                String filename = systemId.substring(systemId.lastIndexOf('/'));
+	            	String filename = systemId;
+	            	int last = systemId.lastIndexOf('/');
+	                if(last > -1 && last < systemId.length()) {
+	                	filename = systemId.substring(systemId.lastIndexOf('/')+1);	
+	                }	
 	                try {
 	                    return catalog.getSystemIdEntityFromSuffix(filename);
 	                } catch (CatalogExceptionEntityNotSupported ceens2) {
@@ -191,12 +196,14 @@ public class CatalogEntityResolver implements EntityResolver,
 	                                        + publicId + ":: systemId:" + systemId);
 	                    }
 	                }
+	                
 	            } catch (Exception e) {
 	                // silence
 	            }
 	            
 	        }
     	}
+    	System.err.println("returning null on " + systemId);
     	return null;
     }
 
@@ -321,9 +328,9 @@ public class CatalogEntityResolver implements EntityResolver,
 
         void add(String describer) {
             if (System.getProperty("org.daisy.debug") != null) {
-                System.err
-                        .println("DEBUG org.daisy.util.xml.catalag.CatalogEntityResolver: entity not supported: "
-                                + describer);
+//                System.err
+//                        .println("DEBUG org.daisy.util.xml.catalag.CatalogEntityResolver: entity not supported: "
+//                                + describer);
             }
             exceptions.add(describer);
         }
