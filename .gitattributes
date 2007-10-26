@@ -540,6 +540,14 @@ transformers/se_tpb_aligner/align/AlignerFactory.java -text
 transformers/se_tpb_aligner/align/AlignerFactoryException.java -text
 transformers/se_tpb_aligner/align/impl/FallbackAlignerImpl.java -text
 transformers/se_tpb_aligner/align/impl/TPBAlignerImpl.java -text
+transformers/se_tpb_aligner/align/impl/acousticModel.tcl -text
+transformers/se_tpb_aligner/align/impl/all.tree -text
+transformers/se_tpb_aligner/align/impl/cmu.except -text
+transformers/se_tpb_aligner/align/impl/cmu.tree -text
+transformers/se_tpb_aligner/align/impl/dtbalign.tcl -text
+transformers/se_tpb_aligner/align/impl/lexica.tcl -text
+transformers/se_tpb_aligner/align/impl/liblts.tcl -text
+transformers/se_tpb_aligner/align/impl/tpblex.except -text
 transformers/se_tpb_aligner/messages.properties -text
 transformers/se_tpb_aligner/subtree/DefaultWellFormerImpl.java -text
 transformers/se_tpb_aligner/subtree/DivisionStrategy.java -text
