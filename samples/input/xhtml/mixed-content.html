@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+<title>sync point test</title>
+<meta name="dc:identifier" content="DTB00607"/>
+<meta name="dc:title" content="The Story of Christianity"/>
+<meta name="dc:creator" content="Collins, Michael"/>
+<meta name="dc:creator" content="Price, Matthew A."/>
+<meta name="dc:publisher" content="TPB"/>
+<meta name="dc:date" content="2007-07-09"/>
+<meta name="dc:language" content="en-US"/>
+<link rel="stylesheet" type="text/css" href="default.css"/>
+</head>
+
+<body>
+<h1 class="title" id="h1classtitle">sync point test</h1>
+
+<div class="case-2">
+		<p>[-2] ONE SYNC POINT.</p>
+		One sync point.	
+		<p>ONE SYNC POINT.</p>
+</div>
+
+<div class="case-2b">
+		<p>[-2] ONE SYNC POINT.</p>
+		One sync point.	
+		      <br/>         <p>ONE SYNC POINT.</p>
+</div>
+
+<div class="case-1">
+		<p>[0] ONE SYNC POINT.</p>
+		<p>ONE SYNC POINT.</p>
+		<br/>
+		<em>ONE </em> 
+		SYNC 
+		<br/>
+		<em> POINT</em>.
+		<ul>
+			<li>One sync point.</li>
+			<li>One <em>sync</em> point.</li>
+			<li>One <em>sync</em> point. <p>One sync point.</p></li>		
+		</ul>
+</div>
+
+<div class="case0">
+		<p>[0] ONE SYNC POINT.</p>
+		<br/>
+		<em>ONE </em> 
+		SYNC 
+		<em> POINT</em>.
+</div>
+
+<div class="case1">
+		<em>[1] ONE </em>
+		<br/>
+		<em>SYN</em> 
+		C 
+		<em>POINT </em>
+		.
+</div>
+
+<div class="case2a">
+		<em>[2a] ONE </em>		
+		<em>SYNC POINT</em>
+		.
+</div>
+
+<div class="case2b" id="force">
+		<em>[2b] ONE </em>		
+		<em>SYNC POINT.</em>
+</div>
+
+<div class="case3">
+		<em>[3] ONE</em>		
+		SYNC POINT
+</div>
+
+<div class="case4">
+		<em>[4] ONE</em>		
+		SYNC
+		<em>POINT</em>
+</div>
+
+<div class="case5">
+<!-- broken! -->
+		<em>
+			[5] ONE SYNC POINT
+			<span id="this">ONE SYNC POINT</span>
+			ONE SYNC POINT
+		</em>		
+		<em>ONE SYNC</em> POINT
+		<span>ONE SYNC POINT</span>
+</div>
+
+<div class="case5b">
+<!-- broken! -->
+		<!-- <em> -->
+		<span>
+			[5] ONE SYNC POINT
+			<span id="this">ONE SYNC POINT</span>
+			ONE SYNC POINT
+			<p>
+				One <em>sync <span>deep</span>point</em>.
+			</p>
+		<!-- </em> -->		
+		</span>
+		<em>ONE SYNC</em> POINT
+		<span>ONE SYNC POINT</span>
+</div>
+
+<div class="case6">
+	<p>
+		[6] ONE
+		<em>SYNC POINT</em>
+		<span class="page-normal" id="page-162">ONE SYNC POINT</span>
+		<em id="i001">ONE SYNC POINT</em>
+	</p>	
+</div>
+
+<div class="case7">
+	<p>
+		<em id="i002">[7] ONE SYNC POINT</em>
+		<span class="page-normal" id="page-163">ONE SYNC POINT</span>
+		<em>ONE SYNC </em>
+		POINT
+	</p>	
+</div>
+
+<div class="case7">
+	<p>
+		<em>[8] ONE SYNC POINT</em>
+		<span class="page-normal" id="page-163">ONE SYNC POINT</span>
+		<em>ONE SYNC POINT </em>
+	</p>	
+</div>
+
+<div class="case8">
+	<p>	 One sync point.
+		<p>
+		  <em>[8] ONE SYNC POINT</em>
+		  <span class="page-normal" id="page-163">ONE SYNC POINT</span>
+		  <em>ONE SYNC POINT </em>
+		</p>
+		One <em>sync</em> point.
+	</p>	
+</div>
+
+<div class="case9">
+	<p>One sync point.</p>
+	<code>One sync point</code>
+	. 
+</div>
+
+<div class="case10">
+	<p>One sentence. One sentence <noteref class="endnote" idref="#fn_1">1</noteref>.</p>
+</div>
+
+<div class="case11">
+    <p>One sentence <noteref class="endnote" idref="#fn_2">2</noteref>. One sentence 
+    <noteref class="endnote" idref="#fn_3">3</noteref>. One sentence.</p>
+</div>
+</body>
+</html>

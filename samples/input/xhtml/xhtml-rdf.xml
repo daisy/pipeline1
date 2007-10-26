@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <head>
+    <title>Sample XHTML with embedded RDF</title>
+    <rdf:RDF
+      xmlns:dc="http://purl.org/dc/elements/1.1/">
+      <rdf:Description rdf:about="http://www.oxygenxml.com/onvdl/sample/xhtml-rdf/xhtml-rdf.xml">
+        <dc:title>Sample NVDL usage</dc:title>
+        <dc:description>Sample NVDL usage showing the usage of RDF inside XHTML.</dc:description>
+        <dc:publisher>Syncro Soft</dc:publisher>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>Schema languages</rdf:li>
+            <rdf:li>NVDL sample</rdf:li>
+            <rdf:li>XHTML and RDF</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:type>World Wide Web Page</dc:type>
+        <dc:format>text/html</dc:format>
+        <dc:language>en</dc:language>
+      </rdf:Description>
+    </rdf:RDF>
+  </head>
+  <body>
+    <h1>Sample NVDL usage</h1>
+    <p>Sample XHTML with embedded RDF</p>
+
+         <rdf:Bag>
+            <rdf:li>Schema languages</rdf:li>
+            <rdf:li>NVDL sample</rdf:li>
+            <rdf:li>XHTML and RDF</rdf:li>
+          </rdf:Bag>
+          
+  </body>
+</html>

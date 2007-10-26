@@ -190,6 +190,7 @@ samples/input/dtb/z3986-2005/speechgen0007.smil -text
 samples/input/dtb/z3986-2005/tpbnarrator.res -text
 samples/input/dtb/z3986-2005/tpbnarrator_res.mp3 -text
 samples/input/dtbook/dontworrybehappy.xml -text
+samples/input/dtbook/dtbook-math.xml -text
 samples/input/dtbook/dtbook.2005.basic.css -text
 samples/input/dtbook/hauy-2005-1-short.xml -text
 samples/input/dtbook/hauy-2005-1.xml -text
@@ -210,6 +211,7 @@ samples/input/ops/package.opf -text
 samples/input/ops/valentin.jpg -text
 samples/input/rtf/RTF2dtbook.rtf -text
 samples/input/schema/foobar.sch -text
+samples/input/schema/xhtml-rdf.nvdl -text
 samples/input/transl/character-translation-table.xml -text
 samples/input/transl/diakrit-translation-table.xml -text
 samples/input/transl/example-table.xml -text
@@ -220,7 +222,9 @@ samples/input/word/wml-sample.xml -text
 samples/input/xhtml/d202.css -text
 samples/input/xhtml/daisy_202.html -text
 samples/input/xhtml/daisylog.jpg -text
+samples/input/xhtml/mixed-content.html -text
 samples/input/xhtml/multi-language-unicode.html -text
+samples/input/xhtml/xhtml-rdf.xml -text
 scripts/_dev/Daisy202toZ3986-2005.taskScript -text
 scripts/_dev/DtbookToRtf.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
