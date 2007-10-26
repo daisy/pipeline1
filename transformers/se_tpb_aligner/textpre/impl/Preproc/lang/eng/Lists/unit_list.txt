@@ -1,0 +1,226 @@
+ac			acre
+cfs			cubic feet per second
+°C			degrees Celsius
+°F			degrees Fahrenheit
+ft			feet
+g			gram
+gal			gallon
+ha			hectare
+kg			kilogram
+m			meter
+mg			milligram
+mgd			million gallons per day
+ng			nanogram
+pg			picogram
+#pH			potential of hydrogen
+pph			part per hundred,percent
+ppm			part per million
+ppt			part per thousand
+#
+##$			dollar
+#\%			procent
+#afghani
+#aln
+#ar
+#balboa
+#bath
+#birr
+#bolivar
+#boliviana
+#cedi
+#celsius
+#cent
+#centimeter
+#cents
+#cl			centiliter
+#cm			centimeter
+#cm2			kvadratcentimeter
+#cm3			kubikcentimeter
+#cm²			kvadratcentimeter
+#cm³			kubikcentimeter
+#colon
+#cordoba
+#dalasi
+#db			decibel
+#dB			decibel
+#decibel
+#decimeter
+#denar
+#dinar
+#dirham
+#dm			decimeter
+#dm²			kvadratdecimeter
+#dm³			kubikdecimeter
+#dm2			kvadratdecimeter
+#dm3			kubikdecimeter
+#dobra
+#dollar
+#dong
+#drachma
+#drachmer
+#dram
+#euro
+#famn
+#famnar
+#fahrenheit
+#florin
+#forint
+#fot
+#framnc
+#franc
+#frank
+##g			gram
+#gourde
+#gr			gram
+#grad
+#grader
+#gram
+#guarani
+#guilder
+#gulden
+##h			timmar
+##ha			hektar
+#hektar
+#hekto
+#hektogram
+#hertz
+#hg			hektogram
+#hryvnia
+#hz			hertz
+#Hz			hertz
+#kalori
+#kalorier
+#kcal			kalori
+#kelvin
+#kg			kilogram
+#kilo
+#kilogram
+#kilometer
+#kilometer per timma
+#kilowatt
+#kilowattimmar
+#kina
+#kip
+#km			kilometer
+#km/h			kilometer per timma
+#km²			kvadratkilometer
+#km³			kubikilometer
+#km2			kvadratkilometer
+#km3			kubikkilometer
+#koruna
+#krona
+#krone
+#kroner
+#kronor
+#kroon
+#kubikcentimeter
+#kubikdecimeter
+#kubikfot
+#kubikkilometer
+#kubikmeter
+#kubikmillimeter
+#kuna
+#kvadratcentimeter
+#kvadratdecimeter
+#kvadratkilometer
+#kvadratmeter
+#kvadratmillimeter
+#kw			kilowatt
+#kwacha
+#kwanza
+#kwh			kilowattimmar
+#kyat
+#lari
+#lat
+#lek
+#lempira
+#leone
+#leu
+#leva
+#lilangeni
+#lira
+#litas
+#loti
+##m			meter
+#m/s			meter per sekund
+#m2			kvadratmeter
+#m3			kubikmeter
+#m²			kvadratmeter
+#m³			kubikmeter
+#manat
+#marka
+#meter
+#meter per sekund
+#metical
+#millimeter
+#millisekunder
+#min			minuter
+#minut
+#minuter
+#mm			millimeter
+#mm²			kvadratmillimeter
+#mm³			kubikmillimeter
+#mm2			kvadratmillimeter
+#mm3			kubikmillimeter
+#ms			millisekunder
+#naira
+#nakfa
+#ngultrum
+#pa’anga
+#peso
+#pound
+#procent
+#pula
+#pund
+#rail
+#rand
+#real
+#rial
+#riel
+#ringgit
+#riyal
+#rubel
+#ruble
+#rufiyaa
+#rupee
+#rupiah
+#ruppe
+##s			sekunder
+##sek			sekunder
+#sekund
+#sekunder
+#sekundmeter
+#shekel
+#shilling
+#sol
+#sum
+#taka
+#tala
+#terawatt
+#terawattimmar
+#timma
+#timmar
+#togrog
+#tolar
+#ton
+#tugrik
+#tum
+#tw			terawatt
+#twh			terawattimmar
+##v			volt
+#vatu
+#volt
+##w			watt
+#watt
+#won
+#yen
+#yuan
+#zloty
+#€			euro
+#£			pund
+#ångström
+#öre
+#W/t			watt per timme
+#MhZ			megahertz
+#mhz			megahertz
+#

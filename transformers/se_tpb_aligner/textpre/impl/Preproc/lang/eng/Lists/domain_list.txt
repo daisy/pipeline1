@@ -1,0 +1,11 @@
+co	s i2: _ 'öw
+uk	j u4: _ k 'e j
+com	k 'å m
+se	e s _ 'i2:
+no	e n _ 'öw
+fi	e f _ 'a j
+dk	d i2: _ k 'e j
+us	j u4: _ 'e s
+de	d i2: _ 'i2:
+pl	p i2: _ 'e l
+net	n 'e t

@@ -1,0 +1,87 @@
+#TPA			CMU
+
+# Diphtongs
+a j			ay		hide
+e j			ey		ate
+å j			oy		toy
+öw			ow		oat
+au			aw		cow
+eu			eh uh
+
+# Vowels
+i2:			iy		eat
+e2:			iy		eat
+y2:			iy		eat
+i			ih		it
+i3			ih		it
+y			ih		it
+e			eh		Ed
+ä			eh		Ed
+e3			eh		Ed
+ë r3			er		hurt
+ë r			er		hurt
+ö3: r3			er		hurt
+ö3 r3			er		hurt
+ö3: r			er		hurt
+ö3 r			er		hurt
+ö2:			er		hurt
+ö			er		hurt
+ö3:			er		hurt
+ö3			er		hurt
+ä3:			ae		at
+ä3			ae		at
+ä2:			ae		at
+a			ah		hut
+a3:			ah		hut
+ë			ah		hut
+u4:			uw		two
+u2:			uw		two
+o2:			uw		two
+u4			uh		hood
+u			uh		hood
+o			uh		hood
+u3			uh		hood
+å2:			ao		ought
+å			aa		odd
+a2:			aa		odd
+o3			aa		odd
+
+# Nasalised vowels
+an			aa n
+on			aa n
+en			ae n			
+
+# Consonants
+b			b		be
+d			d		dee
+rd			d		dee
+f			f		fee
+g			g		green
+h			hh		he
+j			y		yield
+k			k		key
+l			l		lee
+rl			l		lee
+m			m		me
+n			n		knee
+rn			n		knee
+ng			ng		ping
+p			p		pee
+r			r		read
+r3			r		read
+r4			r		read
+s			s		sea
+rs			sh		she
+sj3			sh		she
+sj			sh		she
+t			t		tea
+tj			sh		she
+rt			t		tea
+v			v		vee
+dh			dh		thee
+j3			jh		gee
+rs3			zh		seizure
+th			th		theta
+tj3			ch		cheese
+w			w		we
+z			z		zee

@@ -5,7 +5,7 @@
 #
 #
 #***********************************************************#
-$path = "C:/TPB/Textprocessning/Textprocessning";
+#$path = "C:/TPB/Textprocessning/Textprocessning";
 $lang = "eng";
 $main_lang = "(?:eng|-)";
 $path2 = "C:/TPB/Preproc";

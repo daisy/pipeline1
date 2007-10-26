@@ -1,0 +1,52 @@
+A # 'e j # LT
+B # b 'i2: # LT
+C # s 'i2: # LT
+D # d 'i2: # LT
+E # 'i2: # LT
+F # 'e f: # LT
+G # j3 'i2: # LT
+H # 'e j tj3 # LT
+I # 'a j # LT
+J # j3 'e j # LT
+K # k 'e j # LT
+L # 'e l: # LT
+M # 'e m: # LT
+N # 'e n: # LT
+O # 'öw # LT
+P # p 'i2: # LT
+Q # k j 'u2: # LT
+R # 'a2: r3 # LT
+S # 'e s: # LT
+T # t 'i2: # LT
+U # j 'u4: # LT
+V # v 'i2: # LT
+W # d 'a b ë l - v i2: # LT
+X # 'e k: s # LT
+Y # w 'a j # LT
+Z # z 'e d # LT
+a # 'e j # LT
+b # b 'i2: # LT
+c # s 'i2: # LT
+d # d 'i2: # LT
+e # 'i2: # LT
+f # 'e f: # LT
+g # j3 'i2: # LT
+h # 'e j tj3 # LT
+i # 'a j # LT
+j # j3 'e j # LT
+k # k 'e j # LT
+l # 'e l: # LT
+m # 'e m: # LT
+n # 'e n: # LT
+o # 'öw # LT
+p # p 'i2: # LT
+q # k j 'u2: # LT
+r # 'a2: r3 # LT
+s # 'e s: # LT
+t # t 'i2: # LT
+u # j 'u4: # LT
+v # v 'i2: # LT
+w # d 'a b ë l - v i2: # LT
+x # 'e k: s # LT
+y # w 'a j # LT
+z # z 'e d # LT

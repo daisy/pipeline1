@@ -1,0 +1,34 @@
+Ã¡	_aa_	á	# a med accent
+Ã	_AA_	Á	# A accent
+Ã¤	_a:_	ä	# a prick
+Ã„	_A:_	Ä	# A prick
+Ã¥	_ao_	å	# a ring
+Ã…	_Ao_	Å	# A ring
+Ã 	_	à	# a bakåtaccent
+Ã€	_	à	# A bakåtaccent
+Ã©	_ee_	é	# e accent
+Ã‰	_EE_	É	# E accent
+Ã¨	_	è	# e bakåtaccent
+Ãˆ	_	È	# E bakåtaccent
+Ã«	_e:_	ë	# e prick
+Ã‹	_E:_	Ë	# E prick
+Ã­	_ii_	í	# i accent
+Ã	_II_	Í	# I accent
+Ã¯	_i:_	ï	# i prick
+Ã	_I:_	Ï	# I prick
+Ã³	_oo_	ó	# o accent
+Ã“	_OO_	Ó	# O accent
+Ã²	_	ò	# o bakåtaccent
+Ã’	_	Ò	# O bakåtaccent
+Ã¶	_o:_	ö	# o prick
+Ã–	_O:_	Ö	# O prick
+Ãº	_uu_	ú	# u accent
+Ãš	_UU_	Ú	# U accent
+Ã¼	_u:_	ü	# u prick
+Ãœ	_U:_	Ü	# U prick
+Ã½	_yy_	ı	# y accent
+Ã	_YY_	İ	# Y accent
+Ã¿	_y:_	ÿ	# y prick
+Ã±	_n-_	ñ	# n tilde
+Ã‘	_N-_	Ñ	# N tilde
+â€“	-	 - 	# long dash (mdash)

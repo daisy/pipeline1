@@ -1,0 +1,870 @@
+#AABBR		EXPANSION					RULE	MAY NOT END SENTENCE	CASE SENSITIVE
+#St.			Saint;Street					1	0	0
+#(Jam.)			Jamieson;Scottish Dict. 			1	0	0
+#(Morris) (quoted from) E. E. Morris's Austral English 			1	0	0
+#(Th.)			(quoted from) Thornton's American Glossary 	1	0	0
+#(Y.)			(quoted from) Yule & Burnell's Hobson- Jobson 	1	0	0
+#AF.		 	Anglo-French 					1	0	0
+#AFr.			Anglo-French 					1	0	0
+#Alb.			Albanian 					1	0	0
+#Ann.			Annals 						1	0	0
+#Cotgr. R.		Cotgrave;Dictionarie of the French and English tongues 		1	0	0
+#D.A.			Dictionary of Americanisms 			1	0	0
+#D.A.E.			Dictionary of American English 			1	0	0
+#D.O.S.T.		Dictionary of the Older Scottish Tongue 	1	0	0
+#Da.			Danish 						1	0	0
+#E.			East 						1	0	0
+#E.D.D. English Dialect Dictionary 					1	0	0
+#EE.			Early English 					1	0	0
+#F.			French 						1	0	0
+#Fr.			French 						1	0	0
+#Funk or Funk's Stand. Dict. Funk and Wagnalls Standard Dictionary 	1	0	0
+#G.			German 						1	0	0
+#Ger.			German 						1	0	0
+#Godef. F.		Godefroy;Dictionnaire de l'ancienne langue francaise 		1	0	0
+#IE.			Indo-European 					1	0	0
+#Ir.			Irish 						1	0	0
+#It.			Italian 					1	0	0
+#J.;			(J.) (quoted from) Johnson's Dictionary 	1	0	0
+#L.			Latin 						1	0	0
+#LXX			Septuagint 					1	0	0
+#ME.			Middle English 					1	0	0
+#MHG.			Middle High German 				1	0	0
+#MLG.			Middle Low German 				1	0	0
+#Mal.			Malay;Malayan 					1	0	0
+#Man.			Manual 						1	0	0
+#Mar.			Marine 						1	0	0
+#N.			North 						1	0	0
+#N.E.			North East 					1	0	0
+#N.E.D.			New English Dictionary;original title of the Oxford English Dictionary (first edition)		1	0	0
+#N.T.			New Testament 					1	0	0
+#N.W.			North West 					1	0	0
+#N.Z.			New Zealand 					1	0	0
+#NF.			Northern French 				1	0	0
+#NFr.			Northern French 				1	0	0
+#No.			Number 						1	0	0
+#O.T.			Old Testament 					1	0	0
+#OE.			Old English (= Anglo-Saxon) 			1	0	0
+#OF.;OFr.		Old French 					1	0	0
+#OFris.			Old Frisian 					1	0	0
+#OHG.			Old High German 				1	0	0
+#OIr.			Old Irish 					1	0	0
+#ON.			Old Norse 					1	0	0
+#ONF.			Old Northern French 				1	0	0
+#OS.			Old Saxon 					1	0	0
+#OSl.			Old (Church) Slavonic 				1	0	0
+#Path.			(as label) in Pathology;(in titles) Pathology;- ical 		1	0	0
+#Pers.			Persian 					1	0	0
+#Pg.			Portuguese 					1	0	0
+#Pol.			Polish 						1	0	0
+#Pol.			politics;political 				1	0	0
+#Pr.			Provencal 					1	0	0
+#Q.			Quarterly 					1	0	0
+#R.			Royal 						1	0	0
+#Rum.			Rumanian 					1	0	0
+#Russ.			Russian 					1	0	0
+#S.			South 						1	0	0
+#S.N.D.			Scottish National Dictionary 			1	0	0
+#Sc.			Scottish					1	0	0
+#Skr.			Sanskrit 					1	0	0
+#Slav.			Slavonic 					1	0	0
+#Sp			 Spanish 					1	0	0
+#Sp.			(in titles) Speech;-es 			1	0	0
+#Spec.			(in titles) Specimen 				1	0	0
+#Sw.			Swedish 					1	0	0
+#Syd. Soc. Lex.		Sydenham Society;Lexicon of Medicine & Allied Sciences 		1	0	0
+#Turk.			Turkish 					1	0	0
+#U.S.			United States 					1	0	0
+#U.S.S.R.		Union of Soviet Socialist Republics 		1	0	0
+#W.			Welsh;West 					1	0	0
+#WS.			West Saxon 					1	0	0
+#Webster		Webster's (New International) Dictionary 	1	0	0
+#dat.			dative 						1	0	0
+#dem.			demonstrative 					1	0	0
+#f.			(in Etym.) formed on 				1	0	0
+#f.			(in subordinate entries) form of 		1	0	0
+#f.			feminine 					1	0	0
+#fl.			flourished					1	0	0
+#her.			heraldry 					1	0	0
+#id.			idem;the same					1	0	0
+#imp.			imperative 					1	0	0
+#ind.			indicative 					1	0	0
+#inf.			infinitive 					1	0	0
+#int.			interjection 					1	0	0
+#intr.			intransitive 					1	0	0
+#l.			line  						1	0	0
+#less.			lesson;lessons 					1	0	0
+#long.			longitude					1	0	0
+#m.			masculine 					1	0	0
+#math.			mathematics;mathematical 			1	0	0
+#mil.			military					1	0	0
+#min.			mineralogy;mineralogical 			1	0	0
+#mineral.		mineralogy;mineralogical 			1	0	0
+#mod.			modern 						1	0	0
+#mus.			music;musical;museum				1	0	0
+#myst.			mystery 					1	0	0
+#n.			neuter 						1	0	0
+#nat.			natural 					1	0	0
+#north.			northern dialect 				1	0	0
+#obl.			oblique 					1	0	0
+#opt.			optics 						1	0	0
+#org.			organic 					1	0	0
+#p.			page 						1	0	0
+#pass.			passive;passively 				1	0	0
+#pers.			person;personal 				1	0	0
+#pf.			perfect 					1	0	0
+#pl.			plural 						1	0	0
+#poet.			poetic;-al 					1	0	0
+#pop.			popular;popularly 				1	0	0
+#porc.			porcelain 					1	0	0
+#pott.			pottery 					1	0	0
+#pr.			present 					1	0	0
+#priv.			privative 					1	0	0
+#pron.			pronoun 					1	0	0
+#prop.			properly 					1	0	0
+#pros.			prosody 					1	0	0
+#quot(s).		quotation(s) 					1	0	0
+#rep.			report;-s 					1	0	0
+#sb.			substantive 					1	0	0
+#sc.			'understand' or 'supply';scilicet 		1	0	0
+#sing.			singular 					1	0	0
+#sk.			sketch 						1	0	0
+#soc.			society 					1	0	0
+#sp.			spelling 					1	0	0
+#stand.			standard 					1	0	0
+#str.			strong 						1	0	0
+#t.			teaspoon;ton					1	0	0
+#tr.			translated;translation				1	0	0
+#trans.			transactions;transitive				1	0	0
+#transf.		transferred sense				1	0	0
+#treas.			treasury 					1	0	0
+#treat.			treatise 					1	0	0
+#trig.			trigonometry 					1	0	0
+#trop.			tropical 					1	0	0
+#v.			verb						1	0	0
+#v.str.			strong verb 					1	0	0
+#v.w.			weak verb 					1	0	0
+#var(s).		variant(s) of 					1	0	0
+#vars.			variant(s) of 					1	0	0
+#vb.			verb 						1	0	0
+#vet.			veterinary 					1	0	0
+A.D.			anno Domini;in the year of the Lord		1	0	0
+A.D.			anno domini 					1	0	0
+A.V.			authorized version 				1	0	0
+Adv.			advance;advanced;advances			1	0	0
+Aeronaut.		aeronautic;aeronautical;aeronauticals		1	0	0
+Afr.			Africa;african					1	0	0
+Agric.			agriculture;agricultural			1	0	0
+Amer.			American 					1	0	0
+Amer.Ind.		American Indian 				1	0	0
+Anat.			anatomy;anatomical				1	0	0
+Anc.			ancient 					1	0	0
+Anglo-Ind.		Anglo-Indian 					1	0	0
+Anglo-Ir.		Anglo-Irish 					1	0	0
+Appl.			applied 					1	0	0
+Applic.			application;applications 			1	0	0
+Apr.			April						1	0	0
+Arab.			Arabic 						1	0	0
+Aram.			Aramaic 					1	0	0
+Arch.			architecture;architectural 			1	0	0
+Arm.			Armenian 					1	0	0
+Aug.			August						1	0	0
+Austral.		Australian 					1	0	0
+Ave.			Avenue						1	0	0
+B.C.			Before Christ;British Columbia			1	0	0
+Bd			board						1	0	0
+BeV			billion electron volts				1	0	0
+Bk.			book 						1	0	0
+Blvd.			boulevard					1	0	0
+Bp.			bishop 						1	0	0
+Brit			British						1	0	0
+Brit.			Britain;British 				1	0	0
+Bulg.			Bulgarian 					1	0	0
+Calif.			California					1	0	0
+Cambr.			Cambridge 					1	0	0
+Canad.			Canadian 					1	0	0
+Capt.			Captain						1	0	0
+Cat.			Catalan 					1	0	0
+Celt.			Celtic 						1	0	0
+Ch.			Church 						1	0	0
+Chem.  			chemistry;chemistrical 				1	0	0
+Chr.			Christian 					1	0	0
+Chron.			Chronicle 					1	0	0
+Chronol.		chronology;chronological 			1	0	0
+Co			cmpany						1	0	0
+Col.			colonel;colony 					1	0	0
+Colo.			Colorado					1	0	0
+Comdr.			Commander					1	0	0
+Commo.			Commodore					1	0	0
+Conn.			Connecticut					1	0	0
+Ct			court						1	0	0
+D.C.			District of Columbia 				1	0	0
+D.Eng.			Doctor of Engineering				1	0	0
+D.Lit.			Doctor of Literature;Doctor of Letters		1	0	0
+D.Litt.			Doctor of Literature;Doctor of Letters		1	0	0
+D.Mus.			Doctor Musicae;Doctor of Music			1	0	0
+D.Sc.			Doctor of Science				1	0	0
+Dec.			December					1	0	0
+Dr.			Doctor						1	0	0
+Du.			Dutch 						1	0	0
+Edin.			Edinburgh 					1	0	0
+Eng.			England;English 				1	0	0
+Ens.			Ensign						1	0	0
+Esq.			Esquire						1	0	0
+Ess.			esssay;essays 					1	0	0
+Feb.			February					1	0	0
+Finn.			Finnish 					1	0	0
+Found.			Foundation;Foundations 				1	0	0
+Fri.			Friday						1	0	0
+Fris.			Frisian 					1	0	0
+Gael.			Gaelic 						1	0	0
+Gaz.			Gazette 					1	0	0
+Gmc.			Germanic 					1	0	0
+Goth.			Gothic 						1	0	0
+Gov.			Governor					1	0	0
+Heb.			Hebrew 						1	0	0
+Hebr.			Hebrew 						1	0	0
+Hind.			Hindustani 					1	0	0
+Hon.			Honorable					1	0	0
+Ibid.			Ibidem;in the same book or passage		1	0	0
+Icel.			Icelandic 					1	0	0
+Inc.			incorporated					1	0	0
+Jan.			January						1	0	0
+Jap.			Japanese 					1	0	0
+Jr.			Junior						1	0	0
+LG.			Low German 					1	0	0
+Let.			letter;letters 					1	0	0
+Lett.			letter;letters 					1	0	0
+Lieut.			Lieutenant					1	0	0
+Lit.			Literary 					1	0	0
+Lit. D.			Literarum Doctor;Doctor of Literature;Doctor of Letters		1	0	0
+Lit.B.			Literarum Baccalaureus;Bachelor of Literature	1	0	0
+Lith.			Lithuanian 					1	0	0
+Litt. D.		Literarum Doctor;Doctor of Literature;Doctor of Letters		1	0	0
+Lt.			Lieutenant					1	0	0
+Ltd.			limited						1	0	0
+MDu.			Middle Dutch 					1	0	0
+Maj.			Major						1	0	0
+Manch.			Manchester 					1	0	0
+Mar.			March						1	0	0
+MeV			million electron volts				1	0	0
+Messrs			Messieurs;Gentlemen;Sirs			1	0	0
+Mgr.			Monsignor					1	0	0
+Mlle			Mademoiselle					1	0	0
+Mme			Madame						1	0	0
+Mon.			Monday						1	0	0
+Msgr.			Monsignor					1	0	0
+Mt.			Mount;Mountain					1	0	0
+Mus.B.			Musicae Baccalaureus;Bachelor of Music		1	0	0
+Mus.D.			Musicae Doctor;Doctor of Music			1	0	0
+N.&Q.			Notes and Queries 				1	0	0
+N.Amer.			North America;North American 			1	0	0
+Nat. Hist.		natural history 				1	0	0
+Neb.			Nebraska					1	0	0
+Nebr.			Nebraska					1	0	0
+Newf.			Newfoundland					1	0	0
+Nfld.			Newfoundland					1	0	0
+No			number						1	0	0
+Norw.			Norwegian 					1	0	0
+Nos			numbers						1	0	0
+Nov.			November					1	0	0
+Oct.			October						1	0	0
+Okla.			Oklahoma					1	0	0
+Ont.			Ontario						1	0	0
+Ore.			Oregon						1	0	0
+Oxf.			Oxford 						1	0	0
+Pd.M.			Master of Pedagogy				1	0	0
+Ph.B.			Philosophiae Baccalaureus;Bachelor of Philosophy		1	0	0
+Ph.D.			Philosophiae Doctor;Doctor of Philosophy	1	0	0
+Ph.G.			Graduate in Pharmacy				1	0	0
+Phar.D.			Doctor of Pharmacy				1	0	0
+Pkwy			parkway						1	0	0
+Pl.			Place						1	0	0
+Pres.			President					1	0	0
+Que.			Quebec						1	0	0
+R.C.Ch.			Roman Catholic Church 				1	0	0
+Rd			road						1	0	0
+Rd.			road						1	0	0
+Rep.			representative					1	0	0
+Rev.			Revelation;Reverend				1	0	0
+Rom.			Roman;Romance;Romanic 				1	0	0
+S. Dak.			South Dakota					1	0	0
+S.Afr.			South Africa;South African 			1	0	0
+Sat.			Saturday					1	0	0
+Sc. Nat. Dict.		Scottish National Dictionary 			1	0	0
+Sc.B.			Scientiae Baccalaureus;Bachelor of Science	1	0	0
+Sc.D.			Scientiae Doctor;Doctor of Science		1	0	0
+Scand.			Scandinavia;Scandinavian 			1	0	0
+Sch			school						1	0	0
+Sch.			School 						1	0	0
+Scot.			Scottish 					1	0	0
+Scotl.			Scotland 					1	0	0
+Sen.			Senator						1	0	0
+Sept.			September					1	0	0
+Sergt.			Sergeant					1	0	0
+Sgt.			Sergeant					1	0	0
+Sr.			Senior						1	0	0
+St			Street;Saint					1	0	0
+St.			Saint;Street;Strait				1	0	0
+Stanf.			Stanford					1	0	0
+Sun.			Sunday						1	0	0
+Supt.			Superintendent					1	0	0
+Syr.			Syrian 						1	0	0
+Tenn.			Tennessee					1	0	0
+Tex.			Texas						1	0	0
+Thurs.			Thursday					1	0	0
+Tokh.			Tokharian 					1	0	0
+Tue.			Tuesday						1	0	0
+Tues.			Tuesday						1	0	0
+Ven.			Venerable					1	0	0
+W. Va.			West Virginia					1	0	0
+WGmc.			West Germanic 					1	0	0
+Wash.			Washington					1	0	0
+Wed.			Wednesday					1	0	0
+Westm.			Westminster 					1	0	0
+Wis.			Wisconsin					1	0	0
+Wisc.			Wisconsin					1	0	0
+Wy.			Wyoming						1	0	0
+Wyo.			Wyoming						1	0	0
+Xmas			Christmas					1	0	0
+a.s.a.p			as soon as possible				1	0	0
+a.s.a.p.		as soon as possible				1	0	0
+abbrev.			abbreviation (of) 				1	0	0
+abl.			ablative 					1	0	0
+absol.			absolute;absolutely				1	0	0
+abstr.			abstract;abstracts				1	0	0
+acc.			accusative 					1	0	0
+accel.			accelerando					1	0	0
+acct			account						1	0	0
+acct.			account 					1	0	0
+ad lib.			ad libitum;at pleasure				1	0	0
+adj.			adjective 					1	0	0
+adm.			admiral						1	0	0
+admin			administration;administrative			1	0	0
+admis			admission					1	0	0
+admr			administrator					1	0	0
+adv.			adverb 						1	0	0
+advb.			adverbial;adverbially 				1	0	0
+advt.			advertisement 					1	0	0
+aff			affidavit					1	0	0
+aff			affirm						1	0	0
+agrmnt			agreement;agreements				1	0	0
+anon			anonymous					1	0	0
+anthrop.		anthropology;anthropological 			1	0	0
+anthropol.		anthropology;anthropological 			1	0	0
+antiq.			antiquities;antiquity 				1	0	0
+aphet.			aphetic;aphetized 				1	0	0
+app.			apparently 					1	0	0
+appos.			appositive;appositively 			1	0	0
+approp			appropriation					1	0	0
+apt.			apartment					1	0	0
+arb			abritrator					1	0	0
+asap			as soon as possible				1	0	0
+assn			association					1	0	0
+assoc			associate					1	0	0
+assoc.			association 					1	0	0
+asst			assistant					1	0	0
+astr.			astronomy 					1	0	0
+astrol.			astrology 					1	0	0
+astron.			astronomy;astronomical 				1	0	0
+astronaut.		astronautic;astronautics 			1	0	0
+attrib.			attributive;attributively 			1	0	0
+auth			authority					1	0	0
+autobiogr.		autobiography;autobiographical 			1	0	0
+bankr			bankruptcy					1	0	0
+bbl.			barrel;barrels					abbreviation_rule_1	0	0
+bef.			before 						1	0	0
+bibliogr.		bibliography;bibliographical 			1	0	0
+biochem.		biochemistry;biochemistrical 			1	0	0
+biol.			biology;biological 				1	0	0
+bk			bank;book					1	0	0
+bldg			building					1	0	0
+bot.			botany;botanical				1	0	0
+bu.			bushel;bushels					abbreviation_rule_1	0	0
+bull.			bulletin 					1	0	0
+#c			circa;about 		(as c 1700)		1	0	0
+#c.			century 		(as 19th c.)		1	0	0
+c/o			care of						1	0	0
+cal			calendar;calorie				1	0	0
+cal.			calendar 					1	0	0
+catachr.		catachrestically 				1	0	0
+catal.			catalogue 					1	0	0
+cc			cubic centimeter;cubic centimeters		abbreviation_rule_1	0	0
+cc.			cubic centimeter;cubic centimeters		abbreviation_rule_1	0	0
+ceb.			debate;debates					1	0	0
+cent.			century;central 				1	0	0
+cent. dict.		Century Dictionary 				1	0	0
+cert			certificate;certification;certify		1	0	0
+cf.			compare;confer					1	0	0
+cf.			confer;compare					1	0	0
+ch.			chapter						1	0	0
+ch			chapter						1	0	0
+chap.			chapter						1	0	0
+chap			chapter						1	0	0
+chem			chemical					1	0	0
+cinemat.		cinematography 					1	0	0
+cinematogr.		cinematography 					1	0	0
+cl. L.			classical Latin 				1	0	0
+clin.			clinical 					1	0	0
+cm			centimeter;centimeters				abbreviation_rule_1	0	0
+cm2			square centimeter;square centimeters		abbreviation_rule_1	0	0
+cm3			cubic centimeter;cubic centimeters		abbreviation_rule_1	0	0
+cmt			committee					1	0	0
+co.			company;county					1	0	0
+cogn. w.		cognate with 					1	0	0
+coll			college						1	0	0
+coll.			collection 					1	0	0
+collect.		collective;collectively 			1	0	0
+colloq.			colloquial;colloquially 			1	0	0
+comb.			combinations 					1	0	0
+comb.			combined;combining 				1	0	0
+comm.			commercial					1	0	0
+commn			commission					1	0	0
+communic.		communications 					1	0	0
+comp.			compound;composition 				1	0	0
+compan.			companion 					1	0	0
+compar.			comparative 					1	0	0
+compl.			complement 					1	0	0
+compl.			complete 					1	0	0
+conc.			concise 					1	0	0
+conch.			conchology 					1	0	0
+concr.			concrete;concretely 				1	0	0
+conf.			conference 					1	0	0
+congr.			congress 					1	0	0
+conj.			conjunction 					1	0	0
+cons.			consonant 					1	0	0
+const.			construction;construed with 			1	0	0
+contr			construction;contract				1	0	0
+contr.			contrast;contrast with				1	0	0
+contrib.		contribution 					1	0	0
+coop			cooperative					1	0	0
+corp			corporation					1	0	0
+corp.			corporal;corporation				1	0	0
+corr.			correspondence 					1	0	0
+corresp.		corresponding;corresponding to			1	0	0
+cpd.			compound 					1	0	0
+cresc.			crescendo					1	0	0
+crit.			criticism;critical 				1	0	0
+cryst.			crystallography 				1	0	0
+ctr			center						1	0	0
+cts			cents						1	0	0
+cu			cubic						1	0	0
+cwt			hundredweight					1	0	0
+cycl.			cyclopaedia;cyclopaedic 			1	0	0
+cytol.			cytology;cytological 				1	0	0
+def.			definite;definitition 				1	0	0
+dept			department					1	0	0
+dept.			department					1	0	0
+deriv.			derivative;derivativation 			1	0	0
+derog.			derogatory 					1	0	0
+descr.			description;descriptitive 			1	0	0
+dev			development					1	0	0
+devel.			development;developmental 			1	0	0
+devs			developments					1	0	0
+diagn.			diagnosis;diagnostic 				1	0	0
+dial.			dialect;dialectal 				1	0	0
+dict.			dictionary					1	0	0
+dim.			diminuendo					1	0	0
+dim.			diminutive 					1	0	0
+dir			director					1	0	0
+dis.			disease 					1	0	0
+diss.			dissertation 					1	0	0
+dist.			district					1	0	0
+distr			district					1	0	0
+distrib			distributing;distributor			1	0	0
+div			division					1	0	0
+dm			decimeter;decimeters				abbreviation_rule_1	0	0
+dm2			decimeter;decimeters				abbreviation_rule_1	0	0
+dm3			decimeter;decimeters				abbreviation_rule_1	0	0
+doc			document					1	0	0
+doz.			dozen;dozens					abbreviation_rule_1	0	0
+dwt.			deadweight ton;pennyweight			1	0	0
+e.g.			for example					1	0	0
+e.g.			for example;exempli gratia			1	0	0
+e.midl.			east midland					1	0	0
+eccl.			ecclesiastical 					1	0	0
+ecol.			ecology 					1	0	0
+econ			economic;economical;economically		1	0	0
+econ.			economy;economics 				1	0	0
+ed			edition;education				1	0	0
+ed.			edition 					1	0	0
+ed.			edition;editor;education			1	0	0
+educ			educational					1	0	0
+educ.			education;educational 				1	0	0
+elec			electric;electrical;electrically;electronic	1	0	0
+electr.			electricity;electrical 				1	0	0
+electron.		electronic;electronics 				1	0	0
+elem.			element;elementary 				1	0	0
+ellipt.			elliptical;elliptically 			1	0	0
+embryol.		embryology 					1	0	0
+empl			employment					1	0	0
+encycl.			encyclopaedia;encyclopaediaic 			1	0	0
+engg			engineering					1	0	0
+engin.			engineering 					1	0	0
+engr			engineer					1	0	0
+ent.			entomology 					1	0	0
+entomol.		entomology;entomological	 		1	0	0
+envt			environment					1	0	0
+envtl			environmental					1	0	0
+equop			equipment					1	0	0
+erron.			erroneous;erroneously 				1	0	0
+esp.			especially 					1	0	0
+esp.			especially					1	0	0
+est.			established					1	0	0
+et al.			and others					1	0	0
+et al.			and others;et alia				1	0	0
+et seq.			and the following things;et sequentia		1	0	0
+etc.			et cetera 					1	0	0
+etc.			et cetera;and so on				1	0	0
+ethnol.			ethnology 					1	0	0
+etym.			etymology 					1	0	0
+euphem.			euphemistically 				1	0	0
+exam.			examination 					1	0	0
+examr			examiner					1	0	0
+exc.			except 						1	0	0
+exch			exchange					1	0	0
+exerc.			exercise;exercises 				1	0	0
+exper.			experiment;experimental 			1	0	0
+explor.			exploration;explorations 			1	0	0
+fed			federal						1	0	0
+fed			federal;federation				1	0	0
+fedn			federation					1	0	0
+fem.			feminine 					1	0	0
+ff.			and following;folios				1	0	0
+fig.			figur;figurative;figuratively 			1	0	0
+foundn			foundation					1	0	0
+freq.			frequent;frequently 				1	0	0
+ft			foot;feet					abbreviation_rule_1	0	0
+fund.			fundamental;fundamentals 			1	0	0
+gal.			gallon;gallons					abbreviation_rule_1	0	0
+gen			general						1	0	0
+gen.			general;generally;genitive			1	0	0
+geogr.			geography;geographical 				1	0	0
+geol.			geology;geological 				1	0	0
+geom.			geometry 					1	0	0
+geomorphol.		geomorphology 					1	0	0
+gloss.			glossary 					1	0	0
+gov			government;governor				1	0	0
+govt			government					1	0	0
+govt.			government 					1	0	0
+gr.			great;greek					1	0	0
+gram.			grammar;grammatical 				1	0	0
+gt.			great 						1	0	0
+guar			guaranty					1	0	0
+herb.			herbalists 					1	0	0
+hist			history						1	0	0
+hist.			history;historical 				1	0	0
+histol.			histology;histological 				1	0	0
+hlth			health						1	0	0
+hon.			honorary					1	0	0
+hort.			horticulture 					1	0	0
+hosp			hospital					1	0	0
+hous			housing						1	0	0
+househ.			household 					1	0	0
+housek.			housekeeping 					1	0	0
+hp			horsepower					1	0	0
+hq			headquarters					1	0	0
+hr			hour						1	0	0
+hrg			hearing						1	0	0
+hwy			highway						1	0	0
+i.e.			that is						1	0	0
+i.e.			that is;id est					1	0	0
+ichthyol.		ichthyology 					1	0	0
+id.			the same					1	0	0
+illus			illustrated					1	0	0
+illustr.		illustration;illustrated 			1	0	0
+imit.			imitative 					1	0	0
+immunol.		immunology 					1	0	0
+impers.			impersonal 					1	0	0
+impf.			imperfect 					1	0	0
+in.			inch;inches					1	0	0
+inc			incorporated					1	0	0
+inc.			incorporated;inclusive				1	0	0
+indef.			indefinite 					1	0	0
+indem			indemnity					1	0	0
+indep			independent					1	0	0
+indid			industries					1	0	0
+indus			industry;industrial				1	0	0
+industr.		industry;industrial 				1	0	0
+infl.			influenced 					1	0	0
+info			information					1	0	0
+inj			injunction					1	0	0
+inorg.			inorganic 					1	0	0
+ins			insurance					1	0	0
+ins.			insurance 					1	0	0
+inst			institute;institution				1	0	0
+inst.			institute;instituttion 				1	0	0
+intergovt		intergovernmental				1	0	0
+interrog		interrogatory					1	0	0
+interrogs		interrogatories					1	0	0
+intl			international					1	0	0
+introd.			introduction 					1	0	0
+inv			investment					1	0	0
+irreg.			irregular;irregularly 				1	0	0
+joc.			jocular;jocularly 				1	0	0
+jrnl.			journal 					1	0	0
+jun.			junior 						1	0	0
+kg			kilogram;kilograms				abbreviation_rule_1	0	0
+km			kilometer;kilometers				abbreviation_rule_1	0	0
+km2			square kilometer;square kilometers		abbreviation_rule_1	0	0
+knowl.			knowledge 					1	0	0
+kw			kilowatt					1	0	0
+kwhr			kilowatt-hour					1	0	0
+lab.			laboratory;laboratories				1	0	0
+lang.			language 					1	0	0
+lat.			latitude					1	0	0
+lb			pound;libra					1	0	0
+lect.			lecture;lectures 				1	0	0
+leg			legislative					1	0	0
+liab			liability					1	0	0
+lit.			literal;literally 				1	0	0
+litig			litigation					1	0	0
+loc. cit.		in the place cited;loco citato			1	0	0
+ltd			limited						1	0	0
+mach			machine;machinery				1	0	0
+mag			magistrate					1	0	0
+mag.			magazine 					1	0	0
+magn.			magnetic;magnetism 				1	0	0
+managem.		management 					1	0	0
+manuf.			manufacture;manufacturing 			1	0	0
+masc.			masculine 					1	0	0
+mech.			mechanics;mechanical 				1	0	0
+med			medical;medicine				1	0	0
+med.			medicine;medical 				1	0	0
+med.L.			medieval Latin 					1	0	0
+mem.			memoir;memoirs 					1	0	0
+meml			memorial					1	0	0
+metaph.			metaphysics 					1	0	0
+meteorol.		meteorology;meteorological 			1	0	0
+mfg			manufacturing					1	0	0
+mfr			nmanufacturer					1	0	0
+mg.			milligram					1	0	0
+mi.			mile						1	0	0
+midl.			midland						1	0	0
+misc			miscellaneous					1	0	0
+misc.			(in titles) Miscellany;-eous 			1	0	0
+mkt			market						1	0	0
+mktg			marketing					1	0	0
+mm			millimeter;millimeters				abbreviation_rule_1	0	0
+mm2			square millimeter;square millimeters		abbreviation_rule_1	0	0
+mm3			cubic millimeter;cubic millimeters		abbreviation_rule_1	0	0
+mo.			month						1	0	0
+mod			modification;modify				1	0	0
+mod.L.			modern Latin 					1	0	0
+mods			modifications					1	0	0
+mph			miles per hour					1	0	0
+mun			municipal					1	0	0
+mut			mutual						1	0	0
+mythol.			mythology 					1	0	0
+n.b.			nota bene;note well				1	0	0
+n.d.			no date						1	0	0
+n.q.			no quotations 					1	0	0
+narr.			narrative 					1	0	0
+natl			national					1	0	0
+naut.			nautical					1	0	0
+neurol.			neurology 					1	0	0
+neut.			neuter 						1	0	0
+no.			number;numero					1	0	0
+nom.			nominative 					1	0	0
+non seq.		it does not follow;non sequitur			1	0	0
+nucl.			nuclear 					1	0	0
+numism.			numismatics  					1	0	0
+o.p.			out of print					1	0	0
+obj.			object 						1	0	0
+obs.			obsolete 					1	0	0
+obstetr.		obstetric 					1	0	0
+occas.			occasionally 					1	0	0
+op. cit.		in the work cited;opere citato			1	0	0
+ophthalm.		ophthalmology 					1	0	0
+opp.			opposed;opposed to;the opposite;the opposite of	1	0	0
+org			organization;organizing				1	0	0
+orig.			origin;original;originally 			1	0	0
+ornith.			ornithology;ornithological 			1	0	0
+outl.			outline 					1	0	0
+oz.			ounce;ounces					abbreviation_rule_1	0	0
+oz			ounce;ounces					abbreviation_rule_1	0	0
+p.			page						1	0	0
+#p			page						1	0	0
+pa. pple.		passive participle;past participle 		1	0	0
+pa.t.			past tense 					1	0	0
+palaeogr.		palaeography 					1	0	0
+palaeont.		palaeontology;palaeontological			1	0	0
+#par			paragraph					1	0	0
+pd			paid						1	0	0
+perh.			perhaps						1	0	0
+perm			permanent					1	0	0
+petrogr.		petrography 					1	0	0
+petrol.			petrology;petrological 				1	0	0
+pf			preferred					1	0	0
+pfd			preferred					1	0	0
+pharm			pharmaceutic;pharmaceutical;pharmaceutics Pharm		1	0	0
+pharm.			pharmacology 					1	0	0
+philol.			philology;philological 				1	0	0
+philos.			philosophy;philosophic 				1	0	0
+phonet.			phonetic;phonetically 				1	0	0
+photogr.		photography;photographical 			1	0	0
+phr.			phrase 						1	0	0
+phys.			physical					1	0	0
+physiol.		physiology;physiological 			1	0	0
+pict.			picture;pictorial 				1	0	0
+pk.			peck						1	0	0
+pkg			package						1	0	0
+plur.			plural 						1	0	0
+pol			political					1	0	0
+pol. econ.		political economy 				1	0	0
+polit.			politics;political 				1	0	0
+poss.			possessive 					1	0	0
+pp.			pages						1	0	0
+pp			pages						1	0	0
+ppd			postpaid;prepaid				1	0	0
+ppl. a.			participial adjective 				1	0	0
+pple.			participle 					1	0	0
+pple. adj.		participial adjective 				1	0	0
+pr. pple.		present participle 				1	0	0
+pract.			practice;practical 				1	0	0
+prec.			preceding					1	0	0
+pred.			predicative 					1	0	0
+pref.			preface;prefix					1	0	0
+prelim			preliminary					1	0	0
+prep.			preposition 					1	0	0
+pres.			present 					1	0	0
+princ.			principle;principles 				1	0	0
+prob.			probably 					1	0	0
+probl.			problem 					1	0	0
+proc.			proceedings 					1	0	0
+prod			product						1	0	0
+produc			production					1	0	0
+prof.			professor					1	0	0
+profl			professional					1	0	0
+profn			profession					1	0	0
+prog			program						1	0	0
+pronunc.		pronunciation 					1	0	0
+prop			property					1	0	0
+prov.			provencal 					1	0	0
+prtg			printing					1	0	0
+psych.			psychology 					1	0	0
+psychol.		psychology;psychological 			1	0	0
+pt.			point;port;part;pint				1	0	0
+pub			public						1	0	0
+publ.			publications 					1	0	0
+publg			publishing					1	0	0
+pvt.			private						1	0	0
+q.v.			which see;quod vide				1	0	0
+qt.			quart						1	0	0
+qu			question					1	0	0
+ques			question					1	0	0
+radiol.			radiology 					1	0	0
+rec.			record 						1	0	0
+recons			reconsideration					1	0	0
+redupl.			reduplicating 					1	0	0
+ref			referee;referendum;refining			1	0	0
+ref.			reference 					1	0	0
+refash.			refashioned;refashioning 			1	0	0
+refl.			reflexive 					1	0	0
+reg.			register;regular				1	0	0
+regis			registration					1	0	0
+regl			regional					1	0	0
+regul			regulation					1	0	0
+rehg			rehearing					1	0	0
+rel			related to 					1	0	0
+reminisc.		reminiscence;reminiscences 			1	0	0
+rep			representative					1	0	0
+repl			replacement					1	0	0
+repr.			representative;representing 			1	0	0
+reprod			reproduction;reproductive			1	0	0
+req			request						1	0	0
+reqmnt			requirement					1	0	0
+reqmnts			requirements					1	0	0
+res.			research 					1	0	0
+rev			revision;revised				1	0	0
+rev.			review;revised					1	0	0
+rhet.			rhetoric 					1	0	0
+rit.			ritardando					1	0	0
+ritard.			ritardando					1	0	0
+ritn.			ritenuto;retarding				1	0	0
+s.g.			specific gravity				1	0	0
+s.v.			under the word;sub voce				1	0	0
+s.w.			south-western					1	0	0
+sc.			that is to say;scilicet				1	0	0
+sel.			selection;selections 				1	0	0
+seq.			the following.sequentia				1	0	0
+ser.			series 						1	0	0
+serv			service						1	0	0
+sgd			signed						1	0	0
+soc			social						1	0	0
+sociol.			sociology;sociological 				1	0	0
+socy			society						1	0	0
+sp. gr.			specific gravity				1	0	0
+spec			special						1	0	0
+spec.			specifically 					1	0	0
+sq			square						1	0	0
+struct.			structure;structural 				1	0	0
+stud.			studies 					1	0	0
+subcmt			subcommittee					1	0	0
+subdiv			subdivision					1	0	0
+subj.			subject 					1	0	0
+subord. cl.		subordinate clause 				1	0	0
+subseq.			subsequent;subsequently 			1	0	0
+subst.			substantively 					1	0	0
+suff.			suffix 						1	0	0
+superl.			superlative 					1	0	0
+suppl			supplemental					1	0	0
+suppl.			supplement 					1	0	0
+surg.			surgery;surgical 				1	0	0
+syll.			syllable 					1	0	0
+syst.			system;systematic 				1	0	0
+taxon.			taxonomy;taxonomical 				1	0	0
+tb.			tablespoon;tablespoons				abbreviation_rule_1	0	0
+tbs.			tablespoon;tablespoons				abbreviation_rule_1	0	0
+tbsp.			tablespoon;tablespoons				abbreviation_rule_1	0	0
+techn.			technical;technically 				1	0	0
+technol.		technology;technological 			1	0	0
+tel			telephone					1	0	0
+telegr.			telegraphy 					1	0	0
+teleph.			telephony 					1	0	0
+temp			temporary					1	0	0
+theatr.			theatre;theatrical 				1	0	0
+theol.			theology;theological 				1	0	0
+theoret.		theoretical 					1	0	0
+tp.			township					1	0	0
+trans			translation;translator				1	0	0
+transcon		transcontinental				1	0	0
+transl.			translated;translation				1	0	0
+transp			transport;transportation			1	0	0
+trav.			travel;travels 					abbreviation_rule_1	0	0
+treatm.			treatment 					1	0	0
+typog.			typography 					1	0	0
+typogr.			typography 					1	0	0
+ult.			ultimately 					1	0	0
+unif			uniform						1	0	0
+univ.			university					1	0	0
+unkn.			unknown 					1	0	0
+usu.			usually 					1	0	0
+util			utility						1	0	0
+vbl. sb.		verbal substantive 				1	0	0
+vertebr.		vertebrate;vertebrates 				1	0	0
+vet. sci.		veterinary science 				1	0	0
+viz.			namely;videlicet				1	0	0
+vol.			volume						1	0	0
+voy.			voyage;voyages 					abbreviation_rule_1	0	0
+vs.			versus;against					1	0	0
+vulg.			vulgar 						1	0	0
+w.midl.			west midland					1	0	0
+wd.			word 						1	0	0
+wks.			works 						1	0	0
+wt.			weight						1	0	0
+yd			yard						1	0	0
+yr			year						1	0	0
+yrs.			years 						1	0	0
+zoogeogr.		zoogeography 					1	0	0
+zool.			zoology;zoological 				1	0	0
+a.s.o.			and so on					1	0	0
+a.s.o			and so on					1	0	0
+a s o			and so on					1	0	0
+aso.			and so on					1	0	0
+p.m.			p.m.						1	0	0
+a.m.			a.m.						1	0	0
+p.m			p.m.						1	0	0
+a.m			a.m.						1	0	0
+pm			p.m.						1	0	0
+am			a.m.						abbreviation_rule_2	0	0
