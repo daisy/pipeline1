@@ -104,7 +104,7 @@
 <pre>
 &lt;div&gt;
     This is some text before the picture.
-    &lt;img src="fig01.png" alt="Map over Norway" /&gt;
+    &lt;img src="fig01.png" alt="Map: Norway" /&gt;
     This is some text after the picture.
 &lt;/div&gt;
 </pre>
@@ -112,14 +112,14 @@
 <pre>
 &lt;div&gt;
     &lt;p&gt;This is some text before the picture.&lt;/p&gt;
-    &lt;img src="fig01.png" alt="Map over Norway" /&gt;
+    &lt;img src="fig01.png" alt="Map: Norway" /&gt;
     &lt;p&gt;This is some text after the picture.&lt;/p&gt;
 &lt;/div&gt;
 </pre>
     or, perhaps better, skip the <code>div</code> element:
 <pre>
 &lt;p&gt;This is some text before the picture.&lt;/p&gt;
-&lt;img src="fig01.png" alt="Map over Norway" /&gt;
+&lt;img src="fig01.png" alt="Map: Norway" /&gt;
 &lt;p&gt;This is some text after the picture.&lt;/p&gt;
 </pre>
     </li>
@@ -366,13 +366,46 @@ Proper markup should rather be as follows:
         </td>
     </tr>
     <tr valign="top">
-        <td><code></code></td>
-        <td><code></code></td>
-        <td></td>
+        <td><code>a</code>, where the value of the <code>href</code> attribute
+            does not contain the string <span class="text">.smil#</span>.
+        </td>
+        <td><code>a</code></td>
+        <td>
+            <ul>
+                <li>The <code>href</code>, <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+        </td>
     </tr>
 </table>
 
 <p>Other elements than the ones listed above will result in a comment in the DTBook file.</p>
+
+<p>Note that for all XHTML elements listed above, the following rule applies:
+<br />
+If the XHTML element has an <code>a</code> element as a child (in the XML sense of the term),
+    and this <code>a</code> element has an <code>href</code> attribute with a 
+    value containing the string <span class="text">.smil#</span>, the value of the <code>href</code> attribute
+    is transferred to a <code>smilref</code> attribute for the DTBook element that results from the transformation of the XHTML element.
+    The <code>a</code> element will not be transformed in this process.
+</p>
+
+<p>So the following piece of XHTML code:</p>
+<pre>
+&lt;h2 id="baaw_0007"&gt;&lt;a href="baaw0004.smil#baaw_0007"&gt;Section 1.1&lt;/a&gt;&lt;/h2&gt;
+&lt;span class="page-normal" id="baaw_0008"&gt;&lt;a href="baaw0004.smil#baaw_0008"&gt;4&lt;/a&gt;&lt;/span&gt;
+&lt;span class="page-normal" id="baaw_0009"&gt;&lt;a href="baaw0004.smil#baaw_0009"&gt;5&lt;/a&gt;&lt;/span&gt;
+:
+</pre>
+would be transformed into:
+<pre>
+&lt;level2&gt;
+   &lt;h2 id="baaw_0007" smilref="baaw0004.smil#baaw_0007"&gt;Section 1.1&lt;/h2&gt;
+   &lt;pagenum page="normal" id="page-4" smilref="baaw0004.smil#baaw_0008"&gt;4&lt;/pagenum&gt;
+   &lt;pagenum page="normal" id="page-5" smilref="baaw0004.smil#baaw_0009"&gt;5&lt;/pagenum&gt;
+   :
+&lt;/level2&gt;
+   
+</pre>
 
 <!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
 

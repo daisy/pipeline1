@@ -6,12 +6,20 @@
 	xmlns:html="http://www.w3.org/1999/xhtml"
 	exclude-result-prefixes="xs html">
 	
+<!--	<xsl:output method="xml" 
+		encoding="UTF-8"
+		indent="yes"
+		doctype-public="-//NISO//DTD dtbook 2005-2//EN"
+		doctype-system="V:\MFBP\piXi\DTD\dtbook-2005-2.dtd" />-->
+
 	<xsl:output method="xml" 
 		encoding="UTF-8"
 		indent="yes"
-		doctype-public="-//NISO//DTD dtbook 2005-1//EN"
-		doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd" />
-		
+		doctype-public="-//NISO//DTD dtbook 2005-2//EN"
+		doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd" />
+	
+	<xsl:variable name="smil" as="xs:string" select="'.smil#'" />
+	
 	<xsl:template match="/">
 		<dtbook>
 			<xsl:apply-templates />
@@ -42,6 +50,8 @@
 			<xsl:call-template name="copy-attributes" />
 			<xsl:if test="html:h1[@class eq 'frontmatter']">
 				<frontmatter>
+					<!-- Assuming that the title element in head represents the title -->
+					<xsl:apply-templates select="//html:head/html:title" />
 					<xsl:apply-templates select="html:h1[@class eq 'frontmatter']" />
 				</frontmatter>
 			</xsl:if>
@@ -54,6 +64,12 @@
 				</rearmatter>
 			</xsl:if>
 		</book>
+	</xsl:template>
+	
+	<xsl:template match="html:title">
+		<doctitle>
+			<xsl:apply-templates />
+		</doctitle>
 	</xsl:template>
 	
 	<!-- The following template handles everything concerning levels in the DTBook -->
@@ -101,6 +117,7 @@
 			<xsl:copy-of select="@class" /> <!-- Transfer the class attribute from the hx element to the levelx element -->
 			<!-- Create the hx element -->
 			<xsl:element name="{local-name()}">
+<!--				<xsl:call-template name="smilref" />-->
 				<xsl:call-template name="copy-heading-attributes" />
 				<xsl:apply-templates />
 			</xsl:element>
@@ -130,10 +147,12 @@
 
 	<xsl:template match="html:span[starts-with(@class,'page-')]">
 		<pagenum page="{substring-after(@class,'page-')}" id="{concat('page-',.)}">
+<!--			<xsl:call-template name="smilref" />-->
 			<xsl:call-template name="copy-page-attributes" />
 			<xsl:value-of select="." />
 		</pagenum>
 	</xsl:template>
+	
 	<xsl:template match="html:span[@class eq 'sentence']">
 		<sent>
 			<xsl:call-template name="copy-span-attributes" />
@@ -158,6 +177,20 @@
 		</noteref>
 	</xsl:template>
 
+	<xsl:template match="html:a[contains(@href,$smil)]">
+		<!-- This is the a element used to represent a reference to a SMIL file in a DAISY 2.02 content doc.
+			We don't need it in the DTBook, as the @href will end up as a @smilref in the parent element.
+			This is handled by the named template 'copy-std-attr'
+-->
+		<xsl:apply-templates />
+	</xsl:template>
+	
+<!--	<xsl:template match="html:a">
+		<a
+		<xsl:call-template name="copy-std-attr" />
+		<xsl:apply-templates />
+	</xsl:template>-->
+
 	<xsl:template match="html:div[@class eq 'notebody']">
 		<note>
 			<xsl:copy-of select="@id" />
@@ -180,14 +213,14 @@
 		</list>
 	</xsl:template>
 	
-	<xsl:template match="html:p | html:li | html:dl | html:dt | html:dd | html:span | html:strong | html:em | html:sub | html:sup | html:br | html:div">
+	<xsl:template match="html:a | html:p | html:li | html:dl | html:dt | html:dd | html:span | html:strong | html:em | html:sub | html:sup | html:br | html:div">
 		<xsl:element name="{local-name()}">
 			<xsl:call-template name="copy-attributes" />
 			<xsl:apply-templates/>
 		</xsl:element>
 	</xsl:template>
 
-	<xsl:template match="html:table | html:tr | html:td | html:th | html:col">
+	<xsl:template match="html:table | html:table/html:caption | html:tr | html:td | html:th | html:col">
 		<xsl:element name="{local-name()}">
 			<xsl:call-template name="copy-table-attributes" />
 			<xsl:apply-templates/>
@@ -196,7 +229,7 @@
 	
 	
 	<xsl:template name="copy-attributes">
-		<xsl:copy-of select="@id, @class" />
+		<xsl:copy-of select="@id, @class, @href" />
 		<xsl:call-template name="copy-std-attr" />
 	</xsl:template>
 	<xsl:template name="copy-heading-attributes">
@@ -215,7 +248,17 @@
 		<xsl:call-template name="copy-std-attr" />
 	</xsl:template>
 	<xsl:template name="copy-std-attr">
-		<xsl:copy-of select="@title, @style, @dir, @xml:lang" />
+<!--	Per Sennels, 20070927: Don't copy @style, as it's not allowed in 2005-2
+		<xsl:copy-of select="@title, @style, @dir, @xml:lang" /> -->
+		<xsl:copy-of select="@title, @dir, @xml:lang" />
+		<xsl:call-template name="smilref" />
+	</xsl:template>
+
+	<xsl:template name="smilref">
+<!-- 	Per Sennels, 20071026: Handle the html:a/@href attribute, if present -->
+		<xsl:if test="contains(html:a/@href,$smil)">
+			<xsl:attribute name="smilref" select="html:a/@href" />
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="*">
