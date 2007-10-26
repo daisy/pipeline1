@@ -36,7 +36,7 @@ public class TpbPreProcessorImpl extends PreProcessor {
 			
 			/*
 			 * Build the command string.
-			 * perl path/textprocXML.pl -inputXML pathspec --inputLanguage=langspec --resultPath=pathspec --mode=align 
+			 * perl path/textprocXML.pl --inputXML=pathspec --inputLanguage=langspec --resultPath=pathspec --mode=align 
 			 */						
 	        ArrayList<String> arr = new ArrayList<String>();
 	        arr.add("perl");
@@ -50,7 +50,7 @@ public class TpbPreProcessorImpl extends PreProcessor {
 	         * Execute
 	         */
 	        int ret;
-	                	
+	        System.err.println("Encoding: " + arr.toString());        	
             ret = Command.execute((String[])(arr.toArray(new String[arr.size()])));
             if(ret == -1) {
             	throw new PreProcessorException(exePath + " returned -1");

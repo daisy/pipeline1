@@ -566,6 +566,7 @@ transformers/se_tpb_aligner/textpre/PreProcessorFactoryException.java -text
 transformers/se_tpb_aligner/textpre/impl/FallbackPreProcessorImpl.java -text
 transformers/se_tpb_aligner/textpre/impl/Preproc/preproc.pl -text
 transformers/se_tpb_aligner/textpre/impl/TpbPreProcessorImpl.java -text
+transformers/se_tpb_aligner/textpre/impl/textprocXML.pl -text
 transformers/se_tpb_aligner/transformer.tdf -text
 transformers/se_tpb_aligner/util/AudioSource.java -text
 transformers/se_tpb_aligner/util/Result.java -text
