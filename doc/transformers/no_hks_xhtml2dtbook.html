@@ -152,6 +152,7 @@ Proper markup should rather be as follows:
 <h2 id="output">Output</h2>
 
 <h3 id="success">On success</h3>
+<p>A DTBook file compliant with the DTBook 2005-2 DTD. The various elements in the XHTML file are handled according to the following information.</p>
 <table width="100%">
     <tr valign="bottom">
         <th>XHTML element</th>
@@ -376,6 +377,11 @@ Proper markup should rather be as follows:
             </ul>
         </td>
     </tr>
+    <tr valign="top">
+        <td><code></code></td>
+        <td><code></code></td>
+        <td></td>
+    </tr>
 </table>
 
 <p>Other elements than the ones listed above will result in a comment in the DTBook file.</p>
@@ -383,7 +389,7 @@ Proper markup should rather be as follows:
 <p>Note that for all XHTML elements listed above, the following rule applies:
 <br />
 If the XHTML element has an <code>a</code> element as a child (in the XML sense of the term),
-    and this <code>a</code> element has an <code>href</code> attribute with a 
+    and this <code>a</code> element has an <code>href</code> attribute with a
     value containing the string <span class="text">.smil#</span>, the value of the <code>href</code> attribute
     is transferred to a <code>smilref</code> attribute for the DTBook element that results from the transformation of the XHTML element.
     The <code>a</code> element will not be transformed in this process.
@@ -404,7 +410,7 @@ would be transformed into:
    &lt;pagenum page="normal" id="page-5" smilref="baaw0004.smil#baaw_0009"&gt;5&lt;/pagenum&gt;
    :
 &lt;/level2&gt;
-   
+
 </pre>
 
 <!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
