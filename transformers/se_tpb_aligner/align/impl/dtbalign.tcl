@@ -2153,7 +2153,8 @@ if {[string match {* *} [lindex [lindex $segres [expr $i+1]] end]]} {
   }
   lappend tmp $endPoint
 #puts QQQ,$tmp
-regsub -all {y.x } $tmp "" tmp
+#  ska bort
+#regsub -all {y.x } $tmp "" tmp
 #puts QQQ,$tmp
   # Add little silence before and after each timetagged chunk
   set new {}
@@ -2186,7 +2187,7 @@ regsub -all {y.x } $tmp "" tmp
    regsub -all {y\.x} $text x.y text
   }
 #puts AAA,$tmp
- lappend tmp 0 0 0 0 0 0 0 0
+# lappend tmp 0 0 0 0 0 0 0 0
   set text ""
   set parserMode insertTime
   set tmpIndex 0
