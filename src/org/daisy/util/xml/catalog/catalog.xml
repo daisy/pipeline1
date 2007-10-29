@@ -3,10 +3,10 @@
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">
 
   <group> <!-- relaxng common -->
-      <system systemId="../z3986-relaxngcommon/attributes.rng" uri="./relaxngcommon/z3986-attributes.rng" />
-      <system systemId="z3986-attributes.rng" uri="./relaxngcommon/z3986-attributes.rng" />  
-      <system systemId="../relaxngcommon/z3986-datatypes.rng" uri="./relaxngcommon/z3986-datatypes.rng" />
-      <system systemId="z3986-datatypes.rng" uri="./relaxngcommon/z3986-datatypes.rng" />  
+      <system systemId="../relaxngcommon/attributes.rng" uri="./relaxngcommon/attributes.rng" />
+      <system systemId="attributes.rng" uri="./relaxngcommon/attributes.rng" />  
+      <system systemId="../relaxngcommon/datatypes.rng" uri="./relaxngcommon/datatypes.rng" />
+      <system systemId="datatypes.rng" uri="./relaxngcommon/datatypes.rng" />  
   </group>
 
   <group> <!-- xhtml 1.0 -->
