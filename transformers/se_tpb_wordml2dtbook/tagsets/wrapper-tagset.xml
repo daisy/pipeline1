@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wrapperSettings version="2007-1" xmlns="http://www.tpb.se/ns/2007/blockwrapper">
+	<group name="blockquote" tag="blockquote">
+		<attribute name="class" value="test"/>
+	</group>
+	<group name="list" tag="list" type="list">
+		<attribute name="type" value="pl"/>
+		<listitem name="li">
+			<attribute name="class" value="added"/>
+		</listitem>
+	</group>
+	<group name="nativeList" tag="list" type="list">
+		<attribute name="type" value="pl"/>
+		<listitem name="li">
+			<attribute name="class" value="nativeList"/>
+		</listitem>
+	</group>
+</wrapperSettings>

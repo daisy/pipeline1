@@ -22,9 +22,13 @@
 				<map value="p"/>
 			</tag>
 			<tag name="footnote text">
+				<!--
 				<wrap value="note" addId="true" merge="false">
 					<using value="p"/>
-				</wrap>
+				</wrap>-->
+				<map value="p">
+					<attribute name="group" value="note"/>
+				</map>
 			</tag>
 		</paragraphs>
 		<character useInlineFormatting="true">

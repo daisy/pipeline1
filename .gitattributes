@@ -743,6 +743,7 @@ transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTT
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe.manifest -text svneol=unset#application/octet-stream
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.pdb -text
 transformers/se_tpb_syncPointNormalizer/transformer.tdf -text
+transformers/se_tpb_wordml2dtbook/FileJuggler.java -text
 transformers/se_tpb_wordml2dtbook/ImageConverter.java -text
 transformers/se_tpb_wordml2dtbook/custom/new-custom-tagset.xml -text
 transformers/se_tpb_wordml2dtbook/custom/se_rk_custom-tagset.xml -text
@@ -769,12 +770,15 @@ transformers/se_tpb_wordml2dtbook/modules/output.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/paragraphs.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/parameters.xsl -text
 transformers/se_tpb_wordml2dtbook/modules/recursive-copy.xsl -text
+transformers/se_tpb_wordml2dtbook/tagsets/wrapper-tagset.xml -text
 transformers/se_tpb_wordml2dtbook/templates/native.dot -text
 transformers/se_tpb_wordml2dtbook/templates/scanned.dot -text
 transformers/se_tpb_wordml2dtbook/transformer.tdf -text
 transformers/se_tpb_wordml2dtbook/xslt/dtbook-2005-1.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/dtbook-2005-2.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-add-author-title.xsl -text
+transformers/se_tpb_wordml2dtbook/xslt/post-add-blockwrapper-ns.xsl -text
+transformers/se_tpb_wordml2dtbook/xslt/post-blockwrapper.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-count-characters-dtbook.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-count-characters-wml.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-defragment-em.xsl -text

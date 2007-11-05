@@ -132,13 +132,13 @@
 	<xsl:variable name="cTags" select="$mapset//d:custom[@style=$customStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
 	<xsl:variable name="sTags" select="$mapset//d:standardWord[@version=$defaultStyle]/d:paragraphs/d:tag[@name=$styleName]"/>
 	<xsl:variable name="tag" select="$cTags[1] | ($sTags[count($cTags)=0])[1]"/>
-	<xsl:choose>
-		<xsl:when test="not(w:pPr/w:listPr and not($tag/@listOverride='true'))">
+<!--	<xsl:choose>
+		<xsl:when test="not(w:pPr/w:listPr and not($tag/@listOverride='true'))">-->
 			<xsl:call-template name="processParagraph">
 				<xsl:with-param name="node" select="."/>
 				<xsl:with-param name="tag" select="$tag"/>
 			</xsl:call-template>
-		</xsl:when>
+<!--		</xsl:when>
 		<xsl:otherwise>
 			<xsl:choose>
 				<xsl:when test="count(preceding-sibling::w:p[1][w:pPr/w:listPr])=0">
@@ -156,11 +156,11 @@
 							</xsl:call-template>
 						</xsl:otherwise>
 					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise><!-- ??? --></xsl:otherwise>
+				</xsl:when>-->
+<!--				<xsl:otherwise>--><!-- ??? --><!--</xsl:otherwise>
 			</xsl:choose>
 		</xsl:otherwise>
-	</xsl:choose>
+	</xsl:choose>-->
 </xsl:template>
 
 <xsl:template match="w:r">

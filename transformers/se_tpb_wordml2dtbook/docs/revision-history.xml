@@ -274,4 +274,19 @@ Notes:
 		<remark>
 		</remark>
 	</revision>
+	<revision>
+		<version>1.9.0</version>
+		<date>18 October 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>--- Resolved bugs ---</para>
+			<para>Resolved the list bug first described in version 1.4.2 with new block/list processing.</para>
+			<para>--- Other changes ---</para>
+			<para>Moved repairing/tidying processes to DTBookFix</para>
+			<para>Updated scripts to include DTBookFix</para>
+			<para>Improved accuracy of text size check</para>
+		</description>
+		<remark>
+		</remark>
+	</revision>
 </history>

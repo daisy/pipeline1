@@ -90,6 +90,11 @@
 		</parameter>
 
 		<parameter>
+			<name>filename</name>
+			<value>dtbook-tmp.xml</value>
+		</parameter>
+		
+		<parameter>
 			<name>images</name>
 			<value>${images}</value>
 		</parameter>
@@ -131,6 +136,19 @@
 		
 	</task>
 
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}/dtbook-tmp.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}/dtbook.xml</value>
+		</parameter>
+		
+	</task>
+
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>
@@ -142,6 +160,17 @@
 			<value>NONE</value>
 		</parameter>
 		
+		<parameter>
+			<name>generateContextInfo</name>
+			<value>true</value>
+		</parameter>
+	</task>
+	
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${output}/dtbook-tmp.xml</value>
+		</parameter>
 	</task>
 
 </taskScript>

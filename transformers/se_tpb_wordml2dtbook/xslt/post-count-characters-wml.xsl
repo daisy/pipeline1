@@ -42,7 +42,7 @@
 	<xsl:output encoding="utf-8" omit-xml-declaration="yes" method="text" indent="no"/>
 
 	<xsl:template match="w:t"><xsl:value-of select="."/></xsl:template>
-	<xsl:template match="w:t[ancestor::w:hdr or ancestor::w:ftr]"/>
+	<xsl:template match="w:t[ancestor::w:hdr or ancestor::w:ftr or ancestor::w:pict]"/>
 	
 	<xsl:template match="text()"/>
 

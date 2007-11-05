@@ -9,14 +9,25 @@
 			<tag name="heading 5" listOverride="true"><map value="h5"/></tag>
 			<tag name="heading 6" listOverride="true"><map value="h6"/></tag>
 			<tag name="Block Text">
+				<!--
 				<wrap value="blockquote" addId="false" merge="true">
 					<using value="p"/>
-				</wrap>
+				</wrap>-->
+				<map value="p">
+					<attribute name="group" value="blockquote"/>
+				</map>
 			</tag>
 			<tag name="caption">
+				<!--
 				<wrap value="imggroup" addId="false" merge="true">
 					<using value="caption"/>
-				</wrap>
+				</wrap>-->
+				<map value="caption">
+					<attribute name="group" value="imggroup"/>
+				</map>
+			</tag>
+			<tag name="list">
+				<map value="li"/>
 			</tag>
 			<!--
 			<tag name="List Number" listOverride="true">

@@ -34,6 +34,7 @@ number(concat(string(w:pPr/w:listPr/w:ilvl/@w:val), '0')) div 10
 
 <!-- process next list-item -->
 <!-- Rewritten as call-template -->
+<!--
 <xsl:template name="processList">
 	<xsl:param name="node"/>
 	<xsl:param name="level" select="0"/>
@@ -87,9 +88,10 @@ number(concat(string(w:pPr/w:listPr/w:ilvl/@w:val), '0')) div 10
 		</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
-
+-->
 <!-- Find next list-item on the same level -->
 <!--	Optimized Tail recursion	-->
+<!--
 <xsl:template name="findNextItem">
 	<xsl:param name="node"/>
 	<xsl:param name="level" select="0"/>
@@ -102,7 +104,7 @@ number(concat(string(w:pPr/w:listPr/w:ilvl/@w:val), '0')) div 10
 					<xsl:with-param name="level" select="$level"/>
 				</xsl:call-template>
 			</xsl:when>
-			<xsl:when test="$level&gt;$cLevel"></xsl:when> <!-- Do nothing -->
+			<xsl:when test="$level&gt;$cLevel"></xsl:when>--> <!-- Do nothing --> <!--
 			<xsl:otherwise>
 				<xsl:call-template name="findNextItem">
 					<xsl:with-param name="node" select="$node/following-sibling::w:p[1]"/>
@@ -111,9 +113,10 @@ number(concat(string(w:pPr/w:listPr/w:ilvl/@w:val), '0')) div 10
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:if>
-</xsl:template>
+</xsl:template>-->
 
 <!--	Optimized Tail recursion	-->
+<!--
 <xsl:template name="processBlock">
 	<xsl:param name="node"/>
 	<xsl:param name="pStyleName"/>
@@ -127,14 +130,15 @@ number(concat(string(w:pPr/w:listPr/w:ilvl/@w:val), '0')) div 10
 				<xsl:when test="$node/w:pPr/w:listPr and not($tag/@listOverride='true')">
 					<xsl:choose>
 						<xsl:when test="count($node/preceding-sibling::w:p[1][w:pPr/w:listPr])=0">
-							<xsl:for-each select="$node"> <!-- change context -->
+							<xsl:for-each select="$node">--> <!-- change context -->
+							<!--
 								<xsl:call-template name="startList">
 									<xsl:with-param name="node" select="$node"/>
 									<xsl:with-param name="tag" select="$tag"/>
 								</xsl:call-template>
 							</xsl:for-each>
 						</xsl:when>
-						<xsl:otherwise><!-- do nothing --></xsl:otherwise>
+						<xsl:otherwise>--><!-- do nothing --><!--</xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
 				<xsl:otherwise>
@@ -155,8 +159,8 @@ number(concat(string(w:pPr/w:listPr/w:ilvl/@w:val), '0')) div 10
 			</xsl:call-template>
 		</xsl:if>
 	</xsl:if>
-</xsl:template>
-
+</xsl:template>-->
+<!--
 <xsl:template name="startList">
 	<xsl:param name="node"/>
 	<xsl:param name="tag"/>
@@ -174,7 +178,8 @@ number(concat(string(w:pPr/w:listPr/w:ilvl/@w:val), '0')) div 10
 		</xsl:choose>
 	</xsl:if>
 </xsl:template>
-
+-->
+<!--
 <xsl:template name="startBlock">
 	<xsl:param name="node"/>
 	<xsl:param name="tag"/>
@@ -214,12 +219,19 @@ number(concat(string(w:pPr/w:listPr/w:ilvl/@w:val), '0')) div 10
 		</xsl:element>
 	</xsl:if>
 </xsl:template>
-
+-->
 <xsl:template name="processParagraph">
 	<xsl:param name="node"/>
 	<xsl:param name="tag"/>
 	<xsl:variable name="styleName" select="key('matchStyle', $node/w:pPr/w:pStyle/@w:val)/w:name/@w:val"/>
 	<xsl:choose>
+		<xsl:when test="$node/w:pPr/w:listPr and not($tag/@listOverride='true')">
+			<li group="nativeList"><xsl:attribute name="level"><xsl:choose><xsl:when test="number($node/w:pPr/w:listPr/w:ilvl/@w:val)&gt;=0"><xsl:value-of select="number($node/w:pPr/w:listPr/w:ilvl/@w:val)+1"/></xsl:when>
+		<xsl:otherwise><xsl:value-of select="1"/></xsl:otherwise>
+		</xsl:choose></xsl:attribute><xsl:call-template name="getListSymbol">
+				<xsl:with-param name="node" select="$node"/>
+			</xsl:call-template><xsl:apply-templates select="$node/node()"/></li>
+		</xsl:when>
 		<xsl:when test="count($tag)&gt;0">
 			<xsl:choose>
 				<xsl:when test="$tag/d:map">
@@ -234,10 +246,12 @@ number(concat(string(w:pPr/w:listPr/w:ilvl/@w:val), '0')) div 10
 					</xsl:element>
 				</xsl:when>
 				<xsl:when test="$tag/d:wrap">
+					<xsl:message terminate="yes">Deprecated operation "wrap". Change your config files!</xsl:message>
+				<!--
 					<xsl:call-template name="startBlock">
 						<xsl:with-param name="node" select="$node"/>
 						<xsl:with-param name="tag" select="$tag"/>
-					</xsl:call-template>
+					</xsl:call-template>-->
 				</xsl:when>
 				<xsl:when test="$tag/d:comment">
 					<xsl:comment><xsl:call-template name="getListSymbol">
