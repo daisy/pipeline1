@@ -20,10 +20,11 @@ public class LocusTransformer  {
 	
 	public static Location newLocation(ValidatorMessage message) {		
 		LocationImpl loc =  new LocusTransformer().new LocationImpl();	
-		try{
+		try{			
 			loc.setColumnNumber(message.getColumn());
 			loc.setLineNumber(message.getLine());
-			loc.setSystemId(message.getFile().toString());
+			if(message.getFile()!=null)
+				loc.setSystemId(message.getFile().toString());
 		}catch (Exception e) {}
 		return loc;
 	}
@@ -82,6 +83,23 @@ public class LocusTransformer  {
 			loc.setPublicId(sl.getPublicId());
 		}catch (Exception e) {}
 		return loc;
+	}
+	
+	/**
+	 * Try to create a Location from inparam Exception, return null if inparam is not
+	 * successfully transformed.
+	 */
+	public static Location newLocation(Exception e) {				
+		if(e instanceof SAXParseException) {
+			return LocusTransformer.newLocation((SAXParseException)e);
+		}else if(e instanceof CSSParseException) {
+			return LocusTransformer.newLocation((CSSParseException)e);
+		}else if(e instanceof FilesetFileException) {
+			return LocusTransformer.newLocation((FilesetFileException)e);
+		}else if(e instanceof TransformerException) {
+			return LocusTransformer.newLocation((TransformerException)e);
+		}
+		return null;
 	}
 	
 	public static Location newLocation(DOMLocator location) {		
