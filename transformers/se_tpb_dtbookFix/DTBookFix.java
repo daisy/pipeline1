@@ -15,8 +15,12 @@ import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.exception.ExceptionTransformer;
 import org.daisy.util.fileset.FilesetType;
+import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
+import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.fileset.validation.Validator;
 import org.daisy.util.fileset.validation.ValidatorFactory;
 import org.daisy.util.fileset.validation.ValidatorListener;
@@ -76,7 +80,7 @@ import org.xml.sax.SAXParseException;
  * @version 19 October 2007
  * @since 1.0
  */
-public class DTBookFix extends Transformer implements ValidatorListener {
+public class DTBookFix extends Transformer implements ValidatorListener, FilesetErrorHandler {
 	private static final float PROGRESS_INCS = 14;
 	private int currentInc = 0;
 	private boolean mHadValidationErrors = false;
@@ -161,22 +165,24 @@ public class DTBookFix extends Transformer implements ValidatorListener {
 		ValidatorFactory vfac = ValidatorFactory.newInstance();		
 		mHadValidationErrors = false;
 		try{
+			Fileset dtbookFileset = new FilesetImpl(f.toURI(),this,true,false);			
 			Validator validator = vfac.newValidator(FilesetType.DTBOOK_DOCUMENT);
-			validator.setListener(this);
-			
+			validator.setListener(this);			
 			/*
 			 * If adding extra schemas beyond the canonical ones, do:
 			 * URL url = CatalogEntityResolver.getInstance().resolveEntityToURL(catalogID);
 			 * String type = "org.daisy.util.fileset.impl.Z3986DtbookFileImpl";
 			 * validator.setSchema(url,type);
 			 */
-
-			validator.validate(f.toURI());
+			validator.validate(dtbookFileset);
 		}catch (ValidatorNotSupportedException  e) {
 			// TODO: inform or throw
 			e.printStackTrace();
 		} catch (ValidatorException e) {
 			// TODO: inform or throw
+			e.printStackTrace();
+		} catch (FilesetFatalException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 		return !mHadValidationErrors;
@@ -288,7 +294,7 @@ public class DTBookFix extends Transformer implements ValidatorListener {
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#inform(org.daisy.util.fileset.validation.Validator, java.lang.String)
 	 */
 	public void inform(Validator validator, String information) {
-		// TODO: inform? See int_daisy_validator.ValidatorDriver
+		this.sendMessage(information, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM,null);		
 	}
 
 	/*
@@ -297,6 +303,23 @@ public class DTBookFix extends Transformer implements ValidatorListener {
 	 */
 	public void progress(Validator validator, double progress) {
 		// TODO Auto-generated method stub		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
+	 */
+	public void error(FilesetFileException ffe) throws FilesetFileException {		
+		Throwable root =ffe.getRootCause();
+		if(root==null) root = ffe.getCause();		
+		/*
+		 * Because we are using tempdirs, have to filter out all
+		 * exceptions about missing referenced files.
+		 */
+		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {
+			mHadValidationErrors = true;
+			this.sendMessage(root.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, null);
+		} 		
 	}
 
 
