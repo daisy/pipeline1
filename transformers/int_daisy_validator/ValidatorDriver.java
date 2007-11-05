@@ -530,10 +530,10 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				this.checkAbort();
 			}catch (Exception e) {
 				mStateTracker.mHadCaughtException = true;				
-				String message = i18n("SCHEMA_VALIDATION_FAILURE",source.getSystemId());
+				String message = i18n("SCHEMA_VALIDATION_FAILURE",source.getSystemId() + ": " + e.getMessage());
 				this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 			}        
-		}		
+		} //for		
 	}
 
 	/*
