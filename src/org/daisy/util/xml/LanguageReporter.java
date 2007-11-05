@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -31,7 +32,7 @@ public class LanguageReporter {
 	private String mRootLanguage = null;
 	
 	private static final String localName = "lang";
-	private static final String nsURI = "http://www.w3.org/XML/1998/namespace";
+	private static final String nsURI = XMLConstants.XML_NS_URI;
 	
 	/**
 	 * Constructor.
