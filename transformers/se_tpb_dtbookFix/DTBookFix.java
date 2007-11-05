@@ -5,11 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.xml.stream.Location;
+import javax.xml.transform.TransformerException;
+
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.EventBus;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.exception.ExceptionTransformer;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
@@ -19,11 +23,14 @@ import org.daisy.util.fileset.validation.ValidatorListener;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
+import org.daisy.util.fileset.validation.message.ValidatorSevereErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
+import org.daisy.util.xml.LocusTransformer;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
+import org.xml.sax.SAXParseException;
 
 /**
  * 
@@ -73,6 +80,7 @@ public class DTBookFix extends Transformer implements ValidatorListener {
 	private static final float PROGRESS_INCS = 14;
 	private int currentInc = 0;
 	private boolean mHadValidationErrors = false;
+	private final static String DTBOOK_VALIDATOR_IMPL = "org.daisy.util.fileset.validation:http://www.daisy.org/fileset/DTBOOK_DOCUMENT";
 
 	public DTBookFix(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);
@@ -87,10 +95,24 @@ public class DTBookFix extends Transformer implements ValidatorListener {
 		String tidy = (String)parameters.get("tidy");
 		String indent = (String)parameters.get("indent");
 
+		/*
+		 * Set a sysprop to help the dtbook validator factory discovery
+		 */
+		String initFactoryProp = System.getProperty(
+				DTBOOK_VALIDATOR_IMPL);
+		if(initFactoryProp==null){
+			System.setProperty(
+					DTBOOK_VALIDATOR_IMPL,
+			"org.daisy.util.fileset.validation.ValidatorImplDtbook");
+		}
+		
+		
 		// tomma p i table läggs till om hx pga... pagenumfix?
 		// ändra hx i tabell till p
 		
 		try {
+			
+			
 			FileJuggler files = new FileJuggler(input, output);
 		    if ("true".equals(forceRepair) || /*!*/ isValid(files.getInput())) {
 				EventBus.getInstance().publish(new MessageEvent(this, "Reparing...", MessageEvent.Type.INFO));
@@ -122,7 +144,16 @@ public class DTBookFix extends Transformer implements ValidatorListener {
 		} catch (XSLTException e) {
 			e.printStackTrace();
 			return false;
-		} 
+		} finally {
+			/*
+			 * Reset the validator factory to initial value
+			 */
+			if(initFactoryProp!=null) {
+				System.setProperty(DTBOOK_VALIDATOR_IMPL,initFactoryProp);
+			}else{
+				System.clearProperty(DTBOOK_VALIDATOR_IMPL);
+			}
+		}
 		return true;
 	}
 	
@@ -230,20 +261,26 @@ public class DTBookFix extends Transformer implements ValidatorListener {
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#exception(org.daisy.util.fileset.validation.Validator, java.lang.Exception)
 	 */
-	public void exception(Validator validator, Exception e) {
-		// TODO: inform? See Transformer#sendMessage(FilesetFileException ffe)
+	public void exception(Validator validator, Exception e) {		
 		mHadValidationErrors = true;
+		Location loc = LocusTransformer.newLocation(e);
+		this.sendMessage(e.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT,loc);						
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#report(org.daisy.util.fileset.validation.Validator, org.daisy.util.fileset.validation.message.ValidatorMessage)
 	 */
-	public void report(Validator validator, ValidatorMessage message) {
-		if(!(message instanceof ValidatorWarningMessage)) {			
+	public void report(Validator validator, ValidatorMessage message) {		
+		MessageEvent.Type type = null;
+		if(message instanceof ValidatorWarningMessage) {			
+			type = MessageEvent.Type.WARNING;		
+		}else {
 			mHadValidationErrors = true;
+			type = MessageEvent.Type.ERROR;
 		}
-		// TODO: inform? See int_daisy_validator.ValidatorDriver
+		Location loc = LocusTransformer.newLocation(message);
+		this.sendMessage(message.getMessage(), type, MessageEvent.Cause.INPUT,loc);		
 	}
 	
 	/*
