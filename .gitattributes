@@ -664,6 +664,10 @@ transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_8.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_9.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/transformer.tdf -text
 transformers/se_tpb_dtbookFix/DTBookFix.java -text
+transformers/se_tpb_dtbookFix/DTBookFix2.java -text
+transformers/se_tpb_dtbookFix/DTBookFixExecutor.java -text
+transformers/se_tpb_dtbookFix/DTBookFixExecutorXSLT.java -text
+transformers/se_tpb_dtbookFix/ExecutorCategory.java -text
 transformers/se_tpb_dtbookFix/FileJuggler.java -text
 transformers/se_tpb_dtbookFix/transformer.tdf -text
 transformers/se_tpb_dtbookFix/xslt/level-tools.xsl -text
