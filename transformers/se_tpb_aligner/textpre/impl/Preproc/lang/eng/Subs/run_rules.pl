@@ -8,14 +8,27 @@
 #**************************************************************#
 sub run_rules {
 
+	my $sent = shift;
+
+
 	&run_initials_subs();
 
-	&run_date_subs();
-	&run_time_subs();
-	&run_email_subs();
-	&run_url_subs();
+	if ( $sent =~ /\d/ ) {
+		&run_date_subs();
+		&run_time_subs();
+	}
+	
+	if ( $sent =~ /\@/ ) {
+		&run_email_subs();
+	}
+	
+	if ( $sent =~ /(?:www|http)/ ) {
+		&run_url_subs();
+	}
+	
 	&run_filename_subs();
 	
+
 	# Moved from xxx----xxx
 	# Do the same for Swedish???
 	&run_roman_num_subs();
@@ -25,23 +38,24 @@ sub run_rules {
 	&run_acronym_subs();
 #	&run_unit_subs();
 	
-	&run_decimal_num_subs();
+	if ( $sent =~ /\d/ ) {
+		&run_decimal_num_subs();
+		&run_mixed_num_subs();
+	#	&run_phone_num_subs();
+		&run_ordinals_num_subs();
+		
+	#	&run_interval_num_subs();
+		
+		&run_year_num_subs();
+		
+		&run_currency_subs();
+	}
 
-	&run_mixed_num_subs();
-#	&run_phone_num_subs();
-
-	# xxx----xxx
-	&run_ordinals_num_subs();
-	
-#	&run_interval_num_subs();
-	
-	&run_year_num_subs();
-	
-	&run_currency_subs();
 
 		
 	&run_expansion_subs();
 	&run_expansion_subs_2();
+
 	
 }
 #************************************************************#
