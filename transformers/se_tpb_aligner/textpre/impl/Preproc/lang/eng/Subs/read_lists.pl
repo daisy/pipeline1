@@ -14,8 +14,8 @@ sub read_lists {
 #	&read_taglex("0");
 #	&read_extra_lexicon("0");
 	&read_namelex("0");
-	&read_acronym_list("0");
-	&read_abbreviation_list("0");
+	&read_acronym_list("1");
+	&read_abbreviation_list("1");
 	&read_unit_list("0");
 	&read_alphabet("0");
 	&read_domain_list("0");
@@ -173,7 +173,7 @@ sub read_extra_lexicon {
 			$ort = lc($ort);
 			
 			# Language
-			my $lang = "swe";
+			my $lang = "eng";
 			if ( $rest =~ /(lang:[^ ]+)( |$)/ ) {
 				$lang = $1;
 			}

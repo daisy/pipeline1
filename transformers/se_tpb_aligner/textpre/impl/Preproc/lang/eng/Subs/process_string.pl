@@ -11,18 +11,27 @@ sub process_string {
 
 	$main_lang = $lang;
 
-
+	$string =~ s/\&\#x002D\;/-/g;	# mdash
+	$string =~ s/\&\#x00A9\;/©/g;	# copyright
+	$string =~ s/\&\#x0026\;/\&/g;	# ampersand
+	$string =~ s/\&\#x00AE\;/\®/g;	# registrated trademark
+	$string =~ s/–/-/g;
+	
 	my $sentences = &sentence_split( $string );
 	my @sentences = split/<SENT_SPLIT>/,$sentences;
+
 
 	my $ret_string;
 
 	foreach my $sent ( @sentences ) {
 
+#		print "\n---------------\nSENTENCE: $sent\n";
+
 		my $push_string;
 
 		# Multiword expression lookup	Example: "art. nr.", "o. s. v.".
 #		$string = &multiword_expression_lookup($sent);
+
 	
 		# Count number of components in string.
 		($number_of_components) = &count_components_blanks($sent);
@@ -50,8 +59,9 @@ sub process_string {
 	
 #		&print_all_output();
 	
+
 		# Rules for mark-up and expansions.
-		&run_rules();
+		&run_rules($sent);
 	
 	
 		# Language detection (twice to catch modified contexts).
@@ -60,22 +70,24 @@ sub process_string {
 		# Homograph disambiguation
 #		&homograph_disambiguation();
 	
+
 		# Convert TPA to CMU transcription alphabet.
 		if ( $mode eq "align" ) {
-			while(($k,$v) = each (%transcription)) {
-				if ( $v !~ /^(?:$default_transcription|<UNKNOWN>)$/ ) {
-					$transcription{ $k } = &tpa2cmu($v);
+			foreach my $k ( sort(keys(%transcription))) {
+				
+				if ( $transcription{ $k } !~ /^(?:$default_transcription|<UNKNOWN>)$/ ) {
+					$transcription{ $k } = &tpa2cmu($transcription{ $k });
 	
 				}
 			}
 
 			$push_string = &ssml_output;
 
-			$ret_string .= "$push_string ";
+			$ret_string .= $push_string;
 			
-#			&print_all_output();
+			&print_all_output();
 		} else {
-#			&print_all_output();
+			&print_all_output();
 		}
 		
 		

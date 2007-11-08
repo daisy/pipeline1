@@ -63,14 +63,16 @@ sub count_components {
 #			print "UNK: $pos{$o}\t$orthography{ $o }\n";
 			
 			# Split on delimiters
-			$orthography{ $o }	=~	 s/([$all_delimiters]|[\@_\%\/\\])/<SPLITTER>$1<SPLITTER>/g;
+			$orthography{ $o }	=~	 s/([$all_delimiters]|[\@_\%\/\\\®\©])/<SPLITTER>$1<SPLITTER>/g;
+
+			$orthography{ $o }	=~	s/(\&\#x....)/<SPLITTER>$1<SPLITTER>/g;
 
 			# Split on digits
 			$orthography{ $o }	=~	s/(\d+)/<SPLITTER>$1<SPLITTER>/g;
 	
-			# Merge full stops with abbreviations.
-			# Example:	"tisd"	"."	-->	"tisd."
-#			$orthography{ $o }	=~	s/(<SPLITTER>|^)($abbreviation_list)<SPLITTER>\.<SPLITTER>/$1$2\.<SPLITTER>/iog;
+			# Merge full stops with abbreviations. And "c" & "p" (circa, page).
+			# Example:	"c"	"."	-->	"c."
+			$orthography{ $o }	=~	s/(<SPLITTER>|^)($abbreviation_list|c|p)<SPLITTER>\.<SPLITTER>/$1$2\.<SPLITTER>/iog;
 
 			# Split intervals with roman numbers.
 			$orthography{ $o } =~ s/([MDCLXVI]+)-([MDCLXVI]+)/$1<SPLITTER>-<SPLITTER>$2/g;
@@ -79,13 +81,23 @@ sub count_components {
 			# Do not split ":-"
 			$orthography{ $o } =~ s/<SPLITTER>:<SPLITTER>(-(?:<SPLITTER>|$))/<SPLITTER>:$1/g;
 
-
 			# Stout&Hedges
 			$orthography{ $o } =~ s/([a-zåäö])\&([a-zåäö])/$1<SPLITTER>\&<SPLITTER>$2/ig;
 #			print "OO $orthography{ $o }\n";
 
 			# Do not split "'s" etc. (I've, you'd, development's...)
-			$orthography{ $o } =~ s/([a-z])<SPLITTER>\'<SPLITTER>([a-z])/$1\'$2/ig;
+			$orthography{ $o } =~ s/([a-z\d])<SPLITTER>\'<SPLITTER>([a-z])/$1\'$2/ig;
+
+#			print "OOO $orthography{ $o }\n";
+
+			# '60s
+			$orthography{ $o } =~ s/\'<SPLITTER>(\d\d)<SPLITTER>s\b/<SPLITTER>\'$1s<SPLITTER>/g;
+
+#			print "OOO $orthography{ $o }\n";
+	
+			# 1950s
+			$orthography{ $o } =~ s/<SPLITTER>(\d+)<SPLITTER>s\b/<SPLITTER>$1s<SPLITTER>/g;
+
 
 #			print "OOO $orthography{ $o }\n";
 

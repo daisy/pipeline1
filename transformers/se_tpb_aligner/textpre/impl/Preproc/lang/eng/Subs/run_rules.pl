@@ -26,6 +26,7 @@ sub run_rules {
 		&run_url_subs();
 	}
 	
+#	&print_all_output();
 	&run_filename_subs();
 	
 
@@ -37,6 +38,7 @@ sub run_rules {
 
 	&run_acronym_subs();
 #	&run_unit_subs();
+
 	
 	if ( $sent =~ /\d/ ) {
 		&run_decimal_num_subs();
@@ -44,7 +46,7 @@ sub run_rules {
 	#	&run_phone_num_subs();
 		&run_ordinals_num_subs();
 		
-	#	&run_interval_num_subs();
+		&run_interval_num_subs();
 		
 		&run_year_num_subs();
 		

@@ -21,7 +21,9 @@ sub sentence_split {
 	# Name initials:	H.C.
 	$string		=~	s/\.<SENT_SPLIT>([A-ZÅÄÖ](?:\.| ))/\.$1/g;
 	$string		=~	s/\.<SENT_SPLIT>([A-ZÅÄÖ](?:\.| ))/\.$1/g;
-	
+
+	# c. AD90
+	$string		=~	s/\.<SENT_SPLIT>( *[A-ZÅÄÖ][A-ZÅÄÖ])/\.$1/g;
 
 	# Dates
 	$string		=~ 	s/($abbreviation_list)<SENT_SPLIT>(\d)/$1 $2/ig;

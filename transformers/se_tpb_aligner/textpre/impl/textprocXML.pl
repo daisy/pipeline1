@@ -39,6 +39,7 @@ if ( $xml_lang =~ /^en/i) {
 	
 }
 
+
 my $parser = new XML::Parser;
 
 $parser->setHandlers(    

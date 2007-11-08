@@ -1,5 +1,5 @@
 %num_0_9 = qw(
-0	zero
+0	oh
 1	one
 2	two
 3	three

@@ -5,6 +5,8 @@
 sub tpa2cmu {
 	my $string = shift;
 
+#	print "\nSTRING: $string\n";
+
 	$string =~ s/^([^\|]+)\s*\|.+/$1/;
 
 	# Remove stress

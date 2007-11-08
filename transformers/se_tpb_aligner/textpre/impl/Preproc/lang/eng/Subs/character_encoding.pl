@@ -42,6 +42,7 @@ sub character_encoding {
 	$string =~ s/Ã€/à/g;	# A bakåtaccent
 	$string =~ s/â€™/\'/g;	# enkelfnutt
 	
+	
 	return $string;
 }
 1;
