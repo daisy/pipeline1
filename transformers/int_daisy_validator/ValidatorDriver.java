@@ -287,6 +287,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				//something happened that we are not yet handling gracefully
 				//this.sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 				String message = i18n("ERROR_ABORTING", e.getMessage());
+				xmlReport(new ValidatorException(e.getMessage(), e));
 				throw new TransformerRunException(message,e);
 			}
 
@@ -400,10 +401,12 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				} catch (ValidatorNotSupportedException e) {
 					mStateTracker.mHadCaughtException = true;					
 					String message = i18n("DELEGATE_INSTANTIATION_FAILURE", array[i]);
+					xmlReport(new ValidatorException(message, e));
 					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 				} catch (ValidatorException e) {
 					mStateTracker.mHadCaughtException = true;
 					String message = i18n("DELEGATE_INSTANTIATION_FAILURE", array[i]);
+					xmlReport(new ValidatorException(message, e));
 					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 				}
 			}			
@@ -433,6 +436,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				}catch (Exception e) {
 					mStateTracker.mHadCaughtException = true;					
 					String message =i18n("SCHEMA_INSTANTIATION_FAILURE", array[i]+ " " + e.getMessage());
+					xmlReport(e);
 					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 				}
 			}						
@@ -448,6 +452,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					mSchemaSources.putAll(map);
 				}catch (Exception e) {
 					String message = i18n("SCHEMA_INSTANTIATION_FAILURE", str);
+					xmlReport(new ValidatorException(message, e));
 					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 				}																	
 			}//for
@@ -478,6 +483,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		}catch (Exception e) {
 			mStateTracker.mHadCaughtException = true;			
 			String message = i18n("DTD_VALIDATION_FAILURE", e.getMessage());
+			xmlReport(new ValidatorException(message, e));
 			this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 		}finally{
 			try {
@@ -531,6 +537,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			}catch (Exception e) {
 				mStateTracker.mHadCaughtException = true;				
 				String message = i18n("SCHEMA_VALIDATION_FAILURE",source.getSystemId() + ": " + e.getMessage());
+				xmlReport(e);
 				this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 			}        
 		} //for		
