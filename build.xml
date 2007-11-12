@@ -36,8 +36,8 @@
 		<include name="commons-cli-1.0.jar"/>
 		<include name="icu4j-3_6.jar"/>		
 		<include name="jaudiotagger.jar"/>
-		<include name="jing.jar"/>
-		<include name="jl1.0.jar"/>					
+		<include name="jl1.0.jar"/>
+		<include name="onvdl.jar"/>
 		<include name="sac.jar"/>
 		<include name="saxon8.jar"/>
 		<include name="saxon8-dom.jar"/>
@@ -305,14 +305,14 @@
 		<mkdir dir="${distribution.dir}/transformers"/>
 		
 		<!-- int_daisy_validator -->
-		<!--jar jarfile="${distribution.dir}/transformers/int_daisy_validator.jar">
+		<jar jarfile="${distribution.dir}/transformers/int_daisy_validator.jar">
 			<fileset dir="${base.dir}/transformers">
 				<include name="int_daisy_validator/**/*.*"/>
 				<not>
 					<filename name="**/*.java"/>
 				</not>
 			</fileset>
-		</jar-->		
+		</jar>		
 
 		<!-- uk_rnib_dtbook2xhtml -->
 		<!--jar jarfile="${distribution.dir}/transformers/uk_rnib_dtbook2xhtml.jar">
@@ -347,6 +347,24 @@
 		</jar>
 	</target>
 	
+	
+	<!-- ================================= 
+		      target: buildJarDist
+		      
+		      Builds a zip file containing the jars needed to run the pipeline.
+		     ================================= -->
+	<target name="buildJarDist"
+			description="Packages the Jars needed to run dmfc"
+			depends="buildCoreJar, buildUtil">
+		<zip zipfile="${distribution.dir}/jarpack.zip">
+			<fileset refid="fileset.utilJars"/>
+			<fileset dir="${distribution.dir}">
+				<include name="pipeline.jar"/>
+				<include name="org.daisy.util.jar"/>
+			</fileset>
+		</zip>
+	</target>
+
 	
 	<!-- =====================================================================
     	  target: buildRealeaseZip
