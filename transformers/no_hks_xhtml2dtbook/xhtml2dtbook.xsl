@@ -10,7 +10,7 @@
 		encoding="UTF-8"
 		indent="yes"
 		doctype-public="-//NISO//DTD dtbook 2005-2//EN"
-		doctype-system="V:\MFBP\piXi\DTD\dtbook-2005-2.dtd" />-->
+		doctype-system="V:\MFBP\piXi\DTD\dtbook-2005-2.dtd" /> -->
 
 	<xsl:output method="xml" 
 		encoding="UTF-8"
@@ -154,17 +154,65 @@
 	</xsl:template>
 	
 	<xsl:template match="html:span[@class eq 'sentence']">
+		<xsl:variable name="e.next" select="following-sibling::*[1]" />
 		<sent>
 			<xsl:call-template name="copy-span-attributes" />
 			<xsl:apply-templates />
 		</sent>
 	</xsl:template>
+
 	<xsl:template match="html:span[ends-with(@class,'-prodnote')]">
-		<prodnote render="{substring-before(@class,'-prodnote')}">
-			<xsl:call-template name="copy-span-attributes" />
+		<xsl:variable name="e.p.1" select="preceding-sibling::*[1]" />
+		<xsl:variable name="e.p.2" select="preceding-sibling::*[2]" />
+		<xsl:variable name="part-of-imggroup" as="xs:boolean" select="
+			local-name($e.p.1) eq 'img'
+			or
+			(	
+				local-name($e.p.1) eq 'span' and $e.p.1/@class eq 'caption' and local-name($e.p.2) eq 'img'
+			)" />
+		<xsl:choose>
+			<xsl:when test="$part-of-imggroup" />
+			<xsl:otherwise>
+				<prodnote render="{substring-before(@class,'-prodnote')}">
+					<xsl:call-template name="copy-span-attributes" />
+					<xsl:apply-templates />
+				</prodnote>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="html:span[ends-with(@class,'-prodnote')]" mode="inside-imgrp">
+		<xsl:param name="group-id" as="xs:string" />
+		<prodnote render="{substring-before(@class,'-prodnote')}" imgref="{concat('img-',$group-id)}" id="{concat('pnote-',$group-id)}">
+			<xsl:call-template name="copy-std-attr" />
+<!--			<xsl:comment>TREFF</xsl:comment>-->
 			<xsl:apply-templates />
 		</prodnote>
 	</xsl:template>
+
+	<xsl:template match="html:span[@class eq 'caption']">
+		<xsl:variable name="e.p.1" select="preceding-sibling::*[1]" />
+		<xsl:variable name="e.p.2" select="preceding-sibling::*[2]" />
+		<xsl:variable name="part-of-imggroup" as="xs:boolean" select="
+			local-name($e.p.1) eq 'img'
+			or
+			(	
+				local-name($e.p.1) eq 'span' and ends-with($e.p.1/@class,'-prodnote') and local-name($e.p.2) eq 'img'
+			)" />
+		<xsl:choose>
+			<xsl:when test="$part-of-imggroup" /> <!-- The element his handled by the template for img elements -->
+			<xsl:otherwise>
+				<xsl:next-match />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="html:span[@class eq 'caption']" mode="inside-imgrp">
+		<xsl:param name="group-id" as="xs:string" />
+		<caption imgref="{concat('img-',$group-id)}" id="{concat('caption-',$group-id)}">
+			<xsl:call-template name="copy-std-attr" />
+			<xsl:apply-templates />
+		</caption>
+	</xsl:template>
+
 	<xsl:template match="html:span[@class eq 'noteref']">
 		<noteref>
 			<xsl:attribute name="idref" select="
@@ -185,12 +233,6 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-<!--	<xsl:template match="html:a">
-		<a
-		<xsl:call-template name="copy-std-attr" />
-		<xsl:apply-templates />
-	</xsl:template>-->
-
 	<xsl:template match="html:div[@class eq 'notebody']">
 		<note>
 			<xsl:copy-of select="@id" />
@@ -200,10 +242,52 @@
 	</xsl:template>
 
 	<xsl:template match="html:img">
-		<img>
-			<xsl:copy-of select="@src, @alt" />
-			<xsl:call-template name="copy-attributes" />
-		</img>
+		<xsl:variable name="e.f.1" select="following-sibling::*[1]" />
+		<xsl:variable name="e.f.2" select="following-sibling::*[2]" />
+		<xsl:variable name="imggrp.associate.first" as="xs:boolean"
+			select="
+				local-name($e.f.1) eq 'span' and ends-with($e.f.1/@class,'-prodnote')
+				or
+				local-name($e.f.1) eq 'span' and $e.f.1/@class eq 'caption'
+				" />
+		<xsl:variable name="imggrp.associate.second" as="xs:boolean"
+			select="
+				(	local-name($e.f.1) eq 'span' and ends-with($e.f.1/@class,'-prodnote')
+					and
+					local-name($e.f.2) eq 'span' and $e.f.2/@class eq 'caption'
+				)
+				or
+				(	local-name($e.f.2) eq 'span' and ends-with($e.f.2/@class,'-prodnote')
+					and
+					local-name($e.f.1) eq 'span' and $e.f.1/@class eq 'caption'
+				)
+				" />
+		<xsl:choose>
+			<xsl:when test="$imggrp.associate.first">
+				<xsl:variable name="id" as="xs:string" select="generate-id()" />
+				<imggroup id="{concat('imggrp-',$id)}">
+					<img>
+						<xsl:copy-of select="@src, @alt" />
+						<xsl:call-template name="copy-attributes-not-id" />
+						<xsl:attribute name="id" select="concat('img-',$id)" />
+					</img>
+					<xsl:apply-templates select="$e.f.1" mode="inside-imgrp">
+						<xsl:with-param name="group-id" as="xs:string" select="$id" />
+					</xsl:apply-templates>
+					<xsl:if test="$imggrp.associate.second">
+						<xsl:apply-templates select="$e.f.2" mode="inside-imgrp">
+							<xsl:with-param name="group-id" as="xs:string" select="$id" />
+						</xsl:apply-templates>
+					</xsl:if>
+				</imggroup>
+			</xsl:when>
+			<xsl:otherwise>
+				<img>
+					<xsl:copy-of select="@src, @alt" />
+					<xsl:call-template name="copy-attributes" />
+				</img>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="html:ol | html:ul">
@@ -230,6 +314,10 @@
 	
 	<xsl:template name="copy-attributes">
 		<xsl:copy-of select="@id, @class, @href" />
+		<xsl:call-template name="copy-std-attr" />
+	</xsl:template>
+	<xsl:template name="copy-attributes-not-id">
+		<xsl:copy-of select="@class, @href" />
 		<xsl:call-template name="copy-std-attr" />
 	</xsl:template>
 	<xsl:template name="copy-heading-attributes">

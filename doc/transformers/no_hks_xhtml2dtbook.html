@@ -13,6 +13,8 @@
       pre, code {font-family:monospace; color:rgb(120,120,170);}
       code {font-size:100%;}
       pre {font-size:small;}
+      ul {margin-bottom:0.5ex;margin-top:0.5ex;}
+      tr.x {background-color:rgb(252,252,255);}
 	</style>
 </head>
 <body>
@@ -20,7 +22,12 @@
 <div id="toc" class="toc">
 <ul>
 	<li><a href="#purpose">Transformer Purpose</a></li>
-	<li><a href="#inputReqs">Input Requirements</a></li>
+	<li><a href="#inputReqs">Input Requirements</a>
+        <ul>
+    		<li><a href="#twoStageProcess">A note on the two stage process for creating a DTBook file from an HTML document</a></li>
+    		<li><a href="#canonicalForm">Requirements for the canonical form of the XHTML document</a></li>
+        </ul>
+    </li>
 	<li><a href="#output">Output</a>
 	<ul>
 		<li><a href="#success">On success</a></li>
@@ -42,12 +49,27 @@
 
 <h2 id="purpose">Transformer Purpose</h2>
 <!-- brief summary of purpose -->
-<p>To transform a valid XHTML file into a valid DTBook file.</p>
+<p>To transform a valid XHTML file in the canonical form into a valid DTBook file.</p>
 
 
 <h2 id="inputReqs">Input Requirements</h2>
+<h3 id="twoStageProcess">A note on the two stage process for creating a DTBook file from an HTML document</h3>
+<p>Transformation of a general HTML document to a DTBook document, is likely to be a two stage process. 
+</p>
+<ol>
+    <li>The first stage will be to turn the HTML document into a <em>canonical form</em> of an XHTML document. 
+    Depending on the state of the HTML document, this is will be a process consisting of both automatic and manual processing. 
+    Requirements for the canonical form are given below.</li>
+    <li>The second stage is to create the DTBook document from the canonical XHTML. 
+    This will be done in a completely automatic XSLT&#160;2.0 transformation process, normally controlled by the DAISY&#160;Pipeline.</li>
+</ol>
+<p>
+    The DAISY&#160;Consortium does not supply any tools for performing the first stage, as the process required probably will differ among organizations.
+    For the second stage, the DAISY&#160;Consortium has developed the <em>no_hks_xhtml2dtbook</em> transformer.
+</p>
+<h3 id="canonicalForm">Requirements for the canonical form of the XHTML document</h3>
 <ul>
-    <li>Input must be a valid XHTML Transitional or XHTML Strict document.</li>
+    <li>The XHTML document must be a valid XHTML Transitional or XHTML Strict document.</li>
     <li>The document <em>must</em> containt at least one <code>h1</code> element.</li>
     <li>Alle heading elements (<code>h1</code> to <code>h6</code>) <em>must</em> be child elements (in the XML sense of the term) of the
         <code>body</code> element.<br />
@@ -96,6 +118,38 @@
 &lt;p&gt;Some more text in a paragraph ....
 :
 </pre>
+    </li>
+    <li>The <code>span</code> element <em>may not</em> be child elements (in the XML sense of the term) of the <code>body</code> element,
+        unless the <code>class</code> attribute ...
+        <ul>
+            <li>... starts with the string <span class="text">page-</span>,</li>
+            <li>... is equal to <span class="text">noteref</span>,</li>
+            <li>... ends with the string <span class="text">-prodnote</span>, or</li>
+            <li>... is equal to <span class="text">caption</span>, and the <code>span</code> element is evaluated to be a part of an image group
+            (<a href="#imggrp">more details</a>).</li>
+        </ul>
+This excludes markup such as: 
+<pre>
+&lt;body&gt;
+    &lt;h1&gt;The title&lt;/h1&gt;
+    &lt;span class="sentence"&gt;This is a sentence, and also a child of the body element.&lt;/span&gt;
+    &lt;span class="sentence"&gt;And so is this.&lt;/span&gt;
+    :
+    :
+&lt;/body&gt;
+    </pre>
+    Rather, you should use:
+<pre>
+&lt;body&gt;
+    &lt;h1&gt;The title&lt;/h1&gt;
+    &lt;p&gt;
+        &lt;span class="sentence"&gt;This is a sentence, and also a child of the body element.&lt;/span&gt;
+        &lt;span class="sentence"&gt;And so is this.&lt;/span&gt;
+    &lt;/p&gt;
+    :
+    :
+&lt;/body&gt;
+    </pre>
     </li>
     <li>The <code>div</code> element <em>may not</em> have <code>br</code>
         or <code>span</code> as child elements (in the XML sense of the term).</li>
@@ -168,7 +222,7 @@ Proper markup should rather be as follows:
             </ul>
         </td>
     </tr>
-    <tr valign="top">
+    <tr valign="top" class="x">
         <td><code>head/link</code>, where the value for the <code>rel</code> attribute equals <span class="text">stylesheet</span>.
         </td>
         <td><code>head/link</code></td>
@@ -183,11 +237,11 @@ Proper markup should rather be as follows:
         <td><code>book</code></td>
         <td>
             <ul>
-                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
     </tr>
-    <tr valign="top">
+    <tr valign="top" class="x">
         <td><code>h1</code> to <code>h6</code></td>
         <td><pre>
 &lt;levelx&gt;
@@ -198,7 +252,7 @@ Proper markup should rather be as follows:
 </pre></td>
         <td>
             <ul>
-                <li>The <code>id</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>id</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
                 <li>If the <code>hx</code> element carries a <code>class</code> attribute, it is transferred to the corresponding
                 <code>levelx</code> element.</li>
             </ul>
@@ -222,11 +276,11 @@ Proper markup should rather be as follows:
         <td><code>sent</code></td>
         <td>
             <ul>
-                <li>The <code>id</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>id</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
     </tr>
-    <tr valign="top">
+    <tr valign="top" class="x">
         <td>
             <code>span</code>, where the value for the <code>class</code> attribute starts
             with
@@ -249,7 +303,7 @@ Proper markup should rather be as follows:
                 </li>
                 <li>The <code>id</code> attribute gets a value constructed by adding the string
                     <span class="text">page-</span> to the content of the <code>span</code> element.</li>
-                <li>The <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
     </tr>
@@ -267,11 +321,18 @@ Proper markup should rather be as follows:
                     <code>class</code> attribute, is the string
                     <span class="text">required-prodnote</span>.
                 </li>
-                <li>The <code>id</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>id</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+            </ul>
+            If the <code>span</code> element is evaluated to be a part of an image group (<a href="#imggrp">link to more information</a>), 
+            the following rules apply:
+            <ul>
+                <li>The generated <code>prodnote</code> element will be a child of an <code>imggroup</code> element.</li>
+                <li>The <code>id</code> attribute will not be copied, but will be generated by the transformation engine.</li>
+                <li>An <code>imgref</code> attribute will get an appropriate value to reference the relevant <code>img</code> element.</li>
             </ul>
         </td>
     </tr>
-    <tr valign="top">
+    <tr valign="top" class="x">
         <td><code>span</code>, with a value for the <code>class</code>            attribute equal to
             <span class="text">noteref</span>.</td>
         <td><code>noteref</code></td>
@@ -279,17 +340,40 @@ Proper markup should rather be as follows:
             <ul>
                 <li>The <code>idref</code> attribute for the <code>noteref</code> element gets a value based on the value of
                     the <code>bodyref</code> attribute for the <code>span</code> element.</li>
-                <li>The <code>id</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>id</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
     </tr>
     <tr valign="top">
+        <td><code>span</code>, with a value for the <code>class</code>            attribute equal to
+            <span class="text">caption</span>, and the <code>span</code> element evaluated to be a part of an image group
+            (<a href="#imggrp">more information</a>).</td>
+        <td>
+        <pre>
+&lt;imggroup&gt;
+    &lt;img.../&gt;
+    &lt;caption&gt;...&lt;/caption&gt;
+    :
+&lt;/imggroup&gt;
+</pre>
+        </td>
+<!--        <td><code>caption</code>, as child of an
+            <code>imggroup</code> element
+        </td> -->
+        <td>
+            <ul>
+                <li>The <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li><code>id</code> and <code>imgref</code> attributes are created, with appropriate values.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr valign="top" class="x">
         <td><code>span</code>, with no <code>class</code>
             attribute, or a value for the <code>class</code>            attribute different from any the ones mentioned above.</td>
         <td><code>span</code></td>
         <td>
             <ul>
-                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
     </tr>
@@ -299,26 +383,39 @@ Proper markup should rather be as follows:
         <td><code>note</code></td>
         <td>
             <ul>
-                <li>The <code>id</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>id</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
     </tr>
-    <tr valign="top">
+    <tr valign="top" class="x">
         <td><code>div</code>, with no <code>class</code>
             attribute, or a value for the <code>class</code>            attribute different from the one mentioned above.</td>
         <td><code>div</code></td>
         <td>
             <ul>
-                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
     </tr>
     <tr valign="top">
-        <td><code>img</code></td>
+        <td><code>img</code>, where the element is evaluated to be a part of an image group.</td>
+        <td>
+        <pre>
+&lt;imggroup&gt;
+    &lt;img.../&gt;
+    :
+    :
+&lt;/imggroup&gt;
+</pre>
+        </td>
+        <td>See <a href="#imggrp">section on image groups</a>.</td>
+    </tr>
+    <tr valign="top" class="x">
+        <td><code>img</code>, where the element is evaluated <em>not</em> to be a part of an image group.</td>
         <td><code>img</code></td>
         <td>
             <ul>
-                <li>The <code>alt</code>, <code>src</code>, <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>alt</code>, <code>src</code>, <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
     </tr>
@@ -328,17 +425,17 @@ Proper markup should rather be as follows:
         <td>
             <ul>
                 <li>The <code>type</code> attribute will have the value <span class="text">ol</span>.</li>
-                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
     </tr>
-    <tr valign="top">
+    <tr valign="top" class="x">
         <td><code>ul</code></td>
         <td><code>list</code></td>
         <td>
             <ul>
                 <li>The <code>type</code> attribute will have the value <span class="text">ul</span>.</li>
-                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
     </tr>
@@ -347,11 +444,11 @@ Proper markup should rather be as follows:
         <td><code>table</code>, <code>tr</code>, <code>td</code>, <code>th</code> and <code>col</code> respectively</td>
         <td>
             <ul>
-                <li>The <code>rowspan</code>, <code>colspan</code>, <code>valign</code>, <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>rowspan</code>, <code>colspan</code>, <code>valign</code>, <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
     </tr>
-    <tr valign="top">
+    <tr valign="top" class="x">
         <td>
             <code>p</code>, <code>li</code>, <code>dl</code>, <code>dt</code>, <code>dd</code>,
             <code>strong</code>, <code>em</code>, <code>sub</code>, <code>sup</code> and
@@ -362,7 +459,7 @@ Proper markup should rather be as follows:
             <code>br</code> respectively</td>
         <td>
             <ul>
-                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
     </tr>
@@ -373,20 +470,22 @@ Proper markup should rather be as follows:
         <td><code>a</code></td>
         <td>
             <ul>
-                <li>The <code>href</code>, <code>id</code>, <code>class</code>, <code>title</code>, <code>style</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>The <code>href</code>, <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
+            See also <a href="#smilRefs">References to SMIL files</a> for more information on how <code>a</code> elements are handled during transformation.
         </td>
     </tr>
-    <tr valign="top">
+<!--    <tr valign="top">
         <td><code></code></td>
         <td><code></code></td>
         <td></td>
-    </tr>
+    </tr> -->
 </table>
 
 <p>Other elements than the ones listed above will result in a comment in the DTBook file.</p>
 
-<p>Note that for all XHTML elements listed above, the following rule applies:
+<h4 id="smilRefs">References to SMIL files</h4>
+<p>For all XHTML elements listed above, the following rule applies:
 <br />
 If the XHTML element has an <code>a</code> element as a child (in the XML sense of the term),
     and this <code>a</code> element has an <code>href</code> attribute with a
@@ -410,10 +509,90 @@ would be transformed into:
    &lt;pagenum page="normal" id="page-5" smilref="baaw0004.smil#baaw_0009"&gt;5&lt;/pagenum&gt;
    :
 &lt;/level2&gt;
-
 </pre>
 
 <!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
+<h4 id="imggrp">Required markup for image groups</h4>
+<p>
+    When an <code>img</code> element occurs in the input document, 
+    an <code>imggroup</code> element is created,
+<!--    the <code>img</code> element
+    will be wrapped up in an <code>imggroup</code> element, -->
+     if the <code>img</code> element 
+    has one, or both, of the following elements:
+</p>
+<ul>
+    <li><code>span</code> element, where the value for the <code>class</code> attribute ends with the string <span class="text">-prodnote</span>.</li>
+    <li><code>span</code> element, where the value for the <code>class</code> attribute is equal to the string <span class="text">caption</span>.</li>
+</ul>
+<p>
+    as the first following sibling(s) (in the XML sense of the term). 
+    The <code>img</code> element, and whatever results from transformation of the two elements listed above, will be placed 
+    in the <code>imggroup</code> element, and
+    appropriate values for <code>id</code> and <code>imgref</code> attributes are created for all elements in the image group.
+</p>
+
+<p>As an example, the following markup in the XHTML:</p>
+<pre>
+    :
+    &lt;h2&gt;&lt;a href="smil0026.smil#0001"&gt;Town halls in Norway&lt;/a&gt;&lt;/h2&gt;
+    &lt;p&gt;&lt;a href="smil0026.smil#0002"&gt;This is the paragraph before the image, caption and description.&lt;/a&gt;&lt;/p&gt;
+    &lt;img id="fig04" src="file04.png" alt="Picture: The Oslo Town Hall" /&gt;
+    &lt;span class="caption"&gt;&lt;a href="smil0026.smil#0003"&gt;The town hall in Oslo, located close to the harbor, 
+        is one of the largest brick buildings in the city.&lt;/a&gt;&lt;/span&gt;
+    &lt;span class="optional-prodnote"&gt;&lt;a href="smil0026.smil#0004"&gt;A photography showing a rather large building with two towers.&lt;/a&gt;&lt;/span&gt;
+    &lt;p&gt;&lt;a href="smil0026.smil#0005"&gt;This is the paragraph after the image, caption and description.&lt;/a&gt;&lt;/p&gt;
+    :
+</pre>
+<p>will result in the following markup in the generated DTBook file (<code>id</code> and <code>imgref</code> values may differ):</p>
+<pre>
+    :
+    &lt;level2&gt;
+       &lt;h2 smilref="smil0026.smil#0001"&gt;Town halls in Norway&lt;/h2&gt;
+       &lt;p smilref="smil0026.smil#0002"&gt;This is the paragraph before the image, caption and description.&lt;/p&gt;
+       &lt;imggroup id="imggrp-d1e340"&gt;
+          &lt;img src="file04.png" alt="Picture: The Oslo Town Hall" id="img-d1e340"/&gt;
+          &lt;caption imgref="img-d1e340" id="caption-d1e340" smilref="smil0026.smil#0003"&gt;The town hall in Oslo, 
+            located close to the harbor, is one of the largest brick buildings in the city.&lt;/caption&gt;
+          &lt;prodnote render="optional" imgref="img-d1e340" id="pnote-d1e340"
+                    smilref="smil0026.smil#0004"&gt;A photography showing a rather large building with two towers.&lt;/prodnote&gt;
+       &lt;/imggroup&gt;
+       &lt;p smilref="smil0026.smil#0005"&gt;This is the paragraph after the image, caption and description.&lt;/p&gt;
+       :
+    &lt;/level2&gt;
+    :
+</pre>
+
+<p>However, the following, very similar, markup in the XHTML:</p>
+<pre>
+    :
+    &lt;h2&gt;&lt;a href="smil0026.smil#0001"&gt;Town halls in Norway&lt;/a&gt;&lt;/h2&gt;
+    &lt;p&gt;&lt;a href="smil0026.smil#0002"&gt;This is the paragraph before the image, caption and description.&lt;/a&gt;&lt;/p&gt;
+    &lt;img id="fig04" src="file04.png" alt="Picture: The Oslo Town Hall" /&gt;
+    &lt;span class="caption"&gt;&lt;a href="smil0026.smil#0003"&gt;The town hall in Oslo, located close to the harbor,
+        is one of the largest brick buildings in the city.&lt;/a&gt;&lt;/span&gt;
+    &lt;span class="prodnote"&gt;&lt;a href="smil0026.smil#0004"&gt;A photography showing a rather large building with two towers.&lt;/a&gt;&lt;/span&gt;
+    &lt;p&gt;&lt;a href="smil0026.smil#0005"&gt;This is the paragraph after the image, caption and description.&lt;/a&gt;&lt;/p&gt;
+    :
+</pre>
+<p>will result in the following markup in the generated DTBook file (<code>id</code> and <code>imgref</code> values may differ):</p>
+<pre>
+    :
+    &lt;level2&gt;
+       &lt;h2 smilref="smil0026.smil#0001"&gt;Town halls in Norway&lt;/h2&gt;
+       &lt;p smilref="smil0026.smil#0002"&gt;This is the paragraph before the image, caption and description.&lt;/p&gt;
+       &lt;imggroup id="imggrp-d1e340"&gt;
+          &lt;img src="file04.png" alt="Picture: The Oslo Town Hall" id="img-d1e340"/&gt;
+          &lt;caption imgref="img-d1e340" id="caption-d1e340" smilref="smil0026.smil#0003"&gt;The town hall in Oslo, 
+            located close to the harbor, is one of the largest brick buildings in the city.&lt;/caption&gt;
+       &lt;/imggroup&gt;
+       &lt;span class="prodnote" smilref="smil0026.smil#0004"&gt;A photography showing a rather large building with two towers.&lt;/span&gt;
+       &lt;p smilref="smil0026.smil#0005"&gt;This is the paragraph after the image, caption and description.&lt;/p&gt;
+       :
+    &lt;/level2&gt;
+    :
+</pre>
+<p>Note that this DTBook markup is in fact invalid. It is left as an exercise to the reader to trace the cause of this error back to the XHTML code.</p>
 
 <h3 id="failure">On error</h3>
 <p>????????????????</p>
@@ -430,7 +609,10 @@ would be transformed into:
 <!-- <p>None.</p> -->
 
 <h2 id="future">Further development</h2>
-<p>Extend the transformation rules to handle more elements in the XHTML document.</p>
+<ul>
+    <li>Extend the transformation rules to handle more elements in the XHTML document.</li>
+    <li>Provide some mechanism for validation of the canonical XHTML document.</li>
+</ul> 
 <!-- notes on refactoring; TODOs and MAYDOs -->
 
 
