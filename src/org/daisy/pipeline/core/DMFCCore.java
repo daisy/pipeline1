@@ -95,25 +95,56 @@ public class DMFCCore implements TransformerHandlerLoader {
         mHomeDirectory = homeDir;
         mCreator = new Creator(this);
         mRunner = new Runner();
-        initialize(userProps);
+        initialize(userProps, null);
+    }
+    
+    /**
+     * Creates an instance of Daisy Pipeline. This constructor gives
+     * the user the opportunity to supply both user properties and
+     * pipeline properties as <code>userProps</code> and 
+     * <code>pipelineProps</code>.
+     * 
+     * @param inListener a listener of (user) input events
+     * @param homeDir the directory considered the daisy pipeline home directory
+     * @param userProps a set of user properties
+     * @param pipelineProps a set of pipeline properties
+     * @throws DMFCConfigurationException it the pipeline properties cannot
+     * be read.
+     */
+    public DMFCCore(InputListener inListener, File homeDir, Properties userProps, Properties pipelineProps) 
+    		throws DMFCConfigurationException {
+    	 mInputListener = inListener;
+         mHomeDirectory = homeDir;
+         mCreator = new Creator(this);
+         mRunner = new Runner();
+         initialize(userProps, pipelineProps);
     }
 
-    private void initialize(Properties userProps)
+    private void initialize(Properties userProps, Properties pipelineProps)
             throws DMFCConfigurationException, SecurityException {
-        // Load properties
-        // mg 20070530: we use two properties files; one with likelihood of user
-        // access and one less likely
-        // Init system properties
-        URL propsURL = getClass().getClassLoader().getResource(
-                "pipeline.properties");
-        XMLProperties properties = new XMLProperties(System.getProperties());
-        try {
-            properties.loadFromXML(propsURL.openStream());
-        } catch (IOException e) {
-            throw new DMFCConfigurationException(
-                    "Can't read pipeline.properties", e);
-        }
-        System.setProperties(properties);
+    	
+    	// Martin Blomberg 20071109: make it possible to give both
+    	// Properties as parameters eventougth pipeline.properties
+    	// is not normally accessed by users.
+    	if (pipelineProps == null) {
+        	// Load properties
+            // mg 20070530: we use two properties files; one with likelihood of user
+            // access and one less likely
+            // Init system properties
+            URL propsURL = getClass().getClassLoader().getResource(
+                    "pipeline.properties");
+            XMLProperties properties = new XMLProperties(System.getProperties());
+            try {
+                properties.loadFromXML(propsURL.openStream());
+            } catch (IOException e) {
+                throw new DMFCConfigurationException(
+                        "Can't read pipeline.properties", e);
+            }
+            System.setProperties(properties);
+    	} else {
+       		System.getProperties().putAll(pipelineProps);
+    	}
+
         // Init user properties
         setUserProperties(userProps);
 
