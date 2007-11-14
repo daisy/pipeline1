@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 
+#$preproc_path = "$dirname/Preproc";
+
 #$preproc_path = "C:/TPB/Preproc";
 $lang = "eng";
 
@@ -31,7 +33,7 @@ require "$preproc_path/lang/$lang/Rules/acronym_rules.pl";
 require "$preproc_path/lang/$lang/Rules/merge_num_rules.pl";
 require "$preproc_path/lang/$lang/Rules/decimal_num_rules.pl";
 require "$preproc_path/lang/$lang/Rules/ordinals_num_rules.pl";
-#require "$preproc_path/lang/$lang/Rules/interval_num_rules.pl";
+require "$preproc_path/lang/$lang/Rules/interval_num_rules.pl";
 
 require "$preproc_path/lang/$lang/Rules/currency_rules.pl";
 
