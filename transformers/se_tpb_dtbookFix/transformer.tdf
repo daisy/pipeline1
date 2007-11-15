@@ -1,7 +1,7 @@
 <transformer version="1.1">
 	<name>DTBook Fix</name>
 	<description>desc...</description>
-	<classname>se_tpb_dtbookFix.DTBookFix</classname>
+	<classname>se_tpb_dtbookFix.DTBookFix2</classname>
 	<license>LGPL</license>
 	<author>Joel Håkansson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
@@ -65,6 +65,17 @@
 		<parameter required="false" type="enum">
 			<name>simplifyHeadingLayout</name>
 			<description>Simplify heading layout by moving headings upward where possible</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>abortOnError</name>
+			<description>Abort processing if DTBook is invalid after repairing.</description>
 			<example>true</example>
 			<enum>
 				<value>true</value>

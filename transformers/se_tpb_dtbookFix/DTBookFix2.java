@@ -14,10 +14,13 @@ import javax.xml.stream.Location;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import net.sf.saxon.event.MessageEmitter;
 
 import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.EventBus;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.event.MessageEvent.Cause;
 import org.daisy.pipeline.core.event.MessageEvent.Type;
@@ -65,9 +68,11 @@ public class DTBookFix2 extends Transformer implements URIResolver, TransformerD
 		boolean forceRepair = ((String)parameters.get("forceRepair")).contentEquals("true");
 		String tidy = (String)parameters.get("tidy");
 		String indent = (String)parameters.get("indent");
+		String abortOnError = (String)parameters.get("abortOnError");
+		FileJuggler files = null;
 		
-		try{
-			
+		try {
+			files = new FileJuggler(input, output);
 	    	/*
 	    	 * Peek on input and get version
 	    	 */			
@@ -79,24 +84,36 @@ public class DTBookFix2 extends Transformer implements URIResolver, TransformerD
 	    	/*
 	    	 * Create wanted categories and call DTBookFixExecutor.execute
 	    	 */
-	    	if(forceRepair || !isValid(input)) {
-		    	List<DTBookFixExecutor> repairCategory = 
-		    		createCategory(ExecutorCategory.REPAIR, parameters, inputDTBookVersion);	    		
-		    	for(DTBookFixExecutor exec : repairCategory) {
-		    		//exec.execute(source, result);
-		    	}
-	    	}
-
+	    	List<DTBookFixExecutor> repairCategory = 
+	    		createCategory(ExecutorCategory.REPAIR, parameters, inputDTBookVersion);	    		
 	    	List<DTBookFixExecutor> tidyCategory = 
 	    		createCategory(ExecutorCategory.TIDY, parameters, inputDTBookVersion);	    	
-	    	for(DTBookFixExecutor exec : tidyCategory) {
-	    		//exec.execute(source, result);
+	    	int progressLen = repairCategory.size() + tidyCategory.size();
+	    	double progress = 0;
+	    	if(forceRepair || !isValid(input)) {
+	    		EventBus.getInstance().publish(new MessageEvent(this, "Reparing...", MessageEvent.Type.INFO));
+		    	for(DTBookFixExecutor exec : repairCategory) {
+		    		exec.execute(new StreamSource(files.getInput()), new StreamResult(files.getOutput()));
+		    		files.swap();
+		    		progress++;
+		    		progress(progress/progressLen);
+		    	}
+	    	} else {
+	    		progress = repairCategory.size();
+	    		progress(progress/progressLen);
 	    	}
-	    		
-		}catch (Exception e) {
+	    	EventBus.getInstance().publish(new MessageEvent(this, "Tidying...", MessageEvent.Type.INFO));
+	    	for(DTBookFixExecutor exec : tidyCategory) {
+	    		exec.execute(new StreamSource(files.getInput()), new StreamResult(files.getOutput()));
+	    		files.swap();
+	    		progress++;
+	    		progress(progress/progressLen);
+	    	}
+	    	progress(1);
+	    	files.close();
+		} catch (Exception e) {
 			throw new TransformerRunException(e.getMessage(),e);
 		}
-    	
 		return true;
 	}
 	
@@ -116,13 +133,27 @@ public class DTBookFix2 extends Transformer implements URIResolver, TransformerD
     	/*
     	 * Add each executor
     	 */
-    	if(execCategory==ExecutorCategory.TIDY) {    		    		 		
-    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2,"Level cleaner",this,this,emitter));
-    		//etc
+    	if(execCategory==ExecutorCategory.TIDY) {
+    		//tidy-level-cleaner.xsl should be optional...
+    		//category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2,"Level cleaner",this,this,emitter));
+    		
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/tidy-pagenum-fix.xsl"),v2005_1_2,"Pagenum fix",this,this,emitter));
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2,"Add author and title",this,this,emitter));
+    		
+    		//./xslt/tidy-indent.xsl should be optional
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/tidy-indent.xsl"),v2005_1_2,"Indent",this,this,emitter));
     	}else if (execCategory==ExecutorCategory.REPAIR) {
-    		//etc
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/repair-levelnormalizer.xsl"),v2005_1_2,"Level normalizer",this,this,emitter));
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/repair-levelsplitter.xsl"),v2005_1_2,"Level splitter",this,this,emitter));
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/repair-level1.xsl"),v2005_1_2,"Repair level 1",this,this,emitter));
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/repair-level2.xsl"),v2005_1_2,"Repair level 2",this,this,emitter));
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/repair-level3.xsl"),v2005_1_2,"Repair level 3",this,this,emitter));
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/repair-level4.xsl"),v2005_1_2,"Repair level 4",this,this,emitter));
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/repair-level5.xsl"),v2005_1_2,"Repair level 5",this,this,emitter));
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/repair-level6.xsl"),v2005_1_2,"Repair level 6",this,this,emitter));
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/repair-remove-illegal-headings.xsl"),v2005_1_2,"Remove illegal headings",this,this,emitter));
+    		category.add(new DTBookFixExecutorXSLT(parameters,this.getClass().getResource("./xslt/repair-lists.xsl"),v2005_1_2,"Repair lists",this,this,emitter));
     	}
-    	
     	for (int i = 0; i < category.size(); i++) {
     		DTBookFixExecutor dbfe = category.get(i);
        		if(!dbfe.supportsVersion(inputDTBookVersion)) {

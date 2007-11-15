@@ -113,12 +113,6 @@ not(ancestor::dtb:h1|ancestor::dtb:h2|ancestor::dtb:h3|ancestor::dtb:h4|ancestor
 	</xsl:template>
  <!-- /move pagenum -->
  
- <!-- for text counting -->
- <xsl:template match="dtb:span[@class='listSymbol']">
-	 <xsl:value-of select="."/>
- </xsl:template>
- <!-- /for text counting -->
- 
  <xsl:template match="dtb:strong[text() and count(node())=1 and normalize-space()='']">
 	 <xsl:apply-templates/>
  </xsl:template>
