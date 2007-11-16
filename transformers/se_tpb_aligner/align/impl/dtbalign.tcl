@@ -343,6 +343,9 @@ proc EStart {name attlist args} {
     set ::lastSSMLTran $val
     set ::lastSSMLElem $name
    }
+   if {$attr == "alias"} {
+    append ::text " $val "
+   }
    if {$attr == "type" && $val == "english"} {
     set ::lastSSMLType "english"
    }
@@ -447,11 +450,13 @@ proc ECharData {data} {
  if {$::lastSSMLElem != ""} {
   set ::lastSSMLWord $data
  }
- append ::text $data
+ append ::text " $data "
 }
 
 proc EXML {version encoding standalone} {
- append ::text "<?xml version=\'$version\' encoding=\'$encoding\'?>"
+ if {$::parserMode == "insertTime"} {
+  append ::text "<?xml version=\'$version\' encoding=\'$encoding\'?>"
+ }
 }
 
 set parser [::xml::parser -reportempty 1 \
@@ -589,6 +594,7 @@ proc CreateLexicon {} {
    } else {
     set domain default
    }
+   #puts $word,[lts::transcribe -multiple 1 -domain $domain $clean_word]
    set ::trans($word)   [lts::syn2rec [lindex [lts::transcribe -multiple 1 \
 					    -domain $domain $clean_word] 0]]
    if {$::doStress} {
