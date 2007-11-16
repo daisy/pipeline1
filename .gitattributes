@@ -78,6 +78,7 @@ doc/scripts/UnicodeNormalizer.html -text
 doc/scripts/WordMLToXhtml.html -text
 doc/scripts/WordMLtoDTBook.html -text
 doc/scripts/Z3986DTBValidator.html -text
+doc/scripts/dtbook2005-1To2005-2.html -text
 doc/summary.html -text
 doc/templates/script-doc-template.html -text
 doc/transformers/ca_cnib_rtf2dtbook.html -text
