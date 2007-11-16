@@ -243,6 +243,7 @@ scripts/conversion/simple/RtfToDtbook.taskScript -text
 scripts/conversion/simple/RtfToXhtml.taskScript -text
 scripts/conversion/simple/WordMLtoDTBook.taskScript -text
 scripts/conversion/simple/WordMLtoXhtml.taskScript -text
+scripts/conversion/simple/dtbook2005-1To2005-2.taskScript -text
 scripts/creation/simple/Narrator-DtbookToDaisy202.taskScript -text
 scripts/creation/simple/OCFCreator.taskScript -text
 scripts/creation/simple/OPSCreator.taskScript -text
