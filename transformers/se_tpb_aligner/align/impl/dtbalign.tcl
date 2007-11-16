@@ -71,32 +71,12 @@ set wordFileExt .ord
 # Time tagged file extension
 set tagFileExt .tag
 
-# glöm inte ändra tid ovan
-set realm other
-set realm phon
-set realm inhouse
 set exeName [file root $argv0]
-switch $realm {
- inhouse {
-  if {$argv == ""} {
-   puts "Usage: $exeName \[options\] files.list\n or    $exeName \[options\] file1 file2 ...\n\nOption\n -phones     bool  Create phone label files ($doPhones)\n -words      bool  Create word label files ($doWords)\n -timetags   bool  Edit time tags in text file ($doTimeTags)\n -realign    bool  Do realignment using phone label file ($realign)\n -iwm        bool  Try to handle spontaneous pauses ($addIWM)\n -stress     bool  Add lexical stress markers to phone labels ($doStress)\n -quick      bool  Favour speed instead of accuracy ($beQuick)\n -hmmset     name  Use specified HMM set\n -method     name  Use specified ensemble method ($useMethod)\n -phonerec   bool  Perform phoneme recognition ($phoneRec)\n -crop       time  Perform silence cropping with given margin ($cropMargin)\n -start      time  Start offset in seconds (0.0)\n -end        time  End point in seconds ('file end')\n -prune      width Apply beam pruning during search ($prunet)\n -backtrack  width Size of backtrack window ($backtrack)\n -tagskips   bool  Allow skipping of time tags ($allowTimeSkips)\n -coart      bool  Allow co-articulatory transformations ($coart)\n -lexicon    file  Use lexicon from file/save lexicon to file\n -lang       name  Use models trained for given language ($lang)\n -tfa        file  Save label files in Transcription File Archive\n -mlf        file  Read transcriptions from Master Label File\n -textext    ext   Input text file extension ($textFileExt)\n -phoneext   ext   Phone label file extension ($phoneFileExt)\n -wordext    ext   Word label file extension ($wordFileExt)\n -timetagext ext   Time tagged file extension ($tagFileExt)"
-   exit
-  }
- }
- phon {
-  set doTimeTags 1
-  if {$argv == ""} {
-   puts "Usage: $exeName \[options\] files.list\n or    $exeName \[options\] file1 file2 ...\n\nOption\n -timetags   bool  Edit time tags in text file ($doTimeTags)\n -iwm        bool  Try to handle spontaneous pauses ($addIWM)\n -start      time  Start offset in seconds (0.0)\n -end        time  End point in seconds ('file end')\n -prune      width Apply beam pruning during search ($prunet)\n -backtrack  width Size of backtrack window ($backtrack)\n -tagskips   bool  Allow skipping of time tags ($allowTimeSkips)\n -textext    ext   Input text file extension ($textFileExt)\n -timetagext ext   Time tagged file extension ($tagFileExt)"
-   exit
-  }
- }
- other {
-  if {$argv == ""} {
-   puts "Usage: $exeName \[options\] files.list\n or    $exeName \[options\] file1 file2 ...\n\nOption\n -phones     bool  Create phone label files ($doPhones)\n -words      bool  Create word label files ($doWords)\n -iwm        bool  Try to handle spontaneous pauses ($addIWM)\n -stress     bool  Add lexical stress markers to phone labels ($doStress)\n -crop       time  Perform silence cropping with given margin ($cropMargin)\n -start      time  Start offset in seconds (0.0)\n -end        time  End point in seconds ('file end')\n -prune      width Apply beam pruning during search ($prunet)\n -backtrack  width Size of backtrack window ($backtrack)\n -coart      bool  Allow co-articulatory transformations ($coart)\n -lexicon    file  Use lexicon from file/save lexicon to file\n -textext    ext   Input text file extension ($textFileExt)\n -phoneext   ext   Phone label file extension ($phoneFileExt)\n -wordext    ext   Word label file extension ($wordFileExt)"
-   exit
-  }
- }
+if {$argv == ""} {
+ puts "Usage: $exeName \[options\] files.list\n or    $exeName \[options\] file1 file2 ...\n\nOption\n -phones     bool  Create phone label files ($doPhones)\n -words      bool  Create word label files ($doWords)\n -timetags   bool  Edit time tags in text file ($doTimeTags)\n -realign    bool  Do realignment using phone label file ($realign)\n -iwm        bool  Try to handle spontaneous pauses ($addIWM)\n -stress     bool  Add lexical stress markers to phone labels ($doStress)\n -quick      bool  Favour speed instead of accuracy ($beQuick)\n -hmmset     name  Use specified HMM set\n -method     name  Use specified ensemble method ($useMethod)\n -phonerec   bool  Perform phoneme recognition ($phoneRec)\n -crop       time  Perform silence cropping with given margin ($cropMargin)\n -start      time  Start offset in seconds (0.0)\n -end        time  End point in seconds ('file end')\n -prune      width Apply beam pruning during search ($prunet)\n -backtrack  width Size of backtrack window ($backtrack)\n -tagskips   bool  Allow skipping of time tags ($allowTimeSkips)\n -coart      bool  Allow co-articulatory transformations ($coart)\n -lexicon    file  Use lexicon from file/save lexicon to file\n -lang       name  Use models trained for given language ($lang)\n -tfa        file  Save label files in Transcription File Archive\n -mlf        file  Read transcriptions from Master Label File\n -textext    ext   Input text file extension ($textFileExt)\n -phoneext   ext   Phone label file extension ($phoneFileExt)\n -wordext    ext   Word label file extension ($wordFileExt)\n -timetagext ext   Time tagged file extension ($tagFileExt)"
+ exit
 }
+
 
 set debug 0
 set intro ""
@@ -278,7 +258,7 @@ if {$lang == "sv"} {
 if {$doTimeTags} {
  set beQuick 1
  if {$backtrack == -1} {
-  set backtrack 1000
+  set backtrack 3000
  }
  if {$useHMMset == ""} {
   if {$lang == "se"} {
@@ -422,7 +402,7 @@ proc EEnd {name args} {
 
  if {$::parserMode == "getText"} {
   if {$name == $::lastSyncElem} {
-   append ::text "</time>"
+   #append ::text "</time>"
   }
   set ::lastSyncElem ""
   if {$name == $::lastSSMLElem} {
@@ -451,11 +431,19 @@ proc EEnd {name args} {
 }
 
 proc ECharData {data} {
- regsub -all {&} $data {\&amp;} data
- regsub -all {<} $data {\&lt;} data
- regsub -all {>} $data {\&gt;} data
- regsub -all {'} $data {\&apos;} data
- regsub -all {"} $data {\&quot;} data
+ if {$::parserMode == "insertTime"} {
+  regsub -all {&} $data {\&amp;} data
+  regsub -all {<} $data {\&lt;} data
+  regsub -all {>} $data {\&gt;} data
+  regsub -all {'} $data {\&apos;} data
+  regsub -all {"} $data {\&quot;} data
+ } else {
+  regsub -all {\&amp;}  $data {&} data
+  regsub -all {\&lt;}   $data {<} data
+  regsub -all {\&gt;}   $data {>} data
+  regsub -all {\&apos;} $data {'} data
+  regsub -all {\&quot;} $data {"} data
+ }
  if {$::lastSSMLElem != ""} {
   set ::lastSSMLWord $data
  }
@@ -874,7 +862,7 @@ proc CreateLists {text plist alist plen isLastChunk} {
   # Special sub-network for <speech> and <time>
   if {[string equal $word "<speech>"] || \
     [string equal $word "<time>"]} {
-   if {$::backtrack <= 0} {
+   if {0&&$::backtrack <= 0} {
     lappend phonelist "sil \"sil $word\""
     lappend arclist [list $start [incr nodeindex]]
     lappend phonelist "!NULL"
@@ -1726,6 +1714,7 @@ foreach file $files {
      }
      set nstime [format "%.7f" [expr $etime - 0.003]]
      set last [lindex $l1 end]
+#puts AA,$last
      set l1 [lreplace $l1 end end [lreplace $last 1 1 $nstime]]
      set last [lindex $l2 end]
      if {[lindex $last 1] == [format "%.7f" $stime]} {
@@ -1741,9 +1730,11 @@ foreach file $files {
     }
     if {[string match {* *} [lindex $labentry 2]] && \
 	    [regexp {.*_(\d)} [lindex $labentry 2] dummy stress]} {
-#puts AAA$labentry,$phn
+#puts B$labentry,$phn
      append phn _$stress
     }
+    if {$phn == ""} { set phn sil }
+#puts C,$phn
     lappend l1 "[format "%.7f" [expr $stime+$start]] [format "%.7f" [expr $etime+$start]] $phn"
     
     if {[string match {* *} [lindex $labentry 2]]} {
@@ -1990,7 +1981,8 @@ if {[string match {* *} [lindex [lindex $segres [expr $i+1]] end]]} {
  }
 
  # write out l1 and l2 to file
- 
+
+# puts $l2 
  if {$doPhones} {
   if {$TFAname != ""} {
    set name [eval file join [lrange [file split $root] end-$TFAcomponents end]]
@@ -2153,32 +2145,33 @@ if {[string match {* *} [lindex [lindex $segres [expr $i+1]] end]]} {
   }
   lappend tmp $endPoint
 #puts QQQ,$tmp
-#  ska bort
+# ska bort
 #regsub -all {y.x } $tmp "" tmp
 #puts QQQ,$tmp
-  # Add little silence before and after each timetagged chunk
-  set new {}
-  if {[lindex $tmp 0] > 0.1} {
-   lappend new [expr [lindex $tmp 0] - 0.1]
-  } else {
-   lappend new 0.0
-  }
-  foreach {a b} [lrange $tmp 1 end-1] {
-   if {$a + 0.2 < $b} {
-    lappend new [expr $a + 0.1]
-    lappend new [expr $b - 0.1]
+  if 0 {
+   # Add little silence before and after each timetagged chunk
+   set new {}
+   if {[lindex $tmp 0] > 0.1} {
+    lappend new [expr [lindex $tmp 0] - 0.1]
    } else {
-    lappend new [expr $a + ($b - $a) / 2]
-    lappend new [expr $b - ($b - $a) / 2]
+    lappend new 0.0
    }
-  }
-  if {[lindex $tmp end] + 0.1 < [s length -unit seconds]} {
-   lappend new [expr [lindex $tmp end] + 0.1]
-  } else {
-   lappend new [s length -unit seconds]
-  }
-  set tmp $new
-  
+   foreach {a b} [lrange $tmp 1 end-1] {
+    if {$a + 0.2 < $b} {
+     lappend new [expr $a + 0.1]
+     lappend new [expr $b - 0.1]
+    } else {
+     lappend new [expr $a + ($b - $a) / 2]
+     lappend new [expr $b - ($b - $a) / 2]
+    }
+   }
+   if {[lindex $tmp end] + 0.1 < [s length -unit seconds]} {
+    lappend new [expr [lindex $tmp end] + 0.1]
+   } else {
+    lappend new [s length -unit seconds]
+   }
+   set tmp $new
+  }  
   if 0 {
    foreach {stamp1 stamp2} $tmp {
     regsub {x\.y} $text $stamp1 text
