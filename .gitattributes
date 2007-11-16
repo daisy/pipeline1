@@ -112,6 +112,7 @@ doc/transformers/se_tpb_xmldetection.html -text
 doc/transformers/se_tpb_zed2daisy202.html -text
 doc/transformers/uk_rnib_dtbook2xhtml.html -text
 doc/transformers/uk_rnib_odf2dtbook.html -text
+doc/transformers/us_rfbd_dtbookMigrator.html -text
 lib/ZedVal.jar -text
 lib/batik-css.jar -text
 lib/batik-util.jar -text
