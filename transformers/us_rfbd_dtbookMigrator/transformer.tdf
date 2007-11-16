@@ -1,0 +1,36 @@
+<transformer version="1.0">
+	<name>DTBook 2005-1 to 2005-2 migrator</name>
+	<description>
+		Makes only the minimal updates necessary to migrate a 2005-1 DTBook document to 2005-2.
+		The only destructive action taken by this transformer is to remove any style attributes.
+	</description>
+	<classname>org.daisy.pipeline.transformers.XSLTRunner</classname>
+	<license>unknown</license>
+	<author>James Pritchett</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/us_rfbd_dtbookMigrator.html"/>
+	
+	<parameters>
+		<parameter required="true" direction="in" type="application/x-dtbook+xml">
+			<name>xml</name>
+			<description>The DTBook 2005-1 XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+		
+		<parameter type="application/xml">
+			<name>xslt</name>
+			<value>${transformer_dir}/dtbook2005-1to2.xsl</value>
+		</parameter>
+
+		<parameter type="string">
+			<name>factory</name>
+			<value>com.icl.saxon.TransformerFactoryImpl</value>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/xhtml+xml">
+			<name>out</name>
+			<description>The output 2005-2 document</description>
+			<example>file:///path/to/outFile.xml</example>
+		</parameter>
+	</parameters>
+</transformer>

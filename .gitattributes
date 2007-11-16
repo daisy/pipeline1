@@ -812,3 +812,5 @@ transformers/uk_rnib_odf2dtbook/odfNesting.xsl -text
 transformers/uk_rnib_odf2dtbook/odfStructure.xsl -text
 transformers/uk_rnib_odf2dtbook/readme.txt -text
 transformers/uk_rnib_odf2dtbook/usage.html -text
+transformers/us_rfbd_dtbookMigrator/dtbook2005-1to2.xsl -text
+transformers/us_rfbd_dtbookMigrator/transformer.tdf -text
