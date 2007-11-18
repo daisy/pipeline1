@@ -60,6 +60,7 @@ public final class MIMEConstants {
 	public static final String MIME_APPLICATION_X_TEX = "application/x-tex";
 	public static final String MIME_APPLICATION_X_TEXINFO = "application/x-texinfo";
 	public static final String MIME_APPLICATION_ZIP = "application/zip";
+	public static final String MIME_APPLICATION_X_AUDACITY_AUP = "application/x-audacity-aup";
 	public static final String MIME_AUDIO_3GPP = "audio/3gpp";
 	public static final String MIME_AUDIO_MP4A_LATM = "audio/MP4A-LATM";
 	public static final String MIME_AUDIO_MPEG = "audio/mpeg";

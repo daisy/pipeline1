@@ -82,6 +82,8 @@
 		<type id="opf20" name="application/oebps-package+xml" parentTypes="xml" namePatterns="*.opf" />		
 		<!-- OCF 1.0 -->
 		<type id="ocf10" name="application/epub+zip" parentTypes="zip" namePatterns="*.epub" />				
+		<!-- Audacity -->
+		<type id="aup" name="application/x-audacity-aup" namePatterns="*.aup"/> 
 
 		
 	</directory>
