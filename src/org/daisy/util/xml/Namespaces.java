@@ -10,6 +10,8 @@ public final class Namespaces {
 	public static final String XHTML_10_NS_URI = "http://www.w3.org/1999/xhtml";	
 	public static final String SMIL_20_NS_URI = "http://www.w3.org/2001/SMIL20/";	
 	
+	public static final String DUBLIN_CORE_NS_URI = "http://purl.org/dc/elements/1.1/"; 
+	
 	public static final String MATHML_NS_URI = "http://www.w3.org/1998/Math/MathML";
 	public static final String SVG_NS_URI = "http://www.w3.org/2000/svg";
 	
