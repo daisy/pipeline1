@@ -2,9 +2,14 @@
 	<name>DTBook to XHTML</name>
 	<description>Transforms a DTBook 2005 document to XHTML 1.0</description>
 	<classname>uk_rnib_dtbook2xhtml.DTBook2Xhtml</classname>
-	<license>unknown</license>
-	<author>Dave Pawson</author>
+	<license>LGPL</license>
+	<author>Linus Ericsson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	
+	<!-- 
+		Note: this transformer uses the XSLT dtbook2xhtml.xsl 
+		placed in org/daisy/util/xml/xslt/stylesheets 
+	-->
 	
 	<parameters>
 
