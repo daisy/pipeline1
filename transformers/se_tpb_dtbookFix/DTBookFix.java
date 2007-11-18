@@ -42,6 +42,7 @@ import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedExceptio
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
 import org.daisy.util.xml.LocusTransformer;
+import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogURIResolver;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
@@ -116,7 +117,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 		FileJuggler files = null;
 		
 		/*
-		 * Set a sysprop for the XSLT factory. This needs to be a 2.0 processor,
+		 * Set a sysprop for the XSLT factory. This needs to be a 1.0 and 2.0 processor,
 		 * so we are expecting the tdf to namedrop the Saxon8 identifier.
 		 * Save any preexisting prop, and reset in finally
 		 */
@@ -137,21 +138,25 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 						
 			files = new FileJuggler(input, output);
 			mCatalogURIResolver = new CatalogURIResolver();
-						
-	    	/*
-	    	 * Peek on input and get version et al
-	    	 */			
-	    	Peeker peeker = PeekerPool.getInstance().acquire();
-	    	PeekResult result = peeker.peek(input);
-	    	//TODO should use doctype instead of @version
-	    	String inputDTBookVersion = result.getRootElementAttributes().getValue("version");
-	    	PeekerPool.getInstance().release(peeker);
+			
+			/*
+			 * Confirm that input prerequisites are met (see javadoc of #confirmPrerequisites).
+	    	 * At the same time, get a PeekResult to retrieve version information et al.
+	    	 */
+			PeekResult result = confirmPrerequisites(input);
+			
+			//use @version to determine version since doctype contents may or may not be present
+	    	String inputDTBookVersion = result.getRootElementAttributes().getValue("version");	    	
+
+	    	//add version to parameters so that XSLTs may enjoy it if needed
+	    	parameters.put("DTBookVersion", inputDTBookVersion);
 	    		    		    	    		    	
 	    	/*
 	    	 * Create the executor categories
 	    	 */
 	    	List<Executor> repairCategory = 
-	    		createCategory(ExecutorCategory.REPAIR, parameters, inputDTBookVersion);	    		
+	    		createCategory(ExecutorCategory.REPAIR, parameters, inputDTBookVersion);	    	
+	    	
 	    	List<Executor> tidyCategory = 
 	    		createCategory(ExecutorCategory.TIDY, parameters, inputDTBookVersion);	    
 	    	
@@ -166,16 +171,17 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	    	if(inputValid) this.sendMessage(i18n("WAS_VALID"));
 	    	
 	    	/*
-	    	 * Run the executors 
+	    	 * Run the executors. First repair if active. 
 	    	 */
 	    	if(forceRepair || !inputValid) {	    		
 	    		this.sendMessage(i18n("REPAIRING"),MessageEvent.Type.INFO);
 		    	for(Executor exec : repairCategory) {
+		    		this.sendMessage(i18n("RUNNING_EXECUTOR", exec.getNiceName()),MessageEvent.Type.INFO);
 		    		exec.execute(new StreamSource(files.getInput()), new StreamResult(files.getOutput()));
 		    		files.swap();
 		    		progress++;
 		    		progress(progress/progressLen);
-		    	}	
+		    	}
 	    	} else {
 	    		progress = repairCategory.size();
 	    		progress(progress/progressLen);
@@ -183,6 +189,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	    			    		    		    	
 	    	this.sendMessage(i18n("TIDYING"),MessageEvent.Type.INFO);
 	    	for(Executor exec : tidyCategory) {
+	    		this.sendMessage(i18n("RUNNING_EXECUTOR", exec.getNiceName()),MessageEvent.Type.INFO);
 	    		exec.execute(new StreamSource(files.getInput()), new StreamResult(files.getOutput()));
 	    		files.swap();
 	    		progress++;
@@ -224,6 +231,56 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 		return true;
 	}
 	
+	/**
+	 * This method implements parts of the contract with subclasses of Executor:
+	 * <p>Before calling the first executor, the transformer will assure that the following properties hold true for the input document:</p>
+	 * <ul>	
+	 * 	<li>DTBook namespace present</li>
+	 * 	<li>DOCTYPE-@version match</li>
+	 * </ul>
+	 * @throws TransformerRunException if prerequisites are not met
+	 * @return a PeekResult on the inparam file 
+	 */
+	private PeekResult confirmPrerequisites(File input) throws TransformerRunException {
+    	Peeker peeker = PeekerPool.getInstance().acquire();
+    	PeekResult result;
+		try {
+			result = peeker.peek(input);			
+			//check that we are namespaced as expected
+			if(!result.getRootElementNsUri().equals(Namespaces.Z2005_DTBOOK_NS_URI)) {
+				throw new TransformerRunException(i18n("INPUT_ERROR_NAMESPACE", Namespaces.Z2005_DTBOOK_NS_URI));
+			}
+			
+			//check doctype/@version match
+			String publicId = result.getPrologPublicId();
+			String systemId = result.getPrologSystemId();
+			String version = result.getRootElementAttributes().getValue("version");
+			if(publicId!=null && version!=null) {
+				if(!publicId.contains(version)) {
+					throw new TransformerRunException(i18n("INPUT_ERROR_VERSION_AMBIVALENCE", publicId, version));
+				}
+			} else if(systemId!=null && version!=null) {
+				if(!systemId.contains(version)) {
+					throw new TransformerRunException(i18n("INPUT_ERROR_VERSION_AMBIVALENCE", systemId, version));
+				} 	
+			} else if (version!=null){
+				// the spec does not really require that public or system IDs are present
+				String message = i18n("INPUT_WARNING_NO_DOCTYPE");
+				this.sendMessage(message, MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);				
+			}else{
+				//no doctype, no @version
+				throw new TransformerRunException(i18n("INPUT_ERROR_NO_DOCTYPE_NO_VERSION"));
+			}
+							
+		} catch (Exception e) {
+			throw new TransformerRunException(e.getMessage(),e);
+		} finally {      	
+			PeekerPool.getInstance().release(peeker);
+		}		
+		
+    	return result;
+	}
+
 	@SuppressWarnings("unchecked")
 	private List<Executor> createCategory(ExecutorCategory execCategory, Map parameters, String inputDTBookVersion) {
 		final String[] v2005_1 = {"2005-1"};		
@@ -247,7 +304,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
     			category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2,i18n("LEVEL_CLEANER"),this,this,emitter));
     		}
     		
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-pagenum-fix.xsl"),v2005_1_2,i18n("PAGEUM_FIX"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-pagenum-fix.xsl"),v2005_1_2,i18n("PAGENUM_FIX"),this,this,emitter));
     		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2,i18n("ADD_AUTHOR_AND_TITLE"),this,this,emitter));
     		
     		//run the indenter last in the chain, this is harmless so always active
