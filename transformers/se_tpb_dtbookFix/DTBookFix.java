@@ -3,17 +3,30 @@ package se_tpb_dtbookFix;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Writer;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.stream.Location;
+import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import net.sf.saxon.event.MessageEmitter;
 
 import org.daisy.pipeline.core.InputListener;
-import org.daisy.pipeline.core.event.EventBus;
 import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent.Cause;
+import org.daisy.pipeline.core.event.MessageEvent.Type;
 import org.daisy.pipeline.core.transformer.Transformer;
+import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.exception.ExceptionTransformer;
+import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
@@ -27,16 +40,17 @@ import org.daisy.util.fileset.validation.ValidatorListener;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
-import org.daisy.util.fileset.validation.message.ValidatorSevereErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
 import org.daisy.util.xml.LocusTransformer;
-import org.daisy.util.xml.catalog.CatalogEntityResolver;
-import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
-import org.daisy.util.xml.xslt.Stylesheet;
-import org.daisy.util.xml.xslt.XSLTException;
-import org.xml.sax.SAXParseException;
+import org.daisy.util.xml.catalog.CatalogURIResolver;
+import org.daisy.util.xml.peek.PeekResult;
+import org.daisy.util.xml.peek.Peeker;
+import org.daisy.util.xml.peek.PeekerPool;
+
 
 /**
+ * Main Transformer class. See ../doc/transformers/se_tpb_dtbookFix for further details.
+ * /**
  * 
  * Fixes dtbook conversion errors/problems
  * 
@@ -76,193 +90,300 @@ import org.xml.sax.SAXParseException;
  *   - Option to skip repairing and fail if input is invalid
  *   - Add documentation
  *   
- * @author  Joel Hakansson, TPB
- * @version 19 October 2007
- * @since 1.0
+ * @author Joel Håkansson, Markus Gylling 
  */
-public class DTBookFix extends Transformer implements ValidatorListener, FilesetErrorHandler {
-	private static final float PROGRESS_INCS = 14;
-	private int currentInc = 0;
-	private boolean mHadValidationErrors = false;
-	private final static String DTBOOK_VALIDATOR_IMPL = "org.daisy.util.fileset.validation:http://www.daisy.org/fileset/DTBOOK_DOCUMENT";
+public class DTBookFix extends Transformer implements URIResolver, TransformerDelegateListener, ValidatorListener, FilesetErrorHandler {
 
+	private boolean mHadValidationErrors = false;
+	private CatalogURIResolver mCatalogURIResolver = null;
+	private final static String DTBOOK_VALIDATOR_IMPL = "org.daisy.util.fileset.validation:http://www.daisy.org/fileset/DTBOOK_DOCUMENT";
+	private final static String JAVAX_FACTORY_KEY = "javax.xml.transform.TransformerFactory";
+	
 	public DTBookFix(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);
 	}
 
+	@Override
 	protected boolean execute(Map parameters) throws TransformerRunException {
-		progress(0);
-		String factory = (String)parameters.remove("factory");
-		File input = new File((String)parameters.get("input"));
-		File output = new File((String)parameters.get("output"));
-		String forceRepair = (String)parameters.get("forceRepair");
+		progress(0);		
+		String factory = (String)parameters.remove("factory");						
+		File input = FilenameOrFileURI.toFile((String)parameters.get("input"));
+		File output = FilenameOrFileURI.toFile((String)parameters.get("output"));
+		boolean forceRepair = ((String)parameters.get("forceRepair")).contentEquals("true");
+		boolean abortOnError = ((String)parameters.get("abortOnError")).contentEquals("true");
 		String tidy = (String)parameters.get("tidy");
-		String indent = (String)parameters.get("indent");
-
+		
+		FileJuggler files = null;
+		
+		/*
+		 * Set a sysprop for the XSLT factory. This needs to be a 2.0 processor,
+		 * so we are expecting the tdf to namedrop the Saxon8 identifier.
+		 * Save any preexisting prop, and reset in finally
+		 */
+		String initXsltFactoryProp = System.getProperty(JAVAX_FACTORY_KEY);		
+		System.setProperty(JAVAX_FACTORY_KEY, factory);
+						
 		/*
 		 * Set a sysprop to help the dtbook validator factory discovery
 		 */
-		String initFactoryProp = System.getProperty(
-				DTBOOK_VALIDATOR_IMPL);
-		if(initFactoryProp==null){
+		String initDtbookValidatorFactoryProp = System.getProperty(DTBOOK_VALIDATOR_IMPL);
+		if(initDtbookValidatorFactoryProp==null){
 			System.setProperty(
 					DTBOOK_VALIDATOR_IMPL,
 			"org.daisy.util.fileset.validation.ValidatorImplDtbook");
 		}
 		
-		
-		// tomma p i table läggs till om hx pga... pagenumfix?
-		// ändra hx i tabell till p
-		
 		try {
-			
-			
-			FileJuggler files = new FileJuggler(input, output);
-		    if ("true".equals(forceRepair) || /*!*/ isValid(files.getInput())) {
-				EventBus.getInstance().publish(new MessageEvent(this, "Reparing...", MessageEvent.Type.INFO));
-				repair(files, factory, parameters);
-			} else { advance(10); }
-		    if (!isValid(files.getInput())) {
-		    	EventBus.getInstance().publish(new MessageEvent(this, "Reparing failed!", MessageEvent.Type.ERROR));
-		    	return false;
-		    }
-		    if ("true".equals(tidy)) {
-				EventBus.getInstance().publish(new MessageEvent(this, "Tidying...", MessageEvent.Type.INFO));
-				tidy(files, factory, parameters);
-			} else { advance(3); }
-			
-		    if ("true".equals(indent)) {
-				Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/tidy-indent.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-				files.swap();
-		    }
-			next();
-
-			files.close();
-			EventBus.getInstance().publish(new MessageEvent(this, "Done!", MessageEvent.Type.INFO));
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		} catch (CatalogExceptionNotRecoverable e) {
-			e.printStackTrace();
-			return false;
-		} catch (XSLTException e) {
-			e.printStackTrace();
-			return false;
-		} finally {
-			/*
-			 * Reset the validator factory to initial value
-			 */
-			if(initFactoryProp!=null) {
-				System.setProperty(DTBOOK_VALIDATOR_IMPL,initFactoryProp);
+						
+			files = new FileJuggler(input, output);
+			mCatalogURIResolver = new CatalogURIResolver();
+						
+	    	/*
+	    	 * Peek on input and get version et al
+	    	 */			
+	    	Peeker peeker = PeekerPool.getInstance().acquire();
+	    	PeekResult result = peeker.peek(input);
+	    	//TODO should use doctype instead of @version
+	    	String inputDTBookVersion = result.getRootElementAttributes().getValue("version");
+	    	PeekerPool.getInstance().release(peeker);
+	    		    		    	    		    	
+	    	/*
+	    	 * Create the executor categories
+	    	 */
+	    	List<Executor> repairCategory = 
+	    		createCategory(ExecutorCategory.REPAIR, parameters, inputDTBookVersion);	    		
+	    	List<Executor> tidyCategory = 
+	    		createCategory(ExecutorCategory.TIDY, parameters, inputDTBookVersion);	    
+	    	
+	    	int progressLen = repairCategory.size() + tidyCategory.size();	    	
+	    	double progress = 0;
+	    	
+	    	/*
+	    	 * Validate input
+	    	 */
+	    	this.sendMessage(i18n("VALIDATING_INPUT", input.getName()));
+	    	boolean inputValid = isValid(input);
+	    	if(inputValid) this.sendMessage(i18n("WAS_VALID"));
+	    	
+	    	/*
+	    	 * Run the executors 
+	    	 */
+	    	if(forceRepair || !inputValid) {	    		
+	    		this.sendMessage(i18n("REPAIRING"),MessageEvent.Type.INFO);
+		    	for(Executor exec : repairCategory) {
+		    		exec.execute(new StreamSource(files.getInput()), new StreamResult(files.getOutput()));
+		    		files.swap();
+		    		progress++;
+		    		progress(progress/progressLen);
+		    	}	
+	    	} else {
+	    		progress = repairCategory.size();
+	    		progress(progress/progressLen);
+	    	}
+	    			    		    		    	
+	    	this.sendMessage(i18n("TIDYING"),MessageEvent.Type.INFO);
+	    	for(Executor exec : tidyCategory) {
+	    		exec.execute(new StreamSource(files.getInput()), new StreamResult(files.getOutput()));
+	    		files.swap();
+	    		progress++;
+	    		progress(progress/progressLen);
+	    	}
+	    	
+	    	files.close();
+	    	
+	    	/*
+	    	 * Validate the output
+	    	 */
+	    	this.sendMessage(i18n("VALIDATING_OUTPUT", output));
+	    	if(!isValid(output)) {
+	    		if(abortOnError) {	    	
+	    			throw new TransformerRunException(i18n("ABORTING_INVALID"));
+	    		}	
+	    	}else{
+	    		this.sendMessage(i18n("WAS_VALID"));
+	    	}
+	    	
+	    	progress(1);
+	    	
+		} catch (Exception e) {
+			throw new TransformerRunException(e.getMessage(),e);
+		}finally{			
+			 //Reset the validator factory to initial value			
+			if(initDtbookValidatorFactoryProp!=null) {
+				System.setProperty(DTBOOK_VALIDATOR_IMPL,initDtbookValidatorFactoryProp);
 			}else{
 				System.clearProperty(DTBOOK_VALIDATOR_IMPL);
+			}
+			//Reset the xslt factory to initial value
+			if(initXsltFactoryProp!=null) {
+				System.setProperty(JAVAX_FACTORY_KEY,initXsltFactoryProp);
+			}else{
+				System.clearProperty(JAVAX_FACTORY_KEY);
 			}
 		}
 		return true;
 	}
 	
-	private boolean isValid(File f) {
+	@SuppressWarnings("unchecked")
+	private List<Executor> createCategory(ExecutorCategory execCategory, Map parameters, String inputDTBookVersion) {
+		final String[] v2005_1 = {"2005-1"};		
+		final String[] v2005_2 = {"2005-2"};
+		final String[] v2005_1_2 = {"2005-1","2005-2"};
+						
+		List<Executor> category = new LinkedList<Executor>();
+		
+		/*
+		 * Instantiate a message emitter to listen to messages from Saxon
+		 */
+    	MessageEmitter emitter = new MessageEmitter();
+    	emitter.setWriter(new MessageEmitterWriter(this));
+    	
+    	/*
+    	 * Add each executor
+    	 */
+    	if(execCategory==ExecutorCategory.TIDY) {
+    		//tidy-level-cleaner.xsl should be optional
+    		if(((String)parameters.get("simplifyHeadingLayout")).contentEquals("true")) {
+    			category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2,i18n("LEVEL_CLEANER"),this,this,emitter));
+    		}
+    		
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-pagenum-fix.xsl"),v2005_1_2,i18n("PAGEUM_FIX"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2,i18n("ADD_AUTHOR_AND_TITLE"),this,this,emitter));
+    		
+    		//run the indenter last in the chain, this is harmless so always active
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-indent.xsl"),v2005_1_2,i18n("INDENT"),this,this,emitter));
+    		
+    	}else if (execCategory==ExecutorCategory.REPAIR) {
+    		//optional charset recoder
+    		//this should always be run first in the repair category
+    		if(((String)parameters.get("fixCharset")).contentEquals("true")) {
+    			category.add(new CharsetExecutor(parameters,i18n("CHARSET_FIXER"),this));
+    		}
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelnormalizer.xsl"),v2005_1_2,i18n("LEVEL_NORMALIZER"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelsplitter.xsl"),v2005_1_2,i18n("LEVEL_SPLITTER"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level1.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_1"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level2.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_2"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level3.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_3"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level4.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_4"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level5.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_5"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level6.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_6"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-illegal-headings.xsl"),v2005_1_2,i18n("REMOVE_ILLEGAL_HEADINGS"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-lists.xsl"),v2005_1_2,i18n("REPAIR_LISTS"),this,this,emitter));
+    	}
+    	
+    	for (int i = 0; i < category.size(); i++) {
+    		Executor dbfe = category.get(i);
+       		if(!dbfe.supportsVersion(inputDTBookVersion)) {
+    			category.remove(i);
+        		String message = i18n("REMOVING", dbfe.getNiceName(), inputDTBookVersion);
+        		this.sendMessage(message,Type.WARNING,Cause.INPUT);
+    		}
+		}
+    	
+    	if(category.isEmpty()) {
+    		String message = i18n("EMPTY_CATEGORY", category.toString());
+    		this.sendMessage(message,Type.WARNING,Cause.INPUT);
+    	}
+    	
+		return category;
+	}
+
+	private boolean isValid(File f) throws TransformerRunException {
+		return isValid(f,null);
+	}
+	
+	private boolean isValid(File f, Set<URL> extraSchemas) throws TransformerRunException {
 		ValidatorFactory vfac = ValidatorFactory.newInstance();		
 		mHadValidationErrors = false;
 		try{
 			Fileset dtbookFileset = new FilesetImpl(f.toURI(),this,true,false);			
 			Validator validator = vfac.newValidator(FilesetType.DTBOOK_DOCUMENT);
 			validator.setListener(this);			
-			/*
-			 * If adding extra schemas beyond the canonical ones, do:
-			 * URL url = CatalogEntityResolver.getInstance().resolveEntityToURL(catalogID);
-			 * String type = "org.daisy.util.fileset.impl.Z3986DtbookFileImpl";
-			 * validator.setSchema(url,type);
-			 */
+			
+			if(extraSchemas!=null) {
+				String type = "org.daisy.util.fileset.impl.Z3986DtbookFileImpl";
+				for(URL url : extraSchemas) {
+					validator.setSchema(url,type);
+				}
+			}			
 			validator.validate(dtbookFileset);
 		}catch (ValidatorNotSupportedException  e) {
-			// TODO: inform or throw
-			e.printStackTrace();
+			throw new TransformerRunException(e.getMessage(),e);
 		} catch (ValidatorException e) {
-			// TODO: inform or throw
-			e.printStackTrace();
+			throw new TransformerRunException(e.getMessage(),e);			
 		} catch (FilesetFatalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new TransformerRunException(e.getMessage(),e);			
 		}	
 		return !mHadValidationErrors;
 	}
 	
-	private String getPath(String path) {
-		return new File(this.getTransformerDirectory(), path).getAbsolutePath();
+	/*
+	 * (non-Javadoc)
+	 * @see javax.xml.transform.URIResolver#resolve(java.lang.String, java.lang.String)
+	 */
+	public Source resolve(String href, String base) throws TransformerException {		
+		System.err.println("dtbookfix resolve, href=" + href + " , base=" + base);
+		return mCatalogURIResolver.resolve(href, base);
 	}
-	
-	private void next() {
-		currentInc++;
-		progress(currentInc/PROGRESS_INCS<=1?currentInc/PROGRESS_INCS:1);
-	}
-	
-	private void advance(int steps) {
-		for (int i=0;i<steps;i++) {
-			next();
+
+	/**
+	 * Get and forward XSLT messages.
+	 * @author Markus Gylling
+	 */
+	class MessageEmitterWriter extends Writer {
+		Transformer mT = null;
+		MessageEmitterWriter(Transformer t) {
+			mT = t;
 		}
-	}
-	
-	private void repair(FileJuggler files, String factory, Map parameters) throws CatalogExceptionNotRecoverable, XSLTException, FileNotFoundException {
-		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-levelnormalizer.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-		files.swap();
-		next();
 		
-		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-levelsplitter.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-		files.swap();
-		next();
-		
-		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-level1.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-		files.swap();
-		next();
-		
-		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-level2.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-		files.swap();
-		next();
-		
-		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-level3.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-		files.swap();
-		next();
-					
-		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-level4.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-		files.swap();
-		next();
-					
-		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-level5.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-		files.swap();
-		next();
-		
-		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-level6.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-		files.swap();
-		next();
-
-		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-remove-illegal-headings.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-		files.swap();
-		next();
-
-		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/repair-lists.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-		files.swap();
-		next();
-	}
-	
-	private void tidy(FileJuggler files, String factory, Map parameters) throws FileNotFoundException, CatalogExceptionNotRecoverable, XSLTException {
-		String simplifyHeadingLayout = (String)parameters.get("simplifyHeadingLayout");
-		if ("true".equals(simplifyHeadingLayout)) {
-			Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/tidy-level-cleaner.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			files.swap();
+		@Override
+		public void close() throws IOException {
+			
 		}
-		next();
 
-		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/tidy-pagenum-fix.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-		files.swap();
-		next();
-		
-		Stylesheet.apply(files.getInput().getAbsolutePath(), getPath("./xslt/tidy-add-author-title.xsl"), files.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-		files.swap();
-		next();
+		@Override
+		public void flush() throws IOException {
+			
+		}
 
+		@Override
+		public void write(char[] cbuf, int off, int len) throws IOException {
+			String s = new String(cbuf, off, len).trim();
+			mT.sendMessage("XSLT message: " + s,MessageEvent.Type.INFO,MessageEvent.Cause.SYSTEM,null);			
+		}
+		 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateLocalize(java.lang.String, java.lang.Object)
+	 */
+	public String delegateLocalize(String message, Object param) {
+		if(param==null) {
+			return i18n(message);
+		}
+		return i18n(message,param);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateMessage(java.lang.Object, java.lang.String, org.daisy.pipeline.core.event.MessageEvent.Type, org.daisy.pipeline.core.event.MessageEvent.Cause, javax.xml.stream.Location)
+	 */
+	public void delegateMessage(Object delegate, String message, Type type,Cause cause, Location location) {
+		if(location!=null) {
+			this.sendMessage(message,type,cause,location);
+		}	
+		this.sendMessage(message,type,cause);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateProgress(java.lang.Object, double)
+	 */
+	public void delegateProgress(Object delegate,double progress) {
+		//ignore				
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#exception(org.daisy.util.fileset.validation.Validator, java.lang.Exception)
@@ -302,7 +423,7 @@ public class DTBookFix extends Transformer implements ValidatorListener, Fileset
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#progress(org.daisy.util.fileset.validation.Validator, double)
 	 */
 	public void progress(Validator validator, double progress) {
-		// TODO Auto-generated method stub		
+		//ignore
 	}
 
 	/*
@@ -321,7 +442,4 @@ public class DTBookFix extends Transformer implements ValidatorListener, Fileset
 			this.sendMessage(root.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, null);
 		} 		
 	}
-
-
-
 }

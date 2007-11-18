@@ -1,7 +1,7 @@
 <transformer version="1.1">
 	<name>DTBook Fix</name>
 	<description>desc...</description>
-	<classname>se_tpb_dtbookFix.DTBookFix2</classname>
+	<classname>se_tpb_dtbookFix.DTBookFix</classname>
 	<license>LGPL</license>
 	<author>Joel Håkansson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
@@ -9,29 +9,21 @@
 	
 	<parameters>
 
-<!-- Main parameters -->
 		<parameter required="true" direction="in" type="application/xml">
 			<name>input</name>
-			<description>DTBook file</description>
+			<description>Input DTBook file</description>
 			<example>file:///path/to/file.xml</example>
 		</parameter>
 
 		<parameter required="true" direction="out" type="application/xml">
 			<name>output</name>
-			<description>The output DTBook 2005-1 XML file</description>
+			<description>Output DTBook file</description>
 			<example>file:///path/to/outFile.xml</example>
-		</parameter>
-
-		<parameter type="string" required="false">
-			<name>factory</name>
-			<description>Factory</description>
-			<example>com.icl.saxon.TransformerFactoryImpl</example>
-			<default>com.icl.saxon.TransformerFactoryImpl</default>
 		</parameter>
 		
 		<parameter required="false" type="enum">
 			<name>tidy</name>
-			<description>Tweak dtbook appearence</description>
+			<description>Tweak dtbook appearance</description>
 			<example>true</example>
 			<enum>
 				<value>true</value>
@@ -42,7 +34,7 @@
 		
 		<parameter required="false" type="enum">
 			<name>forceRepair</name>
-			<description>Force repair when input is valid</description>
+			<description>Run repair category even if input is valid</description>
 			<example>true</example>
 			<enum>
 				<value>true</value>
@@ -50,18 +42,7 @@
 			</enum>
 			<default>false</default>
 		</parameter>
-		
-		<parameter required="false" type="enum">
-			<name>indent</name>
-			<description>Indent (pretty print) output</description>
-			<example>true</example>
-			<enum>
-				<value>true</value>
-				<value>false</value>
-			</enum>
-			<default>true</default>
-		</parameter>
-		
+				
 		<parameter required="false" type="enum">
 			<name>simplifyHeadingLayout</name>
 			<description>Simplify heading layout by moving headings upward where possible</description>
@@ -74,8 +55,8 @@
 		</parameter>
 		
 		<parameter required="false" type="enum">
-			<name>abortOnError</name>
-			<description>Abort processing if DTBook is invalid after repairing.</description>
+			<name>fixCharset</name>
+			<description>Run character set detection and transcoding</description>
 			<example>true</example>
 			<enum>
 				<value>true</value>
@@ -83,6 +64,39 @@
 			</enum>
 			<default>false</default>
 		</parameter>
+		
+		
+		<parameter required="false" type="enum">
+			<name>abortOnError</name>
+			<description>Abort processing if DTBook is invalid after repairing</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>factory</name>
+			<description>Javax XSLT Factory</description>
+			<example>com.icl.saxon.TransformerFactoryImpl</example>
+			<default>net.sf.saxon.TransformerFactoryImpl</default>
+		</parameter>
+
+
+		<!--
+		<parameter required="false" type="enum">
+			<name>indent</name>
+			<description>Indent (pretty print) output</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+		-->
 
 	</parameters>
 

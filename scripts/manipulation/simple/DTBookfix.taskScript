@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<taskScript version="2.0" name="WordMLtoDTBook">
-	<nicename>DTBook fix</nicename>
-	<description>Fixes common DTBook conversion errors and problems</description>
+<taskScript version="2.0" name="DTBookFix">
+	<nicename>DTBook Fixer</nicename>
+	<description>Fixes common DTBook errors and problems</description>
    	<documentation uri="../../../doc/scripts/DTBookFix.html"/>
-    <comment></comment>
+    <comment/>
 	
 	<parameter name="input" value="" required="true">
 		<nicename>Input file</nicename>
@@ -22,17 +22,26 @@
 		</datatype>
 	</parameter>
 
-	<parameter name="indent" value="true" required="false">
-		<nicename>Indent output</nicename>
-		<description>Check box to indent (pretty print) output</description>
+	<parameter name="simplifyHeadingLayout" value="false" required="false">
+		<nicename>Simplify heading layout</nicename>
+		<description>Check box to simplify heading layout by moving headings upward where possible</description>
 		<datatype>
 			<boolean/>
 		</datatype>
 	</parameter>
 
-	<parameter name="simplifyHeadingLayout" value="false" required="false">
-		<nicename>Simplify heading layout</nicename>
-		<description>Check box to simplify heading layout by moving headings upward where possible</description>
+
+	<parameter name="forceRepair" value="false" required="false">
+		<nicename>Force repair </nicename>
+		<description>Check box to run the Repair fix category even if input is valid</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	<parameter name="fixCharset" value="false" required="false">
+		<nicename>Fix Character set</nicename>
+		<description>Check box to attempt to fix an invalid stated character set</description>
 		<datatype>
 			<boolean/>
 		</datatype>
@@ -53,12 +62,18 @@
 			<name>simplifyHeadingLayout</name>
 			<value>${simplifyHeadingLayout}</value>
 		</parameter>
-		
-		<parameter>
-			<name>indent</name>
-			<value>${indent}</value>
-		</parameter>
 				
+		<parameter>
+			<name>forceRepair</name>
+			<value>${forceRepair}</value>
+		</parameter>
+
+		<parameter>
+			<name>fixCharset</name>
+			<value>${fixCharset}</value>
+		</parameter>
+
+		
 	</task>
 
 </taskScript>

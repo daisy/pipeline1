@@ -4,7 +4,7 @@ package se_tpb_dtbookFix;
  *
  * @author Markus Gylling
  */
-public enum ExecutorCategory {
+enum ExecutorCategory {
 	TIDY,
 	REPAIR;
 }

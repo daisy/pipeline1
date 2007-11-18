@@ -194,6 +194,7 @@ samples/input/dtb/z3986-2005/tpbnarrator_res.mp3 -text
 samples/input/dtbook/dontworrybehappy.xml -text
 samples/input/dtbook/dtbook-math.xml -text
 samples/input/dtbook/dtbook.2005.basic.css -text
+samples/input/dtbook/hauy-2005-1-charsetError.xml -text
 samples/input/dtbook/hauy-2005-1-short.xml -text
 samples/input/dtbook/hauy-2005-1.xml -text
 samples/input/dtbook/hauy_invalid.xml -text
@@ -342,6 +343,7 @@ src/org/daisy/pipeline/test/impl/DTBSplitter1.java -text
 src/org/daisy/pipeline/test/impl/DTBook2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/DTBook2Xhtml2MathML.java -text
 src/org/daisy/pipeline/test/impl/DTBook2rtf1.java -text
+src/org/daisy/pipeline/test/impl/DTBookFix1.java -text
 src/org/daisy/pipeline/test/impl/DTBookValidator1.java -text
 src/org/daisy/pipeline/test/impl/DTBookValidator2.java -text
 src/org/daisy/pipeline/test/impl/Daisy202ToZ398620051.java -text
@@ -666,12 +668,13 @@ transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_7.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_8.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_9.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/transformer.tdf -text
+transformers/se_tpb_dtbookFix/CharsetExecutor.java -text
 transformers/se_tpb_dtbookFix/DTBookFix.java -text
-transformers/se_tpb_dtbookFix/DTBookFix2.java -text
-transformers/se_tpb_dtbookFix/DTBookFixExecutor.java -text
-transformers/se_tpb_dtbookFix/DTBookFixExecutorXSLT.java -text
+transformers/se_tpb_dtbookFix/Executor.java -text
 transformers/se_tpb_dtbookFix/ExecutorCategory.java -text
 transformers/se_tpb_dtbookFix/FileJuggler.java -text
+transformers/se_tpb_dtbookFix/XSLTExecutor.java -text
+transformers/se_tpb_dtbookFix/messages.properties -text
 transformers/se_tpb_dtbookFix/transformer.tdf -text
 transformers/se_tpb_dtbookFix/xslt/level-tools.xsl -text
 transformers/se_tpb_dtbookFix/xslt/output.xsl -text

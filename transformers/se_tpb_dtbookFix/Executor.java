@@ -11,21 +11,21 @@ import org.daisy.pipeline.exception.TransformerRunException;
  * Abstract base for all executors.
  * @author Markus Gylling
  */
-public abstract class DTBookFixExecutor {
+abstract class Executor {
 	protected Map<String, String> mParameters = null;
 	protected String mNiceName = null;
 		
-	public DTBookFixExecutor(Map<String, String> parameters, String niceName) {
+	Executor(Map<String, String> parameters, String niceName) {
 		mParameters = parameters;
 		mNiceName = niceName;
 	}
 				
-	public abstract boolean supportsVersion(String version);
+	abstract boolean supportsVersion(String version);
 	
-	public String getNiceName() {
+	String getNiceName() {
 		return mNiceName;
 	}
 					
-	public abstract void execute(Source source, Result result) throws TransformerRunException;
+	abstract void execute(Source source, Result result) throws TransformerRunException;
 	
 }
