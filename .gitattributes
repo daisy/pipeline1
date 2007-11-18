@@ -399,6 +399,7 @@ src/org/daisy/util/xml/LocusTransformer.java -text
 src/org/daisy/util/xml/NamespaceReporter.java -text
 src/org/daisy/util/xml/Namespaces.java -text
 src/org/daisy/util/xml/SimpleNamespaceContext.java -text
+src/org/daisy/util/xml/catalog/audacity/audacityproject-1.3.0.dtd -text
 src/org/daisy/util/xml/catalog/idpf/opf20.rng -text
 src/org/daisy/util/xml/catalog/rdf/rdfxml.rng -text
 src/org/daisy/util/xml/catalog/svg/svg11-flat.dtd -text svneol=unset#application/octet-stream

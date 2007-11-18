@@ -456,7 +456,11 @@
     <system systemId="http://www.w3.org/TR/speech-synthesis/synthesis.dtd" uri="./ssml/synthesis.dtd" />
   </group>
   
-
+  <group> <!-- audacity .aup -->  
+    <system systemId="http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" uri="./audacity/audacityproject-1.3.0.dtd" />
+    <public publicId="-//audacityproject-1.3.0//DTD//EN" uri="./audacity/audacityproject-1.3.0.dtd" />
+  </group> 
+  
   <!--
   <group>  
     <system systemId="http://java.sun.com/dtd/properties.dtd" uri="./sun/properties.dtd" />
