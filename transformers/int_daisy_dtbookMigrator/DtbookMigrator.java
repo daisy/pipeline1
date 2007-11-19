@@ -28,8 +28,9 @@ import org.daisy.util.xml.xslt.XSLTException;
 import org.xml.sax.SAXException;
 
 /**
- * 
- * @author Markus Gylling
+ *  
+ * @deprecated - use us_rfbd_dtbookMigrator instead
+ * @author Per Sennels
  */
 public class DtbookMigrator extends Transformer implements FilesetErrorHandler{
 	private static final String XSLT_FACTORY = "net.sf.saxon.TransformerFactoryImpl";	

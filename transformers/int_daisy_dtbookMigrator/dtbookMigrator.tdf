@@ -1,9 +1,9 @@
 <transformer version="1.0">
-	<name>Dtbook Migrator</name>
+	<name>Dtbook Migrator - DEPRECATED - use us_rfbd_dtbookMigrator instead</name>
 	<description>Upgrades a Dtbook document to a later version</description>
 	<classname>int_daisy_dtbookMigrator.DtbookMigrator</classname>
 	<license>LGPL</license>
-	<author>Markus Gylling</author>
+	<authorPer Sennels</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>	
 	<parameters>	
 		<parameter required="true" direction="in" type="application/xml">
