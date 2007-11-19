@@ -14,6 +14,7 @@ public final class Namespaces {
 	
 	public static final String MATHML_NS_URI = "http://www.w3.org/1998/Math/MathML";
 	public static final String SVG_NS_URI = "http://www.w3.org/2000/svg";
+	public static final String SSML_10_NS_URI = "http://www.w3.org/2001/10/synthesis";
 	
 	public static final String Z2005_NCX_NS_URI = "http://www.daisy.org/z3986/2005/ncx/";	
 	public static final String Z2005_DTBOOK_NS_URI = "http://www.daisy.org/z3986/2005/dtbook/";
