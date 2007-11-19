@@ -3,13 +3,8 @@ package se_tpb_aligner.align.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.stream.Location;
-
-import org.daisy.pipeline.core.event.MessageEvent;
-import org.daisy.util.file.FileUtils;
 import org.daisy.util.fileset.impl.FilesetFileFactory;
 import org.daisy.util.fileset.interfaces.audio.AudioFile;
-import org.daisy.util.xml.LocusTransformer;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;
@@ -21,7 +16,6 @@ import org.w3c.dom.DOMError;
 import org.w3c.dom.DOMErrorHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.LSParser;
 

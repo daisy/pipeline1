@@ -40,28 +40,36 @@
 	</parameter>
 		
 		
-	<!-- *****************************
-	      Mixed Content Normalizer, adding syncpoints
-	     ***************************** -->		
-	<task name="int_daisy_mixedContentNormalizer" interactive="false">
+	<!-- Structure announcer  -->
+	<task name="se_tpb_annonsator" interactive="false">
 		<parameter>
 			<name>input</name>
 			<value>${inputXML}</value>
 		</parameter>		
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/pipeline__temp/01-normalized.xml</value>
+			<value>${outputPath}/pipeline__temp/01-announcer.xml</value>
+		</parameter>		
+	</task>	
+		
+	<!--  Mixed Content Normalizer, adding syncpoints -->		
+	<task name="int_daisy_mixedContentNormalizer" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/pipeline__temp/01-announcer.xml</value>
+		</parameter>		
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/pipeline__temp/02-normalized.xml</value>
 		</parameter>
 	</task>
 	
 	
-	<!-- *****************************
-	      Aligner 
-	     ***************************** -->
+	<!--  Aligner  -->
 	<task name="se_tpb_aligner" interactive="false">
 		<parameter>
 			<name>inputXML</name>
-			<value>${outputPath}/pipeline__temp/01-normalized.xml</value>
+			<value>${outputPath}/pipeline__temp/02-normalized.xml</value>
 		</parameter>		
 		<parameter>
 			<name>inputAudioDir</name>
@@ -73,43 +81,85 @@
 		</parameter>
 		<parameter>
 			<name>outputXML</name>
-			<value>${outputPath}/pipeline__temp/02-aligned.xml</value>
+			<value>${outputPath}/pipeline__temp/03-aligned.xml</value>
 		</parameter>
 	</task>
 	
-	<!-- ******************
-	      File Set Creator
-	     ****************** 
+	<!-- pretty print the manifest -->
+	<task name="int_daisy_prettyPrinter" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/pipeline__temp/03-aligned.xml</value>
+		</parameter>		
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/pipeline__temp/</value>
+		</parameter>
+	</task>
+	
+	
+	<!--  File Set Creator --> 
 	<task name="se_tpb_filesetcreator" interactive="false">
 		<parameter>
 			<name>outputDirectory</name>
-			<value>${outputPath}</value>
+			<value>${outputPath}/z3986</value>
 		</parameter>
 		<parameter>
 			<name>manuscriptFilename</name>
-			<value>${outputPath}/pipeline__temp/02-aligned.xml</value>
+			<value>${outputPath}/pipeline__temp/03-aligned.xml</value>
 		</parameter>
 		<parameter>
 			<name>outputDTBFilename</name>
-			<value>${outputPath}/03-dtbook.xml</value>
+			<value>${outputPath}/z3986/dtbook.xml</value>
 		</parameter>		
 	</task>	
-	-->
 	
-	<!-- *************************
-	      z3986 Validation (zedval)
-	     ************************* 
+	<!-- downgrade to 2.02 -->
+	<task name="se_tpb_zed2daisy202" interactive="false">
+		<parameter>
+			<name>manifest</name>
+			<value>${outputPath}/z3986/03-aligned.opf</value>
+		</parameter>					
+		<parameter>
+			<name>outDir</name>
+			<value>${outputPath}/d202</value>
+		</parameter>				
+	</task>
+	
+	<!-- z3986 Validation (zedval)	      
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/z3986/03-speechgen.opf</value>
+			<value>${outputPath}/z3986/03-aligned.opf</value>
 		</parameter>		
 		<parameter>
 			<name>abortThreshold</name>
-			<value>WARNING</value>
+			<value>ERROR</value>
 		</parameter>
 	</task>
 	-->
 	
+	<!-- d202 Validation 	      
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/d202/ncc.html</value>
+		</parameter>		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+	</task>
+	-->
+	
+	<!-- delete temp resources
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${outputPath}/pipeline__temp/</value>
+		</parameter>					
+	</task>
+	-->
+	 
 	
 </taskScript>

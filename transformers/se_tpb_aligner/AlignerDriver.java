@@ -57,8 +57,15 @@ public class AlignerDriver extends Transformer {
 		super(inListener, isInteractive);		
 	}
 	
+	/*
+	 * TODO
+	 * 
+	 * 
+	 */
+	
 	@Override
 	protected boolean execute(Map parameters) throws TransformerRunException {
+				
 		try{			
 			
 			mFinalOutputDoc = new XMLResult(FilenameOrFileURI.toFile((String)parameters.remove("outputXML")));
@@ -93,12 +100,15 @@ public class AlignerDriver extends Transformer {
 				tpp = ppfac.getFallbackInstance();
 			}	
 			
+			this.sendMessage(0.05);
+			
 			/*
 			 * Run the PreProcessor on the input doc
 			 */
 			XMLSource tppSource = new XMLSource(mInputDoc);
 			XMLResult tppResult = new XMLResult(mTempDir, "preprocessed.xml");
 			try{
+				this.sendMessage("Running text preprocessor on " + tppSource.getName(), MessageEvent.Type.DEBUG);
 				tpp.process(tppSource, mLanguage, tppResult);
 			}catch (PreProcessorException e) {
 				String message = i18n("PREPROCESSOR_ERROR", e.getMessage());										
@@ -107,8 +117,8 @@ public class AlignerDriver extends Transformer {
 					PreProcessor fbpp = ppfac.getFallbackInstance();
 					fbpp.process(tppSource, mLanguage, tppResult);
 				}
-			}	
-			
+			}				
+			this.sendMessage(0.2);
 			
 			/*
 			 * Prepare for alignment.
@@ -120,10 +130,13 @@ public class AlignerDriver extends Transformer {
 			SubTreeHandler subTreeHandler = sthf.getHandler(xs, ds);				
 			subTreeHandler.initialize();						
 			this.sendMessage(i18n("CREATED_SUBDOCUMENTS", subTreeHandler.size()), MessageEvent.Type.INFO);		
-			//TODO reenable
-//			if(handler.size()!= mInputAudioFiles.size()) {
-//				throw new TransformerRunException(i18n("SIZE_MISMATCH"));
-//			}
+			
+			/*
+			 * Make sure the number of audiofiles match the number of segments
+			 */
+			if(subTreeHandler.size()!= mInputAudioFiles.size()) {
+				throw new TransformerRunException(i18n("SIZE_MISMATCH"));
+			}
 			
 			
 			/*
@@ -134,6 +147,7 @@ public class AlignerDriver extends Transformer {
 			List<Triple> triples = new LinkedList<Triple>();			
 			int i = 0;
 			for(SubTree subtree : subTreeHandler) {
+				this.checkAbort();
 				i++;
 				XMLSource alignerXMLSource = new XMLSource(mTempDir, "segment_source"+i+".xml");
 				AudioSource alignerAudioSource = new AudioSource(mInputAudioFiles.get(i-1));
@@ -143,7 +157,7 @@ public class AlignerDriver extends Transformer {
 				subtree.render(new XMLResult(triple.getXMLSource()));				
 			}
 			
-			
+						
 			/*
 			 * Instantiate an Aligner that supports the current language.			
 			 */			
@@ -155,6 +169,7 @@ public class AlignerDriver extends Transformer {
 				String message = i18n("ALIGNER_FACTORY_ERROR", e.getMessage());
 				throw new TransformerRunException(message);
 			}	
+			this.sendMessage(0.3);
 			
 			/*
 			 * Loop over the triples list.
@@ -162,10 +177,15 @@ public class AlignerDriver extends Transformer {
 			 * in the result field of the Triple object.
 			 * Replace subtrees in the subtreehandler with the aligner output.
 			 */			
-			int k = -1;
+			int k = 0;
 			for (Triple t : triples) {	
+				this.checkAbort();	
+				k++;
 				try {
+					this.sendMessage("Aligning " + t.getXMLSource().getName(), MessageEvent.Type.DEBUG);
 					aligner.process(t.getXMLSource(), t.getAudioSource(), mLanguage, t.getXMLResult());
+					double rel = (double)k/(double)triples.size();	
+					this.sendMessage(0.6*rel+0.3);					
 				}catch (AlignerException e) {
 					String message = i18n("ALIGNER_ERROR", e.getMessage());					
 					if(mUseFallbacks) {
@@ -176,26 +196,28 @@ public class AlignerDriver extends Transformer {
 						throw new TransformerRunException(message);
 					}
 				}	
-				subTreeHandler.set(++k, new SubTree(new XMLSource(t.getXMLResult())));
+				subTreeHandler.set(k-1, new SubTree(new XMLSource(t.getXMLResult())));
 			}
-															
+			this.sendMessage(0.9);
+			
 			/*
 			 * Render the one XML doc to final destination.
 			 * This is the input doc with SMIL namespace attribute decorations added. 
 			 */
 			subTreeHandler.render(mFinalOutputDoc);
 			
+			/*
+			 * Copy the audio files to the same dir as mFinalOutputDoc
+			 */
+			mFinalOutputDir.addFiles(mInputAudioFiles, true);
 			
 			/*
 			 * delete the contents of the internal temp dir
 			 */
-//			System.gc();
-//			mTempDir.deleteContents(true);
-//			mTempDir.delete();
-			
-//			System.out.println("input doc has " + countElements(mInputDoc) + " elements.");
-//			System.out.println("input doc has " + countElements(mFinalOutputDoc) + " elements.");
-									
+			System.gc();
+			mTempDir.deleteContents(true);
+			mTempDir.delete();
+												
 		} catch (Exception e) {
 			String message = i18n("ERROR_ABORTING", e.getMessage());
 			throw new TransformerRunException(message, e);

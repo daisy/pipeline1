@@ -1,10 +1,14 @@
 package se_tpb_aligner.subtree;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
@@ -21,6 +25,7 @@ import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
@@ -46,9 +51,13 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 	static final String IGNORE_NSPREFIX = "pipeline";	
 	static final String IGNORE_LOCALNAME = "ignore";
 	
-	protected static final String DTBOOK_NSURI = "http://www.daisy.org/z3986/2005/dtbook/";
-	protected static final String SMIL_NSURI = "http://www.w3.org/2001/SMIL20/";
+	protected static final String DTBOOK_NSURI = Namespaces.Z2005_DTBOOK_NS_URI;
+	protected static final String SMIL_NSURI = Namespaces.SMIL_20_NS_URI;
+	protected static final String SSML_NSURI = Namespaces.SSML_10_NS_URI;
+	protected static final String ANNON_NSURI = "http://www.example.com";
+	static final String SMIL_NSPREFIX = "smil";
 	static QName ignoreQName = null;
+	static QName smilSrcAttrQName = null;
  
 	static Attribute ignoreAttribute = null;
 	static StartElement ignoreStartElement = null;
@@ -79,10 +88,12 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 			xef=StAXEventFactoryPool.getInstance().acquire();
 			
 			ignoreQName = new QName(IGNORE_NSURI, IGNORE_LOCALNAME, IGNORE_NSPREFIX);			
+			smilSrcAttrQName = new QName(SMIL_NSURI, "src", SMIL_NSPREFIX);
 			ignoreAttribute = xef.createAttribute(IGNORE_NSPREFIX, IGNORE_NSURI,IGNORE_LOCALNAME, "true");
 			ignoreStartElement = xef.createStartElement(IGNORE_NSPREFIX, IGNORE_NSURI,IGNORE_LOCALNAME);			
 			ignoreEndElement = xef.createEndElement(IGNORE_NSPREFIX, IGNORE_NSURI,IGNORE_LOCALNAME);
-	
+			
+			
 			mProlog = new LinkedList<XMLEvent>();
 			//set up the reader and call a concrete implementation of #read
 			properties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
@@ -147,16 +158,40 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 					 * Or an empty element ignore, which indicates that the next end tag (in any namespace) should be dropped.
 					 */
 					if(e.isStartElement()) {
-						if(!e.asStartElement().getName().equals(ignoreQName)) {
-							if(e.asStartElement().getAttributeByName(ignoreQName)==null) {
-								wrt.add(e);
-								if(firstSubTree && firstSubTreeFirstElement){
-									Namespace ns = xef.createNamespace("smil",SMIL_NSURI);
-									wrt.add(ns);
+						if((!e.asStartElement().getName().equals(ignoreQName)) 
+								&& (getAttributeByName(e.asStartElement(),ignoreQName)==null)) {
+
+								StartElement se = e.asStartElement();								
+								
+								Set<Namespace> namespaces = new HashSet<Namespace>();
+								Set<Attribute> attributes = new HashSet<Attribute>();
+								
+								for (Iterator<Namespace> it = namespaces.iterator(); it.hasNext();) {
+									namespaces.add(it.next());									
+								}
+								
+								if(firstSubTree && firstSubTreeFirstElement){									
+									namespaces.add(xef.createNamespace("smil",SMIL_NSURI));
+									namespaces.add(xef.createNamespace("annon",ANNON_NSURI));
+									namespaces.add(xef.createNamespace("ssml",SSML_NSURI));
 									firstSubTreeFirstElement = false;
 								}
-							}
-						}						
+								
+								for (Iterator<Attribute> it = se.getAttributes(); it.hasNext();) {
+									Attribute a =  it.next();
+									if(a.getName().equals(smilSrcAttrQName)) {
+										//rewrite the smil:src value from absolute to relative.
+										//later all audio will be copied to same dir as manifest
+										String relative = new File(a.getValue()).getName();
+										attributes.add(xef.createAttribute(smilSrcAttrQName, relative));
+									}else{
+										attributes.add(a);
+									}
+								
+								}															
+								wrt.add(xef.createStartElement(se.getName(), attributes.iterator(), namespaces.iterator()));
+						} //if(!e.asStartElement().getName().equals(ignoreQName))
+
 					}else if (e.isEndElement()) {
 						if(previousEndElement!=null) {
 							if(!previousEndElement.getName().equals(ignoreQName)) {						
@@ -171,11 +206,15 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 						}
 						previousEndElement = e.asEndElement();
 					}else if(e.getEventType() == XMLEvent.NAMESPACE) {
-						//strip redundant smil ns decls						
+						//strip redundant smil ns decls
+						//(we declare them at root to get a cleaner output)
 						Namespace ns = (Namespace) e;
-						if(!ns.getNamespaceURI().equals(SMIL_NSURI)) {
+						if(!ns.getNamespaceURI().equals(SMIL_NSURI) 
+								&& !ns.getNamespaceURI().equals(SSML_NSURI) 
+								&& !ns.getNamespaceURI().equals(ANNON_NSURI)) {
 							wrt.add(e);
 						}
+						wrt.add(e);
 					}else{
 						wrt.add(e);
 					}										
@@ -227,6 +266,15 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 		}		
     	return super.add(subtree);
     }
-	
-		
+
+	/**
+	 * Override the dreaded wstx indexoutofboundsexception
+	 */
+	private Attribute getAttributeByName(StartElement se, QName qname) {
+		for (Iterator<Attribute> iterator = se.getAttributes(); iterator.hasNext();) {
+			Attribute a = iterator.next();
+			if(a.getName().equals(qname)) return a;
+		}
+		return null;
+	}
 }
