@@ -28,14 +28,14 @@ sub ssml_output {
 			my $transcr	=	$transcription{ $k };
 			$transcr	=~	s/\"/\&quot\;/g;
 
-			push @text,"<ssml:say-as type\=\"acronym\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
+			push @text,"<ssml:say-as type\=\"acronym\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
 			
 		# Initials with pronunciation
 		} elsif ( $type{ $k }	=~	/INITIAL/ ) {
 			my $transcr	=	$transcription{ $k };
 			$transcr	=~	s/\"/\&quot\;/g;
 			
-			push @text,"<ssml:say-as type\=\"spell-out\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
+			push @text,"<ssml:say-as type\=\"spell-out\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
 
 
 		# Abbreviations etc. <sub alias>
@@ -58,7 +58,7 @@ sub ssml_output {
 				my $transcr	=	$transcription{ $k };
 				$transcr	=~	s/\"/\&quot\;/g;
 
-				push @text,"<ssml:say-as type\=\"proper name\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
+				push @text,"<ssml:say-as type\=\"proper name\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
 			
 			# Pronunciation does not exist
 			} else {
@@ -81,7 +81,7 @@ sub ssml_output {
 				my $transcr	=	$transcription{ $k };
 				$transcr	=~	s/\"/\&quot\;/g;
 
-				push @text,"<ssml:say-as type\=\"english\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
+				push @text,"<ssml:say-as type\=\"english\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
 			
 			# Pronunciation does not exist
 			} else {
@@ -93,7 +93,7 @@ sub ssml_output {
 			my $transcr	=	$transcription{ $k };
 			$transcr	=~	s/\"/\&quot\;/g;
 
-			push @text,"<ssml:phoneme alphabet\=\"$phoneme_alphabet\" ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme>";
+			push @text,"<ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme>";
 	
 		} else {
 			push @text,$orthography{ $k };
