@@ -1214,7 +1214,23 @@ public class NCXMaker implements BusListener {
 		DEBUG("NCXMaker#handleNavMapElement: Creates a heading: (" + se.getName().getLocalPart() + ")");
 		Element navNode = (Element) openLevels.peek();
 		Map attrs = new HashMap();
-		String textContent = getNextSmilContext(reader, attrs);
+		
+		//String textContent = getNextSmilContext(reader, attrs);
+		//mg 20071119: changed the above to the below
+		//when not having <sent> everywhere, the incoming StartElement 
+		//may be the carrier of the sync point (and text node as child)
+		String textContent = null;
+		if(hasSmilAttributes(se)) {
+			//this is the new one
+			getSmilContext(se, attrs);
+			textContent = getTextContent(reader);
+			DEBUG("Alert: MG20071119: using alternate method in NCXMaker#handleNavMapElement. Shouldnt happen when running Narrator.");
+			//System.err.println("Alert: MG20071119: using alternate method in NCXMaker#handleNavMapElement. Shouldnt happen when running Narrator.");
+		}else{
+			//this is the classic one
+			textContent = getNextSmilContext(reader, attrs);
+		}				
+		//mg 20071119: end changes
 		
 		navNode.setAttribute("class", se.getName().getLocalPart());
 		navNode.setAttribute("id", getNextId());
