@@ -4,8 +4,10 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
   xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
   xmlns:s="http://www.w3.org/2001/SMIL20/"
+  xmlns:m="http://www.w3.org/1998/Math/MathML"  
+  xmlns:svg="http://www.w3.org/2000/svg"
   xmlns="http://www.w3.org/1999/xhtml"
-	exclude-result-prefixes="dtb s">
+  exclude-result-prefixes="dtb s m svg">
 
 <!--
 	<xsl:strip-space elements="*"/>
@@ -16,15 +18,22 @@
 	<xsl:param name="first_smil"/>
 	<xsl:param name="css_path"/>
 	<xsl:param name="daisy_noteref"/>
+	<xsl:param name="svg_mathml"/>
 
 <!--	<xsl:output method="xml" encoding="utf-8" indent="no"
 		doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
 		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>-->
     <xsl:output method="xml" encoding="utf-8" indent="no"/>
 
-	<xsl:template match="/">
-	    <xsl:text disable-output-escaping="yes">
-&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"</xsl:text>
+	<xsl:template match="/">		
+		<xsl:choose>
+			<xsl:when test="$svg_mathml='true'">
+		    	<xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd"</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"</xsl:text>
+			</xsl:otherwise>
+		</xsl:choose>
         <xsl:if test="$daisy_noteref='true'">
   	      <xsl:text disable-output-escaping="yes"> [
   	      &lt;!ATTLIST span bodyref CDATA #IMPLIED&gt;
@@ -67,9 +76,11 @@
 		<xsl:element name="html" namespace="http://www.w3.org/1999/xhtml">
 			<xsl:if test="@xml:lang">
 				<xsl:copy-of select="@xml:lang"/>
-				<xsl:attribute name="lang">
-					<xsl:value-of select="@xml:lang"/>
-				</xsl:attribute>
+				<xsl:if test="$svg_mathml=null">
+					<xsl:attribute name="lang">
+						<xsl:value-of select="@xml:lang"/>
+					</xsl:attribute>
+				</xsl:if>	
 			</xsl:if>			
 			<xsl:if test="@dir">
 				<xsl:copy-of select="@dir"/>
@@ -1033,6 +1044,25 @@
 				</xsl:attribute>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	
+	<!-- MathML; deep copy -->	
+	<xsl:template match="m:math">
+		<xsl:copy-of select="."/>
+	</xsl:template>	
+	
+	<xsl:template match="m:math" mode="inlineOnly" >
+    	<xsl:copy-of select="."/>  	
+	</xsl:template>
+	
+	<!-- SVG; deep copy -->	
+	<xsl:template match="svg:svg">
+		<xsl:copy-of select="."/>
+	</xsl:template>	
+	
+	<xsl:template match="svg:svg" mode="inlineOnly" >
+    	<xsl:copy-of select="."/>  	
 	</xsl:template>
 
 </xsl:stylesheet>
