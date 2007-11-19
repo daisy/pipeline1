@@ -27,7 +27,7 @@
 			<value>com.icl.saxon.TransformerFactoryImpl</value>
 		</parameter>
 
-		<parameter required="true" direction="out" type="application/xhtml+xml">
+		<parameter required="true" direction="out" type="application/x-dtbook+xml">
 			<name>out</name>
 			<description>The output 2005-2 document</description>
 			<example>file:///path/to/outFile.xml</example>
