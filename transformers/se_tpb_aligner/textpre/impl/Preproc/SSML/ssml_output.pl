@@ -28,14 +28,14 @@ sub ssml_output {
 			my $transcr	=	$transcription{ $k };
 			$transcr	=~	s/\"/\&quot\;/g;
 
-			push @text,"<ssml:say-as type\=\"acronym\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
+			push @text,"<ssml:say-as ssml:type\=\"acronym\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
 			
 		# Initials with pronunciation
 		} elsif ( $type{ $k }	=~	/INITIAL/ ) {
 			my $transcr	=	$transcription{ $k };
 			$transcr	=~	s/\"/\&quot\;/g;
 			
-			push @text,"<ssml:say-as type\=\"spell-out\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
+			push @text,"<ssml:say-as ssml:type\=\"spell-out\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
 
 
 		# Abbreviations etc. <sub alias>
@@ -58,11 +58,11 @@ sub ssml_output {
 				my $transcr	=	$transcription{ $k };
 				$transcr	=~	s/\"/\&quot\;/g;
 
-				push @text,"<ssml:say-as type\=\"proper name\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
+				push @text,"<ssml:say-as ssml:type\=\"proper name\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
 			
 			# Pronunciation does not exist
 			} else {
-				push @text,"<ssml:say-as type\=\"proper name\">$orthography{ $k }<\/ssml:say-as>";
+				push @text,"<ssml:say-as ssml:type\=\"proper name\">$orthography{ $k }<\/ssml:say-as>";
 			}				
 		
 		
@@ -81,11 +81,11 @@ sub ssml_output {
 				my $transcr	=	$transcription{ $k };
 				$transcr	=~	s/\"/\&quot\;/g;
 
-				push @text,"<ssml:say-as type\=\"english\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
+				push @text,"<ssml:say-as ssml:type\=\"english\"><ssml:phoneme alphabet\=\"$phoneme_alphabet\" ssml:ph\=\"$transcr\">$orthography{ $k }<\/ssml:phoneme><\/ssml:say-as>";
 			
 			# Pronunciation does not exist
 			} else {
-				push @text,"<ssml:say-as type\=\"english\">$orthography{ $k }<\/ssml:say-as>";
+				push @text,"<ssml:say-as ssml:type\=\"english\">$orthography{ $k }<\/ssml:say-as>";
 			}
 			
 		# Pronunciation exists
