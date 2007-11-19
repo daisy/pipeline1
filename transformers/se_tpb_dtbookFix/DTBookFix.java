@@ -385,7 +385,6 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 
 	/**
 	 * Get and forward XSLT messages.
-	 * @author Markus Gylling
 	 */
 	class MessageEmitterWriter extends Writer {
 		Transformer mT = null;
