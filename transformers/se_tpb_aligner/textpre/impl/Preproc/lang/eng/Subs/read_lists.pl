@@ -120,7 +120,7 @@ sub read_domain_list {
 	# Knyt listan till hash.
 	tie (%domain_list,"DB_File",$domain_list_db_file,O_RDWR|O_CREAT, 0666) or die "Cannot tie $domain_list_db_file: $!";
 	
-	# Lexikon har uppdaterats och ska läsas in på nytt.
+	# Lexikon har uppdaterats och ska lï¿½sas in pï¿½ nytt.
 	if ($update == 1) {
 		
 		%domain_list = ();
@@ -132,10 +132,10 @@ sub read_domain_list {
 			$domain_list{ $ort }	=	$trk;
 		}
 	}
-	# Sortera i första hand på förkortningens längd för att matcha längsta först senare.		
+	# Sortera i fï¿½rsta hand pï¿½ fï¿½rkortningens lï¿½ngd fï¿½r att matcha lï¿½ngsta fï¿½rst senare.		
 	@domain_list = sort { length($b) <=> length($a) || $a cmp $b } keys %domain_list;
 			
-	# Förkortningarnas ortografi.
+	# Fï¿½rkortningarnas ortografi.
 	$domain_list = join"\|",@domain_list;
 
 #	while (($k,$v) = each(%domain_list)) { print "$k\t$v\n"; }
@@ -156,7 +156,7 @@ sub read_extra_lexicon {
 	tie (%extra_lexicon,"DB_File",$extra_lexicon_db_file,O_RDWR|O_CREAT, 0666) or die "Cannot tie $extra_lexicon_db_file: $!";	
 	tie (%extra_lexicon_tags,"DB_File",$extra_lexicon_tags_db_file,O_RDWR|O_CREAT, 0666) or die "Cannot tie $extra_lexicon_tags_db_file: $!";	
 	
-	# Lexikon har uppdaterats och ska läsas in på nytt.
+	# Lexikon har uppdaterats och ska lï¿½sas in pï¿½ nytt.
 	if ($update == 1) {
 		
 		%extra_lexicon = ();
@@ -184,8 +184,8 @@ sub read_extra_lexicon {
 			if (not(exists($extra_lexicon{$ort}))) {
 				
 			
-				# 070125 Alla ord med engelsk språktagg finns nu i det engelska lexikonet med försvenskade uttal.
-				# De ska inte läsas in här.
+				# 070125 Alla ord med engelsk sprï¿½ktagg finns nu i det engelska lexikonet med fï¿½rsvenskade uttal.
+				# De ska inte lï¿½sas in hï¿½r.
 				if ($rest !~ /lang:(?:en)/) {
 					
 					$rest =~ s/ (?:lang|new|orig|freq):.*$//;
@@ -203,14 +203,15 @@ sub read_extra_lexicon {
 sub read_acronym_list {
 	my $update = shift;
 
-	$acronym_list_file = "C:/TPB/Preproc/lang/$lang/Lists/acronym_list.txt";
+	#$acronym_list_file = "C:/TPB/Preproc/lang/$lang/Lists/acronym_list.txt";
+	$acronym_list_file = "$preproc_path/lang/eng/Lists/acronym_list.txt";	
 	$acronym_db_file = "$preproc_path/lang/eng/DB/acronym.db";
 
 
 	# Knyt listan till hash.
 	tie (%acronym_list,"DB_File",$acronym_db_file,O_RDWR|O_CREAT, 0666) or die "Cannot tie $acronym_db_file: $!";	
 	
-	# Listan har uppdaterats och ska läsas in på nytt.
+	# Listan har uppdaterats och ska lï¿½sas in pï¿½ nytt.
 	if ($update == 1) {
 
 		%acronym_list = ();
@@ -235,11 +236,11 @@ sub read_acronym_list {
 
 	} # end if $update == 1
 
-	# Sortera i första hand på förkortningens längd för att matcha längsta först senare.		
+	# Sortera i fï¿½rsta hand pï¿½ fï¿½rkortningens lï¿½ngd fï¿½r att matcha lï¿½ngsta fï¿½rst senare.		
 	@acronym_list = sort { length($b) <=> length($a) || $a cmp $b } keys %acronym_list;
 
 			
-	# Förkortningarnas ortografi.
+	# Fï¿½rkortningarnas ortografi.
 	$acronym_list = join"\|",@acronym_list;
 
 }
@@ -271,8 +272,8 @@ sub read_unit_list {
 	tie (%unit_list,"DB_File",$unit_db_file,O_RDWR|O_CREAT, 0666) or die "Cannot tie $unit_db_file: $!";	
 	
 	
-	# Måste quotemetas p.g.a "$", annars blir det en <UNIT>-tagg sist på varje rad.
-	# Listan har uppdaterats och ska läsas in på nytt.
+	# Mï¿½ste quotemetas p.g.a "$", annars blir det en <UNIT>-tagg sist pï¿½ varje rad.
+	# Listan har uppdaterats och ska lï¿½sas in pï¿½ nytt.
 	if ($update == 1) {
 
 		%unit_list = ();
@@ -285,7 +286,7 @@ sub read_unit_list {
 
 			next if /^\#/;
 			
-			# Om expansion finns, lägg den som värde.
+			# Om expansion finns, lï¿½gg den som vï¿½rde.
 			if ($line =~ /\t/) {
 			
 				($unit,$exp) = split/\t+/,$line;
@@ -306,7 +307,7 @@ sub read_unit_list {
 #	$x = "mhz";
 #	if (exists ($unit_list{$x})) { print "JJJJAAA $x\t$unit_list{$x}\n\n"; }
 
-	# Sortera i första hand på enhetens längd för att matcha längsta först senare.		
+	# Sortera i fï¿½rsta hand pï¿½ enhetens lï¿½ngd fï¿½r att matcha lï¿½ngsta fï¿½rst senare.		
 	@unit_list = sort { length($b) <=> length($a) || $a cmp $b } keys %unit_list;
 			
 
@@ -336,13 +337,13 @@ sub read_taglex {
 #	tie (%new_lex_trk,"DB_File",$new_lex_trk_db_file2,O_RDWR|O_CREAT, 0666) or die "Cannot tie $new_lex_trk_db_file2: $!";	
 	
 	
-	# Lexikon har uppdaterats och ska läsas in på nytt.
+	# Lexikon har uppdaterats och ska lï¿½sas in pï¿½ nytt.
 	if ($update == 1) {
 
 		%new_lexicon = ();
 		%new_lex_trk = ();
 		
-		# Skapa hash med ortografi som nyckel och pos-taggar som värde.
+		# Skapa hash med ortografi som nyckel och pos-taggar som vï¿½rde.
 		open LEXICON,"$lexicon_file" or die "Cannot open $lexicon_file: $!";
 		while (<LEXICON>) {
 			chomp;
@@ -382,8 +383,8 @@ sub create_lexicon_hash {
 
 #	print "\n------------\n$line\nLAGN: $lang\n\n";
 	
-	# 070125 Alla ord med engelsk språktagg finns nu i det engelska lexikonet med försvenskade uttal.
-	# De ska inte läsas in här.
+	# 070125 Alla ord med engelsk sprï¿½ktagg finns nu i det engelska lexikonet med fï¿½rsvenskade uttal.
+	# De ska inte lï¿½sas in hï¿½r.
 	if ($lang !~ /^(?:en|no)$/) {
 
 #		print "LANG: $lang\n\n";
@@ -453,7 +454,7 @@ sub create_lexicon_hash {
 	#		#print "\n\n\nooooooooooooooooooooooooo\nCHECKER: $checker\n$new_lex_trk{$ort}\n\n";
 			
 			
-		# Har inte förekommit tidigare.
+		# Har inte fï¿½rekommit tidigare.
 		} else {
 			
 #			print "TT1 $trk\t$transcription{$ort}\n";
@@ -470,7 +471,7 @@ sub create_lexicon_hash {
 
 }
 #################################################################################
-# read_abbreviation_list	Läser förkortningslista/databas			#
+# read_abbreviation_list	Lï¿½ser fï¿½rkortningslista/databas			#
 #################################################################################
 sub read_abbreviation_list {
 	my $update = shift;
@@ -481,7 +482,7 @@ sub read_abbreviation_list {
 	# Knyt listan till hash.
 	tie (%abbreviation_list,"DB_File",$abbreviation_db_file,O_RDWR|O_CREAT, 0666) or die "Cannot tie $abbreviation_db_file: $!";	
 	
-	# Listan har uppdaterats och ska läsas in på nytt.
+	# Listan har uppdaterats och ska lï¿½sas in pï¿½ nytt.
 	if ($update == 1) {
 
 		%abbreviation_list = ();
@@ -518,10 +519,10 @@ sub read_abbreviation_list {
 	} # end if $update == 1
 
 	
-	# Sortera i första hand på förkortningens längd för att matcha längsta först senare.		
+	# Sortera i fï¿½rsta hand pï¿½ fï¿½rkortningens lï¿½ngd fï¿½r att matcha lï¿½ngsta fï¿½rst senare.		
 	@abbreviation_list = sort { length($b) <=> length($a) || $a cmp $b } keys %abbreviation_list;
 			
-	# Förkortningarnas ortografi.
+	# Fï¿½rkortningarnas ortografi.
 	$abbreviation_list = join"\|",@abbreviation_list;
 
 
@@ -540,12 +541,12 @@ sub read_namelex {
 	tie (%name_lexicon_tags,"DB_File",$name_tags_db_file,O_RDWR|O_CREAT, 0666) or die "Cannot tie $name_tags_db_file: $!";	
 		
 	
-	# Lexikon har uppdaterats och ska läsas in på nytt.
+	# Lexikon har uppdaterats och ska lï¿½sas in pï¿½ nytt.
 	if ($update == 1) {
 
 		%name_lexicon = ();
 		
-		# Skapa hash med ortografi som nyckel och pos-taggar som värde.
+		# Skapa hash med ortografi som nyckel och pos-taggar som vï¿½rde.
 		open LEXICON,"$namelex_file" or die "Cannot open $namelex_file: $!";
 		while (<LEXICON>) {
 			chomp;
@@ -567,7 +568,7 @@ sub read_namelex {
 
 }
 #################################################################################
-# read_alphabet		Läser alfabetsfil med ortografi och transkription	#
+# read_alphabet		Lï¿½ser alfabetsfil med ortografi och transkription	#
 #################################################################################
 sub read_alphabet {
 	
@@ -589,12 +590,12 @@ sub read_alphabet {
 		while (<ALPHABET>) {
 			chomp;
 			
-			next if $_ !~ /[a-zåäö]/i;
+			next if $_ !~ /[a-zï¿½ï¿½ï¿½]/i;
 			
 			my ($ort,$trk,$tag) = split/ \# /;
 
 			
-			# Om man inte vill ha med konsonantlängd.
+			# Om man inte vill ha med konsonantlï¿½ngd.
 #			if ($consonant_length eq "false") {
 			$trk =~ s/($consonants_trk)\:/$1/og;
 #			}
@@ -606,7 +607,7 @@ sub read_alphabet {
 	} # end if $update == 1
 }
 #################################################################################
-# read_eng_lexicon		Läser 5K engelskt lexikon och transkriptioner	#
+# read_eng_lexicon		Lï¿½ser 5K engelskt lexikon och transkriptioner	#
 #################################################################################
 sub read_eng_lexicon {
 	my $update = shift;
@@ -622,7 +623,7 @@ sub read_eng_lexicon {
 	tie (%eng_lexicon,"DB_File",$eng_lexicon_db_file,O_RDWR|O_CREAT, 0666) or die "Cannot tie $eng_lexicon_db_file: $!";	
 	tie (%eng_lexicon_tags,"DB_File",$eng_lexicon_tags_db_file,O_RDWR|O_CREAT, 0666) or die "Cannot tie $eng_lexicon_tags_db_file: $!";	
 	
-	# Lexikon har uppdaterats och ska läsas in på nytt.
+	# Lexikon har uppdaterats och ska lï¿½sas in pï¿½ nytt.
 	if ($update == 1) {
 		
 		%eng_lexicon = ();
