@@ -18,6 +18,7 @@
  */
 package se_tpb_annonsator;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -48,6 +49,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.file.FileUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.settings.SettingsResolver;
@@ -119,7 +121,10 @@ public class Annonsator extends Transformer implements ErrorListener {
             XMLReader xmlreader = sp.getXMLReader();
             xmlreader.setEntityResolver(CatalogEntityResolver.getInstance());
             SAXSource xmlSource = new SAXSource(xmlreader, new InputSource(new FileInputStream(input)));
-            Result result = new StreamResult(new FileOutputStream(output));
+            //create outputs parent dir 
+            File outputFile = new File(output);
+            FileUtils.createDirectory(outputFile.getParentFile());
+            Result result = new StreamResult(new FileOutputStream(outputFile));
             // Attribute version of stylesheet uses XSLT 2.0 
             Stylesheet.apply(xmlSource, xsltSource, result, "net.sf.saxon.TransformerFactoryImpl", parameters, this);
             
