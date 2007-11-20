@@ -32,7 +32,7 @@
 
 
 	<parameter name="forceRepair" value="false" required="false">
-		<nicename>Force repair </nicename>
+		<nicename>Force repair</nicename>
 		<description>Check box to run the Repair fix category even if input is valid</description>
 		<datatype>
 			<boolean/>

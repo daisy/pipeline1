@@ -47,7 +47,7 @@
 	<xsl:template match="dtb:book">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
-			<xsl:if test="not(dtb:frontmatter)">
+			<xsl:if test="not(dtb:frontmatter) and count(//dtb:meta[@name='dc:Creator' or @name='dc:Title'])&gt;0">
 				<xsl:element name="frontmatter">
 					<xsl:call-template name="insertDoctitle"/>
 					<xsl:call-template name="insertDocauthor"/>
