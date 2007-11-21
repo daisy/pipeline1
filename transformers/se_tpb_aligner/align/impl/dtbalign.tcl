@@ -306,6 +306,7 @@ proc tokenise {text} {
 package require -exact xml 3.1
 
 proc formatTime {t} {
+ if {$t == "y.x"} { return "00:00:00.000" }
  set dec [string trimleft [format "%.3f" [expr {$t-int($t)}]] 0]
  if {$dec == 1} {
   set t [expr {$t + 1.0}]
@@ -2129,6 +2130,7 @@ if {[string match {* *} [lindex [lindex $segres [expr $i+1]] end]]} {
     }
    }
   }
+#puts stderr XX,$tmp
   set posl [lsearch -all $tmp y.x]
   if {$posl != {}} {
    foreach pos $posl {
@@ -2185,7 +2187,7 @@ if {[string match {* *} [lindex [lindex $segres [expr $i+1]] end]]} {
    }
    regsub -all {y\.x} $text x.y text
   }
-#puts AAA,$tmp
+#puts stderr AAA,$tmp
 # lappend tmp 0 0 0 0 0 0 0 0
   set text ""
   set parserMode insertTime
