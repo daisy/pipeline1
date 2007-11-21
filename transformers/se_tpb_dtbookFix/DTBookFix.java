@@ -26,11 +26,13 @@ import org.daisy.pipeline.core.event.MessageEvent.Type;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
+import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
@@ -47,6 +49,7 @@ import org.daisy.util.xml.catalog.CatalogURIResolver;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
+import org.xml.sax.SAXParseException;
 
 
 /**
@@ -104,6 +107,13 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 		super(inListener, isInteractive);
 	}
 
+	/*
+	 * TODO ideas (mg20071121)
+	 *  optional add GUID or better inparam UID to meta
+	 *  optional add Locale lang or better inparam lang to xml:lang
+	 *  optional, docauthor doctitle/dc:title values as inparams?
+	 */
+	
 	@Override
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		progress(0);		
@@ -171,9 +181,12 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	    	if(inputValid) this.sendMessage(i18n("WAS_VALID"));
 	    	
 	    	/*
-	    	 * Run the executors. First repair if active. 
-	    	 */
-	    	if(forceRepair || !inputValid) {	    		
+	    	 * Run the executors. First repair category: if force is on, or input is invalid. 
+	    	 */	    	
+	    	boolean repairResultValid = true;	
+	    	boolean repairRun = false;
+	    	if(forceRepair || !inputValid) {
+	    		repairRun = true;
 	    		this.sendMessage(i18n("REPAIRING"),MessageEvent.Type.INFO);
 		    	for(Executor exec : repairCategory) {
 		    		this.sendMessage(i18n("RUNNING_EXECUTOR", exec.getNiceName()),MessageEvent.Type.INFO);
@@ -182,34 +195,69 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 		    		progress++;
 		    		progress(progress/progressLen);
 		    	}
+		    	 //Validate the output of the repair
+		    	this.sendMessage(i18n("VALIDATING_REPAIR_OUTPUT", output));
+		    	if(!isValid(files.getInput())) {
+		    		repairResultValid = false;	
+		    	}else{
+		    		this.sendMessage(i18n("WAS_VALID"));
+		    	}
 	    	} else {
 	    		progress = repairCategory.size();
 	    		progress(progress/progressLen);
 	    	}
-	    			    		    		    	
-	    	this.sendMessage(i18n("TIDYING"),MessageEvent.Type.INFO);
-	    	for(Executor exec : tidyCategory) {
-	    		this.sendMessage(i18n("RUNNING_EXECUTOR", exec.getNiceName()),MessageEvent.Type.INFO);
-	    		exec.execute(new StreamSource(files.getInput()), new StreamResult(files.getOutput()));
-	    		files.swap();
-	    		progress++;
-	    		progress(progress/progressLen);
-	    	}
-	    	
-	    	files.close();
 	    	
 	    	/*
-	    	 * Validate the output
+	    	 * Run tidy category only if we have a valid file.
 	    	 */
-	    	this.sendMessage(i18n("VALIDATING_OUTPUT", output));
-	    	if(!isValid(output)) {
-	    		if(abortOnError) {	    	
-	    			throw new TransformerRunException(i18n("ABORTING_INVALID"));
-	    		}	
+	    	boolean tidyRun = false;
+	    	if((repairRun && repairResultValid)||(!repairRun && inputValid)) {
+	    		tidyRun = true;
+		    	this.sendMessage(i18n("TIDYING"),MessageEvent.Type.INFO);
+		    	for(Executor exec : tidyCategory) {
+		    		this.sendMessage(i18n("RUNNING_EXECUTOR", exec.getNiceName()),MessageEvent.Type.INFO);
+		    		exec.execute(new StreamSource(files.getInput()), new StreamResult(files.getOutput()));
+		    		files.swap();
+		    		progress++;
+		    		progress(progress/progressLen);
+		    	}
 	    	}else{
-	    		this.sendMessage(i18n("WAS_VALID"));
+	    		this.sendMessage(i18n("TIDY_NOT_RUN_INVALID"),MessageEvent.Type.INFO);
 	    	}
 	    	
+	    	
+	    	/*
+	    	 * copy aux files over to dest dir if not same as input
+	    	 */
+	    	if(!input.getParentFile().equals(output.getParentFile())) {
+	    		Fileset toCopy = new FilesetImpl(input.toURI(),this,false,false);
+	    		EFolder dest = new EFolder(output.getParentFile());
+	    		dest.addFileset(toCopy, true);
+	    		File manifest = new File(dest,input.getName());
+	    		manifest.delete();
+	    	}
+	    		    	
+	    	/*
+	    	 * Close the Juggler and copy last tempfile to final result location.
+	    	 * This will overwrite the manifest we copied above. Implies no name change.
+	    	 */
+	    	files.close();
+	    		    		    	
+	    	/*
+	    	 * Validate the final output, if tidy was run (else post 
+	    	 * repair validation serves as the last one).
+	    	 * This could be done as a separate transformer as well.
+	    	 */
+	    	if(tidyRun) {
+		    	this.sendMessage(i18n("VALIDATING_FINAL_OUTPUT", output));
+		    	if(!isValid(output)) {
+		    		if(abortOnError) {	    	
+		    			throw new TransformerRunException(i18n("ABORTING_INVALID"));
+		    		}	
+		    	}else{
+		    		this.sendMessage(i18n("WAS_VALID"));
+		    	}
+			}
 	    	progress(1);
 	    	
 		} catch (Exception e) {
@@ -352,8 +400,8 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	private boolean isValid(File f, Set<URL> extraSchemas) throws TransformerRunException {
 		ValidatorFactory vfac = ValidatorFactory.newInstance();		
 		mHadValidationErrors = false;
-		try{
-			Fileset dtbookFileset = new FilesetImpl(f.toURI(),this,true,false);			
+		try{			
+			Fileset dtbookFileset = new FilesetImpl(f.toURI(),this,true,false);						
 			Validator validator = vfac.newValidator(FilesetType.DTBOOK_DOCUMENT);
 			validator.setListener(this);			
 			
@@ -487,15 +535,32 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */
 	public void error(FilesetFileException ffe) throws FilesetFileException {		
-		Throwable root =ffe.getRootCause();
-		if(root==null) root = ffe.getCause();		
-		/*
-		 * Because we are using tempdirs, have to filter out all
-		 * exceptions about missing referenced files.
-		 */
-		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {
-			mHadValidationErrors = true;
-			this.sendMessage(root.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, null);
-		} 		
+		Throwable root =ffe.getRootCause();		
+		if(root==null) root = ffe.getCause();	
+		
+		Location loc = null;
+		if(root instanceof SAXParseException) {
+			loc=LocusTransformer.newLocation((SAXParseException)root);
+		}
+		
+		if(!(ffe instanceof FilesetFileWarningException)) {
+			/*
+			 * Because we are using tempdirs, have to filter out all
+			 * exceptions about missing referenced files.
+			 */	
+			if (!(root instanceof FileNotFoundException)) {
+				mHadValidationErrors = true;				
+				this.sendMessage(root.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, loc);
+			}			
+		}else{
+			this.sendMessage(root.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT, loc);
+		}
+
+//broken code (wouldnt report FilesetFileErrorException				
+//		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {
+//			mHadValidationErrors = true;
+//			this.sendMessage(root.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, null);
+//		} 		
+		
 	}
 }
