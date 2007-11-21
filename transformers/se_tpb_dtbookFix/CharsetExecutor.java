@@ -34,7 +34,10 @@ import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 
 /**
- *
+ * This executor deals with the case of erroneous stated encodings in XML documents.
+ * <p>Attempt to detect the character set of an XML document, take the document
+ * through a read-write cycle, ignoring any stated characterset in the document
+ * itself.</p>
  * @author Markus Gylling
  */
 class CharsetExecutor extends Executor {

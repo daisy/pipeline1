@@ -227,7 +227,9 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	    	
 	    	
 	    	/*
-	    	 * copy aux files over to dest dir if not same as input
+	    	 * copy aux files over to dest dir if not same as input.
+	    	 * Delete the manifest file since it will be replaced
+	    	 * with the output from the Juggler.
 	    	 */
 	    	if(!input.getParentFile().equals(output.getParentFile())) {
 	    		Fileset toCopy = new FilesetImpl(input.toURI(),this,false,false);
@@ -239,7 +241,6 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	    		    	
 	    	/*
 	    	 * Close the Juggler and copy last tempfile to final result location.
-	    	 * This will overwrite the manifest we copied above. Implies no name change.
 	    	 */
 	    	files.close();
 	    		    		    	
