@@ -340,17 +340,17 @@ proc EStart {name attlist args} {
    append ::text {<time>}
   }
   foreach {attr val} $attlist {
-   if {$attr == "ph"} {
+   if {$attr == "smil:ph"} {
     set ::lastSSMLTran $val
     set ::lastSSMLElem $name
    }
-   if {$attr == "alias"} {
+   if {$attr == "smil:alias"} {
     append ::text " $val "
    }
-   if {$attr == "type" && $val == "english"} {
+   if {$attr == "smil:type" && $val == "english"} {
     set ::lastSSMLType "english"
    }
-   if {$attr == "type" && $val == "proper name"} {
+   if {$attr == "smil:type" && $val == "proper name"} {
     set ::lastSSMLType "proper name"
    }
   }
@@ -2090,7 +2090,7 @@ if {[string match {* *} [lindex [lindex $segres [expr $i+1]] end]]} {
     set text [InsertEmptyTimeTags $text]
    }
   }
-  #puts $l2
+# puts stderr Y,$l2
   set f4 [open $outXML w]
   fconfigure $f4 -encoding utf-8
 
