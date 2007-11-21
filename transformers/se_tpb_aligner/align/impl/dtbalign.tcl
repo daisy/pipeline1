@@ -340,17 +340,17 @@ proc EStart {name attlist args} {
    append ::text {<time>}
   }
   foreach {attr val} $attlist {
-   if {$attr == "smil:ph"} {
+   if {$attr == "ssml:ph"} {
     set ::lastSSMLTran $val
     set ::lastSSMLElem $name
    }
-   if {$attr == "smil:alias"} {
+   if {$attr == "ssml:alias"} {
     append ::text " $val "
    }
-   if {$attr == "smil:type" && $val == "english"} {
+   if {$attr == "ssml:type" && $val == "english"} {
     set ::lastSSMLType "english"
    }
-   if {$attr == "smil:type" && $val == "proper name"} {
+   if {$attr == "ssml:type" && $val == "proper name"} {
     set ::lastSSMLType "proper name"
    }
   }
