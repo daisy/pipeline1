@@ -58,6 +58,7 @@ doc/scripts/DTBAudioEncoderSplitter.html -text
 doc/scripts/DTBMerger.html -text
 doc/scripts/DTBSplitter.html -text
 doc/scripts/DTBookFix.html -text
+doc/scripts/DTBookToRTF.html -text
 doc/scripts/DTBookToXhtml.html -text
 doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
@@ -82,6 +83,7 @@ doc/scripts/dtbook2005-1To2005-2.html -text
 doc/summary.html -text
 doc/templates/script-doc-template.html -text
 doc/transformers/ca_cnib_rtf2dtbook.html -text
+doc/transformers/dk_dbb_dtbook2rtf.html -text
 doc/transformers/int_daisy_daisy2022Zed2005.html -text
 doc/transformers/int_daisy_filesetAudioTagger.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
