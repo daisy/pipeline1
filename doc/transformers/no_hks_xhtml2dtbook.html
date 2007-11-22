@@ -54,13 +54,13 @@
 
 <h2 id="inputReqs">Input Requirements</h2>
 <h3 id="twoStageProcess">A note on the two stage process for creating a DTBook file from an HTML document</h3>
-<p>Transformation of a general HTML document to a DTBook document, is likely to be a two stage process. 
+<p>Transformation of a general HTML document to a DTBook document, is likely to be a two stage process.
 </p>
 <ol>
-    <li>The first stage will be to turn the HTML document into a <em>canonical form</em> of an XHTML document. 
-    Depending on the state of the HTML document, this is will be a process consisting of both automatic and manual processing. 
+    <li>The first stage will be to turn the HTML document into a <em>canonical form</em> of an XHTML document.
+    Depending on the state of the HTML document, this is will be a process consisting of both automatic and manual processing.
     Requirements for the canonical form are given below.</li>
-    <li>The second stage is to create the DTBook document from the canonical XHTML. 
+    <li>The second stage is to create the DTBook document from the canonical XHTML.
     This will be done in a completely automatic XSLT&#160;2.0 transformation process, normally controlled by the DAISY&#160;Pipeline.</li>
 </ol>
 <p>
@@ -71,6 +71,8 @@
 <ul>
     <li>The XHTML document must be a valid XHTML Transitional or XHTML Strict document.</li>
     <li>The document <em>must</em> containt at least one <code>h1</code> element.</li>
+    <li>The first child element (in the XML sense of the term) of the <code>body</code> element should be an <code>h1</code> element. 
+        Any child element placed before the first <code>h1</code>, will be ignored during transformation, and will not be present in the generated DTBook document.</li>
     <li>Alle heading elements (<code>h1</code> to <code>h6</code>) <em>must</em> be child elements (in the XML sense of the term) of the
         <code>body</code> element.<br />
         This excludes markup such as:
@@ -128,7 +130,7 @@
             <li>... is equal to <span class="text">caption</span>, and the <code>span</code> element is evaluated to be a part of an image group
             (<a href="#imggrp">more details</a>).</li>
         </ul>
-This excludes markup such as: 
+This excludes markup such as:
 <pre>
 &lt;body&gt;
     &lt;h1&gt;The title&lt;/h1&gt;
@@ -323,7 +325,7 @@ Proper markup should rather be as follows:
                 </li>
                 <li>The <code>id</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
-            If the <code>span</code> element is evaluated to be a part of an image group (<a href="#imggrp">link to more information</a>), 
+            If the <code>span</code> element is evaluated to be a part of an image group (<a href="#imggrp">link to more information</a>),
             the following rules apply:
             <ul>
                 <li>The generated <code>prodnote</code> element will be a child of an <code>imggroup</code> element.</li>
@@ -514,11 +516,11 @@ would be transformed into:
 <!-- contract definition: details on delivered output given that input reqs are satisfied and no exception occurs -->
 <h4 id="imggrp">Required markup for image groups</h4>
 <p>
-    When an <code>img</code> element occurs in the input document, 
+    When an <code>img</code> element occurs in the input document,
     an <code>imggroup</code> element is created,
 <!--    the <code>img</code> element
     will be wrapped up in an <code>imggroup</code> element, -->
-     if the <code>img</code> element 
+     if the <code>img</code> element
     has one, or both, of the following elements:
 </p>
 <ul>
@@ -526,8 +528,8 @@ would be transformed into:
     <li><code>span</code> element, where the value for the <code>class</code> attribute is equal to the string <span class="text">caption</span>.</li>
 </ul>
 <p>
-    as the first following sibling(s) (in the XML sense of the term). 
-    The <code>img</code> element, and whatever results from transformation of the two elements listed above, will be placed 
+    as the first following sibling(s) (in the XML sense of the term).
+    The <code>img</code> element, and whatever results from transformation of the two elements listed above, will be placed
     in the <code>imggroup</code> element, and
     appropriate values for <code>id</code> and <code>imgref</code> attributes are created for all elements in the image group.
 </p>
@@ -538,7 +540,7 @@ would be transformed into:
     &lt;h2&gt;&lt;a href="smil0026.smil#0001"&gt;Town halls in Norway&lt;/a&gt;&lt;/h2&gt;
     &lt;p&gt;&lt;a href="smil0026.smil#0002"&gt;This is the paragraph before the image, caption and description.&lt;/a&gt;&lt;/p&gt;
     &lt;img id="fig04" src="file04.png" alt="Picture: The Oslo Town Hall" /&gt;
-    &lt;span class="caption"&gt;&lt;a href="smil0026.smil#0003"&gt;The town hall in Oslo, located close to the harbor, 
+    &lt;span class="caption"&gt;&lt;a href="smil0026.smil#0003"&gt;The town hall in Oslo, located close to the harbor,
         is one of the largest brick buildings in the city.&lt;/a&gt;&lt;/span&gt;
     &lt;span class="optional-prodnote"&gt;&lt;a href="smil0026.smil#0004"&gt;A photography showing a rather large building with two towers.&lt;/a&gt;&lt;/span&gt;
     &lt;p&gt;&lt;a href="smil0026.smil#0005"&gt;This is the paragraph after the image, caption and description.&lt;/a&gt;&lt;/p&gt;
@@ -552,7 +554,7 @@ would be transformed into:
        &lt;p smilref="smil0026.smil#0002"&gt;This is the paragraph before the image, caption and description.&lt;/p&gt;
        &lt;imggroup id="imggrp-d1e340"&gt;
           &lt;img src="file04.png" alt="Picture: The Oslo Town Hall" id="img-d1e340"/&gt;
-          &lt;caption imgref="img-d1e340" id="caption-d1e340" smilref="smil0026.smil#0003"&gt;The town hall in Oslo, 
+          &lt;caption imgref="img-d1e340" id="caption-d1e340" smilref="smil0026.smil#0003"&gt;The town hall in Oslo,
             located close to the harbor, is one of the largest brick buildings in the city.&lt;/caption&gt;
           &lt;prodnote render="optional" imgref="img-d1e340" id="pnote-d1e340"
                     smilref="smil0026.smil#0004"&gt;A photography showing a rather large building with two towers.&lt;/prodnote&gt;
@@ -583,7 +585,7 @@ would be transformed into:
        &lt;p smilref="smil0026.smil#0002"&gt;This is the paragraph before the image, caption and description.&lt;/p&gt;
        &lt;imggroup id="imggrp-d1e340"&gt;
           &lt;img src="file04.png" alt="Picture: The Oslo Town Hall" id="img-d1e340"/&gt;
-          &lt;caption imgref="img-d1e340" id="caption-d1e340" smilref="smil0026.smil#0003"&gt;The town hall in Oslo, 
+          &lt;caption imgref="img-d1e340" id="caption-d1e340" smilref="smil0026.smil#0003"&gt;The town hall in Oslo,
             located close to the harbor, is one of the largest brick buildings in the city.&lt;/caption&gt;
        &lt;/imggroup&gt;
        &lt;span class="prodnote" smilref="smil0026.smil#0004"&gt;A photography showing a rather large building with two towers.&lt;/span&gt;
@@ -612,7 +614,7 @@ would be transformed into:
 <ul>
     <li>Extend the transformation rules to handle more elements in the XHTML document.</li>
     <li>Provide some mechanism for validation of the canonical XHTML document.</li>
-</ul> 
+</ul>
 <!-- notes on refactoring; TODOs and MAYDOs -->
 
 
