@@ -19,45 +19,47 @@
 
 <li><p>If you are making an official (i.e. not just local for your own needs) build, modify the date in org/daisy/util/Version.java and org/daisy/pipeline/Version.java. Commit.</p></li>
 
-<li><p>Make sure the build.xml script is updated (commit changes): make sure the JARs defined in the <fileset> with id="fileset.utilJars" is correct.</p></li>
+<li><p>Make sure the build.xml script is updated (commit changes): make sure the JARs defined in the &lt;fileset&gt; with id="fileset.utilJars" is correct.</p></li>
 
 <li><p>Create a tag:</p>
-<p><ul>
+<ul>
    <li>from the "SVN Repository Exploring" perspective, right click on trunk/dmfc and select "Branch/Tag..."</li>
    <li>set the "To URL" to "https://daisymfc.svn.sourceforge.net/svnroot/daisymfc/tags/v{DATE}", where {DATE} is the date of the date of the release in YYYYMMDD format.</li>
-</ul></p>   
+</ul>   
 </li>
 
 <li><p>Excluding a certain transformer:</p>
-  <p><ul>
+  <ul>
   <li>make sure the transformer is not used by ant scripts...</li>
-  <li>In build.xml, edit the <patternset> with id="patternset.transformers". Add an exclude line: &lt;exclude name="int_daisy_validator/**/*.*"/&gt;</li>
-  </ul></p>
+  <li>In build.xml, edit the &lt;patternset&gt; with id="patternset.transformers". Add an exclude line: &lt;exclude name="int_daisy_validator/**/*.*"/&gt;</li>
+  </ul>
 </li>
 
 <li>
 <p>Make sure the following is run on a clean pipeline checkout:</p>
 <p>Run the "all" target in the build script. The generated files are:</p>
-<p><ul>
+<ul>
   <li>dist/pipeline-${ISO-TODAY}.zip</li>
   <li>dist/pipeline-${ISO-TODAY}-src.zip</li>
   <li>dist/org.daisy.util-docs.zip</li>
   <li>dist/org.daisy.pipeline-framework-docs.zip</li>
   <li>dist/org.daisy.pipeline-transformers-docs.zip</li>
-</ul></p>
+</ul>
 </li>
 
 <li>
 <p>Test the generated build!</p>
-<p><ul>
+<ul>
   <li>run a couple of scripts, preferably using both pipeline.bat and pipeline.sh.</li>
   <li>make sure the javadoc looks OK</li>
- </ul></p> 
+ </ul> 
 </li>
 
 <li><p>Upload to sf.net</p>
   <p>Create a release named "pipeline-{DATE}" (where {DATE} is the release date in YYYY-MM-DD format) in the "pipeline" package and upload the generated files.</p>
 </li>
+
+<li><p>Change the download link on the sf shell main page.</p></li>
 
 <ol>
 
