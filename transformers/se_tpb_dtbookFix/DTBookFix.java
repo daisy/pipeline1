@@ -375,6 +375,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
     		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level6.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_6"),this,this,emitter));
     		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-illegal-headings.xsl"),v2005_1_2,i18n("REMOVE_ILLEGAL_HEADINGS"),this,this,emitter));
     		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-lists.xsl"),v2005_1_2,i18n("REPAIR_LISTS"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-idref.xsl"),v2005_1_2,i18n("REPAIR_IDREF"),this,this,emitter));
     	}
     	
     	for (int i = 0; i < category.size(); i++) {

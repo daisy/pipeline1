@@ -682,6 +682,7 @@ transformers/se_tpb_dtbookFix/transformer.tdf -text
 transformers/se_tpb_dtbookFix/xslt/level-tools.xsl -text
 transformers/se_tpb_dtbookFix/xslt/output.xsl -text
 transformers/se_tpb_dtbookFix/xslt/recursive-copy.xsl -text
+transformers/se_tpb_dtbookFix/xslt/repair-idref.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-level1.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-level2.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-level3.xsl -text
