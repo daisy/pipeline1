@@ -27,13 +27,6 @@
 	<xsl:include href="recursive-copy.xsl"/>
 	<xsl:include href="output.xsl"/>
 	
-	<xsl:template match="/">
-		<!-- very basic check to insure that the document in question "aims to be a dtbook" -->
-		<xsl:if test="not(dtb:dtbook)">
-			<xsl:message terminate="yes">Dokument is not in dtbook namespace.</xsl:message>
-		</xsl:if>
-		<xsl:apply-templates/>
-	</xsl:template>
 
 	<xsl:template match="dtb:level2|dtb:level3|dtb:level4|dtb:level5|dtb:level6">
 		<xsl:variable name="level" select="substring-after(name(), 'level')"/>
