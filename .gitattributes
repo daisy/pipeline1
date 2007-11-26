@@ -196,6 +196,7 @@ samples/input/dtb/z3986-2005/tpbnarrator_res.mp3 -text
 samples/input/dtbook/dontworrybehappy.xml -text
 samples/input/dtbook/dtbook-math.xml -text
 samples/input/dtbook/dtbook.2005.basic.css -text
+samples/input/dtbook/dtbookfix-example[!!-~](invalid).xml -text
 samples/input/dtbook/hauy-2005-1-charsetError.xml -text
 samples/input/dtbook/hauy-2005-1-short.xml -text
 samples/input/dtbook/hauy-2005-1.xml -text
