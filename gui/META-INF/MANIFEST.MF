@@ -17,13 +17,17 @@ Export-Package:
  org.daisy.pipeline.gui,
  org.daisy.pipeline.gui.doc,
  org.daisy.pipeline.gui.jobs,
+ org.daisy.pipeline.gui.jobs.runner,
  org.daisy.pipeline.gui.jobs.wizard,
  org.daisy.pipeline.gui.messages,
  org.daisy.pipeline.gui.model,
  org.daisy.pipeline.gui.parameters,
  org.daisy.pipeline.gui.progress,
  org.daisy.pipeline.gui.scripts,
+ org.daisy.pipeline.gui.scripts.datatype,
+ org.daisy.pipeline.gui.update,
  org.daisy.pipeline.gui.util,
  org.daisy.pipeline.gui.util.actions,
  org.daisy.pipeline.gui.util.swt,
  org.daisy.pipeline.gui.util.viewers
+Import-Package: org.eclipse.ui.dialogs
