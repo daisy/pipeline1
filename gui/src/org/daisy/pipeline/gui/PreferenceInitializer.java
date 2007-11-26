@@ -34,9 +34,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	private void initCommonDefaults() {
 		// set the default temp dir
 		try {
-			PreferencesUtil.put(PipelineUtil.PATH_TO_TEMP_DIR, File
-					.createTempFile("dont", "care").getParent(), //$NON-NLS-1$ //$NON-NLS-2$
-					defaultScope);
+			File tempFile = File.createTempFile("dont", "care");//$NON-NLS-1$ //$NON-NLS-2$
+			PreferencesUtil.put(PreferencesKeys.PATH_TO_TEMP_DIR, tempFile
+					.getParent(), defaultScope);
+			tempFile.deleteOnExit();
 		} catch (IOException e) {
 			GuiPlugin.get().warn("Couldn't find the default temp directory", e); //$NON-NLS-1$
 		}
@@ -68,28 +69,29 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 * Process the initialization steps particular to Linux.
 	 */
 	private void initLinuxDefaults() {
-		setPrefPath(PipelineUtil.PATH_TO_IMAGEMAGICK, "/usr/bin/imagemagick");//$NON-NLS-1$
-		setPrefPath(PipelineUtil.PATH_TO_LAME, "/usr/bin/lame");//$NON-NLS-1$
-		setPrefPath(PipelineUtil.PATH_TO_PYTHON, "/usr/bin/python");//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_IMAGEMAGICK, "/usr/bin/imagemagick");//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_LAME, "/usr/bin/lame");//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_PYTHON, "/usr/bin/python");//$NON-NLS-1$
 	}
 
 	/**
 	 * Process the initialization steps particular to Mac OS X.
 	 */
 	private void initMacDefaults() {
-		setPrefPath(PipelineUtil.PATH_TO_IMAGEMAGICK, "/opt/local/bin/convert");//$NON-NLS-1$
-		setPrefPath(PipelineUtil.PATH_TO_LAME, "/sw/bin/lame");//$NON-NLS-1$
-		setPrefPath(PipelineUtil.PATH_TO_PYTHON, "/usr/bin/python");//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_IMAGEMAGICK,
+				"/opt/local/bin/convert");//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_LAME, "/sw/bin/lame");//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_PYTHON, "/usr/bin/python");//$NON-NLS-1$
 	}
 
 	/**
 	 * Process the initialization steps particular to MS Windows.
 	 */
 	private void initWindowsDefaults() {
-		setPrefPath(PipelineUtil.PATH_TO_IMAGEMAGICK,
+		setPrefPath(PreferencesKeys.PATH_TO_IMAGEMAGICK,
 				"C:\\Program Files\\ImageMagick-6.3.5-Q16\\convert.exe");//$NON-NLS-1$
-		setPrefPath(PipelineUtil.PATH_TO_LAME, "C:\\lame\\lame.exe");//$NON-NLS-1$
-		setPrefPath(PipelineUtil.PATH_TO_PYTHON, "C:\\Python25\\python.exe");//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_LAME, "C:\\lame\\lame.exe");//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_PYTHON, "C:\\Python25\\python.exe");//$NON-NLS-1$
 	}
 
 	/**

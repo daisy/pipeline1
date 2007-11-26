@@ -56,32 +56,13 @@ public final class PipelineUtil {
 	public static final String TRANS_DOC_DIR = DOC_DIR + "/transformers"; //$NON-NLS-1$
 	/** The path to the user documentation directory */
 	public static final String USER_DOC_DIR = DOC_DIR + "/enduser"; //$NON-NLS-1$
-	// Preferences Keys
-	/** The name of the preference holding the path to ImageMagick */
-	public static final String PATH_TO_IMAGEMAGICK = "PATH_TO_IMAGEMAGICK"; //$NON-NLS-1$
-	/** The name of the preference holding the default path to ImageMagick */
-	public static final String PATH_TO_IMAGEMAGICK_DEFAULT = "/path/to/convert.exe"; //$NON-NLS-1$
+	// Property Keys
 	/** The name of the System properties used for the path to ImageMagick */
 	public static final String PATH_TO_IMAGEMAGICK_PROP = "pipeline.imageMagick.converter.path"; //$NON-NLS-1$
-	/** The name of the preference holding the path to lame */
-	public static final String PATH_TO_LAME = "PATH_TO_LAME"; //$NON-NLS-1$
-	/** The name of the preference holding the default path to lame */
-	public static final String PATH_TO_LAME_DEFAULT = "/path/to/lame.exe"; //$NON-NLS-1$
 	/** The name of the System properties used for the path to Lame */
 	public static final String PATH_TO_LAME_PROP = "dmfc.lame.path"; //$NON-NLS-1$
-	/** The name of the preference holding the path to python */
-	public static final String PATH_TO_PYTHON = "PATH_TO_PYTHON"; //$NON-NLS-1$
-	/** The name of the preference holding the default path to python */
-	public static final String PATH_TO_PYTHON_DEFAULT = "/path/to/python.exe"; //$NON-NLS-1$
 	/** The name of the System properties used for the path to Python */
 	public static final String PATH_TO_PYTHON_PROP = "pipeline.python.path"; //$NON-NLS-1$
-	/** The name of the preference holding the path to the temporary directory */
-	public static final String PATH_TO_TEMP_DIR = "PATH_TO_TEMP_DIR"; //$NON-NLS-1$
-	/**
-	 * The name of the preference holding the default path to the temporary
-	 * directory
-	 */
-	public static final String PATH_TO_TEMP_DIR_DEFAULT = "/path/to/tmp"; //$NON-NLS-1$
 	/**
 	 * The name of the System properties used for the path to the temporary
 	 * directory
@@ -100,13 +81,17 @@ public final class PipelineUtil {
 	public static Properties convPrefToProperties() {
 		Properties properties = new Properties();
 		properties.setProperty(PATH_TO_IMAGEMAGICK_PROP, PreferencesUtil.get(
-				PATH_TO_IMAGEMAGICK, PATH_TO_IMAGEMAGICK_DEFAULT));
+				PreferencesKeys.PATH_TO_IMAGEMAGICK,
+				PreferencesKeys.PATH_TO_IMAGEMAGICK_DEFAULT));
 		properties.setProperty(PATH_TO_LAME_PROP, PreferencesUtil.get(
-				PATH_TO_LAME, PATH_TO_LAME_DEFAULT));
+				PreferencesKeys.PATH_TO_LAME,
+				PreferencesKeys.PATH_TO_LAME_DEFAULT));
 		properties.setProperty(PATH_TO_PYTHON_PROP, PreferencesUtil.get(
-				PATH_TO_PYTHON, PATH_TO_PYTHON_DEFAULT));
+				PreferencesKeys.PATH_TO_PYTHON,
+				PreferencesKeys.PATH_TO_PYTHON_DEFAULT));
 		properties.setProperty(PATH_TO_TEMP_DIR_PROP, PreferencesUtil.get(
-				PATH_TO_TEMP_DIR, PATH_TO_TEMP_DIR_DEFAULT));
+				PreferencesKeys.PATH_TO_TEMP_DIR,
+				PreferencesKeys.PATH_TO_TEMP_DIR_DEFAULT));
 		return properties;
 	}
 

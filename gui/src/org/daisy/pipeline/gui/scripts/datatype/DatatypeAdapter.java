@@ -44,16 +44,6 @@ import org.eclipse.swt.widgets.Control;
  * 
  */
 public abstract class DatatypeAdapter {
-	/**
-	 * The name of the preference holding the last file path used as input
-	 * parameter.
-	 */
-	public static final String LAST_SELECTED_INPUT = "LAST_SELECTED_INPUT"; //$NON-NLS-1$
-	/**
-	 * The name of the preference holding the last file path used as output
-	 * parameter.
-	 */
-	public static final String LAST_SELECTED_OUTPUT = "LAST_SELECTED_OUTPUT"; //$NON-NLS-1$
 
 	/**
 	 * The main control used to edit the parameter

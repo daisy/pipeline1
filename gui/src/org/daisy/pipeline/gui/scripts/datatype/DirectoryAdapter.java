@@ -21,6 +21,7 @@ import java.io.File;
 
 import org.daisy.pipeline.core.script.ScriptParameter;
 import org.daisy.pipeline.core.script.datatype.DirectoryDatatype;
+import org.daisy.pipeline.gui.PreferencesKeys;
 import org.daisy.pipeline.gui.PreferencesUtil;
 import org.daisy.pipeline.gui.util.CheckUtil;
 import org.daisy.pipeline.gui.util.DialogHelper;
@@ -70,15 +71,19 @@ public class DirectoryAdapter extends DefaultAdapter {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				File file = new File(PreferencesUtil.get(
-						type.isInput() ? LAST_SELECTED_INPUT
-								: LAST_SELECTED_OUTPUT, field.getText()));
+						type.isInput() ? PreferencesKeys.LAST_SELECTED_INPUT
+								: PreferencesKeys.LAST_SELECTED_OUTPUT, field
+								.getText()));
 				int style = (type.isInput()) ? SWT.OPEN : SWT.SAVE;
 				String path = DialogHelper.browseDir(parent.getShell(), file,
 						style);
 				if (path != null) {
 					field.setText(path);
-					PreferencesUtil.put(type.isInput() ? LAST_SELECTED_INPUT
-							: LAST_SELECTED_OUTPUT, path, new InstanceScope());
+					PreferencesUtil
+							.put(
+									type.isInput() ? PreferencesKeys.LAST_SELECTED_INPUT
+											: PreferencesKeys.LAST_SELECTED_OUTPUT,
+									path, new InstanceScope());
 				}
 			}
 		});

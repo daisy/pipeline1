@@ -64,7 +64,7 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
 		// ImageMagick Path
 		parent = getFieldEditorParent();
 		FileFieldEditor imageMagickEditor = new FileFieldEditor(
-				PipelineUtil.PATH_TO_IMAGEMAGICK,
+				PreferencesKeys.PATH_TO_IMAGEMAGICK,
 				Messages.pref_imageMagickPath_label, parent);
 		imageMagickEditor.getTextControl(parent).setToolTipText(
 				Messages.pref_imageMagickPath_tooltip);
@@ -72,14 +72,15 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
 		// Lame Path
 		parent = getFieldEditorParent();
 		FileFieldEditor lameEditor = new FileFieldEditor(
-				PipelineUtil.PATH_TO_LAME, Messages.pref_lamePath_label, parent);
+				PreferencesKeys.PATH_TO_LAME, Messages.pref_lamePath_label,
+				parent);
 		lameEditor.getTextControl(parent).setToolTipText(
 				Messages.pref_lamePath_tooltip);
 		addField(lameEditor);
 		// Python Path
 		parent = getFieldEditorParent();
 		FileFieldEditor pythonEditor = new FileFieldEditor(
-				PipelineUtil.PATH_TO_PYTHON, Messages.pref_pythonPath_label,
+				PreferencesKeys.PATH_TO_PYTHON, Messages.pref_pythonPath_label,
 				parent);
 		pythonEditor.getTextControl(parent).setToolTipText(
 				Messages.pref_pythonPath_tooltip);
@@ -87,8 +88,8 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
 		// Temp Dir Path
 		parent = getFieldEditorParent();
 		DirectoryFieldEditor tempDirEditor = new DirectoryFieldEditor(
-				PipelineUtil.PATH_TO_TEMP_DIR, Messages.pref_tempDirPath_label,
-				parent);
+				PreferencesKeys.PATH_TO_TEMP_DIR,
+				Messages.pref_tempDirPath_label, parent);
 		tempDirEditor.getTextControl(parent).setToolTipText(
 				Messages.pref_tempDirPath_tooltip);
 		addField(tempDirEditor);
@@ -163,8 +164,8 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
 			FieldEditor field = (FieldEditor) event.getSource();
 			String prefName = field.getPreferenceName();
 			if ((prefName != null)
-					&& (prefName.equals(PipelineUtil.PATH_TO_LAME) || prefName
-							.equals(PipelineUtil.PATH_TO_PYTHON))) {
+					&& (prefName.equals(PreferencesKeys.PATH_TO_LAME) || prefName
+							.equals(PreferencesKeys.PATH_TO_PYTHON))) {
 				mustReloadCore = true;
 			}
 		}

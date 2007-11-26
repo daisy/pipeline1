@@ -122,6 +122,7 @@ public class DefaultAdapter extends DatatypeAdapter {
 	protected void hookValueListener() {
 		control.addListener(SWT.Modify, new Listener() {
 			public void handleEvent(Event event) {
+				System.out.println("hello");
 				fireValueChanged();
 			}
 		});
