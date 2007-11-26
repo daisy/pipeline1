@@ -802,6 +802,7 @@ transformers/se_tpb_wordml2dtbook/xslt/post-defragment-sub.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-defragment-sup.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-indent.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/post-pagenum-fix.xsl -text
+transformers/se_tpb_wordml2dtbook/xslt/post-remove-temporary-structure.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/pre-input-validator.xsl -text
 transformers/se_tpb_xmldetection/lang/fr.xml -text
 transformers/se_tpb_xmldetection/transformer.tdf -text

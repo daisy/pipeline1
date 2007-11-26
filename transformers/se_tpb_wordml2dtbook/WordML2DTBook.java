@@ -79,7 +79,7 @@ public class WordML2DTBook extends Transformer {
         final File inputValidator = new File(this.getTransformerDirectory(), "./xslt/pre-input-validator.xsl");
         final File countCharsWml = new File(this.getTransformerDirectory(), "./xslt/post-count-characters-wml.xsl");
         final File countCharsDTBook = new File(this.getTransformerDirectory(), "./xslt/post-count-characters-dtbook.xsl");
-        final File pagenumFix = new File(this.getTransformerDirectory(), "./xslt/post-pagenum-fix.xsl");
+        final File removeTempStructure = new File(this.getTransformerDirectory(), "./xslt/post-remove-temporary-structure.xsl");
         final File defragmentSub = new File(this.getTransformerDirectory(), "./xslt/post-defragment-sub.xsl");
         final File defragmentSup = new File(this.getTransformerDirectory(), "./xslt/post-defragment-sup.xsl");
         final File defragmentEm = new File(this.getTransformerDirectory(), "./xslt/post-defragment-em.xsl");
@@ -181,9 +181,9 @@ public class WordML2DTBook extends Transformer {
 			progress(0.79);
 			sendMessage("Post processing...");
 			// Must match the order in wordml2dtbook.xsl
-			//Stylesheet.apply(t1.getFile().getAbsolutePath(), pagenumFix.getAbsolutePath(), t2.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
-			//progress(0.82);
-			Stylesheet.apply(t1.getFile().getAbsolutePath(), defragmentSub.getAbsolutePath(), t3.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(t1.getFile().getAbsolutePath(), removeTempStructure.getAbsolutePath(), t2.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			progress(0.82);
+			Stylesheet.apply(t2.getFile().getAbsolutePath(), defragmentSub.getAbsolutePath(), t3.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
 			progress(0.85);
 			Stylesheet.apply(t3.getFile().getAbsolutePath(), defragmentSup.getAbsolutePath(), t4.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
 			progress(0.88);
