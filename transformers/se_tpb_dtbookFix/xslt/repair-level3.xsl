@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-	Add Level1
+	Add Level3
 		Version
 			2007-09-27
 
 		Description
-			...
+			See "level-tools.xls" for description
 
 		Nodes
-			levelx
+			level3
 
 		Namespaces
-			(x) ""
 			(x) "http://www.daisy.org/z3986/2005/dtbook/"
 
 		Doctype

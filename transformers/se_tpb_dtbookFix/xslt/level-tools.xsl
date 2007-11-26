@@ -1,12 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--	
-		Level tools
-		Collects all tricky level wrapping stuff.
--->
 <!--
-		Joel Håkansson, TPB
-		Version 2007-09-27
- -->
+	Level tools
+		Version
+			2007-09-27
+
+		Description
+			Level tools inserts levels by using the templates "addRootStructure",
+			"addSubStructure" and "insertLevel".
+
+			* "addRootStructure" is used when adding level1 nodes
+			* "addSubStructure" is used when adding levelx (x>1) nodes
+			* "insertLevel" is used by the other two to execute the level insertion.
+
+			Known bug: Level tools does not respond correctly when a comment or 
+			processing-instruction node is the first child node.
+
+		Nodes
+			levelx
+
+		Namespaces
+			(x) "http://www.daisy.org/z3986/2005/dtbook/"
+
+		Doctype
+			(x) DTBook
+
+		Author
+			Joel Håkansson, TPB
+-->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/">
 
 	<xsl:template name="addRootStructure">

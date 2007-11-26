@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-		Pagenum fix
-		Removes
-			* empty (or nested) p
-			* otherwise empty p or li around pagenum (except p in td)
-			* empty em, strong, sub, sup
-		Moves
-			* pagenum inside h[x] before h[x]
-			* pagenum inside a word after the word
-		Adds an empty p-tag back(?) if: 
-				- levelx is empty or contains nothing but empty p-tags
-				- hx is the last element or followed by nothing but empty p-tags
+	Pagenum fix
+		Version
+			2007-10-15
 
-		Joel Håkansson, TPB
-		Version 2007-10-15
+		Description
+			Removes
+				* empty (or nested) p
+				* otherwise empty p or li around pagenum (except p in td)
+				* empty em, strong, sub, sup
+			Moves
+				* pagenum inside h[x] before h[x]
+				* pagenum inside a word after the word
+			Adds an empty p-tag back(?) if: 
+					- levelx is empty or contains nothing but empty p-tags
+					- hx is the last element or followed by nothing but empty p-tags
 
+			Status: pending refactoring
+
+		Nodes
+			p, em, strong, sub, sup, pagenum
+
+		Namespaces
+			(x) "http://www.daisy.org/z3986/2005/dtbook/"
+
+		Doctype
+			(x) DTBook
+
+		Author
+			Joel Håkansson, TPB
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
 

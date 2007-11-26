@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-		Indent
-		Indents output to aid debugging
+	Indent
+		Version
+			2007-10-19
 
-		Joel Håkansson, TPB
-		Version 2007-10-19
+		Description
+			Removes existing whitespace nodes and indents output to aid debugging.
+				- Does not remove whitespace or apply indentation in inline context
+				- Does not apply indentation when number of children is 1.
+
+		Nodes
+			whitespace
+
+		Namespaces
+			(x) "http://www.daisy.org/z3986/2005/dtbook/"
+
+		Doctype
+			(x) DTBook
+
+		Author
+			Joel Håkansson, TPB
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" xmlns="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
 	

@@ -5,13 +5,12 @@
 			2007-09-27
 
 		Description
-			...
+			See "level-tools.xls" for description
 
 		Nodes
-			levelx
+			level1
 
 		Namespaces
-			(x) ""
 			(x) "http://www.daisy.org/z3986/2005/dtbook/"
 
 		Doctype

@@ -5,7 +5,11 @@
 			2007-09-17
 
 		Description
-			Moves structure upwards where possible
+			Redundant level structure is sometimes used to mimic the original layout, 
+			but can pose a problem in some circumstances. "Level cleaner" simplifies 
+			the level structure by removing redundant levels (subordinate levels will 
+			be moved upwards). Note that the headings of the affected levels will 
+			also change, which will alter the appearance of the layout.
 
 		Nodes
 			levelx

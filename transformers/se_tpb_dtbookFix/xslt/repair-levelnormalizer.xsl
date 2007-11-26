@@ -5,7 +5,9 @@
 			2007-09-26
 
 		Description
-			Removes levelx if it has descendant headings of x-1 (this simplifies later steps)
+			Removes levelx if it has descendant headings of x-1 (this simplifies later steps).
+
+			Note: Level normalizer cannot fix level1/level2/level1
 
 		Nodes
 			levelx

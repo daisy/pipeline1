@@ -5,7 +5,11 @@
 			2007-09-27
 
 		Description
-			...
+			Changes a hx into a p with @class="hx" if parent isn't levelx
+
+			Note:
+				"Remove illegal headings" cannot handle hx in inline context.
+				Support for this could be added.
 
 		Nodes
 			hx

@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-		Add author and title
-		Inserts docauthor and doctitle
+	Add author and title
+		Version
+			2007-10-15
 
-		Joel Håkansson, TPB
-		Version 2007-10-15
+		Description
+			Inserts docauthor and doctitle
+
+		Nodes
+			docauthor
+			doctitle
+
+		Namespaces
+			(x) "http://www.daisy.org/z3986/2005/dtbook/"
+
+		Doctype
+			(x) DTBook
+
+		Author
+			Joel Håkansson, TPB
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" xmlns="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
 
