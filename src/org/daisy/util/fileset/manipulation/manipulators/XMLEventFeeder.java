@@ -158,6 +158,8 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 		xif = StAXInputFactoryPool.getInstance().acquire(xifProperties);
 		
 		xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
+		//mg20071127:
+		xofProperties.put(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
 		xof = StAXOutputFactoryPool.getInstance().acquire(xofProperties);
 		
 		xef = StAXEventFactoryPool.getInstance().acquire();
