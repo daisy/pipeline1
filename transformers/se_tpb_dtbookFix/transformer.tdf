@@ -42,6 +42,17 @@
 			</enum>
 			<default>false</default>
 		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>forceTidy</name>
+			<description>Run tidy category even if input to tidy is invalid</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
 				
 		<parameter required="false" type="enum">
 			<name>simplifyHeadingLayout</name>

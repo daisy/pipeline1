@@ -90,9 +90,13 @@ import org.xml.sax.SAXParseException;
  *   	<levelx><h1>Heading</h1><p/></levelx><levelx><p>text</p>...
  *      to
  *      <levelx><h1>Heading</h1><p>text</p>...
- *   - Implement input and intermediate validation
- *   - Option to skip repairing and fail if input is invalid
  *   - Add documentation
+ *   - before repair-idref: fix note and annotation id's (generate-id())
+ *   - tidy-add-author-title is sometimes needed for validity. Split
+ *     in two: repair on 2005-2 (add doctitle if frontmatter present and doctitle missing) 
+ *     and tidy on 2005-x add doctitle (if mising) and docauthor
+ *   - Move indent to separate step and add parameter for indentation.
+ *   - Move repairing operations in tidy-pagenum-fix.xsl to repair.
  *   
  * @author Joel Håkansson, Markus Gylling 
  */
@@ -121,6 +125,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 		File input = FilenameOrFileURI.toFile((String)parameters.get("input"));
 		File output = FilenameOrFileURI.toFile((String)parameters.get("output"));
 		boolean forceRepair = ((String)parameters.get("forceRepair")).contentEquals("true");
+		boolean forceTidy = ((String)parameters.get("forceTidy")).contentEquals("true");
 		boolean abortOnError = ((String)parameters.get("abortOnError")).contentEquals("true");
 		String tidy = (String)parameters.get("tidy");
 		
@@ -211,7 +216,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	    	 * Run tidy category only if we have a valid file.
 	    	 */
 	    	boolean tidyRun = false;
-	    	if((repairRun && repairResultValid)||(!repairRun && inputValid)) {
+	    	if(forceTidy || (repairRun && repairResultValid)||(!repairRun && inputValid)) {
 	    		tidyRun = true;
 		    	this.sendMessage(i18n("TIDYING"),MessageEvent.Type.INFO);
 		    	for(Executor exec : tidyCategory) {
