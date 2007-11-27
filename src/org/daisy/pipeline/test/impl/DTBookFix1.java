@@ -12,8 +12,8 @@ public class DTBookFix1 extends PipelineTest {
 	}
 	
 	@Override
-	public List<String> getParameters() {
-		mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy-2005-1-charsetError.xml");
+	public List<String> getParameters() {		//
+		mParameters.add("--input=" + mDataInputDir + "/dtbook/dtbookfix-example (invalid).xml");
 		mParameters.add("--output=" + mDataOutputDir + "/DTBookFix1/out.xml");				
 		mParameters.add("--forceRepair=" + "true");
 		mParameters.add("--fixCharset=" + "true");

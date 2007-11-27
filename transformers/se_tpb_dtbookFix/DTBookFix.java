@@ -31,7 +31,6 @@ import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
@@ -53,6 +52,11 @@ import org.xml.sax.SAXParseException;
 
 
 /**
+<<<<<<< .mine
+ * Main Transformer class. 
+ * <p>See ../doc/transformers/se_tpb_dtbookFix for further details.</p>
+ * <p>Individial Executors (XSLTs, classes) have inline documentaiton as well.</p>
+=======
  * Main Transformer class. See ../doc/transformers/se_tpb_dtbookFix for further details.
  * /**
  * 
@@ -98,6 +102,7 @@ import org.xml.sax.SAXParseException;
  *   - Move indent to separate step and add parameter for indentation.
  *   - Move repairing operations in tidy-pagenum-fix.xsl to repair.
  *   
+>>>>>>> .r1544
  * @author Joel Håkansson, Markus Gylling 
  */
 public class DTBookFix extends Transformer implements URIResolver, TransformerDelegateListener, ValidatorListener, FilesetErrorHandler {
@@ -335,7 +340,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
     	return result;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")	
 	private List<Executor> createCategory(ExecutorCategory execCategory, Map parameters, String inputDTBookVersion) {
 		final String[] v2005_1 = {"2005-1"};		
 		final String[] v2005_2 = {"2005-2"};
@@ -441,11 +446,13 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	/**
 	 * Get and forward XSLT messages.
 	 */
+	@SuppressWarnings("unused")
 	class MessageEmitterWriter extends Writer {
 		Transformer mT = null;
 		MessageEmitterWriter(Transformer t) {
 			mT = t;
 		}
+		
 		
 		@Override
 		public void close() throws IOException {
@@ -480,6 +487,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateMessage(java.lang.Object, java.lang.String, org.daisy.pipeline.core.event.MessageEvent.Type, org.daisy.pipeline.core.event.MessageEvent.Cause, javax.xml.stream.Location)
 	 */
+	@SuppressWarnings("unused")
 	public void delegateMessage(Object delegate, String message, Type type,Cause cause, Location location) {
 		if(location!=null) {
 			this.sendMessage(message,type,cause,location);
@@ -491,6 +499,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateProgress(java.lang.Object, double)
 	 */
+	@SuppressWarnings("unused")
 	public void delegateProgress(Object delegate,double progress) {
 		//ignore				
 	}
@@ -499,6 +508,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#exception(org.daisy.util.fileset.validation.Validator, java.lang.Exception)
 	 */
+	@SuppressWarnings("unused")
 	public void exception(Validator validator, Exception e) {		
 		mHadValidationErrors = true;
 		Location loc = LocusTransformer.newLocation(e);
@@ -509,6 +519,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#report(org.daisy.util.fileset.validation.Validator, org.daisy.util.fileset.validation.message.ValidatorMessage)
 	 */
+	@SuppressWarnings("unused")
 	public void report(Validator validator, ValidatorMessage message) {		
 		MessageEvent.Type type = null;
 		if(message instanceof ValidatorWarningMessage) {			
@@ -525,6 +536,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#inform(org.daisy.util.fileset.validation.Validator, java.lang.String)
 	 */
+	@SuppressWarnings("unused")
 	public void inform(Validator validator, String information) {
 		this.sendMessage(information, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM,null);		
 	}
@@ -533,6 +545,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#progress(org.daisy.util.fileset.validation.Validator, double)
 	 */
+	@SuppressWarnings("unused")
 	public void progress(Validator validator, double progress) {
 		//ignore
 	}
@@ -541,6 +554,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */
+	@SuppressWarnings("unused")
 	public void error(FilesetFileException ffe) throws FilesetFileException {		
 		Throwable root =ffe.getRootCause();		
 		if(root==null) root = ffe.getCause();	
