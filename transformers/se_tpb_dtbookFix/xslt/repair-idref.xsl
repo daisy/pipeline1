@@ -38,10 +38,16 @@
 				<xsl:when test="not(@idref) or @idref='' or @idref='#'">
 					<xsl:choose>
 						<xsl:when test="self::dtb:noteref">
-							<xsl:attribute name="idref">#<xsl:value-of select="(//dtb:note)[round(count(//dtb:note) div count(//dtb:noteref))]/@id"/></xsl:attribute>
+							<xsl:attribute name="idref">#<xsl:value-of select="(//dtb:note)[
+							round( ( ( count(current()/preceding::dtb:noteref) ) 
+								* 
+							( count(//dtb:note) div count(//dtb:noteref) ) ) + 0.5)]/@id"/></xsl:attribute>
 						</xsl:when>
 						<xsl:when test="self::dtb:annoref">
-							<xsl:attribute name="idref">#<xsl:value-of select="(//dtb:annotation)[round(count(//dtb:annotation) div count(//dtb:annoref))]/@id"/></xsl:attribute>
+							<xsl:attribute name="idref">#<xsl:value-of select="(//dtb:annotation)[
+							round( ( ( count(current()/preceding::dtb:annoref) )
+								*
+							( count(//dtb:annotation) div count(//dtb:annoref) ) ) + 0.5)]/@id"/></xsl:attribute>
 						</xsl:when>
 					</xsl:choose>
 				</xsl:when>
