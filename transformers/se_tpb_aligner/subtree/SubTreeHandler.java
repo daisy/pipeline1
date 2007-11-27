@@ -55,7 +55,16 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 	protected static final String SMIL_NSURI = Namespaces.SMIL_20_NS_URI;
 	protected static final String SSML_NSURI = Namespaces.SSML_10_NS_URI;
 	protected static final String ANNON_NSURI = "http://www.example.com";
+	
+	protected static Namespace DTBOOK_NAMESPACE = null;
+	protected static Namespace SMIL_NAMESPACE = null;
+	protected static Namespace SSML_NAMESPACE = null;
+	protected static Namespace ANNON_NAMESPACE = null;
+	
 	static final String SMIL_NSPREFIX = "smil";
+	static final String ANNON_NSPREFIX = "annon";
+	static final String SSML_NSPREFIX = "ssml";
+	
 	static QName ignoreQName = null;
 	static QName smilSrcAttrQName = null;
  
@@ -83,6 +92,7 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 		XMLEventFactory xef = null;
 		Map properties = null;
 		XMLInputFactory xif = null;
+		XMLEventReader reader = null;
 		try{
 			//prep some recurring constructs
 			xef=StAXEventFactoryPool.getInstance().acquire();
@@ -93,13 +103,18 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 			ignoreStartElement = xef.createStartElement(IGNORE_NSPREFIX, IGNORE_NSURI,IGNORE_LOCALNAME);			
 			ignoreEndElement = xef.createEndElement(IGNORE_NSPREFIX, IGNORE_NSURI,IGNORE_LOCALNAME);
 			
+			DTBOOK_NAMESPACE = xef.createNamespace(DTBOOK_NSURI);
+			SMIL_NAMESPACE = xef.createNamespace(SMIL_NSPREFIX,SMIL_NSURI);
+			SSML_NAMESPACE =  xef.createNamespace(SSML_NSPREFIX,SSML_NSURI);
+			ANNON_NAMESPACE = xef.createNamespace(ANNON_NSPREFIX,ANNON_NSURI);
+			
 			
 			mProlog = new LinkedList<XMLEvent>();
 			//set up the reader and call a concrete implementation of #read
 			properties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
 			xif = StAXInputFactoryPool.getInstance().acquire(properties);
 			StreamSource ss = new StreamSource(mInputDoc);
-			XMLEventReader reader = xif.createXMLEventReader(ss);
+			reader = xif.createXMLEventReader(ss);
 			//gather the prolog and pos the reader before root
 			while(reader.hasNext()) {
 				XMLEvent p = reader.peek();
@@ -107,8 +122,9 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 				mProlog.add(reader.nextEvent());
 			}
 			//then call sub
-			this.read(reader);			
+			this.read(reader);
 		}finally{
+			reader.close();
 			StAXEventFactoryPool.getInstance().release(xef);
 			StAXInputFactoryPool.getInstance().release(xif, properties);
 		}
@@ -123,6 +139,7 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 	 * @throws FileNotFoundException 
 	 */
 	public void render (XMLResult destination) throws XMLStreamException, FileNotFoundException {
+		System.err.println("rendering all to "+ destination.getAbsolutePath());
 		/*
 		 * <elem pipeline:ignore='true'>
 		 * 
@@ -143,26 +160,39 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 			sr = new StreamResult(fos);			
 			wrt = xof.createXMLEventWriter(sr);
 			//re-add prolog
+//			boolean hadDTDinProlog = false;
 			for(XMLEvent x : mProlog) {
+				//should be a start document, and (optionally) a DTD event
 				wrt.add(x);
+//				if(x.getEventType() == XMLEvent.DTD) hadDTDinProlog = true;
 			}	
+			
+//			//temp
+//			if(!hadDTDinProlog) {
+//				wrt.add(xef.createDTD("<!DOCTYPE dtbook PUBLIC \"-//NISO//DTD dtbook 2005-2//EN\" \"http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd\">"));
+//			}
+			
 			boolean firstSubTree = true;
 			boolean firstSubTreeFirstElement = true;
 			for(SubTree subtree : this) {
 				EndElement previousEndElement = null;
 				List<XMLEvent> list = subtree.getContent();
+				
 				for(XMLEvent e : list){
 					/*
 					 * Watch for start tags with the ignore attribute,
 					 * start or end tags in the ignore namespace,
 					 * Or an empty element ignore, which indicates that the next end tag (in any namespace) should be dropped.
+					 * 
+					 * We also filter out SSML here, since it uses elements, which the filesetCreator does not support filtering atm.
 					 */
 					if(e.isStartElement()) {
-						if((!e.asStartElement().getName().equals(ignoreQName)) 
-								&& (getAttributeByName(e.asStartElement(),ignoreQName)==null)) {
-
-								StartElement se = e.asStartElement();								
-								
+						if((e.asStartElement().getName().equals(ignoreQName)) || (getAttributeByName(e.asStartElement(),ignoreQName)!=null)) {
+							//this an ignore element that should not be rendered to output		
+						}else if(e.asStartElement().getName().getNamespaceURI().equals(SSML_NSURI)) {
+							//this an ssml element that should not be rendered to output
+						}else {	
+								StartElement se = e.asStartElement();																
 								Set<Namespace> namespaces = new HashSet<Namespace>();
 								Set<Attribute> attributes = new HashSet<Attribute>();
 								
@@ -170,11 +200,19 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 									namespaces.add(it.next());									
 								}
 								
+								//some namespace decl cleanup
 								if(firstSubTree && firstSubTreeFirstElement){									
-									namespaces.add(xef.createNamespace("smil",SMIL_NSURI));
-									namespaces.add(xef.createNamespace("annon",ANNON_NSURI));
-									namespaces.add(xef.createNamespace("ssml",SSML_NSURI));
+									namespaces.add(SMIL_NAMESPACE);
+									namespaces.add(ANNON_NAMESPACE);
+									namespaces.add(SSML_NAMESPACE);
+									if(!namespaces.contains(DTBOOK_NAMESPACE)) {
+										namespaces.add(DTBOOK_NAMESPACE);
+									}
 									firstSubTreeFirstElement = false;
+								}else{
+									namespaces.remove(SMIL_NAMESPACE);
+									namespaces.remove(ANNON_NAMESPACE);
+									namespaces.remove(SSML_NAMESPACE);									
 								}
 								
 								for (Iterator<Attribute> it = se.getAttributes(); it.hasNext();) {
@@ -196,25 +234,19 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 						if(previousEndElement!=null) {
 							if(!previousEndElement.getName().equals(ignoreQName)) {						
 								if(!e.asEndElement().getName().equals(ignoreQName)) {
-									wrt.add(e);
+									if(!e.asEndElement().getName().getNamespaceURI().equals(SSML_NSURI)) {
+										wrt.add(e);
+									}	
 								}
 							}
 						}else{
 							if(!e.asEndElement().getName().equals(ignoreQName)) {
-								wrt.add(e);
+								if(!e.asEndElement().getName().getNamespaceURI().equals(SSML_NSURI)) {
+									wrt.add(e);
+								}	
 							}
 						}
 						previousEndElement = e.asEndElement();
-					}else if(e.getEventType() == XMLEvent.NAMESPACE) {
-						//strip redundant smil ns decls
-						//(we declare them at root to get a cleaner output)
-						Namespace ns = (Namespace) e;
-						if(!ns.getNamespaceURI().equals(SMIL_NSURI) 
-								&& !ns.getNamespaceURI().equals(SSML_NSURI) 
-								&& !ns.getNamespaceURI().equals(ANNON_NSURI)) {
-							wrt.add(e);
-						}
-						wrt.add(e);
 					}else{
 						wrt.add(e);
 					}										
