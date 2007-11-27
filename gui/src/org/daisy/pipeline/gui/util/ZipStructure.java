@@ -210,8 +210,6 @@ public class ZipStructure {
 		while (entries.hasMoreElements()) {
 			ZipEntry entry = entries.nextElement();
 			IPath path = new Path(entry.getName()).addTrailingSeparator();
-			System.out.println("caching entry " + entry.getName());
-			System.out.println("caching path  " + entry.getName());
 
 			if (entry.isDirectory()) {
 				cacheDir(path);

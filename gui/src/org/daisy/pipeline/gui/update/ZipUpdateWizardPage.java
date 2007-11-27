@@ -32,25 +32,28 @@ import org.daisy.pipeline.gui.util.ZipStructure;
 import org.daisy.pipeline.gui.util.viewers.ZipContentProvider;
 import org.daisy.pipeline.gui.util.viewers.ZipLabelProvider;
 import org.daisy.util.mime.MIMEConstants;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * The wizard page used to apply a ZIP patch for software update.
@@ -102,35 +105,47 @@ public class ZipUpdateWizardPage extends WizardPage {
 		zipPathField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		zipBrowseButton = new Button(control, SWT.PUSH | SWT.CENTER);
 		zipBrowseButton.setText("Browse...");
+		// SashForm
+		SashForm sash = new SashForm(control, SWT.VERTICAL);
+		GridData sashGD = new GridData(GridData.FILL_BOTH);
+		sashGD.horizontalSpan = 3;
+		sashGD.heightHint = 300;
+		sash.setLayoutData(sashGD);
+		Composite descrArea = new Composite(sash, SWT.NONE);
+		descrArea.setLayout(new GridLayout());
+		Composite treeArea = new Composite(sash, SWT.NONE);
+		treeArea.setLayout(new GridLayout());
+		sash.setWeights(new int[] { 1, 2 });
 		// Description Area
-		Label descriptionLabel = new Label(control, SWT.NONE);
+		Label descriptionLabel = new Label(descrArea, SWT.NONE);
 		descriptionLabel.setText("Description:");
-		GridData descrLabelGD = new GridData();
-		descrLabelGD.horizontalSpan = 3;
-		descriptionLabel.setLayoutData(descrLabelGD);
-		zipDescriptionText = new Text(control, SWT.READ_ONLY | SWT.MULTI
+		zipDescriptionText = new Text(descrArea, SWT.READ_ONLY | SWT.MULTI
 				| SWT.V_SCROLL | SWT.BORDER);
-		GridData desctTextGD = new GridData(GridData.FILL_BOTH);
-		desctTextGD.horizontalSpan = 3;
-		desctTextGD.heightHint = (new GC(descriptionLabel)).getFontMetrics()
-				.getHeight() * 4;
-		zipDescriptionText.setLayoutData(desctTextGD);
+		zipDescriptionText.setLayoutData(new GridData(GridData.FILL_BOTH));
 		// Zip Tree Viewer
-		Label treeLabel = new Label(control, SWT.NONE);
+		Label treeLabel = new Label(treeArea, SWT.NONE);
 		treeLabel.setText("Content:");
-		GridData treeLabelGD = new GridData();
-		treeLabelGD.horizontalSpan = 3;
-		treeLabel.setLayoutData(treeLabelGD);
-		zipViewer = new TreeViewer(control);
+		zipViewer = new TreeViewer(treeArea);
 		zipViewer.setContentProvider(new ZipContentProvider());
 		zipViewer.setLabelProvider(new ZipLabelProvider());
-		GridData treeGD = new GridData(GridData.FILL_BOTH);
-		treeGD.horizontalSpan = 3;
-		zipViewer.getControl().setLayoutData(treeGD);
+		zipViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
 		// Finalize
 		hookListeners();
 		updatePageComplete();
 		setControl(control);
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		if (zipStructure != null) {
+			try {
+				zipStructure.getZipFile().close();
+			} catch (IOException e) {
+				GuiPlugin.get().error("Couldn't close the ZIP update patch", e);
+			}
+		}
+
 	}
 
 	/**
@@ -146,32 +161,38 @@ public class ZipUpdateWizardPage extends WizardPage {
 	 *         succeeded.
 	 */
 	public boolean finish() {
-		ZipUpdateOperation operation = new ZipUpdateOperation(zipStructure);
+		ZipUpdateOperation operation = new ZipUpdateOperation(zipStructure,
+				getShell());
 
 		try {
 			getContainer().run(true, false, operation);
 		} catch (InterruptedException e) {
-			GuiPlugin.get().error(e.getMessage(), e);
+			GuiPlugin.get().info(e.getMessage(), e);
+			operation.revert();
 			return false;
 		} catch (InvocationTargetException e) {
 			MessageDialog
 					.openError(getContainer().getShell(), "Update Error",
-							"An error occurred while trying to apply the update patch.");
+							"Could not apply the update patch. See the error log for details.");
 			GuiPlugin.get().error(e.getMessage(), e);
+			operation.revert();
 			return false;
 		}
+		IStatus status = operation.getStatus();
+		if (!status.isOK()) {
+			ErrorDialog.openError(getContainer().getShell(), "Update Error",
+					null, status);
+			operation.revert();
+			return false;
+		} else {
+			boolean restart = MessageDialog
+					.openQuestion(
+							getContainer().getShell(),
+							"Update Succeeded",
+							"The application wil be updated on the next restart.\nDo you want to restart now ?");
+			return (restart) ? PlatformUI.getWorkbench().restart() : true;
+		}
 
-		// IStatus status = operation.getStatus();
-		// if (!status.isOK()) {
-		// ErrorDialog.openError(getContainer().getShell(),
-		// DataTransferMessages.FileImport_importProblems, null, // no
-		// // special
-		// // message
-		// status);
-		// return false;
-		// }
-
-		return true;
 	}
 
 	/**
@@ -258,5 +279,4 @@ public class ZipUpdateWizardPage extends WizardPage {
 		zipViewer.expandAll();
 		zipPathField.setFocus();
 	}
-
 }

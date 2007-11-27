@@ -22,15 +22,24 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.util.ZipStructure;
+import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * A runnable operation that perform a software update from a ZIP update patch.
@@ -57,14 +66,22 @@ public class ZipUpdateOperation implements IRunnableWithProgress {
 	private ZipStructure zipStruct;
 	/** The root directory of the DAISY Pipeline installation */
 	private File installDir;
+	/** A map for retrieving backups of overwritten files */
+	private Map<File, File> backupFiles;
+	/** The set of top-level directories that have been created by the operation */
+	private Set<File> newDirs;
+	/** Keeps track of errors that occurred during the operation (can be null) */
+	private MultiStatus errors;
 
 	/**
 	 * Creates a new update operation for the given ZIP structure.
 	 * 
 	 * @param zipStruct
 	 *            the ZIP structure used for the new update operation
+	 * @param shell
+	 *            TODO
 	 */
-	public ZipUpdateOperation(ZipStructure zipStruct) {
+	public ZipUpdateOperation(ZipStructure zipStruct, Shell shell) {
 		this.zipStruct = zipStruct;
 		try {
 			this.installDir = new File(Platform.getInstallLocation().getURL()
@@ -72,6 +89,61 @@ public class ZipUpdateOperation implements IRunnableWithProgress {
 		} catch (URISyntaxException e) {
 			GuiPlugin.get().error("Unable to get a File from install location",
 					e);
+		}
+		this.backupFiles = new HashMap<File, File>();
+		this.newDirs = new HashSet<File>();
+	}
+
+	private void addError(File file, Exception e) {
+		GuiPlugin.get().error("An error occured while updating " + file, e);
+		if (errors == null) {
+			errors = new MultiStatus(
+					GuiPlugin.ID,
+					0,
+					"Could not apply the update patch. See the error log for details.",
+					null);
+		}
+		errors.add(new Status(IStatus.ERROR, GuiPlugin.ID,
+				(file.isDirectory()) ? "Could not create directory:"
+						: "Could not update file:", e));
+	}
+
+	/**
+	 * Returns the status of the update operation. Any error that occurred
+	 * during the execution of this operation is added as a {@link IStatus} to
+	 * the returned {@link MultiStatus}.
+	 * 
+	 * @return the status of the update operation.
+	 */
+	public IStatus getStatus() {
+		return (errors == null) ? Status.OK_STATUS : errors;
+	}
+
+	/**
+	 * Reverts this update operation.
+	 * <ul>
+	 * <li>Delete any directory created by the operation.</li>
+	 * <li>Revert any changed file to its backup copy.</li>
+	 * </ul>
+	 */
+	public void revert() {
+		for (File dir : newDirs) {
+			try {
+				EFolder folder = new EFolder(dir);
+				if (!(folder.deleteContents() && folder.delete())) {
+					throw new IllegalStateException(
+							"Could not delete directory " + dir);
+				}
+			} catch (Exception e) {
+				GuiPlugin.get().error("Could not revert directory " + dir, e);
+			}
+		}
+		for (File file : backupFiles.keySet()) {
+			try {
+				FileUtils.copyFile(backupFiles.get(file), file);
+			} catch (IOException e) {
+				GuiPlugin.get().error("Could not revert file " + file, e);
+			}
 		}
 	}
 
@@ -85,56 +157,66 @@ public class ZipUpdateOperation implements IRunnableWithProgress {
 		monitor = progressMonitor;
 		try {
 			monitor.beginTask("Applying update patch", zipStruct
-					.getEntryCount() * 10 + 10);
-			for (ZipEntry entry : zipStruct.getChildren(zipStruct.getRoot())) {
-				updateRec(entry);
-			}
-			zipStruct.getZipFile().close();
-			monitor.worked(10);
-		} catch (Exception e) {
-			GuiPlugin.get().error(
-					"Unexpected exception while applyinh an update patch", e);
+					.getEntryCount() * 10);
+			updateRec(zipStruct.getRoot(), false);
 		} finally {
 			monitor.done();
 		}
 
 	}
 
-	private void updateDir(ZipEntry entry) {
+	private boolean updateDir(ZipEntry entry, boolean isNewBranch) {
 		monitor.subTask("Updating directory " + entry.getName());
 		File dir = new File(installDir, entry.getName());
-		if (!dir.exists() && !dir.mkdir()) {
-			GuiPlugin.get().error("Couldn't create directory " + dir, null);
+		try {
+			if (!dir.exists()) {
+				if (!dir.mkdir()) {
+					throw new IOException(dir + " (Permission denied)");
+				}
+				if (!isNewBranch) {
+					newDirs.add(dir);
+				}
+				isNewBranch = true;
+			}
+		} catch (Exception e) {
+			addError(dir, e);
+		} finally {
+			monitor.worked(10);
 		}
-		monitor.worked(10);
+		return isNewBranch;
 	}
 
 	private void updateFile(ZipEntry entry) {
 		monitor.subTask("Updating file " + entry.getName());
 		File file = new File(installDir, entry.getName());
-		if (file.exists() && !file.delete()) {
-			GuiPlugin.get().error("Couldn't delete file " + file, null);
-		}
 		try {
+			if (file.exists()) {
+				File backup = File.createTempFile("pipeline.update-"
+						+ file.getName() + "-", ".bak");//$NON-NLS-1$ //$NON-NLS-2$ 
+				backup.deleteOnExit();
+				FileUtils.copyFile(file, backup);
+				backupFiles.put(file, backup);
+				file.delete();
+			}
 			FileUtils.writeInputStreamToFile(zipStruct.getZipFile()
 					.getInputStream(entry), file);
-		} catch (IOException e) {
-			GuiPlugin.get().error("Couldn't write to file " + file, e);
+		} catch (Exception e) {
+			addError(file, e);
 		} finally {
 			monitor.worked(10);
 		}
 	}
 
-	private void updateRec(ZipEntry entry) {
+	private void updateRec(ZipEntry entry, boolean isNewBranch) {
 		if (monitor.isCanceled()) {
 			throw new OperationCanceledException();
 		}
 		if (!entry.isDirectory()) {
 			updateFile(entry);
 		} else {
-			updateDir(entry);
+			isNewBranch |= updateDir(entry, isNewBranch);
 			for (ZipEntry childEntry : zipStruct.getChildren(entry)) {
-				updateRec(childEntry);
+				updateRec(childEntry, isNewBranch);
 			}
 		}
 	}
