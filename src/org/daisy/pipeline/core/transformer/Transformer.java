@@ -49,6 +49,7 @@ import org.daisy.pipeline.exception.TransformerAbortException;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
+import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.i18n.I18n;
 import org.daisy.util.i18n.XMLPropertyResourceBundle;
 import org.daisy.util.xml.LocusTransformer;
@@ -354,7 +355,7 @@ public abstract class Transformer implements BusListener {
 		Location loc = LocusTransformer.newLocation(ffe);
 		Throwable root =ffe.getRootCause();
 		if(root==null) root = ffe.getCause();		
-		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {			
+		if (!(ffe instanceof FilesetFileWarningException) && !(ffe.getCause() instanceof FileNotFoundException)) {			
 			this.sendMessage(root.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, loc);
 		} else {			
 			this.sendMessage(root.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT, loc);
