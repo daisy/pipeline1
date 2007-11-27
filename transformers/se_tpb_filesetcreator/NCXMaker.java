@@ -1351,7 +1351,9 @@ public class NCXMaker implements BusListener {
 	 * @param parent the parent of the generated node.
 	 * @throws XMLStreamException
 	 */
-	private void handleDocMisc(BookmarkedXMLEventReader reader, Element parent) throws XMLStreamException {
+	private void handleDocMisc(BookmarkedXMLEventReader reader, Element parent, XMLEvent currentManuscriptEvent) throws XMLStreamException {
+		//mg 20071127; added third inparam above, for the case where readers current event is the smil carrier (<docTitle smil:xx>text</docTitle>)
+		
 		String bookmark = "handleTempNameBookmark";
 		reader.setBookmark(bookmark);
 		
@@ -1360,8 +1362,20 @@ public class NCXMaker implements BusListener {
 		Element textElement = parent.getOwnerDocument().createElementNS(ncxNamespaceURI, "text");
 		textElement.appendChild(parent.getOwnerDocument().createTextNode(textContent));
 		parent.appendChild(textElement);
+		
 		Map attrs = new HashMap();
 		String begin = null;
+		
+		//begin mg 20071127
+		if(currentManuscriptEvent.isStartElement()) {
+			if (hasSmilAttributes(currentManuscriptEvent.asStartElement())) {
+				getSmilContext(currentManuscriptEvent.asStartElement(), attrs);
+				attrs.remove("smilref");
+				begin = (String) attrs.remove(smilClipBegin);
+			}
+		}
+		//end mg 20071127
+		
 		while (elemCount > 0) {
 			XMLEvent event = reader.nextEvent();
 			if (event.isEndElement()) {
@@ -1431,7 +1445,7 @@ public class NCXMaker implements BusListener {
 				Element authorElement = 
 					(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:*[@id='author']", mNsc);
 				authorElement.removeAttribute("id");
-				handleDocMisc(reader, authorElement);
+				handleDocMisc(reader, authorElement, event);
 				authorFound = true;
 			}
 			
@@ -1441,7 +1455,7 @@ public class NCXMaker implements BusListener {
 				Element titleElement = 
 					(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:*[@id='title']", mNsc);
 				titleElement.removeAttribute("id");
-				handleDocMisc(reader, titleElement);				
+				handleDocMisc(reader, titleElement, event);				
 				titleFound = true;
 			}
 		}
