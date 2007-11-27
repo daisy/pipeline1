@@ -232,13 +232,13 @@ samples/input/xhtml/mixed-content.html -text
 samples/input/xhtml/multi-language-unicode.html -text
 samples/input/xhtml/xhtml-rdf.xml -text
 scripts/_dev/Daisy202toZ3986-2005.taskScript -text
-scripts/_dev/DtbookToRtf.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
 scripts/_dev/XMLAudioAligner.taskScript -text
 scripts/_dev/Xhtml2Dtbook.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
 scripts/conversion/advanced/WordMLtoDTBook.taskScript -text
+scripts/conversion/simple/DtbookToRtf.taskScript -text
 scripts/conversion/simple/DtbookToXhtml.taskScript -text
 scripts/conversion/simple/HtmlToXhtml.taskScript -text
 scripts/conversion/simple/OdfToDtbook.taskScript -text

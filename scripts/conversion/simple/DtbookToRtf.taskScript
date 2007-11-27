@@ -3,7 +3,7 @@
 <taskScript version="2.0" name="DtbookToRtf">
  <nicename>DTBook to RTF</nicename>
  <description>Convert a DTBook document to RTF</description>
- <documentation uri="../../../doc/scripts/DTBookToRtf.html" />
+ <documentation uri="../../../doc/scripts/DTBookToRTF.html" />
  <comment />
  
  <parameter name="input" value="" required="true">
