@@ -1,27 +1,19 @@
 package se_tpb_aligner;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.XMLEvent;
-
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.EFile;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.xml.LanguageReporter;
-import org.daisy.util.xml.pool.StAXInputFactoryPool;
 
 import se_tpb_aligner.align.Aligner;
 import se_tpb_aligner.align.AlignerException;
@@ -87,6 +79,7 @@ public class AlignerDriver extends Transformer {
 			LanguageReporter langReporter = new LanguageReporter(mInputDoc.toURI().toURL());
 			mLanguage = langReporter.getRootLanguage();
 			if(null==mLanguage) throw new TransformerRunException(i18n("NO_ROOT_LANGUAGE"));
+			
 			
 			/*
 			 * Instantiate a PreProcessor
@@ -225,20 +218,6 @@ public class AlignerDriver extends Transformer {
 
 		return true;
 		
-	}
-
-	private int countElements(File doc) throws FileNotFoundException, XMLStreamException {
-		EFile efile = new EFile(doc);
-		Map properties = null;
-		int k = 0;
-		XMLInputFactory xif = StAXInputFactoryPool.getInstance().acquire(properties);
-		XMLEventReader xer = xif.createXMLEventReader(efile.asInputStream());
-		while(xer.hasNext()) {
-			XMLEvent xe = xer.nextEvent();
-			if (xe.isStartElement()) ++k;			
-		}		
-		StAXInputFactoryPool.getInstance().release(xif, properties);
-		return k;
 	}
 
 	private DivisionStrategy setDivisionStrategy(Map parameters) throws TransformerRunException {
