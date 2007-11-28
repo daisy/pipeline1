@@ -96,9 +96,6 @@ public abstract class Transformer implements BusListener {
 		mIsInteractive = isInteractive.booleanValue();
 		mInputListener = inListener;
 		
-		//subscribe to user events
-		EventBus.getInstance().subscribe(this, UserEvent.class);
-		
 		//load local messages file
 		try {
 			/*

@@ -52,6 +52,7 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.CoreMessageEvent;
 import org.daisy.pipeline.core.event.EventBus;
 import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.UserEvent;
 import org.daisy.pipeline.core.script.Task;
 import org.daisy.pipeline.exception.NotSupposedToHappenException;
 import org.daisy.pipeline.exception.TransformerDisabledException;
@@ -273,7 +274,14 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
             throw new TransformerRunException(i18n("TRANSFORMER_INVOCATION_PROBLEM"), e);
         }
 
-        return transformer.executeWrapper(runParameters, mTransformerDirectory);
+		EventBus.getInstance().subscribe(transformer, UserEvent.class);
+		boolean res=false;
+        try {
+			res=transformer.executeWrapper(runParameters, mTransformerDirectory);
+		} finally {
+			EventBus.getInstance().unsubscribe(transformer, UserEvent.class);
+		}
+        return res;
     }
 
     /**
