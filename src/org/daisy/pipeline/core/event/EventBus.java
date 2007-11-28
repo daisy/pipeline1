@@ -39,6 +39,13 @@ public class EventBus {
 	 * some point using {@link #unsubscribe(BusListener, Class)}.
 	 * </p>
 	 * 
+	 * <p>Note also that the TransformerHandler class handles subscribing 
+	 * and unsubscribing main Transformer instances; as a Transformer developer,
+     * you only need to worry about sub- and unsubscribing delegates. </p>
+     * 
+     * <p>(The TransformerDelegateListener interface can be used by Transformer 
+     * delegates to get access to the event framework without the need for subscription.)</p>
+	 * 
 	 * @param subscriber
 	 *            The object that is subscribing.
 	 * @param type
@@ -80,8 +87,7 @@ public class EventBus {
 	 *            that has subclasses infers unsubscription from these
 	 *            subclasses as well.
 	 */
-	public void unsubscribe(BusListener subscriber,
-			Class<? extends EventObject> type) {
+	public void unsubscribe(BusListener subscriber, Class<? extends EventObject> type) {
 		// unsubscribe from the event
 		Set<BusListener> listeners = mListenersMap.get(type);
 		if (listeners != null)
@@ -142,5 +148,15 @@ public class EventBus {
 		}
 		return false;
 	}
+	
+    /**
+     * Get a list of all currently registered listeners.
+     * <p>Warning - this method is for debug purposes only. Do not use this to force 
+     * unsubcription; ensure proper usage of local sub- and unsubscription instead.</p>
+     */
+    public Map<Class<? extends EventObject>, Set<BusListener>>  getRegisteredListeners() {
+    	System.err.println("Warning: you are using a debug only method (EventBus#getRegisteredListeners())");
+    	return mListenersMap;
+    }
 
 }
