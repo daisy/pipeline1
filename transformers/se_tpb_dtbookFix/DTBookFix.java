@@ -52,11 +52,9 @@ import org.xml.sax.SAXParseException;
 
 
 /**
-<<<<<<< .mine
  * Main Transformer class. 
  * <p>See ../doc/transformers/se_tpb_dtbookFix for further details.</p>
  * <p>Individial Executors (XSLTs, classes) have inline documentaiton as well.</p>
-=======
  * Main Transformer class. See ../doc/transformers/se_tpb_dtbookFix for further details.
  * /**
  * 
@@ -102,7 +100,6 @@ import org.xml.sax.SAXParseException;
  *   - Move indent to separate step and add parameter for indentation.
  *   - Move repairing operations in tidy-pagenum-fix.xsl to repair.
  *   
->>>>>>> .r1544
  * @author Joel Håkansson, Markus Gylling 
  */
 public class DTBookFix extends Transformer implements URIResolver, TransformerDelegateListener, ValidatorListener, FilesetErrorHandler {
@@ -502,6 +499,14 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	@SuppressWarnings("unused")
 	public void delegateProgress(Object delegate,double progress) {
 		//ignore				
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateCheckAbort()
+	 */
+	public boolean delegateCheckAbort() {
+		return super.isAborted();		
 	}
 	
 	/*
