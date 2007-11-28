@@ -29,6 +29,7 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 
 	private ZedContext mCurrentZedContext = null;
 	private URI mInputOpf = null;
+	//private ZedMap zedMap = null;
 
 	/**
 	 * Constructor.
@@ -70,7 +71,7 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 			ZedVal zedval = new ZedVal();
 			mValidatorListener.inform(this, "Validating with ZedVal version " + zedval.getVersion());
 			try {
-				zedval.setReporter(this);
+				zedval.setReporter(this);														
 				zedval.validate(new File(mInputOpf));
 			} catch (ZedContextException e) {
 				throw new ValidatorException(e.getMessage(),e);
@@ -87,9 +88,9 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 	 * @see org.daisy.util.fileset.validation.Validator#reset()
 	 */
 	public void reset() {
-		super.reset();
-		mCurrentZedContext = null;
+		super.reset();		
 		mInputOpf = null;
+		
 		//TODO reset local member vars
 	}
 
@@ -104,19 +105,23 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 			//we have an invalidity report
 			FailureMessage fm = (FailureMessage)zm;
 			
-			URI f = fm.getFile().toURI();
-			String msg = fm.getText();
+			URI f = fm.getFile().toURI();			
 			int line = (int)fm.getLine();
 			int col = (int)fm.getColumn();
 			
+			String detailMessage = fm.getText();
+			ZedMessage mapm = (ZedMessage)fm.getTest().getOnFalseMsgs().get("long");
+			String mapMessage = mapm.getText();
+			if(!detailMessage.contains("no details")) mapMessage = mapMessage + ". " + detailMessage;						
+			
 			if(fm.getTest()!=null && fm.getTest().getType() == ZedTest.RECOMMENDATION) {
-				mValidatorListener.report(this, new ValidatorWarningMessage(f,msg,line,col));
+				mValidatorListener.report(this, new ValidatorWarningMessage(f,mapMessage,line,col));
 			}else{
-				mValidatorListener.report(this, new ValidatorErrorMessage(f,msg,line,col));
+				mValidatorListener.report(this, new ValidatorErrorMessage(f,mapMessage,line,col));
 			}			
 		} else{
 			//we have a failure-to-validate (ErrorMessage)
-			ErrorMessage em = (ErrorMessage) zm;
+			ErrorMessage em = (ErrorMessage) zm;			
 			//TODO we may need to cast further down and get precise info
 			ValidatorException ve = new ValidatorException(em.getText());
 			mValidatorListener.exception(this, ve);			
