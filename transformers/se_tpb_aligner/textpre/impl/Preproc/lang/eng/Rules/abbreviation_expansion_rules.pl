@@ -27,6 +27,8 @@ sub abbreviation_expansion {
 			$expansions	=~	s/;.*$//;
 			$exp{ $curr }	=	$expansions;
 			
+#			print "JOJO $expansions\n";
+			
 		} elsif (
 			# Special contextual rules.
 			$context	eq	"SPECIAL"
@@ -217,6 +219,7 @@ sub abbreviation_context {
 		$apply_rule	=	&abbreviation_rule_7($context);
 	}
 		
+		
 	# No rule was applied, don't expand.
 	if ($apply_rule		==	100) {
 		$exp{ $curr }	=	"<NONE>";
@@ -246,12 +249,12 @@ sub abbreviation_rule_1 {
 	
 	my $apply_rule	=	100;
 	
-#	print "\n---------------\n222. $orthography{$prev_2}\t111. $pos{$prev_1}\n\n";
+#	print "\n---------------\n222. $orthography{$prev_2}\t111. $orthography{$prev_1}\n\n";
 	
 	if ( exists ( $orthography{ $prev_1 } )) {
 	
 		if ( 
-			$orthography{ $prev_1 }		=~	/^(?:[02-9]|\d\d)$/
+			$orthography{ $prev_1 }		=~	/^(?:[02-9]|\d\d+)$/
 			||
 			(exists ( $orthography{ $prev_2 } )
 			&&
@@ -261,6 +264,7 @@ sub abbreviation_rule_1 {
 				
 		) {
 			$apply_rule			=	1;
+#			print "AAA $apply_rule\n";
 			
 		} elsif (
 			$orthography{ $prev_1 }		=~	/^(?:1|[\.\,]5)$/

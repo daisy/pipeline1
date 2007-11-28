@@ -152,7 +152,7 @@ sub character_expansion {
 			&plus_minus_expansion();
 	
 		} elsif ( $ort{ $curr }	  	eq	"†"		) {	# dagger
-			&expansion();
+			&dagger_expansion();
 	
 	#	} elsif ( $ort{ $curr }	  	eq	"‡"		) {	# obelisk
 	#		&expansion();
@@ -447,36 +447,45 @@ sub parenthesis_expansion {
 	
 	) {
 
+		# Current location
 		my $cmp_curr	=	$curr;
 		$cmp_curr	=~	s/^0+(\d+)$/$1/;
-		my $par_counter = 0;
+		
+		# Location counter
+		my $loc_counter = 0;
 
-#		print "\n\nLLLLL @orthography_list\n\n\n";
 
 		# Look for closing parenthesis at least three words from current position.
 		foreach my $loc (@orthography_list) {
-		
+
+			# Location comparison
 			my $cmp_loc	=	$loc;
 			$cmp_loc	=~	s/^0+(\d+)$/$1/;
+			
+			
+#			print "OOO $cmp_loc\t\t$cmp_curr\t\t$ort{ $curr }\n"; exit;
 			
 #			print "PL $pos{ $loc}\t$par_counter\n";
 			
 			# Look only to the right of current.
-			if ( $cmp_loc > $cmp_curr && ($pos{ $loc } !~ /DEL/ || $orthography{$loc} eq ")")) {
-				$par_counter++;
+			if ( $cmp_loc > $cmp_curr && ($pos{ $loc } ne 'DEL' || $orthography{$loc} eq ")")) {
+				$loc_counter++;
 				
-#				print "\n------------\nLOC: $loc\tCURR: $curr\nPC: $par_counter\nOO $orthography{$loc}\n\n";
+#				print "--------------------------\nStart loc: $cmp_curr\tThis loc: $cmp_loc\nThis ort: $orthography{ $loc }\tThis pos: $pos{ $loc }\nCOUNT: $par_counter\tLIMIT: $expand_limit\n";
+#				print "\n------------\nLOC: $loc\tCURR: $cmp_curr\t$ort{ $curr }\nPC: $par_counter\nOO $orthography{$loc}\nLIMIT: $expand_limit\n\n";
 	
 				if (
-					$par_counter >= $expand_limit
+					$loc_counter >= $expand_limit + 1
 					&&
 					$orthography{ $loc }	eq	")"
 				) {
+#					print "PC $par_counter\t\tEL: $expand_limit\n\n";
 					$exp{ $curr }	=	"parenthesis";
 					$pause{ $curr }	=	"$parenthesis_pause_before|$parenthesis_pause_after";
 					$exp{ $loc }	=	"end of parenthesis";
 					$pause{ $loc }	=	"$parenthesis_pause_before|$parenthesis_pause_after";
 					$expanded	=	"1";
+#					print "EXP: $exp{ $curr}\t$exp{ $loc}\n";
 				}
 					
 	
@@ -505,28 +514,35 @@ sub square_bracket_expansion {
 	
 	) {
 
+		# Current location
 		my $cmp_curr	=	$curr;
 		$cmp_curr	=~	s/^0+(\d+)$/$1/;
-		my $par_counter = 	0;
+		
+		# Location counter
+		my $loc_counter = 0;
 
-#		print "\n\nLLLLL @orthography_list\n\n\n";
 
 		# Look for closing parenthesis at least three words from current position.
 		foreach my $loc (@orthography_list) {
-		
+
+			# Location comparison
 			my $cmp_loc	=	$loc;
 			$cmp_loc	=~	s/^0+(\d+)$/$1/;
+			
+			
+#			print "OOO $cmp_loc\t\t$cmp_curr\t\t$ort{ $curr }\n"; exit;
 			
 #			print "PL $pos{ $loc}\t$par_counter\n";
 			
 			# Look only to the right of current.
-			if ( $cmp_loc > $cmp_curr && ($pos{ $loc } !~ /DEL/ || $orthography{$loc} eq "]")) {
-				$par_counter++;
+			if ( $cmp_loc > $cmp_curr && ($pos{ $loc } ne 'DEL' || $orthography{$loc} eq "]")) {
+				$loc_counter++;
 				
-#				print "\n------------\nLOC: $loc\tCURR: $curr\nPC: $par_counter\nOO $orthography{$loc}\n\n";
+#				print "--------------------------\nStart loc: $cmp_curr\tThis loc: $cmp_loc\nThis ort: $orthography{ $loc }\tThis pos: $pos{ $loc }\nCOUNT: $par_counter\tLIMIT: $expand_limit\n";
+#				print "\n------------\nLOC: $loc\tCURR: $cmp_curr\t$ort{ $curr }\nPC: $par_counter\nOO $orthography{$loc}\nLIMIT: $expand_limit\n\n";
 	
 				if (
-					$par_counter >= $expand_limit
+					$loc_counter >= $expand_limit + 1
 					&&
 					$orthography{ $loc }	eq	"]"
 				) {
@@ -560,6 +576,66 @@ sub curly_bracket_expansion {
 # doublequote_expansion
 #**************************************************************#
 sub doublequote_expansion {
+	
+	my $expanded = 0;
+	
+	if (
+		$ort{ $curr }	=~	/^[\"\»\«]$/
+	
+	) {
+
+		# Current location
+		my $cmp_curr	=	$curr;
+		$cmp_curr	=~	s/^0+(\d+)$/$1/;
+		
+		# Location counter
+		my $loc_counter = 0;
+
+
+		# Look for closing parenthesis at least three words from current position.
+		foreach my $loc (@orthography_list) {
+
+			# Location comparison
+			my $cmp_loc	=	$loc;
+			$cmp_loc	=~	s/^0+(\d+)$/$1/;
+			
+			
+#			print "OOO $cmp_loc\t\t$cmp_curr\t\t$ort{ $curr }\n"; exit;
+			
+#			print "PL $pos{ $loc}\t$par_counter\n";
+			
+			# Look only to the right of current.
+			if ( $cmp_loc > $cmp_curr && ($pos{ $loc } ne 'DEL' || $orthography{$loc} =~ /^[\"\»\«]$/)) {
+				$loc_counter++;
+				
+#				print "--------------------------\nStart loc: $cmp_curr\tThis loc: $cmp_loc\nThis ort: $orthography{ $loc }\tThis pos: $pos{ $loc }\nCOUNT: $par_counter\tLIMIT: $expand_limit\n";
+#				print "\n------------\nLOC: $loc\tCURR: $cmp_curr\t$ort{ $curr }\nPC: $par_counter\nOO $orthography{$loc}\nLIMIT: $expand_limit\n\n";
+	
+				if (
+					$loc_counter >= $expand_limit + 1
+
+					&&
+					$orthography{ $loc }	=~	/^[\"\»\«]$/
+				) {
+					$exp{ $curr }	=	"quote";
+					$pause{ $curr }	=	"$parenthesis_pause_before|$parenthesis_pause_after";
+					$exp{ $loc }	=	"unquote";
+					$pause{ $loc }	=	"$parenthesis_pause_before|$parenthesis_pause_after";
+					$expanded	=	"1";
+				}
+					
+	
+			}
+			
+		} # end foreach $loc
+	}
+	
+	# If expansion isn't applied, add pause.
+	if ( $expanded == 0 ) {
+		$exp{ $curr } 	=	"<NONE>";
+		$pause{ $curr }	=	"$parenthesis_pause";
+	}
+
 }
 #**************************************************************#
 # singlequote_expansion

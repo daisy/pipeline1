@@ -20,7 +20,7 @@ S # 'e s: # LT
 T # t 'i2: # LT
 U # j 'u4: # LT
 V # v 'i2: # LT
-W # d 'a b ë l - v i2: # LT
+W # d 'a b ë l - j u4: # LT
 X # 'e k: s # LT
 Y # w 'a j # LT
 Z # z 'e d # LT
@@ -46,7 +46,7 @@ s # 'e s: # LT
 t # t 'i2: # LT
 u # j 'u4: # LT
 v # v 'i2: # LT
-w # d 'a b ë l - v i2: # LT
+w # d 'a b ë l - j u4: # LT
 x # 'e k: s # LT
 y # w 'a j # LT
 z # z 'e d # LT

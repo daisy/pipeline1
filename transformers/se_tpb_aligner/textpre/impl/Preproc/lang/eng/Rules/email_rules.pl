@@ -129,7 +129,7 @@ sub email_1 {
 						$type{ $rc }	=	"EMAIL";
 						
 						# Domain							
-						if ( $ort{ $rc }	=~	/^$domain_list$/i ) {
+						if ( $ort{ $rc }	=~	/^(?:$domain_list)$/i ) {
 							&domain_rule($rc);
 						}
 			
@@ -154,7 +154,7 @@ sub domain_rule {
 							
 	my $o = lc($ort{ $loc });
 	$transcription{ $loc }	=	$domain_list{ $o };
-	$lang{ $loc }		=	"swe";
+	$lang{ $loc }		=	"eng";
 	$morphology{ $loc }	=	"-";
 	$pos{ $loc }		=	"DOMAIN";
 }

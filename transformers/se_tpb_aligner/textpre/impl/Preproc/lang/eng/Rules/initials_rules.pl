@@ -43,14 +43,18 @@ sub initials_1 {
 			&&
 			$pos{ $next_2 }		eq	"DEL"
 			&&
-			$pos{ $next_3 }		=~	/^PM/
+			(
+				$pos{ $next_3 }		=~	/^PM/
+				||
+				$ort{ $next_3 }		=~	/^[A-Z][a-z]/
+			)
 		) {
 			$type{ $curr }		=	"INITIAL";
 			$type{ $next_1 }	=	"INITIAL";
 			
 			$pos{ $curr }		=	"PM";
 			$morphology{ $curr }	=	"NOM";
-			$lang{ $curr }		=	"swe";
+			$lang{ $curr }		=	"eng";
 			
 			$transcription{ $curr }	=	$alphabet{ $ort{ $curr } };
 			&initial_spread_1();
@@ -69,14 +73,18 @@ sub initials_1 {
 			&&
 			$ort{ $next_1 }		eq	"."
 			&&
-			$pos{ $next_2 }		=~	/^PM/
+			(
+				$pos{ $next_2 }		=~	/^PM/
+				||
+				$ort{ $next_2 }		=~	/^[A-Z][a-z]/
+			)
 		) {
 			$type{ $curr }		=	"INITIAL";
 			$type{ $next_1 }	=	"INITIAL";
 			
 			$pos{ $curr }		=	"PM";
 			$morphology{ $curr }	=	"NOM";
-			$lang{ $curr }		=	"swe";
+			$lang{ $curr }		=	"eng";
 
 			$transcription{ $curr }	=	$alphabet{ $ort{ $curr } };
 			&initial_spread_1();
@@ -94,13 +102,17 @@ sub initials_1 {
 			&&
 			$pos{ $next_1 }		eq	"DEL"
 			&&
-			$pos{ $next_2 }		=~	/^PM/
+			(
+				$pos{ $next_2 }		=~	/^PM/
+				||
+				$ort{ $next_2 }		=~	/^[A-Z][a-z]/
+			)
 		) {
 			$type{ $curr }		=	"INITIAL";
 			
 			$pos{ $curr }		=	"PM";
 			$morphology{ $curr }	=	"NOM";
-			$lang{ $curr }		=	"swe";
+			$lang{ $curr }		=	"eng";
 
 			$transcription{ $curr }	=	$alphabet{ $ort{ $curr } };
 			&initial_spread_1();
@@ -136,14 +148,18 @@ sub initials_2 {
 			&&
 			$ort{ $prev_2 }		eq	","
 			&&
-			$pos{ $prev_3 }		=~	/^PM/
+			(
+				$pos{ $prev_3 }		=~	/^PM/
+				||
+				$ort{ $prev_3 }		=~	/^[A-Z][a-z]/
+			)
 		) {
 			$type{ $curr }		=	"INITIAL";
 			$type{ $next_1 }	=	"INITIAL";
 			
 			$pos{ $curr }		=	"PM";
 			$morphology{ $curr }	=	"NOM";
-			$lang{ $curr }		=	"swe";
+			$lang{ $curr }		=	"eng";
 			$transcription{ $curr }	=	$alphabet{ $ort{ $curr } };
 
 			&initial_spread_2();
@@ -161,13 +177,17 @@ sub initials_2 {
 			&&
 			$ort{ $prev_1 }		=~	/^[\.\, ]$/
 			&&
-			$pos{ $prev_2 }		=~	/^PM/
+			(
+				$pos{ $prev_2 }		=~	/^PM/
+				||
+				$ort{ $prev_2 }		=~	/^[A-Z][a-z]/
+			)
 		) {
 			$type{ $curr }		=	"INITIAL";
 			
 			$pos{ $curr }		=	"PM";
 			$morphology{ $curr }	=	"NOM";
-			$lang{ $curr }		=	"swe";
+			$lang{ $curr }		=	"eng";
 			$transcription{ $curr }	=	$alphabet{ $ort{ $curr } };
 
 			&initial_spread_2();
@@ -197,13 +217,17 @@ sub initials_2 {
 			&&
 			$ort{ $prev_2 }		eq	","
 			&&
-			$pos{ $prev_3 }		=~	/^PM/
+			(
+				$pos{ $prev_3 }		=~	/^PM/
+				||
+				$ort{ $prev_3 }		=~	/^[A-Z][a-z]/
+			)
 		) {
 			$type{ $curr }		=	"INITIAL";
 			
 			$pos{ $curr }		=	"PM";
 			$morphology{ $curr }	=	"NOM";
-			$lang{ $curr }		=	"swe";
+			$lang{ $curr }		=	"eng";
 
 			$transcription{ $curr }	=	$alphabet{ $ort{ $curr } };
 

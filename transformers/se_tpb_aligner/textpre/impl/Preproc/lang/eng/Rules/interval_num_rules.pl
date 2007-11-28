@@ -7,6 +7,7 @@ sub interval_num_subs {
 	my $index_list = shift;
 	($prev_10,$prev_9,$prev_8,$prev_7,$prev_6,$prev_5,$prev_4,$prev_3,$prev_2,$prev_1,$curr,$next_1,$next_2,$next_3,$next_4,$next_5,$next_6,$next_7,$next_8,$next_9,$next_10) = split/\|/,$index_list;
 
+
 	&interval_num_1();
 	&interval_num_2();
 	
@@ -75,7 +76,8 @@ sub interval_num_1 {
 #		
 #**************************************************************#
 sub interval_num_2 {
-
+	
+	
 	# With blanks
 	if ( exists ( $ort{ $prev_2 } ) && exists ($ort{ $next_2 } )) {
 		
@@ -93,13 +95,21 @@ sub interval_num_2 {
 			# Context
 			$ort{ $curr }		eq	"-"
 			&&
-			$type{ $prev_2 }	=~	/^NUM/
+			(
+				$type{ $prev_2 }	=~	/^NUM/
+				||
+				$pos{ $prev_2 }		=~	/NUM/
+			)
 			&&
 			$pos{ $prev_1 }		eq	"DEL"
 			&&
 			$pos{ $next_1 }		eq	"DEL"
 			&&
-			$type{ $next_2 }	=~	/^NUM/
+			(
+				$type{ $next_2 }	=~	/^NUM/
+				||
+				$pos{ $next_2 }		=~	/NUM/
+			)
 		) {
 			# Retag
 			$type{ $curr }		=	"INTERVAL";
@@ -124,9 +134,17 @@ sub interval_num_2 {
 			# Context
 			$ort{ $curr }		eq	"-"
 			&&
-			$type{ $prev_1 }	=~	/^NUM/
+			(
+				$type{ $prev_1 }	=~	/^NUM/
+				||
+				$pos{ $prev_1 }		=~	/NUM/
+			)
 			&&
-			$type{ $next_1 }	=~	/^NUM/
+			(
+				$type{ $next_1 }	=~	/^NUM/
+				||
+				$pos{ $next_1 }		=~	/NUM/
+			)
 		) {
 			# Retag
 			$type{ $curr }		=	"INTERVAL";

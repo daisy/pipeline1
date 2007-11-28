@@ -86,15 +86,29 @@ sub time_2 {
 			$ort{ $next_1 }	eq	":"			# :
 			&&
 			$ort{ $next_2 }	=~	/^\d\d$/io		# 45
+			
 					
 		) {
-			# Retag
-			$type{ $curr }		=	"TIME";
-			$type{ $next_1 }	=	"TIME";
-			$type{ $next_2 }	=	"TIME";
 			
-			$pos{ $curr }		=	"NUM CARD";
-			$pos{ $next_2 }		=	"NUM CARD";
+			if ( exists $ort{ $next_3 } ) {
+				if ( $ort{ $next_3} ne '-' ) {
+					# Retag
+					$type{ $curr }		=	"TIME";
+					$type{ $next_1 }	=	"TIME";
+					$type{ $next_2 }	=	"TIME";
+					
+					$pos{ $curr }		=	"NUM CARD";
+					$pos{ $next_2 }		=	"NUM CARD";
+				}
+			} else {
+				# Retag
+				$type{ $curr }		=	"TIME";
+				$type{ $next_1 }	=	"TIME";
+				$type{ $next_2 }	=	"TIME";
+				
+				$pos{ $curr }		=	"NUM CARD";
+				$pos{ $next_2 }		=	"NUM CARD";
+			}
 		}
 	} # end exists
 }

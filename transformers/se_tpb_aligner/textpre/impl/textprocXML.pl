@@ -11,8 +11,9 @@ use File::Basename;
  ( $dummy,$outfile ) = split/\=/,$ARGV[2];
  ( $dummy,$mode ) = split/\=/,$ARGV[3];
  
- 
- 
+
+# C:\TPB\Aligner\textpre>perl textprocXML.pl --inputXML=C:/eclipse/aligner-input/xml/1/christ-pages.xml --inputLanguage=en --resultPath=C:/TPB/Aligner/textpre/out.xml --mode=align  
+
 open OUT,">:utf8","$outfile" or die "Cannot open $outfile: $!";
 
 #$preproc_path = "C:/eclipse/workspace/pipeline2/transformers/se_tpb_aligner/textpre/impl/Preproc";
@@ -53,6 +54,8 @@ $parser->parsefile($xmlfile);
 
 sub startElement {
 	my( $parseinst, $element, %attrs ) = @_;
+
+	$pageFlag = 0;
 	
 	print OUT "<$element";
 	while (($k,$v) = each ( %attrs )) {
@@ -67,42 +70,79 @@ sub startElement {
 	if ( $element ne "meta" ) {
 		print OUT ">";
 	}
+
+	# Structure announcer
+	if ( $element =~ /blockquote/i ) {
+		print OUT "<ssml:sub ssml:alias\=\"Quote.\"><\/ssml:sub>";
+	
+	} elsif ( $element =~ /table/i ) {
+		print OUT "<ssml:sub ssml:alias\=\"Table.\"><\/ssml:sub>";
+	
+	} elsif ( $element =~ /caption/i ) {
+		print OUT "<ssml:sub ssml:alias\=\"Caption.\"><\/ssml:sub>";
+	
+	} elsif ( $element =~ /sidebar/i ) {
+		print OUT "<ssml:sub ssml:alias\=\"Side bar.\"><\/ssml:sub>";
+	
+	} elsif ( $element =~ /page/i ) {
+		$pageFlag = 1;
+	}
+
 }
 
 sub endElement {
-       my( $parseinst, $element ) = @_;
+	my( $parseinst, $element ) = @_;
 	
+	# Structure announcer
+	if ( $element eq "blockquote" ) {
+		print OUT "<ssml:sub ssml:alias\=\"End of quote.\"><\/ssml:sub>";
+	
+	} elsif ( $element eq "table" ) {
+		print OUT "<ssml:sub ssml:alias\=\"End of table.\"><\/ssml:sub>";
+	
+	} elsif ( $element eq "caption" ) {
+		print OUT "<ssml:sub ssml:alias\=\"End of caption.\"><\/ssml:sub>";
+	
+	} elsif ( $element eq "sidebar" ) {
+		print OUT "<ssml:sub ssml:alias\=\"End of side bar.\"><\/ssml:sub>";
+	}		
+
 	if ( $element eq "meta" ) {
 		print OUT "/>";
 	} else {
 		print OUT "</$element>";
 	}
+
+
+
 }
 
 
 sub characterData {
        my( $parseinst, $data ) = @_;
 
-
-#		if ( $data !~ /^\s*$/ ) {
-
-			# Swedish text processing
-			if ( $xml_lang eq "sv" ) {
+	# Swedish text processing
+	if ( $xml_lang eq "sv" ) {
 				
-				$data = &process_string($data,"swe",$mode);
+		$data = &process_string($data,"swe",$mode);
 						
-			# English text processing
-			} elsif ( $xml_lang =~ /^en/i ) {
-				
-				$data = &process_string($data,"eng",$mode);
-				
-			}
-						
-			# Remove unnecessary ssml (e.g. break information)
-			$data = &clean_ssml($data);
+	# English text processing
+	} elsif ( $xml_lang =~ /^en/i ) {
+		$data = &process_string($data,"eng",$mode);
+		
+	}
+
+	# Page numbers
+	if ( $pageFlag == 1 ) {
+		print OUT "<ssml:sub ssml:alias\=\"Page.\"><\/ssml:sub>";
+	}
 	
-			print OUT "$data";
-#		}
+	$pageFlag = 0;
+						
+	# Remove unnecessary ssml (e.g. break information)
+	$data = &clean_ssml($data);
+	
+	print OUT "$data";
 
 }
 #*************************************************************************#

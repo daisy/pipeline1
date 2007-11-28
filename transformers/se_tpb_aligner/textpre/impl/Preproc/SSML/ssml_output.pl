@@ -41,8 +41,8 @@ sub ssml_output {
 		# Abbreviations etc. <sub alias>
 		} elsif ( 	$exp{ $k } 	!~	/^(?:<NONE>|0)$/
 				&&
-				$pos{ $k } =~ /^(?:UNK|0)$/
-				&&
+# 071128 why??			$pos{ $k } =~ /^(?:UNK|0)$/
+#				&&
 				$transcription{ $k } eq $default_transcription
 			) {
 			

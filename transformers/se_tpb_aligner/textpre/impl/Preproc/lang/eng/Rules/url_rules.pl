@@ -36,8 +36,8 @@ sub url_1 {
 		) {	
 
 
-			my @index_list		=	split/\|/,$index_list;
-			@index_list		=	sort(@index_list);
+			my @index_list		=	sort(keys(%orthography)); #split/\|/,$index_list;
+#			@index_list		=	sort(@index_list);
 
 			my $saved_counter 	=	$curr;
 
@@ -49,8 +49,14 @@ sub url_1 {
 			
 			
 			foreach my $rc (@index_list) {
-
-				if ($rc eq "$saved_counter") {
+				
+				my $stripped_rc = $rc;
+				$stripped_rc =~ s/^0+(\d+)$/$1/;
+				my $stripped_curr = $curr;
+				$stripped_curr =~ s/^0+(\d+)$/$1/;
+				
+				# Only check items after $curr location.
+				if ($rc eq "$saved_counter" && $stripped_rc >= $stripped_curr) {
 					$rc_check = 1;
 				}
 
@@ -60,7 +66,10 @@ sub url_1 {
 					$rc_check	==	1
 					&&
 					$pos_tester	==	0
+					&&
+					$counter	<	$#index_list
 				) {
+					
 					if ( 
 						$pos{ $index_list[ $counter ] }	=~	/^(?:(?:MAJ|MIN)[ _]DEL|QUOTE)$/
 						&&
@@ -78,16 +87,18 @@ sub url_1 {
 								
 						$type{ $rc }	=	"URL";
 
+
 						# Domain							
-						if ( $ort{ $rc }	=~	/^$domain_list$/i ) {
+						if ( $ort{ $rc }	=~	/^(?:$domain_list)$/i ) {
+#							print "\n-------------\nORT: $ort{ $rc }\n$domain_list\n\n";
 							&domain_rule($rc);
 						}
 
 					} else {
 						$pos_tester	=	1;
 					}
-#						print "\n\n--------\nRC: $rc\nORT: $ort{$rc}\nPT: $pos_tester\nCOU: $counter\t$saved_counter\nP1: $pos{ $index_list[ $counter ] }\nP2: $index_list[ $counter + 1 ]\n\n";
 
+#					print "\n\n--------\nRC: $rc\nORT: $ort{$rc}\nPT: $pos_tester\nCOU: $counter\t$saved_counter\nP1: $pos{ $index_list[ $counter ] }\nP2: $index_list[ $counter + 1 ]\n\n";
 
 				}
 				$counter++;

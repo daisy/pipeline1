@@ -1,6 +1,15 @@
 CTO # s i2: _ t i2: _ 'öw # ACR NOM lang:en
 NATO # n 'e j t öw # ACR NOM lang:en
 TPB # t i2: _ p i2: _ b 'i2: # ACR NOM lang:en
-www # d a b ë l _ j u4: | d a b ë l _ j u4: | d 'a b ë l j u4: # ACR NOM lang:en
+www # d a b ë l j u4: - d a b ë l j u4: - d 'a b ë l j u4: # ACR NOM lang:en
 http # e j tj3 _ t i2: _ t i2: _ p 'i2: # ACR NOM lang:en
 ISBN # a j e s b i2: 'e n # ACR NOM lang:en
+CIP # s i2: a j p 'i2: # ACR NOM lang:en
+AD # e j d 'i2: # ACR NOM lang:en
+BC-AD # b i2: s 'i2: - t u4: - e j d 'i2: # ACR NOM lang:en
+NIV # e n a j v 'i2: # ACR NOM lang:en
+UK # j u4: _ k 'e j # ACR NOM lang:en
+uk # j u4: _ k 'e j # ACR NOM lang:en
+USA # j u4: _ e s _ 'e j # ACR NOM lang:en
+UN # j u4: _ 'e n # ACR NOM lang:en
+EU # i2: _ j 'u4: # ACR NOM lang:en

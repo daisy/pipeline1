@@ -1,4 +1,5 @@
 zero		z 'i2: r öw
+oh		'öw
 one		w 'a n
 two		t 'u4:
 three		th r3 'i2:

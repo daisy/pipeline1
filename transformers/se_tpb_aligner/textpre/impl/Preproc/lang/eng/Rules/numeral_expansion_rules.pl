@@ -18,11 +18,13 @@ sub num_card_expansion {
 
 		my $ort		=	$ort{ $curr };
 		$ort		=~	s/[ \,]//g;
-			
-
+		
+		my $s = 0;
+		if ( $ort =~ s/s$// ) {
+			$s = 1;
+		}
 
 #		print "POS $pos{$curr}\nORT $ort\n";
-
 
 		#**********************************************#
 		# Conversion into letter string.
@@ -31,7 +33,6 @@ sub num_card_expansion {
 		if ( $type{ $curr }	=~	/ROMAN/ ) {
 			my $arabic	=	&roman2arabic( $ort );
 			$letters	=	&expand_cardinals( $arabic );
-
 			
 		# Arabic numbers
 		} else {
@@ -40,15 +41,20 @@ sub num_card_expansion {
 
 		$letters	=	&insert_and($letters);
 
-
+		
 		#**********************************************#
 		# Conversion into phoneme string.
 		#**********************************************#
 		my $transcription	=	&num_phonemes( $letters );
 
-		$exp{ $curr }		=	$letters;
-		
+#		print "OOO $letters\t$transcription\n";
 
+		if ( $s == 1 ) {
+			$letters .= 's';
+			$transcription .= ' s';
+		}
+
+		$exp{ $curr }		=	$letters;
 		$transcription{ $curr }	=	$transcription;
 		
 #		print "L: $letters\tT: $transcription\n\n";
@@ -66,11 +72,18 @@ sub num_year_expansion {
 		$pos{ $curr }	=~	/YEAR/
 	) {
 
+		my $temp_year = $ort{ $curr };
+	
+		my $s = 0;
+		if ( $temp_year =~ s/s$// ) {
+			$s = 1;
+		}
+
 
 		#**********************************************#
 		# Conversion into letter string.
 		#**********************************************#
-		my $letters	=	&expand_years( $ort{ $curr } );
+		my $letters	=	&expand_years( $temp_year );
 		$letters	=	&insert_and($letters);
 
 #		print "HHHH $ort{ $curr}\t$letters\n";
@@ -79,6 +92,11 @@ sub num_year_expansion {
 		# Conversion into phoneme string.
 		#**********************************************#
 		my $transcription	=	&num_phonemes( $letters );
+
+		if ( $s == 1 ) {
+			$letters .= 's';
+			$transcription .= ' s';
+		}
 
 		$exp{ $curr }		=	$letters;
 		$transcription{ $curr }	=	$transcription;
@@ -167,11 +185,11 @@ sub expand_cardinals {
 
 	# 00
 	if ($num =~ /^00$/) {
-		$num_exp = "zero zero";
+		$num_exp = "oh oh";
 
 	# 000
 	} elsif ($num =~ /^000$/) {
-		$num_exp = "zero zero zero";
+		$num_exp = "oh oh oh";
 
 	# Initial "0", spell the number.
 	# The number is part of email/url/file name and 
@@ -201,6 +219,7 @@ sub expand_cardinals {
 	# Normal numbers (no initial zeroes).
 	} else {
 
+		
 		# Split into 3-digit clusters.
 		until ($num !~ /\d\d\d\d(\s|$)/) {
 			$num =~ s/(\d\d\d)(\s|$)/ $1$2/;
@@ -235,7 +254,7 @@ sub expand_cardinals {
 		$num_exp = join" ",@num_exp;
 
 	
-		if ($num_exp !~ /^zero(?: zero)*$/) {
+		if ($num_exp !~ /^oh(?: oh)*$/) {
 		
 			# Skriv ihop om det är ett jämnt thousandtal, annars isär.
 			#if ($num =~ /000$/) {
@@ -252,7 +271,8 @@ sub expand_cardinals {
 			$num_exp =~ s/([a-z]) ([a-z]+( thousand) [a-z]+)$/$1 millions $2/;
 			$num_exp =~ s/([a-z]) ([a-z]+( millions?) [a-z]+( thousand) [a-z]+)$/$1 billions $2/;
 		
-			$num_exp =~ s/zero/ /g;
+			$num_exp =~ s/oh/ /g;
+			$num_exp =~ s/tw u/twohu/g;
 			
 			$num_exp =~ s/(^| )hundred(thousand)?/$1 /g;
 			$num_exp =~ s/(millions|billions)\s*(millions|thousand)/$1/g;
@@ -264,7 +284,7 @@ sub expand_cardinals {
 			$num_exp =~ s/(billions?) millions?/$1/;
 			$num_exp =~ s/ +$//;
 			
-		} # end if $num_exp !~ zero zero
+		} # end if $num_exp !~ oh oh
 
 	} # end if årtal med fyra siffror
 
@@ -295,7 +315,7 @@ sub num_10_19 {
 sub num_20_99 {
 	my $num = shift;
 	my ($first,$second) = split//,$num;
-	my $first_exp = "zero";
+	my $first_exp = "oh";
 	if ($first != 0) {
 		$first_exp = $num_20_90{$first};
 	}
@@ -360,6 +380,7 @@ sub num_phonemes {
 		foreach my $temp_o (@temp_ort) {
 			$temp_o =~ s/^ +//; $temp_o =~ s/ +$//;
 
+			# print "TO $temp_o\n";
 
 			if (exists($num_trk{$temp_o})) {
 				$o_trk = $num_trk{$temp_o};
@@ -441,7 +462,7 @@ sub expand_years {
 			
 		}
 			
-		if ( $second eq "00" ) {
+		if ( $second eq "00" && $first ne '20' ) {
 			
 			$num_exp	.=	"hundred";
 			
@@ -460,9 +481,9 @@ sub expand_years {
 		}
 		
 
-		$num_exp	=~	s/zero$/ /;
+		$num_exp	=~	s/oh$/ /;
 		
-		
+	
 	# Not 4 digits, process as normal cardinal.
 	} else {
 		$num_exp = &expand_cardinals( $num );
