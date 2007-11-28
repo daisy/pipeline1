@@ -55,7 +55,7 @@ public class EventBus {
 	 * @param listener
 	 *            The object that is subscribing.
 	 * @param type
-	 *            The of event class to subscribe to.
+	 *            The class of event to subscribe to.
 	 */
 	public void subscribe(BusListener listener,
 			Class<? extends EventObject> type) {
@@ -92,7 +92,7 @@ public class EventBus {
 	 * @param listener
 	 *            The object that will stop receiving events.
 	 * @param type
-	 *            The of Event object to unsubscribe from.
+	 *            The class of event to unsubscribe from.
 	 */
 	public void unsubscribe(BusListener listener,
 			Class<? extends EventObject> type) {
