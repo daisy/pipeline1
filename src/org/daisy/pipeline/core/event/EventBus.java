@@ -31,7 +31,8 @@ public class EventBus {
 	}
 
 	/**
-	 * Subscribe as a recipient of events from the EventBus.
+	 * Subscribes a listener as a recipient of events from the EventBus (it will
+	 * receive notifications on all the events inheriting from the given class).
 	 * <p>
 	 * <strong>WARNING: </strong> To avoid memory leaks, the caller of this
 	 * method (usually the owner of the <code>listener</code>)
@@ -39,19 +40,22 @@ public class EventBus {
 	 * some point using {@link #unsubscribe(BusListener, Class)}.
 	 * </p>
 	 * 
-	 * <p>Note also that the TransformerHandler class handles subscribing 
-	 * and unsubscribing main Transformer instances; as a Transformer developer,
-     * you only need to worry about sub- and unsubscribing delegates. </p>
-     * 
-     * <p>(The TransformerDelegateListener interface can be used by Transformer 
-     * delegates to get access to the event framework without the need for subscription.)</p>
+	 * <p>
+	 * Note also that the TransformerHandler class handles subscribing and
+	 * unsubscribing main Transformer instances; as a Transformer developer, you
+	 * only need to worry about sub- and unsubscribing delegates.
+	 * </p>
 	 * 
-	 * @param subscriber
+	 * <p>
+	 * (The TransformerDelegateListener interface can be used by Transformer
+	 * delegates to get access to the event framework without the need for
+	 * subscription.)
+	 * </p>
+	 * 
+	 * @param listener
 	 *            The object that is subscribing.
 	 * @param type
-	 *            The of Event object to subscribe to. Registering a class that
-	 *            has subclasses infers subscription to these subclasses as
-	 *            well.
+	 *            The of event class to subscribe to.
 	 */
 	public void subscribe(BusListener listener,
 			Class<? extends EventObject> type) {
@@ -78,20 +82,24 @@ public class EventBus {
 	}
 
 	/**
-	 * Unsubscribe as a receiver of events from the EventBus.
+	 * Unsubscribes the given listener as a receiver of the given class of
+	 * events from the EventBus.
+	 * <p>
+	 * Note that unsubscribing to a class of event does <em>not</em>infers
+	 * unsubscription from subclasses (if such subscription ever occurred).
+	 * </p>
 	 * 
-	 * @param subscriber
-	 *            The object that will stop recieving events.
+	 * @param listener
+	 *            The object that will stop receiving events.
 	 * @param type
-	 *            The of Event object to unsubscribe from. Unsubscribing a class
-	 *            that has subclasses infers unsubscription from these
-	 *            subclasses as well.
+	 *            The of Event object to unsubscribe from.
 	 */
-	public void unsubscribe(BusListener subscriber, Class<? extends EventObject> type) {
+	public void unsubscribe(BusListener listener,
+			Class<? extends EventObject> type) {
 		// unsubscribe from the event
 		Set<BusListener> listeners = mListenersMap.get(type);
 		if (listeners != null)
-			listeners.remove(subscriber);
+			listeners.remove(listener);
 
 		// //unsubscribe from any subclasses of the event
 		// for (Iterator iter = mListenersMap.keySet().iterator();
@@ -107,7 +115,7 @@ public class EventBus {
 
 	/**
 	 * Publish an event in the event bus. Subscribers that have subscribed to
-	 * superclasses of the published event will recieve notification as well.
+	 * super classes of the published event will receive notification as well.
 	 */
 	@SuppressWarnings("unchecked")
 	public void publish(EventObject event) {
@@ -116,7 +124,7 @@ public class EventBus {
 		Set<BusListener> listeners = mListenersMap.get(event.getClass());
 		publish(listeners, event);
 
-		// publish to subscribers of superclasses of the event
+		// publish to subscribers of super classes of the event
 		for (Class klass : mListenersMap.keySet()) {
 			if (isSubclass(event.getClass(), klass)) {
 				Set<BusListener> set = mListenersMap.get(klass);
@@ -148,15 +156,19 @@ public class EventBus {
 		}
 		return false;
 	}
-	
-    /**
-     * Get a list of all currently registered listeners.
-     * <p>Warning - this method is for debug purposes only. Do not use this to force 
-     * unsubcription; ensure proper usage of local sub- and unsubscription instead.</p>
-     */
-    public Map<Class<? extends EventObject>, Set<BusListener>>  getRegisteredListeners() {
-    	System.err.println("Warning: you are using a debug only method (EventBus#getRegisteredListeners())");
-    	return mListenersMap;
-    }
+
+	/**
+	 * Get a list of all currently registered listeners.
+	 * <p>
+	 * Warning - this method is for debug purposes only. Do not use this to
+	 * force unsubscription; ensure proper usage of local sub- and unsubscription
+	 * instead.
+	 * </p>
+	 */
+	public Map<Class<? extends EventObject>, Set<BusListener>> getRegisteredListeners() {
+		System.err
+				.println("Warning: you are using a debug only method (EventBus#getRegisteredListeners())");
+		return mListenersMap;
+	}
 
 }
