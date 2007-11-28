@@ -18,6 +18,9 @@ xmlns:blk="http://www.tpb.se/ns/2007/blockwrapper">
 						<xsl:variable name="group" select="@blk:group"/>
 						<xsl:variable name="tag" select="$tagset/blk:group[@name=$group]"/>
 						<xsl:element name="{$tag/@tag}" namespace="http://www.daisy.org/z3986/2005/dtbook/">
+							<xsl:if test="$tag/@addID='true'">
+								<xsl:attribute name="id" select="generate-id()"/>
+							</xsl:if>
 							<xsl:for-each select="$tag/blk:attribute">
 								<xsl:attribute name="{@name}" select="@value"/>
 							</xsl:for-each>
