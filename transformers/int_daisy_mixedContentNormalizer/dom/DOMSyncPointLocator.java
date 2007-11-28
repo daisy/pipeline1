@@ -61,7 +61,7 @@ public class DOMSyncPointLocator extends AbstractSyncPointLocator  {
             
             Element e = null;            
 		    while ((e=(Element)walker.nextNode())!=null) {					    			    	
-		    	if(mUserAbort) throw new TransformerRunException ("user abort");		    	
+		    	if(mTransformer.delegateCheckAbort()) throw new TransformerRunException ("user abort");		    	
 		    	if(e.getFirstChild()!=null){ //never sync on empty elements
 			    	if(hasOnlyIgnorableChildren(e)) {
 			    		addSyncPoint(e);

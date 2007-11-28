@@ -65,7 +65,7 @@ public class DOMNormalizer extends AbstractNormalizer {
 		    while ((e=(Element)walker.nextNode())!=null) {					    			    	
 		    	mTransformer.delegateProgress(this, 
 		    			((double)mCurrentElementCount/(mInputDocElementCount+mModCount)));
-		    	if(mUserAbort) throw new TransformerRunException ("user abort");	
+		    	if(mTransformer.delegateCheckAbort()) throw new TransformerRunException ("user abort");	
 		    	
 		    	NodeList children = e.getChildNodes();		
 		    	SiblingState state = getSiblingState(children);

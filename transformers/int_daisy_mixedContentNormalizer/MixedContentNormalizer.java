@@ -228,6 +228,14 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 
 	/*
 	 * (non-Javadoc)
+	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateCheckAbort()
+	 */
+	public boolean delegateCheckAbort() {
+		return super.isAborted();		
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */
 	public void error(FilesetFileException ffe) throws FilesetFileException {
