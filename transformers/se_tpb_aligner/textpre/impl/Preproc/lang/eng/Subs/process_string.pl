@@ -9,6 +9,7 @@ sub process_string {
 
 	my ( $string,$lang,$mode ) = @_;
 
+
 	$main_lang = $lang;
 
 	$string =~ s/\&\#x002D\;/-/g;	# mdash
@@ -60,6 +61,7 @@ sub process_string {
 #		&print_all_output();
 	
 
+
 		# Rules for mark-up and expansions.
 		&run_rules($sent);
 	
@@ -83,7 +85,8 @@ sub process_string {
 
 			$push_string = &ssml_output;
 
-			$ret_string .= $push_string;
+
+			$ret_string .= "$push_string ";
 			
 			&print_all_output();
 		} else {

@@ -25,7 +25,6 @@ $preproc_path = "$dirname/Preproc";
 $| = 1;
 
 if ( $xml_lang =~ /^en/i) {
-#	$eng_path = "C:/TPB/Preproc";
 
 	require "$preproc_path/lang/eng/require_files.pl";
 
@@ -40,6 +39,19 @@ if ( $xml_lang =~ /^en/i) {
 	
 }
 
+$xmlfile2 = $xmlfile;
+$xmlfile2 =~ s/\.xml/2\.xml/;
+
+# Parser splits at &#x002D;
+open XML,"$xmlfile" or die "Couldn't open $xmlfile: $!\n";;
+open XML2,">$xmlfile2" or die "Couldn't open $xmlfile2: $!\n";
+while (<XML>) {
+	s/\&\#x002D\;/-/g;	# mdash
+	print XML2 "$_";
+}
+close XML;
+close XML2;
+
 
 my $parser = new XML::Parser;
 
@@ -51,6 +63,8 @@ $parser->setHandlers(
 );
 
 $parser->parsefile($xmlfile);
+
+unlink($xmlfile2) or die "Cannot delete $xmlfile2: $!\n";
 
 sub startElement {
 	my( $parseinst, $element, %attrs ) = @_;
@@ -82,10 +96,18 @@ sub startElement {
 		print OUT "<ssml:sub ssml:alias\=\"Caption.\"><\/ssml:sub>";
 	
 	} elsif ( $element =~ /sidebar/i ) {
-		print OUT "<ssml:sub ssml:alias\=\"Side bar.\"><\/ssml:sub>";
+		print OUT "<ssml:sub ssml:alias\=\"Box in text.\"><\/ssml:sub>";
 	
 	} elsif ( $element =~ /page/i ) {
 		$pageFlag = 1;
+	
+	# If page numbers in table of contents are read as "page n"
+	} elsif ( $element =~ /lic/i ) {
+		while (($k,$v) = each( %attrs )) {
+			if ( $v =~ /pagenum/i ) {
+				$pageFlag = 1;
+			}
+		}
 	}
 
 }
@@ -104,7 +126,7 @@ sub endElement {
 		print OUT "<ssml:sub ssml:alias\=\"End of caption.\"><\/ssml:sub>";
 	
 	} elsif ( $element eq "sidebar" ) {
-		print OUT "<ssml:sub ssml:alias\=\"End of side bar.\"><\/ssml:sub>";
+		print OUT "<ssml:sub ssml:alias\=\"End of box in text.\"><\/ssml:sub>";
 	}		
 
 	if ( $element eq "meta" ) {
@@ -128,8 +150,9 @@ sub characterData {
 						
 	# English text processing
 	} elsif ( $xml_lang =~ /^en/i ) {
+
 		$data = &process_string($data,"eng",$mode);
-		
+
 	}
 
 	# Page numbers
