@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.daisy.pipeline.Version;
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.PreferencesKeys;
 import org.daisy.pipeline.gui.PreferencesUtil;
@@ -34,7 +35,9 @@ import org.daisy.pipeline.gui.util.viewers.ZipLabelProvider;
 import org.daisy.util.mime.MIMEConstants;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizard;
@@ -77,6 +80,8 @@ public class ZipUpdateWizardPage extends WizardPage {
 	protected ZipStructure zipStructure;
 	/** The filter applied to the ZIP content (for ignoring metadata files) */
 	protected ZipUpdateFilter zipFilter = new ZipUpdateFilter();
+	/** The metadata of the update patch */
+	protected ZipUpdateMetadata zipMetadata;
 
 	private boolean isFieldDirty;
 
@@ -163,7 +168,26 @@ public class ZipUpdateWizardPage extends WizardPage {
 	public boolean finish() {
 		ZipUpdateOperation operation = new ZipUpdateOperation(zipStructure,
 				getShell());
-
+		if ((zipMetadata != null)
+				&& !zipMetadata.getVersion().equals(Version.getVersion())) {
+			MessageDialog warningDialog = new MessageDialog(
+					getContainer().getShell(),
+					"Incompatible Version",
+					null,
+					"The version targeted by the selected update patch ["
+							+ zipMetadata.getVersion()
+							+ "] does not match exactly the current version of the DAISY Pipeline ["
+							+ Version.getVersion()
+							+ "]."
+							+ "\nApplying this update patch could be harmful to the DAISY Pipeline installation.\n\nAre you sure you want to contine?",
+					MessageDialog.WARNING, new String[] {
+							IDialogConstants.OK_LABEL,
+							IDialogConstants.CANCEL_LABEL },
+					IDialogConstants.CANCEL_ID);
+			if (warningDialog.open() != IDialogConstants.OK_ID) {
+				return false;
+			}
+		}
 		try {
 			getContainer().run(true, false, operation);
 		} catch (InterruptedException e) {
@@ -189,7 +213,7 @@ public class ZipUpdateWizardPage extends WizardPage {
 					.openQuestion(
 							getContainer().getShell(),
 							"Update Succeeded",
-							"The application wil be updated on the next restart.\nDo you want to restart now ?");
+							"It is recommended that you restart the DAISY Pipeline GUI now for the update to take effect.\nWould you like to restart now ?");
 			return (restart) ? PlatformUI.getWorkbench().restart() : true;
 		}
 
@@ -255,12 +279,25 @@ public class ZipUpdateWizardPage extends WizardPage {
 			zipFile = new ZipFile(path);
 		} catch (ZipException e) {
 			setErrorMessage("Invalid Zip file.");
+			return;
 		} catch (IOException e) {
 			setErrorMessage("Zip file could not be read.");
+			return;
 		}
-		// Reset the description area
-		ZipUpdateMetadata metadata = new ZipUpdateMetadata(zipFile);
-		zipDescriptionText.setText(metadata.getDescription());
+		// Load the metadata
+		zipMetadata = new ZipUpdateMetadata(zipFile);
+		if (!zipMetadata.isOK()) {
+			setErrorMessage("Invalid ZIP update patch: properties not found.");
+			return;
+		}
+		if (!zipMetadata.getVersion().equals(Version.getVersion())) {
+			setMessage(
+					"The version targeted by the selected update patch ["
+							+ zipMetadata.getVersion()
+							+ "] does not match exactly the current version of the DAISY Pipeline ["
+							+ Version.getVersion() + "]", DialogPage.WARNING);
+		}
+		zipDescriptionText.setText(zipMetadata.getDescription());
 		// Finally reset the zip structure
 		zipStructure = new ZipStructure(zipFile, zipFilter);
 	}

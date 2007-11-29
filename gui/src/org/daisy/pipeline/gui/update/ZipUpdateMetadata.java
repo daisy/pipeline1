@@ -35,12 +35,16 @@ import org.daisy.util.i18n.XMLProperties;
 public class ZipUpdateMetadata {
 	/** The key for property holding the description of the update patch */
 	private static final String DESCRIPTION_KEY = "description";//$NON-NLS-1$
+	/** The key for property holding the version of the update patch is for */
+	private static final String VERSION_KEY = "version";//$NON-NLS-1$
 	/** The path to the metadata properties file */
 	private static final String PROP_PATH = "update.properties";//$NON-NLS-1$
 	/** The ZipFile this is the metadata of */
 	private ZipFile zipFile;
 	/** The properties holding the metadata */
 	private Properties properties;
+	/** Whether the properties have been correctly loaded */
+	private boolean isLoaded;
 
 	/**
 	 * Creates a new metadata instance for the given ZIP patch.
@@ -52,7 +56,7 @@ public class ZipUpdateMetadata {
 		super();
 		this.zipFile = zipFile;
 		this.properties = new XMLProperties();
-		loadProperties();
+		this.isLoaded = loadProperties();
 	}
 
 	/**
@@ -65,18 +69,39 @@ public class ZipUpdateMetadata {
 				"Description not available.");
 	}
 
-	private void loadProperties() {
+	/**
+	 * Returns the version of the Pipeline this update targets.
+	 * 
+	 * @return the version of the Pipeline this update targets.
+	 */
+	public String getVersion() {
+		return properties.getProperty(VERSION_KEY, "not specified");
+	}
+
+	/**
+	 * Whether the metadata has been found and properly loaded.
+	 * 
+	 * @return <code>true</code> if and only if the metadata properties file
+	 *         has been found and properly loaded.
+	 */
+	public boolean isOK() {
+		return isLoaded;
+	}
+
+	private boolean loadProperties() {
 		ZipEntry propEntry = zipFile.getEntry(PROP_PATH);
 		if (propEntry == null) {
 			GuiPlugin.get().error("Unable to fetch the udpate patch metadata",
 					null);
-			return;
+			return false;
 		}
 		try {
 			properties.loadFromXML(zipFile.getInputStream(propEntry));
+			return true;
 		} catch (IOException e) {
 			GuiPlugin.get().error(
 					"Unable to load properties from the metadata file", e);//$NON-NLS-1$
+			return false;
 		}
 	}
 }
