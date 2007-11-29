@@ -441,17 +441,18 @@ proc ECharData {data} {
   regsub -all {>} $data {\&gt;} data
   regsub -all {'} $data {\&apos;} data
   regsub -all {"} $data {\&quot;} data
+  append ::text $data
  } else {
   regsub -all {\&amp;}  $data {&} data
   regsub -all {\&lt;}   $data {<} data
   regsub -all {\&gt;}   $data {>} data
   regsub -all {\&apos;} $data {'} data
   regsub -all {\&quot;} $data {"} data
+  append ::text " $data "
  }
  if {$::lastSSMLElem != ""} {
   set ::lastSSMLWord $data
  }
- append ::text " $data "
 }
 
 proc EXML {version encoding standalone} {
