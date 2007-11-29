@@ -66,7 +66,7 @@ public class ZipUpdateMetadata {
 	 */
 	public String getDescription() {
 		return properties.getProperty(DESCRIPTION_KEY,
-				"Description not available.");
+				Messages.metadata_description_NA);
 	}
 
 	/**
@@ -75,7 +75,8 @@ public class ZipUpdateMetadata {
 	 * @return the version of the Pipeline this update targets.
 	 */
 	public String getVersion() {
-		return properties.getProperty(VERSION_KEY, "not specified");
+		return properties.getProperty(VERSION_KEY,
+				Messages.metadata_version_NA);
 	}
 
 	/**
@@ -91,7 +92,7 @@ public class ZipUpdateMetadata {
 	private boolean loadProperties() {
 		ZipEntry propEntry = zipFile.getEntry(PROP_PATH);
 		if (propEntry == null) {
-			GuiPlugin.get().error("Unable to fetch the udpate patch metadata",
+			GuiPlugin.get().error("Unable to fetch the udpate patch metadata", //$NON-NLS-1$
 					null);
 			return false;
 		}

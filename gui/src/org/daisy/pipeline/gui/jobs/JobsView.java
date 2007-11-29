@@ -204,7 +204,7 @@ public class JobsView extends ViewPart {
 							&& (item.getData() instanceof JobParameter)) {
 						JobParameter param = (JobParameter) item.getData();
 						e.result = param.getScriptParameter().getNicename()
-								+ ": " + param.getValue();
+								+ ": " + param.getValue(); //$NON-NLS-1$
 					}
 				}
 			}
@@ -235,7 +235,7 @@ public class JobsView extends ViewPart {
 							nameLength = Math.max(nameLength, e.gc.textExtent(p
 									.getScriptParameter().getNicename()).x);
 						}
-						nameLength += e.gc.textExtent(": ").x;
+						nameLength += e.gc.textExtent(": ").x; //$NON-NLS-1$
 						paramNameLength.put(param.getJob(), nameLength);
 					}
 					e.gc.drawText(

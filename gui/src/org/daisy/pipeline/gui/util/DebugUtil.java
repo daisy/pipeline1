@@ -118,14 +118,15 @@ public class DebugUtil {
 	 *            a display to watch for focus and tab-traversal events
 	 */
 	public static void traceEvents(final Display display) {
-
-		display.addFilter(SWT.FocusIn, new Listener() {
+		Listener focusListener = new Listener() {
 			public void handleEvent(Event event) {
 				Control focused = display.getFocusControl();
 				System.err.println("Focused: " + toStringObject(focused));
+				// System.err.println("Parent TabList:");
+				// printTabList(focused.getParent(), 2);
 			}
-		});
-		display.addFilter(SWT.Traverse, new Listener() {
+		};
+		Listener traverseListener = new Listener() {
 
 			public void handleEvent(Event event) {
 				switch (event.detail) {
@@ -172,7 +173,9 @@ public class DebugUtil {
 				}
 			}
 
-		});
+		};
+		display.addFilter(SWT.FocusIn, focusListener);
+		// display.addFilter(SWT.Traverse, traverseListener);
 	}
 
 	private DebugUtil() {

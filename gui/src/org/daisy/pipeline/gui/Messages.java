@@ -26,6 +26,8 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.daisy.pipeline.gui.messages"; //$NON-NLS-1$
+	/** The accessible name of the view drop-down menu */
+	public static String accessibleName_viewMenu;
 	/** Message warning the the core is being reloaded */
 	public static String message_reloadCore;
 	/** The title of the edit menu */

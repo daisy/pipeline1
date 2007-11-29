@@ -56,8 +56,8 @@ public class DirectoryAdapter extends DefaultAdapter {
 		super(parent,
 				(param.getDatatype() instanceof DirectoryDatatype) ? param
 						: CheckUtil.illegalArgument(param,
-								"Invalid parameter type: the type of "
-										+ param.getName() + " is "
+								"Invalid parameter type: the type of " //$NON-NLS-1$
+										+ param.getName() + " is " //$NON-NLS-1$
 										+ param.getDatatype()));
 	}
 

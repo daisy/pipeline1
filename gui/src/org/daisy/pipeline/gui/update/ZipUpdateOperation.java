@@ -87,7 +87,7 @@ public class ZipUpdateOperation implements IRunnableWithProgress {
 			this.installDir = new File(Platform.getInstallLocation().getURL()
 					.toURI());
 		} catch (URISyntaxException e) {
-			GuiPlugin.get().error("Unable to get a File from install location",
+			GuiPlugin.get().error("Unable to get a File from install location", //$NON-NLS-1$
 					e);
 		}
 		this.backupFiles = new HashMap<File, File>();
@@ -95,17 +95,14 @@ public class ZipUpdateOperation implements IRunnableWithProgress {
 	}
 
 	private void addError(File file, Exception e) {
-		GuiPlugin.get().error("An error occured while updating " + file, e);
+		GuiPlugin.get().error("An error occured while updating " + file, e); //$NON-NLS-1$
 		if (errors == null) {
-			errors = new MultiStatus(
-					GuiPlugin.ID,
-					0,
-					"Could not apply the update patch. See the error log for details.",
-					null);
+			errors = new MultiStatus(GuiPlugin.ID, 0,
+					Messages.zipOperation_error_globalMessage, null);
 		}
 		errors.add(new Status(IStatus.ERROR, GuiPlugin.ID,
-				(file.isDirectory()) ? "Could not create directory:"
-						: "Could not update file:", e));
+				((file.isDirectory()) ? Messages.zipOperation_error_directory
+						: Messages.zipOperation_error_file), e));
 	}
 
 	/**
@@ -132,17 +129,17 @@ public class ZipUpdateOperation implements IRunnableWithProgress {
 				EFolder folder = new EFolder(dir);
 				if (!(folder.deleteContents() && folder.delete())) {
 					throw new IllegalStateException(
-							"Could not delete directory " + dir);
+							"Could not delete directory " + dir); //$NON-NLS-1$
 				}
 			} catch (Exception e) {
-				GuiPlugin.get().error("Could not revert directory " + dir, e);
+				GuiPlugin.get().error("Could not revert directory " + dir, e); //$NON-NLS-1$
 			}
 		}
 		for (File file : backupFiles.keySet()) {
 			try {
 				FileUtils.copyFile(backupFiles.get(file), file);
 			} catch (IOException e) {
-				GuiPlugin.get().error("Could not revert file " + file, e);
+				GuiPlugin.get().error("Could not revert file " + file, e); //$NON-NLS-1$
 			}
 		}
 	}
@@ -156,7 +153,7 @@ public class ZipUpdateOperation implements IRunnableWithProgress {
 			throws InvocationTargetException, InterruptedException {
 		monitor = progressMonitor;
 		try {
-			monitor.beginTask("Applying update patch", zipStruct
+			monitor.beginTask(Messages.zipOperation_monitor_mainTask, zipStruct
 					.getEntryCount() * 10);
 			updateRec(zipStruct.getRoot(), false);
 		} finally {
@@ -166,12 +163,13 @@ public class ZipUpdateOperation implements IRunnableWithProgress {
 	}
 
 	private boolean updateDir(ZipEntry entry, boolean isNewBranch) {
-		monitor.subTask("Updating directory " + entry.getName());
+		monitor.subTask(Messages.zipOperation_monitor_updatingDir
+				+ entry.getName());
 		File dir = new File(installDir, entry.getName());
 		try {
 			if (!dir.exists()) {
 				if (!dir.mkdir()) {
-					throw new IOException(dir + " (Permission denied)");
+					throw new IOException(dir + " (Permission denied)"); //$NON-NLS-1$
 				}
 				if (!isNewBranch) {
 					newDirs.add(dir);
@@ -187,12 +185,13 @@ public class ZipUpdateOperation implements IRunnableWithProgress {
 	}
 
 	private void updateFile(ZipEntry entry) {
-		monitor.subTask("Updating file " + entry.getName());
+		monitor.subTask(Messages.zipOperation_monitor_updatingFile
+				+ entry.getName());
 		File file = new File(installDir, entry.getName());
 		try {
 			if (file.exists()) {
-				File backup = File.createTempFile("pipeline.update-"
-						+ file.getName() + "-", ".bak");//$NON-NLS-1$ //$NON-NLS-2$ 
+				File backup = File.createTempFile("pipeline.update-" //$NON-NLS-1$
+						+ file.getName() + "-", ".bak"); //$NON-NLS-1$ //$NON-NLS-2$
 				backup.deleteOnExit();
 				FileUtils.copyFile(file, backup);
 				backupFiles.put(file, backup);

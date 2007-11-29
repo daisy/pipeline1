@@ -339,7 +339,7 @@ public abstract class CompositeListViewer<I extends CompositeItem> extends
 		super.setLabelProvider(labelProvider);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	protected void setSelectionToWidget(List sel, boolean reveal) {
 		if ((sel == null) || (sel.size() == 0)) { // clear selection

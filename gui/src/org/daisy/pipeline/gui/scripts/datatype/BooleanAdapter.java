@@ -49,8 +49,8 @@ public class BooleanAdapter extends DefaultAdapter {
 	public BooleanAdapter(Composite parent, ScriptParameter param) {
 		super(parent, (param.getDatatype() instanceof BooleanDatatype) ? param
 				: CheckUtil.illegalArgument(param,
-						"Invalid parameter type: the type of "
-								+ param.getName() + " is "
+						"Invalid parameter type: the type of " //$NON-NLS-1$
+								+ param.getName() + " is " //$NON-NLS-1$
 								+ param.getDatatype()));
 	}
 

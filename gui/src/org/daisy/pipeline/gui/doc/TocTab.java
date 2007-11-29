@@ -99,7 +99,7 @@ public abstract class TocTab extends TreeTabItemProvider implements ITocTab {
 
     protected FileFilter createFileFilter() {
         EFileFilter filter = new HtmlFileFilter();
-        filter.rejectDir("img");
+        filter.rejectDir("img"); //$NON-NLS-1$
         return filter;
     }
 

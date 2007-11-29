@@ -56,8 +56,8 @@ public class FileAdapter extends DefaultAdapter {
 	public FileAdapter(Composite parent, ScriptParameter param) {
 		super(parent, (param.getDatatype() instanceof FileDatatype) ? param
 				: CheckUtil.illegalArgument(param,
-						"Invalid parameter type: the type of "
-								+ param.getName() + " is "
+						"Invalid parameter type: the type of " //$NON-NLS-1$
+								+ param.getName() + " is " //$NON-NLS-1$
 								+ param.getDatatype()));
 	}
 

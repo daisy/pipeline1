@@ -100,7 +100,7 @@ public final class OperationUtil {
 
 		// Create an adapter for providing UI context to the operation.
 		IAdaptable info = new IAdaptable() {
-			@SuppressWarnings("unchecked")
+			@SuppressWarnings("unchecked") //$NON-NLS-1$
 			public Object getAdapter(Class adapter) {
 				if (Shell.class.equals(adapter)) {
 					return shell;

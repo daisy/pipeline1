@@ -48,7 +48,7 @@ public class UpdateWizard extends Wizard implements IWorkbenchWizard {
 	@Override
 	public void addPages() {
 		super.addPages();
-		setWindowTitle("Install and Update");
+		setWindowTitle(Messages.wizard_title);
 		zipUpdatePage = new ZipUpdateWizardPage();
 		addPage(zipUpdatePage);
 	}

@@ -34,7 +34,7 @@ import org.eclipse.ui.presentations.StackPresentation;
  * @author Romain Deltour
  * 
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings("restriction") //$NON-NLS-1$
 public class HackingPresentationFactory extends WorkbenchPresentationFactory_33 {
 
 	@Override
@@ -48,7 +48,7 @@ public class HackingPresentationFactory extends WorkbenchPresentationFactory_33 
 
 							@Override
 							public void getName(AccessibleEvent e) {
-								e.result = "View Menu";
+								e.result = Messages.accessibleName_viewMenu;
 							}
 
 						});

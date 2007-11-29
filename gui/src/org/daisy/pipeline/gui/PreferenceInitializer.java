@@ -108,7 +108,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		if (file.exists()) {
 			PreferencesUtil.put(pref, path, defaultScope);
 		} else {
-			PreferencesUtil.put(pref, "", defaultScope);
+			PreferencesUtil.put(pref, "", defaultScope); //$NON-NLS-1$
 		}
 	}
 }

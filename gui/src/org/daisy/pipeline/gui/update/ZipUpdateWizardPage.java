@@ -42,6 +42,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.FocusAdapter;
@@ -67,7 +68,7 @@ import org.eclipse.ui.PlatformUI;
 public class ZipUpdateWizardPage extends WizardPage {
 
 	/** The name used to identify this wizard page */
-	private static final String NAME = "zipUpdate";
+	private static final String NAME = "zipUpdate"; //$NON-NLS-1$
 	/** The field for the path to the update patch */
 	protected Text zipPathField;
 	/** The "browse..." button to invoke a file selector dialog */
@@ -90,8 +91,8 @@ public class ZipUpdateWizardPage extends WizardPage {
 	 */
 	protected ZipUpdateWizardPage() {
 		super(NAME);
-		setTitle("Apply a ZIP Update Patch");
-		setDescription("Select a ZIP archive containing the update patch to install.");
+		setTitle(Messages.zipPage_title);
+		setDescription(Messages.zipPage_message_info);
 	}
 
 	/*
@@ -105,11 +106,12 @@ public class ZipUpdateWizardPage extends WizardPage {
 		control.setLayout(new GridLayout(3, false));
 		// Zip Path Field
 		Label zipPathLabel = new Label(control, SWT.NONE);
-		zipPathLabel.setText("Zip Update Patch:");
+		zipPathLabel.setText(Messages.zipPage_path_label);
 		zipPathField = new Text(control, SWT.SINGLE | SWT.BORDER);
 		zipPathField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		zipBrowseButton = new Button(control, SWT.PUSH | SWT.CENTER);
-		zipBrowseButton.setText("Browse...");
+		zipBrowseButton
+				.setText(org.daisy.pipeline.gui.util.Messages.button_browse);
 		// SashForm
 		SashForm sash = new SashForm(control, SWT.VERTICAL);
 		GridData sashGD = new GridData(GridData.FILL_BOTH);
@@ -123,13 +125,13 @@ public class ZipUpdateWizardPage extends WizardPage {
 		sash.setWeights(new int[] { 1, 2 });
 		// Description Area
 		Label descriptionLabel = new Label(descrArea, SWT.NONE);
-		descriptionLabel.setText("Description:");
+		descriptionLabel.setText(Messages.zipPage_descr_label);
 		zipDescriptionText = new Text(descrArea, SWT.READ_ONLY | SWT.MULTI
 				| SWT.V_SCROLL | SWT.BORDER);
 		zipDescriptionText.setLayoutData(new GridData(GridData.FILL_BOTH));
 		// Zip Tree Viewer
 		Label treeLabel = new Label(treeArea, SWT.NONE);
-		treeLabel.setText("Content:");
+		treeLabel.setText(Messages.zipPage_content_label);
 		zipViewer = new TreeViewer(treeArea);
 		zipViewer.setContentProvider(new ZipContentProvider());
 		zipViewer.setLabelProvider(new ZipLabelProvider());
@@ -147,7 +149,7 @@ public class ZipUpdateWizardPage extends WizardPage {
 			try {
 				zipStructure.getZipFile().close();
 			} catch (IOException e) {
-				GuiPlugin.get().error("Couldn't close the ZIP update patch", e);
+				GuiPlugin.get().error("Couldn't close the ZIP update patch", e); //$NON-NLS-1$
 			}
 		}
 
@@ -170,16 +172,11 @@ public class ZipUpdateWizardPage extends WizardPage {
 				getShell());
 		if ((zipMetadata != null)
 				&& !zipMetadata.getVersion().equals(Version.getVersion())) {
-			MessageDialog warningDialog = new MessageDialog(
-					getContainer().getShell(),
-					"Incompatible Version",
-					null,
-					"The version targeted by the selected update patch ["
-							+ zipMetadata.getVersion()
-							+ "] does not match exactly the current version of the DAISY Pipeline ["
-							+ Version.getVersion()
-							+ "]."
-							+ "\nApplying this update patch could be harmful to the DAISY Pipeline installation.\n\nAre you sure you want to contine?",
+			MessageDialog warningDialog = new MessageDialog(getContainer()
+					.getShell(), Messages.zipPage_dialog_warning_version_title,
+					null, NLS.bind(Messages.zipPage_message_warning_version,
+							zipMetadata.getVersion(), Version.getVersion())
+							+ Messages.zipPage_dialog_warning_version_question,
 					MessageDialog.WARNING, new String[] {
 							IDialogConstants.OK_LABEL,
 							IDialogConstants.CANCEL_LABEL },
@@ -195,25 +192,23 @@ public class ZipUpdateWizardPage extends WizardPage {
 			operation.revert();
 			return false;
 		} catch (InvocationTargetException e) {
-			MessageDialog
-					.openError(getContainer().getShell(), "Update Error",
-							"Could not apply the update patch. See the error log for details.");
+			MessageDialog.openError(getContainer().getShell(),
+					Messages.zipPage_dialog_error_title,
+					Messages.zipPage_dialog_error_message);
 			GuiPlugin.get().error(e.getMessage(), e);
 			operation.revert();
 			return false;
 		}
 		IStatus status = operation.getStatus();
 		if (!status.isOK()) {
-			ErrorDialog.openError(getContainer().getShell(), "Update Error",
-					null, status);
+			ErrorDialog.openError(getContainer().getShell(),
+					Messages.zipPage_dialog_error_title, null, status);
 			operation.revert();
 			return false;
 		} else {
-			boolean restart = MessageDialog
-					.openQuestion(
-							getContainer().getShell(),
-							"Update Succeeded",
-							"It is recommended that you restart the DAISY Pipeline GUI now for the update to take effect.\nWould you like to restart now ?");
+			boolean restart = MessageDialog.openQuestion(getContainer()
+					.getShell(), Messages.zipPage_dialog_ok_title,
+					Messages.zipPage_dialog_ok_confirm);
 			return (restart) ? PlatformUI.getWorkbench().restart() : true;
 		}
 
@@ -278,24 +273,22 @@ public class ZipUpdateWizardPage extends WizardPage {
 		try {
 			zipFile = new ZipFile(path);
 		} catch (ZipException e) {
-			setErrorMessage("Invalid Zip file.");
+			setErrorMessage(Messages.zipPage_message_error_invalidZip);
 			return;
 		} catch (IOException e) {
-			setErrorMessage("Zip file could not be read.");
+			setErrorMessage(Messages.zipPage_message_error_readAccess);
 			return;
 		}
 		// Load the metadata
 		zipMetadata = new ZipUpdateMetadata(zipFile);
 		if (!zipMetadata.isOK()) {
-			setErrorMessage("Invalid ZIP update patch: properties not found.");
+			setErrorMessage(Messages.zipPage_message_metadataNA);
 			return;
 		}
 		if (!zipMetadata.getVersion().equals(Version.getVersion())) {
-			setMessage(
-					"The version targeted by the selected update patch ["
-							+ zipMetadata.getVersion()
-							+ "] does not match exactly the current version of the DAISY Pipeline ["
-							+ Version.getVersion() + "]", DialogPage.WARNING);
+			setMessage(NLS.bind(Messages.zipPage_message_warning_version,
+					zipMetadata.getVersion(), Version.getVersion()),
+					DialogPage.WARNING);
 		}
 		zipDescriptionText.setText(zipMetadata.getDescription());
 		// Finally reset the zip structure

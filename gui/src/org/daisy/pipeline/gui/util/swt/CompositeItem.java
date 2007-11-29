@@ -47,7 +47,7 @@ import org.eclipse.swt.widgets.Listener;
  * @author Romain Deltour
  * 
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("unchecked") //$NON-NLS-1$
 public abstract class CompositeItem extends Composite {
 
 	/**

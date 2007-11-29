@@ -31,5 +31,5 @@ public interface PreferencesKeys {
 	public static final String PATH_TO_TEMP_DIR_DEFAULT = "/path/to/tmp"; //$NON-NLS-1$
 
 	/** The preference holding the path of the last selected zip patch. */
-	public static final String UPDATE_LAST_SELECTED_ZIP = "UPDATE_LAST_SELECTED_ZIP";
+	public static final String UPDATE_LAST_SELECTED_ZIP = "UPDATE_LAST_SELECTED_ZIP"; //$NON-NLS-1$
 }

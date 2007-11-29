@@ -56,7 +56,7 @@ import org.eclipse.swt.widgets.TypedListener;
  * @param <I>
  *            A subclass of {@link CompositeItem} used for the list elements
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("unchecked") //$NON-NLS-1$
 public class CompositeList<I extends CompositeItem> extends ScrolledComposite {
 	/** The internal content area */
 	Composite content;
@@ -786,7 +786,7 @@ public class CompositeList<I extends CompositeItem> extends ScrolledComposite {
 	 * 
 	 * @see CompositeList#deselectAll()
 	 */
-	@SuppressWarnings("null")
+	@SuppressWarnings("null") //$NON-NLS-1$
 	public void setSelection(int[] indices) {
 		checkWidget();
 		if (indices == null) {
@@ -874,7 +874,7 @@ public class CompositeList<I extends CompositeItem> extends ScrolledComposite {
 	 * 
 	 * @see CompositeList#showSelection()
 	 */
-	@SuppressWarnings("null")
+	@SuppressWarnings("null") //$NON-NLS-1$
 	public void showItem(CompositeItem item) {
 		checkWidget();
 		if (item == null) {
