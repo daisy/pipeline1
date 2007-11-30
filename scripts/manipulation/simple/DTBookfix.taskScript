@@ -7,7 +7,7 @@
     <comment/>
 	
 	<parameter name="input" value="" required="true">
-		<nicename>Input file</nicename>
+		<nicename>Input File</nicename>
 		<description>Select input DTBook file</description>
 		<datatype>
 			<file mime="application/xml" type="input"/>
@@ -15,13 +15,25 @@
 	</parameter>
 	
 	<parameter name="output" value="" required="true">
-		<nicename>Output file</nicename>
+		<nicename>Output File</nicename>
 		<description>Select output file</description>
 		<datatype>
 			<file mime="application/xml" type="output"/>
 		</datatype>
 	</parameter>
 
+	<parameter name="cat" value="REPAIR_TIDY" required="true">
+		<nicename>Active Categories</nicename>
+		<description>Select the type of manipulation to be performed  \n (See documentation for more information)</description>
+		<datatype>
+			<enum>
+			  <item nicename="Tidy only" value="TIDY" />
+			  <item nicename="Repair only" value="REPAIR" />
+			  <item nicename="Repair, then Tidy" value="REPAIR_TIDY" />
+			</enum>
+		</datatype>
+	</parameter>
+	
 	<parameter name="simplifyHeadingLayout" value="false" required="false">
 		<nicename>Simplify heading layout</nicename>
 		<description>Check box to simplify heading layout by moving headings upward where possible</description>
@@ -29,16 +41,15 @@
 			<boolean/>
 		</datatype>
 	</parameter>
-
-
+<!--
 	<parameter name="forceRepair" value="false" required="false">
-		<nicename>Force repair</nicename>
-		<description>Check box to run the Repair fix category even if input is valid</description>
+		<nicename>Force Repair</nicename>
+		<description>Check box to run the Repair manipulation category even if the  input is valid</description>
 		<datatype>
 			<boolean/>
 		</datatype>
 	</parameter>
-
+-->
 	<parameter name="fixCharset" value="false" required="false">
 		<nicename>Fix Character set</nicename>
 		<description>Check box to attempt to fix an invalid stated character set</description>
@@ -59,20 +70,24 @@
 		</parameter>
 
 		<parameter>
+			<name>runCategories</name>
+			<value>${cat}</value>
+		</parameter>
+
+		<parameter>
 			<name>simplifyHeadingLayout</name>
 			<value>${simplifyHeadingLayout}</value>
 		</parameter>
-				
+		<!--		
 		<parameter>
 			<name>forceRepair</name>
 			<value>${forceRepair}</value>
 		</parameter>
-
+		-->
 		<parameter>
 			<name>fixCharset</name>
 			<value>${fixCharset}</value>
 		</parameter>
-
 		
 	</task>
 
