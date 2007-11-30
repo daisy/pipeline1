@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -53,53 +55,8 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Main Transformer class. 
- * <p>See ../doc/transformers/se_tpb_dtbookFix for further details.</p>
- * <p>Individial Executors (XSLTs, classes) have inline documentaiton as well.</p>
- * Main Transformer class. See ../doc/transformers/se_tpb_dtbookFix for further details.
- * /**
- * 
- * Fixes dtbook conversion errors/problems
- * 
- * Features:
- * 	- Adds levels where missing
- *  - Adds list items around lists in lists
- *  - Simplifies structure if possible 
- *  
- * Steps: 
- *  1. Removes levelx if it has descendant headings of x-1
- *  2. Splits a level into several levels on every additional heading on the same level
- *  3. Adds headings where needed
- *  4. Changes hx to p where parent isn't a levely
- *  
- *  5. Add li around lists that has a list as parent
- *   
- *  6. Moves structure upwards where possible
- *  
- *  (7. Tidy description todo)
- *  
- *  Limitations:
- *   - Cannot handle reversed structure: e.g. level3/level2/level1
- *   - Does not structure frontmatter
- *   - Validation not implemented yet!
- *   
- *  Note:
- *   - The current version of post-pagenum-fix.xsl contains one repairing operation
- *     that will never be used since the program will stop if the file is invalid at
- *     that point. If needed, it should be moved to the repairing section of dtbook-fix.
- *     
- *  Further development:
- *   - Tidy:
- *   	<levelx><h1>Heading</h1><p/></levelx><levelx><p>text</p>...
- *      to
- *      <levelx><h1>Heading</h1><p>text</p>...
- *   - Add documentation
- *   - before repair-idref: fix note and annotation id's (generate-id())
- *   - tidy-add-author-title is sometimes needed for validity. Split
- *     in two: repair on 2005-2 (add doctitle if frontmatter present and doctitle missing) 
- *     and tidy on 2005-x add doctitle (if mising) and docauthor
- *   - Move indent to separate step and add parameter for indentation.
- *   - Move repairing operations in tidy-pagenum-fix.xsl to repair.
- *   
+ * <p>See ../doc/transformers/se_tpb_dtbookFix.html for further details, 
+ * and inline documentation of individial Executors (XSLTs, classes).</p>
  * @author Joel Håkansson, Markus Gylling 
  */
 public class DTBookFix extends Transformer implements URIResolver, TransformerDelegateListener, ValidatorListener, FilesetErrorHandler {
@@ -122,195 +79,171 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	
 	@Override
 	protected boolean execute(Map parameters) throws TransformerRunException {
-		progress(0);		
-		String factory = (String)parameters.remove("factory");						
+		
 		File input = FilenameOrFileURI.toFile((String)parameters.get("input"));
 		File output = FilenameOrFileURI.toFile((String)parameters.get("output"));
-		boolean forceRepair = ((String)parameters.get("forceRepair")).contentEquals("true");
-		boolean forceTidy = ((String)parameters.get("forceTidy")).contentEquals("true");
-		boolean abortOnError = ((String)parameters.get("abortOnError")).contentEquals("true");
-		String tidy = (String)parameters.get("tidy");
-		
-		FileJuggler files = null;
-		
-		/*
-		 * Set a sysprop for the XSLT factory. This needs to be a 1.0 and 2.0 processor,
-		 * so we are expecting the tdf to namedrop the Saxon8 identifier.
-		 * Save any preexisting prop, and reset in finally
-		 */
-		String initXsltFactoryProp = System.getProperty(JAVAX_FACTORY_KEY);		
-		System.setProperty(JAVAX_FACTORY_KEY, factory);
+		boolean abortOnError = ((String)parameters.get("abortOnError")).contentEquals("true");				
+		SystemPropertyHandler propertyHandler = new SystemPropertyHandler(parameters);
+		propertyHandler.set();
 						
-		/*
-		 * Set a sysprop to help the dtbook validator factory discovery
-		 */
-		String initDtbookValidatorFactoryProp = System.getProperty(DTBOOK_VALIDATOR_IMPL);
-		if(initDtbookValidatorFactoryProp==null){
-			System.setProperty(
-					DTBOOK_VALIDATOR_IMPL,
-			"org.daisy.util.fileset.validation.ValidatorImplDtbook");
-		}
-		
 		try {
-						
-			files = new FileJuggler(input, output);
+			
+			if(input.getCanonicalPath().equals(output.getCanonicalPath())) {
+				throw new TransformerRunException(i18n("INPUT_OUTPUT_SAME"));
+			}
+			
 			mCatalogURIResolver = new CatalogURIResolver();
 			
 			/*
 			 * Confirm that input prerequisites are met (see javadoc of #confirmPrerequisites).
-	    	 * At the same time, get a PeekResult to retrieve version information et al.
+	    	 * Populate the parameters Map with document meta info.
 	    	 */
-			PeekResult result = confirmPrerequisites(input);
+			confirmPrerequisites(input,parameters);
 			
-			//use @version to determine version since doctype contents may or may not be present
-	    	String inputDTBookVersion = result.getRootElementAttributes().getValue("version");	    	
-
-	    	//add version to parameters so that XSLTs may enjoy it if needed
-	    	parameters.put("DTBookVersion", inputDTBookVersion);
-	    		    		    	    		    	
-	    	/*
-	    	 * Create the executor categories
-	    	 */
-	    	List<Executor> repairCategory = 
-	    		createCategory(ExecutorCategory.REPAIR, parameters, inputDTBookVersion);	    	
-	    	
-	    	List<Executor> tidyCategory = 
-	    		createCategory(ExecutorCategory.TIDY, parameters, inputDTBookVersion);	    
-	    	
-	    	int progressLen = repairCategory.size() + tidyCategory.size();	    	
-	    	double progress = 0;
-	    	
+			
+			/*
+			 * Create an ordered List with the user activated categories
+			 */
+			List<ExecutorCategory> activeCategories = getActiveCategories((String)parameters.get("runCategories"));
+			
+			
+			/*
+			 * Populate each category with executors
+			 */
+			Map<ExecutorCategory,List<Executor>> executors = new LinkedHashMap<ExecutorCategory,List<Executor>>(); 			
+			for (ExecutorCategory category : activeCategories) {
+				executors.put(category, createCategory(category, parameters, (String)parameters.get("DTBookVersion")));				
+			}
+			
+			
 	    	/*
 	    	 * Validate input
 	    	 */
 	    	this.sendMessage(i18n("VALIDATING_INPUT", input.getName()));
-	    	boolean inputValid = isValid(input);
-	    	if(inputValid) this.sendMessage(i18n("WAS_VALID"));
+	    	if(isValid(input)) this.sendMessage(i18n("WAS_VALID"));
+			
 	    	
-	    	/*
-	    	 * Run the executors. First repair category: if force is on, or input is invalid. 
-	    	 */	    	
-	    	boolean repairResultValid = true;	
-	    	boolean repairRun = false;
-	    	if(forceRepair || !inputValid) {
-	    		repairRun = true;
-	    		this.sendMessage(i18n("REPAIRING"),MessageEvent.Type.INFO);
-		    	for(Executor exec : repairCategory) {
+			/*
+			 * Execute the Executors.
+			 */
+			FileJuggler juggler = new FileJuggler(input, output);
+			int progressLen = getActiveExecutorCount(executors);
+			double progress = 0;
+			for(ExecutorCategory category : executors.keySet()) {
+				this.sendMessage(i18n("RUNNING_CATEGORY",i18n(category.name())),MessageEvent.Type.INFO);
+		    	for(Executor exec : executors.get(category)) {
 		    		this.sendMessage(i18n("RUNNING_EXECUTOR", exec.getNiceName()),MessageEvent.Type.INFO);
-		    		exec.execute(new StreamSource(files.getInput()), new StreamResult(files.getOutput()));
-		    		files.swap();
+		    		exec.execute(new StreamSource(juggler.getInput()), new StreamResult(juggler.getOutput()));
+		    		juggler.swap();
 		    		progress++;
-		    		progress(progress/progressLen);
-		    	}
-		    	 //Validate the output of the repair
-		    	this.sendMessage(i18n("VALIDATING_REPAIR_OUTPUT", output));
-		    	if(!isValid(files.getInput())) {
-		    		repairResultValid = false;	
-		    	}else{
-		    		this.sendMessage(i18n("WAS_VALID"));
-		    	}
-	    	} else {
-	    		progress = repairCategory.size();
-	    		progress(progress/progressLen);
-	    	}
-	    	
-	    	/*
-	    	 * Run tidy category only if we have a valid file.
-	    	 */
-	    	boolean tidyRun = false;
-	    	if(forceTidy || (repairRun && repairResultValid)||(!repairRun && inputValid)) {
-	    		tidyRun = true;
-		    	this.sendMessage(i18n("TIDYING"),MessageEvent.Type.INFO);
-		    	for(Executor exec : tidyCategory) {
-		    		this.sendMessage(i18n("RUNNING_EXECUTOR", exec.getNiceName()),MessageEvent.Type.INFO);
-		    		exec.execute(new StreamSource(files.getInput()), new StreamResult(files.getOutput()));
-		    		files.swap();
-		    		progress++;
-		    		progress(progress/progressLen);
-		    	}
-	    	}else{
-	    		this.sendMessage(i18n("TIDY_NOT_RUN_INVALID"),MessageEvent.Type.INFO);
-	    	}
-	    	
-	    	
-	    	/*
-	    	 * copy aux files over to dest dir if not same as input.
-	    	 * Delete the manifest file since it will be replaced
-	    	 * with the output from the Juggler.
-	    	 */
-	    	if(!input.getParentFile().equals(output.getParentFile())) {
-	    		Fileset toCopy = new FilesetImpl(input.toURI(),this,false,false);
-	    		EFolder dest = new EFolder(output.getParentFile());
-	    		dest.addFileset(toCopy, true);
-	    		File manifest = new File(dest,input.getName());
-	    		manifest.delete();
-	    	}
-	    		    	
-	    	/*
-	    	 * Close the Juggler and copy last tempfile to final result location.
-	    	 */
-	    	files.close();
-	    		    		    	
-	    	/*
-	    	 * Validate the final output, if tidy was run (else post 
-	    	 * repair validation serves as the last one).
-	    	 * This could be done as a separate transformer as well.
-	    	 */
-	    	if(tidyRun) {
-		    	this.sendMessage(i18n("VALIDATING_FINAL_OUTPUT", output));
-		    	if(!isValid(output)) {
-		    		if(abortOnError) {	    	
-		    			throw new TransformerRunException(i18n("ABORTING_INVALID"));
-		    		}	
-		    	}else{
-		    		this.sendMessage(i18n("WAS_VALID"));
+		    		this.sendMessage(progress/progressLen);
 		    	}
 			}
-	    	progress(1);
+			
+			
+			/*
+			 * Get the result to final output dir,
+			 * including aux files
+			 */
+			finalize(input, output, juggler);
+			
+			
+	    	/*
+	    	 * Validate output.
+	    	 * This could be done as a separate transformer as well.
+	    	 */	    	
+		    this.sendMessage(i18n("VALIDATING_OUTPUT", output));
+	    	if(!isValid(output)) {
+	    		if(abortOnError) {	    	
+	    			throw new TransformerRunException(i18n("ABORTING_INVALID"));
+	    		}	
+	    	}else{
+	    		this.sendMessage(i18n("WAS_VALID"));
+	    	}
+			
 	    	
 		} catch (Exception e) {
+			if(e instanceof TransformerRunException) throw (TransformerRunException)e;
 			throw new TransformerRunException(e.getMessage(),e);
 		}finally{			
-			 //Reset the validator factory to initial value			
-			if(initDtbookValidatorFactoryProp!=null) {
-				System.setProperty(DTBOOK_VALIDATOR_IMPL,initDtbookValidatorFactoryProp);
-			}else{
-				System.clearProperty(DTBOOK_VALIDATOR_IMPL);
-			}
-			//Reset the xslt factory to initial value
-			if(initXsltFactoryProp!=null) {
-				System.setProperty(JAVAX_FACTORY_KEY,initXsltFactoryProp);
-			}else{
-				System.clearProperty(JAVAX_FACTORY_KEY);
-			}
+			propertyHandler.reset();
 		}
 		return true;
 	}
 	
+	private int getActiveExecutorCount(Map<ExecutorCategory, List<Executor>> executors) {
+		int i = 0;
+		for(List<Executor> list : executors.values()) {
+			i+= list.size();
+		}
+		return i;
+	}
+
 	/**
-	 * This method implements parts of the contract with subclasses of Executor:
-	 * <p>Before calling the first executor, the transformer will assure that the following properties hold true for the input document:</p>
+	 * Activate categories based on the runCategories user inparam.
+	 * <p>The returned set contains ExecutorCategory instances in
+	 * the same order as their names appear in the inparam, so category
+	 * execution order is defined by the inparam string.</p>
+	 * 
+	 */
+	private List<ExecutorCategory> getActiveCategories(String param) {
+		List<ExecutorCategory> list = new LinkedList<ExecutorCategory>(); 
+		String[] wantedCategories = param.split("_");
+		for (int i = 0; i < wantedCategories.length; i++) {			
+			list.add(ExecutorCategory.valueOf(wantedCategories[i]));			
+		}				
+		return list;
+	}
+
+	
+	/**
+	 * Copy aux files over to dest dir if not same as input.
+	 * Delete the manifest file since it will be replaced
+	 * with the output from the Juggler.
+	 * Close the juggler.
+	 * @throws IOException If juggle close fails. 
+	 */
+	private void finalize(File input, File output, FileJuggler files) throws IOException  {
+		if(!input.getParentFile().equals(output.getParentFile())) {
+			try{
+				Fileset toCopy = new FilesetImpl(input.toURI(),this,false,false);
+				EFolder dest = new EFolder(output.getParentFile());
+				dest.addFileset(toCopy, true);
+				File manifest = new File(dest,input.getName());
+				manifest.delete();
+			}catch (Exception e) {
+				this.sendMessage(i18n("AUX_COPY_ERROR",e.getMessage()), MessageEvent.Type.ERROR);
+			}				
+			files.close();
+		}
+	}
+	
+	/**
+	 * Check input prerequisites for running the Executors:
 	 * <ul>	
 	 * 	<li>DTBook namespace present</li>
-	 * 	<li>DOCTYPE-@version match</li>
+	 * 	<li>DOCTYPE-@version inambiguity</li>
 	 * </ul>
+	 * <p>Populate the parameters inparam with document info</p> 
 	 * @throws TransformerRunException if prerequisites are not met
-	 * @return a PeekResult on the inparam file 
 	 */
-	private PeekResult confirmPrerequisites(File input) throws TransformerRunException {
+	@SuppressWarnings("unchecked")
+	private void confirmPrerequisites(File input, Map parameters) throws Exception {
     	Peeker peeker = PeekerPool.getInstance().acquire();
     	PeekResult result;
-		try {
+		
+    	try {
 			result = peeker.peek(input);			
 			//check that we are namespaced as expected
 			if(!result.getRootElementNsUri().equals(Namespaces.Z2005_DTBOOK_NS_URI)) {
 				throw new TransformerRunException(i18n("INPUT_ERROR_NAMESPACE", Namespaces.Z2005_DTBOOK_NS_URI));
 			}
 			
-			//check doctype/@version match
 			String publicId = result.getPrologPublicId();
 			String systemId = result.getPrologSystemId();
 			String version = result.getRootElementAttributes().getValue("version");
+	    				
+			//check doctype/@version match			
 			if(publicId!=null && version!=null) {
 				if(!publicId.contains(version)) {
 					throw new TransformerRunException(i18n("INPUT_ERROR_VERSION_AMBIVALENCE", publicId, version));
@@ -326,15 +259,15 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 			}else{
 				//no doctype, no @version
 				throw new TransformerRunException(i18n("INPUT_ERROR_NO_DOCTYPE_NO_VERSION"));
-			}
-							
-		} catch (Exception e) {
-			throw new TransformerRunException(e.getMessage(),e);
+			}			
+			
+			//populate parameters
+			parameters.put("DTBookVersion", version);
+						
 		} finally {      	
 			PeekerPool.getInstance().release(peeker);
 		}		
-		
-    	return result;
+		    	
 	}
 
 	@SuppressWarnings("unchecked")	
@@ -355,7 +288,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
     	 * Add each executor
     	 */
     	if(execCategory==ExecutorCategory.TIDY) {
-    		//tidy-level-cleaner.xsl should be optional
+    		//tidy-level-cleaner.xsl is optional
     		if(((String)parameters.get("simplifyHeadingLayout")).contentEquals("true")) {
     			category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2,i18n("LEVEL_CLEANER"),this,this,emitter));
     		}
@@ -580,13 +513,48 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 			}			
 		}else{
 			this.sendMessage(root.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT, loc);
+		}		
+	}
+	
+	private class SystemPropertyHandler {
+		String factory = null;
+		String initXsltFactoryProp = null;
+		String initDtbookValidatorFactoryProp = null;
+		
+		private SystemPropertyHandler(Map parameters) {
+			factory = (String)parameters.get("factory");	
 		}
+						
+		private void set() {
 
-//broken code (wouldnt report FilesetFileErrorException				
-//		if (ffe instanceof FilesetFileFatalErrorException && !(ffe.getCause() instanceof FileNotFoundException)) {
-//			mHadValidationErrors = true;
-//			this.sendMessage(root.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, null);
-//		} 		
+    	    //Set a sysprop for the XSLT factory. 
+			//This needs to be a 1.0 and 2.0 processor, so we are expecting the tdf to namedrop the Saxon8 identifier.
+			initXsltFactoryProp = System.getProperty(JAVAX_FACTORY_KEY);		
+			System.setProperty(JAVAX_FACTORY_KEY, factory);
+							
+			 //Set a sysprop to help the dtbook validator factory discovery
+			initDtbookValidatorFactoryProp = System.getProperty(DTBOOK_VALIDATOR_IMPL);
+			if(initDtbookValidatorFactoryProp==null){
+				System.setProperty(
+						DTBOOK_VALIDATOR_IMPL,
+				"org.daisy.util.fileset.validation.ValidatorImplDtbook");
+			}
+		}
+		
+		private void reset() {
+			 //Reset the validator factory to initial value			
+			if(initDtbookValidatorFactoryProp!=null) {
+				System.setProperty(DTBOOK_VALIDATOR_IMPL,initDtbookValidatorFactoryProp);
+			}else{
+				System.clearProperty(DTBOOK_VALIDATOR_IMPL);
+			}
+			//Reset the xslt factory to initial value
+			if(initXsltFactoryProp!=null) {
+				System.setProperty(JAVAX_FACTORY_KEY,initXsltFactoryProp);
+			}else{
+				System.clearProperty(JAVAX_FACTORY_KEY);
+			}
+		}
 		
 	}
 }

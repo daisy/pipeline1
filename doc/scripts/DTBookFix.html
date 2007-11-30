@@ -3,12 +3,11 @@
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
 <head>
 	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
-	<title>Pipeline Task: DTBook fix</title>
+	<title>Pipeline Script: DTBook Fix</title>
 	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
 </head>
 <body>
-<h1 class="title">Pipeline Task: <em>DTBook Fix</em></h1>
-<!-- script documentation contains primarily end-user-centric information -->
+<h1 class="title">Pipeline Script: DTBook Fix</h1>
 
 <div id="toc" class="toc">
 <ul>
@@ -21,32 +20,109 @@
 </div>
 
 <h2 id="overview">Overview</h2>
-<!-- brief summary of purpose and whats going on. What does this script do really? -->
-
+<p>This script will attempt to <em>repair</em> and <em>tidy</em> a suboptimal DTBook document.</p>
+<p>The actual manipulation routines performed are described in the <a href="#cats">DTBookFix Categories</a> section below.</p>
+ 
 <h2 id="inputReqs">Input Requirements</h2>
-<!-- detailed requirements on input nature -->
+<p>A DTBook document. As is seldom the case in the Pipeline, the document need not be valid.</p>
+<p>Note that the manipulations that are performed are heavily dependent on 
+which version of DTBook is used (<code>2005-1</code>, <code>2005-2</code>, etc).
+If your input document is of a version that is not supported by all or some of the manipulation routines that are performed, 
+warnings will be issued.</p>
 
 <h2 id="output">Output</h2>
+<p>Depending on the input document version and your settings, the output document will have had anything from zero to several different
+structural modifications. <em>Note that no guarantees are made that the output will be valid.</em> The input document is validated several
+times during the process, so watch the messages that are conveyed, especially those towards the end of the process.</p> 
+
+<p>If you keep encountering DTBook documents with recurring problems that are not fixed by this Script, please contact the Pipeline development team.</p>
 
 <h2 id="config">Configuration</h2>
-<!-- description on params exposed in script -->
-<!-- Although not recommended, possiblity to reference one or several 
-	transformer docs here instead of duplicating. Remember though that the 
-	transformer doc is developer centric and this doc is end user centric.
-	Here, use the nicenames for parameters! Explain consequence of default values.
--->
 	<dl id="paramslist">
 			<dt>Input file</dt>
-			<dd>Select input xml file</dd>
+			<dd><strong>Required</strong>. Select input DTBook file</dd>
+
 			<dt>Output directory</dt>
-			<dd>Select output directory</dd>
+			<dd><strong>Required</strong>. Select where to store the output result.</dd>
+
+			<dt>Active Categories</dt>
+			<dd>Select the type of manipulation to be performed by activating one or several Categories. 
+			Note that by default, the Repair category is only run if the input is invalid; 
+			however you can override that behavior by activating the Force Repair option.<br/>
+			Read more on what is included in each category in the <a href="#cats">DTBookFix Categories</a> section below.</dd>
+
+			<dt>Force Repair</dt>
+			<dd><strong>Optional</strong>. When checked, DTBookFix will attempt to repair the file even if it's already valid.</dd>
+
 			<dt>Simplify heading layout</dt>
-			<dd>Redundant level structure is sometimes used to mimic the original layout, but can pose a problem in some circumstances. Check the box to simplify the level structure by removing redundant levels (subordinate levels will be moved upwards). Note that the headings of the affected levels will also change, which will alter the appearance of the layout.</dd>
-			<dt>Force repair</dt>
-			<dd>When checked, DTBookFix will attempt to repair the file even if it's already valid.</dd>
+			<dd>This is an <strong>optional</strong> routine within the Tidy category. 
+			Check the box to simplify the level structure by removing redundant levels.<br/>
+			See further <a href="#levelclean">Level cleanup </a> below. 
+			</dd>
+
 			<dt>Fix Character set</dt>
-			<dd>Check box to attempt to fix an invalid stated character set</dd>
+			<dd>This is an <strong>optional</strong> routine within the Repair category. 
+			Check box to attempt to fix an invalid stated character set. See further <a href="#charsetrecoder">Character Set recoder</a> below.</dd>
 	</dl>
+
+<h2 id="cats">DTBookFix Categories</h2>
+<p>This section gives a technical summary of the manipulations that are done within each DTBookFix manipulation category.</p>
+
+<h3>The Repair Category</h3>
+<dl>
+<!--
+	<dt>Level normalizer</dt>
+	<dd>Inexplicably geeky.</dd>
+-->	
+	<dt>Level splitter</dt>
+	<dd>Splits a level into several levels if a certain <code>level1-6</code> element has several headings on the same level.</dd>
+	
+	<dt>Level 1-6 repair</dt>
+	<dd>Inserts <code>level1-6</code> elements where needed to meet the requirements on proper nesting</dd>
+	
+	<dt>Illegal heading removal</dt>
+	<dd>
+		Changes an illegal heading (for example, an <code>h3</code> element inside a <code>level2</code> element) 
+		into a <code>p</code> element. The <code>p</code> element will have the class attribute value 
+		of the original heading element name (e.g. <code>&lt;p class="h3"&gt;</code>).
+	</dd>
+	
+	<dt>List repair</dt>
+	<dd>
+		<ul>
+			<li>Wraps a <code>list</code> in <code>li</code> when the parent of the list is another list.</li>
+		    <li>adds a <code>type</code> attribute if missing (default value is "pl")</li>
+		</ul>    
+	</dd>
+	
+	<dt id="charsetrecoder">Character Set recoder</dt>
+	<dd>This will run a <em>character set detection</em> algorithm on the input file, disregarding any stated characterset, and then recode the entire file. Only enable this if you have explicit issues with character display, or when your document is reported to be malformed with stated reasons similar to "invalid  byte sequence" or similar.</dd>
+	
+	<dt>IDREF repair</dt>
+	<dd>
+	<ul>
+		<li>Adds the <code>idref</code> attribute to <code>noteref</code> and <code>annoref</code> elements if missing</li>
+		<li>Estimate and give the <code>idref</code> attribute a value if empty</li>
+		<li>Add a hash mark in the beginning of all idref attributes that don't contain a hash mark.</li>
+	</ul>
+
+</dl>
+
+<h3>The Tidy Category</h3>
+<dl>
+	<dt id="levelclean">Level cleanup</dt>
+	<dd>Simplifies the level structure by removing redundant levels (subordinate levels will be moved upwards). Note that the headings of the affected levels will also change, which will alter the appearance of the layout.</dd>
+	
+	<dt>Pagenum fix</dt>
+	<dd>TBD, mixed</dd>
+
+	<dt>Author and Title addition</dt>
+	<dd>Inserts docauthor and doctitle elements to frontmatter using Dublin Core metadata.</dd>
+		
+	<dt>Indenter</dt>
+	<dd>Performs a "pretty print" of the XML elements in the document.</dd>
+	
+</dl>
 		
 <h2 id="transformers">Appendix: List of Transformers used</h2>
 <p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>

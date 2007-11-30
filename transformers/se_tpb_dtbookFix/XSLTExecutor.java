@@ -24,7 +24,8 @@ import org.daisy.util.xml.LocusTransformer;
 
 
 /**
- * A utility class for representing a dtbook fix executor based on XSLT.
+ * A utility class for representing a DTBook fix executor based on XSLT.
+ * <p>For XSLT development guidelines, see <code>../../doc/transformers/se_tpb_dtbookfix.html<code></p>
  * @author Markus Gylling
  */
 class XSLTExecutor extends Executor implements ErrorListener{

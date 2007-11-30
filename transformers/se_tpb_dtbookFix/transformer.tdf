@@ -22,27 +22,18 @@
 		</parameter>
 		
 		<parameter required="false" type="enum">
-			<name>tidy</name>
-			<description>Tweak dtbook appearance</description>
-			<example>true</example>
+			<name>runCategories</name>
+			<description>Which categories to run. Underscore separated. Order is significant.</description>
+			<example>TIDY</example>
 			<enum>
-				<value>true</value>
-				<value>false</value>
+				<value>TIDY</value>
+				<value>REPAIR</value>
+				<value>REPAIR_TIDY</value>				
 			</enum>
-			<default>true</default>
+			<default>REPAIR_TIDY</default>
 		</parameter>
 		
-		<parameter required="false" type="enum">
-			<name>forceRepair</name>
-			<description>Run repair category even if input is valid</description>
-			<example>true</example>
-			<enum>
-				<value>true</value>
-				<value>false</value>
-			</enum>
-			<default>false</default>
-		</parameter>
-		
+		<!--
 		<parameter required="false" type="enum">
 			<name>forceTidy</name>
 			<description>Run tidy category even if input to tidy is invalid</description>
@@ -55,8 +46,20 @@
 		</parameter>
 				
 		<parameter required="false" type="enum">
+			<name>forceRepair</name>
+			<description>Run repair category even if input is valid</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+		-->
+		
+		<parameter required="false" type="enum">
 			<name>simplifyHeadingLayout</name>
-			<description>Simplify heading layout by moving headings upward where possible</description>
+			<description>Optional in Tidy category. Simplify heading layout by moving headings upward where possible</description>
 			<example>true</example>
 			<enum>
 				<value>true</value>
@@ -67,7 +70,7 @@
 		
 		<parameter required="false" type="enum">
 			<name>fixCharset</name>
-			<description>Run character set detection and transcoding</description>
+			<description>Optional in Repair category. Run character set detection and transcoding</description>
 			<example>true</example>
 			<enum>
 				<value>true</value>
@@ -79,7 +82,7 @@
 		
 		<parameter required="false" type="enum">
 			<name>abortOnError</name>
-			<description>Abort processing if DTBook is invalid after repairing</description>
+			<description>Throw TransformerRunException if output is invalid (excluding missing aux files)</description>
 			<example>true</example>
 			<enum>
 				<value>true</value>
