@@ -295,6 +295,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
     		
     		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-pagenum-fix.xsl"),v2005_1_2,i18n("PAGENUM_FIX"),this,this,emitter));
     		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2,i18n("ADD_AUTHOR_AND_TITLE"),this,this,emitter));
+    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-lang.xsl"),v2005_1_2,i18n("ADD_LANG"),this,this,emitter));
     		
     		//run the indenter last in the chain, this is harmless so always active
     		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-indent.xsl"),v2005_1_2,i18n("INDENT"),this,this,emitter));

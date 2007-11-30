@@ -696,6 +696,7 @@ transformers/se_tpb_dtbookFix/xslt/repair-levelsplitter.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-lists.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-remove-illegal-headings.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-add-author-title.xsl -text
+transformers/se_tpb_dtbookFix/xslt/tidy-add-lang.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-indent.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-level-cleaner.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-pagenum-fix.xsl -text
