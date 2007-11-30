@@ -2,7 +2,7 @@
 <!--
 	Fix idref attribute on noteref and annoref elements
 		Version
-			2007-11-23
+			2007-11-30
 
 		Description
 			idref must be present on noteref and annoref. Add idref if missing or 
@@ -61,6 +61,7 @@
 					<xsl:copy-of select="@idref"/>
 				</xsl:otherwise>
 			</xsl:choose>
+			<xsl:apply-templates/>
 		</xsl:copy>
 	</xsl:template>
 
