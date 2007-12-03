@@ -27,13 +27,14 @@
 <p>A DTBook document. As is seldom the case in the Pipeline, the document need not be valid.</p>
 <p>Note that the manipulations that are performed are heavily dependent on 
 which version of DTBook is used (<code>2005-1</code>, <code>2005-2</code>, etc).
-If your input document is of a version that is not supported by all or some of the manipulation routines that are performed, 
+If your input document is of a version that is not supported by all or some of the manipulation routines that are performed, these routines will be disabled, and 
 warnings will be issued.</p>
 
 <h2 id="output">Output</h2>
 <p>Depending on the input document version and your settings, the output document will have had anything from zero to several different
-structural modifications. <em>Note that no guarantees are made that the output will be valid.</em> The input document is validated several
-times during the process, so watch the messages that are conveyed, especially those towards the end of the process.</p> 
+structural modifications. <em>Note that no guarantees are made that the output will be valid</em>.</p> 
+
+<p>The input document is validated at the end of the process, so watch the validation messages that are issued towards the end of the process.</p> 
 
 <p>If you keep encountering DTBook documents with recurring problems that are not fixed by this Script, please contact the Pipeline development team.</p>
 
@@ -46,13 +47,13 @@ times during the process, so watch the messages that are conveyed, especially th
 			<dd><strong>Required</strong>. Select where to store the output result.</dd>
 
 			<dt>Active Categories</dt>
-			<dd>Select the type of manipulation to be performed by activating one or several Categories. 
-			Note that by default, the Repair category is only run if the input is invalid; 
-			however you can override that behavior by activating the Force Repair option.<br/>
+			<dd>Select the type of manipulation to be performed by activating one or several Categories.<br/> 
+			<!-- Note that by default, the Repair category is only run if the input is invalid; 
+			however you can override that behavior by activating the Force Repair option.<br/> -->
 			Read more on what is included in each category in the <a href="#cats">DTBookFix Categories</a> section below.</dd>
 
-			<dt>Force Repair</dt>
-			<dd><strong>Optional</strong>. When checked, DTBookFix will attempt to repair the file even if it's already valid.</dd>
+			<dt>Force Execution</dt>
+			<dd><strong>Optional</strong>. When checked, DTBookFix will run all selected categories disregarding the input documents state (by default, the Repair category is run only if the document is invalid, and the Tidy category is run only of the document is valid).</dd>
 
 			<dt>Simplify heading layout</dt>
 			<dd>This is an <strong>optional</strong> routine within the Tidy category. 

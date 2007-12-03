@@ -54,7 +54,7 @@
 		
 		<h3 id="failure">On error</h3>
 		<p>On execution error, the transformer will throw an exception and abort.</p>
-		<p>The transformer will not throw an exception on failure to repair an invalid input document to a valid state. Validation is done inline, so messages will be conveyed regarding repair success.</p> 
+		<p>The transformer will not throw an exception on failure to repair an invalid input document to a valid state. (Validation is done inline to DEBUG, and by the script on final result, so messages will be conveyed regarding repair success.</p> 
 		
 		<h2 id="config">Configuration/Customization</h2>
 		
@@ -70,23 +70,24 @@
 		<dt>Executor</dt>
 		<dd><p>Any document manipulation routine bundled in this Transformer must be an 
 		extension of the abstract class <code>Executor</code>.</p></dd>
+
 		<dt>Categories</dt>
 		<dd><p><code>Executor</code>s are grouped in categories. At the time of writing, 
 		two categories (REPAIR and TIDY) exist, but more can be added should the need arise.</p></dd>
+		
 		<dt>Executor Granularity</dt>
 		<dd><p>Fix/Tidy functionality authors are encouraged to add *one* fix/tidy feature
 		per executor to allow finely-grained sorting/filtering.</p></dd>
+
 		<dt>Extensibility</dt>
-		<dd><p>The Transformer is written to allow swift addition of new repair/tidy functionality.</p> 
-		<p>To allow multiple context use, the preferred executor technology is XSLT, 
+		<dd>		
+		<p>The Transformer is written to allow swift addition of new repair/tidy functionality.</p> 
+		<p>To allow multiple context use, the preferred Executor technology is XSLT, 
 		but the Transformer allows associating other executors 
-		(such as javaclasses) with a category.</p></dd>
-		<dt>Input version handling</dt>
-		<dd>
-		<dd><p>The Transformer is written to allow swift addition of new repair/tidy functionality.</p> 
-		<p>To allow multiple context use, the preferred executor technology is XSLT, 
-		but the Transformer allows associating other executors 
-		(such as javaclasses) with a category.</p></dd>
+		(such as javaclasses) with a category.</p>		
+		<p>Besides appending new Executors, additional categories can be added as well.</p>				
+		</dd>
+
 		<dt>Input version handling</dt>
 		<dd>
 		<p>An Executor implementation must never change the DTBook DOCTYPE/version between input and output.</p>
@@ -94,13 +95,17 @@
 		there exists no ambiguity in the documents stated DOCTYPE/version. In other words, an Executor implementor
 		can use any token (DOCTYPE, dtbook@version or the DTBookVersion parameter) to determine input version.</p>
 		<p>By extending the abstract Executor class, you are by contract forced to implement the <code>supportsVersion</code>
-		method. Any Executor that returns false on the call to this method will be removed from the Executor list before launch. Every such disabling will yield a warning message to the Pipeline EventBus.</p> 		
+		method. Any Executor that returns false on the call to this method will be removed from the Executor list before launch. 
+		Every such disabling will yield a warning message to the Pipeline EventBus.</p> 		
 		</dd>
+		
 		<dt>Prerequisites</dt>
 		<dd>
-		<p>The main Transformer class will assure that the following prerequisites hold true before launching the Executor list(s).</p>
+		<p>The main Transformer class will assure that the following prerequisites hold true before 
+		launching the Executor list(s).</p>
 		<ul>
-		  <li>Proper root namespace declaration, making the DTBook namespace the default namespace (does not guarantee that the xmlns attribute is not DTD defaulted)</li>
+		  <li>Proper root namespace declaration, making the DTBook namespace the default namespace 
+		  (does not guarantee that the xmlns attribute is not DTD defaulted)</li>
 		  <li>No DOCTYPE/version ambiguity</li>
 		</ul>		
 		<p>If these  prerequisites are not met, a TransformerRunException is thrown.</p> 
@@ -108,14 +113,19 @@
 		
 		<dt>Reporting when modifications are done</dt>
 		<dd>
-			<p>Executor implementors are recommended to <em>report</em> when actual modifications are made. The way to do this depends on the executor type:</p>
+			<p>Executor implementors are recommended to <em>report</em> when actual modifications 
+			are made. The way to do this depends on the executor type:</p>
 			<ul>
 			<li>XSLT executors report through <code>xsl:message</code>.</li>
-			<li>Java executors report through any means available to reach the EventBus (either via direct call, or preferably through the <code>TransformerDelegateListener</code> interface.</p>
+			<li>Java executors report through any means available to reach the EventBus 
+			(either via direct call, or through the 
+			<code>TransformerDelegateListener</code> interface.</p>
 			</ul>
 		</dd>
 		<dt>XSLT integration</dt>
-		<dd><p>XSLT stylesheets are typically integrated by adding a one-liner to the <code>DTBookFix#createCategory</code> method, which
+		<dd><p>XSLT stylesheets are typically placed in the /xslt/subdirectory of the transformer
+		main directory, and then integrated into a Category by adding a one-liner to the 
+		<code>DTBookFix#createCategory</code> method, which
 		will create an instance of the <code>XSLTExecutor</code> convenience class.</p></dd>
 		</dl>
 		
