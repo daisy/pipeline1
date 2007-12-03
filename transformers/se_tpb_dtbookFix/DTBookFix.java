@@ -43,10 +43,14 @@ import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
 import org.daisy.util.xml.LocusTransformer;
 import org.daisy.util.xml.Namespaces;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogURIResolver;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 
@@ -56,7 +60,7 @@ import org.xml.sax.SAXParseException;
  * and inline documentation of individual Executors (XSLTs, classes).</p>
  * @author Joel Håkansson, Markus Gylling 
  */
-public class DTBookFix extends Transformer implements URIResolver, TransformerDelegateListener, ValidatorListener, FilesetErrorHandler {
+public class DTBookFix extends Transformer implements EntityResolver, URIResolver, TransformerDelegateListener, ValidatorListener, FilesetErrorHandler {
 
 	private boolean mHadValidationErrors = false;
 	private CatalogURIResolver mCatalogURIResolver = null;
@@ -272,13 +276,13 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
     		    		
     		if(((String)parameters.get("simplifyHeadingLayout")).contentEquals("true")) {
     			//tidy-level-cleaner.xsl is optional
-    			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2,i18n("LEVEL_CLEANER"),this,this,emitter));
+    			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2,i18n("LEVEL_CLEANER"),this,this,this,emitter));
     		}    		
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-pagenum-fix.xsl"),v2005_1_2,i18n("PAGENUM_FIX"),this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2,i18n("ADD_AUTHOR_AND_TITLE"),this,this,emitter));    		
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-pagenum-fix.xsl"),v2005_1_2,i18n("PAGENUM_FIX"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2,i18n("ADD_AUTHOR_AND_TITLE"),this,this,this,emitter));    		
     		//run the indenter last in the chain, this is harmless so always active
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-indent.xsl"),v2005_1_2,i18n("INDENT"),this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-lang.xsl"),v2005_1_2,i18n("ADD_LANG"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-indent.xsl"),v2005_1_2,i18n("INDENT"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-lang.xsl"),v2005_1_2,i18n("ADD_LANG"),this,this,this,emitter));
     		
     		/*
     		 * Populate the supportedstates of the TIDY category 
@@ -296,18 +300,18 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
     		if(((String)parameters.get("fixCharset")).contentEquals("true")) {
     			executors.add(new CharsetExecutor(parameters,i18n("CHARSET_FIXER"),this));
     		}
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelnormalizer.xsl"),v2005_1_2,i18n("LEVEL_NORMALIZER"),this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelsplitter.xsl"),v2005_1_2,i18n("LEVEL_SPLITTER"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelnormalizer.xsl"),v2005_1_2,i18n("LEVEL_NORMALIZER"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelsplitter.xsl"),v2005_1_2,i18n("LEVEL_SPLITTER"),this,this,this,emitter));
     		//repair 1-6 needs to be added in sequential order:
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level1.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_1"),this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level2.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_2"),this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level3.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_3"),this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level4.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_4"),this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level5.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_5"),this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level6.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_6"),this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-illegal-headings.xsl"),v2005_1_2,i18n("REMOVE_ILLEGAL_HEADINGS"),this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-lists.xsl"),v2005_1_2,i18n("REPAIR_LISTS"),this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-idref.xsl"),v2005_1_2,i18n("REPAIR_IDREF"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level1.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_1"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level2.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_2"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level3.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_3"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level4.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_4"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level5.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_5"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level6.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_6"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-illegal-headings.xsl"),v2005_1_2,i18n("REMOVE_ILLEGAL_HEADINGS"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-lists.xsl"),v2005_1_2,i18n("REPAIR_LISTS"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-idref.xsl"),v2005_1_2,i18n("REPAIR_IDREF"),this,this,this,emitter));
 
     		/*
     		 * Populate the supportedstates of the REPAIR category 
@@ -375,10 +379,19 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	 * @see javax.xml.transform.URIResolver#resolve(java.lang.String, java.lang.String)
 	 */
 	public Source resolve(String href, String base) throws TransformerException {		
-		System.err.println("dtbookfix resolve, href=" + href + " , base=" + base);
+		System.err.println("dtbookfix URIResolver resolve, href=" + href + " , base=" + base);
 		return mCatalogURIResolver.resolve(href, base);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+	 */
+	public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+		//System.err.println("dtbookfix resolveEntity, publicId=" + publicId + " , systemId=" + systemId);
+		return CatalogEntityResolver.getInstance().resolveEntity(publicId, systemId);				
+	}
+	
 	/**
 	 * Get and forward XSLT messages.
 	 */
@@ -558,4 +571,6 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 		}
 		
 	}
+
+	
 }
