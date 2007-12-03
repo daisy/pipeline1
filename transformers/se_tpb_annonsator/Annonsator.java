@@ -55,6 +55,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.settings.SettingsResolver;
 import org.daisy.util.xml.settings.SettingsResolverException;
 import org.daisy.util.xml.settings.UnsupportedDocumentTypeException;
+import org.daisy.util.xml.stax.StaxEntityResolver;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
 import org.w3c.dom.Document;
@@ -87,8 +88,10 @@ public class Annonsator extends Transformer implements ErrorListener {
         XMLInputFactory factory = XMLInputFactory.newInstance();
         try {
             resolver = SettingsResolver.getInstance("type.xml", this.getClass()); 
-            
+            //mg20071203: set entityresolver
+            factory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
             XMLEventReader reader = factory.createXMLEventReader(new FileInputStream(input));
+            
             URL configUrl = null;
             
             // Detect which config file to use
