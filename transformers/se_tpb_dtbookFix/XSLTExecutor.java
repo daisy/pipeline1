@@ -1,10 +1,15 @@
 package se_tpb_dtbookFix;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.xml.parsers.SAXParser;
 import javax.xml.stream.Location;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Result;
@@ -12,6 +17,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
 import net.sf.saxon.Controller;
@@ -20,7 +26,14 @@ import net.sf.saxon.event.MessageEmitter;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.xml.LocusTransformer;
+import org.daisy.util.xml.pool.SAXParserPool;
+import org.daisy.util.xml.sax.SAXConstants;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -31,20 +44,22 @@ import org.daisy.util.xml.LocusTransformer;
 class XSLTExecutor extends Executor implements ErrorListener{
 	private URL mXSLT=null;
 	private String[] mSupportedVersions = null;
-	private TransformerDelegateListener mTransformer = null;
-	private URIResolver mResolver = null;
+	private TransformerDelegateListener mTransformer = null;	
+	private URIResolver mURIResolver = null;
+	private EntityResolver mEntityResolver = null;
 	private MessageEmitter mEmitter = null;
 	
 	public XSLTExecutor(Map<String, String> parameters, URL xslt, 
 			String[] supportedVersions, String niceName, 
-			TransformerDelegateListener transformer, URIResolver resolver, 
-			MessageEmitter emitter) {
+			TransformerDelegateListener transformer, URIResolver uriResolver, 
+			EntityResolver entityResolver, MessageEmitter emitter) {
 		
 		super(parameters, niceName);
 		mXSLT = xslt;
 		mSupportedVersions = supportedVersions;
 		mTransformer = transformer;
-		mResolver = resolver;
+		mURIResolver = uriResolver;
+		mEntityResolver = entityResolver;
 		mEmitter = emitter;
 	}
 		
@@ -66,7 +81,32 @@ class XSLTExecutor extends Executor implements ErrorListener{
 		//we assume that Saxon is the XSLT processor used,
 		//but catch+message in case its not.
 		
-		try{
+		SAXSource saxSource = null; 
+		Map<String, Object> features = null;
+		Map<String, Object> properties = null;
+		SAXParser parser = null;
+		try{			
+			
+			/*
+			 * Create a SAXSource, hook up an entityresolver
+			 */
+			if(!(source instanceof SAXSource)) {
+				File input = FilenameOrFileURI.toFile(source.getSystemId());
+				features = new HashMap<String, Object>();
+				properties = new HashMap<String, Object>();
+				features.put(SAXConstants.SAX_FEATURE_VALIDATION, Boolean.FALSE);		
+				parser = SAXParserPool.getInstance().acquire(features, properties);                
+		        saxSource = new SAXSource(parser.getXMLReader(), new InputSource(new FileInputStream(input)));        
+		        saxSource.setSystemId(input.toString());
+			}else{
+				saxSource = (SAXSource) source;
+			}						
+			saxSource.getXMLReader().setEntityResolver(mEntityResolver);
+	        
+			
+	        /*
+	         * Create the TransformerFactory and ask it to be quiet
+	         */
 			TransformerFactory tfac = TransformerFactory.newInstance();
 			try{
 				tfac.setAttribute("http://saxon.sf.net/feature/version-warning", Boolean.FALSE);
@@ -75,20 +115,31 @@ class XSLTExecutor extends Executor implements ErrorListener{
 						, MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM, null);
 			}
 	
-	        StreamSource xslt = new StreamSource(mXSLT.openStream());
-	        if(xslt.getSystemId()==null)
-	        	xslt.setSystemId(mXSLT.toURI().toASCIIString());
-	        javax.xml.transform.Transformer processor = tfac.newTransformer(xslt); 
+			
+			/*
+			 * Create the stylesheet source
+			 */
+	        StreamSource xsltSource = new StreamSource(mXSLT.openStream());
+	        if(xsltSource.getSystemId()==null) xsltSource.setSystemId(mXSLT.toURI().toASCIIString());
 	        
-	        processor.setErrorListener(this);
-	        processor.setURIResolver(mResolver);
+	        
+	        /*
+	         * Create the xslt transform processor
+	         */
+	        javax.xml.transform.Transformer processor = tfac.newTransformer(xsltSource); 	        
+	        processor.setErrorListener(this);	        
+	        processor.setURIResolver(mURIResolver);
 	        try{   
 	        	((Controller)processor).setMessageEmitter(mEmitter);
 	        }catch (Exception e){
 	        	mTransformer.delegateMessage(this, e.getLocalizedMessage()
 					, MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM, null);
 	        }
-	     	       
+	     	
+	        
+	        /*
+	         * Set any parameters on the processor
+	         */
 	        if (mParameters != null) {
 	            for (Iterator it = mParameters.entrySet().iterator(); it.hasNext(); ) {
 	                Map.Entry paramEntry = (Map.Entry)it.next();
@@ -99,13 +150,22 @@ class XSLTExecutor extends Executor implements ErrorListener{
 	    					, MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM, null);
 	    	        }	
 	            }
-	        }	        
-	        processor.transform(source, result);
+	        }	     
+	        
+	        /*
+	         * Apply.
+	         */
+	        processor.transform(saxSource, result);		 
+	        
 		}catch (Exception e) {
 			throw new TransformerRunException(e.getMessage(),e);
-		}	
+		} finally {
+			if(parser!=null) {				
+				SAXParserPool.getInstance().release(parser, features, properties);  
+			}
+		}
 	}
-	
+		
 	/*
 	 * (non-Javadoc)
 	 * @see javax.xml.transform.ErrorListener#error(javax.xml.transform.TransformerException)
@@ -115,7 +175,7 @@ class XSLTExecutor extends Executor implements ErrorListener{
 		mTransformer.delegateMessage(this, te.getLocalizedMessage()
 				, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM, loc);				
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see javax.xml.transform.ErrorListener#fatalError(javax.xml.transform.TransformerException)
