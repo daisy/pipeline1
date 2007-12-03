@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../validation/ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../validation/ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
 <taskScript version="2.0" name="DTBookFix">
 	<nicename>DTBook Fixer</nicename>
 	<description>Fixes common DTBook errors and problems</description>
@@ -24,7 +28,7 @@
 
 	<parameter name="cat" value="REPAIR_TIDY" required="true">
 		<nicename>Active Categories</nicename>
-		<description>Select the type of manipulation to be performed  \n (See documentation for more information)</description>
+		<description>Select the type of manipulation to be performed (See documentation for more information)</description>
 		<datatype>
 			<enum>
 			  <item nicename="Tidy only" value="TIDY" />
@@ -33,30 +37,32 @@
 			</enum>
 		</datatype>
 	</parameter>
+
+	<parameter name="forceRun" value="false" required="false">
+		<nicename>Force Execution</nicename>
+		<description>Check box to run all selected categories even if the input document is not in the expected state (valid, invalid, etc)</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
 	
 	<parameter name="simplifyHeadingLayout" value="false" required="false">
 		<nicename>Simplify heading layout</nicename>
-		<description>Check box to simplify heading layout by moving headings upward where possible</description>
+		<description>Optional routine in the Tidy category. Check box to simplify heading layout by moving headings upward where possible</description>
 		<datatype>
 			<boolean/>
 		</datatype>
 	</parameter>
-<!--
-	<parameter name="forceRepair" value="false" required="false">
-		<nicename>Force Repair</nicename>
-		<description>Check box to run the Repair manipulation category even if the  input is valid</description>
-		<datatype>
-			<boolean/>
-		</datatype>
-	</parameter>
--->
+
 	<parameter name="fixCharset" value="false" required="false">
 		<nicename>Fix Character set</nicename>
-		<description>Check box to attempt to fix an invalid stated character set</description>
+		<description>Optional routine in the Repair category. Check box to attempt to fix an invalid stated character set</description>
 		<datatype>
 			<boolean/>
 		</datatype>
 	</parameter>
+	
+	&ValidatorScriptParamsSimpleStatic;
 	
 	<task name="se_tpb_dtbookFix" interactive="false">
 		<parameter>
@@ -78,17 +84,32 @@
 			<name>simplifyHeadingLayout</name>
 			<value>${simplifyHeadingLayout}</value>
 		</parameter>
-		<!--		
-		<parameter>
-			<name>forceRepair</name>
-			<value>${forceRepair}</value>
-		</parameter>
-		-->
+
 		<parameter>
 			<name>fixCharset</name>
 			<value>${fixCharset}</value>
+		</parameter>		
+	</task>
+	
+	<task name="int_daisy_validator" interactive="false">
+	
+		<parameter>
+			<name>input</name>
+			<value>${output}</value>
+		</parameter>
+
+ 	    &ValidatorTaskParamsSimpleStatic;
+
+		<parameter>
+			<name>requireInputType</name>
+			<value>Dtbook document</value>
 		</parameter>
 		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>	
+										
 	</task>
 
 </taskScript>
