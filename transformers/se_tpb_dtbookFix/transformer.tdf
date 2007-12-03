@@ -33,30 +33,18 @@
 			<default>REPAIR_TIDY</default>
 		</parameter>
 		
-		<!--
-		<parameter required="false" type="enum">
-			<name>forceTidy</name>
-			<description>Run tidy category even if input to tidy is invalid</description>
-			<example>true</example>
-			<enum>
-				<value>true</value>
-				<value>false</value>
-			</enum>
-			<default>false</default>
-		</parameter>
-				
-		<parameter required="false" type="enum">
-			<name>forceRepair</name>
-			<description>Run repair category even if input is valid</description>
-			<example>true</example>
-			<enum>
-				<value>true</value>
-				<value>false</value>
-			</enum>
-			<default>false</default>
-		</parameter>
-		-->
 		
+		<parameter required="false" type="enum">
+			<name>forceRun</name>
+			<description>Run all selected categories even if input is not in the expected state (valid, invalid, etc)</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+								
 		<parameter required="false" type="enum">
 			<name>simplifyHeadingLayout</name>
 			<description>Optional in Tidy category. Simplify heading layout by moving headings upward where possible</description>
@@ -79,38 +67,12 @@
 			<default>false</default>
 		</parameter>
 		
-		
-		<parameter required="false" type="enum">
-			<name>abortOnError</name>
-			<description>Throw TransformerRunException if output is invalid (excluding missing aux files)</description>
-			<example>true</example>
-			<enum>
-				<value>true</value>
-				<value>false</value>
-			</enum>
-			<default>false</default>
-		</parameter>
-
 		<parameter type="string" required="false">
 			<name>factory</name>
 			<description>Javax XSLT Factory</description>
 			<example>com.icl.saxon.TransformerFactoryImpl</example>
 			<default>net.sf.saxon.TransformerFactoryImpl</default>
 		</parameter>
-
-
-		<!--
-		<parameter required="false" type="enum">
-			<name>indent</name>
-			<description>Indent (pretty print) output</description>
-			<example>true</example>
-			<enum>
-				<value>true</value>
-				<value>false</value>
-			</enum>
-			<default>true</default>
-		</parameter>
-		-->
 
 	</parameters>
 

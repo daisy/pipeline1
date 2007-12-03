@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +40,7 @@ import org.daisy.util.fileset.validation.Validator;
 import org.daisy.util.fileset.validation.ValidatorFactory;
 import org.daisy.util.fileset.validation.ValidatorListener;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
-import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
-import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
 import org.daisy.util.xml.LocusTransformer;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogURIResolver;
@@ -56,15 +53,13 @@ import org.xml.sax.SAXParseException;
 /**
  * Main Transformer class. 
  * <p>See ../doc/transformers/se_tpb_dtbookFix.html for further details, 
- * and inline documentation of individial Executors (XSLTs, classes).</p>
+ * and inline documentation of individual Executors (XSLTs, classes).</p>
  * @author Joel Håkansson, Markus Gylling 
  */
 public class DTBookFix extends Transformer implements URIResolver, TransformerDelegateListener, ValidatorListener, FilesetErrorHandler {
 
 	private boolean mHadValidationErrors = false;
 	private CatalogURIResolver mCatalogURIResolver = null;
-	private final static String DTBOOK_VALIDATOR_IMPL = "org.daisy.util.fileset.validation:http://www.daisy.org/fileset/DTBOOK_DOCUMENT";
-	private final static String JAVAX_FACTORY_KEY = "javax.xml.transform.TransformerFactory";
 	
 	public DTBookFix(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);
@@ -82,7 +77,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 		
 		File input = FilenameOrFileURI.toFile((String)parameters.get("input"));
 		File output = FilenameOrFileURI.toFile((String)parameters.get("output"));
-		boolean abortOnError = ((String)parameters.get("abortOnError")).contentEquals("true");				
+		boolean force = ((String)parameters.get("forceRun")).contentEquals("true");						
 		SystemPropertyHandler propertyHandler = new SystemPropertyHandler(parameters);
 		propertyHandler.set();
 						
@@ -102,42 +97,42 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 			
 			
 			/*
-			 * Create an ordered List with the user activated categories
+			 * Create an ordered List with the user activated category names
 			 */
-			List<ExecutorCategory> activeCategories = getActiveCategories((String)parameters.get("runCategories"));
+			List<Category.Name> nameList = getActiveCategories((String)parameters.get("runCategories"));
 			
 			
 			/*
-			 * Populate each category with executors
+			 * Create Category instances, populated with executors
 			 */
-			Map<ExecutorCategory,List<Executor>> executors = new LinkedHashMap<ExecutorCategory,List<Executor>>(); 			
-			for (ExecutorCategory category : activeCategories) {
-				executors.put(category, createCategory(category, parameters, (String)parameters.get("DTBookVersion")));				
+			List<Category> categories = new LinkedList<Category>(); 			
+			for (Category.Name name : nameList) {
+				categories.add(createCategory(name, parameters, (String)parameters.get("DTBookVersion")));				
 			}
 			
 			
-	    	/*
-	    	 * Validate input
-	    	 */
-	    	this.sendMessage(i18n("VALIDATING_INPUT", input.getName()));
-	    	if(isValid(input)) this.sendMessage(i18n("WAS_VALID"));
-			
-	    	
 			/*
 			 * Execute the Executors.
 			 */
 			FileJuggler juggler = new FileJuggler(input, output);
-			int progressLen = getActiveExecutorCount(executors);
+			int progressLen = getActiveExecutorCount(categories);
 			double progress = 0;
-			for(ExecutorCategory category : executors.keySet()) {
-				this.sendMessage(i18n("RUNNING_CATEGORY",i18n(category.name())),MessageEvent.Type.INFO);
-		    	for(Executor exec : executors.get(category)) {
-		    		this.sendMessage(i18n("RUNNING_EXECUTOR", exec.getNiceName()),MessageEvent.Type.INFO);
-		    		exec.execute(new StreamSource(juggler.getInput()), new StreamResult(juggler.getOutput()));
-		    		juggler.swap();
-		    		progress++;
-		    		this.sendMessage(progress/progressLen);
-		    	}
+			for(Category category : categories) {				
+				InputState state = getInputState(juggler.getInput());
+				if(force||category.supportsInputState(state)) {
+					this.sendMessage(i18n("RUNNING_CATEGORY",i18n(category.getName().toString())),MessageEvent.Type.INFO);
+			    	for(Executor exec : category) {
+			    		this.sendMessage(i18n("RUNNING_EXECUTOR", exec.getNiceName()),MessageEvent.Type.INFO);
+			    		exec.execute(new StreamSource(juggler.getInput()), new StreamResult(juggler.getOutput()));
+			    		juggler.swap();
+			    		progress++;
+			    		this.sendMessage(progress/progressLen);
+			    	}
+				}else{
+					this.sendMessage(i18n("CATEGORY_SKIPPED", i18n(category.getName().name()), i18n(state.name())), MessageEvent.Type.INFO);
+					progress += category.size();
+					this.sendMessage(progress/progressLen);
+				}
 			}
 			
 			
@@ -146,22 +141,7 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 			 * including aux files
 			 */
 			finalize(input, output, juggler);
-			
-			
-	    	/*
-	    	 * Validate output.
-	    	 * This could be done as a separate transformer as well.
-	    	 */	    	
-		    this.sendMessage(i18n("VALIDATING_OUTPUT", output));
-	    	if(!isValid(output)) {
-	    		if(abortOnError) {	    	
-	    			throw new TransformerRunException(i18n("ABORTING_INVALID"));
-	    		}	
-	    	}else{
-	    		this.sendMessage(i18n("WAS_VALID"));
-	    	}
-			
-	    	
+							    		    	
 		} catch (Exception e) {
 			if(e instanceof TransformerRunException) throw (TransformerRunException)e;
 			throw new TransformerRunException(e.getMessage(),e);
@@ -171,10 +151,10 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 		return true;
 	}
 	
-	private int getActiveExecutorCount(Map<ExecutorCategory, List<Executor>> executors) {
+	private int getActiveExecutorCount(List<Category> categories) {
 		int i = 0;
-		for(List<Executor> list : executors.values()) {
-			i+= list.size();
+		for(Category category : categories) {
+			i+= category.size();
 		}
 		return i;
 	}
@@ -186,11 +166,11 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	 * execution order is defined by the inparam string.</p>
 	 * 
 	 */
-	private List<ExecutorCategory> getActiveCategories(String param) {
-		List<ExecutorCategory> list = new LinkedList<ExecutorCategory>(); 
+	private List<Category.Name> getActiveCategories(String param) {
+		List<Category.Name> list = new LinkedList<Category.Name>(); 
 		String[] wantedCategories = param.split("_");
 		for (int i = 0; i < wantedCategories.length; i++) {			
-			list.add(ExecutorCategory.valueOf(wantedCategories[i]));			
+			list.add(Category.Name.valueOf(wantedCategories[i]));			
 		}				
 		return list;
 	}
@@ -213,9 +193,9 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 				manifest.delete();
 			}catch (Exception e) {
 				this.sendMessage(i18n("AUX_COPY_ERROR",e.getMessage()), MessageEvent.Type.ERROR);
-			}				
-			files.close();
+			}							
 		}
+		files.close();
 	}
 	
 	/**
@@ -266,85 +246,105 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 						
 		} finally {      	
 			PeekerPool.getInstance().release(peeker);
-		}		
-		    	
+		}				    	
 	}
 
 	@SuppressWarnings("unchecked")	
-	private List<Executor> createCategory(ExecutorCategory execCategory, Map parameters, String inputDTBookVersion) {
+	private Category createCategory(Category.Name name, Map parameters, String inputDTBookVersion) {
 		final String[] v2005_1 = {"2005-1"};		
 		final String[] v2005_2 = {"2005-2"};
 		final String[] v2005_1_2 = {"2005-1","2005-2"};
 						
-		List<Executor> category = new LinkedList<Executor>();
+		List<Executor> executors = new LinkedList<Executor>();
+		Set<InputState> supportedStates = new HashSet<InputState>();
 		
 		/*
 		 * Instantiate a message emitter to listen to messages from Saxon
 		 */
     	MessageEmitter emitter = new MessageEmitter();
     	emitter.setWriter(new MessageEmitterWriter(this));
-    	
-    	/*
-    	 * Add each executor
-    	 */
-    	if(execCategory==ExecutorCategory.TIDY) {
-    		//tidy-level-cleaner.xsl is optional
+    	    	
+    	if(name==Category.Name.TIDY) {
+    		
+    		/*
+    		 * Populate the executors of the TIDY category 
+    		 */    		
+    		    		
     		if(((String)parameters.get("simplifyHeadingLayout")).contentEquals("true")) {
-    			category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2,i18n("LEVEL_CLEANER"),this,this,emitter));
-    		}
-    		
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-pagenum-fix.xsl"),v2005_1_2,i18n("PAGENUM_FIX"),this,this,emitter));
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2,i18n("ADD_AUTHOR_AND_TITLE"),this,this,emitter));
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-lang.xsl"),v2005_1_2,i18n("ADD_LANG"),this,this,emitter));
-    		
+    			//tidy-level-cleaner.xsl is optional
+    			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2,i18n("LEVEL_CLEANER"),this,this,emitter));
+    		}    		
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-pagenum-fix.xsl"),v2005_1_2,i18n("PAGENUM_FIX"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2,i18n("ADD_AUTHOR_AND_TITLE"),this,this,emitter));    		
     		//run the indenter last in the chain, this is harmless so always active
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-indent.xsl"),v2005_1_2,i18n("INDENT"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-indent.xsl"),v2005_1_2,i18n("INDENT"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-lang.xsl"),v2005_1_2,i18n("ADD_LANG"),this,this,emitter));
     		
-    	}else if (execCategory==ExecutorCategory.REPAIR) {
+    		/*
+    		 * Populate the supportedstates of the TIDY category 
+    		 */    		    		
+    		supportedStates.add(InputState.VALID);
+    		
+    	}else if (name==Category.Name.REPAIR) {
+    		
+    		/*
+    		 * Populate the executors of the REPAIR category 
+    		 */    		
+    		    		
     		//optional charset recoder
     		//this should always be run first in the repair category
     		if(((String)parameters.get("fixCharset")).contentEquals("true")) {
-    			category.add(new CharsetExecutor(parameters,i18n("CHARSET_FIXER"),this));
+    			executors.add(new CharsetExecutor(parameters,i18n("CHARSET_FIXER"),this));
     		}
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelnormalizer.xsl"),v2005_1_2,i18n("LEVEL_NORMALIZER"),this,this,emitter));
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelsplitter.xsl"),v2005_1_2,i18n("LEVEL_SPLITTER"),this,this,emitter));
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level1.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_1"),this,this,emitter));
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level2.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_2"),this,this,emitter));
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level3.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_3"),this,this,emitter));
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level4.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_4"),this,this,emitter));
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level5.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_5"),this,this,emitter));
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level6.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_6"),this,this,emitter));
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-illegal-headings.xsl"),v2005_1_2,i18n("REMOVE_ILLEGAL_HEADINGS"),this,this,emitter));
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-lists.xsl"),v2005_1_2,i18n("REPAIR_LISTS"),this,this,emitter));
-    		category.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-idref.xsl"),v2005_1_2,i18n("REPAIR_IDREF"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelnormalizer.xsl"),v2005_1_2,i18n("LEVEL_NORMALIZER"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelsplitter.xsl"),v2005_1_2,i18n("LEVEL_SPLITTER"),this,this,emitter));
+    		//repair 1-6 needs to be added in sequential order:
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level1.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_1"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level2.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_2"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level3.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_3"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level4.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_4"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level5.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_5"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level6.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_6"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-illegal-headings.xsl"),v2005_1_2,i18n("REMOVE_ILLEGAL_HEADINGS"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-lists.xsl"),v2005_1_2,i18n("REPAIR_LISTS"),this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-idref.xsl"),v2005_1_2,i18n("REPAIR_IDREF"),this,this,emitter));
+
+    		/*
+    		 * Populate the supportedstates of the REPAIR category 
+    		 */
+    		supportedStates.add(InputState.INVALID);
+    		
     	}
     	
-    	for (int i = 0; i < category.size(); i++) {
-    		Executor dbfe = category.get(i);
-       		if(!dbfe.supportsVersion(inputDTBookVersion)) {
-    			category.remove(i);
-        		String message = i18n("REMOVING", dbfe.getNiceName(), inputDTBookVersion);
+    	for (int i = 0; i < executors.size(); i++) {
+    		Executor executor = executors.get(i);
+       		if(!executor.supportsVersion(inputDTBookVersion)) {
+    			executors.remove(i);
+        		String message = i18n("REMOVING", executor.getNiceName(), inputDTBookVersion);
         		this.sendMessage(message,Type.WARNING,Cause.INPUT);
     		}
 		}
     	
-    	if(category.isEmpty()) {
-    		String message = i18n("EMPTY_CATEGORY", category.toString());
+    	if(executors.isEmpty()) {
+    		String message = i18n("EMPTY_CATEGORY", executors.toString());
     		this.sendMessage(message,Type.WARNING,Cause.INPUT);
     	}
     	
-		return category;
-	}
-
-	private boolean isValid(File f) throws TransformerRunException {
-		return isValid(f,null);
+		return new Category(name,supportedStates,executors);
 	}
 	
-	private boolean isValid(File f, Set<URL> extraSchemas) throws TransformerRunException {
+	private InputState getInputState(File input) throws ValidatorException {		
+		return getInputState(input, null);
+	}
+	
+	private InputState getInputState(File input, Set<URL> extraSchemas) throws ValidatorException {	
+		
+    	this.sendMessage(i18n("VALIDATING", input),MessageEvent.Type.DEBUG);
+    			
 		ValidatorFactory vfac = ValidatorFactory.newInstance();		
 		mHadValidationErrors = false;
 		try{			
-			Fileset dtbookFileset = new FilesetImpl(f.toURI(),this,true,false);						
+			Fileset dtbookFileset = new FilesetImpl(input.toURI(),this,true,false);						
 			Validator validator = vfac.newValidator(FilesetType.DTBOOK_DOCUMENT);
 			validator.setListener(this);			
 			
@@ -354,15 +354,20 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 					validator.setSchema(url,type);
 				}
 			}			
-			validator.validate(dtbookFileset);
-		}catch (ValidatorNotSupportedException  e) {
-			throw new TransformerRunException(e.getMessage(),e);
-		} catch (ValidatorException e) {
-			throw new TransformerRunException(e.getMessage(),e);			
+			validator.validate(dtbookFileset);		
 		} catch (FilesetFatalException e) {
-			throw new TransformerRunException(e.getMessage(),e);			
+			this.sendMessage(i18n("WAS_MALFORMED"),MessageEvent.Type.DEBUG);
+			return InputState.MALFORMED;			
 		}	
-		return !mHadValidationErrors;
+		
+		if (mHadValidationErrors) {
+			this.sendMessage(i18n("WAS_INVALID"),MessageEvent.Type.DEBUG);
+			return InputState.INVALID; 
+		}
+		
+		this.sendMessage(i18n("WAS_VALID"),MessageEvent.Type.DEBUG);
+		return InputState.VALID;
+		
 	}
 	
 	/*
@@ -461,14 +466,8 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	@SuppressWarnings("unused")
 	public void report(Validator validator, ValidatorMessage message) {		
 		MessageEvent.Type type = null;
-		if(message instanceof ValidatorWarningMessage) {			
-			type = MessageEvent.Type.WARNING;		
-		}else {
-			mHadValidationErrors = true;
-			type = MessageEvent.Type.ERROR;
-		}
 		Location loc = LocusTransformer.newLocation(message);
-		this.sendMessage(message.getMessage(), type, MessageEvent.Cause.INPUT,loc);		
+		this.sendMessage(message.getMessage(), MessageEvent.Type.DEBUG, MessageEvent.Cause.INPUT,loc);		
 	}
 	
 	/*
@@ -477,7 +476,6 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 	 */
 	@SuppressWarnings("unused")
 	public void inform(Validator validator, String information) {
-		this.sendMessage(information, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM,null);		
 	}
 
 	/*
@@ -510,17 +508,19 @@ public class DTBookFix extends Transformer implements URIResolver, TransformerDe
 			 */	
 			if (!(root instanceof FileNotFoundException)) {
 				mHadValidationErrors = true;				
-				this.sendMessage(root.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, loc);
+				this.sendMessage(root.getMessage(), MessageEvent.Type.DEBUG, MessageEvent.Cause.INPUT, loc);
 			}			
 		}else{
-			this.sendMessage(root.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT, loc);
+			this.sendMessage(root.getMessage(), MessageEvent.Type.DEBUG, MessageEvent.Cause.INPUT, loc);
 		}		
 	}
 	
 	private class SystemPropertyHandler {
-		String factory = null;
-		String initXsltFactoryProp = null;
-		String initDtbookValidatorFactoryProp = null;
+		private final static String DTBOOK_VALIDATOR_IMPL = "org.daisy.util.fileset.validation:http://www.daisy.org/fileset/DTBOOK_DOCUMENT";
+		private final static String JAVAX_FACTORY_KEY = "javax.xml.transform.TransformerFactory";
+		private String factory = null;
+		private String initXsltFactoryProp = null;
+		private String initDtbookValidatorFactoryProp = null;
 		
 		private SystemPropertyHandler(Map parameters) {
 			factory = (String)parameters.get("factory");	

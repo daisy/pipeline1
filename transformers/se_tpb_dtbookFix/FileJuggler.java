@@ -18,7 +18,7 @@ import org.daisy.util.file.TempFile;
  * @version 27 sep 2007
  * @since 1.0
  */
-public class FileJuggler {
+class FileJuggler {
 	private TempFile t1;
 	private TempFile t2;
 	private File input;
@@ -31,7 +31,7 @@ public class FileJuggler {
 	 * @param output An output file
 	 * @throws IOException 
 	 */
-	public FileJuggler(File input, File output) throws IOException {
+	FileJuggler(File input, File output) throws IOException {
 		this.t1 = null;
 		this.t2 = null;
 		this.toggle = true;
@@ -47,7 +47,7 @@ public class FileJuggler {
 	 * Get the current input file
 	 * @return Returns the current input file
 	 */
-	public File getInput() {
+	File getInput() {
 		return toggle ? t1.getFile() : t2.getFile();
 	}
 	
@@ -55,7 +55,7 @@ public class FileJuggler {
 	 * Get the current output file
 	 * @return Returns the current output file
 	 */
-	public File getOutput() {
+	File getOutput() {
 		return toggle ? t2.getFile() : t1.getFile();
 	}
 	
@@ -63,7 +63,7 @@ public class FileJuggler {
 	 * Swap the input and output file before writing to the output again
 	 * @throws FileNotFoundException 
 	 */
-	public void swap() throws FileNotFoundException {
+	void swap() throws FileNotFoundException {
 		// Check that the soon to be input file exists
 		if (getOutput().exists()) {
 			toggle = !toggle;
@@ -78,7 +78,7 @@ public class FileJuggler {
 	 * Closes the temporary files and copies the result to the output file
 	 * @throws IOException 
 	 */
-	public void close() throws IOException {
+	void close() throws IOException {
 		if (getOutput().exists()) FileUtils.copy(getOutput(), output);
 		else if (getInput().exists()) FileUtils.copy(getInput(), output);
 		else FileUtils.copy(input, output);
