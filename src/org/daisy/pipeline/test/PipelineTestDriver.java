@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.pipeline.test.impl.Aligner1;
+import org.daisy.pipeline.test.impl.Audacity2DTB1;
 import org.daisy.pipeline.test.impl.CharacterRepertoireManipulator1;
 import org.daisy.pipeline.test.impl.CharsetSwitcher1;
 import org.daisy.pipeline.test.impl.ConfigurableValidator1;
@@ -17,9 +18,11 @@ import org.daisy.pipeline.test.impl.DTBSplitter1;
 import org.daisy.pipeline.test.impl.DTBook2Xhtml1;
 import org.daisy.pipeline.test.impl.DTBook2Xhtml2MathML;
 import org.daisy.pipeline.test.impl.DTBook2rtf1;
+import org.daisy.pipeline.test.impl.DTBookFix1;
 import org.daisy.pipeline.test.impl.DTBookValidator1;
 import org.daisy.pipeline.test.impl.DTBookValidator2;
 import org.daisy.pipeline.test.impl.Daisy202ToZ398620051;
+import org.daisy.pipeline.test.impl.FilesetCreator1;
 import org.daisy.pipeline.test.impl.FilesetRenamer1;
 import org.daisy.pipeline.test.impl.Html2Xhtml1;
 import org.daisy.pipeline.test.impl.MixedContentNormalizer1;
@@ -149,16 +152,18 @@ public class PipelineTestDriver {
 //		tests.add(new OpsCreator1(inputDir, outputDir));
 //		tests.add(new OpsCreator2(inputDir, outputDir));
 //		tests.add(new OpsCreator3(inputDir, outputDir));		
-//		tests.add(new DTBook2rtf1(inputDir, outputDir));
 //		tests.add(new Xhtml2DTBook1(inputDir, outputDir));		
 //		tests.add(new MultiFormatMedia1(inputDir, outputDir));
 //		tests.add(new MixedContentNormalizer1(inputDir, outputDir));
 //		tests.add(new ValidatorNVDL1(inputDir, outputDir));
-	
+//		tests.add(new DTBook2rtf1(inputDir, outputDir));
+//		tests.add(new DTBookFix1(inputDir, outputDir));	
 		
 		
-////////// tests with input data not in samples dir: 		
+////////// tests with input data not in samples dir:
+		//tests.add(new FilesetCreator1(inputDir, outputDir));		
 		//tests.add(new Aligner1(inputDir, outputDir));
+		//tests.add(new Audacity2DTB1(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoder1(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoderSplitter1(inputDir, outputDir));
 		//tests.add(new PrettyPrinter3(inputDir, outputDir));

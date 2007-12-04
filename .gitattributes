@@ -350,6 +350,7 @@ src/org/daisy/pipeline/test/impl/DTBookFix1.java -text
 src/org/daisy/pipeline/test/impl/DTBookValidator1.java -text
 src/org/daisy/pipeline/test/impl/DTBookValidator2.java -text
 src/org/daisy/pipeline/test/impl/Daisy202ToZ398620051.java -text
+src/org/daisy/pipeline/test/impl/FilesetCreator1.java -text
 src/org/daisy/pipeline/test/impl/FilesetRenamer1.java -text
 src/org/daisy/pipeline/test/impl/Html2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/MixedContentNormalizer1.java -text
