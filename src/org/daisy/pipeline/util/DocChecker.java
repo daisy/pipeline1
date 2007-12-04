@@ -1,6 +1,7 @@
 package org.daisy.pipeline.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.util.file.EFile;
 import org.daisy.util.file.EFolder;
@@ -30,7 +32,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Util class (with main) to check the documentation package within a Pipeline 
- * distribution and report inexistance, invalidity, broken links, etc.
+ * distribution and report inexistence, invalidity, broken links, etc.
  * <p>This class is typically run at build stage.<p>  
  * <p>This class assumes that documentation resources are not jarred.</p>
  * @author Markus Gylling
@@ -106,6 +108,9 @@ public class DocChecker implements FilesetErrorHandler {
 		
 		for (Iterator iter = scriptAndTransformerFiles.keySet().iterator(); iter.hasNext();) {
 			File file = (File) iter.next();
+			if(file.getName().toLowerCase().contains("multiformat")) {
+				System.err.println("stop");
+			}
 			String docURI = parseForDocURI(file);
 			if(docURI==null){
 				System.err.println("[DocChecker Warning] File " + file.getParentFile().getName()+"/"+file.getName() + " has no inline documentation URI");
@@ -126,7 +131,12 @@ public class DocChecker implements FilesetErrorHandler {
 
 	private String parseForDocURI(File file) throws Exception {
 		XMLInputFactory xif = StAXInputFactoryPool.getInstance().acquire(mXifProperties);
-		XMLEventReader reader = xif.createXMLEventReader(file.toURI().toURL().openStream());
+		FileInputStream fis = new FileInputStream(file);
+		StreamSource ss = new StreamSource(fis);
+		ss.setSystemId(file);
+		
+		
+		XMLEventReader reader = xif.createXMLEventReader(ss);
 		
 		String ret = null;		
 		while (reader.hasNext() && ret == null) {
@@ -139,7 +149,7 @@ public class DocChecker implements FilesetErrorHandler {
 				}
 			}
 		}	
-		
+		fis.close();
 		reader.close();
 		StAXInputFactoryPool.getInstance().release(xif, mXifProperties);
 		return ret;
@@ -160,7 +170,7 @@ public class DocChecker implements FilesetErrorHandler {
 						ret.put(file, rootElemLocalName);
 					}
 				}catch (Exception e) {
-					//System.err.println("[DocChecker Warning] Peeker exception in " + file.getName());
+					System.err.println("[DocChecker Warning] Peeker exception in " + file.getName());
 				}
 			}
 		}

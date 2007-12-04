@@ -82,8 +82,9 @@ public class DocIndexGenerator implements ErrorHandler {
 		System.err.println("Generating index-enduser...");
 		file = new EFile(docFolder, "index-enduser.html");			
 		doc = parse(file);						
-		populate(doc, docFolder, "scripts", "Pipeline Script: ");		
 		populate(doc, docFolder, "enduser", "");
+		populate(doc, docFolder, "scripts", "Pipeline Script: ");		
+		
 		createTOC(doc);
 		serialize(doc, file);
 
@@ -127,13 +128,24 @@ public class DocIndexGenerator implements ErrorHandler {
 
 	private Document addMetaData(Document doc) {
 		Element head = (Element)XPathUtils.selectSingleNode(doc.getDocumentElement(), "head");
+		String generator = this.getClass().getName();
+		
+		Node preExisting = XPathUtils.selectSingleNode(head, "./meta[@content='" + generator + "']");
+		if(preExisting!=null) {
+			preExisting.getParentNode().removeChild(preExisting);
+		}
 		
 		Element meta = doc.createElement("meta");
 		meta.setAttribute("name", "generator");
-		meta.setAttribute("content", this.getClass().getName());
+		meta.setAttribute("content", generator);
 		
 		head.appendChild(meta);
 		
+		
+		preExisting = XPathUtils.selectSingleNode(head, "./meta[@name='date']");
+		if(preExisting!=null) {
+			preExisting.getParentNode().removeChild(preExisting);
+		}
 		meta = doc.createElement("meta");
 		meta.setAttribute("name", "date");
 		meta.setAttribute("content", getDate());
