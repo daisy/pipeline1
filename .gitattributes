@@ -685,6 +685,8 @@ transformers/se_tpb_dtbookFix/transformer.tdf -text
 transformers/se_tpb_dtbookFix/xslt/level-tools.xsl -text
 transformers/se_tpb_dtbookFix/xslt/output.xsl -text
 transformers/se_tpb_dtbookFix/xslt/recursive-copy.xsl -text
+transformers/se_tpb_dtbookFix/xslt/repair-complete-structure.xsl -text
+transformers/se_tpb_dtbookFix/xslt/repair-flatten-redundant-nesting.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-idref.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-level1.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-level2.xsl -text
@@ -695,12 +697,15 @@ transformers/se_tpb_dtbookFix/xslt/repair-level6.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-levelnormalizer.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-levelsplitter.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-lists.xsl -text
+transformers/se_tpb_dtbookFix/xslt/repair-remove-empty-elements.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-remove-illegal-headings.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-add-author-title.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-add-lang.xsl -text
+transformers/se_tpb_dtbookFix/xslt/tidy-change-inline-pagenum-to-block.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-indent.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-level-cleaner.xsl -text
-transformers/se_tpb_dtbookFix/xslt/tidy-pagenum-fix.xsl -text
+transformers/se_tpb_dtbookFix/xslt/tidy-move-pagenum.xsl -text
+transformers/se_tpb_dtbookFix/xslt/tidy-remove-empty-elements.xsl -text
 transformers/se_tpb_filesetcreator/resource/tpbnarrator_res.mp3 -text
 transformers/se_tpb_filesetcreator/transformer.tdf -text
 transformers/se_tpb_imageConverter/ImageConverter.java -text

@@ -2,7 +2,7 @@
 <!--
 	Fix idref attribute on noteref and annoref elements
 		Version
-			2007-11-30
+			2007-12-03
 
 		Description
 			idref must be present on noteref and annoref. Add idref if missing or 
@@ -12,6 +12,13 @@
 			Add a hash mark in the beginning of all idref attributes that don't
 			contain a hash mark.
 
+		Input parameters
+			assignEmpty - 	'true'/'false'
+							'true' assigns an idref value to noteref/annoref based on its
+							relative placement among notes/annotations
+			addHashMark -	'true'/'false'
+							'true' adds a hash mark in the beginning of all idref attributes 
+							that don't contain a hash mark.
 
 		Nodes
 			noteref, annoref
@@ -31,11 +38,21 @@
 	<xsl:include href="recursive-copy.xsl"/>
 	<xsl:include href="output.xsl"/>
 	
+	<xsl:param name="assignEmpty" select="'true'"/>
+	<xsl:param name="addHashMark" select="'true'"/>
+	
+	<xsl:template match="dtb:dtbook">
+		<xsl:choose>
+			<xsl:when test="$assignEmpty='false' and $addHashMark='false'"><xsl:copy-of select="."/></xsl:when>
+			<xsl:otherwise><xsl:call-template name="copy"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
 	<xsl:template match="dtb:noteref|dtb:annoref">
 		<xsl:copy>
 			<xsl:copy-of select="@*[not(local-name()='idref')]"/>
 			<xsl:choose>
-				<xsl:when test="not(@idref) or @idref='' or @idref='#'">
+				<xsl:when test="$assignEmpty='true' and (not(@idref) or @idref='' or @idref='#')">
 					<xsl:choose>
 						<xsl:when test="self::dtb:noteref">
 							<xsl:attribute name="idref">#<xsl:value-of select="(//dtb:note)[
@@ -51,7 +68,7 @@
 						</xsl:when>
 					</xsl:choose>
 				</xsl:when>
-				<xsl:when test="not(contains(@idref,'#'))">
+				<xsl:when test="$addHashMark='true' and (not(contains(@idref,'#')))">
 					<xsl:attribute name="idref">
 						<xsl:text>#</xsl:text>
 						<xsl:value-of select="@idref"/>

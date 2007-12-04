@@ -37,10 +37,18 @@
 					<level1>
 						<!-- Level normalizer will fix this -->
 						<h1>Heading 4 (level 1)</h1>
-						<p>Paragraph 4</p>
+						<p><!-- Flatten redundant nesting will fix this --><p>Paragraph 4</p></p>
 					</level1>
 				</level2>
 			</level3>
+			<level1><!-- Remove empty elements will fix this --></level1>
+			<!-- Complete structure will fix this -->
+			<level1><h1>Heading 5 (level 1)</h1></level1>
+			<level1>
+				<!-- Idref will fix this -->
+				<p><noteref>1</noteref></p>
+				<note id="note-1"><p>1. The note</p></note>
+			</level1>
 		</bodymatter>
 	</book>
 </dtbook>
