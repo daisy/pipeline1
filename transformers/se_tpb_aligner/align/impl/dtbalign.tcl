@@ -838,6 +838,7 @@ proc CreateLists {text plist alist plen isLastChunk} {
    set ::stressV($word) {}
    continue
   }
+  if {$::trans($word) == "0"} continue
   lappend tmp $word
  }
  set words $tmp
@@ -2187,6 +2188,16 @@ if {[string match {* *} [lindex [lindex $segres [expr $i+1]] end]]} {
     regsub {x\.y} $text $stamp2 text
    }
    regsub -all {y\.x} $text x.y text
+  }
+  if 1 {
+   set newTmp {}
+   foreach {stamp1 stamp2} $tmp {
+    lappend newTmp $stamp1 $stamp1
+   }
+   lappend newTmp [lindex $tmp end]
+#puts $tmp
+#puts $newTmp
+   set tmp [lrange $newTmp 1 end]
   }
 #puts stderr AAA,$tmp
 # lappend tmp 0 0 0 0 0 0 0 0
