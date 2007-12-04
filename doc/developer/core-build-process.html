@@ -10,25 +10,27 @@
 <body>
 <h1 class="title">Core Build Process</h1>
 
-  <p class="author">Linus Ericson</p>
+  <p class="author">Linus Ericson, Markus Gylling</p>
   <p class="updated">Latest update: 2007-10-09</p>
   <p class="summary">A step-by-step guide on building the Pipeline core.</p>
 
 
 <ol>
 
-<li><p>If you are making an official (i.e. not just local for your own needs) build, modify the date in org/daisy/util/Version.java and org/daisy/pipeline/Version.java. Commit.</p></li>
+<li>
+<p>If you are making an official (i.e. not just local for your own needs) build, modify the date in org/daisy/util/Version.java and org/daisy/pipeline/Version.java. Commit.</p></li>
 
 <li><p>Make sure the build.xml script is updated (commit changes): make sure the JARs defined in the &lt;fileset&gt; with id="fileset.utilJars" is correct.</p></li>
 
-<li><p>Create a tag:</p>
+<li><p>If you are making an official build, create a tag:</p>
 <ul>
    <li>from the "SVN Repository Exploring" perspective, right click on trunk/dmfc and select "Branch/Tag..."</li>
    <li>set the "To URL" to "https://daisymfc.svn.sourceforge.net/svnroot/daisymfc/tags/v{DATE}", where {DATE} is the date of the date of the release in YYYYMMDD format.</li>
 </ul>   
 </li>
 
-<li><p>Excluding a certain transformer:</p>
+<li>
+  <p>Excluding a certain transformer:</p>
   <ul>
   <li>make sure the transformer is not used by ant scripts...</li>
   <li>In build.xml, edit the &lt;patternset&gt; with id="patternset.transformers". Add an exclude line: &lt;exclude name="int_daisy_validator/**/*.*"/&gt;</li>
@@ -60,6 +62,8 @@
 </li>
 
 <li><p>Change the download link on the sf shell main page.</p></li>
+
+<li>Rebuild and update the documentation suite on the sf shell main page. Use <code>org.daisy.pipeline.util.DocIndexGenerator</code> to regenerate indices, then upload the whole /doc/ directory.</p>
 
 <ol>
 

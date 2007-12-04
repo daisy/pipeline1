@@ -124,7 +124,7 @@
     parameter must be supplied by the user when the script is run. If the user does not
     supply the value of an optional parameter, the <code>value</code> attribute is used
     as a default value.</p>
-   <p>There are currently six different datatypes available for script parameters.</p>
+   <p>There are currently seven different datatypes available for script parameters.</p>
 
   <h3 id="param_file">File</h3>
   <p>The <code>mime</code> attribute contains the mime type of the file. The value of the
@@ -134,7 +134,19 @@
     &lt;nicename&gt;Input File&lt;/nicename&gt;
     &lt;description&gt;A DTBook file in 2005-1 or 2005-2 format&lt;/description&gt;
     &lt;datatype&gt;
-        &lt;file mime="" type="input"/&gt;
+        &lt;file mime="application/xml" type="input"/&gt;
+    &lt;/datatype&gt;
+&lt;/parameter&gt;</pre>
+
+  <h3 id="param_files">Files</h3>
+  <p>The <code>mime</code> attribute contains the mime type of the files. The value of the
+    <code>type</code> attribute is either <code>input</code> or <code>output</code>.
+    Depending on this value, a GUI can display either an open or a save file dialog.</p>
+  <pre>&lt;parameter name="fileParam" value="" required="true"&gt;
+    &lt;nicename&gt;Input Files&lt;/nicename&gt;
+    &lt;description&gt;One or several DTBook files in 2005-1 or 2005-2 format&lt;/description&gt;
+    &lt;datatype&gt;
+        &lt;files mime="application/xml" type="input"/&gt;
     &lt;/datatype&gt;
 &lt;/parameter&gt;</pre>
 
@@ -249,14 +261,14 @@
 
   <hr/>
 
-  <!-- ************************************************** -->
+  <!-- ************************************************** 
 
   <h2 id="documentation">Full documentation</h2>
   <p class="fixme">TBD. Script documentation</p>
 
   <hr/>
 
-  <!-- ************************************************** -->
+  ************************************************** -->
 
   <h2 id="example">Example</h2>
 
