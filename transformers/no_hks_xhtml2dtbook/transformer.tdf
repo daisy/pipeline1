@@ -3,7 +3,7 @@
 	<description>Transform an XHTML 1.x document to DTBook</description>
 	<classname>no_hks_xhtml2dtbook.Xhtml2DTBook</classname>
 	<license>LGPL</license>
-	<author>Per Sennels, Markus Gylling</author>
+	<author>Per Sennels</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	<documentation uri="../../doc/transformers/no_hks_xhtml2dtbook.html"/>
 	

@@ -7,8 +7,13 @@ import java.util.Map;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.fileset.exception.FilesetFileException;
+import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.TransformerFactoryConstants;
@@ -17,9 +22,8 @@ import org.daisy.util.xml.xslt.TransformerFactoryConstants;
  *
  * Main transformer class. See doc/transformers/no_hks_xhtml2dtbook for details.
  * @author Per Sennels
- * @author Markus Gylling
  */
-public class Xhtml2DTBook extends Transformer {
+public class Xhtml2DTBook extends Transformer implements FilesetErrorHandler {
 
 	public Xhtml2DTBook(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);		
@@ -36,13 +40,11 @@ public class Xhtml2DTBook extends Transformer {
 	@Override
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		try{
-		
-//			Chain chain = new Chain(TransformerFactoryConstants.SAXON8, CatalogEntityResolver.getInstance());
-//			//TODO add any pre-tweak (xhtml-xhtml) XSLTs using inparams			
-//			// add the static canonical XSLT 
-//			chain.addStylesheet(new StreamSource(this.getClass().getResource("xhtml2dtbook.xsl").openStream()));
+			/*
+			 * TODO add any pre-canonical (xhtml-xhtml) XSLTs using inparams
+			 */	
 	
-			//get xslt
+			//get the canonical xslt
 			URL xslt = this.getClass().getResource("xhtml2dtbook.xsl");
 			
 			//get input file
@@ -52,11 +54,19 @@ public class Xhtml2DTBook extends Transformer {
 			File output = FilenameOrFileURI.toFile((String) parameters.remove("output"));			
 			FileUtils.createDirectory(output.getParentFile());
 						
+			//copy any referred files over
+			EFolder outputFolder = new EFolder(output.getParentFile());
+			Fileset fileset = new FilesetImpl(input.toURI(),this,false,false);
+			outputFolder.addFileset(fileset, true);
+			//remove the manifest file from output dir
+			File remove = new File(outputFolder,input.getName());
+			remove.delete();
+				
+			//apply the canonical xslt
 			Stylesheet.apply(input.getAbsolutePath(), xslt, output.getAbsolutePath(), 
-					TransformerFactoryConstants.SAXON8, null, 
+					TransformerFactoryConstants.SAXON8, parameters, 
 						CatalogEntityResolver.getInstance());
 			
-//			chain.applyChain(input, output);
 					
 		} catch (Exception e) {
 			String message = i18n("ERROR_ABORTING", e.getMessage());
@@ -65,6 +75,14 @@ public class Xhtml2DTBook extends Transformer {
 
 		return true;
 		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
+	 */
+	public void error(FilesetFileException ffe) throws FilesetFileException {
+		this.sendMessage(ffe);		
 	}
 
 }
