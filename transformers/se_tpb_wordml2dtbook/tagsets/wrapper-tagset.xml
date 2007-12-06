@@ -3,7 +3,7 @@
 
 	<group name="blockquote" tag="blockquote"/>
 	
-	<group name="imagegroup" tag="imagegroup"/>
+	<group name="imggroup" tag="imggroup"/>
 	
 	<group name="note" tag="note" addID="true"/>
 
