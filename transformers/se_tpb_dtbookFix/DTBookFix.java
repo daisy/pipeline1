@@ -129,6 +129,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 				if(force||category.supportsInputState(state)) {
 					this.sendMessage(i18n("RUNNING_CATEGORY",i18n(category.getName().toString())),MessageEvent.Type.INFO);
 			    	for(Executor exec : category) {
+			    		this.checkAbort();
 			    		this.sendMessage(i18n("RUNNING_EXECUTOR", exec.getNiceName()),MessageEvent.Type.INFO);
 			    		exec.execute(new StreamSource(juggler.getInput()), new StreamResult(juggler.getOutput()));
 			    		juggler.swap();
@@ -174,7 +175,8 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 	 * 
 	 */
 	private List<Category.Name> getActiveCategories(String param) {
-		List<Category.Name> list = new LinkedList<Category.Name>(); 
+		List<Category.Name> list = new LinkedList<Category.Name>();
+		if(param.contentEquals("NOTHING")) return list;
 		String[] wantedCategories = param.split("_");
 		for (int i = 0; i < wantedCategories.length; i++) {			
 			list.add(Category.Name.valueOf(wantedCategories[i]));			
