@@ -231,9 +231,11 @@ samples/input/xhtml/daisylog.jpg -text
 samples/input/xhtml/mixed-content.html -text
 samples/input/xhtml/multi-language-unicode.html -text
 samples/input/xhtml/xhtml-rdf.xml -text
+scripts/_dev/AudacityToDTB.taskScript -text
 scripts/_dev/Daisy202toZ3986-2005.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
+scripts/_dev/Narrator-Dev.taskScript -text
 scripts/_dev/XMLAudioAligner.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
 scripts/conversion/advanced/WordMLtoDTBook.taskScript -text
