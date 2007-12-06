@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
@@ -32,9 +34,11 @@ import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.interfaces.xml.Xhtml10File;
 import org.daisy.util.fileset.interfaces.xml.XmlFile;
 import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
 import org.daisy.util.fileset.interfaces.xml.d202.D202SmilFile;
+import org.daisy.util.fileset.interfaces.xml.d202.D202TextualContentFile;
 import org.daisy.util.fileset.manipulation.FilesetFileManipulator;
 import org.daisy.util.fileset.manipulation.FilesetManipulationException;
 import org.daisy.util.fileset.manipulation.FilesetManipulator;
@@ -62,7 +66,7 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 	private static Characters mLineBreak = null;
 	private static Characters mIndent = null;
 	private static String mTempFileRegex = null;
-
+	private boolean mFilterAnnoyingDefaultAttributes = true; //filter defaults in xhtml1 and smil1
 	public PrettyPrinter(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);
 	}
@@ -191,6 +195,9 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 	private QName previousStartOrEndElementQName = null;
 	private int depth = 0;
 	
+	private Pattern annoyingXHTML10AttributeMatcher = Pattern.compile("shape");
+	private Pattern annoyingSMIL10AttributeMatcher = Pattern.compile("repeat|fill|skip-content|type|left|top|z-index|fit");
+		
 	public List<XMLEvent> nextEvent(XMLEvent xe, ContextStack context) {
 		retEvents.clear();
 				
@@ -233,10 +240,23 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 			}else{
 				iterator = se.getAttributes();
 			}
-			
+								
 			while(iterator.hasNext()) {
-				Attribute attr = (Attribute) iterator.next();
-				retEvents.add(attr);
+				Attribute attr = (Attribute) iterator.next();		
+				if(mFilterAnnoyingDefaultAttributes) {
+					if(mCurrentInputFile instanceof Xhtml10File){
+						if(annoyingXHTML10AttributeMatcher.matcher(attr.getName().getLocalPart()).matches()) {
+							//System.err.println("prettyprinter skipping nonspecificed attribute " + attr.getName() + " in " + mCurrentInputFile.getName());
+							continue;
+						}
+					}else if (mCurrentInputFile instanceof D202SmilFile){
+						if(annoyingSMIL10AttributeMatcher.matcher(attr.getName().getLocalPart()).matches()) {
+							//System.err.println("prettyprinter skipping nonspecificed attribute " + attr.getName() + " in " + mCurrentInputFile.getName());
+							continue;
+						}
+					}
+				}
+				retEvents.add(attr);								
 			}
 						
 			previousEvent = XMLEvent.START_ELEMENT;
@@ -247,9 +267,8 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 		}else if (xe.getEventType() == XMLEvent.END_ELEMENT) {
 			
 			--depth;
-			//if(previousEvent!=XMLEvent.CHARACTERS && previousEvent!=XMLEvent.ATTRIBUTE) {
 			if(previousEvent!=XMLEvent.CHARACTERS && previousEvent!=XMLEvent.ATTRIBUTE && previousEvent!=XMLEvent.START_ELEMENT) {
-				if 	((!(mCurrentInputFile instanceof D202NccFile)) || (!previousStartOrEndElementQName.getLocalPart().equals("a"))) {
+				if ((!(mCurrentInputFile instanceof D202NccFile)) || (!previousStartOrEndElementQName.getLocalPart().equals("a"))) {
 					if(previousEvent==XMLEvent.SPACE||previousEvent==XMLEvent.END_ELEMENT) {				
 						retEvents.add(mLineBreak);
 					}
@@ -259,7 +278,7 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 
 			retEvents.add(xe);			
 			if(previousEvent==XMLEvent.START_ELEMENT) {	
-				retEvents.add(mLineBreak);
+				//retEvents.add(mLineBreak);
 			}
 			previousEvent = XMLEvent.END_ELEMENT;
 			previousStartOrEndElementQName = xe.asEndElement().getName();
@@ -294,7 +313,7 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler, F
 				}else if(name.equals("content")) {
 					contentAttr = a;
 				}else if(name.equals("http-equiv")) {
-					contentAttr = a;
+					httpEquivAttr = a;
 				}else{
 					otherAttrs.add(a);
 				}
