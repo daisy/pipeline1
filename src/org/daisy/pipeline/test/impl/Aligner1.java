@@ -13,9 +13,10 @@ public class Aligner1 extends PipelineTest {
 	
 	@Override
 	public List<String> getParameters() {				
-		mParameters.add("--inputXML=" + mDataInputDir + "/dtbook/hauy-2005-1.xml");		
-		mParameters.add("--inputAudio=" + "D:/dtbs/d202/bcakeP/");
-		mParameters.add("--outputPath="+ "D:/aligner-out/"); 
+		mParameters.add("--inputXML=" + "C:/eclipse/aligner-input/xml/1/christ-pages.xml");		
+		mParameters.add("--inputAudio=" + "C:/eclipse/aligner-input/audio/1/christ-pages");
+		mParameters.add("--outputPath="+ "C:/eclipse/aligner-output/");
+		mParameters.add("--divider="+ "pages");		
 		return mParameters;
 	}
 
