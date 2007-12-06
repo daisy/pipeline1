@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.pipeline.test.impl.Aligner1;
-import org.daisy.pipeline.test.impl.Audacity2DTB1;
+//import org.daisy.pipeline.test.impl.Audacity2DTB1;
 import org.daisy.pipeline.test.impl.CharacterRepertoireManipulator1;
 import org.daisy.pipeline.test.impl.CharsetSwitcher1;
 import org.daisy.pipeline.test.impl.ConfigurableValidator1;
@@ -162,7 +162,7 @@ public class PipelineTestDriver {
 		
 ////////// tests with input data not in samples dir:
 		//tests.add(new FilesetCreator1(inputDir, outputDir));		
-		//tests.add(new Aligner1(inputDir, outputDir));
+		tests.add(new Aligner1(inputDir, outputDir));
 		//tests.add(new Audacity2DTB1(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoder1(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoderSplitter1(inputDir, outputDir));
