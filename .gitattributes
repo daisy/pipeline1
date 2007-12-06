@@ -378,6 +378,9 @@ src/org/daisy/pipeline/util/DocIndexGenerator.java -text
 src/org/daisy/pipeline/util/IndexGenerator.java -text
 src/org/daisy/pipeline/util/PropertiesConverter.java -text
 src/org/daisy/pipeline/util/SummaryGenerator.java -text
+src/org/daisy/util/css/stylesheets/Stylesheets.java -text
+src/org/daisy/util/css/stylesheets/d202.basic.css -text
+src/org/daisy/util/css/stylesheets/dtbook.2005.basic.css -text
 src/org/daisy/util/execution/State.java -text
 src/org/daisy/util/fileset/impl/Opf20FileImpl.java -text
 src/org/daisy/util/fileset/interfaces/xml/ops20/OPF20File.java -text
