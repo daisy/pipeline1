@@ -79,8 +79,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	private void initMacDefaults() {
 		setPrefPath(PreferencesKeys.PATH_TO_IMAGEMAGICK,
-				"/opt/local/bin/convert");//$NON-NLS-1$
-		setPrefPath(PreferencesKeys.PATH_TO_LAME, "/sw/bin/lame");//$NON-NLS-1$
+				"/usr/local/bin/convert");//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_LAME, "/usr/local/bin/lame");//$NON-NLS-1$
 		setPrefPath(PreferencesKeys.PATH_TO_PYTHON, "/usr/bin/python");//$NON-NLS-1$
 	}
 
