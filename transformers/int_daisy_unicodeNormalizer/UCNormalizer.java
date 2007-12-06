@@ -19,6 +19,7 @@
 package int_daisy_unicodeNormalizer;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
+import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
@@ -86,7 +88,8 @@ public class UCNormalizer extends Transformer implements FilesetManipulatorListe
 			//implement FilesetManipulatorListener
 			fm.setListener(this);
 			//set input fileset
-			fm.setInputFileset(new File((String)parameters.remove("input")).toURI());
+			File f = new File((String)parameters.remove("input"));
+			fm.setInputFileset(f.toURI());
 			//set destination
 			fm.setOutputFolder((EFolder)FileUtils.createDirectory(new EFolder((String)parameters.remove("output"))));
 			//set restriction, only listen to XmlFile
@@ -101,8 +104,7 @@ public class UCNormalizer extends Transformer implements FilesetManipulatorListe
 			fm.iterate();
 			//done.
 			sendMessage(i18n("COMPLETED_NORM", processedCount));
-		} catch (Exception e) {
-			//this.sendMessage(i18n("ERROR_ABORTING",e.getMessage()), MessageEvent.Type.ERROR);			
+		} catch (Exception e) {			
 			String message = i18n("ERROR_ABORTING",e.getMessage());
 			throw new TransformerRunException(message,e);
 		}			
