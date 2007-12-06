@@ -18,21 +18,25 @@
 <ol>
 
 <li>
-<p>If you are making an official (i.e. not just local for your own needs) build, modify the date in org/daisy/util/Version.java and org/daisy/pipeline/Version.java. Commit.</p></li>
+	<p>If you are making an official (i.e. not just local for your own needs) build, modify the date in org/daisy/util/Version.java and org/daisy/pipeline/Version.java. Commit.</p>
+</li>
 
-<li><p>Make sure the build.xml script is updated (commit changes): make sure the JARs defined in the &lt;fileset&gt; with id="fileset.utilJars" is correct.</p></li>
+<li>
+	<p>Make sure the build.xml script is updated (commit changes): make sure the JARs defined in the &lt;fileset&gt; with id="fileset.utilJars" is correct.</p>
+</li>
 
-<li><p>If you are making an official build, create a tag:</p>
-<ul>
-   <li>from the "SVN Repository Exploring" perspective, right click on trunk/dmfc and select "Branch/Tag..."</li>
-   <li>set the "To URL" to "https://daisymfc.svn.sourceforge.net/svnroot/daisymfc/tags/v{DATE}", where {DATE} is the date of the date of the release in YYYYMMDD format.</li>
-</ul>   
+<li>
+	<p>If you are making an official build, create a tag:</p>
+	<ul>
+	   <li>from the "SVN Repository Exploring" perspective, right click on trunk/dmfc and select "Branch/Tag..."</li>
+	   <li>set the "To URL" to "https://daisymfc.svn.sourceforge.net/svnroot/daisymfc/tags/v{DATE}", where {DATE} is the date of the date of the release in YYYYMMDD format.</li>
+	</ul>   
 </li>
 
 <li>
   <p>Excluding a certain transformer:</p>
   <ul>
-  <li>make sure the transformer is not used by ant scripts...</li>
+  <li>make sure the transformer is not used by any scripts...</li>
   <li>In build.xml, edit the &lt;patternset&gt; with id="patternset.transformers". Add an exclude line: &lt;exclude name="int_daisy_validator/**/*.*"/&gt;</li>
   </ul>
 </li>
@@ -52,7 +56,8 @@
 <li>
 <p>Test the generated build!</p>
 <ul>
-  <li>run a couple of scripts, preferably using both pipeline.bat and pipeline.sh.</li>
+  <li>Minimally, run a couple of scripts, preferably using both pipeline.bat and pipeline.sh.</li>
+  <li>If creating an official release, make sure to have run the entire suite in <code>org.daisy.pipeline.test.TestDriver</code> both before (in your IDE) and after the build (using the main method of TestDriver).
   <li>make sure the javadoc looks OK</li>
  </ul> 
 </li>
