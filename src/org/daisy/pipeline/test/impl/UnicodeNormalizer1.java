@@ -13,7 +13,7 @@ public class UnicodeNormalizer1 extends PipelineTest {
 	
 	@Override
 	public List<String> getParameters() {		
-		mParameters.add("--input=" + mDataInputDir + "/dtbook/dontworrybehappy.xml");
+		mParameters.add("--input=" + mDataInputDir + "/xhtml/multi-language-unicode.html");
 		mParameters.add("--output=" + mDataOutputDir + "/UnicodeNormalizer1/");
 		return mParameters;
 	}

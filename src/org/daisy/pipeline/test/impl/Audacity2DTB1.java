@@ -5,36 +5,35 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class PrettyPrinter1 extends PipelineTest {
+public class Audacity2DTB1 extends PipelineTest {
 
-	public PrettyPrinter1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public Audacity2DTB1(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
-	public List<String> getParameters() {		
-		mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy_valid.xml");
-		mParameters.add("--output=" + mDataOutputDir + "/PrettyPrinter1/");
+	public List<String> getParameters() {				
+		mParameters.add("--inputAUP=" + "D:\\_temp_dev\\audacity test\\1\\test5.aup");				
+		mParameters.add("--outputPath="+ "D:\\_temp_dev\\audacity-out\\"); 
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "pretty printer";
+		return "";
 	}
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("PrettyPrinter.taskScript".equals(scriptName)) {
+		if("AudacityToDTB.taskScript".equals(scriptName)) {
 			return true;
-		}		
+		}
 		return false;
 	}
 
 	@Override
 	public void confirm() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
 }

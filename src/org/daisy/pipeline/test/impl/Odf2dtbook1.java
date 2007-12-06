@@ -21,7 +21,7 @@ public class Odf2dtbook1 extends PipelineTest {
 
 	@Override
 	public String getResultDescription() {		
-		return "";
+		return "Should generate a valid DTBook file par possible metadata missing";
 	}
 
 	@Override

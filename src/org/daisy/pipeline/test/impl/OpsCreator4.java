@@ -5,27 +5,27 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class PrettyPrinter1 extends PipelineTest {
+public class OpsCreator4 extends PipelineTest {
 
-	public PrettyPrinter1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public OpsCreator4(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
-	public List<String> getParameters() {		
-		mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy_valid.xml");
-		mParameters.add("--output=" + mDataOutputDir + "/PrettyPrinter1/");
+	public List<String> getParameters() {
+		mParameters.add("--input=" + mDataInputDir + "/dtbook/the_waste_land.xml");
+		mParameters.add("--output=" + mDataOutputDir + "/OpsCreator4/wasteland.epub");				
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "pretty printer";
+		return "";
 	}
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("PrettyPrinter.taskScript".equals(scriptName)) {
+		if("OPSCreator.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;

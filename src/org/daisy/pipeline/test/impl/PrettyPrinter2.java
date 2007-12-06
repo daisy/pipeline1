@@ -14,7 +14,7 @@ public class PrettyPrinter2 extends PipelineTest {
 	@Override
 	public List<String> getParameters() {		
 		mParameters.add("--input=" + mDataInputDir + "/dtb/d202/dontworrybehappy/ncc.html");
-		mParameters.add("--output=" + mDataOutputDir + "/PrettyPrinter1/");
+		mParameters.add("--output=" + mDataOutputDir + "/PrettyPrinter2/");
 		return mParameters;
 	}
 

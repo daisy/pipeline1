@@ -337,6 +337,7 @@ src/org/daisy/pipeline/test/PipelineTest.java -text
 src/org/daisy/pipeline/test/PipelineTestDriver.java -text
 src/org/daisy/pipeline/test/PipelineTestException.java -text
 src/org/daisy/pipeline/test/impl/Aligner1.java -text
+src/org/daisy/pipeline/test/impl/Audacity2DTB1.java -text
 src/org/daisy/pipeline/test/impl/CharacterRepertoireManipulator1.java -text
 src/org/daisy/pipeline/test/impl/CharsetSwitcher1.java -text
 src/org/daisy/pipeline/test/impl/ConfigurableValidator1.java -text
@@ -358,6 +359,8 @@ src/org/daisy/pipeline/test/impl/Html2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/MixedContentNormalizer1.java -text
 src/org/daisy/pipeline/test/impl/MultiFormatMedia1.java -text
 src/org/daisy/pipeline/test/impl/Narrator1.java -text
+src/org/daisy/pipeline/test/impl/Narrator2.java -text
+src/org/daisy/pipeline/test/impl/Narrator3.java -text
 src/org/daisy/pipeline/test/impl/OcfCreator1.java -text
 src/org/daisy/pipeline/test/impl/Odf2dtbook1.java -text
 src/org/daisy/pipeline/test/impl/Odf2dtbook2.java -text
@@ -365,6 +368,7 @@ src/org/daisy/pipeline/test/impl/Odf2xhtml1.java -text
 src/org/daisy/pipeline/test/impl/OpsCreator1.java -text
 src/org/daisy/pipeline/test/impl/OpsCreator2.java -text
 src/org/daisy/pipeline/test/impl/OpsCreator3.java -text
+src/org/daisy/pipeline/test/impl/OpsCreator4.java -text
 src/org/daisy/pipeline/test/impl/PrettyPrinter1.java -text
 src/org/daisy/pipeline/test/impl/PrettyPrinter2.java -text
 src/org/daisy/pipeline/test/impl/PrettyPrinter3.java -text

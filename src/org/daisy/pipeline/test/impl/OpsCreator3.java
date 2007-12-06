@@ -13,15 +13,14 @@ public class OpsCreator3 extends PipelineTest {
 	
 	@Override
 	public List<String> getParameters() {
-		//mParameters.add("--input=" + mDataInputDir + "/xhtml/multi-language-unicode.html;" + mDataInputDir + "/xhtml/daisy_202.html");
 		mParameters.add("--input=" + mDataInputDir + "/xhtml/daisy_202.html");
-		mParameters.add("--output=" + mDataOutputDir + "/OpsCreator3/hauy.epub");				
+		mParameters.add("--output=" + mDataOutputDir + "/OpsCreator3/daisy_202.epub");				
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "";
+		return "Should create an XHTML OCF, and report a broken link '#metadef'";
 	}
 
 	@Override
