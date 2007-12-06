@@ -48,11 +48,11 @@
 					</linegroup>
 					<linegroup>
 						<line>What are the roots that clutch, what branches grow</line>
-						<line>Out of this stony rubbish? Son of man<noteref idref="note-1">*</noteref>,<linenum>20</linenum>
+						<line>Out of this stony rubbish? Son of man<noteref idref="#note-1">*</noteref>,<linenum>20</linenum>
 						</line>
 						<line>You cannot say, or guess, for you know only</line>
 						<line>A heap of broken images, where the sun beats,</line>
-						<line>And the dead tree gives no shelter, the cricket no relief<noteref idref="note-2">*</noteref>,</line>
+						<line>And the dead tree gives no shelter, the cricket no relief<noteref idref="#note-2">*</noteref>,</line>
 						<line>And the dry stone no sound of water. Only</line>
 						<line>There is shadow under this red rock,</line>
 						<line>(Come in under the shadow of this red rock),</line>
@@ -63,7 +63,7 @@
 						</line>
 						<blockquote xml:lang="de">
 							<poem>
-								<line>Frisch weht der Wind<noteref idref="note-3">*</noteref>
+								<line>Frisch weht der Wind<noteref idref="#note-3">*</noteref>
 								</line>
 								<line>Der Heimat zu</line>
 								<line>Mein Irisch Kind,</line>
@@ -79,14 +79,14 @@
 						</line>
 						<line>Looking into the heart of light, the silence.</line>
 						<line xml:lang="de">
-							<em>Od' und leer das Meer</em>.<noteref idref="note-4">*</noteref>
+							<em>Od' und leer das Meer</em>.<noteref idref="#note-4">*</noteref>
 						</line>
 					</linegroup>
 					<linegroup>
 						<line>Madame Sosostris, famous clairvoyante,</line>
 						<line>Had a bad cold, nevertheless</line>
 						<line>Is known to be the wisest woman in Europe,</line>
-						<line>With a wicked pack of cards. Here, said she<noteref idref="note-5">*</noteref>,</line>
+						<line>With a wicked pack of cards. Here, said she<noteref idref="#note-5">*</noteref>,</line>
 						<line>Is your card, the drowned Phoenician Sailor,</line>
 						<line>(Those are pearls that were his eyes. Look!)</line>
 						<line>Here is Belladonna, the Lady of the Rocks,</line>
@@ -103,17 +103,17 @@
 						<line>One must be so careful these days.</line>
 					</linegroup>
 					<linegroup>
-						<line>Unreal City<noteref idref="note-6">*</noteref>,<linenum>60</linenum>
+						<line>Unreal City<noteref idref="#note-6">*</noteref>,<linenum>60</linenum>
 						</line>
 						<line>Under the brown fog of a winter dawn,</line>
 						<line>A crowd flowed over London Bridge, so many,</line>
-						<line>I had not thought death had undone so many.<noteref idref="note-7">*</noteref>
+						<line>I had not thought death had undone so many.<noteref idref="#note-7">*</noteref>
 						</line>
-						<line>Sighs, short and infrequent, were exhaled<noteref idref="note-8">*</noteref>,</line>
+						<line>Sighs, short and infrequent, were exhaled<noteref idref="#note-8">*</noteref>,</line>
 						<line>And each man fixed his eyes before his feet.</line>
 						<line>Flowed up the hill and down King William Street,</line>
 						<line>To where Saint Mary Woolnoth kept the hours</line>
-						<line>With a dead sound on the final stroke of nine.<noteref idref="note-9">*</noteref>
+						<line>With a dead sound on the final stroke of nine.<noteref idref="#note-9">*</noteref>
 						</line>
 						<line>There I saw one I knew, and stopped him, crying "Stetson!</line>
 						<line>"You who were with me in the ships at Mylae!<linenum>70</linenum>
@@ -123,16 +123,16 @@
 						<line>"Or has the sudden frost disturbed its bed?</line>
 					</linegroup>
 					<linegroup>
-						<line>"Oh keep the Dog far hence, that's friend to men,<noteref idref="note-10">*</noteref>
+						<line>"Oh keep the Dog far hence, that's friend to men,<noteref idref="#note-10">*</noteref>
 						</line>
 						<line>"Or with his nails he'll dig it up again!</line>
 						<line>"You! <span xml:lang="fr">hypocrite lecteur! - mon semblable, - mon frere</span>
-							!"<noteref idref="note-11">*</noteref>
+							!"<noteref idref="#note-11">*</noteref>
 						</line>
 					</linegroup>
 					<hd>II. A GAME OF CHESS</hd>
 					<linegroup>
-						<line>The Chair she sat in, like a burnished throne<noteref idref="note-12">*</noteref>,</line>
+						<line>The Chair she sat in, like a burnished throne<noteref idref="#note-12">*</noteref>,</line>
 						<line>Glowed on the marble, where the glass</line>
 						<line>Held up by standards wrought with fruited vines</line>
 						<line>From which a golden Cupidon peeped out<linenum>80</linenum>
@@ -149,17 +149,17 @@
 						<line>That freshened from the window, these ascended<linenum>90</linenum>
 						</line>
 						<line>In fattening the prolonged candle-flames,</line>
-						<line>Flung their smoke into the laquearia<noteref idref="note-13">*</noteref>,</line>
+						<line>Flung their smoke into the laquearia<noteref idref="#note-13">*</noteref>,</line>
 						<line>Stirring the pattern on the coffered ceiling.</line>
 						<line>Huge sea-wood fed with copper</line>
 						<line>Burned green and orange, framed by the coloured stone,</line>
 						<line>In which sad light a carved dolphin swam.</line>
 						<line>Above the antique mantel was displayed</line>
-						<line>As though a window gave upon the sylvan scene<noteref idref="note-14">*</noteref>
+						<line>As though a window gave upon the sylvan scene<noteref idref="#note-14">*</noteref>
 						</line>
-						<line>The change of Philomel, by the barbarous king<noteref idref="note-15">*</noteref>
+						<line>The change of Philomel, by the barbarous king<noteref idref="#note-15">*</noteref>
 						</line>
-						<line>So rudely forced; yet there the nightingale<noteref idref="note-16">*</noteref>
+						<line>So rudely forced; yet there the nightingale<noteref idref="#note-16">*</noteref>
 							<linenum>100</linenum>
 						</line>
 						<line>Filled all the desert with inviolable voice</line>
@@ -182,14 +182,14 @@
 							<line>"I never know what you are thinking. Think."</line>
 						</linegroup>
 						<linegroup>
-							<line>I think we are in rats' alley<noteref idref="note-17">*</noteref>
+							<line>I think we are in rats' alley<noteref idref="#note-17">*</noteref>
 							</line>
 							<line>Where the dead men lost their bones.</line>
 						</linegroup>
 					</linegroup>
 					<linegroup>
 						<line>"What is that noise?"</line>
-						<line>The wind under the door.<noteref idref="note-18">*</noteref>
+						<line>The wind under the door.<noteref idref="#note-18">*</noteref>
 						</line>
 						<line>"What is that noise now? What is the wind doing?"</line>
 						<line>Nothing again nothing.<linenum>120</linenum>
@@ -203,7 +203,7 @@
 					<linegroup>
 						<line>I remember</line>
 						<line>Those are pearls that were his eyes.</line>
-						<line>"Are you alive, or not? Is there nothing in your head?"<noteref idref="note-19">*</noteref>
+						<line>"Are you alive, or not? Is there nothing in your head?"<noteref idref="#note-19">*</noteref>
 						</line>
 						<line>But</line>
 						<line>O O O O that Shakespeherian Rag&#x2015;</line>
@@ -217,7 +217,7 @@
 						<line>The hot water at ten.</line>
 						<line>And if it rains, a closed car at four.</line>
 						<line>And we shall play a game of chess,</line>
-						<line>Pressing lidless eyes and waiting for a knock upon the door.<noteref idref="note-20">*</noteref>
+						<line>Pressing lidless eyes and waiting for a knock upon the door.<noteref idref="#note-20">*</noteref>
 						</line>
 					</linegroup>
 					<linegroup>
@@ -265,7 +265,7 @@
 						<line>The river's tent is broken: the last fingers of leaf</line>
 						<line>Clutch and sink into the wet bank. The wind</line>
 						<line>Crosses the brown land, unheard. The nymphs are departed.</line>
-						<line>Sweet Thames, run softly, till I end my song.<noteref idref="note-21">*</noteref>
+						<line>Sweet Thames, run softly, till I end my song.<noteref idref="#note-21">*</noteref>
 						</line>
 						<line>The river bears no empty bottles, sandwich papers,</line>
 						<line>Silk handkerchiefs, cardboard boxes, cigarette ends</line>
@@ -286,36 +286,36 @@
 						<line>On a winter evening round behind the gashouse<linenum>190</linenum>
 						</line>
 						<line>Musing upon the king my brother's wreck</line>
-						<line>And on the king my father's death before him.<noteref idref="note-22">*</noteref>
+						<line>And on the king my father's death before him.<noteref idref="#note-22">*</noteref>
 						</line>
 						<line>White bodies naked on the low damp ground</line>
 						<line>And bones cast in a little low dry garret,</line>
 						<line>Rattled by the rat's foot only, year to year.</line>
-						<line>But at my back from time to time I hear<noteref idref="note-23">*</noteref>
+						<line>But at my back from time to time I hear<noteref idref="#note-23">*</noteref>
 						</line>
-						<line>The sound of horns and motors, which shall bring<noteref idref="note-24">*</noteref>
+						<line>The sound of horns and motors, which shall bring<noteref idref="#note-24">*</noteref>
 						</line>
 						<line>Sweeney to Mrs. Porter in the spring.</line>
-						<line>O the moon shone bright on Mrs. Porter<noteref idref="note-25">*</noteref>
+						<line>O the moon shone bright on Mrs. Porter<noteref idref="#note-25">*</noteref>
 						</line>
 						<line>And on her daughter<linenum>200</linenum>
 						</line>
 						<line>They wash their feet in soda water</line>
 						<line xml:lang="fr">
-							<em>Et O ces voix d'enfants, chantant dans la coupole<noteref idref="note-26">*</noteref>
+							<em>Et O ces voix d'enfants, chantant dans la coupole<noteref idref="#note-26">*</noteref>
 							</em>!</line>
 					</linegroup>
 					<linegroup>
 						<line>Twit twit twit</line>
 						<line>Jug jug jug jug jug jug</line>
 						<line>So rudely forc'd.</line>
-						<line xml:lang="fr_maybe">Tereu</line>
+						<line>Tereu</line>
 					</linegroup>
 					<linegroup>
 						<line>Unreal City</line>
 						<line>Under the brown fog of a winter noon</line>
 						<line>Mr. Eugenides, the Smyrna merchant</line>
-						<line>Unshaven, with a pocket full of currants<noteref idref="note-27">*</noteref>
+						<line>Unshaven, with a pocket full of currants<noteref idref="#note-27">*</noteref>
 							<linenum>210</linenum>
 						</line>
 						<line>C.i.f. London: documents at sight,</line>
@@ -327,11 +327,11 @@
 						<line>At the violet hour, when the eyes and back</line>
 						<line>Turn upward from the desk, when the human engine waits</line>
 						<line>Like a taxi throbbing waiting,</line>
-						<line>I Tiresias, though blind, throbbing between two lives<noteref idref="note-28">*</noteref>,</line>
+						<line>I Tiresias, though blind, throbbing between two lives<noteref idref="#note-28">*</noteref>,</line>
 						<line>Old man with wrinkled female breasts, can see</line>
 						<line>At the violet hour, the evening hour that strives<linenum>220</linenum>
 						</line>
-						<line>Homeward, and brings the sailor home from sea<noteref idref="note-29">*</noteref>,</line>
+						<line>Homeward, and brings the sailor home from sea<noteref idref="#note-29">*</noteref>,</line>
 						<line>The typist home at teatime, clears her breakfast, lights</line>
 						<line>Her stove, and lays out food in tins.</line>
 						<line>Out of the window perilously spread</line>
@@ -368,14 +368,14 @@
 						</line>
 						<line>Her brain allows one half-formed thought to pass:</line>
 						<line>"Well now that's done: and I'm glad it's over."</line>
-						<line>When lovely woman stoops to folly and<noteref idref="note-30">*</noteref>
+						<line>When lovely woman stoops to folly and<noteref idref="#note-30">*</noteref>
 						</line>
 						<line>Paces about her room again, alone,</line>
 						<line>She smoothes her hair with automatic hand,</line>
 						<line>And puts a record on the gramophone.</line>
 					</linegroup>
 					<linegroup>
-						<line>"This music crept by me upon the waters"<noteref idref="note-31">*</noteref>
+						<line>"This music crept by me upon the waters"<noteref idref="#note-31">*</noteref>
 						</line>
 						<line>And along the Strand, up Queen Victoria Street.</line>
 						<line>O City city, I can sometimes hear</line>
@@ -384,12 +384,12 @@
 						<line>The pleasant whining of a mandoline</line>
 						<line>And a clatter and a chatter from within</line>
 						<line>Where fishmen lounge at noon: where the walls</line>
-						<line>Of Magnus Martyr hold<noteref idref="note-32">*</noteref>
+						<line>Of Magnus Martyr hold<noteref idref="#note-32">*</noteref>
 						</line>
 						<line>Inexplicable splendour of Ionian white and gold.</line>
 					</linegroup>
 					<linegroup>
-						<line>The river sweats<noteref idref="note-33">*</noteref>
+						<line>The river sweats<noteref idref="#note-33">*</noteref>
 						</line>
 						<line>Oil and tar</line>
 						<line>The barges drift</line>
@@ -406,7 +406,7 @@
 						<line>Wallala leialala</line>
 					</linegroup>
 					<linegroup>
-						<line>Elizabeth and Leicester<noteref idref="note-34">*</noteref>
+						<line>Elizabeth and Leicester<noteref idref="#note-34">*</noteref>
 						</line>
 						<line>Beating oars<linenum>280</linenum>
 						</line>
@@ -425,7 +425,7 @@
 					</linegroup>
 					<linegroup>
 						<line>"Trams and dusty trees.</line>
-						<line>Highbury bore me. Richmond and Kew<noteref idref="note-35">*</noteref>
+						<line>Highbury bore me. Richmond and Kew<noteref idref="#note-35">*</noteref>
 						</line>
 						<line>Undid me. By Richmond I raised my knees</line>
 						<line>Supine on the floor of a narrow canoe."</line>
@@ -445,13 +445,13 @@
 						<line>la la</line>
 					</linegroup>
 					<linegroup>
-						<line>To Carthage then I came<noteref idref="note-36">*</noteref>
+						<line>To Carthage then I came<noteref idref="#note-36">*</noteref>
 						</line>
 					</linegroup>
 					<linegroup>
-						<line>Burning burning burning burning<noteref idref="note-37">*</noteref>
+						<line>Burning burning burning burning<noteref idref="#note-37">*</noteref>
 						</line>
-						<line>O Lord Thou pluckest me out<noteref idref="note-38">*</noteref>
+						<line>O Lord Thou pluckest me out<noteref idref="#note-38">*</noteref>
 						</line>
 						<line>O Lord Thou pluckest<linenum>310</linenum>
 						</line>
@@ -520,14 +520,14 @@
 							<line>Not the cicada</line>
 							<line>And dry grass singing</line>
 							<line>But sound of water over a rock</line>
-							<line>Where the hermit-thrush sings in the pine trees<noteref idref="note-39">*</noteref>
+							<line>Where the hermit-thrush sings in the pine trees<noteref idref="#note-39">*</noteref>
 							</line>
 							<line>Drip drop drip drop drop drop drop</line>
 							<line>But there is no water</line>
 						</linegroup>
 					</linegroup>
 					<linegroup>
-						<line>Who is the third who walks always beside you?<noteref idref="note-40">*</noteref>
+						<line>Who is the third who walks always beside you?<noteref idref="#note-40">*</noteref>
 							<linenum>360</linenum>
 						</line>
 						<line>When I count, there are only you and I together</line>
@@ -535,7 +535,7 @@
 						<line>There is always another one walking beside you</line>
 						<line>Gliding wrapt in a brown mantle, hooded</line>
 						<line>I do not know whether a man or a woman</line>
-						<line>&#x2015;But who is that on the other side of you?<noteref idref="note-41">*</noteref>
+						<line>&#x2015;But who is that on the other side of you?<noteref idref="#note-41">*</noteref>
 						</line>
 					</linegroup>
 					<linegroup>
@@ -585,7 +585,7 @@
 						</line>
 						<line>DA</line>
 						<line>
-							<span xml:lang="sa">Datta</span>: what have we given?<noteref idref="note-42">*</noteref>
+							<span xml:lang="sa">Datta</span>: what have we given?<noteref idref="#note-42">*</noteref>
 						</line>
 						<line>My friend, blood shaking my heart</line>
 						<line>The awful daring of a moment's surrender</line>
@@ -593,14 +593,14 @@
 						<line>By this, and this only, we have existed</line>
 						<line>Which is not to be found in our obituaries
 						</line>
-						<line>Or in memories draped by the beneficent spider<noteref idref="note-43">*</noteref>
+						<line>Or in memories draped by the beneficent spider<noteref idref="#note-43">*</noteref>
 						</line>
 						<line>Or under seals broken by the lean solicitor</line>
 						<line>In our empty rooms<linenum>410</linenum>
 						</line>
 						<line>DA</line>
 						<line>
-							<span xml:lang="sa">Dayadhvam</span>: I have heard the key<noteref idref="note-44">*</noteref>
+							<span xml:lang="sa">Dayadhvam</span>: I have heard the key<noteref idref="#note-44">*</noteref>
 						</line>
 						<line>Turn in the door once and turn once only</line>
 						<line>We think of the key, each in his prison</line>
@@ -618,30 +618,30 @@
 					</linegroup>
 					<linegroup>
 						<line>I sat upon the shore</line>
-						<line>Fishing, with the arid plain behind me<noteref idref="note-45">*</noteref>
+						<line>Fishing, with the arid plain behind me<noteref idref="#note-45">*</noteref>
 						</line>
 						<line>Shall I at least set my lands in order?</line>
 						<line>London Bridge is falling down falling down falling down</line>
 						<line xml:lang="it">
 							<em>Poi s'ascose nel foco che gli affina</em>
-							<noteref idref="note-46">*</noteref>
+							<noteref idref="#note-46">*</noteref>
 						</line>
 						<line>
 							<span xml:lang="it">
 								<em>Quando fiam ceu chelidon</em>
-							</span> - O swallow swallow<noteref idref="note-47">*</noteref>
+							</span> - O swallow swallow<noteref idref="#note-47">*</noteref>
 						</line>
 						<line xml:lang="fr">
 							<em>Le Prince d'Aquitaine a la tour abolie</em>
-							<noteref idref="note-48">*</noteref>
+							<noteref idref="#note-48">*</noteref>
 							<linenum>430</linenum>
 						</line>
 						<line>These fragments I have shored against my ruins</line>
-						<line>Why then Ile fit you. Hieronymo's mad againe.<noteref idref="note-49">*</noteref>
+						<line>Why then Ile fit you. Hieronymo's mad againe.<noteref idref="#note-49">*</noteref>
 						</line>
 						<line xml:lang="sa">Datta. Dayadhvam. Damyata.</line>
 						<linegroup>
-							<line xml:lang="sa">Shantih shantih shantih<noteref idref="note-50">*</noteref>
+							<line xml:lang="sa">Shantih shantih shantih<noteref idref="#note-50">*</noteref>
 							</line>
 						</linegroup>
 					</linegroup>

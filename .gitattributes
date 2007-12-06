@@ -203,6 +203,7 @@ samples/input/dtbook/hauy_invalid.xml -text
 samples/input/dtbook/hauy_valid.xml -text
 samples/input/dtbook/the_waste_land.xml -text
 samples/input/dtbook/valentin.jpg -text
+samples/input/epub/wasteland.epub -text
 samples/input/html/img/nor02.jpg -text
 samples/input/html/nor01.jpg -text
 samples/input/html/nor1.html -text
@@ -210,10 +211,10 @@ samples/input/jpg/daisylog.jpg -text
 samples/input/odf/error.odf.odt -text
 samples/input/odf/simple.odt -text
 samples/input/odf/simple2.odt -text
-samples/input/ops/hauy-2005-1.xml -text
+samples/input/ops/dtbook.2005.basic.css -text
 samples/input/ops/navigation.ncx -text
 samples/input/ops/package.opf -text
-samples/input/ops/valentin.jpg -text
+samples/input/ops/the_waste_land.xml -text
 samples/input/rtf/RTF2dtbook.rtf -text
 samples/input/schema/foobar.sch -text
 samples/input/schema/xhtml-rdf.nvdl -text
