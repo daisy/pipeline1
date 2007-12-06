@@ -1,7 +1,5 @@
 package int_daisy_opsCreator;
 
-import int_daisy_opsCreator.metadata.MetadataItem;
-import int_daisy_opsCreator.metadata.MetadataList;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,14 +19,19 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.ProcessingInstruction;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.script.datatype.FilesDatatype;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.css.stylesheets.Stylesheets;
+import org.daisy.util.dtb.meta.MetadataItem;
+import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
@@ -236,19 +239,23 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 			mOpsMetaData.add(new QName(DC_NS,"publisher",DC_PFX), dcPublisherValue);
 
 			//dc:date event=publication
+			QName event = new QName(OPF_NS,"event","opf");
+			
 			test = (String)parameters.get("dc:date");
 			if(test != null && test.length()> 0 ) {
 				dcDateValue = test;
 			}						
-			QName q = new QName(DC_NS,"date",DC_PFX);
+			QName q = new QName(DC_NS,"date",DC_PFX);			
 			MetadataItem m = new MetadataItem(q,dcDateValue);
-			m.addAttribute(OPF_NS, "event","publication");
+			//m.addAttribute(OPF_NS, "event","publication");
+			m.addAttribute(event,"publication");
 			mOpsMetaData.add(m);
 			
 			//dc:date event=creation (today)
 			QName n = new QName(DC_NS,"date",DC_PFX);
 			MetadataItem d = new MetadataItem(n,getCurrentDate());
-			d.addAttribute(OPF_NS, "event","creation");
+			//d.addAttribute(OPF_NS, "event","creation");
+			d.addAttribute(event,"creation");
 			mOpsMetaData.add(d);
 
 			//dc:identifier
@@ -329,12 +336,16 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 		if(mIteratorIsFirstFileset && file instanceof ManifestFile) {
 			mIteratorIsFirstManifest = true;
 		}
+				
+		seenStylesheetInstruction = false;
+		passedFirstElement = false;
 		
 		//restriction is set to only recieve XmlFile here 		
 		try {
 			XMLEventExposer xee = new XMLEventExposer (this,null,null,true,false,false);
 			xee.setEventTypeRestriction(XMLEvent.START_ELEMENT);
 			xee.setEventTypeRestriction(XMLEvent.ATTRIBUTE);
+			xee.setEventTypeRestriction(XMLEvent.PROCESSING_INSTRUCTION);
 			return xee;
 		} catch (Exception e) {
 			throw new FilesetManipulationException(e.getMessage(),e);
@@ -342,23 +353,58 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 
 	}
 
-	
+	boolean seenStylesheetInstruction = false;
+	boolean passedFirstElement = false;
+		
 	/*
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.manipulation.manipulators.XMLEventConsumer#nextEvent(javax.xml.stream.events.XMLEvent, org.daisy.util.xml.stax.ContextStack)
 	 */
 	public List<XMLEvent> nextEvent(XMLEvent event, ContextStack context) {
+					
+		if(event.isAttribute()) return null;
+		
+		List<XMLEvent> list = new LinkedList<XMLEvent>();
+		
+		/*
+		 * watch for style procins before root 
+		 */		
+		if(!passedFirstElement && event.getEventType() == XMLEvent.PROCESSING_INSTRUCTION) {
+			ProcessingInstruction pi = (ProcessingInstruction) event;
+			if(pi.getTarget().equals("xml-stylesheet")) {
+				seenStylesheetInstruction = true;
+			}
+		}
+		
+		/*
+		 * If we have dtbook root, no stylesheet procins passed, add one
+		 */
+		if(event.isStartElement() && !passedFirstElement 
+			&& !seenStylesheetInstruction 
+				&& event.asStartElement().getName().getLocalPart().equals("dtbook")) {
+			//add a css
+			try{
+				URL cssURL = Stylesheets.get(Stylesheets.DocumentType.Z3986_DTBOOK);
+				String cssLocalName = cssURL.toString().substring(cssURL.toString().lastIndexOf('/')+1);
+				mOutputDir.writeToFile(cssLocalName, cssURL.openStream());
+				list.add(mXMLEventFactory.createProcessingInstruction
+						("xml-stylesheet", "href='" +cssLocalName +"' type='text/css'")
+				);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
 		/*
 		 * If missing, add id attr to elements that match the ncx config.
 		 * We need to deal with attributes included in the StartElement event from the exposer
 		 * and discard the separate Attribute events
-		 */			
-		if(event.isAttribute()) return null;
-		
-		List<XMLEvent> list = new LinkedList<XMLEvent>();
+		 */
+				
 		list.add(event);
 		
-		if(event.isStartElement()) {
+		if(event.isStartElement()) {			
 			StartElement se = event.asStartElement();
 			//check if this element needs an id attribute
 			if(mNcxConfiguration.matchesNavMapFilter(se)||mNcxConfiguration.matchesNavListFilter(se)) {				
@@ -382,6 +428,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 					mFirstXmlLangValue = a.getValue();
 				}
 			}
+			passedFirstElement= true;
 		}
 		
 		return list;

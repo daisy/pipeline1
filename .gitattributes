@@ -541,8 +541,6 @@ transformers/int_daisy_opsCreator/NcxBuilderConfiguration.java -text
 transformers/int_daisy_opsCreator/OpfBuilder.java -text
 transformers/int_daisy_opsCreator/OpsCreator.java -text
 transformers/int_daisy_opsCreator/messages.properties -text
-transformers/int_daisy_opsCreator/metadata/MetadataItem.java -text
-transformers/int_daisy_opsCreator/metadata/MetadataList.java -text
 transformers/int_daisy_opsCreator/ncx-config-default.xml -text
 transformers/int_daisy_opsCreator/ncx-config.rng -text
 transformers/int_daisy_opsCreator/transformer.tdf -text

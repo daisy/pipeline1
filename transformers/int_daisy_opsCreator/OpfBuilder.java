@@ -1,6 +1,5 @@
 package int_daisy_opsCreator;
 
-import int_daisy_opsCreator.metadata.MetadataList;
 
 import java.net.URI;
 import java.util.HashSet;
@@ -13,6 +12,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.events.Namespace;
 
+
+import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.xml.IDGenerator;
@@ -48,6 +49,7 @@ class OpfBuilder extends Builder {
 			mEventList.add(xef.createStartDocument("utf-8", "1.0"));
 						
 			mEventList.add(xef.createStartElement("",pkg.getNamespaceURI(),pkg.getLocalPart()));
+			mEventList.add(xef.createNamespace("", pkg.getNamespaceURI()));
 			mEventList.add(xef.createAttribute("version", "2.0"));
 			mEventList.add(xef.createAttribute("unique-identifier", "uid"));
 			

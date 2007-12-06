@@ -1,7 +1,5 @@
 package int_daisy_opsCreator;
 
-import int_daisy_opsCreator.metadata.MetadataItem;
-import int_daisy_opsCreator.metadata.MetadataList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,8 +29,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
+import org.daisy.util.dtb.meta.MetadataItem;
+import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.i18n.CharUtils;

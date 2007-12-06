@@ -1,6 +1,5 @@
 package int_daisy_opsCreator;
 
-import int_daisy_opsCreator.metadata.MetadataList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,6 +14,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
+
+import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXOutputFactoryPool;
@@ -36,7 +37,7 @@ public abstract class Builder {
 		mMetaData  = metadata;
 		
 		if(xofProperties==null){
-			xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();		
+			xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();	
 		}		
 	}
 	
