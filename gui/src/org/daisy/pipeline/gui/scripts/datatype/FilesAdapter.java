@@ -94,4 +94,16 @@ public class FilesAdapter extends DefaultAdapter {
 		return 3;
 	}
 
+	@Override
+	public String getValue() {
+		String value = super.getValue();
+		return value.replace(File.pathSeparatorChar, FilesDatatype.SEPARATOR_CHAR);
+	}
+
+	@Override
+	public void setValue(String value) {
+		super.setValue(value.replace(FilesDatatype.SEPARATOR_CHAR,
+				File.pathSeparatorChar));
+	}
+
 }
