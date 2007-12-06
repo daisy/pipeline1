@@ -30,6 +30,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.script.datatype.FilesDatatype;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFolder;
@@ -159,7 +160,7 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 		String param = ((String)parameters.remove("substitutionTables"));
 		if(param!=null){
 			mUCharReplacer = new UCharReplacer();
-			String[] tables = param.split(File.pathSeparator);
+			String[] tables = param.split(FilesDatatype.SEPARATOR_STRING);
 			for (int i = 0; i < tables.length; i++) {
 				File t = new File(tables[i].trim());
 				if(t.exists()) {

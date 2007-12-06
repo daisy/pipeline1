@@ -30,6 +30,7 @@ import javax.xml.stream.events.Namespace;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.script.datatype.FilesDatatype;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
@@ -154,7 +155,7 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 	 */
 	private Set<Publication> getPublications(String inputParam) throws FilesetFatalException, MalformedURLException, TransformerRunException, MIMETypeException, FileNotFoundException {
 		Set<Publication> publications = new HashSet<Publication>();
-		String[] array = inputParam.split(File.pathSeparator);
+		String[] array = inputParam.split(FilesDatatype.SEPARATOR_STRING);
 		for (String string : array) {
 			EFile file = new EFile(FilenameOrFileURI.toFile(string.trim()));
 			if(!file.exists()) throw new FileNotFoundException(file.getAbsolutePath());

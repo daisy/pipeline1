@@ -26,6 +26,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.script.datatype.FilesDatatype;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFolder;
@@ -300,7 +301,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 	 */
 	private List<URL> getInputDocuments(String inputParam) throws IOException, MalformedURLException {
 		List<URL> retList = new LinkedList<URL>();
-		String[] docs = inputParam.split(File.pathSeparator);
+		String[] docs = inputParam.split(FilesDatatype.SEPARATOR_STRING);
 		for (String doc : docs) {
 			URL url = LocationUtils.identifierToURL(doc);
 			InputStream is = url.openStream();

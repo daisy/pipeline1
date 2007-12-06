@@ -25,7 +25,8 @@ import java.io.File;
  * @author Markus Gylling
  */
 public class FilesDatatype extends Datatype {
-
+	public static final char SEPARATOR_CHAR = ';'; 
+	public static final String SEPARATOR_STRING = ";"; 
 	private String mime;
 	private String type;
 	
@@ -65,7 +66,7 @@ public class FilesDatatype extends Datatype {
 	@Override
 	public void validate(String value) throws DatatypeException {
 		if (isInput()) {			
-			String[] values = value.split(File.pathSeparator);
+			String[] values = value.split(SEPARATOR_STRING);
 			for (String string : values) {
 				File file = new File(string.trim());
 				if (!file.exists()) {

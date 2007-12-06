@@ -40,6 +40,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.script.datatype.FilesDatatype;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.exception.ExceptionTransformer;
@@ -428,7 +429,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		//get schemas from inparams
 		String schemas = (String)parameters.remove("schemas");
 		if(schemas!=null && schemas.length()>0) {
-			String[] array = schemas.split(File.pathSeparator);
+			String[] array = schemas.split(FilesDatatype.SEPARATOR_STRING);
 			for (int i = 0; i < array.length; i++) {
 				try{
 					Map<Source,String> map = ValidationUtils.toSchemaSources(array[i]);

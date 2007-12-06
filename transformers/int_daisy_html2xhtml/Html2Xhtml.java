@@ -28,6 +28,7 @@ import org.ccil.cowan.tagsoup.AutoDetector;
 import org.ccil.cowan.tagsoup.Parser;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.script.datatype.FilesDatatype;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
@@ -94,7 +95,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 					&& xslparam.length() > 0) {
 				// add stylesheets to follow echo.xsl in the user-customized
 				// transform chain
-				String[] xsls = xslparam.split(File.pathSeparator);
+				String[] xsls = xslparam.split(FilesDatatype.SEPARATOR_STRING);
 				for (int i = 0; i < xsls.length; i++) {
 					EFile xslf = new EFile(xsls[i]);
 					if (!xslf.exists()) {
