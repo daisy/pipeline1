@@ -87,6 +87,12 @@ structural modifications. <em>Note that no guarantees are made that the output w
 		into a <code>p</code> element. The <code>p</code> element will have the class attribute value 
 		of the original heading element name (e.g. <code>&lt;p class="h3"&gt;</code>).
 	</dd>
+
+	<dt>Flatten redundant nesting</dt>
+	<dd>Removes nested p</dd>
+
+	<dt>Complete structure</dt>
+	<dd>Adds an empty paragraph if the last element in the level is a heading</dd>
 	
 	<dt>List repair</dt>
 	<dd>
@@ -107,6 +113,9 @@ structural modifications. <em>Note that no guarantees are made that the output w
 		<li>Add a hash mark in the beginning of all idref attributes that don't contain a hash mark.</li>
 	</ul>
 	</dd>
+	
+	<dt>Empty elements remover</dt>
+	<dd>Removes empty/whitespace elements that must have children.</dd>
 
 </dl>
 
@@ -115,8 +124,18 @@ structural modifications. <em>Note that no guarantees are made that the output w
 	<dt id="levelclean">Level cleanup</dt>
 	<dd>Simplifies the level structure by removing redundant levels (subordinate levels will be moved upwards). Note that the headings of the affected levels will also change, which will alter the appearance of the layout.</dd>
 	
-	<dt>Pagenum fix</dt>
-	<dd>TBD, mixed</dd>
+	<dt>Pagenum mover</dt>
+	<dd>
+		<ul><li>Pagenums in headings are placed before the heading</li>
+			<li>Pagenums in words are placed after the word.</li>
+		</ul>
+	</dd>
+	
+	<dt>Change inline pagenum to block</dt>
+	<dd>Removes otherwise empty p or li around pagenum (except p in td)</dd>
+	
+	<dt>Empty elements remover</dt>
+	<dd>Removes empty/whitespace elements (p, em, strong, sub, sup), unless required for validity. E.g. an empty p that is preceded by a heading and followed only by other empty p is not removed.</dd>
 
 	<dt>Author and Title addition</dt>
 	<dd>Inserts docauthor and doctitle elements to frontmatter using Dublin Core metadata.</dd>
