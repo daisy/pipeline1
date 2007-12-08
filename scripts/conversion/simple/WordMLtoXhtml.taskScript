@@ -5,6 +5,9 @@
 <!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../validation/ValidatorTaskParamsSimpleStatic.paramGroup">
 <!ENTITY CharsetSwitcherScriptParamsStatic SYSTEM "../../manipulation/CharsetSwitcherScriptParamsStatic.paramGroup">
 <!ENTITY DtbookToXhtmlScriptParamsStatic SYSTEM "../DtbookToXhtmlScriptParamsStatic.paramGroup">
+<!ENTITY DTBookFixCategoryScriptParam SYSTEM "../../manipulation/DTBookFixCategoryScriptParam.paramGroup">
+<!ENTITY DTBookFixScriptParamsStatic SYSTEM "../../manipulation/DTBookFixScriptParamsStatic.paramGroup">
+<!ENTITY DTBookFixTaskParamsStatic SYSTEM "../../manipulation/DTBookFixTaskParamsStatic.paramGroup">
 ]>
 <taskScript version="2.0" name="WordMLToXhtml">
 	<nicename>Word 2003 XML to XHTML</nicename>
@@ -28,8 +31,10 @@
 		</datatype>
 	</parameter>		
 
+	&DTBookFixCategoryScriptParam;
+	&DTBookFixScriptParamsStatic;
     &DtbookToXhtmlScriptParamsStatic;
-	&CharsetSwitcherScriptParamsStatic;								
+	&CharsetSwitcherScriptParamsStatic;				
 	&ValidatorScriptParamsSimpleStatic;		
 			
 	<task name="se_tpb_wordml2dtbook" interactive="false">
@@ -44,15 +49,34 @@
 		</parameter>						
 	</task>		
 
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>$parent{output}/pipeline__temp/1/dtbook.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>$parent{output}/pipeline__temp/2/dtbook.xml</value>
+		</parameter>	
+		
+		<parameter>
+			<name>runCategories</name>
+			<value>${dtbookFixRunCategories}</value>
+		</parameter>
+		
+		&DTBookFixTaskParamsStatic;	
+	</task>
+
 	<task name="uk_rnib_dtbook2xhtml" interactive="false">	
 		<parameter>
 			<name>xml</name>
-			<value>$parent{output}/pipeline__temp/1/$filename{input}.dtbook.xml</value>
+			<value>$parent{output}/pipeline__temp/2/dtbook.xml</value>
 		</parameter>
 					
 		<parameter>
 			<name>out</name>
-			<value>$parent{output}/pipeline__temp/2/$filename{output}</value>			
+			<value>$parent{output}/pipeline__temp/3/$filename{output}</value>			
 		</parameter>				
 
 		<parameter>
@@ -69,7 +93,7 @@
 	<task name="se_tpb_charsetSwitcher" interactive="false">	
 		<parameter>
 			<name>input</name>
-			<value>$parent{output}/pipeline__temp/2/$filename{output}</value>
+			<value>$parent{output}/pipeline__temp/3/$filename{output}</value>
 		</parameter>
 					
 		<parameter>

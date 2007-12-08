@@ -145,8 +145,7 @@
 		<parameter>
 			<name>output</name>
 			<value>${output}/dtbook.xml</value>
-		</parameter>
-		
+		</parameter>		
 	</task>
 
 	<task name="int_daisy_validator" interactive="false">

@@ -3,6 +3,9 @@
 [
 <!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../validation/ValidatorScriptParamsSimpleStatic.paramGroup">
 <!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../validation/ValidatorTaskParamsSimpleStatic.paramGroup">
+<!ENTITY DTBookFixCategoryScriptParam SYSTEM "../../manipulation/DTBookFixCategoryScriptParam.paramGroup">
+<!ENTITY DTBookFixScriptParamsStatic SYSTEM "../../manipulation/DTBookFixScriptParamsStatic.paramGroup">
+<!ENTITY DTBookFixTaskParamsStatic SYSTEM "../../manipulation/DTBookFixTaskParamsStatic.paramGroup">
 ]>
 <taskScript version="2.0" name="RtfToDtbook">
 	<nicename>RTF to DTBook</nicename>
@@ -25,7 +28,9 @@
 			<file mime="application/x-dtbook+xml" type="output"/>
 		</datatype>
 	</parameter>		
-			
+	
+	&DTBookFixCategoryScriptParam;
+	&DTBookFixScriptParamsStatic;		
 	&ValidatorScriptParamsSimpleStatic;		
 			
 	<task name="ca_cnib_rtf2dtbook" interactive="false">
@@ -36,9 +41,28 @@
 					
 		<parameter>
 			<name>dtbook</name>
-			<value>${dtbook}</value>
+			<value>$parent{dtbook}/pipeline__temp/temp.xml</value>
 		</parameter>						
 	</task>		
+
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>$parent{dtbook}/pipeline__temp/temp.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${dtbook}</value>
+		</parameter>		
+		
+		<parameter>
+			<name>runCategories</name>
+			<value>${dtbookFixRunCategories}</value>
+		</parameter>
+		
+		&DTBookFixTaskParamsStatic;	
+	</task>
 
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>

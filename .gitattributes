@@ -261,6 +261,9 @@ scripts/manipulation/AudioTaggerTaskParamsStatic.paramGroup -text
 scripts/manipulation/CharsetSwitcherScriptParamsStatic.paramGroup -text
 scripts/manipulation/DTBSplitterScriptParamsStatic.paramGroup -text
 scripts/manipulation/DTBSplitterTaskParamsStatic.paramGroup -text
+scripts/manipulation/DTBookFixCategoryScriptParam.paramGroup -text
+scripts/manipulation/DTBookFixScriptParamsStatic.paramGroup -text
+scripts/manipulation/DTBookFixTaskParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerScriptParamsStatic.paramGroup -text
 scripts/manipulation/FilesetRenamerTaskParamsStatic.paramGroup -text
 scripts/manipulation/advanced/CharacterRepertoireManipulator.taskScript -text

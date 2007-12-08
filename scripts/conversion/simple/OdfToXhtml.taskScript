@@ -44,15 +44,27 @@
 		</parameter>						
 	</task>
 	
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>$parent{output}/pipeline__temp/1/$filename{output}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>$parent{output}/pipeline__temp/2/$filename{output}</value>
+		</parameter>		
+	</task>
+	
 	<task name="uk_rnib_dtbook2xhtml" interactive="false">	
 		<parameter>
 			<name>xml</name>
-			<value>$parent{output}/pipeline__temp/1/$filename{output}</value>
+			<value>$parent{output}/pipeline__temp/2/$filename{output}</value>
 		</parameter>
 					
 		<parameter>
 			<name>out</name>
-			<value>$parent{output}/pipeline__temp/2/$filename{output}</value>			
+			<value>$parent{output}/pipeline__temp/3/$filename{output}</value>			
 		</parameter>				
 
 		<parameter>
@@ -69,7 +81,7 @@
 	<task name="se_tpb_charsetSwitcher" interactive="false">	
 		<parameter>
 			<name>input</name>
-			<value>$parent{output}/pipeline__temp/2/$filename{output}</value>
+			<value>$parent{output}/pipeline__temp/3/$filename{output}</value>
 		</parameter>
 					
 		<parameter>

@@ -36,9 +36,21 @@
 					
 		<parameter>
 			<name>dtbook</name>
-			<value>${dtbook}</value>
+			<value>$parent{dtbook}/pipeline__temp/dtbook.xml</value>
 		</parameter>						
 	</task>		
+	
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>$parent{dtbook}/pipeline__temp/dtbook.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${dtbook}</value>
+		</parameter>		
+	</task>
 			
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
@@ -53,5 +65,12 @@
 		
 		&ValidatorTaskParamsSimpleStatic;												
 	</task>		
+	
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>$parent{dtbook}/pipeline__temp/</value>
+		</parameter>					
+	</task>	
 			
 </taskScript>
