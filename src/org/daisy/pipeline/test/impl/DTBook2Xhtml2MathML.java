@@ -22,7 +22,7 @@ public class DTBook2Xhtml2MathML extends PipelineTest {
 
 	@Override
 	public String getResultDescription() {		
-		return "s/b us-ascci";
+		return "s/b utf-8 XHTML 1.1 with MathML";
 	}
 
 	@Override

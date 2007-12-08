@@ -12,8 +12,7 @@ public class RenamerTaggerValidator1 extends PipelineTest {
 	}
 	
 	@Override
-	public List<String> getParameters() {		
-		//mParameters.add("--userInput=" + "D:/dtbs/d202/hauy.202.rev4/ncc.html");		
+	public List<String> getParameters() {			
 		mParameters.add("--userInput=" + mDataInputDir + "/dtb/d202/dontworrybehappy/ncc.html");
 		mParameters.add("--userOutput=" + mDataOutputDir + "/RenamerTaggerValidator1/");
 		return mParameters;

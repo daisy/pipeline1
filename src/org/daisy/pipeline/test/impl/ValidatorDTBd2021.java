@@ -5,27 +5,26 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class FilesetRenamer1 extends PipelineTest {
+public class ValidatorDTBd2021 extends PipelineTest {
 
-	public FilesetRenamer1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public ValidatorDTBd2021(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
 	public List<String> getParameters() {		
-		mParameters.add("--filesetRenamerInputFile=" + mDataInputDir + "/dtb/d202/dontworrybehappy/ncc.html");
-		mParameters.add("--filesetRenamerOutputPath=" + mDataOutputDir + "/FilesetRenamer1/");
+		mParameters.add("--input=" + mDataInputDir + "/dtb/d202/dontworrybehappy/ncc.html");
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "";
+		return "Should report no errors.";
 	}
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("FilesetRenamer.taskScript".equals(scriptName)) {
+		if("Daisy202DTBValidator.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;
@@ -33,7 +32,8 @@ public class FilesetRenamer1 extends PipelineTest {
 
 	@Override
 	public void confirm() {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
+		
 	}
 
 }

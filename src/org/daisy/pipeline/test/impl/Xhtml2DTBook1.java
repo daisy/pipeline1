@@ -13,8 +13,11 @@ public class Xhtml2DTBook1 extends PipelineTest {
 	
 	@Override
 	public List<String> getParameters() {
-		mParameters.add("--inputFile=" + mDataInputDir + "/xhtml/daisy_202.html");
-		mParameters.add("--outputFile=" + mDataOutputDir + "/Xhtml2Dtbook/output01.xml");		
+		//mg: this one crashes Saxon:
+		//mParameters.add("--inputFile=" + mDataInputDir + "/xhtml/daisy_202.html");		
+		//mg: this one generates validation errors:
+		mParameters.add("--inputFile=" + mDataInputDir + "/xhtml/valentinhauy.html");
+		mParameters.add("--outputFile=" + mDataOutputDir + "/Xhtml2Dtbook1/output01.xml");		
 		return mParameters;
 	}
 
@@ -33,8 +36,7 @@ public class Xhtml2DTBook1 extends PipelineTest {
 
 	@Override
 	public void confirm() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
 }

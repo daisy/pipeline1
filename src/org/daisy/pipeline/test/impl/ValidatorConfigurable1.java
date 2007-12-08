@@ -5,23 +5,22 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class ValidatorNVDL1 extends PipelineTest {
+public class ValidatorConfigurable1 extends PipelineTest {
 
-	public ValidatorNVDL1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public ValidatorConfigurable1(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
 	public List<String> getParameters() {		
-		mParameters.add("--validatorInputFile=" + mDataInputDir + "/xhtml/xhtml-rdf.xml");
-		mParameters.add("--validatorInputSchemas=" + mDataInputDir + "/schema/xhtml-rdf.nvdl");
-				
+		mParameters.add("--validatorInputFile=" + mDataInputDir + "/dtbook/hauy_valid.xml");
+		mParameters.add("--validatorInputSchemas=" + mDataInputDir + "/schema/foobar.sch");
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "Should return one error, xhtml-rdf.nvdl only allows rdf in head";
+		return "Test should validate a dtbook document and return missing 'dc:FooBar' because of the added bogus schematron";
 	}
 
 	@Override

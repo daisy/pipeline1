@@ -6,11 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.pipeline.test.impl.Aligner1;
-//import org.daisy.pipeline.test.impl.Audacity2DTB1;
+import org.daisy.pipeline.test.impl.Audacity2DTB1;
 import org.daisy.pipeline.test.impl.CharacterRepertoireManipulator1;
 import org.daisy.pipeline.test.impl.CharsetSwitcher1;
-import org.daisy.pipeline.test.impl.ConfigurableValidator1;
-import org.daisy.pipeline.test.impl.D202dtbValidator1;
+import org.daisy.pipeline.test.impl.FilesetRenamer2;
+import org.daisy.pipeline.test.impl.ValidatorConfigurable1;
+import org.daisy.pipeline.test.impl.ValidatorDTBd2021;
 import org.daisy.pipeline.test.impl.DTBAudioEncoder1;
 import org.daisy.pipeline.test.impl.DTBAudioEncoderSplitter1;
 import org.daisy.pipeline.test.impl.DTBAudioEncoderRenamer1;
@@ -19,8 +20,9 @@ import org.daisy.pipeline.test.impl.DTBook2Xhtml1;
 import org.daisy.pipeline.test.impl.DTBook2Xhtml2MathML;
 import org.daisy.pipeline.test.impl.DTBook2rtf1;
 import org.daisy.pipeline.test.impl.DTBookFix1;
-import org.daisy.pipeline.test.impl.DTBookValidator1;
-import org.daisy.pipeline.test.impl.DTBookValidator2;
+import org.daisy.pipeline.test.impl.ValidatorDTBd2022;
+import org.daisy.pipeline.test.impl.ValidatorDTBook1;
+import org.daisy.pipeline.test.impl.ValidatorDTBook2;
 import org.daisy.pipeline.test.impl.Daisy202ToZ398620051;
 import org.daisy.pipeline.test.impl.FilesetCreator1;
 import org.daisy.pipeline.test.impl.FilesetRenamer1;
@@ -28,6 +30,8 @@ import org.daisy.pipeline.test.impl.Html2Xhtml1;
 import org.daisy.pipeline.test.impl.MixedContentNormalizer1;
 import org.daisy.pipeline.test.impl.MultiFormatMedia1;
 import org.daisy.pipeline.test.impl.Narrator1;
+import org.daisy.pipeline.test.impl.Narrator2;
+import org.daisy.pipeline.test.impl.Narrator3;
 import org.daisy.pipeline.test.impl.OcfCreator1;
 import org.daisy.pipeline.test.impl.Odf2dtbook1;
 import org.daisy.pipeline.test.impl.Odf2dtbook2;
@@ -35,6 +39,7 @@ import org.daisy.pipeline.test.impl.Odf2xhtml1;
 import org.daisy.pipeline.test.impl.OpsCreator1;
 import org.daisy.pipeline.test.impl.OpsCreator2;
 import org.daisy.pipeline.test.impl.OpsCreator3;
+import org.daisy.pipeline.test.impl.OpsCreator4;
 import org.daisy.pipeline.test.impl.PrettyPrinter1;
 import org.daisy.pipeline.test.impl.PrettyPrinter2;
 import org.daisy.pipeline.test.impl.PrettyPrinter3;
@@ -43,7 +48,11 @@ import org.daisy.pipeline.test.impl.Rtf2Xhtml1;
 import org.daisy.pipeline.test.impl.Rtf2dtbook1;
 import org.daisy.pipeline.test.impl.UnicodeNormalizer1;
 import org.daisy.pipeline.test.impl.ValidatorNVDL1;
+import org.daisy.pipeline.test.impl.WordML2DTBook1;
+import org.daisy.pipeline.test.impl.WordML2DTBook2;
+import org.daisy.pipeline.test.impl.WordML2DTBook3;
 import org.daisy.pipeline.test.impl.WordML2Xhtml1;
+import org.daisy.pipeline.test.impl.WordML2Xhtml2;
 import org.daisy.pipeline.test.impl.Xhtml2DTBook1;
 import org.daisy.pipeline.ui.CommandLineUI;
 import org.daisy.util.file.EFolder;
@@ -121,58 +130,87 @@ public class PipelineTestDriver {
 	public static Collection<PipelineTest> getTests() {
 		List<PipelineTest> tests = new LinkedList<PipelineTest>(); 
 
-//		tests.add(new ConfigurableValidator1(inputDir, outputDir));
-//		tests.add(new D202dtbValidator1(inputDir, outputDir));
-//		tests.add(new D202dtbValidator2(inputDir, outputDir));
-//		tests.add(new DTBookValidator1(inputDir, outputDir));
-//		tests.add(new DTBookValidator2(inputDir, outputDir));
-//		tests.add(new FilesetRenamer1(inputDir, outputDir));
-//		tests.add(new Narrator1(inputDir, outputDir));
-//		tests.add(new OcfCreator1(inputDir, outputDir));
-//		tests.add(new Odf2dtbook1(inputDir, outputDir));
-//		tests.add(new PrettyPrinter1(inputDir, outputDir));
-//		tests.add(new PrettyPrinter2(inputDir, outputDir));
-//		tests.add(new RenamerTaggerValidator1(inputDir, outputDir));		
-//		tests.add(new UnicodeNormalizer1(inputDir, outputDir));
-//		tests.add(new Rtf2dtbook1(inputDir, outputDir));
-//		tests.add(new DTBSplitter1(inputDir, outputDir));
-//		tests.add(new Daisy202ToZ398620051(inputDir, outputDir));
-//		tests.add(new CharsetSwitcher1(inputDir, outputDir));
-//		tests.add(new WordML2Xhtml1(inputDir, outputDir));
-//		tests.add(new DTBook2Xhtml1(inputDir, outputDir));		
-//		tests.add(new DTBook2Xhtml2MathML(inputDir, outputDir));
-//		tests.add(new Rtf2Xhtml1(inputDir, outputDir));
-//		tests.add(new PrettyPrinter1(inputDir, outputDir));
-//		tests.add(new Html2Xhtml1(inputDir, outputDir));
-//		tests.add(new Odf2dtbook1(inputDir, outputDir));
-//		tests.add(new CharacterRepertoireManipulator1(inputDir, outputDir));
-//		tests.add(new Odf2xhtml1(inputDir, outputDir));
-//		tests.add(new Odf2dtbook1(inputDir, outputDir));
-//		tests.add(new Odf2dtbook2(inputDir, outputDir));		
+		//20071209: broken:
+		//tests.add(new Odf2dtbook1(inputDir, outputDir));
+		//tests.add(new Odf2xhtml1(inputDir, outputDir));
+		
+		
+		/*
+		 * Tests with input data in samples dir.
+		 * To run a complete Pipeline testrun, 
+		 * decomment all lines below
+		 */
+		
 //		tests.add(new OpsCreator1(inputDir, outputDir));
 //		tests.add(new OpsCreator2(inputDir, outputDir));
-//		tests.add(new OpsCreator3(inputDir, outputDir));		
-//		tests.add(new Xhtml2DTBook1(inputDir, outputDir));		
-//		tests.add(new MultiFormatMedia1(inputDir, outputDir));
-//		tests.add(new MixedContentNormalizer1(inputDir, outputDir));
+//		tests.add(new OpsCreator3(inputDir, outputDir));
+//		tests.add(new OpsCreator4(inputDir, outputDir));		
+//		tests.add(new OcfCreator1(inputDir, outputDir));		
+//		tests.add(new WordML2DTBook1(inputDir, outputDir));
+//		tests.add(new WordML2DTBook2(inputDir, outputDir));
+//		tests.add(new WordML2DTBook3(inputDir, outputDir));
+//		tests.add(new WordML2Xhtml1(inputDir, outputDir));		
+//		tests.add(new WordML2Xhtml2(inputDir, outputDir));
+//		tests.add(new Narrator1(inputDir, outputDir));
+//		tests.add(new Narrator2(inputDir, outputDir));
+//		tests.add(new Narrator3(inputDir, outputDir));		
 //		tests.add(new ValidatorNVDL1(inputDir, outputDir));
+//		tests.add(new ValidatorDTBook1(inputDir, outputDir));
+//		tests.add(new ValidatorDTBook2(inputDir, outputDir));
+//		tests.add(new ValidatorDTBd2021(inputDir, outputDir));
+//		tests.add(new ValidatorDTBd2022(inputDir, outputDir));
+//		tests.add(new ValidatorConfigurable1(inputDir, outputDir));		
+//		tests.add(new PrettyPrinter1(inputDir, outputDir));
+//		tests.add(new PrettyPrinter2(inputDir, outputDir));		
+//		tests.add(new CharacterRepertoireManipulator1(inputDir, outputDir));
+//		tests.add(new CharsetSwitcher1(inputDir, outputDir));
+//		tests.add(new UnicodeNormalizer1(inputDir, outputDir));				
+//		tests.add(new Rtf2dtbook1(inputDir, outputDir));		
+//		tests.add(new Rtf2Xhtml1(inputDir, outputDir));
 //		tests.add(new DTBook2rtf1(inputDir, outputDir));
-//		tests.add(new DTBookFix1(inputDir, outputDir));	
+//		tests.add(new Xhtml2DTBook1(inputDir, outputDir));  		
+//		tests.add(new DTBook2Xhtml1(inputDir, outputDir));
+//		tests.add(new DTBook2Xhtml2MathML(inputDir, outputDir));
+//		tests.add(new MixedContentNormalizer1(inputDir, outputDir));
+//		tests.add(new DTBookFix1(inputDir, outputDir));		
+//		tests.add(new Html2Xhtml1(inputDir, outputDir));
+//		tests.add(new DTBSplitter1(inputDir, outputDir));
+//		tests.add(new FilesetRenamer1(inputDir, outputDir));		
+//		tests.add(new RenamerTaggerValidator1(inputDir, outputDir));				
+//		tests.add(new Daisy202ToZ398620051(inputDir, outputDir));				
+//		tests.add(new MultiFormatMedia1(inputDir, outputDir));
+	
+
+		/*
+		 * End Tests with input data in samples dir
+		 */
 		
 		
-////////// tests with input data not in samples dir:
-		//tests.add(new FilesetCreator1(inputDir, outputDir));		
-		tests.add(new Aligner1(inputDir, outputDir));
+		
+		
+		/*
+		 * Tests with input data not in samples dir:
+		 * Dont decomment these unless you have access
+		 * to the extra (non SVN) input data collection, 
+		 * or mod the inparams accordingly.
+		 */
+		//tests.add(new PrettyPrinter3(inputDir, outputDir));				
+		//tests.add(new FilesetCreator1(inputDir, outputDir));	
+		//tests.add(new FilesetRenamer2(inputDir, outputDir));
+		//tests.add(new Aligner1(inputDir, outputDir));
 		//tests.add(new Audacity2DTB1(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoder1(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoderSplitter1(inputDir, outputDir));
 		//tests.add(new PrettyPrinter3(inputDir, outputDir));
 		//tests.add(new DTBAudioEncoderRenamer1(inputDir, outputDir));
-////////// end tests with input data not in samples dir 
+
+		/*
+		 * End Tests with input data not in samples dir:
+		 */
 		
 		return tests;
 	}
 
 	
-//	tests.add(new CharsetTranscoder1(inputDir, outputDir));
+	
 }

@@ -5,24 +5,25 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class WordML2Xhtml1 extends PipelineTest {
+public class WordML2Xhtml2 extends PipelineTest {
 
-	public WordML2Xhtml1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public WordML2Xhtml2(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
 	public List<String> getParameters() {
 		mParameters.add("--input=" + mDataInputDir + "/word/wml-sample.xml");
-		mParameters.add("--output=" + mDataOutputDir + "/WordML2Xhtml1/fromWord.html");		
-		mParameters.add("--charsetSwitcherLineBreaks="+"unix");
+		mParameters.add("--output=" + mDataOutputDir + "/WordML2Xhtml2/fromWord.html");		
+		mParameters.add("--charsetSwitcherLineBreaks="+"dos");
 		mParameters.add("--charsetSwitcherEncoding="+"utf-8");
+		mParameters.add("--dtbookFixRunCategories="+"NOTHING");
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "All transformers active, UNIX linebreaks";
+		return "No DTBookFix applied (useing enum NOTHING), DOS linebreaks";
 	}
 
 	@Override

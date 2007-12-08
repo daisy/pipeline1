@@ -5,26 +5,27 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class DTBookValidator1 extends PipelineTest {
+public class WordML2DTBook1 extends PipelineTest {
 
-	public DTBookValidator1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public WordML2DTBook1(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
-	public List<String> getParameters() {		
-		mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy_valid.xml");
+	public List<String> getParameters() {
+		mParameters.add("--input=" + mDataInputDir + "/word/wml-sample.xml");
+		mParameters.add("--output=" + mDataOutputDir + "/WordML2DTBook1/fromWord.xml");		
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "Test should validate a dtbook document and return all valid";
+		return "With minimal parameters, image conversion on";
 	}
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("DTBookValidator.taskScript".equals(scriptName)) {
+		if("WordMLtoDTBook.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;

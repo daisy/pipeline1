@@ -5,29 +5,30 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class WordML2Xhtml1 extends PipelineTest {
+public class WordML2DTBook2 extends PipelineTest {
 
-	public WordML2Xhtml1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public WordML2DTBook2(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
 	public List<String> getParameters() {
 		mParameters.add("--input=" + mDataInputDir + "/word/wml-sample.xml");
-		mParameters.add("--output=" + mDataOutputDir + "/WordML2Xhtml1/fromWord.html");		
-		mParameters.add("--charsetSwitcherLineBreaks="+"unix");
-		mParameters.add("--charsetSwitcherEncoding="+"utf-8");
+		mParameters.add("--output=" + mDataOutputDir + "/WordML2DTBook2/fromWord.xml");		
+		mParameters.add("--title=PipelineTest Inserted Title");
+		mParameters.add("--author=PipelineTest Inserted Author");
+		mParameters.add("--uid=PipelineTest_Inserted_UID");
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "All transformers active, UNIX linebreaks";
+		return "Inserting title, author and uid, image conversion on";
 	}
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("WordMLtoXhtml.taskScript".equals(scriptName)) {
+		if("WordMLtoDTBook.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;

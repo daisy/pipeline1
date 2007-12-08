@@ -5,27 +5,26 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class ConfigurableValidator1 extends PipelineTest {
+public class ValidatorDTBd2022 extends PipelineTest {
 
-	public ConfigurableValidator1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public ValidatorDTBd2022(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
 	public List<String> getParameters() {		
-		mParameters.add("--validatorInputFile=" + mDataInputDir + "/dtbook/hauy_valid.xml");
-		mParameters.add("--validatorInputSchemas=" + mDataInputDir + "/schema/foobar.sch");
+		mParameters.add("--input=" + mDataInputDir + "/dtb/d202/dontworrybehappy-invalid/ncc.html");
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "Test should validate a dtbook document and return missing 'dc:FooBar'";
+		return "Should report errors.";
 	}
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("ConfigurableValidator.taskScript".equals(scriptName)) {
+		if("Daisy202DTBValidator.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;

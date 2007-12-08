@@ -15,8 +15,8 @@ public class DTBSplitter1 extends PipelineTest {
 	public List<String> getParameters() {		
 		mParameters.add("--input=" + mDataInputDir + "/dtb/d202/dontworrybehappy/ncc.html");
 		mParameters.add("--output=" + mDataOutputDir + "/DTBSplitter1");
-		mParameters.add("--maxSize=" + 1);
-		mParameters.add("--maxLevel=" + 6);		
+		mParameters.add("--splitterMaxSize=" + 1);
+		mParameters.add("--splitterMaxLevel=" + 6);		
 		return mParameters;
 	}
 
