@@ -79,7 +79,8 @@ class FileJuggler {
 	 * @throws IOException 
 	 */
 	void close() throws IOException {
-		if (getOutput().exists()) FileUtils.copy(getOutput(), output);
+		//mg20071207: added length>0
+		if (getOutput().exists() && getOutput().length()>0) FileUtils.copy(getOutput(), output);
 		else if (getInput().exists()) FileUtils.copy(getInput(), output);
 		else FileUtils.copy(input, output);
 		t1.delete();
