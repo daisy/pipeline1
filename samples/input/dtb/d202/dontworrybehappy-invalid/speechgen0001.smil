@@ -1,58 +1,47 @@
 <?xml version='1.0' encoding='utf-8'?>
-
-<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 1.0//EN" "http://www.w3.org/TR/REC-SMIL/SMIL10.dtd" []>
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 1.0//EN" "http://www.w3.org/TR/REC-SMIL/SMIL10.dtd" >
 <smil>
-   <head>
-      <meta name="ncc:generator" content="DMFC z3986-2005 to Daisy 2.02 (smil2smil v0.2)" skip-content="true" />
-      <meta name="dc:format" content="Daisy 2.02" skip-content="true" />
-      <meta name="dc:identifier" content="F00000" skip-content="true" />
-      <meta name="dc:title" content="&#xa;&#x9;&#x9;&#x9;&#x9;Don't Worry, Be Happy&#xa;&#x9;         " skip-content="true" />
-      <meta name="ncc:totalElapsedTime" content="0:00:00" />
-      <meta name="ncc:timeInThisSmil" content="0:00:22" />
-      <layout type="text/smil-basic-layout">
-         <region id="txtView" left="0" top="0" z-index="0" fit="hidden" skip-content="true" />
-      </layout>
-   </head>
-   <body>
-      <seq dur="21.773s">
-         <par endsync="last" id="doctitle" repeat="1">
-            <text id="doctitleText" src="content.html#h1classtitle" repeat="1" fill="remove" />
-            <audio src="speechgen0001.mp3" id="doctitleAudio" clip-begin="npt=0.000s" clip-end="npt=2.658s" />
-         </par>
-	
-		
-		
-		
-		
-	
-	
-		
-		         <par endsync="last" id="tcp1" repeat="1">
-            <text id="txtd68e18" src="content.html#dtb1" repeat="1" fill="remove" />
-            <audio src="speechgen0001.mp3" id="audd68e20" clip-begin="npt=0.000s" clip-end="npt=2.658s" />
-         </par>
-         <par endsync="last" id="tcp2" repeat="1">
-            <text id="txtd68e25" src="content.html#dtb2" repeat="1" fill="remove" />
-            <audio src="speechgen0001.mp3" id="audd68e27" clip-begin="npt=2.658s" clip-end="npt=6.163s" />
-         </par>
-         <par endsync="last" id="tcp3" repeat="1">
-            <text id="txtd68e32" src="content.html#dtb3" repeat="1" fill="remove" />
-            <audio src="speechgen0001.mp3" id="audd68e34" clip-begin="npt=6.163s" clip-end="npt=8.497s" />
-         </par>
-         <par endsync="last" id="tcp4" repeat="1">
-            <text id="txtd68e39" src="content.html#dtb4" repeat="1" fill="remove" />
-            <audio src="speechgen0001.mp3" id="audd68e41" clip-begin="npt=8.497s" clip-end="npt=11.746s" />
-         </par>
-         <par endsync="last" id="tcp5" repeat="1">
-            <text id="txtd68e46" src="content.html#dtb5" repeat="1" fill="remove" />
-            <audio src="speechgen0001.mp3" id="audd68e48" clip-begin="npt=11.746s" clip-end="npt=14.291s" />
-         </par>
-         <par endsync="last" id="tcp6" repeat="1">
-            <text id="txtd68e53" src="content.html#dtb6" repeat="1" fill="remove" />
-            <audio src="speechgen0001.mp3" id="audd68e55" clip-begin="npt=14.291s" clip-end="npt=19.115s" />
-         </par>
-
-	
-      </seq>
-   </body>
+	<head>
+		<meta name="ncc:generator" content="DMFC z3986-2005 to Daisy 2.02 (smil2smil v0.2)" />
+		<meta name="dc:format" content="Daisy 2.02" />
+		<meta name="dc:identifier" content="F00000" />
+		<meta name="dc:title" content="&#xa;&#x9;&#x9;&#x9;&#x9;Don't Worry, Be Happy&#xa;&#x9;         " />
+		<meta name="ncc:totalElapsedTime" content="0:00:00" />
+		<meta name="ncc:timeInThisSmil" content="0:00:22" />
+		<layout>
+			<region id="txtView" />
+		</layout>
+	</head>
+	<body>
+		<seq dur="21.773s">
+			<par endsync="last" id="doctitle">
+				<text id="doctitleText" src="content.html#h1classtitle" />
+				<audio src="speechgen0001.mp3" clip-begin="npt=0.000s" clip-end="npt=2.658s" id="doctitleAudio" />
+			</par>
+			<par endsync="last" id="tcp1">
+				<text id="txtd68e18" src="content.html#dtb1" />
+				<audio src="speechgen0001.mp3" clip-begin="npt=0.000s" clip-end="npt=2.658s" id="audd68e20" />
+			</par>
+			<par endsync="last" id="tcp2">
+				<text id="txtd68e25" src="content.html#dtb2" />
+				<audio src="speechgen0001.mp3" clip-begin="npt=2.658s" clip-end="npt=6.163s" id="audd68e27" />
+			</par>
+			<par endsync="last" id="tcp3">
+				<text id="txtd68e32" src="content.html#dtb3" />
+				<audio src="speechgen0001.mp3" clip-begin="npt=6.163s" clip-end="npt=8.497s" id="audd68e34" />
+			</par>
+			<par endsync="last" id="tcp4">
+				<text id="txtd68e39" src="content.html#dtb4" />
+				<audio src="speechgen0001.mp3" clip-begin="npt=8.497s" clip-end="npt=11.746s" id="audd68e41" />
+			</par>
+			<par endsync="last" id="tcp5">
+				<text id="txtd68e46" src="content.html#dtb5" />
+				<audio src="speechgen0001.mp3" clip-begin="npt=11.746s" clip-end="npt=14.291s" id="audd68e48" />
+			</par>
+			<par endsync="last" id="tcp6">
+				<text id="txtd68e53" src="content.html#dtb6" />
+				<audio src="speechgen0001.mp3" clip-begin="npt=14.291s" clip-end="npt=19.115s" id="audd68e55" />
+			</par>
+		</seq>
+	</body>
 </smil>

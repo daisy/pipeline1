@@ -211,6 +211,10 @@ samples/input/jpg/daisylog.jpg -text
 samples/input/odf/error.odf.odt -text
 samples/input/odf/simple.odt -text
 samples/input/odf/simple2.odt -text
+samples/input/ops/dtbook.2005.basic.css -text
+samples/input/ops/navigation.ncx -text
+samples/input/ops/package.opf -text
+samples/input/ops/the_waste_land.xml -text
 samples/input/rtf/RTF2dtbook.rtf -text
 samples/input/schema/foobar.sch -text
 samples/input/schema/xhtml-rdf.nvdl -text
@@ -221,11 +225,14 @@ samples/input/transl/greek-translation-table.xml -text
 samples/input/transl/phon-translation-table.xml -text
 samples/input/txt/wasteland.txt -text
 samples/input/word/wml-sample.xml -text
+samples/input/xhtml/base.css -text
 samples/input/xhtml/d202.css -text
 samples/input/xhtml/daisy_202.html -text
 samples/input/xhtml/daisylog.jpg -text
 samples/input/xhtml/mixed-content.html -text
 samples/input/xhtml/multi-language-unicode.html -text
+samples/input/xhtml/valentin.jpg -text
+samples/input/xhtml/valentinhauy.html -text
 samples/input/xhtml/xhtml-rdf.xml -text
 scripts/_dev/AudacityToDTB.taskScript -text
 scripts/_dev/Daisy202toZ3986-2005.taskScript -text

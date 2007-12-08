@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="uid">
+	<metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+		<dc:title>The Waste Land</dc:title>
+		<dc:creator>Eliot, T. S.</dc:creator>
+		<dc:publisher>TPB</dc:publisher>
+		<dc:date opf:event="publication">2007-08-16</dc:date>
+		<dc:date opf:event="creation">2007-12-06</dc:date>
+		<dc:identifier id="uid">C00000</dc:identifier>
+		<dc:language>en</dc:language>
+		<meta name="generator" content="Daisy Pipeline OPS Creator" />
+	</metadata>
+	<manifest>
+		<item id="opf1" href="dtbook.2005.basic.css" media-type="text/css" />
+		<item id="opf2" href="the_waste_land.xml" media-type="application/x-dtbook+xml" />
+		<item id="ncx" href="navigation.ncx" media-type="application/x-dtbncx+xml" />
+	</manifest>
+	<spine toc="ncx">
+		<itemref idref="opf2" />
+	</spine>
+</package>

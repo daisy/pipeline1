@@ -1,0 +1,350 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd" >
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="en">
+	<head>
+		<meta name="generator" content="Daisy Pipeline OPS Creator" />
+	</head>
+	<docTitle>
+		<text>The Waste Land</text>
+	</docTitle>
+	<docAuthor>
+		<text>Eliot, T. S.</text>
+	</docAuthor>
+	<navMap>
+		<navPoint id="ncx1" class="h1" playOrder="51">
+			<navLabel>
+				<text>NOTES ON "THE WASTE LAND"</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops51" />
+			<navPoint id="ncx2" class="h2" playOrder="52">
+				<navLabel>
+					<text>I. THE BURIAL OF THE DEAD</text>
+				</navLabel>
+				<content src="the_waste_land.xml#ops52" />
+			</navPoint>
+			<navPoint id="ncx3" class="h2" playOrder="53">
+				<navLabel>
+					<text>II.  A GAME OF CHESS</text>
+				</navLabel>
+				<content src="the_waste_land.xml#ops53" />
+			</navPoint>
+			<navPoint id="ncx4" class="h2" playOrder="54">
+				<navLabel>
+					<text>III.  THE FIRE SERMON</text>
+				</navLabel>
+				<content src="the_waste_land.xml#ops54" />
+			</navPoint>
+			<navPoint id="ncx5" class="h2" playOrder="55">
+				<navLabel>
+					<text>V. WHAT THE THUNDER SAID</text>
+				</navLabel>
+				<content src="the_waste_land.xml#ops55" />
+			</navPoint>
+		</navPoint>
+	</navMap>
+	<navList class="noteref" id="noteref-list">
+		<navLabel>
+			<text>Note References</text>
+		</navLabel>
+		<navTarget id="ncx6" class="noteref" playOrder="1">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops1" />
+		</navTarget>
+		<navTarget id="ncx7" class="noteref" playOrder="2">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops2" />
+		</navTarget>
+		<navTarget id="ncx8" class="noteref" playOrder="3">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops3" />
+		</navTarget>
+		<navTarget id="ncx9" class="noteref" playOrder="4">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops4" />
+		</navTarget>
+		<navTarget id="ncx10" class="noteref" playOrder="5">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops5" />
+		</navTarget>
+		<navTarget id="ncx11" class="noteref" playOrder="6">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops6" />
+		</navTarget>
+		<navTarget id="ncx12" class="noteref" playOrder="7">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops7" />
+		</navTarget>
+		<navTarget id="ncx13" class="noteref" playOrder="8">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops8" />
+		</navTarget>
+		<navTarget id="ncx14" class="noteref" playOrder="9">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops9" />
+		</navTarget>
+		<navTarget id="ncx15" class="noteref" playOrder="10">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops10" />
+		</navTarget>
+		<navTarget id="ncx16" class="noteref" playOrder="11">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops11" />
+		</navTarget>
+		<navTarget id="ncx17" class="noteref" playOrder="12">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops12" />
+		</navTarget>
+		<navTarget id="ncx18" class="noteref" playOrder="13">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops13" />
+		</navTarget>
+		<navTarget id="ncx19" class="noteref" playOrder="14">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops14" />
+		</navTarget>
+		<navTarget id="ncx20" class="noteref" playOrder="15">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops15" />
+		</navTarget>
+		<navTarget id="ncx21" class="noteref" playOrder="16">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops16" />
+		</navTarget>
+		<navTarget id="ncx22" class="noteref" playOrder="17">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops17" />
+		</navTarget>
+		<navTarget id="ncx23" class="noteref" playOrder="18">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops18" />
+		</navTarget>
+		<navTarget id="ncx24" class="noteref" playOrder="19">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops19" />
+		</navTarget>
+		<navTarget id="ncx25" class="noteref" playOrder="20">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops20" />
+		</navTarget>
+		<navTarget id="ncx26" class="noteref" playOrder="21">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops21" />
+		</navTarget>
+		<navTarget id="ncx27" class="noteref" playOrder="22">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops22" />
+		</navTarget>
+		<navTarget id="ncx28" class="noteref" playOrder="23">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops23" />
+		</navTarget>
+		<navTarget id="ncx29" class="noteref" playOrder="24">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops24" />
+		</navTarget>
+		<navTarget id="ncx30" class="noteref" playOrder="25">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops25" />
+		</navTarget>
+		<navTarget id="ncx31" class="noteref" playOrder="26">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops26" />
+		</navTarget>
+		<navTarget id="ncx32" class="noteref" playOrder="27">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops27" />
+		</navTarget>
+		<navTarget id="ncx33" class="noteref" playOrder="28">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops28" />
+		</navTarget>
+		<navTarget id="ncx34" class="noteref" playOrder="29">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops29" />
+		</navTarget>
+		<navTarget id="ncx35" class="noteref" playOrder="30">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops30" />
+		</navTarget>
+		<navTarget id="ncx36" class="noteref" playOrder="31">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops31" />
+		</navTarget>
+		<navTarget id="ncx37" class="noteref" playOrder="32">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops32" />
+		</navTarget>
+		<navTarget id="ncx38" class="noteref" playOrder="33">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops33" />
+		</navTarget>
+		<navTarget id="ncx39" class="noteref" playOrder="34">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops34" />
+		</navTarget>
+		<navTarget id="ncx40" class="noteref" playOrder="35">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops35" />
+		</navTarget>
+		<navTarget id="ncx41" class="noteref" playOrder="36">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops36" />
+		</navTarget>
+		<navTarget id="ncx42" class="noteref" playOrder="37">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops37" />
+		</navTarget>
+		<navTarget id="ncx43" class="noteref" playOrder="38">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops38" />
+		</navTarget>
+		<navTarget id="ncx44" class="noteref" playOrder="39">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops39" />
+		</navTarget>
+		<navTarget id="ncx45" class="noteref" playOrder="40">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops40" />
+		</navTarget>
+		<navTarget id="ncx46" class="noteref" playOrder="41">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops41" />
+		</navTarget>
+		<navTarget id="ncx47" class="noteref" playOrder="42">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops42" />
+		</navTarget>
+		<navTarget id="ncx48" class="noteref" playOrder="43">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops43" />
+		</navTarget>
+		<navTarget id="ncx49" class="noteref" playOrder="44">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops44" />
+		</navTarget>
+		<navTarget id="ncx50" class="noteref" playOrder="45">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops45" />
+		</navTarget>
+		<navTarget id="ncx51" class="noteref" playOrder="46">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops46" />
+		</navTarget>
+		<navTarget id="ncx52" class="noteref" playOrder="47">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops47" />
+		</navTarget>
+		<navTarget id="ncx53" class="noteref" playOrder="48">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops48" />
+		</navTarget>
+		<navTarget id="ncx54" class="noteref" playOrder="49">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops49" />
+		</navTarget>
+		<navTarget id="ncx55" class="noteref" playOrder="50">
+			<navLabel>
+				<text>*</text>
+			</navLabel>
+			<content src="the_waste_land.xml#ops50" />
+		</navTarget>
+	</navList>
+</ncx>
