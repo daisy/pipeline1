@@ -1,31 +1,31 @@
 package org.daisy.pipeline.test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.daisy.pipeline.test.impl.Aligner1;
 import org.daisy.pipeline.test.impl.Audacity2DTB1;
 import org.daisy.pipeline.test.impl.CharacterRepertoireManipulator1;
 import org.daisy.pipeline.test.impl.CharsetSwitcher1;
-import org.daisy.pipeline.test.impl.FilesetRenamer2;
-import org.daisy.pipeline.test.impl.ValidatorConfigurable1;
-import org.daisy.pipeline.test.impl.ValidatorDTBd2021;
 import org.daisy.pipeline.test.impl.DTBAudioEncoder1;
-import org.daisy.pipeline.test.impl.DTBAudioEncoderSplitter1;
 import org.daisy.pipeline.test.impl.DTBAudioEncoderRenamer1;
+import org.daisy.pipeline.test.impl.DTBAudioEncoderSplitter1;
 import org.daisy.pipeline.test.impl.DTBSplitter1;
 import org.daisy.pipeline.test.impl.DTBook2Xhtml1;
 import org.daisy.pipeline.test.impl.DTBook2Xhtml2MathML;
 import org.daisy.pipeline.test.impl.DTBook2rtf1;
 import org.daisy.pipeline.test.impl.DTBookFix1;
-import org.daisy.pipeline.test.impl.ValidatorDTBd2022;
-import org.daisy.pipeline.test.impl.ValidatorDTBook1;
-import org.daisy.pipeline.test.impl.ValidatorDTBook2;
 import org.daisy.pipeline.test.impl.Daisy202ToZ398620051;
 import org.daisy.pipeline.test.impl.FilesetCreator1;
 import org.daisy.pipeline.test.impl.FilesetRenamer1;
+import org.daisy.pipeline.test.impl.FilesetRenamer2;
 import org.daisy.pipeline.test.impl.Html2Xhtml1;
 import org.daisy.pipeline.test.impl.MixedContentNormalizer1;
 import org.daisy.pipeline.test.impl.MultiFormatMedia1;
@@ -34,7 +34,6 @@ import org.daisy.pipeline.test.impl.Narrator2;
 import org.daisy.pipeline.test.impl.Narrator3;
 import org.daisy.pipeline.test.impl.OcfCreator1;
 import org.daisy.pipeline.test.impl.Odf2dtbook1;
-import org.daisy.pipeline.test.impl.Odf2dtbook2;
 import org.daisy.pipeline.test.impl.Odf2xhtml1;
 import org.daisy.pipeline.test.impl.OpsCreator1;
 import org.daisy.pipeline.test.impl.OpsCreator2;
@@ -42,11 +41,15 @@ import org.daisy.pipeline.test.impl.OpsCreator3;
 import org.daisy.pipeline.test.impl.OpsCreator4;
 import org.daisy.pipeline.test.impl.PrettyPrinter1;
 import org.daisy.pipeline.test.impl.PrettyPrinter2;
-import org.daisy.pipeline.test.impl.PrettyPrinter3;
 import org.daisy.pipeline.test.impl.RenamerTaggerValidator1;
 import org.daisy.pipeline.test.impl.Rtf2Xhtml1;
 import org.daisy.pipeline.test.impl.Rtf2dtbook1;
 import org.daisy.pipeline.test.impl.UnicodeNormalizer1;
+import org.daisy.pipeline.test.impl.ValidatorConfigurable1;
+import org.daisy.pipeline.test.impl.ValidatorDTBd2021;
+import org.daisy.pipeline.test.impl.ValidatorDTBd2022;
+import org.daisy.pipeline.test.impl.ValidatorDTBook1;
+import org.daisy.pipeline.test.impl.ValidatorDTBook2;
 import org.daisy.pipeline.test.impl.ValidatorNVDL1;
 import org.daisy.pipeline.test.impl.WordML2DTBook1;
 import org.daisy.pipeline.test.impl.WordML2DTBook2;
@@ -66,6 +69,91 @@ public class PipelineTestDriver {
 
 	static EFolder inputDir = null;
 	static EFolder outputDir = null;
+	
+	public PipelineTestDriver(EFolder samplesDirectory, EFolder scriptsDirectory) throws Exception {
+		inputDir = new EFolder(samplesDirectory, "input");
+		outputDir = new EFolder(samplesDirectory, "output");
+		FileUtils.createDirectory(outputDir);
+		
+		assert(scriptsDirectory.exists() && samplesDirectory.exists() && outputDir.exists() && inputDir.exists());
+		
+		System.out.println("Using testdata directory " + samplesDirectory.getAbsolutePath());
+		System.out.println("Using scripts directory " + scriptsDirectory.getAbsolutePath());
+
+		System.out.print("Deleting output directory contents...");
+		outputDir.deleteContents(true);				
+		System.out.println(" done.");
+						
+		Collection<File> scripts = scriptsDirectory.getFiles(true, ".+\\.taskScript");		
+		System.out.println("Found " + scripts.size() + " scripts.");
+		
+		Collection<PipelineTest> tests = getTests(); 
+		System.out.println("Found " + tests.size() + " tests .");
+		System.out.println("-----------------------");
+		
+		
+		Set<File> scriptsWithoutTests = new HashSet<File>();
+		Set<FailedTest> failedTests = new HashSet<FailedTest>();
+		
+		for (File script: scripts) {
+			boolean testExistsForScript = false;
+			for (PipelineTest test : tests) {
+				if(test.supportsScript(script.getName())) {
+					testExistsForScript = true;
+					try{
+						System.out.println("Test " + test.getClass().getName() +": " + test.getResultDescription());	
+						List<String> parametersList = new LinkedList<String>();
+						parametersList.add(script.getAbsolutePath());
+						parametersList.addAll(test.getParameters());
+						String[] array = parametersList.toArray(new String[parametersList.size()]);
+						CommandLineUI.main(array);
+						test.confirm();
+					}catch (Exception e) {
+						if(tests.size()>1) {
+							//we are running several tests at once,
+							//collect, continue, and then inform outside lop
+							failedTests.add(new FailedTest(script,test,e));
+							e.printStackTrace();
+						}else{
+							throw e;
+						}
+					}	
+					System.out.println("-----------------------");
+				}				
+			}
+			if(!testExistsForScript) {
+				scriptsWithoutTests.add(script);
+			}
+		}
+						
+		System.out.println("Pipeline test drive done.");
+
+		
+		if(tests.size()>1) {
+			
+			if(!failedTests.isEmpty()) {
+				System.out.println("The following " + failedTests.size() + " tests failed (the driver caught an exception while invoking them))");
+				for(FailedTest t : failedTests) {
+					System.out.println(t.mTest.getClass().getSimpleName() + ": using script " + t.mScript.getName());
+					System.out.println("Exception: " + t.mException.getMessage() + "[" + t.mException.getCause().getClass().getSimpleName() + "]");
+					System.err.println();
+				}
+			}else{
+				System.out.println("No tests failed (in the sense that no exceptions where caught in the driver");
+			}
+		
+		
+		
+			if(!scriptsWithoutTests.isEmpty()) {
+				System.out.println("The following " + scriptsWithoutTests.size() + " scripts were not tested:");
+				for(File f : scriptsWithoutTests) {
+					System.out.println(f.getName());
+				}
+			}else{
+				System.out.println("All scripts in "+ scriptsDirectory.getAbsolutePath() + " were tested");
+			}
+		}
+	}
 
 	/**
 	 * Run a series of instantiations of CommandLineGUI.
@@ -82,57 +170,20 @@ public class PipelineTestDriver {
 				
 		EFolder samplesDirectory = new EFolder(args[0]);		
 		EFolder scriptsDirectory = new EFolder(args[1]);		
-		inputDir = new EFolder(samplesDirectory, "input");
-		outputDir = new EFolder(samplesDirectory, "output");
-		FileUtils.createDirectory(outputDir);
 		
-		assert(scriptsDirectory.exists() && samplesDirectory.exists() && outputDir.exists() && inputDir.exists());
+		PipelineTestDriver pdt = new PipelineTestDriver(samplesDirectory,scriptsDirectory);
 		
-		System.out.println("Using testdata directory " + samplesDirectory.getAbsolutePath());
-		System.out.println("Using scripts directory " + scriptsDirectory.getAbsolutePath());
-
-		System.out.print("Deleting output directory contents...");
-		outputDir.deleteContents(true);				
-		System.out.println(" done.");
-		
-		System.out.print("Collecting scripts... ");		
-		Collection<File> scripts = scriptsDirectory.getFiles(true, ".+\\.taskScript");		
-		System.out.println("found " + scripts.size() + ".");
-		
-		System.out.print("Collecting tests... ");
-		Collection<PipelineTest> tests = getTests(); 
-		System.out.println("found " + tests.size() + ".");
-		System.out.println("-----------------------");
-		
-		for (File script: scripts) {
-			boolean testExistsForScript = false;
-			for (PipelineTest test : tests) {
-				if(test.supportsScript(script.getName())) {
-					testExistsForScript = true;
-					System.out.println("Test " + test.getClass().getName() +": " + test.getResultDescription());	
-					List<String> parametersList = new LinkedList<String>();
-					parametersList.add(script.getAbsolutePath());
-					parametersList.addAll(test.getParameters());
-					String[] array = parametersList.toArray(new String[parametersList.size()]);
-					CommandLineUI.main(array);
-					test.confirm();
-					System.out.println("-----------------------");
-				}				
-			}
-			if(!testExistsForScript) {
-				//System.err.println("No test for script " + script.getName());
-			}
-		}
-						
-		System.out.println("Pipeline test drive done.");
 	}
 
+	/**
+	 * Populate the test collection
+	 */
 	public static Collection<PipelineTest> getTests() {
 		List<PipelineTest> tests = new LinkedList<PipelineTest>(); 
 
 		//20071209: broken:
-		//tests.add(new Odf2dtbook1(inputDir, outputDir));
-		//tests.add(new Odf2xhtml1(inputDir, outputDir));
+//		tests.add(new Odf2dtbook1(inputDir, outputDir));
+//		tests.add(new Odf2xhtml1(inputDir, outputDir));
 		
 		
 		/*
@@ -193,16 +244,14 @@ public class PipelineTestDriver {
 		 * Dont decomment these unless you have access
 		 * to the extra (non SVN) input data collection, 
 		 * or mod the inparams accordingly.
-		 */
-		//tests.add(new PrettyPrinter3(inputDir, outputDir));				
-		//tests.add(new FilesetCreator1(inputDir, outputDir));	
-		//tests.add(new FilesetRenamer2(inputDir, outputDir));
-		//tests.add(new Aligner1(inputDir, outputDir));
-		//tests.add(new Audacity2DTB1(inputDir, outputDir));
-		//tests.add(new DTBAudioEncoder1(inputDir, outputDir));
-		//tests.add(new DTBAudioEncoderSplitter1(inputDir, outputDir));
-		//tests.add(new PrettyPrinter3(inputDir, outputDir));
-		//tests.add(new DTBAudioEncoderRenamer1(inputDir, outputDir));
+		 */			
+//		tests.add(new FilesetCreator1(inputDir, outputDir));	
+//		tests.add(new FilesetRenamer2(inputDir, outputDir));
+//		tests.add(new Aligner1(inputDir, outputDir));
+//		tests.add(new Audacity2DTB1(inputDir, outputDir));
+//		tests.add(new DTBAudioEncoder1(inputDir, outputDir));
+//		tests.add(new DTBAudioEncoderSplitter1(inputDir, outputDir));
+//		tests.add(new DTBAudioEncoderRenamer1(inputDir, outputDir));
 
 		/*
 		 * End Tests with input data not in samples dir:
@@ -211,6 +260,16 @@ public class PipelineTestDriver {
 		return tests;
 	}
 
+	class FailedTest {
+		File mScript;
+		PipelineTest mTest;
+		Exception mException;
+		FailedTest(File script, PipelineTest test, Exception failure) {
+			mScript = script;
+			mTest = test;
+			mException = failure;
+		}
+	}
 	
 	
 }
