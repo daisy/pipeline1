@@ -80,9 +80,8 @@ public class FileJuggler {
 	 */
 	public void close() throws IOException {
 		//mg20071207: added length>0
-		//jh20071210: removed length>0, added t2.delete() in constrcutor
-		if (getOutput().exists()) FileUtils.copy(getOutput(), output);
-		else if (getInput().exists()) FileUtils.copy(getInput(), output);
+		if (getOutput().exists() && getOutput().length()>0) FileUtils.copy(getOutput(), output);
+		else if (getInput().exists() && getInput().length()>0) FileUtils.copy(getInput(), output);
 		else FileUtils.copy(input, output);
 		t1.delete();
 		t2.delete();
