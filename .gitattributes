@@ -418,6 +418,7 @@ src/org/daisy/util/dtb/ncxonly/model/write/smil/SMILFile.java -text
 src/org/daisy/util/dtb/resource/ResourceFile.java -text
 src/org/daisy/util/dtb/resource/text.res -text
 src/org/daisy/util/execution/State.java -text
+src/org/daisy/util/file/FileJuggler.java -text
 src/org/daisy/util/fileset/impl/Opf20FileImpl.java -text
 src/org/daisy/util/fileset/interfaces/xml/ops20/OPF20File.java -text
 src/org/daisy/util/fileset/manipulation/manipulators/XMLEventConsumer.java -text
@@ -732,7 +733,6 @@ transformers/se_tpb_dtbookFix/Category.java -text
 transformers/se_tpb_dtbookFix/CharsetExecutor.java -text
 transformers/se_tpb_dtbookFix/DTBookFix.java -text
 transformers/se_tpb_dtbookFix/Executor.java -text
-transformers/se_tpb_dtbookFix/FileJuggler.java -text
 transformers/se_tpb_dtbookFix/InputState.java -text
 transformers/se_tpb_dtbookFix/XSLTExecutor.java -text
 transformers/se_tpb_dtbookFix/messages.properties -text
@@ -821,7 +821,6 @@ transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTT
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.exe.manifest -text svneol=unset#application/octet-stream
 transformers/se_tpb_speechgenerator/tts/SimpleCommandLineTTS/SimpleCommandLineTTS.pdb -text
 transformers/se_tpb_syncPointNormalizer/transformer.tdf -text
-transformers/se_tpb_wordml2dtbook/FileJuggler.java -text
 transformers/se_tpb_wordml2dtbook/ImageConverter.java -text
 transformers/se_tpb_wordml2dtbook/custom/new-custom-tagset.xml -text
 transformers/se_tpb_wordml2dtbook/custom/se_rk_custom-tagset.xml -text

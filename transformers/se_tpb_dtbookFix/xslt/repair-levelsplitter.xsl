@@ -31,6 +31,7 @@
 			<xsl:copy-of select="@*"/>
 			<xsl:for-each select="node()">
 				<xsl:if test="self::dtb:*[name()=concat('h', $level)] and preceding-sibling::dtb:*[name()=concat('h', $level)]">
+					<xsl:message terminate="no"><xsl:value-of select="concat('Splitting level ', $level)"/></xsl:message>
 					<xsl:value-of select="concat('&lt;/level', $level, '&gt;&lt;level', $level, '&gt;')" disable-output-escaping="yes"/>
 				</xsl:if>
 				<xsl:apply-templates select="."/>

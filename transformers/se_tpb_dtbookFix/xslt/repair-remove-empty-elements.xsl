@@ -47,6 +47,7 @@
 			)=count(node())
 		)
 	]">
+		<xsl:message terminate="no">Removed an empty element</xsl:message>
 		<xsl:apply-templates/>
 	</xsl:template>
   

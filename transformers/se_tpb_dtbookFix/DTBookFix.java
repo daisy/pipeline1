@@ -28,6 +28,7 @@ import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFolder;
+import org.daisy.util.file.FileJuggler;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.exception.FilesetFatalException;
@@ -428,7 +429,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 		@Override
 		public void write(char[] cbuf, int off, int len) throws IOException {
 			String s = new String(cbuf, off, len).trim();
-			mT.sendMessage("XSLT message: " + s,MessageEvent.Type.INFO,MessageEvent.Cause.SYSTEM,null);			
+			if (s.length()>0 && !s.startsWith("<?xml")) mT.sendMessage("XSLT message: " + s,MessageEvent.Type.INFO,MessageEvent.Cause.SYSTEM,null);			
 		}
 		 
 	}

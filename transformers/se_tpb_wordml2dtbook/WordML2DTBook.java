@@ -15,12 +15,11 @@ import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.execution.Command;
 import org.daisy.util.execution.ExecutionException;
+import org.daisy.util.file.FileJuggler;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.xslt.Stylesheet;
-
-import se_tpb_dtbAudioEncoder.EncodingException;
 
 /**
  * 

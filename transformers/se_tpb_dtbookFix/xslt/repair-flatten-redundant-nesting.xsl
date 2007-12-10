@@ -29,6 +29,7 @@
 			self::dtb:p or self::comment() or
 				self::processing-instruction()
 		])=count(node())]">
+		<xsl:message terminate="no">Removed a nested paragraph</xsl:message>
 		<xsl:apply-templates/>
 	</xsl:template>
   

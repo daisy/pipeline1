@@ -59,12 +59,14 @@
 							round( ( ( count(current()/preceding::dtb:noteref) ) 
 								* 
 							( count(//dtb:note) div count(//dtb:noteref) ) ) + 0.5)]/@id"/></xsl:attribute>
+							<xsl:message terminate="no">Added idref to noteref</xsl:message>
 						</xsl:when>
 						<xsl:when test="self::dtb:annoref">
 							<xsl:attribute name="idref">#<xsl:value-of select="(//dtb:annotation)[
 							round( ( ( count(current()/preceding::dtb:annoref) )
 								*
 							( count(//dtb:annotation) div count(//dtb:annoref) ) ) + 0.5)]/@id"/></xsl:attribute>
+							<xsl:message terminate="no">Added idref to annoref</xsl:message>
 						</xsl:when>
 					</xsl:choose>
 				</xsl:when>
@@ -73,6 +75,7 @@
 						<xsl:text>#</xsl:text>
 						<xsl:value-of select="@idref"/>
 					</xsl:attribute>
+					<xsl:message terminate="no">Added hash mark to idref</xsl:message>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:copy-of select="@idref"/>

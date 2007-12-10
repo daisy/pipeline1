@@ -1,11 +1,9 @@
-package se_tpb_dtbookFix;
+package org.daisy.util.file;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.daisy.util.file.FileUtils;
-import org.daisy.util.file.TempFile;
 
 /**
  * Given an initial input file and the final output file, this class can be 
@@ -18,7 +16,7 @@ import org.daisy.util.file.TempFile;
  * @version 27 sep 2007
  * @since 1.0
  */
-class FileJuggler {
+public class FileJuggler {
 	private TempFile t1;
 	private TempFile t2;
 	private File input;
@@ -31,7 +29,7 @@ class FileJuggler {
 	 * @param output An output file
 	 * @throws IOException 
 	 */
-	FileJuggler(File input, File output) throws IOException {
+	public FileJuggler(File input, File output) throws IOException {
 		this.t1 = null;
 		this.t2 = null;
 		this.toggle = true;
@@ -47,7 +45,7 @@ class FileJuggler {
 	 * Get the current input file
 	 * @return Returns the current input file
 	 */
-	File getInput() {
+	public File getInput() {
 		return toggle ? t1.getFile() : t2.getFile();
 	}
 	
@@ -55,7 +53,7 @@ class FileJuggler {
 	 * Get the current output file
 	 * @return Returns the current output file
 	 */
-	File getOutput() {
+	public File getOutput() {
 		return toggle ? t2.getFile() : t1.getFile();
 	}
 	
@@ -63,7 +61,7 @@ class FileJuggler {
 	 * Swap the input and output file before writing to the output again
 	 * @throws FileNotFoundException 
 	 */
-	void swap() throws FileNotFoundException {
+	public void swap() throws FileNotFoundException {
 		// Check that the soon to be input file exists
 		if (getOutput().exists()) {
 			toggle = !toggle;
@@ -78,7 +76,7 @@ class FileJuggler {
 	 * Closes the temporary files and copies the result to the output file
 	 * @throws IOException 
 	 */
-	void close() throws IOException {
+	public void close() throws IOException {
 		//mg20071207: added length>0
 		if (getOutput().exists() && getOutput().length()>0) FileUtils.copy(getOutput(), output);
 		else if (getInput().exists()) FileUtils.copy(getInput(), output);

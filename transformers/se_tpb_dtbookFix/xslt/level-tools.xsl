@@ -96,6 +96,7 @@
 
 		<xsl:choose>
 			<xsl:when test="self::dtb:*[name()=concat('level', $level)]">
+				<xsl:message terminate="no">Corrected a level</xsl:message>
 				<xsl:if test="not($first) and not(preceding-sibling::*[1][self::dtb:*[name()=concat('level', $level)]])">
 					<xsl:value-of select="concat('&lt;/level', $level, '&gt;')" disable-output-escaping="yes"/>
 				</xsl:if>
@@ -105,16 +106,19 @@
 				</xsl:if>
 			</xsl:when>
 			<xsl:when test="$first">
+				<xsl:message terminate="no">Corrected a level</xsl:message>
 				<xsl:value-of select="concat('&lt;level', $level, '&gt;')" disable-output-escaping="yes"/>
 				<xsl:apply-templates select="."/>
 			</xsl:when>
 			<xsl:when test="$last">
+				<xsl:message terminate="no">Corrected a level</xsl:message>
 				<xsl:apply-templates select="."/>
 				<xsl:value-of select="concat('&lt;/level', $level, '&gt;')" disable-output-escaping="yes"/>
 			</xsl:when>
 			<xsl:when test="self::dtb:*[name()=concat('h', $level)] and preceding-sibling::dtb:*[number(substring-after(name(), 'h'))>=$level]">
 				<xsl:if test="not(preceding-sibling::*[1][self::dtb:*[name()=concat('level', $level)]])">
 					<xsl:value-of select="concat('&lt;/level', $level, '&gt;&lt;level', $level, '&gt;')" disable-output-escaping="yes"/>
+					<xsl:message terminate="no">Corrected a level</xsl:message>
 				</xsl:if>
 				<xsl:apply-templates select="."/>
 			</xsl:when>

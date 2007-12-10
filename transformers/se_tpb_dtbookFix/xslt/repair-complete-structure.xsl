@@ -27,6 +27,7 @@
 	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6|dtb:hd">
 		<xsl:call-template name="copy"/>
 		<xsl:if test="not(following-sibling::*)">
+			<xsl:message terminate="no">Added an empty paragraph to complete level</xsl:message>
 			<xsl:element name="p" namespace="http://www.daisy.org/z3986/2005/dtbook/"/>
 		</xsl:if>
 	</xsl:template>

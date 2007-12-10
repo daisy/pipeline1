@@ -27,6 +27,7 @@
 	<xsl:include href="output.xsl"/>
 
 	<xsl:template match="dtb:list[parent::dtb:list]">
+		<xsl:message terminate="no">Adding li-tag around list-tag</xsl:message>
 		<xsl:element name="li" namespace="http://www.daisy.org/z3986/2005/dtbook/">
 			<xsl:call-template name="copyList"/>
 		</xsl:element>
@@ -39,7 +40,10 @@
 	<xsl:template name="copyList">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
-			<xsl:if test="not(@type)"><xsl:attribute name="type">pl</xsl:attribute></xsl:if>
+			<xsl:if test="not(@type)">
+				<xsl:message terminate="no">Adding @type="pl" to list-tag</xsl:message>
+				<xsl:attribute name="type">pl</xsl:attribute>
+			</xsl:if>
 			<xsl:apply-templates/>
 		</xsl:copy>
 	</xsl:template>

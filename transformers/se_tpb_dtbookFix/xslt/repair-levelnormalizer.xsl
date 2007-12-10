@@ -32,6 +32,7 @@
 		<xsl:variable name="level" select="substring-after(name(), 'level')"/>
 		<xsl:choose>
 			<xsl:when test="descendant::dtb:*[(self::dtb:h1 or self::dtb:h2 or self::dtb:h3 or self::dtb:h4 or self::dtb:h5 or self::dtb:h6) and substring-after(name(), 'h')&lt;$level]">
+				<xsl:message terminate="no">Removed problematic level</xsl:message>
 				<xsl:apply-templates/>
 			</xsl:when>
 			<xsl:otherwise>
