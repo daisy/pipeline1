@@ -638,6 +638,8 @@ transformers/se_tpb_aligner/textpre/impl/Preproc/lang/eng/DB/acronym.db -text
 transformers/se_tpb_aligner/textpre/impl/Preproc/lang/eng/DB/alphabet.db -text
 transformers/se_tpb_aligner/textpre/impl/Preproc/lang/eng/DB/char_norm.db -text
 transformers/se_tpb_aligner/textpre/impl/Preproc/lang/eng/DB/domain_list.db -text
+transformers/se_tpb_aligner/textpre/impl/Preproc/lang/eng/DB/eng_lexicon.db -text
+transformers/se_tpb_aligner/textpre/impl/Preproc/lang/eng/DB/eng_lexicon_tags.db -text
 transformers/se_tpb_aligner/textpre/impl/Preproc/lang/eng/DB/name_lexicon.db -text
 transformers/se_tpb_aligner/textpre/impl/Preproc/lang/eng/DB/name_tags_lexicon.db -text
 transformers/se_tpb_aligner/textpre/impl/Preproc/lang/eng/DB/num_transcr.db -text
