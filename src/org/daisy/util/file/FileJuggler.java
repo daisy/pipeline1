@@ -38,6 +38,8 @@ public class FileJuggler {
 		if (!input.exists()) throw new FileNotFoundException();
 		this.t1 = new TempFile();
 		this.t2 = new TempFile();
+		//jh20071210, added t2.delete();
+		t2.delete();
 		FileUtils.copy(input, this.t1.getFile());
 	}
 
@@ -78,7 +80,8 @@ public class FileJuggler {
 	 */
 	public void close() throws IOException {
 		//mg20071207: added length>0
-		if (getOutput().exists() && getOutput().length()>0) FileUtils.copy(getOutput(), output);
+		//jh20071210: removed length>0, added t2.delete() in constrcutor
+		if (getOutput().exists()) FileUtils.copy(getOutput(), output);
 		else if (getInput().exists()) FileUtils.copy(getInput(), output);
 		else FileUtils.copy(input, output);
 		t1.delete();
