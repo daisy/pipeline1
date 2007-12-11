@@ -191,7 +191,7 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
 	            
 	        }
     	}
-    	System.err.println("returning null on " + systemId);
+    	//System.err.println("returning null on " + systemId);
     	return null;
     }
 
