@@ -25,6 +25,10 @@ public interface PreferencesKeys {
 	public static final String PATH_TO_PYTHON = "PATH_TO_PYTHON"; //$NON-NLS-1$
 	/** The preference holding the default path to python */
 	public static final String PATH_TO_PYTHON_DEFAULT = "/path/to/python.exe"; //$NON-NLS-1$
+	/** The preference holding the path to sox */
+	public static final String PATH_TO_SOX = "PATH_TO_SOX"; //$NON-NLS-1$
+	/** The preference holding the default path to sox */
+	public static final String PATH_TO_SOX_DEFAULT = "/path/to/sox"; //$NON-NLS-1$
 	/** The preference holding the path to the temporary directory */
 	public static final String PATH_TO_TEMP_DIR = "PATH_TO_TEMP_DIR"; //$NON-NLS-1$	
 	/** The preference holding the default path to the temporary directory */

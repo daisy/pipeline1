@@ -58,6 +58,10 @@ public class Messages extends NLS {
 	public static String pref_pythonPath_label;
 	/** The tooltip for the preference for the path to Python */
 	public static String pref_pythonPath_tooltip;
+	/** The label presenting the preference for the path to SoX */
+	public static String pref_soxPath_label;
+	/** The tooltip for the preference for the path to SoX */
+	public static String pref_soxPath_tooltip;
 	/**
 	 * The label presenting the preference for the path to the temporary
 	 * directory

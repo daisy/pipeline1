@@ -63,6 +63,8 @@ public final class PipelineUtil {
 	public static final String PATH_TO_LAME_PROP = "dmfc.lame.path"; //$NON-NLS-1$
 	/** The name of the System properties used for the path to Python */
 	public static final String PATH_TO_PYTHON_PROP = "pipeline.python.path"; //$NON-NLS-1$
+	/** The name of the System properties used for the path to SoX */
+	public static final String PATH_TO_SOX_PROP = "pipeline.sox.path"; //$NON-NLS-1$
 	/**
 	 * The name of the System properties used for the path to the temporary
 	 * directory
@@ -89,6 +91,9 @@ public final class PipelineUtil {
 		properties.setProperty(PATH_TO_PYTHON_PROP, PreferencesUtil.get(
 				PreferencesKeys.PATH_TO_PYTHON,
 				PreferencesKeys.PATH_TO_PYTHON_DEFAULT));
+		properties.setProperty(PATH_TO_SOX_PROP, PreferencesUtil.get(
+				PreferencesKeys.PATH_TO_SOX,
+				PreferencesKeys.PATH_TO_SOX_DEFAULT));
 		properties.setProperty(PATH_TO_TEMP_DIR_PROP, PreferencesUtil.get(
 				PreferencesKeys.PATH_TO_TEMP_DIR,
 				PreferencesKeys.PATH_TO_TEMP_DIR_DEFAULT));

@@ -85,6 +85,16 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
 		pythonEditor.getTextControl(parent).setToolTipText(
 				Messages.pref_pythonPath_tooltip);
 		addField(pythonEditor);
+		// SoX Path (Mac OS X only)
+		if (System.getProperty("os.name").startsWith("Mac OS X")) { //$NON-NLS-1$ //$NON-NLS-2$
+			parent = getFieldEditorParent();
+			FileFieldEditor soxEditor = new FileFieldEditor(
+					PreferencesKeys.PATH_TO_SOX, Messages.pref_soxPath_label,
+					parent);
+			pythonEditor.getTextControl(parent).setToolTipText(
+					Messages.pref_soxPath_tooltip);
+			addField(soxEditor);
+		}
 		// Temp Dir Path
 		parent = getFieldEditorParent();
 		DirectoryFieldEditor tempDirEditor = new DirectoryFieldEditor(

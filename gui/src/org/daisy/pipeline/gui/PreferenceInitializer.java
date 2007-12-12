@@ -37,7 +37,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 			File tempFile = File.createTempFile("dont", "care");//$NON-NLS-1$ //$NON-NLS-2$
 			PreferencesUtil.put(PreferencesKeys.PATH_TO_TEMP_DIR, tempFile
 					.getParent(), defaultScope);
-			tempFile.deleteOnExit();
+			tempFile.delete();
 		} catch (IOException e) {
 			GuiPlugin.get().warn("Couldn't find the default temp directory", e); //$NON-NLS-1$
 		}
@@ -82,6 +82,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 				"/usr/local/bin/convert");//$NON-NLS-1$
 		setPrefPath(PreferencesKeys.PATH_TO_LAME, "/usr/local/bin/lame");//$NON-NLS-1$
 		setPrefPath(PreferencesKeys.PATH_TO_PYTHON, "/usr/bin/python");//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_SOX, "/usr/local/bin/sox");//$NON-NLS-1$
 	}
 
 	/**
