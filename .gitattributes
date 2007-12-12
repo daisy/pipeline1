@@ -779,6 +779,7 @@ transformers/se_tpb_speechgen2/charsubst/character-translation-table.xml -text
 transformers/se_tpb_speechgen2/conf/loquendo.xml -text
 transformers/se_tpb_speechgen2/conf/sgConfig-sv.xml -text
 transformers/se_tpb_speechgen2/conf/sgConfig.xml -text
+transformers/se_tpb_speechgen2/external/MacOS/MacSayTTS.java -text svneol=unset#text/plain
 transformers/se_tpb_speechgen2/external/MacOS/daisytts.pl -text
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/Interop.SpeechLib.dll -text
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/Program.cs -text
@@ -789,6 +790,7 @@ transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/SimpleCommandLineTT
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/doc.xml -text
 transformers/se_tpb_speechgen2/messages.properties -text
 transformers/se_tpb_speechgen2/regex/loquendo-general.xml -text
+transformers/se_tpb_speechgen2/regex/macosx-say.xml -text svneol=unset#text/plain
 transformers/se_tpb_speechgen2/regex/year_en.xml -text
 transformers/se_tpb_speechgen2/regex/year_sv.xml -text
 transformers/se_tpb_speechgen2/transformer.tdf -text
@@ -802,6 +804,7 @@ transformers/se_tpb_speechgen2/tts/TTSInput.java -text
 transformers/se_tpb_speechgen2/tts/TTSOutput.java -text
 transformers/se_tpb_speechgen2/tts/TTSSyncPoint.java -text
 transformers/se_tpb_speechgen2/tts/XMLParameter.java -text
+transformers/se_tpb_speechgen2/tts/adapters/AbstractTTSAdapter.java -text svneol=unset#text/plain
 transformers/se_tpb_speechgen2/tts/adapters/LocalStreamTTS.java -text
 transformers/se_tpb_speechgen2/tts/adapters/RemoteStreamTTS.java -text
 transformers/se_tpb_speechgen2/tts/concurrent/TTSAdapter.java -text

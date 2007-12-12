@@ -88,8 +88,8 @@
 
    		<lang lang="en">
 			<tts default="true">
-				<param name="class" value="se_tpb_speechgen2.tts.adapters.LocalStreamTTS"/>
-				<param name="command" value="${transformer_dir}/external/MacOS/daisytts.pl"/>
+				<param name="class" value="se_tpb_speechgen2.external.MacOS.MacSayTTS"/>
+                <param name="regex" value="${transformer_dir}/regex/macosx-say.xml"/>
 			</tts>
 		</lang>
 	

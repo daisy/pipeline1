@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleSet>
+    <!-- Escape punctuation only input to prevent sox crashes  -->
+	<rule match="\p{Punct}+" replace="" />
+</ruleSet>
+
