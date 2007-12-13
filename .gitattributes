@@ -756,6 +756,7 @@ transformers/se_tpb_dtbookFix/xslt/repair-level6.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-levelnormalizer.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-levelsplitter.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-lists.xsl -text
+transformers/se_tpb_dtbookFix/xslt/repair-pagenum-type.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-remove-empty-elements.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-remove-illegal-headings.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-add-author-title.xsl -text

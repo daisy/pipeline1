@@ -325,6 +325,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-lists.xsl"),v2005_1_2,i18n("REPAIR_LISTS"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-idref.xsl"),v2005_1_2,i18n("REPAIR_IDREF"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-empty-elements.xsl"),v2005_1_2,i18n("REPAIR_REMOVE_EMPTY_ELEMENTS"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-pagenum-type.xsl"),v2005_1_2,i18n("REPAIR_PAGENUM_TYPE"),this,this,this,emitter));
 
     		/*
     		 * Populate the supported states of the REPAIR category 
