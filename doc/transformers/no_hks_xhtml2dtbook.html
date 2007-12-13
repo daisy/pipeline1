@@ -15,6 +15,7 @@
       pre {font-size:small;}
       ul {margin-bottom:0.5ex;margin-top:0.5ex;}
       tr.x {background-color:rgb(252,252,255);}
+      ul#input-reqs li {margin-bottom:1ex;}
 	</style>
 </head>
 <body>
@@ -68,10 +69,10 @@
     For the second stage, the DAISY&#160;Consortium has developed the <em>no_hks_xhtml2dtbook</em> transformer.
 </p>
 <h3 id="canonicalForm">Requirements for the canonical form of the XHTML document</h3>
-<ul>
+<ul id="input-reqs">
     <li>The XHTML document must be a valid XHTML Transitional or XHTML Strict document.</li>
     <li>The document <em>must</em> containt at least one <code>h1</code> element.</li>
-    <li>The first child element (in the XML sense of the term) of the <code>body</code> element should be an <code>h1</code> element. 
+    <li>The first child element (in the XML sense of the term) of the <code>body</code> element should be an <code>h1</code> element.
         Any child element placed before the first <code>h1</code>, will be ignored during transformation, and will not be present in the generated DTBook document.</li>
     <li>Alle heading elements (<code>h1</code> to <code>h6</code>) <em>must</em> be child elements (in the XML sense of the term) of the
         <code>body</code> element.<br />
@@ -121,6 +122,7 @@
 :
 </pre>
     </li>
+    <li>The <code>br</code>  element <em>may not</em> be child elements (in the XML sense of the term) of the <code>body</code> element.</li>
     <li>The <code>span</code> element <em>may not</em> be child elements (in the XML sense of the term) of the <code>body</code> element,
         unless the <code>class</code> attribute ...
         <ul>
@@ -152,6 +154,28 @@ This excludes markup such as:
     :
 &lt;/body&gt;
     </pre>
+    </li>
+    <li>A <code>span</code> element, with a value for the <code>class</code> attribute starting with the string <span class="text">page-</span>,
+        must have a text content that, when normalized, is suitable to form part of an <code>id</code> attribute value in the DTBook file.<br />
+        The following four examples:
+        <pre>
+&lt;span class="page-normal"&gt;4&lt;/span&gt;
+
+&lt;span class="page-normal"&gt;
+    89
+&lt;/span&gt;
+
+&lt;span class="page-front"&gt;xiv&lt;/span&gt;
+
+&lt;span class="page-special"&gt;B-34&lt;/span&gt;</pre>
+        are perfectly okay, and will result in the <code>id</code> values <span class="text">page-4</span>, <span class="text">page-89</span>, 
+        <span class="text">page-xiv</span>
+        and <span class="text">page-B-34</span>, respectively, in the DTBook file.<br />
+        The  markup:
+        <pre>
+&lt;span class="page-normal"&gt;page 4&lt;/span&gt;</pre>
+        does not comply with this requirement.
+
     </li>
     <li>The <code>div</code> element <em>may not</em> have <code>br</code>
         or <code>span</code> as child elements (in the XML sense of the term).</li>
@@ -304,7 +328,7 @@ Proper markup should rather be as follows:
                     <!-- value from the <code>class</code>. -->
                 </li>
                 <li>The <code>id</code> attribute gets a value constructed by adding the string
-                    <span class="text">page-</span> to the content of the <code>span</code> element.</li>
+                    <span class="text">page-</span> to the normalized content of the <code>span</code> element.</li>
                 <li>The <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
             </ul>
         </td>
@@ -452,16 +476,18 @@ Proper markup should rather be as follows:
     </tr>
     <tr valign="top" class="x">
         <td>
-            <code>p</code>, <code>li</code>, <code>dl</code>, <code>dt</code>, <code>dd</code>,
+            <code>p</code>, <code>blockquote</code>, <code>li</code>, <code>dl</code>, <code>dt</code>, <code>dd</code>,
             <code>strong</code>, <code>em</code>, <code>sub</code>, <code>sup</code> and
             <code>br</code>
         </td>
-        <td>            <code>p</code>, <code>li</code>, <code>dl</code>, <code>dt</code>, <code>dd</code>,
+        <td>            <code>p</code>, <code>blockquote</code>, <code>li</code>, <code>dl</code>, <code>dt</code>, <code>dd</code>,
             <code>strong</code>, <code>em</code>, <code>sub</code>, <code>sup</code> and
             <code>br</code> respectively</td>
         <td>
             <ul>
                 <li>The <code>id</code>, <code>class</code>, <code>title</code>, <code>dir</code> and <code>xml:lang</code> attributes are copied.</li>
+                <li>If the <code>br</code> element is a child (in the XML sense of the term) of the <code>body</code> element, it will not be transformed to a <code>br</code> in the DTBook. 
+                    However, a comment is added to the DTBook file.</li>
             </ul>
         </td>
     </tr>

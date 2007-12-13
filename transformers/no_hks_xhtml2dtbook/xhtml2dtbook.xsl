@@ -10,7 +10,7 @@
 		encoding="UTF-8"
 		indent="yes"
 		doctype-public="-//NISO//DTD dtbook 2005-2//EN"
-		doctype-system="V:\MFBP\piXi\DTD\dtbook-2005-2.dtd" /> -->
+		doctype-system="V:\MFBP\piXi\DTD\dtbook-2005-2.dtd" />-->
 
 	<xsl:output method="xml" 
 		encoding="UTF-8"
@@ -146,7 +146,7 @@
 	</xsl:template>
 
 	<xsl:template match="html:span[starts-with(@class,'page-')]">
-		<pagenum page="{substring-after(@class,'page-')}" id="{concat('page-',.)}">
+		<pagenum page="{substring-after(@class,'page-')}" id="{concat('page-',normalize-space(.))}">
 <!--			<xsl:call-template name="smilref" />-->
 			<xsl:call-template name="copy-page-attributes" />
 			<xsl:value-of select="." />
@@ -297,13 +297,17 @@
 		</list>
 	</xsl:template>
 	
-	<xsl:template match="html:a | html:p | html:li | html:dl | html:dt | html:dd | html:span | html:strong | html:em | html:sub | html:sup | html:br | html:div">
+	<xsl:template match="html:a | html:p | html:li | html:dl | html:dt | html:dd | html:span | html:strong | html:em | html:sub | html:sup | html:br | html:div | html:blockquote">
 		<xsl:element name="{local-name()}">
 			<xsl:call-template name="copy-attributes" />
 			<xsl:apply-templates/>
 		</xsl:element>
 	</xsl:template>
 
+	<xsl:template match="html:body/html:br">
+		<xsl:comment>br elements as direct child of body is removed</xsl:comment>
+	</xsl:template>
+	
 	<xsl:template match="html:table | html:table/html:caption | html:tr | html:td | html:th | html:col">
 		<xsl:element name="{local-name()}">
 			<xsl:call-template name="copy-table-attributes" />
@@ -344,8 +348,8 @@
 
 	<xsl:template name="smilref">
 <!-- 	Per Sennels, 20071026: Handle the html:a/@href attribute, if present -->
-		<xsl:if test="contains(html:a/@href,$smil)">
-			<xsl:attribute name="smilref" select="html:a/@href" />
+		<xsl:if test="contains(html:a[1]/@href,$smil)">
+			<xsl:attribute name="smilref" select="html:a[1]/@href" />
 		</xsl:if>
 	</xsl:template>
 	
@@ -354,6 +358,7 @@
 			<xsl:text>
 </xsl:text>
 			<xsl:comment> **** No template for element: <xsl:value-of select="local-name()" /> **** </xsl:comment>
+			<xsl:message terminate="no"> **** No template for element: <xsl:value-of select="local-name()" /> **** </xsl:message>
 		</xsl:if>
 			
 		<xsl:apply-templates />
