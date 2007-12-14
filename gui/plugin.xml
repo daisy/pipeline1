@@ -167,7 +167,6 @@
          </action>
          <action
                class="org.daisy.pipeline.gui.jobs.CancelPullDownAction"
-               definitionId="org.daisy.pipeline.gui.command.cancelDropDown"
                enablesFor="+"
                icon="icons/action-stop.gif"
                id="org.daisy.pipeline.gui.action.cancelPullDown"
@@ -181,7 +180,6 @@
          </action>
          <action
                class="org.daisy.pipeline.gui.jobs.RunPullDownAction"
-               definitionId="org.daisy.pipeline.gui.command.runDropDown"
                enablesFor="+"
                icon="icons/action-run.gif"
                id="org.daisy.pipeline.gui.action.runPullDown"
@@ -401,11 +399,6 @@
             name="%command.cancel"/>
       <command
             categoryId="org.daisy.pipeline.gui.command.category.run"
-            description="%command.cancel.description"
-            id="org.daisy.pipeline.gui.command.cancelDropDown"
-            name="%command.cancel"/>
-      <command
-            categoryId="org.daisy.pipeline.gui.command.category.run"
             description="%command.cancelAll.description"
             id="org.daisy.pipeline.gui.command.cancelAll"
             name="%command.cancelAll"/>
@@ -441,11 +434,6 @@
             name="%command.run"/>
       <command
             categoryId="org.daisy.pipeline.gui.command.category.run"
-            description="%command.run.description"
-            id="org.daisy.pipeline.gui.command.runDropDown"
-            name="%command.run"/>
-      <command
-            categoryId="org.daisy.pipeline.gui.command.category.run"
             description="%command.runAll.description"
             id="org.daisy.pipeline.gui.command.runAll"
             name="%command.runAll"/>
@@ -466,6 +454,25 @@
             id="org.daisy.pipeline.gui.command.update"
             name="%command.update">
       </command>
+      <command
+            categoryId="org.eclipse.ui.category.help"
+            defaultHandler="org.daisy.pipeline.gui.doc.ShowDocHandler"
+            description="%command.showDoc.description"
+            id="org.daisy.pipeline.gui.command.showDoc"
+            name="%command.showDoc">
+         <commandParameter
+               id="org.daisy.pipeline.gui.doc.showDoc.handleWarning"
+               name="org.daisy.pipeline.gui.doc.showDoc.handleWarning"
+               optional="false">
+         </commandParameter>
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="org.daisy.pipeline.gui.command.showDoc"
+            icon="icons/persp-doc.gif">
+      </image>
    </extension>
    <extension
          point="org.eclipse.ui.intro">
@@ -498,6 +505,21 @@
    </extension>
    <extension
          point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:help?before=additions">
+         <separator name="org.daisy.pipeline.gui.help.beforeShowDoc"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.daisy.pipeline.gui.command.showDoc"
+               label="%command.showDoc"
+               tooltip="%command.showDoc.description">
+            <parameter
+                  name="org.daisy.pipeline.gui.doc.showDoc.handleWarning"
+                  value="true">
+            </parameter>
+         </command>
+      </menuContribution>
       <menuContribution
             locationURI="menu:help?after=additions">
          <command

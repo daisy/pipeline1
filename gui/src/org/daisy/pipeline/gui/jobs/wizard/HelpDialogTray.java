@@ -187,7 +187,7 @@ public class HelpDialogTray extends DialogTray implements IPageChangedListener {
 			// Register with the keybinding service
 			IHandlerService handlerService = (IHandlerService) PlatformUI
 					.getWorkbench().getService(IHandlerService.class);
-			handlerService.activateHandler(ICommandConstants.TOGGLE_BROWSER,
+			handlerService.activateHandler(ICommandConstants.TOGGLE_BROWSER_CMD,
 					new ActionHandler(tba), new ActiveShellExpression(shell));
 		} catch (SWTError e) {
 			GuiPlugin.get().error("Couldn't instantiate the browser widget", e); //$NON-NLS-1$

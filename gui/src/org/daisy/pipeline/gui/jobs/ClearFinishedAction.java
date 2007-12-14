@@ -46,106 +46,128 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 
+/**
+ * The action used to clear finished jobs from the queue.
+ * 
+ * @author Romain Deltour
+ * 
+ */
 public class ClearFinishedAction extends Action implements IJobChangeListener {
-    private static final EnumSet<State> finishedStates = EnumSet.of(
-            State.ABORTED, State.FAILED, State.FINISHED);
-    private final JobsView view;
-    private final JobManager jobManager;
+	/**
+	 * The underlying undoable operation that do clear the jobs.
+	 */
+	protected class ClearFinishedOperation extends AbstractOperation {
 
-    public ClearFinishedAction(JobsView view) {
-        super(Messages.action_clearFinished, GuiPlugin
-                .createDescriptor(IIconsKeys.CLEAR_FINISHED));
-        this.view = view;
-        this.jobManager = JobManager.getDefault();
-        setActionDefinitionId(ICommandConstants.CLEAR_FINISHED);
-        setEnabled(false);
-        StateManager.getDefault().addJobChangeListener(this);
-    }
+		private IStructuredSelection sel;
+		private SortedMap<Integer, JobInfo> map;
 
-    @Override
-    public void run() {
-        IOperationHistory operationHistory = OperationHistoryFactory
-                .getOperationHistory();
-        IUndoContext undoContext = PlatformUI.getWorkbench()
-                .getOperationSupport().getUndoContext();
-        IUndoableOperation operation = new ClearFinishedOperation();
-        operation.addContext(undoContext);
-        try {
-            // No need to provide monitor or GUI context
-            operationHistory.execute(operation, null, null);
-        } catch (ExecutionException e) {
-            // TODO implement better exception dialog
-            MessageDialog.openError(view.getSite().getShell(),
-                    Messages.error_delete_title, Messages.error_delete_message
-                            + e.getMessage());
-        }
-    }
+		/**
+		 * Creates the operation and initializes it with finished jobs.
+		 */
+		public ClearFinishedOperation() {
+			super(getText());
+			map = new TreeMap<Integer, JobInfo>();
+			List<JobInfo> finishedJobs = jobManager
+					.getJobsByState(finishedStates);
+			for (JobInfo jobInfo : finishedJobs) {
+				map.put(jobManager.indexOf(jobInfo), jobInfo);
+			}
+		}
 
-    protected class ClearFinishedOperation extends AbstractOperation {
+		@Override
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info)
+				throws ExecutionException {
+			return redo(monitor, info);
+		}
 
-        private IStructuredSelection sel;
-        private SortedMap<Integer, JobInfo> map;
+		@Override
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info)
+				throws ExecutionException {
+			jobManager.removeAll(map.values());
+			return Status.OK_STATUS;
+		}
 
-        public ClearFinishedOperation() {
-            super(getText());
-            map = new TreeMap<Integer, JobInfo>();
-            List<JobInfo> finishedJobs = jobManager
-                    .getJobsByState(finishedStates);
-            for (JobInfo jobInfo : finishedJobs) {
-                map.put(jobManager.indexOf(jobInfo), jobInfo);
-            }
-        }
+		@Override
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info)
+				throws ExecutionException {
+			for (Integer index : map.keySet()) {
+				jobManager.add(index, map.get(index));
+			}
+			view.getViewer().setSelection(sel);
+			return Status.OK_STATUS;
+		}
 
-        @Override
-        public IStatus execute(IProgressMonitor monitor, IAdaptable info)
-                throws ExecutionException {
-            return redo(monitor, info);
-        }
+	}
 
-        @Override
-        public IStatus redo(IProgressMonitor monitor, IAdaptable info)
-                throws ExecutionException {
-            jobManager.removeAll(map.values());
-            return Status.OK_STATUS;
-        }
+	/** The enumeration of states of finished jobs */
+	private static final EnumSet<State> finishedStates = EnumSet.of(
+			State.ABORTED, State.FAILED, State.FINISHED);
 
-        @Override
-        public IStatus undo(IProgressMonitor monitor, IAdaptable info)
-                throws ExecutionException {
-            for (Integer index : map.keySet()) {
-                jobManager.add(index, map.get(index));
-            }
-            view.getViewer().setSelection(sel);
-            return Status.OK_STATUS;
-        }
+	/** A reference to the jobs view */
+	private final JobsView view;
+	/** A reference to the jobs manager */
+	private final JobManager jobManager;
 
-    }
+	/**
+	 * Creates the action for the given jobs view.
+	 * 
+	 * @param view
+	 *            the jobs view this action applies to.
+	 */
+	public ClearFinishedAction(JobsView view) {
+		super(Messages.action_clearFinished, GuiPlugin
+				.createDescriptor(IIconsKeys.CLEAR_FINISHED));
+		this.view = view;
+		this.jobManager = JobManager.getDefault();
+		setActionDefinitionId(ICommandConstants.CLEAR_FINISHED_CMD);
+		setEnabled(false);
+		StateManager.getDefault().addJobChangeListener(this);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.daisy.pipeline.gui.model.IJobChangeListener#jobChanged(org.daisy.pipeline.gui.model.JobInfo)
-     */
-    public void jobChanged(JobInfo jobInfo) {
-        jobsChanged(Arrays.asList(new JobInfo[] { jobInfo }));
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.daisy.pipeline.gui.model.IJobChangeListener#jobChanged(org.daisy.pipeline.gui.model.JobInfo)
+	 */
+	public void jobChanged(JobInfo jobInfo) {
+		jobsChanged(Arrays.asList(new JobInfo[] { jobInfo }));
+	}
 
-    private void refreshEnable() {
-        setEnabled(jobManager.getJobsByState(finishedStates).size() > 0);
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.daisy.pipeline.gui.model.IJobChangeListener#jobsChanged(java.util.List)
+	 */
+	public void jobsChanged(List<JobInfo> jobInfos) {
+		for (JobInfo info : jobInfos) {
+			if (finishedStates.contains(info.getSate())) {
+				setEnabled(true);
+				return;
+			}
+		}
+		refreshEnable();
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.daisy.pipeline.gui.model.IJobChangeListener#jobsChanged(java.util.List)
-     */
-    public void jobsChanged(List<JobInfo> jobInfos) {
-        for (JobInfo info : jobInfos) {
-            if (finishedStates.contains(info.getSate())) {
-                setEnabled(true);
-                return;
-            }
-        }
-        refreshEnable();
-    }
+	private void refreshEnable() {
+		setEnabled(jobManager.getJobsByState(finishedStates).size() > 0);
+	}
+
+	@Override
+	public void run() {
+		IOperationHistory operationHistory = OperationHistoryFactory
+				.getOperationHistory();
+		IUndoContext undoContext = PlatformUI.getWorkbench()
+				.getOperationSupport().getUndoContext();
+		IUndoableOperation operation = new ClearFinishedOperation();
+		operation.addContext(undoContext);
+		try {
+			// No need to provide monitor or GUI context
+			operationHistory.execute(operation, null, null);
+		} catch (ExecutionException e) {
+			// TODO implement better exception dialog
+			MessageDialog.openError(view.getSite().getShell(),
+					Messages.error_delete_title, Messages.error_delete_message
+							+ e.getMessage());
+		}
+	}
 }
