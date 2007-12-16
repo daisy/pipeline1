@@ -374,7 +374,6 @@ src/org/daisy/pipeline/test/impl/OpsCreator3.java -text
 src/org/daisy/pipeline/test/impl/OpsCreator4.java -text
 src/org/daisy/pipeline/test/impl/PrettyPrinter1.java -text
 src/org/daisy/pipeline/test/impl/PrettyPrinter2.java -text
-src/org/daisy/pipeline/test/impl/PrettyPrinter3.java -text
 src/org/daisy/pipeline/test/impl/RenamerTaggerValidator1.java -text
 src/org/daisy/pipeline/test/impl/Rtf2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/Rtf2dtbook1.java -text
