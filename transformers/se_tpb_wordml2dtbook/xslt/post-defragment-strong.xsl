@@ -22,7 +22,7 @@
 		Merges consecutive strong
 
 		Joel Håkansson, TPB
-		Version 2007-05-03
+		Version 2007-12-17
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
 
@@ -31,7 +31,7 @@
 
 	<xsl:template match="dtb:strong">
 		<xsl:choose>
-			<xsl:when test="preceding-sibling::node()[1][self::dtb:strong]"/>
+			<xsl:when test="preceding-sibling::node()[not(self::text() and normalize-space()='')][1][self::dtb:strong]"/>
 			<xsl:otherwise>
 				<xsl:copy>
 					<xsl:copy-of select="@*"/>
@@ -42,11 +42,23 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<xsl:template match="text()[self::text() and normalize-space()='']">
+		<xsl:choose>
+			<xsl:when test="preceding-sibling::node()[1][self::dtb:strong]"/>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
 	<xsl:template match="dtb:strong" mode="seekNext">
 		<xsl:apply-templates/>
 		<xsl:apply-templates select="following-sibling::node()[1]" mode="seekNext"/>
 	</xsl:template>
-	
+
+	<xsl:template match="text()[self::text() and normalize-space()='']" mode="seekNext">
+		<xsl:value-of select="."/>
+		<xsl:apply-templates select="following-sibling::node()[1]" mode="seekNext"/>
+	</xsl:template>
+
 	<xsl:template match="*|text()" mode="seekNext"/>
 	
 </xsl:stylesheet>

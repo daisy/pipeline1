@@ -289,4 +289,15 @@ Notes:
 		<remark>
 		</remark>
 	</revision>
+	<revision>
+		<version>1.9.1</version>
+		<date>17 December 2007</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>--- Other changes ---</para>
+			<para>Improved defragmentation of inline elements</para>
+		</description>
+		<remark>
+		</remark>
+	</revision>
 </history>
