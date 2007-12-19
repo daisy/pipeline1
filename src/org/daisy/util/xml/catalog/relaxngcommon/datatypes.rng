@@ -106,6 +106,10 @@
 			<value>application/x-dtbncx+xml</value>
 			<value>application/x-dtbook+xml</value>
 			<value>application/x-dtbresource+xml</value>
+			<!-- mg 20071209 as per zedissue on XSLT media type -->
+			<!-- yet undecided which type to use, so allow both for now -->
+			<value>application/xml</value>
+			<value>application/xslt+xml</value>
 		</choice>
 	</define>
 	
