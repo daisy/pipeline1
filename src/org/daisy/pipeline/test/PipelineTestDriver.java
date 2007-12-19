@@ -50,6 +50,7 @@ import org.daisy.pipeline.test.impl.ValidatorDTBd2021;
 import org.daisy.pipeline.test.impl.ValidatorDTBd2022;
 import org.daisy.pipeline.test.impl.ValidatorDTBook1;
 import org.daisy.pipeline.test.impl.ValidatorDTBook2;
+import org.daisy.pipeline.test.impl.ValidatorDTBz39861;
 import org.daisy.pipeline.test.impl.ValidatorNVDL1;
 import org.daisy.pipeline.test.impl.WordML2DTBook1;
 import org.daisy.pipeline.test.impl.WordML2DTBook2;
@@ -141,9 +142,7 @@ public class PipelineTestDriver {
 			}else{
 				System.out.println("No tests failed (in the sense that no exceptions where caught in the driver");
 			}
-		
-		
-		
+						
 			if(!scriptsWithoutTests.isEmpty()) {
 				System.out.println("The following " + scriptsWithoutTests.size() + " scripts were not tested:");
 				for(File f : scriptsWithoutTests) {
@@ -210,6 +209,7 @@ public class PipelineTestDriver {
 //		tests.add(new ValidatorDTBook2(inputDir, outputDir));
 //		tests.add(new ValidatorDTBd2021(inputDir, outputDir));
 //		tests.add(new ValidatorDTBd2022(inputDir, outputDir));
+//		tests.add(new ValidatorDTBz39861(inputDir, outputDir));
 //		tests.add(new ValidatorConfigurable1(inputDir, outputDir));		
 //		tests.add(new PrettyPrinter1(inputDir, outputDir));
 //		tests.add(new PrettyPrinter2(inputDir, outputDir));		

@@ -385,6 +385,7 @@ src/org/daisy/pipeline/test/impl/ValidatorDTBd2021.java -text
 src/org/daisy/pipeline/test/impl/ValidatorDTBd2022.java -text
 src/org/daisy/pipeline/test/impl/ValidatorDTBook1.java -text
 src/org/daisy/pipeline/test/impl/ValidatorDTBook2.java -text
+src/org/daisy/pipeline/test/impl/ValidatorDTBz39861.java -text
 src/org/daisy/pipeline/test/impl/ValidatorNVDL1.java -text
 src/org/daisy/pipeline/test/impl/WordML2DTBook1.java -text
 src/org/daisy/pipeline/test/impl/WordML2DTBook2.java -text
