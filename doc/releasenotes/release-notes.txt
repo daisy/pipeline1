@@ -13,6 +13,56 @@ Report bugs and issues to:
 http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
 ***************************************
+Pipeline Maintenance Release, 2007-12-21
+***************************************
+
+Changes regarding the installation process:
+---------------------------------
+- A complete package handling for Mac OS X installation
+- Beta installer for Windows (this installer will be finalized in the January/February 2008 timeframe)
+
+Changes in the GUI
+------------------
+- New feature for software updates ("Updates" available in the Help menu)
+
+New Functionality (comments, suggestions and bug reports are welcome for all of the below!)
+----------------
+- New DTBook to RTF transformer and script
+Many thanks to DBB and Ole Holst Andersen for contributing this.
+The script is available in the /conversion/simple/ category of the Script selector.
+
+- Initial version of an XHTML to DTBook transformer
+This initial version is provided for input and comments that will guide further development. The Script
+and Transformer documentation describes the current status and principles. 
+Many thanks to Per Sennels of Huseby Norway for contributing this.
+The script is available in the /conversion/advanced/ category of the Script selector.
+
+- New DTBook Fixer transformer and script
+This transformer will try to repair common problems in DTBook files; primarly problems that occur in 
+files that are output from automated conversion processes, such as the WordML to DTBook Script.
+Many thanks to Joel Håkansson (TPB), James Pritchett (RFB&D) and Linus Ericson (TPB).
+The standalone script is available in the /manipulation/simple/ category of the Script selector.
+The DTBook Fixer transformer is now also included as a part of the WordML to DTBook, RTF to DTBook 
+and ODF to Dtbook scripts.
+
+- New DTBook 2005-1 to DTBook 2005-2 migrator transformer and script
+This is a part of the "DAISY Migration Suite" script collection, that will be finalized during 2008.
+Many thanks to James Pritchett and RFB&D for contributing this.
+
+- Improved DTBook to XHTML transformer 
+The DTBook to XHTML conversion now has experimental support for the DTBook MathML extension. If the input
+DTBook file contains MathML, the output XHTML file will include MathML islands as defined by the W3C XHTML 
+1.1 plus MathML 2.0 plus SVG 1.1 profile.
+Many thanks to Chris Koch at ViewPlus Technologies for submitting this feature request!
+
+- Validation updates
+The Z3986 DTB Validator now uses the latest ZedVal release (2.0 RC4, released 20071219)
+
+Bug fixes ,stability and performance improvements
+---------
+Too many to mention here, the full list can be reviewed online at http://sourceforge.net/mailarchive/forum.php?forum_name=daisymfc-svn
+
+***************************************
 Pipeline Maintenance Release, 2007-10-03
 ***************************************
 
