@@ -31,6 +31,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.LocatorImpl;
 
 import com.thaiopensource.util.PropertyMapBuilder;
+import com.thaiopensource.validate.SchemaReader;
 import com.thaiopensource.validate.ValidateProperty;
 import com.thaiopensource.validate.ValidationDriver;
 
@@ -44,6 +45,10 @@ final class JingUtils {
 	 * Performs a basic configuration of the com.thaiopensource.validate.ValidationDriver.
 	 */
 	/*package*/ static ValidationDriver configDriver(AbstractValidator val, ValidationDriver driver) throws Exception {
+		return JingUtils.configDriver(val, driver, null);	
+	}
+	
+	/*package*/ static ValidationDriver configDriver(AbstractValidator val, ValidationDriver driver, SchemaReader reader) throws Exception {
 		PropertyMapBuilder builder = new PropertyMapBuilder();
 
 		/* Set the ErrorHandler.
@@ -60,7 +65,7 @@ final class JingUtils {
 						
 		/* 
 		 * Note - when using oNVDL instead of Jing, the above should be fixed,
-		 * so the below is not really necessary
+		 * so the below line is not really necessary
 		 */
 		builder.put(ValidateProperty.XML_READER_CREATOR, new XmlReaderCreatorImpl(false, val.getEntityResolver()));
 		
@@ -69,7 +74,11 @@ final class JingUtils {
 		/*
 		 * initialize the driver
 		 */
-		return new ValidationDriver(builder.toPropertyMap());	
+		if(reader==null) {
+			return new ValidationDriver(builder.toPropertyMap());
+		}
+		return new ValidationDriver(builder.toPropertyMap(),reader);
+		
 	}
 	
 	/**
@@ -107,8 +116,8 @@ final class JingUtils {
 	 */
 	/*package*/ static boolean validate(ValidationDriver driver, Source source) throws SAXException, IOException{
 		boolean isValid = true;
-		if(driver!=null) {			
-			if (!driver.validate(SAXSource.sourceToInputSource(source))) {
+		if(driver!=null) {						
+			if (!driver.validate(SAXSource.sourceToInputSource(source))) {				
 				isValid = false;
 			}
 		}else{

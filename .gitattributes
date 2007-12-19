@@ -507,6 +507,7 @@ src/org/daisy/util/xml/validation/jaxp/ISOSchematronValidator.java -text
 src/org/daisy/util/xml/validation/jaxp/NVDLSchema.java -text
 src/org/daisy/util/xml/validation/jaxp/NVDLSchemaFactory.java -text
 src/org/daisy/util/xml/validation/jaxp/NVDLValidator.java -text
+src/org/daisy/util/xml/validation/jaxp/SaxonSchematronSchemaReaderFactory.java -text
 src/org/daisy/util/xml/xslt/TransformerFactoryConstants.java -text
 src/org/daisy/util/xml/xslt/stylesheets/Any2ISOSchtrn.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/RNG2ISOSchtrn.xsl -text

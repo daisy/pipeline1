@@ -24,8 +24,11 @@ import java.io.IOException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
+import org.daisy.util.xml.validation.SchemaLanguageConstants;
 import org.xml.sax.SAXException;
 
+import com.thaiopensource.validate.SchemaReader;
+import com.thaiopensource.validate.SchemaReaderFactory;
 import com.thaiopensource.validate.ValidationDriver;
 
 /**
@@ -35,6 +38,7 @@ import com.thaiopensource.validate.ValidationDriver;
 public class SchematronValidator extends AbstractValidator {
 	private ValidationDriver driver = null;
 	private SchematronSchema schema = null;
+	public static final String JING_SCHEMA_READER_KEY = "org.daisy.util.xml.validation.jaxp.SchematronValidator.SchemaReaderFactory"; 
 	
 	/*package*/ SchematronValidator(SchematronSchema schema) {
 		this.schema = schema;
@@ -42,10 +46,42 @@ public class SchematronValidator extends AbstractValidator {
 
 	/*package*/ boolean initialize() {
 		try {
-			driver = JingUtils.configDriver(this,driver);
+			/*
+			 * mg20071212:
+			 * Due to various mem leak and deadlock issues, we are
+			 * adding a layer here to optionally override Jings discovery
+			 * of impls of com.thaiopensource.validate.SchemaReaderFactory.
+			 * 
+			 * If the given sysprop is not available, or class load fails,
+			 * we fall back to Jings default behavior, which is to use
+			 * jar:/META-INF/services/com.thaiopensource.validate.SchemaReaderFactory
+			 */
+									
+			String schemaReaderFactoryValue = System.getProperty(JING_SCHEMA_READER_KEY);
+			if(schemaReaderFactoryValue !=null && schemaReaderFactoryValue.length()>0) {
+				SchemaReaderFactory srf = null;
+				try{
+					Class c = Class.forName(schemaReaderFactoryValue);
+					srf = (SchemaReaderFactory)c.newInstance();			
+					SchemaReader rd = srf.createSchemaReader(SchemaLanguageConstants.SCHEMATRON_NS_URI);		
+					//System.err.println("DEBUG: SchematronValidator#initialize using explicit SchemaReaderFactory read from system properties: " + srf.getClass().getCanonicalName());
+					driver = JingUtils.configDriver(this,driver,rd);
+				}catch (Exception e) {
+					System.err.println("Error in SchematronValidator#initialize when instantiating schemaReaderFactoryValue: " + e.getMessage());
+					driver = null;
+				}	
+			}
+			
+			if(driver==null) {
+				//fallback to default behavior
+				//System.err.println("DEBUG: SchematronValidator#initialize using Jing discovery for SchemaReaderFactory ");
+				driver = JingUtils.configDriver(this,driver);
+			}
+			
 		} catch (Exception e) {
 			return false;
-		}				 		
+		}
+		
 		return JingUtils.loadSchemas(this, driver, schema);
 	}
 	
@@ -57,5 +93,6 @@ public class SchematronValidator extends AbstractValidator {
 	public void validate(Source source) throws SAXException, IOException {
 		JingUtils.validate(driver,source);
 	}
-	
+		
+
 }
