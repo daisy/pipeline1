@@ -24,13 +24,6 @@
    </requires>
 
    <plugin
-         id="org.eclipse.help.base"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.pde.runtime"
          download-size="0"
          install-size="0"
@@ -45,35 +38,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.lucene"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.help.appserver"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.ui.forms"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.lucene.analysis"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.http.jetty"
          download-size="0"
          install-size="0"
          version="0.0.0"
