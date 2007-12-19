@@ -386,8 +386,10 @@ public class Creator implements ErrorHandler, EntityResolver {
      * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
      */
     public void warning(SAXParseException e) throws SAXException {
-        saxWarn(e);
-        // mValidationError = true;
+    	if(!e.getMessage().contains("XSLT 1.0")) {
+    		//hack, avoid saxon 8 version warning messages
+    		saxWarn(e);
+    	}
     }
 
     private void saxWarn(SAXParseException e) {
