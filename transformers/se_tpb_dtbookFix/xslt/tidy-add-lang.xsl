@@ -28,6 +28,7 @@
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:if test="count(@xml:lang)=0 and count(dtb:head/dtb:meta[@name='dc:Language'])&gt;0">
+            	<xsl:message terminate="no">Adding @xml:lang to dtbook element</xsl:message>
                 <xsl:attribute name="xml:lang">
                     <xsl:value-of select="dtb:head/dtb:meta[@name='dc:Language']/@content"/>
                 </xsl:attribute>
