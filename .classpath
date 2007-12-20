@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" output="transformers" path="transformers"/>
+	<classpathentry excluding="**/.DS_Store" kind="src" path="src"/>
+	<classpathentry excluding="**/.DS_Store" kind="src" output="transformers" path="transformers"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="output" path="bin"/>	
 	<classpathentry exported="true" kind="lib" path="lib/batik-css.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-util.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chardet.jar"/>
@@ -13,8 +12,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/icu4j-charsets-3_8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jaudiotagger.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jl1.0.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/onvdl.jar" />
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.15.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/onvdl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/sac.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/saxon.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/saxon8.jar"/>
@@ -28,4 +27,5 @@
 	<classpathentry exported="true" kind="lib" path="lib/xalan.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ZedVal.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
