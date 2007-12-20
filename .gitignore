@@ -6,6 +6,7 @@ transformers/*.class
 transformers/ca_cnib_rtf2dtbook/*.class
 transformers/ca_cnib_rtf2dtbook/*.pyc
 transformers/ca_cnib_rtf2dtbook/rtf2xml/*.class
+transformers/ca_cnib_rtf2dtbook/rtf2xml/*.pyc
 transformers/dk_dbb_dtbook2rtf/*.class
 transformers/int_daisy_daisy2022Zed2005/*.class
 transformers/int_daisy_daisy2022Zed2005/resources/*.class
