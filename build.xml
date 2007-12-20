@@ -35,13 +35,15 @@
 		<include name="chardet.jar"/>
 		<include name="commons-cli-1.0.jar"/>
 		<include name="icu4j-3_8.jar"/>		
+        <include name="icu4j-charsets.jar"/>     
 		<include name="jaudiotagger.jar"/>
 		<include name="jl1.0.jar"/>
+        <include name="log4j-1.2.15.jar"/>
 		<include name="onvdl.jar"/>
 		<include name="sac.jar"/>
+        <include name="saxon.jar"/>
 		<include name="saxon8.jar"/>
 		<include name="saxon8-dom.jar"/>
-		<include name="saxon.jar"/>
 		<include name="serializer.jar"/>
 		<include name="stax-api-1.0.1.jar"/>
 		<include name="tagsoup-1.1.3.jar"/>	
