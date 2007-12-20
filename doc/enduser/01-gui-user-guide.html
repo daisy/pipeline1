@@ -44,7 +44,11 @@
 				</ul>
 			</li>
 			<li><a href="#docsPersp">The Documentation Perspective</a></li>
-			<li><a href="#prefDialog">The Preferences Dialog</a></li>
+			<li><a href="#advanced">Advanced Features</a></li>
+				<ul>
+					<li><a href="#prefDialog">The Preferences Dialog</a></li>
+					<li><a href="#update">Applying an Update Patch</a></li>
+				</ul>
 			<li><a href="#request">Making a feature request</a></li>
 			<li><a href="#bugs">Reporting a bug</a></li>
 			<li><a href="#help">Getting further help</a></li>
@@ -243,14 +247,20 @@
 	<p>To toggle between the documentation tree view and the browser view, use the <kbd>F6</kbd> key.</p>
 
 
-
-	<h2 id="prefDialog">The Preferences Dialog</h2>
+	<h2 id="advanced">Advanced Features</h2>
+	
+	<h3 id="prefDialog">The Preferences Dialog</h3>
 	<p>The Preferences Dialog can be accessed via the <kbd>Preferences</kbd> entry in the <kbd>Window</kbd> menu item.</p>
 	<p>This dialog contains various settings for configuring the appearance of the GUI. You can also modify keyboard shortcuts here.</p>
 	<p>The most important part of this dialog is the <em>Paths</em> section. You can read about what the different entries here	mean in the <a href="installation.html#config">Installation document</a>.</p>
 	<img alt="The Paths section of the Preferences dialog" src="./img/dp-011.png" />
 
-	
+	<h3 id="update">Applying an Update Patch</h3>
+	<p>The DAISY Pipeline can be updated by applying zipped patches provided by the development team. This feature is available via the <kbd>Updates...</kbd> entry in the <kbd>Help</kbd> item of the main menu bar.</p>
+	<img alt="The Update menu action" src="./img/dp-014.png" />
+	<p>The wizard will ask you to select the ZIP file containing the update patch, and if the patch is valid it will show its content along with some textual description. Then, click on the "Finish" button to apply the software update.</p>
+	<img alt="The Update Wizard" src="./img/dp-015.png"/>
+	<p>Note that update patches will usually consist in small software updates (such as the import of new Pipeline scripts, documentation files, etc). Greater changes will probably require a new installation and will not be available as update patches.</p>
 
 	<h2 id="request">Making a Feature Request</h2>
 	<p>To make a feature request, please sign on to SourceForge, and use the <a href="http://sourceforge.net/tracker/?group_id=134191&amp;atid=729302">DAISY Pipeline Feature Request tracker</a>.</p>
