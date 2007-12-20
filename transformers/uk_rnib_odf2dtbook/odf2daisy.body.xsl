@@ -33,6 +33,7 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 xmlns='http://www.daisy.org/z3986/2005/dtbook/'
+xmlns:dtb='http://www.daisy.org/z3986/2005/dtbook/'
 xmlns:d="rnib.org.uk/ns#"
 xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:xdt="http://www.w3.org/2005/02/xpath-datatypes"
@@ -67,11 +68,11 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
                          script form math dr3d chart svg 
                          number meta dc xlink fo draw table 
                          text style office xdt xs
-                         xalan exslt d dp"
+                         xalan exslt d dp dtb"
 
                 version="2.0">
 
-<xsl:param name="headingsfile" select="'none'"/>
+
 
   <xsl:preserve-space elements="Preformatted_20_Text"/>
 
@@ -93,14 +94,15 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
     </revdescription>
     <revremark>&#xA9;Copyright Dave Pawson, RNIB, 2006</revremark>
    </revision>
+
    <revision>
     <revnumber>1.1</revnumber>
-    <date>2007-07-07T08:56:20Z</date>
+    <date>2007-06-04T09:58:07Z</date>
     <authorinitials>DaveP</authorinitials>
     <revdescription>
-     <para>Improper processing of level 6 headers. corrected</para>
+     <para>Updated with newer grouping algorithm, Tks to David Carlisle, NAG</para>
     </revdescription>
-    <revremark>&#xA9;Copyright Dave Pawson,  2006,2007</revremark>
+    <revremark>&#xA9;Copyright Dave Pawson, 2007</revremark>
    </revision>
 
 
@@ -111,7 +113,7 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
   <xsl:output method="xml"/>
 
 
- 
+
  
 
   <xsl:template match="office:body">
@@ -124,95 +126,91 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
   </xsl:template>
 
 
-
-  <xsl:template match="text:sequence-decl"/>
-
-
-
 <!-- Set up a variable holding the style information -->
 <xsl:variable name="styles" select="document($stylefile)/*" as="item()*"/>
-
- <!-- Set up a variable holding the heading information,  -->
-<xsl:variable name="headings" select="document($headingsfile)" as="item()*"/>
 
 
 
 <xsl:template match="office:text">
+  <!--
+  <xsl:for-each-group select="node()" 
+    group-starting-with="text:h[@text:style-name=$level1]">
+    <xsl:apply-templates select="." />
+  </xsl:for-each-group>
+  -->
   <xsl:call-template name="group">
-    <xsl:with-param name="elementGroup" select="*"/>
     <xsl:with-param name="level" select="1"/>
   </xsl:call-template>
 </xsl:template>
 
- 
 
- <!-- General grouping template -->
- <!-- elementGroup is the group requiring structure -->
- <!-- level is the numeric level, 1-6 only -->
- <!--  -->
+
+<xsl:variable name="level1" select="$styles//style[dname='Heading 1'][1]/@name"/>
+<xsl:variable name="level2" select="$styles//style[dname='Heading 2'][1]/@name"/>
+<xsl:variable name="level3" select="$styles//style[dname='Heading 3'][1]/@name"/>
+<xsl:variable name="level4" select="$styles//style[dname='Heading 4'][1]/@name"/>
+<xsl:variable name="level5" select="$styles//style[dname='Heading 5'][1]/@name"/>
+<xsl:variable name="level6" select="$styles//style[dname='Heading 6'][1]/@name"/>
+
+
+<xsl:variable name="levels">
+  <levels>
+    <xsl:for-each select="$styles/style[@parentStyle='Heading']">
+      <level name='{@name}'/>
+    </xsl:for-each>
+  </levels>
+</xsl:variable>
+
+
+
+
+
+
+<!-- Named template does all the grouping work. -->
 <xsl:template name="group">
-  <xsl:param name="elementGroup" as="element()*"/>
-  <xsl:param name="level" as="xs:integer" />
+ <xsl:param name="level" select="1"/>
+ <xsl:param name="n" select="node()"/>
 
-  <!--  -->
-  <xsl:variable name="key" as="item()*">
-    <xsl:sequence select="$headings/headings/level[@n = $level]/h"/>
-  </xsl:variable>
-  <xsl:if test="$debug">
-    <xsl:message terminate="no">
-      element: <xsl:value-of select="name($elementGroup[1])"/>
-      level: <xsl:value-of select="$level"/>
-      style | []: [<xsl:value-of select="$elementGroup[1]/@text:style-name"/>]
-      headerStyles:  <xsl:copy-of select="$key"/> 
-    </xsl:message>
-  </xsl:if>
-  <xsl:for-each-group select="$elementGroup" group-starting-with="text:h[@text:style-name = ($key)]">
-      <xsl:choose>
-        <xsl:when test="@text:style-name = ($key)"> <!-- was $elementGroup[1]/@text:style-name = ($key) -->
-        <xsl:element name="{concat('level',string($level))}">
-            <xsl:element name="{concat('h',(string($level)))}">
-              <xsl:apply-templates select="current-group()[1]"/>
-            </xsl:element>
-            <xsl:variable name="this" select="generate-id(current-group()[1])"/>
-            <xsl:if test="not(following-sibling::*[local-name()=('p', 'list')]/text()
-                          [generate-id(preceding-sibling::text:h[1]) = $this ])">
-              <p/>
-            </xsl:if>
-            <xsl:choose>              
-              <xsl:when test="$level le 6"><!--  was &lt; ver 1.1 -->
-                <xsl:call-template name="group">
-                  <xsl:with-param name="elementGroup" select="remove(current-group(), 1)"/>
-                  <xsl:with-param name="level" select="$level + 1"/>
-                </xsl:call-template>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:apply-templates select="current-group()"/>
-              </xsl:otherwise>
-            </xsl:choose>
-          
-          </xsl:element>
-        </xsl:when>
-        <xsl:otherwise>
-           <xsl:apply-templates select="current-group()"/>
-        </xsl:otherwise>
-      </xsl:choose>    
-    </xsl:for-each-group>
+ <xsl:variable name="levelName" select="$levels/dtb:levels/dtb:level[$level]/@name"/>
+
+ <xsl:if test="$debug">
+ <xsl:message>
+   Processing <xsl:value-of select="name()"/>
+   Level is <xsl:value-of select="$level"/>
+   LevelName is "<xsl:value-of select="$levelName"/>"
+
+ </xsl:message>
+</xsl:if>
+ <!-- Select the group at  level $level -->
+ <xsl:for-each-group select="$n" group-starting-with="text:h[@text:style-name=$levelName]">
+ <xsl:choose>
+   <xsl:when test="@text:style-name = $levelName">
+     <xsl:element name="{concat('level',$level)}">
+       <xsl:element name="{concat('h',$level)}">
+         <!-- Apply templates to the current (heading) element -->
+         <xsl:apply-templates select="."/>
+       </xsl:element>
+       <!-- Iterate over any headers and successive groups at lower levels-->
+       <xsl:call-template name="group">
+         <xsl:with-param name="level" select="$level+1"/>
+         <xsl:with-param name="n" select="current-group()[position()!=1]"/>
+       </xsl:call-template>
+     </xsl:element>
+   </xsl:when>
+   <xsl:otherwise>
+   <!-- Process any children within this 'level' -->
+   <xsl:apply-templates select="current-group()"/>
+ </xsl:otherwise>
+</xsl:choose>
+</xsl:for-each-group>
 </xsl:template>
 
 
 
 <xsl:template match="text:h">
-  <xsl:variable name="name" select="('h6',$styles[//style[@name]=current()/@text:style-name]/mapsTo)[last()]"/>
-    <xsl:apply-templates/>
+  <xsl:apply-templates/>
 </xsl:template>
-
-
-<xsl:variable name="headingName" select="'text:h'"/>
-
-
-
-
-
+ 
 
 <xsl:template match="text:section">
   <div>
@@ -282,20 +280,32 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
  </xsl:template>
 
 
+
  <!-- Default text. Processed lower priority for overrides -->
-<xsl:template match="text:p[string(.)]"  priority="0.1">
+<xsl:template match="text:p[string(.)]"  >
+  <xsl:if test="$debug">
+  <xsl:message>
+    p with  text content, "<xsl:value-of select="."/>", with <xsl:value-of select="count(*)"/> children
+  </xsl:message>
+</xsl:if>
    <p><xsl:apply-templates /></p>
 </xsl:template>
 
 
+<!-- Empty element, ignore -->
 <xsl:template match="text:p[not(string(.))]" />
 
+<!-- Empty of text, but has children -->
+<xsl:template match="text:p[not(string(.))][*]" >
+
+  <xsl:apply-templates/>
+</xsl:template>
 
  <!-- Fixed format, respect ws -->
 <xsl:template match="text:p[@text:style-name='Preformatted_20_Text']" priority="0.6"  >
   <samp>
     <xsl:apply-templates/>
-</samp>
+  </samp>
 </xsl:template>
 
 
@@ -305,8 +315,8 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
  <!-- Annotations Parent may be a para -->
  <xsl:template match="text:p[office:annotation][not(ancestor::table:table-row)]"  >
    <p>
-   <xsl:apply-templates  mode="note"/>
- </p>
+     <xsl:apply-templates  mode="note"/>
+   </p>
      <xsl:apply-templates select="office:annotation"/>
  </xsl:template>
 
@@ -442,8 +452,9 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
  <!--  -->
  <!-- Images. All assumed to be block progression direction.  -->
  <!-- Does not process text:p in draw:text-box -->
+<!-- Was also [not(ancestor::draw:text-box)] -->
+<xsl:template match="text:p[draw:frame]"  priority="10">
 
-<xsl:template match="text:p [draw:frame][not(ancestor::draw:text-box)]"  priority="1">
   <p>
     <xsl:apply-templates/>
   </p>
@@ -451,6 +462,7 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
 
  <!-- External images only -->
 <xsl:template match="draw:frame[.//draw:image]" >
+
   <imggroup>
     <xsl:apply-templates select=".//draw:image"/>
     <caption>
@@ -468,7 +480,7 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
 
 
  <!--The wrapping text-box is processed by the ancestor.   -->
- <xsl:template match="text:p[parent::draw:text-box]" priority="1">
+ <xsl:template match="draw:text-box/text:p">
    <xsl:for-each select="text()|text:sequence">
      <xsl:value-of select="."/>
    </xsl:for-each>
@@ -602,7 +614,12 @@ exclude-result-prefixes="xsi xsd xforms dom oooc ooow ooo
 
    <xsl:template match="text:p [@text:style-name=key('pageBreaks','page')/../@style:name]"  >
 
-  
+     <xsl:if test="$debug">
+     <xsl:message>
+       Found page number, <xsl:value-of select="count(preceding::text:p[@text:style-name=
+                             key('pageBreaks','page')/../@style:name]) + 1"/>
+     </xsl:message>
+   </xsl:if>
    <p>
      <pagenum id="{generate-id()}"
        page='normal'>
@@ -729,7 +746,6 @@ text:ref-name="x" -->
 
 
 
-
 <!-- Look up the level from the stylename -->
  <xsl:function name="dp:levelFromName" as="xs:string">
    <xsl:param name="sname" as="xs:string"/>
@@ -771,13 +787,5 @@ text:ref-name="x" -->
     </xsl:otherwise>
   </xsl:choose>
 </xsl:function>
-
-
-<xsl:template match="*">
-  <xsl:message>
-    <xsl:value-of select="name(..)"/>/<xsl:value-of select="name()"/> not processed
-  </xsl:message>
-</xsl:template>
-
 
 </xsl:stylesheet>

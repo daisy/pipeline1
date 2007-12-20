@@ -108,5 +108,4 @@ transformers/se_tpb_zed2daisy202/*.class
 transformers/uk_rnib_dtbook2text/*.class
 transformers/uk_rnib_dtbook2xhtml/*.class
 transformers/uk_rnib_dtbook2xhtml/old/*.class
-transformers/uk_rnib_odf2dtbook/*.class
 transformers/us_rfbd_dtbookMigrator/*.class
