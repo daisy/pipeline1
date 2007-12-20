@@ -308,6 +308,10 @@
             schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
             sequence="M1+,"/>
       <key
+            commandId="org.eclipse.ui.window.showKeyAssist"
+            schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
+            sequence="M1+M2+L"/>
+      <key
             commandId="org.daisy.pipeline.gui.command.newItem"
             schemeId="org.daisy.pipeline.gui.bindings.defaultScheme"
             sequence="M1+N"/>
@@ -507,7 +511,8 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="menu:help?before=additions">
-         <separator name="org.daisy.pipeline.gui.help.beforeShowDoc"
+         <separator
+               name="org.daisy.pipeline.gui.help.beforeShowDoc"
                visible="true">
          </separator>
          <command
@@ -518,6 +523,12 @@
                   name="org.daisy.pipeline.gui.doc.showDoc.handleWarning"
                   value="true">
             </parameter>
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:help?before=additions">
+         <command
+               commandId="org.eclipse.ui.window.showKeyAssist">
          </command>
       </menuContribution>
       <menuContribution
