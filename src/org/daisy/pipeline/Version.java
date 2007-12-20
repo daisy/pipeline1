@@ -25,7 +25,7 @@ package org.daisy.pipeline;
  */
 public class Version {
 
-	private static final String VERSION = "2007-10-09";
+	private static final String VERSION = "2007-12-21";
 	
 	public static String getVersion() {
 		return VERSION;
