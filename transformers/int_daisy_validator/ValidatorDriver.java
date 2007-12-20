@@ -570,9 +570,10 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
 	 */
 	public void fatalError(SAXParseException exception) throws SAXException {
-		//we redirect anything received here to ValidatorListener#message just to be consistent.
+		//we redirect anything received here to ValidatorListener#message just to be consistent.					
 		this.report(null,ExceptionTransformer.newValidatorMessage
-				(exception, ExceptionTransformer.SAX_ERRHANDLER_TYPE_FATALERROR));		
+				(exception, ExceptionTransformer.SAX_ERRHANDLER_TYPE_FATALERROR));
+		
 	}
 
 	/*
@@ -581,9 +582,11 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 */
 	public void warning(SAXParseException exception) throws SAXException {
 		//we redirect anything received here to ValidatorListener#message just to be consistent.
-		this.report(null,ExceptionTransformer.newValidatorMessage
+		if(!exception.getMessage().contains("XSLT 1.0")) {
+			//temp hack to avoid saxon 8 version warning messages
+			this.report(null,ExceptionTransformer.newValidatorMessage
 				(exception, ExceptionTransformer.SAX_ERRHANDLER_TYPE_WARNING));		
-
+		}
 	}
 
 	/*

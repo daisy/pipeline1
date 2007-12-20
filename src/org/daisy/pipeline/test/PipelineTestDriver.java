@@ -201,7 +201,7 @@ public class PipelineTestDriver {
 //		tests.add(new WordML2DTBook3(inputDir, outputDir));
 //		tests.add(new WordML2Xhtml1(inputDir, outputDir));		
 //		tests.add(new WordML2Xhtml2(inputDir, outputDir));
-//		tests.add(new Narrator1(inputDir, outputDir));
+		tests.add(new Narrator1(inputDir, outputDir));
 //		tests.add(new Narrator2(inputDir, outputDir));
 //		tests.add(new Narrator3(inputDir, outputDir));		
 //		tests.add(new ValidatorNVDL1(inputDir, outputDir));

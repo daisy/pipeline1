@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 
 import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileBunchCopy;
@@ -93,7 +94,7 @@ public class XMLDetection extends Transformer {
             if (Boolean.parseBoolean(doAbbrAcronymDetection)) {
                 sendMessage(Level.FINER, i18n("STARTING_ABBR_ACRONYM"));
 	            TempFile temp = new TempFile();
-	            sendMessage(Level.FINER, "Temp abbr: " + temp.getFile());
+	            this.sendMessage("Temp abbr: " + temp.getFile(), MessageEvent.Type.DEBUG);	            
 	            URL customLangFileURL = null;
 	            if (customLang != null) {
 	                customLangFileURL = new File(customLang).toURI().toURL(); 
@@ -108,7 +109,7 @@ public class XMLDetection extends Transformer {
             if (Boolean.parseBoolean(doSentenceDetection)) {
                 sendMessage(Level.FINER, i18n("STARTING_SENTENCE"));
                 TempFile temp = new TempFile();
-                sendMessage(Level.FINER, "Temp sent: " + temp.getFile());
+                this.sendMessage("Temp sent: " + temp.getFile(), MessageEvent.Type.DEBUG);                
                 URL customLangFileURL = null;
 	            if (customLang != null) {
 	                customLangFileURL = new File(customLang).toURI().toURL(); 
@@ -123,7 +124,7 @@ public class XMLDetection extends Transformer {
             if (Boolean.parseBoolean(doWordDetection)) {
                 sendMessage(Level.FINER, i18n("STARTING_WORD"));
                 TempFile temp = new TempFile();
-                sendMessage(Level.FINER, "Temp word: " + temp.getFile());
+                this.sendMessage("Temp word: " + temp.getFile(), MessageEvent.Type.DEBUG);                
                 XMLWordDetector wordDetector = new XMLWordDetector(currentInput, temp.getFile());
                 wordDetector.detect(null);
                 currentInput = temp.getFile();

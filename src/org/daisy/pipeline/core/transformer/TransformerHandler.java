@@ -756,7 +756,7 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
      */
     public void warning(SAXParseException e) throws SAXException {
     	if(!e.getMessage().contains("XSLT 1.0")) {
-    		//hack, avoid saxon 8 version warning messages
+    		//temp hack to avoid saxon 8 version warning messages
     		saxWarn(e);
     	}	        
     }

@@ -332,7 +332,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	 */
 	public void warning(SAXParseException exception) throws SAXException {
 		if(!exception.getMessage().contains("XSLT 1.0")) {
-			//hack: avoid Saxon version warnings
+			//temp hack to avoid saxon 8 version warning messages
 			mValidatorListener.report(this,ExceptionTransformer.newValidatorMessage
 					(exception, ExceptionTransformer.SAX_ERRHANDLER_TYPE_WARNING));
 		}
