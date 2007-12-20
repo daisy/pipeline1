@@ -2,7 +2,7 @@
 <feature
       id="org.daisy.pipeline.gui"
       label="%featureName"
-      version="1.0.0"
+      version="1.0.2"
       provider-name="%providerName"
       plugin="org.daisy.pipeline.gui"
       os="linux,macosx,win32"
