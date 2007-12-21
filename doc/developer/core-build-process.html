@@ -42,6 +42,10 @@
 </li>
 
 <li>
+	<p>If you are making an official build, make sure the UserAgreement.txt file lists the corrent libraries.</p>
+</li>
+
+<li>
 	<p>If you are making an official build, create a tag:</p>
 	<ul>
 	   <li>from the "SVN Repository Exploring" perspective, right click on trunk/dmfc and select "Branch/Tag..."</li>
@@ -81,9 +85,10 @@
 
 <li><p>Rebuild the documentation suite using <code>org.daisy.pipeline.util.DocIndexGenerator</code> to regenerate indices, and then upload the whole /doc directory on the Pipeline sourceforge website.</p>
 	<p>Note: make sure write acces is given to both user and group, if not run from the sf shell:<br/>
-	<code>cd /home/gourps/d/da/daisymfc/htdocs/doc</code><br/>
-	<code>find . -type f -exec chmod 664 {} \;</code><br/>
-	<code>find . -type d -exec chmod 775 {} \;</code>
+	<code>$ cd /home/groups/d/da/daisymfc</code><br/>
+	<code>$ chgrp daisymfc . -R</code><br/>
+	<code>$ find . -type f -exec chmod 664 {} \;</code><br/>
+	<code>$ find . -type d -exec chmod 775 {} \;</code>
 		</p>
 </li>
 
