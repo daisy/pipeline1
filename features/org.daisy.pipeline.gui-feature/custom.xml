@@ -27,10 +27,11 @@
 	<!--  feature.directory - the directory containing the resulting feature   -->
 	<!-- ===================================================================== -->
 	<target name="post.gather.bin.parts">
-		<!--copy todir="${destination.temp.folder}/../configuration" failonerror="true" overwrite="true">
-			<fileset dir="${basedir}/../org.daisy.pipeline/src" includes="pipeline.properties" />
-			<fileset dir="${basedir}/../org.daisy.pipeline/src" includes="pipeline.user.properties" />
-		</copy-->
+		 <copy todir="${destination.temp.folder}/../licenses" failonerror="true" overwrite="true">
+		    <fileset dir="${basedir}/../org.daisy.pipeline/licenses" exclude="UserAgreement.txt"/>
+		  </copy>
+		 <copy file="${basedir}/../org.daisy.pipeline/licenses/UserAgreement.txt" todir="${destination.temp.folder}/../licenses" failonerror="true" overwrite="true"/>
+		 <copy file="${basedir}/../org.daisy.pipeline/doc/releasenotes/release-notes.txt" todir="${destination.temp.folder}/../licenses" failonerror="true" overwrite="true"/>
 	</target>
 
 </project>
