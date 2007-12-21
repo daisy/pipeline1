@@ -32,8 +32,9 @@ Many thanks to DBB and Ole Holst Andersen for contributing this.
 The script is available in the /conversion/simple/ category of the Script selector.
 
 - Initial version of an XHTML to DTBook transformer
-This initial version is provided for input and comments that will guide further development. The Script
-and Transformer documentation describes the current status and principles. 
+This early version is provided for input and comments that will guide further development. The Script
+and Transformer documentation describes the current status and principles. Note - the DTBook output from this
+script is not yet ready for use; it will most likely be invalid. 
 Many thanks to Per Sennels of Huseby Norway for contributing this.
 The script is available in the /conversion/advanced/ category of the Script selector.
 
