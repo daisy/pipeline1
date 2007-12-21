@@ -9,7 +9,7 @@
 	
 	<!-- Timestamp format definition -->
 	<tstamp>
-		<format property="ISO-TODAY" pattern="yyyy-MM-dd"/>
+		<format property="ISO-TODAY" pattern="yyyyMMdd"/>
 	</tstamp>
 		
 	<property name="release.name" value="pipeline-${ISO-TODAY}"/>
