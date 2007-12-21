@@ -28,10 +28,10 @@
 	<!-- ===================================================================== -->
 	<target name="post.gather.bin.parts">
 		 <copy todir="${destination.temp.folder}/../licenses" failonerror="true" overwrite="true">
-		    <fileset dir="${basedir}/../org.daisy.pipeline/licenses" exclude="UserAgreement.txt"/>
+		    <fileset dir="${basedir}/../org.daisy.pipeline/licenses" excludes="UserAgreement.txt"/>
 		  </copy>
-		 <copy file="${basedir}/../org.daisy.pipeline/licenses/UserAgreement.txt" todir="${destination.temp.folder}/../licenses" failonerror="true" overwrite="true"/>
-		 <copy file="${basedir}/../org.daisy.pipeline/doc/releasenotes/release-notes.txt" todir="${destination.temp.folder}/../licenses" failonerror="true" overwrite="true"/>
+		 <copy file="${basedir}/../org.daisy.pipeline/licenses/UserAgreement.txt" todir="${destination.temp.folder}/.." failonerror="true" overwrite="true"/>
+		 <copy file="${basedir}/../org.daisy.pipeline/doc/releasenotes/release-notes.txt" todir="${destination.temp.folder}/.." failonerror="true" overwrite="true"/>
 	</target>
 
 </project>
