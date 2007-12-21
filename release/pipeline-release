@@ -1,0 +1,153 @@
+#!/bin/sh
+
+# Usage
+USAGE="\
+Release and pack the Pipeline GUI.\n\
+Usage: `basename $0` [options] final-dir export-dir install-dir\n\
+Where:\n\
+	- final-dir is the directory where you want to output the installers\n\
+	- export-dir is the directory where you output Eclipse products\n\
+	-isntall-dir is the directory containing the pipeline installer scripts\n\
+Options:\n\
+    -h : print this help\n\
+    -w : create windows installer\n\
+    -l : create linux installer\n\
+    -m : create mac installer\n\
+    -q : quiet"
+
+# Parse the Options
+while getopts "hwlmq" OPTION
+do
+  case $OPTION in
+    h) echo -e $USAGE
+       exit 0;;
+    w) WIN=true;;
+    l) LINUX=true;;
+    m) MAC=true;;
+    q) QUIET=true;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+# VARS
+OLD_DIR=`pwd`
+FINAL_DIR=${1:-/Users/Romain/Desktop}
+EXPORT_DIR=${2:-/Users/Romain/Public/build}
+INSTALL_SRC_DIR=${3:-/Users/Romain/Documents/Work/pipeline/release}
+# Check OS flags
+if [[ -z $WIN$LINUX$MAC ]]
+then
+	WIN=true
+	LINUX=true
+	MAC=true
+fi
+
+# Windows build	
+if [[ ! -z $WIN ]]
+then
+	if [[ -z $QUIET ]]; then echo "Creating Windows release..."; fi
+	cd "$EXPORT_DIR"
+	cd win32.win32.x86
+	cd `ls`
+	cp "$INSTALL_SRC_DIR/windows/pipeline-setup.nsi" .
+	makensis pipeline-setup.nsi > "$FINAL_DIR/nsis.log"
+	mv setup.exe "$FINAL_DIR/PipelineGUI-`date +%Y%m%d`_setup.exe"
+	if [[ -z $QUIET ]]; then echo "Done."; fi
+fi
+
+# Linux build	
+if [[ ! -z $LINUX ]]
+then
+	if [[ -z $QUIET ]]; then echo "Creating Linux release..."; fi
+	cd "$EXPORT_DIR"
+	cd linux.gtk.x86
+	cd `ls`
+	chmod 755 DAISY\ Pipeline
+	tar -czf "$FINAL_DIR/PipelineGUI-`date +%Y%m%d`.tar.gz" *
+	if [[ -z $QUIET ]]; then echo "Done."; fi
+fi
+
+# Mac OS X build	
+if [[ ! -z $MAC ]]
+then		
+	if [[ -z $QUIET ]]; then echo "Creating Mac OS X release..."; fi
+		
+makedmg ()
+{
+# Vars
+FILES_DIR="$INSTALL_SRC_DIR/macosx"
+REPACK="$FILES_DIR/EclipseOSXRepackager"
+SRC_DIR="$EXPORT_DIR/macosx.carbon.x86/`ls "$EXPORT_DIR/macosx.carbon.x86"`"
+APP_NAME=DAISY\ Pipeline.app
+VOL_NAME=DAISY\ Pipeline
+TEMP_DMG_SRC="${FINAL_DIR}/tmp_DMGSRC"
+if [ -z $INCLUDE_TOOLS ]; then
+	DMG_NAME=PipelineGUI-noTools-`date +%Y%m%d`.dmg
+else
+	DMG_NAME=PipelineGUI-`date +%Y%m%d`.dmg
+fi
+TEMP_DMG="${FINAL_DIR}/tmp_${DMG_NAME}"
+
+# Prepare the dmg content
+if [[ -z $QUIET ]]; then echo " - Preparing the disk image content..."; fi
+rm -Rf "${TEMP_DMG_SRC}"
+mkdir "${TEMP_DMG_SRC}"
+mkdir "${TEMP_DMG_SRC}/INFO"
+cp "${SRC_DIR}/release-notes.txt" "${TEMP_DMG_SRC}/INFO/"
+cp "${SRC_DIR}/UserAgreement.txt" "${TEMP_DMG_SRC}/INFO/"
+cp -R "${SRC_DIR}/licenses" "${TEMP_DMG_SRC}/INFO/"
+ln -s /Applications "${TEMP_DMG_SRC}/Applications"
+if [ -z $INCLUDE_TOOLS ]; then
+	cp "$FILES_DIR/files/README-noTools.rtf" "${TEMP_DMG_SRC}/README.rtf"
+else
+	cp "$FILES_DIR/files/README-withTools.rtf" "${TEMP_DMG_SRC}/README.rtf"
+	cp -R "$FILES_DIR/tools/External Tools.mpkg" "${TEMP_DMG_SRC}"
+fi
+
+# Repackage the application
+if [[ -z $QUIET ]]; then echo " - Repackaging the application bundle..."; fi
+${REPACK} "${SRC_DIR}" "${TEMP_DMG_SRC}/${APP_NAME}" >> "$FINAL_DIR/makedmg$INCLUDE_TOOLS.log"
+
+# create dmg
+if [[ -z $QUIET ]]; then echo " - Creating the disk image..."; fi
+rm -f "${TEMP_DMG}"
+hdiutil create -srcfolder "${TEMP_DMG_SRC}" -volname "${VOL_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW "${TEMP_DMG}" >> "$FINAL_DIR/makedmg$INCLUDE_TOOLS.log"
+rm -Rf "${TEMP_DMG_SRC}"
+
+# mount it
+if [[ -z $QUIET ]]; then echo " - Mounting the disk image..."; fi
+DEV_NAME=`hdiutil attach -readwrite -noverify -noautoopen "${TEMP_DMG}" | egrep '^/dev/' | sed 1q | awk '{print $1}'` >> "$FINAL_DIR/makedmg$INCLUDE_TOOLS.log"
+
+# customize the disk image
+if [[ -z $QUIET ]]; then echo " - Customizing the disk image..."; fi
+mkdir "/Volumes/${VOL_NAME}/.background"
+cp "$FILES_DIR/artwork/dmg-background.png" "/Volumes/${VOL_NAME}/.background/background.png"
+cp "$FILES_DIR/artwork/dmg-icon.icns" "/Volumes/${VOL_NAME}/.VolumeIcon.icns"
+osascript $FILES_DIR/customizeDMG.scpt
+/Developer/Tools/SetFile -a C "/Volumes/${VOL_NAME}"
+
+# unmount
+if [[ -z $QUIET ]]; then echo " - Unmounting the disk image..."; fi
+hdiutil detach "${DEV_NAME}" >> "$FINAL_DIR/makedmg$INCLUDE_TOOLS.log"
+ 
+# compress image
+if [[ -z $QUIET ]]; then echo " - Compressing the disk image..."; fi
+rm -f "${FINAL_DIR}/${DMG_NAME}"
+hdiutil convert "${TEMP_DMG}" -format UDBZ -imagekey zlib-level=9 -o "${FINAL_DIR}/${DMG_NAME}" >> "$FINAL_DIR/makedmg$INCLUDE_TOOLS.log"
+rm -f "${TEMP_DMG}"
+
+}
+	
+	INCLUDE_TOOLS="+Tools"
+	makedmg
+	
+	if [[ -z $QUIET ]]; then echo "Done."; fi
+fi
+
+
+
+makedmg ()
+{
+  echo "Making dmg with "
+}
+exit 0
