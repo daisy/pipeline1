@@ -207,7 +207,8 @@
 				<include name="doc/**/*.*"/>
 				<exclude name="doc/dev_old/**/*.*"/>
 				<include name="META-INF/**/*.*"/>
-				<include name="scripts/**/*.*"/>
+				<include name="scripts/**/*.*"/>				
+				<include name="licenses/**/*.*"/>
 			</fileset>
 			<zipfileset dir="${transformers.dir}" prefix="transformers">
 				<patternset refid="patternset.transformers"/>
@@ -418,6 +419,10 @@
 				<include name="*.html"/>
 				<include name="*.css"/>
 			</zipfileset>
+			<!-- Documentation -->
+			<zipfileset dir="${base.dir}/licenses" prefix="${release.name}/licenses">
+				<include name="**/*.*"/>
+			</zipfileset>					
 		</zip>
 	</target>		
 	
