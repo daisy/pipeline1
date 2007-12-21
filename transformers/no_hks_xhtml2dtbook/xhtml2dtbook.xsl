@@ -21,7 +21,7 @@
 	<xsl:variable name="smil" as="xs:string" select="'.smil#'" />
 	
 	<xsl:template match="/">
-		<dtbook>
+		<dtbook version="2005-2">
 			<xsl:apply-templates />
 		</dtbook>
 	</xsl:template>
