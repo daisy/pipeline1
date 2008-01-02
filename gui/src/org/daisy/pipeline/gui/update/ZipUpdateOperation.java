@@ -21,7 +21,6 @@ package org.daisy.pipeline.gui.update;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,6 +38,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -83,13 +83,12 @@ public class ZipUpdateOperation implements IRunnableWithProgress {
 	 */
 	public ZipUpdateOperation(ZipStructure zipStruct, Shell shell) {
 		this.zipStruct = zipStruct;
-		try {
-			this.installDir = new File(Platform.getInstallLocation().getURL()
-					.toURI());
-		} catch (URISyntaxException e) {
-			GuiPlugin.get().error("Unable to get a File from install location", //$NON-NLS-1$
-					e);
+		Location installLoc = Platform.getInstallLocation();
+		if (installLoc == null) {
+			throw new IllegalStateException(
+					"Unable to get the install location");//$NON-NLS-1$
 		}
+		this.installDir = new File(installLoc.getURL().getPath());
 		this.backupFiles = new HashMap<File, File>();
 		this.newDirs = new HashSet<File>();
 	}
