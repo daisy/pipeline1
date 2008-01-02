@@ -41,6 +41,8 @@ public class MacSayTTS extends AbstractTTSAdapter {
 			throw new TTSException("Could not execute: " + cmd, e);
 		} catch (InterruptedException e) {
 			throw new TTSException("Command was interrupted: " + cmd, e);
+		} finally{
+			(new File(aiffName)).delete();
 		}
 		try {
 			return AudioFiles.getAudioFileDuration(destination);
