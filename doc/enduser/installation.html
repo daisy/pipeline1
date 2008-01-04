@@ -18,13 +18,26 @@
    	<div id="toc" class="toc">
 		<ul>
 			<li><a href="#prereqs">Prerequisites</a></li>
-			<li><a href="#install">Installation</a></li>
+			<li><a href="#install">Installation</a>
+				<ul>
+					<li><a href="#install-windows">On Windows XP</a></li>
+					<li><a href="#install-macosx">On Mac OS X</a></li>
+					<li><a href="#install-linux">On Linux</a></li>
+				</ul>
+			</li>
 			<li><a href="#config">Configuration</a>
 			<ul>
 				<li><a href="#advancedconfig">Advanced configuration</a></li>
 			</ul>
 			</li>
-      		<li><a href="#uninstall">Uninstalling the Pipeline</a></li>
+			<li><a href="#updates">Updates</a></li>
+			<li><a href="#uninstall">Uninstalling the Pipeline</a>
+				<ul>
+					<li><a href="#uninstall-windows">On Windows XP</a></li>
+					<li><a href="#uninstall-macosx">On Mac OS X</a></li>						
+					<li><a href="#uninstall-linux">On Linux</a></li>	
+				</ul>
+			</li>
 		</ul>
 	</div>
             
@@ -33,27 +46,31 @@
       <p>The Java Runtime Environment can be downloaded from <a href="http://www.java.com">http://www.java.com</a>.</p>
            
       <h2 id="install">Installation</h2>
-      <ol>
-      <li><p>Download the zip release on the <a href="http://sourceforge.net/project/showfiles.php?group_id=162777">Pipeline GUI download page</a>. Select the zip archive corresponding to your environment:</p>
-      <ul>
-      <li>If using Windows, select <code>pipeline-gui-[date].win32.win32.x86.zip</code></li>
-      <li>If using Linux, select <code>pipeline-gui-[date].linux.gtk.x86.zip</code></li>
-      <li>If using Mac (Intel), select <code>pipeline-gui-[date].macosx.carbon.x86.zip</code></li>
-      <li>If using Mac (PPC), select <code>pipeline-gui-[date].macosx.carbon.ppc.zip</code></li>
-      </ul>
-      
-      </li>
-      <li><p>Create a directory on your local file system where you want to install the application.</p></li>
-      <li><p>Extract the content of the zip archive to the newly created directory.</p></li>
-      <li><p>Run the 'DAISY Pipeline' executable:</p>
-	      <ul>
-	      <li><code>DAISY Pipeline.exe</code> on Windows</li>
-	      <li><code>DAISY Pipeline.app</code> on Mac OS X</li>
-	      <li><code>DAISY Pipeline</code> on Linux</li>
-	      </ul>
-      </li>
-      </ol>
-      <p>(Note that you probably want to create a shortcut to the Pipeline executable and put that on a convenient place (such as your desktop) for convenient access later on.)</p>
+
+			<h3 id="install-windows">On Windows XP</h3>
+			<ol>
+				<li>Download the "DAISY Pipeline GUI for Windows" on the <a href="http://daisymfc.sourceforge.net/index.html#dl">Pipeline download page.</a></li>
+				<li>Launch the downloaded installer: PipelineGUI-<em>versiondate</em>_setup.exe </li>
+				<li>Follow the instructions of the installer.</li>
+			</ol>
+			<p><strong>Warning:</strong> make sure the installation directory have write permissions.</p>
+			
+			<h3 id="install-macosx">On Mac OS X</h3>
+			<ol>
+				<li>Download the "DAISY Pipeline GUI for Mac OS X" on the <a href="http://daisymfc.sourceforge.net/index.html#dl">Pipeline download page.</a></li>
+				<li>Mount the "PipelineGUI-<em>versiondate</em>.dmg" disk image (with double-click or cmd-down).</li>
+				<li>Make sure to read the README file.</li>
+				<li>Copy the "DAISY Pipeline" application to the folder of your choice (for instance the "Applications" folder).</li>
+			</ol>
+			<p><strong>Note:</strong> the disk image comes with an installer for the external utility tools used by some Pipeline transformers. If you want to install these tools, launch the "External Tools" installer and follow the instructions.</p>
+			
+			<h3 id="install-linux">On Linux(es)</h3>
+			<ol>
+				<li>Download the "DAISY Pipeline GUI for Linux" on the <a href="http://daisymfc.sourceforge.net/index.html#dl">Pipeline download page.</a></li>
+		      <li>Create a directory on your local file system where you want to install the application.</li>
+		      <li>Extract the content of the "PipelineGUI-<em>versiondate</em>.tar.gz" archive to the newly created directory.</li>
+			</ol>
+	      <p><strong>Note:</strong> you may want to create a shortcut to the Pipeline executable and put that on a convenient place (such as your desktop) for convenient access later on.)</p>
 
       <h2 id="config">Configuration</h2>
       <p>Upon first launch of the Pipeline, you should take a moment to look over <code>Paths</code> in the Pipeline Preferences dialog. The Preferences dialog can be reached from the <code>Window</code> menu item.</p>
@@ -62,6 +79,7 @@
       <dt><code>Temporary Directory</code></dt><dd>Directory to store temporary files in. This directory <em>must</em> be set, and write access to it must be enabled.</dd>
       <dt><code>LAME executable</code></dt><dd>Path to the <a href="http://lame.sourceforge.net/index.php">LAME</a> executable (Must be set if you intend to run a script that includes MP3 encoding).</dd>
       <dt><code>Python executable</code></dt><dd>Path to <a href="http://www.python.org/">Python</a> executable (Must be set if you intend to run the RTF to DTBook or RTF to XHTML scripts).</dd>
+      <dt><code>SoX executable</code></dt><dd>Path to the <a href="http://sox.sourceforge.net/">SoX</a> (Sound eXchange) executable used on Mac OS X for speech synthesis.</dd>
       </dl>
       <p>Information on how to install LAME and Python is available in <a href="./installing-lame.html">Installing the Lame MP3 Encoder for use within the Daisy Pipeline</a> and <a href="./installing-python.html">Installing Python for use within the Daisy Pipeline</a>.</p>
 	  <p>Note: When starting the Pipeline, you may get warnings that certain scripts could not be loaded; this is most likely due to the fact that the settings discussed above have not been set.</p>
@@ -72,8 +90,24 @@
 	  <h4>Displaying the browser widget on Linux</h4>
 	  <p>If the browser widget used by for example the documentation perspective in the Daisy Pipeline GUI doesn't work, it can be configured by following the <a href="http://www.eclipse.org/swt/faq.php#browserlinuxrcp">instructions at eclipse.org</a>.</p>
 
+
+      <h2 id="updates">Updates</h2>
+		<p>The DAISY Pipeline can be updated by applying zipped patches provided by the development team. These zip patches can be applied using the <kbd>Updates...</kbd> entry in the <kbd>Help</kbd> item of the main menu bar of the Pipeline GUI.</p>
+		<p>Update patches are available on the sourceforge and also listed on the <a href="http://daisymfc.sourceforge.net/index.html#dl">Pipeline download page.</a></p>
+		<p>For more information on how to use the update feature, please refer to the <a href="./01-gui-user-guide.html#update">Pipeline User Guide</a></p>
+
       <h2 id="uninstall">Uninstalling the Pipeline</h2>
-	  <p>To uninstall the Pipeline, simply delete the directory to which you extracted the Pipeline application archive during the installation process.</p>	
+	  <p>To uninstall the Pipeline, simply delete the directory to which you extracted the Pipeline application archive during the installation process.</p>		
+
+			<h3 id="uninstall-windows">On Windows XP</h3>
+			<p>Use the Pipeline uninstaller available in the Pipeline installation directory.</p>
+			
+			<h3 id="uninstall-macosx">On Mac OS X</h3>
+			<p>Delete the "DAISY Pipeline" application from the applications directory.</p>
+			
+			<h3 id="uninstall-linux">On Linux(es)</h3>
+			<p>Delete the directory to which you extracted the Pipeline application archive during the installation process.</p>
+			
 
       </body>
 </html>
