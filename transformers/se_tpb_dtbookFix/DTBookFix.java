@@ -325,7 +325,8 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-lists.xsl"),v2005_1_2,i18n("REPAIR_LISTS"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-idref.xsl"),v2005_1_2,i18n("REPAIR_IDREF"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-empty-elements.xsl"),v2005_1_2,i18n("REPAIR_REMOVE_EMPTY_ELEMENTS"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-pagenum-type.xsl"),v2005_1_2,i18n("REPAIR_PAGENUM_TYPE"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-pagenum-type.xsl"),v2005_1_2,i18n("REPAIR_PAGENUM_TYPE"),this,this,this,emitter));    		
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-metadata.xsl"),v2005_1_2,i18n("REPAIR_METADATA"),this,this,this,emitter));
 
     		/*
     		 * Populate the supported states of the REPAIR category 
@@ -491,8 +492,8 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#report(org.daisy.util.fileset.validation.Validator, org.daisy.util.fileset.validation.message.ValidatorMessage)
 	 */
 	@SuppressWarnings("unused")
-	public void report(Validator validator, ValidatorMessage message) {		
-		MessageEvent.Type type = null;
+	public void report(Validator validator, ValidatorMessage message) {
+		mHadValidationErrors = true;
 		Location loc = LocusTransformer.newLocation(message);
 		this.sendMessage(message.getMessage(), MessageEvent.Type.DEBUG, MessageEvent.Cause.INPUT,loc);		
 	}
