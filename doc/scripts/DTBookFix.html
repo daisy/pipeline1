@@ -100,6 +100,9 @@ structural modifications. <em>Note that no guarantees are made that the output w
 		<ul>
 			<li>Wraps a <code>list</code> in <code>li</code> when the parent of the list is another list.</li>
 		    <li>adds a <code>type</code> attribute if missing (default value is "pl")</li>
+		    <li>Corrects the <code>depth</code> attribute if it is incorrect</li>
+		    <li>Removes the <code>enum</code> attribute if the list is not ordered</li>
+		    <li>Removes the <code>start</code> attribute if the list is not ordered</li>
 		</ul>    
 	</dd>
 	
@@ -117,6 +120,24 @@ structural modifications. <em>Note that no guarantees are made that the output w
 	
 	<dt>Empty elements remover</dt>
 	<dd>Removes empty/whitespace elements that must have children.</dd>
+	
+	<dt>Page number type repair</dt>
+	<dd>
+		<p>Changes the <code>type</code> attribute of the <code>pagenum</code> element to match the contents of the element
+	    (i.e. the page number value).</p>
+	    <p>Incorrect "normal" page numbers will be changed to "front" if the contents contains roman numerals and the element is located in the frontmatter of the book.
+	       Incorrect "front" page numbers will be changed to "normal" if the contents contains arabic numbers. Otherwise the page attribute will be changed to "special" if it is incorrect.</p>
+	</dd>
+	
+	<dt>Metadata repair</dt>
+	<dd>
+	<ul>
+		<li>Fixes Dublin Core metadata name case errors (i.e. <code>dc:title</code> is changed to <code>dc:Title</code>)</li>
+		<li>Removes unknown Dublin Core metadata (i.e. dc:Hello)</li>
+		<li>Adds a <code>dtb:uid</code> from <code>dc:Identifier</code>, if missing</li>
+		<li>Adds a <code>dc:Title</code> from the first <code>doctitle</code> element of the book, if missing</li>
+	</ul>
+	</dd>
 
 </dl>
 
