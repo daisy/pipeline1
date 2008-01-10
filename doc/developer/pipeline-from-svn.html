@@ -112,6 +112,7 @@
 				<li>One of the actual SVN Connectors, for instance <strong>SVNKit Implementation</strong></li>
 			</ul>
 			<img src="img/subversive-5.png" alt="Select features"/>
+			<p>Note: if you have some dependency errors due to some prerequisites not being available, try to uncheck the problematic optional features.</p>
 		</li>
 
 		<li>Accept terms of license agreement and press on the <code>Next</code> button.</li>
@@ -171,7 +172,7 @@
 		<li><p>Select <code>org.daisy.pipeline.test.PipelineTestDriver</code> as the main class.</p></li>
 
 		<li>
-			<p>In the <code>Arguments</code> tab, add the following string as program arguments: <code>${project_loc}/samples ${project_loc}/scripts</code></p><img src="./img/run-core-0.png" alt="Program Arguments: ${project_loc}/samples ${project_loc}/scripts" />
+			<p>In the <code>Arguments</code> tab, add the following string as program arguments: <code>"${project_loc}/samples ${project_loc}/scripts"</code></p><img src="./img/run-core-0.png" alt="Program Arguments: ${project_loc}/samples ${project_loc}/scripts" />
 		</li>
 
 		<li><p>Select <code>Apply</code> then <code>Close</code>, dont run yet.</p></li>
@@ -200,9 +201,9 @@
 
 		<li><p>Set the command line arguments in the <code>Program Argument</code> area of the <code>Arguments</code> tab.</p>
 
-			<p>The following program arguments runs the DTBookValidator Script against an item in the /samples/ folder: <code>${project_loc}/scripts/validation/simple/DTBookValidator.taskScript --input=${project_loc}/samples/input/dtbook/dontworrybehappy.xml</code></p>
+			<p>The following program arguments runs the DTBookValidator Script against an item in the /samples/ folder: <code>"${project_loc}/scripts/validation/simple/DTBookValidator.taskScript" --input="${project_loc}/samples/input/dtbook/dontworrybehappy.xml"</code></p>
 
-			<p>Note: The <code>Arguments</code> tab needs to be changed everytime you want to run a new script or run a script against new input.</p>
+			<p>Note: The <code>Arguments</code> tab needs to be changed every time you want to run a new script or run a script against new input.</p>
 		</li>
 
 		<li><p>Press on <code>Run</code>.</p></li>
@@ -294,13 +295,13 @@
 
 		<li><p>Name it (for instance"Pipeline GUI").</p></li>
 
-		<li><p>In the <code>Program to Run</code> section of the <code>Main</code> tab, select the <code>Run a product</code> radio button and choose the product called <code>org.daisy.pipeline.gui.product</code></p><img src="img/target-0.png" alt="Run configuration - main tab"/></li>
+		<li><p>In the <code>Program to Run</code> section of the <code>Main</code> tab, select the <code>Run a product</code> radio button and choose the product called <code>org.daisy.pipeline.gui.product</code></p><img src="img/run-gui-0.png" alt="Run configuration - main tab"/></li>
 
 		<li><p>Move the <code>Plug-ins</code> tab.</p></li>
 
 		<li><p>Choose to "Launch with plug-ins selected below only"</p></li>
 
-		<li><p>Deselect all the plug-ins, then select the <code>org.daisy.pipeline.gui</code> plug-in and press on <code>Add Required Plug-ins</code>.</p><img src="img/target-0.png" alt="Run configuration - plugins tab"/></li>
+		<li><p>Deselect all the plug-ins, then select the <code>org.daisy.pipeline.gui</code> plug-in and press on <code>Add Required Plug-ins</code>.</p><img src="img/run-gui-0.png" alt="Run configuration - plugins tab"/></li>
 
 		<li><p>Finally press the <code>Run</code> button!</p></li>
 	</ol>
