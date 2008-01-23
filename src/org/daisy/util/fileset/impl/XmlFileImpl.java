@@ -442,7 +442,8 @@ abstract class XmlFileImpl
         } else {
             String message = "did not recognize processing instruction"
                     + target + " " + data + " in " + this.getName();
-            this.warning(new SAXParseException(message, null));
+            //this.warning(new SAXParseException(message, null));
+            System.err.println(message);
         }
     }
 
