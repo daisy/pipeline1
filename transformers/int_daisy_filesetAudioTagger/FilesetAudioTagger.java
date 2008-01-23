@@ -58,6 +58,7 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 	
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		
@@ -90,7 +91,7 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 			this.checkAbort();
 			
 			if(doID3tags) {				
-				this.sendMessage(i18n("GENERATING_ID3TAGS"), MessageEvent.Type.INFO);
+				this.sendMessage(i18n("GENERATING_ID3TAGS"), MessageEvent.Type.INFO_FINER);
 				fm = new FilesetManipulator();
 				fm.setInputFileset(mInputFileset);
 				fm.setOutputFolder(mOutputDir);
@@ -98,7 +99,7 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 				fm.setFileTypeRestriction(Mp3File.class);
 				fm.iterate();				
 			}			
-			this.sendMessage(i18n("GENERATED_ID3TAGS",mAudioSpine.size()), MessageEvent.Type.INFO);
+			this.sendMessage(i18n("GENERATED_ID3TAGS",mAudioSpine.size()), MessageEvent.Type.INFO_FINER);
 			
 			this.sendMessage(0.95);
 			this.checkAbort();
@@ -129,7 +130,7 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 						this.sendMessage(i18n("ERROR_GENERATING_PLAYLIST",filename), MessageEvent.Type.ERROR);
 					}
 				}				
-				this.sendMessage(i18n("GENERATED_PLAYLISTS",generatedPlaylists), MessageEvent.Type.INFO);
+				this.sendMessage(i18n("GENERATED_PLAYLISTS",generatedPlaylists), MessageEvent.Type.INFO_FINER);
 			}
 			
 		} catch (Exception e) {			
@@ -141,9 +142,10 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 	}
 
 	/**
-	 * A temporary solution dealing with audioSpine haveing dupe entries because of 
-	 * skippabiliy crossrefs.
+	 * A temporary solution dealing with audioSpine having duplicate entries because of 
+	 * skippability crossrefs.
 	 */
+	@SuppressWarnings("unchecked")
 	private Collection deleteDupes(Collection audioSpine) {
 		List list = new ArrayList();
 		for (Iterator iterator = audioSpine.iterator(); iterator.hasNext();) {
