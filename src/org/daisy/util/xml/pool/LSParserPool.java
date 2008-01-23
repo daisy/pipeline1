@@ -22,7 +22,6 @@ package org.daisy.util.xml.pool;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
@@ -131,11 +130,11 @@ public class LSParserPool extends AbstractPool {
 	public Map<String, Object> getDefaultPropertyMap(Boolean dtdValidating){
 		if(null==mDefaultPropertyMap) {			
 			mDefaultPropertyMap = new HashMap<String, Object>();			
-			try {
-				mDefaultPropertyMap.put("resource-resolver", CatalogEntityResolver.getInstance());				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+//			try {
+//				mDefaultPropertyMap.put("resource-resolver", CatalogEntityResolver.getInstance());				
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
 		}
 		mDefaultPropertyMap.put("validate", dtdValidating);
 		mDefaultPropertyMap.put("validate-if-schema", dtdValidating);
