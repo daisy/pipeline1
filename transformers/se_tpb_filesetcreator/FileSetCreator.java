@@ -30,7 +30,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -38,9 +37,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.EventBus;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.event.UserAbortEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
-import org.daisy.pipeline.exception.TransformerAbortException;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.execution.ProgressObserver;
 import org.daisy.util.file.FileBunchCopy;
@@ -86,6 +85,7 @@ public class FileSetCreator extends Transformer {
 	 * @param parameters the parameters supplied to this transformer
 	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
 	 */
+	@SuppressWarnings("unchecked")
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		
 		String outputDirectory = (String) parameters.remove("outputDirectory");
@@ -102,9 +102,9 @@ public class FileSetCreator extends Transformer {
 			outputDir.mkdir();
 		}
 		
-		//*****************************************************************************************************
-		sendMessage(Level.CONFIG, i18n("USING_INPUT_FILE", manuscriptFilename));
-		sendMessage(Level.CONFIG, i18n("USING_OUTPUT_DIR", outputDirectory));
+		//*****************************************************************************************************		
+		this.sendMessage(i18n("USING_INPUT_FILE", manuscriptFilename), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
+		this.sendMessage(i18n("USING_OUTPUT_DIR", outputDirectory), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 		
 		File finalDTBFile = new File(outputDTBFilename);
 		File tmp = new File(changeSuffix(manuscriptFilename, ".ncx"));
@@ -141,8 +141,8 @@ public class FileSetCreator extends Transformer {
 			
 			//*****************************************************************************************************
 			// Collect the src-attributes
-			sendMessage(Level.FINEST, i18n("SEARCHING_FOR_REFERRED_FILES"));
-					
+			this.sendMessage(i18n("SEARCHING_FOR_REFERRED_FILES"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
+			
 			// get the files referred from the resource file + the resource file itself
 			File resourceFile = new File(resourceFilename);
 			SrcExtractor srcex = new SrcExtractor(resourceFile);
@@ -162,7 +162,7 @@ public class FileSetCreator extends Transformer {
 			FileBunchCopy.copyFiles(inputBaseDir, outputDir, files, null, true);
 			references.addAll(files);
 			
-			sendMessage(Level.FINEST, i18n("DONE"));
+			this.sendMessage(i18n("DONE"), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 
 			
 			//*****************************************************************************************************
@@ -177,7 +177,7 @@ public class FileSetCreator extends Transformer {
 			
 			//*****************************************************************************************************
 			// Create the smil files
-			sendMessage(Level.FINEST, i18n("GENERATING_SMIL"));			
+			this.sendMessage(i18n("GENERATING_SMIL"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 			
 			ProgressObserver pr = new ProgressObserver() {
 				public void reportProgress(double progress) {
@@ -208,12 +208,13 @@ public class FileSetCreator extends Transformer {
 			Vector smilFiles = sm.getAllGeneratedSmilFiles();
 			File modifiedManuscriptFile = sm.getModifiedManuscriptFile();
 			references.addAll(sm.getAdditionalFiles());
-			sendMessage(Level.FINEST, i18n("DONE"));
+			
+			this.sendMessage(i18n("DONE"), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 			
 					
 			//*****************************************************************************************************
 			// Create the ncxmaker and put it to work
-			sendMessage(Level.FINEST, i18n("GENERATING_NCX"));
+			this.sendMessage(i18n("GENERATING_NCX"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 			
 			pr = new ProgressObserver() {
 				public void reportProgress(double progress) {
@@ -242,7 +243,7 @@ public class FileSetCreator extends Transformer {
 			//removeAbortListener(ncx);
 			EventBus.getInstance().unsubscribe(ncx, UserAbortEvent.class);
 						
-			sendMessage(Level.FINEST, i18n("DONE"));
+			this.sendMessage(i18n("DONE"), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 			
 			generatedFiles.add(finalDTBFile.getName());
 			generatedFiles.add(ncxFilename);
@@ -251,7 +252,7 @@ public class FileSetCreator extends Transformer {
 			
 			//*****************************************************************************************************
 			// Create the opfmaker and put it to work			
-			sendMessage(Level.FINEST, i18n("GENERATING_OPF"));
+			this.sendMessage(i18n("GENERATING_OPF"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 					
 			Map dcElements = ncx.getDCElements();		
 			if (null == dcElements.get("dc:Date")) {
@@ -284,9 +285,9 @@ public class FileSetCreator extends Transformer {
 			opf.makeOPF();
 			checkAbort();
 			
-			sendMessage(Level.FINEST, i18n("DONE"));
+			this.sendMessage(i18n("DONE"), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 			
-			sendMessage(Level.FINEST, i18n("AUDIO_FILE_COPY"));
+			this.sendMessage(i18n("AUDIO_FILE_COPY"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 			progress(SMILS_DONE + NCX_DONE + OPF_DONE);
 			
 			pr = new ProgressObserver() {
@@ -295,7 +296,7 @@ public class FileSetCreator extends Transformer {
 				}
 			};
 			FileBunchCopy.copyFiles(manuscriptFile.getParentFile(), outputDir, sm.getAdditionalFiles(), pr, false);
-			sendMessage(Level.FINEST, i18n("DONE"));
+			this.sendMessage(i18n("DONE"), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -311,6 +312,7 @@ public class FileSetCreator extends Transformer {
 	 * Returns the book structures.
 	 * @return the book structures.
 	 */
+	@SuppressWarnings("unchecked")
 	private Map getBookStructs() {
 		Map structs = new HashMap();
 		
@@ -329,6 +331,7 @@ public class FileSetCreator extends Transformer {
 	 * Returns the MIME-types.
 	 * @return the MIME-types.
 	 */
+	@SuppressWarnings("unchecked")
 	private Map getMimeTypes() {
 		
 		mimeTypes.put(".mp4", "audio/mpeg4-generic");
@@ -364,6 +367,7 @@ public class FileSetCreator extends Transformer {
 	 * @throws SAXException
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unchecked")
 	private void parseConfigFile(
 			String filename, 
 			Set navListHeadings, 
@@ -394,6 +398,7 @@ public class FileSetCreator extends Transformer {
 	 * @param root	the root of the DOM 
 	 * @param xPath	xpath selecting the parent element
 	 */
+	@SuppressWarnings("unchecked")
 	private void getConfigItems(Set set, Node root, String xPath) {
 		Set elemNames = new HashSet();
 		Node parent = XPathUtils.selectSingleNode(root, xPath);
@@ -431,6 +436,7 @@ public class FileSetCreator extends Transformer {
 	 * @param prefix
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private boolean containsMimeType(Set filenames, Map mimetypes, String prefix) {
 		for (Iterator it = filenames.iterator(); it.hasNext(); ) {
 			String filename = (String) it.next();
@@ -498,8 +504,8 @@ public class FileSetCreator extends Transformer {
 		}
 
 		if (null == version) {
-			sendMessage(Level.WARNING, i18n("VERSION_NOT_FOUND"));
-			sendMessage(Level.WARNING, i18n("2005-1_FALLBACK"));
+			this.sendMessage(i18n("VERSION_NOT_FOUND"), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
+			this.sendMessage(i18n("2005-1_FALLBACK"), MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
 		}
 		
 		return version;

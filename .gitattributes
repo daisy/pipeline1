@@ -591,7 +591,6 @@ transformers/int_daisy_opsCreator/ncx-config-default.xml -text
 transformers/int_daisy_opsCreator/ncx-config.rng -text
 transformers/int_daisy_opsCreator/transformer.tdf -text
 transformers/int_daisy_prettyPrinter/PrettyPrinter.java -text
-transformers/int_daisy_prettyPrinter/messages.properties -text
 transformers/int_daisy_prettyPrinter/transformer.tdf -text
 transformers/int_daisy_recorder2dtb/AudacityToDTB.html -text
 transformers/int_daisy_recorder2dtb/InputType.java -text

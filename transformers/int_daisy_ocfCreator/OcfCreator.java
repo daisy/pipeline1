@@ -71,7 +71,7 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 			Set<Publication> publications = getPublications((String)parameters.remove("input"));
 			
 			this.sendMessage(0.2);
-			this.sendMessage(i18n("BUILDING_OCF", publications.size()), MessageEvent.Type.INFO, MessageEvent.Cause.INPUT);
+			this.sendMessage(i18n("BUILDING_OCF", publications.size()), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.INPUT);
 						
 			FileUtils.createDirectory(outputEpubFile.getParentFile());
 			ZipOutputStream outputOcf = new ZipOutputStream(new FileOutputStream(outputEpubFile));
@@ -165,10 +165,9 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 				publications.add(new Publication(fileset,getTypeLabel(fileset)));
 			} catch (FilesetFatalException ffe) {
 				if(ffe.getRootCause() instanceof FilesetTypeNotSupportedException) {
-					if(file.setMimeType()==null) {
-						this.sendMessage(i18n("MIMETYPE_DETECTION_FAILED",file.getName()), MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT);
-						file.setMimeType("application/anonymous");
-					}
+					//TODO Could use SignatureDetector
+					this.sendMessage(i18n("MIMETYPE_DETECTION_FAILED",file.getName()), MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT);
+					file.setMimeType("application/anonymous");
 					publications.add(new Publication(file,getTypeLabel(file)));
 				}else{
 					throw ffe;
@@ -196,7 +195,7 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 		Map xofProperties = null;
 		
 		try{
-			xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
+			xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();						
 			xof = StAXOutputFactoryPool.getInstance().acquire(xofProperties);
 			xef = StAXEventFactoryPool.getInstance().acquire();
 			FileOutputStream fos = new FileOutputStream(container);
@@ -211,7 +210,9 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 			
 			xew.add(xef.createStartDocument("utf-8","1.0"));
 			xew.add(lineBreak);			
-			xew.add(xef.createStartElement(containerRoot,null,null));
+			//xew.add(xef.createStartElement(containerRoot,null,null));
+			xew.add(xef.createStartElement("",containerRoot.getNamespaceURI(),containerRoot.getLocalPart()));
+			xew.add(xef.createNamespace(containerRoot.getNamespaceURI()));
 			xew.add(xef.createAttribute("version", "1.0"));
 			xew.add(lineBreak);
 			xew.add(tab);

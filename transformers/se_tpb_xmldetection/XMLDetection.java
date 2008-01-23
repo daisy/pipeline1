@@ -24,8 +24,6 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -54,11 +52,9 @@ public class XMLDetection extends Transformer {
      * @param eventListeners
      * @param isInteractive
      */
-    public XMLDetection(InputListener inListener, Set eventListeners,
-            Boolean isInteractive) {
-        super(inListener, eventListeners, isInteractive);
+    public XMLDetection(InputListener inListener,  Boolean isInteractive) {
+        super(inListener, isInteractive);
     }
-
 
     protected boolean execute(Map parameters) throws TransformerRunException {
         String input = (String)parameters.remove("input");
@@ -70,17 +66,17 @@ public class XMLDetection extends Transformer {
         String doOverride = (String)parameters.remove("doOverride");
         //String logFile = (String)parameters.remove("logFile");
         String copyReferredFiles = (String)parameters.remove("copyReferredFiles");        
-        
-        sendMessage(Level.FINER, i18n("USING_INPUT", input));
-        sendMessage(Level.FINER, i18n("USING_OUTPUT", output));
+                
+        this.sendMessage(i18n("USING_INPUT", input), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
+        this.sendMessage(i18n("USING_OUTPUT", output), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
         
         if (customLang != null) {
             if (customLang.equals("")) {
                 customLang = null;
             } else {
-                sendMessage(Level.FINER, i18n("USING_CUSTOMLANG", customLang));
+                this.sendMessage(i18n("USING_CUSTOMLANG", customLang), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
                 if (Boolean.parseBoolean(doOverride)) {
-                    sendMessage(Level.FINER, i18n("OVERRIDING"));
+                	this.sendMessage(i18n("OVERRIDING"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
                 }
             }
         }
@@ -91,10 +87,10 @@ public class XMLDetection extends Transformer {
         try {            
             
             // Abbr + Acronym
-            if (Boolean.parseBoolean(doAbbrAcronymDetection)) {
-                sendMessage(Level.FINER, i18n("STARTING_ABBR_ACRONYM"));
+            if (Boolean.parseBoolean(doAbbrAcronymDetection)) {                
+                this.sendMessage(i18n("STARTING_ABBR_ACRONYM"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 	            TempFile temp = new TempFile();
-	            this.sendMessage("Temp abbr: " + temp.getFile(), MessageEvent.Type.DEBUG);	            
+	            this.sendMessage("Temp abbr: " + temp.getFile(), MessageEvent.Type.INFO_FINER);	            
 	            URL customLangFileURL = null;
 	            if (customLang != null) {
 	                customLangFileURL = new File(customLang).toURI().toURL(); 
@@ -102,14 +98,14 @@ public class XMLDetection extends Transformer {
 	            XMLAbbrDetector abbrDetector = new XMLAbbrDetector(currentInput, temp.getFile(), customLangFileURL, Boolean.parseBoolean(doOverride));                
 	            abbrDetector.detect(null);
 	            currentInput = temp.getFile();
-	            sendMessage(Level.FINER, i18n("FINISHING_ABBR_ACRONYM"));
+	            this.sendMessage(i18n("FINISHING_ABBR_ACRONYM"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
             }
 
             // Sentence
             if (Boolean.parseBoolean(doSentenceDetection)) {
-                sendMessage(Level.FINER, i18n("STARTING_SENTENCE"));
+                this.sendMessage(i18n("STARTING_SENTENCE"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
                 TempFile temp = new TempFile();
-                this.sendMessage("Temp sent: " + temp.getFile(), MessageEvent.Type.DEBUG);                
+                this.sendMessage("Temp sent: " + temp.getFile(), MessageEvent.Type.INFO_FINER);                
                 URL customLangFileURL = null;
 	            if (customLang != null) {
 	                customLangFileURL = new File(customLang).toURI().toURL(); 
@@ -117,26 +113,26 @@ public class XMLDetection extends Transformer {
                 XMLSentenceDetector sentDetector = new XMLSentenceDetector(currentInput, temp.getFile(), customLangFileURL, Boolean.parseBoolean(doOverride));                
                 sentDetector.detect(null);
                 currentInput = temp.getFile();
-                sendMessage(Level.FINER, i18n("FINISHING_SENTENCE"));
+                this.sendMessage(i18n("FINISHING_SENTENCE"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
             }
             
             // Word
             if (Boolean.parseBoolean(doWordDetection)) {
-                sendMessage(Level.FINER, i18n("STARTING_WORD"));
+                this.sendMessage(i18n("STARTING_WORD"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
                 TempFile temp = new TempFile();
                 this.sendMessage("Temp word: " + temp.getFile(), MessageEvent.Type.DEBUG);                
                 XMLWordDetector wordDetector = new XMLWordDetector(currentInput, temp.getFile());
                 wordDetector.detect(null);
                 currentInput = temp.getFile();
-                sendMessage(Level.FINER, i18n("FINISHING_WORD"));
+                this.sendMessage(i18n("FINISHING_WORD"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
             }
             
-            // Copy to output file
-            sendMessage(Level.FINER, i18n("STARTING_COPY"));
+            // Copy to output file            
+            this.sendMessage(i18n("STARTING_COPY"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
             FileUtils.copy(currentInput, finalOutput);
             
             if (Boolean.parseBoolean(copyReferredFiles)) {
-                sendMessage(Level.FINER, i18n("COPYING_REFERRED_FILES"));
+                this.sendMessage(i18n("COPYING_REFERRED_FILES"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
                 Collection filesToCopy = new HashSet();
 	            Fileset fileset = new FilesetImpl(FilenameOrFileURI.toURI(input), new DefaultFilesetErrorHandlerImpl(), false, true);
 	            filesToCopy.addAll(fileset.getLocalMembersURIs());
@@ -148,15 +144,15 @@ public class XMLDetection extends Transformer {
             }
             
         } catch (CatalogExceptionNotRecoverable e) {
-            throw new TransformerRunException("Catalog problem", e);
+            throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()));
         } catch (IOException e) {
-            throw new TransformerRunException("IO problem", e);
+        	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()));
         } catch (XMLStreamException e) {
-            throw new TransformerRunException("StAX problem", e);
+        	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()));
         } catch (UnsupportedDocumentTypeException e) {
-            throw new TransformerRunException("Unsupported DOCTYPE", e);
+        	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()));
         } catch (FilesetFatalException e) {
-            throw new TransformerRunException("Fileset problem", e);
+        	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()));
         }           
         
         return true;

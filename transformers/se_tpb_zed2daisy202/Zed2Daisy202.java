@@ -30,13 +30,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 
 import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerAbortException;
 import org.daisy.pipeline.exception.TransformerRunException;
@@ -44,10 +44,7 @@ import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
-import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
-import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
@@ -95,8 +92,8 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
     private File inputDir = null;
     private File outputDir = null;
     
-    public Zed2Daisy202(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-        super(inListener, eventListeners, isInteractive);
+    public Zed2Daisy202(InputListener inListener,  Boolean isInteractive) {
+        super(inListener,  isInteractive);
     }
 
     protected boolean execute(Map parameters) throws TransformerRunException {
@@ -107,11 +104,17 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         outputDir = new File(outDir);      
 
         try {
-            // Build fileset
-            this.sendMessage(Level.INFO, i18n("BUILDING_FILESET"));
+            // Build fileset            
+            this.sendMessage(i18n("BUILDING_FILESET"), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
             Fileset fileset = this.buildFileSet(manifest);   
             if (fileset.hadErrors()) {
-            	throw new TransformerRunException(i18n("FILESET_HAD_ERRORS"));
+            	String detail = null;
+            	for (Iterator<?> iterator = fileset.getErrors().iterator(); iterator.hasNext();) {
+					FilesetFileException exc = (FilesetFileException) iterator.next();
+					detail = exc.getMessage();	
+					break;
+				}            	
+            	throw new TransformerRunException(i18n("ERROR_ABORTING",detail));
             }
             this.progress(FILESET_DONE);
             this.checkAbort();
@@ -150,13 +153,16 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             this.checkAbort();
             
             // Create xhtml 
-            this.sendMessage(Level.INFO, i18n("CREATING_XHTML", contentXHTML));
+            this.sendMessage(i18n("CREATING_XHTML", contentXHTML), 
+            		MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
+            
             this.createXhtml(dtbook, opf);            
             this.progress(XHTML_DONE);
             this.checkAbort();
 
             // Create NCC
-            this.sendMessage(Level.INFO, i18n("BUILDING_NCC", "ncc.html"));
+            this.sendMessage(i18n("BUILDING_NCC", "ncc.html"), 
+            		MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
             this.createNcc(opf.getFile(), totalElapsedTime);            
             this.progress(NCC_DONE);
             this.checkAbort();
@@ -167,15 +173,15 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             this.checkAbort();
             
         } catch (CatalogExceptionNotRecoverable e) {
-            throw new TransformerRunException(e.getMessage(), e);
+            throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
         } catch (XSLTException e) {
-            throw new TransformerRunException(e.getMessage(), e);
+        	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
         } catch (IOException e) {
-            throw new TransformerRunException(e.getMessage(), e);
+        	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
         } catch (XMLStreamException e) {
-            throw new TransformerRunException(e.getMessage(), e);
+        	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
         } catch (FilesetFatalException e) {
-            throw new TransformerRunException(e.getMessage(), e);
+        	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
         }
         
         return true;
@@ -262,8 +268,10 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             smilCount++;
             Z3986SmilFile smilZed = (Z3986SmilFile)it.next();
             File smil202 = new File(outputDir, smilZed.getFile().getName());
-            Object[] params = {new Integer(smilNum), new Integer(smilCount), smil202.getName()};
-            this.sendMessage(Level.INFO, i18n("SMIL", params));            
+            Object[] params = {new Integer(smilNum), new Integer(smilCount), smil202.getName()};  
+            this.sendMessage(i18n("SMIL", params), 
+            	MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
+            
             
             File temp2 = TempFile.create();
                         
@@ -328,7 +336,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             fileCount++;
             FilesetFile fsf = (FilesetFile)it.next();
             Object[] params = {new Integer(fileNum), new Integer(fileCount), fsf.getFile().getName()};
-            this.sendMessage(Level.INFO, i18n("COPYING_FILE", params));
+            this.sendMessage(i18n("COPYING_FILE", params), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
             URI relativeURI = fileset.getRelativeURI(fsf);
             File out = new File(outputDir.toURI().resolve(relativeURI));
             FileUtils.copy(fsf.getFile(), out);
@@ -341,20 +349,8 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         return new FilesetImpl(FilenameOrFileURI.toFile(manifest).toURI(), this, false, true);
     }
 
-	public void error(FilesetFileException ffe) throws FilesetFileException {		
-		if(ffe instanceof FilesetFileFatalErrorException) {
-			this.sendMessage(Level.WARNING, "Serious error in "	+ ffe.getOrigin().getName() + ": " 
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}else if (ffe instanceof FilesetFileErrorException) {
-			this.sendMessage(Level.WARNING, "Error in " + ffe.getOrigin().getName() + ": " 
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}else if (ffe instanceof FilesetFileWarningException) {
-			this.sendMessage(Level.WARNING, "Warning in " + ffe.getOrigin().getName() + ": " 
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}else{
-			this.sendMessage(Level.WARNING, "Exception with unknown severity in " + ffe.getOrigin().getName() + ": "
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}		
+	public void error(FilesetFileException ffe) throws FilesetFileException {
+		this.sendMessage(ffe);	
 	}
     
 }

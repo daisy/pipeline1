@@ -93,7 +93,7 @@ public class Recorder2dtb extends Transformer implements TransformerDelegateList
 		EFolder destination = 
 			new EFolder(FileUtils.createDirectory(FilenameOrFileURI.toFile(dest)));
 		
-		this.sendMessage(i18n("RENDERING_TO", destination.getAbsolutePath())
+		this.sendMessage(i18n("RENDERING_RESULT_TO", destination.getAbsolutePath())
 				, MessageEvent.Type.INFO, MessageEvent.Cause.INPUT);		
 		
 		return destination;

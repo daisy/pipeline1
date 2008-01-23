@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import javax.xml.stream.XMLEventReader;
@@ -149,17 +148,17 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
         		this.nccNcxOnly(input, outputBaseDir);
         	}
         } catch (FilesetFatalException e) {
-        	throw new TransformerRunException(e.getMessage(), e);
+        	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
         } catch (IOException e) {
-        	throw new TransformerRunException(e.getMessage(), e);
+        	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
 		} catch (CatalogExceptionNotRecoverable e) {
-			throw new TransformerRunException(e.getMessage(), e);
+			throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
 		} catch (XMLStreamException e) {
-			throw new TransformerRunException(e.getMessage(), e);
+			throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
 		} catch (URISyntaxException e) {
-			throw new TransformerRunException(e.getMessage(), e);
+			throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
 		} catch (XSLTException e) {
-			throw new TransformerRunException(e.getMessage(), e);
+			throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
 		}
         
 		return true;
@@ -294,19 +293,7 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */
 	public void error(FilesetFileException ffe) throws FilesetFileException {		
-		if(ffe instanceof FilesetFileFatalErrorException) {
-			this.sendMessage(Level.WARNING, "Serious error in "	+ ffe.getOrigin().getName() + ": " 
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}else if (ffe instanceof FilesetFileErrorException) {
-			this.sendMessage(Level.WARNING, "Error in " + ffe.getOrigin().getName() + ": " 
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}else if (ffe instanceof FilesetFileWarningException) {
-			this.sendMessage(Level.WARNING, "Warning in " + ffe.getOrigin().getName() + ": " 
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}else{
-			this.sendMessage(Level.WARNING, "Exception with unknown severity in " + ffe.getOrigin().getName() + ": "
-					+ ffe.getCause().getMessage() + " [" + ffe.getCause().getClass().getSimpleName() + "]");
-		}		
+		this.sendMessage(ffe);		
 	}
 
 }

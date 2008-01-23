@@ -143,6 +143,7 @@ public class DTBook2Xhtml extends Transformer implements FilesetErrorHandler,  D
 			if(parameters.containsKey("svg_mathml")) {
 				//some post-xslt namespace cleanup.
 				Map<String, Object>domConfigMap = LSParserPool.getInstance().getDefaultPropertyMap(Boolean.FALSE);
+				domConfigMap.put("resource-resolver", CatalogEntityResolver.getInstance());
 				LSParser parser = LSParserPool.getInstance().acquire(domConfigMap);
 				DOMConfiguration domConfig = parser.getDomConfig();						
 				domConfig.setParameter("error-handler", this);										

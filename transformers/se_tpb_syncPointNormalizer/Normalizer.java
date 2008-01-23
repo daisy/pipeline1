@@ -46,6 +46,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
@@ -106,8 +107,8 @@ public class Normalizer extends Transformer {
             
             // First pass: record elements content info
             XMLEventReader xer = xif.createXMLEventReader(new FileInputStream(input));
-            Map elementInfo = this.getElementInfo(xer);
-            sendMessage(Level.INFO, elementInfo.size() + " elements found.");
+            Map elementInfo = this.getElementInfo(xer);            
+            this.sendMessage(i18n("ELEMENTS_FOUND",elementInfo.size()), MessageEvent.Type.DEBUG);
             xer.close();
             
             // Second pass: normalize elements with mixed content

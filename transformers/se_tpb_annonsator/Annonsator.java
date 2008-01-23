@@ -47,6 +47,7 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileUtils;
@@ -114,8 +115,8 @@ public class Annonsator extends Transformer implements ErrorListener {
             xsltBuilder.setOutputFile(xslOutput);
             xsltBuilder.printToFile();
             Document xslt = xsltBuilder.getTemplate();
-            sendMessage(Level.FINE, i18n("STYLESHEET_CREATED"));
-            
+            this.sendMessage(i18n("STYLESHEET_CREATED"), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
+                        
             // Perform transformation
             DOMSource xsltSource = new DOMSource(xslt);            
             SAXParserFactory spf = SAXParserFactory.newInstance();

@@ -77,7 +77,7 @@ class CharsetExecutor extends Executor {
 	    	String detectedCharset = match.getName();
 	    				
 			if(detectedCharset == null) throw new UnsupportedCharsetException("detected charset is null");			
-			String message = mTransformer.delegateLocalize("CHARSET_DETECTED", detectedCharset);
+			String message = mTransformer.delegateLocalize("READING_USING_CHARSET", detectedCharset);
 			mTransformer.delegateMessage(this, message, MessageEvent.Type.INFO, MessageEvent.Cause.INPUT, null);
 						
 			/*

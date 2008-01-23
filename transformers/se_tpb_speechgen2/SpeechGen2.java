@@ -225,10 +225,9 @@ public class SpeechGen2 extends Transformer {
 			parseConfigFile(configFile.getAbsolutePath());
 
 			// copy the additional files
-			sendMessage(i18n("COPYING_REFERRED_FILES"), MessageEvent.Type.INFO);
+			sendMessage(i18n("COPYING_REFERRED_FILES"), MessageEvent.Type.DEBUG);
 			SrcExtractor extr = new SrcExtractor(inputFile);
 			FileBunchCopy.copyFiles(extr.getBaseDir(), outputDir, extr.getSrcValues(), null, true);
-
 
 			// Get ready to count the number of phrases to generate with TTS.
 			XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -240,7 +239,7 @@ public class SpeechGen2 extends Transformer {
 			XMLEventReader plainReader = factory.createXMLEventReader(fis);
 			reader = new BookmarkedXMLEventReader(plainReader);
 
-			sendMessage(i18n("COUNTING_PHRASES"), MessageEvent.Type.INFO);
+			sendMessage(i18n("COUNTING_PHRASES"), MessageEvent.Type.DEBUG);
 			numSPoints = 0;
 			String characterEncoding = "utf-8";
 			ContextStack peek = new ContextStack();
@@ -310,14 +309,14 @@ public class SpeechGen2 extends Transformer {
 			}
 
 			//sendMessage(Level.FINEST, i18n("DONE"));
-			sendMessage(i18n("FOUND_NUMBER", String.valueOf(numSPoints)), MessageEvent.Type.INFO);
+			sendMessage(i18n("FOUND_NUMBER", String.valueOf(numSPoints)), MessageEvent.Type.DEBUG);
 
 
 			//-----------------------------------------------------------------
 			//-----------------------------------------------------------------
 
 			// Here goes the loading of text into tts system...
-			sendMessage(i18n("LOADING_TEXT"), MessageEvent.Type.INFO);
+			sendMessage(i18n("LOADING_TEXT"), MessageEvent.Type.DEBUG);
 
 			barrier = new CountDownLatch(lastSynchNumber.size() + 1);
 			
@@ -361,7 +360,7 @@ public class SpeechGen2 extends Transformer {
 			//---------------------------------------------------------------------------
 			// Fetch the audio
 			//---------------------------------------------------------------------------
-			sendMessage(i18n("FETCHING_AUDIO"), MessageEvent.Type.INFO);
+			sendMessage(i18n("FETCHING_AUDIO"), MessageEvent.Type.DEBUG);
 			
 			if (!doFetchAudio(inputFile, outputFile, reader)) {
 				// close all open streams
@@ -369,50 +368,50 @@ public class SpeechGen2 extends Transformer {
 			}
 			
 			
-			sendMessage(i18n("AWAIT_LAST_MERGE"), MessageEvent.Type.INFO);
+			sendMessage(i18n("AWAIT_LAST_MERGE"), MessageEvent.Type.DEBUG);
 			mergeAudio();
 			if (concurrentMerge) {
 				barrier.await();
 			}
 			
-			sendMessage(i18n("DONE"), MessageEvent.Type.INFO);
+			sendMessage(i18n("DONE"), MessageEvent.Type.DEBUG);
 		} catch (NullPointerException e) {
-			sendMessage(i18n("FATAL_ERROR", e.getMessage()), MessageEvent.Type.ERROR);
+			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (InterruptedException e) {
-			sendMessage(i18n("FATAL_ERROR", e.getMessage()), MessageEvent.Type.ERROR);
+			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (IOException e) {
-			sendMessage(i18n("FATAL_ERROR", e.getMessage()), MessageEvent.Type.ERROR);
+			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (UnsupportedAudioFileException e) {
-			sendMessage(i18n("FATAL_ERROR", e.getMessage()), MessageEvent.Type.ERROR);
+			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (CatalogExceptionNotRecoverable e) {
-			sendMessage(i18n("FATAL_ERROR", e.getMessage()), MessageEvent.Type.ERROR);			
+			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);			
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (XMLStreamException e) {
-			sendMessage(i18n("FATAL_ERROR", e.getMessage()), MessageEvent.Type.ERROR);			
+			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);			
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (ParserConfigurationException e) {
-			sendMessage(i18n("FATAL_ERROR", e.getMessage()), MessageEvent.Type.ERROR);
+			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (SAXException e) {
-			sendMessage(i18n("FATAL_ERROR", e.getMessage()), MessageEvent.Type.ERROR);
+			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
 			throw new TransformerRunException(e.getMessage(), e);

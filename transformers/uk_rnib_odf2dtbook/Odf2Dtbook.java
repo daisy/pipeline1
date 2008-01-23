@@ -163,7 +163,7 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
             mTempDir.delete();
             
         } catch (Exception e) {
-        	this.sendMessage(e.getMessage(),MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
+        	this.sendMessage(i18n("ERROR_ABORTING",e.getMessage()),MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
             throw new TransformerRunException(e.getMessage(), e);
 		}finally{
         	System.setProperty("javax.xml.transform.TransformerFactory",systemTransformerFactory);        	
@@ -215,11 +215,12 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
     	}
     }
 
-    /**
-     * 
+    /*
+     * (non-Javadoc)
+     * @see javax.xml.transform.URIResolver#resolve(java.lang.String, java.lang.String)
      */
+	@SuppressWarnings("unused")
 	public Source resolve(String href, String base) throws TransformerException {
-		//System.err.println("resolve: " + href);
 		if(href.equals("content.xml")||href.equals("styles.xml")||href.equals("_styles.xml")||href.equals("meta.xml")) {			
 			return new StreamSource(new File(mTempDir,href));
 		}
@@ -227,26 +228,29 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
 			return new StreamSource(new File(this.getTransformerDirectory(), href));
 		}
 		if(href.length()>0){
-			this.sendMessage(i18n("UNRESOLVED",href),MessageEvent.Type.WARNING,MessageEvent.Cause.SYSTEM);
+			this.sendMessage(i18n("UNRESOLVED",href),MessageEvent.Type.DEBUG,MessageEvent.Cause.SYSTEM);
 		}else{
 			System.err.println("href with length 0 in Odf2Dtbook#resolve");
 		}
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public void error(TransformerException e) throws TransformerException {
 		Location loc = LocusTransformer.newLocation(e);
-		this.sendMessage(e.getMessage(),MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT,loc);	
+		this.sendMessage(i18n("ERROR",e.getMessage()),MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT,loc);	
 	}
 
+	@SuppressWarnings("unused")
 	public void fatalError(TransformerException e) throws TransformerException {
 		Location loc = LocusTransformer.newLocation(e);
-		this.sendMessage(e.getMessage(),MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT,loc);
+		this.sendMessage(i18n("ERROR",e.getMessage()),MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT,loc);
 	}
 
+	@SuppressWarnings("unused")
 	public void warning(TransformerException e) throws TransformerException {
 		Location loc = LocusTransformer.newLocation(e);
-		this.sendMessage(e.getMessage(),MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT,loc);
+		this.sendMessage(i18n("ERROR",e.getMessage()),MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT,loc);
 	}
     	
 	class MessageEmitterWriter extends Writer {
@@ -255,18 +259,21 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
 			mT = t;
 		}
 		
+		@SuppressWarnings("unused")
 		@Override
 		public void close() throws IOException {
 			// TODO Auto-generated method stub
 			
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public void flush() throws IOException {
 			// TODO Auto-generated method stub
 			
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public void write(char[] cbuf, int off, int len) throws IOException {
 			String s = new String(cbuf, off, len).trim();

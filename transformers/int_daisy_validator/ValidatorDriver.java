@@ -56,6 +56,7 @@ import org.daisy.util.fileset.validation.ValidatorFactory;
 import org.daisy.util.fileset.validation.ValidatorListener;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
+import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorSevereErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
@@ -75,11 +76,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+
+
 /**
  * An input type agnostic multi schema type multi layered validator.
  * @author Markus Gylling
  */
-
 //@SuppressWarnings("unused")
 public class ValidatorDriver extends Transformer implements FilesetErrorHandler, ValidatorListener, ErrorHandler {
 
@@ -95,7 +97,6 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	private PeekResult mInputFilePeekResult = null;									//a global peek on inputfile
 	private Map<Source, String> mSchemaSources = new HashMap<Source, String>();		//<Source>,<SchemaNSURI> 
 	private HashSet mValidatorMessageCache = new HashSet();							//to avoid identical messages
-	//private FilesetRegex mRegex = FilesetRegex.getInstance();						//convenience shortcut
 	private StateTracker mStateTracker = new StateTracker();						//inner class
 	private CompletionTracker mCompletionTracker = new CompletionTracker();			//inner class
 	private XMLReporter mXmlReporter = null;										// validator xml output
@@ -136,7 +137,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 
 		try {
 
-			long start = System.nanoTime();
+			//long start = System.nanoTime();
 			
 			// Martin Blomberg 2006-11-28
 			// initialize the optional xml reporter
@@ -163,7 +164,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					mDocumentContextInfoProvider = new ExtendedLocationProvider();
 				} catch (Exception e) {
 					String message = i18n("FAILURE_INITIALIZING_CONTEXT_INFO",e.getMessage());
-					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
+					this.sendMessage(message, MessageEvent.Type.DEBUG, MessageEvent.Cause.INPUT);
 					mDocumentContextInfoProvider = null;
 					mGenerateContextInfo = false;
 				}
@@ -227,7 +228,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 						//TODO set schemas on validator
 						
 						String message = i18n("VALIDATING_FILESET", mInputFileset.getFilesetType().toNiceNameString());
-						this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+						this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 						filesetValidator.validate(mInputFileset);
 						
 						this.sendMessage(PROGRESS_FILESET_VALIDATION);
@@ -242,7 +243,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					}catch (ValidatorException ve) {
 						//another error than nonsupported type occured
 						mStateTracker.mHadCaughtException = true;
-						String message = i18n("FILESET_VALIDATION_FAILURE", ve.getMessage());		
+						String message = i18n("FILESET_VALIDATION_ERROR", ve.getMessage());		
 						this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 						// add exception to xml report
 						xmlReport(ve);
@@ -266,7 +267,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 							&& (mInputFilePeekResult.getPrologSystemId()!=null
 									||mInputFilePeekResult.getPrologPublicId()!=null)){
 						String message = i18n("SAX_DTD_VAL");
-						this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+						this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 						doSAXDTDValidation();	
 						this.sendMessage(PROGRESS_SAX_VALIDATION);
 						this.checkAbort();
@@ -277,7 +278,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				if((!(mSchemaSources = setSchemaSources(parameters)).isEmpty()) 
 						&& (mInputFilePeekResult != null)) {
 					String message = i18n("JAXP_SCHEMA_VAL", Integer.toString(mSchemaSources.size()));
-					this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+					this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 					doJAXPSchemaValidation();
 					this.sendMessage(PROGRESS_JAXP_VALIDATION);
 					this.checkAbort();
@@ -292,7 +293,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				throw new TransformerRunException(message,e);
 			}
 
-			long end = System.nanoTime();
+			//long end = System.nanoTime();
 
 			/*
 			 * finally, check the result state and completion situation.
@@ -324,34 +325,34 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 
 			if(mCompletionTracker.mCompletedFilesetValidation) {
 				String message = i18n("COMPLETED_FILESET_VALIDATION");		
-				this.sendMessage(message, MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
+				this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 			}else{
 				if(mCompletionTracker.mCompletedFilesetInstantiation) {					
 					String message = i18n("COMPLETED_FILESET_INSTANTIATION");		
-					this.sendMessage(message, MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
+					this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 
 				}else{
 					if(mCompletionTracker.mCompletedInlineDTDValidation) {						
 						String message = i18n("COMPLETED_DTD_VALIDATION");		
-						this.sendMessage(message, MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
+						this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 					}
 				}
 			}
 
 			if(mCompletionTracker.mCompletedJAXPSchemaValidation) {
 				String message = i18n("COMPLETED_JAXP_VALIDATION");		
-				this.sendMessage(message, MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
+				this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 			}
 			
-			String message = i18n("DURATION", Double.toString((end-start)/1000000000));		
-			this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
-
-			message = i18n("MESSAGES_FROM_VALIDATOR",Integer.toString(mValidatorMessageCache.size()));		
-			this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
-			
+//			String message = i18n("DURATION", Double.toString((end-start)/1000000000));		
+//			this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+						
 			if(mValidatorMessageCache.size()==0) {				
-				message = i18n("CONGRATS");		
+				String message = i18n("CONGRATS");		
 				this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+			}else{
+				String message = i18n("MESSAGES_FROM_VALIDATOR",Integer.toString(mValidatorMessageCache.size()));		
+				this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);	
 			}
 			
 			
@@ -369,7 +370,6 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				try {
 					mXmlReporter.finishReport();
 				} catch (XMLStreamException e) {
-					//this.sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 					String message = i18n("ERROR_ABORTING", e.getMessage());
 					throw new TransformerRunException(message,e);			
 				}
@@ -381,7 +381,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				try {
 					mDocumentContextInfoProvider.reset();
 				} catch (XMLStreamException e) {
-					this.sendMessage(i18n("COULDNT_CLEAR_READER_CACHE", e.getMessage()), MessageEvent.Type.WARNING);					
+					this.sendMessage(i18n("COULDNT_CLEAR_READER_CACHE", e.getMessage()), MessageEvent.Type.DEBUG);					
 				}
 			}
 		}
@@ -422,8 +422,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * @throws SAXException 
 	 * @throws IOException 
 	 */
-	
-	
+	@SuppressWarnings("unchecked")
 	private Map<Source,String> setSchemaSources(Map parameters)  {
 
 		//get schemas from inparams
@@ -445,13 +444,14 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 
 		//get schemas from doc inline
 		if(mInputFilePeekResult!=null){
-			Set xsis = mInputFilePeekResult.getXSISchemaLocationURIs();
-			for (Iterator iter = xsis.iterator(); iter.hasNext();) {
+			Set<?> xsis = mInputFilePeekResult.getXSISchemaLocationURIs();
+			for (Iterator<?> iter = xsis.iterator(); iter.hasNext();) {
 				String str = (String) iter.next();						
 				try{
 					Map<Source,String> map = ValidationUtils.toSchemaSources(str);
 					mSchemaSources.putAll(map);
 				}catch (Exception e) {
+					mStateTracker.mHadCaughtException = true;
 					String message = i18n("SCHEMA_INSTANTIATION_FAILURE", str);
 					xmlReport(new ValidatorException(message, e));
 					this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
@@ -518,7 +518,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					fileName = fileName.substring(fileName.lastIndexOf("/"));
 				}				
 				String message = i18n("VALIDATING_USING_SCHEMA",schemaType, fileName);
-				this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+				this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 
 				//then do it
 				if(!factoryMap.containsKey(schemaNsURI)) {
@@ -548,6 +548,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */	
+	@SuppressWarnings("unused")
 	public void error(FilesetFileException ffe) throws FilesetFileException {
 		//we redirect anything recoverable that is reported during 
 		//fileset instantiation to ValidatorListener#message just to
@@ -559,6 +560,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
 	 */
+	@SuppressWarnings("unused")
 	public void error(SAXParseException exception) throws SAXException {
 		//we redirect anything received here to ValidatorListener#message just to be consistent.
 		this.report(null,ExceptionTransformer.newValidatorMessage
@@ -569,6 +571,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
 	 */
+	@SuppressWarnings("unused")
 	public void fatalError(SAXParseException exception) throws SAXException {
 		//we redirect anything received here to ValidatorListener#message just to be consistent.					
 		this.report(null,ExceptionTransformer.newValidatorMessage
@@ -580,6 +583,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
 	 */
+	@SuppressWarnings("unused")
 	public void warning(SAXParseException exception) throws SAXException {
 		//we redirect anything received here to ValidatorListener#message just to be consistent.
 		if(!exception.getMessage().contains("XSLT 1.0")) {
@@ -631,7 +635,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 				try {
 					loc = mDocumentContextInfoProvider.generate(loc);
 				} catch (Exception e) {
-					this.sendMessage(i18n("FAILURE_GETTING_CONTEXT_INFO", e.getMessage()), MessageEvent.Type.WARNING);
+					this.sendMessage(i18n("FAILURE_GETTING_CONTEXT_INFO", e.getMessage()), MessageEvent.Type.DEBUG);
 				}
 			}
 			
@@ -662,6 +666,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#progress(org.daisy.util.fileset.validation.Validator, double)
 	 */
+	@SuppressWarnings("unused")
 	public void progress(Validator validator, double progress) {
 		//cant do much here since the validators progres is not equal to the transformers progress..		
 	}	
@@ -670,6 +675,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#exception(org.daisy.util.fileset.validation.Validator, java.lang.Exception)
 	 */
+	@SuppressWarnings("unused")
 	public void exception(Validator validator, Exception e) {
 		mStateTracker.mHadCaughtException = true;
 		xmlReport(e);		
@@ -681,7 +687,8 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.ValidatorListener#inform(org.daisy.util.fileset.validation.Validator, java.lang.String)
 	 */
-	public void inform(Validator validator, String information) {
+	public void inform(@SuppressWarnings("unused")
+	Validator validator, String information) {
 		this.sendMessage(information, MessageEvent.Type.INFO);
 	}
 
@@ -755,7 +762,14 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					"org.daisy.util.fileset.validation:http://www.daisy.org/fileset/OPS_20",
 			"org.daisy.util.fileset.validation.ValidatorImplOPS2x");
 		}
-		
+
+		test = System.getProperty(
+		"org.daisy.util.fileset.validation:http://www.daisy.org/fileset/OPS_EPUB");
+		if(test==null){
+			System.setProperty(
+					"org.daisy.util.fileset.validation:http://www.daisy.org/fileset/OPS_EPUB",
+			"org.daisy.util.fileset.validation.ValidatorImplEpubCheck");
+		}
 
 	}
 

@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -119,7 +118,7 @@ public class DtbAudioEncoder extends Transformer {
                     // Encode audio files
                     ++currentNum;
                     Object[] params = {new Integer(totalNum), new Integer(currentNum), fsf.getFile().getName()};
-                    this.sendMessage(i18n("ENCODING", params), MessageEvent.Type.DEBUG);
+                    this.sendMessage(i18n("ENCODING", params), MessageEvent.Type.INFO_FINER);
                     this.encodeFile(fsf.getFile(), outputDirectory, fileset.getRelativeURI(fsf));
                     alreadyDone.add(fsf.getFile().getName());
                     currentSize += fsf.getFile().length();

@@ -7,7 +7,6 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.EFile;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 
@@ -22,6 +21,7 @@ public class Copyer extends Transformer {
 		super(inListener, isInteractive);
 	}
 
+	@SuppressWarnings({"unchecked", "unused"})
 	@Override
 	protected boolean execute(Map parameters) throws TransformerRunException {		
 		try{
@@ -39,14 +39,14 @@ public class Copyer extends Transformer {
 			File input = new File(inputParam);
 			if(!input.exists()) throw new TransformerRunException(input + " does not exist");
 			
-			this.sendMessage(i18n("COPYING", input.getAbsolutePath()), MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+			this.sendMessage(i18n("COPYING", input.getAbsolutePath()), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 			
 			if(input.isFile()) {
 				File dest = new File(destinationParam);
 				if(overwrite ||(!dest.exists())){
 					FileUtils.copyFile(input, dest );
 				}else{
-					this.sendMessage(i18n("COPY_CANCELED", dest.getAbsolutePath()), MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);					
+					this.sendMessage(i18n("COPY_CANCELED", dest.getAbsolutePath()), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);					
 				}
 			}else if(input.isDirectory()){	
 				EFolder inputFolder = new EFolder(input);
@@ -55,14 +55,12 @@ public class Copyer extends Transformer {
 				EFolder destination = new EFolder(output);				
 				boolean result = inputFolder.copyChildrenTo(destination, overwrite, deep, inputExcludeRegex );
 				if(!result) {
-					this.sendMessage(i18n("COPY_CANCELED_UNKNOWN"), MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+					this.sendMessage(i18n("COPY_CANCELED_UNKNOWN"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 				}
 			}else{
 				throw new TransformerRunException("input is not recognized"); 
 			}
-			
-			
-		
+
 		}catch (Exception e) {
 			this.sendMessage(i18n("COPIER_MAIN_EXCEPTION", e.getMessage()), MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);			
 		}		

@@ -128,17 +128,17 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			for(Category category : categories) {				
 				InputState state = getInputState(juggler.getInput());
 				if(force||category.supportsInputState(state)) {
-					this.sendMessage(i18n("RUNNING_CATEGORY",i18n(category.getName().toString())),MessageEvent.Type.INFO);
+					this.sendMessage(i18n("RUNNING_CATEGORY",i18n(category.getName().toString())),MessageEvent.Type.INFO_FINER);
 			    	for(Executor exec : category) {
 			    		this.checkAbort();
-			    		this.sendMessage(i18n("RUNNING_EXECUTOR", exec.getNiceName()),MessageEvent.Type.INFO);
+			    		this.sendMessage(i18n("RUNNING_EXECUTOR", exec.getNiceName()),MessageEvent.Type.INFO_FINER);
 			    		exec.execute(new StreamSource(juggler.getInput()), new StreamResult(juggler.getOutput()));
 			    		juggler.swap();
 			    		progress++;
 			    		this.sendMessage(progress/progressLen);
 			    	}
 				}else{
-					this.sendMessage(i18n("CATEGORY_SKIPPED", i18n(category.getName().name()), i18n(state.name())), MessageEvent.Type.INFO);
+					this.sendMessage(i18n("CATEGORY_SKIPPED", i18n(category.getName().name()), i18n(state.name())), MessageEvent.Type.INFO_FINER);
 					progress += category.size();
 					this.sendMessage(progress/progressLen);
 				}
@@ -358,7 +358,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 	
 	private InputState getInputState(File input, Set<URL> extraSchemas) throws ValidatorException {	
 		
-    	this.sendMessage(i18n("VALIDATING", input),MessageEvent.Type.DEBUG);
+    	this.sendMessage(i18n("VALIDATING", input),MessageEvent.Type.INFO_FINER);
     			
 		ValidatorFactory vfac = ValidatorFactory.newInstance();		
 		mHadValidationErrors = false;
@@ -375,16 +375,16 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			}			
 			validator.validate(dtbookFileset);		
 		} catch (FilesetFatalException e) {
-			this.sendMessage(i18n("WAS_MALFORMED"),MessageEvent.Type.DEBUG);
+			this.sendMessage(i18n("WAS_MALFORMED"),MessageEvent.Type.INFO_FINER);
 			return InputState.MALFORMED;			
 		}	
 		
 		if (mHadValidationErrors) {
-			this.sendMessage(i18n("WAS_INVALID"),MessageEvent.Type.DEBUG);
+			this.sendMessage(i18n("WAS_INVALID"),MessageEvent.Type.INFO_FINER);
 			return InputState.INVALID; 
 		}
 		
-		this.sendMessage(i18n("WAS_VALID"),MessageEvent.Type.DEBUG);
+		this.sendMessage(i18n("WAS_VALID"),MessageEvent.Type.INFO_FINER);
 		return InputState.VALID;
 		
 	}

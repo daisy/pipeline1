@@ -114,7 +114,7 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 			if(mUCharReplacer!=null) {
 				//number of successful table hits
 				if(!mUCharReplacer.getTranslationTables().isEmpty()) {
-					this.sendMessage(i18n("SUBSTITUTION_COUNT",mUCharReplacer.getTranslationTableHitCount()), MessageEvent.Type.INFO, MessageEvent.Cause.INPUT);
+					this.sendMessage(i18n("SUBSTITUTION_COUNT",mUCharReplacer.getTranslationTableHitCount()), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.INPUT);
 				}
 				
 				//warnings (table failures)
@@ -127,15 +127,15 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 						codePoint = (Integer) iter.next();					
 						value = (String)map.get(codePoint);
 						StringBuilder sb = new StringBuilder(127);
-						sb.append("No user provided replacement text found for ");
+						sb.append(i18n("NO_REPLACEMENT_FOR"));
 						sb.append(CharUtils.unicodeHexEscape(codePoint.intValue()));
 						sb.append(" [");
 						sb.append(String.copyValueOf(Character.toChars(codePoint.intValue())));
-						sb.append(']');
+						sb.append("]. ");
 					    if(value!=null) {
-					    	sb.append(". Using fallback '").append(value).append("' instead.");
+					    	sb.append(i18n("USING_FALLBACK",value));					    	
 					    }else{
-					    	sb.append(". Input character forwarded to output.");
+					    	sb.append(i18n("FORWARDED"));
 					    }						
 					    this.sendMessage(sb.toString(),MessageEvent.Type.WARNING);
 					}
@@ -143,7 +143,6 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 			}
 			
 		} catch (Exception e) {
-			//this.sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			String message = (i18n("ERROR_ABORTING", e.getMessage()));
 			throw new TransformerRunException(message,e);			
 		} finally {
@@ -167,10 +166,10 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 					try{
 						mUCharReplacer.addSubstitutionTable(t.toURI().toURL());
 					}catch (Exception e) {
-						this.sendMessage("Translation table " + t.getPath() + " exception: " + e.getMessage(), MessageEvent.Type.WARNING);
+						this.sendMessage(i18n("ERROR",e.getLocalizedMessage()));
 					}	
 				}else{
-					this.sendMessage("Translation table " + t.getPath() + " could not be found", MessageEvent.Type.WARNING);
+					this.sendMessage(i18n("FILE_NOT_FOUND",t.getPath()), MessageEvent.Type.WARNING);
 				}				
 			} //for				
 		} //if param != null
@@ -188,7 +187,7 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 		if(param!=null&&!param.toLowerCase().equals("none")) {	
 			try{
 				Charset chrs = Charset.forName(param);
-				this.sendMessage(i18n("USING_EXCLUDE_CHARSET",chrs.displayName()), MessageEvent.Type.INFO);
+				this.sendMessage(i18n("USING_EXCLUDE_CHARSET",chrs.displayName()), MessageEvent.Type.INFO_FINER);
 				mUCharReplacer.setExclusionRepertoire(chrs);
 			}catch (Exception e) {
 				this.sendMessage(i18n("EXCLUDE_CHARSET_FAIL",param), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
@@ -201,7 +200,7 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 						&&!mUCharReplacer.getFallbackState(mUCharReplacer.FALLBACK_TRANSLITERATE_ANY_TO_LATIN)
 						&&!mUCharReplacer.getFallbackState(mUCharReplacer.FALLBACK_TRANSLITERATE_REMOVE_NONSPACING_MARKS)
 						)) {
-			this.sendMessage("No translation tables loaded, and no fallbacks enabled", MessageEvent.Type.WARNING);
+			this.sendMessage(i18n("NOTHING_LOADED"), MessageEvent.Type.WARNING);
 			mUCharReplacer=null;
 		}
 
