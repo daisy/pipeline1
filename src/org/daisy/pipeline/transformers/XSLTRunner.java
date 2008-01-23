@@ -68,10 +68,10 @@ public class XSLTRunner extends Transformer {
         String factory = (String)parameters.remove("factory");
         
         // xml        
-        sendMessage(i18n("XSLT_READING_XML", xmlFileName), MessageEvent.Type.INFO , MessageEvent.Cause.SYSTEM); 
+        sendMessage(i18n("XSLT_READING_XML", xmlFileName), MessageEvent.Type.INFO_FINER , MessageEvent.Cause.SYSTEM); 
         
         // xslt        
-        sendMessage(i18n("XSLT_READING_XSLT", xsltFileName), MessageEvent.Type.INFO , MessageEvent.Cause.SYSTEM);
+        sendMessage(i18n("XSLT_READING_XSLT", xsltFileName), MessageEvent.Type.DEBUG , MessageEvent.Cause.SYSTEM);
         
         // factory
         if (factory != null) {	        
@@ -79,7 +79,7 @@ public class XSLTRunner extends Transformer {
 	    }
         
         // result
-        sendMessage( i18n("XSLT_WRITING_OUT", outFileName), MessageEvent.Type.INFO , MessageEvent.Cause.SYSTEM);        
+        sendMessage( i18n("XSLT_WRITING_OUT", outFileName), MessageEvent.Type.INFO_FINER , MessageEvent.Cause.SYSTEM);        
 		
 		try {			
 			//mg20070905 assure the dir path exists 

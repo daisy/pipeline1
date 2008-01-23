@@ -21,13 +21,12 @@ package org.daisy.pipeline.transformers;
 import java.io.File;
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.execution.Command;
@@ -68,8 +67,8 @@ public class ExeRunner extends Transformer {
      * @param eventListeners a set of event listeners
      * @param interactive specified whether the Transformer should be run in interactive mode
      */    
-    public ExeRunner(InputListener inListener, Set eventListeners, Boolean interactive) {
-        super(inListener, eventListeners, interactive);
+    public ExeRunner(InputListener inListener, Boolean interactive) {
+        super(inListener, interactive);
     }
     
     protected boolean execute(Map parameters) throws TransformerRunException {
@@ -120,20 +119,20 @@ public class ExeRunner extends Transformer {
         // Read poll interval
         int pollInterval = Integer.parseInt(System.getProperty("dmfc.pollExeInterval", "500"));
         if (pollInterval < 10) {
-            sendMessage(Level.WARNING, i18n("POLL_INTERVAL_TO_SMALL"));
+        	sendMessage(i18n("POLL_INTERVAL_TO_SMALL"),MessageEvent.Type.WARNING);            
             pollInterval = 500;
         }
         
         int exitVal;
         try {
-            sendMessage(Level.FINE, i18n("RUNNING_COMMAND", command));
+            sendMessage(i18n("RUNNING_COMMAND"),MessageEvent.Type.INFO_FINER);
             Date startDate = new Date();
             exitVal = Command.execute(command, dir, stdoutFile, stderrFile, maxRunningTime, pollInterval);
             Date doneDate = new Date();
-            sendMessage(Level.FINE, i18n("PROGRAM_RAN_FOR", command, new Long((doneDate.getTime() - startDate.getTime())/1000)));
+            sendMessage(i18n("PROGRAM_RAN_FOR", command, new Long((doneDate.getTime() - startDate.getTime())/1000)),MessageEvent.Type.INFO_FINER);
             
         } catch (ExecutionException e) {
-            sendMessage(Level.WARNING, e.getMessage());
+        	sendMessage(e.getLocalizedMessage(),MessageEvent.Type.WARNING);
             return false;
         }
           
