@@ -272,7 +272,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 		} catch (Exception e) {
 			this.sendMessage(e.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
 		}
-		this.sendMessage(i18n("NO_CHARSET",mInputFile.getName()),MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT);
+		this.sendMessage(i18n("CHARSET_DETECTION_FAILED",mInputFile.getName()),MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT);
 		return null;
 	}
 
