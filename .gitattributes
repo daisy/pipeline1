@@ -328,6 +328,7 @@ src/org/daisy/pipeline/core/event/TaskStateChangeEvent.java -text
 src/org/daisy/pipeline/core/event/UserAbortEvent.java -text
 src/org/daisy/pipeline/core/event/UserEvent.java -text
 src/org/daisy/pipeline/core/event/UserReplyEvent.java -text
+src/org/daisy/pipeline/core/pipeline.messages -text
 src/org/daisy/pipeline/core/script/AbstractProperty.java -text
 src/org/daisy/pipeline/core/script/Creator.java -text
 src/org/daisy/pipeline/core/script/Job.java -text
