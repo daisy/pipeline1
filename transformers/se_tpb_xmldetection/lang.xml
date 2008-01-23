@@ -3,10 +3,10 @@
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">
   
   <group>
-    <public systemId="sv" uri="lang/sv.xml" />
-    <public systemId="fr" uri="lang/fr.xml" />
-    <public systemId="en" uri="lang/en.xml" />
-    <public systemId="common" uri="lang/common.xml" />
+    <system systemId="sv" uri="lang/sv.xml" />
+    <system systemId="fr" uri="lang/fr.xml" />
+    <system systemId="en" uri="lang/en.xml" />
+    <system systemId="common" uri="lang/common.xml" />
   </group>
     
 </catalog>
