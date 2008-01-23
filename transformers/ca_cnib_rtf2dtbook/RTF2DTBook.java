@@ -52,8 +52,7 @@ public class RTF2DTBook extends Transformer {
 	}
 	
 	protected boolean execute(Map parameters) throws TransformerRunException {
-		
-		
+				
 		//first check if python is installed and identified
 		File test = new File(pythonCommand);
 		if(!test.exists() || !test.canRead()) {
@@ -77,8 +76,7 @@ public class RTF2DTBook extends Transformer {
 		try {
 			xmlFile = new TempFile();
 		} catch (IOException e) {
-			String message = i18n("CANNOT_CREATE_TEMP_FILE");
-			//this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
+			String message = i18n("ERROR_ABORTING",e.getMessage());
 			throw new TransformerRunException(message, e);
 		}
 
@@ -96,22 +94,19 @@ public class RTF2DTBook extends Transformer {
 		//printArgs(args);
 
 		// Run python
-		sendMessage(i18n("RUNNING_PYTHON"));
+		sendMessage(i18n("RUNNING_PYTHON"),MessageEvent.Type.INFO_FINER);
 		this.progress(0.05);
 
 
 		try {
 			if (Command.execute(args) != 0) {
-				String message = i18n("PYTHON_FAILED");
-				//this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
+				String message = i18n("ERROR_ABORTING",i18n("PYTHON_FAILED"));
 				throw new TransformerRunException(message);				
 			}
 		} catch (ExecutionException e1) {
-			String message = i18n("CANNOT_RUN_PYTHON");
-			//this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
-			throw new TransformerRunException(message, e1);			
+			String message = i18n("ERROR_ABORTING",e1.getMessage());
+			throw new TransformerRunException(message, e1);
 		} 
-
 
 		/*
 		System.out.println("The length of the temp file is: " + xmlFile.getFile().length());
@@ -119,8 +114,7 @@ public class RTF2DTBook extends Transformer {
 		is 0 and causes the Stylesheet.apply to fail.
 		 */
 		
-		// Finish up with some XSLT
-		sendMessage(i18n("APPLYING_XSLT"));
+		sendMessage(i18n("APPLYING_XSLT"),MessageEvent.Type.INFO_FINER);
 		this.progress(0.70);
 		try {
 			File outputFile = new File(dtbookFile);
@@ -128,15 +122,10 @@ public class RTF2DTBook extends Transformer {
 			EntityResolver resolver = CatalogEntityResolver.getInstance();
 			Stylesheet.apply(xmlFile.getFile().getAbsolutePath(), stylesheet, outputFile.getAbsolutePath(), xsltFactory, null, resolver);
 			this.progress(0.99);
-		} catch (XSLTException e) {
-			String message = i18n("CANNOT_CREATE_TEMP_FILE");
-			//this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
+		} catch (Exception e) {
+			String message = i18n("ERROR_ABORTING",e.getLocalizedMessage());
 			throw new TransformerRunException(message, e);			
-		} catch (CatalogExceptionNotRecoverable e) {
-			String message = i18n("ENTITY_RESOLVER_ERROR");
-			//this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
-			throw new TransformerRunException(message, e);
-		}
+		} 
 		return true;
 	}
 
