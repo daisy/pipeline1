@@ -27,18 +27,15 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.Attributes;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamConstants;
+import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Represents the catalog file (physically in
@@ -53,58 +50,124 @@ import org.xml.sax.helpers.DefaultHandler;
  * load resources from other directories - made Hastables non-static to support
  * multiple independent instances
  */
+/*
+ * 2007-12-27 mgylling - changed reader of catalog file to use StAX pool to save some initialization time.
+ */
 public final class CatalogFile {
-    private Class resourceClass;
+    private Class<?> resourceClass;
     private URL catalogURL;
-    private Hashtable pIdTable = new Hashtable(); 
-    private Hashtable sIdTable = new Hashtable(); 
-    private Hashtable srcIdTable = new Hashtable();
+    private Hashtable<String,Object> pIdTable = new Hashtable<String,Object>(); //initially stored as URL, but turned into string after first access
+    private Hashtable<String,Object> sIdTable = new Hashtable<String,Object>(); //initially stored as URL, but turned into string after first access
+    private Hashtable<String,URL> srcIdTable = new Hashtable<String,URL>();    //maintains the URL state of the key
+    
+    
 
     /**
      * Class instantiator
      * 
      * @param url
      *            URL of the catalog file
-     * @throws IOException
-     * @throws SAXException
+     * @throws IOException 
+     * @throws XMLStreamException 
      */
-    public CatalogFile(URL url, Class resourceBase) throws IOException, SAXException, URISyntaxException {
+    public CatalogFile(URL url, Class resourceBase) throws IOException, SAXException, URISyntaxException{
+    	//we maintain the old throws signature
+    	final String ns_uri = "urn:oasis:names:tc:entity:xmlns:xml:catalog";
+    	final String public_name = "public";
+    	final String publicId_name = "publicId";
+    	final String system_name = "system";
+    	final String systemId_name = "systemId";
+    	final String uri_name = "uri";
+    	
         resourceClass = resourceBase;
         if (resourceBase == null) {
             resourceClass = this.getClass();
         }
         catalogURL = url;
 
-        try {
-            // get a jaxp sax instance
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            factory.setValidating(false);
-            factory.setNamespaceAware(true);
-            try {
-                // intern strings in order to be able to use == instead of
-                // .equals
-                factory.setFeature(
-                        "http://xml.org/sax/features/string-interning", true);
-                // turn of loaddtd on catalog file (else goes to oasis) - note
-                // apache specific, jaxp13 does not seem to support this
-                factory
-                        .setFeature(
-                                "http://apache.org/xml/features/nonvalidating/load-external-dtd",
-                                false);
-            } catch (SAXNotRecognizedException snre) {
-            	if(System.getProperty("org.daisy.debug")!=null) {
-            		System.err.println("DEBUG org.daisy.util.xml.catalog.CatalogFile " + snre.getMessage());
-            	}
-            } catch (SAXNotSupportedException snse) {
-                System.err.println(snse.getMessage());
-            }
-            SAXParser p = factory.newSAXParser();
-            p.parse(url.openStream(), new CatalogSaxHandler());
-        } catch (CatalogExceptionRecoverable cer) {
-            System.err.println(cer.getMessage());
-        } catch (ParserConfigurationException pce) {
-            System.err.println(pce.getMessage());
+        Map<String, Object> properties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
+        properties.put(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.TRUE);
+        XMLInputFactory xif = null;
+        try{
+        	xif = StAXInputFactoryPool.getInstance().acquire(properties);
+        	XMLStreamReader reader = xif.createXMLStreamReader(catalogURL.openStream());
+        	String key = null;
+        	String value = null;        	
+        	while(reader.hasNext()) {
+        		int type = reader.next();
+        		
+        		if(type == XMLStreamConstants.START_ELEMENT) {
+	        		if(reader.getLocalName().equals(system_name)) {
+	        		   key = reader.getAttributeValue(null, systemId_name);        			
+	        		}else if(reader.getLocalName().equals(public_name)) {
+	        	       key = reader.getAttributeValue(null, publicId_name);
+	        		}else{
+	        			continue;
+	        		}
+	        		if(key!=null) {
+	        			value = reader.getAttributeValue(null, uri_name);
+	                    if (value.indexOf("./") == 0) {
+	                    	value = value.substring(2);
+	                    }
+	                    URL entityUrl = resourceClass.getResource(value);
+	                    if (entityUrl == null) {
+	                    	entityUrl = resourceClass.getClassLoader().getResource(value);
+	                    }
+	                    
+	                    if(entityUrl!=null) {
+		                    if (reader.getLocalName().equals(public_name)) {
+		                        pIdTable.put(key, entityUrl);
+		                    }else{
+		                        sIdTable.put(key, entityUrl);
+		                    }
+		                    srcIdTable.put(key, entityUrl);
+	                    }else{
+	                        System.err.println("CatalogFile warning: Entity "
+	                                + key + " defined in catalog "
+	                                + catalogURL + " not found.");  
+	                    }                    
+	        		}        		
+	        		key = null;
+	        		value = null;    
+        		}
+        	}
+        	
+		} catch (XMLStreamException e) {			
+			throw new IOException(e.getMessage());
+		}finally{
+        	StAXInputFactoryPool.getInstance().release(xif, properties);
         }
+        
+//        try {
+//            // get a jaxp sax instance
+//            SAXParserFactory factory = SAXParserFactory.newInstance();
+//            factory.setValidating(false);
+//            factory.setNamespaceAware(true);
+//            try {
+//                // intern strings in order to be able to use == instead of
+//                // .equals
+//                factory.setFeature(
+//                        "http://xml.org/sax/features/string-interning", true);
+//                // turn of loaddtd on catalog file (else goes to oasis) - note
+//                // apache specific, jaxp13 does not seem to support this
+//                factory
+//                        .setFeature(
+//                                "http://apache.org/xml/features/nonvalidating/load-external-dtd",
+//                                false);
+//            } catch (SAXNotRecognizedException snre) {
+//            	if(System.getProperty("org.daisy.debug")!=null) {
+//            		System.err.println("DEBUG org.daisy.util.xml.catalog.CatalogFile " + snre.getMessage());
+//            	}
+//            } catch (SAXNotSupportedException snse) {
+//                System.err.println(snse.getMessage());
+//            }
+//            SAXParser p = factory.newSAXParser();
+//            p.parse(url.openStream(), new CatalogSaxHandler());
+//        } catch (CatalogExceptionRecoverable cer) {
+//            System.err.println(cer.getMessage());
+//        } catch (ParserConfigurationException pce) {
+//            System.err.println(pce.getMessage());
+//        }
     }
 
     /**
@@ -198,8 +261,8 @@ public final class CatalogFile {
     }
 
     public URL getEntityLocalURL(String id) throws CatalogExceptionEntityNotSupported {
-    	//FIXME this is weirdly written
-        URL entity = (URL) srcIdTable.get(id);
+    	
+        URL entity = srcIdTable.get(id);
         if (entity == null) {
             throw new CatalogExceptionEntityNotSupported(
                     "No support in catalog for public id: " + id);
@@ -229,90 +292,90 @@ public final class CatalogFile {
         return sIdTable.size() + pIdTable.size();
     }
 
-    class CatalogSaxHandler extends DefaultHandler {
-        public void startElement(String namespaceURI, String sName,
-                String qName, Attributes attrs)
-                throws CatalogExceptionRecoverable {
-            String pId = null;
-            String sId = null;
-            URL entity = null;
-            if (qName == null) {
-                System.err.println("qname==null");
-                return;
-            }
-
-            if (qName == "public" || qName == "system") {
-                if (attrs != null) {
-                    for (int i = 0; i < attrs.getLength(); i++) {
-                        if (attrs.getQName(i) == "publicId") {
-                            pId = attrs.getValue(i);
-                        } else if (attrs.getQName(i) == "systemId") {
-                            sId = attrs.getValue(i);
-                        } else if (attrs.getQName(i) == "uri") {
-                            // entity = new
-                            // File(catalog.getParentFile(),attrs.getValue(i));
-                            // do this in case we are inside a jar:
-                            String uri = attrs.getValue(i);
-                            if (uri.indexOf("./") == 0) {
-                                uri = uri.substring(2);
-                            }
-                            URL url = resourceClass.getResource(uri);
-                            if (url == null) {
-                                url = resourceClass.getClassLoader()
-                                        .getResource(uri);
-                            }
-                            if (url != null) {
-                                entity = url;
-                            } else {
-                                System.err
-                                        .println("CatalogFile warning: Entity "
-                                                + attrs.getValue(i)
-                                                + " defined in catalog "
-                                                + catalogURL
-                                                + " not retrievable");
-                            }// if (url
-                        }// if (attrs
-                    } // for
-
-                    if (entity != null) {
-                        if (true) {
-                            if (pId != null) {
-                                srcIdTable.put(pId, entity);
-                                pIdTable.put(pId, entity);
-                            }
-                            if (sId != null) {
-                                srcIdTable.put(sId, entity);
-                                sIdTable.put(sId, entity);
-                            }
-                        } else {
-                            System.err.println("CatalogFile warning: Entity "
-                                    + entity + " defined in catalog "
-                                    + catalogURL + " not found.");                        
-                        } //if (entity.exists()                                                                            
-                    } //if (((entity != null)||
-                    else {
-                        System.err
-                                .println("CatalogFile warning: public or system element without uri attribute in catalog "
-                                        + catalogURL + "; " + sId + "; " + pId);
-                    }
-                }//if (attrs != null)
-            }//if qname.equals
-        }//startelement  
-
-        public void fatalError(SAXParseException spe)
-                throws CatalogExceptionNotRecoverable {
-            throw new CatalogExceptionNotRecoverable("fatal parse error in "
-                    + catalogURL + ":" + spe.getMessage() + "line: "
-                    + spe.getLineNumber());
-        }
-
-        public InputSource resolveEntity(String arg0, String arg1)
-                throws IOException, SAXException {
-            //called if the catalog parse references its own entities (like in doctype; catalog.dtd)
-            //should not happen since setFeature load-external-dtd = false
-            System.err
-                    .println("CatalogFile warning: CatalogFile tries to retrieve own entity");
-            return null;
-        }
-    }
+//    class CatalogSaxHandler extends DefaultHandler {
+//        public void startElement(String namespaceURI, String sName,
+//                String qName, Attributes attrs)
+//                throws CatalogExceptionRecoverable {
+//            String pId = null;
+//            String sId = null;
+//            URL entity = null;
+//            if (qName == null) {
+//                System.err.println("qname==null");
+//                return;
+//            }
+//
+//            if (qName == "public" || qName == "system") {
+//                if (attrs != null) {
+//                    for (int i = 0; i < attrs.getLength(); i++) {
+//                        if (attrs.getQName(i) == "publicId") {
+//                            pId = attrs.getValue(i);
+//                        } else if (attrs.getQName(i) == "systemId") {
+//                            sId = attrs.getValue(i);
+//                        } else if (attrs.getQName(i) == "uri") {
+//                            // entity = new
+//                            // File(catalog.getParentFile(),attrs.getValue(i));
+//                            // do this in case we are inside a jar:
+//                            String uri = attrs.getValue(i);
+//                            if (uri.indexOf("./") == 0) {
+//                                uri = uri.substring(2);
+//                            }
+//                            URL url = resourceClass.getResource(uri);
+//                            if (url == null) {
+//                                url = resourceClass.getClassLoader()
+//                                        .getResource(uri);
+//                            }
+//                            if (url != null) {
+//                                entity = url;
+//                            } else {
+//                                System.err
+//                                        .println("CatalogFile warning: Entity "
+//                                                + attrs.getValue(i)
+//                                                + " defined in catalog "
+//                                                + catalogURL
+//                                                + " not retrievable");
+//                            }// if (url
+//                        }// if (attrs
+//                    } // for
+//
+//                    if (entity != null) {
+//                        if (true) {
+//                            if (pId != null) {
+//                                srcIdTable.put(pId, entity);
+//                                pIdTable.put(pId, entity);
+//                            }
+//                            if (sId != null) {
+//                                srcIdTable.put(sId, entity);
+//                                sIdTable.put(sId, entity);
+//                            }
+//                        } else {
+//                            System.err.println("CatalogFile warning: Entity "
+//                                    + entity + " defined in catalog "
+//                                    + catalogURL + " not found.");                        
+//                        } //if (entity.exists()                                                                            
+//                    } //if (((entity != null)||
+//                    else {
+//                        System.err
+//                                .println("CatalogFile warning: public or system element without uri attribute in catalog "
+//                                        + catalogURL + "; " + sId + "; " + pId);
+//                    }
+//                }//if (attrs != null)
+//            }//if qname.equals
+//        }//startelement  
+//
+//        public void fatalError(SAXParseException spe)
+//                throws CatalogExceptionNotRecoverable {
+//            throw new CatalogExceptionNotRecoverable("fatal parse error in "
+//                    + catalogURL + ":" + spe.getMessage() + "line: "
+//                    + spe.getLineNumber());
+//        }
+//
+//        public InputSource resolveEntity(String arg0, String arg1)
+//                throws IOException, SAXException {
+//            //called if the catalog parse references its own entities (like in doctype; catalog.dtd)
+//            //should not happen since setFeature load-external-dtd = false
+//            System.err
+//                    .println("CatalogFile warning: CatalogFile tries to retrieve own entity");
+//            return null;
+//        }
+//    }
 }
