@@ -563,7 +563,6 @@ transformers/int_daisy_filesetAudioTagger/playlist/XSPFWriter.java -text
 transformers/int_daisy_filesetAudioTagger/transformer.tdf -text
 transformers/int_daisy_filesetEncryptor/transformer.tdf -text
 transformers/int_daisy_filesetRenamer/transformer.tdf -text
-transformers/int_daisy_html2xhtml/messages.properties -text
 transformers/int_daisy_html2xhtml/transformer.tdf -text
 transformers/int_daisy_html2xhtml/xhtml-clean-minimum.xsl -text
 transformers/int_daisy_mixedContentNormalizer/AbstractNormalizer.java -text
