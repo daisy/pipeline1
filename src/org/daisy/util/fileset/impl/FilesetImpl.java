@@ -60,7 +60,8 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Markus Gylling
  */
-public class FilesetImpl implements Fileset {
+@SuppressWarnings("unchecked")
+public class FilesetImpl implements Fileset {	
 	private Map mLocalMembers = new HashMap();								//<URI>, <FilesetFile>	
 	private HashSet mRemoteMembers = new HashSet();							//<String> 
 	private FilesetExceptionCollector mFilesetExceptionCollector = null; 
@@ -247,6 +248,13 @@ public class FilesetImpl implements Fileset {
 						this.mManifestMember = new PlsFileImpl(f.toURI());					 						
 						//send it to the observer which handles the rest generically
 						this.fileInstantiatedEvent((FilesetFileImpl)this.mManifestMember);	
+				}else if(mRegex.matches(mRegex.FILE_EPUB, f.getName())) {
+					//set the fileset type
+					this.mFilesetType = FilesetType.OPS_EPUB;
+					//instantiate the appropriate filetype with this as errorhandler
+					this.mManifestMember = new EpubFileImpl(f.toURI());					 						
+					//send it to the observer which handles the rest generically
+					this.fileInstantiatedEvent((FilesetFileImpl)this.mManifestMember);
 				}else{
 					//other types
 				    //throw new FilesetFatalException("Unsupported manifest type");

@@ -10,7 +10,6 @@ import javax.xml.stream.events.Attribute;
 
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
 import org.daisy.util.fileset.util.FilesetConstants;
 import org.daisy.util.fileset.validation.delegate.impl.InnerDocURICheckerDelegate;
 import org.daisy.util.fileset.validation.delegate.impl.InterDocURICheckerDelegate;
@@ -20,7 +19,8 @@ import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 
 /**
- * A Fileset Validator for OPS 2.0 publications.
+ * A Fileset Validator for OPS 2.0 publications. Note - this validator is not for epub archives, check
+ * ValidatorImplEpub for that.
  * @author Markus Gylling
  */
 public class ValidatorImplOPS2x extends ValidatorImplAbstract implements Validator {

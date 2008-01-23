@@ -66,6 +66,7 @@ public class FilesetRegex {
 		FILE_M3U = Pattern.compile(".+\\.[Mm][3][Uu]$");
 		FILE_PLS = Pattern.compile(".+\\.[Pp][Ll][Ss]$");
 		FILE_PDF = Pattern.compile(".+\\.[Pp][Dd][Ff]$");
+		FILE_EPUB = Pattern.compile(".+\\.[Ee][Pp][Uu][Bb]$");
 		
 		XHTML_ELEMENTS_WITH_URI_ATTRS = Pattern.compile("(^a$)|(^link$)|(^img$)");
 		XHTML_ATTRS_WITH_URIS = Pattern.compile("(^href$)|(^src$)"); 
@@ -118,6 +119,7 @@ public class FilesetRegex {
 	public Pattern FILE_M3U; 
 	public Pattern FILE_PLS;
 	public Pattern FILE_PDF;
+	public Pattern FILE_EPUB;
 	
 	public Pattern XHTML_ELEMENTS_WITH_URI_ATTRS;
 	public Pattern XHTML_ATTRS_WITH_URIS;  

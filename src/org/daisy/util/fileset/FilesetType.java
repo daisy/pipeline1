@@ -24,11 +24,13 @@ package org.daisy.util.fileset;
  * @author Markus Gylling
  */
 public final class FilesetType {
+	
 	private FilesetType() {}          
     public static final FilesetType DAISY_202 = new FilesetType();
     public static final FilesetType Z3986 = new FilesetType();
     public static final FilesetType NIMAS = new FilesetType();
     public static final FilesetType OPS_20 = new FilesetType();
+    public static final FilesetType OPS_EPUB = new FilesetType();
     public static final FilesetType Z3986_RESOURCEFILE = new FilesetType();
     public static final FilesetType XHTML_DOCUMENT = new FilesetType();
     public static final FilesetType HTML_DOCUMENT = new FilesetType();
@@ -60,6 +62,9 @@ public final class FilesetType {
        	}else
            	if (this.equals(FilesetType.OPS_20)) {
             		return "OPS_20";		
+        }else
+           	if (this.equals(FilesetType.OPS_EPUB)) {
+               		return "OPS_EPUB";            		
        	}else
        	if (this.equals(FilesetType.PLAYLIST_M3U)) {
         		return "PLAYLIST_M3U";
@@ -101,6 +106,9 @@ public final class FilesetType {
        	}else
         if (this.equals(FilesetType.OPS_20)) {
         	return "OPS 2.0 fileset";        		
+        }else
+            if (this.equals(FilesetType.OPS_EPUB)) {
+            	return "OPS 2.0 EPUB File";        	
        	}else
        	if (this.equals(FilesetType.PLAYLIST_M3U)) {
         		return "M3U playlist";
