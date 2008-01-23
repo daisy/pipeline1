@@ -242,6 +242,9 @@ public class CommandLineUI implements InputListener, BusListener {
                 case INFO:
                     type = "INFO";
                     break;
+                case INFO_FINER:
+                    type = "INFO_FINER";
+                    break;    
                 case WARNING:
                     type = "WARNING";
                     break;
