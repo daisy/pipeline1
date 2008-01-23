@@ -5,27 +5,26 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class OpsCreator1 extends PipelineTest {
+public class ValidatorEpubCheck2 extends PipelineTest {
 
-	public OpsCreator1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public ValidatorEpubCheck2(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
-	public List<String> getParameters() {
-		mParameters.add("--input=" + mDataInputDir + "/xhtml/valentinhauy11.html");
-		mParameters.add("--output=" + mDataOutputDir + "/OpsCreator1/valentin_hauy.epub");				
+	public List<String> getParameters() {		
+		mParameters.add("--input=" + mDataInputDir + "/epub/valentin_hauy.epub");
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "";
+		return "Should report no errors.";
 	}
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("OPSCreator.taskScript".equals(scriptName)) {
+		if("EpubCheck.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;

@@ -84,6 +84,7 @@ doc/scripts/DTBookToXhtml.html -text
 doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/Daisy202ToZ39862005.html -text
+doc/scripts/EpubCheck.html -text
 doc/scripts/FilesetRenamer.html -text
 doc/scripts/HtmlToXhtml.html -text
 doc/scripts/ImageConverter.html -text
@@ -141,6 +142,7 @@ lib/batik-css.jar -text
 lib/batik-util.jar -text
 lib/chardet.jar -text
 lib/commons-cli-1.0.jar -text
+lib/epubcheck.jar -text
 lib/icu4j-3_8.jar -text
 lib/icu4j-charsets-3_8.jar -text
 lib/jaudiotagger.jar -text
@@ -226,6 +228,7 @@ samples/input/dtbook/hauy_invalid.xml -text
 samples/input/dtbook/hauy_valid.xml -text
 samples/input/dtbook/the_waste_land.xml -text
 samples/input/dtbook/valentin.jpg -text
+samples/input/epub/valentin_hauy.epub -text
 samples/input/epub/wasteland.epub -text
 samples/input/html/img/nor02.jpg -text
 samples/input/html/nor01.jpg -text
@@ -256,6 +259,7 @@ samples/input/xhtml/mixed-content.html -text
 samples/input/xhtml/multi-language-unicode.html -text
 samples/input/xhtml/valentin.jpg -text
 samples/input/xhtml/valentinhauy.html -text
+samples/input/xhtml/valentinhauy11.html -text
 samples/input/xhtml/xhtml-rdf.xml -text
 scripts/_dev/AudacityToDTB.taskScript -text
 scripts/_dev/Daisy202toZ3986-2005.taskScript -text
@@ -310,6 +314,7 @@ scripts/validation/ValidatorTaskParamsSimpleStatic.paramGroup -text
 scripts/validation/advanced/ConfigurableValidator.taskScript -text
 scripts/validation/simple/DTBookValidator.taskScript -text
 scripts/validation/simple/Daisy202DTBValidator.taskScript -text
+scripts/validation/simple/EpubCheck.taskScript -text
 scripts/validation/simple/Z3986DTBValidator.taskScript -text
 src/org/daisy/pipeline/core/MyURLClassLoader.java -text
 src/org/daisy/pipeline/core/event/BusListener.java -text
@@ -407,6 +412,8 @@ src/org/daisy/pipeline/test/impl/ValidatorDTBd2022.java -text
 src/org/daisy/pipeline/test/impl/ValidatorDTBook1.java -text
 src/org/daisy/pipeline/test/impl/ValidatorDTBook2.java -text
 src/org/daisy/pipeline/test/impl/ValidatorDTBz39861.java -text
+src/org/daisy/pipeline/test/impl/ValidatorEpubCheck1.java -text
+src/org/daisy/pipeline/test/impl/ValidatorEpubCheck2.java -text
 src/org/daisy/pipeline/test/impl/ValidatorNVDL1.java -text
 src/org/daisy/pipeline/test/impl/WordML2DTBook1.java -text
 src/org/daisy/pipeline/test/impl/WordML2DTBook2.java -text

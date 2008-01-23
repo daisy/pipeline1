@@ -14,7 +14,7 @@ public class OpsCreator4 extends PipelineTest {
 	@Override
 	public List<String> getParameters() {
 		mParameters.add("--input=" + mDataInputDir + "/dtbook/the_waste_land.xml");
-		mParameters.add("--output=" + mDataOutputDir + "/OpsCreator4/wasteland.epub");				
+		mParameters.add("--output=" + mDataOutputDir + "/OpsCreator4/wasteland.epub");			
 		return mParameters;
 	}
 

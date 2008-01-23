@@ -47,6 +47,8 @@ import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.location.LocationUtils;
 import org.daisy.util.xml.IDGenerator;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
@@ -54,6 +56,7 @@ import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.pool.StAXOutputFactoryPool;
+import org.daisy.util.xml.stax.StaxEntityResolver;
 import org.xml.sax.SAXException;
 
 /**
@@ -272,11 +275,17 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 		try{
 			xef = StAXEventFactoryPool.getInstance().acquire();
 			xifProperties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
+			xifProperties.put(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
 			xif = StAXInputFactoryPool.getInstance().acquire(xifProperties);
+			try {
+				xif.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
+			} catch (CatalogExceptionNotRecoverable e1) {
+				e1.printStackTrace();
+			}
 			xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();			
 			xof = StAXOutputFactoryPool.getInstance().acquire(xofProperties);
 			is = inputManifestURL.openStream();			
-			XMLEventReader xer = xif.createXMLEventReader(is);
+			XMLEventReader xer = xif.createXMLEventReader(is);			
 			fos = new FileOutputStream(outputManifestFile);
 			boolean seenStylesheetInstruction = false;
 			boolean passedFirstElement = false;

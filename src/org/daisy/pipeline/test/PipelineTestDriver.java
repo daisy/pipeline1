@@ -51,6 +51,8 @@ import org.daisy.pipeline.test.impl.ValidatorDTBd2022;
 import org.daisy.pipeline.test.impl.ValidatorDTBook1;
 import org.daisy.pipeline.test.impl.ValidatorDTBook2;
 import org.daisy.pipeline.test.impl.ValidatorDTBz39861;
+import org.daisy.pipeline.test.impl.ValidatorEpubCheck1;
+import org.daisy.pipeline.test.impl.ValidatorEpubCheck2;
 import org.daisy.pipeline.test.impl.ValidatorNVDL1;
 import org.daisy.pipeline.test.impl.WordML2DTBook1;
 import org.daisy.pipeline.test.impl.WordML2DTBook2;
@@ -179,11 +181,13 @@ public class PipelineTestDriver {
 	 */
 	public static Collection<PipelineTest> getTests() {
 		List<PipelineTest> tests = new LinkedList<PipelineTest>(); 
-
-		//20071209: broken:
-//		tests.add(new Odf2dtbook1(inputDir, outputDir));
-//		tests.add(new Odf2xhtml1(inputDir, outputDir));
 		
+		/**
+		 * Current broken (due to bug in epubcheck):
+		 * tests.add(new OpsCreator3(inputDir, outputDir)); (input is XHTML 1.0 and epubcheck crashes)
+		 * tests.add(new OpsCreator2(inputDir, outputDir)); (input is XHTML 1.0 and epubcheck crashes)
+		 * tests.add(new ValidatorEpubCheck2(inputDir, outputDir)); //(input is XHTML 1.1 and epubcheck crashes) 
+		 */
 		
 		/*
 		 * Tests with input data in samples dir.
@@ -192,8 +196,6 @@ public class PipelineTestDriver {
 		 */
 		
 //		tests.add(new OpsCreator1(inputDir, outputDir));
-//		tests.add(new OpsCreator2(inputDir, outputDir));
-//		tests.add(new OpsCreator3(inputDir, outputDir));
 //		tests.add(new OpsCreator4(inputDir, outputDir));		
 //		tests.add(new OcfCreator1(inputDir, outputDir));		
 //		tests.add(new WordML2DTBook1(inputDir, outputDir));
@@ -201,7 +203,9 @@ public class PipelineTestDriver {
 //		tests.add(new WordML2DTBook3(inputDir, outputDir));
 //		tests.add(new WordML2Xhtml1(inputDir, outputDir));		
 //		tests.add(new WordML2Xhtml2(inputDir, outputDir));
-		tests.add(new Narrator1(inputDir, outputDir));
+//		tests.add(new Odf2dtbook1(inputDir, outputDir));
+//		tests.add(new Odf2xhtml1(inputDir, outputDir));
+//		tests.add(new Narrator1(inputDir, outputDir));
 //		tests.add(new Narrator2(inputDir, outputDir));
 //		tests.add(new Narrator3(inputDir, outputDir));		
 //		tests.add(new ValidatorNVDL1(inputDir, outputDir));
@@ -210,6 +214,7 @@ public class PipelineTestDriver {
 //		tests.add(new ValidatorDTBd2021(inputDir, outputDir));
 //		tests.add(new ValidatorDTBd2022(inputDir, outputDir));
 //		tests.add(new ValidatorDTBz39861(inputDir, outputDir));
+//		tests.add(new ValidatorEpubCheck1(inputDir, outputDir));		
 //		tests.add(new ValidatorConfigurable1(inputDir, outputDir));		
 //		tests.add(new PrettyPrinter1(inputDir, outputDir));
 //		tests.add(new PrettyPrinter2(inputDir, outputDir));		

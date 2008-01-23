@@ -159,18 +159,6 @@
 		</parameter>						
 	</task>
 
-	<task name="int_daisy_validator" interactive="false">
-		<parameter>
-			<name>input</name>
-			<value>$parent{output}/pipeline__temp/2/package.opf</value>
-		</parameter>
-		
-		<parameter>
-			<name>abortThreshold</name>
-			<value>NONE</value>
-		</parameter>						
-	</task>
-
 	<task name="int_daisy_ocfCreator" interactive="false">
 		<parameter>
 			<name>input</name>
@@ -180,6 +168,18 @@
 		<parameter>
 			<name>output</name>
 			<value>${output}</value>
+		</parameter>						
+	</task>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
 		</parameter>						
 	</task>
 
