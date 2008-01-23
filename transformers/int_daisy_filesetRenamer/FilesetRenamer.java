@@ -125,7 +125,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			this.sendMessage(0.1);
 			this.checkAbort();			
 			String message = i18n("ANALYZING_INPUT", mInputFileset.getFilesetType().toNiceNameString());
-			this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+			this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 								
 			try{		
 				//create a renaming strategy using the template name
@@ -164,7 +164,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			
 			//render the final output			
 			message = i18n("RENDERING_RESULT_TO", mOutputDir.getCanonicalPath());
-			this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+			this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 			renderStrategy(mInputFileset,mOutputDir);
 												
 			//clean up the temp traces if utilized
