@@ -98,6 +98,7 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
  * @author Markus Gylling
  */
 
+@SuppressWarnings("unchecked")
 public class Daisy2022Zed2005 extends Transformer implements FilesetErrorHandler {
 	
 	//TODO add support for uid as inparam, overriding ncc:dc:identifier
@@ -141,7 +142,7 @@ public class Daisy2022Zed2005 extends Transformer implements FilesetErrorHandler
 						
 		try {
 			// Build input fileset
-			this.sendMessage(i18n("BUILDING_FILESET"));    
+			this.sendMessage(i18n("BUILDING_FILESET"),MessageEvent.Type.DEBUG);    
 			
 			mInputFileset = buildFileSet(inparamNccPath, FilesetType.DAISY_202);				
 			mInputNcc = (D202NccFile) mInputFileset.getManifestMember();            
@@ -216,7 +217,7 @@ public class Daisy2022Zed2005 extends Transformer implements FilesetErrorHandler
 		D202SmilFile d202_smil = null;
 		long totalElapsedTime = 0; //in milliseconds
 		
-		this.sendMessage(i18n("CREATING_SMIL", ""));
+		this.sendMessage(i18n("CREATING_SMIL"),MessageEvent.Type.DEBUG);
 		
 		URL xsltURL = this.getClass().getResource("d202smil_Z2005smil.xsl");
 				
@@ -254,7 +255,7 @@ public class Daisy2022Zed2005 extends Transformer implements FilesetErrorHandler
 	private void createZedNcx(D202NccFile ncc, String uid) throws CatalogExceptionNotRecoverable, XSLTException, FilesetFatalException {
 		String ncxFileName = this.getAsciiFilename(uid,"ncx");
 		
-		this.sendMessage(i18n("CREATING_NCX", ncxFileName));                            	
+		this.sendMessage(i18n("CREATING_NCX", ncxFileName),MessageEvent.Type.DEBUG);                            	
 		
 		File ncxOut = new File(mOutputDir, ncxFileName);
 		URL xsltURL = this.getClass().getResource("d202ncc_Z2005ncx.xsl");
@@ -273,7 +274,7 @@ public class Daisy2022Zed2005 extends Transformer implements FilesetErrorHandler
 		
 		String dtbookFileName = this.getAsciiFilename(uid,"xml");
 		
-		this.sendMessage(i18n("CREATING_DTBOOK", dtbookFileName));
+		this.sendMessage(i18n("CREATING_DTBOOK", dtbookFileName),MessageEvent.Type.DEBUG);
 		
 		File dtbookOut = new File(mOutputDir, dtbookFileName);
 		URL xsltURL = this.getClass().getResource("d202xhtml_Z2005dtbook.xsl");
@@ -407,6 +408,7 @@ public class Daisy2022Zed2005 extends Transformer implements FilesetErrorHandler
 		serializer.serialize(opfDom);
 		
 	}
+	
 	
 	private void copyMembers() throws FilesetFatalException, IOException {
 		
