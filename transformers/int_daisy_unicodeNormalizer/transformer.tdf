@@ -18,7 +18,7 @@
 		
 		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
 			<name>output</name>			
-			<description>The output directory</description>
+			<description>The output directory, may (but should rather not) be same as input dir</description>
 			<example>D:/path/to/outputDir/</example>
 		</parameter>		
 		

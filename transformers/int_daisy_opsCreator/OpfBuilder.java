@@ -1,18 +1,14 @@
 package int_daisy_opsCreator;
 
-
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.events.Namespace;
-
-
 import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;

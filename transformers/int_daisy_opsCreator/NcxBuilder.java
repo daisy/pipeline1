@@ -69,6 +69,7 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 		
 	private String mNcxNamespace = null;
 	private String mDtbookNamespace = null;
+	private String mXhtmlNamespace = null;
 	private QName mQNameNcxRoot = null;
 	private QName mQNameNcxNavLabel = null;
 	private QName mQNameNcxNavList = null;
@@ -81,6 +82,7 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 	private QName mQNameNcxText = null;
 	private QName mQNameConfigLabel = null;
 	private QName mQNameDtbookPagenum = null;
+	private QName mQNameXhtmlSpan = null;
 	private QName mQNameDcLanguage = null;
 	private String mDcLanguageValue = null;
 	
@@ -94,6 +96,7 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 		
 		mNcxNamespace = "http://www.daisy.org/z3986/2005/ncx/";						
 		mDtbookNamespace = "http://www.daisy.org/z3986/2005/dtbook/";
+		mXhtmlNamespace = "http://www.w3.org/1999/xhtml";
 		mQNameNcxRoot = new QName(mNcxNamespace,"ncx");
 		mQNameNcxNavLabel = new QName(mNcxNamespace,"navLabel");
 		mQNameNcxNavList = new QName(mNcxNamespace,"navList");
@@ -105,7 +108,8 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 		mQNameNcxContent = new QName(mNcxNamespace,"content");		
 		mQNameNcxText = new QName(mNcxNamespace,"text");
 		mQNameConfigLabel = new QName("http://www.daisy.org/pipeline/ncxconfig#","label");
-		mQNameDtbookPagenum = new QName(mDtbookNamespace,"pagenum");
+		mQNameDtbookPagenum = new QName(mDtbookNamespace,"pagenum");		
+		mQNameXhtmlSpan = new QName(mXhtmlNamespace,"span");
 		mQNameDcLanguage = new QName(OpsCreator.DC_NS,"language");		
 		MetadataItem m = mMetaData.get(mQNameDcLanguage);		
 		if(m!=null) mDcLanguageValue = m.getValue();
@@ -191,35 +195,50 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 		}
 		
 		//then render one navList per group
-		//if theres a pagelist, render it first				
+		//if theres a pagelist, render it first
+		List<NavPointSource> pageList = null;
 		if(sortedMap.containsKey(mQNameDtbookPagenum)) {
-			List<NavPointSource> list = sortedMap.get(mQNameDtbookPagenum);
-			if(list!=null && !list.isEmpty()) {
-				buildList(mQNameDtbookPagenum, list,xef);
+			pageList = sortedMap.get(mQNameDtbookPagenum);							
+		}else{
+			//we support Daisy 2.02 span.pagex as well, silently
+			pageList = sortedMap.get(mQNameXhtmlSpan);
+			if(pageList!=null){
+				//need to check that class attr is as expected
+				QName classAttr = new QName(null,"class");
+				for(NavPointSource nps : pageList) {
+					Attribute a = nps.mStartElement.getAttributeByName(classAttr);
+					if(!(a.getValue().matches("page-normal|page-special|page-front"))) {
+						pageList.remove(nps);
+					}
+				}
 			}
-			
+		}
+		if(pageList!=null && !pageList.isEmpty()) {
+			buildList(mQNameDtbookPagenum, pageList,xef,true);
+			sortedMap.remove(mQNameDtbookPagenum);
+			//there can be other types of span in the config, 
+			//but we dont support that
+			sortedMap.remove(mQNameXhtmlSpan);
 		}
 		
+		//then all the other navLists
 		for(QName q : sortedMap.keySet()) {
-			if(!q.equals(mQNameDtbookPagenum)) {
-				List<NavPointSource> list = sortedMap.get(q);
-				if(list!=null && !list.isEmpty()) {
-					buildList(q, list,xef);
-				}	
-			}			
+			List<NavPointSource> list = sortedMap.get(q);
+			if(list!=null && !list.isEmpty()) {
+				buildList(q, list,xef,false);
+			}	
 		}
 											
 	}
 	
-	private void buildList(QName q, List<NavPointSource> list, XMLEventFactory xef) {
+	private void buildList(QName q, List<NavPointSource> list, XMLEventFactory xef, boolean isPageList) {
 		/*
-		 * We need different names for the events if the incoming qname is dtbook:pagenum
+		 * We need different names for the events if the incoming list represents pages
 		 */
 		QName qList = mQNameNcxNavList;
 		QName qTarget = mQNameNcxNavTarget;		
-		boolean isPageList = false;		
-		if(q.equals(mQNameDtbookPagenum)) {
-			isPageList = true;
+				
+		if(isPageList) {			
 			qList = mQNameNcxPageList;
 			qTarget = mQNameNcxPageTarget;
 		}
@@ -251,12 +270,27 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 		for(NavPointSource nps : list) {
 			createTargetStartElement(qTarget, nps, xef);
 			if(isPageList) {
-				Attribute page = getAttribute("page", nps.mStartElement);
 				String typeValue = "normal";
-				if(page!=null) {
-					typeValue = page.getValue();
+				if(nps.mStartElement.getName().equals(mQNameDtbookPagenum)) {
+					Attribute page = getAttribute("page", nps.mStartElement);
+					if(page!=null) {
+						typeValue = page.getValue();
+					}	
+				}else if(nps.mStartElement.getName().equals(mQNameXhtmlSpan)){
+					Attribute classAttr = getAttribute("class", nps.mStartElement);
+					if(classAttr.getValue().equals("page-special")) {
+						typeValue = "special";
+					}else if(classAttr.getValue().equals("page-front")) {
+						typeValue = "front";
+					}
 				}
 				mEventList.add(xef.createAttribute("type", typeValue));
+				
+				if(typeValue.equals("normal")) {
+					int intValue = getIntFromLabel(nps);
+					if(intValue>-1)
+						mEventList.add(xef.createAttribute("value", Integer.toString(intValue)));
+				}
 			}
 			createNavLabelElement(nps, xef);
 			createContentElement(xef, nps);				
@@ -265,6 +299,18 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 		//close navlist
 		mEventList.add(xef.createEndElement(qList, null));
 		
+	}
+
+	/**
+	 * Create an int represenation of a label, return -1 if fail.
+	 */
+	private int getIntFromLabel(NavPointSource nps) {
+		try{
+			return Integer.parseInt(nps.mLabel.trim());
+		}catch (Exception e) {
+			
+		}
+		return -1;
 	}
 
 	/**
@@ -403,8 +449,11 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 		return count;
 	}
 
+	/**
+	 * Return true if localName equals h1|h2|h3|h4|h5|h5. Note: note true if 'hd'
+	 */
 	private boolean isHeadingElement(String localName) {
-		if(localName.length()==2 && localName.startsWith("h")) {
+		if(localName.length()==2 && localName.startsWith("h") &&!localName.equals("hd")) {
 			return true;
 		}
 		return false;
@@ -572,18 +621,21 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void error(SAXParseException e) throws SAXException {
 		Location loc = LocusTransformer.newLocation(e);
 		mOwner.sendMessage(e.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, loc);		
 	}
 
 
+	@SuppressWarnings("unused")
 	public void fatalError(SAXParseException e) throws SAXException {
 		Location loc = LocusTransformer.newLocation(e);
 		mOwner.sendMessage(e.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, loc);		
 	}
 
 
+	@SuppressWarnings("unused")
 	public void warning(SAXParseException e) throws SAXException {
 		Location loc = LocusTransformer.newLocation(e);
 		mOwner.sendMessage(e.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT, loc);

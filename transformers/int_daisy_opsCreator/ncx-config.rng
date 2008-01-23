@@ -66,14 +66,18 @@ The navListLabels element defines explicit language-dependent labels to use for 
 	        <nsName ns="http://www.daisy.org/pipeline/ncxconfig#" />
 	      </except>	      
 	    </anyName>
-	    <interleave>
-		    <optional>
-		    	<ref name="label.attribute"/>	    		  
-		    </optional>
+	    <interleave>  
 		    <zeroOrMore>	
-			  <attribute>
-				<nsName/>
-			  </attribute>
+			  <choice>
+				  <ref name="label.attribute"/> <!-- only one label attribute -->
+				  <attribute>
+					<anyName>
+		      			<except>
+		        			<nsName ns="http://www.daisy.org/pipeline/ncxconfig#" />
+		      			</except>	      
+		    		</anyName>
+				  </attribute>
+			  </choice>
 	        </zeroOrMore>
 	    </interleave>
 		<empty/>
@@ -89,7 +93,11 @@ The navListLabels element defines explicit language-dependent labels to use for 
 	    </anyName>	    
 	    <zeroOrMore>	
 		  <attribute>
-		    <nsName/>
+		    					<anyName>
+		      			<except>
+		        			<nsName ns="http://www.daisy.org/pipeline/ncxconfig#" />
+		      			</except>	      
+		    		</anyName>
 		  </attribute>
         </zeroOrMore>
         <oneOrMore>	    

@@ -1,11 +1,10 @@
 package int_daisy_opsCreator;
 
-
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -18,11 +17,16 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.ProcessingInstruction;
+import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
@@ -41,41 +45,33 @@ import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.ManifestFile;
-import org.daisy.util.fileset.interfaces.xml.XmlFile;
-import org.daisy.util.fileset.manipulation.FilesetFileManipulator;
-import org.daisy.util.fileset.manipulation.FilesetManipulationException;
-import org.daisy.util.fileset.manipulation.FilesetManipulator;
-import org.daisy.util.fileset.manipulation.FilesetManipulatorListener;
-import org.daisy.util.fileset.manipulation.manipulators.XMLEventConsumer;
-import org.daisy.util.fileset.manipulation.manipulators.XMLEventExposer;
 import org.daisy.util.location.LocationUtils;
 import org.daisy.util.xml.IDGenerator;
+import org.daisy.util.xml.peek.PeekResult;
+import org.daisy.util.xml.peek.Peeker;
+import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
-import org.daisy.util.xml.stax.ContextStack;
+import org.daisy.util.xml.pool.StAXInputFactoryPool;
+import org.daisy.util.xml.pool.StAXOutputFactoryPool;
+import org.xml.sax.SAXException;
 
 /**
  * Main transformer class. Create an OPS 2.0 publication from DTBook or XHTML input.
  * @author Markus Gylling
  */
-public class OpsCreator extends Transformer implements FilesetErrorHandler, FilesetManipulatorListener, XMLEventConsumer {
+public class OpsCreator extends Transformer implements FilesetErrorHandler {
 	private List<URL> mInputDocuments = null;
 	private List<Fileset> mInputFilesets = null;
 	private List<Fileset> mOutputFilesets = null;
 	private EFolder mOutputDir = null;
 	private NcxBuilderConfiguration mNcxConfiguration = null;
 	private IDGenerator mIdGenerator = null;
-	private XMLEventFactory mXMLEventFactory = null;
 	private Set<StartElement> mInputMetadata = null;
 	private MetadataList mOpsMetaData = null;	
 	private String mFirstXmlLangValue = null;
 	private QName mXmlLangQName = null;
-	
-	private boolean mIteratorIsFirstManifest = false;
-	private boolean mIteratorIsFirstFileset = true;
-	
+		
 	static public final String OPF_NS = "http://www.idpf.org/2007/opf";
 	static public final String DC_NS = "http://purl.org/dc/elements/1.1/"; 
 	static public final String DC_PFX = "dc";
@@ -88,6 +84,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 		mXmlLangQName = new QName("xml:lang");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		try{						
@@ -101,26 +98,15 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 			mOutputFilesets = new LinkedList<Fileset>();
 			
 			/*
-			 * Copy over filesets to output dir, ensure
-			 * that all content docs have IDs on NCX target positions
+			 * Get filesets over to destination dir, 
+			 * including any mods
 			 */
-			try{
-				mXMLEventFactory = StAXEventFactoryPool.getInstance().acquire();				
-				for (Fileset fileset : mInputFilesets) {
-					FilesetManipulator fm = new FilesetManipulator();
-					fm.setInputFileset(fileset);
-					fm.setOutputFolder(mOutputDir);
-					fm.setFileTypeRestriction(XmlFile.class);
-					fm.setListener(this);
-					fm.iterate();
-					mIteratorIsFirstFileset = false;
-					URI uri = (new File(fm.getOutputFolder(),fm.getInputFileset().getManifestMember().getFile().getName())).toURI();
-					mOutputFilesets.add(new FilesetImpl(uri,this,false,false));
-				}
-			}finally{
-				StAXEventFactoryPool.getInstance().release(mXMLEventFactory);				
+			boolean first = true;
+			for (Fileset fileset : mInputFilesets) {					
+				mOutputFilesets.add(pipe(fileset,first));
+				first = false;										
 			}
-								
+									
 			/*
 			 * Build the package file
 			 */
@@ -142,8 +128,8 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 		return true;
 	}
 
-	private URL getNcxConfigURL(Map parameters) {
-		String ncxConfigParam = (String)parameters.remove("ncxConfig");	
+	private URL getNcxConfigURL(Map<String,String> parameters) {
+		String ncxConfigParam = parameters.remove("ncxConfig");	
 		if(ncxConfigParam!=null && ncxConfigParam.length()>0) {
 			//user provided custom ncx config file
 			URL url = LocationUtils.identifierToURL(ncxConfigParam);
@@ -151,8 +137,241 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 			return url;
 		}
 		//use default
-		this.sendMessage(i18n("USING_DEFAULT_NCX_CONFIG"), MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+		this.sendMessage(i18n("USING_DEFAULT_NCX_CONFIG"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 		return this.getClass().getResource("ncx-config-default.xml");
+	}
+
+	/**
+	 * Create a Fileset instance for each input document
+	 * @throws URISyntaxException 
+	 * @throws FilesetFatalException 
+	 */
+	private List<Fileset> getInputFilesets(List<URL> inputDocuments) throws FilesetFatalException, URISyntaxException {		
+		List<Fileset> retList = new LinkedList<Fileset>();
+		for (URL url : inputDocuments) {
+			Fileset fileset = new FilesetImpl(url.toURI(),this);
+			if(fileset.getFilesetType() != FilesetType.DTBOOK_DOCUMENT &&
+					fileset.getFilesetType() != FilesetType.XHTML_DOCUMENT) {
+				throw new FilesetFatalException(i18n("DISALLOWED_DOCUMENT_TYPE",fileset.getFilesetType().toNiceNameString()));
+			}
+			retList.add(fileset);
+		}		
+		return retList;
+	}
+
+	/**
+	 * Build an ordered list of input documents, make sure all exist. Check input versions.
+	 * @throws MalformedURLException
+	 * @throws IOException  
+	 * @throws SAXException 
+	 * @throws TransformerRunException 
+	 */
+	private List<URL> getInputDocuments(String inputParam) throws IOException, MalformedURLException, SAXException, TransformerRunException {
+		List<URL> retList = new LinkedList<URL>();
+		String[] docs = inputParam.split(FilesDatatype.SEPARATOR_STRING);
+		for (String doc : docs) {
+			URL url = LocationUtils.identifierToURL(doc);
+			url = checkValidType(url);
+			retList.add(url);
+		}		
+		return retList;
+	}
+
+	private URL checkValidType(URL url) throws SAXException, IOException, TransformerRunException {
+		Peeker peeker = null;
+		try{
+			peeker = PeekerPool.getInstance().acquire();
+			PeekResult result = peeker.peek(url);		
+			if(!result.getRootElementLocalName().matches("html|dtbook")) {
+				throw new TransformerRunException(i18n("DISALLOWED_DOCUMENT_TYPE",result.getRootElementLocalName()));
+			}
+			
+			String token = getVersionToken(result);
+			
+			if(result.getRootElementLocalName().equals("dtbook")) {								
+				if(token!=null) {					
+					if(!(token.contains("2005-2"))) {
+						this.sendMessage(i18n("DISALLOWED_DOCUMENT_VERSION",result.getRootElementLocalName(),token),
+								MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
+						//TODO if 2005-1, do a dynamic transform
+					}
+				}else{
+					this.sendMessage(i18n("DISALLOWED_DOCUMENT_VERSION",result.getRootElementLocalName(),"unknown"), 
+								MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
+				}
+			}
+			
+			if(result.getRootElementLocalName().equals("html")) {
+				if(token!=null) {					
+					if(!(token.contains("XHTML 1.1") || token.contains("xhtml11.dtd"))) {
+						this.sendMessage(i18n("DISALLOWED_DOCUMENT_VERSION",result.getRootElementLocalName(),token), 
+								MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
+						//TODO if 1.0, do a dynamic transform
+					}
+				}else{
+					this.sendMessage(i18n("DISALLOWED_DOCUMENT_VERSION",result.getRootElementLocalName(),"unknown"), 
+								MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
+				}
+			}
+		}finally{
+			PeekerPool.getInstance().release(peeker);
+		}
+		return url;
+	}
+
+	private String getVersionToken(PeekResult result) {		 
+		String token = result.getPrologPublicId();
+		if(token==null) {
+			token = result.getPrologSystemId();
+			if(token==null) {
+				String name = null;
+				for (int i = 0; i < result.getRootElementAttributes().getLength(); i++) {
+					name = result.getRootElementAttributes().getLocalName(i);
+					if(name.equals("version")) {
+						token = result.getRootElementAttributes().getValue(i);
+					}
+				}
+			}
+		}	
+		return token;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
+	 */
+	public void error(FilesetFileException ffe) throws FilesetFileException {		
+		this.sendMessage(ffe);
+	}
+
+	/**
+	 * Copy over filesets to output dir, ensure
+	 * that manifest member has IDs on NCX target positions.
+	 * Add CSS if missing.
+	 * @param fileset Fileset to copy
+	 * @param first Whether this is the first call to this method (in case of several input filesets)
+	 * @throws IOException 
+	 * @throws FilesetFatalException 
+	 * @throws XMLStreamException 
+	 */
+	private Fileset pipe(Fileset fileset, boolean first) throws IOException, FilesetFatalException, XMLStreamException {		
+		mOutputDir.addFileset(fileset, true);
+		
+		URL inputManifestURL = fileset.getManifestMember().getFile().toURI().toURL(); 				
+		File outputManifestFile = new File(mOutputDir,fileset.getManifestMember().getFile().getName());
+				
+		XMLEventFactory xef = null;
+		XMLInputFactory xif = null;
+		Map<String, Object> xifProperties = null;
+		XMLOutputFactory xof = null;
+		Map<String, Object> xofProperties = null;
+		InputStream is = null;
+		FileOutputStream fos = null;
+		XMLEventWriter xew = null;
+		
+		try{
+			xef = StAXEventFactoryPool.getInstance().acquire();
+			xifProperties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
+			xif = StAXInputFactoryPool.getInstance().acquire(xifProperties);
+			xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();			
+			xof = StAXOutputFactoryPool.getInstance().acquire(xofProperties);
+			is = inputManifestURL.openStream();			
+			XMLEventReader xer = xif.createXMLEventReader(is);
+			fos = new FileOutputStream(outputManifestFile);
+			boolean seenStylesheetInstruction = false;
+			boolean passedFirstElement = false;
+			
+			while(xer.hasNext()) {
+				XMLEvent xe = xer.nextEvent();
+				if(xe.getEventType() == XMLEvent.START_DOCUMENT) {
+					StartDocument sd = (StartDocument) xe; 
+					String enc = sd.getCharacterEncodingScheme();
+					if(enc==null||enc.equals(""))enc="utf-8";
+					xew = xof.createXMLEventWriter(fos,enc);
+					xew.add(xe);
+				}else if(xe.getEventType() == XMLEvent.PROCESSING_INSTRUCTION) {
+					ProcessingInstruction pi = (ProcessingInstruction) xe;
+					if(pi.getTarget().equals("xml-stylesheet")) {
+						seenStylesheetInstruction = true;
+					}
+					xew.add(pi);
+				}else if(xe.isStartElement()) {
+					StartElement se = xe.asStartElement();
+					if(!passedFirstElement) {
+						xew.setDefaultNamespace(se.getName().getNamespaceURI());
+					}
+					if(se.getName().getLocalPart() == "dtbook" 
+							&& !passedFirstElement 
+								&& !seenStylesheetInstruction) {						
+						try{
+							URL cssURL = Stylesheets.get(Stylesheets.DocumentType.Z3986_DTBOOK);
+							String cssLocalName = cssURL.toString().substring(cssURL.toString().lastIndexOf('/')+1);
+							mOutputDir.writeToFile(cssLocalName, cssURL.openStream());
+							xew.add(xef.createProcessingInstruction
+									("xml-stylesheet", "href='" +cssLocalName +"' type='text/css'")
+							);
+							this.sendMessage(i18n("ADDED_CSS",  fileset.getManifestMember().getFile().getName()), 
+									MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+						}catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+					
+					xew.add(xe);
+					
+					//check if this element needs an id attribute
+					if(mNcxConfiguration.matchesNavMapFilter(se)||mNcxConfiguration.matchesNavListFilter(se)) {				
+						if(!hasIdAttribute(se)) {							
+							xew.add(xef.createAttribute("id", mIdGenerator.generateId()));
+						}
+					}
+					
+					if(first) {
+						//collect meta elements 
+						if(se.getName().getLocalPart().equals("meta")) {
+							mInputMetadata.add(se);
+						}
+					}
+					
+					if(mFirstXmlLangValue==null){
+						Attribute a = se.getAttributeByName(mXmlLangQName);
+						if(a!=null){
+							mFirstXmlLangValue = a.getValue();
+						}
+					}
+					passedFirstElement = true;					
+				}else{
+					xew.add(xe);					
+				}
+
+			}
+		}finally{
+			xew.flush();
+			xew.close();
+			if(is!=null)is.close();
+			if(fos!=null)fos.close();
+			StAXEventFactoryPool.getInstance().release(xef);	
+			StAXInputFactoryPool.getInstance().release(xif,xifProperties);
+			StAXOutputFactoryPool.getInstance().release(xof,xofProperties);
+			
+		}		
+		return new FilesetImpl(outputManifestFile.toURI(),this,false,false);
+	}
+
+
+	private boolean hasIdAttribute(StartElement se) {
+		for (Iterator<?> iter = se.getAttributes(); iter.hasNext();) {
+			Attribute a = (Attribute)iter.next();		
+			if(a.getName().getLocalPart().equals("id")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private String getCurrentDate() {	
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		return format.format(new java.util.Date());
 	}
 
 	/**
@@ -160,7 +379,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 	 * <p>If dupe, inparam wins.</p>
 	 * @throws PoolException 
 	 */
-	private MetadataList getMetadata(Map parameters) throws PoolException {
+	private MetadataList getMetadata(Map<String, String> parameters) throws PoolException {
 		
 		/*
 		 * At the time of writing, supported metadata is 
@@ -178,7 +397,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 		 * Values supplied as inparameters to the transformer take 
 		 * precedence over any occurences in the document.   
 		 */
-
+	
 		if(mOpsMetaData==null){						
 			mOpsMetaData = new MetadataList();			
 			String dcTitleValue = null;
@@ -191,7 +410,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 			
 			for(StartElement se : mInputMetadata) {
 				//a set of <meta/> elements				
-				for (Iterator iter = se.getAttributes(); iter.hasNext();) {
+				for (Iterator<?> iter = se.getAttributes(); iter.hasNext();) {
 					Attribute a = (Attribute) iter.next();
 					String name = a.getName().getLocalPart().toLowerCase();
 					if(name.equals("name")){
@@ -218,30 +437,30 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 			}
 			
 			//dc:title
-			String test = (String)parameters.get("dc:title");
+			String test = parameters.get("dc:title");
 			if(test != null && test.length()> 0 ) {
 				dcTitleValue = test;
 			}						
 			mOpsMetaData.add(new QName(DC_NS,"title",DC_PFX), dcTitleValue);
 			
 			//dc:creator
-			test = (String)parameters.get("dc:creator");
+			test = parameters.get("dc:creator");
 			if(test != null && test.length()> 0 ) {
 				dcCreatorValue = test;
 			}						
 			mOpsMetaData.add(new QName(DC_NS,"creator",DC_PFX), dcCreatorValue);
 			
 			//dc:publisher
-			test = (String)parameters.get("dc:publisher");
+			test = parameters.get("dc:publisher");
 			if(test != null && test.length()> 0 ) {
 				dcPublisherValue = test;
 			}						
 			mOpsMetaData.add(new QName(DC_NS,"publisher",DC_PFX), dcPublisherValue);
-
+	
 			//dc:date event=publication
 			QName event = new QName(OPF_NS,"event","opf");
 			
-			test = (String)parameters.get("dc:date");
+			test = parameters.get("dc:date");
 			if(test != null && test.length()> 0 ) {
 				dcDateValue = test;
 			}						
@@ -257,9 +476,9 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 			//d.addAttribute(OPF_NS, "event","creation");
 			d.addAttribute(event,"creation");
 			mOpsMetaData.add(d);
-
+	
 			//dc:identifier
-			test = (String)parameters.get("dc:identifier");
+			test = parameters.get("dc:identifier");
 			if(test != null && test.length()> 0 ) {
 				dcIdentifierValue = test;
 			}					
@@ -267,9 +486,9 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 			MetadataItem im = new MetadataItem(i,dcIdentifierValue);
 			im.addAttribute("id","uid");
 			mOpsMetaData.add(im);
-
+	
 			//dc:langauge
-			test = (String)parameters.get("dc:language");
+			test = parameters.get("dc:language");
 			if(test != null && test.length()> 0 ) {
 				dcLanguageValue = test;				
 			}									
@@ -281,173 +500,6 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler, File
 			
 		} // if mOpsMetaData == null
 		return mOpsMetaData;
-	}
-
-	/**
-	 * Create a Fileset instance for each input document
-	 * @throws URISyntaxException 
-	 * @throws FilesetFatalException 
-	 */
-	private List<Fileset> getInputFilesets(List<URL> inputDocuments) throws FilesetFatalException, URISyntaxException {		
-		List<Fileset> retList = new LinkedList<Fileset>();
-		for (URL url : inputDocuments) {
-			Fileset fileset = new FilesetImpl(url.toURI(),this);
-			if(fileset.getFilesetType() != FilesetType.DTBOOK_DOCUMENT &&
-					fileset.getFilesetType() != FilesetType.XHTML_DOCUMENT) {
-				throw new FilesetFatalException("Fileset " + fileset.getFilesetType().toNiceNameString() + " is not an allowed type.");
-			}
-			retList.add(fileset);
-		}		
-		return retList;
-	}
-
-	/**
-	 * Build an ordered list of input documents, make sure all exist.
-	 * @throws MalformedURLException
-	 * @throws IOException  
-	 */
-	private List<URL> getInputDocuments(String inputParam) throws IOException, MalformedURLException {
-		List<URL> retList = new LinkedList<URL>();
-		String[] docs = inputParam.split(FilesDatatype.SEPARATOR_STRING);
-		for (String doc : docs) {
-			URL url = LocationUtils.identifierToURL(doc);
-			InputStream is = url.openStream();
-			is.close();
-			retList.add(url);
-		}		
-		return retList;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
-	 */
-	public void error(FilesetFileException ffe) throws FilesetFileException {		
-		this.sendMessage(ffe);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.daisy.util.fileset.manipulation.FilesetManipulatorListener#nextFile(org.daisy.util.fileset.interfaces.FilesetFile)
-	 */
-	public FilesetFileManipulator nextFile(FilesetFile file) throws FilesetManipulationException {
-		
-		mIteratorIsFirstManifest = false;
-		if(mIteratorIsFirstFileset && file instanceof ManifestFile) {
-			mIteratorIsFirstManifest = true;
-		}
-				
-		seenStylesheetInstruction = false;
-		passedFirstElement = false;
-		
-		//restriction is set to only recieve XmlFile here 		
-		try {
-			XMLEventExposer xee = new XMLEventExposer (this,null,null,true,false,false);
-			xee.setEventTypeRestriction(XMLEvent.START_ELEMENT);
-			xee.setEventTypeRestriction(XMLEvent.ATTRIBUTE);
-			xee.setEventTypeRestriction(XMLEvent.PROCESSING_INSTRUCTION);
-			return xee;
-		} catch (Exception e) {
-			throw new FilesetManipulationException(e.getMessage(),e);
-		}					
-
-	}
-
-	boolean seenStylesheetInstruction = false;
-	boolean passedFirstElement = false;
-		
-	/*
-	 * (non-Javadoc)
-	 * @see org.daisy.util.fileset.manipulation.manipulators.XMLEventConsumer#nextEvent(javax.xml.stream.events.XMLEvent, org.daisy.util.xml.stax.ContextStack)
-	 */
-	public List<XMLEvent> nextEvent(XMLEvent event, ContextStack context) {
-					
-		if(event.isAttribute()) return null;
-		
-		List<XMLEvent> list = new LinkedList<XMLEvent>();
-		
-		/*
-		 * watch for style procins before root 
-		 */		
-		if(!passedFirstElement && event.getEventType() == XMLEvent.PROCESSING_INSTRUCTION) {
-			ProcessingInstruction pi = (ProcessingInstruction) event;
-			if(pi.getTarget().equals("xml-stylesheet")) {
-				seenStylesheetInstruction = true;
-			}
-		}
-		
-		/*
-		 * If we have dtbook root, no stylesheet procins passed, add one
-		 */
-		if(event.isStartElement() && !passedFirstElement 
-			&& !seenStylesheetInstruction 
-				&& event.asStartElement().getName().getLocalPart().equals("dtbook")) {
-			//add a css
-			try{
-				URL cssURL = Stylesheets.get(Stylesheets.DocumentType.Z3986_DTBOOK);
-				String cssLocalName = cssURL.toString().substring(cssURL.toString().lastIndexOf('/')+1);
-				mOutputDir.writeToFile(cssLocalName, cssURL.openStream());
-				list.add(mXMLEventFactory.createProcessingInstruction
-						("xml-stylesheet", "href='" +cssLocalName +"' type='text/css'")
-				);
-			}catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-		}
-		
-		/*
-		 * If missing, add id attr to elements that match the ncx config.
-		 * We need to deal with attributes included in the StartElement event from the exposer
-		 * and discard the separate Attribute events
-		 */
-				
-		list.add(event);
-		
-		if(event.isStartElement()) {			
-			StartElement se = event.asStartElement();
-			//check if this element needs an id attribute
-			if(mNcxConfiguration.matchesNavMapFilter(se)||mNcxConfiguration.matchesNavListFilter(se)) {				
-				if(!hasIdAttribute(se)) {
-					//list.add(mXMLEventFactory.createAttribute(new QName(se.getName().getNamespaceURI(),"id",null), mIdGenerator.generateId()));
-					list.add(mXMLEventFactory.createAttribute("id", mIdGenerator.generateId()));
-					
-				}
-			}
-			if(mIteratorIsFirstManifest) {
-				//collect meta elements
-				String n = se.getName().getLocalPart(); 
-				if(n.equals("meta")) {
-					mInputMetadata.add(se);
-				}
-			}
-			
-			if(mFirstXmlLangValue==null){
-				Attribute a = se.getAttributeByName(mXmlLangQName);
-				if(a!=null){
-					mFirstXmlLangValue = a.getValue();
-				}
-			}
-			passedFirstElement= true;
-		}
-		
-		return list;
-		
-	}
-
-	private boolean hasIdAttribute(StartElement se) {
-		for (Iterator iter = se.getAttributes(); iter.hasNext();) {
-			Attribute a = (Attribute)iter.next();		
-			if(a.getName().getLocalPart().equals("id")) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private String getCurrentDate() {	
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		return format.format(new java.util.Date());
 	}
 
 }
