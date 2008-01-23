@@ -353,9 +353,9 @@ public abstract class Transformer implements BusListener {
 		Throwable root =ffe.getRootCause();
 		if(root==null) root = ffe.getCause();		
 		if (!(ffe instanceof FilesetFileWarningException) && !(ffe.getCause() instanceof FileNotFoundException)) {			
-			this.sendMessage(root.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, loc);
+			this.sendMessage(root.getLocalizedMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, loc);
 		} else {			
-			this.sendMessage(root.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT, loc);
+			this.sendMessage(root.getLocalizedMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT, loc);
 		}		
 	}
 	
