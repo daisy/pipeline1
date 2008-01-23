@@ -31,6 +31,7 @@ import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.xml.LocusTransformer;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.dom.Serializer;
 import org.daisy.util.xml.pool.LSParserPool;
 import org.w3c.dom.DOMConfiguration;
@@ -76,7 +77,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 					StreamSource ss = new StreamSource(input);
 					InputDocInfoProvider docInfo = new InputDocInfoProvider(ss);
 					String message = i18n("INPUT_DOC_ELEMENT_COUNT", docInfo.getElementCount());			
-					this.sendMessage(message, MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM, null);
+					this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM, null);
 
 					/*
 					 * Check if we have explicit support for given namespaces
@@ -92,6 +93,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 					 * Load the input as DOM
 					 */
 					domConfigMap = LSParserPool.getInstance().getDefaultPropertyMap(Boolean.FALSE);
+					domConfigMap.put("resource-resolver", CatalogEntityResolver.getInstance());
 					parser = LSParserPool.getInstance().acquire(domConfigMap);
 					DOMConfiguration domConfig = parser.getDomConfig();						
 					domConfig.setParameter("error-handler", this);
@@ -105,7 +107,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 					DOMNormalizer domNormalizer = new DOMNormalizer(this,config);
 					domNormalizer.setInputDocElementCount(docInfo.getElementCount());
 					DOMResult result = (DOMResult) domNormalizer.normalize(new DOMSource(doc,input.getAbsolutePath()));
-					this.sendMessage(i18n("NORMALIZATION_MODIFICATIONS",domNormalizer.getNumberOfModifications()));			
+					this.sendMessage(i18n("NORMALIZATION_MODIFICATIONS",domNormalizer.getNumberOfModifications()),MessageEvent.Type.INFO_FINER);			
 
 					
 					/*
@@ -115,7 +117,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 						DOMSyncPointLocator domSyncPointLocator = new DOMSyncPointLocator(this,config);
 						domSyncPointLocator.setInputDocElementCount(domNormalizer.getFinalElementCount());
 						result = (DOMResult) domSyncPointLocator.locate(new DOMSource(result.getNode()));
-						this.sendMessage(i18n("SYNCPOINTS_ADDED",domSyncPointLocator.getNumberOfSyncPoints()));
+						this.sendMessage(i18n("SYNCPOINTS_ADDED",domSyncPointLocator.getNumberOfSyncPoints()),MessageEvent.Type.INFO_FINER);
 					}
 			
 									
