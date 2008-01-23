@@ -19,10 +19,14 @@
 
 package org.daisy.util.xml.catalog;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.net.URL;
 
+import javax.xml.stream.XMLResolver;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
@@ -35,7 +39,6 @@ import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * Threadsafe singleton implementation of a catalog entityresolver.
@@ -103,7 +106,7 @@ import org.xml.sax.SAXException;
  * @author markusg
  */
 
-public class CatalogEntityResolver implements EntityResolver, LSResourceResolver, URIResolver {
+public class CatalogEntityResolver implements EntityResolver, LSResourceResolver, URIResolver, XMLResolver {
     private static CatalogFile catalog;    
     private static DOMImplementationLS mDOMImplementationLS = null;
     private static CatalogEntityResolver mInstance = null;
@@ -113,11 +116,7 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
         URL catalogURL = this.getClass().getResource("catalog.xml");
         try {
             catalog = new CatalogFile(catalogURL, this.getClass());            
-        } catch (IOException ioe) {
-            throw new CatalogExceptionNotRecoverable(ioe);
-        } catch (SAXException se) {
-            throw new CatalogExceptionNotRecoverable(se);
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             throw new CatalogExceptionNotRecoverable(e);
         }
     }
@@ -277,15 +276,12 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
         return catalog.getSize();
     }
 
-    /**
-     * URIResolver impl. Note: only use this if you want to resolve URIs in
-     * schemas when the URI destinations are in the Catalog. For all other use
-     * cases, use CatalogURIResolver.
+    /*
+     * (non-Javadoc)
+     * @see javax.xml.transform.URIResolver#resolve(java.lang.String, java.lang.String)
      */
     @SuppressWarnings("unused")
-    public Source resolve(String href, String base) throws TransformerException {
-        // href is a reference inside the schema
-        // to a sub schema, for example ../relaxngcommon/attributes.rng
+    public Source resolve(String href, String base) throws TransformerException {     
         try {
             URL url = this.resolveEntityToURL(href);
             if (url != null) {            
@@ -294,11 +290,43 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
 	            return ss;
             }
         } catch (IOException e) {
-
+        	throw new TransformerException(e);
         }
-
         return null;
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see javax.xml.stream.XMLResolver#resolveEntity(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("unused")
+	public Object resolveEntity(String publicID, String systemID, 
+			String baseURI, 
+			String namespace) throws XMLStreamException {		
+        try {
+            InputSource is = resolveEntity(publicID, systemID);
+            if (is == null) {
+                return null;
+            }
+            InputStream istr = is.getByteStream();
+            if (istr != null) {
+                return istr;
+            }
+            Reader rdr = is.getCharacterStream();
+            if (rdr != null) {
+                StringBuffer buffer = new StringBuffer();
+                int ch = 0;
+                while ((ch = rdr.read())> -1) {
+                    buffer.append((char)ch);
+                }
+                ByteArrayInputStream bais = new ByteArrayInputStream(buffer.toString().getBytes());
+                return bais;
+            }
+        } catch (IOException e) {
+            throw new XMLStreamException(e);
+        }
+        return null;
+	}
     
     public void setListener(CatalogListener listener) {
     	mListener = listener;
@@ -309,4 +337,6 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
     		mListener.entityNotSupported(notResolved);
     	}
     }
+
+    
 }
