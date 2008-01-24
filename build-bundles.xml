@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project default="all">
+	<description>
+		Buildfile for creating OSGi bundles from the Daisy Pipeline util and lib dirs
+	</description>
+	
+	<!-- ================================================================== -->
+	<!-- Common properties                                                  -->
+	<!-- ================================================================== -->
+		
+	<property name="base.dir" value="."/>		
+	<property name="src.dir" value="${base.dir}/src"/>	
+	<property name="build.dir" value="${base.dir}/bin"/>	
+	<property name="distribution.dir" value="${base.dir}/dist"/>
+	<tstamp>
+		<format property="NOW" pattern="yyyyMMddHHmm"/>
+	</tstamp>	
+	
+	<tstamp>
+		<format property="ISO-TODAY" pattern="yyyyMMdd"/>
+	</tstamp>
+	
+	<!-- ================================================================== -->
+	<!-- Private targets                                                    -->
+	<!-- ================================================================== -->
+	
+	<!-- - - - - - - - - - - - - - - - - -
+	      target: createDistributionDir
+	      
+	      Creates the distribution dirctory.
+	     - - - - - - - - - - - - - - - - - -->
+	<target name="createDistributionDir">
+		<mkdir dir="${distribution.dir}"/>
+	</target>
+	
+	
+	<!-- - - - - - - - - - - - - - - - - -
+	      target: removeClasses
+	      
+	      Cleans up old class files so that the new ones can be built.
+	     - - - - - - - - - - - - - - - - - -->
+	<target name="removeClasses" if="${build.dir}">
+		<delete dir="${build.dir}/org">
+			<fileset dir="${build.dir}" includes="**/*.class"/>
+		</delete>
+	</target>
+	
+	
+	<!-- - - - - - - - - - - - - - - - - -
+	      target: compile
+	      
+	      Compiles all src classes.
+	     - - - - - - - - - - - - - - - - - -->
+	<target name="compile" depends="removeClasses">
+		<javac 	srcdir="${src.dir}" 
+				destdir="${build.dir}" 
+				includes="**/*.java" 
+				debug="true"
+				/>
+	</target>
+	
+	
+	<!-- ================================================================== -->
+	<!-- Public targets                                                     -->
+	<!-- ================================================================== -->
+		
+	<!-- ================================= 
+		  target: all		  
+		  Builds all plugin jars.
+		 ================================= -->
+	<target name="all" 
+		    description="Builds all plugins" 
+		    depends="buildRcpPluginUtilXmlCatalog,buildRcpPluginUtilXmlPool,buildRcpPluginUtilMime,buildRcpPluginUtilFileDetect,buildRcpPluginWoodstox"/>
+				
+	<property name="buddyPolicy" value="dependent"/>
+	
+	<!-- ================================= 
+		  target: buildRcpPluginUtilXmlCatalog
+		  
+		  depends on pool, stax api and woodstox
+		 ================================= -->	
+	
+	<property name="catalog.plugin.symbolicName" value="org.daisy.util.xml.catalog"/>
+	<property name="catalog.plugin.version" value="1.0.0"/>
+	<property name="catalog.plugin.fullName" value="${catalog.plugin.symbolicName}_${catalog.plugin.version}"/>
+	
+	<target name="buildRcpPluginUtilXmlCatalog"
+			description="Builds the XML Catalog package as a RCP 3.3 injection plugin"
+			depends="createDistributionDir,compile">
+		<delete file="${distribution.dir}/${catalog.plugin.fullName}.jar"/>
+		<delete file="${distribution.dir}/${catalog.plugin.fullName}-src.zip"/>
+		<jar jarfile="${distribution.dir}/${catalog.plugin.fullName}.jar">
+			<fileset dir="${base.dir}/bin/">
+				<include name="org/daisy/util/xml/catalog/**/*.*"/>
+			</fileset>
+			<manifest>
+				<attribute name="Bundle-ManifestVersion" value="2"/>
+				<attribute name="Bundle-Name" value="XML Catalog Plug-in"/>
+				<attribute name="Bundle-SymbolicName" value="${catalog.plugin.symbolicName}"/>
+				<attribute name="Bundle-Version" value="${catalog.plugin.version}"/>
+				<attribute name="Bundle-ClassPath" value="${catalog.plugin.fullName}.jar"/>
+				<attribute name="Export-Package" value="${catalog.plugin.symbolicName}"/>
+				<attribute name="Eclipse-LazyStart" value="true"/> 
+				<attribute name="Eclipse-BuddyPolicy" value="${buddyPolicy}"/>
+				<attribute name="Require-Bundle" value="${pool.plugin.symbolicName}, ${wstx.plugin.symbolicName}"/>
+				<attribute name="Build-Date" value="${ISO-TODAY}"/>
+			</manifest>			
+		</jar>
+		<zip zipfile="${distribution.dir}/${catalog.plugin.fullName}-src.zip" >				
+			<fileset dir="${base.dir}/src/org/daisy/util/xml/catalog">
+				<include name="**/*.*"/>
+				<exclude name="**/*.class"/>
+			</fileset>
+		</zip>	
+	</target>
+	
+	
+	<!-- ================================= 
+		  target: buildRcpPluginUtilXmlPool
+		  
+		  depends on com.ctc.woodstox
+		 ================================= -->	
+	
+	<property name="pool.plugin.symbolicName" value="org.daisy.util.xml.pool"/>
+	<property name="pool.plugin.version" value="1.0.0"/>
+	<property name="pool.plugin.fullName" value="${pool.plugin.symbolicName}_${pool.plugin.version}"/>
+	
+	<target name="buildRcpPluginUtilXmlPool"
+			description="Builds the XML pool package as a RCP 3.3 injection plugin"
+			depends="createDistributionDir,compile">
+		<delete file="${distribution.dir}/${pool.plugin.fullName}.jar"/>
+		<delete file="${distribution.dir}/${pool.plugin.fullName}-src.zip"/>
+		<jar jarfile="${distribution.dir}/${pool.plugin.fullName}.jar">
+			<fileset dir="${base.dir}/bin">
+				<include name="/org/daisy/util/xml/pool/**/*.*"/>
+			</fileset>
+			<manifest>
+				<attribute name="Bundle-ManifestVersion" value="2"/>
+				<attribute name="Bundle-Name" value="XML pool Plug-in"/>
+				<attribute name="Bundle-SymbolicName" value="${pool.plugin.symbolicName}"/>
+				<attribute name="Bundle-Version" value="${pool.plugin.version}"/>
+				<attribute name="Bundle-ClassPath" value="${pool.plugin.fullName}.jar"/>
+				<attribute name="Export-Package" value="${pool.plugin.symbolicName}"/>
+				<attribute name="Require-Bundle" value="${wstx.plugin.symbolicName}"/>
+				<attribute name="Eclipse-LazyStart" value="true"/> 
+				<attribute name="Eclipse-BuddyPolicy" value="${buddyPolicy}"/>
+				<attribute name="Build-Date" value="${ISO-TODAY}"/>
+			</manifest>			
+		</jar>
+		<zip zipfile="${distribution.dir}/${pool.plugin.fullName}-src.zip" >				
+			<fileset dir="${base.dir}/src/org/daisy/util/xml/pool">
+				<include name="**/*.*"/>
+				<exclude name="**/*.class"/>
+			</fileset>
+		</zip>	
+	</target>
+	
+	<!-- ================================= 
+		  target: buildRcpPluginUtilMime
+		  
+		  depends on pool
+		 ================================= -->	
+	
+	<property name="mime.plugin.symbolicName" value="org.daisy.util.mime"/>
+	<property name="mime.plugin.version" value="1.0.0"/>
+	<property name="mime.plugin.fullName" value="${mime.plugin.symbolicName}_${mime.plugin.version}"/>
+	
+	<target name="buildRcpPluginUtilMime"
+			description="Builds the Mime package as a RCP 3.3 injection plugin"
+			depends="createDistributionDir,compile">
+		<delete file="${distribution.dir}/${mime.plugin.fullName}.jar"/>
+		<delete file="${distribution.dir}/${mime.plugin.fullName}-src.zip"/>
+		<jar jarfile="${distribution.dir}/${mime.plugin.fullName}.jar">
+			<fileset dir="${base.dir}/bin">
+				<include name="/org/daisy/util/mime/**/*.*"/>
+			</fileset>
+			<manifest>
+				<attribute name="Bundle-ManifestVersion" value="2"/>
+				<attribute name="Bundle-Name" value="XML mime Plug-in"/>
+				<attribute name="Bundle-SymbolicName" value="${mime.plugin.symbolicName}"/>
+				<attribute name="Bundle-Version" value="${mime.plugin.version}"/>
+				<attribute name="Bundle-ClassPath" value="${mime.plugin.fullName}.jar"/>
+				<attribute name="Export-Package" value="${mime.plugin.symbolicName}"/>
+				<attribute name="Require-Bundle" value="${pool.plugin.symbolicName}"/>
+				<attribute name="Eclipse-LazyStart" value="true"/> 
+				<attribute name="Eclipse-BuddyPolicy" value="${buddyPolicy}"/>
+				<attribute name="Build-Date" value="${ISO-TODAY}"/>
+			</manifest>			
+		</jar>
+		<zip zipfile="${distribution.dir}/${mime.plugin.fullName}-src.zip" >				
+			<fileset dir="${base.dir}/src/org/daisy/util/mime">
+				<include name="**/*.*"/>
+				<exclude name="**/*.class"/>
+			</fileset>
+		</zip>	
+	</target>
+	
+	<!-- ================================= 
+		  target: buildRcpPluginUtilFileDetect
+		  depends on mime, pool, woodstox, util.stax.DoctypeParser
+		 ================================= -->	
+
+	<property name="detect.plugin.symbolicName" value="org.daisy.util.file.detect"/>
+	<property name="detect.plugin.version" value="1.0.0"/>
+	<property name="detect.plugin.fullName" value="${detect.plugin.symbolicName}_${detect.plugin.version}"/>
+	
+	<target name="buildRcpPluginUtilFileDetect"
+			description="Builds the Signature Detector package as a RCP 3.3 injection plugin"
+			depends="createDistributionDir,compile">
+		<delete file="${distribution.dir}/${detect.plugin.fullName}.jar"/>
+		<delete file="${distribution.dir}/${detect.plugin.fullName}-src.zip"/>
+		<jar jarfile="${distribution.dir}/${detect.plugin.fullName}.jar">
+			<fileset dir="${base.dir}/bin/">
+				<include name="org/daisy/util/file/detect/**/*.*"/>				
+				<include name="org/daisy/util/xml/stax/DoctypeParser.class"/>								
+			</fileset>
+			<manifest>
+				<attribute name="Bundle-ManifestVersion" value="2"/>
+				<attribute name="Bundle-Name" value="Signature Detection Plug-in"/>
+				<attribute name="Bundle-SymbolicName" value="${detect.plugin.symbolicName}"/>
+				<attribute name="Bundle-Version" value="${detect.plugin.version}"/>
+				<attribute name="Bundle-ClassPath" value="${detect.plugin.fullName}.jar"/>
+				<attribute name="Export-Package" value="${detect.plugin.symbolicName},org.daisy.util.xml.stax"/>
+				<attribute name="Require-Bundle" value="${pool.plugin.symbolicName},${mime.plugin.symbolicName},${wstx.plugin.symbolicName}"/>
+				<attribute name="Eclipse-LazyStart" value="true"/> 
+				<attribute name="Eclipse-BuddyPolicy" value="${buddyPolicy}"/>
+				<attribute name="Build-Date" value="${ISO-TODAY}"/>
+			</manifest>			
+		</jar>
+		<zip zipfile="${distribution.dir}/${detect.plugin.fullName}-src.zip" >				
+			<fileset dir="${base.dir}/src/org/daisy/util/file/detect">
+				<include name="**/*.*"/>
+				<exclude name="**/*.class"/>
+			</fileset>
+		</zip>	
+	</target>	
+	
+	
+	<!-- ================================= 
+		  target: buildRcpPluginWoodstox
+		  depends on stax api 101
+		  Note: check woodstox jar version match
+		 ================================= -->
+	
+	<property name="wstx.plugin.version" value="3.9.0"/>
+	<property name="wstx.plugin.symbolicName" value="com.ctc.wstx"/>
+	<property name="wstx.plugin.fullName" value="${wstx.plugin.symbolicName}_${wstx.plugin.version}"/>
+			
+	<target name="buildRcpPluginWoodstox"
+			description="Builds the Woodstox and StAX AP1 101 jars as a RCP 3.3 injection plugin"
+			depends="createDistributionDir,compile">
+		
+		<delete file="${distribution.dir}/${wstx.plugin.fullName}.jar"/>
+		<delete file="${distribution.dir}/${wstx.plugin.fullName}-src.zip"/>
+		
+		<fileset dir="${base.dir}/lib/" includes="wstx-lgpl-${wstx.plugin.version}.jar" id="woodstox"/>	
+		<fileset dir="${base.dir}/lib/" includes="stax-api-1.0.1.jar" id="staxapi"/>
+		
+		<mkdir dir="${distribution.dir}/temp"/>
+		
+		<unzip dest="${distribution.dir}/temp">
+			<fileset refid="woodstox"/>
+			<fileset refid="staxapi"/>
+		</unzip>
+		
+		<delete file="${distribution.dir}/temp/META-INF/MANIFEST.MF"/>
+		
+		<jar jarfile="${distribution.dir}/${wstx.plugin.fullName}.jar">
+					<fileset dir="${distribution.dir}/temp">
+						<include name="**/*.*"/>																	
+					</fileset>
+					<manifest>
+						<attribute name="Bundle-ManifestVersion" value="2"/>
+						<attribute name="Bundle-Name" value="Woodstox and StAX API 1.0.1 Plug-in"/>
+						<attribute name="Bundle-SymbolicName" value="${wstx.plugin.symbolicName}"/>
+						<attribute name="Bundle-Version" value="${wstx.plugin.version}"/>
+						<attribute name="Bundle-ClassPath" value="${wstx.plugin.fullName}.jar"/>
+						<attribute name="Export-Package" value="${wstx.plugin.packages}"/>		
+						<attribute name="Eclipse-BuddyPolicy" value="${buddyPolicy}"/>
+						<attribute name="Eclipse-LazyStart" value="true"/> 
+						<attribute name="Build-Date" value="${ISO-TODAY}"/>
+					</manifest>			
+		</jar>
+		<zip zipfile="${distribution.dir}/${wstx.plugin.fullName}-src.zip" >				
+			<fileset dir="${distribution.dir}/temp">
+				<include name="**/*.*"/>
+				<exclude name="**/*.class"/>
+			</fileset>
+		</zip>		
+		
+		<delete dir="${distribution.dir}/temp" includeemptydirs="true" followsymlinks="no" deleteonexit="true" failonerror="false"/>
+	</target>
+	
+	<property name="wstx.plugin.packages" value="com.ctc.wstx.api,com.ctc.wstx.cfg,com.ctc.wstx.dom,com.ctc.wstx.dtd,com.ctc.wstx.ent,com.ctc.wstx.evt,com.ctc.wstx.exc,com.ctc.wstx.io,com.ctc.wstx.msv,com.ctc.wstx.sax,com.ctc.wstx.sr,com.ctc.wstx.stax,com.ctc.wstx.sw,com.ctc.wstx.util,javax.xml,javax.xml.namespace,javax.xml.stream,javax.xml.stream.events,javax.xml.stream.util,org.codehaus.stax2,org.codehaus.stax2.evt,org.codehaus.stax2.io,org.codehaus.stax2.ri,org.codehaus.stax2.ri.evt,org.codehaus.stax2.typed,org.codehaus.stax2.validation"/>
+
+</project>
