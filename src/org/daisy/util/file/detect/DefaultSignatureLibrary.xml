@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<signatures xmlns="http://www.daisy.org/pipeline/ns#">  
+<!--
+	mgylling 20071123 
+	see ./SignatureLibrary.rng for details 
+-->
+    
+  <signature 	mimeRef="z3986dtbook" 
+  				nameRegex=".+\.[Xx][Mm][Ll]$" 
+  				implementors=""
+  				niceName="Z3986 DTBook XML File"
+  				xmlns:d="http://www.daisy.org/z3986/2005/dtbook/">
+    	<xmlHeader>
+    		<d:dtbook />
+    	</xmlHeader>
+  </signature>
+      
+  <signature 	mimeRef="d202ncc" 
+  				nameRegex="[Nn][Cc][Cc]\.[Hh][Tt][Mm][Ll]?$" 
+  				implementors=""
+  				niceName="Daisy 2.02 DTB NCC File"
+  				xmlns:xht="http://www.w3.org/1999/xhtml">
+    	<xmlHeader>
+    		<xht:html />
+    	</xmlHeader>    	 
+    	<xmlAnywhere>
+    		<xht:meta name="dc:format" content="Daisy 2.02"/>
+    	</xmlAnywhere>   	
+  </signature>
+
+  <signature 	mimeRef="xhtml" 
+  				nameRegex=".+\.[Xx]?[Hh][Tt][Mm][Ll]?$" 
+  				implementors="org.daisy.util.fileset.impl.Xhtml10FileImpl"
+  				niceName="XHTML (eXtensible Hyper Text Markup Language) File">
+    	<xmlHeader>
+    		<xht:html xmlns:xht="http://www.w3.org/1999/xhtml" />
+    	</xmlHeader>    	    	
+  </signature>
+
+  <signature 	mimeRef="texthtml" 
+  				nameRegex=".+\.[Hh][Tt][Mm][Ll]?$" 
+  				implementors="org.daisy.util.fileset.impl.HtmlFileImpl"
+  				niceName="HTML (Hyper Text Markup Language) File" />   	    	
+  
+  <signature 	mimeRef="pdf" 
+  				nameRegex=".+\.[Pp][Dd][Ff]$" 
+  				implementors="org.daisy.util.fileset.impl.PdfFileImpl"
+  				niceName="Adobe PDF (Portable Document Format) File">
+  		<byteHeader>0x25 0x50 0x44 0x46 0x2D 0x31 0x2E</byteHeader>   
+  </signature>
+
+  <signature 	mimeRef="rtf" 
+  				nameRegex=".+\.[Rr][Tt][Ff]$" 
+  				implementors="org.daisy.util.fileset.impl.RtfFileImpl"
+  				niceName="Microsoft RTF (Rich Text Format) File">
+  		<byteHeader>0x7B 0x5C 0x72 0x74 0x66</byteHeader>   
+  </signature>
+
+	<!-- ================================================================== -->
+	<!-- IDPF                                                               -->
+	<!-- ================================================================== -->
+	
+  <signature 	mimeRef="ocf10" 
+  				nameRegex=".+\.[Ee][Pp][Uu][Bb]$" 
+  				implementors=""
+  				niceName="OEBPS Container File (epub)">
+  		<byteHeader>0x50 0x4B</byteHeader>   
+  </signature>
+  
+  <signature 	mimeRef="opf20" 
+  				nameRegex=".+\.[Oo][Pp][Ff]$" 
+  				implementors=""
+  				niceName="OPF (Open Packaging Format) 2.0 File"
+  				xmlns:opf20="http://www.idpf.org/2007/opf">
+    	<xmlHeader>
+    		<opf20:package version="2.0" />
+    	</xmlHeader>    	    	
+  </signature>
+  
+	<!-- ================================================================== -->
+	<!-- Images                                                             -->
+	<!-- ================================================================== -->
+	
+  <signature 	mimeRef="jpg" 
+  				nameRegex="(.+\.[Jj][Pp][Gg]$)|(.+\.[Jj][Pp][Ee][Gg]$)" 
+  				implementors="org.daisy.util.fileset.impl.JpgFileImpl"
+  				niceName="JPEG (Joint Photographic Experts Group) Image">
+    	<byteHeader>0xff 0xd8 0xff 0xe0</byteHeader>
+    	<byteHeader>0xff 0xd8 0xff 0xe1</byteHeader>
+  </signature>  
+
+  <signature 	mimeRef="gif" 
+  				nameRegex=".+\.[Gg][Ii][Ff]$" 
+  				implementors="org.daisy.util.fileset.impl.GifFileImpl"
+  				niceName="GIF (Graphic Interchange Format) Image">
+    	<byteHeader>0x47 0x49 0x46 0x38</byteHeader> <!-- GIF8 -->
+    	<byteHeader>0x47 0x49 0x46 0x38 0x37 0x61 </byteHeader> <!-- GIF87a -->
+    	<byteHeader>0x47 0x49 0x46 0x38 0x39 0x61</byteHeader> <!-- GIF89a -->    	
+  </signature>
+
+  <signature 	mimeRef="png" 
+  				nameRegex=".+\.[Pp][Nn][Gg]$" 
+  				implementors="org.daisy.util.fileset.impl.PngFileImpl"
+  				niceName="PNG (Portable Network Graphics) Image">    	
+    	<byteHeader>0x89 0x50 0x4E 0x47 0x0D 0x0A 0x1A 0x0A</byteHeader>
+  </signature>
+
+  <signature 	mimeRef="bmp" 
+  				nameRegex=".+\.[Bb][Mm][Pp]$" 
+  				implementors="org.daisy.util.fileset.impl.BmpFileImpl"
+  				niceName="BMP (Windows OS/2 Bitmap Graphics) Image">    	
+    	<byteHeader>0x42 0x4D</byteHeader>
+  </signature>
+  
+</signatures>

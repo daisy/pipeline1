@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar 
+	xmlns="http://relaxng.org/ns/structure/1.0"
+	ns="http://www.daisy.org/pipeline/ns#" 
+	xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">
+		
+  	<a:doc>
+  		RelaxNG grammar for SignatureRegistry.xml
+  		
+    	Last edit by: mgylling 2007-07-08
+    	
+  		A collection of signatures of files (aka magic).  	
+    	
+    	The signatures element may contain one or several signature elements.
+  
+  		The four attributes on the signature element (mimeRef, nameRegex, 
+  		implementors, niceName) are required, but may be empty.  	
+    	
+  		The mimeRef attribute is an id of an entry in MIMETypeRegistry.xml  
+  		
+  		The nameRegex attribute contains a regex pattern for the file name.  
+  		
+  		The implementors attribute is a space separated list of qualified 
+  		names of specialized implementations of the resource type.  	
+  		
+  		The niceName attribute is a human readable identifier of the 
+  		resource type.
+  
+  		The signature element must have (zero or more xmlHeader+xmlAnywhere children) 
+  		or (zero or more byteHeader children) or (zero children (= a weak signature)).   	
+
+  		The xmlHeader element contains an empty element with zero or more 
+  		attributes and zero or more xmlns declarations.
+  
+  		For a xmlHeader match to occur, the file root element must match 
+  		on all properties of the empty element in xmlHeader. 
+  
+  		The xmlHeader attributes (publicId and systemId) describe DTD prolog 
+  		properties. These attributes are optional.
+  
+  		The xmlAnyWhere element contains a sequence of XML events 
+  		(elements, attributes, text). This sequence 
+  		(post whitespace trim) is matched against the resource only if 
+  		the prolog/root matching was not conclusive. 
+  		   		
+  		Zero, one or several xmlAnyWhere elements may be provided.
+  
+  		The byteHeader element contains an arbitrary length byte 
+  		sequence, space separated, matched against the same amount 
+  		of bytes at start of the file (magic).
+  
+  		Within one signature element, the xmlHeader, xmlAnyWhere and 
+  		byteHeader elements may be repeated, but xmlHeader/xmlAnyWhere 
+  		and byteHeader elements may not coexist within the same signature.
+    	
+  	</a:doc>
+
+	<start>
+    	<ref name="element.signatures"/>
+  	</start>
+
+	<define name="element.signatures">
+		<element name="signatures">
+			<oneOrMore>
+				<ref name="element.signature"/>
+			</oneOrMore>			
+		</element>
+	</define>
+
+	<define name="element.signature">
+		<element name="signature">
+			<ref name="attlist.element.signature"/>		
+			<choice>
+				<ref name="content.signature.xml"/>
+				<ref name="content.signature.byte"/>
+				<ref name="content.signature.weak"/>
+			</choice>
+		</element>
+	</define>
+
+	<define name="attlist.element.signature">
+		<attribute name="mimeRef"/>
+		<attribute name="nameRegex"/>
+		<attribute name="implementors"/>
+		<attribute name="niceName"/>					
+	</define>
+
+	<define name="content.signature.xml">		
+		<interleave>
+			<oneOrMore>
+				<ref name="element.xmlHeader"/>
+			</oneOrMore>
+			<zeroOrMore>	
+				<ref name="element.xmlAnywhere"/>
+			</zeroOrMore>
+		</interleave>
+	</define>
+	
+	<define name="content.signature.byte">
+		<oneOrMore>
+			<element name="byteHeader">
+				<text/>
+			</element>
+		</oneOrMore>
+	</define>
+
+	<define name="content.signature.weak">
+		<empty/>
+	</define>
+
+	<define name="element.xmlHeader">
+		<ref name="attlist.element.xmlHeader"/>		
+  		<element name="xmlHeader">
+	    	<anyName/>
+	    	<zeroOrMore>	
+		  		<attribute>
+	    			<anyName/>
+		  		</attribute>
+        	</zeroOrMore>
+	    </element>	    
+	</define>
+
+	<define name="element.xmlAnywhere">				
+  		<element name="xmlAnywhere">
+	    	<oneOrMore combine="interleave">
+	    		<text/>
+	    		<ref name="anyElement"/>
+        	</oneOrMore>
+	    </element>	    
+	</define>
+
+	<define name="attlist.element.xmlHeader">
+		<attribute name="publicId"/>
+		<attribute name="systemId"/>
+	</define>
+	
+	<define name="anyElement">
+    	<element>
+      		<anyName/>
+      		<zeroOrMore>
+				<choice>
+					<attribute>
+				    	<anyName/>
+				  	</attribute>
+				  	<text/>
+				  	<ref name="anyElement"/>
+				</choice>
+			</zeroOrMore>
+    	</element>
+ 	</define>
+		
+</grammar>

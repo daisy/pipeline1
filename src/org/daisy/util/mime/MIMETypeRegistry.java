@@ -35,10 +35,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.daisy.util.file.EFile;
-import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
-import org.daisy.util.xml.stax.StaxEntityResolver;
 
 /**
  * Singleton MIME registry class. Use the <code>getInstance</code> method
@@ -58,7 +55,7 @@ public class MIMETypeRegistry implements XMLReporter {
 			XMLStreamReader reader;
 			xif = StAXInputFactoryPool.getInstance().acquire(StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false));				
 	        xif.setXMLReporter(this);
-			xif.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));        
+			//xif.setXMLResolver(CatalogEntityResolver.getInstance());        
 			reader = xif.createXMLStreamReader(docURL.openStream());
 			buildMap(reader);			
 		} catch (Exception e) {
@@ -108,8 +105,7 @@ public class MIMETypeRegistry implements XMLReporter {
 					entries.put(id, mimeType);		
 		        }
 		    }
-		}
-		
+		}		
 	}
 
 	/**
@@ -165,6 +161,7 @@ public class MIMETypeRegistry implements XMLReporter {
 	 * a utility method to use when
 	 * updating the constants in MIMEConstants.java
 	 */
+	@SuppressWarnings({"unused", "unchecked"})
 	private static void printConstants() throws MIMETypeRegistryException {
 		List slist = new LinkedList();
 		String decl = "public static final String ";
@@ -195,46 +192,11 @@ public class MIMETypeRegistry implements XMLReporter {
 	 * Only warnings and non-fatal errors should be reported through this interface. 
 	 * Fatal errors should be thrown as XMLStreamException.
 	 */
+	@SuppressWarnings("unused")
 	public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
   	  	      System.err.println(errorType + " in " + location.getSystemId());
       	      System.err.println("[line " + location.getLineNumber() + "] [column " + location.getColumnNumber() + "]");
       	      System.err.println(message);      
 	}
 	
-	/**
-	 * Attempt to detect a MIMEType for the inparam resource locator
-	 * @return the MIMEType if detection suceeded, else null.
-	 * @throws MIMETypeRegistryException 
-	 */
-	public MIMEType detect(URL url, boolean looseHeuristics) throws MIMETypeRegistryException {
-		//TODO improve, dont assume file URLs
-		//TODO improve, dont rely on filenames alone; peek etc
-		//TODO use XML file for detection patterns (xmlroot, byte signature)
-		//will be:
-		
-//		Signature sig = SignatureRegistry.getInstance().detect(url, looseHeuristics);
-//		if(sig==null) return null;
-//		return entries.get(sig.getMIMEType().getId();
-		
-		//temporary:
-		try{
-			String filename = url.getFile();
-			if(filename.length()>0) {
-				EFile file = new EFile(filename);
-				String pattern = "*." + file.getExtension();
-				
-				Collection c = entries.values();
-				Iterator i = c.iterator();
-				while(i.hasNext()) {
-					MIMEType m = (MIMEType) i.next();
-					if(m.getFilenamePatterns().contains(pattern)) {
-						return m;
-					}
-				}
-			}
-		}catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-		return null;
-	}  	      
 }

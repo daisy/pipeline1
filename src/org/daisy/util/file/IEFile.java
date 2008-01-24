@@ -55,14 +55,14 @@ public abstract interface IEFile {
 	 */
 	public MIMEType setMimeType(String mime) throws MIMETypeException;
 	
-	/**
-	 * An extension to java.io.File.
-	 * Attempts to retrieve a org.daisy.util.mime.MimeType object
-	 * by heuristical analysis of properties of this File.
-	 * @return 
-	 * 		the MimeType object if set succeeded, else a MimeTypeException
-	 */
-	public MIMEType setMimeType() throws MIMETypeException;
+//	/**
+//	 * An extension to java.io.File.
+//	 * Attempts to retrieve a org.daisy.util.mime.MimeType object
+//	 * by heuristical analysis of properties of this File.
+//	 * @return 
+//	 * 		the MimeType object if set succeeded, else a MimeTypeException
+//	 */
+//	public MIMEType setMimeType() throws MIMETypeException;
 	
 	/**
 	 * An extension to java.io.File.

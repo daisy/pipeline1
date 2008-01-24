@@ -19,14 +19,12 @@
 
 package org.daisy.util.mime;
 
-import org.daisy.util.exception.BaseException;
-
 /**
  * Base class for all Exceptions thrown from org.daisy.util.mime
  * @author Markus Gylling
  */
-public class MIMEException extends BaseException {
-
+public class MIMEException extends Exception {
+		
 	public MIMEException(String message) {
 		super(message);
 	}

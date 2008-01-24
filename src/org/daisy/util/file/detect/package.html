@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+	<head>
+		<title>org.daisy.util.file.detect</title>
+	</head>
+<body>
+  File signature detector a.k.a Linux Magic.
+  <p>Detect the type of a resource based on magic numbers (byte signature) or XML tokens (XML signature).</p>
+  <p>The signature data (signature library) is stored in an XML document (see SignatureLibrary.rng); 
+  this package ships with a default exemplar of such a library.</p>
+  
+  <p>Usage example:</p>
+  <pre><code>
+  //create instance, optionally load the default library
+  SignatureDetector detector = new SignatureDetector(true);
+  //load a user library
+  detector.loadLibrary(myLibrary.toURL);
+  //detect a resource
+  List&lt;Signature&gt; list = detector.detect(myResourceURL);
+  </code></pre>
+  
+  <p>The return type is a List of <code>Signature</code> objects. This is because many times, a resource will match several signatures. For example (and depending on which libraries are loaded), a Daisy 2.02 
+  NCC file could match an 2.02 NCC signature and a XHTML 1.0 signature. The list is sorted with closest match first.</p>
+  
+  <p>Documentation on how to compose a signature library (or extending the shipped one) is available in
+  ./SignatureLibrary.rng</p>
+        
+</body>
+</html>

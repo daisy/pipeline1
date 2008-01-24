@@ -92,13 +92,20 @@ public class EFile extends java.io.File  {
 		}				
 	}
 	
-	public MIMEType setMimeType() throws MIMETypeException {
-		try{
-			return this.mimeType = mimeFactory.newMimeType(this);
-		} catch (Exception e) {
-			throw new MIMETypeException(e.getMessage(),e);
-		}
-	}
+//	public MIMEType setMimeType() throws MIMETypeException {	
+//		try{
+//			SignatureDetector detector = new SignatureDetector(true);
+//			List<Signature> list = detector.detect(this);
+//			if(list!=null && !list.isEmpty()) {
+//				MIMEType mime = list.get(0).getMIMEType();
+//				setMimeType(mime);
+//				return mime;
+//			}	
+//		}catch (Exception e) {
+//			throw new MIMETypeException(e.getMessage(),e);
+//		}	
+//		return null;
+//	}
 	
 	public void setMimeType(MIMEType mime) {
 		  this.mimeType = mime; 
