@@ -460,10 +460,9 @@
     <system systemId="http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" uri="./audacity/audacityproject-1.3.0.dtd" />
     <public publicId="-//audacityproject-1.3.0//DTD//EN" uri="./audacity/audacityproject-1.3.0.dtd" />
   </group> 
-  
-  <!--
+   
   <group>  
     <system systemId="http://java.sun.com/dtd/properties.dtd" uri="./sun/properties.dtd" />
   </group> 
-  --> 
+ 
 </catalog>
