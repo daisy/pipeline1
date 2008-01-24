@@ -21,6 +21,8 @@ package org.daisy.util.xml.xslt.stylesheets;
 
 import java.net.URL;
 
+import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+
 /**
  * A static getter for access to the canonical stylesheets
  * who has their home in this directory. Note; the URL returned
@@ -29,13 +31,18 @@ import java.net.URL;
  * @author Markus Gylling
  */
 public class Stylesheets {
-
+		
 	/**
-	 * @param localName local (no path specified) name of a stylesheet placed in the same folder as this class.
-	 * @return a URL of the stylesheet if found, else null.
+	 * Get the URL of an XSLT stylesehet
+	 * @param identifier A system id of the wanted stylesheet (check ./catalog.xml).
+	 * @return a URL of the stylesheet if found, else null
 	 */
-	public static URL get(String localName) {
-		return Stylesheets.class.getResource(localName);
+	public static URL get(String identifier) {
+		try {
+			return StylesheetResolver.getInstance().resolve(identifier);
+		} catch (CatalogExceptionNotRecoverable e) {
+			return null;
+		}								
 	}
 	
 }

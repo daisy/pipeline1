@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- <!DOCTYPE catalog PUBLIC "-//OASIS//DTD XML Catalogs V1.1//EN" "http://www.oasis-open.org/committees/entity/release/1.1/catalog.dtd"> -->
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">
+      
+  <group> <!-- dsdl --> 
+    <system systemId="Any2ISOSchtrn.xsl" uri="./dsdl/any2isoschematron.xsl" />
+    <system systemId="any2isoschematron.xsl" uri="./dsdl/any2isoschematron.xsl" />
+    <system systemId="Any2Schtrn.xsl" uri="./dsdl/any2schematron.xsl" />
+    <system systemId="any2schematron.xsl" uri="./dsdl/any2schematron.xsl" />
+    <system systemId="RNG2ISOSchtrn.xsl" uri="./dsdl/relaxng2isoschematron.xsl" />
+    <system systemId="relaxng2isoschematron.xsl" uri="./dsdl/relaxng2isoschematron.xsl" />
+    <system systemId="RNG2Schtrn.xsl" uri="./dsdl/relaxng2schematron.xsl" />
+    <system systemId="relaxng2schematron.xsl" uri="./dsdl/relaxng2schematron.xsl" />
+    <system systemId="iso_schematron_skeleton.xsl" uri="./dsdl/iso_schematron_skeleton.xsl" />    
+    <system systemId="iso_svrl.xsl" uri="./dsdl/iso_svrl.xsl" />    
+  </group>
+  
+  <group> <!-- dtbook --> 
+    <system systemId="dtbook2xhtml.xsl" uri="./dtbook/dtbook2xhtml.xsl" />
+  </group>
+
+  <group> <!-- xhtml--> 
+    <system systemId="xhtml10toXhtml11.xsl" uri="./xhtml/xhtml10toXhtml11.xsl" />
+  </group>
+
+  <group> <!-- misc --> 
+    <system systemId="echo.xsl" uri="./misc/echo.xsl" />
+  </group>	
+			
+</catalog>
