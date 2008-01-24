@@ -8,6 +8,8 @@ import org.daisy.util.file.EFile;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.XPathUtils;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.dom.Serializer;
 import org.daisy.util.xml.pool.LSParserPool;
 import org.w3c.dom.DOMConfiguration;
@@ -31,6 +33,11 @@ public class XhtmlSmilRefStripper implements DOMErrorHandler {
 		Map<String, Object> domConfigMap = null;
 		LSParser parser = null;
 		domConfigMap = LSParserPool.getInstance().getDefaultPropertyMap(Boolean.FALSE);
+		try {
+			domConfigMap.put("resource-resolver", CatalogEntityResolver.getInstance());
+		} catch (CatalogExceptionNotRecoverable e) {
+			e.printStackTrace();
+		}
 		parser = LSParserPool.getInstance().acquire(domConfigMap);
 		DOMConfiguration domConfig = parser.getDomConfig();						
 		domConfig.setParameter("error-handler", this);
