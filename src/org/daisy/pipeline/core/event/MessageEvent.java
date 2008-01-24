@@ -51,8 +51,13 @@ public class MessageEvent extends SystemEvent {
 		mLocation = location;
 	}
 
+	/**
+	 * ERROR, WARNING and INFO are message types that are vital to convey to the user.
+	 * INFO_FINER is a message type that is not vital to convey (peripheral information).
+	 * DEBUG messages are purely developer oriented.
+	 */
 	public static enum Type {
-	    ERROR, WARNING, INFO, DEBUG
+	    ERROR, WARNING, INFO, DEBUG, INFO_FINER
 	}
 	
 	public static enum Cause {
