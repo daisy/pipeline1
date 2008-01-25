@@ -18,7 +18,7 @@
       <product
             application="org.daisy.pipeline.gui.application"
             description="%product.description"
-            name="DAISY Pipeline">      <property
+            name="%product.name">      <property
             name="introTitle"
             value="%intro.title"/>
       <property
@@ -466,7 +466,7 @@
             name="%command.showDoc">
          <commandParameter
                id="org.daisy.pipeline.gui.doc.showDoc.handleWarning"
-               name="org.daisy.pipeline.gui.doc.showDoc.handleWarning"
+               name="%command.showDoc.param.handleWarning"
                optional="false">
          </commandParameter>
       </command>
@@ -624,7 +624,7 @@
       <factory
             class="org.daisy.pipeline.gui.HackingPresentationFactory"
             id="org.daisy.pipeline.gui.presentationFactory"
-            name="Hacking Factory">
+            name="%presentation.hackingFactory">
       </factory>
    </extension>
 

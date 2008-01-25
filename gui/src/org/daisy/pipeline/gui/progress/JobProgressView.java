@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -168,7 +169,7 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 		stateLabel.setLayoutData(formData);
 		// Create the cancel buttons
 		cancelButton = new ToolItem(toolbar, SWT.PUSH);
-		cancelButton.setToolTipText(Messages.button_cancel_tooltip);
+		cancelButton.setToolTipText(IDialogConstants.CANCEL_LABEL);
 		cancelButton.setImage(GuiPlugin.getImage(IIconsKeys.ACTION_STOP));
 		cancelButton.addSelectionListener(new SelectionAdapter() {
 			@Override

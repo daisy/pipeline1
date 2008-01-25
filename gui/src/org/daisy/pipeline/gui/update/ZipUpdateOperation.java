@@ -97,7 +97,7 @@ public class ZipUpdateOperation implements IRunnableWithProgress {
 		GuiPlugin.get().error("An error occured while updating " + file, e); //$NON-NLS-1$
 		if (errors == null) {
 			errors = new MultiStatus(GuiPlugin.ID, 0,
-					Messages.zipOperation_error_globalMessage, null);
+					Messages.zipPage_dialog_error_message, null);
 		}
 		errors.add(new Status(IStatus.ERROR, GuiPlugin.ID,
 				((file.isDirectory()) ? Messages.zipOperation_error_directory

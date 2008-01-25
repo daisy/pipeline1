@@ -26,11 +26,6 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.daisy.pipeline.gui.progress.messages"; //$NON-NLS-1$
 	/**
-	 * The tooltip of the button to cancel the job displayed in the progress
-	 * view
-	 */
-	public static String button_cancel_tooltip;
-	/**
 	 * The text to display in the progress view when no job is selected.
 	 */
 	public static String label_noJob;

@@ -48,8 +48,6 @@ public class Messages extends NLS {
 	public static String zipOperation_monitor_updatingDir;
 	/** The main progress message */
 	public static String zipOperation_monitor_mainTask;
-	/** The message shown when error occurred in the update operation */
-	public static String zipOperation_error_globalMessage;
 	/** The message for an error that occurred while creating a directory */
 	public static String zipOperation_error_directory;
 	/** The message for an error that occurred while updating a file */
