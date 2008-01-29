@@ -48,6 +48,9 @@ set startTime 0.0
 set endTime -1
 # Beam pruning threshold
 set prunet -1
+# Window pruning width
+set prunew -1
+set prunew 200
 # Backtrack window
 set backtrack -1
 # Allow skipping of time-tags
@@ -73,7 +76,7 @@ set tagFileExt .tag
 
 set exeName [file root $argv0]
 if {$argv == ""} {
- puts "Usage: $exeName \[options\] files.list\n or    $exeName \[options\] file1 file2 ...\n\nOption\n -phones     bool  Create phone label files ($doPhones)\n -words      bool  Create word label files ($doWords)\n -timetags   bool  Edit time tags in text file ($doTimeTags)\n -realign    bool  Do realignment using phone label file ($realign)\n -iwm        bool  Try to handle spontaneous pauses ($addIWM)\n -stress     bool  Add lexical stress markers to phone labels ($doStress)\n -quick      bool  Favour speed instead of accuracy ($beQuick)\n -hmmset     name  Use specified HMM set\n -method     name  Use specified ensemble method ($useMethod)\n -phonerec   bool  Perform phoneme recognition ($phoneRec)\n -crop       time  Perform silence cropping with given margin ($cropMargin)\n -start      time  Start offset in seconds (0.0)\n -end        time  End point in seconds ('file end')\n -prune      width Apply beam pruning during search ($prunet)\n -backtrack  width Size of backtrack window ($backtrack)\n -tagskips   bool  Allow skipping of time tags ($allowTimeSkips)\n -coart      bool  Allow co-articulatory transformations ($coart)\n -lexicon    file  Use lexicon from file/save lexicon to file\n -lang       name  Use models trained for given language ($lang)\n -tfa        file  Save label files in Transcription File Archive\n -mlf        file  Read transcriptions from Master Label File\n -textext    ext   Input text file extension ($textFileExt)\n -phoneext   ext   Phone label file extension ($phoneFileExt)\n -wordext    ext   Word label file extension ($wordFileExt)\n -timetagext ext   Time tagged file extension ($tagFileExt)"
+ puts "Usage: $exeName \[options\] files.list\n or    $exeName \[options\] file1 file2 ...\n\nOption\n -phones     bool  Create phone label files ($doPhones)\n -words      bool  Create word label files ($doWords)\n -timetags   bool  Edit time tags in text file ($doTimeTags)\n -realign    bool  Do realignment using phone label file ($realign)\n -iwm        bool  Try to handle spontaneous pauses ($addIWM)\n -stress     bool  Add lexical stress markers to phone labels ($doStress)\n -quick      bool  Favour speed instead of accuracy ($beQuick)\n -hmmset     name  Use specified HMM set\n -method     name  Use specified ensemble method ($useMethod)\n -phonerec   bool  Perform phoneme recognition ($phoneRec)\n -crop       time  Perform silence cropping with given margin ($cropMargin)\n -start      time  Start offset in seconds (0.0)\n -end        time  End point in seconds ('file end')\n -prunet      width Apply beam pruning during search ($prunet)\n -prunew      width Apply window pruning during search ($prunew)\n -backtrack  width Size of backtrack window ($backtrack)\n -tagskips   bool  Allow skipping of time tags ($allowTimeSkips)\n -coart      bool  Allow co-articulatory transformations ($coart)\n -lexicon    file  Use lexicon from file/save lexicon to file\n -lang       name  Use models trained for given language ($lang)\n -tfa        file  Save label files in Transcription File Archive\n -mlf        file  Read transcriptions from Master Label File\n -textext    ext   Input text file extension ($textFileExt)\n -phoneext   ext   Phone label file extension ($phoneFileExt)\n -wordext    ext   Word label file extension ($wordFileExt)\n -timetagext ext   Time tagged file extension ($tagFileExt)"
  exit
 }
 
@@ -156,8 +159,12 @@ while {1} {
   set endTime $arg
   continue
  }
- if {[cmdline::getopt argv {prune.arg} opt arg] == 1} {
+ if {[cmdline::getopt argv {prunet.arg} opt arg] == 1} {
   set prunet $arg
+  continue
+ }
+ if {[cmdline::getopt argv {prunew.arg} opt arg] == 1} {
+  set prunew $arg
   continue
  }
  if {[cmdline::getopt argv {backtrack.arg} opt arg] == 1} {
@@ -258,20 +265,35 @@ if {$lang == "sv"} {
 if {$doTimeTags} {
  set beQuick 1
  if {$backtrack == -1} {
-  set backtrack 3000
+  set backtrack 3000 ; # fungerar för engelsk bok och engelska HMM:er
+  #set backtrack 6000 ; # fungerar för engelsk bok och svenska HMM:er
  }
  if {$useHMMset == ""} {
   if {$lang == "se"} {
    set useHMMset "1025_8mix"
   } else {
    set useHMMset "t1016"
+   #set useHMMset "1025_8mix" ;# hack to force Swedish models
   }
  }
 }
 
 # text analysis
 #source libta.tcl
+
 #ta::init
+# lts
+source liblts.tcl
+if {$lang == "se"} {
+ #lts::init $lang suot.tree suot.except
+ # 070621
+ lts::init $lang all.tree tpblex.except
+ source lexica.tcl
+} else {
+ set lang us
+ #lts::init $lang cmu.tree cmu.except
+ lts::init $lang cmu2.tree cmu2.except
+}
 
 # generate list of tokens (words) from input text
 # html.like tags should generate one token each, regardless of content
@@ -306,7 +328,7 @@ proc tokenise {text} {
 package require -exact xml 3.1
 
 proc formatTime {t} {
- if {$t == "y.x"} { return "00:00:00.000" }
+ if {$t == "y.x" || $t == ""} { return "00:00:00.000" }
  set dec [string trimleft [format "%.3f" [expr {$t-int($t)}]] 0]
  if {$dec == 1} {
   set t [expr {$t + 1.0}]
@@ -327,6 +349,8 @@ set lastSSMLType ""
 set lastSSMLElem ""
 set lastSSMLWord ""
 
+set nTimeTags 0
+
 proc EStart {name attlist args} {
  array set a [list -empty 0 \
 		  -namespace "" \
@@ -338,10 +362,11 @@ proc EStart {name attlist args} {
   if {[lsearch $attlist smil:sync] > -1} {
    set ::lastSyncElem $name
    append ::text {<time>}
+   incr ::nTimeTags
   }
   foreach {attr val} $attlist {
    if {$attr == "ssml:ph"} {
-    set ::lastSSMLTran $val
+    set ::lastSSMLTran [lts::syn2rec $val]
     set ::lastSSMLElem $name
    }
    if {$attr == "ssml:alias"} {
@@ -411,7 +436,7 @@ proc EEnd {name args} {
   set ::lastSyncElem ""
   if {$name == $::lastSSMLElem} {
    if {$::lastSSMLTran != ""} {
-    set ::trans($::lastSSMLWord) [list $::lastSSMLTran]
+    set ::trans($::lastSSMLWord) $::lastSSMLTran
    }
    if {$::lastSSMLType != ""} {
     set ::domain($::lastSSMLWord) $::lastSSMLType
@@ -485,18 +510,6 @@ puts $eee $text
 close $eee
 }
 #puts qq,$text
-
-# lts
-source liblts.tcl
-if {$lang == "se"} {
- #lts::init $lang suot.tree suot.except
- # 070621
- lts::init $lang all.tree tpblex.except
- source lexica.tcl
-} else {
- set lang us
- lts::init $lang cmu.tree cmu.except
-}
 
 #pack [label .a -text "Creating database..."]
 #wm withdraw .
@@ -582,11 +595,6 @@ proc CreateLexicon {} {
    set ::stressV($word) ""
   } else {
    regsub -all {,|\.|!|\?} $word "" clean_word
-   if {$::debug > 2} {
-    puts  "$word: "
-    puts "[lts::syn2rec [lts::transcribe -stress 1 -multiple 1 $clean_word]],\
-	[lts::transcribe -stress 1 -multiple 1 $clean_word], $clean_word"
-   }
    #if {[string match *-* [lts::transcribe -stress 1 -multiple 1 $clean_word]]} {
    # puts $word,[lts::transcribe -stress 1 -multiple 1 $clean_word]
    #}
@@ -595,6 +603,12 @@ proc CreateLexicon {} {
     set domain $::domain($clean_word)
    } else {
     set domain default
+   }
+   if {$::debug > 2} {
+    puts  "$word: "
+    set dtr [lts::transcribe -stress 0 -multiple 1 -domain $domain $clean_word]
+    set cldtr [lts::syn2rec [lindex $dtr 0]]
+    puts "$cldtr,, $dtr,, $clean_word"
    }
    #puts $word,[lts::transcribe -multiple 1 -domain $domain $clean_word]
    set ::trans($word)   [lts::syn2rec [lindex [lts::transcribe -multiple 1 \
@@ -682,134 +696,185 @@ proc TextNorm {text isLastChunk} {
 set allowedHmmNames [list RS RT RL RN RD TJ SJ NG Ö3 Ö4 Ä3 Ä4 A: I: E: O: U: Y: Å: Ä: Ö: A0 E0 F V S H M N R L J E A I O U Y Å Ä Ö P B T D K G p t k b d g sil]
 
 proc tpa2hmm {inTrans} {
- if {$::lang != "se"} { return $inTrans }
- regsub {e\.} $inTrans "E:" trans
- 
- regsub {sil} $trans "SIL"  trans
- 
- regsub {\.} $trans ""  trans
- regsub {2:} $trans ":" trans
- regsub {2}  $trans ":" trans
- 
- # Xenophone mappings
- regsub {3:} $trans "3" trans
- regsub {öw}  $trans "Ö3" trans ;  # 070621
- 
- regsub {an:} $trans "A:" trans
- regsub {an}  $trans "A:" trans
- regsub {a3}  $trans "A:" trans
- regsub {dh:} $trans "V"  trans
- regsub {dh}  $trans "V"  trans
- regsub {en:} $trans "Ä:" trans
- regsub {en}  $trans "Ä:" trans
- regsub {tj3} $trans "TJ" trans
- regsub {sj3} $trans "SJ" trans
- regsub {j3}  $trans "J"  trans
- regsub {on}  $trans "Å:" trans
- regsub {r3}  $trans "R"  trans
- regsub {r4}  $trans "R"  trans
- regsub {rs3} $trans "RS" trans
- regsub {th:} $trans "F"  trans
- regsub {th}  $trans "F"  trans
- regsub {u4:} $trans "O:" trans
- regsub {u4}  $trans "O:" trans
- regsub {w:}  $trans "O:" trans
- regsub {w}   $trans "O:" trans
- regsub {z}   $trans "RS" trans
- 
- # Swedish phone mappings
- 
- regsub {ä3:} $trans "Ä3" trans
- regsub {ä3} $trans "Ä4"  trans
- regsub {ö3:} $trans "Ö3" trans
- regsub {ö3} $trans "Ö4"  trans
- regsub {ë} $trans "E0"   trans
- regsub {e3} $trans "E" trans
- regsub {u3} $trans "U" trans
- regsub {o3} $trans "O" trans
- regsub {i3} $trans "I" trans
- 
- regsub {au}  $trans "A" trans
- regsub {eu}  $trans "E" trans
- 
- regsub {u:}  $trans "U:" trans
- regsub {u}  $trans "U"   trans
- regsub {o:}  $trans "O:" trans
- regsub {o}  $trans "O"   trans
- regsub {a:}  $trans "A:" trans
- regsub {a}  $trans "A"   trans
- regsub {e:}  $trans "E:" trans
- regsub {e}  $trans "E"   trans
- regsub {i:}  $trans "I:" trans
- regsub {i}  $trans "I"   trans
- regsub {y:}  $trans "Y:" trans
- regsub {y}  $trans "Y"   trans
- regsub {å:}  $trans "Å:" trans
- regsub {å}  $trans "Å"   trans
- regsub {ä:}  $trans "Ä:" trans
- regsub {ä}  $trans "Ä"   trans
- regsub {ö:}  $trans "Ö:" trans
- regsub {ö}  $trans "Ö"   trans
- 
- regsub {rd:} $trans "d"  trans
- regsub {ng:} $trans "NG" trans
- regsub {b:}  $trans "b"  trans
- regsub {d:}  $trans "d"  trans
- regsub {g:}  $trans "g"  trans
- regsub {h:}  $trans "H"  trans
- regsub {f:}  $trans "F"  trans
- regsub {tj:} $trans "TJ" trans
- regsub {sj:} $trans "SJ" trans
- regsub {j:}  $trans "J"  trans
- regsub {k:}  $trans "k"  trans
- regsub {rl:} $trans "RL" trans
- regsub {l:}  $trans "L"  trans
- regsub {m:}  $trans "M"  trans
- regsub {rn:} $trans "RN" trans
- regsub {n:}  $trans "N"  trans
- regsub {p:}  $trans "p"  trans
- regsub {r:}  $trans "R"  trans
- regsub {rs:} $trans "RS" trans
- regsub {s:}  $trans "S"  trans
- regsub {rt:} $trans "t"  trans
- regsub {t:}  $trans "t"  trans
- regsub {v:}  $trans "V"  trans 
- 
- regsub {rtc} $trans "RT" trans
- regsub {rdc} $trans "RD" trans
- 
- regsub {rd} $trans "d"  trans
- regsub {rl} $trans "RL" trans
- regsub {rn} $trans "RN" trans
- regsub {rs} $trans "RS" trans
- regsub {rt} $trans "t"  trans
- 
- regsub {bcl} $trans "B" trans
- regsub {dcl} $trans "D" trans
- regsub {gcl} $trans "G" trans
- regsub {h}  $trans "H"  trans
- regsub {f}  $trans "F"  trans
- regsub {tj} $trans "TJ" trans
- regsub {j}  $trans "J"  trans
- regsub {kcl} $trans "K" trans
- regsub {pcl} $trans "P" trans
- regsub {tcl} $trans "T" trans
- regsub {rl} $trans "RL" trans
- regsub {l}  $trans "L"  trans
- regsub {m}  $trans "M"  trans
- regsub {ng} $trans "NG" trans
- regsub {rn} $trans "RN" trans
- regsub {n}  $trans "N"  trans
- regsub {rs} $trans "RS" trans
- regsub {r}  $trans "R"  trans
- regsub {sj} $trans "SJ" trans
- regsub {s}  $trans "S"  trans
- regsub {v}  $trans "V"  trans
-
- regsub {s\s|t\s|r\s|n\s} $trans {& } trans
-# set trans [string toupper $trans]
- regsub {SIL} $trans "sil" trans
- if {[lsearch $::allowedHmmNames $trans] == -1} { set trans "" ; puts "Disallowing: $inTrans -> $trans" }
+ set trans $inTrans
+ if {$::lang == "se"} {
+  regsub {e\.} $trans "E:" trans
+  
+  regsub {sil} $trans "SIL"  trans
+  
+  regsub {\.} $trans ""  trans
+  regsub {2:} $trans ":" trans
+  regsub {2}  $trans ":" trans
+  
+  # Xenophone mappings
+  regsub {3:} $trans "3" trans
+  regsub {öw}  $trans "Ö3" trans ;  # 070621
+  
+  regsub {an:} $trans "A:" trans
+  regsub {an}  $trans "A:" trans
+  regsub {a3}  $trans "A:" trans
+  regsub {dh:} $trans "V"  trans
+  regsub {dh}  $trans "V"  trans
+  regsub {en:} $trans "Ä:" trans
+  regsub {en}  $trans "Ä:" trans
+  regsub {tj3} $trans "TJ" trans
+  regsub {sj3} $trans "SJ" trans
+  regsub {j3}  $trans "J"  trans
+  regsub {on}  $trans "Å:" trans
+  regsub {r3}  $trans "R"  trans
+  regsub {r4}  $trans "R"  trans
+  regsub {rs3} $trans "RS" trans
+  regsub {th:} $trans "F"  trans
+  regsub {th}  $trans "F"  trans
+  regsub {u4:} $trans "O:" trans
+  regsub {u4}  $trans "O:" trans
+  regsub {w:}  $trans "O:" trans
+  regsub {w}   $trans "O:" trans
+  regsub {z}   $trans "RS" trans
+  
+  # Swedish phone mappings
+  
+  regsub {ä3:} $trans "Ä3" trans
+  regsub {ä3} $trans "Ä4"  trans
+  regsub {ö3:} $trans "Ö3" trans
+  regsub {ö3} $trans "Ö4"  trans
+  regsub {ë} $trans "E0"   trans
+  regsub {e3} $trans "E" trans
+  regsub {u3} $trans "U" trans
+  regsub {o3} $trans "O" trans
+  regsub {i3} $trans "I" trans
+  
+  regsub {au}  $trans "A" trans
+  regsub {eu}  $trans "E" trans
+  
+  regsub {u:}  $trans "U:" trans
+  regsub {u}  $trans "U"   trans
+  regsub {o:}  $trans "O:" trans
+  regsub {o}  $trans "O"   trans
+  regsub {a:}  $trans "A:" trans
+  regsub {a}  $trans "A"   trans
+  regsub {e:}  $trans "E:" trans
+  regsub {e}  $trans "E"   trans
+  regsub {i:}  $trans "I:" trans
+  regsub {i}  $trans "I"   trans
+  regsub {y:}  $trans "Y:" trans
+  regsub {y}  $trans "Y"   trans
+  regsub {å:}  $trans "Å:" trans
+  regsub {å}  $trans "Å"   trans
+  regsub {ä:}  $trans "Ä:" trans
+  regsub {ä}  $trans "Ä"   trans
+  regsub {ö:}  $trans "Ö:" trans
+  regsub {ö}  $trans "Ö"   trans
+  
+  regsub {rd:} $trans "d"  trans
+  regsub {ng:} $trans "NG" trans
+  regsub {b:}  $trans "b"  trans
+  regsub {d:}  $trans "d"  trans
+  regsub {g:}  $trans "g"  trans
+  regsub {h:}  $trans "H"  trans
+  regsub {f:}  $trans "F"  trans
+  regsub {tj:} $trans "TJ" trans
+  regsub {sj:} $trans "SJ" trans
+  regsub {j:}  $trans "J"  trans
+  regsub {k:}  $trans "k"  trans
+  regsub {rl:} $trans "RL" trans
+  regsub {l:}  $trans "L"  trans
+  regsub {m:}  $trans "M"  trans
+  regsub {rn:} $trans "RN" trans
+  regsub {n:}  $trans "N"  trans
+  regsub {p:}  $trans "p"  trans
+  regsub {r:}  $trans "R"  trans
+  regsub {rs:} $trans "RS" trans
+  regsub {s:}  $trans "S"  trans
+  regsub {rt:} $trans "t"  trans
+  regsub {t:}  $trans "t"  trans
+  regsub {v:}  $trans "V"  trans 
+  
+  regsub {rtc} $trans "RT" trans
+  regsub {rdc} $trans "RD" trans
+  
+  regsub {rd} $trans "d"  trans
+  regsub {rl} $trans "RL" trans
+  regsub {rn} $trans "RN" trans
+  regsub {rs} $trans "RS" trans
+  regsub {rt} $trans "t"  trans
+  
+  regsub {bcl} $trans "B" trans
+  regsub {dcl} $trans "D" trans
+  regsub {gcl} $trans "G" trans
+  regsub {h}   $trans "H"  trans
+  regsub {f}   $trans "F"  trans
+  regsub {tj}  $trans "TJ" trans
+  regsub {j}   $trans "J"  trans
+  regsub {kcl} $trans "K" trans
+  regsub {pcl} $trans "P" trans
+  regsub {tcl} $trans "T" trans
+  regsub {rl} $trans "RL" trans
+  regsub {l}  $trans "L"  trans
+  regsub {m}  $trans "M"  trans
+  regsub {ng} $trans "NG" trans
+  regsub {rn} $trans "RN" trans
+  regsub {n}  $trans "N"  trans
+  regsub {rs} $trans "RS" trans
+  regsub {r}  $trans "R"  trans
+  regsub {sj} $trans "SJ" trans
+  regsub {s}  $trans "S"  trans
+  regsub {v}  $trans "V"  trans
+  
+  regsub {s\s|t\s|r\s|n\s} $trans {& } trans
+  set trans [string toupper $trans]
+  regsub {SIL} $trans "sil" trans
+  if {[lsearch $::allowedHmmNames $trans] == -1} { set trans "" ; puts "Disallowing: $inTrans -> $trans" }
+ } else {
+  if 0 {
+  # hack to use Swedish models, comment out soon
+  regsub {er1} $trans {E0} trans
+  regsub {er2} $trans {R} trans
+  regsub {dh}  $trans {J} trans
+  regsub {jh1} $trans {D} trans
+  regsub {jh2} $trans {d} trans
+  regsub {jh3} $trans {J} trans
+  regsub {th}  $trans {F} trans
+  regsub {ch}  $trans {TJ} trans
+  regsub {sh}  $trans {RS} trans
+  regsub {zh}  $trans {RS} trans
+  regsub {s}   $trans {S} trans
+  regsub {pcl} $trans {P} trans
+  regsub {tcl} $trans {T} trans
+  regsub {kcl} $trans {K} trans
+  regsub {bcl} $trans {B} trans
+  regsub {dcl} $trans {D} trans
+  regsub {gcl} $trans {G} trans
+  regsub {r}   $trans {R} trans
+  regsub {z}   $trans {S} trans
+  regsub {l}   $trans {L} trans
+  regsub {v}   $trans {V} trans
+  regsub {uw}  $trans {U:} trans
+  regsub {uh}  $trans {U} trans
+  regsub {ng}  $trans {NG} trans
+  regsub {n}   $trans {N} trans
+  regsub {m}   $trans {M} trans
+  regsub {f}   $trans {F} trans
+  regsub {iy}  $trans {I} trans
+  regsub {ae}  $trans {Ä} trans
+  regsub {ao}  $trans {Å} trans
+  regsub {ow}  $trans {O:} trans
+  regsub {oy1} $trans {Å} trans
+  regsub {oy2} $trans {J} trans
+  regsub {aw}  $trans {Å:} trans
+  regsub {w}   $trans {O:} trans
+  regsub {ah}  $trans {A} trans
+  regsub {eh}  $trans {A} trans
+  regsub {ey1} $trans {Ä} trans
+  regsub {ey2} $trans {J} trans
+  regsub {ay1} $trans {A} trans
+  regsub {ay2} $trans {J} trans
+  regsub {aa}  $trans {A} trans
+  regsub {ih}  $trans {I} trans
+  regsub {hh}  $trans {H} trans
+  regsub {y}   $trans {J} trans
+ }
+ }
  return $trans
 }
 
@@ -999,7 +1064,7 @@ proc CreateLists {text plist alist plen isLastChunk} {
    for {set k 0} {$k < [llength $transcription]} {incr k} {
     set phone [lindex $transcription $k]
     set hmmName [tpa2hmm $phone]
-    if {$hmmName == ""} { error "$word: $phone ($transcription)" }
+    if {$hmmName == ""} { error "$word: $::lang $phone ($transcription)" }
     set tag $phone
     if {$k == 0 || $::doStress} {
      if {$k == 0} {
@@ -1610,13 +1675,21 @@ foreach file $files {
      memory validate on
      #memory trace on
     }
-    if {[catch {set res [param an $phonelist $arclist $hset \
-		 -start [expr int($starttime/$framelen+.5)] \
-		 -end [expr int($endtime/$framelen+.5)] -output phones \
-			     -prunethreshold $prunet -backtrack $backtrack]} err]} {
-     puts stderr $err
-     exit -1
-   }
+    foreach run {try1 try2 try3} {
+     if {[catch {set res [param an $phonelist $arclist $hset \
+			      -start [expr int($starttime/$framelen+.5)] \
+			      -end [expr int($endtime/$framelen+.5)] \
+			      -output phones \
+			      -prunethreshold $prunet \
+			      -prunewindow $prunew \
+			      -backtrack $backtrack]} err]} {
+      set prunew [expr 2 * $prunew]
+      if {$run == "try3"} { exit -1 }
+      puts stderr "$err \nretrying using -prunew $prunew"
+     } else {
+      break
+     }
+    }
     if $memdebug {
      #memory trace off
     }
@@ -2009,6 +2082,34 @@ if {[string match {* *} [lindex [lindex $segres [expr $i+1]] end]]} {
      incr i
      continue
     }
+    # join labels such as ay1 ay2 into a single label ay
+    foreach joinLab {ay ey oy er} {
+    }
+    if {$thislab == "ay1" && $nextlab == "ay2"} {
+     puts $f1 "[lindex [lindex $l1 $i] 0] [lindex [lindex $l1 [expr $i+1]] 1] ay"
+     incr i
+     continue
+    }
+    if {$thislab == "ey1" && $nextlab == "ey2"} {
+     puts $f1 "[lindex [lindex $l1 $i] 0] [lindex [lindex $l1 [expr $i+1]] 1] ey"
+     incr i
+     continue
+    }
+    if {$thislab == "oy1" && $nextlab == "oy2"} {
+     puts $f1 "[lindex [lindex $l1 $i] 0] [lindex [lindex $l1 [expr $i+1]] 1] oy"
+     incr i
+     continue
+    }
+    if {$thislab == "er1" && $nextlab == "er2"} {
+     puts $f1 "[lindex [lindex $l1 $i] 0] [lindex [lindex $l1 [expr $i+1]] 1] er"
+     incr i
+     continue
+    }
+    if {$thislab == "jh1" && $nextlab == "jh2"} {
+     puts $f1 "[lindex [lindex $l1 $i] 0] [lindex [lindex $l1 [expr $i+2]] 1] jh"
+     incr i 2
+     continue
+    }
     puts $f1 [lindex $l1 $i]
    }
    if {$i < [llength $l1]} {
@@ -2105,6 +2206,7 @@ if {[string match {* *} [lindex [lindex $segres [expr $i+1]] end]]} {
    if {$i < [llength $l2]-2} {
     set nextlab   [lindex [lindex $l2 [expr $i+1]] 2]
    }
+   if {$thislab == "<time>"} { incr ::nTimeTags -1 }
    if {$thislab == "<time>" || $thislab == "<speech>"} {
     set first 1
     for {set j 0} {$j < [llength $l1]-1} {incr j} {
@@ -2189,13 +2291,15 @@ if {[string match {* *} [lindex [lindex $segres [expr $i+1]] end]]} {
    }
    regsub -all {y\.x} $text x.y text
   }
-  if 1 {
+# remove time gaps
+  if 0 {
    set newTmp {}
    foreach {stamp1 stamp2} $tmp {
     lappend newTmp $stamp1 $stamp1
    }
    lappend newTmp [lindex $tmp end]
-#puts $tmp
+   #puts $tmp
+   if {$::nTimeTags != 0} { puts "Warning, lost sync-points: $::nTimeTags" }
 #puts $newTmp
    set tmp [lrange $newTmp 1 end]
   }

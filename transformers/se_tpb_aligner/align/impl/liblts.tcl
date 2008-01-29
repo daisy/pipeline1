@@ -1901,6 +1901,7 @@ proc lts::cartName {word} {
 }
 
 proc lts::transUS {word stressPositions} {
+ #puts [info level 0]
  variable lang
  variable lts
 
@@ -1908,7 +1909,7 @@ proc lts::transUS {word stressPositions} {
 
  # check if the word is among exceptions
  if {[info exists lts($lang,$word)]} {
-  lappend resl $lts($lang,$word)
+  lappend resl [lindex $lts($lang,$word) 0]
   return [list $resl DUMMY]
  }
 
@@ -2064,6 +2065,7 @@ proc lts::syn2rec {list} {
 
 # ny version för tpa, input should be {{h e j}} a la lts::transcribe
 proc lts::syn2rec {list} {
+ #puts [info level 0]
  set res {}
  foreach str $list {
 
@@ -2102,12 +2104,72 @@ proc lts::syn2rec {list} {
   regsub -all {j3} $str {dcl j3} str
   regsub -all {tdcl j3} $str {tcl tj3} str ;# not so beautiful...
   regsub -all {sdcl j3} $str {sj3} str ;# not so beautiful...
-  
-  lappend res $str
+
+  if 0 {
+   # hack to use Swedish HMMs with english
+   regsub -all {er} $str {E0 R} str
+   regsub -all {dh} $str {J} str
+   regsub -all {jh} $str {T t J} str
+   regsub -all {th} $str {F} str
+   regsub -all {ch} $str {TJ} str
+   regsub -all {sh} $str {RS} str
+   regsub -all {zh} $str {RS} str
+   regsub -all {s} $str {S} str
+   regsub -all {pcl} $str {P} str
+   regsub -all {tcl} $str {T} str
+   regsub -all {kcl} $str {K} str
+   regsub -all {bcl} $str {B} str
+   regsub -all {dcl} $str {D} str
+   regsub -all {gcl} $str {G} str
+   regsub -all {r} $str {R} str
+   regsub -all {z} $str {S} str
+   regsub -all {l} $str {L} str
+   regsub -all {v} $str {V} str
+   regsub -all {uw} $str {U:} str
+   regsub -all {uh} $str {U} str
+   regsub -all {ng} $str {NG} str
+   regsub -all {n} $str {N} str
+   regsub -all {m} $str {M} str
+   regsub -all {f} $str {F} str
+   regsub -all {iy} $str {I} str
+   regsub -all {ae} $str {Ä} str
+   regsub -all {ao} $str {Å} str
+   regsub -all {ow} $str {O:} str
+   regsub -all {oy} $str {Å J} str
+   regsub -all {aw} $str {Å:} str
+   regsub -all {w} $str {O:} str
+   regsub -all {ah} $str {A} str
+   regsub -all {eh} $str {A} str
+   regsub -all {ey} $str {Ä J} str
+   regsub -all {ay} $str {A J} str
+   regsub -all {aa} $str {A} str
+   regsub -all {ih} $str {I} str
+   regsub -all {hh} $str {H} str
+   regsub -all {y} $str {J} str
+   # end hack  
+  }
+  if 0 {
+   # hack to use Swedish HMMs with English
+   regsub -all {er} $str {er1 er2} str
+   regsub -all {jh} $str {jh1 jh2 jh3} str
+   regsub -all {oy} $str {oy1 oy2} str
+   regsub -all {ey} $str {ey1 ey2} str
+   regsub -all {ay} $str {ay1 ay2} str
+   # end hack  
+  }
+ lappend res $str
  }
  regsub -all {\s\-|\s\_} $res "" res 
-
- set res
+ 
+ #puts A,$res
+ set res2 {}
+ foreach e1 $res {
+  foreach e2 $e1 {
+   lappend res2 $e2
+  }
+ }
+ #puts B,[list $res2]
+ return [list $res2]
 }
 
 proc lts::rec2syn {str} {

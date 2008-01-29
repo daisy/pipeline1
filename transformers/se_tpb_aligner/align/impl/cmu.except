@@ -1,1099 +1,1099 @@
-set lts(us,absorbent) [list ah b z ao r b ah n t]
-set lts(us,accepts) [list ae k s eh p t s]
-set lts(us,accessory) [list ae k s eh s er iy]
-set lts(us,accion) [list ae ch iy ah n]
-set lts(us,accor's) [list ae k er z]
-set lts(us,accuse) [list ah k y uw z]
-set lts(us,acquisition's) [list ae k w ah z ih sh ah n z]
-set lts(us,acre) [list ey k er]
-set lts(us,adaptation) [list ae d ah p t ey sh ah n]
-set lts(us,advertisements) [list ae d v er t ay z m ah n t s]
-set lts(us,advocate's) [list ae d v ah k ah t s]
-set lts(us,aggregate) [list ae g r ah g ah t]
-set lts(us,ahearn) [list ah hh er n]
-set lts(us,aigner) [list eh n y ey]
-set lts(us,ainslie) [list ey n z l iy]
-set lts(us,airworthy) [list eh r w er dh iy]
-set lts(us,alaric) [list ae l er ih k]
-set lts(us,alarmist) [list ah l aa r m ah s t]
-set lts(us,albergo) [list aa l b eh r g ow]
-set lts(us,albertine) [list ae l b er t iy n]
-set lts(us,almond) [list aa m ah n d]
-set lts(us,alternately) [list ao l t er n ah t l iy]
-set lts(us,amaryllis) [list ae m er ih l ah s]
-set lts(us,amateurism) [list ae m ah ch er ih z ah m]
-set lts(us,amber's) [list ae m b er]
-set lts(us,amerindian) [list ae m er ih n d iy ah n]
-set lts(us,ammons) [list ae m ah n z]
-set lts(us,amoskeag's) [list ae m ah s k ey g z]
-set lts(us,amusingly) [list ah m y uw z ih ng l iy]
-set lts(us,anarchical) [list ae n aa r k ah k ah l]
-set lts(us,anchorage) [list ae ng k er ah jh]
-set lts(us,anctil) [list ae ng k t ih l]
-set lts(us,andreae) [list aa n d r ey aa]
-set lts(us,andromeda) [list ae n d r aa m ah d ah]
-set lts(us,anemometer) [list ae n ah m aa m ah t er]
-set lts(us,angeles') [list ae n jh ah l iy z]
-set lts(us,angelinos) [list ae n jh ah l iy n ow z]
-set lts(us,ankle) [list ae ng k ah l]
-set lts(us,annandale) [list ae n ah n d ey l]
-set lts(us,annen) [list ae n ah n]
-set lts(us,annualize) [list ae n y uw w ah l ay z]
-set lts(us,anonymous) [list ah n aa n ah m ah s]
-set lts(us,anteriormost) [list ae n t ih r iy er m ow s t]
-set lts(us,antigones) [list ae n t ih g ah n iy z]
-set lts(us,antunes) [list aa n t uw n eh s]
-set lts(us,aol) [list ey ow eh l]
-set lts(us,aparicio) [list ae p er ih s iy ow]
-set lts(us,aphid) [list ae f ah d]
-set lts(us,appleby) [list ae p ah l b iy]
-set lts(us,applewhite) [list ae p ah l w ay t]
-set lts(us,application) [list ae p l ah k ey sh ah n]
-set lts(us,apprenticed) [list ah p r eh n t ah s t]
-set lts(us,arabia) [list er ey b iy ah]
-set lts(us,arbitron) [list aa r b ah t r aa n]
-set lts(us,arbuckle) [list aa r b ah k ah l]
-set lts(us,archambault) [list aa r sh ah m b ow]
-set lts(us,arising) [list er ay z ih ng]
-set lts(us,aristocrat) [list er ih s t ah k r ae t]
-set lts(us,arkansan) [list aa r k ae n z ah n]
-set lts(us,arnault) [list aa r n ow]
-set lts(us,aronow) [list er ow n ow]
-set lts(us,arrangement) [list er ey n jh m ah n t]
-set lts(us,arrays) [list er ey z]
-set lts(us,arresting) [list er eh s t ih ng]
-set lts(us,ashe's) [list ae sh ah z]
-set lts(us,aspartame) [list ae s p er t ey m]
-set lts(us,aspirate) [list ae s p ah r ey t]
-set lts(us,assurance) [list ah sh uh r ah n s]
-set lts(us,astred) [list ae s t er d]
-set lts(us,astrological) [list ae s t r ah l aa jh ih k ah l]
-set lts(us,atlanta's) [list ae t l ae n t ah z]
-set lts(us,attenuates) [list ah t eh n y uw ey t s]
-set lts(us,auditors') [list ao d ah t er z]
-set lts(us,austrasia) [list ao s t r ey zh ah]
-set lts(us,authorize) [list ao th er ay z]
-set lts(us,averell) [list aa v eh r ey l]
-set lts(us,aviles) [list aa v iy l eh s]
-set lts(us,baechle) [list b eh k ah l]
-set lts(us,bahraini) [list b er ey n iy]
-set lts(us,balmer) [list b aa m er]
-set lts(us,banc) [list b ae ng k]
-set lts(us,bancorp's) [list b ae ng k ao r p s]
-set lts(us,banya) [list b aa n y ah]
-set lts(us,baranoski) [list b er ah n aw s k iy]
-set lts(us,barclays') [list b aa r k l iy z]
-set lts(us,barings') [list b eh r ih ng z]
-set lts(us,barnacles) [list b aa r n ah k ah l z]
-set lts(us,barometers) [list b er aa m ah t er z]
-set lts(us,barrages) [list b er aa zh ah z]
-set lts(us,barrientes) [list b er iy n t s]
-set lts(us,bartkowiak) [list b er t k aw iy ae k]
-set lts(us,basil) [list b ae z ah l]
-set lts(us,bazzano) [list b aa t s aa n ow]
-set lts(us,beens) [list b ih n z]
-set lts(us,belaboring) [list b ah l ey b er ih ng]
-set lts(us,benavides) [list b ey n aa v iy d eh s]
-set lts(us,benighted) [list b ah n ay t ah d]
-set lts(us,berni) [list b eh r n iy]
-set lts(us,besant) [list b eh z ah n t]
-set lts(us,bettes) [list b eh t iy z]
-set lts(us,biffle) [list b ih f ah l]
-set lts(us,bilbro) [list b iy l b r ow]
-set lts(us,billionths) [list b ih l y ah n th s]
-set lts(us,bimiodal) [list b ay m ow d ah l]
-set lts(us,binding) [list b ay n d ih ng]
-set lts(us,biogen) [list b ay ow jh eh n]
-set lts(us,bipartisan) [list b ay p aa r t ah z ah n]
-set lts(us,blanche) [list b l ae n ch]
-set lts(us,blankenhorn) [list b l ae ng k ah n hh er n]
-set lts(us,blasier's) [list b l ey z iy er z]
-set lts(us,blasphemy) [list b l ae s f ah m iy]
-set lts(us,bleser) [list b l iy z er]
-set lts(us,blitstein) [list b l ih t s t iy n]
-set lts(us,blues') [list b l uw z]
-set lts(us,boise's) [list b oy z iy z]
-set lts(us,bombardier) [list b aa m b er d ih r]
-set lts(us,bomber) [list b aa m er]
-set lts(us,bombshell) [list b aa m sh eh l]
-set lts(us,borowiec) [list b er aw iy k]
-set lts(us,borwn) [list b ao r w ih n]
-set lts(us,bouquets) [list b ow k ey z]
-set lts(us,bourgault) [list b uh r g ow]
-set lts(us,bowser) [list b ow z er]
-set lts(us,boyson) [list b oy z ah n]
-set lts(us,bracamontes) [list b r ae k ah m aa n t iy z]
-set lts(us,brearley) [list b r er l iy]
-set lts(us,brennen) [list b r eh n ah n]
-set lts(us,briere) [list b r ih r]
-set lts(us,bristle) [list b r ih s ah l]
-set lts(us,broderick's) [list b r aa d er ih k z]
-set lts(us,brokerages') [list b r ow k er ih jh ah z]
-set lts(us,broncos) [list b r aa ng k ow z]
-set lts(us,browns') [list b r aw n z]
-set lts(us,browsers) [list b r aw z er z]
-set lts(us,buchler) [list b ah k ah l er]
-set lts(us,bundespost) [list b uh n d ah s p ow s t]
-set lts(us,burgener) [list b er g iy n er]
-set lts(us,burruss) [list b uh r ah s]
-set lts(us,businesses) [list b ih z n ah s ah z]
-set lts(us,businessphones) [list b ih z n ah s f ow n z]
-set lts(us,busler) [list b ah s ah l er]
-set lts(us,cabernet) [list k ae b er n ey]
-set lts(us,cabriolet) [list k ae b r iy ow l ey]
-set lts(us,cachet) [list k ae sh ey]
-set lts(us,cake's) [list k ey k s]
-set lts(us,calamitous) [list k ah l ae m ah t ah s]
-set lts(us,calf's) [list k ae f s]
-set lts(us,californian's) [list k ae l ah f ao r n y ah n z]
-set lts(us,calmly) [list k aa m l iy]
-set lts(us,canchola) [list k aa n k ow l ah]
-set lts(us,cannonsburg) [list k ae n ah n z b er g]
-set lts(us,caprice) [list k ah p r iy s]
-set lts(us,carducci) [list k aa r d uw ch iy]
-set lts(us,career) [list k er ih r]
-set lts(us,caressing) [list k er eh s ih ng]
-set lts(us,carmelite) [list k aa r m ah l ay t]
-set lts(us,carousing) [list k er aw z ih ng]
-set lts(us,cascades') [list k ae s k ey d z]
-set lts(us,cashier) [list k ae sh ih r]
-set lts(us,casualness) [list k ae zh ah w ah l n ah s]
-set lts(us,catalonia) [list k ae t ah l ow n y ah]
-set lts(us,catamarans) [list k ah t ae m er ah n z]
-set lts(us,caused) [list k aa z d]
-set lts(us,cauthorn) [list k ao th er n]
-set lts(us,cawthorne) [list k ao th er n]
-set lts(us,celestial) [list s ah l eh s ch ah l]
-set lts(us,censoring) [list s eh n s er ih ng]
-set lts(us,cerveny) [list ch er v iy n iy]
-set lts(us,ceryl) [list s eh r ah l]
-set lts(us,chairpeople) [list ch eh r p iy p ah l]
-set lts(us,champeau) [list sh ae m p ow]
-set lts(us,chapin) [list sh ah p ae n]
-set lts(us,charest) [list ch aa r ey eh s t]
-set lts(us,charlottetown) [list sh aa r l ah t t aw n]
-set lts(us,charpentier) [list sh aa r p ah n t ih r]
-set lts(us,chastened) [list ch ey s ah n d]
-set lts(us,chatz's) [list ch ae t s ah z]
-set lts(us,chelette) [list sh eh l eh t]
-set lts(us,chemically) [list k eh m ah k l iy]
-set lts(us,chenault) [list sh ih n ow]
-set lts(us,chery) [list ch eh r iy]
-set lts(us,chesler) [list ch eh s ah l er]
-set lts(us,chesshir) [list sh eh sh er]
-set lts(us,chiapparone) [list ch iy ae p er ow n]
-set lts(us,chose) [list ch ow z]
-set lts(us,christianize) [list k r ih s ch ah n ay z]
-set lts(us,christmas) [list k r ih s m ah s]
-set lts(us,chronicle's) [list k r aa n ih k ah l z]
-set lts(us,chute) [list sh uw t]
-set lts(us,ciaccia) [list ch iy ah ch iy ah]
-set lts(us,cicalese) [list ch iy k aa l ey z iy]
-set lts(us,cincotta) [list ch iy n k ow t ah]
-set lts(us,cini) [list ch iy n iy]
-set lts(us,circle's) [list s er k ah l z]
-set lts(us,claiborne) [list k l ey b er n]
-set lts(us,claussen) [list k l ao z s ah n]
-set lts(us,cleanser) [list k l eh n z er]
-set lts(us,clockwise) [list k l aa k w ay z]
-set lts(us,coeducational) [list k ow eh jh ah k ey sh ah n ah l]
-set lts(us,coglianese) [list k ow g l iy ah n ey z iy]
-set lts(us,cognoscenti) [list k aa g n ao sh eh n t iy]
-set lts(us,cohen's) [list k ow ah n z]
-set lts(us,colasurdo) [list k ow l aa s uh r d ow]
-set lts(us,collaborated) [list k ah l ae b er ey t ah d]
-set lts(us,collagen) [list k aa l ah g ah n]
-set lts(us,collision) [list k ah l ih zh ah n]
-set lts(us,colonia) [list k ah l ow n iy ah]
-set lts(us,colorado's) [list k aa l er aa d ow z]
-set lts(us,colorful) [list k ah l er f ah l]
-set lts(us,coloroll) [list k ah l er ow l]
-set lts(us,comfortably) [list k ah m f er t ah b l iy]
-set lts(us,comically) [list k aa m ih k ah l iy]
-set lts(us,command's) [list k ah m ae n d z]
-set lts(us,commandments) [list k ah m ae n d m ah n t s]
-set lts(us,commemorations) [list k ah m eh m er ey sh ah n z]
-set lts(us,commendation) [list k aa m ah n d ey sh ah n]
-set lts(us,commentary) [list k aa m ah n t eh r iy]
-set lts(us,commercializing) [list k ah m er sh ah l ay z ih ng]
-set lts(us,commonly) [list k aa m ah n l iy]
-set lts(us,communism's) [list k aa m y ah n ih z ah m z]
-set lts(us,competed) [list k ah m p iy t ah d]
-set lts(us,composers) [list k ah m p ow z er z]
-set lts(us,compositional) [list k aa m p ah z ih sh ah n ah l]
-set lts(us,compunction) [list k ah m p ah ng k sh ah n]
-set lts(us,concerns') [list k ah n s er n z]
-set lts(us,confide) [list k ah n f ay d]
-set lts(us,confidentially) [list k aa n f ah d eh n sh ah l iy]
-set lts(us,conformists) [list k ah n f ao r m ah s t s]
-set lts(us,congratulated) [list k ah n g r ae ch ah l ey t ah d]
-set lts(us,consequential) [list k aa n s ah k w eh n ch ah l]
-set lts(us,consoling) [list k ah n s ow l ih ng]
-set lts(us,consortium's) [list k ah n s ao r sh iy ah m z]
-set lts(us,constantinople) [list k aa n s t ae n t ah n ow p ah l]
-set lts(us,constructionist) [list k ah n s t r ah k sh ah n ih s t]
-set lts(us,contemporaneously) [list k ah n t eh m p er ey n iy ah s l iy]
-set lts(us,continental's) [list k aa n t ah n eh n t ah l z]
-set lts(us,continued) [list k ah n t ih n y uw d]
-set lts(us,contrabassoon) [list k aa n t r ah b ae s uw n]
-set lts(us,contradict) [list k aa n t r ah d ih k t]
-set lts(us,controllable) [list k ah n t r ow l ah b ah l]
-set lts(us,converged) [list k ah n v er jh d]
-set lts(us,coplen) [list k aa p ah l ah n]
-set lts(us,cordasco) [list k er d aa s k ow]
-set lts(us,cordially) [list k ao r jh ah l iy]
-set lts(us,cormorants) [list k ao r m er ah n t s]
-set lts(us,corona) [list k er ow n ah]
-set lts(us,corporacion) [list k ao r p er aa s iy ow n]
-set lts(us,corporations) [list k ao r p er ey sh ah n z]
-set lts(us,corralling) [list k er ae l ih ng]
-set lts(us,corrective) [list k er eh k t ih v]
-set lts(us,corrodes) [list k er ow d z]
-set lts(us,corrupting) [list k er ah p t ih ng]
-set lts(us,countries') [list k ah n t r iy z]
-set lts(us,coupled) [list k ah p ah l d]
-set lts(us,cousin) [list k ah z ah n]
-set lts(us,crippled) [list k r ih p ah l d]
-set lts(us,cruise) [list k r uw z]
-set lts(us,crumitie) [list k r uw m ah t ay]
-set lts(us,crumpled) [list k r ah m p ah l d]
-set lts(us,cruse) [list k r uw z]
-set lts(us,cyrillic) [list s er ih l ih k]
-set lts(us,d'amore) [list d iy ah m ao r ey]
-set lts(us,dammen) [list d ae m ah n]
-set lts(us,dangelo) [list d ae n jh ah l ow]
-set lts(us,daniele) [list d ae n y eh l]
-set lts(us,dannenberg) [list d ae n ah n b er g]
-set lts(us,darensbourg) [list d ae r ah n s b er g]
-set lts(us,darrelle) [list d er eh l]
-set lts(us,dartmouth) [list d aa r t m ah th]
-set lts(us,decisions) [list d ah s ih zh ah n z]
-set lts(us,decompose) [list d iy k ah m p ow z]
-set lts(us,defuse) [list d ah f y uw z]
-set lts(us,delorey) [list d eh l er iy]
-set lts(us,deltadromeus) [list d eh l t ah d r ow m ah s]
-set lts(us,delusion) [list d ah l uw zh ah n]
-set lts(us,democratic's) [list d eh m ah k r ae t ih k s]
-set lts(us,demodulate) [list d iy m aa jh ah l ey t]
-set lts(us,depositional) [list d eh p ah z ih sh ah n ah l]
-set lts(us,depots) [list d iy p ow z]
-set lts(us,dershem) [list d er sh ah m]
-set lts(us,desertion) [list d ah z er sh ah n]
-set lts(us,designations) [list d eh z ih g n ey sh ah n z]
-set lts(us,desire) [list d ah z ay er]
-set lts(us,deteriorate) [list d ah t ih r iy er ey t]
-set lts(us,devillier's) [list d ah v ih l y er s]
-set lts(us,dezern) [list d ey z eh r n]
-set lts(us,diarrhea) [list d ay er iy ah]
-set lts(us,diblasi) [list d ah b l aa s iy]
-set lts(us,dicesare) [list d ih ch eh s aa r iy]
-set lts(us,dicioccio) [list d ih ch ow ch iy ow]
-set lts(us,dienes) [list d iy n eh z]
-set lts(us,dietitian's) [list d ay ah t ih sh ah n z]
-set lts(us,diffuse) [list d ah f y uw s]
-set lts(us,diminutive) [list d ah m ih n y ah t ih v]
-set lts(us,diorite) [list d ay er ay t]
-set lts(us,dipirro) [list d iy p ih r ow]
-set lts(us,directed) [list d ih r eh k t ah d]
-set lts(us,disaster) [list d ih z ae s t er]
-set lts(us,discoloration) [list d ih s k ah l er ey sh ah n]
-set lts(us,disease's) [list d ih z iy z ah z]
-set lts(us,disguised) [list d ih s g ay z d]
-set lts(us,dishonor) [list d ih s aa n er]
-set lts(us,disposal) [list d ih s p ow z ah l]
-set lts(us,dispossess) [list d ih s p ah z eh s]
-set lts(us,dissections) [list d ay s eh k sh ah n z]
-set lts(us,distinctiveness) [list d ih s t ih ng k t ih v n ah s]
-set lts(us,divisions') [list d ih v ih zh ah n z]
-set lts(us,doctoring) [list d aa k t er ih ng]
-set lts(us,dolores) [list d ah l ao r ah s]
-set lts(us,dominique) [list d ao m ah n iy k]
-set lts(us,dorais) [list d er ey]
-set lts(us,dornin) [list d ao n ah n]
-set lts(us,dovey) [list d ah v ey]
-set lts(us,drawers) [list d r ao r z]
-set lts(us,drennen) [list d r eh n ah n]
-set lts(us,drinas) [list d iy n ah z]
-set lts(us,dumber) [list d ah m er]
-set lts(us,dunckel) [list d ah ng k ah l]
-set lts(us,dupre) [list d ah p er]
-set lts(us,duran's) [list d er ae n s]
-set lts(us,dusseault) [list d ah s ow]
-set lts(us,dwindling) [list d w ih n d ah l ih ng]
-set lts(us,earlywine) [list er l iy w ay n]
-set lts(us,earney) [list er n iy]
-set lts(us,earth) [list er th]
-set lts(us,earthquake) [list er th k w ey k]
-set lts(us,earthy) [list er th iy]
-set lts(us,eberhard) [list eh b er hh aa r t]
-set lts(us,editor's) [list eh d ah t er z]
-set lts(us,edris) [list ah d r iy s]
-set lts(us,edwards's) [list eh d w er d z ah z]
-set lts(us,eisenstein) [list ay z ah n s t ay n]
-set lts(us,elga) [list eh l g aa]
-set lts(us,embleton) [list eh m b ah l t aa n]
-set lts(us,emerald) [list eh m r ah l d]
-set lts(us,emigre) [list eh m ah g r ey]
-set lts(us,emory's) [list eh m er iy z]
-set lts(us,enck) [list eh ng k]
-set lts(us,enclosure) [list eh n k l ow zh er]
-set lts(us,endorphin) [list eh n d ao r f ah n]
-set lts(us,enlarges) [list ah n l aa r jh ah z]
-set lts(us,enshroud) [list ah n sh r aw d]
-set lts(us,ensures) [list eh n sh uh r z]
-set lts(us,enterprises') [list eh n t er p r ay z ah z]
-set lts(us,enyart) [list eh n y aa r t]
-set lts(us,erda) [list eh r d ah]
-set lts(us,espanol) [list eh s p aa n y ow l]
-set lts(us,esprit's) [list eh s p r iy z]
-set lts(us,estate's) [list ah s t ey t s]
-set lts(us,ether) [list iy th er]
-set lts(us,euchred) [list y uw k er d]
-set lts(us,euthanasia) [list y uw th ah n ey zh ah]
-set lts(us,everytime) [list eh v r iy t ay m]
-set lts(us,ewart) [list y uw er t]
-set lts(us,exchanges') [list eh k s ch ey n jh ah z]
-set lts(us,execution) [list eh k s ah k y uw sh ah n]
-set lts(us,executor) [list ih g z eh k y ah t er]
-set lts(us,exercise) [list eh k s er s ay z]
-set lts(us,exile) [list eh g z ay l]
-set lts(us,explosion) [list ih k s p l ow zh ah n]
-set lts(us,exponentially) [list eh k s p ow n eh n sh ah l iy]
-set lts(us,expresso) [list ih k s p eh s ow]
-set lts(us,extendible) [list eh k s t eh n d ah b ah l]
-set lts(us,extirpate) [list eh k s t er p ey t]
-set lts(us,extracts) [list ih k s t r ae k t s]
-set lts(us,extrasensory) [list eh k s t r ah s eh n s er iy]
-set lts(us,fabre) [list f ey b er]
-set lts(us,falmouth) [list f ae l m ah th]
-set lts(us,fansler) [list f ae n s ah l er]
-set lts(us,faragher) [list f ae r ah g hh er]
-set lts(us,farinacci) [list f aa r iy n aa ch iy]
-set lts(us,february's) [list f eh b y ah w eh r iy z]
-set lts(us,fidler) [list f ay d ah l er]
-set lts(us,filets) [list f ah l ey z]
-set lts(us,financiers) [list f ih n ah n s ih r z]
-set lts(us,finck) [list f ih ng k]
-set lts(us,fissure) [list f ih sh er]
-set lts(us,flaugher) [list f l ao er]
-set lts(us,foramen) [list f er ey m ah n]
-set lts(us,forbes's) [list f ao r b z ah z]
-set lts(us,foreclosure) [list f ao r k l ow zh er]
-set lts(us,fors) [list f er z]
-set lts(us,fourth's) [list f ao r th s]
-set lts(us,fowle) [list f aw ah l]
-set lts(us,francaise) [list f r aa n s eh z]
-set lts(us,franchise's) [list f r ae n ch ay z ah z]
-set lts(us,franco's) [list f r ae ng k ow z]
-set lts(us,fraudulent) [list f r ao jh ah l ah n t]
-set lts(us,frightening) [list f r ay t ah n ih ng]
-set lts(us,fuchsias) [list f y uw sh ah z]
-set lts(us,functionally) [list f ah ng k sh ah n ah l iy]
-set lts(us,gaiser) [list g ey z er]
-set lts(us,garrett's) [list g eh r ah t z]
-set lts(us,garrigues) [list g aa r iy g eh s]
-set lts(us,garzarelli) [list g aa r z er eh l iy]
-set lts(us,gaulin) [list g ow l ae n]
-set lts(us,gauvin) [list g ow v ae n]
-set lts(us,gelatin) [list jh eh l ah t ah n]
-set lts(us,generales) [list jh eh n eh r aa l eh s]
-set lts(us,gentian) [list jh eh n sh ah n]
-set lts(us,gentlewomen's) [list jh eh n t ah l w ih m ah n z]
-set lts(us,geopolitically) [list jh iy ow p ah l ih t ih k l iy]
-set lts(us,germiston) [list jh er m ah s t aa n]
-set lts(us,gertsch) [list g er ch]
-set lts(us,giessen) [list g iy z s ah n]
-set lts(us,gilbo) [list jh iy l b ow]
-set lts(us,gillett) [list jh ih l ih t]
-set lts(us,ginger) [list jh ih n jh er]
-set lts(us,giraud) [list zh ay r ow]
-set lts(us,gismondi) [list jh iy s m ow n d iy]
-set lts(us,gitlin) [list jh ih t l ih n]
-set lts(us,gonya) [list g ow n y ah]
-set lts(us,graced) [list g r ey s t]
-set lts(us,grackles) [list g r ae k ah l z]
-set lts(us,gradualism) [list g r ae jh ah w ah l ih z ah m]
-set lts(us,graduates) [list g r ae jh ah w ah t s]
-set lts(us,grandchildren) [list g r ae n ch ih l d r ah n]
-set lts(us,grandma) [list g r ae m aa]
-set lts(us,granules) [list g r ae n y ah l z]
-set lts(us,greased) [list g r iy s t]
-set lts(us,gregory) [list g r eh g er iy]
-set lts(us,griffith's) [list g r ih f ih th s]
-set lts(us,grisly) [list g r ih z l iy]
-set lts(us,gristle) [list g r ih s ah l]
-set lts(us,groseclose) [list g r aa s ih k l ow z]
-set lts(us,gsell) [list g ah s eh l]
-set lts(us,gucciardo) [list g uw ch aa r d ow]
-set lts(us,guerriero) [list g er ih r ow]
-set lts(us,gumbs) [list g ah m z]
-set lts(us,gunatilake) [list g uw n aa t ih l aa k ey]
-set lts(us,guthmiller) [list g ah th m ah l er]
-set lts(us,habermehl) [list hh ae b er m ah l]
-set lts(us,hackle) [list hh ae k ah l]
-set lts(us,hairdo) [list hh eh r d uw]
-set lts(us,haitis) [list hh ey t iy z]
-set lts(us,halcomb) [list hh ae l k ah m]
-set lts(us,half's) [list hh ae f s]
-set lts(us,halfrida) [list hh ae f r ah d ah]
-set lts(us,halve) [list hh ae v]
-set lts(us,hammonds) [list hh ae m ah n d z]
-set lts(us,handkerchiefs) [list hh ae ng k er ch ah f s]
-set lts(us,hannen) [list hh ae n ah n]
-set lts(us,hans) [list hh aa n s]
-set lts(us,harassers) [list hh er ae s er z]
-set lts(us,harbor's) [list hh aa r b er z]
-set lts(us,hartshorne) [list hh aa r ch er n]
-set lts(us,hashemite) [list hh ae sh ah m ay t]
-set lts(us,hassled) [list hh ae s ah l d]
-set lts(us,haughtily) [list hh ao t ah l iy]
-set lts(us,healthamerica) [list hh iy l th ah m eh r ih k ah]
-set lts(us,heckle) [list hh eh k ah l]
-set lts(us,heidi's) [list hh ay d iy s]
-set lts(us,heightening) [list hh ay t ah n ih ng]
-set lts(us,helmet) [list hh eh l m ah t]
-set lts(us,hemmen) [list hh eh m ah n]
-set lts(us,hemorrhaging) [list hh eh m er ih jh ih ng]
-set lts(us,heparin) [list hh eh p er ih n]
-set lts(us,herbalists) [list er b ah l ah s t s]
-set lts(us,heringer) [list hh eh r ah n jh er]
-set lts(us,hermosillo) [list hh er m ah s ih l ow]
-set lts(us,hesitations) [list hh eh z ah t ey sh ah n z]
-set lts(us,heterosporous) [list hh eh t er aa s p er ah s]
-set lts(us,hichens) [list hh ih k ah n z]
-set lts(us,hilden) [list hh ay l d ah n]
-set lts(us,hindman) [list hh ay n d m ah n]
-set lts(us,hiser) [list hh ay z er]
-set lts(us,hjort) [list hh ah jh ao r t]
-set lts(us,hoggart) [list hh aa g er t]
-set lts(us,hollandsworth) [list hh aa l ah n d z w er th]
-set lts(us,holloran) [list hh aa l er ah n]
-set lts(us,homage) [list aa m ah jh]
-set lts(us,homicidal) [list hh aa m ah s ay d ah l]
-set lts(us,homosporous) [list hh ah m aa s p er ah s]
-set lts(us,honestly) [list aa n ah s t l iy]
-set lts(us,honoraria) [list aa n er eh r iy ah]
-set lts(us,honoring) [list aa n er ih ng]
-set lts(us,horatian) [list hh er ey sh ah n]
-set lts(us,hosing) [list hh ow z ih ng]
-set lts(us,hosni) [list hh ow z n iy]
-set lts(us,hour) [list aw er]
-set lts(us,hrawi) [list hh er w aa w iy]
-set lts(us,huberto) [list hh uw b eh r t ow]
-set lts(us,huml) [list hh ah m ah l]
-set lts(us,humoral) [list hh y uw m er ah l]
-set lts(us,huser) [list hh y uw z er]
-set lts(us,hygrometer) [list hh ay g r aa m ah t er]
-set lts(us,hymowitz) [list hh ih m ah w ih t s]
-set lts(us,iacobucci) [list iy aa k ow b uw ch iy]
-set lts(us,idlewild) [list ay d ah l w ay l d]
-set lts(us,illiterates) [list ih l ih t er ah t s]
-set lts(us,imitations) [list ih m ah t ey sh ah n z]
-set lts(us,immanence) [list ih m ah n ah n s]
-set lts(us,impartially) [list ih m p aa r sh ah l iy]
-set lts(us,incision) [list ih n s ih zh ah n]
-set lts(us,inconsistencies) [list ih ng k aa n s ih s t eh n s iy z]
-set lts(us,inconveniences) [list ih n k ah n v iy n y ah n s ah z]
-set lts(us,incorporations) [list ih n k ao r p er ey sh ah n z]
-set lts(us,incursions) [list ih n k er zh ah n z]
-set lts(us,indictments) [list ih n d ay t m ah n t s]
-set lts(us,indistinct) [list ih n d ah s t ih ng k t]
-set lts(us,individualists) [list ih n d ah v ih jh uw ah l ah s t s]
-set lts(us,individuals) [list ih n d ah v ih jh ah w ah l z]
-set lts(us,ines) [list ih n ih s]
-set lts(us,information) [list ih n f er m ey sh ah n]
-set lts(us,inglese) [list ih ng g l iy z]
-set lts(us,ingratiate) [list ih ng g r ey sh iy ey t]
-set lts(us,initiate) [list ih n ih sh iy ey t]
-set lts(us,innes) [list ih n ah s]
-set lts(us,insinuate) [list ih n s ih n y uw ey t]
-set lts(us,instinctive) [list ih n s t ih ng k t ih v]
-set lts(us,insured) [list ih n sh uh r d]
-set lts(us,intensive) [list ih n t eh n s ah v]
-set lts(us,interest) [list ih n t r ah s t]
-set lts(us,interferon) [list ih n t er f ih r aa n]
-set lts(us,interpose) [list ih n t er p ow z]
-set lts(us,iranians') [list ay r ey n iy ah n z]
-set lts(us,iron) [list ay er n]
-set lts(us,isaacs) [list ay z ih k s]
-set lts(us,isaiah) [list ay z ey ah]
-set lts(us,isis) [list ay s ah s]
-set lts(us,islamic) [list ih z l aa m ih k]
-set lts(us,islanders) [list ay l ah n d er z]
-set lts(us,isley) [list ay l iy]
-set lts(us,israeli) [list ih z r ey l iy]
-set lts(us,issue) [list ih sh uw]
-set lts(us,issuing) [list ih sh uw ih ng]
-set lts(us,izetbegovic) [list ih z eh t b eh g ow v ih ch]
-set lts(us,jacobowitz) [list y ah k aa b ah w ih t s]
-set lts(us,janca) [list jh ae ng k ah]
-set lts(us,japanese) [list jh ae p ah n iy z]
-set lts(us,jarriel) [list zh er iy l]
-set lts(us,jaskiewicz) [list y aa s k ah v ih ch]
-set lts(us,jesuits) [list jh eh zh uw ah t s]
-set lts(us,joncas) [list jh aa ng k ah z]
-set lts(us,joser) [list jh ow z er]
-set lts(us,junction) [list jh ah ng k sh ah n]
-set lts(us,juniors) [list jh uw n y er z]
-set lts(us,kadrmas) [list k ae d er m aa z]
-set lts(us,kaschak) [list k ae sh ah k]
-set lts(us,kashiwagi) [list k ae sh ah w ae g iy]
-set lts(us,kasler) [list k ae s ah l er]
-set lts(us,kastens) [list k ey s ah n z]
-set lts(us,kcal) [list k ey k aa l]
-set lts(us,kearby) [list k er b iy]
-set lts(us,kemmons) [list k eh m ah n z]
-set lts(us,kentucky's) [list k ah n t ah k iy z]
-set lts(us,kenyan) [list k eh n y ah n]
-set lts(us,kestenbaum) [list k eh s ah n b aw m]
-set lts(us,khabarovsk) [list k ae b er aa f s k]
-set lts(us,khashoggi) [list k ah sh aa jh iy]
-set lts(us,kiesler) [list k iy z l er]
-set lts(us,klinck) [list k l ih ng k]
-set lts(us,kmetz) [list k ah m eh t s]
-set lts(us,knipl) [list n ih p ah l]
-set lts(us,komsomol's) [list k aa m s ow m ah l z]
-set lts(us,koslow's) [list k aa z l ow z]
-set lts(us,kostecki) [list k ah s t eh t s k iy]
-set lts(us,kozicki) [list k ah z ih t s k iy]
-set lts(us,kozyrev's) [list k aa z er eh v z]
-set lts(us,kreditanstalt) [list k r eh d ih t ah n s t ao l t]
-set lts(us,kretschmar) [list k r eh ch m er]
-set lts(us,kuennen) [list k uh n ah n]
-set lts(us,ladbroke's) [list l ae d b r ow k s]
-set lts(us,lammons) [list l ae m ah n z]
-set lts(us,laotian) [list l ey ow sh ah n]
-set lts(us,laparoscopy) [list l ae p er aa s k ah p iy]
-set lts(us,laroche's) [list l aa r ow sh ah z]
-set lts(us,larue) [list l er uw]
-set lts(us,lasers) [list l ey z er z]
-set lts(us,lavinia) [list l ah v ih n y ah]
-set lts(us,lcs) [list eh l s iy eh s]
-set lts(us,leagues') [list l iy g z]
-set lts(us,learns) [list l er n z]
-set lts(us,lefort) [list l eh f er t]
-set lts(us,lenart) [list l eh n er t]
-set lts(us,lentine) [list l eh n t iy n iy]
-set lts(us,levitte's) [list l eh v ih t s]
-set lts(us,liberati) [list l iy b er aa t iy]
-set lts(us,lichen) [list l ay k ah n]
-set lts(us,lichtenstein) [list l ih k t ah n s t iy n]
-set lts(us,licorice) [list l ih k er ih sh]
-set lts(us,liliane) [list l ah l iy ae n]
-set lts(us,limit) [list l ih m ah t]
-set lts(us,lincks) [list l ih ng k s]
-set lts(us,linearly) [list l ih n iy er l iy]
-set lts(us,lisiecki) [list l ih s iy t s k iy]
-set lts(us,listened) [list l ih s ah n d]
-set lts(us,lithography) [list l ah th aa g r ah f iy]
-set lts(us,longacre) [list l ao ng ey k er]
-set lts(us,losec) [list l ow z ah k]
-set lts(us,louis) [list l uw ah s]
-set lts(us,loutzenhiser) [list l aw t z ah n hh ay z er]
-set lts(us,lumberman) [list l ah m b er m ae n]
-set lts(us,macioce) [list m aa ch ow ch iy]
-set lts(us,madeline) [list m ae d ah l ih n]
-set lts(us,maggi) [list m ae jh iy]
-set lts(us,maginnis) [list m ah g ih n ah s]
-set lts(us,maharaja) [list m aa hh er aa zh ah]
-set lts(us,malaysia's) [list m ah l ey zh ah z]
-set lts(us,mandato) [list m aa n d aa t ow]
-set lts(us,manfre) [list m ae n f er]
-set lts(us,manganese) [list m ae ng g ah n iy z]
-set lts(us,manges) [list m ey n jh ah z]
-set lts(us,manhandle) [list m ae n hh ae n d ah l]
-set lts(us,mani) [list m aa n iy]
-set lts(us,mantia) [list m aa n sh ah]
-set lts(us,manufacture) [list m ae n y ah f ae k ch er]
-set lts(us,maple) [list m ey p ah l]
-set lts(us,marcelia) [list m aa r ch eh l iy ah]
-set lts(us,marciniak) [list m er ch ih n iy ae k]
-set lts(us,margalov) [list m aa g ah l ao v]
-set lts(us,margarita) [list m aa r g er iy t ah]
-set lts(us,margory) [list m er g er iy]
-set lts(us,marinoff) [list m ae r ah n ao f]
-set lts(us,marlborough) [list m aa r l b er ow]
-set lts(us,marmoset) [list m aa r m ah z eh t]
-set lts(us,marooney) [list m er uw n iy]
-set lts(us,mars's) [list m aa r z ah z]
-set lts(us,martials) [list m aa r sh ah l z]
-set lts(us,martyred) [list m aa r t er d]
-set lts(us,mascolo) [list m aa s k ow l ow]
-set lts(us,masteller) [list m ey s t ah l er]
-set lts(us,materna) [list m aa t eh r n ah]
-set lts(us,mathe) [list m ey dh]
-set lts(us,mathena) [list m ae th ah n ah]
-set lts(us,mathison) [list m ae th ih s ah n]
-set lts(us,matteis) [list m ah t ay s]
-set lts(us,mattern) [list m ae t er n]
-set lts(us,mayse) [list m ey z]
-set lts(us,mccaslin) [list m ah k ae z l ah n]
-set lts(us,mcdermid) [list m ah k d er m ah d]
-set lts(us,mckennon) [list m ah k eh n ah n]
-set lts(us,meakin) [list m iy k ah n]
-set lts(us,measles) [list m iy z ah l z]
-set lts(us,medallions) [list m ah d ae l y ah n z]
-set lts(us,medved) [list m eh d v ah d]
-set lts(us,melamed) [list m eh l ah m eh d]
-set lts(us,melgar) [list m ey l g aa r]
-set lts(us,memorialize) [list m ah m ao r iy ah l ay z]
-set lts(us,menasion's) [list m eh n ae s iy ah n z]
-set lts(us,mendes) [list m ey n d eh s]
-set lts(us,menear) [list m ah n ih r]
-set lts(us,menorah's) [list m ah n ao r ah z]
-set lts(us,menu) [list m eh n y uw]
-set lts(us,merta) [list m eh r t ah]
-set lts(us,mesodermal) [list m eh z ah d er m ah l]
-set lts(us,metallic) [list m ah t ae l ih k]
-set lts(us,meticulously) [list m ah t ih k y ah l ah s l iy]
-set lts(us,meurer) [list m er er]
-set lts(us,michaelina) [list m ay k ah l iy n ah]
-set lts(us,michalec) [list m ah hh aa l ih k]
-set lts(us,midpriced) [list m ih d p r ay s t]
-set lts(us,mightily) [list m ay t ah l iy]
-set lts(us,mijares) [list m iy y aa r eh s]
-set lts(us,milewski) [list m ah l eh f s k iy]
-set lts(us,milius) [list m ay l iy ah s]
-set lts(us,millin) [list m ih l ah n]
-set lts(us,millionths) [list m ih l y ah n t th s]
-set lts(us,minasian) [list m ih n ae zh ah n]
-set lts(us,mindful) [list m ay n d f ah l]
-set lts(us,minerals') [list m ih n er ah l z]
-set lts(us,minoring) [list m ay n er ih ng]
-set lts(us,minuteman) [list m ih n ah t m ae n]
-set lts(us,mirroring) [list m ih r er ih ng]
-set lts(us,mises) [list m ay z ah z]
-set lts(us,mispriced) [list m ih s p r ay s t]
-set lts(us,mit) [list eh m ay t iy]
-set lts(us,mitsui's) [list m iy t s uw iy z]
-set lts(us,mitterrand) [list m iy t er ao n d]
-set lts(us,moderates) [list m aa d er ah t s]
-set lts(us,modular) [list m aa jh ah l er]
-set lts(us,molesting) [list m ah l eh s t ih ng]
-set lts(us,molony) [list m ah l ao n iy]
-set lts(us,monetarism) [list m aa n ah t er ih z ah m]
-set lts(us,mongeau) [list m ah ng g ow]
-set lts(us,monitoring) [list m aa n ah t er ih ng]
-set lts(us,monosaccharide) [list m aa n ah s ae k er ay d]
-set lts(us,monumentally) [list m aa n y ah m eh n t ah l iy]
-set lts(us,morales) [list m er ae l z]
-set lts(us,moreau) [list m er ow]
-set lts(us,moroccan) [list m er aa k ah n]
-set lts(us,moses) [list m ow z ah s]
-set lts(us,mother) [list m ah dh er]
-set lts(us,motorcars) [list m ow t er k aa r z]
-set lts(us,motorists) [list m ow t er ah s t s]
-set lts(us,moustache) [list m ah s t ae sh]
-set lts(us,mpeg) [list eh m p eh g]
-set lts(us,multiuser) [list m ah l t iy y uw z er]
-set lts(us,murrin) [list m ao r ih n]
-set lts(us,museum) [list m y uw z iy ah m]
-set lts(us,musicals) [list m y uw z ih k ah l z]
-set lts(us,muslim) [list m ah z l ah m]
-set lts(us,naranjo) [list n aa r aa n y ow]
-set lts(us,nauseam) [list n aw z iy m]
-set lts(us,nazionale) [list n aa t s iy ow n aa l iy]
-set lts(us,negotiable) [list n ah g ow sh ah b ah l]
-set lts(us,negotiators') [list n ah g ow sh iy ey t er z]
-set lts(us,neighbor's) [list n ey b er z]
-set lts(us,nemecek) [list n eh m ah s ih k]
-set lts(us,nesheim) [list n eh s hh ay m]
-set lts(us,netanyahu) [list n eh t ah n y aa hh uw]
-set lts(us,netherlands') [list n eh th er l ae n d z]
-set lts(us,newcastle's) [list n uw k ae s ah l z]
-set lts(us,nicaraguan) [list n ih k er aa g w ah n]
-set lts(us,nichols') [list n ih k ah l z]
-set lts(us,nicolai) [list n iy k ow l aa iy]
-set lts(us,nitschke) [list n ih ch k]
-set lts(us,nonresidential) [list n aa n r eh z ah d eh n sh ah l]
-set lts(us,nonunionized) [list n aa n y uw n y ah n ay z d]
-set lts(us,north's) [list n ao r th s]
-set lts(us,nosiness) [list n ow z iy n ah s]
-set lts(us,notoriety) [list n ow t er ay ah t iy]
-set lts(us,nuns') [list n ah n z]
-set lts(us,nurseryman) [list n er s er iy m ae n]
-set lts(us,nussle) [list n ah s ah l]
-set lts(us,nyers) [list n ay r z]
-set lts(us,obermiller) [list aa b er m ah l er]
-set lts(us,observation) [list aa b z er v ey sh ah n]
-set lts(us,observing) [list ah b z er v ih ng]
-set lts(us,obyrne) [list aa b er n]
-set lts(us,odometers) [list ow d aa m ah t er z]
-set lts(us,odorless) [list ow d er l ah s]
-set lts(us,oeser) [list ow z er]
-set lts(us,oettinger) [list ow t ah n jh er]
-set lts(us,officers) [list ao f ah s er z]
-set lts(us,oftentimes) [list ao f ah n t ay m z]
-set lts(us,ogles) [list ow g ah l z]
-set lts(us,ogre) [list ow g er]
-set lts(us,ohanesian) [list aa hh ah n eh zh ah n]
-set lts(us,ohern) [list aa hh er n]
-set lts(us,okasan) [list ow k ey z ah n]
-set lts(us,olivares) [list ow l iy v aa r eh s]
-set lts(us,omniscient) [list aa m n ih sh ah n t]
-set lts(us,oncogene) [list aa ng k ow jh iy n]
-set lts(us,ones') [list w ah n z]
-set lts(us,onion) [list ah n y ah n]
-set lts(us,onnen) [list aa n ah n]
-set lts(us,operations') [list aa p er ey sh ah n z]
-set lts(us,opportunism) [list aa p er t uw n ih z ah m]
-set lts(us,optimistically) [list aa p t ah m ih s t ih k ah l iy]
-set lts(us,orear) [list er ih r]
-set lts(us,organism's) [list ao r g ah n ih z ah m z]
-set lts(us,originating) [list er ih jh ah n ey t ih ng]
-set lts(us,orthodontia) [list ao r th ah d aa n ch iy ah]
-set lts(us,ossetians) [list aa s eh sh y ah n z]
-set lts(us,oubre) [list uw b er]
-set lts(us,outhouses) [list aw t hh aw s ah z]
-set lts(us,overused) [list ow v er y uw z d]
-set lts(us,ovoviviparous) [list ow v ow v ay v ih p er ah s]
-set lts(us,pacifism) [list p ae s ah f ih z ah m]
-set lts(us,pancanadian) [list p ae ng k ah n ey d iy ah n]
-set lts(us,pandolfi) [list p aa n d ow l f iy]
-set lts(us,panoramic) [list p ae n er ae m ih k]
-set lts(us,pantaleo) [list p aa n t aa l iy ow]
-set lts(us,paralysis) [list p er ae l ah s ih s]
-set lts(us,parent's) [list p eh r ah n t s]
-set lts(us,parishioner) [list p er ih sh ah n er]
-set lts(us,parmelee) [list p aa r m ah l iy]
-set lts(us,parole) [list p er ow l]
-set lts(us,patiently) [list p ey sh ah n t l iy]
-set lts(us,patrician) [list p ah t r ih sh ah n]
-set lts(us,patrimonial) [list p ae t r ah m ow n y ah l]
-set lts(us,pellagra) [list p ah l ae g r ah]
-set lts(us,pendyala) [list p eh d y aa l ah]
-set lts(us,penitentiaries) [list p eh n ah t eh n ch er iy z]
-set lts(us,penrose) [list p eh n r ow z]
-set lts(us,percussionist) [list p er k ah sh ah n ih s t]
-set lts(us,petronas) [list p eh t r ow n ah s]
-set lts(us,petrowski) [list p ah t r ao f s k iy]
-set lts(us,pfeifle) [list f ay f ah l]
-set lts(us,pharmacologist) [list f aa r m ah k aa l ah jh ih s t]
-set lts(us,phillippi) [list f ah l iy p iy]
-set lts(us,philosophies) [list f ah l aa s ah f iy z]
-set lts(us,phosphorous) [list f aa s f er ah s]
-set lts(us,photometer) [list f ah t aa m ah t er]
-set lts(us,piasecki) [list p iy ah s eh t s k iy]
-set lts(us,pingleton) [list p ih ng g ah l t aa n]
-set lts(us,pinion) [list p ih n y ah n]
-set lts(us,pinochet) [list p ih n ih sh ey]
-set lts(us,piscitelli) [list p iy s ch iy t eh l iy]
-set lts(us,pistilli) [list p iy s t iy l iy]
-set lts(us,pittsboro) [list p ih t s b er ow]
-set lts(us,planck) [list p l ae ng k]
-set lts(us,polaroid) [list p ow l er oy d]
-set lts(us,politically) [list p ah l ih t ih k ah l iy]
-set lts(us,popularly) [list p aa p y ah l er l iy]
-set lts(us,porcella) [list p ao r ch eh l ah]
-set lts(us,poses) [list p ow z ah z]
-set lts(us,positions) [list p ah z ih sh ah n z]
-set lts(us,posner) [list p ow z n er]
-set lts(us,possessor) [list p ah z eh s er]
-set lts(us,potential) [list p ah t eh n sh ah l]
-set lts(us,poulos) [list p ah l iy s]
-set lts(us,precinct) [list p r iy s ih ng k t]
-set lts(us,prediction) [list p r iy d ih k sh ah n]
-set lts(us,premiers) [list p r eh m ih r z]
-set lts(us,premonitory) [list p r ah m ah n ah t er iy]
-set lts(us,preserver) [list p r iy z er v er]
-set lts(us,presidential's) [list p r eh z ah d eh n ch ah l z]
-set lts(us,prickett) [list p r ih k eh t]
-set lts(us,principles) [list p r ih n s ah p ah l z]
-set lts(us,procaccini) [list p r ow k aa ch iy n iy]
-set lts(us,procida) [list p r ow ch iy d ah]
-set lts(us,promiscuity) [list p r ow m ah s k y uw ah t iy]
-set lts(us,proposes) [list p r ah p ow z ah z]
-set lts(us,providential) [list p r aa v ah d eh n ch ah l]
-set lts(us,przybylski) [list p er z ah b ih l s k iy]
-set lts(us,psencik) [list s eh n s ih k]
-set lts(us,psoriasis) [list s er ay ah s ah s]
-set lts(us,psychoanalytic) [list s ay k ow ae n ah l ih t ih k]
-set lts(us,psychotherapists) [list s ay k ah th eh r ah p ah s t s]
-set lts(us,ptomaine) [list t ow m ey n]
-set lts(us,publications') [list p ah b l ih k ey sh ah n z]
-set lts(us,puccio) [list p uw ch iy ow]
-set lts(us,punctured) [list p ah ng k ch er d]
-set lts(us,purolator's) [list p y uh r ah l ey t er z]
-set lts(us,pyramid) [list p ih r ah m ah d]
-set lts(us,quadruple) [list k w aa d r uw p ah l]
-set lts(us,quaranta) [list k w er ae n t ah]
-set lts(us,quebecoise) [list k eh b eh k w aa]
-set lts(us,raborn) [list r ae b er n]
-set lts(us,raises) [list r ey z ah z]
-set lts(us,ramesses) [list r ae m ah s ah z]
-set lts(us,ranck) [list r ae ng k]
-set lts(us,raser) [list r ey z er]
-set lts(us,rayborn) [list r ey b er n]
-set lts(us,rb) [list aa r b iy]
-set lts(us,reanalyse) [list r iy ae n ah l ay z]
-set lts(us,reassures) [list r iy ah sh uh r z]
-set lts(us,recommendation) [list r eh k ah m ah n d ey sh ah n]
-set lts(us,recuse) [list r ih k y uw z]
-set lts(us,recycling) [list r iy s ay k ah l ih ng]
-set lts(us,redistributing) [list r iy d ah s t r ih b y uw t ih ng]
-set lts(us,rehearse) [list r iy hh er s]
-set lts(us,rehiring) [list r iy hh ay r ih ng]
-set lts(us,reier) [list r ey er]
-set lts(us,reneged) [list r ah n ih g d]
-set lts(us,repressing) [list r iy p r eh s ih ng]
-set lts(us,researching) [list r iy s er ch ih ng]
-set lts(us,resemblances) [list r iy z eh m b l ah n s ah z]
-set lts(us,reservationist) [list r eh z er v ey sh ah n ah s t]
-set lts(us,reservoir) [list r eh z ah v w aa r]
-set lts(us,reshuffled) [list r iy sh ah f ah l d]
-set lts(us,resident) [list r eh z ah d ah n t]
-set lts(us,residuals) [list r ah z ih jh uw ah l z]
-set lts(us,resolute) [list r eh z ah l uw t]
-set lts(us,resonant) [list r eh z ah n ah n t]
-set lts(us,respirators) [list r eh s p er ey t er z]
-set lts(us,resumes) [list r ah z uw m z]
-set lts(us,resurrected) [list r eh z er eh k t ah d]
-set lts(us,reunions) [list r iy uw n y ah n z]
-set lts(us,reynolds's) [list r eh n ah l d z ah z]
-set lts(us,riccio) [list r iy ch iy ow]
-set lts(us,richemont) [list r ih ch ah m aa n t]
-set lts(us,richman) [list r ih ch m ae n]
-set lts(us,riemersma) [list r iy m eh r s m ah]
-set lts(us,ringed) [list r ih ng d]
-set lts(us,rissoli) [list r ah s ow l iy]
-set lts(us,riven) [list r ih v ah n]
-set lts(us,robards) [list r aa b er d z]
-set lts(us,rockrose) [list r aa k r ow z]
-set lts(us,roeser) [list r ow z er]
-set lts(us,rollins's) [list r aa l ih n z ah z]
-set lts(us,rosabel) [list r ow z ah b eh l]
-set lts(us,rosalyn) [list r aa z ah l ah n]
-set lts(us,rosanne) [list r ow z ae n]
-set lts(us,roseberry) [list r ow z b eh r iy]
-set lts(us,rosekrans) [list r ow z k r ah n z]
-set lts(us,rosenau) [list r ow z n aw]
-set lts(us,rosenblatt) [list r ow z ah n b l ae t]
-set lts(us,rosener) [list r ow z ah n er]
-set lts(us,rosenlund) [list r ow z ah n l ah n d]
-set lts(us,rosenthal) [list r ow z ah n th ao l]
-set lts(us,roshier) [list r ow sh y er]
-set lts(us,rossler) [list r aa s ah l er]
-set lts(us,rowser) [list r ow z er]
-set lts(us,ruberto) [list r uw b eh r t ow]
-set lts(us,rugen) [list r ah g ah n]
-set lts(us,ruggirello) [list r uw jh ih r eh l ow]
-set lts(us,runkle) [list r ah ng k ah l]
-set lts(us,ruse) [list r uw z]
-set lts(us,rustler) [list r ah s l er]
-set lts(us,s's) [list eh s ah z]
-set lts(us,sabretech) [list s ey b er t eh k]
-set lts(us,safier) [list s ah f ih r]
-set lts(us,salmans) [list s ae m ah n z]
-set lts(us,sanctimony) [list s ae ng k t ah m ow n iy]
-set lts(us,sanctuaries) [list s ae ng k ch uw eh r iy z]
-set lts(us,sandford) [list s ae n d f er d]
-set lts(us,saracino) [list s aa r aa ch iy n ow]
-set lts(us,sarene) [list s er iy n]
-set lts(us,sarkisian) [list s aa r k ih zh ah n]
-set lts(us,sathre) [list s ae th er]
-set lts(us,sauer) [list s aw er]
-set lts(us,sauter) [list s ao t ey er]
-set lts(us,scheffler) [list sh eh f ah l er]
-set lts(us,schemel) [list sh eh m ah l]
-set lts(us,schertzer) [list sh er t s er]
-set lts(us,schickler) [list sh ih k ah l er]
-set lts(us,schimke) [list s k ih m k]
-set lts(us,schlumberger) [list sh l ah m b er zh ey]
-set lts(us,scholars) [list s k aa l er z]
-set lts(us,schoo) [list sh uw]
-set lts(us,schuchard) [list sh ah k er d]
-set lts(us,schuette) [list s k uw t]
-set lts(us,scoffed) [list s k ao f t]
-set lts(us,seagate's) [list s iy g ey t s]
-set lts(us,searching) [list s er ch ih ng]
-set lts(us,searles) [list s er l z]
-set lts(us,sebree) [list s ah b r iy]
-set lts(us,secretive) [list s iy k r ah t ih v]
-set lts(us,sehorn) [list s eh hh er n]
-set lts(us,seifried) [list s ay f er iy d]
-set lts(us,seigniorage) [list s iy g n iy er ih jh]
-set lts(us,senator's) [list s eh n ah t er z]
-set lts(us,sensory) [list s eh n s er iy]
-set lts(us,separating) [list s eh p er ey t ih ng]
-set lts(us,serle) [list s ao r ah l]
-set lts(us,shaath's) [list sh aa th s]
-set lts(us,shackled) [list sh ae k ah l d]
-set lts(us,shankles) [list sh ae ng k ah l z]
-set lts(us,sharrar) [list sh er aa r]
-set lts(us,shea) [list sh ey]
-set lts(us,shenanigans) [list sh ah n ae n ih g ah n z]
-set lts(us,should) [list sh uh d]
-set lts(us,siddhartha) [list s ah d aa r t ah]
-set lts(us,sidener) [list s ih d iy n er]
-set lts(us,signor) [list s iy n y ao r]
-set lts(us,silveri) [list s iy l v eh r iy]
-set lts(us,silvestri) [list s iy l v eh s t r iy]
-set lts(us,simmons) [list s ih m ah n z]
-set lts(us,singularly) [list s ih ng g y ah l er l iy]
-set lts(us,siple) [list s ay p ah l]
-set lts(us,siron) [list s ao r ah n]
-set lts(us,skase) [list s k ey z]
-set lts(us,skenandore) [list s k ah n ae n d er]
-set lts(us,skorupa) [list s k er uw p ah]
-set lts(us,snapples) [list s n ae p ah l z]
-set lts(us,snarled) [list s n aa r ah l d]
-set lts(us,soften) [list s ao f ah n]
-set lts(us,sonnen) [list s aa n ah n]
-set lts(us,sonorous) [list s aa n er ah s]
-set lts(us,sousa) [list s uw z ah]
-set lts(us,sparkle) [list s p aa r k ah l]
-set lts(us,sperle) [list s p ao r ah l]
-set lts(us,spokespeople) [list s p ow k s p iy p ah l]
-set lts(us,sponsor's) [list s p aa n s er z]
-set lts(us,spoofed) [list s p uw f t]
-set lts(us,sprinkles) [list s p r ih ng k ah l z]
-set lts(us,srdan) [list s er d ae n]
-set lts(us,standby) [list s t ae n d b ay]
-set lts(us,stapleton) [list s t ey p ah l t ah n]
-set lts(us,stearn) [list s t er n]
-set lts(us,stefl) [list s t eh f ah l]
-set lts(us,steichen) [list s t ay k ah n]
-set lts(us,stephens's) [list s t iy v ah n z ah z]
-set lts(us,stereotypical) [list s t eh r iy ow t ih p ih k ah l]
-set lts(us,stickler) [list s t ih k ah l er]
-set lts(us,stiffed) [list s t ih f t]
-set lts(us,stirewalt) [list s t ao r uw ah l t]
-set lts(us,stores') [list s t ao r z]
-set lts(us,studios') [list s t uw d iy ow z]
-set lts(us,stuttgart) [list s t ah t g er t]
-set lts(us,substantiate) [list s ah b s t ae n ch iy ey t]
-set lts(us,succumbed) [list s ah k ah m d]
-set lts(us,suckle) [list s ah k ah l]
-set lts(us,sugar's) [list sh uh g er z]
-set lts(us,sumitomo's) [list s uw m ah t ow m ow z]
-set lts(us,superficially) [list s uw p er f ih sh ah l l iy]
-set lts(us,supervisory) [list s uw p er v ay z er iy]
-set lts(us,sures) [list sh uh r z]
-set lts(us,surrealism's) [list s er iy l ih z ah m z]
-set lts(us,surrency) [list s ao r ah n s iy]
-set lts(us,susanna) [list s uw z ae n ah]
-set lts(us,sweethearts) [list s w iy t hh aa r t s]
-set lts(us,swordplay) [list s ao r d p l ey]
-set lts(us,sylvestre) [list s ih l v eh s t er]
-set lts(us,synchronize) [list s ih ng k r ah n ay z]
-set lts(us,tamarisk) [list t ae m er ih s k]
-set lts(us,tambs) [list t ae m z]
-set lts(us,tangiers) [list t ae n jh ih r z]
-set lts(us,tangredi) [list t aa ng g r eh d iy]
-set lts(us,tape's) [list t ey p s]
-set lts(us,tarses) [list t aa r s ah s]
-set lts(us,taveras) [list t aa v eh r aa z]
-set lts(us,taxes') [list t ae k s ah z]
-set lts(us,teheran's) [list t eh hh er aa n z]
-set lts(us,tehrans) [list t ey r aa n z]
-set lts(us,templeton's) [list t eh m p ah l t ah n z]
-set lts(us,tennant) [list t eh n ah n t]
-set lts(us,tensiometer) [list t eh n s iy aa m ah t er]
-set lts(us,tercero) [list t er ch eh r ow]
-set lts(us,tewksbury) [list t uw k s b er iy]
-set lts(us,theatre's) [list th iy ah t er z]
-set lts(us,theodorou) [list th iy ah d er uw]
-set lts(us,therein) [list dh eh r ih n]
-set lts(us,thinking) [list th ih ng k ah ng]
-set lts(us,thumb) [list th ah m]
-set lts(us,thunk) [list th ah n k]
-set lts(us,tickle) [list t ih k ah l]
-set lts(us,timidly) [list t ih m ah d l iy]
-set lts(us,timmeny) [list t ih m ah n iy]
-set lts(us,timpone) [list t iy m p ow n iy]
-set lts(us,tincture) [list t ih ng k ch er]
-set lts(us,tinman) [list t ih n m ae n]
-set lts(us,tombstone) [list t uw m s t ow n]
-set lts(us,toughens) [list t ah f ah n z]
-set lts(us,townsend) [list t aw n z ah n d]
-set lts(us,townspeople) [list t aw n z p iy p ah l]
-set lts(us,transalaska) [list t r ae n z ah l ae s k ah]
-set lts(us,transcapital) [list t r ae n z k ae p ah t ah l]
-set lts(us,transgressions) [list t r ae n z g r eh sh ah n z]
-set lts(us,transition) [list t r ae n z ih sh ah n]
-set lts(us,transpired) [list t r ae n s p ay er d]
-set lts(us,transue) [list t r ae n z uw]
-set lts(us,trbovich) [list t er b aa v ih ch]
-set lts(us,trenchard) [list t r eh ng k er d]
-set lts(us,tripled) [list t r ih p ah l d]
-set lts(us,trois) [list t w aa]
-set lts(us,truncheon) [list t r ah n ch ah n]
-set lts(us,tschantz) [list ch ae n t s]
-set lts(us,tucson) [list t uw s aa n]
-set lts(us,turchin) [list t er ch ah n]
-set lts(us,tyrannical) [list t er ae n ih k ah l]
-set lts(us,uccel) [list uw ch ah l]
-set lts(us,unabomb) [list y uw n ah b ao m]
-set lts(us,uncommonly) [list ah n k aa m ah n l iy]
-set lts(us,undemocratic) [list ah n d eh m ah k r ae t ih k]
-set lts(us,unionize) [list y uw n y ah n ay z]
-set lts(us,unyielding) [list ah n y iy l d ih ng]
-set lts(us,usable) [list y uw z ah b ah l]
-set lts(us,usenet) [list y uw z n eh t]
-set lts(us,valoree) [list v ae l er iy]
-set lts(us,vanguard's) [list v ae n g aa r d z]
-set lts(us,vannatta) [list v aa n aa t ah]
-set lts(us,vansant) [list v aa n s ah n t]
-set lts(us,vantrease) [list v ah n t r iy s]
-set lts(us,vectra) [list v eh k t r er]
-set lts(us,vendors') [list v eh n d er z]
-set lts(us,verdi) [list v eh r d iy]
-set lts(us,verduin) [list v eh r d uw ih n]
-set lts(us,verno) [list v eh r n ow]
-set lts(us,vertucci) [list v er t uw ch iy]
-set lts(us,vidales) [list v iy d aa l eh s]
-set lts(us,videoconferencing) [list v iy d iy ow k aa n f r ah n s ih ng]
-set lts(us,villalon) [list v iy l aa l ao n]
-set lts(us,vineyard) [list v ih n y er d]
-set lts(us,visitor's) [list v ih z ah t er z]
-set lts(us,voiced) [list v oy s t]
-set lts(us,volatility) [list v aa l ah t ih l ah t iy]
-set lts(us,voltaren) [list v ow l t er ah n]
-set lts(us,vossler) [list v aa s ah l er]
-set lts(us,vranesevic) [list v r aa n ah s eh v ih ch]
-set lts(us,wachowski) [list v ah hh ao f s k iy]
-set lts(us,wallich's) [list w ao l ih k s]
-set lts(us,warhol's) [list w ao hh r ao l z]
-set lts(us,warmest) [list w ao r m ah s t]
-set lts(us,waskiewicz) [list v aa s k ah v ih ch]
-set lts(us,wasserstein) [list w aa s er s t iy n]
-set lts(us,waynesboro) [list w ey n z b er ow]
-set lts(us,weighing) [list w ey ih ng]
-set lts(us,weisenborn) [list w ay s ih n b er n]
-set lts(us,wengler) [list w ih ng ah l er]
-set lts(us,wessling) [list w eh s ah l ih ng]
-set lts(us,westheimer) [list w eh s t hh ay m er]
-set lts(us,what'll) [list w ah t ah l]
-set lts(us,whisenhunt) [list w ay z ah n hh ah n t]
-set lts(us,who) [list hh uw]
-set lts(us,wholesaler) [list hh ow l s ey l er]
-set lts(us,whom) [list hh uw m]
-set lts(us,wiacek) [list v ay ah ch eh k]
-set lts(us,wildes) [list w ay l d z]
-set lts(us,wildman) [list w ay l d m ah n]
-set lts(us,willapa) [list w ah l aa p ah]
-set lts(us,willmott) [list w ih l m ah t]
-set lts(us,wilmott) [list w ih l m ah t]
-set lts(us,winding) [list w ay n d ih ng]
-set lts(us,windswept) [list w ih n s w eh p t]
-set lts(us,winslow) [list w ih n z l ow]
-set lts(us,wisecup) [list w ay z k ah p]
-set lts(us,wisler) [list w ih s ah l er]
-set lts(us,witnesses') [list w ih t n ah s ah z]
-set lts(us,worshipping) [list w er sh ah p ih ng]
-set lts(us,worthen) [list w er th ah n]
-set lts(us,wrinkles) [list r ih ng k ah l z]
-set lts(us,wyser) [list w ay z er]
-set lts(us,y) [list w ay]
-set lts(us,yaple) [list y ey p ah l]
-set lts(us,ydstie's) [list y ih d s t iy z]
-set lts(us,yearling) [list y ih l ih ng]
-set lts(us,ylvisaker) [list y ih l v ah s aa k er]
-set lts(us,zakrzewski) [list z aa k er z uw s k iy]
-set lts(us,zerby) [list z ih r b iy]
-set lts(us,zertuche) [list z ih r t ah k]
-set lts(us,zinck) [list z ih ng k]
-set lts(us,zippora) [list z iy p ao r ah]
+lappend lts(us,absorbent) {ah b z ao r b ah n t}
+lappend lts(us,accepts) {ae k s eh p t s}
+lappend lts(us,accessory) {ae k s eh s er iy}
+lappend lts(us,accion) {ae ch iy ah n}
+lappend lts(us,accor's) {ae k er z}
+lappend lts(us,accuse) {ah k y uw z}
+lappend lts(us,acquisition's) {ae k w ah z ih sh ah n z}
+lappend lts(us,acre) {ey k er}
+lappend lts(us,adaptation) {ae d ah p t ey sh ah n}
+lappend lts(us,advertisements) {ae d v er t ay z m ah n t s}
+lappend lts(us,advocate's) {ae d v ah k ah t s}
+lappend lts(us,aggregate) {ae g r ah g ah t}
+lappend lts(us,ahearn) {ah hh er n}
+lappend lts(us,aigner) {eh n y ey}
+lappend lts(us,ainslie) {ey n z l iy}
+lappend lts(us,airworthy) {eh r w er dh iy}
+lappend lts(us,alaric) {ae l er ih k}
+lappend lts(us,alarmist) {ah l aa r m ah s t}
+lappend lts(us,albergo) {aa l b eh r g ow}
+lappend lts(us,albertine) {ae l b er t iy n}
+lappend lts(us,almond) {aa m ah n d}
+lappend lts(us,alternately) {ao l t er n ah t l iy}
+lappend lts(us,amaryllis) {ae m er ih l ah s}
+lappend lts(us,amateurism) {ae m ah ch er ih z ah m}
+lappend lts(us,amber's) {ae m b er}
+lappend lts(us,amerindian) {ae m er ih n d iy ah n}
+lappend lts(us,ammons) {ae m ah n z}
+lappend lts(us,amoskeag's) {ae m ah s k ey g z}
+lappend lts(us,amusingly) {ah m y uw z ih ng l iy}
+lappend lts(us,anarchical) {ae n aa r k ah k ah l}
+lappend lts(us,anchorage) {ae ng k er ah jh}
+lappend lts(us,anctil) {ae ng k t ih l}
+lappend lts(us,andreae) {aa n d r ey aa}
+lappend lts(us,andromeda) {ae n d r aa m ah d ah}
+lappend lts(us,anemometer) {ae n ah m aa m ah t er}
+lappend lts(us,angeles') {ae n jh ah l iy z}
+lappend lts(us,angelinos) {ae n jh ah l iy n ow z}
+lappend lts(us,ankle) {ae ng k ah l}
+lappend lts(us,annandale) {ae n ah n d ey l}
+lappend lts(us,annen) {ae n ah n}
+lappend lts(us,annualize) {ae n y uw w ah l ay z}
+lappend lts(us,anonymous) {ah n aa n ah m ah s}
+lappend lts(us,anteriormost) {ae n t ih r iy er m ow s t}
+lappend lts(us,antigones) {ae n t ih g ah n iy z}
+lappend lts(us,antunes) {aa n t uw n eh s}
+lappend lts(us,aol) {ey ow eh l}
+lappend lts(us,aparicio) {ae p er ih s iy ow}
+lappend lts(us,aphid) {ae f ah d}
+lappend lts(us,appleby) {ae p ah l b iy}
+lappend lts(us,applewhite) {ae p ah l w ay t}
+lappend lts(us,application) {ae p l ah k ey sh ah n}
+lappend lts(us,apprenticed) {ah p r eh n t ah s t}
+lappend lts(us,arabia) {er ey b iy ah}
+lappend lts(us,arbitron) {aa r b ah t r aa n}
+lappend lts(us,arbuckle) {aa r b ah k ah l}
+lappend lts(us,archambault) {aa r sh ah m b ow}
+lappend lts(us,arising) {er ay z ih ng}
+lappend lts(us,aristocrat) {er ih s t ah k r ae t}
+lappend lts(us,arkansan) {aa r k ae n z ah n}
+lappend lts(us,arnault) {aa r n ow}
+lappend lts(us,aronow) {er ow n ow}
+lappend lts(us,arrangement) {er ey n jh m ah n t}
+lappend lts(us,arrays) {er ey z}
+lappend lts(us,arresting) {er eh s t ih ng}
+lappend lts(us,ashe's) {ae sh ah z}
+lappend lts(us,aspartame) {ae s p er t ey m}
+lappend lts(us,aspirate) {ae s p ah r ey t}
+lappend lts(us,assurance) {ah sh uh r ah n s}
+lappend lts(us,astred) {ae s t er d}
+lappend lts(us,astrological) {ae s t r ah l aa jh ih k ah l}
+lappend lts(us,atlanta's) {ae t l ae n t ah z}
+lappend lts(us,attenuates) {ah t eh n y uw ey t s}
+lappend lts(us,auditors') {ao d ah t er z}
+lappend lts(us,austrasia) {ao s t r ey zh ah}
+lappend lts(us,authorize) {ao th er ay z}
+lappend lts(us,averell) {aa v eh r ey l}
+lappend lts(us,aviles) {aa v iy l eh s}
+lappend lts(us,baechle) {b eh k ah l}
+lappend lts(us,bahraini) {b er ey n iy}
+lappend lts(us,balmer) {b aa m er}
+lappend lts(us,banc) {b ae ng k}
+lappend lts(us,bancorp's) {b ae ng k ao r p s}
+lappend lts(us,banya) {b aa n y ah}
+lappend lts(us,baranoski) {b er ah n aw s k iy}
+lappend lts(us,barclays') {b aa r k l iy z}
+lappend lts(us,barings') {b eh r ih ng z}
+lappend lts(us,barnacles) {b aa r n ah k ah l z}
+lappend lts(us,barometers) {b er aa m ah t er z}
+lappend lts(us,barrages) {b er aa zh ah z}
+lappend lts(us,barrientes) {b er iy n t s}
+lappend lts(us,bartkowiak) {b er t k aw iy ae k}
+lappend lts(us,basil) {b ae z ah l}
+lappend lts(us,bazzano) {b aa t s aa n ow}
+lappend lts(us,beens) {b ih n z}
+lappend lts(us,belaboring) {b ah l ey b er ih ng}
+lappend lts(us,benavides) {b ey n aa v iy d eh s}
+lappend lts(us,benighted) {b ah n ay t ah d}
+lappend lts(us,berni) {b eh r n iy}
+lappend lts(us,besant) {b eh z ah n t}
+lappend lts(us,bettes) {b eh t iy z}
+lappend lts(us,biffle) {b ih f ah l}
+lappend lts(us,bilbro) {b iy l b r ow}
+lappend lts(us,billionths) {b ih l y ah n th s}
+lappend lts(us,bimiodal) {b ay m ow d ah l}
+lappend lts(us,binding) {b ay n d ih ng}
+lappend lts(us,biogen) {b ay ow jh eh n}
+lappend lts(us,bipartisan) {b ay p aa r t ah z ah n}
+lappend lts(us,blanche) {b l ae n ch}
+lappend lts(us,blankenhorn) {b l ae ng k ah n hh er n}
+lappend lts(us,blasier's) {b l ey z iy er z}
+lappend lts(us,blasphemy) {b l ae s f ah m iy}
+lappend lts(us,bleser) {b l iy z er}
+lappend lts(us,blitstein) {b l ih t s t iy n}
+lappend lts(us,blues') {b l uw z}
+lappend lts(us,boise's) {b oy z iy z}
+lappend lts(us,bombardier) {b aa m b er d ih r}
+lappend lts(us,bomber) {b aa m er}
+lappend lts(us,bombshell) {b aa m sh eh l}
+lappend lts(us,borowiec) {b er aw iy k}
+lappend lts(us,borwn) {b ao r w ih n}
+lappend lts(us,bouquets) {b ow k ey z}
+lappend lts(us,bourgault) {b uh r g ow}
+lappend lts(us,bowser) {b ow z er}
+lappend lts(us,boyson) {b oy z ah n}
+lappend lts(us,bracamontes) {b r ae k ah m aa n t iy z}
+lappend lts(us,brearley) {b r er l iy}
+lappend lts(us,brennen) {b r eh n ah n}
+lappend lts(us,briere) {b r ih r}
+lappend lts(us,bristle) {b r ih s ah l}
+lappend lts(us,broderick's) {b r aa d er ih k z}
+lappend lts(us,brokerages') {b r ow k er ih jh ah z}
+lappend lts(us,broncos) {b r aa ng k ow z}
+lappend lts(us,browns') {b r aw n z}
+lappend lts(us,browsers) {b r aw z er z}
+lappend lts(us,buchler) {b ah k ah l er}
+lappend lts(us,bundespost) {b uh n d ah s p ow s t}
+lappend lts(us,burgener) {b er g iy n er}
+lappend lts(us,burruss) {b uh r ah s}
+lappend lts(us,businesses) {b ih z n ah s ah z}
+lappend lts(us,businessphones) {b ih z n ah s f ow n z}
+lappend lts(us,busler) {b ah s ah l er}
+lappend lts(us,cabernet) {k ae b er n ey}
+lappend lts(us,cabriolet) {k ae b r iy ow l ey}
+lappend lts(us,cachet) {k ae sh ey}
+lappend lts(us,cake's) {k ey k s}
+lappend lts(us,calamitous) {k ah l ae m ah t ah s}
+lappend lts(us,calf's) {k ae f s}
+lappend lts(us,californian's) {k ae l ah f ao r n y ah n z}
+lappend lts(us,calmly) {k aa m l iy}
+lappend lts(us,canchola) {k aa n k ow l ah}
+lappend lts(us,cannonsburg) {k ae n ah n z b er g}
+lappend lts(us,caprice) {k ah p r iy s}
+lappend lts(us,carducci) {k aa r d uw ch iy}
+lappend lts(us,career) {k er ih r}
+lappend lts(us,caressing) {k er eh s ih ng}
+lappend lts(us,carmelite) {k aa r m ah l ay t}
+lappend lts(us,carousing) {k er aw z ih ng}
+lappend lts(us,cascades') {k ae s k ey d z}
+lappend lts(us,cashier) {k ae sh ih r}
+lappend lts(us,casualness) {k ae zh ah w ah l n ah s}
+lappend lts(us,catalonia) {k ae t ah l ow n y ah}
+lappend lts(us,catamarans) {k ah t ae m er ah n z}
+lappend lts(us,caused) {k aa z d}
+lappend lts(us,cauthorn) {k ao th er n}
+lappend lts(us,cawthorne) {k ao th er n}
+lappend lts(us,celestial) {s ah l eh s ch ah l}
+lappend lts(us,censoring) {s eh n s er ih ng}
+lappend lts(us,cerveny) {ch er v iy n iy}
+lappend lts(us,ceryl) {s eh r ah l}
+lappend lts(us,chairpeople) {ch eh r p iy p ah l}
+lappend lts(us,champeau) {sh ae m p ow}
+lappend lts(us,chapin) {sh ah p ae n}
+lappend lts(us,charest) {ch aa r ey eh s t}
+lappend lts(us,charlottetown) {sh aa r l ah t t aw n}
+lappend lts(us,charpentier) {sh aa r p ah n t ih r}
+lappend lts(us,chastened) {ch ey s ah n d}
+lappend lts(us,chatz's) {ch ae t s ah z}
+lappend lts(us,chelette) {sh eh l eh t}
+lappend lts(us,chemically) {k eh m ah k l iy}
+lappend lts(us,chenault) {sh ih n ow}
+lappend lts(us,chery) {ch eh r iy}
+lappend lts(us,chesler) {ch eh s ah l er}
+lappend lts(us,chesshir) {sh eh sh er}
+lappend lts(us,chiapparone) {ch iy ae p er ow n}
+lappend lts(us,chose) {ch ow z}
+lappend lts(us,christianize) {k r ih s ch ah n ay z}
+lappend lts(us,christmas) {k r ih s m ah s}
+lappend lts(us,chronicle's) {k r aa n ih k ah l z}
+lappend lts(us,chute) {sh uw t}
+lappend lts(us,ciaccia) {ch iy ah ch iy ah}
+lappend lts(us,cicalese) {ch iy k aa l ey z iy}
+lappend lts(us,cincotta) {ch iy n k ow t ah}
+lappend lts(us,cini) {ch iy n iy}
+lappend lts(us,circle's) {s er k ah l z}
+lappend lts(us,claiborne) {k l ey b er n}
+lappend lts(us,claussen) {k l ao z s ah n}
+lappend lts(us,cleanser) {k l eh n z er}
+lappend lts(us,clockwise) {k l aa k w ay z}
+lappend lts(us,coeducational) {k ow eh jh ah k ey sh ah n ah l}
+lappend lts(us,coglianese) {k ow g l iy ah n ey z iy}
+lappend lts(us,cognoscenti) {k aa g n ao sh eh n t iy}
+lappend lts(us,cohen's) {k ow ah n z}
+lappend lts(us,colasurdo) {k ow l aa s uh r d ow}
+lappend lts(us,collaborated) {k ah l ae b er ey t ah d}
+lappend lts(us,collagen) {k aa l ah g ah n}
+lappend lts(us,collision) {k ah l ih zh ah n}
+lappend lts(us,colonia) {k ah l ow n iy ah}
+lappend lts(us,colorado's) {k aa l er aa d ow z}
+lappend lts(us,colorful) {k ah l er f ah l}
+lappend lts(us,coloroll) {k ah l er ow l}
+lappend lts(us,comfortably) {k ah m f er t ah b l iy}
+lappend lts(us,comically) {k aa m ih k ah l iy}
+lappend lts(us,command's) {k ah m ae n d z}
+lappend lts(us,commandments) {k ah m ae n d m ah n t s}
+lappend lts(us,commemorations) {k ah m eh m er ey sh ah n z}
+lappend lts(us,commendation) {k aa m ah n d ey sh ah n}
+lappend lts(us,commentary) {k aa m ah n t eh r iy}
+lappend lts(us,commercializing) {k ah m er sh ah l ay z ih ng}
+lappend lts(us,commonly) {k aa m ah n l iy}
+lappend lts(us,communism's) {k aa m y ah n ih z ah m z}
+lappend lts(us,competed) {k ah m p iy t ah d}
+lappend lts(us,composers) {k ah m p ow z er z}
+lappend lts(us,compositional) {k aa m p ah z ih sh ah n ah l}
+lappend lts(us,compunction) {k ah m p ah ng k sh ah n}
+lappend lts(us,concerns') {k ah n s er n z}
+lappend lts(us,confide) {k ah n f ay d}
+lappend lts(us,confidentially) {k aa n f ah d eh n sh ah l iy}
+lappend lts(us,conformists) {k ah n f ao r m ah s t s}
+lappend lts(us,congratulated) {k ah n g r ae ch ah l ey t ah d}
+lappend lts(us,consequential) {k aa n s ah k w eh n ch ah l}
+lappend lts(us,consoling) {k ah n s ow l ih ng}
+lappend lts(us,consortium's) {k ah n s ao r sh iy ah m z}
+lappend lts(us,constantinople) {k aa n s t ae n t ah n ow p ah l}
+lappend lts(us,constructionist) {k ah n s t r ah k sh ah n ih s t}
+lappend lts(us,contemporaneously) {k ah n t eh m p er ey n iy ah s l iy}
+lappend lts(us,continental's) {k aa n t ah n eh n t ah l z}
+lappend lts(us,continued) {k ah n t ih n y uw d}
+lappend lts(us,contrabassoon) {k aa n t r ah b ae s uw n}
+lappend lts(us,contradict) {k aa n t r ah d ih k t}
+lappend lts(us,controllable) {k ah n t r ow l ah b ah l}
+lappend lts(us,converged) {k ah n v er jh d}
+lappend lts(us,coplen) {k aa p ah l ah n}
+lappend lts(us,cordasco) {k er d aa s k ow}
+lappend lts(us,cordially) {k ao r jh ah l iy}
+lappend lts(us,cormorants) {k ao r m er ah n t s}
+lappend lts(us,corona) {k er ow n ah}
+lappend lts(us,corporacion) {k ao r p er aa s iy ow n}
+lappend lts(us,corporations) {k ao r p er ey sh ah n z}
+lappend lts(us,corralling) {k er ae l ih ng}
+lappend lts(us,corrective) {k er eh k t ih v}
+lappend lts(us,corrodes) {k er ow d z}
+lappend lts(us,corrupting) {k er ah p t ih ng}
+lappend lts(us,countries') {k ah n t r iy z}
+lappend lts(us,coupled) {k ah p ah l d}
+lappend lts(us,cousin) {k ah z ah n}
+lappend lts(us,crippled) {k r ih p ah l d}
+lappend lts(us,cruise) {k r uw z}
+lappend lts(us,crumitie) {k r uw m ah t ay}
+lappend lts(us,crumpled) {k r ah m p ah l d}
+lappend lts(us,cruse) {k r uw z}
+lappend lts(us,cyrillic) {s er ih l ih k}
+lappend lts(us,d'amore) {d iy ah m ao r ey}
+lappend lts(us,dammen) {d ae m ah n}
+lappend lts(us,dangelo) {d ae n jh ah l ow}
+lappend lts(us,daniele) {d ae n y eh l}
+lappend lts(us,dannenberg) {d ae n ah n b er g}
+lappend lts(us,darensbourg) {d ae r ah n s b er g}
+lappend lts(us,darrelle) {d er eh l}
+lappend lts(us,dartmouth) {d aa r t m ah th}
+lappend lts(us,decisions) {d ah s ih zh ah n z}
+lappend lts(us,decompose) {d iy k ah m p ow z}
+lappend lts(us,defuse) {d ah f y uw z}
+lappend lts(us,delorey) {d eh l er iy}
+lappend lts(us,deltadromeus) {d eh l t ah d r ow m ah s}
+lappend lts(us,delusion) {d ah l uw zh ah n}
+lappend lts(us,democratic's) {d eh m ah k r ae t ih k s}
+lappend lts(us,demodulate) {d iy m aa jh ah l ey t}
+lappend lts(us,depositional) {d eh p ah z ih sh ah n ah l}
+lappend lts(us,depots) {d iy p ow z}
+lappend lts(us,dershem) {d er sh ah m}
+lappend lts(us,desertion) {d ah z er sh ah n}
+lappend lts(us,designations) {d eh z ih g n ey sh ah n z}
+lappend lts(us,desire) {d ah z ay er}
+lappend lts(us,deteriorate) {d ah t ih r iy er ey t}
+lappend lts(us,devillier's) {d ah v ih l y er s}
+lappend lts(us,dezern) {d ey z eh r n}
+lappend lts(us,diarrhea) {d ay er iy ah}
+lappend lts(us,diblasi) {d ah b l aa s iy}
+lappend lts(us,dicesare) {d ih ch eh s aa r iy}
+lappend lts(us,dicioccio) {d ih ch ow ch iy ow}
+lappend lts(us,dienes) {d iy n eh z}
+lappend lts(us,dietitian's) {d ay ah t ih sh ah n z}
+lappend lts(us,diffuse) {d ah f y uw s}
+lappend lts(us,diminutive) {d ah m ih n y ah t ih v}
+lappend lts(us,diorite) {d ay er ay t}
+lappend lts(us,dipirro) {d iy p ih r ow}
+lappend lts(us,directed) {d ih r eh k t ah d}
+lappend lts(us,disaster) {d ih z ae s t er}
+lappend lts(us,discoloration) {d ih s k ah l er ey sh ah n}
+lappend lts(us,disease's) {d ih z iy z ah z}
+lappend lts(us,disguised) {d ih s g ay z d}
+lappend lts(us,dishonor) {d ih s aa n er}
+lappend lts(us,disposal) {d ih s p ow z ah l}
+lappend lts(us,dispossess) {d ih s p ah z eh s}
+lappend lts(us,dissections) {d ay s eh k sh ah n z}
+lappend lts(us,distinctiveness) {d ih s t ih ng k t ih v n ah s}
+lappend lts(us,divisions') {d ih v ih zh ah n z}
+lappend lts(us,doctoring) {d aa k t er ih ng}
+lappend lts(us,dolores) {d ah l ao r ah s}
+lappend lts(us,dominique) {d ao m ah n iy k}
+lappend lts(us,dorais) {d er ey}
+lappend lts(us,dornin) {d ao n ah n}
+lappend lts(us,dovey) {d ah v ey}
+lappend lts(us,drawers) {d r ao r z}
+lappend lts(us,drennen) {d r eh n ah n}
+lappend lts(us,drinas) {d iy n ah z}
+lappend lts(us,dumber) {d ah m er}
+lappend lts(us,dunckel) {d ah ng k ah l}
+lappend lts(us,dupre) {d ah p er}
+lappend lts(us,duran's) {d er ae n s}
+lappend lts(us,dusseault) {d ah s ow}
+lappend lts(us,dwindling) {d w ih n d ah l ih ng}
+lappend lts(us,earlywine) {er l iy w ay n}
+lappend lts(us,earney) {er n iy}
+lappend lts(us,earth) {er th}
+lappend lts(us,earthquake) {er th k w ey k}
+lappend lts(us,earthy) {er th iy}
+lappend lts(us,eberhard) {eh b er hh aa r t}
+lappend lts(us,editor's) {eh d ah t er z}
+lappend lts(us,edris) {ah d r iy s}
+lappend lts(us,edwards's) {eh d w er d z ah z}
+lappend lts(us,eisenstein) {ay z ah n s t ay n}
+lappend lts(us,elga) {eh l g aa}
+lappend lts(us,embleton) {eh m b ah l t aa n}
+lappend lts(us,emerald) {eh m r ah l d}
+lappend lts(us,emigre) {eh m ah g r ey}
+lappend lts(us,emory's) {eh m er iy z}
+lappend lts(us,enck) {eh ng k}
+lappend lts(us,enclosure) {eh n k l ow zh er}
+lappend lts(us,endorphin) {eh n d ao r f ah n}
+lappend lts(us,enlarges) {ah n l aa r jh ah z}
+lappend lts(us,enshroud) {ah n sh r aw d}
+lappend lts(us,ensures) {eh n sh uh r z}
+lappend lts(us,enterprises') {eh n t er p r ay z ah z}
+lappend lts(us,enyart) {eh n y aa r t}
+lappend lts(us,erda) {eh r d ah}
+lappend lts(us,espanol) {eh s p aa n y ow l}
+lappend lts(us,esprit's) {eh s p r iy z}
+lappend lts(us,estate's) {ah s t ey t s}
+lappend lts(us,ether) {iy th er}
+lappend lts(us,euchred) {y uw k er d}
+lappend lts(us,euthanasia) {y uw th ah n ey zh ah}
+lappend lts(us,everytime) {eh v r iy t ay m}
+lappend lts(us,ewart) {y uw er t}
+lappend lts(us,exchanges') {eh k s ch ey n jh ah z}
+lappend lts(us,execution) {eh k s ah k y uw sh ah n}
+lappend lts(us,executor) {ih g z eh k y ah t er}
+lappend lts(us,exercise) {eh k s er s ay z}
+lappend lts(us,exile) {eh g z ay l}
+lappend lts(us,explosion) {ih k s p l ow zh ah n}
+lappend lts(us,exponentially) {eh k s p ow n eh n sh ah l iy}
+lappend lts(us,expresso) {ih k s p eh s ow}
+lappend lts(us,extendible) {eh k s t eh n d ah b ah l}
+lappend lts(us,extirpate) {eh k s t er p ey t}
+lappend lts(us,extracts) {ih k s t r ae k t s}
+lappend lts(us,extrasensory) {eh k s t r ah s eh n s er iy}
+lappend lts(us,fabre) {f ey b er}
+lappend lts(us,falmouth) {f ae l m ah th}
+lappend lts(us,fansler) {f ae n s ah l er}
+lappend lts(us,faragher) {f ae r ah g hh er}
+lappend lts(us,farinacci) {f aa r iy n aa ch iy}
+lappend lts(us,february's) {f eh b y ah w eh r iy z}
+lappend lts(us,fidler) {f ay d ah l er}
+lappend lts(us,filets) {f ah l ey z}
+lappend lts(us,financiers) {f ih n ah n s ih r z}
+lappend lts(us,finck) {f ih ng k}
+lappend lts(us,fissure) {f ih sh er}
+lappend lts(us,flaugher) {f l ao er}
+lappend lts(us,foramen) {f er ey m ah n}
+lappend lts(us,forbes's) {f ao r b z ah z}
+lappend lts(us,foreclosure) {f ao r k l ow zh er}
+lappend lts(us,fors) {f er z}
+lappend lts(us,fourth's) {f ao r th s}
+lappend lts(us,fowle) {f aw ah l}
+lappend lts(us,francaise) {f r aa n s eh z}
+lappend lts(us,franchise's) {f r ae n ch ay z ah z}
+lappend lts(us,franco's) {f r ae ng k ow z}
+lappend lts(us,fraudulent) {f r ao jh ah l ah n t}
+lappend lts(us,frightening) {f r ay t ah n ih ng}
+lappend lts(us,fuchsias) {f y uw sh ah z}
+lappend lts(us,functionally) {f ah ng k sh ah n ah l iy}
+lappend lts(us,gaiser) {g ey z er}
+lappend lts(us,garrett's) {g eh r ah t z}
+lappend lts(us,garrigues) {g aa r iy g eh s}
+lappend lts(us,garzarelli) {g aa r z er eh l iy}
+lappend lts(us,gaulin) {g ow l ae n}
+lappend lts(us,gauvin) {g ow v ae n}
+lappend lts(us,gelatin) {jh eh l ah t ah n}
+lappend lts(us,generales) {jh eh n eh r aa l eh s}
+lappend lts(us,gentian) {jh eh n sh ah n}
+lappend lts(us,gentlewomen's) {jh eh n t ah l w ih m ah n z}
+lappend lts(us,geopolitically) {jh iy ow p ah l ih t ih k l iy}
+lappend lts(us,germiston) {jh er m ah s t aa n}
+lappend lts(us,gertsch) {g er ch}
+lappend lts(us,giessen) {g iy z s ah n}
+lappend lts(us,gilbo) {jh iy l b ow}
+lappend lts(us,gillett) {jh ih l ih t}
+lappend lts(us,ginger) {jh ih n jh er}
+lappend lts(us,giraud) {zh ay r ow}
+lappend lts(us,gismondi) {jh iy s m ow n d iy}
+lappend lts(us,gitlin) {jh ih t l ih n}
+lappend lts(us,gonya) {g ow n y ah}
+lappend lts(us,graced) {g r ey s t}
+lappend lts(us,grackles) {g r ae k ah l z}
+lappend lts(us,gradualism) {g r ae jh ah w ah l ih z ah m}
+lappend lts(us,graduates) {g r ae jh ah w ah t s}
+lappend lts(us,grandchildren) {g r ae n ch ih l d r ah n}
+lappend lts(us,grandma) {g r ae m aa}
+lappend lts(us,granules) {g r ae n y ah l z}
+lappend lts(us,greased) {g r iy s t}
+lappend lts(us,gregory) {g r eh g er iy}
+lappend lts(us,griffith's) {g r ih f ih th s}
+lappend lts(us,grisly) {g r ih z l iy}
+lappend lts(us,gristle) {g r ih s ah l}
+lappend lts(us,groseclose) {g r aa s ih k l ow z}
+lappend lts(us,gsell) {g ah s eh l}
+lappend lts(us,gucciardo) {g uw ch aa r d ow}
+lappend lts(us,guerriero) {g er ih r ow}
+lappend lts(us,gumbs) {g ah m z}
+lappend lts(us,gunatilake) {g uw n aa t ih l aa k ey}
+lappend lts(us,guthmiller) {g ah th m ah l er}
+lappend lts(us,habermehl) {hh ae b er m ah l}
+lappend lts(us,hackle) {hh ae k ah l}
+lappend lts(us,hairdo) {hh eh r d uw}
+lappend lts(us,haitis) {hh ey t iy z}
+lappend lts(us,halcomb) {hh ae l k ah m}
+lappend lts(us,half's) {hh ae f s}
+lappend lts(us,halfrida) {hh ae f r ah d ah}
+lappend lts(us,halve) {hh ae v}
+lappend lts(us,hammonds) {hh ae m ah n d z}
+lappend lts(us,handkerchiefs) {hh ae ng k er ch ah f s}
+lappend lts(us,hannen) {hh ae n ah n}
+lappend lts(us,hans) {hh aa n s}
+lappend lts(us,harassers) {hh er ae s er z}
+lappend lts(us,harbor's) {hh aa r b er z}
+lappend lts(us,hartshorne) {hh aa r ch er n}
+lappend lts(us,hashemite) {hh ae sh ah m ay t}
+lappend lts(us,hassled) {hh ae s ah l d}
+lappend lts(us,haughtily) {hh ao t ah l iy}
+lappend lts(us,healthamerica) {hh iy l th ah m eh r ih k ah}
+lappend lts(us,heckle) {hh eh k ah l}
+lappend lts(us,heidi's) {hh ay d iy s}
+lappend lts(us,heightening) {hh ay t ah n ih ng}
+lappend lts(us,helmet) {hh eh l m ah t}
+lappend lts(us,hemmen) {hh eh m ah n}
+lappend lts(us,hemorrhaging) {hh eh m er ih jh ih ng}
+lappend lts(us,heparin) {hh eh p er ih n}
+lappend lts(us,herbalists) {er b ah l ah s t s}
+lappend lts(us,heringer) {hh eh r ah n jh er}
+lappend lts(us,hermosillo) {hh er m ah s ih l ow}
+lappend lts(us,hesitations) {hh eh z ah t ey sh ah n z}
+lappend lts(us,heterosporous) {hh eh t er aa s p er ah s}
+lappend lts(us,hichens) {hh ih k ah n z}
+lappend lts(us,hilden) {hh ay l d ah n}
+lappend lts(us,hindman) {hh ay n d m ah n}
+lappend lts(us,hiser) {hh ay z er}
+lappend lts(us,hjort) {hh ah jh ao r t}
+lappend lts(us,hoggart) {hh aa g er t}
+lappend lts(us,hollandsworth) {hh aa l ah n d z w er th}
+lappend lts(us,holloran) {hh aa l er ah n}
+lappend lts(us,homage) {aa m ah jh}
+lappend lts(us,homicidal) {hh aa m ah s ay d ah l}
+lappend lts(us,homosporous) {hh ah m aa s p er ah s}
+lappend lts(us,honestly) {aa n ah s t l iy}
+lappend lts(us,honoraria) {aa n er eh r iy ah}
+lappend lts(us,honoring) {aa n er ih ng}
+lappend lts(us,horatian) {hh er ey sh ah n}
+lappend lts(us,hosing) {hh ow z ih ng}
+lappend lts(us,hosni) {hh ow z n iy}
+lappend lts(us,hour) {aw er}
+lappend lts(us,hrawi) {hh er w aa w iy}
+lappend lts(us,huberto) {hh uw b eh r t ow}
+lappend lts(us,huml) {hh ah m ah l}
+lappend lts(us,humoral) {hh y uw m er ah l}
+lappend lts(us,huser) {hh y uw z er}
+lappend lts(us,hygrometer) {hh ay g r aa m ah t er}
+lappend lts(us,hymowitz) {hh ih m ah w ih t s}
+lappend lts(us,iacobucci) {iy aa k ow b uw ch iy}
+lappend lts(us,idlewild) {ay d ah l w ay l d}
+lappend lts(us,illiterates) {ih l ih t er ah t s}
+lappend lts(us,imitations) {ih m ah t ey sh ah n z}
+lappend lts(us,immanence) {ih m ah n ah n s}
+lappend lts(us,impartially) {ih m p aa r sh ah l iy}
+lappend lts(us,incision) {ih n s ih zh ah n}
+lappend lts(us,inconsistencies) {ih ng k aa n s ih s t eh n s iy z}
+lappend lts(us,inconveniences) {ih n k ah n v iy n y ah n s ah z}
+lappend lts(us,incorporations) {ih n k ao r p er ey sh ah n z}
+lappend lts(us,incursions) {ih n k er zh ah n z}
+lappend lts(us,indictments) {ih n d ay t m ah n t s}
+lappend lts(us,indistinct) {ih n d ah s t ih ng k t}
+lappend lts(us,individualists) {ih n d ah v ih jh uw ah l ah s t s}
+lappend lts(us,individuals) {ih n d ah v ih jh ah w ah l z}
+lappend lts(us,ines) {ih n ih s}
+lappend lts(us,information) {ih n f er m ey sh ah n}
+lappend lts(us,inglese) {ih ng g l iy z}
+lappend lts(us,ingratiate) {ih ng g r ey sh iy ey t}
+lappend lts(us,initiate) {ih n ih sh iy ey t}
+lappend lts(us,innes) {ih n ah s}
+lappend lts(us,insinuate) {ih n s ih n y uw ey t}
+lappend lts(us,instinctive) {ih n s t ih ng k t ih v}
+lappend lts(us,insured) {ih n sh uh r d}
+lappend lts(us,intensive) {ih n t eh n s ah v}
+lappend lts(us,interest) {ih n t r ah s t}
+lappend lts(us,interferon) {ih n t er f ih r aa n}
+lappend lts(us,interpose) {ih n t er p ow z}
+lappend lts(us,iranians') {ay r ey n iy ah n z}
+lappend lts(us,iron) {ay er n}
+lappend lts(us,isaacs) {ay z ih k s}
+lappend lts(us,isaiah) {ay z ey ah}
+lappend lts(us,isis) {ay s ah s}
+lappend lts(us,islamic) {ih z l aa m ih k}
+lappend lts(us,islanders) {ay l ah n d er z}
+lappend lts(us,isley) {ay l iy}
+lappend lts(us,israeli) {ih z r ey l iy}
+lappend lts(us,issue) {ih sh uw}
+lappend lts(us,issuing) {ih sh uw ih ng}
+lappend lts(us,izetbegovic) {ih z eh t b eh g ow v ih ch}
+lappend lts(us,jacobowitz) {y ah k aa b ah w ih t s}
+lappend lts(us,janca) {jh ae ng k ah}
+lappend lts(us,japanese) {jh ae p ah n iy z}
+lappend lts(us,jarriel) {zh er iy l}
+lappend lts(us,jaskiewicz) {y aa s k ah v ih ch}
+lappend lts(us,jesuits) {jh eh zh uw ah t s}
+lappend lts(us,joncas) {jh aa ng k ah z}
+lappend lts(us,joser) {jh ow z er}
+lappend lts(us,junction) {jh ah ng k sh ah n}
+lappend lts(us,juniors) {jh uw n y er z}
+lappend lts(us,kadrmas) {k ae d er m aa z}
+lappend lts(us,kaschak) {k ae sh ah k}
+lappend lts(us,kashiwagi) {k ae sh ah w ae g iy}
+lappend lts(us,kasler) {k ae s ah l er}
+lappend lts(us,kastens) {k ey s ah n z}
+lappend lts(us,kcal) {k ey k aa l}
+lappend lts(us,kearby) {k er b iy}
+lappend lts(us,kemmons) {k eh m ah n z}
+lappend lts(us,kentucky's) {k ah n t ah k iy z}
+lappend lts(us,kenyan) {k eh n y ah n}
+lappend lts(us,kestenbaum) {k eh s ah n b aw m}
+lappend lts(us,khabarovsk) {k ae b er aa f s k}
+lappend lts(us,khashoggi) {k ah sh aa jh iy}
+lappend lts(us,kiesler) {k iy z l er}
+lappend lts(us,klinck) {k l ih ng k}
+lappend lts(us,kmetz) {k ah m eh t s}
+lappend lts(us,knipl) {n ih p ah l}
+lappend lts(us,komsomol's) {k aa m s ow m ah l z}
+lappend lts(us,koslow's) {k aa z l ow z}
+lappend lts(us,kostecki) {k ah s t eh t s k iy}
+lappend lts(us,kozicki) {k ah z ih t s k iy}
+lappend lts(us,kozyrev's) {k aa z er eh v z}
+lappend lts(us,kreditanstalt) {k r eh d ih t ah n s t ao l t}
+lappend lts(us,kretschmar) {k r eh ch m er}
+lappend lts(us,kuennen) {k uh n ah n}
+lappend lts(us,ladbroke's) {l ae d b r ow k s}
+lappend lts(us,lammons) {l ae m ah n z}
+lappend lts(us,laotian) {l ey ow sh ah n}
+lappend lts(us,laparoscopy) {l ae p er aa s k ah p iy}
+lappend lts(us,laroche's) {l aa r ow sh ah z}
+lappend lts(us,larue) {l er uw}
+lappend lts(us,lasers) {l ey z er z}
+lappend lts(us,lavinia) {l ah v ih n y ah}
+lappend lts(us,lcs) {eh l s iy eh s}
+lappend lts(us,leagues') {l iy g z}
+lappend lts(us,learns) {l er n z}
+lappend lts(us,lefort) {l eh f er t}
+lappend lts(us,lenart) {l eh n er t}
+lappend lts(us,lentine) {l eh n t iy n iy}
+lappend lts(us,levitte's) {l eh v ih t s}
+lappend lts(us,liberati) {l iy b er aa t iy}
+lappend lts(us,lichen) {l ay k ah n}
+lappend lts(us,lichtenstein) {l ih k t ah n s t iy n}
+lappend lts(us,licorice) {l ih k er ih sh}
+lappend lts(us,liliane) {l ah l iy ae n}
+lappend lts(us,limit) {l ih m ah t}
+lappend lts(us,lincks) {l ih ng k s}
+lappend lts(us,linearly) {l ih n iy er l iy}
+lappend lts(us,lisiecki) {l ih s iy t s k iy}
+lappend lts(us,listened) {l ih s ah n d}
+lappend lts(us,lithography) {l ah th aa g r ah f iy}
+lappend lts(us,longacre) {l ao ng ey k er}
+lappend lts(us,losec) {l ow z ah k}
+lappend lts(us,louis) {l uw ah s}
+lappend lts(us,loutzenhiser) {l aw t z ah n hh ay z er}
+lappend lts(us,lumberman) {l ah m b er m ae n}
+lappend lts(us,macioce) {m aa ch ow ch iy}
+lappend lts(us,madeline) {m ae d ah l ih n}
+lappend lts(us,maggi) {m ae jh iy}
+lappend lts(us,maginnis) {m ah g ih n ah s}
+lappend lts(us,maharaja) {m aa hh er aa zh ah}
+lappend lts(us,malaysia's) {m ah l ey zh ah z}
+lappend lts(us,mandato) {m aa n d aa t ow}
+lappend lts(us,manfre) {m ae n f er}
+lappend lts(us,manganese) {m ae ng g ah n iy z}
+lappend lts(us,manges) {m ey n jh ah z}
+lappend lts(us,manhandle) {m ae n hh ae n d ah l}
+lappend lts(us,mani) {m aa n iy}
+lappend lts(us,mantia) {m aa n sh ah}
+lappend lts(us,manufacture) {m ae n y ah f ae k ch er}
+lappend lts(us,maple) {m ey p ah l}
+lappend lts(us,marcelia) {m aa r ch eh l iy ah}
+lappend lts(us,marciniak) {m er ch ih n iy ae k}
+lappend lts(us,margalov) {m aa g ah l ao v}
+lappend lts(us,margarita) {m aa r g er iy t ah}
+lappend lts(us,margory) {m er g er iy}
+lappend lts(us,marinoff) {m ae r ah n ao f}
+lappend lts(us,marlborough) {m aa r l b er ow}
+lappend lts(us,marmoset) {m aa r m ah z eh t}
+lappend lts(us,marooney) {m er uw n iy}
+lappend lts(us,mars's) {m aa r z ah z}
+lappend lts(us,martials) {m aa r sh ah l z}
+lappend lts(us,martyred) {m aa r t er d}
+lappend lts(us,mascolo) {m aa s k ow l ow}
+lappend lts(us,masteller) {m ey s t ah l er}
+lappend lts(us,materna) {m aa t eh r n ah}
+lappend lts(us,mathe) {m ey dh}
+lappend lts(us,mathena) {m ae th ah n ah}
+lappend lts(us,mathison) {m ae th ih s ah n}
+lappend lts(us,matteis) {m ah t ay s}
+lappend lts(us,mattern) {m ae t er n}
+lappend lts(us,mayse) {m ey z}
+lappend lts(us,mccaslin) {m ah k ae z l ah n}
+lappend lts(us,mcdermid) {m ah k d er m ah d}
+lappend lts(us,mckennon) {m ah k eh n ah n}
+lappend lts(us,meakin) {m iy k ah n}
+lappend lts(us,measles) {m iy z ah l z}
+lappend lts(us,medallions) {m ah d ae l y ah n z}
+lappend lts(us,medved) {m eh d v ah d}
+lappend lts(us,melamed) {m eh l ah m eh d}
+lappend lts(us,melgar) {m ey l g aa r}
+lappend lts(us,memorialize) {m ah m ao r iy ah l ay z}
+lappend lts(us,menasion's) {m eh n ae s iy ah n z}
+lappend lts(us,mendes) {m ey n d eh s}
+lappend lts(us,menear) {m ah n ih r}
+lappend lts(us,menorah's) {m ah n ao r ah z}
+lappend lts(us,menu) {m eh n y uw}
+lappend lts(us,merta) {m eh r t ah}
+lappend lts(us,mesodermal) {m eh z ah d er m ah l}
+lappend lts(us,metallic) {m ah t ae l ih k}
+lappend lts(us,meticulously) {m ah t ih k y ah l ah s l iy}
+lappend lts(us,meurer) {m er er}
+lappend lts(us,michaelina) {m ay k ah l iy n ah}
+lappend lts(us,michalec) {m ah hh aa l ih k}
+lappend lts(us,midpriced) {m ih d p r ay s t}
+lappend lts(us,mightily) {m ay t ah l iy}
+lappend lts(us,mijares) {m iy y aa r eh s}
+lappend lts(us,milewski) {m ah l eh f s k iy}
+lappend lts(us,milius) {m ay l iy ah s}
+lappend lts(us,millin) {m ih l ah n}
+lappend lts(us,millionths) {m ih l y ah n t th s}
+lappend lts(us,minasian) {m ih n ae zh ah n}
+lappend lts(us,mindful) {m ay n d f ah l}
+lappend lts(us,minerals') {m ih n er ah l z}
+lappend lts(us,minoring) {m ay n er ih ng}
+lappend lts(us,minuteman) {m ih n ah t m ae n}
+lappend lts(us,mirroring) {m ih r er ih ng}
+lappend lts(us,mises) {m ay z ah z}
+lappend lts(us,mispriced) {m ih s p r ay s t}
+lappend lts(us,mit) {eh m ay t iy}
+lappend lts(us,mitsui's) {m iy t s uw iy z}
+lappend lts(us,mitterrand) {m iy t er ao n d}
+lappend lts(us,moderates) {m aa d er ah t s}
+lappend lts(us,modular) {m aa jh ah l er}
+lappend lts(us,molesting) {m ah l eh s t ih ng}
+lappend lts(us,molony) {m ah l ao n iy}
+lappend lts(us,monetarism) {m aa n ah t er ih z ah m}
+lappend lts(us,mongeau) {m ah ng g ow}
+lappend lts(us,monitoring) {m aa n ah t er ih ng}
+lappend lts(us,monosaccharide) {m aa n ah s ae k er ay d}
+lappend lts(us,monumentally) {m aa n y ah m eh n t ah l iy}
+lappend lts(us,morales) {m er ae l z}
+lappend lts(us,moreau) {m er ow}
+lappend lts(us,moroccan) {m er aa k ah n}
+lappend lts(us,moses) {m ow z ah s}
+lappend lts(us,mother) {m ah dh er}
+lappend lts(us,motorcars) {m ow t er k aa r z}
+lappend lts(us,motorists) {m ow t er ah s t s}
+lappend lts(us,moustache) {m ah s t ae sh}
+lappend lts(us,mpeg) {eh m p eh g}
+lappend lts(us,multiuser) {m ah l t iy y uw z er}
+lappend lts(us,murrin) {m ao r ih n}
+lappend lts(us,museum) {m y uw z iy ah m}
+lappend lts(us,musicals) {m y uw z ih k ah l z}
+lappend lts(us,muslim) {m ah z l ah m}
+lappend lts(us,naranjo) {n aa r aa n y ow}
+lappend lts(us,nauseam) {n aw z iy m}
+lappend lts(us,nazionale) {n aa t s iy ow n aa l iy}
+lappend lts(us,negotiable) {n ah g ow sh ah b ah l}
+lappend lts(us,negotiators') {n ah g ow sh iy ey t er z}
+lappend lts(us,neighbor's) {n ey b er z}
+lappend lts(us,nemecek) {n eh m ah s ih k}
+lappend lts(us,nesheim) {n eh s hh ay m}
+lappend lts(us,netanyahu) {n eh t ah n y aa hh uw}
+lappend lts(us,netherlands') {n eh th er l ae n d z}
+lappend lts(us,newcastle's) {n uw k ae s ah l z}
+lappend lts(us,nicaraguan) {n ih k er aa g w ah n}
+lappend lts(us,nichols') {n ih k ah l z}
+lappend lts(us,nicolai) {n iy k ow l aa iy}
+lappend lts(us,nitschke) {n ih ch k}
+lappend lts(us,nonresidential) {n aa n r eh z ah d eh n sh ah l}
+lappend lts(us,nonunionized) {n aa n y uw n y ah n ay z d}
+lappend lts(us,north's) {n ao r th s}
+lappend lts(us,nosiness) {n ow z iy n ah s}
+lappend lts(us,notoriety) {n ow t er ay ah t iy}
+lappend lts(us,nuns') {n ah n z}
+lappend lts(us,nurseryman) {n er s er iy m ae n}
+lappend lts(us,nussle) {n ah s ah l}
+lappend lts(us,nyers) {n ay r z}
+lappend lts(us,obermiller) {aa b er m ah l er}
+lappend lts(us,observation) {aa b z er v ey sh ah n}
+lappend lts(us,observing) {ah b z er v ih ng}
+lappend lts(us,obyrne) {aa b er n}
+lappend lts(us,odometers) {ow d aa m ah t er z}
+lappend lts(us,odorless) {ow d er l ah s}
+lappend lts(us,oeser) {ow z er}
+lappend lts(us,oettinger) {ow t ah n jh er}
+lappend lts(us,officers) {ao f ah s er z}
+lappend lts(us,oftentimes) {ao f ah n t ay m z}
+lappend lts(us,ogles) {ow g ah l z}
+lappend lts(us,ogre) {ow g er}
+lappend lts(us,ohanesian) {aa hh ah n eh zh ah n}
+lappend lts(us,ohern) {aa hh er n}
+lappend lts(us,okasan) {ow k ey z ah n}
+lappend lts(us,olivares) {ow l iy v aa r eh s}
+lappend lts(us,omniscient) {aa m n ih sh ah n t}
+lappend lts(us,oncogene) {aa ng k ow jh iy n}
+lappend lts(us,ones') {w ah n z}
+lappend lts(us,onion) {ah n y ah n}
+lappend lts(us,onnen) {aa n ah n}
+lappend lts(us,operations') {aa p er ey sh ah n z}
+lappend lts(us,opportunism) {aa p er t uw n ih z ah m}
+lappend lts(us,optimistically) {aa p t ah m ih s t ih k ah l iy}
+lappend lts(us,orear) {er ih r}
+lappend lts(us,organism's) {ao r g ah n ih z ah m z}
+lappend lts(us,originating) {er ih jh ah n ey t ih ng}
+lappend lts(us,orthodontia) {ao r th ah d aa n ch iy ah}
+lappend lts(us,ossetians) {aa s eh sh y ah n z}
+lappend lts(us,oubre) {uw b er}
+lappend lts(us,outhouses) {aw t hh aw s ah z}
+lappend lts(us,overused) {ow v er y uw z d}
+lappend lts(us,ovoviviparous) {ow v ow v ay v ih p er ah s}
+lappend lts(us,pacifism) {p ae s ah f ih z ah m}
+lappend lts(us,pancanadian) {p ae ng k ah n ey d iy ah n}
+lappend lts(us,pandolfi) {p aa n d ow l f iy}
+lappend lts(us,panoramic) {p ae n er ae m ih k}
+lappend lts(us,pantaleo) {p aa n t aa l iy ow}
+lappend lts(us,paralysis) {p er ae l ah s ih s}
+lappend lts(us,parent's) {p eh r ah n t s}
+lappend lts(us,parishioner) {p er ih sh ah n er}
+lappend lts(us,parmelee) {p aa r m ah l iy}
+lappend lts(us,parole) {p er ow l}
+lappend lts(us,patiently) {p ey sh ah n t l iy}
+lappend lts(us,patrician) {p ah t r ih sh ah n}
+lappend lts(us,patrimonial) {p ae t r ah m ow n y ah l}
+lappend lts(us,pellagra) {p ah l ae g r ah}
+lappend lts(us,pendyala) {p eh d y aa l ah}
+lappend lts(us,penitentiaries) {p eh n ah t eh n ch er iy z}
+lappend lts(us,penrose) {p eh n r ow z}
+lappend lts(us,percussionist) {p er k ah sh ah n ih s t}
+lappend lts(us,petronas) {p eh t r ow n ah s}
+lappend lts(us,petrowski) {p ah t r ao f s k iy}
+lappend lts(us,pfeifle) {f ay f ah l}
+lappend lts(us,pharmacologist) {f aa r m ah k aa l ah jh ih s t}
+lappend lts(us,phillippi) {f ah l iy p iy}
+lappend lts(us,philosophies) {f ah l aa s ah f iy z}
+lappend lts(us,phosphorous) {f aa s f er ah s}
+lappend lts(us,photometer) {f ah t aa m ah t er}
+lappend lts(us,piasecki) {p iy ah s eh t s k iy}
+lappend lts(us,pingleton) {p ih ng g ah l t aa n}
+lappend lts(us,pinion) {p ih n y ah n}
+lappend lts(us,pinochet) {p ih n ih sh ey}
+lappend lts(us,piscitelli) {p iy s ch iy t eh l iy}
+lappend lts(us,pistilli) {p iy s t iy l iy}
+lappend lts(us,pittsboro) {p ih t s b er ow}
+lappend lts(us,planck) {p l ae ng k}
+lappend lts(us,polaroid) {p ow l er oy d}
+lappend lts(us,politically) {p ah l ih t ih k ah l iy}
+lappend lts(us,popularly) {p aa p y ah l er l iy}
+lappend lts(us,porcella) {p ao r ch eh l ah}
+lappend lts(us,poses) {p ow z ah z}
+lappend lts(us,positions) {p ah z ih sh ah n z}
+lappend lts(us,posner) {p ow z n er}
+lappend lts(us,possessor) {p ah z eh s er}
+lappend lts(us,potential) {p ah t eh n sh ah l}
+lappend lts(us,poulos) {p ah l iy s}
+lappend lts(us,precinct) {p r iy s ih ng k t}
+lappend lts(us,prediction) {p r iy d ih k sh ah n}
+lappend lts(us,premiers) {p r eh m ih r z}
+lappend lts(us,premonitory) {p r ah m ah n ah t er iy}
+lappend lts(us,preserver) {p r iy z er v er}
+lappend lts(us,presidential's) {p r eh z ah d eh n ch ah l z}
+lappend lts(us,prickett) {p r ih k eh t}
+lappend lts(us,principles) {p r ih n s ah p ah l z}
+lappend lts(us,procaccini) {p r ow k aa ch iy n iy}
+lappend lts(us,procida) {p r ow ch iy d ah}
+lappend lts(us,promiscuity) {p r ow m ah s k y uw ah t iy}
+lappend lts(us,proposes) {p r ah p ow z ah z}
+lappend lts(us,providential) {p r aa v ah d eh n ch ah l}
+lappend lts(us,przybylski) {p er z ah b ih l s k iy}
+lappend lts(us,psencik) {s eh n s ih k}
+lappend lts(us,psoriasis) {s er ay ah s ah s}
+lappend lts(us,psychoanalytic) {s ay k ow ae n ah l ih t ih k}
+lappend lts(us,psychotherapists) {s ay k ah th eh r ah p ah s t s}
+lappend lts(us,ptomaine) {t ow m ey n}
+lappend lts(us,publications') {p ah b l ih k ey sh ah n z}
+lappend lts(us,puccio) {p uw ch iy ow}
+lappend lts(us,punctured) {p ah ng k ch er d}
+lappend lts(us,purolator's) {p y uh r ah l ey t er z}
+lappend lts(us,pyramid) {p ih r ah m ah d}
+lappend lts(us,quadruple) {k w aa d r uw p ah l}
+lappend lts(us,quaranta) {k w er ae n t ah}
+lappend lts(us,quebecoise) {k eh b eh k w aa}
+lappend lts(us,raborn) {r ae b er n}
+lappend lts(us,raises) {r ey z ah z}
+lappend lts(us,ramesses) {r ae m ah s ah z}
+lappend lts(us,ranck) {r ae ng k}
+lappend lts(us,raser) {r ey z er}
+lappend lts(us,rayborn) {r ey b er n}
+lappend lts(us,rb) {aa r b iy}
+lappend lts(us,reanalyse) {r iy ae n ah l ay z}
+lappend lts(us,reassures) {r iy ah sh uh r z}
+lappend lts(us,recommendation) {r eh k ah m ah n d ey sh ah n}
+lappend lts(us,recuse) {r ih k y uw z}
+lappend lts(us,recycling) {r iy s ay k ah l ih ng}
+lappend lts(us,redistributing) {r iy d ah s t r ih b y uw t ih ng}
+lappend lts(us,rehearse) {r iy hh er s}
+lappend lts(us,rehiring) {r iy hh ay r ih ng}
+lappend lts(us,reier) {r ey er}
+lappend lts(us,reneged) {r ah n ih g d}
+lappend lts(us,repressing) {r iy p r eh s ih ng}
+lappend lts(us,researching) {r iy s er ch ih ng}
+lappend lts(us,resemblances) {r iy z eh m b l ah n s ah z}
+lappend lts(us,reservationist) {r eh z er v ey sh ah n ah s t}
+lappend lts(us,reservoir) {r eh z ah v w aa r}
+lappend lts(us,reshuffled) {r iy sh ah f ah l d}
+lappend lts(us,resident) {r eh z ah d ah n t}
+lappend lts(us,residuals) {r ah z ih jh uw ah l z}
+lappend lts(us,resolute) {r eh z ah l uw t}
+lappend lts(us,resonant) {r eh z ah n ah n t}
+lappend lts(us,respirators) {r eh s p er ey t er z}
+lappend lts(us,resumes) {r ah z uw m z}
+lappend lts(us,resurrected) {r eh z er eh k t ah d}
+lappend lts(us,reunions) {r iy uw n y ah n z}
+lappend lts(us,reynolds's) {r eh n ah l d z ah z}
+lappend lts(us,riccio) {r iy ch iy ow}
+lappend lts(us,richemont) {r ih ch ah m aa n t}
+lappend lts(us,richman) {r ih ch m ae n}
+lappend lts(us,riemersma) {r iy m eh r s m ah}
+lappend lts(us,ringed) {r ih ng d}
+lappend lts(us,rissoli) {r ah s ow l iy}
+lappend lts(us,riven) {r ih v ah n}
+lappend lts(us,robards) {r aa b er d z}
+lappend lts(us,rockrose) {r aa k r ow z}
+lappend lts(us,roeser) {r ow z er}
+lappend lts(us,rollins's) {r aa l ih n z ah z}
+lappend lts(us,rosabel) {r ow z ah b eh l}
+lappend lts(us,rosalyn) {r aa z ah l ah n}
+lappend lts(us,rosanne) {r ow z ae n}
+lappend lts(us,roseberry) {r ow z b eh r iy}
+lappend lts(us,rosekrans) {r ow z k r ah n z}
+lappend lts(us,rosenau) {r ow z n aw}
+lappend lts(us,rosenblatt) {r ow z ah n b l ae t}
+lappend lts(us,rosener) {r ow z ah n er}
+lappend lts(us,rosenlund) {r ow z ah n l ah n d}
+lappend lts(us,rosenthal) {r ow z ah n th ao l}
+lappend lts(us,roshier) {r ow sh y er}
+lappend lts(us,rossler) {r aa s ah l er}
+lappend lts(us,rowser) {r ow z er}
+lappend lts(us,ruberto) {r uw b eh r t ow}
+lappend lts(us,rugen) {r ah g ah n}
+lappend lts(us,ruggirello) {r uw jh ih r eh l ow}
+lappend lts(us,runkle) {r ah ng k ah l}
+lappend lts(us,ruse) {r uw z}
+lappend lts(us,rustler) {r ah s l er}
+lappend lts(us,s's) {eh s ah z}
+lappend lts(us,sabretech) {s ey b er t eh k}
+lappend lts(us,safier) {s ah f ih r}
+lappend lts(us,salmans) {s ae m ah n z}
+lappend lts(us,sanctimony) {s ae ng k t ah m ow n iy}
+lappend lts(us,sanctuaries) {s ae ng k ch uw eh r iy z}
+lappend lts(us,sandford) {s ae n d f er d}
+lappend lts(us,saracino) {s aa r aa ch iy n ow}
+lappend lts(us,sarene) {s er iy n}
+lappend lts(us,sarkisian) {s aa r k ih zh ah n}
+lappend lts(us,sathre) {s ae th er}
+lappend lts(us,sauer) {s aw er}
+lappend lts(us,sauter) {s ao t ey er}
+lappend lts(us,scheffler) {sh eh f ah l er}
+lappend lts(us,schemel) {sh eh m ah l}
+lappend lts(us,schertzer) {sh er t s er}
+lappend lts(us,schickler) {sh ih k ah l er}
+lappend lts(us,schimke) {s k ih m k}
+lappend lts(us,schlumberger) {sh l ah m b er zh ey}
+lappend lts(us,scholars) {s k aa l er z}
+lappend lts(us,schoo) {sh uw}
+lappend lts(us,schuchard) {sh ah k er d}
+lappend lts(us,schuette) {s k uw t}
+lappend lts(us,scoffed) {s k ao f t}
+lappend lts(us,seagate's) {s iy g ey t s}
+lappend lts(us,searching) {s er ch ih ng}
+lappend lts(us,searles) {s er l z}
+lappend lts(us,sebree) {s ah b r iy}
+lappend lts(us,secretive) {s iy k r ah t ih v}
+lappend lts(us,sehorn) {s eh hh er n}
+lappend lts(us,seifried) {s ay f er iy d}
+lappend lts(us,seigniorage) {s iy g n iy er ih jh}
+lappend lts(us,senator's) {s eh n ah t er z}
+lappend lts(us,sensory) {s eh n s er iy}
+lappend lts(us,separating) {s eh p er ey t ih ng}
+lappend lts(us,serle) {s ao r ah l}
+lappend lts(us,shaath's) {sh aa th s}
+lappend lts(us,shackled) {sh ae k ah l d}
+lappend lts(us,shankles) {sh ae ng k ah l z}
+lappend lts(us,sharrar) {sh er aa r}
+lappend lts(us,shea) {sh ey}
+lappend lts(us,shenanigans) {sh ah n ae n ih g ah n z}
+lappend lts(us,should) {sh uh d}
+lappend lts(us,siddhartha) {s ah d aa r t ah}
+lappend lts(us,sidener) {s ih d iy n er}
+lappend lts(us,signor) {s iy n y ao r}
+lappend lts(us,silveri) {s iy l v eh r iy}
+lappend lts(us,silvestri) {s iy l v eh s t r iy}
+lappend lts(us,simmons) {s ih m ah n z}
+lappend lts(us,singularly) {s ih ng g y ah l er l iy}
+lappend lts(us,siple) {s ay p ah l}
+lappend lts(us,siron) {s ao r ah n}
+lappend lts(us,skase) {s k ey z}
+lappend lts(us,skenandore) {s k ah n ae n d er}
+lappend lts(us,skorupa) {s k er uw p ah}
+lappend lts(us,snapples) {s n ae p ah l z}
+lappend lts(us,snarled) {s n aa r ah l d}
+lappend lts(us,soften) {s ao f ah n}
+lappend lts(us,sonnen) {s aa n ah n}
+lappend lts(us,sonorous) {s aa n er ah s}
+lappend lts(us,sousa) {s uw z ah}
+lappend lts(us,sparkle) {s p aa r k ah l}
+lappend lts(us,sperle) {s p ao r ah l}
+lappend lts(us,spokespeople) {s p ow k s p iy p ah l}
+lappend lts(us,sponsor's) {s p aa n s er z}
+lappend lts(us,spoofed) {s p uw f t}
+lappend lts(us,sprinkles) {s p r ih ng k ah l z}
+lappend lts(us,srdan) {s er d ae n}
+lappend lts(us,standby) {s t ae n d b ay}
+lappend lts(us,stapleton) {s t ey p ah l t ah n}
+lappend lts(us,stearn) {s t er n}
+lappend lts(us,stefl) {s t eh f ah l}
+lappend lts(us,steichen) {s t ay k ah n}
+lappend lts(us,stephens's) {s t iy v ah n z ah z}
+lappend lts(us,stereotypical) {s t eh r iy ow t ih p ih k ah l}
+lappend lts(us,stickler) {s t ih k ah l er}
+lappend lts(us,stiffed) {s t ih f t}
+lappend lts(us,stirewalt) {s t ao r uw ah l t}
+lappend lts(us,stores') {s t ao r z}
+lappend lts(us,studios') {s t uw d iy ow z}
+lappend lts(us,stuttgart) {s t ah t g er t}
+lappend lts(us,substantiate) {s ah b s t ae n ch iy ey t}
+lappend lts(us,succumbed) {s ah k ah m d}
+lappend lts(us,suckle) {s ah k ah l}
+lappend lts(us,sugar's) {sh uh g er z}
+lappend lts(us,sumitomo's) {s uw m ah t ow m ow z}
+lappend lts(us,superficially) {s uw p er f ih sh ah l l iy}
+lappend lts(us,supervisory) {s uw p er v ay z er iy}
+lappend lts(us,sures) {sh uh r z}
+lappend lts(us,surrealism's) {s er iy l ih z ah m z}
+lappend lts(us,surrency) {s ao r ah n s iy}
+lappend lts(us,susanna) {s uw z ae n ah}
+lappend lts(us,sweethearts) {s w iy t hh aa r t s}
+lappend lts(us,swordplay) {s ao r d p l ey}
+lappend lts(us,sylvestre) {s ih l v eh s t er}
+lappend lts(us,synchronize) {s ih ng k r ah n ay z}
+lappend lts(us,tamarisk) {t ae m er ih s k}
+lappend lts(us,tambs) {t ae m z}
+lappend lts(us,tangiers) {t ae n jh ih r z}
+lappend lts(us,tangredi) {t aa ng g r eh d iy}
+lappend lts(us,tape's) {t ey p s}
+lappend lts(us,tarses) {t aa r s ah s}
+lappend lts(us,taveras) {t aa v eh r aa z}
+lappend lts(us,taxes') {t ae k s ah z}
+lappend lts(us,teheran's) {t eh hh er aa n z}
+lappend lts(us,tehrans) {t ey r aa n z}
+lappend lts(us,templeton's) {t eh m p ah l t ah n z}
+lappend lts(us,tennant) {t eh n ah n t}
+lappend lts(us,tensiometer) {t eh n s iy aa m ah t er}
+lappend lts(us,tercero) {t er ch eh r ow}
+lappend lts(us,tewksbury) {t uw k s b er iy}
+lappend lts(us,theatre's) {th iy ah t er z}
+lappend lts(us,theodorou) {th iy ah d er uw}
+lappend lts(us,therein) {dh eh r ih n}
+lappend lts(us,thinking) {th ih ng k ah ng}
+lappend lts(us,thumb) {th ah m}
+lappend lts(us,thunk) {th ah n k}
+lappend lts(us,tickle) {t ih k ah l}
+lappend lts(us,timidly) {t ih m ah d l iy}
+lappend lts(us,timmeny) {t ih m ah n iy}
+lappend lts(us,timpone) {t iy m p ow n iy}
+lappend lts(us,tincture) {t ih ng k ch er}
+lappend lts(us,tinman) {t ih n m ae n}
+lappend lts(us,tombstone) {t uw m s t ow n}
+lappend lts(us,toughens) {t ah f ah n z}
+lappend lts(us,townsend) {t aw n z ah n d}
+lappend lts(us,townspeople) {t aw n z p iy p ah l}
+lappend lts(us,transalaska) {t r ae n z ah l ae s k ah}
+lappend lts(us,transcapital) {t r ae n z k ae p ah t ah l}
+lappend lts(us,transgressions) {t r ae n z g r eh sh ah n z}
+lappend lts(us,transition) {t r ae n z ih sh ah n}
+lappend lts(us,transpired) {t r ae n s p ay er d}
+lappend lts(us,transue) {t r ae n z uw}
+lappend lts(us,trbovich) {t er b aa v ih ch}
+lappend lts(us,trenchard) {t r eh ng k er d}
+lappend lts(us,tripled) {t r ih p ah l d}
+lappend lts(us,trois) {t w aa}
+lappend lts(us,truncheon) {t r ah n ch ah n}
+lappend lts(us,tschantz) {ch ae n t s}
+lappend lts(us,tucson) {t uw s aa n}
+lappend lts(us,turchin) {t er ch ah n}
+lappend lts(us,tyrannical) {t er ae n ih k ah l}
+lappend lts(us,uccel) {uw ch ah l}
+lappend lts(us,unabomb) {y uw n ah b ao m}
+lappend lts(us,uncommonly) {ah n k aa m ah n l iy}
+lappend lts(us,undemocratic) {ah n d eh m ah k r ae t ih k}
+lappend lts(us,unionize) {y uw n y ah n ay z}
+lappend lts(us,unyielding) {ah n y iy l d ih ng}
+lappend lts(us,usable) {y uw z ah b ah l}
+lappend lts(us,usenet) {y uw z n eh t}
+lappend lts(us,valoree) {v ae l er iy}
+lappend lts(us,vanguard's) {v ae n g aa r d z}
+lappend lts(us,vannatta) {v aa n aa t ah}
+lappend lts(us,vansant) {v aa n s ah n t}
+lappend lts(us,vantrease) {v ah n t r iy s}
+lappend lts(us,vectra) {v eh k t r er}
+lappend lts(us,vendors') {v eh n d er z}
+lappend lts(us,verdi) {v eh r d iy}
+lappend lts(us,verduin) {v eh r d uw ih n}
+lappend lts(us,verno) {v eh r n ow}
+lappend lts(us,vertucci) {v er t uw ch iy}
+lappend lts(us,vidales) {v iy d aa l eh s}
+lappend lts(us,videoconferencing) {v iy d iy ow k aa n f r ah n s ih ng}
+lappend lts(us,villalon) {v iy l aa l ao n}
+lappend lts(us,vineyard) {v ih n y er d}
+lappend lts(us,visitor's) {v ih z ah t er z}
+lappend lts(us,voiced) {v oy s t}
+lappend lts(us,volatility) {v aa l ah t ih l ah t iy}
+lappend lts(us,voltaren) {v ow l t er ah n}
+lappend lts(us,vossler) {v aa s ah l er}
+lappend lts(us,vranesevic) {v r aa n ah s eh v ih ch}
+lappend lts(us,wachowski) {v ah hh ao f s k iy}
+lappend lts(us,wallich's) {w ao l ih k s}
+lappend lts(us,warhol's) {w ao hh r ao l z}
+lappend lts(us,warmest) {w ao r m ah s t}
+lappend lts(us,waskiewicz) {v aa s k ah v ih ch}
+lappend lts(us,wasserstein) {w aa s er s t iy n}
+lappend lts(us,waynesboro) {w ey n z b er ow}
+lappend lts(us,weighing) {w ey ih ng}
+lappend lts(us,weisenborn) {w ay s ih n b er n}
+lappend lts(us,wengler) {w ih ng ah l er}
+lappend lts(us,wessling) {w eh s ah l ih ng}
+lappend lts(us,westheimer) {w eh s t hh ay m er}
+lappend lts(us,what'll) {w ah t ah l}
+lappend lts(us,whisenhunt) {w ay z ah n hh ah n t}
+lappend lts(us,who) {hh uw}
+lappend lts(us,wholesaler) {hh ow l s ey l er}
+lappend lts(us,whom) {hh uw m}
+lappend lts(us,wiacek) {v ay ah ch eh k}
+lappend lts(us,wildes) {w ay l d z}
+lappend lts(us,wildman) {w ay l d m ah n}
+lappend lts(us,willapa) {w ah l aa p ah}
+lappend lts(us,willmott) {w ih l m ah t}
+lappend lts(us,wilmott) {w ih l m ah t}
+lappend lts(us,winding) {w ay n d ih ng}
+lappend lts(us,windswept) {w ih n s w eh p t}
+lappend lts(us,winslow) {w ih n z l ow}
+lappend lts(us,wisecup) {w ay z k ah p}
+lappend lts(us,wisler) {w ih s ah l er}
+lappend lts(us,witnesses') {w ih t n ah s ah z}
+lappend lts(us,worshipping) {w er sh ah p ih ng}
+lappend lts(us,worthen) {w er th ah n}
+lappend lts(us,wrinkles) {r ih ng k ah l z}
+lappend lts(us,wyser) {w ay z er}
+lappend lts(us,y) {w ay}
+lappend lts(us,yaple) {y ey p ah l}
+lappend lts(us,ydstie's) {y ih d s t iy z}
+lappend lts(us,yearling) {y ih l ih ng}
+lappend lts(us,ylvisaker) {y ih l v ah s aa k er}
+lappend lts(us,zakrzewski) {z aa k er z uw s k iy}
+lappend lts(us,zerby) {z ih r b iy}
+lappend lts(us,zertuche) {z ih r t ah k}
+lappend lts(us,zinck) {z ih ng k}
+lappend lts(us,zippora) {z iy p ao r ah}
 set ltsw(us,'course) 1
 set ltsw(us,'til) 1
 set ltsw(us,aardvark) 1
@@ -1198,7 +1198,7 @@ set ltsw(us,adopts) 1
 set ltsw(us,adoring) 1
 set ltsw(us,adrea) 1
 set ltsw(us,adriel) 1
-set ltss(us,adtec) [list -1 0 3]
+lappend ltss(us,adtec) {-1 0 3}
 set ltsw(us,adtec) 1
 set ltsw(us,adulterous) 1
 set ltsw(us,advancement) 1
@@ -1222,7 +1222,7 @@ set ltsw(us,affronts) 1
 set ltsw(us,aficionado) 1
 set ltsw(us,afoot) 1
 set ltsw(us,african) 1
-set ltss(us,afsane) [list 0 3 5]
+lappend ltss(us,afsane) {0 3 5}
 set ltsw(us,afsane) 1
 set ltsw(us,afterglow) 1
 set ltsw(us,aftertaste) 1
@@ -1263,7 +1263,7 @@ set ltsw(us,aired) 1
 set ltsw(us,airfoils) 1
 set ltsw(us,airington) 1
 set ltsw(us,airliner) 1
-set ltss(us,airmen) [list -1 0 3]
+lappend ltss(us,airmen) {-1 0 3}
 set ltsw(us,airmen) 1
 set ltsw(us,airship) 1
 set ltsw(us,airtouch) 1
@@ -1316,7 +1316,7 @@ set ltsw(us,aliquippa) 1
 set ltsw(us,alitalia) 1
 set ltsw(us,alkalies) 1
 set ltsw(us,alkire) 1
-set ltss(us,allbee) [list -1 0 3]
+lappend ltss(us,allbee) {-1 0 3}
 set ltsw(us,allbee) 1
 set ltsw(us,allebach) 1
 set ltsw(us,allegheny) 1
@@ -1337,7 +1337,7 @@ set ltsw(us,allport) 1
 set ltsw(us,allspice) 1
 set ltsw(us,alluded) 1
 set ltsw(us,allusive) 1
-set ltss(us,allyn) [list -1 0 2]
+lappend ltss(us,allyn) {-1 0 2}
 set ltsw(us,allyn) 1
 set ltsw(us,almaguer) 1
 set ltsw(us,almeda) 1
@@ -1365,7 +1365,7 @@ set ltsw(us,alveoli) 1
 set ltsw(us,alvis) 1
 set ltsw(us,alwine) 1
 set ltsw(us,alysia) 1
-set ltss(us,alzona) [list 5 3 0]
+lappend ltss(us,alzona) {5 3 0}
 set ltsw(us,alzona) 1
 set ltsw(us,amadea) 1
 set ltsw(us,amalea) 1
@@ -1380,9 +1380,9 @@ set ltsw(us,ambiguities) 1
 set ltsw(us,ambled) 1
 set ltsw(us,ambriz) 1
 set ltsw(us,ambrosio) 1
-set ltss(us,ambushed) [list -1 0 3]
+lappend ltss(us,ambushed) {-1 0 3}
 set ltsw(us,ambushed) 1
-set ltss(us,amdahl) [list -1 0 3]
+lappend ltss(us,amdahl) {-1 0 3}
 set ltsw(us,amdahl) 1
 set ltsw(us,amelia) 1
 set ltsw(us,amendola) 1
@@ -1457,10 +1457,10 @@ set ltsw(us,annexes) 1
 set ltsw(us,announces) 1
 set ltsw(us,annualize) 1
 set ltsw(us,annulled) 1
-set ltss(us,anodes) [list -1 0 2]
+lappend ltss(us,anodes) {-1 0 2}
 set ltsw(us,anodes) 1
 set ltsw(us,anonymous) 1
-set ltss(us,anreder) [list 5 0 3]
+lappend ltss(us,anreder) {5 0 3}
 set ltsw(us,anreder) 1
 set ltsw(us,anschluss) 1
 set ltsw(us,anselmi) 1
@@ -1488,7 +1488,7 @@ set ltsw(us,antonelli) 1
 set ltsw(us,antoniou) 1
 set ltsw(us,antoon) 1
 set ltsw(us,antunes) 1
-set ltss(us,anwyll) [list -1 0 3]
+lappend ltss(us,anwyll) {-1 0 3}
 set ltsw(us,anwyll) 1
 set ltsw(us,anymore) 1
 set ltsw(us,anywhere) 1
@@ -1562,7 +1562,7 @@ set ltsw(us,arizona) 1
 set ltsw(us,arkansan) 1
 set ltsw(us,arkose) 1
 set ltsw(us,arleta) 1
-set ltss(us,arlyne) [list -1 0 3]
+lappend ltss(us,arlyne) {-1 0 3}
 set ltsw(us,arlyne) 1
 set ltsw(us,armament) 1
 set ltsw(us,armas) 1
@@ -1572,7 +1572,7 @@ set ltsw(us,armetta) 1
 set ltsw(us,armina) 1
 set ltsw(us,armond) 1
 set ltsw(us,armrests) 1
-set ltss(us,armtek's) [list -1 0 4]
+lappend ltss(us,armtek's) {-1 0 4}
 set ltsw(us,armtek's) 1
 set ltsw(us,arnault) 1
 set ltsw(us,arnett) 1
@@ -1598,7 +1598,7 @@ set ltsw(us,artra's) 1
 set ltsw(us,arty's) 1
 set ltsw(us,arval) 1
 set ltsw(us,arvin) 1
-set ltss(us,arzate) [list -1 0 3]
+lappend ltss(us,arzate) {-1 0 3}
 set ltsw(us,arzate) 1
 set ltsw(us,asamera) 1
 set ltsw(us,asbestos) 1
@@ -1624,7 +1624,7 @@ set ltsw(us,assayer) 1
 set ltsw(us,assemblies) 1
 set ltsw(us,assert) 1
 set ltsw(us,asses) 1
-set ltss(us,assets) [list -1 0 2]
+lappend ltss(us,assets) {-1 0 2}
 set ltsw(us,assets) 1
 set ltsw(us,assignments) 1
 set ltsw(us,assistants) 1
@@ -1787,7 +1787,7 @@ set ltsw(us,ballin) 1
 set ltsw(us,ballooned) 1
 set ltsw(us,ballow) 1
 set ltsw(us,balls) 1
-set ltss(us,balmer) [list 3 1 -1]
+lappend ltss(us,balmer) {3 1 -1}
 set ltsw(us,balmer) 1
 set ltsw(us,balogh) 1
 set ltsw(us,balsley) 1
@@ -1795,7 +1795,7 @@ set ltsw(us,balthrop) 1
 set ltsw(us,baltz) 1
 set ltsw(us,balzer) 1
 set ltsw(us,bambinos) 1
-set ltss(us,banal) [list 1 3 -1]
+lappend ltss(us,banal) {1 3 -1}
 set ltsw(us,banal) 1
 set ltsw(us,banc) 1
 set ltsw(us,bancorp's) 1
@@ -1817,7 +1817,7 @@ set ltsw(us,banquo's) 1
 set ltsw(us,bantered) 1
 set ltsw(us,banya) 1
 set ltsw(us,bapley) 1
-set ltss(us,barach) [list 1 3 -1]
+lappend ltss(us,barach) {1 3 -1}
 set ltsw(us,barach) 1
 set ltsw(us,baranoski) 1
 set ltsw(us,barba) 1
@@ -1838,13 +1838,13 @@ set ltsw(us,bargeron) 1
 set ltsw(us,baril) 1
 set ltsw(us,barings') 1
 set ltsw(us,barkan) 1
-set ltss(us,barkey) [list -1 1 4]
+lappend ltss(us,barkey) {-1 1 4}
 set ltsw(us,barkey) 1
 set ltsw(us,barks) 1
 set ltsw(us,barlow) 1
 set ltsw(us,barnacles) 1
 set ltsw(us,barnes) 1
-set ltss(us,barnhard) [list -1 1 5]
+lappend ltss(us,barnhard) {-1 1 5}
 set ltsw(us,barnhard) 1
 set ltsw(us,barns) 1
 set ltsw(us,barometers) 1
@@ -1885,7 +1885,7 @@ set ltsw(us,basulto) 1
 set ltsw(us,batchelder) 1
 set ltsw(us,bateson) 1
 set ltsw(us,bathgate) 1
-set ltss(us,batik) [list 1 3 -1]
+lappend ltss(us,batik) {1 3 -1}
 set ltsw(us,batik) 1
 set ltsw(us,battaglia) 1
 set ltsw(us,battenfield) 1
@@ -1902,7 +1902,7 @@ set ltsw(us,baun) 1
 set ltsw(us,bautzer) 1
 set ltsw(us,baver) 1
 set ltsw(us,baxendale) 1
-set ltss(us,baybank) [list -1 1 3]
+lappend ltss(us,baybank) {-1 1 3}
 set ltsw(us,baybank) 1
 set ltsw(us,bayes) 1
 set ltsw(us,bayliner) 1
@@ -1952,7 +1952,7 @@ set ltsw(us,befallen) 1
 set ltsw(us,beforehand) 1
 set ltsw(us,begala) 1
 set ltsw(us,beget) 1
-set ltss(us,begin) [list 1 3 -1]
+lappend ltss(us,begin) {1 3 -1}
 set ltsw(us,begin) 1
 set ltsw(us,begley) 1
 set ltsw(us,beguelin) 1
@@ -1992,7 +1992,7 @@ set ltsw(us,belsky) 1
 set ltsw(us,beltran) 1
 set ltsw(us,belvedere) 1
 set ltsw(us,belzberg) 1
-set ltss(us,bemiss) [list -1 1 3]
+lappend ltss(us,bemiss) {-1 1 3}
 set ltsw(us,bemiss) 1
 set ltsw(us,bena) 1
 set ltsw(us,benavides) 1
@@ -2037,7 +2037,7 @@ set ltsw(us,bermuda) 1
 set ltsw(us,bernadene) 1
 set ltsw(us,bernardi) 1
 set ltsw(us,bernasconi) 1
-set ltss(us,berner) [list 3 1 -1]
+lappend ltss(us,berner) {3 1 -1}
 set ltsw(us,berner) 1
 set ltsw(us,berni) 1
 set ltsw(us,bernoulli) 1
@@ -2075,7 +2075,7 @@ set ltsw(us,bhangra) 1
 set ltsw(us,biagi) 1
 set ltsw(us,biamby) 1
 set ltsw(us,biannual) 1
-set ltss(us,bibbins) [list -1 1 3]
+lappend ltss(us,bibbins) {-1 1 3}
 set ltsw(us,bibbins) 1
 set ltsw(us,biby) 1
 set ltsw(us,bickel) 1
@@ -2136,7 +2136,7 @@ set ltsw(us,bisceglia) 1
 set ltsw(us,bisek) 1
 set ltsw(us,bishop) 1
 set ltsw(us,bismarck) 1
-set ltss(us,bisset) [list -1 1 3]
+lappend ltss(us,bisset) {-1 1 3}
 set ltsw(us,bisset) 1
 set ltsw(us,bistodeau) 1
 set ltsw(us,biter) 1
@@ -2232,7 +2232,7 @@ set ltsw(us,bogar) 1
 set ltsw(us,boge) 1
 set ltsw(us,bogeymen) 1
 set ltsw(us,boggling) 1
-set ltss(us,bogor) [list -1 1 3]
+lappend ltss(us,bogor) {-1 1 3}
 set ltsw(us,bogor) 1
 set ltsw(us,bohall) 1
 set ltsw(us,bohen) 1
@@ -2300,9 +2300,9 @@ set ltsw(us,borowiec) 1
 set ltsw(us,borrello) 1
 set ltsw(us,borrowers') 1
 set ltsw(us,borseth) 1
-set ltss(us,bortner) [list 5 1 -1]
+lappend ltss(us,bortner) {5 1 -1}
 set ltsw(us,bortner) 1
-set ltss(us,borwn) [list -1 1 4]
+lappend ltss(us,borwn) {-1 1 4}
 set ltsw(us,borwn) 1
 set ltsw(us,boschwitz) 1
 set ltsw(us,boshell) 1
@@ -2444,7 +2444,7 @@ set ltsw(us,broach) 1
 set ltsw(us,broadbeach) 1
 set ltsw(us,broadhead) 1
 set ltsw(us,broadstreet) 1
-set ltss(us,brobeck) [list -1 2 4]
+lappend ltss(us,brobeck) {-1 2 4}
 set ltsw(us,brobeck) 1
 set ltsw(us,broce) 1
 set ltsw(us,brockert) 1
@@ -2500,7 +2500,7 @@ set ltsw(us,bryer) 1
 set ltsw(us,bryson) 1
 set ltsw(us,bubar) 1
 set ltsw(us,bubeck) 1
-set ltss(us,bucase) [list -1 2 4]
+lappend ltss(us,bucase) {-1 2 4}
 set ltsw(us,bucase) 1
 set ltsw(us,bucek) 1
 set ltsw(us,buchanon) 1
@@ -2526,7 +2526,7 @@ set ltsw(us,buffalos) 1
 set ltsw(us,bufford) 1
 set ltsw(us,bugaboo) 1
 set ltsw(us,bugger) 1
-set ltss(us,bugling) [list 4 2 -1]
+lappend ltss(us,bugling) {4 2 -1}
 set ltsw(us,bugling) 1
 set ltsw(us,buhr) 1
 set ltsw(us,buie) 1
@@ -2553,7 +2553,7 @@ set ltsw(us,bunner) 1
 set ltsw(us,bunt's) 1
 set ltsw(us,buntz) 1
 set ltsw(us,buoy) 1
-set ltss(us,burack) [list 4 2 -1]
+lappend ltss(us,burack) {4 2 -1}
 set ltsw(us,burack) 1
 set ltsw(us,burbank's) 1
 set ltsw(us,burchette) 1
@@ -2585,7 +2585,7 @@ set ltsw(us,burruss) 1
 set ltsw(us,bursting) 1
 set ltsw(us,burton's) 1
 set ltsw(us,burzynski) 1
-set ltss(us,busboys) [list -1 1 4]
+lappend ltss(us,busboys) {-1 1 4}
 set ltsw(us,busboys) 1
 set ltsw(us,buschmann) 1
 set ltsw(us,bush's) 1
@@ -2607,7 +2607,7 @@ set ltsw(us,buttered) 1
 set ltsw(us,butterscotch) 1
 set ltsw(us,buttocks) 1
 set ltsw(us,buttressed) 1
-set ltss(us,butyl) [list 4 2 -1]
+lappend ltss(us,butyl) {4 2 -1}
 set ltsw(us,butyl) 1
 set ltsw(us,buy) 1
 set ltsw(us,buyouts) 1
@@ -2638,7 +2638,7 @@ set ltsw(us,caen's) 1
 set ltsw(us,caetano) 1
 set ltsw(us,caffee) 1
 set ltsw(us,cage) 1
-set ltss(us,caguas) [list -1 1 4]
+lappend ltss(us,caguas) {-1 1 4}
 set ltsw(us,caguas) 1
 set ltsw(us,cahoots) 1
 set ltsw(us,cain's) 1
@@ -2719,7 +2719,7 @@ set ltsw(us,capozzi) 1
 set ltsw(us,cappelli) 1
 set ltsw(us,cappy) 1
 set ltsw(us,caprice) 1
-set ltss(us,capsize) [list -1 1 4]
+lappend ltss(us,capsize) {-1 1 4}
 set ltsw(us,capsize) 1
 set ltsw(us,caption) 1
 set ltsw(us,captor) 1
@@ -2729,9 +2729,9 @@ set ltsw(us,caramandi) 1
 set ltsw(us,caravan) 1
 set ltsw(us,carballo) 1
 set ltsw(us,carbohydrate) 1
-set ltss(us,carbone) [list -1 1 4]
+lappend ltss(us,carbone) {-1 1 4}
 set ltsw(us,carbone) 1
-set ltss(us,carboy) [list -1 1 4]
+lappend ltss(us,carboy) {-1 1 4}
 set ltsw(us,carboy) 1
 set ltsw(us,carcinogenic) 1
 set ltsw(us,carded) 1
@@ -2752,7 +2752,7 @@ set ltsw(us,carjacker) 1
 set ltsw(us,carla's) 1
 set ltsw(us,carley) 1
 set ltsw(us,carlisi) 1
-set ltss(us,carloads) [list -1 1 4]
+lappend ltss(us,carloads) {-1 1 4}
 set ltsw(us,carloads) 1
 set ltsw(us,carlsbad) 1
 set ltsw(us,carlton's) 1
@@ -2785,9 +2785,9 @@ set ltsw(us,cartoonist) 1
 set ltsw(us,cartwheel) 1
 set ltsw(us,carvajal) 1
 set ltsw(us,carvey) 1
-set ltss(us,caryn) [list -1 1 3]
+lappend ltss(us,caryn) {-1 1 3}
 set ltsw(us,caryn) 1
-set ltss(us,casal) [list 1 3 -1]
+lappend ltss(us,casal) {1 3 -1}
 set ltsw(us,casal) 1
 set ltsw(us,casas) 1
 set ltsw(us,cascades') 1
@@ -2824,7 +2824,7 @@ set ltsw(us,catchings) 1
 set ltsw(us,categorize) 1
 set ltsw(us,caterers) 1
 set ltsw(us,cathay) 1
-set ltss(us,cathode) [list -1 1 3]
+lappend ltss(us,cathode) {-1 1 3}
 set ltsw(us,cathode) 1
 set ltsw(us,catledge) 1
 set ltsw(us,catone) 1
@@ -2860,7 +2860,7 @@ set ltsw(us,cellophane) 1
 set ltsw(us,cellulosa) 1
 set ltsw(us,celsius) 1
 set ltsw(us,cement) 1
-set ltss(us,cencor) [list -1 1 4]
+lappend ltss(us,cencor) {-1 1 4}
 set ltsw(us,cencor) 1
 set ltsw(us,censoring) 1
 set ltsw(us,centaur) 1
@@ -2880,7 +2880,7 @@ set ltsw(us,certitude) 1
 set ltsw(us,cerveny) 1
 set ltsw(us,ceryl) 1
 set ltsw(us,cessna) 1
-set ltss(us,cetec) [list -1 1 3]
+lappend ltss(us,cetec) {-1 1 3}
 set ltsw(us,cetec) 1
 set ltsw(us,cha) 1
 set ltsw(us,chacko) 1
@@ -2895,7 +2895,7 @@ set ltsw(us,chalked) 1
 set ltsw(us,challengers) 1
 set ltsw(us,chalupa) 1
 set ltsw(us,chambers) 1
-set ltss(us,chamlong) [list -1 1 4]
+lappend ltss(us,chamlong) {-1 1 4}
 set ltsw(us,chamlong) 1
 set ltsw(us,champeau) 1
 set ltsw(us,champlin) 1
@@ -2961,7 +2961,7 @@ set ltsw(us,cheyney) 1
 set ltsw(us,chiapparone) 1
 set ltsw(us,chiaro) 1
 set ltsw(us,chicanery) 1
-set ltss(us,chicked) [list 1 -1 -1]
+lappend ltss(us,chicked) {1 -1 -1}
 set ltsw(us,chicked) 1
 set ltsw(us,chicots) 1
 set ltsw(us,chief's) 1
@@ -2996,7 +2996,7 @@ set ltsw(us,chore) 1
 set ltsw(us,chores) 1
 set ltsw(us,chose) 1
 set ltsw(us,chowdhury) 1
-set ltss(us,chrismon) [list 5 2 -1]
+lappend ltss(us,chrismon) {5 2 -1}
 set ltsw(us,chrismon) 1
 set ltsw(us,christal) 1
 set ltsw(us,christensen) 1
@@ -3009,7 +3009,7 @@ set ltsw(us,chromium) 1
 set ltsw(us,chronicle's) 1
 set ltsw(us,chronologies) 1
 set ltsw(us,chryslers) 1
-set ltss(us,chuan) [list -1 2 1]
+lappend ltss(us,chuan) {-1 2 1}
 set ltsw(us,chuan) 1
 set ltsw(us,chuck) 1
 set ltsw(us,chudler) 1
@@ -3040,7 +3040,7 @@ set ltsw(us,circulations) 1
 set ltsw(us,circumstance) 1
 set ltsw(us,circumvention) 1
 set ltsw(us,cirillo) 1
-set ltss(us,cisar) [list -1 3 1]
+lappend ltss(us,cisar) {-1 3 1}
 set ltsw(us,cisar) 1
 set ltsw(us,cissell) 1
 set ltsw(us,citadel's) 1
@@ -3112,7 +3112,7 @@ set ltsw(us,club) 1
 set ltsw(us,cluck) 1
 set ltsw(us,clugston) 1
 set ltsw(us,clumsiness) 1
-set ltss(us,cluster) [list 5 2 -1]
+lappend ltss(us,cluster) {5 2 -1}
 set ltsw(us,cluster) 1
 set ltsw(us,cluttered) 1
 set ltsw(us,clyte) 1
@@ -3164,7 +3164,7 @@ set ltsw(us,collard) 1
 set ltsw(us,colleague) 1
 set ltsw(us,collection) 1
 set ltsw(us,collector) 1
-set ltss(us,colleen) [list -1 3 1]
+lappend ltss(us,colleen) {-1 3 1}
 set ltsw(us,colleen) 1
 set ltsw(us,collegiate) 1
 set ltsw(us,colleville) 1
@@ -3182,7 +3182,7 @@ set ltsw(us,colorado's) 1
 set ltsw(us,colorful) 1
 set ltsw(us,coloroll) 1
 set ltsw(us,colossus) 1
-set ltss(us,coltec) [list -1 1 4]
+lappend ltss(us,coltec) {-1 1 4}
 set ltsw(us,coltec) 1
 set ltsw(us,coltsfoot) 1
 set ltsw(us,columbo) 1
@@ -3190,12 +3190,12 @@ set ltsw(us,columns) 1
 set ltsw(us,com) 1
 set ltsw(us,comas) 1
 set ltsw(us,combativeness) 1
-set ltss(us,combo) [list -1 1 4]
+lappend ltss(us,combo) {-1 1 4}
 set ltsw(us,combo) 1
 set ltsw(us,comdex) 1
 set ltsw(us,comedian) 1
 set ltsw(us,comella) 1
-set ltss(us,cometh) [list -1 1 3]
+lappend ltss(us,cometh) {-1 1 3}
 set ltsw(us,cometh) 1
 set ltsw(us,comfortably) 1
 set ltsw(us,comically) 1
@@ -3240,7 +3240,7 @@ set ltsw(us,compuchem) 1
 set ltsw(us,compunction) 1
 set ltsw(us,computed) 1
 set ltsw(us,computerlike) 1
-set ltss(us,comrades) [list -1 1 4]
+lappend ltss(us,comrades) {-1 1 4}
 set ltsw(us,comrades) 1
 set ltsw(us,cona) 1
 set ltsw(us,concatenation) 1
@@ -3291,12 +3291,12 @@ set ltsw(us,conquest) 1
 set ltsw(us,conradine) 1
 set ltsw(us,conrow) 1
 set ltsw(us,consciously) 1
-set ltss(us,consent) [list 1 4 -1]
+lappend ltss(us,consent) {1 4 -1}
 set ltsw(us,consent) 1
 set ltsw(us,consequential) 1
 set ltsw(us,conservatorship) 1
 set ltsw(us,consideration) 1
-set ltss(us,consist) [list 1 4 -1]
+lappend ltss(us,consist) {1 4 -1}
 set ltsw(us,consist) 1
 set ltsw(us,consob) 1
 set ltsw(us,consoli) 1
@@ -3367,15 +3367,15 @@ set ltsw(us,corbridge) 1
 set ltsw(us,cordasco) 1
 set ltsw(us,cordially) 1
 set ltsw(us,cordner) 1
-set ltss(us,cordray) [list -1 1 5]
+lappend ltss(us,cordray) {-1 1 5}
 set ltsw(us,cordray) 1
-set ltss(us,corell) [list -1 3 1]
+lappend ltss(us,corell) {-1 3 1}
 set ltsw(us,corell) 1
 set ltsw(us,corette) 1
 set ltsw(us,corinn's) 1
 set ltsw(us,corken) 1
 set ltsw(us,corkum) 1
-set ltss(us,corliss) [list -1 1 4]
+lappend ltss(us,corliss) {-1 1 4}
 set ltsw(us,corliss) 1
 set ltsw(us,cormorants) 1
 set ltsw(us,corneal) 1
@@ -3504,7 +3504,7 @@ set ltsw(us,critical) 1
 set ltsw(us,critics) 1
 set ltsw(us,critter) 1
 set ltsw(us,croaker) 1
-set ltss(us,croats) [list -1 2 3]
+lappend ltss(us,croats) {-1 2 3}
 set ltsw(us,croats) 1
 set ltsw(us,crocker's) 1
 set ltsw(us,crofoot) 1
@@ -3523,7 +3523,7 @@ set ltsw(us,crossroads) 1
 set ltsw(us,crosthwaite) 1
 set ltsw(us,crotty) 1
 set ltsw(us,crouse) 1
-set ltss(us,crowbar) [list -1 2 4]
+lappend ltss(us,crowbar) {-1 2 4}
 set ltsw(us,crowbar) 1
 set ltsw(us,crowed) 1
 set ltsw(us,crown's) 1
@@ -3544,10 +3544,10 @@ set ltsw(us,crypts) 1
 set ltsw(us,crystals) 1
 set ltsw(us,cuadrado) 1
 set ltsw(us,cubbison) 1
-set ltss(us,cubist) [list -1 2 4]
+lappend ltss(us,cubist) {-1 2 4}
 set ltsw(us,cubist) 1
 set ltsw(us,cuckoo) 1
-set ltss(us,cuddihy) [list 5 1 3]
+lappend ltss(us,cuddihy) {5 1 3}
 set ltsw(us,cuddihy) 1
 set ltsw(us,cudney) 1
 set ltsw(us,cuesta) 1
@@ -3560,7 +3560,7 @@ set ltsw(us,culminating) 1
 set ltsw(us,cult's) 1
 set ltsw(us,cultivation) 1
 set ltsw(us,culturing) 1
-set ltss(us,cumbee) [list -1 1 4]
+lappend ltss(us,cumbee) {-1 1 4}
 set ltsw(us,cumbee) 1
 set ltsw(us,cummick) 1
 set ltsw(us,cumulatively) 1
@@ -3591,7 +3591,7 @@ set ltsw(us,cutrell) 1
 set ltsw(us,cutter) 1
 set ltsw(us,cutworm) 1
 set ltsw(us,cwynar) 1
-set ltss(us,cybill) [list -1 1 3]
+lappend ltss(us,cybill) {-1 1 3}
 set ltsw(us,cybill) 1
 set ltsw(us,cyclostome) 1
 set ltsw(us,cylinder) 1
@@ -3603,7 +3603,7 @@ set ltsw(us,czarnik) 1
 set ltsw(us,czechs) 1
 set ltsw(us,d) 1
 set ltsw(us,d'amore) 1
-set ltss(us,d'etat) [list -1 1 3]
+lappend ltss(us,d'etat) {-1 1 3}
 set ltsw(us,d'etat) 1
 set ltsw(us,d'orsay) 1
 set ltsw(us,daane) 1
@@ -3652,7 +3652,7 @@ set ltsw(us,dansby) 1
 set ltsw(us,danstett) 1
 set ltsw(us,dantrell) 1
 set ltsw(us,danzer) 1
-set ltss(us,dapice) [list -1 1 3]
+lappend ltss(us,dapice) {-1 1 3}
 set ltsw(us,dapice) 1
 set ltsw(us,darak) 1
 set ltsw(us,darcy) 1
@@ -3695,7 +3695,7 @@ set ltsw(us,deadwood) 1
 set ltsw(us,deak's) 1
 set ltsw(us,dealers) 1
 set ltsw(us,dealmakers) 1
-set ltss(us,deana) [list 4 2 1]
+lappend ltss(us,deana) {4 2 1}
 set ltsw(us,deana) 1
 set ltsw(us,deangelo) 1
 set ltsw(us,dearinger) 1
@@ -3714,7 +3714,7 @@ set ltsw(us,debtor) 1
 set ltsw(us,debunking) 1
 set ltsw(us,debutantes) 1
 set ltsw(us,decadence) 1
-set ltss(us,decals) [list -1 1 3]
+lappend ltss(us,decals) {-1 1 3}
 set ltsw(us,decals) 1
 set ltsw(us,decapitation) 1
 set ltsw(us,decastro) 1
@@ -3801,7 +3801,7 @@ set ltsw(us,dell) 1
 set ltsw(us,dellavecchia) 1
 set ltsw(us,delman) 1
 set ltsw(us,delmont) 1
-set ltss(us,delong) [list 1 3 -1]
+lappend ltss(us,delong) {1 3 -1}
 set ltsw(us,delong) 1
 set ltsw(us,delorey) 1
 set ltsw(us,delouis) 1
@@ -3812,7 +3812,7 @@ set ltsw(us,delucchi) 1
 set ltsw(us,delusion) 1
 set ltsw(us,delving) 1
 set ltsw(us,demagogues) 1
-set ltss(us,demands) [list -1 3 1]
+lappend ltss(us,demands) {-1 3 1}
 set ltsw(us,demands) 1
 set ltsw(us,demarcus) 1
 set ltsw(us,demars) 1
@@ -3830,7 +3830,7 @@ set ltsw(us,demonizing) 1
 set ltsw(us,demonstrative) 1
 set ltsw(us,demore) 1
 set ltsw(us,demott) 1
-set ltss(us,demure) [list -1 4 1]
+lappend ltss(us,demure) {-1 4 1}
 set ltsw(us,demure) 1
 set ltsw(us,den) 1
 set ltsw(us,denationalizations) 1
@@ -3926,7 +3926,7 @@ set ltsw(us,devillier's) 1
 set ltsw(us,deviney) 1
 set ltsw(us,devita) 1
 set ltsw(us,devolution) 1
-set ltss(us,devoss) [list 1 3 -1]
+lappend ltss(us,devoss) {1 3 -1}
 set ltsw(us,devoss) 1
 set ltsw(us,devour) 1
 set ltsw(us,dewaard) 1
@@ -3946,7 +3946,7 @@ set ltsw(us,diane) 1
 set ltsw(us,diaper) 1
 set ltsw(us,diarrhea) 1
 set ltsw(us,diastase) 1
-set ltss(us,diaz) [list -1 1 2]
+lappend ltss(us,diaz) {-1 1 2}
 set ltsw(us,diaz) 1
 set ltsw(us,dibbern) 1
 set ltsw(us,diblasi) 1
@@ -4018,7 +4018,7 @@ set ltsw(us,disantis) 1
 set ltsw(us,disappearing) 1
 set ltsw(us,disarmament) 1
 set ltsw(us,disaster) 1
-set ltss(us,disbar) [list -1 4 1]
+lappend ltss(us,disbar) {-1 4 1}
 set ltsw(us,disbar) 1
 set ltsw(us,disbursement) 1
 set ltsw(us,discerned) 1
@@ -4068,7 +4068,7 @@ set ltsw(us,dissertation) 1
 set ltsw(us,dissolution) 1
 set ltsw(us,dissuaded) 1
 set ltsw(us,distasi) 1
-set ltss(us,distill) [list -1 4 1]
+lappend ltss(us,distill) {-1 4 1}
 set ltsw(us,distill) 1
 set ltsw(us,distillers') 1
 set ltsw(us,distinctiveness) 1
@@ -4106,7 +4106,7 @@ set ltsw(us,dodds) 1
 set ltsw(us,dodging) 1
 set ltsw(us,doeden) 1
 set ltsw(us,doering) 1
-set ltss(us,dogberry) [list 6 1 4]
+lappend ltss(us,dogberry) {6 1 4}
 set ltsw(us,dogberry) 1
 set ltsw(us,doggies) 1
 set ltsw(us,dogmatic) 1
@@ -4120,7 +4120,7 @@ set ltsw(us,dolled) 1
 set ltsw(us,dolloff) 1
 set ltsw(us,dolores) 1
 set ltsw(us,domagala) 1
-set ltss(us,dombeck) [list -1 1 4]
+lappend ltss(us,dombeck) {-1 1 4}
 set ltsw(us,dombeck) 1
 set ltsw(us,domeier) 1
 set ltsw(us,domenico) 1
@@ -4133,7 +4133,7 @@ set ltsw(us,dommer) 1
 set ltsw(us,don'ts) 1
 set ltsw(us,donahoo) 1
 set ltsw(us,donaldson's) 1
-set ltss(us,donates) [list -1 1 3]
+lappend ltss(us,donates) {-1 1 3}
 set ltsw(us,donates) 1
 set ltsw(us,donato) 1
 set ltsw(us,donella) 1
@@ -4143,7 +4143,7 @@ set ltsw(us,donnay) 1
 set ltsw(us,donnelly's) 1
 set ltsw(us,donoghue's) 1
 set ltsw(us,donor) 1
-set ltss(us,donuts') [list -1 1 3]
+lappend ltss(us,donuts') {-1 1 3}
 set ltsw(us,donuts') 1
 set ltsw(us,doogie) 1
 set ltsw(us,dooms) 1
@@ -4186,7 +4186,7 @@ set ltsw(us,doxey) 1
 set ltsw(us,doyle's) 1
 set ltsw(us,dr) 1
 set ltsw(us,drabinsky) 1
-set ltss(us,draftees) [list -1 5 2]
+lappend ltss(us,draftees) {-1 5 2}
 set ltsw(us,draftees) 1
 set ltsw(us,dragan) 1
 set ltsw(us,dragon) 1
@@ -4231,7 +4231,7 @@ set ltsw(us,drupes) 1
 set ltsw(us,dryden) 1
 set ltsw(us,dryser) 1
 set ltsw(us,dualism) 1
-set ltss(us,duarte) [list -1 2 5]
+lappend ltss(us,duarte) {-1 2 5}
 set ltsw(us,duarte) 1
 set ltsw(us,dubberly) 1
 set ltsw(us,dubinsky) 1
@@ -4246,7 +4246,7 @@ set ltsw(us,dudd) 1
 set ltsw(us,dudgeon) 1
 set ltsw(us,duels) 1
 set ltsw(us,duerr) 1
-set ltss(us,duets) [list 1 2 -1]
+lappend ltss(us,duets) {1 2 -1}
 set ltsw(us,duets) 1
 set ltsw(us,duffell) 1
 set ltsw(us,duffus) 1
@@ -4265,7 +4265,7 @@ set ltsw(us,dumont) 1
 set ltsw(us,dumpsters) 1
 set ltsw(us,dunaj) 1
 set ltsw(us,dunckel) 1
-set ltss(us,dunfee) [list -1 1 4]
+lappend ltss(us,dunfee) {-1 1 4}
 set ltsw(us,dunfee) 1
 set ltsw(us,dunite) 1
 set ltsw(us,dunkerley) 1
@@ -4296,7 +4296,7 @@ set ltsw(us,dvoracek) 1
 set ltsw(us,dwarves) 1
 set ltsw(us,dwellings) 1
 set ltsw(us,dwindling) 1
-set ltss(us,dyad) [list -1 1 2]
+lappend ltss(us,dyad) {-1 1 2}
 set ltsw(us,dyad) 1
 set ltsw(us,dybas) 1
 set ltsw(us,dyeing) 1
@@ -4370,7 +4370,7 @@ set ltsw(us,egbertine) 1
 set ltsw(us,egert) 1
 set ltsw(us,eggers) 1
 set ltsw(us,eggshells) 1
-set ltss(us,eglise) [list -1 3 0]
+lappend ltss(us,eglise) {-1 3 0}
 set ltsw(us,eglise) 1
 set ltsw(us,egomaniac) 1
 set ltsw(us,egypt) 1
@@ -4393,7 +4393,7 @@ set ltsw(us,eisenstein) 1
 set ltsw(us,eisner's) 1
 set ltsw(us,ejaculation) 1
 set ltsw(us,eka) 1
-set ltss(us,ekholm) [list -1 0 3]
+lappend ltss(us,ekholm) {-1 0 3}
 set ltsw(us,ekholm) 1
 set ltsw(us,ekstrand) 1
 set ltsw(us,elaborately) 1
@@ -4432,7 +4432,7 @@ set ltsw(us,eller) 1
 set ltsw(us,ellery) 1
 set ltsw(us,elliff) 1
 set ltsw(us,ellingwood) 1
-set ltss(us,ellis's) [list 4 0 2]
+lappend ltss(us,ellis's) {4 0 2}
 set ltsw(us,ellis's) 1
 set ltsw(us,ellsberg) 1
 set ltsw(us,ellzey) 1
@@ -4462,11 +4462,11 @@ set ltsw(us,embry) 1
 set ltsw(us,emdr) 1
 set ltsw(us,emerald) 1
 set ltsw(us,emergence) 1
-set ltss(us,emerging) [list 4 2 0]
+lappend ltss(us,emerging) {4 2 0}
 set ltsw(us,emerging) 1
 set ltsw(us,emert) 1
 set ltsw(us,emig) 1
-set ltss(us,emigre) [list 2 0 5]
+lappend ltss(us,emigre) {2 0 5}
 set ltsw(us,emigre) 1
 set ltsw(us,emily's) 1
 set ltsw(us,emit) 1
@@ -4479,7 +4479,7 @@ set ltsw(us,empiricist) 1
 set ltsw(us,employers') 1
 set ltsw(us,empress) 1
 set ltsw(us,empts) 1
-set ltss(us,emu) [list -1 0 3]
+lappend ltss(us,emu) {-1 0 3}
 set ltsw(us,emu) 1
 set ltsw(us,en) 1
 set ltsw(us,enables) 1
@@ -4489,7 +4489,7 @@ set ltsw(us,enchanted) 1
 set ltsw(us,enchilada) 1
 set ltsw(us,enck) 1
 set ltsw(us,enclosure) 1
-set ltss(us,encor) [list -1 0 3]
+lappend ltss(us,encor) {-1 0 3}
 set ltsw(us,encor) 1
 set ltsw(us,encounters) 1
 set ltsw(us,encrypt) 1
@@ -4530,7 +4530,7 @@ set ltsw(us,enrollee) 1
 set ltsw(us,ensco's) 1
 set ltsw(us,enshroud) 1
 set ltsw(us,ensley) 1
-set ltss(us,ensrud) [list -1 0 4]
+lappend ltss(us,ensrud) {-1 0 4}
 set ltsw(us,ensrud) 1
 set ltsw(us,ensures) 1
 set ltsw(us,entangle) 1
@@ -4542,7 +4542,7 @@ set ltsw(us,enthralled) 1
 set ltsw(us,entities) 1
 set ltsw(us,entity) 1
 set ltsw(us,entrant) 1
-set ltss(us,entrees) [list -1 0 4]
+lappend ltss(us,entrees) {-1 0 4}
 set ltsw(us,entrees) 1
 set ltsw(us,entrepreneur's) 1
 set ltsw(us,entrust) 1
@@ -4589,7 +4589,7 @@ set ltsw(us,erte) 1
 set ltsw(us,erupt) 1
 set ltsw(us,eruptive) 1
 set ltsw(us,erwin) 1
-set ltss(us,escada) [list 5 3 0]
+lappend ltss(us,escada) {5 3 0}
 set ltsw(us,escada) 1
 set ltsw(us,escalona) 1
 set ltsw(us,escapee) 1
@@ -4680,7 +4680,7 @@ set ltsw(us,exhausted) 1
 set ltsw(us,exhibited) 1
 set ltsw(us,exhibits) 1
 set ltsw(us,exhorts) 1
-set ltss(us,exile) [list -1 0 3]
+lappend ltss(us,exile) {-1 0 3}
 set ltsw(us,exile) 1
 set ltsw(us,existence) 1
 set ltsw(us,exner) 1
@@ -4756,7 +4756,7 @@ set ltsw(us,fambro) 1
 set ltsw(us,familiarize) 1
 set ltsw(us,famines) 1
 set ltsw(us,fanciful) 1
-set ltss(us,fanfare) [list -1 1 4]
+lappend ltss(us,fanfare) {-1 1 4}
 set ltsw(us,fanfare) 1
 set ltsw(us,fann) 1
 set ltsw(us,fansler) 1
@@ -4767,9 +4767,9 @@ set ltsw(us,farb) 1
 set ltsw(us,farese) 1
 set ltsw(us,farha) 1
 set ltsw(us,farinacci) 1
-set ltss(us,farlee) [list -1 1 4]
+lappend ltss(us,farlee) {-1 1 4}
 set ltsw(us,farlee) 1
-set ltss(us,farmboy) [list -1 1 5]
+lappend ltss(us,farmboy) {-1 1 5}
 set ltsw(us,farmboy) 1
 set ltsw(us,farmhouses) 1
 set ltsw(us,farmworker) 1
@@ -4805,7 +4805,7 @@ set ltsw(us,feasts) 1
 set ltsw(us,featherless) 1
 set ltsw(us,featured) 1
 set ltsw(us,february's) 1
-set ltss(us,feces) [list -1 1 3]
+lappend ltss(us,feces) {-1 1 3}
 set ltsw(us,feces) 1
 set ltsw(us,fedak) 1
 set ltsw(us,federal) 1
@@ -4849,13 +4849,13 @@ set ltsw(us,ferrandino) 1
 set ltsw(us,ferraro) 1
 set ltsw(us,ferrency) 1
 set ltsw(us,ferretti) 1
-set ltss(us,ferrill) [list 1 3 -1]
+lappend ltss(us,ferrill) {1 3 -1}
 set ltsw(us,ferrill) 1
 set ltsw(us,ferrochrome) 1
 set ltsw(us,ferrous) 1
 set ltsw(us,fertig) 1
 set ltsw(us,fertilizing) 1
-set ltss(us,fescue) [list -1 1 5]
+lappend ltss(us,fescue) {-1 1 5}
 set ltsw(us,fescue) 1
 set ltsw(us,fessler) 1
 set ltsw(us,festive) 1
@@ -4962,7 +4962,7 @@ set ltsw(us,fleet's) 1
 set ltsw(us,fleischauer) 1
 set ltsw(us,fleissner) 1
 set ltsw(us,flemons) 1
-set ltss(us,flesner) [list 5 2 -1]
+lappend ltss(us,flesner) {5 2 -1}
 set ltsw(us,flesner) 1
 set ltsw(us,fleury) 1
 set ltsw(us,flexible) 1
@@ -4999,7 +4999,7 @@ set ltsw(us,flypaper) 1
 set ltsw(us,foaming) 1
 set ltsw(us,focht) 1
 set ltsw(us,fodor) 1
-set ltss(us,fogarty) [list 6 1 3]
+lappend ltss(us,fogarty) {6 1 3}
 set ltsw(us,fogarty) 1
 set ltsw(us,fogle) 1
 set ltsw(us,foia) 1
@@ -5014,7 +5014,7 @@ set ltsw(us,folse) 1
 set ltsw(us,foment) 1
 set ltsw(us,fonda's) 1
 set ltsw(us,fondness) 1
-set ltss(us,fonner) [list 3 1 -1]
+lappend ltss(us,fonner) {3 1 -1}
 set ltsw(us,fonner) 1
 set ltsw(us,fontenette) 1
 set ltsw(us,foodmaker's) 1
@@ -5154,7 +5154,7 @@ set ltsw(us,fugues) 1
 set ltsw(us,fuji's) 1
 set ltsw(us,fujis) 1
 set ltsw(us,fuklah) 1
-set ltss(us,fulani) [list 5 3 1]
+lappend ltss(us,fulani) {5 3 1}
 set ltsw(us,fulani) 1
 set ltsw(us,fulfilling) 1
 set ltsw(us,full) 1
@@ -5170,7 +5170,7 @@ set ltsw(us,funnell) 1
 set ltsw(us,fuoco) 1
 set ltsw(us,furbush) 1
 set ltsw(us,furini) 1
-set ltss(us,furlong) [list -1 1 3]
+lappend ltss(us,furlong) {-1 1 3}
 set ltsw(us,furlong) 1
 set ltsw(us,furnas) 1
 set ltsw(us,furniture) 1
@@ -5181,7 +5181,7 @@ set ltsw(us,fuson) 1
 set ltsw(us,fustat) 1
 set ltsw(us,future) 1
 set ltsw(us,fuzes) 1
-set ltss(us,fyock) [list -1 2 -1]
+lappend ltss(us,fyock) {-1 2 -1}
 set ltsw(us,fyock) 1
 set ltsw(us,gabardine) 1
 set ltsw(us,gabehart) 1
@@ -5223,7 +5223,7 @@ set ltsw(us,gamer) 1
 set ltsw(us,gammel) 1
 set ltsw(us,gamunde) 1
 set ltsw(us,gandalf) 1
-set ltss(us,ganem) [list -1 1 3]
+lappend ltss(us,ganem) {-1 1 3}
 set ltsw(us,ganem) 1
 set ltsw(us,gangemi) 1
 set ltsw(us,gangplank) 1
@@ -5238,7 +5238,7 @@ set ltsw(us,garbutt) 1
 set ltsw(us,garda) 1
 set ltsw(us,gardener's) 1
 set ltsw(us,gardiner) 1
-set ltss(us,gardyne) [list -1 1 4]
+lappend ltss(us,gardyne) {-1 1 4}
 set ltsw(us,gardyne) 1
 set ltsw(us,garfunkel) 1
 set ltsw(us,gargoyle) 1
@@ -5247,7 +5247,7 @@ set ltsw(us,garling) 1
 set ltsw(us,garments) 1
 set ltsw(us,garners) 1
 set ltsw(us,garnishes) 1
-set ltss(us,garon) [list 1 3 -1]
+lappend ltss(us,garon) {1 3 -1}
 set ltsw(us,garon) 1
 set ltsw(us,garraway) 1
 set ltsw(us,garrett's) 1
@@ -5303,7 +5303,7 @@ set ltsw(us,gelett) 1
 set ltsw(us,gelles) 1
 set ltsw(us,gelvin) 1
 set ltsw(us,gemco) 1
-set ltss(us,gemini) [list 3 1 5]
+lappend ltss(us,gemini) {3 1 5}
 set ltsw(us,gemini) 1
 set ltsw(us,gemstones) 1
 set ltsw(us,gencorp's) 1
@@ -5324,7 +5324,7 @@ set ltsw(us,gentian) 1
 set ltsw(us,gentleman's) 1
 set ltsw(us,gentlewomen's) 1
 set ltsw(us,gentz) 1
-set ltss(us,genzyme) [list -1 1 4]
+lappend ltss(us,genzyme) {-1 1 4}
 set ltsw(us,genzyme) 1
 set ltsw(us,geoffrion) 1
 set ltsw(us,geoid) 1
@@ -5382,9 +5382,9 @@ set ltsw(us,gilbo) 1
 set ltsw(us,gilding) 1
 set ltsw(us,gilgore) 1
 set ltsw(us,gill's) 1
-set ltss(us,gillem) [list -1 1 3]
+lappend ltss(us,gillem) {-1 1 3}
 set ltsw(us,gillem) 1
-set ltss(us,gillett) [list -1 3 1]
+lappend ltss(us,gillett) {-1 3 1}
 set ltsw(us,gillett) 1
 set ltsw(us,gillick) 1
 set ltsw(us,gillin) 1
@@ -5412,7 +5412,7 @@ set ltsw(us,gittler) 1
 set ltsw(us,giulio) 1
 set ltsw(us,giveback) 1
 set ltsw(us,giveth) 1
-set ltss(us,gizmo) [list -1 1 4]
+lappend ltss(us,gizmo) {-1 1 4}
 set ltsw(us,gizmo) 1
 set ltsw(us,glacial) 1
 set ltsw(us,glad) 1
@@ -5449,7 +5449,7 @@ set ltsw(us,glow) 1
 set ltsw(us,gluck) 1
 set ltsw(us,glues) 1
 set ltsw(us,glutaric) 1
-set ltss(us,glycine) [list -1 2 4]
+lappend ltss(us,glycine) {-1 2 4}
 set ltsw(us,glycine) 1
 set ltsw(us,glyn) 1
 set ltsw(us,gnann) 1
@@ -5500,7 +5500,7 @@ set ltsw(us,goodness) 1
 set ltsw(us,goodridge) 1
 set ltsw(us,goodstein) 1
 set ltsw(us,goodyear's) 1
-set ltss(us,googins) [list -1 1 3]
+lappend ltss(us,googins) {-1 1 3}
 set ltsw(us,googins) 1
 set ltsw(us,goos) 1
 set ltsw(us,goostree) 1
@@ -5704,7 +5704,7 @@ set ltsw(us,gut) 1
 set ltsw(us,guthmiller) 1
 set ltsw(us,gutman) 1
 set ltsw(us,gutter) 1
-set ltss(us,gutwaks) [list -1 1 4]
+lappend ltss(us,gutwaks) {-1 1 4}
 set ltsw(us,gutwaks) 1
 set ltsw(us,guyette) 1
 set ltsw(us,guzek) 1
@@ -5713,7 +5713,7 @@ set ltsw(us,gway) 1
 set ltsw(us,gwizdala) 1
 set ltsw(us,gym) 1
 set ltsw(us,gypsy) 1
-set ltss(us,gyros) [list -1 1 3]
+lappend ltss(us,gyros) {-1 1 3}
 set ltsw(us,gyros) 1
 set ltsw(us,ha) 1
 set ltsw(us,haagen) 1
@@ -5767,11 +5767,11 @@ set ltsw(us,halprin) 1
 set ltsw(us,halter) 1
 set ltsw(us,halve) 1
 set ltsw(us,hamad) 1
-set ltss(us,hamar) [list 1 3 -1]
+lappend ltss(us,hamar) {1 3 -1}
 set ltsw(us,hamar) 1
 set ltsw(us,hambley) 1
 set ltsw(us,hamburgers) 1
-set ltss(us,hamid) [list 1 3 -1]
+lappend ltss(us,hamid) {1 3 -1}
 set ltsw(us,hamid) 1
 set ltsw(us,hamlet) 1
 set ltsw(us,hammacher) 1
@@ -5783,7 +5783,7 @@ set ltsw(us,hamrick) 1
 set ltsw(us,hamstrings) 1
 set ltsw(us,hanahan) 1
 set ltsw(us,hanby) 1
-set ltss(us,handbag) [list -1 1 5]
+lappend ltss(us,handbag) {-1 1 5}
 set ltsw(us,handbag) 1
 set ltsw(us,handcrafts) 1
 set ltsw(us,handelman) 1
@@ -5826,7 +5826,7 @@ set ltsw(us,hare's) 1
 set ltsw(us,hargadon) 1
 set ltsw(us,hargrove) 1
 set ltsw(us,hariz) 1
-set ltss(us,harkin's) [list -1 1 4]
+lappend ltss(us,harkin's) {-1 1 4}
 set ltsw(us,harkin's) 1
 set ltsw(us,harlacher) 1
 set ltsw(us,harley's) 1
@@ -5857,11 +5857,11 @@ set ltsw(us,harvest) 1
 set ltsw(us,harvey's) 1
 set ltsw(us,haryana) 1
 set ltsw(us,hascall) 1
-set ltss(us,haselton) [list 1 3 -1]
+lappend ltss(us,haselton) {1 3 -1}
 set ltsw(us,haselton) 1
 set ltsw(us,hashemite) 1
 set ltsw(us,haskett) 1
-set ltss(us,haso's) [list -1 1 3]
+lappend ltss(us,haso's) {-1 1 3}
 set ltsw(us,haso's) 1
 set ltsw(us,hasselman) 1
 set ltsw(us,hassled) 1
@@ -5981,7 +5981,7 @@ set ltsw(us,hendron) 1
 set ltsw(us,heney) 1
 set ltsw(us,henk) 1
 set ltsw(us,henley) 1
-set ltss(us,henness) [list -1 1 3]
+lappend ltss(us,henness) {-1 1 3}
 set ltsw(us,henness) 1
 set ltsw(us,henning) 1
 set ltsw(us,henriette) 1
@@ -6014,7 +6014,7 @@ set ltsw(us,herschensohn) 1
 set ltsw(us,hershman) 1
 set ltsw(us,hertel) 1
 set ltsw(us,herwig) 1
-set ltss(us,herzer) [list 3 1 -1]
+lappend ltss(us,herzer) {3 1 -1}
 set ltsw(us,herzer) 1
 set ltsw(us,hesheng) 1
 set ltsw(us,hesitations) 1
@@ -6025,7 +6025,7 @@ set ltsw(us,heterosporous) 1
 set ltsw(us,hetti) 1
 set ltsw(us,hetzler) 1
 set ltsw(us,hew) 1
-set ltss(us,hewins) [list -1 2 3]
+lappend ltss(us,hewins) {-1 2 3}
 set ltsw(us,hewins) 1
 set ltsw(us,hexagon) 1
 set ltsw(us,heydon) 1
@@ -6059,7 +6059,7 @@ set ltsw(us,hillhouse) 1
 set ltsw(us,hillmann) 1
 set ltsw(us,hillsides) 1
 set ltsw(us,hilmer) 1
-set ltss(us,hiltner) [list 5 1 -1]
+lappend ltss(us,hiltner) {5 1 -1}
 set ltsw(us,hiltner) 1
 set ltsw(us,himmelfarb) 1
 set ltsw(us,hinchcliffe) 1
@@ -6110,7 +6110,7 @@ set ltsw(us,hoffa) 1
 set ltsw(us,hoffert) 1
 set ltsw(us,hoffner) 1
 set ltsw(us,hofstetter) 1
-set ltss(us,hogarty) [list 6 1 3]
+lappend ltss(us,hogarty) {6 1 3}
 set ltsw(us,hogarty) 1
 set ltsw(us,hoggart) 1
 set ltsw(us,hogrefe) 1
@@ -6199,7 +6199,7 @@ set ltsw(us,hospital) 1
 set ltsw(us,hossack) 1
 set ltsw(us,hosted) 1
 set ltsw(us,hostettler) 1
-set ltss(us,hotcakes) [list -1 1 4]
+lappend ltss(us,hotcakes) {-1 1 4}
 set ltsw(us,hotcakes) 1
 set ltsw(us,hotels') 1
 set ltsw(us,hottel) 1
@@ -6221,7 +6221,7 @@ set ltsw(us,howdyshell) 1
 set ltsw(us,howery) 1
 set ltsw(us,howitzer) 1
 set ltsw(us,howling) 1
-set ltss(us,howtek) [list -1 1 3]
+lappend ltss(us,howtek) {-1 1 3}
 set ltsw(us,howtek) 1
 set ltsw(us,hoying) 1
 set ltsw(us,hrawi) 1
@@ -6246,11 +6246,11 @@ set ltsw(us,hughbanks) 1
 set ltsw(us,hughlett) 1
 set ltsw(us,hughston) 1
 set ltsw(us,huguley) 1
-set ltss(us,huish) [list -1 2 3]
+lappend ltss(us,huish) {-1 2 3}
 set ltsw(us,huish) 1
 set ltsw(us,hukstra) 1
 set ltsw(us,huldy) 1
-set ltss(us,hulin) [list -1 2 4]
+lappend ltss(us,hulin) {-1 2 4}
 set ltsw(us,hulin) 1
 set ltsw(us,hull's) 1
 set ltsw(us,hulme) 1
@@ -6262,7 +6262,7 @@ set ltsw(us,humbert) 1
 set ltsw(us,humbly) 1
 set ltsw(us,humerus) 1
 set ltsw(us,humidity's) 1
-set ltss(us,huml) [list 3 1 -1]
+lappend ltss(us,huml) {3 1 -1}
 set ltsw(us,huml) 1
 set ltsw(us,humoral) 1
 set ltsw(us,humpal) 1
@@ -6285,7 +6285,7 @@ set ltsw(us,husky's) 1
 set ltsw(us,hustead) 1
 set ltsw(us,hutcheson) 1
 set ltsw(us,huts) 1
-set ltss(us,hutu's) [list -1 1 3]
+lappend ltss(us,hutu's) {-1 1 3}
 set ltsw(us,hutu's) 1
 set ltsw(us,huxley) 1
 set ltsw(us,hwan's) 1
@@ -6613,7 +6613,7 @@ set ltsw(us,jackpot) 1
 set ltsw(us,jacksonville) 1
 set ltsw(us,jacobean) 1
 set ltsw(us,jacobowitz) 1
-set ltss(us,jacor) [list -1 1 3]
+lappend ltss(us,jacor) {-1 1 3}
 set ltsw(us,jacor) 1
 set ltsw(us,jacquetta) 1
 set ltsw(us,jadwin) 1
@@ -6687,11 +6687,11 @@ set ltsw(us,jian) 1
 set ltsw(us,jicha) 1
 set ltsw(us,jimenez) 1
 set ltsw(us,jin) 1
-set ltss(us,jinkins) [list -1 1 4]
+lappend ltss(us,jinkins) {-1 1 4}
 set ltsw(us,jinkins) 1
 set ltsw(us,jirsa) 1
 set ltsw(us,jo) 1
-set ltss(us,joann) [list -1 2 1]
+lappend ltss(us,joann) {-1 2 1}
 set ltsw(us,joann) 1
 set ltsw(us,jobs) 1
 set ltsw(us,jochem) 1
@@ -6715,7 +6715,7 @@ set ltsw(us,jordanian) 1
 set ltsw(us,jornal) 1
 set ltsw(us,joseph) 1
 set ltsw(us,joser) 1
-set ltss(us,josleyn) [list -1 1 4]
+lappend ltss(us,josleyn) {-1 1 4}
 set ltsw(us,josleyn) 1
 set ltsw(us,jostle) 1
 set ltsw(us,joules) 1
@@ -6748,7 +6748,7 @@ set ltsw(us,junky) 1
 set ltsw(us,jupiter) 1
 set ltsw(us,jure) 1
 set ltsw(us,jurica) 1
-set ltss(us,jurist) [list -1 1 3]
+lappend ltss(us,jurist) {-1 1 3}
 set ltsw(us,jurist) 1
 set ltsw(us,jurors) 1
 set ltsw(us,justification) 1
@@ -6756,10 +6756,10 @@ set ltsw(us,justiniano) 1
 set ltsw(us,jute) 1
 set ltsw(us,k's) 1
 set ltsw(us,kabbalah) 1
-set ltss(us,kabuki) [list 1 3 5]
+lappend ltss(us,kabuki) {1 3 5}
 set ltsw(us,kabuki) 1
 set ltsw(us,kaczmarczyk) 1
-set ltss(us,kadrmas) [list 3 1 5]
+lappend ltss(us,kadrmas) {3 1 5}
 set ltsw(us,kadrmas) 1
 set ltsw(us,kaestner) 1
 set ltsw(us,kagan) 1
@@ -6778,7 +6778,7 @@ set ltsw(us,kalo) 1
 set ltsw(us,kaluza) 1
 set ltsw(us,kamber) 1
 set ltsw(us,kamenar) 1
-set ltss(us,kamins) [list -1 1 3]
+lappend ltss(us,kamins) {-1 1 3}
 set ltsw(us,kamins) 1
 set ltsw(us,kammerer) 1
 set ltsw(us,kampen) 1
@@ -6829,7 +6829,7 @@ set ltsw(us,kawasmi) 1
 set ltsw(us,kayaks) 1
 set ltsw(us,kayo) 1
 set ltsw(us,kazikaev) 1
-set ltss(us,kcal) [list 3 1 -1]
+lappend ltss(us,kcal) {3 1 -1}
 set ltsw(us,kcal) 1
 set ltsw(us,keal) 1
 set ltsw(us,kearby) 1
@@ -6855,7 +6855,7 @@ set ltsw(us,kellison) 1
 set ltsw(us,kellwood) 1
 set ltsw(us,kelps) 1
 set ltsw(us,kelting) 1
-set ltss(us,kemal) [list 1 3 -1]
+lappend ltss(us,kemal) {1 3 -1}
 set ltsw(us,kemal) 1
 set ltsw(us,kemmons) 1
 set ltsw(us,kemper's) 1
@@ -6863,7 +6863,7 @@ set ltsw(us,kempski) 1
 set ltsw(us,kenan) 1
 set ltsw(us,kendrick) 1
 set ltsw(us,kenetech) 1
-set ltss(us,kenmore) [list -1 1 4]
+lappend ltss(us,kenmore) {-1 1 4}
 set ltsw(us,kenmore) 1
 set ltsw(us,kennebunkport) 1
 set ltsw(us,kennemer) 1
@@ -7014,7 +7014,7 @@ set ltsw(us,koberstein) 1
 set ltsw(us,koby) 1
 set ltsw(us,kochanski) 1
 set ltsw(us,kocinski) 1
-set ltss(us,kodak) [list -1 1 3]
+lappend ltss(us,kodak) {-1 1 3}
 set ltsw(us,kodak) 1
 set ltsw(us,koehler) 1
 set ltsw(us,koen) 1
@@ -7047,7 +7047,7 @@ set ltsw(us,kopec) 1
 set ltsw(us,kopf) 1
 set ltsw(us,kopp) 1
 set ltsw(us,koppers') 1
-set ltss(us,koran) [list 1 3 -1]
+lappend ltss(us,koran) {1 3 -1}
 set ltsw(us,koran) 1
 set ltsw(us,korda) 1
 set ltsw(us,korean's) 1
@@ -7094,7 +7094,7 @@ set ltsw(us,kresge) 1
 set ltsw(us,kretschmar) 1
 set ltsw(us,kreuzer) 1
 set ltsw(us,kriegel) 1
-set ltss(us,krigsten) [list -1 2 6]
+lappend ltss(us,krigsten) {-1 2 6}
 set ltsw(us,krigsten) 1
 set ltsw(us,kringley) 1
 set ltsw(us,kristi) 1
@@ -7110,14 +7110,14 @@ set ltsw(us,krudman) 1
 set ltsw(us,krukowski) 1
 set ltsw(us,krumwiede) 1
 set ltsw(us,krupski) 1
-set ltss(us,krutick) [list -1 2 4]
+lappend ltss(us,krutick) {-1 2 4}
 set ltsw(us,krutick) 1
 set ltsw(us,kryptos) 1
-set ltss(us,kuba) [list 4 2 -1]
+lappend ltss(us,kuba) {4 2 -1}
 set ltsw(us,kuba) 1
 set ltsw(us,kubiak) 1
 set ltsw(us,kubisiak) 1
-set ltss(us,kucan) [list 4 2 -1]
+lappend ltss(us,kucan) {4 2 -1}
 set ltsw(us,kucan) 1
 set ltsw(us,kuchinski) 1
 set ltsw(us,kuder) 1
@@ -7127,7 +7127,7 @@ set ltsw(us,kuffner) 1
 set ltsw(us,kuhlmann) 1
 set ltsw(us,kuiken) 1
 set ltsw(us,kulesza) 1
-set ltss(us,kulish) [list 4 2 -1]
+lappend ltss(us,kulish) {4 2 -1}
 set ltsw(us,kulish) 1
 set ltsw(us,kulp) 1
 set ltsw(us,kumm) 1
@@ -7166,7 +7166,7 @@ set ltsw(us,laces) 1
 set ltsw(us,lachica) 1
 set ltsw(us,lackawanna) 1
 set ltsw(us,lackovic) 1
-set ltss(us,lacoss) [list 1 3 -1]
+lappend ltss(us,lacoss) {1 3 -1}
 set ltsw(us,lacoss) 1
 set ltsw(us,lacquered) 1
 set ltsw(us,lactic) 1
@@ -7191,7 +7191,7 @@ set ltsw(us,lakeside) 1
 set ltsw(us,lakshamanan's) 1
 set ltsw(us,lalla) 1
 set ltsw(us,lam) 1
-set ltss(us,lamar) [list 1 3 -1]
+lappend ltss(us,lamar) {1 3 -1}
 set ltsw(us,lamar) 1
 set ltsw(us,lamattina) 1
 set ltsw(us,lamberson) 1
@@ -7215,7 +7215,7 @@ set ltsw(us,landell) 1
 set ltsw(us,landfair) 1
 set ltsw(us,landgrebe) 1
 set ltsw(us,landings) 1
-set ltss(us,landlord) [list -1 1 5]
+lappend ltss(us,landlord) {-1 1 5}
 set ltsw(us,landlord) 1
 set ltsw(us,landmines) 1
 set ltsw(us,landowski) 1
@@ -7450,7 +7450,7 @@ set ltsw(us,lighting) 1
 set ltsw(us,lightship) 1
 set ltsw(us,lijewski) 1
 set ltsw(us,likened) 1
-set ltss(us,likins) [list -1 1 3]
+lappend ltss(us,likins) {-1 1 3}
 set ltsw(us,likins) 1
 set ltsw(us,lilco) 1
 set ltsw(us,liliane) 1
@@ -7486,7 +7486,7 @@ set ltsw(us,lipe) 1
 set ltsw(us,lipp) 1
 set ltsw(us,lippincott) 1
 set ltsw(us,lipschitz) 1
-set ltss(us,lipski) [list -1 1 5]
+lappend ltss(us,lipski) {-1 1 5}
 set ltsw(us,lipski) 1
 set ltsw(us,lipuma) 1
 set ltsw(us,liquidating) 1
@@ -7555,7 +7555,7 @@ set ltsw(us,londoner) 1
 set ltsw(us,lones) 1
 set ltsw(us,longacre) 1
 set ltsw(us,longenecker) 1
-set ltss(us,longhorn) [list -1 1 4]
+lappend ltss(us,longhorn) {-1 1 4}
 set ltsw(us,longhorn) 1
 set ltsw(us,longitudes) 1
 set ltsw(us,longmont) 1
@@ -7571,7 +7571,7 @@ set ltsw(us,loosestrifes) 1
 set ltsw(us,lopardo) 1
 set ltsw(us,lopid) 1
 set ltsw(us,lopsided) 1
-set ltss(us,loran) [list -1 1 3]
+lappend ltss(us,loran) {-1 1 3}
 set ltsw(us,loran) 1
 set ltsw(us,lords) 1
 set ltsw(us,lorelli) 1
@@ -7598,7 +7598,7 @@ set ltsw(us,lovan) 1
 set ltsw(us,lovegrove) 1
 set ltsw(us,lover's) 1
 set ltsw(us,lovewell) 1
-set ltss(us,lovins) [list -1 1 3]
+lappend ltss(us,lovins) {-1 1 3}
 set ltsw(us,lovins) 1
 set ltsw(us,lowden) 1
 set ltsw(us,lowensky) 1
@@ -7610,7 +7610,7 @@ set ltsw(us,lozoya) 1
 set ltsw(us,luana) 1
 set ltsw(us,lubavitcher) 1
 set ltsw(us,lube) 1
-set ltss(us,lubitz) [list -1 1 3]
+lappend ltss(us,lubitz) {-1 1 3}
 set ltsw(us,lubitz) 1
 set ltsw(us,lubricated) 1
 set ltsw(us,lucas') 1
@@ -7642,7 +7642,7 @@ set ltsw(us,luminous) 1
 set ltsw(us,lumper's) 1
 set ltsw(us,luna) 1
 set ltsw(us,lunched) 1
-set ltss(us,lunday) [list -1 1 4]
+lappend ltss(us,lunday) {-1 1 4}
 set ltsw(us,lunday) 1
 set ltsw(us,lundholm) 1
 set ltsw(us,lunetta) 1
@@ -7669,7 +7669,7 @@ set ltsw(us,lynching) 1
 set ltsw(us,lynes) 1
 set ltsw(us,lynott) 1
 set ltsw(us,lyric) 1
-set ltss(us,lyrist) [list -1 1 3]
+lappend ltss(us,lyrist) {-1 1 3}
 set ltsw(us,lyrist) 1
 set ltsw(us,lyster) 1
 set ltsw(us,m'bow) 1
@@ -7747,7 +7747,7 @@ set ltsw(us,majid) 1
 set ltsw(us,majorities) 1
 set ltsw(us,makara) 1
 set ltsw(us,maker's) 1
-set ltss(us,makinen) [list 5 1 3]
+lappend ltss(us,makinen) {5 1 3}
 set ltsw(us,makinen) 1
 set ltsw(us,makris) 1
 set ltsw(us,malabre) 1
@@ -7851,7 +7851,7 @@ set ltsw(us,markan) 1
 set ltsw(us,markell) 1
 set ltsw(us,marketamerica) 1
 set ltsw(us,marketings) 1
-set ltss(us,markey) [list -1 1 4]
+lappend ltss(us,markey) {-1 1 4}
 set ltsw(us,markey) 1
 set ltsw(us,markkaa) 1
 set ltsw(us,markovich) 1
@@ -7884,7 +7884,7 @@ set ltsw(us,marts) 1
 set ltsw(us,martyred) 1
 set ltsw(us,marullo) 1
 set ltsw(us,marveled) 1
-set ltss(us,marwick) [list -1 1 4]
+lappend ltss(us,marwick) {-1 1 4}
 set ltsw(us,marwick) 1
 set ltsw(us,marylou) 1
 set ltsw(us,marzec) 1
@@ -7947,7 +7947,7 @@ set ltsw(us,maxfield) 1
 set ltsw(us,maximilian) 1
 set ltsw(us,maxis) 1
 set ltsw(us,maxwell) 1
-set ltss(us,mayall) [list -1 1 2]
+lappend ltss(us,mayall) {-1 1 2}
 set ltsw(us,mayall) 1
 set ltsw(us,maybury) 1
 set ltsw(us,mayer) 1
@@ -7960,7 +7960,7 @@ set ltsw(us,maziarz) 1
 set ltsw(us,mazurkiewicz) 1
 set ltsw(us,mazzeo) 1
 set ltsw(us,mazzolla) 1
-set ltss(us,mcafee) [list 3 1 5]
+lappend ltss(us,mcafee) {3 1 5}
 set ltsw(us,mcafee) 1
 set ltsw(us,mcallen) 1
 set ltsw(us,mcandrews) 1
@@ -8094,7 +8094,7 @@ set ltsw(us,megafood) 1
 set ltsw(us,megan) 1
 set ltsw(us,megatons) 1
 set ltsw(us,megill) 1
-set ltss(us,meharry) [list 5 3 1]
+lappend ltss(us,meharry) {5 3 1}
 set ltsw(us,meharry) 1
 set ltsw(us,mehlhaff) 1
 set ltsw(us,mei) 1
@@ -8107,11 +8107,11 @@ set ltsw(us,melamed) 1
 set ltsw(us,melange) 1
 set ltsw(us,melba) 1
 set ltsw(us,melchor) 1
-set ltss(us,melee) [list -1 1 3]
+lappend ltss(us,melee) {-1 1 3}
 set ltsw(us,melee) 1
 set ltsw(us,melgar) 1
 set ltsw(us,melikian) 1
-set ltss(us,melisse) [list -1 1 3]
+lappend ltss(us,melisse) {-1 1 3}
 set ltsw(us,melisse) 1
 set ltsw(us,mella) 1
 set ltsw(us,mellgren) 1
@@ -8119,12 +8119,12 @@ set ltsw(us,mellman) 1
 set ltsw(us,mellow) 1
 set ltsw(us,meloche) 1
 set ltsw(us,meloni) 1
-set ltss(us,melroy) [list -1 1 4]
+lappend ltss(us,melroy) {-1 1 4}
 set ltsw(us,melroy) 1
 set ltsw(us,meltzer) 1
 set ltsw(us,melzer) 1
 set ltsw(us,membranous) 1
-set ltss(us,memoirs) [list -1 1 4]
+lappend ltss(us,memoirs) {-1 1 4}
 set ltsw(us,memoirs) 1
 set ltsw(us,memorialize) 1
 set ltsw(us,memotec) 1
@@ -8140,7 +8140,7 @@ set ltsw(us,menninger) 1
 set ltsw(us,menorah's) 1
 set ltsw(us,mensinger) 1
 set ltsw(us,menter) 1
-set ltss(us,mentor) [list -1 1 4]
+lappend ltss(us,mentor) {-1 1 4}
 set ltsw(us,mentor) 1
 set ltsw(us,menu) 1
 set ltsw(us,menzione) 1
@@ -8192,7 +8192,7 @@ set ltsw(us,meurer) 1
 set ltsw(us,mexico) 1
 set ltsw(us,meyers) 1
 set ltsw(us,mezvinsky) 1
-set ltss(us,mhoon) [list -1 2 -1]
+lappend ltss(us,mhoon) {-1 2 -1}
 set ltsw(us,mhoon) 1
 set ltsw(us,miata) 1
 set ltsw(us,micatin) 1
@@ -8209,7 +8209,7 @@ set ltsw(us,microbilt) 1
 set ltsw(us,microcircuits) 1
 set ltsw(us,microeconomics) 1
 set ltsw(us,microgram) 1
-set ltss(us,micron) [list -1 1 4]
+lappend ltss(us,micron) {-1 1 4}
 set ltsw(us,micron) 1
 set ltsw(us,microphones) 1
 set ltsw(us,microscopically) 1
@@ -8251,7 +8251,7 @@ set ltsw(us,milledge) 1
 set ltsw(us,millerick) 1
 set ltsw(us,millibar) 1
 set ltsw(us,milligram) 1
-set ltss(us,millin) [list 3 1 -1]
+lappend ltss(us,millin) {3 1 -1}
 set ltsw(us,millin) 1
 set ltsw(us,millionths) 1
 set ltsw(us,millner) 1
@@ -8265,7 +8265,7 @@ set ltsw(us,minasian) 1
 set ltsw(us,mincher) 1
 set ltsw(us,minda) 1
 set ltsw(us,mindful) 1
-set ltss(us,minea) [list 4 3 1]
+lappend ltss(us,minea) {4 3 1}
 set ltsw(us,minea) 1
 set ltsw(us,minella) 1
 set ltsw(us,mineral's) 1
@@ -8286,7 +8286,7 @@ set ltsw(us,minnis) 1
 set ltsw(us,minogue) 1
 set ltsw(us,minoring) 1
 set ltsw(us,minotti) 1
-set ltss(us,minstar) [list -1 1 5]
+lappend ltss(us,minstar) {-1 1 5}
 set ltsw(us,minstar) 1
 set ltsw(us,minteer) 1
 set ltsw(us,mintzer) 1
@@ -8326,7 +8326,7 @@ set ltsw(us,mistaking) 1
 set ltsw(us,mistreating) 1
 set ltsw(us,mistrust) 1
 set ltsw(us,misunderstandings) 1
-set ltss(us,mit) [list -1 0 -1]
+lappend ltss(us,mit) {-1 0 -1}
 set ltsw(us,mit) 1
 set ltsw(us,mitcheltree) 1
 set ltsw(us,mites) 1
@@ -8337,7 +8337,7 @@ set ltsw(us,mitterrand) 1
 set ltsw(us,mitzi) 1
 set ltsw(us,mixner) 1
 set ltsw(us,miyake) 1
-set ltss(us,mizar) [list -1 1 3]
+lappend ltss(us,mizar) {-1 1 3}
 set ltsw(us,mizar) 1
 set ltsw(us,mizner) 1
 set ltsw(us,mnemonics) 1
@@ -8368,7 +8368,7 @@ set ltsw(us,moldy) 1
 set ltsw(us,molenda) 1
 set ltsw(us,molesting) 1
 set ltsw(us,molinar) 1
-set ltss(us,mollen) [list -1 1 3]
+lappend ltss(us,mollen) {-1 1 3}
 set ltsw(us,mollen) 1
 set ltsw(us,mollie) 1
 set ltsw(us,molly) 1
@@ -8445,7 +8445,7 @@ set ltsw(us,morrell) 1
 set ltsw(us,morrisette) 1
 set ltsw(us,morrisville's) 1
 set ltsw(us,morss) 1
-set ltss(us,mortell) [list 1 4 -1]
+lappend ltss(us,mortell) {1 4 -1}
 set ltsw(us,mortell) 1
 set ltsw(us,mortgaged) 1
 set ltsw(us,mortimore) 1
@@ -8456,7 +8456,7 @@ set ltsw(us,moshus) 1
 set ltsw(us,moskolenko) 1
 set ltsw(us,mosman) 1
 set ltsw(us,mossman) 1
-set ltss(us,motel) [list 1 3 -1]
+lappend ltss(us,motel) {1 3 -1}
 set ltsw(us,motel) 1
 set ltsw(us,mother) 1
 set ltsw(us,motioned) 1
@@ -8481,7 +8481,7 @@ set ltsw(us,mowat) 1
 set ltsw(us,mowing) 1
 set ltsw(us,moye) 1
 set ltsw(us,moynihan) 1
-set ltss(us,mpeg) [list -1 0 3]
+lappend ltss(us,mpeg) {-1 0 3}
 set ltsw(us,mpeg) 1
 set ltsw(us,mroczek) 1
 set ltsw(us,ms) 1
@@ -8497,7 +8497,7 @@ set ltsw(us,muggers) 1
 set ltsw(us,muhabara) 1
 set ltsw(us,muhlenkamp) 1
 set ltsw(us,mujahedeen) 1
-set ltss(us,mula) [list 4 2 -1]
+lappend ltss(us,mula) {4 2 -1}
 set ltsw(us,mula) 1
 set ltsw(us,mulches) 1
 set ltsw(us,mulford) 1
@@ -8554,7 +8554,7 @@ set ltsw(us,mutters) 1
 set ltsw(us,mutzman) 1
 set ltsw(us,muzzy) 1
 set ltsw(us,myer) 1
-set ltss(us,mylar) [list -1 1 3]
+lappend ltss(us,mylar) {-1 1 3}
 set ltsw(us,mylar) 1
 set ltsw(us,myojin) 1
 set ltsw(us,myres) 1
@@ -8613,7 +8613,7 @@ set ltsw(us,nauseam) 1
 set ltsw(us,nav) 1
 set ltsw(us,navarre) 1
 set ltsw(us,navies) 1
-set ltss(us,navin) [list 1 3 -1]
+lappend ltss(us,navin) {1 3 -1}
 set ltsw(us,navin) 1
 set ltsw(us,navy's) 1
 set ltsw(us,nayyar) 1
@@ -8649,7 +8649,7 @@ set ltsw(us,neloms) 1
 set ltsw(us,nemecek) 1
 set ltsw(us,nemo) 1
 set ltsw(us,neoclassic) 1
-set ltss(us,neons) [list -1 1 2]
+lappend ltss(us,neons) {-1 1 2}
 set ltsw(us,neons) 1
 set ltsw(us,neotenic) 1
 set ltsw(us,nephrite) 1
@@ -8776,7 +8776,7 @@ set ltsw(us,norcen) 1
 set ltsw(us,nordby) 1
 set ltsw(us,nordine) 1
 set ltsw(us,nordstrom) 1
-set ltss(us,norem) [list -1 1 3]
+lappend ltss(us,norem) {-1 1 3}
 set ltsw(us,norem) 1
 set ltsw(us,norgard) 1
 set ltsw(us,norinko) 1
@@ -8812,7 +8812,7 @@ set ltsw(us,nowland) 1
 set ltsw(us,noyd) 1
 set ltsw(us,nuala) 1
 set ltsw(us,nuckolls) 1
-set ltss(us,nucor) [list -1 1 3]
+lappend ltss(us,nucor) {-1 1 3}
 set ltsw(us,nucor) 1
 set ltsw(us,nudging) 1
 set ltsw(us,nugent) 1
@@ -8866,7 +8866,7 @@ set ltsw(us,occidentale's) 1
 set ltsw(us,occupied) 1
 set ltsw(us,occurrence) 1
 set ltsw(us,oceanographer) 1
-set ltss(us,ochoa) [list 3 2 0]
+lappend ltss(us,ochoa) {3 2 0}
 set ltsw(us,ochoa) 1
 set ltsw(us,ockerbloom) 1
 set ltsw(us,octavio) 1
@@ -8935,7 +8935,7 @@ set ltsw(us,ones') 1
 set ltsw(us,onion) 1
 set ltsw(us,onnen) 1
 set ltsw(us,onorato) 1
-set ltss(us,onstage) [list -1 4 0]
+lappend ltss(us,onstage) {-1 4 0}
 set ltsw(us,onstage) 1
 set ltsw(us,onus) 1
 set ltsw(us,oomph) 1
@@ -8973,7 +8973,7 @@ set ltsw(us,orf) 1
 set ltsw(us,organism's) 1
 set ltsw(us,organizer) 1
 set ltsw(us,orgeron) 1
-set ltss(us,orient) [list 2 0 3]
+lappend ltss(us,orient) {2 0 3}
 set ltsw(us,orient) 1
 set ltsw(us,orifices) 1
 set ltsw(us,originating) 1
@@ -8983,7 +8983,7 @@ set ltsw(us,orlena) 1
 set ltsw(us,ormand) 1
 set ltsw(us,orna) 1
 set ltsw(us,orne) 1
-set ltss(us,orosz) [list -1 0 2]
+lappend ltss(us,orosz) {-1 0 2}
 set ltsw(us,orosz) 1
 set ltsw(us,orphee) 1
 set ltsw(us,orrick) 1
@@ -8992,7 +8992,7 @@ set ltsw(us,ortega's) 1
 set ltsw(us,orthodontia) 1
 set ltsw(us,orthography) 1
 set ltsw(us,ortman) 1
-set ltss(us,orville) [list -1 0 3]
+lappend ltss(us,orville) {-1 0 3}
 set ltsw(us,orville) 1
 set ltsw(us,orzech) 1
 set ltsw(us,osakowa's) 1
@@ -9096,7 +9096,7 @@ set ltsw(us,packwood) 1
 set ltsw(us,pacts) 1
 set ltsw(us,padding) 1
 set ltsw(us,paden) 1
-set ltss(us,padlocks) [list -1 1 4]
+lappend ltss(us,padlocks) {-1 1 4}
 set ltsw(us,padlocks) 1
 set ltsw(us,padua) 1
 set ltsw(us,paez) 1
@@ -9146,7 +9146,7 @@ set ltsw(us,papale) 1
 set ltsw(us,papay) 1
 set ltsw(us,paperboard) 1
 set ltsw(us,papers) 1
-set ltss(us,papin) [list 1 3 -1]
+lappend ltss(us,papin) {1 3 -1}
 set ltsw(us,papin) 1
 set ltsw(us,pappert) 1
 set ltsw(us,par) 1
@@ -9213,7 +9213,7 @@ set ltsw(us,patios) 1
 set ltsw(us,patriarca) 1
 set ltsw(us,patrician) 1
 set ltsw(us,patrimonial) 1
-set ltss(us,patrol) [list 1 4 -1]
+lappend ltss(us,patrol) {1 4 -1}
 set ltsw(us,patrol) 1
 set ltsw(us,patrone) 1
 set ltsw(us,patsy) 1
@@ -9281,7 +9281,7 @@ set ltsw(us,penned) 1
 set ltsw(us,pennies) 1
 set ltsw(us,pennock) 1
 set ltsw(us,pennypacker) 1
-set ltss(us,penrose) [list -1 1 4]
+lappend ltss(us,penrose) {-1 1 4}
 set ltsw(us,penrose) 1
 set ltsw(us,pensive) 1
 set ltsw(us,pentagons) 1
@@ -9293,7 +9293,7 @@ set ltsw(us,peplow) 1
 set ltsw(us,pepperman) 1
 set ltsw(us,pepsi's) 1
 set ltsw(us,pera) 1
-set ltss(us,percell) [list 1 3 -1]
+lappend ltss(us,percell) {1 3 -1}
 set ltsw(us,percell) 1
 set ltsw(us,perception) 1
 set ltsw(us,percifield) 1
@@ -9302,7 +9302,7 @@ set ltsw(us,perea) 1
 set ltsw(us,perennial) 1
 set ltsw(us,pereyra) 1
 set ltsw(us,perfectly) 1
-set ltss(us,perform) [list 1 3 -1]
+lappend ltss(us,perform) {1 3 -1}
 set ltsw(us,perform) 1
 set ltsw(us,perfume) 1
 set ltsw(us,peria's) 1
@@ -9316,7 +9316,7 @@ set ltsw(us,perlmutter) 1
 set ltsw(us,permanently) 1
 set ltsw(us,permian) 1
 set ltsw(us,permitted) 1
-set ltss(us,pernice) [list -1 1 3]
+lappend ltss(us,pernice) {-1 1 3}
 set ltsw(us,pernice) 1
 set ltsw(us,perone) 1
 set ltsw(us,perotti) 1
@@ -9375,7 +9375,7 @@ set ltsw(us,pham) 1
 set ltsw(us,pharaoh) 1
 set ltsw(us,pharma) 1
 set ltsw(us,pharmacologist) 1
-set ltss(us,pharos) [list -1 1 3]
+lappend ltss(us,pharos) {-1 1 3}
 set ltsw(us,pharos) 1
 set ltsw(us,pheasants) 1
 set ltsw(us,phenol) 1
@@ -9398,7 +9398,7 @@ set ltsw(us,photocopiers) 1
 set ltsw(us,photograph) 1
 set ltsw(us,photometer) 1
 set ltsw(us,photovoltaics) 1
-set ltss(us,phua) [list 3 2 -1]
+lappend ltss(us,phua) {3 2 -1}
 set ltsw(us,phua) 1
 set ltsw(us,phylogeny) 1
 set ltsw(us,physicist) 1
@@ -9414,7 +9414,7 @@ set ltsw(us,pickers) 1
 set ltsw(us,pickford) 1
 set ltsw(us,pickling) 1
 set ltsw(us,pickups) 1
-set ltss(us,picop) [list -1 1 3]
+lappend ltss(us,picop) {-1 1 3}
 set ltsw(us,picop) 1
 set ltsw(us,picture's) 1
 set ltsw(us,piddling) 1
@@ -9473,7 +9473,7 @@ set ltsw(us,pivotal) 1
 set ltsw(us,pizano) 1
 set ltsw(us,pizzerias) 1
 set ltsw(us,pla) 1
-set ltss(us,placek) [list -1 2 4]
+lappend ltss(us,placek) {-1 2 4}
 set ltsw(us,placek) 1
 set ltsw(us,placid) 1
 set ltsw(us,placoid) 1
@@ -9494,7 +9494,7 @@ set ltsw(us,platoons) 1
 set ltsw(us,platz) 1
 set ltsw(us,plautz) 1
 set ltsw(us,played) 1
-set ltss(us,playpen) [list -1 2 4]
+lappend ltss(us,playpen) {-1 2 4}
 set ltsw(us,playpen) 1
 set ltsw(us,plaza) 1
 set ltsw(us,pleading) 1
@@ -9514,7 +9514,7 @@ set ltsw(us,plourde) 1
 set ltsw(us,plowshare) 1
 set ltsw(us,plucks) 1
 set ltsw(us,plum's) 1
-set ltss(us,plumeri) [list 6 4 2]
+lappend ltss(us,plumeri) {6 4 2}
 set ltsw(us,plumeri) 1
 set ltsw(us,plumped) 1
 set ltsw(us,plunging) 1
@@ -9564,7 +9564,7 @@ set ltsw(us,polysilicon) 1
 set ltsw(us,polyvinyl) 1
 set ltsw(us,pomeranz) 1
 set ltsw(us,pomp) 1
-set ltss(us,pompon) [list -1 1 4]
+lappend ltss(us,pompon) {-1 1 4}
 set ltsw(us,pompon) 1
 set ltsw(us,ponderosa) 1
 set ltsw(us,pons) 1
@@ -9610,7 +9610,7 @@ set ltsw(us,postrel) 1
 set ltsw(us,posturings) 1
 set ltsw(us,pote) 1
 set ltsw(us,potential) 1
-set ltss(us,pothole) [list -1 1 4]
+lappend ltss(us,pothole) {-1 1 4}
 set ltsw(us,pothole) 1
 set ltsw(us,potomac) 1
 set ltsw(us,potted) 1
@@ -9654,7 +9654,7 @@ set ltsw(us,prefabrication) 1
 set ltsw(us,prefrontal) 1
 set ltsw(us,preignition) 1
 set ltsw(us,prejudice) 1
-set ltss(us,preludes) [list -1 2 4]
+lappend ltss(us,preludes) {-1 2 4}
 set ltsw(us,preludes) 1
 set ltsw(us,premeditated) 1
 set ltsw(us,premiers) 1
@@ -9738,7 +9738,7 @@ set ltsw(us,pronunciation) 1
 set ltsw(us,prop) 1
 set ltsw(us,propagating) 1
 set ltsw(us,propels) 1
-set ltss(us,propfan) [list -1 2 5]
+lappend ltss(us,propfan) {-1 2 5}
 set ltsw(us,propfan) 1
 set ltsw(us,prophylactic) 1
 set ltsw(us,proposes) 1
@@ -9780,7 +9780,7 @@ set ltsw(us,psoriasis) 1
 set ltsw(us,psychoanalytic) 1
 set ltsw(us,psychotherapists) 1
 set ltsw(us,ptomaine) 1
-set ltss(us,pubic) [list 4 2 -1]
+lappend ltss(us,pubic) {4 2 -1}
 set ltsw(us,pubic) 1
 set ltsw(us,publications') 1
 set ltsw(us,publicker) 1
@@ -9788,23 +9788,23 @@ set ltsw(us,publishing) 1
 set ltsw(us,puccio) 1
 set ltsw(us,puddle) 1
 set ltsw(us,pudwill) 1
-set ltss(us,pufahl) [list 4 2 -1]
+lappend ltss(us,pufahl) {4 2 -1}
 set ltsw(us,pufahl) 1
 set ltsw(us,puffs) 1
-set ltss(us,pugmire) [list -1 1 4]
+lappend ltss(us,pugmire) {-1 1 4}
 set ltsw(us,pugmire) 1
 set ltsw(us,pukes) 1
 set ltsw(us,pullam) 1
 set ltsw(us,pulleys) 1
 set ltsw(us,pullum) 1
 set ltsw(us,pulpwood) 1
-set ltss(us,pulte) [list 4 1 -1]
+lappend ltss(us,pulte) {4 1 -1}
 set ltsw(us,pulte) 1
 set ltsw(us,puming) 1
 set ltsw(us,pumpkin) 1
 set ltsw(us,punchy) 1
 set ltsw(us,punctured) 1
-set ltss(us,puneet) [list -1 3 1]
+lappend ltss(us,puneet) {-1 3 1}
 set ltsw(us,puneet) 1
 set ltsw(us,punishment) 1
 set ltsw(us,punky) 1
@@ -9829,7 +9829,7 @@ set ltsw(us,puttenbay) 1
 set ltsw(us,putts) 1
 set ltsw(us,puzzlemaster) 1
 set ltsw(us,pyeatt) 1
-set ltss(us,pylon) [list -1 1 3]
+lappend ltss(us,pylon) {-1 1 3}
 set ltsw(us,pylon) 1
 set ltsw(us,pyramid) 1
 set ltsw(us,pyrotechnics) 1
@@ -9879,16 +9879,16 @@ set ltsw(us,quizzes) 1
 set ltsw(us,quotation) 1
 set ltsw(us,qureshi) 1
 set ltsw(us,raad) 1
-set ltss(us,rabbi) [list -1 1 3]
+lappend ltss(us,rabbi) {-1 1 3}
 set ltsw(us,rabbi) 1
 set ltsw(us,raben) 1
 set ltsw(us,rabine) 1
 set ltsw(us,raborn) 1
 set ltsw(us,racemes) 1
-set ltss(us,rachad) [list -1 3 1]
+lappend ltss(us,rachad) {-1 3 1}
 set ltsw(us,rachad) 1
 set ltsw(us,rachmaninoff) 1
-set ltss(us,racism) [list 5 1 3]
+lappend ltss(us,racism) {5 1 3}
 set ltsw(us,racism) 1
 set ltsw(us,racketeer) 1
 set ltsw(us,racks) 1
@@ -9898,13 +9898,13 @@ set ltsw(us,radebaugh) 1
 set ltsw(us,radford) 1
 set ltsw(us,radiate) 1
 set ltsw(us,radicalization) 1
-set ltss(us,radio) [list 3 1 4]
+lappend ltss(us,radio) {3 1 4}
 set ltsw(us,radio) 1
 set ltsw(us,radius) 1
 set ltsw(us,radman) 1
 set ltsw(us,rados) 1
 set ltsw(us,radziewicz) 1
-set ltss(us,rafael) [list 3 4 1]
+lappend ltss(us,rafael) {3 4 1}
 set ltsw(us,rafael) 1
 set ltsw(us,raffensperger) 1
 set ltsw(us,raffo) 1
@@ -9981,7 +9981,7 @@ set ltsw(us,rawls) 1
 set ltsw(us,rayborn) 1
 set ltsw(us,rayed) 1
 set ltsw(us,raymer) 1
-set ltss(us,raynet) [list -1 1 3]
+lappend ltss(us,raynet) {-1 1 3}
 set ltsw(us,raynet) 1
 set ltsw(us,raysor) 1
 set ltsw(us,razo) 1
@@ -10013,7 +10013,7 @@ set ltsw(us,rebecca) 1
 set ltsw(us,rebellion) 1
 set ltsw(us,reber) 1
 set ltsw(us,rebook) 1
-set ltss(us,rebuff) [list 1 3 -1]
+lappend ltss(us,rebuff) {1 3 -1}
 set ltsw(us,rebuff) 1
 set ltsw(us,rebuilds) 1
 set ltsw(us,recalcitrant) 1
@@ -10044,10 +10044,10 @@ set ltsw(us,recreation) 1
 set ltsw(us,rectangle) 1
 set ltsw(us,rectitude) 1
 set ltsw(us,recur) 1
-set ltss(us,recuse) [list -1 4 1]
+lappend ltss(us,recuse) {-1 4 1}
 set ltsw(us,recuse) 1
 set ltsw(us,recycling) 1
-set ltss(us,redbird) [list -1 1 4]
+lappend ltss(us,redbird) {-1 1 4}
 set ltsw(us,redbird) 1
 set ltsw(us,redden) 1
 set ltsw(us,redditt) 1
@@ -10055,12 +10055,12 @@ set ltsw(us,redeemable) 1
 set ltsw(us,redel) 1
 set ltsw(us,redeploy) 1
 set ltsw(us,redevelop) 1
-set ltss(us,redhead) [list -1 1 4]
+lappend ltss(us,redhead) {-1 1 4}
 set ltsw(us,redhead) 1
 set ltsw(us,redirection) 1
 set ltsw(us,redistributing) 1
 set ltsw(us,redlich) 1
-set ltss(us,rednecks) [list -1 1 4]
+lappend ltss(us,rednecks) {-1 1 4}
 set ltsw(us,rednecks) 1
 set ltsw(us,redoubled) 1
 set ltsw(us,redrafted) 1
@@ -10130,7 +10130,7 @@ set ltsw(us,rejoice) 1
 set ltsw(us,rejuvenated) 1
 set ltsw(us,relabel) 1
 set ltsw(us,relative) 1
-set ltss(us,relays) [list -1 1 3]
+lappend ltss(us,relays) {-1 1 3}
 set ltsw(us,relays) 1
 set ltsw(us,relegating) 1
 set ltsw(us,relentlessly) 1
@@ -10139,7 +10139,7 @@ set ltsw(us,religionist) 1
 set ltsw(us,relinquishes) 1
 set ltsw(us,reller) 1
 set ltsw(us,relocations) 1
-set ltss(us,remand) [list -1 3 1]
+lappend ltss(us,remand) {-1 3 1}
 set ltsw(us,remand) 1
 set ltsw(us,remarkably) 1
 set ltsw(us,remarriage) 1
@@ -10147,7 +10147,7 @@ set ltsw(us,remco) 1
 set ltsw(us,remembrances) 1
 set ltsw(us,remind) 1
 set ltsw(us,reminiscence) 1
-set ltss(us,remit) [list 1 3 -1]
+lappend ltss(us,remit) {1 3 -1}
 set ltsw(us,remit) 1
 set ltsw(us,remmington) 1
 set ltsw(us,remorse) 1
@@ -10170,7 +10170,7 @@ set ltsw(us,rentmeester) 1
 set ltsw(us,reny) 1
 set ltsw(us,reoffered) 1
 set ltsw(us,reorganize) 1
-set ltss(us,repack) [list 1 3 -1]
+lappend ltss(us,repack) {1 3 -1}
 set ltsw(us,repack) 1
 set ltsw(us,repair) 1
 set ltsw(us,repatriation) 1
@@ -10178,7 +10178,7 @@ set ltsw(us,repeaters) 1
 set ltsw(us,repent) 1
 set ltsw(us,repertory) 1
 set ltsw(us,repka) 1
-set ltss(us,replant) [list 1 4 -1]
+lappend ltss(us,replant) {1 4 -1}
 set ltsw(us,replant) 1
 set ltsw(us,replenishment) 1
 set ltsw(us,replied) 1
@@ -10203,7 +10203,7 @@ set ltsw(us,rescue) 1
 set ltsw(us,resealed) 1
 set ltsw(us,researching) 1
 set ltsw(us,resemblances) 1
-set ltss(us,resende) [list 6 3 1]
+lappend ltss(us,resende) {6 3 1}
 set ltsw(us,resende) 1
 set ltsw(us,reservationist) 1
 set ltsw(us,reservoir) 1
@@ -10218,7 +10218,7 @@ set ltsw(us,respective) 1
 set ltsw(us,respirators) 1
 set ltsw(us,respondent) 1
 set ltsw(us,ress) 1
-set ltss(us,restart) [list 1 4 -1]
+lappend ltss(us,restart) {1 4 -1}
 set ltsw(us,restart) 1
 set ltsw(us,restaurant's) 1
 set ltsw(us,restless) 1
@@ -10254,7 +10254,7 @@ set ltsw(us,reversal) 1
 set ltsw(us,reverses) 1
 set ltsw(us,reverted) 1
 set ltsw(us,reviewer) 1
-set ltss(us,reville) [list -1 1 3]
+lappend ltss(us,reville) {-1 1 3}
 set ltsw(us,reville) 1
 set ltsw(us,revision) 1
 set ltsw(us,revisits) 1
@@ -10275,7 +10275,7 @@ set ltsw(us,rhizome) 1
 set ltsw(us,rhododendron) 1
 set ltsw(us,rhoto) 1
 set ltsw(us,rhymes) 1
-set ltss(us,riad) [list 1 2 -1]
+lappend ltss(us,riad) {1 2 -1}
 set ltsw(us,riad) 1
 set ltsw(us,ribas) 1
 set ltsw(us,ribera) 1
@@ -10285,7 +10285,7 @@ set ltsw(us,richa) 1
 set ltsw(us,richarson) 1
 set ltsw(us,richemont) 1
 set ltsw(us,richey) 1
-set ltss(us,richman) [list -1 1 4]
+lappend ltss(us,richman) {-1 1 4}
 set ltsw(us,richman) 1
 set ltsw(us,richwhite) 1
 set ltsw(us,rickels) 1
@@ -10368,7 +10368,7 @@ set ltsw(us,rockey) 1
 set ltsw(us,rockley) 1
 set ltsw(us,rockrose) 1
 set ltsw(us,roda) 1
-set ltss(us,roddick) [list -1 1 3]
+lappend ltss(us,roddick) {-1 1 3}
 set ltsw(us,roddick) 1
 set ltsw(us,rodell) 1
 set ltsw(us,rodeos) 1
@@ -10460,7 +10460,7 @@ set ltsw(us,royces) 1
 set ltsw(us,roylance) 1
 set ltsw(us,rozanski) 1
 set ltsw(us,rozier) 1
-set ltss(us,ruback) [list -1 1 3]
+lappend ltss(us,ruback) {-1 1 3}
 set ltsw(us,ruback) 1
 set ltsw(us,rubbers) 1
 set ltsw(us,rubell) 1
@@ -10476,7 +10476,7 @@ set ltsw(us,rudis) 1
 set ltsw(us,rudnicky) 1
 set ltsw(us,rudzinski) 1
 set ltsw(us,rueff) 1
-set ltss(us,ruella) [list 4 2 1]
+lappend ltss(us,ruella) {4 2 1}
 set ltsw(us,ruella) 1
 set ltsw(us,rufe) 1
 set ltsw(us,ruffini) 1
@@ -10510,7 +10510,7 @@ set ltsw(us,russify) 1
 set ltsw(us,russum) 1
 set ltsw(us,rustler) 1
 set ltsw(us,ruszkowski) 1
-set ltss(us,ruthann) [list -1 3 1]
+lappend ltss(us,ruthann) {-1 3 1}
 set ltsw(us,ruthann) 1
 set ltsw(us,rutile) 1
 set ltsw(us,rutstein) 1
@@ -10523,7 +10523,7 @@ set ltsw(us,ryen) 1
 set ltsw(us,rylan) 1
 set ltsw(us,rynearson) 1
 set ltsw(us,ryser) 1
-set ltss(us,s's) [list 2 0 -1]
+lappend ltss(us,s's) {2 0 -1}
 set ltsw(us,s's) 1
 set ltsw(us,saar) 1
 set ltsw(us,sabah) 1
@@ -10537,7 +10537,7 @@ set ltsw(us,sachs') 1
 set ltsw(us,sacking) 1
 set ltsw(us,sacrament) 1
 set ltsw(us,sacrificing) 1
-set ltss(us,sadat) [list 1 3 -1]
+lappend ltss(us,sadat) {1 3 -1}
 set ltsw(us,sadat) 1
 set ltsw(us,saddening) 1
 set ltsw(us,saddles) 1
@@ -10602,7 +10602,7 @@ set ltsw(us,sandel) 1
 set ltsw(us,sandford) 1
 set ltsw(us,sandifer) 1
 set ltsw(us,sandler) 1
-set ltss(us,sandon) [list -1 1 4]
+lappend ltss(us,sandon) {-1 1 4}
 set ltsw(us,sandon) 1
 set ltsw(us,sandpoint) 1
 set ltsw(us,sandstorms) 1
@@ -10634,7 +10634,7 @@ set ltsw(us,saros) 1
 set ltsw(us,sarti) 1
 set ltsw(us,sarver) 1
 set ltsw(us,saskatoon) 1
-set ltss(us,sasser) [list 3 1 -1]
+lappend ltss(us,sasser) {3 1 -1}
 set ltsw(us,sasser) 1
 set ltsw(us,sassoon) 1
 set ltsw(us,satchell) 1
@@ -10647,7 +10647,7 @@ set ltsw(us,sauer) 1
 set ltsw(us,sauls) 1
 set ltsw(us,saunders') 1
 set ltsw(us,saus) 1
-set ltss(us,sauter) [list 1 3 -1]
+lappend ltss(us,sauter) {1 3 -1}
 set ltsw(us,sauter) 1
 set ltsw(us,savaged) 1
 set ltsw(us,savannas) 1
@@ -10655,7 +10655,7 @@ set ltsw(us,save) 1
 set ltsw(us,saves) 1
 set ltsw(us,savin) 1
 set ltsw(us,savio) 1
-set ltss(us,savitt) [list 1 3 -1]
+lappend ltss(us,savitt) {1 3 -1}
 set ltsw(us,savitt) 1
 set ltsw(us,savored) 1
 set ltsw(us,sawall) 1
@@ -10777,7 +10777,7 @@ set ltsw(us,schwind) 1
 set ltsw(us,sciacca) 1
 set ltsw(us,scibelli) 1
 set ltsw(us,scientific's) 1
-set ltss(us,scios) [list 3 2 -1]
+lappend ltss(us,scios) {3 2 -1}
 set ltsw(us,scios) 1
 set ltsw(us,sciuto) 1
 set ltsw(us,scoffed) 1
@@ -10844,7 +10844,7 @@ set ltsw(us,sedivy) 1
 set ltsw(us,seduce) 1
 set ltsw(us,see) 1
 set ltsw(us,seedeaters) 1
-set ltss(us,seefeld) [list -1 1 3]
+lappend ltss(us,seefeld) {-1 1 3}
 set ltsw(us,seefeld) 1
 set ltsw(us,seek) 1
 set ltsw(us,seelbach) 1
@@ -10865,7 +10865,7 @@ set ltsw(us,seismologists) 1
 set ltsw(us,seitter) 1
 set ltsw(us,seized) 1
 set ltsw(us,sekulow) 1
-set ltss(us,seldane) [list -1 1 4]
+lappend ltss(us,seldane) {-1 1 4}
 set ltsw(us,seldane) 1
 set ltsw(us,selections) 1
 set ltsw(us,selenium) 1
@@ -10889,7 +10889,7 @@ set ltsw(us,semrad) 1
 set ltsw(us,senator's) 1
 set ltsw(us,senders) 1
 set ltsw(us,senesac) 1
-set ltss(us,senile) [list -1 1 3]
+lappend ltss(us,senile) {-1 1 3}
 set ltsw(us,senile) 1
 set ltsw(us,senna) 1
 set ltsw(us,sensation) 1
@@ -10919,7 +10919,7 @@ set ltsw(us,servicemaster) 1
 set ltsw(us,servin) 1
 set ltsw(us,seshadri) 1
 set ltsw(us,sessions) 1
-set ltss(us,setback) [list -1 1 4]
+lappend ltss(us,setback) {-1 1 4}
 set ltsw(us,setback) 1
 set ltsw(us,seto) 1
 set ltsw(us,settings) 1
@@ -10950,7 +10950,7 @@ set ltsw(us,sham) 1
 set ltsw(us,shambo) 1
 set ltsw(us,shaming) 1
 set ltsw(us,shamu) 1
-set ltss(us,shandong) [list -1 4 1]
+lappend ltss(us,shandong) {-1 4 1}
 set ltsw(us,shandong) 1
 set ltsw(us,shangkun) 1
 set ltsw(us,shankles) 1
@@ -11003,7 +11003,7 @@ set ltsw(us,shibboleth) 1
 set ltsw(us,shield) 1
 set ltsw(us,shiffler) 1
 set ltsw(us,shifting) 1
-set ltss(us,shihan) [list -1 1 3]
+lappend ltss(us,shihan) {-1 1 3}
 set ltsw(us,shihan) 1
 set ltsw(us,shillinglaw) 1
 set ltsw(us,shimmering) 1
@@ -11027,7 +11027,7 @@ set ltsw(us,shockwave) 1
 set ltsw(us,shoelaces) 1
 set ltsw(us,shoestring) 1
 set ltsw(us,shokhin) 1
-set ltss(us,shomaker) [list 5 1 3]
+lappend ltss(us,shomaker) {5 1 3}
 set ltsw(us,shomaker) 1
 set ltsw(us,shoo) 1
 set ltsw(us,shooter) 1
@@ -11099,7 +11099,7 @@ set ltsw(us,sileo) 1
 set ltsw(us,silhouettes) 1
 set ltsw(us,silk) 1
 set ltsw(us,sillier) 1
-set ltss(us,silos) [list -1 1 3]
+lappend ltss(us,silos) {-1 1 3}
 set ltsw(us,silos) 1
 set ltsw(us,silvar) 1
 set ltsw(us,silveri) 1
@@ -11165,7 +11165,7 @@ set ltsw(us,skok) 1
 set ltsw(us,skorupa) 1
 set ltsw(us,skroch) 1
 set ltsw(us,skurdal) 1
-set ltss(us,skydome) [list -1 2 4]
+lappend ltss(us,skydome) {-1 2 4}
 set ltsw(us,skydome) 1
 set ltsw(us,skyrocket) 1
 set ltsw(us,skywriter) 1
@@ -11247,7 +11247,7 @@ set ltsw(us,snooks) 1
 set ltsw(us,snorted) 1
 set ltsw(us,snowballed) 1
 set ltsw(us,snowbound) 1
-set ltss(us,snowman) [list -1 2 4]
+lappend ltss(us,snowman) {-1 2 4}
 set ltsw(us,snowman) 1
 set ltsw(us,snub) 1
 set ltsw(us,snugging) 1
@@ -11421,7 +11421,7 @@ set ltsw(us,squeegee) 1
 set ltsw(us,squid) 1
 set ltsw(us,squires) 1
 set ltsw(us,squirts) 1
-set ltss(us,srdan) [list -1 1 3]
+lappend ltss(us,srdan) {-1 1 3}
 set ltsw(us,srdan) 1
 set ltsw(us,srivastava) 1
 set ltsw(us,staats) 1
@@ -11442,7 +11442,7 @@ set ltsw(us,staley's) 1
 set ltsw(us,stalinization) 1
 set ltsw(us,stallard) 1
 set ltsw(us,stallman) 1
-set ltss(us,stalter) [list 5 2 -1]
+lappend ltss(us,stalter) {5 2 -1}
 set ltsw(us,stalter) 1
 set ltsw(us,stambaugh) 1
 set ltsw(us,stammer) 1
@@ -11602,7 +11602,7 @@ set ltsw(us,strehl) 1
 set ltsw(us,streisand) 1
 set ltsw(us,strep) 1
 set ltsw(us,stressor) 1
-set ltss(us,stretto) [list -1 3 5]
+lappend ltss(us,stretto) {-1 3 5}
 set ltsw(us,stretto) 1
 set ltsw(us,strickland) 1
 set ltsw(us,strictures) 1
@@ -11666,12 +11666,12 @@ set ltsw(us,suburb's) 1
 set ltsw(us,subversive) 1
 set ltsw(us,successive) 1
 set ltsw(us,succumbed) 1
-set ltss(us,suchinda) [list 6 3 1]
+lappend ltss(us,suchinda) {6 3 1}
 set ltsw(us,suchinda) 1
 set ltsw(us,suckle) 1
-set ltss(us,sudafed) [list 3 1 5]
+lappend ltss(us,sudafed) {3 1 5}
 set ltsw(us,sudafed) 1
-set ltss(us,suddam) [list -1 3 1]
+lappend ltss(us,suddam) {-1 3 1}
 set ltsw(us,suddam) 1
 set ltsw(us,sudduth) 1
 set ltsw(us,sueker) 1
@@ -11688,7 +11688,7 @@ set ltsw(us,suk) 1
 set ltsw(us,sukthankar) 1
 set ltsw(us,sulfa) 1
 set ltsw(us,sulked) 1
-set ltss(us,sullins) [list -1 1 3]
+lappend ltss(us,sullins) {-1 1 3}
 set ltsw(us,sullins) 1
 set ltsw(us,sulphur) 1
 set ltsw(us,sulzbach) 1
@@ -11825,7 +11825,7 @@ set ltsw(us,tack) 1
 set ltsw(us,tackling) 1
 set ltsw(us,tactfully) 1
 set ltsw(us,tad) 1
-set ltss(us,tadpole) [list -1 1 4]
+lappend ltss(us,tadpole) {-1 1 4}
 set ltsw(us,tadpole) 1
 set ltsw(us,tafel) 1
 set ltsw(us,taft's) 1
@@ -11856,7 +11856,7 @@ set ltsw(us,tampered) 1
 set ltsw(us,tan) 1
 set ltsw(us,tandy's) 1
 set ltsw(us,tangeman) 1
-set ltss(us,tangiers) [list -1 4 1]
+lappend ltss(us,tangiers) {-1 4 1}
 set ltsw(us,tangiers) 1
 set ltsw(us,tangredi) 1
 set ltsw(us,tanjug) 1
@@ -11865,7 +11865,7 @@ set ltsw(us,tannest) 1
 set ltsw(us,tantalize) 1
 set ltsw(us,tantalum) 1
 set ltsw(us,tanzania) 1
-set ltss(us,taoism) [list 4 1 2]
+lappend ltss(us,taoism) {4 1 2}
 set ltsw(us,taoism) 1
 set ltsw(us,tape's) 1
 set ltsw(us,tapestry) 1
@@ -11901,7 +11901,7 @@ set ltsw(us,team's) 1
 set ltsw(us,teamsters) 1
 set ltsw(us,tearfully) 1
 set ltsw(us,teased) 1
-set ltss(us,teate) [list -1 1 2]
+lappend ltss(us,teate) {-1 1 2}
 set ltsw(us,teate) 1
 set ltsw(us,tebelskis) 1
 set ltsw(us,technic) 1
@@ -11916,7 +11916,7 @@ set ltsw(us,teens) 1
 set ltsw(us,teetered) 1
 set ltsw(us,tefra) 1
 set ltsw(us,teheran's) 1
-set ltss(us,tehrans) [list -1 3 1]
+lappend ltss(us,tehrans) {-1 3 1}
 set ltsw(us,tehrans) 1
 set ltsw(us,teikoku) 1
 set ltsw(us,tejon) 1
@@ -11948,7 +11948,7 @@ set ltsw(us,tendler) 1
 set ltsw(us,tenets) 1
 set ltsw(us,tennant) 1
 set ltsw(us,tennesseans) 1
-set ltss(us,tenore) [list -1 1 3]
+lappend ltss(us,tenore) {-1 1 3}
 set ltsw(us,tenore) 1
 set ltsw(us,tensiometer) 1
 set ltsw(us,tenth) 1
@@ -11962,7 +11962,7 @@ set ltsw(us,terminator) 1
 set ltsw(us,terpening) 1
 set ltsw(us,terral) 1
 set ltsw(us,terrie) 1
-set ltss(us,terrile) [list -1 3 1]
+lappend ltss(us,terrile) {-1 3 1}
 set ltsw(us,terrile) 1
 set ltsw(us,territory) 1
 set ltsw(us,terry's) 1
@@ -12001,7 +12001,7 @@ set ltsw(us,theory's) 1
 set ltsw(us,therapies) 1
 set ltsw(us,there) 1
 set ltsw(us,therein) 1
-set ltss(us,thermae) [list -1 1 3]
+lappend ltss(us,thermae) {-1 1 3}
 set ltsw(us,thermae) 1
 set ltsw(us,thermoplastic) 1
 set ltsw(us,therrien) 1
@@ -12077,12 +12077,12 @@ set ltsw(us,tincture) 1
 set ltsw(us,tine) 1
 set ltsw(us,tingley) 1
 set ltsw(us,tinkering) 1
-set ltss(us,tinman) [list -1 1 4]
+lappend ltss(us,tinman) {-1 1 4}
 set ltsw(us,tinman) 1
 set ltsw(us,tinseltown) 1
 set ltsw(us,tip) 1
 set ltsw(us,tipper) 1
-set ltss(us,tippins) [list -1 1 3]
+lappend ltss(us,tippins) {-1 1 3}
 set ltsw(us,tippins) 1
 set ltsw(us,tipsy) 1
 set ltsw(us,tirane) 1
@@ -12140,7 +12140,7 @@ set ltsw(us,tornatore) 1
 set ltsw(us,torpid) 1
 set ltsw(us,torrence) 1
 set ltsw(us,torrez) 1
-set ltss(us,torstar) [list -1 1 5]
+lappend ltss(us,torstar) {-1 1 5}
 set ltsw(us,torstar) 1
 set ltsw(us,tortorella) 1
 set ltsw(us,tortures) 1
@@ -12241,7 +12241,7 @@ set ltsw(us,trimmers) 1
 set ltsw(us,trinity) 1
 set ltsw(us,triola) 1
 set ltsw(us,tripled) 1
-set ltss(us,tripods) [list -1 2 4]
+lappend ltss(us,tripods) {-1 2 4}
 set ltsw(us,tripods) 1
 set ltsw(us,tripping) 1
 set ltsw(us,trism) 1
@@ -12273,7 +12273,7 @@ set ltsw(us,trumped) 1
 set ltsw(us,truncheon) 1
 set ltsw(us,trupiano) 1
 set ltsw(us,truss) 1
-set ltss(us,trustees) [list -1 5 2]
+lappend ltss(us,trustees) {-1 5 2}
 set ltsw(us,trustees) 1
 set ltsw(us,truszkowski) 1
 set ltsw(us,tryon) 1
@@ -12284,7 +12284,7 @@ set ltsw(us,tsongas') 1
 set ltsw(us,tube) 1
 set ltsw(us,tubular) 1
 set ltsw(us,tuck) 1
-set ltss(us,tucson) [list -1 1 3]
+lappend ltss(us,tucson) {-1 1 3}
 set ltsw(us,tucson) 1
 set ltsw(us,tuell) 1
 set ltsw(us,tufa) 1
@@ -12364,7 +12364,7 @@ set ltsw(us,unapologetic) 1
 set ltsw(us,unassisted) 1
 set ltsw(us,unavailability) 1
 set ltsw(us,unbearably) 1
-set ltss(us,unbend) [list -1 3 0]
+lappend ltss(us,unbend) {-1 3 0}
 set ltsw(us,unbend) 1
 set ltsw(us,unbowed) 1
 set ltsw(us,unburdened) 1
@@ -12427,9 +12427,9 @@ set ltsw(us,unintentional) 1
 set ltsw(us,uninviting) 1
 set ltsw(us,unionize) 1
 set ltsw(us,unisom) 1
-set ltss(us,unita) [list 5 3 1]
+lappend ltss(us,unita) {5 3 1}
 set ltsw(us,unita) 1
-set ltss(us,unitel) [list 3 1 5]
+lappend ltss(us,unitel) {3 1 5}
 set ltsw(us,unitel) 1
 set ltsw(us,units') 1
 set ltsw(us,universes) 1
@@ -12479,7 +12479,7 @@ set ltsw(us,upp) 1
 set ltsw(us,uprooting) 1
 set ltsw(us,upshur) 1
 set ltsw(us,upstarts) 1
-set ltss(us,uptick) [list -1 0 3]
+lappend ltss(us,uptick) {-1 0 3}
 set ltsw(us,uptick) 1
 set ltsw(us,upwardly) 1
 set ltsw(us,uranus) 1
@@ -12493,10 +12493,10 @@ set ltsw(us,urkel) 1
 set ltsw(us,urquidi) 1
 set ltsw(us,urso) 1
 set ltsw(us,usable) 1
-set ltss(us,usenet) [list -1 1 4]
+lappend ltss(us,usenet) {-1 1 4}
 set ltsw(us,usenet) 1
 set ltsw(us,ushering) 1
-set ltss(us,usurps) [list -1 3 1]
+lappend ltss(us,usurps) {-1 3 1}
 set ltsw(us,usurps) 1
 set ltsw(us,uterine) 1
 set ltsw(us,utilicorp) 1
@@ -12508,10 +12508,10 @@ set ltsw(us,uzzle) 1
 set ltsw(us,vaca) 1
 set ltsw(us,vacationed) 1
 set ltsw(us,vaccaro) 1
-set ltss(us,vacek) [list -1 1 3]
+lappend ltss(us,vacek) {-1 1 3}
 set ltsw(us,vacek) 1
 set ltsw(us,vacuous) 1
-set ltss(us,vadim) [list 1 3 -1]
+lappend ltss(us,vadim) {1 3 -1}
 set ltsw(us,vadim) 1
 set ltsw(us,vaginal) 1
 set ltsw(us,vahey) 1
@@ -12551,7 +12551,7 @@ set ltsw(us,vanepps) 1
 set ltsw(us,vang) 1
 set ltsw(us,vanguard's) 1
 set ltsw(us,vanhook) 1
-set ltss(us,vanhuss) [list -1 4 1]
+lappend ltss(us,vanhuss) {-1 4 1}
 set ltsw(us,vanhuss) 1
 set ltsw(us,vanishes) 1
 set ltsw(us,vanlanen) 1
@@ -12694,7 +12694,7 @@ set ltsw(us,vocabulary) 1
 set ltsw(us,vociferously) 1
 set ltsw(us,voelkel) 1
 set ltsw(us,vogeler) 1
-set ltss(us,vogl) [list 3 1 -1]
+lappend ltss(us,vogl) {3 1 -1}
 set ltsw(us,vogl) 1
 set ltsw(us,voiced) 1
 set ltsw(us,voiding) 1
@@ -12728,7 +12728,7 @@ set ltsw(us,wachowski) 1
 set ltsw(us,wacker) 1
 set ltsw(us,wad) 1
 set ltsw(us,wade) 1
-set ltss(us,wadkins) [list -1 1 4]
+lappend ltss(us,wadkins) {-1 1 4}
 set ltsw(us,wadkins) 1
 set ltsw(us,waechter) 1
 set ltsw(us,waffling) 1
@@ -12897,7 +12897,7 @@ set ltsw(us,whales) 1
 set ltsw(us,whammy) 1
 set ltsw(us,what'll) 1
 set ltsw(us,wheeling's) 1
-set ltss(us,wheless) [list -1 1 3]
+lappend ltss(us,wheless) {-1 1 3}
 set ltsw(us,wheless) 1
 set ltsw(us,wherein) 1
 set ltsw(us,wherry) 1
@@ -12965,7 +12965,7 @@ set ltsw(us,wilfong) 1
 set ltsw(us,wilhelm) 1
 set ltsw(us,wilhite) 1
 set ltsw(us,wilkens) 1
-set ltss(us,wilkins) [list -1 1 4]
+lappend ltss(us,wilkins) {-1 1 4}
 set ltsw(us,wilkins) 1
 set ltsw(us,willa) 1
 set ltsw(us,willapa) 1
@@ -13159,7 +13159,7 @@ set ltsw(us,younkins) 1
 set ltsw(us,youssef) 1
 set ltsw(us,yowell) 1
 set ltsw(us,yuan) 1
-set ltss(us,yuhasz) [list -1 1 3]
+lappend ltss(us,yuhasz) {-1 1 3}
 set ltsw(us,yuhasz) 1
 set ltsw(us,yul) 1
 set ltsw(us,yundt) 1
@@ -13167,7 +13167,7 @@ set ltsw(us,yuppify) 1
 set ltsw(us,yurt) 1
 set ltsw(us,yuval) 1
 set ltsw(us,zabowski) 1
-set ltss(us,zacek) [list -1 1 3]
+lappend ltss(us,zacek) {-1 1 3}
 set ltsw(us,zacek) 1
 set ltsw(us,zachman) 1
 set ltsw(us,zaftig) 1
@@ -13248,5 +13248,5 @@ set ltsw(us,zwicker) 1
 set ltsw(us,zydeco) 1
 set ltsw(us,zysk) 1
 set ltsw(us,zywicki) 1
-set ltss(us,) [list ]
+lappend ltss(us,) {}
 set ltsw(us,) 1
