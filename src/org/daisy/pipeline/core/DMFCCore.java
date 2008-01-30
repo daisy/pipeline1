@@ -151,7 +151,7 @@ public class DMFCCore implements TransformerHandlerLoader {
         // Load messages
         ResourceBundle bundle = XMLPropertyResourceBundle.getBundle((this
                 .getClass().getPackage().getName()).replace('.', '/')
-                + "/pipeline.messages", Locale.ENGLISH, this.getClass()
+                + "/messages.properties", Locale.ENGLISH, this.getClass()
                 .getClassLoader());
         // ResourceBundle bundle =
         // XMLPropertyResourceBundle.getBundle(this.getClass().getPackage().getName()
