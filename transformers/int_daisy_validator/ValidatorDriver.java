@@ -837,11 +837,12 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 		/**
 		 * @return true if the input threshold was breached during the validation pass.
 		 */
+		// jpritchett@rfbd.org, 31 Jan 2008:  Fixed logic flaw that prevented messages < threshold to pass (Bug #1883783)
 		boolean thresholdBreached(String setThreshold) {
 			if(!hadValidatorMessage()) return false;
-			if (setThreshold.equals(WARNING) && (mHadValidationWarning||mHadValidationError||mHadValidationSevereError)) return true;
-			if (setThreshold.equals(ERROR) && (mHadValidationError||mHadValidationSevereError)) return true;
-			if (setThreshold.equals(SEVERE) && mHadValidationSevereError) return true;
+			if (setThreshold.equals(WARNING)) return (mHadValidationWarning||mHadValidationError||mHadValidationSevereError);
+			if (setThreshold.equals(ERROR)) return (mHadValidationError||mHadValidationSevereError);
+			if (setThreshold.equals(SEVERE)) return mHadValidationSevereError;
 			if (setThreshold.equals(NONE)) return false;															
 			throw new InvalidParameterException(setThreshold);
 		}
