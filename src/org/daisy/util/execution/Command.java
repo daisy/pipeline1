@@ -27,6 +27,7 @@ import java.util.Date;
 
 import org.daisy.util.file.NullOutputStream;
 import org.daisy.util.file.StreamRedirector;
+import org.daisy.util.text.LineFilter;
 
 /**
  * A utility class for executing external commands.
@@ -47,6 +48,7 @@ public class Command {
      * @return the exit value of the program that was run.
      * @throws ExecutionException
      */
+	@Deprecated
     public static int execute(String command, File workDir, OutputStream stdout, OutputStream stderr, int timeout, int pollInterval) throws ExecutionException {        
         // Check working directory
         if (workDir != null && !workDir.isDirectory()) {
@@ -130,10 +132,11 @@ public class Command {
      * <code>null</code> will send them to the standard error of the caller).
      * @param timeout the timeout in milliseconds before the program will be aborted.
      * @param pollInterval the interval between checks to see if the program has finished running. 
+     * @param lineFilter the <code>LineFilter</code> to filter the <code>stdout</code> and <code>stderr</code> streams through
      * @return the exit value of the program that was run.
      * @throws ExecutionException
      */
-    public static int execute(String[] cmdarray, File workDir, OutputStream stdout, OutputStream stderr, int timeout, int pollInterval) throws ExecutionException {        
+    public static int execute(String[] cmdarray, File workDir, OutputStream stdout, OutputStream stderr, int timeout, int pollInterval, LineFilter lineFilter) throws ExecutionException {        
         // Check working directory
         if (workDir != null && !workDir.isDirectory()) {
             throw new ExecutionException("'" + workDir + "' is not a directory");
@@ -169,8 +172,8 @@ public class Command {
             if (stderr != null) {
                 errStream = stderr;
             }            
-            StreamRedirector out = new StreamRedirector(proc.getInputStream(), outStream);
-            StreamRedirector err = new StreamRedirector(proc.getErrorStream(), errStream);            
+            StreamRedirector out = new StreamRedirector(proc.getInputStream(), outStream, lineFilter, false);
+            StreamRedirector err = new StreamRedirector(proc.getErrorStream(), errStream, lineFilter, false);            
             out.start();
             err.start();
             
@@ -206,6 +209,10 @@ public class Command {
         return exitVal;
     }
     
+    public static int execute(String[] cmdarray, File workDir, OutputStream stdout, OutputStream stderr, int timeout, int pollInterval) throws ExecutionException {
+    	return execute(cmdarray, workDir, stdout, stderr, timeout, pollInterval);
+    }
+    
     /**
      * Execute an external program.
      * <p>
@@ -219,6 +226,7 @@ public class Command {
      * @throws ExecutionException
      * @see #execute(String, File, File, File, int, int)
      */
+    @Deprecated
     public static int execute(String command) throws ExecutionException {
         return execute(command, null, (OutputStream)null, (OutputStream)null, -1, 500);
     }
@@ -227,6 +235,7 @@ public class Command {
         return execute(cmdarray, null, (OutputStream)null, (OutputStream)null, -1, 500);
     }
     
+    @Deprecated
     public static int execute(String command, boolean ignoreOutput) throws ExecutionException {
         OutputStream out = null;
         OutputStream err = null;
@@ -247,6 +256,7 @@ public class Command {
         return execute(cmdarray, null, out, err, -1, 500);
     }
     
+    @Deprecated
     public static int execute(String command, File workDir, File stdout, File stderr, int timeout, int pollInterval) throws ExecutionException {
         try {
             return execute(command, workDir, new FileOutputStream(stdout), new FileOutputStream(stderr), timeout, pollInterval);

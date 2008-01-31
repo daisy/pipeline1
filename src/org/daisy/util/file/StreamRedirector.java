@@ -26,6 +26,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import org.daisy.util.text.LineFilter;
+
 /**
  * Redirects an input stream to a output stream in a separate thread.
  * @author Linus Ericson
@@ -34,7 +36,24 @@ public class StreamRedirector extends Thread {
     
     protected InputStream inputStream;
     protected OutputStream outputStream;
-    protected boolean flush = false;
+    protected LineFilter filter;
+    protected boolean flush;
+    
+    /**
+     * Constructor specifying a <code>LineFilter</code> and the ability to select whether the
+     * stream should be flushed after each write or not.
+     * @param inStream the input stream to redirect
+     * @param outSteam the output stream to redirect the input to
+     * @param lineFilter the line filter to filter the contents through before it is written to the output stream
+     * @param flushOutstream <code>true</code> if the output stream should be
+     *  flushed after each write, <code>false</code> otherwise
+     */
+    public StreamRedirector(InputStream inStream, OutputStream outSteam, LineFilter lineFilter, boolean flushOutstream) {
+        inputStream = inStream;
+        outputStream = outSteam;
+        filter = lineFilter;
+        flush = flushOutstream;
+    }
     
     /**
      * Creates a new <code>StreamRedirector</code>.
@@ -42,14 +61,11 @@ public class StreamRedirector extends Thread {
      * @param outSteam the output stream to redirect the input to.
      */
     public StreamRedirector(InputStream inStream, OutputStream outSteam) {
-        inputStream = inStream;
-        outputStream = outSteam;
+    	this(inStream, outSteam, false);
     }
 
     public StreamRedirector(InputStream inStream, OutputStream outSteam, boolean flushOutstream) {
-        inputStream = inStream;
-        outputStream = outSteam;
-        flush = flushOutstream;
+    	this(inStream, outSteam, null, flushOutstream);
     }
     
     public void run() {
@@ -64,10 +80,15 @@ public class StreamRedirector extends Thread {
             String line = null;
             while ( (line = br.readLine()) != null) {
                 if (writer != null) {
-                    writer.println(line);
-                    if (flush) {
-                        writer.flush();
-                    }
+                	if (filter != null) {
+                		line = filter.filterLine(line);
+                	}
+                	if (line != null) {
+                		writer.println(line);
+                		if (flush) {
+                			writer.flush();
+                		}
+                	}
                 }  
             }
             if (writer != null) {
