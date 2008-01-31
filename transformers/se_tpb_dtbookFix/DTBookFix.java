@@ -225,7 +225,9 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     	try {
 			result = peeker.peek(input);			
 			//check that we are namespaced as expected
-			if(!result.getRootElementNsUri().equals(Namespaces.Z2005_DTBOOK_NS_URI)) {
+			// jpritchett@rfbd.org, 31 Jan 2008:  Added test for null (Bug #1879846)
+			if(result.getRootElementNsUri() == null ||
+			   !result.getRootElementNsUri().equals(Namespaces.Z2005_DTBOOK_NS_URI)) {
 				throw new TransformerRunException(i18n("INPUT_ERROR_NAMESPACE", Namespaces.Z2005_DTBOOK_NS_URI));
 			}
 			
