@@ -210,7 +210,7 @@ public class Command {
     }
     
     public static int execute(String[] cmdarray, File workDir, OutputStream stdout, OutputStream stderr, int timeout, int pollInterval) throws ExecutionException {
-    	return execute(cmdarray, workDir, stdout, stderr, timeout, pollInterval);
+    	return execute(cmdarray, workDir, stdout, stderr, timeout, pollInterval, null);
     }
     
     /**
