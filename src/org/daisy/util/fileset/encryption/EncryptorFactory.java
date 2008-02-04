@@ -1,5 +1,9 @@
 package org.daisy.util.fileset.encryption;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Iterator;
 
 import org.daisy.util.fileset.FilesetType;
@@ -22,8 +26,17 @@ import org.daisy.util.fileset.encryption.exception.EncryptorNotSupportedExceptio
  * <p>Multiple implementations may coexist on the system, sharing the initial (non-specifying) part of the key string.
  * This factory will query each found implementation (using non-specifying part of the key) to find out if it supports the requested services, and return the first match.
  * If no match is found, an EncryptorNotSupportedException is thrown.
- * </p> 
+ * </p>
+ *  
+ * <p>
+ * The JAR <a href="http://java.sun.com/j2se/1.5.0/docs/guide/jar/jar.html#Service%20Provider">service provider</a>
+ * functionality is also supported. The factory searches for a file named <code>org.daisy.util.fileset.encryption.Encryptor</code>
+ * in a <code>META-INF/service</code> directory on the class path. Once found, the factory reads the file line by line and
+ * tries to instantiate each Encryptor implementation found in the file until it finds one that supports the required
+ * encryption type and fileset type.  
+ * </p>
  * @author Markus Gylling
+ * @author Linus Ericson
  */
 
 public class EncryptorFactory {
@@ -62,8 +75,69 @@ public class EncryptorFactory {
 					if(mDebugState) System.out.println("DEBUG: EncryptorFactory.newEncryptor Exception");					
 				}  								
 			} 			
-		} 		
+		}
+		Encryptor enc = this.findFromJarService(encryptionType, filesetType);
+		if (enc != null) {
+			return enc;
+		}
 		throw new EncryptorNotSupportedException(encryptionType.toString() + " " + filesetType.toString());		
+	}
+	
+	private Encryptor findFromJarService(EncryptionType encryptionType, FilesetType filesetType) {
+		String serviceClass = "META-INF/services/org.daisy.util.fileset.encryption.Encryptor";
+		
+		InputStream inputStream = null;
+		ClassLoader cl = this.getClass().getClassLoader();
+        inputStream = cl.getResourceAsStream(serviceClass);
+        if (inputStream == null) {
+        	inputStream = this.getClass().getResourceAsStream(serviceClass);
+        }
+        
+        if (inputStream == null) {
+        	// No services file found. Give up.
+            return null;
+        }
+        
+        // Read services file line by line. Try to instantiate an Encryptor and see
+		// if the encryptor supports the required encryption type and fileset type
+        try {
+        	BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));		
+			String line = reader.readLine();
+			while (line != null) {
+				if (line.contains("#")) {
+					line = line.substring(0, line.indexOf("#"));					
+				}
+				line = line.trim();
+				if (!"".equals(line)) {
+					line = line.trim();
+					Class klass = null;
+					Object o = null;
+					try {
+						klass = Class.forName(line);
+						o = klass.newInstance();
+					} catch (ClassNotFoundException e) {
+						//e.printStackTrace();
+					} catch (InstantiationException e) {
+						//e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						//e.printStackTrace();
+					}					
+		            if(o instanceof Encryptor) {
+		            	Encryptor enc = (Encryptor)o;
+		            	if(enc.supportsEncryptionType(encryptionType) && enc.supportsFilesetType(filesetType)) {
+		            		// This one looks good
+		            		return enc;
+		            	}		            			            			            	
+		            }
+				}
+				line = reader.readLine();
+			}
+		} catch (IOException e) {			
+			//e.printStackTrace();
+		}
+		
+		// No suitable implementation found
+		return null;
 	}
 	
 }
