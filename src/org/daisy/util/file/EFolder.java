@@ -501,7 +501,7 @@ public class EFolder extends File {
 	 * @throws IOException
 	 */
 	public boolean copyChildrenTo(EFolder destination, boolean overwrite) throws IOException {
-		return copyChildrenTo(destination,overwrite,true,".+");
+		return copyChildrenTo(destination,overwrite,true,null);
 	}
 
 	
