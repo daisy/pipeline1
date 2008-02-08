@@ -57,7 +57,7 @@ public class MessageEvent extends SystemEvent {
 	 * DEBUG messages are purely developer oriented.
 	 */
 	public static enum Type {
-	    ERROR, WARNING, INFO, DEBUG, INFO_FINER
+	    ERROR, WARNING, INFO, INFO_FINER, DEBUG
 	}
 	
 	public static enum Cause {
