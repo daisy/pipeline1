@@ -65,6 +65,9 @@ public interface IIconsKeys {
 	/** The path to the "filter info" icon (relative to the plugin home) */
 	public static final String MESSAGE_FILTER_INFO = ICON_DIR
 			+ "message-filter-info.gif"; //$NON-NLS-1$
+	/** The path to the "filter info finer" icon (relative to the plugin home) */
+	public static final String MESSAGE_FILTER_INFO_FINER = ICON_DIR
+			+ "message-filter-info-finer.gif"; //$NON-NLS-1$;
 	/** The path to the "close" icon (relative to the plugin home) */
 	public static final String MESSAGE_FILTER_SYSTEM = ICON_DIR
 			+ "message-filter-system.gif"; //$NON-NLS-1$
@@ -73,6 +76,9 @@ public interface IIconsKeys {
 			+ "message-filter-warning.gif"; //$NON-NLS-1$
 	/** The path to the "info message" icon (relative to the plugin home) */
 	public static final String MESSAGE_INFO = ICON_DIR + "message-info.gif"; //$NON-NLS-1$
+	/** The path to the "info finer message" icon (relative to the plugin home) */
+	public static final String MESSAGE_INFO_FINER = ICON_DIR
+			+ "message-info-finer.gif"; //$NON-NLS-1$
 	/** The path to the "scroll lock" icon (relative to the plugin home) */
 	public static final String MESSAGE_SCROLL_LOCK = ICON_DIR
 			+ "message-scroll-lock.gif"; //$NON-NLS-1$
