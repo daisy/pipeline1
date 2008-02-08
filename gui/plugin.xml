@@ -18,7 +18,7 @@
       <product
             application="org.daisy.pipeline.gui.application"
             description="%product.description"
-            name="%product.name">      <property
+            name="DAISY Pipeline">      <property
             name="introTitle"
             value="%intro.title"/>
       <property
