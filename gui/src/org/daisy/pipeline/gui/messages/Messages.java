@@ -89,6 +89,10 @@ public class Messages extends NLS {
 	public static String type_info;
 	/** The name of the button to filter 'info' message type */
 	public static String type_info_filter;
+	/** The label of the 'info finer' message type */
+	public static String type_info_finer;
+	/** The name of the button to filter 'info finer' message type */
+	public static String type_info_finer_filter;
 	/** The label of the 'warning' message type */
 	public static String type_warning;
 	/** The name of the button to filter 'warning' message type */
@@ -137,6 +141,8 @@ public class Messages extends NLS {
 			return type_error_filter;
 		case INFO:
 			return type_info_filter;
+		case INFO_FINER:
+			return type_info_finer_filter;
 		case WARNING:
 			return type_warning_filter;
 		default:
@@ -177,6 +183,8 @@ public class Messages extends NLS {
 			return type_error;
 		case INFO:
 			return type_info;
+		case INFO_FINER:
+			return type_info_finer;
 		case WARNING:
 			return type_warning;
 		default:

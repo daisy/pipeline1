@@ -55,6 +55,8 @@ class MessageField extends AbstractTableField {
 				return GuiPlugin.getImage(IIconsKeys.MESSAGE_ERROR);
 			case INFO:
 				return GuiPlugin.getImage(IIconsKeys.MESSAGE_INFO);
+			case INFO_FINER:
+				return GuiPlugin.getImage(IIconsKeys.MESSAGE_INFO_FINER);
 			case WARNING:
 				return GuiPlugin.getImage(IIconsKeys.MESSAGE_WARNING);
 			}
