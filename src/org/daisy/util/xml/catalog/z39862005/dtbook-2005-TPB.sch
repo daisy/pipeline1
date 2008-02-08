@@ -467,8 +467,8 @@
   
   <!-- Rule 68: No smilref attributes -->
   <sch:pattern name="dtbook_TPB_noSmilref" id="dtbook_TPB_noSmilref">
-    <sch:rule context="dtbk:*/@smilref">
-    	<sch:assert test="false()">[tpb68] smilref attributes in a plain DTBook file is not allowed</sch:assert>
+    <sch:rule context="dtbk:*">
+    	<sch:report test="@smilref">[tpb68] smilref attributes in a plain DTBook file is not allowed</sch:report>
     </sch:rule>
   </sch:pattern>
   
@@ -561,10 +561,10 @@
   </sch:pattern>
   -->    
   
-  <!-- Rule 115: Only allow hd, linegroup and line inside poem -->
+  <!-- Rule 115: Only allow hd, linegroup, line and pagenum inside poem -->
   <sch:pattern name="dtbook_TPB_poemContents" id="dtbook_TPB_poemContents">
   	<sch:rule context="dtbk:poem/dtbk:*">
-      <sch:assert test="self::dtbk:hd or self::dtbk:linegroup or self::dtbk:line">[tpb115] Only hd, linegroup and line are allowed inside poem</sch:assert>
+      <sch:assert test="self::dtbk:hd or self::dtbk:linegroup or self::dtbk:line or self::dtbk:pagenum">[tpb115] Only hd, linegroup, line and pagenum are allowed inside poem</sch:assert>
     </sch:rule>	
   </sch:pattern>
     
