@@ -50,13 +50,14 @@ public class ScriptsLabelProvider extends LabelProvider implements
 	 *            A File in the script file tree.
 	 */
 	@Override
-	public String getText(Object file) {
+	public String getText(Object obj) {
 		String text;
-		Script script = scriptMan.getScript(((File) file).toURI());
-		if (script != null) {
-			text = script.getNicename();
+		File file = (File) obj;
+		if (file.isDirectory()) {
+			text = Messages.getName(file);
 		} else {
-			text = ((File) file).getName();
+			Script script = scriptMan.getScript((file).toURI());
+			text = (script != null) ? script.getNicename() : file.getName();
 		}
 		return text;
 	}
