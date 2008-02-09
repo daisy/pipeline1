@@ -25,11 +25,28 @@ import org.daisy.pipeline.gui.model.ScriptManager;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 
+/**
+ * 
+ * JFac label provider for the script tree.
+ * <p>
+ * Provides labels for
+ * </p>
+ * <ul>
+ * <li>Scripts files</li>
+ * <li>Scripts directories used as categorization</li>
+ * </ul>
+ * 
+ * @author Romain Deltour
+ * 
+ */
 public class ScriptsLabelProvider extends LabelProvider implements
 		ILabelProvider {
 
 	private ScriptManager scriptMan;
 
+	/**
+	 * Creates a new instance of this label provider.
+	 */
 	public ScriptsLabelProvider() {
 		scriptMan = ScriptManager.getDefault();
 	}
