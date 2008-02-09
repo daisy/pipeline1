@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %nlFragmentName
 Bundle-SymbolicName: org.eclipse.jface.nl3
-Bundle-Version: 3.3.0
+Bundle-Version: 3.3.0.vqualifier
 Bundle-Vendor: %nlProviderName
 Fragment-Host: org.eclipse.jface;bundle-version="[3.3.0,3.4.0)"
 Bundle-Localization: nl_fragment
