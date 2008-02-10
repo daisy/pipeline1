@@ -1,0 +1,77 @@
+RNIB/Pipeline TelCon - December 18, 2007
+========================================
+%CSS: notes.css 
+%Date: 2007-12-18 
+%Attendees: Ian Greenow (RNIB), Stephen Hibberd ? or Mark Frodsham ?, Romain Deltour (DAISY) 
+%Scribe: Romain Deltour
+
+
+
+## RNIB Forenote - Agenda
+
+To quote the Deployment Overview document, there is a section which reads:
+
+>In some circumstances, it is desirable to provide distributions which limit the functionality of the Pipeline for a certain use case, and which provide a >user interface tailored for that limited functionality.
+>
+>The Pipeline can be made to accomplish this by doing the following:
+>
+>- Provide a target subset build, which simply "filters out" any Transformers and Scripts that are not needed. This is achieved by (cloning and) >manipulating the Pipeline "makefile" (which is an Ant script). 
+>- Provide a specialized UI, either by customizing any of the UIs mentioned above, or by writing a separate standalone UI."
+	
+We would be interested in finding out more information on the last 2 points, customizing the pipeline GUI to meet specific requirements.
+
+Mark has summarised below a typical example of how we would currently produce accessible media:
+
+We have developed a .NET application that transforms a raw fixed-width data file, which we receive on a daily basis from our client, into a set of embossable braille (plain text), Large Print (MS-Word) and Audio (DAISY) files. This data file contains bank statement details for many customers and the application's GUI is VERY simple  -- one-click!
+
+If we just concentrate on Audio output for now, we would like to know how we could replace our .NET application with the DAISY Pipeline. In particular the following are causing us some concern:-
+
+1.	We do not want to present a command line interface to our operators.
+2.	The GUI that we have seen so far is very complex
+
+## Dedicated GUI viability
+
+Ian asks what are the solutions for extending the GUI.
+
+1. Use .Net for the GUI
+	1. Pipeline CLI as an underlying batch process
+		- pros: easy integration
+		- cons: not flexible
+	2. call to the Pipeline API via Java/C# bridge
+		- pros: full access to the Pipeline API
+		- cons: Java/C# bridge might be clumsy ?
+2. Use of RCP
+	- pros: single technology (pure-java), full access to the Pipeline API, rely on existing code
+	- cons: need Java skills
+
+RNIB has no Java skills. OTOH using RCP is probably the best solution for full integration. 
+Rom: a minimalistic GUI wouldn't represent a huge effort (rough estimate for a beta: 2 weeks work with RCP skills).
+
+Right now, the best is to create a new GUI is to checkout the Pipeline GUI code and start from it by pruning useless parts.
+
+The idea is to go to even more modularization/componentization. Once done, pick up the plugin/bundle you need and host only the custom code on RNIB's side.
+
+## Developer Setup
+
+Many questions on the setup requirements:
+
+- user access: anonymous checkout / login required to commit 
+- 2 different projects (daisymfg + daisymfcgui)
+- RCP IDE required for the GUI (Eclipse, open source, eclipse.org)
+- code maintenance / privacy (would RNIB need to host a duplicated code repo ?)
+
+
+Custom build:
+
+small explanation on the Ant build script. Note: ant is used for the Pipeline Core only. Pipeline GUI requires Eclipse PDE tooling.
+
+
+## TODO List
+
+- @Rom: send link to API doc (Javadoc)
+- @Rom: send link to developer setup doc when it's ready
+- @Rom: write doc on how to build from ant
+- @Rom: write doc on how to customize the ant build
+- @RNIB: fetch the code and investigate
+- @Markus: is there an ongoing external project for a dedicated gui (or Pipeline integration in c#) ?
+- @Markus: what can DAISY do to help: refactor, provide some code ? => very interesting proof of concept of the RCP stack.

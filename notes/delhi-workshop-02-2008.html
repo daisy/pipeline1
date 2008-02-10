@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"/>
+    <title>DAISY Pipeline Workshop - Feb 2008, Delhi</title>
+    <link rel="stylesheet" type="text/css" href="notes.css"/>
+    <meta name="Date" content="6-9 Feb 2008"/>
+    <meta name="Attendees" content="Avneesh &amp; Romain (+Dipendra)"/>
+    <meta name="Last modified" content="2008-02-10"/>
+  </head>
+  <body>
+    <h1 id="daisypipelineworkshop-feb2008delhi">DAISY Pipeline Workshop - Feb 2008, Delhi</h1>
+    <div class="summary">
+      <p><em>Date</em>: 6-9 Feb 2008<br/><em>Attendees</em>: Avneesh &amp; Romain (+Dipendra)<br/><em>Last modified</em>: 2008-02-10<br/></p>
+    </div>
+    <div id="toc">
+      <h2>Table of Contents</h2>
+      <ul>
+        <li>
+          <a href="#agenda">Agenda</a>
+        </li>
+        <li>
+          <a href="#hindittsintegration">Hindi TTS integration</a>
+          <ul>
+            <li>
+              <a href="#problem">Problem</a>
+            </li>
+            <li>
+              <a href="#currentworkaround">Current Workaround</a>
+            </li>
+            <li>
+              <a href="#java.netbridge">Java / .Net bridge</a>
+            </li>
+            <li>
+              <a href="#mssapi5inthepipelinewithcom4j">MS SAPI5 in the Pipeline with com4j</a>
+            </li>
+            <li>
+              <a href="#remainingissues">Remaining issues</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#localization">Localization</a>
+          <ul>
+            <li>
+              <a href="#resources">Resources</a>
+            </li>
+            <li>
+              <a href="#testinglist">Testing list</a>
+            </li>
+            <li>
+              <a href="#process">Process</a>
+            </li>
+            <li>
+              <a href="#remainingissues">Remaining Issues</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#plansforpipelineusageinindianab">Plans for Pipeline usage in India / NAB</a>
+          <ul>
+            <li>
+              <a href="#mp3filesettodaisy2.02dtb">MP3 file set to DAISY 2.02 DTB</a>
+            </li>
+            <li>
+              <a href="#simplifiedappforfull-textfull-audioproduction">Simplified app for full-text full-audio production</a>
+            </li>
+            <li>
+              <a href="#ttsconfiguration">TTS configuration</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <h2 id="agenda">Agenda</h2>
+    <ol>
+      <li>Hindi TTS integration in the Narrator</li>
+      <li>Hindi Localization
+<ul><li>Pipeline Core</li><li>Pipeline GUI</li><li>Eclipse RCP ?</li></ul></li>
+      <li>Plans for Pipeline usage in NAB</li>
+    </ol>
+    <h2 id="hindittsintegration">Hindi TTS integration</h2>
+    <h3 id="problem">Problem</h3>
+    <p>Currently, the TTS engine is called via Runtime.exec(...), which invokes a "console" application on Windows.
+The trouble is "console" applications are UTF-8 only, and cannot use UTF-16 (which is required by the Hindi TTS).</p>
+    <h3 id="currentworkaround">Current Workaround</h3>
+    <ul>
+      <li>the "console" .exe called in the TTSAdapter outputs an intermediary text file</li>
+      <li>a “Windows Forms" application is then called to extract content from this text file</li>
+      <li>the content is moved to UTF-16 and passed to the TTS engine</li>
+    </ul>
+    <p>R: what about the performance impact of this intermediary text file ? <br/>
+A: about 10%¨ <br/>
+R: another approach would be to use .Net / Java bridge</p>
+    <h3 id="java.netbridge">Java / .Net bridge</h3>
+    <ul>
+      <li>JNI: Java Native Interface. <br/>
+C/C++ code to bridge native code to Java. <br/>
+From Wikipedia: "The JNI is not trivial and requires a considerable effort to learn" </li>
+      <li>JNA: Java Native Access <br/>
+easy access to native shared libraries (DLLs on Windows) without writing anything but Java code <br/>
+used by successful java projects</li>
+      <li>Jacob: Java / COM bridge <br/>
+old project but revived on sourceforge, poor documentation though.</li>
+      <li>com4j <br/>
+new promising project (hobby project from a Sun guy)</li>
+    </ul>
+    <p>JNA (which seem to be the easier to use), is only for c-style libraries and was not made for wrapping COM interfaces.</p>
+    <p>Two solutions are possible:</p>
+    <ol>
+      <li>Wrap the useful SAPI methods in a simple C/C++ library called through JNA</li>
+      <li>Use a proper Java/COM bridge (Jacob or com4j)</li>
+    </ol>
+    <h3 id="mssapi5inthepipelinewithcom4j">MS SAPI5 in the Pipeline with com4j</h3>
+    <p>We successfully generated wrappers for COM interfaces of SAPI5 (a build ant script is available to re-generated the wrappers).</p>
+    <p>The SimpleCommandLineTTS.exe c#-based command line tool was rewritten as a Java class calling the COM wrappers.</p>
+    <p>A Narrator script was successfully executed from the PipelineTestDriver.</p>
+    <p>Using the same wrappers, we can now enable a finer-grained configuration of SAPI-compliant TTS.</p>
+    <h3 id="remainingissues">Remaining issues</h3>
+    <ul>
+      <li><span class="todo">[TODO]</span> test it with the Pipeline GUI / OSGi runtime <br/>
+(a bad linkage error prevented me to do that... it should come from my Eclipse/Java setup though.)</li>
+      <li><span class="todo">[TODO]</span> refine the build scripts to include the com bridge for windows only</li>
+    </ul>
+    <h2 id="localization">Localization</h2>
+    <h3 id="resources">Resources</h3>
+    <ul>
+      <li>
+        <a href="http://www.eclipse.org/articles/Article-Internationalization/how2I18n.html#step5">How to Internationalize your Eclipse Plug-In</a>
+      </li>
+      <li>
+        <a href="http://www.eclipse.org/articles/Article-TVT/how2TestI18n.html" title="How to Test your Internationalized Eclipse Plug-In">How to Test Your Internationalized Eclipse Plug-In</a>
+      </li>
+    </ul>
+    <h3 id="testinglist">Testing list</h3>
+    <ul>
+      <li>Failure to use locale-sensitive functions</li>
+      <li>New code problems introduced by the translation</li>
+      <li>Hardcoded strings</li>
+      <li>Text expansion problems</li>
+      <li>Inadvertently translated strings</li>
+      <li>Font changes, encoding/codepage problems</li>
+      <li>Out-of-context translation errors</li>
+    </ul>
+    <h3 id="process">Process</h3>
+    <p>Pipeline core: simply put the messages_hi.properties in the code.</p>
+    <ul>
+      <li>at some point this will need some customization of the build script to strip out unwanted translation files.</li>
+      <li>may deliver lang packs as Update ZIP ?</li>
+    </ul>
+    <p>Pipeline GUI: define NL fragments à la RCP</p>
+    <ul>
+      <li>lang packs are plugin fragments</li>
+      <li>simply copy it in the plugin dir</li>
+      <li>write a GUI feature or wait for p2 / pipeline-osgi ?</li>
+    </ul>
+    <h3 id="remainingissues">Remaining Issues</h3>
+    <ul>
+      <li><span class="done">[DONE]</span> mnemonics: work well with Hindi script</li>
+      <li><span class="done">[DONE]</span> brands (DAISY Pipeline, Python): not to be translated</li>
+      <li>[PROGRESS] P2 Eclipse messages</li>
+      <li><span class="todo">[TODO]</span> P3 Eclipse messages</li>
+      <li><span class="done">[DONE]</span> localize Script categorization (uses directory names)</li>
+      <li><span class="todo">[TODO]</span> translate Scripts name ?</li>
+      <li><span class="todo">[TODO]</span> translate Documentation ?</li>
+      <li><span class="todo">[TODO]</span> Refactor I18n class ? =&gt; there's duplicate boiler-plate code</li>
+      <li><span class="done">[DONE]</span> hard coded messages in pipeline core</li>
+      <li><span class="todo">[TODO]</span> hard coded messages in transformers</li>
+      <li><span class="todo">[TODO]</span> define a deployment strategy
+<ul><li>for RCP: as plugin fragements</li><li>use the update feature ?</li><li>do separate localized builds ?</li></ul></li>
+      <li><span class="todo">[TODO]</span> write a GUI command / preference to set the locale</li>
+    </ul>
+    <h2 id="plansforpipelineusageinindianab">Plans for Pipeline usage in India / NAB</h2>
+    <h3 id="mp3filesettodaisy2.02dtb">MP3 file set to DAISY 2.02 DTB</h3>
+    <p>This conversion would be required as a companion product to the flash-based, low-cost DAISY player.</p>
+    <p>Idea: a script chaining 3 transformers:</p>
+    <ul>
+      <li>MP3 file set to playlist (to be developed, probably pick up some code from DTB to Playlist converter)</li>
+      <li>Playlist to DAISY Z (work in progress)</li>
+      <li>Z to DAISY 2.02 (done and stable)</li>
+    </ul>
+    <p>A minimalist, dedicated GUI would be required, probably in .Net (it better fits the developers skills, better accessibility features).</p>
+    <h3 id="simplifiedappforfull-textfull-audioproduction">Simplified app for full-text full-audio production</h3>
+    <ul>
+      <li>Basically a dedicated GUI for the Narrator.</li>
+      <li>Minimalist GUI approach. Wizards are a pattern easier to understand for VI users.
+<ul><li>page 1: get an input word (or dtbook ?) document</li><li>page 2: set an output folder</li><li>page 3 (optional?): configure the TTS / voice</li></ul></li>
+      <li>may be an RCP app, to reuse / proof the existing GUI model</li>
+    </ul>
+    <h3 id="ttsconfiguration">TTS configuration</h3>
+    <p>A nice addition would be the possibility to configure the voice used in the TTS from the GUI.  </p>
+    <ul>
+      <li>The use of the SAPI5 bridge ease this functionality on Windows.</li>
+      <li>Greg Kearney has a script that list available voices on Mac.</li>
+    </ul>
+    <p>Dipendra also thinks about a "Universal SAPI Adaptor" (TM), that would facilitate plugging-in non-SAPI compliant TTS to the Pipeline, even from the GUI. Nice idea but not realistic from the technical standpoint .</p>
+  </body>
+</html>

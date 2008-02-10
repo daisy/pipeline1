@@ -126,9 +126,10 @@ Action items:
 - Drop-down buttons for the view menu:
 	- spoken as "custom control"
 	- there's a keyboard shortcut to access it, it's a bit hidden in the menu bar though
-	- [TODO] try to manually set the accessible information, and report to Eclipse anyway (see [eclipse bug #][])
+	- [DONE] try to manually set the accessible information, and report to Eclipse anyway (see [eclipse bug #204657][204657])
 - *to be continued...*
 
+[204657]: http://bugs.eclipse.org/bugs/show_bug.cgi?id=204657
 [1751017]:  http://sourceforge.net/tracker/index.php?func=detail&aid=1751017&group_id=162777&atid=951926
 [1751023]:  http://sourceforge.net/tracker/index.php?func=detail&aid=1751023&group_id=162777&atid=951926
 [1752458]:  http://sourceforge.net/tracker/index.php?func=detail&aid=1752458&group_id=162777&atid=951926

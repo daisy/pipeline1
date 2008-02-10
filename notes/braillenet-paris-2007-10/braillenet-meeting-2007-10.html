@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"/>
+    <title>BrailleNet / DAISY meeting - Paris, October 2007</title>
+    <link rel="stylesheet" type="text/css" href="notes.css "/>
+    <meta name="Date" content="2007-08-20 "/>
+    <meta name=" Attendees" content="Dominique Burger (BrailleNet / INSERM), Catherine Desbuquois (BrailleNet), Bruno Marmol (BrailleNet / INRIA), Romain Deltour (DAISY) "/>
+    <meta name="Scribe" content="Romain Deltour "/>
+  </head>
+  <body>
+    <h1 id="braillenetdaisymeeting-parisoctober2007">BrailleNet / DAISY meeting - Paris, October 2007</h1>
+    <div class="summary">
+      <p>The purpose of this meeting was to investigate on the feasibility of the integration of the DAISY Pipeline in the production chain of BrailleNet.</p>
+      <p><em>Date</em>: 2007-08-20 <br/><em> Attendees</em>: Dominique Burger (BrailleNet / INSERM), Catherine Desbuquois (BrailleNet), Bruno Marmol (BrailleNet / INRIA), Romain Deltour (DAISY) <br/><em>Scribe</em>: Romain Deltour <br/></p>
+    </div>
+    <div id="toc">
+      <h2>Table of Contents</h2>
+      <ul>
+        <li>
+          <a href="#thehlneserver">The "Hélène" server</a>
+        </li>
+        <li>
+          <a href="#theproductionchain">The production chain</a>
+          <ul>
+            <li>
+              <a href="#initialimport">1. Initial import</a>
+            </li>
+            <li>
+              <a href="#structuring">2. Structuring</a>
+            </li>
+            <li>
+              <a href="#conversiontoxml">3. Conversion to XML</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#daisypipelinedemo">DAISY Pipeline demo</a>
+          <ul>
+            <li>
+              <a href="#questionsissuesraisedduringthedemo">Questions/issues raised during the demo</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#potentialuseofthepipelinebybraillenet">Potential use of the Pipeline by BrailleNet</a>
+          <ul>
+            <li>
+              <a href="#integratingthepipelinetotheservertoolchain">Integrating the Pipeline to the server tool chain</a>
+            </li>
+            <li>
+              <a href="#usingthepipelineforbraillenetconversions">Using the Pipeline for BrailleNet conversions</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <h2 id="thehlneserver">The "Hélène" server</h2>
+    <ul>
+      <li>2 different services:
+<ul><li><em>Serveur Hélène</em>: to deliver content to transcripters / Braille producers</li><li><em>Bibliothèque Hélène</em>: a library service for users of an "IRIS" Braille refreshable display</li></ul></li>
+      <li>simple user and admin interface (html + forms for the admin interface)</li>
+      <li>each book is represented by a <em>book note</em> that contains:
+<ul><li>the metadata</li><li>a preview of the book structure (in html)</li><li>a list of the several formats available</li></ul></li>
+    </ul>
+    <h2 id="theproductionchain">The production chain</h2>
+    <h3 id="initialimport">1. Initial import</h3>
+    <ol>
+      <li>Receive the original file from publishers (usually in PDF)</li>
+      <li>Print ToC for later use in the re-structuring phase</li>
+      <li>Export to RTF using either:
+<ul><li>Adobe Reader's export feature</li><li><a href="http://finereader.abbyy.com/">ABBYY Fine Reader</a> conversion tools (recommended, better conversion)</li></ul></li>
+    </ol>
+    <p>In parallel, a <em>book note</em> is first created on the server using the admin web interface (html form).
+The original PDF is published on the server.</p>
+    <h3 id="structuring">2. Structuring</h3>
+    <p>The RTF created in phase 1 is then re-structured from scratch, using MS Word 2007. Default styles are used to map the original structure. The following structuring elements are processed:</p>
+    <ul>
+      <li>headings</li>
+      <li>tables</li>
+      <li>footnotes</li>
+      <li>links</li>
+      <li>sometimes images (cut &amp; paste) + comment</li>
+      <li>custom comments</li>
+    </ul>
+    <p>Note that math formulas are not processed (yet).
+Page breaks were supported but it seems it no longer works.</p>
+    <p>A macro (for MS Word) is available to constrain the style of the doc (and later in phase 3 to connect to the server).
+Problems of maintenance occurred (compatibility between Word versions).</p>
+    <p>=&gt; Use the Pipeline to modernize the Word (or ODF?) to DTBook conversion?</p>
+    <h3 id="conversiontoxml">3. Conversion to XML</h3>
+    <ol>
+      <li>The custom macro connects to the server to link the RTF document with the book note.</li>
+      <li>The structured DTBook-ready RTF is sent to the server</li>
+      <li>The conversion to DTBook is launched manually from the web admin interface.</li>
+      <li>Links can then be created to make other formats available with on-the-fly conversion. Available formats are:
+<ul><li>single file HTML (for use in a browser)</li><li>multiple files HTML (for use with refreshable brailled displays)</li><li>large print PDF</li><li>Braille-adapted PDF</li></ul></li>
+    </ol>
+    <p>The RTF to DTBook conversion uses <a href="http://www.infinity-loop.de/products/upcast/">upCast</a>:</p>
+    <ul>
+      <li>commercial (produced by a German company, Infinity Loop)</li>
+      <li>causes some maintenance issues</li>
+    </ul>
+    <p>The DTBook to other format conversions use home made converters (using mostly XSLT).</p>
+    <p>Note that the conversion to PDF used  <a href="http://xmlgraphics.apache.org/fop/">Apache FOP</a> (Java-based XSL-FO to PDF) but should switch to <a href="http://www.princexml.com/">Prince XML</a> (better PDF accessibility features).</p>
+    <h2 id="daisypipelinedemo">DAISY Pipeline demo</h2>
+    <p>A short demo of the Pipeline was made: how to browse the documentation, how to create a Job, how to run a Job, how to analyze the messages.</p>
+    <p>The Pipeline was then tested with some content produced by BrailleNet:</p>
+    <ul>
+      <li>Validation of a DTBook file produced by BrailleNet
+<ul><li>almost OK :)</li><li>declaration of the MathML namespace raises a DTD validation error
+<ul><li>the MathML namespace is not used </li></ul></li></ul></li>
+      <li>RTF (formatted with the BrailleNet macro) to DTBook
+<ul><li>OK</li><li>The book title is level 1, the remaining structure starts with level 2.
+Note that BrailleNet didn't set the title as level 1, the whole structure is moved one level down.</li><li>xml:lang value is an empty string, causing validation problems</li></ul></li>
+      <li>RTF (produced with Word 2007, no macro) to DTBook
+<ul><li>same issues as with previous test</li></ul></li>
+      <li>WordML to DTBook
+<ul><li>had to tell Word 2007 to save as Word 2003 XML</li><li>images were not extracted</li></ul></li>
+      <li>DTBook (produced by BrailleNet) to HTML
+<ul><li>didn't work. The HTML tags seem to have not been output</li><li><span class="todo">[TODO]</span> report a bug and investigate.</li></ul></li>
+    </ul>
+    <h3 id="questionsissuesraisedduringthedemo">Questions/issues raised during the demo</h3>
+    <ul>
+      <li>Is the RTF to DTBook stable enough for production ?</li>
+      <li>And WordML to DTBook ? ODF to DTBook ?</li>
+      <li>Is there an OpenXML (or whatever it's called) transformer in development ? i.e. Will WordML to DTBook be upgraded to Word 2007 format ?</li>
+      <li>What can be done to make images extracted by the WordML to DTBook transformer ?
+<ul><li>the Pipeline doc describes a step-by-step pre-processing but it seems to be targeting Word 2003. </li><li>Word 2007 does not use an application menu but a ribbon (a mix between a menu and a toolbar), and the pre-processing couldn't be reproduced.</li></ul></li>
+    </ul>
+    <h2 id="potentialuseofthepipelinebybraillenet">Potential use of the Pipeline by BrailleNet</h2>
+    <p>BrailleNet could benefit from using the Pipeline:</p>
+    <ul>
+      <li>free open source software</li>
+      <li>supported / maintained software (maintenance of the current macro / tools can be difficult by lack of developers)</li>
+      <li>rely on the user / developer community</li>
+      <li>quality insurance (validation)</li>
+    </ul>
+    <p>The Pipeline can definitely be used for RTF to DTBook conversion and for validation (replacement of the macro + upCast solution).
+It can also potentially be used for on-the-fly conversion of the master DTBook to other formats (higher development cost).</p>
+    <p>Two different issues at stake:</p>
+    <ul>
+      <li>integrating the Pipeline to the BrailleNet server-based conversion chain</li>
+      <li>adapting the Pipeline transformers to BrailleNet needs</li>
+    </ul>
+    <h3 id="integratingthepipelinetotheservertoolchain">Integrating the Pipeline to the server tool chain</h3>
+    <p>The BrailleNet servers are implemented in Perl. There's no existing Java web container.</p>
+    <p>The call to the Pipeline would be made internally, using the command line version. No need to have a full-blown server-side Pipeline with a servlet container.</p>
+    <p>The potential move to OSGi (component framework) was raised. It's not a big deal for BrailleNet, the dynamic behavior is not a top priority requirement (low maintenance rate).</p>
+    <h3 id="usingthepipelineforbraillenetconversions">Using the Pipeline for BrailleNet conversions</h3>
+    <p>BrailleNet would need a ToC generator (for HTML generation). It would be easy to create one using existing XSLT-based ToC generators, and to write a script that optionally calls this task in the HTML converter.</p>
+    <p>BrailleNet would need some custom options in the RTF to DTBook for creating metadata that could be used to link the produced DTBook to the book note on the server.</p>
+    <p>BrailleNet could possibly contribute some XLST used in their current conversions.</p>
+    <p>The Pipeline could potentially be used for all the conversions (including PDF generation). </p>
+  </body>
+</html>
