@@ -2,7 +2,7 @@
 <!--
 	Level cleaner
 		Version
-			2007-09-17
+			2008-02-11
 
 		Description
 			Redundant level structure is sometimes used to mimic the original layout, 
@@ -22,49 +22,44 @@
 		Doctype
 			(x) DTBook
 
-		Author
+		Authors
 			Joel Håkansson, TPB
+			James Pritchett, RFB&D
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/">
 
 	<xsl:include href="recursive-copy.xsl"/>
 	<xsl:include href="output.xsl"/>
 
-	<!-- if levelx parent has only one child (this), then remove levelx -->
-	<xsl:template match="dtb:level2|dtb:level3|dtb:level4|dtb:level5|dtb:level6">
-		<xsl:param name="remove" select="0"/>
+	<!-- Template for all levels (1-6) -->
+	<xsl:template match="dtb:level1|dtb:level2|dtb:level3|dtb:level4|dtb:level5|dtb:level6">
+		<xsl:param name="currentLevel" select="0"/>		<!-- $currentLevel defaults to 1 -->
+		
 		<xsl:choose>
-			<xsl:when test="count(parent::node()/*)=1">
+		<!-- If all children are level nodes, then this is a redundant level; don't output anything -->
+			<xsl:when test="count(./dtb:level2|./dtb:level3|./dtb:level4|./dtb:level5|./dtb:level6)=count(child::*)">
 				<xsl:apply-templates>
-					<xsl:with-param name="remove" select="$remove+1"/>
+					<xsl:with-param name="currentLevel" select="$currentLevel"/>
 				</xsl:apply-templates>
 			</xsl:when>
-			<xsl:when test="$remove&gt;0">
-				<xsl:element name="level{substring(name(), 6)-$remove}" namespace="http://www.daisy.org/z3986/2005/dtbook/">
+			
+		<!-- Otherwise, output the next level element and recurse with $currentLevel bumped up one -->
+			<xsl:otherwise>
+				<xsl:element name="level{$currentLevel + 1}" namespace="http://www.daisy.org/z3986/2005/dtbook/">
 					<xsl:copy-of select="@*"/>
 					<xsl:apply-templates>
-						<xsl:with-param name="remove" select="$remove"/>
+						<xsl:with-param name="currentLevel" select="$currentLevel+1"/>
 					</xsl:apply-templates>
 				</xsl:element>
-			</xsl:when>
-			<xsl:when test="not(node())"/>
-			<xsl:otherwise>
-				<xsl:copy>
-					<xsl:copy-of select="@*"/>
-					<xsl:apply-templates>
-						<xsl:with-param name="remove" select="$remove"/>
-					</xsl:apply-templates>
-				</xsl:copy>
 			</xsl:otherwise>
-		</xsl:choose>
+			</xsl:choose>
 	</xsl:template>
-	
-	<!-- remove empty level1 -->
-	<xsl:template match="dtb:level1[not(node())]"/>
-	
-	<xsl:template match="dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6">
-		<xsl:param name="remove" select="0"/>
-		<xsl:element name="h{substring(name(), 2)-$remove}" namespace="http://www.daisy.org/z3986/2005/dtbook/">
+		
+	<!-- Template for all headings (h1-h6) -->
+	<!-- This just rewrites the heading at the current level (whatever that might be) -->
+	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6">
+		<xsl:param name="currentLevel" select="0"/>
+		<xsl:element name="h{$currentLevel}" namespace="http://www.daisy.org/z3986/2005/dtbook/">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates/>
 		</xsl:element>
