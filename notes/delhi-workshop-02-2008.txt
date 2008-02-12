@@ -3,7 +3,7 @@ DAISY Pipeline Workshop - Feb 2008, Delhi
 %CSS: notes.css
 %Date: 6-9 Feb 2008
 %Attendees: Avneesh & Romain (+Dipendra)
-%Last modified: 2008-02-10
+%modified: 2008-02-10
 
 Agenda
 ------
@@ -63,7 +63,7 @@ Using the same wrappers, we can now enable a finer-grained configuration of SAPI
 
 ### Remaining issues
 
-- [TODO] test it with the Pipeline GUI / OSGi runtime  
+- [DONE] test it with the Pipeline GUI / OSGi runtime  
   (a bad linkage error prevented me to do that... it should come from my Eclipse/Java setup though.)
 - [TODO] refine the build scripts to include the com bridge for windows only
 
