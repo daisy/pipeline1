@@ -401,13 +401,6 @@
     	<sch:assert test="preceding-sibling::*[1][self::dtbk:img]">[tpb53] caption must immediately follow an img element</sch:assert>
     </sch:rule>
   </sch:pattern>
-   
-  <!-- Rule 55: no prodnotes as direct children of list -->
-  <sch:pattern name="dtbook_TPB_prodnoteInList" id="dtbook_TPB_prodnoteInList">
-    <sch:rule context="dtbk:list">
-    	<sch:assert test="not(dtbk:prodnote)">[tpb55] prodnotes are not allowed in lists</sch:assert>
-    </sch:rule>
-  </sch:pattern>
   
   <!-- Rule 57: table of contents -->
   <sch:pattern name="dtbook_TPB_listIntoc" id="dtbook_TPB_listIntoc">
