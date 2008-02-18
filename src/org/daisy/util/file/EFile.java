@@ -72,12 +72,10 @@ public class EFile extends java.io.File  {
 		super(file.toURI());
 	}
 	
-	public boolean isSymLink() throws IOException {
-		boolean isEqual = this.getAbsolutePath().equals(this.getCanonicalPath());
-		if(!isEqual) {
-			return true;
-		}
-		return false;
+	public boolean isSymLink() throws IOException {		
+		File parent = this.getParentFile().getCanonicalFile();
+		File check = new File(parent, this.getName());
+		return !check.getAbsolutePath().equals(check.getCanonicalPath());		
 	}
 
 	public MIMEType getMimeType() {
