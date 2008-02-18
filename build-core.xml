@@ -34,6 +34,7 @@
 		<include name="batik-util.jar"/>
 		<include name="chardet.jar"/>
 		<include name="commons-cli-1.0.jar"/>
+		<include name="epubcheck.jar"/>
 		<include name="icu4j-3_8.jar"/>		
         <include name="icu4j-charsets.jar"/>     
 		<include name="jaudiotagger.jar"/>
@@ -49,7 +50,7 @@
 		<include name="tagsoup-1.1.3.jar"/>	
 		<include name="tritonus_remaining-0.3.6.jar"/>			
 		<include name="tritonus_share-0.3.6.jar"/>
-		<include name="wstx-lgpl-3.2.1.jar"/>
+		<include name="wstx-lgpl-3.2.4.jar"/>
 		<include name="xalan.jar"/>
 		<include name="xercesImpl.jar"/>			
 		<include name="ZedVal.jar"/>													
