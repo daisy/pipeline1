@@ -57,7 +57,7 @@ public class DoctypeParser {
         	if (matcher.group(sROOT) != null) {
         		mRootElem = matcher.group(sROOT);
         	}
-            if (matcher.group(sTYPE).startsWith("PUBLIC")) {
+            if (matcher.group(sTYPE) != null && matcher.group(sTYPE).startsWith("PUBLIC")) {
                 pub = matcher.group(sPUBLIC_PUBLICID);
                 sys = matcher.group(sPUBLIC_SYSTEMID);
                 pub = pub.substring(1, pub.length() - 1);
@@ -65,9 +65,11 @@ public class DoctypeParser {
                 mPublicId = pub;
                 mSystemId = sys;               
             } else {
-            	sys = matcher.group(sSYSTEM_SYSTEMID);                        
-            	sys = sys.substring(1, sys.length() - 1);
-            	mSystemId = sys;
+            	if (matcher.group(sSYSTEM_SYSTEMID) != null) {
+	            	sys = matcher.group(sSYSTEM_SYSTEMID);                        
+	            	sys = sys.substring(1, sys.length() - 1);
+	            	mSystemId = sys;
+            	}
             }
             if (matcher.group(sINTERNAL) != null) {
             	String internal = matcher.group(sINTERNAL);
