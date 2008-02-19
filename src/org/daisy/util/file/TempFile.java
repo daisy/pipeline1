@@ -55,6 +55,19 @@ public class TempFile {
 	}
 	
 	/**
+	 * Creates a new TempFile from an existing file.
+	 * This constructor creates a new temporary file and copies
+	 * the contents of <code>sourceFile</code> to it.
+	 * @param sourceFile the File to copy
+	 * @throws IOException
+	 */
+	public TempFile(File sourceFile) throws IOException {
+		file = File.createTempFile("temp", ".tmp", tempDir);
+		FileUtils.copyFile(sourceFile, file);
+		file.deleteOnExit();
+	}
+	
+	/**
 	 * Creates a new <code>TempFile</code> and returns the <code>File</code> reference to it.
 	 * @return the <code>File</code> reference to to the <code>TempFile</code>
 	 * @throws IOException
