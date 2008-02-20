@@ -555,6 +555,7 @@ src/org/daisy/util/xml/catalog/xhtml10/modules/text.rng -text
 src/org/daisy/util/xml/catalog/xhtml10/xhtml-basic.rng -text
 src/org/daisy/util/xml/catalog/xhtml10/xhtml-strict.rng -text
 src/org/daisy/util/xml/catalog/xhtml10/xhtml.rng -text
+src/org/daisy/util/xml/catalog/z39862005/dtbook-2005-3.dtd -text
 src/org/daisy/util/xml/dom/Serializer.java -text
 src/org/daisy/util/xml/pool/LSParserPool.java -text
 src/org/daisy/util/xml/pool/LSSerializerPool.java -text
