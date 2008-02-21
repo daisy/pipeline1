@@ -77,8 +77,9 @@ public class DtbSplitter202 extends DtbSplitter {
 	private D202NccFile nccFile;
 	private Document nccFileDocument;
 	private D202MasterSmilFile masterSmilFile;
+	private String dirPrefix = null;
 	
-    public DtbSplitter202(Fileset inputFileset, File outDir, File promptManifest, long maxVolSize, DtbTransformationReporter reportGen) throws XmlParsingException{
+    public DtbSplitter202(Fileset inputFileset, File outDir, File promptManifest, long maxVolSize, DtbTransformationReporter reportGen, String dirPrefix) throws XmlParsingException{
         super(outDir, promptManifest, maxVolSize, reportGen);
 		try {
 			for(Iterator i=inputFileset.getLocalMembers().iterator();i.hasNext();){
@@ -90,6 +91,7 @@ public class DtbSplitter202 extends DtbSplitter {
 					this.masterSmilFile = (D202MasterSmilFile)file;
 				}
 			}
+			this.dirPrefix = dirPrefix;
 		} catch (Exception e) {
             throw new XmlParsingException(this.nccFile.getFile().getAbsolutePath());
 		}
@@ -206,7 +208,7 @@ public class DtbSplitter202 extends DtbSplitter {
 	 */
 	protected DtbVolume initializeNewVolume(int volumeNr){
 
-		DtbVolume vol = new DtbVolume(volumeNr, super.getOutputDir(), super.getReportGenarator());
+		DtbVolume vol = new DtbVolume(volumeNr, super.getOutputDir(), super.getReportGenarator(), this.dirPrefix);
 		if(this.masterSmilFile!=null){//master.smil is optional
             //TODO is this ok?
 			// do not add master.smil as the FilsetImpl will fail when merging

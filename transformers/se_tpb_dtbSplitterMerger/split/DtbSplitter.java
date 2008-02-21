@@ -143,7 +143,7 @@ public abstract class DtbSplitter {
 			if(!collecting && referenceLevel == this.maxSplitLevel+1){
 				collecting = true;
 				savedVolume = volume;
-				volume = new DtbVolume(0, null, this.reportGenerator);
+				volume = new DtbVolume(0, null, this.reportGenerator, "");
                 isTitleSmilSet = false;
 			}else if(collecting && referenceLevel < this.maxSplitLevel+1 ){
 				collecting = false;
@@ -176,7 +176,7 @@ public abstract class DtbSplitter {
 			 * decrement the volume size
 			 */
 				volume.decrementVolumeSize(potentialFileSetSize);
-                DtbVolume tmp = new DtbVolume(0,null, this.reportGenerator);
+                DtbVolume tmp = new DtbVolume(0,null, this.reportGenerator, "");
                 if(closingCollecting){
                     tmp.addResourcesFrom(volume);
                     tmp.incrementVolumeSize(volume.getVolumeSize());

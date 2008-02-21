@@ -66,14 +66,14 @@ public class DtbVolume {
 	/*
 	 * Splitting output constructor
 	 */
-	public DtbVolume(int volNr, File outputDir, DtbTransformationReporter rg){
+	public DtbVolume(int volNr, File outputDir, DtbTransformationReporter rg, String dirPrefix){
 		this.volumeNr = volNr;
 		this.reportGenerator = rg;
 		/* outputDir may come as null when we are creating a temporary volume 
 		 * for collecting non splittable elements
 		 */
 		if(outputDir!=null)
-			this.volumeOutputDir = new File(outputDir.getAbsolutePath()+ File.separator + volNr);
+			this.volumeOutputDir = new File(outputDir.getAbsolutePath()+ File.separator + dirPrefix + volNr);
 		
 		this.volumeType = this.SPLIT_VOL_TYPE;	
 		

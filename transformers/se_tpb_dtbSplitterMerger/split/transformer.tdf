@@ -84,6 +84,20 @@
 			</enum>
 			<default>6</default>
 		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>alwaysIdSubdir</name>
+			<description>
+			  Put the book in a subdirectory named after the book identifier when the book
+			  did not need to be split.
+			</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
 
 	</parameters>	
 

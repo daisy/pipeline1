@@ -35,6 +35,8 @@ import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
+import org.daisy.util.fileset.interfaces.xml.z3986.Z3986OpfFile;
 import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
 
 import se_tpb_dtbSplitterMerger.DtbSplitterMergerConstants;
@@ -77,6 +79,7 @@ public class DtbSplitterTransformer extends Transformer implements DtbTransforma
         String inparamKeepInput = (String)parameters.remove("keepInput");
         String inparamMaxSplitLevel = (String)parameters.remove("maxSplitLevel");
         String inparamPromptFilesManifestPath = (String)parameters.remove("promptFilesManifestPath");
+        String inparamAlwaysIdSubdir = (String)parameters.remove("alwaysIdSubdir");
 		
         //check input file path
         File inputFile = new File(inparamFilePath);
@@ -105,6 +108,18 @@ public class DtbSplitterTransformer extends Transformer implements DtbTransforma
                 //copy the book to the outDir and quit
                 super.sendMessage(Level.INFO,i18n("BOOK_SMALLER_THAN_VOL_SIZE",inparamVolumeSizeInMB+" MB"));
                 super.sendMessage(Level.INFO,i18n("COPYING_BOOK",outDir.getAbsolutePath()));
+                
+                String identifier = "book";
+                if(FilesetType.DAISY_202.toString().equals(fs.getFilesetType().toString())) { 
+                	D202NccFile ncc = (D202NccFile)fs.getManifestMember();
+                	identifier = ncc.getDcIdentifier();
+                } else if(FilesetType.Z3986.toString().equals(fs.getFilesetType().toString())) { 
+                	Z3986OpfFile opf = (Z3986OpfFile)fs.getManifestMember();
+                	identifier = opf.getUID();
+                }
+                if (Boolean.parseBoolean(inparamAlwaysIdSubdir)) {
+                	outDir = new File(outDir, identifier);
+                }
                 DtbVolume outVolume = new DtbVolume(outDir,this);
                 Collection inputFileset = new ArrayList();
                 Collection filesetFiles = fs.getLocalMembers();
@@ -129,9 +144,17 @@ public class DtbSplitterTransformer extends Transformer implements DtbTransforma
 
 			DtbSplitter splitter = null;
 			if(FilesetType.DAISY_202.toString().equals(fsType.toString())){
-			    splitter = new DtbSplitter202(fs, outDir, promptManifest, maxVolumeSizeInBytes, this);
+				String dirPrefix = "";
+				if (Boolean.parseBoolean(inparamAlwaysIdSubdir)) {
+                	dirPrefix = ((D202NccFile)fs.getManifestMember()).getDcIdentifier() + "_";
+                }
+			    splitter = new DtbSplitter202(fs, outDir, promptManifest, maxVolumeSizeInBytes, this, dirPrefix);
 			}else if(FilesetType.Z3986.toString().equals(fsType.toString())){
-			    splitter = new DtbSplitter3(fs, outDir, promptManifest, maxVolumeSizeInBytes, this);
+				String dirPrefix = "";
+				if (Boolean.parseBoolean(inparamAlwaysIdSubdir)) {
+                	dirPrefix = ((Z3986OpfFile)fs.getManifestMember()).getUID() + "_";
+                }
+			    splitter = new DtbSplitter3(fs, outDir, promptManifest, maxVolumeSizeInBytes, this, dirPrefix);
 			}
             if(splitter!=null){
                 //set optional params

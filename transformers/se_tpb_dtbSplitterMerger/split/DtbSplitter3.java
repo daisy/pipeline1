@@ -75,8 +75,9 @@ public class DtbSplitter3 extends DtbSplitter {
 	private Z3986OpfFile opfFile;
 	private Z3986NcxFile ncxFile;
     private Document opfDoc;
+    private String dirPrefix = null;
 	
-    public DtbSplitter3(Fileset inputFileset, File outDir, File promptManifest, long maxVolSize, DtbTransformationReporter reportGen) throws XmlParsingException{
+    public DtbSplitter3(Fileset inputFileset, File outDir, File promptManifest, long maxVolSize, DtbTransformationReporter reportGen, String dirPrefix) throws XmlParsingException{
         super(outDir, promptManifest, maxVolSize, reportGen);
         
 		try {
@@ -89,6 +90,7 @@ public class DtbSplitter3 extends DtbSplitter {
 					this.ncxFile = (Z3986NcxFile)file;
 				}
 			}
+			this.dirPrefix = dirPrefix;
 		} catch (Exception e) {
 			throw new XmlParsingException(this.opfFile.getFile().getAbsolutePath());
 		}
@@ -149,7 +151,7 @@ public class DtbSplitter3 extends DtbSplitter {
     
 	protected DtbVolume initializeNewVolume(int volumeNr){
 
-		DtbVolume vol = new DtbVolume(volumeNr, super.getOutputDir(),super.getReportGenarator());
+		DtbVolume vol = new DtbVolume(volumeNr, super.getOutputDir(),super.getReportGenarator(), this.dirPrefix);
 		vol.incrementVolumeSize(((File)this.opfFile).length());
 		vol.addResourceFile(this.opfFile);
 		//add all resources except for smil audio and full text 
