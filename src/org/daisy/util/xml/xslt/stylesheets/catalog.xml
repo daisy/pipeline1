@@ -17,6 +17,9 @@
   
   <group> <!-- dtbook --> 
     <system systemId="dtbook2xhtml.xsl" uri="./dtbook/dtbook2xhtml.xsl" />
+    <system systemId="dtbook110to2005-1.xsl" uri="./dtbook/dtbook110to2005-1.xsl" />
+    <system systemId="dtbook2005-1to2.xsl" uri="./dtbook/dtbook2005-1to2.xsl" />
+    <system systemId="dtbook2005-2to3.xsl" uri="./dtbook/dtbook2005-2to3.xsl" />
   </group>
 
   <group> <!-- xhtml--> 

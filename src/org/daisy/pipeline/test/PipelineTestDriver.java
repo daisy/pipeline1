@@ -22,6 +22,9 @@ import org.daisy.pipeline.test.impl.DTBook2Xhtml1;
 import org.daisy.pipeline.test.impl.DTBook2Xhtml2MathML;
 import org.daisy.pipeline.test.impl.DTBook2rtf1;
 import org.daisy.pipeline.test.impl.DTBookFix1;
+import org.daisy.pipeline.test.impl.DTBookMigrator1;
+import org.daisy.pipeline.test.impl.DTBookMigrator2;
+import org.daisy.pipeline.test.impl.DTBookMigrator3;
 import org.daisy.pipeline.test.impl.Daisy202ToZ398620051;
 import org.daisy.pipeline.test.impl.FilesetCreator1;
 import org.daisy.pipeline.test.impl.FilesetRenamer1;
@@ -184,9 +187,7 @@ public class PipelineTestDriver {
 		
 		/**
 		 * Current broken (due to bug in epubcheck):
-		 * tests.add(new OpsCreator3(inputDir, outputDir)); (input is XHTML 1.0 and epubcheck crashes)
-		 * tests.add(new OpsCreator2(inputDir, outputDir)); (input is XHTML 1.0 and epubcheck crashes)
-		 * tests.add(new ValidatorEpubCheck2(inputDir, outputDir)); //(input is XHTML 1.1 and epubcheck crashes) 
+		 * tests.add(new OpsCreator3(inputDir, outputDir)); (input is XHTML 1.0 and epubcheck crashes)		 
 		 */
 		
 		/*
@@ -196,8 +197,10 @@ public class PipelineTestDriver {
 		 */
 		
 //		tests.add(new OpsCreator1(inputDir, outputDir));
-//		tests.add(new OpsCreator4(inputDir, outputDir));		
-//		tests.add(new OcfCreator1(inputDir, outputDir));		
+//		tests.add(new OpsCreator2(inputDir, outputDir)); 
+//		tests.add(new OpsCreator3(inputDir, outputDir)); // (input is XHTML 1.0 and epubcheck crashes)
+//		tests.add(new OpsCreator4(inputDir, outputDir));			 
+//		tests.add(new OcfCreator1(inputDir, outputDir));			
 //		tests.add(new WordML2DTBook1(inputDir, outputDir));
 //		tests.add(new WordML2DTBook2(inputDir, outputDir));
 //		tests.add(new WordML2DTBook3(inputDir, outputDir));
@@ -214,7 +217,8 @@ public class PipelineTestDriver {
 //		tests.add(new ValidatorDTBd2021(inputDir, outputDir));
 //		tests.add(new ValidatorDTBd2022(inputDir, outputDir));
 //		tests.add(new ValidatorDTBz39861(inputDir, outputDir));
-//		tests.add(new ValidatorEpubCheck1(inputDir, outputDir));		
+//		tests.add(new ValidatorEpubCheck1(inputDir, outputDir));
+//		tests.add(new ValidatorEpubCheck2(inputDir, outputDir));		
 //		tests.add(new ValidatorConfigurable1(inputDir, outputDir));		
 //		tests.add(new PrettyPrinter1(inputDir, outputDir));
 //		tests.add(new PrettyPrinter2(inputDir, outputDir));		
@@ -229,6 +233,9 @@ public class PipelineTestDriver {
 //		tests.add(new DTBook2Xhtml2MathML(inputDir, outputDir));
 //		tests.add(new MixedContentNormalizer1(inputDir, outputDir));
 //		tests.add(new DTBookFix1(inputDir, outputDir));		
+//		tests.add(new DTBookMigrator1(inputDir, outputDir));
+//		tests.add(new DTBookMigrator2(inputDir, outputDir));
+//		tests.add(new DTBookMigrator3(inputDir, outputDir));
 //		tests.add(new Html2Xhtml1(inputDir, outputDir));
 //		tests.add(new DTBSplitter1(inputDir, outputDir));
 //		tests.add(new FilesetRenamer1(inputDir, outputDir));		

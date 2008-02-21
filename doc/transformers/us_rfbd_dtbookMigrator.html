@@ -44,46 +44,49 @@ that end users may come in contact with that information. -->
 
 <h2 id="inputReqs">Input Requirements</h2>
 <p>
-	A valid DTBook 2005-1 document.
+	A valid DTBook document.
 </p>
 
 <h2 id="output">Output</h2>
 
 <h3 id="success">On success</h3>
-<p>
-	A valid DTBook 2005-2 document.  Note that this will include removal of all style attributes from the source document.
-</p>
+<p>A valid DTBook document.</p>
 
 <h3 id="failure">On error</h3>
-<p>
-	On error, this transformer will throw an exception and abort execution.
-</p>
+<p>On error, this transformer will throw an exception and abort execution.</p>
 
 
 <h2 id="config">Configuration/Customization</h2>
 
 	<h3 id="params">Parameters (tdf)</h3>
-	<!-- description on params as defined in tdf, please use the below definition list -->
+	
 	<dl id="paramslist">
 	<dt>xml</dt>
 	<dd>The input DTBook 2005-1 document</dd>
 	<dt>out</dt>
 	<dd>The output DTBook 2005-2 document</dd>
+	<dt>version</dt>
+	<dd>An enum to select desired output version. Defaults to LATEST.</dd>
 	</dl>
 	
 	<h3 id="extConfig">Extended configurability</h3>
 <p>
 	[None]
 </p>
-	
+
 <h2 id="future">Further development</h2>
-<p>
-	Future versions of this transformer may support migration from earlier versions of the DTBook DTD.  Also, as new versions of the DTD appear, this transformer will be updated to support migration to the latest version.
-</p>	
+ <p>To add support for a new DTBook version, perform the following steps:</p>  
+ <ol>
+ 	<li>Create the XSLT and add it to <code>org.daisy.util.xml.xslt.stylesheets.dtbook</code>.
+  This XSLT should include logic to go from previous to current version only.</li>
+ 	<li>Register the new XSLT in <code>org.daisy.util.xml.xslt.stylesheets.catalog.xml</code></li>
+  <li>Update the <code>us_rfbd_dtbookMigrator.DtbookVersion</code> enum.</li>
+  <li>Update the <code>us_rfbd_dtbookMigrator.DtbookVersionManager</code> class.</li>
+ </ol>
 
 <h2 id="dependencies">Dependencies</h2>
 <p>
-	[None]
+	Saxon XSLT processor.
 </p>
 
 <h2 id="owner">Author</h2>

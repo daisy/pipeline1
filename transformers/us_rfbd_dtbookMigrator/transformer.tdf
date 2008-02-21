@@ -1,11 +1,12 @@
 <transformer version="1.0">
-	<name>DTBook 2005-1 to 2005-2 migrator</name>
+	<name>DTBook Migrator</name>
 	<description>
-		Makes only the minimal updates necessary to migrate a 2005-1 DTBook document to 2005-2.
-		The only destructive action taken by this transformer is to remove any style attributes.
+		Upgrade a DTBook document to a later version of itself. 
+		The default behavior is to upgrade to the latest published version,
+		but this can be overriden using options.
 	</description>
-	<classname>org.daisy.pipeline.transformers.XSLTRunner</classname>
-	<license>unknown</license>
+	<classname>us_rfbd_dtbookMigrator.DtbookMigrator</classname>
+	<license>LGPL</license>
 	<author>James Pritchett</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
 	<documentation uri="../../doc/transformers/us_rfbd_dtbookMigrator.html"/>
@@ -13,24 +14,39 @@
 	<parameters>
 		<parameter required="true" direction="in" type="application/x-dtbook+xml">
 			<name>xml</name>
-			<description>The DTBook 2005-1 XML file</description>
+			<description>The input DTBook XML file</description>
 			<example>file:///path/to/file.xml</example>
 		</parameter>
 		
+		<parameter required="false" type="enum">
+			<name>version</name>
+			<description>The desired output version</description>
+			<example>2005-2</example>
+			<enum>
+				<value>LATEST</value> 
+				<value>2005-1</value>
+				<value>2005-2</value>
+				<value>2005-3</value>
+			</enum>
+			<default>LATEST</default>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-dtbook+xml">
+			<name>out</name>
+			<description>The output DTBook XML document</description>
+			<example>file:///path/to/outFile.xml</example>
+		</parameter>
+		
+		<!-- 
 		<parameter type="application/xml">
 			<name>xslt</name>
 			<value>${transformer_dir}/dtbook2005-1to2.xsl</value>
 		</parameter>
-
 		<parameter type="string">
 			<name>factory</name>
 			<value>com.icl.saxon.TransformerFactoryImpl</value>
 		</parameter>
-
-		<parameter required="true" direction="out" type="application/x-dtbook+xml">
-			<name>out</name>
-			<description>The output 2005-2 document</description>
-			<example>file:///path/to/outFile.xml</example>
-		</parameter>
+		-->
+		
 	</parameters>
 </transformer>
