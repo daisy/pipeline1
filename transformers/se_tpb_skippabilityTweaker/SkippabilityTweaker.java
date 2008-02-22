@@ -138,6 +138,10 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
                 // Single book volume. Just one book to process.
                 manifests.add(input);                
             } else {
+            	// Copy discinfo file
+            	if (input.getName().toLowerCase().matches("discinfo\\.html?")) {
+            		FileUtils.copy(input, new File(outputDir, input.getName()));
+            	}
                 // If the input is a multi book volume, we need to tweak each sub book
                 Collection<File> inputFiles = ManifestFinder.getManifests(true, new EFolder(input.getParentFile()));
                 for (File file : inputFiles) {
@@ -218,8 +222,8 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
         for (FilesetFile filesetFile : (Collection<FilesetFile>)fileset.getLocalMembers()) {
             if (filesetFile instanceof D202SmilFile || filesetFile instanceof D202NccFile || filesetFile instanceof D202TextualContentFile) {
                 URI relative = inputDirUri.relativize(filesetFile.getFile().toURI());
-                URI outputUri = outputDirUri.resolve(relative);
-                File outputFile = new File(outputUri);
+                //URI outputUri = outputDirUri.resolve(relative);
+                File outputFile = new File(outputDir, relative.toString());
                 FileUtils.copyFile(filesetFile.getFile(), outputFile);
             }
             if (filesetFile instanceof D202TextualContentFile) {
@@ -392,8 +396,8 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
         D202NccFile ncc = (D202NccFile)fileset.getManifestMember();
         for (D202SmilFile smil : (Collection<D202SmilFile>)ncc.getSpineItems()) {
             URI relative = inputDirUri.relativize(smil.getFile().toURI());
-            URI outputUri = outputDirUri.resolve(relative);
-            File outputFile = new File(outputUri);
+            //URI outputUri = outputDirUri.resolve(relative);
+            File outputFile = new File(outputDir, relative.toString());
             TempFile tempFile = new TempFile(outputFile);
             totalElapsedTime += smilFileClockFixer.fix(tempFile.getFile(), outputFile, totalElapsedTime);
             tempFile.delete();
@@ -441,8 +445,8 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
         InternalSubsetAndMetaFilter internalSubsetAndMetaFilter = new InternalSubsetAndMetaFilter(staxInPool, staxInProperties, staxOutPool, staxOutProperties, staxEvPool);
         for (FilesetFile filesetFile : (Collection<FilesetFile>)fileset.getLocalMembers()) {
             URI relative = inputDirUri.relativize(filesetFile.getFile().toURI());
-            URI outputUri = outputDirUri.resolve(relative);
-            File outputFile = new File(outputUri);
+            //URI outputUri = outputDirUri.resolve(relative);
+            File outputFile = new File(outputDir, relative.toString());
             
             if (filesetFile instanceof D202SmilFile ||
                     filesetFile instanceof D202MasterSmilFile) {
