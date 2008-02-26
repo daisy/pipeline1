@@ -22,9 +22,9 @@ public interface TransformerDelegateListener {
 	public void delegateMessage(Object delegate, String message, MessageEvent.Type type, MessageEvent.Cause cause, Location location);
 	
 	/**
-	 * Request localization of a string through accessing the listeners message bundles.
+	 * Request localization through accessing the listeners message bundles.
 	 */
-	public String delegateLocalize(String message, Object param);
+	public String delegateLocalize(String key, Object[] params);
 	
 	/**
 	 * Query the listener on whether it has recieved an abort event.

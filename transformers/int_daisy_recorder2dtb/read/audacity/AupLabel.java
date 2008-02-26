@@ -73,7 +73,7 @@ public class AupLabel {
 		}catch (Exception e) {
 
 		}
-		String message = mTransformer.delegateLocalize("MARKER_ERROR", title);
+		String message = mTransformer.delegateLocalize("MARKER_ERROR", new String[]{title});
 		mTransformer.delegateMessage(this, message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, null);		
 		return new Value("MARKER ERROR");
 	}
@@ -109,7 +109,7 @@ public class AupLabel {
 		}catch (Exception e) {
 			
 		}	
-		String message = mTransformer.delegateLocalize("MARKER_ERROR", title);
+		String message = mTransformer.delegateLocalize("MARKER_ERROR", new String[]{title});
 		mTransformer.delegateMessage(this, message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, null);
 		return Semantic.UNKNOWN;
 	}

@@ -49,7 +49,7 @@ public class ReaderFactory {
 				mTransformer.delegateMessage(this, e.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM, null);
 			} 
 		}
-		throw new TransformerRunException(mTransformer.delegateLocalize("TYPE_NOT_SUPPORTED", url.getPath()));
+		throw new TransformerRunException(mTransformer.delegateLocalize("TYPE_NOT_SUPPORTED", new String[]{url.getPath()}));
 	}
 	
 }

@@ -77,7 +77,7 @@ class CharsetExecutor extends Executor {
 	    	String detectedCharset = match.getName();
 	    				
 			if(detectedCharset == null) throw new UnsupportedCharsetException("detected charset is null");			
-			String message = mTransformer.delegateLocalize("READING_USING_CHARSET", detectedCharset);
+			String message = mTransformer.delegateLocalize("READING_USING_CHARSET", new Object[]{detectedCharset});
 			mTransformer.delegateMessage(this, message, MessageEvent.Type.INFO, MessageEvent.Cause.INPUT, null);
 						
 			/*
@@ -123,7 +123,7 @@ class CharsetExecutor extends Executor {
 				StAXEventFactoryPool.getInstance().release(xef);
 			}			
 		} catch (Exception e) {			
-			String message = mTransformer.delegateLocalize("CHARSET_FAIL", e.getMessage());
+			String message = mTransformer.delegateLocalize("CHARSET_FAIL", new String[]{e.getMessage()});
 			mTransformer.delegateMessage(this, message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM, null);
 			try {
 				FileUtils.copy(input, output);

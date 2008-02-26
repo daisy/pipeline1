@@ -442,11 +442,11 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateLocalize(java.lang.String, java.lang.Object)
 	 */
-	public String delegateLocalize(String message, Object param) {
-		if(param==null) {
-			return i18n(message);
+	public String delegateLocalize(String key, Object[] params) {
+		if(params==null) {
+			return i18n(key);
 		}
-		return i18n(message,param);
+		return i18n(key,params);
 	}
 
 	/*

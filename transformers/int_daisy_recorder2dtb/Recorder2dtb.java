@@ -193,9 +193,9 @@ public class Recorder2dtb extends Transformer implements TransformerDelegateList
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateLocalize(java.lang.String, java.lang.Object)
 	 */
-	public String delegateLocalize(String message, Object param) {
-		if(param==null) return i18n(message);
-		return i18n(message,param);
+	public String delegateLocalize(String key, Object[] params) {
+		if(key==null) return i18n(key);
+		return i18n(key,params);
 	}
 
 	/*
