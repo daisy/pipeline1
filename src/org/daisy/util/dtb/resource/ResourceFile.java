@@ -14,6 +14,11 @@ public class ResourceFile {
 		TEXT_ONLY;
 	}
 	
+	/**
+	 * Get a set of URLs that represent a resource file and 
+	 * its possible auxilliary files. One of the URLs returned
+	 * is that of the resource file.
+	 */
 	public static Set<URL> get(Type type) {
 		Set<String> filenames = new HashSet<String>();
 		
