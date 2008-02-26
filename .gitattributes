@@ -285,6 +285,7 @@ scripts/_dev/Daisy202toZ3986-2005.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
 scripts/_dev/Narrator-Dev.taskScript -text
+scripts/_dev/NccNcxOnly.taskScript -text
 scripts/_dev/XMLAudioAligner.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
 scripts/conversion/advanced/WordMLtoDTBook.taskScript -text
@@ -417,6 +418,7 @@ src/org/daisy/pipeline/test/impl/MultiFormatMedia1.java -text
 src/org/daisy/pipeline/test/impl/Narrator1.java -text
 src/org/daisy/pipeline/test/impl/Narrator2.java -text
 src/org/daisy/pipeline/test/impl/Narrator3.java -text
+src/org/daisy/pipeline/test/impl/NccNcxOnly1.java -text
 src/org/daisy/pipeline/test/impl/OcfCreator1.java -text
 src/org/daisy/pipeline/test/impl/Odf2dtbook1.java -text
 src/org/daisy/pipeline/test/impl/Odf2dtbook2.java -text

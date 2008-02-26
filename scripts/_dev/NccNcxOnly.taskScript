@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../validation/ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../validation/ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+<taskScript version="2.0" name="NccNcxOnly">
+	<nicename>Full Text to NCC-Only creator</nicename>
+	<description>Create an NCC-Only DTB from a Full text 2.02 DTB</description>
+	<documentation uri="../../../doc/scripts/NccNcxOnly.html"/>
+
+	<parameter name="input" value="" required="true">
+		<nicename>Input NCC</nicename>
+		<description>Select input NCC</description>
+		<datatype>
+			<file mime="application/x-dtbd202ncc+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output Directory</nicename>
+		<description>Select the output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+
+	<task name="se_tpb_nccNcxOnly" interactive="false">
+		<parameter>
+			<name>manifest</name>
+			<value>${input}</value>
+		</parameter>		
+		<parameter>
+			<name>outDir</name>
+			<value>${output}</value>
+		</parameter>
+	</task>
+	
+</taskScript>
