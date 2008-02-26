@@ -110,10 +110,12 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 			int col = (int)fm.getColumn();
 			
 			String detailMessage = fm.getText();
-			ZedMessage mapm = (ZedMessage)fm.getTest().getOnFalseMsgs().get("long");
-			String mapMessage = mapm.getText();
-			if(!detailMessage.contains("no details")) mapMessage = mapMessage + ". " + detailMessage;						
-			
+			String mapMessage = detailMessage;
+			if(fm.getTest()!=null){
+				ZedMessage mapm = (ZedMessage)fm.getTest().getOnFalseMsgs().get("long");
+				mapMessage = mapm.getText();
+				if(!detailMessage.contains("no details")) mapMessage = mapMessage + ". " + detailMessage;						
+			}
 			if(fm.getTest()!=null && fm.getTest().getType() == ZedTest.RECOMMENDATION) {
 				mValidatorListener.report(this, new ValidatorWarningMessage(f,mapMessage,line,col));
 			}else{
