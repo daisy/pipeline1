@@ -1,0 +1,34 @@
+<transformer version="1.0">
+	<name>DTB Migrator</name>
+	<description>Migrates DTBs upwards and downwards</description>
+	<classname>int_daisy_dtbMigrator.DtbMigrator</classname>
+	<license>LGPL</license>
+	<author>Markus Gylling, Brandon Nelson, Per Sennels, Linus Ericson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	
+	<parameters>	
+	    <parameter required="true" direction="in" type="application/anonymous">
+			<name>input</name>
+			<description>Input DTB manifest (NCC, OPF)</description>
+			<example>D:/path/to/input.opf</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>destination</name>
+			<description>The output directory</description>
+			<example>D:/path/to/outputdir/</example>
+		</parameter>		
+		
+		<parameter required="true" type="enum">
+			<name>outputVersion</name>
+			<description>The type of DTB to output</description>
+			<example>Z2005</example>
+			<enum>
+				<value>Z2005</value>
+				<value>D202</value>
+			</enum>
+		</parameter>
+					
+	</parameters>	
+
+</transformer>

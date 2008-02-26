@@ -326,6 +326,7 @@ scripts/manipulation/simple/DTBookfix.taskScript -text
 scripts/manipulation/simple/FilesetRenamer.taskScript -text
 scripts/manipulation/simple/ImageConverter.taskScript -text
 scripts/manipulation/simple/PrettyPrinter.taskScript -text
+scripts/migration/simple/DTBForwardMigrator.taskScript -text
 scripts/migration/simple/DTBookMigrator.taskScript -text
 scripts/validation/ValidatorScriptParamsAdvancedStatic.paramGroup -text
 scripts/validation/ValidatorScriptParamsSimpleStatic.paramGroup -text
@@ -397,6 +398,7 @@ src/org/daisy/pipeline/test/impl/CharsetSwitcher1.java -text
 src/org/daisy/pipeline/test/impl/DTBAudioEncoder1.java -text
 src/org/daisy/pipeline/test/impl/DTBAudioEncoderRenamer1.java -text
 src/org/daisy/pipeline/test/impl/DTBAudioEncoderSplitter1.java -text
+src/org/daisy/pipeline/test/impl/DTBMigrator1.java -text
 src/org/daisy/pipeline/test/impl/DTBSplitter1.java -text
 src/org/daisy/pipeline/test/impl/DTBook2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/DTBook2Xhtml2MathML.java -text
@@ -621,6 +623,21 @@ transformers/int_daisy_daisy2022Zed2005/resources/ResourceProvider.java -text
 transformers/int_daisy_daisy2022Zed2005/resources/dtbook.2005.basic.css -text
 transformers/int_daisy_daisy2022Zed2005/resources/pipeline.res -text
 transformers/int_daisy_daisy2022Zed2005/transformer.tdf -text
+transformers/int_daisy_dtbMigrator/DtbDescriptor.java -text
+transformers/int_daisy_dtbMigrator/DtbMigrator.java -text
+transformers/int_daisy_dtbMigrator/DtbType.java -text
+transformers/int_daisy_dtbMigrator/DtbVersion.java -text
+transformers/int_daisy_dtbMigrator/Migrator.java -text
+transformers/int_daisy_dtbMigrator/MigratorException.java -text
+transformers/int_daisy_dtbMigrator/MigratorFactory.java -text
+transformers/int_daisy_dtbMigrator/MigratorFactoryException.java -text
+transformers/int_daisy_dtbMigrator/impl/d202_z2005/MigratorImpl.java -text
+transformers/int_daisy_dtbMigrator/impl/d202_z2005/xslt/d202ncc_Z2005ncx.xsl -text
+transformers/int_daisy_dtbMigrator/impl/d202_z2005/xslt/d202ncc_Z2005opf.xsl -text
+transformers/int_daisy_dtbMigrator/impl/d202_z2005/xslt/d202smil_Z2005smil.xsl -text
+transformers/int_daisy_dtbMigrator/impl/z2005_d202/MigratorImpl.java -text
+transformers/int_daisy_dtbMigrator/messages.properties -text
+transformers/int_daisy_dtbMigrator/transformer.tdf -text
 transformers/int_daisy_filesetAudioTagger/FilesetAudioTagger.java -text
 transformers/int_daisy_filesetAudioTagger/id3/ID3Tagger.java -text
 transformers/int_daisy_filesetAudioTagger/messages.properties -text
