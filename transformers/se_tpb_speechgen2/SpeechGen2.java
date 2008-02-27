@@ -362,19 +362,16 @@ public class SpeechGen2 extends Transformer {
 			//---------------------------------------------------------------------------
 			sendMessage(i18n("FETCHING_AUDIO"), MessageEvent.Type.DEBUG);
 			
-			if (!doFetchAudio(inputFile, outputFile, reader)) {
-				// close all open streams
-				closeStreams(fis, reader);
+			if (doFetchAudio(inputFile, outputFile, reader)) {
+				sendMessage(i18n("AWAIT_LAST_MERGE"), MessageEvent.Type.DEBUG);
+				mergeAudio();
+				if (concurrentMerge) {
+					barrier.await();
+				}
 			}
-			
-			
-			sendMessage(i18n("AWAIT_LAST_MERGE"), MessageEvent.Type.DEBUG);
-			mergeAudio();
-			if (concurrentMerge) {
-				barrier.await();
-			}
-			
 			sendMessage(i18n("DONE"), MessageEvent.Type.DEBUG);
+			
+			
 		} catch (NullPointerException e) {
 			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
@@ -492,14 +489,7 @@ public class SpeechGen2 extends Transformer {
 						}
 					}
 
-					try {
-						checkAbort();
-					} catch (TransformerAbortException tae) {
-						
-
-						// exit the main loop by returning false.
-						return false;
-					}
+					checkAbort();
 					progress((double) synchronizationPointCounter / numSPoints);
 
 					// create the new startElement, i e. the same element + smil-attributes.
