@@ -18,14 +18,17 @@
 package org.daisy.pipeline.core.script;
 
 import java.util.Collection;
+import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.daisy.pipeline.core.event.BusListener;
 import org.daisy.pipeline.core.event.CoreMessageEvent;
 import org.daisy.pipeline.core.event.EventBus;
 import org.daisy.pipeline.core.event.JobStateChangeEvent;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.event.StateChangeEvent;
+import org.daisy.pipeline.core.event.UserAbortEvent;
 import org.daisy.pipeline.core.transformer.Parameter;
 import org.daisy.pipeline.core.transformer.TransformerHandler;
 import org.daisy.pipeline.exception.JobAbortedException;
@@ -39,9 +42,10 @@ import org.daisy.util.i18n.I18n;
  * 
  * @author Linus Ericson
  */
-public class Runner {
+public class Runner implements BusListener {
 
     private boolean mRunning;
+    private boolean mAbort;
     private int mCompletedTasks;
     private I18n mInternationalization;
 
@@ -64,6 +68,8 @@ public class Runner {
                     "Not all required parameters have been set");
         }
         try {
+        	this.mAbort = false;
+        	EventBus.getInstance().subscribe(this, UserAbortEvent.class);        	
             this.mRunning = true;
             this.mCompletedTasks = 0;
 
@@ -72,6 +78,11 @@ public class Runner {
                             StateChangeEvent.Status.STARTED));
 
             for (Task task : job.getScript().getTasks()) {
+            	if (mAbort) {
+            		String message = i18n("SCRIPT_ABORTED");
+            		throw new JobAbortedException(message);
+            	}
+            	
                 // Get transformer handler
                 TransformerHandler handler = task.getTransformerHandler();
 
@@ -101,14 +112,28 @@ public class Runner {
         	//mg 20070619: The transformer authors are responsible for localization        	
         	EventBus.getInstance().publish(new CoreMessageEvent(this,e.getMessage(), MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
         	throw new JobFailedException(e.getMessage(),e);
-        }catch (Exception e) {        	
+        } catch (JobAbortedException e) {
+        	EventBus.getInstance().publish(new CoreMessageEvent(this, e.getMessage(), MessageEvent.Type.INFO,MessageEvent.Cause.INPUT));        	
+        	throw new JobAbortedException(e.getMessage(), e);
+        } catch (Exception e) {
         	EventBus.getInstance().publish(new CoreMessageEvent(this,e.getMessage(), MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
         	throw new JobFailedException(i18n("ERROR_RUNNING_SCRIPT",e.getMessage()),e);
         } finally {
+        	EventBus.getInstance().unsubscribe(this, UserAbortEvent.class);
             this.mRunning = false;
             this.mCompletedTasks = 0;
         }
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.daisy.pipeline.core.event.BusListener#received(java.util.EventObject)
+     */
+	public void received(EventObject event) {
+		if (event instanceof UserAbortEvent) {
+			mAbort = true;
+		}
+	}
 
     /**
      * Add hard-coded transformer parameters
