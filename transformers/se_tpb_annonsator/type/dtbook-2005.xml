@@ -245,7 +245,7 @@
 						</xsl:variable>
 						<xsl:choose>
 							<xsl:when test="parent::dtb:list[@enum='a' or @enum='A']">
-								<xsl:value-of select="codepoints-to-string(string-to-codepoints('A') - 1 + count(preceding-sibling::dtb:li) + round($start))"/>
+								<xsl:value-of select="codepoints-to-string(xs:integer(string-to-codepoints('A') - 1 + count(preceding-sibling::dtb:li) + round($start)))"/>
 							</xsl:when>
 							<xsl:otherwise>
 								<xsl:value-of select="count(preceding-sibling::dtb:li) + round($start)"/>
