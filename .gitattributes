@@ -613,6 +613,7 @@ src/org/daisy/util/xml/xslt/stylesheets/dtbook/dtbook110to2005-1.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/dtbook/dtbook2005-1to2.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/dtbook/dtbook2005-2to3.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/dtbook/dtbook2xhtml.xsl -text
+src/org/daisy/util/xml/xslt/stylesheets/dtbook/xhtml2dtbook.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/misc/echo.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/xhtml/xhtml10toXhtml11.xsl -text
 src/pipeline.properties -text
@@ -708,7 +709,6 @@ transformers/int_daisy_validator/validator.css -text
 transformers/int_daisy_validator/validator.xsl -text
 transformers/no_hks_xhtml2dtbook/Xhtml2DTBook.java -text
 transformers/no_hks_xhtml2dtbook/transformer.tdf -text
-transformers/no_hks_xhtml2dtbook/xhtml2dtbook.xsl -text
 transformers/pipeline_system_copyer/Copyer.java -text
 transformers/pipeline_system_copyer/messages.properties -text
 transformers/pipeline_system_copyer/transformer.tdf -text

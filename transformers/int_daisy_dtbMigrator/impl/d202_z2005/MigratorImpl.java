@@ -126,7 +126,6 @@ public class MigratorImpl implements Migrator {
 		 * Add DTBook CSS (unless XSLT does this)
 		 * 
 		 */
-
 		mOutputDir = destination;
 		mManifestItems = new HashMap<String,FilesetFile>();
 		mFilesetFileFactory = FilesetFileFactory.newInstance();
@@ -143,24 +142,31 @@ public class MigratorImpl implements Migrator {
 			/*
 			 * Create zed smil from the 2.02 smil input docs
 			 */
+			System.err.println("PS: Pre SMIL");
 			SmilClock dtbTotalTime = createZedSmil(identifier, title, inputFileset, isNccOnly);
+			System.err.println("PS: Post SMIL");
 		
 			/*
 			 * Create NCX from the input NCC
 			 */
+			System.err.println("PS: Pre NCX");
 			createZedNcx((D202NccFile)inputFileset.getManifestMember(),identifier);
+			System.err.println("PS: Post NCX");
 		
 			/*
 			 * Create dtbook from the input xhtml
 			 */
+			System.err.println("PS: Pre DTBook");
 			if (!isNccOnly) {
 				this.createZedDtbook(inputFileset,identifier,title);
 			}
+			System.err.println("PS: Post DTBook");
 		
 			/*
 			 * Add a resource file, default is a one-member text-only resource file
 			 * TODO allow user to override the default, use fileset etc
 			 */
+			System.err.println("PS: Pre Resource");
 			Set<URL> res = ResourceFile.get(ResourceFile.Type.TEXT_ONLY);
 			for(URL u : res) {  //now length always == 1				
 				String localName = new File(u.toURI()).getName();
@@ -170,16 +176,22 @@ public class MigratorImpl implements Migrator {
 				mManifestItems.put(out.getAbsolutePath(), 
 						mFilesetFileFactory.newFilesetFile("Z3986ResourceFile", out.toURI()));
 			}
+			System.err.println("PS: Post Resource");
 			
 			/*
 			 * Copy things that move to output unchanged
 			 */
+			System.err.println("PS: Kopier...");
 			copyMembers(inputFileset);
+			System.err.println("PS: Fullført");
+			
 		
 			/*
 			 * Finally, the output topology is getting stable, create the opf
 			 */			                            			
+			System.err.println("PS: Pre OPF");
 			createZedOpf((D202NccFile)inputFileset.getManifestMember(),identifier,dtbTotalTime);
+			System.err.println("PS: Post OPF");
 		
 		}catch (Exception e) {
 			throw new MigratorException(e.getLocalizedMessage(),e);
@@ -279,7 +291,7 @@ public class MigratorImpl implements Migrator {
 						MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM,null);
 				
 				File dtbookOut = new File(mOutputDir, dtbookFileName);  //TODO relativize
-				URL xsltURL = Stylesheets.get("pers_stylesheet"); //TODO
+				URL xsltURL = Stylesheets.get("xhtml2dtbook.xsl");
 				
 				Map<String,String> parameters = new HashMap<String,String>();
 				parameters.put("uid", uid);
