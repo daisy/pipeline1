@@ -17,6 +17,7 @@ import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.TransformerFactoryConstants;
+import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
 
 /**
  *
@@ -45,7 +46,8 @@ public class Xhtml2DTBook extends Transformer implements FilesetErrorHandler {
 			 */	
 	
 			//get the canonical xslt
-			URL xslt = this.getClass().getResource("xhtml2dtbook.xsl");
+//			URL xslt = this.getClass().getResource("xhtml2dtbook.xsl");
+			URL xsltURL = Stylesheets.get("xhtml2dtbook.xsl");
 			
 			//get input file
 			File input = FilenameOrFileURI.toFile((String) parameters.remove("input"));
