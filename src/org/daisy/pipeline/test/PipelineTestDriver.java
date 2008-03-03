@@ -17,7 +17,8 @@ import org.daisy.pipeline.test.impl.CharsetSwitcher1;
 import org.daisy.pipeline.test.impl.DTBAudioEncoder1;
 import org.daisy.pipeline.test.impl.DTBAudioEncoderRenamer1;
 import org.daisy.pipeline.test.impl.DTBAudioEncoderSplitter1;
-import org.daisy.pipeline.test.impl.DTBMigrator1;
+import org.daisy.pipeline.test.impl.DTBMigratorForward1;
+import org.daisy.pipeline.test.impl.DTBMigratorBackward1;
 import org.daisy.pipeline.test.impl.DTBSplitter1;
 import org.daisy.pipeline.test.impl.DTBook2Xhtml1;
 import org.daisy.pipeline.test.impl.DTBook2Xhtml2MathML;
@@ -245,7 +246,8 @@ public class PipelineTestDriver {
 //		tests.add(new Daisy202ToZ398620051(inputDir, outputDir));				
 //		tests.add(new MultiFormatMedia1(inputDir, outputDir));
 //		tests.add(new NccNcxOnly1(inputDir, outputDir));
-//		tests.add(new DTBMigrator1(inputDir, outputDir));
+		tests.add(new DTBMigratorForward1(inputDir, outputDir));
+//		tests.add(new DTBMigratorBackward1(inputDir, outputDir));
 
 		/*
 		 * End Tests with input data in samples dir
