@@ -33,7 +33,7 @@ import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.script.datatype.FilesDatatype;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.css.stylesheets.Stylesheets;
+import org.daisy.util.css.stylesheets.Css;
 import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.file.EFolder;
@@ -313,7 +313,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 							&& !passedFirstElement 
 								&& !seenStylesheetInstruction) {						
 						try{
-							URL cssURL = Stylesheets.get(Stylesheets.DocumentType.Z3986_DTBOOK);
+							URL cssURL = Css.get(Css.DocumentType.Z3986_DTBOOK);
 							String cssLocalName = cssURL.toString().substring(cssURL.toString().lastIndexOf('/')+1);
 							mOutputDir.writeToFile(cssLocalName, cssURL.openStream());
 							xew.add(xef.createProcessingInstruction
