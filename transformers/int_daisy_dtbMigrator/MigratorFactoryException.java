@@ -13,7 +13,7 @@ public class MigratorFactoryException extends BaseException {
 	}
 
 	public MigratorFactoryException(String message, Throwable t) {
-		super(message);
+		super(message,t);
 	}
 	
 	private static final long serialVersionUID = -7310258911197380265L;

@@ -28,6 +28,54 @@
 				<value>D202</value>
 			</enum>
 		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>inputType</name>
+			<description>
+				The type of input DTB in terms of text (NCC/NCX only or Full/Partial Text).
+				Select DETECT to have an analysis determine the type. If any other value
+				is selected, it will win and the analysis will not be performed.				
+			</description>
+			<example>DETECT</example>
+			<enum>
+				<value>DETECT</value>
+				<value>NCC_NCX_ONLY</value>
+				<value>TEXT</value>
+			</enum>
+			<default>DETECT</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>newIdentifier</name>
+		    <description>
+		    	A unique identifier of the publication. If this value is set, it will override
+		    	and replace the value given in the input DTB. If this value is not set, the
+		    	identifier given in input DTB will be used in the output.		    	
+		    </description>
+		    <example>dk_dbb_12345</example>
+		    <default/>
+		</parameter>
+		
+		<parameter required="false" type="text/css">
+			<name>outputCSS</name>
+			<description>
+				A CSS to use for output textual content files. 
+				If this value is not set, a default CSS will be used.
+			</description>
+			<example>D:/path/to/my.css</example>
+			<default/>
+		</parameter>
+
+		<parameter required="false" type="application/x-dtbresource+xml">
+			<name>outputResourceFile</name>
+			<description>
+				A Resource file to use for output z3986 filesets. 
+				If this value is not set, a default Resource file will be used.
+			</description>
+			<example>D:/path/to/my.res</example>
+			<default/>
+		</parameter>
+
 					
 	</parameters>	
 

@@ -44,32 +44,36 @@ public class DtbMigrator extends Transformer implements FilesetErrorHandler, Tra
 			/*
 			 * Create DtbDescriptors for input and output. 
 			 */			
-			DtbVersion inputVersion = DtbDescriptor.getVersion(inputFileset);
-			DtbType inputType = DtbDescriptor.getType(inputFileset);			
-			DtbDescriptor inputDescriptor = new DtbDescriptor(inputVersion, inputType);
+			DtbDescriptor inputDescriptor = getInputDescriptor(inputFileset);
 			DtbDescriptor outputDescriptor = getOutputDescriptor(parameters,inputDescriptor);
 			
 			/*
 			 * Get a handle to a migrator impl that supports input and output
-			 */
-			Map<String,String> migratorParams = null; //TODO
+			 */			
 			MigratorFactory factory = MigratorFactory.newInstance(this);	
-			Migrator migrator = factory.newMigrator(inputDescriptor, inputFileset, outputDescriptor, migratorParams);
+			Migrator migrator = factory.newMigrator(inputDescriptor, inputFileset, outputDescriptor, parameters);
 			
 			/*
 			 * Execute.
 			 */	
 			migrator.setListener(this);
-			migrator.migrate(inputDescriptor, outputDescriptor, migratorParams, inputFileset, destination);
+			migrator.migrate(inputDescriptor, outputDescriptor, parameters, inputFileset, destination);
 			
 			
-		}catch (Exception e) {
+		} catch (Exception e) {
 			if(e instanceof TransformerRunException) throw (TransformerRunException)e;
 			throw new TransformerRunException(e.getLocalizedMessage(),e);
 		}
 		return true;
 	}
 
+	private DtbDescriptor getInputDescriptor(Fileset inputFileset) {
+		DtbVersion inputVersion = DtbDescriptor.getVersion(inputFileset);
+		DtbType inputType = DtbDescriptor.getType(inputFileset);			
+		DtbDescriptor inputDescriptor = new DtbDescriptor(inputVersion, inputType);
+		return inputDescriptor;
+	}
+	
 	private DtbDescriptor getOutputDescriptor(Map parameters, DtbDescriptor inputDescriptor) {
 		String param = (String)parameters.remove("outputVersion");
 		DtbVersion version = null;
@@ -80,9 +84,6 @@ public class DtbMigrator extends Transformer implements FilesetErrorHandler, Tra
 		}
 		
 		DtbType type = inputDescriptor.getType();
-		
-		//TODO if we have impls that also change types, 
-		//then add here
 		
 		return new DtbDescriptor(version,type);
 	}
@@ -121,7 +122,7 @@ public class DtbMigrator extends Transformer implements FilesetErrorHandler, Tra
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateProgress(java.lang.Object, double)
 	 */
 	public void delegateProgress(Object delegate, double progress) {
-		// TODO Auto-generated method stub		
+		sendMessage(progress);		
 	}
 
 	

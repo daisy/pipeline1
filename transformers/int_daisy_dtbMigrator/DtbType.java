@@ -5,17 +5,17 @@ package int_daisy_dtbMigrator;
  * @author Markus Gylling
  */
 public enum DtbType {
-	AUDIO_NCX{		
+	AUDIO {		
 		public String toString() {			
 			return "Audio and NCC/NCX";
 		}
 	},
-	TEXT_AUDIO_NCX {		
+	TEXT_AUDIO {		
 		public String toString() {			
-			return "Text, Audio (full or partial) and NCC/NCX";
+			return "Text, Audio and NCC/NCX";
 		}
 	},
-	TEXT_NCX {		
+	TEXT {		
 		public String toString() {			
 			return "Text and NCC/NCX";
 		}

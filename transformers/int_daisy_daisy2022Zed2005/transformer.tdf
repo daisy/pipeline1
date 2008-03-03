@@ -1,5 +1,5 @@
 <transformer version="1.1">
-	<name>Daisy 2.02 to Zed 2005</name>
+	<name>DEPRECATED Daisy 2.02 to Zed 2005</name>
 	<description>Transforms a Daisy 2.02 fileset to a Z3986 2005 file set</description>
 	<classname>int_daisy_daisy2022Zed2005.Daisy2022Zed2005</classname>
 	<license>unknown</license>

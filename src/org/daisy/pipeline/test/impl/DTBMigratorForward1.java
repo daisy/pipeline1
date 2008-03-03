@@ -5,9 +5,9 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class DTBMigrator1 extends PipelineTest {
+public class DTBMigratorForward1 extends PipelineTest {
 
-	public DTBMigrator1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public DTBMigratorForward1(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	

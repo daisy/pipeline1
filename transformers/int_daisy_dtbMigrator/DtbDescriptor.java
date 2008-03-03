@@ -80,11 +80,11 @@ public class DtbDescriptor {
 		
 		if(hasNavigation) {
 			if(hasAudio && !hasText) {
-				return DtbType.AUDIO_NCX;
+				return DtbType.AUDIO;
 			}else if(!hasAudio && hasText) {
-				return DtbType.TEXT_NCX;
+				return DtbType.TEXT;
 			}else if(hasAudio && hasText) {
-				return DtbType.TEXT_AUDIO_NCX;
+				return DtbType.TEXT_AUDIO;
 			}
 		}
 		return null;

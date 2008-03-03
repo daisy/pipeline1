@@ -5,7 +5,7 @@
 <!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../validation/ValidatorTaskParamsSimpleStatic.paramGroup">
 ]>
 <taskScript version="2.0" name="Daisy202ToZ39862005">
-	<nicename>[BETA] Daisy 2.02 to Z39.86-2005</nicename>
+	<nicename>[DEPRECATED] Daisy 2.02 to Z39.86-2005</nicename>
 	<description>Convert a Daisy 2.02 DTB to a Z39.86-2005 DTB. Note - this is an early beta - work in progress.</description>
    	<documentation uri="../../../doc/scripts/Daisy202ToZ39862005.html"/>
     <comment/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <taskScript version="2.0" name="dtbForwardMigrator">
-	<nicename>Daisy DTB Forward Migrator</nicename>
+	<nicename>DTB Forward Migrator</nicename>
 	<description>Migrate a Daisy 2.02 DTB to Z39.86-2005</description>
 	<documentation uri="../../../doc/scripts/DTBForwardMigrator.html"/>
 	
@@ -20,6 +20,42 @@
 		</datatype>
 	</parameter>
 
+	 <parameter name="inputDtbType" value="DETECT" required="false">
+		<nicename>Input DTB Type</nicename>
+		<description>Select input DTB type (NCC-Only or Full/Partial Text)</description>
+		<datatype>
+			<enum>
+			  <item nicename="Auto detect" value="DETECT" />
+			  <item nicename="NCC Only" value="NCC_NCX_ONLY" />
+			  <item nicename="Full/Partial text" value="TEXT" />
+			</enum>
+		</datatype>
+	</parameter>
+
+	<parameter name="newIdentifier" value="" required="false">
+		<nicename>Identifier</nicename>
+		<description>A unique identifier of the publication.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<parameter name="userCss" value="" required="false">
+		<nicename>Optional CSS</nicename>
+		<description>Select a CSS to append to output DTBook document</description>
+		<datatype>
+			<file mime="text/css" type="input"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="userRes" value="" required="false">
+		<nicename>Optional Resource File</nicename>
+		<description>Select a Resource file to append to output fileset</description>
+		<datatype>
+			<file mime="application/x-dtbresource+xml" type="input"/>
+		</datatype>
+	</parameter>
+
 	<task name="int_daisy_dtbMigrator" interactive="false">
 		<parameter>
 			<name>input</name>
@@ -32,7 +68,23 @@
 		<parameter>
 			<name>outputVersion</name>
 			<value>Z2005</value>
+		</parameter>
+		<parameter>
+			<name>inputType</name>
+			<value>${inputDtbType}</value>
+		</parameter>
+		<parameter>
+			<name>newIdentifier</name>
+			<value>${newIdentifier}</value>
 		</parameter>		
+		<parameter>
+			<name>outputCSS</name>
+			<value>${userCss}</value>
+		</parameter>	
+		<parameter>
+			<name>outputResourceFile</name>
+			<value>${userRes}</value>
+		</parameter>
 	</task>
 	
 	<task name="int_daisy_validator" interactive="false">

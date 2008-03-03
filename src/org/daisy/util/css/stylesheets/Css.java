@@ -29,7 +29,7 @@ import java.net.URL;
  * @author Markus Gylling
  */
 
-public class Stylesheets {
+public class Css {
 
 	private static final String D202_DEFAULT_CSS = "d202.basic.css";
 	private static final String Z3986_DEFAULT_CSS = "dtbook.2005.basic.css";
@@ -39,7 +39,7 @@ public class Stylesheets {
 	 * @return a URL of the stylesheet if found, else null.
 	 */
 	public static URL get(String localName) {
-		return Stylesheets.class.getResource(localName);
+		return Css.class.getResource(localName);
 	}
 	
 	/**
@@ -48,10 +48,10 @@ public class Stylesheets {
 	 */
 	public static URL get(DocumentType docType) {
 		if(docType == DocumentType.D202_XHTML) {
-			return Stylesheets.class.getResource(D202_DEFAULT_CSS);
+			return Css.class.getResource(D202_DEFAULT_CSS);
 		}else
 		if(docType == DocumentType.Z3986_DTBOOK) {
-			return Stylesheets.class.getResource(Z3986_DEFAULT_CSS);
+			return Css.class.getResource(Z3986_DEFAULT_CSS);
 		}
 		throw new IllegalArgumentException();
 	}
