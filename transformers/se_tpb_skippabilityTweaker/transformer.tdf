@@ -64,6 +64,13 @@
 			</enum>
 			<default>copy</default>
 		</parameter>
+		
+		<parameter required="false" direction="in" type="string">
+			<name>backupPrefix</name>
+			<description>Prefix of backup directory</description>
+			<example>backup_</example>			
+			<default></default>
+		</parameter>
 				
 	</parameters>	
 

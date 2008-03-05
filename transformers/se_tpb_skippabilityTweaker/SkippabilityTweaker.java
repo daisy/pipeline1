@@ -21,8 +21,10 @@ package se_tpb_skippabilityTweaker;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -96,6 +98,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
 	private boolean skipProdnote;
 	private boolean skipFootnote;
     private boolean moveFootnote;
+    private String backupDir = null;
     
     private StAXInputFactoryPool staxInPool = StAXInputFactoryPool.getInstance();
     private StAXOutputFactoryPool staxOutPool = StAXOutputFactoryPool.getInstance();
@@ -122,6 +125,11 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
 		String paramSidebar = (String)parameters.remove("sidebar");
 		String paramProdnote = (String)parameters.remove("prodnote");
 		String paramNote = (String)parameters.remove("note");
+		String paramBackupPrefix = (String)parameters.remove("backupPrefix");
+		
+		if (paramBackupPrefix != null && !"".equals(paramBackupPrefix)) {
+        	backupDir = paramBackupPrefix + new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+        }
 		
 		skipPagenum = Boolean.parseBoolean(paramPagenum);
 		skipSidebar = Boolean.parseBoolean(paramSidebar);
@@ -216,6 +224,19 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
         }
         this.progress(0.20);
         this.checkAbort();
+        
+        // Do we need to create a backup of changed files?
+        if (backupDir != null) {
+        	File fullBackupDir = new File(outputDir, backupDir);
+        	for (FilesetFile filesetFile : (Collection<FilesetFile>)fileset.getLocalMembers()) {
+                if (filesetFile instanceof D202SmilFile || filesetFile instanceof D202NccFile
+                		|| filesetFile instanceof D202TextualContentFile || filesetFile instanceof D202MasterSmilFile) {
+                    URI relative = inputDirUri.relativize(filesetFile.getFile().toURI());
+                    File outputFile = new File(fullBackupDir, relative.toString());
+                    FileUtils.copyFile(filesetFile.getFile(), outputFile);
+                }                
+            }
+        }
         
         // Copy all SMIL files to the desired location (they will be updated
         // later on as modifications are performed
