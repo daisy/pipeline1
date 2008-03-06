@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="2.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	xmlns:html="http://www.w3.org/1999/xhtml"
 	xmlns:c="http://daisymfc.sf.net/xslt/config"
 	xmlns="http://www.daisy.org/z3986/2005/ncx/"
-	exclude-result-prefixes="html c">
+	exclude-result-prefixes="html c xs">
 
 <!-- 
 	To do: 
@@ -30,20 +31,50 @@
 
 <!-- inparams: -->
 <xsl:param name="uid" />					<!-- uid of publication -->
+<xsl:param name="defaultStatePagenumbers" as="xs:string" select="'true'" />		<!-- value for head/smilCustomTest/@defaultState -->
+<xsl:param name="defaultStateSidebars" as="xs:string" select="'true'" /> 		<!-- value for head/smilCustomTest/@defaultState -->
+<xsl:param name="defaultStateFootnotes" as="xs:string" select="'true'" />		<!-- value for head/smilCustomTest/@defaultState -->
+<xsl:param name="defaultStateProdnotes" as="xs:string" select="'true'" /> 		<!-- value for head/smilCustomTest/@defaultState -->
+
+<xsl:variable name="NCC.Folder" as="xs:string" select="replace(document-uri(/),'(.*)/ncc.html','$1')" />
 
 <xsl:template match="/html:html">
 	<ncx version="2005-1">
+<!-- 		<xsl:comment>
+			Parametre:
+			uid: <xsl:value-of select="$uid" />
+			
+		</xsl:comment> -->
 		<xsl:apply-templates select="html:head" />
 		<xsl:apply-templates select="html:body" />
-	</ncx>
+	</ncx> 
 </xsl:template>
+
+<xsl:variable name="SMIL.filenames" as="xs:string+" 
+	select="distinct-values(
+		for $s in //html:a[matches(@href,'(.+)smil#(.+)')]/@href 
+		return substring-before($s,'#')
+	)" />
+
+<xsl:variable name="List.smilCustomTest" as="xs:string*">
+	<xsl:variable name="list.sct" as="xs:string*">
+		<xsl:for-each select="$SMIL.filenames">
+			<xsl:for-each select="doc(concat($NCC.Folder,'/',.))//par[@system-required]">
+				<xsl:sequence select="@system-required" />
+			</xsl:for-each>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:sequence select="distinct-values($list.sct)" />
+</xsl:variable>
+
 
 <xsl:template match="html:head">
 	<head>
+<!-- 		<xsl:comment>Mandatory meta-data</xsl:comment><xsl:text>&#10;</xsl:text> -->
 		<meta name="dtb:uid" content="{$uid}" />
 		<meta name="dtb:depth" content="{html:meta[@name='ncc:depth']/@content}" />
 		<meta name="dtb:generator" content="Pipeline Daisy 2.02 to z39.86-2005" />
-		<meta name="dtb:totalPageCount" content="{html:meta[@name='ncc:pageFront']/@content + html:meta[@name='ncc:pageNormal']/@content + html:meta[@name='ncc:pageSpecial']/@content}" />	
+		<meta name="dtb:totalPageCount" content="{html:meta[@name='ncc:pageFront']/@content + html:meta[@name='ncc:pageNormal']/@content + html:meta[@name='ncc:pageSpecial']/@content}" />
 		<xsl:choose>
 			<xsl:when test="html:span[@class='page-normal']">
 				<meta name="dtb:maxPageNumber" content="{max(//html:span[@class='page-normal'])}" />
@@ -52,7 +83,38 @@
 				<meta name="dtb:maxPageNumber" content="0" />
 			</xsl:otherwise>
 		</xsl:choose>
-		<!-- <smilCustomTest /> -->
+		<!-- psps: smilCustomTest 
+		<xsl:comment>smilCustomtest</xsl:comment><xsl:text>&#10;</xsl:text> -->
+		<xsl:for-each select="$List.smilCustomTest">
+			<smilCustomTest id="{substring-before(.,'-on')}" defaultState="false" override="visible">
+				<xsl:attribute name="defaultState">
+					<xsl:choose>
+						<xsl:when test=". eq 'pagenumber-on'"><xsl:value-of select="$defaultStatePagenumbers" /></xsl:when>
+						<xsl:when test=". eq 'sidebar-on'"><xsl:value-of select="$defaultStateSidebars" /></xsl:when>
+						<xsl:when test=". eq 'footnote-on'"><xsl:value-of select="$defaultStateFootnotes" /></xsl:when>
+						<xsl:when test=". eq 'prodnote-on'"><xsl:value-of select="$defaultStateProdnotes" /></xsl:when>
+						<!-- There should be no other cases, but just in case: -->
+						<xsl:otherwise><xsl:value-of select="'true'" /></xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+				<xsl:attribute name="bookStruct">
+					<xsl:choose>
+						<xsl:when test=". eq 'pagenumber-on'">PAGE_NUMBER</xsl:when>
+						<xsl:when test=". eq 'sidebar-on'">OPTIONAL_SIDEBAR</xsl:when>
+						<xsl:when test=". eq 'footnote-on'">NOTE</xsl:when>
+						<xsl:when test=". eq 'prodnote-on'">OPTIONAL_PRODUCER_NOTE</xsl:when>
+						<xsl:otherwise>UNKNOWN_BOOKSTRUCT</xsl:otherwise>
+					</xsl:choose>	
+				</xsl:attribute>	
+			</smilCustomTest>
+		</xsl:for-each>
+		<!-- psps: Transfer all meta elements, as long as they don't start with dtb: 
+		<xsl:comment>Various meta data from ncc</xsl:comment><xsl:text>&#10;</xsl:text>-->
+		<xsl:for-each select="html:meta[not(@http-equiv or starts-with(@name,'dtb:'))]">
+			<meta>
+				<xsl:copy-of select="@*" />
+			</meta>		
+		</xsl:for-each>
 	</head>
 	<docTitle>
 		<text><xsl:value-of select="html:title" /></text>
