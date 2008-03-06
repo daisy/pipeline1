@@ -23,11 +23,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.ErrorListener;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
@@ -66,7 +62,6 @@ import org.daisy.util.fileset.interfaces.xml.z3986.Z3986SmilFile;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
-import org.daisy.util.xml.catalog.CatalogURIResolver;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.TransformerFactoryConstants;
 import org.daisy.util.xml.xslt.XSLTException;
@@ -221,8 +216,8 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 		mTransformer.delegateMessage(this, mTransformer.delegateLocalize("CREATING_SMIL", null), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM, null);
 				
 		URL xsltURL = this.getClass().getResource("./xslt/d202smil_Z2005smil.xsl");
-			
-		//TODO use a cached Transformer, need to reset time params in each run
+
+		//TODO use a cached transformer
 		
 		long totalElapsedTimeMillis = 0;
 		for (Iterator<?> it = inputFileset.getManifestMember().getReferencedLocalMembers().iterator(); it.hasNext(); ) {
@@ -376,11 +371,11 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 						mTransformer.delegateLocalize(
 								"CSS_ERROR", new String[]{e.getMessage()}), 
 								MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, null);
-				cssUri = null;
+				css = null;
 			}			
 		}
 		
-		if(cssUri==null) {
+		if(css==null) {
 			//add a default stylesheet
 			try{
 				URL url = Css.get(Css.DocumentType.Z3986_DTBOOK);
@@ -389,15 +384,17 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 				InputStream is = url.openStream();
 				mOutputDir.writeToFile(name, is);
 				is.close();
+				//prep the value for the XSLT below
+				cssUri = css.getName();
 			}catch (Exception e) {
 				mTransformer.delegateMessage(this, 
 						mTransformer.delegateLocalize(
 								"CSS_ERROR", new String[]{e.getMessage()}), 
 								MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM, null);
-				cssUri = null;
+				css = null;
 			}				
 		}		
-		reportCompleted(css);
+		if(css!=null)reportCompleted(css);
 		
 		/*
 		 * Transform the docs.
@@ -698,42 +695,42 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 	}
 	
 //	private Transformer createTransformer(Source xslt, Map<String,String> parameters) throws XSLTException {
-//	javax.xml.transform.Transformer transformer = null;
-//	try {
-//	    String property = "javax.xml.transform.TransformerFactory";
-//	    String oldFactory = System.getProperty(property);		    
-//	    System.setProperty(property, TransformerFactoryConstants.SAXON8);
-//	    
-//		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+//		javax.xml.transform.Transformer transformer = null;
 //		try {
-//			transformerFactory.setAttribute("http://saxon.sf.net/feature/version-warning", Boolean.FALSE);
-//		} catch (IllegalArgumentException iae) {
-//			
-//		}
-//		transformerFactory.setErrorListener(this);
-//					
-//		// Reset old factory property
-//		System.setProperty(property, (oldFactory==null?"":oldFactory));			
-//
-//		// Create transformer
-//        transformer = transformerFactory.newTransformer(xslt);
-//
-//        // Set any parameters to the XSLT
-//        if (parameters != null) {
-//            for (Iterator<?> it = parameters.entrySet().iterator(); it.hasNext(); ) {
-//                Map.Entry paramEntry = (Map.Entry)it.next();
-//                transformer.setParameter((String)paramEntry.getKey(), paramEntry.getValue());
-//            }
-//        }
-//        
-//        transformer.setURIResolver(new CatalogURIResolver());  
-//        
-//    } catch (TransformerConfigurationException e) {
-//        throw new XSLTException(e.getMessageAndLocation(), e);                               
-//    } catch (CatalogExceptionNotRecoverable e) {
-//        throw new XSLTException(e.getMessage(), e);
-//    }
+//		    String property = "javax.xml.transform.TransformerFactory";
+//		    String oldFactory = System.getProperty(property);		    
+//		    System.setProperty(property, TransformerFactoryConstants.SAXON8);
+//		    
+//			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+//			try {
+//				transformerFactory.setAttribute("http://saxon.sf.net/feature/version-warning", Boolean.FALSE);
+//			} catch (IllegalArgumentException iae) {
+//				
+//			}
+//			transformerFactory.setErrorListener(this);
+//						
+//			// Reset old factory property
+//			System.setProperty(property, (oldFactory==null?"":oldFactory));			
+//	
+//			// Create transformer
+//	        transformer = transformerFactory.newTransformer(xslt);
+//	
+//	        // Set any parameters to the XSLT
+//	        if (parameters != null) {
+//	            for (Iterator<?> it = parameters.entrySet().iterator(); it.hasNext(); ) {
+//	                Map.Entry paramEntry = (Map.Entry)it.next();
+//	                transformer.setParameter((String)paramEntry.getKey(), paramEntry.getValue());
+//	            }
+//	        }
+//	        
+//	        transformer.setURIResolver(new CatalogURIResolver());  
+//	        
+//	    } catch (TransformerConfigurationException e) {
+//	        throw new XSLTException(e.getMessageAndLocation(), e);                               
+//	    } catch (CatalogExceptionNotRecoverable e) {
+//	        throw new XSLTException(e.getMessage(), e);
+//	    }
 //    
-//    return transformer;
-//}
+//	    return transformer;
+//	}
 }

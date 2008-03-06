@@ -9,7 +9,7 @@ import org.daisy.util.fileset.interfaces.FilesetFile;
 
 /**
  * The set of files that make up the output z2005 DTB.
- * <p>These are exhastively reflected in the output OPF manifest</p>
+ * <p>These are exhaustively reflected in the output OPF manifest</p>
  * @author Markus Gylling
  */
 public class ManifestItems extends HashSet<FilesetFile> {
