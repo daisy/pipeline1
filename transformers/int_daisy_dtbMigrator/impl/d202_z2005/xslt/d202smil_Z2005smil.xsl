@@ -32,14 +32,6 @@
 
 <xsl:template match="smil">
 	<smil>
-<!-- 		<xsl:comment>
-			Parametre:
-			uid: <xsl:value-of select="$uid" />
-			title: <xsl:value-of select="$title" />
-			totalElapsedTime: <xsl:value-of select="$totalElapsedTime" />
-			timeinThisSmil: <xsl:value-of select="$timeinThisSmil" />
-			isNcxOnly: <xsl:value-of select="$isNcxOnly" />
-		</xsl:comment> -->
 		<xsl:apply-templates select="head" />
 		<xsl:apply-templates select="body" />	
 	</smil>
@@ -50,7 +42,7 @@
 		<meta name="dtb:uid" content="{$uid}" />
 		<meta name="dtb:totalElapsedTime" content="{$totalElapsedTime}" />
 		<meta name="dtb:generator" content="DAISY Pipeline" />
-		<!-- psps: Added customAttributes, what to do with defaultState (give value as param?) -->
+		<!-- psps: Added customAttributes -->
 		<xsl:if test="//par/@system-required">
 			<customAttributes>
 				<xsl:for-each select="distinct-values(//par/@system-required)">

@@ -40,25 +40,20 @@
 
 <xsl:template match="/html:html">
 	<ncx version="2005-1">
-<!-- 		<xsl:comment>
-			Parametre:
-			uid: <xsl:value-of select="$uid" />
-			
-		</xsl:comment> -->
 		<xsl:apply-templates select="html:head" />
 		<xsl:apply-templates select="html:body" />
 	</ncx> 
 </xsl:template>
 
-<xsl:variable name="SMIL.filenames" as="xs:string+" 
-	select="distinct-values(
-		for $s in //html:a[matches(@href,'(.+)smil#(.+)')]/@href 
-		return substring-before($s,'#')
-	)" />
 
 <xsl:variable name="List.smilCustomTest" as="xs:string*">
+	<xsl:variable name="smil.filenames" as="xs:string+" 
+		select="distinct-values(
+			for $s in //html:a[matches(@href,'(.+)smil#(.+)')]/@href 
+			return substring-before($s,'#')
+		)" />
 	<xsl:variable name="list.sct" as="xs:string*">
-		<xsl:for-each select="$SMIL.filenames">
+		<xsl:for-each select="$smil.filenames">
 			<xsl:for-each select="doc(concat($NCC.Folder,'/',.))//par[@system-required]">
 				<xsl:sequence select="@system-required" />
 			</xsl:for-each>
@@ -70,7 +65,6 @@
 
 <xsl:template match="html:head">
 	<head>
-<!-- 		<xsl:comment>Mandatory meta-data</xsl:comment><xsl:text>&#10;</xsl:text> -->
 		<meta name="dtb:uid" content="{$uid}" />
 		<meta name="dtb:depth" content="{html:meta[@name='ncc:depth']/@content}" />
 		<meta name="dtb:generator" content="Pipeline Daisy 2.02 to z39.86-2005" />
@@ -83,8 +77,7 @@
 				<meta name="dtb:maxPageNumber" content="0" />
 			</xsl:otherwise>
 		</xsl:choose>
-		<!-- psps: smilCustomTest 
-		<xsl:comment>smilCustomtest</xsl:comment><xsl:text>&#10;</xsl:text> -->
+		<!-- psps: smilCustomTest -->
 		<xsl:for-each select="$List.smilCustomTest">
 			<smilCustomTest id="{substring-before(.,'-on')}" defaultState="false" override="visible">
 				<xsl:attribute name="defaultState">
@@ -108,8 +101,7 @@
 				</xsl:attribute>	
 			</smilCustomTest>
 		</xsl:for-each>
-		<!-- psps: Transfer all meta elements, as long as they don't start with dtb: 
-		<xsl:comment>Various meta data from ncc</xsl:comment><xsl:text>&#10;</xsl:text>-->
+		<!-- psps: Transfer all meta elements, as long as they don't start with dtb -->
 		<xsl:for-each select="html:meta[not(@http-equiv or starts-with(@name,'dtb:'))]">
 			<meta>
 				<xsl:copy-of select="@*" />
