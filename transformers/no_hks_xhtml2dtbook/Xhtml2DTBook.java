@@ -65,7 +65,7 @@ public class Xhtml2DTBook extends Transformer implements FilesetErrorHandler {
 			remove.delete();
 				
 			//apply the canonical xslt
-			Stylesheet.apply(input.getAbsolutePath(), xslt, output.getAbsolutePath(), 
+			Stylesheet.apply(input.getAbsolutePath(), xsltURL, output.getAbsolutePath(), 
 					TransformerFactoryConstants.SAXON8, parameters, 
 						CatalogEntityResolver.getInstance());
 			

@@ -14,6 +14,8 @@ public class DTBMigratorForward1 extends PipelineTest {
 	@Override
 	public List<String> getParameters() {
 		mParameters.add("--input=" + mDataInputDir + "/dtb/d202/dontworrybehappy-nccOnly/ncc.html");
+//		mParameters.add("--input=" + mDataInputDir + "/dtb/d202/DC01/ncc.html");
+//		mParameters.add("--input=" + mDataInputDir + "/dtb/d202/dontworrybehappy/ncc.html");
 		mParameters.add("--output=" + mDataOutputDir + "/DTBMigrator1/");		
 		return mParameters;
 	}

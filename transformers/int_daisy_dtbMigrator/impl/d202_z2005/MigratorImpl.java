@@ -160,7 +160,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 			 */
 			createZedNcx((D202NccFile)inputFileset.getManifestMember(),inputProperties);
 		
-			
+			System.err.println("isNccOnly: "+ inputProperties.isNccOnly());
 			/*
 			 * Create dtbook from the input xhtml
 			 */
@@ -278,6 +278,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 		parameters.put("defaultStateSidebars",properties.getDefaultState(BookStruct.OPTIONAL_SIDEBAR).toString());
 		parameters.put("defaultStateFootnotes",properties.getDefaultState(BookStruct.NOTE).toString());
 		parameters.put("defaultStateProdnotes",properties.getDefaultState(BookStruct.OPTIONAL_PRODUCER_NOTE).toString());
+		parameters.put("nccFolder",ncc.getFile().getParent());
 		
 		Stylesheet.apply(ncc.getFile().getAbsolutePath(), xsltURL, ncxOut.getAbsolutePath(), 
 				TransformerFactoryConstants.SAXON8, parameters, CatalogEntityResolver.getInstance());
@@ -410,7 +411,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 						mTransformer.delegateLocalize("CREATING_DTBOOK", new String[]{dtbookFileName}), 
 							MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM,null);
 				
-				File dtbookOut = new File(ff.getFile().getParentFile(), dtbookFileName);
+				File dtbookOut = new File(mOutputDir, dtbookFileName);
 				
 				URL xsltURL = Stylesheets.get("xhtml2dtbook.xsl");
 				

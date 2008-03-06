@@ -35,8 +35,10 @@
 <xsl:param name="defaultStateSidebars" as="xs:string" select="'true'" /> 		<!-- value for head/smilCustomTest/@defaultState -->
 <xsl:param name="defaultStateFootnotes" as="xs:string" select="'true'" />		<!-- value for head/smilCustomTest/@defaultState -->
 <xsl:param name="defaultStateProdnotes" as="xs:string" select="'true'" /> 		<!-- value for head/smilCustomTest/@defaultState -->
+<xsl:param name="nccFolder" as="xs:string" select="'path'" /> 					<!-- path to D202 DTB folder -->
 
-<xsl:variable name="NCC.Folder" as="xs:string" select="replace(document-uri(/),'(.*)/ncc.html','$1')" />
+<!-- <xsl:variable name="NCC.Folder" as="xs:string" select="replace(document-uri(/),'(.*)/ncc.html','$1')" /> -->
+<xsl:variable name="NCC.Folder" as="xs:string" select="translate($nccFolder,'\','/')" />
 
 <xsl:template match="/html:html">
 	<ncx version="2005-1">
@@ -46,7 +48,7 @@
 </xsl:template>
 
 
-<xsl:variable name="List.smilCustomTest" as="xs:string*">
+<xsl:variable name="List.smilCustomTest" as="xs:string*"> <!-- collect a list of all distinct customTests in all smil fles -->
 	<xsl:variable name="smil.filenames" as="xs:string+" 
 		select="distinct-values(
 			for $s in //html:a[matches(@href,'(.+)smil#(.+)')]/@href 
