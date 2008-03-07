@@ -26,9 +26,11 @@
       <!-- dc:Publisher -->
       <sch:assert test="count(dtbk:meta[@name='dc:Publisher'])=1">[narrator10] Meta dc:Publisher must occur once</sch:assert>
     </sch:rule>
+    <sch:rule context="dtbk:meta[@name='dc:Publisher']">      
+      <sch:assert test="string-length(normalize-space(@content)) > 0">[narrator10] Meta dc:Publisher must contain non-whitespace content</sch:assert>      
+    </sch:rule>
   </sch:pattern>
-  
-  
+    
   <!-- Rule 11: Root element must have @xml:lang -->
   <sch:pattern name="dtbook_narrator_xmlLang" id="dtbook_narrator_xmlLang">
   	<sch:rule context="dtbk:dtbook">
@@ -106,10 +108,10 @@
   	</sch:rule>  	
   </sch:pattern>
   
-  <!-- Rule 113: pagenum value must be unique for each page type -->  
+  <!-- Rule 113: pagenum value must be unique for page type 'normal' -->  
   <sch:pattern name="dtbook_narrator_pagenumValueUnique" id="dtbook_narrator_pagenumValueUnique">
   	<sch:rule context="dtbk:pagenum[@page='normal' or not(@page)]">
-  		<sch:assert test="count(key('pageNormalValues', .))=1">[narrator113] pagenum value must be unique for each page type</sch:assert>
+  		<sch:assert test="count(key('pageNormalValues', .))=1">[narrator113] pagenum value must be unique for page type 'normal'</sch:assert>
   	</sch:rule>
   </sch:pattern>
   
