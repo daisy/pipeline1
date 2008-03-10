@@ -23,4 +23,13 @@
 			<boolean/>
 		</datatype>
 	</parameter>
+	
+	<parameter name="documentLanguage" value="" required="false">
+		<nicename>Document language</nicename>
+		<description>Set the document language (as defined by IETF RFC 3066). Leave blank to use default value</description>
+		<datatype>
+			<string regex="([a-zA-Z]{1,8}(\-[0-9a-zA-Z]{1,8})*)?"/>
+		</datatype>
+	</parameter>
+	
 </paramGroup>

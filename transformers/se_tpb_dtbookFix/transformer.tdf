@@ -74,6 +74,13 @@
 			<example>com.icl.saxon.TransformerFactoryImpl</example>
 			<default>net.sf.saxon.TransformerFactoryImpl</default>
 		</parameter>
+		
+		<parameter type="string" required="false">
+			<name>documentLanguage</name>
+			<description>Set the document language (as defined by IETF RFC 3066). Leave blank to use default value</description>
+			<example>en</example>
+			<default></default>
+		</parameter>
 
 	</parameters>
 

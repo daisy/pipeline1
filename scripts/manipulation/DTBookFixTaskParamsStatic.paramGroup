@@ -13,5 +13,10 @@
 		<parameter>
 			<name>fixCharset</name>
 			<value>${fixCharset}</value>
-		</parameter>		
+		</parameter>
+		
+		<parameter>
+			<name>documentLanguage</name>
+			<value>${documentLanguage}</value>
+		</parameter>
 </paramGroup>
