@@ -71,6 +71,10 @@ public class TTSRunner implements Runnable {
 			mCallback.slaveTerminated(mSlave, in);
 			System.err.println(e.getMessage());
 			e.printStackTrace();
+		} catch (Throwable e) {
+			mCallback.slaveTerminated(mSlave, in);
+			System.err.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
