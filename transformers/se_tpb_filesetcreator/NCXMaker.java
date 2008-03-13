@@ -133,6 +133,8 @@ public class NCXMaker implements BusListener {
 		"<!DOCTYPE dtbook PUBLIC \"-//NISO//DTD dtbook 2005-1//EN\" \"http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd\">";
 	private String dtbookDoctypeStr_2005_2 = 				// dtbook 2005-2 version doctype
 		"<!DOCTYPE dtbook PUBLIC \"-//NISO//DTD dtbook 2005-2//EN\" \"http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd\">";
+	private String dtbookDoctypeStr_2005_3 = 				// dtbook 2005-3 version doctype
+		"<!DOCTYPE dtbook PUBLIC \"-//NISO//DTD dtbook 2005-3//EN\" \"http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd\">";
 	private String dtbookNamespaceURI = "http://www.daisy.org/z3986/2005/dtbook/";		// dtbook namespace
 	private String smilNamespaceURI = "http://www.w3.org/2001/SMIL20/";					// smil namespace
 	private String ncxNamespaceURI = "http://www.daisy.org/z3986/2005/ncx/";			// ncx namespace
@@ -193,7 +195,7 @@ public class NCXMaker implements BusListener {
 		reader.close();
 		reader = getBookmarkedXMLEventReader(inputFile);
 		
-		// get the dtbook version (-1/-2) to be able to output the correct doctype.
+		// get the dtbook version (-1/-2/-3) to be able to output the correct doctype.
 		dtbookVersion = filesetCreator.getDTBookVersion(inputFile);
 		
 		// prepare for namespace-aware dom handling
@@ -382,7 +384,9 @@ public class NCXMaker implements BusListener {
 					event = eventFactory.createStartDocument("utf-8", "1.0");             
 				}
 				writeEvent(event);
-				if ("2005-2".equals(dtbookVersion)) {
+				if ("2005-3".equals(dtbookVersion)) {
+					event = eventFactory.createDTD(dtbookDoctypeStr_2005_3);
+				} else if ("2005-2".equals(dtbookVersion)) {
 					event = eventFactory.createDTD(dtbookDoctypeStr_2005_2);
 				} else {
 					event = eventFactory.createDTD(dtbookDoctypeStr_2005_1);

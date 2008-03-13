@@ -72,6 +72,8 @@ public class ValidatorImplDtbook extends ValidatorImplAbstract implements Valida
 				setSchema(CatalogEntityResolver.getInstance().resolveEntityToURL("-//NISO//RNG dtbook 2005-1//EN"),"org.daisy.util.fileset.impl.Z3986DtbookFileImpl");
 			}else if(version.equals("2005-2")) {
 				setSchema(CatalogEntityResolver.getInstance().resolveEntityToURL("-//NISO//RNG dtbook 2005-2//EN"),"org.daisy.util.fileset.impl.Z3986DtbookFileImpl");
+			}else if(version.equals("2005-3")) {
+				setSchema(CatalogEntityResolver.getInstance().resolveEntityToURL("-//NISO//RNG dtbook 2005-3//EN"),"org.daisy.util.fileset.impl.Z3986DtbookFileImpl");
 			}else{
 				mValidatorListener.inform(this, "No canonical schema resources were internally associated with this DTBook document version (" + version + ")");
 			}

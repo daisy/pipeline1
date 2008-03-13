@@ -72,6 +72,8 @@ li.hd {list-style-type: none; font-weight: bold; margin-top: 0.5em;}
 table {border: 2px solid gray; padding: 1em; font-size: 80%; margin-top: 1.5em; margin-bottom: 2em;}
 th {border: 1px solid gray; font-weight: bold; padding: 0.5em}
 td {border: 1px solid gray; padding: 0.5em}
+td.noborder {border: none;}
+td.noborder span.page-normal, td.noborder span.page-special, td.noborder span.page-front {display: block; text-align: center; margin: 1em 5em 1em 5em; font-weight: bold; padding: 0px; border: none;}
 
 /* --- IMAGES --- */
 div.imggroup {display: block; margin-top: 1em; margin-bottom: 1em;}

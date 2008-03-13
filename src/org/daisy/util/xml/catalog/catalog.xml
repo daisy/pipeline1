@@ -181,6 +181,7 @@
     <public publicId="-//NISO//DTD dtbook 2005-3//EN" uri="./z39862005/dtbook-2005-3.dtd" />
     <public publicId="-//NISO//RNG dtbook 2005-1//EN" uri="./z39862005/dtbook-2005-1.rng" />
     <public publicId="-//NISO//RNG dtbook 2005-2//EN" uri="./z39862005/dtbook-2005-2.rng" />
+    <public publicId="-//NISO//RNG dtbook 2005-3//EN" uri="./z39862005/dtbook-2005-3.rng" />
     <system systemId="http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd" uri="./z39862005/dtbook-2005-1.dtd" />
     <system systemId="http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd" uri="./z39862005/dtbook-2005-2.dtd" />    
     <system systemId="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" uri="./z39862005/dtbook-2005-3.dtd" />
@@ -189,6 +190,7 @@
     <system systemId="dtbook-2005-3.dtd" uri="./z39862005/dtbook-2005-3.dtd" />
     <system systemId="dtbook-2005-1.rng" uri="./z39862005/dtbook-2005-1.rng" />
     <system systemId="dtbook-2005-2.rng" uri="./z39862005/dtbook-2005-2.rng" />
+    <system systemId="dtbook-2005-3.rng" uri="./z39862005/dtbook-2005-3.rng" />
     <public publicId="-//NISO//DTD dtbook 2005-2+mathml//EN" uri="./z39862005/dtbook-2005-2.dtd" />
     
     <system systemId="dtbook-2005.rng" uri="./z39862005/dtbook-2005.rng" />  

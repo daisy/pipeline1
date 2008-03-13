@@ -31,6 +31,7 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.css.stylesheets.Css;
 import org.daisy.util.file.EFile;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
@@ -126,7 +127,7 @@ public class DTBook2Xhtml extends Transformer implements FilesetErrorHandler,  D
 				}
 				Stylesheet.apply(inputXML, xsltURL, new File(folder, outFileName).toString(), factory, parameters, CatalogEntityResolver.getInstance());
 
-				URL url2 = this.getClass().getResource("default.css");
+				URL url2 = Css.get(Css.DocumentType.D202_XHTML);				
 				folder.writeToFile((String)parameters.get("css_path"), url2.openStream());
 				
 				for (Iterator it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {

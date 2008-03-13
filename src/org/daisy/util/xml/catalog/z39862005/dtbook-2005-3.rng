@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar  
+  ns="http://www.daisy.org/z3986/2005/dtbook/"
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:sch="http://www.ascc.net/xml/schematron"
+  xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"  
+>
+  <sch:ns prefix="dtbk" uri="http://www.daisy.org/z3986/2005/dtbook/"/>
+
+  <a:documentation>
+      RelaxNg schema for Z39.86 Dtbook version 2005-3  
+      Last edit by: linuse 2006-10-19
+	  Original version: mgylling 2005-07-01
+	  
+	  This schema only tests for things beyond the 
+	  restrictions of 2005-3 DTD.
+	  
+  	  org.daisy.util.xml.catalog mapping by 
+	  the PID '-//NISO//RNG dtbook 2005-3//EN'
+    
+      Version/change history:
+	    mg20060204: added schtests
+		mg20060315: added pagenum and more schtests	        
+		le20061019: moved common tests to dtbook-2005.rng	        
+  </a:documentation>
+  
+  <include href="dtbook-2005.rng">
+
+    <define name="dtbook.attlist">
+      <attribute name="version">
+        <value>2005-3</value>
+      </attribute>
+      <ref name="i18n.attributes"/>
+    </define>
+  
+  </include>
+	          
+</grammar>

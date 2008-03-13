@@ -40,6 +40,7 @@ import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerAbortException;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.css.stylesheets.Css;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
@@ -269,9 +270,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             Z3986SmilFile smilZed = (Z3986SmilFile)it.next();
             File smil202 = new File(outputDir, smilZed.getFile().getName());
             Object[] params = {new Integer(smilNum), new Integer(smilCount), smil202.getName()};  
-            this.sendMessage(i18n("SMIL", params), 
-            	MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
-            
+            //this.sendMessage(i18n("SMIL", params), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);            
             
             File temp2 = TempFile.create();
                         
@@ -307,10 +306,11 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         URI uri = ((Z3986SmilFile)it.next()).getFile().toURI();
         uri = opf.getFile().getParentFile().toURI().relativize(uri);
         
-        Map parameters = new HashMap();
+        Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("filter_word", "yes");
-        parameters.put("baseDir", inputDir.toURI());
-        parameters.put("first_smil", uri);
+        parameters.put("baseDir", inputDir.toURI().toString());
+        parameters.put("first_smil", uri.toString());
+        parameters.put("split_simple_table", "true");
         parameters.put("css_path", cssName);
         
         URL url = Stylesheets.get("dtbook2xhtml.xsl");
@@ -319,7 +319,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         Stylesheet.apply(dtbook.toURI().toString(), url, xhtmlOut.toURI().toString(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
         
         // Step 2: Insert a stylesheet
-        FileUtils.copy(new File(this.getTransformerDirectory(), cssName), new File(outputDir, cssName));
+        FileUtils.writeInputStreamToFile(Css.get(Css.DocumentType.D202_XHTML).openStream(), new File(outputDir, cssName));
     }
         
     
@@ -336,7 +336,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             fileCount++;
             FilesetFile fsf = (FilesetFile)it.next();
             Object[] params = {new Integer(fileNum), new Integer(fileCount), fsf.getFile().getName()};
-            this.sendMessage(i18n("COPYING_FILE", params), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
+            //this.sendMessage(i18n("COPYING_FILE", params), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
             URI relativeURI = fileset.getRelativeURI(fsf);
             File out = new File(outputDir.toURI().resolve(relativeURI));
             FileUtils.copy(fsf.getFile(), out);

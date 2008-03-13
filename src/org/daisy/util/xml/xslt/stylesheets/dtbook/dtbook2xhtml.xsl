@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<xsl:stylesheet version="1.0"
+<xsl:stylesheet version="2.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
   xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
   xmlns:s="http://www.w3.org/2001/SMIL20/"
   xmlns:m="http://www.w3.org/1998/Math/MathML"  
   xmlns:svg="http://www.w3.org/2000/svg"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="dtb s m svg">
+  exclude-result-prefixes="dtb s m svg xs">
 
-<!--
-	<xsl:strip-space elements="*"/>
-	<xsl:preserve-space elements="code samp span sent w"/>
--->
 	<xsl:param name="filter_word"/>
 	<xsl:param name="baseDir"/>
 	<xsl:param name="first_smil"/>
 	<xsl:param name="css_path"/>
 	<xsl:param name="daisy_noteref"/>
 	<xsl:param name="svg_mathml"/>
+	<xsl:param name="split_simple_table"/>
 
-<!--	<xsl:output method="xml" encoding="utf-8" indent="no"
-		doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>-->
-    <xsl:output method="xml" encoding="utf-8" indent="no"/>
+    <xsl:output method="xml" encoding="utf-8" indent="yes"/>
 
 	<xsl:template match="/">		
 		<xsl:choose>
@@ -52,6 +47,10 @@
 <!-- <!ENTITY cncatts "@id|@title|@xml:lang"> -->
 <xsl:template name="copyCncatts">
 	<xsl:copy-of select="@id|@title|@xml:lang"/>
+</xsl:template>
+
+<xsl:template name="copyAttsNoId">
+	<xsl:copy-of select="@class|@title|@xml:lang"/>
 </xsl:template>
 
 <!-- <!ENTITY inlineParent "ancestor::*[self::dtb:h1 or self::dtb:h2 or self::dtb:h3 or self::dtb:h4 or self::dtb:h5 or self::dtb:h6 or self::dtb:hd or self::dtb:span or self::dtb:p]"> -->
@@ -141,9 +140,11 @@
 
  <!-- Unsure. How does this position for a copy? -->
    <xsl:template match="dtb:link">
+   <!--
      <link>
        <xsl:copy-of select="@*"/>
      </link>
+	-->
    </xsl:template>
 
 
@@ -169,22 +170,6 @@
 			<xsl:apply-templates/>
 		</body>
    </xsl:template>
-
-<!--
-<xsl:template match="dtb:doctitle[1]">
-    <div class="doctitle">
-    	<xsl:if test="not(@id)">
-    		<xsl:attribute name="id">
-    			<xsl:value-of select="'h1classtitle'"/>
-    		</xsl:attribute>
-    	</xsl:if>
-    	<xsl:call-template name="copyCncatts"/>
-    	<a href="title.smil#doctitle">
-    		<xsl:value-of select="."/>
-    	</a>
-      </div>
-  </xsl:template>
--->
 		
 	<xsl:template match="dtb:frontmatter|dtb:bodymatter|dtb:rearmatter">
 		<xsl:apply-templates/>
@@ -670,15 +655,68 @@
    </xsl:template>
 
 
+	<xsl:template match="dtb:table">
+		<xsl:choose>
+			<xsl:when test="count(dtb:*[local-name()!='tr' and local-name()!='pagenum' and local-name()!='caption'])=0 and
+			                element-available('xsl:for-each-group') and
+			                $split_simple_table='true'">
+				<xsl:call-template name="simpleTable"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<table>
+					<xsl:call-template name="copyCatts"/>
+					<xsl:apply-templates/>
+				</table>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="simpleTable">
+		<xsl:variable name="tableAtts">
+			<dummy>
+				<xsl:call-template name="copyAttsNoId"/>
+			</dummy>
+		</xsl:variable>
+		<xsl:variable name="idAtt">
+			<dummy>
+				<xsl:copy-of select="@id"/>
+			</dummy>
+		</xsl:variable>
+		<xsl:variable name="elemName" as="xs:string" select="name()"/>
+		<xsl:for-each-group select="node()" group-starting-with="dtb:pagenum">
+			<xsl:apply-templates select="current-group()[self::dtb:pagenum]" mode="pagenumonly"/>
+			<xsl:if test="current-group()[not(self::dtb:pagenum)]">
+				<xsl:element name="{$elemName}">
+					<xsl:if test="position()=1">
+						<xsl:copy-of select="$idAtt/*/@*"/>
+					</xsl:if>
+					<xsl:copy-of select="$tableAtts/*/@*"/>
 
+					<xsl:apply-templates select="current-group()[not(self::dtb:pagenum)]"/>
+				</xsl:element>
+			</xsl:if>
+		</xsl:for-each-group>
+	</xsl:template>
 
-   <xsl:template match="dtb:table">
-     <table>
-       <xsl:call-template name="copyCatts"/>
-       <xsl:apply-templates/>
-     </table>
-   </xsl:template>
-
+	<xsl:template match="dtb:pagenum" mode="pagenumonly">
+		<xsl:call-template name="pagenum"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:table/dtb:pagenum|dtb:tbody/dtb:pagenum">
+		<tr>
+			<td class="noborder">
+				<xsl:attribute name="colspan">
+					<xsl:variable name="tdsInRow" select="number(sum(ancestor::dtb:table[1]/descendant::*[self::dtb:td or self::dtb:th]/(@colspan * @rowspan))) div count(ancestor::dtb:table[1]/descendant::dtb:tr)"/>
+					<!-- <xsl:message>tdsInRow:<xsl:value-of select="$tdsInRow"/></xsl:message> -->
+					<xsl:if test="$tdsInRow != round($tdsInRow) and $tdsInRow != NaN">
+    					<xsl:message>Warning: Colspan and rowspan values in table don't add up.</xsl:message>
+            		</xsl:if>
+            		<xsl:value-of select="floor($tdsInRow)"/>
+				</xsl:attribute>
+				<xsl:call-template name="pagenum"/>				
+			</td>
+		</tr>
+	</xsl:template>
 
    <xsl:template match="dtb:tbody">
      <tbody>

@@ -26,7 +26,7 @@
 		
 		<parameter type="string">
 			<name>factory</name>			
-			<value>com.icl.saxon.TransformerFactoryImpl</value>
+			<value>net.sf.saxon.TransformerFactoryImpl</value>
 		</parameter>
 		
 		<parameter required="true" direction="out" type="application/xhtml+xml">
@@ -49,6 +49,17 @@
 		<parameter required="false" direction="in" type="enum">
 			<name>daisy_noteref</name>
 			<description>Use daisy style noterefs</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>split_simple_table</name>
+			<description>Split simple tables on page change</description>
 			<example>true</example>
 			<enum>
 				<value>true</value>
