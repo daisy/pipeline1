@@ -514,6 +514,7 @@ src/org/daisy/util/fileset/interfaces/binary/EpubFile.java -text
 src/org/daisy/util/fileset/interfaces/xml/ops20/OPF20File.java -text
 src/org/daisy/util/fileset/manipulation/manipulators/XMLEventConsumer.java -text
 src/org/daisy/util/fileset/manipulation/manipulators/XMLEventExposer.java -text
+src/org/daisy/util/fileset/util/FilesetFileFilter.java -text
 src/org/daisy/util/fileset/util/FilesetLabelProvider.java -text
 src/org/daisy/util/fileset/util/FilesetSpineProvider.java -text
 src/org/daisy/util/fileset/validation/ValidatorImplAbstract.java -text
