@@ -13,12 +13,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -59,6 +61,7 @@ import org.daisy.util.fileset.interfaces.xml.z3986.Z3986NcxFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986OpfFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986ResourceFile;
 import org.daisy.util.fileset.interfaces.xml.z3986.Z3986SmilFile;
+import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
@@ -158,7 +161,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 			/*
 			 * Create NCX from the input NCC
 			 */
-			createZedNcx((D202NccFile)inputFileset.getManifestMember(),inputProperties);
+			createZedNcx((D202NccFile)inputFileset.getManifestMember(),inputProperties,parameters);
 		
 			System.err.println("isNccOnly: "+ inputProperties.isNccOnly());
 			/*
@@ -229,10 +232,14 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 				//remember: the XSLTs are written context unaware, 
 				//so they need to get all necessary context info as inparams.
 				Map<String,String> parameters = new HashMap<String,String>();
+				//unique identifier of the publication
 				parameters.put("uid", properties.getIdentifier());
 				parameters.put("title", properties.getTitle());
+				//time value of time elapsed until the onset of this smil file
 				parameters.put("totalElapsedTime",new SmilClock(totalElapsedTimeMillis).toString(SmilClock.FULL));
+				//duration of this smil file
 				parameters.put("timeinThisSmil",in.getCalculatedDuration().toString(SmilClock.FULL));
+				//default state to use for skippables, if that skippable appears at all.
 				parameters.put("defaultStatePagenumbers",properties.getDefaultState(BookStruct.PAGE_NUMBER).toString());
 				parameters.put("defaultStateSidebars",properties.getDefaultState(BookStruct.OPTIONAL_SIDEBAR).toString());
 				parameters.put("defaultStateFootnotes",properties.getDefaultState(BookStruct.NOTE).toString());
@@ -243,7 +250,9 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 					//the absence of this param means "dont drop text elems"
 					parameters.put("isNcxOnly","true");
 				}						
-				
+				// Whether the NCC points to pars in this SMIL file. If all targets point to par, value is 'true', else 'false'.
+				parameters.put("NCCPointsToPars",Boolean.toString(getSmilTargetType(in, (D202NccFile)inputFileset.getManifestMember())));
+								
 				Stylesheet.apply(in.getFile().getAbsolutePath(), xsltURL, out.getAbsolutePath(),
 						TransformerFactoryConstants.SAXON8, parameters, CatalogEntityResolver.getInstance());
 				
@@ -260,7 +269,31 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 		
 	}
 		
-	private void createZedNcx(D202NccFile ncc, InputProperties properties) throws CatalogExceptionNotRecoverable, XSLTException {
+	/**
+	 * Does the NCC point to par or text in incoming smil file?
+	 * If all targets point to par, return true, else return false.
+	 */
+	private boolean getSmilTargetType(D202SmilFile smil, D202NccFile ncc) {
+		QName par = new QName("par");
+		try{
+			Collection<?> uris = ncc.getUriStrings();
+			for(Object o : uris) {
+				String uri = (String)o;
+				if(uri.startsWith(smil.getName())) {
+					String id = URIStringParser.getFragment(uri);	
+					if(!smil.hasIDValueOnQName(id, par)){
+						return false;
+					}
+				}
+			}
+			return true;			
+		}catch (Exception e) {
+			System.err.println("d202_z2005.MigratoImpl#getSmilTargetType: " + e.getMessage());			
+		}
+		return false;
+	}
+
+	private void createZedNcx(D202NccFile ncc, InputProperties properties, Map<?,?> params) throws CatalogExceptionNotRecoverable, XSLTException {
 				  		
 		String ncxFileName = "navigation.ncx";
 		
@@ -273,13 +306,23 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 		URL xsltURL = this.getClass().getResource("./xslt/d202ncc_Z2005ncx.xsl");
 				
 		Map<String,String> parameters = new HashMap<String,String>();
+		//unique identifier of the publication
 		parameters.put("uid", properties.getIdentifier());
+		
+		//a list of customTests that appears in the DTB.
+		String customTestIDs = getSmilCustomTests();
+		if(customTestIDs!=null&&customTestIDs.length()>0) {
+			parameters.put("smilCustomTests",customTestIDs);
+		}	
+		//default state to use for skippables, if that skippable appears at all.
 		parameters.put("defaultStatePagenumbers", properties.getDefaultState(BookStruct.PAGE_NUMBER).toString());
 		parameters.put("defaultStateSidebars",properties.getDefaultState(BookStruct.OPTIONAL_SIDEBAR).toString());
 		parameters.put("defaultStateFootnotes",properties.getDefaultState(BookStruct.NOTE).toString());
 		parameters.put("defaultStateProdnotes",properties.getDefaultState(BookStruct.OPTIONAL_PRODUCER_NOTE).toString());
-		parameters.put("nccFolder",ncc.getFile().getParent());
-		
+				
+		// A user preference: whether to add audio elements to navLabel by opening the reffed smil and get the closest audio
+		parameters.put("addNavLabelAudio", (String)params.get("ncxAddNavLabelAudio"));
+				
 		Stylesheet.apply(ncc.getFile().getAbsolutePath(), xsltURL, ncxOut.getAbsolutePath(), 
 				TransformerFactoryConstants.SAXON8, parameters, CatalogEntityResolver.getInstance());
 		
@@ -289,6 +332,30 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 		
 	}
 	
+	/**
+	 * Get a list of the customTests that are acuually used in the book.
+	 * This method requires that mManifestItems contain the output zed SMIL files.
+	 * These IDs are one of the following, and map naturally to one bookstruct each:
+	 * pagenumber,sidebar,footnote,prodnote
+	 */
+	private String getSmilCustomTests() {
+		Set<String> customTestIDs = new HashSet<String>();
+		for(FilesetFile f : mManifestItems) {
+			if(f instanceof Z3986SmilFile) {
+				Z3986SmilFile smil = (Z3986SmilFile)f;
+				customTestIDs.addAll(smil.getCustomTestIDs());				
+			}
+		}
+		StringBuilder builder = new StringBuilder();
+		for (String id : customTestIDs) {
+			builder.append(id);
+			builder.append(' ');
+		}
+		if(builder.length()>0)
+			return builder.deleteCharAt(builder.length()-1).toString();
+		return "";
+	}
+
 	/**
 	 * Add a resource file
 	 */
@@ -339,7 +406,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 			}				
 		}	
 		
-		reportCompleted(res);
+		if(res!=null)reportCompleted(res);
 	}
 	
 	/**

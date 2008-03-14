@@ -75,6 +75,20 @@
 			<example>D:/path/to/my.res</example>
 			<default/>
 		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>ncxAddNavLabelAudio</name>
+		    <description>
+		    	Whether to create an audio element for each navLabel in the NCX. This
+		    	can be costly timewise, and the default behavior is off.  		    	
+		    </description>
+		    <example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+		    <default>false</default>
+		</parameter>
 
 					
 	</parameters>	

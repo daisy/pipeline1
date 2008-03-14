@@ -18,7 +18,7 @@ public class MigratorFactory {
 	private MigratorFactory(TransformerDelegateListener transformer) {
 		registry = new ArrayList<Migrator>();
 		registry.add(new int_daisy_dtbMigrator.impl.d202_z2005.MigratorImpl());
-		registry.add(new int_daisy_dtbMigrator.impl.z2005_d202.MigratorImpl());
+		//registry.add(new int_daisy_dtbMigrator.impl.z2005_d202.MigratorImplOld());
 		listener = transformer;
 	}
 	
