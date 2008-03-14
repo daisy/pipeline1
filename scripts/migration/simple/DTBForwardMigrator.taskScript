@@ -40,6 +40,14 @@
 		</datatype>
 	</parameter>
 
+	<parameter name="addNcxNavLabelAudio" value="false" required="false">
+		<nicename>Add NCX navLabel audio</nicename>
+		<description>Set whether to add audio to NCX navLabels (costly operation)</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
 	<parameter name="userCss" value="" required="false">
 		<nicename>Optional CSS</nicename>
 		<description>Select a CSS to append to output DTBook document</description>
@@ -85,6 +93,10 @@
 			<name>outputResourceFile</name>
 			<value>${userRes}</value>
 		</parameter>
+		<parameter>
+			<name>ncxAddNavLabelAudio</name>
+			<value>${addNcxNavLabelAudio}</value>
+		</parameter>			
 	</task>
 	
 	<task name="int_daisy_validator" interactive="false">
