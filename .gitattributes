@@ -287,6 +287,7 @@ scripts/_dev/MultiFormatMedia.taskScript -text
 scripts/_dev/Narrator-Dev.taskScript -text
 scripts/_dev/NccNcxOnly.taskScript -text
 scripts/_dev/XMLAudioAligner.taskScript -text
+scripts/_dev/XukCreator.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
 scripts/conversion/advanced/WordMLtoDTBook.taskScript -text
 scripts/conversion/advanced/Xhtml2Dtbook.taskScript -text
@@ -449,6 +450,7 @@ src/org/daisy/pipeline/test/impl/WordML2DTBook3.java -text
 src/org/daisy/pipeline/test/impl/WordML2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/WordML2Xhtml2.java -text
 src/org/daisy/pipeline/test/impl/Xhtml2DTBook1.java -text
+src/org/daisy/pipeline/test/impl/XukCreator1.java -text
 src/org/daisy/pipeline/util/DocChecker.java -text
 src/org/daisy/pipeline/util/DocIndexGenerator.java -text
 src/org/daisy/pipeline/util/IndexGenerator.java -text
@@ -712,6 +714,14 @@ transformers/int_daisy_unicodeTranscoder/transformer.tdf -text
 transformers/int_daisy_validator/XMLReporter.java -text
 transformers/int_daisy_validator/validator.css -text
 transformers/int_daisy_validator/validator.xsl -text
+transformers/int_daisy_xukCreator/XukCreator.java -text
+transformers/int_daisy_xukCreator/XukFilter.java -text
+transformers/int_daisy_xukCreator/XukFilterException.java -text
+transformers/int_daisy_xukCreator/XukFilterFactory.java -text
+transformers/int_daisy_xukCreator/impl/Daisy202toObi.java -text
+transformers/int_daisy_xukCreator/impl/Daisy202toObi.xsl -text
+transformers/int_daisy_xukCreator/messages.properties -text
+transformers/int_daisy_xukCreator/transformer.tdf -text
 transformers/no_hks_xhtml2dtbook/Xhtml2DTBook.java -text
 transformers/no_hks_xhtml2dtbook/transformer.tdf -text
 transformers/pipeline_system_copyer/Copyer.java -text

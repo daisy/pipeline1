@@ -66,6 +66,7 @@ import org.daisy.pipeline.test.impl.WordML2DTBook3;
 import org.daisy.pipeline.test.impl.WordML2Xhtml1;
 import org.daisy.pipeline.test.impl.WordML2Xhtml2;
 import org.daisy.pipeline.test.impl.Xhtml2DTBook1;
+import org.daisy.pipeline.test.impl.XukCreator1;
 import org.daisy.pipeline.ui.CommandLineUI;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
@@ -246,8 +247,9 @@ public class PipelineTestDriver {
 //		tests.add(new Daisy202ToZ398620051(inputDir, outputDir));				
 //		tests.add(new MultiFormatMedia1(inputDir, outputDir));
 //		tests.add(new NccNcxOnly1(inputDir, outputDir));
-		tests.add(new DTBMigratorForward1(inputDir, outputDir));
+//		tests.add(new DTBMigratorForward1(inputDir, outputDir));		
 //		tests.add(new DTBMigratorBackward1(inputDir, outputDir));
+		tests.add(new XukCreator1(inputDir, outputDir));		
 
 		/*
 		 * End Tests with input data in samples dir

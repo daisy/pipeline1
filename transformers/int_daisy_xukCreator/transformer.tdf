@@ -1,0 +1,38 @@
+<transformer version="1.0">
+	<name>XUK Creator</name>
+	<description>Convert various content types into Urakawa XUK format</description>
+	<classname>int_daisy_xukCreator.XukCreator</classname>
+	<license>LGPL</license>
+	<author>Markus Gylling, Julien Quint</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	
+	<parameters>	
+	    <parameter required="true" direction="in" type="application/anonymous">
+			<name>input</name>
+			<description>Input manifest (NCC, OPF, playlist, etc)</description>
+			<example>D:/path/to/input.opf</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>destination</name>
+			<description>The output directory</description>
+			<example>D:/path/to/outputdir/</example>
+		</parameter>		
+		
+		<parameter required="false" type="enum">
+			<name>outputType</name>
+			<description>
+				Indication on the intended consumer of the output XUK 
+			</description>
+			<example>Obi</example>
+			<enum>
+				<value>Obi</value>
+				<value>Tobi</value>
+				<value>Generic</value>
+			</enum>
+			<default>Generic</default>
+		</parameter>
+							
+	</parameters>	
+
+</transformer>

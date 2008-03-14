@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<taskScript version="2.0" name="AudacityToDTB">
+	<nicename>Obi XUK creator</nicename>
+	<description>Obi XUK Creator developer edition</description>
+	<documentation uri="../../../doc/scripts/XukCreator.html"/>
+
+	<parameter name="input" value="" required="true">
+		<nicename>Input</nicename>
+		<description>The object (DTB etc) to create a XUK file from</description>
+		<datatype>
+			<file mime="application/x-anonymous" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output Directory</nicename>
+		<description>The output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+	
+	<task name="int_daisy_xukCreator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>destination</name>
+			<value>${output}</value>
+		</parameter>
+		<parameter>
+			<name>outputType</name>
+			<value>Obi</value>
+		</parameter>
+	</task>	
+	
+	
+</taskScript>
