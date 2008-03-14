@@ -19,7 +19,7 @@
 
 <xsl:template match="*">
 	<xsl:copy>
-		<xsl:if test="name()!='head'">
+		<xsl:if test="name()!='head' and name()!='meta'">
 			<xsl:attribute name="id"><xsl:value-of select="generate-id()" /></xsl:attribute>
 		</xsl:if>
 		<xsl:copy-of select="@*" />
@@ -28,10 +28,18 @@
 </xsl:template>
 
 <!-- Root element name is changed, plus add version & namespace -->
-<xsl:template match="dtbook3">
-	<dtbook version="2005-1" xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+<xsl:template match="dtbook">
+	<dtbook version="2005-1">
 		<xsl:apply-templates />
 	</dtbook>
+</xsl:template>
+
+<!-- levelhd is transformed to hd, including all attributes excluding the depth attribute -->
+<xsl:template match="levelhd">
+	<hd>
+		<xsl:copy-of select="@*[name()!='depth']" />
+		<xsl:apply-templates />
+	</hd>
 </xsl:template>
 
 <!-- Kill hr's, style's, and head/title's -->
