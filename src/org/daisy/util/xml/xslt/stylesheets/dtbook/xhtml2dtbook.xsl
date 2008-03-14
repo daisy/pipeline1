@@ -6,17 +6,18 @@
 	xmlns:html="http://www.w3.org/1999/xhtml"
 	exclude-result-prefixes="xs html">
 	
-<!--	<xsl:output method="xml" 
-		encoding="UTF-8"
-		indent="yes"
-		doctype-public="-//NISO//DTD dtbook 2005-2//EN"
-		doctype-system="V:\MFBP\piXi\DTD\dtbook-2005-2.dtd" />-->
 
 	<xsl:output method="xml" 
 		encoding="UTF-8"
 		indent="yes"
 		doctype-public="-//NISO//DTD dtbook 2005-2//EN"
 		doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd" />
+	
+	<!--  Input paramerets -->
+	<xsl:param name="uid" as="xs:string" select="'[UID]'" />					<!-- uid of publication -->
+	<xsl:param name="title" as="xs:string" select="'[DTB_TITLE]'" />			<!-- title of publication -->
+	<xsl:param name="cssUri" as="xs:string" select="'[CSS]'" />					<!-- URI to CSS of publication -->
+	
 	
 	<xsl:variable name="smil" as="xs:string" select="'.smil#'" />
 	
@@ -28,8 +29,13 @@
 	
 	<xsl:template match="html:head">
 		<head>
+			<meta name="dtb:uid" content="{$uid}" />
+			<meta name="dtb:title" content="{$title}" />
+			<meta name="dc:Title" content="{$title}" />
 			<xsl:apply-templates select="html:meta" />
-			<xsl:apply-templates select="html:link[@rel='stylesheet']" />
+<!-- psps20080311: css given as param, so no need to take it from XHTML document
+			<xsl:apply-templates select="html:link[@rel='stylesheet']" /> -->
+			<link rel="stylesheet" type="text/css" href="{$cssUri}"/>
 		</head>
 	</xsl:template>
 	
@@ -112,6 +118,12 @@
 			if ($h.next-on-same-level-or-higher)
 			then $h.next-level.all[. &lt;&lt; $h.next-on-same-level-or-higher]
 			else $h.next-level.all" />
+		<!-- Are there any elements (except hr and br) before the next heading: -->
+		<xsl:variable name="NoRelevantElementsUntilNextHeading" as="xs:boolean"
+			select="every $e in $e.up-to-next-heading satisfies matches(local-name($e),'^br$|^hr$')" />
+		<!-- Is the next sibling (ignoring hr and br elements when deciding who's next) a heading on a lower level: -->
+		<xsl:variable name="NextFollowingSiblingIsHeadingOnLowerLevel" as="xs:boolean"
+			select="matches(local-name(following-sibling::*[not(matches(local-name(.),'^br$|^hr$'))][1]),concat('^h[',string($h.this.level+1),'-6]$'))" />
 		<!-- Create the levelx element -->
 		<xsl:element name="{concat('level',string($h.this.level))}">
 			<xsl:copy-of select="@class" /> <!-- Transfer the class attribute from the hx element to the levelx element -->
@@ -138,18 +150,25 @@
 				<strong>Relevant children:</strong><br />
 				Count: <xsl:value-of select="count($e.up-to-next-heading)" />
 			</div>-->			
+
 			<!-- Apply templates for all elements up to the next heading -->
 			<xsl:apply-templates select="$e.up-to-next-heading" />
+
+			<!-- If there are no relevant elements until the next heading, add a dummy element (to satisfy DTBook).
+				However if the next relevant sibling is a heading on a lower level, then don't add the dummy element
+			  -->
+			<xsl:if test="$NoRelevantElementsUntilNextHeading and not($NextFollowingSiblingIsHeadingOnLowerLevel)">
+				<p class="dummy" />
+			</xsl:if>
 			<!-- Apply templates for all headings on the next level -->
 			<xsl:apply-templates select="$h.next-level.relevant" />
 		</xsl:element>
 	</xsl:template>
 
 	<xsl:template match="html:span[starts-with(@class,'page-')]">
-		<pagenum page="{substring-after(@class,'page-')}" id="{concat('page-',normalize-space(.))}">
-<!--			<xsl:call-template name="smilref" />-->
+		<pagenum page="{substring-after(@class,'page-')}" id="{if (@id) then @id else concat('page-',normalize-space(.))}">
 			<xsl:call-template name="copy-page-attributes" />
-			<xsl:value-of select="." />
+			<xsl:value-of select="normalize-space(.)" />
 		</pagenum>
 	</xsl:template>
 	
@@ -303,9 +322,18 @@
 			<xsl:apply-templates/>
 		</xsl:element>
 	</xsl:template>
+	
+	<xsl:template match="html:div[html:span]">
+		<div>
+			<xsl:call-template name="copy-attributes" />
+			<p class="inserted-by-transformer">
+				<xsl:apply-templates />
+			</p>
+		</div>
+	</xsl:template>
 
 	<xsl:template match="html:body/html:br">
-		<xsl:comment>br elements as direct child of body is removed</xsl:comment>
+<!-- 		<xsl:comment>br elements as direct child of body is removed</xsl:comment> -->
 	</xsl:template>
 	
 	<xsl:template match="html:table | html:table/html:caption | html:tr | html:td | html:th | html:col">
@@ -340,8 +368,6 @@
 		<xsl:call-template name="copy-std-attr" />
 	</xsl:template>
 	<xsl:template name="copy-std-attr">
-<!--	Per Sennels, 20070927: Don't copy @style, as it's not allowed in 2005-2
-		<xsl:copy-of select="@title, @style, @dir, @xml:lang" /> -->
 		<xsl:copy-of select="@title, @dir, @xml:lang" />
 		<xsl:call-template name="smilref" />
 	</xsl:template>
@@ -358,7 +384,7 @@
 			<xsl:text>
 </xsl:text>
 			<xsl:comment> **** No template for element: <xsl:value-of select="local-name()" /> **** </xsl:comment>
-			<xsl:message terminate="no"> **** No template for element: <xsl:value-of select="local-name()" /> **** </xsl:message>
+<!-- 			<xsl:message terminate="no"> **** No template for element: <xsl:value-of select="local-name()" /> **** </xsl:message> -->
 		</xsl:if>
 			
 		<xsl:apply-templates />

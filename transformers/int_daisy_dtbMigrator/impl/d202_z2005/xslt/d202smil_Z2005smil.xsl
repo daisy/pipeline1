@@ -8,10 +8,29 @@
 <!-- 
 	To do:
 	- 2.02 ncc normally points to smil <text/>, in zed this is 
-			allowed but not recommended, should be parent timecontainer
+			allowed but not recommended, should be parent timecontainer (psps: fixed, but input param needed)
 	- layout/region?
-	- skippability
+	- skippability (psps: fixed for pages, sidebars, and prodnotes. footnotes must be handled)
 -->
+
+<!-- psps20080312: The @id problem
+	Case 1: @id on par, not on par/text
+		ncc points to par
+		Perfect, just let the @id stay where it is, and perhaps create a suitable @id on the par/text
+	case 2: @id on par/text, not on par itself
+		ncc points to text
+		Zed prefers the other way round, so we'll move the par/text/@id to par/@id, and perhaps create a suitable @id on the par/text
+	case 3: @id on both
+		This is the tricky one, as we don't know if ncc points to the par or the par/text.
+		Proposed solution: Assume that Pipeline can figure out the ncc/SMIL-relation, 
+		and hands it over to the xsl as a boolean parameter; NCCPointsToPar
+		If NCCPointsToPar then
+			let the @id's stay where they are
+		else
+			swap the par/@id and the par/text/@id
+		end if
+	TODO: Must check out how this works for D202 footnotes with nested par's 
+ -->
 	
 <xsl:output doctype-public="-//NISO//DTD dtbsmil 2005-1//EN" 
 	doctype-system="http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd" 
@@ -29,6 +48,9 @@
 	<xsl:param name="defaultStateSidebars" as="xs:string" select="'true'" /> 		<!-- value for head/customAttributes/customTest/@defaultState -->
 	<xsl:param name="defaultStateFootnotes" as="xs:string" select="'true'" />		<!-- value for head/customAttributes/customTest/@defaultState -->
 	<xsl:param name="defaultStateProdnotes" as="xs:string" select="'true'" /> 		<!-- value for head/customAttributes/customTest/@defaultState -->
+	<xsl:param name="NCCPointsToPar" as="xs:string" select="'false'" /> 			<!-- used for proper @id handling for par's -->
+
+<xsl:variable name="NCCPtoP" as="xs:boolean" select="matches($NCCPointsToPar,'true','i')" />
 
 <xsl:template match="smil">
 	<smil>
@@ -42,6 +64,8 @@
 		<meta name="dtb:uid" content="{$uid}" />
 		<meta name="dtb:totalElapsedTime" content="{$totalElapsedTime}" />
 		<meta name="dtb:generator" content="DAISY Pipeline" />
+		<meta name="NCCPointsToPar" content="{$NCCPointsToPar}" />
+		<meta name="NCCPtoP" content="{$NCCPtoP}" />
 		<!-- psps: Added customAttributes -->
 		<xsl:if test="//par/@system-required">
 			<customAttributes>
@@ -72,18 +96,27 @@
 	</body>
 </xsl:template>
 
-<!-- psps: Changed in order to handle par with no @id  
-<xsl:template match="par">
-	<par id="{@id}">
-		<xsl:apply-templates select="node()" />
-	</par>
-</xsl:template> -->
-
 <xsl:template match="par">
 	<par>
 		<xsl:attribute name="id">
-			<!-- Use @id on par if present, else @id on text child if present, or generate by system  -->
-			<xsl:value-of select="if (@id) then @id else if (text/@id) then text/@id else generate-id()" />
+			<xsl:choose>
+				<xsl:when test="@id and not(text/@id)">		<!-- Case 1: keep @id as it is  -->
+					<xsl:value-of select="@id" />
+				</xsl:when>
+				<xsl:when test="not(@id) and text/@id">		<!-- Case 2: use text/@id on the par -->
+					<xsl:value-of select="text/@id" />
+				</xsl:when>
+				<xsl:otherwise>								<!-- Case 3: @id on both elements, value of $NCCPtoP decides what to do -->
+					<xsl:choose>
+						<xsl:when test="$NCCPtoP">
+							<xsl:value-of select="@id" />
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="text/@id" />
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:attribute>
 		<xsl:if test="@system-required">
 			<xsl:attribute name="customTest">
@@ -100,18 +133,27 @@
 		<!-- no text element rendered -->
 	</xsl:when>
 	<xsl:otherwise>
-		<!-- 
-			the text docs have the same filename barring extension
-			e.g. foo.html into foo.xml.
-		 -->
-		 <!--  TODO below breaks if filename contains period chars 
-		<text src="{substring-before(@src, '.')}.xml#{substring-after(@src, '#')}"> -->
-		<!-- psps: fixed -->
 		<text src="{replace(@src,'(.+)htm(l?)#(.+)','$1xml#$3')}">
-			<xsl:choose>
-				<xsl:when test="@id"><xsl:attribute name="id" select="concat('text-',@id)" /></xsl:when> <!-- added 'text-' in front of @id to be sure it's unique -->
-				<xsl:otherwise><xsl:attribute name="id" select="generate-id()" /></xsl:otherwise>
-			</xsl:choose>
+			<xsl:attribute name="id">
+				<xsl:choose>
+					<xsl:when test="../@id and not(@id)">		<!-- Case 1 -->
+						<xsl:value-of select="concat('t1-',../@id)" />
+					</xsl:when>
+					<xsl:when test="not(../@id) and @id">		<!-- Case 2 -->
+						<xsl:value-of select="concat('t2-',@id)" />
+					</xsl:when>
+					<xsl:otherwise>								<!-- Case 3: @id on both elements, value of $NCCPtoP decides what to do -->
+						<xsl:choose>
+							<xsl:when test="$NCCPtoP">
+								<xsl:value-of select="@id" />
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="../@id" />
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
 		</text>
 	</xsl:otherwise>	
 	</xsl:choose>

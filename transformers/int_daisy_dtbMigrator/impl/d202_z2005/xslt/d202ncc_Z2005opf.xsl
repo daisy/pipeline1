@@ -2,10 +2,11 @@
 <xsl:stylesheet version="2.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:html="http://www.w3.org/1999/xhtml"	
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	xmlns:c="http://daisymfc.sf.net/xslt/config"
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
 	xmlns="http://openebook.org/namespaces/oeb-package/1.0/"
-	exclude-result-prefixes="html c">
+	exclude-result-prefixes="html c xs">
 
 	<!-- issue: xmlns:dc declaration not appearing in dc-metadata element, but 
 			appears in xml declaration. Does it matter? 
@@ -31,6 +32,7 @@
 <xsl:param name="dtbTotalTime" />			<!-- formatted SMIL clock value -->
 <xsl:param name="dtbMultimediaContent" />	<!-- formatted string -->
 <xsl:param name="uid" />					<!-- uid of publication -->
+<xsl:param name="cssUri" as="xs:string" select="'[CSS]'" />					<!-- URI to CSS of publication -->
 
 
 <xsl:template match="/html:html">
@@ -113,17 +115,19 @@
 	<dc:Description><xsl:value-of select="../@content" /></dc:Description>
 </xsl:template>
 
+<!-- psps: Duplicated template 
 <xsl:template match="@name[.='dc:source']" mode="dc-metadata">
 	<dc:Source><xsl:value-of select="../@content" /></dc:Source>
-</xsl:template>
+</xsl:template> -->
 
 <xsl:template match="@name[.='dc:type']" mode="dc-metadata">
 	<dc:Type><xsl:value-of select="../@content" /></dc:Type>
 </xsl:template>
 
+<!-- psps: Duplicated template 
 <xsl:template match="@name[.='dc:coverage']" mode="dc-metadata">
 	<dc:Coverage><xsl:value-of select="../@content" /></dc:Coverage>
-</xsl:template>
+</xsl:template> -->
 
 <xsl:template match="@name[.='dc:relation']" mode="dc-metadata">
 	<dc:Relation><xsl:value-of select="../@content" /></dc:Relation>
