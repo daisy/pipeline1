@@ -26,9 +26,10 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.regex.Pattern;
 
 import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.util.FilesetFileFilter;
 
 /**
  * EFolder - where E stands for extended.
@@ -392,21 +393,40 @@ public class EFolder extends File {
 	 * @throws IOException if something bad happens
 	 */
 	public boolean addFileset(Fileset fileset, boolean overwrite) throws IOException {
+		return this.addFileset(fileset, overwrite, null);
+	}
+	
+	/**
+	 * Copies an org.daisy.util.fileset into this folder
+	 * <p>Any directory relative relations of input fileset (in relation to manifest) will be maintained.
+	 * <p>If a fileset member lives in a superdirectory of the manifest member, an IOException will be thrown. All members
+	 * must be in same folder as or subfolder of the Fileset manifest file.</p>
+	 * @param fileset the Fileset instance to copy into this folder
+	 * @param overwrite whether to overwrite preexisting specimen (specifiles) in destination
+	 * @param filter An impl of FilesetFileFilter to use when only a subset of the Fileset should be added. May be null, in which case all Fileset members are added.
+	 * @return true if all members were copied successfully; false otherwise. If overwrite is false and a copy is skipped, still returns true. 
+	 * @throws IOException if something bad happens
+	 */
+	public boolean addFileset(Fileset fileset, boolean overwrite, FilesetFileFilter filter) throws IOException {
 		EFolder inputBaseDir = fileset.getManifestMember().getParentFolder();
-		Iterator i = fileset.getLocalMembers().iterator();
+		String baseDirCanonicalPath = inputBaseDir.getCanonicalPath();
+		Iterator<?> i = fileset.getLocalMembers().iterator();
 		while(i.hasNext()) {
-			File file = (File) i.next();
-			if(file.getParentFile().getCanonicalPath().equals(inputBaseDir.getCanonicalPath())) {
-				//file is in same dir as manifestfile
-				this.addFile(file,overwrite);
-			}else{
-				//file is in subdir
-				URI relative = inputBaseDir.toURI().relativize(file.getParentFile().toURI());
-				if(relative.toString().startsWith("..")) throw new IOException("fileset member "+file.getName()+" does not live in a sibling or descendant folder of manifest member");
-				EFolder subdir = new EFolder(this,relative.getPath());
-				FileUtils.createDirectory(subdir);
-				subdir.addFile(file,overwrite);
-			}						
+			FilesetFile file = (FilesetFile) i.next();
+			if(filter==null||filter.acceptFile(file) == FilesetFileFilter.ACCEPT) {
+				File f = file.getFile();
+				if(f.getParentFile().getCanonicalPath().equals(baseDirCanonicalPath)) {
+					//file is in same dir as manifestfile
+					this.addFile(f,overwrite);
+				}else{
+					//file is in subdir
+					URI relative = inputBaseDir.toURI().relativize(f.getParentFile().toURI());
+					if(relative.toString().startsWith("..")) throw new IOException("fileset member "+file.getName()+" does not live in a sibling or descendant folder of manifest member");
+					EFolder subdir = new EFolder(this,relative.getPath());
+					FileUtils.createDirectory(subdir);
+					subdir.addFile(f,overwrite);
+				}		
+			}
 		}						
 		return true;
 	}
