@@ -21,6 +21,7 @@ package org.daisy.util.fileset.impl;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
@@ -44,6 +45,8 @@ class SmilFileImpl extends XmlFileImpl implements SmilFile {
 	private SmilClock audioClipBegin = null; //does not gather anything outside startelement; here for optim 	
 	private SmilClock audioClipEnd = null; //does not gather anything outside startelement; here for optim	 
 	private long myCalculatedDuration = 0;
+	/** id attr values of any occuring customTest elements in head */
+	protected Set<String> mCustomTestIDs = null;
 
 	SmilFileImpl(URI uri, String mimeStringConstant) throws ParserConfigurationException, SAXException, IOException {
 		super(uri, mimeStringConstant);
@@ -63,6 +66,10 @@ class SmilFileImpl extends XmlFileImpl implements SmilFile {
 			if (attrName == "id") {
 				QName q = new QName(namespaceURI, sName);
 				this.putIdAndQName(attrValue, q);
+				if(sName=="customTest") {
+					//the element customTest in head, not the attribute in body
+					mCustomTestIDs.add(attrValue);
+				}
 			} else if (FilesetRegex.getInstance().matches(FilesetRegex.getInstance().SMIL_ATTRIBUTES_WITH_URIS, attrName)) {
 				putUriValue(attrValue);
 			}
@@ -105,6 +112,7 @@ class SmilFileImpl extends XmlFileImpl implements SmilFile {
 				audioClipEnd = null;
 			}
 		}
+		
 	}
 
 	public SmilClock getCalculatedDuration() {

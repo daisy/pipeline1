@@ -19,6 +19,8 @@
 
 package org.daisy.util.fileset.interfaces.xml.z3986;
 
+import java.util.Set;
+
 import org.daisy.util.fileset.interfaces.xml.SmilFile;
 import org.daisy.util.mime.MIMEConstants;
 import org.daisy.util.xml.SmilClock;
@@ -34,4 +36,10 @@ public interface Z3986SmilFile extends SmilFile {
 	 * @return if given, the stated value for TotalElapsedTime (==time prior to onset of this smil file).
 	 */
 	public SmilClock getStatedTotalElapsedTime();
+	
+	/**
+	 * Get the id values of any occurring customTest elements in this SMIL files head.
+	 * If this SMIL file contains no customTest elements, and empty Set is returned.
+	 */
+	public Set<String> getCustomTestIDs();
 }

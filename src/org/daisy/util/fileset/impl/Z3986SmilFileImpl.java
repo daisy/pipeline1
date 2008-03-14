@@ -21,6 +21,8 @@ package org.daisy.util.fileset.impl;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -35,10 +37,15 @@ final class Z3986SmilFileImpl extends SmilFileImpl implements Z3986SmilFile {
 
 	public Z3986SmilFileImpl(URI uri) throws ParserConfigurationException, SAXException, IOException {
 		super(uri,Z3986SmilFile.mimeStringConstant);	
+		mCustomTestIDs = new HashSet<String>();
 	}
 		
 	public SmilClock getStatedTotalElapsedTime() {
 		return myStatedTotalElapsedTime;
+	}
+	
+	public Set<String> getCustomTestIDs() {
+		return mCustomTestIDs;
 	}
 	
 	private static final long serialVersionUID = 1360195717746938439L;
