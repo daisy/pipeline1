@@ -394,6 +394,10 @@ abstract class XmlFileImpl
     public boolean hasIDValue(String value) {
         return mIdQNameMap.containsKey(value);
     }
+    
+    public QName getQName(String idval) {
+    	return (QName)mIdQNameMap.get(idval);
+    }
 
     public boolean hasIDValueOnQName(String idval, QName qName) {
     	QName test = (QName) mIdQNameMap.get(idval);

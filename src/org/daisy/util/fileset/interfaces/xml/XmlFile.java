@@ -118,6 +118,12 @@ public interface XmlFile extends FilesetFile, Referring {
 	public boolean hasIDValueOnQName(String idval, QName qName);
 	
 	/**
+	 *@return The QName of an element on which <code>idval</code> is the value of an attribute named <code>id</code>, or null if no element with attribute <code>id</code> valued <code>idval</code> exists.
+	 *@see #hasIDValue(String)
+	 */
+	public QName getQName(String idval);
+	
+	/**
 	 * @return a Map of inline schema URIs. 
 	 * <p>Note - this collection does not include schema URIs occuring in document prolog, only on document root (i.e. typically xsi refs).
 	 * <p>If the document contains no inline schema URIs, the returne value is an empty Map, not null.</p>
