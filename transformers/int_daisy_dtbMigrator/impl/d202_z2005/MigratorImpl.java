@@ -156,7 +156,14 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 			 * Create zed smil from the 2.02 smil input docs
 			 */
 			SmilClock dtbTotalTime = createZedSmil(inputFileset, inputProperties);
-
+			
+			/*
+			 * Parse all created SMIL files
+			 */
+			for(FilesetFile f : mManifestItems) {
+				f.parse();
+			}
+			
 		
 			/*
 			 * Create NCX from the input NCC
@@ -293,7 +300,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 		return false;
 	}
 
-	private void createZedNcx(D202NccFile ncc, InputProperties properties, Map<?,?> params) throws CatalogExceptionNotRecoverable, XSLTException {
+	private void createZedNcx(D202NccFile ncc, InputProperties properties, Map<?,?> params) throws XSLTException, SAXException {
 				  		
 		String ncxFileName = "navigation.ncx";
 		
@@ -333,7 +340,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 	}
 	
 	/**
-	 * Get a list of the customTests that are acuually used in the book.
+	 * Get a list of the customTests that are actually used in the book.
 	 * This method requires that mManifestItems contain the output zed SMIL files.
 	 * These IDs are one of the following, and map naturally to one bookstruct each:
 	 * pagenumber,sidebar,footnote,prodnote
@@ -342,7 +349,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 		Set<String> customTestIDs = new HashSet<String>();
 		for(FilesetFile f : mManifestItems) {
 			if(f instanceof Z3986SmilFile) {
-				Z3986SmilFile smil = (Z3986SmilFile)f;
+				Z3986SmilFile smil = (Z3986SmilFile)f;				
 				customTestIDs.addAll(smil.getCustomTestIDs());				
 			}
 		}
