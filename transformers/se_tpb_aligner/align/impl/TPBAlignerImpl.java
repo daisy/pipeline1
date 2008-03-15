@@ -1,10 +1,27 @@
 package se_tpb_aligner.align.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.daisy.util.execution.Command;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.xml.Namespaces;
+import org.daisy.util.xml.SimpleNamespaceContext;
+import org.daisy.util.xml.SmilClock;
+import org.daisy.util.xml.XPathUtils;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.dom.Serializer;
+import org.daisy.util.xml.pool.LSParserPool;
+import org.w3c.dom.Attr;
+import org.w3c.dom.DOMConfiguration;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.ls.LSParser;
 
 import se_tpb_aligner.align.Aligner;
 import se_tpb_aligner.align.AlignerException;
@@ -60,7 +77,12 @@ public class TPBAlignerImpl extends Aligner {
             if(ret == -1) {
             	throw new AlignerException(exePath + " returned -1");
             }
-                            		
+                      
+            /*
+             * Post tweak timing of the XML output from the aligner
+             */
+            result = tweakTiming(result);
+            
 		} catch (Exception e) {
 			throw new AlignerException(e.getMessage(),e);
 		}		
@@ -68,6 +90,66 @@ public class TPBAlignerImpl extends Aligner {
 	}
 
 	
+	/**
+	 * Load the Aligner output and tweak SMIL times to be adjacent.
+	 * <p>Each clip start time is rewinded by a configurable value (default 30 ms).</p>
+	 * <p>Each clips end time is moved to 1 ms before the next clips start time.</p>
+	 * @throws CatalogExceptionNotRecoverable 
+	 * @throws CatalogExceptionNotRecoverable 
+	 * @throws IOException 
+	 * @throws IOException 
+	 */
+	private XMLResult tweakTiming(XMLResult result) throws CatalogExceptionNotRecoverable, IOException  {
+		
+		final long REWIND = 30;  //millis to subtract from clipBegin values	
+		
+		//load
+		Map<String,Object> domConfigMap = LSParserPool.getInstance().getDefaultPropertyMap(Boolean.FALSE);
+		domConfigMap.put("resource-resolver", CatalogEntityResolver.getInstance());
+		LSParser parser = LSParserPool.getInstance().acquire(domConfigMap);
+		DOMConfiguration domConfig = parser.getDomConfig();						
+		domConfig.setParameter("error-handler", this);
+		domConfig.setParameter("entities", Boolean.FALSE);						
+		Document doc = parser.parseURI(result.toURI().toString());
+		
+		//tweak
+		SimpleNamespaceContext snc = new SimpleNamespaceContext();
+		snc.declareNamespace("smil", Namespaces.SMIL_20_NS_URI);
+		NodeList nodes = XPathUtils.selectNodes(doc.getDocumentElement(), "//*[@smil:sync]", snc);
+		
+		for (int i = 0; i < nodes.getLength(); i++) {
+			Element e = (Element)nodes.item(i);
+			Attr beginAttr = e.getAttributeNode("clipBegin");
+			SmilClock newBeginClock = rewind(new SmilClock(beginAttr.getValue()),REWIND);
+			beginAttr.setNodeValue(newBeginClock.toString(SmilClock.FULL));
+			if(i>0) {
+				Element prev = (Element)nodes.item(i-1);
+				Attr endAttr = prev.getAttributeNode("clipEnd");
+				SmilClock newEndClock = new SmilClock(newBeginClock.millisecondsValue()-1);				
+				endAttr.setNodeValue(newEndClock.toString(SmilClock.FULL));
+			}
+		}
+				
+		//serialize
+		Map<String,Object> props = new HashMap<String,Object>();
+		props.put("namespaces", Boolean.FALSE); 					
+		props.put("error-handler", this);					
+		Serializer.serialize(doc, result, "utf-8", props);		
+		
+		LSParserPool.getInstance().release(parser, domConfigMap);			
+
+		return result;
+	}
+
+	/**
+	 * Create a SmilClock which represents inparam smilClock rewinded by second argument.
+	 */
+	private SmilClock rewind(SmilClock smilClock,long rewind) {
+		long initTime = smilClock.millisecondsValue();
+		if(initTime-rewind<0) return new SmilClock(0);
+		return new SmilClock(initTime-rewind);
+	}
+
 	@Override
 	public boolean supportsLanguage(String language) {
 		if(language.startsWith("sv")||language.startsWith("en")) {

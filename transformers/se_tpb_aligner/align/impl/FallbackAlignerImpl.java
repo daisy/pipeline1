@@ -8,6 +8,7 @@ import org.daisy.util.fileset.interfaces.audio.AudioFile;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.dom.Serializer;
 import org.daisy.util.xml.pool.LSParserPool;
 import org.w3c.dom.Attr;
@@ -31,6 +32,7 @@ import se_tpb_aligner.util.XMLSource;
  */
 public class FallbackAlignerImpl extends Aligner implements DOMErrorHandler {
 	private final String smilNSURI = "http://www.w3.org/2001/SMIL20/";
+	@SuppressWarnings("unchecked")
 	@Override
 	public XMLResult process(XMLSource inputXML, AudioSource inputAudioFile, String inputLanguage, XMLResult result) throws AlignerException {						
 		try {
@@ -40,6 +42,7 @@ public class FallbackAlignerImpl extends Aligner implements DOMErrorHandler {
 			SmilClock zero = new SmilClock(0);
 
 			Map domConfigMap = LSParserPool.getInstance().getDefaultPropertyMap(Boolean.FALSE);
+			domConfigMap.put("resource-resolver", CatalogEntityResolver.getInstance());
 			LSParser parser = LSParserPool.getInstance().acquire(domConfigMap);
 			DOMConfiguration domConfig = parser.getDomConfig();						
 			domConfig.setParameter("error-handler", this);
@@ -75,6 +78,8 @@ public class FallbackAlignerImpl extends Aligner implements DOMErrorHandler {
 			props.put("namespaces", Boolean.FALSE); 					
 			props.put("error-handler", this);					
 			Serializer.serialize(doc,  result, "utf-8",props);
+			
+			LSParserPool.getInstance().release(parser, domConfigMap);
 			
 		} catch (Exception e) {
 			throw new AlignerException(e.getMessage(),e);
