@@ -49,7 +49,9 @@
 					<xsl:apply-templates select="html:meta" />
 				</xsl:otherwise>
 			</xsl:choose>
-			<link rel="stylesheet" type="text/css" href="{$cssUri}"/>
+			<xsl:if test="$cssUri ne '[CSS]'">
+				<link rel="stylesheet" type="text/css" href="{$cssUri}"/>
+			</xsl:if>
 		</head>
 	</xsl:template>
 	

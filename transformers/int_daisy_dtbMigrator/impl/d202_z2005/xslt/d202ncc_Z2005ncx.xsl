@@ -34,7 +34,7 @@
 <xsl:param name="defaultStateFootnotes" as="xs:string" select="'true'" />		<!-- value for head/smilCustomTest/@defaultState -->
 <xsl:param name="defaultStateProdnotes" as="xs:string" select="'true'" /> 		<!-- value for head/smilCustomTest/@defaultState -->
 <xsl:param name="nccFolder" as="xs:string" select="'[path]'" /> 				<!-- path to D202 DTB folder -->
-<xsl:param name="addNavLabelAudio" as="xs:string" select="'true'" /> 			<!-- add audio element to NavLabel elements -->
+<xsl:param name="addNavLabelAudio" as="xs:string" select="'false'" /> 			<!-- add audio element to NavLabel elements -->
 <xsl:param name="minNavLabelAudioLength" as="xs:integer" select="1000" /> 		<!-- minimum length for audio clips in NavLabel elements -->
 
 <xsl:variable name="dtbFolder" as="xs:string" select="translate($nccFolder,'\','/')" />
