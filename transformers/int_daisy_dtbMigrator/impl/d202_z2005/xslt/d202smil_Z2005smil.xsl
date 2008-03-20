@@ -48,9 +48,9 @@
 	<xsl:param name="defaultStateSidebars" as="xs:string" select="'true'" /> 		<!-- value for head/customAttributes/customTest/@defaultState -->
 	<xsl:param name="defaultStateFootnotes" as="xs:string" select="'true'" />		<!-- value for head/customAttributes/customTest/@defaultState -->
 	<xsl:param name="defaultStateProdnotes" as="xs:string" select="'true'" /> 		<!-- value for head/customAttributes/customTest/@defaultState -->
-	<xsl:param name="NCCPointsToPar" as="xs:string" select="'false'" /> 			<!-- used for proper @id handling for par's -->
+	<xsl:param name="NCCPointsToPars" as="xs:string" select="'false'" /> 			<!-- used for proper @id handling for par's -->
 
-<xsl:variable name="NCCPtoP" as="xs:boolean" select="matches($NCCPointsToPar,'true','i')" />
+<xsl:variable name="NCCPtoP" as="xs:boolean" select="matches($NCCPointsToPars,'true','i')" />
 
 <xsl:template match="smil">
 	<smil>
@@ -64,7 +64,7 @@
 		<meta name="dtb:uid" content="{$uid}" />
 		<meta name="dtb:totalElapsedTime" content="{$totalElapsedTime}" />
 		<meta name="dtb:generator" content="DAISY Pipeline" />
-		<meta name="NCCPointsToPar" content="{$NCCPointsToPar}" />
+		<meta name="NCCPointsToPar" content="{$NCCPointsToPars}" />
 		<meta name="NCCPtoP" content="{$NCCPtoP}" />
 		<!-- psps: Added customAttributes -->
 		<xsl:if test="//par/@system-required">

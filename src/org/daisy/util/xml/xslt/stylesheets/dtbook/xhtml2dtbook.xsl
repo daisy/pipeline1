@@ -4,7 +4,8 @@
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	xmlns="http://www.daisy.org/z3986/2005/dtbook/"
 	xmlns:html="http://www.w3.org/1999/xhtml"
-	exclude-result-prefixes="xs html">
+	xmlns:pfunc="http://daisymfc.sf.net/xslt/function"
+	exclude-result-prefixes="xs html pfunc">
 	
 
 	<xsl:output method="xml" 
@@ -17,6 +18,10 @@
 	<xsl:param name="uid" as="xs:string" select="'[UID]'" />					<!-- uid of publication -->
 	<xsl:param name="title" as="xs:string" select="'[DTB_TITLE]'" />			<!-- title of publication -->
 	<xsl:param name="cssUri" as="xs:string" select="'[CSS]'" />					<!-- URI to CSS of publication -->
+	<xsl:param name="nccFolder" as="xs:string" select="'[path]'" /> 			<!-- path to D202 DTB folder -->
+	<xsl:param name="transferDcMetadata" as="xs:string" select="'true'" /> 		<!-- transfer dc:* metadata from ncc file -->
+
+	<xsl:variable name="dtbFolder" as="xs:string" select="translate($nccFolder,'\','/')" />
 	
 	
 	<xsl:variable name="smil" as="xs:string" select="'.smil#'" />
@@ -32,17 +37,51 @@
 			<meta name="dtb:uid" content="{$uid}" />
 			<meta name="dtb:title" content="{$title}" />
 			<meta name="dc:Title" content="{$title}" />
-			<xsl:apply-templates select="html:meta" />
-<!-- psps20080311: css given as param, so no need to take it from XHTML document
-			<xsl:apply-templates select="html:link[@rel='stylesheet']" /> -->
+			<meta name="nccFolder" content="{$nccFolder}" />
+			<meta name="transferDcMetadata" content="{$transferDcMetadata}" />
+			<xsl:choose>
+				<xsl:when test="matches($transferDcMetadata,'true','i') and doc-available(concat($dtbFolder,'/ncc.html'))">
+					<!-- If requested, and if ncc.html can be found, transfer dc:* metadata (not dc:title, handled above) from ncc.html -->
+					<xsl:apply-templates select="doc(concat($dtbFolder,'/ncc.html'))//html:head/html:meta[starts-with(@name,'dc:') and @name ne 'dc:title']" mode="metadata-from-ncc"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<!-- If not requested, or ncc.html not found, use whatever is in the XHTML  -->
+					<xsl:apply-templates select="html:meta" />
+				</xsl:otherwise>
+			</xsl:choose>
 			<link rel="stylesheet" type="text/css" href="{$cssUri}"/>
 		</head>
 	</xsl:template>
 	
-	<xsl:template match="html:meta">
+	<xsl:template match="html:meta[@name]">
+		<meta>
+			<xsl:attribute name="name">
+				<xsl:choose>
+					<xsl:when test="matches(@name,'^dc:(creator|subject|description|publisher|contributor|date|type|format|identifier|source|language|relation|coverage|rights)$','i')">
+						<xsl:value-of select="concat('dc:',pfunc:initialCaps(substring-after(@name,'dc:')))" />
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="@name" />
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:copy-of select="@content, @scheme" />
+		</meta>
+	</xsl:template>
+
+	<xsl:template match="html:meta[not(@name)]">
 		<meta>
 			<xsl:copy-of select="@name, @content, @scheme" />
 		</meta>
+	</xsl:template>
+
+	<xsl:template match="html:meta" mode="metadata-from-ncc">
+		<xsl:if test="matches(@name,'^dc:(creator|subject|description|publisher|contributor|date|type|format|identifier|source|language|relation|coverage|rights)$','i')">
+			<meta>
+				<xsl:attribute name="name" select="concat('dc:',pfunc:initialCaps(substring-after(@name,'dc:')))" />
+				<xsl:copy-of select="@content, @scheme" />
+			</meta>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="html:link">
@@ -389,4 +428,24 @@
 			
 		<xsl:apply-templates />
 	</xsl:template>
+	
+	<xsl:function name="pfunc:initialCaps" as="xs:string">
+		<!-- Return a given string with the first letter capitalized. If input empty, return empty -->
+		<xsl:param name="string" as="xs:string" />
+		<xsl:choose>
+			<xsl:when test="boolean($string)"> <!-- Test if it's an empty string -->
+				<xsl:value-of select="string-join(
+					(
+						upper-case(substring($string,1,1)), 
+						substring($string,2)
+					),
+					''
+					)
+					" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$string" />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:function>
 </xsl:stylesheet>

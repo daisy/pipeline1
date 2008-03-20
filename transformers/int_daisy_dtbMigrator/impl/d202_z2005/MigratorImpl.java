@@ -170,7 +170,6 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 			 */
 			createZedNcx((D202NccFile)inputFileset.getManifestMember(),inputProperties,parameters);
 		
-			System.err.println("isNccOnly: "+ inputProperties.isNccOnly());
 			/*
 			 * Create dtbook from the input xhtml
 			 */
@@ -329,7 +328,12 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 				
 		// A user preference: whether to add audio elements to navLabel by opening the reffed smil and get the closest audio
 		parameters.put("addNavLabelAudio", (String)params.get("ncxAddNavLabelAudio"));
-				
+		// A user preference: the minimum length (in millisec) for audioclips used in NavLabel elements
+		parameters.put("minNavLabelAudioLength", (String)params.get("ncxMinNavLabelAudioLength"));
+		
+		// The location of the ncc folder, assumed in the style sheet to also be the location of the SMIL files. A bit risky?
+		parameters.put("nccFolder",ncc.getFile().getParent());
+		
 		Stylesheet.apply(ncc.getFile().getAbsolutePath(), xsltURL, ncxOut.getAbsolutePath(), 
 				TransformerFactoryConstants.SAXON8, parameters, CatalogEntityResolver.getInstance());
 		
@@ -493,6 +497,11 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 				parameters.put("uid", properties.getIdentifier());
 				parameters.put("title", properties.getTitle());
 				parameters.put("cssUri", cssUri); 
+				// A user preference: shall meta data be transfered from the ncc file to the DTBook
+				parameters.put("transferDcMetadata", (String)params.get("dtbookTransferNCCMetadata"));
+				
+				// The location of the ncc file (assuming that it is the same folder as the content doc. Risky?)
+				parameters.put("nccFolder",ff.getFile().getParent());
 				
 				Stylesheet.apply(ff.getFile().getAbsolutePath(), xsltURL, dtbookOut.getAbsolutePath(), 
 						TransformerFactoryConstants.SAXON8, parameters, CatalogEntityResolver.getInstance());
