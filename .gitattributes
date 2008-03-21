@@ -102,6 +102,7 @@ doc/scripts/RtfToXhtml.html -text
 doc/scripts/UnicodeNormalizer.html -text
 doc/scripts/WordMLToXhtml.html -text
 doc/scripts/WordMLtoDTBook.html -text
+doc/scripts/Xhtml2Dtbook.html -text svneol=unset#text/plain
 doc/scripts/Z3986DTBValidator.html -text
 doc/scripts/dtbook2005-1To2005-2.html -text
 doc/summary.html -text
