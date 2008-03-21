@@ -19,7 +19,7 @@
 	<xsl:param name="title" as="xs:string" select="'[DTB_TITLE]'" />			<!-- title of publication -->
 	<xsl:param name="cssUri" as="xs:string" select="'[CSS]'" />					<!-- URI to CSS of publication -->
 	<xsl:param name="nccFolder" as="xs:string" select="'[path]'" /> 			<!-- path to D202 DTB folder -->
-	<xsl:param name="transferDcMetadata" as="xs:string" select="'true'" /> 		<!-- transfer dc:* metadata from ncc file -->
+	<xsl:param name="transferDcMetadata" as="xs:string" select="'false'" /> 	<!-- transfer dc:* metadata from ncc file -->
 
 	<xsl:variable name="dtbFolder" as="xs:string" select="translate($nccFolder,'\','/')" />
 	
@@ -37,10 +37,12 @@
 			<meta name="dtb:uid" content="{$uid}" />
 			<meta name="dtb:title" content="{$title}" />
 			<meta name="dc:Title" content="{$title}" />
-			<meta name="nccFolder" content="{$nccFolder}" />
 			<meta name="transferDcMetadata" content="{$transferDcMetadata}" />
 			<xsl:choose>
-				<xsl:when test="matches($transferDcMetadata,'true','i') and doc-available(concat($dtbFolder,'/ncc.html'))">
+				<xsl:when test="
+						matches($transferDcMetadata,'true','i') 
+						and doc-available(concat($dtbFolder,'/ncc.html'))
+						and $nccFolder ne '[path]'">
 					<!-- If requested, and if ncc.html can be found, transfer dc:* metadata (not dc:title, handled above) from ncc.html -->
 					<xsl:apply-templates select="doc(concat($dtbFolder,'/ncc.html'))//html:head/html:meta[starts-with(@name,'dc:') and @name ne 'dc:title']" mode="metadata-from-ncc"/>
 				</xsl:when>
