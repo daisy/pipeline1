@@ -149,6 +149,7 @@ lib/epubcheck.jar -text
 lib/icu4j-3_8.jar -text
 lib/icu4j-charsets-3_8.jar -text
 lib/jaudiotagger.jar -text
+lib/jing-saxon8-patch.jar -text
 lib/jl1.0.jar -text
 lib/log4j-1.2.15.jar -text
 lib/onvdl.jar -text
