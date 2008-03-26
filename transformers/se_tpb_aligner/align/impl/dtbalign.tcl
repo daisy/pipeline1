@@ -262,6 +262,7 @@ if {$beQuick == 0} {
 if {$lang == "sv"} {
  set lang "se"
 }
+
 if {$doTimeTags} {
  set beQuick 1
  if {$backtrack == -1} {
@@ -269,7 +270,7 @@ if {$doTimeTags} {
   #set backtrack 6000 ; # fungerar för engelsk bok och svenska HMM:er
  }
  if {$useHMMset == ""} {
-  if {$lang == "se"} {
+  if {$lang == "se" || $lang == "nob"} {
    set useHMMset "1025_8mix"
   } else {
    set useHMMset "t1016"
@@ -289,6 +290,8 @@ if {$lang == "se"} {
  # 070621
  lts::init $lang all.tree tpblex.except
  source lexica.tcl
+} elseif {$lang == "nob"} {
+ lts::init $lang norkompleks.tree norkompleks.except
 } else {
  set lang us
  #lts::init $lang cmu.tree cmu.except
@@ -366,7 +369,10 @@ proc EStart {name attlist args} {
   }
   foreach {attr val} $attlist {
    if {$attr == "ssml:ph"} {
-    set ::lastSSMLTran [lts::syn2rec $val]
+    regsub {\{} $val ä val
+    regsub {\}} $val å val
+    regsub {%} $val "" val ; # fulhack
+    set ::lastSSMLTran [lindex [lts::syn2rec [list $val]] 0]
     set ::lastSSMLElem $name
    }
    if {$attr == "ssml:alias"} {
@@ -696,8 +702,60 @@ proc TextNorm {text isLastChunk} {
 set allowedHmmNames [list RS RT RL RN RD TJ SJ NG Ö3 Ö4 Ä3 Ä4 A: I: E: O: U: Y: Å: Ä: Ö: A0 E0 F V S H M N R L J E A I O U Y Å Ä Ö P B T D K G p t k b d g sil]
 
 proc tpa2hmm {inTrans} {
+ #puts [info level 0]
  set trans $inTrans
- if {$::lang == "se"} {
+ if {$::lang == "se" || $::lang == "nob"} {
+  if 1 {
+  # hack to use Swedish models with Norwegian SAMPA phones, done via tpa
+   set trans ",$trans,"
+   regsub {,äi,}   $trans {;e;} trans
+   regsub {,2y,}   $trans {;ö;} trans
+   regsub {,Aå,}   $trans {;eu;} trans
+   regsub {,Ai,}   $trans {;a;} trans
+   regsub {,åi,}   $trans {;u;} trans
+   regsub {,ui,}   $trans {;o;} trans
+   regsub {,Au,}   $trans {;au;} trans
+   regsub {,i,}   $trans {;i;} trans
+   regsub {,e,}   $trans {;e;} trans
+   regsub {,ä,}   $trans {;ä3;} trans
+   regsub {,A,}   $trans {;a;} trans
+   regsub {,y,}   $trans {;y;} trans
+   regsub {,2,}   $trans {;ö;} trans
+   regsub {,2:,}   $trans {;ö:;} trans
+   regsub {,å,}   $trans {;u;} trans
+   regsub {,O,}   $trans {;å;} trans
+   regsub {,u,}   $trans {;o;} trans
+   regsub {,@,}   $trans {;ë;} trans
+   regsub {,n_=,}   $trans {;n;} trans
+   regsub {,rn_=,}   $trans {;rn;} trans
+   regsub {,dz,}   $trans {;j3;} trans
+   regsub {,rt,}   $trans {;rt;} trans
+   regsub {,rd,}   $trans {;rd;} trans
+   regsub {,rl,}   $trans {;rl;} trans
+   regsub {,rn,}   $trans {;rn;} trans
+   regsub {,rL,}   $trans {;rl;} trans
+   regsub {,r-d,}   $trans {;r;} trans
+   regsub {,p,}   $trans {;p;} trans
+   regsub {,b,}   $trans {;b;} trans
+   regsub {,t,}   $trans {;t;} trans
+   regsub {,d,}   $trans {;d;} trans
+   regsub {,k,}   $trans {;k;} trans
+   regsub {,g,}   $trans {;g;} trans
+   regsub {,f,}   $trans {;f;} trans
+   regsub {,v,}   $trans {;v;} trans
+   regsub {,s,}   $trans {;,s;} trans
+   regsub {,S,}   $trans {;,rs;} trans
+   regsub {,C,}   $trans {;,tj;} trans
+   regsub {,j,}   $trans {;,j;} trans
+   regsub {,h,}   $trans {;,h;} trans
+   regsub {,m,}   $trans {;,m;} trans
+   regsub {,n,}   $trans {;,n;} trans
+   regsub {,N,}   $trans {;ng;} trans
+   regsub {,l,}   $trans {;l;} trans
+   regsub {,r,}   $trans {;r;} trans
+  }
+  regsub -all {,} $trans {} trans
+  regsub -all {;} $trans {} trans
   regsub {e\.} $trans "E:" trans
   
   regsub {sil} $trans "SIL"  trans
@@ -827,53 +885,53 @@ proc tpa2hmm {inTrans} {
   if {[lsearch $::allowedHmmNames $trans] == -1} { set trans "" ; puts "Disallowing: $inTrans -> $trans" }
  } else {
   if 0 {
-  # hack to use Swedish models, comment out soon
-  regsub {er1} $trans {E0} trans
-  regsub {er2} $trans {R} trans
-  regsub {dh}  $trans {J} trans
-  regsub {jh1} $trans {D} trans
-  regsub {jh2} $trans {d} trans
-  regsub {jh3} $trans {J} trans
-  regsub {th}  $trans {F} trans
-  regsub {ch}  $trans {TJ} trans
-  regsub {sh}  $trans {RS} trans
-  regsub {zh}  $trans {RS} trans
-  regsub {s}   $trans {S} trans
-  regsub {pcl} $trans {P} trans
-  regsub {tcl} $trans {T} trans
-  regsub {kcl} $trans {K} trans
-  regsub {bcl} $trans {B} trans
-  regsub {dcl} $trans {D} trans
-  regsub {gcl} $trans {G} trans
-  regsub {r}   $trans {R} trans
-  regsub {z}   $trans {S} trans
-  regsub {l}   $trans {L} trans
-  regsub {v}   $trans {V} trans
-  regsub {uw}  $trans {U:} trans
-  regsub {uh}  $trans {U} trans
-  regsub {ng}  $trans {NG} trans
-  regsub {n}   $trans {N} trans
-  regsub {m}   $trans {M} trans
-  regsub {f}   $trans {F} trans
-  regsub {iy}  $trans {I} trans
-  regsub {ae}  $trans {Ä} trans
-  regsub {ao}  $trans {Å} trans
-  regsub {ow}  $trans {O:} trans
-  regsub {oy1} $trans {Å} trans
-  regsub {oy2} $trans {J} trans
-  regsub {aw}  $trans {Å:} trans
-  regsub {w}   $trans {O:} trans
-  regsub {ah}  $trans {A} trans
-  regsub {eh}  $trans {A} trans
-  regsub {ey1} $trans {Ä} trans
-  regsub {ey2} $trans {J} trans
-  regsub {ay1} $trans {A} trans
-  regsub {ay2} $trans {J} trans
-  regsub {aa}  $trans {A} trans
-  regsub {ih}  $trans {I} trans
-  regsub {hh}  $trans {H} trans
-  regsub {y}   $trans {J} trans
- }
+   # hack to use Swedish models with CMU phones, comment out soon
+   regsub {er1} $trans {E0} trans
+   regsub {er2} $trans {R} trans
+   regsub {dh}  $trans {J} trans
+   regsub {jh1} $trans {D} trans
+   regsub {jh2} $trans {d} trans
+   regsub {jh3} $trans {J} trans
+   regsub {th}  $trans {F} trans
+   regsub {ch}  $trans {TJ} trans
+   regsub {sh}  $trans {RS} trans
+   regsub {zh}  $trans {RS} trans
+   regsub {s}   $trans {S} trans
+   regsub {pcl} $trans {P} trans
+   regsub {tcl} $trans {T} trans
+   regsub {kcl} $trans {K} trans
+   regsub {bcl} $trans {B} trans
+   regsub {dcl} $trans {D} trans
+   regsub {gcl} $trans {G} trans
+   regsub {r}   $trans {R} trans
+   regsub {z}   $trans {S} trans
+   regsub {l}   $trans {L} trans
+   regsub {v}   $trans {V} trans
+   regsub {uw}  $trans {U:} trans
+   regsub {uh}  $trans {U} trans
+   regsub {ng}  $trans {NG} trans
+   regsub {n}   $trans {N} trans
+   regsub {m}   $trans {M} trans
+   regsub {f}   $trans {F} trans
+   regsub {iy}  $trans {I} trans
+   regsub {ae}  $trans {Ä} trans
+   regsub {ao}  $trans {Å} trans
+   regsub {ow}  $trans {O:} trans
+   regsub {oy1} $trans {Å} trans
+   regsub {oy2} $trans {J} trans
+   regsub {aw}  $trans {Å:} trans
+   regsub {w}   $trans {O:} trans
+   regsub {ah}  $trans {A} trans
+   regsub {eh}  $trans {A} trans
+   regsub {ey1} $trans {Ä} trans
+   regsub {ey2} $trans {J} trans
+   regsub {ay1} $trans {A} trans
+   regsub {ay2} $trans {J} trans
+   regsub {aa}  $trans {A} trans
+   regsub {ih}  $trans {I} trans
+   regsub {hh}  $trans {H} trans
+   regsub {y}   $trans {J} trans
+  }
  }
  return $trans
 }
@@ -1675,7 +1733,7 @@ foreach file $files {
      memory validate on
      #memory trace on
     }
-    foreach run {try1 try2 try3} {
+    foreach run {try1 try2 try3 try4 try5} {
      if {[catch {set res [param an $phonelist $arclist $hset \
 			      -start [expr int($starttime/$framelen+.5)] \
 			      -end [expr int($endtime/$framelen+.5)] \
@@ -1684,7 +1742,7 @@ foreach file $files {
 			      -prunewindow $prunew \
 			      -backtrack $backtrack]} err]} {
       set prunew [expr 2 * $prunew]
-      if {$run == "try3"} { exit -1 }
+      if {$run == "try5"} { exit -1 }
       puts stderr "$err \nretrying using -prunew $prunew"
      } else {
       break

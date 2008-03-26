@@ -152,7 +152,7 @@ public class TPBAlignerImpl extends Aligner {
 
 	@Override
 	public boolean supportsLanguage(String language) {
-		if(language.startsWith("sv")||language.startsWith("en")) {
+		if(language.startsWith("sv")||language.startsWith("en")||language.startsWith("nob")) {
 			return true;
 		}
 		return false;

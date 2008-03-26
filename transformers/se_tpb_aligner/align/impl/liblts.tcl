@@ -43,10 +43,13 @@ proc lts::init {language treeFile exceptionFile} {
  
  variable lang
  set lang $language
- if {$lang != "se" && $lang != "us" && $lang != "en"} {
+ if {$lang != "se" && $lang != "us" && $lang != "en" && $lang != "rp" && $lang != "nob"} {
   error "Unsupported language: $lang"
  }
- 
+ # ta bor
+ #puts stderr "BAD stuff"
+ #if {$lang == "nob"} { set lang se }
+
  if 0 { 
   set lts(se,sagomaskin) [list S A: G O M A SJ I: N]
   set ltss(se,sagomaskin) [list -1 1 7]
@@ -450,7 +453,7 @@ proc lts::addStressMarkers {trans stress} {
  variable lang
  
  # Panic fix for the case where no main stress was assigned
- if {[lindex $stress 0] == -1 && [lindex $stress 1] == -1} {
+ if {$lang != "rp" && [lindex $stress 0] == -1 && [lindex $stress 1] == -1} {
   set stress [list -1 0 [lindex $stress 2]]
  }
  # Can not have both accent I and accent II
@@ -459,7 +462,8 @@ proc lts::addStressMarkers {trans stress} {
   set stress [list [lindex $stress 0] -1 -1]
  }
  # Can not have both accent I and secondary stress
- if {$stress != "" && [lindex $stress 0] != -1 && [lindex $stress 2] != -1} {
+ if {$lang != "rp" && $stress != "" && \
+	 [lindex $stress 0] != -1 && [lindex $stress 2] != -1} {
   set stress [list [lindex $stress 0] -1 -1]
  }
 
@@ -1260,6 +1264,9 @@ proc lts::transcribe {args} {
  regsub -all {\(|\)|\#|\.|\,|\?|\!|\;|\"|\:|\\|/} $word "" word
  # test 070626
  #regsub -all {\(|\)|\#|\.|\,|\?|\!|\;|\"|\\|/} $word "" word
+
+ # 080204, temporary solution for Norwegian
+ set word [string map {ø ö æ ä \u0152 Ö \uc6 Ä} $word]
 
  if {[string match lts::transcribe* [info level 0]]} {
   set compound 0
@@ -2160,7 +2167,11 @@ proc lts::syn2rec {list} {
  lappend res $str
  }
  regsub -all {\s\-|\s\_} $res "" res 
- 
+
+ return $res
+
+ # where was the code below used, seems insane, from a mulpron perspective
+
  #puts A,$res
  set res2 {}
  foreach e1 $res {
