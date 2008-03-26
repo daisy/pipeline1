@@ -126,6 +126,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
 		String paramProdnote = (String)parameters.remove("prodnote");
 		String paramNote = (String)parameters.remove("note");
 		String paramBackupPrefix = (String)parameters.remove("backupPrefix");
+		String paramCopyNonFilesetFiles = (String)parameters.remove("copyNonFilesetFiles");
 		
 		if (paramBackupPrefix != null && !"".equals(paramBackupPrefix)) {
         	backupDir = paramBackupPrefix + new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
@@ -177,6 +178,12 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
                 
                 // Tweak the book
                 tweakBook(manifest, new EFolder(bookOutputDir));
+            }
+            
+            // Copy files not in the fileset (i.e. copy everything but don't overwrite anything)?
+            if ("true".equals(paramCopyNonFilesetFiles)) {
+            	EFolder inputDir = new EFolder(input.getParentFile());
+            	inputDir.copyChildrenTo(outputDir, false);
             }
             
 		} catch (IOException e) {			
@@ -481,6 +488,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
             }
             this.checkAbort();
         }
+        
         this.progress(1.00);
         this.checkAbort();
     }

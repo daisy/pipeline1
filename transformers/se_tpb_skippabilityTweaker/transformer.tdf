@@ -71,6 +71,17 @@
 			<example>backup_</example>			
 			<default></default>
 		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>copyNonFilesetFiles</name>
+			<description>Copy files and directories not in the fileset</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>			
+			<default>false</default>
+		</parameter>
 				
 	</parameters>	
 
