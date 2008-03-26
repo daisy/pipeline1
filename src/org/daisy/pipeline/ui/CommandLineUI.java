@@ -213,6 +213,9 @@ public class CommandLineUI implements InputListener, BusListener {
             // Execute script
             dmfc.execute(job);
 
+            // Exit successfully
+            System.exit(0);
+            
         } catch (DMFCConfigurationException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {
@@ -227,6 +230,9 @@ public class CommandLineUI implements InputListener, BusListener {
             EventBus.getInstance().unsubscribe(ui, MessageEvent.class);
             EventBus.getInstance().unsubscribe(ui, StateChangeEvent.class);
         }
+        
+        // We end up here if an exception occurred.  
+        System.exit(1);
     }
 
     public void received(EventObject event) {
