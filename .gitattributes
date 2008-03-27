@@ -913,6 +913,7 @@ transformers/se_tpb_imageConverter/transformer.tdf -text
 transformers/se_tpb_skippabilityTweaker/ContentDocSearcher.java -text
 transformers/se_tpb_skippabilityTweaker/ContentDocSkippableItemFinder.java -text
 transformers/se_tpb_skippabilityTweaker/ContentDocSmilRepointer.java -text
+transformers/se_tpb_skippabilityTweaker/DiscInfoNccFinder.java -text
 transformers/se_tpb_skippabilityTweaker/FileAndFragment.java -text
 transformers/se_tpb_skippabilityTweaker/InternalSubsetAndMetaFilter.java -text
 transformers/se_tpb_skippabilityTweaker/NccItem.java -text

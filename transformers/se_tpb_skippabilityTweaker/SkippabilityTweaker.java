@@ -151,14 +151,11 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
             	if (input.getName().toLowerCase().matches("discinfo\\.html?")) {
             		FileUtils.copy(input, new File(outputDir, input.getName()));
             	}
-                // If the input is a multi book volume, we need to tweak each sub book
-                Collection<File> inputFiles = ManifestFinder.getManifests(true, new EFolder(input.getParentFile()));
-                for (File file : inputFiles) {
-                    FilesetFile manifest = FilesetFileFactory.newInstance().newFilesetFile(file);
-                    if("D202NccFileImpl".equals((manifest.getClass().getSimpleName()))) {
-                        manifests.add(manifest.getFile());
-                    }
-                }
+            	
+            	// If the input is a multi book volume, we need to tweak each sub book
+            	DiscInfoNccFinder discInfoNccFinder = new DiscInfoNccFinder(staxInPool, staxInProperties);
+            	List<File> nccFiles = discInfoNccFinder.getNccFilesFromDiscInfo(input);
+            	manifests.addAll(nccFiles);
             }
             
             // Iterate over each book
