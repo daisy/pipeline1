@@ -18,6 +18,8 @@ import org.daisy.util.xml.dom.Serializer;
 import org.daisy.util.xml.pool.LSParserPool;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMConfiguration;
+import org.w3c.dom.DOMError;
+import org.w3c.dom.DOMErrorHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -34,7 +36,7 @@ import se_tpb_aligner.util.XMLSource;
  * <p>Location of the binary executable is done through the System property "pipeline.aligner.tpbaligner.path".</p>
  * @author Markus Gylling
  */
-public class TPBAlignerImpl extends Aligner {
+public class TPBAlignerImpl extends Aligner implements DOMErrorHandler {
 	
 	private String exePath = null;
 	
@@ -119,12 +121,12 @@ public class TPBAlignerImpl extends Aligner {
 		
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Element e = (Element)nodes.item(i);
-			Attr beginAttr = e.getAttributeNode("clipBegin");
+			Attr beginAttr = e.getAttributeNodeNS(Namespaces.SMIL_20_NS_URI,"clipBegin");
 			SmilClock newBeginClock = rewind(new SmilClock(beginAttr.getValue()),REWIND);
 			beginAttr.setNodeValue(newBeginClock.toString(SmilClock.FULL));
 			if(i>0) {
 				Element prev = (Element)nodes.item(i-1);
-				Attr endAttr = prev.getAttributeNode("clipEnd");
+				Attr endAttr = prev.getAttributeNodeNS(Namespaces.SMIL_20_NS_URI,"clipEnd");
 				SmilClock newEndClock = new SmilClock(newBeginClock.millisecondsValue()-1);				
 				endAttr.setNodeValue(newEndClock.toString(SmilClock.FULL));
 			}
@@ -144,17 +146,28 @@ public class TPBAlignerImpl extends Aligner {
 	/**
 	 * Create a SmilClock which represents inparam smilClock rewinded by second argument.
 	 */
-	private SmilClock rewind(SmilClock smilClock,long rewind) {
-		long initTime = smilClock.millisecondsValue();
-		if(initTime-rewind<0) return new SmilClock(0);
-		return new SmilClock(initTime-rewind);
+	private SmilClock rewind(SmilClock smilClock,long rewind) {		
+		long sum = smilClock.millisecondsValue()-rewind;
+		return sum<0 ? new SmilClock(0) : new SmilClock(sum);
 	}
 
 	@Override
 	public boolean supportsLanguage(String language) {
-		if(language.startsWith("sv")||language.startsWith("en")||language.startsWith("nob")) {
+		if(language.startsWith("sv")||language.startsWith("en")) {
 			return true;
 		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.w3c.dom.DOMErrorHandler#handleError(org.w3c.dom.DOMError)
+	 */
+	public boolean handleError(DOMError error) {
+		System.err.println(error.getMessage());
+		if(error.getSeverity() == error.SEVERITY_WARNING) {
+			return true;
+		}		
 		return false;
 	}
 	
