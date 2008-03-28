@@ -21,10 +21,6 @@ public interface PreferencesKeys {
 	public static final String PATH_TO_LAME = "PATH_TO_LAME"; //$NON-NLS-1$
 	/** The preference holding the default path to lame */
 	public static final String PATH_TO_LAME_DEFAULT = "/path/to/lame.exe"; //$NON-NLS-1$
-	/** The preference holding the path to python */
-	public static final String PATH_TO_PYTHON = "PATH_TO_PYTHON"; //$NON-NLS-1$
-	/** The preference holding the default path to python */
-	public static final String PATH_TO_PYTHON_DEFAULT = "/path/to/python.exe"; //$NON-NLS-1$
 	/** The preference holding the path to sox */
 	public static final String PATH_TO_SOX = "PATH_TO_SOX"; //$NON-NLS-1$
 	/** The preference holding the default path to sox */

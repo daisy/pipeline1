@@ -88,9 +88,6 @@ public final class PipelineUtil {
 		properties.setProperty(PATH_TO_LAME_PROP, PreferencesUtil.get(
 				PreferencesKeys.PATH_TO_LAME,
 				PreferencesKeys.PATH_TO_LAME_DEFAULT));
-		properties.setProperty(PATH_TO_PYTHON_PROP, PreferencesUtil.get(
-				PreferencesKeys.PATH_TO_PYTHON,
-				PreferencesKeys.PATH_TO_PYTHON_DEFAULT));
 		properties.setProperty(PATH_TO_SOX_PROP, PreferencesUtil.get(
 				PreferencesKeys.PATH_TO_SOX,
 				PreferencesKeys.PATH_TO_SOX_DEFAULT));

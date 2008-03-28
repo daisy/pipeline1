@@ -3,6 +3,7 @@ package org.daisy.pipeline.gui;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IScopeContext;
@@ -71,7 +72,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	private void initLinuxDefaults() {
 		setPrefPath(PreferencesKeys.PATH_TO_IMAGEMAGICK, "/usr/bin/imagemagick");//$NON-NLS-1$
 		setPrefPath(PreferencesKeys.PATH_TO_LAME, "/usr/bin/lame");//$NON-NLS-1$
-		setPrefPath(PreferencesKeys.PATH_TO_PYTHON, "/usr/bin/python");//$NON-NLS-1$
 	}
 
 	/**
@@ -81,7 +81,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		setPrefPath(PreferencesKeys.PATH_TO_IMAGEMAGICK,
 				"/usr/local/bin/convert");//$NON-NLS-1$
 		setPrefPath(PreferencesKeys.PATH_TO_LAME, "/usr/local/bin/lame");//$NON-NLS-1$
-		setPrefPath(PreferencesKeys.PATH_TO_PYTHON, "/usr/bin/python");//$NON-NLS-1$
 		setPrefPath(PreferencesKeys.PATH_TO_SOX, "/usr/local/bin/sox");//$NON-NLS-1$
 	}
 
@@ -91,8 +90,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	private void initWindowsDefaults() {
 		setPrefPath(PreferencesKeys.PATH_TO_IMAGEMAGICK,
 				"C:\\Program Files\\ImageMagick-6.3.5-Q16\\convert.exe");//$NON-NLS-1$
-		setPrefPath(PreferencesKeys.PATH_TO_LAME, "C:\\lame\\lame.exe");//$NON-NLS-1$
-		setPrefPath(PreferencesKeys.PATH_TO_PYTHON, "C:\\Python25\\python.exe");//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_LAME, (new File(Platform
+				.getInstallLocation().getURL().getPath()
+				+ "/lame.exe")).getPath());
 	}
 
 	/**

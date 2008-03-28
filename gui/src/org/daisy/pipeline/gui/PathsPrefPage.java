@@ -77,21 +77,13 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
 		lameEditor.getTextControl(parent).setToolTipText(
 				Messages.pref_lamePath_tooltip);
 		addField(lameEditor);
-		// Python Path
-		parent = getFieldEditorParent();
-		FileFieldEditor pythonEditor = new FileFieldEditor(
-				PreferencesKeys.PATH_TO_PYTHON, Messages.pref_pythonPath_label,
-				parent);
-		pythonEditor.getTextControl(parent).setToolTipText(
-				Messages.pref_pythonPath_tooltip);
-		addField(pythonEditor);
 		// SoX Path (Mac OS X only)
 		if (System.getProperty("os.name").startsWith("Mac OS X")) { //$NON-NLS-1$ //$NON-NLS-2$
 			parent = getFieldEditorParent();
 			FileFieldEditor soxEditor = new FileFieldEditor(
 					PreferencesKeys.PATH_TO_SOX, Messages.pref_soxPath_label,
 					parent);
-			pythonEditor.getTextControl(parent).setToolTipText(
+			soxEditor.getTextControl(parent).setToolTipText(
 					Messages.pref_soxPath_tooltip);
 			addField(soxEditor);
 		}
@@ -164,7 +156,7 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
 
 	/**
 	 * Sets the <code>mustReloadCore</code> flag to <code>true</code> if the
-	 * python or lame paths changed (these properties are used at transformer
+	 * lame path changed (these properties are used at transformer
 	 * initialization)
 	 */
 	@Override
@@ -174,11 +166,9 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
 			FieldEditor field = (FieldEditor) event.getSource();
 			String prefName = field.getPreferenceName();
 			if ((prefName != null)
-					&& (prefName.equals(PreferencesKeys.PATH_TO_LAME) || prefName
-							.equals(PreferencesKeys.PATH_TO_PYTHON))) {
+					&& (prefName.equals(PreferencesKeys.PATH_TO_LAME))) {
 				mustReloadCore = true;
 			}
 		}
 	}
-
 }
