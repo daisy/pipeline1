@@ -19,12 +19,12 @@
 			<name>dtbook</name>			
 			<description>Output DTBook 2005 file</description>
 			<example>file:///path/to/file.xml</example>
-		</parameter>		
-		
-		<parameter type="string">
-			<name>python</name>			
-			<value>${transformer_dir}/rtf2xml.py</value>
-		</parameter>
+		</parameter>		 
+        
+        <parameter type="string">
+            <name>rtf2xml</name>         
+            <value>${transformer_dir}/rtf2xml</value>
+        </parameter>
 		
 		<parameter type="string">
 			<name>stylesheet</name>			

@@ -21,6 +21,8 @@ package ca_cnib_rtf2dtbook;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.daisy.pipeline.core.InputListener;
@@ -37,7 +39,6 @@ import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
 import org.xml.sax.EntityResolver;
 
-
 /**
  * @author Brandon Nelson
  * @author Linus Ericson
@@ -45,87 +46,86 @@ import org.xml.sax.EntityResolver;
  */
 public class RTF2DTBook extends Transformer {
 
-	private static String pythonCommand = System.getProperty("pipeline.python.path");
-
-	public RTF2DTBook(InputListener inListener,  Boolean isInteractive) {
-		super(inListener, isInteractive);        
+	public RTF2DTBook(InputListener inListener, Boolean isInteractive) {
+		super(inListener, isInteractive);
 	}
-	
+
 	protected boolean execute(Map parameters) throws TransformerRunException {
-				
-		//first check if python is installed and identified
-		File test = new File(pythonCommand);
-		if(!test.exists() || !test.canRead()) {
-			String message = i18n("PYTHON_INSTALL_PROBLEM");
-			this.sendMessage(message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
-			throw new TransformerRunException(message);
+		// Get the rtf2xml command
+		String rtf2xml = (String)parameters.remove("rtf2xml");
+		if (System.getProperty("os.name").startsWith("Windows")) {
+			// Windows: returns rtf2xml.exe (compiled from python with py2exe)
+			rtf2xml += "-win/rtf2xml.exe";
+		} else {
+			// Linux, Mac: returns the python command with rtf2xml.py script
+			rtf2xml += "-py/rtf2xml.py";
 		}
-		
+		rtf2xml = FilenameOrFileURI.toFile(rtf2xml).getAbsolutePath();
+
 		// Read parameters
 		// Dynamic ones
-		String rtfFile = (String)parameters.remove("rtf");
-		String dtbookFile = (String)parameters.remove("dtbook");
+		String rtfFile = (String) parameters.remove("rtf");
+		String dtbookFile = (String) parameters.remove("dtbook");
 
 		// Static ones
-		String python = (String)parameters.remove("python");
-		String stylesheet = (String)parameters.remove("stylesheet");
-		String xsltFactory = (String)parameters.remove("factory");
-		
+		String stylesheet = (String) parameters.remove("stylesheet");
+		String xsltFactory = (String) parameters.remove("factory");
+
 		// Output the XML into a temporary file
 		TempFile xmlFile;
 		try {
 			xmlFile = new TempFile();
 		} catch (IOException e) {
-			String message = i18n("ERROR_ABORTING",e.getMessage());
+			String message = i18n("ERROR_ABORTING", e.getMessage());
 			throw new TransformerRunException(message, e);
 		}
 
-		// Setup python args
-		String[] args = new String[8];
-		args[0] = pythonCommand;
-		args[1] = FilenameOrFileURI.toFile(python).getAbsolutePath();
-		args[2] = "--headings-to-sections";
-		args[3] = "--lists";
-		args[4] = "--indent=1";
-		args[5] = "--no-empty-para";
-		args[6] = "--output=" + xmlFile.getFile().getAbsolutePath();
-		args[7] = FilenameOrFileURI.toFile(rtfFile).getAbsolutePath();;
+		// Setup rtf2xml args
+		List<String> args = new ArrayList<String>();
+		args.add(rtf2xml);
+		args.add("--headings-to-sections");
+		args.add("--lists");
+		args.add("--indent=1");
+		args.add("--no-empty-para");
+		args.add("--output=" + xmlFile.getFile().getAbsolutePath());
+		args.add(FilenameOrFileURI.toFile(rtfFile).getAbsolutePath());
 
-		//printArgs(args);
+		// printArgs(args);
 
-		// Run python
-		sendMessage(i18n("RUNNING_PYTHON"),MessageEvent.Type.INFO_FINER);
+		// Run rtf2xml
+		sendMessage(i18n("RUNNING_PYTHON"), MessageEvent.Type.INFO_FINER);
 		this.progress(0.05);
 
-
 		try {
-			if (Command.execute(args) != 0) {
-				String message = i18n("ERROR_ABORTING",i18n("PYTHON_FAILED"));
-				throw new TransformerRunException(message);				
+			if (Command.execute(args.toArray(new String[args.size()])) != 0) {
+				String message = i18n("ERROR_ABORTING", i18n("PYTHON_FAILED"));
+				throw new TransformerRunException(message);
 			}
 		} catch (ExecutionException e1) {
-			String message = i18n("ERROR_ABORTING",e1.getMessage());
+			String message = i18n("ERROR_ABORTING", e1.getMessage());
 			throw new TransformerRunException(message, e1);
-		} 
+		}
 
 		/*
-		System.out.println("The length of the temp file is: " + xmlFile.getFile().length());
-		If the transformer fails, no tempfile is being created.  The length of the file
-		is 0 and causes the Stylesheet.apply to fail.
+		 * System.out.println("The length of the temp file is: " +
+		 * xmlFile.getFile().length()); If the transformer fails, no tempfile is
+		 * being created. The length of the file is 0 and causes the
+		 * Stylesheet.apply to fail.
 		 */
-		
-		sendMessage(i18n("APPLYING_XSLT"),MessageEvent.Type.INFO_FINER);
+
+		sendMessage(i18n("APPLYING_XSLT"), MessageEvent.Type.INFO_FINER);
 		this.progress(0.70);
 		try {
 			File outputFile = new File(dtbookFile);
 			outputFile.getParentFile().mkdirs();
 			EntityResolver resolver = CatalogEntityResolver.getInstance();
-			Stylesheet.apply(xmlFile.getFile().getAbsolutePath(), stylesheet, outputFile.getAbsolutePath(), xsltFactory, null, resolver);
+			Stylesheet.apply(xmlFile.getFile().getAbsolutePath(), stylesheet,
+					outputFile.getAbsolutePath(), xsltFactory, null, resolver);
 			this.progress(0.99);
 		} catch (Exception e) {
-			String message = i18n("ERROR_ABORTING",e.getLocalizedMessage());
-			throw new TransformerRunException(message, e);			
-		} 
+			String message = i18n("ERROR_ABORTING", e.getLocalizedMessage());
+			throw new TransformerRunException(message, e);
+		}
 		return true;
 	}
 

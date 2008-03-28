@@ -625,6 +625,14 @@ src/org/daisy/util/xml/xslt/stylesheets/misc/echo.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/xhtml/xhtml10toXhtml11.xsl -text
 src/pipeline.properties -text
 src/pipeline.user.properties -text
+transformers/ca_cnib_rtf2dtbook/rtf2xml-win/MSVCR71.dll -text
+transformers/ca_cnib_rtf2dtbook/rtf2xml-win/bz2.pyd -text
+transformers/ca_cnib_rtf2dtbook/rtf2xml-win/char_set.py -text
+transformers/ca_cnib_rtf2dtbook/rtf2xml-win/library.zip -text
+transformers/ca_cnib_rtf2dtbook/rtf2xml-win/python25.dll -text
+transformers/ca_cnib_rtf2dtbook/rtf2xml-win/rtf2xml.exe -text
+transformers/ca_cnib_rtf2dtbook/rtf2xml-win/unicodedata.pyd -text
+transformers/ca_cnib_rtf2dtbook/rtf2xml-win/w9xpopen.exe -text
 transformers/ca_cnib_rtf2dtbook/transformer.tdf -text
 transformers/dk_dbb_dtbook2rtf/dtbook_rtfNoNcc.xsl -text
 transformers/dk_dbb_dtbook2rtf/dtbook_rtf_call.xsl -text
