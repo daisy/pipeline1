@@ -48,6 +48,22 @@
 		</datatype>
 	</parameter>
 
+	<parameter name="transferNCCMetadata" value="false" required="false">
+		<nicename>Transfer NCC metadata</nicename>
+		<description>Set whether to transfer metadata from the 2.02 NCC to the DTBook</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	<parameter name="minNavLabelAudioLength" value="1000" required="false">
+		<nicename>Audio clip length</nicename>
+		<description>Set minimum audio clip length (milliseconds) for NCX navLabel audio</description>
+		<datatype>
+			<integer min="1" max="5000"/>
+		</datatype>
+	</parameter>
+
 	<parameter name="userCss" value="" required="false">
 		<nicename>Optional CSS</nicename>
 		<description>Select a CSS to append to output DTBook document</description>
@@ -96,6 +112,14 @@
 		<parameter>
 			<name>ncxAddNavLabelAudio</name>
 			<value>${addNcxNavLabelAudio}</value>
+		</parameter>	
+		<parameter>
+			<name>dtbookTransferNCCMetadata</name>
+			<value>${transferNCCMetadata}</value>
+		</parameter>	
+		<parameter>
+			<name>ncxMinNavLabelAudioLength</name>
+			<value>${minNavLabelAudioLength}</value>
 		</parameter>			
 	</task>
 	

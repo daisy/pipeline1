@@ -90,6 +90,27 @@
 		    <default>false</default>
 		</parameter>
 
+		<parameter required="false" type="string">
+			<name>ncxMinNavLabelAudioLength</name>
+			<description>
+				The minimum length (in millisec) for audioclips used in NavLabel elements
+			</description>
+			<example>1000</example>
+			<default>1000</default>
+		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>dtbookTransferNCCMetadata</name>
+		    <description>
+		    	Whether to try to transfer metadata from the ncc file to the DTBook content document.
+		    </description>
+		    <example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+		    <default>false</default>
+		</parameter>
 					
 	</parameters>	
 

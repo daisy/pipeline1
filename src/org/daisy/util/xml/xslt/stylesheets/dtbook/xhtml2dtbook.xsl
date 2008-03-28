@@ -18,8 +18,8 @@
 	<xsl:param name="uid" as="xs:string" select="'[UID]'" />					<!-- uid of publication -->
 	<xsl:param name="title" as="xs:string" select="'[DTB_TITLE]'" />			<!-- title of publication -->
 	<xsl:param name="cssUri" as="xs:string" select="'[CSS]'" />					<!-- URI to CSS of publication -->
-	<xsl:param name="nccFolder" as="xs:string" select="'[path]'" /> 			<!-- path to D202 DTB folder -->
-	<xsl:param name="transferDcMetadata" as="xs:string" select="'false'" /> 	<!-- transfer dc:* metadata from ncc file -->
+	<xsl:param name="nccURI" as="xs:string" select="'[nccURI]'" /> 				<!-- URI to D202 NCC file -->
+	<xsl:param name="transferDcMetadata" as="xs:string" select="'true'" /> 	<!-- transfer dc:* metadata from ncc file -->
 
 	<xsl:variable name="dtbFolder" as="xs:string" select="translate($nccFolder,'\','/')" />
 	
@@ -37,12 +37,13 @@
 			<meta name="dtb:uid" content="{$uid}" />
 			<meta name="dtb:title" content="{$title}" />
 			<meta name="dc:Title" content="{$title}" />
+			<meta name="nccURI" content="{$nccURI}" />
 			<meta name="transferDcMetadata" content="{$transferDcMetadata}" />
 			<xsl:choose>
 				<xsl:when test="
 						matches($transferDcMetadata,'true','i') 
-						and doc-available(concat($dtbFolder,'/ncc.html'))
-						and $nccFolder ne '[path]'">
+						and doc-available($nccURI)
+						and $nccFolder ne '[nccURI]'">
 					<!-- If requested, and if ncc.html can be found, transfer dc:* metadata (not dc:title, handled above) from ncc.html -->
 					<xsl:apply-templates select="doc(concat($dtbFolder,'/ncc.html'))//html:head/html:meta[starts-with(@name,'dc:') and @name ne 'dc:title']" mode="metadata-from-ncc"/>
 				</xsl:when>
@@ -275,12 +276,19 @@
 		</caption>
 	</xsl:template>
 
-	<xsl:template match="html:span[@class eq 'noteref']">
+	<xsl:template match="html:body/html:span[@class eq 'noteref']" priority="5">
+		<!-- If the noteref is direct child of html:body, then wrap into a paragraph, and use next match -->
+		<p class="noteref">
+			<xsl:next-match />
+		</p>
+	</xsl:template>
+	
+	<xsl:template match="html:span[@class eq 'noteref']" priority="3">
 		<noteref>
-			<xsl:attribute name="idref" select="
-				if (contains(@bodyref,'#'))
+			<xsl:attribute name="idref" select="@bodyref
+(:				if (contains(@bodyref,'#'))
 				then substring-after(@bodyref,'#')
-				else @bodyref" />
+				else @bodyref :)" />
 			<xsl:copy-of select="@id" />
 			<xsl:call-template name="copy-std-attr" />
 			<xsl:apply-templates />

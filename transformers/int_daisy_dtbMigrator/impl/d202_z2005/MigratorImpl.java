@@ -501,7 +501,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 				parameters.put("transferDcMetadata", (String)params.get("dtbookTransferNCCMetadata"));
 				
 				// The location of the ncc file (assuming that it is the same folder as the content doc. Risky?)
-				parameters.put("nccFolder",ff.getFile().getParent());
+				parameters.put("nccURI",inputFileset.getManifestMember().getFile().toURI().toString());
 				
 				Stylesheet.apply(ff.getFile().getAbsolutePath(), xsltURL, dtbookOut.getAbsolutePath(), 
 						TransformerFactoryConstants.SAXON8, parameters, CatalogEntityResolver.getInstance());
