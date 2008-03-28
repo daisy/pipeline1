@@ -938,6 +938,7 @@ transformers/se_tpb_skippabilityTweaker/messages.properties -text
 transformers/se_tpb_skippabilityTweaker/transformer.tdf -text
 transformers/se_tpb_speechgen2/SpeechGen2.java -text
 transformers/se_tpb_speechgen2/audio/AudioConcat.java -text
+transformers/se_tpb_speechgen2/audio/AudioConcatQueue.java -text
 transformers/se_tpb_speechgen2/audio/AudioFiles.java -text
 transformers/se_tpb_speechgen2/audio/SequenceAudioInputStream.java -text
 transformers/se_tpb_speechgen2/audio/SilenceAudioFile.java -text
