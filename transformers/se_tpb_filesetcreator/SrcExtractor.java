@@ -2,7 +2,6 @@ package se_tpb_filesetcreator;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,14 +18,6 @@ import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 
-/* Vad jag vill att den här klassen ska göra:
- * 
- * Förmodligen egentligen det jag hade tänkt att
- * SrcCollector skulle göra, det är kanske ett bättre namn ändå?
- * Men hur som helst: läsa igenom ett dokument och samla på sig
- * alla värden av src-attribut. Det kan väl inte vara så svårt?
- */
-
 /**
  * Utility for extracting all values of src attributes from an xml-file.
  * @author Martin Blomberg
@@ -36,7 +27,7 @@ public class SrcExtractor {
 
 	private QName attribName = new QName("src");
 	private File xmlFile;
-	private Set srcValues = new HashSet();
+	private Set<String> srcValues = new HashSet<String>();
 	
 	/**
 	 * @param xmlFile the file in which to look for references.
@@ -88,7 +79,7 @@ public class SrcExtractor {
 	 * @return a set containing strings. The strings are 
 	 * the values of the src attrubutes.
 	 */
-	public Set getSrcValues() {
+	public Set<String> getSrcValues() {
 		return srcValues;
 	}
 	
