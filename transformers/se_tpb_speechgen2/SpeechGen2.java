@@ -90,8 +90,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import se_tpb_filesetcreator.SrcExtractor;
+import se_tpb_speechgen2.audio.AudioConcatQueue;
 import se_tpb_speechgen2.audio.AudioFiles;
-import se_tpb_speechgen2.audio.WavConcatWorker;
 import se_tpb_speechgen2.tts.TTS;
 import se_tpb_speechgen2.tts.TTSBuilder;
 import se_tpb_speechgen2.tts.TTSBuilderException;
@@ -109,7 +109,7 @@ public class SpeechGen2 extends Transformer {
 	private XMLEventFactory eventFactory;						// creates stax events to output
 	private XMLEventWriter writer;		 						// for writing stax events to file.
 	private String smilURI = "http://www.w3.org/2001/SMIL20/";	// namespace identifier
-	private String smilPrefix = "smil";							// namespcace prefix
+	private String smilPrefix = "smil";							// namespace prefix
 	private String smilClipBegin = "clipBegin";					// attribute name
 	private String smilClipEnd = "clipEnd";						// attribute name
 	private String smilSrc = "src";								// attribute name
@@ -146,22 +146,23 @@ public class SpeechGen2 extends Transformer {
 	private Set<String> containsSynch = new HashSet<String>();					// names of elements which may contain sync points.
 
 	// silence
-	private static int AFTER_LAST;								// miliseconds: silence after last sync point in an audio file
-	private static int AFTER_FIRST;								// miliseconds: silence after first sync point in an audio file
-	private static int BEFORE_ANNOUNCEMENT;						// miliseconds: silence before announcement
-	private static int AFTER_ANNOUNCEMENT;						// miliseconds: silence after announcement
-	private static int AFTER_REGULAR_PHRASE;					// miliseconds: silence after each phrase
+	private static int AFTER_LAST;								// milliseconds: silence after last sync point in an audio file
+	private static int AFTER_FIRST;								// milliseconds: silence after first sync point in an audio file
+	private static int BEFORE_ANNOUNCEMENT;						// milliseconds: silence before announcement
+	private static int AFTER_ANNOUNCEMENT;						// milliseconds: silence after announcement
+	private static int AFTER_REGULAR_PHRASE;					// milliseconds: silence after each phrase
 
 	// misc variables
 	private File outputDir;										// output directory
 	private boolean concurrentMerge;							// merge in a parallel thread? May save time on some systems.
 	private boolean mp3Output;									// whether or not to encode the generated files as mp3.
-	private CountDownLatch barrier;						// thread synchronization
+	private int numAudioFiles;									// approx. number of resulting audio files
 	private DocumentBuilder domBuilder;							// used for constructing a small Document for each sync point.
 	private AudioFormat mSilenceFormat = 
 		new AudioFormat(22050, 16, 1,true, false);
 	
-	
+	private CountDownLatch countOnce = new CountDownLatch(1);	// thread synchronization
+	private AudioConcatQueue audioConcatQueue = new AudioConcatQueue(countOnce); // wav files concatenation and possibly mp3 encoding.
 	
 	public SpeechGen2(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);
@@ -281,8 +282,8 @@ public class SpeechGen2 extends Transformer {
 				throw new TransformerRunException(e.getMessage(), e);
 			}
 
-			for (Iterator it = languages.iterator(); it.hasNext(); ) {
-				String lang = (String) it.next();
+			for (Iterator<String> it = languages.iterator(); it.hasNext(); ) {
+				String lang = it.next();
 
 				TTS tts = null;
 				// try to get a tts for the language
@@ -318,8 +319,7 @@ public class SpeechGen2 extends Transformer {
 			// Here goes the loading of text into tts system...
 			sendMessage(i18n("LOADING_TEXT"), MessageEvent.Type.DEBUG);
 
-			barrier = new CountDownLatch(lastSynchNumber.size() + 1);
-			
+			numAudioFiles = lastSynchNumber.size() + 1;
 
 			// how many audio files will be produced?
 			// make sure the filenames will be ok.
@@ -344,9 +344,9 @@ public class SpeechGen2 extends Transformer {
 			reader.close();
 			
 			// start all tts instances
-			for (Iterator it = ttsEngines.keySet().iterator(); it.hasNext(); ) {
-				String xmlLang = (String) it.next();
-				TTS tts = (TTS) ttsEngines.get(xmlLang);
+			for (Iterator<String> it = ttsEngines.keySet().iterator(); it.hasNext(); ) {
+				String xmlLang = it.next();
+				TTS tts = ttsEngines.get(xmlLang);
 				tts.start();
 			}
 			
@@ -355,7 +355,13 @@ public class SpeechGen2 extends Transformer {
 			isr = new InputStreamReader(fis, Charset.forName(characterEncoding));
 			plainReader = factory.createXMLEventReader(isr);
 			reader = new BookmarkedXMLEventReader(plainReader);
-						
+			
+			//-----------------------------------------------------------------
+			// Start the audio merger queue
+			//-----------------------------------------------------------------
+			Thread t = new Thread(audioConcatQueue);
+			t.setPriority(t.getPriority() + 1);
+			t.start();
 			
 			//---------------------------------------------------------------------------
 			// Fetch the audio
@@ -365,9 +371,17 @@ public class SpeechGen2 extends Transformer {
 			if (doFetchAudio(inputFile, outputFile, reader)) {
 				sendMessage(i18n("AWAIT_LAST_MERGE"), MessageEvent.Type.DEBUG);
 				mergeAudio();
-				if (concurrentMerge) {
-					barrier.await();
+				audioConcatQueue.finish();
+				
+				int mergeProgress = audioConcatQueue.numFilesMerged();
+				// make sure progress does not exceed 1.
+				progress(Math.min((double) (numAudioFiles - 1) / numAudioFiles, (double) mergeProgress / numAudioFiles));
+				while (countOnce.getCount() > 0) {
+					Thread.sleep(3 * 1000);
+					mergeProgress = audioConcatQueue.numFilesMerged();
+					progress(Math.min((double) (numAudioFiles - 1) / numAudioFiles, (double) mergeProgress / numAudioFiles));
 				}
+				progress(1.0);
 			}
 			sendMessage(i18n("DONE"), MessageEvent.Type.DEBUG);
 			
@@ -376,51 +390,69 @@ public class SpeechGen2 extends Transformer {
 			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
+			audioConcatQueue.abort();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (InterruptedException e) {
 			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
+			audioConcatQueue.abort();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (IOException e) {
 			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
+			audioConcatQueue.abort();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (UnsupportedAudioFileException e) {
 			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
+			audioConcatQueue.abort();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (CatalogExceptionNotRecoverable e) {
 			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);			
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
+			audioConcatQueue.abort();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (XMLStreamException e) {
 			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);			
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
+			audioConcatQueue.abort();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (ParserConfigurationException e) {
 			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
+			audioConcatQueue.abort();
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (SAXException e) {
 			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
 			System.err.println(e + " " + e.getMessage());
 			e.printStackTrace();
+			audioConcatQueue.abort();
 			throw new TransformerRunException(e.getMessage(), e);
+		} catch (TransformerRunException e) {
+			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
+			System.err.println(e + " " + e.getMessage());
+			e.printStackTrace();
+			audioConcatQueue.abort();
+			throw e;
 		} finally {
+		
 			try {
 				closeStreams(fis, reader);
 			} catch (XMLStreamException e) {
+				e.printStackTrace();
 				throw new TransformerRunException(e.getMessage(), e);
 			} catch (IOException e) {
+				e.printStackTrace();
 				throw new TransformerRunException(e.getMessage(), e);
 			}
 			terminateTTSInstances();
+			sendMessage("Leaving SpeechGen2", MessageEvent.Type.DEBUG);
 		}
 
 		return true;
@@ -458,6 +490,8 @@ public class SpeechGen2 extends Transformer {
 
 				if (isSynchronizationPoint(reader, event.asStartElement())) {
 					synchronizationPointCounter++;
+					//System.err.println("TTS Progress: " + synchronizationPointCounter + " / " + numSPoints);
+					//System.err.println("Merge/LAME Progress: " + audioConcatQueue.numFilesMerged() + " / ~" + numAudioFiles);
 										
 					// first phrase in a file
 					boolean isFirst = workingFiles.size() == 0;						
@@ -490,8 +524,9 @@ public class SpeechGen2 extends Transformer {
 					}
 
 					checkAbort();
-					progress((double) synchronizationPointCounter / numSPoints);
-
+					double progress = Math.min(0.99, (double) audioConcatQueue.numFilesMerged() / numAudioFiles);
+					progress(progress);
+					
 					// create the new startElement, i e. the same element + smil-attributes.
 					StartElement se = addSmilAttrs(event, smilTimeStartValue);
 					writeEvent(se);
@@ -785,15 +820,14 @@ public class SpeechGen2 extends Transformer {
 
 	/**
 	 * Merges the small clips (each synchpoint) so far into one
-	 * .wav file. Performes mp3-encoding according to the configuration, as well
-	 * as handling all this in a separate thread.
+	 * .wav file. Performes mp3-encoding as well, in a separate thread.
 	 * @throws IOException
 	 * @throws UnsupportedAudioFileException
 	 * @throws InterruptedException
 	 */
 	private void mergeAudio() throws IOException, UnsupportedAudioFileException, InterruptedException {
 		if (0 == workingFiles.size()) {
-			barrier.countDown();
+			numAudioFiles--;
 			return;
 		}
 
@@ -807,15 +841,7 @@ public class SpeechGen2 extends Transformer {
 			mp3file = goMp3(currentAudioFile);
 		}
 		
-		if (concurrentMerge) {
-			WavConcatWorker wcw = new WavConcatWorker(wf, currentAudioFile, mp3file, barrier);
-			new Thread(wcw).start();
-		} else {
-			CountDownLatch currentMerge = new CountDownLatch(1);
-			WavConcatWorker wcw = new WavConcatWorker(wf, currentAudioFile, mp3file, currentMerge);
-			new Thread(wcw).start();
-			currentMerge.await();
-		}		
+		audioConcatQueue.addAudio(wf, currentAudioFile, mp3file);	
 
 		workingFiles.clear();
 		clock = new SmilClock(0);
@@ -1385,10 +1411,10 @@ public class SpeechGen2 extends Transformer {
 	 */
 	private void terminateTTSInstances() throws TransformerRunException {
 		List<Exception> exceptions = new ArrayList<Exception>();
-		for (Iterator it = ttsEngines.keySet().iterator(); it.hasNext(); ) {
-			Object key = it.next();
+		for (Iterator<String> it = ttsEngines.keySet().iterator(); it.hasNext(); ) {
+			String key = it.next();
 			//System.err.println("Closing tts for xml:lang >>" + key + "<<");
-			TTS t = (TTS) ttsEngines.get(key);
+			TTS t = ttsEngines.get(key);
 			try {
 				t.close();
 			} catch (IOException e) {
