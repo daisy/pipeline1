@@ -71,7 +71,7 @@ public class FileSetCreator extends Transformer {
 	private static double OPF_DONE = 0.09;		// time proportion of the opf generation.
 	private static double COPY_DONE = 0;		// time proportion of the file copying, may change further down
 	
-	private Map mimeTypes = new HashMap();		// file name suffixes -> mime types
+	private Map<String, String> mimeTypes = new HashMap<String, String>();		// file name suffixes -> mime types
 
 	public FileSetCreator(InputListener inputListener, Set eventListeners, Boolean bool) {
 		super(inputListener, eventListeners, bool);
@@ -85,7 +85,6 @@ public class FileSetCreator extends Transformer {
 	 * @param parameters the parameters supplied to this transformer
 	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
 	 */
-	@SuppressWarnings("unchecked")
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		
 		String outputDirectory = (String) parameters.remove("outputDirectory");
@@ -113,15 +112,15 @@ public class FileSetCreator extends Transformer {
 		String opfFilename = tmp.getName();
 		
 		// the sets of element namnes to handle
-		Set navListHeadings = new HashSet();
-		Set customNavLists = new HashSet();
-		Set escapable = new HashSet();
-		Set skippable = new HashSet();
-		Set forceLink = new HashSet();
-		Set levels = new HashSet();
+		Set<String> navListHeadings = new HashSet<String>();
+		Set<String> customNavLists = new HashSet<String>();
+		Set<String> escapable = new HashSet<String>();
+		Set<String> skippable = new HashSet<String>();
+		Set<String> forceLink = new HashSet<String>();
+		Set<String> levels = new HashSet<String>();
 		
-		Set generatedFiles = new HashSet();
-		Set references = new HashSet();		
+		Set<String> generatedFiles = new HashSet<String>();
+		Set<String> references = new HashSet<String>();		
 		File manuscriptFile = new File(manuscriptFilename);
 		
 		// will we have to copy files or are they already in the right directory?
@@ -146,7 +145,7 @@ public class FileSetCreator extends Transformer {
 			// get the files referred from the resource file + the resource file itself
 			File resourceFile = new File(resourceFilename);
 			SrcExtractor srcex = new SrcExtractor(resourceFile);
-			Set files = srcex.getSrcValues();
+			Set<String> files = srcex.getSrcValues();
 			File inputBaseDir = srcex.getBaseDir();
 			FileBunchCopy.copyFiles(inputBaseDir, outputDir, files, null, false);
 			references.addAll(files);
@@ -203,9 +202,9 @@ public class FileSetCreator extends Transformer {
 			
 						
 			// collect usable data from the smilmaker
-			Set allCustomTests = sm.getAllCustomTests();
+			Set<String> allCustomTests = sm.getAllCustomTests();
 			String totalTime = sm.getStrTotoalTime();
-			Vector smilFiles = sm.getAllGeneratedSmilFiles();
+			Vector<String> smilFiles = sm.getAllGeneratedSmilFiles();
 			File modifiedManuscriptFile = sm.getModifiedManuscriptFile();
 			references.addAll(sm.getAdditionalFiles());
 			
@@ -254,13 +253,13 @@ public class FileSetCreator extends Transformer {
 			// Create the opfmaker and put it to work			
 			this.sendMessage(i18n("GENERATING_OPF"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 					
-			Map dcElements = ncx.getDCElements();		
+			Map<String, String> dcElements = ncx.getDCElements();		
 			if (null == dcElements.get("dc:Date")) {
 				Date now = new Date();			
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");	
 				dcElements.put("dc:Date", dateFormat.format(now));
 			}
-			Map metaElements = new HashMap();
+			Map<String, String> metaElements = new HashMap<String, String>();
 			mimeTypes = getMimeTypes();
 			
 			String mediaContent = "";
@@ -312,9 +311,8 @@ public class FileSetCreator extends Transformer {
 	 * Returns the book structures.
 	 * @return the book structures.
 	 */
-	@SuppressWarnings("unchecked")
-	private Map getBookStructs() {
-		Map structs = new HashMap();
+	private Map<String, String> getBookStructs() {
+		Map<String, String> structs = new HashMap<String, String>();
 		
 		structs.put("linenum", "LINE_NUMBER");
 		structs.put("note", "NOTE");
@@ -331,8 +329,7 @@ public class FileSetCreator extends Transformer {
 	 * Returns the MIME-types.
 	 * @return the MIME-types.
 	 */
-	@SuppressWarnings("unchecked")
-	private Map getMimeTypes() {
+	private Map<String, String> getMimeTypes() {
 		
 		mimeTypes.put(".mp4", "audio/mpeg4-generic");
 		mimeTypes.put(".mp3", "audio/mpeg");
@@ -367,15 +364,14 @@ public class FileSetCreator extends Transformer {
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	private void parseConfigFile(
 			String filename, 
-			Set navListHeadings, 
-			Set customNavLists,
-			Set forceLink, 
-			Set escapable, 
-			Set skippable, 
-			Set levels) throws ParserConfigurationException, SAXException, IOException {
+			Set<String> navListHeadings, 
+			Set<String> customNavLists,
+			Set<String> forceLink, 
+			Set<String> escapable, 
+			Set<String> skippable, 
+			Set<String> levels) throws ParserConfigurationException, SAXException, IOException {
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
@@ -398,9 +394,8 @@ public class FileSetCreator extends Transformer {
 	 * @param root	the root of the DOM 
 	 * @param xPath	xpath selecting the parent element
 	 */
-	@SuppressWarnings("unchecked")
-	private void getConfigItems(Set set, Node root, String xPath) {
-		Set elemNames = new HashSet();
+	private void getConfigItems(Set<String> set, Node root, String xPath) {
+		Set<String> elemNames = new HashSet<String>();
 		Node parent = XPathUtils.selectSingleNode(root, xPath);
 		NodeList items = parent.getChildNodes();
 		DEBUG("xPath: " + xPath);
@@ -436,9 +431,8 @@ public class FileSetCreator extends Transformer {
 	 * @param prefix
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	private boolean containsMimeType(Set filenames, Map mimetypes, String prefix) {
-		for (Iterator it = filenames.iterator(); it.hasNext(); ) {
+	private boolean containsMimeType(Set<String> filenames, Map<String, String> mimetypes, String prefix) {
+		for (Iterator<String> it = filenames.iterator(); it.hasNext(); ) {
 			String filename = (String) it.next();
 			String suffix = filename.substring(filename.lastIndexOf('.'));
 			String mime = (String) mimetypes.get(suffix);

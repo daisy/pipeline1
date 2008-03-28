@@ -46,6 +46,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
+import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -106,23 +107,23 @@ public class SmilMaker implements AbortListener, BusListener {
 	private File outputDirectory;					// directory in which to write smil files
 	private File smilTemplateFile;					// the location of the smil template file
 
-	private Vector smilTrees = new Vector();		// container of almost (link rumble may still be left) finished smil files represented as DOM.
-	private Vector smilFiles = new Vector();		// container of Files, smilFiles.get(i) represents smilTrees.get(i)
+	private Vector<Document> smilTrees = new Vector<Document>();		// container of almost (link rumble may still be left) finished smil files represented as DOM.
+	private Vector<File> smilFiles = new Vector<File>();		// container of Files, smilFiles.get(i) represents smilTrees.get(i)
 	
 	private int smilId;								// generator for smil file element ids making use of a simple counter
 	private int dtbid;								// generator for dtb file element ids making use of a simple counter
 	
-	private Set skippable;							// names of skippable elements
-	private Set ecapable;							// names of escapable elements
-	private Set headings;							// names of heading elements
-	private Set forceLink = new HashSet();			// mapping between element names of ref->content (e.g noteref->note)
-	private Set otherEncounteredFiles = new HashSet();	// names of encountered files, such as images.
+	private Set<String> skippable;							// names of skippable elements
+	private Set<String> ecapable;							// names of escapable elements
+	private Set<String> headings;							// names of heading elements
+	private Set<String> forceLink = new HashSet<String>();			// mapping between element names of ref->content (e.g noteref->note)
+	private Set<String> otherEncounteredFiles = new HashSet<String>();	// names of encountered files, such as images.
 	
-	private Set currentlySkipped = new HashSet();	// names of present skippable elements in the current smil
-	private Set totalSkipped = new HashSet();		// names of present skippable elements in all smils
+	private Set<String> currentlySkipped = new HashSet<String>();	// names of present skippable elements in the current smil
+	private Set<String> totalSkipped = new HashSet<String>();		// names of present skippable elements in all smils
 	
 	private Document currentSmil;					// the current smil	
-	private Stack openSeqs = new Stack();			// stack keeping track of which seq in the current smil to append children to
+	private Stack<Element> openSeqs = new Stack<Element>();			// stack keeping track of which seq in the current smil to append children to
 	
 	private String smilClipBegin = "clipBegin";		// name of smil attribute
 	private String smilClipEnd = "clipEnd";			// name of smil attribute
@@ -134,7 +135,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	private boolean newSmilIncoming = false;		// whether next sync point's corresponding audio is in a file other than currentAudioFilename 
 	private long totalTime;							// total duration of this book.
 	
-	private Vector generatedFiles = new Vector();	// names of all generated (smil) files
+	private Vector<String> generatedFiles = new Vector<String>();	// names of all generated (smil) files
 	private File manuscriptOutputFile;				// the location to which the modified input document should be written
 	private String uid;								// the id of this book
 	
@@ -142,7 +143,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	private String smilDoctypeSystem = "http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd";// doctype system of output smil
 	private String smilNamespaceURI = "http://www.w3.org/2001/SMIL20/";						// namespace for the smil elements
 	
-	private Map smilFileMapping = new HashMap();		// used for mapping element id to file
+	private Map<String, String> smilFileMapping = new HashMap<String, String>();		// used for mapping element id to file
 	private MultiHashMap forceLinkMap = new MultiHashMap(false);
 	private ProgressObserver mProgressObserver;						// ProgressObserver: a component to report progress to, used for ui.
 	private int numSmilFiles;							// the expected number of generated smil files, used for progress reporting
@@ -170,9 +171,9 @@ public class SmilMaker implements AbortListener, BusListener {
 			File inputManuscript, 
 			File outputDir, 
 			File smilTemplate, 
-			Set skippable, 
-			Set escapable, 
-			Set forceLink,
+			Set<String> skippable, 
+			Set<String> escapable, 
+			Set<String> forceLink,
 			ProgressObserver obs) 
 			throws 
 			FileNotFoundException, 
@@ -207,7 +208,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		// TODO
 		// until we have a context aware bookmarked xml event reader, 
 		// narrator will treat h1-h6 as valid headings. Not hd.
-		this.headings = new HashSet();
+		this.headings = new HashSet<String>();
 		headings.add("h1");
 		headings.add("h2");
 		headings.add("h3");
@@ -255,12 +256,12 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @throws XMLStreamException
 	 */
 	private int countAudioFiles(BookmarkedXMLEventReader reader) throws XMLStreamException {
-		Set audioFiles = new HashSet();
+		Set<String> audioFiles = new HashSet<String>();
 		while (reader.hasNext()) {
 			XMLEvent event = reader.nextEvent();
 			if (event.isStartElement() && hasSmilAttributes(event.asStartElement())) {
 				Map attrs = getSmilContext(event.asStartElement());
-				audioFiles.add(attrs.get(smilSrc));
+				audioFiles.add((String) attrs.get(smilSrc));
 			}
 		}
 		return audioFiles.size();
@@ -287,7 +288,7 @@ public class SmilMaker implements AbortListener, BusListener {
 			return null;
 		}
 		
-		Map attributes = new HashMap();
+		Map<String, String> attributes = new HashMap<String, String>();
 		
 		//DEBUG(se);
 		for (Iterator it = se.getAttributes(); it.hasNext(); ) {
@@ -305,7 +306,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @return a <code>Set</code> containing the names of all custom test 
 	 * performed in the document processed.
 	 */
-	public Set getAllCustomTests() {
+	public Set<String> getAllCustomTests() {
 		return totalSkipped;
 	}
 	
@@ -316,7 +317,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @return a <code>Vector</code> containing the names as
 	 * <code>java.lang.String</code>-objects of the generated files.
 	 */
-	public Vector getAllGeneratedSmilFiles() {
+	public Vector<String> getAllGeneratedSmilFiles() {
 		return generatedFiles;
 	}
 	
@@ -506,7 +507,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		
 		
 		// fetch all link targets. note elements, and such
-		Map forceLinks = new HashMap();
+		Map<String, Element> forceLinks = new HashMap<String, Element>();
 		// for each genereated smil DOM
 		forEachGeneratedDom = System.currentTimeMillis();
 		for (Iterator it = smilTrees.iterator(); it.hasNext(); ) {
@@ -547,6 +548,7 @@ public class SmilMaker implements AbortListener, BusListener {
 				
 				Node newLinkTarget = parent.getOwnerDocument().importNode(linkTarget, true);
 				updateSubtreeIds(newLinkTarget);
+				removeAttrRecursive((Element) newLinkTarget, "idref");
 				
 				boolean isEqualNode = (nextSibling != null) && (nextSibling.isEqualNode(linkTarget));
 				if (null == nextSibling) {
@@ -607,6 +609,20 @@ public class SmilMaker implements AbortListener, BusListener {
 //		System.err.println("foreach generated dom: " + formatTime(forEachGeneratedDom));
 //		System.err.println("foreach link target:   " + formatTime(forEachLinkTarget));
 //		System.err.println("foreach reference: " + formatTime(forEachReference));
+	}
+	
+	/**
+	 * Removes the attribute represented by <code>attrName</code> from
+	 * <code>elem</code> and its descendants.
+	 * @param elem an element.
+	 * @param attrName the name of the attribute to remove.
+	 */
+	private void removeAttrRecursive(Element elem, String attrName) {
+		NodeList nodes = XPathUtils.selectNodes(elem, "//*[@" + attrName + "]");
+		for (int i = 0; i < nodes.getLength(); i++) {
+			Element e = (Element) nodes.item(i);
+			e.removeAttribute(attrName);
+		}
 	}
 	
 	
@@ -883,19 +899,19 @@ public class SmilMaker implements AbortListener, BusListener {
 		// Create a new StartElement to return. That element will be
 		// written to file instead of the one we received as parameter
 		
-		Collection namespaces = new HashSet();
-		Collection attributes = new HashSet();
+		Collection<Namespace> namespaces = new HashSet<Namespace>();
+		Collection<Attribute> attributes = new HashSet<Attribute>();
 		
 		// smilref-attr & id-attr
 		attributes.add(eventFactory.createAttribute(new QName("smilref"), getCurrentSmilFilename() + "#" + parId));
 		attributes.add(eventFactory.createAttribute(new QName("id"), dtbId));
 			
 		for (Iterator it = se.getAttributes(); it.hasNext(); ) {
-			attributes.add(it.next());
+			attributes.add((Attribute)it.next());
 		}
 
 		for (Iterator ns = se.getNamespaces(); ns.hasNext(); ) {
-			namespaces.add(ns.next());
+			namespaces.add((Namespace)ns.next());
 		}
 		
 		StartElement newStartElement = eventFactory.createStartElement(se.getName(), attributes.iterator(), namespaces.iterator());
@@ -954,11 +970,11 @@ public class SmilMaker implements AbortListener, BusListener {
 		// Create what's supposed to be in the dtbook:		
 		// attributes:
 		if (scopeContainsSmil(reader, se)) {
-			Set attributes = new HashSet();
+			Set<Attribute> attributes = new HashSet<Attribute>();
 			attributes.add(eventFactory.createAttribute(new QName("smilref"), getCurrentSmilFilename() + "#" + tcsId));
 			attributes.add(eventFactory.createAttribute(new QName("id"), dtbId));
 			for (Iterator it = se.getAttributes(); it.hasNext(); ) {
-				attributes.add(it.next());
+				attributes.add((Attribute)it.next());
 			}
 			return eventFactory.createStartElement(se.getName(), attributes.iterator(), se.getNamespaces());
 		} else {
@@ -1005,7 +1021,7 @@ public class SmilMaker implements AbortListener, BusListener {
 			(Element) XPathUtils.selectSingleNode(smilDom.getDocumentElement(), "//smil:customAttributes", mNsc);
 		
 		if (customTestNodes.getLength() > 0) {	
-			Set customTestNames = new HashSet();
+			Set<String> customTestNames = new HashSet<String>();
 			for (int i = 0; i < customTestNodes.getLength(); i++) {
 				Element elem = (Element) customTestNodes.item(i);
 				customTestNames.add(elem.getAttribute("customTest"));
@@ -1104,13 +1120,13 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * if no such exists.
 	 * @throws XMLStreamException
 	 */
-	private String getNextSmilSrc(BookmarkedXMLEventReader reader, Vector levelChange) throws XMLStreamException {
+	private String getNextSmilSrc(BookmarkedXMLEventReader reader, Vector<Boolean> levelChange) throws XMLStreamException {
 		String bookmark = "getNextSmilSrc";
 		reader.setBookmark(bookmark);
 		String src = null;
 		boolean marked = false;
 		if (null == levelChange) {
-			levelChange = new Vector();
+			levelChange = new Vector<Boolean>();
 		}
 		levelChange.add(Boolean.FALSE);
 		
@@ -1165,7 +1181,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	private boolean nextParIsNewSmil(BookmarkedXMLEventReader reader) throws XMLStreamException {
 		
 		boolean isNewLevel = false;
-		Vector levelChangeHolder = new Vector();
+		Vector<Boolean> levelChangeHolder = new Vector<Boolean>();
 		String smilSrc = getNextSmilSrc(reader, levelChangeHolder);
 		
 		Boolean levelChange = (Boolean) levelChangeHolder.get(0);
@@ -1501,7 +1517,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * Returns a <code>Set</code> containing .. objects representing the
 	 * encountered files in the input document, typically audio files.
 	 */
-	public Set getAdditionalFiles() {
+	public Set<String> getAdditionalFiles() {
 		return otherEncounteredFiles;
 	}
 
