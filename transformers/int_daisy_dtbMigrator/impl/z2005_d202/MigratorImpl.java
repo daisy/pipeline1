@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.util.file.EFolder;
-import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.Fileset;
 
 import int_daisy_dtbMigrator.DtbDescriptor;
 import int_daisy_dtbMigrator.Migrator;

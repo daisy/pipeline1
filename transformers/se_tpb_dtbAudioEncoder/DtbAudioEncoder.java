@@ -35,12 +35,12 @@ import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.fileset.AudioFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
+import org.daisy.util.fileset.OpfFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetImpl;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.audio.AudioFile;
-import org.daisy.util.fileset.interfaces.xml.OpfFile;
 import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 

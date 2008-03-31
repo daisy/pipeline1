@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.validation.delegate.ValidatorDelegateImplAbstract;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;

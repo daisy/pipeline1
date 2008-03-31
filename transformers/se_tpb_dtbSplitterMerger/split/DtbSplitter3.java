@@ -40,11 +40,11 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
 import org.daisy.util.file.FileUtils;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.Referable;
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986NcxFile;
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986OpfFile;
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986ResourceFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.Referable;
+import org.daisy.util.fileset.Z3986NcxFile;
+import org.daisy.util.fileset.Z3986OpfFile;
+import org.daisy.util.fileset.Z3986ResourceFile;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;

@@ -16,7 +16,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 import org.daisy.util.dtb.meta.MetadataList;
-import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXOutputFactoryPool;
 

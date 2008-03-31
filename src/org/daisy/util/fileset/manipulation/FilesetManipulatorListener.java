@@ -19,8 +19,8 @@
 
 package org.daisy.util.fileset.manipulation;
 
-import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
-import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.FilesetErrorHandler;
+import org.daisy.util.fileset.FilesetFile;
 
 public interface FilesetManipulatorListener extends FilesetErrorHandler{
 	

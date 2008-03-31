@@ -20,7 +20,7 @@
 package org.daisy.util.fileset.exception;
 
 import org.daisy.util.exception.BaseException;
-import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.FilesetFile;
 
 /**
  * <p>A wrapper for any exception reported through the FilesetErrorHandler interface</p>

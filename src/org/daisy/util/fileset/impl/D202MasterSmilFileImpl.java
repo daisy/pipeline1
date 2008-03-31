@@ -25,7 +25,7 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.daisy.util.fileset.interfaces.xml.d202.D202MasterSmilFile;
+import org.daisy.util.fileset.D202MasterSmilFile;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

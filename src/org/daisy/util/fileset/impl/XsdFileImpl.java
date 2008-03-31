@@ -25,8 +25,8 @@ import java.net.URI;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.daisy.util.fileset.interfaces.SchemaFile;
-import org.daisy.util.fileset.interfaces.schema.XsdFile;
+import org.daisy.util.fileset.SchemaFile;
+import org.daisy.util.fileset.XsdFile;
 import org.xml.sax.SAXException;
 
 final class XsdFileImpl extends XmlFileImpl implements XsdFile, SchemaFile {

@@ -23,7 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
-import org.daisy.util.fileset.interfaces.sgml.SgmlFile;
+import org.daisy.util.fileset.SgmlFile;
 
 abstract class SgmlFileImpl extends FilesetFileImpl implements SgmlFile{
 

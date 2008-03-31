@@ -26,8 +26,8 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.daisy.util.fileset.SmilFile;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
-import org.daisy.util.fileset.interfaces.xml.SmilFile;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.xml.SmilClock;
 import org.xml.sax.Attributes;

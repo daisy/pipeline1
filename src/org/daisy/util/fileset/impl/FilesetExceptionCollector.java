@@ -23,8 +23,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.daisy.util.fileset.FilesetErrorHandler;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 
 /*package*/ class FilesetExceptionCollector {
 	private Set exceptions = new HashSet();

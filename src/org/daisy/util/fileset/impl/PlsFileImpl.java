@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.daisy.util.fileset.interfaces.text.PlsFile;
+import org.daisy.util.fileset.PlsFile;
 /**
  * @author Markus Gylling
  */

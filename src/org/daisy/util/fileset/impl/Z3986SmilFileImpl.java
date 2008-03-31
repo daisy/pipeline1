@@ -26,7 +26,7 @@ import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986SmilFile;
+import org.daisy.util.fileset.Z3986SmilFile;
 import org.daisy.util.xml.SmilClock;
 import org.xml.sax.SAXException;
 

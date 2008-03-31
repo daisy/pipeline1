@@ -31,11 +31,11 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.daisy.util.file.FileUtils;
-import org.daisy.util.fileset.interfaces.Referable;
-import org.daisy.util.fileset.interfaces.audio.AudioFile;
-import org.daisy.util.fileset.interfaces.xml.SmilFile;
-import org.daisy.util.fileset.interfaces.xml.TextualContentFile;
-import org.daisy.util.fileset.interfaces.xml.XmlFile;
+import org.daisy.util.fileset.AudioFile;
+import org.daisy.util.fileset.Referable;
+import org.daisy.util.fileset.SmilFile;
+import org.daisy.util.fileset.TextualContentFile;
+import org.daisy.util.fileset.XmlFile;
 
 /**
  * @author Piotr Kiernicki

@@ -7,8 +7,8 @@ import java.util.Set;
 
 import javax.xml.stream.events.Attribute;
 
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetType;
-import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.validation.delegate.ValidatorDelegate;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotRecognizedException;

@@ -23,7 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
-import org.daisy.util.fileset.interfaces.binary.PdfFile;
+import org.daisy.util.fileset.PdfFile;
 
 final class PdfFileImpl extends FilesetFileImpl implements PdfFile {
 

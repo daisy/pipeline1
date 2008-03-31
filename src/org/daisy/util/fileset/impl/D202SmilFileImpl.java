@@ -24,7 +24,7 @@ import java.net.URI;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.daisy.util.fileset.interfaces.xml.d202.D202SmilFile;
+import org.daisy.util.fileset.D202SmilFile;
 import org.daisy.util.xml.SmilClock;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

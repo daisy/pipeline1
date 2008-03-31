@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.daisy.util.file.FileUtils;
-import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.manipulation.FilesetFileManipulator;
 import org.daisy.util.fileset.manipulation.FilesetManipulationException;
 

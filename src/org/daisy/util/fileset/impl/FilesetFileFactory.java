@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.exception.FilesetFatalException;
-import org.daisy.util.fileset.interfaces.FilesetFile;
 
 
 /**

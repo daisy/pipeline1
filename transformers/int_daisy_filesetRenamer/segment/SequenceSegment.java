@@ -8,13 +8,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.daisy.util.fileset.D202NccFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.ManifestFile;
-import org.daisy.util.fileset.interfaces.Referring;
-import org.daisy.util.fileset.interfaces.xml.OpfFile;
-import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
+import org.daisy.util.fileset.ManifestFile;
+import org.daisy.util.fileset.OpfFile;
+import org.daisy.util.fileset.Referring;
 
 /**
  * Represents a sequential segment of a filename, ie 

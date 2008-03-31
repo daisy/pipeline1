@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.net.URI;
 
-import org.daisy.util.fileset.interfaces.text.PlayList;
+import org.daisy.util.fileset.PlayList;
 
 abstract class PlayListImpl extends FilesetFileImpl implements PlayList {
 	LineNumberReader reader;

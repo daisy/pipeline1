@@ -33,10 +33,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.XMLEvent;
 
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.xml.XmlFile;
+import org.daisy.util.fileset.XmlFile;
 import org.daisy.util.fileset.validation.delegate.ValidatorDelegateImplAbstract;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;

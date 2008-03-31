@@ -25,9 +25,9 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.daisy.util.fileset.ManifestFile;
+import org.daisy.util.fileset.Xhtml10File;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
-import org.daisy.util.fileset.interfaces.ManifestFile;
-import org.daisy.util.fileset.interfaces.xml.Xhtml10File;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

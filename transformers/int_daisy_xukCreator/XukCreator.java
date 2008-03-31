@@ -9,11 +9,11 @@ import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetErrorHandler;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 
 /**
  * Main Transformer class.

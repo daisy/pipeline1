@@ -41,7 +41,7 @@ import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.manipulation.FilesetFileManipulator;
 import org.daisy.util.fileset.manipulation.FilesetManipulationException;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;

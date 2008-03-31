@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.encryption.exception.EncryptionException;
 import org.daisy.util.fileset.encryption.exception.EncryptorNotSupportedException;
-import org.daisy.util.fileset.interfaces.Fileset;
 
 /**
  * An abstract Encryptor that implementors may choose to extend.

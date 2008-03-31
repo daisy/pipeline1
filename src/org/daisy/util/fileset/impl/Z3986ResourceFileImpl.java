@@ -26,7 +26,7 @@ import java.net.URI;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986ResourceFile;
+import org.daisy.util.fileset.Z3986ResourceFile;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

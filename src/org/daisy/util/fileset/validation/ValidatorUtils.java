@@ -3,10 +3,10 @@ package org.daisy.util.fileset.validation;
 import java.net.URI;
 import java.util.Iterator;
 
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.Referring;
-import org.daisy.util.fileset.interfaces.sgml.HtmlFile;
-import org.daisy.util.fileset.interfaces.xml.XmlFile;
+import org.daisy.util.fileset.FilesetFile;
+import org.daisy.util.fileset.HtmlFile;
+import org.daisy.util.fileset.Referring;
+import org.daisy.util.fileset.XmlFile;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;

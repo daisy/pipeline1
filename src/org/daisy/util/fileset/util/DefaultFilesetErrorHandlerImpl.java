@@ -19,11 +19,11 @@
 
 package org.daisy.util.fileset.util;
 
+import org.daisy.util.fileset.FilesetErrorHandler;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
-import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 
 /**
  * A utility do-little implementation

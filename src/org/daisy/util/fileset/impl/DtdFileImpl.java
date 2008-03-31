@@ -23,8 +23,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
-import org.daisy.util.fileset.interfaces.SchemaFile;
-import org.daisy.util.fileset.interfaces.schema.DtdFile;
+import org.daisy.util.fileset.DtdFile;
+import org.daisy.util.fileset.SchemaFile;
 
 
 final class DtdFileImpl extends FilesetFileImpl implements DtdFile, SchemaFile {

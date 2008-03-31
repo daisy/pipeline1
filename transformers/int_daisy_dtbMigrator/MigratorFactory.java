@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
-import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.Fileset;
 
 /**
  * A factory producing DTB migrators.

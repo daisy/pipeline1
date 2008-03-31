@@ -24,6 +24,10 @@ import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.fileset.D202NccFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetErrorHandler;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.encryption.EncryptionType;
 import org.daisy.util.fileset.encryption.Encryptor;
 import org.daisy.util.fileset.encryption.EncryptorFactory;
@@ -33,10 +37,6 @@ import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.impl.FilesetFileFactory;
 import org.daisy.util.fileset.impl.FilesetImpl;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
 import org.daisy.util.fileset.util.ManifestFinder;
 
 /**

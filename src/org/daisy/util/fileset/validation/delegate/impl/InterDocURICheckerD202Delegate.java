@@ -2,10 +2,10 @@ package org.daisy.util.fileset.validation.delegate.impl;
 
 import javax.xml.namespace.QName;
 
+import org.daisy.util.fileset.D202SmilFile;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.xml.XmlFile;
-import org.daisy.util.fileset.interfaces.xml.d202.D202SmilFile;
+import org.daisy.util.fileset.XmlFile;
 import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;
 
 /**

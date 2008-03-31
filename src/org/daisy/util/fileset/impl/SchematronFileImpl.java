@@ -25,8 +25,8 @@ import java.net.URI;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.daisy.util.fileset.interfaces.SchemaFile;
-import org.daisy.util.fileset.interfaces.schema.SchematronFile;
+import org.daisy.util.fileset.SchemaFile;
+import org.daisy.util.fileset.SchematronFile;
 import org.xml.sax.SAXException;
 
 final class SchematronFileImpl extends XmlFileImpl implements SchematronFile, SchemaFile {

@@ -6,10 +6,10 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 
 import org.daisy.util.file.EFolder;
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.encryption.exception.EncryptionException;
 import org.daisy.util.fileset.encryption.exception.EncryptorNotSupportedException;
-import org.daisy.util.fileset.interfaces.Fileset;
 
 /**
  * Base interface for any implementation of a fileset encryptor. 

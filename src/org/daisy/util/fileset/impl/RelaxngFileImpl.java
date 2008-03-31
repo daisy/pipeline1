@@ -25,8 +25,8 @@ import java.net.URI;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.daisy.util.fileset.interfaces.SchemaFile;
-import org.daisy.util.fileset.interfaces.schema.RelaxngFile;
+import org.daisy.util.fileset.RelaxngFile;
+import org.daisy.util.fileset.SchemaFile;
 import org.xml.sax.SAXException;
 
 final class RelaxngFileImpl extends XmlFileImpl implements RelaxngFile, SchemaFile {

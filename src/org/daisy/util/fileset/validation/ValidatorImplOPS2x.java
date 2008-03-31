@@ -8,8 +8,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.events.Attribute;
 
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetType;
-import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.util.FilesetConstants;
 import org.daisy.util.fileset.validation.delegate.impl.InnerDocURICheckerDelegate;
 import org.daisy.util.fileset.validation.delegate.impl.InterDocURICheckerDelegate;

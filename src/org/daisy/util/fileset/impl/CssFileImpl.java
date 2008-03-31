@@ -26,11 +26,11 @@ import java.net.URI;
 import java.util.Locale;
 
 import org.apache.batik.css.parser.Parser;
+import org.daisy.util.fileset.CssFile;
+import org.daisy.util.fileset.ManifestFile;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
-import org.daisy.util.fileset.interfaces.ManifestFile;
-import org.daisy.util.fileset.interfaces.text.CssFile;
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.CSSParseException;
 import org.w3c.css.sac.DocumentHandler;

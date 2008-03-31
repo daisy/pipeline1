@@ -35,11 +35,11 @@ import javax.xml.namespace.QName;
 
 import org.ccil.cowan.tagsoup.AutoDetector;
 import org.ccil.cowan.tagsoup.Parser;
+import org.daisy.util.fileset.HtmlFile;
+import org.daisy.util.fileset.ManifestFile;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
-import org.daisy.util.fileset.interfaces.ManifestFile;
-import org.daisy.util.fileset.interfaces.sgml.HtmlFile;
 import org.daisy.util.i18n.CharsetDetector;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;

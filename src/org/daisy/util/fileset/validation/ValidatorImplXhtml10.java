@@ -2,8 +2,8 @@ package org.daisy.util.fileset.validation;
 
 import java.net.URI;
 
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetType;
-import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.validation.delegate.impl.InnerDocURICheckerDelegate;
 import org.daisy.util.fileset.validation.delegate.impl.InterDocURICheckerDelegate;
 import org.daisy.util.fileset.validation.exception.ValidatorException;

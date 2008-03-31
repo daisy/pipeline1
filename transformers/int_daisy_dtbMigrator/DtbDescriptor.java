@@ -2,13 +2,13 @@ package int_daisy_dtbMigrator;
 
 import java.util.Iterator;
 
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.audio.AudioFile;
-import org.daisy.util.fileset.interfaces.xml.TextualContentFile;
-import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986NcxFile;
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986OpfFile;
+import org.daisy.util.fileset.AudioFile;
+import org.daisy.util.fileset.D202NccFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
+import org.daisy.util.fileset.TextualContentFile;
+import org.daisy.util.fileset.Z3986NcxFile;
+import org.daisy.util.fileset.Z3986OpfFile;
 
 /**
  * Describe the nature of a DTB.

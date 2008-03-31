@@ -19,10 +19,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.daisy.util.file.EFile;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.xml.d202.D202MasterSmilFile;
-import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
+import org.daisy.util.fileset.D202MasterSmilFile;
+import org.daisy.util.fileset.D202NccFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.util.FilesetLabelProvider;
 import org.daisy.util.i18n.CharUtils;
 

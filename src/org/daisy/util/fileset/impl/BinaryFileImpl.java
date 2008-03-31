@@ -23,7 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
-import org.daisy.util.fileset.interfaces.binary.BinaryFile;
+import org.daisy.util.fileset.BinaryFile;
 
 abstract class BinaryFileImpl extends FilesetFileImpl implements BinaryFile {
 

@@ -32,8 +32,8 @@ import java.util.Map;
 
 import org.daisy.util.file.EFile;
 import org.daisy.util.file.IEFile;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
-import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.mime.MIMETypeException;
 

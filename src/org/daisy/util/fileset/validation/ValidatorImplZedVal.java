@@ -3,9 +3,9 @@ package org.daisy.util.fileset.validation;
 import java.io.File;
 import java.net.URI;
 
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
 import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;

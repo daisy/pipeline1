@@ -14,10 +14,12 @@ import org.daisy.util.file.EFile;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.fileset.D202NccFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetErrorHandler;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
+
 
 /**
  * Main Transformer class.
@@ -40,7 +42,7 @@ public class DtbMigrator extends Transformer implements FilesetErrorHandler, Tra
 			EFile inputFile = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("input")));
 			EFolder destination = new EFolder(FileUtils.createDirectory(FilenameOrFileURI.toFile((String)parameters.remove("destination"))));
 			Fileset inputFileset = new FilesetImpl(inputFile.toURI(),this,false,false);
-			
+						
 			/*
 			 * Create DtbDescriptors for input and output. 
 			 */			

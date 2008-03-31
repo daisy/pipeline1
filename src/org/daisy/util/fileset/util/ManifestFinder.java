@@ -7,7 +7,7 @@ import org.daisy.util.file.EFolder;
 
 /**
  * Given an input filesystem directory, locates all 
- * {@link org.daisy.util.fileset.interfaces.ManifestFile} 
+ * {@link org.daisy.util.fileset.ManifestFile} 
  * files within it and its subfolders.
  * @author Markus Gylling
  */
@@ -16,7 +16,7 @@ public class ManifestFinder {
 	/**
 	 * @return a Collection of File containing all files within set basefolder whose filename
 	 * patterns indicate that they implement the 
-	 * {@link org.daisy.util.fileset.interfaces.ManifestFile} interface.
+	 * {@link org.daisy.util.fileset.ManifestFile} interface.
 	 * @param deep whether to recurse subfolders.
 	 * @param baseFolder filessystem directory to search within
 	 * @throws IOException 

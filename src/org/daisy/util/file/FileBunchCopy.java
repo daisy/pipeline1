@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.daisy.util.execution.ProgressObserver;
-import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.Fileset;
 
 /**
  * Utilities to copy different collections of files.

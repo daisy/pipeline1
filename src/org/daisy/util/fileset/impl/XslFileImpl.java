@@ -25,7 +25,7 @@ import java.net.URI;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.daisy.util.fileset.interfaces.xml.XslFile;
+import org.daisy.util.fileset.XslFile;
 import org.xml.sax.SAXException;
 
 /**

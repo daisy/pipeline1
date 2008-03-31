@@ -23,8 +23,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
-import org.daisy.util.fileset.interfaces.ManifestFile;
-import org.daisy.util.fileset.interfaces.binary.EpubFile;
+import org.daisy.util.fileset.EpubFile;
+import org.daisy.util.fileset.ManifestFile;
 
 /**
  * @author Markus Gylling

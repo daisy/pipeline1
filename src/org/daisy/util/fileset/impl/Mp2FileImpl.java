@@ -29,7 +29,7 @@ import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Header;
 
-import org.daisy.util.fileset.interfaces.audio.Mp2File;
+import org.daisy.util.fileset.Mp2File;
 import org.daisy.util.xml.SmilClock;
 
 /**

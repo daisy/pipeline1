@@ -19,7 +19,7 @@
 
 package org.daisy.util.fileset.exception;
 
-import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.FilesetFile;
 
 public class FilesetFileErrorException extends FilesetFileException {
 

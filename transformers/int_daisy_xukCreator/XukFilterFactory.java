@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.Fileset;
 
 /**
  * A factory producing filters that can generate XUK files from various input.

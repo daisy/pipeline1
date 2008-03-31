@@ -36,7 +36,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.util.file.EFolder;
-import org.daisy.util.fileset.interfaces.xml.d202.D202SmilFile;
+import org.daisy.util.fileset.D202SmilFile;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;

@@ -5,14 +5,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.daisy.util.fileset.AudioFile;
+import org.daisy.util.fileset.D202NccFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
+import org.daisy.util.fileset.SmilFile;
+import org.daisy.util.fileset.Z3986OpfFile;
 import org.daisy.util.fileset.exception.FilesetTypeNotSupportedException;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.audio.AudioFile;
-import org.daisy.util.fileset.interfaces.xml.SmilFile;
-import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986OpfFile;
 
 /**
  * A helper class for spinal (main presentational sequence) retrievals from Fileset instances.

@@ -1,7 +1,7 @@
 package int_daisy_filesetRenamer.segment;
 
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.interfaces.FilesetFile;
 import org.daisy.util.fileset.util.FilesetLabelProvider;
 
 /**

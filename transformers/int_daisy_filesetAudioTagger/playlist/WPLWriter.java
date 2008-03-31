@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import org.daisy.util.fileset.AudioFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
-import org.daisy.util.fileset.interfaces.audio.AudioFile;
 import org.daisy.util.fileset.util.FilesetLabelProvider;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;

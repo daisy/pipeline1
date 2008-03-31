@@ -27,8 +27,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.util.FilesetFileFilter;
 
 /**

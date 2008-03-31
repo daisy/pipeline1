@@ -22,7 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
-import org.daisy.util.fileset.interfaces.image.PngFile;
+import org.daisy.util.fileset.PngFile;
 
 /**
  * @author Markus Gylling

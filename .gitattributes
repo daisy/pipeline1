@@ -510,10 +510,10 @@ src/org/daisy/util/file/detect/XMLExtendedToken.java -text
 src/org/daisy/util/file/detect/XMLRootToken.java -text
 src/org/daisy/util/file/detect/XMLSignature.java -text
 src/org/daisy/util/file/detect/package.html -text
+src/org/daisy/util/fileset/EpubFile.java -text
+src/org/daisy/util/fileset/OPF20File.java -text
 src/org/daisy/util/fileset/impl/EpubFileImpl.java -text
 src/org/daisy/util/fileset/impl/Opf20FileImpl.java -text
-src/org/daisy/util/fileset/interfaces/binary/EpubFile.java -text
-src/org/daisy/util/fileset/interfaces/xml/ops20/OPF20File.java -text
 src/org/daisy/util/fileset/manipulation/manipulators/XMLEventConsumer.java -text
 src/org/daisy/util/fileset/manipulation/manipulators/XMLEventExposer.java -text
 src/org/daisy/util/fileset/util/FilesetFileFilter.java -text

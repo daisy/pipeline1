@@ -35,9 +35,9 @@ import org.daisy.util.file.FileBunchCopy;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetImpl;
-import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 

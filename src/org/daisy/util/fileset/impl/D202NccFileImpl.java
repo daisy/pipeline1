@@ -28,11 +28,11 @@ import java.util.LinkedHashMap;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.daisy.util.fileset.D202NccFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
+import org.daisy.util.fileset.UIDCarrier;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.UIDCarrier;
-import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
 import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.xml.SmilClock;
 import org.xml.sax.Attributes;

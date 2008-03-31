@@ -1,6 +1,6 @@
 package int_daisy_filesetRenamer.segment;
 
-import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.FilesetFile;
 
 /**
  * Represents a segment of a filename, which is an exact copy of the input filename (minus extension segment).

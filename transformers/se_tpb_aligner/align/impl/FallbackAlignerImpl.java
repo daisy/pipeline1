@@ -3,8 +3,8 @@ package se_tpb_aligner.align.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.daisy.util.fileset.AudioFile;
 import org.daisy.util.fileset.impl.FilesetFileFactory;
-import org.daisy.util.fileset.interfaces.audio.AudioFile;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;

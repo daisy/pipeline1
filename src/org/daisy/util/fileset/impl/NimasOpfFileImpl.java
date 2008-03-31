@@ -25,7 +25,7 @@ import java.net.URI;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.daisy.util.fileset.interfaces.xml.z3986.NimasOpfFile;
+import org.daisy.util.fileset.NimasOpfFile;
 import org.xml.sax.SAXException;
 
 final class NimasOpfFileImpl extends OpfFileImpl implements NimasOpfFile{

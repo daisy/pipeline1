@@ -8,9 +8,9 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
+import org.daisy.util.fileset.AudioFile;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.audio.AudioFile;
 import org.daisy.util.fileset.util.FilesetLabelProvider;
 
 /**

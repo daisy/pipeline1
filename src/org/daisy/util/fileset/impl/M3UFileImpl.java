@@ -22,7 +22,7 @@ package org.daisy.util.fileset.impl;
 import java.io.IOException;
 import java.net.URI;
 
-import org.daisy.util.fileset.interfaces.text.M3UFile;
+import org.daisy.util.fileset.M3UFile;
 
 final class M3UFileImpl extends PlayListImpl implements M3UFile {
 

@@ -4,9 +4,9 @@ import java.net.URI;
 import java.net.URL;
 
 import org.daisy.util.exception.ExceptionTransformer;
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetType;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
+import org.daisy.util.fileset.Z3986DtbookFile;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
 import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;

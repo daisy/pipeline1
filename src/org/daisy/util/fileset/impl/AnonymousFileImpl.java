@@ -23,7 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
-import org.daisy.util.fileset.interfaces.AnonymousFile;
+import org.daisy.util.fileset.AnonymousFile;
 
 /**
  * @author Markus Gylling

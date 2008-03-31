@@ -34,9 +34,9 @@ import java.util.logging.Level;
 
 import javax.xml.stream.XMLInputFactory;
 
-import org.daisy.util.fileset.interfaces.xml.SmilFile;
-import org.daisy.util.fileset.interfaces.xml.TextualContentFile;
-import org.daisy.util.fileset.interfaces.xml.XmlFile;
+import org.daisy.util.fileset.SmilFile;
+import org.daisy.util.fileset.TextualContentFile;
+import org.daisy.util.fileset.XmlFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.StaxEntityResolver;

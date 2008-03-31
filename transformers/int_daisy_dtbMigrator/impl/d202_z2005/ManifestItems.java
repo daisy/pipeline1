@@ -3,9 +3,9 @@ package int_daisy_dtbMigrator.impl.d202_z2005;
 import java.net.URI;
 import java.util.HashSet;
 
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetFileFactory;
-import org.daisy.util.fileset.interfaces.FilesetFile;
 
 /**
  * The set of files that make up the output z2005 DTB.

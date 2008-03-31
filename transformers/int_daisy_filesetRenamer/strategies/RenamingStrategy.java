@@ -6,8 +6,8 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
-import org.daisy.util.fileset.interfaces.FilesetFile;
 
 /**
  * A base interface for fileset renaming strategies.

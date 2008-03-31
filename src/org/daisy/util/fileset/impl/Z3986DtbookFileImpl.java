@@ -29,9 +29,9 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.daisy.util.fileset.interfaces.ManifestFile;
-import org.daisy.util.fileset.interfaces.UIDCarrier;
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986DtbookFile;
+import org.daisy.util.fileset.ManifestFile;
+import org.daisy.util.fileset.UIDCarrier;
+import org.daisy.util.fileset.Z3986DtbookFile;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

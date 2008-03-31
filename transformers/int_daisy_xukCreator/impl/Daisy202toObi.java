@@ -5,11 +5,11 @@ import java.net.URL;
 import java.util.Map;
 
 import org.daisy.util.file.EFolder;
+import org.daisy.util.fileset.AudioFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.audio.AudioFile;
-import org.daisy.util.fileset.interfaces.image.ImageFile;
+import org.daisy.util.fileset.ImageFile;
 import org.daisy.util.fileset.util.FilesetFileFilter;
 import org.daisy.util.fileset.util.FilesetLabelProvider;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;

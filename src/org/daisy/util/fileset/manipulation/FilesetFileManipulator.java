@@ -21,7 +21,7 @@ package org.daisy.util.fileset.manipulation;
 
 import java.io.File;
 
-import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.FilesetFile;
 
 /**
  * Interface that any manipulator of a FilesetFile must implement in

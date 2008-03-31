@@ -3,7 +3,7 @@ package int_daisy_xukCreator;
 import java.util.Map;
 
 import org.daisy.util.file.EFolder;
-import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.util.FilesetFileFilter;
 
 /**

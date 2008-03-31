@@ -1,7 +1,7 @@
 package org.daisy.util.fileset.validation.delegate;
 
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetType;
-import org.daisy.util.fileset.interfaces.Fileset;
 import org.daisy.util.fileset.validation.Validator;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;

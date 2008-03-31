@@ -1,6 +1,6 @@
 package org.daisy.util.fileset.util;
 
-import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.FilesetFile;
 
 /**
  * A filter for FilesetFiles.

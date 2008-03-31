@@ -3,7 +3,7 @@ package int_daisy_filesetRenamer.segment;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.util.FilesetLabelProvider;
 
 /**

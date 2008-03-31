@@ -25,7 +25,7 @@ import java.net.URI;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986OpfFile;
+import org.daisy.util.fileset.Z3986OpfFile;
 import org.daisy.util.xml.SmilClock;
 import org.xml.sax.SAXException;
 

@@ -33,18 +33,18 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import javazoom.jl.decoder.BitstreamException;
 
+import org.daisy.util.fileset.D202MasterSmilFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetErrorHandler;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
+import org.daisy.util.fileset.ManifestFile;
+import org.daisy.util.fileset.Referring;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.exception.FilesetTypeNotSupportedException;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.ManifestFile;
-import org.daisy.util.fileset.interfaces.Referring;
-import org.daisy.util.fileset.interfaces.xml.d202.D202MasterSmilFile;
 import org.daisy.util.fileset.util.FilesetConstants;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.fileset.util.URIStringParser;
@@ -594,7 +594,7 @@ public class FilesetImpl implements Fileset {
 	
 	/**
 	 * @deprecated
-	 * @see org.daisy.util.fileset.interfaces.FilesetFile#getRelativeURI
+	 * @see org.daisy.util.fileset.FilesetFile#getRelativeURI
 	 */
 	public URI getRelativeURI(FilesetFile filesetFile) {
 	    ManifestFile manifest = this.getManifestMember();

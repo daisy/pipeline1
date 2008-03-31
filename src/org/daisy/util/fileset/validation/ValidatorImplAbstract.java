@@ -18,14 +18,14 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.daisy.util.exception.ExceptionTransformer;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetErrorHandler;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
+import org.daisy.util.fileset.XmlFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.xml.XmlFile;
 import org.daisy.util.fileset.validation.delegate.ValidatorDelegate;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotRecognizedException;

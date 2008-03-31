@@ -3,7 +3,7 @@ package int_daisy_filesetAudioTagger.id3;
 import java.io.File;
 
 import org.daisy.util.file.FileUtils;
-import org.daisy.util.fileset.interfaces.FilesetFile;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.manipulation.FilesetFileManipulator;
 import org.daisy.util.fileset.manipulation.FilesetManipulationException;
 import org.jaudiotagger.tag.id3.ID3v23Frame;

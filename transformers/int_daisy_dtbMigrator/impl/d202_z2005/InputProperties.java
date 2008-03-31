@@ -6,7 +6,7 @@ import int_daisy_dtbMigrator.DtbType;
 
 import java.util.Map;
 
-import org.daisy.util.fileset.interfaces.Fileset;
+import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.util.FilesetLabelProvider;
 
 /**

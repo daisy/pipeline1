@@ -27,8 +27,8 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.daisy.util.fileset.WavFile;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
-import org.daisy.util.fileset.interfaces.audio.WavFile;
 import org.daisy.util.xml.SmilClock;
 
 /**

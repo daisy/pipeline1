@@ -20,10 +20,10 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.util.file.EFile;
 import org.daisy.util.file.EFolder;
+import org.daisy.util.fileset.FilesetErrorHandler;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
-import org.daisy.util.fileset.interfaces.FilesetErrorHandler;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;

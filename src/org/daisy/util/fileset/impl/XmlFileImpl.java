@@ -39,10 +39,10 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xerces.util.XMLGrammarPoolImpl;
+import org.daisy.util.fileset.XmlFile;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
-import org.daisy.util.fileset.interfaces.xml.XmlFile;
 import org.daisy.util.xml.XMLUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogException;

@@ -30,13 +30,13 @@ import java.util.logging.Level;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.fileset.D202NccFile;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
+import org.daisy.util.fileset.Z3986OpfFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetImpl;
-import org.daisy.util.fileset.interfaces.Fileset;
-import org.daisy.util.fileset.interfaces.FilesetFile;
-import org.daisy.util.fileset.interfaces.xml.d202.D202NccFile;
-import org.daisy.util.fileset.interfaces.xml.z3986.Z3986OpfFile;
 import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
 
 import se_tpb_dtbSplitterMerger.DtbSplitterMergerConstants;
