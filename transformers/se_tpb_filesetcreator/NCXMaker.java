@@ -1106,7 +1106,7 @@ public class NCXMaker implements BusListener {
 			// continue, just pretend we never saw this pagenum element.
 			return;
 		}
-		String pageNumber = ((Element) XPathUtils.selectSingleNode(pageTarget, "//ncx:text", mNsc)).getTextContent();
+		String pageNumber = ((Element) XPathUtils.selectSingleNode(pageTarget, "//ncx:text", mNsc)).getTextContent().trim();
 		DEBUG("NCXMaker#handlePageNum: text content: " + pageNumber);
 		try {
 			int pNumber = Integer.parseInt(pageNumber);
