@@ -92,7 +92,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 				"C:\\Program Files\\ImageMagick-6.3.5-Q16\\convert.exe");//$NON-NLS-1$
 		setPrefPath(PreferencesKeys.PATH_TO_LAME, (new File(Platform
 				.getInstallLocation().getURL().getPath()
-				+ "/lame.exe")).getPath());
+				+ "/ext/lame.exe")).getPath());
 	}
 
 	/**
