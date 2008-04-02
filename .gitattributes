@@ -885,6 +885,7 @@ transformers/se_tpb_dtbookFix/LangExecutor.java -text
 transformers/se_tpb_dtbookFix/XSLTExecutor.java -text
 transformers/se_tpb_dtbookFix/messages.properties -text
 transformers/se_tpb_dtbookFix/transformer.tdf -text
+transformers/se_tpb_dtbookFix/xslt/iterative-processor.xsl -text
 transformers/se_tpb_dtbookFix/xslt/level-tools.xsl -text
 transformers/se_tpb_dtbookFix/xslt/output.xsl -text
 transformers/se_tpb_dtbookFix/xslt/output2.xsl -text
@@ -909,6 +910,7 @@ transformers/se_tpb_dtbookFix/xslt/repair-remove-illegal-headings.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-add-author-title.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-add-lang.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-change-inline-pagenum-to-block.xsl -text
+transformers/se_tpb_dtbookFix/xslt/tidy-externalize-whitespace.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-indent.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-level-cleaner.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-move-pagenum.xsl -text

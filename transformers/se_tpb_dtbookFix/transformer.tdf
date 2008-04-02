@@ -58,6 +58,17 @@
 		</parameter>
 		
 		<parameter required="false" type="enum">
+			<name>externalizeWhitespace</name>
+			<description>Optional in Tidy category. Move leading and trailing whitespace outside of em, strong, sub, sup and pagenum elements.</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
 			<name>fixCharset</name>
 			<description>Optional in Repair category. Run character set detection and transcoding</description>
 			<example>true</example>
