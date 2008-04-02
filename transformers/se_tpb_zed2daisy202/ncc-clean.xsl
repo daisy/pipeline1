@@ -62,7 +62,7 @@
 			<xsl:attribute name="content">
 				<xsl:choose>
 					<xsl:when test="/h:html/h:body/h:span[@class='page-normal']">
-						<xsl:value-of select="/h:html/h:body/h:span[@class='page-normal'][last()]/h:a"/>
+						<xsl:value-of select="normalize-space(/h:html/h:body/h:span[@class='page-normal'][last()]/h:a)"/>
 					</xsl:when>
 					<xsl:otherwise>0</xsl:otherwise>				
 				</xsl:choose>
