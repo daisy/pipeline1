@@ -34,7 +34,7 @@
 	<xsl:template name="processChildNodes">
 		<xsl:param name="node"/>
 		<xsl:param name="count" select="1"/>
-		<xsl:message terminate="no"><xsl:value-of select="concat('Processing document... (Iteration ', $count, ')')"/></xsl:message>
+		<xsl:message terminate="no"><xsl:value-of select="concat('Processing nodes... (Iteration ', $count, ')')"/></xsl:message>
 		<xsl:variable name="tempDoc"><xsl:apply-templates select="$node" mode="iteratorStart"/></xsl:variable>
 		<xsl:choose>
 			<xsl:when test="deep-equal($tempDoc, $node)">

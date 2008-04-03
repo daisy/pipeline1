@@ -59,7 +59,7 @@
 		
 		<parameter required="false" type="enum">
 			<name>externalizeWhitespace</name>
-			<description>Optional in Tidy category. Move leading and trailing whitespace outside of em, strong, sub, sup and pagenum elements.</description>
+			<description>Optional in Tidy category. Move leading and trailing whitespace outside of em, strong, sub, sup, noteref and pagenum elements</description>
 			<example>true</example>
 			<enum>
 				<value>true</value>

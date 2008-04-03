@@ -2,10 +2,10 @@
 <!--
 	Externalize whitespace
 		Version
-			2008-04-02
+			2008-04-03
 
 		Description
-			Externalizes leading and trailing whitespace from em, strong, sub, sup, pagenum.
+			Externalizes leading and trailing whitespace from em, strong, sub, sup, pagenum, noteref.
 			Handles any level of nesting, e.g.:
 				<em> <strong> this </strong> <strong> is <pagenum id="p-1"> 1 </pagenum> </strong> an example </em>
 
@@ -31,7 +31,7 @@
 	<xsl:apply-templates select="." mode="startProcessing"/>
 </xsl:template>
 
-<xsl:template match="dtb:em[not(@xml:space='preserve')]|dtb:strong[not(@xml:space='preserve')]|dtb:sub[not(@xml:space='preserve')]|dtb:sup[not(@xml:space='preserve')]|dtb:pagenum[not(@xml:space='preserve')]">
+<xsl:template match="dtb:em[not(@xml:space='preserve')]|dtb:strong[not(@xml:space='preserve')]|dtb:sub[not(@xml:space='preserve')]|dtb:sup[not(@xml:space='preserve')]|dtb:pagenum[not(@xml:space='preserve')]|dtb:noteref[not(@xml:space='preserve')]">
 	<xsl:choose>
 		<xsl:when test="count(node())=1 and text()">
 			<xsl:choose>

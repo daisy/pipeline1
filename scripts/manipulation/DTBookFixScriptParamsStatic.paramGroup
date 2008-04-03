@@ -15,6 +15,14 @@
 			<boolean/>
 		</datatype>
 	</parameter>
+	
+	<parameter name="externalizeWhitespace" value="false" required="false">
+		<nicename>Tidy inline whitespace</nicename>
+		<description>Optional routine in the Tidy category. Check box to move leading and trailing whitespace outside of em, strong, sub, sup, noteref and pagenum elements</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
 
 	<parameter name="fixCharset" value="false" required="false">
 		<nicename>Fix Character set</nicename>

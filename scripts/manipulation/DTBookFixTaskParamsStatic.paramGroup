@@ -11,6 +11,11 @@
 		</parameter>
 
 		<parameter>
+			<name>externalizeWhitespace</name>
+			<value>${externalizeWhitespace}</value>
+		</parameter>
+
+		<parameter>
 			<name>fixCharset</name>
 			<value>${fixCharset}</value>
 		</parameter>
