@@ -307,11 +307,11 @@ Proper markup should rather be as follows:
         </td>
     </tr>
     <tr valign="top">
-        <td><code>cssUri</code></td>
+        <td><code>cssURI</code></td>
         <td><span class="text">[css]</span></td>
         <td>
             The URI to the Cascading Style Sheet (CSS) to be used for the DTBook file.<br />
-            If this parameter is not specified, no link will be made to a style sheet.
+            If this parameter is not specified, no reference will be made to a style sheet.
         </td>
     </tr>
     <tr valign="top">
@@ -325,11 +325,11 @@ Proper markup should rather be as follows:
             <span class="text">dc:</span>. Note: the <span class="text">dc:title</span> meta data is not handled
             through this mechanism, as it is specified with the <code>title</code> parameter.
             <br />
-            If this parameter is set to <span class="text">true</span>, the parameter <code>nccFolder</code> must be specified.
+            If this parameter is set to <span class="text">true</span>, the parameter <code>nccURI</code> must be specified.
         </td>
     </tr>
     <tr valign="top">
-        <td><code>nccFolder</code></td>
+        <td><code>nccURI</code></td>
         <td><span class="text">false</span></td>
         <td>
             This parameter is only applicable if the transformation is used as a part of a DAISY 2.02 to DAISY 3.0 DTB migration,
@@ -363,6 +363,11 @@ Proper markup should rather be as follows:
                 <li>The <code>name</code>, <code>content</code> and <code>scheme</code> attributes are copied.</li>
             </ul>
         </td>
+    </tr>
+    <tr valign="top">
+        <td><code>head/title</code></td>
+        <td><code>frontmatter/doctitle</code></td>
+        <td/>
     </tr>
 <!--    <tr valign="top" class="x">
         <td><code>head/link</code>, where the value for the <code>rel</code> attribute equals <span class="text">stylesheet</span>.

@@ -4,7 +4,7 @@
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	xmlns="http://www.daisy.org/z3986/2005/dtbook/"
 	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:pfunc="http://daisymfc.sf.net/xslt/function"
+	xmlns:pfunc="http://www.daisy.org/pipeline/xslt/function"
 	exclude-result-prefixes="xs html pfunc">
 	
 
@@ -17,17 +17,26 @@
 	<!--  Input paramerets -->
 	<xsl:param name="uid" as="xs:string" select="'[UID]'" />					<!-- uid of publication -->
 	<xsl:param name="title" as="xs:string" select="'[DTB_TITLE]'" />			<!-- title of publication -->
-	<xsl:param name="cssUri" as="xs:string" select="'[CSS]'" />					<!-- URI to CSS of publication -->
+	<xsl:param name="cssURI" as="xs:string" select="'[cssURI]'" />				<!-- URI to CSS of publication -->
 	<xsl:param name="nccURI" as="xs:string" select="'[nccURI]'" /> 				<!-- URI to D202 NCC file -->
 	<xsl:param name="transferDcMetadata" as="xs:string" select="'true'" /> 	<!-- transfer dc:* metadata from ncc file -->
 
-	<xsl:variable name="dtbFolder" as="xs:string" select="translate($nccFolder,'\','/')" />
+	<xsl:variable name="dtbFolder" as="xs:string" select="translate($nccURI,'\','/')" />
 	
 	
 	<xsl:variable name="smil" as="xs:string" select="'.smil#'" />
 	
 	<xsl:template match="/">
+		<!-- Processing instruction: Use CSS to display the DTBook XML -->
+		<xsl:if test="$cssURI ne '[CSS]'">
+			<xsl:processing-instruction name="xml-stylesheet">
+				<xsl:text> type="text/css" href="</xsl:text>
+				<xsl:value-of select="$cssURI" />
+				<xsl:text>"</xsl:text>
+			</xsl:processing-instruction>
+		</xsl:if>
 		<dtbook version="2005-2">
+			<xsl:copy-of select="html:html/@xml:lang" />
 			<xsl:apply-templates />
 		</dtbook>
 	</xsl:template>
@@ -37,13 +46,11 @@
 			<meta name="dtb:uid" content="{$uid}" />
 			<meta name="dtb:title" content="{$title}" />
 			<meta name="dc:Title" content="{$title}" />
-			<meta name="nccURI" content="{$nccURI}" />
-			<meta name="transferDcMetadata" content="{$transferDcMetadata}" />
 			<xsl:choose>
 				<xsl:when test="
 						matches($transferDcMetadata,'true','i') 
 						and doc-available($nccURI)
-						and $nccFolder ne '[nccURI]'">
+						and $nccURI ne '[nccURI]'">
 					<!-- If requested, and if ncc.html can be found, transfer dc:* metadata (not dc:title, handled above) from ncc.html -->
 					<xsl:apply-templates select="doc(concat($dtbFolder,'/ncc.html'))//html:head/html:meta[starts-with(@name,'dc:') and @name ne 'dc:title']" mode="metadata-from-ncc"/>
 				</xsl:when>
@@ -52,9 +59,6 @@
 					<xsl:apply-templates select="html:meta" />
 				</xsl:otherwise>
 			</xsl:choose>
-			<xsl:if test="$cssUri ne '[CSS]'">
-				<link rel="stylesheet" type="text/css" href="{$cssUri}"/>
-			</xsl:if>
 		</head>
 	</xsl:template>
 	
@@ -98,7 +102,7 @@
 	<xsl:template match="html:body">
 		<book>
 			<xsl:call-template name="copy-attributes" />
-			<xsl:if test="html:h1[@class eq 'frontmatter']">
+			<xsl:if test="html:h1[@class eq 'frontmatter'] or //html:head/html:title">
 				<frontmatter>
 					<!-- Assuming that the title element in head represents the title -->
 					<xsl:apply-templates select="//html:head/html:title" />

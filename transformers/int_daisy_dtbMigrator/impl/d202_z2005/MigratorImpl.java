@@ -496,7 +496,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 				Map<String,String> parameters = new HashMap<String,String>();
 				parameters.put("uid", properties.getIdentifier());
 				parameters.put("title", properties.getTitle());
-				parameters.put("cssUri", cssUri); 
+				parameters.put("cssURI", cssUri); 
 				// A user preference: shall meta data be transfered from the ncc file to the DTBook
 				parameters.put("transferDcMetadata", (String)params.get("dtbookTransferNCCMetadata"));
 				
