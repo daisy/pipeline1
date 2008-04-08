@@ -28,7 +28,7 @@
 	
 	<xsl:template match="/">
 		<!-- Processing instruction: Use CSS to display the DTBook XML -->
-		<xsl:if test="$cssURI ne '[CSS]'">
+		<xsl:if test="$cssURI ne '[cssURI]'">
 			<xsl:processing-instruction name="xml-stylesheet">
 				<xsl:text> type="text/css" href="</xsl:text>
 				<xsl:value-of select="$cssURI" />
