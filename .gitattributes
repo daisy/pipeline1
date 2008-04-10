@@ -893,6 +893,7 @@ transformers/se_tpb_dtbookFix/xslt/output.xsl -text
 transformers/se_tpb_dtbookFix/xslt/output2.xsl -text
 transformers/se_tpb_dtbookFix/xslt/recursive-copy.xsl -text
 transformers/se_tpb_dtbookFix/xslt/recursive-copy2.xsl -text
+transformers/se_tpb_dtbookFix/xslt/repair-add-levels.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-complete-structure.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-flatten-redundant-nesting.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-idref.xsl -text
