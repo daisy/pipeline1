@@ -104,7 +104,7 @@
   		<sch:assert test="string-length(@src)>=5">[narrator109] Invalid image filename.</sch:assert>
   		<sch:assert test="substring(@src,string-length(@src) - 3, 4)='.jpg' or
   		                  substring(@src,string-length(@src) - 3, 4)='.png' or
-  		                  substring(@src,string-length(@src) - 3, 4)='.svg'">[narrator109] Images must be in JPG, PNG or SVG format.</sch:assert>
+  		                  substring(@src,string-length(@src) - 3, 4)='.svg'">[narrator109] Images must be in JPG (*.jpg), PNG (*.png) or SVG (*.svg) format.</sch:assert>
   	</sch:rule>  	
   </sch:pattern>
   
