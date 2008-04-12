@@ -86,6 +86,8 @@ Function CheckInstDirReg
     EnableWindow $R1 0
     GetDlgItem $R1 $R0 1001
     EnableWindow $R1 0
+    GetDlgItem $R0 $HWNDPARENT 1
+    System::Call "user32::SetFocus(i R0)"
   donothing:
 FunctionEnd
 
@@ -101,6 +103,8 @@ Function CheckSMDirReg
     EnableWindow $R1 0
     GetDlgItem $R1 $R0 1005
     EnableWindow $R1 0
+    GetDlgItem $R0 $HWNDPARENT 1
+    System::Call "user32::SetFocus(i R0)"
   donothing:
 FunctionEnd
 ;----------------------------------------------------------
@@ -140,12 +144,35 @@ InstType /COMPONENTSONLYONCUSTOM
 Function .onInit
   ; check the user priviledges
   !insertmacro MULTIUSER_INIT
-  ; set the registry root according to the priviledge
   ; show the language selection dialog
   !insertmacro MUI_LANGDLL_DISPLAY
-  
+
 
 FunctionEnd
+
+;----------------------------------------------------------
+;   Legacy Clean-Up Section
+;----------------------------------------------------------
+Section -LegacyCleanUp SEC00
+    ; dclean the configuration and workspce area
+    RMDir /r /REBOOTOK "$INSTDIR\configuration"
+    RMDir /r /REBOOTOK "$INSTDIR\plugins"
+    RMDir /r /REBOOTOK "$INSTDIR\features"
+    RMDir /r /REBOOTOK "$INSTDIR\workspace"
+    ; clean the start menu
+    ReadRegStr $SMGROUP ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY}" "${PRODUCT_REG_VALUENAME_STARTMENU}"
+    StrCmp $SMGROUP "" end
+    ReadRegStr $R0 HKCU "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" "Programs"
+    IfFileExists $R0\$SMGROUP 0 end
+    RMDIR /r "$R0\$SMGROUP\workspace"
+    ; If the current user doesn't have a user install, clean everything in the menu
+    ReadRegStr $R1 HKCU "${PRODUCT_REG_KEY}" "${PRODUCT_REG_VALUENAME_STARTMENU}"
+    StrCmp $R1 "" 0 end
+    Delete "$R0\$SMGROUP\${PRODUCT_NAME}.lnk"
+    Delete "$R0\$SMGROUP\Uninstall ${PRODUCT_NAME}.lnk"
+    RMDIR "$R0\$SMGROUP"
+    end:
+SectionEnd
 
 ;----------------------------------------------------------
 ;   Main Section
@@ -211,8 +238,6 @@ Section -AdditionalIcons
   CreateShortCut "$SMPROGRAMS\$SMGROUP\${UNINSTALLER_NAME}.lnk" "$INSTDIR\${UNINSTALLER_NAME}.exe"
   CreateShortCut "$SMPROGRAMS\$SMGROUP\${PRODUCT_PUBLISHER}.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
   CreateShortCut "$SMPROGRAMS\$SMGROUP\${PRODUCT_NAME}.lnk" "$INSTDIR\DAISY Pipeline.exe"
-  ; Clean legacy installer remainings
-  RMDIR /r /REBOOTOK "$SMPROGRAMS\$SMGROUP\workspace"
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
@@ -298,12 +323,12 @@ Section Uninstall
   RMDir /r /REBOOTOK "$INSTDIR\configuration"
   RMDir /r /REBOOTOK "$INSTDIR\workspace"
   RMDir /REBOOTOK "$INSTDIR"
-  
+
   ; --- Clean the App Data dirs if it is a shared install
   StrCmp "$MultiUser.InstallMode" "AllUsers" 0 next
   ${un.EnumUsersReg} "un.rmAppDataDir" temp.key
   next:
-  
+
   ; --- Clean the start menu ---
   !insertmacro MUI_STARTMENU_GETFOLDER Application $SMGROUP
   Delete "$SMPROGRAMS\$SMGROUP\${PRODUCT_NAME}.lnk"
