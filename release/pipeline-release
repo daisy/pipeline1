@@ -14,10 +14,11 @@ Options:\n\
     -l : create linux installer\n\
     -m : create mac installer\n\
     -q : quiet\n\
-    -v : verbose"
+    -V : verbose\n\
+    -v VER : set the version to VER"
 
 # Parse the Options
-while getopts "hwlmqv" OPTION
+while getopts "hwlmqVv:" OPTION
 do
   case $OPTION in
     h) echo -e $USAGE
@@ -25,8 +26,9 @@ do
     w) WIN=true;;
     l) LINUX=true;;
     m) MAC=true;;
+    v) VERSION="$OPTARG";;
     q) QUIET=true;;
-    v) VERBOSE=true;;
+    V) VERBOSE=true;;
   esac
 done
 shift $(($OPTIND - 1))
@@ -36,6 +38,7 @@ OLD_DIR=`pwd`
 FINAL_DIR=${1:-/Users/Romain/Desktop}
 EXPORT_DIR=${2:-/Users/Romain/Public/build}
 INSTALL_SRC_DIR=${3:-/Users/Romain/Documents/Work/pipeline/release}
+VERSION=${VERSION:-$VERSION}
 # Check OS flags
 if [[ -z $WIN$LINUX$MAC ]]
 then
@@ -55,7 +58,7 @@ then
 	if [[ -z $VERBOSE ]]; then exec 3>&1 && exec 1>/dev/null; fi
 	makensis pipeline-setup.nsi | tee "$FINAL_DIR/nsis.log"
 	if [[ -z $VERBOSE ]]; then exec 1>&3; fi
-	mv setup.exe "$FINAL_DIR/PipelineGUI-`date +%Y%m%d`_setup.exe"
+	mv setup.exe "$FINAL_DIR/PipelineGUI-$VERSION_setup.exe"
 	if [[ -z $QUIET ]]; then echo "Done."; fi
 fi
 
@@ -67,7 +70,7 @@ then
 	cd linux.gtk.x86
 	cd `ls`
 	chmod 755 DAISY\ Pipeline
-	tar -czf "$FINAL_DIR/PipelineGUI-`date +%Y%m%d`.tar.gz" *
+	tar -czf "$FINAL_DIR/PipelineGUI-$VERSION.tar.gz" *
 	if [[ -z $QUIET ]]; then echo "Done."; fi
 fi
 
@@ -86,9 +89,9 @@ APP_NAME=DAISY\ Pipeline.app
 VOL_NAME=DAISY\ Pipeline
 TEMP_DMG_SRC="${FINAL_DIR}/tmp_DMGSRC"
 if [ -z $INCLUDE_TOOLS ]; then
-	DMG_NAME=PipelineGUI-noTools-`date +%Y%m%d`.dmg
+	DMG_NAME=PipelineGUI-noTools-$VERSION.dmg
 else
-	DMG_NAME=PipelineGUI-`date +%Y%m%d`.dmg
+	DMG_NAME=PipelineGUI-$VERSION.dmg
 fi
 TEMP_DMG="${FINAL_DIR}/tmp_${DMG_NAME}"
 
