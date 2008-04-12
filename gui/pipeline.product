@@ -68,7 +68,7 @@
    </plugins>
 
    <features>
-      <feature id="org.daisy.pipeline.gui" version="1.0.2"/>
+      <feature id="org.daisy.pipeline.gui" version="1.0.3"/>
       <feature id="org.eclipse.rcp" version="3.3.2.R33x_r20071022-8y8eE9CEV3FspP8HJrY1M2dS"/>
       <feature id="org.eclipse.rcp.additions" version="3.3.2.200712191738"/>
    </features>
