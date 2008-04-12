@@ -2,7 +2,7 @@
 <feature
       id="org.daisy.pipeline.gui"
       label="%featureName"
-      version="1.0.2"
+      version="1.0.3"
       provider-name="%providerName"
       plugin="org.daisy.pipeline.gui"
       os="linux,macosx,win32"
@@ -31,16 +31,16 @@
    </requires>
 
    <plugin
+         id="org.daisy.pipeline"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
          id="org.daisy.pipeline.gui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.daisy.pipeline"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
 </feature>
