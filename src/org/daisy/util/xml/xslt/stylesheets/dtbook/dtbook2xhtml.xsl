@@ -982,6 +982,23 @@
            <xsl:apply-templates/>
          </span>
        </xsl:when>
+       <xsl:when test="@smilref">
+         <xsl:variable name="url" select="substring-before(@smilref, '#')"/>
+		 <xsl:variable name="fragment" select="substring-after(@smilref, '#')"/>
+		 <xsl:choose>
+		   <xsl:when test="document(concat($baseDir, $url))//*[@id=$fragment and self::s:par] and not(ancestor::dtb:note) and not(descendant::*[@smilref])">
+		     <a id="{@id}">
+			   <xsl:attribute name="href">
+			     <xsl:value-of select="@smilref"/>
+			   </xsl:attribute>
+			   <xsl:apply-templates/>
+			 </a>
+		   </xsl:when>
+		   <xsl:otherwise>
+		     <xsl:apply-templates/>
+		   </xsl:otherwise>
+	     </xsl:choose>
+       </xsl:when>
        <xsl:otherwise>
          <a>
            <xsl:call-template name="copyCatts"/>
