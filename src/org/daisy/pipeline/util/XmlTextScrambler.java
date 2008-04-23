@@ -111,8 +111,12 @@ public class XmlTextScrambler {
 				context.addEvent(xe);
 				if(xe.isStartElement()) {
 					skipElemTextScrambling=shouldSkip(xe.asStartElement());
-					if(xe.asStartElement().getName().getLocalPart()=="meta") {
+					if(isMetaElement(xe.asStartElement())) {					
 						xe = handleMetaElement(xe.asStartElement(),xef);
+					}else if (isImageElement(xe.asStartElement())) {
+						xe = handleImageElement(xe.asStartElement(),xef);
+					}else if (isAcronymElement(xe.asStartElement())) {
+						xe = handleAcronymElement(xe.asStartElement(),xef);
 					}
 				}else if(xe.isCharacters() && !skipElemTextScrambling 
 						&& !CharUtils.isXMLWhiteSpace(xe.asCharacters().getData())) {
@@ -135,6 +139,62 @@ public class XmlTextScrambler {
 			StAXOutputFactoryPool.getInstance().release(xof, xofProperties);
 			StAXEventFactoryPool.getInstance().release(xef);
 		}	
+	}
+	
+	private boolean isAcronymElement(StartElement se) {
+		return se.getName().getLocalPart().matches("acronym|abbr");
+	}
+	
+	private boolean isImageElement(StartElement se) {
+		return se.getName().getLocalPart()=="img";
+	}
+
+	private boolean isMetaElement(StartElement se) {
+		return se.getName().getLocalPart()=="meta";
+	}
+
+	private XMLEvent handleAcronymElement(StartElement se, XMLEventFactory xef) {
+		String nsURI = se.getName().getNamespaceURI();
+		if(nsURI ==Namespaces.Z2005_DTBOOK_NS_URI
+				|| nsURI ==Namespaces.XHTML_10_NS_URI) {
+			
+			Set<Attribute> attrs = new HashSet<Attribute>();
+			Iterator<?> iter = se.getAttributes();
+			while(iter.hasNext()) {
+				Attribute a = (Attribute)iter.next();
+				if(a.getName().getLocalPart()=="title") {					
+					attrs.add(xef.createAttribute(a.getName(), "srambled"));
+				}else{
+					attrs.add(a);
+				}
+			}
+			return xef.createStartElement(se.getName(), attrs.iterator(), se.getNamespaces());
+		}
+		System.err.println("Namespace " + se.getName().getNamespaceURI() + " not recognized, may not scramble completely.");
+		return se;
+	}
+	
+	private XMLEvent handleImageElement(StartElement se, XMLEventFactory xef) {
+		String nsURI = se.getName().getNamespaceURI();
+		if(nsURI ==Namespaces.Z2005_DTBOOK_NS_URI
+				|| nsURI ==Namespaces.XHTML_10_NS_URI) {
+			
+			Set<Attribute> attrs = new HashSet<Attribute>();
+			Iterator<?> iter = se.getAttributes();
+			while(iter.hasNext()) {
+				Attribute a = (Attribute)iter.next();
+				if(a.getName().getLocalPart()=="src") {
+					attrs.add(xef.createAttribute(a.getName(), "dummy.jpg"));
+				} else if(a.getName().getLocalPart()=="alt") {
+					attrs.add(xef.createAttribute(a.getName(), "srambled"));
+				}else{
+					attrs.add(a);
+				}
+			}
+			return xef.createStartElement(se.getName(), attrs.iterator(), se.getNamespaces());
+		}
+		System.err.println("Namespace " + se.getName().getNamespaceURI() + " not recognized, may not scramble completely.");
+		return se;
 	}
 	
 	private XMLEvent handleMetaElement(StartElement se, XMLEventFactory xef) {		
