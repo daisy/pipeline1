@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <taskScript version="2.0" name="dtbForwardMigrator">
-	<nicename>DTB Forward Migrator</nicename>
+	<nicename>DTB Forward Migrator [BETA]</nicename>
 	<description>Migrate a Daisy 2.02 DTB to Z39.86-2005</description>
 	<documentation uri="../../../doc/scripts/DTBForwardMigrator.html"/>
 	
