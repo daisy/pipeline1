@@ -2,84 +2,52 @@ package org.daisy.pipeline.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.InvalidParameterException;
 import java.util.Collection;
+import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.daisy.pipeline.test.impl.Aligner1;
-import org.daisy.pipeline.test.impl.Audacity2DTB1;
-import org.daisy.pipeline.test.impl.CharacterRepertoireManipulator1;
-import org.daisy.pipeline.test.impl.CharsetSwitcher1;
-import org.daisy.pipeline.test.impl.DTBAudioEncoder1;
-import org.daisy.pipeline.test.impl.DTBAudioEncoderRenamer1;
-import org.daisy.pipeline.test.impl.DTBAudioEncoderSplitter1;
-import org.daisy.pipeline.test.impl.DTBMigratorForward1;
-import org.daisy.pipeline.test.impl.DTBMigratorBackward1;
-import org.daisy.pipeline.test.impl.DTBSplitter1;
-import org.daisy.pipeline.test.impl.DTBook2Xhtml1;
-import org.daisy.pipeline.test.impl.DTBook2Xhtml2MathML;
-import org.daisy.pipeline.test.impl.DTBook2rtf1;
-import org.daisy.pipeline.test.impl.DTBookFix1;
-import org.daisy.pipeline.test.impl.DTBookMigrator1;
-import org.daisy.pipeline.test.impl.DTBookMigrator2;
-import org.daisy.pipeline.test.impl.DTBookMigrator3;
-import org.daisy.pipeline.test.impl.Daisy202ToZ398620051;
-import org.daisy.pipeline.test.impl.FilesetCreator1;
-import org.daisy.pipeline.test.impl.FilesetRenamer1;
-import org.daisy.pipeline.test.impl.FilesetRenamer2;
-import org.daisy.pipeline.test.impl.Html2Xhtml1;
-import org.daisy.pipeline.test.impl.MixedContentNormalizer1;
-import org.daisy.pipeline.test.impl.MultiFormatMedia1;
-import org.daisy.pipeline.test.impl.Narrator1;
-import org.daisy.pipeline.test.impl.Narrator2;
-import org.daisy.pipeline.test.impl.Narrator3;
-import org.daisy.pipeline.test.impl.NccNcxOnly1;
-import org.daisy.pipeline.test.impl.OcfCreator1;
-import org.daisy.pipeline.test.impl.Odf2dtbook1;
-import org.daisy.pipeline.test.impl.Odf2xhtml1;
-import org.daisy.pipeline.test.impl.OpsCreator1;
-import org.daisy.pipeline.test.impl.OpsCreator2;
-import org.daisy.pipeline.test.impl.OpsCreator3;
-import org.daisy.pipeline.test.impl.OpsCreator4;
-import org.daisy.pipeline.test.impl.PrettyPrinter1;
-import org.daisy.pipeline.test.impl.PrettyPrinter2;
-import org.daisy.pipeline.test.impl.RenamerTaggerValidator1;
-import org.daisy.pipeline.test.impl.Rtf2Xhtml1;
-import org.daisy.pipeline.test.impl.Rtf2dtbook1;
-import org.daisy.pipeline.test.impl.UnicodeNormalizer1;
-import org.daisy.pipeline.test.impl.ValidatorConfigurable1;
-import org.daisy.pipeline.test.impl.ValidatorDTBd2021;
-import org.daisy.pipeline.test.impl.ValidatorDTBd2022;
-import org.daisy.pipeline.test.impl.ValidatorDTBook1;
-import org.daisy.pipeline.test.impl.ValidatorDTBook2;
-import org.daisy.pipeline.test.impl.ValidatorDTBz39861;
-import org.daisy.pipeline.test.impl.ValidatorEpubCheck1;
-import org.daisy.pipeline.test.impl.ValidatorEpubCheck2;
-import org.daisy.pipeline.test.impl.ValidatorNVDL1;
-import org.daisy.pipeline.test.impl.WordML2DTBook1;
-import org.daisy.pipeline.test.impl.WordML2DTBook2;
-import org.daisy.pipeline.test.impl.WordML2DTBook3;
-import org.daisy.pipeline.test.impl.WordML2Xhtml1;
-import org.daisy.pipeline.test.impl.WordML2Xhtml2;
-import org.daisy.pipeline.test.impl.Xhtml2DTBook1;
-import org.daisy.pipeline.test.impl.XukCreator1;
+import javax.xml.stream.Location;
+
+import org.daisy.pipeline.core.DMFCCore;
+import org.daisy.pipeline.core.event.BusListener;
+import org.daisy.pipeline.core.event.CoreMessageEvent;
+import org.daisy.pipeline.core.event.EventBus;
+import org.daisy.pipeline.core.event.JobStateChangeEvent;
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.StateChangeEvent;
+import org.daisy.pipeline.core.event.TaskMessageEvent;
+import org.daisy.pipeline.core.event.TaskStateChangeEvent;
+import org.daisy.pipeline.core.script.Job;
+import org.daisy.pipeline.core.script.Script;
+import org.daisy.pipeline.core.script.ScriptParameter;
+import org.daisy.pipeline.core.script.Task;
+import org.daisy.pipeline.exception.DMFCConfigurationException;
 import org.daisy.pipeline.ui.CommandLineUI;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
+import org.daisy.util.i18n.XMLProperties;
+import org.daisy.util.xml.stax.ExtendedLocationImpl;
 
 /**
  * A test runner for the Daisy Pipeline
  * @author Markus Gylling
  */
-public class PipelineTestDriver {
+public class PipelineTestDriver implements BusListener {
 
 	static EFolder inputDir = null;
 	static EFolder outputDir = null;
 	
+	@SuppressWarnings("unchecked")
 	public PipelineTestDriver(EFolder samplesDirectory, EFolder scriptsDirectory) throws Exception {
 		inputDir = new EFolder(samplesDirectory, "input");
 		outputDir = new EFolder(samplesDirectory, "output");
@@ -100,29 +68,76 @@ public class PipelineTestDriver {
 		Collection<PipelineTest> tests = getTests(); 
 		System.out.println("Found " + tests.size() + " tests .");
 		System.out.println("-----------------------");
-		
-		
+				
 		Set<File> scriptsWithoutTests = new HashSet<File>();
 		Set<FailedTest> failedTests = new HashSet<FailedTest>();
 		
-		for (File script: scripts) {
+		
+        /*
+         *  Load user properties
+         */
+        URL propsURL = CommandLineUI.class.getClassLoader().getResource(
+                "pipeline.user.properties");
+        XMLProperties properties = new XMLProperties();
+        try {
+            properties.loadFromXML(propsURL.openStream());
+        } catch (IOException e) {
+            throw new DMFCConfigurationException(
+                    "Can't read pipeline.user.properties", e);
+        }
+		
+        /*
+         * Subscribe to all message and state change events
+         */
+        EventBus.getInstance().subscribe(this, MessageEvent.class);
+        EventBus.getInstance().subscribe(this, StateChangeEvent.class);
+        
+		Pattern paramPattern = Pattern.compile("--(\\w+)=(.+)");
+		
+		for (File scriptFile: scripts) {
 			boolean testExistsForScript = false;
 			for (PipelineTest test : tests) {
-				if(test.supportsScript(script.getName())) {
+				if(test.supportsScript(scriptFile.getName())) {
 					testExistsForScript = true;
 					try{
 						System.out.println("Test " + test.getClass().getName() +": " + test.getResultDescription());	
-						List<String> parametersList = new LinkedList<String>();
-						parametersList.add(script.getAbsolutePath());
-						parametersList.addAll(test.getParameters());
-						String[] array = parametersList.toArray(new String[parametersList.size()]);
-						CommandLineUI.main(array);
+													            
+			            DMFCCore dmfc = new DMFCCore(null, findHomeDirectory(),properties);
+			            Script script = dmfc.newScript(scriptFile.toURI().toURL());
+			            Job job = new Job(script);
+						
+			            String[] array = test.getParameters().toArray(new String[test.getParameters().size()]);			            
+						Map<String, String> parameters = new HashMap<String, String>();
+				        
+						for (int i = 0; i < array.length; i++) {
+				        	Matcher matcher = paramPattern.matcher(array[i]);
+				            if (matcher.matches()) {
+				                String key = matcher.group(1);
+				                String value = matcher.group(2);
+				                parameters.put(key, value);
+				            } else {
+				                throw new InvalidParameterException("Error: invalid parameter '" + array[i]);
+				            }
+				        }
+			            
+			            for (String name : parameters.keySet()) {
+			                String value = parameters.get(name);
+			                ScriptParameter param = job.getScriptParameter(name);
+			                if (param == null) {
+			                    System.out.println("Error: Unknown parameter " + name);			                   
+			                }
+			                job.setParameterValue(name, value);
+			            }
+
+			            // Execute script
+			            dmfc.execute(job);
+			            
 						test.confirm();
 					}catch (Exception e) {
 						if(tests.size()>1) {
 							//we are running several tests at once,
-							//collect, continue, and then inform outside lop
-							failedTests.add(new FailedTest(script,test,e));
+							//collect, continue, and then inform outside loop
+							failedTests.add(new FailedTest(scriptFile,test,e));
 							e.printStackTrace();
 						}else{
 							throw e;
@@ -132,10 +147,16 @@ public class PipelineTestDriver {
 				}				
 			}
 			if(!testExistsForScript) {
-				scriptsWithoutTests.add(script);
+				scriptsWithoutTests.add(scriptFile);
 			}
 		}
-						
+
+        /*
+         * Subscribe to all message and state change events
+         */
+        EventBus.getInstance().unsubscribe(this, MessageEvent.class);
+        EventBus.getInstance().unsubscribe(this, StateChangeEvent.class);
+		
 		System.out.println("Pipeline test drive done.");
 
 		
@@ -164,7 +185,7 @@ public class PipelineTestDriver {
 	}
 
 	/**
-	 * Run a series of instantiations of CommandLineGUI.
+	 * Run a series of instantiations of the Pipeline.
 	 * Use scripts from the pipeline canonical script collection, use local input data.
 	 * Main runnable with Eclipse run profile params '${project_loc}/samples ${project_loc}/scripts'.
 	 * <p>
@@ -179,7 +200,7 @@ public class PipelineTestDriver {
 		EFolder samplesDirectory = new EFolder(args[0]);		
 		EFolder scriptsDirectory = new EFolder(args[1]);		
 		
-		PipelineTestDriver pdt = new PipelineTestDriver(samplesDirectory,scriptsDirectory);
+		new PipelineTestDriver(samplesDirectory,scriptsDirectory);
 		
 	}
 
@@ -249,7 +270,9 @@ public class PipelineTestDriver {
 //		tests.add(new NccNcxOnly1(inputDir, outputDir));
 //		tests.add(new DTBMigratorForward1(inputDir, outputDir));		
 //		tests.add(new DTBMigratorBackward1(inputDir, outputDir));
-		tests.add(new XukCreator1(inputDir, outputDir));		
+//		tests.add(new XukCreator1(inputDir, outputDir));
+//		tests.add(new FilesetGenerator1(inputDir, outputDir));
+//		tests.add(new FilesetGenerator2(inputDir, outputDir));		
 
 		/*
 		 * End Tests with input data in samples dir
@@ -289,6 +312,154 @@ public class PipelineTestDriver {
 			mException = failure;
 		}
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.pipeline.core.event.BusListener#received(java.util.EventObject)
+	 */
+    public void received(EventObject event) {
+        // we are subscribing to MessageEvent and StateChangeEvent
+
+        try {
+            if (event instanceof MessageEvent) {
+                MessageEvent sme = (MessageEvent) event;
+                StringBuilder message = new StringBuilder();
+
+                String type = null;
+                switch (sme.getType()) {
+                case INFO:
+                    type = "INFO";
+                    return; //reduce clutter in testdriver output
+                case INFO_FINER:
+                    type = "INFO_FINER";
+                    return;  //reduce clutter in testdriver output
+                case WARNING:
+                    type = "WARNING";
+                    break;
+                case ERROR:
+                    type = "ERROR";
+                    break;
+                case DEBUG:
+                    type = "DEBUG";
+                    return; //reduce clutter in testdriver output
+                }
+
+                String who = null;
+                if (sme instanceof CoreMessageEvent) {
+                    who = "Pipeline Core";
+                } else if (sme instanceof TaskMessageEvent) {
+                    Task task = (Task) sme.getSource();
+                    if (task.getTransformerInfo() != null) {
+                        who = task.getTransformerInfo().getNiceName();
+                    } else {
+                        who = task.getName();
+                    }
+                } else {
+                    who = "???";
+                }
+
+                StringBuilder location = new StringBuilder();
+                if (sme.getLocation() != null) {
+                    Location loc = sme.getLocation();
+                    String sysId = loc.getSystemId();
+                    if (sysId != null && sysId.length() > 0) {
+                        File file = new File(sysId);
+                        location.append(" Location: ");
+                        location.append(file.getPath());
+                        if (loc.getLineNumber() > -1) {
+                            location.append(' ');
+                            location.append(loc.getLineNumber());
+                            if (loc.getColumnNumber() > -1) {
+                                location.append(':');
+                                location.append(loc.getColumnNumber());
+                            }
+                        }
+                    }
+                                   
+                    //mg20070904: printing extended location info
+                    if(loc instanceof ExtendedLocationImpl) {                    		                        
+                    	ExtendedLocationImpl eLoc = (ExtendedLocationImpl)loc;                    	
+                    	ExtendedLocationImpl.InformationType[] types = ExtendedLocationImpl.InformationType.values();                    	                    	
+                    	for (int i = 0; i < types.length; i++) {                    		
+                    		location.append("\n\t");
+                    		location.append(types[i].toString()).append(':').append(' ');
+                    		String value = eLoc.getExtendedLocationInfo(types[i]);
+                    		location.append(value==null?"N/A":value);                            		
+						}                    	
+                    }
+                    
+                }//if (sme.getLocation() != null)
+
+                message.append('[');
+                message.append(type);
+                message.append(',').append(' ');
+                message.append(who);
+                message.append(']').append(' ');
+                message.append(sme.getMessage());
+                message.append(location.toString());
+
+                System.out.println(message.toString());
+
+            } else if (event instanceof StateChangeEvent) {
+                StateChangeEvent sce = (StateChangeEvent) event;
+
+                String type = null;
+                String name = null;
+                String state = (sce.getState() == StateChangeEvent.Status.STARTED) ? "started"
+                        : "stopped";
+
+                if (event instanceof JobStateChangeEvent) {
+                    type = "Job"; // we refer to scripts as "Jobs" to users.
+                    Job job = (Job) sce.getSource();
+                    name = job.getScript().getNicename();
+                } else if (event instanceof TaskStateChangeEvent) {
+                	return; //reduce clutter in testdriver output
+//                    type = "Transformer";
+//                    Task task = (Task) sce.getSource();
+//                    name = task.getTransformerInfo().getNiceName();
+                } else {
+                    System.err.println(event.getClass().getSimpleName());
+                }
+
+                System.out.println("[STATE] " + type + " " + name + " just "
+                        + state);
+
+            } else {
+                System.err.println(event.getClass().getSimpleName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Finds the pipeline home directory.
+     * 
+     * @param propertiesURL
+     * @return
+     * @throws DMFCConfigurationException
+     */
+    private static File findHomeDirectory() throws DMFCConfigurationException {
+        URL propertiesURL = DMFCCore.class.getClassLoader().getResource(
+                "pipeline.properties");
+        File propertiesFile = null;
+        try {
+            propertiesFile = new File(propertiesURL.toURI());
+        } catch (URISyntaxException e) {
+            throw new DMFCConfigurationException(e.getMessage(), e);
+        }
+        // Is this the home dir?
+        File folder = propertiesFile.getParentFile();
+        if (DMFCCore.testHomeDirectory(folder)) {
+            return folder;
+        }
+        // Test parent
+        folder = folder.getParentFile();
+        if (DMFCCore.testHomeDirectory(folder)) {
+            return folder;
+        }
+        throw new DMFCConfigurationException(
+                "Cannot locate the Daisy Pipeline home directory");
+    }
 	
 }
