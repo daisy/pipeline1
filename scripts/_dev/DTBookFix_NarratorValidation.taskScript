@@ -37,11 +37,17 @@
 
 		<parameter>
 			<name>runCategories</name>
-			<value>REPAIR_TIDY_NARRATOR</value>
+			<value>NARRATOR</value>
+			<!-- <value>REPAIR_NARRATOR</value> -->
 		</parameter>
 		
 		<parameter>
 			<name>simplifyHeadingLayout</name>
+			<value>true</value>
+		</parameter>
+
+		<parameter>
+			<name>forceRun</name>
 			<value>true</value>
 		</parameter>
 			

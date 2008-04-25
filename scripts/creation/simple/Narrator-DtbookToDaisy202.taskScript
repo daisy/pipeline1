@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <taskScript version="2.0" name="dtbook2daisy202">
 	<nicename>Narrator</nicename>
-	<description>Converts a DTBook 2005 file to a complete DAISY/NISO 2005 and a Daisy 2.02 file set</description>
+	<description>Converts a DTBook 2005 file to a complete DAISY/NISO 2005 DTB and a Daisy 2.02 DTB file set</description>
 	<documentation uri="../../../doc/scripts/Narrator-DtbookToDaisy202.html"/>
 		
 	<parameter name="input" value="" required="true">
@@ -50,11 +50,16 @@
 
 		<parameter>
 			<name>runCategories</name>
-			<value>REPAIR_TIDY_NARRATOR</value>
+			<value>NARRATOR</value>
 		</parameter>
 		
 		<parameter>
 			<name>simplifyHeadingLayout</name>
+			<value>true</value>
+		</parameter>
+
+		<parameter>
+			<name>forceRun</name>
 			<value>true</value>
 		</parameter>
 			
@@ -80,7 +85,7 @@
 		</parameter>
 		<parameter>
 			<name>abortThreshold</name>
-			<value>ERROR</value>
+			<value>NONE</value>
 		</parameter>
 	</task>
 	

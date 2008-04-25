@@ -151,5 +151,28 @@
 	        	<xsl:copy-of select="."/>
 	        </xsl:otherwise>
         </xsl:choose>
-    </xsl:template>       
+    </xsl:template>      
+    
+	<xsl:template match="dtb:meta[@name='dc:Description']">
+    	<xsl:choose>
+	    	<xsl:when test="translate(@content, ' ', '')=''">
+	        	<xsl:message terminate="no">Removing dc:Description lacking content</xsl:message>	            
+	        </xsl:when>   
+	        <xsl:otherwise>
+	        	<xsl:copy-of select="."/>
+	        </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>      
+    
+    <xsl:template match="dtb:meta[@name='dc:Subject']">
+    	<xsl:choose>
+	    	<xsl:when test="translate(@content, ' ', '')=''">
+	        	<xsl:message terminate="no">Removing dc:Subject lacking content</xsl:message>	            
+	        </xsl:when>   
+	        <xsl:otherwise>
+	        	<xsl:copy-of select="."/>
+	        </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+     
 </xsl:stylesheet>
