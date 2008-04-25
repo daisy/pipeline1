@@ -40,6 +40,10 @@ class Xhtml10FileImpl extends XmlFileImpl implements Xhtml10File, ManifestFile {
 	private int currentHeadingLevel =0;
 	private boolean correctHeadingSequence = true;
 	protected boolean parsingBody = false;
+	private boolean inHeadTitle = false;
+	private String mTitleString = null;
+	private String mDcTitleString = null;
+	private String mDcIdentifierString = null;
 	
 	Xhtml10FileImpl(URI uri) throws ParserConfigurationException, SAXException, IOException {
 		super(uri,Xhtml10File.mimeStringConstant); 
@@ -52,6 +56,8 @@ class Xhtml10FileImpl extends XmlFileImpl implements Xhtml10File, ManifestFile {
 	public void startElement(String namespaceURI, String sName, String qName, Attributes attrs) throws SAXException {
 		super.startElement(namespaceURI, sName, qName, attrs);
 		if(sName=="body") parsingBody = true;
+		if(sName=="title") inHeadTitle = true;
+		
 		for (int i = 0; i < attrs.getLength(); i++) {
 			attrName = attrs.getQName(i);
 			attrValue = attrs.getValue(i).intern(); //for some reason	
@@ -63,16 +69,42 @@ class Xhtml10FileImpl extends XmlFileImpl implements Xhtml10File, ManifestFile {
 				putUriValue(attrValue);
 			}else if (attrName=="xml:lang") {
 				this.mXmlLangValues.add(attrValue);
-			}						
+			}
+			
+			if(sName == "meta") {			
+				if(attrName=="name" && attrValue.toLowerCase()=="dc:title") {
+					mDcTitleString = attrs.getValue("", "content");
+				}
+				if(attrName=="name" && attrValue.toLowerCase()=="dc:identifier") {
+					mDcIdentifierString = attrs.getValue("", "content");
+				}
+			}
+			
 		} //for (int i
+				
+		
+		
 	}
 	
 	public boolean hasHierarchicalHeadingSequence() {
 		return correctHeadingSequence;
 	}
-		
+	
+	@Override
+	public void characters(char[] ch, int start, int length) throws SAXException {
+		super.characters(ch, start, length);
+		if(inHeadTitle){
+			if(mTitleString==null) {
+				mTitleString = String.copyValueOf(ch,start,length);
+			}else{
+				mTitleString += String.copyValueOf(ch,start,length);
+			}	
+    	}
+	}
+	
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if(localName=="body") parsingBody = false;
+		if(localName=="title") inHeadTitle = false;
 		if (correctHeadingSequence == true){
 			if(regex.matches(regex.XHTML_HEADING_ELEMENT,localName)) {
 				try{					
@@ -87,6 +119,21 @@ class Xhtml10FileImpl extends XmlFileImpl implements Xhtml10File, ManifestFile {
 			}
 		}
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.Xhtml10File#getTitle()
+	 */
+	public String getTitle() {	
+		if(mDcTitleString!=null) return mDcTitleString;
+		return mTitleString;
+	}
 	
 	private static final long serialVersionUID = 699491683089715725L;
+
+	public String getIdentifier() {		
+		return mDcIdentifierString;
+	}
+
+
 }

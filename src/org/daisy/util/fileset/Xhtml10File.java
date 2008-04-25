@@ -32,5 +32,16 @@ public interface Xhtml10File extends XmlFile{
 	 * @return true if the xhtml heading sequence is correctly hierarchical, false otherwise
 	 */
 	public boolean hasHierarchicalHeadingSequence();
+
+	/**
+	 * @return The title of this XHTML file, where head/meta/@dc:identifier takes precedence over head/title. 
+	 * Return null if none of these values are present in the instance.
+	 */
+	public String getTitle();
+	
+	/**
+	 * @return The dc:identifier of this XHTML file, or null if this value is not present in the instance.
+	 */
+	public String getIdentifier();
 	
 }
