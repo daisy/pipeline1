@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: ODF Text to DTBook</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>ODF Text to DTBook</em></h1>
+
+<div id="toc" class="toc">
+	<ul>
+		<li><a href="#overview">Overview</a></li>
+		<li><a href="#inputReqs">Input Requirements</a></li>
+		<li><a href="#output">Output</a></li>
+		<li><a href="#config">Configuration</a></li>
+		<li><a href="#authoring-guide">Open Document Text to DTBook authoring guide</a></li>
+		<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+	</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script will transform an <a href="http://www.openoffice.org/product/writer.html">Open Document Text</a> file (<code>*.odt</code>) to DTBook.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>The input Open Document Text file needs to conform to the constraints and authoring style as defined in the <a href="#authoring-guide">Open Document Text to DTBook authoring guide</a>.</p>
+
+<h2 id="output">Output</h2>
+<p>A DTBook document.</p>
+
+<h2 id="config">Configuration</h2>
+
+	<dl id="paramslist">
+		<dt>Input ODF file</dt>
+		<dd><strong>Required</strong>. Select the input *odt file.</dd>
+		<dt>Output DTBook file</dt>
+		<dd><strong>Required</strong>. Select the output DTBook file.</dd>
+		<dt>XML Validation Report</dt>
+		<dd><strong>Optional.</strong> Path to a file to store a validation XML report in.</dd>	
+	</dl>
+
+<h2 id="authoring-guide">Open Document Text to DTBook authoring guide</h2>
+  <p>How to write ODF documents that will easily transform into Daisy dtbook documents. A user guide.</p>
+  <p>The structure of the Daisy dtbook file is directly derived from
+  the styling information, which is derived from the styles you
+  use. </p>
+
+  <h2>Headings</h2>
+  <p>ODF, like other office tools, has pre-defined levels of
+  headings. In the styles and formatting menu (F11 to access), these
+  are shown as <b>heading 1</b> through to <b>heading 9</b>. Use these
+  headings. Do not create your own, either explicitly, or derived from
+  the default headings. If that isn't good enough for you, write the
+  Daisy version seperately. Remember that Daisy books aren't as
+  visually pretty as your Office documents, they are meant to pass on
+  information from their content. </p>
+  <p>Any level beyond <b>heading 6</b> will be ignored. </p>
+  <p>The first piece of content in the document must be a heading
+  level 1, as required by dtbook. </p>
+  <p>Headings must follow the principles set out in dtbook, i.e. after
+  a level 1, the only valid headings are level 2 or another level 1
+  heading. Don't omit levels. This is required by the transform, and
+  makes sense stylistically. </p>
+
+  <h2>Block level styling</h2>
+  <p>Block level means the sequence of <b>paragraph</b> level items as
+  the document is scanned top to bottom (in Western usage). If you set
+  to on, the menu item view / non printing characters, control F10,
+  then the presence or absence of the end of paragraph character
+  indicates where the blocks end.</p>
+  
+  <p>In ODF, it is possible to have content which appears as a new
+  block level item, but in fact is a continuation. For example, a
+  small graphic with text following it visually looks like a new
+  paragraph below the graphic. In fact by default in some office
+  applications, the text is a continuation of the block (paragraph) in
+  which the graphic is located. Place the cursor directly after the
+  graphic and hit return to separate the blocks.</p>
+		
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+
+<ol>
+	<li><a href="../transformers/uk_rnib_odf2dtbook.html">ODF to DTBook</a></li>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>
+</ol>
+
+</body>
+</html>

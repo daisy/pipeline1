@@ -1328,6 +1328,10 @@ transformers/se_tpb_xmldetection/lang/fr.xml -text
 transformers/se_tpb_xmldetection/transformer.tdf -text
 transformers/uk_rnib_dtbook2xhtml/messages.properties -text
 transformers/uk_rnib_dtbook2xhtml/transformer.tdf -text
+transformers/uk_rnib_odf2dtbook/OdfToDtbook.html -text
+transformers/uk_rnib_odf2dtbook/OdfToDtbook.taskScript -text
+transformers/uk_rnib_odf2dtbook/OdfToXhtml.html -text
+transformers/uk_rnib_odf2dtbook/OdfToXhtml.taskScript -text
 transformers/uk_rnib_odf2dtbook/analyseStyles.xsl -text
 transformers/uk_rnib_odf2dtbook/dummy.xml -text
 transformers/uk_rnib_odf2dtbook/identity2.xsl -text
@@ -1344,6 +1348,7 @@ transformers/uk_rnib_odf2dtbook/odfNestCheck.xsl -text
 transformers/uk_rnib_odf2dtbook/odfNesting.xsl -text
 transformers/uk_rnib_odf2dtbook/odfStructure.xsl -text
 transformers/uk_rnib_odf2dtbook/readme.txt -text
+transformers/uk_rnib_odf2dtbook/uk_rnib_odf2dtbook.html -text
 transformers/uk_rnib_odf2dtbook/usage.html -text
 transformers/us_rfbd_dtbookMigrator/DtbookMigrator.java -text
 transformers/us_rfbd_dtbookMigrator/DtbookVersion.java -text

@@ -1,11 +1,11 @@
 <transformer version="1.1">
-	<name>ODF to DTBook</name>
+	<name>ODF to DTBook [DEPRECATED]</name>
 	<description>OpenDocument Text to DTBook transformer</description>
 	<classname>uk_rnib_odf2dtbook.Odf2Dtbook</classname>
 	<license>GPL</license>
 	<author>Dave Pawson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
-	<documentation uri="../../doc/transformers/uk_rnib_odf2dtbook.html"/>
+	<documentation uri="./uk_rnib_odf2dtbook.html"/>
 	
 	<parameters>
 		<parameter required="true" direction="in" type="application/vnd.oasis.opendocument.text">
