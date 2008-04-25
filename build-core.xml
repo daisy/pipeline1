@@ -42,7 +42,7 @@
 		<include name="commons-cli-1.0.jar"/>
 		<include name="epubcheck.jar"/>
 		<include name="icu4j-3_8.jar"/>		
-        <include name="icu4j-charsets.jar"/>     
+        <!-- <include name="icu4j-charsets.jar"/> -->    
 		<include name="jaudiotagger.jar"/>
 		<include name="jl1.0.jar"/>
         <include name="log4j-1.2.15.jar"/>
@@ -113,12 +113,11 @@
 	<!-- The set of transformers to be included -->
 	<patternset id="patternset.transformers">
 		<include name="**/*.*"/>
-		
-		<exclude name="int_daisy_daisy2022Zed2005/**/*.*"/>
+				
 		<exclude name="int_daisy_dtbookMigrator/**/*.*"/>
 		<exclude name="se_tpb_aligner/**/*.*"/>
 		<exclude name="int_daisy_filesetEncryptor/**/*.*"/>
-		<exclude name="int_daisy_mixedContentNormalizer/**/*.*"/>
+		<exclude name="uk_rnib_odf2dtbook/**/*.*"/>
 		<exclude name="int_daisy_recorder2dtb/**/*.*"/>
 		<exclude name="se_tpb_speechgenerator/**/*.*"/>
 	</patternset>
