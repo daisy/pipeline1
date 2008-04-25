@@ -22,7 +22,7 @@ import se_tpb_speechgen2.tts.TTSInput;
 import se_tpb_speechgen2.tts.TTSOutput;
 
 /**
- * The TTSAdapter's view of the TTSGroup. Basically just an input provider
+ * The TTSRunner's view of the TTSGroup. Basically just an input provider
  * and an ouput receiver.
  * @author Martin Blomberg
  *
@@ -43,7 +43,7 @@ public interface TTSGroupFacade {
 	public void addOutput(TTSOutput out);
 	
 	/**
-	 * Called by a slave when a slave has terminated abnormally.
+	 * Called by a TTSRunner when a slave has terminated abnormally.
 	 * @param slave the terminated slave.
 	 * @param myLastInput the slaves last input.
 	 */

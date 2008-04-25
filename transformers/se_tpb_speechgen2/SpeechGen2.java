@@ -53,6 +53,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
@@ -132,9 +133,10 @@ public class SpeechGen2 extends Transformer {
 	private Queue<Integer> lastSynchNumber = new LinkedList<Integer>();			// a queue containing the sync point number of the last sync point before a merge. Used for inserting silence.
 
 	// announcements:
-	private List<StartElement> before = new ArrayList<StartElement>();						// list of elements to introduce using speech 
+	private Stack<StartElement> before = new Stack<StartElement>();						// list of elements to introduce using speech 
 	private Stack<StartElement> after = new Stack<StartElement>();							// stack of elements to close/terminate using speech
 	private Stack<Integer> afterLevels = new Stack<Integer>();					// stack of levels keeping track of to which element level the terminating announcements correspond to.
+	Map<QName, Stack<Boolean>> annMap = new HashMap<QName, Stack<Boolean>>();
 	private QName announceBefore;								// the attribute containing the before announcements
 	private QName announceAfter;								// the attribute containing the after announcements
 
@@ -342,7 +344,8 @@ public class SpeechGen2 extends Transformer {
 			isr.close();
 			fis.close();
 			reader.close();
-			
+			annMap = new HashMap<QName, Stack<Boolean>>();
+
 			// start all tts instances
 			for (Iterator<String> it = ttsEngines.keySet().iterator(); it.hasNext(); ) {
 				String xmlLang = it.next();
@@ -465,10 +468,11 @@ public class SpeechGen2 extends Transformer {
 			xmlContext.addEvent(event);
 
 			if (event.isStartElement()) {
+				StartElement se = event.asStartElement();
 
 				/* adds the namespace at the first element */
 				if (first) {
-					StartElement curr = event.asStartElement();
+					StartElement curr = se;
 					first = false;
 					Set<Namespace> ns = new HashSet<Namespace>();
 					for (Iterator it = curr.getNamespaces(); it.hasNext(); ) {
@@ -478,17 +482,29 @@ public class SpeechGen2 extends Transformer {
 					event = eventFactory.createStartElement(curr.getName(), curr.getAttributes(), ns.iterator());
 				}
 
-				if (isMergeAudio(event.asStartElement())) {
+				if (isMergeAudio(se)) {
 					mergeAudio();
 				}
 
-				if (isAnnouncement(event.asStartElement())) {
-					before.add(event.asStartElement());
-					after.push(event.asStartElement());
-					afterLevels.push(new Integer(xmlContext.getContext().size()));
+				if (isAnnouncement(se)) {
+					 before.add(se);
+					 after.push(se);
+					 afterLevels.push(new
+					 Integer(xmlContext.getContext().size()));
+					Stack<Boolean> ann = annMap.get(se.getName());
+					if (ann == null) {
+						ann = new Stack<Boolean>();
+						annMap.put(se.getName(), ann);
+					}
+					ann.push(true);
+				} else {
+					Stack<Boolean> ann = annMap.get(se.getName());
+					if (ann != null) {
+						ann.push(false);
+					}
 				}
 
-				if (isSynchronizationPoint(reader, event.asStartElement())) {
+				if (isSynchronizationPoint(reader, se)) {
 					synchronizationPointCounter++;
 					//System.err.println("TTS Progress: " + synchronizationPointCounter + " / " + numSPoints);
 					//System.err.println("Merge/LAME Progress: " + audioConcatQueue.numFilesMerged() + " / ~" + numAudioFiles);
@@ -497,15 +513,13 @@ public class SpeechGen2 extends Transformer {
 					boolean isFirst = workingFiles.size() == 0;						
 					String smilTimeStartValue = null;
 					try {
-						smilTimeStartValue = fetchSynchronizationPoint(reader, event.asStartElement());
+						smilTimeStartValue = fetchSynchronizationPoint(reader, se);
 					} catch (Exception e) {
 						// print debug info about where an error occured
+						// TODO forward a new location with a proper system ID
 						Location loc = event.getLocation();
-						String lineCol = "[" + loc.getLineNumber() + ", " + loc.getColumnNumber() + "]";
-						String msg = "Error trying to process phrase near [line, col]: " + lineCol + " in file " + inputFile;
+						String lineCol = "[" + loc.getLineNumber() + ", " + loc.getColumnNumber() + "]";						String msg = "Error trying to process phrase near [line, col]: " + lineCol + " in file " + inputFile;
 						sendMessage(msg, MessageEvent.Type.ERROR);
-						System.err.println(msg);
-						e.printStackTrace();
 						throw new TransformerRunException(e.getMessage(), e);
 					}
 					
@@ -528,7 +542,7 @@ public class SpeechGen2 extends Transformer {
 					progress(progress);
 					
 					// create the new startElement, i e. the same element + smil-attributes.
-					StartElement se = addSmilAttrs(event, smilTimeStartValue);
+					se = addSmilAttrs(event, smilTimeStartValue);
 					writeEvent(se);
 					event = null; // to avoid being written to file once more
 					boolean writeToFile = true;
@@ -543,7 +557,23 @@ public class SpeechGen2 extends Transformer {
 					writer = outputFactory.createXMLEventWriter(new FileOutputStream(outputFile), sd.getCharacterEncodingScheme());
 				} else {
 					writer = outputFactory.createXMLEventWriter(new FileOutputStream(outputFile), "utf-8");
-					event = eventFactory.createStartDocument("utf-8", "1.0");             
+					event = eventFactory.createStartDocument("utf-8", "1.0");
+				}
+			} else if (event.isEndElement()) {
+				EndElement ee = event.asEndElement();
+				Stack<Boolean> ann = annMap.get(ee.getName());
+				if (ann != null) {
+					boolean wasAnnouncement = ann.pop();
+					if (wasAnnouncement) {
+						if (!before.isEmpty()) {
+							before.pop();
+						}
+						if (!after.isEmpty()) {
+							after.pop();
+							afterLevels.pop();
+						}
+					}
+
 				}
 			}
 
@@ -561,19 +591,33 @@ public class SpeechGen2 extends Transformer {
 			xmlContext.addEvent(event);
 
 			if (event.isStartElement()) {
-				if (isMergeAudio(event.asStartElement())) {
-					//mergeAudio();
+				StartElement se = event.asStartElement();
+				
+				if (isMergeAudio(se)) {
+					// mergeAudio();
 				}
 
-				if (isAnnouncement(event.asStartElement())) {
-					before.add(event.asStartElement());
-					after.push(event.asStartElement());
-					afterLevels.push(new Integer(xmlContext.getContext().size()));
+				if (isAnnouncement(se)) {
+					 before.add(se);
+					 after.push(se);
+					 afterLevels.push(new
+					 Integer(xmlContext.getContext().size()));
+					Stack<Boolean> ann = annMap.get(se.getName());
+					if (ann == null) {
+						ann = new Stack<Boolean>();
+						annMap.put(se.getName(), ann);
+					}
+					ann.push(true);
+				} else {
+					Stack<Boolean> ann = annMap.get(se.getName());
+					if (ann != null) {
+						ann.push(false);
+					}
 				}
 
-				if (isSynchronizationPoint(reader, event.asStartElement())) {
-					loadSynchronizationPoint(reader, event.asStartElement());
-					
+				if (isSynchronizationPoint(reader, se)) {
+					loadSynchronizationPoint(reader, se);
+
 					try {
 						checkAbort();
 					} catch (TransformerAbortException tae) {
@@ -588,6 +632,22 @@ public class SpeechGen2 extends Transformer {
 					event = null; // to avoid being written to file once more
 					boolean writeToFile = false;
 					fastForward(reader, writeToFile);
+				}
+			} else if (event.isEndElement()) {
+				EndElement ee = event.asEndElement();
+				Stack<Boolean> ann = annMap.get(ee.getName());
+				if (ann != null) {
+					boolean wasAnnouncement = ann.pop();
+					if (wasAnnouncement) {
+						if (!before.isEmpty()) {
+							before.pop();
+						}
+						if (!after.isEmpty()) {
+							after.pop();
+							afterLevels.pop();
+						}
+					}
+
 				}
 			} 
 		}
