@@ -371,14 +371,16 @@ public class SmilMaker implements AbortListener, BusListener {
 					if (isEscapable(event)) {
 						XMLEvent modifiedStartElement = newSeq(reader, event.asStartElement());
 						event = modifiedStartElement;
-					} else if (isPar(event.asStartElement())) {
+					}
+					
+					else if (isPar(event.asStartElement())) {
 						XMLEvent modifiedStartElement = newPar(event.asStartElement());
 						event = modifiedStartElement;
 					} 
-					
-					if (isLinkSource(event.asStartElement())) {
+					else if (isLinkSource(event.asStartElement())) {
 						handleLinkSource(event.asStartElement());
-					} else if (isLinkTarget(event.asStartElement())) {
+					} 
+					else if (isLinkTarget(event.asStartElement())) {
 						handleLinkTarget(event.asStartElement());
 					}
 					
