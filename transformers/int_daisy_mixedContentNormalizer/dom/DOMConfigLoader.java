@@ -27,6 +27,7 @@ public class DOMConfigLoader {
 		QName ignore = new QName(pipelineNS,"ignore");
 		QName wrapper = new QName(pipelineNS,"wrapper");	
 		QName syncScope = new QName(pipelineNS,"syncScope");
+		QName syncForce = new QName(pipelineNS,"syncForce");
 		QName syncAttr = new QName(pipelineNS,"syncMarkerAttribute");		
 		QName whitespaceAttr = new QName("asWhitespace");
 		QName scrubAttr = new QName("scrubWhitespace");
@@ -42,6 +43,7 @@ public class DOMConfigLoader {
 			boolean inWrapper = false;
 			boolean inSyncAttr = false;
 			boolean inSyncScope = false;
+			boolean inSyncForce = false;
 				
 			String currentNS = null;
 			while(reader.hasNext()) {
@@ -74,12 +76,16 @@ public class DOMConfigLoader {
 						inSyncScope = true; continue;
 					}else if (se.getName().equals(syncAttr)) {
 						inSyncAttr = true; continue;
+					}else if (se.getName().equals(syncForce)) {
+						inSyncForce = true; continue;						
 					}else if (inIgnore) {
 						dnc.addIgnorable(se);
 					}else if (inWrapper) {
 						dnc.addWrapper(se);
 					}else if (inSyncScope) {
 						dnc.addScope(se.getName().getNamespaceURI(), se.getName());
+					}else if (inSyncForce) {
+						dnc.addSyncForce(se);						
 					}else if (inSyncAttr) {						
 						dnc.addSyncPointAttribute(currentNS, se.getName(), "true");
 					}
@@ -90,6 +96,8 @@ public class DOMConfigLoader {
 						inWrapper = false;
 					}else if (xe.asEndElement().getName().equals(syncScope)) {
 						inSyncScope = false;
+					}else if (xe.asEndElement().getName().equals(syncForce)) {
+						inSyncForce = false;						
 					}else if (xe.asEndElement().getName().equals(syncAttr)) {
 						inSyncAttr = false;
 					}

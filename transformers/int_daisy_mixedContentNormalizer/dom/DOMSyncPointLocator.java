@@ -63,10 +63,15 @@ public class DOMSyncPointLocator extends AbstractSyncPointLocator  {
 		    while ((e=(Element)walker.nextNode())!=null) {					    			    	
 		    	if(mTransformer.delegateCheckAbort()) throw new TransformerRunException ("user abort");		    	
 		    	if(e.getFirstChild()!=null){ //never sync on empty elements
-			    	if(hasOnlyIgnorableChildren(e)) {
+
+		    		if(mConfig.isSyncForce(e)) {
+		    			addSyncPoint(e);
+		    		}
+		    		else if(hasOnlyIgnorableChildren(e) && !hasSyncedAncestor(e)) {
 			    		addSyncPoint(e);
 			    	}
-			    	else if(e.getUserData("isWrapper")!=null  && !hasSyncedAncestor(e)){ //TODO && !hasSyncedAncestor(e) only for nested wrapper bug
+			    	else if(e.getUserData("isWrapper")!=null  && !hasSyncedAncestor(e)){ 
+			    		//TODO && !hasSyncedAncestor(e) only for nested wrapper bug
 			    		addSyncPoint(e);
 			    	}
 			    	//else if (!hasSyncedAncestor(e) && DOMUtil.hasTextChild(e)) {

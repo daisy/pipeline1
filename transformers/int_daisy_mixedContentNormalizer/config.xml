@@ -75,6 +75,15 @@ Defines a one per document element scope outside of which the sync point locator
 			<xhtml:body/>
 		</syncScope>
 		
+		<syncForce>
+			<xhtml:h1/>
+			<xhtml:h2/>
+			<xhtml:h3/>
+			<xhtml:h4/>
+			<xhtml:h5/>
+			<xhtml:h6/>
+		</syncForce>
+		
 		<syncMarkerAttribute>
 		    <smil:sync xmlns:smil="http://www.w3.org/2001/SMIL20/" />
 		</syncMarkerAttribute>		

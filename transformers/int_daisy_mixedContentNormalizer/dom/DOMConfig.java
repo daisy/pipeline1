@@ -12,6 +12,7 @@ import javax.xml.stream.events.StartElement;
 
 import org.daisy.util.i18n.CharUtils;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -24,6 +25,7 @@ public class DOMConfig {
 
 	private Set<StartElement> mWrappers = null;
 	private Set<StartElement> mIgnorables = null;
+	private Set<StartElement> mSyncForce = null;
 	private Set<String> mSupportedNamespaces = null;
 	private Map<String, QName> mSyncPointScopes = null;
 	private Map<String, Attribute> mSyncPointAttributes = null;
@@ -36,6 +38,7 @@ public class DOMConfig {
 		mWrappers = new HashSet<StartElement>();
 		mSupportedNamespaces = new HashSet<String>();
 		mSyncPointScopes = new HashMap<String, QName>();
+		mSyncForce = new HashSet<StartElement>();
 		mSyncPointAttributes = new HashMap<String, Attribute>();
 		mExtraWhitespaceCharacters = new HashMap<String, char[]>();
 		mWrapperScrubbingNamespaces = new HashSet<String>(); 
@@ -57,6 +60,10 @@ public class DOMConfig {
 		mSyncPointScopes.put(namespaceuri, scope);
 	}
 
+	/*package*/ void addSyncForce(StartElement se) {
+		mSyncForce.add(se);
+	}
+	
 	/*package*/ void addWhitespaceCharacters(String namespaceuri, String characters) throws IllegalArgumentException {
 		//support only bmp so 1-char representation all the time
 		String[] tmp = characters.split(" ");
@@ -107,14 +114,47 @@ public class DOMConfig {
 		for(StartElement se : mIgnorables) {
 			if(se.getName().getLocalPart().equals(e.getNodeName())) {
 				if(se.getName().getNamespaceURI().equals(e.getNamespaceURI())) {
-					//TODO compare attributes
-					return true;
+					if(matchesAttributes(e,se)) return true;
 				}	
 			}			
 		}				
 		return false;
 	}
 	
+	/**
+	 * Return true if all attributes on Element e exist on StartElement se, else false.
+	 * When se contains zero attributes, no test is made, and true is returned 
+	 * (A StartElement in config with 0 attrs means that attributes are not significant).
+	 */
+	private boolean matchesAttributes(Element e, StartElement se) {
+		if(!se.getAttributes().hasNext()) return true;
+		
+		for (int i = 0; i < e.getAttributes().getLength(); i++) {
+			Attr a = (Attr)e.getAttributes().item(i);
+			QName test = new QName(a.getNamespaceURI(),a.getLocalName());
+			//TODO should we match on attr values as well?
+			if(se.getAttributeByName(test)==null) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @return true if inparam element is in the list of elements marked to be forced to sync in the config.
+	 */
+	public boolean isSyncForce(Element e) {				
+		for(StartElement se : mSyncForce) {
+			if(se.getName().getLocalPart().equals(e.getNodeName())) {
+				if(se.getName().getNamespaceURI().equals(e.getNamespaceURI())) {
+					if(matchesAttributes(e,se)) {
+						return true;
+					}
+				}	
+			}			
+		}				
+		return false;
+	}
 	
 	/**
 	 * Retrieve the wrapper element to use in a particular namespace context.
@@ -125,7 +165,7 @@ public class DOMConfig {
 				return se;								
 			}
 		}
-		//fallback //TODO separate method
+		//fallback 
 		XMLEventFactory xef = null;
 		try{
 			xef = StAXEventFactoryPool.getInstance().acquire();

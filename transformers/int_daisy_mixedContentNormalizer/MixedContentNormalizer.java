@@ -55,11 +55,12 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 	protected boolean execute(Map parameters) throws TransformerRunException {
 		try {
 			File input = FilenameOrFileURI.toFile((String)parameters.remove("input"));
+			if(input==null||!input.exists()||input.isDirectory()) throw new TransformerRunException(i18n("FILE_NOT_FOUND",input));
 			File output = FilenameOrFileURI.toFile((String)parameters.remove("output"));	
 			boolean addSyncPoints = parameters.remove("addSyncPoints").equals("true");			
 			String implementation = (String) parameters.remove("implementation");
 			
-			long start = System.nanoTime();
+			//long start = System.nanoTime();
 			if(implementation.equals("dom")) {						
 
 				Map<String, Object> domConfigMap = null;
@@ -135,8 +136,8 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 				}
 			}//	if(implementation.equals("dom"))
 			
-			long end = System.nanoTime();						
-			System.err.println("normalized in " + (end-start)/1000000 + " milliseconds");
+//			long end = System.nanoTime();						
+//			System.err.println("normalized in " + (end-start)/1000000 + " milliseconds");
 			
 			/*
 			 * Copy input fileset aux members, if any
