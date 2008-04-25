@@ -76,7 +76,8 @@ public abstract class XMLBreakDetector {
         outputFactory = XMLOutputFactory.newInstance();
         
         inputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
-        inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);        
+        inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
+           
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
         //System.err.println(inputFactory.isPropertySupported(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES));
         //System.err.println(inputFactory.isPropertySupported(XMLInputFactory.SUPPORT_DTD));
@@ -94,7 +95,8 @@ public abstract class XMLBreakDetector {
             inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
             inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.TRUE);
             inputFactory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
-            inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);
+            //mg20080423 set to true
+            inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);
         }
         
         outputFile = outFile;

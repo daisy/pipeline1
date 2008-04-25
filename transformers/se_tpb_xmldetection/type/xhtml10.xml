@@ -2,6 +2,16 @@
 
 <elementInfo>
 
+    <abbrElement namespace="http://www.w3.org/1999/xhtml" prefix="" name="abbr" expandAttribute="title"/>
+
+	<acronymElement namespace="http://www.w3.org/1999/xhtml" prefix="" name="acronym" expandAttribute="title">
+		
+	</acronymElement>
+	
+	<initialismElement namespace="http://www.w3.org/1999/xhtml" prefix="" name="acronym" expandAttribute="title">
+		
+	</initialismElement>
+
 	<sentenceElement namespace="http://www.w3.org/1999/xhtml" prefix="" name="p">
 		<attribute name="class" value="sent"/>
 	</sentenceElement>

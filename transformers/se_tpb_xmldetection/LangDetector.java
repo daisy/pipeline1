@@ -32,6 +32,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.stax.StaxEntityResolver;
+
 /**
  * 
  * @author Linus Ericson
@@ -40,8 +44,26 @@ import javax.xml.stream.events.XMLEvent;
 
     public static Set getXMLLangSet(File file) throws FileNotFoundException, XMLStreamException {
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        factory.setProperty("javax.xml.stream.supportDTD", Boolean.FALSE);
-        factory.setProperty("javax.xml.stream.isNamespaceAware", Boolean.TRUE);
+        //factory.setProperty("javax.xml.stream.supportDTD", Boolean.FALSE);
+        //factory.setProperty("javax.xml.stream.isNamespaceAware", Boolean.TRUE);
+        //mg20080423 replaced the above,
+        //when xhtml with entities will throw an exception if not:
+        try {
+        	factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);        
+	        factory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
+	        factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);
+	        factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.TRUE);
+	        factory.setProperty(XMLInputFactory.IS_VALIDATING, Boolean.FALSE);
+	        try {
+				factory.setProperty(XMLInputFactory.RESOLVER, new StaxEntityResolver(CatalogEntityResolver.getInstance()));
+			} catch (CatalogExceptionNotRecoverable e) {
+				e.printStackTrace();
+			}
+	        
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+        
         
         XMLEventReader er = factory.createXMLEventReader(new FileInputStream(file));
         
