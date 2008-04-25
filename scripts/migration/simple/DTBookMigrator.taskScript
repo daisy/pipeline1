@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <taskScript version="2.0" name="dtbookMigrator">
-	<nicename>DTBook Migrator</nicename>
+	<nicename>DTBook Migrator [BETA]</nicename>
 	<description>Migrate a DTBook document to a later version of itself</description>
 	<documentation uri="../../../doc/scripts/DTBookMigrator.html"/>
 	<parameter name="input" value="" required="true">

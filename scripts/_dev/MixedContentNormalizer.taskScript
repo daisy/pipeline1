@@ -2,7 +2,7 @@
 <taskScript version="2.0" name="dtbook2daisy202">
 	<nicename>Mixed Content Normalizer</nicename>
 	<description>Normalize mixed content models by inserting elements wrapping text</description>
-	<documentation uri="../../../doc/scripts/MixedContentNormalizer.html"/>
+	<!-- <documentation uri="../../../doc/scripts/MixedContentNormalizer.html"/> -->
 		
 	<parameter name="inputXML" value="" required="true">
 		<nicename>Input XML file</nicename>
