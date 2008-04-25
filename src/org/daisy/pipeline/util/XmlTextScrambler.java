@@ -18,6 +18,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.ProcessingInstruction;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -117,6 +118,8 @@ public class XmlTextScrambler {
 						xe = handleImageElement(xe.asStartElement(),xef);
 					}else if (isAcronymElement(xe.asStartElement())) {
 						xe = handleAcronymElement(xe.asStartElement(),xef);
+					}else if (isLinkElement(xe.asStartElement())) {
+						xe = handleLinkElement(xe.asStartElement(),xef);
 					}
 				}else if(xe.isCharacters() && !skipElemTextScrambling 
 						&& !CharUtils.isXMLWhiteSpace(xe.asCharacters().getData())) {
@@ -124,8 +127,10 @@ public class XmlTextScrambler {
 							context.getContextXPath(
 									ContextStack.XPATH_SELECT_ELEMENTS_ONLY, 
 										ContextStack.XPATH_PREDICATES_NONE));
+				}else if(xe.getEventType()==XMLEvent.PROCESSING_INSTRUCTION) {
+					xe = handleProcessingInstruction((ProcessingInstruction)xe,xef);
 				}
-				writer.add(xe);				
+				if(xe!=null)writer.add(xe);				
 			}
 
 		} catch (CatalogExceptionNotRecoverable e) {
@@ -139,6 +144,24 @@ public class XmlTextScrambler {
 			StAXOutputFactoryPool.getInstance().release(xof, xofProperties);
 			StAXEventFactoryPool.getInstance().release(xef);
 		}	
+	}
+	
+	private XMLEvent handleLinkElement(StartElement se, XMLEventFactory xef) {		
+		//remove all links since they may refer to copyrighted stuff
+		//TODO
+		return se;
+	}
+	
+	private XMLEvent handleProcessingInstruction(ProcessingInstruction pi, XMLEventFactory xef) {
+		//remove all css PIs since they may be copyrighted
+		if(pi.getTarget().equals("xml-stylesheet")) {
+			return null;
+		}
+		return pi;
+	}
+
+	private boolean isLinkElement(StartElement se) {
+		return se.getName().getLocalPart().equals("link");
 	}
 	
 	private boolean isAcronymElement(StartElement se) {
