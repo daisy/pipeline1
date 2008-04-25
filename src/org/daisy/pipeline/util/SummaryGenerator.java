@@ -185,6 +185,7 @@ public class SummaryGenerator implements InputListener {
 		DMFCCore dmfc = new DMFCCore(null,dir,properties);
 						
 		for(File s : scripts) {
+			if(s.getParentFile().getName().equals("_dev")) continue;
 			try {
 				Script script = dmfc.newScript(s.toURI().toURL());
 																 

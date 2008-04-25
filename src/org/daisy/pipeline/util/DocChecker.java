@@ -106,20 +106,23 @@ public class DocChecker implements FilesetErrorHandler {
 		//if it doesnt exist, warn
 		Set<URI> existingDocumentationFiles = new HashSet<URI>();
 		
-		for (Iterator iter = scriptAndTransformerFiles.keySet().iterator(); iter.hasNext();) {
+		for (Iterator<?> iter = scriptAndTransformerFiles.keySet().iterator(); iter.hasNext();) {
 			File file = (File) iter.next();
 			if(file.getName().toLowerCase().contains("multiformat")) {
 				System.err.println("stop");
 			}
 			String docURI = parseForDocURI(file);
 			if(docURI==null){
-				System.err.println("[DocChecker Warning] File " + file.getParentFile().getName()+"/"+file.getName() + " has no inline documentation URI");
+				//dont report _dev errors				
+				if(!file.getParentFile().getName().equals("_dev"))
+					System.err.println("[DocChecker Warning] File " + file.getParentFile().getName()+"/"+file.getName() + " has no inline documentation URI");
 			}else{
 				URI resolvedURI = file.toURI().resolve(docURI);
 				File test = new File(resolvedURI);
 				if(test.exists()) {
 					existingDocumentationFiles.add(resolvedURI);
 				}else{
+					if(!file.getParentFile().getName().equals("_dev"))
 					System.err.println("[DocChecker Warning] Documentation URI in " + file.getParentFile().getName()+"/"+file.getName() + " does not resolve. URI is: " + resolvedURI );
 				}
 			}
@@ -181,6 +184,8 @@ public class DocChecker implements FilesetErrorHandler {
 
 	public void error(FilesetFileException ffe) throws FilesetFileException {
 		String line = "";
+		if(ffe.getCause().getMessage().contains("no matching file type found for")) return;
+		
 		if(ffe.getCause() instanceof SAXParseException) {
 			SAXParseException spe = (SAXParseException) ffe.getCause();
 			line = Integer.toString(spe.getLineNumber());
