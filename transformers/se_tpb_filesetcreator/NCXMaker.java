@@ -47,6 +47,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.Namespace;
+import javax.xml.stream.events.ProcessingInstruction;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -394,7 +395,10 @@ public class NCXMaker implements BusListener {
 				
 				
 			} else if (event.isProcessingInstruction()) {
-				continue;
+				//continue;
+				//mg20080401: allow xml-stylesheet to pass through
+				ProcessingInstruction pi = (ProcessingInstruction) event;				
+				if(!pi.getTarget().equals("xml-stylesheet")) continue;
 			}
 			
 			checkTransformerAborted();
