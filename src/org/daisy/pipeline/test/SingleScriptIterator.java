@@ -204,7 +204,7 @@ public class SingleScriptIterator implements BusListener {
 			File script = FilenameOrFileURI.toFile(args[2]);
 			if(script==null||!script.exists()) throw new FileNotFoundException(args[2]);
 			
-			EFolder outputFolder = new EFolder(FileUtils.createDirectory((FilenameOrFileURI.toFile(args[0]))));
+			EFolder outputFolder = new EFolder(FileUtils.createDirectory((FilenameOrFileURI.toFile(args[3]))));
 			
 			Map<String,String> parameters = new HashMap<String,String>(); //TODO get this from args[]
 			
