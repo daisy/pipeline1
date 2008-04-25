@@ -272,6 +272,7 @@ samples/input/sadx/BulletList.docx -text
 samples/input/sadx/BulletList.xml -text
 samples/input/sadx/EmptyHeading.docx -text
 samples/input/sadx/EmptyHeading.xml -text
+samples/input/sadx/EmptyHeadingComplex.xml -text
 samples/input/sadx/EmptyHeadingOnly.docx -text
 samples/input/sadx/EmptyHeadingOnly.xml -text
 samples/input/sadx/FullyFeatured.docx -text
@@ -282,6 +283,8 @@ samples/input/sadx/Head1Only.docx -text
 samples/input/sadx/Head1Only.xml -text
 samples/input/sadx/NoHead1.docx -text
 samples/input/sadx/NoHead1.xml -text
+samples/input/sadx/NoTitle.docx -text
+samples/input/sadx/NoTitle.xml -text
 samples/input/sadx/OrderedList.docx -text
 samples/input/sadx/OrderedList.xml -text
 samples/input/sadx/ParaOnly.docx -text
@@ -472,10 +475,13 @@ src/org/daisy/pipeline/test/impl/NarratorSADX.template -text
 src/org/daisy/pipeline/test/impl/NarratorSADX_AnotherBulletList.java -text
 src/org/daisy/pipeline/test/impl/NarratorSADX_BulletList.java -text
 src/org/daisy/pipeline/test/impl/NarratorSADX_EmptyHeading.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_EmptyHeadingComplex.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/test/impl/NarratorSADX_EmptyHeadingOnly.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/test/impl/NarratorSADX_FullyFeatured.java -text
 src/org/daisy/pipeline/test/impl/NarratorSADX_Head1Head3_NoHead2.java -text
 src/org/daisy/pipeline/test/impl/NarratorSADX_Head1Only.java -text
 src/org/daisy/pipeline/test/impl/NarratorSADX_NoHead1.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_NoTitle.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/test/impl/NarratorSADX_OrderedList.java -text
 src/org/daisy/pipeline/test/impl/NarratorSADX_ParaOnly.java -text
 src/org/daisy/pipeline/test/impl/NarratorSADX_ParaOnly_NoTitleMeta.java -text
@@ -956,7 +962,9 @@ transformers/se_tpb_dtbookFix/messages.properties -text
 transformers/se_tpb_dtbookFix/transformer.tdf -text
 transformers/se_tpb_dtbookFix/xslt/iterative-processor.xsl -text
 transformers/se_tpb_dtbookFix/xslt/level-tools.xsl -text
+transformers/se_tpb_dtbookFix/xslt/narrator-empty-headings.xsl -text
 transformers/se_tpb_dtbookFix/xslt/narrator-metadata.xsl -text
+transformers/se_tpb_dtbookFix/xslt/narrator-title.xsl -text svneol=unset#text/plain
 transformers/se_tpb_dtbookFix/xslt/output.xsl -text
 transformers/se_tpb_dtbookFix/xslt/output2.xsl -text
 transformers/se_tpb_dtbookFix/xslt/recursive-copy.xsl -text

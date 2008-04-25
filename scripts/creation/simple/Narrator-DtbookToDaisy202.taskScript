@@ -32,10 +32,29 @@
 			</enum>
 		</datatype>
 	</parameter>
+
+
+	<!-- *************************
+	      DTBook first input validation, report errors but continue 
+	     ************************* -->
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>		
+		<parameter>
+			<name>requireInputType</name>
+			<value>Dtbook document</value>
+		</parameter>
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+	</task>
 	
 	
 	<!-- *************************
-	      DTBook Fix
+	      DTBook Fix - run Narrator category (which *includes* repair executors)
 	     ************************* -->
 	<task name="se_tpb_dtbookFix" interactive="false">
 		<parameter>
@@ -68,7 +87,7 @@
 	
 	
 	<!-- *************************
-	      DTBook input validation 
+	      DTBook second input validation, this time abort if not valid including Narrator tests. 
 	     ************************* -->
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
@@ -85,7 +104,7 @@
 		</parameter>
 		<parameter>
 			<name>abortThreshold</name>
-			<value>NONE</value>
+			<value>ERROR</value>
 		</parameter>
 	</task>
 	

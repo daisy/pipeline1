@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Add dublin core metadata as required by the Narrator Script
-    (these elements are not required by the core DTBook grammar).
     
     Version
     2008-03-31
@@ -9,10 +7,12 @@
     Description
     Adds dc:Language, dc:Date and dc:Publisher to dtbook, if not present in input,
     or given but with null/whitespace only content values.
-    
+        
     dc:Language is taken from xml:lang if set, else inparam
     dc:Date is taken as inparam
     dc:Publisher is taken as inparam
+    
+    Removes dc:description and dc:subject if not valued
     
     Nodes
     dtbook/head
@@ -91,7 +91,7 @@
      
     <xsl:template match="dtb:meta[@name='dc:Publisher']">
     	<xsl:choose>
-	    	<xsl:when test="translate(@content, ' ', '')=''">
+	    	<xsl:when test="normalize-space(@content) eq ''">
 	        	<xsl:message terminate="no">Adding value to empty dc:Publisher metadata element</xsl:message>
 	            <xsl:element name="meta" namespace="http://www.daisy.org/z3986/2005/dtbook/">
 					<xsl:attribute name="name">
@@ -110,7 +110,7 @@
     
     <xsl:template match="dtb:meta[@name='dc:Language']">
     	<xsl:choose>
-	    	<xsl:when test="translate(@content, ' ', '')=''">
+	    	<xsl:when test="normalize-space(@content) eq ''">
 	        	<xsl:message terminate="no">Adding value to empty dc:Language metadata element</xsl:message>
 	            <xsl:element name="meta" namespace="http://www.daisy.org/z3986/2005/dtbook/">
 					<xsl:attribute name="name">
@@ -136,7 +136,7 @@
     
     <xsl:template match="dtb:meta[@name='dc:Date']">
     	<xsl:choose>
-	    	<xsl:when test="translate(@content, ' ', '')=''">
+	    	<xsl:when test="normalize-space(@content) eq ''">
 	        	<xsl:message terminate="no">Adding value to empty dc:Date metadata element</xsl:message>
 	            <xsl:element name="meta" namespace="http://www.daisy.org/z3986/2005/dtbook/">
 					<xsl:attribute name="name">
@@ -155,7 +155,7 @@
     
 	<xsl:template match="dtb:meta[@name='dc:Description']">
     	<xsl:choose>
-	    	<xsl:when test="translate(@content, ' ', '')=''">
+	    	<xsl:when test="normalize-space(@content) eq ''">
 	        	<xsl:message terminate="no">Removing dc:Description lacking content</xsl:message>	            
 	        </xsl:when>   
 	        <xsl:otherwise>
@@ -166,7 +166,7 @@
     
     <xsl:template match="dtb:meta[@name='dc:Subject']">
     	<xsl:choose>
-	    	<xsl:when test="translate(@content, ' ', '')=''">
+	    	<xsl:when test="normalize-space(@content) eq ''">
 	        	<xsl:message terminate="no">Removing dc:Subject lacking content</xsl:message>	            
 	        </xsl:when>   
 	        <xsl:otherwise>

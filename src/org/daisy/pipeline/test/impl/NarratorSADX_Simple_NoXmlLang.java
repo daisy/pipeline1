@@ -31,7 +31,7 @@ public class NarratorSADX_Simple_NoXmlLang extends PipelineTest {
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if ("DTBookFix_NarratorValidation.taskScript".equals(scriptName)) {
+		if ("Narrator-DtbookToDaisy202.taskScript".equals(scriptName)) {
 			return true;
 		}
 		return false;

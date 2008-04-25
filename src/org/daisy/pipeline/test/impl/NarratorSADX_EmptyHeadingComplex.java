@@ -5,9 +5,9 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.EFolder;
 
-public class NarratorSADX_TitleParaOnly extends PipelineTest {
+public class NarratorSADX_EmptyHeadingComplex extends PipelineTest {
 
-	public NarratorSADX_TitleParaOnly(EFolder dataInputDir, EFolder dataOutputDir) {
+	public NarratorSADX_EmptyHeadingComplex(EFolder dataInputDir, EFolder dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 
@@ -18,9 +18,9 @@ public class NarratorSADX_TitleParaOnly extends PipelineTest {
 
 	@Override
 	public List<String> getParameters() {
-		mParameters.add("--input=" + mDataInputDir + "/sadx/TitleParaOnly.xml");
+		mParameters.add("--input=" + mDataInputDir + "/sadx/EmptyHeadingComplex.xml");
 		mParameters.add("--outputPath=" + mDataOutputDir
-				+ "/NarratorSADX-TitleParaOnly/");
+				+ "/NarratorSADX-EmptyHeading/");
 		return mParameters;
 	}
 

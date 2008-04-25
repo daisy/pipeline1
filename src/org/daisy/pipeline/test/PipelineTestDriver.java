@@ -241,22 +241,25 @@ public class PipelineTestDriver implements BusListener {
 //		tests.add(new NarratorSADX_AnotherBulletList(inputDir, outputDir));
 //		tests.add(new NarratorSADX_BulletList(inputDir, outputDir));
 //		tests.add(new NarratorSADX_EmptyHeading(inputDir, outputDir));
+//		tests.add(new NarratorSADX_EmptyHeadingComplex(inputDir, outputDir));
+//		tests.add(new NarratorSADX_EmptyHeadingOnly(inputDir, outputDir));
 //		tests.add(new NarratorSADX_FullyFeatured(inputDir, outputDir));
 //		tests.add(new NarratorSADX_Head1Head3_NoHead2(inputDir, outputDir));
 //		tests.add(new NarratorSADX_Head1Only(inputDir, outputDir));
-//		tests.add(new NarratorSADX_NoHead1(inputDir, outputDir));
-//		tests.add(new NarratorSADX_OrderedList(inputDir, outputDir));
-//		tests.add(new NarratorSADX_ParaOnly_NoTitleMeta(inputDir, outputDir));
-//		tests.add(new NarratorSADX_ParaOnly(inputDir, outputDir));
+//		tests.add(new NarratorSADX_NoHead1(inputDir, outputDir)); // OK  (fails rule 14,100)
+//		tests.add(new NarratorSADX_NoTitle(inputDir, outputDir));
+//		tests.add(new NarratorSADX_OrderedList(inputDir, outputDir)); 
+//		tests.add(new NarratorSADX_ParaOnly_NoTitleMeta(inputDir, outputDir)); // OK (fails rule 100)
+//		tests.add(new NarratorSADX_ParaOnly(inputDir, outputDir)); // OK (fails rule 100)
 //		tests.add(new NarratorSADX_Simple_NoCreatorMeta(inputDir, outputDir));
 //		tests.add(new NarratorSADX_Simple_NoPublisherMeta(inputDir, outputDir));
 //		tests.add(new NarratorSADX_Simple_NoTitleMeta(inputDir, outputDir));
 //		tests.add(new NarratorSADX_Simple_NoUidMeta(inputDir, outputDir));
 //		tests.add(new NarratorSADX_Simple(inputDir, outputDir));
-//		tests.add(new NarratorSADX_TitleOnly(inputDir, outputDir));
-//		tests.add(new NarratorSADX_TitleParaOnly(inputDir, outputDir));
 //		tests.add(new NarratorSADX_Simple_NoXmlLang(inputDir, outputDir));
 //		tests.add(new NarratorSADX_Simple_NoLangAtAll(inputDir, outputDir));
+//		tests.add(new NarratorSADX_TitleOnly(inputDir, outputDir)); // OK (fails rule 100)
+//		tests.add(new NarratorSADX_TitleParaOnly(inputDir, outputDir)); // OK (fails rule 100)		
 		
 //		tests.add(new ValidatorNVDL1(inputDir, outputDir));
 //		tests.add(new ValidatorDTBook1(inputDir, outputDir));
