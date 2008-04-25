@@ -35,8 +35,10 @@ class Category extends LinkedList<Executor> {
 	}
 	
 	enum Name {	
+		INDENT,
 		TIDY,
-		REPAIR;
+		REPAIR,
+		NARRATOR;
 	}
 	
 	private static final long serialVersionUID = 8014675633930802166L;

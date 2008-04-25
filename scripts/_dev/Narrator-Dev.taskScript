@@ -44,13 +44,39 @@
 	
 	&FilesetRenamerScriptParamsStatic;
 	
+		<!-- *************************
+	      DTBook Fix
+	     ************************* -->
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/00-dtbookfix.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>runCategories</name>
+			<value>REPAIR_TIDY_NARRATOR</value>
+		</parameter>
+		
+		<parameter>
+			<name>simplifyHeadingLayout</name>
+			<value>true</value>
+		</parameter>
+			
+	</task>
+	
 	<!-- *************************
 	      DTBook input validation 
 	     ************************* -->
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${input}</value>
+			<value>${outputPath}/00-dtbookfix.xml</value>
 		</parameter>
 		<parameter>
 			<name>schemas</name>
@@ -73,7 +99,7 @@
 	<task name="se_tpb_xmldetection" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${input}</value>
+			<value>${outputPath}/00-dtbookfix.xml</value>
 		</parameter>		
 		<parameter>
 			<name>output</name>

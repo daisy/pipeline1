@@ -243,6 +243,7 @@ samples/input/dtbook/dontworrybehappy.xml -text
 samples/input/dtbook/dtbook-math.xml -text
 samples/input/dtbook/dtbook.2005.basic.css -text
 samples/input/dtbook/dtbookfix-example[!!-~](invalid).xml -text
+samples/input/dtbook/dtbookfix-example-2-invalid.xml -text
 samples/input/dtbook/hauy-2005-1-charsetError.xml -text
 samples/input/dtbook/hauy-2005-1-short.xml -text
 samples/input/dtbook/hauy-2005-1.xml -text
@@ -265,6 +266,43 @@ samples/input/ops/navigation.ncx -text
 samples/input/ops/package.opf -text
 samples/input/ops/the_waste_land.xml -text
 samples/input/rtf/RTF2dtbook.rtf -text
+samples/input/sadx/AnotherBulletList.docx -text
+samples/input/sadx/AnotherBulletList.xml -text
+samples/input/sadx/BulletList.docx -text
+samples/input/sadx/BulletList.xml -text
+samples/input/sadx/EmptyHeading.docx -text
+samples/input/sadx/EmptyHeading.xml -text
+samples/input/sadx/FullyFeatured.docx -text
+samples/input/sadx/FullyFeatured.xml -text
+samples/input/sadx/Head1Head3_NoHead2.docx -text
+samples/input/sadx/Head1Head3_NoHead2.xml -text svneol=unset#text/plain
+samples/input/sadx/Head1Only.docx -text
+samples/input/sadx/Head1Only.xml -text
+samples/input/sadx/NoHead1.docx -text
+samples/input/sadx/NoHead1.xml -text
+samples/input/sadx/OrderedList.docx -text
+samples/input/sadx/OrderedList.xml -text
+samples/input/sadx/ParaOnly.docx -text
+samples/input/sadx/ParaOnly.xml -text
+samples/input/sadx/ParaOnly_NoTitleMeta.docx -text
+samples/input/sadx/ParaOnly_NoTitleMeta.xml -text svneol=unset#text/plain
+samples/input/sadx/Simple.docx -text
+samples/input/sadx/Simple.xml -text
+samples/input/sadx/Simple_NoCreatorMeta.docx -text
+samples/input/sadx/Simple_NoCreatorMeta.xml -text svneol=unset#text/plain
+samples/input/sadx/Simple_NoLangAtAll.xml -text
+samples/input/sadx/Simple_NoPublisherMeta.docx -text
+samples/input/sadx/Simple_NoPublisherMeta.xml -text svneol=unset#text/plain
+samples/input/sadx/Simple_NoTitleMeta.docx -text
+samples/input/sadx/Simple_NoTitleMeta.xml -text svneol=unset#text/plain
+samples/input/sadx/Simple_NoUidMeta.docx -text
+samples/input/sadx/Simple_NoUidMeta.xml -text svneol=unset#text/plain
+samples/input/sadx/Simple_NoXmlLang.xml -text
+samples/input/sadx/TitleOnly.docx -text
+samples/input/sadx/TitleOnly.xml -text
+samples/input/sadx/TitleParaOnly.docx -text
+samples/input/sadx/TitleParaOnly.xml -text
+samples/input/sadx/dtbookbasic.css -text
 samples/input/schema/foobar.sch -text
 samples/input/schema/xhtml-rdf.nvdl -text
 samples/input/transl/character-translation-table.xml -text
@@ -285,6 +323,7 @@ samples/input/xhtml/valentinhauy.html -text
 samples/input/xhtml/valentinhauy11.html -text
 samples/input/xhtml/xhtml-rdf.xml -text
 scripts/_dev/AudacityToDTB.taskScript -text
+scripts/_dev/DTBookFix_NarratorValidation.taskScript -text
 scripts/_dev/Daisy202toZ3986-2005.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
@@ -411,6 +450,7 @@ src/org/daisy/pipeline/test/impl/DTBook2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/DTBook2Xhtml2MathML.java -text
 src/org/daisy/pipeline/test/impl/DTBook2rtf1.java -text
 src/org/daisy/pipeline/test/impl/DTBookFix1.java -text
+src/org/daisy/pipeline/test/impl/DTBookFix2.java -text
 src/org/daisy/pipeline/test/impl/DTBookMigrator1.java -text
 src/org/daisy/pipeline/test/impl/DTBookMigrator2.java -text
 src/org/daisy/pipeline/test/impl/DTBookMigrator3.java -text
@@ -424,6 +464,27 @@ src/org/daisy/pipeline/test/impl/MultiFormatMedia1.java -text
 src/org/daisy/pipeline/test/impl/Narrator1.java -text
 src/org/daisy/pipeline/test/impl/Narrator2.java -text
 src/org/daisy/pipeline/test/impl/Narrator3.java -text
+src/org/daisy/pipeline/test/impl/Narrator4.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX.template -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_AnotherBulletList.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_BulletList.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_EmptyHeading.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_FullyFeatured.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_Head1Head3_NoHead2.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_Head1Only.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_NoHead1.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_OrderedList.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_ParaOnly.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_ParaOnly_NoTitleMeta.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_Simple.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_Simple_NoCreatorMeta.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_Simple_NoLangAtAll.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_Simple_NoPublisherMeta.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_Simple_NoTitleMeta.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_Simple_NoUidMeta.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_Simple_NoXmlLang.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_TitleOnly.java -text
+src/org/daisy/pipeline/test/impl/NarratorSADX_TitleParaOnly.java -text
 src/org/daisy/pipeline/test/impl/NccNcxOnly1.java -text
 src/org/daisy/pipeline/test/impl/OcfCreator1.java -text
 src/org/daisy/pipeline/test/impl/Odf2dtbook1.java -text
@@ -455,6 +516,7 @@ src/org/daisy/pipeline/test/impl/WordML2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/WordML2Xhtml2.java -text
 src/org/daisy/pipeline/test/impl/Xhtml2DTBook1.java -text
 src/org/daisy/pipeline/test/impl/XukCreator1.java -text
+src/org/daisy/pipeline/test/impl/buildtest.sh -text
 src/org/daisy/pipeline/util/DocChecker.java -text
 src/org/daisy/pipeline/util/DocIndexGenerator.java -text
 src/org/daisy/pipeline/util/IndexGenerator.java -text
@@ -885,11 +947,13 @@ transformers/se_tpb_dtbookFix/DTBookFix.java -text
 transformers/se_tpb_dtbookFix/Executor.java -text
 transformers/se_tpb_dtbookFix/InputState.java -text
 transformers/se_tpb_dtbookFix/LangExecutor.java -text
+transformers/se_tpb_dtbookFix/NarratorMetadataExecutor.java -text
 transformers/se_tpb_dtbookFix/XSLTExecutor.java -text
 transformers/se_tpb_dtbookFix/messages.properties -text
 transformers/se_tpb_dtbookFix/transformer.tdf -text
 transformers/se_tpb_dtbookFix/xslt/iterative-processor.xsl -text
 transformers/se_tpb_dtbookFix/xslt/level-tools.xsl -text
+transformers/se_tpb_dtbookFix/xslt/narrator-metadata.xsl -text
 transformers/se_tpb_dtbookFix/xslt/output.xsl -text
 transformers/se_tpb_dtbookFix/xslt/output2.xsl -text
 transformers/se_tpb_dtbookFix/xslt/recursive-copy.xsl -text

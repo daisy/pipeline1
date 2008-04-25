@@ -105,6 +105,11 @@ transformers/se_tpb_xmldetection/*.class
 transformers/se_tpb_xmldetection/lang/*.class
 transformers/se_tpb_xmldetection/type/*.class
 transformers/se_tpb_zed2daisy202/*.class
+transformers/uk_rnib_barclaycard_1
+transformers/uk_rnib_barclaycard_2
+transformers/uk_rnib_barclaycard_3
+transformers/uk_rnib_barclaycard_4
+transformers/uk_rnib_barclaycard_5
 transformers/uk_rnib_dtbook2text/*.class
 transformers/uk_rnib_dtbook2xhtml/*.class
 transformers/uk_rnib_dtbook2xhtml/old/*.class

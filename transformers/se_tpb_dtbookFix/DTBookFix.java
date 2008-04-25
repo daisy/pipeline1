@@ -118,6 +118,10 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 				categories.add(createCategory(name, parameters, (String)parameters.get("DTBookVersion")));				
 			}
 			
+			/* 
+			 * Run the indenter last in the chain, this is harmless so always active
+			 */
+			categories.add(createCategory(Category.Name.INDENT, parameters, (String)parameters.get("DTBookVersion")));
 			
 			/*
 			 * Execute the Executors.
@@ -266,6 +270,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 		final String[] v2005_1 = {"2005-1"};		
 		final String[] v2005_2 = {"2005-2"};
 		final String[] v2005_1_2 = {"2005-1","2005-2"};
+		final String[] v2005_1_2_3 = {"2005-1","2005-2","2005-3"};
 						
 		List<Executor> executors = new LinkedList<Executor>();
 		Set<InputState> supportedStates = new HashSet<InputState>();
@@ -284,12 +289,12 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		    		
     		if(((String)parameters.get("simplifyHeadingLayout")).contentEquals("true")) {
     			//tidy-level-cleaner.xsl is optional
-    			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2,i18n("LEVEL_CLEANER"),this,this,this,emitter));
+    			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2_3,i18n("LEVEL_CLEANER"),this,this,this,emitter));
     		}    		
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-move-pagenum.xsl"),v2005_1_2,i18n("MOVE_PAGENUM"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-change-inline-pagenum-to-block.xsl"),v2005_1_2,i18n("CHANGE_INLINE_PAGENUM"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-remove-empty-elements.xsl"),v2005_1_2,i18n("TIDY_REMOVE_EMPTY_ELEMENTS"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2,i18n("ADD_AUTHOR_AND_TITLE"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-move-pagenum.xsl"),v2005_1_2_3,i18n("MOVE_PAGENUM"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-change-inline-pagenum-to-block.xsl"),v2005_1_2_3,i18n("CHANGE_INLINE_PAGENUM"),this,this,this,emitter));
+//    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-remove-empty-elements.xsl"),v2005_1_2_3,i18n("TIDY_REMOVE_EMPTY_ELEMENTS"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2_3,i18n("ADD_AUTHOR_AND_TITLE"),this,this,this,emitter));
     		executors.add(new LangExecutor(parameters, this.getClass().getResource("./xslt/tidy-add-lang.xsl"), i18n("ADD_LANG"), this, this, this, emitter));
     		
     		if(((String)parameters.get("externalizeWhitespace")).contentEquals("true")) {
@@ -317,34 +322,53 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     			executors.add(new CharsetExecutor(parameters,i18n("CHARSET_FIXER"),this));
     		}
     		//all level repair needs to be added in sequential order:
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelnormalizer.xsl"),v2005_1_2,i18n("LEVEL_NORMALIZER"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelsplitter.xsl"),v2005_1_2,i18n("LEVEL_SPLITTER"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelnormalizer.xsl"),v2005_1_2_3,i18n("LEVEL_NORMALIZER"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelsplitter.xsl"),v2005_1_2_3,i18n("LEVEL_SPLITTER"),this,this,this,emitter));
     		if(((String)parameters.get("repairLevelImpl")).contentEquals("xslt 1.0")) {
-	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level1.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_1"),this,this,this,emitter));
-	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level2.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_2"),this,this,this,emitter));
-	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level3.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_3"),this,this,this,emitter));
-	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level4.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_4"),this,this,this,emitter));
-	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level5.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_5"),this,this,this,emitter));
-	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level6.xsl"),v2005_1_2,i18n("REPAIR_LEVEL_6"),this,this,this,emitter));
+	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level1.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_1"),this,this,this,emitter));
+	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level2.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_2"),this,this,this,emitter));
+	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level3.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_3"),this,this,this,emitter));
+	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level4.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_4"),this,this,this,emitter));
+	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level5.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_5"),this,this,this,emitter));
+	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level6.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_6"),this,this,this,emitter));
     		} else if(((String)parameters.get("repairLevelImpl")).contentEquals("xslt 2.0")) {
-    			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-add-levels.xsl"),v2005_1_2,i18n("REPAIR_LEVELS"),this,this,this,emitter));
+    			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-add-levels.xsl"),v2005_1_2_3,i18n("REPAIR_LEVELS"),this,this,this,emitter));
     		}
 
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-illegal-headings.xsl"),v2005_1_2,i18n("REMOVE_ILLEGAL_HEADINGS"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-flatten-redundant-nesting.xsl"),v2005_1_2,i18n("FLATTEN_REDUNDANT_NESTING"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-complete-structure.xsl"),v2005_1_2,i18n("COMPLETE_STRUCTURE"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-lists.xsl"),v2005_1_2,i18n("REPAIR_LISTS"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-idref.xsl"),v2005_1_2,i18n("REPAIR_IDREF"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-empty-elements.xsl"),v2005_1_2,i18n("REPAIR_REMOVE_EMPTY_ELEMENTS"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-pagenum-type.xsl"),v2005_1_2,i18n("REPAIR_PAGENUM_TYPE"),this,this,this,emitter));    		
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-metadata.xsl"),v2005_1_2,i18n("REPAIR_METADATA"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-illegal-headings.xsl"),v2005_1_2_3,i18n("REMOVE_ILLEGAL_HEADINGS"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-flatten-redundant-nesting.xsl"),v2005_1_2_3,i18n("FLATTEN_REDUNDANT_NESTING"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-complete-structure.xsl"),v2005_1_2_3,i18n("COMPLETE_STRUCTURE"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-lists.xsl"),v2005_1_2_3,i18n("REPAIR_LISTS"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-idref.xsl"),v2005_1_2_3,i18n("REPAIR_IDREF"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-empty-elements.xsl"),v2005_1_2_3,i18n("REPAIR_REMOVE_EMPTY_ELEMENTS"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-pagenum-type.xsl"),v2005_1_2_3,i18n("REPAIR_PAGENUM_TYPE"),this,this,this,emitter));    		
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-metadata.xsl"),v2005_1_2_3,i18n("REPAIR_METADATA"),this,this,this,emitter));
 
     		/*
     		 * Populate the supported states of the REPAIR category 
     		 */
     		supportedStates.add(InputState.INVALID);
     		
+    	}else if (name==Category.Name.NARRATOR) {
+    		
+    		/*
+    		 * Populate the executors of the NARRATOR category 
+    		 */
+    		executors.add(new NarratorMetadataExecutor(parameters, this.getClass().getResource("./xslt/narrator-metadata.xsl"), i18n("NARRATOR_METADATA"), this, this, this, emitter));
+    		
+    		/*
+    		 * Populate the supported states of the NARRATOR category 
+    		 */
+    		supportedStates.add(InputState.VALID);
+    		supportedStates.add(InputState.INVALID);
+    		
+    	}else if (name==Category.Name.INDENT) {
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-indent.xsl"),v2005_1_2_3,i18n("INDENT"),this,this,this,emitter));
+    		
+    		supportedStates.add(InputState.INVALID);
+    		supportedStates.add(InputState.VALID);
     	}
+		
     	
     	for (int i = 0; i < executors.size(); i++) {
     		Executor executor = executors.get(i);

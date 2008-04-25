@@ -24,6 +24,14 @@
     			<xsl:with-param name="internal" select="''"/>
     		</xsl:call-template>
     	</xsl:when>	
+    	<xsl:when test="$version='2005-3'">
+    		<xsl:call-template name="print-doctype">
+    			<xsl:with-param name="public" select="'-//NISO//DTD dtbook 2005-3//EN'"/>
+    			<xsl:with-param name="system" select="'http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd'"/>
+    			<xsl:with-param name="root" select="'dtbook'"/>
+    			<xsl:with-param name="internal" select="''"/>
+    		</xsl:call-template>
+    	</xsl:when>	
     	<xsl:otherwise>
     		<xsl:message terminate="yes">
     			<xsl:text>Unrecognized DTBook version: '</xsl:text><xsl:value-of select="$version"/><xsl:text>'</xsl:text>

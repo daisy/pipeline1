@@ -11,6 +11,11 @@
         doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd" 
         name="v2005-2"/>
 
+<xsl:output method="xml" version="1.0" indent="no" encoding="UTF-8" 
+        doctype-public="-//NISO//DTD dtbook 2005-3//EN"
+        doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" 
+        name="v2005-3"/>
+
 <xsl:template match="/">
 	<!-- Check version attribute -->
 	<xsl:variable name="version" select="/dtb:dtbook/@version"/>
@@ -23,6 +28,11 @@
     	</xsl:when>
     	<xsl:when test="$version='2005-2'">
 			<xsl:result-document format="v2005-2">
+				<xsl:apply-templates />
+			</xsl:result-document>
+    	</xsl:when>	
+    	<xsl:when test="$version='2005-3'">
+			<xsl:result-document format="v2005-3">
 				<xsl:apply-templates />
 			</xsl:result-document>
     	</xsl:when>	

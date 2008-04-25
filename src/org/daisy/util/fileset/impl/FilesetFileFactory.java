@@ -112,7 +112,7 @@ public final class FilesetFileFactory {
 	/**
 	 * Instantiates and returns a FilesetFile that implements the interface given in inparam.
 	 * @param interfaceName the local/simple name of the interface that the return object should implement. 
-	 * The interface simplename must be one of those in org.daisy.util.fileset.interfaces.
+	 * The interface simplename must be one of those in org.daisy.util.fileset.
 	 * @param resource URI of the resource to return a FilesetFile for. Only local URIs are explicitly supported at the moment.
 	 * @return An implementation of the interface given in inparam.
 	 * @throws FilesetFatalException 

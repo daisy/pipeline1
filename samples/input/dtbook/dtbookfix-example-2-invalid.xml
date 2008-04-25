@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dtbook
+  PUBLIC "-//NISO//DTD dtbook 2005-3//EN" "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd">
+<dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="2005-3">
+	<head>
+		<meta name="dtb:uid" content="dummy-uid-00001"/>
+		<meta name="dc:Title" content="The book"/>
+		<meta name="dc:Creator" content="The author"/>
+		<meta name="dc:Publisher" content=""/>
+	</head>
+	<book>
+		<!-- Add author title will insert author and title here -->
+		<bodymatter>
+			<level1>
+				<h1>Heading 1 (level 1)</h1>
+				<p>Paragraph 1</p>
+				<!-- Level splitter will fix this -->
+				<h1>Heading 2 (level 1)</h1>
+				<p>Paragraph 2</p>
+				<h2>Heading 3 (level 2)</h2>
+				<p>Paragraph 3</p>
+				<!-- Repair lists will fix this -->
+				<list>
+					<list>
+						<li>List item 1</li>
+						<li>List item 2</li>
+					</list>
+				</list>
+				<table>
+					<tr>
+						<!-- Remove illegal headings will fix this -->
+						<td><h3>Heading 3 (level 3)</h3></td>
+					</tr>
+				</table>
+			</level1>
+			<level3>
+				<level2>
+					<level1>
+						<!-- Level normalizer will fix this -->
+						<h1>Heading 4 (level 1)</h1>
+						<p><!-- Flatten redundant nesting will fix this --><p>Paragraph 4</p></p>
+					</level1>
+				</level2>
+			</level3>
+			<level1><!-- Remove empty elements will fix this --></level1>
+			<!-- Complete structure will fix this -->
+			<level1><h1>Heading 5 (level 1)</h1></level1>
+			<level1>
+				<!-- Idref will fix this -->
+				<p><noteref>1</noteref></p>
+				<note id="note-1"><p>1. The note</p></note>
+			</level1>
+		</bodymatter>
+	</book>
+</dtbook>

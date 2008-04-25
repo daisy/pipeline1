@@ -9,6 +9,7 @@
 			  <item nicename="Tidy only" value="TIDY" />
 			  <item nicename="Repair only" value="REPAIR" />
 			  <item nicename="Repair, then Tidy" value="REPAIR_TIDY" />
+			  <item nicename="Repair, then Tidy, then Narrator specific fixes" value="REPAIR_TIDY_NARRATOR" />
 			  <item nicename="Dont apply DTBook fix at all" value="NOTHING" />
 			</enum>
 		</datatype>

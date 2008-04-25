@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='utf-8'?>
+<taskScript version="2.0" name="dtbookFixNarrator">
+	<nicename>DTBookFix+Narrator</nicename>
+	<description>Runs a doc through DTBookFIX and then validate with Narrator rules</description>
+	<documentation uri="../../../doc/scripts/Narrator-DtbookToDaisy202.html"/>
+		
+	<parameter name="input" value="" required="true">
+		<nicename>Input DTBook file</nicename>
+		<description>A DTBook 2005 file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="outputPath" value="" required="true">
+		<nicename>Output folder</nicename>
+		<description>Base folder for the Narrator output</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+		
+	
+	<!-- *************************
+	      DTBook Fix
+	     ************************* -->
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/00-dtbookfix.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>runCategories</name>
+			<value>REPAIR_TIDY_NARRATOR</value>
+		</parameter>
+		
+		<parameter>
+			<name>simplifyHeadingLayout</name>
+			<value>true</value>
+		</parameter>
+			
+	</task>
+	
+	
+	
+	<!-- *************************
+	      DTBook input validation 
+	     ************************* -->
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/00-dtbookfix.xml</value>
+		</parameter>
+		<parameter>
+			<name>schemas</name>
+			<value>-//TPB//SCH dtbook 2005 Narrator//EN</value>
+		</parameter>
+		<parameter>
+			<name>requireInputType</name>
+			<value>Dtbook document</value>
+		</parameter>
+		<parameter>
+			<name>abortThreshold</name>
+			<value>WARNING</value>
+		</parameter>
+	</task>
+		
+</taskScript>

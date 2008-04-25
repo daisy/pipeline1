@@ -235,7 +235,29 @@ public class PipelineTestDriver implements BusListener {
 //		tests.add(new Odf2xhtml1(inputDir, outputDir));
 //		tests.add(new Narrator1(inputDir, outputDir));
 //		tests.add(new Narrator2(inputDir, outputDir));
-//		tests.add(new Narrator3(inputDir, outputDir));		
+//		tests.add(new Narrator3(inputDir, outputDir));
+//		tests.add(new Narrator4(inputDir, outputDir));
+
+//		tests.add(new NarratorSADX_AnotherBulletList(inputDir, outputDir));
+//		tests.add(new NarratorSADX_BulletList(inputDir, outputDir));
+//		tests.add(new NarratorSADX_EmptyHeading(inputDir, outputDir));
+//		tests.add(new NarratorSADX_FullyFeatured(inputDir, outputDir));
+//		tests.add(new NarratorSADX_Head1Head3_NoHead2(inputDir, outputDir));
+//		tests.add(new NarratorSADX_Head1Only(inputDir, outputDir));
+//		tests.add(new NarratorSADX_NoHead1(inputDir, outputDir));
+//		tests.add(new NarratorSADX_OrderedList(inputDir, outputDir));
+//		tests.add(new NarratorSADX_ParaOnly_NoTitleMeta(inputDir, outputDir));
+//		tests.add(new NarratorSADX_ParaOnly(inputDir, outputDir));
+//		tests.add(new NarratorSADX_Simple_NoCreatorMeta(inputDir, outputDir));
+//		tests.add(new NarratorSADX_Simple_NoPublisherMeta(inputDir, outputDir));
+//		tests.add(new NarratorSADX_Simple_NoTitleMeta(inputDir, outputDir));
+//		tests.add(new NarratorSADX_Simple_NoUidMeta(inputDir, outputDir));
+//		tests.add(new NarratorSADX_Simple(inputDir, outputDir));
+//		tests.add(new NarratorSADX_TitleOnly(inputDir, outputDir));
+//		tests.add(new NarratorSADX_TitleParaOnly(inputDir, outputDir));
+//		tests.add(new NarratorSADX_Simple_NoXmlLang(inputDir, outputDir));
+//		tests.add(new NarratorSADX_Simple_NoLangAtAll(inputDir, outputDir));
+		
 //		tests.add(new ValidatorNVDL1(inputDir, outputDir));
 //		tests.add(new ValidatorDTBook1(inputDir, outputDir));
 //		tests.add(new ValidatorDTBook2(inputDir, outputDir));
@@ -258,6 +280,7 @@ public class PipelineTestDriver implements BusListener {
 //		tests.add(new DTBook2Xhtml2MathML(inputDir, outputDir));
 //		tests.add(new MixedContentNormalizer1(inputDir, outputDir));
 //		tests.add(new DTBookFix1(inputDir, outputDir));		
+//		tests.add(new DTBookFix2(inputDir, outputDir));
 //		tests.add(new DTBookMigrator1(inputDir, outputDir));
 //		tests.add(new DTBookMigrator2(inputDir, outputDir));
 //		tests.add(new DTBookMigrator3(inputDir, outputDir));

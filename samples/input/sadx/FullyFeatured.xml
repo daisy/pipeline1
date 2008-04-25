@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="dtbookbasic.css" type="text/css"?>
+<!DOCTYPE dtbook PUBLIC "-//NISO//DTD dtbook 2005-3//EN" "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd">
+<dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="2005-3" xml:lang="fr-FR">
+  <head>
+    <link href="dtbookbasic.css"/>
+    <meta name="dt:version" content="1.0"/>
+    <meta name="dtb:uid" content="4791675291557518196"/>
+    <meta name="dc:Title" content=" Title"/>
+    <meta name="dc:Creator" content="Romain Deltour"/>
+    <meta name="dc:Date" content="2008-03-31"/>
+    <meta name="dc:Publisher" content="DAISY"/>
+    <meta name="dc:subject" content=""/>
+    <meta name="dc:description" content=""/>
+    <meta name="dc:identifier" content="4791675291557518196"/>
+    <meta name="dc:Language" content="fr-FR"/>
+    <meta name="dc:Language" content="ar-SA"/>
+    <meta name="dc:Language" content="en-US"/>
+  </head>
+  <book showin="blp">
+    <frontmatter>
+      <doctitle> Title</doctitle>
+      <docauthor>Romain Deltour</docauthor>
+    </frontmatter>
+    <bodymatter id="bodymatter_0001">
+      <level1>
+        <pagenum page="normal" id="page1">1</pagenum>
+        <doctitle>Title
+</doctitle>
+      </level1>
+      <level1>
+        <h1 xml:lang="en-US">Heading 1
+</h1>
+        <p/>
+        <p xml:lang="en-US">Paragraph  with <strong>strong</strong> and <em>emphasis</em></p>
+        <table border="1">
+          <tbody>
+            <tr>
+              <td>
+                <p xml:lang="en-US">Col 1</p>
+              </td>
+              <td>
+                <p xml:lang="en-US">Col2</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p xml:lang="en-US">Row</p>
+              </td>
+              <td>
+                <p xml:lang="en-US">Row</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p xml:lang="en-US">Paragraph with a note<noteref idref="#endnote-1" class="Endnote" xml:lang="fr-FR">1</noteref> and another note<noteref idref="#endnote-2" class="Endnote" xml:lang="fr-FR">2</noteref></p>
+        <p xml:lang="en-US">Paragraph with <sup>superscript</sup> and <sub>subscript</sub></p>
+      </level1>
+    </bodymatter>
+    <rearmatter>
+      <level1>
+        <note id="endnote-1" class="Endnote">
+          <p>1 Note content</p>
+        </note>
+        <note id="endnote-2" class="Endnote">
+          <p>2 Another note content</p>
+        </note>
+      </level1>
+    </rearmatter>
+  </book>
+</dtbook>
