@@ -5,14 +5,14 @@
   <head>
     <link href="dtbookbasic.css"/>
     <meta name="dt:version" content="1.0"/>
-    <meta name="dtb:uid" content="5113578578912150423"/>
+    <meta name="dtb:uid" content="5638401586871075693"/>
     <meta name="dc:Title" content=" Title"/>
     <meta name="dc:Creator" content="Romain Deltour"/>
     <meta name="dc:Date" content="2008-04-01"/>
     <meta name="dc:Publisher" content="DAISY"/>
     <meta name="dc:subject" content=""/>
     <meta name="dc:description" content=""/>
-    <meta name="dc:identifier" content="5113578578912150423"/>
+    <meta name="dc:identifier" content="5638401586871075693"/>
     <meta name="dc:Language" content="fr-FR"/>
     <meta name="dc:Language" content="ar-SA"/>
     <meta name="dc:Language" content="en-US"/>
@@ -29,15 +29,10 @@
 </doctitle>
       </level1>
       <level1>
-        <h1>Heading1
+        <h1>
 </h1>
         <p/>
-        <level2>
-          <h2>
-</h2>
-          <p/>
-          <p xml:lang="en-US">paragraph</p>
-        </level2>
+        <p xml:lang="en-US">paragraph</p>
       </level1>
     </bodymatter>
     <rearmatter>

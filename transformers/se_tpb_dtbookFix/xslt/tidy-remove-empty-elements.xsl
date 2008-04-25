@@ -2,12 +2,14 @@
 <!--
 	Remove empty elements
 		Version
-			2007-11-29
+			2008-04-02
 
 		Description
 			Removes
-				* empty/whitespace p except when preceded by hx and 
-						followed only by other empty p
+				* empty/whitespace p except when 
+						1. preceded by hx or no preceding element and parent is a level
+						and 
+						2. followed only by other empty p 
 				* empty/whitespace em, strong, sub, sup
 
 		Nodes
@@ -29,7 +31,7 @@
  
  	<xsl:template match="dtb:p[(text() and count(node())=1 and normalize-space()='') or not(node())]">
 		<xsl:choose>
-			<xsl:when test="preceding-sibling::*[1][starts-with(name(), 'h')] and count(following-sibling::*)=count(following-sibling::dtb:p[(text() and count(node())=1 and normalize-space()='') or not(node())])"><xsl:call-template name="copy"/></xsl:when>
+			<xsl:when test="(preceding-sibling::*[1][starts-with(name(), 'h')] or (not(preceding-sibling::*) and (parent::dtb:level1 or parent::dtb:level2 or parent::dtb:level3 or parent::dtb:level4 or parent::dtb:level5 or parent::dtb:level6))) and count(following-sibling::*)=count(following-sibling::dtb:p[(text() and count(node())=1 and normalize-space()='') or not(node())])"><xsl:call-template name="copy"/></xsl:when>
 			<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

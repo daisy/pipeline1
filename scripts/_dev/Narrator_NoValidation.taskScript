@@ -1,0 +1,283 @@
+<?xml version='1.0' encoding='utf-8'?>
+<taskScript version="2.0" name="dtbook2daisy202">
+    <nicename>Narrator with no input Validation</nicename>
+    <description>Converts a DTBook 2005 file to a complete DAISY/NISO 2005 and a Daisy 2.02 file set</description>
+    <documentation uri="../../../doc/scripts/Narrator-DtbookToDaisy202.html"/>
+        
+    <parameter name="input" value="" required="true">
+        <nicename>Input DTBook file</nicename>
+        <description>A DTBook 2005 file</description>
+        <datatype>
+            <file mime="application/x-dtbook+xml" type="input"/>
+        </datatype>
+    </parameter>
+    
+    <parameter name="outputPath" value="" required="true">
+        <nicename>Output folder</nicename>
+        <description>Base folder for the Narrator output</description>
+        <datatype>
+            <directory type="output"/>
+        </datatype>
+    </parameter>
+    
+    <parameter name="bitrate" value="32" required="false">
+        <nicename>Bitrate</nicename>
+        <description>MP3 encoding bitrate</description>
+        <datatype>
+            <enum>
+                <item nicename="32 kbit/s" value="32"/>
+                <item nicename="48 kbit/s" value="48"/>
+                <item nicename="64 kbit/s" value="64"/>
+                <item nicename="128 kbit/s" value="128"/>
+            </enum>
+        </datatype>
+    </parameter>
+    
+    
+    <!-- *************************
+          DTBook Fix
+         ************************* -->
+    <task name="se_tpb_dtbookFix" interactive="false">
+        <parameter>
+            <name>input</name>
+            <value>${input}</value>
+        </parameter>
+
+        <parameter>
+            <name>output</name>
+            <value>${outputPath}/00-dtbookfix.xml</value>
+        </parameter>
+
+        <parameter>
+            <name>runCategories</name>
+            <value>REPAIR_TIDY_NARRATOR</value>
+        </parameter>
+        
+        <parameter>
+            <name>simplifyHeadingLayout</name>
+            <value>true</value>
+        </parameter>
+            
+    </task>
+    
+    
+    <!-- ****************************
+          Abbr and Acronym detection 
+         **************************** -->
+    <task name="se_tpb_xmldetection" interactive="false">
+        <parameter>
+            <name>input</name>
+            <value>${outputPath}/00-dtbookfix.xml</value>
+        </parameter>        
+        <parameter>
+            <name>output</name>
+            <value>${outputPath}/01-abbracro.xml</value>
+        </parameter>        
+        <parameter>
+            <name>doAbbrAcronymDetection</name>
+            <value>true</value>
+        </parameter>        
+        <parameter>
+            <name>doSentenceDetection</name>
+            <value>false</value>
+        </parameter>        
+        <parameter>
+            <name>doWordDetection</name>
+            <value>false</value>
+        </parameter>
+    </task>
+    
+    <!-- *********************
+          Structure announcer 
+         ********************* -->
+    <task name="se_tpb_annonsator" interactive="false">
+        <parameter>
+            <name>input</name>
+            <value>${outputPath}/01-abbracro.xml</value>
+        </parameter>        
+        <parameter>
+            <name>output</name>
+            <value>${outputPath}/02-struct.xml</value>
+        </parameter>        
+    </task>
+    
+    <!-- ********************
+          Sentence detection 
+         ******************** -->
+    <task name="se_tpb_xmldetection" interactive="false">
+        <parameter>
+            <name>input</name>
+            <value>${outputPath}/02-struct.xml</value>
+        </parameter>        
+        <parameter>
+            <name>output</name>
+            <value>${outputPath}/03-sent.xml</value>
+        </parameter>        
+        <parameter>
+            <name>doAbbrAcronymDetection</name>
+            <value>false</value>
+        </parameter>        
+        <parameter>
+            <name>doSentenceDetection</name>
+            <value>true</value>
+        </parameter>        
+        <parameter>
+            <name>doWordDetection</name>
+            <value>false</value>
+        </parameter>
+    </task>
+    
+    <!-- *****************************
+          Synchronization point normalization 
+         ***************************** -->
+    <task name="se_tpb_syncPointNormalizer" interactive="false">
+        <parameter>
+            <name>input</name>
+            <value>${outputPath}/03-sent.xml</value>
+        </parameter>        
+        <parameter>
+            <name>output</name>
+            <value>${outputPath}/04-syncpoint.xml</value>
+        </parameter>
+    </task>
+    
+    <!-- ******************
+          Speech Generator
+         ******************
+    <task name="se_tpb_speechgenerator" interactive="false">
+        <parameter>
+            <name>inputFilename</name>
+            <value>${outputPath}/04-syncpoint.xml</value>
+        </parameter>
+        <parameter>
+            <name>outputDirectory</name>
+            <value>${outputPath}/z3986/</value>
+        </parameter>
+        <parameter>
+            <name>outputFilename</name>
+            <value>${outputPath}/z3986/06-speechgen.xml</value>
+        </parameter>
+        <parameter>
+            <name>mp3Output</name>
+            <value>true</value>
+        </parameter>
+        <parameter>
+            <name>concurrentAudioMerge</name>
+            <value>true</value>
+        </parameter>
+    </task>
+    -->
+    
+    
+    <!-- ******************
+          SpeechGen2
+         ****************** -->
+    <task name="se_tpb_speechgen2" interactive="false">
+        <parameter>
+            <name>inputFilename</name>
+            <value>${outputPath}/04-syncpoint.xml</value>
+        </parameter>
+        <parameter>
+            <name>outputDirectory</name>
+            <value>${outputPath}/z3986/</value>
+        </parameter>
+        <parameter>
+            <name>outputFilename</name>
+            <value>${outputPath}/z3986/06-speechgen.xml</value>
+        </parameter>
+        
+        <parameter>
+            <name>mp3Output</name>
+            <value>false</value>
+        </parameter>
+        <parameter>
+            <name>concurrentAudioMerge</name>
+            <value>true</value>
+        </parameter>    
+    </task>
+
+
+    <!-- ******************
+          File Set Creator
+         ****************** -->
+    <task name="se_tpb_filesetcreator" interactive="false">
+        <parameter>
+            <name>outputDirectory</name>
+            <value>${outputPath}/z3986</value>
+        </parameter>
+        <parameter>
+            <name>manuscriptFilename</name>
+            <value>${outputPath}/z3986/06-speechgen.xml</value>
+        </parameter>
+        <parameter>
+            <name>outputDTBFilename</name>
+            <value>${outputPath}/z3986/07-dtbook.xml</value>
+        </parameter>        
+    </task>
+    
+    
+    <!-- *************************
+          z3986 Validation (zedval)
+         ************************* -->
+    <task name="int_daisy_validator" interactive="false">
+        <parameter>
+            <name>input</name>
+            <value>${outputPath}/z3986/06-speechgen.opf</value>
+        </parameter>        
+        <parameter>
+            <name>abortThreshold</name>
+            <value>ERROR</value>
+        </parameter>
+    </task>
+
+    
+    
+    <!-- ***************
+          Audio encoder
+         *************** -->
+    <task name="se_tpb_dtbAudioEncoder" interactive="false">
+        <parameter>
+            <name>manifest</name>
+            <value>${outputPath}/z3986/06-speechgen.opf</value>
+        </parameter>                    
+        <parameter>
+            <name>outDir</name>
+            <value>${outputPath}/z3986-mp3</value>
+        </parameter>                        
+        <parameter>
+            <name>bitrate</name>
+            <value>${bitrate}</value>
+        </parameter>
+    </task>
+    
+
+    <!-- ************************************
+          Z3986-2005 to Daisy 2.02 Converter
+         ************************************ -->
+    <task name="se_tpb_zed2daisy202" interactive="false">
+        <parameter>
+            <name>manifest</name>
+            <value>${outputPath}/z3986-mp3/06-speechgen.opf</value>
+        </parameter>                    
+        <parameter>
+            <name>outDir</name>
+            <value>${outputPath}/daisy202</value>
+        </parameter>                
+    </task>
+
+    
+    <!-- *************************
+          Daisy 2.02 Validation 
+         ************************* -->
+    <task name="int_daisy_validator" interactive="false">
+        <parameter>
+            <name>input</name>
+            <value>${outputPath}/daisy202/ncc.html</value>
+        </parameter>        
+        <parameter>
+            <name>abortThreshold</name>
+            <value>ERROR</value>
+        </parameter>
+    </task>
+    
+</taskScript>

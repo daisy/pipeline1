@@ -330,7 +330,7 @@ public class FileSetCreator extends Transformer {
 	 * @return the MIME-types.
 	 */
 	private Map<String, String> getMimeTypes() {
-		
+		//TODO mgylling: This could use org.daisy.util.mime instead of local hardcoding
 		mimeTypes.put(".mp4", "audio/mpeg4-generic");
 		mimeTypes.put(".mp3", "audio/mpeg");
 		mimeTypes.put(".wav", "audio/x-wav");
@@ -342,6 +342,7 @@ public class FileSetCreator extends Transformer {
 		mimeTypes.put(".ncx", "application/x-dtbncx+xml");
 		mimeTypes.put(".xml", "application/x-dtbook+xml");
 		mimeTypes.put(".res", "application/x-dtbresource+xml");
+		mimeTypes.put(".css", "text/css");
 		
 		return mimeTypes;
 	}

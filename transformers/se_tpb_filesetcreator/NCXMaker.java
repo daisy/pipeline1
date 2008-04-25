@@ -1093,12 +1093,17 @@ public class NCXMaker implements BusListener {
 	
 	
 	/**
-	 * Creates a node for the pagenum element and adds it to the "pagelist" navlist.
-	 * @param reader for the input document.
-	 * @param se the pagenum element from the input document.
+	 * Creates a node for the pagenum element and adds it to the "pagelist"
+	 * navlist.
+	 * 
+	 * @param reader
+	 *            for the input document.
+	 * @param se
+	 *            the pagenum element from the input document.
 	 * @throws XMLStreamException
 	 */
-	private void handlePageNum(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {
+	private void handlePageNum(BookmarkedXMLEventReader reader, StartElement se)
+			throws XMLStreamException {
 		DEBUG("NCXMaker#handlePageNum: pagenum: " + se.getName().getLocalPart());
 		Element pageTarget = createNCXNode(reader, se, "pageTarget", "pagenum");
 		if (null == pageTarget) {
@@ -1117,10 +1122,11 @@ public class NCXMaker implements BusListener {
 		} catch (NumberFormatException nfe) {
 			// nada, pageNumber wasn't numeric
 		}
-		
-		Element pageList = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:pageList", mNsc);
+
+		Element pageList = (Element) XPathUtils.selectSingleNode(ncxTemplate
+				.getDocumentElement(), "//ncx:pageList", mNsc);
 		pageList.appendChild(pageTarget);
-		
+
 		pageCount++;
 	}
 	

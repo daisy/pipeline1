@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.Namespace;
+import javax.xml.stream.events.ProcessingInstruction;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -63,13 +65,16 @@ import org.daisy.pipeline.core.event.UserAbortEvent;
 import org.daisy.pipeline.exception.TransformerAbortException;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.collection.MultiHashMap;
+import org.daisy.util.css.stylesheets.Css;
 import org.daisy.util.execution.AbortListener;
 import org.daisy.util.execution.ProgressObserver;
+import org.daisy.util.file.EFolder;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -94,6 +99,7 @@ import org.xml.sax.SAXException;
  * @author Martin Blomberg
  *
  */
+
 public class SmilMaker implements AbortListener, BusListener {
 	
 	public static String DEBUG_PROPERTY = "org.daisy.debug";	// the system property used to determine if we're in debug mode or not
@@ -255,6 +261,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @return the number of distinct audio file names in the manuscript file.
 	 * @throws XMLStreamException
 	 */
+	
 	private int countAudioFiles(BookmarkedXMLEventReader reader) throws XMLStreamException {
 		Set<String> audioFiles = new HashSet<String>();
 		while (reader.hasNext()) {
@@ -344,12 +351,22 @@ public class SmilMaker implements AbortListener, BusListener {
 		
 		try {
 			uid = getUid(reader);
+			
+			//mg20080331: 1845210 Add DTBook CSS if not in source
+			URL u = Css.get(Css.DocumentType.Z3986_DTBOOK);
+			ProcessingInstruction cssPI = setCss(reader, u);
+										
 			startNewSmil(reader);
 			
+			boolean rootElementSeen = false;
 			while (reader.hasNext()) {
 				XMLEvent event = reader.nextEvent();
 				
 				if (event.isStartElement()) {
+					//mg20080401:
+					if(!rootElementSeen && cssPI!=null) writeEvent(cssPI);
+					rootElementSeen = true;
+					//end mg20080401
 					
 					if (isEscapable(event)) {
 						XMLEvent modifiedStartElement = newSeq(reader, event.asStartElement());
@@ -373,7 +390,7 @@ public class SmilMaker implements AbortListener, BusListener {
 								new FileOutputStream(manuscriptOutputFile), 
 								sd.getCharacterEncodingScheme());					
 					} else {
-						manuscriptOutputFile = File.createTempFile("dtbook.temp.", null);
+						manuscriptOutputFile = File.createTempFile("dtbook.temp.", null);						
 						writer = outputFactory.createXMLEventWriter(
 								new FileOutputStream(manuscriptOutputFile), 
 								"utf-8");
@@ -796,10 +813,10 @@ public class SmilMaker implements AbortListener, BusListener {
 			event = reader.nextEvent();
 			if (!event.isStartElement()) {
 				continue;
-			} else {
-				se = event.asStartElement();
 			}
 			
+			se = event.asStartElement();
+						
 			Attribute at = se.getAttributeByName(new QName("name"));
 			if (null == at) {
 				continue;
@@ -814,6 +831,49 @@ public class SmilMaker implements AbortListener, BusListener {
 		
 		reader.gotoAndRemoveBookmark(bookmark);
 		return uid;
+	}
+	
+	/**
+	 * Does our to-be dtbook doc have a css associated with it? 
+	 * If not, create a default one. 
+	 * @param reader a reader for the input document.
+	 * @return If no css existed in input, a newly created processing instruction to be added to
+	 * document prolog, else null.
+	 */
+	private ProcessingInstruction setCss(BookmarkedXMLEventReader reader, URL css) {
+		String bookmark = "cssSearcherBkMk";
+		reader.setBookmark(bookmark);
+		boolean foundCss = false;
+		
+		try{			
+			XMLEvent event = null;			
+			ProcessingInstruction pi = null;			
+			while (reader.hasNext()) {
+				event = reader.nextEvent();				
+				if(event.isStartElement()) break;				
+				if (!event.isProcessingInstruction()) continue;				
+				pi = (ProcessingInstruction)event;				
+				if(pi.getTarget() == "xml-stylesheet") {
+					foundCss = true;
+					break;
+				}					
+			}
+			
+			if(!foundCss) {
+				XMLEventFactory xef = StAXEventFactoryPool.getInstance().acquire();
+				String name = css.getFile().substring(css.getFile().lastIndexOf("/")+1);				
+				EFolder out = new EFolder(outputDirectory);
+				out.writeToFile(name, css.openStream());
+				otherEncounteredFiles.add(name);
+				return xef.createProcessingInstruction("xml-stylesheet", "href='" +name+ "' type='text/css'");
+			}
+			
+		}catch (Exception e) {
+			
+		}finally{
+			reader.gotoAndRemoveBookmark(bookmark);
+		}	
+		return null;
 	}
 	
 	/**

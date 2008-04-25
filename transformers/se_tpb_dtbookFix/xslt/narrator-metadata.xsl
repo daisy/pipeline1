@@ -7,7 +7,9 @@
     2008-03-31
     
     Description
-    Adds dc:Language, dc:Date and dc:Publisher to dtbook, if not present in input.
+    Adds dc:Language, dc:Date and dc:Publisher to dtbook, if not present in input,
+    or given but with null/whitespace only content values.
+    
     dc:Language is taken from xml:lang if set, else inparam
     dc:Date is taken as inparam
     dc:Publisher is taken as inparam

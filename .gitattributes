@@ -272,6 +272,8 @@ samples/input/sadx/BulletList.docx -text
 samples/input/sadx/BulletList.xml -text
 samples/input/sadx/EmptyHeading.docx -text
 samples/input/sadx/EmptyHeading.xml -text
+samples/input/sadx/EmptyHeadingOnly.docx -text
+samples/input/sadx/EmptyHeadingOnly.xml -text
 samples/input/sadx/FullyFeatured.docx -text
 samples/input/sadx/FullyFeatured.xml -text
 samples/input/sadx/Head1Head3_NoHead2.docx -text
@@ -328,6 +330,7 @@ scripts/_dev/Daisy202toZ3986-2005.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
 scripts/_dev/Narrator-Dev.taskScript -text
+scripts/_dev/Narrator_NoValidation.taskScript -text
 scripts/_dev/NccNcxOnly.taskScript -text
 scripts/_dev/XMLAudioAligner.taskScript -text
 scripts/_dev/XukCreator.taskScript -text
