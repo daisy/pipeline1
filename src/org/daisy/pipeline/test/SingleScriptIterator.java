@@ -63,12 +63,13 @@ public class SingleScriptIterator implements BusListener {
         Failures failures = new Failures();
 		int i = 0;
 		for(File f : inputFiles) {
+			File outputDir = null;
 			try{
 				List<Signature> signatures = detector.detect(f);
 				if(signatures.isEmpty()) continue;
 				if(!signatures.get(0).getMIMEType().isEqualOrAlias(inputFileType)) continue;	
 				i++;
-				File outputDir = FileUtils.createDirectory(new File(outputFolder, Integer.toString(i)));
+				outputDir = FileUtils.createDirectory(new File(outputFolder, Integer.toString(i)));
 				System.out.println("Running " + scriptFile.getName() + " using " + f.getName() + " as input and " + outputDir.getName() + " as output." );
 				
 	            DMFCCore dmfc = new DMFCCore(null, findHomeDirectory(),properties);
@@ -93,15 +94,18 @@ public class SingleScriptIterator implements BusListener {
 	
 	            // Execute script
 	            dmfc.execute(mCurrentJob);
-	            
-	            System.out.println("Done running " + scriptFile.getName() + " using " + f.getName() + " as input and " + outputDir.getName() + " as output." );
+	            	            
 			}catch (Exception e) {
 				failures.add(new Failure(e,mCurrentJob));
+			}finally{
+				System.out.println("Done running " + scriptFile.getName() + " using " + f.getName() + " as input and " + outputDir.getName() + " as output." );
 			}
 			
 		}
 		EventBus.getInstance().unsubscribe(this, MessageEvent.class);
-        EventBus.getInstance().unsubscribe(this, StateChangeEvent.class);		
+        EventBus.getInstance().unsubscribe(this, StateChangeEvent.class);
+        
+        System.err.println("Iteration done. " + failures.size() + " failures (exceptions thrown from pipeline core) were recorded");
 	}
 	
 	private ScriptParameter getInputParam(Job currentJob) {
@@ -132,7 +136,7 @@ public class SingleScriptIterator implements BusListener {
 			sb.append(']');
 			sb.append(' ');
 			sb.append(failure.e.getLocalizedMessage());
-			
+			System.err.println(sb.toString());
 			//Map<String,String> params = failure.j.getJobParameters();
 			
 			return true;
