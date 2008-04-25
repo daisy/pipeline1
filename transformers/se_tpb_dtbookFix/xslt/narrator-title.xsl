@@ -14,9 +14,10 @@
     present in input, or given but with null/whitespace only 
     content values.
 
-    Title value is taken from the first 'doctitle' element in
-    the bodymatter, or if it does not exist from the first 
-    heading 1.
+    Title value is taken:
+    - from the 'dc:Title' metadata is present
+    - or else from the first 'doctitle' element in the bodymatter
+    - or else from the first heading 1.
 
     Nodes
     dtbook/head
@@ -32,12 +33,16 @@
 	
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="1.0" exclude-result-prefixes="dtb">
-	<xsl:include href="recursive-copy2.xsl"/>
-	<xsl:include href="output2.xsl"/>
+	<xsl:include href="recursive-copy.xsl"/>
+	<xsl:include href="output.xsl"/>
 	
-	<!-- The value that will be set to 'dc:Title' and 'frontmatter/doctitle' -->
+	<!-- The title that will be used -->
 	<xsl:param name="titleValue">
 		<xsl:choose>
+			<!-- If it exists, takes the value from the first 'dc:Title' metadata -->
+			<xsl:when test="string-length(normalize-space(//dtb:head/dtb:meta[@name='dc:Title']/@content))>0">
+				<xsl:value-of select="normalize-space(//dtb:head/dtb:meta[@name='dc:Title']/@content)"/>
+			</xsl:when>
 			<!-- If it exists, takes the value from the first 'doctitle' in the bodymatter -->
 			<xsl:when test="string-length(normalize-space(//dtb:bodymatter//dtb:doctitle[1]))>0">
 				<xsl:value-of select="normalize-space(//dtb:bodymatter//dtb:doctitle[1])"/>
@@ -96,7 +101,7 @@
 	</xsl:template>
 	
 	<!-- Set the front matter 'doctitle' element if it's empty -->
-	<xsl:template match="dtb:frontmatter/dtb:doctitle[normalize-space(self)='']">
+	<xsl:template match="dtb:frontmatter/dtb:doctitle[normalize-space(self::*)='']">
 		<xsl:message terminate="no">Adding value to empty doctitle element in the frontmatter</xsl:message>
 		<xsl:element name="doctitle" namespace="http://www.daisy.org/z3986/2005/dtbook/">
 			<xsl:value-of select="$titleValue"/>
