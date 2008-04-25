@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta content="application/xhtml+xml; charset=utf-8" http-equiv="Content-Type" />
@@ -175,13 +177,13 @@
 			<li>Locate sample input data (and, if your work is to be publicly available, put that in the <code>trunk/dmfc/samples/</code> directory).</li>
 			<li>Create an extension of the abstract <code>org.daisy.pipeline.test.PipelineTest</code> class and place it in the <code>org.daisy.pipeline.test.impl</code> package. The simplest way to do this is to clone one of the existing classes in the <code>org.daisy.pipeline.test.impl</code> package, give it a meaningful new name, and then modify the supportsScript method so that it matches your script name, and the getParameters() method so that it matches your script parameters.</li>
 			<li>Import and add a your new test class in <code>org.daisy.pipeline.test.PipelineTestDriver</code>. Disable all other tests by commenting them out.</li>
-			<li>If using Eclipse, add a Run Profile for <code>org.daisy.pipeline.test.PipelineTestDriver</code> using the parameters '${project_loc}/samples ${project_loc}/scripts'. (More info in the javadoc of PipelineTestDriver.)</p>
+			<li>If using Eclipse, add a Run Profile for <code>org.daisy.pipeline.test.PipelineTestDriver</code> using the parameters '${project_loc}/samples ${project_loc}/scripts'. (More info in the javadoc of PipelineTestDriver.)</li>
 		</ul>		
 		<p>This Run Profile can now be used throughout your development process, and the test case can be reused later on when doing automated stability tests of a Pipeline disiribution.</p> 
 		  
   <h2 id="finalize">Complete development, abiding to the code of conduct</h2>
 	  <p>Now, the time has come to keep coding until the defined Transformer contract is fulfilled.</p>
-	  <p>Please refer to the <a href="codeOfConduct">Transformer Authors Code of Conduct</a> for details on coding style and other rules and recommendations that apply.</p>      		
+	  <p>Please refer to the <a href="#codeOfConduct">Transformer Authors Code of Conduct</a> for details on coding style and other rules and recommendations that apply.</p>      		
        <h3 id="lib">Notes on the use of Libraries</h3>
      		<p>Apart from the obvious JRE runtime classes, you will most probably be using several libraries in your code.</p>
      		<p>In the <code>/lib/</code> directory, the third party libraries that are currently used by the Pipeline core or other Transformers are available. If you need to add another third party library to get the job done, consult with a project admin (or post to the daisymfc-developer list) first. We are trying to keep the distribution size down, and therefore need to be restrictive on new lib additions where possible.</p>                
@@ -201,12 +203,12 @@
   
   <h2 id="deploy">Deploy</h2>
   <p>If your Transformer and Script are on the Pipeline SVN and should provided in an official Pipeline release, all you need to do is to make sure that the Ant Build Script is not excluding your packages, and to make sure that your Script is moved out of the <code>_dev</code> script directory to a more appropriate location (one of the sibling dirs to the dev dit).</p>
-  <p>An alternative channel for distributing binaries to desktop users is to use the <a href="TBD">Pipeline GUI Import feature</a>.</p> 
+  <p>An alternative channel for distributing binaries to desktop users is to use the <a href="../enduser/01-gui-user-guide.html#update">Pipeline GUI Import feature</a>.</p> 
   
           
   <h2 id="codeOfConduct">Transformer Authors Code of Conduct</h2>  
 
-  	<h3 id="inter">Inter-transformer dependencies</h4>
+  	<h3 id="inter">Inter-transformer dependencies</h3>
      	<p>To avoid a dependency nightmare, it is strictly forbidden to use classes, XSLTs, etcetera from other Transformer packages. A Transformer needs to be written completely unaware of what other Transformers exists around it. As a Transformer developer you can help enforce this by reducing class visibility to package level.</p>
      	<p>If a certain function or service ends up being reimplemented by many transformers, the typical solution to avoid code duplication is to move it to the <code>org.daisy.util</code> package. Consult with a project admin (or post to the daisymfc-developer list) if you have candidate code for inclusion there.</p>
 

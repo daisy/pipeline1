@@ -96,8 +96,6 @@ doc/scripts/ImageConverter.html -text
 doc/scripts/Narrator-DtbookToDaisy202.html -text
 doc/scripts/OCFCreator.html -text
 doc/scripts/OPSCreator.html -text
-doc/scripts/OdfToDtbook.html -text
-doc/scripts/OdfToXhtml.html -text
 doc/scripts/PrettyPrinter.html -text
 doc/scripts/RenamerTaggerValidator.html -text
 doc/scripts/RtfToDtbook.html -text
@@ -126,6 +124,7 @@ doc/transformers/int_daisy_unicodeNormalizer.html -text
 doc/transformers/int_daisy_unicodeTranscoder.html -text
 doc/transformers/int_daisy_validator.html -text
 doc/transformers/no_hks_xhtml2dtbook.html -text
+doc/transformers/pipeline_system_copyer.html -text
 doc/transformers/pipeline_system_deleter.html -text
 doc/transformers/se_tpb_annonsator.html -text
 doc/transformers/se_tpb_charsetSwitcher.html -text
@@ -143,7 +142,6 @@ doc/transformers/se_tpb_wordml2dtbook.html -text
 doc/transformers/se_tpb_xmldetection.html -text
 doc/transformers/se_tpb_zed2daisy202.html -text
 doc/transformers/uk_rnib_dtbook2xhtml.html -text
-doc/transformers/uk_rnib_odf2dtbook.html -text
 doc/transformers/us_rfbd_dtbookMigrator.html -text
 lib/ZedVal.jar -text
 lib/batik-css.jar -text
