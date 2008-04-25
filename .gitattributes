@@ -963,6 +963,7 @@ transformers/se_tpb_dtbookFix/transformer.tdf -text
 transformers/se_tpb_dtbookFix/xslt/iterative-processor.xsl -text
 transformers/se_tpb_dtbookFix/xslt/level-tools.xsl -text
 transformers/se_tpb_dtbookFix/xslt/narrator-headings.xsl -text svneol=unset#text/plain
+transformers/se_tpb_dtbookFix/xslt/narrator-lists.xsl -text svneol=unset#text/plain
 transformers/se_tpb_dtbookFix/xslt/narrator-metadata.xsl -text
 transformers/se_tpb_dtbookFix/xslt/narrator-title.xsl -text svneol=unset#text/plain
 transformers/se_tpb_dtbookFix/xslt/output.xsl -text

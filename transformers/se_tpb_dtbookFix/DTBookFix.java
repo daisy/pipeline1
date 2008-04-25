@@ -396,7 +396,8 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		 */
     		executors.add(new NarratorMetadataExecutor(parameters, this.getClass().getResource("./xslt/narrator-metadata.xsl"), i18n("NARRATOR_METADATA"), this, this, this, emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/narrator-headings.xsl"),v2005_1_2_3,i18n("NARRATOR_EMPTY_HEADINGS"),this,this,this,emitter));
-    		executors.add(new NarratorMetadataExecutor(parameters, this.getClass().getResource("./xslt/narrator-title.xsl"), i18n("NARRATOR_METADATA"), this, this, this, emitter));
+    		executors.add(new NarratorMetadataExecutor(parameters, this.getClass().getResource("./xslt/narrator-title.xsl"), i18n("NARRATOR_TITLE"), this, this, this, emitter));
+    		executors.add(new NarratorMetadataExecutor(parameters, this.getClass().getResource("./xslt/narrator-lists.xsl"), i18n("NARRATOR_LISTS"), this, this, this, emitter));
     		
     		
     		/*

@@ -228,6 +228,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                             abbrType = Abbr.INITIALISM;
                         } else {
                             skip = true;
+                            abbrAcronym = null;
                         }
                         if (!skip) {
 	                        Attribute expand = event.asStartElement().getAttributeByName(new QName(expandAttributeName));
@@ -240,9 +241,9 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                         }
                     } else /* isEndElement */ {
                         // FIXME make sure end matches with start
-                        if (elementName.equals(breakSettings.getAbbrElement()) ||
+                        if (abbrAcronym !=null && (elementName.equals(breakSettings.getAbbrElement()) ||
                                 elementName.equals(breakSettings.getAcronymElement()) ||
-                                elementName.equals(breakSettings.getInitialismElement())) {
+                                elementName.equals(breakSettings.getInitialismElement()))) {
                             abbrAcronym = new Abbr(buffer.substring(abbrAcronym.getStart(), buffer.length()), abbrAcronym.getExpansion(), abbrAcronym.getExpAttr(), abbrAcronym.getType(), abbrAcronym.getStart(), buffer.length());
                             abbrAcronymList.add(abbrAcronym);
                             //logger.finer(abbrAcronym.toString());
