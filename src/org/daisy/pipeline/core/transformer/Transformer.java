@@ -116,7 +116,7 @@ public abstract class Transformer implements BusListener {
 			}	
 			addI18nBundle(bundle);
 		} catch (MissingResourceException e) {	
-			System.err.println("No resource bundle found for " + this.getClass().getName());			
+			//System.err.println("No resource bundle found for " + this.getClass().getName());			
 		}
 	}
 	
