@@ -42,7 +42,6 @@ import se_tpb_speechgen2.tts.util.TTSUtils;
 public class DefaultSapiTTS extends AbstractTTSAdapter {
 
 	ISpeechVoice voice;
-	ISpeechFileStream stream = null;
 
 	public DefaultSapiTTS(TTSUtils ttsUtils, Map<String, String> params) {
 		super(ttsUtils, params);
@@ -51,6 +50,7 @@ public class DefaultSapiTTS extends AbstractTTSAdapter {
 
 	@Override
 	public void read(String line, File destination) throws IOException, TTSException {
+		ISpeechFileStream stream = null;
 		try {
 			stream = ClassFactory.createSpFileStream();
 			stream.open(destination.getAbsolutePath(),
@@ -63,15 +63,13 @@ public class DefaultSapiTTS extends AbstractTTSAdapter {
 		} finally {
 			if (stream != null) {
 				stream.close();
+				stream.dispose();
 			}
 		}
 	}
 
 	@Override
 	public void close() throws IOException, TTSException {
-		if (stream != null) {
-			stream.dispose();
-		}
 		if (voice != null) {
 			voice.dispose();
 		}
