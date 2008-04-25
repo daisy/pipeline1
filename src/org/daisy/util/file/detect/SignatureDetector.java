@@ -138,7 +138,10 @@ public final class SignatureDetector {
 		if(returnType == ReturnType.XML && retList.size()>1 ) {
 			List<Signature> tempList = new LinkedList<Signature>();			
 			for(Signature s : retList) {
-				if(s instanceof XMLSignature) {
+				//if(s instanceof XMLSignature) { 
+				//mg200804 added filename match when getting a false hit that a 202 contentdoc was an ncc
+				//may be a better way to deal with this
+				if(s instanceof XMLSignature && signatures.get(s).matchesFilename()) {
 					XMLSignature xs = (XMLSignature)s;
 					Set<XMLExtendedToken> extendedTokens = xs.getExtendedTokens();
 					if(!extendedTokens.isEmpty()) {

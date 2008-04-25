@@ -14,10 +14,13 @@
     		<d:dtbook />
     	</xmlHeader>
   </signature>
-      
+  
+	<!-- ================================================================== -->
+	<!-- DAISY 2.02                                                         -->
+	<!-- ================================================================== -->
   <signature 	mimeRef="d202ncc" 
   				nameRegex="[Nn][Cc][Cc]\.[Hh][Tt][Mm][Ll]?$" 
-  				implementors=""
+  				implementors="org.daisy.util.filesetNG.D202NccFile"
   				niceName="Daisy 2.02 DTB NCC File"
   				xmlns:xht="http://www.w3.org/1999/xhtml">
     	<xmlHeader>
@@ -28,9 +31,39 @@
     	</xmlAnywhere>   	
   </signature>
 
+  <signature 	mimeRef="d202smil" 
+  				nameRegex=".+\.[Ss][Mm][Ii][Ll]$" 
+  				implementors="org.daisy.util.filesetNG.D202SmilFile"
+  				niceName="Daisy 2.02 DTB SMIL File">
+    	<xmlHeader publicId="-//W3C//DTD SMIL 1.0//EN" systemId="http://www.w3.org/TR/REC-smil/SMIL10.dtd">
+    		<smil xmlns=""/>
+    	</xmlHeader>    	 
+    	<xmlAnywhere>
+    		<meta name="dc:format" content="Daisy 2.02"/>
+    	</xmlAnywhere>   	
+  </signature>
+
+	<!-- ================================================================== -->
+	<!-- SMIL                                                               -->
+	<!-- ================================================================== -->
+  
+  <signature 	mimeRef="smil" 
+  				nameRegex=".+\.[Ss][Mm][Ii][Ll]$" 
+  				implementors=""
+  				niceName="W3C SMIL 1.0 File">
+    	<xmlHeader publicId="-//W3C//DTD SMIL 1.0//EN" systemId="http://www.w3.org/TR/REC-smil/SMIL10.dtd">
+    		<smil />
+    	</xmlHeader>  	
+  </signature>
+  
+
+	<!-- ================================================================== -->
+	<!-- XHTML                                                              -->
+	<!-- ================================================================== -->
+
   <signature 	mimeRef="xhtml" 
   				nameRegex=".+\.[Xx]?[Hh][Tt][Mm][Ll]?$" 
-  				implementors="org.daisy.util.fileset.impl.Xhtml10FileImpl"
+  				implementors="org.daisy.util.filesetNG.Xhtml10File"
   				niceName="XHTML (eXtensible Hyper Text Markup Language) File">
     	<xmlHeader>
     		<xht:html xmlns:xht="http://www.w3.org/1999/xhtml" />
@@ -41,6 +74,16 @@
   				nameRegex=".+\.[Hh][Tt][Mm][Ll]?$" 
   				implementors="org.daisy.util.fileset.impl.HtmlFileImpl"
   				niceName="HTML (Hyper Text Markup Language) File" />   	    	
+  
+	<!-- ================================================================== -->
+	<!-- MISC                                                               -->
+	<!-- ================================================================== -->
+  
+  <signature 	mimeRef="css" 
+  				nameRegex="(.+\.[Cc][Ss][Ss]$)" 
+  				implementors="org.daisy.util.filesetNG.CssFile"
+  				niceName="CSS (Cascading Style Sheet) File">
+  </signature>
   
   <signature 	mimeRef="pdf" 
   				nameRegex=".+\.[Pp][Dd][Ff]$" 
@@ -76,6 +119,16 @@
     		<opf20:package version="2.0" />
     	</xmlHeader>    	    	
   </signature>
+
+	<!-- ================================================================== -->
+	<!-- Audio                                                             -->
+	<!-- ================================================================== -->
+  <signature 	mimeRef="mpeg" 
+  				nameRegex="(.+\.[Mm][Pp]3$)" 
+  				implementors="org.daisy.util.filesetNG.Mp3File"
+  				niceName="MP3 (MPEG-1 Audio Layer 3) Audio File">
+    	<!--  TODO<byteHeader>0xff 0xd8 0xff 0xe0</byteHeader>  -->   	
+  </signature>
   
 	<!-- ================================================================== -->
 	<!-- Images                                                             -->
@@ -83,7 +136,7 @@
 	
   <signature 	mimeRef="jpg" 
   				nameRegex="(.+\.[Jj][Pp][Gg]$)|(.+\.[Jj][Pp][Ee][Gg]$)" 
-  				implementors="org.daisy.util.fileset.impl.JpgFileImpl"
+  				implementors="org.daisy.util.filesetNG.JpgFile"
   				niceName="JPEG (Joint Photographic Experts Group) Image">
     	<byteHeader>0xff 0xd8 0xff 0xe0</byteHeader>
     	<byteHeader>0xff 0xd8 0xff 0xe1</byteHeader>

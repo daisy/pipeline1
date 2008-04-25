@@ -8,6 +8,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 
 import org.daisy.util.mime.MIMEType;
+import org.daisy.util.xml.stax.AttributeByName;
 
 /**
  * XML file signature. Contains a MIMEType, a name regex, and an XMLSignatureToken.
@@ -45,7 +46,7 @@ public class XMLSignature extends Signature {
 	/**
 	 * Match the inparams against this signatures name pattern and XML Root token(s).
 	 */
-	/*package*/ SignatureMatchResult matches(StartElement se, String publicID, String systemID, String fileName) {		
+	/*package*/ SignatureMatchResult matches(StartElement se, String publicID, String systemID, String fileName) {
 		boolean matchesFilename = getNameRegex().matcher(fileName).matches();
 		XMLRootToken matchedToken = matchesRootToken(se, publicID, systemID);
 		boolean matchesToken = matchedToken!=null; 		
@@ -84,9 +85,9 @@ public class XMLSignature extends Signature {
 					matchesToken = false;
 				}
 				
-				for (Iterator iter = token.getAttributes(); iter.hasNext();) {
+				for (Iterator<?> iter = token.getAttributes(); iter.hasNext();) {
 					Attribute tokenAttr = (Attribute) iter.next();
-					Attribute test = se.getAttributeByName(tokenAttr.getName());
+					Attribute test = AttributeByName.get(tokenAttr.getName(),se);
 					if(test==null) {
 						matchesToken = false;					
 					}else{

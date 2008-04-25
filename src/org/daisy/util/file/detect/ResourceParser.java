@@ -74,7 +74,7 @@ import org.daisy.util.xml.stax.DoctypeParser;
 		}catch (Exception e) {
 			
 		} finally {
-			reader.close();
+			if(reader!=null) reader.close();//reader is null if for example inparam URL did not exist
 			StAXInputFactoryPool.getInstance().release(xif, properties);
 		}
 		
