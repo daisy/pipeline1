@@ -860,6 +860,7 @@ src/org/daisy/util/xml/catalog/z39862005/dtbook-2005-3.rng -text
 src/org/daisy/util/xml/dom/Serializer.java -text
 src/org/daisy/util/xml/pool/LSParserPool.java -text
 src/org/daisy/util/xml/pool/LSSerializerPool.java -text
+src/org/daisy/util/xml/stax/AttributeByName.java -text
 src/org/daisy/util/xml/stax/ConvenientXMLEventReader.java -text
 src/org/daisy/util/xml/stax/ExtendedLocationImpl.java -text
 src/org/daisy/util/xml/stax/ExtendedLocationProvider.java -text
