@@ -71,7 +71,7 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler {
 	private int previousEvent = XMLEvent.START_DOCUMENT;
 	private QName previousStartOrEndElementQName = null;
 	private int depth = 0;	
-	private Pattern annoyingXHTML10AttributeMatcher = Pattern.compile("shape");
+	private Pattern annoyingXHTML10AttributeMatcher = Pattern.compile("shape|clear");
 	private Pattern annoyingSMIL10AttributeMatcher = Pattern.compile("repeat|fill|skip-content|type|left|top|z-index|fit");
 	
 	
@@ -131,12 +131,12 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler {
 			
 			for (Iterator iterator = mInputFileset.getLocalMembers().iterator(); iterator.hasNext();) {				
 				checkAbort();
-				FilesetFile ffile = (FilesetFile) iterator.next();
-				File destination = getDestination(ffile);
-				if(ffile instanceof XmlFile) {
-					tempFiles.add(prettyPrint((XmlFile)ffile,  new File(destination.getAbsolutePath()+".prettyPrinted")));
+				mCurrentInputFile = (FilesetFile) iterator.next();
+				File destination = getDestination(mCurrentInputFile);
+				if(mCurrentInputFile instanceof XmlFile) {
+					tempFiles.add(prettyPrint((XmlFile)mCurrentInputFile,  new File(destination.getAbsolutePath()+".prettyPrinted")));
 				}else{
-					copy(ffile,destination);
+					copy(mCurrentInputFile,destination);
 				}
 				count++;
 				this.sendMessage(0.1 + ((count/filesetSize)*0.9));
@@ -285,7 +285,6 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler {
 			
 		}else if (xe.getEventType() == XMLEvent.START_ELEMENT) {
 			StartElement se = (StartElement) xe;
-			//System.err.println(se.getName().getLocalPart());
 			if(previousEvent!=XMLEvent.CHARACTERS) {
 				if((!(mCurrentInputFile instanceof D202NccFile)) || (!se.getName().getLocalPart().equals("a"))) {
 					retEvents.add(mLineBreak);							
