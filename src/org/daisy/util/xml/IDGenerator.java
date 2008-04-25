@@ -19,6 +19,8 @@
 
 package org.daisy.util.xml;
 
+import java.util.Set;
+
 import org.daisy.util.i18n.CharUtils;
 
 /**
@@ -55,6 +57,18 @@ public class IDGenerator {
 	public String generateId(){
 		counter++;		
 		return this.prefix + counter;
+	}
+
+	/**
+	 * Generate an ID that will not clash with a name in the inparam set.
+	 */
+	public String generateId(Set<String> avoid) {
+		String id;
+		do {
+			counter++;
+			id = this.prefix + counter;
+		} while(avoid.contains(id));
+		return id;
 	}
 	
 
