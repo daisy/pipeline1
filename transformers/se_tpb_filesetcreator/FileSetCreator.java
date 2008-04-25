@@ -343,7 +343,8 @@ public class FileSetCreator extends Transformer {
 		mimeTypes.put(".xml", "application/x-dtbook+xml");
 		mimeTypes.put(".res", "application/x-dtbresource+xml");
 		mimeTypes.put(".css", "text/css");
-		
+		mimeTypes.put(".xsl", "application/xslt+xml");
+		mimeTypes.put(".xslt", "application/xslt+xml");		
 		return mimeTypes;
 	}
 	

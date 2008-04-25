@@ -334,6 +334,8 @@ public class OPFMaker {
 		if (null == mime) {
 			throw new IllegalArgumentException("Illegal filename suffix: " + suffix);
 		}
+		//TODO this should not abort if an unknown type is encountered. 
+		//Use SignatureDetector or something else
 		
 		return mime;
 	}
