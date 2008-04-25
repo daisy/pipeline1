@@ -451,6 +451,7 @@ src/org/daisy/pipeline/core/transformer/transformer-1.1.rng -text
 src/org/daisy/pipeline/test/PipelineTest.java -text
 src/org/daisy/pipeline/test/PipelineTestDriver.java -text
 src/org/daisy/pipeline/test/PipelineTestException.java -text
+src/org/daisy/pipeline/test/SingleScriptIterator.java -text
 src/org/daisy/pipeline/test/impl/Aligner1.java -text
 src/org/daisy/pipeline/test/impl/Audacity2DTB1.java -text
 src/org/daisy/pipeline/test/impl/CharacterRepertoireManipulator1.java -text
