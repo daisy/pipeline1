@@ -3,6 +3,7 @@
 META-INF/MANIFEST.MF -text
 META-INF/services/javax.xml.validation.SchemaFactory -text
 /build-bundles.xml -text
+/build-sapi.xml -text svneol=unset#text/plain
 /build.properties -text
 /custom.xml -text
 doc/404.html -text
@@ -146,6 +147,8 @@ lib/ZedVal.jar -text
 lib/batik-css.jar -text
 lib/batik-util.jar -text
 lib/chardet.jar -text
+lib/com4j.dll -text
+lib/com4j.jar -text
 lib/commons-cli-1.0.jar -text
 lib/epubcheck.jar -text
 lib/icu4j-3_8.jar -text
@@ -162,6 +165,7 @@ lib/saxon8.jar -text
 lib/serializer.jar -text
 lib/stax-api-1.0.1.jar -text
 lib/tagsoup-1.1.3.jar -text
+lib/tlbimp.jar -text
 lib/tritonus_remaining-0.3.6.jar -text
 lib/tritonus_share-0.3.6.jar -text
 lib/wstx-lgpl-3.2.4.jar -text
@@ -609,6 +613,189 @@ src/org/daisy/util/i18n/XMLPropertyResourceBundle.java -text
 src/org/daisy/util/location/LocationUtils.java -text
 src/org/daisy/util/text/CircularFifoStringBuilder.java -text
 src/org/daisy/util/text/LineFilter.java -text
+src/org/daisy/util/wincom/sapi5/ClassFactory.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPIDSPRG.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPIDSPTSI.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechAudio.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechAudioBufferInfo.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechAudioFormat.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechAudioStatus.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechBaseStream.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechCustomStream.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechDataKey.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechFileStream.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechGrammarRule.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechGrammarRuleState.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechGrammarRuleStateTransition.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechGrammarRuleStateTransitions.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechGrammarRules.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechLexicon.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechLexiconProns.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechLexiconPronunciation.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechLexiconWord.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechLexiconWords.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechMMSysAudio.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechMemoryStream.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechObjectToken.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechObjectTokenCategory.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechObjectTokens.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhoneConverter.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhraseAlternate.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhraseAlternates.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhraseBuilder.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhraseElement.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhraseElements.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhraseInfo.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhraseProperties.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhraseProperty.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhraseReplacement.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhraseReplacements.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhraseRule.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechPhraseRules.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechRecoContext.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechRecoContextEvents.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechRecoResult.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechRecoResultTimes.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechRecognizer.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechRecognizerStatus.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechVoice.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechVoiceEvent.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechVoiceStatus.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/DISPID_SpeechWaveFormatEx.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/IEnumSpObjectTokens.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISequentialStream.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/IServiceProvider.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpAudio.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpDataKey.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpEventSink.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpEventSource.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpGrammarBuilder.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpLexicon.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpMMSysAudio.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpNotifySink.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpNotifySource.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpNotifyTranslator.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpObjectToken.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpObjectTokenCategory.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpObjectWithToken.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpPhoneConverter.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpPhrase.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpPhraseAlt.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpProperties.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpRecoContext.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpRecoGrammar.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpRecoResult.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpRecognizer.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpResourceManager.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpStream.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpStreamFormat.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpStreamFormatConverter.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpVoice.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechAudio.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechAudioBufferInfo.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechAudioFormat.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechAudioStatus.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechBaseStream.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechCustomStream.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechDataKey.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechFileStream.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechGrammarRule.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechGrammarRuleState.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechGrammarRuleStateTransition.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechGrammarRuleStateTransitions.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechGrammarRules.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechLexicon.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechLexiconPronunciation.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechLexiconPronunciations.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechLexiconWord.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechLexiconWords.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechMMSysAudio.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechMemoryStream.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechObjectToken.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechObjectTokenCategory.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechObjectTokens.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhoneConverter.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhraseAlternate.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhraseAlternates.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhraseElement.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhraseElements.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhraseInfo.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhraseInfoBuilder.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhraseProperties.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhraseProperty.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhraseReplacement.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhraseReplacements.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhraseRule.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechPhraseRules.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechRecoContext.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechRecoGrammar.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechRecoResult.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechRecoResultTimes.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechRecognizer.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechRecognizerStatus.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechTextSelectionInformation.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechVoice.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechVoiceStatus.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/ISpeechWaveFormatEx.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/IStream.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPAUDIOOPTIONS.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPAUDIOSTATE.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPBOOKMARKOPTIONS.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPCONTEXTSTATE.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPDATAKEYLOCATION.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPEVENTENUM.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPFILEMODE.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPGRAMMARSTATE.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPGRAMMARWORDTYPE.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPINTERFERENCE.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPLEXICONTYPE.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPLOADOPTIONS.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPPARTOFSPEECH.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPRECOSTATE.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPRULESTATE.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPSTREAMFORMATTYPE.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPVISEMES.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPVPRIORITY.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPWORDPRONOUNCEABLE.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SPWORDTYPE.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechAudioFormatType.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechAudioState.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechBookmarkOptions.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechDataKeyLocation.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechDiscardType.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechDisplayAttributes.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechEngineConfidence.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechFormatType.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechGrammarRuleStateTransitionType.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechGrammarState.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechGrammarWordType.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechInterference.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechLexiconType.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechLoadOption.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechPartOfSpeech.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechRecoContextState.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechRecoEvents.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechRecognitionType.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechRecognizerState.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechRetainedAudioOptions.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechRuleAttributes.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechRuleState.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechRunState.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechSpecialTransitionType.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechStreamFileMode.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechStreamSeekPositionType.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechTokenContext.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechTokenShellFolder.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechVisemeFeature.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechVisemeType.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechVoiceEvents.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechVoicePriority.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechVoiceSpeakFlags.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechWordPronounceable.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/SpeechWordType.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/events/_ISpeechRecoContextEvents.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/events/_ISpeechVoiceEvents.java -text svneol=unset#text/plain
+src/org/daisy/util/wincom/sapi5/package.html -text svneol=unset#text/plain
 src/org/daisy/util/xml/LanguageReporter.java -text
 src/org/daisy/util/xml/LocusTransformer.java -text
 src/org/daisy/util/xml/NamespaceReporter.java -text
@@ -1039,6 +1226,7 @@ transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/SimpleCommandLineTT
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/SimpleCommandLineTTS.exe.manifest -text
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/SimpleCommandLineTTS.pdb -text
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/doc.xml -text
+transformers/se_tpb_speechgen2/external/win/DefaultSapiTTS.java -text svneol=unset#text/plain
 transformers/se_tpb_speechgen2/messages.properties -text
 transformers/se_tpb_speechgen2/regex/loquendo-general.xml -text
 transformers/se_tpb_speechgen2/regex/macosx-say.xml -text svneol=unset#text/plain

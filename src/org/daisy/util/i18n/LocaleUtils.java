@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  */
 public class LocaleUtils {
     
-    private static Pattern localePattern = Pattern.compile("(\\p{Alpha}{2})(?:[-_](\\p{Alpha}{2}))?");
+    private static Pattern localePattern = Pattern.compile("(\\p{Alpha}{2})(?:[-_](\\p{Alpha}{2}))?(?:[-_](\\p{Alnum}{1,8}))*");
     
     private LocaleUtils() { }
     

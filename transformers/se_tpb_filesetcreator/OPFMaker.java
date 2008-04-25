@@ -332,7 +332,7 @@ public class OPFMaker {
 		String suffix = filename.substring(filename.lastIndexOf('.'));
 		String mime = (String) mimeTypes.get(suffix);
 		if (null == mime) {
-			throw new IllegalArgumentException("Illegal filename suffix: " + mime);
+			throw new IllegalArgumentException("Illegal filename suffix: " + suffix);
 		}
 		
 		return mime;

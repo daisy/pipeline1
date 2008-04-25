@@ -296,7 +296,6 @@ public class TTSBuilder implements TTSConstants {
 						throw new TTSBuilderException(e.getMessage(), e);
 					}
 				}
-				
 				// add the tts to the group
 				ttsInstances.add(tts);
 			}

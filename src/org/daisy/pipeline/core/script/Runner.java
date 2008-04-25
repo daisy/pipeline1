@@ -118,6 +118,9 @@ public class Runner implements BusListener {
         } catch (Exception e) {
         	EventBus.getInstance().publish(new CoreMessageEvent(this,e.getMessage(), MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
         	throw new JobFailedException(i18n("ERROR_RUNNING_SCRIPT",e.getMessage()),e);
+        }catch (Error e) {        	
+        	EventBus.getInstance().publish(new CoreMessageEvent(this,e.getMessage(), MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
+        	throw new JobFailedException(i18n("ERROR_RUNNING_SCRIPT",e.getMessage()),e);
         } finally {
         	EventBus.getInstance().unsubscribe(this, UserAbortEvent.class);
             this.mRunning = false;

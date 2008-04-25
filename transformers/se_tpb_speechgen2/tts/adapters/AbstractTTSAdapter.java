@@ -5,11 +5,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.events.StartElement;
 
+import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.xslt.XSLTException;
 import org.w3c.dom.Document;
 
+import se_tpb_speechgen2.audio.AudioFiles;
 import se_tpb_speechgen2.tts.TTSException;
 import se_tpb_speechgen2.tts.concurrent.TTSAdapter;
 import se_tpb_speechgen2.tts.util.TTSUtils;
@@ -28,7 +32,7 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 	/** The reference to the TTSUtils passed to the constructor */
 	protected TTSUtils mUtils;
 	/** The reference to the parameters passed to the constructor */
-	protected Map<?, ?> mParams;
+	protected Map<String, String> mParams;
 
 	/**
 	 * Creates the adapter and stores the given utils and parameters.
@@ -37,8 +41,10 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 	 *            TTS utils
 	 * @param params
 	 *            the parameters for this TTS adapater
+	 * @throws IllegalArgumentException
+	 *             if one of the argument is <code>null</code>.
 	 */
-	public AbstractTTSAdapter(TTSUtils ttsUtils, Map<?, ?> params) {
+	public AbstractTTSAdapter(TTSUtils ttsUtils, Map<String, String> params) {
 		if (ttsUtils == null) {
 			throw new IllegalArgumentException(
 					"No TTSUtils supplied! Unable to continue");
@@ -78,12 +84,19 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 	 */
 	public long read(List<StartElement> announcements, QName attrName,
 			File destination) throws IOException, TTSException {
-		String line = TTSUtils.concatAttributes(announcements, attrName);
-		line = mUtils.str2input(line);
-		if (canSpeak(line)) {
-			return read(line, destination);
-		} else {
-			return 0;
+		try {
+			String line = TTSUtils.concatAttributes(announcements, attrName);
+			line = mUtils.str2input(line);
+			if (canSpeak(line)) {
+				read(line, destination);
+				return AudioFiles.getAudioFileDuration(destination);
+			} else {
+				return 0;
+			}
+		} catch (IOException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new TTSException(e.getMessage());
 		}
 	}
 
@@ -100,17 +113,20 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 	 * @throws IOException
 	 * @throws TTSException
 	 */
-	public long read(Document doc, File destination) throws TTSException {
-		String line;
+	public long read(Document doc, File destination) throws IOException,
+			TTSException {
 		try {
-			line = mUtils.dom2input(doc);
+			String line = mUtils.dom2input(doc);
+			if (canSpeak(line)) {
+				read(line, destination);
+				return AudioFiles.getAudioFileDuration(destination);
+			} else {
+				return 0;
+			}
+		} catch (IOException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new TTSException(e.getMessage());
-		}
-		if (canSpeak(line)) {
-			return read(line, destination);
-		} else {
-			return 0;
 		}
 	}
 
@@ -121,11 +137,10 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 	 *            the line to read.
 	 * @param destination
 	 *            the local file in which to store the generated audio.
-	 * @return The duration of the generated audio.
-	 * @throws TTSException
+	 * @throws TTSException, IOException
 	 */
-	public abstract long read(String line, File destination)
-			throws TTSException;
+	public abstract void read(String line, File destination)
+			throws IOException, TTSException;
 
 	/**
 	 * Whether the given line is speakable.

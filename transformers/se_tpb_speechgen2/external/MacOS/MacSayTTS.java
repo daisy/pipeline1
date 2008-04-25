@@ -1,3 +1,21 @@
+/*
+ * DMFC - The DAISY Multi Format Converter
+ * Copyright (C) 2005  Daisy Consortium
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 package se_tpb_speechgen2.external.MacOS;
 
 import java.io.File;
@@ -21,12 +39,12 @@ import se_tpb_speechgen2.tts.util.TTSUtils;
  */
 public class MacSayTTS extends AbstractTTSAdapter {
 
-	public MacSayTTS(TTSUtils ttsUtils, Map<?, ?> params) {
+	public MacSayTTS(TTSUtils ttsUtils, Map<String, String> params) {
 		super(ttsUtils, params);
 	}
 
 	@Override
-	public long read(String line, File destination) throws TTSException {
+	public void read(String line, File destination) throws IOException, TTSException {
 		String destName = destination.getAbsolutePath();
 		String aiffName = destName + ".aiff";
 		String say = "/usr/bin/say";
@@ -41,15 +59,8 @@ public class MacSayTTS extends AbstractTTSAdapter {
 			throw new TTSException("Could not execute: " + cmd, e);
 		} catch (InterruptedException e) {
 			throw new TTSException("Command was interrupted: " + cmd, e);
-		} finally{
+		} finally {
 			(new File(aiffName)).delete();
-		}
-		try {
-			return AudioFiles.getAudioFileDuration(destination);
-		} catch (UnsupportedAudioFileException e) {
-			throw new TTSException(e.getMessage(), e);
-		} catch (IOException e) {
-			throw new TTSException(e.getMessage(), e);
 		}
 	}
 }

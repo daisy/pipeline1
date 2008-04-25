@@ -56,7 +56,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import se_tpb_speechgen2.audio.AudioFiles;
 import se_tpb_speechgen2.tts.TTSBuilder;
 import se_tpb_speechgen2.tts.TTSConstants;
 import se_tpb_speechgen2.tts.TTSInput;
@@ -69,7 +68,7 @@ import se_tpb_speechgen2.tts.TTSInput;
  */
 public class TTSUtils {
 
-	private Map parameters;									// custom parameters
+	private Map<String,String> parameters;									// custom parameters
 	private RegexReplace[] specificReplace;					// regexes: optional, applied before general regexes
 	private RegexReplace[] regexReplace;					// regexes: optional, applied after specific regexes
 	private UCharReplacer charReplacer;						// replacement of characters
@@ -110,7 +109,7 @@ public class TTSUtils {
 	 * @param params A java.util.Map containing parameters.
 	 * @throws IOException
 	 */
-	public TTSUtils(Map params) throws IOException {
+	public TTSUtils(Map<String,String> params) throws IOException {
 		parameters = params;
 		init();
 	}	
@@ -169,7 +168,7 @@ public class TTSUtils {
 //			announcements += at.getValue() + " ";
 //			}
 //			Replaced with the following do-it-yourself iteration, 14 Aug 2006
-			for (Iterator atIt = se.getAttributes(); atIt.hasNext(); ) {
+			for (Iterator<?> atIt = se.getAttributes(); atIt.hasNext(); ) {
 				Attribute at = (Attribute) atIt.next();
 				if (attrName.equals(at.getName())) {
 					announcements += at.getValue() + " ";
@@ -651,20 +650,18 @@ public class TTSUtils {
 	
 	
 	/**
+	 * Writes the given audio data to the given file
 	 * @param data the audio data
 	 * @param dst the destination file
-	 * @return the duration of the audio, in millis.
 	 * @throws IOException
-	 * @throws UnsupportedAudioFileException
 	 */
-	public static long writeAudio(byte[] data, File dst) throws IOException, UnsupportedAudioFileException {
+	public static void writeAudio(byte[] data, File dst) throws IOException {
 		if (null == data || data.length == 0) {
-			return 0;
+			return;
 		}
 		
 		FileOutputStream fos = new FileOutputStream(dst);
 		fos.write(data);
 		fos.close();
-		return AudioFiles.getAudioFileDuration(dst);
 	}
 }

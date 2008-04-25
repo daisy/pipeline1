@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<project name="sapi-wrapper" default="tlbimp" basedir=".">
+  
+
+  <property name="com4j.dir" value="C:/Dev/com4j-20080107"/>
+  
+  <taskdef resource="com4j/tlbimp/ant.properties">
+    <classpath>
+        <fileset dir="${com4j.dir}" includes="tlbimp.jar"/>
+    </classpath>
+  </taskdef>
+  
+  
+  <target name="tlbimp">
+    <!-- compile Microsoft Speech API -->
+    <tlbimp libid="C866CA3A-32F7-11D2-9602-00C04F8EE628"
+      destdir="src" package="org.daisy.util.wincom.sapi5" />
+  </target>
+ 
+  
+  <target name="clean">
+    <delete dir="sapi5"/>
+  </target>
+</project>
+

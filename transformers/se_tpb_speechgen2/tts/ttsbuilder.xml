@@ -46,8 +46,11 @@
 				for one (1) configuration for each os. -->
 			
 			<tts default="true">
+            <!--
 				<param name="class" value="se_tpb_speechgen2.tts.adapters.LocalStreamTTS"/>
-				<param name="command" value="${transformer_dir}/external/SimpleCommandLineTTS/SimpleCommandLineTTS.exe"/>
+				<param name="command" value="${transformer_dir}/external/SimpleCommandLineTTS/SimpleCommandLineTTS.exe"/> 
+            -->
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
 				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 				
 				<!-- character substitution choises -->
