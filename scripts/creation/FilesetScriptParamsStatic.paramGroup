@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+
+	<parameter name="outputPath" value="" required="true">
+		<nicename>Output folder</nicename>
+		<description>Select a directory to store the output in</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="identifier" value="" required="false">
+		<nicename>Identifier</nicename>
+		<description>Add an identifier for use in the output metadata.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+</paramGroup>	

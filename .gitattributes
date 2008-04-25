@@ -89,6 +89,7 @@ doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/Daisy202ToZ39862005.html -text
 doc/scripts/EpubCheck.html -text
+doc/scripts/FilesetGenerator-Daisy202TextOnly.html -text
 doc/scripts/FilesetRenamer.html -text
 doc/scripts/HtmlToXhtml.html -text
 doc/scripts/ImageConverter.html -text
@@ -114,6 +115,7 @@ doc/transformers/dk_dbb_dtbook2rtf.html -text
 doc/transformers/int_daisy_daisy2022Zed2005.html -text
 doc/transformers/int_daisy_dtbMigrator.html -text svneol=unset#text/plain
 doc/transformers/int_daisy_filesetAudioTagger.html -text
+doc/transformers/int_daisy_filesetGenerator.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
 doc/transformers/int_daisy_html2xhtml.html -text
 doc/transformers/int_daisy_mixedContentNormalizer.html -text
@@ -354,6 +356,9 @@ scripts/conversion/simple/RtfToXhtml.taskScript -text
 scripts/conversion/simple/WordMLtoDTBook.taskScript -text
 scripts/conversion/simple/WordMLtoXhtml.taskScript -text
 scripts/conversion/simple/dtbook2005-1To2005-2.taskScript -text
+scripts/creation/FilesetScriptParamsStatic.paramGroup -text
+scripts/creation/advanced/Fileset-DtbookToDaisy202TextOnly.taskScript -text
+scripts/creation/advanced/Fileset-XhtmlToDaisy202TextOnly.taskScript -text
 scripts/creation/simple/Narrator-DtbookToDaisy202.taskScript -text
 scripts/creation/simple/OCFCreator.taskScript -text
 scripts/creation/simple/OPSCreator.taskScript -text
@@ -466,6 +471,8 @@ src/org/daisy/pipeline/test/impl/DTBookMigrator2.java -text
 src/org/daisy/pipeline/test/impl/DTBookMigrator3.java -text
 src/org/daisy/pipeline/test/impl/Daisy202ToZ398620051.java -text
 src/org/daisy/pipeline/test/impl/FilesetCreator1.java -text
+src/org/daisy/pipeline/test/impl/FilesetGenerator1.java -text
+src/org/daisy/pipeline/test/impl/FilesetGenerator2.java -text
 src/org/daisy/pipeline/test/impl/FilesetRenamer1.java -text
 src/org/daisy/pipeline/test/impl/FilesetRenamer2.java -text
 src/org/daisy/pipeline/test/impl/Html2Xhtml1.java -text
@@ -933,6 +940,16 @@ transformers/int_daisy_filesetAudioTagger/playlist/WPLWriter.java -text
 transformers/int_daisy_filesetAudioTagger/playlist/XSPFWriter.java -text
 transformers/int_daisy_filesetAudioTagger/transformer.tdf -text
 transformers/int_daisy_filesetEncryptor/transformer.tdf -text
+transformers/int_daisy_filesetGenerator/FilesetGenerator.java -text
+transformers/int_daisy_filesetGenerator/FilesetGeneratorException.java -text
+transformers/int_daisy_filesetGenerator/FilesetGeneratorFactory.java -text
+transformers/int_daisy_filesetGenerator/IFilesetGenerator.java -text
+transformers/int_daisy_filesetGenerator/impl/d202/D202TextOnlyGenerator.java -text
+transformers/int_daisy_filesetGenerator/transformer.tdf -text
+transformers/int_daisy_filesetGenerator/util/IDPopulator.java -text
+transformers/int_daisy_filesetGenerator/util/d202/D202MasterSmilBuilder.java -text
+transformers/int_daisy_filesetGenerator/util/d202/D202NccBuilder.java -text
+transformers/int_daisy_filesetGenerator/util/d202/D202SmilBuilder.java -text
 transformers/int_daisy_filesetRenamer/transformer.tdf -text
 transformers/int_daisy_html2xhtml/transformer.tdf -text
 transformers/int_daisy_html2xhtml/xhtml-clean-minimum.xsl -text
