@@ -19,17 +19,19 @@
 
 package org.daisy.util.fileset.util;
 
+import org.daisy.util.file.FilenameOrFileURI;
+
 /**
  * This class does not duplicate java.net.URI,
  * but provides highspeed substring getters for URIs in string form.
  * @author Markus Gylling
  */
 public class URIStringParser {
+	private static final char hash = '#';
 	
 	public static String stripFragment(String uri) {				
 		StringBuilder sb = new StringBuilder();
-		int length = uri.length();
-		char hash = '#';
+		int length = uri.length();		
 		for (int i = 0; i < length; i++) {
 			if (uri.charAt(i)==hash) {
 				return sb.toString();
@@ -41,7 +43,6 @@ public class URIStringParser {
 
 	public static String getFragment(String uri) {					
 		StringBuilder sb = new StringBuilder();
-		char hash = '#';		
 		int hashPos = -1;
 		
 		for (int i = 0; i < uri.length(); i++) {

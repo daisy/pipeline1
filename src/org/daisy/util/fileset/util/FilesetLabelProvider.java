@@ -16,6 +16,7 @@ import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.SmilFile;
+import org.daisy.util.fileset.Xhtml10File;
 import org.daisy.util.fileset.XmlFile;
 import org.daisy.util.fileset.Z3986NcxFile;
 import org.daisy.util.fileset.Z3986OpfFile;
@@ -74,6 +75,9 @@ public class FilesetLabelProvider {
 	        }else if(mFileset.getFilesetType()== FilesetType.DAISY_202) {
 	        	D202NccFile ncc = (D202NccFile) mFileset.getManifestMember();
 	        	mFilesetIdentifier = ncc.getDcIdentifier();        	
+	        }else if(mFileset.getFilesetType()== FilesetType.XHTML_DOCUMENT) {
+	        	Xhtml10File xht = (Xhtml10File) mFileset.getManifestMember();
+	        	mFilesetIdentifier = xht.getIdentifier();        	
 	        }
 		}
 		return mFilesetIdentifier;
@@ -90,6 +94,9 @@ public class FilesetLabelProvider {
 	        }else if(mFileset.getFilesetType()== FilesetType.DAISY_202) {
 	        	D202NccFile ncc = (D202NccFile) mFileset.getManifestMember();
 	        	mFilesetTitle = ncc.getDcTitle();        	
+	        }else if(mFileset.getFilesetType()== FilesetType.XHTML_DOCUMENT) {
+	        	Xhtml10File xht = (Xhtml10File) mFileset.getManifestMember();
+	        	mFilesetTitle = xht.getTitle();        	
 	        }
 		}
 		return mFilesetTitle;
