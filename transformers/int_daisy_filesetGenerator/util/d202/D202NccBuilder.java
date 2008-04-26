@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,8 +38,7 @@ import org.daisy.util.xml.stax.AttributeByName;
  * @author Markus Gylling
  */
 public class D202NccBuilder {
-	private final File mDestination;
-	private final static String OUTPUT_ENCODING = "utf-8";
+	private final File mDestination;	
 	private List<NccNavItem> mNavItems = null;
 	private MetadataList mMetaItems = null;		
 	private static String XHTML_DTD;
@@ -57,10 +57,12 @@ public class D202NccBuilder {
 	private static QName qTitle;
 	private GlobalMetadata mGlobalMetadata = null;	
 	private SmilClock mDuration = null;
+	private final Charset mOutputCharset;
 		
 	
-	public D202NccBuilder(File destination, GlobalMetadata metadata) {
-		mDestination = destination;		
+	public D202NccBuilder(File destination, GlobalMetadata metadata, Charset outputCharset) {
+		mDestination = destination;
+		mOutputCharset = outputCharset;		
 		mNavItems = new ArrayList<NccNavItem>();
 		mMetaItems = new MetadataList();
 		XHTML_DTD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
@@ -198,14 +200,14 @@ public class D202NccBuilder {
 		Map<String, Object> properties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
 		XMLOutputFactory xof = StAXOutputFactoryPool.getInstance().acquire(properties);
 		FileOutputStream fos = new FileOutputStream(mDestination);
-		XMLEventWriter writer = xof.createXMLEventWriter(fos,OUTPUT_ENCODING);
+		XMLEventWriter writer = xof.createXMLEventWriter(fos,mOutputCharset.name());
 		XMLEventFactory xef = StAXEventFactoryPool.getInstance().acquire();
 						
 		Attribute classPageNormal = xef.createAttribute("class", "page-normal");
 		Attribute classPageSpecial = xef.createAttribute("class", "page-special");
 		Attribute classPageFront = xef.createAttribute("class", "page-front");
 		
-		writer.add(xef.createStartDocument());
+		writer.add(xef.createStartDocument(mOutputCharset.name(),"1.0"));
 		writer.add(xef.createDTD(XHTML_DTD));
 		writer.add(xef.createStartElement(qHtml,null,null));
 		
@@ -214,7 +216,7 @@ public class D202NccBuilder {
 		//add internal metas
 		
 		writer.add(xef.createStartElement(qMeta,null,null));
-		writer.add(xef.createAttribute("content", "application/xhtml+xml; charset=utf-8"));
+		writer.add(xef.createAttribute("content", "application/xhtml+xml; charset=" + mOutputCharset.name()));
 		writer.add(xef.createAttribute("http-equiv", "Content-type"));
 		writer.add(xef.createEndElement(qMeta,null));
 		
@@ -225,7 +227,7 @@ public class D202NccBuilder {
 		
 		writer.add(xef.createStartElement(qMeta,null,null));
 		writer.add(xef.createAttribute("name", "ncc:charset"));
-		writer.add(xef.createAttribute("content", OUTPUT_ENCODING));
+		writer.add(xef.createAttribute("content", mOutputCharset.name()));
 		writer.add(xef.createEndElement(qMeta,null));
 		
 		writer.add(xef.createStartElement(qMeta,null,null));

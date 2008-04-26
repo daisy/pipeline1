@@ -9,6 +9,18 @@
 		</datatype>
 	</parameter>
 	
+	<parameter name="outputEncoding" value="utf-8" required="false">
+		<nicename>Output encoding</nicename>
+		<description>Select the output characterset encoding</description>
+		<datatype>
+			<enum>
+			  <item nicename="utf-8" value="utf-8" />
+			  <item nicename="iso-8859-1" value="iso-8859-1" />
+			  <item nicename="Shift-JIS" value="Shift_JIS" />			  
+			</enum>
+		</datatype>
+	</parameter>
+	
 	<parameter name="identifier" value="" required="false">
 		<nicename>Identifier</nicename>
 		<description>Add an identifier for use in the output metadata.</description>
@@ -16,5 +28,7 @@
 			<string/>
 		</datatype>
 	</parameter>
+	
+	
 
 </paramGroup>	

@@ -14,8 +14,9 @@ public class FilesetGenerator1 extends PipelineTest {
 	@Override
 	public List<String> getParameters() {		
 		mParameters.add("--input=" + mDataInputDir + "/xhtml/daisy_202.html");
-		mParameters.add("--outputPath=" + mDataOutputDir + "/FilesetGenerator2/");
+		mParameters.add("--outputPath=" + mDataOutputDir + "/FilesetGenerator1/");
 		mParameters.add("--identifier=C123456789");
+		mParameters.add("--outputEncoding=iso-8859-1");
 		return mParameters;
 	}
 

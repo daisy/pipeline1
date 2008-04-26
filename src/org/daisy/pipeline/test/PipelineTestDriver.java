@@ -32,6 +32,8 @@ import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.core.script.ScriptParameter;
 import org.daisy.pipeline.core.script.Task;
 import org.daisy.pipeline.exception.DMFCConfigurationException;
+import org.daisy.pipeline.test.impl.FilesetGenerator1;
+import org.daisy.pipeline.test.impl.FilesetGenerator2;
 import org.daisy.pipeline.ui.CommandLineUI;
 import org.daisy.util.file.EFolder;
 import org.daisy.util.file.FileUtils;
@@ -297,8 +299,8 @@ public class PipelineTestDriver implements BusListener {
 //		tests.add(new DTBMigratorForward1(inputDir, outputDir));		
 //		tests.add(new DTBMigratorBackward1(inputDir, outputDir));
 //		tests.add(new XukCreator1(inputDir, outputDir));
-//		tests.add(new FilesetGenerator1(inputDir, outputDir));
-//		tests.add(new FilesetGenerator2(inputDir, outputDir));		
+		tests.add(new FilesetGenerator1(inputDir, outputDir));
+		tests.add(new FilesetGenerator2(inputDir, outputDir));		
 
 		/*
 		 * End Tests with input data in samples dir

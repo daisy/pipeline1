@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -63,8 +64,7 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
  * @author Markus Gylling
  */
 public class D202TextOnlyGenerator implements IFilesetGenerator {
-	private static final String OUTPUT_ENCODING = "utf-8";
-	
+		
 	private EFolder mDestination = null;
 	private List<Fileset> mInputFilesets = null;	
 	private Map<String, Object> mConfiguration = null;
@@ -75,6 +75,7 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 	private final static QName qHref = new QName("","href");
 	private TransformerDelegateListener mListener = null;
 	private GlobalMetadata mGlobalMetadata = null;
+	private Charset mOutputCharset = null;
 	
 
 	/*
@@ -94,13 +95,21 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 		 * Create some general metadata to be passed around
 		 */
 		mGlobalMetadata = new GlobalMetadata();
-				
+		/*
+		 * Figure out which output encoding to use
+		 */
+		if(mConfiguration.containsKey("Charset") && (mConfiguration.get("Charset")!=null)) {
+			mOutputCharset  = (Charset)mConfiguration.get("Charset");
+		}else{
+			mOutputCharset = Charset.forName("utf-8");
+		}
+		
 		/*
 		 * We have 1-n Xhtml Filesets as input. These are turned into one 2.02 fileset.
 		 */
 		
 		File ncc = new File(mDestination,"ncc.html");
-		mNccBuilder = new D202NccBuilder(ncc,mGlobalMetadata);		
+		mNccBuilder = new D202NccBuilder(ncc,mGlobalMetadata,mOutputCharset);		
 		mSmilBuilders = new ArrayList<D202SmilBuilder>();
 		
 		Map<String,Object> xifProperties = null;	
@@ -158,7 +167,7 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 			is = new FileInputStream(tempContentDoc);			
 			reader = new BookmarkedXMLEventReader(xif.createXMLEventReader(is));
 			fos = new FileOutputStream(outputContentDoc);
-			writer = xof.createXMLEventWriter(fos,OUTPUT_ENCODING);
+			writer = xof.createXMLEventWriter(fos,mOutputCharset.name());
 			
 			while(reader.hasNext()) {
 				XMLEvent xe = reader.nextEvent();
@@ -166,10 +175,12 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 				if(xe.isStartElement()){
 					writeStartElement(xe.asStartElement(),writer,xef);
 					if(xe.asStartElement().getName().getLocalPart()=="head") {						
-						handleHead(reader,writer,contentDocCounter);									
+						handleHead(reader,writer,xef,contentDocCounter);									
 					}else if(xe.asStartElement().getName().getLocalPart()=="body") {						
 						handleBody(reader,writer,outputContentDoc,xef,contentDocCounter,mInputFilesets.size());
 					}
+				}else if(xe.isStartDocument()) {
+					writer.add(xef.createStartDocument(mOutputCharset.name(), "1.0"));
 				}else{
 					writer.add(xe);
 				}
@@ -245,7 +256,7 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 	 * Handle all events after head open until head close. 
 	 * Only add metas to NCC builder if this is the first XHTML input doc.
 	 */
-	private void handleHead(BookmarkedXMLEventReader reader, XMLEventWriter writer, int contentDocCounter) throws XMLStreamException {
+	private void handleHead(BookmarkedXMLEventReader reader, XMLEventWriter writer, XMLEventFactory xef, int contentDocCounter) throws XMLStreamException {
 		while(reader.hasNext()) {
 			XMLEvent xe = reader.nextEvent();
 			
@@ -256,6 +267,9 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 			
 			if(contentDocCounter==1) {
 				if(xe.isStartElement() && xe.asStartElement().getName().getLocalPart() == "meta") {
+					/*
+					 * Handle classic metas
+					 */
 					Attribute name = getAttribute(xe.asStartElement(),new QName("", "name"));
 					String nameValue = null;			
 					if(name!=null)nameValue = handleMetaName(name.getValue());
@@ -267,6 +281,17 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 					if(nameValue!=null && contentValue!=null) {					
 						mNccBuilder.addMetadataItem(nameValue, contentValue);
 					}	
+					
+					/*
+					 * Handle http-equiv, we may be transcoding
+					 */
+					Attribute httpEquiv = getAttribute(xe.asStartElement(),new QName("", "http-equiv"));
+					if(httpEquiv!=null) {
+						Set<Attribute> attrs = new HashSet<Attribute>();
+						attrs.add(xef.createAttribute(new QName("http-equiv"), "Content-type"));
+						attrs.add(xef.createAttribute(new QName("content"), "application/xhtml+xml; charset=" + mOutputCharset.name()));
+						xe = xef.createStartElement(new QName(Namespaces.XHTML_10_NS_URI,"meta"), attrs.iterator(), xe.asStartElement().getNamespaces());
+					}
 				}	
 			}
 			writer.add(xe);
@@ -327,7 +352,7 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 						}
 						//open a new smilBuilder
 						mCurrentSmilBuilder = new D202SmilBuilder(getSmilFileName(mSmilBuilders.size()+1),elementText
-								,mGlobalMetadata);
+								,mGlobalMetadata,mOutputCharset);
 					}
 					
 					/*

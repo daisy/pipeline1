@@ -32,6 +32,8 @@ Such filesets can then be opened in a Daisy production tool of your choice to re
 <!-- detailed requirements on input nature -->
 <p>A DTBook file or an XHTML file (this depends on which of the Fileset Generator scripts you have chosen.</p>
 
+<p class="alert">Note - it is recommended that the first element in your input document body is a heading. Any elements preceeding the first heading while be maintained in the content document, but will not become part of the DAISY DTB synchronization.</p>
+
 <h2 id="output">Output</h2>
 <p>A Daisy 2.02 Text-Only fileset.</p>
 
@@ -43,6 +45,11 @@ Such filesets can then be opened in a Daisy production tool of your choice to re
 		
 		<dt>Output directory</dt>
 		<dd><strong>Required.</strong> Select the directory to store the result in. This directory can <strong>not</strong> be the same as the input directory, or the script will abort.</dd>
+
+		<dt>Output encoding</dt>
+		<dd><strong>Optional.</strong> While the default output characterset encoding is Unicode(utf-8) some heritage DAISY production tools (such as Sigtuna DAR) does not support Unicode properly. For this reason, it is sometimes necessary to select another output encoding than utf-8.
+		If you are not sure what this means, leave this setting at its default value. If the output character set you want is not available in the selection dialog, leave it at its default value and run a separate pass with the Pipeline <a href="CharsetSwitcher.html">Charset Switcher script</a> after the Daisy 2.02 fileset has been generated.  
+		</dd>
 
 		<dt>Identifier</dt>
 		<dd><strong>Optional.</strong> Add a publication identifier to use in the output metadata. Use this only if your input document does not already contain an identifier (such as dc:identifier or dtb:uid).</dd>		

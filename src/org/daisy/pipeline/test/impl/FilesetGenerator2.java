@@ -14,7 +14,8 @@ public class FilesetGenerator2 extends PipelineTest {
 	@Override
 	public List<String> getParameters() {		
 		mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy_valid.xml");
-		mParameters.add("--outputPath=" + mDataOutputDir + "/FilesetGenerator1/");
+		mParameters.add("--outputPath=" + mDataOutputDir + "/FilesetGenerator2/");
+		mParameters.add("--outputEncoding=Shift_JIS");
 		return mParameters;
 	}
 

@@ -92,8 +92,7 @@
 		</parameter>										
 	</task>	
 
-
-	<!-- *****************************
+		<!-- *****************************
 		Mixed Content Normalizer, adding syncpoints
 	 ***************************** -->
 	<task name="int_daisy_mixedContentNormalizer" interactive="false">
@@ -118,26 +117,29 @@
 		</parameter>
 		<parameter>
 			<name>outputDirectory</name>
-			<value>${outputPath}</value>
+			<value>${outputPath}/pipeline__temp/04/</value>
 		</parameter>	
 		<parameter>
 			<name>outputType</name>
 			<value>D202_TEXTONLY</value>
 		</parameter>
 		<parameter>
+			<name>outputEncoding</name>
+			<value>${outputEncoding}</value>
+		</parameter>		
+		<parameter>
 			<name>uid</name>
 			<value>${identifier}</value>
 		</parameter>		
 	</task>
-	
-	
+		
 	<!-- ************************************
 	      Pretty Printer (input and output same)
 		 ************************************ -->	
 	<task name="int_daisy_prettyPrinter" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/ncc.html</value>
+			<value>${outputPath}/pipeline__temp/04/ncc.html</value>
 		</parameter>
 
 		<parameter>
@@ -150,7 +152,7 @@
 			<value>DOS</value>
 		</parameter>
 	</task>
-	
+		
 	<!-- *************************
 	      2.02 Validation 
 	     ************************* -->
@@ -174,5 +176,7 @@
 			<value>${outputPath}/pipeline__temp/</value>
 		</parameter>					
 	</task>	
+
+
 
 </taskScript>

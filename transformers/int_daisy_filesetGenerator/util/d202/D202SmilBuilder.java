@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.security.spec.MGF1ParameterSpec;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,10 +47,12 @@ public class D202SmilBuilder {
 	private static QName qMeta;
 	private static QName qLayout;
 	private static QName qRegion;
+	private final Charset mOutputCharset;
 	
-	public D202SmilBuilder(File destination, String headingText, GlobalMetadata metadata) {
+	public D202SmilBuilder(File destination, String headingText, GlobalMetadata metadata, Charset outputCharset) {
 		mDestination = destination;
 		mHeadingText = headingText;
+		mOutputCharset = outputCharset;
 		mIdentifier = metadata.mPublicationIdentifier;
 		mPublicationTitle = metadata.mPublicationTitle;
 		if(mParIDGenerator == null) {
@@ -95,10 +98,10 @@ public class D202SmilBuilder {
 		Map<String, Object> properties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
 		XMLOutputFactory xof = StAXOutputFactoryPool.getInstance().acquire(properties);
 		FileOutputStream fos = new FileOutputStream(mDestination);
-		XMLEventWriter writer = xof.createXMLEventWriter(fos,"utf-8");
+		XMLEventWriter writer = xof.createXMLEventWriter(fos,mOutputCharset.name());
 		XMLEventFactory xef = StAXEventFactoryPool.getInstance().acquire();
 						
-		writer.add(xef.createStartDocument());
+		writer.add(xef.createStartDocument(mOutputCharset.name(),"1.0"));
 		writer.add(xef.createDTD(SMIL_DTD));
 		writer.add(xef.createStartElement(qSmil,null,null));
 		

@@ -14,6 +14,12 @@
 			<description>Input XML file</description>
 			<example>D:/path/to/inputFile.xml</example>
 		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>outputDirectory</name>			
+			<description>The output directory</description>
+			<example>D:/path/to/outputDir/</example>
+		</parameter>
 		
 		<parameter required="true" type="enum">
 			<name>outputType</name>			
@@ -32,11 +38,13 @@
 			<default/>
 		</parameter>
 		
-		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
-			<name>outputDirectory</name>			
-			<description>The output directory</description>
-			<example>D:/path/to/outputDir/</example>
+		<parameter required="false" type="string">
+			<name>outputEncoding</name>			
+			<description>The output encoding of the fileset XML (or otherwise textual) members (if any).</description>
+			<example>iso-8859-1</example>
+			<default>utf-8</default>
 		</parameter>
+
 							
 						
 																
