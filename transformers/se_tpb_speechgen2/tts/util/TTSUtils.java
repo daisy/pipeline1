@@ -139,12 +139,15 @@ public class TTSUtils {
 	 */
 	public void parseRomanNumerals(Document doc) {
 		// parse all roman numerals
-		NodeList romans = XPathUtils.selectNodes(doc.getDocumentElement(), "//pagenum[@page='front']");
-		for (int i = 0; i < romans.getLength(); i++) {	
-			Element elem = (Element) romans.item(i);
+		NodeList frontNums = XPathUtils.selectNodes(doc.getDocumentElement(), "//pagenum[@page='front']");
+		for (int i = 0; i < frontNums.getLength(); i++) {	
+			Element elem = (Element) frontNums.item(i);
 			String str = elem.getTextContent().trim();
-			str = String.valueOf(RomanNumeral.parseInt(str));
-			elem.setTextContent(str);
+			// rd20080426: only parse the numeral as roman if it really is
+			if (RomanNumeral.isRoman(str)){
+				str = String.valueOf(RomanNumeral.parseInt(str));
+				elem.setTextContent(str);
+			}
 		}
 	}
 	

@@ -1,4 +1,6 @@
 package se_tpb_speechgen2.tts.util;
+
+import java.util.regex.Pattern;
 /*
  An object of type RomanNumeral is an integer between 1 and 3999.  It can
  be constructed either from an integer or from a string that represents
@@ -10,6 +12,8 @@ package se_tpb_speechgen2.tts.util;
 public class RomanNumeral {
 	
 	private final int num;   // The number represented by this Roman numeral.
+
+	private static final Pattern PATTERN_ROMAN_NUMERAL = Pattern.compile("[MmDdCcLlVvIi]*");
 	
 	/* The following arrays are used by the toString() function to construct
 	 the standard Roman numeral representation of the number.  For each i,
@@ -131,5 +135,14 @@ public class RomanNumeral {
 		return new RomanNumeral(romanNumeral).toInt();
 	}
 	
+	/**
+	 * Whether the given numeral is a roman numeral 
+	 * i.e. if it matches the pattern <code>[MmDdCcLlVvIi]*</code>.
+	 * @param numeral a numeral
+	 * @return whether the given numeral is a roman numeral.
+	 */
+	public static boolean isRoman(String numeral) {
+		return PATTERN_ROMAN_NUMERAL.matcher(numeral).matches();
+	}
 	
 } // end class RomanNumeral

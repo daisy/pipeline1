@@ -16,7 +16,7 @@
 	</xsl:template>	
 	
 	
-	<xsl:template match="pagenum[@page='front']">
+	<xsl:template match="pagenum[@page='front' and matches(string(.),'[MmDdCcLlVvIi]*')]">
 		<xsl:choose>
 			<xsl:when test="lang('sv')">
 				<xsl:text>Romersk siffra, sidan </xsl:text>
