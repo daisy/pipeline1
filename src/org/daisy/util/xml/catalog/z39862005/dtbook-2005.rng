@@ -86,7 +86,10 @@
   				<attribute name="page">
   					<value type="string">front</value>
   				</attribute>
-  				<ref name="datatype.romannumeral"/>
+				<choice>
+					<ref name="datatype.romannumeral"/>
+					<ref name="datatype.positiveInteger"/>
+				</choice>
   			</group>
   			<group>
   				<attribute name="page">
