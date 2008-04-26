@@ -33,15 +33,15 @@ import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.pool.StAXOutputFactoryPool;
+import org.daisy.util.xml.stax.AttributeByName;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
 import org.daisy.util.xml.stax.ContextStack;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 
 /**
  * Scramble the text nodes of an XML document, except for a static set of exceptions.
- * Output document is placed in the same dir as input document, with the text ".scrambled"
- * added before the extension.
- * 
+ * Output document is placed in the same dir as input document, with the text ".scrambled" added before the extension.
+ * All image and CSS links are turned into references to "dummy.jpg" and "dummy.css" respectively.
  * @author Markus Gylling
  */
 public class XmlTextScrambler {
@@ -52,7 +52,7 @@ public class XmlTextScrambler {
 	 * @throws XMLStreamException
 	 * @throws IOException 
 	 */
-	public XmlTextScrambler(EFolder input) throws XMLStreamException, IOException {
+	public XmlTextScrambler(EFolder input) {
 		Collection<?> files = input.getFiles(true);
 		Iterator<?> iter = files.iterator();
 		while(iter.hasNext()) {			
@@ -63,7 +63,11 @@ public class XmlTextScrambler {
 			}catch (Exception e) {
 				continue; //not an xml file
 			}
-			scramble(new EFile(f));
+			try{
+				scramble(new EFile(f));
+			}catch (Exception e) {
+				System.err.println("Exception while scrambling " + f.getAbsolutePath() + ": " + e.getMessage());
+			}	
 			PeekerPool.getInstance().release(peeker);
 		}
 	}
@@ -120,6 +124,8 @@ public class XmlTextScrambler {
 						xe = handleAcronymElement(xe.asStartElement(),xef);
 					}else if (isLinkElement(xe.asStartElement())) {
 						xe = handleLinkElement(xe.asStartElement(),xef);
+					}else if (isAnchorElement(xe.asStartElement())) {
+						xe = handleAnchorElement(xe.asStartElement(),xef);
 					}
 				}else if(xe.isCharacters() && !skipElemTextScrambling 
 						&& !CharUtils.isXMLWhiteSpace(xe.asCharacters().getData())) {
@@ -129,6 +135,8 @@ public class XmlTextScrambler {
 										ContextStack.XPATH_PREDICATES_NONE));
 				}else if(xe.getEventType()==XMLEvent.PROCESSING_INSTRUCTION) {
 					xe = handleProcessingInstruction((ProcessingInstruction)xe,xef);
+				}else if(xe.isEndElement()) {
+					skipElemTextScrambling = false;
 				}
 				if(xe!=null)writer.add(xe);				
 			}
@@ -146,20 +154,71 @@ public class XmlTextScrambler {
 		}	
 	}
 	
+	
+
+	private XMLEvent handleAnchorElement(StartElement se,XMLEventFactory xef) {
+		
+		Set<Attribute> attrs = new HashSet<Attribute>();
+		Attribute href = AttributeByName.get(new QName("href"), se);
+		
+		if(href!=null) {
+			String value = "http";
+			if(href.getValue().toLowerCase().contains(("mailto"))) {
+				value = "mailto:dummy@dummy.org";
+			}else if(href.getValue().trim().startsWith("#")) {				
+				value = href.getValue();				
+			} else if(href.getValue().toLowerCase().contains("smil")) {
+					value = href.getValue();				
+			} else {
+					value = "http://dummy.org";				
+			}
+			attrs.add(xef.createAttribute(href.getName(), value));			
+		}
+		
+		Iterator<?> i = se.getAttributes();
+		while(i.hasNext()) {
+			Attribute a = (Attribute)i.next();
+			if(!a.getName().getLocalPart().equals("href")) {
+				attrs.add(a);
+			}
+		}
+		return xef.createStartElement(se.getName(), attrs.iterator(), se.getNamespaces());
+	}
+
 	private XMLEvent handleLinkElement(StartElement se, XMLEventFactory xef) {		
 		//remove all links since they may refer to copyrighted stuff
-		//TODO
-		return se;
+		//unless its a css link in which case we create a new one
+		Attribute type = AttributeByName.get(new QName("type"),se);
+		Attribute rel = AttributeByName.get(new QName("rel"),se);
+		if((type!=null && type.getValue().toLowerCase().equals("text/css"))
+				||(rel!=null&&rel.getValue().toLowerCase().equals("stylesheet"))) {
+			Set<Attribute> attrs = new HashSet<Attribute>();
+			attrs.add(xef.createAttribute(new QName("href"), "dummy.css"));
+			Iterator<?> i = se.getAttributes();
+			while(i.hasNext()) {
+				Attribute a = (Attribute)i.next();
+				if(a.getName().getLocalPart()!="href") {
+					attrs.add(a);
+				}
+			}
+			return xef.createStartElement(se.getName(), attrs.iterator(), se.getNamespaces());
+		}
+		return null;
 	}
 	
 	private XMLEvent handleProcessingInstruction(ProcessingInstruction pi, XMLEventFactory xef) {
-		//remove all css PIs since they may be copyrighted
-		if(pi.getTarget().equals("xml-stylesheet")) {
-			return null;
+		//remove all PIs since they may be copyrighted or freaky weird in other ways
+		//unless its a css PI in which case we create a new one
+		if(pi.getTarget().equals("xml-stylesheet") && pi.getData().toLowerCase().contains("css")) {
+			return xef.createProcessingInstruction("xml-stylesheet", "type=\"text/css\" href=\"dummy.css\"");
 		}
-		return pi;
+		return null;
 	}
 
+	private boolean isAnchorElement(StartElement se) {
+		return se.getName().getLocalPart()=="a";
+	}
+	
 	private boolean isLinkElement(StartElement se) {
 		return se.getName().getLocalPart().equals("link");
 	}
@@ -255,23 +314,43 @@ public class XmlTextScrambler {
 				attrs = new HashSet<Attribute>();
 				attrs.add(xef.createAttribute("class", "page-normal"));
 				skips.add(xef.createStartElement(new QName(Namespaces.XHTML_10_NS_URI,"span"), attrs.iterator(), null));
+
+				attrs = new HashSet<Attribute>();
+				attrs.add(xef.createAttribute("class", "page-front"));
+				skips.add(xef.createStartElement(new QName(Namespaces.XHTML_10_NS_URI,"span"), attrs.iterator(), null));
+
+				attrs = new HashSet<Attribute>();
+				attrs.add(xef.createAttribute("class", "page-special"));
+				skips.add(xef.createStartElement(new QName(Namespaces.XHTML_10_NS_URI,"span"), attrs.iterator(), null));
+				
+				attrs = new HashSet<Attribute>();
+				attrs.add(xef.createAttribute("class", "noteref"));
+				skips.add(xef.createStartElement(new QName(Namespaces.XHTML_10_NS_URI,"span"), attrs.iterator(), null));
+
 				
 				StAXEventFactoryPool.getInstance().release(xef);
 			}
 			
+			
+			
 			for(StartElement test : skips) {
-				if(se.getName().getNamespaceURI().equals(test.getName().getNamespaceURI())) {
-					if(se.getName().getLocalPart().equals(test.getName().getLocalPart())) {
-						Iterator<?> iter = test.getAttributes();
-						while(iter.hasNext()) {
-							Attribute testAttr = (Attribute) iter.next();
-							if(se.getAttributeByName(testAttr.getName())==null) {
-								return false;
-							}
+				boolean matchesName = true;
+				boolean matchesAttrs = true;
+				if(se.getName().equals(test.getName())) {					
+					Iterator<?> iter = test.getAttributes();						
+					//real elem must have all attrs of test elem
+					while(iter.hasNext()) {
+						Attribute testAttr = (Attribute) iter.next();
+						Attribute realAttr = AttributeByName.get(testAttr.getName(),se);
+						if(realAttr==null || !realAttr.getValue().equals(testAttr.getValue())) {
+							matchesAttrs = false;
 						}
-						return true;
-					}	
+					}
+					
+				}else{
+					matchesName = false;
 				}
+				if(matchesName && matchesAttrs) return true;
 			}
 	
 		}catch (Exception e) {
