@@ -112,9 +112,7 @@
 	
 	<!-- The set of transformers to be included -->
 	<patternset id="patternset.transformers">
-		<include name="**/*.*"/>
-				
-		<exclude name="int_daisy_dtbookMigrator/**/*.*"/>
+		<include name="**/*.*"/>		
 		<exclude name="se_tpb_aligner/**/*.*"/>
 		<exclude name="int_daisy_filesetEncryptor/**/*.*"/>
 		<exclude name="uk_rnib_odf2dtbook/**/*.*"/>
