@@ -8,8 +8,6 @@ transformers/ca_cnib_rtf2dtbook/*.pyc
 transformers/ca_cnib_rtf2dtbook/rtf2xml-py/rtf2xml/*.class
 transformers/ca_cnib_rtf2dtbook/rtf2xml-py/rtf2xml/*.pyc
 transformers/dk_dbb_dtbook2rtf/*.class
-transformers/int_daisy_daisy2022Zed2005/*.class
-transformers/int_daisy_daisy2022Zed2005/resources/*.class
 transformers/int_daisy_filesetAudioTagger/*.class
 transformers/int_daisy_filesetAudioTagger/id3/*.class
 transformers/int_daisy_filesetAudioTagger/playlist/*.class
