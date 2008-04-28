@@ -324,16 +324,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		//all level repair needs to be added in sequential order:
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelnormalizer.xsl"),v2005_1_2_3,i18n("LEVEL_NORMALIZER"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelsplitter.xsl"),v2005_1_2_3,i18n("LEVEL_SPLITTER"),this,this,this,emitter));
-    		if(((String)parameters.get("repairLevelImpl")).contentEquals("xslt 1.0")) {
-	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level1.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_1"),this,this,this,emitter));
-	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level2.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_2"),this,this,this,emitter));
-	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level3.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_3"),this,this,this,emitter));
-	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level4.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_4"),this,this,this,emitter));
-	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level5.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_5"),this,this,this,emitter));
-	    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level6.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_6"),this,this,this,emitter));
-    		} else if(((String)parameters.get("repairLevelImpl")).contentEquals("xslt 2.0")) {
-    			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-add-levels.xsl"),v2005_1_2_3,i18n("REPAIR_LEVELS"),this,this,this,emitter));
-    		}
+   			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-add-levels.xsl"),v2005_1_2_3,i18n("REPAIR_LEVELS"),this,this,this,emitter));
 
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-illegal-headings.xsl"),v2005_1_2_3,i18n("REMOVE_ILLEGAL_HEADINGS"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-flatten-redundant-nesting.xsl"),v2005_1_2_3,i18n("FLATTEN_REDUNDANT_NESTING"),this,this,this,emitter));
@@ -376,12 +367,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		//all level repair needs to be added in sequential order:
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelnormalizer.xsl"),v2005_1_2_3,i18n("LEVEL_NORMALIZER"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-levelsplitter.xsl"),v2005_1_2_3,i18n("LEVEL_SPLITTER"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level1.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_1"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level2.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_2"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level3.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_3"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level4.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_4"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level5.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_5"),this,this,this,emitter));
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-level6.xsl"),v2005_1_2_3,i18n("REPAIR_LEVEL_6"),this,this,this,emitter));
+   			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-add-levels.xsl"),v2005_1_2_3,i18n("REPAIR_LEVELS"),this,this,this,emitter));
     		
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-illegal-headings.xsl"),v2005_1_2_3,i18n("REMOVE_ILLEGAL_HEADINGS"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-flatten-redundant-nesting.xsl"),v2005_1_2_3,i18n("FLATTEN_REDUNDANT_NESTING"),this,this,this,emitter));

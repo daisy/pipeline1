@@ -70,17 +70,6 @@
 		</parameter>
 		
 		<parameter required="false" type="enum">
-			<name>repairLevelImpl</name>
-			<description>Optional in Repair category. Select level repair implementation.</description>
-			<example>xslt 1.0</example>
-			<enum>
-				<value>xslt 1.0</value>
-				<value>xslt 2.0</value>
-			</enum>
-			<default>xslt 2.0</default>
-		</parameter>
-		
-		<parameter required="false" type="enum">
 			<name>fixCharset</name>
 			<description>Optional in Repair category. Run character set detection and transcoding</description>
 			<example>true</example>

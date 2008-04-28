@@ -1188,12 +1188,6 @@ transformers/se_tpb_dtbookFix/xslt/repair-add-levels.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-complete-structure.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-flatten-redundant-nesting.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-idref.xsl -text
-transformers/se_tpb_dtbookFix/xslt/repair-level1.xsl -text
-transformers/se_tpb_dtbookFix/xslt/repair-level2.xsl -text
-transformers/se_tpb_dtbookFix/xslt/repair-level3.xsl -text
-transformers/se_tpb_dtbookFix/xslt/repair-level4.xsl -text
-transformers/se_tpb_dtbookFix/xslt/repair-level5.xsl -text
-transformers/se_tpb_dtbookFix/xslt/repair-level6.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-levelnormalizer.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-levelsplitter.xsl -text
 transformers/se_tpb_dtbookFix/xslt/repair-lists.xsl -text
