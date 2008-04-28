@@ -30,6 +30,26 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	}
 
 	/**
+	 * Returns the best path for the given executable name.
+	 * 
+	 * @param name
+	 *            the name of an executable
+	 * @return the path to this executable
+	 */
+	private String detectMacPath(String name) {
+		String path;
+		path = "/opt/local/bin/" + name;//$NON-NLS-1$
+		if (new File(path).exists()) {
+			return path;
+		}
+		path = "/sw/local/bin/" + name;//$NON-NLS-1$
+		if (new File(path).exists()) {
+			return path;
+		}
+		return "/usr/local/bin" + name;//$NON-NLS-1$
+	}
+
+	/**
 	 * Process the initialization steps common to all OSes.
 	 */
 	private void initCommonDefaults() {
@@ -79,9 +99,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	private void initMacDefaults() {
 		setPrefPath(PreferencesKeys.PATH_TO_IMAGEMAGICK,
-				"/usr/local/bin/convert");//$NON-NLS-1$
-		setPrefPath(PreferencesKeys.PATH_TO_LAME, "/usr/local/bin/lame");//$NON-NLS-1$
-		setPrefPath(PreferencesKeys.PATH_TO_SOX, "/usr/local/bin/sox");//$NON-NLS-1$
+				detectMacPath("convert"));//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_LAME, detectMacPath("lame"));//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_SOX, detectMacPath("sox"));//$NON-NLS-1$
 	}
 
 	/**
