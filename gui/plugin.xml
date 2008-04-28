@@ -470,6 +470,18 @@
                optional="false">
          </commandParameter>
       </command>
+      <command
+            categoryId="org.eclipse.ui.category.window"
+            defaultHandler="org.daisy.pipeline.gui.language.LanguageSwitchHandler"
+            description="%command.language.description"
+            id="org.daisy.pipeline.gui.command.language"
+            name="%command.language">
+         <commandParameter
+               id="org.daisy.gui.language.locale"
+               name="locale"
+               optional="true">
+         </commandParameter>
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.commandImages">
@@ -536,6 +548,38 @@
          <command
                commandId="org.daisy.pipeline.gui.command.update">
          </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:window?after=additions">
+         <menu
+               label="%command.language"
+               mnemonic="L">
+            <command
+                  commandId="org.daisy.pipeline.gui.command.language"
+                  label="%language.default"
+                  style="radio">
+            </command>
+            <command
+                  commandId="org.daisy.pipeline.gui.command.language"
+                  icon="icons/lang-en.gif"
+                  label="%language.english"
+                  style="radio">
+               <parameter
+                     name="org.daisy.gui.language.locale"
+                     value="en">
+               </parameter>
+            </command>
+            <command
+                  commandId="org.daisy.pipeline.gui.command.language"
+                  icon="icons/lang-hi.gif"
+                  label="%language.hindi"
+                  style="radio">
+               <parameter
+                     name="org.daisy.gui.language.locale"
+                     value="hi">
+               </parameter>
+            </command>
+         </menu>
       </menuContribution>
    </extension>
    <extension
