@@ -27,38 +27,60 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TabFolder;
 
 /**
+ * An abstract implementation of a {@link ITabItemProvider} that uses a
+ * {@link TreeViewer} for client area of the provided tab item.
+ * 
  * @author Romain Deltour
  * 
  */
 public abstract class TreeTabItemProvider extends DefaultTabItemProvider {
 
-    private TreeViewer treeViewer;
+	private TreeViewer treeViewer;
 
-    @Override
-    protected Control createControl(TabFolder parent) {
-        treeViewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL
-                | SWT.V_SCROLL | SWT.BORDER);
-        treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-        treeViewer.setContentProvider(createContentProvider());
-        treeViewer.setLabelProvider(createLabelProvider());
-        treeViewer.setInput(getInput());
-        return treeViewer.getControl();
-    }
+	@Override
+	protected Control createControl(TabFolder parent) {
+		treeViewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.BORDER);
+		treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+		treeViewer.setContentProvider(createContentProvider());
+		treeViewer.setLabelProvider(createLabelProvider());
+		treeViewer.setInput(getInput());
+		return treeViewer.getControl();
+	}
 
-    public TreeViewer getViewer() {
-        return treeViewer;
-    }
+	/**
+	 * Returns the tree viewer used in the client area of the provided tab item.
+	 * 
+	 * @return the tree viewer used in the client area of the provided tab item.
+	 */
+	public TreeViewer getViewer() {
+		return treeViewer;
+	}
 
-    @Override
-    protected abstract String getTitle();
+	@Override
+	protected abstract String getTitle();
 
-    protected abstract IContentProvider createContentProvider();
+	/**
+	 * Creates the content provider for underlying tree viewer of this tab item.
+	 * 
+	 * @return the content provider for underlying tree viewer of this tab item.
+	 */
+	protected abstract IContentProvider createContentProvider();
 
-    protected abstract Object getInput();
+	/**
+	 * Returns the input used by the underlying tree viewer of this tab item.
+	 * 
+	 * @return the input used by the underlying tree viewer of this tab item.
+	 */
+	protected abstract Object getInput();
 
-    protected abstract IBaseLabelProvider createLabelProvider();
-
-    @Override
-    protected abstract String getToolTipText();
+	/**
+	 * Returns the label provider used by the underlying tree viewer of this tab
+	 * item.
+	 * 
+	 * @return the label provider used by the underlying tree viewer of this tab
+	 *         item.
+	 */
+	protected abstract IBaseLabelProvider createLabelProvider();
 
 }

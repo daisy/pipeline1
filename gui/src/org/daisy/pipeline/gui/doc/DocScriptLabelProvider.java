@@ -22,21 +22,29 @@ import org.daisy.pipeline.gui.scripts.ScriptsLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 /**
+ * The JFace label provider used for the scripts documentation ToC tab.
+ * 
  * @author Romain Deltour
  * 
  */
 public class DocScriptLabelProvider extends ScriptsLabelProvider {
 
-    private TocImageProvider imageProvider;
+	private TocImageProvider imageProvider;
 
-    public DocScriptLabelProvider(TocImageProvider imageProvider) {
-        super();
-        this.imageProvider = imageProvider;
-    }
+	/**
+	 * Creates a new instance of this label provider.
+	 * 
+	 * @param imageProvider
+	 *            the ToC icons provider
+	 */
+	public DocScriptLabelProvider(TocImageProvider imageProvider) {
+		super();
+		this.imageProvider = imageProvider;
+	}
 
-    @Override
-    public Image getImage(Object element) {
-        return imageProvider.getImage(element);
-    }
+	@Override
+	public Image getImage(Object element) {
+		return imageProvider.getImage(element);
+	}
 
 }

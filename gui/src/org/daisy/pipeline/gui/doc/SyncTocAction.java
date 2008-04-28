@@ -24,26 +24,35 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 
 /**
+ * The Action used to synchronize the current ToC with the doc page currently
+ * displayed in the documentation view.
+ * 
  * @author Romain Deltour
  * 
  */
 public class SyncTocAction extends Action implements IAction {
 
-    private DocView view;
+	private DocView view;
 
-    public SyncTocAction(DocView view) {
-        super(Messages.action_synchronize, IAction.AS_CHECK_BOX);
-        setText(Messages.action_synchronize);
-        setToolTipText(Messages.action_synchronize_tooltip);
-        setImageDescriptor(GuiPlugin
-                .createDescriptor(IIconsKeys.HELP_SYNCHRONIZE));
-        this.view = view;
-        setChecked(view.shouldSynchronizeToc());
-    }
+	/**
+	 * Creates this action for the given doc view.
+	 * 
+	 * @param view
+	 *            a reference to the doc view
+	 */
+	public SyncTocAction(DocView view) {
+		super(Messages.action_synchronize, IAction.AS_CHECK_BOX);
+		setText(Messages.action_synchronize);
+		setToolTipText(Messages.action_synchronize_tooltip);
+		setImageDescriptor(GuiPlugin
+				.createDescriptor(IIconsKeys.HELP_SYNCHRONIZE));
+		this.view = view;
+		setChecked(view.shouldSynchronizeToc());
+	}
 
-    @Override
-    public void run() {
-        view.setTocSynchronization(isChecked());
-    }
+	@Override
+	public void run() {
+		view.setTocSynchronization(isChecked());
+	}
 
 }

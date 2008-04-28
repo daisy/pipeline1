@@ -22,35 +22,51 @@ import java.io.File;
 
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.eclipse.swt.graphics.Image;
 
 /**
+ * Provides icons for items in a ToC tab.
+ * 
  * @author Romain Deltour
  * 
  */
 public class TocImageProvider {
 
-    EFolder root;
+	Directory root;
 
-    public TocImageProvider(EFolder root) {
-        super();
-        this.root = root;
-    }
+	/**
+	 * Creates a new <code>TocImageProvider</code> for the ToC representing
+	 * the file hierarchy starting at the given root.
+	 * 
+	 * @param root
+	 *            the root of the file hierarchy of the ToC to provide icons for
+	 */
+	public TocImageProvider(Directory root) {
+		super();
+		this.root = root;
+	}
 
-    public Image getImage(Object element) {
-        if (element instanceof File) {
-            File file = (File) element;
-            if (file.isDirectory()) {
-                if (root != null && root.equals(file.getParentFile())) {
-                    return GuiPlugin.getImage(IIconsKeys.HELP_TOC_SECTION);
-                } else {
-                    return GuiPlugin.getImage(IIconsKeys.HELP_TOC_SUBSECTION);
-                }
-            } else {
-                return GuiPlugin.getImage(IIconsKeys.HELP_TOC_ITEM);
-            }
-        }
-        return null;
-    }
+	/**
+	 * Returns an icon to use for the given element in a ToC.
+	 * 
+	 * @param element
+	 *            a ToC element
+	 * @return an icon to use for the given element in a ToC
+	 */
+	public Image getImage(Object element) {
+		if (element instanceof File) {
+			File file = (File) element;
+			if (file.isDirectory()) {
+				if ((root != null) && root.equals(file.getParentFile())) {
+					return GuiPlugin.getImage(IIconsKeys.HELP_TOC_SECTION);
+				} else {
+					return GuiPlugin.getImage(IIconsKeys.HELP_TOC_SUBSECTION);
+				}
+			} else {
+				return GuiPlugin.getImage(IIconsKeys.HELP_TOC_ITEM);
+			}
+		}
+		return null;
+	}
 }

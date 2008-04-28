@@ -27,47 +27,56 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 /**
+ * A JFace label provider for a documentation file. Used in the ToC tab of the
+ * doc view.
+ * 
  * @author Romain Deltour
  * 
  */
 public class DocFileLabelProvider extends LabelProvider {
-    private TocImageProvider imageProvider;
-    private Map<File, String> titleMap;
+	private TocImageProvider imageProvider;
+	private Map<File, String> titleMap;
 
-    public DocFileLabelProvider(TocImageProvider imageProvider) {
-        super();
-        this.imageProvider = imageProvider;
-        this.titleMap = new HashMap<File, String>();
-    }
+	/**
+	 * Creates a new instance of this label provider.
+	 * 
+	 * @param imageProvider
+	 *            the ToC icons provider
+	 */
+	public DocFileLabelProvider(TocImageProvider imageProvider) {
+		super();
+		this.imageProvider = imageProvider;
+		this.titleMap = new HashMap<File, String>();
+	}
 
-    @Override
-    public String getText(Object element) {
-        if (element instanceof File) {
-            File file = (File) element;
-            String title = titleMap.get(file);
-            if (title == null) {
-                if (file.isFile()) {
-                    try {
-                        title = XhtmlTitleProvider.getTitle(file.toURI()
-                                .toURL());
-                    } catch (Exception e) {
-                        GuiPlugin.get().error(
-                                "Couldn't fetch xhtml title of " + file, e); //$NON-NLS-1$
-                    }
-                }
-                if (title == null || title.length() == 0) {
-                    title = file.getName();
-                }
-                titleMap.put(file, title);
-            }
-            return title;
-        }
-        return null;
-    }
+	@Override
+	public String getText(Object element) {
+		if (element instanceof File) {
+			File file = (File) element;
+			String title = titleMap.get(file);
+			if (title == null) {
+				if (file.isFile()) {
+					try {
+						title = XhtmlTitleProvider.getTitle(file.toURI()
+								.toURL());
+					} catch (Exception e) {
+						GuiPlugin.get().error(
+								"Couldn't fetch xhtml title of " + file, e); //$NON-NLS-1$
+					}
+				}
+				if ((title == null) || (title.length() == 0)) {
+					title = file.getName();
+				}
+				titleMap.put(file, title);
+			}
+			return title;
+		}
+		return null;
+	}
 
-    @Override
-    public Image getImage(Object element) {
-        return imageProvider.getImage(element);
-    }
+	@Override
+	public Image getImage(Object element) {
+		return imageProvider.getImage(element);
+	}
 
 }

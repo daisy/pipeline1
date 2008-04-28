@@ -54,17 +54,17 @@ public class ScriptsLabelProvider extends LabelProvider implements
 	/**
 	 * Returns the text for the label of the given script file.
 	 * 
-	 * There is a hierarchy in the file structure that organises the.
+	 * There is a hierarchy in the file structure that organizes the.
 	 * transformers by type:
 	 * <ul>
 	 * <li>Directories does not have associated script handler objects, they
-	 * must be labelled by their name.</li>
-	 * <li>Script file does have an associated script handler, they are
-	 * labelled with teh script name retrieved from the handler. </li>
+	 * must be labeled by their name.</li>
+	 * <li>Script file does have an associated script handler, they are labeled
+	 * with the script name retrieved from the handler. </li>
 	 * </ul>
 	 * 
-	 * @param file
-	 *            A File in the script file tree.
+	 * @param obj
+	 *            An element in the script file tree.
 	 */
 	@Override
 	public String getText(Object obj) {

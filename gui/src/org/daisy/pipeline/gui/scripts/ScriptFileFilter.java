@@ -21,8 +21,8 @@ import java.io.File;
 
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.util.EFileFilter;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
@@ -65,8 +65,8 @@ public class ScriptFileFilter extends EFileFilter {
 	}
 
 	@Override
-	protected boolean acceptEFolder(EFolder dir) {
-		if (!acceptDir || !super.acceptEFolder(dir)) {
+	protected boolean acceptDir(Directory dir) {
+		if (!acceptDir || !super.acceptDir(dir)) {
 			return false;
 		}
 		return containsScript(dir);

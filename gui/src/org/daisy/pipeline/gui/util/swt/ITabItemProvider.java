@@ -22,13 +22,28 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
 /**
+ * A provider of a {@link TabItem} in a tab-based view.
+ * 
  * @author Romain Deltour
  * 
  */
 public interface ITabItemProvider {
 
-    public TabItem createTabItem(TabFolder parent);
+	/**
+	 * Creates the new <code>TabItem</code> in the given
+	 * <code>TabFolder</code>.
+	 * 
+	 * @param parent
+	 *            the tab folder to create the new tab item for.
+	 * @return the newly created tab item
+	 */
+	public TabItem createTabItem(TabFolder parent);
 
-    public TabItem getTabItem();
+	/**
+	 * Returns the tab item provided by this provider.
+	 * 
+	 * @return the tab item provided by this provider.
+	 */
+	public TabItem getTabItem();
 
 }

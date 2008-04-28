@@ -24,14 +24,35 @@ import org.daisy.pipeline.gui.util.swt.ITabItemProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 
 /**
+ * The generic facade to a Table of Content tab in the {@link DocView}.
+ * 
  * @author Romain Deltour
  * 
  */
 public interface ITocTab extends ITabItemProvider {
 
-    public URI getURI();
+	/**
+	 * Returns the URI of the doc currently selected in this ToC tab.
+	 * 
+	 * @return the URI of the doc currently selected in this ToC tab.
+	 */
+	public URI getURI();
 
-    public TreeViewer getViewer();
+	/**
+	 * Returns the JFace tree viewer internally used to represent the ToC in
+	 * this tab.
+	 * 
+	 * @return the tree viewer internally used to represent the ToC in this tab.
+	 */
+	public TreeViewer getViewer();
 
-    public boolean select(Object element);
+	/**
+	 * Selects the given object in this ToC tab.
+	 * 
+	 * @param element
+	 *            the element of this ToC to select.
+	 * @return <code>true</code> if and only if the ToC in this tab contains
+	 *         the given element and it was successfully selected.
+	 */
+	public boolean select(Object element);
 }

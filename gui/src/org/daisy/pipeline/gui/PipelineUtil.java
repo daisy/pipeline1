@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
@@ -40,7 +40,7 @@ import org.osgi.service.prefs.Preferences;
 public final class PipelineUtil {
 
 	/** A cache of fetched Pipeline core directories */
-	private static final Map<String, EFolder> dirMap = new HashMap<String, EFolder>();
+	private static final Map<String, Directory> dirMap = new HashMap<String, Directory>();
 	// Directory Paths
 	/** The path to the documentation directory */
 	public static final String DOC_DIR = "/doc"; //$NON-NLS-1$
@@ -105,12 +105,12 @@ public final class PipelineUtil {
 	 *            A path rooting in the Pipeline core bundle.
 	 * @return the folder object corresponding to <code>path</code>.
 	 */
-	private static EFolder fetchDir(String path) {
-		EFolder dir = null;
+	private static Directory fetchDir(String path) {
+		Directory dir = null;
 		Bundle coreBundle = Platform.getBundle(GuiPlugin.CORE_ID);
 		try {
 			URL url = FileLocator.toFileURL(coreBundle.getEntry(path));
-			dir = new EFolder(url.getPath());
+			dir = new Directory(url.getPath());
 		} catch (Exception e) {
 			GuiPlugin.get().error("Couldn't find the " + path + " directory", //$NON-NLS-1$ //$NON-NLS-2$
 					e);
@@ -125,8 +125,8 @@ public final class PipelineUtil {
 	 *            A path rooting in the Pipeline core bundle.
 	 * @return the folder object corresponding to <code>path</code>.
 	 */
-	public static EFolder getDir(String path) {
-		EFolder dir = dirMap.get(path);
+	public static Directory getDir(String path) {
+		Directory dir = dirMap.get(path);
 		if (dir == null) {
 			dir = fetchDir(path);
 			dirMap.put(path, dir);

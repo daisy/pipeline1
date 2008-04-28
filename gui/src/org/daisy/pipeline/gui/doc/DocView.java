@@ -69,7 +69,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class DocView extends ViewPart {
 
-	/** The ID of this view (as used in pugin.xml) */
+	/** The ID of this view (as used in plugin.xml) */
 	public static final String ID = "org.daisy.pipeline.gui.views.doc"; //$NON-NLS-1$
 
 	/** The browser widget used to display HTML doc files */

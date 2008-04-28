@@ -22,27 +22,38 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Romain Deltour
- *
  */
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.daisy.pipeline.gui.doc.messages"; //$NON-NLS-1$
-    public static String action_synchronize;
-    public static String action_synchronize_tooltip;
-    public static String dialog_showDoc_message;
-    public static String dialog_showDoc_title;
-    public static String dialog_showDoc_toggle;
-    public static String error_noBrowser;
-    public static String tab_help;
-    public static String tab_help_tooltip;
-    public static String tab_script;
-    public static String tab_script_tooltip;
-    public static String tab_transformers;
-    public static String tab_transformers_tooltip;
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
+	private static final String BUNDLE_NAME = "org.daisy.pipeline.gui.doc.messages"; //$NON-NLS-1$
+	/** The name of the sync ToC action */
+	public static String action_synchronize;
+	/** The tooltip of the sync ToC action */
+	public static String action_synchronize_tooltip;
+	/** The message of the confirm dialog to show the doc perspective */
+	public static String dialog_showDoc_message;
+	/** The title of the confirm dialog to show the doc perspective */
+	public static String dialog_showDoc_title;
+	/** The toggle message of the confirm dialog to show the doc perspective */
+	public static String dialog_showDoc_toggle;
+	/** The error message to display when the browser couldn't be created */
+	public static String error_noBrowser;
+	/** the title of the user guide ToC tab */
+	public static String tab_help;
+	/** the tooltip of the user guide ToC tab */
+	public static String tab_help_tooltip;
+	/** the title of the script ToC tab */
+	public static String tab_script;
+	/** the tooltip of the script ToC tab */
+	public static String tab_script_tooltip;
+	/** the title of the transformers ToC tab */
+	public static String tab_transformers;
+	/** the tooltip of the transformers ToC tab */
+	public static String tab_transformers_tooltip;
+	static {
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+	}
 
-    private Messages() {
-    }
+	private Messages() {
+	}
 }

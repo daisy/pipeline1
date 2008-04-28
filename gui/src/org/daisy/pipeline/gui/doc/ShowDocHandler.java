@@ -34,6 +34,8 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
+ * Command handler for the show doc action.
+ * 
  * @author Romain Deltour
  * 
  */

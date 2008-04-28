@@ -29,7 +29,7 @@ import java.util.zip.ZipEntry;
 
 import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.util.ZipStructure;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -125,7 +125,7 @@ public class ZipUpdateOperation implements IRunnableWithProgress {
 	public void revert() {
 		for (File dir : newDirs) {
 			try {
-				EFolder folder = new EFolder(dir);
+				Directory folder = new Directory(dir);
 				if (!(folder.deleteContents() && folder.delete())) {
 					throw new IllegalStateException(
 							"Could not delete directory " + dir); //$NON-NLS-1$

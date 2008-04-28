@@ -19,27 +19,28 @@
 package org.daisy.pipeline.gui.doc;
 
 import org.daisy.pipeline.gui.PipelineUtil;
-import org.daisy.util.file.EFolder;
-
+import org.daisy.util.file.Directory;
 
 /**
+ * The {@link ITocTab} for the Pipeline user guide.
+ * 
  * @author Romain Deltour
  * 
  */
 public class HelpTocTab extends TocTab {
 
-    @Override
-    protected EFolder getRootDir() {
-        return PipelineUtil.getDir(PipelineUtil.USER_DOC_DIR);
-    }
+	@Override
+	protected Directory getRootDir() {
+		return PipelineUtil.getDir(PipelineUtil.USER_DOC_DIR);
+	}
 
-    @Override
-    protected String getTitle() {
-        return Messages.tab_help;
-    }
+	@Override
+	protected String getTitle() {
+		return Messages.tab_help;
+	}
 
-    @Override
-    protected String getToolTipText() {
-        return Messages.tab_help_tooltip;
-    }
+	@Override
+	protected String getToolTipText() {
+		return Messages.tab_help_tooltip;
+	}
 }

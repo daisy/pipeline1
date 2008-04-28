@@ -24,11 +24,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.daisy.pipeline.gui.GuiPlugin;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
 
 /**
- * A file filter designed to be use with {@link EFile}s and {@link EFolder}s.
+ * A file filter designed to be use with {@link EFile}s and {@link Directory}s.
  * 
  * @author Romain Deltour
  * 
@@ -60,7 +60,7 @@ public abstract class EFileFilter implements FileFilter {
 	 * <p>
 	 * The <code>EFileFilter</code> implementation of this interface
 	 * dispatches to the {@link #acceptEFile(EFile)} and
-	 * {@link #acceptEFolder(EFolder)} methods.
+	 * {@link #acceptDir(Directory)} methods.
 	 * </p>
 	 * 
 	 * @param file
@@ -72,10 +72,10 @@ public abstract class EFileFilter implements FileFilter {
 
 		if (file.isDirectory()) {
 			try {
-				return acceptEFolder(new EFolder(file));
+				return acceptDir(new Directory(file));
 			} catch (IOException e) {
 				GuiPlugin.get().error(
-						"Couldn't create EFolder from file " + file, e); //$NON-NLS-1$
+						"Couldn't create Directory from file " + file, e); //$NON-NLS-1$
 				return false;
 			}
 		} else {
@@ -111,7 +111,7 @@ public abstract class EFileFilter implements FileFilter {
 	 * @return <code>true</code> if and only if <code>pathname</code> should
 	 *         be included
 	 */
-	protected boolean acceptEFolder(EFolder dir) {
+	protected boolean acceptDir(Directory dir) {
 		return !filteredDirNames.contains(dir.getName());
 	}
 

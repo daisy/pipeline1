@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.UUID;
 
-import org.daisy.pipeline.core.DMFCCore;
+import org.daisy.pipeline.core.PipelineCore;
 import org.daisy.pipeline.gui.model.MessageManager;
 import org.daisy.pipeline.gui.model.ScriptManager;
 import org.daisy.pipeline.gui.model.StateManager;
@@ -62,7 +62,7 @@ public class GuiPlugin extends AbstractUIPlugin {
 	// The shared instance.
 	private static GuiPlugin plugin;
 
-	private DMFCCore core;
+	private PipelineCore core;
 	private UUID uuid;
 
 	/**
@@ -200,7 +200,7 @@ public class GuiPlugin extends AbstractUIPlugin {
 	 * 
 	 * @return the internal instance of the Pipeline Core.
 	 */
-	public DMFCCore getCore() {
+	public PipelineCore getCore() {
 		return core;
 	}
 
@@ -286,7 +286,7 @@ public class GuiPlugin extends AbstractUIPlugin {
 		File homeDir = PipelineUtil.getDir(PipelineUtil.HOME_DIR);
 		Properties userProps = PipelineUtil.convPrefToProperties();
 		try {
-			core = new DMFCCore(null, homeDir, userProps);
+			core = new PipelineCore(null, homeDir, userProps);
 		} catch (Exception e) {
 			error("Error while intializing the Pipeline core", e); //$NON-NLS-1$
 		}

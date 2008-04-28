@@ -19,26 +19,29 @@
 package org.daisy.pipeline.gui.doc;
 
 import org.daisy.pipeline.gui.PipelineUtil;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 /**
+ * The {@link ITocTab} for the Pipeline transformers documentation. Lists the
+ * transformers directory.
+ * 
  * @author Romain Deltour
  * 
  */
 public class TransformersTocTab extends TocTab {
 
-    @Override
-    protected EFolder getRootDir() {
-        return PipelineUtil.getDir(PipelineUtil.TRANS_DOC_DIR);
-    }
+	@Override
+	protected Directory getRootDir() {
+		return PipelineUtil.getDir(PipelineUtil.TRANS_DOC_DIR);
+	}
 
-    @Override
-    protected String getTitle() {
-        return Messages.tab_transformers;
-    }
+	@Override
+	protected String getTitle() {
+		return Messages.tab_transformers;
+	}
 
-    @Override
-    protected String getToolTipText() {
-        return Messages.tab_transformers_tooltip;
-    }
+	@Override
+	protected String getToolTipText() {
+		return Messages.tab_transformers_tooltip;
+	}
 }
