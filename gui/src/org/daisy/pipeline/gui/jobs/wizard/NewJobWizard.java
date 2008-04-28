@@ -25,6 +25,7 @@ import org.daisy.pipeline.gui.GuiPlugin;
 import org.daisy.pipeline.gui.IIconsKeys;
 import org.daisy.pipeline.gui.JobsPerspective;
 import org.daisy.pipeline.gui.PipelineUtil;
+import org.daisy.pipeline.gui.jobs.JobsView;
 import org.daisy.pipeline.gui.jobs.NewJobOperation;
 import org.daisy.pipeline.gui.model.JobManager;
 import org.daisy.pipeline.gui.util.actions.OperationUtil;
@@ -178,6 +179,8 @@ public class NewJobWizard extends Wizard implements INewWizard {
 		try {
 			workbench.showPerspective(JobsPerspective.ID, workbench
 					.getActiveWorkbenchWindow());
+			workbench.getActiveWorkbenchWindow().getActivePage().showView(
+					JobsView.ID);
 		} catch (WorkbenchException e) {
 			GuiPlugin.get().error(
 					"Couldn't switch to the Documentation perspective", e); //$NON-NLS-1$
