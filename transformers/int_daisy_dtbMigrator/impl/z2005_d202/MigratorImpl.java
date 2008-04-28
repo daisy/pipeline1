@@ -1,13 +1,13 @@
 package int_daisy_dtbMigrator.impl.z2005_d202;
 
+import int_daisy_dtbMigrator.DtbDescriptor;
+import int_daisy_dtbMigrator.Migrator;
+
 import java.util.Map;
 
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.fileset.Fileset;
-
-import int_daisy_dtbMigrator.DtbDescriptor;
-import int_daisy_dtbMigrator.Migrator;
 
 /**
  * An implementation of DtbMigrator that supports downgrading z2005 books to Daisy 2.02
@@ -21,8 +21,8 @@ public class MigratorImpl implements Migrator {
 	 * (non-Javadoc)
 	 * @see int_daisy_dtbMigrator.DtbMigrator#migrate(int_daisy_dtbMigrator.DtbDescriptor, int_daisy_dtbMigrator.DtbDescriptor, java.util.Map, org.daisy.util.fileset.interfaces.Fileset, org.daisy.util.file.EFolder)
 	 */
-	public void migrate(DtbDescriptor input, DtbDescriptor output, Map parameters,
-			Fileset inputFileset, EFolder destination) {				
+	public void migrate(DtbDescriptor input, DtbDescriptor output, Map<String, String> parameters,
+			Fileset inputFileset, Directory destination) {				
 	}
 
 	/*
