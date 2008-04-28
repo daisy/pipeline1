@@ -41,6 +41,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.pool.StAXOutputFactoryPool;
+import org.daisy.util.xml.stax.AttributeByName;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 
 /**
@@ -56,7 +57,7 @@ public class SmilMerger  {
 	private static final String SMIL_ADD_NS = "http://www.daisy.org/pipeline/smil/";
 	private static final String NCX_NS = "http://www.daisy.org/pipeline/ncx/";
 	private static final String DTBOOK_NS = "http://www.daisy.org/pipeline/dtbook/";
-	
+	private int ncxNodesAdded = 0;
 	/**
 	 * Constructor.
 	 */
@@ -165,6 +166,8 @@ public class SmilMerger  {
 		 */
 		StAXInputFactoryPool.getInstance().release(xif, properties);
 		StAXEventFactoryPool.getInstance().release(xef);
+		
+		System.err.println("NCX nodes added to behemoth: " + ncxNodesAdded);
 	}
 
 	private IDGenerator createIdGenerator() {		
@@ -185,12 +188,15 @@ public class SmilMerger  {
 		final QName idQName = new QName(null,"id");
 		final QName prevUriQName = new QName(SMIL_ADD_NS,"prevURI");
 		final QName targetQName = new QName(DTBOOK_NS,"targetQName");
+//		final QName targetContextQName = new QName(DTBOOK_NS,"targetContext");
 		final QName ncxTextQName = new QName(NCX_NS,"text");
 		final QName ncxContextQName = new QName(NCX_NS,"context");
+		final QName srcQname = new QName(null,"src");
 		final String prevUriBase = currentSmilFileName+"#";
-		
+						
 		while(reader.hasNext()) {
 			XMLEvent e = reader.nextEvent();
+		
 			if(e.isStartElement() && e.asStartElement().getName().getLocalPart().equals("body")) continue;
 			if(e.isEndElement() && e.asEndElement().getName().getLocalPart().equals("body")) break;
 			
@@ -198,8 +204,8 @@ public class SmilMerger  {
 				StartElement se = e.asStartElement();
 				destination.add(xef.createStartElement("", SMIL_NS, se.getName().getLocalPart()));
 				
-				//if element has a customTest, redefine value to be the canonical one
-				Attribute a = se.getAttributeByName(customTestQName);
+				//if element has a customTest, redefine value to be the canonical one				
+				Attribute a = AttributeByName.get(customTestQName,se);
 				if(a!=null) {					
 					NcxSmilCustomTest test = ncxSmilCustomTests.get(a.getValue());
 					if(test!=null && test.bookStruct!=null && isSupportedIn202(test.bookStruct)) {
@@ -211,7 +217,8 @@ public class SmilMerger  {
 				}
 				
 				//if the element has an ID
-				a = se.getAttributeByName(idQName); 
+				
+				a = AttributeByName.get(idQName,se);
 				if(a!=null) {
 					//store locally the value of a URI referencing this node before id change
 					String origURI = prevUriBase+a.getValue();
@@ -222,6 +229,7 @@ public class SmilMerger  {
 					if(ncxNode!=null) {
 						destination.add(xef.createAttribute(ncxContextQName, ncxNode.xpathContext));
 						destination.add(xef.createAttribute(ncxTextQName, ncxNode.text));
+						ncxNodesAdded++;
 					}
 				}
 				
@@ -229,8 +237,8 @@ public class SmilMerger  {
 				destination.add(xef.createAttribute(idQName, idg.generateId()));
 				
 				//if text element, add the qname of the dtbook destination element
-				if(se.getName().getLocalPart() == "text" && inputDtbook!=null && !inputDtbook.isEmpty()) {
-					String srcValue = se.getAttributeByName(new QName(null,"src")).getValue();
+				if(se.getName().getLocalPart() == "text" && inputDtbook!=null && !inputDtbook.isEmpty()) {					
+					String srcValue = AttributeByName.get(srcQname, se).getValue();
 					String dtbookFilename = srcValue.substring(0, srcValue.indexOf('#'));
 					String dtbookId = srcValue.substring(srcValue.indexOf('#')+1);
 					QName qName = null;
@@ -241,7 +249,7 @@ public class SmilMerger  {
 						}
 					}
 					if(qName!=null) {
-						destination.add(xef.createAttribute(targetQName, qName.toString()));
+						destination.add(xef.createAttribute(targetQName, qName.toString()));						
 					}
 				}
 								

@@ -18,6 +18,7 @@ import org.daisy.util.fileset.Z3986NcxFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
+import org.daisy.util.xml.stax.AttributeByName;
 import org.daisy.util.xml.stax.ConvenientXMLEventReader;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 
@@ -30,6 +31,7 @@ class NcxContentNodes extends HashMap<String,NcxContentNode> {
 
 		NcxContentNodes(Z3986NcxFile ncx) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
 			super();
+			QName srcQname = new QName(null,"src");
 			Map<String,Object> properties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
 			XMLInputFactory xif = StAXInputFactoryPool.getInstance().acquire(properties);
 			xif.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
@@ -46,7 +48,7 @@ class NcxContentNodes extends HashMap<String,NcxContentNode> {
 					if(se.getName().getLocalPart() == "text") {
 						textElemOpen = true;
 					}else if(se.getName().getLocalPart() == "content") {
-						Attribute a = se.getAttributeByName(new QName(null,"src"));
+						Attribute a = AttributeByName.get(srcQname,se);
 						contentSrcValue = a.getValue();
 					}
 				}else if(e.isEndElement()) {
