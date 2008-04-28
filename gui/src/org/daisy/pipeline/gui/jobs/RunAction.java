@@ -35,32 +35,32 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  * 
  */
 public class RunAction extends AbstractActionDelegate {
-    IStructuredSelection selection;
+	IStructuredSelection selection;
 
-    @Override
-    public void run(IAction action) {
-        if (selection == null) {
-            return;
-        }
-        // Extract the selected jobInfos
-        List<JobInfo> jobInfos = new LinkedList<JobInfo>();
-        Iterator iter = selection.iterator();
-        while (iter.hasNext()) {
-            Object element = iter.next();
-            if (element instanceof JobInfo) {
-                jobInfos.add((JobInfo) element);
-            }
-        }
-        // Run the selection
-        IJobsRunner runner = SequentialJobsRunner.getDefault();
-        runner.run(jobInfos);
-    }
+	@Override
+	public void run(IAction action) {
+		if (selection == null) {
+			return;
+		}
+		// Extract the selected jobInfos
+		List<JobInfo> jobInfos = new LinkedList<JobInfo>();
+		Iterator<?> iter = selection.iterator();
+		while (iter.hasNext()) {
+			Object element = iter.next();
+			if (element instanceof JobInfo) {
+				jobInfos.add((JobInfo) element);
+			}
+		}
+		// Run the selection
+		IJobsRunner runner = SequentialJobsRunner.getDefault();
+		runner.run(jobInfos);
+	}
 
-    @Override
-    public void selectionChanged(IAction action, ISelection selection) {
-        if (selection instanceof IStructuredSelection) {
-            this.selection = (IStructuredSelection) selection;
-        }
-    }
+	@Override
+	public void selectionChanged(IAction action, ISelection selection) {
+		if (selection instanceof IStructuredSelection) {
+			this.selection = (IStructuredSelection) selection;
+		}
+	}
 
 }

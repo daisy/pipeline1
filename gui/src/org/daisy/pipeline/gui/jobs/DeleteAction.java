@@ -44,90 +44,111 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+/**
+ * The Action used to delete a Pipeline job in the Jobs view.
+ * 
+ * @author Romain Deltour
+ * 
+ */
 public class DeleteAction extends Action implements ISelectionChangedListener {
-    private final JobsView view;
-    private final JobManager jobManager;
-    private final ISelectionEnabler enabler;
-    private IStructuredSelection selection;
+	private final JobsView view;
+	private final JobManager jobManager;
+	private final ISelectionEnabler enabler;
+	private IStructuredSelection selection;
 
-    public DeleteAction(JobsView view) {
-        super(Messages.action_delete, PlatformUI.getWorkbench()
-                .getSharedImages().getImageDescriptor(
-                        ISharedImages.IMG_TOOL_DELETE));
-        this.view = view;
-        this.jobManager = JobManager.getDefault();
-        this.enabler = new DefaultSelectionEnabler(
-                ISelectionEnabler.Mode.ONE_OR_MORE,
-                new Class[] { JobInfo.class });
-        setEnabled(false);
-        this.view.getViewer().addSelectionChangedListener(this);
-    }
+	/**
+	 * Creates an instance of this action for the given Jobs view.
+	 * 
+	 * @param view
+	 *            A reference to the Jobs view
+	 */
+	public DeleteAction(JobsView view) {
+		super(Messages.action_delete, PlatformUI.getWorkbench()
+				.getSharedImages().getImageDescriptor(
+						ISharedImages.IMG_TOOL_DELETE));
+		this.view = view;
+		this.jobManager = JobManager.getDefault();
+		this.enabler = new DefaultSelectionEnabler(
+				ISelectionEnabler.Mode.ONE_OR_MORE,
+				new Class[] { JobInfo.class });
+		setEnabled(false);
+		this.view.getViewer().addSelectionChangedListener(this);
+	}
 
-    @Override
-    public void run() {
-        IOperationHistory operationHistory = OperationHistoryFactory
-                .getOperationHistory();
-        IUndoContext undoContext = PlatformUI.getWorkbench()
-                .getOperationSupport().getUndoContext();
-        IUndoableOperation operation = new DeleteOperation(selection);
-        operation.addContext(undoContext);
-        try {
-            // No need to provide monitor or GUI context
-            operationHistory.execute(operation, null, null);
-        } catch (ExecutionException e) {
-            // TODO implement better exception dialog
-            MessageDialog.openError(view.getSite().getShell(),
-                    Messages.error_delete_title, Messages.error_delete_message
-                            + e.getMessage());
-        }
-    }
+	@Override
+	public void run() {
+		IOperationHistory operationHistory = OperationHistoryFactory
+				.getOperationHistory();
+		IUndoContext undoContext = PlatformUI.getWorkbench()
+				.getOperationSupport().getUndoContext();
+		IUndoableOperation operation = new DeleteOperation(selection);
+		operation.addContext(undoContext);
+		try {
+			// No need to provide monitor or GUI context
+			operationHistory.execute(operation, null, null);
+		} catch (ExecutionException e) {
+			// TODO implement better exception dialog
+			MessageDialog.openError(view.getSite().getShell(),
+					Messages.error_delete_title, Messages.error_delete_message
+							+ e.getMessage());
+		}
+	}
 
-    public void selectionChanged(SelectionChangedEvent event) {
-        ISelection incoming = event.getSelection();
-        setEnabled(enabler.isEnabledFor(incoming));
-        if (isEnabled()) {
-            selection = (IStructuredSelection) incoming;
-        }
+	public void selectionChanged(SelectionChangedEvent event) {
+		ISelection incoming = event.getSelection();
+		setEnabled(enabler.isEnabledFor(incoming));
+		if (isEnabled()) {
+			selection = (IStructuredSelection) incoming;
+		}
 
-    }
+	}
 
-    protected class DeleteOperation extends AbstractOperation {
+	/**
+	 * The internal undoable operation used by the delete action.
+	 */
+	protected class DeleteOperation extends AbstractOperation {
 
-        private IStructuredSelection sel;
-        private SortedMap<Integer, JobInfo> map;
+		private IStructuredSelection sel;
+		private SortedMap<Integer, JobInfo> map;
 
-        public DeleteOperation(IStructuredSelection selection) {
-            super(getText());
-            sel = selection;
-            map = new TreeMap<Integer, JobInfo>();
-            for (Iterator iter = selection.iterator(); iter.hasNext();) {
-                JobInfo job = (JobInfo) iter.next();
-                map.put(jobManager.indexOf(job), job);
-            }
-        }
+		/**
+		 * Creates an operation for deleting the given selection.
+		 * 
+		 * @param selection
+		 *            a selection of jobs
+		 */
+		public DeleteOperation(IStructuredSelection selection) {
+			super(getText());
+			sel = selection;
+			map = new TreeMap<Integer, JobInfo>();
+			for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
+				JobInfo job = (JobInfo) iter.next();
+				map.put(jobManager.indexOf(job), job);
+			}
+		}
 
-        @Override
-        public IStatus execute(IProgressMonitor monitor, IAdaptable info)
-                throws ExecutionException {
-            return redo(monitor, info);
-        }
+		@Override
+		public IStatus execute(IProgressMonitor monitor, IAdaptable info)
+				throws ExecutionException {
+			return redo(monitor, info);
+		}
 
-        @Override
-        public IStatus redo(IProgressMonitor monitor, IAdaptable info)
-                throws ExecutionException {
-            jobManager.removeAll(map.values());
-            return Status.OK_STATUS;
-        }
+		@Override
+		public IStatus redo(IProgressMonitor monitor, IAdaptable info)
+				throws ExecutionException {
+			jobManager.removeAll(map.values());
+			return Status.OK_STATUS;
+		}
 
-        @Override
-        public IStatus undo(IProgressMonitor monitor, IAdaptable info)
-                throws ExecutionException {
-            for (Integer index : map.keySet()) {
-                jobManager.add(index, map.get(index));
-            }
-            view.getViewer().setSelection(sel);
-            return Status.OK_STATUS;
-        }
+		@Override
+		public IStatus undo(IProgressMonitor monitor, IAdaptable info)
+				throws ExecutionException {
+			for (Integer index : map.keySet()) {
+				jobManager.add(index, map.get(index));
+			}
+			view.getViewer().setSelection(sel);
+			return Status.OK_STATUS;
+		}
 
-    }
+	}
 }
