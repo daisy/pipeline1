@@ -28,7 +28,7 @@ Bundle-ClassPath:
  lib/saxon8-dom.jar,
  lib/serializer.jar,
  lib/stax-api-1.0.1.jar,
- lib/tagsoup-1.1.3.jar,
+ lib/tagsoup-1.2.jar,
  lib/tritonus_remaining-0.3.6.jar,
  lib/tritonus_share-0.3.6.jar,
  lib/xalan.jar,
