@@ -1208,6 +1208,7 @@ transformers/se_tpb_dtbookFix/xslt/tidy-externalize-whitespace.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-indent.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-level-cleaner.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-move-pagenum.xsl -text
+transformers/se_tpb_dtbookFix/xslt/tidy-pagenum-type.xsl -text svneol=unset#text/plain
 transformers/se_tpb_dtbookFix/xslt/tidy-remove-empty-elements.xsl -text
 transformers/se_tpb_filesetcreator/messages_hi.properties -text svneol=unset#unset
 transformers/se_tpb_filesetcreator/resource/tpbnarrator_res.mp3 -text

@@ -9,11 +9,10 @@
 			Update the @page attribute to make it match the contents of the pagenum
 			element.
 			
-			If @page="normal" but the contents of the element doesn't match "normal"
+			If @page="front" but the contents of the element doesn't match "front"
 			content, the @page attribute is changed to:
-			  - @page="front" if the contents is roman numerals and the pagenum element
-			    is located in the frontmatter of the book
-			  - @page="special" otherwise	
+			  - @page="normal" if the contents is digits only
+			  - @page="special" otherwise			
 
 		Nodes
 			pagenum
@@ -32,23 +31,24 @@
 	<xsl:include href="recursive-copy2.xsl"/>
 	<xsl:include href="output2.xsl"/>
 	
+	
 	<!-- 
-		Match:  This is a @page="normal", but the content doesn't look like that
-		Action: If in frontmatter and the contents are roman numerals, change to @page="front",
+		Match:  This is a @page="front", but the content doesn't look like that
+		Action: If the contents are numbers only, change to @page="normal",
 		        otherwise change to @page="special"
 	 -->
-	<xsl:template match="dtb:pagenum[@page='normal' and not(matches(.,'^\s*\d+\s*$','s'))]">
+	<xsl:template match="dtb:pagenum[@page='front' and not(matches(.,'^\s*[Mm]*([Dd]?[Cc]{0,3}|[Cc][DdMm])([Ll]?[Xx]{0,3}|[Xx][LlCc])([Vv]?[Ii]{0,3}|[Ii][VvXx])\s*$','s'))]">
 		<xsl:choose>			
-			<xsl:when test="ancestor::dtb:frontmatter and matches(.,'^\s*[Mm]*([Dd]?[Cc]{0,3}|[Cc][DdMm])([Ll]?[Xx]{0,3}|[Xx][LlCc])([Vv]?[Ii]{0,3}|[Ii][VvXx])\s*$','s')">
-				<xsl:message>changing page="normal" to page="front"</xsl:message>
+			<xsl:when test="matches(.,'^\s*\d+\s*$','s')">
+				<xsl:message>changing page="front" to page="normal"</xsl:message>
 				<xsl:copy>
-					<xsl:attribute name="page">front</xsl:attribute>				
+					<xsl:attribute name="page">normal</xsl:attribute>				
 					<xsl:copy-of select="@*[local-name()!='page']"/>
 					<xsl:apply-templates/>			
 				</xsl:copy>
 			</xsl:when>			
 			<xsl:otherwise>
-				<xsl:message>changing page="normal" to page="special"</xsl:message>				
+				<xsl:message>changing page="front" to page="special"</xsl:message>
 				<xsl:copy>
 					<xsl:attribute name="page">special</xsl:attribute>				
 					<xsl:copy-of select="@*[local-name()!='page']"/>

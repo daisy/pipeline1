@@ -291,6 +291,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2_3,i18n("LEVEL_CLEANER"),this,this,this,emitter));
     		}    		
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-move-pagenum.xsl"),v2005_1_2_3,i18n("MOVE_PAGENUM"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-pagenum-type.xsl"),v2005_1_2_3,i18n("TIDY_PAGENUM_TYPE"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-change-inline-pagenum-to-block.xsl"),v2005_1_2_3,i18n("CHANGE_INLINE_PAGENUM"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-remove-empty-elements.xsl"),v2005_1_2_3,i18n("TIDY_REMOVE_EMPTY_ELEMENTS"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2_3,i18n("ADD_AUTHOR_AND_TITLE"),this,this,this,emitter));
@@ -363,6 +364,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2_3,i18n("LEVEL_CLEANER"),this,this,this,emitter));
     		}    		
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-move-pagenum.xsl"),v2005_1_2_3,i18n("MOVE_PAGENUM"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-pagenum-type.xsl"),v2005_1_2_3,i18n("TIDY_PAGENUM_TYPE"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-change-inline-pagenum-to-block.xsl"),v2005_1_2_3,i18n("CHANGE_INLINE_PAGENUM"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-remove-empty-elements.xsl"),v2005_1_2_3,i18n("TIDY_REMOVE_EMPTY_ELEMENTS"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2_3,i18n("ADD_AUTHOR_AND_TITLE"),this,this,this,emitter));
@@ -454,12 +456,12 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			}			
 			validator.validate(dtbookFileset);		
 		} catch (FilesetFatalException e) {
-			this.sendMessage(i18n("WAS_MALFORMED"),MessageEvent.Type.INFO_FINER);
+			this.sendMessage(i18n("WAS_MALFORMED"),MessageEvent.Type.INFO);
 			return InputState.MALFORMED;			
 		}	
 		
 		if (mHadValidationErrors) {
-			this.sendMessage(i18n("WAS_INVALID"),MessageEvent.Type.INFO_FINER);
+			this.sendMessage(i18n("WAS_INVALID"),MessageEvent.Type.INFO);
 			return InputState.INVALID; 
 		}
 		
