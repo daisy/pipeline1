@@ -79,7 +79,7 @@ import org.daisy.util.xml.pool.StAXOutputFactoryPool;
     private Map<String,Pair<String,List<XMLEvent>>> smilNoterefIdXMLEventMap;
     //private String contentBodyRef;
     private Map<String,String> contentBodyRefSmilBodyIdMap = null;
-    private int injectcount = 0;
+    //private int injectcount = 0;
     private String smilPrefix = null;
 	
 	public SmilEventInjector(StAXInputFactoryPool staxInPool,
@@ -256,10 +256,9 @@ import org.daisy.util.xml.pool.StAXOutputFactoryPool;
                 outputQueue.clear();
                 activeId = null;
                 return null;
-            } else {
-                this.flushOutput();
-                outputQueue.clear();
             }
+			this.flushOutput();
+			outputQueue.clear();
         }
         return ee;
     }

@@ -1,7 +1,20 @@
 /*
- * Created on 2007 apr 8
- */
-package org.daisy.pipeline.util;
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */package org.daisy.pipeline.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,7 +23,7 @@ import java.util.Collection;
 import java.util.Properties;
 
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 /**
  * Convert transformer messages.properties to xml
@@ -19,7 +32,7 @@ import org.daisy.util.file.EFolder;
 public class PropertiesConverter {
 
 	public PropertiesConverter(String path) throws IOException {
-		EFolder baseDir = new EFolder(path);
+		Directory baseDir = new Directory(path);
 		assert(baseDir.exists());
 		
 		Collection<File> coll = baseDir.getFiles(true, "messages(.+)?\\.properties");
@@ -27,7 +40,7 @@ public class PropertiesConverter {
 		for (File file : coll) {			
 			EFile efile = new EFile(file);
 			if(efile.getAbsolutePath().contains("INSERTSELECTORHERE")) {				
-				EFolder parent = efile.getParentFolder();
+				Directory parent = efile.getParentFolder();
 				System.err.println("Converting " + efile.getAbsolutePath());
 				Properties props = new Properties();
 				props.load(efile.asInputStream());			
@@ -44,7 +57,7 @@ public class PropertiesConverter {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {		
-		PropertiesConverter pc = new PropertiesConverter(args[0]);
+		new PropertiesConverter(args[0]);
 	}
 
 }

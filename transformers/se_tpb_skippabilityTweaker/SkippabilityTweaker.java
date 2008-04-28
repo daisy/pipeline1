@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,7 +38,7 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
@@ -116,15 +115,15 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
 	}
 
 	@Override
-	protected boolean execute(Map parameters) throws TransformerRunException {
-		String paramInput = (String)parameters.remove("input");
-		String paramOutput = (String)parameters.remove("output");
-		String paramPagenum = (String)parameters.remove("pagenum");
-		String paramSidebar = (String)parameters.remove("sidebar");
-		String paramProdnote = (String)parameters.remove("prodnote");
-		String paramNote = (String)parameters.remove("note");
-		String paramBackupPrefix = (String)parameters.remove("backupPrefix");
-		String paramCopyNonFilesetFiles = (String)parameters.remove("copyNonFilesetFiles");
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
+		String paramInput = parameters.remove("input");
+		String paramOutput = parameters.remove("output");
+		String paramPagenum = parameters.remove("pagenum");
+		String paramSidebar = parameters.remove("sidebar");
+		String paramProdnote = parameters.remove("prodnote");
+		String paramNote = parameters.remove("note");
+		String paramBackupPrefix = parameters.remove("backupPrefix");
+		String paramCopyNonFilesetFiles = parameters.remove("copyNonFilesetFiles");
 		
 		if (paramBackupPrefix != null && !"".equals(paramBackupPrefix)) {
         	backupDir = paramBackupPrefix + new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
@@ -138,7 +137,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
 		
 		try {			
 			File input = FilenameOrFileURI.toFile(paramInput);
-            EFolder outputDir = new EFolder(FilenameOrFileURI.toFile(paramOutput));
+            Directory outputDir = new Directory(FilenameOrFileURI.toFile(paramOutput));
             
             List<File> manifests = new ArrayList<File>();            
             if ("ncc.html".equalsIgnoreCase(input.getName()) ||"ncc.htm".equalsIgnoreCase(input.getName())) {
@@ -172,12 +171,12 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
                 }
                 
                 // Tweak the book
-                tweakBook(manifest, new EFolder(bookOutputDir));
+                tweakBook(manifest, new Directory(bookOutputDir));
             }
             
             // Copy files not in the fileset (i.e. copy everything but don't overwrite anything)?
             if ("true".equals(paramCopyNonFilesetFiles)) {
-            	EFolder inputDir = new EFolder(input.getParentFile());
+            	Directory inputDir = new Directory(input.getParentFile());
             	inputDir.copyChildrenTo(outputDir, false);
             }
             
@@ -199,17 +198,17 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
     protected void progress(double progress) {
         if (count > 0 && countMax > 0) {
             double start = (count - 1) / (double)countMax;
-            double current = progress / (double)countMax;
+            double current = progress / countMax;
             super.progress(start + current);
         } else {
             super.progress(progress);
         }
     }
 
-    private void tweakBook(File input, EFolder outputDir) throws IOException, TransformerRunException, FilesetFatalException, CatalogExceptionNotRecoverable, XMLStreamException {
+    private void tweakBook(File input, Directory outputDir) throws IOException, TransformerRunException, FilesetFatalException, CatalogExceptionNotRecoverable, XMLStreamException {
         File inputDir = input.getParentFile();
         URI inputDirUri = inputDir.toURI();
-        URI outputDirUri = outputDir.toURI();
+        //URI outputDirUri = outputDir.toURI();
         Map<File, Map<String, NccItem>> data = new LinkedHashMap<File, Map<String, NccItem>>();
         Map<File, Map<String, String>> noteData = new LinkedHashMap<File, Map<String, String>>();
         
@@ -230,7 +229,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
         // Do we need to create a backup of changed files?
         if (backupDir != null) {
         	File fullBackupDir = new File(outputDir, backupDir);
-        	for (FilesetFile filesetFile : (Collection<FilesetFile>)fileset.getLocalMembers()) {
+        	for (FilesetFile filesetFile : fileset.getLocalMembers()) {
                 if (filesetFile instanceof D202SmilFile || filesetFile instanceof D202NccFile
                 		|| filesetFile instanceof D202TextualContentFile || filesetFile instanceof D202MasterSmilFile) {
                     URI relative = inputDirUri.relativize(filesetFile.getFile().toURI());
@@ -242,7 +241,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
         
         // Copy all SMIL files to the desired location (they will be updated
         // later on as modifications are performed
-        for (FilesetFile filesetFile : (Collection<FilesetFile>)fileset.getLocalMembers()) {
+        for (FilesetFile filesetFile : fileset.getLocalMembers()) {
             if (filesetFile instanceof D202SmilFile || filesetFile instanceof D202NccFile || filesetFile instanceof D202TextualContentFile) {
                 URI relative = inputDirUri.relativize(filesetFile.getFile().toURI());
                 //URI outputUri = outputDirUri.resolve(relative);
@@ -417,7 +416,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
         // We reuse the fileset instance from the input fileset although we are modifying the
         // output fileset. Since we haven't renamed any SMIL files this should be OK...
         D202NccFile ncc = (D202NccFile)fileset.getManifestMember();
-        for (D202SmilFile smil : (Collection<D202SmilFile>)ncc.getSpineItems()) {
+        for (D202SmilFile smil : ncc.getSpineItems()) {
             URI relative = inputDirUri.relativize(smil.getFile().toURI());
             //URI outputUri = outputDirUri.resolve(relative);
             File outputFile = new File(outputDir, relative.toString());
@@ -466,7 +465,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
         // Copy all other files to the output folder (i.e. MP3 and CSS).            
         this.sendMessage(i18n("STEP_COPYING_OTHER_FILES"), MessageEvent.Type.INFO_FINER);
         InternalSubsetAndMetaFilter internalSubsetAndMetaFilter = new InternalSubsetAndMetaFilter(staxInPool, staxInProperties, staxOutPool, staxOutProperties, staxEvPool);
-        for (FilesetFile filesetFile : (Collection<FilesetFile>)fileset.getLocalMembers()) {
+        for (FilesetFile filesetFile : fileset.getLocalMembers()) {
             URI relative = inputDirUri.relativize(filesetFile.getFile().toURI());
             //URI outputUri = outputDirUri.resolve(relative);
             File outputFile = new File(outputDir, relative.toString());

@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.fileset.encryption;
 
 import java.io.BufferedReader;
@@ -57,13 +74,13 @@ public class EncryptorFactory {
 	
 	public Encryptor newEncryptor(EncryptionType encryptionType, FilesetType filesetType) throws EncryptorNotSupportedException {
 		//go through system properties and see if we find a matching registered impl						
-		for (Iterator iter = System.getProperties().keySet().iterator(); iter.hasNext();) {
+		for (Iterator<?> iter = System.getProperties().keySet().iterator(); iter.hasNext();) {
 			String key = (String) iter.next();
 			if(key.startsWith(mSystemPropertyKeyConstant)) {		
 				String implName = System.getProperty(key);				
 				if(mDebugState) System.out.println("DEBUG: EncryptorFactory.newEncryptor trying impl " + implName);
 				try {
-					Class klass = Class.forName(implName);
+					Class<?> klass = Class.forName(implName);
 					Object o = klass.newInstance();
 		            if(o instanceof Encryptor) {
 		            	Encryptor enc = (Encryptor)o;
@@ -110,7 +127,7 @@ public class EncryptorFactory {
 				line = line.trim();
 				if (!"".equals(line)) {
 					line = line.trim();
-					Class klass = null;
+					Class<?> klass = null;
 					Object o = null;
 					try {
 						klass = Class.forName(line);

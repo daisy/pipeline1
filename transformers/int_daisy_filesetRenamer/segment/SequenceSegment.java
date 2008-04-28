@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_filesetRenamer.segment;
 
 import java.text.DecimalFormat;
@@ -23,8 +40,8 @@ import org.daisy.util.fileset.Referring;
  */
 
 public class SequenceSegment extends Segment {
-	private static Map mFilesetTypeCounter = new HashMap(); 			//fileset, Map<ClassName, Long> (number of files of a certain class in a certain fileset
-	private static Map mFormatCache = new HashMap();
+	private static Map<Fileset,Map<String,Long>> mFilesetTypeCounter = new HashMap<Fileset,Map<String,Long>>(); 			//fileset, Map<ClassName, Long> (number of files of a certain class in a certain fileset
+	private static Map<String,DecimalFormat> mFormatCache = new HashMap<String,DecimalFormat>();
 	
 	private SequenceSegment(String content) {
 		super(content);		
@@ -52,15 +69,15 @@ public class SequenceSegment extends Segment {
 	 * inparam FilesetFile.
 	 */
 	private static Long getCount(FilesetFile file, Fileset fileset) {
-		Map countMap = (Map)mFilesetTypeCounter.get(fileset);
+		Map<String,Long> countMap = mFilesetTypeCounter.get(fileset);
 				
 		if(countMap==null) {		
 			//this fileset has not been counted before, so do it			
-			countMap = new HashMap(); //(<ClassName>, <Long>)
-			for (Iterator iter = fileset.getLocalMembers().iterator(); iter.hasNext();) {
+			countMap = new HashMap<String,Long>(); //(<ClassName>, <Long>)
+			for (Iterator<FilesetFile> iter = fileset.getLocalMembers().iterator(); iter.hasNext();) {
 				Object member = iter.next();
 				String className = member.getClass().getName();
-				Long cnt = (Long)countMap.get(className);
+				Long cnt = countMap.get(className);
 				if(cnt==null) {
 					//first occurence of this type
 					countMap.put(className, Long.valueOf(1));
@@ -71,7 +88,7 @@ public class SequenceSegment extends Segment {
 			}
 			mFilesetTypeCounter.put(fileset, countMap);
 		}
-		Long count = ((Long)countMap.get(file.getClass().getName()));
+		Long count = (countMap.get(file.getClass().getName()));
 		if(count==null) return Long.valueOf(0);
 		return count;
 	}
@@ -91,7 +108,7 @@ public class SequenceSegment extends Segment {
 			}
 			
 			//then deal with discovery using manifest as the starting point
-			Collection loop = null;		
+			Collection<? extends FilesetFile> loop = null;		
 			//if input fileset is a DTB, us the spine collection as a starting point.		
 			if(fileset.getFilesetType()==FilesetType.DAISY_202) {
 				loop = ((D202NccFile)manifest).getSpineItems();
@@ -106,10 +123,10 @@ public class SequenceSegment extends Segment {
 			//break the loop when inparam file is found,
 			//return the postincremented counter
 			long counter = 0;
-			for (Iterator iter = loop.iterator(); iter.hasNext();) {
-				Set counterCache = new HashSet(); 
-				Set alreadySearchedCache = new HashSet();
-				FilesetFile toCheck = (FilesetFile)iter.next();	
+			for (Iterator<? extends FilesetFile> iter = loop.iterator(); iter.hasNext();) {
+				Set<String> counterCache = new HashSet<String>(); 
+				Set<String> alreadySearchedCache = new HashSet<String>();
+				FilesetFile toCheck = iter.next();	
 				counter = search(toCheck,toFind,counterCache,alreadySearchedCache);
 				if(counter>-1) break;
 			}
@@ -124,7 +141,7 @@ public class SequenceSegment extends Segment {
 	 * each time a file of the same type as toFind is found, including toFind itself. 
 	 * @return counterCache value when toFind is found, or -1 if toFind was not found within toCheck nor among the referenced members within toCheck  
 	 */
-	private static long search(FilesetFile toCheck, FilesetFile toFind, Set counterCache, Set alreadySearchedCache) {
+	private static long search(FilesetFile toCheck, FilesetFile toFind, Set<String> counterCache, Set<String> alreadySearchedCache) {
 		try{
 			//if toCheck is of our current type and not already counted, up the counter
 			if(toCheck.getClass().getName().equals(toFind.getClass().getName())) {
@@ -141,8 +158,8 @@ public class SequenceSegment extends Segment {
 			
 			if(toCheck instanceof Referring) {
 				Referring referer = (Referring) toCheck;
-				for (Iterator iter = referer.getReferencedLocalMembers().iterator(); iter.hasNext();) {
-					FilesetFile ffile = (FilesetFile) iter.next();
+				for (Iterator<FilesetFile> iter = referer.getReferencedLocalMembers().iterator(); iter.hasNext();) {
+					FilesetFile ffile = iter.next();
 					if(!alreadySearchedCache.contains(ffile.getFile().getCanonicalPath())){
 						alreadySearchedCache.add(ffile.getFile().getCanonicalPath());
 						long found = search(ffile,toFind,counterCache,alreadySearchedCache);
@@ -169,7 +186,7 @@ public class SequenceSegment extends Segment {
 
 		String format = Long.toString(count);
 		if(format.length()<3)format="999";
-		DecimalFormat df =  (DecimalFormat)mFormatCache.get(format);
+		DecimalFormat df = mFormatCache.get(format);
 		if(df==null){
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < format.length(); ++i) {

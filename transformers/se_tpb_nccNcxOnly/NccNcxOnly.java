@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_nccNcxOnly;
 
@@ -30,17 +29,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 
 import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerAbortException;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.D202MasterSmilFile;
@@ -53,10 +52,7 @@ import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.ImageFile;
 import org.daisy.util.fileset.ManifestFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
-import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
-import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.impl.FilesetFileFactory;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.util.ManifestFinder;
@@ -106,20 +102,20 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
 	 */
-	protected boolean execute(Map parameters) throws TransformerRunException {
-		String input = (String)parameters.remove("manifest");
-        String outDir = (String)parameters.remove("outDir");
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
+		String input = parameters.remove("manifest");
+        String outDir = parameters.remove("outDir");
 
         File outputBaseDir = new File(outDir);
         
         try {
         	File manifestFile = FilenameOrFileURI.toFile(input);
         	if (manifestFile.isDirectory()) {
-        		EFolder inputBaseDir = new EFolder(manifestFile);
-        		Collection inputFiles = ManifestFinder.getManifests(true, inputBaseDir);
-        		Collection manifests = new ArrayList();
-        		for (Iterator i = inputFiles.iterator(); i.hasNext();) {
-    				FilesetFile manifest = FilesetFileFactory.newInstance().newFilesetFile((File)i.next());    				
+        		Directory inputBaseDir = new Directory(manifestFile);
+        		Collection<File> inputFiles = ManifestFinder.getManifests(true, inputBaseDir);
+        		Collection<FilesetFile> manifests = new ArrayList<FilesetFile>();
+        		for (Iterator<File> i = inputFiles.iterator(); i.hasNext();) {
+    				FilesetFile manifest = FilesetFileFactory.newInstance().newFilesetFile(i.next());    				
     				//if this is a file we should work on given acceptedTypes inparam
     				if("D202NccFileImpl".equals((manifest.getClass().getSimpleName()))) {
     					manifests.add(manifest);
@@ -127,8 +123,8 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
     			}
         		
         		total = manifests.size();
-        		for (Iterator it = manifests.iterator(); it.hasNext(); ) {   
-        			FilesetFile manifest = (FilesetFile)it.next();
+        		for (Iterator<FilesetFile> it = manifests.iterator(); it.hasNext(); ) {   
+        			FilesetFile manifest = it.next();
         			File outputDir;
         			Fileset inputFileset = new FilesetImpl(manifest.getFile().toURI(), this, false, false);	
 					if(!inputBaseDir.getCanonicalPath().equals(inputFileset.getManifestMember().getParentFolder().getCanonicalPath())){
@@ -137,8 +133,8 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
 						outputDir = FileUtils.createDirectory(hypo.getParentFile());
 					}else{
 						outputDir = outputBaseDir;
-					}
-					this.sendMessage(Level.INFO, i18n("OUTPUT_DIR", outputDir));
+					}					
+					sendMessage(i18n("OUTPUT_DIR", outputDir), MessageEvent.Type.INFO_FINER);
 					
 					this.nccNcxOnly(manifest.getFile().getAbsolutePath(), outputDir);					
 					count++;
@@ -165,8 +161,8 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
 	}
 	
 	private void nccNcxOnly(String manifest, File outputDir) throws FilesetFatalException, TransformerRunException, IOException, CatalogExceptionNotRecoverable, URISyntaxException, XMLStreamException, XSLTException {
-		// Build a fileset
-        this.sendMessage(Level.INFO, i18n("BUILDING_FILESET"));
+		// Build a fileset        
+        sendMessage(i18n("BUILDING_FILESET"), MessageEvent.Type.INFO_FINER);
         Fileset fileset = this.buildFileSet(manifest);   
         if (fileset.hadErrors()) {
         	throw new TransformerRunException(i18n("FILESET_HAD_ERRORS"));
@@ -184,10 +180,10 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
         this.checkAbort();
         
         // Loop through smil files and change links
-        Collection spineItems = nccFile.getSpineItems();
+        Collection<D202SmilFile> spineItems = nccFile.getSpineItems();
         int i = 0;
-        for (Iterator it = spineItems.iterator(); it.hasNext(); ) {
-        	D202SmilFile smilFile = (D202SmilFile)it.next();
+        for (Iterator<D202SmilFile> it = spineItems.iterator(); it.hasNext(); ) {
+        	D202SmilFile smilFile = it.next();
         	i++;
         	this.updateSmil(smilFile, outputDir, idUri);
         	this.progress((double)count/total + (NCCURI_DONE + (SMIL_DONE-NCCURI_DONE)*((double)i/spineItems.size()))/total);	        	
@@ -225,7 +221,7 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
 	 * @throws CatalogExceptionNotRecoverable 
 	 */
 	private void updateSmil(D202SmilFile smilFile, File outDir, NccIdUriList idUriList) throws FileNotFoundException, XMLStreamException, CatalogExceptionNotRecoverable {
-		Map properties = null;
+		Map<String,Object> properties = null;
 		XMLInputFactory xif = null;
 		try{
 			properties = mInputFactoryPool.getDefaultPropertyMap(false);			
@@ -251,11 +247,11 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
 	 * @throws TransformerAbortException
 	 */
 	private void copyFiles(ManifestFile manifest, Fileset fileset, File outputDir) throws IOException, TransformerAbortException {
-		Collection toCopy = new ArrayList();
+		Collection<FilesetFile> toCopy = new ArrayList<FilesetFile>();
         long totalSize = 0;
         long currentSize = 0;
-        for (Iterator it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
-        	FilesetFile fsf = (FilesetFile)it.next();
+        for (Iterator<FilesetFile> it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
+        	FilesetFile fsf = it.next();
         	if (fsf instanceof D202TextualContentFile ||
         		fsf instanceof D202NccFile ||
         		fsf instanceof D202SmilFile ||
@@ -267,8 +263,8 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
         		totalSize += fsf.getFile().length();	        		
         	}
         }
-        for (Iterator it = toCopy.iterator(); it.hasNext(); ) {
-        	FilesetFile fsf = (FilesetFile)it.next();
+        for (Iterator<FilesetFile> it = toCopy.iterator(); it.hasNext(); ) {
+        	FilesetFile fsf = it.next();
         	currentSize += fsf.getFile().length();
         	URI relative = manifest.getRelativeURI(fsf);
     		File out = new File(outputDir.toURI().resolve(relative));

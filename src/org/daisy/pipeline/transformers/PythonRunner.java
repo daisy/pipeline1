@@ -18,6 +18,7 @@
  */
 package org.daisy.pipeline.transformers;
 
+import java.util.EventListener;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -40,11 +41,12 @@ public class PythonRunner extends Transformer {
 	
 	private static Pattern variablePattern = Pattern.compile("\\$\\{(\\w+)\\}");
 
-	public PythonRunner(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-		super(inListener, eventListeners, isInteractive);
+	public PythonRunner(InputListener inListener, @SuppressWarnings("unused")
+	Set<EventListener> eventListeners, Boolean isInteractive) {
+		super(inListener, isInteractive);
 	}
 
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		// Count the number of arguments
 		int argc = 0;
 		while (true) {
@@ -60,7 +62,7 @@ public class PythonRunner extends Transformer {
 		args[0] = pythonCommand;
 		for (int i = 0; i < argc; ++i) {
 			String argNum = "arg" + String.valueOf(i);
-			args[i+1] = expandCommandPattern((String)parameters.get(argNum), parameters);
+			args[i+1] = expandCommandPattern(parameters.get(argNum), parameters);
 			//System.err.println("Item: '" + argNum + "', '" + (String)parameters.get(argNum) + "', '" + args[i] + "'");
 		}
 		
@@ -74,7 +76,7 @@ public class PythonRunner extends Transformer {
 		return result == 0;
 	}
 	
-	private String expandCommandPattern(String commandPattern, Map parameters) throws TransformerRunException {
+	private String expandCommandPattern(String commandPattern, Map<String,String> parameters) throws TransformerRunException {
         if (commandPattern == null) {
             return "";
         }
@@ -82,7 +84,7 @@ public class PythonRunner extends Transformer {
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
             String variable = matcher.group(1);
-            String value = (String)parameters.get(variable);
+            String value = parameters.get(variable);
             if (value == null) {
                 throw new TransformerRunException(i18n("UNRECOGIZED_COMMAD_PATTERN_VARIABLE", variable));
             }

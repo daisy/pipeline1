@@ -90,7 +90,7 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 	
 	public void initialize() throws XMLStreamException {
 		XMLEventFactory xef = null;
-		Map properties = null;
+		Map<String,Object> properties = null;
 		XMLInputFactory xif = null;
 		XMLEventReader reader = null;
 		try{
@@ -147,7 +147,7 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 		 * </elem>
 		 * 
 		 */
-		Map properties = null;		
+		Map<String,Object> properties = null;		
 		XMLOutputFactory xof = null;
 		XMLEventFactory xef = null;
 		XMLEventWriter wrt = null;
@@ -215,8 +215,8 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 									namespaces.remove(SSML_NAMESPACE);									
 								}
 								
-								for (Iterator<Attribute> it = se.getAttributes(); it.hasNext();) {
-									Attribute a =  it.next();
+								for (Iterator<?> it = se.getAttributes(); it.hasNext();) {
+									Attribute a =  (Attribute) it.next();
 									if(a.getName().equals(smilSrcAttrQName)) {
 										//rewrite the smil:src value from absolute to relative.
 										//later all audio will be copied to same dir as manifest
@@ -303,8 +303,8 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 	 * Override the dreaded wstx indexoutofboundsexception
 	 */
 	private Attribute getAttributeByName(StartElement se, QName qname) {
-		for (Iterator<Attribute> iterator = se.getAttributes(); iterator.hasNext();) {
-			Attribute a = iterator.next();
+		for (Iterator<?> iterator = se.getAttributes(); iterator.hasNext();) {
+			Attribute a = (Attribute) iterator.next();
 			if(a.getName().equals(qname)) return a;
 		}
 		return null;

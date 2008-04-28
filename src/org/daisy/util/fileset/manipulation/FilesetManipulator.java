@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.fileset.manipulation;
 
 import java.io.File;
@@ -26,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetErrorHandler;
@@ -42,10 +40,10 @@ import org.daisy.util.fileset.manipulation.manipulators.UnalteringCopier;
  */
 public class FilesetManipulator implements FilesetErrorHandler {
 	protected Fileset inputFileset = null;
-	protected List typeRestrictions = null;
-	protected EFolder outFolder = null;
+	protected List<Class<?>> typeRestrictions = null;
+	protected Directory outFolder = null;
 	protected FilesetManipulatorListener listener = null;
-	private EFolder inputBaseDir = null; //the parent folder of input manifest file
+	private Directory inputBaseDir = null; //the parent folder of input manifest file
 	private boolean allowDestinationOverwrite = true;
 	
 	/**
@@ -75,7 +73,7 @@ public class FilesetManipulator implements FilesetErrorHandler {
 	public void setInputFileset(Fileset fileset) throws FilesetManipulationException {
 		 this.inputFileset = fileset;	
 		 try {
-			this.inputBaseDir = new EFolder(this.inputFileset.getManifestMember().getFile().getParentFile());
+			this.inputBaseDir = new Directory(this.inputFileset.getManifestMember().getFile().getParentFile());
 		 } catch (IOException e) {
 			throw new FilesetManipulationException(e.getMessage(),e);
 		 }
@@ -88,7 +86,7 @@ public class FilesetManipulator implements FilesetErrorHandler {
 	public void setInputFileset(URI manifest) throws FilesetManipulationException {
 		try { 
 			this.inputFileset = new FilesetImpl(manifest,this,false,false);				 
-			this.inputBaseDir = new EFolder(this.inputFileset.getManifestMember().getFile().getParentFile());
+			this.inputBaseDir = new Directory(this.inputFileset.getManifestMember().getFile().getParentFile());
 		} catch (Exception e) {
 			throw new FilesetManipulationException(e.getMessage(),e);
 		}
@@ -98,7 +96,7 @@ public class FilesetManipulator implements FilesetErrorHandler {
 	/**
 	 * Set the destination of the manipulated Fileset
 	 */
-	public void setOutputFolder(EFolder folder) throws IOException {		
+	public void setOutputFolder(Directory folder) throws IOException {		
 		FileUtils.createDirectory(folder);		
 		this.outFolder = folder;
 	}
@@ -106,7 +104,7 @@ public class FilesetManipulator implements FilesetErrorHandler {
 	/**
 	 * Get the destination of the manipulated Fileset, null if not set
 	 */
-	public EFolder getOutputFolder() throws IOException {
+	public Directory getOutputFolder() {
 		return this.outFolder;
 	}
 	
@@ -128,8 +126,8 @@ public class FilesetManipulator implements FilesetErrorHandler {
 	 * <p>If this property is not set on the instance, no exclusions are made. This is
 	 * the same as calling this method with a list containing a FilesetFile Class entry.</p> 
 	 */
-	public void setTypeRestriction(List filesetFileInterfaces) {
-		if(this.typeRestrictions == null) this.typeRestrictions = new ArrayList();
+	public void setTypeRestriction(List<Class<?>> filesetFileInterfaces) {
+		if(this.typeRestrictions == null) this.typeRestrictions = new ArrayList<Class<?>>();
 		this.typeRestrictions.addAll(filesetFileInterfaces);
 	}
 
@@ -142,8 +140,8 @@ public class FilesetManipulator implements FilesetErrorHandler {
 	 * <p>If this property is not set on the instance, no exclusions are made. This is
 	 * the same as calling this method with a list containing a FilesetFile entry.</p> 
 	 */
-	public void setFileTypeRestriction(Class filesetFileInterface) {
-		if(this.typeRestrictions == null) this.typeRestrictions = new ArrayList();
+	public void setFileTypeRestriction(Class<?> filesetFileInterface) {
+		if(this.typeRestrictions == null) this.typeRestrictions = new ArrayList<Class<?>>();
 		this.typeRestrictions.add(filesetFileInterface);
 	}
 	
@@ -164,8 +162,8 @@ public class FilesetManipulator implements FilesetErrorHandler {
 			if(this.inputFileset != null && (this.outFolder!=null && this.outFolder.exists())) {
 				try{
 					FilesetFileManipulator copier = new UnalteringCopier(); //for all silent moves
-					for (Iterator iter = this.inputFileset.getLocalMembers().iterator(); iter.hasNext();) {
-						FilesetFile file = (FilesetFile) iter.next();
+					for (Iterator<FilesetFile> iter = this.inputFileset.getLocalMembers().iterator(); iter.hasNext();) {
+						FilesetFile file = iter.next();
 						if(this.isTypeEnabled(file)) {
 							//notify listener, get action impl back
 							FilesetFileManipulator ffm = listener.nextFile(file);
@@ -209,7 +207,7 @@ public class FilesetManipulator implements FilesetErrorHandler {
 			//file is in subdir
 			URI relative = inputBaseDir.toURI().relativize(file.getFile().getParentFile().toURI());
 			if(relative.toString().startsWith("..")) throw new IOException("fileset member "+file.getName()+" does not live in a sibling or descendant folder of manifest member");
-			EFolder subdir = new EFolder(this.outFolder,relative.getPath());
+			Directory subdir = new Directory(this.outFolder,relative.getPath());
 			FileUtils.createDirectory(subdir);
 			return new File(subdir, file.getName());			
 		}
@@ -227,8 +225,8 @@ public class FilesetManipulator implements FilesetErrorHandler {
 		//of the restriction list
 		for (int i = 0; i < typeRestrictions.size(); i++) {			
 			try{
-				Class test = (Class)typeRestrictions.get(i);
-				Object cast = test.cast(file);
+				Class<?> test = typeRestrictions.get(i);
+				test.cast(file);
 				return true;  //we didnt get an exception...				
 			}catch (Exception e) {
 				//just continue the loop	

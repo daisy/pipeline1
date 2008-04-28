@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.fileset.validation;
 
 import java.io.File;
@@ -99,8 +116,8 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	
 	private void executeDelegates() throws ValidatorNotSupportedException, ValidatorException {
 		if(mDelegates!=null) {
-			for (Iterator iter = mDelegates.iterator(); iter.hasNext();) {
-				ValidatorDelegate vd = (ValidatorDelegate) iter.next();
+			for (Iterator<ValidatorDelegate> iter = mDelegates.iterator(); iter.hasNext();) {
+				ValidatorDelegate vd = iter.next();
 				if(vd.isFilesetTypeSupported(mFileset.getFilesetType())) {
 					vd.execute(mFileset);
 				}else{
@@ -112,6 +129,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void executeSchemas() throws ValidatorNotSupportedException, ValidatorException {
 		/*
 		 * mSchemas = <SchemaURL, FilesetFileClassTypeToApplySchemaOn)
@@ -122,8 +140,8 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 		 */
 		
 			if(mSchemas!=null) {
-				for (Iterator iter = mSchemas.keySet().iterator(); iter.hasNext();) {
-					URL schemaURL = (URL) iter.next();
+				for (Iterator<URL> iter = mSchemas.keySet().iterator(); iter.hasNext();) {
+					URL schemaURL = iter.next();
 					try {						
 						//instead of Peeker to be sure we dont miss non-root decls:
 						NamespaceReporter nsr = new NamespaceReporter(schemaURL);				
@@ -172,8 +190,8 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	}
 	
 	private void validate(javax.xml.validation.Validator validator, TypeRestriction restriction) throws FileNotFoundException, SAXException, IOException {
-		for (Iterator iter = mFileset.getLocalMembers().iterator(); iter.hasNext();) {
-			FilesetFile ffile = (FilesetFile) iter.next();
+		for (Iterator<FilesetFile> iter = mFileset.getLocalMembers().iterator(); iter.hasNext();) {
+			FilesetFile ffile = iter.next();
 			if(ffile.getClass().getName().equals(restriction.mFilesetFileType)) { 
 				XmlFile xf = (XmlFile)ffile;
 				if(xf.isWellformed()) {	
@@ -228,8 +246,8 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 						+ mFileset.getFilesetType().toNiceNameString() + " filesets.");
 			}
 			if(mDelegates!=null) {
-				for (Iterator iter = mDelegates.iterator(); iter.hasNext(); ) {
-					ValidatorDelegate delegate = (ValidatorDelegate) iter.next();
+				for (Iterator<ValidatorDelegate> iter = mDelegates.iterator(); iter.hasNext(); ) {
+					ValidatorDelegate delegate = iter.next();
 					if (!delegate.isFilesetTypeSupported(mFileset.getFilesetType())) {
 						throw new ValidatorNotSupportedException("The validator delegate does not support validation of "
 								+ mFileset.getFilesetType().toNiceNameString() + " filesets.");
@@ -255,6 +273,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */	
+	@SuppressWarnings("unused")
 	public void error(FilesetFileException ffe) throws FilesetFileException {
 		/*
 		 * These are errors that the fileset instance emits during instantiation.
@@ -293,7 +312,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.Validator#getSupportedFilesetTypes()
 	 */
-	public List getSupportedFilesetTypes() {		
+	public List<FilesetType> getSupportedFilesetTypes() {		
 		return mSupportedFilesetTypes;
 	}
 	
@@ -310,6 +329,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	 * a subclass happens to use javax.xml.validation and doesnt override. 
 	 * We redirect to ValidatorListener.report.
 	 */
+	@SuppressWarnings("unused")
 	public void error(SAXParseException exception) throws SAXException {
 		mValidatorListener.report(this,ExceptionTransformer.newValidatorMessage
 			(exception, ExceptionTransformer.SAX_ERRHANDLER_TYPE_ERROR));		
@@ -320,6 +340,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	 * a subclass happens to use javax.xml.validation and doesnt override. 
 	 * We redirect to ValidatorListener.report.
 	 */
+	@SuppressWarnings("unused")
 	public void fatalError(SAXParseException exception) throws SAXException {
 		mValidatorListener.report(this,ExceptionTransformer.newValidatorMessage
 				(exception, ExceptionTransformer.SAX_ERRHANDLER_TYPE_FATALERROR));		
@@ -330,6 +351,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	 * a subclass happens to use javax.xml.validation and doesnt override. 
 	 * We redirect to ValidatorListener.report.
 	 */
+	@SuppressWarnings("unused")
 	public void warning(SAXParseException exception) throws SAXException {
 		if(!exception.getMessage().contains("XSLT 1.0")) {
 			//temp hack to avoid saxon 8 version warning messages
@@ -356,7 +378,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 		//we dont use listener.exception to report here, 
 		//since we are still in configuration time. 
 		try {
-			Class klass = Class.forName(delegateClassName);
+			Class<?> klass = Class.forName(delegateClassName);
 			Object o = klass.newInstance();
             if(o instanceof ValidatorDelegate) {
             	delegate = (ValidatorDelegate)o;
@@ -369,6 +391,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 		addDelegate(delegate);				
 	}
 	
+	@SuppressWarnings("unused")
 	private void addDelegate(ValidatorDelegate delegate) throws ValidatorException, ValidatorNotSupportedException {		
 		if (mDelegates == null) mDelegates = new ArrayList<ValidatorDelegate>();
 		delegate.setValidator(this);
@@ -387,27 +410,32 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.validation.Validator#setSchema(java.net.URL, java.lang.String)
 	 */
+	@SuppressWarnings("unused")
 	public void setSchema(URL schema, String filesetFileType, Set<Attribute> rootAttributes) throws ValidatorException, ValidatorNotSupportedException {
 		if(mSchemas==null) mSchemas = new HashMap<URL,TypeRestriction>();
 		TypeRestriction restriction = new TypeRestriction(filesetFileType,rootAttributes);
 		mSchemas.put(schema, restriction);
 	}
 	
+	@SuppressWarnings("unused")
 	public void setFeature(String name, boolean value) throws ValidatorNotRecognizedException, ValidatorNotSupportedException {
         if (name == null) throw new NullPointerException("the name parameter is null");
         throw new ValidatorNotRecognizedException(name);	                
 	}
 
+	@SuppressWarnings("unused")
 	public boolean getFeature(String name) throws ValidatorNotRecognizedException, ValidatorNotSupportedException {
         if (name == null) throw new NullPointerException("the name parameter is null");
         throw new ValidatorNotRecognizedException(name);	         
 	}
 	
+	@SuppressWarnings("unused")
 	public void setProperty(String name, Object object) throws ValidatorNotRecognizedException, ValidatorNotSupportedException {
         if (name == null) throw new NullPointerException("the name parameter is null");        
        	throw new ValidatorNotRecognizedException(name);	 
 	}
 
+	@SuppressWarnings("unused")
 	public Object getProperty(String name) throws ValidatorNotRecognizedException, ValidatorNotSupportedException {
         if (name == null) throw new NullPointerException("the name parameter is null");
         throw new ValidatorNotRecognizedException(name);

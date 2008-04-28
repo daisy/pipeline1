@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package se_tpb_filesetcreator;
@@ -68,7 +67,7 @@ import org.daisy.util.collection.MultiHashMap;
 import org.daisy.util.css.stylesheets.Css;
 import org.daisy.util.execution.AbortListener;
 import org.daisy.util.execution.ProgressObserver;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;
@@ -267,8 +266,8 @@ public class SmilMaker implements AbortListener, BusListener {
 		while (reader.hasNext()) {
 			XMLEvent event = reader.nextEvent();
 			if (event.isStartElement() && hasSmilAttributes(event.asStartElement())) {
-				Map attrs = getSmilContext(event.asStartElement());
-				audioFiles.add((String) attrs.get(smilSrc));
+				Map<String,String> attrs = getSmilContext(event.asStartElement());
+				audioFiles.add(attrs.get(smilSrc));
 			}
 		}
 		return audioFiles.size();
@@ -288,9 +287,8 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @param se
 	 * @return a <code>Map</code> containing the smil-attributes of the
 	 * start element <code>se</code> or null of no such attribute exist.
-	 * @throws XMLStreamException
 	 */
-	private Map getSmilContext(StartElement se) throws XMLStreamException {
+	private Map<String,String> getSmilContext(StartElement se) {
 		if (!hasSmilAttributes(se)) {
 			return null;
 		}
@@ -298,7 +296,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		Map<String, String> attributes = new HashMap<String, String>();
 		
 		//DEBUG(se);
-		for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+		for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
 			attributes.put(at.getName().getLocalPart(), at.getValue());
 		}
@@ -458,8 +456,8 @@ public class SmilMaker implements AbortListener, BusListener {
 		int size = smilTrees.size();
 		for (; i < size; i++) {
 			
-			Document doc = (Document) smilTrees.get(i);
-			File file = (File) smilFiles.get(i);
+			Document doc = smilTrees.get(i);
+			File file = smilFiles.get(i);
 			
 			millis = finishSmil(millis, doc);
 			outputDocument(doc, file);
@@ -474,14 +472,14 @@ public class SmilMaker implements AbortListener, BusListener {
 	 */
 	private void insertLinks() {
 		DEBUG("insertLinks");
-		for (Iterator it = smilFileMapping.keySet().iterator(); it.hasNext(); ) {
-			String linkTargetId = (String) it.next();
-			String linkTargetFilename = (String) smilFileMapping.get(linkTargetId);
+		for (Iterator<String> it = smilFileMapping.keySet().iterator(); it.hasNext(); ) {
+			String linkTargetId = it.next();
+			String linkTargetFilename = smilFileMapping.get(linkTargetId);
 			
 			for (int i = 0; i < smilTrees.size(); i++) {
 				
-				Document dom = (Document) smilTrees.get(i);
-				File file = (File) smilFiles.get(i);
+				Document dom = smilTrees.get(i);
+				File file = smilFiles.get(i);
 				
 				String  filenamePart = "";
 				if (!file.getName().equals(linkTargetFilename)) {
@@ -525,8 +523,8 @@ public class SmilMaker implements AbortListener, BusListener {
 		Map<String, Element> forceLinks = new HashMap<String, Element>();
 		// for each genereated smil DOM
 		forEachGeneratedDom = System.currentTimeMillis();
-		for (Iterator it = smilTrees.iterator(); it.hasNext(); ) {
-			Document curr = (Document) it.next();
+		for (Iterator<Document> it = smilTrees.iterator(); it.hasNext(); ) {
+			Document curr = it.next();
 			
 			// select every node with attribute tempLinkId
 			// store them in a hashmap using the id as key
@@ -542,21 +540,21 @@ public class SmilMaker implements AbortListener, BusListener {
 		int numLaps = forceLinks.keySet().size();
 		int counter = 0;
 		forEachLinkTarget = System.currentTimeMillis();
-		for (Iterator elemIt = forceLinks.keySet().iterator(); elemIt.hasNext(); ) {
+		for (Iterator<String> elemIt = forceLinks.keySet().iterator(); elemIt.hasNext(); ) {
 			
-			String elemId = (String) elemIt.next();
-			Node linkTarget = (Node) forceLinks.get(elemId);
+			String elemId = elemIt.next();
+			Node linkTarget = forceLinks.get(elemId);
 			((Element) linkTarget).removeAttribute(tempLinkId);			
-			Collection srcs = forceLinkMap.getCollection(elemId);
+			Collection<?> srcs = forceLinkMap.getCollection(elemId);
 			if (null == srcs) {
 				// note (or something) without any reference
 				continue;
 			}
 		
 			tmpFer = System.currentTimeMillis();
-			for (Iterator srcIt = srcs.iterator(); srcIt.hasNext(); ) {
+			for (Iterator<?> srcIt = srcs.iterator(); srcIt.hasNext(); ) {
 				
-				Element linkSrc = (Element) srcIt.next();
+				Element linkSrc = (Element)srcIt.next();
 				linkSrc.removeAttribute("idref");
 				Element nextSibling = (Element) linkSrc.getNextSibling();
 				Element parent = (Element) linkSrc.getParentNode();
@@ -641,23 +639,23 @@ public class SmilMaker implements AbortListener, BusListener {
 	}
 	
 	
-	private String formatTime(long timestamp) {
-		String val = "";
-		
-		long ms = timestamp % 1000;
-		timestamp /= 1000;
-		long s = timestamp % 60;
-		timestamp /= 60;
-		long m = timestamp % 60;
-		timestamp /= 60;
-		long h = timestamp % 60;
-		
-		val = h + ":" +
-			(m > 9 ? "" : "0") + m + ":" +
-			(s > 9 ? "" : "0") + s + "." + ms;
-		
-		return val;
-	}
+//	private String formatTime(long timestamp) {
+//		String val = "";
+//		
+//		long ms = timestamp % 1000;
+//		timestamp /= 1000;
+//		long s = timestamp % 60;
+//		timestamp /= 60;
+//		long m = timestamp % 60;
+//		timestamp /= 60;
+//		long h = timestamp % 60;
+//		
+//		val = h + ":" +
+//			(m > 9 ? "" : "0") + m + ":" +
+//			(s > 9 ? "" : "0") + s + "." + ms;
+//		
+//		return val;
+//	}
 	
 	
 	/**
@@ -862,7 +860,7 @@ public class SmilMaker implements AbortListener, BusListener {
 			if(!foundCss) {
 				XMLEventFactory xef = StAXEventFactoryPool.getInstance().acquire();
 				String name = css.getFile().substring(css.getFile().lastIndexOf("/")+1);				
-				EFolder out = new EFolder(outputDirectory);
+				Directory out = new Directory(outputDirectory);
 				out.writeToFile(name, css.openStream());
 				otherEncounteredFiles.add(name);
 				return xef.createProcessingInstruction("xml-stylesheet", "href='" +name+ "' type='text/css'");
@@ -892,34 +890,17 @@ public class SmilMaker implements AbortListener, BusListener {
 		String dtbId = null;
 		String idRef = null;
 		
-		try {
-			Map tmp = this.getSmilContext(se);
-			currentSmilClipBegin = (String) tmp.get(smilClipBegin);
-			currentSmilClipEnd = (String) tmp.get(smilClipEnd);
-			currentSmilClipSrc = (String) tmp.get(smilSrc);
-			dtbId = (String) tmp.get("id");
-			idRef = (String) tmp.get("idref");
-		} catch (XMLStreamException e) {
-			for (Iterator it = se.getAttributes(); it.hasNext(); ) {
-				Attribute a = (Attribute) it.next();
-				if (a.getName().getLocalPart().equals(smilClipBegin)) {
-					currentSmilClipBegin = a.getValue();
-				} else if (a.getName().getLocalPart().equals(smilClipEnd)) {
-					currentSmilClipEnd = a.getValue();
-				} else if (a.getName().getLocalPart().equals(smilSrc)) {
-					currentSmilClipSrc = a.getValue();
-				} else if (a.getName().getLocalPart().equals("id")) {
-					dtbId = a.getValue();
-				} else if (a.getName().getLocalPart().equals("idref")) {
-					idRef = a.getValue();
-				}
-			}
-		}
+		Map<String,String> tmp = this.getSmilContext(se);
+		currentSmilClipBegin = tmp.get(smilClipBegin);
+		currentSmilClipEnd = tmp.get(smilClipEnd);
+		currentSmilClipSrc = tmp.get(smilSrc);
+		dtbId = tmp.get("id");
+		idRef = tmp.get("idref");
 		
 		
 		
 		// Create a new par-element, add it to the seq on the stack.
-		Element parentSeqElement = (Element) openSeqs.peek();
+		Element parentSeqElement = openSeqs.peek();
 		Element parElement = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "par");
 		
 		String parId = getNextSmilId("tcp");
@@ -964,11 +945,11 @@ public class SmilMaker implements AbortListener, BusListener {
 		attributes.add(eventFactory.createAttribute(new QName("smilref"), getCurrentSmilFilename() + "#" + parId));
 		attributes.add(eventFactory.createAttribute(new QName("id"), dtbId));
 			
-		for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+		for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
 			attributes.add((Attribute)it.next());
 		}
 
-		for (Iterator ns = se.getNamespaces(); ns.hasNext(); ) {
+		for (Iterator<?> ns = se.getNamespaces(); ns.hasNext(); ) {
 			namespaces.add((Namespace)ns.next());
 		}
 		
@@ -992,17 +973,14 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @param se the start element of the structure the seq will represent.
 	 * @return the substitute <code>XMLEvent</code> that is to be written to the 
 	 * output file instead of the one we received as parameter.
-	 * @throws XMLStreamException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws IOException
+	 * @throws XMLStreamException 
 	 */
-	private StartElement newSeq(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException, ParserConfigurationException, SAXException, IOException {		
+	private StartElement newSeq(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {		
 		String tcsId = getNextSmilId("tcs");
 		Attribute dtbIdAtt = se.getAttributeByName(new QName("id")); 
 		String dtbId = null == dtbIdAtt ? this.getNextDTBId() : dtbIdAtt.getValue();
 		
-		Element parentSeqElement = (Element) openSeqs.peek();
+		Element parentSeqElement = openSeqs.peek();
 		Element newSeq = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "seq");
 		newSeq.setAttribute("class", se.getName().getLocalPart());
 		newSeq.setAttribute("id", tcsId);
@@ -1031,13 +1009,12 @@ public class SmilMaker implements AbortListener, BusListener {
 			Set<Attribute> attributes = new HashSet<Attribute>();
 			attributes.add(eventFactory.createAttribute(new QName("smilref"), getCurrentSmilFilename() + "#" + tcsId));
 			attributes.add(eventFactory.createAttribute(new QName("id"), dtbId));
-			for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+			for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
 				attributes.add((Attribute)it.next());
 			}
 			return eventFactory.createStartElement(se.getName(), attributes.iterator(), se.getNamespaces());
-		} else {
-			return se;
 		}
+		return se;
 	}
 	
 	/**
@@ -1045,7 +1022,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @param escapable Are we supposed to calculate DTBuserEscape?
 	 */
 	private void closeSeq(boolean escapable) {
-		Element seq = (Element) openSeqs.pop();
+		Element seq = openSeqs.pop();
 		if (seq.getChildNodes().getLength() == 0) {
 			seq.getParentNode().removeChild(seq);
 		} else if (escapable) {
@@ -1085,9 +1062,9 @@ public class SmilMaker implements AbortListener, BusListener {
 				customTestNames.add(elem.getAttribute("customTest"));
 			}
 		
-			for (Iterator it = customTestNames.iterator(); it.hasNext(); ) {
+			for (Iterator<String> it = customTestNames.iterator(); it.hasNext(); ) {
 				Element customTest = smilDom.createElementNS(smilNamespaceURI, "customTest");
-				customTest.setAttribute("id", (String) it.next());
+				customTest.setAttribute("id", it.next());
 				customTest.setAttribute("override", "visible");
 				customAttributes.appendChild(customTest);
 			}
@@ -1125,14 +1102,12 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * Opens a new smil DOM by reading a template file.. If there is an open smil DOM already, it is placed
 	 * on hold until it's time to (possibly) rearrange the notes, etc.
 	 * @param reader a reader pointed to the input document.
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
 	 * @throws IOException
 	 * @throws TransformerRunException
-	 * @throws TransformerException
 	 * @throws XMLStreamException
+	 * @throws SAXException 
 	 */
-	private void startNewSmil(BookmarkedXMLEventReader reader) throws ParserConfigurationException, SAXException, IOException, TransformerRunException, TransformerException, XMLStreamException {
+	private void startNewSmil(BookmarkedXMLEventReader reader) throws IOException, TransformerRunException, XMLStreamException, SAXException {
 		// reporting to UI
 		mProgressObserver.reportProgress(((double) smilFiles.size() / numSmilFiles) * (1 - noteRumbleTimeProportion - domFinalizeTimeProportion));
 		// have we been aborted?
@@ -1204,7 +1179,7 @@ public class SmilMaker implements AbortListener, BusListener {
 			
 			
 			if (hasSmilAttributes(event.asStartElement())) {
-				for (Iterator it = event.asStartElement().getAttributes(); it.hasNext(); ) {
+				for (Iterator<?> it = event.asStartElement().getAttributes(); it.hasNext(); ) {
 					Attribute at = (Attribute) it.next();
 					if (at.getName().getNamespaceURI().equals(this.smilNamespaceURI) && at.getName().getLocalPart().equals(smilSrc)) {
 						src = at.getValue().trim();
@@ -1242,7 +1217,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		Vector<Boolean> levelChangeHolder = new Vector<Boolean>();
 		String smilSrc = getNextSmilSrc(reader, levelChangeHolder);
 		
-		Boolean levelChange = (Boolean) levelChangeHolder.get(0);
+		Boolean levelChange = levelChangeHolder.get(0);
 		if (!levelChange.booleanValue()) {
 			if (null != smilSrc) {
 				otherEncounteredFiles.add(smilSrc);
@@ -1346,7 +1321,7 @@ public class SmilMaker implements AbortListener, BusListener {
 			href = href.substring(1);
 		}
 		
-		Element parentSeqElement = (Element) openSeqs.peek();
+		Element parentSeqElement = openSeqs.peek();
 		Element linkElement = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "a"); 
 		parentSeqElement.appendChild(linkElement);
 		openSeqs.push(linkElement);
@@ -1368,7 +1343,7 @@ public class SmilMaker implements AbortListener, BusListener {
 			linkTargetId = getNextSmilId("tcs");
 		}
 		
-		Element parentSeq = (Element) openSeqs.peek();
+		Element parentSeq = openSeqs.peek();
 		Element linkTarget = parentSeq.getOwnerDocument().createElement("seq");
 		linkTarget.setAttribute("class", "a");
 		parentSeq.appendChild(linkTarget);
@@ -1405,7 +1380,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * configured as skippable, <code>false</code> otherwise.
 	 */
 	private boolean isSkippable(StartElement se) {
-		for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+		for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
 			QName name = at.getName();
 			if (name.getLocalPart().equals("render") && at.getValue().equals("required")) {
@@ -1479,7 +1454,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * <code>false</code> otherwise.
 	 */
 	private boolean hasSmilAttributes(StartElement se) {
-		for (Iterator it = se.asStartElement().getAttributes(); it.hasNext(); ) {
+		for (Iterator<?> it = se.asStartElement().getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
 			if (at.getName().getNamespaceURI().equals(smilNamespaceURI )) {
 				return true;
@@ -1544,6 +1519,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * Prints debug messages on System.err if <code>DEBUG == true</code>
 	 * @param e the <code>XMLEvent</code> to output.
 	 */
+	@SuppressWarnings("unused")
 	private void DEBUG(XMLEvent e) {
 		if (e.isStartElement()) {
 			DEBUG(e.asStartElement().getName().getLocalPart());

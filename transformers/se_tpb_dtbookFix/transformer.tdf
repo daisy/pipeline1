@@ -29,7 +29,7 @@
 				<value>TIDY</value> <!-- run only Tidy category -->
 				<value>REPAIR</value> <!-- run only Repair category -->
 				<value>REPAIR_TIDY</value> <!-- run both Tidy and Repair categories in sequence as they appear -->
-				<value>REPAIR_TIDY_NARRATOR</value> <!-- run Tidy, Repair and Narrator categories in sequence as they appear -->
+				<value>NARRATOR</value> <!-- run Tidy, Repair and Narrator categories in sequence as they appear -->
 				<value>NOTHING</value> <!-- Run nothing -->				
 			</enum>
 			<default>REPAIR_TIDY</default>

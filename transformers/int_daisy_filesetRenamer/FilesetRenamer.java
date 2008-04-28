@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_filesetRenamer;
 
 import int_daisy_filesetRenamer.segment.EchoSegment;
@@ -25,7 +42,7 @@ import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.Fileset;
@@ -58,11 +75,11 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	private FilesetManipulator mFilesetManipulator = null;
 	private EFile mInputManifest = null;
 	private Fileset mInputFileset = null;
-	private EFolder mOutputDir = null;				//final output destination
-	private EFolder mRoundtripOutputDir = null; 	//for temporary storage, not always used
+	private Directory mOutputDir = null;				//final output destination
+	private Directory mRoundtripOutputDir = null; 	//for temporary storage, not always used
 	private SegmentedFileName mTemplateName = null;
 	private RenamingStrategy mStrategy = null;
-	private List mTypeExclusions = null;
+	private List<Class<?>> mTypeExclusions = null;
 	private boolean mFilesystemSafe = true;
 	private FilesetFile mCurrentFile = null;
 	private String oldName = null;	
@@ -81,7 +98,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	}
 	
 	
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		/*
 		 * First, create the renaming strategy using the input tokens.
 		 * Validate this strategy. 
@@ -101,20 +118,20 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 		FilesetManipulator fman = null;
 		try {  				
 			//set the input manifest
-			mInputManifest = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("input")));
+			mInputManifest = new EFile(FilenameOrFileURI.toFile(parameters.remove("input")));
 			//set input fileset
 			mInputFileset = new FilesetImpl(mInputManifest.toURI(),this,false,false);			
 			//parse the renamingPattern param, create a template filename
 			//to use while creating the new names
-			mTemplateName = parsePatternTokens((String)parameters.remove("renamingPattern"));			
+			mTemplateName = parsePatternTokens(parameters.remove("renamingPattern"));			
 			//create the type exclusion list
-			mTypeExclusions = setExclusions((String)parameters.remove("exclude"));
+			mTypeExclusions = setExclusions(parameters.remove("exclude"));
 			//whether to force ascii subset in output
-			mFilesystemSafe = Boolean.parseBoolean((String)parameters.remove("filesystemSafe"));
+			mFilesystemSafe = Boolean.parseBoolean(parameters.remove("filesystemSafe"));
 			//max filename length
-			mMaxFilenameLength = Integer.parseInt((String)parameters.remove("maxFilenameLength"));
+			mMaxFilenameLength = Integer.parseInt(parameters.remove("maxFilenameLength"));
 			//set/create output dir
-			mOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(FilenameOrFileURI.toFile((String)parameters.remove("output"))));
+			mOutputDir = (Directory)FileUtils.createDirectory(new Directory(FilenameOrFileURI.toFile(parameters.remove("output"))));
 			//if input and output dir are the same, skip and return true
 			if(mOutputDir.getCanonicalPath().equals(mInputFileset.getManifestMember().getFile().getParentFile().getCanonicalPath())) {
 				String message = i18n("IN_OUT_SAME_SKIPPING", mOutputDir.getCanonicalPath());
@@ -141,7 +158,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 				randomizedName.addSegment(RandomUniqueSegment.create(mInputFileset, 6));				
 				mStrategy = createStrategy(mInputFileset, randomizedName, mTypeExclusions, 96);				
 				//render the randomized fileset to a subfolder of user output folder
-				mRoundtripOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(new File(mOutputDir,"dmfc_temp")));
+				mRoundtripOutputDir = (Directory)FileUtils.createDirectory(new Directory(new File(mOutputDir,"dmfc_temp")));
 								
 				message = i18n("RENDER_ROUNDTRIP", e.getMessage(), mRoundtripOutputDir.getAbsolutePath());
 				this.sendMessage(message, MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
@@ -194,7 +211,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	/**
 	 * @throws FilesetRenamingException if resulting strategy is not valid or something else went wrong.
 	 */
-	private RenamingStrategy createStrategy(Fileset fileset, SegmentedFileName templateName, List typeExclusions, int maxFilenameLength) throws FilesetRenamingException {
+	private RenamingStrategy createStrategy(Fileset fileset, SegmentedFileName templateName, List<Class<?>> typeExclusions, int maxFilenameLength) throws FilesetRenamingException {
 		RenamingStrategy rs = new DefaultStrategy(fileset,templateName,mFilesystemSafe);
 		rs.setTypeExclusion(typeExclusions);
 		rs.setMaxFilenameLength(maxFilenameLength);
@@ -207,7 +224,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	 * Render a fileset to disk. Register self as listener, 
 	 * and use the callbacks to intervene and apply the rename strategy to the output.
 	 */
-	private void renderStrategy(Fileset fileset, EFolder outputDir) throws FilesetManipulationException, IOException {		
+	private void renderStrategy(Fileset fileset, Directory outputDir) throws FilesetManipulationException, IOException {		
 		//get a FilesetManipulator instance
 		mFilesetManipulator = new FilesetManipulator();
 		//implement FilesetManipulatorListener
@@ -225,7 +242,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	 * Create a List&lt;Class&gt; of excluded file types using an inparam.
 	 */
 	@SuppressWarnings("unchecked")
-	private List setExclusions(String param) {
+	private List<Class<?>> setExclusions(String param) {
 		mTypeExclusions = new ArrayList();
 		String[] types = param.split(",");
 		for (int i = 0; i < types.length; i++) {
@@ -334,10 +351,10 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			StringBuilder sb = new StringBuilder();
 			//replace oldNames with newNames and return
 			sb.append(value);		
-			Iterator it = mStrategy.getIterator();
+			Iterator<URI> it = mStrategy.getIterator();
 			while(it.hasNext()) {
 				try{
-					URI oldNameURI = (URI)it.next();			
+					URI oldNameURI = it.next();			
 					//oldName = (new File(oldNameURI)).getName(); 
 					//problem: above doesnt take escape sequences into account, gotta keep them, so:
 					oldName = URIStringParser.stripPath(oldNameURI.toString());

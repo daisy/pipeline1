@@ -79,7 +79,7 @@ public class TTSBuilder {
 	 * @param parameterSubst the parameter/value map.
 	 * @throws TTSBuilderException 
 	 */
-	public TTSBuilder(File configFile, Map parameterSubst) throws TTSBuilderException {
+	public TTSBuilder(File configFile, Map<String,String> parameterSubst) throws TTSBuilderException {
 		this.configFile = configFile;
 		this.config = readXML(configFile);
 		XMLParameter xmlp = new XMLParameter(parameterSubst);
@@ -164,7 +164,7 @@ public class TTSBuilder {
 	 * @throws TTSBuilderException 
 	 */
 	public TTS newTTS(String lang) throws TTSBuilderException {
-		Map parameters = new HashMap();
+		Map<String, String> parameters = new HashMap<String, String>();
 
 		String xpath = null;
 		Element docElement = null;
@@ -208,17 +208,17 @@ public class TTSBuilder {
 			parameters.put(elem.getAttribute("name"), elem.getAttribute("value"));
 		}
 
-		String fullClassName = (String) parameters.get(CLASS);
+		String fullClassName = parameters.get(CLASS);
 		if (null == fullClassName) {
 			throw new IllegalArgumentException("The full class name must be privided for every TTS Java wrapper implementation, edit " + 
 					configFile.getAbsolutePath() + 
 					" in order to fix this problem. Tried to create tts for xml:lang= " + lang);
 		}
 
-		Class ttsClass = null; 
-		Class parameterList[] = null;
-		Map constrParam[] = null;
-		Constructor constructor = null;
+		Class<?> ttsClass = null; 
+		Class<?> parameterList[] = null;
+		Map<?,?> constrParam[] = null;
+		Constructor<?> constructor = null;
 		TTS tts = null;
 
 		try {

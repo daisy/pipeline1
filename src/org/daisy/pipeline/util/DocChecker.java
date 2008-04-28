@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.pipeline.util;
 
 import java.io.File;
@@ -19,7 +36,7 @@ import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.fileset.FilesetErrorHandler;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
@@ -39,28 +56,28 @@ import org.xml.sax.SAXParseException;
  */
 public class DocChecker implements FilesetErrorHandler {
 					
-	private Map<String, Boolean> mXifProperties = null;
+	private Map<String, Object> mXifProperties = null;
 	
 	/**
 	 * @param pipelineRootDir a string representing the root directory of the pipeline.
 	 */	
 	public DocChecker(String pipelineRootDir) throws Exception {
 		
-		mXifProperties = new HashMap<String, Boolean>();
+		mXifProperties = new HashMap<String, Object>();
 		mXifProperties.put(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
 		mXifProperties.put(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
 		mXifProperties.put(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);
 		mXifProperties.put(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.TRUE);
 		mXifProperties.put(XMLInputFactory.IS_VALIDATING, Boolean.FALSE);
 		
-		EFolder  rootDir = new EFolder(pipelineRootDir);
+		Directory  rootDir = new Directory(pipelineRootDir);
 		assert(rootDir.exists());
 		
-		EFolder scriptsDir = new EFolder(rootDir,"scripts");
-		EFolder transformersDir = new EFolder(rootDir,"transformers");
-		EFolder docDir = new EFolder(rootDir,"doc");
-		EFolder endUserDocDir = new EFolder(docDir,"enduser");
-		EFolder devDocDir = new EFolder(docDir,"developer");
+		Directory scriptsDir = new Directory(rootDir,"scripts");
+		Directory transformersDir = new Directory(rootDir,"transformers");
+		Directory docDir = new Directory(rootDir,"doc");
+		Directory endUserDocDir = new Directory(docDir,"enduser");
+		Directory devDocDir = new Directory(docDir,"developer");
 				
 		Map<File,String> scriptAndTransformerFiles = new HashMap<File,String>();
 		
@@ -158,7 +175,7 @@ public class DocChecker implements FilesetErrorHandler {
 		return ret;
 	}
 
-	private Map<File,String> getDocuments(EFolder rootDir, String rootElemLocalName, String extension) throws Exception {
+	private Map<File,String> getDocuments(Directory rootDir, String rootElemLocalName, String extension) throws Exception {
 		 		
 		Collection<File> all = rootDir.getFiles(true);
 		Map<File,String> ret = new HashMap<File,String>();
@@ -182,6 +199,7 @@ public class DocChecker implements FilesetErrorHandler {
 		return ret;
 	}
 
+	@SuppressWarnings("unused")
 	public void error(FilesetFileException ffe) throws FilesetFileException {
 		String line = "";
 		if(ffe.getCause().getMessage().contains("no matching file type found for")) return;
@@ -198,7 +216,7 @@ public class DocChecker implements FilesetErrorHandler {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		DocChecker dc = new DocChecker(args[0]);
+		new DocChecker(args[0]);
 	}
 
 }

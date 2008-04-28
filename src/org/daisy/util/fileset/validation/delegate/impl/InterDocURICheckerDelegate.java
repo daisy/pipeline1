@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.fileset.validation.delegate.impl;
 
 import java.net.URI;
@@ -25,7 +42,7 @@ import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;
  */
 public class InterDocURICheckerDelegate extends ValidatorDelegateImplAbstract {
 
-	public boolean isFilesetTypeSupported(FilesetType type) {
+	public boolean isFilesetTypeSupported(@SuppressWarnings("unused")FilesetType type) {
 		return true;
 	}
 
@@ -44,13 +61,13 @@ public class InterDocURICheckerDelegate extends ValidatorDelegateImplAbstract {
 		URI cache = null;
 		FilesetFile referencedMember = null;
 
-		for (Iterator iter = fileset.getLocalMembers().iterator(); iter.hasNext();) {
-			FilesetFile ffile = (FilesetFile) iter.next();
+		for (Iterator<FilesetFile> iter = fileset.getLocalMembers().iterator(); iter.hasNext();) {
+			FilesetFile ffile = iter.next();
 			if (ffile instanceof Referring) {				
 				Referring referer = (Referring) ffile;
-				Iterator uriator = referer.getUriStrings().iterator();
+				Iterator<String> uriator = referer.getUriStrings().iterator();
 				while (uriator.hasNext()) {
-					String uriString = (String) uriator.next();
+					String uriString = uriator.next();
 					if (!regex.matches(regex.URI_REMOTE, uriString) && !uriString.startsWith("#")) {
 						String path = URIStringParser.stripFragment(uriString);
 						String fragment = URIStringParser.getFragment(uriString);

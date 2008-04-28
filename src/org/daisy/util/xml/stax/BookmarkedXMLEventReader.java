@@ -1,20 +1,19 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.util.xml.stax;
 
@@ -45,7 +44,7 @@ public class BookmarkedXMLEventReader implements XMLEventReader {
    
     private XMLEventReader xer;
     
-    private Map bookmarks = new HashMap();    
+    private Map<String,LinkedEvent> bookmarks = new HashMap<String,LinkedEvent>();    
     private XMLEvent lastEvent = null;
     private LinkedEvent current = null;
     
@@ -77,7 +76,7 @@ public class BookmarkedXMLEventReader implements XMLEventReader {
      * @param name the name of the bookmark.
      */
     public void gotoBookmark(String name) {
-        LinkedEvent le = (LinkedEvent)bookmarks.get(name);
+        LinkedEvent le = bookmarks.get(name);
         if (le == null) {
             throw new IllegalArgumentException("Unknown bookmark: " + name);
         }
@@ -114,7 +113,7 @@ public class BookmarkedXMLEventReader implements XMLEventReader {
      * Gets all bookmark names.
      * @return the current set of bookmark names.
      */
-    public Set getBookmarkNames() {
+    public Set<String> getBookmarkNames() {
         return bookmarks.keySet();
     }
     
@@ -132,8 +131,8 @@ public class BookmarkedXMLEventReader implements XMLEventReader {
      * Warning: this method performs a linear search over all bookmarks.
      */
     public boolean atBookmark() {
-        for (Iterator it = bookmarks.keySet().iterator(); it.hasNext(); ) {
-            LinkedEvent le = (LinkedEvent)bookmarks.get(it.next());
+        for (Iterator<String> it = bookmarks.keySet().iterator(); it.hasNext(); ) {
+            LinkedEvent le = bookmarks.get(it.next());
             if (le == current) {
                 return true;
             }
@@ -149,7 +148,7 @@ public class BookmarkedXMLEventReader implements XMLEventReader {
         if (!bookmarkExists(name)) {
             throw new IllegalArgumentException("Unknown bookmark: " + name);
         }
-        LinkedEvent le = (LinkedEvent)bookmarks.get(name);        
+        LinkedEvent le = bookmarks.get(name);        
         return (le == current);
     }
     
@@ -158,11 +157,11 @@ public class BookmarkedXMLEventReader implements XMLEventReader {
      * Warning: this method performs a linear search over all bookmarks.
      * @return a Set of bookmark names
      */
-    public Set getBookmarkNamesHere() {
-        Set result = new HashSet();
-        for (Iterator it = bookmarks.keySet().iterator(); it.hasNext(); ) {
-            String bookmarkName = (String)it.next();
-            LinkedEvent le = (LinkedEvent)bookmarks.get(bookmarkName);
+    public Set<String> getBookmarkNamesHere() {
+        Set<String> result = new HashSet<String>();
+        for (Iterator<String> it = bookmarks.keySet().iterator(); it.hasNext(); ) {
+            String bookmarkName = it.next();
+            LinkedEvent le = bookmarks.get(bookmarkName);
             if (le == current) {
                 result.add(bookmarkName);
             }
@@ -180,7 +179,7 @@ public class BookmarkedXMLEventReader implements XMLEventReader {
      * @param to the name of the new bookmark
      */
     public void copyBookmark(String from, String to) {
-        LinkedEvent le = (LinkedEvent)bookmarks.get(from);
+        LinkedEvent le = bookmarks.get(from);
         if (le == null) {
             throw new IllegalArgumentException("Unknown bookmark: " + from);
         }
@@ -204,11 +203,11 @@ public class BookmarkedXMLEventReader implements XMLEventReader {
      * @return <code>true</code> if the bookmarks point to the same location, <code>false</code> otherwise
      */
     public boolean bookmarksEqual(String name1, String name2) {
-        LinkedEvent le1 = (LinkedEvent)bookmarks.get(name1);
+        LinkedEvent le1 = bookmarks.get(name1);
         if (le1 == null) {
             throw new IllegalArgumentException("Unknown bookmark: " + le1);
         }
-        LinkedEvent le2 = (LinkedEvent)bookmarks.get(name2);
+        LinkedEvent le2 = bookmarks.get(name2);
         if (le2 == null) {
             throw new IllegalArgumentException("Unknown bookmark: " + le2);
         }

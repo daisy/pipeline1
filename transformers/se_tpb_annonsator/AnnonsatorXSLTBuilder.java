@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package se_tpb_annonsator;
 
 import java.io.FileNotFoundException;
@@ -42,7 +59,7 @@ import org.xml.sax.SAXException;
 public class AnnonsatorXSLTBuilder {
 
 	private DocumentBuilder builder;
-	private Set languages;
+	private Set<String> languages;
 	private Document config;
 	private Document template;
 	
@@ -80,7 +97,7 @@ public class AnnonsatorXSLTBuilder {
 	        }
 	        
 	        // find out which languages are used in the rules
-	        languages = new HashSet();
+	        languages = new HashSet<String>();
 	        NodeList list = XPathUtils.selectNodes(config.getDocumentElement(), "//lang[@lang]");
 			for (int i = 0; i < list.getLength(); ++i) {
 				Node node = list.item(i);
@@ -114,7 +131,7 @@ public class AnnonsatorXSLTBuilder {
 	 * @param templateFile a <tt>URL</tt> pointing at the xsl-template file
 	 * @throws TransformerRunException
 	 */
-	private void modifyTextNodes(URL templateFile) throws ParserConfigurationException, TransformerRunException {
+	private void modifyTextNodes(URL templateFile) throws TransformerRunException {
 	
 		try {
 			template = builder.parse(templateFile.openStream());
@@ -122,8 +139,8 @@ public class AnnonsatorXSLTBuilder {
 			elem.setAttribute(xmlnsAttr, xmlnsValue);
 			
 			Element ifBefore = template.getElementById("ifBefore");
-			for (Iterator it = languages.iterator(); it.hasNext(); ) {
-			    String lang = (String)it.next();
+			for (Iterator<String> it = languages.iterator(); it.hasNext(); ) {
+			    String lang = it.next();
 			    Element ifBeforeClone = (Element)ifBefore.cloneNode(true);
 			    ifBeforeClone.setAttribute("test", "lang('" + lang + "')");
 			    ifBeforeClone.removeAttribute("id");
@@ -142,8 +159,8 @@ public class AnnonsatorXSLTBuilder {
 			ifBefore.getParentNode().removeChild(ifBefore);
 			
 			Element ifAfter = template.getElementById("ifAfter");
-			for (Iterator it = languages.iterator(); it.hasNext(); ) {
-			    String lang = (String)it.next();
+			for (Iterator<String> it = languages.iterator(); it.hasNext(); ) {
+			    String lang = it.next();
 			    Element ifAfterClone = (Element)ifAfter.cloneNode(true);
 			    ifAfterClone.setAttribute("test", "lang('" + lang + "')");
 			    ifAfterClone.removeAttribute("id");

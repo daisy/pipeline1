@@ -3,11 +3,11 @@ package org.daisy.pipeline.test.impl;
 import java.util.List;
 
 import org.daisy.pipeline.test.PipelineTest;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 public class WordML2DTBook3 extends PipelineTest {
 
-	public WordML2DTBook3(EFolder dataInputDir, EFolder dataOutputDir) {
+	public WordML2DTBook3(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	

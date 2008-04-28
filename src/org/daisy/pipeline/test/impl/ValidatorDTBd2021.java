@@ -3,11 +3,11 @@ package org.daisy.pipeline.test.impl;
 import java.util.List;
 
 import org.daisy.pipeline.test.PipelineTest;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 public class ValidatorDTBd2021 extends PipelineTest {
 
-	public ValidatorDTBd2021(EFolder dataInputDir, EFolder dataOutputDir) {
+	public ValidatorDTBd2021(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	

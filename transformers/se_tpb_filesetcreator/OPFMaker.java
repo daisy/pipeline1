@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package se_tpb_filesetcreator;
@@ -45,7 +44,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
-import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -61,16 +59,16 @@ public class OPFMaker {
 	
 	public static String DEBUG_PROPERTY = "org.daisy.debug";	// the system property used to determine if we're in debug mode or not
 	
-	private Map mimeTypes;							// maps filename suffix to mime type for valid file types.
-	private Map dcElements;							// a MultiHashMap containing dc elements and their values.
+	private Map<String,String> mimeTypes;			// maps filename suffix to mime type for valid file types.
+	private Map<?,?> dcElements;							// a MultiHashMap containing dc elements and their values.
 	private Map metaData;							// meta data container, such as total time, media content etc.
-	private Vector smils;							// the smil files names in order.
-	private Set generatedFiles;						// files generated during file set creation.
-	private Set referredFiles;						// files referred in other ways, e.g images.
-	private Set validDCElemNames = new HashSet();	// valid dc elements for the opf.
+	private Vector<?> smils;							// the smil files names in order.
+	private Set<String> generatedFiles;						// files generated during file set creation.
+	private Set<String> referredFiles;						// files referred in other ways, e.g images.
+	private Set<String> validDCElemNames = new HashSet<String>();	// valid dc elements for the opf.
 	private File opfTemplateFile;					// the opf template
 	private File opfOutputFile;						// output location of the generated opf
-	private Vector ids = new Vector();				// opf file ids.
+	private Vector<String> ids = new Vector<String>();				// opf file ids.
 	
 	private Document opf;							// the opfd beeing costructed
 	private int id;									// id making use of a simple counter
@@ -91,18 +89,17 @@ public class OPFMaker {
 	 * @param opfTemplate the opf template file.
 	 * @param opfOutputFile the location for the generated opf file.
 	 * @param inputDir the directory where input dtbook and files reside.
-	 * @throws CatalogExceptionNotRecoverable
 	 */
 	public OPFMaker(
-			Map mimeTypes, 
-			Map dcElements, 
-			Map metaData, 
-			Vector smils, 
-			Set generatedFiles, 
-			Set referredFiles, 
+			Map<String,String> mimeTypes, 
+			Map<?,?> dcElements, 
+			Map<?,?> metaData, 
+			Vector<?> smils, 
+			Set<String> generatedFiles, 
+			Set<String> referredFiles, 
 			File opfTemplate, 
 			File opfOutputFile, 
-			File inputDir) throws CatalogExceptionNotRecoverable {
+			File inputDir) {
 		
 		this.mimeTypes = mimeTypes;
 		this.dcElements = dcElements;
@@ -166,9 +163,9 @@ public class OPFMaker {
 	private void makeSpine() {
 		Element spine = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/opf:package/opf:spine", mNsc);
 		
-		for (Iterator it = ids.iterator(); it.hasNext(); ) {
+		for (Iterator<String> it = ids.iterator(); it.hasNext(); ) {
 			Element itemref = opf.createElementNS(opfNamespaceURI, "itemref");
-			itemref.setAttribute("idref", (String) it.next());
+			itemref.setAttribute("idref", it.next());
 			spine.appendChild(itemref);
 		}
 	}
@@ -182,7 +179,7 @@ public class OPFMaker {
 		Element manifest = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/opf:package/opf:manifest", mNsc);
 		
 		// smil files, make sure IDs are saved in proper sequence
-		for (Iterator it = smils.iterator(); it.hasNext(); ) {
+		for (Iterator<?> it = smils.iterator(); it.hasNext(); ) {
 			Object temp = it.next();
 			File currentFile = new File((String) temp);
 			String id = getNextId("smil-");
@@ -196,13 +193,13 @@ public class OPFMaker {
 		}
 		
 		// other files
-		Set remainingFiles = new HashSet();
+		Set<String> remainingFiles = new HashSet<String>();
 		remainingFiles.addAll(referredFiles);
 		remainingFiles.addAll(generatedFiles);
 		
-		for (Iterator it = remainingFiles.iterator(); it.hasNext(); ) {
+		for (Iterator<String> it = remainingFiles.iterator(); it.hasNext(); ) {
 			
-			String filename = (String) it.next();
+			String filename = it.next();
 			filename = filename.replace('\\', '/');
 			
 			String id;
@@ -214,7 +211,7 @@ public class OPFMaker {
 				id = getNextId();
 			}
 			
-			Element elem = (Element) opf.createElementNS(opfNamespaceURI, "item");
+			Element elem = opf.createElementNS(opfNamespaceURI, "item");
 			elem.setAttribute("href", filename);
 			elem.setAttribute("id", id);
 			elem.setAttribute("media-type", getMimeType(filename));
@@ -228,8 +225,8 @@ public class OPFMaker {
 	 *
 	 */
 	private void makeDCElements() {		
-		for (Iterator collIt = dcElements.keySet().iterator(); collIt.hasNext(); ) {
-			String originalStr = (String) collIt.next();
+		for (Iterator<?> collIt = dcElements.keySet().iterator(); collIt.hasNext(); ) {
+			String originalStr = (String)collIt.next();
 			
 			// sort out the prefix:elemname, e.g "dc:Creator"
 			String elemName = originalStr;
@@ -259,9 +256,9 @@ public class OPFMaker {
 			}
 			
 			// for each value for the key "dc:Something", add an element to the opf.
-			Collection dcVals = (Collection) dcElements.get(originalStr);
-			for (Iterator it = dcVals.iterator(); it.hasNext(); ) { 
-				String originalValue = (String) it.next();
+			Collection<String> dcVals = (Collection<String>) dcElements.get(originalStr);
+			for (Iterator<String> it = dcVals.iterator(); it.hasNext(); ) { 
+				String originalValue = it.next();
 				Element elem = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "/opf:package/opf:metadata/opf:dc-metadata/" + elemName, mNsc);
 				if (null == elem || elem.getTextContent().trim().length() != 0) {
 					elem = opf.createElementNS(dcNamespaceURI, prefix + delim + elemName);
@@ -283,7 +280,7 @@ public class OPFMaker {
 		
 		/* Martin Blomberg 7/5 2007 */
 		/* here goes the real id element */
-		Collection singleValue = (Collection) dcElements.get("uid");
+		Collection<String> singleValue = (Collection<String>) dcElements.get("uid");
 		if (null != singleValue) {
 			if (singleValue.size() == 1) {
 
@@ -291,8 +288,8 @@ public class OPFMaker {
 				Element elem = opf.createElementNS(dcNamespaceURI, "dc:Identifier");
 				node.appendChild(elem);
 				elem.setAttribute("id", "uid");
-				for (Iterator it = singleValue.iterator(); it.hasNext(); ) {
-					elem.appendChild(opf.createTextNode((String) it.next()));	
+				for (Iterator<String> it = singleValue.iterator(); it.hasNext(); ) {
+					elem.appendChild(opf.createTextNode(it.next()));	
 				}			
 			}
 		}
@@ -305,9 +302,9 @@ public class OPFMaker {
 	 */
 	private void makeMetaElements() {
 		Element xMeta = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "//opf:x-metadata", mNsc);
-		for (Iterator it = metaData.keySet().iterator(); it.hasNext(); ) {
+		for (Iterator<?> it = metaData.keySet().iterator(); it.hasNext(); ) {
 			
-			String metaName = (String) it.next();
+			String metaName = (String)it.next();
 			String metaContent = (String) metaData.get(metaName);
 			
 			Element newMeta = opf.createElementNS(opfNamespaceURI, "meta");
@@ -330,7 +327,7 @@ public class OPFMaker {
 		}
 		
 		String suffix = filename.substring(filename.lastIndexOf('.'));
-		String mime = (String) mimeTypes.get(suffix);
+		String mime = mimeTypes.get(suffix);
 		if (null == mime) {
 			throw new IllegalArgumentException("Illegal filename suffix: " + suffix);
 		}
@@ -415,6 +412,7 @@ public class OPFMaker {
 	 * the system property <tt>org.daisy.debug</tt> is defined.
 	 * @param d the document.
 	 */
+	@SuppressWarnings("unused")
 	private void DEBUG(Document d) {
 		if (System.getProperty(DEBUG_PROPERTY) != null) {
 			try {

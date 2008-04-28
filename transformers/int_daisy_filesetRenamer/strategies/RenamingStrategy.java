@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_filesetRenamer.strategies;
 
 import int_daisy_filesetRenamer.FilesetRenamingException;
@@ -25,14 +42,14 @@ public interface RenamingStrategy {
 	 * This equals enabling all FilesetFile interface Classes not registered here.
 	 * However, if this method is never called on an instance, all members are enabled.  
 	 */
-	public void setTypeExclusion(Class filesetFileInterface);
+	public void setTypeExclusion(Class<?> filesetFileInterface);
 
 	/**
 	 * Disable one or several specific FilesetFile interface Classes for renaming.
 	 * This equals enabling all FilesetFile interface Classes not registered here.
 	 * However, if this method is never called on an instance, all members are enabled.  
 	 */
-	public void setTypeExclusion(List filesetFileInterfaces);
+	public void setTypeExclusion(List<Class<?>> filesetFileInterfaces);
 	
 	/**
 	 * Checks whether there are name collisions in naming strategy;
@@ -59,7 +76,7 @@ public interface RenamingStrategy {
 	/**
 	 * Get an iterator for the keyset of the URI(old),URI(new) HashMap
 	 */
-	public Iterator getIterator();
+	public Iterator<URI> getIterator();
 
 	/**
 	 * Set the maximum numbers of characters in generated filenames.

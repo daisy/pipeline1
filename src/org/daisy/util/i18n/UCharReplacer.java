@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.i18n;
 
 import java.io.IOException;
@@ -85,11 +83,11 @@ import com.ibm.icu.text.UCharacterIterator;
  */
 
 public class UCharReplacer  {	
-	private ArrayList mSubstitutionTables = null; 					//ArrayList<HashMap:<int codepoint>,<replaceString>>: all loaded translationtables
-	private HashMap mSubstitutionTable = null;						//represents the currently selected translationTable
-	private Iterator mSubstitutionTablesIterator = null;			//recycled tables map iterator
+	private ArrayList<Map<Integer,String>> mSubstitutionTables = null; 					//ArrayList<HashMap:<int codepoint>,<replaceString>>: all loaded translationtables
+	private Map<Integer,String> mSubstitutionTable = null;						//represents the currently selected translationTable
+	private Iterator<Map<Integer,String>> mSubstitutionTablesIterator = null;			//recycled tables map iterator
 	private int mSubstitutionTableUseCount = 0;						//counter: number of replaces made using any loaded tables.
-	private HashMap mSubstitutionTableFailures = null; 				//<Integer,String>; one entry per user table char replacement failure
+	private Map<Integer,String> mSubstitutionTableFailures = null; 				//<Integer,String>; one entry per user table char replacement failure
 	private boolean mFallbackToLatinTransliteration = false;		//whether to attempt transliteration to Latin when a user table does not provide a replacement for a codepoint
 	private boolean 
 		mFallbackToNonSpacingMarkRemovalTransliteration = false;	//as above, but nonspacing mark (accent) removal
@@ -104,8 +102,8 @@ public class UCharReplacer  {
 	 * Default constructor.
 	 */
 	public UCharReplacer() {
-		mSubstitutionTables = new ArrayList();
-		mSubstitutionTableFailures = new HashMap();		
+		mSubstitutionTables = new ArrayList<Map<Integer,String>>();
+		mSubstitutionTableFailures = new HashMap<Integer,String>();		
 	}
 
 	
@@ -172,7 +170,7 @@ public class UCharReplacer  {
 	/**
 	 * @return the list of loaded character substitution tables. This list is never null, but may be empty.
 	 */
-	public List getTranslationTables() {		
+	public List<Map<Integer,String>> getTranslationTables() {		
 		return mSubstitutionTables;		
 	}
 	
@@ -209,7 +207,7 @@ public class UCharReplacer  {
 	 * was used instead.
 	 * @see #reset() 
 	 */
-	public Map getTranslationTableFailures() {
+	public Map<Integer,String> getTranslationTableFailures() {
 		return mSubstitutionTableFailures;
 	}
 	
@@ -319,9 +317,9 @@ public class UCharReplacer  {
 	private String retrieveSubstituteFromUserTables(int codePoint) {
 		Integer integer = Integer.valueOf(codePoint);		
 		for (mSubstitutionTablesIterator = mSubstitutionTables.iterator(); mSubstitutionTablesIterator.hasNext();) {
-			mSubstitutionTable = (HashMap) mSubstitutionTablesIterator.next();
+			mSubstitutionTable = mSubstitutionTablesIterator.next();
 			if(mSubstitutionTable.containsKey(integer)) {
-				return (String)mSubstitutionTable.get(integer);
+				return mSubstitutionTable.get(integer);
 			}
 		}
 		return null;
@@ -380,14 +378,14 @@ public class UCharReplacer  {
 	/**
 	 * Loads a table using the Properties class.
 	 */
-	private HashMap loadTable(URL tableURL) throws IOException {
-		HashMap map = new HashMap();
+	private HashMap<Integer,String> loadTable(URL tableURL) throws IOException {
+		HashMap<Integer,String> map = new HashMap<Integer,String>();
 		
 		// Martin Blomberg 2006-08-15:
 		Properties props = new Properties();
 		props.loadFromXML(tableURL.openStream());
-		Set keys = props.keySet();
-		for (Iterator it = keys.iterator(); it.hasNext(); ) {
+		Set<?> keys = props.keySet();
+		for (Iterator<?> it = keys.iterator(); it.hasNext(); ) {
 			String key = (String) it.next();
 			try {
 				map.put(Integer.decode("0x" + key), props.getProperty(key));
@@ -427,7 +425,8 @@ public class UCharReplacer  {
 	/**
 	 * @deprecated use .addSubstitutionTable(URL) as we are XML now.
 	 */
-	public void addTranslationTable(URL table, String encoding) throws IOException {
+	public void addTranslationTable(URL table, @SuppressWarnings("unused")
+	String encoding) throws IOException {
 		addSubstitutionTable(table);
 	}
 	

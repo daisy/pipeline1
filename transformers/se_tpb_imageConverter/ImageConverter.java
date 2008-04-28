@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package se_tpb_imageConverter;
 
 import java.io.File;
@@ -23,17 +40,17 @@ public class ImageConverter extends Transformer {
 	}
 
 	@Override
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		progress(0);
-		File input = new File((String)parameters.remove("input"));
-        File output = new File((String)parameters.remove("output"));
-        String converter = (String)parameters.remove("converter");
-        String arguments = ((String)parameters.remove("arguments")).trim();
-        String ext = ((String)parameters.remove("extension")).trim();
-        String placeholderInput = ((String)parameters.remove("placeholderInput")).trim();
-        String placeholderOutput = ((String)parameters.remove("placeholderOutput")).trim();
-        String tag = ((String)parameters.remove("lookForTag")).trim();
-        String att = ((String)parameters.remove("lookForAttribute")).trim();
+		File input = new File(parameters.remove("input"));
+        File output = new File(parameters.remove("output"));
+        String converter = parameters.remove("converter");
+        String arguments = parameters.remove("arguments").trim();
+        String ext = parameters.remove("extension").trim();
+        String placeholderInput = parameters.remove("placeholderInput").trim();
+        String placeholderOutput = parameters.remove("placeholderOutput").trim();
+        String tag = parameters.remove("lookForTag").trim();
+        String att = parameters.remove("lookForAttribute").trim();
         
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
 		inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
@@ -82,13 +99,11 @@ public class ImageConverter extends Transformer {
 			ir.filter();
 			ir.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return false;
+			throw new TransformerRunException(e.getMessage(),e);			
 		} catch (XMLStreamException e) {
-			e.printStackTrace();
-			return false;
+			throw new TransformerRunException(e.getMessage(),e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new TransformerRunException(e.getMessage(),e);
 		}
 		progress(1);
 		return true;

@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package se_tpb_wordml2dtbook;
 
 import java.io.File;
@@ -5,6 +22,7 @@ import java.io.FilenameFilter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.parsers.SAXParserFactory;
@@ -44,33 +62,33 @@ public class WordML2DTBook extends Transformer {
 		super(inListener, isInteractive);
 	}
 
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		progress(0);
 
 		// program parameters
-		String factory = (String)parameters.remove("factory");
-		String input = (String)parameters.remove("xml");
-        String xslt = (String)parameters.remove("xslt");
-        File outdir = new File((String)parameters.remove("out"));
-        String filename = (String)parameters.remove("filename");
-        String images = (String)parameters.remove("images");
-        String overwrite = (String)parameters.remove("overwrite");
-        String version = (String)parameters.remove("dtbook-version");
+		String factory = parameters.remove("factory");
+		String input = parameters.remove("xml");
+        String xslt = parameters.remove("xslt");
+        File outdir = new File(parameters.remove("out"));
+        String filename = parameters.remove("filename");
+        String images = parameters.remove("images");
+        String overwrite = parameters.remove("overwrite");
+        String version = parameters.remove("dtbook-version");
  
-        String forceJPEG = (String)parameters.get("forceJPEG");
+        String forceJPEG = parameters.get("forceJPEG");
 		if ("true".equals(forceJPEG) && "true".equals(images)) {
 			try {
 				String converter = System.getProperty("pipeline.imageMagick.converter.path");
 				ArrayList<String> arg = new ArrayList<String>();
 				arg.add(converter);
-				Command.execute((String[])(arg.toArray(new String[arg.size()])), true);
+				Command.execute((arg.toArray(new String[arg.size()])), true);
 			} catch (ExecutionException e) {
         		sendMessage("ImageMagick is not available. Verify that ImageMagick is installed and that Daisy Pipeline can find it (paths setup).", MessageEvent.Type.ERROR);
 			}
 		}        
         // xslt parameters
-        String uid = (String)parameters.get("uid");
-        String stylesheet = (String)parameters.get("stylesheet");
+        String uid = parameters.get("uid");
+        String stylesheet = parameters.get("stylesheet");
 
         final File dtbook2xthml = new File(this.getTransformerDirectory(), "./lib/dtbook2xhtml.xsl");
         final File defaultcss = new File(this.getTransformerDirectory(), "./lib/default.css");
@@ -83,18 +101,22 @@ public class WordML2DTBook extends Transformer {
         final File defragmentSup = new File(this.getTransformerDirectory(), "./xslt/post-defragment-sup.xsl");
         final File defragmentEm = new File(this.getTransformerDirectory(), "./xslt/post-defragment-em.xsl");
         final File defragmentStrong = new File(this.getTransformerDirectory(), "./xslt/post-defragment-strong.xsl");
-        final File addAuthorTitle = new File(this.getTransformerDirectory(), "./xslt/post-add-author-title.xsl");
-        final File indent = new File(this.getTransformerDirectory(), "./xslt/post-indent.xsl");
+//        final File addAuthorTitle = new File(this.getTransformerDirectory(), "./xslt/post-add-author-title.xsl");
+//        final File indent = new File(this.getTransformerDirectory(), "./xslt/post-indent.xsl");
         File doctypeXsl;
         if ("2005-2".equals(version)) {
         	doctypeXsl = new File(this.getTransformerDirectory(), "./xslt/dtbook-2005-2.xsl");
         } else {
         	doctypeXsl = new File(this.getTransformerDirectory(), "./xslt/dtbook-2005-1.xsl");
         }
+        
+        Map<String,Object> xslParams = new HashMap<String,Object>();
+        xslParams.putAll(parameters);
+        
 //      validate input
 		try {
 			TempFile t0 = new TempFile();
-			Stylesheet.apply(input, inputValidator.getAbsolutePath(), t0.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(input, inputValidator.getAbsolutePath(), t0.getFile().getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
 		} catch (Exception e) {
 			sendMessage("Input is not a WordML file", MessageEvent.Type.ERROR);
 			return false;
@@ -142,32 +164,32 @@ public class WordML2DTBook extends Transformer {
 			TempFile t4 = new TempFile();
 			TempFile t5 = new TempFile();
 			TempFile t6 = new TempFile();
-			TempFile t7 = new TempFile();
-			TempFile t8 = new TempFile();
+//			TempFile t7 = new TempFile();
+//			TempFile t8 = new TempFile();
 			
 			sendMessage("Tempfolder: " + t1.getFile().getParent(), MessageEvent.Type.DEBUG);
 
 
 			sendMessage("Converting to DTBook...");
 			FileJuggler juggler = new FileJuggler(new File(input), t1.getFile());
-			Stylesheet.apply(juggler.getInput().getAbsolutePath(), xslt, juggler.getOutput().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(juggler.getInput().getAbsolutePath(), xslt, juggler.getOutput().getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
 			juggler.swap();
 			progress(0.5);
 			// Add blockwrapper ns (xslt 2.0)
-			Stylesheet.apply(juggler.getInput().getAbsolutePath(), new File(this.getTransformerDirectory(), "./xslt/post-add-blockwrapper-ns.xsl").getAbsolutePath(), juggler.getOutput().getAbsolutePath(), "net.sf.saxon.TransformerFactoryImpl", parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(juggler.getInput().getAbsolutePath(), new File(this.getTransformerDirectory(), "./xslt/post-add-blockwrapper-ns.xsl").getAbsolutePath(), juggler.getOutput().getAbsolutePath(), "net.sf.saxon.TransformerFactoryImpl", xslParams, CatalogEntityResolver.getInstance());
 			juggler.swap();
 			progress(0.55);
 			// Blockwrapper (xslt 2.0)
-			Stylesheet.apply(juggler.getInput().getAbsolutePath(), new File(this.getTransformerDirectory(), "./xslt/post-blockwrapper.xsl").getAbsolutePath(), juggler.getOutput().getAbsolutePath(), "net.sf.saxon.TransformerFactoryImpl", parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(juggler.getInput().getAbsolutePath(), new File(this.getTransformerDirectory(), "./xslt/post-blockwrapper.xsl").getAbsolutePath(), juggler.getOutput().getAbsolutePath(), "net.sf.saxon.TransformerFactoryImpl", xslParams, CatalogEntityResolver.getInstance());
 			juggler.close();
 			progress(0.6);
 			// check character count
 			TempFile tc1 = new TempFile();
 			TempFile tc2 = new TempFile();
 			sendMessage("Verifying result...");
-			Stylesheet.apply(input, countCharsWml.getAbsolutePath(), tc1.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(input, countCharsWml.getAbsolutePath(), tc1.getFile().getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
 			progress(0.7);
-			Stylesheet.apply(t1.getFile().getAbsolutePath(), countCharsDTBook.getAbsolutePath(), tc2.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(t1.getFile().getAbsolutePath(), countCharsDTBook.getAbsolutePath(), tc2.getFile().getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
 			
 			if (tc1.getFile().length()!=tc2.getFile().length()) {
 				long diff = (tc2.getFile().length() - tc1.getFile().length());
@@ -180,21 +202,21 @@ public class WordML2DTBook extends Transformer {
 			progress(0.79);
 			sendMessage("Post processing...");
 			// Must match the order in wordml2dtbook.xsl
-			Stylesheet.apply(t1.getFile().getAbsolutePath(), removeTempStructure.getAbsolutePath(), t2.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(t1.getFile().getAbsolutePath(), removeTempStructure.getAbsolutePath(), t2.getFile().getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
 			progress(0.82);
-			Stylesheet.apply(t2.getFile().getAbsolutePath(), defragmentSub.getAbsolutePath(), t3.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(t2.getFile().getAbsolutePath(), defragmentSub.getAbsolutePath(), t3.getFile().getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
 			progress(0.85);
-			Stylesheet.apply(t3.getFile().getAbsolutePath(), defragmentSup.getAbsolutePath(), t4.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(t3.getFile().getAbsolutePath(), defragmentSup.getAbsolutePath(), t4.getFile().getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
 			progress(0.88);
-			Stylesheet.apply(t4.getFile().getAbsolutePath(), defragmentEm.getAbsolutePath(), t5.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(t4.getFile().getAbsolutePath(), defragmentEm.getAbsolutePath(), t5.getFile().getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
 			progress(0.91);
-			Stylesheet.apply(t5.getFile().getAbsolutePath(), defragmentStrong.getAbsolutePath(), t6.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(t5.getFile().getAbsolutePath(), defragmentStrong.getAbsolutePath(), t6.getFile().getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
 			progress(0.94);
-			//Stylesheet.apply(t6.getFile().getAbsolutePath(), addAuthorTitle.getAbsolutePath(), t7.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			//Stylesheet.apply(t6.getFile().getAbsolutePath(), addAuthorTitle.getAbsolutePath(), t7.getFile().getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
 			//progress(0.97);
-			//Stylesheet.apply(t6.getFile().getAbsolutePath(), indent.getAbsolutePath(), t8.getFile().getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			//Stylesheet.apply(t6.getFile().getAbsolutePath(), indent.getAbsolutePath(), t8.getFile().getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
 			//progress(0.99);
-			Stylesheet.apply(t6.getFile().getAbsolutePath(), doctypeXsl.getAbsolutePath(), result.getAbsolutePath(), factory, parameters, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(t6.getFile().getAbsolutePath(), doctypeXsl.getAbsolutePath(), result.getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
         } catch (Exception e) {
             throw new TransformerRunException(e.getMessage(), e);
 		}
@@ -222,7 +244,7 @@ public class WordML2DTBook extends Transformer {
 	  	sendMessage(msg);
 	}
 	
-	private void convertToJPEG(File[] imageFiles, File outdir) throws TransformerRunException {
+	private void convertToJPEG(File[] imageFiles, File outdir) {
 		if (imageFiles.length>0) {
 			sendMessage("Converting images...");
 		}

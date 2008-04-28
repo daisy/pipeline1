@@ -1,23 +1,20 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-package int_daisy_validator;
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */package int_daisy_validator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,7 +53,6 @@ import org.daisy.util.fileset.validation.ValidatorFactory;
 import org.daisy.util.fileset.validation.ValidatorListener;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
-import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorSevereErrorMessage;
 import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
@@ -96,7 +92,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	private Fileset mInputFileset = null;											//based in inputfile
 	private PeekResult mInputFilePeekResult = null;									//a global peek on inputfile
 	private Map<Source, String> mSchemaSources = new HashMap<Source, String>();		//<Source>,<SchemaNSURI> 
-	private HashSet mValidatorMessageCache = new HashSet();							//to avoid identical messages
+	private HashSet<ValidatorMessage> mValidatorMessageCache = new HashSet<ValidatorMessage>();							//to avoid identical messages
 	private StateTracker mStateTracker = new StateTracker();						//inner class
 	private CompletionTracker mCompletionTracker = new CompletionTracker();			//inner class
 	private XMLReporter mXmlReporter = null;										// validator xml output
@@ -115,7 +111,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 	}
 	
 		
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 
 		/*
 		 * Try to create a Fileset instance on the input file 
@@ -142,11 +138,11 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			// Martin Blomberg 2006-11-28
 			// initialize the optional xml reporter
 			try {
-				String outputPath = (String) parameters.remove("xmlReport");
+				String outputPath = parameters.remove("xmlReport");
 				if (outputPath != null && outputPath.length()>0 ) {
 					File reportFile = new File(outputPath);
 					
-					String xmlStylesheet = (String) parameters.remove("xmlStylesheet");
+					String xmlStylesheet = parameters.remove("xmlStylesheet");
 					if (xmlStylesheet != null) {
 						mXmlReporter = new XMLReporter(reportFile, xmlStylesheet);
 					} else {
@@ -172,9 +168,9 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			
 			
 			try{			
-				mInputFile = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("input")));			
+				mInputFile = new EFile(FilenameOrFileURI.toFile(parameters.remove("input")));			
 
-				String type = (String)parameters.remove("requireInputType");
+				String type = parameters.remove("requireInputType");
 				if(!type.toLowerCase().equals("off"))mRequiredInputType = type; //else leave as null
 				
 				Peeker peeker = null;
@@ -203,7 +199,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 						}
 					}
 					
-					mForcedValidatorImpl = (String) parameters.remove("forceImplementation");
+					mForcedValidatorImpl = parameters.remove("forceImplementation");
 					if (mForcedValidatorImpl != null && mForcedValidatorImpl.length()>0 ) {
 						//set the system property for the ValidatorFactory to access later
 						String key = "org.daisy.util.fileset.validation:http://www.daisy.org/fileset/"
@@ -222,7 +218,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 						Validator filesetValidator = validatorFactory.newValidator(mInputFileset.getFilesetType());
 						filesetValidator.setListener(this);	
 
-						String delegates = (String)parameters.remove("delegates");
+						String delegates = parameters.remove("delegates");
 						this.setDelegates(filesetValidator, delegates);
 						
 						//TODO set schemas on validator
@@ -300,11 +296,11 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 			 * based primarily on inparams, select an appropriate exit strategy.
 			 */
 
-			String abortOnExceptionParam = ((String)parameters.remove("abortOnException"));
+			String abortOnExceptionParam = (parameters.remove("abortOnException"));
 			if(abortOnExceptionParam==null)abortOnExceptionParam="true";
 			boolean abortOnException = abortOnExceptionParam.equals("true");
 			
-			String abortThreshold = (String)parameters.remove("abortThreshold");
+			String abortThreshold = parameters.remove("abortThreshold");
 			if(abortThreshold == null) abortThreshold = "NONE";
 
 			if(abortOnException && mStateTracker.mHadCaughtException) {

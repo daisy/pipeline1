@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_zed2daisy202;
 
@@ -43,7 +42,6 @@ import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.StaxEntityResolver;
-import org.daisy.util.xml.xslt.XSLTException;
 
 /**
  * Gives the final touch to a NCC.
@@ -78,10 +76,8 @@ class NccFixer {
      * @param totalElapsedTime
      * @throws XMLStreamException
      * @throws IOException
-     * @throws CatalogExceptionNotRecoverable
-     * @throws XSLTException
      */
-    public void fix(File nccIn, File nccOut, long totalElapsedTime) throws XMLStreamException, IOException, CatalogExceptionNotRecoverable, XSLTException {
+    public void fix(File nccIn, File nccOut, long totalElapsedTime) throws XMLStreamException, IOException {
         XMLEventReader nccReader = factory.createXMLEventReader(new FileInputStream(nccIn));        
         XMLEventWriter nccWriter = outFactory.createXMLEventWriter(new FileOutputStream(nccOut), "utf-8");
 
@@ -90,7 +86,7 @@ class NccFixer {
         // Skip to the start of body
         this.skipTo(nccReader, "body");
         
-        Collection nccItems = new ArrayList();
+        Collection<NccItem> nccItems = new ArrayList<NccItem>();
         
         // Read the items of the NCC
         NccItem nccItem = this.getNccItem(nccReader);
@@ -133,12 +129,12 @@ class NccFixer {
                 if ("meta".equals(se.getName().getLocalPart())) {
                     Attribute name = se.getAttributeByName(new QName("name"));
                     if (name!=null && "ncc:totalTime".equals(name.getValue())) {
-                        Collection attrs = new ArrayList();
+                        Collection<Attribute> attrs = new ArrayList<Attribute>();
                         attrs.add(name);
                         attrs.add(eventFactory.createAttribute("content", new SmilClock((totalElapsedTime+500)-((totalElapsedTime+500)%1000)).toString(SmilClock.FULL)));
                         writer.add(eventFactory.createStartElement(new QName(null, "meta", ""), attrs.iterator(), null));                        
                     } else {
-                    	Collection attrs = new ArrayList();
+                    	Collection<Attribute> attrs = new ArrayList<Attribute>();
                     	this.addAttribute(attrs, se, "name");
                     	this.addAttribute(attrs, se, "http-equiv");
                     	this.addAttribute(attrs, se, "content");
@@ -173,8 +169,8 @@ class NccFixer {
         }
     }
     
-    private void addAttribute(Collection coll, StartElement se, String attribute) {
-    	for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+    private void addAttribute(Collection<Attribute> coll, StartElement se, String attribute) {
+    	for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
     		Attribute attr = (Attribute)it.next();
     		if (attribute.equals(attr.getName().getLocalPart())) {
     			coll.add(attr);
@@ -188,10 +184,10 @@ class NccFixer {
      * @param writer
      * @throws XMLStreamException
      */
-    private void writeNccItems(Collection nccItems, XMLEventWriter writer) throws XMLStreamException {
+    private void writeNccItems(Collection<NccItem> nccItems, XMLEventWriter writer) throws XMLStreamException {
         boolean first = true;
-        for (Iterator iter = nccItems.iterator(); iter.hasNext(); ) {
-            NccItem item = (NccItem)iter.next();            
+        for (Iterator<NccItem> iter = nccItems.iterator(); iter.hasNext(); ) {
+            NccItem item = iter.next();            
             item.writeItem(writer, first);
             first = false;
         }

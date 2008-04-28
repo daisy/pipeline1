@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package se_tpb_dtbSplitterMerger;
@@ -46,8 +45,8 @@ import org.w3c.dom.NodeList;
  */
 public class DtbPromptFiles {
     
-    private HashMap smilSet = new HashMap();
-    private HashMap audioSet = new HashMap();
+    private HashMap<Integer,File> smilSet = new HashMap<Integer,File>();
+    private HashMap<Integer,File> audioSet = new HashMap<Integer,File>();
         
     private String lang = null;
     private final static String DEFAULT_PROMPT_LANG = "en";
@@ -65,7 +64,7 @@ public class DtbPromptFiles {
         DtbParsingInitializer pInit = new DtbParsingInitializer(this.reportGenerator);
         //retrieve the DOM document with prompt files 
         this.promptManifestDoc = pInit.parseDocWithDOM(promptFilesXmlManifest);
-        Collection availableLanguages = new ArrayList();
+        Collection<String> availableLanguages = new ArrayList<String>();
         NodeList langSets = this.promptManifestDoc.getElementsByTagName("set");
         for(int i=0; i<langSets.getLength(); i++){
             Element setElem = (Element)langSets.item(i);
@@ -126,7 +125,7 @@ public class DtbPromptFiles {
     }
     
     public File getSmilPromt(int volNr){
-        File smil = (File)this.smilSet.get(new Integer(volNr));
+        File smil = this.smilSet.get(new Integer(volNr));
         return smil;
     }
     
@@ -147,11 +146,11 @@ public class DtbPromptFiles {
         return audioId;
     }
     
-    public HashMap getSmilSet(int volumeSetSize){
+    public HashMap<Integer,File> getSmilSet(@SuppressWarnings("unused")int volumeSetSize){
         return this.smilSet;
     }
     
-    public HashMap getAudioSet(int volumeSetSize){
+    public HashMap<Integer,File> getAudioSet(@SuppressWarnings("unused")int volumeSetSize){
         return this.audioSet;
     }
     

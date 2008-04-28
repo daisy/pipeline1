@@ -50,8 +50,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import javazoom.jl.decoder.SampleBuffer;
-
 
 //TODO: the name AudioConcat is no longer appropriate. 
 //There should be a name that is neutral to concat/mix.
@@ -156,7 +154,7 @@ public class AudioConcat
 		}
 		
 		float sampleRate = 
-			(float) Math.max(f1.getSampleRate(), f2.getSampleRate());
+			Math.max(f1.getSampleRate(), f2.getSampleRate());
 		int sampleSizeInBits = 
 			Math.max(f1.getSampleSizeInBits(), f2.getSampleSizeInBits());
 		int channels = 
@@ -189,11 +187,11 @@ public class AudioConcat
 	 * Both provided by Tritonus (www.tritonus.org) under LGPL.
 	 * 	
 	 */
-	public static void concat(List inputFiles, File outputFile) {
+	public static void concat(List<File> inputFiles, File outputFile) {
 		AudioFormat highestQuality = null;
 		
-		for (Iterator it = inputFiles.iterator(); it.hasNext(); ) {
-			File f = (File) it.next();
+		for (Iterator<File> it = inputFiles.iterator(); it.hasNext(); ) {
+			File f = it.next();
 			try {
 				AudioInputStream ais = AudioSystem.getAudioInputStream(f);
 				AudioFormat af = ais.getFormat();
@@ -219,9 +217,9 @@ public class AudioConcat
 		concat(inputFiles, outputFile, highestQuality);
 	}
 	
-	public static void concat(List inputFiles, File outputFile, AudioFormat outputFormat) {
+	public static void concat(List<File> inputFiles, File outputFile, AudioFormat outputFormat) {
 		AudioFormat	audioFormat = null;
-		List		audioInputStreamList = new ArrayList();
+		List<AudioInputStream> audioInputStreamList = new ArrayList<AudioInputStream>();
 		
 		/*
 		 *	All remaining arguments are assumed to be filenames of
@@ -229,7 +227,7 @@ public class AudioConcat
 		 */
 		for (int i = 0; i < inputFiles.size(); i++)
 		{
-			File soundFile = (File) inputFiles.get(i);
+			File soundFile = inputFiles.get(i);
 			
 			/*
 			 *	We have to read in the sound file.
@@ -290,8 +288,8 @@ public class AudioConcat
 		{
 			e.printStackTrace();
 		} finally {
-			for (Iterator it = audioInputStreamList.iterator(); it.hasNext(); ) {
-				AudioInputStream ais = (AudioInputStream) it.next();
+			for (Iterator<AudioInputStream> it = audioInputStreamList.iterator(); it.hasNext(); ) {
+				AudioInputStream ais = it.next();
 				try {
 					ais.close();
 				} catch (IOException e) {

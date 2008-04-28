@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_recorder2dtb.read.audacity;
 
 import int_daisy_recorder2dtb.InputType;
@@ -26,7 +43,7 @@ import org.daisy.util.dtb.ncxonly.model.AudioClip;
 import org.daisy.util.dtb.ncxonly.model.Item;
 import org.daisy.util.dtb.ncxonly.model.Model;
 import org.daisy.util.dtb.ncxonly.model.AudioClip.Nature;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.peek.PeekResult;
@@ -60,7 +77,7 @@ public final class AudacityAupReader extends Reader implements ErrorHandler {
 		Model model = new Model();
 		XMLInputFactory xif = null;
 		XMLStreamReader reader = null;
-		Map properties = null;
+		Map<String,Object> properties = null;
 		InputStream is = null;
 		
 		try{
@@ -71,7 +88,7 @@ public final class AudacityAupReader extends Reader implements ErrorHandler {
 			 * We assume that all file local names are unique. 
 			 */			
 			File projectFile = new File(mInputURL.toURI());
-			EFolder start = new EFolder(projectFile.getParentFile());
+			Directory start = new Directory(projectFile.getParentFile());
 			Collection<File> coll = start.getFiles(true, "(.+\\.wav$)|(.+\\.au$)|(.+\\.aiff?$)");
 			Map<String,File> projectAudioFiles = new HashMap<String, File>();
 			for(File f : coll) {
@@ -130,6 +147,7 @@ public final class AudacityAupReader extends Reader implements ErrorHandler {
 		return model;
 	}
 
+	@SuppressWarnings("unused")
 	private void debugPrint(AupWaveTracks aupWaveTracks) {
 		int i = 0;
 		for(AupWaveTrack track : aupWaveTracks) {
@@ -401,6 +419,7 @@ public final class AudacityAupReader extends Reader implements ErrorHandler {
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
 	 */
+	@SuppressWarnings("unused")
 	public void warning(SAXParseException exception) throws SAXException {
 				
 	}

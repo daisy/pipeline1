@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_filesetGenerator.util.d202;
 
 import int_daisy_filesetGenerator.impl.d202.D202TextOnlyGenerator.GlobalMetadata;
@@ -10,10 +27,12 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
@@ -21,6 +40,7 @@ import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 
 import org.daisy.util.dtb.meta.MetadataItem;
@@ -209,7 +229,10 @@ public class D202NccBuilder {
 		
 		writer.add(xef.createStartDocument(mOutputCharset.name(),"1.0"));
 		writer.add(xef.createDTD(XHTML_DTD));
-		writer.add(xef.createStartElement(qHtml,null,null));
+		
+		Set<Namespace> xhtmlNS = new HashSet<Namespace>();
+		xhtmlNS.add(xef.createNamespace(Namespaces.XHTML_10_NS_URI));
+		writer.add(xef.createStartElement(qHtml,null,xhtmlNS.iterator()));
 		
 		writer.add(xef.createStartElement(qHead,null,null));
 
@@ -367,7 +390,7 @@ public class D202NccBuilder {
 		while(iter.hasPrevious()) {
 			NccNavItem ni = iter.previous();
 			if(ni.mType == NccNavItemType.PAGE_NORMAL) return ni.mText.trim();
-		} 
+		}	
 		return value;
 	}
 

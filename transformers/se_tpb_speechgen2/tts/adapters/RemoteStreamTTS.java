@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_speechgen2.tts.adapters;
 
@@ -25,11 +24,8 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.Map;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 import org.daisy.util.file.StreamRedirector;
 
-import se_tpb_speechgen2.audio.AudioFiles;
 import se_tpb_speechgen2.tts.TTSConstants;
 import se_tpb_speechgen2.tts.TTSException;
 import se_tpb_speechgen2.tts.util.TTSUtils;
@@ -239,64 +235,64 @@ public class RemoteStreamTTS extends AbstractTTSAdapter {
 		return super.canSpeak(line);
 	}
 
-	private static String formatTime(long time) {
-		StringBuffer sb = new StringBuffer();
+//	private static String formatTime(long time) {
+//		StringBuffer sb = new StringBuffer();
+//
+//		long ms = time % 1000;
+//		time /= 1000;
+//		long s = time % 60;
+//		time /= 60;
+//		long m = time % 60;
+//		time /= 60;
+//		long h = time;
+//
+//		// hours
+//		sb.append(h);
+//		sb.append('h');
+//
+//		// minutes
+//		if (m < 10) {
+//			sb.append('0');
+//		}
+//		sb.append(m);
+//		sb.append('m');
+//
+//		// seconds
+//		if (s < 10) {
+//			sb.append('0');
+//		}
+//		sb.append(s);
+//		sb.append('.');
+//
+//		// and the ms (as part of the sec part)..
+//		if (ms < 10) {
+//			sb.append('0');
+//			sb.append('0');
+//		} else if (ms < 100) {
+//			sb.append('0');
+//		}
+//		sb.append(ms);
+//		sb.append('s');
+//
+//		return sb.toString();
+//	}
 
-		long ms = time % 1000;
-		time /= 1000;
-		long s = time % 60;
-		time /= 60;
-		long m = time % 60;
-		time /= 60;
-		long h = time;
-
-		// hours
-		sb.append(h);
-		sb.append('h');
-
-		// minutes
-		if (m < 10) {
-			sb.append('0');
-		}
-		sb.append(m);
-		sb.append('m');
-
-		// seconds
-		if (s < 10) {
-			sb.append('0');
-		}
-		sb.append(s);
-		sb.append('.');
-
-		// and the ms (as part of the sec part)..
-		if (ms < 10) {
-			sb.append('0');
-			sb.append('0');
-		} else if (ms < 100) {
-			sb.append('0');
-		}
-		sb.append(ms);
-		sb.append('s');
-
-		return sb.toString();
-	}
-
-	private static String formatByteSize(long bytes) {
-		StringBuffer sb = new StringBuffer();
-
-		long mbytes = bytes / (1024 * 1024);
-
-		if (mbytes < 1) {
-			sb.append(bytes);
-			sb.append(" b");
-		} else {
-			sb.append('~');
-			sb.append(mbytes);
-			sb.append(" m");
-		}
-
-		return sb.toString();
-	}
+//	private static String formatByteSize(long bytes) {
+//		StringBuffer sb = new StringBuffer();
+//
+//		long mbytes = bytes / (1024 * 1024);
+//
+//		if (mbytes < 1) {
+//			sb.append(bytes);
+//			sb.append(" b");
+//		} else {
+//			sb.append('~');
+//			sb.append(mbytes);
+//			sb.append(" m");
+//		}
+//
+//		return sb.toString();
+//	}
 
 	@Override
 	public void read(String line, File destination) throws IOException,

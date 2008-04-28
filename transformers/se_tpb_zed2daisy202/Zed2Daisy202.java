@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_zed2daisy202;
 
@@ -62,6 +61,7 @@ import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.TransformerCache;
 import org.daisy.util.xml.xslt.XSLTException;
 import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
+import org.xml.sax.SAXException;
 
 /**
  * Creates a Daisy 2.02 full text, full audio fileset from a Z3986-2005
@@ -97,9 +97,9 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         super(inListener,  isInteractive);
     }
 
-    protected boolean execute(Map parameters) throws TransformerRunException {
-        String manifest = (String)parameters.remove("manifest");
-        String outDir = (String)parameters.remove("outDir");
+    protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
+        String manifest = parameters.remove("manifest");
+        String outDir = parameters.remove("outDir");
         
         inputDir = new File(manifest).getParentFile();
         outputDir = new File(outDir);      
@@ -120,7 +120,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             this.progress(FILESET_DONE);
             this.checkAbort();
             
-            Set filesToCopy = new HashSet();
+            Set<FilesetFile> filesToCopy = new HashSet<FilesetFile>();
             
             // Create output directory
             outputDir = FileUtils.createDirectory(new File(outDir)); 
@@ -129,8 +129,8 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             File ncx = null;
             OpfFile opf = null;
             File dtbook = null;
-            for (Iterator it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
-                FilesetFile fsf = (FilesetFile)it.next();
+            for (Iterator<FilesetFile> it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
+                FilesetFile fsf = it.next();
                 if (fsf instanceof Z3986SmilFile) {
                     // Do smils later
                 } else if (fsf instanceof Z3986NcxFile) {
@@ -183,7 +183,9 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
         } catch (FilesetFatalException e) {
         	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
-        }
+        } catch (SAXException e) {
+        	throw new TransformerRunException(i18n("ERROR_ABORTING",e.getMessage()), e);
+		}
         
         return true;
     }
@@ -198,7 +200,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      * @throws IOException
      */
     private void createNcc(File opf, long totalElapsedTime) throws CatalogExceptionNotRecoverable, XSLTException, XMLStreamException, IOException {
-        Map parameters = new HashMap();
+        Map<String,Object> parameters = new HashMap<String,Object>();
         parameters.put("baseDir", outputDir.toURI());
         parameters.put("date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         File nccFile = new File(outputDir, "ncc.html");
@@ -234,12 +236,12 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      * @return the total time of the book (in milliseconds)
      * @throws XMLStreamException
      * @throws IOException
-     * @throws CatalogExceptionNotRecoverable
      * @throws XSLTException
      * @throws FilesetException
      * @throws TransformerAbortException
+     * @throws SAXException 
      */
-    private long createSmils(OpfFile opf, File dtbook, File ncx) throws XMLStreamException, IOException, CatalogExceptionNotRecoverable, XSLTException, TransformerAbortException {
+    private long createSmils(OpfFile opf, File dtbook, File ncx) throws XMLStreamException, IOException, XSLTException, TransformerAbortException, SAXException {
 
         // Extract the information the smil2smil stylesheet needs
         // from the DTBook and the OPF. This will speed up the
@@ -251,7 +253,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         long totalElapsedTime = 0;
         File smil2smil = new File(this.getTransformerDirectory(), "smil2smil.xsl");
         
-        Map parameters = new HashMap();
+        Map<String,Object> parameters = new HashMap<String,Object>();
         parameters.put("xhtml_document", contentXHTML);
         //parameters.put("dtbook_document", dtbook.toURI());
         parameters.put("baseDir", inputDir.toURI());
@@ -262,14 +264,14 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         TransformerCache cache = new TransformerCache();
         
         // For each SMIL file
-        Collection spineItems = opf.getSpineItems();      
+        Collection<FilesetFile> spineItems = opf.getSpineItems();      
         int smilNum = spineItems.size();
         int smilCount = 0;
-        for (Iterator it = spineItems.iterator(); it.hasNext(); ) {
+        for (Iterator<FilesetFile> it = spineItems.iterator(); it.hasNext(); ) {
             smilCount++;
             Z3986SmilFile smilZed = (Z3986SmilFile)it.next();
             File smil202 = new File(outputDir, smilZed.getFile().getName());
-            Object[] params = {new Integer(smilNum), new Integer(smilCount), smil202.getName()};  
+            //Object[] params = {new Integer(smilNum), new Integer(smilCount), smil202.getName()};  
             //this.sendMessage(i18n("SMIL", params), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);            
             
             File temp2 = TempFile.create();
@@ -301,12 +303,12 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
     	String cssName = "default.css";
         File xhtmlOut = new File(outputDir, contentXHTML);
         
-        Iterator it = opf.getSpineItems().iterator();
+        Iterator<FilesetFile> it = opf.getSpineItems().iterator();
         
-        URI uri = ((Z3986SmilFile)it.next()).getFile().toURI();
+        URI uri = (it.next()).getFile().toURI();
         uri = opf.getFile().getParentFile().toURI().relativize(uri);
         
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("filter_word", "yes");
         parameters.put("baseDir", inputDir.toURI().toString());
         parameters.put("first_smil", uri.toString());
@@ -329,15 +331,15 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      * @throws IOException
      * @throws TransformerAbortException
      */
-    private void copyFiles(Set files, Fileset fileset) throws IOException, TransformerAbortException {
+    private void copyFiles(Set<FilesetFile> files, Fileset fileset) throws IOException, TransformerAbortException {
         int fileNum = files.size();
         int fileCount = 0;
-        for (Iterator it = files.iterator(); it.hasNext(); ) {
+        for (Iterator<FilesetFile> it = files.iterator(); it.hasNext(); ) {
             fileCount++;
-            FilesetFile fsf = (FilesetFile)it.next();
-            Object[] params = {new Integer(fileNum), new Integer(fileCount), fsf.getFile().getName()};
+            FilesetFile fsf = it.next();
+            //Object[] params = {new Integer(fileNum), new Integer(fileCount), fsf.getFile().getName()};
             //this.sendMessage(i18n("COPYING_FILE", params), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
-            URI relativeURI = fileset.getRelativeURI(fsf);
+            URI relativeURI = fileset.getManifestMember().getRelativeURI(fsf);
             File out = new File(outputDir.toURI().resolve(relativeURI));
             FileUtils.copy(fsf.getFile(), out);
             this.progress(0.85 + (0.99-0.85)*((double)fileCount/fileNum));

@@ -2,6 +2,7 @@ package org.daisy.util.wincom.sapi5.events;
 
 import com4j.*;
 
+@SuppressWarnings("unused")
 @IID("{A372ACD1-3BEF-4BBD-8FFB-CB3E2B416AF8}")
 public abstract class _ISpeechVoiceEvents {
     /**

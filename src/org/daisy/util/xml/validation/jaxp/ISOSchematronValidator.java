@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.xml.validation.jaxp;
 
 import java.io.File;
@@ -46,7 +44,7 @@ import org.xml.sax.SAXException;
  *  @author Markus Gylling
  */
 public class ISOSchematronValidator extends AbstractValidator implements ErrorListener, URIResolver {
-	private Set compiledSchemas = null;
+	private Set<Transformer> compiledSchemas = null;
 	private ISOSchematronSchema schema = null;	
 	
 	/*package*/ ISOSchematronValidator(ISOSchematronSchema schema) {
@@ -55,7 +53,7 @@ public class ISOSchematronValidator extends AbstractValidator implements ErrorLi
 	}
 
 	/*package*/ boolean initialize() {
-		compiledSchemas = new HashSet();
+		compiledSchemas = new HashSet<Transformer>();
 		TransformerFactory tfac = TransformerFactory.newInstance();
 		tfac.setURIResolver(this);
 		tfac.setErrorListener(this);
@@ -83,10 +81,10 @@ public class ISOSchematronValidator extends AbstractValidator implements ErrorLi
 		return true;
 	}
 	
+	@SuppressWarnings("unused")
 	public void validate(Source source, Result result) throws SAXException, IOException {		
 		try {			
-			for(Object o : compiledSchemas) {
-				Transformer t = (Transformer)o;
+			for(Transformer t : compiledSchemas) {				
 				t.transform(source, result);
 			}			
 		} catch (TransformerException e) {
@@ -102,6 +100,7 @@ public class ISOSchematronValidator extends AbstractValidator implements ErrorLi
 	 * (non-Javadoc)
 	 * @see javax.xml.transform.ErrorListener#error(javax.xml.transform.TransformerException)
 	 */
+	@SuppressWarnings("unused")
 	public void error(TransformerException te) throws TransformerException {		
 		try {
 			this.errorHandler.error(ExceptionTransformer.newSAXParseException(te));
@@ -114,6 +113,7 @@ public class ISOSchematronValidator extends AbstractValidator implements ErrorLi
 	 * (non-Javadoc)
 	 * @see javax.xml.transform.ErrorListener#fatalError(javax.xml.transform.TransformerException)
 	 */
+	@SuppressWarnings("unused")
 	public void fatalError(TransformerException te) throws TransformerException {
 		try {
 			this.errorHandler.error(ExceptionTransformer.newSAXParseException(te));
@@ -126,6 +126,7 @@ public class ISOSchematronValidator extends AbstractValidator implements ErrorLi
 	 * (non-Javadoc)
 	 * @see javax.xml.transform.ErrorListener#warning(javax.xml.transform.TransformerException)
 	 */
+	@SuppressWarnings("unused")
 	public void warning(TransformerException te) throws TransformerException {
 		try {
 			this.errorHandler.error(ExceptionTransformer.newSAXParseException(te));
@@ -138,6 +139,7 @@ public class ISOSchematronValidator extends AbstractValidator implements ErrorLi
 	 * (non-Javadoc)
 	 * @see javax.xml.transform.URIResolver#resolve(java.lang.String, java.lang.String)
 	 */
+	@SuppressWarnings("unused")
 	public Source resolve(String href, String base) throws TransformerException {
 		/*
 		 * The first time this is called is when the SRVL XSL looks

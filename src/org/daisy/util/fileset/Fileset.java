@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.fileset;
 
 import java.net.URI;
@@ -81,21 +79,21 @@ public interface Fileset {
 	 *This collection is not ordered, as opposed to the collections
 	 *returned by FilesetFile.getReferencedLocalMembers()
 	 */
-	public Collection getLocalMembers();
+	public Collection<FilesetFile> getLocalMembers();
 	
 	/**
 	* @return a Collection&lt;URI&gt; representing existing local Fileset members
 	* @see #getMissingMembersURIs()
 	* @see #getRemoteResources()
 	*/
-	public Collection getLocalMembersURIs();
+	public Collection<URI> getLocalMembersURIs();
 	
 	/**
 	 *@return a collection&lt;String&gt; (unresolved URI or URL strings) of 
 	 *remote resources referenced from within the fileset 
 	 *(typically http, mailto, etc URIs) 
 	 */
-	public Collection getRemoteResources();
+	public Collection<String> getRemoteResources();
 	
 	/**
 	*@return true if errors (nontthrown exceptions) were reported during membership population process, false otherwise
@@ -103,14 +101,14 @@ public interface Fileset {
 	public boolean hadErrors();
 	
 	/**
-	 *@return a collection&lt;FilesetFileException&gt; representing errors (nontthrown exceptions) reported during fileset instantiation.
+	 *@return a collection&lt;Exception&gt; representing errors (nontthrown exceptions) reported during fileset instantiation.
 	 *This contents of this collection equals the sum of all calls to an implementation of the FilesetErrorHandler
 	 *interface during one Fileset instantiation process; in other words, the use of getErrors() and FilesetErrorHandler 
 	 *are interchangeable and depends on preference. Since the use of FilesetErrorHandler is required, and since callbacks to that interface
 	 *are instant and not post-hoc, the use of FilesetErrorHandler instead of this method is recommended.
 	 *@see org.daisy.util.fileset.FilesetErrorHandler
 	 */
-	public Collection getErrors();
+	public Collection<Exception> getErrors();
 	
 	/**
 	 *returns the FilesetType of this Fileset instance 
@@ -130,7 +128,7 @@ public interface Fileset {
 	 * @return a collection of absolutized local member URIs found in the fileset, 
 	 * but where the physical resource was missing.
 	 */
-	public Collection getMissingMembersURIs();
+	public Collection<URI> getMissingMembersURIs();
 	
 	/**
 	*@return the sum bytesize of all existing local members in this fileset.

@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_xmldetection;
 
@@ -49,6 +48,7 @@ import org.daisy.util.i18n.LocaleUtils;
 /**
  * @author Linus Ericson
  */
+@SuppressWarnings("unchecked")
 public class LangSettings {
     
 //    private static Logger logger = Logger.getLogger(LangSettings.class.getName());
@@ -165,8 +165,8 @@ public class LangSettings {
     }
     
     private MultiHashMap handleKey(String lang, XMLEventReader er) throws XMLStreamException {
-        List nameList = new ArrayList();
-        List mayEndSentenceList = new ArrayList();
+        List<String> nameList = new ArrayList<String>();
+        List<String> mayEndSentenceList = new ArrayList<String>();
         Set itemSet = null;
         
         MultiHashMap resultMap = new MultiHashMap(false);
@@ -205,7 +205,7 @@ public class LangSettings {
                     // For each name element, create a new item. Since we don't know
                     // the expansion yet, we'll fill in that value later
                     itemSet = new HashSet();
-                    Iterator itName = nameList.iterator();
+                    Iterator<String> itName = nameList.iterator();
                     Iterator itEndSent = mayEndSentenceList.iterator();                    
                     while (itName.hasNext()) {                        
                         String name = (String)itName.next();
@@ -368,7 +368,7 @@ public class LangSettings {
         case Abbr.INITIALISM:
             coll = initialisms.getCollection(key);
 	    	if (coll != null) {
-	    	    for (Iterator it = coll.iterator(); it.hasNext(); ) {
+	    	    for (Iterator<?> it = coll.iterator(); it.hasNext(); ) {
 	    	        item = (Item)it.next();
 	    	        exp = item.getValue();
 	    	        if (exp.equals(expansion)) {
@@ -380,7 +380,7 @@ public class LangSettings {
         case Abbr.ACRONYM:
             coll = acronyms.getCollection(key);
 	    	if (coll != null) {
-	    	    for (Iterator it = coll.iterator(); it.hasNext(); ) {
+	    	    for (Iterator<?> it = coll.iterator(); it.hasNext(); ) {
 	    	        item = (Item)it.next();
 	    	        exp = item.getValue();
 	    	        if (exp.equals(expansion)) {
@@ -494,7 +494,7 @@ public class LangSettings {
 		    item = (Item)coll.iterator().next();
 		    return item;
         } else if (type == Abbr.FIX) {
-            for (Iterator it = fixes.keySet().iterator(); it.hasNext(); ) {
+            for (Iterator<?> it = fixes.keySet().iterator(); it.hasNext(); ) {
                 String k = (String)it.next();
                 if (Pattern.compile(k, Pattern.DOTALL).matcher(key).matches()) {
                     item = (Item)fixes.get(k);
@@ -542,8 +542,8 @@ public class LangSettings {
         this.acronyms = acro;        
     }
     
-    public Collection getCompleteStringCollection() {
-        Collection coll = new ArrayList();
+    public Collection<String> getCompleteStringCollection() {
+        Collection<String> coll = new ArrayList<String>();
         coll.addAll(initialisms.keySet());        
         coll.addAll(acronyms.keySet());
         coll.addAll(abbrs.keySet());        

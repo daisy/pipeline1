@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.dtb.ncxonly.model.write;
 
 import java.io.IOException;
@@ -17,7 +34,7 @@ import org.daisy.util.dtb.ncxonly.model.write.audio.WAVBuilder;
 import org.daisy.util.dtb.ncxonly.model.write.ncx.NCXBuilder;
 import org.daisy.util.dtb.ncxonly.model.write.opf.OPFBuilder;
 import org.daisy.util.dtb.ncxonly.model.write.smil.SMILBuilder;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXOutputFactoryPool;
@@ -76,10 +93,10 @@ public class NCXOnlyDTBWriter {
 				
 	}
 
-	public void write(EFolder destination) throws IOException, XMLStreamException {
+	public void write(Directory destination) throws IOException, XMLStreamException {
 		XMLEventFactory xef = null;
 		XMLOutputFactory xof = null;
-		Map properties = null;
+		Map<String,Object> properties = null;
 		try{
 			xef = StAXEventFactoryPool.getInstance().acquire();
 			properties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
@@ -106,7 +123,7 @@ public class NCXOnlyDTBWriter {
 			 * Create one WAV file per SMIL file, render the audio.
 			 * Change references in smilBuilder to the new audio.
 			 */
-			WAVBuilder wavBuilder = new WAVBuilder(smilBuilder,destination);
+			new WAVBuilder(smilBuilder,destination);
 	
 			/*
 			 * Merge clips that are marked for merging, if any.
@@ -128,7 +145,7 @@ public class NCXOnlyDTBWriter {
 			/*
 			 * Finally create and render the OPF.
 			 */
-			OPFBuilder opfBuilder = new OPFBuilder(mModel,smilBuilder,ncxBuilder,destination,xof,xef);
+			new OPFBuilder(mModel,smilBuilder,ncxBuilder,destination,xof,xef);
 			
 		}finally{
 			StAXEventFactoryPool.getInstance().release(xef);

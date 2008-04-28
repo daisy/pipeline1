@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.mime;
 
 import java.net.URL;
@@ -139,10 +137,10 @@ public class MIMETypeRegistry implements XMLReporter {
 	 * @return a MimeType if represented in the map, null otherwise.
 	 */
 	public MIMEType getEntryByName(String mime) {			
-		Collection c = entries.values();
-		Iterator i = c.iterator();
+		Collection<MIMEType> c = entries.values();
+		Iterator<MIMEType> i = c.iterator();
 		while(i.hasNext()) {
-			MIMEType m = (MIMEType) i.next();
+			MIMEType m = i.next();
 			if(mime.equals(m.getString())) {
 				return m;
 			}
@@ -153,7 +151,7 @@ public class MIMETypeRegistry implements XMLReporter {
 	/**
 	 * @return the Map&lt;ID,MimeType&gt; of canonical MimeTypes present in the Registry.
 	 */
-	public Map getEntries(){
+	public Map<String,MIMEType> getEntries(){
 		return entries;
 	}
 	
@@ -165,8 +163,8 @@ public class MIMETypeRegistry implements XMLReporter {
 	private static void printConstants() throws MIMETypeRegistryException {
 		List slist = new LinkedList();
 		String decl = "public static final String ";
-		for (Iterator iter = getInstance().getEntries().keySet().iterator(); iter.hasNext();) {
-			MIMEType mt = (MIMEType) getInstance().getEntries().get(iter.next());
+		for (Iterator<String> iter = getInstance().getEntries().keySet().iterator(); iter.hasNext();) {
+			MIMEType mt = getInstance().getEntries().get(iter.next());
 			String print = decl + "MIME_" +  mt.getString().toUpperCase().replace(".","_").replace("/","_").replace("-","_").replace("+","_") +" = \"" + mt.getString() + "\";";
 			slist.add(print);
 		}

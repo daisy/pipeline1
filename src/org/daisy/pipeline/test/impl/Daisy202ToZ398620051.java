@@ -3,11 +3,11 @@ package org.daisy.pipeline.test.impl;
 import java.util.List;
 
 import org.daisy.pipeline.test.PipelineTest;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 public class Daisy202ToZ398620051 extends PipelineTest {
 
-	public Daisy202ToZ398620051(EFolder dataInputDir, EFolder dataOutputDir) {
+	public Daisy202ToZ398620051(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	

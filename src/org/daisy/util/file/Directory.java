@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.file;
 
 import java.io.File;
@@ -39,28 +37,28 @@ import org.daisy.util.fileset.util.FilesetFileFilter;
  * @author Markus Gylling
  */
 
-public class EFolder extends File {
+public class Directory extends File {
 
 	public final static int TYPE_FOLDER = 0;
 	public final static int TYPE_FILE = 1;
 	public final static int TYPE_FILE_OR_FOLDER = 2;
 
-	public EFolder(URI uri) throws IOException {
+	public Directory(URI uri) throws IOException {
 		super(uri);
 		testDir();		
 	}
 
-	public EFolder(String path) throws IOException {
+	public Directory(String path) throws IOException {
 		super(path);
 		testDir();	
 	}
 
-	public EFolder(File parent, String child) throws IOException {
+	public Directory(File parent, String child) throws IOException {
 		super(parent, child);
 		testDir();	
 	}
 
-	public EFolder (File folder) throws IOException {				
+	public Directory (File folder) throws IOException {				
 		super(folder.toURI());
 		testDir();	
 	}
@@ -131,16 +129,16 @@ public class EFolder extends File {
 	 *         folder. The collection excludes folders and their descending
 	 *         files. The collection includes hidden files.
 	 */
-	public Collection getFiles() {
+	public Collection<File> getFiles() {
 		return this.list(TYPE_FILE, true, null, false);
 	}
 
 	/**
-	 * @return A Collection&lt;Folder&gt; of directly descending folders of this
+	 * @return A Collection&lt;File&gt; of directly descending folders of this
 	 *         folder. The collection excludes files. The collection includes
 	 *         hidden folders.
 	 */
-	public Collection getFolders() {
+	public Collection<File> getFolders() {
 		return this.list(TYPE_FOLDER, true, null, false);
 	}
 
@@ -149,7 +147,7 @@ public class EFolder extends File {
 	 *         objects of this folder. Equals java.io.File#listFiles() except
 	 *         the return type. The collection includes hidden objects.
 	 */
-	public Collection getFilesAndFolders() {
+	public Collection<File> getFilesAndFolders() {
 		return this.list(TYPE_FILE_OR_FOLDER, true, null, false);
 	}
 
@@ -160,18 +158,18 @@ public class EFolder extends File {
 	 * @param deep
 	 *            If true, subdirectories will be traversed recursively.
 	 */
-	public Collection getFiles(boolean deep) {
+	public Collection<File> getFiles(boolean deep) {
 		return this.list(TYPE_FILE, true, null, deep);
 	}
 
 	/**
-	 * @return A Collection&lt;Folder&gt; of folder descendants of this folder.
+	 * @return A Collection&lt;File&gt; of folder descendants of this folder.
 	 *         The collection excludes files. The collection includes hidden
 	 *         folders.
 	 * @param deep
 	 *            If true, subdirectories will be traversed recursively.
 	 */
-	public Collection getFolders(boolean deep) {
+	public Collection<File> getFolders(boolean deep) {
 		return this.list(TYPE_FOLDER, true, null, deep);
 	}
 
@@ -181,7 +179,7 @@ public class EFolder extends File {
 	 * @param deep
 	 *            If true, subdirectories will be traversed recursively.
 	 */
-	public Collection getFilesAndFolders(
+	public Collection<File> getFilesAndFolders(
 			boolean deep) {
 		return this.list(TYPE_FILE_OR_FOLDER, true, null, deep);
 	}
@@ -196,13 +194,13 @@ public class EFolder extends File {
 	 *            A regular expression for name filtering; if null treated as
 	 *            '.+'
 	 */
-	public Collection getFiles(boolean deep,
+	public Collection<File> getFiles(boolean deep,
 			String regex) {
 		return this.list(TYPE_FILE, true, regex, deep);
 	}
 
 	/**
-	 * @return A Collection&lt;Folder&gt; of folder descendants of this folder.
+	 * @return A Collection&lt;File&gt; of folder descendants of this folder.
 	 *         The collection excludes files. The collection includes hidden
 	 *         folders.
 	 * @param deep
@@ -211,7 +209,7 @@ public class EFolder extends File {
 	 *            A regular expression for name filtering; if null treated as
 	 *            '.+'
 	 */
-	public Collection getFolders(boolean deep,
+	public Collection<File> getFolders(boolean deep,
 			String regex) {
 		return this.list(TYPE_FOLDER, true, regex, deep);
 	}
@@ -225,7 +223,7 @@ public class EFolder extends File {
 	 *            A regular expression for name filtering; if null treated as
 	 *            '.+'
 	 */
-	public Collection getFilesAndFolders(
+	public Collection<File> getFilesAndFolders(
 			boolean deep, String regex) {
 		return this.list(TYPE_FILE_OR_FOLDER, true, regex, deep);
 	}
@@ -242,13 +240,13 @@ public class EFolder extends File {
 	 *            If false, hidden files will be excluded from return
 	 *            collection.
 	 */
-	public Collection getFiles(boolean deep,
+	public Collection<File> getFiles(boolean deep,
 			String regex, boolean includeHidden) {
 		return this.list(TYPE_FILE, includeHidden, regex, deep);
 	}
 
 	/**
-	 * @return A Collection&lt;Folder&gt; of folder descendants of this folder.
+	 * @return A Collection&lt;File&gt; of folder descendants of this folder.
 	 *         The collection excludes files.
 	 * @param deep
 	 *            If true, subdirectories will be traversed recursively.
@@ -259,7 +257,7 @@ public class EFolder extends File {
 	 *            If false, hidden files will be excluded from return
 	 *            collection.
 	 */
-	public Collection getFolders(boolean deep,
+	public Collection<File> getFolders(boolean deep,
 			String regex, boolean includeHidden) {
 		return this.list(TYPE_FOLDER, includeHidden, regex, deep);
 	}
@@ -276,7 +274,7 @@ public class EFolder extends File {
 	 *            If false, hidden files will be excluded from return
 	 *            collection.
 	 */
-	public Collection getFilesAndFolders(
+	public Collection<File> getFilesAndFolders(
 			boolean deep, String regex,
 			boolean includeHidden) {
 		return this.list(TYPE_FILE_OR_FOLDER, includeHidden, regex, deep);
@@ -359,25 +357,20 @@ public class EFolder extends File {
 	 * @throws IOException
 	 * @see #addFiles(Collection, boolean)
 	 */
-	public boolean addFiles(Collection fileSources, boolean overwrite) throws IOException {
-		Iterator i = fileSources.iterator();
+	public boolean addFiles(Collection<File> fileSources, boolean overwrite) throws IOException {
+		Iterator<File> i = fileSources.iterator();
 		boolean result = true;
 		
-		while(i.hasNext()) {
-			Object value = i.next();
-			if(value instanceof File) {
-				File source = (File) value;
-				File dest = new File(this, source.getName());				
-				if (!overwrite && dest.exists()) {
-					result = false;
-					System.err.println("destination exists in EFolder.addFiles and overwrite disabled: " + dest.getPath());
-				}else{
-					FileUtils.copyFile(source, dest);
-				}
-			}else{
+		while(i.hasNext()) {			
+			File source = i.next();
+			File dest = new File(this, source.getName());				
+			if (!overwrite && dest.exists()) {
 				result = false;
-				System.err.println("classcast problem in EFolder.addFiles: " + value.getClass().getSimpleName());
+				System.err.println("destination exists in EFolder.addFiles and overwrite disabled: " + dest.getPath());
+			}else{
+				FileUtils.copyFile(source, dest);
 			}
+			
 		}
 		return result;
 	}
@@ -408,7 +401,7 @@ public class EFolder extends File {
 	 * @throws IOException if something bad happens
 	 */
 	public boolean addFileset(Fileset fileset, boolean overwrite, FilesetFileFilter filter) throws IOException {
-		EFolder inputBaseDir = fileset.getManifestMember().getParentFolder();
+		Directory inputBaseDir = fileset.getManifestMember().getParentFolder();
 		String baseDirCanonicalPath = inputBaseDir.getCanonicalPath();
 		Iterator<?> i = fileset.getLocalMembers().iterator();
 		while(i.hasNext()) {
@@ -422,7 +415,7 @@ public class EFolder extends File {
 					//file is in subdir
 					URI relative = inputBaseDir.toURI().relativize(f.getParentFile().toURI());
 					if(relative.toString().startsWith("..")) throw new IOException("fileset member "+file.getName()+" does not live in a sibling or descendant folder of manifest member");
-					EFolder subdir = new EFolder(this,relative.getPath());
+					Directory subdir = new Directory(this,relative.getPath());
 					FileUtils.createDirectory(subdir);
 					subdir.addFile(f,overwrite);
 				}		
@@ -520,7 +513,7 @@ public class EFolder extends File {
 	 * 		True if all objects of this folder were successfully copied to destination, false otherwise
 	 * @throws IOException
 	 */
-	public boolean copyChildrenTo(EFolder destination, boolean overwrite) throws IOException {
+	public boolean copyChildrenTo(Directory destination, boolean overwrite) throws IOException {
 		return copyChildrenTo(destination,overwrite,true,null);
 	}
 
@@ -540,7 +533,7 @@ public class EFolder extends File {
 	 * 		True if all objects of this folder were successfully copied to destination, false otherwise
 	 * @throws IOException
 	 */
-	public boolean copyChildrenTo(EFolder destination, boolean overwrite, boolean deep, String regex) throws IOException {
+	public boolean copyChildrenTo(Directory destination, boolean overwrite, boolean deep, String regex) throws IOException {
 		boolean result = true;
 		boolean cur;
 		
@@ -570,8 +563,8 @@ public class EFolder extends File {
 					}
 				}else{ //isDirectory
 					if(deep){
-						EFolder srcDir = new EFolder(children[i].getAbsolutePath());
-						EFolder destDir = new EFolder(destination,srcDir.getName()); 
+						Directory srcDir = new Directory(children[i].getAbsolutePath());
+						Directory destDir = new Directory(destination,srcDir.getName()); 
 						cur = srcDir.copyChildrenTo(destDir,overwrite,deep,regex); 
 						if(!cur) result = cur;
 					}
@@ -619,11 +612,11 @@ public class EFolder extends File {
 	 *            whether to recurse subdirs
 	 * @return a HashSet of File and/or Folder objects
 	 */
-	private HashSet list(int type,
+	private HashSet<File> list(int type,
 			boolean hidden, String regex,
 			boolean deep) {
 
-		HashSet set = new HashSet();
+		HashSet<File> set = new HashSet<File>();
 
 		File[] files = this.listFiles();
 		if(null!=files){
@@ -638,11 +631,11 @@ public class EFolder extends File {
 							if (files[i].isFile()) {
 								set.add(files[i]);
 							} else {
-								EFolder f;
+								Directory f;
 								try {
-									f = new EFolder(files[i].getAbsolutePath());
+									f = new Directory(files[i].getAbsolutePath());
 								} catch (IOException e) {
-									System.err.println(e.getMessage());
+									e.printStackTrace();
 									continue;
 								}
 								set.add(f);
@@ -652,7 +645,7 @@ public class EFolder extends File {
 				}
 				if (deep && files[i].isDirectory()) {
 					try {
-						EFolder fldr = new EFolder(files[i].getAbsolutePath());
+						Directory fldr = new Directory(files[i].getAbsolutePath());
 						set.addAll(fldr.list(type, hidden, regex, deep));
 					} catch (IOException e) {
 						System.err.println(e.getMessage());
@@ -688,7 +681,7 @@ public class EFolder extends File {
 		for (int i = 0; i < children.length; i++) {
 			if (children[i].isDirectory()) {
 				if (deep) {
-					EFolder fldr = new EFolder(children[i].getAbsolutePath());
+					Directory fldr = new Directory(children[i].getAbsolutePath());
 					boolean cur = fldr.delete(type, deep, regex, deleteHidden);
 					if (!cur) result = cur;
 				}

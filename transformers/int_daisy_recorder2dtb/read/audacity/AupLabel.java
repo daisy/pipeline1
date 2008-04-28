@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_recorder2dtb.read.audacity;
 
 
@@ -17,7 +34,7 @@ public class AupLabel {
 	private static final Pattern PATTERN_ROMAN_NUMERAL = Pattern.compile("[MmDdCcLlVvIi]*");
 	private double mStartSeconds = -1;
 	private double mEndSeconds = -1;
-	private String mInitTitle;
+	//private String mInitTitle;
 	private Value mValue;
 	private Semantic mSemantic;
 	private TransformerDelegateListener mTransformer = null;
@@ -25,7 +42,7 @@ public class AupLabel {
 	
 	public AupLabel(String t, String t1, String title, TransformerDelegateListener tdl) {
 		mTransformer = tdl;
-		mInitTitle = title;
+		//mInitTitle = title;
 		/*
 		 * t and t1 are second strings, eg 4.70888889
 		 * dont store as smilclock as we loose precision 

@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.file;
 
 import java.io.File;
@@ -55,7 +53,7 @@ public class EFile extends java.io.File  {
 		super(parent, child);
 	}
 
-	public EFile(EFolder parent, String child) {
+	public EFile(Directory parent, String child) {
 		super(parent, child);
 	}
 	
@@ -109,8 +107,8 @@ public class EFile extends java.io.File  {
 		  this.mimeType = mime; 
 	}
 	
-	public EFolder getParentFolder() throws IOException{
-		return new EFolder(this.getParent());
+	public Directory getParentFolder() throws IOException{
+		return new Directory(this.getParent());
 	}
 	
 	public String getName(){
@@ -147,7 +145,8 @@ public class EFile extends java.io.File  {
 		return null;
 	}
 
-    public InputSource asInputSource() throws FileNotFoundException {    	
+    @SuppressWarnings("unused")
+	public InputSource asInputSource() throws FileNotFoundException {    	
     	//InputSource is = new InputSource(new FileReader(this));
     	//use this instead to avoid charset decoding probs
     	InputSource is = new InputSource(this.toString());

@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_html2xhtml;
 
 import java.io.BufferedReader;
@@ -32,7 +49,7 @@ import org.daisy.pipeline.core.script.datatype.FilesDatatype;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
@@ -72,15 +89,14 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 		super(inListener, isInteractive);
 	}
 
-	protected boolean execute(Map parameters)
-			throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 
 		try {
 
-			mInputFile = new EFile(FilenameOrFileURI.toFile((String) parameters.remove("input")));
+			mInputFile = new EFile(FilenameOrFileURI.toFile(parameters.remove("input")));
 			InputSource is = new InputSource(new FileInputStream(mInputFile));
 
-			String enc = (String) parameters.remove("encoding");
+			String enc = parameters.remove("encoding");
 			if (enc != null && enc.length() > 0) {
 				mUserSetEncoding = enc;
 			}
@@ -90,7 +106,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 			Chain chain = new Chain(TransformerFactoryConstants.SAXON8, CatalogEntityResolver.getInstance());
 			chain.addStylesheet(new StreamSource(this.getClass().getResource("xhtml-clean-minimum.xsl").openStream()));
 
-			String xslparam = (String) parameters.remove("xsl");
+			String xslparam = parameters.remove("xsl");
 			if (xslparam != null
 					&& xslparam.length() > 0) {
 				// add stylesheets to follow echo.xsl in the user-customized
@@ -108,7 +124,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 			} else {
 				// add stylesheets to follow echo.xsl in the default transform
 				// chain
-				String cleanLevel = (String) parameters.remove("cleanLevel");
+				String cleanLevel = parameters.remove("cleanLevel");
 				if ("NONE".equals(cleanLevel)) {
 					// add no more xslts, echo.xsl is all we use. This is the
 					// default.
@@ -120,7 +136,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 			}
 
 			// create the tagsoup instance
-			String param = (String)parameters.remove("stripUnknownElems");
+			String param = parameters.remove("stripUnknownElems");
 			boolean ignoreBogons = param.equals("true");
 			
 			Parser parser = new Parser();
@@ -144,7 +160,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 			
 			// if we came this far,
 			// create the output dir and move result there
-			EFolder outDir = (EFolder) FileUtils.createDirectory(new EFolder((String) parameters.remove("outDir")));			
+			Directory outDir = (Directory) FileUtils.createDirectory(new Directory(parameters.remove("outDir")));			
 			File outFile = outDir.addFile(tempOutFile2.getFile());
 			File finalFile = new java.io.File(outFile.getParentFile(), mInputFile.getName());
 			outFile.renameTo(finalFile);
@@ -210,9 +226,9 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 			FileUtils.copy(in, out);
 		}else{
 			XMLInputFactory xif = null;
-			Map xifPropertes = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
+			Map<String,Object> xifPropertes = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
 			XMLOutputFactory xof = null;
-			Map xofPropertes = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
+			Map<String,Object> xofPropertes = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
 			XMLEventFactory xef = null;
 			
 			try{
@@ -245,7 +261,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 	
 	
 
-	public Reader autoDetectingReader(InputStream i) {
+	public Reader autoDetectingReader(@SuppressWarnings("unused")InputStream i) {
 		// detect charset of current active inFile
 		// return a reader with encoding prop set.
 		// ignore the inputstream inparam...
@@ -276,6 +292,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public void error(FilesetFileException ffe) throws FilesetFileException {
 		//run when parsing the xhtml output, dont report out
 		//complaining has no place here

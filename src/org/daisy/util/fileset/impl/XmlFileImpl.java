@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.fileset.impl;
 
 import java.io.FileNotFoundException;
@@ -81,7 +79,7 @@ abstract class XmlFileImpl
     static DocumentBuilderFactory domFactory = null;
     static DocumentBuilder domBuilder = null;    
     
-    protected Set mXmlLangValues = new HashSet();						//collected in subclasses... can change that
+    protected Set<String> mXmlLangValues = new HashSet<String>();						//collected in subclasses... can change that
     
     private boolean isWellformed = true;
     private boolean isDTDValid = true;
@@ -93,8 +91,8 @@ abstract class XmlFileImpl
     private static Boolean mDTDValidating = null;							//config flag
 
     private SAXParser mSAXParser = null;								//The parser on loan from the pool
-    private static HashMap mSAXParserFeatures = null;					//parser config map (used for pool)
-    private static HashMap mSAXParserProperties = null;					//parser config map (used for pool)
+    private static HashMap<String,Object> mSAXParserFeatures = null;					//parser config map (used for pool)
+    private static HashMap<String,Object> mSAXParserProperties = null;					//parser config map (used for pool)
     private static SAXParserPool mPool = null;							//static convenience pointer    
 
     private Attributes mRootElementAttributes = null;					//caught in first startElement call    
@@ -103,14 +101,14 @@ abstract class XmlFileImpl
     private String mRootElementqName = null;							//caught in first startElement call
     protected boolean mRootElementReported = false;  					//requires subclasses to do super on StartElement
     
-    protected Set mNamespaces = new HashSet(); 							//<QName>, caught in startPrefixMapping
+    protected Set<QName> mNamespaces = new HashSet<QName>(); 			//<QName>, caught in startPrefixMapping
     
     private String mPrologPublicId = null;								//caught by LexicalHandler, regardless of DTD load config
     private String mPrologSystemId = null;								//caught by LexicalHandler, regardless of DTD load config
     private String mPrologEncoding = null;								//caught in setDocumentLocator(Locator)
     private String mPrologXmlVersion = null;							//caught in setDocumentLocator(Locator)
 
-    private Map mIdQNameMap = new HashMap(); 							// <idvalue>,<carrierQname>, populated by subclasses
+    private Map<String,QName> mIdQNameMap = new HashMap<String,QName>();// <idvalue>,<carrierQname>, populated by subclasses
     
     public static XMLGrammarPoolImpl mGrammarPool = null;
     
@@ -136,7 +134,7 @@ abstract class XmlFileImpl
     		//first class load 
     		mPool = SAXParserPool.getInstance();
     		//configure maps for the SAXParserPool.    		
-    		mSAXParserFeatures = new HashMap();
+    		mSAXParserFeatures = new HashMap<String,Object>();
     		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_NAMESPACES, Boolean.TRUE);
     		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_NAMESPACE_PREFIXES, Boolean.TRUE);
     		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_NAMESPACES, Boolean.TRUE);
@@ -144,7 +142,7 @@ abstract class XmlFileImpl
     		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_LEXICAL_HANDLER_PARAMETER_ENTITIES, Boolean.TRUE);
     		mSAXParserFeatures.put(SAXConstants.SAX_FEATURE_USE_ENTITY_RESOLVER2, Boolean.TRUE);
     		//if(mValidating == null) mValidating = Boolean.valueOf(getValidatingProperty());    		 
-    		mSAXParserProperties = new HashMap();
+    		mSAXParserProperties = new HashMap<String,Object>();
     		mSAXParserProperties.put(SAXConstants.SAX_PROPERTY_LEXICAL_HANDLER, this);
     							    	
     	}	
@@ -205,7 +203,8 @@ abstract class XmlFileImpl
      * ContentHandler impl. Typically, subclasses override this, and are expected to use a super call
      * This class has the responsibility of flipping the mRootElementReported bool.
      */
-    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+    @SuppressWarnings("unused")
+	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     	if(!mRootElementReported){
     		mRootElementReported = true;
     		mRootElementAttributes = AttributesCloner.clone(atts);
@@ -219,7 +218,8 @@ abstract class XmlFileImpl
      * (non-Javadoc)
      * @see org.xml.sax.ContentHandler#startPrefixMapping(java.lang.String, java.lang.String)
      */
-    public void startPrefixMapping(String prefix, String uri)throws SAXException {
+    @SuppressWarnings("unused")
+	public void startPrefixMapping(String prefix, String uri)throws SAXException {
     	//add to the namespaces set
     	this.mNamespaces.add(new QName(uri,"",prefix));
     }
@@ -228,7 +228,8 @@ abstract class XmlFileImpl
      * (non-Javadoc)
      * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String, java.lang.String, java.lang.String)
      */
-    public void startDTD(String name, String publicId, String systemId)throws SAXException {
+    @SuppressWarnings("unused")
+	public void startDTD(String name, String publicId, String systemId)throws SAXException {
 //		if(mDebugMode) {
 //			System.out.println("DEBUG: XmlFileImpl#startDTD -- LexicalHandler is reporting");
 //		}  
@@ -245,10 +246,13 @@ abstract class XmlFileImpl
     	return resolveEntity(null, publicId, null, systemId);
     }
 
-    /**
-     * EntityResolver2 impl
-     */    	
-	public InputSource resolveEntity(String name, String publicId, String baseURI, String systemId) throws IOException {		
+    /*
+     * (non-Javadoc)
+     * @see org.xml.sax.ext.EntityResolver2#resolveEntity(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */   	
+    @SuppressWarnings("unused")
+	public InputSource resolveEntity(String name, String publicId, 
+			String baseURI, String systemId) throws IOException {		
 		//only of LexicalHandler hasnt already set, 
 		//this method isnt called if apache load dtd props are off
 		if(mPrologPublicId==null)mPrologPublicId = publicId;
@@ -285,16 +289,19 @@ abstract class XmlFileImpl
     }
 
     
-    public void fatalError(SAXParseException spe) throws SAXException {
+    @SuppressWarnings("unused")
+	public void fatalError(SAXParseException spe) throws SAXException {
         isWellformed = false;
         myExceptions.add(new FilesetFileFatalErrorException(this,spe));
     }
 
+    @SuppressWarnings("unused")
     public void error(SAXParseException spe)throws SAXException {
         isDTDValid = false;
         myExceptions.add(new FilesetFileErrorException(this,spe));
     }
 
+    @SuppressWarnings("unused")
     public void warning(SAXParseException spe) throws SAXException {
         myExceptions.add(new FilesetFileWarningException(this,spe));
     }
@@ -342,8 +349,8 @@ abstract class XmlFileImpl
 	private String getRootElementPrefix() {		
 		if(null != mRootElementNsUri) {
 			//return a 0-n length string
-			for (Iterator iter = mNamespaces.iterator(); iter.hasNext();) {
-				QName qn = (QName) iter.next();
+			for (Iterator<QName> iter = mNamespaces.iterator(); iter.hasNext();) {
+				QName qn = iter.next();
 				if(qn.getNamespaceURI().equals(mRootElementNsUri)) {
 					return qn.getPrefix();
 				}
@@ -356,22 +363,22 @@ abstract class XmlFileImpl
 		return mRootElementAttributes;
 	}
 			
-    public Collection getXmlLangValues(){
+    public Collection<String> getXmlLangValues(){
     	return this.mXmlLangValues;
     }
 
-    public Collection getNamespaces(){
+    public Collection<QName> getNamespaces(){
     	return this.mNamespaces;
     }
     
-	public Map getInlineSchemaURIs() {
+	public Map<String,String> getInlineSchemaURIs() {
 		//note: the fact that this is computed after the fact
 		//and not directly at startelement means that
 		//the schema uris dont end up in the uris collection
-		HashMap map = new HashMap();
-		Set xsis = XMLUtils.getXSISchemaLocationURIs(mRootElementNsUri, mRootElementLocalName, mRootElementqName, mRootElementAttributes);
-		for (Iterator iter = xsis.iterator(); iter.hasNext();) {
-			String str = (String) iter.next();
+		HashMap<String,String> map = new HashMap<String,String>();
+		Set<String> xsis = XMLUtils.getXSISchemaLocationURIs(mRootElementNsUri, mRootElementLocalName, mRootElementqName, mRootElementAttributes);
+		for (Iterator<String> iter = xsis.iterator(); iter.hasNext();) {
+			String str = iter.next();
 			map.put(str, SchemaLanguageConstants.W3C_XML_SCHEMA_NS_URI);							
 		}	
 		return map;
@@ -396,11 +403,11 @@ abstract class XmlFileImpl
     }
     
     public QName getQName(String idval) {
-    	return (QName)mIdQNameMap.get(idval);
+    	return mIdQNameMap.get(idval);
     }
 
     public boolean hasIDValueOnQName(String idval, QName qName) {
-    	QName test = (QName) mIdQNameMap.get(idval);
+    	QName test = mIdQNameMap.get(idval);
         if (test != null) {
         	if(test.getLocalPart().equals(qName.getLocalPart()) 
         			&& test.getNamespaceURI().equals(qName.getNamespaceURI())
@@ -419,6 +426,7 @@ abstract class XmlFileImpl
      * EntityResolver2 impl
      * Allows applications to provide an external subset for documents that don't explicitly define one. 
      */
+	@SuppressWarnings("unused")
 	public InputSource getExternalSubset(String name, String baseURI) throws SAXException, IOException {
 		return null;
 	}
@@ -526,21 +534,36 @@ abstract class XmlFileImpl
     }
     
     //empty methods: for subclasses to implement as needed     
+	@SuppressWarnings("unused")
 	public void endDocument() throws SAXException {}
+	@SuppressWarnings("unused")
 	public void endPrefixMapping(String prefix) throws SAXException {}
+	@SuppressWarnings("unused")
 	public void endElement(String uri, String localName, String qName) throws SAXException {}
+	@SuppressWarnings("unused")
 	public void characters(char[] ch, int start, int length) throws SAXException {}
+	@SuppressWarnings("unused")
 	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {}
-    public void skippedEntity(String arg0) throws SAXException {}
-    public void startDocument() throws SAXException {}        
-    public void notationDecl(String arg0, String arg1, String arg2) throws SAXException {}
-    public void unparsedEntityDecl(String arg0, String arg1, String arg2,String arg3) throws SAXException {}
-    public void endDTD() throws SAXException {}
-    public void startEntity(String name) throws SAXException {}
-    public void endEntity(String name) throws SAXException {}
-    public void startCDATA() throws SAXException {}
-    public void endCDATA() throws SAXException {}
-    public void comment(char[] ch, int start, int length) throws SAXException {}
+	@SuppressWarnings("unused")
+	public void skippedEntity(String arg0) throws SAXException {}
+	@SuppressWarnings("unused")
+	public void startDocument() throws SAXException {}        
+	@SuppressWarnings("unused")
+	public void notationDecl(String arg0, String arg1, String arg2) throws SAXException {}
+	@SuppressWarnings("unused")
+	public void unparsedEntityDecl(String arg0, String arg1, String arg2,String arg3) throws SAXException {}
+	@SuppressWarnings("unused")
+	public void endDTD() throws SAXException {}
+	@SuppressWarnings("unused")
+	public void startEntity(String name) throws SAXException {}
+	@SuppressWarnings("unused")
+	public void endEntity(String name) throws SAXException {}
+	@SuppressWarnings("unused")
+	public void startCDATA() throws SAXException {}
+	@SuppressWarnings("unused")
+	public void endCDATA() throws SAXException {}
+	@SuppressWarnings("unused")
+	public void comment(char[] ch, int start, int length) throws SAXException {}
     //methods of ext.DeclHandler
 //	public void attributeDecl(String eName, String aName, String type, String mode, String value) throws SAXException {}
 //	public void elementDecl(String name, String model) throws SAXException {}

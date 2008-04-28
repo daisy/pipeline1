@@ -40,7 +40,6 @@ package se_tpb_speechgenerator;
 */
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,24 +49,24 @@ import java.util.List;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 
 
 public class SequenceAudioInputStream
 	extends		AudioInputStream
 {
+	@SuppressWarnings("unused")
 	private static final boolean	DEBUG = false;
 
-	private List			m_audioInputStreamList;
+	private List<AudioInputStream>			m_audioInputStreamList;
 	private	int			m_nCurrentStream;
 	
 
 	
-	public SequenceAudioInputStream(AudioFormat audioFormat, Collection audioInputStreams)
+	public SequenceAudioInputStream(AudioFormat audioFormat, Collection<AudioInputStream> audioInputStreams)
 	{
 		super(new ByteArrayInputStream(new byte[0]), audioFormat, AudioSystem.NOT_SPECIFIED);
-		m_audioInputStreamList = new ArrayList(audioInputStreams);
+		m_audioInputStreamList = new ArrayList<AudioInputStream>(audioInputStreams);
 		m_nCurrentStream = 0;
 	}
 
@@ -116,7 +115,7 @@ public class SequenceAudioInputStream
 
 	private AudioInputStream getCurrentStream()
 	{
-		return (AudioInputStream) m_audioInputStreamList.get(m_nCurrentStream);	
+		return m_audioInputStreamList.get(m_nCurrentStream);	
 	}
 
 
@@ -133,20 +132,17 @@ public class SequenceAudioInputStream
 	public long getFrameLength()
 	{
 		long	lLengthInFrames = 0;
-		Iterator	streamIterator = m_audioInputStreamList.iterator();
+		Iterator<AudioInputStream>	streamIterator = m_audioInputStreamList.iterator();
 		while (streamIterator.hasNext())
 		{		
-			AudioInputStream	stream = (AudioInputStream) streamIterator.next();
+			AudioInputStream	stream = streamIterator.next();
 			long	lLength = stream.getFrameLength();
 
 			if (lLength == AudioSystem.NOT_SPECIFIED)
 			{
 				return AudioSystem.NOT_SPECIFIED;
-			} 
-			else
-			{
-				lLengthInFrames += lLength;
 			}
+			lLengthInFrames += lLength;
 		}
 		return lLengthInFrames;
 	}
@@ -173,21 +169,15 @@ public class SequenceAudioInputStream
 				*/
 				return read();
 			}
-			else
-			{
-				/*
-				  No more data. We signal EOF.
-				*/
-				return -1;
-			}
-		}
-		else
-		{
 			/*
-			  The most common case: We return the byte.
+			  No more data. We signal EOF.
 			*/
-			return nByte;
+			return -1;
 		}
+		/*
+		  The most common case: We return the byte.
+		*/
+		return nByte;
 	}
 
 
@@ -212,26 +202,21 @@ public class SequenceAudioInputStream
 				*/
 				return read(abData, nOffset, nLength);
 			}
-			else
-			{
-				/*
-				  No more data. We signal EOF.
-				*/
-				return -1;
-			}
-		}
-		else
-		{
 			/*
-			  The most common case: We return the length.
+			  No more data. We signal EOF.
 			*/
-			return nBytesRead;
+			return -1;
 		}
+		/*
+		  The most common case: We return the length.
+		*/
+		return nBytesRead;
 	}
 
 
 
-	public long skip(long lLength)
+	public long skip(@SuppressWarnings("unused")
+	long lLength)
 		throws	IOException
 	{
 		throw new IOException("skip() is not implemented in class SequenceInputStream. Mail if you need this feature.");
@@ -247,6 +232,7 @@ public class SequenceAudioInputStream
 
 
 
+	@SuppressWarnings("unused")
 	public void close()
 		throws	IOException
 	{
@@ -255,7 +241,8 @@ public class SequenceAudioInputStream
 
 
 
-	public void mark(int nReadLimit)
+	public void mark(@SuppressWarnings("unused")
+	int nReadLimit)
 	{
 		throw new RuntimeException("mark() is not implemented in class SequenceInputStream. Mail if you need this feature.");
 	}
@@ -277,6 +264,7 @@ public class SequenceAudioInputStream
 
 
 
+	@SuppressWarnings("unused")
 	private static void out(String strMessage)
 	{
 		System.out.println(strMessage);

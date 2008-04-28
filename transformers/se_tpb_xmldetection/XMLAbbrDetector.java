@@ -1,25 +1,23 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_xmldetection;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
@@ -60,7 +58,7 @@ public class XMLAbbrDetector extends XMLWordDetector {
      */
     public XMLAbbrDetector(File inFile, File outFile, URL customLang, boolean override) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
         super(inFile, outFile);
-        Set xmllang = LangDetector.getXMLLangSet(inFile);
+        Set<String> xmllang = LangDetector.getXMLLangSet(inFile);
         caas = new ContextAwareAbbrSettings(); 
         setBreakSettings(caas);
         setContextStackFilter(caas);
@@ -68,18 +66,18 @@ public class XMLAbbrDetector extends XMLWordDetector {
     }
 
     protected void handleBreaks(String data) throws XMLStreamException {
-        Vector breaks = breakFinder.findBreaks(data, null);
+        Vector<?> breaks = breakFinder.findBreaks(data, null);
         //System.err.println(breaks);  
         writeElements(data, breaks);
     }
     
-    private void writeElements(String text, Vector breaks) throws XMLStreamException {
+    private void writeElements(String text, Vector<?> breaks) throws XMLStreamException {
         if (breaks.size() == 0) {
             writeString(text);
             return;
         }
         int oldEnd = 0;
-        for (Iterator it = breaks.iterator(); it.hasNext(); ) {
+        for (Iterator<?> it = breaks.iterator(); it.hasNext(); ) {
             Abbr abbr = (Abbr)it.next();
             int start = abbr.getStart();
             int end = abbr.getEnd();
@@ -116,11 +114,11 @@ public class XMLAbbrDetector extends XMLWordDetector {
         writeString(text.substring(oldEnd));
     }
     
-    private Iterator getBreakAttributes(Map map, String att, String exp, QName expAttName, String expAttValue) {
-        Iterator result = null;
-        Vector v = new Vector();
+    private Iterator<Attribute> getBreakAttributes(Map<?,?> map, String att, String exp, QName expAttName, String expAttValue) {
+        Iterator<Attribute> result = null;
+        Vector<Attribute> v = new Vector<Attribute>();
         if (map != null) {
-            for (Iterator it = map.keySet().iterator(); it.hasNext(); ) {
+            for (Iterator<?> it = map.keySet().iterator(); it.hasNext(); ) {
                 String name = (String)it.next();
                 String value = (String)map.get(name);
                 Attribute attr = eventFactory.createAttribute(name, value);
@@ -141,7 +139,7 @@ public class XMLAbbrDetector extends XMLWordDetector {
         return result;
     }
     
-    public static void main(String[] args) throws CatalogExceptionNotRecoverable, UnsupportedDocumentTypeException, FileNotFoundException, XMLStreamException {
+    public static void main(String[] args) throws UnsupportedDocumentTypeException {
         XMLAbbrDetector detector;
 
         try {

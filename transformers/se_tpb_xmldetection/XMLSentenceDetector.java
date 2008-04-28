@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_xmldetection;
 
@@ -49,6 +48,7 @@ import org.daisy.util.xml.stax.ContextStack;
 /**
  * @author Linus Ericson
  */
+@SuppressWarnings("unchecked")
 public class XMLSentenceDetector extends XMLBreakDetector {
 
 //    private static Logger logger = Logger.getLogger(XMLSentenceDetector.class.getName());
@@ -86,8 +86,8 @@ public class XMLSentenceDetector extends XMLBreakDetector {
     }
     
     /* *** METHODS *** */
-    
-    protected void detect() throws UnsupportedDocumentTypeException, FileNotFoundException, XMLStreamException {
+        
+	protected void detect() throws UnsupportedDocumentTypeException, FileNotFoundException, XMLStreamException {
         // The buffer for the text to detect sentence breaks in
         StringBuffer buffer = new StringBuffer();
         
@@ -291,11 +291,11 @@ public class XMLSentenceDetector extends XMLBreakDetector {
      * @param attributes
      * @return
      */
-    private boolean attributesMatch(StartElement se, Map attributes) {
+    private boolean attributesMatch(StartElement se, Map<String,String> attributes) {
         boolean result = true;
-        for (Iterator it = attributes.keySet().iterator(); it.hasNext(); ) {
-            String key = (String)it.next();
-            String value = (String)attributes.get(key);
+        for (Iterator<String> it = attributes.keySet().iterator(); it.hasNext(); ) {
+            String key = it.next();
+            String value = attributes.get(key);
             Attribute att = se.getAttributeByName(new QName(key));
             if (att != null) {
                 if (!att.getValue().equals(value)) {
@@ -315,8 +315,8 @@ public class XMLSentenceDetector extends XMLBreakDetector {
             return true;
         }
         String currentPath = contextStack.getContextPath();
-        for (Iterator it = allowedPaths.iterator(); it.hasNext(); ) {
-            String allowed = (String)it.next();
+        for (Iterator<String> it = allowedPaths.iterator(); it.hasNext(); ) {
+            String allowed = it.next();
             if (currentPath.startsWith(allowed)) {
                 return true;
             }
@@ -394,7 +394,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                 text = text.substring(currentBreak - offset, text.length());
                 offset = currentBreak;
                 ContextStack.ContextInfo tmp = 
-                	(ContextStack.ContextInfo) writeStack.getContext().pop();
+                	writeStack.getContext().pop();
                 QName lastWritten = tmp.getName();
                 /*
                  *  FIXME we only need to check that the last element really was
@@ -448,7 +448,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
         if (lastIsStart) {
         	// The last tag is a start tag
         	ContextStack.ContextInfo ci = 
-        		(ContextStack.ContextInfo) contextStack.getParentContext().peek();
+        		contextStack.getParentContext().peek();
         	
         	return breakSettings.mayContainText(ci.getName());
         } 

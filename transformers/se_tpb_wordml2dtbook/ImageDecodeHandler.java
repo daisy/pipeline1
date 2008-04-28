@@ -1,7 +1,23 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package se_tpb_wordml2dtbook;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 
@@ -21,7 +37,7 @@ import org.xml.sax.ext.DefaultHandler2;
 public class ImageDecodeHandler extends DefaultHandler2 {
 	private boolean openPict;
 	//private sun.misc.BASE64Decoder decoder;
-	private FileOutputStream output;
+	//private FileOutputStream output;
 	private File outputFile;
 	private StringBuffer buffer;
 	private int imgcount;
@@ -37,13 +53,14 @@ public class ImageDecodeHandler extends DefaultHandler2 {
 		this.inputdir = inputdir;
 		this.outputdir = outputdir;
 		this.imgcount = 0;
-		this.output = null;
+		//this.output = null;
 		this.openPict = false;
 		this.filesToConvert = new ArrayList<File>();
 		//this.decoder = new sun.misc.BASE64Decoder();
 	}
 	
 	
+	@SuppressWarnings("unused")
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
 		if (localName.equals("binData")) {
 			openPict = true;
@@ -87,6 +104,7 @@ public class ImageDecodeHandler extends DefaultHandler2 {
 		return filename;
 	}
 	
+	@SuppressWarnings("unused")
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (openPict) {
 			openPict = false;
@@ -99,6 +117,7 @@ public class ImageDecodeHandler extends DefaultHandler2 {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		if (openPict) {
 			buffer.append(ch, start, length);
@@ -106,7 +125,7 @@ public class ImageDecodeHandler extends DefaultHandler2 {
 	}
 	
 	public File[] getFilesToConvert() {
-		return (File[])filesToConvert.toArray(new File[filesToConvert.size()]);
+		return filesToConvert.toArray(new File[filesToConvert.size()]);
 	}
 
 }

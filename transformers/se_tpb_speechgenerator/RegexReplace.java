@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
  */
 public class RegexReplace {
 	
-	private Vector patterns = new Vector();
+	private Vector<PatternReplace> patterns = new Vector<PatternReplace>();
 	private boolean DEBUG = false;
 	
 	/**
@@ -78,8 +78,8 @@ public class RegexReplace {
 	 * @return the filtered text.
 	 */
 	public String filter(String text) {
-		for (Iterator it = patterns.iterator(); it.hasNext(); ) {
-			PatternReplace pr = (PatternReplace) it.next();
+		for (Iterator<PatternReplace> it = patterns.iterator(); it.hasNext(); ) {
+			PatternReplace pr = it.next();
 			text = processTest(text, pr.getPattern(), pr.getReplace());
 		}
 		return text;

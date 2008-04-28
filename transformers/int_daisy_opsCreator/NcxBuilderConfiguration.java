@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_opsCreator;
 
 import java.io.IOException;
@@ -90,7 +107,7 @@ public class NcxBuilderConfiguration implements ErrorHandler {
 			if(labels!=null) { 
 				for (StartElement labelElement : labels) {
 					boolean foundLabel = false;
-					for (Iterator iter = labelElement.getAttributes(); iter.hasNext();) {
+					for (Iterator<?> iter = labelElement.getAttributes(); iter.hasNext();) {
 						Attribute a = (Attribute) iter.next();					
 						if(a.getName().getLocalPart().equals("lang")) {
 							if(a.getValue().equals(language)) {
@@ -129,7 +146,7 @@ public class NcxBuilderConfiguration implements ErrorHandler {
 				//QName is the same, check attributes
 				//all filterElement attrs and attrvalues must be present on event
 				boolean attributesMatch = true;
-				for (Iterator iter = filterElement.getAttributes(); iter.hasNext();) {
+				for (Iterator<?> iter = filterElement.getAttributes(); iter.hasNext();) {
 					Attribute filterAttr = (Attribute) iter.next();
 					if(filterAttr.getName().getNamespaceURI().equals(configNS)) continue;
 					Attribute eventAttr = event.getAttributeByName(filterAttr.getName());
@@ -164,7 +181,7 @@ public class NcxBuilderConfiguration implements ErrorHandler {
 		sv.validate(config);
 		
 		XMLInputFactory xif = null;
-		Map properties = null;		
+		Map<String,Object> properties = null;		
 		try {
 			properties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
 			xif = StAXInputFactoryPool.getInstance().acquire(properties);									
@@ -220,18 +237,19 @@ public class NcxBuilderConfiguration implements ErrorHandler {
 	
 	
 	
+	@SuppressWarnings("unused")
 	public void error(SAXParseException e) throws SAXException {
 		Location loc = LocusTransformer.newLocation(e);
 		mOwner.sendMessage(e.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, loc);		
 	}
 
-
+	@SuppressWarnings("unused")
 	public void fatalError(SAXParseException e) throws SAXException {
 		Location loc = LocusTransformer.newLocation(e);
 		mOwner.sendMessage(e.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, loc);		
 	}
 
-
+	@SuppressWarnings("unused")
 	public void warning(SAXParseException e) throws SAXException {
 		Location loc = LocusTransformer.newLocation(e);
 		mOwner.sendMessage(e.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT, loc);

@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.fileset.validation;
 
 import java.net.URI;
@@ -107,11 +124,12 @@ class ValidatorImplD202 extends ValidatorImplAbstract implements Validator, Erro
 	/**
 	 * Perform additional validation other than that done through the call to super.validate (which executes any schemas and delegates registered on super)
 	 */
+	@SuppressWarnings("unused")
 	private void validate() throws ValidatorException, ValidatorNotSupportedException {
 		FilesetFile mCurrentlyValidatedMember = null;
-		for (Iterator iter = mFileset.getLocalMembers().iterator(); iter.hasNext();) {
+		for (Iterator<FilesetFile> iter = mFileset.getLocalMembers().iterator(); iter.hasNext();) {
 			try{
-				mCurrentlyValidatedMember = (FilesetFile) iter.next();
+				mCurrentlyValidatedMember = iter.next();
 				
 				if(mCurrentlyValidatedMember instanceof D202NccFile) {						
 					nccFile((D202NccFile)mCurrentlyValidatedMember);								
@@ -136,8 +154,8 @@ class ValidatorImplD202 extends ValidatorImplAbstract implements Validator, Erro
 		//do a loop through spine and check timing					
 		D202NccFile ncc = (D202NccFile) mFileset.getManifestMember();			
 		long calculatedTotalTimeMillis = 0;						
-		for (Iterator spineIterator = ncc.getSpineItems().iterator(); spineIterator.hasNext();) {
-			D202SmilFile smil = (D202SmilFile) spineIterator.next();
+		for (Iterator<D202SmilFile> spineIterator = ncc.getSpineItems().iterator(); spineIterator.hasNext();) {
+			D202SmilFile smil = spineIterator.next();
 
 			//test totalElapsedTime
 			if (smil.getStatedTotalElapsedTime()!=null) {

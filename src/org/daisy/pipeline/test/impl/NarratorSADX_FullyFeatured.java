@@ -3,11 +3,11 @@ package org.daisy.pipeline.test.impl;
 import java.util.List;
 
 import org.daisy.pipeline.test.PipelineTest;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 public class NarratorSADX_FullyFeatured extends PipelineTest {
 
-	public NarratorSADX_FullyFeatured(EFolder dataInputDir, EFolder dataOutputDir) {
+	public NarratorSADX_FullyFeatured(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 

@@ -1,15 +1,16 @@
 package org.daisy.util.wincom.sapi5.events;
 
-import com4j.*;
-
+import com4j.DISPID;
+import com4j.IID;
+@SuppressWarnings("unused")
 @IID("{7B8FCB42-0E9D-4F00-A048-7B04D6179D3D}")
 public abstract class _ISpeechRecoContextEvents {
     /**
      * StartStream
      */
     @DISPID(1)
-    public void startStream(
-        int streamNumber,
+    public void startStream(        
+		int streamNumber,
         java.lang.Object streamPosition) {
             throw new UnsupportedOperationException();
     }
@@ -183,7 +184,8 @@ public abstract class _ISpeechRecoContextEvents {
      */
     @DISPID(17)
     public void audioLevel(
-        int streamNumber,
+        
+		int streamNumber,
         java.lang.Object streamPosition,
         int audioLevel) {
             throw new UnsupportedOperationException();

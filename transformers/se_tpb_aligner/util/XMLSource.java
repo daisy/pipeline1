@@ -2,7 +2,7 @@ package se_tpb_aligner.util;
 
 import java.io.File;
 
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 /**
  *
@@ -14,7 +14,7 @@ public class XMLSource extends Source {
 		super(file);
 	}
 
-	public XMLSource(EFolder dir, String string) {
+	public XMLSource(Directory dir, String string) {
 		super(dir,string);
 	}
 

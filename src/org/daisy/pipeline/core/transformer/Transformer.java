@@ -1,26 +1,26 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.pipeline.core.transformer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.EventListener;
 import java.util.EventObject;
 import java.util.Locale;
 import java.util.Map;
@@ -33,7 +33,6 @@ import javax.xml.stream.Location;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.BusListener;
-import org.daisy.pipeline.core.event.CoreMessageEvent;
 import org.daisy.pipeline.core.event.EventBus;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.event.RequestEvent;
@@ -42,13 +41,11 @@ import org.daisy.pipeline.core.event.TaskMessageEvent;
 import org.daisy.pipeline.core.event.TaskProgressChangeEvent;
 import org.daisy.pipeline.core.event.TaskStateChangeEvent;
 import org.daisy.pipeline.core.event.UserAbortEvent;
-import org.daisy.pipeline.core.event.UserEvent;
 import org.daisy.pipeline.core.event.UserReplyEvent;
 import org.daisy.pipeline.core.script.Task;
 import org.daisy.pipeline.exception.TransformerAbortException;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.fileset.exception.FilesetFileException;
-import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.i18n.I18n;
 import org.daisy.util.i18n.XMLPropertyResourceBundle;
@@ -82,7 +79,7 @@ public abstract class Transformer implements BusListener {
 	 * @param isInteractive
 	 * @deprecated use the (Boolean isinteractive) constructor instead
 	 */
-	public Transformer(InputListener inListener, Set eventListeners, Boolean isInteractive) {		
+	public Transformer(InputListener inListener, Set<EventListener> eventListeners, Boolean isInteractive) {		
 		this(inListener,isInteractive);		
 	}
 	
@@ -162,9 +159,9 @@ public abstract class Transformer implements BusListener {
 	 * @param parameters a collection of parameters
 	 * @return <code>true</code> if the Transformer was successful, <code>false</code> otherwise.
 	 */
-	protected abstract boolean execute(Map parameters) throws TransformerRunException;
+	protected abstract boolean execute(Map<String,String> parameters) throws TransformerRunException;
 	
-	final public boolean executeWrapper(Map parameters, File dir) throws TransformerRunException {
+	final public boolean executeWrapper(Map<String,String> parameters, File dir) throws TransformerRunException {
 	    checkAbort();
 	    mTransformerDirectory = dir;
 	    sendMessage(StateChangeEvent.Status.STARTED);	    
@@ -348,6 +345,7 @@ public abstract class Transformer implements BusListener {
 	/**
 	 * Convenience method to send a message about a FilesetFileException. 
 	 */
+	@SuppressWarnings("unused")
 	protected void sendMessage(FilesetFileException ffe) throws FilesetFileException {
 		Location loc = LocusTransformer.newLocation(ffe);
 		Throwable root =ffe.getRootCause();

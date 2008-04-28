@@ -57,7 +57,7 @@ public class SubTree {
 	 */
 	public SubTree(XMLSource content) throws XMLStreamException {		
 		//read the input file, scrap any pre-root stuff and the enddocument event.
-		Map properties = null;
+		Map<String,Object> properties = null;
 		XMLInputFactory xif = null;
 		mContent = new LinkedList<XMLEvent>();
 		try{				
@@ -100,7 +100,7 @@ public class SubTree {
 	 * @throws IOException 
 	 */
 	public void render(XMLResult destination) throws XMLStreamException, IOException {
-		Map properties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
+		Map<String,Object> properties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
 		XMLOutputFactory xof = null;
 		XMLEventFactory xef = StAXEventFactoryPool.getInstance().acquire();
 		XMLEvent x2 = null;

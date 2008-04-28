@@ -1,22 +1,20 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package ca_cnib_rtf2dtbook;
 
 import java.io.File;
@@ -34,9 +32,7 @@ import org.daisy.util.execution.ExecutionException;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
-import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
-import org.daisy.util.xml.xslt.XSLTException;
 import org.xml.sax.EntityResolver;
 
 /**
@@ -50,9 +46,9 @@ public class RTF2DTBook extends Transformer {
 		super(inListener, isInteractive);
 	}
 
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		// Get the rtf2xml command
-		String rtf2xml = (String)parameters.remove("rtf2xml");
+		String rtf2xml = parameters.remove("rtf2xml");
 		if (System.getProperty("os.name").startsWith("Windows")) {
 			// Windows: returns rtf2xml.exe (compiled from python with py2exe)
 			rtf2xml += "-win/rtf2xml.exe";
@@ -64,12 +60,12 @@ public class RTF2DTBook extends Transformer {
 
 		// Read parameters
 		// Dynamic ones
-		String rtfFile = (String) parameters.remove("rtf");
-		String dtbookFile = (String) parameters.remove("dtbook");
+		String rtfFile = parameters.remove("rtf");
+		String dtbookFile = parameters.remove("dtbook");
 
 		// Static ones
-		String stylesheet = (String) parameters.remove("stylesheet");
-		String xsltFactory = (String) parameters.remove("factory");
+		String stylesheet = parameters.remove("stylesheet");
+		String xsltFactory = parameters.remove("factory");
 
 		// Output the XML into a temporary file
 		TempFile xmlFile;
@@ -129,6 +125,7 @@ public class RTF2DTBook extends Transformer {
 		return true;
 	}
 
+	@SuppressWarnings("unused")
 	private void printArgs(String[] args) {
 		System.err.println("arg0: " + args[0]);
 		System.err.println("arg1: " + args[1]);

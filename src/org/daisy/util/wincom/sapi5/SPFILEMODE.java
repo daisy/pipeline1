@@ -1,6 +1,5 @@
 package org.daisy.util.wincom.sapi5  ;
 
-import com4j.*;
 
 public enum SPFILEMODE {
     SPFM_OPEN_READONLY, // 0

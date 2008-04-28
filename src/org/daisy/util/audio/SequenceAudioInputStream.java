@@ -101,18 +101,16 @@ public class SequenceAudioInputStream extends AudioInputStream {
 				  to read from it.
 				 */
 				return read();
-			} else {
-				/*
-				  No more data. We signal EOF.
-				 */
-				return -1;
 			}
-		} else {
 			/*
-			  The most common case: We return the byte.
+			  No more data. We signal EOF.
 			 */
-			return nByte;
+			return -1;
 		}
+		/*
+		  The most common case: We return the byte.
+		 */
+		return nByte;
 	}
 
 	public int read(byte[] abData, int nOffset,
@@ -131,21 +129,19 @@ public class SequenceAudioInputStream extends AudioInputStream {
 				  to read from it.
 				 */
 				return read(abData, nOffset, nLength);
-			} else {
-				/*
-				  No more data. We signal EOF.
-				 */
-				return -1;
 			}
-		} else {
 			/*
-			  The most common case: We return the length.
+			  No more data. We signal EOF.
 			 */
-			return nBytesRead;
+			return -1;
 		}
+		/*
+		  The most common case: We return the length.
+		 */
+		return nBytesRead;
 	}
 
-	public long skip(long lLength) throws IOException {
+	public long skip(@SuppressWarnings("unused")long lLength) throws IOException {
 		throw new IOException("skip() is not implemented in class SequenceInputStream. Mail if you need this feature.");
 	}
 
@@ -159,7 +155,7 @@ public class SequenceAudioInputStream extends AudioInputStream {
 		}
 	}
 
-	public void mark(int nReadLimit) {
+	public void mark(@SuppressWarnings("unused")int nReadLimit) {
 		throw new RuntimeException("mark() is not implemented in class SequenceInputStream. Mail if you need this feature.");
 	}
 
@@ -171,9 +167,6 @@ public class SequenceAudioInputStream extends AudioInputStream {
 		return false;
 	}
 
-	private static void out(String strMessage) {
-		System.out.println(strMessage);
-	}
 }
 
 /*** SequenceAudioInputStream.java ***/

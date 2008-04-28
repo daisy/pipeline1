@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.pipeline.util;
 
 import java.io.File;
@@ -21,7 +38,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
-import org.daisy.pipeline.core.DMFCCore;
+import org.daisy.pipeline.core.PipelineCore;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.RequestEvent;
 import org.daisy.pipeline.core.event.UserReplyEvent;
@@ -30,7 +47,7 @@ import org.daisy.pipeline.core.transformer.TransformerHandler;
 import org.daisy.pipeline.core.transformer.TransformerInfo;
 import org.daisy.pipeline.exception.DMFCConfigurationException;
 import org.daisy.pipeline.exception.TransformerDisabledException;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.i18n.XMLProperties;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXOutputFactoryPool;
@@ -44,15 +61,15 @@ public class SummaryGenerator implements InputListener {
 	private static final String xhtmlNS = "http://www.w3.org/1999/xhtml"; 
 	private static final String br = "\n";
 	
-	public SummaryGenerator(EFolder pipelineMainDir, File destination) throws IOException, XMLStreamException, DMFCConfigurationException {
+	public SummaryGenerator(Directory pipelineMainDir, File destination) throws IOException, XMLStreamException, DMFCConfigurationException {
 		XMLEventFactory xef = null;
 		XMLOutputFactory xof = null;
-		Map outMap = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
+		Map<String,Object> outMap = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
 		outMap.put(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
 		checkSystemProperties(pipelineMainDir);
 		try{
 			List<XMLEvent> doc = new LinkedList<XMLEvent>();
-			EFolder dir = pipelineMainDir;
+			Directory dir = pipelineMainDir;
 			
 			xef = StAXEventFactoryPool.getInstance().acquire();
 			
@@ -85,6 +102,7 @@ public class SummaryGenerator implements InputListener {
 	}
 
 
+	@SuppressWarnings("unused")
 	private void print(List<XMLEvent> list) {
 		for (XMLEvent x : list) {
 		if(x.getEventType() == XMLEvent.START_DOCUMENT) System.err.println("[START]");
@@ -95,7 +113,7 @@ public class SummaryGenerator implements InputListener {
 		}
 	}
 
-	private void generateTransformerSummary(List<XMLEvent> doc, EFolder dir, XMLEventFactory xef, File destination) throws IOException {		
+	private void generateTransformerSummary(List<XMLEvent> doc, Directory dir, XMLEventFactory xef, File destination) throws IOException {		
 		
 		URI dest = destination.getParentFile().toURI();
 		
@@ -109,7 +127,7 @@ public class SummaryGenerator implements InputListener {
 		doc.add(xef.createStartElement(new QName(xhtmlNS, "dl"),null,null));
 		doc.add(xef.createCharacters(br));
 		
-		EFolder transformersDir = new EFolder(dir, "transformers");
+		Directory transformersDir = new Directory(dir, "transformers");
 		Collection<File> c = transformersDir.getFiles(true, ".+\\.[Tt][Dd][Ff]$");
 		List<File> tdfs = new LinkedList<File>(c);
 		Collections.sort(tdfs);
@@ -161,7 +179,7 @@ public class SummaryGenerator implements InputListener {
 		
 	}
 
-	private void generateScriptSummary(List<XMLEvent> doc, EFolder dir, XMLEventFactory xef, File destination) throws IOException, DMFCConfigurationException {
+	private void generateScriptSummary(List<XMLEvent> doc, Directory dir, XMLEventFactory xef, File destination) throws IOException, DMFCConfigurationException {
 		
 		URI dest = destination.getParentFile().toURI();
 		
@@ -174,7 +192,7 @@ public class SummaryGenerator implements InputListener {
 		doc.add(xef.createStartElement(new QName(xhtmlNS, "dl"),null,null));
 		doc.add(xef.createCharacters(br));
 		
-		EFolder scriptsDir = new EFolder(dir, "scripts");
+		Directory scriptsDir = new Directory(dir, "scripts");
 		Collection<File> c = scriptsDir.getFiles(true, ".+\\.[Tt][Aa][Ss][Kk][Ss][Cc][Rr][Ii][Pp][Tt]$");
 		List<File> scripts = new LinkedList<File>(c);
 		Collections.sort(scripts);
@@ -182,7 +200,7 @@ public class SummaryGenerator implements InputListener {
 		URL uurl = new File(dir,"/src/pipeline.user.properties").toURI().toURL();
         XMLProperties properties = new XMLProperties(System.getProperties());        
         properties.loadFromXML(uurl.openStream());
-		DMFCCore dmfc = new DMFCCore(null,dir,properties);
+		PipelineCore dmfc = new PipelineCore(null,dir,properties);
 						
 		for(File s : scripts) {
 			if(s.getParentFile().getName().equals("_dev")) continue;
@@ -303,8 +321,7 @@ public class SummaryGenerator implements InputListener {
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.InputListener#getUserReply(org.daisy.pipeline.core.event.RequestEvent)
 	 */
-	public UserReplyEvent getUserReply(
-			RequestEvent event) {
+	public UserReplyEvent getUserReply(@SuppressWarnings("unused") RequestEvent event) {
 		// TODO Auto-generated method stub
 		return null;
 	}	
@@ -316,7 +333,7 @@ public class SummaryGenerator implements InputListener {
 	public static void main(String[] args) {		
 		System.err.println("Running SummaryGenerator...");
 		try {
-			EFolder mainDir = new EFolder(args[0]);
+			Directory mainDir = new Directory(args[0]);
 			if(!mainDir.exists()) {
 				throw new IOException(mainDir.toString());
 			}
@@ -332,7 +349,7 @@ public class SummaryGenerator implements InputListener {
 		System.err.println("SummaryGenerator done.");
 	}
 	
-	private void checkSystemProperties(EFolder pipelineBaseDir) throws InvalidPropertiesFormatException, IOException {
+	private void checkSystemProperties(Directory pipelineBaseDir) throws InvalidPropertiesFormatException, IOException {
 		
 		URL url = new File(pipelineBaseDir,"/src/pipeline.properties").toURI().toURL();
 		URL uurl = new File(pipelineBaseDir,"/src/pipeline.user.properties").toURI().toURL();

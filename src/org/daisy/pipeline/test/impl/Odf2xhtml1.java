@@ -3,11 +3,11 @@ package org.daisy.pipeline.test.impl;
 import java.util.List;
 
 import org.daisy.pipeline.test.PipelineTest;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 public class Odf2xhtml1 extends PipelineTest {
 
-	public Odf2xhtml1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public Odf2xhtml1(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	

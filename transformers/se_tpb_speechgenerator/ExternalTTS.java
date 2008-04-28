@@ -20,7 +20,6 @@
 package se_tpb_speechgenerator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
@@ -46,7 +45,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.i18n.UCharReplacer;
 import org.daisy.util.xml.XPathUtils;
-import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.TransformerCache;
 import org.daisy.util.xml.xslt.XSLTException;
@@ -65,7 +63,7 @@ import org.xml.sax.SAXException;
  */
 public abstract class ExternalTTS implements TTS {
 	
-	protected Map parameters;									// custom parameters
+	protected Map<?,?> parameters;									// custom parameters
 	protected RegexReplace specificReplace;						// regexes: optional, applied before general regexes
 	protected RegexReplace generalReplace;						// regexes: optional, applied after specific regexes
 	protected UCharReplacer charReplacer;						// replacement of characters
@@ -77,9 +75,8 @@ public abstract class ExternalTTS implements TTS {
 	/**
 	 * Constructor taking a map of parameters/properties as parameter. 
 	 * @param params A java.util.Map containing parameters.
-	 * @throws IOException
 	 */
-	public ExternalTTS(Map params) throws IOException {
+	public ExternalTTS(Map<?,?> params) {
 		this.setParamMap(params);
 		//if (null != params.get(TTSBuilder.BINARY)) {
 		//	this.setBinaryPath(new File((String) params.get(TTSBuilder.BINARY)));
@@ -120,7 +117,7 @@ public abstract class ExternalTTS implements TTS {
 	 * @throws UnsupportedAudioFileException 
 	 * @throws TransformerRunException 
 	 */
-	public long introduceStruct(List startElements, QName attributeQName, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException {
+	public long introduceStruct(List<StartElement> startElements, QName attributeQName, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException {
 		String sayBefore = concatAttributes(startElements, attributeQName);
 		return sayImpl(sayBefore, outputFile);
 	}
@@ -136,7 +133,7 @@ public abstract class ExternalTTS implements TTS {
 	 * @throws UnsupportedAudioFileException 
 	 * @throws TransformerRunException 
 	 */
-	public long terminateStruct(List startElements, QName attributeQName, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException {
+	public long terminateStruct(List<StartElement> startElements, QName attributeQName, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException {
 		String sayAfter = concatAttributes(startElements, attributeQName);
 		return sayImpl(sayAfter, outputFile);
 	}
@@ -182,17 +179,17 @@ public abstract class ExternalTTS implements TTS {
 	 * @return the value of the attribute named <code>attrName</code>
 	 * for all elements in <code>startElements</code>.
 	 */
-	private String concatAttributes(List startElements, QName attrName) {
+	private String concatAttributes(List<StartElement> startElements, QName attrName) {
 		String announcements = "";
 		for (int i = 0; i< startElements.size(); i++) {
-			StartElement se = (StartElement) startElements.get(i);
+			StartElement se = startElements.get(i);
 // jpritchett@rfbd.org:  For some reason, the following doesn't work all the time.
 //			Attribute at = se.getAttributeByName(attrName);
 //			if (at != null) {
 //				announcements += at.getValue() + " ";
 //			}
 // Replaced with the following do-it-yourself iteration, 14 Aug 2006
-			for (Iterator atIt = se.getAttributes(); atIt.hasNext(); ) {
+			for (Iterator<?> atIt = se.getAttributes(); atIt.hasNext(); ) {
 				Attribute at = (Attribute) atIt.next();
 				if (attrName.equals(at.getName())) {
 					announcements += at.getValue() + " ";
@@ -234,7 +231,7 @@ public abstract class ExternalTTS implements TTS {
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgenerator.TTS#setParamMap(java.util.Map)
 	 */
-	public void setParamMap(Map params) {
+	public void setParamMap(Map<?,?> params) {
 		
 		parameters = params;
 		if (null != params.get("generalRegexFilename")) {
@@ -332,16 +329,6 @@ public abstract class ExternalTTS implements TTS {
 				xsltFilename = (String) params.get("xsltFilename");
 				// load the transformer
 				cache.get(xsltFilename, XSLT_FACTORY);
-			} catch (IOException e) {
-				System.err.println("Could not parse " + params.get("xsltFilename"));
-				System.err.println("Continuing without XSLT, ");
-				e.printStackTrace();
-				xsltFilename = null;
-			} catch (SAXException e) {
-				System.err.println("Could not parse " + params.get("xsltFilename"));
-				System.err.println("Continuing without XSLT, ");
-				e.printStackTrace();
-				xsltFilename = null;
 			} catch (XSLTException e) {
 				System.err.println("Could not parse " + params.get("xsltFilename"));
 				System.err.println("Continuing without XSLT, ");
@@ -356,19 +343,19 @@ public abstract class ExternalTTS implements TTS {
 	 * Applies an XSLT on the synchronization point DOM.
 	 * @param document the synchronization point DOM.
 	 * @return the text remaining from <code>document</code> after the XSLT.
-	 * @throws CatalogExceptionNotRecoverable
 	 * @throws XSLTException
-	 * @throws FileNotFoundException
+	 * @throws IOException 
+	 * @throws SAXException 
 	 */
-	protected String xsltFilter(Document document) throws CatalogExceptionNotRecoverable, XSLTException, FileNotFoundException {
+	protected String xsltFilter(Document document) throws XSLTException, SAXException, IOException {
 		if (xsltFilename != null) {
 			StringBuffer buff = new StringBuffer();
 			DOMSource source = new DOMSource(document.getDocumentElement());
 			Stylesheet.apply(source, cache.get(xsltFilename, XSLT_FACTORY), buff, null, null);
 			return buff.toString().trim();
-		} else {
-			return document.getDocumentElement().getTextContent().trim();
 		}
+		return document.getDocumentElement().getTextContent().trim();
+		
 	}
 	
 	
@@ -472,6 +459,7 @@ public abstract class ExternalTTS implements TTS {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void DEBUG(Document d) {
 		if (System.getProperty("org.daisy.debug") != null) {
 			DEBUG("ExternalTTS#DEBUG(Document):");

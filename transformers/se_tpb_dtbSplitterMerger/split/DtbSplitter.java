@@ -1,22 +1,20 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package se_tpb_dtbSplitterMerger.split;
 /*
  * 
@@ -30,10 +28,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.xml.stream.XMLInputFactory;
 
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.SmilFile;
 import org.daisy.util.fileset.TextualContentFile;
 import org.daisy.util.fileset.XmlFile;
@@ -77,7 +77,7 @@ public abstract class DtbSplitter {
     private XMLInputFactory factory;
 	
 	
-    public DtbSplitter(File outDir, File promptManifest, long maxVolSize, DtbTransformationReporter reportGen) throws XmlParsingException{
+    public DtbSplitter(File outDir, File promptManifest, long maxVolSize, DtbTransformationReporter reportGen){
         this.outputDir = outDir;
         this.promptManifestFile = promptManifest;
         this.maxVolumeSizeInBytes = maxVolSize;
@@ -86,11 +86,11 @@ public abstract class DtbSplitter {
 
     public abstract void executeSplitting() throws TransformationAbortedByUserException,XmlParsingException, MaxVolumeSizeExceededException, IOException;
 	
-	protected Collection getNonSmilReferences(XmlFile filesetFile){
-		Collection resources = new ArrayList();
+	protected Collection<FilesetFile> getNonSmilReferences(XmlFile filesetFile){
+		Collection<FilesetFile> resources = new ArrayList<FilesetFile>();
 		if(filesetFile!=null){
-			for(Iterator i=filesetFile.getReferencedLocalMembers().iterator();i.hasNext();){
-				Object file = i.next();
+			for(Iterator<FilesetFile> i=filesetFile.getReferencedLocalMembers().iterator();i.hasNext();){
+				FilesetFile file = i.next();
 				if(!(file instanceof SmilFile)){
 					resources.add(file);
 				}
@@ -98,7 +98,7 @@ public abstract class DtbSplitter {
 		}
 		return resources;
 	}
-	abstract protected Collection getBasePlaySequenceSmilCollection();
+	abstract protected Collection<SmilFile> getBasePlaySequenceSmilCollection();
 	abstract protected int getFileReferenceLevel(String fileName) throws XmlParsingException;
     abstract protected DtbVolume initializeNewVolume(int volumeNr);
 	abstract protected void saveVolumes() throws TransformationAbortedByUserException,XmlParsingException, IOException;
@@ -107,8 +107,8 @@ public abstract class DtbSplitter {
 	//abstract protected void reportBookInfo() throws DtbException;
 		
 		
-	protected void createVolumes(Collection a_smilPlaySequence) throws TransformationAbortedByUserException, MaxVolumeSizeExceededException, XmlParsingException, IOException{
-        long start = new Date().getTime();
+	protected void createVolumes(Collection<SmilFile> a_smilPlaySequence) throws TransformationAbortedByUserException, MaxVolumeSizeExceededException, XmlParsingException, IOException{
+        //long start = new Date().getTime();
 		int referenceLevel = 0;
 		boolean collecting = false;
 		boolean closingCollecting = false;
@@ -119,12 +119,10 @@ public abstract class DtbSplitter {
 		DtbVolume volume = this.initializeNewVolume(volumeNr);
 		// the volume has been created and placed in the volume set.
 		
-		Iterator fSet = a_smilPlaySequence.iterator();		
+		Iterator<SmilFile> fSet = a_smilPlaySequence.iterator();		
 		boolean isTitleSmilSet = false;
 		while(fSet.hasNext()){	
-			Object o = fSet.next();
-		
-			SmilFile smilFile = (SmilFile)o;
+			SmilFile smilFile = fSet.next();					
 			if(!isTitleSmilSet){
 				volume.setTitleSmil(smilFile);
 				isTitleSmilSet = true;
@@ -224,8 +222,8 @@ public abstract class DtbSplitter {
 		 //The volumes have been created and placed in the volumeSet.
 		 
 		this.fillVolumesWithPrompts();//non title prompts
-        long end = new Date().getTime();
-        long timeSpanInMillisSec = end - start; 
+        //long end = new Date().getTime();
+        //long timeSpanInMillisSec = end - start; 
  //       this.reportGenerator.sendMessage(Level.INFO, "VOLUMES_CREATION_TIME_IN_MILLIS", new Long(timeSpanInMillisSec));
 		/* Ask the user to confirm the number and the sizes of the volumes.
 		 * The user chooses whether to abort the application.
@@ -250,9 +248,9 @@ public abstract class DtbSplitter {
 		long fileSetSize = 0;
 		fileSetSize += ((File)smiFile).length();
 
-		Iterator i = smiFile.getReferencedLocalMembers().iterator();
+		Iterator<FilesetFile> i = smiFile.getReferencedLocalMembers().iterator();
 		while (i.hasNext()) {
-			Object file = i.next();
+			FilesetFile file = i.next();
 			if (file instanceof TextualContentFile && !volume.getFullTextFiles().contains(file)){
 				TextualContentFile txtFile = (TextualContentFile)file;
 				/*
@@ -261,9 +259,9 @@ public abstract class DtbSplitter {
 				 */
 				fileSetSize += txtFile.getFile().length();
 				//Add the size of non-smil files from the full text resource.
-				Iterator fullTxtReferencedLocalMembers = txtFile.getReferencedLocalMembers().iterator();
+				Iterator<FilesetFile> fullTxtReferencedLocalMembers = txtFile.getReferencedLocalMembers().iterator();
 				while (fullTxtReferencedLocalMembers.hasNext()) {
-					Object f = fullTxtReferencedLocalMembers.next();
+					FilesetFile f = fullTxtReferencedLocalMembers.next();
 					if(!(f instanceof SmilFile)){
 						fileSetSize += ((File)f).length();
 					}	
@@ -283,9 +281,9 @@ public abstract class DtbSplitter {
 	private void confirmCalculatedVolumes() throws TransformationAbortedByUserException{
          
         this.reportGenerator.sendTransformationMessage(Level.INFO, "NUMBER_OF_VOLUMES", new Integer(this.volumeSet.size()));
-		for(Iterator i=this.volumeSet.iterator(); i.hasNext();){
+		for(Iterator<DtbVolume> i=this.volumeSet.iterator(); i.hasNext();){
 		
-			DtbVolume v = (DtbVolume)i.next();
+			DtbVolume v = i.next();
             this.reportGenerator.sendTransformationMessage(Level.INFO,"VOLUME_NR_AND_SIZE", new Integer(v.getVolumeNr()), new Long(v.getVolumeSize()/DtbSplitterMergerConstants.volumeSizeMeasureUnit));
 		}
 		
@@ -306,20 +304,20 @@ public abstract class DtbSplitter {
 		int numberOfVolumes = this.volumeSet.size();
 		this.promptFiles = new DtbPromptFiles(this.promptManifestFile, this.reportGenerator, language);
 		
-		HashMap smilSet = promptFiles.getSmilSet(numberOfVolumes);
-		HashMap audioSet = promptFiles.getAudioSet(numberOfVolumes);
+		Map<Integer,File> smilSet = promptFiles.getSmilSet(numberOfVolumes);
+		HashMap<Integer,File> audioSet = promptFiles.getAudioSet(numberOfVolumes);
 		
-		for(Iterator volumes=this.volumeSet.iterator(); volumes.hasNext();){
+		for(Iterator<DtbVolume> volumes=this.volumeSet.iterator(); volumes.hasNext();){
 			
-			DtbVolume volume = (DtbVolume)volumes.next();
+			DtbVolume volume = volumes.next();
 			int volNr = volume.getVolumeNr();
 			
 			for(int i=1; i<=numberOfVolumes; i++){
 				
 				if(i!=volNr){
-				File smilPrompt = (File)smilSet.get(new Integer(i));
+				File smilPrompt = smilSet.get(new Integer(i));
 				volume.addPromptFile(smilPrompt);
-				File audioPrompt = (File)audioSet.get(new Integer(i));
+				File audioPrompt = audioSet.get(new Integer(i));
 				volume.addPromptFile(audioPrompt);
 				}
 					

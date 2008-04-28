@@ -1,26 +1,23 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package se_tpb_speechgen2.tts.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +52,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import se_tpb_speechgen2.tts.TTSBuilder;
 import se_tpb_speechgen2.tts.TTSConstants;
@@ -107,9 +105,8 @@ public class TTSUtils {
 	 * Additional parameters may be present in the map.
 	 * 
 	 * @param params A java.util.Map containing parameters.
-	 * @throws IOException
 	 */
-	public TTSUtils(Map<String,String> params) throws IOException {
+	public TTSUtils(Map<String,String> params) {
 		parameters = params;
 		init();
 	}	
@@ -120,7 +117,7 @@ public class TTSUtils {
 	 * @throws UnsupportedAudioFileException 
 	 * @throws TransformerRunException 
 	 */
-	public void expandAbbrs(Document doc) throws IOException {
+	public void expandAbbrs(Document doc) {
 		NodeList abbrs = XPathUtils.selectNodes(doc.getDocumentElement(), "//*[@exp]");
 		// if supplied, use exp attributes instead of text nodes
 		for (int i = 0; i < abbrs.getLength(); i++) {	
@@ -217,7 +214,7 @@ public class TTSUtils {
 		//-------------------------------------------------------------------------------
 		// regex
 		//
-		line = (String) parameters.get(TTSConstants.REGEX_URLS);
+		line = parameters.get(TTSConstants.REGEX_URLS);
 		if (line != null) {
 			urls = getURLs(line);
 			regexReplace = new RegexReplace[urls.length];
@@ -229,7 +226,7 @@ public class TTSUtils {
 		//-------------------------------------------------------------------------------
 		// character substitution tables
 		//
-		line = (String) parameters.get(TTSConstants.CHARACTER_SUBSTITUTION_TABLES);
+		line = parameters.get(TTSConstants.CHARACTER_SUBSTITUTION_TABLES);
 		if (line != null) {
 			urls = getURLs(line);
 			charReplacer = new UCharReplacer();
@@ -246,7 +243,7 @@ public class TTSUtils {
 
 
 			// Set optional exclusion repertoire
-			String excludeCharset = (String) parameters.get("characterExcludeFromSubstitution");
+			String excludeCharset = parameters.get("characterExcludeFromSubstitution");
 			if (excludeCharset != null) {
 				try {
 					charReplacer.setExclusionRepertoire(Charset.forName(excludeCharset));
@@ -257,7 +254,7 @@ public class TTSUtils {
 
 			// Set optional character fallback state(s)
 			if (null != parameters.get("characterFallbackStates")) {
-				String characterFallbacks = (String) parameters.get("characterFallbackStates");
+				String characterFallbacks = parameters.get("characterFallbackStates");
 				String[] fallbacks = characterFallbacks.split(",");
 				for (int i = 0; i < fallbacks.length; i++) {
 					if (fallbacks[i].trim().equals("fallbackToNonSpacingMarkRemovalTransliteration")) {
@@ -278,7 +275,7 @@ public class TTSUtils {
 		//-------------------------------------------------------------------------------
 		// years
 		//
-		line = (String) parameters.get(TTSConstants.YEAR_REGEX_URL);
+		line = parameters.get(TTSConstants.YEAR_REGEX_URL);
 		if (line != null) {
 			urls = getURLs(line);
 
@@ -301,7 +298,7 @@ public class TTSUtils {
 		//-------------------------------------------------------------------------------
 		// XSLT
 		//
-		line = (String) parameters.get(TTSConstants.XSLT_URLS);
+		line = parameters.get(TTSConstants.XSLT_URLS);
 		if (line != null) {
 			try {
 				urls = getURLs(line);
@@ -354,19 +351,17 @@ public class TTSUtils {
 	 * Applies an XSLT on the synchronization point DOM.
 	 * @param document the synchronization point DOM.
 	 * @return the text remaining from <code>document</code> after the XSLT.
-	 * @throws CatalogExceptionNotRecoverable
 	 * @throws XSLTException
-	 * @throws FileNotFoundException
 	 */
-	public String xsltFilter(Document document) throws CatalogExceptionNotRecoverable, XSLTException, FileNotFoundException {
+	public String xsltFilter(Document document) throws XSLTException {
 		if (xsltFilename != null) {
 			StringBuffer buff = new StringBuffer();
 			DOMSource source = new DOMSource(document.getDocumentElement());
 			Stylesheet.apply(source, cache.get(xsltFilename, XSLT_FACTORY), buff, null, null);
 			return buff.toString().trim();
-		} else {
-			return document.getDocumentElement().getTextContent().trim();
-		}
+		} 
+		return document.getDocumentElement().getTextContent().trim();
+		
 	}
 
 
@@ -444,6 +439,7 @@ public class TTSUtils {
 
 	
 
+	@SuppressWarnings("unused")
 	private void DEBUG(String msg) {
 		if (System.getProperty("org.daisy.debug") != null) {
 			System.out.println("DEBUG: " + msg);
@@ -484,12 +480,11 @@ public class TTSUtils {
 		
 		if (input.isSyncPoint()) {
 			return containsLetterOrDigit(input.getSyncPoint());
-		} else {
-			List<StartElement> anns = input.getAnnouncements();
-			QName qn = input.getQName();
-			String concat = concatAttributes(anns, qn);
-			return containsLettersOrDigits(concat);
 		}
+		List<StartElement> anns = input.getAnnouncements();
+		QName qn = input.getQName();
+		String concat = concatAttributes(anns, qn);
+		return containsLettersOrDigits(concat);
 	}
 	
 	/*
@@ -555,11 +550,11 @@ public class TTSUtils {
 	 * speakable text.
 	 * @param doc the xml fragment representing a syncpoint.
 	 * @return speakable text.
-	 * @throws CatalogExceptionNotRecoverable
 	 * @throws XSLTException
 	 * @throws IOException
+	 * @throws SAXException 
 	 */
-	public String dom2input(Document doc) throws CatalogExceptionNotRecoverable, XSLTException, IOException {
+	public String dom2input(Document doc) throws XSLTException, IOException, SAXException {
 		expandAbbrs(doc);
 		parseRomanNumerals(doc);
 		prepareTextContent(doc);

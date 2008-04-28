@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.fileset;
 
 import java.io.FileNotFoundException;
@@ -92,7 +90,7 @@ public interface XmlFile extends FilesetFile, Referring {
 	 * be an emtpy collection, not null. The collection contains only unique items, and
 	 * values are the untampered-with values of the xml:lang attribute.
 	 */
-	public Collection getXmlLangValues();
+	public Collection<String> getXmlLangValues();
 
 	/**
 	 *@return a collection&lt;javax.xml.namespace.QName&gt; of all unique namespaces occuring in this XML document. 
@@ -101,7 +99,7 @@ public interface XmlFile extends FilesetFile, Referring {
 	 * the QName objects therein will always return null on getLocalPart(), and will (for a default namespace entry) return
 	 * null on getPrefix(). The getPrefix() method is guaranteed to be a String representation of the namespace URI. 
 	 */
-	public Collection getNamespaces();
+	public Collection<QName> getNamespaces();
 	
 	/**
 	 *@return true if <code>idval</code> exists as the value of an attribute named <code>id</code> in the document, false otherwise
@@ -124,10 +122,10 @@ public interface XmlFile extends FilesetFile, Referring {
 	/**
 	 * @return a Map of inline schema URIs. 
 	 * <p>Note - this collection does not include schema URIs occuring in document prolog, only on document root (i.e. typically xsi refs).
-	 * <p>If the document contains no inline schema URIs, the returne value is an empty Map, not null.</p>
+	 * <p>If the document contains no inline schema URIs, the returned value is an empty Map, not null.</p>
 	 * <p>Map structure is: UnresolvedSchemaUriString, SchemaNamespaceURI</p>
 	 */
-	public Map getInlineSchemaURIs();
+	public Map<String,String> getInlineSchemaURIs();
 	
 
 				

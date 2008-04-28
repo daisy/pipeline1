@@ -22,15 +22,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 import org.daisy.util.wincom.sapi5.ClassFactory;
 import org.daisy.util.wincom.sapi5.ISpeechFileStream;
 import org.daisy.util.wincom.sapi5.ISpeechVoice;
 import org.daisy.util.wincom.sapi5.SpeechStreamFileMode;
 import org.daisy.util.wincom.sapi5.SpeechVoiceSpeakFlags;
 
-import se_tpb_speechgen2.audio.AudioFiles;
 import se_tpb_speechgen2.tts.TTSException;
 import se_tpb_speechgen2.tts.adapters.AbstractTTSAdapter;
 import se_tpb_speechgen2.tts.util.TTSUtils;
@@ -48,6 +45,7 @@ public class DefaultSapiTTS extends AbstractTTSAdapter {
 		voice = ClassFactory.createSpVoice();
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void read(String line, File destination) throws IOException, TTSException {
 		ISpeechFileStream stream = null;
@@ -68,6 +66,7 @@ public class DefaultSapiTTS extends AbstractTTSAdapter {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void close() throws IOException, TTSException {
 		if (voice != null) {

@@ -3,11 +3,11 @@ package org.daisy.pipeline.test.impl;
 import java.util.List;
 
 import org.daisy.pipeline.test.PipelineTest;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 public class UnicodeNormalizer1 extends PipelineTest {
 
-	public UnicodeNormalizer1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public UnicodeNormalizer1(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	

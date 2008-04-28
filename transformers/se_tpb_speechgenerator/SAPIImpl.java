@@ -38,6 +38,7 @@ import org.daisy.util.file.StreamRedirector;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.XSLTException;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Uses simple stdin-stdout piping to communicate with an 
@@ -64,16 +65,15 @@ public final class SAPIImpl extends ExternalTTS {
 	 * 
 	 * @throws IOException
 	 */
-	public SAPIImpl(Map params) throws IOException {
+	public SAPIImpl(Map<?,?> params) throws IOException {
 		super(params);
 		String bin = (String) params.get(TTSBuilder.BINARY);
 		if (null == bin) {
 			String message = "Missing property " + TTSBuilder.BINARY +
 			" for tts " + getClass().getName();
 			throw new IllegalArgumentException(message);
-		} else {
-			setBinaryPath(new File(bin));
 		}
+		setBinaryPath(new File(bin));
 		initialize();
 	}	
 	
@@ -120,6 +120,9 @@ public final class SAPIImpl extends ExternalTTS {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_mixedContentNormalizer;
 
 import int_daisy_mixedContentNormalizer.dom.DOMConfig;
@@ -24,10 +41,11 @@ import org.daisy.pipeline.core.event.MessageEvent.Type;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.FilesetErrorHandler;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.xml.LocusTransformer;
@@ -52,13 +70,13 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 	}
 
 	@Override
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		try {
-			File input = FilenameOrFileURI.toFile((String)parameters.remove("input"));
+			File input = FilenameOrFileURI.toFile(parameters.remove("input"));
 			if(input==null||!input.exists()||input.isDirectory()) throw new TransformerRunException(i18n("FILE_NOT_FOUND",input));
-			File output = FilenameOrFileURI.toFile((String)parameters.remove("output"));	
+			File output = FilenameOrFileURI.toFile(parameters.remove("output"));	
 			boolean addSyncPoints = parameters.remove("addSyncPoints").equals("true");			
-			String implementation = (String) parameters.remove("implementation");
+			String implementation = parameters.remove("implementation");
 			
 			//long start = System.nanoTime();
 			if(implementation.equals("dom")) {						
@@ -143,15 +161,15 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 			 * Copy input fileset aux members, if any
 			 */
 			if(!input.getParentFile().equals(output.getParentFile())) {				
-				EFolder out = null;
+				Directory out = null;
 				FilesetImpl fileset = null;
 				try{
-					out = new EFolder(output.getParentFile());
+					out = new Directory(output.getParentFile());
 					fileset = new FilesetImpl(input.toURI(),this);
-					EFolder inputBaseDir = fileset.getManifestMember().getParentFolder();
-					Iterator i = fileset.getLocalMembers().iterator();
+					Directory inputBaseDir = fileset.getManifestMember().getParentFolder();
+					Iterator<FilesetFile> i = fileset.getLocalMembers().iterator();
 					while(i.hasNext()) {
-						File file = (File) i.next();
+						File file = i.next().getFile();
 						if(!file.getCanonicalPath().equals(input.getCanonicalPath())) {
 							if(file.getParentFile().getCanonicalPath().equals(inputBaseDir.getCanonicalPath())) {
 								//file is in same dir as manifestfile
@@ -160,7 +178,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 								//file is in subdir
 								URI relative = inputBaseDir.toURI().relativize(file.getParentFile().toURI());
 								if(!relative.toString().startsWith("..")) { 
-									EFolder subdir = new EFolder(out,relative.getPath());
+									Directory subdir = new Directory(out,relative.getPath());
 									FileUtils.createDirectory(subdir);
 									subdir.addFile(file,true);
 								}
@@ -201,7 +219,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateMessage(java.lang.String, org.daisy.pipeline.core.event.MessageEvent.Type, org.daisy.pipeline.core.event.MessageEvent.Cause, javax.xml.stream.Location)
 	 */
-	public void delegateMessage(Object delegate, String message, Type type, Cause cause, Location location) {
+	public void delegateMessage(@SuppressWarnings("unused")Object delegate, String message, Type type, Cause cause, Location location) {
 		this.sendMessage(message, type, cause, location);
 	}
 

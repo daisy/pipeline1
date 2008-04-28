@@ -1,20 +1,19 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.util.fileset.validation.delegate.impl;
 
@@ -77,16 +76,16 @@ public class CorrectXMLEncodingDeclarationDelegate extends ValidatorDelegateImpl
 		
 	}
 	
-	public boolean isFilesetTypeSupported(FilesetType type) {	
+	public boolean isFilesetTypeSupported(@SuppressWarnings("unused")FilesetType type) {	
 		return true;		
 	}
 
 	public void execute(Fileset fileset) throws ValidatorNotSupportedException, ValidatorException {		
 		super.execute(fileset);
 		
-		Collection members = fileset.getLocalMembers();
-		for (Iterator it = members.iterator(); it.hasNext(); ) {
-			FilesetFile filesetFile = (FilesetFile)it.next();
+		Collection<FilesetFile> members = fileset.getLocalMembers();
+		for (Iterator<FilesetFile> it = members.iterator(); it.hasNext(); ) {
+			FilesetFile filesetFile = it.next();
 			if (filesetFile instanceof XmlFile) {
 				try {
 					this.checkEncoding(filesetFile.getFile().toURI().toURL());
@@ -113,7 +112,7 @@ public class CorrectXMLEncodingDeclarationDelegate extends ValidatorDelegateImpl
 	
 	private void checkEncoding(URL url) throws IOException, URISyntaxException, CatalogExceptionNotRecoverable, XMLStreamException {
 		String xmlDeclarationEncoding = null;
-		List encodingDeclarations = new ArrayList();
+		List<EncodingLocation> encodingDeclarations = new ArrayList<EncodingLocation>();
 		
 		CharsetDetector detector = new CharsetDetector();		
 		String charset = detector.detect(url);
@@ -164,8 +163,8 @@ public class CorrectXMLEncodingDeclarationDelegate extends ValidatorDelegateImpl
         reader.close();
         
         // Make sure all collected encoding declarations have the same value.
-        for (Iterator it = encodingDeclarations.iterator(); it.hasNext(); ) {
-        	EncodingLocation encLoc = (EncodingLocation)it.next();
+        for (Iterator<EncodingLocation> it = encodingDeclarations.iterator(); it.hasNext(); ) {
+        	EncodingLocation encLoc = it.next();
         	if (!xmlDeclarationEncoding.equalsIgnoreCase(encLoc.encoding)) {
         		this.report(new ValidatorErrorMessage(url.toURI(), encLoc.name + " differs from the XML encoding declaration.", encLoc.location.getLineNumber(), encLoc.location.getColumnNumber()));
         	}

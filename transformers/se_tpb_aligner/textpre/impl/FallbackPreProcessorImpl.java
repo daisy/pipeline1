@@ -20,7 +20,7 @@ public class FallbackPreProcessorImpl extends PreProcessor {
 	}
 	
 	@Override
-	public Result process(Source source, String language, Result result) throws PreProcessorException {		
+	public Result process(Source source, @SuppressWarnings("unused")String language, Result result) throws PreProcessorException {		
 		try {
 			FileUtils.copyFile(source, result);
 		} catch (IOException e) {
@@ -30,7 +30,7 @@ public class FallbackPreProcessorImpl extends PreProcessor {
 	}
 
 	@Override
-	public boolean supportsLanguage(String language) {		
+	public boolean supportsLanguage(@SuppressWarnings("unused")String language) {		
 		return false;
 	}
 

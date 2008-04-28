@@ -3,11 +3,11 @@ package org.daisy.pipeline.test.impl;
 import java.util.List;
 
 import org.daisy.pipeline.test.PipelineTest;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 public class DTBAudioEncoder1 extends PipelineTest {
 
-	public DTBAudioEncoder1(EFolder dataInputDir, EFolder dataOutputDir) {
+	public DTBAudioEncoder1(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	

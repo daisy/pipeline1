@@ -1,25 +1,23 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_speechgen2.tts.concurrent;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,6 +27,7 @@ import java.util.Map;
 import java.util.Queue;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.events.StartElement;
 
 import org.w3c.dom.Document;
 
@@ -88,8 +87,8 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 			throw new IllegalArgumentException(msg);
 		}
 		
-		for (Iterator it = ttsInstances.iterator(); it.hasNext(); ) {
-			TTSAdapter tmp = (TTSAdapter) it.next();
+		for (Iterator<TTSAdapter> it = ttsInstances.iterator(); it.hasNext(); ) {
+			TTSAdapter tmp = it.next();
 			if (null == tmp) {
 				String msg = tmp + " is not a valid TTSInstance.";
 				throw new IllegalArgumentException(msg);
@@ -110,7 +109,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgen2.tts.TTS#addAnnouncements(java.util.List, javax.xml.namespace.QName, java.io.File)
 	 */
-	public void addAnnouncements(List announcement, QName attrName, File outputFile) { 		
+	public void addAnnouncements(List<StartElement> announcement, QName attrName, File outputFile) { 		
 		addInput(new TTSAnnouncement(announcement, attrName, outputFile, spCounter++));
 	}
 	
@@ -138,7 +137,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgen2.tts.TTS#close()
 	 */
-	public void close() throws IOException, TTSException {
+	public void close() throws TTSException {
 		if (0 == mSlaves.size()) {
 			DEBUG("Number of slaves: " + mSlaves.size()); 
 			return;
@@ -148,10 +147,10 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 		
 		DEBUG("Await slave termination...");
 		int i = 0;
-		for (Iterator iter = mSlaves.keySet().iterator(); iter.hasNext();) {
+		for (Iterator<TTSRunner> iter = mSlaves.keySet().iterator(); iter.hasNext();) {
 			
 			DEBUG("Processing slave " + i);
-			TTSRunner element = (TTSRunner) iter.next();
+			TTSRunner element = iter.next();
 			
 			try {
 				element.close();
@@ -160,7 +159,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 			}
 			DEBUG("Terminated slave " + i);
 			
-			Thread thread = (Thread) mSlaves.get(element);
+			Thread thread = mSlaves.get(element);
 			
 			DEBUG("Await termination of slave " + i);
 			boolean success = true;
@@ -212,7 +211,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 			}
 		}
 		
-		TTSOutput to = (TTSOutput) mTTSOutput.remove(mOutputIndex);
+		TTSOutput to = mTTSOutput.remove(mOutputIndex);
 		mOutputIndex = new Integer(mOutputIndex.intValue() + 1);
 		
 		notifyAll();
@@ -241,7 +240,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 		// I was thinking of a BlockingPriorityQueue
 		// that is filled with "poison" when all jobs
 		// are finished.
-		return (TTSInput) mTTSInput.poll();
+		return mTTSInput.poll();
 	}
 	
 	/* (non-Javadoc)
@@ -257,7 +256,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgen2.tts.concurrent.TTSGroupFacade#slaveTerminated(se_tpb_speechgen2.tts.concurrent.TTSInstance, se_tpb_speechgen2.tts.TTSInput)
 	 */
-	public synchronized void slaveTerminated(TTSAdapter slave, TTSInput myLastInput) {
+	public synchronized void slaveTerminated(@SuppressWarnings("unused")TTSAdapter slave, TTSInput myLastInput) {
 		// TODO
 		DEBUG("#slaveTerminated: ");
 		

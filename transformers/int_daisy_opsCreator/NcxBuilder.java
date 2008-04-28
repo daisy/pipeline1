@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_opsCreator;
 
 
@@ -332,7 +349,8 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 			  mEventList.add(xef.createEndElement(mQNameNcxNavPoint, null));
 			  //close all open in the stack
 			  while(!openPointStack.empty()) {
-				  NavPointSource nps2 = openPointStack.pop();
+				  //NavPointSource nps2 = openPointStack.pop();
+				  openPointStack.pop();
 				  //System.err.println("close:: " + nps2.mStartElement.getName().getLocalPart() + "::" + nps2.mLabel);
 				  mEventList.add(xef.createEndElement(mQNameNcxNavPoint, null));
 			  }
@@ -468,7 +486,7 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 	}
 
 	private Attribute getAttribute(String localPart, StartElement se) {
-		for (Iterator iter = se.getAttributes(); iter.hasNext();) {
+		for (Iterator<?> iter = se.getAttributes(); iter.hasNext();) {
 			Attribute a = (Attribute) iter.next();
 			if(a.getName().getLocalPart().equals(localPart)) {
 				return a;
@@ -488,7 +506,7 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 		mNavListIncludeEvents = new LinkedList<NavPointSource>();
 		
 		XMLInputFactory xif = null;
-		Map properties = null;
+		Map<String,Object> properties = null;
 		try {
 			properties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(Boolean.FALSE);
 			xif = StAXInputFactoryPool.getInstance().acquire(properties);

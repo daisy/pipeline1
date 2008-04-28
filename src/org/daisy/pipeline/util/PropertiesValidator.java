@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.pipeline.util;
 
 import java.io.File;
@@ -15,7 +32,7 @@ import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.validation.XMLValidationException;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.StaxEntityResolver;
@@ -28,7 +45,7 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
 public class PropertiesValidator implements XMLReporter {
 
 	public PropertiesValidator(String path) throws IOException, CatalogExceptionNotRecoverable {
-		EFolder baseDir = new EFolder(path);		
+		Directory baseDir = new Directory(path);		
 		Collection<File> files = baseDir.getFiles(true, ".+\\.properties|.+\\.messages");				
         XMLValidationSchemaFactory sf = XMLValidationSchemaFactory.newInstance(XMLValidationSchema.SCHEMA_ID_DTD);
         URL schemaFile = CatalogEntityResolver.getInstance().resolveEntityToURL("http://java.sun.com/dtd/properties.dtd");
@@ -65,11 +82,14 @@ public class PropertiesValidator implements XMLReporter {
 	 * @throws XMLStreamException 
 	 * @throws CatalogExceptionNotRecoverable 
 	 */
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException, CatalogExceptionNotRecoverable, XMLStreamException {		
 		new PropertiesValidator(args[0]);
 		System.err.println("Validation done.");
 	}
 
+	
+	@SuppressWarnings("unused")
 	public void report(String arg0, String arg1, Object arg2, Location arg3) throws XMLStreamException {
 		System.err.println(arg0 + arg1 +arg3.getLineNumber());
 	}

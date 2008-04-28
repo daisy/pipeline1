@@ -1,8 +1,24 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package se_tpb_dtbookFix;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -32,8 +48,6 @@ import org.daisy.util.xml.pool.SAXParserPool;
 import org.daisy.util.xml.sax.SAXConstants;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 
 
 /**
@@ -141,10 +155,10 @@ class XSLTExecutor extends Executor implements ErrorListener{
 	         * Set any parameters on the processor
 	         */
 	        if (mParameters != null) {
-	            for (Iterator it = mParameters.entrySet().iterator(); it.hasNext(); ) {
-	                Map.Entry paramEntry = (Map.Entry)it.next();
+	            for (Iterator<Map.Entry<String,String>> it = mParameters.entrySet().iterator(); it.hasNext(); ) {
+	                Map.Entry<String,String> paramEntry = it.next();
 	                try{   
-	                	processor.setParameter((String)paramEntry.getKey(), paramEntry.getValue());
+	                	processor.setParameter(paramEntry.getKey(), paramEntry.getValue());
 	    	        }catch (Exception e){
 	    	        	mTransformer.delegateMessage(this, e.getLocalizedMessage()
 	    					, MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM, null);
@@ -170,6 +184,7 @@ class XSLTExecutor extends Executor implements ErrorListener{
 	 * (non-Javadoc)
 	 * @see javax.xml.transform.ErrorListener#error(javax.xml.transform.TransformerException)
 	 */
+	@SuppressWarnings("unused")
 	public void error(TransformerException te) throws TransformerException {
 		Location loc = LocusTransformer.newLocation(te);
 		mTransformer.delegateMessage(this, te.getLocalizedMessage()
@@ -191,6 +206,7 @@ class XSLTExecutor extends Executor implements ErrorListener{
 	 * (non-Javadoc)
 	 * @see javax.xml.transform.ErrorListener#warning(javax.xml.transform.TransformerException)
 	 */
+	@SuppressWarnings("unused")
 	public void warning(TransformerException te) throws TransformerException {
 		Location loc = LocusTransformer.newLocation(te);
 		mTransformer.delegateMessage(this, te.getLocalizedMessage()

@@ -1,7 +1,25 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_filesetRenamer.segment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -12,7 +30,7 @@ import org.daisy.util.fileset.Fileset;
  * @author Markus Gylling
  */
 public class RandomUniqueSegment extends Segment {	
-	private static Map generatedRandomSegments = new HashMap(); //fileset, ArrayList
+	private static Map<Fileset,List<String>> generatedRandomSegments = new HashMap<Fileset,List<String>>(); //fileset, ArrayList
 	
 	private RandomUniqueSegment(String content) {
 		super(content);			
@@ -31,7 +49,7 @@ public class RandomUniqueSegment extends Segment {
 	 */
 	public static RandomUniqueSegment create(Fileset fileset, int groups) {		
 		String scr;
-		ArrayList list = (ArrayList)generatedRandomSegments.get(fileset);
+		List<String> list = generatedRandomSegments.get(fileset);
 				
 		//make sure length is larger than fileset size, else eternal loop
 		if(groups==0) groups++;
@@ -40,7 +58,7 @@ public class RandomUniqueSegment extends Segment {
 				
 		if(list==null) {
 			//this is the first random to generate for this fileset
-			list = new ArrayList();
+			list = new ArrayList<String>();
 			scr = scramble(groups);			
 			generatedRandomSegments.put(fileset, list);
 		}else{

@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-package org.daisy.util.xml;
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */package org.daisy.util.xml;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -153,109 +151,59 @@ public class PeekerImpl
         return q;
     }
 
-    public void startElement(String uri,
-            String localName, String qName,
-            Attributes atts) throws SAXException {
+    @SuppressWarnings("unused")
+    public void startElement(String uri,String localName, String qName,	Attributes atts) throws SAXException {
         this.rootElementLocalName = localName;
         this.rootElementNsUri = uri;
         throw new SAXStopParsingException("");
     }
+    
+    @SuppressWarnings("unused")
+    public void endElement(String uri,String localName, String qName)throws SAXException {}
+    @SuppressWarnings("unused")
+    public void setDocumentLocator(Locator locator) {}
+    @SuppressWarnings("unused")
+    public void startDocument()throws SAXException {}
+    @SuppressWarnings("unused")
+    public void endDocument() throws SAXException {}
+    @SuppressWarnings("unused")
+    public void startPrefixMapping(String prefix,String uri) throws SAXException {}
+    @SuppressWarnings("unused")
+    public void endPrefixMapping(String prefix)throws SAXException {}
+    @SuppressWarnings("unused")
+    public void characters(char[] ch, int start,int length) throws SAXException {}
+    @SuppressWarnings("unused")
+    public void ignorableWhitespace(char[] ch,int start, int length)throws SAXException {}
+    @SuppressWarnings("unused")
+    public void processingInstruction(String target, String data)throws SAXException {}
+    @SuppressWarnings("unused")
+    public void skippedEntity(String name)throws SAXException {}
+    @SuppressWarnings("unused")
+    public void startDTD(String name,String publicId, String systemId)throws SAXException {}
+    @SuppressWarnings("unused")
+    public void endDTD() throws SAXException {}
+    @SuppressWarnings("unused")
+    public void startEntity(String name)throws SAXException {}
+    @SuppressWarnings("unused")
+    public void endEntity(String name)throws SAXException {}
+    @SuppressWarnings("unused")
+    public void startCDATA() throws SAXException {}
+    @SuppressWarnings("unused")
+    public void endCDATA() throws SAXException {}
+    @SuppressWarnings("unused")
+    public void comment(char[] ch, int start,int length) throws SAXException {}
+    @SuppressWarnings("unused")
+    public void warning(SAXParseException exception)throws SAXException {}
+    @SuppressWarnings("unused")
+    public void error(SAXParseException exception)throws SAXException {}
+    @SuppressWarnings("unused")
+    public void fatalError(SAXParseException exception)throws SAXException {}
+    @SuppressWarnings("unused")
+    public void notationDecl(String name,String publicId, String systemId)throws SAXException {}
+    @SuppressWarnings("unused")
+    public void unparsedEntityDecl(String name,String publicId, String systemId,String notationName)throws SAXException {}
 
-    public void endElement(String uri,
-            String localName, String qName)
-            throws SAXException {
-    }
-
-    public void setDocumentLocator(Locator locator) {
-    }
-
-    public void startDocument()
-            throws SAXException {
-    }
-
-    public void endDocument() throws SAXException {
-    }
-
-    public void startPrefixMapping(String prefix,
-            String uri) throws SAXException {
-    }
-
-    public void endPrefixMapping(String prefix)
-            throws SAXException {
-    }
-
-    public void characters(char[] ch, int start,
-            int length) throws SAXException {
-    }
-
-    public void ignorableWhitespace(char[] ch,
-            int start, int length)
-            throws SAXException {
-    }
-
-    public void processingInstruction(
-            String target, String data)
-            throws SAXException {
-    }
-
-    public void skippedEntity(String name)
-            throws SAXException {
-    }
-
-    public void startDTD(String name,
-            String publicId, String systemId)
-            throws SAXException {
-    }
-
-    public void endDTD() throws SAXException {
-    }
-
-    public void startEntity(String name)
-            throws SAXException {
-    }
-
-    public void endEntity(String name)
-            throws SAXException {
-    }
-
-    public void startCDATA() throws SAXException {
-    }
-
-    public void endCDATA() throws SAXException {
-    }
-
-    public void comment(char[] ch, int start,
-            int length) throws SAXException {
-    }
-
-    public void warning(
-            SAXParseException exception)
-            throws SAXException {
-    }
-
-    public void error(SAXParseException exception)
-            throws SAXException {
-    }
-
-    public void fatalError(
-            SAXParseException exception)
-            throws SAXException {
-    }
-
-    public void notationDecl(String name,
-            String publicId, String systemId)
-            throws SAXException {
-    }
-
-    public void unparsedEntityDecl(String name,
-            String publicId, String systemId,
-            String notationName)
-            throws SAXException {
-    }
-
-    public InputSource resolveEntity(
-            String publicId, String systemId)
-            throws SAXException, IOException {
+    public InputSource resolveEntity(String publicId, String systemId)throws SAXException, IOException {
         if (publicId != null) {
             this.firstPublicId = publicId;
         }

@@ -114,6 +114,7 @@ public class SilenceAudioInputStream extends AudioInputStream {
 			}
 		}
 
+		@SuppressWarnings("unused")
 		public int read() throws IOException {
 			/* Here, we assum that this method is only called if the frame
 			   size is one. AudioInputStream should guarantee this. */
@@ -141,7 +142,7 @@ public class SilenceAudioInputStream extends AudioInputStream {
 	}
 
 
-	private static void out(String strMessage) {
-		System.out.println(strMessage);
-	}
+//	private static void out(String strMessage) {
+//		System.out.println(strMessage);
+//	}
 }

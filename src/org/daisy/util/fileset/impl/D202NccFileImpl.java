@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.fileset.impl;
 
 import java.io.IOException;
@@ -29,8 +27,8 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.daisy.util.fileset.D202NccFile;
+import org.daisy.util.fileset.D202SmilFile;
 import org.daisy.util.fileset.Fileset;
-import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.UIDCarrier;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.util.URIStringParser;
@@ -49,7 +47,7 @@ final class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile, UIDC
 	private String myDcTitle = null;	
 	private boolean hasNccSetInfo = false;
 	private boolean hasRelAttrsInBody = false;
-	private LinkedHashMap spineMap= new LinkedHashMap();
+	private LinkedHashMap<URI,D202SmilFile> spineMap= new LinkedHashMap<URI,D202SmilFile>();
 	private boolean finalSpineMapIsBuilt = false;
 
 		
@@ -127,7 +125,7 @@ final class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile, UIDC
 		return false;
 	}
 
-	public Collection getSpineItems() throws IllegalStateException {
+	public Collection<D202SmilFile> getSpineItems() throws IllegalStateException {
 		if (finalSpineMapIsBuilt) {
 			return spineMap.values();	
 		}
@@ -136,16 +134,16 @@ final class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile, UIDC
 
 	/*package*/ void buildSpineMap (Fileset fileset) {
 		//this can be done only when a complete fileset is built
-		Iterator it = this.getUriStrings().iterator();
+		Iterator<String> it = this.getUriStrings().iterator();
 		while(it.hasNext()) {
-			String str = (String) it.next();
+			String str = it.next();
 			URI key = null;
 			if(str.indexOf(".smil")>=0) {		
 				str = URIStringParser.stripFragment(str);
 				key = this.getFile().toURI().resolve(str);
-				FilesetFile ff = fileset.getLocalMember(key);
+				D202SmilFile ff = (D202SmilFile)fileset.getLocalMember(key);
 				if (ff!=null){
-					spineMap.put(key,fileset.getLocalMember(key));
+					spineMap.put(key,(D202SmilFile)fileset.getLocalMember(key));
 				}
 			}									
 		}				

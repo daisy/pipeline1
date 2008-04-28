@@ -19,6 +19,7 @@
 package org.daisy.pipeline.transformers;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.daisy.pipeline.core.InputListener;
@@ -61,11 +62,11 @@ public class XSLTRunner extends Transformer {
         super(inputListener,  interactive);
     }
 
-    protected boolean execute(Map parameters) throws TransformerRunException {
-        String xmlFileName = (String)parameters.remove("xml");
-        String xsltFileName = (String)parameters.remove("xslt");
-        String outFileName = (String)parameters.remove("out");
-        String factory = (String)parameters.remove("factory");
+    protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
+        String xmlFileName = parameters.remove("xml");
+        String xsltFileName = parameters.remove("xslt");
+        String outFileName = parameters.remove("out");
+        String factory = parameters.remove("factory");
         
         // xml        
         sendMessage(i18n("XSLT_READING_XML", xmlFileName), MessageEvent.Type.INFO_FINER , MessageEvent.Cause.SYSTEM); 
@@ -86,8 +87,12 @@ public class XSLTRunner extends Transformer {
 			//(net.sf.saxon.Transformer for example doesnt create dirs)
 			File out = new File(outFileName);
 			out.getParentFile().mkdirs();
+			//convert parameters to String,Object
+			Map<String,Object> xslParams = new HashMap<String,Object>();
+			xslParams.putAll(parameters);
 			
-		    Stylesheet.apply(xmlFileName, xsltFileName, outFileName, factory, parameters, CatalogEntityResolver.getInstance());
+		    Stylesheet.apply(xmlFileName, xsltFileName, outFileName, factory, xslParams, CatalogEntityResolver.getInstance());
+		    
         } catch (XSLTException e) {
             throw new TransformerRunException(e.getMessage(), e);
 		} catch (CatalogExceptionNotRecoverable e) {

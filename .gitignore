@@ -2,6 +2,7 @@
 /bin
 /dist
 doc/api
+samples/output
 transformers/*.class
 transformers/ca_cnib_rtf2dtbook/*.class
 transformers/ca_cnib_rtf2dtbook/*.pyc

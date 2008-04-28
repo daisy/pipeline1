@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_syncPointNormalizer;
 
@@ -26,7 +25,7 @@ import javax.xml.stream.events.XMLEvent;
 
 /*package*/ class AttributedContext {
     
-    protected Stack context = new Stack();
+    protected Stack<ContextInfo> context = new Stack<ContextInfo>();
       
     public boolean register(XMLEvent event) {
         if (event.isStartElement()) {            
@@ -39,18 +38,18 @@ import javax.xml.stream.events.XMLEvent;
     
     public void setHasMustElement() {
         for (int i = 0; i < context.size() - 1; ++i) {
-            ((ContextInfo)context.elementAt(i)).hasMustElement = true;
+            (context.elementAt(i)).hasMustElement = true;
         }
     }
     
     public void setHasWantElement() {
         for (int i = 0; i < context.size() - 1; ++i) {
-            ((ContextInfo)context.elementAt(i)).hasWantElement = true;
+            (context.elementAt(i)).hasWantElement = true;
         }
     }
     
     public ContextInfo peek() {
-        return (ContextInfo)context.peek();
+        return context.peek();
     }
     
     public boolean isEmpty() {
@@ -62,13 +61,13 @@ import javax.xml.stream.events.XMLEvent;
     }
     
     public ContextInfo getParent() {
-        return (ContextInfo)context.elementAt(context.size() - 2);
+        return context.elementAt(context.size() - 2);
     }
     
     public String getContextPath() {
         StringBuffer buffer = new StringBuffer();
-        for (Iterator it = context.iterator(); it.hasNext(); ) {
-            QName name = ((ContextInfo)it.next()).name;
+        for (Iterator<ContextInfo> it = context.iterator(); it.hasNext(); ) {
+            QName name = (it.next()).name;
             buffer.append("/").append(name.getLocalPart());
         }
         if (context.isEmpty()) {

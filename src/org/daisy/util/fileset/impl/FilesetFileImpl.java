@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.fileset.impl;
 
 import java.io.File;
@@ -43,10 +41,10 @@ import org.daisy.util.mime.MIMETypeException;
  */
 
 abstract class FilesetFileImpl extends EFile implements FilesetFile, IEFile {
-	private LinkedHashSet myUriStrings = new LinkedHashSet();	
-	private LinkedHashMap myFilesetReferences = new LinkedHashMap();	
-	private Map myFilesetReferers = null;	
-	protected LinkedHashSet myExceptions = new LinkedHashSet();	
+	private LinkedHashSet<String> myUriStrings = new LinkedHashSet<String>();	
+	private LinkedHashMap<URI,FilesetFile> myFilesetReferences = new LinkedHashMap<URI,FilesetFile>();	
+	private Map<URI,FilesetFile> myFilesetReferers = null;	
+	protected LinkedHashSet<Exception> myExceptions = new LinkedHashSet<Exception>();	
 	protected boolean isParsed = false;
 	protected FilesetRegex regex = FilesetRegex.getInstance();
 	
@@ -78,7 +76,7 @@ abstract class FilesetFileImpl extends EFile implements FilesetFile, IEFile {
 		myUriStrings.add(uri);
 	}
 		
-	public Collection getUriStrings(){
+	public Collection<String> getUriStrings(){
 		return this.myUriStrings;
 	}
 		
@@ -87,14 +85,14 @@ abstract class FilesetFileImpl extends EFile implements FilesetFile, IEFile {
 	}
 			
 	public FilesetFile getReferencedLocalMember(URI uri) {
-		return (FilesetFile)myFilesetReferences.get(uri);
+		return myFilesetReferences.get(uri);
 	}
 		
-	public Collection getReferencedLocalMembers() {
+	public Collection<FilesetFile> getReferencedLocalMembers() {
 		return myFilesetReferences.values();
 	}
 	
-	public Collection getReferringLocalMembers() throws NullPointerException {
+	public Collection<FilesetFile> getReferringLocalMembers() throws NullPointerException {
 		if (myFilesetReferers==null) throw new NullPointerException("this collection has not been set");
 		return myFilesetReferers.values(); 
 	}
@@ -102,7 +100,7 @@ abstract class FilesetFileImpl extends EFile implements FilesetFile, IEFile {
 	public FilesetFile getReferringLocalMember(URI uri) throws  NullPointerException {
 		if (myFilesetReferers==null) throw new NullPointerException ("this collection has not been set");
 		if (!myFilesetReferers.isEmpty()){ 
-			return (FilesetFile)myFilesetReferers.get(uri);
+			return myFilesetReferers.get(uri);
 		}
 		return null;
 	}
@@ -111,11 +109,11 @@ abstract class FilesetFileImpl extends EFile implements FilesetFile, IEFile {
         return isParsed;
     }
 	
-	void setReferringLocalMembers(Map fileset) {
+	void setReferringLocalMembers(Map<URI,FilesetFile> fileset) {
 		//populate the myFilesetReferers HashMap - who points to me?
-		myFilesetReferers = new HashMap();
+		myFilesetReferers = new HashMap<URI,FilesetFile>();
 		URI myURI = this.toURI();
-		Iterator it = fileset.keySet().iterator();
+		Iterator<URI> it = fileset.keySet().iterator();
 		while (it.hasNext()) {
 			FilesetFileImpl member = (FilesetFileImpl) fileset.get(it.next());
 			Object o = member.getReferencedLocalMember(myURI);
@@ -137,45 +135,11 @@ abstract class FilesetFileImpl extends EFile implements FilesetFile, IEFile {
 		return parent.resolve(relativeURI);		
 	}
 	
-
-//    public InputSource asInputSource() throws FileNotFoundException {    	
-//    	InputSource is = new InputSource(new FileReader(this));
-//    	is.setSystemId(this.toString());
-//        return is;
-//    }
-//    
-//    public InputStream asInputStream() throws FileNotFoundException {    	
-//    	return new FileInputStream(this);    	        
-//    }
-//       
-//	public byte[] asByteArray() throws IOException {
-//		InputStream is = this.asInputStream();
-//		long length = this.length();
-//		byte[] bytes = new byte[(int)length];
-//		int offset = 0;
-//        int numRead = 0;
-//        while (offset < bytes.length
-//               && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
-//            offset += numRead;
-//        }
-//        if (offset < bytes.length) {
-//            throw new IOException("IOException in " + this.getName());
-//        }
-//        is.close();
-//        return bytes;
-//	}
-//	
-//	public ByteBuffer asByteBuffer() throws IOException {
-//		byte[] bytes = this.asByteArray();
-//		ByteBuffer buf = ByteBuffer.allocate(bytes.length);				
-//		return (ByteBuffer)buf.put(bytes).rewind();
-//	}
-    
     public boolean hadErrors() {
     	return !myExceptions.isEmpty();
     }
 
-    public Collection getErrors() {
+    public Collection<Exception> getErrors() {
     	return myExceptions;
     }
 

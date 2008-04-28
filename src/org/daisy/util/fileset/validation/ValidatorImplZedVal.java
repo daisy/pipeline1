@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.fileset.validation;
 
 import java.io.File;
@@ -69,7 +86,7 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 	private void validate() throws ValidatorException, ValidatorNotSupportedException {
 		try{
 			ZedVal zedval = new ZedVal();
-			mValidatorListener.inform(this, "Validating with ZedVal version " + zedval.getVersion());
+			mValidatorListener.inform(this, "Validating with ZedVal version " + ZedVal.getVersion());
 			try {
 				zedval.setReporter(this);														
 				zedval.validate(new File(mInputOpf));
@@ -98,6 +115,7 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 	 * (non-Javadoc)
 	 * @see org.daisy.zedval.engine.ZedReporter#addMessage(org.daisy.zedval.engine.ZedMessage)
 	 */
+	@SuppressWarnings("unused")
 	public void addMessage(ZedMessage zm) throws ZedReporterException {
 		//find out what particular ZedMessage we are dealing with,
 		//and create the most appropriate ValidatorMessage
@@ -134,6 +152,7 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 	 * (non-Javadoc)
 	 * @see org.daisy.zedval.engine.ZedReporter#close()
 	 */
+	@SuppressWarnings("unused")
 	public void close() throws ZedReporterException {
 		//nothing to see here, please move along
 	}
@@ -142,6 +161,7 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 	 * (non-Javadoc)
 	 * @see org.daisy.zedval.engine.ZedReporter#initialize()
 	 */
+	@SuppressWarnings("unused")
 	public void initialize() throws ZedReporterException {
 		//nothing to see here, please move along		
 	}
@@ -158,6 +178,7 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */	
+	@SuppressWarnings("unused")
 	public void error(FilesetFileException ffe) throws FilesetFileException {
 		/*
 		 * We override the superclass Fileset errorlistener in order

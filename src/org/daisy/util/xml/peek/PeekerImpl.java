@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.xml.peek;
 
 import java.io.File;
@@ -179,6 +196,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ContentHandler#startPrefixMapping(java.lang.String, java.lang.String)
 	 */
+	@SuppressWarnings("unused")
 	public void startPrefixMapping(String prefix, String uri) throws SAXException {		
 		mPeekResult.addPrefixMapping(prefix, uri);
 	}
@@ -200,6 +218,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String, java.lang.String, java.lang.String)
 	 */
+    @SuppressWarnings("unused")
 	public void startDTD(String name, String publicId, String systemId) throws SAXException {
 		if(mDebugMode) {
 			System.out.println("DEBUG: PeekerImpl#startDTD -- LexicalHandler is reporting");
@@ -212,6 +231,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
      * (non-Javadoc)
      * @see org.xml.sax.ContentHandler#processingInstruction(java.lang.String, java.lang.String)
      */
+	@SuppressWarnings("unused")
 	public void processingInstruction(String target, String data) throws SAXException {
 		
 	}
@@ -220,6 +240,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ContentHandler#characters(char[], int, int)
 	 */
+	@SuppressWarnings("unused")
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		
 	}
@@ -227,7 +248,8 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	/*
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ContentHandler#endDocument()
-	 */
+	 */	
+	@SuppressWarnings("unused")
 	public void endDocument() throws SAXException {
 		
 	}
@@ -236,6 +258,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@SuppressWarnings("unused")
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		
 	}
@@ -244,6 +267,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
 	 */
+	@SuppressWarnings("unused")
 	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
 		
 	}
@@ -252,6 +276,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ContentHandler#startDocument()
 	 */
+	@SuppressWarnings("unused")
 	public void startDocument() throws SAXException {
 		
 	}
@@ -260,6 +285,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ContentHandler#skippedEntity(java.lang.String)
 	 */
+	@SuppressWarnings("unused")
 	public void skippedEntity(String name) throws SAXException {
 		
 	}
@@ -268,6 +294,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ContentHandler#endPrefixMapping(java.lang.String)
 	 */
+	@SuppressWarnings("unused")
 	public void endPrefixMapping(String prefix) throws SAXException {
 		
 	}
@@ -276,6 +303,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
 	 */
+	@SuppressWarnings("unused")
 	public void error(SAXParseException exception) throws SAXException {
 		
 	}
@@ -284,6 +312,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
 	 */
+	@SuppressWarnings("unused")
 	public void fatalError(SAXParseException exception) throws SAXException {
 				
 	}
@@ -292,6 +321,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
 	 */
+	@SuppressWarnings("unused")
 	public void warning(SAXParseException exception) throws SAXException {
 				
 	}
@@ -300,6 +330,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
 	 */
+	@SuppressWarnings("unused")
 	public void comment(char[] ch, int start, int length) throws SAXException {
 
 	}
@@ -308,6 +339,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#endCDATA()
 	 */
+	@SuppressWarnings("unused")
 	public void endCDATA() throws SAXException {
 
 	}
@@ -316,6 +348,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#endDTD()
 	 */
+	@SuppressWarnings("unused")
 	public void endDTD() throws SAXException {
 
 	}
@@ -324,6 +357,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#endEntity(java.lang.String)
 	 */
+	@SuppressWarnings("unused")
 	public void endEntity(String name) throws SAXException {
 
 	}
@@ -332,6 +366,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#startCDATA()
 	 */
+	@SuppressWarnings("unused")
 	public void startCDATA() throws SAXException {
 
 	}
@@ -340,6 +375,7 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#startEntity(java.lang.String)
 	 */
+	@SuppressWarnings("unused")
 	public void startEntity(String name) throws SAXException {
 
 	}

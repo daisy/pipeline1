@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_opsCreator;
 
 import java.io.File;
@@ -36,7 +53,7 @@ import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.css.stylesheets.Css;
 import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.dtb.meta.MetadataList;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.Fileset;
@@ -67,7 +84,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 	private List<URL> mInputDocuments = null;
 	private List<Fileset> mInputFilesets = null;
 	private List<Fileset> mOutputFilesets = null;
-	private EFolder mOutputDir = null;
+	private Directory mOutputDir = null;
 	private NcxBuilderConfiguration mNcxConfiguration = null;
 	private IDGenerator mIdGenerator = null;
 	private Set<StartElement> mInputMetadata = null;
@@ -97,7 +114,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 			URL ncxConfigURL = getNcxConfigURL(parameters);
 			mNcxConfiguration = new NcxBuilderConfiguration(ncxConfigURL,this);
 					
-			mOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(FilenameOrFileURI.toFile((String)parameters.remove("output"))));
+			mOutputDir = (Directory)FileUtils.createDirectory(new Directory(FilenameOrFileURI.toFile((String)parameters.remove("output"))));
 			mOutputFilesets = new LinkedList<Fileset>();
 			
 			/*

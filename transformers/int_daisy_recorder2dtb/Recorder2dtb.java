@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_recorder2dtb;
 
 import int_daisy_recorder2dtb.read.Reader;
@@ -25,7 +42,7 @@ import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.dtb.ncxonly.model.Model;
 import org.daisy.util.dtb.ncxonly.model.write.NCXOnlyDTBWriter;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.xml.Namespaces;
@@ -89,9 +106,9 @@ public class Recorder2dtb extends Transformer implements TransformerDelegateList
 				, MessageEvent.Type.INFO, MessageEvent.Cause.INPUT);		
 	}
 	
-	private EFolder getDestination(String dest) throws IOException {
-		EFolder destination = 
-			new EFolder(FileUtils.createDirectory(FilenameOrFileURI.toFile(dest)));
+	private Directory getDestination(String dest) throws IOException {
+		Directory destination = 
+			new Directory(FileUtils.createDirectory(FilenameOrFileURI.toFile(dest)));
 		
 		this.sendMessage(i18n("RENDERING_RESULT_TO", destination.getAbsolutePath())
 				, MessageEvent.Type.INFO, MessageEvent.Cause.INPUT);		
@@ -182,6 +199,7 @@ public class Recorder2dtb extends Transformer implements TransformerDelegateList
 		return model;
 	}
 
+	@SuppressWarnings("unused")
 	private void debugPrint(Model model, String dest) throws IOException, XMLStreamException {
 		File f = new File(dest);
 		FileUtils.createDirectory(f.getParentFile());
@@ -202,14 +220,15 @@ public class Recorder2dtb extends Transformer implements TransformerDelegateList
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateMessage(java.lang.Object, java.lang.String, org.daisy.pipeline.core.event.MessageEvent.Type, org.daisy.pipeline.core.event.MessageEvent.Cause, javax.xml.stream.Location)
 	 */
-	public void delegateMessage(Object delegate, String message, Type type, Cause cause, Location location) {
-		this.sendMessage(message,type,cause,null);
+	public void delegateMessage(@SuppressWarnings("unused")Object delegate, String message, Type type, Cause cause, Location location) {
+		this.sendMessage(message,type,cause,location);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateProgress(java.lang.Object, double)
 	 */
+	@SuppressWarnings("unused")
 	public void delegateProgress(Object delegate, double progress) {
 				
 	}

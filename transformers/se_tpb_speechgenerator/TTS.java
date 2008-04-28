@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.xml.namespace.QName;
+import javax.xml.stream.events.StartElement;
 
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.w3c.dom.Document;
@@ -30,7 +31,7 @@ public interface TTS {
 	 * @throws UnsupportedAudioFileException 
 	 * @throws TransformerRunException 
 	 */
-	long introduceStruct(List startElements, QName attributeQName, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException;
+	long introduceStruct(List<StartElement> startElements, QName attributeQName, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException;
 	
 	/**
 	 * Makes an announcement, termination, for each start element in the list
@@ -43,7 +44,7 @@ public interface TTS {
 	 * @throws UnsupportedAudioFileException 
 	 * @throws TransformerRunException 
 	 */
-	long terminateStruct(List startElements, QName attributeQName, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException;
+	long terminateStruct(List<StartElement> startElements, QName attributeQName, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException;
 	
 	/**
 	 * A DOM containing text to read.
@@ -72,5 +73,5 @@ public interface TTS {
 	 * @throws IOException 
 	 * @throws MalformedURLException 
 	 */
-	void setParamMap(Map params) throws MalformedURLException, IOException;
+	void setParamMap(Map<?,?> params) throws MalformedURLException, IOException;
 }

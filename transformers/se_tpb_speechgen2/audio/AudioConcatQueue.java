@@ -1,28 +1,25 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package se_tpb_speechgen2.audio;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -180,15 +177,15 @@ public class AudioConcatQueue implements Runnable {
 		queue.add(this.poison);
 	}
 
-	private long getTotalSize(FileBunch fb) {
-		List<File> inputFiles = fb.getInputFiles();
-		long size = 0;
-		for (Iterator<File> it = inputFiles.iterator(); it.hasNext();) {
-			File f = (File) it.next();
-			size += f.length();
-		}
-		return size;
-	}
+//	private long getTotalSize(FileBunch fb) {
+//		List<File> inputFiles = fb.getInputFiles();
+//		long size = 0;
+//		for (Iterator<File> it = inputFiles.iterator(); it.hasNext();) {
+//			File f = (File) it.next();
+//			size += f.length();
+//		}
+//		return size;
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -207,7 +204,7 @@ public class AudioConcatQueue implements Runnable {
 				boolean sleep = false;
 				synchronized (queue) {
 					if (queue.size() > 0) {
-						fb = (FileBunch) queue.poll();
+						fb = queue.poll();
 						long time = System.currentTimeMillis();
 						// time to end?
 						if (this.poison == fb) {
@@ -344,7 +341,7 @@ public class AudioConcatQueue implements Runnable {
 			AudioConcat.concat(inputFiles, outputWav);
 
 			for (int i = 0; i < inputFiles.size(); i++) {
-				File f = (File) inputFiles.get(i);
+				File f = inputFiles.get(i);
 				if (!f.delete()) {
 					f.deleteOnExit();
 				}

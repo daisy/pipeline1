@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package us_rfbd_dtbookMigrator;
 
 import java.io.File;
@@ -15,7 +32,7 @@ import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileJuggler;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.Fileset;
@@ -57,14 +74,14 @@ public class DtbookMigrator extends Transformer implements FilesetErrorHandler {
 	}
 
 	@Override
-	protected boolean execute(Map parameters)throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters)throws TransformerRunException {
 		try{
 			
 			/*
 			 * Get handles to input and output.
 			 */
-			EFile input = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("xml")));
-			EFile output = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("out")));
+			EFile input = new EFile(FilenameOrFileURI.toFile(parameters.remove("xml")));
+			EFile output = new EFile(FilenameOrFileURI.toFile(parameters.remove("out")));
 			
 			/*
 			 * Determine the version of the input document.
@@ -77,7 +94,7 @@ public class DtbookMigrator extends Transformer implements FilesetErrorHandler {
 			 * Determine what version the user wants in the result.
 			 * On failure, set version to latest possible.
 			 */			
-			DtbookVersion outputVersion = getVersion((String)parameters.remove("version"));
+			DtbookVersion outputVersion = getVersion(parameters.remove("version"));
 			if(outputVersion==null) {
 				outputVersion = DtbookVersionManager.getChronology()
 					.get(DtbookVersionManager.getChronology().size()-1);
@@ -199,7 +216,7 @@ public class DtbookMigrator extends Transformer implements FilesetErrorHandler {
 		if(!input.getParentFile().equals(output.getParentFile())) {
 			try{
 				Fileset toCopy = new FilesetImpl(input.toURI(),this,false,false);
-				EFolder dest = new EFolder(output.getParentFile());
+				Directory dest = new Directory(output.getParentFile());
 				dest.addFileset(toCopy, true);
 				File manifest = new File(dest,input.getName());
 				manifest.delete();

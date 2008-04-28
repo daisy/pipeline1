@@ -3,11 +3,11 @@ package org.daisy.pipeline.test.impl;
 import java.util.List;
 
 import org.daisy.pipeline.test.PipelineTest;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 public class NarratorSADX_ParaOnly_NoTitleMeta extends PipelineTest {
 
-	public NarratorSADX_ParaOnly_NoTitleMeta(EFolder dataInputDir, EFolder dataOutputDir) {
+	public NarratorSADX_ParaOnly_NoTitleMeta(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 

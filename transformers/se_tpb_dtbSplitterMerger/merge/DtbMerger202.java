@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package se_tpb_dtbSplitterMerger.merge;
@@ -35,9 +34,9 @@ import org.daisy.util.fileset.D202NccFile;
 import org.daisy.util.fileset.D202SmilFile;
 import org.daisy.util.fileset.D202TextualContentFile;
 import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.Referable;
 import org.daisy.util.fileset.SmilFile;
-import org.daisy.util.fileset.TextualContentFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
@@ -60,9 +59,10 @@ import se_tpb_dtbSplitterMerger.XmlParsingException;
  * 
  * @author Piotr Kiernicki
  */
+@SuppressWarnings("unchecked")
 public class DtbMerger202 extends DtbMerger {
 
-    public DtbMerger202(List inFiles, File outDir, DtbTransformationReporter rg){
+    public DtbMerger202(List<File> inFiles, File outDir, DtbTransformationReporter rg){
         super(inFiles,outDir,rg);
     }
 
@@ -83,9 +83,9 @@ public class DtbMerger202 extends DtbMerger {
 
 	   int inputVolNr = 0;
 	 	
-	   List outputD202SmilFiles = new ArrayList();
-       List outputResourceFiles = new ArrayList();
-	   List outputPromptFiles = new ArrayList();
+	   List<File> outputD202SmilFiles = new ArrayList<File>();
+       List<File> outputResourceFiles = new ArrayList<File>();
+	   List<File> outputPromptFiles = new ArrayList<File>();
        
 		
 	   for(Iterator NCCs = super.getInputFiles().iterator();NCCs.hasNext();){
@@ -95,7 +95,7 @@ public class DtbMerger202 extends DtbMerger {
 		   // 2.1 Fill the output volume's collections with smil, full text, resource and prompt files,
 		   //     duplicates are excluded.
 		   this.fillTmpVolume(inputVolNr, inputVolNcc, tmpVolume);
-		   outputVolume.addFullTextFile((TextualContentFile)tmpVolume.getFullTextFiles().get(0));
+		   outputVolume.addFullTextFile(tmpVolume.getFullTextFiles().get(0));
 			
 		   /* 2.2 Copy the files here for the sake of the possible subdirectory resources in the input volume.
 			*     To be able to deal with subfolders we will need the current source volume's directory.
@@ -103,10 +103,10 @@ public class DtbMerger202 extends DtbMerger {
 		   String inputVolumeDir = inputVolNcc.getParent(); 
 		   boolean checkRelativePath = true;
 			
-		   List smils = tmpVolume.copyFilesIntoVolume(tmpVolume.getSmilFiles(), super.isUserPromptOn(), super.isKeepInputDtb(), inputVolumeDir, checkRelativePath);
+		   List<File> smils = tmpVolume.copyFilesIntoVolume(tmpVolume.getSmilFiles(), super.isUserPromptOn(), super.isKeepInputDtb(), inputVolumeDir, checkRelativePath);
 		   outputD202SmilFiles.addAll(smils);
 							
-		   List audioFiles = tmpVolume.copyFilesIntoVolume(tmpVolume.getAudioFiles(), super.isUserPromptOn(), super.isKeepInputDtb(), inputVolumeDir, checkRelativePath);
+		   List<File> audioFiles = tmpVolume.copyFilesIntoVolume(tmpVolume.getAudioFiles(), super.isUserPromptOn(), super.isKeepInputDtb(), inputVolumeDir, checkRelativePath);
 		   outputVolume.addAudioFiles(audioFiles);
            
            outputResourceFiles.addAll(tmpVolume.getResourceFiles());
@@ -146,29 +146,29 @@ public class DtbMerger202 extends DtbMerger {
 	   }
    }
  
-	private void handleDuplicatedResourceFiles(List navigationFiles, DtbVolume outputVolume) throws TransformationAbortedByUserException, IOException, FilesetFatalException {
+	private void handleDuplicatedResourceFiles(List<File> navigationFiles, DtbVolume outputVolume) throws TransformationAbortedByUserException, IOException, FilesetFatalException {
 		
 		if(navigationFiles!=null && navigationFiles.size()>0){
-			List files = new ArrayList();
-			File navigationFile = (File)navigationFiles.get(0);
+			List<FilesetFile> files = new ArrayList<FilesetFile>();
+			File navigationFile = navigationFiles.get(0);
 			String inputVolumeDir = navigationFile.getParentFile().getAbsolutePath(); 
 			Fileset navigationFileset = null;
 			try {
 				boolean throwExceptionOnError = false;
                 boolean dtdValidate = true;
-                navigationFileset = (Fileset)new FilesetImpl(navigationFile.toURI(), new DefaultFilesetErrorHandlerImpl(throwExceptionOnError),dtdValidate);
+                navigationFileset = new FilesetImpl(navigationFile.toURI(), new DefaultFilesetErrorHandlerImpl(throwExceptionOnError),dtdValidate);
 			} catch (FilesetFatalException e) {
 				this.getReportGenarator().sendTransformationMessage(Level.SEVERE, "FILESET_COULD_NOT_BE_BUILT", navigationFile.getAbsolutePath());
                 throw e;
 			}
-			Iterator members=navigationFileset.getLocalMembers().iterator();
+			Iterator<FilesetFile> members=navigationFileset.getLocalMembers().iterator();
 			while(members.hasNext()){
 				Object f = members.next();
 				if(!(f  instanceof D202NccFile 
 						|| f  instanceof D202TextualContentFile 
 						|| f  instanceof SmilFile 
 						|| f instanceof AudioFile)){
-					files.add(f);
+					files.add((FilesetFile)f);
 				}
 			}
 			List resources = outputVolume.copyFilesIntoVolume(files, super.isUserPromptOn(), super.isKeepInputDtb(), inputVolumeDir, true);
@@ -177,15 +177,19 @@ public class DtbMerger202 extends DtbMerger {
 
 	}
 
-	private File mergeXhtmlFilesWithDOM(List inputXhtmlFiles) throws XmlParsingException, IOException{
-		
+	private File mergeXhtmlFilesWithDOM(List<?> inputXhtmlFiles) throws XmlParsingException, IOException{
+		//mg inparam list here seems to be either FilesetFile or File
 		File outputXhtmlFile = null;
 
 		File firstVolumeXhtmlFile = null;
 		
 		//Get an input xhtml document 
 		if(inputXhtmlFiles.size()>0){
-			firstVolumeXhtmlFile = (File)inputXhtmlFiles.get(0);
+			if(inputXhtmlFiles.get(0) instanceof File) {
+				firstVolumeXhtmlFile = (File)inputXhtmlFiles.get(0);
+			}else{
+				firstVolumeXhtmlFile = ((FilesetFile)inputXhtmlFiles.get(0)).getFile();
+			}	
 		}else{
 			//There are no full text documents
 			return null;
@@ -200,10 +204,16 @@ public class DtbMerger202 extends DtbMerger {
 		* and put them in a Map where the keys are 
 		* the id values of the parent of the anchor element. 
 		*/
-		HashMap nonPromptAnchorElements = new HashMap();
-		for(Iterator input=inputXhtmlFiles.iterator(); input.hasNext();){
-		
-			File inputFile = (File)input.next();
+		HashMap<String,Element> nonPromptAnchorElements = new HashMap<String,Element>();
+		for(Iterator<?> input=inputXhtmlFiles.iterator(); input.hasNext();){
+			Object o = input.next();
+			File inputFile = null;
+			if(o instanceof File) {
+				inputFile = (File)o;
+			} else{
+				inputFile =((FilesetFile)o).getFile();
+			}
+			
 			Document doc = parseInit.parseDocWithDOM(inputFile);
 			
 			NodeList anchorList = doc.getElementsByTagName("a");
@@ -236,7 +246,7 @@ public class DtbMerger202 extends DtbMerger {
 			
 			if(anchor.getAttribute("rel").length()>0){
 				//get the matching non prompt anchor from the HashMap
-				Element a = (Element)nonPromptAnchorElements.get(id);
+				Element a = nonPromptAnchorElements.get(id);
 				String hrefValue = a.getAttribute("href");
 				
 				anchor.setAttribute("href", hrefValue);
@@ -285,14 +295,14 @@ public class DtbMerger202 extends DtbMerger {
 		try {
 			boolean throwExceptionOnError = false;
 			boolean dtdValidate = true;
-			inputVolNccFileset = (Fileset)new FilesetImpl(inputVolumeNcc.toURI(), new DefaultFilesetErrorHandlerImpl(throwExceptionOnError),dtdValidate);
+			inputVolNccFileset = new FilesetImpl(inputVolumeNcc.toURI(), new DefaultFilesetErrorHandlerImpl(throwExceptionOnError),dtdValidate);
 		} catch (FilesetFatalException e) {
             this.getReportGenarator().sendTransformationMessage(Level.SEVERE, "FILESET_COULD_NOT_BE_BUILT", inputVolumeNcc.getAbsolutePath());
             throw e;
 		}
 		
-		List titlePromptsAudio = new ArrayList();//we catch the below via title promt smil and then remove from audio files collection
-		Iterator i = inputVolNccFileset.getLocalMembers().iterator();
+		List<AudioFile> titlePromptsAudio = new ArrayList<AudioFile>();//we catch the below via title promt smil and then remove from audio files collection
+		Iterator<FilesetFile> i = inputVolNccFileset.getLocalMembers().iterator();
 				
 		while(i.hasNext()){
 			Object file = i.next();
@@ -308,11 +318,11 @@ public class DtbMerger202 extends DtbMerger {
 				if(f.getName().equals(DtbPromptFiles.TITLE_SMIL_FILE_NAME) && volNr>1){
 					//this is just a prompt title smil
 					tmpVolume.addPromptFile(f);
-                    Collection members = f.getReferencedLocalMembers();
-                    for(Iterator j=members.iterator();j.hasNext();){
+                    Collection<FilesetFile> members = f.getReferencedLocalMembers();
+                    for(Iterator<FilesetFile> j=members.iterator();j.hasNext();){
                         Object o = j.next();
                         if(o instanceof AudioFile) {
-                            titlePromptsAudio.add(o) ;
+                            titlePromptsAudio.add((AudioFile)o) ;
                         }
                     }
 				}else if(f.getName().startsWith("cd_")||f.getName().startsWith("skiva_")){//FIXME rename all prompts with some prefix, e.g. dtbsm_prompt_cd1.smil

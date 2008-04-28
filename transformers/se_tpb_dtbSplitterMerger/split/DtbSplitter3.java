@@ -1,26 +1,22 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package se_tpb_dtbSplitterMerger.split;
-/*
- * 
- */
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +37,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.Referable;
 import org.daisy.util.fileset.Z3986NcxFile;
 import org.daisy.util.fileset.Z3986OpfFile;
@@ -54,8 +51,8 @@ import org.w3c.dom.NodeList;
 
 import se_tpb_dtbSplitterMerger.DtbParsingInitializer;
 import se_tpb_dtbSplitterMerger.DtbPromptFiles;
-import se_tpb_dtbSplitterMerger.DtbTransformationReporter;
 import se_tpb_dtbSplitterMerger.DtbSerializer;
+import se_tpb_dtbSplitterMerger.DtbTransformationReporter;
 import se_tpb_dtbSplitterMerger.DtbVolume;
 import se_tpb_dtbSplitterMerger.DtbVolumeSet;
 import se_tpb_dtbSplitterMerger.TransformationAbortedByUserException;
@@ -67,6 +64,7 @@ import se_tpb_dtbSplitterMerger.XmlParsingException;
  * @author Piotr Kiernicki
  */
 
+@SuppressWarnings("unchecked")
 public class DtbSplitter3 extends DtbSplitter {
     
     private final static String NCX_VERSION_Z3986_2002 = "1.1.0";
@@ -81,7 +79,7 @@ public class DtbSplitter3 extends DtbSplitter {
         super(outDir, promptManifest, maxVolSize, reportGen);
         
 		try {
-			for(Iterator i=inputFileset.getLocalMembers().iterator();i.hasNext();){
+			for(Iterator<FilesetFile> i=inputFileset.getLocalMembers().iterator();i.hasNext();){
 				Object file = i.next();
 				if(file instanceof Z3986OpfFile){
 					this.opfFile = (Z3986OpfFile)file;
@@ -155,14 +153,14 @@ public class DtbSplitter3 extends DtbSplitter {
 		vol.incrementVolumeSize(((File)this.opfFile).length());
 		vol.addResourceFile(this.opfFile);
 		//add all resources except for smil audio and full text 
-        for(Iterator i=this.opfFile.getReferencedLocalMembers().iterator();i.hasNext();){
-            Referable file = (Referable)i.next();
+        for(Iterator<FilesetFile> i=this.opfFile.getReferencedLocalMembers().iterator();i.hasNext();){
+            Referable file = i.next();
             if(file instanceof Z3986ResourceFile){
                 vol.incrementVolumeSize(file.getFile().length());
                 vol.addResourceFile(file);
                 //add resource file's referables
-                for(Iterator r=((Z3986ResourceFile)file).getReferencedLocalMembers().iterator();r.hasNext();){
-                    Referable f = (Referable)r.next();
+                for(Iterator<FilesetFile> r=((Z3986ResourceFile)file).getReferencedLocalMembers().iterator();r.hasNext();){
+                    Referable f = r.next();
                     vol.incrementVolumeSize(f.getFile().length());
                     vol.addResourceFile(f);
                 }
@@ -290,7 +288,7 @@ public class DtbSplitter3 extends DtbSplitter {
 			}
 		}
 		//build changeMsg elements
-		List aVolumePrompts = ((DtbVolume)volumeSet.get(0)).getPromtFiles();
+		List aVolumePrompts = volumeSet.get(0).getPromtFiles();
 		if(aVolumePrompts!=null && aVolumePrompts.size()>0){		
 			
 			DtbPromptFiles promptFiles = super.getPromptFiles(); 
@@ -373,7 +371,7 @@ public class DtbSplitter3 extends DtbSplitter {
  */
 	protected void saveVolumes() throws TransformationAbortedByUserException, XmlParsingException, IOException{
 		
-		Document distInfoDoc = (Document)this.generateDistInfoDoc(super.getVolumeSet());
+		Document distInfoDoc = this.generateDistInfoDoc(super.getVolumeSet());
 		String inputVolumeDir = this.opfFile.getFile().getParent();
 				
 		for(Iterator volumes = super.getVolumeSet().iterator();volumes.hasNext();){
@@ -413,6 +411,7 @@ public class DtbSplitter3 extends DtbSplitter {
 	
 		}
 	}
+	
 	
 	private void copyAudioPrompts(DtbVolume volume, 
                                 boolean keepPromptFiles, 

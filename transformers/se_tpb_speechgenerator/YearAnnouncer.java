@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  */
 class YearAnnouncer {
     
-    private Map numberMapMap = null;
+    private Map<?,?> numberMapMap = null;
     private Pattern before = null;
     private Pattern after = null;
     private Pattern match = null;
@@ -109,7 +109,7 @@ class YearAnnouncer {
         for (int i = 1; i <= matcher.groupCount(); ++i) {
             Integer in = new Integer(i);
             if (numberMapMap.containsKey(in)) {
-                Map groupMap = (Map)numberMapMap.get(in);
+                Map<?,?> groupMap = (Map<?,?>)numberMapMap.get(in);
                 result = result + groupMap.get(matcher.group(i));
             } else if (matcher.group(i) != null) {
                 result = result + matcher.group(i);
@@ -130,13 +130,13 @@ class YearAnnouncer {
         min = Integer.parseInt(XPathUtils.valueOf(doc.getDocumentElement(), "/year/@min"));
         max = Integer.parseInt(XPathUtils.valueOf(doc.getDocumentElement(), "/year/@max"));
         
-        Map mapmap = new HashMap();        
+        Map<Integer,Map<String,String>> mapmap = new HashMap<Integer,Map<String,String>>();        
         NodeList groups = XPathUtils.selectNodes(doc.getDocumentElement(), "//group");
         for (int i = 0; i < groups.getLength(); ++i) {
             Element group = (Element)groups.item(i);
             Integer groupNumber = Integer.valueOf(group.getAttribute("number"));
             
-            Map map = new HashMap();
+            Map<String,String> map = new HashMap<String,String>();
             NodeList values = XPathUtils.selectNodes(group, "value");
             for (int j = 0; j < values.getLength(); ++j) {
                 Element value = (Element)values.item(j);

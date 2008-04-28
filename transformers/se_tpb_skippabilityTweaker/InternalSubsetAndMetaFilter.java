@@ -170,8 +170,8 @@ import org.daisy.util.xml.stax.StaxFilter;
             if ("span".equals(event.getName().getLocalPart())) {
                 if (event.getAttributeByName(new QName("bodyref")) != null) {
                     List<Attribute> attrs = new ArrayList<Attribute>();
-                    for (Iterator<Attribute> attrItr = event.getAttributes(); attrItr.hasNext(); ) {
-                        Attribute attr = attrItr.next();
+                    for (Iterator<?> attrItr = event.getAttributes(); attrItr.hasNext(); ) {
+                        Attribute attr = (Attribute)attrItr.next();
                         if (!"bodyref".equals(attr.getName().getLocalPart())) {
                             attrs.add(attr);
                         }

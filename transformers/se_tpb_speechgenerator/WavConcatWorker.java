@@ -38,7 +38,7 @@ import org.daisy.util.execution.ExecutionException;
  */
 public class WavConcatWorker implements Runnable {
 	
-	private List inputFiles;		// a list of input files to concatenate.
+	private List<File> inputFiles;		// a list of input files to concatenate.
 	private File wavFile;			// the resulting wav file.
 	private File mp3File;			// the optional mp3 encoding of wavFile.
 	private CountDownLatch signal;	// thread synchronization: signal when done!
@@ -57,7 +57,7 @@ public class WavConcatWorker implements Runnable {
 	 * @param signal a <code>CountDownLatch</code> to give the caller (the thread
 	 * that started this thread) an "i've finished"-signal.
 	 */
-	public WavConcatWorker(List inputFiles, File outWav, File outMp3, CountDownLatch signal) {
+	public WavConcatWorker(List<File> inputFiles, File outWav, File outMp3, CountDownLatch signal) {
 		this.inputFiles = inputFiles;
 		this.wavFile = outWav;
 		this.mp3File = outMp3;
@@ -95,12 +95,12 @@ public class WavConcatWorker implements Runnable {
 	 * @param outputWav a <code>java.io.File</code> pointing to the desired result.
 	 * @throws IOException
 	 */
-	private void merge(List inputFiles, File outputWav) throws IOException {
+	private void merge(List<File> inputFiles, File outputWav) throws IOException {
 		// the divide and conquer approach is made to avoid 
 		// the "too many open files"-exception from Java.
 		if (inputFiles.size() > maxTempFiles) {
 			// first half of the list
-			List files = new ArrayList();
+			List<File> files = new ArrayList<File>();
 			File firstMerge = File.createTempFile("wavmerge", ".wav");
 			for (int i = 0; i < inputFiles.size() / 2; i++) {
 				files.add(inputFiles.get(i));
@@ -108,7 +108,7 @@ public class WavConcatWorker implements Runnable {
 			merge(files, firstMerge);
 			
 			// second half of the list
-			List moreFiles = new ArrayList();
+			List<File> moreFiles = new ArrayList<File>();
 			File secondMerge = File.createTempFile("wavmerge", ".wav");
 			for (int i = inputFiles.size() / 2; i < inputFiles.size(); i++) {
 				moreFiles.add(inputFiles.get(i));
@@ -125,7 +125,7 @@ public class WavConcatWorker implements Runnable {
 			// base case:
 			AudioConcat.concat(inputFiles, outputWav);
 			for (int i = 0; i < inputFiles.size(); i++) {
-				File f = (File) inputFiles.get(i);
+				File f = inputFiles.get(i);
 				if (!f.delete()) {
 					f.deleteOnExit();
 				}

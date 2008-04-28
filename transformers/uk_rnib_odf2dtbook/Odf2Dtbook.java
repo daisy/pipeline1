@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package uk_rnib_odf2dtbook;
 
@@ -51,7 +50,7 @@ import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
@@ -76,11 +75,11 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
         super(inListener, isInteractive);        
     }
     
-    protected boolean execute(Map parameters) throws TransformerRunException {
+    protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
         String systemTransformerFactory = null;
     	
-        EFile inputOdf = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("odf")));
-        EFile outputDtbook = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("dtbook")));           
+        EFile inputOdf = new EFile(FilenameOrFileURI.toFile(parameters.remove("odf")));
+        EFile outputDtbook = new EFile(FilenameOrFileURI.toFile(parameters.remove("dtbook")));           
         File outputDir = outputDtbook.getParentFile();
         
         try {
@@ -158,7 +157,7 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
             saxon.transform(new StreamSource(content), new StreamResult(outputDtbook));            
                         
             // Remove temporary directory
-            EFolder eTemp = new EFolder(mTempDir);
+            Directory eTemp = new Directory(mTempDir);
             eTemp.deleteContents();
             mTempDir.delete();
             
@@ -202,7 +201,7 @@ public class Odf2Dtbook extends Transformer  implements URIResolver, ErrorListen
      * @throws IOException
      */
     private void extractImages(ZipFile odfFile, File outputDir) throws IOException {
-    	Enumeration enumer = odfFile.entries();
+    	Enumeration<?> enumer = odfFile.entries();
     	File pictureDir = new File(outputDir, "Pictures");
     	while (enumer.hasMoreElements()) {
     		ZipEntry entry = (ZipEntry)enumer.nextElement();

@@ -1,25 +1,25 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_xmldetection;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
@@ -56,16 +56,16 @@ public class XMLDetection extends Transformer {
         super(inListener, isInteractive);
     }
 
-    protected boolean execute(Map parameters) throws TransformerRunException {
-        String input = (String)parameters.remove("input");
-        String output = (String)parameters.remove("output");
-        String doAbbrAcronymDetection = (String)parameters.remove("doAbbrAcronymDetection");
-        String doSentenceDetection = (String)parameters.remove("doSentenceDetection");
-        String doWordDetection = (String)parameters.remove("doWordDetection");
-        String customLang = (String)parameters.remove("customLang");
-        String doOverride = (String)parameters.remove("doOverride");
+    protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
+        String input = parameters.remove("input");
+        String output = parameters.remove("output");
+        String doAbbrAcronymDetection = parameters.remove("doAbbrAcronymDetection");
+        String doSentenceDetection = parameters.remove("doSentenceDetection");
+        String doWordDetection = parameters.remove("doWordDetection");
+        String customLang = parameters.remove("customLang");
+        String doOverride = parameters.remove("doOverride");
         //String logFile = (String)parameters.remove("logFile");
-        String copyReferredFiles = (String)parameters.remove("copyReferredFiles");        
+        String copyReferredFiles = parameters.remove("copyReferredFiles");        
                 
         this.sendMessage(i18n("USING_INPUT", input), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
         this.sendMessage(i18n("USING_OUTPUT", output), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
@@ -133,7 +133,7 @@ public class XMLDetection extends Transformer {
             
             if (Boolean.parseBoolean(copyReferredFiles)) {
                 this.sendMessage(i18n("COPYING_REFERRED_FILES"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
-                Collection filesToCopy = new HashSet();
+                Collection<URI> filesToCopy = new HashSet<URI>();
 	            Fileset fileset = new FilesetImpl(FilenameOrFileURI.toURI(input), new DefaultFilesetErrorHandlerImpl(), false, true);
 	            filesToCopy.addAll(fileset.getLocalMembersURIs());
 	            filesToCopy.remove(fileset.getManifestMember().getFile().toURI());

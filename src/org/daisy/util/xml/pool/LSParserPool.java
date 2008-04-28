@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.xml.pool;
 
 import java.util.HashMap;
@@ -60,7 +58,7 @@ public class LSParserPool extends AbstractPool {
 	 * @param domConfigMap key value pairs from http://docjar.com/docs/api/org/w3c/dom/DOMConfiguration.html
 	 * @param mode DOMImplementationLS.MODE_SYNCHRONOUS or DOMImplementationLS.MODE_ASYNCHRONOUS 	 
 	 */
-	public LSParser acquire(Map domConfigMap, short mode) throws PoolException {
+	public LSParser acquire(Map<String,Object> domConfigMap, short mode) throws PoolException {
 		Map<String,Object> features = new HashMap<String,Object>();
 				
 		features.put("DOMImplementationLS.MODE", Short.valueOf(mode));
@@ -82,11 +80,11 @@ public class LSParserPool extends AbstractPool {
 	 * Retrieve a LSParser from the pool, configurable via DOMConfiguration.
 	 * <p>The parser returned will be synchronous.</p>
 	 */
-	public LSParser acquire(Map domConfigMap) throws PoolException {
+	public LSParser acquire(Map<String,Object> domConfigMap) throws PoolException {
 		return this.acquire(domConfigMap, DOMImplementationLS.MODE_SYNCHRONOUS);
 	}
 	
-	private LSParser createLSParser(Map features, Map domConfig)  {		
+	private LSParser createLSParser(Map<String,Object> features, Map<String,Object> domConfig)  {		
 		Short mode = (Short)features.get("DOMImplementationLS.MODE");
 		LSParser parser = mDOMImplementationLS.createLSParser(mode.shortValue(), null);		
 		DOMConfiguration config = parser.getDomConfig();		
@@ -101,7 +99,7 @@ public class LSParserPool extends AbstractPool {
 	 * Return the parser back to the pool.
 	 * @throws PoolException 
 	 */
-	public void release(LSParser parser, Map domConfig) throws PoolException {	
+	public void release(LSParser parser, Map<String,Object> domConfig) throws PoolException {	
 		try {
 			Map<String,Object> features = new HashMap<String,Object>();
 						

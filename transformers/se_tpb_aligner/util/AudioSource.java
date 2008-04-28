@@ -2,7 +2,7 @@ package se_tpb_aligner.util;
 
 import java.io.File;
 
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 /**
  *
@@ -14,7 +14,7 @@ public class AudioSource extends Source {
 		super(file);
 	}
 
-	public AudioSource(EFolder dir, String string) {
+	public AudioSource(Directory dir, String string) {
 		super(dir,string);
 	}
 

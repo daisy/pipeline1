@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package se_tpb_speechgen2.tts.adapters;
 
 import java.io.File;
@@ -5,12 +22,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.events.StartElement;
 
-import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
-import org.daisy.util.xml.xslt.XSLTException;
 import org.w3c.dom.Document;
 
 import se_tpb_speechgen2.audio.AudioFiles;
@@ -63,6 +77,7 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 	 * 
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unused")
 	public void close() throws IOException, TTSException {
 		// default implementation does nothing
 	}
@@ -90,9 +105,8 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 			if (canSpeak(line)) {
 				read(line, destination);
 				return AudioFiles.getAudioFileDuration(destination);
-			} else {
-				return 0;
 			}
+			return 0;
 		} catch (IOException e) {
 			throw e;
 		} catch (Exception e) {
@@ -120,9 +134,8 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 			if (canSpeak(line)) {
 				read(line, destination);
 				return AudioFiles.getAudioFileDuration(destination);
-			} else {
-				return 0;
 			}
+			return 0;
 		} catch (IOException e) {
 			throw e;
 		} catch (Exception e) {

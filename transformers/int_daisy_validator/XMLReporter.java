@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_validator;
 
 import java.io.File;
@@ -12,12 +29,13 @@ import java.util.Set;
 import java.util.Stack;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Characters;
+import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.util.fileset.validation.Validator;
@@ -41,8 +59,8 @@ public class XMLReporter {
 	private Characters mNewLine;						// a new line character event, improves the output readability.
 	
 	private String mXmlStylesheet;						// the xml-stylesheet value url
-	private Stack mPendingEvents = new Stack();			// stack containing pending elements: write all of these before finishing.
-	public final Set NAMESPACES = new HashSet();		// container of (the single) namespace
+	private Stack<XMLEvent> mPendingEvents = new Stack<XMLEvent>();			// stack containing pending elements: write all of these before finishing.
+	public final Set<Namespace> NAMESPACES = new HashSet<Namespace>();		// container of (the single) namespace
 
 	public static final String NAMESPACE_PREFIX = "";												// validator abbr.
 	public static final String NAMESPACE_URI = "http://www.daisy.org/ns/pipeline/validator/";			// unique string
@@ -59,9 +77,8 @@ public class XMLReporter {
 	 * @param xmlStylesheet the xml-stylesheet to be used.
 	 * @throws FileNotFoundException
 	 * @throws XMLStreamException
-	 * @throws ParserConfigurationException
 	 */
-	public XMLReporter(File outputFile, String xmlStylesheet) throws FileNotFoundException, XMLStreamException, ParserConfigurationException {
+	public XMLReporter(File outputFile, String xmlStylesheet) throws FileNotFoundException, XMLStreamException {
 		// check to see if outputFile is ok
 		if (null == outputFile) {
 			String msg = "The validation xml report output file may not be null!";
@@ -106,11 +123,10 @@ public class XMLReporter {
 	 * using the string <code>inputFilename</code> as name of the validated file.
 	 * 
 	 * @param outputFile the file to which the xml report will be stored.
-	 * @throws ParserConfigurationException 
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	public XMLReporter(File outputFile) throws ParserConfigurationException, FileNotFoundException, XMLStreamException {
+	public XMLReporter(File outputFile) throws FileNotFoundException, XMLStreamException {
 		this(outputFile, null);
 	}
 	
@@ -155,13 +171,13 @@ public class XMLReporter {
 	 */
 	public void finishReport() throws XMLStreamException {
 		while (mPendingEvents.size() > 2) {
-			writeEvent((XMLEvent) mPendingEvents.pop());
+			writeEvent(mPendingEvents.pop());
 		}
 		
 		printFootSection();
 		
 		while (!mPendingEvents.isEmpty()) {
-			writeEvent((XMLEvent) mPendingEvents.pop());
+			writeEvent(mPendingEvents.pop());
 		}
 		
 		mEventWriter.flush();
@@ -186,7 +202,7 @@ public class XMLReporter {
 		}
 		
 		String message = validatorMessage.getMessage();		
-		Set attributes = new HashSet();
+		Set<Attribute> attributes = new HashSet<Attribute>();
 		
 		String file = "";
 		URI uri = validatorMessage.getFile();
@@ -223,7 +239,7 @@ public class XMLReporter {
 		stackTrace.append(sw.toString());
 		
 	
-		Set attributes = new HashSet();
+		Set<Attribute> attributes = new HashSet<Attribute>();
 		
 		// level - Exceptions are always SEVERE 
 		attributes.add(mEventFactory.createAttribute("level", "Severe error"));		
@@ -240,10 +256,9 @@ public class XMLReporter {
 	
 	/**
 	 * Constructs the beginning of the xml report.
-	 * @throws ParserConfigurationException 
 	 * @throws XMLStreamException 
 	 */
-	private void beginReport() throws ParserConfigurationException, XMLStreamException {
+	private void beginReport() throws XMLStreamException {
 		QName documentQName = new QName(NAMESPACE_URI, "validator", NAMESPACE_PREFIX);
 		QName bodyQName = new QName(NAMESPACE_URI, "body", NAMESPACE_PREFIX);
 		

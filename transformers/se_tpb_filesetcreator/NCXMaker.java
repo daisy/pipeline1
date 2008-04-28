@@ -1,22 +1,20 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package se_tpb_filesetcreator;
 
 import java.io.File;
@@ -97,17 +95,17 @@ public class NCXMaker implements BusListener {
 	
 	public static String DEBUG_PROPERTY = "org.daisy.debug";	// the system property used to determine if we're in debug mode or not
 	
-	private Set navListHeadings;							// heading element names
-	private Set levels;										// level element names
-	private Set customNavList;								// names of elements which should be given a cusom navlist
-	private Map usedCustomNavLists = new HashMap();			// names of elements with a populated custom navlist
-	private Set customTests;								// names of the elements with custom test
+	private Set<String> navListHeadings;							// heading element names
+	private Set<String> levels;										// level element names
+	private Set<String> customNavList;						// names of elements which should be given a cusom navlist
+	private Map<String,Object> usedCustomNavLists = new HashMap<String,Object>();			// names of elements with a populated custom navlist
+	private Set<String> customTests;								// names of the elements with custom test
 
-	private HashMap smilPlayorder = new HashMap();			// a mapping smilref->playorder
+	private HashMap<String,String> smilPlayorder = new HashMap<String,String>();			// a mapping smilref->playorder
 	private Map dcElements = new MultiHashMap(false); 		// mapping dc:elementname->(collection of values)
 	
 	private Document ncxTemplate;							// the ncx template file
-	private Stack openLevels = new Stack();					// stack keeping track of the open levels, add new ones to the one on top.
+	private Stack<Element> openLevels = new Stack<Element>();	// stack keeping track of the open levels, add new ones to the one on top.
 	private ContextStack contextStack = new ContextStack();	// keeping track of xml content. Mainly to recognize level/hd instead of sidebar/hd
 	
 	private BookmarkedXMLEventReader reader;				// a reader pointed to the input document - a modified dtbook
@@ -122,7 +120,7 @@ public class NCXMaker implements BusListener {
 	private int pageCount;									// the number of pages
 	private String strPageMax = "0";						// the value of the greatest page number seen so far
 	private String uid;										// the dtbook uid
-	private Map bookStructs;								// mapping between element names and book structs.
+	private Map<String,String> bookStructs;					// mapping between element names and book structs.
 	
 	private String smilClipBegin = "clipBegin";				// smil attribute
 	private String smilClipEnd = "clipEnd";					// smil attribute
@@ -163,9 +161,9 @@ public class NCXMaker implements BusListener {
 	 */
 	public NCXMaker(
 			File inputFile, 
-			Set levels,
-			Set navListHeadings,
-			Set customNavList,
+			Set<String> levels,
+			Set<String> navListHeadings,
+			Set<String> customNavList,
 			File dtbookOutputFile, 
 			File ncxTemplateFile,
 			ProgressObserver obs,
@@ -261,9 +259,9 @@ public class NCXMaker implements BusListener {
 	 * A list which is empty will be removed before the result is output to file.
 	 */
 	private void prepareCustomNavLists() {
-		Element root = (Element) ncxTemplate.getDocumentElement();
-		for (Iterator it = customNavList.iterator(); it.hasNext(); ) {
-			String elemName = (String) it.next();
+		Element root = ncxTemplate.getDocumentElement();
+		for (Iterator<String> it = customNavList.iterator(); it.hasNext(); ) {
+			String elemName = it.next();
 			Element listHead = ncxTemplate.createElementNS(ncxNamespaceURI, "navList");
 			listHead.setAttribute("class", elemName);
 			listHead.setAttribute("id", navListName(elemName));
@@ -317,12 +315,10 @@ public class NCXMaker implements BusListener {
 	 * 
 	 * @throws XMLStreamException
 	 * @throws TransformerRunException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
 	 * @throws IOException
 	 * @throws TransformerException
 	 */
-	public void makeNCX() throws XMLStreamException, TransformerRunException, ParserConfigurationException, SAXException, IOException, TransformerException {
+	public void makeNCX() throws XMLStreamException, TransformerRunException, IOException, TransformerException {
 		
 		DEBUG(ncxTemplate);
 		//DEBUG("NCXMaker#makeNCX: docElem: " + ncxTemplate.getDocumentElement());
@@ -420,9 +416,9 @@ public class NCXMaker implements BusListener {
 			titleElement.removeAttribute("id");
 			Element text = ncxTemplate.createElementNS(ncxNamespaceURI, "text");
 			titleElement.appendChild(text);
-			Collection titles = (Collection) dcElements.get("dc:Title");
+			Collection<String> titles = (Collection<String>) dcElements.get("dc:Title");
 			String strText = "";
-			for (Iterator tit = titles.iterator(); tit.hasNext();) {
+			for (Iterator<String> tit = titles.iterator(); tit.hasNext();) {
 				strText += " " + tit.next();
 			}
 			text.appendChild(ncxTemplate.createTextNode(strText));
@@ -496,10 +492,10 @@ public class NCXMaker implements BusListener {
 	private void removeEmptyNavPoints() {
 		NodeList emptyNodes = XPathUtils.selectNodes(ncxTemplate.getDocumentElement(), "//ncx:navPoint[@class='empty']", mNsc);
 		for (int i = 0; i < emptyNodes.getLength(); i++) {
-			Vector navPointChildren = getNavPointChildren((Element) emptyNodes.item(i));
+			Vector<Element> navPointChildren = getNavPointChildren((Element) emptyNodes.item(i));
 			Node reference = emptyNodes.item(i);
-			for (Iterator it = navPointChildren.iterator(); it.hasNext(); ) {
-				Node navPoint = (Node) it.next();
+			for (Iterator<Element> it = navPointChildren.iterator(); it.hasNext(); ) {
+				Node navPoint = it.next();
 				reference.getParentNode().insertBefore(navPoint, reference);
 			}
 			reference.getParentNode().removeChild(reference);
@@ -521,8 +517,8 @@ public class NCXMaker implements BusListener {
 	 * <code>navPoint</code>.
 	 * 
 	 */
-	private Vector getNavPointChildren(Element navPoint) {
-		Vector children = new Vector();
+	private Vector<Element> getNavPointChildren(Element navPoint) {
+		Vector<Element> children = new Vector<Element>();
 		NodeList nodes = navPoint.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Element elem = (Element) nodes.item(i);
@@ -540,8 +536,8 @@ public class NCXMaker implements BusListener {
 	 *
 	 */
 	private void removeEmptyLists() {
-		for (Iterator it = customNavList.iterator(); it.hasNext(); ) {
-			String elemName = (String) it.next();
+		for (Iterator<String> it = customNavList.iterator(); it.hasNext(); ) {
+			String elemName = it.next();
 			if (usedCustomNavLists.get(elemName) == null) {
 				Node customNavList =
 					XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:navList[@id='" + navListName(elemName, true) + "']", mNsc);
@@ -571,11 +567,11 @@ public class NCXMaker implements BusListener {
 		if (customTests != null) {
 			Element head = 
 				(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:head", mNsc);
-			for (Iterator it = customTests.iterator(); it.hasNext(); ) {
+			for (Iterator<String> it = customTests.iterator(); it.hasNext(); ) {
 				Element customTest = ncxTemplate.createElementNS(ncxNamespaceURI, "smilCustomTest");
 				customTest.setAttribute("override", "visible");
-				String elemName = (String) it.next();
-				String bookStruct = (String) bookStructs.get(elemName);
+				String elemName = it.next();
+				String bookStruct = bookStructs.get(elemName);
 				if (null != bookStruct) {
 					customTest.setAttribute("bookStruct", bookStruct);
 				}
@@ -633,9 +629,8 @@ public class NCXMaker implements BusListener {
 	 * @param se
 	 * @return a <code>Map</code> containing the smil-attributes of the
 	 * start element <code>se</code> or null of no such attribute exist.
-	 * @throws XMLStreamException
 	 */
-	private Map getSmilContext(StartElement se) throws XMLStreamException {
+	private Map<String,String> getSmilContext(StartElement se) {
 		return getSmilContext(se, null);
 	}
 	
@@ -656,18 +651,17 @@ public class NCXMaker implements BusListener {
 	 * @param se
 	 * @return the <code>Map attributes</code> containing the smil-attributes of the
 	 * start element <code>se</code> or null of no such attribute exist.
-	 * @throws XMLStreamException
 	 */
-	private Map getSmilContext(StartElement se, Map attributes) throws XMLStreamException {
+	private Map<String,String> getSmilContext(StartElement se, Map<String,String> attributes) {
 		if (!hasSmilAttributes(se)) {
 			return null;
 		}
 		
 		if (null == attributes) {
-			attributes = new HashMap();
+			attributes = new HashMap<String,String>();
 		}
 		
-		for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+		for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
 			QName name = at.getName();
 			if (name.getLocalPart().equals(smilClipBegin)) {
@@ -759,7 +753,7 @@ public class NCXMaker implements BusListener {
 	 * @return the text content of the element with smil attributes.
 	 * @throws XMLStreamException
 	 */
-	private String getNextSmilContext(BookmarkedXMLEventReader reader, Map attributes) throws XMLStreamException {
+	private String getNextSmilContext(BookmarkedXMLEventReader reader, Map<String,String> attributes) throws XMLStreamException {
 		String bookmark = "TPB Narrator.NCXMaker.getFirstSmilAttrs";
 		reader.setBookmark(bookmark);
 		
@@ -922,7 +916,7 @@ public class NCXMaker implements BusListener {
 		String bookmark = "TPB Narrator.NCXMaker.createNCXNode";
 		reader.setBookmark(bookmark);
 			
-		Map smilAttrs = new HashMap();
+		Map<String,String> smilAttrs = new HashMap<String,String>();
 		String contentBuffer = "";
 		if (hasSmilAttributes(se)) {
 			smilAttrs = getSmilContext(se);
@@ -941,7 +935,7 @@ public class NCXMaker implements BusListener {
 			return null;
 		}
 			
-		String currentSmilRef = (String) smilAttrs.get(smilRef);
+		String currentSmilRef = smilAttrs.get(smilRef);
 		Document owner = ncxTemplate;
 		Element navNode = owner.createElementNS(ncxNamespaceURI, navNodeName);
 		navNode.setAttribute("class", classAttribute);
@@ -949,7 +943,7 @@ public class NCXMaker implements BusListener {
 		navNode.setAttribute("id", getNextId());
 		
 		Attribute type = null;
-		for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+		for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
 			if ("page".equals(at.getName().getLocalPart())) {
 				type = at;
@@ -965,9 +959,9 @@ public class NCXMaker implements BusListener {
 		Element navLabel = owner.createElementNS(ncxNamespaceURI, "navLabel");
 
 		Element audio = owner.createElementNS(ncxNamespaceURI, "audio");
-		audio.setAttribute(smilSrc, (String) smilAttrs.get(smilSrc));
-		audio.setAttribute(smilClipBegin, (String) smilAttrs.get(smilClipBegin));
-		audio.setAttribute(smilClipEnd, (String) smilAttrs.get(smilClipEnd));
+		audio.setAttribute(smilSrc, smilAttrs.get(smilSrc));
+		audio.setAttribute(smilClipBegin, smilAttrs.get(smilClipBegin));
+		audio.setAttribute(smilClipEnd, smilAttrs.get(smilClipEnd));
 		
 		Element text = owner.createElementNS(ncxNamespaceURI, "text");
 		Node textContent = owner.createTextNode(contentBuffer.toString());
@@ -994,8 +988,8 @@ public class NCXMaker implements BusListener {
 	 * @return the start element without non dtb attributes. 
 	 */
 	private XMLEvent keepDTB(StartElement se) {
-		Collection attributes = new HashSet();
-		for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+		Collection<Attribute> attributes = new HashSet<Attribute>();
+		for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
 			QName name = at.getName();
 			String nsuri = name.getNamespaceURI();
@@ -1004,8 +998,8 @@ public class NCXMaker implements BusListener {
 			}
 		}
 		
-		Collection namespaces = new HashSet();
-		for (Iterator it = se.getNamespaces(); it.hasNext(); ) {
+		Collection<Namespace> namespaces = new HashSet<Namespace>();
+		for (Iterator<?> it = se.getNamespaces(); it.hasNext(); ) {
 			Namespace ns = (Namespace) it.next();
 			
 			if (ns.isDefaultNamespaceDeclaration()) {
@@ -1162,7 +1156,7 @@ public class NCXMaker implements BusListener {
 	 */
 	private void handlePushLevel(String navNodeName) {
 		Element navNode = createNCXNode(navNodeName);
-		Element parent = (Element) openLevels.peek();
+		Element parent = openLevels.peek();
 		parent.appendChild(navNode);
 		openLevels.push(navNode);
 		recordMaxDepth();
@@ -1219,15 +1213,11 @@ public class NCXMaker implements BusListener {
 	 * @param reader a reader for the input document
 	 * @param se the start element representing the start of a navigation node.
 	 * @throws XMLStreamException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws TransformerRunException
 	 */
-	private void handleNavMapElement(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException, ParserConfigurationException, SAXException, IOException, TransformerRunException {
+	private void handleNavMapElement(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {
 		DEBUG("NCXMaker#handleNavMapElement: Creates a heading: (" + se.getName().getLocalPart() + ")");
-		Element navNode = (Element) openLevels.peek();
-		Map attrs = new HashMap();
+		Element navNode = openLevels.peek();
+		Map<String,String> attrs = new HashMap<String,String>();
 		
 		//String textContent = getNextSmilContext(reader, attrs);
 		//mg 20071119: changed the above to the below
@@ -1248,18 +1238,18 @@ public class NCXMaker implements BusListener {
 		
 		navNode.setAttribute("class", se.getName().getLocalPart());
 		navNode.setAttribute("id", getNextId());
-		navNode.setAttribute("playOrder", getStrPlayorder((String) attrs.get(smilRef)));
+		navNode.setAttribute("playOrder", getStrPlayorder(attrs.get(smilRef)));
 		
 		Element audio = getNavNodeAudio(navNode);
-		audio.setAttribute(smilSrc, (String) attrs.get(smilSrc));
-		audio.setAttribute(smilClipBegin, (String) attrs.get(smilClipBegin));
-		audio.setAttribute(smilClipEnd, (String) attrs.get(smilClipEnd));
+		audio.setAttribute(smilSrc, attrs.get(smilSrc));
+		audio.setAttribute(smilClipBegin, attrs.get(smilClipBegin));
+		audio.setAttribute(smilClipEnd, attrs.get(smilClipEnd));
 		
 		Element text = getNavNodeText(navNode);
 		text.appendChild(text.getOwnerDocument().createTextNode(textContent));
 		
 		Element content = getNavNodeContent(navNode);
-		content.setAttribute("src", (String) attrs.get(smilRef));
+		content.setAttribute("src", attrs.get(smilRef));
 	}
 
 	/**
@@ -1277,7 +1267,7 @@ public class NCXMaker implements BusListener {
 			return false;
 		}
 		
-		for (Iterator it = e.asStartElement().getAttributes(); it.hasNext(); ) {
+		for (Iterator<?> it = e.asStartElement().getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
 			if (at.getName().getNamespaceURI().equals(smilNamespaceURI)) {
 				return true;
@@ -1308,15 +1298,14 @@ public class NCXMaker implements BusListener {
 			
 			if (!event.isStartElement()) {
 				continue;
-			} else {
-				elemCount++;
 			}
+			elemCount++;
 			
 			// only start elements come here...
 			String key = null;
 			String value = null;
 			
-			for (Iterator it = event.asStartElement().getAttributes(); it.hasNext(); ) {
+			for (Iterator<?> it = event.asStartElement().getAttributes(); it.hasNext(); ) {
 				Attribute at = (Attribute) it.next();
 					
 				if (at.getName().getLocalPart().equals("name") && at.getValue().startsWith("dc:")) {
@@ -1377,7 +1366,7 @@ public class NCXMaker implements BusListener {
 		textElement.appendChild(parent.getOwnerDocument().createTextNode(textContent));
 		parent.appendChild(textElement);
 		
-		Map attrs = new HashMap();
+		Map<String,String> attrs = new HashMap<String,String>();
 		String begin = null;
 		
 		//begin mg 20071127
@@ -1385,7 +1374,7 @@ public class NCXMaker implements BusListener {
 			if (hasSmilAttributes(currentManuscriptEvent.asStartElement())) {
 				getSmilContext(currentManuscriptEvent.asStartElement(), attrs);
 				attrs.remove("smilref");
-				begin = (String) attrs.remove(smilClipBegin);
+				begin = attrs.remove(smilClipBegin);
 			}
 		}
 		//end mg 20071127
@@ -1406,7 +1395,7 @@ public class NCXMaker implements BusListener {
 				attrs.clear();
 				getSmilContext(event.asStartElement(), attrs);
 				attrs.remove("smilref");
-				String tmp = (String) attrs.remove(smilClipBegin);
+				String tmp = attrs.remove(smilClipBegin);
 				if (null == begin) {
 					begin = tmp;
 				}
@@ -1415,9 +1404,9 @@ public class NCXMaker implements BusListener {
 		
 		Element audio = ncxTemplate.createElementNS(ncxNamespaceURI, "audio");
 		audio.setAttribute(smilClipBegin, begin);
-		for (Iterator it = attrs.keySet().iterator(); it.hasNext(); ) {
+		for (Iterator<?> it = attrs.keySet().iterator(); it.hasNext(); ) {
 			String key = (String) it.next();
-			audio.setAttribute(key, (String) attrs.get(key));
+			audio.setAttribute(key, attrs.get(key));
 		}
 		parent.appendChild(audio);
 		reader.gotoAndRemoveBookmark(bookmark);
@@ -1429,9 +1418,8 @@ public class NCXMaker implements BusListener {
 	 * @param reader a reader for the input document
 	 * @param se the frontmatter start element.
 	 * @throws XMLStreamException
-	 * @throws FileNotFoundException
 	 */
-	private void handleFrontMatter(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException, FileNotFoundException {
+	private void handleFrontMatter(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {
 		String bookmark = "handleFrontMatter";
 		reader.setBookmark(bookmark);
 		
@@ -1498,7 +1486,7 @@ public class NCXMaker implements BusListener {
 	 * @return the next playorder as a String.
 	 */
 	private String getStrPlayorder(String smilref) {
-		String playorder = (String) smilPlayorder.get(smilref);
+		String playorder = smilPlayorder.get(smilref);
 		if (smilref != null && playorder != null) {
 			return playorder;
 		}
@@ -1537,11 +1525,12 @@ public class NCXMaker implements BusListener {
 	 * Debug messages are prefixed with "<tt>DEBUG: </tt>".
 	 * @param se the start element.
 	 */
+	@SuppressWarnings("unused")
 	private void DEBUG(StartElement se) {
 		if (System.getProperty(DEBUG_PROPERTY) != null) {
 			System.out.print("DEBUG: <");
 			System.out.print(se.getName().getLocalPart());
-			for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+			for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
 				Attribute at = (Attribute) it.next();
 				System.out.print(" " + at.getName().getLocalPart() + "=\"" + at.getValue() + "\"");
 			}
@@ -1591,7 +1580,7 @@ public class NCXMaker implements BusListener {
 		}
 	}
 	
-	private void DEBUG(Document d) throws FileNotFoundException {
+	private void DEBUG(Document d) {
 		if (System.getProperty(DEBUG_PROPERTY) != null) {
 			boolean success = false;
 			try {
@@ -1621,7 +1610,7 @@ public class NCXMaker implements BusListener {
 	 * customTest were performed.
 	 * @param bookStructs a mapping from elementnames to bookstructs.
 	 */
-	public void setCustomTests(Set allCustomTests, Map bookStructs) {
+	public void setCustomTests(Set<String> allCustomTests, Map<String,String> bookStructs) {
 		customTests = allCustomTests;
 		this.bookStructs = bookStructs;
 	}

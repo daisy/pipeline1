@@ -4,8 +4,6 @@ import java.lang.reflect.Constructor;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.transform.Source;
-
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
@@ -53,7 +51,7 @@ public class SubTreeHandlerFactory {
 			for (Class<? extends SubTreeHandler> c : registry) {		
 				SubTreeHandler test = c.newInstance();
 				if(test.supportsDivisionStrategy(divider) && test.supportsDocumentType(peek)) {
-					Constructor constr = c.getDeclaredConstructor(new Class[] {XMLSource.class, DivisionStrategy.class});
+					Constructor<?> constr = c.getDeclaredConstructor(new Class[] {XMLSource.class, DivisionStrategy.class});
 					return  (SubTreeHandler) constr.newInstance(new Object[] {doc,divider});
 				}								 			
 			}

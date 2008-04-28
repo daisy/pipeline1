@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.fileset.manipulation.manipulators;
 
 import java.io.File;
@@ -46,10 +44,6 @@ import org.daisy.util.fileset.manipulation.FilesetFileManipulator;
 import org.daisy.util.fileset.manipulation.FilesetManipulationException;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
-import org.daisy.util.xml.peek.PeekResult;
-import org.daisy.util.xml.peek.Peeker;
-import org.daisy.util.xml.peek.PeekerPool;
-import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.pool.StAXOutputFactoryPool;
@@ -79,6 +73,7 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	private Charset mRequestedOutputEncoding = null;
 	private String newLocalName = null;
 		
+	@SuppressWarnings("unused")
 	private boolean mDebugMode = false;
 	private boolean mSeparateWriteAttributes = true;
 	/**
@@ -257,7 +252,7 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 								writeStartElement((StartElement)xe);
 							}	
 							//report the attributes separately in both cases
-							for (Iterator iter = se.getAttributes(); iter.hasNext();) {
+							for (Iterator<?> iter = se.getAttributes(); iter.hasNext();) {
 								Attribute a = (Attribute)iter.next();
 								mContextStack.addEvent(a);
 								writeAttribute(a);							
@@ -377,29 +372,30 @@ public class XMLEventFeeder implements FilesetFileManipulator, XMLReporter {
 	//
 
 	
-	private String getEncoding(FilesetFile inFile) {
-		Peeker peeker = null;
-		try{
-			peeker = PeekerPool.getInstance().acquire();
-			PeekResult result = peeker.peek((File)inFile);
-			String enc = result.getPrologEncoding();
-			return (null!=enc) ? enc : null;		
-		}catch (Exception e) {
-			return null;
-		}finally{
-			try {
-				PeekerPool.getInstance().release(peeker);
-			} catch (PoolException e) {
-				if(mDebugMode) {
-					System.out.println("XMLEventFeeder#getEncoding PoolException: " + e.getMessage());
-				}
-			}
-		}		
-	}
+//	private String getEncoding(FilesetFile inFile) {
+//		Peeker peeker = null;
+//		try{
+//			peeker = PeekerPool.getInstance().acquire();
+//			PeekResult result = peeker.peek((File)inFile);
+//			String enc = result.getPrologEncoding();
+//			return (null!=enc) ? enc : null;		
+//		}catch (Exception e) {
+//			return null;
+//		}finally{
+//			try {
+//				PeekerPool.getInstance().release(peeker);
+//			} catch (PoolException e) {
+//				if(mDebugMode) {
+//					System.out.println("XMLEventFeeder#getEncoding PoolException: " + e.getMessage());
+//				}
+//			}
+//		}		
+//	}
 	
 	/**
 	 * The XMLReporter interface implementation
 	 */
+	@SuppressWarnings("unused")
 	public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
 		  //TODO use builder
 		  String report = ""; 

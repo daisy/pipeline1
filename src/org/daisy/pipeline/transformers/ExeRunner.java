@@ -71,14 +71,14 @@ public class ExeRunner extends Transformer {
         super(inListener, interactive);
     }
     
-    protected boolean execute(Map parameters) throws TransformerRunException {
+    protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
         // Read parameters
-        String commandPattern = (String)parameters.remove("exe_command");
-        String workDir = (String)parameters.remove("exe_workdir");
-        String stdout = (String)parameters.remove("exe_stdout");
-        String stderr = (String)parameters.remove("exe_stderr");
-        String timeout = (String)parameters.remove("exe_timeout");
-        String successRegex = (String)parameters.remove("exe_success_regex");
+        String commandPattern = parameters.remove("exe_command");
+        String workDir = parameters.remove("exe_workdir");
+        String stdout = parameters.remove("exe_stdout");
+        String stderr = parameters.remove("exe_stderr");
+        String timeout = parameters.remove("exe_timeout");
+        String successRegex = parameters.remove("exe_success_regex");
         
         // Compile successRegex pattern
         Pattern success = null;
@@ -146,7 +146,7 @@ public class ExeRunner extends Transformer {
         return success.matcher(String.valueOf(exitVal)).matches();
     }
 
-    private String expandCommandPattern(String commandPattern, Map parameters) throws TransformerRunException {
+    private String expandCommandPattern(String commandPattern, Map<String,String> parameters) throws TransformerRunException {
         if (commandPattern == null) {
             return "";
         }
@@ -154,7 +154,7 @@ public class ExeRunner extends Transformer {
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
             String variable = matcher.group(1);
-            String value = (String)parameters.get(variable);
+            String value = parameters.get(variable);
             if (value == null) {
                 throw new TransformerRunException(i18n("UNRECOGIZED_COMMAD_PATTERN_VARIABLE", variable));
             }

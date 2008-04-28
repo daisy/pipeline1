@@ -1,9 +1,25 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.dtb.ncxonly.model.write.opf;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,12 +41,11 @@ import org.daisy.util.dtb.ncxonly.model.write.ncx.NCXBuilder;
 import org.daisy.util.dtb.ncxonly.model.write.smil.SMILBuilder;
 import org.daisy.util.dtb.ncxonly.model.write.smil.SMILFile;
 import org.daisy.util.dtb.resource.ResourceFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.mime.MIMEConstants;
 import org.daisy.util.xml.IDGenerator;
 import org.daisy.util.xml.Namespaces;
-import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 
 /**
@@ -45,17 +60,17 @@ public class OPFBuilder {
 	private XMLEvent nl = null;
 	private XMLEvent tab = null;
 	private XMLEvent tab2 = null;
-	private XMLEvent tab3 = null;
+	//private XMLEvent tab3 = null;
 	private Namespace opfNamespace = null;
 	private Namespace dcNamespace = null;
-	private EFolder mDestinationDirectory = null;
+	private Directory mDestinationDirectory = null;
 	
 	
-	public OPFBuilder(Model model, SMILBuilder smilBuilder, NCXBuilder ncxBuilder, EFolder dest, XMLOutputFactory xof, XMLEventFactory xef) throws XMLStreamException, FileNotFoundException {
+	public OPFBuilder(Model model, SMILBuilder smilBuilder, NCXBuilder ncxBuilder, Directory dest, XMLOutputFactory xof, XMLEventFactory xef) throws XMLStreamException, FileNotFoundException {
 		nl = xef.createCharacters(LINEBREAK);
 		tab = xef.createCharacters(TAB);
 		tab2 = xef.createCharacters(TAB+TAB);
-		tab3 = xef.createCharacters(TAB+TAB+TAB);
+		//tab3 = xef.createCharacters(TAB+TAB+TAB);
 		opfNamespace = xef.createNamespace(Namespaces.OPF_10_NS_URI);
 		dcNamespace = xef.createNamespace(Namespaces.DUBLIN_CORE_NS_URI);
 		mDestinationDirectory = dest;

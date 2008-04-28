@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_mixedContentNormalizer.dom;
 
 import int_daisy_mixedContentNormalizer.AbstractNormalizer;
@@ -20,7 +37,6 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.i18n.CharUtils;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,7 +57,7 @@ public class DOMNormalizer extends AbstractNormalizer {
 	private Map<String, Element> mWrapperElementCache = null;
 	
 	
-	public DOMNormalizer(TransformerDelegateListener transformer, DOMConfig dnc) throws TransformerRunException{
+	public DOMNormalizer(TransformerDelegateListener transformer, DOMConfig dnc){
 		super(transformer);
 		mConfig = dnc;
 		mWrapperElementCache = new HashMap<String, Element>(); 
@@ -215,13 +231,14 @@ public class DOMNormalizer extends AbstractNormalizer {
 			//add a new text node outside wrapper, given direction
 			Node newTextNode = textNode.getOwnerDocument().createTextNode(movedChars.toString());
 			Element wrapper = (Element)textNode.getParentNode();
+			@SuppressWarnings("unused")
 			Node inserted = null;
 			if(dir==Direction.BEFORE) {
 				inserted = wrapper.getParentNode().insertBefore(newTextNode, wrapper);				
 			}else{
 				Node wrappersNextSibling = wrapper.getNextSibling();
 				if(wrappersNextSibling!=null) {
-					inserted = wrapper.getParentNode().insertBefore(newTextNode, wrappersNextSibling);
+					wrapper.getParentNode().insertBefore(newTextNode, wrappersNextSibling);
 				}else{
 					inserted = wrapper.getParentNode().appendChild(newTextNode);
 				}
@@ -332,7 +349,7 @@ public class DOMNormalizer extends AbstractNormalizer {
 			newElem = source.getOwnerDocument().createElementNS(
 				wrapperSource.getName().getNamespaceURI(), 
 				wrapperSource.getName().getLocalPart());			
-			for (Iterator iter = wrapperSource.getAttributes(); iter.hasNext();) {
+			for (Iterator<?> iter = wrapperSource.getAttributes(); iter.hasNext();) {
 				Attribute a = (Attribute) iter.next();
 				newElem.setAttribute(a.getName().getLocalPart(), a.getValue());
 			}
@@ -358,15 +375,15 @@ public class DOMNormalizer extends AbstractNormalizer {
 		}		
 	}
 	
-	/**
-	 * Return a wrapper parent of inparam wrapper, or null if one does not exist
-	 */
-	private Element hasWrapperAncestor(Element wrapper) {		
-		Node parent = wrapper.getParentNode();		
-		if(parent==null || parent.getNodeType()!= Node.ELEMENT_NODE) return null;
-		if(((Element)parent).getUserData("isWrapper")!=null) return (Element)parent;
-		return hasWrapperAncestor((Element)parent);
-	}
+//	/**
+//	 * Return a wrapper parent of inparam wrapper, or null if one does not exist
+//	 */
+//	private Element hasWrapperAncestor(Element wrapper) {		
+//		Node parent = wrapper.getParentNode();		
+//		if(parent==null || parent.getNodeType()!= Node.ELEMENT_NODE) return null;
+//		if(((Element)parent).getUserData("isWrapper")!=null) return (Element)parent;
+//		return hasWrapperAncestor((Element)parent);
+//	}
 	
 	/**
 	 * Retrieve the number of elements in input document after normalization has been completed.

@@ -1,22 +1,20 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-package int_daisy_unicodeNormalizer;
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */package int_daisy_unicodeNormalizer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,7 +42,7 @@ import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.Fileset;
@@ -86,8 +84,8 @@ import com.ibm.icu.text.Normalizer;
 public class UCNormalizer extends Transformer implements FilesetErrorHandler {
 	private EFile mInputManifest = null;
 	private Fileset mInputFileset = null;	
-	private EFolder mOutputDir;
-	private EFolder mInputDir;
+	private Directory mOutputDir;
+	private Directory mInputDir;
 	
 	private Normalizer.Mode mode = null; 
 	private boolean textnodesOnly = false; 
@@ -115,12 +113,12 @@ public class UCNormalizer extends Transformer implements FilesetErrorHandler {
 			/*
 			 * Set input dir
 			 */						
-			mInputDir = new EFolder(mInputFileset.getManifestMember().getFile().getParentFile());
+			mInputDir = new Directory(mInputFileset.getManifestMember().getFile().getParentFile());
 			
 			/*
 			 * Set output directory
 			 */
-			mOutputDir = (EFolder)FileUtils.createDirectory(new EFolder((String)parameters.remove("output")));
+			mOutputDir = (Directory)FileUtils.createDirectory(new Directory((String)parameters.remove("output")));
 			
 			/*
 			 * Set normalization form
@@ -278,7 +276,7 @@ public class UCNormalizer extends Transformer implements FilesetErrorHandler {
 			if(relative.toString().startsWith("..")) 
 				throw new IOException("fileset member "+file.getName()+" " +
 						"does not live in a sibling or descendant folder of manifest member");
-			EFolder subdir = new EFolder(mOutputDir,relative.getPath());
+			Directory subdir = new Directory(mOutputDir,relative.getPath());
 			FileUtils.createDirectory(subdir);
 			return new File(subdir, file.getName());			
 		}

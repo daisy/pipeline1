@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.xml.peek;
 
 import java.util.HashMap;
@@ -24,14 +41,14 @@ public class PeekResult {
     private boolean mPrologIsStandalone = false;		//standalone property
     private String mRootElementNsUri = null;			//ns uri of root element, may remain null    
     private String mRootElementLocalName = null;     	//localname of root element
-    private Map mRootElementPrefixMappings = null;   	//Map<nsuri, prefix> stores all calls to ContentHandler.startPrefixMapping
+    private Map<String,String> mRootElementPrefixMappings = null;   	//Map<nsuri, prefix> stores all calls to ContentHandler.startPrefixMapping
     private Attributes mRootElementAttributes = null;	//may remain null if no attrs on root
-    private Set mXSISchemaLocationURIs = null;			
+    private Set<String> mXSISchemaLocationURIs = null;			
     
 	
 	/*package*/ PeekResult(String systemId) {
 		this.mInputSourceSystemId = systemId;
-		this.mRootElementPrefixMappings = new HashMap();
+		this.mRootElementPrefixMappings = new HashMap<String,String>();
 	}
 
 	void addPrefixMapping(String prefix, String uri) {
@@ -42,7 +59,7 @@ public class PeekResult {
 	 * @return a Map &lt;nsuri, prefix&gt; of all namespace declarations occuring on the root element.
 	 * A default namespace will have the prefix \"\", ie the empty string.
 	 */
-	public Map getRootElementPrefixMappings() {
+	public Map<String,String> getRootElementPrefixMappings() {
 		return this.mRootElementPrefixMappings;
 	}
 	
@@ -145,7 +162,7 @@ public class PeekResult {
 	public String getRootElementPrefix() {		
 		if(null != this.mRootElementNsUri) {
 			//return a 0-n length string
-			return (String)this.mRootElementPrefixMappings.get(this.mRootElementNsUri);
+			return this.mRootElementPrefixMappings.get(this.mRootElementNsUri);
 		}
 		return null; //no namespace binding
 	}
@@ -181,11 +198,11 @@ public class PeekResult {
 	/**
 	 * @return any XSI schema location URIs that were namedropped on root.
 	 */
-	public Set getXSISchemaLocationURIs() {
+	public Set<String> getXSISchemaLocationURIs() {
 		return mXSISchemaLocationURIs;
 	}
 
-	void setXSISchemaLocationURIs(Set schemaLocationURIs) {
+	void setXSISchemaLocationURIs(Set<String> schemaLocationURIs) {
 		mXSISchemaLocationURIs = schemaLocationURIs;
 	}
 }

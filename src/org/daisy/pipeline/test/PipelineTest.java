@@ -3,14 +3,14 @@ package org.daisy.pipeline.test;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 public abstract class PipelineTest {
 	protected String mDataInputDir = null;
 	protected String mDataOutputDir = null;
 	protected List<String> mParameters = null;
 	
-	public PipelineTest(EFolder dataInputDir, EFolder dataOutputDir) {
+	public PipelineTest(Directory dataInputDir, Directory dataOutputDir) {
 		mDataInputDir = dataInputDir.getAbsolutePath();
 		mDataOutputDir = dataOutputDir.getAbsolutePath();
 		mParameters= new LinkedList<String>();

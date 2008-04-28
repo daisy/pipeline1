@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.dtb.meta;
 
 import java.io.File;
@@ -103,7 +120,7 @@ public class MetadataList extends LinkedList<MetadataItem> {
 	 * Serialize this list as an XML document.
 	 */
 	public void serialize(File destination) throws XMLStreamException, IOException {
-		Map xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
+		Map<String,Object> xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
 		XMLOutputFactory xof = null;
 		XMLEventFactory xef = null;
 		try{
@@ -127,7 +144,7 @@ public class MetadataList extends LinkedList<MetadataItem> {
 	 */
 
 	public static MetadataList deserialize(URL source) throws XMLStreamException, IOException {
-		Map xifProperties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(Boolean.FALSE);
+		Map<String,Object> xifProperties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(Boolean.FALSE);
 		XMLInputFactory xif = null;
 		XMLEventFactory xef = null;
 		MetadataList ret = new MetadataList();
@@ -148,7 +165,7 @@ public class MetadataList extends LinkedList<MetadataItem> {
 					if(!isRootElement) {
 						isMetaElementOpen = true;
 						m = new MetadataItem(se.getName());
-						for (Iterator iter = se.getAttributes(); iter.hasNext();) {
+						for (Iterator<?> iter = se.getAttributes(); iter.hasNext();) {
 							m.addAttribute((Attribute) iter.next());							
 						}
 					}else {

@@ -22,9 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-
-import se_tpb_speechgen2.audio.AudioFiles;
 import se_tpb_speechgen2.tts.TTSException;
 import se_tpb_speechgen2.tts.adapters.AbstractTTSAdapter;
 import se_tpb_speechgen2.tts.util.TTSUtils;
@@ -43,6 +40,7 @@ public class MacSayTTS extends AbstractTTSAdapter {
 		super(ttsUtils, params);
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void read(String line, File destination) throws IOException, TTSException {
 		String destName = destination.getAbsolutePath();

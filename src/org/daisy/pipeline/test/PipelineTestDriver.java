@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 import javax.xml.stream.Location;
 
-import org.daisy.pipeline.core.DMFCCore;
+import org.daisy.pipeline.core.PipelineCore;
 import org.daisy.pipeline.core.event.BusListener;
 import org.daisy.pipeline.core.event.CoreMessageEvent;
 import org.daisy.pipeline.core.event.EventBus;
@@ -32,10 +32,9 @@ import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.core.script.ScriptParameter;
 import org.daisy.pipeline.core.script.Task;
 import org.daisy.pipeline.exception.DMFCConfigurationException;
-import org.daisy.pipeline.test.impl.FilesetGenerator1;
-import org.daisy.pipeline.test.impl.FilesetGenerator2;
+import org.daisy.pipeline.test.impl.DTBMigratorBackward1;
 import org.daisy.pipeline.ui.CommandLineUI;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.i18n.XMLProperties;
 import org.daisy.util.xml.stax.ExtendedLocationImpl;
@@ -46,13 +45,13 @@ import org.daisy.util.xml.stax.ExtendedLocationImpl;
  */
 public class PipelineTestDriver implements BusListener {
 
-	static EFolder inputDir = null;
-	static EFolder outputDir = null;
+	static Directory inputDir = null;
+	static Directory outputDir = null;
 	
 	@SuppressWarnings("unchecked")
-	public PipelineTestDriver(EFolder samplesDirectory, EFolder scriptsDirectory) throws Exception {
-		inputDir = new EFolder(samplesDirectory, "input");
-		outputDir = new EFolder(samplesDirectory, "output");
+	public PipelineTestDriver(Directory samplesDirectory, Directory scriptsDirectory) throws Exception {
+		inputDir = new Directory(samplesDirectory, "input");
+		outputDir = new Directory(samplesDirectory, "output");
 		FileUtils.createDirectory(outputDir);
 		
 		assert(scriptsDirectory.exists() && samplesDirectory.exists() && outputDir.exists() && inputDir.exists());
@@ -104,7 +103,7 @@ public class PipelineTestDriver implements BusListener {
 					try{
 						System.out.println("Test " + test.getClass().getName() +": " + test.getResultDescription());	
 													            
-			            DMFCCore dmfc = new DMFCCore(null, findHomeDirectory(),properties);
+			            PipelineCore dmfc = new PipelineCore(null, findHomeDirectory(),properties);
 			            Script script = dmfc.newScript(scriptFile.toURI().toURL());
 			            Job job = new Job(script);
 						
@@ -168,7 +167,14 @@ public class PipelineTestDriver implements BusListener {
 				System.out.println("The following " + failedTests.size() + " tests failed (the driver caught an exception while invoking them))");
 				for(FailedTest t : failedTests) {
 					System.out.println(t.mTest.getClass().getSimpleName() + ": using script " + t.mScript.getName());
-					System.out.println("Exception: " + t.mException.getMessage() + "[" + t.mException.getCause().getClass().getSimpleName() + "]");
+					if(t.mException!=null) {
+						if(t.mException.getCause() !=null) {
+							System.out.println("Exception: " + t.mException.getMessage() + "[" + t.mException.getCause().getClass().getSimpleName() + "]");
+						}else{
+							System.out.println("Exception: " + t.mException.getMessage() + "[cause is null]");
+						}
+					}
+					
 					System.err.println();
 				}
 			}else{
@@ -199,8 +205,8 @@ public class PipelineTestDriver implements BusListener {
 	 */
 	public static void main(String[] args) throws Exception {
 				
-		EFolder samplesDirectory = new EFolder(args[0]);		
-		EFolder scriptsDirectory = new EFolder(args[1]);		
+		Directory samplesDirectory = new Directory(args[0]);		
+		Directory scriptsDirectory = new Directory(args[1]);		
 		
 		new PipelineTestDriver(samplesDirectory,scriptsDirectory);
 		
@@ -220,12 +226,17 @@ public class PipelineTestDriver implements BusListener {
 		/*
 		 * Tests with input data in samples dir.
 		 * To run a complete Pipeline testrun, 
-		 * decomment all lines below
+		 * decomment all lines below.
+		 * 
+		 * Note - some of these tests does generated invalid output.
+		 * When this is expected a comment is/should be printed as the
+		 * first line.
 		 */
 		
+			
 //		tests.add(new OpsCreator1(inputDir, outputDir));
 //		tests.add(new OpsCreator2(inputDir, outputDir)); 
-//		tests.add(new OpsCreator3(inputDir, outputDir)); // (input is XHTML 1.0 and epubcheck crashes)
+//////	tests.add(new OpsCreator3(inputDir, outputDir));   // (input is XHTML 1.0 and epubcheck crashes)
 //		tests.add(new OpsCreator4(inputDir, outputDir));			 
 //		tests.add(new OcfCreator1(inputDir, outputDir));			
 //		tests.add(new WordML2DTBook1(inputDir, outputDir));
@@ -233,13 +244,13 @@ public class PipelineTestDriver implements BusListener {
 //		tests.add(new WordML2DTBook3(inputDir, outputDir));
 //		tests.add(new WordML2Xhtml1(inputDir, outputDir));		
 //		tests.add(new WordML2Xhtml2(inputDir, outputDir));
-//		tests.add(new Odf2dtbook1(inputDir, outputDir));
-//		tests.add(new Odf2xhtml1(inputDir, outputDir));
+		
 //		tests.add(new Narrator1(inputDir, outputDir));
 //		tests.add(new Narrator2(inputDir, outputDir));
 //		tests.add(new Narrator3(inputDir, outputDir));
 //		tests.add(new Narrator4(inputDir, outputDir));
-
+//		tests.add(new MultiFormatMedia1(inputDir, outputDir));
+		
 //		tests.add(new NarratorSADX_AnotherBulletList(inputDir, outputDir));
 //		tests.add(new NarratorSADX_BulletList(inputDir, outputDir));
 //		tests.add(new NarratorSADX_EmptyHeading(inputDir, outputDir));
@@ -285,22 +296,20 @@ public class PipelineTestDriver implements BusListener {
 //		tests.add(new DTBook2Xhtml2MathML(inputDir, outputDir));
 //		tests.add(new MixedContentNormalizer1(inputDir, outputDir));
 //		tests.add(new DTBookFix1(inputDir, outputDir));		
-//		tests.add(new DTBookFix2(inputDir, outputDir));
+//		tests.add(new DTBookFix2(inputDir, outputDir));		
 //		tests.add(new DTBookMigrator1(inputDir, outputDir));
 //		tests.add(new DTBookMigrator2(inputDir, outputDir));
-//		tests.add(new DTBookMigrator3(inputDir, outputDir));
+//		tests.add(new DTBookMigrator3(inputDir, outputDir));		
 //		tests.add(new Html2Xhtml1(inputDir, outputDir));
 //		tests.add(new DTBSplitter1(inputDir, outputDir));
 //		tests.add(new FilesetRenamer1(inputDir, outputDir));		
-//		tests.add(new RenamerTaggerValidator1(inputDir, outputDir));				
-//		tests.add(new Daisy202ToZ398620051(inputDir, outputDir));				
-//		tests.add(new MultiFormatMedia1(inputDir, outputDir));
+//		tests.add(new RenamerTaggerValidator1(inputDir, outputDir));						
 //		tests.add(new NccNcxOnly1(inputDir, outputDir));
 //		tests.add(new DTBMigratorForward1(inputDir, outputDir));		
-//		tests.add(new DTBMigratorBackward1(inputDir, outputDir));
+		tests.add(new DTBMigratorBackward1(inputDir, outputDir));
 //		tests.add(new XukCreator1(inputDir, outputDir));
-		tests.add(new FilesetGenerator1(inputDir, outputDir));
-		tests.add(new FilesetGenerator2(inputDir, outputDir));		
+//		tests.add(new FilesetGenerator1(inputDir, outputDir));
+//		tests.add(new FilesetGenerator2(inputDir, outputDir));		
 
 		/*
 		 * End Tests with input data in samples dir
@@ -325,6 +334,18 @@ public class PipelineTestDriver implements BusListener {
 
 		/*
 		 * End Tests with input data not in samples dir:
+		 */
+		
+		/*
+		 * Tests for deprecated transformers/scripts
+		 */					
+		
+//		tests.add(new Odf2dtbook1(inputDir, outputDir));
+//		tests.add(new Odf2xhtml1(inputDir, outputDir));
+//		tests.add(new Daisy202ToZ398620051(inputDir, outputDir));				
+
+		/*
+		 * End Tests for deprecated transformers/scripts
 		 */
 		
 		return tests;
@@ -441,10 +462,11 @@ public class PipelineTestDriver implements BusListener {
                     Job job = (Job) sce.getSource();
                     name = job.getScript().getNicename();
                 } else if (event instanceof TaskStateChangeEvent) {
-                	return; //reduce clutter in testdriver output
-//                    type = "Transformer";
-//                    Task task = (Task) sce.getSource();
-//                    name = task.getTransformerInfo().getNiceName();
+                	//return; //reduce clutter in testdriver output
+                	if(state.equals("stopped")) return;
+                    type = "Transformer";
+                    Task task = (Task) sce.getSource();
+                    name = task.getTransformerInfo().getNiceName();
                 } else {
                     System.err.println(event.getClass().getSimpleName());
                 }
@@ -468,7 +490,7 @@ public class PipelineTestDriver implements BusListener {
      * @throws DMFCConfigurationException
      */
     private static File findHomeDirectory() throws DMFCConfigurationException {
-        URL propertiesURL = DMFCCore.class.getClassLoader().getResource(
+        URL propertiesURL = PipelineCore.class.getClassLoader().getResource(
                 "pipeline.properties");
         File propertiesFile = null;
         try {
@@ -478,12 +500,12 @@ public class PipelineTestDriver implements BusListener {
         }
         // Is this the home dir?
         File folder = propertiesFile.getParentFile();
-        if (DMFCCore.testHomeDirectory(folder)) {
+        if (PipelineCore.testHomeDirectory(folder)) {
             return folder;
         }
         // Test parent
         folder = folder.getParentFile();
-        if (DMFCCore.testHomeDirectory(folder)) {
+        if (PipelineCore.testHomeDirectory(folder)) {
             return folder;
         }
         throw new DMFCConfigurationException(

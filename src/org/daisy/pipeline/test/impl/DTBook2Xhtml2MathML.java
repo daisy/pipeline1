@@ -3,11 +3,11 @@ package org.daisy.pipeline.test.impl;
 import java.util.List;
 
 import org.daisy.pipeline.test.PipelineTest;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 public class DTBook2Xhtml2MathML extends PipelineTest {
 
-	public DTBook2Xhtml2MathML(EFolder dataInputDir, EFolder dataOutputDir) {
+	public DTBook2Xhtml2MathML(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	

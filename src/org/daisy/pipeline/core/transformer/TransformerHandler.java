@@ -1,5 +1,5 @@
 /*
- * DMFC - The DAISY Multi Format Converter Copyright (C) 2005 Daisy Consortium
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -83,16 +83,16 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
     private String mNiceName;
     private String mDescription;
     private String mClassname;
-    private Set mJars = new HashSet();
-    private Vector mParameters = new Vector();
+    private Set<String> mJars = new HashSet<String>();
+    private Vector<Parameter> mParameters = new Vector<Parameter>();
     private boolean mPlatformSupported = true;
-    private File mHomeDir = null;
-    private String mVersion = null;
+//    private File mHomeDir = null;
+//    private String mVersion = null;
     private I18n mInternationalization;
     private InputListener mInputListener;
     private DirClassLoader mTransformerClassLoader;
-    private Class mTransformerClass;
-    private Constructor mTransformerConstructor;
+    private Class<?> mTransformerClass;
+    private Constructor<?> mTransformerConstructor;
     private File mTransformerDirectory;
     private boolean mLoadedFromJar = false;
     private static Map<String,Object> xifProperties = null;
@@ -115,7 +115,7 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
         mInternationalization = new I18n();
         mInputListener = inListener;
         mTransformerDirectory = tdfFile.getParentFile();
-        mHomeDir = transformersDir.getParentFile();
+//        mHomeDir = transformersDir.getParentFile();
 
         /*
          * If any validation or dependency check fails, disable this Transformer
@@ -260,7 +260,7 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
      * @return <code>true</code> if the run was successful, <code>false</code>
      *         otherwise
      */
-    public boolean run(Map runParameters, boolean interactive, Task task) throws TransformerRunException {
+    public boolean run(Map<String,String> runParameters, boolean interactive, Task task) throws TransformerRunException {
         Transformer transformer = null;
         try {
             transformer = createTransformerObject(interactive, task);
@@ -300,8 +300,8 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
         dir = dir.getParentFile();
         mTransformerClassLoader = new DirClassLoader(transformersDir, transformersDir);
         
-        for (Iterator it = mJars.iterator(); it.hasNext();) {
-            String jar = (String) it.next();
+        for (Iterator<String> it = mJars.iterator(); it.hasNext();) {
+            String jar = it.next();
             mTransformerClassLoader.addJar(new File(dir, jar));
         }
         
@@ -363,7 +363,7 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
             params.add(Boolean.valueOf(interactive));
         } else {
             params.add(mInputListener);
-            params.add(new HashSet()); // this is the dummy no longer used but
+            params.add(new HashSet<Object>()); // this is the dummy no longer used but
                                         // kept for Transformer backwards
                                         // compatibility
             params.add(Boolean.valueOf(interactive));
@@ -431,8 +431,8 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
                 String seName = se.getName().getLocalPart();
                 if (seName.equals("transformer")) {
                     current = "transformer";
-                    Attribute att = se.getAttributeByName(new QName("version"));
-                    mVersion = att.getValue();
+//                    Attribute att = se.getAttributeByName(new QName("version"));
+//                    mVersion = att.getValue();
                 } else if (seName.equals("name")) {
                     current = "name";
                 } else if (seName.equals("description")) {
@@ -488,11 +488,11 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
          * mg20070327: first we check for the 'new' constructor that doesnt take
          * the deprecated set of EventListener
          */
-        Class[] params = { InputListener.class, Boolean.class };
+        Class<?>[] params = { InputListener.class, Boolean.class };
         try {
             mTransformerConstructor = mTransformerClass.getConstructor(params);
         } catch (NoSuchMethodException nsme) {
-            Class[] params2 = { InputListener.class, Set.class, Boolean.class };
+            Class<?>[] params2 = { InputListener.class, Set.class, Boolean.class };
             mTransformerConstructor = mTransformerClass.getConstructor(params2);
         }
 
@@ -553,7 +553,7 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
     /**
      * Gets a collection of the parameters of the Transformer. 
      */
-    public Collection getParameters() {
+    public Collection<Parameter> getParameters() {
         return mParameters;
     }
 
@@ -695,8 +695,8 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
     }
 
     public String getParameterType(String parameterName) {
-        for (Iterator it = mParameters.iterator(); it.hasNext();) {
-            Parameter param = (Parameter) it.next();
+        for (Iterator<Parameter> it = mParameters.iterator(); it.hasNext();) {
+            Parameter param = it.next();
             if (parameterName.equals(param.getName())) {
                 return param.getType();
             }
@@ -732,7 +732,8 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
      * 
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
-    public void error(SAXParseException e) throws SAXException {
+    @SuppressWarnings("unused")
+	public void error(SAXParseException e) throws SAXException {
         saxWarn(e);
         mValidationError = true;
     }
@@ -742,7 +743,8 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
      * 
      * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
      */
-    public void fatalError(SAXParseException e) throws SAXException {
+    @SuppressWarnings("unused")
+	public void fatalError(SAXParseException e) throws SAXException {
         saxWarn(e);
         mValidationError  = true;
     }
@@ -752,7 +754,8 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
      * 
      * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
      */
-    public void warning(SAXParseException e) throws SAXException {
+    @SuppressWarnings("unused")
+	public void warning(SAXParseException e) throws SAXException {
     	if(!e.getMessage().contains("XSLT 1.0")) {
     		//temp hack to avoid saxon 8 version warning messages
     		saxWarn(e);

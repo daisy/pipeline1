@@ -1,22 +1,20 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package se_tpb_filesetcreator;
 
 import java.io.File;
@@ -73,8 +71,8 @@ public class FileSetCreator extends Transformer {
 	
 	private Map<String, String> mimeTypes = new HashMap<String, String>();		// file name suffixes -> mime types
 
-	public FileSetCreator(InputListener inputListener, Set eventListeners, Boolean bool) {
-		super(inputListener, eventListeners, bool);
+	public FileSetCreator(InputListener inputListener, Boolean bool) {
+		super(inputListener, bool);
 	}
 	
 	/* (non-Javadoc)
@@ -85,16 +83,16 @@ public class FileSetCreator extends Transformer {
 	 * @param parameters the parameters supplied to this transformer
 	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
 	 */
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		
-		String outputDirectory = (String) parameters.remove("outputDirectory");
-		String manuscriptFilename = (String) parameters.remove("manuscriptFilename");
-		String outputDTBFilename = (String) parameters.remove("outputDTBFilename");
-		String resourceFilename = (String) parameters.remove("resourceFilename");
-		String smilTemplateFilename = (String) parameters.remove("smilTemplateFilename");
-		String ncxTemplateFilename = (String) parameters.remove("ncxTemplateFilename");
-		String opfTemplateFilename = (String) parameters.remove("opfTemplateFilename");
-		String fscConfigFilename = (String) parameters.remove("fscConfigFilename");
+		String outputDirectory = parameters.remove("outputDirectory");
+		String manuscriptFilename = parameters.remove("manuscriptFilename");
+		String outputDTBFilename = parameters.remove("outputDTBFilename");
+		String resourceFilename = parameters.remove("resourceFilename");
+		String smilTemplateFilename = parameters.remove("smilTemplateFilename");
+		String ncxTemplateFilename = parameters.remove("ncxTemplateFilename");
+		String opfTemplateFilename = parameters.remove("opfTemplateFilename");
+		String fscConfigFilename = parameters.remove("fscConfigFilename");
 		
 		File outputDir = new File(outputDirectory);
 		if (!outputDir.exists()) {
@@ -435,9 +433,9 @@ public class FileSetCreator extends Transformer {
 	 */
 	private boolean containsMimeType(Set<String> filenames, Map<String, String> mimetypes, String prefix) {
 		for (Iterator<String> it = filenames.iterator(); it.hasNext(); ) {
-			String filename = (String) it.next();
+			String filename = it.next();
 			String suffix = filename.substring(filename.lastIndexOf('.'));
-			String mime = (String) mimetypes.get(suffix);
+			String mime = mimetypes.get(suffix);
 			if (null == mime) {
 				continue;
 			}

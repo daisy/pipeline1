@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_dtbSplitterMerger.split;
 
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.daisy.pipeline.core.InputListener;
@@ -61,25 +59,25 @@ public class DtbSplitterTransformer extends Transformer implements DtbTransforma
 	 * @param eventListeners
 	 * @param isInteractive
 	 */
-	public DtbSplitterTransformer(InputListener inListener, Set eventListeners,
-			Boolean isInteractive) {
-		super(inListener, eventListeners, isInteractive);
+	public DtbSplitterTransformer(InputListener inListener, Boolean isInteractive) {
+		super(inListener, isInteractive);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
 	 */
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		//obligatory params
-		String inparamFilePath = (String)parameters.remove("inputFilePath");
-        String inparamOutDirPath = (String)parameters.remove("outDirPath");
-        String inparamVolumeSizeInMB = (String)parameters.remove("volumeSizeInMB");
+		String inparamFilePath = parameters.remove("inputFilePath");
+        String inparamOutDirPath = parameters.remove("outDirPath");
+        String inparamVolumeSizeInMB = parameters.remove("volumeSizeInMB");
 //      optional params
-        String inparamUserPrompt = (String)parameters.remove("userPrompt");
-        String inparamKeepInput = (String)parameters.remove("keepInput");
-        String inparamMaxSplitLevel = (String)parameters.remove("maxSplitLevel");
-        String inparamPromptFilesManifestPath = (String)parameters.remove("promptFilesManifestPath");
-        String inparamAlwaysIdSubdir = (String)parameters.remove("alwaysIdSubdir");
+        String inparamUserPrompt = parameters.remove("userPrompt");
+        String inparamKeepInput = parameters.remove("keepInput");
+        String inparamMaxSplitLevel = parameters.remove("maxSplitLevel");
+        String inparamPromptFilesManifestPath = parameters.remove("promptFilesManifestPath");
+        String inparamAlwaysIdSubdir = parameters.remove("alwaysIdSubdir");
 		
         //check input file path
         File inputFile = new File(inparamFilePath);
@@ -121,11 +119,11 @@ public class DtbSplitterTransformer extends Transformer implements DtbTransforma
                 	outDir = new File(outDir, identifier);
                 }
                 DtbVolume outVolume = new DtbVolume(outDir,this);
-                Collection inputFileset = new ArrayList();
-                Collection filesetFiles = fs.getLocalMembers();
-                Iterator i = filesetFiles.iterator();
+                Collection<File> inputFileset = new ArrayList<File>();
+                Collection<FilesetFile> filesetFiles = fs.getLocalMembers();
+                Iterator<FilesetFile> i = filesetFiles.iterator();
                 while(i.hasNext()){
-                    File f = ((FilesetFile)i.next()).getFile();
+                    File f = (i.next()).getFile();
                     inputFileset.add(f);
                 }
                 try {
@@ -186,7 +184,7 @@ public class DtbSplitterTransformer extends Transformer implements DtbTransforma
         boolean throwExceptionOnError = true;
         boolean dtdValidate = true;
         try {
-            fs = (Fileset)new FilesetImpl(new File(inparamFilePath).toURI(),new DefaultFilesetErrorHandlerImpl(throwExceptionOnError),dtdValidate);
+            fs = new FilesetImpl(new File(inparamFilePath).toURI(),new DefaultFilesetErrorHandlerImpl(throwExceptionOnError),dtdValidate);
         } catch (FilesetFatalException e) {
             throw new TransformerRunException(super.i18n("FILESET_COULD_NOT_BE_BUILT",inparamFilePath));
         }           

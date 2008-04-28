@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.mime;
 
 import java.util.Collection;
@@ -52,9 +50,9 @@ public class MIMETypeImpl implements MIMEType {
 	 		String namePatterns = null; // an space separated string or null
 	
 	//these collections are built the first time they are requested
-	private Map aliases = null; // Map<MimeType>, is null until first request, then may be empty 
-	private Map ancestors = null; // Map<MimeType>, is null until first request, then may be empty
-	private Map descendants = null; // Map<MimeType>, is null until first request, then may be empty 
+	private Map<String,MIMEType> aliases = null; // Map<MimeType>, is null until first request, then may be empty 
+	private Map<String,MIMEType> ancestors = null; // Map<MimeType>, is null until first request, then may be empty
+	private Map<String,MIMEType> descendants = null; // Map<MimeType>, is null until first request, then may be empty 
 
 	/**
 	 * Constructor. This is package private: only way to get a MimeType from the
@@ -69,9 +67,9 @@ public class MIMETypeImpl implements MIMEType {
 		if(namePatterns!=null||namePatterns.length()>0) this.namePatterns = namePatterns; // a space separated string or ""
 	}
 
-	public Map getAncestors() throws MIMETypeException {
+	public Map<String,MIMEType> getAncestors() throws MIMETypeException {
 		if (ancestors == null) { //first request
-			ancestors = new HashMap();
+			ancestors = new HashMap<String,MIMEType>();
 			if (parentIdrefs != null) {
 				String[] array = parentIdrefs.split("\\s+");
 				for (int i = 0; i < array.length; i++) {
@@ -100,9 +98,9 @@ public class MIMETypeImpl implements MIMEType {
 		return getAncestors().containsKey(mime.getId());		
 	}
 
-	public Map getAliases() throws MIMETypeException {
+	public Map<String,MIMEType> getAliases() throws MIMETypeException {
 		if (aliases == null) { //first request
-			aliases = new HashMap();
+			aliases = new HashMap<String,MIMEType>();
 			if (aliasIdrefs != null) {
 				String[] array = aliasIdrefs.split("\\s+");
 				for (int i = 0; i < array.length; i++) {
@@ -132,15 +130,15 @@ public class MIMETypeImpl implements MIMEType {
 		|| getAliases().containsKey(mime.getId());		
 	}
 
-	public Map getDescendants() throws MIMETypeException {
+	public Map<String,MIMEType> getDescendants() throws MIMETypeException {
 		//return all MimeTypes in the registry that marks this as an ancestor
 		if (descendants == null) { //first request
-			descendants = new HashMap();
+			descendants = new HashMap<String,MIMEType>();
 			try {
-				Map regMap = MIMETypeRegistry.getInstance().getEntries();
-				Iterator i = regMap.keySet().iterator();
+				Map<String,MIMEType> regMap = MIMETypeRegistry.getInstance().getEntries();
+				Iterator<String> i = regMap.keySet().iterator();
 				while(i.hasNext()) {
-					MIMEType m = (MIMEType) regMap.get(i.next());
+					MIMEType m = regMap.get(i.next());
 					if(m.getAncestors().containsKey(this.getId())) {
 						descendants.put(m.getId(),m);
 					}
@@ -205,14 +203,14 @@ public class MIMETypeImpl implements MIMEType {
 		return registryId;
 	}
 
-	public Collection getFilenamePatterns() throws MIMETypeException  {		
+	public Collection<String> getFilenamePatterns() throws MIMETypeException  {		
 		return getFilenamePatterns(MIMEType.WIDTH_LOCAL_PLUS_ALIASES);
 	}
 
-	public Collection getFilenamePatterns(int width) throws MIMETypeException {
+	public Collection<String> getFilenamePatterns(int width) throws MIMETypeException {
 		String regex="\\s+";
 		//collect all instances that we should get patterns from
-		Map instances = new HashMap();
+		Map<String,MIMEType> instances = new HashMap<String,MIMEType>();
 		
 		instances.put(this.getId(),this);
 		
@@ -229,20 +227,20 @@ public class MIMETypeImpl implements MIMEType {
 		}
 
 		// build the filename pattern collection from the instances map
-		Set patterns = new HashSet();
-		for (Iterator iter = instances.keySet().iterator(); iter.hasNext();) {
-			MIMETypeImpl mt = (MIMETypeImpl) instances.get(iter.next());
+		Set<String> patterns = new HashSet<String>();
+		for (Iterator<String> iter = instances.keySet().iterator(); iter.hasNext();) {
+			MIMETypeImpl mt = (MIMETypeImpl)instances.get(iter.next());
 			patterns.addAll(this.splitString(mt.namePatterns,regex));
 		}
 		return patterns;
 	}
 
-	public Collection getFilenamePatterns(int width, int patternType) throws MIMETypeException {
-		Collection c = getFilenamePatterns(width);
+	public Collection<String> getFilenamePatterns(int width, int patternType) throws MIMETypeException {
+		Collection<String> c = getFilenamePatterns(width);
 		if(patternType == FILENAME_PATTERN_REGEX) {
-			Set translated = new HashSet();
-			for (Iterator iter = c.iterator(); iter.hasNext();) {
-				String pt = (String) iter.next();
+			Set<String> translated = new HashSet<String>();
+			for (Iterator<String> iter = c.iterator(); iter.hasNext();) {
+				String pt = iter.next();
 				translated.add(globToRegex(pt));				
 			}
 			 return translated;
@@ -250,8 +248,8 @@ public class MIMETypeImpl implements MIMEType {
 		return c;
 	}
 	
-	private Collection splitString(String string, String regex){
-		Set set = new HashSet();
+	private Collection<String> splitString(String string, String regex){
+		Set<String> set = new HashSet<String>();
 		if(string != null && !"".equals(string)){
 			String[] array = string.split(regex);
 			for (int i = 0; i < array.length; i++) {

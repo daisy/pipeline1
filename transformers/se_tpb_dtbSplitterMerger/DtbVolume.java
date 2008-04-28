@@ -1,26 +1,22 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package se_tpb_dtbSplitterMerger;
-/*
- * 
- */
 
 import java.io.File;
 import java.io.IOException;
@@ -42,12 +38,12 @@ import org.daisy.util.fileset.XmlFile;
  */
 public class DtbVolume {
 	
-	private List smilFiles = new ArrayList();
-    private List audioFiles = new ArrayList();
-	private List resourceFiles = new ArrayList();
-	private List fullTextFiles = new ArrayList();
-	private List promptFiles = new ArrayList();
-	private List redundantFiles = new ArrayList();
+	private List<File> smilFiles = new ArrayList<File>();
+    private List<File> audioFiles = new ArrayList<File>();
+	private List<File> resourceFiles = new ArrayList<File>();
+	private List<TextualContentFile> fullTextFiles = new ArrayList<TextualContentFile>();
+	private List<File> promptFiles = new ArrayList<File>();
+	private List<?> redundantFiles = new ArrayList<Object>();
 	
 	private int volumeNr;
 	private File volumeOutputDir = null;
@@ -94,16 +90,16 @@ public class DtbVolume {
 		this.volumeType = this.MERGE_VOL_TYPE;
 	}
 
-	public List copyFilesIntoVolume(Collection inputFiles,  
+	public List<File> copyFilesIntoVolume(Collection<?> inputFiles,  
                                     boolean userPromptOn,
 									boolean keepInput, 
 									String inputVolumeDir, 
 									boolean checkRelativePath) throws TransformationAbortedByUserException, IOException{
 		
-		List outputFiles = new ArrayList();
+		List<File> outputFiles = new ArrayList<File>();
 		
 		//Copy each file to the new directory.
-		Iterator i = inputFiles.iterator();
+		Iterator<?> i = inputFiles.iterator();
 		while(i.hasNext()){
 			File inputFile = (File)i.next();
 			File outputDir = this.createOutputDir(inputFile,inputVolumeDir,checkRelativePath);
@@ -169,7 +165,7 @@ public class DtbVolume {
 	 *    The only exception is made for the full text files as they differ also by their contents.
 	 *    That is why addFile is not used in addFullTextFile.
 	 */
-	private void addFile(File file, List collection){
+	private void addFile(File file, List<File> collection){
 		
 		if(this.volumeType==this.SPLIT_VOL_TYPE && !collection.contains(file)){
 			
@@ -177,11 +173,11 @@ public class DtbVolume {
 						
 		}else if(this.volumeType==this.MERGE_VOL_TYPE){
 
-			Iterator i = collection.iterator();
+			Iterator<File> i = collection.iterator();
 			boolean fileNameFound = false;
 		
 			while(i.hasNext()){
-				File fileInCollection = (File)i.next();
+				File fileInCollection = i.next();
 				if(file.getName().equalsIgnoreCase(fileInCollection.getName())){
 					fileNameFound = true;
                     break;
@@ -208,17 +204,17 @@ public class DtbVolume {
     public void addAudioFile(AudioFile f){
         this.addFile(f.getFile(),this.audioFiles);
     }
-    public void addAudioFiles(List files){
+    public void addAudioFiles(List<File> files){
         this.audioFiles.addAll(files);
     }
     
-    public List getAudioFiles(){
+    public List<File> getAudioFiles(){
         return this.audioFiles;
     }
 	
 	public void addSmilResources(SmilFile SmilFile, boolean isPromptFile){
 		
-		Iterator i = SmilFile.getReferencedLocalMembers().iterator();
+		Iterator<?> i = SmilFile.getReferencedLocalMembers().iterator();
 		while(i.hasNext()){
 			Referable file = (Referable)i.next();
 			if(file instanceof TextualContentFile){
@@ -244,7 +240,7 @@ public class DtbVolume {
 	}
 	
 	private void addFullTextResources(TextualContentFile fText){
-		Iterator i = fText.getReferencedLocalMembers().iterator();
+		Iterator<?> i = fText.getReferencedLocalMembers().iterator();
 		while(i.hasNext()){
 			Referable file = (Referable)i.next();
 			if(!(file instanceof XmlFile)){
@@ -269,31 +265,31 @@ public class DtbVolume {
 	}
 	
 	public void addResourcesFrom(DtbVolume vol){
-		List smils = vol.getSmilFiles();
-		List resources = vol.getResourceFiles();
-		List fullText = vol.getFullTextFiles();
+		List<File> smils = vol.getSmilFiles();
+		List<File> resources = vol.getResourceFiles();
+		List<TextualContentFile> fullText = vol.getFullTextFiles();
 		
-		Iterator s = smils.iterator();
+		Iterator<File> s = smils.iterator();
 		while(s.hasNext()){
 			this.addSmilFile((SmilFile)s.next());
 		}
 		
-		Iterator r = resources.iterator();
+		Iterator<File> r = resources.iterator();
 		while(r.hasNext()){
 			this.addResourceFile((Referable)r.next());
 		}
 		
-		Iterator f = fullText.iterator();
+		Iterator<TextualContentFile> f = fullText.iterator();
 		while(f.hasNext()){
-			this.addFullTextFile((TextualContentFile)f.next());
+			this.addFullTextFile(f.next());
 		}
 	}
 		
-	public List getSmilFiles() {
+	public List<File> getSmilFiles() {
 		return this.smilFiles;
 	}
 	
-	public void setSmilFiles(List files){
+	public void setSmilFiles(List<File> files){
 		this.smilFiles = files;
 	}
 	
@@ -301,11 +297,11 @@ public class DtbVolume {
 	 * Returns a collection with <code>java.io.File</code> instances.
 	 * @return a collection with <code>java.io.File</code> instances.
 	 */
-	public List getResourceFiles() {
+	public List<File> getResourceFiles() {
 		return this.resourceFiles;
 	}
 
-	public void setResourceFiles(List files){
+	public void setResourceFiles(List<File> files){
 		this.resourceFiles = files;
 	}
 
@@ -314,11 +310,11 @@ public class DtbVolume {
 	 * Returns a collection with <code>java.io.File</code> instances.
 	 * @return a collection with <code>java.io.File</code> instances.
 	 */
-	public List getFullTextFiles() {
+	public List<TextualContentFile> getFullTextFiles() {
 		return this.fullTextFiles;
 	}
 	
-	public void setFullTextFiles(List files) {
+	public void setFullTextFiles(List<TextualContentFile> files) {
 		this.fullTextFiles = files;
 	}
 		
@@ -326,11 +322,11 @@ public class DtbVolume {
 	 * Returns a collection with <code>java.io.File</code> instances.
 	 * @return a collection with <code>java.io.File</code> instances.
 	 */
-	public List getPromtFiles() {
+	public List<File> getPromtFiles() {
 			return this.promptFiles;
 	}
 	
-	public void setPromptFiles(List files){
+	public void setPromptFiles(List<File> files){
 		this.promptFiles = files;
 	}
 
@@ -338,11 +334,11 @@ public class DtbVolume {
 	 * Returns a collection with <code>java.io.File</code> instances.
 	 * @return a collection with <code>java.io.File</code> instances.
 	 */
-	public List getRedundantFiles() {
+	public List<?> getRedundantFiles() {
 		return redundantFiles;
 	}
 
-	public void setRedundantFiles(List vector) {
+	public void setRedundantFiles(List<?> vector) {
 		redundantFiles = vector;
 	}		
 

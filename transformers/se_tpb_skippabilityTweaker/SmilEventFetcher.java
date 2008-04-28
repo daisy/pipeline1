@@ -56,7 +56,7 @@ import org.daisy.util.xml.pool.StAXOutputFactoryPool;
  */
 /*package*/ class SmilEventFetcher {
 	
-    private static final String indent = "\t\t\t\t\t\t\t\t";
+   // private static final String indent = "\t\t\t\t\t\t\t\t";
     
 	private StAXInputFactoryPool staxInPool;
     private StAXOutputFactoryPool staxOutPool;
@@ -253,11 +253,10 @@ import org.daisy.util.xml.pool.StAXOutputFactoryPool;
                     outputQueue.clear();
                     //System.err.println("XXX cut XXX");
                     return null;
-                } else {
-                    //System.err.println("XXX copy XXX");
-                    this.flushOutput();
-                    outputQueue.clear();
                 }
+				//System.err.println("XXX copy XXX");
+				this.flushOutput();
+				outputQueue.clear();
             } else {
                 this.flushOutput();
                 outputQueue.clear();

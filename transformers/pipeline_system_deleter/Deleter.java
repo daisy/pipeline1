@@ -1,6 +1,22 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package pipeline_system_deleter;
 
-import java.io.File;
 import java.util.Map;
 
 import org.daisy.pipeline.core.InputListener;
@@ -8,7 +24,7 @@ import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 /**
  * Transformer that deletes resources on the filesystem.
@@ -21,16 +37,17 @@ public class Deleter extends Transformer {
 		super(inListener, isInteractive);
 	}
 
+	@SuppressWarnings("unused")
 	@Override
-	protected boolean execute(Map parameters) throws TransformerRunException {		
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {		
 		try{
 			// le20070531: If we don't call System.gc() there might be some old trailing 
 			// file locks and the delete will fail.
 			System.gc();
 			
-			String active = (String)parameters.remove("active");
+			String active = parameters.remove("active");
 			if(active.equals("true")){
-				String toDelete = (String)parameters.remove("delete");
+				String toDelete = parameters.remove("delete");
 				EFile resource = new EFile(toDelete);				
 				if(!resource.exists()) return true;
 				
@@ -40,7 +57,7 @@ public class Deleter extends Transformer {
 						this.sendMessage(i18n("DELETER_FAILURE", resource.getAbsolutePath()), MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
 					}
 				}else if (resource.isDirectory() && !resource.isSymLink()) {
-					EFolder folder = new EFolder(resource);
+					Directory folder = new Directory(resource);
 					boolean result = folder.deleteContents(true);
 					if(result) {
 						result = folder.delete();

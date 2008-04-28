@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package se_tpb_dtbSplitterMerger.merge;
@@ -26,7 +25,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import javax.xml.transform.TransformerException;
@@ -34,7 +32,7 @@ import javax.xml.transform.TransformerException;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -51,6 +49,7 @@ import se_tpb_dtbSplitterMerger.XmlParsingException;
  * @author Piotr Kiernicki
  *
  */
+@SuppressWarnings("deprecation")
 public class DtbMergerTransformer extends Transformer implements DtbTransformationReporter{
 
 	 private long bookSize;
@@ -64,22 +63,22 @@ public class DtbMergerTransformer extends Transformer implements DtbTransformati
 	 * @param eventListeners
 	 * @param isInteractive
 	 */
-	public DtbMergerTransformer(InputListener inListener, Set eventListeners,
-			Boolean isInteractive) {
-		super(inListener, eventListeners, isInteractive);
+	public DtbMergerTransformer(InputListener inListener, Boolean isInteractive) {
+		super(inListener, isInteractive);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
 	 */
-	protected boolean execute(Map parameters) throws TransformerRunException {
-		String inparamBookPath = (String)parameters.remove("multiVolumeDTBPath");
-        String inparamOutDirPath = (String)parameters.remove("outDirPath");
-        String inparamUserPrompt = (String)parameters.remove("userPrompt");
-        String inparamKeepInput= (String)parameters.remove("keepInput");
-        String inparamKeepRedundant = (String)parameters.remove("keepRedundant");
+	
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
+		String inparamBookPath = parameters.remove("multiVolumeDTBPath");
+        String inparamOutDirPath = parameters.remove("outDirPath");
+        String inparamUserPrompt = parameters.remove("userPrompt");
+        String inparamKeepInput= parameters.remove("keepInput");
+        String inparamKeepRedundant = parameters.remove("keepRedundant");
 
-		List inputFilesList = this.getInputFilesList(inparamBookPath);
+		List<File> inputFilesList = this.getInputFilesList(inparamBookPath);
 
         File outDir = new File(inparamOutDirPath);
         if(!(outDir.exists() && outDir.isDirectory())){
@@ -88,7 +87,7 @@ public class DtbMergerTransformer extends Transformer implements DtbTransformati
         
         this.bookSize = this.calculateBookSize(inparamBookPath);
 		try {
-            int daisyVersion = this.retrieveDaisyVersion((File)inputFilesList.get(0));
+            int daisyVersion = this.retrieveDaisyVersion(inputFilesList.get(0));
             DtbMerger merger = null;
             switch(daisyVersion){
                 case 2: {
@@ -118,17 +117,17 @@ public class DtbMergerTransformer extends Transformer implements DtbTransformati
     
     private long calculateBookSize(String inparamBookPath) throws TransformerRunException {
 		long size = 0;
-		EFolder bookDir = null;
+		Directory bookDir = null;
         try {
-            bookDir = new EFolder(inparamBookPath);
+            bookDir = new Directory(inparamBookPath);
         } catch (IOException e) {
             throw new TransformerRunException(super.i18n("WRONG_DIR_PATH", inparamBookPath));
         }
         
-        Collection files = bookDir.getFiles(true);
-        Iterator i = files.iterator();
+        Collection<File> files = bookDir.getFiles(true);
+        Iterator<File> i = files.iterator();
         while(i.hasNext()){
-            File f = (File)i.next();
+            File f = i.next();
             size = size + f.length();
         }
         //System.err.println("book size: "+size);
@@ -181,8 +180,8 @@ public class DtbMergerTransformer extends Transformer implements DtbTransformati
 	 * @return a collection with NCC or OPF files
 	 * @throws TransformerException
 	 */
-	private List getInputFilesList(String inparamBookPath) throws TransformerRunException {
-		List inputList = new ArrayList();
+	private List<File> getInputFilesList(String inparamBookPath) throws TransformerRunException {
+		List<File> inputList = new ArrayList<File>();
         FilesetRegex rgx = FilesetRegex.getInstance();
         
 		File bookDir = new File(inparamBookPath);

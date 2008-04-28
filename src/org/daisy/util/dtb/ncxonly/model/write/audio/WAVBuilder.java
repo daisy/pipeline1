@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.dtb.ncxonly.model.write.audio;
 
 import java.io.File;
@@ -14,12 +31,11 @@ import javax.sound.sampled.AudioSystem;
 
 import org.daisy.util.audio.AudioUtils;
 import org.daisy.util.audio.SequenceAudioInputStream;
-import org.daisy.util.dtb.ncxonly.model.Item;
 import org.daisy.util.dtb.ncxonly.model.AudioClip;
+import org.daisy.util.dtb.ncxonly.model.Item;
 import org.daisy.util.dtb.ncxonly.model.write.smil.SMILBuilder;
 import org.daisy.util.dtb.ncxonly.model.write.smil.SMILFile;
-import org.daisy.util.file.EFolder;
-import org.tritonus.sampled.file.WaveAudioFileWriter;
+import org.daisy.util.file.Directory;
 
 /**
  * Create cleaned-up PCM Wave files, one for each SMIL file. 
@@ -27,7 +43,7 @@ import org.tritonus.sampled.file.WaveAudioFileWriter;
  */
 public class WAVBuilder {
 
-	public WAVBuilder(SMILBuilder smilBuilder, EFolder destination) throws IOException {
+	public WAVBuilder(SMILBuilder smilBuilder, Directory destination) throws IOException {
 		for (int i = 0; i < smilBuilder.getSpine().size(); i++) {
 			File wavDest= new File(destination,getFileName(i+1));
 			SMILFile smilObject = smilBuilder.getSpine().get(i);

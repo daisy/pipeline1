@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.fileset.impl;
 
 import java.io.FileNotFoundException;
@@ -52,8 +50,8 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 	private boolean inDcFormat = false;
 	private boolean inDcTitle = false;
 	private boolean inUidDcIdentifier = false;
-	private HashMap manifestItems = new HashMap();
-	private LinkedHashMap spineMap= new LinkedHashMap();
+	private HashMap<String,URI> manifestItems = new HashMap<String,URI>();
+	private LinkedHashMap<URI,FilesetFile> spineMap= new LinkedHashMap<URI,FilesetFile>();
 	private boolean finalSpineMapIsBuilt = false;
 	protected SmilClock statedDuration = null;
 	protected String statedMultiMediaType = null;
@@ -132,7 +130,7 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 				//and we have the local manifestSmilItems<idString>,<URI> map to match with 	
 				if (attrName=="idref") {
 					//get the uri from the local manifestsmilmap
-					URI key = (URI)manifestItems.get(attrValue);
+					URI key = manifestItems.get(attrValue);
 					//put it in the spineMap
 					spineMap.put(key, null);
 				}
@@ -140,6 +138,7 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 		} //for (int i							
 	}		
 	
+	@SuppressWarnings("unused")
 	public void endElement(String uri, String localName, String qName) throws SAXException {		
 		if (qName=="spine"){
 			inSpine = false;
@@ -155,6 +154,7 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 
 	}
 	
+	@SuppressWarnings("unused")
     public void characters(char[] ch, int start, int length) throws SAXException {
     	if(inDcFormat){    	
     		statedDcFormat = String.copyValueOf(ch,start,length);
@@ -165,7 +165,7 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
     	}
     }
 		
-	public Collection getSpineItems() throws IllegalStateException { 
+	public Collection<FilesetFile> getSpineItems() throws IllegalStateException { 
 		if (finalSpineMapIsBuilt) {
 			return spineMap.values();	
 		}
@@ -174,10 +174,10 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 	
 	/*package*/ void buildSpineMap (Fileset fileset) {
 		//this can be done only when a complete fileset is built
-		LinkedHashMap tempSpineMap = new LinkedHashMap();
-		Iterator it = spineMap.keySet().iterator();
+		LinkedHashMap<URI,FilesetFile> tempSpineMap = new LinkedHashMap<URI,FilesetFile>();
+		Iterator<URI> it = spineMap.keySet().iterator();
 		while(it.hasNext()) {
-			URI key = (URI)it.next();
+			URI key = it.next();
 			FilesetFile ff = fileset.getLocalMember(key);
 			if (ff!=null){
 				tempSpineMap.put(key,fileset.getLocalMember(key));

@@ -1,5 +1,19 @@
 /*
- * Created on 2006-feb-13
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_syncPointNormalizer;
 
@@ -9,7 +23,7 @@ import javax.xml.stream.events.XMLEvent;
 
 
 /**
- * @author linus
+ * @author Linus Ericson
  */
 class NoEventCache extends EventWriterCache {
 
@@ -17,12 +31,13 @@ class NoEventCache extends EventWriterCache {
         super(writer);
     }
 
-    public void writeEvent(XMLEvent ev, boolean isSpan) throws XMLStreamException {
+    public void writeEvent(XMLEvent ev, @SuppressWarnings("unused")boolean isSpan) throws XMLStreamException {
         //System.out.println(tagInfo(ev));
         xew.add(ev);
     }
 
-    public void flush() throws XMLStreamException {
+    @SuppressWarnings("unused")
+	public void flush() throws XMLStreamException {
     }
 
 }

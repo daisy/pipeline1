@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_speechgen2.tts;
 
@@ -49,10 +48,10 @@ import org.w3c.dom.NodeList;
  *
  */
 public class XMLParameter {
-	private Map parameterMapping = null;
+	private Map<String,String> parameterMapping = null;
 	private static boolean DEBUG = false;
 	
-	public XMLParameter(Map map) {
+	public XMLParameter(Map<String,String> map) {
 		this.parameterMapping = map;
 	}
 	
@@ -97,9 +96,9 @@ public class XMLParameter {
 	
 	
 	private String eval(String strValue) {
-		for (Iterator it = parameterMapping.keySet().iterator(); it.hasNext(); ) {
-			String key = (String) it.next();
-			String value = (String) parameterMapping.get(key);
+		for (Iterator<String> it = parameterMapping.keySet().iterator(); it.hasNext(); ) {
+			String key = it.next();
+			String value = parameterMapping.get(key);
 			value = value.replaceAll("\\\\", "\\\\\\\\");
 			strValue = strValue.replaceAll("\\$\\{" + key + "\\}", value);
 		}

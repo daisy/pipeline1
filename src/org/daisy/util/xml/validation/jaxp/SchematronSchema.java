@@ -1,6 +1,5 @@
 /*
- * org.daisy.util - The DAISY java utility library Copyright (C) 2005 Daisy
- * Consortium
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +15,6 @@
  * along with this library; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.xml.validation.jaxp;
 
 import java.io.File;
@@ -151,8 +149,8 @@ public class SchematronSchema extends AbstractSchema implements ErrorListener {
         return outSources;
     }
 
-    public void warning(TransformerException exception)
-            throws TransformerException {
+    @SuppressWarnings("unused")
+    public void warning(TransformerException exception) throws TransformerException {
         if (null != this.originator.getErrorHandler()) {
             try {
                 this.originator.getErrorHandler().warning(
@@ -165,8 +163,8 @@ public class SchematronSchema extends AbstractSchema implements ErrorListener {
         System.err.println(exception.getMessage());
     }
 
-    public void error(TransformerException exception)
-            throws TransformerException {
+    @SuppressWarnings("unused")
+    public void error(TransformerException exception) throws TransformerException {
         if (null != this.originator.getErrorHandler()) {
             try {
                 this.originator.getErrorHandler().error(
@@ -179,8 +177,8 @@ public class SchematronSchema extends AbstractSchema implements ErrorListener {
         System.err.println(exception.getMessage());
     }
 
-    public void fatalError(TransformerException exception)
-            throws TransformerException {
+    @SuppressWarnings("unused")
+    public void fatalError(TransformerException exception) throws TransformerException {
         if (null != this.originator.getErrorHandler()) {
             try {
                 this.originator.getErrorHandler().fatalError(

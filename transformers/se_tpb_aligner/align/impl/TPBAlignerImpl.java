@@ -75,7 +75,7 @@ public class TPBAlignerImpl extends Aligner implements DOMErrorHandler {
 	         * Execute
 	         */
 	        int ret;                	
-            ret = Command.execute((String[])(arr.toArray(new String[arr.size()])));
+            ret = Command.execute((arr.toArray(new String[arr.size()])));
             if(ret == -1) {
             	throw new AlignerException(exePath + " returned -1");
             }
@@ -165,7 +165,7 @@ public class TPBAlignerImpl extends Aligner implements DOMErrorHandler {
 	 */
 	public boolean handleError(DOMError error) {
 		System.err.println(error.getMessage());
-		if(error.getSeverity() == error.SEVERITY_WARNING) {
+		if(error.getSeverity() == DOMError.SEVERITY_WARNING) {
 			return true;
 		}		
 		return false;

@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_filesetRenamer.strategies;
 
 import int_daisy_filesetRenamer.FilesetRenamingException;
@@ -17,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.daisy.util.file.EFile;
 import org.daisy.util.fileset.D202MasterSmilFile;
@@ -33,12 +51,12 @@ import org.daisy.util.i18n.CharUtils;
 public class DefaultStrategy implements RenamingStrategy {
 	private Fileset mInputFileset = null;
 	private SegmentedFileName mTemplateName = null;
-	private HashMap namingStrategy = new HashMap(); 	// <URI>,<URI>
-	private List typeExclusions = new ArrayList();		// Interface names
+	private Map<URI,URI>namingStrategy = new HashMap<URI,URI>(); 	// <URI>,<URI>
+	private List<Class<?>> typeExclusions = new ArrayList<Class<?>>();	// Interface names
 	private int mMaxFilenameLength = 64;				
-	private String mSegmentSeparator = "_";				//default, may wanna enable changing this
+	private String mSegmentSeparator = "_";							//default, may wanna enable changing this
 	private boolean mForceAsciiSubset = false;
-	private boolean isValidated = false;
+	//private boolean isValidated = false;
 	private FilesetLabelProvider mLabelProvider = null;
 	private int mFileCount = 0;
 	
@@ -60,8 +78,8 @@ public class DefaultStrategy implements RenamingStrategy {
 	public void create() throws FilesetRenamingException {
 		//populate the URI(old), URI(new) map.
 		this.namingStrategy.clear();
-		for (Iterator iter = this.mInputFileset.getLocalMembersURIs().iterator(); iter.hasNext();) {
-			URI uri = (URI)iter.next();
+		for (Iterator<URI> iter = this.mInputFileset.getLocalMembersURIs().iterator(); iter.hasNext();) {
+			URI uri = iter.next();
 			FilesetFile f = this.mInputFileset.getLocalMember(uri);
 			if(!this.isTypeDisabled(f)) {
 				//create a new name: createNewName(f) method implemented by subclass
@@ -82,14 +100,14 @@ public class DefaultStrategy implements RenamingStrategy {
 	private String createNewName(FilesetFile f) throws FilesetRenamingException {
 		
 		String returnName = null;
-		List templateSegments = mTemplateName.getSegments();
+		List<Segment> templateSegments = mTemplateName.getSegments();
 		SegmentedFileName newName = new SegmentedFileName();
 		newName.setSegmentSeparator(mSegmentSeparator);
 		
 		mFileCount++;
 		try{			
-			for (Iterator iter = templateSegments.iterator(); iter.hasNext();) {
-				Segment templateSegment = (Segment) iter.next();
+			for (Iterator<Segment> iter = templateSegments.iterator(); iter.hasNext();) {
+				Segment templateSegment = iter.next();
 				if(templateSegment instanceof FilesetUIDSegment) {
 					//template value should be 'uid'
 					newName.addSegment(FilesetUIDSegment.create(mLabelProvider));
@@ -201,7 +219,7 @@ public class DefaultStrategy implements RenamingStrategy {
 		//of the restriction list
 		for (int i = 0; i < typeExclusions.size(); i++) {			
 			try{
-				Class test = (Class)typeExclusions.get(i);
+				Class<?> test = typeExclusions.get(i);
 				test.cast(file);
 				return true;  //we didnt get an exception...				
 			}catch (Exception e) {
@@ -215,7 +233,7 @@ public class DefaultStrategy implements RenamingStrategy {
 	 * (non-Javadoc)
 	 * @see int_daisy_filesetRenamer.strategies.RenamingStrategy#setTypeExclusion(java.lang.Class)
 	 */
-	public void setTypeExclusion(Class filesetFileInterface) {
+	public void setTypeExclusion(Class<?> filesetFileInterface) {
 		typeExclusions.add(filesetFileInterface);				
 	}
 
@@ -223,7 +241,7 @@ public class DefaultStrategy implements RenamingStrategy {
 	 * (non-Javadoc)
 	 * @see int_daisy_filesetRenamer.strategies.RenamingStrategy#setTypeExclusion(java.util.List)
 	 */
-	public void setTypeExclusion(List filesetFileInterfaces) {
+	public void setTypeExclusion(List<Class<?>> filesetFileInterfaces) {
 		typeExclusions.addAll(filesetFileInterfaces);				
 	}
 	
@@ -232,19 +250,19 @@ public class DefaultStrategy implements RenamingStrategy {
 	 * @see int_daisy_filesetRenamer.strategies.RenamingStrategy#validate()
 	 */
 	public boolean validate() throws FilesetRenamingException {		
-		isValidated = true;		
+		//isValidated = true;		
 		if (!namingStrategy.isEmpty()) {
 			URI curValue;
 			URI curKey;
 			int i = -1;
-			for (Iterator iter = namingStrategy.keySet().iterator(); iter.hasNext();) {
+			for (Iterator<URI> iter = namingStrategy.keySet().iterator(); iter.hasNext();) {
 				i++;
-				URI value = (URI) namingStrategy.get(iter.next());
+				URI value = namingStrategy.get(iter.next());
 				int k = -1;
-				for (Iterator iter2 = namingStrategy.keySet().iterator(); iter2.hasNext();) {					
+				for (Iterator<URI> iter2 = namingStrategy.keySet().iterator(); iter2.hasNext();) {					
 					k++;
-					curKey = (URI)iter2.next();
-					curValue = (URI) namingStrategy.get(curKey);
+					curKey = iter2.next();
+					curValue = namingStrategy.get(curKey);
 					if(i!=k) {
 						if(value.equals(curValue)) {
 							throw new FilesetRenamingException("duplicate output name: " + value.toString());														
@@ -275,7 +293,7 @@ public class DefaultStrategy implements RenamingStrategy {
 	 * @see int_daisy_filesetRenamer.strategies.RenamingStrategy#getNewLocalName(java.net.URI)
 	 */
 	public String getNewLocalName(URI filesetFileURI) {		
-		URI newURI = (URI)namingStrategy.get(filesetFileURI);
+		URI newURI = namingStrategy.get(filesetFileURI);
 		if(null != newURI) {
 			return (new File(newURI)).getName();
 		}
@@ -286,7 +304,7 @@ public class DefaultStrategy implements RenamingStrategy {
 	 * (non-Javadoc)
 	 * @see int_daisy_filesetRenamer.strategies.RenamingStrategy#getIterator()
 	 */
-	public Iterator getIterator(){
+	public Iterator<URI> getIterator(){
 		return this.namingStrategy.keySet().iterator();
 	}
 

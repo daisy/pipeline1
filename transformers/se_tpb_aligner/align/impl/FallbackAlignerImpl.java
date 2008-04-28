@@ -34,12 +34,12 @@ public class FallbackAlignerImpl extends Aligner implements DOMErrorHandler {
 	private final String smilNSURI = "http://www.w3.org/2001/SMIL20/";
 	@SuppressWarnings("unchecked")
 	@Override
-	public XMLResult process(XMLSource inputXML, AudioSource inputAudioFile, String inputLanguage, XMLResult result) throws AlignerException {						
+	public XMLResult process(XMLSource inputXML, AudioSource inputAudioFile, @SuppressWarnings("unused")String inputLanguage, XMLResult result) throws AlignerException {						
 		try {
 			AudioFile audioFile = (AudioFile)FilesetFileFactory.newInstance().newFilesetFile(inputAudioFile);
 			audioFile.parse();
 			SmilClock audioClock = audioFile.getLength();
-			SmilClock zero = new SmilClock(0);
+			//SmilClock zero = new SmilClock(0);
 
 			Map domConfigMap = LSParserPool.getInstance().getDefaultPropertyMap(Boolean.FALSE);
 			domConfigMap.put("resource-resolver", CatalogEntityResolver.getInstance());
@@ -88,7 +88,7 @@ public class FallbackAlignerImpl extends Aligner implements DOMErrorHandler {
 	}
 		
 	@Override
-	public boolean supportsLanguage(String language) {			
+	public boolean supportsLanguage(@SuppressWarnings("unused")String language) {			
 		return false;		
 	}
 

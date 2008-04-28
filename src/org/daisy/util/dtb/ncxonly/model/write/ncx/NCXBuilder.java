@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.dtb.ncxonly.model.write.ncx;
 
 import java.io.File;
@@ -23,7 +40,7 @@ import org.daisy.util.dtb.ncxonly.model.Model;
 import org.daisy.util.dtb.ncxonly.model.Semantic;
 import org.daisy.util.dtb.ncxonly.model.AudioClip.Nature;
 import org.daisy.util.dtb.ncxonly.model.write.smil.SMILBuilder;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.xml.IDGenerator;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.SmilClock;
@@ -39,11 +56,11 @@ public class NCXBuilder {
 	private XMLEvent nl = null;
 	private XMLEvent tab = null;
 	private XMLEvent tab2 = null;
-	private XMLEvent tab3 = null;
+	//private XMLEvent tab3 = null;
 	
 	private final QName qRoot = new QName(Namespaces.Z2005_NCX_NS_URI,"ncx");
 	private final QName qHead = new QName(Namespaces.Z2005_NCX_NS_URI,"head");	
-	private final QName qMeta = new QName(Namespaces.Z2005_NCX_NS_URI,"meta");
+	//private final QName qMeta = new QName(Namespaces.Z2005_NCX_NS_URI,"meta");
 	private final QName qSmilCustomTest = new QName(Namespaces.Z2005_NCX_NS_URI,"smilCustomTest");		
 	private final QName qDocTitle = new QName(Namespaces.Z2005_NCX_NS_URI,"docTitle");
 	private final QName qDocAuthor = new QName(Namespaces.Z2005_NCX_NS_URI,"docAuthor");	
@@ -52,8 +69,8 @@ public class NCXBuilder {
 	private final QName qNavMap = new QName(Namespaces.Z2005_NCX_NS_URI,"navMap");
 	private final QName qNavPoint = new QName(Namespaces.Z2005_NCX_NS_URI,"navPoint");
 	private final QName qNavLabel = new QName(Namespaces.Z2005_NCX_NS_URI,"navLabel");
-	private final QName qNavList = new QName(Namespaces.Z2005_NCX_NS_URI,"navList");
-	private final QName qNavTarget = new QName(Namespaces.Z2005_NCX_NS_URI,"navTarget");
+	//private final QName qNavList = new QName(Namespaces.Z2005_NCX_NS_URI,"navList");
+	//private final QName qNavTarget = new QName(Namespaces.Z2005_NCX_NS_URI,"navTarget");
 	private final QName qPageList = new QName(Namespaces.Z2005_NCX_NS_URI,"pageList");
 	private final QName qPageTarget = new QName(Namespaces.Z2005_NCX_NS_URI,"pageTarget");
 	private final QName qContent = new QName(Namespaces.Z2005_NCX_NS_URI,"content");
@@ -66,7 +83,7 @@ public class NCXBuilder {
 	 * @throws XMLStreamException 
 	 * @throws FileNotFoundException 
 	 */
-	public NCXBuilder(Model model, SMILBuilder smilBuilder, EFolder dest, XMLOutputFactory xof, XMLEventFactory xef) throws FileNotFoundException, XMLStreamException {
+	public NCXBuilder(Model model, SMILBuilder smilBuilder, Directory dest, XMLOutputFactory xof, XMLEventFactory xef) throws FileNotFoundException, XMLStreamException {
 		mSmilBuilder = smilBuilder;
 		mModel = model;
 		
@@ -74,7 +91,7 @@ public class NCXBuilder {
 		nl = xef.createCharacters(LINEBREAK);
 		tab = xef.createCharacters(TAB);
 		tab2 = xef.createCharacters(TAB+TAB);
-		tab3 = xef.createCharacters(TAB+TAB+TAB);	
+		//tab3 = xef.createCharacters(TAB+TAB+TAB);	
 		IDGenerator idg = new IDGenerator("ncx_");
 		
 		XMLEventWriter writer = xof.createXMLEventWriter(new FileOutputStream(outputNCX));		

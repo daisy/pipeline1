@@ -1,26 +1,22 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-package se_tpb_dtbSplitterMerger.merge;
-/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
  * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+package se_tpb_dtbSplitterMerger.merge;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,7 +38,7 @@ import se_tpb_dtbSplitterMerger.XmlParsingException;
 public abstract class DtbMerger {
 
 	//obligatory values
-	private List inputFiles = new ArrayList();
+	private List<File> inputFiles = new ArrayList<File>();
     private File outputDir = null;
     
 	//optional values
@@ -53,7 +49,7 @@ public abstract class DtbMerger {
     
     private DtbTransformationReporter reportGenerator = null;
     
-    public DtbMerger(List inFiles, File outDir, DtbTransformationReporter r){
+    public DtbMerger(List<File> inFiles, File outDir, DtbTransformationReporter r){
         this.inputFiles = inFiles;
         this.outputDir = outDir;
         this.reportGenerator = r;
@@ -70,8 +66,8 @@ public abstract class DtbMerger {
 
 	protected void removeInputVolumesFiles(){
 		//TODO implement handling of volume subfolders (if it is worth bothering)
-		for(Iterator input=this.inputFiles.iterator(); input.hasNext();){
-			File inputDir = ((File)input.next()).getParentFile();
+		for(Iterator<File> input=this.inputFiles.iterator(); input.hasNext();){
+			File inputDir = (input.next()).getParentFile();
 			inputDir.deleteOnExit();
 			File[] files = inputDir.listFiles();
 			for(int i=0; i<files.length; i++){
@@ -92,7 +88,7 @@ public abstract class DtbMerger {
 		return this.keepInputDtb;
 	}
 	
-	protected List getInputFiles(){
+	protected List<File> getInputFiles(){
 		return this.inputFiles;
 	}
 	protected boolean isKeepRedundantFiles() {

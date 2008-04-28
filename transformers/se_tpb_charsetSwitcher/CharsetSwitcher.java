@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2007  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_charsetSwitcher;
 
@@ -29,7 +28,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -44,7 +42,7 @@ import javazoom.jl.decoder.BitstreamException;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
@@ -82,7 +80,7 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 	
 	
 	private File stylesheet = null;
-	private Map mXifProperties = null;
+	private Map<String,Object> mXifProperties = null;
 	
 	/**
 	 * Constructor.
@@ -90,10 +88,10 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 	 * @param eventListeners
 	 * @param isInteractive
 	 */
-	public CharsetSwitcher(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-		super(inListener, eventListeners, isInteractive);
+	public CharsetSwitcher(InputListener inListener, Boolean isInteractive) {
+		super(inListener, isInteractive);
 		
-		mXifProperties = new HashMap();
+		mXifProperties = new HashMap<String,Object>();
 		mXifProperties.put(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
 		mXifProperties.put(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
 		mXifProperties.put(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);
@@ -106,11 +104,11 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
 	 */
-	protected boolean execute(Map parameters) throws TransformerRunException {
-		String input = (String)parameters.remove("input");
-		String output = (String)parameters.remove("output");
-		String encoding = (String)parameters.remove("encoding");
-		String breaks = (String)parameters.remove("breaks");
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
+		String input = parameters.remove("input");
+		String output = parameters.remove("output");
+		String encoding = parameters.remove("encoding");
+		String breaks = parameters.remove("breaks");
 		
 		File inputFile = FilenameOrFileURI.toFile(input);		
 		File outputFile = new File(FilenameOrFileURI.toFile(output), inputFile.getName());
@@ -131,11 +129,11 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 		}
 		
 		try {
-			EFolder outputFolder = new EFolder(FilenameOrFileURI.toFile(output));
+			Directory outputFolder = new Directory(FilenameOrFileURI.toFile(output));
 			// Compile stylesheet to perform switch
 			stylesheet = this.createStylesheet(encoding);
 			
-			Collection filesInFileset = new HashSet();
+			Collection<FilesetFile> filesInFileset = new HashSet<FilesetFile>();
 			FileUtils.createDirectory(FilenameOrFileURI.toFile(output));
 			FilesetFile filesetFile = FilesetFileFactory.newInstance().newFilesetFile(inputFile);
 			filesetFile.parse();
@@ -150,8 +148,8 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 			this.checkAbort();
 						
 			int count = 0;
-			for (Iterator it = filesInFileset.iterator(); it.hasNext(); ) {
-				FilesetFile fsf = (FilesetFile)it.next();
+			for (Iterator<FilesetFile> it = filesInFileset.iterator(); it.hasNext(); ) {
+				FilesetFile fsf = it.next();
 				if (fsf instanceof XmlFile) {
 					// Handle XML files
 					TempFile tempFile = new TempFile();
@@ -221,7 +219,7 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 		pool.release(factory, mXifProperties);
 		
 		// Fill in properties
-		Map properties = new HashMap();
+		Map<String,Object> properties = new HashMap<String,Object>();
 		if (publicId != null) {
 			properties.put("public", publicId);
 		}
@@ -252,7 +250,7 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 		File compile = new File(this.getTransformerDirectory(), "compile.xsl");
 		File template = new File(this.getTransformerDirectory(), "template.xsl");
 		TempFile stylesheet = new TempFile();	
-		Map parameters = new HashMap();
+		Map<String,Object> parameters = new HashMap<String,Object>();
 		parameters.put("encoding", encoding);
 		Stylesheet.apply(template.toString(), compile.toString(), stylesheet.getFile().toString(), XSLT_FACTORY, parameters, CatalogEntityResolver.getInstance());
 		return stylesheet.getFile();

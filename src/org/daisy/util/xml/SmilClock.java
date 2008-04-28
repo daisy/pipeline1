@@ -1,6 +1,5 @@
 /*
- * org.daisy.util - The DAISY java utility library Copyright (C) 2005 Daisy
- * Consortium
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -57,7 +56,7 @@ import java.util.regex.Pattern;
  * 
  * @author James Pritchett
  */
-public class SmilClock implements Comparable {
+public class SmilClock implements Comparable<Object> {
     // TODO move this to a more appropriate package
     private static Pattern fullClockPattern = Pattern
             .compile("(npt=)?(\\d+):([0-5]\\d):([0-5]\\d)([.](\\d+))?");

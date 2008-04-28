@@ -1,15 +1,29 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.fileset.validation.delegate.impl;
 
-import java.net.URI;
 import java.util.Iterator;
 
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.HtmlFile;
-import org.daisy.util.fileset.Referring;
 import org.daisy.util.fileset.XmlFile;
-import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.fileset.validation.delegate.ValidatorDelegateImplAbstract;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
@@ -23,7 +37,7 @@ import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;
  */
 public class InnerDocURICheckerDelegate extends ValidatorDelegateImplAbstract {
 
-	public boolean isFilesetTypeSupported(FilesetType type) {
+	public boolean isFilesetTypeSupported(@SuppressWarnings("unused")FilesetType type) {
 		return true;
 	}
 
@@ -39,13 +53,13 @@ public class InnerDocURICheckerDelegate extends ValidatorDelegateImplAbstract {
 	public void execute(Fileset fileset) throws ValidatorNotSupportedException, ValidatorException {
 		super.execute(fileset);
 
-		for (Iterator iter = fileset.getLocalMembers().iterator(); iter.hasNext();) {
-			FilesetFile ffile = (FilesetFile) iter.next();
+		for (Iterator<FilesetFile> iter = fileset.getLocalMembers().iterator(); iter.hasNext();) {
+			FilesetFile ffile = iter.next();
 			if (ffile instanceof XmlFile || ffile instanceof HtmlFile) {				
 				XmlFile referer = (XmlFile) ffile;
-				Iterator uriator = referer.getUriStrings().iterator();
+				Iterator<String> uriator = referer.getUriStrings().iterator();
 				while (uriator.hasNext()) {
-					String uriString = (String) uriator.next();
+					String uriString = uriator.next();
 					if (uriString.startsWith("#")) {						
 						String fragment = URIStringParser.getFragment(uriString);
 						if (fragment.length()<1)fragment=null;						

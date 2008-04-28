@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_syncPointNormalizer;
 
@@ -27,7 +26,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
@@ -73,25 +71,25 @@ public class Normalizer extends Transformer {
     
     private QName tagName = null;
     
-    private Set mustSynchronize = new HashSet();
-    private Set synchronize = new HashSet();
+    private Set<String> mustSynchronize = new HashSet<String>();
+    private Set<String> synchronize = new HashSet<String>();
     
     /**
      * @param inListener
      * @param eventListeners
      * @param isInteractive
      */
-    public Normalizer(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-        super(inListener, eventListeners, isInteractive);
+    public Normalizer(InputListener inListener, Boolean isInteractive) {
+        super(inListener, isInteractive);
     }
 
     /**
      * Note: Due to a limitation of woodstox, entity references are always resolved.
      */
-    protected boolean execute(Map parameters) throws TransformerRunException {
+    protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
         // Read paramters
-        String input = (String)parameters.remove("input");
-        String output = (String)parameters.remove("output");
+        String input = parameters.remove("input");
+        String output = parameters.remove("output");
         
         // Create factories
         xif = XMLInputFactory.newInstance();
@@ -107,7 +105,7 @@ public class Normalizer extends Transformer {
             
             // First pass: record elements content info
             XMLEventReader xer = xif.createXMLEventReader(new FileInputStream(input));
-            Map elementInfo = this.getElementInfo(xer);            
+            Map<Integer,ContextInfo> elementInfo = this.getElementInfo(xer);            
             this.sendMessage(i18n("ELEMENTS_FOUND",elementInfo.size()), MessageEvent.Type.DEBUG);
             xer.close();
             
@@ -130,7 +128,7 @@ public class Normalizer extends Transformer {
         return true;
     }
     
-    private void performNormalization(XMLEventReader xer, String output, Map elementInfo) throws FileNotFoundException, XMLStreamException {
+    private void performNormalization(XMLEventReader xer, String output, Map<Integer,ContextInfo> elementInfo) throws FileNotFoundException, XMLStreamException {
         context = new AttributedContext();
         ContextInfo lastInfo = null;
         int elementNumber = 0;
@@ -146,11 +144,11 @@ public class Normalizer extends Transformer {
                 context.peek().number = elementNumber;
                 String name = se.getName().getLocalPart();
                 
-                ContextInfo contextInfo = (ContextInfo)elementInfo.get(new Integer(elementNumber));
+                ContextInfo contextInfo = elementInfo.get(new Integer(elementNumber));
                 //System.err.println(contextInfo.toString());
                 
                 if (contextInfo.childOfWantElement && !contextInfo.hasMustElement && !mustSynchronize.contains(name)) {
-                    ContextInfo parentInfo = (ContextInfo)elementInfo.get(new Integer(context.getParent().number));
+                    ContextInfo parentInfo = elementInfo.get(new Integer(context.getParent().number));
                     if (!context.getParent().spanOpen && parentInfo.hasMustElement) {
 	                    cache.writeEvent(this.getStartElement(), true);
 	                    context.getParent().spanOpen = true;
@@ -174,7 +172,7 @@ public class Normalizer extends Transformer {
                 if(!context.isEmpty()){ //mg20071011
 	                int currentNumber = context.peek().number; 
 	                if (currentNumber > 0) {
-		                ContextInfo contextInfo = (ContextInfo)elementInfo.get(new Integer(currentNumber));
+		                ContextInfo contextInfo = elementInfo.get(new Integer(currentNumber));
 		                String name = contextInfo.name.getLocalPart();
 		                
 		                if ((synchronize.contains(name) || contextInfo.childOfWantElement)  && contextInfo.hasMustElement) {
@@ -213,8 +211,8 @@ public class Normalizer extends Transformer {
         xew.close();
     }
     
-    private Map getElementInfo(XMLEventReader xer) throws XMLStreamException, IOException, ConfigurationException, SettingsResolverException {
-        Map result = new HashMap();
+    private Map<Integer,ContextInfo> getElementInfo(XMLEventReader xer) throws XMLStreamException, IOException, ConfigurationException, SettingsResolverException {
+        Map<Integer,ContextInfo> result = new HashMap<Integer,ContextInfo>();
         context = new AttributedContext();
         int elementNumber = 0;
         boolean rootElementSeen = false;

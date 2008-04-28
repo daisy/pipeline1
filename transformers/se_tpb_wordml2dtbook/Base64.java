@@ -488,52 +488,46 @@ public class Base64
                 return new String( baos.toByteArray() );
             }   // end catch
         }   // end if: compress
-        
-        // Else, don't compress. Better not to use streams at all then.
-        else
-        {
-            // Convert option to boolean in way that code likes it.
-            boolean breakLines = dontBreakLines == 0;
-            
-            int    len43   = len * 4 / 3;
-            byte[] outBuff = new byte[   ( len43 )                      // Main 4:3
-                                       + ( (len % 3) > 0 ? 4 : 0 )      // Account for padding
-                                       + (breakLines ? ( len43 / MAX_LINE_LENGTH ) : 0) ]; // New lines      
-            int d = 0;
-            int e = 0;
-            int len2 = len - 2;
-            int lineLength = 0;
-            for( ; d < len2; d+=3, e+=4 )
-            {
-                encode3to4( source, d+off, 3, outBuff, e );
+		// Convert option to boolean in way that code likes it.
+		boolean breakLines = dontBreakLines == 0;
+		
+		int    len43   = len * 4 / 3;
+		byte[] outBuff = new byte[   ( len43 )                      // Main 4:3
+		                           + ( (len % 3) > 0 ? 4 : 0 )      // Account for padding
+		                           + (breakLines ? ( len43 / MAX_LINE_LENGTH ) : 0) ]; // New lines      
+		int d = 0;
+		int e = 0;
+		int len2 = len - 2;
+		int lineLength = 0;
+		for( ; d < len2; d+=3, e+=4 )
+		{
+		    encode3to4( source, d+off, 3, outBuff, e );
 
-                lineLength += 4;
-                if( breakLines && lineLength == MAX_LINE_LENGTH )
-                {   
-                    outBuff[e+4] = NEW_LINE;
-                    e++;
-                    lineLength = 0;
-                }   // end if: end of line
-            }   // en dfor: each piece of array
+		    lineLength += 4;
+		    if( breakLines && lineLength == MAX_LINE_LENGTH )
+		    {   
+		        outBuff[e+4] = NEW_LINE;
+		        e++;
+		        lineLength = 0;
+		    }   // end if: end of line
+		}   // en dfor: each piece of array
 
-            if( d < len )
-            {
-                encode3to4( source, d+off, len - d, outBuff, e );
-                e += 4;
-            }   // end if: some padding needed
+		if( d < len )
+		{
+		    encode3to4( source, d+off, len - d, outBuff, e );
+		    e += 4;
+		}   // end if: some padding needed
 
-            
-            // Return value according to relevant encoding.
-            try
-            {
-                return new String( outBuff, 0, e, PREFERRED_ENCODING );
-            }   // end try
-            catch (java.io.UnsupportedEncodingException uue)
-            {
-                return new String( outBuff, 0, e );
-            }   // end catch
-            
-        }   // end else: don't compress
+		
+		// Return value according to relevant encoding.
+		try
+		{
+		    return new String( outBuff, 0, e, PREFERRED_ENCODING );
+		}   // end try
+		catch (java.io.UnsupportedEncodingException uue)
+		{
+		    return new String( outBuff, 0, e );
+		}   // end catch
         
     }   // end encodeBytes
     
@@ -720,7 +714,7 @@ public class Base64
         if( bytes != null && bytes.length >= 4 )
         {
             
-            int head = ((int)bytes[0] & 0xff) | ((bytes[1] << 8) & 0xff00);       
+            int head = (bytes[0] & 0xff) | ((bytes[1] << 8) & 0xff00);       
             if( java.util.zip.GZIPInputStream.GZIP_MAGIC == head ) 
             {
                 java.io.ByteArrayInputStream  bais = null;
@@ -1149,28 +1143,20 @@ public class Base64
                     lineLength = 0;
                     return '\n';
                 }   // end if
-                else
-                {
-                    lineLength++;   // This isn't important when decoding
-                                    // but throwing an extra "if" seems
-                                    // just as wasteful.
-                    
-                    int b = buffer[ position++ ];
+				lineLength++;   // This isn't important when decoding
+				                // but throwing an extra "if" seems
+				                // just as wasteful.
+				
+				int b = buffer[ position++ ];
 
-                    if( position >= bufferLength )
-                        position = -1;
+				if( position >= bufferLength )
+				    position = -1;
 
-                    return b & 0xFF; // This is how you "cast" a byte that's
-                                     // intended to be unsigned.
-                }   // end else
+				return b & 0xFF; // This is how you "cast" a byte that's
+				                 // intended to be unsigned.
             }   // end if: position >= 0
-            
-            // Else error
-            else
-            {   
-                // When JDK1.4 is more accepted, use an assertion here.
-                throw new java.io.IOException( "Error in Base64 code reading stream." );
-            }   // end else
+			// When JDK1.4 is more accepted, use an assertion here.
+			throw new java.io.IOException( "Error in Base64 code reading stream." );
         }   // end read
         
         

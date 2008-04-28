@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_filesetGenerator.impl.d202;
 
 import int_daisy_filesetGenerator.FilesetGeneratorException;
@@ -40,7 +57,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetFile;
@@ -65,7 +82,7 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
  */
 public class D202TextOnlyGenerator implements IFilesetGenerator {
 		
-	private EFolder mDestination = null;
+	private Directory mDestination = null;
 	private List<Fileset> mInputFilesets = null;	
 	private Map<String, Object> mConfiguration = null;
 	private D202NccBuilder mNccBuilder;
@@ -87,7 +104,7 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 	 * This class owns the NCC and SMIL builders, 
 	 * and handles generating the modded content doc internally.
 	 */
-	public void execute(EFolder destination) throws FilesetGeneratorException {		
+	public void execute(Directory destination) throws FilesetGeneratorException {		
 
 		mDestination = destination;
 		

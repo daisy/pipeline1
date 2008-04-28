@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_xmldetection;
 
@@ -34,7 +33,6 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.settings.SettingsResolver;
 import org.daisy.util.xml.settings.SettingsResolverException;
 import org.daisy.util.xml.stax.ContextStack;
@@ -54,26 +52,26 @@ import org.daisy.util.xml.stax.ContextStack;
     protected QName fixElement = null;
     protected QName expAttribute = null;
     
-    protected Map sentenceAttributes = new HashMap();
-    protected Map wordAttributes = new HashMap();
-    protected Map abbrAttributes = new HashMap();
-    protected Map acronymAttributes = new HashMap();
-    protected Map initialismAttributes = new HashMap();
-    protected Map fixAttributes = new HashMap();
+    protected Map<String, String> sentenceAttributes = new HashMap<String, String>();
+    protected Map<String, String> wordAttributes = new HashMap<String, String>();
+    protected Map<String, String> abbrAttributes = new HashMap<String, String>();
+    protected Map<String, String> acronymAttributes = new HashMap<String, String>();
+    protected Map<String, String> initialismAttributes = new HashMap<String, String>();
+    protected Map<String, String> fixAttributes = new HashMap<String, String>();
     
     protected String initialismExpand = null;
     protected String acronymExpand = null;
     protected String abbrExpand = null;
     protected String fixExpand = null;
     
-    protected Set nonSentenceBreaking = new HashSet();
-    protected Set sentenceSkip = new HashSet();
-    protected Set wordSkip = new HashSet();
-    protected Set mayContainText = new HashSet();
+    protected Set<String> nonSentenceBreaking = new HashSet<String>();
+    protected Set<String> sentenceSkip = new HashSet<String>();
+    protected Set<String> wordSkip = new HashSet<String>();
+    protected Set<String> mayContainText = new HashSet<String>();
     
-    protected Set defaultPaths = new HashSet();
+    protected Set<String> defaultPaths = new HashSet<String>();
     
-    public ContextAwareBreakSettings(boolean sentence) throws CatalogExceptionNotRecoverable {
+    public ContextAwareBreakSettings(boolean sentence) {
         try {
             //resolver = BreakSettingsResolver.getInstance();
             resolver = SettingsResolver.getInstance("type.xml", this.getClass());
@@ -93,7 +91,7 @@ import org.daisy.util.xml.stax.ContextStack;
     }
 
     public boolean skipContent(QName elementName) {
-        Set skipSet = wordSkip;
+        Set<String> skipSet = wordSkip;
         if (sentenceInstance) {
             skipSet = sentenceSkip;
         }
@@ -152,8 +150,8 @@ import org.daisy.util.xml.stax.ContextStack;
         
         XMLEventReader er = factory.createXMLEventReader(url.openStream());
         
-        Set currentSet = null;
-        Map sentOrWordAttributes = null;
+        Set<String> currentSet = null;
+        Map<String, String> sentOrWordAttributes = null;
         
         while (er.hasNext()) {
             XMLEvent event = er.nextEvent();
@@ -269,7 +267,7 @@ import org.daisy.util.xml.stax.ContextStack;
         return wordElement;           
     }
     
-    public Map getBreakAttributes() {
+    public Map<String, String> getBreakAttributes() {
         if (sentenceInstance) {
             return sentenceAttributes;  
         }
@@ -277,7 +275,7 @@ import org.daisy.util.xml.stax.ContextStack;
     }
 
 
-    public Set getDefaultPaths() {
+    public Set<String> getDefaultPaths() {
         return defaultPaths;
     }
 
@@ -301,19 +299,19 @@ import org.daisy.util.xml.stax.ContextStack;
         return expAttribute;
     }
     
-    public Map getAbbrAttributes() {
+    public Map<String, String> getAbbrAttributes() {
         return abbrAttributes;
     }
     
-    public Map getAcronymAttributes() {
+    public Map<String, String> getAcronymAttributes() {
         return acronymAttributes;
     }
     
-    public Map getInitialismAttributes() {
+    public Map<String, String> getInitialismAttributes() {
         return initialismAttributes;
     }
     
-    public Map getFixAttributes() {
+    public Map<String, String> getFixAttributes() {
         return fixAttributes;
     }
     

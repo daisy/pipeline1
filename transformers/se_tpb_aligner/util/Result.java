@@ -3,7 +3,7 @@ package se_tpb_aligner.util;
 import java.io.File;
 
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 /**
  *
@@ -15,7 +15,7 @@ public class Result extends EFile {
 		super(file);
 	}
 
-	public Result(EFolder dir, String string) {
+	public Result(Directory dir, String string) {
 		super(dir,string);
 	}
 

@@ -1,20 +1,19 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.util.xml.stax;
 
@@ -46,7 +45,7 @@ import org.daisy.util.i18n.LocaleUtils;
 public class ContextStack {
     		
 	private boolean attributeStackingMode = false;
-    protected Stack context = new Stack();
+    protected Stack<ContextInfo> context = new Stack<ContextInfo>();
     
     /**
      * Sets the mode for XPath rendering to only include elements in the location path.
@@ -126,10 +125,10 @@ public class ContextStack {
     /**
      * @return the full context stack [Stack&lt;ContextInfo&gt];
      */
-	public Stack getContext() {
-        Stack result = new Stack();
-        for (Iterator it = context.iterator(); it.hasNext(); ) {
-            ContextInfo ci = (ContextInfo)it.next();
+	public Stack<ContextInfo> getContext() {
+        Stack<ContextInfo> result = new Stack<ContextInfo>();
+        for (Iterator<ContextInfo> it = context.iterator(); it.hasNext(); ) {
+            ContextInfo ci = it.next();
             result.push(ci);
         }
         return result;
@@ -138,15 +137,15 @@ public class ContextStack {
     /**
      * @return the parent context stack [Stack&lt;ContextInfo&gt];
      */
-    public Stack getParentContext() {
-        Stack result = this.getContext();
+    public Stack<ContextInfo> getParentContext() {
+        Stack<ContextInfo> result = this.getContext();
         result.pop();
         return result;
     }
         
     public Locale getCurrentLocale() {
         for (int i = context.size() - 1; i >= 0; --i) {
-            ContextInfo info = (ContextInfo)context.elementAt(i);
+            ContextInfo info = context.elementAt(i);
             Locale loc = info.getLocale();
             if(loc!=null) return loc;
         }
@@ -158,7 +157,7 @@ public class ContextStack {
      * @return the topmost event of the stack, equals the last added XMLEvent.
      */
     public ContextInfo getLastEvent(){
-    	return (ContextInfo)context.lastElement();
+    	return context.lastElement();
     }
     
     /**
@@ -183,11 +182,11 @@ public class ContextStack {
      * @param xPathSelectMode constant available in the ContextStack class. 
      * @param xPathPredicateMode constant available in the ContextStack class.
      */
-    public String getContextXPath(Stack list, int xPathSelectMode, int xPathPredicateMode) {    	
+    public String getContextXPath(Stack<ContextInfo> list, int xPathSelectMode, int xPathPredicateMode) {    	
         return buildXPath(list, xPathSelectMode, xPathPredicateMode);
     }
     
-	private String buildXPath(Stack list, int xpathSelectMode, int xpathPredicateMode) {		
+	private String buildXPath(Stack<ContextInfo> list, int xpathSelectMode, int xpathPredicateMode) {		
 		//this is gonna need heavy rewrite if we want to extend modes
 		//TODO support prefixed names 
         StringBuilder xpathBuilder = new StringBuilder();
@@ -200,14 +199,14 @@ public class ContextStack {
         xpathBuilder.append("/"); //TODO not always from doc root
         
         //build the select axis
-        for (Iterator it = list.iterator(); it.hasNext(); ) {
-            ContextInfo cur = (ContextInfo) it.next(); 
+        for (Iterator<ContextInfo> it = list.iterator(); it.hasNext(); ) {
+            ContextInfo cur = it.next(); 
             isAttribute = cur.getXMLEventType() == XMLEvent.ATTRIBUTE;      
             nameBuilder.delete(0,nameBuilder.length());
             if(isAttribute) nameBuilder.append('@');
             nameBuilder.append(cur.getName().getLocalPart());
         	        	        	
-        	if(!isAttribute||xpathSelectMode==this.XPATH_SELECT_ELEMENTS_AND_TRAILING_ATTRIBUTES) {
+        	if(!isAttribute||xpathSelectMode==ContextStack.XPATH_SELECT_ELEMENTS_AND_TRAILING_ATTRIBUTES) {
         		xpathBuilder.append('/').append(nameBuilder);
         		if(isAttribute) attributeAddedToAxis = true;
         	}	
@@ -220,7 +219,7 @@ public class ContextStack {
         	if(se!=null){
             	//build the predicate
             	StringBuilder predicateBuilder = new StringBuilder();
-            	Iterator i = se.getAttributes();
+            	Iterator<?> i = se.getAttributes();
             	predicateBuilder.append('[');
             	while(i.hasNext()){
             		Attribute a = (Attribute)i.next();
@@ -275,7 +274,7 @@ public class ContextStack {
         public Locale getLocale() {
         	if(this.event.isStartElement()) {
         		StartElement se = event.asStartElement();
-        		for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+        		for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
 	    	        Attribute att = (Attribute)it.next();
 	    	        if ("lang".equals(att.getName().getLocalPart()) && "xml".equals(att.getName().getPrefix())) {
 	    	          return LocaleUtils.string2locale(att.getValue());
@@ -296,9 +295,9 @@ public class ContextStack {
 	/**
 	 * @return the topmost StartElement event in the ContextInfo stack.
 	 */
-    private StartElement getTopMostStartElementEvent(Stack list) {
+    private StartElement getTopMostStartElementEvent(Stack<ContextInfo> list) {
         for (int i = list.size() - 1; i >= 0; --i) {
-            ContextInfo info = (ContextInfo)context.elementAt(i);
+            ContextInfo info = context.elementAt(i);
             if(info.getXMLEventType() == XMLEvent.START_ELEMENT) {
             	return (StartElement)info.getXMLEvent();
             }	
@@ -309,10 +308,10 @@ public class ContextStack {
     /**
      * @deprecated
      */
-    public String getContextPath(Stack list) {
+    public String getContextPath(Stack<ContextInfo> list) {
         StringBuffer buffer = new StringBuffer();
-        for (Iterator it = list.iterator(); it.hasNext(); ) {
-            ContextStack.ContextInfo tmp = (ContextStack.ContextInfo) it.next();
+        for (Iterator<ContextInfo> it = list.iterator(); it.hasNext(); ) {
+            ContextStack.ContextInfo tmp = it.next();
             
         	QName name = tmp.getName();
             buffer.append("/").append(name.getLocalPart());
@@ -334,10 +333,10 @@ public class ContextStack {
     /**
      * Pops the stack until the topmost Event is not an Attribute.
      */
-    private Stack popAttributes() {        	
+    private Stack<ContextInfo> popAttributes() {        	
     	do {
     		if(!context.isEmpty()){
-	    		ContextInfo ci = (ContextInfo) context.lastElement();
+	    		ContextInfo ci = context.lastElement();
 	    		if (ci.getXMLEventType()==XMLEvent.ATTRIBUTE) {
 	    			context.pop();
 	    		}else{

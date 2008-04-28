@@ -84,7 +84,7 @@ import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
     private Map<String, String> idrefContentHrefMap;
     private String getSrcOfNextText = null;
     private SkippableContentIds skippableContentIds = null;
-    private File input = null;
+    //private File input = null;
     
     public SimpleSkippabilityAdder(StAXInputFactoryPool staxPool, Map<String,Object> staxInProperties,
             StAXOutputFactoryPool staxOutPool, Map<String,Object> staxOutProperties,
@@ -113,7 +113,7 @@ import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
         idrefContentHrefMap = new HashMap<String,String>();
         getSrcOfNextText = null;
         this.skippableContentIds = skippableContentIds;
-        this.input = input;
+        //this.input = input;
         
         try {
             xif = staxInPool.acquire(staxInProperties);
@@ -292,8 +292,8 @@ import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
             if (sysReqAttr != null) {
                 StartElement se = (StartElement)event;
                 List<Attribute> attrs = new ArrayList<Attribute>();
-                for (Iterator<Attribute> attIt = se.getAttributes(); attIt.hasNext(); ) {
-                    Attribute att = attIt.next();
+                for (Iterator<?> attIt = se.getAttributes(); attIt.hasNext(); ) {
+                    Attribute att = (Attribute)attIt.next();
                     if (!"system-required".equals(att.getName())) {
                         attrs.add(att);
                     }

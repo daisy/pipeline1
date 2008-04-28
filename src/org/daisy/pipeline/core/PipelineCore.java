@@ -1,6 +1,5 @@
 /*
- * DMFC - The DAISY Multi Format Converter Copyright (C) 2005-2007 Daisy
- * Consortium
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -59,7 +58,7 @@ import org.daisy.util.i18n.XMLPropertyResourceBundle;
  * 
  * @author Linus Ericson
  */
-public class DMFCCore implements TransformerHandlerLoader {
+public class PipelineCore implements TransformerHandlerLoader {
 
     private File mHomeDirectory = null;
 
@@ -79,7 +78,7 @@ public class DMFCCore implements TransformerHandlerLoader {
      * @param inListener a listener of (user) input events
      * @param homeDir the home directory
      */
-    public DMFCCore(InputListener inListener, File homeDir)
+    public PipelineCore(InputListener inListener, File homeDir)
             throws DMFCConfigurationException {
         this(inListener, homeDir, null);
     }
@@ -91,7 +90,7 @@ public class DMFCCore implements TransformerHandlerLoader {
      * @param homeDir the home directory
      * @param userProps a set of user properties
      */
-    public DMFCCore(InputListener inListener, File homeDir, Properties userProps)
+    public PipelineCore(InputListener inListener, File homeDir, Properties userProps)
             throws DMFCConfigurationException {
         mInputListener = inListener;
         mHomeDirectory = homeDir;
@@ -114,7 +113,7 @@ public class DMFCCore implements TransformerHandlerLoader {
      * @throws DMFCConfigurationException it the pipeline properties cannot
      * be read.
      */
-    public DMFCCore(InputListener inListener, File homeDir, Properties userProps, Properties pipelineProps) 
+    public PipelineCore(InputListener inListener, File homeDir, Properties userProps, Properties pipelineProps) 
     		throws DMFCConfigurationException {
     	 mInputListener = inListener;
          mHomeDirectory = homeDir;
@@ -244,9 +243,8 @@ public class DMFCCore implements TransformerHandlerLoader {
                         transformerName, mInputListener, true);
                 mTransformerHandlers.put(transformerName, th);
                 return th;
-            } else {
-                // System.err.println("jar doesn't exist");
-            }
+            } 
+            // System.err.println("jar doesn't exist");            
         }
         return null;
     }

@@ -31,10 +31,10 @@ import org.w3c.dom.NodeList;
  *
  */
 public class XMLParameter {
-	private Map parameterMapping = null;
+	private Map<String,String> parameterMapping = null;
 	private static boolean DEBUG = false;
 	
-	public XMLParameter(Map map) {
+	public XMLParameter(Map<String,String> map) {
 		this.parameterMapping = map;
 	}
 	
@@ -79,9 +79,9 @@ public class XMLParameter {
 	
 	
 	private String eval(String strValue) {
-		for (Iterator it = parameterMapping.keySet().iterator(); it.hasNext(); ) {
-			String key = (String) it.next();
-			String value = (String) parameterMapping.get(key);
+		for (Iterator<String> it = parameterMapping.keySet().iterator(); it.hasNext(); ) {
+			String key = it.next();
+			String value = parameterMapping.get(key);
 			value = value.replaceAll("\\\\", "\\\\\\\\");
 			strValue = strValue.replaceAll("\\$\\{" + key + "\\}", value);
 		}

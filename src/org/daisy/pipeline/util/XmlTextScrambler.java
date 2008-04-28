@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.pipeline.util;
 
 import java.io.File;
@@ -23,7 +40,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.i18n.CharUtils;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
@@ -52,7 +69,7 @@ public class XmlTextScrambler {
 	 * @throws XMLStreamException
 	 * @throws IOException 
 	 */
-	public XmlTextScrambler(EFolder input) {
+	public XmlTextScrambler(Directory input) {
 		Collection<?> files = input.getFiles(true);
 		Iterator<?> iter = files.iterator();
 		while(iter.hasNext()) {			
@@ -374,7 +391,7 @@ public class XmlTextScrambler {
 				throw new IOException(file.toString());
 			}
 			if(file.isDirectory()) {
-				new XmlTextScrambler(new EFolder(file));	
+				new XmlTextScrambler(new Directory(file));	
 			}else{
 				new XmlTextScrambler(new EFile(file));
 			}

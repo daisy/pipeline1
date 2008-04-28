@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.mime;
 
 import java.util.Collection;
@@ -41,7 +39,7 @@ public interface MIMEType {
 	 * @return A Map&lt;ID,MimeType&gt; of hierarchical ancestor MimeTypes if such exist. 
 	 * If no ancestors exist, the return is an empty map; not null.
 	 */
-	public Map getAncestors() throws MIMETypeException;
+	public Map<String,MIMEType> getAncestors() throws MIMETypeException;
 	
 	/**
 	 * @param mime a MimeType that may or may not be a ancestor to this MimeType
@@ -60,7 +58,7 @@ public interface MIMEType {
 	 * aliases to this MimeType if such exist. 
 	 * If no aliases exist, the return is an empty map; not null.
 	 */
-	public Map getAliases() throws MIMETypeException;
+	public Map<String,MIMEType> getAliases() throws MIMETypeException;
 	
 	/**
 	 * Asserts equalness and aliashood between this MimeType and another.
@@ -92,7 +90,7 @@ public interface MIMEType {
 	 * hierarchical descendants to this MimeType if such exist. 
 	 * If no descendants exist, the return is an empty map; not null.
 	 */
-	public Map getDescendants() throws MIMETypeException;
+	public Map<String,MIMEType> getDescendants() throws MIMETypeException;
 
 	/**
 	 * @return True if
@@ -126,7 +124,7 @@ public interface MIMEType {
 	 * The returned collection excludes ancestor and descendant filename patterns.
 	 * The filename patterns use MS Glob format ("*.htm" etc). 
 	 */
-	public Collection getFilenamePatterns() throws MIMETypeException ;
+	public Collection<String> getFilenamePatterns() throws MIMETypeException ;
 			
 	/**
 	 * @param 
@@ -135,7 +133,7 @@ public interface MIMEType {
 	 * @return a collection&lt;String&gt; of known filename patterns for this MimeType.
 	 * The filename patterns use MS Glob format ("*.htm" etc).
 	 */
-	public Collection getFilenamePatterns(int width) throws MIMETypeException ;
+	public Collection<String> getFilenamePatterns(int width) throws MIMETypeException ;
 			
 	/**
 	 * @param 
@@ -147,7 +145,7 @@ public interface MIMEType {
 	 * @return a collection&lt;String&gt; of known filename patterns for this MimeType.
 	 * The filename patterns use MS Glob format ("*.htm" etc) or regex.
 	 */
-	public Collection getFilenamePatterns(int width, int patternType) throws MIMETypeException ;
+	public Collection<String> getFilenamePatterns(int width, int patternType) throws MIMETypeException ;
 	
 	/**
 	 * @return the content type ('top level') substring of the string identifier

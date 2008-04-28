@@ -1,6 +1,5 @@
 /*
- * org.daisy.util - The DAISY java utility library Copyright (C) 2005 Daisy
- * Consortium
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free

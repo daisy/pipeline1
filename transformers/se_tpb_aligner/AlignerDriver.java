@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package se_tpb_aligner;
 
 import java.io.File;
@@ -10,7 +27,7 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.xml.LanguageReporter;
@@ -40,8 +57,8 @@ public class AlignerDriver extends Transformer {
 	private XMLSource mInputDoc = null;
 	private LinkedList<File> mInputAudioFiles = null;
 	private XMLResult mFinalOutputDoc = null;
-	private EFolder mFinalOutputDir = null;
-	private EFolder mTempDir = null;
+	private Directory mFinalOutputDir = null;
+	private Directory mTempDir = null;
 	private String mLanguage = null;
 	private boolean mUseFallbacks = true;
 	
@@ -56,19 +73,19 @@ public class AlignerDriver extends Transformer {
 	 */
 	
 	@Override
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 				
 		try{			
 			
-			mFinalOutputDoc = new XMLResult(FilenameOrFileURI.toFile((String)parameters.remove("outputXML")));
-			mFinalOutputDir = new EFolder(FileUtils.createDirectory(mFinalOutputDoc.getParentFile()));
-			mTempDir = new EFolder(FileUtils.createDirectory(new File(mFinalOutputDir, "aligner__temp")));
+			mFinalOutputDoc = new XMLResult(FilenameOrFileURI.toFile(parameters.remove("outputXML")));
+			mFinalOutputDir = new Directory(FileUtils.createDirectory(mFinalOutputDoc.getParentFile()));
+			mTempDir = new Directory(FileUtils.createDirectory(new File(mFinalOutputDir, "aligner__temp")));
 			
 			/*
 			 * Get input data: an XML document, and a list of audio files. 
 			 */
-			mInputDoc = new XMLSource(FilenameOrFileURI.toFile((String)parameters.remove("inputXML")));
-			EFolder audioFileDir = new EFolder(FilenameOrFileURI.toFile((String)parameters.remove("inputAudioDir")));
+			mInputDoc = new XMLSource(FilenameOrFileURI.toFile(parameters.remove("inputXML")));
+			Directory audioFileDir = new Directory(FilenameOrFileURI.toFile(parameters.remove("inputAudioDir")));
 			mInputAudioFiles = new LinkedList<File>(audioFileDir.getFiles(false, ".+\\.[Ww][Aa][Vv]$"));
 			Collections.sort(mInputAudioFiles);
 			this.sendMessage(i18n("FOUND_AUDIO_FILES", mInputAudioFiles.size()), MessageEvent.Type.INFO);
@@ -220,8 +237,8 @@ public class AlignerDriver extends Transformer {
 		
 	}
 
-	private DivisionStrategy setDivisionStrategy(Map parameters) throws TransformerRunException {
-		String strategyParam = (String)parameters.remove("divider");		
+	private DivisionStrategy setDivisionStrategy(Map<String, String> parameters) throws TransformerRunException {
+		String strategyParam = parameters.remove("divider");		
 		if(strategyParam.equals("levels")) {
 			return DivisionStrategy.LEVELS;
 		} else if(strategyParam.equals("pages")) {

@@ -51,7 +51,7 @@ public class TpbPreProcessorImpl extends PreProcessor {
 	         */
 	        int ret;
 	        System.err.println("Encoding: " + arr.toString());        	
-            ret = Command.execute((String[])(arr.toArray(new String[arr.size()])));
+            ret = Command.execute((arr.toArray(new String[arr.size()])));
             if(ret == -1) {
             	throw new PreProcessorException(exePath + " returned -1");
             }

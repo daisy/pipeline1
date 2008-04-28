@@ -1,20 +1,19 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.util.collection;
 
@@ -30,9 +29,10 @@ import java.util.Set;
  * A HashMap where every key points to a collection of values.
  * @author Linus Ericson
  */
-public class MultiHashMap implements Map {
+@SuppressWarnings("unchecked")
+public class MultiHashMap implements Map<Object,Object> {
     
-    private Map map = new HashMap();
+    private Map<Object,Object> map = new HashMap<Object,Object>();
     private boolean dupes;
     
     /**
@@ -65,7 +65,7 @@ public class MultiHashMap implements Map {
      * @return true if the specified key contains the specified value, false otherwise
      */
     public boolean containsValue(Object key, Object value) {
-        Collection coll = (Collection)map.get(key);
+        Collection<?> coll = (Collection<?>)map.get(key);
         if (coll != null) {
             return coll.contains(value);
         }
@@ -77,7 +77,8 @@ public class MultiHashMap implements Map {
      * @param key the key
      * @param collection the colleaction of values
      */
-    public void putAll(Object key, Collection collection) {
+    
+	public void putAll(Object key, Collection<?> collection) {
         if (map.containsKey(key)) {
             Collection coll = (Collection)map.get(key);
             coll.addAll(collection);
@@ -98,8 +99,8 @@ public class MultiHashMap implements Map {
      * @param key the key
      * @return a collection of values, or null if there is no mapping for the key
      */
-    public Collection getCollection(Object key) {
-        return (Collection)this.get(key);
+    public Collection<?> getCollection(Object key) {
+        return (Collection<?>)this.get(key);
     }
     
     /* *** Methods from Map *** */

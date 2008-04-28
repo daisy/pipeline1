@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.xml.xslt;
 
 import java.io.File;
@@ -76,7 +74,7 @@ public class Stylesheet {
      * @see javax.xml.transform.Source
      * @see javax.xml.transform.Result
      */
-    public static void apply(Source xml, Source xslt, Result result, String factory, Map parameters, ErrorListener errorListener) throws XSLTException{        		
+    public static void apply(Source xml, Source xslt, Result result, String factory, Map<String,Object> parameters, ErrorListener errorListener) throws XSLTException{        		
 		try {
 		    // Create factory
 		    String property = "javax.xml.transform.TransformerFactory";
@@ -103,9 +101,9 @@ public class Stylesheet {
 
             // Set any parameters to the XSLT
             if (parameters != null) {
-	            for (Iterator it = parameters.entrySet().iterator(); it.hasNext(); ) {
-	                Map.Entry paramEntry = (Map.Entry)it.next();
-	                transformer.setParameter((String)paramEntry.getKey(), paramEntry.getValue());
+	            for (Iterator<Map.Entry<String,Object>> it = parameters.entrySet().iterator(); it.hasNext(); ) {
+	                Map.Entry<String,?> paramEntry = it.next();
+	                transformer.setParameter(paramEntry.getKey(), paramEntry.getValue());
 	            }
             }
             transformer.setURIResolver(new CatalogURIResolver());            
@@ -128,13 +126,13 @@ public class Stylesheet {
      * @param parameters any parameters to the stylesheet
      * @throws XSLTException
      */
-    public static void apply(Source xml, Transformer xslt, Result result, Map parameters) throws XSLTException{             
+    public static void apply(Source xml, Transformer xslt, Result result, Map<String,Object> parameters) throws XSLTException{             
         try {            
             // Set any parameters to the XSLT
             if (parameters != null) {
-                for (Iterator it = parameters.entrySet().iterator(); it.hasNext(); ) {
-                    Map.Entry paramEntry = (Map.Entry)it.next();
-                    xslt.setParameter((String)paramEntry.getKey(), paramEntry.getValue());
+                for (Iterator<Map.Entry<String,Object>> it = parameters.entrySet().iterator(); it.hasNext(); ) {
+                    Map.Entry<String,Object> paramEntry = it.next();
+                    xslt.setParameter(paramEntry.getKey(), paramEntry.getValue());
                 }
             }
             // Perform transformation            
@@ -162,7 +160,7 @@ public class Stylesheet {
      * @see javax.xml.transform.Source
      * @see javax.xml.transform.Result
      */
-    public static void apply(Source xml, Source xslt, Result result, String factory, Map parameters) throws XSLTException{        		
+    public static void apply(Source xml, Source xslt, Result result, String factory, Map<String,Object> parameters) throws XSLTException{        		
 		apply(xml, xslt, result, factory, parameters, null);
     }
         
@@ -199,7 +197,7 @@ public class Stylesheet {
      * @throws XSLTException
      * @see #apply(Source, Source, Result, String, Map)
      */
-    public static void apply(String xmlFile, String xsltFile, String outFile, String factory, Map parameters, EntityResolver resolver) throws XSLTException {
+    public static void apply(String xmlFile, String xsltFile, String outFile, String factory, Map<String,Object> parameters, EntityResolver resolver) throws XSLTException {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         parserFactory.setNamespaceAware(true);
         try {
@@ -224,7 +222,7 @@ public class Stylesheet {
         }
     }
     
-    public static void apply(String xmlFile, URL xsltUrl, String outFile, String factory, Map parameters, EntityResolver resolver) throws XSLTException {
+    public static void apply(String xmlFile, URL xsltUrl, String outFile, String factory, Map<String,Object> parameters, EntityResolver resolver) throws XSLTException {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         parserFactory.setNamespaceAware(true);
         try {
@@ -251,7 +249,7 @@ public class Stylesheet {
 		}
     }
     
-    public static void apply(String xmlFile, Transformer xslt, String outFile, Map parameters, EntityResolver resolver) throws XSLTException {
+    public static void apply(String xmlFile, Transformer xslt, String outFile, Map<String,Object> parameters, EntityResolver resolver) throws XSLTException {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         parserFactory.setNamespaceAware(true);
         try {
@@ -262,9 +260,7 @@ public class Stylesheet {
             throw new XSLTException(e.getMessage(), e);
         } catch (ParserConfigurationException e) {
             throw new XSLTException(e.getMessage(), e);
-        } catch (FileNotFoundException e) {
-            throw new XSLTException(e.getMessage(), e);
-        }
+        }    
     }
     
     /**
@@ -293,13 +289,11 @@ public class Stylesheet {
      * @param resolver an entity resolver
      * @throws XSLTException
      */
-    public static void apply(String xmlFile, String xsltFile, DOMResult outDom, String factory, Map parameters, EntityResolver resolver) throws XSLTException {
+    public static void apply(String xmlFile, String xsltFile, DOMResult outDom, String factory, Map<String,Object> parameters, EntityResolver resolver) throws XSLTException {
         try {
             Source xml = file2source(FilenameOrFileURI.toFile(xmlFile), resolver);
             Source xslt = file2source(FilenameOrFileURI.toFile(xsltFile), resolver);
             apply(xml, xslt, outDom, factory, parameters, null);
-        } catch (FileNotFoundException e) {
-            throw new XSLTException(e.getMessage(), e);
         } catch (ParserConfigurationException e) {
             throw new XSLTException(e.getMessage(), e);
         } catch (SAXException e) {
@@ -315,12 +309,10 @@ public class Stylesheet {
      * @param resolver an entity resolver
      * @throws XSLTException
      */
-    public static void apply(String xmlFile, Transformer xslt, DOMResult outDom, Map parameters, EntityResolver resolver) throws XSLTException {
+    public static void apply(String xmlFile, Transformer xslt, DOMResult outDom, Map<String,Object> parameters, EntityResolver resolver) throws XSLTException {
         try {
             Source xml = file2source(FilenameOrFileURI.toFile(xmlFile), resolver);
             apply(xml, xslt, outDom, parameters);
-        } catch (FileNotFoundException e) {
-            throw new XSLTException(e.getMessage(), e);
         } catch (ParserConfigurationException e) {
             throw new XSLTException(e.getMessage(), e);
         } catch (SAXException e) {
@@ -338,12 +330,10 @@ public class Stylesheet {
      * @param resolver an entity resolver
      * @throws XSLTException
      */
-    public static void apply(DOMSource xmlDom, String xsltFile, DOMResult outDom, String factory, Map parameters, EntityResolver resolver) throws XSLTException {
+    public static void apply(DOMSource xmlDom, String xsltFile, DOMResult outDom, String factory, Map<String,Object> parameters, EntityResolver resolver) throws XSLTException {
        try {
            Source xslt = file2source(FilenameOrFileURI.toFile(xsltFile), resolver);
            apply(xmlDom, xslt, outDom, factory, parameters, null);
-       } catch (FileNotFoundException e) {
-           throw new XSLTException(e.getMessage(), e);
        } catch (ParserConfigurationException e) {
            throw new XSLTException(e.getMessage(), e);
        } catch (SAXException e) {
@@ -361,13 +351,11 @@ public class Stylesheet {
      * @param resolver an entity resolver
      * @throws XSLTException
      */
-    public static void apply(DOMSource xmlDom, String xsltFile, String outFile, String factory, Map parameters, EntityResolver resolver) throws XSLTException {
+    public static void apply(DOMSource xmlDom, String xsltFile, String outFile, String factory, Map<String,Object> parameters, EntityResolver resolver) throws XSLTException {
         try {
             Source xslt = file2source(FilenameOrFileURI.toFile(xsltFile), resolver);
             Result result = file2result(FilenameOrFileURI.toFile(outFile));
             apply(xmlDom, xslt, result, factory, parameters, null);
-        } catch (FileNotFoundException e) {
-            throw new XSLTException(e.getMessage(), e);
         } catch (ParserConfigurationException e) {
             throw new XSLTException(e.getMessage(), e);
         } catch (SAXException e) {
@@ -383,19 +371,20 @@ public class Stylesheet {
      * @param resolver an entity resolver
      * @throws XSLTException
      */
-    public static void apply(DOMSource xmlDom, Transformer xslt, String outFile, Map parameters, EntityResolver resolver) throws XSLTException {
+    public static void apply(DOMSource xmlDom, Transformer xslt, String outFile, Map<String,Object> parameters, EntityResolver resolver) throws XSLTException {
         Result result = file2result(FilenameOrFileURI.toFile(outFile));
         apply(xmlDom, xslt, result, parameters);
     }
     
-    public static void apply(DOMSource xmlDom, Transformer xslt, StringBuffer outBuffer, Map parameters, EntityResolver resolver) throws XSLTException {
+    public static void apply(DOMSource xmlDom, Transformer xslt, StringBuffer outBuffer, Map<String,Object> parameters, @SuppressWarnings("unused")
+	EntityResolver resolver) throws XSLTException {
         StringWriter sw = new StringWriter();
         Result result = new StreamResult(sw);
         apply(xmlDom, xslt, result, parameters);
         outBuffer.append(sw.getBuffer());
     }
     
-    /*package*/ static Source file2source(File xml, EntityResolver resolver) throws ParserConfigurationException, SAXException, FileNotFoundException {
+    /*package*/ static Source file2source(File xml, EntityResolver resolver) throws ParserConfigurationException, SAXException {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         parserFactory.setNamespaceAware(true);
         SAXParser parser = parserFactory.newSAXParser();        

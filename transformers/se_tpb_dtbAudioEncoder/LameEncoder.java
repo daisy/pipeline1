@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package se_tpb_dtbAudioEncoder;
 
 import java.io.File;
@@ -17,9 +34,8 @@ public class LameEncoder extends Wav2Mp3 {
      * @param rate
      * @param freq
      * @param isStereo
-     * @throws EncodingException
      */
-    public LameEncoder(int rate, int freq, boolean isStereo) throws EncodingException {
+    public LameEncoder(int rate, int freq, boolean isStereo) {
         super(rate, freq, isStereo);
     }
 
@@ -27,7 +43,7 @@ public class LameEncoder extends Wav2Mp3 {
         int k = this.getSampleFrequency() / 1000;
         int h = this.getSampleFrequency() - (k*1000);
         
-        ArrayList arr = new ArrayList();
+        ArrayList<String> arr = new ArrayList<String>();
         arr.add(lameCommand);
         arr.add("--quiet");
         arr.add("-h");
@@ -46,7 +62,7 @@ public class LameEncoder extends Wav2Mp3 {
         
         try {
         	//System.err.println("Encoding: " + lameCommand + " " + arr.toString());
-            Command.execute((String[])(arr.toArray(new String[arr.size()])));            
+            Command.execute((arr.toArray(new String[arr.size()])));            
         } catch (ExecutionException e) {
             throw new EncodingException(e.getMessage());
         }

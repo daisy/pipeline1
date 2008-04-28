@@ -14,7 +14,7 @@ import java.util.Map;
 
 import javax.xml.stream.Location;
 
-import org.daisy.pipeline.core.DMFCCore;
+import org.daisy.pipeline.core.PipelineCore;
 import org.daisy.pipeline.core.event.BusListener;
 import org.daisy.pipeline.core.event.CoreMessageEvent;
 import org.daisy.pipeline.core.event.EventBus;
@@ -26,17 +26,13 @@ import org.daisy.pipeline.core.event.TaskStateChangeEvent;
 import org.daisy.pipeline.core.script.Job;
 import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.core.script.ScriptParameter;
-import org.daisy.pipeline.core.script.ScriptValidationException;
 import org.daisy.pipeline.core.script.Task;
-import org.daisy.pipeline.core.script.datatype.DatatypeException;
 import org.daisy.pipeline.exception.DMFCConfigurationException;
-import org.daisy.pipeline.exception.JobFailedException;
 import org.daisy.pipeline.ui.CommandLineUI;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.detect.Signature;
-import org.daisy.util.file.detect.SignatureDetectionException;
 import org.daisy.util.file.detect.SignatureDetector;
 import org.daisy.util.i18n.XMLProperties;
 import org.daisy.util.mime.MIMEType;
@@ -52,7 +48,7 @@ import org.daisy.util.xml.stax.ExtendedLocationImpl;
 public class SingleScriptIterator implements BusListener {
 	private Job mCurrentJob = null;
 	
-	public SingleScriptIterator(EFolder inputDir, MIMEType inputFileType, File scriptFile, EFolder outputFolder, Map<String,String> scriptParameters) throws MIMETypeException, SignatureDetectionException, DMFCConfigurationException {
+	public SingleScriptIterator(Directory inputDir, MIMEType inputFileType, File scriptFile, Directory outputFolder, Map<String,String> scriptParameters) throws MIMETypeException, DMFCConfigurationException {
 		
 		String fileNamePattern = buildRegex(inputFileType);		
 		Collection<File> inputFiles = inputDir.getFiles(true,fileNamePattern);	
@@ -72,7 +68,7 @@ public class SingleScriptIterator implements BusListener {
 				outputDir = FileUtils.createDirectory(new File(outputFolder, Integer.toString(i)));
 				System.out.println("Running " + scriptFile.getName() + " using " + f.getName() + " as input and " + outputDir.getName() + " as output." );
 				
-	            DMFCCore dmfc = new DMFCCore(null, findHomeDirectory(),properties);
+	            PipelineCore dmfc = new PipelineCore(null, findHomeDirectory(),properties);
 	            Script script = dmfc.newScript(scriptFile.toURI().toURL());
 	            mCurrentJob = new Job(script);
 	            
@@ -126,7 +122,7 @@ public class SingleScriptIterator implements BusListener {
 	}
 	
 	class Failures extends ArrayList<Failure> {
-		
+
 		public boolean add(Failure failure) {
 			super.add(failure);
 			StringBuilder sb = new StringBuilder();
@@ -140,13 +136,15 @@ public class SingleScriptIterator implements BusListener {
 			//Map<String,String> params = failure.j.getJobParameters();
 			
 			return true;
-		}			
+		}
+		
+		private static final long serialVersionUID = -2234876789606067988L;
 	}
 
 	
 	class Failure {
-		private final Exception e;
-		private final Job j;
+		final Exception e;
+		final Job j;
 
 		Failure(Exception e, Job j) {
 			this.e = e;
@@ -193,9 +191,9 @@ public class SingleScriptIterator implements BusListener {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) {
-		EFolder inputFolder;
+		Directory inputFolder;
 		try {
-			inputFolder = new EFolder(FilenameOrFileURI.toFile(args[0]));
+			inputFolder = new Directory(FilenameOrFileURI.toFile(args[0]));
 			if(inputFolder==null||!inputFolder.exists()) throw new FileNotFoundException(args[0]);
 			
 			String inputMime = args[1];			
@@ -204,7 +202,7 @@ public class SingleScriptIterator implements BusListener {
 			File script = FilenameOrFileURI.toFile(args[2]);
 			if(script==null||!script.exists()) throw new FileNotFoundException(args[2]);
 			
-			EFolder outputFolder = new EFolder(FileUtils.createDirectory((FilenameOrFileURI.toFile(args[3]))));
+			Directory outputFolder = new Directory(FileUtils.createDirectory((FilenameOrFileURI.toFile(args[3]))));
 			
 			Map<String,String> parameters = new HashMap<String,String>(); //TODO get this from args[]
 			
@@ -219,9 +217,6 @@ public class SingleScriptIterator implements BusListener {
 			e.printStackTrace();
 			System.exit(1);
 		} catch (MIMETypeException e) {
-			e.printStackTrace();
-			System.exit(1);
-		} catch (SignatureDetectionException e) {
 			e.printStackTrace();
 			System.exit(1);
 		} catch (DMFCConfigurationException e) {
@@ -357,7 +352,7 @@ public class SingleScriptIterator implements BusListener {
      * @throws DMFCConfigurationException
      */
     private static File findHomeDirectory() throws DMFCConfigurationException {
-        URL propertiesURL = DMFCCore.class.getClassLoader().getResource(
+        URL propertiesURL = PipelineCore.class.getClassLoader().getResource(
                 "pipeline.properties");
         File propertiesFile = null;
         try {
@@ -367,12 +362,12 @@ public class SingleScriptIterator implements BusListener {
         }
         // Is this the home dir?
         File folder = propertiesFile.getParentFile();
-        if (DMFCCore.testHomeDirectory(folder)) {
+        if (PipelineCore.testHomeDirectory(folder)) {
             return folder;
         }
         // Test parent
         folder = folder.getParentFile();
-        if (DMFCCore.testHomeDirectory(folder)) {
+        if (PipelineCore.testHomeDirectory(folder)) {
             return folder;
         }
         throw new DMFCConfigurationException(

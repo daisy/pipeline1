@@ -1,6 +1,5 @@
 /*
- * DMFC - The DAISY Multi Format Converter Copyright (C) 2005-2007 Daisy
- * Consortium
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -34,7 +33,7 @@ import java.util.regex.Pattern;
 
 import javax.xml.stream.Location;
 
-import org.daisy.pipeline.core.DMFCCore;
+import org.daisy.pipeline.core.PipelineCore;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.BusListener;
 import org.daisy.pipeline.core.event.CoreMessageEvent;
@@ -181,7 +180,7 @@ public class CommandLineUI implements InputListener, BusListener {
                         "Can't read pipeline.user.properties", e);
             }
 
-            DMFCCore dmfc = new DMFCCore(ui, findHomeDirectory(),properties);
+            PipelineCore dmfc = new PipelineCore(ui, findHomeDirectory(),properties);
             Script script = dmfc.newScript(scriptFile.toURI().toURL());
             Job job = new Job(script);
 
@@ -455,7 +454,7 @@ public class CommandLineUI implements InputListener, BusListener {
      * @throws DMFCConfigurationException
      */
     private static File findHomeDirectory() throws DMFCConfigurationException {
-        URL propertiesURL = DMFCCore.class.getClassLoader().getResource(
+        URL propertiesURL = PipelineCore.class.getClassLoader().getResource(
                 "pipeline.properties");
         File propertiesFile = null;
         try {
@@ -465,12 +464,12 @@ public class CommandLineUI implements InputListener, BusListener {
         }
         // Is this the home dir?
         File folder = propertiesFile.getParentFile();
-        if (DMFCCore.testHomeDirectory(folder)) {
+        if (PipelineCore.testHomeDirectory(folder)) {
             return folder;
         }
         // Test parent
         folder = folder.getParentFile();
-        if (DMFCCore.testHomeDirectory(folder)) {
+        if (PipelineCore.testHomeDirectory(folder)) {
             return folder;
         }
         throw new DMFCConfigurationException(
@@ -498,7 +497,7 @@ public class CommandLineUI implements InputListener, BusListener {
         String source;
         if (event.getSource() instanceof Transformer) {
             source = ((Transformer) event.getSource()).getTransformerInfo()
-                    .getName();
+                    .getNiceName();
         } else {
             source = event.getSource().getClass().getSimpleName();
         }

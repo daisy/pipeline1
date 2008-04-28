@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_xmldetection;
 
@@ -49,6 +48,7 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
 /**
  * @author Linus Ericson
  */
+@SuppressWarnings("unchecked")
 public abstract class XMLBreakDetector {
     
     protected final static Pattern dtdPattern = Pattern.compile("<!DOCTYPE\\s+\\w+(\\s+((SYSTEM\\s+(\"[^\"]*\"|'[^']*')|PUBLIC\\s+(\"[^\"]*\"|'[^']*')\\s+(\"[^\"]*\"|'[^']*'))))?\\s*(\\[.*\\]\\s*)?>");
@@ -65,12 +65,12 @@ public abstract class XMLBreakDetector {
     protected BreakFinder breakFinder = null;
     protected ContextStack writeStack = new ContextStack();
     
-    protected Set allowedPaths = null;
+    protected Set<String> allowedPaths = null;
     
     private boolean rootElementSeen = false;
     private boolean alreadyCalled = false;
 
-    public XMLBreakDetector (File outFile) throws CatalogExceptionNotRecoverable, FileNotFoundException, XMLStreamException {
+    public XMLBreakDetector (File outFile) throws CatalogExceptionNotRecoverable, XMLStreamException {
         inputFactory = XMLInputFactory.newInstance();
         eventFactory = XMLEventFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
@@ -102,7 +102,7 @@ public abstract class XMLBreakDetector {
         outputFile = outFile;
     }
     
-    public void detect(Set paths) throws UnsupportedDocumentTypeException, FileNotFoundException, XMLStreamException {
+    public void detect(Set<String> paths) throws UnsupportedDocumentTypeException, FileNotFoundException, XMLStreamException {
         if (alreadyCalled) {
             throw new IllegalStateException("This method may only be called once");
         }
@@ -162,9 +162,9 @@ public abstract class XMLBreakDetector {
                 QName breakElement = getBreakElement();
                 QName expAttrName = breakSettings.getExpAttr();
                 StartElement se = event.asStartElement();
-                Vector namespaces = new Vector();
+                Vector<Namespace> namespaces = new Vector<Namespace>();
                 boolean alreadyExists = false;
-                for (Iterator it = se.getNamespaces(); it.hasNext(); ) {
+                for (Iterator<?> it = se.getNamespaces(); it.hasNext(); ) {
                     Namespace ns = (Namespace)it.next();
                     if (ns.getPrefix().equals(breakElement.getPrefix())) {
                         if (ns.getNamespaceURI() == null) {
@@ -196,11 +196,11 @@ public abstract class XMLBreakDetector {
         writerCache.writeEvent(event, filter);
     }
     
-    private void maybeAddExpAttrNS(Vector namespaces, QName expAttrName) throws XMLStreamException {
+    private void maybeAddExpAttrNS(Vector<Namespace> namespaces, QName expAttrName) throws XMLStreamException {
         if (expAttrName != null) {
             boolean alreadyExists = false;
-	        for (Iterator it = namespaces.iterator(); it.hasNext(); ) {
-	            Namespace ns = (Namespace)it.next();
+	        for (Iterator<Namespace> it = namespaces.iterator(); it.hasNext(); ) {
+	            Namespace ns = it.next();
 	            if (ns.getPrefix().equals(expAttrName.getPrefix())) {
 	                if (ns.getNamespaceURI() == null) {
 	                    if (expAttrName.getNamespaceURI() == null) {
@@ -254,12 +254,12 @@ public abstract class XMLBreakDetector {
         return breakSettings.getBreakElement();
     }
     
-    protected Iterator getBreakAttributes() {
-        Iterator result = null;
+    protected Iterator<Attribute> getBreakAttributes() {
+        Iterator<Attribute> result = null;
         Map attributeMap = breakSettings.getBreakAttributes(); 
         if (attributeMap != null) {
-            Vector v = new Vector();
-            for (Iterator it = attributeMap.keySet().iterator(); it.hasNext(); ) {
+            Vector<Attribute> v = new Vector<Attribute>();
+            for (Iterator<?> it = attributeMap.keySet().iterator(); it.hasNext(); ) {
                 String name = (String)it.next();
                 String value = (String)attributeMap.get(name);
                 Attribute attr = eventFactory.createAttribute(name, value);

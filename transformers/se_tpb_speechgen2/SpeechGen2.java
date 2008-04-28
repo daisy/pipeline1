@@ -1,26 +1,24 @@
-/* 
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_speechgen2;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,7 +42,6 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventReader;
@@ -176,23 +173,23 @@ public class SpeechGen2 extends Transformer {
 	 * @see org.daisy.dmfc.core.transformer.Transformer#execute(java.util.Map)
 	 */
 	@Override
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		FileInputStream fis = null;
 		BookmarkedXMLEventReader reader = null;
 		
 		try {
 			/* get the params */
-			File configFile = new File((String) parameters.remove("sgConfigFilename"));
-			File ttsBuilderConfig = new File((String)parameters.remove("ttsBuilderConfig"));
-			File inputFile = new File((String) parameters.remove("inputFilename"));
-			File outputFile = new File((String) parameters.remove("outputFilename"));
+			File configFile = new File(parameters.remove("sgConfigFilename"));
+			File ttsBuilderConfig = new File(parameters.remove("ttsBuilderConfig"));
+			File inputFile = new File(parameters.remove("inputFilename"));
+			File outputFile = new File(parameters.remove("outputFilename"));
 
-			outputDir = new File((String) parameters.get("outputDirectory"));
+			outputDir = new File(parameters.get("outputDirectory"));
 			if (!outputDir.exists()) {
 				outputDir.mkdirs();
 			}
-			concurrentMerge = Boolean.parseBoolean((String) parameters.remove("concurrentAudioMerge"));
-			mp3Output = Boolean.parseBoolean((String) parameters.remove("mp3Output"));
+			concurrentMerge = Boolean.parseBoolean(parameters.remove("concurrentAudioMerge"));
+			mp3Output = Boolean.parseBoolean(parameters.remove("mp3Output"));
 			
 			// validate the configuration file for ttsbuilder
 			ErrorHandler handler = new ErrorHandler() {
@@ -211,7 +208,7 @@ public class SpeechGen2 extends Transformer {
 				}
 			};
 
-			File rng = new File((String)parameters.remove("ttsBuilderRNG"));
+			File rng = new File(parameters.remove("ttsBuilderRNG"));
 			try {
 				RelaxngSchematronValidator validator;
 				validator = new RelaxngSchematronValidator(rng, handler, true, true);
@@ -337,7 +334,7 @@ public class SpeechGen2 extends Transformer {
 			
 			//-----------------------------------------------------------------
 			// Load the text
-			if (!doLoadText(inputFile, fis, reader)) {
+			if (!doLoadText(fis, reader)) {
 				return false;
 			}
 			
@@ -461,7 +458,7 @@ public class SpeechGen2 extends Transformer {
 		return true;
 	}
 
-	private boolean doFetchAudio(File inputFile, File outputFile, BookmarkedXMLEventReader reader) throws XMLStreamException, IOException, UnsupportedAudioFileException, InterruptedException, FactoryConfigurationError, FileNotFoundException, TransformerRunException {
+	private boolean doFetchAudio(File inputFile, File outputFile, BookmarkedXMLEventReader reader) throws XMLStreamException, IOException, UnsupportedAudioFileException, TransformerRunException {
 		boolean first = true;
 		while (reader.hasNext()) {
 			XMLEvent event = reader.nextEvent();
@@ -475,7 +472,7 @@ public class SpeechGen2 extends Transformer {
 					StartElement curr = se;
 					first = false;
 					Set<Namespace> ns = new HashSet<Namespace>();
-					for (Iterator it = curr.getNamespaces(); it.hasNext(); ) {
+					for (Iterator<?> it = curr.getNamespaces(); it.hasNext(); ) {
 						ns.add((Namespace) it.next());
 					}
 					ns.add(eventFactory.createNamespace(smilPrefix, smilURI));
@@ -529,7 +526,7 @@ public class SpeechGen2 extends Transformer {
 
 					// Add some slience before each hx?
 					if (!lastSynchNumber.isEmpty()) {
-						Integer integer = (Integer) lastSynchNumber.peek();
+						Integer integer = lastSynchNumber.peek();
 						if (integer.intValue() == synchronizationPointCounter) {
 							// this was the last synch point of the current part
 							lastSynchNumber.poll();
@@ -585,7 +582,7 @@ public class SpeechGen2 extends Transformer {
 	}
 
 	
-	private boolean doLoadText(File inputFile, FileInputStream fis, BookmarkedXMLEventReader reader) throws XMLStreamException, IOException, UnsupportedAudioFileException, InterruptedException, TransformerRunException {
+	private boolean doLoadText(FileInputStream fis, BookmarkedXMLEventReader reader) throws XMLStreamException, IOException, TransformerRunException {
 		while (reader.hasNext()) {
 			XMLEvent event = reader.nextEvent();
 			xmlContext.addEvent(event);
@@ -662,11 +659,8 @@ public class SpeechGen2 extends Transformer {
 	 * @param se the start element.
 	 * @throws XMLStreamException
 	 * @throws IOException
-	 * @throws UnsupportedAudioFileException
-	 * @throws TransformerRunException
-	 * @throws InterruptedException 
 	 */
-	private void loadSynchronizationPoint(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException, IOException, UnsupportedAudioFileException, TransformerRunException, InterruptedException {
+	private void loadSynchronizationPoint(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException, IOException {
 		Document scope = getDOM(reader, se);
 		List<StartElement> introductions = new ArrayList<StartElement>();
 		introductions.addAll(before);
@@ -693,7 +687,7 @@ public class SpeechGen2 extends Transformer {
 		String lang = scopeRoot.getAttribute("xml:lang");
 
 		// choose tts
-		TTS tts = (TTS) ttsEngines.get(lang);
+		TTS tts = ttsEngines.get(lang);
 
 		
 
@@ -733,10 +727,8 @@ public class SpeechGen2 extends Transformer {
 	 * @throws XMLStreamException
 	 * @throws IOException
 	 * @throws UnsupportedAudioFileException
-	 * @throws TransformerRunException
-	 * @throws InterruptedException 
 	 */
-	private String fetchSynchronizationPoint(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException, IOException, UnsupportedAudioFileException, TransformerRunException, InterruptedException {
+	private String fetchSynchronizationPoint(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException, IOException, UnsupportedAudioFileException {
 		TTSOutput ttsOutput;
 		Document scope = getDOM(reader, se);
 		List<StartElement> introductions = new ArrayList<StartElement>();
@@ -747,7 +739,7 @@ public class SpeechGen2 extends Transformer {
 
 		int minLevel = getMinLevelBeforeNextSynchronization(reader);
 		while (!after.isEmpty()) {
-			Integer integer = (Integer) afterLevels.peek();
+			Integer integer = afterLevels.peek();
 			if (minLevel <= integer.intValue()) {
 				// terminate this element structure
 				afterLevels.pop();
@@ -881,11 +873,8 @@ public class SpeechGen2 extends Transformer {
 	/**
 	 * Merges the small clips (each synchpoint) so far into one
 	 * .wav file. Performes mp3-encoding as well, in a separate thread.
-	 * @throws IOException
-	 * @throws UnsupportedAudioFileException
-	 * @throws InterruptedException
 	 */
-	private void mergeAudio() throws IOException, UnsupportedAudioFileException, InterruptedException {
+	private void mergeAudio() {
 		if (0 == workingFiles.size()) {
 			numAudioFiles--;
 			return;
@@ -986,7 +975,7 @@ public class SpeechGen2 extends Transformer {
 
 		Document dom = domBuilder.newDocument();
 		Element root = dom.createElement(se.getName().getLocalPart());
-		for (Iterator it = se.asStartElement().getAttributes(); it.hasNext(); ) {
+		for (Iterator<?> it = se.asStartElement().getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
 			QName qn = at.getName();
 			root.setAttribute(qn.getLocalPart(), at.getValue());
@@ -1007,7 +996,7 @@ public class SpeechGen2 extends Transformer {
 				elemCount++;
 				Element elem = dom.createElement(e.asStartElement().getName().getLocalPart());
 
-				for (Iterator it = e.asStartElement().getAttributes(); it.hasNext(); ) {
+				for (Iterator<?> it = e.asStartElement().getAttributes(); it.hasNext(); ) {
 					Attribute at = (Attribute) it.next();
 					QName qn = at.getName();
 					elem.setAttribute(qn.getLocalPart(), at.getValue());
@@ -1092,7 +1081,7 @@ public class SpeechGen2 extends Transformer {
 	 * specified, <code>false</code> otherwise.
 	 */
 	private boolean isAnnouncement(StartElement se) {		
-		for (Iterator atIt = se.getAttributes(); atIt.hasNext(); ) {
+		for (Iterator<?> atIt = se.getAttributes(); atIt.hasNext(); ) {
 			Attribute at = (Attribute) atIt.next();
 			if (announceBefore.equals(at.getName())) {
 				return true;
@@ -1258,7 +1247,7 @@ public class SpeechGen2 extends Transformer {
 		Attribute src = eventFactory.createAttribute(srcName, currentAudioFilename);
 
 		Set<Attribute> attributes = new HashSet<Attribute>();
-		for (Iterator it = event.asStartElement().getAttributes(); it.hasNext(); ) {
+		for (Iterator<?> it = event.asStartElement().getAttributes(); it.hasNext(); ) {
 			attributes.add((Attribute) it.next());
 		}
 		attributes.add(clipBegin);
@@ -1266,7 +1255,7 @@ public class SpeechGen2 extends Transformer {
 		attributes.add(src);
 
 		Set<Namespace> namespaces = new HashSet<Namespace>();
-		for (Iterator it = event.asStartElement().getNamespaces(); it.hasNext(); ) {
+		for (Iterator<?> it = event.asStartElement().getNamespaces(); it.hasNext(); ) {
 			namespaces.add((Namespace) it.next());
 		}
 
@@ -1317,7 +1306,7 @@ public class SpeechGen2 extends Transformer {
 	 * @param it An iterator over some files.
 	 * @return the sum of lengths of the files pointed at by <code>it</code>.
 	 */
-	private long getTotalFileSize(Iterator it) {
+	private long getTotalFileSize(Iterator<?> it) {
 		long s = 0;
 		File tmp;
 		for (; it.hasNext(); ) {

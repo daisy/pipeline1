@@ -1,23 +1,19 @@
-
-
-
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package se_tpb_dtbSplitterMerger.split;
@@ -43,7 +39,9 @@ import org.daisy.util.fileset.D202MasterSmilFile;
 import org.daisy.util.fileset.D202NccFile;
 import org.daisy.util.fileset.D202SmilFile;
 import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.Referable;
+import org.daisy.util.fileset.SmilFile;
 import org.daisy.util.fileset.TextualContentFile;
 import org.daisy.util.fileset.XmlFile;
 import org.w3c.dom.Attr;
@@ -67,6 +65,7 @@ import se_tpb_dtbSplitterMerger.XmlParsingException;
  * 
  * @author Piotr Kiernicki
  */
+@SuppressWarnings("unchecked")
 public class DtbSplitter202 extends DtbSplitter {
 	
 	private Map bookInfo = null;
@@ -119,12 +118,12 @@ public class DtbSplitter202 extends DtbSplitter {
 	/* (non-Javadoc)
 	 * @see org.daisy.dtbsm.DtbSplitter#getBasePlaySequenceCollection()
 	 */
-	protected Collection getBasePlaySequenceSmilCollection() {
-		Collection smilFiles = new ArrayList();
-		for(Iterator i=this.nccFile.getReferencedLocalMembers().iterator();i.hasNext();){
-			Object file = i.next();
+	protected Collection<SmilFile> getBasePlaySequenceSmilCollection() {
+		Collection<SmilFile> smilFiles = new ArrayList<SmilFile>();
+		for(Iterator<FilesetFile> i=this.nccFile.getReferencedLocalMembers().iterator();i.hasNext();){
+			FilesetFile file = i.next();
 			if(file instanceof D202SmilFile){
-                smilFiles.add(file);
+                smilFiles.add((D202SmilFile)file);
 			}
 		}
 		return smilFiles;
@@ -241,8 +240,8 @@ public class DtbSplitter202 extends DtbSplitter {
 			 * if it is always just one file, one should change the
 			 * type of fullTextFiles from List to File.
 			 */
-			for(Iterator fullTxt = volume.getFullTextFiles().iterator(); fullTxt.hasNext();){
-				this.modifyCopyNavigationFile(((TextualContentFile)fullTxt.next()), volume);
+			for(Iterator<TextualContentFile> fullTxt = volume.getFullTextFiles().iterator(); fullTxt.hasNext();){
+				this.modifyCopyNavigationFile((fullTxt.next()), volume);
 			}	
 			String inputVolumeDir = this.nccFile.getFile().getParent();
 			boolean checkRelativePath = true;
@@ -280,7 +279,7 @@ public class DtbSplitter202 extends DtbSplitter {
 		}
 	
 		//Change the appropriate attribute values to prompt file names.
-		Document modifiedDoc = (Document)this.modifyNavigationDoc(doc, volume);
+		Document modifiedDoc = this.modifyNavigationDoc(doc, volume);
 	
 		String outputFilePath = volumeOutputDir.getAbsolutePath() + File.separator + inputNavigationFile.getName();
 	
@@ -467,7 +466,7 @@ public class DtbSplitter202 extends DtbSplitter {
 		return navigationDoc;
 	}
 	
-	private String handleTitlePrompt(String titleSmilName, DtbVolume volume) throws XmlParsingException, IOException{
+	private String handleTitlePrompt(@SuppressWarnings("unused")String titleSmilName, DtbVolume volume) throws XmlParsingException, IOException{
 		
 		String titlePromtHrefValue = super.getVolumeSet().getTitlePromptHrefValue();
 		
@@ -482,7 +481,7 @@ public class DtbSplitter202 extends DtbSplitter {
 			D202SmilFile titleSmil = null;
 			
 			//Get a handle to the title smil file, which is in volume one
-			DtbVolume firstVolume = ((DtbVolume)super.getVolumeSet().get(0));
+			DtbVolume firstVolume = super.getVolumeSet().get(0);
 			titleSmil = (D202SmilFile)firstVolume.getTitleSmil();
 			
 			//handle smil prompt file ==========
@@ -515,7 +514,7 @@ public class DtbSplitter202 extends DtbSplitter {
 		return titlePromtHrefValue;
 	}
 	
-	private void handleTitlePromptAudio(AudioFile titleAudio, DtbVolume volume) throws IOException{
+	private void handleTitlePromptAudio(AudioFile titleAudio, @SuppressWarnings("unused")DtbVolume volume){
 		File titlePromptAudio = titleAudio.getFile();
         //it will be copied together with ther promt files
 		//File outTitlePromptAudio = new File(volume.getVolumeOutputDir().getAbsolutePath()+File.separator+titlePromptAudio.getName());

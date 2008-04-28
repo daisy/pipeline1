@@ -1,4 +1,20 @@
-
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package se_tpb_dtbAudioEncoder;
 
 import java.io.File;
@@ -60,8 +76,8 @@ class LinkChanger {
                     if (index != -1 && srcAtt.getValue().substring(index+1).matches(regex)) {
                         String newAtt = srcAtt.getValue().substring(0, index) + "." + replacement;
                         //System.err.println("newAtt: " + newAtt);
-                        Collection coll = new ArrayList();
-                        for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+                        Collection<Attribute> coll = new ArrayList<Attribute>();
+                        for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
                             Attribute att = (Attribute)it.next();
                             if (att.getName().getLocalPart().equals(srcAtt.getName().getLocalPart())) {
                                 coll.add(eventFactory.createAttribute("href", newAtt));
@@ -110,8 +126,8 @@ class LinkChanger {
                     if (index != -1 && srcAtt.getValue().substring(index+1).matches(regex)) {
                         String newAtt = srcAtt.getValue().substring(0, index) + "." + replacement;
                         //System.err.println("newAtt: " + newAtt);
-                        Collection coll = new ArrayList();
-                        for (Iterator it = se.getAttributes(); it.hasNext(); ) {
+                        Collection<Attribute> coll = new ArrayList<Attribute>();
+                        for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
                             Attribute att = (Attribute)it.next();
                             if (att.getName().getLocalPart().equals("src")) {
                                 coll.add(eventFactory.createAttribute("src", newAtt));

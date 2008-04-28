@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.xml.stax;
 
 import java.io.IOException;
@@ -79,7 +96,7 @@ public class ExtendedLocationProvider {
 		}
 		
 		if(cxer==null) {
-			Map properties = null;
+			Map<String,Object> properties = null;
 			XMLInputFactory xif = null;
 			try{
 				properties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
@@ -150,8 +167,8 @@ public class ExtendedLocationProvider {
 	 * @throws XMLStreamException 
 	 */
 	public void reset() throws XMLStreamException {
-		for (Iterator iter = mReaderCache.keySet().iterator(); iter.hasNext();) {
-			URL u = (URL)iter.next();
+		for (Iterator<URL> iter = mReaderCache.keySet().iterator(); iter.hasNext();) {
+			URL u = iter.next();
 			XMLEventReader xer = mReaderCache.get(u);
 			xer.close();			
 		}
@@ -169,7 +186,7 @@ public class ExtendedLocationProvider {
 		URL config = this.getClass().getResource("ExtendedLocationTokens.xml");
 		
 		XMLInputFactory xif = null;
-		Map properties = null;		
+		Map<String,Object> properties = null;		
 		try {
 			properties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
 			xif = StAXInputFactoryPool.getInstance().acquire(properties);									
@@ -230,7 +247,7 @@ public class ExtendedLocationProvider {
 				if(!mapEntry.getAttributes().hasNext()) return true;
 				//else loop over attributes and make sure test has all of the map entry
 				boolean matchesAll = true;
-				for (Iterator iter = mapEntry.getAttributes(); iter.hasNext();) {
+				for (Iterator<?> iter = mapEntry.getAttributes(); iter.hasNext();) {
 					Attribute mapEntryAttr = (Attribute) iter.next();
 					Attribute testAttr = test.getAttributeByName(mapEntryAttr.getName()); 
 					if(testAttr == null) {

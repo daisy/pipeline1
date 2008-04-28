@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.fileset.impl;
 
 import java.io.FileNotFoundException;
@@ -43,15 +41,14 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	private String dcIdentifier = null;
 	private String dtbUid = null;
 	private String doctitle = null;
-	private Set docauthors = new HashSet();
-	private Set dcCreators = new HashSet();
+	private Set<String> docauthors = new HashSet<String>();
+	private Set<String> dcCreators = new HashSet<String>();
 	private String dcPublisher= null;
-	private Set dcLanguages= new HashSet(); //repeatable
+	private Set<String> dcLanguages= new HashSet<String>(); //repeatable
 	private String mRootVersion = null;
 	
 	private boolean inDoctitle = false;
 	private boolean inDocauthor = false;
-	private boolean mInBodyMatter = false;
 	
 	private String charCollector = "";
 	
@@ -107,6 +104,7 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 		}//for (int i
 	}//startElement
 
+	@SuppressWarnings("unused")
 	public void endElement(String uri, String sName, String qName) throws SAXException {
 		if (sName == "doctitle") {			
 			this.doctitle = charCollector;
@@ -119,6 +117,7 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void characters(char[] chars, int start, int end) throws SAXException {
 		if(inDoctitle||inDocauthor) {
 			charCollector += String.copyValueOf(chars,start,end);
@@ -143,12 +142,12 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 
 	public String getDcCreator() {
 		if (!dcCreators.isEmpty()) {
-			return (String)dcCreators.iterator().next();
+			return dcCreators.iterator().next();
 		}
 		return null;
 	}
 	
-	public Collection getDcCreators() {
+	public Collection<String> getDcCreators() {
 		return dcCreators;
 	}
 	
@@ -158,12 +157,12 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 	
 	public String getDocauthor() {
 		if (!docauthors.isEmpty()) {
-			return (String)docauthors.iterator().next();
+			return docauthors.iterator().next();
 		}
 		return null;
 	}
 	
-	public Collection getDocauthors() {
+	public Collection<String> getDocauthors() {
 		return docauthors;
 	}
 
@@ -175,7 +174,7 @@ final class Z3986DtbookFileImpl extends XmlFileImpl implements Z3986DtbookFile, 
 		return dtbUid;
 	}
 	
-	public Collection getDcLanguages() {		
+	public Collection<String> getDcLanguages() {		
 		return this.dcLanguages;
 	}
 	

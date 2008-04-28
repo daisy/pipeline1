@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.pipeline.util;
 
 import java.io.File;
@@ -23,7 +40,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
@@ -48,9 +65,9 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 public class DocIndexGenerator implements ErrorHandler {
 	Map<File,String> mFilesWithTitles = null;
 	
-	DocIndexGenerator(EFolder docFolder) throws Exception {
+	DocIndexGenerator(Directory docFolder) throws Exception {
 		
-		mFilesWithTitles = new HashMap();
+		mFilesWithTitles = new HashMap<File,String>();
 		/*
 		 * We assume that the name of doc/subfolder and the id
 		 * of the wrapper div element in the destination file 
@@ -161,8 +178,8 @@ public class DocIndexGenerator implements ErrorHandler {
 	}
 
 
-	private void populate(Document indexDoc, EFolder docFolder, String name, String deleteInLabels) throws IOException, CatalogExceptionNotRecoverable, PoolException, XMLStreamException {
-		EFolder subDocFolder = new EFolder(docFolder, name);
+	private void populate(Document indexDoc, Directory docFolder, String name, String deleteInLabels) throws IOException, CatalogExceptionNotRecoverable, PoolException, XMLStreamException {
+		Directory subDocFolder = new Directory(docFolder, name);
 		Element subDocListParent = indexDoc.getElementById(name);
 		subDocListParent = (Element)deleteChildren(subDocListParent);
 		getFilesWithTitles(subDocFolder);
@@ -171,8 +188,8 @@ public class DocIndexGenerator implements ErrorHandler {
 
 	private void addRefs(Element parent, String parentFolder, String deleteInLabels) {
 		List<File> list = new LinkedList<File>();
-		for (Iterator iter = mFilesWithTitles.keySet().iterator(); iter.hasNext();) {
-			File file = (File) iter.next();
+		for (Iterator<File> iter = mFilesWithTitles.keySet().iterator(); iter.hasNext();) {
+			File file = iter.next();
 			if(file.getParentFile().getName().equals(parentFolder)){
 				list.add(file);
 			}	
@@ -188,17 +205,6 @@ public class DocIndexGenerator implements ErrorHandler {
 				
 	}
 	
-	private void addRefsOld(Element parent, String parentFolder, String deleteInLabels) {
-		for (Iterator iter = mFilesWithTitles.keySet().iterator(); iter.hasNext();) {
-			File file = (File) iter.next();
-			if(file.getParentFile().getName().equals(parentFolder)){
-				String title = mFilesWithTitles.get(file);
-				String hrefValue = "./"+parentFolder+"/"+file.getName();
-				parent = appendAnchorWithHref(parent, hrefValue, title,deleteInLabels);
-			}	
-		}							
-	}
-
 	private Element appendAnchorWithHref(Element parent, String hrefValue, String text, String deleteInLabels) {
 		Element p = parent.getOwnerDocument().createElement("p");
 		Element anchor = parent.getOwnerDocument().createElement("a");
@@ -209,7 +215,7 @@ public class DocIndexGenerator implements ErrorHandler {
 		return parent;
 	}
 	
-	private void getFilesWithTitles(EFolder transformersDocFolder) throws PoolException, FileNotFoundException, XMLStreamException, CatalogExceptionNotRecoverable {
+	private void getFilesWithTitles(Directory transformersDocFolder) throws PoolException, FileNotFoundException, XMLStreamException, CatalogExceptionNotRecoverable {
 		
 		Collection<File> files = transformersDocFolder.getFiles(false, ".+\\.[Xx]?[Hh][Tt][Mm][Ll]?$");
 		for (File file : files) {
@@ -222,7 +228,7 @@ public class DocIndexGenerator implements ErrorHandler {
 
 		
 	private String getTitle(EFile file) throws PoolException, FileNotFoundException, XMLStreamException, CatalogExceptionNotRecoverable {
-		Map props = new HashMap();
+		Map<String,Object> props = new HashMap<String,Object>();
 		props.put(XMLInputFactory.RESOLVER, new StaxEntityResolver(CatalogEntityResolver.getInstance()));
 		
 		XMLInputFactory xif = StAXInputFactoryPool.getInstance().acquire(props);
@@ -259,7 +265,8 @@ public class DocIndexGenerator implements ErrorHandler {
 				if (node.hasChildNodes()) {
 					deleteChildren(node);
 				}
-				Node del = node.getParentNode().removeChild(node);	
+				//Node del = node.getParentNode().removeChild(node);	
+				node.getParentNode().removeChild(node);
 			}	
 		}
 		return parent;
@@ -273,12 +280,12 @@ public class DocIndexGenerator implements ErrorHandler {
 	public static void main(String[] args) {		
 		System.err.println("Running DocIndexGenerator...");
 		try {
-			EFolder docFolder = new EFolder(args[0]);
+			Directory docFolder = new Directory(args[0]);
 			if(!docFolder.exists()) {
 				throw new IOException(docFolder.toString());
 			}
 		
-			DocIndexGenerator dig = new DocIndexGenerator(docFolder);
+			new DocIndexGenerator(docFolder);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -290,14 +297,17 @@ public class DocIndexGenerator implements ErrorHandler {
 
 
 
+	@SuppressWarnings("unused")
 	public void error(SAXParseException arg0) throws SAXException {
 		System.err.println(arg0.toString());		
 	}
 
+	@SuppressWarnings("unused")
 	public void fatalError(SAXParseException arg0) throws SAXException {
 		System.err.println(arg0.toString());		
 	}
 
+	@SuppressWarnings("unused")
 	public void warning(SAXParseException arg0) throws SAXException {
 		System.err.println(arg0.toString());		
 	}

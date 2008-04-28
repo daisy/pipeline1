@@ -27,7 +27,7 @@ import org.daisy.pipeline.core.event.MessageEvent.Type;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileJuggler;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.Fileset;
@@ -71,7 +71,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 	}
 
 	/*
-	 * TODO ideas (mg20071121)
+	 * ideas (mg20071121)
 	 *  optional add GUID or better inparam UID to meta
 	 *  optional, docauthor doctitle/dc:title values as inparams?
 	 *  
@@ -80,11 +80,11 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 	 */
 	
 	@Override
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		
-		File input = FilenameOrFileURI.toFile((String)parameters.get("input"));
-		File output = FilenameOrFileURI.toFile((String)parameters.get("output"));
-		boolean force = ((String)parameters.get("forceRun")).contentEquals("true");						
+		File input = FilenameOrFileURI.toFile(parameters.get("input"));
+		File output = FilenameOrFileURI.toFile(parameters.get("output"));
+		boolean force = (parameters.get("forceRun")).contentEquals("true");						
 		SystemPropertyHandler propertyHandler = new SystemPropertyHandler(parameters);
 		propertyHandler.set();
 						
@@ -106,7 +106,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			/*
 			 * Create an ordered List with the user activated category names
 			 */
-			List<Category.Name> nameList = getActiveCategories((String)parameters.get("runCategories"));
+			List<Category.Name> nameList = getActiveCategories(parameters.get("runCategories"));
 			
 			
 			/*
@@ -114,13 +114,13 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			 */
 			List<Category> categories = new LinkedList<Category>(); 			
 			for (Category.Name name : nameList) {
-				categories.add(createCategory(name, parameters, (String)parameters.get("DTBookVersion")));				
+				categories.add(createCategory(name, parameters, parameters.get("DTBookVersion")));				
 			}
 			
 			/* 
 			 * Run the indenter last in the chain, this is harmless so always active
 			 */
-			categories.add(createCategory(Category.Name.INDENT, parameters, (String)parameters.get("DTBookVersion")));
+			categories.add(createCategory(Category.Name.INDENT, parameters, parameters.get("DTBookVersion")));
 			
 			/*
 			 * Execute the Executors.
@@ -200,7 +200,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 		if(!input.getParentFile().equals(output.getParentFile())) {
 			try{
 				Fileset toCopy = new FilesetImpl(input.toURI(),this,false,false);
-				EFolder dest = new EFolder(output.getParentFile());
+				Directory dest = new Directory(output.getParentFile());
 				dest.addFileset(toCopy, true);
 				File manifest = new File(dest,input.getName());
 				manifest.delete();
@@ -263,11 +263,13 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			PeekerPool.getInstance().release(peeker);
 		}				    	
 	}
-
-	@SuppressWarnings("unchecked")	
-	private Category createCategory(Category.Name name, Map parameters, String inputDTBookVersion) {
+	
+	private Category createCategory(Category.Name name, Map<String,String> parameters, String inputDTBookVersion) {
+		@SuppressWarnings("unused")
 		final String[] v2005_1 = {"2005-1"};		
+		@SuppressWarnings("unused")
 		final String[] v2005_2 = {"2005-2"};
+		@SuppressWarnings("unused")
 		final String[] v2005_1_2 = {"2005-1","2005-2"};
 		final String[] v2005_1_2_3 = {"2005-1","2005-2","2005-3"};
 						
@@ -286,7 +288,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		 * Populate the executors of the TIDY category 
     		 */    		
     		    		
-    		if(((String)parameters.get("simplifyHeadingLayout")).contentEquals("true")) {
+    		if((parameters.get("simplifyHeadingLayout")).contentEquals("true")) {
     			//tidy-level-cleaner.xsl is optional
     			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2_3,i18n("LEVEL_CLEANER"),this,this,this,emitter));
     		}    		
@@ -297,13 +299,13 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-add-author-title.xsl"),v2005_1_2_3,i18n("ADD_AUTHOR_AND_TITLE"),this,this,this,emitter));
     		executors.add(new LangExecutor(parameters, this.getClass().getResource("./xslt/tidy-add-lang.xsl"), i18n("ADD_LANG"), this, this, this, emitter));
     		
-    		if(((String)parameters.get("externalizeWhitespace")).contentEquals("true")) {
+    		if(parameters.get("externalizeWhitespace").contentEquals("true")) {
     			//tidy-externalize-whitespace.xsl is optional
-    			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-externalize-whitespace.xsl"),v2005_1_2,i18n("EXTERNALIZE_WHITESPACE"),this,this,this,emitter));
+    			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-externalize-whitespace.xsl"),v2005_1_2_3,i18n("EXTERNALIZE_WHITESPACE"),this,this,this,emitter));
     		} 
     		
     		//run the indenter last in the chain, this is harmless so always active
-    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-indent.xsl"),v2005_1_2,i18n("INDENT"),this,this,this,emitter));
+    		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-indent.xsl"),v2005_1_2_3,i18n("INDENT"),this,this,this,emitter));
 
     		/*
     		 * Populate the supported states of the TIDY category 
@@ -318,7 +320,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		    		
     		//optional charset recoder
     		//this should always be run first in the repair category
-    		if(((String)parameters.get("fixCharset")).contentEquals("true")) {
+    		if(parameters.get("fixCharset").contentEquals("true")) {
     			executors.add(new CharsetExecutor(parameters,i18n("CHARSET_FIXER"),this));
     		}
     		//all level repair needs to be added in sequential order:
@@ -350,7 +352,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		/*
     		 * executors from the tidy category
     		 */
-    		if(((String)parameters.get("simplifyHeadingLayout")).contentEquals("true")) {
+    		if(parameters.get("simplifyHeadingLayout").contentEquals("true")) {
     			//tidy-level-cleaner.xsl is optional
     			executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/tidy-level-cleaner.xsl"),v2005_1_2_3,i18n("LEVEL_CLEANER"),this,this,this,emitter));
     		}    		
@@ -617,8 +619,8 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 		private String initXsltFactoryProp = null;
 		private String initDtbookValidatorFactoryProp = null;
 		
-		private SystemPropertyHandler(Map parameters) {
-			factory = (String)parameters.get("factory");	
+		private SystemPropertyHandler(Map<String,String> parameters) {
+			factory = parameters.get("factory");	
 		}
 						
 		private void set() {

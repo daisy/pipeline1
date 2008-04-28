@@ -1,26 +1,22 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package se_tpb_dtbSplitterMerger.merge;
-/*
- * 
- */
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,9 +48,9 @@ public class DtbMerger3 extends DtbMerger {
 	private static final String DIST_INFO_FILE_NAME = "distInfo.dinf";
 	private File distInfoFile = null;
 	
-	private List redundantFilesNames = new ArrayList();
+	private List<String> redundantFilesNames = new ArrayList<String>();
 	
-    public DtbMerger3(List inFiles, File outDir, DtbTransformationReporter r){
+    public DtbMerger3(List<File> inFiles, File outDir, DtbTransformationReporter r){
         super(inFiles,outDir,r);
     }
 
@@ -73,10 +69,10 @@ public class DtbMerger3 extends DtbMerger {
 		/*
 		* For each volume copy the files into the output volume directory 
 		*/
-		List inputFiles = super.getInputFiles();
-        for(Iterator input = inputFiles.iterator(); input.hasNext();){
-            EFolder inputVolumeDir = new EFolder(((File)input.next()).getParentFile());
-            Collection files = inputVolumeDir.getFiles(true);
+		List<File> inputFiles = super.getInputFiles();
+        for(Iterator<File> input = inputFiles.iterator(); input.hasNext();){
+            Directory inputVolumeDir = new Directory((input.next()).getParentFile());
+            Collection<File> files = inputVolumeDir.getFiles(true);
             outputVolume.copyFilesIntoVolume(files,super.isUserPromptOn(),super.isKeepInputDtb(),inputVolumeDir.getAbsolutePath(),true);
         }
         
@@ -96,11 +92,11 @@ public class DtbMerger3 extends DtbMerger {
 		//rg.stopTiming();//moved to DtbMergerTransformer
 	}
 	
-	private List retrievePromptFiles() throws XmlParsingException{
-		List promptFiles = new ArrayList();
+	private List<File> retrievePromptFiles() throws XmlParsingException{
+		List<File> promptFiles = new ArrayList<File>();
 		
-		File volumeOneDir = ((File)super.getInputFiles().get(0)).getParentFile();
-		File volumeTwoDir = ((File)super.getInputFiles().get(1)).getParentFile();
+		File volumeOneDir = super.getInputFiles().get(0).getParentFile();
+		File volumeTwoDir = super.getInputFiles().get(1).getParentFile();
 		
 		this.distInfoFile = new File(volumeOneDir + File.separator + DtbMerger3.DIST_INFO_FILE_NAME);
 
@@ -139,6 +135,7 @@ public class DtbMerger3 extends DtbMerger {
 	}
 	
 
+	@SuppressWarnings("unchecked")
 	private void handleRedundantFiles(DtbVolume outputVolume) throws XmlParsingException, IOException{
 		List redundantFiles = outputVolume.getRedundantFiles();
 		 	
@@ -150,9 +147,9 @@ public class DtbMerger3 extends DtbMerger {
 		/* Retrieve a collection  with prompt files
 		 * and copy them to the redundant files folder.
 		 */ 
-		List promptFiles = this.retrievePromptFiles();//also sets this.distInfoFile
-		for(Iterator prompts=promptFiles.iterator(); prompts.hasNext();){
-			File prompt = (File)prompts.next();
+		List<File> promptFiles = this.retrievePromptFiles();//also sets this.distInfoFile
+		for(Iterator<File> prompts=promptFiles.iterator(); prompts.hasNext();){
+			File prompt = prompts.next();
 			this.redundantFilesNames.add(prompt.getName());
 						
 			if(super.isKeepRedundantFiles()){

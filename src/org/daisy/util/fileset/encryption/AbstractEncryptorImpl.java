@@ -1,9 +1,26 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.fileset.encryption;
 
 import java.io.IOException;
 import java.util.Map;
 
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.encryption.exception.EncryptionException;
@@ -15,8 +32,8 @@ import org.daisy.util.fileset.encryption.exception.EncryptorNotSupportedExceptio
  */
 public abstract class AbstractEncryptorImpl implements Encryptor{
 	protected Fileset mInputFileset = null;
-	protected EFolder mOutputDir = null;
-	protected Map mParameters = null;
+	protected Directory mOutputDir = null;
+	protected Map<String,String> mParameters = null;
 	
 	protected AbstractEncryptorImpl() {
 		
@@ -46,11 +63,11 @@ public abstract class AbstractEncryptorImpl implements Encryptor{
 		mInputFileset = fileset;		
 	}
 	
-	public EFolder getOutputDir() {		
+	public Directory getOutputDir() {		
 		return mOutputDir;
 	}
 
-	public void setOutputDir(EFolder outputDir) throws EncryptionException {
+	public void setOutputDir(Directory outputDir) throws EncryptionException {
 		if(outputDir==null) {
 			throw new EncryptorNotSupportedException("outputDir is null");			
 		}
@@ -67,11 +84,11 @@ public abstract class AbstractEncryptorImpl implements Encryptor{
 	}
 	
 
-	public Map getParameters() {
+	public Map<String,String> getParameters() {
 		return mParameters;
 	}
 
-	public void setParameters(Map parameters) {
+	public void setParameters(Map<String,String> parameters) {
 		 mParameters = parameters;		
 	}
 

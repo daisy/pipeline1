@@ -1,22 +1,20 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package org.daisy.util.xml.pool;
 
 import java.util.Iterator;
@@ -60,7 +58,7 @@ public class DOMParserPool extends AbstractPool {
 	 * <p>For Xerces specific features, see 
 	 * http://xerces.apache.org/xerces2-j/features.html</p>
 	 */
-	public DOMParser acquire(Map saxFeatures, Map saxProperties) throws PoolException {
+	public DOMParser acquire(Map<String,Object> saxFeatures, Map<String,Object> saxProperties) throws PoolException {
 		try {
 			Object o = getProcessorFromCache(saxFeatures, saxProperties);
 			if(o!=null) {
@@ -77,7 +75,7 @@ public class DOMParserPool extends AbstractPool {
 	 * Return the parser back to the pool
 	 * @throws PoolException 
 	 */
-	public void release(DOMParser parser, Map features, Map properties) throws PoolException {	
+	public void release(DOMParser parser, Map<String,Object> features, Map<String,Object> properties) throws PoolException {	
 		try {
 			//reset all handlers
 			parser.setDocumentSource(null);			
@@ -92,22 +90,22 @@ public class DOMParserPool extends AbstractPool {
 		} 
 	}
 	
-	private DOMParser createDomParser(Map features, Map properties) throws ClassCastException, SAXNotRecognizedException, SAXNotSupportedException {		
+	private DOMParser createDomParser(Map<String,Object> features, Map<String,Object> properties) throws ClassCastException, SAXNotRecognizedException, SAXNotSupportedException {		
 		DOMParser parser = new DOMParser();				    
 	    return setFeaturesAndProperties(parser,features, properties);		
 	}
 	
-	private DOMParser setFeaturesAndProperties(DOMParser parser, Map features, Map properties) throws SAXNotRecognizedException, SAXNotSupportedException {
-	    Iterator i;
+	private DOMParser setFeaturesAndProperties(DOMParser parser, Map<String,Object> features, Map<String,Object> properties) throws SAXNotRecognizedException, SAXNotSupportedException {
+	    Iterator<String> i;
 	    if (features != null){
 	      for (i = features.keySet().iterator(); i.hasNext();){
-	        String feature = (String)i.next();
+	        String feature = i.next();
 	        parser.setFeature(feature, ((Boolean)features.get(feature)).booleanValue());
 	      }
 	    }
 	    if (properties != null){
 	      for (i = properties.keySet().iterator(); i.hasNext();){
-	        String property = (String)i.next();
+	        String property = i.next();
 	        parser.setProperty(property, properties.get(property));
 	      }
 	    }

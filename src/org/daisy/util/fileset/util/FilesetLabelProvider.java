@@ -1,3 +1,20 @@
+/*
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package org.daisy.util.fileset.util;
 
 import java.io.IOException;
@@ -15,6 +32,7 @@ import org.daisy.util.fileset.D202SmilFile;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
+import org.daisy.util.fileset.Referring;
 import org.daisy.util.fileset.SmilFile;
 import org.daisy.util.fileset.Xhtml10File;
 import org.daisy.util.fileset.XmlFile;
@@ -43,7 +61,7 @@ public class FilesetLabelProvider {
 	private FilesetType mFilesetType = null;
 	private boolean mFilesetIsDTB = false;	
 	private Document mNavigationDOM = null;
-	private Map mDtbSmilLabelMap = null;  	//A map of labels of smil files in a DTB spine. <URI>,<String> where the key is that files URI and the value is the label
+	private Map<URI,String> mDtbSmilLabelMap = null;  	//A map of labels of smil files in a DTB spine. <URI>,<String> where the key is that files URI and the value is the label
 	private String mFilesetTitle =  null;
 	private String mFilesetIdentifier =  null;
 		
@@ -186,14 +204,14 @@ public class FilesetLabelProvider {
 	 */
 	private SmilFile getFirstSmilReferenceTo(FilesetFile file) throws FilesetTypeNotSupportedException {
 
-		Collection spine = FilesetSpineProvider.getSmilSpine(mFileset);
+		Collection<? extends FilesetFile> spine = FilesetSpineProvider.getSmilSpine(mFileset);
 		if(null==spine)return null; 
 		
 		URI uri = file.getFile().toURI();				
-		for (Iterator iter = spine.iterator(); iter.hasNext();) {
-			SmilFile sf = (SmilFile) iter.next();
+		for (Iterator<? extends FilesetFile> iter = spine.iterator(); iter.hasNext();) {
+			Referring sf = (Referring) iter.next();
 			if (sf.getReferencedLocalMember(uri)!=null) {
-				return sf;
+				return (SmilFile)sf;
 			}
 		}
 				
@@ -213,7 +231,7 @@ public class FilesetLabelProvider {
 			//<URI>,<String> where the value is the label			
 			populateDtbSmilLabelMap();
 		}
-		return (String)mDtbSmilLabelMap.get(smilFile.getFile().toURI());
+		return mDtbSmilLabelMap.get(smilFile.getFile().toURI());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -263,8 +281,8 @@ public class FilesetLabelProvider {
 
 	
 	private XmlFile getDTBNavigationMember() {
-		for (Iterator iter = mFileset.getLocalMembers().iterator(); iter.hasNext();) {
-			FilesetFile f = (FilesetFile) iter.next();
+		for (Iterator<FilesetFile> iter = mFileset.getLocalMembers().iterator(); iter.hasNext();) {
+			FilesetFile f = iter.next();
 			if(f instanceof D202NccFile||f instanceof Z3986NcxFile) {
 				return (XmlFile)f;
 			}			

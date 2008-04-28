@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_speechgen2.tts;
 
@@ -71,7 +70,7 @@ public class TTSBuilder implements TTSConstants {
 		keepFirstMatchingOS(configuration);
 	}
 
-	public TTSBuilder(File configFile, Map fileSubstitutions) throws TTSBuilderException {
+	public TTSBuilder(File configFile, Map<String,String> fileSubstitutions) throws TTSBuilderException {
 		//System.setProperty("org.daisy.debug", "foo");
 		this.configFile = configFile;
 		this.configuration = readXML(configFile);
@@ -222,10 +221,10 @@ public class TTSBuilder implements TTSConstants {
 					" in order to fix this problem. Tried to create tts for xml:lang= " + lang);
 		}
 
-		Class ttsClass = null; 
-		Class parameterList[] = null;
+		Class<?> ttsClass = null; 
+		Class<?> parameterList[] = null;
 		Object constrParam[] = null;
-		Constructor constructor = null;
+		Constructor<?> constructor = null;
 		TTSAdapter tts = null;
 
 		try {
@@ -303,7 +302,7 @@ public class TTSBuilder implements TTSConstants {
 		
 		// create a TTSGroup with all the new Instances.
 		TTSGroup group = new TTSGroup(ttsInstances);
-		return (TTS) group;
+		return group;
 	}
 
 	/**

@@ -35,7 +35,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.fileset.D202SmilFile;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
@@ -67,9 +67,9 @@ class SmilFileClockFixer {
         factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);        
     }
         
-    public long fix(Iterator smilFileIterator, EFolder outputFolder, long totalElapsedTime) throws XMLStreamException, IOException {
+    public long fix(Iterator<D202SmilFile> smilFileIterator, Directory outputFolder, long totalElapsedTime) throws XMLStreamException, IOException {
     	while (smilFileIterator.hasNext()) {
-    		D202SmilFile smilFile = (D202SmilFile)smilFileIterator.next();
+    		D202SmilFile smilFile = smilFileIterator.next();
     		File outFile = new File(outputFolder, smilFile.getName());
     		totalElapsedTime = this.fix(smilFile.getFile(), outFile, totalElapsedTime);
     	}

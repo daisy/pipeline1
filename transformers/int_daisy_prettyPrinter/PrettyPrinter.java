@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_prettyPrinter;
 
 import java.io.File;
@@ -32,7 +49,7 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.D202NccFile;
@@ -59,8 +76,8 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler {
 
 	private EFile mInputManifest = null;
 	private Fileset mInputFileset = null;	
-	private EFolder mOutputDir;
-	private EFolder mInputDir;
+	private Directory mOutputDir;
+	private Directory mInputDir;
 	private XMLEventFactory mEventFactory = null;
 	private FilesetFile mCurrentInputFile = null;
 	private static Characters mLineBreak = null;
@@ -102,13 +119,13 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler {
 			/*
 			 * Set input dir
 			 */						
-			mInputDir = new EFolder(mInputFileset.getManifestMember().getFile().getParentFile());
+			mInputDir = new Directory(mInputFileset.getManifestMember().getFile().getParentFile());
 
 			
 			/*
 			 * Set output dir
 			 */						
-			mOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(FilenameOrFileURI.toFile((String)parameters.remove("output"))));
+			mOutputDir = (Directory)FileUtils.createDirectory(new Directory(FilenameOrFileURI.toFile((String)parameters.remove("output"))));
 			
 			/*
 			 * Set linebreak style
@@ -248,7 +265,7 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler {
 			if(relative.toString().startsWith("..")) 
 				throw new IOException("fileset member "+file.getName()+" " +
 						"does not live in a sibling or descendant folder of manifest member");
-			EFolder subdir = new EFolder(mOutputDir,relative.getPath());
+			Directory subdir = new Directory(mOutputDir,relative.getPath());
 			FileUtils.createDirectory(subdir);
 			return new File(subdir, file.getName());			
 		}
@@ -259,7 +276,7 @@ public class PrettyPrinter extends Transformer implements FilesetErrorHandler {
 	 * The main pretty printing loop. Get one event in, return null or one or many events.
 	 * If we return null, nothing will be written to output
 	 */		
-	public List<XMLEvent> nextEvent(XMLEvent xe, ContextStack context) {
+	public List<XMLEvent> nextEvent(XMLEvent xe, @SuppressWarnings("unused")ContextStack context) {
 		retEvents.clear();
 				
 		if (xe.getEventType() == XMLEvent.DTD) {						

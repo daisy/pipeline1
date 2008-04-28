@@ -152,9 +152,9 @@ import org.daisy.util.xml.stax.StaxFilter;
 					if (fileRef.endsWith(".smil")) {
 						List<Attribute> attrs = new ArrayList<Attribute>();
 						attrs.add(getEventFactory().createAttribute("href", smilNoteBodyId));
-						Iterator<Attribute> attrItr = (Iterator<Attribute>)event.getAttributes();
+						Iterator<?> attrItr = event.getAttributes();
 						while (attrItr.hasNext()) {
-							Attribute attr = attrItr.next();
+							Attribute attr = (Attribute)attrItr.next();
 							if (!"href".equals(attr.getName().getLocalPart())) {
 								attrs.add(attr);
 							}

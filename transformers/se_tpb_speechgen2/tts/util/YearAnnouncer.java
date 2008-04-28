@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_speechgen2.tts.util;
 
@@ -42,7 +41,7 @@ import org.xml.sax.SAXException;
  */
 class YearAnnouncer {
     
-    private Map numberMapMap = null;
+    private Map<Integer,Map<String,String>> numberMapMap = null;
     private Pattern before = null;
     private Pattern after = null;
     private Pattern match = null;
@@ -109,7 +108,7 @@ class YearAnnouncer {
         for (int i = 1; i <= matcher.groupCount(); ++i) {
             Integer in = new Integer(i);
             if (numberMapMap.containsKey(in)) {
-                Map groupMap = (Map)numberMapMap.get(in);
+                Map<String,String> groupMap = numberMapMap.get(in);
                 result = result + groupMap.get(matcher.group(i));
             } else if (matcher.group(i) != null) {
                 result = result + matcher.group(i);
@@ -130,13 +129,13 @@ class YearAnnouncer {
         min = Integer.parseInt(XPathUtils.valueOf(doc.getDocumentElement(), "/year/@min"));
         max = Integer.parseInt(XPathUtils.valueOf(doc.getDocumentElement(), "/year/@max"));
         
-        Map mapmap = new HashMap();        
+        Map<Integer,Map<String,String>> mapmap = new HashMap<Integer,Map<String,String>>();        
         NodeList groups = XPathUtils.selectNodes(doc.getDocumentElement(), "//group");
         for (int i = 0; i < groups.getLength(); ++i) {
             Element group = (Element)groups.item(i);
             Integer groupNumber = Integer.valueOf(group.getAttribute("number"));
             
-            Map map = new HashMap();
+            Map<String,String> map = new HashMap<String,String>();
             NodeList values = XPathUtils.selectNodes(group, "value");
             for (int j = 0; j < values.getLength(); ++j) {
                 Element value = (Element)values.item(j);

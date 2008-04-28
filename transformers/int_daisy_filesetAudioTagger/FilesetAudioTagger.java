@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_filesetAudioTagger;
 
 import int_daisy_filesetAudioTagger.id3.ID3Tagger;
@@ -22,7 +39,7 @@ import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.AudioFile;
@@ -47,9 +64,9 @@ import org.daisy.util.fileset.util.FilesetSpineProvider;
 public class FilesetAudioTagger extends Transformer implements FilesetErrorHandler, FilesetManipulatorListener {
 	private EFile mInputManifest = null;
 	private Fileset mInputFileset = null;
-	private EFolder mOutputDir = null;				
+	private Directory mOutputDir = null;				
 	private FilesetManipulator fm = null;
-	private Collection mAudioSpine = null;
+	private Collection<AudioFile> mAudioSpine = null;
 	private FilesetLabelProvider mLabelProvider = null;
 		
 	public FilesetAudioTagger(InputListener inListener, Boolean isInteractive) {
@@ -60,24 +77,24 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		
 		boolean doID3tags = false;
 		boolean doPlaylists = false;
 		
-		String bool = (String)parameters.remove("doID3Tagging");		
+		String bool = parameters.remove("doID3Tagging");		
 		if(bool!=null && bool.equals("true")) doID3tags = true;
 		
-		bool = (String)parameters.remove("doPlaylistGeneration");		
+		bool = parameters.remove("doPlaylistGeneration");		
 		if(bool!=null && bool.equals("true")) doPlaylists = true;
 
 		try{
 			//set the input manifest
-			mInputManifest = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("input")));
+			mInputManifest = new EFile(FilenameOrFileURI.toFile(parameters.remove("input")));
 			//set input fileset
 			mInputFileset = new FilesetImpl(mInputManifest.toURI(),this,false,false);
 			//set/create output dir
-			mOutputDir = (EFolder)FileUtils.createDirectory(new EFolder(FilenameOrFileURI.toFile((String)parameters.remove("output"))));
+			mOutputDir = (Directory)FileUtils.createDirectory(new Directory(FilenameOrFileURI.toFile(parameters.remove("output"))));
 			//find out if inparam in and out directories are the same 
 			//boolean inputDirEqualsOutputDir = mOutputDir.getCanonicalPath().equals(mInputFileset.getManifestMember().getFile().getParentFile().getCanonicalPath());
 			//create the audioSpine ArrayList
@@ -184,7 +201,8 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 		if (mAudioSpine.contains(file)) {	
 			//String titleFrame, String artistFrame, String albumFrame, String trackNumberFrame
 			try {
-				return new ID3Tagger(mLabelProvider.getFilesetFileTitle(file),mLabelProvider.getFilesetCreator(),mLabelProvider.getFilesetTitle(),getAudioSpinePosition(file));				
+				return new ID3Tagger(mLabelProvider.getFilesetFileTitle(file),mLabelProvider.getFilesetCreator(),
+						mLabelProvider.getFilesetTitle(),getAudioSpinePosition((AudioFile)file));				
 			} catch (FilesetFileException e) {
 				throw new FilesetManipulationException(e.getMessage(),e);
 			}
@@ -196,11 +214,11 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 	/**
 	 * @return a string in format n(this)/n(tot), eg '4/23'
 	 */
-	private String getAudioSpinePosition(FilesetFile inFile) {
+	private String getAudioSpinePosition(AudioFile inFile) {
 		long count = 0;
-		for (Iterator iter = mAudioSpine.iterator(); iter.hasNext();) {
+		for (Iterator<AudioFile> iter = mAudioSpine.iterator(); iter.hasNext();) {
 			count++;
-			FilesetFile current = (FilesetFile) iter.next();
+			AudioFile current = iter.next();
 			if(current==inFile) {
 				return Long.toString(count)+"/"+Long.toString(mAudioSpine.size());
 			}			
@@ -208,6 +226,7 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	private void debugPrintAudioSpine() {
 		System.err.println("");
 		for (Object o : mAudioSpine) {

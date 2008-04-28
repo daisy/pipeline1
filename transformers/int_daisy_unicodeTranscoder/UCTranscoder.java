@@ -1,23 +1,20 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2006  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-package int_daisy_unicodeTranscoder;
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */package int_daisy_unicodeTranscoder;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -33,7 +30,7 @@ import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.script.datatype.FilesDatatype;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetFile;
@@ -70,7 +67,7 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
         super(inListener, isInteractive);        
     }
 	
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		
 		try{
 			//TODO set system properties; StAX Writer
@@ -83,23 +80,23 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 			fm.setListener(this);
 			
 			//set input fileset
-			fm.setInputFileset(new File((String)parameters.remove("input")).toURI());
+			fm.setInputFileset(new File(parameters.remove("input")).toURI());
 			
 			//set destination
-			fm.setOutputFolder((EFolder)FileUtils.createDirectory(new EFolder((String)parameters.remove("output"))));
+			fm.setOutputFolder((Directory)FileUtils.createDirectory(new Directory(parameters.remove("output"))));
 			
 			//set restriction, only listen to XmlFile
 			fm.setFileTypeRestriction(XmlFile.class);
 			
 			//determine what charset encoding to use in output 
-			param = ((String)parameters.remove("outputEncoding"));
+			param = parameters.remove("outputEncoding");
 			if(param!=null) mOutputEncoding = Charset.forName(param);	
 		
 			//check user settable node restriction
-			this.mSubstituteInAttributeValues = ((String)parameters.remove("substituteInAttributeValues")).equals("true");
+			this.mSubstituteInAttributeValues = parameters.remove("substituteInAttributeValues").equals("true");
 			
 			//configure the UCharReplacer, if used		
-			mPerformUCharSubstitution = ((String)parameters.remove("performCharacterSubstitution")).equals("true");
+			mPerformUCharSubstitution = parameters.remove("performCharacterSubstitution").equals("true");
 			if(mPerformUCharSubstitution) configureUCR(parameters);
 
 			//set a counter for progress sake
@@ -122,10 +119,10 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 				if(mUCharReplacer.getExclusionRepertoire()!=null) {
 					Integer codePoint;
 					String value;
-					Map map = mUCharReplacer.getTranslationTableFailures();
-					for (Iterator iter = map.keySet().iterator(); iter.hasNext();) {
-						codePoint = (Integer) iter.next();					
-						value = (String)map.get(codePoint);
+					Map<Integer,String> map = mUCharReplacer.getTranslationTableFailures();
+					for (Iterator<Integer> iter = map.keySet().iterator(); iter.hasNext();) {
+						codePoint = iter.next();					
+						value = map.get(codePoint);
 						StringBuilder sb = new StringBuilder(127);
 						sb.append(i18n("NO_REPLACEMENT_FOR"));
 						sb.append(CharUtils.unicodeHexEscape(codePoint.intValue()));
@@ -155,8 +152,8 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 	/**
 	 * Configure the UCharReplacer object.
 	 */
-	private void configureUCR(Map parameters) throws IllegalCharsetNameException, UnsupportedCharsetException, UnsupportedOperationException {		
-		String param = ((String)parameters.remove("substitutionTables"));
+	private void configureUCR(Map<String,String> parameters) throws IllegalCharsetNameException, UnsupportedCharsetException, UnsupportedOperationException {		
+		String param = (parameters.remove("substitutionTables"));
 		if(param!=null){
 			mUCharReplacer = new UCharReplacer();
 			String[] tables = param.split(FilesDatatype.SEPARATOR_STRING);
@@ -174,16 +171,16 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 			} //for				
 		} //if param != null
 		
-		param = (String)parameters.remove("fallbackToUCD");		
+		param = parameters.remove("fallbackToUCD");		
 		mUCharReplacer.setFallbackState(mUCharReplacer.FALLBACK_USE_UCD_NAMES, param.equals("true"));
 		
-		param = (String)parameters.remove("fallbackToLatinTransliteration");		
+		param = parameters.remove("fallbackToLatinTransliteration");		
 		mUCharReplacer.setFallbackState(mUCharReplacer.FALLBACK_TRANSLITERATE_ANY_TO_LATIN, param.equals("true"));
 		
-		param = (String)parameters.remove("fallbackToNonSpacingMarkRemovalTransliteration");		
+		param = parameters.remove("fallbackToNonSpacingMarkRemovalTransliteration");		
 		mUCharReplacer.setFallbackState(mUCharReplacer.FALLBACK_TRANSLITERATE_REMOVE_NONSPACING_MARKS, param.equals("true"));
 		
-		param = (String)parameters.remove("excludeFromSubstitution");
+		param = parameters.remove("excludeFromSubstitution");
 		if(param!=null&&!param.toLowerCase().equals("none")) {	
 			try{
 				Charset chrs = Charset.forName(param);
@@ -247,7 +244,7 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 	/**
 	 * XMLEventValueConsumer impl
 	 */
-	public String nextValue(String value, ContextStack context) {		
+	public String nextValue(String value, @SuppressWarnings("unused")ContextStack context) {		
 		try{						
 			return mUCharReplacer.replace(value).toString();			
 		}catch (Exception e) {
@@ -258,9 +255,9 @@ public class UCTranscoder extends Transformer implements FilesetManipulatorListe
 	
 	private int getXmlFileCount(Fileset inputFileset) {
 		int count = 0;
-		Iterator i = inputFileset.getLocalMembers().iterator();
+		Iterator<FilesetFile> i = inputFileset.getLocalMembers().iterator();
 		while(i.hasNext()) {
-			FilesetFile f = (FilesetFile) i.next();
+			FilesetFile f = i.next();
 			if(f instanceof XmlFile){
 				count++;
 			}

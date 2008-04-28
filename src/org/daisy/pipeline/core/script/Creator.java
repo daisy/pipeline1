@@ -1,5 +1,5 @@
 /*
- * Daisy Pipeline Copyright (C) 2007 Daisy Consortium
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -360,7 +360,8 @@ public class Creator implements ErrorHandler, EntityResolver {
      * 
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
-    public void error(SAXParseException e) throws SAXException {
+    @SuppressWarnings("unused")
+	public void error(SAXParseException e) throws SAXException {
         saxWarn(e);
         mValidationError = true;
     }
@@ -370,7 +371,8 @@ public class Creator implements ErrorHandler, EntityResolver {
      * 
      * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
      */
-    public void fatalError(SAXParseException e) throws SAXException {
+    @SuppressWarnings("unused")
+	public void fatalError(SAXParseException e) throws SAXException {
         saxWarn(e);
         mValidationError = true;
     }
@@ -380,7 +382,8 @@ public class Creator implements ErrorHandler, EntityResolver {
      * 
      * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
      */
-    public void warning(SAXParseException e) throws SAXException {
+    @SuppressWarnings("unused")
+	public void warning(SAXParseException e) throws SAXException {
     	if(!e.getMessage().contains("XSLT 1.0")) {
     		//temp hack to avoid saxon 8 version warning messages
     		saxWarn(e);
@@ -400,7 +403,8 @@ public class Creator implements ErrorHandler, EntityResolver {
      * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String,
      *      java.lang.String)
      */
-    public InputSource resolveEntity(String systemId, String publicId)
+    @SuppressWarnings("unused")
+	public InputSource resolveEntity(String systemId, String publicId)
             throws SAXException, IOException {
         try {
             String id = systemId;
@@ -409,9 +413,8 @@ public class Creator implements ErrorHandler, EntityResolver {
             URL url = mCurrentScriptURL.toURI().resolve(id).toURL();
             return new InputSource(url.openStream());
         } catch (Exception e) {
-
+        	e.printStackTrace();
         }
-
         return null;
     }
     

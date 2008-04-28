@@ -1,20 +1,19 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package se_tpb_dtbAudioEncoder;
 
@@ -56,13 +55,13 @@ public class DtbAudioEncoder extends Transformer {
         super(inListener, isInteractive);        
     }
     
-    protected boolean execute(Map parameters) throws TransformerRunException {
-        String manifest = (String)parameters.remove("manifest");
-        String outDir = (String)parameters.remove("outDir");
-        String filesetType = (String)parameters.remove("filesetType");
-        String bitrate = (String)parameters.remove("bitrate");
-        String stereo = (String)parameters.remove("stereo");
-        String freq = (String)parameters.remove("freq");        
+    protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
+        String manifest = parameters.remove("manifest");
+        String outDir = parameters.remove("outDir");
+        String filesetType = parameters.remove("filesetType");
+        String bitrate = parameters.remove("bitrate");
+        String stereo = parameters.remove("stereo");
+        String freq = parameters.remove("freq");        
         
         String lamePath = System.getProperty("dmfc.lame.path");
         File test = new File(lamePath);
@@ -95,13 +94,13 @@ public class DtbAudioEncoder extends Transformer {
             
             // Identify audio files and files that need to be updated
             //sendMessage(Level.FINER, "Identifying files to encode or update...");
-            Set alreadyDone = new HashSet();
+            Set<String> alreadyDone = new HashSet<String>();
             
             // Calculate total size of and number of wav files
             long totalSize = 0;
             int totalNum = 0;
-            for (Iterator it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
-                FilesetFile fsf = (FilesetFile)it.next();                
+            for (Iterator<FilesetFile> it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
+                FilesetFile fsf = it.next();                
                 if (fsf instanceof AudioFile && fsf.getFile().getName().matches(".+\\.[Ww][Aa][Vv]")) {
                     totalSize += fsf.getFile().length();
                     ++totalNum;
@@ -111,25 +110,25 @@ public class DtbAudioEncoder extends Transformer {
             this.progress(0.03);
             long currentSize = 0;
             int currentNum = 0;
-            for (Iterator it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
-                FilesetFile fsf = (FilesetFile)it.next();
+            for (Iterator<FilesetFile> it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
+                FilesetFile fsf = it.next();
                 
                 if (fsf instanceof AudioFile && fsf.getFile().getName().matches(".+\\.[Ww][Aa][Vv]")) {
                     // Encode audio files
                     ++currentNum;
                     Object[] params = {new Integer(totalNum), new Integer(currentNum), fsf.getFile().getName()};
                     this.sendMessage(i18n("ENCODING", params), MessageEvent.Type.INFO_FINER);
-                    this.encodeFile(fsf.getFile(), outputDirectory, fileset.getRelativeURI(fsf));
+                    this.encodeFile(fsf.getFile(), outputDirectory, fileset.getManifestMember().getRelativeURI(fsf));
                     alreadyDone.add(fsf.getFile().getName());
                     currentSize += fsf.getFile().length();
                     this.progress(0.03 + (0.95-0.03)*((double)currentSize/totalSize));
                     this.checkAbort();
             
                     // Modify files that reference the (old) audio files
-                    for (Iterator it2 = fsf.getReferringLocalMembers().iterator(); it2.hasNext(); ) {
-                        FilesetFile fsf2 = (FilesetFile)it2.next();
+                    for (Iterator<FilesetFile> it2 = fsf.getReferringLocalMembers().iterator(); it2.hasNext(); ) {
+                        FilesetFile fsf2 = it2.next();
                         if (!alreadyDone.contains(fsf2.getFile().getName())) {
-                            this.relinkFile(fsf2, outputDirectory, fileset.getRelativeURI(fsf2));                            
+                            this.relinkFile(fsf2, outputDirectory, fileset.getManifestMember().getRelativeURI(fsf2));                            
                         }
                         alreadyDone.add(fsf2.getFile().getName());
                     }
@@ -139,13 +138,13 @@ public class DtbAudioEncoder extends Transformer {
             
             this.progress(0.95);
             // Copy other files to destination
-            for (Iterator it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
-                FilesetFile fsf = (FilesetFile)it.next();
+            for (Iterator<FilesetFile> it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
+                FilesetFile fsf = it.next();
                 
                 this.checkAbort();
                 
                 if (!alreadyDone.contains(fsf.getFile().getName())) {                    
-                    this.copyFile(fsf.getFile(), outputDirectory, fileset.getRelativeURI(fsf));
+                    this.copyFile(fsf.getFile(), outputDirectory, fileset.getManifestMember().getRelativeURI(fsf));
                 }
                 
             }

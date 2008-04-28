@@ -1,22 +1,20 @@
 /*
- * DMFC - The DAISY Multi Format Converter
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-package se_tpb_annonsator;
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */package se_tpb_annonsator;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,9 +23,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -77,14 +74,14 @@ public class Annonsator extends Transformer implements ErrorListener {
      * @param eventListeners
      * @param isInteractive
      */
-    public Annonsator(InputListener inListener, Set eventListeners, Boolean isInteractive) {
-        super(inListener, eventListeners, isInteractive);
+    public Annonsator(InputListener inListener, Boolean isInteractive) {
+        super(inListener, isInteractive);
     }
 
-    protected boolean execute(Map parameters) throws TransformerRunException {
-        String input = (String)parameters.remove("input");
-        String output = (String)parameters.remove("output");
-        String xslOutput = (String) parameters.remove("xslOutput");
+    protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
+        String input = parameters.remove("input");
+        String output = parameters.remove("output");
+        String xslOutput = parameters.remove("xslOutput");
         
         XMLInputFactory factory = XMLInputFactory.newInstance();
         try {
@@ -130,7 +127,9 @@ public class Annonsator extends Transformer implements ErrorListener {
             FileUtils.createDirectory(outputFile.getParentFile());
             Result result = new StreamResult(new FileOutputStream(outputFile));
             // Attribute version of stylesheet uses XSLT 2.0 
-            Stylesheet.apply(xmlSource, xsltSource, result, "net.sf.saxon.TransformerFactoryImpl", parameters, this);
+            Map<String,Object> xslParams = new HashMap<String,Object>();
+            xslParams.putAll(parameters);
+            Stylesheet.apply(xmlSource, xsltSource, result, "net.sf.saxon.TransformerFactoryImpl", xslParams, this);
             
         } catch (FileNotFoundException e) {
             throw new TransformerRunException(e.getMessage(), e);
@@ -160,21 +159,22 @@ public class Annonsator extends Transformer implements ErrorListener {
         try {
             url = new URL(getTransformerDirectory().toURI().toURL(), resource);
         } catch (MalformedURLException e) {
-            sendMessage(Level.WARNING, "Malformed resource URL to resource: " + resource);
+            sendMessage("Malformed resource URL to resource: " + resource, MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
         }
         return url;
     }
     
-    public void warning(TransformerException arg0) throws TransformerException {
+    @SuppressWarnings("unused")
+	public void warning(TransformerException arg0) throws TransformerException {
         System.err.println("Warning: " + arg0.getLocalizedMessage());
     }
 
-
+    @SuppressWarnings("unused")
     public void error(TransformerException arg0) throws TransformerException {
         System.err.println("Error: " + arg0.getLocalizedMessage());
     }
 
-
+    @SuppressWarnings("unused")
     public void fatalError(TransformerException arg0) throws TransformerException {
         System.err.println("Fatal: " + arg0.getLocalizedMessage());        
     }

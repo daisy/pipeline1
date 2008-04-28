@@ -1,20 +1,19 @@
 /*
- * org.daisy.util - The DAISY java utility library
- * Copyright (C) 2005  Daisy Consortium
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * org.daisy.util (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 package org.daisy.util.text;
 
@@ -32,7 +31,7 @@ import java.util.regex.Pattern;
  */
 public class StringCollectionMatcher implements TextMatcher {
 
-    private Collection coll;
+    private Collection<String> coll;
     private String text;
     private int start = 0;
     private int end = 0;
@@ -53,7 +52,7 @@ public class StringCollectionMatcher implements TextMatcher {
      * @param textToSearch the text to search.
      * @param suffixPattern a suffix regular expression.
      */
-    public StringCollectionMatcher(Collection strings, String textToSearch, String suffixPattern) {
+    public StringCollectionMatcher(Collection<String> strings, String textToSearch, String suffixPattern) {
         coll = strings;
         text = textToSearch;
         if (suffixPattern != null) {
@@ -66,7 +65,7 @@ public class StringCollectionMatcher implements TextMatcher {
      * @param strings a collection of strings to serach for.
      * @param textToSearch the text to search.
      */
-    public StringCollectionMatcher(Collection strings, String textToSearch) {
+    public StringCollectionMatcher(Collection<String> strings, String textToSearch) {
         this(strings, textToSearch, null);
     }
     
@@ -74,7 +73,7 @@ public class StringCollectionMatcher implements TextMatcher {
      * Adds more strings to the collection.
      * @param strings a collection of strings
      */
-    public void addStrings(Collection strings) {
+    public void addStrings(Collection<String> strings) {
         coll.addAll(strings);
     }
     
@@ -95,8 +94,8 @@ public class StringCollectionMatcher implements TextMatcher {
         result = false;
         start = Integer.MAX_VALUE;
         int originalEnd = end;
-        for (Iterator it = coll.iterator(); it.hasNext(); ) {
-            String current = (String)it.next();
+        for (Iterator<String> it = coll.iterator(); it.hasNext(); ) {
+            String current = it.next();
             indexOf(text, current, originalEnd);
             if (currentStart != -1) {
                 // A match was found

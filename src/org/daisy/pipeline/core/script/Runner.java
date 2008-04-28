@@ -1,5 +1,5 @@
 /*
- * Daisy Pipeline Copyright (C) 2007 Daisy Consortium
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free

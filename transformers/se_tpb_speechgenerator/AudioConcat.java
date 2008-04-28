@@ -134,9 +134,9 @@ public class AudioConcat
 	private static boolean DEBUG = false;
 	
 	
-	public static void concat(List inputFiles, File outputFile) {
+	public static void concat(List<File> inputFiles, File outputFile) {
 		AudioFormat	audioFormat = null;
-		List		audioInputStreamList = new ArrayList();
+		List<AudioInputStream>		audioInputStreamList = new ArrayList<AudioInputStream>();
 				
 		/*
 		 *	All remaining arguments are assumed to be filenames of
@@ -144,7 +144,7 @@ public class AudioConcat
 		 */
 		for (int i = 0; i < inputFiles.size(); i++)
 		{
-			File soundFile = (File) inputFiles.get(i);
+			File soundFile = inputFiles.get(i);
 			
 			/*
 			 *	We have to read in the sound file.
@@ -204,8 +204,8 @@ public class AudioConcat
 		{
 			e.printStackTrace();
 		} finally {
-			for (Iterator it = audioInputStreamList.iterator(); it.hasNext(); ) {
-				AudioInputStream ais = (AudioInputStream) it.next();
+			for (Iterator<AudioInputStream> it = audioInputStreamList.iterator(); it.hasNext(); ) {
+				AudioInputStream ais = it.next();
 				try {
 					ais.close();
 				} catch (IOException e) {

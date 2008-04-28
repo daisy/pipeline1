@@ -3,11 +3,11 @@ package org.daisy.pipeline.test.impl;
 import java.util.List;
 
 import org.daisy.pipeline.test.PipelineTest;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 
 public class DTBookFix2 extends PipelineTest {
 
-	public DTBookFix2(EFolder dataInputDir, EFolder dataOutputDir) {
+	public DTBookFix2(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
@@ -15,7 +15,7 @@ public class DTBookFix2 extends PipelineTest {
 	public List<String> getParameters() {		//
 		mParameters.add("--input=" + mDataInputDir + "/dtbook/dtbookfix-example-2-invalid.xml");
 		mParameters.add("--output=" + mDataOutputDir + "/DTBookFix2/out.xml");
-		mParameters.add("--runCategories=REPAIR_TIDY_NARRATOR");	
+		mParameters.add("--runCategories=REPAIR_TIDY");	
 		mParameters.add("--fixCharset=" + "true");
 		return mParameters;
 	}

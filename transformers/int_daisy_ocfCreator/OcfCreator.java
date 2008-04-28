@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_ocfCreator;
 
 import java.io.File;
@@ -6,7 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -61,14 +77,14 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 	}
 
 	@Override
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		try{	
-			EFile outputEpubFile = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("output")));
+			EFile outputEpubFile = new EFile(FilenameOrFileURI.toFile(parameters.remove("output")));
 			if(!outputEpubFile.getExtension().equals("epub")) {
 				this.sendMessage(i18n("EXTENSION_NOT_EPUB", outputEpubFile.getName()), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
 			}			
 			this.sendMessage(0.1);
-			Set<Publication> publications = getPublications((String)parameters.remove("input"));
+			Set<Publication> publications = getPublications(parameters.remove("input"));
 			
 			this.sendMessage(0.2);
 			this.sendMessage(i18n("BUILDING_OCF", publications.size()), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.INPUT);
@@ -85,8 +101,8 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 				if(pub.mPublication instanceof Fileset) {
 					Fileset fileset = (Fileset) pub.mPublication;
 					FilesetFile manifest = fileset.getManifestMember();
-					for (Iterator iter = fileset.getLocalMembers().iterator(); iter.hasNext();) {				
-						FilesetFile ffile = (FilesetFile) iter.next();
+					for (Iterator<FilesetFile> iter = fileset.getLocalMembers().iterator(); iter.hasNext();) {				
+						FilesetFile ffile = iter.next();
 						URI relative = manifest.getRelativeURI(ffile);
 						entries.add(new OcfEntry(ffile.getFile(),pub.mTypeLabel+"/"+relative.getPath()));
 					}		
@@ -148,12 +164,11 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 	/**
 	 * Create a set of Publication objects to include in OCF. A Publication is either a Fileset or a single file, represented as a URL
 	 * @throws FilesetFatalException 
-	 * @throws MalformedURLException 
 	 * @throws TransformerRunException 
 	 * @throws MIMETypeException 
 	 * @throws FileNotFoundException 
 	 */
-	private Set<Publication> getPublications(String inputParam) throws FilesetFatalException, MalformedURLException, TransformerRunException, MIMETypeException, FileNotFoundException {
+	private Set<Publication> getPublications(String inputParam) throws FilesetFatalException, TransformerRunException, MIMETypeException, FileNotFoundException {
 		Set<Publication> publications = new HashSet<Publication>();
 		String[] array = inputParam.split(FilesDatatype.SEPARATOR_STRING);
 		for (String string : array) {
@@ -166,7 +181,7 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 			} catch (FilesetFatalException ffe) {
 				if(ffe.getRootCause() instanceof FilesetTypeNotSupportedException) {
 					//TODO Could use SignatureDetector
-					this.sendMessage(i18n("MIMETYPE_DETECTION_FAILED",file.getName()), MessageEvent.Type.ERROR,MessageEvent.Cause.INPUT);
+					this.sendMessage(i18n("MIMETYPE_DETECTION_FAILED",file.getName()), MessageEvent.Type.WARNING,MessageEvent.Cause.INPUT);
 					file.setMimeType("application/anonymous");
 					publications.add(new Publication(file,getTypeLabel(file)));
 				}else{
@@ -192,7 +207,7 @@ public class OcfCreator extends Transformer implements FilesetErrorHandler {
 		File container = TempFile.create();				
 		XMLOutputFactory xof = null;
 		XMLEventFactory xef = null;				
-		Map xofProperties = null;
+		Map<String,Object> xofProperties = null;
 		
 		try{
 			xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();						
