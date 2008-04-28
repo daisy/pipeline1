@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taskScript version="2.0" name="dtbForwardMigrator">
+	<nicename>DTB Backward Migrator</nicename>
+	<description>Migrate a Daisy Z39.86-2005 to Daisy 2.02</description>
+	<documentation uri="../../../doc/scripts/DTBBackwardMigrator.html"/>
+	
+	<parameter name="input" value="" required="true">
+		<nicename>Input OPF</nicename>
+		<description>Select input Package File</description>
+		<datatype>
+			<file mime="application/x-dtbd202ncc+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output Directory</nicename>
+		<description>Select the output directory</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+
+	<task name="int_daisy_dtbMigrator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>destination</name>
+			<value>${output}</value>
+		</parameter>
+		<parameter>
+			<name>outputVersion</name>
+			<value>D202</value>
+		</parameter>		
+	</task>
+	<!--
+	<task name="int_daisy_prettyPrinter" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}/ncc.html</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${output}</value>
+		</parameter>
+
+		<parameter>
+			<name>linebreak</name>
+			<value>DOS</value>
+		</parameter>
+				
+	</task>
+	
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${output}/ncc.html</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>NONE</value>
+		</parameter>
+		
+		<parameter>
+			<name>generateContextInfo</name>
+			<value>false</value>
+		</parameter>
+	</task>	
+	-->
+</taskScript>

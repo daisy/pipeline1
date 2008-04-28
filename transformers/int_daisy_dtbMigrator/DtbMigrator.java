@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_dtbMigrator;
 
 import java.util.Map;
@@ -11,10 +28,9 @@ import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
-import org.daisy.util.fileset.D202NccFile;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetErrorHandler;
 import org.daisy.util.fileset.exception.FilesetFileException;
@@ -32,15 +48,23 @@ public class DtbMigrator extends Transformer implements FilesetErrorHandler, Tra
 	}
 	
 	@Override
-	protected boolean execute(Map parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		
 		try{
 
 			/*
 			 * Get handles to input and output.
 			 */
-			EFile inputFile = new EFile(FilenameOrFileURI.toFile((String)parameters.remove("input")));
-			EFolder destination = new EFolder(FileUtils.createDirectory(FilenameOrFileURI.toFile((String)parameters.remove("destination"))));
+			EFile inputFile = new EFile(FilenameOrFileURI.toFile(parameters.remove("input")));
+			Directory destination = new Directory(FileUtils.createDirectory(FilenameOrFileURI.toFile(parameters.remove("destination"))));
+			
+			/*
+			 * Do not allow input and output dirs to be the same
+			 */
+			if(inputFile.getParentFile().getCanonicalPath().equals(destination.getCanonicalPath())) {
+				throw new TransformerRunException(i18n("INPUT_OUTPUT_SAME"));
+			}
+			
 			Fileset inputFileset = new FilesetImpl(inputFile.toURI(),this,false,false);
 						
 			/*
@@ -76,8 +100,8 @@ public class DtbMigrator extends Transformer implements FilesetErrorHandler, Tra
 		return inputDescriptor;
 	}
 	
-	private DtbDescriptor getOutputDescriptor(Map parameters, DtbDescriptor inputDescriptor) {
-		String param = (String)parameters.remove("outputVersion");
+	private DtbDescriptor getOutputDescriptor(Map<String,String> parameters, DtbDescriptor inputDescriptor) {
+		String param = parameters.remove("outputVersion");
 		DtbVersion version = null;
 		if(param.equals("Z2005")) {
 			version = DtbVersion.Z2005;
@@ -115,7 +139,7 @@ public class DtbMigrator extends Transformer implements FilesetErrorHandler, Tra
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateMessage(java.lang.Object, java.lang.String, org.daisy.pipeline.core.event.MessageEvent.Type, org.daisy.pipeline.core.event.MessageEvent.Cause, javax.xml.stream.Location)
 	 */
-	public void delegateMessage(Object delegate, String message, Type type, Cause cause, Location location) {
+	public void delegateMessage(@SuppressWarnings("unused")Object delegate, String message, Type type, Cause cause, Location location) {
 		this.sendMessage(message, type, cause,location);		
 	}
 
@@ -123,7 +147,7 @@ public class DtbMigrator extends Transformer implements FilesetErrorHandler, Tra
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateProgress(java.lang.Object, double)
 	 */
-	public void delegateProgress(Object delegate, double progress) {
+	public void delegateProgress(@SuppressWarnings("unused")Object delegate, double progress) {
 		sendMessage(progress);		
 	}
 

@@ -1,3 +1,20 @@
+/*
+ * Daisy Pipeline (C) 2005-2008 Daisy Consortium
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 package int_daisy_dtbMigrator.impl.d202_z2005;
 
 import int_daisy_dtbMigrator.BookStruct;
@@ -32,7 +49,7 @@ import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.util.css.stylesheets.Css;
 import org.daisy.util.dtb.resource.ResourceFile;
 import org.daisy.util.file.EFile;
-import org.daisy.util.file.EFolder;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.AnonymousFile;
@@ -114,7 +131,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 	private ManifestItems mManifestItems = null;
 	
 	/** Destination directory */
-	private EFolder mOutputDir = null;
+	private Directory mOutputDir = null;
 
 	/** Size of input fileset */
 	private int mInputSize = 0;
@@ -128,10 +145,11 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 	 * 		int_daisy_dtbMigrator.DtbDescriptor, java.util.Map, org.daisy.util.fileset.interfaces.Fileset, org.daisy.util.file.EFolder)
 	 */	
 	public void migrate(DtbDescriptor input, 
+						@SuppressWarnings("unused")
 						DtbDescriptor output, 
 						Map<String,String> parameters, 
 						Fileset inputFileset, 
-						EFolder destination) throws MigratorException {
+						Directory destination) throws MigratorException {
 
 		mOutputDir = destination;
 		mManifestItems = new ManifestItems();
@@ -237,7 +255,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 								
 				//remember: the XSLTs are written context unaware, 
 				//so they need to get all necessary context info as inparams.
-				Map<String,String> parameters = new HashMap<String,String>();
+				Map<String,Object> parameters = new HashMap<String,Object>();
 				//unique identifier of the publication
 				parameters.put("uid", properties.getIdentifier());
 				parameters.put("title", properties.getTitle());
@@ -311,7 +329,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 
 		URL xsltURL = this.getClass().getResource("./xslt/d202ncc_Z2005ncx.xsl");
 				
-		Map<String,String> parameters = new HashMap<String,String>();
+		Map<String,Object> parameters = new HashMap<String,Object>();
 		//unique identifier of the publication
 		parameters.put("uid", properties.getIdentifier());
 		
@@ -327,9 +345,9 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 		parameters.put("defaultStateProdnotes",properties.getDefaultState(BookStruct.OPTIONAL_PRODUCER_NOTE).toString());
 				
 		// A user preference: whether to add audio elements to navLabel by opening the reffed smil and get the closest audio
-		parameters.put("addNavLabelAudio", (String)params.get("ncxAddNavLabelAudio"));
+		parameters.put("addNavLabelAudio", params.get("ncxAddNavLabelAudio"));
 		// A user preference: the minimum length (in millisec) for audioclips used in NavLabel elements
-		parameters.put("minNavLabelAudioLength", (String)params.get("ncxMinNavLabelAudioLength"));
+		parameters.put("minNavLabelAudioLength", params.get("ncxMinNavLabelAudioLength"));
 		
 		// The location of the ncc folder, assumed in the style sheet to also be the location of the SMIL files. A bit risky?
 		parameters.put("nccFolder",ncc.getFile().getParent());
@@ -493,12 +511,12 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 				
 				URL xsltURL = Stylesheets.get("xhtml2dtbook.xsl");
 				
-				Map<String,String> parameters = new HashMap<String,String>();
+				Map<String,Object> parameters = new HashMap<String,Object>();
 				parameters.put("uid", properties.getIdentifier());
 				parameters.put("title", properties.getTitle());
 				parameters.put("cssURI", cssUri); 
 				// A user preference: shall meta data be transfered from the ncc file to the DTBook
-				parameters.put("transferDcMetadata", (String)params.get("dtbookTransferNCCMetadata"));
+				parameters.put("transferDcMetadata", params.get("dtbookTransferNCCMetadata"));
 				
 				// The location of the ncc file (assuming that it is the same folder as the content doc. Risky?)
 				parameters.put("nccURI",inputFileset.getManifestMember().getFile().toURI().toString());
@@ -531,7 +549,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 
 		URL xsltURL = this.getClass().getResource("./xslt/d202ncc_Z2005opf.xsl");
 				
-		Map<String,String> parameters = new HashMap<String,String>();
+		Map<String,Object> parameters = new HashMap<String,Object>();
 		parameters.put("dtbTotalTime", dtbTotalTime.toString(SmilClock.FULL));
 		parameters.put("dtbMultimediaContent", getTopLevelMediaTypes());
 		parameters.put("uid", properties.getIdentifier());
@@ -713,6 +731,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)
 	 */	
+	@SuppressWarnings("unused")
 	public void error(FilesetFileException ffe) throws FilesetFileException {
 		mTransformer.delegateMessage(this, ffe.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT, null);		
 	}
@@ -727,7 +746,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 	/**
 	 * @throws MigratorException if input and output directories are the same.
 	 */
-	private void checkIO(Fileset inputFileset, EFolder destination) throws IOException, MigratorException {
+	private void checkIO(Fileset inputFileset, Directory destination) throws IOException, MigratorException {
 		if(destination.getCanonicalPath().equals(
 				inputFileset.getManifestMember().getFile()
 					.getParentFile().getCanonicalPath())) {			
@@ -774,7 +793,8 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 		throw exception;		
 	}
 
-	public void warning(TransformerException exception)throws TransformerException {
+	public void warning(@SuppressWarnings("unused")
+	TransformerException exception)throws TransformerException {
 				
 	}
 	

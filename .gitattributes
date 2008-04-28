@@ -332,6 +332,7 @@ samples/input/xhtml/valentinhauy.html -text
 samples/input/xhtml/valentinhauy11.html -text
 samples/input/xhtml/xhtml-rdf.xml -text
 scripts/_dev/AudacityToDTB.taskScript -text
+scripts/_dev/DTBBackwardMigrator.taskScript -text
 scripts/_dev/DTBookFix_NarratorValidation.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
@@ -919,6 +920,11 @@ transformers/int_daisy_dtbMigrator/impl/d202_z2005/xslt/d202ncc_Z2005ncx.xsl -te
 transformers/int_daisy_dtbMigrator/impl/d202_z2005/xslt/d202ncc_Z2005opf.xsl -text
 transformers/int_daisy_dtbMigrator/impl/d202_z2005/xslt/d202smil_Z2005smil.xsl -text
 transformers/int_daisy_dtbMigrator/impl/z2005_d202/MigratorImpl.java -text
+transformers/int_daisy_dtbMigrator/impl/z2005_d202/read/NcxContentNode.java -text
+transformers/int_daisy_dtbMigrator/impl/z2005_d202/read/NcxContentNodes.java -text
+transformers/int_daisy_dtbMigrator/impl/z2005_d202/read/NcxSmilCustomTest.java -text
+transformers/int_daisy_dtbMigrator/impl/z2005_d202/read/NcxSmilCustomTests.java -text
+transformers/int_daisy_dtbMigrator/impl/z2005_d202/read/SmilMerger.java -text
 transformers/int_daisy_dtbMigrator/messages.properties -text
 transformers/int_daisy_dtbMigrator/transformer.tdf -text
 transformers/int_daisy_filesetAudioTagger/FilesetAudioTagger.java -text
