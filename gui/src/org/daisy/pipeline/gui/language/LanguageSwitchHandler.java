@@ -124,7 +124,7 @@ public class LanguageSwitchHandler extends AbstractHandler {
 		if (MessageDialog.openQuestion(shell,
 				Messages.langswitch_restart_title,
 				Messages.langswitch_restart_message)) {
-			// PlatformUI.getWorkbench().restart();
+			PlatformUI.getWorkbench().restart();
 		}
 		return null;
 
