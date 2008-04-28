@@ -9,19 +9,11 @@
 			<tag name="heading 5" listOverride="true"><map value="h5"/></tag>
 			<tag name="heading 6" listOverride="true"><map value="h6"/></tag>
 			<tag name="Block Text">
-				<!--
-				<wrap value="blockquote" addId="false" merge="true">
-					<using value="p"/>
-				</wrap>-->
 				<map value="p">
 					<attribute name="group" value="blockquote"/>
 				</map>
 			</tag>
 			<tag name="caption">
-				<!--
-				<wrap value="imggroup" addId="false" merge="true">
-					<using value="caption"/>
-				</wrap>-->
 				<map value="caption">
 					<attribute name="group" value="imggroup"/>
 				</map>
@@ -44,6 +36,21 @@
 			</tag>-->
 		</paragraphs>
 		<character>
+			<tag name="HTML Cite">
+				<map value="cite"/>
+			</tag>
+			<tag name="HTML Code">
+				<map value="code"/>
+			</tag>
+			<tag name="HTML Definition">
+				<map value="dfn"/>
+			</tag>
+			<tag name="HTML Keyboard">
+				<map value="kbd"/>
+			</tag>
+			<tag name="HTML Sample">
+				<map value="samp"/>
+			</tag>
 			<tag name="Strong"><map value="strong"/></tag>
 			<tag name="Emphasis"><map value="em"/></tag>
 			<tag name="page number"><pagenum/></tag>

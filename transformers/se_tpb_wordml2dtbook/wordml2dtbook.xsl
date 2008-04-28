@@ -269,10 +269,10 @@
 <xsl:template match="w:footnote" mode="rearmatter">
 	<note id="note-{count(preceding::w:footnote[ancestor::w:body])+1}">
 		<xsl:for-each select="w:p[position()=1]">
-			<p><xsl:if test="../@w:suppressRef!='on' or not(../@w:suppressRef)"><xsl:element name="span"><xsl:attribute name="class">listSymbol</xsl:attribute><xsl:value-of select="count(preceding::w:footnote[ancestor::w:body])+1"/></xsl:element></xsl:if><xsl:value-of select="."/></p>
+			<p><xsl:if test="../@w:suppressRef!='on' or not(../@w:suppressRef)"><xsl:element name="span"><xsl:attribute name="class">listSymbol</xsl:attribute><xsl:value-of select="count(preceding::w:footnote[ancestor::w:body])+1"/></xsl:element></xsl:if><xsl:for-each select="descendant::w:t"><xsl:value-of select="."/></xsl:for-each></p>
 		</xsl:for-each>
 		<xsl:for-each select="w:p[position()&gt;1]">
-			<p><xsl:value-of select="."/></p>
+			<p><xsl:for-each select="descendant::w:t"><xsl:value-of select="."/></xsl:for-each></p>
 		</xsl:for-each>
 	</note>
 </xsl:template>

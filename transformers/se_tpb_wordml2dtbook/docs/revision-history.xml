@@ -300,4 +300,17 @@ Notes:
 		<remark>
 		</remark>
 	</revision>
+	<revision>
+		<version>1.9.2</version>
+		<date>18 March 2008</date>
+		<author>Joel Håkansson</author>
+		<description>
+			<para>--- Resolved bugs ---</para>
+			<para>Resolved a problem with non textual content in footnotes</para>
+			<para>--- Other changes ---</para>
+			<para>Added conversion rules for the "Save As Daisy" template to the "Simple" scripts</para>
+		</description>
+		<remark>
+		</remark>
+	</revision>
 </history>
