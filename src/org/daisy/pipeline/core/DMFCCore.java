@@ -68,6 +68,8 @@ public class DMFCCore implements TransformerHandlerLoader {
 
     private Creator mCreator;
     private Runner mRunner;
+    
+	private I18n mInternationalization;
 
     /**
      * Create an instance of the Daisy Pipeline. This constructor will fetch the
@@ -96,6 +98,7 @@ public class DMFCCore implements TransformerHandlerLoader {
         mCreator = new Creator(this);
         mRunner = new Runner();
         initialize(userProps, null);
+        mInternationalization = new I18n();
     }
     
     /**
@@ -118,6 +121,7 @@ public class DMFCCore implements TransformerHandlerLoader {
          mCreator = new Creator(this);
          mRunner = new Runner();
          initialize(userProps, pipelineProps);
+         mInternationalization = new I18n();
     }
 
     private void initialize(Properties userProps, Properties pipelineProps)
@@ -223,9 +227,7 @@ public class DMFCCore implements TransformerHandlerLoader {
 
         if (files != null && files.length > 1) {
             EventBus.getInstance().publish(
-                    new CoreMessageEvent(this,
-                            "Error! Incorrect number of TDFs for transformer "
-                                    + transformerName,
+                    new CoreMessageEvent(this, i18n("INVALID_TDF_NUMBER",transformerName),
                             MessageEvent.Type.WARNING));
         } else if (files != null && files.length == 1) {
             TransformerHandler th = new TransformerHandler(files[0],
@@ -303,5 +305,24 @@ public class DMFCCore implements TransformerHandlerLoader {
             }
         });
         return files != null && files.length == 1;
+    }
+    
+    /*
+     * i18n convenience methods
+     */
+    private String i18n(String msgId) {
+    	return mInternationalization.format(msgId);
+    }
+
+    private String i18n(String msgId, Object[] params) {
+    	return mInternationalization.format(msgId, params);
+    }
+
+    private String i18n(String msgId, Object param) {
+    	return i18n(msgId, new Object[] { param });
+    }
+
+    private String i18n(String msgId, Object param1, Object param2) {
+    	return i18n(msgId, new Object[] { param1, param2 });
     }
 }

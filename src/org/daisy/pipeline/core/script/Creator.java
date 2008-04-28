@@ -37,6 +37,7 @@ import org.daisy.pipeline.core.transformer.TransformerHandler;
 import org.daisy.pipeline.core.transformer.TransformerHandlerLoader;
 import org.daisy.pipeline.exception.TransformerDisabledException;
 import org.daisy.util.file.TempFile;
+import org.daisy.util.i18n.I18n;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
@@ -61,6 +62,7 @@ public class Creator implements ErrorHandler, EntityResolver {
     private TransformerHandlerLoader mHandlerLoader;
     private boolean mValidationError = false;
     private URL mCurrentScriptURL = null;
+    private I18n mInternationalization;
 
     /**
      * Constructor.
@@ -69,6 +71,7 @@ public class Creator implements ErrorHandler, EntityResolver {
      */
     public Creator(TransformerHandlerLoader loader) {
         mHandlerLoader = loader;
+        mInternationalization = new I18n();
     }
 
     /**
@@ -148,7 +151,7 @@ public class Creator implements ErrorHandler, EntityResolver {
                 // Upgrade the script to version 2.0
                 EventBus.getInstance().publish(
                         new CoreMessageEvent(this,
-                                "Upgrading version 1.0 script file to 2.0",
+                        		i18n("VERSION_UP", "1.0", "2.0"),
                                 MessageEvent.Type.INFO));
                 TempFile temp = new TempFile();
                 Source input = new StreamSource(url.openStream());
@@ -255,8 +258,7 @@ public class Creator implements ErrorHandler, EntityResolver {
             if (names.contains(name)) {
                 EventBus.getInstance().publish(
                         new CoreMessageEvent(this,
-                                "System error: Property name " + name
-                                        + " is not unique.",
+                        		i18n("UNIQUE_PROP", name),
                                 MessageEvent.Type.WARNING,
                                 MessageEvent.Cause.INPUT));
                 result = false;
@@ -288,9 +290,7 @@ public class Creator implements ErrorHandler, EntityResolver {
                                     param.getName())) {
                         EventBus.getInstance().publish(
                                 new CoreMessageEvent(this,
-                                        "System error: Required parameter "
-                                                + param.getName()
-                                                + " not specified by chain",
+                                		i18n("MISSING_PARAM", param.getName()),
                                         MessageEvent.Type.WARNING,
                                         MessageEvent.Cause.INPUT));
                         result = false;
@@ -330,10 +330,7 @@ public class Creator implements ErrorHandler, EntityResolver {
                                         .publish(
                                                 new CoreMessageEvent(
                                                         this,
-                                                        "System error: Parameter "
-                                                                + param
-                                                                        .getName()
-                                                                + " is hard-coded in the TDF and may not be specified in a script.",
+                                                        i18n("HARD_CODED_PARAM",param.getName()),
                                                         MessageEvent.Type.WARNING,
                                                         MessageEvent.Cause.INPUT));
                                 result = false;
@@ -347,9 +344,7 @@ public class Creator implements ErrorHandler, EntityResolver {
                                 .publish(
                                         new CoreMessageEvent(
                                                 this,
-                                                "System error: Parameter "
-                                                        + taskParamName
-                                                        + " is not defined in the TDF.",
+                                                i18n("UNDEFINED_PARAM",taskParamName),
                                                 MessageEvent.Type.WARNING,
                                                 MessageEvent.Cause.INPUT));
                         result = false;
@@ -394,8 +389,8 @@ public class Creator implements ErrorHandler, EntityResolver {
 
     private void saxWarn(SAXParseException e) {
         EventBus.getInstance().publish(
-                new MessageEvent(this, "User error in " + e.getSystemId()
-                        + " at line " + e.getLineNumber() + ": " + e,
+                new MessageEvent(this,
+                		i18n("ERROR_SYSID", new Object[] {e.getSystemId(), e.getLineNumber(), e }),
                         MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT));
     }
 
@@ -418,6 +413,25 @@ public class Creator implements ErrorHandler, EntityResolver {
         }
 
         return null;
+    }
+    
+    /*
+     * i18n convenience methods
+     */
+    private String i18n(String msgId) {
+    	return mInternationalization.format(msgId);
+    }
+
+    private String i18n(String msgId, Object[] params) {
+    	return mInternationalization.format(msgId, params);
+    }
+
+    private String i18n(String msgId, Object param) {
+    	return i18n(msgId, new Object[] { param });
+    }
+
+    private String i18n(String msgId, Object param1, Object param2) {
+    	return i18n(msgId, new Object[] { param1, param2 });
     }
 
 }

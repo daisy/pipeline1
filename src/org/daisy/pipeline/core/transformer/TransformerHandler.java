@@ -312,8 +312,7 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
                 .getCodeSource().getLocation();
         
         EventBus.getInstance().publish(
-                new CoreMessageEvent(this, "Transformer loaded from "
-                        + codeSourceLocation, MessageEvent.Type.DEBUG));
+                new CoreMessageEvent(this, i18n("TRANSFORMER_LOADED", codeSourceLocation), MessageEvent.Type.DEBUG));
     }
 
     /**
@@ -332,8 +331,7 @@ public class TransformerHandler implements TransformerInfo, ErrorHandler {
         URL codeSourceLocation = mTransformerClass.getProtectionDomain().getCodeSource().getLocation();
         
         EventBus.getInstance().publish(
-                new CoreMessageEvent(this, "Transformer loaded from "
-                        + codeSourceLocation, MessageEvent.Type.DEBUG));
+                new CoreMessageEvent(this, i18n("TRANSFORMER_LOADED", codeSourceLocation), MessageEvent.Type.DEBUG));
         
         if (!codeSourceLocation.toExternalForm().endsWith(".jar") && mLoadedFromJar) {
             System.err.println("System error: JAR and directory mixup!");
