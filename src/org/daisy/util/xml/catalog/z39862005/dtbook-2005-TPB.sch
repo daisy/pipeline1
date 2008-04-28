@@ -560,6 +560,13 @@
       <sch:assert test="self::dtbk:hd or self::dtbk:linegroup or self::dtbk:line or self::dtbk:pagenum">[tpb115] Only hd, linegroup, line and pagenum are allowed inside poem</sch:assert>
     </sch:rule>	
   </sch:pattern>
+  
+  <!-- Rule 116: Don't allow arabic numbers in pagenum/@page="front" -->
+  <sch:pattern name="dtbook_TPB_pageFrontArabic" id="dtbook_TPB_pageFrontArabic">
+  	<sch:rule context="dtbk:pagenum">
+  	  <sch:report test="@page='front' and translate(.,'0123456789','xxxxxxxxxx')!=.">[tpb116] Arabic numbers in page="front" are not allowed</sch:report>
+    </sch:rule>	
+  </sch:pattern>
     
 </sch:schema>
 
