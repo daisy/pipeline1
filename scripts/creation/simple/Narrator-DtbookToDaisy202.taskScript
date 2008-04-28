@@ -6,7 +6,7 @@
 		
 	<parameter name="input" value="" required="true">
 		<nicename>Input DTBook file</nicename>
-		<description>A DTBook 2005 file</description>
+		<description>Select the DTBook input file</description>
 		<datatype>
 			<file mime="application/x-dtbook+xml" type="input"/>
 		</datatype>
@@ -14,15 +14,27 @@
 	
 	<parameter name="outputPath" value="" required="true">
 		<nicename>Output folder</nicename>
-		<description>Base folder for the Narrator output</description>
+		<description>Select directory for the output Narrator DTBs</description>
 		<datatype>
 			<directory type="output"/>
 		</datatype>
 	</parameter>
-	
+
+	<parameter name="dtbookFix" value="NARRATOR" required="false">
+		<nicename>DTBook Fix</nicename>
+		<description>Select whether to apply DTBook Fix routines</description>
+		<datatype>
+			<enum>
+				<item nicename="Do not apply DTBook Fix routines" value="NOTHING"/>
+				<item nicename="Apply DTBook Fix routines" value="NARRATOR"/>
+			</enum>
+		</datatype>
+	</parameter>
+
+
 	<parameter name="bitrate" value="32" required="false">
-		<nicename>Bitrate</nicename>
-		<description>MP3 encoding bitrate</description>
+		<nicename>MP3 Bitrate</nicename>
+		<description>Select output MP3 encoding bitrate</description>
 		<datatype>
 			<enum>
 				<item nicename="32 kbit/s" value="32"/>
@@ -32,25 +44,6 @@
 			</enum>
 		</datatype>
 	</parameter>
-
-
-	<!-- *************************
-	      DTBook first input validation, report errors but continue 
-	     ************************* -->
-	<task name="int_daisy_validator" interactive="false">
-		<parameter>
-			<name>input</name>
-			<value>${input}</value>
-		</parameter>		
-		<parameter>
-			<name>requireInputType</name>
-			<value>Dtbook document</value>
-		</parameter>
-		<parameter>
-			<name>abortThreshold</name>
-			<value>NONE</value>
-		</parameter>
-	</task>
 	
 	
 	<!-- *************************
@@ -64,22 +57,22 @@
 
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/00-dtbookfix.xml</value>
+			<value>${outputPath}/pipeline__temp/00-dtbookfix.xml</value>
 		</parameter>
 
 		<parameter>
 			<name>runCategories</name>
-			<value>NARRATOR</value>
+			<value>${dtbookFix}</value>
 		</parameter>
 		
 		<parameter>
 			<name>simplifyHeadingLayout</name>
-			<value>true</value>
+			<value>false</value>
 		</parameter>
 
 		<parameter>
 			<name>forceRun</name>
-			<value>true</value>
+			<value>false</value>
 		</parameter>
 			
 	</task>
@@ -92,7 +85,7 @@
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/00-dtbookfix.xml</value>
+			<value>${outputPath}/pipeline__temp/00-dtbookfix.xml</value>
 		</parameter>
 		<parameter>
 			<name>schemas</name>
@@ -115,11 +108,11 @@
 	<task name="se_tpb_xmldetection" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/00-dtbookfix.xml</value>
+			<value>${outputPath}/pipeline__temp/00-dtbookfix.xml</value>
 		</parameter>		
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/01-abbracro.xml</value>
+			<value>${outputPath}/pipeline__temp/01-abbracro.xml</value>
 		</parameter>		
 		<parameter>
 			<name>doAbbrAcronymDetection</name>
@@ -141,11 +134,11 @@
 	<task name="se_tpb_annonsator" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/01-abbracro.xml</value>
+			<value>${outputPath}/pipeline__temp/01-abbracro.xml</value>
 		</parameter>		
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/02-struct.xml</value>
+			<value>${outputPath}/pipeline__temp/02-struct.xml</value>
 		</parameter>		
 	</task>
 	
@@ -155,11 +148,11 @@
 	<task name="se_tpb_xmldetection" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/02-struct.xml</value>
+			<value>${outputPath}/pipeline__temp/02-struct.xml</value>
 		</parameter>		
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/03-sent.xml</value>
+			<value>${outputPath}/pipeline__temp/03-sent.xml</value>
 		</parameter>		
 		<parameter>
 			<name>doAbbrAcronymDetection</name>
@@ -181,49 +174,22 @@
 	<task name="se_tpb_syncPointNormalizer" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/03-sent.xml</value>
+			<value>${outputPath}/pipeline__temp/03-sent.xml</value>
 		</parameter>		
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/04-syncpoint.xml</value>
+			<value>${outputPath}/pipeline__temp/04-syncpoint.xml</value>
 		</parameter>
 	</task>
 	
-	<!-- ******************
-	      Speech Generator
-	     ******************
-	<task name="se_tpb_speechgenerator" interactive="false">
-		<parameter>
-			<name>inputFilename</name>
-			<value>${outputPath}/04-syncpoint.xml</value>
-		</parameter>
-		<parameter>
-			<name>outputDirectory</name>
-			<value>${outputPath}/z3986/</value>
-		</parameter>
-		<parameter>
-			<name>outputFilename</name>
-			<value>${outputPath}/z3986/06-speechgen.xml</value>
-		</parameter>
-		<parameter>
-			<name>mp3Output</name>
-			<value>true</value>
-		</parameter>
-		<parameter>
-			<name>concurrentAudioMerge</name>
-			<value>true</value>
-		</parameter>
-	</task>
-	-->
-	
-	
+		
 	<!-- ******************
 	      SpeechGen2
 	     ****************** -->
 	<task name="se_tpb_speechgen2" interactive="false">
 		<parameter>
 			<name>inputFilename</name>
-			<value>${outputPath}/04-syncpoint.xml</value>
+			<value>${outputPath}/pipeline__temp/04-syncpoint.xml</value>
 		</parameter>
 		<parameter>
 			<name>outputDirectory</name>
@@ -327,5 +293,15 @@
 			<value>ERROR</value>
 		</parameter>
 	</task>
+	
+		<!-- *************************
+	     Delete temporary
+	  ************************* --> 
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${outputPath}/pipeline__temp/</value>
+		</parameter>					
+	</task>	
 	
 </taskScript>
