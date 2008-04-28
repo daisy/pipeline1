@@ -362,12 +362,12 @@ public class D202NccBuilder {
 	}
 
 	private String getMaxPageNormal(List<NccNavItem> navItems) {
-		String value = "0";
-		ListIterator<NccNavItem> iter = navItems.listIterator(navItems.size()-1);
+		String value = "0"; 
+		ListIterator<NccNavItem> iter = navItems.listIterator(navItems.size());
 		while(iter.hasPrevious()) {
 			NccNavItem ni = iter.previous();
 			if(ni.mType == NccNavItemType.PAGE_NORMAL) return ni.mText.trim();
-		}
+		} 
 		return value;
 	}
 
