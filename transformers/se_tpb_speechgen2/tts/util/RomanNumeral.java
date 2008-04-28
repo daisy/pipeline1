@@ -13,7 +13,7 @@ public class RomanNumeral {
 	
 	private final int num;   // The number represented by this Roman numeral.
 
-	private static final Pattern PATTERN_ROMAN_NUMERAL = Pattern.compile("[MmDdCcLlVvIi]*");
+	private static final Pattern PATTERN_ROMAN_NUMERAL = Pattern.compile("\\s*[Mm]*([Dd]?[Cc]{0,3}|[Cc][DdMm])([Ll]?[Xx]{0,3}|[Xx][LlCc])([Vv]?[Ii]{0,3}|[Ii][VvXx])\\s*");
 	
 	/* The following arrays are used by the toString() function to construct
 	 the standard Roman numeral representation of the number.  For each i,
