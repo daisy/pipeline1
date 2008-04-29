@@ -10,20 +10,22 @@ Where:\n\
 	-isntall-dir is the directory containing the pipeline installer scripts\n\
 Options:\n\
     -h : print this help\n\
-    -w : create windows installer\n\
-    -l : create linux installer\n\
-    -m : create mac installer\n\
+    -w : create Windows installer\n\
+    -W : create Windows WPF installer\n\
+    -l : create Linux Archive (tar.gz)\n\
+    -m : create MacOSX Disk Image\n\
     -q : quiet\n\
     -V : verbose\n\
     -v VER : set the version to VER"
 
 # Parse the Options
-while getopts "hwlmqVv:" OPTION
+while getopts "hwWlmqVv:" OPTION
 do
   case $OPTION in
     h) echo -e $USAGE
        exit 0;;
     w) WIN=true;;
+    W) WPF=true;;
     l) LINUX=true;;
     m) MAC=true;;
     v) VERSION="$OPTARG";;
@@ -40,7 +42,7 @@ EXPORT_DIR=${2:-/Users/Romain/Public/build}
 INSTALL_SRC_DIR=${3:-/Users/Romain/Documents/Work/pipeline/release}
 VERSION=${VERSION:-$VERSION}
 # Check OS flags
-if [[ -z $WIN$LINUX$MAC ]]
+if [[ -z $WIN$LINUX$MAC$WPF ]]
 then
 	echo -e $USAGE
     exit 0
@@ -60,6 +62,23 @@ then
 	makensis pipeline-setup.nsi | tee "$FINAL_DIR/nsis.log"
 	if [[ -z $VERBOSE ]]; then exec 1>&3; fi
 	mv setup.exe "$FINAL_DIR/PipelineGUI-${VERSION}-Win.exe"
+	if [[ -z $QUIET ]]; then echo "Done."; fi
+fi
+
+# Windows WPF build	
+if [[ ! -z $WPF ]]
+then
+	if [[ -z $QUIET ]]; then echo "Creating Windows WPF release..."; fi
+	cd "$EXPORT_DIR"
+	cd win32.wpf.x86
+	cd `ls`
+	cp "$INSTALL_SRC_DIR/windows/pipeline-setup.nsi" .
+	mkdir ext
+	cp "$INSTALL_SRC_DIR/windows/ext/lame.exe" ext
+	if [[ -z $VERBOSE ]]; then exec 3>&1 && exec 1>/dev/null; fi
+	makensis pipeline-setup.nsi | tee "$FINAL_DIR/nsis.log"
+	if [[ -z $VERBOSE ]]; then exec 1>&3; fi
+	mv setup.exe "$FINAL_DIR/PipelineGUI-${VERSION}-WinWPF.exe"
 	if [[ -z $QUIET ]]; then echo "Done."; fi
 fi
 
@@ -125,9 +144,9 @@ rm -Rf "${TEMP_DMG_SRC}"
 
 # mount it
 if [[ -z $QUIET ]]; then echo " - Mounting the disk image..."; fi
-if [[ -z $VERBOSE ]]; then exec 3>&1 && exec 1>/dev/null; fi
+#if [[ -z $VERBOSE ]]; then exec 3>&1 && exec 1>/dev/null; fi
 DEV_NAME=`hdiutil attach -readwrite -noverify -noautoopen "${TEMP_DMG}" | egrep '^/dev/' | sed 1q | awk '{print $1}'` | tee -a "$FINAL_DIR/makedmg$INCLUDE_TOOLS.log"
-if [[ -z $VERBOSE ]]; then exec 1>&3; fi
+#if [[ -z $VERBOSE ]]; then exec 1>&3; fi
 
 # customize the disk image
 if [[ -z $QUIET ]]; then echo " - Customizing the disk image..."; fi
@@ -140,7 +159,7 @@ osascript $FILES_DIR/customizeDMG.scpt
 # unmount
 if [[ -z $QUIET ]]; then echo " - Unmounting the disk image..."; fi
 if [[ -z $VERBOSE ]]; then exec 3>&1 && exec 1>/dev/null; fi
-hdiutil detach "${DEV_NAME}"  | tee -a "$FINAL_DIR/makedmg$INCLUDE_TOOLS.log"
+hdiutil unmount "${VOL_NAME}"  | tee -a "$FINAL_DIR/makedmg$INCLUDE_TOOLS.log"
 if [[ -z $VERBOSE ]]; then exec 1>&3; fi
  
 # compress image
