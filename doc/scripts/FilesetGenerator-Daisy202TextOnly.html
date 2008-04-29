@@ -35,7 +35,8 @@ Such filesets can then be opened in a Daisy production tool of your choice to re
 <p class="alert">Note - it is recommended that the first element in your input document body is a heading. Any elements preceeding the first heading while be maintained in the content document, but will not become part of the DAISY DTB synchronization.</p>
 
 <h2 id="output">Output</h2>
-<p>A Daisy 2.02 Text-Only fileset.</p>
+<p>A Daisy 2.02 Text-Only fileset.<p>
+<p><em>Note - at the time of writing, the LPStudio/Pro "<code>lpp</code>" file is not included in the output, which means that the DTB can not be opened in LPStudio/Pro.</em></p>
 
 <h2 id="config">Configuration</h2>
 
@@ -47,8 +48,8 @@ Such filesets can then be opened in a Daisy production tool of your choice to re
 		<dd><strong>Required.</strong> Select the directory to store the result in. This directory can <strong>not</strong> be the same as the input directory, or the script will abort.</dd>
 
 		<dt>Output encoding</dt>
-		<dd><strong>Optional.</strong> While the default output characterset encoding is Unicode(utf-8) some heritage DAISY production tools (such as Sigtuna DAR) does not support Unicode properly. For this reason, it is sometimes necessary to select another output encoding than utf-8.
-		If you are not sure what this means, leave this setting at its default value. If the output character set you want is not available in the selection dialog, leave it at its default value and run a separate pass with the Pipeline <a href="CharsetSwitcher.html">Charset Switcher script</a> after the Daisy 2.02 fileset has been generated.  
+		<dd><strong>Optional.</strong> While the default output characterset encoding is Unicode(utf-8) some heritage DAISY production tools (such as Sigtuna DAR, LPStudio Plus and LPStudio/Pro) does not support Unicode properly. For this reason, it is sometimes necessary to select another output encoding than utf-8.
+		<em>If you are not sure what this means, leave this setting at its default value</em>. If the output character set you want is not available in the selection dialog, leave it at its default value and run a separate pass with the Pipeline <a href="CharsetSwitcher.html">Charset Switcher script</a> after the Daisy 2.02 fileset has been generated.  
 		</dd>
 
 		<dt>Identifier</dt>
