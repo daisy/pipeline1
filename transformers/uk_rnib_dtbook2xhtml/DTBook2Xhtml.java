@@ -117,8 +117,8 @@ public class DTBook2Xhtml extends Transformer implements FilesetErrorHandler,  D
 					outFileName = outFile.getName();					
 				}
 				
-				if (inFile.getParentFile().equals(folder)) {
-					throw new TransformerRunException("Output directory may not be same as input directory");
+				if (inFile.getParentFile().getCanonicalPath().equals(folder.getCanonicalPath())) {
+					throw new TransformerRunException(i18n("INPUT_OUTPUT_SAME"));
 				}
 				Fileset fileset = this.buildFileSet(new File(inputXML));								
 				if (!parameters.containsKey("css_path")) {
