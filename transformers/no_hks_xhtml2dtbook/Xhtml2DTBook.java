@@ -96,6 +96,8 @@ public class Xhtml2DTBook extends Transformer implements FilesetErrorHandler {
 			//fix the map
 			Map<String,Object> xslParams = new HashMap<String,Object>();
 			xslParams.putAll(parameters);
+			// Add an optional user specified css as parameter to the xslt
+			xslParams.put("cssURI", parameters.get("outputCSS"));
 			// apply the canonical xslt
 			Stylesheet.apply(input.getAbsolutePath(), xsltURL, output
 					.getAbsolutePath(), TransformerFactoryConstants.SAXON8,

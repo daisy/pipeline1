@@ -20,6 +20,16 @@
 			<description>Path to output DTBook file</description>
 			<example>C:/myDocuments/myDTBookDocument.xml</example>
 		</parameter>
+
+		<parameter required="false" type="text/css">
+			<name>outputCSS</name>
+			<description>
+				A CSS to use for output textual content files. 
+				If this value is not set, a default CSS will be used.
+			</description>
+			<example>D:/path/to/my.css</example>
+			<default/>
+		</parameter>
 				 
 	</parameters>
 
