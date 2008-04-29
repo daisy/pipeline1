@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <taskScript version="2.0" name="OPSCreator">
-	<nicename>OPS Creator</nicename>
-	<description>Create an Open Publication Structure (OPS 2.0) fileset from DTBook or XHTML input.</description>
+	<nicename>EPUB Creator</nicename>
+	<description>Create an EPUB (OPS 2.0) fileset from DTBook or XHTML input.</description>
    	<documentation uri="../../../doc/scripts/OPSCreator.html"/>
     <comment/>
 			
