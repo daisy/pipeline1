@@ -21,7 +21,9 @@ package int_daisy_opsCreator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -46,13 +48,13 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetFile;
+import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.i18n.CharUtils;
 import org.daisy.util.xml.IDGenerator;
 import org.daisy.util.xml.LocusTransformer;
@@ -423,7 +425,17 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 			mOwner.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM,null);
 			throw new NullPointerException(message);
 		}
-		mEventList.add(xef.createAttribute("src", nps.mTargetFile.getName()+"#"+idValue));			
+		//mg20080409: escape URLs of filenames
+		try {
+			URL file = nps.mTargetFile.toURI().toURL();
+			String escaped = file.getFile();
+			escaped = URIStringParser.stripPath(escaped);
+			escaped = URIStringParser.stripFragment(escaped);
+			mEventList.add(xef.createAttribute("src", escaped +"#"+idValue));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			mEventList.add(xef.createAttribute("src", nps.mTargetFile.getName()+"#"+idValue));
+		}					
 		mEventList.add(xef.createEndElement(mQNameNcxContent, null));				
 	}
 	
