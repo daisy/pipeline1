@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?xml-stylesheet href="dtbook.2005.basic.css" type="text/css"?>
+<!DOCTYPE dtbook PUBLIC "-//NISO//DTD dtbook 2005-3//EN" "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" >
+<dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="2005-3" xml:lang="en-US">
+	<head>
+		<meta name="dt:version" content="1.0" />
+		<meta name="dtb:uid" content="AUTO-UID-4748017107383655000" />
+		<meta name="dc:Title" content="The quick brown fox jumps over the lazy dog" />
+		<meta name="dc:Creator" content="Anonymous Author" />
+		<meta name="dc:Date" content="2008-04-28" />
+		<meta name="dc:Publisher" content="O'really Media, Inc." />
+		<meta name="dc:Identifier" content="123456789" />
+		<meta name="dc:Language" content="en-US" />
+	</head>
+	<book showin="blp">
+		<frontmatter>
+			<doctitle>The quick brown fox jumps over the lazy dog</doctitle>
+			<docauthor>Andrew Savikas</docauthor>
+		</frontmatter>
+		<bodymatter id="bodymatter_0001">
+			<level1>
+				<pagenum page="normal" id="page1">1</pagenum>
+				<p>The quick brown fox jumps over the lazy dog.  The quick brown fox jumps over the lazy dog.  The quick brown fox jumps over the lazy dog.  The quick brown fox jumps over the lazy dog.  The quick brown fox jumps over the lazy dog.</p>
+				<p>The quick brown fox jumps over the lazy dog.  The quick brown fox jumps over the lazy dog.  The quick brown fox jumps over the lazy dog.  The quick brown fox jumps over the lazy dog.  The quick brown fox jumps over the lazy dog.</p>
+				<p>The quick brown fox jumps over the lazy dog.  The quick brown fox jumps over the lazy dog.  The quick brown fox jumps over the lazy dog.  The quick brown fox jumps over the lazy dog.  The quick brown fox jumps over the lazy dog.</p>
+				<p />
+			</level1>
+		</bodymatter>
+	</book>
+</dtbook>

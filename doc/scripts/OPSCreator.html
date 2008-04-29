@@ -27,6 +27,11 @@
 <p>If you are adding several documents, ensure that they are added in the logical order of the presentation (Chapter1.xml; Chapter2.xml) etc.</p>
 <p>When selecting an input document, only point to the root/manifest file (XHTML or DTBook document); auxilliary files (CSS, images, etc) are added automatically.</p>
 
+<div class="alert">
+	<p>The OPS Specification is quite picky about what kind of text documents can be used within an EPUB. You can only use XHTML 1.1 (not 1.0) documents, or DTBook 2005-2 (not 2005-1 or 2005-3) documents.</p>
+	<p>If you add a document of a type not supported by the specification, this script will issue a warning and then <em>attempt</em> to convert the document into an allowed version.</p>
+</div>
+
 <h2 id="output">Output</h2>
 <p>An OPS 2.0 publication, including an NCX. The OPS publication is wrapped in an <a href="../transformers/int_daisy_ocfCreator.html">OCF container</a>.</p>
 <p>If the NCX is not created according to your expectations, note that you can
@@ -49,7 +54,7 @@ a rather complex endeavour that requires XML knowledge.</p>
 
 	<dl id="paramslist">
 		<dt>Input file(s)</dt>
-		<dd><strong>Required.</strong> One or several DTBook or XHTML documents.</dd>
+		<dd><strong>Required.</strong> One or several DTBook or XHTML documents, added in proper order.</dd>
 		
 		<dt>Output OCF</dt>
 		<dd><strong>Required.</strong> Output OCF (*.epub) file</dd>

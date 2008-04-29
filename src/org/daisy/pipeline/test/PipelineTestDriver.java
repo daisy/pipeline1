@@ -32,7 +32,6 @@ import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.core.script.ScriptParameter;
 import org.daisy.pipeline.core.script.Task;
 import org.daisy.pipeline.exception.DMFCConfigurationException;
-import org.daisy.pipeline.test.impl.DTBMigratorBackward1;
 import org.daisy.pipeline.ui.CommandLineUI;
 import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
@@ -236,8 +235,9 @@ public class PipelineTestDriver implements BusListener {
 			
 //		tests.add(new OpsCreator1(inputDir, outputDir));
 //		tests.add(new OpsCreator2(inputDir, outputDir)); 
-//////	tests.add(new OpsCreator3(inputDir, outputDir));   // (input is XHTML 1.0 and epubcheck crashes)
-//		tests.add(new OpsCreator4(inputDir, outputDir));			 
+//		tests.add(new OpsCreator3(inputDir, outputDir));
+//		tests.add(new OpsCreator4(inputDir, outputDir));
+//		tests.add(new OpsCreator5(inputDir, outputDir));			
 //		tests.add(new OcfCreator1(inputDir, outputDir));			
 //		tests.add(new WordML2DTBook1(inputDir, outputDir));
 //		tests.add(new WordML2DTBook2(inputDir, outputDir));
@@ -306,7 +306,7 @@ public class PipelineTestDriver implements BusListener {
 //		tests.add(new RenamerTaggerValidator1(inputDir, outputDir));						
 //		tests.add(new NccNcxOnly1(inputDir, outputDir));
 //		tests.add(new DTBMigratorForward1(inputDir, outputDir));		
-		tests.add(new DTBMigratorBackward1(inputDir, outputDir));
+//		tests.add(new DTBMigratorBackward1(inputDir, outputDir));
 //		tests.add(new XukCreator1(inputDir, outputDir));
 //		tests.add(new FilesetGenerator1(inputDir, outputDir));
 //		tests.add(new FilesetGenerator2(inputDir, outputDir));		

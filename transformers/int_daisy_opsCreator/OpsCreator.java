@@ -18,6 +18,8 @@
 package int_daisy_opsCreator;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -44,6 +47,8 @@ import javax.xml.stream.events.ProcessingInstruction;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
@@ -54,16 +59,21 @@ import org.daisy.util.css.stylesheets.Css;
 import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.file.Directory;
+import org.daisy.util.file.EFile;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.file.TempFile;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetErrorHandler;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.fileset.util.FilesetFileFilter;
 import org.daisy.util.location.LocationUtils;
 import org.daisy.util.xml.IDGenerator;
+import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.peek.PeekResult;
@@ -74,6 +84,10 @@ import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.pool.StAXOutputFactoryPool;
 import org.daisy.util.xml.stax.StaxEntityResolver;
+import org.daisy.util.xml.xslt.Stylesheet;
+import org.daisy.util.xml.xslt.TransformerFactoryConstants;
+import org.daisy.util.xml.xslt.XSLTException;
+import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
 import org.xml.sax.SAXException;
 
 /**
@@ -95,7 +109,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 	static public final String OPF_NS = "http://www.idpf.org/2007/opf";
 	static public final String DC_NS = "http://purl.org/dc/elements/1.1/"; 
 	static public final String DC_PFX = "dc";
-	public static final String APP_NAME = "Daisy Pipeline OPS Creator";
+	public static final String APP_NAME = "Daisy Pipeline EPUB Creator";
 			
 	public OpsCreator(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);
@@ -103,30 +117,82 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 		mInputMetadata = new HashSet<StartElement>();
 		mXmlLangQName = new QName("xml:lang");
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	@Override
-	protected boolean execute(Map parameters) throws TransformerRunException {
-		try{						
-			mInputDocuments = getInputDocuments((String)parameters.remove("input"));
-			mInputFilesets = getInputFilesets(mInputDocuments);		
-			  
-			URL ncxConfigURL = getNcxConfigURL(parameters);
-			mNcxConfiguration = new NcxBuilderConfiguration(ncxConfigURL,this);
-					
-			mOutputDir = (Directory)FileUtils.createDirectory(new Directory(FilenameOrFileURI.toFile((String)parameters.remove("output"))));
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
+		try{
+			
+			/*
+			 * Get a list of the plain unmodded input documents
+			 */
+			List<URL> mRawInputDocuments = parseInputParam(parameters.get("input"));
+			
+			/*
+			 * Make sure input dir != output dir
+			 */
+			Directory outputDir = new Directory(FilenameOrFileURI.toFile(parameters.remove("output")));
+			if(outputDir!=null && outputDir.exists()) {
+				for(URL u : mRawInputDocuments ) {
+					File f = new File(u.toURI());
+					if(f.getParentFile().getCanonicalPath().equals(outputDir.getCanonicalPath())) {
+						throw new TransformerRunException(i18n("INPUT_OUTPUT_SAME"));
+					}
+				}
+			}
+			
+			/*
+			 * Get a list of the final input documents; the return may have modded documenttypes,
+			 * which means mInputDocuments URLs may be reffing user provided paths and/or temp paths.
+			 */
+			mInputDocuments = getInputDocuments(mRawInputDocuments);
+			
+			/*
+			 * Get a list of the filesets of the unmodded input documents 
+			 */
+			mInputFilesets = getInputFilesets(mRawInputDocuments);		
+			
+			/*
+			 * Prep output
+			 */			
+			mOutputDir = (Directory)FileUtils.createDirectory(outputDir);
 			mOutputFilesets = new LinkedList<Fileset>();
 			
 			/*
-			 * Get filesets over to destination dir, 
-			 * including any mods
+			 * Get all satellite files of the input filesets over to output
+			 */
+			for(Fileset fileset: mInputFilesets) {
+				final Fileset currentFileset = fileset;
+				mOutputDir.addFileset(fileset, true, new FilesetFileFilter(){
+					public short acceptFile(FilesetFile file) {						
+						try {
+							if(currentFileset.getManifestMember().getFile().getCanonicalPath()
+									.equals(file.getFile().getCanonicalPath())) {
+								return FilesetFileFilter.REJECT;
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						return FilesetFileFilter.ACCEPT;
+					}					
+				});
+			}
+			
+			/*
+			 * Set up the NCX configuration
+			 */			
+			URL ncxConfigURL = getNcxConfigURL(parameters);
+			mNcxConfiguration = new NcxBuilderConfiguration(ncxConfigURL,this);
+			
+			/*
+			 * Get the content docs (manifests) over to output,
+			 * and create representations of the output filesets.
 			 */
 			boolean first = true;
-			for (Fileset fileset : mInputFilesets) {					
-				mOutputFilesets.add(pipe(fileset,first));
-				first = false;										
+			for(URL doc : mInputDocuments) {
+				mOutputFilesets.add(pipe(doc,first));
+				first = false;		
 			}
-									
+																		
 			/*
 			 * Build the package file
 			 */
@@ -180,23 +246,42 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 	}
 
 	/**
-	 * Build an ordered list of input documents, make sure all exist. Check input versions.
+	 * Build an ordered list of input documents using the given transformer inparameter, make sure all exist.
+	 * @throws FileNotFoundException 
+	 */
+	private List<URL> parseInputParam(String inputParam) throws FileNotFoundException {
+		List<URL> retList = new LinkedList<URL>();
+		String[] docs = inputParam.split(FilesDatatype.SEPARATOR_STRING);
+		for (String doc : docs) {
+			URL u = LocationUtils.identifierToURL(doc);
+			if(u!=null) {
+				retList.add(LocationUtils.identifierToURL(doc));
+			}else {
+				throw new FileNotFoundException(doc);
+			}
+		}		
+		return retList;
+	}
+	
+	/**
+	 * Build an ordered list of input documents, make sure all exist. Check input versions, and transform document type if necessary/expected
 	 * @throws MalformedURLException
 	 * @throws IOException  
 	 * @throws SAXException 
 	 * @throws TransformerRunException 
 	 */
-	private List<URL> getInputDocuments(String inputParam) throws IOException, MalformedURLException, SAXException, TransformerRunException {
-		List<URL> retList = new LinkedList<URL>();
-		String[] docs = inputParam.split(FilesDatatype.SEPARATOR_STRING);
-		for (String doc : docs) {
-			URL url = LocationUtils.identifierToURL(doc);
-			url = checkValidType(url);
+	private List<URL> getInputDocuments(List<URL> unModdedDocs) throws IOException, MalformedURLException, SAXException, TransformerRunException {
+		List<URL> retList = new ArrayList<URL>();
+		for (URL doc : unModdedDocs) {			
+			URL url = checkValidType(doc);
 			retList.add(url);
 		}		
 		return retList;
 	}
 
+	/**
+	 * Check if the inparam URL is of a type/version allowed By OPS. If not, transform into a valid type/version and return. 
+	 */
 	private URL checkValidType(URL url) throws SAXException, IOException, TransformerRunException {
 		Peeker peeker = null;
 		try{
@@ -213,7 +298,17 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 					if(!(token.contains("2005-2"))) {
 						this.sendMessage(i18n("DISALLOWED_DOCUMENT_VERSION",result.getRootElementLocalName(),token),
 								MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
-						//TODO if 2005-1, do a dynamic transform
+						//If !2005-2, do a dynamic transform to 1.1
+						try{
+							URL out = createXHTML11(url, result);
+							if(out!=null) {
+								this.sendMessage(i18n("CONVERTED_TO_XHTML11"), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
+								url = out;
+							}
+						}catch (Exception e) {
+							//failure, leave inparam URL
+							this.sendMessage(i18n("ERROR",e.getMessage()), MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
+						}
 					}
 				}else{
 					this.sendMessage(i18n("DISALLOWED_DOCUMENT_VERSION",result.getRootElementLocalName(),"unknown"), 
@@ -221,12 +316,23 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 				}
 			}
 			
-			if(result.getRootElementLocalName().equals("html")) {
+			else if(result.getRootElementLocalName().equals("html")) {
 				if(token!=null) {					
 					if(!(token.contains("XHTML 1.1") || token.contains("xhtml11.dtd"))) {
 						this.sendMessage(i18n("DISALLOWED_DOCUMENT_VERSION",result.getRootElementLocalName(),token), 
 								MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
-						//TODO if 1.0, do a dynamic transform
+						//If we have Xhtml 1.0, do a dynamic transform to 1.1
+						try{
+							URL out = createXHTML11(url, result);
+							if(out!=null) {
+								this.sendMessage(i18n("CONVERTED_TO_XHTML11"), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
+								url = out;
+							}
+						}catch (Exception e) {
+							//failure, leave inparam URL
+							this.sendMessage(i18n("ERROR",e.getMessage()), MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
+						}
+						
 					}
 				}else{
 					this.sendMessage(i18n("DISALLOWED_DOCUMENT_VERSION",result.getRootElementLocalName(),"unknown"), 
@@ -237,6 +343,63 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 			PeekerPool.getInstance().release(peeker);
 		}
 		return url;
+	}
+
+	/**
+	 * Transform an incoming DTBook 2005-x or XHTML 1.0 doc into XHTML 1.1
+	 * @throws IOException 
+	 * @throws XSLTException 
+	 * @throws URISyntaxException 
+	 */
+	private URL createXHTML11(URL in, PeekResult result) throws IOException, XSLTException, URISyntaxException {
+		
+		URL url = in;
+		if(result.getRootElementLocalName() == "dtbook") {
+			//transform DTBook to XHTML 1.0		
+			
+			InputStream iis = in.openStream();
+			StreamSource iss = new StreamSource(iis);
+			iss.setSystemId(new File(in.toURI()).getAbsolutePath());
+						
+			URL xsl = Stylesheets.get("dtbook2xhtml.xsl");
+			InputStream xslis = xsl.openStream();
+			StreamSource xslss = new StreamSource(xslis);
+			
+			File doc = TempFile.create();
+			
+			try {
+				Stylesheet.apply(iss,xslss,new StreamResult(doc),TransformerFactoryConstants.SAXON8,null,null);
+			}finally{
+				iis.close();
+				xslis.close();
+			}
+			url = doc.toURI().toURL();
+		}
+		
+		//transform XHTML 1.0 to 1.1
+		
+		InputStream iis = url.openStream();
+		StreamSource iss = new StreamSource(iis);
+		iss.setSystemId(new File(url.toURI()).getAbsolutePath());
+		URL xsl = Stylesheets.get("xhtml10toXhtml11.xsl");
+		InputStream xslis = xsl.openStream();
+		StreamSource xslss = new StreamSource(xslis);		
+		File out = TempFile.create();
+		try{
+			Stylesheet.apply(iss,xslss,new StreamResult(out),TransformerFactoryConstants.SAXON8,null,null);
+		}finally{
+			iis.close();
+			xslis.close();
+		}
+		
+		//give the result an appropriate name
+		EFile efile = new EFile(in.toURI());
+		Directory tempDir = new Directory(out.getParentFile());
+		FileInputStream fis = new FileInputStream(out);
+		File out2 = tempDir.writeToFile(efile.getNameMinusExtension()+".html", fis);
+		fis.close();
+
+		return out2.toURI().toURL();
 	}
 
 	private String getVersionToken(PeekResult result) {		 
@@ -265,20 +428,22 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 	}
 
 	/**
-	 * Copy over filesets to output dir, ensure
-	 * that manifest member has IDs on NCX target positions.
+	 * Copy over a doc to output dir, ensure
+	 * that manifest member has IDs on NCX target positions. The copied docs
+	 * satellite files are expected to already be in output dir
 	 * Add CSS if missing.
 	 * @param fileset Fileset to copy
 	 * @param first Whether this is the first call to this method (in case of several input filesets)
+	 * @return the output fileset
 	 * @throws IOException 
 	 * @throws FilesetFatalException 
 	 * @throws XMLStreamException 
+	 * @throws URISyntaxException 
 	 */
-	private Fileset pipe(Fileset fileset, boolean first) throws IOException, FilesetFatalException, XMLStreamException {		
-		mOutputDir.addFileset(fileset, true);
+	private Fileset pipe(URL inputManifestURL, boolean first) throws IOException, FilesetFatalException, XMLStreamException, URISyntaxException {		
 		
-		URL inputManifestURL = fileset.getManifestMember().getFile().toURI().toURL(); 				
-		File outputManifestFile = new File(mOutputDir,fileset.getManifestMember().getFile().getName());
+		String fileName = new File(inputManifestURL.toURI()).getName();		
+		File outputManifestFile = new File(mOutputDir,fileName);
 				
 		XMLEventFactory xef = null;
 		XMLInputFactory xif = null;
@@ -306,7 +471,8 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 			fos = new FileOutputStream(outputManifestFile);
 			boolean seenStylesheetInstruction = false;
 			boolean passedFirstElement = false;
-			
+			boolean seenXhtmlCssLink = false;
+			QName xhtHead = new QName(Namespaces.XHTML_10_NS_URI,"head");
 			while(xer.hasNext()) {
 				XMLEvent xe = xer.nextEvent();
 				if(xe.getEventType() == XMLEvent.START_DOCUMENT) {
@@ -321,6 +487,26 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 						seenStylesheetInstruction = true;
 					}
 					xew.add(pi);
+				}else if(xe.isEndElement()) {
+					if(xe.asEndElement().getName().equals(xhtHead) && !seenXhtmlCssLink) {
+						try{
+							URL cssURL = Css.get(Css.DocumentType.D202_XHTML);
+							String cssLocalName = cssURL.toString().substring(cssURL.toString().lastIndexOf('/')+1);
+							mOutputDir.writeToFile(cssLocalName, cssURL.openStream());
+							Set<Attribute> attrs = new HashSet<Attribute>();
+							attrs.add(xef.createAttribute(new QName("type"), "text/css"));
+							attrs.add(xef.createAttribute(new QName("rel"), "stylesheet"));
+							attrs.add(xef.createAttribute(new QName("href"), cssLocalName));
+							QName link = new QName(xe.asEndElement().getName().getNamespaceURI(),"link");
+							xew.add(xef.createStartElement(link, attrs.iterator(), xe.asEndElement().getNamespaces()));
+							xew.add(xef.createEndElement(link, xe.asEndElement().getNamespaces()));
+							this.sendMessage(i18n("ADDED_CSS",  fileName), 
+									MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
+						}catch (Exception e) {
+							e.printStackTrace();
+						}
+					}					
+					xew.add(xe);
 				}else if(xe.isStartElement()) {
 					StartElement se = xe.asStartElement();
 					if(!passedFirstElement) {
@@ -336,11 +522,13 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 							xew.add(xef.createProcessingInstruction
 									("xml-stylesheet", "href='" +cssLocalName +"' type='text/css'")
 							);
-							this.sendMessage(i18n("ADDED_CSS",  fileset.getManifestMember().getFile().getName()), 
+							this.sendMessage(i18n("ADDED_CSS",  fileName), 
 									MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM);
 						}catch (Exception e) {
 							e.printStackTrace();
 						}
+					} else if (se.getName().equals(new QName(Namespaces.XHTML_10_NS_URI,"link")) && !seenXhtmlCssLink) {
+						seenXhtmlCssLink = isXhtmlCssLink(se);
 					}
 					
 					xew.add(xe);
@@ -383,7 +571,18 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 		}		
 		return new FilesetImpl(outputManifestFile.toURI(),this,false,false);
 	}
+	
 
+	private boolean isXhtmlCssLink(StartElement se) {
+		Iterator<?> attrs = se.getAttributes();
+		boolean css = false;
+		while(attrs.hasNext()) {
+			Attribute a = (Attribute) attrs.next();
+			if(a.getName().getLocalPart()=="type" && a.getValue().toLowerCase().equals("text/css")) css = true;
+			else if (a.getName().getLocalPart()=="rel" && a.getValue().toLowerCase().equals("stylesheet")) css = true;
+		}
+		return css;
+	}
 
 	private boolean hasIdAttribute(StartElement se) {
 		for (Iterator<?> iter = se.getAttributes(); iter.hasNext();) {

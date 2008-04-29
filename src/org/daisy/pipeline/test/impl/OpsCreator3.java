@@ -20,7 +20,8 @@ public class OpsCreator3 extends PipelineTest {
 
 	@Override
 	public String getResultDescription() {		
-		return "Should create an XHTML OCF, warn about XHTML 1.0 content being used, and the report a number of errors'";
+		return "Should create an XHTML OCF, warn about XHTML 1.0 content being used, upgrade to 1.1, " +
+				"and then report a number of errors'";
 	}
 
 	@Override

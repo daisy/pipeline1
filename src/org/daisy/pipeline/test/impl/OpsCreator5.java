@@ -5,28 +5,27 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.Directory;
 
-public class OcfCreator1 extends PipelineTest {
+public class OpsCreator5 extends PipelineTest {
 
-	public OcfCreator1(Directory dataInputDir, Directory dataOutputDir) {
+	public OpsCreator5(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
 	public List<String> getParameters() {
-		//mParameters.add("--input=" + mDataInputDir + "/ops/package.opf;"+mDataInputDir + "/txt/wasteland.txt");		
-		mParameters.add("--input=E:/The quick brown fox jumps over the lazy dog.xml");
-		mParameters.add("--output=" + mDataOutputDir + "/OcfCreator1/ocf.epub");				
+		mParameters.add("--input=" + mDataInputDir + "/dtbook/The quick brown fox.xml");
+		mParameters.add("--output=" + mDataOutputDir + "/OpsCreator5/The Quick Fox.epub");			
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return "Create an epub with OEBPS and TXT entries";
+		return "";
 	}
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("OCFCreator.taskScript".equals(scriptName)) {
+		if("OPSCreator.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;
