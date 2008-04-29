@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -36,14 +37,18 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.catalog.CatalogURIResolver;
+import org.daisy.util.xml.pool.SAXParserPool;
+import org.daisy.util.xml.sax.SAXConstants;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -81,8 +86,12 @@ public class Stylesheet {
 		    String oldFactory = System.getProperty(property);
 		    if (factory != null) {
 		        System.setProperty(property, factory);
-		    }
+		    }		    
+			
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			
+			URIResolver resolver = new CatalogURIResolver();
+			
 			try {
 				transformerFactory.setAttribute("http://saxon.sf.net/feature/version-warning", Boolean.FALSE);
 			} catch (IllegalArgumentException iae) {
@@ -95,7 +104,7 @@ public class Stylesheet {
 			
 			// Reset old factory property
 			System.setProperty(property, (oldFactory==null?"":oldFactory));			
-
+						
 			// Create transformer
             javax.xml.transform.Transformer transformer = transformerFactory.newTransformer(xslt);
 
@@ -106,16 +115,41 @@ public class Stylesheet {
 	                transformer.setParameter(paramEntry.getKey(), paramEntry.getValue());
 	            }
             }
-            transformer.setURIResolver(new CatalogURIResolver());            
+            transformer.setURIResolver(resolver); 
+            			
+            //Create a SAXSource, hook up an entityresolver
+	        if(xml.getSystemId()!=null && xml.getSystemId().length()>0) {
+	        	try{
+		            SAXSource saxSource = null;
+					if(!(xml instanceof SAXSource)) {
+						File input = FilenameOrFileURI.toFile(xml.getSystemId());
+						Map<String,Object> features = new HashMap<String, Object>();
+						Map<String,Object> properties = new HashMap<String, Object>();
+						features.put(SAXConstants.SAX_FEATURE_VALIDATION, Boolean.FALSE);		
+						SAXParser parser = SAXParserPool.getInstance().acquire(features, properties);                
+				        saxSource = new SAXSource(parser.getXMLReader(), new InputSource(new FileInputStream(input)));        
+				        saxSource.setSystemId(input.toString());
+					}else{
+						saxSource = (SAXSource) xml;
+					}
+					if(saxSource.getXMLReader().getEntityResolver()==null) {
+						saxSource.getXMLReader().setEntityResolver(CatalogEntityResolver.getInstance());
+					}	
+					xml = saxSource;
+	        	}catch (Exception e) {
+					e.printStackTrace();
+				}
+            }
             // Perform transformation            
             transformer.transform(xml, result);
+            
         } catch (TransformerConfigurationException e) {
             throw new XSLTException(e.getMessageAndLocation(), e);            
         } catch (TransformerException e) {
             throw new XSLTException(e.getMessageAndLocation(), e);            
         } catch (CatalogExceptionNotRecoverable e) {
             throw new XSLTException(e.getMessage(), e);
-        }
+        } 
     }
     
     /**
