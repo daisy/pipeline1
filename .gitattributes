@@ -440,6 +440,7 @@ src/org/daisy/pipeline/core/script/function/ParentFunction.java -text
 src/org/daisy/pipeline/core/script/script-1.0.rng -text
 src/org/daisy/pipeline/core/script/script-2.0.rng -text
 src/org/daisy/pipeline/core/script/script10to20.xsl -text
+src/org/daisy/pipeline/core/transformer/DefaultTransformerDelegateListener.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/core/transformer/TransformerDelegateListener.java -text
 src/org/daisy/pipeline/core/transformer/TransformerHandlerLoader.java -text
 src/org/daisy/pipeline/core/transformer/transformer-1.0.rng -text svneol=unset#application/octet-stream
