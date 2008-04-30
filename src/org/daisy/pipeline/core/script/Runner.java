@@ -76,6 +76,7 @@ public class Runner implements BusListener {
             EventBus.getInstance().publish(
                     new JobStateChangeEvent(job,
                             StateChangeEvent.Status.STARTED));
+            logParameters(job);
 
             for (Task task : job.getScript().getTasks()) {
             	if (mAbort) {
@@ -128,7 +129,17 @@ public class Runner implements BusListener {
         }
     }
     
-    /*
+    private void logParameters(Job job) {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("Job Parameters:\n");
+    	for (JobParameter param : job.getJobParameters().values()) {
+			sb.append(" - ").append(param.getName()).append(':');
+			sb.append(param.getValue()).append("\n");
+		}
+    	EventBus.getInstance().publish(new MessageEvent(this,sb.toString(),MessageEvent.Type.DEBUG));
+	}
+
+	/*
      * (non-Javadoc)
      * @see org.daisy.pipeline.core.event.BusListener#received(java.util.EventObject)
      */
