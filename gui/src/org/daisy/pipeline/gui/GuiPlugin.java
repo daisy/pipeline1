@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.daisy.pipeline.Version;
 import org.daisy.pipeline.core.PipelineCore;
 import org.daisy.pipeline.gui.model.MessageManager;
 import org.daisy.pipeline.gui.model.ScriptManager;
@@ -287,6 +288,7 @@ public class GuiPlugin extends AbstractUIPlugin {
 		Properties userProps = PipelineUtil.convPrefToProperties();
 		try {
 			core = new PipelineCore(null, homeDir, userProps);
+			info("Initialized Pipeline Core v" + Version.getVersion(), null);
 		} catch (Exception e) {
 			error("Error while intializing the Pipeline core", e); //$NON-NLS-1$
 		}
