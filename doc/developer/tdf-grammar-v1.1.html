@@ -71,7 +71,6 @@
 	 element must be defined having the following syntax:</p>
  
  <pre><code>
-
  &lt;enum&gt;
    &lt;value&gt;ONE&lt;/value&gt;
    &lt;value&gt;TWO&lt;/value&gt;
@@ -88,7 +87,14 @@
  <code>required</code> attribute is set to false.
  </p>
 
- <h4>Parameter example</h4>
+ <h4>Variable substitution</h4>
+ <p>A fixed set of variables are usable in the parameter definitions which are substituted dynamically when the TDF is parsed:</p>
+ <ul>
+ 	<li><code>${transformer_dir}</code>: The path to the directory containing this TDF</li>
+ 	<li><code>${dollar}</code>: A dollar sign</li>
+ </ul>
+
+ <h4>Parameter examples</h4>
  <p>
  In the example below, the required input parameter <code>ncc</code> should be of type
  <code>application/x-ncc-2.02+xml</code>.
@@ -98,6 +104,17 @@
    &lt;name&gt;ncc&lt;/name&gt;
    &lt;description&gt;The navigation control center file&lt;/description&gt;
    &lt;example&gt;file:///path/to/ncc.html&lt;/example&gt;
+ &lt;/parameter&gt;
+</code></pre>
+
+ <p>
+ In the example below, the value will be substituted to the path of the style sheet located in 
+the same directory as the TDF</code>.
+ </p>
+ <pre><code>
+ &lt;parameter type=&quot;string&quot;&gt;
+   &lt;name&gt;stylesheet&lt;/name&gt;			
+   &lt;value&gt;${transformer_dir}/xml2dtbook.xsl&lt;/value&gt;
  &lt;/parameter&gt;
 </code></pre>
 
