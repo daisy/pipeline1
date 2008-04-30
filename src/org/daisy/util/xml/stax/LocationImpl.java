@@ -33,7 +33,16 @@ public class LocationImpl implements Location {
 		public LocationImpl () {
 			
 		}
-		
+
+		public LocationImpl (Location location) {
+			if( location!=null){
+				mCharacterOffset = location.getCharacterOffset();
+				mColumnNumber = location.getColumnNumber();
+				mLineNumber = location.getLineNumber();
+				mPublicId = location.getPublicId();
+				mSystemId = location.getSystemId();
+			}
+		}
 		public int getCharacterOffset() {		
 			return mCharacterOffset;
 		}
@@ -54,23 +63,23 @@ public class LocationImpl implements Location {
 			return mSystemId;
 		}
 
-		void setCharacterOffset(int characterOffset) {
+		public void setCharacterOffset(int characterOffset) {
 			mCharacterOffset = characterOffset;
 		}
 
-		void setColumnNumber(int columnNumber) {
+		public void setColumnNumber(int columnNumber) {
 			mColumnNumber = columnNumber;
 		}
 
-		void setLineNumber(int lineNumber) {
+		public void setLineNumber(int lineNumber) {
 			mLineNumber = lineNumber;
 		}
 
-		void setPublicId(String publicId) {
+		public void setPublicId(String publicId) {
 			mPublicId = publicId;
 		}
 
-		void setSystemId(String systemId) {
+		public void setSystemId(String systemId) {
 			mSystemId = systemId;
 		}
 

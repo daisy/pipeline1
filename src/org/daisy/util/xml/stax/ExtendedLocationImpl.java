@@ -64,12 +64,7 @@ public class ExtendedLocationImpl extends LocationImpl {
 	 * @param loc the Location to extend.
 	 */
 	public ExtendedLocationImpl(Location loc) {
-		super();
-		super.setCharacterOffset(loc.getCharacterOffset());
-		super.setColumnNumber(loc.getColumnNumber());
-		super.setLineNumber(loc.getLineNumber());
-		super.setPublicId(loc.getPublicId());
-		super.setSystemId(loc.getSystemId());
+		super(loc);
 		mExtendedValues = new HashMap<InformationType,String>();		
 	}
 	
