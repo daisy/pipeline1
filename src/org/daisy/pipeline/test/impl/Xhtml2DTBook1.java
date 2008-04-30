@@ -12,18 +12,16 @@ public class Xhtml2DTBook1 extends PipelineTest {
 	}
 	
 	@Override
-	public List<String> getParameters() {
-		//mg: this one crashes Saxon:
-		//mParameters.add("--inputFile=" + mDataInputDir + "/xhtml/daisy_202.html");		
-		//mg: this one generates validation errors:
+	public List<String> getParameters() {		
 		mParameters.add("--inputFile=" + mDataInputDir + "/xhtml/valentinhauy.html");
-		mParameters.add("--outputFile=" + mDataOutputDir + "/Xhtml2Dtbook1/output01.xml");		
+		mParameters.add("--outputFile=" + mDataOutputDir + "/Xhtml2Dtbook1/output01.xml");
+		mParameters.add("--userCss=" + mDataInputDir + "/dtbook/dtbook.2005.basic.css");		
 		return mParameters;
 	}
 
 	@Override
 	public String getResultDescription() {		
-		return null;
+		return "Should output a valid DTBook with dtbook.2005.basic.css added. Input XHTML css should not be in output folder. ";
 	}
 
 	@Override

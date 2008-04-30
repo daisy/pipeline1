@@ -18,20 +18,28 @@
 package no_hks_xhtml2dtbook;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.fileset.CssFile;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetErrorHandler;
+import org.daisy.util.fileset.FilesetFile;
+import org.daisy.util.fileset.ImageFile;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.fileset.util.FilesetFileFilter;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.TransformerFactoryConstants;
@@ -43,8 +51,10 @@ import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
  * 
  * @author Per Sennels
  */
-public class Xhtml2DTBook extends Transformer implements FilesetErrorHandler {
+public class Xhtml2DTBook extends Transformer implements FilesetErrorHandler, FilesetFileFilter {
 
+	private Fileset mInputFileset = null;
+	
 	public Xhtml2DTBook(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);
 	}
@@ -85,14 +95,23 @@ public class Xhtml2DTBook extends Transformer implements FilesetErrorHandler {
 
 			// copy any referred files over
 			Directory outputFolder = new Directory(output.getParentFile());
-			Fileset fileset = new FilesetImpl(input.toURI(), this, false, false);
-			outputFolder.addFileset(fileset, true);
-			// remove the manifest file from output dir
-			if (!input.getParentFile().equals(outputFolder)) {
-				File remove = new File(outputFolder, input.getName());
-				remove.delete();
+			mInputFileset = new FilesetImpl(input.toURI(), this, false, true);
+			outputFolder.addFileset(mInputFileset, true, this);
+			
+			//copy user CSS if set and existing
+			String userCSS = parameters.get("outputCSS");
+			if(userCSS!=null && userCSS.length()>0) {
+				File f = FilenameOrFileURI.toFile(userCSS);
+				if(f!=null && f.exists()) {
+					FileInputStream fis = new FileInputStream(f);
+					outputFolder.writeToFile(f.getName(), fis);
+					fis.close();					
+				}else{
+					this.sendMessage(i18n("FILE_NOT_FOUND", userCSS)
+							, MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);					
+				}
 			}
-
+			
 			//fix the map
 			Map<String,Object> xslParams = new HashMap<String,Object>();
 			xslParams.putAll(parameters);
@@ -127,4 +146,42 @@ public class Xhtml2DTBook extends Transformer implements FilesetErrorHandler {
 		this.sendMessage(ffe);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.daisy.util.fileset.util.FilesetFileFilter#acceptFile(org.daisy.util.fileset.FilesetFile)
+	 */
+	public short acceptFile(FilesetFile file) {
+		//dont copy the manifest
+		try {
+			if(file.getFile().getCanonicalPath().equals(
+					mInputFileset.getManifestMember().getFile().getCanonicalPath())) {
+				return FilesetFileFilter.REJECT;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//dont copy the input XHTML CSS, nor any images 
+		//that are referenced uniquely by CSS files
+		
+		if(file instanceof CssFile) return FilesetFileFilter.REJECT;
+		
+		if(file instanceof ImageFile) {
+			try{
+				Iterator<FilesetFile> referers = file.getReferringLocalMembers().iterator();
+				while(referers.hasNext()) {
+					FilesetFile referer = referers.next();
+					if(!(referer instanceof CssFile)) {
+						return FilesetFileFilter.ACCEPT;
+					}					
+				}
+				return FilesetFileFilter.REJECT;
+			}catch (NullPointerException e) {
+				//referers collection not populated
+				e.printStackTrace();
+			}				
+		}		
+		
+		return FilesetFileFilter.ACCEPT;
+	}
 }
