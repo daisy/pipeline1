@@ -109,18 +109,18 @@ public class Runner implements BusListener {
         	EventBus.getInstance().publish(new CoreMessageEvent(this,message, MessageEvent.Type.INFO,MessageEvent.Cause.INPUT));
             throw new JobAbortedException(message, e);
         } catch (TransformerRunException e) {
-        	//mg 20070619: The transformer authors are responsible for localization        	
-        	EventBus.getInstance().publish(new CoreMessageEvent(this,e.getMessage(), MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
-        	throw new JobFailedException(e.getMessage(),e);
+        	//mg 20070619: The transformer authors are responsible for localization
+        	String message = (e.getMessage()!=null)?e.getMessage():i18n("UNEXPECTED_ERROR");
+        	EventBus.getInstance().publish(new CoreMessageEvent(this,message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
+        	throw new JobFailedException(message,e);
         } catch (JobAbortedException e) {
-        	EventBus.getInstance().publish(new CoreMessageEvent(this, e.getMessage(), MessageEvent.Type.INFO,MessageEvent.Cause.INPUT));        	
-        	throw new JobAbortedException(e.getMessage(), e);
+        	String message = (e.getMessage()!=null)?e.getMessage():i18n("UNEXPECTED_ABORT");
+        	EventBus.getInstance().publish(new CoreMessageEvent(this, message, MessageEvent.Type.INFO,MessageEvent.Cause.INPUT));        	
+        	throw new JobAbortedException(message, e);
         } catch (Exception e) {
-        	EventBus.getInstance().publish(new CoreMessageEvent(this,e.getMessage(), MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
-        	throw new JobFailedException(i18n("ERROR_RUNNING_SCRIPT",e.getMessage()),e);
-        }catch (Error e) {        	
-        	EventBus.getInstance().publish(new CoreMessageEvent(this,e.getMessage(), MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
-        	throw new JobFailedException(i18n("ERROR_RUNNING_SCRIPT",e.getMessage()),e);
+        	String message = (e.getMessage()!=null)?e.getMessage():i18n("UNEXPECTED_ERROR");
+        	EventBus.getInstance().publish(new CoreMessageEvent(this,message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
+        	throw new JobFailedException(i18n("ERROR_RUNNING_SCRIPT",message),e);
         } finally {
         	EventBus.getInstance().unsubscribe(this, UserAbortEvent.class);
             this.mRunning = false;
