@@ -98,6 +98,12 @@ public class Xhtml2DTBook extends Transformer implements FilesetErrorHandler {
 			xslParams.putAll(parameters);
 			// Add an optional user specified css as parameter to the xslt
 			xslParams.put("cssURI", parameters.get("outputCSS"));
+			// Title as specified by user
+			xslParams.put("title", parameters.get("title"));
+			// UID as specified by user
+			xslParams.put("uid", parameters.get("uid"));
+			// Avoid DTB Migration specific transformation
+			xslParams.put("transformationMode","standalone");
 			// apply the canonical xslt
 			Stylesheet.apply(input.getAbsolutePath(), xsltURL, output
 					.getAbsolutePath(), TransformerFactoryConstants.SAXON8,

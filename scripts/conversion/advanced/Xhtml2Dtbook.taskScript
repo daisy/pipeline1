@@ -20,6 +20,22 @@
 		</datatype>
 	</parameter>
 
+	<parameter name="title" value="" required="false">
+		<nicename>Title</nicename>
+		<description>The title of the publication. If no value is supplied, the information is extracted from the source file if possible.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<parameter name="uid" value="" required="false">
+		<nicename>dtb:uid</nicename>
+		<description>The publications unique identifier. If no value is supplied, the information is extracted from the source file if possible.</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
 	<parameter name="userCss" value="" required="false">
 		<nicename>CSS</nicename>
 		<description>Select a CSS to append to output DTBook document</description>
@@ -57,6 +73,16 @@
 			<name>output</name>
 			<value>${outputFile}</value>
 		</parameter>					
+
+		<parameter>
+			<name>title</name>
+			<value>${title}</value>
+		</parameter>
+
+		<parameter>
+			<name>uid</name>
+			<value>${uid}</value>
+		</parameter>
 
 		<parameter>
 			<name>outputCSS</name>

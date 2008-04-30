@@ -515,9 +515,9 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 				parameters.put("uid", properties.getIdentifier());
 				parameters.put("title", properties.getTitle());
 				parameters.put("cssURI", cssUri); 
+				parameters.put("transformationMode","DTBmigration");	// Force the xslt transform to take specific action for DTB Migration
 				// A user preference: shall meta data be transfered from the ncc file to the DTBook
 				parameters.put("transferDcMetadata", params.get("dtbookTransferNCCMetadata"));
-				
 				// The location of the ncc file (assuming that it is the same folder as the content doc. Risky?)
 				parameters.put("nccURI",inputFileset.getManifestMember().getFile().toURI().toString());
 				

@@ -34,21 +34,64 @@
 	<!--  Input paramerets -->
 	<xsl:param name="uid" as="xs:string" select="'[UID]'" />					<!-- uid of publication -->
 	<xsl:param name="title" as="xs:string" select="'[DTB_TITLE]'" />			<!-- title of publication -->
-	<xsl:param name="cssURI" as="xs:string" select="'[cssURI]'" />				<!-- URI to CSS of publication -->
+<!-- 	<xsl:param name="cssURI" as="xs:string" select="'[cssURI]'" />	-->			<!-- URI to CSS of publication -->
+	<xsl:param name="cssURI" as="xs:string" select="'test04.css'" />
 	<xsl:param name="nccURI" as="xs:string" select="'[nccURI]'" /> 				<!-- URI to D202 NCC file -->
 	<xsl:param name="transferDcMetadata" as="xs:string" select="'true'" /> 	<!-- transfer dc:* metadata from ncc file -->
+	<xsl:param name="transformationMode" as="xs:string" select="'standalone'" />	<!-- 'standalone' for pure xhtml2dtbook, or 'DTBmigration' for DAISY 2.02 content doc to dtbook transform -->
 
-	<xsl:variable name="dtbFolder" as="xs:string" select="translate($nccURI,'\','/')" />
-	
+	<xsl:variable name="nccURI.mod" as="xs:string" select="translate($nccURI,'\','/')" />
+	<xsl:variable name="cssURI.mod" as="xs:string" select="replace(translate($cssURI,'\','/'),'.*/(.+)','$1')" /> <!-- first, change \ to / and then remove everything up to and inlduing the last /-->  
+	<xsl:variable name="dtbMigration" as="xs:boolean" select="matches($transformationMode,'DTBmigration','i')" />
 	
 	<xsl:variable name="smil" as="xs:string" select="'.smil#'" />
 	
+	<xsl:variable name="xTitle" as="xs:string">
+		<xsl:choose>
+			<xsl:when test="$title eq '' or $title eq '[DTB_TITLE]'">	<!-- unspecfied by user, so we could try to find it in the xhtml source doc -->
+				<xsl:choose>
+					<xsl:when test="html:html/html:head/html:title">	<!-- There is a title element -->
+						<xsl:value-of select="html:html/html:head/html:title" />
+					</xsl:when>
+					<xsl:when test="//html:meta[matches(@name,'^title$|^dc:title$|^dtb:title$','i')]">	<!-- There is some metadata represnting a title -->
+						<xsl:value-of select="//html:meta[matches(@name,'^title$|^dc:title$|^dtb:title$','i')][1]/@content" />
+					</xsl:when>
+					<xsl:otherwise>	<!-- Nothing usable in the source, so leave it empty -->
+						<xsl:value-of select="''" />
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>	<!-- specified by user, so let's use that one as title -->
+				<xsl:value-of select="$title" />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+
+	<xsl:variable name="xUID" as="xs:string">
+		<xsl:choose>
+			<xsl:when test="$uid eq '' or $uid eq '[UID]'">	<!-- unspecfied by user, so we could try to find it in the xhtml source doc -->
+				<xsl:choose>
+					<xsl:when test="//html:meta[matches(@name,'^id$|^dc:id$|^dtb:id$|^uid$|^dc:uid$|^dtb:uid$|^identifier$|^dc:identifier$|^dtb:identifier$','i')]">	<!-- There is some metadata represnting a title -->
+						<xsl:value-of select="//html:meta[matches(@name,'^id$|^dc:id$|^dtb:id$|^uid$|^dc:uid$|^dtb:uid$|^identifier$|^dc:identifier$|^dtb:identifier$','i')][1]/@content" />
+					</xsl:when>
+					<xsl:otherwise>	<!-- Nothing usable in the source, so leave it empty -->
+						<xsl:value-of select="''" />
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>	<!-- specified by user, so let's use that one as UID -->
+				<xsl:value-of select="$uid" />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
+	
 	<xsl:template match="/">
 		<!-- Processing instruction: Use CSS to display the DTBook XML -->
-		<xsl:if test="$cssURI ne '[cssURI]'">
+		<xsl:if test="$cssURI ne '[cssURI]' and $cssURI.mod ne ''">
 			<xsl:processing-instruction name="xml-stylesheet">
 				<xsl:text> type="text/css" href="</xsl:text>
-				<xsl:value-of select="$cssURI" />
+				<xsl:value-of select="$cssURI.mod" />
 				<xsl:text>"</xsl:text>
 			</xsl:processing-instruction>
 		</xsl:if>
@@ -60,24 +103,38 @@
 	
 	<xsl:template match="html:head">
 		<head>
-			<meta name="dtb:uid" content="{$uid}" />
-			<meta name="dtb:title" content="{$title}" />
-			<meta name="dc:Title" content="{$title}" />
+<!-- 			<meta name="transformationMode" content="{$transformationMode}" />
+			<meta name="dtbMigration" content="{$dtbMigration}" />
+			<meta name="transferDcMetadata" content="{$transferDcMetadata}" />
+			<meta name="nccURI" content="{$nccURI}" />
+			<meta name="nccURI.mod" content="{$nccURI.mod}" /> 
+			<meta name="cssURI" content="{$cssURI}" />
+			<meta name="cssURI.mod" content="{$cssURI.mod}" /> 
+			<meta name="title" content="{$title}" />
+			<meta name="xTitle" content="{$xTitle}" />
+			<meta name="uid" content="{$uid}" />
+			<meta name="xUID" content="{$xUID}" />-->
+			<meta name="dtb:uid" content="{$xUID}" />
+			<meta name="dtb:title" content="{$xTitle}" />
+			<meta name="dc:Title" content="{$xTitle}" />
 			<xsl:choose>
 				<xsl:when test="
-						matches($transferDcMetadata,'true','i') 
-						and doc-available($nccURI)
+						$dtbMigration
+						and matches($transferDcMetadata,'true','i') 
+						and doc-available($nccURI.mod)
 						and $nccURI ne '[nccURI]'">
-					<!-- If requested, and if ncc.html can be found, transfer dc:* metadata (not dc:title, handled above) from ncc.html -->
-					<xsl:apply-templates select="doc(concat($dtbFolder,'/ncc.html'))//html:head/html:meta[starts-with(@name,'dc:') and @name ne 'dc:title']" mode="metadata-from-ncc"/>
+					<!-- If requested, and we are doing dtbMigration and if ncc.html can be found, transfer dc:* metadata (not dc:title, handled above) from ncc.html -->
+					<xsl:apply-templates select="doc($nccURI.mod)//html:head/html:meta[starts-with(@name,'dc:') and @name ne 'dc:title']" mode="metadata-from-ncc"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<!-- If not requested, or ncc.html not found, use whatever is in the XHTML  -->
-					<xsl:apply-templates select="html:meta" />
+					<!-- If not migrating, not requested, or ncc.html not found, use whatever is in the XHTML , except dc:title, handled above-->
+					<xsl:apply-templates select="html:meta[@name ne 'dc:title']" />
 				</xsl:otherwise>
 			</xsl:choose>
 		</head>
 	</xsl:template>
+	
+	<xsl:template match="html:meta[@http-equiv]" priority="10"/>	<!-- get rid of this one -->
 	
 	<xsl:template match="html:meta[@name]">
 		<meta>
@@ -105,7 +162,7 @@
 		<xsl:if test="matches(@name,'^dc:(creator|subject|description|publisher|contributor|date|type|format|identifier|source|language|relation|coverage|rights)$','i')">
 			<meta>
 				<xsl:attribute name="name" select="concat('dc:',pfunc:initialCaps(substring-after(@name,'dc:')))" />
-				<xsl:copy-of select="@content, @scheme" />
+				<xsl:copy-of select="@content, @scheme, @http-equiv" />
 			</meta>
 		</xsl:if>
 	</xsl:template>
@@ -317,11 +374,18 @@
 	</xsl:template>
 
 	<xsl:template match="html:a[contains(@href,$smil)]">
-		<!-- This is the a element used to represent a reference to a SMIL file in a DAISY 2.02 content doc.
-			We don't need it in the DTBook, as the @href will end up as a @smilref in the parent element.
-			This is handled by the named template 'copy-std-attr'
--->
-		<xsl:apply-templates />
+		<xsl:choose>
+			<xsl:when test="$dtbMigration">
+				<!-- This is the a element used to represent a reference to a SMIL file in a DAISY 2.02 content doc.
+					We don't need it in the DTBook, as the @href will end up as a @smilref in the parent element.
+					This is handled by the named template 'copy-std-attr' -->
+				<xsl:apply-templates />
+			</xsl:when>
+			<xsl:otherwise>
+				<!--  If not doing a DTB migration, then use the next matching template -->
+				<xsl:next-match />
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="html:div[@class eq 'notebody']">
@@ -445,8 +509,8 @@
 	</xsl:template>
 
 	<xsl:template name="smilref">
-<!-- 	Per Sennels, 20071026: Handle the html:a/@href attribute, if present -->
-		<xsl:if test="contains(html:a[1]/@href,$smil)">
+<!-- 	Per Sennels, 20071026: Handle the html:a/@href attribute, if present and if we are doing a DTB mIgration-->
+		<xsl:if test="$dtbMigration and contains(html:a[1]/@href,$smil)">
 			<xsl:attribute name="smilref" select="html:a[1]/@href" />
 		</xsl:if>
 	</xsl:template>
