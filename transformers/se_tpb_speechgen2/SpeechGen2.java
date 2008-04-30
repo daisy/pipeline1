@@ -66,16 +66,20 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent.Cause;
+import org.daisy.pipeline.core.event.MessageEvent.Type;
+import org.daisy.pipeline.core.transformer.DefaultTransformerDelegateListener;
 import org.daisy.pipeline.core.transformer.Transformer;
+import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerAbortException;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileBunchCopy;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
-import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
 import org.daisy.util.xml.stax.ContextStack;
+import org.daisy.util.xml.stax.LocationImpl;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 import org.daisy.util.xml.validation.RelaxngSchematronValidator;
 import org.daisy.util.xml.validation.ValidationException;
@@ -285,9 +289,24 @@ public class SpeechGen2 extends Transformer {
 				String lang = it.next();
 
 				TTS tts = null;
+				TransformerDelegateListener tdl = new DefaultTransformerDelegateListener(){
+					@Override
+					public String delegateLocalize(String key, Object[] params) {
+						if(params==null)
+							return i18n(key);
+						return i18n(key,params);
+					}
+
+					@Override
+					public void delegateMessage(Object delegate,
+							String message, Type type, Cause cause,
+							Location location) {
+						sendMessage(message, type, cause, location);
+					}
+				};
 				// try to get a tts for the language
 				try {
-					tts = ttsb.newTTS(lang);
+					tts = ttsb.newTTS(lang,tdl);
 				} catch (TTSBuilderException e) {
 					tts = null;
 					String locMsg = i18n("TTS_NOT_FOUND", lang);
@@ -295,7 +314,7 @@ public class SpeechGen2 extends Transformer {
 
 					// try and get a default voice by passing null as lang
 					try {
-						tts = ttsb.newTTS(null);
+						tts = ttsb.newTTS(null,tdl);
 					} catch (TTSBuilderException e2) {
 						tts = null;
 						String msg = i18n("DEFAULT_TTS_NOT_FOUND") + "\n" + e2.getMessage();
@@ -386,61 +405,13 @@ public class SpeechGen2 extends Transformer {
 			sendMessage(i18n("DONE"), MessageEvent.Type.DEBUG);
 			
 			
-		} catch (NullPointerException e) {
-			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
-			System.err.println(e + " " + e.getMessage());
-			e.printStackTrace();
-			audioConcatQueue.abort();
-			throw new TransformerRunException(e.getMessage(), e);
-		} catch (InterruptedException e) {
-			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
-			System.err.println(e + " " + e.getMessage());
-			e.printStackTrace();
-			audioConcatQueue.abort();
-			throw new TransformerRunException(e.getMessage(), e);
-		} catch (IOException e) {
-			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
-			System.err.println(e + " " + e.getMessage());
-			e.printStackTrace();
-			audioConcatQueue.abort();
-			throw new TransformerRunException(e.getMessage(), e);
-		} catch (UnsupportedAudioFileException e) {
-			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
-			System.err.println(e + " " + e.getMessage());
-			e.printStackTrace();
-			audioConcatQueue.abort();
-			throw new TransformerRunException(e.getMessage(), e);
-		} catch (CatalogExceptionNotRecoverable e) {
-			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);			
-			System.err.println(e + " " + e.getMessage());
-			e.printStackTrace();
-			audioConcatQueue.abort();
-			throw new TransformerRunException(e.getMessage(), e);
-		} catch (XMLStreamException e) {
-			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);			
-			System.err.println(e + " " + e.getMessage());
-			e.printStackTrace();
-			audioConcatQueue.abort();
-			throw new TransformerRunException(e.getMessage(), e);
-		} catch (ParserConfigurationException e) {
-			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
-			System.err.println(e + " " + e.getMessage());
-			e.printStackTrace();
-			audioConcatQueue.abort();
-			throw new TransformerRunException(e.getMessage(), e);
-		} catch (SAXException e) {
-			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
-			System.err.println(e + " " + e.getMessage());
-			e.printStackTrace();
-			audioConcatQueue.abort();
-			throw new TransformerRunException(e.getMessage(), e);
-		} catch (TransformerRunException e) {
-			sendMessage(i18n("ERROR_ABORTING", e.getMessage()), MessageEvent.Type.ERROR);
-			System.err.println(e + " " + e.getMessage());
-			e.printStackTrace();
+		}  catch (TransformerRunException e) {
 			audioConcatQueue.abort();
 			throw e;
-		} finally {
+		} catch (Exception e) {
+			audioConcatQueue.abort();
+			throw new TransformerRunException(e.getMessage(), e);
+		}  finally {
 		
 			try {
 				closeStreams(fis, reader);
@@ -512,11 +483,13 @@ public class SpeechGen2 extends Transformer {
 					try {
 						smilTimeStartValue = fetchSynchronizationPoint(reader, se);
 					} catch (Exception e) {
-						// print debug info about where an error occured
-						// TODO forward a new location with a proper system ID
 						Location loc = event.getLocation();
-						String lineCol = "[" + loc.getLineNumber() + ", " + loc.getColumnNumber() + "]";						String msg = "Error trying to process phrase near [line, col]: " + lineCol + " in file " + inputFile;
-						sendMessage(msg, MessageEvent.Type.ERROR);
+						if (loc.getSystemId()==null){
+							LocationImpl newloc = new LocationImpl(loc);
+							newloc.setSystemId(inputFile.getAbsolutePath());
+							loc=newloc;
+						}
+						sendMessage(i18n("ERROR_FETCHING_AUDIO"), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, loc);
 						throw new TransformerRunException(e.getMessage(), e);
 					}
 					

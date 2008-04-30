@@ -19,6 +19,8 @@ package se_tpb_speechgen2.tts.concurrent;
 
 import java.io.IOException;
 
+import org.daisy.pipeline.exception.TransformerRunException;
+
 import se_tpb_speechgen2.tts.TTSException;
 import se_tpb_speechgen2.tts.TTSInput;
 import se_tpb_speechgen2.tts.TTSOutput;
@@ -62,18 +64,8 @@ public class TTSRunner implements Runnable {
 				}
 				mCallback.addOutput(new TTSOutput(in.getFile(), in.getNumber(), duration));
 			}
-		} catch (IOException e) {
-			mCallback.slaveTerminated(mSlave, in);
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-		} catch (TTSException e) {
-			mCallback.slaveTerminated(mSlave, in);
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-		} catch (Throwable e) {
-			mCallback.slaveTerminated(mSlave, in);
-			System.err.println(e.getMessage());
-			e.printStackTrace();
+		}  catch (Throwable t) {
+			mCallback.slaveTerminated(mSlave, in, t);
 		}
 	}
 

@@ -29,6 +29,8 @@ import java.util.Queue;
 import javax.xml.namespace.QName;
 import javax.xml.stream.events.StartElement;
 
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.w3c.dom.Document;
 
 import se_tpb_speechgen2.tts.TTS;
@@ -67,6 +69,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 		new HashMap<Integer, TTSOutput>();		 // ...the same order as input
 	private Integer mOutputIndex = null;		// output queue counter
 	private static boolean DEBUG = false;
+	private TransformerDelegateListener mTDL;
 	
 	
 	/**
@@ -75,7 +78,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 	 * 
 	 * @param ttsInstances the tts process wrappers.
 	 */
-	public TTSGroup(List<TTSAdapter> ttsInstances) {
+	public TTSGroup(List<TTSAdapter> ttsInstances, TransformerDelegateListener tdl) {
 		// check for errornous input
 		if (null == ttsInstances) {
 			String msg = ttsInstances + " not a legal argument for TTSGroup(List)";
@@ -96,6 +99,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 		}
 		
 		mTTSInstances = ttsInstances;
+		mTDL = tdl;
 	}
 	
 	/* (non-Javadoc)
@@ -256,7 +260,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgen2.tts.concurrent.TTSGroupFacade#slaveTerminated(se_tpb_speechgen2.tts.concurrent.TTSInstance, se_tpb_speechgen2.tts.TTSInput)
 	 */
-	public synchronized void slaveTerminated(@SuppressWarnings("unused")TTSAdapter slave, TTSInput myLastInput) {
+	public synchronized void slaveTerminated(@SuppressWarnings("unused")TTSAdapter slave, TTSInput myLastInput, Throwable t) {
 		// TODO
 		DEBUG("#slaveTerminated: ");
 		
@@ -268,6 +272,10 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 
 		// no more work 
 		mTTSInput.clear();
+		
+		// delegates the error message to the transformer
+		String msg = mTDL.delegateLocalize("SLAVE_TERMINATED", null)+t.getLocalizedMessage();
+		mTDL.delegateMessage(this, msg, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM, null);
 		
 		// wake up the master thread
 		notifyAll();

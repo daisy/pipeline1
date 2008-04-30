@@ -36,6 +36,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.util.i18n.LocaleUtils;
 import org.daisy.util.xml.XPathUtils;
 import org.w3c.dom.Document;
@@ -138,7 +139,7 @@ public class TTSBuilder implements TTSConstants {
 	}
 
 
-	public TTS newTTS(String lang) throws TTSBuilderException {
+	public TTS newTTS(String lang, TransformerDelegateListener tdl) throws TTSBuilderException {
 
 		String xpath = null;
 		Element docElement = null;
@@ -301,7 +302,7 @@ public class TTSBuilder implements TTSConstants {
 		}
 		
 		// create a TTSGroup with all the new Instances.
-		TTSGroup group = new TTSGroup(ttsInstances);
+		TTSGroup group = new TTSGroup(ttsInstances,tdl);
 		return group;
 	}
 
