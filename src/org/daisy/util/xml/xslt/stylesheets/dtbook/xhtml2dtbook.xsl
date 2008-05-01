@@ -32,12 +32,11 @@
 		doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd" />
 	
 	<!--  Input paramerets -->
-	<xsl:param name="uid" as="xs:string" select="'[UID]'" />					<!-- uid of publication -->
-	<xsl:param name="title" as="xs:string" select="'[DTB_TITLE]'" />			<!-- title of publication -->
-<!-- 	<xsl:param name="cssURI" as="xs:string" select="'[cssURI]'" />	-->			<!-- URI to CSS of publication -->
-	<xsl:param name="cssURI" as="xs:string" select="'test04.css'" />
-	<xsl:param name="nccURI" as="xs:string" select="'[nccURI]'" /> 				<!-- URI to D202 NCC file -->
-	<xsl:param name="transferDcMetadata" as="xs:string" select="'true'" /> 	<!-- transfer dc:* metadata from ncc file -->
+	<xsl:param name="uid" as="xs:string" select="'[UID]'" />						<!-- uid of publication -->
+	<xsl:param name="title" as="xs:string" select="'[DTB_TITLE]'" />				<!-- title of publication -->
+ 	<xsl:param name="cssURI" as="xs:string" select="'[cssURI]'" />					<!-- URI to CSS of publication -->
+	<xsl:param name="nccURI" as="xs:string" select="'[nccURI]'" /> 					<!-- URI to D202 NCC file -->
+	<xsl:param name="transferDcMetadata" as="xs:string" select="'false'" /> 		<!-- transfer dc:* metadata from ncc file -->
 	<xsl:param name="transformationMode" as="xs:string" select="'standalone'" />	<!-- 'standalone' for pure xhtml2dtbook, or 'DTBmigration' for DAISY 2.02 content doc to dtbook transform -->
 
 	<xsl:variable name="nccURI.mod" as="xs:string" select="translate($nccURI,'\','/')" />

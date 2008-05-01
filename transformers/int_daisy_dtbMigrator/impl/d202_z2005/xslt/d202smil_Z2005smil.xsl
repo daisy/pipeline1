@@ -64,8 +64,8 @@
 		<meta name="dtb:uid" content="{$uid}" />
 		<meta name="dtb:totalElapsedTime" content="{$totalElapsedTime}" />
 		<meta name="dtb:generator" content="DAISY Pipeline" />
-		<meta name="NCCPointsToPar" content="{$NCCPointsToPars}" />
-		<meta name="NCCPtoP" content="{$NCCPtoP}" />
+<!-- 		<meta name="NCCPointsToPar" content="{$NCCPointsToPars}" />
+		<meta name="NCCPtoP" content="{$NCCPtoP}" /> -->
 		<!-- psps: Added customAttributes -->
 		<xsl:if test="//par/@system-required">
 			<customAttributes>

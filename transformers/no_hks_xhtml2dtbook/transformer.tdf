@@ -23,24 +23,21 @@
 
 		<parameter required="false" type="string">
 			<name>title</name>
-			<description>The name of the publication. If no value is supplied, the information is extracted from the original file if possible.</description>
+			<description>The name of the publication. If no value is supplied, the information is extracted from the original file, if possible.</description>
 			<example>The Book</example>
 			<default></default>
 		</parameter>
 
 		<parameter type="string" required="false">
 			<name>uid</name>
-			<description>Set dtb:uid. If no value is supplied, the information is extracted from the original file if possible.</description>
+			<description>The unique identifier of the publication. If no value is supplied, the information is extracted from the original file, if possible.</description>
 			<example>DTB00000</example>
 			<default></default>
 		</parameter>
 
 		<parameter required="false" type="text/css">
 			<name>outputCSS</name>
-			<description>
-				A CSS to use for output textual content files. 
-				If this value is not set, a default CSS will be used.
-			</description>
+			<description>A CSS to use for output textual content files.</description>
 			<example>D:/path/to/my.css</example>
 			<default/>
 		</parameter>

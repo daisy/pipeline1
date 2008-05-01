@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <taskScript version="2.0" name="xhtml2dtbook">
-	<nicename>XHTML 1.x to DTBook 2005</nicename>
+	<nicename>XHTML 1.x to DTBook 2005 [BETA]</nicename>
 	<description>Converts a XHTML 1.x document to DTBook 2005</description>
 	<documentation uri="../../../doc/scripts/Xhtml2DTBook.html"/>
 	
@@ -14,7 +14,7 @@
 
 	<parameter  name="outputFile" value="" required="true">
 		<nicename>Output DTBook</nicename>
-		<description>Select the ouput DTBook file</description>
+		<description>Select the output DTBook file</description>
 		<datatype>
 			<file mime="application/x-dtbook+xml" type="output"/>
 		</datatype>

@@ -6,7 +6,7 @@
 	<title>Transformer documentation: no_hks_xhtml2dtbook</title>
 	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
 	<style type="text/css">
-	  body {margin-right: 4em;}
+      body {margin: 2em; font-family: arial, verdana, sans-serif;}
       table {border-collapse:collapse;font-size:small;}
         td,th {border:1pt solid rgb(220,220,220);padding:2pt;}
         th {background-color:rgb(255,255,230);}
@@ -277,6 +277,23 @@ Proper markup should rather be as follows:
 
 <!-- contract definition: detailed requirements on input nature -->
 <h2 id="parameters">Parameters</h2>
+	<h3 id="params">Parameters (tdf)</h3>
+	<!-- description on params as defined in tdf, please use the below definition list -->
+	<dl id="paramslist">
+	<dt>input</dt>
+	<dd>Path to input XHTML file</dd>
+	<dt>output</dt>
+	<dd>Path to output DTBook file</dd>
+	<dt>title</dt>
+	<dd>The name of the publication. If no value is supplied, the information is extracted from the original file, if possible.</dd>	
+	<dt>uid</dt>
+	<dd>The unique identifier for the publication. If no value is supplied, the information is extracted from the original file, if possible.</dd>	
+	<dt>outputCSS</dt>
+	<dd>A CSS to use for output textual content files.</dd>	
+	</dl>
+	
+	<h3 id="extConfig">Extended configurability</h3>
+	<!-- details on additional config files, system variables etc -->
 <p>For correct transformation from XHTML to DTBook, the following parameters must be given to the transformation style sheet:</p>
 <table width="100%">
     <tr valign="bottom">
@@ -286,7 +303,7 @@ Proper markup should rather be as follows:
     </tr>
     <tr valign="top">
         <td><code>uid</code></td>
-        <td><span class="text">[uid]</span></td>
+        <td><span class="text">[UID]</span></td>
         <td>
             The unique identifier for the publication.<br />
             This parameter should be given a sensible value to be sure that the generated DTBook file has correct meta data.
@@ -296,8 +313,18 @@ Proper markup should rather be as follows:
         </td>
     </tr>
     <tr valign="top">
+        <td><code>transformationMode</code></td>
+        <td><span class="text">standalone</span></td>
+        <td>
+            Used to define how the style sheet transforms the document. If this parameter is given the value 
+            <span class="text">DTBmigration</span>, transformation rules are used that are appropriate for a 
+            migration of a DAISY 2.02 XHTML content to a Z39-86.2005 DTBook file.<br />
+            Any other value, will result in use of transformation rules suitable for a generic XHTML to DTBook converting process.
+        </td>
+    </tr>
+    <tr valign="top">
         <td><code>title</code></td>
-        <td><span class="text">[title]</span></td>
+        <td><span class="text">[DTB_TITLE]</span></td>
         <td>
             The title of the publication.<br />
             This parameter should be given a sensible value to be sure that the generated DTBook file has correct meta data.
@@ -308,7 +335,7 @@ Proper markup should rather be as follows:
     </tr>
     <tr valign="top">
         <td><code>cssURI</code></td>
-        <td><span class="text">[css]</span></td>
+        <td><span class="text">[cssURI]</span></td>
         <td>
             The URI to the Cascading Style Sheet (CSS) to be used for the DTBook file.<br />
             If this parameter is not specified, no reference will be made to a style sheet.
@@ -330,7 +357,7 @@ Proper markup should rather be as follows:
     </tr>
     <tr valign="top">
         <td><code>nccURI</code></td>
-        <td><span class="text">false</span></td>
+        <td><span class="text">[nccURI]</span></td>
         <td>
             This parameter is only applicable if the transformation is used as a part of a DAISY 2.02 to DAISY 3.0 DTB migration,
             and if the parameter <code>transferDcMetadata</code> is set to <span class="text">true</span>.<br />
@@ -635,7 +662,9 @@ Proper markup should rather be as follows:
 <p>Other elements than the ones listed above will result in a comment in the DTBook file.</p>
 
 <h4 id="smilRefs">References to SMIL files</h4>
-<p>For all XHTML elements listed above, the following rule applies:
+<p>
+ If, and only if, the style sheet input parameter <code>transformationMode</code> is given the value
+    <span class="text">DTBmigration</span>, then for all XHTML elements listed above, the following rule applies:
 <br />
 If the XHTML element has an <code>a</code> element as a child (in the XML sense of the term),
     and this <code>a</code> element has an <code>href</code> attribute with a
@@ -745,18 +774,7 @@ would be transformed into:
 <p>Note that this DTBook markup is in fact invalid. It is left as an exercise to the reader to trace the cause of this error back to the XHTML code.</p>
 
 <h3 id="failure">On error</h3>
-<p>????????????????</p>
-<!-- <p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
-<p>See further <a href="#params">Parameters</a>.</p> -->
-
-<!-- <h2 id="config">Configuration/Customization</h2>
-
-<h3 id="params">Parameters (tdf)</h3> -->
-<!-- description on params as defined in tdf -->
-
-<!-- <h3 id="extConfig">Extended configurability</h3> -->
-<!-- details on additional config files, system variables etc -->
-<!-- <p>None.</p> -->
+<p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
 
 <h2 id="future">Further development</h2>
 <ul>
@@ -772,8 +790,10 @@ would be transformed into:
 </ul>
 
 <h2 id="owner">Author</h2>
-Per Sennels, Huseby kompetansesenter, Norway
-
+<ul>
+	<li>Markus Gylling (TPB/DC)</li>
+	<li>Per Sennels (Huseby)</li>
+</ul>
 <h2 id="licensing">Licensing</h2>
 <!-- Licensing information -->
 <p>LGPL</p>
