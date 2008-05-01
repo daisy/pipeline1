@@ -95,7 +95,9 @@ public class DtbMerger202 extends DtbMerger {
 		   // 2.1 Fill the output volume's collections with smil, full text, resource and prompt files,
 		   //     duplicates are excluded.
 		   this.fillTmpVolume(inputVolNr, inputVolNcc, tmpVolume);
-		   outputVolume.addFullTextFile(tmpVolume.getFullTextFiles().get(0));
+		   if( tmpVolume.getFullTextFiles().size()!=0){
+			   outputVolume.addFullTextFile(tmpVolume.getFullTextFiles().get(0));
+		   }
 			
 		   /* 2.2 Copy the files here for the sake of the possible subdirectory resources in the input volume.
 			*     To be able to deal with subfolders we will need the current source volume's directory.
