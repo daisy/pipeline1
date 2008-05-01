@@ -13,7 +13,7 @@
    <configIni use="default"/>
 
    <launcherArgs>
-      <vmArgs>-Dorg.osgi.framework.bootdelegation=javax.*</vmArgs>
+      <vmArgs>-Dorg.osgi.framework.bootdelegation=javax.*,org.w3c.dom.*</vmArgs>
    </launcherArgs>
 
    <windowImages i16="/org.daisy.pipeline.gui/branding/pipeline-logo-16x16.gif" i32="/org.daisy.pipeline.gui/branding/pipeline-logo-32x32.gif" i48="/org.daisy.pipeline.gui/branding/pipeline-logo-48x48.gif" i64="/org.daisy.pipeline.gui/branding/pipeline-logo-64x64.gif" i128="/org.daisy.pipeline.gui/branding/pipeline-logo-128x128.gif"/>
