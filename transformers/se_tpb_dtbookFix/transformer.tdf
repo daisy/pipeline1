@@ -93,7 +93,17 @@
 			<example>en</example>
 			<default></default>
 		</parameter>
-
+        
+        <parameter required="false" type="enum">
+            <name>renameJpeg</name>
+            <description>Whether to rename .jpeg images into .jpg</description>
+            <example>true</example>
+            <enum>
+                <value>true</value>
+                <value>false</value>
+            </enum>
+            <default>true</default>
+        </parameter>
 	</parameters>
 
 </transformer>
