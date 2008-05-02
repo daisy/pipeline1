@@ -5,6 +5,7 @@
 	<license>LGPL</license>
 	<author>Linus Ericsson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+    <documentation uri="../../doc/transformers/uk_rnib_dtbook2xhtml.html"/> 
 	
 	<!-- 
 		Note: this transformer uses the XSLT dtbook2xhtml.xsl 
