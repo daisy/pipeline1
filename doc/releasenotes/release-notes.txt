@@ -13,7 +13,7 @@ Report bugs and issues to:
 http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
 ***************************************
-Pipeline Maintenance Release, 2007-05-02
+Pipeline Maintenance Release, 2008-05-02
 ***************************************
 Complete Windows installer
 - The Windows installer is now complete, allowing installation of the Pipeline without having to install any additional libraries (except the Java runtime).
