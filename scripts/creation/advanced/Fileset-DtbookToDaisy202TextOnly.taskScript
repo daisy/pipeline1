@@ -88,7 +88,7 @@
 
 		<parameter>
 			<name>daisy_noteref</name>
-			<value>true</value>
+			<value>false</value>
 		</parameter>										
 	</task>	
 
