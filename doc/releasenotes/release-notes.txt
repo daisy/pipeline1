@@ -13,6 +13,48 @@ Report bugs and issues to:
 http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
 ***************************************
+Pipeline Maintenance Release, 2007-05-02
+***************************************
+Complete Windows installer
+- The Windows installer is now complete, allowing installation of the Pipeline without having to install any additional libraries (except the Java runtime).
+- Note - this installer allows both single-user and multiple-users installations
+
+Support for DTBook 2005-3 in relevant Pipeline Scripts/Transformers
+
+Changes in the Narrator TTS Script
+- The Narrator script has been ascertained to support input from the latest version of MS Word Save-as-DAISY.
+
+Changes in the DTBook Fix Script
+- Several performance enhancements added to the DTBook Fix script.
+
+Changes in the OPS/EPUB Creator script
+- Now uses EpubCheck for output validation.
+- Dynamically converts input documents to XHTML 1.1 when needed for validity.
+
+Changes in the Xhtml to DTBook script
+- improved the overall stability and input sensitivity
+
+New Script: DTBook Migrator
+- An upwards migrator for DTBook documents versions 1.1.0 to 2005-3, and all versions inbetween. This script is in a beta version.
+
+New Script: DTB Forward Migrator
+- An upwards migrator for Daisy 2.02 DTBs to DAISY/NISO 2005. Supports NCC-Only and Full Text DTB input. This script is in a beta version.
+
+New Script: Daisy 2.02 Text-Only DTB generator.
+- Allows generating Daisy 2.02 Text-Only DTBs from DTBook or XHTML input. This script is in a beta version.
+
+Localization
+- A partial Hindi localization is provided with the default installer.
+- The GUI now has a menu item to switch the GUI locale
+
+ODF to DTBook deprecated and removed
+- The ODF to DTBook Script is no longer included in the default installer, as it was broken and no longer supported by the original developer.
+- A new ODF to DTBook transformation (supporting MathML) is under active development.
+
+... and a long list of bug fixes!
+
+
+***************************************
 Pipeline Maintenance Release, 2007-12-21
 ***************************************
 
