@@ -42,7 +42,8 @@ public class MacSayTTS extends AbstractTTSAdapter {
 
 	@SuppressWarnings("unused")
 	@Override
-	public void read(String line, File destination) throws IOException, TTSException {
+	public void read(String line, File destination) throws IOException,
+			TTSException {
 		String destName = destination.getAbsolutePath();
 		String aiffName = destName + ".aiff";
 		String say = "/usr/bin/say";
@@ -53,12 +54,26 @@ public class MacSayTTS extends AbstractTTSAdapter {
 			Runtime.getRuntime().exec(cmd).waitFor();
 			cmd = new String[] { sox, aiffName, "-t", "wav", destName };
 			Runtime.getRuntime().exec(cmd).waitFor();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new TTSException("Could not execute: " + cmd, e);
-		} catch (InterruptedException e) {
-			throw new TTSException("Command was interrupted: " + cmd, e);
 		} finally {
 			(new File(aiffName)).delete();
 		}
 	}
+
+	@Override
+	protected boolean canSpeak(String line) {
+		if (line == null) {
+			return false;
+		}
+		boolean canSpeak = false;
+		int i = 0;
+		while (!canSpeak && i < line.length()) {
+			int cp = Character.codePointAt(line, i++);
+			canSpeak = !(Character.isSpaceChar(cp) || Character
+					.isWhitespace(cp));
+		}
+		return canSpeak;
+	}
+
 }
