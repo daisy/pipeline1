@@ -46,7 +46,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		if (new File(path).exists()) {
 			return path;
 		}
-		return "/usr/local/bin" + name;//$NON-NLS-1$
+		return "/usr/local/bin/" + name;//$NON-NLS-1$
 	}
 
 	/**
