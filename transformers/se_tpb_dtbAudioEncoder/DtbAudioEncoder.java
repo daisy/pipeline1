@@ -63,7 +63,7 @@ public class DtbAudioEncoder extends Transformer {
         String stereo = parameters.remove("stereo");
         String freq = parameters.remove("freq");        
         
-        String lamePath = System.getProperty("dmfc.lame.path");
+        String lamePath = System.getProperty("pipeline.lame.path");
         File test = new File(lamePath);
 		if(!test.exists() || !test.canRead()) {
 			String message = i18n("LAME_INSTALL_PROBLEM");
@@ -199,7 +199,7 @@ public class DtbAudioEncoder extends Transformer {
     }
     
     public static boolean isSupported() {
-        String lamePath = System.getProperty("dmfc.lame.path");
+        String lamePath = System.getProperty("pipeline.lame.path");
         //System.err.println("Lame path: " + lamePath);
         return LameEncoder.setCommand(lamePath);
     }

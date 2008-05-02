@@ -188,7 +188,7 @@ public class PipelineCore implements TransformerHandlerLoader {
             System.setProperty(name, properties.getProperty(name));
         }
         // Apply new properties if possible
-        TempFile.setTempDir(new File(System.getProperty("dmfc.tempDir")));
+        TempFile.setTempDir(new File(System.getProperty("pipeline.tempDir")));
     }
 
     /**

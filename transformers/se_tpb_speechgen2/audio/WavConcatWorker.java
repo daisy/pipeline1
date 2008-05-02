@@ -141,7 +141,7 @@ public class WavConcatWorker implements Runnable {
 	 * @throws ExecutionException
 	 */
 	private void mp3encode(File inputWav, File outputMp3) throws  ExecutionException {
-		String lameCommand = System.getProperty("dmfc.lame.path");
+		String lameCommand = System.getProperty("pipeline.lame.path");
 		
 		String inputFilename = inputWav.getAbsolutePath();
 		String outputFilename = outputMp3.getAbsolutePath();
