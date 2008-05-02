@@ -53,7 +53,6 @@
 				<li>Launch the downloaded installer: PipelineGUI-<em>versiondate</em>_setup.exe </li>
 				<li>Follow the instructions of the installer.</li>
 			</ol>
-			<p><strong>Warning:</strong> make sure the installation directory have write permissions.</p>
 			
 			<h3 id="install-macosx">On Mac OS X</h3>
 			<ol>
@@ -73,16 +72,17 @@
 	      <p><strong>Note:</strong> you may want to create a shortcut to the Pipeline executable and put that on a convenient place (such as your desktop) for convenient access later on.)</p>
 
       <h2 id="config">Configuration</h2>
-      <p>Upon first launch of the Pipeline, you should take a moment to look over <code>Paths</code> in the Pipeline Preferences dialog. The Preferences dialog can be reached from the <code>Window</code> menu item.</p>
-      <p>The paths that <em>must</em> or <em>may</em> be set are:</p>
+      <p>Paths to third party executables called by the Pipeline are configurable in the Preferences dialog, which can be reached from the <code>Window</code> menu item.</p>
+      <p>Note that on Windows the installer takes care of setting the right paths and installing the required third party tools.</p>
+      <p>The paths that <em>may</em> be set are:</p>
       <dl>
       <dt><code>Temporary Directory</code></dt><dd>Directory to store temporary files in. This directory <em>must</em> be set, and write access to it must be enabled.</dd>
       <dt><code>LAME executable</code></dt><dd>Path to the <a href="http://lame.sourceforge.net/index.php">LAME</a> executable (Must be set if you intend to run a script that includes MP3 encoding).</dd>
-      <dt><code>Python executable</code></dt><dd>Path to <a href="http://www.python.org/">Python</a> executable (Must be set if you intend to run the RTF to DTBook or RTF to XHTML scripts).</dd>
+      <dt><code>ImageMagick convert executable</code></dt><dd>Path to the <a href="http://www.imagemagick.org">ImageMagick</a> convert executable (Must be set if you intend to run the WordML to DTBook script with image conversions).</dd>
       <dt><code>SoX executable</code></dt><dd>Path to the <a href="http://sox.sourceforge.net/">SoX</a> (Sound eXchange) executable used on Mac OS X for speech synthesis.</dd>
       </dl>
-      <p>Information on how to install LAME and Python is available in <a href="./installing-lame.html">Installing the Lame MP3 Encoder for use within the Daisy Pipeline</a> and <a href="./installing-python.html">Installing Python for use within the Daisy Pipeline</a>.</p>
-	  <p>Note: When starting the Pipeline, you may get warnings that certain scripts could not be loaded; this is most likely due to the fact that the settings discussed above have not been set.</p>
+      <p>Information on how to install LAME is available in <a href="./installing-lame.html">Installing the Lame MP3 Encoder for use within the Daisy Pipeline</a>.</p>
+      <p>Information on how to install ImageMagick is available in <a href="./installing-imagemagick.html">Installing ImageMagick for use within the Daisy Pipeline</a>.</p>
 	  
 	  <h3 id="advancedconfig">Advanced configuration</h3>
 	  <h4>Using a non-default Java virtual machine</h4>
