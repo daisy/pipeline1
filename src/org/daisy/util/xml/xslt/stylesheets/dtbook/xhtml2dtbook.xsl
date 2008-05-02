@@ -42,6 +42,13 @@
 	<xsl:variable name="nccURI.mod" as="xs:string" select="translate($nccURI,'\','/')" />
 	<xsl:variable name="cssURI.mod" as="xs:string" select="replace(translate($cssURI,'\','/'),'.*/(.+)','$1')" /> <!-- first, change \ to / and then remove everything up to and inlduing the last /-->  
 	<xsl:variable name="dtbMigration" as="xs:boolean" select="matches($transformationMode,'DTBmigration','i')" />
+
+	<xsl:variable name="regexpMatchTitle" as="xs:string" 
+		select="'^title$|^dc:title$|^dtb:title$'" />	<!--  Possible formats of title representation in metadata  -->
+	<xsl:variable name="regexpMatchID" as="xs:string" 
+		select="'^id$|^dc:id$|^dtb:id$|^uid$|^dc:uid$|^dtb:uid$|^identifier$|^dc:identifier$|^dtb:identifier$'" />	<!--  Possible formats of id representation in metadata  -->
+	<xsl:variable name="regexpMatchTitleAndID" as="xs:string"
+		select="concat($regexpMatchTitle,'|',$regexpMatchID)" />
 	
 	<xsl:variable name="smil" as="xs:string" select="'.smil#'" />
 	
@@ -52,8 +59,8 @@
 					<xsl:when test="html:html/html:head/html:title">	<!-- There is a title element -->
 						<xsl:value-of select="html:html/html:head/html:title" />
 					</xsl:when>
-					<xsl:when test="//html:meta[matches(@name,'^title$|^dc:title$|^dtb:title$','i')]">	<!-- There is some metadata represnting a title -->
-						<xsl:value-of select="//html:meta[matches(@name,'^title$|^dc:title$|^dtb:title$','i')][1]/@content" />
+					<xsl:when test="//html:meta[matches(@name,$regexpMatchTitle,'i')]">	<!-- There is some metadata represnting a title -->
+						<xsl:value-of select="//html:meta[matches(@name,$regexpMatchTitle,'i')][1]/@content" />
 					</xsl:when>
 					<xsl:otherwise>	<!-- Nothing usable in the source, so leave it empty -->
 						<xsl:value-of select="''" />
@@ -70,8 +77,8 @@
 		<xsl:choose>
 			<xsl:when test="$uid eq '' or $uid eq '[UID]'">	<!-- unspecfied by user, so we could try to find it in the xhtml source doc -->
 				<xsl:choose>
-					<xsl:when test="//html:meta[matches(@name,'^id$|^dc:id$|^dtb:id$|^uid$|^dc:uid$|^dtb:uid$|^identifier$|^dc:identifier$|^dtb:identifier$','i')]">	<!-- There is some metadata represnting a title -->
-						<xsl:value-of select="//html:meta[matches(@name,'^id$|^dc:id$|^dtb:id$|^uid$|^dc:uid$|^dtb:uid$|^identifier$|^dc:identifier$|^dtb:identifier$','i')][1]/@content" />
+					<xsl:when test="//html:meta[matches(@name,$regexpMatchID,'i')]">	<!-- There is some metadata represnting a title -->
+						<xsl:value-of select="//html:meta[matches(@name,$regexpMatchID,'i')][1]/@content" />
 					</xsl:when>
 					<xsl:otherwise>	<!-- Nothing usable in the source, so leave it empty -->
 						<xsl:value-of select="''" />
@@ -102,7 +109,7 @@
 	
 	<xsl:template match="html:head">
 		<head>
-<!-- 			<meta name="transformationMode" content="{$transformationMode}" />
+<!-- 		<meta name="transformationMode" content="{$transformationMode}" />
 			<meta name="dtbMigration" content="{$dtbMigration}" />
 			<meta name="transferDcMetadata" content="{$transferDcMetadata}" />
 			<meta name="nccURI" content="{$nccURI}" />
@@ -112,7 +119,14 @@
 			<meta name="title" content="{$title}" />
 			<meta name="xTitle" content="{$xTitle}" />
 			<meta name="uid" content="{$uid}" />
-			<meta name="xUID" content="{$xUID}" />-->
+			<meta name="xUID" content="{$xUID}" /> -->
+<!-- 		<xsl:comment>
+				transformationMode: <xsl:value-of select="$transformationMode" />
+				title: <xsl:value-of select="$title" />
+				xTitle: <xsl:value-of select="$xTitle" />
+				uid: <xsl:value-of select="$uid" />
+				xUID: <xsl:value-of select="$xUID" />
+			</xsl:comment> -->
 			<meta name="dtb:uid" content="{$xUID}" />
 			<meta name="dtb:title" content="{$xTitle}" />
 			<meta name="dc:Title" content="{$xTitle}" />
@@ -122,12 +136,30 @@
 						and matches($transferDcMetadata,'true','i') 
 						and doc-available($nccURI.mod)
 						and $nccURI ne '[nccURI]'">
-					<!-- If requested, and we are doing dtbMigration and if ncc.html can be found, transfer dc:* metadata (not dc:title, handled above) from ncc.html -->
-					<xsl:apply-templates select="doc($nccURI.mod)//html:head/html:meta[starts-with(@name,'dc:') and @name ne 'dc:title']" mode="metadata-from-ncc"/>
+					<!-- If requested, and we are doing dtbMigration and if ncc.html can be found, 
+						transfer dc:* metadata (but not things that might look like a title or an id,
+						and not dc:format either as its content will be wrong) from ncc.html -->
+					<xsl:apply-templates select="
+						doc($nccURI.mod)//html:head/html:meta[
+							starts-with(@name,'dc:') 
+							and 
+							not(
+								matches(
+									@name,
+									concat(
+										$regexpMatchTitleAndID,
+										'|^dc:format$'
+										),
+									'i'
+								)
+							)
+						]" mode="metadata-from-ncc"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<!-- If not migrating, not requested, or ncc.html not found, use whatever is in the XHTML , except dc:title, handled above-->
-					<xsl:apply-templates select="html:meta[@name ne 'dc:title']" />
+					<!-- If not migrating, not requested, or ncc.html not found, 
+						use whatever is in the XHTML, except things that might look like a title or an id, 
+						as they are handled above-->
+					<xsl:apply-templates select="html:meta[not(matches(@name,$regexpMatchTitleAndID,'i'))]" />
 				</xsl:otherwise>
 			</xsl:choose>
 		</head>
@@ -139,7 +171,7 @@
 		<meta>
 			<xsl:attribute name="name">
 				<xsl:choose>
-					<xsl:when test="matches(@name,'^dc:(creator|subject|description|publisher|contributor|date|type|format|identifier|source|language|relation|coverage|rights)$','i')">
+					<xsl:when test="matches(@name,'^dc:(creator|subject|description|publisher|contributor|date|type|format|source|language|relation|coverage|rights)$','i')">
 						<xsl:value-of select="concat('dc:',pfunc:initialCaps(substring-after(@name,'dc:')))" />
 					</xsl:when>
 					<xsl:otherwise>
@@ -158,7 +190,7 @@
 	</xsl:template>
 
 	<xsl:template match="html:meta" mode="metadata-from-ncc">
-		<xsl:if test="matches(@name,'^dc:(creator|subject|description|publisher|contributor|date|type|format|identifier|source|language|relation|coverage|rights)$','i')">
+		<xsl:if test="matches(@name,'^dc:(creator|subject|description|publisher|contributor|date|type|source|language|relation|coverage|rights)$','i')">
 			<meta>
 				<xsl:attribute name="name" select="concat('dc:',pfunc:initialCaps(substring-after(@name,'dc:')))" />
 				<xsl:copy-of select="@content, @scheme, @http-equiv" />
