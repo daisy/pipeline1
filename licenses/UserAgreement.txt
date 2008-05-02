@@ -44,6 +44,11 @@ with the DAISY Pipeline application are listed below:
 	1.0 Mozilla Public License
 	http://www.mozilla.org/MPL/MPL-1.0.html
 	
+    com4j.jar and com4j.dll
+    Interop between Java and Microsoft COM
+    The MIT License
+    http://www.opensource.org/licenses/mit-license.php
+    
 	commons-cli-1.0.jar
 	Command Line Parser
 	Apache Software License, Version 2
@@ -109,7 +114,7 @@ with the DAISY Pipeline application are listed below:
 	X License/Codehaus
 	http://stax.codehaus.org/
 
-	tagsoup.jar
+	tagsoup-1.2.jar
 	SAX-compliant parser in Java/HTML found in the wild
 	http://home.ccil.org/~cowan/XML/tagsoup/
 	Licensed under both the GNU GPL version 2.0 and 
@@ -126,7 +131,7 @@ with the DAISY Pipeline application are listed below:
 	GNU Lessel General Public License
 	http://www.gnu.org/licenses/lgpl.html
 
-	wstx-lgpl-3.2.1.jar
+	wstx-lgpl-3.2.4.jar
 	Woodstox XML processor
 	http://woodstox.codehaus.org/
 	High-performance validating namespace-aware StAX-compliant (JSR-173) Open Source XML-processor
