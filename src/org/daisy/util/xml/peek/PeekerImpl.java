@@ -111,10 +111,11 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 * @see org.daisy.util.xml.peek.Peeker#peek(java.io.File)
 	 */
 	public PeekResult peek(File document) throws SAXException, IOException {
-		//redirect to this.peek(InputSource)		
-    	InputSource is = new InputSource(new FileReader(document));
-    	is.setSystemId(document.toURI().toString());
-    	return peek(is);	
+		//rd 20080502: don't use FileReader to prevent problems with BOM 
+		//InputSource is = new InputSource(new FileReader(document));
+		InputSource is = new InputSource(document.toString());
+		is.setSystemId(document.toURI().toString());
+		return peek(is);	
 	}
 	
 	/*
