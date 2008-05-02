@@ -60,7 +60,7 @@ public final class PipelineUtil {
 	/** The name of the System properties used for the path to ImageMagick */
 	public static final String PATH_TO_IMAGEMAGICK_PROP = "pipeline.imageMagick.converter.path"; //$NON-NLS-1$
 	/** The name of the System properties used for the path to Lame */
-	public static final String PATH_TO_LAME_PROP = "dmfc.lame.path"; //$NON-NLS-1$
+	public static final String PATH_TO_LAME_PROP = "pipeline.lame.path"; //$NON-NLS-1$
 	/** The name of the System properties used for the path to Python */
 	public static final String PATH_TO_PYTHON_PROP = "pipeline.python.path"; //$NON-NLS-1$
 	/** The name of the System properties used for the path to SoX */
@@ -69,7 +69,7 @@ public final class PipelineUtil {
 	 * The name of the System properties used for the path to the temporary
 	 * directory
 	 */
-	public static final String PATH_TO_TEMP_DIR_PROP = "dmfc.tempDir"; //$NON-NLS-1$
+	public static final String PATH_TO_TEMP_DIR_PROP = "pipeline.tempDir"; //$NON-NLS-1$
 	/** The URI to the page to show when a doc has not been found */
 	public static final URI DOC_404 = new File(getDir(DOC_DIR), "404.html") //$NON-NLS-1$
 			.toURI();
