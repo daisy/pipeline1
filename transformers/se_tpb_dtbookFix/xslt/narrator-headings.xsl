@@ -34,24 +34,44 @@
 	<xsl:template match="dtb:level1">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
+			<!-- Copy leading pagenums and comments -->
 			<xsl:apply-templates select="node()" mode="leadingPagenum"/>
+			<!-- Add a heading if there's not one already -->
 			<xsl:if test="not(dtb:h1) or dtb:h1[normalize-space(.)='']">
 				<xsl:message terminate="no">Adding a dummy h1</xsl:message>
 				<xsl:element name="h1" namespace="http://www.daisy.org/z3986/2005/dtbook/">dummy1</xsl:element>
 			</xsl:if>
-			<xsl:apply-templates select="node()" mode="notLeadingPagenum"/>
+			<!-- Copy following siblings or add an empty paragraph -->
+			<xsl:choose>
+				<xsl:when test="dtb:h1[following-sibling::*]">
+					<xsl:apply-templates select="node()" mode="notLeadingPagenum"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<p/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:copy>
 	</xsl:template>
 	
 	<xsl:template match="dtb:level2">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
+			<!-- Copy leading pagenums and comments -->
 			<xsl:apply-templates select="node()" mode="leadingPagenum"/>
+			<!-- Add a heading if there's not one already and there is one in sub levels -->
 			<xsl:if test="(not(dtb:h2) or dtb:h2[normalize-space(.)='']) and descendant::*[(self::dtb:h3 or self::dtb:h4 or self::dtb:h5 or self::dtb:h6) and normalize-space(.)!='']">
 				<xsl:message terminate="no">Adding a dummy h2</xsl:message>
 				<xsl:element name="h2" namespace="http://www.daisy.org/z3986/2005/dtbook/">dummy2</xsl:element>
 			</xsl:if>
-			<xsl:apply-templates select="node()" mode="notLeadingPagenum"/>
+			<!-- Copy following siblings or add an empty paragraph -->
+			<xsl:choose>
+				<xsl:when test="dtb:h2[following-sibling::*]">
+					<xsl:apply-templates select="node()" mode="notLeadingPagenum"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<p/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:copy>
 	</xsl:template>
 	
@@ -60,12 +80,22 @@
 	<xsl:template match="dtb:level3">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
+			<!-- Copy leading pagenums and comments -->
 			<xsl:apply-templates select="node()" mode="leadingPagenum"/>
+			<!-- Add a heading if there's not one already and there is one in sub levels -->
 			<xsl:if test="(not(dtb:h3) or dtb:h3[normalize-space(.)='']) and descendant::*[(self::dtb:h4 or self::dtb:h5 or self::dtb:h6) and normalize-space(.)!='']">
 				<xsl:message terminate="no">Adding a dummy h3</xsl:message>
 				<xsl:element name="h3" namespace="http://www.daisy.org/z3986/2005/dtbook/">dummy3</xsl:element>
 			</xsl:if>
-			<xsl:apply-templates select="node()" mode="notLeadingPagenum"/>
+			<!-- Copy following siblings or add an empty paragraph -->
+			<xsl:choose>
+				<xsl:when test="dtb:h3[following-sibling::*]">
+					<xsl:apply-templates select="node()" mode="notLeadingPagenum"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<p/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:copy>
 	</xsl:template>
 	
@@ -73,12 +103,22 @@
 	<xsl:template match="dtb:level4">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
+			<!-- Copy leading pagenums and comments -->
 			<xsl:apply-templates select="node()" mode="leadingPagenum"/>
+			<!-- Add a heading if there's not one already and there is one in sub levels -->
 			<xsl:if test="(not(dtb:h4) or dtb:h4[normalize-space(.)='']) and descendant::*[(self::dtb:h5 or self::dtb:h6) and normalize-space(.)!='']">
 				<xsl:message terminate="no">Adding a dummy h4</xsl:message>
 				<xsl:element name="h4" namespace="http://www.daisy.org/z3986/2005/dtbook/">dummy4</xsl:element>
 			</xsl:if>
-			<xsl:apply-templates select="node()" mode="notLeadingPagenum"/>
+			<!-- Copy following siblings or add an empty paragraph -->
+			<xsl:choose>
+				<xsl:when test="dtb:h4[following-sibling::*]">
+					<xsl:apply-templates select="node()" mode="notLeadingPagenum"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<p/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:copy>
 	</xsl:template>
 	
@@ -86,12 +126,22 @@
 	<xsl:template match="dtb:level5">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
+			<!-- Copy leading pagenums and comments -->
 			<xsl:apply-templates select="node()" mode="leadingPagenum"/>
+			<!-- Add a heading if there's not one already and there is one in sub levels -->
 			<xsl:if test="(not(dtb:h5) or dtb:h5[normalize-space(.)='']) and descendant::*[self::dtb:h6 and normalize-space(.)!='']">
 				<xsl:message terminate="no">Adding a dummy h2</xsl:message>
 				<xsl:element name="h5" namespace="http://www.daisy.org/z3986/2005/dtbook/">dummy5</xsl:element>
 			</xsl:if>
-			<xsl:apply-templates select="node()" mode="notLeadingPagenum"/>
+			<!-- Copy following siblings or add an empty paragraph -->
+			<xsl:choose>
+				<xsl:when test="dtb:h5[following-sibling::*]">
+					<xsl:apply-templates select="node()" mode="notLeadingPagenum"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<p/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:copy>
 	</xsl:template>
 	
@@ -99,23 +149,27 @@
 	<xsl:template match="dtb:level">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
+			<!-- Copy leading pagenums and comments -->
 			<xsl:apply-templates select="node()" mode="leadingPagenum"/>
+			<!-- Add a heading if there's not one already and there is one in sub levels -->
 			<xsl:if test="(not(dtb:hd) or dtb:hd[normalize-space(.)='']) and descendant::dtb:level/dtb:hd[normalize-space(.)!='']">
 				<xsl:element name="hd" namespace="http://www.daisy.org/z3986/2005/dtbook/">dummyHd</xsl:element>
 			</xsl:if>
-			<xsl:apply-templates select="node()" mode="notLeadingPagenum"/>
+			<!-- Copy following siblings or add an empty paragraph -->
+			<xsl:choose>
+				<xsl:when test="dtb:hd[following-sibling::*]">
+					<xsl:apply-templates select="node()" mode="notLeadingPagenum"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<p/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="dtb:pagenum" mode="leadingPagenum">
-		<xsl:if test="not(preceding-sibling::dtb:*[not(self::dtb:pagenum)])">
-			<xsl:copy>
-				<xsl:copy-of select="@*"/>
-				<xsl:apply-templates/>
-			</xsl:copy>
-		</xsl:if>
-	</xsl:template>	
+	<!-- Templates called after heading processing -->
 	
+	<!-- Copy everything except leading pagenums, remove empty headings -->
 	<xsl:template match="*" mode="notLeadingPagenum">
 		
 		<xsl:choose>
@@ -131,11 +185,26 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>		
- 
-	<xsl:template match="*" mode="leadingPagenum">
+ 	
+	<!-- Templates called before heading processing -->
+	
+	<!-- Copy leading pagenums -->
+	<xsl:template match="dtb:pagenum" mode="leadingPagenum">
+		<xsl:if test="not(preceding-sibling::dtb:*[not(self::dtb:pagenum)])">
+			<xsl:copy>
+				<xsl:copy-of select="@*"/>
+				<xsl:apply-templates/>
+			</xsl:copy>
+		</xsl:if>
 	</xsl:template>
- 
+	
+	<!-- Copy comments and PIs -->
 	 <xsl:template match="processing-instruction()|comment()" mode="leadingPagenum">
 		<xsl:copy-of select="."/>
 	 </xsl:template>
+	
+	<!-- Discard all other elements -->
+	<xsl:template match="*" mode="leadingPagenum">
+	</xsl:template>
+ 
 </xsl:stylesheet>
