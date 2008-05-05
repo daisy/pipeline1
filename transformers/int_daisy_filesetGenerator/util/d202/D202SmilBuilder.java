@@ -45,7 +45,8 @@ import org.daisy.util.xml.pool.StAXOutputFactoryPool;
  * @author Markus Gylling
  */
 public class D202SmilBuilder {
-	private final File mDestination;
+	/** The File destination of this to-be SMIL file. */
+	public final File mDestination;
 	private final String mHeadingText;
 	private String mIdentifier;
 	private String mPublicationTitle;
@@ -90,17 +91,28 @@ public class D202SmilBuilder {
 		}
 	}
 
+	public List<ParContainer> getParList() {
+		return mParList;	
+	}
+		
 	/**
 	 * Add a new par container to this smil file with a single text media child.
 	 * @param contentDocURI the URI the text child shall carry in its src attribute.
-	 * @return the URI to reference this container with.
+	 * @param returnTextFragment If true, the returned String URI will point to the text child of the
+	 * par, else it will point to the parent par id.
+	 * @return the URI to reference this container with, or if second inparam is true, the
+	 * URI to reference the text child of this container with.
 	 */
-	public String addPar(String contentDocURI) {
+	public String addPar(String contentDocURI, boolean returnTextFragment) {
 		ParContainer pc = new ParContainer(contentDocURI);
 		mParList.add(pc);
 		StringBuilder sb = new StringBuilder();
 		sb.append(mDestination.getName()).append('#');		
-		sb.append(pc.mParId);
+		if(!returnTextFragment || pc.mTextId == null ) {
+			sb.append(pc.mParId);
+		}else{
+			sb.append(pc.mTextId);
+		}
 		return sb.toString();
 	}
 	
@@ -203,10 +215,10 @@ public class D202SmilBuilder {
 		return new SmilClock(0);
 	}
 	
-	class ParContainer {
-		final String mContentDocURI;
-		final String mParId;
-		final String mTextId;
+	public class ParContainer {
+		public final String mContentDocURI;
+		public final String mParId;
+		public final String mTextId;
 		
 		/**
 		 * Constructor. Create a par with only a text child.

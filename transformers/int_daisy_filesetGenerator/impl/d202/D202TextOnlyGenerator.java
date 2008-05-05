@@ -56,8 +56,8 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
-import org.daisy.util.file.EFile;
 import org.daisy.util.file.Directory;
+import org.daisy.util.file.EFile;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetFile;
@@ -381,14 +381,14 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 						/*
 						 * Add ref in current smil builder
 						 */
-						String smilURI = mCurrentSmilBuilder.addPar(outputContentDoc.getName()+"#"+getID(xe.asStartElement()));
-											
+						String smilParURI = mCurrentSmilBuilder.addPar(outputContentDoc.getName()+"#"+getID(xe.asStartElement()),true);
+																							
 						/*
 						 * Add ref in NCC
 						 */
 						NccNavItemType navType = mNccBuilder.getType(xe.asStartElement());
 						if(navType!=null) {
-							mNccBuilder.addNccNavItem(navType, smilURI, elementText);
+							mNccBuilder.addNccNavItem(navType, smilParURI, elementText);
 						}	
 										
 						/*
@@ -411,7 +411,7 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 							writeStartElement(xe.asStartElement(), writer, xef);
 							//open an anchor
 							writer.add(xef.createStartElement(qA, null, null));					
-							writer.add(xef.createAttribute(qHref, smilURI));
+							writer.add(xef.createAttribute(qHref, smilParURI));
 							//write everything that appears within the current readers start element
 							XMLEvent xe2 = null;
 							while(reader.hasNext()) {
