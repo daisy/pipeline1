@@ -36,16 +36,21 @@ supports running the Narrator script on the Windows&trade; and Mac OS X&trade; o
 <!-- detailed requirements on input nature -->
 <p>Any valid DTBook 2005 document with the following restrictions:</p>
 <ul>
-  <li>Lists (<code>&lt;list&gt;</code>) and definition lists (<code>&lt;dl&gt;</code>) are
-      not allowed inside paragraphs (<code>&lt;p&gt;</code>).</li>
-  <li>The <code>dc:Language</code>, <code>dc:Date</code> and <code>dc:Publisher</code> metadata
-      must exist.</li>
-  <li>The DTBook root element must have a <code>xml:lang</code> attribute.</li>
-  <li>If there is a heading on level x, there must also be a heading on level x-1.</li>
   <li>Note references and annotation references are only allowed within the same DTBook document.</li>
-  <li>The DTBook document needs at least one heading on level 1</li>
-  <li>Headings must contain some textual content (i.e. may not be empty elements).</li>
-  <li>A <code>doctitle</code> element must exist in the front matter of the DTBook document.</li>
+</ul>
+
+<p>In order to conform to the Narrator internal requirements, the following transformations can be automatically applied to the input document:</p>
+<ul>
+  <li>Lists (<code>&lt;list&gt;</code>) and definition lists (<code>&lt;dl&gt;</code>) inside paragraphs (<code>&lt;p&gt;</code>) are extracted and moved as siblings of the paragraph.</li>
+  <li>The <code>dc:Language</code>, <code>dc:Date</code> and <code>dc:Publisher</code> metadata may be generated if they were not already set.</li>
+  <li>An <code>xml:lang</code> attribute will be added to the DTBook root element if it was not already present.</li>
+  <li>A <code>doctitle</code> element will be added to the front matter of the DTBook document if it was not already present.</li>
+  <li>Dummy headings will be added to the DTBook document in the following cases:
+		<ul>
+			<li>A level has no heading but at least one of its descendant sub-levels has a heading.</li>
+			<li>No <code>h1</code> or <code>hd</code> were found in the entire document.</li>
+		</ul>
+	</li>
 </ul>
 
 <p>The input document is validated to make sure it complies to the above rules when this script is
@@ -67,15 +72,17 @@ supports running the Narrator script on the Windows&trade; and Mac OS X&trade; o
 	Here, use the nicenames for parameters! Explain consequence of default values.
 -->
 	<dl id="paramslist">
-	<dt>Input document</dt>
+	<dt>Input DTBook file</dt>
 	<dd><strong>Required.</strong> A DTBook 2005 document valid against to the rules described in the <a href="#inputReqs">input
 	    requirements</a> section.</dd>
 	<dt>Output directory</dt>
 	<dd><strong>Required.</strong> The base directory of the output. Since Narrator stores some intermediate files in this directory,
 	    the resulting DAISY/NISO 2005 book will be located in the <code>z3986-mp3</code> subdirectory while the Daisy 2.02 book will be located in the <code>daisy202</code> subdirectory.</dd>
-	<dt>Bitrate</dt>
-	<dd><strong>Optional.</strong> The bitrate of the generated MP3 files. A higher value will result in better sound quality
-	    but the audio files will be larger.</dd>
+		<dt>DTBook Fix</dt>
+		<dd><strong>Optional.</strong> Selects whether to apply DTBook Fix routines to the input document.</dd>
+		</dl>
+	<dt>MP3 Bitrate</dt>
+	<dd><strong>Optional.</strong> The bitrate of the generated MP3 files. A higher value will result in better sound quality but the audio files will be larger.</dd>
 	</dl>
 
 <h2 id="transformers">Appendix: List of Transformers used</h2>
@@ -83,6 +90,7 @@ supports running the Narrator script on the Windows&trade; and Mac OS X&trade; o
 
 <ol>
 	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>
+	<li><a href="../transformers/se_tpb_dtbookfix.html">DTBook Fix</a></li>
 	<li><a href="../transformers/se_tpb_xmldetection.html">Abbreviation, acronym and sentence detection</a></li>
 	<li><a href="../transformers/se_tpb_annonsator.html">Structure announcer</a></li>
 	<li><a href="../transformers/se_tpb_syncpointNormalizer.html">Synchronization point normalization</a></li>

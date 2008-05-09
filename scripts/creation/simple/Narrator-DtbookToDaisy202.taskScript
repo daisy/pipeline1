@@ -13,7 +13,7 @@
 	</parameter>
 	
 	<parameter name="outputPath" value="" required="true">
-		<nicename>Output folder</nicename>
+		<nicename>Output directory</nicename>
 		<description>Select directory for the output Narrator DTBs</description>
 		<datatype>
 			<directory type="output"/>
