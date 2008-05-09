@@ -37,8 +37,8 @@
 
 		<parameter>
 			<name>runCategories</name>
-			<value>NARRATOR</value>
-			<!-- <value>REPAIR_NARRATOR</value> -->
+			<value>REPAIR_TIDY_NARRATOR</value>
+			<!-- <value>REPAIR_TIDY_NARRATOR</value> -->
 		</parameter>
 		
 		<parameter>

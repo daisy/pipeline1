@@ -20,13 +20,13 @@
 		</datatype>
 	</parameter>
 
-	<parameter name="dtbookFix" value="NARRATOR" required="false">
+	<parameter name="dtbookFix" value="REPAIR_TIDY_NARRATOR" required="false">
 		<nicename>DTBook Fix</nicename>
 		<description>Select whether to apply DTBook Fix routines</description>
 		<datatype>
 			<enum>
 				<item nicename="Do not apply DTBook Fix routines" value="NOTHING"/>
-				<item nicename="Apply DTBook Fix routines" value="NARRATOR"/>
+				<item nicename="Apply DTBook Fix routines" value="REPAIR_TIDY_NARRATOR"/>
 			</enum>
 		</datatype>
 	</parameter>

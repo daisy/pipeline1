@@ -1184,9 +1184,12 @@ transformers/se_tpb_dtbookFix/XSLTExecutor.java -text
 transformers/se_tpb_dtbookFix/messages.properties -text
 transformers/se_tpb_dtbookFix/messages_hi.properties -text svneol=unset#unset
 transformers/se_tpb_dtbookFix/transformer.tdf -text
+transformers/se_tpb_dtbookFix/xslt/dummy-headings-tools.xsl -text svneol=unset#text/plain
 transformers/se_tpb_dtbookFix/xslt/iterative-processor.xsl -text
 transformers/se_tpb_dtbookFix/xslt/level-tools.xsl -text
-transformers/se_tpb_dtbookFix/xslt/narrator-headings.xsl -text svneol=unset#text/plain
+transformers/se_tpb_dtbookFix/xslt/localization.xsl -text svneol=unset#text/plain
+transformers/se_tpb_dtbookFix/xslt/narrator-headings-r100.xsl -text svneol=unset#text/plain
+transformers/se_tpb_dtbookFix/xslt/narrator-headings-r14.xsl -text svneol=unset#text/plain
 transformers/se_tpb_dtbookFix/xslt/narrator-lists.xsl -text svneol=unset#text/plain
 transformers/se_tpb_dtbookFix/xslt/narrator-metadata.xsl -text
 transformers/se_tpb_dtbookFix/xslt/narrator-title.xsl -text svneol=unset#text/plain
