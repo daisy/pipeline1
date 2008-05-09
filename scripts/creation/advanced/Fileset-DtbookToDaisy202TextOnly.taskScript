@@ -15,6 +15,31 @@
 		</datatype>
 	</parameter>
 	
+    <parameter name="doAbbrAcronymDetection" value="true" required="false">
+        <nicename>Abbreviation and acronym detection</nicename>
+        <description>Perform abbreviation, initialism and acronym detection.</description>
+        <datatype>
+            <boolean/>
+        </datatype>
+    </parameter>
+    
+    <parameter name="doSentenceDetection" value="true" required="false">
+        <nicename>Sentence detection</nicename>
+        <description>Perform sentence detection.</description>
+        <datatype>
+            <boolean/>
+        </datatype>
+    </parameter>
+    
+    <parameter name="doWordDetection" value="false" required="false">
+        <nicename>Word detection</nicename>
+        <description>Perform word detection.</description>
+        <datatype>
+            <boolean/>
+        </datatype>
+    </parameter>
+    
+	
 	&FilesetScriptParamsStatic;
 
 	<!-- *************************
@@ -54,15 +79,15 @@
 		</parameter>		
 		<parameter>
 			<name>doAbbrAcronymDetection</name>
-			<value>true</value>
+			<value>${doAbbrAcronymDetection}</value>
 		</parameter>		
 		<parameter>
 			<name>doSentenceDetection</name>
-			<value>false</value>
+			<value>${doSentenceDetection}</value>
 		</parameter>		
 		<parameter>
 			<name>doWordDetection</name>
-			<value>false</value>
+			<value>${doWordDetection}</value>
 		</parameter>
 	</task>
 	
