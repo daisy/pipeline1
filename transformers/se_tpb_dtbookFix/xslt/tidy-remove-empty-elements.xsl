@@ -13,7 +13,7 @@
 				* empty/whitespace em, strong, sub, sup
 
 		Nodes
-			p, em, strong, sub, sup
+			p, em, strong, sub, sup, hx
 
 		Namespaces
 			(x) "http://www.daisy.org/z3986/2005/dtbook/"
@@ -31,7 +31,7 @@
  
  	<xsl:template match="dtb:p[(text() and count(node())=1 and normalize-space()='') or not(node())]">
 		<xsl:choose>
-			<xsl:when test="(preceding-sibling::*[1][starts-with(name(), 'h')] or (not(preceding-sibling::*) and (parent::dtb:level1 or parent::dtb:level2 or parent::dtb:level3 or parent::dtb:level4 or parent::dtb:level5 or parent::dtb:level6))) and count(following-sibling::*)=count(following-sibling::dtb:p[(text() and count(node())=1 and normalize-space()='') or not(node())])"><xsl:call-template name="copy"/></xsl:when>
+			<xsl:when test="(preceding-sibling::*[1][starts-with(name(), 'h')] or (not(preceding-sibling::*) and (parent::dtb:level1 or parent::dtb:level2 or parent::dtb:level3 or parent::dtb:level4 or parent::dtb:level5 or parent::dtb:level6 or parent::dtb:level))) and count(following-sibling::*)=count(following-sibling::dtb:p[(text() and count(node())=1 and normalize-space()='') or not(node())])"><xsl:call-template name="copy"/></xsl:when>
 			<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -51,5 +51,10 @@
 	<xsl:template match="dtb:sup[(text() and count(node())=1 and normalize-space()='') or not(node())]">
 		<xsl:apply-templates/>
 	</xsl:template>
-  
+	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6|dtb:hd">
+		<xsl:choose>
+			<xsl:when test="normalize-space()!=''"><xsl:call-template name="copy"/></xsl:when>
+			<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 </xsl:stylesheet>
