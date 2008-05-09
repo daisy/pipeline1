@@ -81,6 +81,11 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
  * @author Markus Gylling
  */
 public class D202TextOnlyGenerator implements IFilesetGenerator {
+	
+	public static final String PARAM_CHARSET = "Charset";
+	public static final String PARAM_SMILREF = "SmilRef";
+	public static final String PARAM_SMILREF_VAL_TEXT = "TEXT";
+	public static final String PARAM_SMILREF_VAL_PAR = "PAR";
 		
 	private Directory mDestination = null;
 	private List<Fileset> mInputFilesets = null;	
@@ -115,8 +120,8 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 		/*
 		 * Figure out which output encoding to use
 		 */
-		if(mConfiguration.containsKey("Charset") && (mConfiguration.get("Charset")!=null)) {
-			mOutputCharset  = (Charset)mConfiguration.get("Charset");
+		if(mConfiguration.containsKey(PARAM_CHARSET) && (mConfiguration.get(PARAM_CHARSET)!=null)) {
+			mOutputCharset  = (Charset)mConfiguration.get(PARAM_CHARSET);
 		}else{
 			mOutputCharset = Charset.forName("utf-8");
 		}
@@ -377,11 +382,12 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 					 * TODO Maybe change this and mod the first input doc to have an h1.title as first body descendant.
 					 */
 					if(mCurrentSmilBuilder!=null) {
-										
+
 						/*
 						 * Add ref in current smil builder
 						 */
-						String smilParURI = mCurrentSmilBuilder.addPar(outputContentDoc.getName()+"#"+getID(xe.asStartElement()),true);
+						boolean useTextUri = PARAM_SMILREF_VAL_TEXT.equals(mConfiguration.get(PARAM_SMILREF));
+						String smilParURI = mCurrentSmilBuilder.addPar(outputContentDoc.getName()+"#"+getID(xe.asStartElement()),useTextUri);
 																							
 						/*
 						 * Add ref in NCC

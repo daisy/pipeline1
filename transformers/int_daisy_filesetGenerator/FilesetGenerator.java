@@ -18,6 +18,7 @@
 package int_daisy_filesetGenerator;
 
 import int_daisy_filesetGenerator.FilesetGeneratorFactory.OutputType;
+import int_daisy_filesetGenerator.impl.d202.D202TextOnlyGenerator;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -65,6 +66,7 @@ public class FilesetGenerator extends Transformer implements FilesetErrorHandler
 			Directory destination = new Directory(FileUtils.createDirectory(new File(parameters.remove("outputDirectory"))));			
 			String uid = parameters.remove("uid");
 			String outputEncoding = parameters.remove("outputEncoding");
+			String smilRef = parameters.remove("smilRef");
 			Charset charset = null;
 			try{
 				charset = Charset.forName(outputEncoding);
@@ -90,7 +92,8 @@ public class FilesetGenerator extends Transformer implements FilesetErrorHandler
 			Map<String,Object> config = new HashMap<String,Object>();
 			config.put("TransformerDelegateListener", this);
 			if(uid!=null && uid.length()>0) config.put("uid", uid);
-			config.put("Charset", charset);
+			config.put(D202TextOnlyGenerator.PARAM_CHARSET, charset);
+			config.put(D202TextOnlyGenerator.PARAM_SMILREF, smilRef);
 			
 			/*
 			 * Set up a fileset generator

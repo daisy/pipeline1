@@ -28,7 +28,40 @@
 			<string/>
 		</datatype>
 	</parameter>
-	
-	
+		   
+    <parameter name="doAbbrAcronymDetection" value="true" required="false">
+        <nicename>Abbreviation and acronym detection</nicename>
+        <description>Perform abbreviation, initialism and acronym detection.</description>
+        <datatype>
+            <boolean/>
+        </datatype>
+    </parameter>
+    
+    <parameter name="doSentenceDetection" value="true" required="false">
+        <nicename>Sentence detection</nicename>
+        <description>Perform sentence detection.</description>
+        <datatype>
+            <boolean/>
+        </datatype>
+    </parameter>
+    
+    <parameter name="doWordDetection" value="false" required="false">
+        <nicename>Word detection</nicename>
+        <description>Perform word detection.</description>
+        <datatype>
+            <boolean/>
+        </datatype>
+    </parameter>
+
+	<parameter name="smilRef" value="TEXT" required="false">
+		<nicename>Smil References</nicename>
+		<description>Select the SMIL element used in references: par or text (child of par)</description>
+		<datatype>
+			<enum>
+				<item nicename="par" value="PAR"/>
+				<item nicename="text" value="TEXT"/>
+			</enum>
+		</datatype>
+	</parameter>
 
 </paramGroup>	

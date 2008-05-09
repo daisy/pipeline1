@@ -45,9 +45,17 @@
 			<default>utf-8</default>
 		</parameter>
 
-							
-						
-																
+		<parameter required="false" type="enum">
+			<name>smilRef</name>
+			<description>Select the SMIL element used in references: par or text (child of par)</description>
+			<example>TEXT</example>
+			<enum>
+				<value>PAR</value>				
+				<value>TEXT</value>				
+			</enum>
+			<default>TEXT</default>
+		</parameter>
+
 	</parameters>	
 
 </transformer>

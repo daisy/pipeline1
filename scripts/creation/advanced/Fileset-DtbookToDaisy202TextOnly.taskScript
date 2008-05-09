@@ -14,30 +14,6 @@
 			<file mime="application/x-dtbook+xml" type="input"/>
 		</datatype>
 	</parameter>
-	
-    <parameter name="doAbbrAcronymDetection" value="true" required="false">
-        <nicename>Abbreviation and acronym detection</nicename>
-        <description>Perform abbreviation, initialism and acronym detection.</description>
-        <datatype>
-            <boolean/>
-        </datatype>
-    </parameter>
-    
-    <parameter name="doSentenceDetection" value="true" required="false">
-        <nicename>Sentence detection</nicename>
-        <description>Perform sentence detection.</description>
-        <datatype>
-            <boolean/>
-        </datatype>
-    </parameter>
-    
-    <parameter name="doWordDetection" value="false" required="false">
-        <nicename>Word detection</nicename>
-        <description>Perform word detection.</description>
-        <datatype>
-            <boolean/>
-        </datatype>
-    </parameter>
     
 	
 	&FilesetScriptParamsStatic;
@@ -155,6 +131,10 @@
 		<parameter>
 			<name>uid</name>
 			<value>${identifier}</value>
+		</parameter>		
+		<parameter>
+			<name>smilRef</name>
+			<value>${smilRef}</value>
 		</parameter>		
 	</task>
 		
