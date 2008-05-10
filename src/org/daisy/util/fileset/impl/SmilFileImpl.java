@@ -64,7 +64,7 @@ class SmilFileImpl extends XmlFileImpl implements SmilFile {
 			if (attrName == "id") {
 				QName q = new QName(namespaceURI, sName);
 				this.putIdAndQName(attrValue, q);
-				if(sName=="customTest") {
+				if(mCustomTestIDs !=null && sName=="customTest") {
 					//the element customTest in head, not the attribute in body
 					mCustomTestIDs.add(attrValue);
 				}

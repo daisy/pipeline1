@@ -133,7 +133,7 @@
 	  							<xsl:attribute name="href">
 	  								<xsl:value-of select="$doc"/>
 	  								<xsl:text>#</xsl:text>
-	  								<xsl:value-of select="preceding-sibling::par[1]/@id"/>
+	  								<xsl:value-of select="preceding-sibling::par[1]/text/@id"/>
 	  							</xsl:attribute>
 	  							<xsl:call-template name="get_content_value_of">
 	  								<xsl:with-param name="uri" select="preceding-sibling::par[1]/text/@src"/>
@@ -143,7 +143,7 @@
 	  							<xsl:attribute name="href">
 	  								<xsl:value-of select="$doc"/>
 	  								<xsl:text>#</xsl:text>
-	  								<xsl:value-of select="@id"/>
+	  								<xsl:value-of select="text/@id"/>
 	  							</xsl:attribute>
 	  							<xsl:call-template name="get_content_value_of">
 	  								<xsl:with-param name="uri" select="text/@src"/>
@@ -155,7 +155,7 @@
   		</xsl:if>
   			<xsl:call-template name="maybeGenerateHeading">
   				<xsl:with-param name="uri" select="text/@src"/>
-  				<xsl:with-param name="doc" select="concat($doc,'#',@id)"/>
+  				<xsl:with-param name="doc" select="concat($doc,'#',text/@id)"/>
 	  		</xsl:call-template>
   </xsl:template>
   

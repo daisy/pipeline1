@@ -803,6 +803,7 @@ src/org/daisy/util/wincom/sapi5/SpeechWordType.java -text svneol=unset#text/plai
 src/org/daisy/util/wincom/sapi5/events/_ISpeechRecoContextEvents.java -text svneol=unset#text/plain
 src/org/daisy/util/wincom/sapi5/events/_ISpeechVoiceEvents.java -text svneol=unset#text/plain
 src/org/daisy/util/wincom/sapi5/package.html -text svneol=unset#text/plain
+src/org/daisy/util/xml/IDGenProvider.java -text svneol=unset#text/plain
 src/org/daisy/util/xml/LanguageReporter.java -text
 src/org/daisy/util/xml/LocusTransformer.java -text
 src/org/daisy/util/xml/NamespaceReporter.java -text

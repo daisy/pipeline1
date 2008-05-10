@@ -68,6 +68,7 @@ import org.daisy.util.css.stylesheets.Css;
 import org.daisy.util.execution.AbortListener;
 import org.daisy.util.execution.ProgressObserver;
 import org.daisy.util.file.Directory;
+import org.daisy.util.xml.IDGenProvider;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;
@@ -115,7 +116,6 @@ public class SmilMaker implements AbortListener, BusListener {
 	private Vector<Document> smilTrees = new Vector<Document>();		// container of almost (link rumble may still be left) finished smil files represented as DOM.
 	private Vector<File> smilFiles = new Vector<File>();		// container of Files, smilFiles.get(i) represents smilTrees.get(i)
 	
-	private int smilId;								// generator for smil file element ids making use of a simple counter
 	private int dtbid;								// generator for dtb file element ids making use of a simple counter
 	
 	private Set<String> skippable;							// names of skippable elements
@@ -157,6 +157,9 @@ public class SmilMaker implements AbortListener, BusListener {
 	
 	private boolean mTransformerAborted = false;		// tracks abort events
 	private SimpleNamespaceContext mNsc;				// custom namespace contex for xpath queries
+	
+
+	private IDGenProvider idGen = new IDGenProvider();
 	
 	/**
 	 * @param inputManuscript the input file to read
@@ -717,7 +720,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	private void updateSubtreeIds(Node subtree) {
 		Element elem = (Element) subtree;
 		if (elem.hasAttribute("id")) {
-			elem.setAttribute("id", getNextSmilId("forcelinkstruct"));
+			elem.setAttribute("id", idGen.generateId("forcelinkstruct"));
 		}
 		
 		NodeList children = elem.getChildNodes();
@@ -903,7 +906,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		Element parentSeqElement = openSeqs.peek();
 		Element parElement = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "par");
 		
-		String parId = getNextSmilId("tcp");
+		String parId = idGen.generateId("tcp");
 		if (null == dtbId) {
 			dtbId = getNextDTBId();
 		}
@@ -922,8 +925,10 @@ public class SmilMaker implements AbortListener, BusListener {
 		parentSeqElement.appendChild(parElement);
 		
 		// create the right <text> element and a ref to the dtbook
+		String textId = idGen.generateId("text");
 		Element textElement = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "text");
 		textElement.setAttribute("src", finalDTBookFilename + "#" + dtbId);
+		textElement.setAttribute("id",textId);
 		parElement.appendChild(textElement);
 		
 		
@@ -976,7 +981,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @throws XMLStreamException 
 	 */
 	private StartElement newSeq(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {		
-		String tcsId = getNextSmilId("tcs");
+		String tcsId = idGen.generateId("tcs");
 		Attribute dtbIdAtt = se.getAttributeByName(new QName("id")); 
 		String dtbId = null == dtbIdAtt ? this.getNextDTBId() : dtbIdAtt.getValue();
 		
@@ -1340,7 +1345,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		if (at != null) {
 			linkTargetId = at.getValue();
 		} else {
-			linkTargetId = getNextSmilId("tcs");
+			linkTargetId = idGen.generateId("tcs");
 		}
 		
 		Element parentSeq = openSeqs.peek();
@@ -1404,18 +1409,6 @@ public class SmilMaker implements AbortListener, BusListener {
 		currentlySkipped.add(elemName);
 		totalSkipped.add(elemName);
 	}
-	
-	
-	/**
-	 * Returns the next generated id using a counter, more formally:
-	 * <code>prefix + (++smilId);</code> where smilId is the counter.
-	 * @param prefix the id prefix
-	 * @return the next generated id using a counter.
-	 */
-	private String getNextSmilId(String prefix) {
-		return prefix + (++smilId);
-	}
-	
 	
 	
 	/**
