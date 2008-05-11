@@ -78,10 +78,8 @@ public class IDPopulator {
 			xof = StAXOutputFactoryPool.getInstance().acquire(xofProperties);
 			xef = StAXEventFactoryPool.getInstance().acquire();
 			
-			XMLEventReader baseReader = xif.createXMLEventReader(mInput);
-			writer = xof.createXMLEventWriter(mOutput);
+			XMLEventReader baseReader = xif.createXMLEventReader(mInput);			
 			IDGenerator idGen = new IDGenerator("id_");
-			
 			BookmarkedXMLEventReader reader = new BookmarkedXMLEventReader(baseReader);
 			Set<String> existingIDs = new HashSet<String>();
 			
@@ -108,6 +106,7 @@ public class IDPopulator {
 			/*
 			 * Add new IDs.
 			 */
+			writer = xof.createXMLEventWriter(mOutput);
 			while(reader.hasNext()) {
 				XMLEvent xe = reader.nextEvent();
 				if(xe.isStartElement() && shouldAddID((StartElement)xe, xef)) {
@@ -128,8 +127,7 @@ public class IDPopulator {
 		} catch (CatalogExceptionNotRecoverable e) {
 			e.printStackTrace();
 		}finally{
-			writer.flush();
-			writer.close();
+			if(writer!=null)writer.close();
 			StAXInputFactoryPool.getInstance().release(xif, xifProperties);
 			StAXOutputFactoryPool.getInstance().release(xof, xofProperties);
 			StAXEventFactoryPool.getInstance().release(xef);
