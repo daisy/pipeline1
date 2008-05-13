@@ -164,7 +164,17 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 	 *         TTS adapter.
 	 */
 	protected boolean canSpeak(String line) {
-		return (line != null && line.trim().length() != 0);
+		if (line == null) {
+			return false;
+		}
+		boolean canSpeak = false;
+		int i = 0;
+		while (!canSpeak && i < line.length()) {
+			int cp = Character.codePointAt(line, i++);
+			canSpeak = !(Character.isSpaceChar(cp) || Character
+					.isWhitespace(cp));
+		}
+		return canSpeak;
 	}
 
 }
