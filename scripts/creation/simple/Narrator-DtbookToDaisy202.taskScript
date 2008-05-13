@@ -45,6 +45,16 @@
 		</datatype>
 	</parameter>
 	
+	<parameter name="202hrefTarget" value="PAR" required="false">
+		<nicename>2.02 href target</nicename>
+		<description>Select the SMIL element targeted by href URIs: par or text</description>
+		<datatype>
+			<enum>
+				<item nicename="par" value="PAR"/>
+				<item nicename="text" value="TEXT"/>
+			</enum>
+		</datatype>
+	</parameter>
 	
 	<!-- *************************
 	      DTBook Fix - run Narrator category (which *includes* repair executors)
@@ -276,6 +286,10 @@
 		<parameter>
 			<name>outDir</name>
 			<value>${outputPath}/daisy202</value>
+		</parameter>					
+		<parameter>
+			<name>hrefTarget</name>
+			<value>${202hrefTarget}</value>
 		</parameter>				
 	</task>
 

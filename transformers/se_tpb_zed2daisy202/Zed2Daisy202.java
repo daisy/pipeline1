@@ -100,6 +100,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
     protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
         String manifest = parameters.remove("manifest");
         String outDir = parameters.remove("outDir");
+		String hrefTarget = parameters.remove("hrefTarget");
         
         inputDir = new File(manifest).getParentFile();
         outputDir = new File(outDir);      
@@ -144,7 +145,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
                 } else if (fsf instanceof ImageFile) {
                     filesToCopy.add(fsf);
                 } else {
-                    System.err.println("ignore: " + fsf.getFile().getName());
+                	sendMessage(i18n("IGNORING_FILE", fsf.getFile().getName()), MessageEvent.Type.INFO_FINER);
                 }
             }
                         
@@ -157,14 +158,14 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             this.sendMessage(i18n("CREATING_XHTML", contentXHTML), 
             		MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
             
-            this.createXhtml(dtbook, opf);            
+            this.createXhtml(dtbook, opf, hrefTarget);            
             this.progress(XHTML_DONE);
             this.checkAbort();
 
             // Create NCC
             this.sendMessage(i18n("BUILDING_NCC", "ncc.html"), 
             		MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
-            this.createNcc(opf.getFile(), totalElapsedTime);            
+            this.createNcc(opf.getFile(), totalElapsedTime, hrefTarget);            
             this.progress(NCC_DONE);
             this.checkAbort();
             
@@ -194,15 +195,17 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      * Creates the NCC.
      * @param opf the z3986 package file
      * @param totalElapsedTime the total time of the book in milliseconds
+     * @param hrefTarget whether to make smil references point to text or par
      * @throws CatalogExceptionNotRecoverable
      * @throws XSLTException
      * @throws XMLStreamException
      * @throws IOException
      */
-    private void createNcc(File opf, long totalElapsedTime) throws CatalogExceptionNotRecoverable, XSLTException, XMLStreamException, IOException {
+    private void createNcc(File opf, long totalElapsedTime, String hrefTarget) throws CatalogExceptionNotRecoverable, XSLTException, XMLStreamException, IOException {
         Map<String,Object> parameters = new HashMap<String,Object>();
         parameters.put("baseDir", outputDir.toURI());
         parameters.put("date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        parameters.put("hrefTarget", hrefTarget);
         File nccFile = new File(outputDir, "ncc.html");
         File createNcc = new File(this.getTransformerDirectory(), "ncc-create.xsl");
         File nccRemoveDupes = new File(this.getTransformerDirectory(), "ncc-remove-dupes.xsl");
@@ -294,12 +297,13 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
     /**
      * Creates the XHTML content document.
      * @param dtbook the DTBook document
+     * @param hrefTarget whether to make smil references point to text or par
      * @throws CatalogExceptionNotRecoverable
      * @throws XSLTException
      * @throws IOException
      * @throws FilesetException 
      */
-    private void createXhtml(File dtbook, OpfFile opf) throws CatalogExceptionNotRecoverable, XSLTException, IOException {
+    private void createXhtml(File dtbook, OpfFile opf, String hrefTarget) throws CatalogExceptionNotRecoverable, XSLTException, IOException {
     	String cssName = "default.css";
         File xhtmlOut = new File(outputDir, contentXHTML);
         
@@ -314,6 +318,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         parameters.put("first_smil", uri.toString());
         parameters.put("split_simple_table", "true");
         parameters.put("css_path", cssName);
+        parameters.put("hrefTarget", hrefTarget);
         
         URL url = Stylesheets.get("dtbook2xhtml.xsl");
         

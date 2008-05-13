@@ -20,6 +20,17 @@
 			<name>outDir</name>
 			<description>The output Daisy 2.02 file set directory</description>
 			<example>/path/to/</example>
+		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>hrefTarget</name>
+			<description>Select the SMIL element targeted by href URIs: par or text</description>
+			<example>TEXT</example>
+			<enum>
+				<value>PAR</value>				
+				<value>TEXT</value>				
+			</enum>
+			<default>PAR</default>
 		</parameter>		
 				
 	</parameters>	

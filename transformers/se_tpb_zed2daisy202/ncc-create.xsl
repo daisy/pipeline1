@@ -21,6 +21,8 @@
   
   <xsl:param name="date"/>
   <xsl:param name="baseDir"/>
+  <!-- The smil element to target in href URIs (values are TEXT or PAR) -->
+  <xsl:param name="hrefTarget"/>
   
   <xsl:key name="xhtmlH1" match="x:*[@id and ancestor-or-self::x:h1]" use="@id"/>
   <xsl:key name="xhtmlH2" match="x:*[@id and ancestor-or-self::x:h2]" use="@id"/>
@@ -98,6 +100,16 @@
        **************************************************************** -->    
   <xsl:template match="par">
   	<xsl:param name="doc"/>
+  	<xsl:variable name="targetId">
+		<xsl:choose>
+			<xsl:when test="$hrefTarget='TEXT'">
+				<xsl:value-of select="text/@id"/>
+	  		</xsl:when>
+	  		<xsl:otherwise>
+				<xsl:value-of select="@id"/>
+	  		</xsl:otherwise>
+	  	</xsl:choose>
+  	</xsl:variable>
   		<xsl:if test="@system-required and not(@system-required='footnote-on' and count(ancestor::seq)!=2)">
   			<ncc:span>
   				<xsl:attribute name="id">
@@ -133,7 +145,14 @@
 	  							<xsl:attribute name="href">
 	  								<xsl:value-of select="$doc"/>
 	  								<xsl:text>#</xsl:text>
-	  								<xsl:value-of select="preceding-sibling::par[1]/text/@id"/>
+	  								<xsl:choose>
+	  									<xsl:when test="$hrefTarget='TEXT'">
+			  								<xsl:value-of select="preceding-sibling::par[1]/text/@id"/>
+	  									</xsl:when>
+	  									<xsl:otherwise>
+			  								<xsl:value-of select="preceding-sibling::par[1]/@id"/>
+	  									</xsl:otherwise>
+	  								</xsl:choose>
 	  							</xsl:attribute>
 	  							<xsl:call-template name="get_content_value_of">
 	  								<xsl:with-param name="uri" select="preceding-sibling::par[1]/text/@src"/>
@@ -143,7 +162,7 @@
 	  							<xsl:attribute name="href">
 	  								<xsl:value-of select="$doc"/>
 	  								<xsl:text>#</xsl:text>
-	  								<xsl:value-of select="text/@id"/>
+	  								<xsl:value-of select="$targetId"/>
 	  							</xsl:attribute>
 	  							<xsl:call-template name="get_content_value_of">
 	  								<xsl:with-param name="uri" select="text/@src"/>
@@ -155,7 +174,7 @@
   		</xsl:if>
   			<xsl:call-template name="maybeGenerateHeading">
   				<xsl:with-param name="uri" select="text/@src"/>
-  				<xsl:with-param name="doc" select="concat($doc,'#',text/@id)"/>
+  				<xsl:with-param name="doc" select="concat($doc,'#',$targetId)"/>
 	  		</xsl:call-template>
   </xsl:template>
   

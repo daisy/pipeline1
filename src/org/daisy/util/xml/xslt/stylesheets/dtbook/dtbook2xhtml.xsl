@@ -33,6 +33,8 @@
 	<xsl:param name="daisy_noteref"/>
 	<xsl:param name="svg_mathml"/>
 	<xsl:param name="split_simple_table"/>
+  <!-- The smil element to target in href URIs (values are TEXT or PAR) -->
+  <xsl:param name="hrefTarget"/>
 
     <xsl:output method="xml" encoding="utf-8" indent="yes"/>
 
@@ -172,6 +174,11 @@
 			<xsl:for-each select="(//dtb:doctitle)[1]">
 				<h1 class="title" id="h1classtitle">
 					<xsl:choose>
+						<xsl:when test="$first_smil and $hrefTarget='TEXT'">
+							<a href="{$first_smil}#doctitleText">
+								<xsl:value-of select="."/>
+							</a>
+						</xsl:when>
 						<xsl:when test="$first_smil">
 							<a href="{$first_smil}#doctitle">
 								<xsl:value-of select="."/>
@@ -415,7 +422,9 @@
 			    <xsl:attribute name="href">
 				  <xsl:choose>
 					<xsl:when test="@smilref">
-						<xsl:value-of select="@smilref"/>
+						<xsl:call-template name="hrefValue">
+							<xsl:with-param name="smilref" select="@smilref"/>
+						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:text>#</xsl:text>
@@ -1005,7 +1014,9 @@
 		   <xsl:when test="document(concat($baseDir, $url))//*[@id=$fragment and self::s:par] and not(ancestor::dtb:note) and not(descendant::*[@smilref])">
 		     <a id="{@id}">
 			   <xsl:attribute name="href">
-			     <xsl:value-of select="@smilref"/>
+					<xsl:call-template name="hrefValue">
+						<xsl:with-param name="smilref" select="@smilref"/>
+					</xsl:call-template>
 			   </xsl:attribute>
 			   <xsl:apply-templates/>
 			 </a>
@@ -1031,7 +1042,9 @@
      	<xsl:attribute name="href">
 			<xsl:choose>
 				<xsl:when test="@smilref">
-					<xsl:value-of select="@smilref"/>
+					<xsl:call-template name="hrefValue">
+						<xsl:with-param name="smilref" select="@smilref"/>
+					</xsl:call-template>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:text>#</xsl:text>
@@ -1055,12 +1068,14 @@
 			<xsl:when test="@smilref">
 				<xsl:variable name="url" select="substring-before(@smilref, '#')"/>
 				<xsl:variable name="fragment" select="substring-after(@smilref, '#')"/>
-				<xsl:variable name="smilRef" select="document(concat($baseDir, $url))//*[@id=$fragment]"/>
+				<xsl:variable name="smilElem" select="document(concat($baseDir, $url))//*[@id=$fragment]"/>
 				<xsl:choose>
-					<xsl:when test="$smilRef[self::s:par] and not(ancestor::dtb:note) and not(descendant::*[@smilref])">
+					<xsl:when test="$smilElem[self::s:par] and not(ancestor::dtb:note) and not(descendant::*[@smilref])">
 						<a>
 							<xsl:attribute name="href">
-								<xsl:value-of select="concat($url,'#',$smilRef/s:text/@id)"/>
+								<xsl:call-template name="hrefValue">
+									<xsl:with-param name="smilref" select="@smilref"/>
+								</xsl:call-template>
 							</xsl:attribute>
 							<xsl:apply-templates/>
 						</a>
@@ -1074,6 +1089,21 @@
 				<xsl:apply-templates/>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="hrefValue">
+		<xsl:param name="smilref"/>
+		<xsl:variable name="url" select="substring-before($smilref, '#')"/>
+		<xsl:variable name="fragment" select="substring-after($smilref, '#')"/>
+		<xsl:variable name="smilElem" select="document(concat($baseDir, $url))//*[@id=$fragment]"/>
+	  	<xsl:choose>
+	  		<xsl:when test="$smilElem[self::s:par] and $hrefTarget='TEXT'">
+				<xsl:value-of select="concat($url,'#',$smilElem/s:text/@id)"/>
+	  		</xsl:when>
+	  		<xsl:otherwise>
+				<xsl:value-of select="$smilref"/>
+	  		</xsl:otherwise>
+	  	</xsl:choose>
 	</xsl:template>
 	
 	<!--   <!ENTITY isInline "self::dtb:a or self::dtb:em or self::dtb:strong or self::dtb:abbr or self::dtb:acronym or self::dtb:bdo or self::dtb:dfn or self::dtb:sent or self::dtb:w or self::dtb:sup or self::dtb:sub or self::dtb:span or self::dtb:annoref or self::dtb:noteref or self::dtb:img or self::dtb:br or self::dtb:q or self::dtb:samp or self::dtb:pagenum"> -->
