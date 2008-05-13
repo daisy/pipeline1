@@ -53,9 +53,9 @@
         </datatype>
     </parameter>
 
-	<parameter name="smilRef" value="TEXT" required="false">
-		<nicename>Smil References</nicename>
-		<description>Select the SMIL element used in references: par or text (child of par)</description>
+	<parameter name="hrefTarget" value="TEXT" required="false">
+		<nicename>href Targets</nicename>
+		<description>Select The SMIL element targeted by href URIs in the content document and NCC</description>
 		<datatype>
 			<enum>
 				<item nicename="par" value="PAR"/>

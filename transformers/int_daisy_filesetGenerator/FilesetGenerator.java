@@ -66,7 +66,7 @@ public class FilesetGenerator extends Transformer implements FilesetErrorHandler
 			Directory destination = new Directory(FileUtils.createDirectory(new File(parameters.remove("outputDirectory"))));			
 			String uid = parameters.remove("uid");
 			String outputEncoding = parameters.remove("outputEncoding");
-			String smilRef = parameters.remove("smilRef");
+			String hrefTarget = parameters.remove("hrefTarget");
 			Charset charset = null;
 			try{
 				charset = Charset.forName(outputEncoding);
@@ -93,7 +93,7 @@ public class FilesetGenerator extends Transformer implements FilesetErrorHandler
 			config.put("TransformerDelegateListener", this);
 			if(uid!=null && uid.length()>0) config.put("uid", uid);
 			config.put(D202TextOnlyGenerator.PARAM_CHARSET, charset);
-			config.put(D202TextOnlyGenerator.PARAM_SMILREF, smilRef);
+			config.put(D202TextOnlyGenerator.PARAM_HREFTARGET, hrefTarget);
 			
 			/*
 			 * Set up a fileset generator

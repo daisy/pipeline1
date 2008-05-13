@@ -46,8 +46,8 @@
 		</parameter>
 
 		<parameter required="false" type="enum">
-			<name>smilRef</name>
-			<description>Select the SMIL element used in references: par or text (child of par)</description>
+			<name>hrefTarget</name>
+			<description>Select The SMIL element targeted by href URIs in the content document and NCC</description>
 			<example>TEXT</example>
 			<enum>
 				<value>PAR</value>				

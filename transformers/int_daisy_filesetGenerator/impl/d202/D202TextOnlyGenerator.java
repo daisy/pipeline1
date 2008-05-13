@@ -83,9 +83,9 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
 public class D202TextOnlyGenerator implements IFilesetGenerator {
 	
 	public static final String PARAM_CHARSET = "Charset";
-	public static final String PARAM_SMILREF = "SmilRef";
-	public static final String PARAM_SMILREF_VAL_TEXT = "TEXT";
-	public static final String PARAM_SMILREF_VAL_PAR = "PAR";
+	public static final String PARAM_HREFTARGET = "hrefTarget";
+	public static final String PARAM_HREFTARGET_VAL_TEXT = "TEXT";
+	public static final String PARAM_HREFTARGET_VAL_PAR = "PAR";
 		
 	private Directory mDestination = null;
 	private List<Fileset> mInputFilesets = null;	
@@ -386,7 +386,7 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 						/*
 						 * Add ref in current smil builder
 						 */
-						boolean useTextUri = PARAM_SMILREF_VAL_TEXT.equals(mConfiguration.get(PARAM_SMILREF));
+						boolean useTextUri = PARAM_HREFTARGET_VAL_TEXT.equals(mConfiguration.get(PARAM_HREFTARGET));
 						String smilParURI = mCurrentSmilBuilder.addPar(outputContentDoc.getName()+"#"+getID(xe.asStartElement()),useTextUri);
 																							
 						/*

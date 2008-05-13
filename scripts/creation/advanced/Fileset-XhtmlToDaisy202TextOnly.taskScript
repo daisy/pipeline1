@@ -102,8 +102,8 @@
 			<value>${outputEncoding}</value>
 		</parameter>		
 		<parameter>
-			<name>smilRef</name>
-			<value>${smilRef}</value>
+			<name>hrefTarget</name>
+			<value>${hrefTarget}</value>
 		</parameter>		
 	</task>
 		
