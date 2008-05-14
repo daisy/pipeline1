@@ -203,11 +203,11 @@
 		</parameter>
 		<parameter>
 			<name>outputDirectory</name>
-			<value>${outputPath}/z3986/</value>
+			<value>${outputPath}/pipeline__temp/speechgen/</value>
 		</parameter>
 		<parameter>
 			<name>outputFilename</name>
-			<value>${outputPath}/z3986/06-speechgen.xml</value>
+			<value>${outputPath}/pipeline__temp/speechgen/speechgen.xml</value>
 		</parameter>
 		
 		<parameter>
@@ -231,11 +231,11 @@
 		</parameter>
 		<parameter>
 			<name>manuscriptFilename</name>
-			<value>${outputPath}/z3986/06-speechgen.xml</value>
+			<value>${outputPath}/pipeline__temp/speechgen/speechgen.xml</value>
 		</parameter>
 		<parameter>
 			<name>outputDTBFilename</name>
-			<value>${outputPath}/z3986/07-dtbook.xml</value>
+			<value>${outputPath}/z3986/$filename{input}</value>
 		</parameter>		
 	</task>
 	
@@ -246,7 +246,7 @@
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/z3986/06-speechgen.opf</value>
+			<value>${outputPath}/z3986/speechgen.opf</value>
 		</parameter>		
 		<parameter>
 			<name>abortThreshold</name>
@@ -262,7 +262,7 @@
 	<task name="se_tpb_dtbAudioEncoder" interactive="false">
 		<parameter>
 			<name>manifest</name>
-			<value>${outputPath}/z3986/06-speechgen.opf</value>
+			<value>${outputPath}/z3986/speechgen.opf</value>
 		</parameter>					
 		<parameter>
 			<name>outDir</name>
@@ -281,7 +281,7 @@
 	<task name="se_tpb_zed2daisy202" interactive="false">
 		<parameter>
 			<name>manifest</name>
-			<value>${outputPath}/z3986-mp3/06-speechgen.opf</value>
+			<value>${outputPath}/z3986-mp3/speechgen.opf</value>
 		</parameter>					
 		<parameter>
 			<name>outDir</name>
