@@ -22,11 +22,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -117,6 +119,7 @@ public class NCXMaker implements BusListener {
 	private int playorder;									// the playorder counter
 	private int ncxId;										// ncx id making use of a simple counter
 	private int depth;										// keeps track of the deepest (xml-wise) structure in this book
+	private Node depthHolder; 								// the latest parsed element in the maximum depth branch (start or end parsing)
 	private int pageCount;									// the number of pages
 	private String strPageMax = "0";						// the value of the greatest page number seen so far
 	private String uid;										// the dtbook uid
@@ -326,7 +329,8 @@ public class NCXMaker implements BusListener {
 		//DEBUG("NCXMaker#makeNCX: navMap:  " + navMap);
 		//DEBUG("NCXMaker#makeNCX: docElem: " + ncxTemplate.getDocumentElement());
 		openLevels.push(navMap);
-		recordMaxDepth();
+		// initialize the NCX depth
+		depth = 0;
 		int elemCounter = 0;
 		while (reader.hasNext()) {
 			XMLEvent event = reader.nextEvent();
@@ -357,7 +361,7 @@ public class NCXMaker implements BusListener {
 				}
 				
 				if (isLevelChange(event.asStartElement())) {
-					handlePushLevel("navPoint");
+					handlePushLevel();
 				}
 				
 				if (isNavMapElement(event.asStartElement())) {
@@ -367,7 +371,7 @@ public class NCXMaker implements BusListener {
 			} else if (event.isEndElement()) {
 				
 				if (isLevelChange(event.asEndElement())) {
-					openLevels.pop();
+					handlePopLevel();
 				}
 				
 			} else if (event.isStartDocument()) {
@@ -426,7 +430,8 @@ public class NCXMaker implements BusListener {
 
 		closeStreams();
 		
-		removeEmptyNavPoints();
+		// rd 20080401: navPoints are now removed on the fly
+		removeEmptyPageList();
 		removeEmptyLists();
 		makeNCXHead();
 		
@@ -484,26 +489,16 @@ public class NCXMaker implements BusListener {
 	}
 	
 	
+
 	/**
-	 * Removes empty <code>navPoint</code>-elements, that is 
-	 * navPoint-elements referring to levels that do not have
-	 * a heading. 
+	 * Removes the <code>pageList</code> element if it's empty
 	 */
-	private void removeEmptyNavPoints() {
-		NodeList emptyNodes = XPathUtils.selectNodes(ncxTemplate.getDocumentElement(), "//ncx:navPoint[@class='empty']", mNsc);
-		for (int i = 0; i < emptyNodes.getLength(); i++) {
-			Vector<Element> navPointChildren = getNavPointChildren((Element) emptyNodes.item(i));
-			Node reference = emptyNodes.item(i);
-			for (Iterator<Element> it = navPointChildren.iterator(); it.hasNext(); ) {
-				Node navPoint = it.next();
-				reference.getParentNode().insertBefore(navPoint, reference);
-			}
-			reference.getParentNode().removeChild(reference);
-		}
-		
+	private void removeEmptyPageList() {
+
 		// remove pageList if empty
 		if (0 == pageCount) {
-			Element pageList = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:pageList", mNsc);
+			Element pageList = (Element) XPathUtils.selectSingleNode(
+					ncxTemplate.getDocumentElement(), "//ncx:pageList", mNsc);
 			pageList.getParentNode().removeChild(pageList);
 		}
 	}
@@ -517,8 +512,8 @@ public class NCXMaker implements BusListener {
 	 * <code>navPoint</code>.
 	 * 
 	 */
-	private Vector<Element> getNavPointChildren(Element navPoint) {
-		Vector<Element> children = new Vector<Element>();
+	private List<Node> getNavPointChildren(Element navPoint) {
+		List<Node> children = new ArrayList<Node>();
 		NodeList nodes = navPoint.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Element elem = (Element) nodes.item(i);
@@ -790,14 +785,17 @@ public class NCXMaker implements BusListener {
 		
 		if (elemCount == 0) {
 			reader.gotoAndRemoveBookmark(bookmark);
-			String msg = "No content (smil attributes) found in section ending with: " + errMsg.toString();
-			throw new IllegalArgumentException(msg);
+			// rd 20080401 no longer throws an exception but rather returns null
+			// so that empty headings are pruned from the navmap
+			DEBUG("No content (smil attributes) found in section ending with: "
+					+ errMsg.toString());
+		} else {
+
+			getSmilContext(e.asStartElement(), attributes);
+
+			textContent = getTextContent(reader);
+			reader.gotoAndRemoveBookmark(bookmark);
 		}
-		
-		getSmilContext(e.asStartElement(), attributes);
-		
-		textContent = getTextContent(reader);
-		reader.gotoAndRemoveBookmark(bookmark);
 		return textContent;
 	}
 	
@@ -1040,13 +1038,6 @@ public class NCXMaker implements BusListener {
 			}
 		}
 	}
-		
-	/**
-	 * Records the max depth of the ncx level structure.
-	 */
-	private void recordMaxDepth() {
-		depth = Math.max(depth, openLevels.size() - 1);
-	}
 	
 	
 	
@@ -1154,14 +1145,45 @@ public class NCXMaker implements BusListener {
 	 * pushes it on the stack <code>openLevels</code>.
 	 * @param navNodeName typically "navPoint".
 	 */
-	private void handlePushLevel(String navNodeName) {
-		Element navNode = createNCXNode(navNodeName);
+	private void handlePushLevel() {
+		Element navNode = createNCXNode("navPoint");
 		Element parent = openLevels.peek();
 		parent.appendChild(navNode);
 		openLevels.push(navNode);
-		recordMaxDepth();
+		// rd 20080401: update the depth
+		// we store the depth holder to be able to update the depth when an
+		// empty navPoint is removed
+		int curDepth = openLevels.size() - 1;
+		if (curDepth > depth) {
+			depth = curDepth;
+			depthHolder = navNode;
+		}
 	}
 	
+
+	/**
+	 * Removes empty navPoints and update the NCX depth
+	 */
+	private void handlePopLevel() {
+		Element navPoint = (Element) openLevels.pop();
+		Node parent = navPoint.getParentNode();
+		if ("empty".equals(navPoint.getAttribute("class"))) {
+			// Remove the navPoint
+			List<Node> children = getNavPointChildren(navPoint);
+			for (Node child : children) {
+				parent.insertBefore(child, navPoint);
+			}
+			parent.removeChild(navPoint);
+			// Update the depth
+			if (depthHolder == navPoint) {
+				depth--;
+			}
+		}
+		// Update the depth holder
+		if (depthHolder == navPoint) {
+			depthHolder = parent;
+		}
+	}
 	
 	/**
 	 * Returns <code>true</code> if <code>se</code> means
@@ -1235,6 +1257,12 @@ public class NCXMaker implements BusListener {
 			textContent = getNextSmilContext(reader, attrs);
 		}				
 		//mg 20071119: end changes
+		
+
+		// rd 20080401: only create the navNode if the SMIL context could be retrieved
+		if (textContent == null) {
+			return;
+		}
 		
 		navNode.setAttribute("class", se.getName().getLocalPart());
 		navNode.setAttribute("id", getNextId());
