@@ -565,8 +565,11 @@ public class Directory extends File {
 					if(deep){
 						Directory srcDir = new Directory(children[i].getAbsolutePath());
 						Directory destDir = new Directory(destination,srcDir.getName()); 
-						cur = srcDir.copyChildrenTo(destDir,overwrite,deep,regex); 
-						if(!cur) result = cur;
+						// jpritchett@rfbd.org, 14 May 2008:  Don't recurse on our destination directory!
+						if (!srcDir.equals(destination)) {
+							cur = srcDir.copyChildrenTo(destDir,overwrite,deep,regex); 
+							if(!cur) result = cur;
+						}
 					}
 				}
 			}else{
