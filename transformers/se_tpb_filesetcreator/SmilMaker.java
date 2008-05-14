@@ -110,6 +110,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	private XMLOutputFactory outputFactory;			// factory building the stax output writer
 	private DocumentBuilder documentBuilder;		// parses the smil template over and over again
 
+	private File manuscriptDir;						// parent directory of the input manifest 
 	private File outputDirectory;					// directory in which to write smil files
 	private File smilTemplateFile;					// the location of the smil template file
 
@@ -198,6 +199,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		outputFactory = XMLOutputFactory.newInstance();
 		outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
 
+		manuscriptDir = inputManuscript.getParentFile();
 		outputDirectory = outputDir;
 		if (!outputDirectory.isDirectory()) {
 			if (!outputDirectory.exists()) {
@@ -863,7 +865,7 @@ public class SmilMaker implements AbortListener, BusListener {
 			if(!foundCss) {
 				XMLEventFactory xef = StAXEventFactoryPool.getInstance().acquire();
 				String name = css.getFile().substring(css.getFile().lastIndexOf("/")+1);				
-				Directory out = new Directory(outputDirectory);
+				Directory out = new Directory(manuscriptDir);
 				out.writeToFile(name, css.openStream());
 				otherEncounteredFiles.add(name);
 				return xef.createProcessingInstruction("xml-stylesheet", "href='" +name+ "' type='text/css'");
