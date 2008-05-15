@@ -70,8 +70,10 @@
 		<element name="abbr"/>
 		<element name="acronym"/>
 		<element name="annoref"/>
+		<element name="author"/>	<!-- jpritchett@rfbd.org, 15 May 2008 -->
 		<element name="b"/>
 		<element name="caption"/>
+		<element name="cite"/>	<!-- jpritchett@rfbd.org, 15 May 2008 -->
 		<element name="code"/>
 		<element name="dd"/>
 		<element name="docauthor"/>
@@ -101,6 +103,7 @@
 		<element name="sub"/>
 		<element name="sup"/>
 		<element name="th"/>
+		<element name="title"/>	<!-- jpritchett@rfbd.org, 15 May 2008 -->
 		<element name="td"/>
 		<element name="w"/>
 	</mayContainText>
