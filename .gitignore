@@ -13,6 +13,7 @@ transformers/int_daisy_filesetAudioTagger/*.class
 transformers/int_daisy_filesetAudioTagger/id3/*.class
 transformers/int_daisy_filesetAudioTagger/playlist/*.class
 transformers/int_daisy_filesetEncryptor/*.class
+transformers/int_daisy_filesetGenerator/*.class
 transformers/int_daisy_filesetRenamer/*.class
 transformers/int_daisy_filesetRenamer/segment/*.class
 transformers/int_daisy_filesetRenamer/strategies/*.class
