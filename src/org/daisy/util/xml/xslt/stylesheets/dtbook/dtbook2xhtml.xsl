@@ -316,7 +316,10 @@
    
 
    <xsl:template match="dtb:list/dtb:prodnote">
-     <li class="optional-prodnote"><xsl:apply-templates/></li>
+     <li class="optional-prodnote">
+     	<xsl:apply-templates/>
+     	<xsl:apply-templates select="following-sibling::*[1][self::dtb:pagenum]" mode="pagenumInLi"/>
+     </li>
    </xsl:template>
 
    <xsl:template match="dtb:blockquote/dtb:pagenum">
