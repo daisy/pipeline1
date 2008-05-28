@@ -24,6 +24,9 @@ import com.ibm.icu.text.Transliterator;
  * @author Markus Gylling
  */
 public final class CharUtils {
+	
+	private static Transliterator nfcTransliterator = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC;");
+	private static Transliterator anyLatinTransliterator = Transliterator.getInstance("Any-Latin");
 
 	/**
 	 * @return true if all characters in the string are within the range of 7bit
@@ -464,9 +467,8 @@ public final class CharUtils {
 	 * @return a string where accented characters have accents (nonspacing marks) removed, or null if something bad occured.
 	 */
 	public static String transliterateNonSpacingMarkRemoval(String str){
-		try{
-			Transliterator tl = Transliterator.getInstance("NFD; [:Nonspacing Mark:] Remove; NFC;");
-			return tl.transliterate(str);
+		try{			
+			return nfcTransliterator.transliterate(str);
 		}catch(Exception e){
 			
 		}
@@ -481,8 +483,7 @@ public final class CharUtils {
 	 */
 	public static String transliterateAnyToLatin(String str){
 		try{	
-			Transliterator tl = Transliterator.getInstance("Any-Latin");
-			return tl.transliterate(str);
+			return anyLatinTransliterator.transliterate(str);
 		}catch(Exception e){
 			
 		}
