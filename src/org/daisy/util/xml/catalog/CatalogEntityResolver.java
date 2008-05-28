@@ -21,7 +21,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Enumeration;
 
 import javax.xml.stream.XMLResolver;
 import javax.xml.stream.XMLStreamException;
@@ -30,6 +32,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
+import org.daisy.util.runtime.Service;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
@@ -37,6 +40,7 @@ import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Threadsafe singleton implementation of a catalog entityresolver.
@@ -105,7 +109,7 @@ import org.xml.sax.InputSource;
  */
 
 public class CatalogEntityResolver implements EntityResolver, LSResourceResolver, URIResolver, XMLResolver {
-    private static CatalogFile catalog;    
+    private static CatalogCollection catalog;    
     private static DOMImplementationLS mDOMImplementationLS = null;
     private static CatalogEntityResolver mInstance = null;
     private static CatalogListener mListener = null;
@@ -113,7 +117,9 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
     private CatalogEntityResolver() throws CatalogExceptionNotRecoverable {
         URL catalogURL = this.getClass().getResource("catalog.xml");
         try {
-            catalog = new CatalogFile(catalogURL, this.getClass());            
+            Catalog cat = new CatalogFile(catalogURL, this.getClass());
+            catalog = new CatalogCollection(cat);
+            addExternalCatalogs();
         } catch (Exception e) {
             throw new CatalogExceptionNotRecoverable(e);
         }
@@ -133,6 +139,23 @@ public class CatalogEntityResolver implements EntityResolver, LSResourceResolver
             }
         }
         return mInstance;
+    }
+    
+    /**
+     * Add external catalog files using the JAR services framework.
+     * @throws IOException
+     * @throws SAXException
+     * @throws URISyntaxException
+     */
+    private void addExternalCatalogs() throws IOException, SAXException, URISyntaxException {
+    	Service<CatalogLocator> service = new Service<CatalogLocator>(CatalogLocator.class);
+    	Enumeration<CatalogLocator> providers = service.getProviders();
+    	while (providers.hasMoreElements()) {
+    		CatalogLocator provider = providers.nextElement();
+    		URL catalogURL = provider.getCatalogURL();
+            Catalog cat = new CatalogFile(catalogURL, provider.getClass());
+            catalog.addCatalog(cat);
+    	}
     }
 
     /**
