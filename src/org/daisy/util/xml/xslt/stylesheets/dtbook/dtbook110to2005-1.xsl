@@ -55,23 +55,17 @@
 <xsl:template match="frontmatter|bodymatter|rearmatter">
 	<xsl:copy>
 		<xsl:copy-of select="@*"/>
-		<xsl:for-each-group select="*" group-adjacent="name()='level' or name()='level1' or name()='doctitle' or name()='docauthor'">
+		<xsl:for-each-group select="*" group-adjacent="local-name()='level' or local-name()='level1' or local-name()='doctitle' or local-name()='docauthor'">
 			<xsl:choose>
 				<xsl:when test="current-grouping-key()">
 					<xsl:for-each select="current-group()">
-						<xsl:copy>
-							<xsl:copy-of select="@*"/>
-							<xsl:apply-templates/>
-						</xsl:copy>
+						<xsl:apply-templates select="."/>
 					</xsl:for-each>
 				</xsl:when>
 				<xsl:otherwise>
 					<level depth="1">
 						<xsl:for-each select="current-group()">
-							<xsl:copy>
-								<xsl:copy-of select="@*"/>
-								<xsl:apply-templates/>
-							</xsl:copy>
+							<xsl:apply-templates select="."/>
 						</xsl:for-each>
 					</level>	
 				</xsl:otherwise>
@@ -80,22 +74,15 @@
 	</xsl:copy>
 </xsl:template>
 
-<!-- 
-<xsl:template match="level">
-	<xsl:param name="addDepth" select="0"/>
-	<level>
-		<xsl:copy-of select="@*[name()!='depth']" />
-		<xsl:if test="@depth">
-			<xsl:attribute name="depth">
-				<xsl:value-of select="number(@depth)+@addDepth"/>
-			</xsl:attribute>
+<xsl:template match="level|level1|level2|level3|level4|level5|level6">
+	<xsl:copy>
+		<xsl:copy-of select="@*" />
+		<xsl:apply-templates/>
+		<xsl:if test="count(*[name()!='hd' and name()!='h1' and name()!='h2' and name()!='h3' and name()!='h4' and name()!='h5' and name()!='h6'])=0">
+			<p/>
 		</xsl:if>
-		<xsl:apply-templates>
-			<xsl:with-param name="addDepth" select="@addDepth+1"/>
-		</xsl:apply-templates>
-	</level>
+	</xsl:copy>
 </xsl:template>
--->
  
 <!-- levelhd is transformed to hd, including all attributes excluding the depth attribute -->
 <xsl:template match="levelhd">
