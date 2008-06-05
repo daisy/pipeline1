@@ -21,7 +21,7 @@
 	 Based on dtb36to39.xsl (Aug 2001)
      April 2006
 -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:output omit-xml-declaration="yes" 
 		    encoding="UTF-8"
 		    doctype-public="-//NISO//DTD dtbook 2005-1//EN"
@@ -51,6 +51,52 @@
 	</dtbook>
 </xsl:template>
 
+<!-- wrap non-level block items in fromtmatter in a level -->
+<xsl:template match="frontmatter|bodymatter|rearmatter">
+	<xsl:copy>
+		<xsl:copy-of select="@*"/>
+		<xsl:for-each-group select="*" group-by="name()='level' or name()='level1' or name()='doctitle' or name()='docauthor'">
+			<xsl:choose>
+				<xsl:when test="current-grouping-key()">
+					<xsl:for-each select="current-group()">
+						<xsl:copy>
+							<xsl:copy-of select="@*"/>
+							<xsl:apply-templates/>
+						</xsl:copy>
+					</xsl:for-each>
+				</xsl:when>
+				<xsl:otherwise>
+					<level depth="1">
+						<xsl:for-each select="current-group()">
+							<xsl:copy>
+								<xsl:copy-of select="@*"/>
+								<xsl:apply-templates/>
+							</xsl:copy>
+						</xsl:for-each>
+					</level>	
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each-group>
+	</xsl:copy>
+</xsl:template>
+
+<!-- 
+<xsl:template match="level">
+	<xsl:param name="addDepth" select="0"/>
+	<level>
+		<xsl:copy-of select="@*[name()!='depth']" />
+		<xsl:if test="@depth">
+			<xsl:attribute name="depth">
+				<xsl:value-of select="number(@depth)+@addDepth"/>
+			</xsl:attribute>
+		</xsl:if>
+		<xsl:apply-templates>
+			<xsl:with-param name="addDepth" select="@addDepth+1"/>
+		</xsl:apply-templates>
+	</level>
+</xsl:template>
+-->
+ 
 <!-- levelhd is transformed to hd, including all attributes excluding the depth attribute -->
 <xsl:template match="levelhd">
 	<hd>
@@ -115,6 +161,7 @@
 </xsl:template>
 
 <!-- Convert the various specialized lists to the generic list element -->
+<!-- Ought not be needed, since dtbook v1.1.0 does not contain ol or ul lists 
 <xsl:template match="ol">
 	<list type="ol">
 		<xsl:attribute name="id"><xsl:value-of select="generate-id()" /></xsl:attribute>
@@ -139,7 +186,8 @@
 		<xsl:apply-templates />
 	</list>
 </xsl:template>
-
+-->
+ 
 <!-- lin becomes line -->
 <xsl:template match="lin">
 	<line>
