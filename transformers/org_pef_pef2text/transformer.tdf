@@ -1,0 +1,44 @@
+<transformer version="1.1">
+	<name>PEF to Text</name>
+	<description>Converts a PEF 2008-1 file into text.</description>
+	<classname>org.daisy.pipeline.transformers.XSLTRunner</classname>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/org_pef_pef2text.html"/>	
+	
+	<parameters>
+
+<!-- Main parameters -->
+		<parameter required="true" direction="in" type="application/xml">
+			<name>xml</name>
+			<description>The input file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter type="application/xml">
+			<name>xslt</name>			
+			<value>${transformer_dir}/pef2text.xsl</value>
+		</parameter>		
+		
+		<parameter type="string">
+			<name>factory</name>			
+			<value>net.sf.saxon.TransformerFactoryImpl</value>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/xml">
+			<name>out</name>			
+			<description>Output PEF 2008-1 file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>locale</name>
+			<description>Set target locale.</description>
+			<example>en-US</example>
+			<default>none</default>
+		</parameter>
+
+	</parameters>
+
+</transformer>

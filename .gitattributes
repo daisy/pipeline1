@@ -96,6 +96,7 @@ doc/scripts/ImageConverter.html -text
 doc/scripts/Narrator-DtbookToDaisy202.html -text
 doc/scripts/OCFCreator.html -text
 doc/scripts/OPSCreator.html -text
+doc/scripts/PEFToText.html -text
 doc/scripts/PrettyPrinter.html -text
 doc/scripts/RenamerTaggerValidator.html -text
 doc/scripts/RtfToDtbook.html -text
@@ -123,6 +124,7 @@ doc/transformers/int_daisy_unicodeNormalizer.html -text
 doc/transformers/int_daisy_unicodeTranscoder.html -text
 doc/transformers/int_daisy_validator.html -text
 doc/transformers/no_hks_xhtml2dtbook.html -text
+doc/transformers/org_pef_pef2text.html -text
 doc/transformers/pipeline_system_copyer.html -text
 doc/transformers/pipeline_system_deleter.html -text
 doc/transformers/se_tpb_annonsator.html -text
@@ -340,6 +342,7 @@ scripts/_dev/MultiFormatMedia.taskScript -text
 scripts/_dev/Narrator-Dev.taskScript -text
 scripts/_dev/Narrator_NoValidation.taskScript -text
 scripts/_dev/NccNcxOnly.taskScript -text
+scripts/_dev/PefToText.taskScript -text
 scripts/_dev/XMLAudioAligner.taskScript -text
 scripts/_dev/XukCreator.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
@@ -1030,6 +1033,8 @@ transformers/int_daisy_xukCreator/messages.properties -text
 transformers/int_daisy_xukCreator/transformer.tdf -text
 transformers/no_hks_xhtml2dtbook/Xhtml2DTBook.java -text
 transformers/no_hks_xhtml2dtbook/transformer.tdf -text
+transformers/org_pef_pef2text/pef2text.xsl -text
+transformers/org_pef_pef2text/transformer.tdf -text
 transformers/pipeline_system_copyer/Copyer.java -text
 transformers/pipeline_system_copyer/messages.properties -text
 transformers/pipeline_system_copyer/messages_hi.properties -text svneol=unset#unset

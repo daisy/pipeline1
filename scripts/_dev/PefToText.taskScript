@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<taskScript version="2.0" name="PefToText">
+	<nicename>PEF to text</nicename>
+	<description>desc...</description>
+	<documentation uri="../../doc/scripts/PEFToText.html"/>
+		
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>A PEF-file</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="true">
+		<nicename>Output file</nicename>
+		<description>Output text file</description>
+		<datatype>
+			<file mime="text/plain" type="output"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="locale" value="en-US" required="false">
+		<nicename>Locale</nicename>
+		<description>Target locale</description>
+		<datatype>
+			<enum>
+			  <item nicename="North American ASCII Braille" value="en-US" />
+			  <item nicename="Swedish - CX" value="sv-SE-CX" />
+			</enum>
+		</datatype>
+	</parameter>
+
+	<task name="org_pef_pef2text" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>out</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>locale</name>
+			<value>${locale}</value>
+		</parameter>
+	</task>
+
+</taskScript>
