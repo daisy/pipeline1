@@ -55,7 +55,7 @@
 <xsl:template match="frontmatter|bodymatter|rearmatter">
 	<xsl:copy>
 		<xsl:copy-of select="@*"/>
-		<xsl:for-each-group select="*" group-by="name()='level' or name()='level1' or name()='doctitle' or name()='docauthor'">
+		<xsl:for-each-group select="*" group-adjacent="name()='level' or name()='level1' or name()='doctitle' or name()='docauthor'">
 			<xsl:choose>
 				<xsl:when test="current-grouping-key()">
 					<xsl:for-each select="current-group()">
