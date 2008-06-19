@@ -3,6 +3,8 @@
 	<xsl:output method="text" encoding="utf-8" indent="no" omit-xml-declaration="yes"/>
 
 	<xsl:param name="locale" select="'en-US'"/>
+	<xsl:param name="min"/>
+	<xsl:param name="max"/>
 
 	<xsl:template name="translateRow">
 		<xsl:choose>
@@ -22,14 +24,19 @@
 	</xsl:template>
 
 	<xsl:template match="pef:pef">
-		<xsl:apply-templates select="descendant::pef:page"/>
+		<xsl:if test="//pef:row[matches(text(), '[&#x2840;-&#x28FF;]')]">
+			<xsl:message terminate="yes">Error: Found <xsl:value-of select="count(//pef:row[matches(text(), '[&#x2840;-&#x28FF;]')])"/> row(s) containing 8-dot braille. This implementation does not support 8-dot braille.</xsl:message>
+		</xsl:if>
+		<xsl:variable name="pageMin" select="if (number($min)>0) then number($min) else 1"/>
+		<xsl:variable name="pageMax" select="if (number($max)>0) then number($max) else count(descendant::pef:page)"/>
+		<xsl:apply-templates select="(descendant::pef:page)[position()>=$pageMin and position()&lt;=$pageMax]"/>
 	</xsl:template>
-	
+
 	<xsl:template match="pef:page">
 		<xsl:apply-templates select="*"/>
-		<xsl:if test="following-sibling::pef:page">
+		<!--<xsl:if test="following-sibling::pef:page">-->
 			<xsl:text>&#x000C;</xsl:text>
-		</xsl:if>
+		<!--</xsl:if>-->
 	</xsl:template>
 
 	<xsl:template match="pef:row">
@@ -41,14 +48,19 @@
 
 	<!-- Support for the PEF precursor BPF -->
 	<xsl:template match="bpf:bpf">
-		<xsl:apply-templates select="descendant::bpf:page"/>
+		<xsl:if test="//bpf:row[matches(text(), '[&#x2840;-&#x28FF;]')]">
+			<xsl:message terminate="yes">Error: Found <xsl:value-of select="count(//bpf:row[matches(text(), '[&#x2840;-&#x28FF;]')])"/> row(s) containing 8-dot braille. This implementation does not support 8-dot braille.</xsl:message>
+		</xsl:if>
+		<xsl:variable name="pageMin" select="if (number($min)>0) then number($min) else 1"/>
+		<xsl:variable name="pageMax" select="if (number($max)>0) then number($max) else count(descendant::bpf:page)"/>
+		<xsl:apply-templates select="(descendant::bpf:page)[position()>=$pageMin and position()&lt;=$pageMax]"/>
 	</xsl:template>
 	
 	<xsl:template match="bpf:page">
 		<xsl:apply-templates select="*"/>
-		<xsl:if test="following-sibling::bpf:page">
+		<!--<xsl:if test="following-sibling::bpf:page">-->
 			<xsl:text>&#x000C;</xsl:text>
-		</xsl:if>
+		<!--</xsl:if>-->
 	</xsl:template>
 	
 	<xsl:template match="bpf:row">

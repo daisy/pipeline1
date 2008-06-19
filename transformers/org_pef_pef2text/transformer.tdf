@@ -1,7 +1,7 @@
 <transformer version="1.1">
 	<name>PEF to Text</name>
 	<description>Converts a PEF 2008-1 file into text.</description>
-	<classname>org.daisy.pipeline.transformers.XSLTRunner</classname>
+	<classname>org_pef_pef2text.PEF2Text</classname>
 	<license>LGPL</license>
 	<author>Joel Håkansson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
@@ -33,10 +33,48 @@
 		</parameter>
 
 		<parameter type="string" required="false">
+			<name>deviceName</name>
+			<description>Set device name.</description>
+			<example>MyEmbosser</example>
+			<default></default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>embosser</name>
+			<description>Embosser make and model</description>
+			<example>Everest</example>
+			<enum>
+				<value>none</value>
+				<value>everest</value>
+			</enum>
+			<default>none</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>breaks</name>
+			<description>Line breaks</description>
+			<example>unix</example>
+			<enum>
+				<value>unix</value>
+				<value>dos</value>
+				<value>mac</value>
+				<value>default</value>
+			</enum>
+			<default>dos</default>
+		</parameter>	
+		
+		<parameter type="string" required="false">
 			<name>locale</name>
 			<description>Set target locale.</description>
 			<example>en-US</example>
 			<default>none</default>
+		</parameter>
+		
+		<parameter type="string" required="false">
+			<name>pageRange</name>
+			<description>Range to export</description>
+			<example>3-10</example>
+			<default></default>
 		</parameter>
 
 	</parameters>

@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<taskScript version="2.0" name="EmbossPEF">
+	<nicename>Emboss PEF</nicename>
+	<description>desc...</description>
+	<documentation uri="../../doc/scripts/PEFToText.html"/>
+		
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>A PEF-file</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="embosser" value="none" required="true">
+		<nicename>Embosser</nicename>
+		<description>Select the make and model of the target embosser</description>
+		<datatype>
+			<enum>
+			  <item nicename="None" value="none" />
+			  <item nicename="Index Braille: Everest (older)" value="everest" />
+			  <item nicename="Index Braille: Basic (older)" value="everest" />
+			</enum>
+		</datatype>
+	</parameter>
+
+	<parameter name="deviceName" value="" required="true">
+		<nicename>Device name</nicename>
+		<description>Name of embosser as labelled by the computer</description>
+		<datatype>
+			<string regex=".{3,}"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="pageRange" value="" required="false">
+		<nicename>Page range</nicename>
+		<description>Emboss a selection of pages</description>
+		<datatype>
+			<string regex="(([0-9]+-)?[0-9]*)?"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="false">
+		<nicename>Keep output file</nicename>
+		<description>Keep the print file.</description>
+		<datatype>
+			<file mime="text/plain" type="output"/>
+		</datatype>
+	</parameter>
+
+	<task name="org_pef_pef2text" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>out</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>locale</name>
+			<value>en-US</value>
+		</parameter>
+		
+		<parameter>
+			<name>embosser</name>
+			<value>${embosser}</value>
+		</parameter>
+		
+		<parameter>
+			<name>deviceName</name>
+			<value>${deviceName}</value>
+		</parameter>
+		
+		<parameter>
+			<name>pageRange</name>
+			<value>${pageRange}</value>
+		</parameter>
+
+	</task>
+
+</taskScript>

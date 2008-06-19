@@ -337,6 +337,7 @@ samples/input/xhtml/xhtml-rdf.xml -text
 scripts/_dev/AudacityToDTB.taskScript -text
 scripts/_dev/DTBBackwardMigrator.taskScript -text
 scripts/_dev/DTBookFix_NarratorValidation.taskScript -text
+scripts/_dev/EmbossPEF.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
 scripts/_dev/Narrator-Dev.taskScript -text
@@ -1033,6 +1034,7 @@ transformers/int_daisy_xukCreator/messages.properties -text
 transformers/int_daisy_xukCreator/transformer.tdf -text
 transformers/no_hks_xhtml2dtbook/Xhtml2DTBook.java -text
 transformers/no_hks_xhtml2dtbook/transformer.tdf -text
+transformers/org_pef_pef2text/PEF2Text.java -text
 transformers/org_pef_pef2text/pef2text.xsl -text
 transformers/org_pef_pef2text/transformer.tdf -text
 transformers/pipeline_system_copyer/Copyer.java -text
