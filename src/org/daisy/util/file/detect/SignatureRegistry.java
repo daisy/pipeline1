@@ -16,8 +16,8 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */package org.daisy.util.file.detect;
 
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,23 +30,23 @@ import java.util.Set;
  */
 /*package*/ class SignatureRegistry  {
 		
-	private static Map<URL, SignatureLibrary> mSignatureLibraries = null;
-	private static URL cachedSignaturesURL = null;
-	private static SignatureCache cachedSignatures = null;
+	private static Map<String, SignatureLibrary> mSignatureLibraries = null;
+//	private static URL cachedSignaturesURL = null;
+//	private static SignatureCache cachedSignatures = null;
 		
 	/*package*/ SignatureRegistry() {
-		mSignatureLibraries = new LinkedHashMap<URL, SignatureLibrary>();
-		try {
+		mSignatureLibraries = new LinkedHashMap<String, SignatureLibrary>();
+//		try {
 			/*
 			 * Note - at this time, the cache makes no sense,
 			 * since the detector does not abort on first hit.
 			 */
-			cachedSignaturesURL = new URL("http://cache");
-			cachedSignatures = new SignatureCache(new URL("http://cache"));
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		this.addLibrary(cachedSignatures);
+//			cachedSignaturesURL = new URL("file://X:/cache");
+//			cachedSignatures = new SignatureCache(cachedSignaturesURL);
+//		} catch (MalformedURLException e) {
+//			e.printStackTrace();
+//		}
+		//this.addLibrary(cachedSignatures);
 	}
 
 	/**
@@ -54,11 +54,11 @@ import java.util.Set;
 	 * @throws SignatureLibraryException 
 	 */
 	/*package*/ void addLibrary(URL key, SignatureLibrary library) {
-		mSignatureLibraries.put(key, library);
+		mSignatureLibraries.put(key.toString(), library);
 	}
 	
 	/*package*/ void addLibrary(SignatureLibrary lib) {
-		mSignatureLibraries.put(lib.getURL(), lib);
+		mSignatureLibraries.put(lib.getURL().toString(), lib);
 	}
 
 	
@@ -87,15 +87,17 @@ import java.util.Set;
 	/**
 	 * Get all registered libraries.
 	 */
-	/*package*/ Map<URL, SignatureLibrary> getLoadedLibraries() {
+	/*package*/ Collection<SignatureLibrary> getLoadedLibraries() {
 		//exclude the cache entry
-		Map<URL, SignatureLibrary> ret = new HashMap<URL, SignatureLibrary>();
-		for(URL url : mSignatureLibraries.keySet()) {
-			if(!url.equals(cachedSignaturesURL)) {
-				ret.put(url,mSignatureLibraries.get(url));
-			}			
-		}		
-		return ret;
+//		Map<URL, SignatureLibrary> ret = new HashMap<URL, SignatureLibrary>();
+//		for(URL url : mSignatureLibraries.keySet()) {
+//			if(!url.equals(cachedSignaturesURL)) {
+//				ret.put(url,mSignatureLibraries.get(url));
+//			}			
+//		}		
+//		return ret;
+		return mSignatureLibraries.values();
+		
 	}
 		
 	/**
@@ -156,7 +158,7 @@ import java.util.Set;
 						}
 																		
 						if(matchResult.matchesToken() || matchResult.matchesFilename()) {
-							cachedSignatures.addSignature(sig);
+							//cachedSignatures.addSignature(sig);
 							returnSet.put(sig,matchResult);
 						}
 					}catch (Exception e) {

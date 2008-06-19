@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -69,11 +70,11 @@ public final class SignatureDetector {
 	 * @throws SignatureLibraryException 
 	 */
 	public SignatureDetector(boolean useDefaultLibrary) throws SignatureLibraryException {			
-		mSignatureRegistry = new SignatureRegistry();
-		if(useDefaultLibrary) {
-			URL doc = DefaultSignatureLibrary.getInstance().getURL();
-			mSignatureRegistry.addLibrary(doc, DefaultSignatureLibrary.getInstance());
-		}
+		mSignatureRegistry = new SignatureRegistry();		
+		if(useDefaultLibrary) {		
+			URL doc = DefaultSignatureLibrary.getInstance().getURL();					
+			mSignatureRegistry.addLibrary(doc, DefaultSignatureLibrary.getInstance());		
+		}		
 	}	
 	
 	/**
@@ -238,12 +239,11 @@ public final class SignatureDetector {
 	 * Print information on loaded signatures to standard out.
 	 */
 	public void printSignatures() {
-		Map<URL, SignatureLibrary> libs = mSignatureRegistry.getLoadedLibraries();
+		Collection<SignatureLibrary> libs = mSignatureRegistry.getLoadedLibraries();
 		System.out.println((libs.size())  +" libraries loaded.");	
-		for(URL url : libs.keySet()) {
-			SignatureLibrary lib = libs.get(url);
+		for(SignatureLibrary lib : libs) {			
 			Set<Signature> sigs = lib.getSignatures();
-			System.out.println("Signatures in " + url.toString() + ": " + sigs.size()  + "\n");
+			System.out.println("Signatures in " + lib.getURL().toString() + ": " + sigs.size()  + "\n");
 			for(Signature s : sigs) {
 				System.out.println(s.toString());
 			}

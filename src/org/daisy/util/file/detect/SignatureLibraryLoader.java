@@ -203,5 +203,4 @@ import org.daisy.util.xml.pool.StAXInputFactoryPool;
 			
 		return set;
 	}
-
 }

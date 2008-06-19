@@ -31,7 +31,7 @@ import java.util.Set;
 	private static DefaultSignatureLibrary mInstance = new DefaultSignatureLibrary();
 	
 	private DefaultSignatureLibrary() throws SignatureLibraryException {
-		mXMLDocURL = this.getClass().getResource("DefaultSignatureLibrary.xml");
+		mXMLDocURL = this.getClass().getResource("./DefaultSignatureLibrary.xml");
 		mSignatures = SignatureLibraryLoader.load(mXMLDocURL);
 	}
 

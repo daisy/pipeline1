@@ -20,7 +20,7 @@
 	<!-- ================================================================== -->
   <signature 	mimeRef="d202ncc" 
   				nameRegex="[Nn][Cc][Cc]\.[Hh][Tt][Mm][Ll]?$" 
-  				implementors="org.daisy.util.filesetNG.D202NccFile"
+  				implementors="org.daisy.util.file.set.D202NccFile"
   				niceName="Daisy 2.02 DTB NCC File"
   				xmlns:xht="http://www.w3.org/1999/xhtml">
     	<xmlHeader>
@@ -33,7 +33,7 @@
 
   <signature 	mimeRef="d202smil" 
   				nameRegex=".+\.[Ss][Mm][Ii][Ll]$" 
-  				implementors="org.daisy.util.filesetNG.D202SmilFile"
+  				implementors="org.daisy.util.file.set.D202SmilFile"
   				niceName="Daisy 2.02 DTB SMIL File">
     	<xmlHeader publicId="-//W3C//DTD SMIL 1.0//EN" systemId="http://www.w3.org/TR/REC-smil/SMIL10.dtd">
     		<smil xmlns=""/>
@@ -63,7 +63,7 @@
 
   <signature 	mimeRef="xhtml" 
   				nameRegex=".+\.[Xx]?[Hh][Tt][Mm][Ll]?$" 
-  				implementors="org.daisy.util.filesetNG.Xhtml10File"
+  				implementors="org.daisy.util.file.set.Xhtml10File"
   				niceName="XHTML (eXtensible Hyper Text Markup Language) File">
     	<xmlHeader>
     		<xht:html xmlns:xht="http://www.w3.org/1999/xhtml" />
@@ -81,7 +81,7 @@
   
   <signature 	mimeRef="css" 
   				nameRegex="(.+\.[Cc][Ss][Ss]$)" 
-  				implementors="org.daisy.util.filesetNG.CssFile"
+  				implementors="org.daisy.util.file.set.CssFile"
   				niceName="CSS (Cascading Style Sheet) File">
   </signature>
   
@@ -125,7 +125,7 @@
 	<!-- ================================================================== -->
   <signature 	mimeRef="mpeg" 
   				nameRegex="(.+\.[Mm][Pp]3$)" 
-  				implementors="org.daisy.util.filesetNG.Mp3File"
+  				implementors="org.daisy.util.file.set.Mp3File"
   				niceName="MP3 (MPEG-1 Audio Layer 3) Audio File">
     	<!--  TODO<byteHeader>0xff 0xd8 0xff 0xe0</byteHeader>  -->   	
   </signature>
@@ -136,7 +136,7 @@
 	
   <signature 	mimeRef="jpg" 
   				nameRegex="(.+\.[Jj][Pp][Gg]$)|(.+\.[Jj][Pp][Ee][Gg]$)" 
-  				implementors="org.daisy.util.filesetNG.JpgFile"
+  				implementors="org.daisy.util.file.set.JpgFile"
   				niceName="JPEG (Joint Photographic Experts Group) Image">
     	<byteHeader>0xff 0xd8 0xff 0xe0</byteHeader>
     	<byteHeader>0xff 0xd8 0xff 0xe1</byteHeader>
