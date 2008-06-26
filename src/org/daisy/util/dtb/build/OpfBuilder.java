@@ -39,7 +39,7 @@ import org.daisy.util.xml.pool.StAXOutputFactoryPool;
 
 public class OpfBuilder {
 	OpfType mOutputType;
-	private MetadataList myMetadata;
+	private MetadataList dcMetadata, xMetadata;
 	private HashMap<String, ManifestItem> myManifest;	// Items keyed to absolute path
 	private LinkedHashMap<String, ManifestItem> mySpine;	// Items keyed to absolute path (same as in manifest)
 	
@@ -48,10 +48,15 @@ public class OpfBuilder {
 	 * @param type The type of OPF to create (from enum)
 	 */
 	public OpfBuilder(OpfType type) {
+		if (type == OpfType.OPF_20_10) {
+			throw new UnsupportedOperationException("OPF 2.0 files not yet supported");
+		}
+		
 		mOutputType = type;
 		
 		// Initialize the collections
-		myMetadata = new MetadataList();
+		dcMetadata = new MetadataList();
+		xMetadata = new MetadataList();
 		myManifest = new HashMap<String, ManifestItem>();
 		mySpine = new LinkedHashMap<String, ManifestItem>();
 
@@ -71,7 +76,7 @@ public class OpfBuilder {
 	 * @param manifest URLs of files to include in the manifest
 	 * @param spine URLs of files to include in the spine, in order
 	 */
-	public OpfBuilder(OpfType type, MetadataList metadata, Set<URL> manifest, LinkedHashSet<URL> spine) {
+	public OpfBuilder(OpfType type, MetadataList metadata, Set<URL> manifest, LinkedHashSet<URL> spine) throws FilesetFatalException {
 		this(type);
 		
 		// Use object methods to set everything
@@ -85,14 +90,16 @@ public class OpfBuilder {
 	 * @param metadata The complete list of metadata items to use
 	 */
 	public void setMetadata(MetadataList metadata) {
-		myMetadata = metadata;
+		for (Iterator<MetadataItem> i = metadata.iterator(); i.hasNext(); ) {
+			this.addMetadataItem(i.next());
+		}
 	}
 	
 	/**
 	 * Set all manifest files at once
 	 * @param manifest The complete list of files (URLs) to include in the manifest
 	 */
-	public void setManifest(Set<URL> manifest) {
+	public void setManifest(Set<URL> manifest) throws FilesetFatalException {
 		// Add manifest items for each URL in the set
 		for (Iterator<URL> i = manifest.iterator(); i.hasNext(); ) {
 			this.addManifestItem(i.next());
@@ -103,7 +110,7 @@ public class OpfBuilder {
 	 * Set all spine items at once
 	 * @param spine The complete list of files (URLs) to include in the spine
 	 */
-	public void setSpine(LinkedHashSet<URL> spine) {
+	public void setSpine(LinkedHashSet<URL> spine) throws FilesetFatalException {
 		// Add spine items for each URL in the set
 		for (Iterator<URL> i = spine.iterator(); i.hasNext(); ) {
 			this.addSpineItem(i.next());
@@ -115,11 +122,40 @@ public class OpfBuilder {
 	 * @param item The MetadataItem to add
 	 */
 	public void addMetadataItem(MetadataItem item) {
-		myMetadata.add(item);
+		String name = item.getQName().getLocalPart();
 		
-		// Add the @id to dc:Identifier
-		if (item.getQName().getPrefix().equals("dc") && item.getQName().getLocalPart().equals("Identifier")) {
-			item.addAttribute("id", "opf_UID");
+		// Metadata declared as DC
+		if (item.getQName().getPrefix().equals("dc")) {
+			// Add the @id to dc:Identifier
+			if (name.equals("Identifier")) {
+				item.addAttribute("id", "opf_UID");
+				dcMetadata.add(item);
+			}
+			// Real DC items go into dcMetadata
+			else if (name.equals("Title") ||
+					 name.equals("Language") ||
+					 name.equals("Contributor") ||
+					 name.equals("Coverage") ||
+					 name.equals("Creator") ||
+					 name.equals("Date") ||
+					 name.equals("Description") ||
+//					 name.equals("Format") ||		// Ignore Format; we add this automagically
+					 name.equals("Publisher") ||
+					 name.equals("Relation") ||
+					 name.equals("Rights") ||
+					 name.equals("Source") ||
+					 name.equals("Subject") ||
+					 name.equals("Type")) {
+				dcMetadata.add(item);
+			}
+			// Bogus ones go into xMetadata
+			else {
+				xMetadata.add(item);
+			}
+		}
+		// All other metadata are X
+		else {
+			xMetadata.add(item);
 		}
 	}
 	
@@ -134,7 +170,10 @@ public class OpfBuilder {
 		MetadataItem item;
 		
 		// If it's a DC item, it gets named as such
-		if (name.equals("dc:Title") ||
+		if (name.equals("dc:Format")) {
+			return;
+		}
+		else if (name.equals("dc:Title") ||
 			name.equals("dc:Identifier") ||
 			name.equals("dc:Language") ||
 			name.equals("dc:Contributor") ||
@@ -142,7 +181,7 @@ public class OpfBuilder {
 			name.equals("dc:Creator") ||
 			name.equals("dc:Date") ||
 			name.equals("dc:Description") ||
-			name.equals("dc:Format") ||
+//			name.equals("dc:Format") ||
 			name.equals("dc:Publisher") ||
 			name.equals("dc:Relation") ||
 			name.equals("dc:Rights") ||
@@ -168,14 +207,11 @@ public class OpfBuilder {
 	 * Add a single resource to the manifest
 	 * @param resource URL of resource to add
 	 */
-	public void addManifestItem(URL resource) {		
+	public void addManifestItem(URL resource) throws FilesetFatalException {		
 		// Get the FilesetFile (if possible) and add to manifest
 		FilesetFile ff = getFilesetFile(resource.getPath());
 		
-		if (ff != null) {
-			this.addManifestItem(ff);
-		}
-		// TODO Else throw exception
+		this.addManifestItem(ff);
 	}
 	
 	/**
@@ -194,15 +230,12 @@ public class OpfBuilder {
 	 * Add a single resource to the end of the spine; add to manifest if not already there
 	 * @param resource URL of resource to add
 	 */
-	public void addSpineItem(URL resource) {
+	public void addSpineItem(URL resource) throws FilesetFatalException {
 		// Get the FilesetFile (if possible), then add to Spine
 		// Get the FilesetFile (if possible) and add to manifest
 		FilesetFile ff = getFilesetFile(resource.getPath());
-		
-		if (ff != null) {
-			this.addSpineItem(ff);
-		}
-		// TODO Else throw exception
+
+		this.addSpineItem(ff);
 	}
 	
 	/**
@@ -227,7 +260,7 @@ public class OpfBuilder {
 	 * 
 	 * Much of this code shamelessly stolen from Markus' OPFBuilder
 	 */
-	public void render(URL destination) throws IOException, XMLStreamException {
+	public void render(URL destination) throws IOException, XMLStreamException, BuildException {
 
 	// Set up output writer
 		Map<String,Object> properties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
@@ -244,10 +277,8 @@ public class OpfBuilder {
 		writer.add(xef.createStartElement("",pkg.getNamespaceURI(),pkg.getLocalPart()));
 		
 		// Look for a dc:Identifier; this is an error if not found
-		if (myMetadata.get(new QName(dcNamespace.getNamespaceURI(),"Identifier","dc")) == null) {
-			// TODO throw an exception
-			System.err.println("No dc:Identifier!");
-			return;
+		if (dcMetadata.get(new QName(dcNamespace.getNamespaceURI(),"Identifier","dc")) == null) {
+			throw new BuildException("Missing dc:Identifier metadata (required by DTD)");
 		}
 		
 		// Otherwise, add @unique-identifier (fixed value set in setMetadataItem() above)
@@ -255,7 +286,56 @@ public class OpfBuilder {
 		writer.add(nl);
 		
 	// Metadata items (DC: and X)
-		// TODO: Exception if required items not found; these vary by OPF type
+		// Check to be sure DTD-required metadata items are present
+		if (dcMetadata.get(new QName(dcNamespace.getNamespaceURI(),"Title","dc")) == null) {
+			throw new BuildException("Missing dc:Title metadata (required by DTD)");
+		}
+		if (dcMetadata.get(new QName(dcNamespace.getNamespaceURI(),"Language","dc")) == null) {
+			throw new BuildException("Missing dc:Language metadata (required by DTD)");
+		}
+		
+		// Check for Z39.86-required DC metadata items (these are also required by NIMAS)
+		if (this.mOutputType == OpfType.Z3986_2005 || 
+			this.mOutputType == OpfType.NIMAS_11) {
+			if (dcMetadata.get(new QName(dcNamespace.getNamespaceURI(), "Publisher", "dc")) == null) {
+				throw new BuildException("Missing dc:Publisher metadata (required for Z39.86 and NIMAS)");
+			}
+			if (dcMetadata.get(new QName(dcNamespace.getNamespaceURI(), "Date", "dc")) == null) {
+				throw new BuildException("Missing dc:Date metadata (required for Z39.86 and NIMAS)");
+			}
+		}
+		
+		// TODO Rethink x-metadata so that this can be implemented more cleanly
+//		// Check for Z39.86-required X metadata items
+//		if (this.mOutputType == OpfBuilder.OpfType.Z3986_2005) {
+//			if (xMetadata.get(new QName(opfNamespace.getNamespaceURI(), "dtb:multimediaType")) == null) {
+//				throw new BuildException("Missing dtb:multimediaType metadata (required for Z39.86)");
+//			}
+//			if (xMetadata.get(new QName(opfNamespace.getNamespaceURI(), "dtb:multimediaContent")) == null) {
+//				throw new BuildException("Missing dtb:multimediaContent metadata (required for Z39.86)");
+//			}
+//			if (xMetadata.get(new QName(opfNamespace.getNamespaceURI(), "dtb:totalTime")) == null) {
+//				throw new BuildException("Missing dtb:totalTime metadata (required for Z39.86)");
+//			}
+//		}
+		
+		// Check for NIMAS-required metadata
+		if (this.mOutputType == OpfType.NIMAS_11) {
+			if (dcMetadata.get(new QName(dcNamespace.getNamespaceURI(), "Rights", "dc")) == null) {
+				throw new BuildException("Missing dc:Rights (required for NIMAS)");
+			}
+			if (dcMetadata.get(new QName(dcNamespace.getNamespaceURI(), "Source", "dc")) == null) {
+				throw new BuildException("Missing dc:Source (required for NIMAS)");
+			}			
+		}
+
+		// Add the appropriate dc:Format item
+		if (this.mOutputType == OpfType.Z3986_2005) {
+			this.dcMetadata.add(new MetadataItem(new QName(dcNamespace.getNamespaceURI(), "Format", "dc"), "ANSI/NISO Z39.86-2005"));
+		}
+		else if (this.mOutputType == OpfType.NIMAS_11) {
+			this.dcMetadata.add(new MetadataItem(new QName(dcNamespace.getNamespaceURI(), "Format", "dc"), "NIMAS 1.1"));
+		}
 		
 		QName metadata = new QName(opfNamespace.getNamespaceURI(),"metadata");		
 		QName dcMetadata = new QName(opfNamespace.getNamespaceURI(),"dc-metadata");
@@ -269,36 +349,32 @@ public class OpfBuilder {
 		writer.add(xef.createNamespace("oebpackage", opfNamespace.getNamespaceURI()));
 		writer.add(nl);
 
-		for (Iterator<MetadataItem> i = this.myMetadata.iterator(); i.hasNext(); ) {
+		for (Iterator<MetadataItem> i = this.dcMetadata.iterator(); i.hasNext(); ) {
 			MetadataItem item = i.next();
-			if (item.getQName().getNamespaceURI().equals(dcNamespace.getNamespaceURI())) {
-				writer.add(tab); writer.add(tab);
-				item.asXMLEvents(writer);
-				writer.add(nl);
-			}
+			writer.add(tab); writer.add(tab);
+			item.asXMLEvents(writer);
+			writer.add(nl);
 		}
 		writeEventPlusNewline(writer, xef.createEndElement(dcMetadata,null), 1);
 		
 		// Then, the X metadata
-		writeEventPlusNewline(writer, xef.createStartElement(xMetadata,null,null), 1);
-		for (Iterator<MetadataItem> i = this.myMetadata.iterator(); i.hasNext(); ) {
-			MetadataItem item = i.next();
-			if (item.getQName().getNamespaceURI().equals(opfNamespace.getNamespaceURI())) {
+		if (this.xMetadata.size() > 0) {
+			writeEventPlusNewline(writer, xef.createStartElement(xMetadata,null,null), 1);
+			for (Iterator<MetadataItem> i = this.xMetadata.iterator(); i.hasNext(); ) {
+				MetadataItem item = i.next();
 				writer.add(tab); writer.add(tab);
 				item.asXMLEvents(writer);
 				writer.add(nl);
 			}
+			writeEventPlusNewline(writer, xef.createEndElement(xMetadata,null), 1);
 		}
-		writeEventPlusNewline(writer, xef.createEndElement(xMetadata,null), 1);
 		writeEventPlusNewline(writer, xef.createEndElement(metadata,null), 0);
 
 		
 	// Manifest
 		// No files in manifest is an error
 		if (myManifest == null || myManifest.size() == 0) {
-			// TODO throw exception
-			System.err.println("No files in manifest!");
-			return;
+			throw new BuildException("No files in manifest!");
 		}
 		QName manifest = new QName(opfNamespace.getNamespaceURI(),"manifest");
 		QName item = new QName(opfNamespace.getNamespaceURI(),"item");
@@ -321,12 +397,26 @@ public class OpfBuilder {
 	// Spine
 		// No files in spine is an error
 		if (mySpine == null || mySpine.size() == 0) {
-			// TODO throw exception
-			System.err.println("No files in spine!");
-			return;
+			throw new BuildException("No files in spine!");
 		}
-			// TODO  Exception if any of files are not in manifest
-			// TODO  Exception if any files of wrong type (depends on OPF type)
+		for (Iterator<ManifestItem> i = mySpine.values().iterator(); i.hasNext(); ) {
+			ManifestItem mi = i.next();
+			
+		// Check to be sure that all files are in the manifest, and that they are of the correct media-type
+			if (myManifest.get(mi.getAbsolutePath()) == null) {
+				throw new BuildException("Spine file " + mi.getFilename() + " not listed in manifest");
+			}
+			
+			if (this.mOutputType == OpfType.Z3986_2005 &&
+				mi.getMimeTypeString() != "application/smil") {
+				throw new BuildException("Spine file " + mi.getFilename() + " is not a SMIL file (required by Z39.86)");
+			}
+			if (this.mOutputType == OpfType.NIMAS_11 &&
+				mi.getMimeTypeString() != "application/x-dtbook+xml") {
+				throw new BuildException("Spine file " + mi.getFilename() + " is not a dtbook file (required by NIMAS 1.1)");
+			}
+		}
+		
 		QName spine = new QName(opfNamespace.getNamespaceURI(),"spine");
 		QName itemref = new QName(opfNamespace.getNamespaceURI(),"itemref");
 
@@ -350,8 +440,8 @@ public class OpfBuilder {
 	
 	public enum OpfType {
 		OPF_20_10, 		//http://www.openebook.org/2007/opf/OPF_2.0_final_spec.html
-		Z3986_2005,
-		NIMAS;
+		Z3986_2005,		//http://www.daisy.org/z3986/2005/Z3986-2005.html#OPF
+		NIMAS_11;			//http://nimas.cast.org/about/proposal/spec-v1_1_anno.html
 	}
 	
 	// Just a refactored convenience
@@ -364,15 +454,9 @@ public class OpfBuilder {
 	}
 	
 	// Take a path and return a FilesetFile
-	// This currently uses the FilesetFileFactory to do detection
-	// TODO MG:  could use org.daisy.util.file.detect to retrieve a mime type
-	private FilesetFile getFilesetFile(String fname) {
-		try {
-	 		return fac.newFilesetFile(new File(fname));
-	 	} catch (FilesetFatalException e) {
-	 		e.printStackTrace();		// TODO something more graceful here
-	 		return null;
-	 	}
+	// This assumes that the file extensions are correct, and uses FilesetFileFactory logic to detect file type
+	private FilesetFile getFilesetFile(String fname) throws FilesetFatalException {
+	 	return fac.newFilesetFile(new File(fname));
 	}
 	
 	// Constants and other items useful in multiple contexts
@@ -387,6 +471,7 @@ public class OpfBuilder {
 	private final IDGenerator idg = new IDGenerator("opf_");
 	private final FilesetFileFactory fac = FilesetFileFactory.newInstance();
 
+	// Convenience class to hold information about items for the manifest
 	private class ManifestItem {
 		private FilesetFile f;
 		private String id;
@@ -398,10 +483,6 @@ public class OpfBuilder {
 		
 		public String getId() {
 			return id;
-		}
-		
-		public FilesetFile getFile() {
-			return f;
 		}
 		
 		public String getFilename() {
