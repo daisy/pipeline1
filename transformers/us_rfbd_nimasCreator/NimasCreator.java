@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.NumberFormat;
+import java.util.Calendar;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
@@ -16,6 +18,7 @@ import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.dtb.build.BuildException;
 import org.daisy.util.dtb.build.OpfBuilder;
+import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.file.Directory;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.Fileset;
@@ -84,24 +87,41 @@ public class NimasCreator extends Transformer implements FilesetErrorHandler {
 		OpfBuilder ob = new OpfBuilder(OpfBuilder.OpfType.NIMAS_11);
 		
 			// Add the metadata
+			// TODO Deal with creator types
+			// TODO Deal with repeatable metadata (grade level, creator, ISBN, others?)
 			// TODO Detect metadata from XML file if not given in arguments
-			// TODO Rename the metadata parameters to something more user-friendly
-			// TODO Add optional metadata items, per NIMAC spec
-			// TODO Add autogen of identifier if needed
+			// TODO ?? Maybe get from Overdrive Excel spreadsheet?
+		MetadataItem item = null;
 		try {
-			ob.addMetadataItem("dc:Title", parameters.get("dc:title"));
-			ob.addMetadataItem("dc:Identifier", parameters.get("dc:identifier"));
-			ob.addMetadataItem("dc:Language", parameters.get("dc:language"));
-			ob.addMetadataItem("dc:Publisher", parameters.get("dc:publisher"));
-			ob.addMetadataItem("dc:Date", parameters.get("dc:date"));
-			ob.addMetadataItem("dc:Rights", parameters.get("dc:rights"));
-			ob.addMetadataItem("dc:Source", parameters.get("dc:source"));
-			ob.addMetadataItem("nimas-SourceEdition", parameters.get("nimas-SourceEdition"));
-			ob.addMetadataItem("nimas-SourceDate", parameters.get("nimas-SourceDate"));
+			// Date stuff
+			Calendar cal = Calendar.getInstance();
+			NumberFormat nf = NumberFormat.getIntegerInstance();
+			nf.setMinimumIntegerDigits(2);
+			String createDate = String.valueOf(cal.get(Calendar.YEAR)) + "-" + nf.format(cal.get(Calendar.MONTH)) + "-" + nf.format(cal.get(Calendar.DAY_OF_MONTH));
+			item = ob.addMetadataItem("dc:Date", createDate);
+			item.addAttribute("event","DCTERMS.created");
+
+			item = ob.addMetadataItem("dc:Identifier", parameters.get("ISBN")+"NIMAS");
+			item.addAttribute("scheme", "NIMAS");
+
+			ob.addMetadataItem("dc:Title", parameters.get("title"));
+			ob.addMetadataItem("dc:Language", parameters.get("language"));
+			ob.addMetadataItem("dc:Publisher", parameters.get("publisher"));
+			ob.addMetadataItem("dc:Rights", "The only legal and authorized use of these files is for the production of alternate media materials for blind, visually impaired, or print disabled students as specified in the NIMAC limitation of use agreement. The copyright for these files is the sole property of the original owner.");
+			ob.addMetadataItem("dc:Source", parameters.get("ISBN"));
+			ob.addMetadataItem("dc:Subject", parameters.get("subject"));	
+			ob.addMetadataItem("nimas-SourceEdition", parameters.get("edition"));
+			ob.addMetadataItem("nimas-SourceDate", parameters.get("publicationDate"));
+			ob.addMetadataItem("DCTERMS.description.version", parameters.get("edition"));
+			ob.addMetadataItem("DCTERMS.date.issued", parameters.get("publicationDate"));
+			ob.addMetadataItem("DCTERMS.description.note", parameters.get("contentType"));
+			ob.addMetadataItem("DCTERMS.date.dateCopyrighted", parameters.get("copyrightDate"));
+			ob.addMetadataItem("DCTERMS.audience.educationLevel", parameters.get("gradeLevel"));			
+			ob.addMetadataItem("DCTERMS.publisher.place", parameters.get("publisherPlace"));			
+			ob.addMetadataItem("DCTERMS.relation.isPartOf", parameters.get("series"));			
+			ob.addMetadataItem("DCTERMS.description.version", parameters.get("stateEdition"));			
 		} catch (BuildException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
+			throw new TransformerRunException("Error adding metadata to OPF: " + e.getMessage());
 		}
 		
 		// Re-open the fileset from the copied version of the file
@@ -138,20 +158,17 @@ public class NimasCreator extends Transformer implements FilesetErrorHandler {
 
 		// Now render the OPF to the output
 		try {
-			ob.render(new URL("file:///" + outputDir.getPath() + "/" + parameters.get("dc:identifier") + ".opf"));
+			ob.render(new URL("file:///" + outputDir.getPath() + "/" + parameters.get("ISBN") + "NIMAS.opf"));
 		} catch (BuildException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new TransformerRunException("Build error rendering OPF: " + e.getMessage());
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new TransformerRunException("Malformed URL rendering OPF: " + e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new TransformerRunException("IO error rendering OPF: " + e.getMessage());
 		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new TransformerRunException("XML error rendering OPF: " + e.getMessage());
 		}
+		
 		return true;
 	}
 
