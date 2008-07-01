@@ -1399,3 +1399,5 @@ transformers/us_rfbd_dtbookMigrator/DtbookVersion.java -text
 transformers/us_rfbd_dtbookMigrator/DtbookVersionManager.java -text
 transformers/us_rfbd_dtbookMigrator/messages.properties -text
 transformers/us_rfbd_dtbookMigrator/transformer.tdf -text
+transformers/us_rfbd_nimasCreator/NimasCreator.java -text svneol=unset#text/plain
+transformers/us_rfbd_nimasCreator/transformer.tdf -text

@@ -1,0 +1,98 @@
+<transformer version="1.0">
+	<name>NIMAS fileset creator</name>
+	<description>
+		Create a full NIMAS fileset (OPF, dtbook w/images, PDF)
+		from the dtbook file, PDF, and metadata
+	</description>
+	<classname>us_rfbd_nimasCreator.NimasCreator</classname>
+	<license>LGPL</license>
+	<author>James Pritchett</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/us_rfbd_nimasCreator.html"/>
+
+	<parameters>
+		<parameter required="true" direction="in" type="application/x-dtbook+xml">
+			<name>xml</name>
+			<description>The input DTBook XML file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="in" type="application/pdf">
+			<name>pdf</name>
+			<description>The input PDF file</description>
+			<example>file:///path/to/file.pdf</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>output</name>
+			<description>The output directory</description>
+			<example>D:/path/to/outputDir/</example>
+		</parameter>
+
+<!-- Required metadata -->
+    <!-- DTD-required -->
+		<parameter required="true" type="string">
+			<name>dc:title</name>
+			<description>Dublin Core Title</description>
+			<example>In Cold Blood: A True Account of a Multiple Murder and Its Consequences</example>
+			<default/>
+		</parameter>
+
+		<parameter required="true" type="string">
+			<name>dc:identifier</name>
+			<description>Dublin Core Identifier</description>
+			<example>0-679-74558-0</example>
+			<default/>
+		</parameter>
+
+		<parameter required="true" type="string">
+			<name>dc:language</name>
+			<description>Dublin Core Language</description>
+			<example>en</example>
+			<default/>
+		</parameter>
+
+    <!-- NIMAS-required -->
+		<parameter required="true" type="string">
+			<name>dc:publisher</name>
+			<description>Dublin Core Publisher</description>
+			<example>Random House</example>
+			<default/>
+		</parameter>
+
+		<parameter required="true" type="string">
+			<name>dc:date</name>
+			<description>Dublin Core Date (date of publication)</description>
+			<example>2008</example>
+			<default/>
+		</parameter>
+
+		<parameter required="true" type="string">
+			<name>dc:rights</name>
+			<description>Dublin Core Rights</description>
+			<example>None</example>
+			<default/>
+		</parameter>
+
+		<parameter required="true" type="string">
+			<name>dc:source</name>
+			<description>Dublin Core Source (ISBN)</description>
+			<example>0-679-74558-0</example>
+			<default/>
+		</parameter>
+
+		<parameter required="true" type="string">
+			<name>nimas-SourceEdition</name>
+			<description>NIMAS source edition</description>
+			<example>Third edition</example>
+			<default/>
+		</parameter>
+
+		<parameter required="true" type="string">
+			<name>nimas-SourceDate</name>
+			<description>NIMAS source date</description>
+			<example>1966</example>
+			<default/>
+		</parameter>
+	</parameters>
+</transformer>
