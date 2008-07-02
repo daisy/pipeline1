@@ -74,6 +74,7 @@
 	</xsl:copy>
 </xsl:template>
 
+<!-- levels containing only a heading is appended an empty paragraph -->
 <xsl:template match="level|level1|level2|level3|level4|level5|level6">
 	<xsl:copy>
 		<xsl:copy-of select="@*" />
