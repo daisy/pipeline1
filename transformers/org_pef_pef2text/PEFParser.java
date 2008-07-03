@@ -189,12 +189,6 @@ public class PEFParser {
 				}
 			}
 			parse(new File(input), new File(output), Embosser.valueOf(embosser.toUpperCase()), BrailleTable.valueOf(table.toUpperCase()), LineBreaks.valueOf(breaks.toUpperCase()), Range.parseRange(range), EightDotFallbackMethod.valueOf(fallback.toUpperCase()), (char)Integer.parseInt(replacement, 16));
-			BrailleDevice bd = new BrailleDevice("PPunkt", true);
-			try {
-				bd.emboss(new File(output));
-			} catch (PrintException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 	
