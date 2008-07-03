@@ -1,4 +1,7 @@
 <?xml version="1.1" encoding="UTF-8"?>
+<!-- 
+	Deprecated, replaced by the SAX implementation "PEFParser"
+-->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:pef="http://www.daisy.org/ns/2008/pef" xmlns:bpf="http://www.tpb.se/ns/2006/bpf" exclude-result-prefixes="dc pef bpf">
 	<xsl:output method="text" encoding="utf-8" indent="no" omit-xml-declaration="yes"/>
 
