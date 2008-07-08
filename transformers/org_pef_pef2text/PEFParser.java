@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Stack;
 
@@ -446,7 +447,11 @@ public class PEFParser {
 					&& "row".equals(context.getLocalName())) {
 				String text = new String(ch, start, length);
 				for (char c : text.toCharArray()) {
-					writeInRange(String.valueOf(tableDef.charAt((int)(c & 0x003F))).getBytes(charset));
+					try {
+						writeInRange(String.valueOf(tableDef.charAt((int)(c & 0x003F))).getBytes(charset.name()));
+					} catch (UnsupportedEncodingException e) {
+						throw new SAXException(e);
+					}
 				}
 			}
 		}
