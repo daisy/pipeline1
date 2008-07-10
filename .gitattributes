@@ -145,7 +145,6 @@ doc/transformers/se_tpb_zed2daisy202.html -text
 doc/transformers/uk_rnib_dtbook2xhtml.html -text
 doc/transformers/us_rfbd_dtbookMigrator.html -text
 doc/transformers/us_rfbd_nimasCreator.html -text svneol=unset#text/plain
-lib/ZedVal.jar -text
 lib/batik-css.jar -text
 lib/batik-util.jar -text
 lib/chardet.jar -text
