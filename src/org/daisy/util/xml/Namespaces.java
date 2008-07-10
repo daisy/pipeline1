@@ -17,6 +17,8 @@
  */
 package org.daisy.util.xml;
 
+import javax.xml.XMLConstants;
+
 /**
  * Namespace URI constants. Even more generic ones are in <code>javax.xml.XMLConstants</code>.
  * @author Markus Gylling
@@ -36,4 +38,6 @@ public final class Namespaces {
 	public static final String Z2005_NCX_NS_URI = "http://www.daisy.org/z3986/2005/ncx/";	
 	public static final String Z2005_DTBOOK_NS_URI = "http://www.daisy.org/z3986/2005/dtbook/";
 	public static final String Z2005_RESOURCE_NS_URI = "http://www.daisy.org/z3986/2005/resource/";
+	
+	public static final String XML_NS_URI = XMLConstants.XML_NS_URI;
 }
