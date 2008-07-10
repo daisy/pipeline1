@@ -21,8 +21,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -63,8 +65,10 @@ public class AnnonsatorXSLTBuilder {
 	private Document config;
 	private Document template;
 	
-	private String xmlnsAttr;
-	private String xmlnsValue;
+//	private String xmlnsAttr;
+//	private String xmlnsValue;
+	private Map<String,String> xmlnsAttrs;
+	
 	
 	private String outputFilename;
 	
@@ -83,6 +87,7 @@ public class AnnonsatorXSLTBuilder {
 	    factory.setNamespaceAware(true);
 	    //factory.setValidating(true);
 	    try {
+	    	xmlnsAttrs = new HashMap<String,String>();
 	        builder = factory.newDocumentBuilder();
 	        config = builder.parse(configFile.openStream());
 	        
@@ -91,8 +96,7 @@ public class AnnonsatorXSLTBuilder {
 	        for (int i = 0; i < rootAttributes.getLength(); ++i) {
 	            Attr attr = (Attr)rootAttributes.item(i);
 	            if (attr.getName().startsWith("xmlns")) {
-	            	xmlnsAttr = attr.getName();
-	            	xmlnsValue = attr.getNodeValue();
+	            	xmlnsAttrs.put(attr.getName(), attr.getValue());	            	
 	            }
 	        }
 	        
@@ -136,7 +140,12 @@ public class AnnonsatorXSLTBuilder {
 		try {
 			template = builder.parse(templateFile.openStream());
 			Element elem = template.getDocumentElement(); 
-			elem.setAttribute(xmlnsAttr, xmlnsValue);
+			Iterator<String> iter = xmlnsAttrs.keySet().iterator();
+			while(iter.hasNext()) {
+				String name = iter.next();
+				elem.setAttribute(name, xmlnsAttrs.get(name));	
+			}
+			
 			
 			Element ifBefore = template.getElementById("ifBefore");
 			for (Iterator<String> it = languages.iterator(); it.hasNext(); ) {
@@ -311,7 +320,11 @@ public class AnnonsatorXSLTBuilder {
 			template = builder.parse(templateFile.openStream());
 			
 			Element elem = template.getDocumentElement(); 
-			elem.setAttribute(xmlnsAttr, xmlnsValue);
+			Iterator<String> iter = xmlnsAttrs.keySet().iterator();
+			while(iter.hasNext()) {
+				String name = iter.next();
+				elem.setAttribute(name, xmlnsAttrs.get(name));	
+			}
 			
 			String nsPrefix = XPathUtils.valueOf(config, "//prefix");
 			String nsURI = XPathUtils.valueOf(config, "//namespace");

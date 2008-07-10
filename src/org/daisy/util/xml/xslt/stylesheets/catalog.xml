@@ -21,6 +21,7 @@
     <system systemId="dtbook2005-1to2.xsl" uri="./dtbook/dtbook2005-1to2.xsl" />
     <system systemId="dtbook2005-2to3.xsl" uri="./dtbook/dtbook2005-2to3.xsl" />
     <system systemId="xhtml2dtbook.xsl" uri="./dtbook/xhtml2dtbook.xsl" />
+    <system systemId="mathml-fallback-transform.xslt" uri="./dtbook/mathml-fallback-transform.xslt" />
   </group>
 
   <group> <!-- xhtml--> 

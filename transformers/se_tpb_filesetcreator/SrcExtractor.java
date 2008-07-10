@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -34,6 +35,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.daisy.util.xml.stax.AttributeByName;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 
 /**
@@ -43,10 +45,11 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
  */
 public class SrcExtractor {
 
-	private QName srcAttrName = new QName("src");
-	private QName hrefAttrName = new QName("href");
-	private File xmlFile;
+//	private QName srcAttrName = new QName("src");
+//	private QName hrefAttrName = new QName("href");
+	private File xmlFile;	
 	private Set<String> srcValues = new HashSet<String>();
+	private Set<QName> uriCarriers;
 	
 	/**
 	 * @param xmlFile the file in which to look for references.
@@ -57,6 +60,15 @@ public class SrcExtractor {
 	public SrcExtractor(File xmlFile) throws XMLStreamException, IOException, CatalogExceptionNotRecoverable {
 		this.xmlFile = xmlFile;
 		
+		/*
+		 * All known carriers of URIs in dtbook manuscripts, and resource files
+		 * TODO this whole class can be discarded, use Fileset instead
+		 */
+		this.uriCarriers = new HashSet<QName>();
+		uriCarriers.add(new QName("src"));	   //dtbook, resourcefile
+		uriCarriers.add(new QName("href"));	   //dtbook
+		uriCarriers.add(new QName("altimg"));  //math
+						
 		// open a stream to xmlFile
 		// check if the are any src attributes
 		// if so, put them in some kind of set
@@ -69,14 +81,9 @@ public class SrcExtractor {
 		while (reader.hasNext()) {
 			XMLEvent event = reader.nextEvent();
 			if (event.isStartElement()) {
-				extractSrc(event.asStartElement());
-				
-				//mg20080401, may refer to css here...
-				if(event.asStartElement().getName().getLocalPart()=="link") {					
-					extractLink(event.asStartElement());
-				}
+				StartElement se = event.asStartElement();
+				extractURI(se);
 			} else if (event.isProcessingInstruction()) {
-				//added by mgylling 20080401
 				extractProcIns((ProcessingInstruction)event);
 			}
 		}
@@ -85,9 +92,19 @@ public class SrcExtractor {
 		fileInputStream.close();
 	}
 	
+	private void extractURI(StartElement se) {
+		Attribute attrib;
+		for(QName q : uriCarriers) {
+			if ((attrib = AttributeByName.get(q,se)) != null) {
+				String val = attrib.getValue();
+				if (val != null && val.trim().length() > 0) {
+					srcValues.add(val);
+				}
+			}	
+		}		
+	}
+
 	private void extractProcIns(ProcessingInstruction event) {
-		//added by mgylling 20080401
-		//<?xml-stylesheet href="dtbookbasic.css" type="text/css"?>
 		try{
 			if(event.getTarget().equals("xml-stylesheet")) {
 				String data = event.getData().replace("'", "\"");			
@@ -99,44 +116,12 @@ public class SrcExtractor {
 
 		}
 	}
-
-	/**
-	 * Extracts the value of the attribute with <code>srcAttrName</code>
-	 * if present. 
-	 * @param se the start element to search for <code>srcAttrName</code>.
-	 */
-	private void extractSrc(StartElement se) {
-		Attribute attrib;
-		if ((attrib = se.getAttributeByName(srcAttrName)) != null) {
-			String val = attrib.getValue();
-			if (val != null && val.trim().length() > 0) {
-				srcValues.add(val);
-			}
-		}
-	}
-	
-	/**
-	 * Extracts the value of the attribute with <code>hrefAttrName</code>
-	 * if present. 
-	 * @param se the start element to search for <code>hrefAttrName</code>.
-	 */
-	private void extractLink(StartElement linkElem) {
-		Attribute attrib;
-		if ((attrib = linkElem.getAttributeByName(hrefAttrName)) != null) {
-			String val = attrib.getValue();
-			if (val != null && val.trim().length() > 0 && val.toLowerCase().endsWith("css")) {
-				//we want to avoid adding anything else than css for now (such as sibling dtbook docs)
-				srcValues.add(val);
-			}
-		}
-	}
-	
 	
 	/**
 	 * Returns a set containing strings. The strings are 
-	 * the values of the src attrubutes.
+	 * the values of the URI carrier attributes.
 	 * @return a set containing strings. The strings are 
-	 * the values of the src attrubutes.
+	 * the values of the URI carrier attributes.
 	 */
 	public Set<String> getSrcValues() {
 		return srcValues;

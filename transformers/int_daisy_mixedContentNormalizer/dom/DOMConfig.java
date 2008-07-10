@@ -78,6 +78,7 @@ public class DOMConfig {
 	}
 
 	/*package*/ void addSyncForce(StartElement se) {
+		//System.out.println("adding to syncforce " + se.getName().toString());
 		mSyncForce.add(se);
 	}
 	
@@ -161,8 +162,8 @@ public class DOMConfig {
 	 * @return true if inparam element is in the list of elements marked to be forced to sync in the config.
 	 */
 	public boolean isSyncForce(Element e) {				
-		for(StartElement se : mSyncForce) {
-			if(se.getName().getLocalPart().equals(e.getNodeName())) {
+		for(StartElement se : mSyncForce) {			
+			if(se.getName().getLocalPart().equals(e.getLocalName())) {
 				if(se.getName().getNamespaceURI().equals(e.getNamespaceURI())) {
 					if(matchesAttributes(e,se)) {
 						return true;

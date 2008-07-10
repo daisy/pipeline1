@@ -67,6 +67,7 @@ import org.daisy.pipeline.exception.TransformerAbortException;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.collection.MultiHashMap;
 import org.daisy.util.execution.ProgressObserver;
+import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
@@ -79,6 +80,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import se_tpb_filesetcreator.FileSetCreator.Extension;
 
 
 /**
@@ -147,6 +150,8 @@ public class NCXMaker implements BusListener {
 	private ProgressObserver progressObserver;				// a component to report progress to
 	private boolean mTransformerAborted = false;			// tracks abort events
 	private SimpleNamespaceContext mNsc;					// custom namespace contex for xpath queries
+
+	private Set<Extension> extensions;
 	
 	
 	/**
@@ -167,6 +172,7 @@ public class NCXMaker implements BusListener {
 			Set<String> levels,
 			Set<String> navListHeadings,
 			Set<String> customNavList,
+			Set<Extension> extensions,
 			File dtbookOutputFile, 
 			File ncxTemplateFile,
 			ProgressObserver obs,
@@ -177,6 +183,7 @@ public class NCXMaker implements BusListener {
 		
 		this.navListHeadings = navListHeadings;
 		this.dtbookOutputFile = dtbookOutputFile;
+		this.extensions = extensions;
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setNamespaceAware(true);
@@ -340,6 +347,10 @@ public class NCXMaker implements BusListener {
 				
 				if (isDTBookRoot(event.asStartElement())) {
 					handleDTBookRoot(event.asStartElement());
+					if(extensions.contains(Extension.MATHML)) {
+						//add xmlns:m to root 
+						event = addNamespaceDeclaration(event.asStartElement(),eventFactory.createNamespace("m", Namespaces.MATHML_NS_URI));
+					}
 				}
 				
 				
@@ -385,14 +396,19 @@ public class NCXMaker implements BusListener {
 					event = eventFactory.createStartDocument("utf-8", "1.0");             
 				}
 				writeEvent(event);
+				String dtd;
 				if ("2005-3".equals(dtbookVersion)) {
-					event = eventFactory.createDTD(dtbookDoctypeStr_2005_3);
+					dtd = dtbookDoctypeStr_2005_3;
 				} else if ("2005-2".equals(dtbookVersion)) {
-					event = eventFactory.createDTD(dtbookDoctypeStr_2005_2);
+					dtd = dtbookDoctypeStr_2005_2;
 				} else {
-					event = eventFactory.createDTD(dtbookDoctypeStr_2005_1);
+					dtd = dtbookDoctypeStr_2005_1;
 				}
-				
+				if(extensions.contains(Extension.MATHML)) {
+					//insert the internal subset string before the close '>'
+					dtd = dtd.replace(">", MATHML_INTERNAL_SUBSET);
+				}
+				event = eventFactory.createDTD(dtd);
 				
 			} else if (event.isProcessingInstruction()) {
 				//continue;
@@ -439,6 +455,25 @@ public class NCXMaker implements BusListener {
 	}
 
 	
+	/**
+	 * Add a new namespace declaration to a StartElement.
+	 * If the startelement already has a declaration for the given namespace,
+	 * it will be removed, and the given declaration inserted in its place.
+	 */
+	private StartElement addNamespaceDeclaration(StartElement event, Namespace newNamespace) {
+		Set<Namespace> newNamespaces = new HashSet<Namespace>();
+		Iterator<?> existingNamespaces = event.getNamespaces();
+		while(existingNamespaces.hasNext()) {
+			Namespace ns = (Namespace)existingNamespaces.next();
+			if(!ns.getNamespaceURI().equals(newNamespace.getNamespaceURI())) {
+				newNamespaces.add(ns);
+			}
+		}
+		newNamespaces.add(newNamespace);		
+		return eventFactory.createStartElement(event.getName(), event.getAttributes(), newNamespaces.iterator());
+	}
+
+
 	/**
 	 * Handles the dtbook root element, e.g fetching the xml:lang.
 	 * @param element the dtbook root start element.
@@ -980,27 +1015,35 @@ public class NCXMaker implements BusListener {
 	
 	/**
 	 * Removes attributes from a namespace with a URI other than the
-	 * dtb URI or the empty string.
+	 * dtb URI or the empty string. If extensions are present,
+	 * it will also retain namespace declarations associated with 
+	 * that extension.
 	 * 
 	 * @param se the start element of concern.
 	 * @return the start element without non dtb attributes. 
 	 */
 	private XMLEvent keepDTB(StartElement se) {
-		Collection<Attribute> attributes = new HashSet<Attribute>();
+					
+		Collection<Attribute> attributes = new HashSet<Attribute>();		
 		for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
 			QName name = at.getName();
 			String nsuri = name.getNamespaceURI();
-			if (nsuri.equals(dtbookNamespaceURI) || nsuri.equals("") || name.getPrefix().equals("xml")) {
+			if (nsuri.equals(dtbookNamespaceURI) || nsuri.equals("") || name.getPrefix().equals("xml") 
+					|| (extensions.contains(Extension.MATHML) && nsuri.equals(Namespaces.MATHML_NS_URI))) {
 				attributes.add(at);
 			}
 		}
 		
 		Collection<Namespace> namespaces = new HashSet<Namespace>();
 		for (Iterator<?> it = se.getNamespaces(); it.hasNext(); ) {
-			Namespace ns = (Namespace) it.next();
-			
+			Namespace ns = (Namespace) it.next();			
 			if (ns.isDefaultNamespaceDeclaration()) {
+				namespaces.add(ns);
+			}
+			if(extensions.contains(Extension.MATHML) && 
+					(ns.getNamespaceURI().equals(Namespaces.MATHML_NS_URI) 
+							|| ns.getNamespaceURI().equals(Namespaces.Z2005_DTBOOK_NS_URI))) {
 				namespaces.add(ns);
 			}
 		}
@@ -1165,7 +1208,7 @@ public class NCXMaker implements BusListener {
 	 * Removes empty navPoints and update the NCX depth
 	 */
 	private void handlePopLevel() {
-		Element navPoint = (Element) openLevels.pop();
+		Element navPoint = openLevels.pop();
 		Node parent = navPoint.getParentNode();
 		if ("empty".equals(navPoint.getAttribute("class"))) {
 			// Remove the navPoint
@@ -1698,4 +1741,28 @@ public class NCXMaker implements BusListener {
 			throw new TransformerAbortException("User aborted execution!");
 		}
 	}
+	
+	private final static String MATHML_INTERNAL_SUBSET =  
+		 "[\n"+
+		 "<!ENTITY % MATHML.prefixed \"INCLUDE\" >\n"+
+		 "<!ENTITY % MATHML.prefix \"m\">\n"+
+		 "<!ENTITY % MATHML.Common.attrib\n"+
+		 "        \"xlink:href    CDATA       #IMPLIED\n"+
+		 "         xlink:type     CDATA       #IMPLIED\n"+
+		 "         class          CDATA       #IMPLIED\n"+
+		 "         style          CDATA       #IMPLIED\n"+
+		 "         id             ID          #IMPLIED\n"+
+		 "         xref           IDREF       #IMPLIED\n"+
+		 "         other          CDATA       #IMPLIED\n"+
+		 "         xmlns:dtbook   CDATA       #FIXED 'http://www.daisy.org/z3986/2005/dtbook/'\n"+
+		 "         dtbook:smilref CDATA       #IMPLIED\"" +
+		 " >\n"+
+		 "<!ENTITY % mathML2 PUBLIC \"-//W3C//DTD MathML 2.0//EN\"\n"+
+		 "            \"http://www.w3.org/Math/DTD/mathml2/mathml2.dtd\"\n"+
+		 " >\n"+
+		 " %mathML2;\n"+
+		 " <!ENTITY % externalFlow \"| m:math\">\n"+
+		 " <!ENTITY % externalNamespaces \"xmlns:m CDATA #FIXED\n"+
+		 "	'http://www.w3.org/1998/Math/MathML'\">\n"+
+		 "]>\n";
 }

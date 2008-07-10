@@ -69,12 +69,14 @@ import org.daisy.util.execution.AbortListener;
 import org.daisy.util.execution.ProgressObserver;
 import org.daisy.util.file.Directory;
 import org.daisy.util.xml.IDGenProvider;
+import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
+import org.daisy.util.xml.stax.AttributeByName;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -145,8 +147,8 @@ public class SmilMaker implements AbortListener, BusListener {
 	private File manuscriptOutputFile;				// the location to which the modified input document should be written
 	private String uid;								// the id of this book
 	
-	private String smilDoctypePublic = "-//NISO//DTD dtbsmil 2005-1//EN";					// doctype public of output smil
-	private String smilDoctypeSystem = "http://www.daisy.org/z3986/2005/dtbsmil-2005-1.dtd";// doctype system of output smil
+	private String smilDoctypePublic = "-//NISO//DTD dtbsmil 2005-2//EN";					// doctype public of output smil
+	private String smilDoctypeSystem = "http://www.daisy.org/z3986/2005/dtbsmil-2005-2.dtd";// doctype system of output smil
 	private String smilNamespaceURI = "http://www.w3.org/2001/SMIL20/";						// namespace for the smil elements
 	
 	private Map<String, String> smilFileMapping = new HashMap<String, String>();		// used for mapping element id to file
@@ -158,7 +160,8 @@ public class SmilMaker implements AbortListener, BusListener {
 	
 	private boolean mTransformerAborted = false;		// tracks abort events
 	private SimpleNamespaceContext mNsc;				// custom namespace contex for xpath queries
-	
+
+	private static final QName mathmlMathElement = new QName(Namespaces.MATHML_NS_URI,"math");
 
 	private IDGenProvider idGen = new IDGenProvider();
 	
@@ -370,7 +373,7 @@ public class SmilMaker implements AbortListener, BusListener {
 					if(!rootElementSeen && cssPI!=null) writeEvent(cssPI);
 					rootElementSeen = true;
 					//end mg20080401
-					
+										
 					if (isEscapable(event)) {
 						XMLEvent modifiedStartElement = newSeq(reader, event.asStartElement());
 						event = modifiedStartElement;
@@ -510,7 +513,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * seq-element (e.g. &lt;seq class="note"...) and inserting it right 
 	 * after the referring element. In this way, the player will continue
 	 * right after the reference after playing the target element instead
-	 * of countinuing after the target. 
+	 * of continuing after the target. 
 	 * 
 	 * @throws TransformerAbortException 
 	 *
@@ -819,12 +822,12 @@ public class SmilMaker implements AbortListener, BusListener {
 			}
 			
 			se = event.asStartElement();
-						
-			Attribute at = se.getAttributeByName(new QName("name"));
+									
+			Attribute at = AttributeByName.get(new QName("name"),se);
 			if (null == at) {
 				continue;
 			} else if (at.getValue().equals("dtb:uid")) {
-				at = se.getAttributeByName(new QName("content"));
+				at = AttributeByName.get(new QName("content"),se);
 				if (at != null) {
 					uid = at.getValue();
 				}
@@ -931,6 +934,10 @@ public class SmilMaker implements AbortListener, BusListener {
 		Element textElement = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "text");
 		textElement.setAttribute("src", finalDTBookFilename + "#" + dtbId);
 		textElement.setAttribute("id",textId);
+		//mg if destination is math
+		if(se.getName().equals(mathmlMathElement)) {
+			textElement.setAttribute("type","http://www.w3.org/1998/Math/MathML");
+		}				
 		parElement.appendChild(textElement);
 		
 		
@@ -949,7 +956,12 @@ public class SmilMaker implements AbortListener, BusListener {
 		Collection<Attribute> attributes = new HashSet<Attribute>();
 		
 		// smilref-attr & id-attr
-		attributes.add(eventFactory.createAttribute(new QName("smilref"), getCurrentSmilFilename() + "#" + parId));
+		if(se.getName().getLocalPart().equals("math")) {
+			attributes.add(eventFactory.createAttribute(new QName(Namespaces.Z2005_DTBOOK_NS_URI, "smilref","dtbook"), getCurrentSmilFilename() + "#" + parId));
+		}else{
+			attributes.add(eventFactory.createAttribute(new QName("smilref"), getCurrentSmilFilename() + "#" + parId));	
+		}
+		
 		attributes.add(eventFactory.createAttribute(new QName("id"), dtbId));
 			
 		for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
@@ -958,6 +970,19 @@ public class SmilMaker implements AbortListener, BusListener {
 
 		for (Iterator<?> ns = se.getNamespaces(); ns.hasNext(); ) {
 			namespaces.add((Namespace)ns.next());
+		}
+		
+		if(se.getName().getLocalPart().equals("math")) {
+			//we need to redeclare the dtbook namespace as prefixed on the math element
+			Namespace dtbookNSprefixed = eventFactory.createNamespace("dtbook",Namespaces.Z2005_DTBOOK_NS_URI);
+			Iterator<Namespace> nsIter = namespaces.iterator();
+			while (nsIter.hasNext()) {
+				Namespace ns = nsIter.next();
+				if(ns.getNamespaceURI().equals(Namespaces.Z2005_DTBOOK_NS_URI)) {
+					namespaces.remove(ns);
+				}
+			}
+			namespaces.add(dtbookNSprefixed);
 		}
 		
 		StartElement newStartElement = eventFactory.createStartElement(se.getName(), attributes.iterator(), namespaces.iterator());
@@ -984,7 +1009,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 */
 	private StartElement newSeq(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {		
 		String tcsId = idGen.generateId("tcs");
-		Attribute dtbIdAtt = se.getAttributeByName(new QName("id")); 
+		Attribute dtbIdAtt = AttributeByName.get(new QName("id"),se); 
 		String dtbId = null == dtbIdAtt ? this.getNextDTBId() : dtbIdAtt.getValue();
 		
 		Element parentSeqElement = openSeqs.peek();
@@ -993,7 +1018,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		newSeq.setAttribute("id", tcsId);
 		
 		if (isForceLink(se)) {
-			Attribute at = se.getAttributeByName(new QName("id"));
+			Attribute at = AttributeByName.get(new QName("id"),se);
 			if (at != null) {
 				newSeq.setAttribute(tempLinkId, at.getValue());
 			}
@@ -1009,6 +1034,17 @@ public class SmilMaker implements AbortListener, BusListener {
 		
 		// make the seq available to others
 		openSeqs.push(newSeq);
+		
+		//mg20080614: if the created seq represents a construct
+		//with no syncable descendants, <code>Text</code>, or <m:math smil:sync="true">
+		//we need to create the child par here, since the main loop will not detect
+		//anything to put in a par inside the seq before it closes it again
+		if(!descendantsContainSmil(reader,se)) {
+			//System.err.println("NOTE - newSeq !descendantsContainSmil on a " + se.getName().toString());
+			return (StartElement)newPar(se);				
+		}
+		//end mgmg20080614 additions
+		
 		
 		// Create what's supposed to be in the dtbook:		
 		// attributes:
@@ -1297,7 +1333,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 */
 	private boolean isLinkSource(StartElement se) {
 		if (se.getName().getLocalPart().equals("a")) {
-			return se.getAttributeByName(new QName("href")) != null;
+			return AttributeByName.get(new QName("href"),se) != null;
 		}
 		return false;
 	}
@@ -1311,7 +1347,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 */
 	private boolean isLinkTarget(StartElement se) {
 		if (se.getName().getLocalPart().equals("a")) {
-			return se.getAttributeByName(new QName("href")) == null;
+			return AttributeByName.get(new QName("href"),se) == null;
 		}
 		return false;
 	}
@@ -1322,7 +1358,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @param link the link source element from the input document.
 	 */
 	private void handleLinkSource(StartElement link) {
-		Attribute at = link.getAttributeByName(new QName("href"));  
+		Attribute at = AttributeByName.get(new QName("href"),link);  
 		String href = at.getValue();
 		while (href.startsWith("#")) {
 			href = href.substring(1);
@@ -1343,7 +1379,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 */
 	private void handleLinkTarget(StartElement se) {
 		String linkTargetId;
-		Attribute at = se.getAttributeByName(new QName("id"));
+		Attribute at = AttributeByName.get(new QName("id"),se);
 		if (at != null) {
 			linkTargetId = at.getValue();
 		} else {
@@ -1439,7 +1475,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	
 	
 	/**
-	 * Returns <code>true</code> if and only if <code>e</code>
+	 * Returns <code>true</code> if and only if <code>se</code>
 	 * has attributes from the smil namespace with the namespace URI "http://www.w3.org/2001/SMIL20/",
 	 * <code>false</code> otherwise.
 	 * 
@@ -1474,6 +1510,31 @@ public class SmilMaker implements AbortListener, BusListener {
 		}
 		
 		String bookmark = "SmilMaker.scopeContainsSmil";
+		boolean containsSmil = false;
+		reader.setBookmark(bookmark);
+		int elemCount = 1;
+		while (reader.hasNext() && elemCount > 0) {
+			XMLEvent e = reader.nextEvent();
+			if (e.isStartElement()) {
+				elemCount++;
+				
+				if (hasSmilAttributes(e.asStartElement())) {
+					containsSmil = true;
+					break;
+				}
+					
+			} else if (e.isEndElement()) {
+					elemCount--;
+			}
+		}
+					
+		reader.gotoAndRemoveBookmark(bookmark);
+		return containsSmil;		
+	}
+		
+	private boolean descendantsContainSmil(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {
+				
+		String bookmark = "SmilMaker.descendantsContainSmil";
 		boolean containsSmil = false;
 		reader.setBookmark(bookmark);
 		int elemCount = 1;

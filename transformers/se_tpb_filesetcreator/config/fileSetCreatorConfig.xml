@@ -23,7 +23,7 @@
 		<item>note</item>
 	</customNavList>
 
-	<!-- Escapabel elements -->
+	<!-- Escapable elements -->
 	<escapable>
 		<item>annotation</item>
 		<item>blockquote</item>
@@ -35,6 +35,7 @@
 		<item>sidebar</item>
 		<item>table</item>
 		<item>tr</item>
+		<item>math</item>
 	</escapable>	
 	
 	<!-- skippable elements -->

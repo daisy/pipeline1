@@ -150,7 +150,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 					Serializer.serialize((Document)result.getNode(), output, "utf-8", props);					
 									
 				}finally{
-					LSParserPool.getInstance().release(parser, domConfigMap);
+					if(parser!=null)LSParserPool.getInstance().release(parser, domConfigMap);
 				}
 			}//	if(implementation.equals("dom"))
 			

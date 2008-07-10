@@ -32,6 +32,7 @@ import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.events.Attribute;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -41,6 +42,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.daisy.util.dtb.meta.MetadataItem;
+import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
@@ -61,7 +64,7 @@ public class OPFMaker {
 	
 	private Map<String,String> mimeTypes;			// maps filename suffix to mime type for valid file types.
 	private Map<?,?> dcElements;							// a MultiHashMap containing dc elements and their values.
-	private Map metaData;							// meta data container, such as total time, media content etc.
+	private MetadataList xMetaData;							// x-metadata container, such as total time, media content etc.
 	private Vector<?> smils;							// the smil files names in order.
 	private Set<String> generatedFiles;						// files generated during file set creation.
 	private Set<String> referredFiles;						// files referred in other ways, e.g images.
@@ -82,7 +85,7 @@ public class OPFMaker {
 	 * 
 	 * @param mimeTypes	the mapping between filename suffix and mime type.
 	 * @param dcElements a mapping between dc element name and a collection of values.
-	 * @param metaData a mapping between meta data element names and their values.
+	 * @param xMetadata package file x-metadata.
 	 * @param smils the smil file names in proper sequence.
 	 * @param generatedFiles names of all files generated during file set creation.
 	 * @param referredFiles names of files referred from the dtbook.
@@ -93,7 +96,7 @@ public class OPFMaker {
 	public OPFMaker(
 			Map<String,String> mimeTypes, 
 			Map<?,?> dcElements, 
-			Map<?,?> metaData, 
+			MetadataList xMeta, 
 			Vector<?> smils, 
 			Set<String> generatedFiles, 
 			Set<String> referredFiles, 
@@ -103,7 +106,7 @@ public class OPFMaker {
 		
 		this.mimeTypes = mimeTypes;
 		this.dcElements = dcElements;
-		this.metaData = metaData;
+		this.xMetaData = xMeta;
 		this.smils = smils;
 		this.generatedFiles = generatedFiles;
 		this.referredFiles = referredFiles;
@@ -148,7 +151,7 @@ public class OPFMaker {
 		DEBUG("OPFMaker#makeOPF(): starting...");
 		parseTemplate();
 		makeDCElements();
-		makeMetaElements();
+		makeXMetaElements();
 		makeManifest();
 		makeSpine();
 		DEBUG("OPFMaker#makeOPF() output file: " + opfOutputFile);
@@ -300,17 +303,17 @@ public class OPFMaker {
 	 * Adds the metadata, such as total time, media content etc.
 	 * @param metaData
 	 */
-	private void makeMetaElements() {
+	private void makeXMetaElements() {
 		Element xMeta = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "//opf:x-metadata", mNsc);
-		for (Iterator<?> it = metaData.keySet().iterator(); it.hasNext(); ) {
-			
-			String metaName = (String)it.next();
-			String metaContent = (String) metaData.get(metaName);
-			
+		for(MetadataItem item : xMetaData) {
 			Element newMeta = opf.createElementNS(opfNamespaceURI, "meta");
-			newMeta.setAttribute("name", metaName);
-			newMeta.setAttribute("content", metaContent);
-		
+			newMeta.setAttribute("name", item.getQName().getLocalPart());
+			newMeta.setAttribute("content", item.getValue());
+			Iterator<Attribute> iter = item.getAttributes();
+			while(iter.hasNext()) {
+				Attribute a = iter.next();
+				newMeta.setAttribute(a.getName().getLocalPart(), a.getValue());
+			}
 			xMeta.appendChild(newMeta);
 		}
 	}

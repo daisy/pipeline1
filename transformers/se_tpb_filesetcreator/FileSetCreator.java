@@ -19,6 +19,7 @@ package se_tpb_filesetcreator;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -39,13 +41,19 @@ import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.event.UserAbortEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.dtb.meta.MetadataItem;
+import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.execution.ProgressObserver;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileBunchCopy;
+import org.daisy.util.xml.NamespaceReporter;
+import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.pool.PoolException;
+import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -54,11 +62,8 @@ import org.xml.sax.SAXException;
 
 
 /**
- * Creates a z39.86-fileset given output from the transformer 
- * se_tpb_speechgenerator.SpeechGenerator.
- * 
+ * Creates a z39.86-fileset given output from the transformer se_tpb_speechgenerator.SpeechGenerator.
  * @author Martin Blomberg
- *
  */
 public class FileSetCreator extends Transformer {
 	
@@ -75,41 +80,35 @@ public class FileSetCreator extends Transformer {
 		super(inputListener, bool);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
-	 */
-	/**
-	 * Transformer enterpoint. 
-	 * @param parameters the parameters supplied to this transformer
+	/*
+	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
 	 */
 	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		
 		String outputDirectory = parameters.remove("outputDirectory");
 		String manuscriptFilename = parameters.remove("manuscriptFilename");
-		String outputDTBFilename = parameters.remove("outputDTBFilename");
+		String outputDTBookFilename = parameters.remove("outputDTBFilename");
 		String resourceFilename = parameters.remove("resourceFilename");
+		
 		String smilTemplateFilename = parameters.remove("smilTemplateFilename");
 		String ncxTemplateFilename = parameters.remove("ncxTemplateFilename");
 		String opfTemplateFilename = parameters.remove("opfTemplateFilename");
 		String fscConfigFilename = parameters.remove("fscConfigFilename");
 		
-		File outputDir = new File(outputDirectory);
-		if (!outputDir.exists()) {
-			outputDir.mkdir();
-		}
+
 		
 		//*****************************************************************************************************		
 		this.sendMessage(i18n("USING_INPUT_FILE", manuscriptFilename), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 		this.sendMessage(i18n("USING_OUTPUT_DIR", outputDirectory), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 		
-		File finalDTBFile = new File(outputDTBFilename);
+		File finalDTBookFile = new File(outputDTBookFilename);
 		File tmp = new File(changeSuffix(manuscriptFilename, ".ncx"));
 		String ncxFilename = tmp.getName();
 		tmp = new File(changeSuffix(manuscriptFilename, ".opf"));
 		String opfFilename = tmp.getName();
 		
-		// the sets of element namnes to handle
+		// the sets of element names to handle
 		Set<String> navListHeadings = new HashSet<String>();
 		Set<String> customNavLists = new HashSet<String>();
 		Set<String> escapable = new HashSet<String>();
@@ -121,23 +120,28 @@ public class FileSetCreator extends Transformer {
 		Set<String> references = new HashSet<String>();		
 		File manuscriptFile = new File(manuscriptFilename);
 		
-		// will we have to copy files or are they already in the right directory?
-		if (!outputDir.equals(manuscriptFile.getParentFile())) {
-			COPY_DONE = 0.45;
-			SMILS_DONE *= (1 - COPY_DONE);
-			NCX_DONE *= (1 - COPY_DONE);
-			OPF_DONE *= (1 - COPY_DONE);
-		}
-		
-
-		SmilMaker sm;
-		NCXMaker ncx;
-		OPFMaker opf;
-		
 		try {
 			
+			Directory outputDir = new Directory(outputDirectory);
+			if (!outputDir.exists()) outputDir.mkdir();
+			
+			// will we have to copy files or are they already in the right directory?
+			if (!outputDir.equals(manuscriptFile.getParentFile())) {
+				COPY_DONE = 0.45;
+				SMILS_DONE *= (1 - COPY_DONE);
+				NCX_DONE *= (1 - COPY_DONE);
+				OPF_DONE *= (1 - COPY_DONE);
+			}
+			
+			SmilMaker sm;
+			NCXMaker ncx;
+			OPFMaker opf;
+		
+					
 			//*****************************************************************************************************
 			// Collect the src-attributes
+			// TODO SrcExtrator can be discarded, use Fileset and Directory.addFileset(Fileset,FilesetFileFilter) instead
+			
 			this.sendMessage(i18n("SEARCHING_FOR_REFERRED_FILES"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 			
 			// get the files referred from the resource file + the resource file itself
@@ -190,12 +194,9 @@ public class FileSetCreator extends Transformer {
 					forceLink,
 					pr);
 		
-			//addAbortListener(sm);
-			//mg20070327: use the new event api
 			EventBus.getInstance().subscribe(sm, UserAbortEvent.class);
-			sm.setFinalDTBookFilename(finalDTBFile.getName());
+			sm.setFinalDTBookFilename(finalDTBookFile.getName());
 			sm.makeSmils();
-			//removeAbortListener(sm);
 			EventBus.getInstance().unsubscribe(sm, UserAbortEvent.class);
 			
 						
@@ -208,7 +209,22 @@ public class FileSetCreator extends Transformer {
 			
 			this.sendMessage(i18n("DONE"), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 			
-					
+			//**************************************************************************
+			// Gather some metadata stuff, and check for present extensions
+			
+			mimeTypes = getMimeTypes();			
+			String mediaContent = "";
+			if (containsMimeType(references, mimeTypes, "image")) {
+				mediaContent = ",image";
+			}
+			
+			MetadataList xMetadata = new MetadataList();
+			xMetadata.add(new MetadataItem(new QName("dtb:totalTime"),totalTime));
+			xMetadata.add(new MetadataItem(new QName("dtb:multimediaContent"),"audio,text" + mediaContent));
+						
+			Set<Extension> extensions = checkForExtensions(modifiedManuscriptFile, xMetadata, generatedFiles,outputDir);
+
+			
 			//*****************************************************************************************************
 			// Create the ncxmaker and put it to work
 			this.sendMessage(i18n("GENERATING_NCX"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
@@ -218,31 +234,29 @@ public class FileSetCreator extends Transformer {
 					progress((progress * NCX_DONE) + SMILS_DONE);
 				}
 			};
-
-			
 			
 			ncx = new NCXMaker(
 					modifiedManuscriptFile, 
 					levels,
 					navListHeadings,
 					customNavLists,
-					finalDTBFile,
+					extensions,
+					finalDTBookFile,
 					new File(ncxTemplateFilename),
 					pr,
 					this);
 			
 			ncx.setCustomTests(allCustomTests, getBookStructs());
 			ncx.setNCXOutputFile(new File(outputDir, ncxFilename));
-			//addAbortListener(ncx);
-			//mg 20070327: use the new event api
+
+
 			EventBus.getInstance().subscribe(ncx, UserAbortEvent.class);
 			ncx.makeNCX();
-			//removeAbortListener(ncx);
 			EventBus.getInstance().unsubscribe(ncx, UserAbortEvent.class);
 						
 			this.sendMessage(i18n("DONE"), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 			
-			generatedFiles.add(finalDTBFile.getName());
+			generatedFiles.add(finalDTBookFile.getName());
 			generatedFiles.add(ncxFilename);
 			generatedFiles.add(opfFilename);
 			
@@ -257,21 +271,25 @@ public class FileSetCreator extends Transformer {
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");	
 				dcElements.put("dc:Date", dateFormat.format(now));
 			}
-			Map<String, String> metaElements = new HashMap<String, String>();
-			mimeTypes = getMimeTypes();
-			
-			String mediaContent = "";
-			if (containsMimeType(references, mimeTypes, "image")) {
-				mediaContent = ",image";
-			}
-			
-			metaElements.put("dtb:totalTime", totalTime);
-			metaElements.put("dtb:multimediaContent", "audio,text" + mediaContent);
+						
+						
+//			mimeTypes = getMimeTypes();			
+//			String mediaContent = "";
+//			if (containsMimeType(references, mimeTypes, "image")) {
+//				mediaContent = ",image";
+//			}
+//			
+//			MetadataList xMetadata = new MetadataList();
+//			xMetadata.add(new MetadataItem(new QName("dtb:totalTime"),totalTime));
+//			xMetadata.add(new MetadataItem(new QName("dtb:multimediaContent"),"audio,text" + mediaContent));
+//			
+//			
+//			Set<Extension> extensions = checkForExtensions(modifiedManuscriptFile, xMetadata, generatedFiles,outputDir);
 			
 			opf = new OPFMaker(
 					mimeTypes,
 					dcElements, 
-					metaElements, 
+					xMetadata, 
 					smilFiles, 
 					generatedFiles, 
 					references,
@@ -304,7 +322,47 @@ public class FileSetCreator extends Transformer {
 	}
 
 
+	/**
+	 * Check our input manuscript for any active extensions. If present,
+	 * append needed additions to metaElements and generatedFiles.
+	 * @param modifiedManuscriptFile the input manuscript file
+	 * @param xMetadata Meta elements to be added to the x-metadata section of the pakage file
+	 * @param generatedFiles 
+	 * @return A set of the extensions found, or an empty set if no extensions were found.
+	 */
+	private Set<Extension> checkForExtensions(File modifiedManuscriptFile, MetadataList xMetadata, Set<String> generatedFiles, Directory outputDirectory) {
+		Set<Extension> extensions = new HashSet<Extension>();
+		try{
+			NamespaceReporter nsr = new NamespaceReporter(modifiedManuscriptFile.toURI().toURL());
+			
+			//check for the MathML extension
+			if(nsr.getNamespaceURIs().contains(Namespaces.MATHML_NS_URI)){
+				extensions.add(Extension.MATHML);
+				MetadataItem item = new MetadataItem(new QName("z39-86-extension-version"),"1.0");
+				item.addAttribute("scheme", "http://www.w3.org/1998/Math/MathML");
+				xMetadata.add(item);
+								
+				InputStream xslt = Stylesheets.get("mathml-fallback-transform.xslt").openStream();
+				File out = outputDirectory.writeToFile("mathml-fallback-transform.xslt", xslt);
+				xslt.close();
+				generatedFiles.add(out.getName());
+				
+				item = new MetadataItem(new QName("DTBook-XSLTFallback"),"mathml-fallback-transform.xslt");
+				item.addAttribute("scheme", "http://www.w3.org/1998/Math/MathML");
+				xMetadata.add(item);
+				
+			}			
+			
+		}catch (Exception e) {
+			this.sendMessage(i18n("ERROR", e.getMessage()), MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
+		}
+		return extensions;
+	}
 
+	enum Extension {
+		MATHML;
+	}
+	
 	/**
 	 * Returns the book structures.
 	 * @return the book structures.

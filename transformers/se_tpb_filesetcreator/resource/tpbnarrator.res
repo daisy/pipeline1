@@ -124,6 +124,19 @@
       </resource>
     </nodeSet>
     
+
+  	<nodeSet id="esns009" select="//seq[@class='math']">
+    	<resource xml:lang="en" id="esr009"> 
+      		<text>Mathematical formula</text>
+    	</resource>
+  	</nodeSet> 
+
+  	<nodeSet id="esns010" select="//seq[@class='code']">
+    	<resource xml:lang="en" id="esr010"> 
+      		<text>Computer Code</text>
+    	</resource>
+  	</nodeSet> 
+
   </scope>
 
 
@@ -187,7 +200,7 @@
       </resource>
     </nodeSet>
     
-		<nodeSet id="ns016" select="//table">
+	<nodeSet id="ns016" select="//table">
       <resource xml:lang="en" id="r016">
         <text>Table</text>
         <audio src="tpbnarrator_res.mp3" clipBegin="0:00:26.526" clipEnd="0:00:27.857" />
@@ -200,6 +213,14 @@
         <audio src="tpbnarrator_res.mp3" clipBegin="0:00:27.857" clipEnd="0:00:29.284" />
       </resource>
     </nodeSet>
+   </scope>
+
+   <scope nsuri="http://www.w3.org/1998/Math/MathML">
+     <nodeSet id="m1" select="//math">
+       <resource xml:lang="en" id="rm001">
+         <text>mathematical formula</text>
+       </resource>
+     </nodeSet>
    </scope>
 
 </resources>
