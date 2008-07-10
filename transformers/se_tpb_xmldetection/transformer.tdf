@@ -64,6 +64,17 @@
 			<default>true</default>
 		</parameter>		
 		
+		<parameter required="false" type="enum">
+			<name>doSingleSentAdd</name>
+			<description>Whether to add single sent elements</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
+				
 		<parameter required="false" direction="in" type="application/xml">
 			<name>customLang</name>
 			<description>User supplied language file.</description>

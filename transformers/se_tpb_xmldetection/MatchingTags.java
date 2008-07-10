@@ -38,7 +38,7 @@ class MatchingTags {
 		}
 	}
 	
-	private Vector tagInfo = new Vector();
+	private Vector<TagInfo> tagInfo = new Vector<TagInfo>();
 	
 	public void add(StartElement se) {
 		tagInfo.add(new TagInfo(se.getName(), true));
@@ -48,7 +48,7 @@ class MatchingTags {
 		TagInfo info = new TagInfo(ee.getName(), false);
 		
 		for (int i = tagInfo.size() - 1; i >= 0; i--) {
-			TagInfo tagi = (TagInfo)tagInfo.get(i);
+			TagInfo tagi = tagInfo.get(i);
 			if (info.qname.equals(tagi.qname) && tagi.isStartTag && !tagi.hasMatchingTag) {
 				tagi.hasMatchingTag = true;
 				info.hasMatchingTag = true;
@@ -63,7 +63,7 @@ class MatchingTags {
 		if (i < 0 || i > tagInfo.size() -1) {
 			throw new IllegalArgumentException();
 		}
-		TagInfo info = (TagInfo)tagInfo.get(i);		
+		TagInfo info = tagInfo.get(i);		
 		return info.hasMatchingTag;
 	}
 }

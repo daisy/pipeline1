@@ -100,7 +100,12 @@ input reqs were not satisfied, or because an exception occurs -->
 	<dt>doOverride</dt>
 	<dd><b>Optional.</b> If set to <code>true</code> (defalt is <code>false</code>), the abbreviations,
 	initialisms	and acronyms in the custom language file will override the language specific ones
-	defined in the different language dependant configuration files.</dd>	
+	defined in the different language dependant configuration files.</dd>
+	<dt>doSingleSentAdd</dt>
+	<dd><b>Optional.</b> If set to <code>false</code> (defalt is <code>true</code> which is also the original 
+	behavior of this transformer), sent elements will not be added in the case where they would become the only 
+	descendant of the parent element.	
+	</dd>	
 	</dl>
 	
 	<h3 id="extConfig">Extended configurability</h3>

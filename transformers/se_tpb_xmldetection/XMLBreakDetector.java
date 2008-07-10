@@ -41,6 +41,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.ContextStack;
+import org.daisy.util.xml.stax.DoctypeParser;
 import org.daisy.util.xml.stax.EmptyElementFilter;
 import org.daisy.util.xml.stax.EventWriterCache;
 import org.daisy.util.xml.stax.StaxEntityResolver;
@@ -77,8 +78,12 @@ public abstract class XMLBreakDetector {
         
         inputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
         inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
-           
+        
+        //mg20080613 With IS_REPAIRING_NAMESPACES set to FALSE and using the mathml extension,
+        //the output is really messay re ns declarations, but that needs to be cleaned up later:
+        //if set to TRUE, ns is clean but will break against the DTD later on when the DTD is reinserted. 
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
+        
         //System.err.println(inputFactory.isPropertySupported(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES));
         //System.err.println(inputFactory.isPropertySupported(XMLInputFactory.SUPPORT_DTD));
         //System.err.println(inputFactory.isPropertySupported(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES));
@@ -122,22 +127,32 @@ public abstract class XMLBreakDetector {
     
     
     protected void parseDoctype(String doctype) throws UnsupportedDocumentTypeException {
-        Matcher matcher = dtdPattern.matcher(doctype);
-        if (matcher.matches()) {
-            if (matcher.group(3).startsWith("PUBLIC")) {
-                String pub = matcher.group(5);
-                String sys = matcher.group(6);
-                pub = pub.substring(1, pub.length() - 1);
-                sys = sys.substring(1, sys.length() - 1);
-                breakSettings.setup(pub, sys);
-            } else {
-                String sys = matcher.group(4);                        
-                sys = sys.substring(1, sys.length() - 1);
-                breakSettings.setup(null, sys);
-            }
-        } else {
-            throw new UnsupportedDocumentTypeException("Cannot parse doctype declaration");
-        }
+    	//mg20080613: previous routine does grok internal subsets  
+    	try{
+    		DoctypeParser dp = new DoctypeParser(doctype);
+    		if(dp.getSystemId()==null) throw new UnsupportedDocumentTypeException("Cannot parse doctype declaration");
+    		if(dp.getPublicId()==null) breakSettings.setup(null, dp.getSystemId());
+    		breakSettings.setup(dp.getPublicId(), dp.getSystemId());
+    	}catch (Exception e) {
+    		throw new UnsupportedDocumentTypeException("Cannot parse doctype declaration");
+		}
+    	
+//        Matcher matcher = dtdPattern.matcher(doctype);        
+//        if (matcher.matches()) {
+//            if (matcher.group(3).startsWith("PUBLIC")) {
+//                String pub = matcher.group(5);
+//                String sys = matcher.group(6);
+//                pub = pub.substring(1, pub.length() - 1);
+//                sys = sys.substring(1, sys.length() - 1);
+//                breakSettings.setup(pub, sys);
+//            } else {
+//                String sys = matcher.group(4);                        
+//                sys = sys.substring(1, sys.length() - 1);
+//                breakSettings.setup(null, sys);
+//            }
+//        } else {
+//            throw new UnsupportedDocumentTypeException("Cannot parse doctype declaration");
+//        }
     }
     
     protected boolean parseNamespace(String namespaceURI) {

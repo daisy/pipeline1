@@ -41,7 +41,6 @@ import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
-
 /**
  * @author Linus Ericson
  */
@@ -49,7 +48,6 @@ public class XMLDetection extends Transformer {
 
     /**
      * @param inListener
-     * @param eventListeners
      * @param isInteractive
      */
     public XMLDetection(InputListener inListener,  Boolean isInteractive) {
@@ -64,8 +62,9 @@ public class XMLDetection extends Transformer {
         String doWordDetection = parameters.remove("doWordDetection");
         String customLang = parameters.remove("customLang");
         String doOverride = parameters.remove("doOverride");
-        //String logFile = (String)parameters.remove("logFile");
-        String copyReferredFiles = parameters.remove("copyReferredFiles");        
+        String copyReferredFiles = parameters.remove("copyReferredFiles");      
+        //mg200805: whether to add single sents (e.g. <h1><sent>Text</sent></h1>). True is the original behavior.
+        String doSingleSentAdd = parameters.remove("doSingleSentAdd");
                 
         this.sendMessage(i18n("USING_INPUT", input), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
         this.sendMessage(i18n("USING_OUTPUT", output), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
@@ -110,7 +109,9 @@ public class XMLDetection extends Transformer {
 	            if (customLang != null) {
 	                customLangFileURL = new File(customLang).toURI().toURL(); 
 	            }
-                XMLSentenceDetector sentDetector = new XMLSentenceDetector(currentInput, temp.getFile(), customLangFileURL, Boolean.parseBoolean(doOverride));                
+                XMLSentenceDetector sentDetector = 
+                	new XMLSentenceDetector(currentInput, temp.getFile(), customLangFileURL, 
+                			Boolean.parseBoolean(doOverride),Boolean.parseBoolean(doSingleSentAdd));                
                 sentDetector.detect(null);
                 currentInput = temp.getFile();
                 this.sendMessage(i18n("FINISHING_SENTENCE"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
@@ -157,5 +158,5 @@ public class XMLDetection extends Transformer {
         
         return true;
     }
-
+    
 }

@@ -64,24 +64,25 @@ public class XMLSentenceDetector extends XMLBreakDetector {
     protected ContextStack contextStack = null;
         
     private Locale lastLocale = null;
-    private boolean doctypeSeen = false;
-    
+    private boolean doctypeSeen = false;    
     private boolean sentenceOpen = false;
+    //mg200805: whether to add single sents (e.g. <h1><sent>Text</sent></h1>). True is the original behavior.
+    private boolean doSingleSentAdd = true;
     
     /* *** CONSTRUCTORS *** */
     
     public XMLSentenceDetector (File inFile, File outFile) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
-        this(inFile, outFile, null, false);
+        this(inFile, outFile, null, false, false);
     }
     
-    public XMLSentenceDetector (File inFile, File outFile, URL customLang, boolean override) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
+    public XMLSentenceDetector (File inFile, File outFile, URL customLang, boolean override, boolean singleSentAdd) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
         super(outFile);
         ContextAwareBreakSettings cabi = new ContextAwareBreakSettings(true); 
         setBreakSettings(cabi);
         setContextStackFilter(cabi);
         Set xmllang = LangDetector.getXMLLangSet(inFile);
         setBreakFinder(new DefaultSentenceBreakFinder(xmllang, customLang, override));
-        
+        doSingleSentAdd = singleSentAdd;
         reader = new BookmarkedXMLEventReader(inputFactory.createXMLEventReader(new FileInputStream(inFile)));
     }
     
@@ -162,13 +163,18 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                         if (shouldBeProcessed(firstTagName, firstTagIsStart, elementName, event.isStartElement())) {
                             //System.err.println("Should be processed.");
                             if (!buffer.toString().matches("\\s*")) {
-                                //logger.fine(abbrAcronymList.toString());
                                 Vector breaks = breakFinder.findBreaks(buffer.toString(), abbrAcronymList);
                                 /*
                                 System.err.println(buffer);
                                 System.err.println(breaks);
                                 */
-                                writeElements(true, breaks);
+                                if(breaks.size()!=0 || doSingleSentAdd) {
+                                	writeElements(true, breaks);
+                                }else{
+                                	//mg20080513 if we dont find any breaks and doSingleSentAdd is false,
+                                	//dont write any sents. This avoids things like <h1><sent>Text</sent></h1>
+                                	writeElements(false, new Vector());
+                                }
                             } else {
                                 // Just whitespace in the buffer. 
                                 // Write the elements, but no sentence tags.
