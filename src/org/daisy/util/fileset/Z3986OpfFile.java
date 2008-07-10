@@ -17,8 +17,6 @@
  */
 package org.daisy.util.fileset;
 
-import java.util.Collection;
-
 import org.daisy.util.mime.MIMEConstants;
 import org.daisy.util.xml.SmilClock;
 
