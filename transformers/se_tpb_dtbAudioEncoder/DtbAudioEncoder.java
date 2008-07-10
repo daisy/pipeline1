@@ -181,7 +181,7 @@ public class DtbAudioEncoder extends Transformer {
     }
     
     private void copyFile(File inFile, File outDir, URI relativeURI) throws IOException {
-        System.err.println("Copying " + inFile);
+        //System.err.println("Copying " + inFile);
         URI out = outDir.toURI().resolve(relativeURI);
         //File outFile = new File(outDir, relativeURI.toString());
         FileUtils.copy(inFile, new File(out));
