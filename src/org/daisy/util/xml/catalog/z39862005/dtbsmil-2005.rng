@@ -374,6 +374,19 @@ TODO is this right to exclude hidden?
 					</sch:assert>        
 				</sch:rule>
 			</sch:pattern>		
+			<sch:pattern name="math_escapable" id="math_escapable">
+       			<sch:rule context="smil:text[@type='http://www.w3.org/1998/Math/MathML']">
+	       			<zed:test id="math_escapable"/>
+					<a:documenation>
+						Any SMIL construct whose text URI is referring to elements in the 
+						MathML namespace must be escapable
+					</a:documenation>
+					<sch:assert test="ancestor::smil:seq[@end] and contains(ancestor::smil:seq/@end,'DTBuserEscape;')"> 
+						[sch][zedid::math_escapable]
+					</sch:assert>        
+				</sch:rule>
+			</sch:pattern>
+			
 		</element>
 	</define>
 

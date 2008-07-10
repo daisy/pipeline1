@@ -225,6 +225,10 @@
     <system systemId="http://www.daisy.org/z3986/2005/bookmark-2005-1.dtd" uri="./z39862005/bookmark-2005-1.dtd" />
     <system systemId="bookmark-2005-1.dtd" uri="./z39862005/bookmark-2005-1.dtd" />  
     
+    <!-- MathML-in-DAISY -->
+    <public publicId="-//DAISY//SCH dtbook 2005 MathML" uri="./z39862005/dtbook-math-extension.sch" />
+	<system systemId="dtbook-math-extension.sch" uri="./z39862005/dtbook-math-extension.sch" />    
+    
     <!-- TPB -->  
     <public publicId="-//TPB//SCH dtbook 2005 TPB//EN" uri="./z39862005/dtbook-2005-TPB.sch" />
     <public publicId="-//TPB//SCH dtbook 2005 TPB-prod//EN" uri="./z39862005/dtbook-2005-TPB-prod.sch" />
