@@ -334,6 +334,11 @@ Example: <tt>/home/ttsbfiles/file.rng</tt><br />
 Default: <tt>${transformer_dir}/ttsbuilder-configtest.rng</tt>
   </dd>
 
+<dt>doSmilSyncAttributeBasedSyncPointLocation</dt>
+<dd>required="false", default=false<br />
+Determines whether synchronization points should be located using an attribute <tt>sync</tt> in the SMIL namespace in the input document.<br/>
+This defaults to false, which means that the original behavior of transformer is the default. 
+</dd>
 
 </dl>
 
@@ -452,7 +457,7 @@ regular phrase that's generated.</li>
 <p>An example follows:</p>
 
 
-<pre>&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />&lt;sgConfig&gt;<br /><br />    &lt;absoluteSynch&gt;<br />	&lt;item&gt;pagenum&lt;/item&gt;<br />	&lt;item&gt;noteref&lt;/item&gt;<br />	&lt;item&gt;annoref&lt;/item&gt;<br />	&lt;item&gt;linenum&lt;/item&gt;<br />    &lt;/absoluteSynch&gt;<br />	<br />    &lt;containsSynch&gt;<br />	&lt;item&gt;sent&lt;/item&gt;<br />    &lt;/containsSynch&gt;<br />	<br />    &lt;announceAttributes&gt;<br />	&lt;item id="before" uri="http://www.example.com" prefix="annon" local="before"/&gt;<br />	&lt;item id="after" uri="http://www.example.com" prefix="annon" local="after"/&gt;<br />    &lt;/announceAttributes&gt;<br />	<br />    &lt;mergeAudio&gt;<br />	&lt;item&gt;h1&lt;/item&gt;<br />	&lt;item&gt;h2&lt;/item&gt;<br />	&lt;item&gt;h3&lt;/item&gt;<br />	&lt;item&gt;h4&lt;/item&gt;<br />	&lt;item&gt;h5&lt;/item&gt;<br />	&lt;item&gt;h6&lt;/item&gt;<br />	&lt;item&gt;level/hd&lt;/item&gt;<br />    &lt;/mergeAudio&gt;<br />	<br />    &lt;silence&gt;<br />	&lt;afterLast&gt;2000&lt;/afterLast&gt;<br />	&lt;afterFirst&gt;800&lt;/afterFirst&gt;<br />	&lt;beforeAnnouncement&gt;300&lt;/beforeAnnouncement&gt;<br />	&lt;afterAnnouncement&gt;300&lt;/afterAnnouncement&gt;<br />	&lt;afterRegularPhrase&gt;200&lt;/afterRegularPhrase&gt;<br />    &lt;/silence&gt;<br />	<br />&lt;/sgConfig&gt;<br />	</pre>
+<pre>&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />&lt;sgConfig&gt;<br /><br />    &lt;absoluteSynch&gt;<br />	&lt;item&gt;pagenum&lt;/item&gt;<br />	&lt;item&gt;noteref&lt;/item&gt;<br />	&lt;item&gt;annoref&lt;/item&gt;<br />	&lt;item&gt;linenum&lt;/item&gt;<br />    &lt;/absoluteSynch&gt;<br />	<br />    &lt;containsSynch&gt;<br />	&lt;item&gt;sent&lt;/item&gt;<br />    &lt;/containsSynch&gt;<br />	<br />    &lt;announceAttributes&gt;<br />	&lt;item id="before" uri="http://www.daisy.org/ns/pipeline/annon" prefix="annon" local="before"/&gt;<br />	&lt;item id="after" uri="http://www.daisy.org/ns/pipeline/annon" prefix="annon" local="after"/&gt;<br />    &lt;/announceAttributes&gt;<br />	<br />    &lt;mergeAudio&gt;<br />	&lt;item&gt;h1&lt;/item&gt;<br />	&lt;item&gt;h2&lt;/item&gt;<br />	&lt;item&gt;h3&lt;/item&gt;<br />	&lt;item&gt;h4&lt;/item&gt;<br />	&lt;item&gt;h5&lt;/item&gt;<br />	&lt;item&gt;h6&lt;/item&gt;<br />	&lt;item&gt;level/hd&lt;/item&gt;<br />    &lt;/mergeAudio&gt;<br />	<br />    &lt;silence&gt;<br />	&lt;afterLast&gt;2000&lt;/afterLast&gt;<br />	&lt;afterFirst&gt;800&lt;/afterFirst&gt;<br />	&lt;beforeAnnouncement&gt;300&lt;/beforeAnnouncement&gt;<br />	&lt;afterAnnouncement&gt;300&lt;/afterAnnouncement&gt;<br />	&lt;afterRegularPhrase&gt;200&lt;/afterRegularPhrase&gt;<br />    &lt;/silence&gt;<br />	<br />&lt;/sgConfig&gt;<br />	</pre>
 
 
 <h4 id="ttsb">TTS Builder Configuration</h4>
