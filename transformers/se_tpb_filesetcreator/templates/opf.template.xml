@@ -9,7 +9,7 @@
 	
 		<x-metadata>
 			<meta name="dtb:multimediaType" content="audioFullText"/>
-			<meta name="dtb:narrator" content="Inläst med talsyntes."/>
+			<meta name="dtb:narrator" content="DAISY Pipeline Narrator"/>
 		</x-metadata>
 	
 	</metadata>
