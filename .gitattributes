@@ -172,6 +172,7 @@ lib/tritonus_share-0.3.6.jar -text
 lib/wstx-lgpl-3.2.4.jar -text
 lib/xalan.jar -text
 lib/xercesImpl.jar -text
+lib/zedval.jar -text svneol=unset#unset
 licenses/MITLicense/MITLicense.txt -text svneol=unset#text/plain
 /pipeline.sh -text
 samples/input/dtb/d202/dontworrybehappy-invalid/content.html -text
