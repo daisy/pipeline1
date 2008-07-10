@@ -74,9 +74,11 @@ import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerAbortException;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileBunchCopy;
+import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.stax.AttributeByName;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
 import org.daisy.util.xml.stax.ContextStack;
 import org.daisy.util.xml.stax.LocationImpl;
@@ -163,6 +165,8 @@ public class SpeechGen2 extends Transformer {
 	private DocumentBuilder domBuilder;							// used for constructing a small Document for each sync point.
 	private AudioFormat mSilenceFormat = 
 		new AudioFormat(22050, 16, 1,true, false);
+	private QName SMIL_SYNC_ATTR;
+	private boolean doSmilSyncAttributeBasedSyncPointLocation = false; //Which syncpoint location method to use, see #isSynchronizationPoint
 	
 	private CountDownLatch countOnce = new CountDownLatch(1);	// thread synchronization
 	private AudioConcatQueue audioConcatQueue = new AudioConcatQueue(countOnce); // wav files concatenation and possibly mp3 encoding.
@@ -170,6 +174,7 @@ public class SpeechGen2 extends Transformer {
 	public SpeechGen2(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);
 		eventFactory = XMLEventFactory.newInstance();
+		SMIL_SYNC_ATTR = new QName(Namespaces.SMIL_20_NS_URI,"sync");
 	}
 
 
@@ -187,7 +192,10 @@ public class SpeechGen2 extends Transformer {
 			File ttsBuilderConfig = new File(parameters.remove("ttsBuilderConfig"));
 			File inputFile = new File(parameters.remove("inputFilename"));
 			File outputFile = new File(parameters.remove("outputFilename"));
-
+			
+			//mg200805
+			doSmilSyncAttributeBasedSyncPointLocation = Boolean.parseBoolean(parameters.remove("doSmilSyncAttributeBasedSyncPointLocation"));
+			
 			outputDir = new File(parameters.get("outputDirectory"));
 			if (!outputDir.exists()) {
 				outputDir.mkdirs();
@@ -304,6 +312,7 @@ public class SpeechGen2 extends Transformer {
 						sendMessage(message, type, cause, location);
 					}
 				};
+				
 				// try to get a tts for the language
 				try {
 					tts = ttsb.newTTS(lang,tdl);
@@ -327,7 +336,6 @@ public class SpeechGen2 extends Transformer {
 				}
 			}
 
-			//sendMessage(Level.FINEST, i18n("DONE"));
 			sendMessage(i18n("FOUND_NUMBER", String.valueOf(numSPoints)), MessageEvent.Type.DEBUG);
 
 
@@ -423,7 +431,7 @@ public class SpeechGen2 extends Transformer {
 				throw new TransformerRunException(e.getMessage(), e);
 			}
 			terminateTTSInstances();
-			sendMessage("Leaving SpeechGen2", MessageEvent.Type.DEBUG);
+			sendMessage("Leaving SpeechGen3", MessageEvent.Type.DEBUG);
 		}
 
 		return true;
@@ -443,10 +451,13 @@ public class SpeechGen2 extends Transformer {
 					StartElement curr = se;
 					first = false;
 					Set<Namespace> ns = new HashSet<Namespace>();
+					boolean hasSmilNsDecl = false;
 					for (Iterator<?> it = curr.getNamespaces(); it.hasNext(); ) {
-						ns.add((Namespace) it.next());
+						Namespace nsp = (Namespace)it.next();
+						ns.add(nsp);
+						if(nsp.getPrefix().equals(smilPrefix) && nsp.getNamespaceURI().equals(smilURI)) hasSmilNsDecl = true;
 					}
-					ns.add(eventFactory.createNamespace(smilPrefix, smilURI));
+					if(!hasSmilNsDecl) ns.add(eventFactory.createNamespace(smilPrefix, smilURI));
 					event = eventFactory.createStartElement(curr.getName(), curr.getAttributes(), ns.iterator());
 				}
 
@@ -1245,7 +1256,7 @@ public class SpeechGen2 extends Transformer {
 	 * synchronization point, <code>false</code> otherwise.
 	 * @throws XMLStreamException
 	 */
-	private boolean isSynchronizationPoint(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {
+	private boolean isSynchronizationPointOld(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {
 		String bookmark = "TPB Narrator.SpeechGenerator.getSynchronizationPoint";
 		reader.setBookmark(bookmark);
 
@@ -1258,7 +1269,6 @@ public class SpeechGen2 extends Transformer {
 				elemCount++;
 				String nodeName = event.asStartElement().getName().getLocalPart();
 
-				//if (nodeName != null && (absoluteSynch.contains(nodeName) || "sent".equals(nodeName))) {
 				if (nodeName != null && (absoluteSynch.contains(nodeName) || containsSynch.contains(nodeName))) {
 					reader.gotoAndRemoveBookmark(bookmark);
 					return false;
@@ -1274,6 +1284,59 @@ public class SpeechGen2 extends Transformer {
 		return textContent.trim().length() > 0;
 	}
 
+	/**
+	 * Determine whether current element is a synchronization point.
+	 */
+	private boolean isSynchronizationPoint(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {
+		/**
+		 * mg 200806: We now have two alternate methods of identifying syncpoints.
+		 * New, which relies on @smil:sync, set by int_daisy_mixedContentNormalizer
+		 * Old, which fundmentally relies on the presence of sent elements, and config force elements.
+		 */
+		if(doSmilSyncAttributeBasedSyncPointLocation) {
+			return isSynchronizationPointNew(reader, se);
+		}
+		return isSynchronizationPointOld(reader, se);
+	}
+	
+	/**
+	 * Alternate method to {@link #isSynchronizationPointOld(BookmarkedXMLEventReader, StartElement)} 
+	 * that relies on smil:sync attributes sitting on input nodes.
+	 * @author markusg
+	 */
+	private final static String SYNCPOINT_GETTER_BOOKMK = "Narrator.SpeechGenerator.getSynchronizationPoint";
+	private boolean isSynchronizationPointNew(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {
+		
+		Attribute s = AttributeByName.get(SMIL_SYNC_ATTR, se);
+		if(s==null) return false;
+		
+		//we have a smil:sync attribute on this start element, 
+		//make sure there are non-whitespace characters
+		//TODO or are whitespace-only nodes filtered later?
+		
+		reader.setBookmark(SYNCPOINT_GETTER_BOOKMK);
+		int elemCount = 1;
+		String textContent = "";
+		while (elemCount > 0 && reader.hasNext()) {
+			XMLEvent event = reader.nextEvent();
+			if (event.isStartElement()) {
+				elemCount++;
+			} else if (event.isEndElement()) {
+				elemCount--;
+			} else if (event.isCharacters()) {
+				textContent += event.asCharacters().getData() + " ";
+			}
+		}
+		reader.gotoAndRemoveBookmark(SYNCPOINT_GETTER_BOOKMK);
+		
+		for (int i = 0; i < textContent.codePointCount(0, textContent.length()-1); i++) {
+			int cp = textContent.codePointAt(i);
+			if(!Character.isWhitespace(cp)) return true;
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Returns the sum of lengths of the files pointed at by <code>it</code>.
 	 * @param it An iterator over some files.
@@ -1470,7 +1533,7 @@ public class SpeechGen2 extends Transformer {
 	 */
 	private void DEBUG(Document doc) {
 		if (System.getProperty("org.daisy.debug") != null) {
-			DEBUG("SpeechGen2#DEBUG(Document):");
+			DEBUG("SpeechGen3#DEBUG(Document):");
 			try {
 				TransformerFactory xformFactory = TransformerFactory.newInstance();  
 				javax.xml.transform.Transformer idTransform = xformFactory.newTransformer();
@@ -1484,7 +1547,7 @@ public class SpeechGen2 extends Transformer {
 			} catch (TransformerException e) {
 				e.printStackTrace();
 			} finally {
-				System.out.println("--end SpeechGen2");
+				System.out.println("--end SpeechGen3");
 			}
 
 		}

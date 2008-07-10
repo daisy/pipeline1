@@ -36,7 +36,7 @@ public class TTSSyncPoint implements TTSInput {
 	private int number;
 	
 	/**
-	 * @param doc the docuement, ie the xml fragment, representing the
+	 * @param doc the document, ie the xml fragment, representing the
 	 * syncpoint.
 	 * @param file the destination of the generated output.
 	 * @param nr this input's sequence number.

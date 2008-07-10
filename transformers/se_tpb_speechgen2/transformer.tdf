@@ -72,6 +72,17 @@
 			<default>${transformer_dir}/tts/ttsbuilder-configtest.rng</default>
 			<!--<default>${transformer_dir}/../se_tpb_speechgenerator/ttsbuilder-configtest.rng</default>-->
 		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>doSmilSyncAttributeBasedSyncPointLocation</name>
+			<description>should the syncpoint location use the original method (false) or an @smil:sync based on (true)?</description>
+			<example>true</example>
+			<enum>
+				<value>false</value>
+				<value>true</value>
+			</enum>
+			<default>false</default>
+		</parameter>
 		
 	</parameters>
 

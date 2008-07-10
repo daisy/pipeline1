@@ -13,8 +13,8 @@
 	</containsSynch>
 	
 	<announceAttributes>
-		<item id="before" uri="http://www.example.com" prefix="annon" local="before"/>
-		<item id="after" uri="http://www.example.com" prefix="annon" local="after"/>
+		<item id="before" uri="http://www.daisy.org/ns/pipeline/annon" prefix="annon" local="before"/>
+		<item id="after" uri="http://www.daisy.org/ns/pipeline/annon" prefix="annon" local="after"/>
 	</announceAttributes>
 	
 	<mergeAudio>

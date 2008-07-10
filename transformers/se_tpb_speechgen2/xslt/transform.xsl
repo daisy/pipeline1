@@ -68,6 +68,10 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:template match="math">
+		<xsl:value-of select="@alttext"/>
+	</xsl:template>
+
 
 	<xsl:template match="/">
 		<xsl:apply-templates/>
