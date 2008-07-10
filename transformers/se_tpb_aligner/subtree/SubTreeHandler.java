@@ -54,7 +54,7 @@ public abstract class SubTreeHandler extends LinkedList<SubTree> {
 	protected static final String DTBOOK_NSURI = Namespaces.Z2005_DTBOOK_NS_URI;
 	protected static final String SMIL_NSURI = Namespaces.SMIL_20_NS_URI;
 	protected static final String SSML_NSURI = Namespaces.SSML_10_NS_URI;
-	protected static final String ANNON_NSURI = "http://www.example.com";
+	protected static final String ANNON_NSURI = "http://www.daisy.org/ns/pipeline/annon";
 	
 	protected static Namespace DTBOOK_NAMESPACE = null;
 	protected static Namespace SMIL_NAMESPACE = null;
