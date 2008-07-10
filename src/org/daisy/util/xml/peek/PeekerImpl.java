@@ -18,7 +18,6 @@
 package org.daisy.util.xml.peek;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
