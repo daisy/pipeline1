@@ -18,7 +18,9 @@
 package se_tpb_dtbookFix;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
@@ -29,6 +31,13 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.stream.Location;
+import javax.xml.stream.XMLEventFactory;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.events.DTD;
+import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
@@ -46,6 +55,7 @@ import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileJuggler;
+import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetErrorHandler;
@@ -66,6 +76,10 @@ import org.daisy.util.xml.catalog.CatalogURIResolver;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
+import org.daisy.util.xml.pool.StAXEventFactoryPool;
+import org.daisy.util.xml.pool.StAXInputFactoryPool;
+import org.daisy.util.xml.pool.StAXOutputFactoryPool;
+import org.daisy.util.xml.stax.StaxEntityResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -140,6 +154,12 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			categories.add(createCategory(Category.Name.INDENT, parameters, parameters.get("DTBookVersion")));
 			
 			/*
+			 * Store the DTD declaration (inc internal subset) for re-insertion at the end of the process.
+			 * (It may be a desirable alternate approach to make all XSLTs handle internal subsets etc gracefully)
+			 */			
+			parameters.put("DTDdeclaration", getDTDdecl(input));
+			
+			/*
 			 * Execute the Executors.
 			 */
 			FileJuggler juggler = new FileJuggler(input, output);
@@ -164,6 +184,10 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 				}
 			}
 			
+			/*
+			 * Reinsert the DTD declaration
+			 */
+			setDTDdecl(juggler,parameters);
 			
 			/*
 			 * Get the result to final output dir,
@@ -252,7 +276,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			}
 			
 			String publicId = result.getPrologPublicId();
-			String systemId = result.getPrologSystemId();
+			String systemId = result.getPrologSystemId();			
 			String version = result.getRootElementAttributes().getValue("version");
 	    				
 			//check doctype/@version match			
@@ -442,6 +466,95 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 		this.sendMessage(i18n("WAS_VALID"),MessageEvent.Type.INFO_FINER);
 		return InputState.VALID;
 		
+	}
+	
+	/**
+	 * Insert a DTD declaration, stored in the parameters map.
+	 */
+	private void setDTDdecl(FileJuggler juggler,Map<String, String> parameters) {
+		String DTDdecl = parameters.get("DTDdeclaration");
+		if(DTDdecl == null) return;  //input didnt have a DTD decl
+		
+		Map<String, Object> xifProperties = null;
+		Map<String, Object> xofProperties = null;
+		XMLInputFactory xif = null;
+		XMLOutputFactory xof = null;
+		XMLEventFactory xef = null;
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		try {
+			xifProperties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
+			xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
+			xofProperties.put(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
+			xif = StAXInputFactoryPool.getInstance().acquire(xifProperties);
+			xof = StAXOutputFactoryPool.getInstance().acquire(xofProperties);
+			xif.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
+			fis = new FileInputStream(juggler.getInput());			
+			XMLEventReader reader = xif.createXMLEventReader(fis);
+			fos = new FileOutputStream(juggler.getOutput());
+			XMLEventWriter writer = xof.createXMLEventWriter(fos);			
+			xef = StAXEventFactoryPool.getInstance().acquire();
+			
+			boolean DTDadded = false;
+			while(reader.hasNext()) {
+				XMLEvent xe = reader.nextEvent();
+				if(xe.getEventType()==XMLEvent.DTD) {
+					writer.add(xef.createDTD(DTDdecl));
+					DTDadded = true;
+				}else if(xe.isStartElement() && !DTDadded) {
+					writer.add(xef.createDTD(DTDdecl));
+					writer.add(xe);
+					DTDadded = true;
+				}else{
+					writer.add(xe);
+				}
+			}			
+			
+			if(reader!=null)reader.close();
+			if(writer!=null)writer.flush();writer.close();
+			juggler.swap();
+			
+		} catch (Exception e) {
+			sendMessage(i18n("ERROR",e.getMessage()),MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM, null);			
+		}finally{			
+			if(fis!=null) try {fis.close();} catch (IOException e) {}
+			if(fos!=null) try {fos.close();} catch (IOException e) {}
+			StAXInputFactoryPool.getInstance().release(xif, xifProperties);
+			StAXOutputFactoryPool.getInstance().release(xof, xofProperties);
+		}
+		
+	}
+
+	/**
+	 * Get the entire input file DTD declaration, or null if the input file has no such 
+	 * declaration.
+	 */
+	private String getDTDdecl(File input) {		
+		Map<String, Object> properties = null;
+		XMLInputFactory xif = null;
+		FileInputStream fis = null;
+		try {
+			properties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
+			xif = StAXInputFactoryPool.getInstance().acquire(properties);
+			xif.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
+			fis = new FileInputStream(input);
+			XMLEventReader reader = xif.createXMLEventReader(fis);
+			while(reader.hasNext()) {
+				XMLEvent xe = reader.nextEvent();
+				if(xe.getEventType() == XMLEvent.DTD) {
+					DTD dtd = (DTD) xe;	
+					return dtd.getDocumentTypeDeclaration();
+				}else if(xe.isStartElement()) {
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			sendMessage(i18n("ERROR",e.getMessage()),MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM, null);			
+		}finally{
+			if(fis!=null) try {fis.close();} catch (IOException e) {}
+			StAXInputFactoryPool.getInstance().release(xif, properties);
+		}
+		return null;
 	}
 	
 	/*

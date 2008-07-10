@@ -64,19 +64,16 @@ public class JpegRenameExecutor extends Executor {
 	void execute(Source source, Result result) throws TransformerRunException {
 		File input = new EFile(FilenameOrFileURI.toFile(source.getSystemId()));
 		File output = FilenameOrFileURI.toFile(result.getSystemId());
-
+		Map<String, Object> xifProp = null;
+		XMLInputFactory factory = null;
+		FileInputStream fis = null;
 		try {
-			Map<String, Object> xifProp = StAXInputFactoryPool.getInstance()
-					.getDefaultPropertyMap(false);
-			XMLInputFactory factory = StAXInputFactoryPool.getInstance()
-					.acquire(xifProp);
-			factory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver
-					.getInstance()));
-
-			XMLEventReader reader = factory
-					.createXMLEventReader(new FileInputStream(input));
+			xifProp = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
+			factory = StAXInputFactoryPool.getInstance().acquire(xifProp);
+			factory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
+			fis = new FileInputStream(input);
+			XMLEventReader reader = factory.createXMLEventReader(fis);
 			OutputStream outstream = new FileOutputStream(output);
-
 			StaxFilter filter = new JpegRenamerFilter(reader, outstream);
 			filter.filter();
 		} catch (Exception e) {
@@ -88,6 +85,9 @@ public class JpegRenameExecutor extends Executor {
 			} catch (IOException ioe) {
 				throw new TransformerRunException(ioe.getMessage(), ioe);
 			}
+		}finally{
+			if(fis!=null) try {fis.close();} catch (IOException e) {}
+			StAXInputFactoryPool.getInstance().release(factory, xifProp);
 		}
 	}
 
