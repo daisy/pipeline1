@@ -53,11 +53,10 @@
         </h1>
         <pagenum id="p1" page="normal">1</pagenum>
         <p>Following this paragraph is a mathml island. Presentational markup is used.</p>
-<!--
-		altimg="nativemathml0001.png" 
+        <m:math 
+			id="math0001" 
+			altimg="nativemathml0001.png" 
 			alttext="sigma-summation UnderScript i equals zero OverScript infinity EndScripts x Subscript i"> 
--->
-        <m:math id="math0001"> 
           <m:mrow>
             <m:mstyle displaystyle='true'>
               <m:munderover>
@@ -81,9 +80,9 @@
           <span id="cn0008">
             This is a paragraph after the mathml island that
             uses the in-line expression</span>
-			          <!-- altimg="nativemathml0002.png" alttext="cube root of x " -->
           <m:math 
-            id="math0002"> 
+            id="math0002"
+            altimg="nativemathml0002.png" alttext="cube root of x "> 
             <m:mroot>
               <m:mi>x</m:mi>
               <m:mn>3</m:mn>

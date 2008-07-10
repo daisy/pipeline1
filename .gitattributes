@@ -248,6 +248,7 @@ samples/input/dtb/z3986-2005/tpbnarrator.res -text
 samples/input/dtb/z3986-2005/tpbnarrator_res.mp3 -text
 samples/input/dtbook/The[!!-~]quick[!!-~]brown[!!-~]fox.xml -text
 samples/input/dtbook/dontworrybehappy.xml -text
+samples/input/dtbook/dtbook-math-altset.xml -text
 samples/input/dtbook/dtbook-math.xml -text
 samples/input/dtbook/dtbook.2005.basic.css -text
 samples/input/dtbook/dtbookfix-example[!!-~](invalid).xml -text
@@ -257,6 +258,8 @@ samples/input/dtbook/hauy-2005-1-short.xml -text
 samples/input/dtbook/hauy-2005-1.xml -text
 samples/input/dtbook/hauy_invalid.xml -text
 samples/input/dtbook/hauy_valid.xml -text
+samples/input/dtbook/nativemathml0001.png -text
+samples/input/dtbook/nativemathml0002.png -text
 samples/input/dtbook/scrambled-110.xml -text
 samples/input/dtbook/the_waste_land.xml -text
 samples/input/dtbook/valentin.jpg -text
@@ -341,7 +344,9 @@ scripts/_dev/DTBookFix_NarratorValidation.taskScript -text
 scripts/_dev/EmbossPEF.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
+scripts/_dev/Narrator-Autumn2008.taskScript -text
 scripts/_dev/Narrator-Dev.taskScript -text
+scripts/_dev/Narrator-MathML.taskScript -text
 scripts/_dev/Narrator_NoValidation.taskScript -text
 scripts/_dev/NccNcxOnly.taskScript -text
 scripts/_dev/PefToText.taskScript -text
@@ -486,6 +491,8 @@ src/org/daisy/pipeline/test/impl/Narrator1.java -text
 src/org/daisy/pipeline/test/impl/Narrator2.java -text
 src/org/daisy/pipeline/test/impl/Narrator3.java -text
 src/org/daisy/pipeline/test/impl/Narrator4.java -text
+src/org/daisy/pipeline/test/impl/NarratorAutumn20081.java -text
+src/org/daisy/pipeline/test/impl/NarratorMathML1.java -text
 src/org/daisy/pipeline/test/impl/NarratorSADX.template -text
 src/org/daisy/pipeline/test/impl/NarratorSADX_AnotherBulletList.java -text
 src/org/daisy/pipeline/test/impl/NarratorSADX_BulletList.java -text
@@ -970,6 +977,12 @@ transformers/int_daisy_filesetRenamer/messages_hi.properties -text svneol=unset#
 transformers/int_daisy_filesetRenamer/transformer.tdf -text
 transformers/int_daisy_html2xhtml/transformer.tdf -text
 transformers/int_daisy_html2xhtml/xhtml-clean-minimum.xsl -text
+transformers/int_daisy_mathAltCreator/IMathAltCreator.java -text
+transformers/int_daisy_mathAltCreator/MathAltCreator.java -text
+transformers/int_daisy_mathAltCreator/MathAltCreatorFactory.java -text
+transformers/int_daisy_mathAltCreator/com/dessci/mathflow/MathFlowAltCreator.java -text
+transformers/int_daisy_mathAltCreator/messages.properties -text
+transformers/int_daisy_mathAltCreator/transformer.tdf -text
 transformers/int_daisy_mixedContentNormalizer/AbstractNormalizer.java -text
 transformers/int_daisy_mixedContentNormalizer/AbstractSyncPointLocator.java -text
 transformers/int_daisy_mixedContentNormalizer/InputDocInfoProvider.java -text
