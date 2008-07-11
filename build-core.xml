@@ -59,7 +59,7 @@
 		<include name="wstx-lgpl-3.2.4.jar"/>
 		<include name="xalan.jar"/>
 		<include name="xercesImpl.jar"/>			
-		<include name="ZedVal.jar"/>
+		<include name="zedval.jar"/>
 	</patternset>
 	
 	<fileset dir="${base.dir}/lib" id="fileset.utilJars">
