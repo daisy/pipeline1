@@ -2,6 +2,7 @@
 	<name>SpeechGen2</name>
 	<description>Generates audio for a DTBook document.</description>
 	<classname>se_tpb_speechgen2.SpeechGen2</classname>
+	<jar>lib/com4j.jar</jar>
 	<license>LGPL</license>
 	<author>Martin Blomberg</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>

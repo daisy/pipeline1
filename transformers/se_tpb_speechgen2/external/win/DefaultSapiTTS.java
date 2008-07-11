@@ -22,12 +22,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import org.daisy.util.wincom.sapi5.ClassFactory;
-import org.daisy.util.wincom.sapi5.ISpeechFileStream;
-import org.daisy.util.wincom.sapi5.ISpeechVoice;
-import org.daisy.util.wincom.sapi5.SpeechStreamFileMode;
-import org.daisy.util.wincom.sapi5.SpeechVoiceSpeakFlags;
 
+import se_tpb_speechgen2.external.win.sapi5.ClassFactory;
+import se_tpb_speechgen2.external.win.sapi5.ISpeechFileStream;
+import se_tpb_speechgen2.external.win.sapi5.ISpeechVoice;
+import se_tpb_speechgen2.external.win.sapi5.SpeechStreamFileMode;
+import se_tpb_speechgen2.external.win.sapi5.SpeechVoiceSpeakFlags;
 import se_tpb_speechgen2.tts.TTSException;
 import se_tpb_speechgen2.tts.adapters.AbstractTTSAdapter;
 import se_tpb_speechgen2.tts.util.TTSUtils;

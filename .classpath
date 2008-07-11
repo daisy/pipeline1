@@ -7,7 +7,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/batik-css.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-util.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chardet.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/com4j.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-cli-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/epubcheck.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/icu4j-3_8.jar"/>
@@ -29,5 +28,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/zedval.jar"/>
 	<classpathentry exported="true" kind="lib" path="transformers/int_daisy_filesetAudioTagger/lib/jaudiotagger.jar"/>
+	<classpathentry exported="true" kind="lib" path="transformers/se_tpb_speechgen2/lib/com4j.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
