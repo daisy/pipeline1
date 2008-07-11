@@ -153,7 +153,6 @@ lib/com4j.jar -text
 lib/commons-cli-1.0.jar -text
 lib/epubcheck.jar -text
 lib/icu4j-3_8.jar -text
-lib/icu4j-charsets-3_8.jar -text
 lib/jaudiotagger.jar -text
 lib/jing-saxon8-patch.jar -text
 lib/jl1.0.jar -text
