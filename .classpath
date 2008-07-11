@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="src"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" output="transformers" path="transformers"/>
 	<classpathentry exported="true" kind="lib" path="lib/batik-css.jar"/>
@@ -7,11 +9,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/chardet.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/com4j.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-cli-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jing-saxon8-patch.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/epubcheck.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/icu4j-3_8.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/icu4j-charsets-3_8.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jaudiotagger.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jing-saxon8-patch.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jl1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/onvdl.jar"/>
@@ -28,7 +28,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/xalan.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/zedval.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="lib" path="transformers/int_daisy_filesetAudioTagger/lib/jaudiotagger.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

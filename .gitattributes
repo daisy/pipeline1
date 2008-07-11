@@ -153,7 +153,6 @@ lib/com4j.jar -text
 lib/commons-cli-1.0.jar -text
 lib/epubcheck.jar -text
 lib/icu4j-3_8.jar -text
-lib/jaudiotagger.jar -text
 lib/jing-saxon8-patch.jar -text
 lib/jl1.0.jar -text
 lib/log4j-1.2.15.jar -text
@@ -952,6 +951,7 @@ transformers/int_daisy_dtbMigrator/messages.properties -text
 transformers/int_daisy_dtbMigrator/transformer.tdf -text
 transformers/int_daisy_filesetAudioTagger/FilesetAudioTagger.java -text
 transformers/int_daisy_filesetAudioTagger/id3/ID3Tagger.java -text
+transformers/int_daisy_filesetAudioTagger/lib/jaudiotagger.jar -text
 transformers/int_daisy_filesetAudioTagger/messages.properties -text
 transformers/int_daisy_filesetAudioTagger/messages_hi.properties -text svneol=unset#unset
 transformers/int_daisy_filesetAudioTagger/playlist/AbstractWriter.java -text

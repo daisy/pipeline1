@@ -2,6 +2,7 @@
 	<name>Fileset Audio Tagger</name>
 	<description>Generate audio playlists, and ID3 tags on mp3 files.</description>
 	<classname>int_daisy_filesetAudioTagger.FilesetAudioTagger</classname>
+	<jar>lib/jaudiotagger.jar</jar>
 	<license>LGPL</license>
 	<author>Markus Gylling</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
