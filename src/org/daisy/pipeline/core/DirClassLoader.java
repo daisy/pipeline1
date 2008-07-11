@@ -23,91 +23,105 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 /**
- * A class loader that can load classes and resources from specified
- * directories that are not in the classpath.
+ * A class loader that can load classes and resources from specified directories
+ * that are not in the classpath.
+ * 
  * @author Linus Ericson
  */
 public class DirClassLoader extends URLClassLoader {
 
 	private File classDir;
 	private File resourceDir;
-	
+
 	/**
-	 * Creates a new class loader that can also load classes and resources 
-	 * from the specified directories.
-	 * @param clsDir directory for class files
-	 * @param resDir directory for resource files
+	 * Creates a new class loader that can also load classes and resources from
+	 * the specified directories.
+	 * 
+	 * @param clsDir
+	 *            directory for class files
+	 * @param resDir
+	 *            directory for resource files
 	 */
 	public DirClassLoader(File clsDir, File resDir) {
-		super(new URL[]{fileToURL(clsDir)});
+		super(new URL[] { fileToURL(clsDir) });
 		classDir = clsDir;
 		resourceDir = resDir;
 	}
-	
+
 	private static URL fileToURL(File file) {
-	    try {
-            return file.toURI().toURL();
-        } catch (MalformedURLException e) {
-            // Nothing
-        }
-        return null;
+		try {
+			return file.toURI().toURL();
+		} catch (MalformedURLException e) {
+			// Nothing
+		}
+		return null;
 	}
-		
+
 	public void addJar(File jar) {
-	    this.addURL(fileToURL(jar));
+		this.addURL(fileToURL(jar));
 	}
-	
+
+	@Override
 	public String toString() {
-		return super.toString() + "(" + classDir.getAbsolutePath() + ", " + resourceDir.getAbsolutePath() + ")";
+		return super.toString() + "(" + classDir.getAbsolutePath() + ", "
+				+ resourceDir.getAbsolutePath() + ")";
 	}
-	
+
 	/**
 	 * Gets a resource from the file system.
-	 * @param resource name of the resource to load
-	 * @return a URL to the resource, or <code>null</code> if the resource is not found
+	 * 
+	 * @param resource
+	 *            name of the resource to load
+	 * @return a URL to the resource, or <code>null</code> if the resource is
+	 *         not found
 	 */
+	@Override
 	public URL getResource(String resource) {
-		//System.err.println("Trying to fetch " + resource);
+		// System.err.println("Trying to fetch " + resource);
 		File resourceFile = new File(resourceDir, resource);
 		if (resourceFile.canRead()) {
 			try {
-				//System.err.println("Found resource at " + resourceFile.getAbsolutePath());
+				// System.err.println("Found resource at " +
+				// resourceFile.getAbsolutePath());
 				return resourceFile.toURI().toURL();
 			} catch (MalformedURLException e) {
 				return null;
 			}
 		}
-		return null;
+		// RD20080711 try the super method if it failed so far
+		return super.getResource(resource);
 	}
-	
+
 	/**
 	 * Load a class. This implementation differs from the default implementation
-	 * in the order of how the classes are searched for. This function tries to 
-	 * load the class from the directory specified in the constructor <b>before</b>
-	 * it calls the parent class loader.
-	 * @param className class name of the Class to load
-	 * @return the loaded Class 
+	 * in the order of how the classes are searched for. This function tries to
+	 * load the class from the directory specified in the constructor
+	 * <b>before</b> it calls the parent class loader.
+	 * 
+	 * @param className
+	 *            class name of the Class to load
+	 * @return the loaded Class
 	 * @throws if the specified class is not found
 	 */
+	@Override
 	public Class<?> loadClass(String className) throws ClassNotFoundException {
 		Class<?> foundClass = findLoadedClass(className);
-		if (foundClass != null) {		   
+		if (foundClass != null) {
 			return foundClass;
 		}
 		try {
-			foundClass = findClass(className);			
-		} catch (ClassNotFoundException e) {		    
+			foundClass = findClass(className);
+		} catch (ClassNotFoundException e) {
 			foundClass = this.getClass().getClassLoader().loadClass(className);
-		}		
+		}
 		return foundClass;
 	}
-	
-	
 
-    public File getClassDir() {
-        return classDir;
-    }
-    public File getResourceDir() {
-        return resourceDir;
-    }
+	public File getClassDir() {
+		return classDir;
+	}
+
+	public File getResourceDir() {
+		return resourceDir;
+	}
 }
