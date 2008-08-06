@@ -22,6 +22,8 @@
   
   <xsl:param name="date"/>
   <xsl:param name="baseDir"/>
+  <!-- The smil element to target in href URIs (values are TEXT or PAR) -->
+  <xsl:param name="hrefTarget"/>
   
   <xsl:key name="xhtmlID" match="x:*[@id]" use="@id"/>
   
@@ -66,13 +68,13 @@
   	<xsl:variable name="current">
 	  	<xsl:call-template name="get_generated_id_of_element_with_class">
 	  		<xsl:with-param name="smilUri" select="ncc:a/@href"/>
-	  		<xsl:with-param name="className" select="'prodnote'"/>
+	  		<xsl:with-param name="className" select="'optional-prodnote'"/>
 	  	</xsl:call-template>
   	</xsl:variable>
   	<xsl:variable name="prev">
 	  	<xsl:call-template name="get_generated_id_of_element_with_class">
 	  		<xsl:with-param name="smilUri" select="preceding-sibling::ncc:*[position()=1 and @class='optional-prodnote']/ncc:a/@href"/>
-	  		<xsl:with-param name="className" select="'prodnote'"/>
+	  		<xsl:with-param name="className" select="'optional-prodnote'"/>
 	  	</xsl:call-template>
   	</xsl:variable>
   	<xsl:if test="$current != $prev">
@@ -135,8 +137,17 @@
 		<xsl:param name="className"/>
 		<xsl:if test="$smilUri!=''">
 			<xsl:variable name="smil" select="substring-before($smilUri, '#')"/>
-			<xsl:variable name="fragment" select="substring-after($smilUri, '#')"/>		
-			<xsl:variable name="contentUri" select="document(concat($baseDir,$smil))//*[@id=$fragment]/text/@src"/>
+			<xsl:variable name="fragment" select="substring-after($smilUri, '#')"/>
+			<xsl:variable name="contentUri">
+				<xsl:choose>
+					<xsl:when test="$hrefTarget='TEXT'">
+						<xsl:value-of select="document(concat($baseDir,$smil))//*[@id=$fragment]/@src"/>
+	  				</xsl:when>
+	  				<xsl:otherwise>
+						<xsl:value-of select="document(concat($baseDir,$smil))//*[@id=$fragment]/text/@src"/>
+	  				</xsl:otherwise>
+	  			</xsl:choose>
+			</xsl:variable>			
 			<xsl:variable name="content" select="substring-before($contentUri, '#')"/>
 			<xsl:variable name="contFrag" select="substring-after($contentUri, '#')"/>
 			
