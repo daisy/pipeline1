@@ -20,6 +20,7 @@ package org.daisy.pipeline.core;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
@@ -74,13 +75,34 @@ public class PipelineCore implements TransformerHandlerLoader {
      * Create an instance of the Daisy Pipeline. This constructor will fetch the
      * Pipeline properties files in the <code>bin/</code> sub-directory of
      * <code>homeDir</code>.
+     */
+    public PipelineCore() throws DMFCConfigurationException {
+        this(null, null, null, null);
+    }
+    
+    /**
+     * Create an instance of the Daisy Pipeline. This constructor will fetch the
+     * Pipeline properties files in the <code>bin/</code> sub-directory of
+     * <code>homeDir</code>.
+     * 
+     * @param inListener a listener of (user) input events
+     */
+    public PipelineCore(InputListener inListener)
+            throws DMFCConfigurationException {
+        this(inListener, null, null, null);
+    }
+    
+    /**
+     * Create an instance of the Daisy Pipeline. This constructor will fetch the
+     * Pipeline properties files in the <code>bin/</code> sub-directory of
+     * <code>homeDir</code>.
      * 
      * @param inListener a listener of (user) input events
      * @param homeDir the home directory
      */
     public PipelineCore(InputListener inListener, File homeDir)
             throws DMFCConfigurationException {
-        this(inListener, homeDir, null);
+        this(inListener, homeDir, null, null);
     }
 
     /**
@@ -92,12 +114,7 @@ public class PipelineCore implements TransformerHandlerLoader {
      */
     public PipelineCore(InputListener inListener, File homeDir, Properties userProps)
             throws DMFCConfigurationException {
-        mInputListener = inListener;
-        mHomeDirectory = homeDir;
-        mCreator = new Creator(this);
-        mRunner = new Runner();
-        initialize(userProps, null);
-        mInternationalization = new I18n();
+    	this(inListener, homeDir, userProps, null);
     }
     
     /**
@@ -116,7 +133,7 @@ public class PipelineCore implements TransformerHandlerLoader {
     public PipelineCore(InputListener inListener, File homeDir, Properties userProps, Properties pipelineProps) 
     		throws DMFCConfigurationException {
     	 mInputListener = inListener;
-         mHomeDirectory = homeDir;
+         mHomeDirectory = (homeDir!=null)?homeDir:findHomeDirectory();
          mCreator = new Creator(this);
          mRunner = new Runner();
          initialize(userProps, pipelineProps);
@@ -148,7 +165,18 @@ public class PipelineCore implements TransformerHandlerLoader {
        		System.getProperties().putAll(pipelineProps);
     	}
 
-        // Init user properties
+    	// Init user properties
+    	if (userProps == null) {
+			URL propsURL = getClass().getClassLoader().getResource(
+					"pipeline.user.properties");
+			userProps = new XMLProperties();
+			try {
+				userProps.loadFromXML(propsURL.openStream());
+			} catch (IOException e) {
+				throw new DMFCConfigurationException(
+						"Can't read pipeline.properties", e);
+			}
+		}
         setUserProperties(userProps);
 
         // Load messages
@@ -174,7 +202,6 @@ public class PipelineCore implements TransformerHandlerLoader {
         }
 
     }
-
     /**
      * Configure the Pipeline with the given user properties. This
      * implementation adds the given properties to the System properties.
@@ -182,6 +209,9 @@ public class PipelineCore implements TransformerHandlerLoader {
      * @param properties the user properties used to configure the Pipeline
      */
     public void setUserProperties(Properties properties) {
+    	if (properties == null) {
+			throw new IllegalArgumentException("properties can't be null");
+		}
         // Set system properties
         for (Object key : properties.keySet()) {
             String name = (String) key;
@@ -289,6 +319,37 @@ public class PipelineCore implements TransformerHandlerLoader {
         return mRunner.isRunning();
     }
 
+
+    /**
+     * Finds the pipeline home directory.
+     * 
+     * @param propertiesURL
+     * @return
+     * @throws DMFCConfigurationException
+     */
+    public static File findHomeDirectory() throws DMFCConfigurationException {
+        URL propertiesURL = PipelineCore.class.getClassLoader().getResource(
+                "pipeline.properties");
+        File propertiesFile = null;
+        try {
+            propertiesFile = new File(propertiesURL.toURI());
+        } catch (URISyntaxException e) {
+            throw new DMFCConfigurationException(e.getMessage(), e);
+        }
+        // Is this the home dir?
+        File folder = propertiesFile.getParentFile();
+        if (PipelineCore.testHomeDirectory(folder)) {
+            return folder;
+        }
+        // Test parent
+        folder = folder.getParentFile();
+        if (PipelineCore.testHomeDirectory(folder)) {
+            return folder;
+        }
+        throw new DMFCConfigurationException(
+                "Cannot locate the Daisy Pipeline home directory");
+    }
+    
     /**
      * Tests if a given directory is the home directory.
      * 
