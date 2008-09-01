@@ -148,7 +148,7 @@ doc/transformers/us_rfbd_nimasCreator.html -text svneol=unset#text/plain
 lib/batik-css.jar -text
 lib/batik-util.jar -text
 lib/chardet.jar -text
-lib/commons-cli-1.0.jar -text
+lib/commons-cli-1.1.jar -text
 lib/epubcheck.jar -text
 lib/icu4j-3_8.jar -text
 lib/jing-saxon8-patch.jar -text
