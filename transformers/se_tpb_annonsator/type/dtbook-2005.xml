@@ -118,6 +118,10 @@
 			<before>Caption.</before>
 			<after>End of caption.</after>
 		</lang>
+		<lang lang="fr">
+			<before>Légende.</before>
+			<after>Fin de légende.</after>
+		</lang>
 	</rule>
 
 	<rule match="dtb:sidebar">
@@ -241,6 +245,9 @@
 							<xsl:choose>
 								<xsl:when test="lang('en')">
 									<xsl:text>Roman numeral, </xsl:text>
+								</xsl:when>
+								<xsl:when test="lang('fr')">
+									<xsl:text>Chiffre romain, </xsl:text>
 								</xsl:when>
 								<xsl:when test="lang('sv')">
 									<xsl:text>Romersk siffra, </xsl:text>
