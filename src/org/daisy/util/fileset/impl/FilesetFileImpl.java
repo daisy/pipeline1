@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -73,6 +74,12 @@ abstract class FilesetFileImpl extends EFile implements FilesetFile, IEFile {
 	 * Adds a URI string to the local ordered uri string collection
 	 */
 	protected void putUriValue(String uri) {
+		// RD20080617: Check URI Syntax to bubble-up an informative error message
+		try {
+			new URI(uri);
+		} catch (URISyntaxException e) {
+			throw new IllegalArgumentException("Invalid URI ("+e.getLocalizedMessage()+")");
+		}
 		myUriStrings.add(uri);
 	}
 		

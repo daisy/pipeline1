@@ -119,7 +119,8 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 					putUriValue(attrValue);										
 					if (!regex.matches(regex.URI_REMOTE,attrValue)) {
 						//collect the id and uri for spinelist building
-						String idval = attrs.getValue("id");										
+						String idval = attrs.getValue("id");	
+						// Note: URI syntax has already been checked in putUriValue(attrValue)
 						this.manifestItems.put(idval, this.toURI().resolve(attrValue));
 					}						
 				}	
