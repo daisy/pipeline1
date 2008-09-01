@@ -1,9 +1,6 @@
 package org.daisy.pipeline.test;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.EventObject;
@@ -36,7 +33,6 @@ import org.daisy.pipeline.test.impl.NarratorMathML1;
 import org.daisy.pipeline.ui.CommandLineUI;
 import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
-import org.daisy.util.i18n.XMLProperties;
 import org.daisy.util.xml.stax.ExtendedLocationImpl;
 
 /**
@@ -74,18 +70,6 @@ public class PipelineTestDriver implements BusListener {
 		Set<FailedTest> failedTests = new HashSet<FailedTest>();
 		
 		
-        /*
-         *  Load user properties
-         */
-        URL propsURL = CommandLineUI.class.getClassLoader().getResource(
-                "pipeline.user.properties");
-        XMLProperties properties = new XMLProperties();
-        try {
-            properties.loadFromXML(propsURL.openStream());
-        } catch (IOException e) {
-            throw new DMFCConfigurationException(
-                    "Can't read pipeline.user.properties", e);
-        }
 		
         /*
          * Subscribe to all message and state change events
@@ -103,7 +87,7 @@ public class PipelineTestDriver implements BusListener {
 					try{
 						System.out.println("Test " + test.getClass().getName() +": " + test.getResultDescription());	
 													            
-			            PipelineCore dmfc = new PipelineCore(null, findHomeDirectory(),properties);
+			            PipelineCore dmfc = new PipelineCore();
 			            Script script = dmfc.newScript(scriptFile.toURI().toURL());
 			            Job job = new Job(script);
 						
@@ -486,36 +470,6 @@ public class PipelineTestDriver implements BusListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Finds the pipeline home directory.
-     * 
-     * @param propertiesURL
-     * @return
-     * @throws DMFCConfigurationException
-     */
-    private static File findHomeDirectory() throws DMFCConfigurationException {
-        URL propertiesURL = PipelineCore.class.getClassLoader().getResource(
-                "pipeline.properties");
-        File propertiesFile = null;
-        try {
-            propertiesFile = new File(propertiesURL.toURI());
-        } catch (URISyntaxException e) {
-            throw new DMFCConfigurationException(e.getMessage(), e);
-        }
-        // Is this the home dir?
-        File folder = propertiesFile.getParentFile();
-        if (PipelineCore.testHomeDirectory(folder)) {
-            return folder;
-        }
-        // Test parent
-        folder = folder.getParentFile();
-        if (PipelineCore.testHomeDirectory(folder)) {
-            return folder;
-        }
-        throw new DMFCConfigurationException(
-                "Cannot locate the Daisy Pipeline home directory");
     }
 	
 }
