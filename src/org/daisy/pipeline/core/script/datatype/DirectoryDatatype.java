@@ -63,4 +63,15 @@ public class DirectoryDatatype extends Datatype {
 		}	
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+        if (isInput()) {
+            builder.append("input ");
+        } else {
+            builder.append("output ");
+        }
+        builder.append("directory");
+		return builder.toString();
+	}
 }

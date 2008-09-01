@@ -75,4 +75,19 @@ public class FilesDatatype extends Datatype {
 		}		
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		if (isInput()) {
+            builder.append("input ");
+        } else {
+            builder.append("output ");
+        }
+        if ("application/x-filesystemDirectory".equals(getMime())) {
+            builder.append("directories");
+        } else {
+            builder.append("files (").append(getMime()).append(")");
+        }
+		return builder.toString();
+	}
 }

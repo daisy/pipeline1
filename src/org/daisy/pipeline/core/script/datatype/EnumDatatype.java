@@ -54,4 +54,14 @@ public class EnumDatatype extends Datatype {
 		throw new DatatypeException("Value '" + value + "' does not match any items in this enum.");
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+        builder.append("enum ( ");
+        for (EnumItem item : getItems()) {
+            builder.append("'").append(item.getValue()).append("' ");
+        }
+        builder.append(")");
+		return builder.toString();
+	}
 }

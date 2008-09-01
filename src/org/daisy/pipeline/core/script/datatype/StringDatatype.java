@@ -55,4 +55,11 @@ public class StringDatatype extends Datatype {
 		return pattern;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+        builder.append("string (matching ").append(getRegex());
+        builder.append(")");
+		return builder.toString();
+	}
 }

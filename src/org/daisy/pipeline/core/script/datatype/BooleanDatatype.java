@@ -69,4 +69,13 @@ public class BooleanDatatype extends Datatype {
 		}
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+        builder.append("boolean (").append(getTrueValue());
+        builder.append(", ").append(getFalseValue()).append(")");
+		return builder.toString();
+	}
+
+	
 }

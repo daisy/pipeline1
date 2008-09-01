@@ -18,6 +18,7 @@
 package org.daisy.pipeline.core.script;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -210,6 +211,30 @@ public class Script {
 	 */
 	void addTask(Task task) {
 		this.tasks.add(task);
+	}
+	
+	public void printInfo(PrintWriter out){
+        out.println("Script information");
+        out.println("------------------");
+        out.println("Name:          "+getNicename());
+        out.println("Description:   "+getDescription());
+        out.println("Documentation: "+getDocumentation());
+        out.println("Parameters:");
+        for (ScriptParameter param : getParameters().values()) {
+        	out.println();
+        	out.print("  ");
+        	out.println(param.getName());
+        	out.println("   Name:        "+param.getNicename());
+        	out.println("   Description: "+param.getDescription());
+        	out.println("   Datatype:    "+param.getDatatype());
+            out.print("   Occurrence:  ");
+            if (param.isRequired()) {
+                out.println("required");
+            } else {
+                out.println("optional (default '"+param.getValue()+"')");
+            }
+        }
+        out.flush();
 	}
 		
 }

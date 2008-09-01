@@ -17,7 +17,12 @@
  */
 package org.daisy.pipeline.core.event;
 
+import java.io.File;
+
 import javax.xml.stream.Location;
+
+import org.daisy.pipeline.core.script.Task;
+import org.daisy.util.xml.stax.ExtendedLocationImpl;
 
 /**
  * Event raised when the system emits a textual message.
@@ -74,7 +79,7 @@ public class MessageEvent extends SystemEvent {
 	 * DEBUG messages are purely developer oriented.
 	 */
 	public static enum Type {
-	    ERROR, WARNING, INFO, INFO_FINER, DEBUG
+	    ERROR, WARNING, INFO, INFO_FINER, DEBUG;
 	}
 	
 	public static enum Cause {
@@ -97,6 +102,84 @@ public class MessageEvent extends SystemEvent {
 		return mLocation;
 	}
 
+	public String toString(){
+		return toString(true,true,true,true);
+	}
+	
+	public String toString(boolean withType, boolean withSource, boolean withMessage, boolean withLocation){
+        StringBuilder string = new StringBuilder();
+        
+        String source = null;
+		if (withSource) {
+			if (this instanceof CoreMessageEvent) {
+				source = "Pipeline Core";
+			} else if (this instanceof TaskMessageEvent) {
+				Task task = (Task) getSource();
+				if (task.getTransformerInfo() != null) {
+					source = task.getTransformerInfo().getNiceName();
+				} else {
+					source = task.getName();
+				}
+			} else {
+				source = "???";
+			}
+		}        
+		
+
+        StringBuilder location = new StringBuilder();
+		if (withLocation) {
+			if (getLocation() != null) {
+				Location loc = getLocation();
+				String sysId = loc.getSystemId();
+				if (sysId != null && sysId.length() > 0) {
+					File file = new File(sysId);
+					location.append(" Location: ");
+					location.append(file.getPath());
+					if (loc.getLineNumber() > -1) {
+						location.append(' ');
+						location.append(loc.getLineNumber());
+						if (loc.getColumnNumber() > -1) {
+							location.append(':');
+							location.append(loc.getColumnNumber());
+						}
+					}
+				}
+
+				// mg20070904: printing extended location info
+				if (loc instanceof ExtendedLocationImpl) {
+					ExtendedLocationImpl eLoc = (ExtendedLocationImpl) loc;
+					ExtendedLocationImpl.InformationType[] types = ExtendedLocationImpl.InformationType
+							.values();
+					for (int i = 0; i < types.length; i++) {
+						location.append("\n\t");
+						location.append(types[i].toString()).append(':')
+								.append(' ');
+						String value = eLoc.getExtendedLocationInfo(types[i]);
+						location.append(value == null ? "N/A" : value);
+					}
+				}
+
+			}
+		}
+
+
+		if (withType || withSource) {
+			string.append('[');
+			if (withType)
+				string.append(getType());
+			if (withType && withSource)
+				string.append(',').append(' ');
+			if (withSource)
+				string.append(source);
+			string.append(']').append(' ');
+		}
+		if (withMessage)
+			string.append(getMessage());
+		if (withLocation)
+			string.append(location.toString());
+        return string.toString();
+		
+	}
 	private static final long serialVersionUID = -4372249444244306856L;
 	
 }

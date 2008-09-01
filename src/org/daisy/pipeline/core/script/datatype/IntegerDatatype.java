@@ -75,4 +75,11 @@ public class IntegerDatatype extends Datatype {
 		
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+        builder.append("integer [").append(getMin());
+        builder.append(", ").append(getMax()).append("]");
+		return builder.toString();
+	}
 }

@@ -48,4 +48,10 @@ public abstract class Datatype {
 	 * @throws DatatypeException if the supplied value isn't valid
 	 */
 	public abstract void validate(String value) throws DatatypeException;
+
+	@Override
+	public String toString() {
+		return type.toString();
+	}
+	
 }
