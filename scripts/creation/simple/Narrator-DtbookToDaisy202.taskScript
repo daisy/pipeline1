@@ -235,7 +235,7 @@
 		</parameter>
 		<parameter>
 			<name>outputDTBFilename</name>
-			<value>${outputPath}/z3986/$filename{input}</value>
+			<value>${outputPath}/z3986/dtbook.xml</value>
 		</parameter>		
 	</task>
 	
