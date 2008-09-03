@@ -39,7 +39,7 @@
 		<include name="batik-css.jar"/>
 		<include name="batik-util.jar"/>
 		<include name="chardet.jar"/>
-		<include name="commons-cli-1.0.jar"/>
+		<include name="commons-cli-1.1.jar"/>
 		<include name="epubcheck.jar"/>
 		<include name="icu4j-3_8.jar"/>		
         <!-- <include name="icu4j-charsets.jar"/> -->    
