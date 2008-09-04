@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 
 <taskScript version="2.0" name="EmbossPEF">
-	<nicename>Emboss PEF</nicename>
+	<nicename>Braille: Emboss PEF</nicename>
 	<description>desc...</description>
 	<documentation uri="../../doc/scripts/PEFToText.html"/>
 		
@@ -13,14 +13,14 @@
 		</datatype>
 	</parameter>
 	
-	<parameter name="embosser" value="none" required="true">
+	<parameter name="embosser" value="NONE" required="true">
 		<nicename>Embosser</nicename>
 		<description>Select the make and model of the target embosser</description>
 		<datatype>
 			<enum>
-			  <item nicename="None" value="none" />
-			  <item nicename="Index Braille: Everest (older)" value="everest" />
-			  <item nicename="Index Braille: Basic (older)" value="everest" />
+			  <item nicename="None" value="NONE" />
+			  <item nicename="Index Braille: Everest (older)" value="INDEX_EVEREST" />
+			  <item nicename="Index Braille: Basic (older)" value="INDEX_BASIC" />
 			</enum>
 		</datatype>
 	</parameter>
@@ -49,7 +49,7 @@
 		</datatype>
 	</parameter>
 
-	<task name="org_pef_pef2text" interactive="false">
+	<task name="org_pef_text/pef2text" interactive="false">
 		<parameter>
 			<name>xml</name>
 			<value>${input}</value>
@@ -61,8 +61,8 @@
 		</parameter>
 		
 		<parameter>
-			<name>locale</name>
-			<value>en-US</value>
+			<name>table</name>
+			<value>en_US</value>
 		</parameter>
 		
 		<parameter>

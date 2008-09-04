@@ -271,6 +271,8 @@ samples/input/ops/dtbook.2005.basic.css -text
 samples/input/ops/navigation.ncx -text
 samples/input/ops/package.opf -text
 samples/input/ops/the_waste_land.xml -text
+samples/input/pef/basic.xml -text
+samples/input/pef/test-pattern.xml -text
 samples/input/rtf/RTF2dtbook.rtf -text
 samples/input/sadx/AnotherBulletList.docx -text
 samples/input/sadx/AnotherBulletList.xml -text
@@ -334,9 +336,14 @@ samples/input/xhtml/valentinhauy.html -text
 samples/input/xhtml/valentinhauy11.html -text
 samples/input/xhtml/xhtml-rdf.xml -text
 scripts/_dev/AudacityToDTB.taskScript -text
+scripts/_dev/BrailleEmbossPEF.taskScript -text
+scripts/_dev/BrailleFormatInputParamsStatic.paramGroup -text
+scripts/_dev/BrailleFormatOutputParamsStatic.paramGroup -text
+scripts/_dev/BraillePefToText.taskScript -text
+scripts/_dev/BrailleTextToPEF.taskScript -text
+scripts/_dev/BrailleTextToText.taskScript -text
 scripts/_dev/DTBBackwardMigrator.taskScript -text
 scripts/_dev/DTBookFix_NarratorValidation.taskScript -text
-scripts/_dev/EmbossPEF.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
 scripts/_dev/Narrator-Autumn2008.taskScript -text
@@ -344,7 +351,6 @@ scripts/_dev/Narrator-Dev.taskScript -text
 scripts/_dev/Narrator-MathML.taskScript -text
 scripts/_dev/Narrator_NoValidation.taskScript -text
 scripts/_dev/NccNcxOnly.taskScript -text
-scripts/_dev/PefToText.taskScript -text
 scripts/_dev/XMLAudioAligner.taskScript -text
 scripts/_dev/XukCreator.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
@@ -867,11 +873,18 @@ transformers/int_daisy_xukCreator/messages.properties -text
 transformers/int_daisy_xukCreator/transformer.tdf -text
 transformers/no_hks_xhtml2dtbook/Xhtml2DTBook.java -text
 transformers/no_hks_xhtml2dtbook/transformer.tdf -text
-transformers/org_pef_pef2text/BrailleDevice.java -text
-transformers/org_pef_pef2text/PEF2Text.java -text
-transformers/org_pef_pef2text/PEFParser.java -text
-transformers/org_pef_pef2text/pef2text.xsl -text
-transformers/org_pef_pef2text/transformer.tdf -text
+transformers/org_pef_text/BrailleFormat.java -text
+transformers/org_pef_text/pef2text/BrailleDevice.java -text
+transformers/org_pef_text/pef2text/Element.java -text
+transformers/org_pef_text/pef2text/PEF2Text.java -text
+transformers/org_pef_text/pef2text/PEFHandler.java -text
+transformers/org_pef_text/pef2text/PEFParser.java -text
+transformers/org_pef_text/pef2text/Range.java -text
+transformers/org_pef_text/pef2text/pef2text.xsl -text
+transformers/org_pef_text/pef2text/transformer.tdf -text
+transformers/org_pef_text/text2pef/Text2PEF.java -text
+transformers/org_pef_text/text2pef/TextParser.java -text
+transformers/org_pef_text/text2pef/transformer.tdf -text
 transformers/pipeline_system_copyer/Copyer.java -text
 transformers/pipeline_system_copyer/messages.properties -text
 transformers/pipeline_system_copyer/messages_hi.properties -text svneol=unset#unset

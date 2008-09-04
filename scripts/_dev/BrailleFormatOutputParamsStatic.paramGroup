@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+
+	<parameter name="table" value="en_US" required="true">
+		<nicename>Target format</nicename>
+		<description>Target format</description>
+		<datatype>
+			<enum>
+			  <item nicename="North American ASCII Braille" value="en_US" />
+			  <item nicename="Unicode braille" value="UNICODE_BRAILLE" />
+			  <item nicename="Danish" value="da_DK" />
+			  <item nicename="Swedish - CX" value="sv_SE_CX" />
+			</enum>
+		</datatype>
+	</parameter>
+	
+	<parameter name="pad" value="true" required="false">
+		<nicename>Newline around form feed</nicename>
+		<description>Insert newline before and after form feed</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+		
+</paramGroup>

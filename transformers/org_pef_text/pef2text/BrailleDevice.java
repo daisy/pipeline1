@@ -1,4 +1,4 @@
-package org_pef_pef2text;
+package org_pef_text.pef2text;
 
 import java.io.File;
 import java.io.FileInputStream;

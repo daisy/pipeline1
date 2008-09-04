@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paramGroup>
+
+	<parameter name="mode" value="en_US" required="true">
+		<nicename>Source format</nicename>
+		<description>Source format</description>
+		<datatype>
+			<enum>
+			  <item nicename="North American ASCII Braille" value="en_US" />
+			  <item nicename="Unicode braille" value="UNICODE_BRAILLE" />
+			  <item nicename="Danish" value="da_DK" />
+			  <item nicename="Swedish - CX" value="sv_SE_CX" />
+			</enum>
+		</datatype>
+	</parameter>
+		
+</paramGroup>

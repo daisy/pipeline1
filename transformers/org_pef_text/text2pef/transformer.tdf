@@ -1,0 +1,68 @@
+<transformer version="1.1">
+	<name>Text to PEF</name>
+	<description>Converts a text file into a basic PEF 2008-1 file.</description>
+	<classname>org_pef_text.text2pef.Text2PEF</classname>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/org_pef_text2pef.html"/>	
+	
+	<parameters>
+
+<!-- Main parameters -->
+		<parameter required="true" direction="in" type="text/plain">
+			<name>input</name>
+			<description>The input text file</description>
+			<example>file:///path/to/file.txt</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/xml">
+			<name>output</name>			
+			<description>Output PEF 2008-1 file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="false" direction="in" type="enum">
+			<name>mode</name>
+			<description>Read mode</description>
+			<example>en_US</example>
+			<enum>
+				<value>en_US</value>
+				<value>da_DK</value>
+				<value>sv_SE_CX</value>
+				<value>UNICODE_BRAILLE</value>
+			</enum>
+			<default>en_US</default>
+		</parameter>	
+
+		<parameter type="string" required="false">
+			<name>author</name>
+			<description>Document author</description>
+			<example>Author</example>
+			<default></default>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>title</name>
+			<description>Document title</description>
+			<example>A title</example>
+			<default></default>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>identifier</name>
+			<description>Document identifier</description>
+			<example>UID-00001</example>
+			<default></default>
+		</parameter>
+
+		<parameter type="string" required="false">
+			<name>language</name>
+			<description>Document language</description>
+			<example>en</example>
+			<default></default>
+		</parameter>
+
+	</parameters>
+
+</transformer>
