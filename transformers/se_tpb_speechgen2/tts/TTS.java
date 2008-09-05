@@ -95,4 +95,17 @@ public interface TTS {
 	 */
 	public void close() throws IOException, TTSException;
 	
+	/**
+	 * Whether this TTS engine should abort after he failed to speak a sentence.
+	 * <p>Aborting is equivalent of making {@link #hasNext()} return <code>false</code>.</p>
+	 * @return <code>true</code> iff this TTS aborts after a failure
+	 */
+	public boolean getFailOnError();
+	
+	/**
+	 * Sets whether this TTS engine should abort after he failed to speak a sentence.
+	 * <p>Aborting is equivalent of making {@link #hasNext()} return <code>false</code>.</p>
+	 * @param failOnError whether this TTS should abort after a failure
+	 */
+	public void setFailOnError(boolean failOnError);
 }

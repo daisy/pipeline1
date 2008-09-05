@@ -55,18 +55,18 @@ public class TTSRunner implements Runnable {
 	public void run() {
 		TTSInput in = null;
 		long duration = 0;
-		try {
 			while ((in = mCallback.getNextInput()) != null) {
+				try {
 				if (in.isAnnouncement()) {
 					duration = mSlave.read(in.getAnnouncements(), in.getQName(), in.getFile());		
 				} else {
 					duration = mSlave.read(in.getSyncPoint(), in.getFile());
 				}
 				mCallback.addOutput(new TTSOutput(in.getFile(), in.getNumber(), duration));
+				}  catch (Throwable t) {
+					mCallback.slaveTerminated(mSlave, in, t);
+				}
 			}
-		}  catch (Throwable t) {
-			mCallback.slaveTerminated(mSlave, in, t);
-		}
 	}
 
 	/**

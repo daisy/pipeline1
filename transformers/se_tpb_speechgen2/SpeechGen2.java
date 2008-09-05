@@ -167,6 +167,7 @@ public class SpeechGen2 extends Transformer {
 		new AudioFormat(22050, 16, 1,true, false);
 	private QName SMIL_SYNC_ATTR;
 	private boolean doSmilSyncAttributeBasedSyncPointLocation = false; //Which syncpoint location method to use, see #isSynchronizationPoint
+	private boolean failOnError = false;                       //Whether to abort after a TTS error
 	
 	private CountDownLatch countOnce = new CountDownLatch(1);	// thread synchronization
 	private AudioConcatQueue audioConcatQueue = new AudioConcatQueue(countOnce); // wav files concatenation and possibly mp3 encoding.
@@ -190,11 +191,13 @@ public class SpeechGen2 extends Transformer {
 			/* get the params */
 			File configFile = new File(parameters.remove("sgConfigFilename"));
 			File ttsBuilderConfig = new File(parameters.remove("ttsBuilderConfig"));
-			File inputFile = new File(parameters.remove("inputFilename"));
+			inputFile = new File(parameters.remove("inputFilename"));
 			File outputFile = new File(parameters.remove("outputFilename"));
 			
 			//mg200805
 			doSmilSyncAttributeBasedSyncPointLocation = Boolean.parseBoolean(parameters.remove("doSmilSyncAttributeBasedSyncPointLocation"));
+			//rd200809
+			boolean failOnError = Boolean.parseBoolean(parameters.remove("failOnError"));
 			
 			outputDir = new File(parameters.get("outputDirectory"));
 			if (!outputDir.exists()) {
@@ -331,6 +334,7 @@ public class SpeechGen2 extends Transformer {
 					}
 				} finally {
 					if (tts != null) {
+						tts.setFailOnError(failOnError);
 						ttsEngines.put(lang, tts);
 					}
 				}
@@ -494,13 +498,6 @@ public class SpeechGen2 extends Transformer {
 					try {
 						smilTimeStartValue = fetchSynchronizationPoint(reader, se);
 					} catch (Exception e) {
-						Location loc = event.getLocation();
-						if (loc.getSystemId()==null){
-							LocationImpl newloc = new LocationImpl(loc);
-							newloc.setSystemId(inputFile.getAbsolutePath());
-							loc=newloc;
-						}
-						sendMessage(i18n("ERROR_FETCHING_AUDIO"), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, loc);
 						throw new TransformerRunException(e.getMessage(), e);
 					}
 					
@@ -650,6 +647,15 @@ public class SpeechGen2 extends Transformer {
 		introductions.addAll(before);
 		before.clear();
 
+		//RD20080708 Pass location info to the scope
+		Location loc = se.getLocation();
+		if (loc.getSystemId()==null){
+			LocationImpl newloc = new LocationImpl(loc);
+			newloc.setSystemId(inputFile.getAbsolutePath());
+			loc=newloc;
+		}
+		scope.setUserData("location", loc, null);
+		
 		List<StartElement> terminations = new ArrayList<StartElement>();
 
 		int minLevel = getMinLevelBeforeNextSynchronization(reader);
@@ -783,7 +789,6 @@ public class SpeechGen2 extends Transformer {
 		 */
 		
 		ttsOutput = tts.getNext();
-		
 		duration = ttsOutput.getDuration();
 		file = ttsOutput.getFile();
 		if (duration == 0) {
@@ -1305,6 +1310,7 @@ public class SpeechGen2 extends Transformer {
 	 * @author markusg
 	 */
 	private final static String SYNCPOINT_GETTER_BOOKMK = "Narrator.SpeechGenerator.getSynchronizationPoint";
+	private File inputFile;
 	private boolean isSynchronizationPointNew(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {
 		
 		Attribute s = AttributeByName.get(SMIL_SYNC_ATTR, se);

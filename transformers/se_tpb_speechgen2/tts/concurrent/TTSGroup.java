@@ -27,9 +27,11 @@ import java.util.Map;
 import java.util.Queue;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.events.StartElement;
 
 import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent.Type;
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.w3c.dom.Document;
 
@@ -39,6 +41,7 @@ import se_tpb_speechgen2.tts.TTSException;
 import se_tpb_speechgen2.tts.TTSInput;
 import se_tpb_speechgen2.tts.TTSOutput;
 import se_tpb_speechgen2.tts.TTSSyncPoint;
+import se_tpb_speechgen2.tts.util.TTSUtils;
 
 /**
  * This is an implementation of the TTS interface. It covers the case
@@ -70,6 +73,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 	private Integer mOutputIndex = null;		// output queue counter
 	private static boolean DEBUG = false;
 	private TransformerDelegateListener mTDL;
+	private boolean failOnError = false;        // whether this engine should terminate after a failure
 	
 	
 	/**
@@ -264,18 +268,30 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 		// TODO
 		DEBUG("#slaveTerminated: ");
 		
-		// makes hasNext() return false;
-		spCounter = -1;
+		if (failOnError) {
+			// makes hasNext() return false;
+			spCounter = -1;
+			// no more work
+			mTTSInput.clear();
+		}
 		
 		// makes the currently blocking call receive "something"
 		mTTSOutput.put(mOutputIndex, new TTSOutput(myLastInput.getFile(), myLastInput.getNumber(), 0));
 
-		// no more work 
-		mTTSInput.clear();
 		
 		// delegates the error message to the transformer
-		String msg = mTDL.delegateLocalize("SLAVE_TERMINATED", null)+t.getLocalizedMessage();
-		mTDL.delegateMessage(this, msg, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM, null);
+		TTSUtils ttsUtils = new TTSUtils(new HashMap<String, String>());
+		String sent=null;
+		try {
+			sent=ttsUtils.dom2input(myLastInput.getSyncPoint());
+		} catch (Exception e) {
+			// ignore
+		}
+		mTDL.delegateMessage(this, mTDL.delegateLocalize("SLAVE_TERMINATED",
+				new Object[] { sent }), MessageEvent.Type.ERROR,
+				MessageEvent.Cause.SYSTEM, (Location) myLastInput
+						.getSyncPoint().getUserData("location"));
+		mTDL.delegateMessage(this, "Caused by "+t+": "+t.getMessage(), Type.DEBUG, MessageEvent.Cause.SYSTEM, null);
 		
 		// wake up the master thread
 		notifyAll();
@@ -306,5 +322,13 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 			String base = "DEBUG (" + getClass().getName() + "): ";
 			System.err.println(base + msg);
 		}
+	}
+
+	public boolean getFailOnError() {
+		return failOnError;
+	}
+
+	public void setFailOnError(boolean failOnError) {
+		this.failOnError = failOnError;
 	}
 }
