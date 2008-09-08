@@ -242,7 +242,7 @@ public class TextParser {
 			pw.println("			<dc:language>"+language+"</dc:language>");
 		}
 		pw.println("			<dc:date>"+DATE_FORMAT.format(date)+"</dc:date>");
-		pw.println("			<dc:format>application/x-pef</dc:format>");
+		pw.println("			<dc:format>application/x-pef+xml</dc:format>");
 		if (!"".equals(identifier)) {
 			pw.println("			<dc:identifier>"+identifier+"</dc:identifier>");
 		}

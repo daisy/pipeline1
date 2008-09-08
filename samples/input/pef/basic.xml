@@ -12,7 +12,7 @@
 			<dc:description>This is an example of the Portable Embosser Format (PEF) 1.0</dc:description>
 			<dc:language>sv</dc:language>
 			<dc:date>2008-09-04</dc:date>
-			<dc:format>application/x-pef</dc:format>
+			<dc:format>application/x-pef+xml</dc:format>
 			<dc:identifier>xxxxxx</dc:identifier>
 		</meta>
 	</head>
