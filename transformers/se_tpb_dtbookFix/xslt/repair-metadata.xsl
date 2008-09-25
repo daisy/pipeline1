@@ -2,13 +2,14 @@
 <!--
 	Repair metadata items
 		Version
-			2008-01-07
+			2008-09-24
 
 		Description
 		    - fix metadata case errors
 		    - remove unknown dc-metadata
 			- add dtb:uid (if missing) from dc:Identifier
 			- add dc:Title (if missing) from doctitle
+			- add auto-generated dtb:uid if missing (or if it has empty contents)
 
 		Nodes
 			meta,head
@@ -130,6 +131,17 @@
 				</xsl:variable>
 				<xsl:message><xsl:value-of select="$msg"/></xsl:message>
 			</xsl:when>
+			<!-- Check contents of dtb:uid -->
+			<xsl:when test="@name='dtb:uid' and string-length(normalize-space(@content))=0">
+				<xsl:copy>
+					<xsl:copy-of select="@*[name()!='content']"/>
+					<xsl:attribute name="content">
+						<xsl:text>AUTO-UID-</xsl:text>
+						<xsl:value-of select="generate-id()"/>
+					</xsl:attribute>					
+				</xsl:copy>
+				<xsl:message>Adding auto generated value for the dtb:uid metadata</xsl:message>
+			</xsl:when>
 			<!-- Copy everything else -->
 			<xsl:otherwise>
 				<xsl:copy>
@@ -141,16 +153,26 @@
 	
 	<xsl:template match="dtb:head">
 		<xsl:copy>
-			<!-- If dtb:uid is missing but dc:Identifier is present, use that -->
-			<xsl:if test="not(dtb:meta[matches(@name, '^\s*dtb:uid\s*$','si')]) and
-			                  dtb:meta[matches(@name, '^\s*dc:identifier\s*$','si')]">
+			<!-- Add dtb:uid if missing. If dc:Identifier is present, use that, otherwise auto generate -->
+			<xsl:if test="not(dtb:meta[matches(@name, '^\s*dtb:uid\s*$','si')])">
 			    <xsl:message>Adding dtb:uid metadata</xsl:message>
 				<xsl:element name="meta" namespace="http://www.daisy.org/z3986/2005/dtbook/">
 					<xsl:attribute name="name">
 						<xsl:text>dtb:uid</xsl:text>
 					</xsl:attribute>
 					<xsl:attribute name="content">
-						<xsl:value-of select="dtb:meta[matches(@name, '^\s*dc:identifier\s*$','si')][1]/@content"/>
+						<xsl:variable name="dtbUid">
+							<xsl:value-of select="dtb:meta[matches(@name, '^\s*dc:identifier\s*$','si')][1]/@content"/>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="normalize-space($dtbUid)=''">
+								<xsl:text>AUTO-UID-</xsl:text>
+								<xsl:value-of select="generate-id()"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="$dtbUid"/>
+							</xsl:otherwise>
+						</xsl:choose>						
 					</xsl:attribute>
 				</xsl:element>
 			</xsl:if>
