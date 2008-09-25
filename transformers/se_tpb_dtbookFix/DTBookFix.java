@@ -512,7 +512,6 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			
 			if(reader!=null)reader.close();
 			if(writer!=null)writer.flush();writer.close();
-			juggler.swap();
 			
 		} catch (Exception e) {
 			sendMessage(i18n("ERROR",e.getMessage()),MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM, null);			
@@ -521,6 +520,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			if(fos!=null) try {fos.close();} catch (IOException e) {}
 			StAXInputFactoryPool.getInstance().release(xif, xifProperties);
 			StAXOutputFactoryPool.getInstance().release(xof, xofProperties);
+			try {juggler.swap();} catch (IOException e) {}
 		}
 		
 	}

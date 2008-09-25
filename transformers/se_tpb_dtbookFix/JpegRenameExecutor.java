@@ -76,6 +76,7 @@ public class JpegRenameExecutor extends Executor {
 			OutputStream outstream = new FileOutputStream(output);
 			StaxFilter filter = new JpegRenamerFilter(reader, outstream);
 			filter.filter();
+			filter.close();
 		} catch (Exception e) {
 			mTransformer.delegateMessage(this, mTransformer.delegateLocalize(
 					"JPEG_RENAMER_FAIL", new String[] { e.getMessage() }),
