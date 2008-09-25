@@ -588,8 +588,9 @@
   
   <sch:pattern name="ncx_playOrderOrigin" id="ncx_playOrderOrigin">
       <!-- The sequence of play orders begins with value 1 -->
+      <!-- mg20080925 changed from =1 to >0 -->
       <sch:rule context="ncx:ncx">
-        <sch:assert test="count(//*[@playOrder='1'])=1">
+        <sch:assert test="count(//*[@playOrder='1'])>0">
           [sch][zedid::ncx_playOrderOrigin]
         </sch:assert>
       </sch:rule>
