@@ -19,6 +19,7 @@ package org.daisy.util.fileset.validation;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Map;
 
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetType;
@@ -88,7 +89,8 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 			ZedVal zedval = new ZedVal();
 			mValidatorListener.inform(this, "Validating with ZedVal version " + ZedVal.getVersion());
 			try {
-				zedval.setReporter(this);														
+				zedval.setReporter(this);
+				setUserProperties(zedval);
 				zedval.validate(new File(mInputOpf));
 			} catch (ZedContextException e) {
 				throw new ValidatorException(e.getMessage(),e);
@@ -98,6 +100,19 @@ class ValidatorImplZedVal extends ValidatorImplAbstract implements Validator, Ze
 		}catch (Exception e) {
 			throw new ValidatorException(e.getMessage(),e);
 		}	
+	}
+
+	private void setUserProperties(ZedVal zedval) {
+		try {
+			Map<String,Object> props = (Map<String,Object>)this.getProperty(Validator.PROPERTY_USER_PARAMETERS);
+			if(props.containsKey(Validator.PROPERTY_TIME_TOLERANCE)) {
+				zedval.getContext().setTimeTolerance((String)props.get(Validator.PROPERTY_TIME_TOLERANCE));
+			}
+			
+		}catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		
 	}
 
 	/*

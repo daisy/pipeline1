@@ -24,6 +24,14 @@
 
 	&ValidatorScriptParamsSimpleStatic;
 
+	<parameter name="validatorTimeTolerance" value="0" required="false">
+		<nicename>Time Tolerance</nicename>
+		<description>Set the time tolerance threshold in milliseconds</description>		
+		<datatype>
+				<integer min="0" max ="10000" />
+		</datatype>		
+	</parameter>
+
 	<task name="int_daisy_validator" interactive="false">
 	
 		<parameter>
@@ -42,6 +50,12 @@
 			<name>abortThreshold</name>
 			<value>NONE</value>
 		</parameter>
+		
+		<parameter>
+			<name>time-tolerance</name>
+			<value>${validatorTimeTolerance}</value>
+		</parameter>
+		
 										
 	</task>
 

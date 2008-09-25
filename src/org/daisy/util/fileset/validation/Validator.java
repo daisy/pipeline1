@@ -33,6 +33,12 @@ import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedExceptio
 
 public interface Validator {
 
+	/** A constant name to signify a Map&lt;String,Object&gt; of arbitrary user properties. */	 
+	public String PROPERTY_USER_PARAMETERS = "user-parameters-property";
+	
+	/** A constant name to denote a time tolerance property that a Validator may or may not recognize. */	
+	public String PROPERTY_TIME_TOLERANCE = "time-tolerance";
+	
 	/**
 	 * Is validation of the inparam fileset supported by this Validator?
 	 */

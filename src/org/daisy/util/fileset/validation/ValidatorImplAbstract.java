@@ -66,6 +66,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 	protected boolean mDebugMode = false;													//system property
 	private ArrayList<ValidatorDelegate> mDelegates = null; 								//registered ValidatorDelegates
 	private Map<URL,TypeRestriction> mSchemas = null;	
+	private Map<String,Object> mProperties = null;
 	
 	ValidatorImplAbstract(ArrayList<FilesetType> supportedFilesetTypes ) {
 		initialize(supportedFilesetTypes);		
@@ -81,6 +82,7 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 		if(System.getProperty("org.daisy.debug")!=null) mDebugMode = true;
 		mSupportedFilesetTypes = new ArrayList<FilesetType>();	
 		mSupportedFilesetTypes.addAll(supportedFilesetTypes);
+		mProperties = new HashMap<String,Object>();
 	}
 	
 	/*
@@ -428,17 +430,17 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
         if (name == null) throw new NullPointerException("the name parameter is null");
         throw new ValidatorNotRecognizedException(name);	         
 	}
-	
+		
 	@SuppressWarnings("unused")
 	public void setProperty(String name, Object object) throws ValidatorNotRecognizedException, ValidatorNotSupportedException {
         if (name == null) throw new NullPointerException("the name parameter is null");        
-       	throw new ValidatorNotRecognizedException(name);	 
+       	mProperties.put(name, object);	 
 	}
 
 	@SuppressWarnings("unused")
 	public Object getProperty(String name) throws ValidatorNotRecognizedException, ValidatorNotSupportedException {
         if (name == null) throw new NullPointerException("the name parameter is null");
-        throw new ValidatorNotRecognizedException(name);
+        return mProperties.get(name);
     }
 	
 	class TypeRestriction {

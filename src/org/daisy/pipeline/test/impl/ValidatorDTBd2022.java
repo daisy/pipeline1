@@ -13,7 +13,9 @@ public class ValidatorDTBd2022 extends PipelineTest {
 	
 	@Override
 	public List<String> getParameters() {		
-		mParameters.add("--input=" + mDataInputDir + "/dtb/d202/dontworrybehappy-invalid/ncc.html");
+		//mParameters.add("--input=" + mDataInputDir + "/dtb/d202/dontworrybehappy-invalid/ncc.html");
+		//mParameters.add("--input=D:/dolphinbok/Alice/Single volume/ncc.html");
+		mParameters.add("--input=D:/dolphinbok/Alice/Multi volume/merge/ncc.html");
 		return mParameters;
 	}
 

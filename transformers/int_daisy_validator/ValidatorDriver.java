@@ -190,7 +190,7 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 					mInputFileset = new FilesetImpl(mInputFile.toURI(),this,true,false);
 															
 					if(mRequiredInputType!=null) {
-						//the user has specified that an error+abort should be thrownn if
+						//the user has specified that an error+abort should be thrown if
 						//input fileset is not of the given type
 						if (!mInputFileset.getFilesetType().toNiceNameString().equals(mRequiredInputType)) {
 							String message = i18n("NOT_REQUIRED_INPUT_TYPE",mRequiredInputType);
@@ -221,10 +221,14 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 						String delegates = parameters.remove("delegates");
 						this.setDelegates(filesetValidator, delegates);
 						
-						//TODO set schemas on validator
+						//mg20080925: pass the transformer parameters map in 
+						//up to each impl to look for recognized user requests
+						//in the map
+						filesetValidator.setProperty(Validator.PROPERTY_USER_PARAMETERS, parameters);
 						
 						String message = i18n("VALIDATING_FILESET", mInputFileset.getFilesetType().toNiceNameString());
 						this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
+						
 						filesetValidator.validate(mInputFileset);
 						
 						this.sendMessage(PROGRESS_FILESET_VALIDATION);

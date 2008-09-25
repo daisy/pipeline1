@@ -116,6 +116,19 @@
 			<example>validator.xsl</example>
 			<default/>
 		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>time-tolerance</name>
+			<description>
+				The time tolerance threshold for validators that
+				do time-based tests. Any error below this should
+				not generate an error.
+			</description>
+			<example>50</example>
+			<default>0</default>
+		</parameter>
+		
+		
 				 
 	</parameters>
 

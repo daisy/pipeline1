@@ -14,6 +14,7 @@ public class ValidatorDTBz39861 extends PipelineTest {
 	@Override
 	public List<String> getParameters() {		
 		mParameters.add("--validatorInputFile=" + mDataInputDir + "/dtb/z3986-2005/06-speechgen.opf");
+		mParameters.add("--validatorTimeTolerance=100");
 		return mParameters;
 	}
 
