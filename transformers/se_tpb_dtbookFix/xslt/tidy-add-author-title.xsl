@@ -2,7 +2,7 @@
 <!--
 	Add author and title
 		Version
-			2007-10-15
+			2008-09-25
 
 		Description
 			Inserts docauthor and doctitle
@@ -19,6 +19,7 @@
 
 		Author
 			Joel Håkansson, TPB
+			Linus Ericson, TPB
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" xmlns="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
 
@@ -26,27 +27,40 @@
 	<xsl:include href="output.xsl"/>
 
 	<xsl:template name="insertDoctitle">
-		<xsl:if test="not(//dtb:doctitle)">
-			<xsl:for-each select="//dtb:meta[@name='dc:Title']">
-				<xsl:if test="@content!=''">
-					<xsl:element name="doctitle">
-						<xsl:value-of select="@content"/>
-					</xsl:element>
-				</xsl:if>
-			</xsl:for-each>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="not(//dtb:frontmatter/dtb:doctitle)">
+				<xsl:choose>
+					<xsl:when test="//dtb:meta[@name='dc:Title'][1]/@content!=''">
+						<xsl:element name="doctitle">
+							<xsl:value-of select="//dtb:meta[@name='dc:Title'][1]/@content"/>
+						</xsl:element>
+					</xsl:when>
+					<xsl:when test="//dtb:doctitle">
+						<xsl:copy-of select="(//dtb:doctitle)[1]"/>
+					</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="(//dtb:frontmatter/dtb:doctitle)[1]"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="insertDocauthor">
-		<xsl:if test="not(//dtb:docauthor)">
-			<xsl:for-each select="//dtb:meta[@name='dc:Creator']">
-				<xsl:if test="@content!=''">
-					<xsl:element name="docauthor">
-						<xsl:value-of select="@content"/>
-					</xsl:element>
-				</xsl:if>
-			</xsl:for-each>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="not(//dtb:frontmatter/dtb:docauthor)">
+				<xsl:for-each select="//dtb:meta[@name='dc:Creator']">
+					<xsl:if test="@content!=''">
+						<xsl:element name="docauthor">
+							<xsl:value-of select="@content"/>
+						</xsl:element>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="//dtb:frontmatter/dtb:docauthor"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="dtb:frontmatter">
@@ -56,6 +70,20 @@
 			<xsl:call-template name="insertDocauthor"/>
 			<xsl:apply-templates/>
 		</xsl:copy>
+	</xsl:template>
+	
+	<!-- These elements are already inserted by the insertDoctitle and insertDocauthor functions -->
+	<xsl:template match="dtb:frontmatter/dtb:doctitle">
+		<xsl:choose>
+			<xsl:when test="not(preceding::dtb:doctitle)"><!-- Nothing --></xsl:when>
+			<xsl:otherwise>
+				<xsl:copy>
+					<xsl:copy-of select="@*"/>
+				</xsl:copy>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="dtb:frontmatter/dtb:docauthor">
 	</xsl:template>
 	
 	<xsl:template match="dtb:book">
