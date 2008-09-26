@@ -55,7 +55,6 @@ import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileJuggler;
-import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetErrorHandler;
@@ -70,6 +69,7 @@ import org.daisy.util.fileset.validation.ValidatorListener;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
 import org.daisy.util.xml.LocusTransformer;
+import org.daisy.util.xml.NamespaceReporter;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogURIResolver;
@@ -79,6 +79,7 @@ import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.pool.StAXOutputFactoryPool;
+import org.daisy.util.xml.stax.DoctypeParser;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -376,11 +377,13 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-remove-empty-elements.xsl"),v2005_1_2_3,i18n("REPAIR_REMOVE_EMPTY_ELEMENTS"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-pagenum-type.xsl"),v2005_1_2_3,i18n("REPAIR_PAGENUM_TYPE"),this,this,this,emitter));    		
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/repair-metadata.xsl"),v2005_1_2_3,i18n("REPAIR_METADATA"),this,this,this,emitter));
-
+    		executors.add(new EmptyMathMLStripExecutor(parameters, i18n("NARRATOR_MATHML_STRIP"), this));
+    		
     		/*
     		 * Populate the supported states of the REPAIR category 
     		 */
     		supportedStates.add(InputState.INVALID);
+    		supportedStates.add(InputState.VALID);
     		
     	}else if (name==Category.Name.NARRATOR) {
     		
@@ -390,7 +393,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		 */    		
     		/*
     		 * Populate the executors of the NARRATOR category 
-    		 */
+    		 */    	    
     		executors.add(new NarratorMetadataExecutor(parameters, this.getClass().getResource("./xslt/narrator-metadata.xsl"), i18n("NARRATOR_METADATA"), this, this, this, emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/narrator-headings-r14.xsl"),v2005_1_2_3, i18n("NARRATOR_HEADINGS_R14"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/narrator-headings-r100.xsl"),v2005_1_2_3, i18n("NARRATOR_HEADINGS_R100"),this,this,this,emitter));
@@ -398,7 +401,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		executors.add(new XSLTExecutor(parameters, this.getClass().getResource("./xslt/narrator-lists.xsl"), v2005_1_2_3, i18n("NARRATOR_LISTS"), this, this, this, emitter));
     		if(parameters.get("renameJpeg").contentEquals("true")) {
     			executors.add(new JpegRenameExecutor(parameters, i18n("NARRATOR_JPEG_RENAMER"), this));
-    		}    		
+    		}
     		
     		
     		/*
@@ -482,7 +485,16 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 		XMLEventFactory xef = null;
 		FileInputStream fis = null;
 		FileOutputStream fos = null;
+		
 		try {
+		    // Is there any math in here?
+	        NamespaceReporter namespaceReporter = new NamespaceReporter(juggler.getInput().toURI().toURL());
+	        Set<String> namespaces = namespaceReporter.getNamespaceURIs();
+	        boolean containsMath =  namespaces.contains(Namespaces.MATHML_NS_URI);
+	        if (!containsMath) {
+	            DTDdecl = stripInternalSubset(DTDdecl);
+	        }
+	        
 			xifProperties = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
 			xofProperties = StAXOutputFactoryPool.getInstance().getDefaultPropertyMap();
 			xofProperties.put(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
@@ -525,6 +537,32 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 		
 	}
 
+	private String stripInternalSubset(String doctype) {
+	    DoctypeParser doctypeParser = new DoctypeParser(doctype);
+        StringBuilder builder = new StringBuilder("<!DOCTYPE ");
+        builder.append(doctypeParser.getRootElem());
+        boolean hasPublicID = false;
+        String publicID = doctypeParser.getPublicId();
+        if ((publicID != null) && (publicID.length() > 0)) {
+            builder.append(" PUBLIC \"");
+            builder.append(publicID);
+            builder.append("\"");
+            hasPublicID = true;
+        }
+        String systemID = doctypeParser.getSystemId();
+        if ((systemID != null) && (systemID.length() > 0)) {
+            if (!hasPublicID) {
+                builder.append(" SYSTEM");
+            }
+            builder.append(" \"");
+            builder.append(systemID);
+            builder.append("\"");
+        }
+        // No internal subset added here...            
+        builder.append(">");
+        return builder.toString();
+	}
+	
 	/**
 	 * Get the entire input file DTD declaration, or null if the input file has no such 
 	 * declaration.

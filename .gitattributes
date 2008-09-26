@@ -1035,6 +1035,7 @@ transformers/se_tpb_dtbSplitterMerger/split/transformer.tdf -text
 transformers/se_tpb_dtbookFix/Category.java -text
 transformers/se_tpb_dtbookFix/CharsetExecutor.java -text
 transformers/se_tpb_dtbookFix/DTBookFix.java -text
+transformers/se_tpb_dtbookFix/EmptyMathMLStripExecutor.java -text
 transformers/se_tpb_dtbookFix/Executor.java -text
 transformers/se_tpb_dtbookFix/InputState.java -text
 transformers/se_tpb_dtbookFix/JpegRenameExecutor.java -text svneol=unset#text/plain
