@@ -49,7 +49,7 @@ public class BrailleFormat {
 		public BrailleFormat build() throws UnsupportedEncodingException { return new BrailleFormat(this); }
 		
 	}
-
+	
 	private BrailleFormat(Builder builder) throws UnsupportedEncodingException {
 		fallback = builder.fallback;
 		replacement = builder.replacement;
@@ -60,7 +60,8 @@ public class BrailleFormat {
 		switch (builder.mode) {
 			case EN_US:
 				this.charset = Charset.forName("UTF-8");
-				this.tableDef = new String(" a1b'k2l@cif/msp\"e3h9o6r^djg>ntq,*5<-u8v.%[$+x!&;:4\\0z7(_?w]#y)=");
+				//this.tableDef = new String(" a1b'k2l@cif/msp\"e3h9o6r^djg>ntq,*5<-u8v.%[$+x!&;:4\\0z7(_?w]#y)=");
+				this.tableDef = new String(" A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)=");
 				break;
 			case DA_DK:
 				this.charset = Charset.forName("IBM850");
@@ -88,10 +89,36 @@ public class BrailleFormat {
 		char b;
 		for (char t : tableDef.toCharArray()) {
 			b = (char)(0x2800+i);
-			t2b.put(t, b);
-			b2t.put(b, t);
+			put(b, t);
 			i++;
 		}
+	}
+	
+	private void put(char braille, char glyph) {
+		t2b.put(Character.toLowerCase(glyph), braille);
+		b2t.put(braille, glyph);
+	}
+	
+	/**
+	 * Detects the braille mode based on a sample of text.
+	 * @param sample a single line of text, without control characters
+	 * @return returns a suitable braille mode or null if none is found
+	 */
+	public static BrailleFormat.Mode detect(String sample) {
+		//TODO: Fix. Change the exception in toBraille so that it can be caught
+		Builder b;
+		BrailleFormat bf;
+		for (BrailleFormat.Mode mode : BrailleFormat.Mode.values()) {
+			b = new Builder(mode);
+			try {
+				bf = b.build();
+				bf.toBraille(sample);
+				
+			} catch (UnsupportedEncodingException e) {				
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	public char toBraille(char c) {
@@ -144,6 +171,10 @@ public class BrailleFormat {
 		return eightDot;
 	}
 
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public char[] getCharTable() {
 		return tableDef.toCharArray();
 	}

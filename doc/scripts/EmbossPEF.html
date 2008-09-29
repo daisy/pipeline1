@@ -5,12 +5,12 @@
 <head>
   <meta http-equiv="content-type"
   content="application/xhtml+xml; charset=UTF-8" />
-  <title>Pipeline Script: PEF to Text</title>
+  <title>Pipeline Script: Emboss PEF</title>
   <link rel="stylesheet" type="text/css" href="../pipeline.css" />
 </head>
 
 <body>
-<h1 class="title">Pipeline Script: PEF to Text</h1>
+<h1 class="title">Pipeline Script: Emboss PEF</h1>
 <!-- script documentation contains primarily end-user-centric information -->
 
 <div id="toc" class="toc">
@@ -25,7 +25,7 @@
 
 <h2 id="overview">Overview</h2>
 
-<p>This script converts a PEF 2008-1 document into text.</p>
+<p>This script embosses a PEF 2008-1 document.</p>
 <!-- brief summary of purpose and whats going on. What does this script do really? -->
 
 <h2 id="inputReqs">Input Requirements</h2>
@@ -35,7 +35,7 @@
 
 <h2 id="output">Output</h2>
 
-<p>The output is a plain text document.</p>
+<p>The output is an embossed document.</p>
 
 <h2 id="config">Configuration</h2>
 <!-- description on params exposed in script -->
@@ -47,14 +47,15 @@
 <dl id="paramslist">
   <dt>Input file</dt>
     <dd>Select input PEF document</dd>
-  <dt>Output file</dt>
-    <dd>Select output text file</dd>
-  <dt>Target format</dt>
-    <dd>Select the target format for this text file</dd>
-  <dt>Insert newline around form feed</dt>
-    <dd>Select where to insert newlines adjacent to page breaks. Some
-      applications may ignore a newline adjacent to a page break, but others
-      may interpret them as empty rows.</dd>
+  <dt>Embosser</dt>
+    <dd>Select the make and model of target embosser</dd>
+  <dt>Device name</dt>
+    <dd>Type in the name of the embosser as labelled by the computer OS</dd>
+  <dt>Page range</dt>
+    <dd>Optional. Select a range of pages to emboss.</dd>
+  <dt>Keep output file</dt>
+    <dd>Optional. Select a destination for the file that is sent to the
+      embosser.</dd>
 </dl>
 
 <h2 id="transformers">Appendix: List of Transformers used</h2>

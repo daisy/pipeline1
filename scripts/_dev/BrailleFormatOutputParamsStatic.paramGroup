@@ -14,11 +14,16 @@
 		</datatype>
 	</parameter>
 	
-	<parameter name="pad" value="true" required="false">
-		<nicename>Newline around form feed</nicename>
-		<description>Insert newline before and after form feed</description>
+	<parameter name="pad" value="both" required="false">
+		<nicename>Insert newline around form feed</nicename>
+		<description>Insert newline around form feed</description>
 		<datatype>
-			<boolean/>
+			<enum>
+			  <item nicename="Before" value="before" />
+			  <item nicename="After" value="after" />
+			  <item nicename="Before and after" value="both" />
+			  <item nicename="Neither before nor after" value="none" />
+			</enum>
 		</datatype>
 	</parameter>
 		

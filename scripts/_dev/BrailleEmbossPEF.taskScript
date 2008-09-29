@@ -3,7 +3,7 @@
 <taskScript version="2.0" name="EmbossPEF">
 	<nicename>Braille: Emboss PEF</nicename>
 	<description>desc...</description>
-	<documentation uri="../../doc/scripts/PEFToText.html"/>
+	<documentation uri="../../doc/scripts/EmbossPEF.html"/>
 		
 	<parameter name="input" value="" required="true">
 		<nicename>Input file</nicename>

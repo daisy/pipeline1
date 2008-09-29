@@ -2,16 +2,15 @@ package org_pef_text.text2pef;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.StringTokenizer;
 
 import org_pef_text.BrailleFormat;
 
@@ -37,6 +36,9 @@ public class TextParser {
 	private BrailleFormat mode;
 	private boolean duplex;
 	private Date date;
+	
+	private int maxRows;
+	private int maxCols;
 
 	/**
 	 * 
@@ -190,40 +192,9 @@ public class TextParser {
 		PrintWriter pw = new PrintWriter(output, "utf-8");
 		LineNumberReader lr = new LineNumberReader(new InputStreamReader(is, mode.getPreferredCharset()));
 		// determine max rows/page and chars/row
-		int maxRows=0;
-		int maxCols=0;
-		int cRows=0;
-		String line = lr.readLine();
-		cRows++;
-		boolean pageClosed=true;
-		while (line!=null) {
-			if (pageClosed) {
-				pageClosed=false;
-			}
-			if (line.length()==1 && line.charAt(0)==0x0c) {
-				pageClosed=true;
-				cRows--; // don't count this row
-				if (cRows>maxRows) {
-					maxRows=cRows;
-				}
-				cRows=0;
-			} else {
-				if (line.length()>maxCols) {
-					maxCols=line.length();
-				}
-			}
-			line = lr.readLine();
-			cRows++;
-		}
-		lr.close();
-		if (!pageClosed) {
-			pageClosed=true;
-			cRows--; // don't count this row
-			if (cRows>maxRows) {
-				maxRows=cRows;
-			}
-			cRows=0;			
-		}
+
+		read(lr, null);
+		
 		// reset input
 		is = new FileInputStream(input);
 		lr = new LineNumberReader(new InputStreamReader(is, mode.getPreferredCharset()));
@@ -251,33 +222,82 @@ public class TextParser {
 		pw.println("	<body>");
 		pw.println("		<volume cols=\""+maxCols+"\" rows=\""+maxRows+"\" rowgap=\"0\" duplex=\""+duplex+"\">");
 		pw.println("			<section>");
-		pageClosed = true;
-		line = lr.readLine();
-		while (line!=null) {
-			if (pageClosed) {
-				pw.println("				<page>");
-				pageClosed=false;
-			}
-			if (line.length()==1 && line.charAt(0)==0x0c) {
-				pw.println("				</page>");
-				pageClosed=true;
-			} else {
-				pw.print("					<row>");
-				pw.print(mode.toBraille(line));
-				pw.println("</row>");
-			}
-			line = lr.readLine();
-		}
-		lr.close();
-		if (!pageClosed) {
-			pw.println("				</page>");
-			pageClosed=true;			
-		}
+		
+		read(lr, pw);
 		pw.println("			</section>");
 		pw.println("		</volume>");
 		pw.println("	</body>");
 		pw.println("</pef>");
+		pw.flush();
 		pw.close();
 	}
+	
+	private void read(LineNumberReader lr, PrintWriter pw) throws IOException {
+		maxRows=0;
+		maxCols=0;
+		int cRows=0;
+		boolean pageClosed = true;
+		int eofIndex = -1;
+		cRows++;
+		String line = lr.readLine();
+		while (line!=null) {
+			eofIndex = line.indexOf(0x1A);
+			if (eofIndex>-1) {
+				line = line.substring(0, eofIndex); //remove trailing characters beyond eof-mark (CTRL+Z)
+			}
+			if ("\f".equals(line)) { // if line consists of a single form feed character. Just close the page (don't add rows yet).
+				if (pw!=null) {	pw.println("				</page>");	}
+				pageClosed=true;
+				cRows--; // don't count this row
+				if (cRows>maxRows) { maxRows=cRows;	}
+				cRows=0;
+			} else {
+				String[] pieces = line.split("\\f", -1); //split on form feed
+				int i = 1;
+				for (String p : pieces) {
+					if (i>1) { // there were form feeds
+						if (pw!=null) {	pw.println("				</page>");	}
+						pageClosed=true;
+						cRows--; // don't count this row
+						if (cRows>maxRows) { maxRows=cRows;	}
+						cRows=0;
+					}
+					if (pageClosed) {
+						if (pw!=null) { pw.println("				<page>"); }
+						pageClosed=false;
+					}
+					if (p.length()>maxCols) {
+						maxCols=p.length();
+					}
+					// don't output if row contains form feeds and this segment equals ""
+					if (!(pieces.length>1 && (i==pieces.length || i==1) && "".equals(p))) {
+						if (pw!=null) {
+							pw.print("					<row>");
+							pw.print(mode.toBraille(p));
+							pw.println("</row>");
+						}
+					}
+					i++;
+				}
+			}
+			if (eofIndex>-1) {
+				// End of file reached. Stop reading.
+				line = null;
+			} else {
+				line = lr.readLine();
+				cRows++;
+			}
+		}
+		lr.close();
+		if (!pageClosed) {
+			if (pw!=null) { pw.println("				</page>"); }
+			pageClosed=true;	
+			cRows--; // don't count this row
+			if (cRows>maxRows) { maxRows=cRows;	}
+			cRows=0;
+		}
+	}
+	
+	
 
 }

@@ -5,13 +5,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Stack;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import org_pef_text.BrailleFormat;
-import org_pef_text.BrailleFormat.Builder;
 import org_pef_text.BrailleFormat.EightDotFallbackMethod;
 
 /**
@@ -26,6 +27,7 @@ import org_pef_text.BrailleFormat.EightDotFallbackMethod;
 public class PEFHandler extends DefaultHandler {
 	public enum Embosser {NONE, INDEX_EVEREST, INDEX_BASIC};
 	public enum LineBreaks {DOS, UNIX, MAC};
+	public enum Padding {BOTH, BEFORE, AFTER, NONE};
 	
 	private FileOutputStream os;
 	private BrailleFormat bf;
@@ -48,7 +50,7 @@ public class PEFHandler extends DefaultHandler {
 		private BrailleFormat.Mode mode = BrailleFormat.Mode.values()[0];
 		private Range range = new Range(1);
 		private LineBreaks breaks = LineBreaks.values()[0];
-		private boolean padNewline = false;
+		private Padding padNewline = Padding.values()[0];
 		private EightDotFallbackMethod fallback = EightDotFallbackMethod.values()[0];
 		private char replacement = '\u2800';
 
@@ -65,7 +67,7 @@ public class PEFHandler extends DefaultHandler {
 		public Builder mode(BrailleFormat.Mode value) { mode = value; return this; }
 		public Builder range(Range value) { range = value; return this; }
 		public Builder breaks(LineBreaks value) { breaks = value; return this; }
-		public Builder padNewline(boolean value) { padNewline = value; return this; }
+		public Builder padNewline(Padding value) { padNewline = value; return this; }
 		public Builder fallback(EightDotFallbackMethod value) { fallback = value; return this; }
 		public Builder replacement(char value) { replacement = value; return this; }
 		
@@ -87,13 +89,23 @@ public class PEFHandler extends DefaultHandler {
         this.bf = bfb.build();
         this.header = null;
         this.footer = null;
-        if (builder.padNewline) {
-        	this.formfeed = new byte[1 + 2 * newline.length];
-        	System.arraycopy(newline, 0, formfeed, 0, newline.length);
-        	formfeed[newline.length] = 0x0c; 
-        	System.arraycopy(newline, 0, formfeed, newline.length+1, newline.length);
-        } else {
-        	this.formfeed = new byte[]{0x0c};
+        ArrayList<Byte> ffArray = new ArrayList<Byte>();
+        switch (builder.padNewline) {
+        	case BEFORE:
+        		ffArray.addAll(Arrays.asList(newline[0]));
+        	case NONE:
+        		ffArray.add((byte)0x0c); 
+        		break;
+        	case BOTH:
+        		ffArray.addAll(Arrays.asList(newline[0]));
+        	case AFTER:
+        		ffArray.add((byte)0x0c); 
+        		ffArray.addAll(Arrays.asList(newline[0]));
+        		break;        	
+        }
+        this.formfeed = new byte[ffArray.size()];
+        for (int i=0; i<ffArray.size(); i++) {
+        	this.formfeed[i] = ffArray.get(i);
         }
         this.elements = new Stack<Element>();
         switch (builder.embosser) {

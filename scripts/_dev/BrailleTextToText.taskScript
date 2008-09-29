@@ -8,7 +8,7 @@
 <taskScript version="2.0" name="TextToText">
 	<nicename>Braille: Text to text</nicename>
 	<description>desc...</description>
-	<documentation uri="../../doc/scripts/PEFToText.html"/>
+	<documentation uri="../../doc/scripts/TextToText.html"/>
 		
 	<parameter name="input" value="" required="true">
 		<nicename>Input file</nicename>

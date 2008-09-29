@@ -88,6 +88,7 @@ doc/scripts/DTBookToXhtml.html -text
 doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/Daisy202ToZ39862005.html -text
+doc/scripts/EmbossPEF.html -text
 doc/scripts/EpubCheck.html -text
 doc/scripts/FilesetGenerator-Daisy202TextOnly.html -text
 doc/scripts/FilesetRenamer.html -text
@@ -101,6 +102,8 @@ doc/scripts/PrettyPrinter.html -text
 doc/scripts/RenamerTaggerValidator.html -text
 doc/scripts/RtfToDtbook.html -text
 doc/scripts/RtfToXhtml.html -text
+doc/scripts/TextToPEF.html -text
+doc/scripts/TextToText.html -text
 doc/scripts/UnicodeNormalizer.html -text
 doc/scripts/WordMLToXhtml.html -text
 doc/scripts/WordMLtoDTBook.html -text
@@ -125,6 +128,7 @@ doc/transformers/int_daisy_unicodeTranscoder.html -text
 doc/transformers/int_daisy_validator.html -text
 doc/transformers/no_hks_xhtml2dtbook.html -text
 doc/transformers/org_pef_pef2text.html -text
+doc/transformers/org_pef_text2pef.html -text
 doc/transformers/pipeline_system_copyer.html -text
 doc/transformers/pipeline_system_deleter.html -text
 doc/transformers/se_tpb_annonsator.html -text

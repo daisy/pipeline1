@@ -24,7 +24,7 @@
 
 		<parameter type="string" required="false">
 			<name>deviceName</name>
-			<description>Set device name.</description>
+			<description>Set device name</description>
 			<example>MyEmbosser</example>
 			<default></default>
 		</parameter>
@@ -43,7 +43,7 @@
 		
 		<parameter required="false" direction="in" type="enum">
 			<name>table</name>
-			<description>Write mode</description>
+			<description>Braille code table</description>
 			<example>en_US</example>
 			<enum>
 				<value>en_US</value>
@@ -79,10 +79,12 @@
 			<description>Pad formfeed character with newline</description>
 			<example>true</example>
 			<enum>
-				<value>true</value>
-				<value>false</value>
+				<value>before</value>
+				<value>after</value>
+				<value>both</value>
+				<value>none</value>
 			</enum>
-			<default>false</default>
+			<default>both</default>
 		</parameter>
 
 	</parameters>

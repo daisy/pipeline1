@@ -3,13 +3,9 @@ package org_pef_text.pef2text;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.LineNumberReader;
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.print.Doc;
@@ -25,17 +21,12 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.FileJuggler;
 import org.daisy.util.file.TempFile;
-import org.daisy.util.xml.catalog.CatalogEntityResolver;
-import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
-import org.daisy.util.xml.xslt.Stylesheet;
-import org.daisy.util.xml.xslt.XSLTException;
 import org.xml.sax.SAXException;
 import org_pef_text.BrailleFormat;
-import org_pef_text.BrailleFormat.EightDotFallbackMethod;
 import org_pef_text.pef2text.PEFHandler.Embosser;
 import org_pef_text.pef2text.PEFHandler.LineBreaks;
+import org_pef_text.pef2text.PEFHandler.Padding;
 
 /**
  * The purpose of this transformer is to convert a PEF 2008-1 file into plain text.
@@ -90,7 +81,7 @@ public class PEF2Text extends Transformer {
 				builder.mode(BrailleFormat.Mode.valueOf(table.toUpperCase()));
 			}
 			if (pad!=null && !"".equals(pad)) {
-				builder.padNewline("true".equals(pad));
+				builder.padNewline(Padding.valueOf(pad.toUpperCase()));
 			}
 			PEFHandler ph = builder.build();
 			PEFParser.parse(input, ph);

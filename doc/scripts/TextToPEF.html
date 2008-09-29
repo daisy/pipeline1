@@ -5,12 +5,12 @@
 <head>
   <meta http-equiv="content-type"
   content="application/xhtml+xml; charset=UTF-8" />
-  <title>Pipeline Script: PEF to Text</title>
+  <title>Pipeline Script: Text to PEF</title>
   <link rel="stylesheet" type="text/css" href="../pipeline.css" />
 </head>
 
 <body>
-<h1 class="title">Pipeline Script: PEF to Text</h1>
+<h1 class="title">Pipeline Script: Text to PEF</h1>
 <!-- script documentation contains primarily end-user-centric information -->
 
 <div id="toc" class="toc">
@@ -25,17 +25,18 @@
 
 <h2 id="overview">Overview</h2>
 
-<p>This script converts a PEF 2008-1 document into text.</p>
+<p>This script converts an ASCII type braille file into a PEF 2008-1
+document.</p>
 <!-- brief summary of purpose and whats going on. What does this script do really? -->
 
 <h2 id="inputReqs">Input Requirements</h2>
 
-<p>This script accepts PEF 2008-1 documents.</p>
+<p>This script accepts ASCII type braille files.</p>
 <!-- detailed requirements on input nature -->
 
 <h2 id="output">Output</h2>
 
-<p>The output is a plain text document.</p>
+<p>The output is a PEF 2008-1 document.</p>
 
 <h2 id="config">Configuration</h2>
 <!-- description on params exposed in script -->
@@ -48,13 +49,9 @@
   <dt>Input file</dt>
     <dd>Select input PEF document</dd>
   <dt>Output file</dt>
-    <dd>Select output text file</dd>
-  <dt>Target format</dt>
-    <dd>Select the target format for this text file</dd>
-  <dt>Insert newline around form feed</dt>
-    <dd>Select where to insert newlines adjacent to page breaks. Some
-      applications may ignore a newline adjacent to a page break, but others
-      may interpret them as empty rows.</dd>
+    <dd>Select output file</dd>
+  <dt>Locale</dt>
+    <dd>Select the usage senario for this text file</dd>
 </dl>
 
 <h2 id="transformers">Appendix: List of Transformers used</h2>
@@ -64,7 +61,7 @@ documentation</em>. These are developer and systems-administrator centric
 documents.</p>
 <ol>
   <li><a
-    href="../transformers/org_pef_pef2text.html">org_pef_text/pef2text</a></li>
+    href="../transformers/org_pef_text2pef.html">org_pef_text/text2pef</a></li>
 </ol>
 </body>
 </html>

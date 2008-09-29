@@ -12,6 +12,7 @@ import org_pef_text.BrailleFormat;
 import org_pef_text.BrailleFormat.EightDotFallbackMethod;
 import org_pef_text.pef2text.PEFHandler.Embosser;
 import org_pef_text.pef2text.PEFHandler.LineBreaks;
+import org_pef_text.pef2text.PEFHandler.Padding;
 
 /**
  * SAX implementation of pef2text.xsl 
@@ -104,7 +105,7 @@ public class PEFParser {
 				} else if ("-replacement".equals(args[2+i*2])) {
 					builder.replacement((char)Integer.parseInt(args[3+i*2], 16));
 				} else if ("-pad".equals(args[2+i*2])) {
-					builder.padNewline("true".equals(args[3+i*2]));
+					builder.padNewline(Padding.valueOf(args[3+i*2].toUpperCase()));
 				} else {
 					throw new IllegalArgumentException("Unknown option \"" + args[2+i*2] + "\"");
 				}
