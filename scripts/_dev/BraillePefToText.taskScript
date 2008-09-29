@@ -6,7 +6,7 @@
 
 <taskScript version="2.0" name="PefToText">
 	<nicename>Braille: PEF to text</nicename>
-	<description>desc...</description>
+	<description>This script converts a PEF 2008-1 document into text.</description>
 	<documentation uri="../../doc/scripts/PEFToText.html"/>
 		
 	<parameter name="input" value="" required="true">

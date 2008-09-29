@@ -7,12 +7,12 @@
 
 <taskScript version="2.0" name="TextToText">
 	<nicename>Braille: Text to text</nicename>
-	<description>desc...</description>
+	<description>This script converts from one ASCII type braille file into another.</description>
 	<documentation uri="../../doc/scripts/TextToText.html"/>
 		
 	<parameter name="input" value="" required="true">
 		<nicename>Input file</nicename>
-		<description>A PEF-file</description>
+		<description>Input text file</description>
 		<datatype>
 			<file mime="text/plain" type="input"/>
 		</datatype>
