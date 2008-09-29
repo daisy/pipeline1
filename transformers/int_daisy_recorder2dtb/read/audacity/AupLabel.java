@@ -42,7 +42,6 @@ public class AupLabel {
 	
 	public AupLabel(String t, String t1, String title, TransformerDelegateListener tdl) {
 		mTransformer = tdl;
-		//mInitTitle = title;
 		/*
 		 * t and t1 are second strings, eg 4.70888889
 		 * dont store as smilclock as we loose precision 
@@ -90,21 +89,23 @@ public class AupLabel {
 		}catch (Exception e) {
 
 		}
-		String message = mTransformer.delegateLocalize("MARKER_ERROR", new String[]{title});
-		mTransformer.delegateMessage(this, message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, null);		
-		return new Value("MARKER ERROR");
+//		String message = mTransformer.delegateLocalize("MARKER_ERROR", new String[]{title});
+//		mTransformer.delegateMessage(this, message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, null);
+		//its a general phrase, will never have text display, but store it anyways
+		return new Value(title);
 	}
 
 	private Semantic getSemantic(String title) {
 		//pages always and exclusively begin with 'p'
 		//headings always and exclusively begin with 'hn'
+		//all else are general phrases
 		
 		try{			
 			if(title!=null||title.length()>0){
 				char first = title.charAt(0);
 				switch (first) {
 					case 'p':
-						String val = title.substring(1);
+						String val = title.substring(1).trim();
 						if(isNumeric(val)) {
 							return Semantic.PAGE_NORMAL;
 						}else if(isRoman(val)) {
@@ -126,8 +127,8 @@ public class AupLabel {
 		}catch (Exception e) {
 			
 		}	
-		String message = mTransformer.delegateLocalize("MARKER_ERROR", new String[]{title});
-		mTransformer.delegateMessage(this, message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, null);
+//		String message = mTransformer.delegateLocalize("MARKER_ERROR", new String[]{title});
+//		mTransformer.delegateMessage(this, message, MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT, null);
 		return Semantic.UNKNOWN;
 	}
 	

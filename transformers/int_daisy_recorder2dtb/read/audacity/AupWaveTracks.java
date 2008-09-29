@@ -21,6 +21,8 @@ package int_daisy_recorder2dtb.read.audacity;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.util.dtb.ncxonly.model.AudioClip;
 
 /**
@@ -29,6 +31,13 @@ import org.daisy.util.dtb.ncxonly.model.AudioClip;
  */
 public class AupWaveTracks extends LinkedList<AupWaveTrack> {
 		
+	private TransformerDelegateListener mListener;
+
+	public AupWaveTracks(TransformerDelegateListener listener) {
+		super();
+		this.mListener = listener;		
+	}
+
 	/**
 	 * Get the duration of all wave tracks, expressed in seconds
 	 */
@@ -118,8 +127,9 @@ public class AupWaveTracks extends LinkedList<AupWaveTrack> {
 			s += track.getDurationSeconds();
 			if(seconds<=s) return track;
 		}	
-		System.err.println("Warning: did not find a AupWaveTrack that includes " 
-				+ Double.toString(seconds) + "; total presentation time is " + Double.toString(this.getDuration()) +". Returning last wavetrack.");
+		String msg = "Warning: did not find a AupWaveTrack that includes " 
+				+ Double.toString(seconds) + "; total presentation time is " + Double.toString(this.getDuration()) +". Returning last wavetrack.";
+		mListener.delegateMessage(this,msg, MessageEvent.Type.DEBUG, MessageEvent.Cause.INPUT, null);
 		return this.getLast();
 	}
 	

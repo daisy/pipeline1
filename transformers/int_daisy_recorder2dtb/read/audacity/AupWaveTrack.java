@@ -19,12 +19,22 @@ package int_daisy_recorder2dtb.read.audacity;
 
 import java.util.LinkedList;
 
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
+
 /**
  * An AupWaveTrack consists of a list of AupAudioFile
  * @author Markus Gylling
  */
 public class AupWaveTrack extends LinkedList<AupBlockFile> {
 				
+	private TransformerDelegateListener mListener;
+
+	public AupWaveTrack(TransformerDelegateListener listener) {
+		super();
+		this.mListener = listener;
+	}
+
 	/**
 	 * Get the duration of this wave track, expressed in seconds.
 	 */
@@ -46,8 +56,11 @@ public class AupWaveTrack extends LinkedList<AupBlockFile> {
 			s+= af.getDurationSeconds();
 			if(seconds<=s) return af;
 		}
-		System.err.println("Warning: did not find a AupBlockFile that includes " 
-				+ Double.toString(seconds) + "; total wavetrack time is " + Double.toString(this.getDurationSeconds()) +". Returning last AupBlockFile.");
+		String msg = "Warning: did not find a AupBlockFile that includes " 
+				+ Double.toString(seconds) + "; total wavetrack time is " + Double.toString(this.getDurationSeconds()) +". Returning last AupBlockFile.";
+		
+		mListener.delegateMessage(this, msg, MessageEvent.Type.DEBUG, MessageEvent.Cause.INPUT, null);
+		
 		return this.getLast();		
 	}
 	

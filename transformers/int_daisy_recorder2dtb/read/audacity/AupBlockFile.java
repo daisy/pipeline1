@@ -23,34 +23,38 @@ import java.io.IOException;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.util.audio.AudioUtils;
 
 /**
- * 
+ * Read the audacity blockfiles with our specialized AuReader (little endian and fixes).
  * @author Markus Gylling
  */
 public class AupBlockFile  {
 	private File mFile;
-	private AudioFileFormat mAudioFileFormat;    
+	private AudioFileFormat mAudioFileFormat;
+	private TransformerDelegateListener mListener;    
          
-	public AupBlockFile(File file, String statedLength) throws IOException, UnsupportedAudioFileException {
+	public AupBlockFile(File file, String statedLength, String statedRate, TransformerDelegateListener listener) throws IOException, UnsupportedAudioFileException {
 		mFile = file;
-		
-		/*
-		 * Read the audacity blockfiles with our specialized AuReader (little endian and fixes).
-		 */						
-		AupBlockFileReader reader = new AupBlockFileReader();		
-		mAudioFileFormat = reader.getAudioFileFormat(mFile);				
-		//AudioFormat format = mAudioFileFormat.getFormat();   
-		
+		this.mListener = listener;
+							
+		AupBlockFileReader reader = new AupBlockFileReader(statedRate);		
+		mAudioFileFormat = reader.getAudioFileFormat(mFile);		
+   		
 		int stated = Integer.parseInt(statedLength);
 		int calced = mAudioFileFormat.getFrameLength();
 		if (stated!= calced) {
-			System.err.println("Mismatch in stated and calculated file length:");
-			System.err.println(file + ": " + mAudioFileFormat.toString());
-			System.err.println("stated length: " + Integer.parseInt(statedLength) + ": " + AudioUtils.framesToMillis(stated, mAudioFileFormat));
-			System.err.println("calcd length: " + mAudioFileFormat.getFrameLength() + ": " + AudioUtils.framesToMillis(calced, mAudioFileFormat));
-			
+			try{
+				String msg = "Mismatch in stated and calculated file length:";
+				msg += file + ": " + mAudioFileFormat.toString();
+				msg += " stated length: " + Integer.parseInt(statedLength) + ": " + AudioUtils.framesToMillis(stated, mAudioFileFormat);
+				msg += " calcd length: " + mAudioFileFormat.getFrameLength() + ": " + AudioUtils.framesToMillis(calced, mAudioFileFormat);			
+				mListener.delegateMessage(this, msg, MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT, null);
+			}catch (Exception e) {
+
+			}
 		}
 		//debug
 //		WaveAudioFileWriter writer = new WaveAudioFileWriter();

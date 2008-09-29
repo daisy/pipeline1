@@ -39,16 +39,14 @@ import org.tritonus.share.sampled.file.TAudioFileReader;
  * @author Florian Bomers
  * @author Matthias Pfisterer
  */
-public class AupBlockFileReader extends TAudioFileReader
-{
+public class AupBlockFileReader extends TAudioFileReader {
 	private static final int	READ_LIMIT = 1000;
+	/** Stated sample rate in the aup xml; this since the au header seems locked at 44100 */
+	private String statedRate;
 
-
-
-	public AupBlockFileReader()
-	{
+	public AupBlockFileReader(String statedRate) {
 		super(READ_LIMIT);
-		
+		this.statedRate = statedRate;		
 	}
 
 	private static String readDescription(DataInputStream dis, int len) throws IOException {
@@ -152,7 +150,18 @@ public class AupBlockFileReader extends TAudioFileReader
 			    "unsupported AU file: unknown encoding " + nEncoding);
 		}
 		//int nSampleRate = dataInputStream.readInt();
+		//int nSampleRate = readIntLittleEndian(dataInputStream);
 		int nSampleRate = readIntLittleEndian(dataInputStream);
+		if(statedRate !=null) {
+			try{
+				int test = Integer.parseInt(statedRate);
+				nSampleRate = test;
+			}catch (Exception e) {
+				
+			}	
+		}
+		 
+				
 		if (nSampleRate <= 0) {
 			throw new UnsupportedAudioFileException(
 			    "corrupt AU file: sample rate must be positive");

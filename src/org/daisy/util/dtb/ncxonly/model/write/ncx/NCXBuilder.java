@@ -163,7 +163,7 @@ public class NCXBuilder {
 				writer.add(xef.createStartElement(qPageTarget, null, null));	
 					writer.add(xef.createAttribute("id",idg.generateId()));
 					writer.add(xef.createAttribute("class",item.getSemantic().toString()));
-					writer.add(xef.createAttribute("playOrder",Integer.toString(mModel.indexOf(item)+1)));
+					writer.add(xef.createAttribute("playOrder",Integer.toString(mModel.getPlayOrder(item))));
 					String type = getPageType(item);
 					writer.add(xef.createAttribute("type",type));
 					if(type.equals("normal")) {
@@ -283,11 +283,10 @@ public class NCXBuilder {
 		for (int i = 0; i < depth; i++) {
 			writer.add(tab);	
 		}						
-		//System.err.println("NAVOPEN " + item.getSemantic().toString());
 		writer.add(xef.createStartElement(qNavPoint, null, null));
 			writer.add(xef.createAttribute("id",idg.generateId()));
 			writer.add(xef.createAttribute("class",item.getSemantic().toString()));
-			writer.add(xef.createAttribute("playOrder",Integer.toString(mModel.indexOf(item)+1)));		
+			writer.add(xef.createAttribute("playOrder",Integer.toString(mModel.getPlayOrder(item))));		
 		writer.add(nl);	
 		depth++;
 		for (int i = 0; i < depth; i++) {

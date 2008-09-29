@@ -76,6 +76,20 @@ public class Model extends LinkedList<Item> {
 	}
 
 	/**
+	 * Get the NCX playOrder of given item,
+	 * or -1 if it could not be computed.
+	 * Note - we currently assume that NCX contains only headings and pages.
+	 */
+	public int getPlayOrder(Item item) {
+		int playOrder = 1;
+		for(Item cur : this) {
+			if(cur == item) return playOrder;
+			if(isHeading(cur)||isPage(cur)) playOrder++;
+		}				
+		return -1;
+	}
+	
+	/**
 	 * Return true if this items semantic can be
 	 * categorized as a page
 	 */
@@ -127,7 +141,7 @@ public class Model extends LinkedList<Item> {
 	}
 	
 	/**
-	 * A polymorph method that depending on inparams applies different kinds 
+	 * Depending on inparams, appliy different kinds 
 	 * of revaluing of each Item Value in this Model instance .
 	 */
 	public void revalue(Semantic semantic, Object mode) {

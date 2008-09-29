@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE taskScript
 [
-<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../validation/ValidatorScriptParamsSimpleStatic.paramGroup">
-<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../validation/ValidatorTaskParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../../validation/ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../validation/ValidatorTaskParamsSimpleStatic.paramGroup">
 ]>
 <taskScript version="2.0" name="AudacityToDTB">
-	<nicename>Audacity to DTB</nicename>
+	<nicename>Audacity Save-as-DAISY [BETA]</nicename>
 	<description>Convert an Audacity project into a NCX-only DTB</description>
 	<documentation uri="../../../doc/scripts/AudacityToDTB.html"/>
 		

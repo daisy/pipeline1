@@ -41,7 +41,7 @@ import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.dtb.ncxonly.model.Model;
-import org.daisy.util.dtb.ncxonly.model.write.NCXOnlyDTBWriter;
+import org.daisy.util.dtb.ncxonly.model.write.Z2005NCXOnlyDTBWriter;
 import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
@@ -88,7 +88,7 @@ public class Recorder2dtb extends Transformer implements TransformerDelegateList
 						
 			sendMessage(0.6);
 			
-			NCXOnlyDTBWriter writer = new NCXOnlyDTBWriter(model,parameters); 	
+			Z2005NCXOnlyDTBWriter writer = new Z2005NCXOnlyDTBWriter(model,parameters); 	
 			
 			writer.write(getDestination((String)parameters.remove("output")));	
 								
@@ -103,7 +103,7 @@ public class Recorder2dtb extends Transformer implements TransformerDelegateList
 	
 	private void informType(Reader reader) {
 		this.sendMessage(i18n("USING_TYPE", reader.getSupportedInputType().toString())
-				, MessageEvent.Type.INFO, MessageEvent.Cause.INPUT);		
+				, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.INPUT);		
 	}
 	
 	private Directory getDestination(String dest) throws IOException {
@@ -111,7 +111,7 @@ public class Recorder2dtb extends Transformer implements TransformerDelegateList
 			new Directory(FileUtils.createDirectory(FilenameOrFileURI.toFile(dest)));
 		
 		this.sendMessage(i18n("RENDERING_RESULT_TO", destination.getAbsolutePath())
-				, MessageEvent.Type.INFO, MessageEvent.Cause.INPUT);		
+				, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.INPUT);		
 		
 		return destination;
 	}

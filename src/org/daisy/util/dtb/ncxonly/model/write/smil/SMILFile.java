@@ -90,7 +90,9 @@ public class SMILFile {
 	 * are clips backed by one and the same file.
 	 */
 	public void mergeClips() {
+		
 		for(Item item : mContents.values()) {
+			Set<AudioClip> toRemove = new HashSet<AudioClip>();
 			AudioClip prevClip = null;
 			for(AudioClip clip : item.getAudioClips()) {			
 				if(clip.getNature() == Nature.TRANSIENT) {
@@ -98,14 +100,16 @@ public class SMILFile {
 						if(prevClip.getFile() != clip.getFile()) {
 							throw new IllegalStateException("cannot merge clips that are not from the same file");
 						}						
-						//change prev clip, and then remove current
+						//change prev clip, and then store current for removal
 						prevClip.setEndSeconds(clip.getEndSeconds());						
-						item.getAudioClips().remove(clip);	
-						//System.err.println("SMILFile#mergeClips: what happens to the loop here? concurrent mod"); 
+						toRemove.add(clip);						
 					}										
 				}
 				prevClip = clip;
-			}						
+			}
+			for(AudioClip clip : toRemove) {
+				item.getAudioClips().remove(clip);
+			}
 		}						
 	}
 

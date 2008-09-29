@@ -71,6 +71,7 @@ doc/index-all.html -text
 doc/index-developer.html -text
 doc/index-enduser.html -text
 doc/pipeline.css -text
+doc/scripts/AudacityToDTB.html -text
 doc/scripts/AudioTagger.html -text
 doc/scripts/CharacterRepertoireManipulator.html -text
 doc/scripts/CharsetSwitcher.html -text
@@ -109,6 +110,12 @@ doc/scripts/WordMLToXhtml.html -text
 doc/scripts/WordMLtoDTBook.html -text
 doc/scripts/Xhtml2Dtbook.html -text svneol=unset#text/plain
 doc/scripts/Z3986DTBValidator.html -text
+doc/scripts/img/audacity-headingmarker.jpg -text
+doc/scripts/img/audacity-layout.jpg -text
+doc/scripts/img/audacity-metaeditor.jpg -text
+doc/scripts/img/audacity-pageduration.jpg -text
+doc/scripts/img/audacity-pagemarker.jpg -text
+doc/scripts/img/audacity-titleauthor.jpg -text
 doc/summary.html -text
 doc/templates/script-doc-template.html -text
 doc/transformers/ca_cnib_rtf2dtbook.html -text
@@ -339,7 +346,6 @@ samples/input/xhtml/valentin.jpg -text
 samples/input/xhtml/valentinhauy.html -text
 samples/input/xhtml/valentinhauy11.html -text
 samples/input/xhtml/xhtml-rdf.xml -text
-scripts/_dev/AudacityToDTB.taskScript -text
 scripts/_dev/BrailleEmbossPEF.taskScript -text
 scripts/_dev/BrailleFormatInputParamsStatic.paramGroup -text
 scripts/_dev/BrailleFormatOutputParamsStatic.paramGroup -text
@@ -368,6 +374,7 @@ scripts/conversion/simple/RtfToXhtml.taskScript -text
 scripts/conversion/simple/WordMLtoDTBook.taskScript -text
 scripts/conversion/simple/WordMLtoXhtml.taskScript -text
 scripts/creation/FilesetScriptParamsStatic.paramGroup -text
+scripts/creation/advanced/AudacityToDTB.taskScript -text
 scripts/creation/advanced/Fileset-DtbookToDaisy202TextOnly.taskScript -text
 scripts/creation/advanced/Fileset-XhtmlToDaisy202TextOnly.taskScript -text
 scripts/creation/simple/Narrator-DtbookToDaisy202.taskScript -text
@@ -576,7 +583,7 @@ src/org/daisy/util/dtb/ncxonly/model/Item.java -text
 src/org/daisy/util/dtb/ncxonly/model/Model.java -text
 src/org/daisy/util/dtb/ncxonly/model/Semantic.java -text
 src/org/daisy/util/dtb/ncxonly/model/Value.java -text
-src/org/daisy/util/dtb/ncxonly/model/write/NCXOnlyDTBWriter.java -text
+src/org/daisy/util/dtb/ncxonly/model/write/Z2005NCXOnlyDTBWriter.java -text
 src/org/daisy/util/dtb/ncxonly/model/write/audio/WAVBuilder.java -text
 src/org/daisy/util/dtb/ncxonly/model/write/ncx/NCXBuilder.java -text
 src/org/daisy/util/dtb/ncxonly/model/write/opf/OPFBuilder.java -text
@@ -840,7 +847,6 @@ transformers/int_daisy_opsCreator/ncx-config.rng -text
 transformers/int_daisy_opsCreator/transformer.tdf -text
 transformers/int_daisy_prettyPrinter/PrettyPrinter.java -text
 transformers/int_daisy_prettyPrinter/transformer.tdf -text
-transformers/int_daisy_recorder2dtb/AudacityToDTB.html -text
 transformers/int_daisy_recorder2dtb/InputType.java -text
 transformers/int_daisy_recorder2dtb/Recorder2dtb.java -text
 transformers/int_daisy_recorder2dtb/int_daisy_recorder2dtb.html -text

@@ -39,6 +39,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.dtb.ncxonly.model.AudioClip;
 import org.daisy.util.dtb.ncxonly.model.Item;
 import org.daisy.util.dtb.ncxonly.model.Model;
@@ -110,7 +111,7 @@ public final class AudacityAupReader extends Reader implements ErrorHandler {
 			 * clips can traverse several tracks, so we need to jump around
 			 */
 			List<AupLabelTrack> aupLabelTracks = new LinkedList<AupLabelTrack>();
-			AupWaveTracks aupWaveTracks = new AupWaveTracks();
+			AupWaveTracks aupWaveTracks = new AupWaveTracks(super.mTransformer);
 			
 			while(reader.hasNext()) {
 				reader.next();
@@ -301,7 +302,9 @@ public final class AudacityAupReader extends Reader implements ErrorHandler {
 	 * @throws UnsupportedAudioFileException 
 	 */
 	private AupWaveTrack readWaveTrack(XMLStreamReader reader, Map<String, File> projectAudioFiles) throws XMLStreamException, UnsupportedAudioFileException, IOException {
-		AupWaveTrack wavetrack = new AupWaveTrack();
+		AupWaveTrack wavetrack = new AupWaveTrack(super.mTransformer);
+		//get the stated rate on the wavetrack element, this since the au files headers seem to be locked 44100 regardless of actual
+		String rate = reader.getAttributeValue(null, "rate");
 		while(reader.hasNext()) {
 			reader.next();
 			if(reader.isEndElement() && reader.getLocalName().equals("wavetrack")) {
@@ -320,7 +323,7 @@ public final class AudacityAupReader extends Reader implements ErrorHandler {
 							len = reader.getAttributeValue(i);
 						}
 					}	
-					wavetrack.add(new AupBlockFile(file,len));	
+					wavetrack.add(new AupBlockFile(file,len,rate,super.mTransformer));	
 				}
 			}									
 		}
@@ -338,7 +341,7 @@ public final class AudacityAupReader extends Reader implements ErrorHandler {
 		
 		//reader positioned at <tags/>
 		for (int i = 0; i < reader.getAttributeCount(); i++) {
-			String name = reader.getAttributeName(i).getLocalPart();
+			String name = reader.getAttributeName(i).getLocalPart().toLowerCase();
 			if(name.equals("title")) {
 				QName q = new QName(dcNS,"Title",dcPfx);
 				model.getMetadata().add(q, reader.getAttributeValue(i));
@@ -348,7 +351,10 @@ public final class AudacityAupReader extends Reader implements ErrorHandler {
 			}else if(name.equals("year")) {
 				QName q = new QName(dcNS,"Date",dcPfx);
 				model.getMetadata().add(q, reader.getAttributeValue(i));
-			}			
+			}else if(name.equals("uid")) {
+				QName q = new QName(dcNS,"Identifier",dcPfx);
+				model.getMetadata().add(q, reader.getAttributeValue(i));
+			}		
 		}		
 		//check if any <tag> children
 		while(reader.hasNext()) {
@@ -361,17 +367,37 @@ public final class AudacityAupReader extends Reader implements ErrorHandler {
 				for (int i = 0; i < reader.getAttributeCount(); i++) {
 					String attrName = reader.getAttributeName(i).getLocalPart();
 					if(attrName.equals("name")) {
-						name = reader.getAttributeValue(i);
+						name = reader.getAttributeValue(i).toLowerCase();
 					}else if(attrName.equals("value")) {
 						value = reader.getAttributeValue(i);
 					}
 				}	
 				if(name.length()>0&&value.length()>0) {
-					model.getMetadata().add(name, value);
+					if(name.equals("album")) {
+						QName q = new QName(dcNS,"Title",dcPfx);
+						model.getMetadata().add(q, value);
+					}else if(name.equals("artist")) {
+						QName q = new QName(dcNS,"Creator",dcPfx);
+						model.getMetadata().add(q, value);
+					}else if(name.equals("year")) {
+						QName q = new QName(dcNS,"Date",dcPfx);
+						model.getMetadata().add(q, value);
+					}else if(name.equals("uid")) {
+						QName q = new QName(dcNS,"Identifier",dcPfx);
+						MetadataItem item = new MetadataItem(q,value);
+						item.addAttribute("id", "uid");
+						model.getMetadata().add(item);
+					}else if(name.equals("lang")) {
+						QName q = new QName(dcNS,"Language",dcPfx);
+						MetadataItem item = new MetadataItem(q,value);
+						model.getMetadata().add(item);
+					}
 				}
 			}
 		}		
 	}
+	
+	
 	
 	@Override
 	public boolean supports(URL u) {

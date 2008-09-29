@@ -44,7 +44,7 @@ import org.daisy.util.xml.pool.StAXOutputFactoryPool;
  * @author Markus Gylling
  */
 
-public class NCXOnlyDTBWriter {
+public class Z2005NCXOnlyDTBWriter {
 	private Model mModel = null;
 	private Map<String,String> mParameters = null;
 	
@@ -62,7 +62,7 @@ public class NCXOnlyDTBWriter {
 	 * @param model The Model to render
 	 * @param parameters Recognized parameters are: "pageAutoNumber" ['off'|1-10])
 	 */
-	public NCXOnlyDTBWriter(Model model, Map<String,String> parameters) {
+	public Z2005NCXOnlyDTBWriter(Model model, Map<String,String> parameters) {
 		
 		if(model==null) throw new NullPointerException();
 		if(parameters==null) throw new NullPointerException();
