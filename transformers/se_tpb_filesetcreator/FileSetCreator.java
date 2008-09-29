@@ -147,7 +147,7 @@ public class FileSetCreator extends Transformer {
 			// get the files referred from the resource file + the resource file itself
 			File resourceFile = new File(resourceFilename);
 			SrcExtractor srcex = new SrcExtractor(resourceFile);
-			Set<String> files = srcex.getSrcValues();
+			Set<String> files = srcex.getRelativeResources();
 			File inputBaseDir = srcex.getBaseDir();
 			FileBunchCopy.copyFiles(inputBaseDir, outputDir, files, null, false);
 			references.addAll(files);
@@ -158,7 +158,7 @@ public class FileSetCreator extends Transformer {
 			
 			// get the files referred from the manuscript
 			srcex = new SrcExtractor(manuscriptFile);
-			files = srcex.getSrcValues();
+			files = srcex.getRelativeResources();
 			inputBaseDir = srcex.getBaseDir();
 			FileBunchCopy.copyFiles(inputBaseDir, outputDir, files, null, true);
 			references.addAll(files);
@@ -492,7 +492,12 @@ public class FileSetCreator extends Transformer {
 	private boolean containsMimeType(Set<String> filenames, Map<String, String> mimetypes, String prefix) {
 		for (Iterator<String> it = filenames.iterator(); it.hasNext(); ) {
 			String filename = it.next();
-			String suffix = filename.substring(filename.lastIndexOf('.'));
+			//RD20080905: fixed an IndexOutOfBoundException
+			int i = filename.lastIndexOf('.');
+			if (i==-1){
+				continue;
+			}
+			String suffix = filename.substring(i);
 			String mime = mimetypes.get(suffix);
 			if (null == mime) {
 				continue;

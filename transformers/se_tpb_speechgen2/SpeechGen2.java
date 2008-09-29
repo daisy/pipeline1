@@ -242,7 +242,7 @@ public class SpeechGen2 extends Transformer {
 			// copy the additional files
 			sendMessage(i18n("COPYING_REFERRED_FILES"), MessageEvent.Type.DEBUG);
 			SrcExtractor extr = new SrcExtractor(inputFile);
-			FileBunchCopy.copyFiles(extr.getBaseDir(), outputDir, extr.getSrcValues(), null, true);
+			FileBunchCopy.copyFiles(extr.getBaseDir(), outputDir, extr.getRelativeResources(), null, true);
 
 			// Get ready to count the number of phrases to generate with TTS.
 			XMLInputFactory factory = XMLInputFactory.newInstance();

@@ -20,8 +20,9 @@ package se_tpb_filesetcreator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -49,6 +50,7 @@ public class SrcExtractor {
 //	private QName hrefAttrName = new QName("href");
 	private File xmlFile;	
 	private Set<String> srcValues = new HashSet<String>();
+	private Set<String> extSrcValues;
 	private Set<QName> uriCarriers;
 	
 	/**
@@ -125,6 +127,35 @@ public class SrcExtractor {
 	 */
 	public Set<String> getSrcValues() {
 		return srcValues;
+	}
+	
+	/**
+	 * Returns a set of URI string values of the external URI carrier attributes
+	 * pointing to local relative resources.
+	 * 
+	 * @return a set of URI string values of the external URI carrier attributes
+	 *         pointing to local relative resources.
+	 */
+	public Set<String> getRelativeResources() {
+		synchronized (srcValues) {
+			if (extSrcValues == null) {
+				extSrcValues = new HashSet<String>();
+				for (String src : srcValues) {
+					try {
+						URI uri = new URI(src);
+						if (!uri.isAbsolute()) {
+							String path = uri.getPath();
+							if (path != null && path.length() > 0) {
+								extSrcValues.add(path);
+							}
+						}
+					} catch (URISyntaxException e) {
+						throw new IllegalArgumentException(e);
+					}
+				}
+			}
+		}
+		return extSrcValues;
 	}
 	
 	/**
