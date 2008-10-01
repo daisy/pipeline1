@@ -33,6 +33,7 @@ import org.daisy.util.file.EFile;
 import org.daisy.util.file.IEFile;
 import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
+import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.mime.MIMETypeException;
 
@@ -75,12 +76,13 @@ abstract class FilesetFileImpl extends EFile implements FilesetFile, IEFile {
 	 */
 	protected void putUriValue(String uri) {
 		// RD20080617: Check URI Syntax to bubble-up an informative error message
+	    // LE20080930: Add exception to exceptions list instead of rethrowing
 		try {
 			new URI(uri);
+			myUriStrings.add(uri);
 		} catch (URISyntaxException e) {
-			throw new IllegalArgumentException("Invalid URI ("+e.getLocalizedMessage()+")");
+		    myExceptions.add(new FilesetFileFatalErrorException(this, e));
 		}
-		myUriStrings.add(uri);
 	}
 		
 	public Collection<String> getUriStrings(){
