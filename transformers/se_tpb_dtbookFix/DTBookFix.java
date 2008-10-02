@@ -23,7 +23,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URI;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,15 +55,18 @@ import org.daisy.pipeline.core.event.MessageEvent.Type;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileJuggler;
+import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetErrorHandler;
+import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.FilesetType;
+import org.daisy.util.fileset.Z3986DtbookFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
+import org.daisy.util.fileset.impl.FilesetFileFactory;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.validation.Validator;
 import org.daisy.util.fileset.validation.ValidatorFactory;
@@ -238,15 +243,30 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 	 * Close the juggler.
 	 * @throws IOException If juggle close fails. 
 	 */
-	private void finalize(File input, File output, FileJuggler files) throws IOException  {
+	private void finalize(File input, File output, FileJuggler files) throws IOException  {	    
 		if(!input.getParentFile().equals(output.getParentFile())) {
 			try{
-				Fileset toCopy = new FilesetImpl(input.toURI(),this,false,false);
-				Directory dest = new Directory(output.getParentFile());
-				dest.addFileset(toCopy, true);
-				File manifest = new File(dest,input.getName());
-				manifest.delete();
-			}catch (Exception e) {
+			    // We cannot just instantiate a fileset with the input file as manifest, since
+			    // the input file may contain broken links.
+			    
+			    // Get the URIs from the *fixed* file
+			    FilesetFileFactory factory = FilesetFileFactory.newInstance();
+			    FilesetFile filesetFile = factory.newFilesetFile("Z3986DtbookFile", files.getInput().toURI());
+			    Z3986DtbookFile zed = (Z3986DtbookFile)filesetFile;
+			    zed.parse();
+			    Collection<String> uris = zed.getUriStrings();
+			    
+			    for (String uri : uris) {
+			        URI resolvedFrom = input.toURI().resolve(uri);
+			        URI resolvedTo = output.toURI().resolve(uri);
+			        if ("file".equals(resolvedFrom.getScheme()) && "file".equals(resolvedTo.getScheme())) {
+        		        File from = new File(resolvedFrom);
+        		        File to = new File(resolvedTo);
+        		        FileUtils.copyFile(from, to);
+			        }
+			    }			    
+			}catch (Exception e) {			    
+			    e.printStackTrace();			    
 				this.sendMessage(i18n("AUX_COPY_ERROR",e.getMessage()), MessageEvent.Type.ERROR);
 			}							
 		}
