@@ -29,6 +29,7 @@ import int_daisy_filesetRenamer.segment.SegmentedFileName;
 import int_daisy_filesetRenamer.segment.SequenceSegment;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.EFile;
 import org.daisy.util.fileset.D202MasterSmilFile;
 import org.daisy.util.fileset.D202NccFile;
@@ -51,7 +53,7 @@ import org.daisy.util.i18n.CharUtils;
 public class DefaultStrategy implements RenamingStrategy {
 	private Fileset mInputFileset = null;
 	private SegmentedFileName mTemplateName = null;
-	private Map<URI,URI>namingStrategy = new HashMap<URI,URI>(); 	// <URI>,<URI>
+	private Map<URI,URI> namingStrategy = new HashMap<URI,URI>(); 	// <URI>,<URI>
 	private List<Class<?>> typeExclusions = new ArrayList<Class<?>>();	// Interface names
 	private int mMaxFilenameLength = 64;				
 	private String mSegmentSeparator = "_";							//default, may wanna enable changing this
@@ -59,12 +61,14 @@ public class DefaultStrategy implements RenamingStrategy {
 	//private boolean isValidated = false;
 	private FilesetLabelProvider mLabelProvider = null;
 	private int mFileCount = 0;
+	private Directory mOutputDirectory;
 	
-	public DefaultStrategy(Fileset fileset, SegmentedFileName templateName, boolean forceAsciiSubset) {
+	public DefaultStrategy(Fileset fileset, SegmentedFileName templateName, boolean forceAsciiSubset, Directory outputDirectory) {
 		mInputFileset = fileset;
 		mTemplateName = templateName;
 		mForceAsciiSubset = forceAsciiSubset;
 		mLabelProvider = new FilesetLabelProvider(mInputFileset);
+		mOutputDirectory = outputDirectory;
 		
 		//set some omnipresent hardcoded type exclusions (never rename these)
 		setTypeExclusion(D202NccFile.class);
@@ -76,24 +80,51 @@ public class DefaultStrategy implements RenamingStrategy {
 	 * @see int_daisy_filesetRenamer.strategies.RenamingStrategy#create()
 	 */
 	public void create() throws FilesetRenamingException {
+		
 		//populate the URI(old), URI(new) map.
 		this.namingStrategy.clear();
+		
 		for (Iterator<URI> iter = this.mInputFileset.getLocalMembersURIs().iterator(); iter.hasNext();) {
-			URI uri = iter.next();
-			FilesetFile f = this.mInputFileset.getLocalMember(uri);
+			URI inputURI = iter.next();
+			FilesetFile f = this.mInputFileset.getLocalMember(inputURI);
 			if(!this.isTypeDisabled(f)) {
 				//create a new name: createNewName(f) method implemented by subclass
 				//subclass may return the same name is input, we dont care here
-				File ret = new File(f.getFile().getParentFile(),createNewName(f));				
-				this.namingStrategy.put(uri,ret.toURI());
+				
+				//mg20081003: if filesystemsafe, make sure subdirs are also safe
+				File ret = null;
+				
+				if(isInFilesetRootDir(f)) {					
+					ret = new File(mOutputDirectory,createNewName(f));	
+				}else{					
+					String parentPath = f.getFile().getParentFile().getName();
+					if(mForceAsciiSubset && !CharUtils.isFilenameCompatible(parentPath, CharUtils.FilenameRestriction.Z3986)) {
+						parentPath = CharUtils.toRestrictedSubset(CharUtils.FilenameRestriction.Z3986, parentPath);
+					}
+					ret = new File(mOutputDirectory.getPath() + File.separatorChar + parentPath,createNewName(f));					
+				}
+											
+				this.namingStrategy.put(inputURI,ret.toURI());
 			}else{
 				//let name be the same
-				this.namingStrategy.put(uri,uri);
+				this.namingStrategy.put(inputURI,inputURI);
 			}			
 		}
 		//System.err.println("stop");
 	}
 	
+	private boolean isInFilesetRootDir(FilesetFile f) {
+		try {
+			if(f.getFile().getParentFile().getCanonicalPath().equals(
+					mInputFileset.getManifestMember().getFile().getParentFile().getCanonicalPath())) {
+				return true;
+			}
+		} catch (IOException e) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Create a new name using the template that was provided in the constructor.
 	 */
@@ -250,7 +281,8 @@ public class DefaultStrategy implements RenamingStrategy {
 	 * @see int_daisy_filesetRenamer.strategies.RenamingStrategy#validate()
 	 */
 	public boolean validate() throws FilesetRenamingException {		
-		//isValidated = true;		
+		boolean foundProblem = false;
+		
 		if (!namingStrategy.isEmpty()) {
 			URI curValue;
 			URI curKey;
@@ -265,14 +297,24 @@ public class DefaultStrategy implements RenamingStrategy {
 					curValue = namingStrategy.get(curKey);
 					if(i!=k) {
 						if(value.equals(curValue)) {
-							throw new FilesetRenamingException("duplicate output name: " + value.toString());														
+							//throw new FilesetRenamingException("duplicate output name: " + value.toString());
+							foundProblem = true;
+							namingStrategy.put(curKey, tweakName(curValue));
+							break;
 						}						
 						if(value.equals(curKey)) {
-							throw new FilesetRenamingException("output name collides with input name of other member: " + value.toString());													
+							//throw new FilesetRenamingException("output name collides with input name of other member: " + value.toString());
+							foundProblem = true;
+							namingStrategy.put(curKey, tweakName(curValue));
+							break;
 						}
 					}
-				}								
-			}			
+				}
+				if(foundProblem) break;
+			}
+			if(foundProblem) {
+				return false;
+			}
 		} else { 
 			throw new FilesetRenamingException("strategy not set");
 		}//if (!strategy.isEmpty())
@@ -280,6 +322,14 @@ public class DefaultStrategy implements RenamingStrategy {
 		return true;
 	}
 	
+	private URI tweakName(URI uri) {
+		EFile file = new EFile(uri);
+		String newName =
+			file.getNameMinusExtension() + '_' + '.' + file.getExtension();
+		
+		return new File(file.getParentFile(),newName).toURI();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see int_daisy_filesetRenamer.strategies.RenamingStrategy#getNewLocalName(org.daisy.util.fileset.interfaces.FilesetFile)
@@ -298,6 +348,14 @@ public class DefaultStrategy implements RenamingStrategy {
 			return (new File(newURI)).getName();
 		}
 		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see int_daisy_filesetRenamer.strategies.RenamingStrategy#getNewLocalName(java.net.URI)
+	 */
+	public URI getNewURI(URI filesetFileURI) {		
+		return namingStrategy.get(filesetFileURI);
 	}
 	
 	/*

@@ -28,13 +28,28 @@ import int_daisy_filesetRenamer.strategies.DefaultStrategy;
 import int_daisy_filesetRenamer.strategies.RenamingStrategy;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.DTD;
+import javax.xml.stream.events.Namespace;
+import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.pipeline.core.InputListener;
@@ -45,7 +60,9 @@ import org.daisy.util.file.EFile;
 import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.fileset.CssFile;
 import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetErrorHandler;
 import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.Referring;
 import org.daisy.util.fileset.SmilFile;
@@ -54,38 +71,38 @@ import org.daisy.util.fileset.XmlFile;
 import org.daisy.util.fileset.Z3986DtbookFile;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
-import org.daisy.util.fileset.manipulation.FilesetFileManipulator;
-import org.daisy.util.fileset.manipulation.FilesetManipulationException;
-import org.daisy.util.fileset.manipulation.FilesetManipulator;
-import org.daisy.util.fileset.manipulation.FilesetManipulatorListener;
-import org.daisy.util.fileset.manipulation.manipulators.RenamingCopier;
-import org.daisy.util.fileset.manipulation.manipulators.XMLEventValueConsumer;
-import org.daisy.util.fileset.manipulation.manipulators.XMLEventValueExposer;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.fileset.util.URIStringParser;
+import org.daisy.util.xml.Namespaces;
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.stax.ContextStack;
+import org.daisy.util.xml.stax.DoctypeParser;
+import org.daisy.util.xml.stax.StaxEntityResolver;
+import org.daisy.util.xml.stax.StaxFilter;
 
 /**
  * Rename select members of a fileset using a pattern based token algorithm. See Pipeline doc/transformers.
  * @author Markus Gylling
  */
 
-public class FilesetRenamer extends Transformer implements FilesetManipulatorListener, XMLEventValueConsumer {
+public class FilesetRenamer extends Transformer implements FilesetErrorHandler {
    
-	private FilesetManipulator mFilesetManipulator = null;
+	//private FilesetManipulator mFilesetManipulator = null;
 	private EFile mInputManifest = null;
 	private Fileset mInputFileset = null;
 	private Directory mOutputDir = null;				//final output destination
-	private Directory mRoundtripOutputDir = null; 	//for temporary storage, not always used
+//	private Directory mRoundtripOutputDir = null; 		//for temporary storage, not always used
 	private SegmentedFileName mTemplateName = null;
 	private RenamingStrategy mStrategy = null;
 	private List<Class<?>> mTypeExclusions = null;
 	private boolean mFilesystemSafe = true;
-	private FilesetFile mCurrentFile = null;
-	private String oldName = null;	
+	private FilesetFile mCurrentFile = null;	
 	private FilesetRegex rgx = null;
 	private int mMaxFilenameLength = -1;
-			
+	private int nextFileCallCount = 0;
+	private double filesetSize = -1.0; 
+
 	
 	/**
 	 * Constructor.
@@ -115,7 +132,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 		 *   send error, return true.    
 		 */
 		
-		FilesetManipulator fman = null;
+		//FilesetManipulator fman = null;
 		try {  				
 			//set the input manifest
 			mInputManifest = new EFile(FilenameOrFileURI.toFile(parameters.remove("input")));
@@ -144,37 +161,8 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			String message = i18n("ANALYZING_INPUT", mInputFileset.getFilesetType().toNiceNameString());
 			this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 								
-			try{		
-				//create a renaming strategy using the template name
-				mStrategy = createStrategy(mInputFileset, mTemplateName, mTypeExclusions,mMaxFilenameLength);
-			}catch (FilesetRenamingException e) {
-				//do a roundtrip
-				//TODO analyze the exception to find out if a roundtrip helps at all
-				//TODO means improving the validate method
-				
-				//create a new strategy with heavy random
-				SegmentedFileName randomizedName = new SegmentedFileName();
-				randomizedName.addSegment(FixedSegment.create("temp"));
-				randomizedName.addSegment(RandomUniqueSegment.create(mInputFileset, 6));				
-				mStrategy = createStrategy(mInputFileset, randomizedName, mTypeExclusions, 96);				
-				//render the randomized fileset to a subfolder of user output folder
-				mRoundtripOutputDir = (Directory)FileUtils.createDirectory(new Directory(new File(mOutputDir,"dmfc_temp")));
-								
-				message = i18n("RENDER_ROUNDTRIP", e.getMessage(), mRoundtripOutputDir.getAbsolutePath());
-				this.sendMessage(message, MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
-
-				
-				renderStrategy(mInputFileset,mRoundtripOutputDir);
-				
-				this.sendMessage(0.15);
-				this.checkAbort();
-
-				//reset the inputfileset to the randomized output
-				mInputFileset = new FilesetImpl(getTempManifest(),this,false,false); 
-				//redo strategy with original template, using the randomized output				
-				mStrategy = createStrategy(mInputFileset, mTemplateName, mTypeExclusions, mMaxFilenameLength);
-			}
-			
+			//create a renaming strategy using the template name
+			mStrategy = createStrategy(mInputFileset, mTemplateName, mTypeExclusions,mMaxFilenameLength);
 
 			this.sendMessage(0.2);
 			this.checkAbort();
@@ -183,13 +171,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			message = i18n("RENDERING_RESULT_TO", mOutputDir.getCanonicalPath());
 			this.sendMessage(message, MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
 			renderStrategy(mInputFileset,mOutputDir);
-												
-			//clean up the temp traces if utilized
-			if(mRoundtripOutputDir!=null) {
-				mRoundtripOutputDir.deleteContents(true);
-				mRoundtripOutputDir.delete();
-			}
-					
+																	
 			this.checkAbort();
 			
 		} catch (Exception e) {						
@@ -197,7 +179,7 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 			this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
 
 			try {		
-				fman.getOutputFolder().addFileset(fman.getInputFileset(),true);
+				mOutputDir.addFileset(mInputFileset,true);
 			} catch (IOException ioe) {				
 				message = i18n("ERROR_ABORTING", ioe.getMessage());
 				this.sendMessage(message, MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
@@ -212,31 +194,168 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 	 * @throws FilesetRenamingException if resulting strategy is not valid or something else went wrong.
 	 */
 	private RenamingStrategy createStrategy(Fileset fileset, SegmentedFileName templateName, List<Class<?>> typeExclusions, int maxFilenameLength) throws FilesetRenamingException {
-		RenamingStrategy rs = new DefaultStrategy(fileset,templateName,mFilesystemSafe);
+		RenamingStrategy rs = new DefaultStrategy(fileset,templateName,mFilesystemSafe, mOutputDir);
 		rs.setTypeExclusion(typeExclusions);
 		rs.setMaxFilenameLength(maxFilenameLength);
 		rs.create();
-		rs.validate();
+		
+		boolean valid = true;
+		int count = 0;
+		do {
+			count++;
+			valid = rs.validate();
+		} while(!valid && count<1000);
+		
 		return rs;
 	}
 
 	/**
 	 * Render a fileset to disk. Register self as listener, 
 	 * and use the callbacks to intervene and apply the rename strategy to the output.
+	 * @throws TransformerRunException 
 	 */
-	private void renderStrategy(Fileset fileset, Directory outputDir) throws FilesetManipulationException, IOException {		
-		//get a FilesetManipulator instance
-		mFilesetManipulator = new FilesetManipulator();
-		//implement FilesetManipulatorListener
-		mFilesetManipulator.setListener(this);
-		//set input fileset
-		mFilesetManipulator.setInputFileset(fileset);
-		//set destination
-		mFilesetManipulator.setOutputFolder(outputDir); 
-		//roll through the fileset			
-		mFilesetManipulator.iterate();
-		//done.
+	private void renderStrategy(Fileset fileset, Directory outputDir) throws IOException, TransformerRunException {		
+				
+		for(FilesetFile ffile : fileset.getLocalMembers()) {
+			//progress
+			if(filesetSize == -1.0) filesetSize = Double.parseDouble(Integer.toString(mInputFileset.getLocalMembers().size())+".0");
+			nextFileCallCount++;				
+			this.sendMessage(0.2 + ((nextFileCallCount/filesetSize)*0.8)); //assumes that progress 0.2 was called before first nextFile call 
+			
+			mCurrentFile = ffile;
+			
+			//get to the destination			
+			URI destination = mStrategy.getNewURI(ffile.getFile().toURI());
+			if(ffile instanceof Referring) {
+				copyReferring(ffile, destination);
+			}else{
+				FileUtils.copyFile(ffile.getFile(), new File(destination));
+			}	
+		}
+							
 	}
+	
+	
+	/**
+	 * Copy a referrer to destination, while replacing its internal references according to the renaming strategy.
+	 * @throws TransformerRunException 
+	 */
+	private void copyReferring(FilesetFile source, URI destination) throws TransformerRunException {
+		
+		if(source instanceof XmlFile) {
+			copyXml(source, destination);
+		} else if (source instanceof CssFile) {
+			//TODO
+			try {
+				FileUtils.copyFile(source.getFile(), new File(destination));
+			} catch (IOException e) {
+				
+			}
+		}		
+	}
+
+
+	private void copyXml(FilesetFile source, URI destination) throws TransformerRunException {
+        Map<String, Object> xifProp = null;
+        XMLInputFactory factory = null;
+        FileInputStream fis = null;
+        try {
+            xifProp = StAXInputFactoryPool.getInstance().getDefaultPropertyMap(false);
+            factory = StAXInputFactoryPool.getInstance().acquire(xifProp);
+            factory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
+            fis = new FileInputStream(source.getFile());
+            XMLEventReader reader = factory.createXMLEventReader(fis);
+            OutputStream outstream = new FileOutputStream(new File(destination));
+            StaxFilter filter = new UriModderFilter(reader, outstream);
+            filter.filter();
+            filter.close();
+        } catch (Exception e) {
+            //this.sendMessage(); //TODO
+            try {
+                FileUtils.copy(source.getFile(), new File(destination));
+            } catch (IOException ioe) {
+                throw new TransformerRunException(ioe.getMessage(), ioe);
+            }
+        }finally{
+            if(fis!=null) try {fis.close();} catch (IOException e) {}
+            StAXInputFactoryPool.getInstance().release(factory, xifProp);
+        }
+		
+	}
+
+    /**
+     * Inner class that modifies any URI attributes to carry new names 
+     */
+    private class UriModderFilter extends StaxFilter {
+    	
+        public UriModderFilter(XMLEventReader xer, OutputStream outStream) throws XMLStreamException {
+            super(xer, outStream);            
+        }
+
+        @Override
+        protected StartElement startElement(StartElement event) {
+            boolean modded = false;
+            Set<Attribute> attributes = new HashSet<Attribute>();
+            
+            Iterator<?> iter = event.getAttributes();
+            while(iter.hasNext()) {
+            	Attribute a = (Attribute) iter.next();
+            	if(isURICarrier(a)) {
+            		modded = true;
+            		attributes.add(mod(a));
+            	}else{
+            		attributes.add(a);
+            	}
+            }
+                        
+            if (modded) {
+                return getEventFactory().createStartElement(event.getName(), attributes.iterator(), event.getNamespaces());
+            }
+            return event;
+        }
+
+		private Attribute mod(Attribute a) {
+						
+			String newValue = a.getValue();
+			
+			Iterator<URI> it = mStrategy.getIterator();
+			while(it.hasNext()) {
+				try{
+					//get the absolute URI of the old name
+					URI key = it.next();	
+					//create the old uri using current state
+					URI current = mCurrentFile.getFile().toURI().resolve(a.getValue());					
+					if(key.getPath().equals(current.getPath())) {
+						//the attribure refs oldURI
+						//get the new destination
+						URI newDestination = mStrategy.getNewURI(key);
+						//get the member that will refer to the destination
+						URI newReferer = mStrategy.getNewURI(mCurrentFile.getFile().toURI());
+						URI newRefererParent = new File(newReferer).getParentFile().toURI();
+						//create the new relative URI
+						URI newReference = newRefererParent.relativize(newDestination);						
+						newValue = newReference.toASCIIString();						
+					}
+					
+				}catch (Exception e) {					
+					sendMessage("exception when replacing values with new name: " + e.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
+					newValue = a.getValue();
+				}
+			}				
+			
+			return getEventFactory().createAttribute(a.getName(), newValue);
+		}
+
+		private boolean isURICarrier(Attribute a) {
+			if(pattern==null) {				
+				pattern = Pattern.compile("(^src$)|(^href$)|(^altimg$)|(^smilref$)");
+			}
+			return pattern.matcher(a.getName().getLocalPart()).matches();			 
+		}
+		
+		private Pattern pattern;
+    
+    }
 	
 	/**
 	 * Create a List&lt;Class&gt; of excluded file types using an inparam.
@@ -260,17 +379,6 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 		}
 		return mTypeExclusions;		
 	}
-
-	private URI getTempManifest() throws TransformerRunException {
-		String newName = mStrategy.getNewLocalName(mInputFileset.getManifestMember().getFile().toURI());
-		File newManifest = new File(mRoundtripOutputDir, newName);
-		if(newManifest!=null && newManifest.exists()){
-			return newManifest.toURI();
-		}
-		throw new TransformerRunException("temporary manifest could not be found");
-	}
-
-
 
 	/**
 	 * Parse a string consisting of plus-separated tokens and create a template SegmentedFileName.
@@ -304,100 +412,8 @@ public class FilesetRenamer extends Transformer implements FilesetManipulatorLis
 		return smf;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.daisy.util.fileset.manipulation.FilesetManipulatorListener#nextFile(org.daisy.util.fileset.interfaces.FilesetFile)
-	 */
-	private int nextFileCallCount = 0;
-	private double filesetSize = -1.0; 
+
 	
-	public FilesetFileManipulator nextFile(FilesetFile file) throws FilesetManipulationException {
-		if(filesetSize == -1.0) filesetSize = Double.parseDouble(Integer.toString(mInputFileset.getLocalMembers().size())+".0");
-		nextFileCallCount++;				
-		this.sendMessage(0.2 + ((nextFileCallCount/filesetSize)*0.8)); //assumes that progress 0.2 was called before first nextFile call 
-		
-		mCurrentFile = file; //for checking filetype in nextValue() below
-		try{
-			if (file instanceof Referring) {
-				//this file may have a new name
-				//and may refer to other members that may have new names
-				if(file instanceof XmlFile) {
-					//use the constructor of xmleventfeeder that allows localname change				
-					XMLEventValueExposer xeve = new XMLEventValueExposer(this,mStrategy.getNewLocalName(file));					
-					//default is to only replace in attributes (they typically carry URIs)
-					xeve.setEventTypeRestriction(XMLEvent.ATTRIBUTE);				
-					return xeve;
-				}
-				//FIXME if not xmlfile but still referring (css,html)
-			}
-			//else, this file does not refer to other members
-			//but may still have a new name
-			return new RenamingCopier(mStrategy.getNewLocalName(file));			
-		}catch (Exception e) {
-			throw new FilesetManipulationException(e.getMessage(),e);
-		}
-	}
-
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.daisy.util.fileset.manipulation.manipulators.XMLEventValueConsumer#nextValue(java.lang.String, org.daisy.util.xml.stax.ContextStack)
-	 */
-	public String nextValue(String value, ContextStack context) {
-		//by default we get attribute values only here
-		
-		if(isUriCarrier(context, mCurrentFile)) {
-			int start = -1;
-			StringBuilder sb = new StringBuilder();
-			//replace oldNames with newNames and return
-			sb.append(value);		
-			Iterator<URI> it = mStrategy.getIterator();
-			while(it.hasNext()) {
-				try{
-					URI oldNameURI = it.next();			
-					//oldName = (new File(oldNameURI)).getName(); 
-					//problem: above doesnt take escape sequences into account, gotta keep them, so:
-					oldName = URIStringParser.stripPath(oldNameURI.toString());
-					start = sb.indexOf(oldName);
-					if(start > -1){
-						//this value carries the old name
-						sb.replace(start,start+oldName.length(),mStrategy.getNewLocalName(oldNameURI));
-						break; //REVISIT are we sure first found is enough? values may contain several references...
-					}	
-				}catch (Exception e) {					
-					this.sendMessage("exception when replacing values with new name: " + e.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
-					return value;
-				}
-			}				
-			return sb.toString();
-		}
-		return null; //if !isUriCarrier		
-	}
-	
-	/**
-	 * Performance enhancing; dont loop through name map if current node is recognized to not be a URI carrier
-	 * If we dont recognize the filetype or context, return true. 
-	 */
-	private boolean isUriCarrier(ContextStack context, FilesetFile currentFile) {
-				
-		if(context.getLastEvent().getXMLEventType() == XMLEvent.ATTRIBUTE){
-			String attrName = context.getLastEvent().getName().getLocalPart();
-			if(currentFile instanceof SmilFile && !rgx.matches(rgx.SMIL_ATTRIBUTES_WITH_URIS,attrName)) {
-				return false;
-			}
-			else if(currentFile instanceof Z3986DtbookFile && !rgx.matches(rgx.DTBOOK_ATTRIBUTES_WITH_URIS,attrName)) {
-				return false;
-			}
-			else if(currentFile instanceof Xhtml10File && !rgx.matches(rgx.XHTML_ATTRS_WITH_URIS,attrName)) {
-				return false;
-			}
-			//else its a value we are not sure about
-		}
-		//else its not an attribute; unexpected to be enabled for checking but not this methods role to
-		//have an opinion on that
-		return true;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see org.daisy.util.fileset.interfaces.FilesetErrorHandler#error(org.daisy.util.fileset.exception.FilesetFileException)

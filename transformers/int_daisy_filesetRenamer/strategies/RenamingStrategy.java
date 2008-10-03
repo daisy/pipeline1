@@ -55,7 +55,7 @@ public interface RenamingStrategy {
 	 * Checks whether there are name collisions in naming strategy;
 	 * two output files with same path+name, or the case where a new name 
 	 * is created that happens to coincide with the old name of another member.
-	 * @return true if no naming collisions exist
+	 * @return true if no naming collisions exist, false if they did exist. The validate method can attempt repair.
 	 * @throws FilesetFileFatalErrorException if collisions do exist
 	 */
 	public boolean validate() throws FilesetRenamingException;	
@@ -72,6 +72,13 @@ public interface RenamingStrategy {
 	 */	
 	public String getNewLocalName(URI filesetFileURI);
 
+
+	/**
+	 * @param  filesetFileURI an input fileset URI that may or may not have been given a new name in the renaming strategy
+	 * @return the new URI of the output FilesetFile - where the base directory is still the same as the input base dir. This
+	 * may be changed later 
+	 */	
+	public URI getNewURI(URI filesetFileURI);
 	
 	/**
 	 * Get an iterator for the keyset of the URI(old),URI(new) HashMap

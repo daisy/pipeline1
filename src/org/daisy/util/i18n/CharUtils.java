@@ -244,6 +244,25 @@ public final class CharUtils {
 		}
 		return result.toCharArray();
 	}
+	
+	public static String toRestrictedSubset(FilenameRestriction restriction, String input) {
+		StringBuilder ret = new StringBuilder();
+		for (int i = 0; i < input.length(); i++) {
+			char ch = input.charAt(i);
+			if(!isFilenameCompatible(ch, restriction)) {
+				String s = toPrintableAscii(ch);
+				if(!isFilenameCompatible(s, restriction)) {
+					ret.append('_');
+				}else{
+					ret.append(s);
+				}
+				
+			} else {
+				ret.append(ch);
+			}
+		}
+		return ret.toString();
+	}
 
 	/**
 	 * Converts each unicode whitespace char in the incoming string with 
@@ -307,8 +326,7 @@ public final class CharUtils {
 	 * @return a string containing only chars within the range of printable 7bit
 	 *         ascii
 	 */
-	public static final String toPrintableAscii(
-			char c) {
+	public static final String toPrintableAscii(char c) {
 
 		if (isAsciiPrintable(c)) {
 			return String.valueOf(c);

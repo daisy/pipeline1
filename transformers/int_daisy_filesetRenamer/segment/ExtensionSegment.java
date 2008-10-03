@@ -35,6 +35,8 @@ public class ExtensionSegment extends Segment {
 	public static ExtensionSegment create(String content) {
 		if(content==null || content.length()==0) return new ExtensionSegment("");
 		if(content.length()>0 && !content.startsWith(".")) content = "."+content;
+		//for now, a Z3986 jpeg fixer here. 
+		if(content.toLowerCase().contentEquals("jpeg")) content = "jpg";
 		return new ExtensionSegment(content);
 	}
 	

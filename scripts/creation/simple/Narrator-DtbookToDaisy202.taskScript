@@ -115,6 +115,11 @@
 			<name>filesystemSafe</name>
 			<value>true</value>
 		</parameter>
+		
+		<parameter>
+			<name>exclude</name>
+			<value>None</value>
+		</parameter>
 			
 	</task>
 	
