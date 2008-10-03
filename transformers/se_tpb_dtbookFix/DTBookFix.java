@@ -260,8 +260,8 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			        URI resolvedFrom = input.toURI().resolve(uri);
 			        URI resolvedTo = output.toURI().resolve(uri);
 			        if ("file".equals(resolvedFrom.getScheme()) && "file".equals(resolvedTo.getScheme())) {
-        		        File from = new File(resolvedFrom);
-        		        File to = new File(resolvedTo);
+        		        File from = new File(resolvedFrom.getPath());
+        		        File to = new File(resolvedTo.getPath());
         		        if (from.exists()) {
         		            // We only try to copy the file if it actually exists. If a file
         		            // has been renamed by an executor it will not reside in the input
@@ -429,9 +429,9 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		if(parameters.get("renameJpeg").contentEquals("true")) {
     			executors.add(new JpegRenameExecutor(parameters, i18n("NARRATOR_JPEG_RENAMER"), this));
     		}
-    		if(parameters.get("renameIllegalFilenames").contentEquals("true")) {
-    		    executors.add(new IllegalFilenameExecutor(parameters, i18n("NARRATOR_ILLEGAL_FILENAME"), this));
-    		}
+//    		if(parameters.get("renameIllegalFilenames").contentEquals("true")) {
+//    		    executors.add(new IllegalFilenameExecutor(parameters, i18n("NARRATOR_ILLEGAL_FILENAME"), this));
+//    		}
     		
     		
     		/*
