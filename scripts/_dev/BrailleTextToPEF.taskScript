@@ -23,7 +23,7 @@
 		<nicename>Output file</nicename>
 		<description>Output PEF-file</description>
 		<datatype>
-			<file mime="application/xml" type="output"/>
+			<file mime="application/x-pef+xml" type="output"/>
 		</datatype>
 	</parameter>
 	

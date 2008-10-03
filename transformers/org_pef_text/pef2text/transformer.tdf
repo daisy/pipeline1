@@ -10,7 +10,7 @@
 	<parameters>
 
 <!-- Main parameters -->
-		<parameter required="true" direction="in" type="application/xml">
+		<parameter required="true" direction="in" type="application/x-pef+xml">
 			<name>xml</name>
 			<description>The input PEF 2008-1 file</description>
 			<example>file:///path/to/file.xml</example>

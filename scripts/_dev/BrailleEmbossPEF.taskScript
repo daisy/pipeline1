@@ -9,7 +9,7 @@
 		<nicename>Input file</nicename>
 		<description>A PEF-file</description>
 		<datatype>
-			<file mime="application/xml" type="input"/>
+			<file mime="application/x-pef+xml" type="input"/>
 		</datatype>
 	</parameter>
 	

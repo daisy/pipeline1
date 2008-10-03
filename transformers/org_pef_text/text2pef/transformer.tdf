@@ -16,7 +16,7 @@
 			<example>file:///path/to/file.txt</example>
 		</parameter>
 
-		<parameter required="true" direction="out" type="application/xml">
+		<parameter required="true" direction="out" type="application/x-pef+xml">
 			<name>output</name>			
 			<description>Output PEF 2008-1 file</description>
 			<example>file:///path/to/file.xml</example>

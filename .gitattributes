@@ -282,8 +282,8 @@ samples/input/ops/dtbook.2005.basic.css -text
 samples/input/ops/navigation.ncx -text
 samples/input/ops/package.opf -text
 samples/input/ops/the_waste_land.xml -text
-samples/input/pef/basic.xml -text
-samples/input/pef/test-pattern.xml -text
+samples/input/pef/butterfly.pef -text
+samples/input/pef/poem.pef -text
 samples/input/rtf/RTF2dtbook.rtf -text
 samples/input/sadx/AnotherBulletList.docx -text
 samples/input/sadx/AnotherBulletList.xml -text
