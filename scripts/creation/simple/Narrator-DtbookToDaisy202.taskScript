@@ -67,7 +67,7 @@
 
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/pipeline__temp/00-dtbookfix.xml</value>
+			<value>${outputPath}/pipeline__temp_0/00-dtbookfix.xml</value>
 		</parameter>
 
 		<parameter>
@@ -92,6 +92,31 @@
 			
 	</task>
 	
+	<!-- **********************************************************
+	      File Set Renamer - to fix possible illegal resource names
+	     ********************************************************** -->
+	<task name="int_daisy_filesetRenamer" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/pipeline__temp_0/00-dtbookfix.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/pipeline__temp/</value>
+		</parameter>
+		
+		<parameter>
+			<name>renamingPattern</name>
+			<value>echo</value>
+		</parameter>
+
+		<parameter>
+			<name>filesystemSafe</name>
+			<value>true</value>
+		</parameter>
+			
+	</task>
 	
 	
 	<!-- *************************
@@ -320,6 +345,12 @@
 		<parameter>
 			<name>delete</name>
 			<value>${outputPath}/pipeline__temp/</value>
+		</parameter>					
+	</task>	
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${outputPath}/pipeline__temp_0/</value>
 		</parameter>					
 	</task>	
 	
