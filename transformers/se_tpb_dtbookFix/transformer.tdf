@@ -104,6 +104,17 @@
             </enum>
             <default>true</default>
         </parameter>
+        
+        <parameter required="false" type="enum">
+            <name>renameIllegalFilenames</name>
+            <description>Whether to rename files with illegal characters in the filename (recommended when creating a DTB)</description>
+            <example>true</example>
+            <enum>
+                <value>true</value>
+                <value>false</value>
+            </enum>
+            <default>false</default>
+        </parameter>
 	</parameters>
 
 </transformer>

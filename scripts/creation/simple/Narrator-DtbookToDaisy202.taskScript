@@ -84,6 +84,11 @@
 			<name>forceRun</name>
 			<value>false</value>
 		</parameter>
+		
+		<parameter>
+			<name>renameIllegalFilenames</name>
+			<value>true</value>
+		</parameter>
 			
 	</task>
 	

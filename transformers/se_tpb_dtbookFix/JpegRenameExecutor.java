@@ -139,11 +139,12 @@ public class JpegRenameExecutor extends Executor {
 					MessageEvent.Type.INFO, MessageEvent.Cause.SYSTEM, null);
 			// Copy the .jpg to the output directory
 			try {
+			    FileUtils.createDirectory(outDir);
 				FileUtils.copy(oldImg, newImg);
 			} catch (IOException e) {
 
 				mTransformer.delegateMessage(this, mTransformer
-						.delegateLocalize("JPEG_RNEMER_FAIL", new String[] { e
+						.delegateLocalize("JPEG_RENAMER_FAIL", new String[] { e
 								.getMessage() }), MessageEvent.Type.INFO,
 						MessageEvent.Cause.SYSTEM, null);
 			}

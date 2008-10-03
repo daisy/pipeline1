@@ -262,7 +262,13 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			        if ("file".equals(resolvedFrom.getScheme()) && "file".equals(resolvedTo.getScheme())) {
         		        File from = new File(resolvedFrom);
         		        File to = new File(resolvedTo);
-        		        FileUtils.copyFile(from, to);
+        		        if (from.exists()) {
+        		            // We only try to copy the file if it actually exists. If a file
+        		            // has been renamed by an executor it will not reside in the input
+        		            // directory. In those cases the executors themselves are responsible
+        		            // for copying the file to the output dir.
+        		            FileUtils.copyFile(from, to);
+        		        }
 			        }
 			    }			    
 			}catch (Exception e) {			    
@@ -422,6 +428,9 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		executors.add(new XSLTExecutor(parameters, this.getClass().getResource("./xslt/narrator-lists.xsl"), v2005_1_2_3, i18n("NARRATOR_LISTS"), this, this, this, emitter));
     		if(parameters.get("renameJpeg").contentEquals("true")) {
     			executors.add(new JpegRenameExecutor(parameters, i18n("NARRATOR_JPEG_RENAMER"), this));
+    		}
+    		if(parameters.get("renameIllegalFilenames").contentEquals("true")) {
+    		    executors.add(new IllegalFilenameExecutor(parameters, i18n("NARRATOR_ILLEGAL_FILENAME"), this));
     		}
     		
     		
