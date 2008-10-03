@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.EFile;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
@@ -130,9 +132,9 @@ public class JpegRenameExecutor extends Executor {
 
 		private StartElement renameJpeg(StartElement event, String oldSrc) {
 			String newSrc = oldSrc.substring(0, oldSrc.length()-4)+"jpg";
-			EFile oldImg = new EFile(inDir, oldSrc);
+			EFile oldImg = new EFile(inDir, URIUtils.decode(oldSrc));
 //			String newSrc = oldImg.getNameMinusExtension() + ".jpg";
-			File newImg = new File(outDir, newSrc);
+			File newImg = new File(outDir, URIUtils.decode(newSrc));
 
 			mTransformer.delegateMessage(this, mTransformer.delegateLocalize(
 					"JPEG_RENAME", new String[] { oldSrc }),
