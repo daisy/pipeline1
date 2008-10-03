@@ -30,6 +30,8 @@ transformers/int_daisy_filesetRenamer/*.class
 transformers/int_daisy_filesetRenamer/segment/*.class
 transformers/int_daisy_filesetRenamer/strategies/*.class
 transformers/int_daisy_html2xhtml/*.class
+transformers/int_daisy_mathAltCreator/*.class
+transformers/int_daisy_mathAltCreator/com/dessci/mathflow/*.class
 transformers/int_daisy_mixedContentNormalizer/*.class
 transformers/int_daisy_mixedContentNormalizer/dom/*.class
 transformers/int_daisy_ocfCreator/*.class
@@ -44,6 +46,9 @@ transformers/int_daisy_validator/*.class
 transformers/int_daisy_xukCreator/*.class
 transformers/int_daisy_xukCreator/impl/*.class
 transformers/no_hks_xhtml2dtbook/*.class
+transformers/org_pef_text/*.class
+transformers/org_pef_text/pef2text/*.class
+transformers/org_pef_text/text2pef/*.class
 transformers/pipeline_system_copyer/*.class
 transformers/pipeline_system_deleter/*.class
 transformers/se_tpb_aligner/*.class
@@ -93,6 +98,8 @@ transformers/se_tpb_speechgen2/external/*.class
 transformers/se_tpb_speechgen2/external/MacOS/*.class
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/*.class
 transformers/se_tpb_speechgen2/external/win/*.class
+transformers/se_tpb_speechgen2/external/win/sapi5/*.class
+transformers/se_tpb_speechgen2/external/win/sapi5/events/*.class
 transformers/se_tpb_speechgen2/regex/*.class
 transformers/se_tpb_speechgen2/tts/*.class
 transformers/se_tpb_speechgen2/tts/adapters/*.class
@@ -125,3 +132,4 @@ transformers/uk_rnib_dtbook2xhtml/*.class
 transformers/uk_rnib_dtbook2xhtml/old/*.class
 transformers/uk_rnib_odf2dtbook/*.class
 transformers/us_rfbd_dtbookMigrator/*.class
+transformers/us_rfbd_nimasCreator/*.class
