@@ -90,6 +90,8 @@ public class IllegalFilenameExecutor extends Executor {
             // Copy the files in the renameMapping
             for (URI fromUri : renameMapping.keySet()) {
                 URI toUri = renameMapping.get(fromUri);
+                //RD20081003: make sure the outputDir exist to have a dir URI
+                FileUtils.createDirectory(outputDir);
                 fromUri = inputDir.toURI().resolve(fromUri);
                 toUri = outputDir.toURI().resolve(toUri);
                 File fromFile = new File(fromUri);
