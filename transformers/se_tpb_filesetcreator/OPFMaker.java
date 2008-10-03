@@ -44,6 +44,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.dtb.meta.MetadataList;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
@@ -189,7 +190,7 @@ public class OPFMaker {
 			ids.add(id);
 			
 			Element elem = opf.createElementNS(opfNamespaceURI, "item");
-			elem.setAttribute("href", currentFile.getName());
+			elem.setAttribute("href", URIUtils.encodePath(currentFile.getName()));
 			elem.setAttribute("id", id);
 			elem.setAttribute("media-type", getMimeType(currentFile.getName()));
 			manifest.appendChild(elem);
@@ -215,7 +216,7 @@ public class OPFMaker {
 			}
 			
 			Element elem = opf.createElementNS(opfNamespaceURI, "item");
-			elem.setAttribute("href", filename);
+			elem.setAttribute("href", URIUtils.encodePath(filename));
 			elem.setAttribute("id", id);
 			elem.setAttribute("media-type", getMimeType(filename));
 			manifest.appendChild(elem);
