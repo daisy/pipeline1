@@ -73,6 +73,7 @@ import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.fileset.util.URIStringParser;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
@@ -316,34 +317,57 @@ public class FilesetRenamer extends Transformer implements FilesetErrorHandler {
 
 		private Attribute mod(Attribute a) {
 						
-			String newValue = a.getValue();
-			
-			Iterator<URI> it = mStrategy.getIterator();
-			while(it.hasNext()) {
-				try{
-					//get the absolute URI of the old name
-					URI key = it.next();	
-					//create the old uri using current state
-					URI current = mCurrentFile.getFile().toURI().resolve(a.getValue());					
-					if(key.getPath().equals(current.getPath())) {
-						//the attribure refs oldURI
-						//get the new destination
+			try {
+				URI oldUri = new URI(a.getValue());
+				
+				// create the old uri using current state
+				URI current = mCurrentFile.getFile().toURI().resolve(oldUri);
+				// get the query and fragment
+				String fragAndQuery="";
+				if (oldUri.getRawFragment()!=null){
+					fragAndQuery+='#'+oldUri.getRawFragment();
+				}
+				if (oldUri.getRawQuery()!=null){
+					fragAndQuery+='?'+oldUri.getRawQuery();
+				}
+
+				String newValue=a.getValue();
+				Iterator<URI> it = mStrategy.getIterator();
+				boolean stop = false;
+				while (it.hasNext() && !stop) {
+					// get the absolute URI of the old name
+					URI key = it.next();
+					if (key.getPath().equals(current.getPath())) {
+						stop=true;
+						// the attribute refs oldURI
+						// get the new destination
 						URI newDestination = mStrategy.getNewURI(key);
-						//get the member that will refer to the destination
+						// get the member that will refer to the destination
 						URI newReferer = mStrategy.getNewURI(mCurrentFile.getFile().toURI());
 						URI newRefererParent = new File(newReferer).getParentFile().toURI();
-						//create the new relative URI
-						URI newReference = newRefererParent.relativize(newDestination);						
-						newValue = newReference.toASCIIString();						
+						// create the new relative URI
+						URI newReference = newRefererParent.relativize(newDestination);
+						// get the new manifest name
+						String newManifestName = mStrategy.getNewLocalName(mInputFileset.getManifestMember());
+						if (newReference.toString().equals(newManifestName)){
+							// internal link
+							newValue="";
+						} else{
+							newValue = newReference.toASCIIString();
+						}
+						// add query and fragment
+						newValue+=fragAndQuery;
 					}
-					
-				}catch (Exception e) {					
-					sendMessage("exception when replacing values with new name: " + e.getMessage(), MessageEvent.Type.WARNING, MessageEvent.Cause.SYSTEM);
-					newValue = a.getValue();
+
 				}
-			}				
-			
-			return getEventFactory().createAttribute(a.getName(), newValue);
+				return getEventFactory().createAttribute(a.getName(), newValue);
+			} catch (Exception e) {
+				sendMessage("exception when replacing values with new name: "
+						+ e.getMessage(), MessageEvent.Type.WARNING,
+						MessageEvent.Cause.SYSTEM);
+				return a;
+			}
+
 		}
 
 		private boolean isURICarrier(Attribute a) {
