@@ -294,55 +294,49 @@ public class DefaultStrategy implements RenamingStrategy {
 	 * @see int_daisy_filesetRenamer.strategies.RenamingStrategy#validate()
 	 */
 	public boolean validate() throws FilesetRenamingException {		
+		if (namingStrategy.isEmpty()){
+			throw new FilesetRenamingException("strategy not set");
+		}
 		
 		/*
-		 * Problems to look for:
-		 *  - duplicate output names
-		 *  - output name colliding with input name of other member
+		 * Problems to look for: - duplicate output names - output name
+		 * colliding with input name of other member
 		 */
-		
-		boolean foundProblem = false;
-		
-		if (!namingStrategy.isEmpty()) {
-			URI curValue;
-			URI curKey;
-			int i = -1;
-			for (Iterator<URI> iter = namingStrategy.keySet().iterator(); iter.hasNext();) {
-				i++;
-				URI value = namingStrategy.get(iter.next());
-				String valueLocal = URIStringParser.stripPath(value.getPath());
-				int k = -1;
-				for (Iterator<URI> iter2 = namingStrategy.keySet().iterator(); iter2.hasNext();) {					
-					k++;
-					curKey = iter2.next();
-					curValue = namingStrategy.get(curKey);
-					if(i!=k) {
-						//test for duplicate output names
-						if(value.getPath().equals(curValue.getPath())) {							
-							foundProblem = true;
-							namingStrategy.put(curKey, tweakName(curValue));
-							break;
-						}		
-						
-						//test for output name collision with input name of other member
-						//note: this will give false positives for ./a.jpg and ./img/a.jpg //TODO
-						String curKeyLocal = URIStringParser.stripPath(curKey.getPath());
-						if(valueLocal.equals(curKeyLocal)) {
-							foundProblem = true;
-							namingStrategy.put(curKey, tweakName(curValue));
-							break;
-						}
-					}
+
+		URI inputDirUri = mInputFileset.getManifestMember().getFile()
+				.getParentFile().toURI();
+		URI outputDirUri = mOutputDirectory.toURI();
+		int i = -1;
+		for (Iterator<URI> iter = namingStrategy.keySet().iterator(); iter
+				.hasNext(); i++) {
+			URI key = iter.next();
+			URI value = namingStrategy.get(key);
+			String valueLocal = outputDirUri.relativize(value).getPath();
+			int k = -1;
+			for (Iterator<URI> iter2 = namingStrategy.keySet().iterator(); iter2
+					.hasNext(); k++) {
+				if (i == k) 
+					break;
+				URI curKey = iter2.next();
+				URI curValue = namingStrategy.get(curKey);
+				// test for duplicate output names
+				if (value.getPath().equals(curValue.getPath())) {
+					namingStrategy.put(key, tweakName(value));
+					return false;
 				}
-				if(foundProblem) break;
+
+				// test for output name collision with input name of other
+				// member
+				// note: this will give false positives for ./a.jpg and
+				// ./img/a.jpg //TODO
+				String curKeyLocal = inputDirUri.relativize(curKey).getPath();
+				if (valueLocal.equals(curKeyLocal)) {
+					namingStrategy.put(key, tweakName(value));
+					return false;
+				}
+
 			}
-			if(foundProblem) {
-				return false;
-			}
-		} else { 
-			throw new FilesetRenamingException("strategy not set");
-		}//if (!strategy.isEmpty())
-		
+		}
 		return true;
 	}
 	
