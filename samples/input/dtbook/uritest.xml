@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<?xml-stylesheet href="dtbook.2005.basic.css" type="text/css"?>
+<!DOCTYPE dtbook PUBLIC "-//NISO//DTD dtbook 2005-2//EN" "http://www.daisy.org/z3986/2005/dtbook-2005-2.dtd" []>
+<dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="2005-2" xml:lang="en-US">
+	<head>
+		<meta name="dtb:uid" content="AUTO-UID-4843832046054736000" />
+		<meta name="dc:Title" content="title" />
+		<meta name="dc:Creator" content="DAISY Consortium" />
+		<meta name="dc:Publisher" content="DAISY Consortium" />
+	</head>
+	<book id="d1e11">
+		<frontmatter>
+			<doctitle id="d1e13">title</doctitle>
+			<level depth="1">
+				<p id="d1e17">paragraph</p>
+			</level>
+		</frontmatter>
+		<bodymatter id="body">
+			<level depth="1">
+				<p id="d1e20">block element</p>
+				<!-- <p><a href="#d1e20" external="false">link</a></p> -->
+				<p><imggroup><img id="img1" alt="an image" src="Image 1.jpg" /></imggroup></p>
+				<p><imggroup><img alt="an image" src="Image 1.jpeg" id="img2" /></imggroup></p>
+				<p><imggroup><img alt="an image" src="Image 2.jpg" id="img3" /></imggroup></p>
+				<p><imggroup><img alt="an image" id="img4" src="images[1]/Image 1.jpg" /></imggroup></p>
+				<p><a href="http://www.validuri.org/" external="true">link</a></p>
+				<p><a href="http://www.invalid uri.org/" external="true">link</a></p>
+				<p><a href="#d1e29">link</a></p>
+			</level>
+			<level1>
+				<h1 id="d1e23">h1</h1>
+				<p id="d1e25">fail</p>
+			</level1>
+		</bodymatter>
+		<rearmatter id="rear">
+			<level1>
+				<h1 id="d1e29">h1</h1>
+				<p id="d1e31">paragraph</p>
+			</level1>
+			<level depth="1">
+				<p id="d1e33">block element</p>
+			</level>
+		</rearmatter>
+	</book>
+</dtbook>

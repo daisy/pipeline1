@@ -252,6 +252,9 @@ samples/input/dtb/z3986-2005/speechgen0007.mp3 -text
 samples/input/dtb/z3986-2005/speechgen0007.smil -text
 samples/input/dtb/z3986-2005/tpbnarrator.res -text
 samples/input/dtb/z3986-2005/tpbnarrator_res.mp3 -text
+samples/input/dtbook/Image[!!-~]1.jpeg -text
+samples/input/dtbook/Image[!!-~]1.jpg -text
+samples/input/dtbook/Image[!!-~]2.jpg -text
 samples/input/dtbook/The[!!-~]quick[!!-~]brown[!!-~]fox.xml -text
 samples/input/dtbook/dontworrybehappy.xml -text
 samples/input/dtbook/dtbook-math-altset.xml -text
@@ -264,10 +267,13 @@ samples/input/dtbook/hauy-2005-1-short.xml -text
 samples/input/dtbook/hauy-2005-1.xml -text
 samples/input/dtbook/hauy_invalid.xml -text
 samples/input/dtbook/hauy_valid.xml -text
+samples/input/dtbook/images\[1\]/Image[!!-~]1.jpg -text
 samples/input/dtbook/nativemathml0001.png -text
 samples/input/dtbook/nativemathml0002.png -text
+samples/input/dtbook/numeric.xml -text
 samples/input/dtbook/scrambled-110.xml -text
 samples/input/dtbook/the_waste_land.xml -text
+samples/input/dtbook/uritest.xml -text
 samples/input/dtbook/valentin.jpg -text
 samples/input/epub/valentin_hauy.epub -text
 samples/input/epub/wasteland.epub -text

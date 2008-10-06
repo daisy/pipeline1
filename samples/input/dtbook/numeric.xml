@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?xml-stylesheet href="dtbook.2005.basic.css" type="text/css"?>
+<!DOCTYPE dtbook PUBLIC "-//NISO//DTD dtbook 2005-3//EN" "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd" >
+<dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="2005-3" xml:lang="en-US">
+	<head>
+		<meta name="dt:version" content="1.0" />
+		<meta name="dtb:uid" content="AUTO-UID-4748017107383655000" />
+		<meta name="dc:Title" content="Numeric" />
+		<meta name="dc:Creator" content="Anonymous Author" />
+		<meta name="dc:Date" content="2008-04-28" />
+		<meta name="dc:Publisher" content="O'really Media, Inc." />
+		<meta name="dc:Identifier" content="123456789" />
+		<meta name="dc:Language" content="en-US" />
+	</head>
+	<book showin="blp">
+		<frontmatter>
+			<doctitle>Numeric</doctitle>
+			<docauthor>Numerico</docauthor>
+		</frontmatter>
+		<bodymatter id="bodymatter_0001">
+			<level1>
+				<h1>Heading one</h1>
+					<p>Phrase one in section one.</p>
+					<p>Phrase two in section one.</p>
+					<pagenum page="normal" id="page1">1</pagenum>
+					<p>Phrase three in section one.</p>
+					<p>Phrase four in section one.</p>
+					<level2>
+						<h2>Heading two</h2>
+						<p>Phrase one in section two.</p>
+						<p>Phrase two in section two.</p>
+						<pagenum page="normal" id="page2">2</pagenum>
+						<p>Phrase three in section two.</p>
+						<p>Phrase four in section two.</p>
+					</level2>
+			</level1>
+			<level1>
+				<h1>Heading three</h1>
+					<p>Phrase one in section three.</p>
+					<p>Phrase two in section three.</p>
+					<pagenum page="normal" id="page3">3</pagenum>
+					<p>Phrase three in section three.</p>
+					<p>Phrase four in section three.</p>
+					<level2>
+						<h2>Heading four</h2>
+						<p>Phrase one in section four.</p>
+						<p>Phrase two in section four.</p>
+						<pagenum page="normal" id="page4">4</pagenum>
+						<p>Phrase three in section four.</p>
+						<p>Phrase four in section four.</p>
+						<level3>
+							<h3>Heading five</h3>
+							<p>Phrase one in section five.</p>
+							<p>Phrase two in section five.</p>
+							<pagenum page="normal" id="page5">5</pagenum>
+							<p>Phrase three in section five.</p>
+							<p>Phrase four in section five.</p>
+						</level3>
+					</level2>
+			</level1>
+		</bodymatter>
+	</book>
+</dtbook>
