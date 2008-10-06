@@ -256,7 +256,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			    zed.parse();
 			    Collection<String> uris = zed.getUriStrings();
 			    
-			    for (String uri : uris) {
+			    for (String uri : uris) {			    	
 			        URI resolvedFrom = input.toURI().resolve(uri);
 			        URI resolvedTo = output.toURI().resolve(uri);
 			        if ("file".equals(resolvedFrom.getScheme()) && "file".equals(resolvedTo.getScheme())) {
@@ -426,9 +426,9 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/narrator-headings-r100.xsl"),v2005_1_2_3, i18n("NARRATOR_HEADINGS_R100"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters, this.getClass().getResource("./xslt/narrator-title.xsl"), v2005_1_2_3, i18n("NARRATOR_TITLE"), this, this, this, emitter));
     		executors.add(new XSLTExecutor(parameters, this.getClass().getResource("./xslt/narrator-lists.xsl"), v2005_1_2_3, i18n("NARRATOR_LISTS"), this, this, this, emitter));
-    		if(parameters.get("renameJpeg").contentEquals("true")) {
-    			executors.add(new JpegRenameExecutor(parameters, i18n("NARRATOR_JPEG_RENAMER"), this));
-    		}
+//    		if(parameters.get("renameJpeg").contentEquals("true")) {
+//    			executors.add(new JpegRenameExecutor(parameters, i18n("NARRATOR_JPEG_RENAMER"), this));
+//    		}
 //    		if(parameters.get("renameIllegalFilenames").contentEquals("true")) {
 //    		    executors.add(new IllegalFilenameExecutor(parameters, i18n("NARRATOR_ILLEGAL_FILENAME"), this));
 //    		}
