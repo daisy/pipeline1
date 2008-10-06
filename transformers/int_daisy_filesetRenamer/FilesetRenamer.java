@@ -119,17 +119,11 @@ public class FilesetRenamer extends Transformer implements FilesetErrorHandler {
 	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		/*
 		 * First, create the renaming strategy using the input tokens.
-		 * Validate this strategy. 
-		 * If valid,
-		 *   render, return true.
-		 * If invalid and fixable (ie not a multiple new identical names error),
-		 *   do a first pass of scrambling renaming to a subfolder of out
-		 *   and then rerun the input strategy
-		 * Validate this strategy, 
-		 * If valid
-		 *   render, return true.
-		 * If invalid,
-		 *   render unrenamed fileset (unless in and out are the same)
+		 * Validate this strategy; the validate method will if it encounters
+		 * problems try to fix them, and return false to signify that the 
+		 * initial strategy was broken. 
+		 * 
+		 * On error,  render unrenamed fileset (unless in and out are the same)
 		 *   send error, return true.    
 		 */
 		
@@ -199,6 +193,15 @@ public class FilesetRenamer extends Transformer implements FilesetErrorHandler {
 		rs.setTypeExclusion(typeExclusions);
 		rs.setMaxFilenameLength(maxFilenameLength);
 		rs.create();
+		
+//		Iterator<URI> iter = rs.getIterator();
+//		while(iter.hasNext()) {
+//			URI key = iter.next();
+//			System.err.println("inp: " + key);
+//			URI dest = rs.getNewURI(key);
+//			System.err.println("out: " + dest);
+//		}
+//		System.err.println("stop");
 		
 		boolean valid = true;
 		int count = 0;

@@ -44,7 +44,9 @@ import org.daisy.util.fileset.D202NccFile;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.util.FilesetLabelProvider;
+import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.i18n.CharUtils;
+import org.daisy.util.text.URIUtils;
 
 /**
  * A base renaming strategy
@@ -85,32 +87,43 @@ public class DefaultStrategy implements RenamingStrategy {
 		this.namingStrategy.clear();
 		
 		for (Iterator<URI> iter = this.mInputFileset.getLocalMembersURIs().iterator(); iter.hasNext();) {
+			
 			URI inputURI = iter.next();
+			
 			FilesetFile f = this.mInputFileset.getLocalMember(inputURI);
+			
+			File ret = null;
+			
 			if(!this.isTypeDisabled(f)) {
 				//create a new name: createNewName(f) method implemented by subclass
-				//subclass may return the same name is input, we dont care here
-				
+				//subclass may return the same name is input, we dont care here				
 				//mg20081003: if filesystemsafe, make sure subdirs are also safe
-				File ret = null;
-				
-				if(isInFilesetRootDir(f)) {					
+				//note: we only support one-level subdirs here, TODO
+				boolean inRoot = isInFilesetRootDir(f);
+				if(inRoot) {					
 					ret = new File(mOutputDirectory,createNewName(f));	
 				}else{					
 					String parentPath = f.getFile().getParentFile().getName();
 					if(mForceAsciiSubset && !CharUtils.isFilenameCompatible(parentPath, CharUtils.FilenameRestriction.Z3986)) {
 						parentPath = CharUtils.toRestrictedSubset(CharUtils.FilenameRestriction.Z3986, parentPath);
+						parentPath = parentPath.replace('.', '_'); //no periods in subfolder for z
 					}
 					ret = new File(mOutputDirectory.getPath() + File.separatorChar + parentPath,createNewName(f));					
 				}
 											
-				this.namingStrategy.put(inputURI,ret.toURI());
+				
 			}else{
-				//let name be the same
-				this.namingStrategy.put(inputURI,inputURI);
+				//let name be the same, dont mod at all, even if mForceAsciiSubset				
+				if(isInFilesetRootDir(f)) {
+					ret = new File(mOutputDirectory,f.getFile().getName());
+				}else{
+					String parentPath = f.getFile().getParentFile().getName();
+					ret = new File(mOutputDirectory.getPath() + File.separatorChar + parentPath,f.getFile().getName());
+				}				
 			}			
+			this.namingStrategy.put(inputURI,ret.toURI());
 		}
-		//System.err.println("stop");
+
 	}
 	
 	private boolean isInFilesetRootDir(FilesetFile f) {
@@ -281,6 +294,13 @@ public class DefaultStrategy implements RenamingStrategy {
 	 * @see int_daisy_filesetRenamer.strategies.RenamingStrategy#validate()
 	 */
 	public boolean validate() throws FilesetRenamingException {		
+		
+		/*
+		 * Problems to look for:
+		 *  - duplicate output names
+		 *  - output name colliding with input name of other member
+		 */
+		
 		boolean foundProblem = false;
 		
 		if (!namingStrategy.isEmpty()) {
@@ -290,20 +310,24 @@ public class DefaultStrategy implements RenamingStrategy {
 			for (Iterator<URI> iter = namingStrategy.keySet().iterator(); iter.hasNext();) {
 				i++;
 				URI value = namingStrategy.get(iter.next());
+				String valueLocal = URIStringParser.stripPath(value.getPath());
 				int k = -1;
 				for (Iterator<URI> iter2 = namingStrategy.keySet().iterator(); iter2.hasNext();) {					
 					k++;
 					curKey = iter2.next();
 					curValue = namingStrategy.get(curKey);
 					if(i!=k) {
-						if(value.equals(curValue)) {
-							//throw new FilesetRenamingException("duplicate output name: " + value.toString());
+						//test for duplicate output names
+						if(value.getPath().equals(curValue.getPath())) {							
 							foundProblem = true;
 							namingStrategy.put(curKey, tweakName(curValue));
 							break;
-						}						
-						if(value.equals(curKey)) {
-							//throw new FilesetRenamingException("output name collides with input name of other member: " + value.toString());
+						}		
+						
+						//test for output name collision with input name of other member
+						//note: this will give false positives for ./a.jpg and ./img/a.jpg //TODO
+						String curKeyLocal = URIStringParser.stripPath(curKey.getPath());
+						if(valueLocal.equals(curKeyLocal)) {
 							foundProblem = true;
 							namingStrategy.put(curKey, tweakName(curValue));
 							break;

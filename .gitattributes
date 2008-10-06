@@ -509,6 +509,7 @@ src/org/daisy/pipeline/test/impl/Narrator1.java -text
 src/org/daisy/pipeline/test/impl/Narrator2.java -text
 src/org/daisy/pipeline/test/impl/Narrator3.java -text
 src/org/daisy/pipeline/test/impl/Narrator4.java -text
+src/org/daisy/pipeline/test/impl/Narrator5.java -text
 src/org/daisy/pipeline/test/impl/NarratorAutumn20081.java -text
 src/org/daisy/pipeline/test/impl/NarratorMathML1.java -text
 src/org/daisy/pipeline/test/impl/NarratorSADX.template -text
