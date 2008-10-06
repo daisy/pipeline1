@@ -67,7 +67,7 @@
 
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/pipeline__temp_0/00-dtbookfix.xml</value>
+			<value>${outputPath}/pipeline__temp/tmp0/00-dtbookfix.xml</value>
 		</parameter>
 
 		<parameter>
@@ -98,12 +98,12 @@
 	<task name="int_daisy_filesetRenamer" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/pipeline__temp_0/00-dtbookfix.xml</value>
+			<value>${outputPath}/pipeline__temp/tmp0/00-dtbookfix.xml</value>
 		</parameter>
 
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/pipeline__temp/</value>
+			<value>${outputPath}/pipeline__temp/tmp1/</value>
 		</parameter>
 		
 		<parameter>
@@ -130,7 +130,7 @@
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/pipeline__temp/00-dtbookfix.xml</value>
+			<value>${outputPath}/pipeline__temp/tmp1/00-dtbookfix.xml</value>
 		</parameter>
 		<parameter>
 			<name>schemas</name>
@@ -153,11 +153,11 @@
 	<task name="se_tpb_xmldetection" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/pipeline__temp/00-dtbookfix.xml</value>
+			<value>${outputPath}/pipeline__temp/tmp1/00-dtbookfix.xml</value>
 		</parameter>		
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/pipeline__temp/01-abbracro.xml</value>
+			<value>${outputPath}/pipeline__temp/tmp1/01-abbracro.xml</value>
 		</parameter>		
 		<parameter>
 			<name>doAbbrAcronymDetection</name>
@@ -179,11 +179,11 @@
 	<task name="se_tpb_annonsator" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/pipeline__temp/01-abbracro.xml</value>
+			<value>${outputPath}/pipeline__temp/tmp1/01-abbracro.xml</value>
 		</parameter>		
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/pipeline__temp/02-struct.xml</value>
+			<value>${outputPath}/pipeline__temp/tmp1/02-struct.xml</value>
 		</parameter>		
 	</task>
 	
@@ -193,11 +193,11 @@
 	<task name="se_tpb_xmldetection" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/pipeline__temp/02-struct.xml</value>
+			<value>${outputPath}/pipeline__temp/tmp1/02-struct.xml</value>
 		</parameter>		
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/pipeline__temp/03-sent.xml</value>
+			<value>${outputPath}/pipeline__temp/tmp1/03-sent.xml</value>
 		</parameter>		
 		<parameter>
 			<name>doAbbrAcronymDetection</name>
@@ -219,11 +219,11 @@
 	<task name="se_tpb_syncPointNormalizer" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/pipeline__temp/03-sent.xml</value>
+			<value>${outputPath}/pipeline__temp/tmp1/03-sent.xml</value>
 		</parameter>		
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/pipeline__temp/04-syncpoint.xml</value>
+			<value>${outputPath}/pipeline__temp/tmp1/04-syncpoint.xml</value>
 		</parameter>
 	</task>
 	
@@ -234,7 +234,7 @@
 	<task name="se_tpb_speechgen2" interactive="false">
 		<parameter>
 			<name>inputFilename</name>
-			<value>${outputPath}/pipeline__temp/04-syncpoint.xml</value>
+			<value>${outputPath}/pipeline__temp/tmp1/04-syncpoint.xml</value>
 		</parameter>
 		<parameter>
 			<name>outputDirectory</name>
@@ -351,12 +351,6 @@
 			<name>delete</name>
 			<value>${outputPath}/pipeline__temp/</value>
 		</parameter>					
-	</task>	
-	<task name="pipeline_system_deleter" interactive="false">
-		<parameter>
-			<name>delete</name>
-			<value>${outputPath}/pipeline__temp_0/</value>
-		</parameter>					
-	</task>	
+	</task>
 	
 </taskScript>
