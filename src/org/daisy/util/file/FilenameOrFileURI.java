@@ -22,6 +22,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Pattern;
 
+import org.daisy.util.text.URIUtils;
+
 /**
  * Read filenames or file URIs and output <code>File</code> or
  * <code>URI</code> objects. 
@@ -41,7 +43,7 @@ public class FilenameOrFileURI {
         try {
             if (hasScheme(filenameOrFileURI)) {
                 try {                    
-                    File f = new File(new URI(filenameOrFileURI));
+                    File f = new File(URIUtils.createURI(filenameOrFileURI));
                     return f;
                 } catch (URISyntaxException e) {
                     e.printStackTrace();                   

@@ -337,10 +337,10 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
                         transformer.setURIResolver(CatalogEntityResolver.getInstance());
                     }
                     transformer.transform(xml, new StreamResult(
-                            schematronSchema.getFile().toURL().toString()));
+                            schematronSchema.getFile().toURI().toString()));
                     schSource = new InputSource(schematronSchema.getFile()
-                            .toURL().toString());
-                    schSource.setSystemId(schematronSchema.getFile().toURL().toString());
+                            .toURI().toString());
+                    schSource.setSystemId(schematronSchema.getFile().toURI().toString());
                 } else {
                     // just pass along the method inputparam InputSource
                     schSource = new InputSource(schema.openStream());
