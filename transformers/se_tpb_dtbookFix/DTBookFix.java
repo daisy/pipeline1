@@ -172,7 +172,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			int progressLen = getActiveExecutorCount(categories);
 			double progress = 0;
 			for(Category category : categories) {				
-				InputState state = getInputState(juggler.getInput());
+				InputState state = getInputState(juggler, parameters);
 				if(force||category.supportsInputState(state)) {
 					this.sendMessage(i18n("RUNNING_CATEGORY",i18n(category.getName().toString())),MessageEvent.Type.INFO_FINER);
 			    	for(Executor exec : category) {
@@ -464,12 +464,17 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 		return new Category(name,supportedStates,executors);
 	}
 	
+	private InputState getInputState(FileJuggler juggler, Map<String,String> parameters) throws ValidatorException {
+	    // Reinsert the doctype declaration each time the document is validated.
+	    setDTDdecl(juggler, parameters);
+	    return getInputState(juggler.getInput());
+	}
+	
 	private InputState getInputState(File input) throws ValidatorException {		
 		return getInputState(input, null);
 	}
 	
 	private InputState getInputState(File input, Set<URL> extraSchemas) throws ValidatorException {	
-		
     	this.sendMessage(i18n("VALIDATING", input),MessageEvent.Type.INFO_FINER);
     			
 		ValidatorFactory vfac = ValidatorFactory.newInstance();		
@@ -567,6 +572,11 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 		
 	}
 
+	/**
+	 * Strip out the internal subset from a doctype declaration.
+	 * @param doctype a doctype declaration
+	 * @return the doctype declaration without internal subset
+	 */
 	private String stripInternalSubset(String doctype) {
 	    DoctypeParser doctypeParser = new DoctypeParser(doctype);
         StringBuilder builder = new StringBuilder("<!DOCTYPE ");
