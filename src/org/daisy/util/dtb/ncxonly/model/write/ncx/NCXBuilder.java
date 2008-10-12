@@ -342,26 +342,30 @@ public class NCXBuilder {
 		writeMetaElement(xef,writer,"dtb:depth",Integer.toString(Model.getHeadingDepth(model)));
 		writeMetaElement(xef,writer,"dtb:generator","Pipeline " + Version.getVersion());
 		writeMetaElement(xef,writer,"dtb:totalPageCount",Integer.toString(Model.getPageCount(model)));
-		Item item = getLastPage(model);
+		Item lastPage = getLastPage(model);
 		String val = "0";
-		if(item!=null) {
-			val=item.getValue().toString();
+		if(lastPage!=null) {
+			val=lastPage.getValue().toString();
 		}	
 		writeMetaElement(xef,writer,"dtb:maxPageNumber",val);		
+		
 		//add customTests
 		Set<Semantic> added = new HashSet<Semantic>();
 		for(Item itm : model) {
 			if(itm.getAudioClips().get(0).getNature() == Nature.NONTRANSIENT) {
-				if(! added.contains(item.getSemantic())) {
-					writer.add(nl);	
-					writer.add(tab);
-					writer.add(xef.createStartElement(qSmilCustomTest, null, null));
-					writer.add(xef.createAttribute("bookStruct", getBookStruct(item.getSemantic())));
-					writer.add(xef.createAttribute("defaultState", "false"));
-					writer.add(xef.createAttribute("id", item.getSemantic().toString()));
-					writer.add(xef.createAttribute("override", "visible"));				
-					writer.add(xef.createEndElement(qSmilCustomTest, null));
-					added.add(item.getSemantic());
+				if(!added.contains(itm.getSemantic())) {
+					String bookStruct = getBookStruct(itm.getSemantic());
+					if(bookStruct!=null) {
+						writer.add(nl);	
+						writer.add(tab);
+						writer.add(xef.createStartElement(qSmilCustomTest, null, null));
+						writer.add(xef.createAttribute("bookStruct", bookStruct));
+						writer.add(xef.createAttribute("defaultState", "false"));
+						writer.add(xef.createAttribute("id", itm.getSemantic().toString()));
+						writer.add(xef.createAttribute("override", "visible"));				
+						writer.add(xef.createEndElement(qSmilCustomTest, null));
+						added.add(itm.getSemantic());
+					}
 				}
 			}
 		}
@@ -404,11 +408,14 @@ public class NCXBuilder {
 		return "navigation.ncx";
 	}
 	
+	/**
+	 * Get the bookstruct of a Semantic, or null if no bookstruct maps.
+	 */
 	private String getBookStruct(Semantic sem) {
 		if(sem.name().startsWith("PAGE")) {
 			return "PAGE_NUMBER";
 		}
-		throw new IllegalArgumentException(sem.toString());
+		return null;
 	}
 	
 }
