@@ -1152,13 +1152,39 @@
 	</xsl:template>
 	
 	
-	<!-- MathML; deep copy -->	
+	<!-- MathML -->	
 	<xsl:template match="m:math">
-		<xsl:copy-of select="."/>
+		<xsl:call-template name="process_math"/>
 	</xsl:template>	
 	
 	<xsl:template match="m:math" mode="inlineOnly" >
-    	<xsl:copy-of select="."/>  	
+    	<xsl:call-template name="process_math"/>
+	</xsl:template>
+	
+	<xsl:template name="process_math">
+		<xsl:choose>
+			<xsl:when test="$svg_mathml='true'">
+				<!-- Deep copy -->
+				<xsl:copy-of select="."/>
+			</xsl:when>
+			<xsl:when test="@altimg and @dtb:smilref and @alttext">
+				<a>
+					<xsl:attribute name="href">
+						<xsl:call-template name="hrefValue">
+							<xsl:with-param name="smilref">
+								<xsl:value-of select="@dtb:smilref"/>
+							</xsl:with-param>
+						</xsl:call-template>
+					</xsl:attribute>
+					<img src="{@altimg}" alt="{@alttext}">
+						<xsl:copy-of select="@id"/>
+					</img>
+				</a>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:message>***** Warning: Skipping unsupported MathML content *****</xsl:message>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- SVG; deep copy -->	

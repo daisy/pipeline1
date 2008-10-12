@@ -2,6 +2,9 @@ package int_daisy_mathAltCreator;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.stream.XMLInputFactory;
@@ -11,8 +14,17 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
+import org.daisy.util.fileset.Fileset;
+import org.daisy.util.fileset.FilesetErrorHandler;
+import org.daisy.util.fileset.FilesetFile;
+import org.daisy.util.fileset.ManifestFile;
+import org.daisy.util.fileset.exception.FilesetFileException;
+import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.xml.NamespaceReporter;
+import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.stax.StaxEntityResolver;
@@ -22,7 +34,7 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
  * Factory-based discovery of implementations of the IMathMLAltCreator interface
  * @author Markus Gylling
  */
-public class MathAltCreator extends Transformer {
+public class MathAltCreator extends Transformer implements FilesetErrorHandler {
 
 	public MathAltCreator(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);
@@ -37,25 +49,43 @@ public class MathAltCreator extends Transformer {
 			 */
 			File inputDoc = FilenameOrFileURI.toFile(parameters.get("input"));
 			File outputDoc = FilenameOrFileURI.toFile(parameters.get("output"));
+			boolean overwrite = Boolean.parseBoolean(parameters.get("overwrite"));
+			Directory outputDir = new Directory(outputDoc.getParentFile());
 		
-			/*
-			 * Find out whether the input doc has all math:alttext and math:altimg
-			 * already set. If so, copy input to output and return.
-			 */
-			int incomplete = getAltIncompleteIslands(inputDoc);
-			if(incomplete==0) {
-				FileUtils.copyFile(inputDoc, outputDoc);
-				return true;
+			// Build a fileset
+			Fileset fileset = new FilesetImpl(inputDoc.toURI(), this, false, false);
+			
+			// Check if input document contains any math. If not, just pass the doc through
+			NamespaceReporter namespaceReporter = new NamespaceReporter(inputDoc.toURL());
+			boolean containsMath = (namespaceReporter.getPrefix(Namespaces.MATHML_NS_URI) != null);
+			if(!containsMath) {
+			    FileUtils.copyFile(inputDoc, outputDoc);
+			    this.copyReferredFiles(fileset, outputDir);
+			    return true;
 			}
 			
+			/*
+			 * Find out whether the input doc has all math:alttext and math:altimg
+			 * already set. If so, and the overwrite option is set to false, copy
+			 * input to output and return.
+			 */
+			int incomplete = getAltIncompleteIslands(inputDoc);
+			if(incomplete==0 && !overwrite) {
+				FileUtils.copyFile(inputDoc, outputDoc);
+				this.copyReferredFiles(fileset, outputDir);
+				return true;
+			}
+					
 			/* If not alt complete, we need to locate a provider of the 
 			 * IMathAltCreator service.
 			 */
 			
 	    	boolean result = false;
 	    	IMathAltCreator service = MathAltCreatorFactory.newInstance().newMathAltCreator();
+	    	Map<String,Object> params = new HashMap<String,Object>();
+	    	params.put("overwrite", overwrite);
 	    	if(service!=null) {
-	    		service.configure(inputDoc,outputDoc,null);	    				    			
+	    		service.configure(inputDoc, outputDoc, params);	    				    			
 		    	
 	    		this.sendMessage(i18n("USING_SERVICE",
 	    				incomplete,service.getNiceName()), 
@@ -114,6 +144,32 @@ public class MathAltCreator extends Transformer {
 		}
 		return count;
 	}
+	
+	/**
+	 * Copy any referred files (such as images) to the output directory.
+	 * @param fileset file fileset to copy
+	 * @param outputDir the output directory
+	 * @throws IOException
+	 */
+	private void copyReferredFiles(Fileset fileset, Directory outputDir) throws IOException {
+	    ManifestFile manifest = fileset.getManifestMember();
+	    if (manifest.getParentFolder().getAbsolutePath().equals(outputDir.getAbsolutePath())) {
+	        // inputDir == outputDir, we don't need to copy anything
+	        return;
+	    }
+	    FileUtils.createDirectory(outputDir);
+	    for (FilesetFile fsf : fileset.getLocalMembers()) {
+	        if (fsf != manifest) {
+	            URI relative = manifest.getFile().toURI().relativize(fsf.getFile().toURI());
+	            URI outUri = outputDir.toURI().resolve(relative);
+	            FileUtils.copyFile(fsf.getFile(), new File(outUri));
+	        }
+	    }
+	}
+
+    public void error(FilesetFileException ffe) throws FilesetFileException {
+        this.sendMessage(ffe);
+    }
 
 }
 

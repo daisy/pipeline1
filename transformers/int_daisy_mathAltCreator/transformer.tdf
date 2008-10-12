@@ -19,6 +19,17 @@
 			<name>output</name>
 			<description>The output DTBook+MathML document</description>
 			<example>C://path/to/dtbook-output.xml</example>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>overwrite</name>
+			<description>Overwrite existing MathML alttext and altimg attributes</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
 		</parameter>		
 
 	</parameters>	
