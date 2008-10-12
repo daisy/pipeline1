@@ -823,6 +823,7 @@ transformers/int_daisy_mathAltCreator/IMathAltCreator.java -text
 transformers/int_daisy_mathAltCreator/MathAltCreator.java -text
 transformers/int_daisy_mathAltCreator/MathAltCreatorFactory.java -text
 transformers/int_daisy_mathAltCreator/com/dessci/mathflow/MathFlowAltCreator.java -text
+transformers/int_daisy_mathAltCreator/com/dessci/mathflow/RegistryQuery.java -text
 transformers/int_daisy_mathAltCreator/messages.properties -text
 transformers/int_daisy_mathAltCreator/transformer.tdf -text
 transformers/int_daisy_mixedContentNormalizer/AbstractNormalizer.java -text

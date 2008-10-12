@@ -29,7 +29,6 @@ import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
-import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.pool.StAXOutputFactoryPool;
@@ -45,14 +44,10 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
 	private File mInputDoc;
 	private File mOutputDoc;
 	private File mComposerPath;
-	private File mLicensePath;
 	private String mImagesPath;
-	private String mOptsPath;
-	
-	private static final String REG_VALUE_COMPOSER = "TODO_COMPOSER";
-	private static final String REG_VALUE_LICENSE = "TODO_LICENSE";
-	
-	Set<TransformerDelegateListener> listeners = null;
+	private String mOverwrite = "false";
+		
+	private Set<TransformerDelegateListener> listeners = null;
 	
 	/**
 	 * Default constructor, also used by factory initializer.
@@ -69,21 +64,32 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
     	mInputDoc = input;
     	mOutputDoc = output;
     	mImagesPath = "images";
-		mOptsPath = "opts.xml";		
-		mComposerPath = FilenameOrFileURI.toFile(getRegistryValue(REG_VALUE_COMPOSER));
-		mLicensePath = FilenameOrFileURI.toFile(getRegistryValue(REG_VALUE_COMPOSER));
+    	if (parameters != null) {
+    	    Boolean over = (Boolean)parameters.get("overwrite");
+    	    if (over != null && over.booleanValue()) {
+    	        mOverwrite = "true";
+    	    }
+    	}
     	
-		if(mInputDoc==null||mOutputDoc==null||mComposerPath==null||mLicensePath==null) {
+    	// Make sure we're running on Windows
+    	if (!System.getProperty("os.name").matches("Windows.*")) {
+    	    throw new IllegalStateException(getNiceName() + " is only supported on the Windows platform.");
+    	}
+    	
+    	String programDir = getRegistryValue("HKLM\\Software\\Design Science\\DSMD1", "ProgramDir");
+    	if (programDir == null) {
+    	    throw new IllegalStateException("Cannot locate the installation directory of " + getNiceName());
+    	}    	
+    	mComposerPath = new File(FilenameOrFileURI.toFile(programDir), "1.0/MathDAISY.exe");
+    	
+		if(mInputDoc==null||mOutputDoc==null||programDir==null) {
 			throw new IllegalStateException();
 		}
 	}
 
-	private String getRegistryValue(String key) {
-		//TODO
-		if(key.equals(REG_VALUE_COMPOSER)) {
-			return "C:\\Program Files\\MathFlow SDK\\1.0\\windows\\bin\\DocumentComposer.exe";
-		}
-		return "C:\\Program Files\\MathFlow SDK\\1.0\\windows\\samples\\dessci.lic";
+	private String getRegistryValue(String key, String name) {
+	    String value = RegistryQuery.readString(key, name);
+	    return value;
 	}
 
 	/*
@@ -91,48 +97,31 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
 	 * @see int_daisy_mathAltCreator.IMathAltCreator#execute()
 	 */
 	public void execute() throws Exception {
-//		> > > > "../bin/DocumentComposer" -license "dessci.lic"
-//		> > -outputtype mathml
-//		> > > > -imagetype gif -fontmetrics true -alttext "true"
-//		> > > > -inputdoc "input.html"
-//		> > > > -outputdoc "output2.html" -imagefolder "images" -saveoptions
-//		> > > > "opts.xml
-		
-       ArrayList<String> arr = new ArrayList<String>();		        
-       char q = '"';
-       arr.add(q + mComposerPath.getAbsolutePath() + q);        
-       arr.add("-license");
-       arr.add(q + mLicensePath.getAbsolutePath() + q);
-       arr.add("-outputtype");        
-       arr.add("mathml");               
-       arr.add("-imagetype");
-       arr.add("png");
-       arr.add("-fontmetrics");
-       arr.add("true");
-       arr.add("-alttext");
-       arr.add("true");
-       arr.add("-inputdoc");
-       arr.add(q + mInputDoc.getAbsolutePath() + q);
-       arr.add("-outputdoc");
-       arr.add(q + mOutputDoc.getAbsolutePath() + q);
-       arr.add("-imagefolder");
-       arr.add(q + mImagesPath + q);
-       arr.add("-saveoptions");
-       arr.add(q + mOptsPath + q);	        
+	    ArrayList<String> commandArgs = new ArrayList<String>();
+	    commandArgs.add(mComposerPath.getAbsolutePath());
+	    
+	    commandArgs.add("-inputdoc");
+	    commandArgs.add(mInputDoc.getAbsolutePath());
+	    
+	    commandArgs.add("-outputdoc");
+	    commandArgs.add(mOutputDoc.getAbsolutePath());
+	    
+	    commandArgs.add("-imagefolder");
+	    commandArgs.add(mImagesPath);
+	    
+	    commandArgs.add("-overwrite");
+	    commandArgs.add(mOverwrite);
        
-       /*
-        * Execute
-        */
-       int ret;
-       //System.err.println("Pipeline calling MathFlow: " + arr.toString());        	
-       ret = Command.execute((arr.toArray(new String[arr.size()])));
-       //System.err.println("ret");
-       if(ret == -1) {
-       	//TODO 
-    	   System.err.println("WARNING DocumentComposer returned -1");
-       }
+	    /*
+	     * Execute
+	     */
+	    int ret;
+	    ret = Command.execute((commandArgs.toArray(new String[commandArgs.size()])));
+	    if(ret != 0) {
+	        throw new IOException("MathDAISY failed. Exit status was " + ret);
+	    }
        
-       tempFix();
+	    tempFix();
 		
 	}
 		
@@ -171,7 +160,7 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
 						Attribute a = (Attribute)i.next();
 						if(!a.getName().getPrefix().equals("dsi")) {
 							if(a.getName().getLocalPart().equals("alttext")) {
-								attributes.add(xef.createAttribute(new QName("", "alttext" ), a.getValue().replace('\\', '/')));
+								attributes.add(xef.createAttribute(new QName("", "alttext" ), a.getValue()));
 							}else if(a.getName().getLocalPart().equals("altimg")) {
 								attributes.add(xef.createAttribute(new QName("", "altimg" ), a.getValue().replace('\\', '/')));
 							}else{
@@ -195,8 +184,13 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
 				}
 			}			
 			
-			if(reader!=null)reader.close();
-			if(writer!=null)writer.flush();writer.close();
+			if (reader!=null) {
+			    reader.close();
+			}
+			if (writer!=null) {
+			    writer.flush();
+			    writer.close();
+			}
 						
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -221,7 +215,6 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
 
 	public void addListener(TransformerDelegateListener listener) {
 		listeners.add(listener);
-		
 	}
 
 	public void removeListener(TransformerDelegateListener listener) {
