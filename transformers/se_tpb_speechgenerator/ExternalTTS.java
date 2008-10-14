@@ -300,7 +300,7 @@ public abstract class ExternalTTS implements TTS {
 		if (null != params.get("yearFilename")) {
 			try {
 				yearAnnouncer = 
-					new YearAnnouncer(new File((String) params.get("yearFilename")).toURL());
+					new YearAnnouncer(new File((String) params.get("yearFilename")).toURI().toURL());
 			} catch (MalformedURLException e) {
 				String msg = "Exception occurred during creation of " + 
 					params.get(TTSBuilder.CLASS) + "\n";

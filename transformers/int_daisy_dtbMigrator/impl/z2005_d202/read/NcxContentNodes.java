@@ -37,7 +37,7 @@ class NcxContentNodes extends HashMap<String,NcxContentNode> {
 			xif.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
 			InputStream is = ncx.asInputStream();				
 			XMLEventReader xer = xif.createXMLEventReader(is);
-			ConvenientXMLEventReader reader = new ConvenientXMLEventReader(ncx.getFile().toURL(),xer); 
+			ConvenientXMLEventReader reader = new ConvenientXMLEventReader(ncx.getFile().toURI().toURL(),xer); 
 			boolean textElemOpen = false;
 			String textValue = null;
 			String contentSrcValue = null;

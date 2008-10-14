@@ -157,12 +157,12 @@ class YearAnnouncer {
     
     
     public static void main(String args[]) throws MalformedURLException, ParserConfigurationException, SAXException, IOException {
-        YearAnnouncer ya = new YearAnnouncer(new File("h:/year_se.xml").toURL());
+        YearAnnouncer ya = new YearAnnouncer(new File("h:/year_se.xml").toURI().toURL());
         System.err.println(ya.test("Jag åt 174 korvar till middag."));
         System.err.println(ya.test("Huset byggdes 1856."));
         System.err.println(ya.test("Huset byggdes på 1920-talet av en slump."));
         
-        ya = new YearAnnouncer(new File("h:/year_en.xml").toURL());
+        ya = new YearAnnouncer(new File("h:/year_en.xml").toURI().toURL());
         System.err.println(ya.test("I ate 174 sausages for dinner."));
         System.err.println(ya.test("The house was built 1856."));
         System.err.println(ya.test("The house was built in the 1920s by accident."));

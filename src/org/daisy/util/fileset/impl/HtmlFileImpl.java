@@ -136,7 +136,7 @@ class HtmlFileImpl extends SgmlFileImpl implements HtmlFile, ManifestFile, Conte
 		Charset cs = null;
 
 		try {
-			charset = det.detect(this.toURL());
+			charset = det.detect(this.toURI().toURL());
 			if (null == charset) {
 				charset = det.getProbableCharsetUsingLocale();
 			}

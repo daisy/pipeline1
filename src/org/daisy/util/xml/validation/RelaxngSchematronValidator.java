@@ -273,7 +273,7 @@ public class RelaxngSchematronValidator implements Validator, ErrorHandler {
         try {
             TempFile f = new TempFile();            
             FileUtils.writeStringToFile(f.getFile(),schSchemaData,"utf-8");            
-            initialize(f.getFile().toURL(),errh,false,true,false);
+            initialize(f.getFile().toURI().toURL(),errh,false,true,false);
             f.delete();
         } catch (IOException e) {
             throw new ValidationException(e.getMessage(), e);
