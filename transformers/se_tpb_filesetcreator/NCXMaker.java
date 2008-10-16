@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.Vector;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -344,39 +343,54 @@ public class NCXMaker implements BusListener {
 			contextStack.addEvent(event);
 			
 			if (event.isStartElement()) {
+				StartElement se = event.asStartElement();
 				
-				if (isDTBookRoot(event.asStartElement())) {
-					handleDTBookRoot(event.asStartElement());
+				if (isDTBookRoot(se)) {
+					handleDTBookRoot(se);
 					if(extensions.contains(Extension.MATHML)) {
 						//add xmlns:m to root 
-						event = addNamespaceDeclaration(event.asStartElement(),eventFactory.createNamespace("m", Namespaces.MATHML_NS_URI));
+						event = addNamespaceDeclaration(se,eventFactory.createNamespace("m", Namespaces.MATHML_NS_URI));
 					}
 				}
 				
 				
-				if (isFrontMatter(event.asStartElement())) {
-					handleFrontMatter(reader, event.asStartElement());
+				if (isFrontMatter(se)) {
+					handleFrontMatter(reader, se);
 				}
 				
-				if (isHead(event.asStartElement())) {
-					handleHead(reader, event.asStartElement());
+				if (isHead(se)) {
+					handleHead(reader, se);
 				}
 				
 				
-				if (isPageNum(event.asStartElement())) {
-					handlePageNum(reader, event.asStartElement());
+				if (isPageNum(se)) {
+					handlePageNum(reader, se);
 				}
 				
-				if (isCustomNavListElement(event.asStartElement())) {
-					handleCustomNavListElement(reader, event.asStartElement());
+				if (isCustomNavListElement(se)) {
+					handleCustomNavListElement(reader, se);
 				}
 				
-				if (isLevelChange(event.asStartElement())) {
+				if (isLevelChange(se)) {
 					handlePushLevel();
 				}
 				
-				if (isNavMapElement(event.asStartElement())) {
-					handleNavMapElement(reader, event.asStartElement());
+				if (isNavMapElement(se)) {
+					handleNavMapElement(reader, se);
+				}
+				
+				// LE 2008-10-16: change prefix of math to m:
+				if (Namespaces.MATHML_NS_URI.equals(se.getName().getNamespaceURI())) {
+				    List<Namespace> nsList = new ArrayList<Namespace>();
+				    for (Iterator iter = se.getNamespaces(); iter.hasNext(); ) {
+				        Namespace ns = (Namespace)iter.next();
+				        if (Namespaces.MATHML_NS_URI.equals(ns.getNamespaceURI())) {
+				            ns = eventFactory.createNamespace("m", ns.getNamespaceURI());
+				        }
+				        nsList.add(ns);
+				    }
+				    QName mathElem = new QName(Namespaces.MATHML_NS_URI, se.getName().getLocalPart(), "m");
+				    event = eventFactory.createStartElement(mathElem, se.getAttributes(), nsList.iterator());
 				}
 				
 			} else if (event.isEndElement()) {
