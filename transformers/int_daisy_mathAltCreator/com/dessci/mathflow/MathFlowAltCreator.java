@@ -153,7 +153,8 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
 			while(reader.hasNext()) {
 				XMLEvent xe = reader.nextEvent();
 				if(xe.getEventType()==XMLEvent.START_ELEMENT && xe.asStartElement().getName().getLocalPart() == "math") {
-					QName math = new QName(Namespaces.MATHML_NS_URI,"math","m");
+				    String prefix = xe.asStartElement().getName().getPrefix();
+					QName math = new QName(Namespaces.MATHML_NS_URI, "math", prefix);
 					Set<Attribute> attributes = new HashSet<Attribute>();
 					Iterator<?> i = xe.asStartElement().getAttributes();
 					while(i.hasNext()) {
@@ -210,7 +211,7 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
 	 * @see int_daisy_mathAltCreator.IMathAltCreator#getNiceName()
 	 */
 	public String getNiceName() {		
-		return "DesignScience MathFlow";
+		return "DesignScience MathDAISY";
 	}
 
 	public void addListener(TransformerDelegateListener listener) {
