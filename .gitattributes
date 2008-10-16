@@ -1144,6 +1144,7 @@ transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/SimpleCommandLineTT
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/SimpleCommandLineTTS.exe.manifest -text
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/SimpleCommandLineTTS.pdb -text
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/doc.xml -text
+transformers/se_tpb_speechgen2/external/linux/ESpeakTTS.java -text svneol=unset#text/plain
 transformers/se_tpb_speechgen2/external/win/DefaultSapiTTS.java -text svneol=unset#text/plain
 transformers/se_tpb_speechgen2/external/win/sapi5/ClassFactory.java -text svneol=unset#text/plain
 transformers/se_tpb_speechgen2/external/win/sapi5/DISPIDSPRG.java -text svneol=unset#text/plain

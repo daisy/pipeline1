@@ -53,7 +53,7 @@
                 <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
 				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 				
-				<!-- character substitution choises -->
+				<!-- character substitution choices -->
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				
 			</tts>
@@ -70,16 +70,250 @@
 		
 		<lang lang="en">
 			<tts default="true">
+				<param name="eSpeakVoiceFile" value="default"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+			<!--
+			<tts default="true">
 				<param name="class" value="se_tpb_speechgen2.tts.adapters.JLoq"/>
 				<param name="regex" value="${transformer_dir}/regex/loquendo-general.xml"/>
 				<param name="ttsProperties" value="${transformer_dir}/conf/loquendo.xml"/>
 				<param name="xslt" value="${transformer_dir}/xslt/loquendo-en.xsl"/>
-				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
-				
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 			</tts>
+			-->
 		</lang>
-	
+		<lang lang="af">
+			<tts>
+				<param name="eSpeakVoiceFile" value="af"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="bs">
+			<tts>
+				<param name="eSpeakVoiceFile" value="bs"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>		
+		<lang lang="cs">
+			<tts>
+				<param name="eSpeakVoiceFile" value="cs"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>		
+		<lang lang="de">
+			<tts>
+				<param name="eSpeakVoiceFile" value="de"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="el">
+			<tts>
+				<param name="eSpeakVoiceFile" value="el"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>		
+		<lang lang="es">
+			<tts>
+				<param name="eSpeakVoiceFile" value="es"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="fi">
+			<tts>
+				<param name="eSpeakVoiceFile" value="fi"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>		
+		<lang lang="fr">
+			<tts>
+				<param name="eSpeakVoiceFile" value="fr"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<!--
+		<lang lang="grc">
+			<tts>
+				<param name="eSpeakVoiceFile" value="grc"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		-->
+		<lang lang="hi">
+			<tts>
+				<param name="eSpeakVoiceFile" value="hi"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>					
+		<lang lang="hr">
+			<tts>
+				<param name="eSpeakVoiceFile" value="hr"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="hu">
+			<tts>
+				<param name="eSpeakVoiceFile" value="hu"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="is">
+			<tts>
+				<param name="eSpeakVoiceFile" value="is"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="it">
+			<tts>
+				<param name="eSpeakVoiceFile" value="it"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="la">
+			<tts>
+				<param name="eSpeakVoiceFile" value="la"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="nl">
+			<tts>
+				<param name="eSpeakVoiceFile" value="nl"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>		
+		<lang lang="no">
+			<tts>
+				<param name="eSpeakVoiceFile" value="no"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>		
+		<lang lang="pl">
+			<tts>
+				<param name="eSpeakVoiceFile" value="pl"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>	
+		<lang lang="ru">
+			<tts>
+				<param name="eSpeakVoiceFile" value="ru"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="sk">
+			<tts>
+				<param name="eSpeakVoiceFile" value="sk"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>		
+		<lang lang="sr">
+			<tts>
+				<param name="eSpeakVoiceFile" value="sr"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="sv">
+			<tts>
+				<param name="eSpeakVoiceFile" value="sv"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="sw">
+			<tts>
+				<param name="eSpeakVoiceFile" value="sw"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>		
+		<lang lang="ta">
+			<tts>
+				<param name="eSpeakVoiceFile" value="ta"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="tr">
+			<tts>
+				<param name="eSpeakVoiceFile" value="tr"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="vi">
+			<tts>
+				<param name="eSpeakVoiceFile" value="vi"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<lang lang="zh">
+			<tts>
+				<param name="eSpeakVoiceFile" value="zh"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		<!--
+		<lang lang="zh-yue">
+			<tts>
+				<param name="eSpeakVoiceFile" value="zhy"/>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+			</tts>
+		</lang>
+		-->
 	</os>
 	
 	

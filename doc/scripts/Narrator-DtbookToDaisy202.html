@@ -16,6 +16,7 @@
 <li><a href="#inputReqs">Input Requirements</a></li>
 <li><a href="#output">Output</a></li>
 <li><a href="#config">Configuration</a></li>
+<li><a href="#linux">Running Narrator on Linux</a></li>
 <li><a href="#transformers">Appendix: List of Transformers used</a></li>
 </ul>
 </div>
@@ -86,6 +87,26 @@ supports running the Narrator script on the Windows&trade; and Mac OS X&trade; o
 	<dt>2.02 href target</dt>
 	<dd><strong>Optional.</strong> The SMIL element (<code>text</code> or <code>par</code>) to target by href URIs in the content document and NCC of the DAISY 2.02 book.</dd>
 	</dl>
+
+<h2 id="linux">Running Narrator on Linux</h2>
+<p>This script can be run out-of-the-box on Linux providing that two libraries are installed.</p>
+
+<dl>
+<dt>The eSpeak TTS library</dt>
+<dd>
+<p>If you are using later versions of Ubuntu, eSpeak and its dependencies should be installed by default. Assure this is true by issuing the command <code>espeak "testing"</code> or something similar.</p>
+<p>If you do not have eSpeak installed, get it at <a href="http://espeak.sourceforge.net/">eSpeak SourceForge homepage</a>.</p>
+<p><em>Note for advanced users - you can configure which eSpeak voice to use for which language by changing the Speech Generator TTS builder configuration. This is done in <code>transformers/speechgen2/tts/ttsbuilder.xml</code></em>.</p>
+</dd>
+
+<dt>Lame MP3 Encoder</dt>
+<dd>
+	<p>The Lame MP3 encoder needs to be installed, and the <code>pipeline.user.properties</code> file needs to point to the installation path.</p>
+	<p>Using Aptitude (for example on Ubuntu), install lame through the shell via the command <code>sudo aptitude install lame</code>.</p>
+	<p>In pipeline.user.properties (or through the Pipeline GUI if you are using that) change pipeline.lame.path to <code>/usr/bin/lame</code>.</p> 
+</dd>
+</dl>
+ 
 
 <h2 id="transformers">Appendix: List of Transformers used</h2>
 <p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>

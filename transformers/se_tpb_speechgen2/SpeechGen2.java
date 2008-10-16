@@ -1115,7 +1115,9 @@ public class SpeechGen2 extends Transformer {
 	 * @throws IOException
 	 */
 	private File getNextTempAudioFile(boolean addToWorkingFiles) throws IOException {
-		File file = File.createTempFile("tempfile-tpbnarrator-", ".wav", outputDir);
+		//File file = File.createTempFile("tempfile-tpbnarrator-", ".wav", outputDir);
+		//mg20081016 shorten tempfile names to fix weird concat behavior on Ubuntu.
+		File file = File.createTempFile("tmp-", ".wav", outputDir);
 		if (addToWorkingFiles) {
 			workingFiles.add(file);
 		}
