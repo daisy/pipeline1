@@ -66,6 +66,19 @@
 			<default>false</default>
 		</parameter>
 		
+		<parameter required="false" type="enum">
+			<name>mp3bitrate</name>
+			<description>The bitrate of the encoded files</description>
+			<example>48</example>
+			<enum>
+				<value>32</value>
+				<value>48</value>
+				<value>64</value>
+				<value>128</value>
+			</enum>
+			<default>32</default>
+		</parameter>	
+		
 		<parameter required="false" direction="in" type="application/xml">
 			<name>ttsBuilderRNG</name>
 			<description>Path to a RelaxNG schema</description>

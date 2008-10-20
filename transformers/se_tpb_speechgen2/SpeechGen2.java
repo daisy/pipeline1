@@ -161,6 +161,7 @@ public class SpeechGen2 extends Transformer {
 	private File outputDir;										// output directory
 	private boolean concurrentMerge;							// merge in a parallel thread? May save time on some systems.
 	private boolean mp3Output;									// whether or not to encode the generated files as mp3.
+	private int mp3bitrate;                                     // bitrate of mp3 files
 	private int numAudioFiles;									// approx. number of resulting audio files
 	private DocumentBuilder domBuilder;							// used for constructing a small Document for each sync point.
 	private AudioFormat mSilenceFormat = 
@@ -170,7 +171,7 @@ public class SpeechGen2 extends Transformer {
 	private boolean failOnError = false;                       //Whether to abort after a TTS error
 	
 	private CountDownLatch countOnce = new CountDownLatch(1);	// thread synchronization
-	private AudioConcatQueue audioConcatQueue = new AudioConcatQueue(countOnce); // wav files concatenation and possibly mp3 encoding.
+	private AudioConcatQueue audioConcatQueue = null;           // wav files concatenation and possibly mp3 encoding.
 	
 	public SpeechGen2(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);
@@ -205,6 +206,8 @@ public class SpeechGen2 extends Transformer {
 			}
 			concurrentMerge = Boolean.parseBoolean(parameters.remove("concurrentAudioMerge"));
 			mp3Output = Boolean.parseBoolean(parameters.remove("mp3Output"));
+			mp3bitrate = Integer.parseInt(parameters.remove("mp3bitrate"));
+			audioConcatQueue = new AudioConcatQueue(countOnce, mp3bitrate);
 			
 			// validate the configuration file for ttsbuilder
 			ErrorHandler handler = new ErrorHandler() {

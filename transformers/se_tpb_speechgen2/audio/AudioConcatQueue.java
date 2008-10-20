@@ -62,6 +62,11 @@ public class AudioConcatQueue implements Runnable {
 	 * Maximum number of files to merge, if more: divide and conquer.
 	 */
 	private int maxTempFiles = 200;
+	
+	/**
+	 * The bitrate of the resulting mp3 file, if applicable
+	 */
+	private int mp3bitrate;
 
 	/**
 	 * Represents a "merge job".
@@ -96,23 +101,13 @@ public class AudioConcatQueue implements Runnable {
 	/**
 	 * Constructs a new queue for audio concatenation.
 	 * 
-	 * @param inputFiles
-	 *            the list of input files to merge. The files will be deleted
-	 *            once merged.
-	 * @param outWav
-	 *            the target file for the wav concatenation. Must not be
-	 *            <code>null</code>.
-	 * @param outMp3
-	 *            the mp3 output file. If <code>null</code>,
-	 *            <code>outputWav</code> will be the result of this run,
-	 *            otherwise the output will be represented by
-	 *            <code>outputMp3</code> and <code>outputWav</code> will be
-	 *            deleted together with the files in <code>inputFiles</code>,
 	 * @param signal
 	 *            a <code>CountDownLatch</code> to give the caller (the thread
 	 *            that started this thread) an "i've finished"-signal.
+	 * @param mp3bitrate
+	 *            the requested bitrate of the resulting mp3 file
 	 */
-	public AudioConcatQueue(CountDownLatch signal) {
+	public AudioConcatQueue(CountDownLatch signal, int mp3bitrate) {
 		if (signal == null) {
 			String msg = "CountDownLatch may not be null!";
 			throw new IllegalArgumentException(msg);
@@ -120,6 +115,7 @@ public class AudioConcatQueue implements Runnable {
 
 		this.signal = signal;
 		queue = new LinkedBlockingQueue<FileBunch>();
+		this.mp3bitrate = mp3bitrate;
 	}
 
 	/**
@@ -366,9 +362,10 @@ public class AudioConcatQueue implements Runnable {
 
 		String inputFilename = inputWav.getAbsolutePath();
 		String outputFilename = outputMp3.getAbsolutePath();
+		String bitrate = String.valueOf(mp3bitrate);
 
 		String cmd[] = { lameCommand, "--quiet", "-h", "-m", "m", "-a", "-cbr",
-				"-b", "32", "--resample", "22.50", inputFilename,
+				"-b", bitrate, "--resample", "22.50", inputFilename,
 				outputFilename };
 
 		int exitVal = Command.execute(cmd);
