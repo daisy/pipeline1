@@ -39,8 +39,12 @@ Defines a one per document element scope outside of which the sync point locator
 
 	<namespace uri="http://www.daisy.org/z3986/2005/dtbook/" xmlns:dtbook="http://www.daisy.org/z3986/2005/dtbook/">
 		<ignore asWhitespace=".">
+			<dtbook:abbr />
+			<dtbook:acronym />
 			<dtbook:em />
-			<dtbook:strong />	
+			<dtbook:strong />
+			<dtbook:sub />
+			<dtbook:sup />
 			
 			<!-- These two are added by se_tpb_xmldetectíon  -->
 			<dtbook:w class="num-word"/>
