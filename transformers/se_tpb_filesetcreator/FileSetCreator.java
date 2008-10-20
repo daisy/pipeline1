@@ -34,6 +34,10 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.EventBus;
@@ -53,6 +57,8 @@ import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
 import org.daisy.util.xml.pool.PoolException;
+import org.daisy.util.xml.xslt.Stylesheet;
+import org.daisy.util.xml.xslt.TransformerFactoryConstants;
 import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -332,6 +338,7 @@ public class FileSetCreator extends Transformer {
 	 */
 	private Set<Extension> checkForExtensions(File modifiedManuscriptFile, MetadataList xMetadata, Set<String> generatedFiles, Directory outputDirectory) {
 		Set<Extension> extensions = new HashSet<Extension>();
+		Peeker peeker = null;
 		try{
 			NamespaceReporter nsr = new NamespaceReporter(modifiedManuscriptFile.toURI().toURL());
 			
@@ -339,22 +346,44 @@ public class FileSetCreator extends Transformer {
 			if(nsr.getNamespaceURIs().contains(Namespaces.MATHML_NS_URI)){
 				extensions.add(Extension.MATHML);
 				MetadataItem item = new MetadataItem(new QName("z39-86-extension-version"),"1.0");
-				item.addAttribute("scheme", "http://www.w3.org/1998/Math/MathML");
+				item.addAttribute("scheme", Namespaces.MATHML_NS_URI);
 				xMetadata.add(item);
-								
-				InputStream xslt = Stylesheets.get("mathml-fallback-transform.xslt").openStream();
-				File out = outputDirectory.writeToFile("mathml-fallback-transform.xslt", xslt);
-				xslt.close();
-				generatedFiles.add(out.getName());
 				
-				item = new MetadataItem(new QName("DTBook-XSLTFallback"),"mathml-fallback-transform.xslt");
-				item.addAttribute("scheme", "http://www.w3.org/1998/Math/MathML");
+				// Look at the dtbook/@version attribute to select the correct public and system ID
+	            peeker = PeekerPool.getInstance().acquire();
+	            PeekResult peekResult = peeker.peek(modifiedManuscriptFile);
+	            Attributes attrs = peekResult.getRootElementAttributes();
+	            String version = attrs.getValue("version");
+	            String publicId = "-//NISO//DTD dtbook " + version + "//EN";
+	            String systemId = "http://www.daisy.org/z3986/2005/dtbook-" + version + ".dtd";
+				
+				// Add MathML fallback XSLT having the correct public and system ID
+				String mathMLFallbackTransform = "mathml-fallback-transform.xslt";
+				InputStream xsltCompiler = Stylesheets.get("xsl-doctype-switcher.xsl").openStream();
+				InputStream xslt = Stylesheets.get(mathMLFallbackTransform).openStream();				
+				Source source = new StreamSource(xslt);
+				Source xsl = new StreamSource(xsltCompiler);
+				Result result = new StreamResult(new File(outputDirectory, mathMLFallbackTransform));
+				Map<String,Object> parameters = new HashMap<String,Object>();
+				parameters.put("publicId", publicId);
+				parameters.put("systemId", systemId);
+				Stylesheet.apply(source, xsl, result, TransformerFactoryConstants.SAXON8, parameters, null);
+				xslt.close();
+				xsltCompiler.close();
+				generatedFiles.add(mathMLFallbackTransform);
+				
+				item = new MetadataItem(new QName("DTBook-XSLTFallback"), mathMLFallbackTransform);
+				item.addAttribute("scheme", Namespaces.MATHML_NS_URI);
 				xMetadata.add(item);
 				
 			}			
 			
 		}catch (Exception e) {
 			this.sendMessage(i18n("ERROR", e.getMessage()), MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
+		} finally {
+		    if (peeker != null) {
+		        PeekerPool.getInstance().release(peeker);
+		    }
 		}
 		return extensions;
 	}

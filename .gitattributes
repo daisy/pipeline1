@@ -751,6 +751,7 @@ src/org/daisy/util/xml/xslt/stylesheets/dtbook/dtbook2xhtml.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/dtbook/mathml-fallback-transform.xslt -text
 src/org/daisy/util/xml/xslt/stylesheets/dtbook/xhtml2dtbook.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/misc/echo.xsl -text
+src/org/daisy/util/xml/xslt/stylesheets/misc/xsl-doctype-switcher.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/xhtml/xhtml10toXhtml11.xsl -text
 src/pipeline.properties -text
 src/pipeline.user.properties -text

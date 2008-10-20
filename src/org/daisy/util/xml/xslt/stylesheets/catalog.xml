@@ -30,6 +30,7 @@
 
   <group> <!-- misc --> 
     <system systemId="echo.xsl" uri="./misc/echo.xsl" />
+    <system systemId="xsl-doctype-switcher.xsl" uri="./misc/xsl-doctype-switcher.xsl" />
   </group>	
 			
 </catalog>
