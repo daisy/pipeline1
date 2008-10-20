@@ -260,7 +260,7 @@
    <xsl:template match="dtb:covertitle">
      <p>
        <xsl:call-template name="copyCatts"/>
-       <xsl:apply-templates mode="inlineOnly"/>
+       <xsl:call-template name="maybeSmilrefInlineOnly"/>
      </p>
    </xsl:template>
 
@@ -269,7 +269,8 @@
    <xsl:template match="dtb:p">
      <p>
        <xsl:call-template name="copyCatts"/>
-       <xsl:apply-templates mode="inlineOnly"/></p>
+       <xsl:call-template name="maybeSmilrefInlineOnly"/>
+     </p>
    </xsl:template>
 
 
@@ -329,7 +330,7 @@
    <xsl:template match="dtb:address">
    <div class="address">
      <xsl:call-template name="copyCncatts"/>
-     <xsl:apply-templates/>
+     <xsl:call-template name="maybeSmilref"/>
    </div>
    </xsl:template>
 
@@ -337,70 +338,71 @@
    <xsl:template match="dtb:h1">
      <h1>
        <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
     </h1>
    </xsl:template>
 
    <xsl:template match="dtb:h2">
      <h2>
        <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
     </h2>
    </xsl:template>
 
    <xsl:template match="dtb:h3">
      <h3>
        <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
     </h3>
    </xsl:template>
 
    <xsl:template match="dtb:h4">
      <h4>
        <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
     </h4>
    </xsl:template>
 
    <xsl:template match="dtb:h5">
      <h5>
        <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
     </h5>
    </xsl:template>
 
    <xsl:template match="dtb:h6">
      <h6>
        <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
     </h6>
    </xsl:template>
 
 
-  <xsl:template match="dtb:bridgehead">
-    <div class="bridgehead">
-      <xsl:call-template name="copyCncatts"/>
-      <xsl:apply-templates/></div>
+   <xsl:template match="dtb:bridgehead">
+     <div class="bridgehead">
+       <xsl:call-template name="copyCncatts"/>
+       <xsl:call-template name="maybeSmilref"/>
+     </div>
    </xsl:template>
    
-
-
-
+   
    <xsl:template match="dtb:list[not(@type)]">
-     <ul><xsl:call-template name="copyCatts"/><xsl:apply-templates/></ul>
+     <ul>
+       <xsl:call-template name="copyCatts"/>
+       <xsl:apply-templates/>
+     </ul>
    </xsl:template>
-
-
- 
 
 
    <xsl:template match="dtb:lic">
      <span class="lic">
        <xsl:call-template name="copyCncatts"/>
-       <xsl:apply-templates/></span>
+       <xsl:call-template name="maybeSmilref"/>
+     </span>
    </xsl:template>
 
 	<xsl:template match="dtb:br">
+		<xsl:copy-of select="@id|@class|@title"/>
 		<br/>
 	</xsl:template>
 
@@ -453,22 +455,22 @@
    <xsl:template match="dtb:caption">
      <caption>
        <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates mode="inlineOnly"/>
-    </caption>
+       <xsl:call-template name="maybeSmilrefInlineOnly"/>
+     </caption>
    </xsl:template>
 
 
    <xsl:template match="dtb:imggroup/dtb:caption">   
    	 <div class="caption">
 		    <xsl:call-template name="copyCncatts"/>
-		    <xsl:apply-templates/>
+		    <xsl:call-template name="maybeSmilref"/>
 		 </div>
    </xsl:template>
 
    <xsl:template match="dtb:div">
      <div>
        <xsl:call-template name="copyCatts"/>
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </div>
    </xsl:template>
 
@@ -487,21 +489,21 @@
   <xsl:template match="dtb:annotation">
     <div class="annotation">
     	<xsl:call-template name="copyCncatts"/>
-    	<xsl:apply-templates/>
+    	<xsl:call-template name="maybeSmilref"/>
     </div>
    </xsl:template>
 
   <xsl:template match="dtb:author">
     <div class="author">
     	<xsl:call-template name="copyCncatts"/>
-    	<xsl:apply-templates/>
+    	<xsl:call-template name="maybeSmilref"/>
     </div>
    </xsl:template>
 
    <xsl:template match="dtb:blockquote">
      <blockquote>
        <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
     </blockquote>
    </xsl:template>
 
@@ -509,73 +511,49 @@
   <xsl:template match="dtb:byline">
     <div class="byline">
     	<xsl:call-template name="copyCncatts"/>
-    	<xsl:apply-templates/>
+    	<xsl:call-template name="maybeSmilref"/>
     </div>
    </xsl:template>
 
   <xsl:template match="dtb:dateline">
     <div class="dateline">
     	<xsl:call-template name="copyCncatts"/>
-    	<xsl:apply-templates/>
+    	<xsl:call-template name="maybeSmilref"/>
     </div>
    </xsl:template>
 
   <xsl:template match="dtb:doctitle">
     <div class="doctitle">
     	<xsl:call-template name="copyCncatts"/>
-    	<xsl:apply-templates/>
+    	<xsl:call-template name="maybeSmilref"/>
     </div>
   </xsl:template>
   
-  <!--
-  <xsl:template match="dtb:doctitle[1]">
-    <div class="doctitle">
-    	<xsl:if test="not(@id)">
-    		<xsl:attribute name="id">
-    			<xsl:value-of select="'h1classtitle'"/>
-    		</xsl:attribute>
-    	</xsl:if>
-    	<xsl:call-template name="copyCncatts"/>
-    	<a href="title.smil#doctitle">
-    		<xsl:value-of select="."/>
-    	</a>
-      </div>
-  </xsl:template>
--->
-  <xsl:template match="dtb:docauthor">
-    <div class="docauthor"><xsl:call-template name="copyCncatts"/><xsl:apply-templates/></div>
+   <xsl:template match="dtb:docauthor">
+     <div class="docauthor">
+       <xsl:call-template name="copyCncatts"/>
+       <xsl:call-template name="maybeSmilref"/>
+     </div>
    </xsl:template>
-   <!--
-   <xsl:template match="dtb:docauthor[1]">
-    <div class="docauthor">
-    	<xsl:if test="not(@id)">
-    		<xsl:attribute name="id">
-    			<xsl:value-of select="'h1classauthor'"/>
-    		</xsl:attribute>
-    	</xsl:if>
-    	<xsl:call-template name="copyCncatts"/>
-    	<a href="title.smil#docauthor">
-    		<xsl:value-of select="."/>
-    	</a>    
-    </div>
-  </xsl:template>
-  -->
 
-  <xsl:template match="dtb:epigraph">
-    <div class="epigraph"><xsl:call-template name="copyCncatts"/><xsl:apply-templates/></div>
+   <xsl:template match="dtb:epigraph">
+     <div class="epigraph">
+       <xsl:call-template name="copyCncatts"/>
+       <xsl:call-template name="maybeSmilref"/>
+     </div>
    </xsl:template>
 
 	<xsl:template match="dtb:note">
 		<div class="notebody">
 			<xsl:call-template name="copyCncatts"/>
-			<xsl:apply-templates/>
+			<xsl:call-template name="maybeSmilref"/>
 		</div>
 	</xsl:template>
 
    <xsl:template match="dtb:sidebar">
       <div class="sidebar">
         <xsl:call-template name="copyCncatts"/>
-        <xsl:apply-templates/>
+        <xsl:call-template name="maybeSmilref"/>
       </div>
    </xsl:template>
 
@@ -584,13 +562,13 @@
    		<xsl:when test="parent::dtb:level">
    			<xsl:element name="{concat('h', count(ancestor::dtb:level))}">
    				<xsl:call-template name="copyCatts"/>
-        	<xsl:apply-templates/>
+        		<xsl:call-template name="maybeSmilref"/>
    			</xsl:element>
    		</xsl:when>
    		<xsl:otherwise>
    			<div class="hd">
         	<xsl:call-template name="copyCncatts"/>
-        	<xsl:apply-templates/>
+        	<xsl:call-template name="maybeSmilref"/>
       	</div>
    		</xsl:otherwise>
    	</xsl:choose>
@@ -599,7 +577,7 @@
    <xsl:template match="dtb:list/dtb:hd">
       <li class="hd">
         <xsl:call-template name="copyCncatts"/>
-        <xsl:apply-templates/>
+        <xsl:call-template name="maybeSmilref"/>
         <xsl:apply-templates select="following-sibling::*[1][self::dtb:pagenum]" mode="pagenumInLi"/>
       </li>
    </xsl:template>
@@ -647,7 +625,7 @@
    <xsl:template match="dtb:li">
      <li>
        <xsl:call-template name="copyCatts"/>
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
        <xsl:apply-templates select="following-sibling::*[1][self::dtb:pagenum]" mode="pagenumInLi"/>
      </li>
    </xsl:template>
@@ -671,14 +649,14 @@
   <xsl:template match="dtb:dt">
      <dt>
        <xsl:call-template name="copyCatts"/>
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </dt>
    </xsl:template>
 
   <xsl:template match="dtb:dd">
      <dd>
        <xsl:call-template name="copyCatts"/>
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </dd>
    </xsl:template>
 
@@ -781,7 +759,7 @@
      <th>
        <xsl:call-template name="copyCatts"/>
        <xsl:copy-of select="@rowspan|@colspan"/>
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </th>
    </xsl:template>
 
@@ -789,7 +767,7 @@
      <td>
        <xsl:call-template name="copyCatts"/>
        <xsl:copy-of select="@rowspan|@colspan"/>
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </td>
    </xsl:template>
 
@@ -824,28 +802,26 @@
 
    <xsl:template match="dtb:poem/dtb:title">
      <p class="title">
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </p>
-
    </xsl:template>
 
    <xsl:template match="dtb:cite/dtb:title">
      <span class="title">
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </span>
-
    </xsl:template>
 
 	<xsl:template match="dtb:cite/dtb:author">
      <span class="author">
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </span>
    </xsl:template>
 
    <xsl:template match="dtb:cite">
      <cite>
        <xsl:call-template name="copyCatts"/>
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </cite>
    </xsl:template>
 
@@ -854,14 +830,14 @@
    <xsl:template match="dtb:code">
      <code>
        <xsl:call-template name="copyCatts"/>
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </code>
    </xsl:template>
 
    <xsl:template match="dtb:kbd">
      <kbd>
        <xsl:call-template name="copyCatts"/>
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </kbd>
    </xsl:template>
 
@@ -876,7 +852,7 @@
    <xsl:template match="dtb:samp">
      <samp>
        <xsl:call-template name="copyCatts"/>
-       <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </samp>
    </xsl:template>
 
@@ -884,23 +860,23 @@
 
    <xsl:template match="dtb:linegroup">
      <div class="linegroup">
-       <xsl:call-template name="copyCncatts"/>  
-      <xsl:apply-templates/>
+       <xsl:call-template name="copyCncatts"/>
+       <xsl:call-template name="maybeSmilref"/>  
     </div>
    </xsl:template>
 
 
    <xsl:template match="dtb:line">
    <p class="line">
-       <xsl:call-template name="copyCncatts"/>  
-      <xsl:apply-templates mode="inlineOnly"/>
+       <xsl:call-template name="copyCncatts"/>
+       <xsl:call-template name="maybeSmilrefInlineOnly"/>  
     </p>
    </xsl:template>
 
    <xsl:template match="dtb:linenum">
    <span class="linenum">
-       <xsl:call-template name="copyCncatts"/>  
-      <xsl:apply-templates/>
+       <xsl:call-template name="copyCncatts"/>
+       <xsl:call-template name="maybeSmilref"/>  
     </span>
    </xsl:template>
 
@@ -919,14 +895,14 @@
  <xsl:template match="dtb:em">
    <em>
      <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+     <xsl:call-template name="maybeSmilref"/>
     </em>
    </xsl:template>
 
  <xsl:template match="dtb:strong">
    <strong>
      <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+     <xsl:call-template name="maybeSmilref"/>
     </strong>
    </xsl:template>
 
@@ -934,26 +910,29 @@
    <xsl:template match="dtb:abbr">
      <abbr>
        <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </abbr>
    </xsl:template>
 
   <xsl:template match="dtb:acronym">
      <acronym>
        <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
      </acronym>
    </xsl:template>
 
   <xsl:template match="dtb:bdo">
     <bdo>
        <xsl:copy-of select="@*"/>
-      <xsl:apply-templates/>
+       <xsl:call-template name="maybeSmilref"/>
     </bdo>
   </xsl:template>
 
   <xsl:template match="dtb:dfn">
-     <span class="definition"><xsl:call-template name="copyCncatts"/><xsl:apply-templates/></span>
+     <span class="definition">
+       <xsl:call-template name="copyCncatts"/>
+       <xsl:call-template name="maybeSmilref"/>
+     </span>
    </xsl:template>
 
   <xsl:template match="dtb:sent">
@@ -967,10 +946,12 @@
 	<xsl:template match="dtb:w">
 		<xsl:choose>
   		<xsl:when test="$filter_word='yes'">
-  			<xsl:apply-templates/>
+  			<xsl:call-template name="maybeSmilref"/>
   		</xsl:when>
   		<xsl:otherwise>
-  			<span class="word"><xsl:apply-templates/></span>
+  			<span class="word">
+  			  <xsl:call-template name="maybeSmilref"/>
+  			</span>
   		</xsl:otherwise>
   	</xsl:choose>     
 	</xsl:template>
@@ -981,14 +962,14 @@
  <xsl:template match="dtb:sup">
    <sup>
      <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+      <xsl:call-template name="maybeSmilref"/>
     </sup>
    </xsl:template>
    
  <xsl:template match="dtb:sub">
    <sub>
      <xsl:call-template name="copyCatts"/>
-      <xsl:apply-templates/>
+     <xsl:call-template name="maybeSmilref"/>
     </sub>
    </xsl:template>
 
@@ -1094,6 +1075,34 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:template name="maybeSmilrefInlineOnly">
+		<xsl:choose>
+			<xsl:when test="@smilref">
+				<xsl:variable name="url" select="substring-before(@smilref, '#')"/>
+				<xsl:variable name="fragment" select="substring-after(@smilref, '#')"/>
+				<xsl:variable name="smilElem" select="document(concat($baseDir, $url))//*[@id=$fragment]"/>
+				<xsl:choose>
+					<xsl:when test="$smilElem[self::s:par] and not(ancestor::dtb:note) and not(descendant::*[@smilref])">
+						<a>
+							<xsl:attribute name="href">
+								<xsl:call-template name="hrefValue">
+									<xsl:with-param name="smilref" select="@smilref"/>
+								</xsl:call-template>
+							</xsl:attribute>
+							<xsl:apply-templates mode="inlineOnly"/>
+						</a>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates mode="inlineOnly"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates mode="inlineOnly"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template name="hrefValue">
 		<xsl:param name="smilref"/>
 		<xsl:variable name="url" select="substring-before($smilref, '#')"/>
@@ -1111,15 +1120,8 @@
 	
 	<!--   <!ENTITY isInline "self::dtb:a or self::dtb:em or self::dtb:strong or self::dtb:abbr or self::dtb:acronym or self::dtb:bdo or self::dtb:dfn or self::dtb:sent or self::dtb:w or self::dtb:sup or self::dtb:sub or self::dtb:span or self::dtb:annoref or self::dtb:noteref or self::dtb:img or self::dtb:br or self::dtb:q or self::dtb:samp or self::dtb:pagenum"> -->
 	<xsl:template match="dtb:*" mode="inlineOnly">
-		<!--<xsl:message><xsl:value-of select="name(.)"/>: inline only</xsl:message>-->
 		<xsl:choose>
 			<xsl:when test="self::dtb:a or self::dtb:em or self::dtb:strong or self::dtb:abbr or self::dtb:acronym or self::dtb:bdo or self::dtb:dfn or self::dtb:sent or self::dtb:w or self::dtb:sup or self::dtb:sub or self::dtb:span or self::dtb:annoref or self::dtb:noteref or self::dtb:img or self::dtb:br or self::dtb:q or self::dtb:samp or self::dtb:pagenum">
-				<!--
-				<xsl:message>
-					<xsl:value-of select="name(.)"/>
-					<xsl:text> is inline</xsl:text>
-				</xsl:message>
-				-->
 				<xsl:apply-templates select=".">
 					<xsl:with-param name="inlineFix" select="'true'"/>
 				</xsl:apply-templates>
@@ -1130,7 +1132,7 @@
 						<xsl:with-param name="element" select="."/>
 					</xsl:call-template>					
 					<xsl:call-template name="copyCncatts"/>
-					<xsl:apply-templates mode="inlineOnly"/>
+					<xsl:call-template name="maybeSmilrefInlineOnly"/>
 				</span>
 			</xsl:otherwise>
 		</xsl:choose>
