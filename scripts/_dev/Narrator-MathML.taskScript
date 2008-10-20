@@ -273,8 +273,13 @@
 		
 		<parameter>
 			<name>mp3Output</name>
-			<value>false</value>
+			<value>true</value>
 		</parameter>
+		<parameter>
+			<name>mp3bitrate</name>
+			<value>${bitrate}</value>
+		</parameter>		
+		
 		<parameter>
 			<name>concurrentAudioMerge</name>
 			<value>true</value>
@@ -319,33 +324,13 @@
 	</task>
 
 	
-	
-	<!-- ***************
-	      Audio encoder
-	     *************** -->
-	<task name="se_tpb_dtbAudioEncoder" interactive="false">
-		<parameter>
-			<name>manifest</name>
-			<value>${outputPath}/z3986/speechgen.opf</value>
-		</parameter>					
-		<parameter>
-			<name>outDir</name>
-			<value>${outputPath}/z3986-mp3</value>
-		</parameter>						
-		<parameter>
-			<name>bitrate</name>
-			<value>${bitrate}</value>
-		</parameter>
-	</task>
-	
-
 	<!-- ************************************
 	      Z3986-2005 to Daisy 2.02 Converter
 	     ************************************ -->
 	<task name="se_tpb_zed2daisy202" interactive="false">
 		<parameter>
 			<name>manifest</name>
-			<value>${outputPath}/z3986-mp3/speechgen.opf</value>
+			<value>${outputPath}/z3986/speechgen.opf</value>
 		</parameter>					
 		<parameter>
 			<name>outDir</name>
