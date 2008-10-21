@@ -80,7 +80,7 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
     	if (programDir == null) {
     	    throw new IllegalStateException("Cannot locate the installation directory of " + getNiceName());
     	}    	
-    	mComposerPath = new File(FilenameOrFileURI.toFile(programDir), "1.0/MathDAISY.exe");
+    	mComposerPath = new File(FilenameOrFileURI.toFile(programDir), "MathDAISY.exe");
     	
 		if(mInputDoc==null||mOutputDoc==null||programDir==null) {
 			throw new IllegalStateException();
