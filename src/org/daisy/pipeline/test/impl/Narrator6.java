@@ -5,17 +5,17 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.Directory;
 
-public class Narrator5 extends PipelineTest {
+public class Narrator6 extends PipelineTest {
 
-	public Narrator5(Directory dataInputDir, Directory dataOutputDir) {
+	public Narrator6(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
 	public List<String> getParameters() {		
 		mParameters.add("--input=" + mDataInputDir +"/dtbook/mixed-content-torture.xml");
-		mParameters.add("--outputPath=" + mDataOutputDir + "/Narrator5/");
-		mParameters.add("--doSentDetection=false");
+		mParameters.add("--outputPath=" + mDataOutputDir + "/Narrator6/");
+		mParameters.add("--doSentDetection=true");
 		return mParameters;
 	}
 

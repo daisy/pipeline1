@@ -268,6 +268,7 @@ samples/input/dtbook/hauy-2005-1.xml -text
 samples/input/dtbook/hauy_invalid.xml -text
 samples/input/dtbook/hauy_valid.xml -text
 samples/input/dtbook/images\[1\]/Image[!!-~]1.jpg -text
+samples/input/dtbook/mixed-content-torture.xml -text svneol=unset#text/plain
 samples/input/dtbook/nativemathml0001.png -text
 samples/input/dtbook/nativemathml0002.png -text
 samples/input/dtbook/numeric.xml -text
@@ -510,6 +511,7 @@ src/org/daisy/pipeline/test/impl/Narrator2.java -text
 src/org/daisy/pipeline/test/impl/Narrator3.java -text
 src/org/daisy/pipeline/test/impl/Narrator4.java -text
 src/org/daisy/pipeline/test/impl/Narrator5.java -text
+src/org/daisy/pipeline/test/impl/Narrator6.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/test/impl/NarratorAutumn20081.java -text
 src/org/daisy/pipeline/test/impl/NarratorMathML1.java -text
 src/org/daisy/pipeline/test/impl/NarratorSADX.template -text

@@ -126,7 +126,7 @@ public class DOMConfig {
 	}
 	
 	/**
-	 * @return true if inparam element is in the list of elements marked as ignorable in the config.
+	 * @return true if inparam element is in the list of elements marked as ignorable in the config, or if it is empty.
 	 */
 	public boolean isIgnorable(Element e) {				
 		for(StartElement se : mIgnorables) {
@@ -135,7 +135,9 @@ public class DOMConfig {
 					if(matchesAttributes(e,se)) return true;
 				}	
 			}			
-		}				
+		}			
+		//mg20081027 if empty return true
+		if(e.getFirstChild()==null) return true;
 		return false;
 	}
 	
@@ -192,29 +194,70 @@ public class DOMConfig {
 			StAXEventFactoryPool.getInstance().release(xef);
 		}
 	}
-
+	
 	/**
-	 * @return true if inparam sibling list is only ignorable elements and/or XML whitespace
+	 * @return true if inparam sibling list are DOM Text nodes only, false if
+	 * other node types than text, or the given NodeList is null or empty
 	 */
-	public boolean isIgnorableElementsAndWhitespaceOnly(NodeList childNodes) {
+	public boolean isTextOnly(NodeList childNodes) {
+		if(childNodes==null || childNodes.getLength()==0) return false;
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node n = childNodes.item(i);
+			if(n.getNodeType()!=Node.TEXT_NODE) {
+				return false;
+			}
+		}	
+		return true;
+	}
+	
+	/**
+	 * @return true if inparam sibling list and descendants are only ignorable elements and/or XML whitespace
+	 * @param deep whether to include element descendants in the weighting
+	 */
+	public boolean isIgnorableElementsAndWhitespaceOnly(NodeList childNodes, boolean deep) {
+		if(childNodes==null || childNodes.getLength()==0) return true;
+		
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			Node n = childNodes.item(i);
 			if(n.getNodeType()==Node.TEXT_NODE) {
-//				if(!CharUtils.isXMLWhiteSpace(n.getNodeValue())) {
-//					return false;
-//				}
-//				alt:
 				TextNodeType tnt = getTextNodeType(n.getNodeValue(), n.getParentNode().getNamespaceURI());
 				if(tnt==TextNodeType.TEXT) return false;
-//				end alt:				
 			}else if(n.getNodeType()==Node.ELEMENT_NODE) {
 				Element e = (Element)n;
 				if(!isIgnorable(e)) return false;
+				if(deep) {
+					if(!isIgnorableElementsAndWhitespaceOnly(e.getChildNodes(),deep)) {
+						return false;
+					}
+				}
 			}
 		}		
 		return true;
 	}
 	
+	/**
+	 * @return true if inparam sibling list and descendants are only ignorable elements and/or text and/or XML whitespace
+	 * @param deep whether to include element descendants in the weighting
+	 */
+	public boolean isIgnorableElementsAndTextOnly(NodeList childNodes, boolean deep) {
+		if(childNodes==null || childNodes.getLength()==0) return true;
+		
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node n = childNodes.item(i);
+			if(n.getNodeType()==Node.TEXT_NODE) {
+				//this includes both whitespace and text
+			}else if(n.getNodeType()==Node.ELEMENT_NODE) {
+				Element e = (Element)n;
+				if(!isIgnorable(e)) return false;
+				if(deep) {
+					if(!isIgnorableElementsAndTextOnly(e.getChildNodes(),deep)) {
+						return false;
+					}
+				}
+			}
+		}		
+		return true;
+	}
 		
 	public static enum TextNodeType {
 		XML_WHITESPACE,			//ignorable

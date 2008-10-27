@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE dtbook PUBLIC "-//NISO//DTD dtbook 2005-3//EN" "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd">
+<dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="2005-3">
+	<head>
+		<meta name="dtb:uid" content="AUTO-UID-4843832046054736000"/>
+		<meta name="dc:Title" content="title"/>
+		<meta name="dc:Creator" content="DAISY Consortium"/>
+		<meta name="dc:Date" content="2008-06-04"/>
+		<meta name="dc:Publisher" content="DAISY Consortium"/>
+		<meta name="dc:Language" content="en"/>
+	</head>
+	<book id="d1e11">
+		<frontmatter>
+			<doctitle id="d1e13">Sync Point Torture</doctitle>
+			<docauthor id="d1e15">Marquis de Sade</docauthor>
+			<level depth="1">
+				<p>A frontmatter paragraph. This paragraph contains two sentences, and is text-only.</p>
+				<p>Another frontmatter paragraph. This paragraph contains two sentences, and has an <em>inlined simple</em> emphasis.</p>
+			</level>
+		</frontmatter>
+		<bodymatter id="body">
+			<level1>
+				<p id="para1">Paragraph text before emphasis,
+					<em id="em1">
+						Then text within emphasis before pagenum
+						<pagenum page="normal" id="page1">1</pagenum>
+						and text within emphasis after pagenum
+					</em>
+					and text after emphasis still within para.
+				</p>
+			
+				<p id="para2">Paragraph text before emphasis, <em id="em2">Then text within emphasis before pagenum <pagenum page="normal" id="page2">2</pagenum> and text within emphasis after pagenum</em> and text after emphasis still within para.</p>
+
+				<list  type="ul" id="list1">
+					<li>One sync point.</li>
+					<li>One <em>sync</em> point.</li>
+					<li id="li1">One <em>sync</em> point. <p>One sync point.</p></li>		
+				</list>
+
+				<p id="para3">
+					<span>[-2] ONE SYNC POINT.</span>
+					One sync point.	
+					<span>ONE SYNC POINT.</span>
+				</p>
+				
+				<p id="para4">
+					<span>[0] ONE SYNC POINT.</span>
+					<span>ONE SYNC POINT.</span>
+					<br/>
+					<em>ONE </em> 
+					SYNC 
+					<br/>
+					<em> POINT</em>.
+				</p>
+						
+				<p id="para5">Paragraph text before emphasis,
+					<em id="em3">
+						Then text within emphasis before imggroup
+						<imggroup>
+				  			<img src="valentin.jpg" alt="This is an image alt text"/>
+				  			<caption>This is the image caption</caption>
+				  			<prodnote render="required">This is a production note. It contains several sentences. This is the last one.</prodnote>
+						</imggroup>
+						and text within emphasis after imggroup
+					</em>
+					and text after imggroup still within para.
+				</p>		
+							
+			</level1>
+
+		</bodymatter>
+		<rearmatter id="rear">
+			<level1>
+				<h1>h1</h1>
+				<p>A simple rearmatter paragraph.</p>
+			</level1>
+			<level depth="1">
+				<h1>h1</h1>
+				<p>A rearmatter paragraph. This one has two sentences</p>
+			</level>
+		</rearmatter>
+	</book>
+</dtbook>
+
+ 	  	 

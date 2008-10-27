@@ -142,7 +142,8 @@ public class DOMSyncPointLocator extends AbstractSyncPointLocator  {
 	}
 		
 	private boolean hasOnlyIgnorableChildren(Element e) {				
-		return mConfig.isIgnorableElementsAndWhitespaceOnly(e.getChildNodes());		
+		//mg20081027 check descendants (deep)
+		return mConfig.isIgnorableElementsAndWhitespaceOnly(e.getChildNodes(),true); 
 	}
 
 

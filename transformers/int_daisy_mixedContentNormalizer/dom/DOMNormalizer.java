@@ -82,7 +82,7 @@ public class DOMNormalizer extends AbstractNormalizer {
 		    	mTransformer.delegateProgress(this, 
 		    			((double)mCurrentElementCount/(mInputDocElementCount+mModCount)));
 		    	if(mTransformer.delegateCheckAbort()) throw new TransformerRunException ("user abort");	
-		    	
+
 		    	NodeList children = e.getChildNodes();		
 		    	SiblingState state = getSiblingState(children);
 		    	if(state==SiblingState.UNBALANCED) normalizeChildren(e);
@@ -107,27 +107,31 @@ public class DOMNormalizer extends AbstractNormalizer {
 		
 		for (int i = 0; i < siblings.getLength(); i++) {
 			Node child = siblings.item(i);
-			if(child.getNodeType() == Node.TEXT_NODE) {
-//				orig::				
-//				if(!CharUtils.isXMLWhiteSpace(child.getNodeValue())) {
-//					hasNonXMLWhiteSpaceText = true;		
-//				}		
-//				end orig::
-//				alt::				
+			if(child.getNodeType() == Node.TEXT_NODE) {				
 				TextNodeType tnt = mConfig.getTextNodeType(child.getNodeValue(), 
 						child.getParentNode().getNamespaceURI());
-				if(tnt == TextNodeType.TEXT) hasNonWhiteSpaceText = true;
-//				end alt::				
+				if(tnt == TextNodeType.TEXT) hasNonWhiteSpaceText = true;				
 			}
 			else
 			if(child.getNodeType() == Node.ELEMENT_NODE) {
 				Element elm = (Element)child;
+				boolean isEmpty = elm.getFirstChild()==null;
 				if (!mConfig.isIgnorable(elm)) {
-					if(elm.getFirstChild()!=null){ //empty, is ignorable even if not in config
+					if(!isEmpty){ 
 						hasNonIgnorableElems = true;
-					}	
+					}else{
+						//empty, is ignorable even if not in config
+					}
 				}else{
-					hasIgnorableElems = true;
+					//mg20081027
+					//is marked as ignorable, check its descendants
+					if(mConfig.isIgnorableElementsAndWhitespaceOnly(elm.getChildNodes(), true)
+							|| isEmpty 
+								||mConfig.isTextOnly(elm.getChildNodes())) {
+						hasIgnorableElems = true;	
+					}else{
+						hasNonIgnorableElems = true;
+					}
 				}
 			}	
 			else {
@@ -159,10 +163,11 @@ public class DOMNormalizer extends AbstractNormalizer {
 			children = parent.getChildNodes();
 						
 			for (int i = 0; i < children.getLength(); i++) {			
-				currentNode = children.item(i);				
+				currentNode = children.item(i);						
 				if (currentNode.getNodeType() == Node.TEXT_NODE 
 						|| (currentNode.getNodeType() == Node.ELEMENT_NODE 
-								&& mConfig.isIgnorable((Element)currentNode))) {
+								&& mConfig.isIgnorable((Element)currentNode) 
+								&& mConfig.isIgnorableElementsAndTextOnly(((Element)currentNode).getChildNodes(), true))) {
 					//ignorable element, whitespace node or text node
 					ignorables.add(currentNode);				
 				}else{

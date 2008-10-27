@@ -219,7 +219,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateMessage(java.lang.String, org.daisy.pipeline.core.event.MessageEvent.Type, org.daisy.pipeline.core.event.MessageEvent.Cause, javax.xml.stream.Location)
 	 */
-	public void delegateMessage(@SuppressWarnings("unused")Object delegate, String message, Type type, Cause cause, Location location) {
+	public void delegateMessage(Object delegate, String message, Type type, Cause cause, Location location) {
 		this.sendMessage(message, type, cause, location);
 	}
 
