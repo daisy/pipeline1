@@ -267,11 +267,14 @@ public class SpeechGen2 extends Transformer {
 				peek.addEvent(event);
 				xmlContext.addEvent(event);
 				if (event.isStartElement()) {
+				    StartElement se = event.asStartElement();
 					languages.add(peek.getCurrentLocale().getLanguage());
-					if (isSynchronizationPoint(reader, event.asStartElement())) {
+					String context = xmlContext.getContextXPath(ContextStack.XPATH_SELECT_ELEMENTS_ONLY, ContextStack.XPATH_PREDICATES_NONE);
+					if (isSynchronizationPoint(reader, se)) {
 						numSPoints++;
-						fastForward(reader);
-					} else if (isMergeAudio(event.asStartElement())) {
+						fastForward(reader);						
+					} 
+					if (isMergeAudio(se, context)) {
 						lastSynchNumber.add(new Integer(numSPoints));
 					}
 				}
@@ -468,7 +471,8 @@ public class SpeechGen2 extends Transformer {
 					event = eventFactory.createStartElement(curr.getName(), curr.getAttributes(), ns.iterator());
 				}
 
-				if (isMergeAudio(se)) {
+				String context = xmlContext.getContextXPath(ContextStack.XPATH_SELECT_ELEMENTS_ONLY, ContextStack.XPATH_PREDICATES_NONE);
+				if (isMergeAudio(se, context)) {
 					mergeAudio();
 				}
 
@@ -574,7 +578,8 @@ public class SpeechGen2 extends Transformer {
 			if (event.isStartElement()) {
 				StartElement se = event.asStartElement();
 				
-				if (isMergeAudio(se)) {
+				String context = xmlContext.getContextXPath(ContextStack.XPATH_SELECT_ELEMENTS_ONLY, ContextStack.XPATH_PREDICATES_NONE);
+				if (isMergeAudio(se, context)) {
 					// mergeAudio();
 				}
 
@@ -1094,11 +1099,7 @@ public class SpeechGen2 extends Transformer {
 	 * @return <code>true</code> if this element means a merge of
 	 * the audio files, <code>false</code> otherwise.
 	 */
-	private boolean isMergeAudio(StartElement se) {
-		String context = xmlContext.getContextXPath(
-				ContextStack.XPATH_SELECT_ELEMENTS_ONLY,
-				ContextStack.XPATH_PREDICATES_NONE);
-
+	private boolean isMergeAudio(StartElement se, String context) {
 		for (Iterator<String> it = mergeAudio.iterator(); it.hasNext(); ) {
 			String elem = it.next();
 			if (context.endsWith(elem)) {
