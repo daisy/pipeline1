@@ -84,6 +84,7 @@ doc/scripts/DTBMerger.html -text
 doc/scripts/DTBSplitter.html -text
 doc/scripts/DTBookFix.html -text
 doc/scripts/DTBookMigrator.html -text
+doc/scripts/DTBookToLaTeX.html -text
 doc/scripts/DTBookToRTF.html -text
 doc/scripts/DTBookToXhtml.html -text
 doc/scripts/DTBookValidator.html -text
@@ -143,6 +144,7 @@ doc/transformers/se_tpb_charsetSwitcher.html -text
 doc/transformers/se_tpb_dtbAudioEncoder.html -text
 doc/transformers/se_tpb_dtbMerger.html -text
 doc/transformers/se_tpb_dtbSplitter.html -text
+doc/transformers/se_tpb_dtbook2latex.html -text
 doc/transformers/se_tpb_dtbookfix.html -text
 doc/transformers/se_tpb_filesetcreator.html -text
 doc/transformers/se_tpb_imageConverter.html -text
