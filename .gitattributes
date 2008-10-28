@@ -361,6 +361,7 @@ scripts/_dev/BrailleTextToPEF.taskScript -text
 scripts/_dev/BrailleTextToText.taskScript -text
 scripts/_dev/DTBBackwardMigrator.taskScript -text
 scripts/_dev/DTBookFix_NarratorValidation.taskScript -text
+scripts/_dev/DTBookToLaTeX.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
 scripts/_dev/Narrator-Autumn2008.taskScript -text

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../validation/ValidatorScriptParamsSimpleStatic.paramGroup">
+]>
+<taskScript version="2.0" name="DTBookToLaTeX">
+  <nicename>DTBook to LaTeX</nicename>
+  <description>Convert a DTBook document to LaTeX</description>
+  <documentation uri="../../../doc/scripts/DTBookToLaTeX.html"/>
+  <comment/>
+  
+  <parameter name="input" value="" required="true">
+    <nicename>Input DTBook</nicename>
+    <description>Select input DTBook file</description>
+    <datatype>
+      <file mime="application/x-dtbook+xml" type="input"/>
+    </datatype>
+  </parameter>
+  
+  <parameter name="output" value="" required="true">
+    <nicename>Output LaTeX</nicename>
+    <description>Select the output LaTeX file</description>
+    <datatype>
+      <file mime="application/x-latex" type="output"/>
+    </datatype>
+  </parameter>		
+  
+  &ValidatorScriptParamsSimpleStatic;		
+  
+  <parameter name="fontsize" value="17pt" required="false">
+    <nicename>The font size for the generated LaTeX</nicename>
+    <description>The font size to be used. See also the documentation of the extsizes package (http://www.ctan.org/tex-archive/macros/latex/contrib/extsizes)</description>
+      
+    <datatype>
+     <enum>
+       <item nicename="12pt" value="12pt"/>
+       <item nicename="14pt" value="14pt"/>
+       <item nicename="17pt" value="17pt"/>
+       <item nicename="20pt" value="20pt"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
+  <parameter name="fontfamily" value="cmr" required="false">
+    <nicename>The font family for the generated LaTeX</nicename>
+    <description>The font family to be used. See also the LaTeX font guide (http://www.latex-project.org/guides/fntguide.pdf)</description>
+    <datatype>
+     <enum>
+       <item nicename="cmr" value="cmr"/>
+       <item nicename="cmss" value="cmss"/>
+       <item nicename="cmvtt" value="cmvtt"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
+  <parameter name="defaultLanguage" value="english" required="false">
+    <nicename>Default language if no language is specified</nicename>
+    <description>The language to use for the babel package if no xml:lang tag specifies it. For all valid values check the babel documentation (http://www.ctan.org/get/macros/latex/required/babel/babel.pdf)</description>
+    <datatype>
+     <enum>
+       <item nicename="english" value="english"/>
+       <item nicename="ngerman" value="ngerman"/>
+       <item nicename="USenglish" value="USenglish"/>
+       <item nicename="UKenglish" value="UKenglish"/>
+       <item nicename="swedish" value="swedish"/>
+       <item nicename="canadian" value="canadian"/>
+       <item nicename="french" value="french"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
+  <parameter name="papersize" value="a4paper" required="false">
+    <nicename>The paper size for the generated LaTeX</nicename>
+    <description>The paper size to be used.</description>
+    <datatype>
+     <enum>
+       <item nicename="a3paper" value="a3paper"/>
+       <item nicename="a4paper" value="a4paper"/>
+       <item nicename="a5paper" value="a5paper"/>
+       <item nicename="letterpaper" value="letterpaper"/>
+       <item nicename="legalpaper" value="legalpaper"/>
+       <item nicename="executivepaper" value="executivepaper"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
+  <task name="se_tpb_dtbook2latex" interactive="false">	
+    <parameter>
+      <name>xml</name>
+      <value>${input}</value>
+    </parameter>
+    
+    <parameter>
+      <name>out</name>
+      <value>${output}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>fontsize</name>
+      <value>${fontsize}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>fontfamily</name>
+      <value>${fontfamily}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>defaultLanguage</name>
+      <value>${defaultLanguage}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>papersize</name>
+      <value>${papersize}</value>			
+    </parameter>				
+  </task>		
+  
+</taskScript>

@@ -25,6 +25,71 @@
 			<value>net.sf.saxon.TransformerFactoryImpl</value>
 		</parameter>
 		
+		<parameter type="enum" direction="in" required="false">
+		  <name>fontsize</name>			
+		  <description>The font size to be used in the
+		    generated LaTeX. See also the documentation of the
+		    extsizes package
+		    (http://www.ctan.org/tex-archive/macros/latex/contrib/extsizes)</description>
+		  <example>17pt</example>
+		  <enum>
+		    <value>12pt</value>
+		    <value>14pt</value>
+		    <value>17pt</value>
+		    <value>20pt</value>
+		  </enum>
+		  <default>17pt</default>
+		</parameter>
+		
+		<parameter type="enum" direction="in" required="false">
+		  <name>fontfamily</name>			
+		  <description>The font family to be used in the
+		    generated LaTeX. See also the LaTeX font guide
+		    (http://www.latex-project.org/guides/fntguide.pdf)</description>
+		  <example>cmr</example>
+		  <enum>
+		    <value>cmr</value>
+		    <value>cmss</value>
+		    <value>cmvtt</value>
+		  </enum>
+		  <default>cmr</default>
+		</parameter>
+		
+		<parameter type="enum" direction="in" required="false">
+		  <name>defaultLanguage</name>			
+		  <description>The language to use for the babel
+		  package if no language is specified in a xml:lang
+		  tag. For all valid values check the babel
+		  documentation
+		  (http://www.ctan.org/get/macros/latex/required/babel/babel.pdf)</description>
+		  <example>english</example>
+		  <enum>
+		    <value>english</value>
+		    <value>ngerman</value>
+		    <value>USenglish</value>
+		    <value>UKenglish</value>
+		    <value>swedish</value>
+		    <value>canadian</value>
+		    <value>french</value>
+		  </enum>
+		  <default>english</default>
+		</parameter>
+		
+		<parameter  type="enum" direction="in" required="false">
+		  <name>papersize</name>			
+		  <description>The paper size to be used in the generated LaTeX</description>
+		  <example>a4paper</example>
+		  <enum>
+		    <value>a3paper</value>
+		    <value>a4paper</value>
+		    <value>a5paper</value>
+		    <value>letterpaper</value>
+		    <value>legalpaper</value>
+		    <value>executivepaper</value>
+		  </enum>
+		  <default>a4paper</default>
+		</parameter>
+		
 		<parameter required="true" direction="out" type="application/x-latex">
 			<name>out</name>
 			<description>The output LaTeX document</description>
