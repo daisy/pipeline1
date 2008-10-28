@@ -2,6 +2,7 @@
 <!DOCTYPE taskScript
 [
 <!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../validation/ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../validation/ValidatorTaskParamsSimpleStatic.paramGroup">
 ]>
 <taskScript version="2.0" name="DTBookToLaTeX">
   <nicename>DTBook to LaTeX</nicename>
@@ -84,6 +85,20 @@
     </datatype>
   </parameter>
   
+  <task name="int_daisy_validator" interactive="false">
+    <parameter>
+      <name>input</name>
+      <value>${input}</value>
+    </parameter>
+    
+    <parameter>
+      <name>abortThreshold</name>
+      <value>NONE</value>
+    </parameter>
+    
+    &ValidatorTaskParamsSimpleStatic;
+  </task>
+  
   <task name="se_tpb_dtbook2latex" interactive="false">	
     <parameter>
       <name>xml</name>
@@ -115,5 +130,12 @@
       <value>${papersize}</value>			
     </parameter>				
   </task>		
+
+  <task name="pipeline_system_deleter" interactive="false">
+    <parameter>
+      <name>delete</name>
+      <value>$parent{output}/pipeline__temp/</value>
+    </parameter>
+  </task>
   
 </taskScript>
