@@ -55,11 +55,11 @@ hyperlänkar
      <xsl:param name="iso639Code"/>
      <xsl:variable name="babelLang">
        <xsl:choose>
-   	 <xsl:when test="matches($iso639Code, 'sv([_\-].+)?')">swedish</xsl:when>
-   	 <xsl:when test="matches($iso639Code, 'en[_\-][Uu][Ss]')">USenglish</xsl:when>
-   	 <xsl:when test="matches($iso639Code, 'en[_\-][Uu][Kk]')">UKenglish</xsl:when>
-   	 <xsl:when test="matches($iso639Code, 'en([_\-].+)?')">english</xsl:when>
-   	 <xsl:when test="matches($iso639Code, 'de([_\-].+)?')">ngerman</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'sv(-.+)?')">swedish</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'en-[Uu][Ss]')">USenglish</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'en-[Uu][Kk]')">UKenglish</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'en(-.+)?')">english</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'de(-.+)?')">ngerman</xsl:when>
 	 <xsl:otherwise>
 	   <xsl:message>
 	     ***** <xsl:value-of select="$iso639Code"/> not supported. Defaulting to '<xsl:value-of select="$defaultLanguage"/>' ******
