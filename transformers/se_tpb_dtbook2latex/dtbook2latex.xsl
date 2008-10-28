@@ -44,7 +44,8 @@ hyperlänkar
    	<xsl:text>\usepackage[utf8x]{inputenc}&#10;</xsl:text>
    	<xsl:call-template name="findLanguage"/>
    	<xsl:text>\setlength{\parskip}{1.5ex}&#10;</xsl:text>
-   	<xsl:text>\setlength{\parindent}{0ex}&#10;&#10;&#10;</xsl:text>
+   	<xsl:text>\setlength{\parindent}{0ex}&#10;</xsl:text>
+	<xsl:text>\usepackage[pdftex]{hyperref}&#10;&#10;&#10;</xsl:text>
    	<xsl:apply-templates/>
    </xsl:template>
 
