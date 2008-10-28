@@ -18,6 +18,13 @@ hyperlänkar
 	<xsl:output method="text" encoding="utf-8" indent="no"/>
 	<xsl:strip-space elements="*"/>
 	<xsl:preserve-space elements="code samp"/>
+	
+  <!-- Possible values are 12pt, 14pt, 17pt and 20pt -->
+  <xsl:param name="fontsize">17pt</xsl:param>
+  <!-- Possible values are for example 'cmr', 'cmss' or 'cmvtt' -->
+  <xsl:param name="fontfamily">cmr</xsl:param>
+  <xsl:param name="defaultLanguage">english</xsl:param>
+  <xsl:param name="papersize">a4paper</xsl:param>
 
    <xsl:template match="/">
       <xsl:apply-templates/>
@@ -25,20 +32,46 @@ hyperlänkar
 
    <xsl:template match="dtb:dtbook">
 	<xsl:text>% ***********************&#10;</xsl:text>
-   	<xsl:text>% DMFC dtbook2latex v0.1&#10;</xsl:text>
+   	<xsl:text>% DMFC dtbook2latex v0.2&#10;</xsl:text>
 	<xsl:text>% ***********************&#10;</xsl:text>
-   	<xsl:text>\documentclass[a4paper]{book}&#10;</xsl:text>   
+   	<xsl:text>\documentclass[</xsl:text>
+	<xsl:value-of select="$fontsize"/>
+   	<xsl:text>,</xsl:text>
+	<xsl:value-of select="$papersize"/>
+	<xsl:text>,twoside]{extbook}&#10;</xsl:text>   
    	<xsl:text>\usepackage[pdftex]{graphicx}&#10;</xsl:text>
    	<xsl:text>\usepackage{ucs}&#10;</xsl:text>
    	<xsl:text>\usepackage[utf8x]{inputenc}&#10;</xsl:text>
-   	<!--<xsl:call-template name="findLanguage"/>-->
+   	<xsl:call-template name="findLanguage"/>
    	<xsl:text>\setlength{\parskip}{1.5ex}&#10;</xsl:text>
    	<xsl:text>\setlength{\parindent}{0ex}&#10;&#10;&#10;</xsl:text>
    	<xsl:apply-templates/>
    </xsl:template>
 
+   <xsl:template name="iso639toBabel">
+     <!-- Could probably also use lookup tables here as explained in
+     http://www.ibm.com/developerworks/library/x-xsltip.html and
+     http://www.ibm.com/developerworks/xml/library/x-tiplook.html -->
+     <xsl:param name="iso639Code"/>
+     <xsl:variable name="babelLang">
+       <xsl:choose>
+   	 <xsl:when test="matches($iso639Code, 'sv([_\-].+)?')">swedish</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'en[_\-][Uu][Ss]')">USenglish</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'en[_\-][Uu][Kk]')">UKenglish</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'en([_\-].+)?')">english</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'de([_\-].+)?')">ngerman</xsl:when>
+	 <xsl:otherwise>
+	   <xsl:message>
+	     ***** <xsl:value-of select="$iso639Code"/> not supported. Defaulting to '<xsl:value-of select="$defaultLanguage"/>' ******
+	   </xsl:message>
+	   <xsl:value-of select="$defaultLanguage"/></xsl:otherwise>
+       </xsl:choose>
+     </xsl:variable>
+     <xsl:value-of select="$babelLang"/>
+   </xsl:template>
+
    <xsl:template name="findLanguage">
-   	<xsl:variable name="lang">
+   	<xsl:variable name="iso639Code">
    		<xsl:choose>
 	   		<xsl:when test="//dtb:meta[@name='dc:Language']">
 	   			<xsl:value-of select="//dtb:meta[@name='dc:Language']/@content"/>
@@ -51,19 +84,13 @@ hyperlänkar
 	   		</xsl:when>   			
    		</xsl:choose>
    	</xsl:variable>
-   	<xsl:variable name="trLang">
-   		<xsl:choose>
-   			<xsl:when test="matches($lang, 'sv([_\-].+)?')">swedish</xsl:when>
-   			<xsl:when test="matches($lang, 'en[_\-][Uu][Ss]')">USenglish</xsl:when>
-   			<xsl:when test="matches($lang, 'en[_\-][Uu][Kk]')">UKenglish</xsl:when>
-   			<xsl:when test="matches($lang, 'en([_\-].+)?')">english</xsl:when>
-   		</xsl:choose>
-   	</xsl:variable>
-   	<xsl:if test="$trLang">
-   		<xsl:text>\usepackage[</xsl:text>
-   		<xsl:value-of select="$trLang"/>
-   		<xsl:text>]{babel}&#10;</xsl:text>
-   	</xsl:if>
+   	<xsl:text>\usepackage[</xsl:text>
+   	<xsl:call-template name="iso639toBabel">
+ 	  <xsl:with-param name="iso639Code">
+	    <xsl:value-of select="$iso639Code"/>
+	  </xsl:with-param>
+	</xsl:call-template>
+   	<xsl:text>]{babel}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:head">
@@ -76,6 +103,7 @@ hyperlänkar
 
    <xsl:template match="dtb:book">
 	<xsl:text>\begin{document}&#10;</xsl:text>
+        <xsl:text>\fontfamily{</xsl:text><xsl:value-of select="$fontfamily"/><xsl:text>}\selectfont&#10;</xsl:text>
 	<xsl:apply-templates/>
 	<xsl:text>\end{document}&#10;</xsl:text>
    </xsl:template>
@@ -155,6 +183,9 @@ hyperlänkar
    </xsl:template>
 
    <xsl:template match="dtb:pagenum">
+     <xsl:text>\marginpar{</xsl:text>
+	<xsl:apply-templates/>
+     <xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:address">
@@ -319,7 +350,19 @@ hyperlänkar
    </xsl:template>
 
    <xsl:template match="dtb:hd">
-   	<xsl:apply-templates/>
+     <xsl:variable name="level">
+       <xsl:value-of select="count(ancestor::dtb:level)"/>
+     </xsl:variable>
+     <xsl:choose>
+       <xsl:when test="$level=1"><xsl:text>\chapter{</xsl:text></xsl:when>
+       <xsl:when test="$level=2"><xsl:text>\section{</xsl:text></xsl:when>
+       <xsl:when test="$level=3"><xsl:text>\subsection{</xsl:text></xsl:when>
+       <xsl:when test="$level=4"><xsl:text>\subsubsection{</xsl:text></xsl:when>
+       <xsl:when test="$level=5"><xsl:text>\paragraph{</xsl:text></xsl:when>
+       <xsl:when test="$level>5"><xsl:text>\subparagraph{</xsl:text></xsl:when>
+     </xsl:choose>
+     <xsl:apply-templates/>
+     <xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:list/dtb:hd">
