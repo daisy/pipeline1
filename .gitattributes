@@ -490,6 +490,7 @@ src/org/daisy/pipeline/test/impl/DTBAudioEncoderSplitter1.java -text
 src/org/daisy/pipeline/test/impl/DTBMigratorBackward1.java -text
 src/org/daisy/pipeline/test/impl/DTBMigratorForward1.java -text
 src/org/daisy/pipeline/test/impl/DTBSplitter1.java -text
+src/org/daisy/pipeline/test/impl/DTBook2LaTeX.java -text
 src/org/daisy/pipeline/test/impl/DTBook2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/DTBook2Xhtml2MathML.java -text
 src/org/daisy/pipeline/test/impl/DTBook2rtf1.java -text
