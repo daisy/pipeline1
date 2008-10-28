@@ -26,8 +26,6 @@
     </datatype>
   </parameter>		
   
-  &ValidatorScriptParamsSimpleStatic;		
-  
   <parameter name="fontsize" value="17pt" required="false">
     <nicename>The font size for the generated LaTeX</nicename>
     <description>The font size to be used. See also the documentation of the extsizes package (http://www.ctan.org/tex-archive/macros/latex/contrib/extsizes)</description>
@@ -84,6 +82,8 @@
      </enum>
     </datatype>
   </parameter>
+  
+  &ValidatorScriptParamsSimpleStatic;		
   
   <task name="int_daisy_validator" interactive="false">
     <parameter>
