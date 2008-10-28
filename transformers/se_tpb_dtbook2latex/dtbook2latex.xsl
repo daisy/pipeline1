@@ -586,6 +586,12 @@ hyperlänkar
    	<xsl:text>}$</xsl:text>
    </xsl:template>
 
+   <xsl:template match="dtb:span">
+     <!-- FIXME: What to do with span? It basically depends on the class -->
+     <!-- attribute which can be used for anything (colour, typo, error, etc) -->
+     <xsl:apply-templates/>
+   </xsl:template>
+
    <xsl:template match="dtb:a[@href]">
    	<xsl:apply-templates/>
    </xsl:template>
