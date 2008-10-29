@@ -306,7 +306,10 @@ public class SmilMaker implements AbortListener, BusListener {
 		//DEBUG(se);
 		for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
-			attributes.put(at.getName().getLocalPart(), at.getValue());
+			// LE 2008-10-28: Avoid copying src instead of smil:src
+			if (!at.getName().getLocalPart().equals("src") || at.getName().getNamespaceURI().equals(smilNamespaceURI)) {
+			    attributes.put(at.getName().getLocalPart(), at.getValue());
+			}
 		}
 		
 		return attributes;

@@ -1341,6 +1341,11 @@ public class SpeechGen2 extends Transformer {
 		}
 		reader.gotoAndRemoveBookmark(SYNCPOINT_GETTER_BOOKMK);
 		
+		// LE 2008-10-26: support forced sync on empty elements
+        if (textContent.length() == 0) {
+            return true;
+        }
+		
 		for (int i = 0; i < textContent.codePointCount(0, textContent.length()-1); i++) {
 			int cp = textContent.codePointAt(i);
 			if(!Character.isWhitespace(cp)) return true;

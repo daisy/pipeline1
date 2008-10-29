@@ -58,7 +58,11 @@ Defines a one per document element scope outside of which the sync point locator
 		<syncScope>
 			<dtbook:book />
 		</syncScope>
-		
+		 
+		<syncForce>			
+			<dtbook:img/>
+		</syncForce>
+		 
 		<syncMarkerAttribute>
 		    <smil:sync xmlns:smil="http://www.w3.org/2001/SMIL20/" />
 		</syncMarkerAttribute>

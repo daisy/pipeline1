@@ -71,6 +71,12 @@
 	<xsl:template match="math">
 		<xsl:value-of select="@alttext"/>
 	</xsl:template>
+	
+	<xsl:template match="img">
+		<xsl:text>, </xsl:text>
+		<xsl:value-of select="@alt"/>
+		<xsl:text>, </xsl:text>
+	</xsl:template>
 
 
 	<xsl:template match="/">

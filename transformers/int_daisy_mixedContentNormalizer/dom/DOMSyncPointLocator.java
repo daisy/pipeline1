@@ -96,6 +96,12 @@ public class DOMSyncPointLocator extends AbstractSyncPointLocator  {
 			    	//end alt::
 			    		addSyncPoint(e);
 			    	}
+		    	} else {
+		    	    // LE 2008-10-26: allow forced sync on empty element if it's not part
+		    	    // of another sync point (added to support sync on img within imggroup).
+		    	    if (mConfig.isSyncForce(e) && !hasSyncedAncestor(e)) {
+		    	        addSyncPoint(e);
+		    	    }
 		    	}
 		    }
 		    
