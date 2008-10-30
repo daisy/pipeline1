@@ -35,6 +35,8 @@
 	<xsl:param name="split_simple_table"/>
   <!-- The smil element to target in href URIs (values are TEXT or PAR) -->
   <xsl:param name="hrefTarget"/>
+  <!-- The prefix to add to the filename of each smil file -->
+  <xsl:param name="smilPrefix"/>
 
     <xsl:output method="xml" encoding="utf-8" indent="yes"/>
 
@@ -175,12 +177,12 @@
 				<h1 class="title" id="h1classtitle">
 					<xsl:choose>
 						<xsl:when test="$first_smil and $hrefTarget='TEXT'">
-							<a href="{$first_smil}#doctitleText">
+							<a href="{$smilPrefix}{$first_smil}#doctitleText">
 								<xsl:value-of select="."/>
 							</a>
 						</xsl:when>
 						<xsl:when test="$first_smil">
-							<a href="{$first_smil}#doctitle">
+							<a href="{$smilPrefix}{$first_smil}#doctitle">
 								<xsl:value-of select="."/>
 							</a>
 						</xsl:when>
@@ -1110,10 +1112,10 @@
 		<xsl:variable name="smilElem" select="document(concat($baseDir, $url))//*[@id=$fragment]"/>
 	  	<xsl:choose>
 	  		<xsl:when test="$smilElem[self::s:par] and $hrefTarget='TEXT'">
-				<xsl:value-of select="concat($url,'#',$smilElem/s:text/@id)"/>
+				<xsl:value-of select="concat(concat($smilPrefix,$url),'#',$smilElem/s:text/@id)"/>
 	  		</xsl:when>
 	  		<xsl:otherwise>
-				<xsl:value-of select="$smilref"/>
+				<xsl:value-of select="concat($smilPrefix,$smilref)"/>
 	  		</xsl:otherwise>
 	  	</xsl:choose>
 	</xsl:template>

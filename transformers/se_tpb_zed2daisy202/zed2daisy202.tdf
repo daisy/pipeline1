@@ -31,7 +31,14 @@
 				<value>TEXT</value>				
 			</enum>
 			<default>PAR</default>
-		</parameter>		
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>smilPrefix</name>
+			<description>Prefix to add to the Daisy 2.02 smil files</description>
+			<example>d202-</example>
+			<default></default>
+		</parameter>
 				
 	</parameters>	
 

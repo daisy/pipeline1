@@ -368,6 +368,7 @@ scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
 scripts/_dev/Narrator-Autumn2008.taskScript -text
 scripts/_dev/Narrator-Dev.taskScript -text
+scripts/_dev/Narrator-MathML-samedir.taskScript -text
 scripts/_dev/Narrator-MathML.taskScript -text
 scripts/_dev/Narrator_NoValidation.taskScript -text
 scripts/_dev/NccNcxOnly.taskScript -text

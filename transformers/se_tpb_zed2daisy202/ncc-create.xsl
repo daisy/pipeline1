@@ -23,6 +23,8 @@
   <xsl:param name="baseDir"/>
   <!-- The smil element to target in href URIs (values are TEXT or PAR) -->
   <xsl:param name="hrefTarget"/>
+  <!-- The prefix to add to the filename of each smil file -->
+  <xsl:param name="smilPrefix"/>
   
   <xsl:key name="xhtmlH1" match="x:*[@id and ancestor-or-self::x:h1]" use="@id"/>
   <xsl:key name="xhtmlH2" match="x:*[@id and ancestor-or-self::x:h2]" use="@id"/>
@@ -80,7 +82,7 @@
        **************************************************************** -->  
   <xsl:template match="o:itemref">
   	<xsl:variable name="idref" select="@idref"/>
-  	<xsl:apply-templates select="document(concat($baseDir, //o:item[@id=$idref]/@href))//body/seq">
+  	<xsl:apply-templates select="document(concat($baseDir, concat($smilPrefix, //o:item[@id=$idref]/@href)))//body/seq">
   		<xsl:with-param name="doc" select="//o:item[@id=$idref]/@href"/>
   	</xsl:apply-templates>
   </xsl:template>
@@ -143,6 +145,7 @@
 	  					<xsl:choose>
 	  						<xsl:when test="@system-required='footnote-on'">
 	  							<xsl:attribute name="href">
+	  								<xsl:value-of select="$smilPrefix"/>
 	  								<xsl:value-of select="$doc"/>
 	  								<xsl:text>#</xsl:text>
 	  								<xsl:choose>
@@ -160,6 +163,7 @@
 			  				</xsl:when>
 			  				<xsl:otherwise>
 	  							<xsl:attribute name="href">
+	  								<xsl:value-of select="$smilPrefix"/>
 	  								<xsl:value-of select="$doc"/>
 	  								<xsl:text>#</xsl:text>
 	  								<xsl:value-of select="$targetId"/>
@@ -284,6 +288,7 @@
   	</xsl:attribute>
   	<ncc:a>
   		<xsl:attribute name="href">
+  			<xsl:value-of select="$smilPrefix"/>
 	  		<xsl:value-of select="$doc"/>				
   		</xsl:attribute>
   		<xsl:value-of select="."/>

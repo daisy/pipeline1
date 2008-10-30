@@ -101,9 +101,15 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         String manifest = parameters.remove("manifest");
         String outDir = parameters.remove("outDir");
 		String hrefTarget = parameters.remove("hrefTarget");
+		String smilPrefix = parameters.remove("smilPrefix");
         
         inputDir = new File(manifest).getParentFile();
-        outputDir = new File(outDir);      
+        outputDir = new File(outDir);
+        
+        // If the output is written to the same dir as input, the smil files must have a prefix
+        if (inputDir.equals(outputDir) && smilPrefix.equals("")) {
+            throw new TransformerRunException(i18n("NO_SMILPREFIX"));
+        }
 
         try {
             // Build fileset            
@@ -125,6 +131,10 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             
             // Create output directory
             outputDir = FileUtils.createDirectory(new File(outDir)); 
+            
+            if (smilPrefix == null) {
+                smilPrefix = "";
+            }
             
             // Find NCX, OPF, DTBook and files to copy
             File ncx = null;
@@ -150,7 +160,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             }
                         
             // Create smils
-            long totalElapsedTime = this.createSmils(opf, dtbook, ncx);            
+            long totalElapsedTime = this.createSmils(opf, dtbook, ncx, smilPrefix);            
             this.progress(SMIL_DONE);
             this.checkAbort();
             
@@ -158,14 +168,14 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             this.sendMessage(i18n("CREATING_XHTML", contentXHTML), 
             		MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
             
-            this.createXhtml(dtbook, opf, hrefTarget);            
+            this.createXhtml(dtbook, opf, hrefTarget, smilPrefix);            
             this.progress(XHTML_DONE);
             this.checkAbort();
 
             // Create NCC
             this.sendMessage(i18n("BUILDING_NCC", "ncc.html"), 
             		MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
-            this.createNcc(opf.getFile(), totalElapsedTime, hrefTarget);            
+            this.createNcc(opf.getFile(), totalElapsedTime, hrefTarget, smilPrefix);            
             this.progress(NCC_DONE);
             this.checkAbort();
             
@@ -201,11 +211,12 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      * @throws XMLStreamException
      * @throws IOException
      */
-    private void createNcc(File opf, long totalElapsedTime, String hrefTarget) throws CatalogExceptionNotRecoverable, XSLTException, XMLStreamException, IOException {
+    private void createNcc(File opf, long totalElapsedTime, String hrefTarget, String smilPrefix) throws CatalogExceptionNotRecoverable, XSLTException, XMLStreamException, IOException {
         Map<String,Object> parameters = new HashMap<String,Object>();
         parameters.put("baseDir", outputDir.toURI());
         parameters.put("date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         parameters.put("hrefTarget", hrefTarget);
+        parameters.put("smilPrefix", smilPrefix);
         File nccFile = new File(outputDir, "ncc.html");
         File createNcc = new File(this.getTransformerDirectory(), "ncc-create.xsl");
         File nccRemoveDupes = new File(this.getTransformerDirectory(), "ncc-remove-dupes.xsl");
@@ -244,7 +255,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      * @throws TransformerAbortException
      * @throws SAXException 
      */
-    private long createSmils(OpfFile opf, File dtbook, File ncx) throws XMLStreamException, IOException, XSLTException, TransformerAbortException, SAXException {
+    private long createSmils(OpfFile opf, File dtbook, File ncx, String smilPrefix) throws XMLStreamException, IOException, XSLTException, TransformerAbortException, SAXException {
 
         // Extract the information the smil2smil stylesheet needs
         // from the DTBook and the OPF. This will speed up the
@@ -273,7 +284,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         for (Iterator<FilesetFile> it = spineItems.iterator(); it.hasNext(); ) {
             smilCount++;
             Z3986SmilFile smilZed = (Z3986SmilFile)it.next();
-            File smil202 = new File(outputDir, smilZed.getFile().getName());
+            File smil202 = new File(outputDir, smilPrefix + smilZed.getFile().getName());
             //Object[] params = {new Integer(smilNum), new Integer(smilCount), smil202.getName()};  
             //this.sendMessage(i18n("SMIL", params), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);            
             
@@ -303,7 +314,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      * @throws IOException
      * @throws FilesetException 
      */
-    private void createXhtml(File dtbook, OpfFile opf, String hrefTarget) throws CatalogExceptionNotRecoverable, XSLTException, IOException {
+    private void createXhtml(File dtbook, OpfFile opf, String hrefTarget, String smilPrefix) throws CatalogExceptionNotRecoverable, XSLTException, IOException {
     	String cssName = "default.css";
         File xhtmlOut = new File(outputDir, contentXHTML);
         
@@ -319,6 +330,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         parameters.put("split_simple_table", "true");
         parameters.put("css_path", cssName);
         parameters.put("hrefTarget", hrefTarget);
+        parameters.put("smilPrefix", smilPrefix);
         
         URL url = Stylesheets.get("dtbook2xhtml.xsl");
         
