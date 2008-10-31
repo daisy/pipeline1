@@ -426,6 +426,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
     		executors.add(new XSLTExecutor(parameters,this.getClass().getResource("./xslt/narrator-headings-r100.xsl"),v2005_1_2_3, i18n("NARRATOR_HEADINGS_R100"),this,this,this,emitter));
     		executors.add(new XSLTExecutor(parameters, this.getClass().getResource("./xslt/narrator-title.xsl"), v2005_1_2_3, i18n("NARRATOR_TITLE"), this, this, this, emitter));
     		executors.add(new XSLTExecutor(parameters, this.getClass().getResource("./xslt/narrator-lists.xsl"), v2005_1_2_3, i18n("NARRATOR_LISTS"), this, this, this, emitter));
+    		executors.add(new XSLTExecutor(parameters, this.getClass().getResource("./xslt/narrator-empty-cells.xsl"), v2005_1_2_3, i18n("NARRATOR_EMPTY_CELLS"), this, this, this, emitter));
 //    		if(parameters.get("renameJpeg").contentEquals("true")) {
 //    			executors.add(new JpegRenameExecutor(parameters, i18n("NARRATOR_JPEG_RENAMER"), this));
 //    		}
