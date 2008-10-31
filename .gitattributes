@@ -181,6 +181,7 @@ lib/wstx-lgpl-3.2.4.jar -text
 lib/xalan.jar -text
 lib/xercesImpl.jar -text
 lib/zedval.jar -text svneol=unset#unset
+licenses/CeCILL-BLicense/CeCILL-B.txt -text
 licenses/MITLicense/MITLicense.txt -text svneol=unset#text/plain
 /pipeline.sh -text
 samples/input/dtb/d202/dontworrybehappy-invalid/content.html -text
