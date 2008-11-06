@@ -324,7 +324,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         uri = opf.getFile().getParentFile().toURI().relativize(uri);
         
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("filter_word", "yes");
+        parameters.put("filter_word", "no");
         parameters.put("baseDir", inputDir.toURI().toString());
         parameters.put("first_smil", uri.toString());
         parameters.put("split_simple_table", "true");
