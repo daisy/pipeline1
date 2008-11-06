@@ -952,6 +952,7 @@
   		</xsl:when>
   		<xsl:otherwise>
   			<span class="word">
+  			  <xsl:call-template name="copyCncatts"/>
   			  <xsl:call-template name="maybeSmilref"/>
   			</span>
   		</xsl:otherwise>
