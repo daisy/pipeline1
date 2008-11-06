@@ -78,6 +78,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.stax.AttributeByName;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
+import org.daisy.util.xml.stax.ContextStack;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -366,18 +367,24 @@ public class SmilMaker implements AbortListener, BusListener {
 			ProcessingInstruction cssPI = setCss(reader, u);
 										
 			startNewSmil(reader);
+			ContextStack contextStack = new ContextStack();	
+			Set<Integer> escapableLevels = new HashSet<Integer>();			
 			
 			boolean rootElementSeen = false;
 			while (reader.hasNext()) {
 				XMLEvent event = reader.nextEvent();
+				contextStack.addEvent(event);
 				
 				if (event.isStartElement()) {
 					//mg20080401:
 					if(!rootElementSeen && cssPI!=null) writeEvent(cssPI);
 					rootElementSeen = true;
 					//end mg20080401
-										
-					if (isEscapable(event)) {
+					
+					// LE 2008-11-05: this or a descendant element must contain smil attributes,
+					// otherwise we don't need to start an escapable structure
+					if (isEscapable(event) && (hasSmilAttributes(event.asStartElement()) || descendantsContainSmil(reader, event.asStartElement()))) {
+					    escapableLevels.add(contextStack.getContext().size());
 						XMLEvent modifiedStartElement = newSeq(reader, event.asStartElement());
 						event = modifiedStartElement;
 					} else if (isPar(event.asStartElement())) {
@@ -407,9 +414,10 @@ public class SmilMaker implements AbortListener, BusListener {
 						event = eventFactory.createStartDocument("utf-8", "1.0");                
 					}
 				} else if (event.isEndElement()) {
-					if (isEscapable(event)) {
+					if (isEscapable(event) && escapableLevels.contains(contextStack.getContext().size() + 1)) {
 						closeSeq();
 					}
+					escapableLevels.remove(contextStack.getContext().size() + 1);
 					
 					if (isLink(event.asEndElement())) {
 						boolean escapable = false;
@@ -1373,6 +1381,12 @@ public class SmilMaker implements AbortListener, BusListener {
 		openSeqs.push(linkElement);
 		
 		linkElement.setAttribute("href", href);
+		
+		// LE 2008-11-05: set external attribute if specified
+		Attribute external = AttributeByName.get(new QName("external"), link);
+		if (external != null) {
+		    linkElement.setAttribute("external", external.getValue());
+		}
 	}
 	
 	
