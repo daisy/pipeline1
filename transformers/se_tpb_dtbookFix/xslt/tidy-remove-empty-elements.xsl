@@ -2,7 +2,7 @@
 <!--
 	Remove empty elements
 		Version
-			2008-04-02
+			2008-11-05
 
 		Description
 			Removes
@@ -13,10 +13,11 @@
 				* empty/whitespace em, strong, sub, sup
 
 		Nodes
-			p, em, strong, sub, sup, hx
+			p, em, strong, sub, sup, hx, math
 
 		Namespaces
 			(x) "http://www.daisy.org/z3986/2005/dtbook/"
+			(x) "http://www.w3.org/1998/Math/MathML"
 
 		Doctype
 			(x) DTBook
@@ -24,7 +25,7 @@
 		Author
 			Joel Håkansson, TPB
 -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" xmlns:m="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="dtb">
 
 	<xsl:include href="recursive-copy.xsl"/>
 	<xsl:include href="output.xsl"/>
@@ -57,4 +58,9 @@
 			<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
+	<xsl:template match="m:math[not(m:*)]">
+		<xsl:apply-templates/>
+	</xsl:template>
+	
 </xsl:stylesheet>
