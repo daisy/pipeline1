@@ -532,7 +532,23 @@ public class SpeechGen2 extends Transformer {
 					event = null; // to avoid being written to file once more
 					boolean writeToFile = true;
 					fastForward(reader, writeToFile);
+				} else {
+				    // LE 2008-11-05: This is not a sync point. If there still is
+				    // a smil:sync attribute on this element we must remove it to
+				    // avoid NPEs in fileset creator
+				    Attribute smiSyncAttr = AttributeByName.get(SMIL_SYNC_ATTR, se);
+				    if (smiSyncAttr != null) {
+				        List<Attribute> attrs = new ArrayList<Attribute>();
+				        for (Iterator<Attribute> it = se.getAttributes(); it.hasNext(); ) {
+				            Attribute attr = it.next();
+				            if (!attr.getName().equals(SMIL_SYNC_ATTR)) {
+				                attrs.add(attr);
+				            }
+				        }
+				        event = eventFactory.createStartElement(se.getName(), attrs.iterator(), se.getNamespaces());
+				    }
 				}
+				    
 
 			} else if (event.isStartDocument()) {
 				XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
