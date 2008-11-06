@@ -67,6 +67,34 @@
 				</p>		
 							
 			</level1>
+			<level1>
+				<h1>And thus a table</h1>
+				<p>Yes, its table time.</p>
+				<table>
+				
+				<tr><td>Row 1 Cell 1</td><td>Row 1 Cell 2</td><td>Row 1 Cell 3</td></tr>
+
+				<tr><td>Row 2 Cell 1</td><td>Row 2 Cell 2</td><td>Row 2 Cell 3</td></tr>
+				
+				<tr><td></td><td></td><td></td></tr>
+				
+				<tr><td>	</td><td>	</td><td>	</td></tr>
+
+				<tr><td>Row 5 Cell 1</td><td>Row 5 Cell 2</td><td>Row 5 Cell 3</td></tr>
+				
+				<tr><td>Row 5 Cell 1</td><td>Row 5 Cell 2</td>
+						<td>
+						Text preceeding image in table cell, direct text child of td.
+						<p>Text preceeding image in table cell, p child of td.</p>
+						<imggroup>
+				  			<img src="valentin.jpg" alt="This is an image alt text"/>
+				  			<caption>Image on table cell</caption>
+				  			<prodnote render="required">This is a production note. It contains several sentences. This is the last one.</prodnote>
+						</imggroup></td>
+				</tr>
+				
+				</table>
+			</level1>
 
 		</bodymatter>
 		<rearmatter id="rear">

@@ -80,20 +80,19 @@ public class DOMSyncPointLocator extends AbstractSyncPointLocator  {
 		    while ((e=(Element)walker.nextNode())!=null) {					    			    	
 		    	if(mTransformer.delegateCheckAbort()) throw new TransformerRunException ("user abort");		    	
 		    	if(e.getFirstChild()!=null){ //never sync on empty elements
+		    		
 		    		if(mConfig.isSyncForce(e)) {
 		    			addSyncPoint(e);
 		    		}
-		    		else if(hasOnlyIgnorableChildren(e) && !hasSyncedAncestor(e)) {
+		    		//mg 20081106: add check that theres a descendant to sync on 
+		    		//avoid adding sync on tr when <tr><td></td><td></td></tr>
+		    		else if(hasOnlyIgnorableChildren(e) && mConfig.hasTextDescendant(e) && !hasSyncedAncestor(e)) {
 			    		addSyncPoint(e);
 			    	}
 			    	else if(e.getUserData("isWrapper")!=null  && !hasSyncedAncestor(e)){ 
-			    		//TODO && !hasSyncedAncestor(e) only for nested wrapper bug
 			    		addSyncPoint(e);
 			    	}
-			    	//else if (!hasSyncedAncestor(e) && DOMUtil.hasTextChild(e)) {
-			    	//alt::
 			    	else if (!hasSyncedAncestor(e) && mConfig.hasTextChild(e)) {
-			    	//end alt::
 			    		addSyncPoint(e);
 			    	}
 		    	} else {

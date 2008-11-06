@@ -266,10 +266,9 @@ public class DOMConfig {
 	}
 	
 	public TextNodeType getTextNodeType(String text, String namespaceuri) {
-		//System.err.println("input: " + text );
-		
+
 		char[] chars = text.toCharArray();
-		//boolean hasXMLWhitespace = false;
+
 		boolean hasNamespaceWhitespace = false;
 		
 		for (int i = 0; i < chars.length; i++) {			
@@ -281,7 +280,6 @@ public class DOMConfig {
 				return TextNodeType.TEXT;
 			}
 			
-			//if(isXMLWhitespace) hasXMLWhitespace = true;
 			if(isNamespaceWhitespace) hasNamespaceWhitespace = true;
 		}
 		
@@ -318,6 +316,7 @@ public class DOMConfig {
 
 	/**
 	 * @return true if element has a text node child that is not XML whitespace nor namespace whitespace
+	 * @see #hasTextDescendant(Element)
 	 */
 	public boolean hasTextChild(Element e) {
 		if(e.hasChildNodes()) {
@@ -332,6 +331,27 @@ public class DOMConfig {
 		return false;
 	}
 
+	/**
+	 * @return true if element has at least one text node descendant 
+	 * that is not XML whitespace nor namespace whitespace
+	 * @see #hasTextChild(Element)
+	 */
+	public boolean hasTextDescendant(Element e) {
+		if(e.hasChildNodes()) {
+			for (int i = 0; i < e.getChildNodes().getLength(); i++) {
+				Node c = e.getChildNodes().item(i);
+				if(c.getNodeType() == Node.TEXT_NODE){
+					TextNodeType tnt = getTextNodeType(c.getNodeValue(), e.getNamespaceURI());
+					if(tnt == TextNodeType.TEXT) return true;
+				} else if(c.getNodeType() == Node.ELEMENT_NODE){
+					boolean desc = hasTextDescendant((Element)c);
+					if(desc) return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * Return true if wrappers added in given namespace should have leading and trailing
 	 * whitespace scrubbed (i.e. moved outside the wrapper).
