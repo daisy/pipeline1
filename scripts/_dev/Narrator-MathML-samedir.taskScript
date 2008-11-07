@@ -288,6 +288,11 @@
 			<name>doSmilSyncAttributeBasedSyncPointLocation</name>
 			<value>true</value>
 		</parameter>
+		<parameter>
+			<name>failOnError</name>
+			<value>false</value>
+		</parameter>
+		
 	</task>
 
 	<!-- ******************
