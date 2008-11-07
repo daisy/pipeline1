@@ -50,6 +50,7 @@ import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.execution.ProgressObserver;
 import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileBunchCopy;
+import org.daisy.util.i18n.CharUtils;
 import org.daisy.util.xml.NamespaceReporter;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.XPathUtils;
@@ -95,6 +96,12 @@ public class FileSetCreator extends Transformer {
 		String outputDirectory = parameters.remove("outputDirectory");
 		String manuscriptFilename = parameters.remove("manuscriptFilename");
 		String outputDTBookFilename = parameters.remove("outputDTBFilename");
+		//mg20081107 make sure outputDTBookFilename is zed subset compliant
+		File orig = new File(outputDTBookFilename);
+		File safe = new File(orig.getParentFile(), 
+				CharUtils.toRestrictedSubset(CharUtils.FilenameRestriction.Z3986, orig.getName()));
+		outputDTBookFilename = safe.getPath();
+		
 		String resourceFilename = parameters.remove("resourceFilename");
 		
 		String smilTemplateFilename = parameters.remove("smilTemplateFilename");
