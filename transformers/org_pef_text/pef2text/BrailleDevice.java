@@ -27,7 +27,8 @@ import org.daisy.pipeline.exception.TransformerRunException;
  * @since 1.0
  */
 public class BrailleDevice {
-	private final static DocFlavor FLAVOR = DocFlavor.BYTE_ARRAY.AUTOSENSE;
+	//private final static DocFlavor FLAVOR = DocFlavor.BYTE_ARRAY.AUTOSENSE;
+	private final static DocFlavor FLAVOR = DocFlavor.INPUT_STREAM.AUTOSENSE;
 	private DocPrintJob dpj;
 	
 	/**
@@ -52,7 +53,7 @@ public class BrailleDevice {
 	 * @return
 	 */
 	public static PrintService[] getDevices() {
-		PrintService[] printers = PrintServiceLookup.lookupPrintServices(DocFlavor.BYTE_ARRAY.AUTOSENSE, null);
+		PrintService[] printers = PrintServiceLookup.lookupPrintServices(FLAVOR, null);
 		return printers;
 	}
 
@@ -63,20 +64,21 @@ public class BrailleDevice {
 	 * @throws PrintException
 	 */
 	public void emboss(File file) throws FileNotFoundException, PrintException {
-		RawByteDoc doc = new RawByteDoc(file);
+		InputStreamDoc doc = new InputStreamDoc(file);
 		dpj.print(doc, null);
 	}
 	
-	private class RawByteDoc implements Doc {
-		FileInputStream stream;
+	private class InputStreamDoc implements Doc {
+		private File file;
+		private InputStream stream;
 		
 		/**
 		 * Default constructor
 		 * @param file
 		 * @throws FileNotFoundException
 		 */
-		public RawByteDoc(File file) throws FileNotFoundException {
-			 stream = new FileInputStream(file);
+		public InputStreamDoc(File file) throws FileNotFoundException {
+			this.file = file;
 		}
 
 		public DocAttributeSet getAttributes() {
@@ -88,16 +90,20 @@ public class BrailleDevice {
 		}
 
 		public Object getPrintData() throws IOException {
-			return null; //new String("object");
+			return getStreamForBytes();
 		}
 
 		public Reader getReaderForText() throws IOException {
-			return null; //new StringReader("reader");
+			return null;
 		}
 
 		public InputStream getStreamForBytes() throws IOException {
-			return stream; 
-			//new ByteArrayInputStream(new byte[]{0x40, 0x41, 0x42, 0x43, 0x44}) ;
+			synchronized (this) {
+				if (stream==null) {
+					stream = new FileInputStream(file);
+				}
+				return stream;
+			}
 		}
 	}
 }

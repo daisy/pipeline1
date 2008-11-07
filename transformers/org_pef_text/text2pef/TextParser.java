@@ -10,9 +10,9 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.StringTokenizer;
 
-import org_pef_text.BrailleFormat;
+import org_pef_text.AbstractTable;
+import org_pef_text.TableFactory;
 
 /**
  * Reads an ASCII file and parses it into a basic PEF file.
@@ -33,7 +33,7 @@ public class TextParser {
 	private String author;
 	private String language;
 	private String identifier;
-	private BrailleFormat mode;
+	private AbstractTable mode;
 	private boolean duplex;
 	private Date date;
 	
@@ -58,7 +58,7 @@ public class TextParser {
 		private String author = "";
 		private String language = "";
 		private String identifier = "";
-		private BrailleFormat.Mode mode = BrailleFormat.Mode.values()[0];
+		private TableFactory.TableType mode = TableFactory.TableType.values()[0];
 		private boolean duplex = false;
 		private Date date = new Date();
 
@@ -94,7 +94,7 @@ public class TextParser {
 			if (value==null) throw new IllegalArgumentException("Null value not accepted.");
 			identifier = value; return this;
 		}
-		public Builder mode(BrailleFormat.Mode value) {
+		public Builder mode(TableFactory.TableType value) {
 			if (value==null) throw new IllegalArgumentException("Null value not accepted.");
 			mode = value; return this;
 		}
@@ -121,7 +121,9 @@ public class TextParser {
 		author = builder.author;
 		language = builder.language;
 		identifier = builder.identifier;
-		mode = new BrailleFormat.Builder(builder.mode).build();
+		TableFactory b = new TableFactory();
+		b.setTable(builder.mode);
+		mode = b.newTable();
 		duplex = builder.duplex;
 		date = builder.date;
 	}
@@ -160,7 +162,7 @@ public class TextParser {
 				} else if ("-identifier".equals(args[2+i*2])) {
 					builder.identifier(args[3+i*2]);
 				} else if ("-mode".equals(args[2+i*2])) {
-					builder.mode(BrailleFormat.Mode.valueOf(args[3+i*2].toUpperCase()));
+					builder.mode(TableFactory.TableType.valueOf(args[3+i*2].toUpperCase()));
 				} else if ("-language".equals(args[2+i*2])) {
 					builder.language(args[3+i*2]);
 				} else if ("-duplex".equals(args[2+i*2])) {

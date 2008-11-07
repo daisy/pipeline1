@@ -15,8 +15,8 @@
 	</parameter>
 	
 	<parameter name="pad" value="both" required="false">
-		<nicename>Insert newline around form feed</nicename>
-		<description>Insert newline around form feed</description>
+		<nicename>Form feed policy, insert newline</nicename>
+		<description>Define where to insert newline around form feed</description>
 		<datatype>
 			<enum>
 			  <item nicename="Before" value="before" />

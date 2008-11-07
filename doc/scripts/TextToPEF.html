@@ -27,11 +27,24 @@
 
 <p>This script converts an ASCII type braille file into a PEF 2008-1
 document.</p>
+
+<p>The Portable Embosser Format (PEF) is a document type that represents
+braille pages in digital form, accurately and unambiguously; regardless of
+language, location, embosser settings, braille code and computer environment.
+It can be used for braille embossing and archiving anywhere in the world, no
+matter where nor how it was produced. PEF allows new features to be added,
+such as ink overlay or tactile graphics, thus enabling a completely automated
+reproduction of advanced braille books.</p>
 <!-- brief summary of purpose and whats going on. What does this script do really? -->
 
 <h2 id="inputReqs">Input Requirements</h2>
 
-<p>This script accepts ASCII type braille files.</p>
+<p>This script accepts plain text files where each braille character is
+represented by some other character. The most commonly used representation is
+"North American Ascii Braille".</p>
+
+<p>In addition to the characters used to represent braille, the file may
+contain newline and form feed characters.</p>
 <!-- detailed requirements on input nature -->
 
 <h2 id="output">Output</h2>

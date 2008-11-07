@@ -1,6 +1,7 @@
 package org_pef_text.pef2text;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -8,11 +9,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
-import org_pef_text.BrailleFormat;
-import org_pef_text.BrailleFormat.EightDotFallbackMethod;
-import org_pef_text.pef2text.PEFHandler.Embosser;
-import org_pef_text.pef2text.PEFHandler.LineBreaks;
-import org_pef_text.pef2text.PEFHandler.Padding;
+import org_pef_text.TableFactory;
+import org_pef_text.TableFactory.EightDotFallbackMethod;
 
 /**
  * SAX implementation of pef2text.xsl 
@@ -41,19 +39,19 @@ public class PEFParser {
 			System.out.println("Options");
 			System.out.println("  -embosser value     target embosser, available values are:");
 			boolean first=true;
-			for (Embosser e : Embosser.values()) {
+			for (EmbosserFactory.EmbosserType e : EmbosserFactory.EmbosserType.values()) {
 				System.out.println("                          \"" + e.toString().toLowerCase() + "\"" + (first?" (default)":""));
 				first=false;
 			}
 			System.out.println("  -table value        braille code table, available values are:");
 			first=true;
-			for (BrailleFormat.Mode t : BrailleFormat.Mode.values()) {
+			for (TableFactory.TableType t : TableFactory.TableType.values()) {
 				System.out.println("                          \"" + t.toString().toLowerCase() + "\"" + (first?" (default)":""));
 				first=false;
 			}			
 			System.out.println("  -breaks value       line break style, available values are:");
 			first=true;
-			for (LineBreaks b : LineBreaks.values()) {
+			for (LineBreaks.Type b : LineBreaks.Type.values()) {
 				System.out.println("                          \"" + b.toString().toLowerCase() + "\"" + (first?" (default)":""));
 				first=false;
 			}
@@ -90,26 +88,30 @@ public class PEFParser {
 		if (args.length < 2 || args.length % 2 != 0) {
 			throw new IllegalArgumentException("Wrong number of arguments");
 		} else {
-			PEFHandler.Builder builder = new PEFHandler.Builder(new File(args[1]));
+			Range range = null;
+			EmbosserFactory ef = new EmbosserFactory();
 			for (int i=0; i<(args.length-2)/2; i++) {
 				if ("-embosser".equals(args[2+i*2])) {
-					builder.embosser(Embosser.valueOf(args[3+i*2].toUpperCase()));
+					ef.setEmbosserType(EmbosserFactory.EmbosserType.valueOf(args[3+i*2].toUpperCase()));
 				} else if ("-table".equals(args[2+i*2])) {
-					builder.mode(BrailleFormat.Mode.valueOf(args[3+i*2].toUpperCase()));
+					ef.setProperty("table", args[3+i*2]);
 				} else if ("-breaks".equals(args[2+i*2])) {
-					builder.breaks(LineBreaks.valueOf(args[3+i*2].toUpperCase()));
+					ef.setProperty("breaks", args[3+i*2]);
 				} else if ("-range".equals(args[2+i*2])) {
-					builder.range(Range.parseRange(args[3+i*2]));
+					range = Range.parseRange(args[3+i*2]);
 				} else if ("-fallback".equals(args[2+i*2])) {
-					builder.fallback(EightDotFallbackMethod.valueOf(args[3+i*2].toUpperCase()));
+					ef.setProperty("fallback", args[3+i*2]);
 				} else if ("-replacement".equals(args[2+i*2])) {
-					builder.replacement((char)Integer.parseInt(args[3+i*2], 16));
+					ef.setProperty("replacement", args[3+i*2]);
 				} else if ("-pad".equals(args[2+i*2])) {
-					builder.padNewline(Padding.valueOf(args[3+i*2].toUpperCase()));
+					ef.setProperty("pad_newline", args[3+i*2]);
 				} else {
 					throw new IllegalArgumentException("Unknown option \"" + args[2+i*2] + "\"");
 				}
 			}
+			AbstractEmbosser embosser = ef.newEmbosser(new FileOutputStream(args[1]));
+			PEFHandler.Builder builder = new PEFHandler.Builder(embosser);
+			builder.range(range);
 			PEFHandler ph = builder.build();
 			parse(new File(args[0]), ph);
 		}

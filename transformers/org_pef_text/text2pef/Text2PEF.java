@@ -3,15 +3,12 @@ package org_pef_text.text2pef;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
 import java.util.Map;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-
-import org_pef_text.BrailleFormat;
-import org_pef_text.text2pef.TextParser.Builder;
+import org_pef_text.TableFactory;
 
 /**
  * Transformer wrapper for TextParser 
@@ -50,7 +47,7 @@ public class Text2PEF extends Transformer {
 		try {
 			TextParser.Builder builder = new TextParser.Builder(input, output);
 			if (mode!=null && !"".equals(mode)) {
-				builder.mode(BrailleFormat.Mode.valueOf(mode.toUpperCase()));
+				builder.mode(TableFactory.TableType.valueOf(mode.toUpperCase()));
 			}
 			if (title!=null && !"".equals(title)) {
 				builder.title(title);
