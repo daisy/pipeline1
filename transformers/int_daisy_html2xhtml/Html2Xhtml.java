@@ -271,7 +271,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 				cs = Charset.forName(mUserSetEncoding);
 			} else {
 				CharsetDetector det = new CharsetDetector();
-				String charset = det.detect(mInputFile.toURL());
+				String charset = det.detect(mInputFile.toURI().toURL());
 				if (null == charset) {
 					charset = det.getProbableCharsetUsingLocale();
 				}
