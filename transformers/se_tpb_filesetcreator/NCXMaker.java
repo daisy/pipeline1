@@ -848,6 +848,88 @@ public class NCXMaker implements BusListener {
 		return textContent;
 	}
 	
+	/**
+	 * Builds a set of smil attributes and a text node value for this context. The <code>Map attributes</code>
+     * is populated such that the keys are "clipBegin", "clipEnd", "src" and "smilref" and the values
+     * are the corresponding attribute values from the modified (by the SmilMaker) manuscript file.
+     * The text node value and smil attributes are created incrementally by looping through the context
+     * 
+     * @param reader reads the (modified) manuscript
+     * @param attributes a map where to put the attribute names and values.
+     * @return the text content of the element with smil attributes.
+     * @throws XMLStreamException
+     */
+    private String getNextCompleteSmilContext(BookmarkedXMLEventReader reader, Map<String,String> attributes, XMLEvent currentManuscriptEvent) throws XMLStreamException {
+        String bookmark = "TPB Narrator.NCXMaker.getFirstSmilAttrs";
+        reader.setBookmark(bookmark);
+        String textContent = "";
+        
+        int elemCount = 1;
+        Map<String,String> attrs = new HashMap<String,String>();
+        String clipBegin = null;
+        String clipEnd = null;
+        String clipSrc = null;
+        String clipRef = null;
+        
+        if(currentManuscriptEvent.isStartElement()) {
+            if (hasSmilAttributes(currentManuscriptEvent.asStartElement())) {
+                getSmilContext(currentManuscriptEvent.asStartElement(), attrs);
+                clipBegin = attrs.remove(smilClipBegin);
+                clipEnd = attrs.remove(smilClipEnd);
+                clipSrc = attrs.remove(smilSrc);
+                clipRef = attrs.remove(smilRef);
+            }
+        }
+        
+        while (elemCount > 0) {
+            XMLEvent event = reader.nextEvent();
+            if (event.isEndElement()) {
+                elemCount--;
+            } else if (event.isCharacters()) {
+                textContent += event.asCharacters().getData() + " ";
+            }
+            
+            if (!event.isStartElement()) {
+                continue;
+            }
+            
+            // start elements only:
+            elemCount++;
+            if (hasSmilAttributes(event.asStartElement())) {
+                attrs.clear();
+                getSmilContext(event.asStartElement(), attrs);
+                if (clipBegin == null) {
+                    clipBegin = attrs.remove(smilClipBegin);
+                }
+                if (clipRef == null) {
+                    clipRef = attrs.remove(smilRef);
+                }
+                String end = attrs.remove(smilClipEnd);
+                if (end != null) {
+                    clipEnd = end;
+                }
+                String src = attrs.remove(smilSrc);
+                if (clipSrc == null) {
+                    clipSrc = src;
+                } else {
+                    if (src != null && !clipSrc.equals(src)) {
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Only add attributes if the smil values were found
+        if (clipBegin != null && clipEnd != null && clipSrc != null && clipRef != null) {
+            attributes.put(smilClipBegin, clipBegin);
+            attributes.put(smilClipEnd, clipEnd);
+            attributes.put(smilSrc, clipSrc);
+            attributes.put(smilRef, clipRef);
+        }
+        textContent = textContent.replaceAll("\\s+", " ").trim();
+        reader.gotoAndRemoveBookmark(bookmark);
+        return textContent;
+    }
 	
 	/**
 	 * Creates an "empty" navigation element. The element(s)
@@ -972,7 +1054,9 @@ public class NCXMaker implements BusListener {
 			// in the case of a smil-less xml contex, return null, 
 			// there is no point creating an empty nav list entry.
 			try {
-				contentBuffer = getNextSmilContext(reader, smilAttrs);
+				//contentBuffer = getNextSmilContext(reader, smilAttrs);
+			    // LE 2008-11-06: replaced getNextSmilContent with getNextCompleteSmilContext
+			    contentBuffer = getNextCompleteSmilContext(reader, smilAttrs, se);
 			} catch (Exception e) {
 				return null;
 			}
@@ -1307,11 +1391,13 @@ public class NCXMaker implements BusListener {
 			//this is the new one
 			getSmilContext(se, attrs);
 			textContent = getTextContent(reader);
-			DEBUG("Alert: MG20071119: using alternate method in NCXMaker#handleNavMapElement. Shouldnt happen when running Narrator.");
+			//DEBUG("Alert: MG20071119: using alternate method in NCXMaker#handleNavMapElement. Shouldnt happen when running Narrator.");
 			//System.err.println("Alert: MG20071119: using alternate method in NCXMaker#handleNavMapElement. Shouldnt happen when running Narrator.");
 		}else{
 			//this is the classic one
-			textContent = getNextSmilContext(reader, attrs);
+			//textContent = getNextSmilContext(reader, attrs);
+		    // LE 2008-11-06: replaced getNextSmilContent with getNextCompleteSmilContext
+			textContent = getNextCompleteSmilContext(reader, attrs, se);
 		}				
 		//mg 20071119: end changes
 		
