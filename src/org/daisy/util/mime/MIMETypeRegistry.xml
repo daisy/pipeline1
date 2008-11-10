@@ -84,6 +84,8 @@
 		<type id="ocf10" name="application/epub+zip" parentTypes="zip" namePatterns="*.epub" />				
 		<!-- Audacity -->
 		<type id="aup" name="application/x-audacity-aup" namePatterns="*.aup"/> 
+		<!-- PEF 1.0 -->
+		<type id="pef" name="application/x-pef+xml" parentTypes="xml" namePatterns="*.xml *.pef"/>
 
 		
 	</directory>

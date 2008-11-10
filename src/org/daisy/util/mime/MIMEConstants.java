@@ -53,6 +53,7 @@ public final class MIMEConstants {
 	public static final String MIME_APPLICATION_X_GZIP = "application/x-gzip";
 	public static final String MIME_APPLICATION_X_LATEX = "application/x-latex";
 	public static final String MIME_APPLICATION_X_NIMASFILESET_XML = "application/x-nimasfileset+xml";
+	public static final String MIME_APPLICATION_X_PEF_XML = "application/x-pef+xml";
 	public static final String MIME_APPLICATION_X_STUFFIT = "application/x-stuffit";
 	public static final String MIME_APPLICATION_X_TAR = "application/x-tar";
 	public static final String MIME_APPLICATION_X_TEX = "application/x-tex";
