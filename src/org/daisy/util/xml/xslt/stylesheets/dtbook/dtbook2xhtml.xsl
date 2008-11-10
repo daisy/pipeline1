@@ -925,7 +925,8 @@
 
   <xsl:template match="dtb:bdo">
     <bdo>
-       <xsl:copy-of select="@*"/>
+       <xsl:call-template name="copyCatts"/>
+       <xsl:copy-of select="@dir"/>
        <xsl:call-template name="maybeSmilref"/>
     </bdo>
   </xsl:template>
