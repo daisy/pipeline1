@@ -51,6 +51,7 @@ public class SrcExtractor {
 	private File xmlFile;	
 	private Set<String> srcValues = new HashSet<String>();
 	private Set<String> extSrcValues;
+	private Set<String> externalSrcValues = new HashSet<String>();
 	private Set<QName> uriCarriers;
 	
 	/**
@@ -95,12 +96,21 @@ public class SrcExtractor {
 	}
 	
 	private void extractURI(StartElement se) {
+	    // LE 20081115: added external attribute check
+	    boolean external = false;
+	    Attribute externalAttr = AttributeByName.get(new QName("external"), se);
+	    if (externalAttr != null && "true".equals(externalAttr.getValue())) {
+	        external = true;
+	    }
 		Attribute attrib;
 		for(QName q : uriCarriers) {
 			if ((attrib = AttributeByName.get(q,se)) != null) {
 				String val = attrib.getValue();
 				if (val != null && val.trim().length() > 0) {
 					srcValues.add(val);
+					if (external) {
+					    externalSrcValues.add(val);
+					}
 				}
 			}	
 		}		
@@ -156,6 +166,19 @@ public class SrcExtractor {
 			}
 		}
 		return extSrcValues;
+	}
+	
+	/**
+	 * Return a set of URI string values pointing to local relative resources that are
+	 * internal to the DTB. 
+	 * @return a set of URI string values pointing to local relative resources that
+	 *         are part of the DTB.
+	 */
+	public Set<String> getInternalRelativeResources() {
+	    Set<String> result = new HashSet<String>();
+	    result.addAll(getRelativeResources());
+	    result.removeAll(externalSrcValues);
+	    return result;
 	}
 	
 	/**

@@ -174,7 +174,8 @@ public class FileSetCreator extends Transformer {
 			files = srcex.getRelativeResources();
 			inputBaseDir = srcex.getBaseDir();
 			FileBunchCopy.copyFiles(inputBaseDir, outputDir, files, null, true);
-			references.addAll(files);
+			// LE 20081115: make sure no external relative resources are added to the package file
+			references.addAll(srcex.getInternalRelativeResources());
 			
 			this.sendMessage(i18n("DONE"), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
 
