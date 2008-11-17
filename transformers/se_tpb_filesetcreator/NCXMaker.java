@@ -1614,7 +1614,8 @@ public class NCXMaker implements BusListener {
 			}
 			
 			// author
-			if (frontMatterStack.getContextPath().endsWith("docauthor") &&	!authorFound) {
+			// LE 20081116: ignore docauthor elements without any text content
+			if (frontMatterStack.getContextPath().endsWith("docauthor") && !authorFound && !getTextContent(reader).equals("")) {
 				Element authorElement = 
 					(Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:*[@id='author']", mNsc);
 				authorElement.removeAttribute("id");
