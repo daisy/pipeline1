@@ -73,7 +73,9 @@ public class AudioFiles {
 		
 		AudioFileFormat aff = AudioSystem.getAudioFileFormat(file);
 		AudioFormat format = aff.getFormat();
-		return (long)(1000.0 * aff.getFrameLength() / format.getFrameRate());
+		// jpritchett@rfbd.org, 14 Nov 2008:  Changed casting to rounding to make more accurate
+		//return (long)(1000.0 * aff.getFrameLength() / format.getFrameRate());
+		return Math.round(1000.0 * aff.getFrameLength() / format.getFrameRate());
 	}
 	
 	
