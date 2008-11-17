@@ -54,6 +54,7 @@ import org.daisy.util.fileset.Z3986NcxFile;
 import org.daisy.util.fileset.Z3986SmilFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
+import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
@@ -117,12 +118,17 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             Fileset fileset = this.buildFileSet(manifest);   
             if (fileset.hadErrors()) {
             	String detail = null;
-            	for (Iterator<?> iterator = fileset.getErrors().iterator(); iterator.hasNext();) {
+            	for (Iterator<Exception> iterator = fileset.getErrors().iterator(); iterator.hasNext();) {
 					FilesetFileException exc = (FilesetFileException) iterator.next();
+					if (exc instanceof FilesetFileWarningException) {
+					    continue;
+					}
 					detail = exc.getMessage();	
 					break;
-				}            	
-            	throw new TransformerRunException(i18n("ERROR_ABORTING",detail));
+				}
+            	if (detail != null) {
+            	    throw new TransformerRunException(i18n("ERROR_ABORTING",detail));
+            	}
             }
             this.progress(FILESET_DONE);
             this.checkAbort();
