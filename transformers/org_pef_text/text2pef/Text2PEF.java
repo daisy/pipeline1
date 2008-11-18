@@ -46,7 +46,7 @@ public class Text2PEF extends Transformer {
 		progress(0);
 		try {
 			TextParser.Builder builder = new TextParser.Builder(input, output);
-			if (mode!=null && !"".equals(mode)) {
+			if (mode!=null && !"".equals(mode) && !"detect".equals(mode)) {
 				builder.mode(TableFactory.TableType.valueOf(mode.toUpperCase()));
 			}
 			if (title!=null && !"".equals(title)) {

@@ -1,18 +1,24 @@
 package org_pef_text.text2pef;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Date;
 
 import org_pef_text.AbstractTable;
 import org_pef_text.TableFactory;
+import org_pef_text.TableFactory.TableType;
 
 /**
  * Reads an ASCII file and parses it into a basic PEF file.
@@ -58,7 +64,7 @@ public class TextParser {
 		private String author = "";
 		private String language = "";
 		private String identifier = "";
-		private TableFactory.TableType mode = TableFactory.TableType.values()[0];
+		private TableFactory.TableType mode = null;
 		private boolean duplex = false;
 		private Date date = new Date();
 
@@ -95,8 +101,8 @@ public class TextParser {
 			identifier = value; return this;
 		}
 		public Builder mode(TableFactory.TableType value) {
-			if (value==null) throw new IllegalArgumentException("Null value not accepted.");
-			mode = value; return this;
+			mode = value;
+			return this;
 		}
 		public Builder duplex(boolean value) {
 			duplex = value; return this;
@@ -104,6 +110,52 @@ public class TextParser {
 		public Builder date(Date value) {
 			if (value==null) throw new IllegalArgumentException("Null value not accepted.");
 			date = value; return this;
+		}
+		
+		private BitSet analyze(InputStream is) throws IOException {
+			BitSet bs = new BitSet(256);
+			int c;
+			while ((c=is.read())>-1) {
+				bs.set(c);
+			}
+			return bs;
+		}
+		
+		private TableType detect() {
+			try {
+				FileInputStream is = new FileInputStream(input);
+				BitSet in = analyze(is);
+				is.close();
+				in.clear(0x0a);
+				in.clear(0x0c);
+				in.clear(0x0d);
+				//in.clear(239); // byte order mark
+				AbstractTable at;
+				TableFactory f = new TableFactory();
+				//TODO: f.setFallback(EightDotFallbackMethod.FAIL);
+				StringBuffer tmp = new StringBuffer();
+				for (int i=0; i<256; i++) {
+					tmp.append((char)(0x2800+i));
+				}
+				BitSet ta;
+				for (TableType tt : TableFactory.TableType.values()) {
+					 at = f.newTable(tt);
+					 ByteArrayInputStream bs = new ByteArrayInputStream(at.toText(tmp.toString()).getBytes(at.getPreferredCharset().name()));
+					 ta = analyze(bs);
+					 ta.and(in);
+					 if (ta.equals(in)) {
+						 System.out.println("Input matches " + tt.name());
+						 return tt;
+					 }
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
 		}
 		
 		/**
@@ -121,9 +173,14 @@ public class TextParser {
 		author = builder.author;
 		language = builder.language;
 		identifier = builder.identifier;
+		if (builder.mode==null) {
+			builder.mode = builder.detect();
+			if (builder.mode==null) {
+				throw new UnsupportedEncodingException("Cannot detect table.");
+			}
+		}
 		TableFactory b = new TableFactory();
-		b.setTable(builder.mode);
-		mode = b.newTable();
+		mode = b.newTable(builder.mode);
 		duplex = builder.duplex;
 		date = builder.date;
 	}

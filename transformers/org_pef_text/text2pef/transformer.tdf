@@ -27,12 +27,13 @@
 			<description>Read mode</description>
 			<example>en_US</example>
 			<enum>
+				<value>detect</value>
 				<value>en_US</value>
 				<value>da_DK</value>
 				<value>sv_SE_CX</value>
 				<value>UNICODE_BRAILLE</value>
 			</enum>
-			<default>en_US</default>
+			<default>detect</default>
 		</parameter>	
 
 		<parameter type="string" required="false">

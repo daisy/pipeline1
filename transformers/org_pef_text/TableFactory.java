@@ -48,7 +48,11 @@ public class TableFactory {
 	}
 	
 	public AbstractTable newTable() {
-		switch (tableType) {
+		return newTable(tableType);
+	}
+	
+	public AbstractTable newTable(TableType t) {
+		switch (t) {
 			case EN_US:
 				return new SimpleTable(new String(" A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)="), Charset.forName("UTF-8"), fallback, replacement, true);
 			case EN_GB:
