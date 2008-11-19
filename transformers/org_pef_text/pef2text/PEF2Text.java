@@ -80,8 +80,8 @@ public class PEF2Text extends Transformer {
 			PEFParser.parse(input, ph);
 			progress(0.5);
 			if (deviceName!=null && !"".equals(deviceName)) {
-				BrailleDevice bd = new BrailleDevice(deviceName, true);
-				bd.emboss(output);
+				PrinterDevice bd = new PrinterDevice(deviceName, true);
+				bd.transmit(output);
 			}
 		} catch (ParserConfigurationException e) {
 			throw new TransformerRunException(e.getMessage(), e);

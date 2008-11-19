@@ -1,8 +1,14 @@
 package org_pef_text;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
+/**
+ * The table factory will create an Abstract table based on the factory's 
+ * current settings. 
+ * 
+ * @author Joel Håkansson, TPB
+ *
+ */
 public class TableFactory {
 	public enum TableType {EN_US, EN_GB, DA_DK, SV_SE_CX, UNICODE_BRAILLE};
 	public enum EightDotFallbackMethod {MASK, REPLACE, REMOVE}; //, FAIL
@@ -47,10 +53,19 @@ public class TableFactory {
 		}
 	}
 	
+	/**
+	 * Get a new table instance based on the factory's current settings.
+	 * @return returns a new table instance.
+	 */
 	public AbstractTable newTable() {
 		return newTable(tableType);
 	}
 	
+	/**
+	 * Get a new table instance based on the factory's current settings.
+	 * @param t the type of table to return, this will override the factory's default table type.
+	 * @return returns a new table instance.
+	 */
 	public AbstractTable newTable(TableType t) {
 		switch (t) {
 			case EN_US:
@@ -71,29 +86,4 @@ public class TableFactory {
 				throw new IllegalArgumentException("Cannot find table type " + tableType);
 		}
 	}
-
-	/**
-	 * Creates an appropriate table based on a sample of text.
-	 * @param sample a single line of text, without control characters
-	 * @return returns a suitable braille table or null if none is found
-	 */
-	/*
-	public static Table newInstance(String sample) {
-		Builder b;
-		BrailleTranscoder bf;
-		//TODO: Fix. Change the exception in toBraille so that it can be caught
-		//TODO: String, byte[] or file sample?
-		for (TableType t : TableType.values()) {
-			b = new Builder();
-			b.table(t);
-			try {
-				bf = b.build();
-				bf.toBraille(sample);
-			} catch (UnsupportedEncodingException e) {				
-				e.printStackTrace();
-			}			
-		}
-		return null;
-	}*/
-
 }

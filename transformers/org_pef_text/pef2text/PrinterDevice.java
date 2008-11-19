@@ -15,32 +15,33 @@ import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.attribute.DocAttributeSet;
 
-import org.daisy.pipeline.core.event.MessageEvent;
-import org.daisy.pipeline.exception.TransformerRunException;
-
 /**
  * 
- * ... beskrivning ...
+ * Printer device class of type DocFlavor.INPUT_STREAM.AUTOSENSE
+ * 
+ * This class can be used when sending a file to a printer.
  * 
  * @author  Joel Hakansson, TPB
  * @version 3 jul 2008
  * @since 1.0
  */
-public class BrailleDevice {
+public class PrinterDevice {
 	//private final static DocFlavor FLAVOR = DocFlavor.BYTE_ARRAY.AUTOSENSE;
 	private final static DocFlavor FLAVOR = DocFlavor.INPUT_STREAM.AUTOSENSE;
 	private DocPrintJob dpj;
 	
 	/**
-	 * 
-	 * @param embosserName
-	 * @param fuzzyLookup
+	 * Create a device with the provided name.
+	 * @param deviceName the name of the device
+	 * @param fuzzyLookup If true, the returned device is any device whose name contains the 
+	 * supplied deviceName. If false, the returned device name equals the supplied deviceName. 
+	 * @throws IllegalArgumentException if no device is found.
 	 */
-	public BrailleDevice(String embosserName, boolean fuzzyLookup) {
+	public PrinterDevice(String deviceName, boolean fuzzyLookup) {
 		PrintService[] printers = PrintServiceLookup.lookupPrintServices(FLAVOR, null);
 		for (PrintService p : printers) {
-			if (p.getName().equals(embosserName) ||
-					(p.getName().contains(embosserName) && fuzzyLookup)) {
+			if (p.getName().equals(deviceName) ||
+					(p.getName().contains(deviceName) && fuzzyLookup)) {
 				dpj = p.createPrintJob();
 				return;
 			}
@@ -49,8 +50,8 @@ public class BrailleDevice {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * List available devices
+	 * @return returns a list of available devices that accepts DocFlavor.INPUT_STREAM.AUTOSENSE 
 	 */
 	public static PrintService[] getDevices() {
 		PrintService[] printers = PrintServiceLookup.lookupPrintServices(FLAVOR, null);
@@ -58,12 +59,12 @@ public class BrailleDevice {
 	}
 
 	/**
-	 * 
-	 * @param file
+	 * Transmit a file to the device
+	 * @param file the file to transmit
 	 * @throws FileNotFoundException
 	 * @throws PrintException
 	 */
-	public void emboss(File file) throws FileNotFoundException, PrintException {
+	public void transmit(File file) throws FileNotFoundException, PrintException {
 		InputStreamDoc doc = new InputStreamDoc(file);
 		dpj.print(doc, null);
 	}

@@ -12,7 +12,6 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Date;
 
@@ -30,7 +29,8 @@ import org_pef_text.TableFactory.TableType;
  * @version 28 aug 2008
  * @since 1.0
  */
-//TODO: Add rows and cols params
+//TODO: Add rows and cols params. Implement support for maximum page size. If exceeded, break row or page.
+
 public class TextParser {
 	public final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	private File input;
@@ -65,7 +65,7 @@ public class TextParser {
 		private String language = "";
 		private String identifier = "";
 		private TableFactory.TableType mode = null;
-		private boolean duplex = false;
+		private boolean duplex = true;
 		private Date date = new Date();
 
 		/**
@@ -113,46 +113,42 @@ public class TextParser {
 		}
 		
 		private BitSet analyze(InputStream is) throws IOException {
-			BitSet bs = new BitSet(256);
-			int c;
-			while ((c=is.read())>-1) {
-				bs.set(c);
+			BitSet set = new BitSet(256);
+			int val;
+			while ((val=is.read())>-1) {
+				set.set(val);
 			}
-			return bs;
+			return set;
 		}
 		
 		private TableType detect() {
 			try {
 				FileInputStream is = new FileInputStream(input);
-				BitSet in = analyze(is);
+				BitSet inputThumbprint = analyze(is);
 				is.close();
-				in.clear(0x0a);
-				in.clear(0x0c);
-				in.clear(0x0d);
-				//in.clear(239); // byte order mark
-				AbstractTable at;
-				TableFactory f = new TableFactory();
-				//TODO: f.setFallback(EightDotFallbackMethod.FAIL);
-				StringBuffer tmp = new StringBuffer();
+				inputThumbprint.clear(0x0a);
+				inputThumbprint.clear(0x0c);
+				inputThumbprint.clear(0x0d);
+				StringBuffer brailleChars = new StringBuffer();
 				for (int i=0; i<256; i++) {
-					tmp.append((char)(0x2800+i));
+					brailleChars.append((char)(0x2800+i));
 				}
-				BitSet ta;
-				for (TableType tt : TableFactory.TableType.values()) {
-					 at = f.newTable(tt);
-					 ByteArrayInputStream bs = new ByteArrayInputStream(at.toText(tmp.toString()).getBytes(at.getPreferredCharset().name()));
-					 ta = analyze(bs);
-					 ta.and(in);
-					 if (ta.equals(in)) {
-						 System.out.println("Input matches " + tt.name());
-						 return tt;
+				AbstractTable table;
+				TableFactory factory = new TableFactory();
+				BitSet tableThumbprint;
+				for (TableType type : TableFactory.TableType.values()) {
+					 table = factory.newTable(type);
+					 ByteArrayInputStream bis = new ByteArrayInputStream(table.toText(brailleChars.toString()).getBytes(table.getPreferredCharset().name()));
+					 tableThumbprint = analyze(bis);
+					 tableThumbprint.and(inputThumbprint);
+					 if (tableThumbprint.equals(inputThumbprint)) {
+						 System.out.println("Input matches " + type.name());
+						 return type;
 					 }
 				}
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;
@@ -186,12 +182,29 @@ public class TextParser {
 	}
 
 	/**
+	 * Command line entry point.
 	 * @param args
 	 */
-	//TODO: Add command line help text
 	public static void main(String[] args) {
 		if (args.length<2) {
-			System.out.println("Text2PEF input output [options ...]");
+			System.out.println("TextParser input output [options ...]");
+			System.out.println();
+			System.out.println("Arguments");
+			System.out.println("  input               path to the input file");
+			System.out.println("  output              path to the output file");
+			System.out.println();
+			System.out.println("Options");
+			System.out.println("  -mode value        input braille code, available values are:");
+			System.out.println("                          \"detect\" (default)");
+			for (TableFactory.TableType t : TableFactory.TableType.values()) {
+				System.out.println("                          \"" + t.toString().toLowerCase() + "\"");
+			}
+			System.out.println("  -author value       the author of the publication");
+			System.out.println("  -title value        the title of the publication");
+			System.out.println("  -identifier value   the publications unique identifier. If no value is supplied, it will be a generated.");
+			System.out.println("  -language value     set the document language (as defined by IETF RFC 3066)");
+			System.out.println("  -duplex value       set the documents duplex property. Default is \"true\"");
+			System.out.println("  -date value         set the publication date using the form \"yyyy-MM-dd\"");
 		} else {
 			try {
 				parse(args);
@@ -240,7 +253,7 @@ public class TextParser {
 	}
 
 	/**
-	 * Parse using the current settings 
+	 * Parse using current settings
 	 * @throws IOException
 	 */
 	public void parse() throws IOException {

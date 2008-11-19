@@ -13,19 +13,16 @@ import org_pef_text.TableFactory;
 import org_pef_text.TableFactory.EightDotFallbackMethod;
 
 /**
- * SAX implementation of pef2text.xsl 
+ * Reads a PEF-file and outputs a text file.
  * 
  * @author  Joel Hakansson, TPB
  * @version 2 jul 2008
  * @since 1.0
  */
-/* TODO: Allow setting another braille table
- * TODO: Implement support for row gap
- */
 public class PEFParser {
 
 	/**
-	 *
+	 * Command line entry point.
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -127,12 +124,6 @@ public class PEFParser {
 		if (!input.exists()) {
 			throw new IllegalArgumentException("Input does not exist");
 		}
-		/*
-		if (embosser.equals(Embosser.NONE)) {
-			ph = new PEFHandler(output, mode, breaks, range);
-		} else {
-			ph = new PEFHandler(output, embosser, range);
-		}*/
 		SAXParserFactory spf = SAXParserFactory.newInstance();
 		spf.setNamespaceAware(true);
 		SAXParser sp = spf.newSAXParser();

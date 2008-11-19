@@ -3,7 +3,8 @@ package org_pef_text;
 import java.nio.charset.Charset;
 
 /**
- * 
+ * AbstractTable is an interface for transcoding between Unicode braille and
+ * some other braille table.
  * 
  * @author  Joel Hakansson, TPB
  * @version 7 nov 2008
@@ -21,6 +22,11 @@ public interface AbstractTable {
 	
 	/**
 	 * Transcode the given braille into text.
+	 * 
+	 * In most cases this will reverse the effect of
+	 * toBraille(String text), i.e. text.equals(toText(toBraille(text))), however
+	 * an implementation cannot rely on it.
+	 * 
 	 * Values must be between 0x2800 and 0x28FF.
 	 * @param braille
 	 * @return

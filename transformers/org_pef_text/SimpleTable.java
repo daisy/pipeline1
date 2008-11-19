@@ -56,7 +56,7 @@ public class SimpleTable implements AbstractTable {
 		if (ignoreCase) {
 			c = Character.toLowerCase(c);
 		}
-		if (t2b.get(c)==null) throw new IllegalArgumentException("Character '" + c + "' (" + Character.getNumericValue(c) + ") not found.");
+		if (t2b.get(c)==null) throw new IllegalArgumentException("Character '" + c + "' (0x" + Integer.toHexString((int)(c)) + ") not found.");
 		return (t2b.get(c));
 	}
 

@@ -20,14 +20,11 @@ import org.xml.sax.helpers.DefaultHandler;
 public class PEFHandler extends DefaultHandler {
 	private static final String PEF_NS="http://www.daisy.org/ns/2008/pef";
 	private AbstractEmbosser embosser;
-	//private String tableDef;
-
 	private Stack<Element> elements;
 	private Element rowParent;
 	private Element pageParent;
 	private int inputPages;
 	private Range range;
-	//private Charset charset;
 	
 	public static class Builder {
 		//required params

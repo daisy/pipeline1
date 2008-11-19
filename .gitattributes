@@ -906,7 +906,6 @@ transformers/org_pef_text/AbstractTable.java -text
 transformers/org_pef_text/SimpleTable.java -text
 transformers/org_pef_text/TableFactory.java -text
 transformers/org_pef_text/pef2text/AbstractEmbosser.java -text
-transformers/org_pef_text/pef2text/BrailleDevice.java -text
 transformers/org_pef_text/pef2text/ConfigurableEmbosser.java -text
 transformers/org_pef_text/pef2text/Element.java -text
 transformers/org_pef_text/pef2text/EmbosserFactory.java -text
@@ -914,6 +913,7 @@ transformers/org_pef_text/pef2text/LineBreaks.java -text
 transformers/org_pef_text/pef2text/PEF2Text.java -text
 transformers/org_pef_text/pef2text/PEFHandler.java -text
 transformers/org_pef_text/pef2text/PEFParser.java -text
+transformers/org_pef_text/pef2text/PrinterDevice.java -text
 transformers/org_pef_text/pef2text/Range.java -text
 transformers/org_pef_text/pef2text/pef2text.xsl -text
 transformers/org_pef_text/pef2text/transformer.tdf -text
