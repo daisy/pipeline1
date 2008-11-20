@@ -99,6 +99,7 @@ doc/scripts/ImageConverter.html -text
 doc/scripts/Narrator-DtbookToDaisy202.html -text
 doc/scripts/OCFCreator.html -text
 doc/scripts/OPSCreator.html -text
+doc/scripts/PEFIntroduction.html -text
 doc/scripts/PEFToText.html -text
 doc/scripts/PrettyPrinter.html -text
 doc/scripts/RenamerTaggerValidator.html -text

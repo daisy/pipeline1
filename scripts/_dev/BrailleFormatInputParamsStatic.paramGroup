@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paramGroup>
 
-	<parameter name="mode" value="en_US" required="true">
+	<parameter name="mode" value="detect" required="true">
 		<nicename>Source format</nicename>
 		<description>Source format</description>
 		<datatype>
 			<enum>
+			  <item nicename="Detect" value="detect"/>
 			  <item nicename="North American ASCII Braille" value="en_US" />
 			  <item nicename="Unicode braille" value="UNICODE_BRAILLE" />
 			  <item nicename="Danish" value="da_DK" />
