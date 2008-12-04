@@ -117,6 +117,12 @@
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
 			</tts>
+			<!-- Use the following if you'd like to use the AT&T Natural voices TTS
+			<tts>
+				<param name="class" value="se_tpb_speechgen2.external.linux.ATTNaturalVoicesTTS"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/ATTNaturalVoicesGerman.xml"/>
+			</tts>
+			-->
 		</lang>
 		<lang lang="el">
 			<tts>
