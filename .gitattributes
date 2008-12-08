@@ -366,7 +366,6 @@ scripts/_dev/BrailleTextToPEF.taskScript -text
 scripts/_dev/BrailleTextToText.taskScript -text
 scripts/_dev/DTBBackwardMigrator.taskScript -text
 scripts/_dev/DTBookFix_NarratorValidation.taskScript -text
-scripts/_dev/DTBookToLaTeX.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
 scripts/_dev/Narrator-Autumn2008.taskScript -text
@@ -380,6 +379,7 @@ scripts/_dev/XukCreator.taskScript -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
 scripts/conversion/advanced/WordMLtoDTBook.taskScript -text
 scripts/conversion/advanced/Xhtml2Dtbook.taskScript -text
+scripts/conversion/simple/DTBookToLaTeX.taskScript -text
 scripts/conversion/simple/DtbookToRtf.taskScript -text
 scripts/conversion/simple/DtbookToXhtml.taskScript -text
 scripts/conversion/simple/HtmlToXhtml.taskScript -text
