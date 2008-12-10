@@ -135,8 +135,50 @@
     	<resource xml:lang="en" id="esr010"> 
       		<text>Computer Code</text>
     	</resource>
-  	</nodeSet> 
+  	</nodeSet>
+  	
+	<nodeSet id="esns011" select="//seq[@class='blockquote']">
+      <resource xml:lang="en" id="esr011">
+        <text>Quote</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:16.500" clipEnd="0:00:17.737" />
+      </resource>
+    </nodeSet> 
 
+    <nodeSet id="esns012" select="//seq[@class='list']">
+      <resource xml:lang="en" id="esr012">
+        <text>List</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:18.942" clipEnd="0:00:20.118" />
+      </resource>
+    </nodeSet>
+    
+    <nodeSet id="esns013" select="//seq[@class='note']">
+      <resource xml:lang="en" id="esr013">
+        <text>Note</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:20.118" clipEnd="0:00:21.370" />
+      </resource>
+    </nodeSet>
+    
+    <nodeSet id="esns014" select="//seq[@class='poem']">
+      <resource xml:lang="en" id="esr014">
+        <text>Poem</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:21.370" clipEnd="0:00:22.602" />
+      </resource>
+    </nodeSet>
+    
+    <nodeSet id="esns015" select="//seq[@class='table']">
+      <resource xml:lang="en" id="esr015">
+        <text>Table</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:26.526" clipEnd="0:00:27.857" />
+      </resource>
+    </nodeSet>
+    
+    <nodeSet id="esns016" select="//seq[@class='tr']">
+      <resource xml:lang="en" id="esr016">
+        <text>Table row</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:27.857" clipEnd="0:00:29.284" />
+      </resource>
+    </nodeSet>
+    
   </scope>
 
 
