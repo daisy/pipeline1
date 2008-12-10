@@ -27,51 +27,64 @@ import java.util.Stack;
  * @author Linus Ericson
  */
 public class I18n {
-	
+
     private static ResourceBundle defaultBundle = null;
     private Stack<ResourceBundle> bundles = new Stack<ResourceBundle>();
-	
+
     public I18n() {
+    }
+
+    public I18n(ResourceBundle bundle) {
+	bundles.push(bundle);
+    }
+
+    public static void setDefaultBundle(ResourceBundle bundle) {
+	defaultBundle = bundle;
+    }
+
+    public void addBundle(ResourceBundle bundle) {
+	bundles.push(bundle);
+    }
+
+    public String format(String msgId, Object[] params) {
+	try {
+	    for (Iterator<ResourceBundle> it = bundles.iterator(); it.hasNext();) {
+		try {
+		    ResourceBundle bundle = it.next();
+		    String msg = bundle.getString(msgId);
+		    return MessageFormat.format(msg, params);
+		} catch (MissingResourceException e) {
+		    // Nothing
+		}
+	    }
+	    if (defaultBundle != null) {
+		try {
+		    String msg = defaultBundle.getString(msgId);
+		    return MessageFormat.format(msg, params);
+		} catch (MissingResourceException e) {
+		    // Nothing
+		}
+	    }
+	} catch (IllegalArgumentException e) {
+	    return "<wrong format of resource in bundle> " + msgId;
 	}
-    
-	public I18n(ResourceBundle bundle) {
-	    bundles.push(bundle);
-	}
-	
-	public static void setDefaultBundle(ResourceBundle bundle) {
-	    defaultBundle = bundle;
-	}
-	
-	public void addBundle(ResourceBundle bundle) {
-	    bundles.push(bundle);
-	}
-	
-	public String format(String msgId, Object[] params) {
-	    try {
-		    for (Iterator<ResourceBundle> it = bundles.iterator(); it.hasNext(); ) {
-		        try {
-			        ResourceBundle bundle = it.next();
-			        String msg = bundle.getString(msgId);
-			        return MessageFormat.format(msg, params);
-		        } catch (MissingResourceException e) {
-		            // Nothing
-		        }
-		    }
-		    if (defaultBundle != null) {
-		        try {		        
-			        String msg = defaultBundle.getString(msgId);
-			        return MessageFormat.format(msg, params);
-		        } catch (MissingResourceException e) {
-		            // Nothing
-		        }
-		    }
-	    } catch (IllegalArgumentException e) {
-	        return "<wrong format of resource in bundle> " + msgId;
-	    }	    
-	    return "<missing resource> " + msgId;	    
-	}
-	
-	public String format(String msgId) {		
-		return format(msgId, null);
-	}
+	return "<missing resource> " + msgId;
+    }
+
+    public String format(String msgId) {
+	return format(msgId, null);
+    }
+
+    public String format(String msgId, Object param) {
+	return format(msgId, new Object[] { param });
+    }
+
+    public String format(String msgId, Object param1, Object param2) {
+	return format(msgId, new Object[] { param1, param2 });
+    }
+
+    public String format(String msgId, Object param1, Object param2,
+	    Object param3) {
+	return format(msgId, new Object[] { param1, param2, param3 });
+    }
 }
