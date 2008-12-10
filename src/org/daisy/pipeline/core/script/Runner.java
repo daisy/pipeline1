@@ -44,16 +44,16 @@ import org.daisy.util.i18n.I18n;
  */
 public class Runner implements BusListener {
 
+    private EventBus mEventBus = EventBus.getInstance();
     private boolean mRunning;
     private boolean mAbort;
     private int mCompletedTasks;
-    private I18n mInternationalization;
+    private I18n mInternationalization = new I18n();
 
     /**
      * Constructor.
      */
     public Runner() {
-        mInternationalization = new I18n();
     }
 
     /**
@@ -69,11 +69,11 @@ public class Runner implements BusListener {
         }
         try {
         	this.mAbort = false;
-        	EventBus.getInstance().subscribe(this, UserAbortEvent.class);        	
+        	mEventBus.subscribe(this, UserAbortEvent.class);        	
             this.mRunning = true;
             this.mCompletedTasks = 0;
 
-            EventBus.getInstance().publish(
+            mEventBus.publish(
                     new JobStateChangeEvent(job,
                             StateChangeEvent.Status.STARTED));
             logParameters(job);
@@ -95,35 +95,35 @@ public class Runner implements BusListener {
                 // Add hard-coded transformer parameters
                 this.addTransformerParameters(parameters, handler);
 
-                boolean success = handler.run(parameters, task.isInteractive(), task);
+                boolean success = handler.run(parameters, task.isInteractive(), task, null);
                 if (!success) {
                     throw new JobFailedException(i18n("TASK_FAILED", handler.getName()));
                 }
                 this.mCompletedTasks++;
 
             }
-            EventBus.getInstance().publish(
+            mEventBus.publish(
                     new JobStateChangeEvent(job,
                             StateChangeEvent.Status.STOPPED));
         } catch (TransformerAbortException e) {
         	String message = i18n("SCRIPT_ABORTED");
-        	EventBus.getInstance().publish(new CoreMessageEvent(this,message, MessageEvent.Type.INFO,MessageEvent.Cause.INPUT));
+        	mEventBus.publish(new CoreMessageEvent(this,message, MessageEvent.Type.INFO,MessageEvent.Cause.INPUT));
             throw new JobAbortedException(message, e);
         } catch (TransformerRunException e) {
         	//mg 20070619: The transformer authors are responsible for localization
         	String message = (e.getMessage()!=null)?e.getMessage():i18n("UNEXPECTED_ERROR");
-        	EventBus.getInstance().publish(new CoreMessageEvent(this,message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
+        	mEventBus.publish(new CoreMessageEvent(this,message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
         	throw new JobFailedException(message,e);
         } catch (JobAbortedException e) {
         	String message = (e.getMessage()!=null)?e.getMessage():i18n("UNEXPECTED_ABORT");
-        	EventBus.getInstance().publish(new CoreMessageEvent(this, message, MessageEvent.Type.INFO,MessageEvent.Cause.INPUT));        	
+        	mEventBus.publish(new CoreMessageEvent(this, message, MessageEvent.Type.INFO,MessageEvent.Cause.INPUT));        	
         	throw new JobAbortedException(message, e);
         } catch (Exception e) {
         	String message = (e.getMessage()!=null)?e.getMessage():i18n("UNEXPECTED_ERROR");
-        	EventBus.getInstance().publish(new CoreMessageEvent(this,message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
+        	mEventBus.publish(new CoreMessageEvent(this,message, MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM));
         	throw new JobFailedException(i18n("ERROR_RUNNING_SCRIPT",message),e);
         } finally {
-        	EventBus.getInstance().unsubscribe(this, UserAbortEvent.class);
+            mEventBus.unsubscribe(this, UserAbortEvent.class);
             this.mRunning = false;
             this.mCompletedTasks = 0;
         }
@@ -136,7 +136,7 @@ public class Runner implements BusListener {
 			sb.append(" - ").append(param.getName()).append(':');
 			sb.append(param.getValue()).append("\n");
 		}
-    	EventBus.getInstance().publish(new MessageEvent(this,sb.toString(),MessageEvent.Type.DEBUG));
+    	mEventBus.publish(new MessageEvent(this,sb.toString(),MessageEvent.Type.DEBUG));
 	}
 
 	/*
