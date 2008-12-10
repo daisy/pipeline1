@@ -59,7 +59,6 @@ import org.xml.sax.SAXParseException;
  */
 public class Creator implements ErrorHandler, EntityResolver {
 
-    private TransformerHandlerLoader mHandlerLoader;
     private boolean mValidationError = false;
     private URL mCurrentScriptURL = null;
     private I18n mInternationalization;
@@ -69,8 +68,7 @@ public class Creator implements ErrorHandler, EntityResolver {
      * 
      * @param loader a TransformerHandlerLoader
      */
-    public Creator(TransformerHandlerLoader loader) {
-        mHandlerLoader = loader;
+    public Creator() {
         mInternationalization = new I18n();
     }
 
@@ -192,7 +190,7 @@ public class Creator implements ErrorHandler, EntityResolver {
             throws ScriptValidationException {
         for (Task task : script.getTasks()) {
             try {
-                TransformerHandler handler = mHandlerLoader
+                TransformerHandler handler = TransformerHandlerLoader.INSTANCE
                         .getTransformerHandler(task.getName());
                 if (handler != null) {
                     task.setTransformerHandler(handler);

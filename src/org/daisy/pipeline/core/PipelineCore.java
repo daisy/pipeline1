@@ -22,27 +22,18 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
 
-import org.daisy.pipeline.core.event.CoreMessageEvent;
-import org.daisy.pipeline.core.event.EventBus;
-import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.script.Creator;
 import org.daisy.pipeline.core.script.Job;
 import org.daisy.pipeline.core.script.Runner;
 import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.core.script.ScriptValidationException;
-import org.daisy.pipeline.core.transformer.TransformerHandler;
 import org.daisy.pipeline.core.transformer.TransformerHandlerLoader;
 import org.daisy.pipeline.exception.DMFCConfigurationException;
 import org.daisy.pipeline.exception.JobFailedException;
-import org.daisy.pipeline.exception.TransformerDisabledException;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.i18n.I18n;
 import org.daisy.util.i18n.XMLProperties;
@@ -59,17 +50,10 @@ import org.daisy.util.i18n.XMLPropertyResourceBundle;
  * 
  * @author Linus Ericson
  */
-public class PipelineCore implements TransformerHandlerLoader {
-
-    private File mHomeDirectory = null;
-
-    private InputListener mInputListener;
-    private Map<String, TransformerHandler> mTransformerHandlers = new HashMap<String, TransformerHandler>();
+public class PipelineCore {
 
     private Creator mCreator;
     private Runner mRunner;
-    
-	private I18n mInternationalization;
 
     /**
      * Create an instance of the Daisy Pipeline. This constructor will fetch the
@@ -132,12 +116,12 @@ public class PipelineCore implements TransformerHandlerLoader {
      */
     public PipelineCore(InputListener inListener, File homeDir, Properties userProps, Properties pipelineProps) 
     		throws DMFCConfigurationException {
-    	 mInputListener = inListener;
-         mHomeDirectory = (homeDir!=null)?homeDir:findHomeDirectory();
-         mCreator = new Creator(this);
+         homeDir = (homeDir!=null)?homeDir:findHomeDirectory();
+         TransformerHandlerLoader.INSTANCE.setInputListener(inListener); 
+         TransformerHandlerLoader.INSTANCE.setTransformersDirectory(new File(homeDir, "transformers")); 
+         mCreator = new Creator();
          mRunner = new Runner();
          initialize(userProps, pipelineProps);
-         mInternationalization = new I18n();
     }
 
     private void initialize(Properties userProps, Properties pipelineProps)
@@ -193,14 +177,11 @@ public class PipelineCore implements TransformerHandlerLoader {
         // this.getClass().getResource("pipeline.messages"), Locale.ENGLISH);
 
         I18n.setDefaultBundle(bundle);
-
-        // Setup logging
-        Logger lg = Logger.getLogger("");
-        Handler[] handlers = lg.getHandlers();
-        for (int i = 0; i < handlers.length; ++i) {
-            lg.removeHandler(handlers[i]);
+        
+        //Setup Logging Properties
+        if (System.getProperty("java.util.logging.config.file") == null) {
+        	System.setProperty("java.util.logging.config.file", "logging.properties");
         }
-
     }
     /**
      * Configure the Pipeline with the given user properties. This
@@ -219,64 +200,6 @@ public class PipelineCore implements TransformerHandlerLoader {
         }
         // Apply new properties if possible
         TempFile.setTempDir(new File(System.getProperty("pipeline.tempDir")));
-    }
-
-    /**
-     * Gets the home directory of DMFC.
-     * 
-     * @return the home directory of DMFC or <code>null</code> if it has not
-     *         yet been set.
-     */
-    public File getHomeDirectory() {
-        return mHomeDirectory;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.daisy.pipeline.core.transformer.TransformerHandlerLoader#getTransformerHandler(java.lang.String)
-     */
-    public TransformerHandler getTransformerHandler(String transformerName)
-            throws TransformerDisabledException {
-        if (mTransformerHandlers.containsKey(transformerName)) {
-            return mTransformerHandlers.get(transformerName);
-        }
-        File transformersDir = new File(getHomeDirectory(), "transformers");
-
-        // mg20070520: if subdir (such as se_tpb_dtbSplitterMerger.split)
-        transformerName = transformerName.replace('.', '/');
-
-        // Try to load TDF from directory
-        File[] files = new File(transformersDir, transformerName)
-                .listFiles(new FileFilter() {
-                    public boolean accept(File file) {
-                        return file.getName().endsWith(".tdf");
-                    }
-                });
-
-        if (files != null && files.length > 1) {
-            EventBus.getInstance().publish(
-                    new CoreMessageEvent(this, i18n("INVALID_TDF_NUMBER",transformerName),
-                            MessageEvent.Type.WARNING));
-        } else if (files != null && files.length == 1) {
-            TransformerHandler th = new TransformerHandler(files[0],
-                    transformersDir, mInputListener);
-            mTransformerHandlers.put(transformerName, th);
-            return th;
-        } else {
-            // Trying JAR instead
-            // System.err.println("trying jar...");
-            File jarFile = new File(getHomeDirectory(), "transformers/"
-                    + transformerName + ".jar");
-            if (jarFile.exists()) {
-                TransformerHandler th = new TransformerHandler(jarFile,
-                        transformerName, mInputListener, true);
-                mTransformerHandlers.put(transformerName, th);
-                return th;
-            } 
-            // System.err.println("jar doesn't exist");            
-        }
-        return null;
     }
 
     /**
@@ -365,23 +288,5 @@ public class PipelineCore implements TransformerHandlerLoader {
         });
         return files != null && files.length == 1;
     }
-    
-    /*
-     * i18n convenience methods
-     */
-    private String i18n(String msgId) {
-    	return mInternationalization.format(msgId);
-    }
 
-    private String i18n(String msgId, Object[] params) {
-    	return mInternationalization.format(msgId, params);
-    }
-
-    private String i18n(String msgId, Object param) {
-    	return i18n(msgId, new Object[] { param });
-    }
-
-    private String i18n(String msgId, Object param1, Object param2) {
-    	return i18n(msgId, new Object[] { param1, param2 });
-    }
 }

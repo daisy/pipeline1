@@ -42,6 +42,7 @@ import org.daisy.pipeline.core.event.TaskProgressChangeEvent;
 import org.daisy.pipeline.core.event.TaskStateChangeEvent;
 import org.daisy.pipeline.core.event.UserAbortEvent;
 import org.daisy.pipeline.core.event.UserReplyEvent;
+import org.daisy.pipeline.core.script.Job;
 import org.daisy.pipeline.core.script.Task;
 import org.daisy.pipeline.exception.TransformerAbortException;
 import org.daisy.pipeline.exception.TransformerRunException;
@@ -72,6 +73,8 @@ public abstract class Transformer implements BusListener {
 	private I18n mInternationalization;	
 	private boolean mLoadedFromJar = false;
 	private Task mTask;
+	private Job mJob;
+	protected EventBus mEventBus = EventBus.getInstance();
 	
 	/**
 	 * Creates a new Transformer.
@@ -161,7 +164,9 @@ public abstract class Transformer implements BusListener {
 	 */
 	protected abstract boolean execute(Map<String,String> parameters) throws TransformerRunException;
 	
-	final public boolean executeWrapper(Map<String,String> parameters, File dir) throws TransformerRunException {
+	final public boolean executeWrapper(Job job, Map<String,String> parameters, File dir) throws TransformerRunException {
+	    EventBus eventBus = (job!=null)?EventBus.REGISTRY.get(job):null;
+	    mEventBus = (eventBus!=null)?eventBus:EventBus.getInstance();
 	    checkAbort();
 	    mTransformerDirectory = dir;
 	    sendMessage(StateChangeEvent.Status.STARTED);	    
@@ -238,6 +243,10 @@ public abstract class Transformer implements BusListener {
 		mTask = task;
 	}
 	
+	/*package*/ void setJob(Job job) {
+	    mJob = job;
+	}
+	
 	/**
 	 * Gets some information about the transformer, such as name and description.
 	 * @return the TransformerInfo
@@ -279,7 +288,7 @@ public abstract class Transformer implements BusListener {
 	 * Convenience method to emit a message.
 	 */
 	public void sendMessage(String message, MessageEvent.Type type, MessageEvent.Cause cause, Location location) {
-		EventBus.getInstance().publish(new TaskMessageEvent(this.mTask,message,type,cause,location));
+		mEventBus.publish(new TaskMessageEvent(this.mTask,message,type,cause,location));
 	}
 	
 	/**
@@ -287,7 +296,7 @@ public abstract class Transformer implements BusListener {
 	 * @param progress A double between 0.0 and 1.0 inclusive
 	 */
 	protected void sendMessage(double progress) {
-		EventBus.getInstance().publish(new TaskProgressChangeEvent(this.mTask,progress));   
+		mEventBus.publish(new TaskProgressChangeEvent(this.mTask,progress));   
 	}
 	
 	/**
@@ -317,7 +326,7 @@ public abstract class Transformer implements BusListener {
 	 * Convenience method to send a atate change event.
 	 */ 
     protected void sendMessage(StateChangeEvent.Status state) {    	    	
-    	EventBus.getInstance().publish(new TaskStateChangeEvent(this.mTask,state));
+    	mEventBus.publish(new TaskStateChangeEvent(this.mTask,state));
 	}
     
 	/**

@@ -43,6 +43,7 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.RequestEvent;
 import org.daisy.pipeline.core.event.UserReplyEvent;
 import org.daisy.pipeline.core.script.Script;
+import org.daisy.pipeline.core.transformer.DirTransformerLoader;
 import org.daisy.pipeline.core.transformer.TransformerHandler;
 import org.daisy.pipeline.core.transformer.TransformerInfo;
 import org.daisy.pipeline.exception.DMFCConfigurationException;
@@ -134,7 +135,7 @@ public class SummaryGenerator implements InputListener {
 						
 		for(File tdf : tdfs) {
 			try {
-				TransformerHandler th = new TransformerHandler(tdf,transformersDir,this);
+				TransformerHandler th = new TransformerHandler(new DirTransformerLoader(tdf,transformersDir,this));
 				TransformerInfo info = th; 
 
 				doc.add(xef.createStartElement(new QName(xhtmlNS, "dt"),null,null));
