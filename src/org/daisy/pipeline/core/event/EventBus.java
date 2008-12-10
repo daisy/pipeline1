@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * A singleton event bus.
@@ -35,8 +37,14 @@ public class EventBus {
 	private Map<Class<? extends EventObject>, Set<BusListener>> mListenersMap = new HashMap<Class<? extends EventObject>, Set<BusListener>>();
 
 	private static EventBus mInstance = new EventBus();
+	public static ConcurrentMap<Object, EventBus> REGISTRY;
+	
+	static {
+	    REGISTRY = new ConcurrentHashMap<Object, EventBus>();
+	    REGISTRY.put("default", mInstance);
+	}
 
-	private EventBus() {
+	public EventBus() {
 
 	}
 
