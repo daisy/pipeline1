@@ -28,8 +28,7 @@ package org.daisy.util.execution;
  * if not it calls the protected method {@link TimeoutMonitor#timeout()}.
  * </p>
  * <p>
- * The monitoring can be interrupted via the {@link #cancel()}
- * method.
+ * The monitoring can be interrupted via the {@link #cancel()} method.
  * </p>
  * 
  * @author Romain Deltour
@@ -62,12 +61,22 @@ public abstract class TimeoutMonitor extends Thread {
 		}
 	}
 
+	/**
+	 * Performs the logic after this monitor has detected a timeout.
+	 */
 	protected abstract void timeout();
 
+	/**
+	 * Resets the timestamp against which the timeout it is checked (see the
+	 * class Javadoc).
+	 */
 	public void reset() {
 		lastUpdate = System.currentTimeMillis();
 	}
 
+	/**
+	 * Stops the monitoring by interrupting the thread.
+	 */
 	public void cancel() {
 		interrupt();
 	}
