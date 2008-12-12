@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -172,6 +173,23 @@ public class SpeechGen2 extends Transformer {
 	
 	private CountDownLatch countOnce = new CountDownLatch(1);	// thread synchronization
 	private AudioConcatQueue audioConcatQueue = null;           // wav files concatenation and possibly mp3 encoding.
+	private AudioConcatExceptionHandler audioConcatExceptionHandler = new AudioConcatExceptionHandler();
+	
+	private class AudioConcatExceptionHandler implements UncaughtExceptionHandler {
+	    private boolean uncaughtException = false;
+	    private Throwable throwable = null;
+        public void uncaughtException(Thread t, Throwable e) {
+            uncaughtException = true;
+            throwable = e;
+        }
+        public boolean hasUncaughtException() {
+            return uncaughtException;
+        }
+        public Throwable getThrowable() {
+            return throwable;
+        }
+	}
+	
 	
 	public SpeechGen2(InputListener inListener, Boolean isInteractive) {
 		super(inListener, isInteractive);
@@ -207,7 +225,7 @@ public class SpeechGen2 extends Transformer {
 			concurrentMerge = Boolean.parseBoolean(parameters.remove("concurrentAudioMerge"));
 			mp3Output = Boolean.parseBoolean(parameters.remove("mp3Output"));
 			mp3bitrate = Integer.parseInt(parameters.remove("mp3bitrate"));
-			audioConcatQueue = new AudioConcatQueue(countOnce, mp3bitrate);
+			audioConcatQueue = new AudioConcatQueue(countOnce, mp3bitrate);			
 			
 			// validate the configuration file for ttsbuilder
 			ErrorHandler handler = new ErrorHandler() {
@@ -397,8 +415,11 @@ public class SpeechGen2 extends Transformer {
 			// Start the audio merger queue
 			//-----------------------------------------------------------------
 			Thread t = new Thread(audioConcatQueue);
+			t.setUncaughtExceptionHandler(audioConcatExceptionHandler);
 			t.setPriority(t.getPriority() + 1);
 			t.start();
+			
+			
 			
 			//---------------------------------------------------------------------------
 			// Fetch the audio
@@ -415,6 +436,10 @@ public class SpeechGen2 extends Transformer {
 				progress(Math.min((double) (numAudioFiles - 1) / numAudioFiles, (double) mergeProgress / numAudioFiles));
 				while (countOnce.getCount() > 0) {
 					Thread.sleep(3 * 1000);
+					if (audioConcatExceptionHandler.hasUncaughtException()) {
+					    Throwable thr = audioConcatExceptionHandler.getThrowable();
+					    throw new TransformerRunException(thr.getMessage(), thr);
+					}
 					mergeProgress = audioConcatQueue.numFilesMerged();
 					progress(Math.min((double) (numAudioFiles - 1) / numAudioFiles, (double) mergeProgress / numAudioFiles));
 				}

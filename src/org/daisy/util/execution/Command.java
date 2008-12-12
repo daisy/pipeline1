@@ -21,9 +21,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.daisy.util.file.BinaryStreamRedirector;
 import org.daisy.util.file.NullOutputStream;
 import org.daisy.util.file.StreamRedirector;
 import org.daisy.util.text.LineFilter;
@@ -33,6 +37,8 @@ import org.daisy.util.text.LineFilter;
  * @author Linus Ericson
  */
 public class Command {
+    
+    private static Pattern safePathPattern = Pattern.compile("[\\p{Print}]+");
     
     /**
      * Execute an external program.
@@ -135,7 +141,7 @@ public class Command {
      * @return the exit value of the program that was run.
      * @throws ExecutionException
      */
-    public static int execute(String[] cmdarray, File workDir, OutputStream stdout, OutputStream stderr, int timeout, int pollInterval, LineFilter lineFilter) throws ExecutionException {        
+    public static int execute(String[] cmdarray, File workDir, InputStream stdin, OutputStream stdout, OutputStream stderr, int timeout, int pollInterval, LineFilter lineFilter) throws ExecutionException {        
         // Check working directory
         if (workDir != null && !workDir.isDirectory()) {
             throw new ExecutionException("'" + workDir + "' is not a directory");
@@ -170,11 +176,34 @@ public class Command {
             }            
             if (stderr != null) {
                 errStream = stderr;
-            }            
-            StreamRedirector out = new StreamRedirector(proc.getInputStream(), outStream, lineFilter, false);
-            StreamRedirector err = new StreamRedirector(proc.getErrorStream(), errStream, lineFilter, false);            
+            }
+            
+            StreamRedirector out = null;
+            StreamRedirector err = null;
+            if (lineFilter != null) {
+                out = new StreamRedirector(proc.getInputStream(), outStream, lineFilter, false);
+                err = new StreamRedirector(proc.getErrorStream(), errStream, lineFilter, false);
+            } else {
+                BinaryStreamRedirector bout = new BinaryStreamRedirector(proc.getInputStream(), outStream);
+                bout.setCloseInputStream(true);
+                bout.setCloseOutputStream(outStream != System.out);
+                out = bout;
+                
+                BinaryStreamRedirector berr = new BinaryStreamRedirector(proc.getErrorStream(), errStream);
+                berr.setCloseInputStream(true);
+                berr.setCloseOutputStream(errStream != System.err);
+                err = berr;
+            }
+                        
             out.start();
             err.start();
+            
+            if (stdin != null) {
+                BinaryStreamRedirector in = new BinaryStreamRedirector(stdin, proc.getOutputStream());
+                in.setCloseInputStream(true);
+                in.setCloseOutputStream(true);
+                in.start();
+            }
             
             // Wait (by polling) for exit value            
             while (!finished) {
@@ -208,8 +237,16 @@ public class Command {
         return exitVal;
     }
     
+    public static int execute(String[] cmdarray, File workDir, OutputStream stdout, OutputStream stderr, int timeout, int pollInterval, LineFilter lineFilter) throws ExecutionException {
+        return execute(cmdarray, workDir, null, stdout, stderr, timeout, pollInterval, lineFilter);
+    }
+    
     public static int execute(String[] cmdarray, File workDir, OutputStream stdout, OutputStream stderr, int timeout, int pollInterval) throws ExecutionException {
     	return execute(cmdarray, workDir, stdout, stderr, timeout, pollInterval, null);
+    }
+    
+    public static int execute(String[] cmdarray, InputStream stdin, OutputStream stdout, OutputStream stderr) throws ExecutionException {
+        return execute(cmdarray, null, stdin, stdout, stderr, -1, 500, null);
     }
     
     /**
@@ -274,5 +311,22 @@ public class Command {
         } catch (FileNotFoundException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
+    }
+    
+    /**
+     * Checks if a path contains safe characters. Due to a bug in java for windows
+     * calling Runtime.exec() fails when there are non-western unicode characters
+     * in the parameter list. This method checks whether a path is safe to use or
+     * if it might fail when supplied as a parameter to Runtime.exec().
+     * <p>
+     * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4947220
+     * </p>
+     * @param path the path to check
+     * @return <code>true</code> if the path is safe, <code>false</code> otherwise
+     */
+    public static boolean isSafePath(File path) {
+        // FIXME add os check here?
+        Matcher matcher = safePathPattern.matcher(path.getAbsolutePath());
+        return matcher.matches();
     }
 }

@@ -18,6 +18,11 @@
 package se_tpb_dtbAudioEncoder;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import org.daisy.util.execution.Command;
@@ -57,13 +62,19 @@ public class LameEncoder extends Wav2Mp3 {
         arr.add(String.valueOf(this.getBitrate()));
         arr.add("--resample");
         arr.add(String.valueOf(k) + "." + "000".substring(String.valueOf(h).length()) + String.valueOf(h));
-        arr.add(wavFile.getAbsolutePath());
-        arr.add(mp3File.getAbsolutePath());
+        arr.add("-");
+        arr.add("-");
         
         try {
+            // LE 2008-12-11: Read and write from stdin/stdout. That way we don't have
+            // to worry about copying file files to a safe dir before executing lame 
+            InputStream is = new FileInputStream(wavFile);
+            OutputStream os = new FileOutputStream(mp3File);
         	//System.err.println("Encoding: " + lameCommand + " " + arr.toString());
-            Command.execute((arr.toArray(new String[arr.size()])));            
+            Command.execute((arr.toArray(new String[arr.size()])), is, os, null);            
         } catch (ExecutionException e) {
+            throw new EncodingException(e.getMessage());
+        } catch (FileNotFoundException e) {
             throw new EncodingException(e.getMessage());
         }
     }
@@ -71,7 +82,7 @@ public class LameEncoder extends Wav2Mp3 {
     public static boolean setCommand(String command) {
         lameCommand = command;
         try {
-            Command.execute(lameCommand + " --help", true);
+            Command.execute(new String[]{lameCommand, "--help"}, true);
             //System.err.println("Result: " + result);
         } catch (ExecutionException e) {
             return false;

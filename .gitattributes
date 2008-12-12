@@ -616,6 +616,7 @@ src/org/daisy/util/dtb/ncxonly/model/write/smil/SMILFile.java -text
 src/org/daisy/util/dtb/resource/ResourceFile.java -text
 src/org/daisy/util/dtb/resource/text.res -text
 src/org/daisy/util/execution/State.java -text
+src/org/daisy/util/file/BinaryStreamRedirector.java -text
 src/org/daisy/util/file/EFileFilter.java -text svneol=unset#text/plain
 src/org/daisy/util/file/FileJuggler.java -text
 src/org/daisy/util/file/HtmlFileFilter.java -text svneol=unset#text/plain
