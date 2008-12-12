@@ -92,7 +92,7 @@ public class BinaryStreamRedirector extends StreamRedirector {
         try {            
             byte[] buf = new byte[1024];
             int i = 0;
-            while ((i = bis.read(buf)) != -1) {
+            while ((i = bis.read(buf)) != -1 && !isInterrupted()) {
                 bos.write(buf, 0, i);
             }
         } catch (IOException e) {           
