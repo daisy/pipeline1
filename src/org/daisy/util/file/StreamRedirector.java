@@ -76,7 +76,7 @@ public class StreamRedirector extends Thread {
             InputStreamReader isr = new InputStreamReader(inputStream);
             BufferedReader br = new BufferedReader(isr);
             String line = null;
-            while ( (line = br.readLine()) != null) {
+            while ( (line = br.readLine()) != null && !isInterrupted()) {
                 if (writer != null) {
                 	if (filter != null) {
                 		line = filter.filterLine(line);
@@ -96,4 +96,10 @@ public class StreamRedirector extends Thread {
             ioe.printStackTrace();  
         }    
     }
+    
+
+
+	public void cancel() {
+		interrupt();
+	}
 }
