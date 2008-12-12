@@ -18,7 +18,12 @@
 package se_tpb_speechgen2.audio;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -359,31 +364,35 @@ public class AudioConcatQueue implements Runnable {
 	private void mp3encode(File inputWav, File outputMp3)
 			throws ExecutionException {
 		String lameCommand = System.getProperty("pipeline.lame.path");
-
-		String inputFilename = inputWav.getAbsolutePath();
-		String outputFilename = outputMp3.getAbsolutePath();
 		String bitrate = String.valueOf(mp3bitrate);
 
 		String cmd[] = { lameCommand, "--quiet", "-h", "-m", "m", "-a", "-cbr",
-				"-b", bitrate, "--resample", "22.50", inputFilename,
-				outputFilename };
-
-		int exitVal = Command.execute(cmd);
-		if (exitVal != 0) {
-			String str = "";
-			for (int i = 0; i < cmd.length; i++) {
-				str += " " + cmd[i];
-			}
-			System.err.println("Unable to encode using lame:");
-			System.err.println(str);
-			System.err.println("Exit value: " + exitVal);
-			String msg = "Unable to encode using lame, lame exit code: "
-					+ exitVal;
-			throw new ExecutionException(msg);
-		}
-		if (!inputWav.delete()) {
-			inputWav.deleteOnExit();
-		}
+				"-b", bitrate, "--resample", "22.50", "-", "-" };
+		try {
+		    // LE 2008-12-11: Read and write from stdin/stdout. That way we don't have
+		    // to worry about copying file files to a safe dir before executing lame 
+            InputStream is = new FileInputStream(inputWav);
+            OutputStream os = new FileOutputStream(outputMp3);
+            int exitVal = Command.execute(cmd, is, os, null);
+            if (exitVal != 0) {
+                String str = "";
+                for (int i = 0; i < cmd.length; i++) {
+                    str += " " + cmd[i];
+                }
+                System.err.println("Unable to encode using lame:");
+                System.err.println(str);
+                System.err.println("Exit value: " + exitVal);
+                String msg = "Unable to encode using lame, lame exit code: "
+                        + exitVal;
+                throw new ExecutionException(msg);
+            }
+        } catch (FileNotFoundException e) {
+            throw new ExecutionException(e.getMessage(), e);
+        }
+        
+        if (!inputWav.delete()) {
+            inputWav.deleteOnExit();
+        }
 	}
 
 	/**
