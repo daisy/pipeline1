@@ -24,6 +24,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.daisy.util.execution.Command;
+import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.file.TempFile;
@@ -97,14 +98,36 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
 	 * @see int_daisy_mathAltCreator.IMathAltCreator#execute()
 	 */
 	public void execute() throws Exception {
+	    File input = mInputDoc;
+	    File output = mOutputDoc;
+	    boolean copyInput = false;
+	    boolean moveOutput = false;
+	    Directory safeDir = null;
+	    if (!Command.isSafePath(mInputDoc)) {
+	        // Input doc path is unsafe. Copy to temp dir
+	        copyInput = true;
+	        safeDir = new Directory(TempFile.createDir());
+	        input = new File(new File(safeDir, "input"), mInputDoc.getName());
+	        FileUtils.copyFile(mInputDoc, input);
+	    }
+	    if (!Command.isSafePath(mOutputDoc)) {
+	        // Output doc path is unsafe. Write to temp dir instead
+	        moveOutput = true;
+	        if (safeDir == null) {
+	            safeDir = new Directory(TempFile.createDir());
+	        }
+	        output = new File(new File(safeDir, "output"), mOutputDoc.getName());
+	        FileUtils.createDirectory(output.getParentFile());
+	    }
+	    
 	    ArrayList<String> commandArgs = new ArrayList<String>();
 	    commandArgs.add(mComposerPath.getAbsolutePath());
 	    
 	    commandArgs.add("-inputdoc");
-	    commandArgs.add(mInputDoc.getAbsolutePath());
+	    commandArgs.add(input.getAbsolutePath());
 	    
 	    commandArgs.add("-outputdoc");
-	    commandArgs.add(mOutputDoc.getAbsolutePath());
+	    commandArgs.add(output.getAbsolutePath());
 	    
 	    commandArgs.add("-imagefolder");
 	    commandArgs.add(mImagesPath);
@@ -119,6 +142,19 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
 	    ret = Command.execute((commandArgs.toArray(new String[commandArgs.size()])));
 	    if(ret != 0) {
 	        throw new IOException("MathDAISY failed. Exit status was " + ret);
+	    }
+	    
+	    if (moveOutput) {
+	        // Move the result back to the real output location
+	        FileUtils.moveFile(output, mOutputDoc);
+	        Directory tempImages = new Directory(new File(output.getParentFile(), mImagesPath).getCanonicalFile());
+	        Directory destImages = new Directory(new File(mOutputDoc.getParentFile(), mImagesPath).getCanonicalFile());
+	        tempImages.copyChildrenTo(destImages, true);
+	    }
+	    if (copyInput || moveOutput) {
+	        // Delete temp dir
+	        safeDir.deleteContents(true);
+	        safeDir.delete();
 	    }
        
 	    tempFix();
