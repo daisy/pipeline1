@@ -190,6 +190,52 @@ public class FileUtils {
         
         return output;
 
-}
+	}
+	
+	/**
+	 * Moves a file.
+	 * @param inFile the file to move
+	 * @param outFile the destination file
+	 * @throws IOException
+	 */
+	public static void moveFile(File inFile, File outFile) throws IOException {
+	    if (inFile.equals(outFile)) {
+	        return;        
+	    }
+        if (!inFile.isFile()) {
+            throw new IOException(inFile.getAbsolutePath() + " is not a file");               
+        }
+        if (outFile.exists()) {
+            if (!outFile.isFile()) {
+                throw new IOException(outFile.getAbsolutePath() + " is not a file");
+            }   
+        } else {
+            createDirectory(outFile.getParentFile());
+        }
+        
+        // First try to use File.renameTo()
+        boolean renameSuccess = inFile.renameTo(outFile);
+        
+        // If that fails, do copy + delete instead
+        if (!renameSuccess) {
+            copyFile(inFile, outFile);
+            boolean deleteSuccess = inFile.delete();
+            if (!deleteSuccess) {
+                throw new IOException("Failed to delete source file " + inFile.getAbsolutePath());
+            }
+        }
+	}
+	
+	/**
+	 * Checks whether a file is a symbolic link.
+	 * @param file the file to test
+	 * @return <code>true</code> if the file is a symbolic link, <code>false</code> otherwise
+	 * @throws IOException
+	 */
+	public static boolean isSymlink(File file) throws IOException {
+	    File parent = file.getParentFile();
+	    File test = new File(parent.getCanonicalFile(), file.getName());
+	    return !test.getAbsolutePath().equals(test.getCanonicalPath());
+	}
 	
 }

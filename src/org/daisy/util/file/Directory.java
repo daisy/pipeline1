@@ -430,7 +430,7 @@ public class Directory extends File {
 	 * subfolders are deleted. Hidden files and folders are included in deletion.
 	 * @return true if all files were successfully deleted, false otherwise
 	 */
-	public boolean deleteContents() throws Exception {
+	public boolean deleteContents() throws IOException {
 		return delete(TYPE_FILE_OR_FOLDER,false,null,true);
 	}
 
@@ -444,7 +444,7 @@ public class Directory extends File {
 	 *            subfolders (and their descendants).             
 	 * @return true if all files were successfully deleted, false otherwise
 	 */
-	public boolean deleteContents(boolean deep) throws Exception {
+	public boolean deleteContents(boolean deep) throws IOException {
 		return delete(TYPE_FILE_OR_FOLDER,deep,null,true);
 	}
 
@@ -460,7 +460,7 @@ public class Directory extends File {
 	 *				if null treated as '.+'
 	 * @return true if all files were successfully deleted, false otherwise
 	 */
-	public boolean deleteContents(boolean deep, String regex) throws Exception {
+	public boolean deleteContents(boolean deep, String regex) throws IOException {
 		return delete(TYPE_FILE_OR_FOLDER,deep,null,true);
 	}
 		
@@ -478,7 +478,7 @@ public class Directory extends File {
 	 * 				If true, hidden files are included in deletion.
 	 * @return true if all files were successfully deleted, false otherwise
 	 */
-	public boolean deleteContents(boolean deep, String regex, boolean deleteHidden) throws Exception {
+	public boolean deleteContents(boolean deep, String regex, boolean deleteHidden) throws IOException {
 		return delete(TYPE_FILE_OR_FOLDER,deep,null,deleteHidden);
 	}
 	
@@ -499,7 +499,7 @@ public class Directory extends File {
 	 * 				If true, hidden files are included in deletion.
 	 * @return true if all files were successfully deleted, false otherwise
 	 */
-	public boolean deleteContents(int type, boolean deep, String regex, boolean deleteHidden) throws Exception {
+	public boolean deleteContents(int type, boolean deep, String regex, boolean deleteHidden) throws IOException {
 		return delete(type,deep,null,deleteHidden);
 	}
 	
@@ -658,53 +658,57 @@ public class Directory extends File {
 		}//if(null!=files)
 		return set;
 	}
-
+	
+	
 	/**
-	 * An extended File.delete() method
-	 * 
-	 * @param type
-	 *            type of File (file, directory, both) to delete
-	 * @param deleteHidden
-	 *            include hidden files in deletion
-	 * @param regex
-	 *            for file and foldername matching, null equals '.+'
-	 * @param deep
-	 *            whether to recurse subdirs
-	 * @return true if all objects matching inparam criteria were successfully
-	 *         deleted
-	 */
-	private boolean delete(int type, boolean deep, String regex,
-			boolean deleteHidden) throws Exception {
-		
-		if(!this.exists()) throw new IOException(this.getName() + " does not exist");
-		
-		boolean result = true;
-						
-		File[] children = this.listFiles();
-		for (int i = 0; i < children.length; i++) {
-			if (children[i].isDirectory()) {
-				if (deep) {
-					Directory fldr = new Directory(children[i].getAbsolutePath());
-					boolean cur = fldr.delete(type, deep, regex, deleteHidden);
-					if (!cur) result = cur;
-				}
-			}//if (children[i].isDirectory()) 
-			if ((type == TYPE_FILE_OR_FOLDER)
-					|| (children[i].isFile() && type == TYPE_FILE)
-					|| (children[i].isDirectory() && type == TYPE_FOLDER)) {
-				if (!children[i].isHidden()|| deleteHidden) {
-					if (regex == null || children[i].getName().matches(regex)) {
-						if (children[i].getCanonicalFile().equals(children[i].getAbsoluteFile())){
-							//TODO its not a symlink?
-							boolean cur = children[i].delete();
-							if (!cur) result = cur;
-						}
-					}
-				}
-			}
-		}	
-		return result;
-	}
+     * An extended File.delete() method
+     * 
+     * @param type
+     *            type of File (file, directory, both) to delete
+     * @param deleteHidden
+     *            include hidden files in deletion
+     * @param regex
+     *            for file and foldername matching, null equals '.+'
+     * @param deep
+     *            whether to recurse subdirs
+     * @return true if all objects matching inparam criteria were successfully
+     *         deleted
+     */
+    private boolean delete(int type, boolean deep, String regex,
+            boolean deleteHidden) throws IOException {
+        
+        if(!this.exists()) throw new IOException(this.getName() + " does not exist");
+        
+        if (FileUtils.isSymlink(this)) {
+            // This directory is a symlink, and we shall not delete its contents
+            return true;
+        }
+        
+        boolean result = true;
+                        
+        File[] children = this.listFiles();
+        if (children != null) {
+            for (File child : children) {
+                boolean symlink = FileUtils.isSymlink(child);
+                if (child.isDirectory() && !symlink && deep) {
+                    // Descend into subdir if it isn't a symlink
+                    Directory fldr = new Directory(child.getAbsolutePath());
+                    result &= fldr.delete(type, deep, regex, deleteHidden);
+                }
+                if ((type == TYPE_FILE_OR_FOLDER)
+                        || (child.isFile() && type == TYPE_FILE)
+                        || (child.isDirectory() && type == TYPE_FOLDER)) {
+                    if (!child.isHidden()|| deleteHidden) {
+                        if (regex == null || child.getName().matches(regex)) {
+                            // Delete the file, file symlink or directory symlink
+                            result &= child.delete();                            
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
 
 	private static final long serialVersionUID = 4292170837234819837L;
 
