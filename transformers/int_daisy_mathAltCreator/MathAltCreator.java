@@ -85,7 +85,15 @@ public class MathAltCreator extends Transformer implements FilesetErrorHandler {
 	    	Map<String,Object> params = new HashMap<String,Object>();
 	    	params.put("overwrite", overwrite);
 	    	if(service!=null) {
-	    		service.configure(inputDoc, outputDoc, params);	    				    			
+	    	    try {
+	    	        service.configure(inputDoc, outputDoc, params);
+	    	    } catch (IllegalStateException e) {
+	    	        String message = "Documents containing mathematics cannot be converted to DAISY " +	    	        
+                    "format without a plugin to create alternative text and images. Please refer to the " + 
+                    "provided documentation or the DAISY Pipeline project web page at " + 
+                    "http://www.daisy.org/projects/pipeline/ for more information.";
+	    	        throw new TransformerRunException(message, e);
+	    	    }
 		    	
 	    		this.sendMessage(i18n("USING_SERVICE",
 	    				incomplete,service.getNiceName()), 
