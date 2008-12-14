@@ -54,6 +54,7 @@ public class PipelineCore {
 
     private Creator mCreator;
     private Runner mRunner;
+    private File mHomeDir;
 
     /**
      * Create an instance of the Daisy Pipeline. This constructor will fetch the
@@ -108,7 +109,7 @@ public class PipelineCore {
      * <code>pipelineProps</code>.
      * 
      * @param inListener a listener of (user) input events
-     * @param homeDir the directory considered the daisy pipeline home directory
+     * @param mHomeDir the directory considered the daisy pipeline home directory
      * @param userProps a set of user properties
      * @param pipelineProps a set of pipeline properties
      * @throws DMFCConfigurationException it the pipeline properties cannot
@@ -116,9 +117,9 @@ public class PipelineCore {
      */
     public PipelineCore(InputListener inListener, File homeDir, Properties userProps, Properties pipelineProps) 
     		throws DMFCConfigurationException {
-         homeDir = (homeDir!=null)?homeDir:findHomeDirectory();
+         mHomeDir = (homeDir!=null)?homeDir:findHomeDirectory();
          TransformerHandlerLoader.INSTANCE.setInputListener(inListener); 
-         TransformerHandlerLoader.INSTANCE.setTransformersDirectory(new File(homeDir, "transformers")); 
+         TransformerHandlerLoader.INSTANCE.setTransformersDirectory(new File(mHomeDir, "transformers")); 
          mCreator = new Creator();
          mRunner = new Runner();
          initialize(userProps, pipelineProps);
@@ -240,6 +241,14 @@ public class PipelineCore {
      */
     public boolean isRunning() {
         return mRunner.isRunning();
+    }
+    
+    /**
+     * Returns the home directory of this Pipeline instance.
+     * @return the home directory of this Pipeline instance.
+     */
+    public File getHomeDirectory() {
+    	return mHomeDir;
     }
 
 
