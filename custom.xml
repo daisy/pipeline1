@@ -130,6 +130,8 @@
 	<target name="post.gather.bin.parts">
 		<chmod perm="755" file="${target.folder}/transformers/se_tpb_speechgen2/external/MacOS/daisytts.pl"/>
 		<chmod perm="755" file="${target.folder}/transformers/ca_cnib_rtf2dtbook/rtf2xml-py/rtf2xml.py"/>
+
+		<delete dir="${target.folder}/transformers" includes="**/*.java"/>
 	</target>
 
 	<!-- ===================================================================== -->
