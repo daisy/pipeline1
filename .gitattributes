@@ -2,6 +2,7 @@
 /.project -text svneol=unset#text/plain
 META-INF/MANIFEST.MF -text
 META-INF/services/javax.xml.validation.SchemaFactory -text
+/build-addin.xml -text svneol=unset#text/plain
 /build-bundles.xml -text
 /build-sapi.xml -text svneol=unset#text/plain
 /build.properties -text
