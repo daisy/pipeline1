@@ -175,6 +175,7 @@ lib/saxon.jar -text
 lib/saxon8-dom.jar -text
 lib/saxon8.jar -text
 lib/serializer.jar -text
+lib/slf4j-api-1.5.6.jar -text
 lib/stax-api-1.0.1.jar -text
 lib/tagsoup-1.2.jar -text
 lib/tritonus_remaining-0.3.6.jar -text
@@ -491,6 +492,11 @@ src/org/daisy/pipeline/core/transformer/TransformerLoader.java -text svneol=unse
 src/org/daisy/pipeline/core/transformer/transformer-1.0.rng -text svneol=unset#application/octet-stream
 src/org/daisy/pipeline/core/transformer/transformer-1.1.rng -text
 src/org/daisy/pipeline/exception/TdfParseException.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/rmi/LocalClientSocketFactory.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/rmi/LocalServerSocketFactory.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/rmi/RMIPipelineApp.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/rmi/RMIPipelineInstance.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/rmi/RMIPipelineListener.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/test/PipelineTest.java -text
 src/org/daisy/pipeline/test/PipelineTestDriver.java -text
 src/org/daisy/pipeline/test/PipelineTestException.java -text
