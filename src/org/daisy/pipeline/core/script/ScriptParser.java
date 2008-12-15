@@ -55,10 +55,10 @@ import org.daisy.util.xml.pool.StAXInputFactoryPool;
  * A singleton class for parsing task script files into Script objects.
  * @author Linus Ericson
  */
-class Parser {
+public class ScriptParser {
 
 	// Singleton instance
-	private static Parser sInstance = null;
+	private static ScriptParser sInstance = null;
 			
 	private static String SCRIPT = "taskScript";
 	private static String SCRIPT_NICENAME = "nicename";
@@ -84,7 +84,7 @@ class Parser {
 	 * Constructor.
 	 * @throws XMLStreamException
 	 */
-	private Parser() throws XMLStreamException {
+	public ScriptParser() {
 		mXifProperties = new HashMap<String, Object>();
 		mXifProperties.put(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
 		mXifProperties.put(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
@@ -96,7 +96,7 @@ class Parser {
 		try {
 			mFactory = pool.acquire(mXifProperties);
 		} catch (PoolException e) {		
-			throw new XMLStreamException("Could not acquire an XMLInputFactory", e);
+			throw new IllegalStateException("Could not acquire an XMLInputFactory", e);
 		}
 	}
 	
@@ -105,11 +105,11 @@ class Parser {
 	 * @return a Parser
 	 * @throws XMLStreamException
 	 */
-	public static Parser getInstance() throws XMLStreamException {
+	public static ScriptParser getInstance() throws XMLStreamException {
 		if (sInstance == null) {
-			synchronized (Parser.class) {
+			synchronized (ScriptParser.class) {
 				if (sInstance == null) {
-					sInstance = new Parser();
+					sInstance = new ScriptParser();
 				}
 			}
 		}

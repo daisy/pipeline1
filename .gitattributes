@@ -454,11 +454,12 @@ src/org/daisy/pipeline/core/script/AbstractProperty.java -text
 src/org/daisy/pipeline/core/script/Creator.java -text
 src/org/daisy/pipeline/core/script/Job.java -text
 src/org/daisy/pipeline/core/script/JobParameter.java -text
-src/org/daisy/pipeline/core/script/Parser.java -text
 src/org/daisy/pipeline/core/script/Runner.java -text
 src/org/daisy/pipeline/core/script/Script.java -text
 src/org/daisy/pipeline/core/script/ScriptParameter.java -text
+src/org/daisy/pipeline/core/script/ScriptParser.java -text
 src/org/daisy/pipeline/core/script/ScriptProperty.java -text
+src/org/daisy/pipeline/core/script/ScriptUtils.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/core/script/ScriptValidationException.java -text
 src/org/daisy/pipeline/core/script/StringProperty.java -text
 src/org/daisy/pipeline/core/script/TaskParameter.java -text
