@@ -597,6 +597,7 @@ src/org/daisy/pipeline/util/XhtmlSmilRefStripper.java -text
 src/org/daisy/pipeline/util/XmlTextScrambler.java -text
 src/org/daisy/util/audio/AudioUtils.java -text
 src/org/daisy/util/audio/SequenceAudioInputStream.java -text
+src/org/daisy/util/collection/ListenersHolder.java -text svneol=unset#text/plain
 src/org/daisy/util/css/stylesheets/Css.java -text
 src/org/daisy/util/css/stylesheets/d202.basic.css -text
 src/org/daisy/util/css/stylesheets/dtbook.2005.basic.css -text
