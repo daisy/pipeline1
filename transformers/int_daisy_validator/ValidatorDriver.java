@@ -45,6 +45,7 @@ import org.daisy.util.file.EFile;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetErrorHandler;
+import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetTypeNotSupportedException;
 import org.daisy.util.fileset.impl.FilesetImpl;
@@ -248,9 +249,17 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 						// add exception to xml report
 						xmlReport(ve);
 					}
-				}catch (FilesetTypeNotSupportedException e) {
-					//org.daisy.util.fileset did not recognize the input type					
-					
+				}catch (FilesetFatalException e) {
+					 
+					if(!(e.getRootCause() instanceof FilesetTypeNotSupportedException)) {
+						// add exception to xml report
+						xmlReport(e);
+						throw e;
+					} else{
+						//org.daisy.util.fileset did not recognize the input type
+						//continue
+					}
+																
 					if(mRequiredInputType!=null) {
 						//the user has specified that an error+abort should be thrown if
 						//input is not of the given Fileset type
@@ -260,8 +269,6 @@ public class ValidatorDriver extends Transformer implements FilesetErrorHandler,
 						throw new TransformerRunException(message);						
 					}
 										
-					// add exception to xml report
-					xmlReport(e);
 					//since no fileset, no dtd validation yet
 					if((mInputFilePeekResult != null) 
 							&& (mInputFilePeekResult.getPrologSystemId()!=null

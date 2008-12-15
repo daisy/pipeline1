@@ -298,6 +298,7 @@ samples/input/ops/package.opf -text
 samples/input/ops/the_waste_land.xml -text
 samples/input/pef/6-dot-chart.pef -text
 samples/input/pef/butterfly.pef -text
+samples/input/pef/pef-2008-1.rng -text
 samples/input/pef/poem.pef -text
 samples/input/rtf/RTF2dtbook.rtf -text
 samples/input/sadx/AnotherBulletList.docx -text
@@ -577,6 +578,7 @@ src/org/daisy/pipeline/test/impl/Rtf2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/Rtf2dtbook1.java -text
 src/org/daisy/pipeline/test/impl/UnicodeNormalizer1.java -text
 src/org/daisy/pipeline/test/impl/ValidatorConfigurable1.java -text
+src/org/daisy/pipeline/test/impl/ValidatorConfigurable2.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/test/impl/ValidatorDTBd2021.java -text
 src/org/daisy/pipeline/test/impl/ValidatorDTBd2022.java -text
 src/org/daisy/pipeline/test/impl/ValidatorDTBook1.java -text
