@@ -40,176 +40,163 @@ import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.i18n.I18n;
 
 /**
+ * Common abstract parent of transformer loaders implementations.
+ * 
  * @author Romain Deltour
  */
 public abstract class AbstractTransformerLoader implements TransformerLoader {
 
-    private InputListener inputListener;
-    private Class<?> transformerClass;
-    private Constructor<?> transformerConstructor;
-    private I18n i18n = new I18n();
+	private InputListener inputListener;
+	private Class<?> transformerClass;
+	private Constructor<?> transformerConstructor;
+	private I18n i18n = new I18n();
 
-    public AbstractTransformerLoader(InputListener inputListener) {
-	this.inputListener = inputListener;
-    }
-
-    /**
-     * @param classname
-     * @param jars
-     * @param niceName
-     * @throws ClassNotFoundException
-     */
-    public void init(String classname, Collection<String> jars, String nicename)
-	    throws TransformerDisabledException {
-	try {
-	    loadClass(classname, getClassLoader(jars), nicename);
-	    // Check the transformer class has a known constructor
-	    checkConstructor();
-	    // Do dependency checks in the class associated with the Transformer
-	    if (!checkSupported()) {
-		throw new TransformerDisabledException(i18n
-			.format("TRANSFORMER_NOT_SUPPORTED"));
-	    }
-	} catch (ClassNotFoundException e) {
-	    throw new TransformerDisabledException(i18n
-		    .format("CANNOT_CREATE_TRANSFORMER_CLASS"), e);
-	} catch (NoSuchMethodException e) {
-	    throw new TransformerDisabledException(i18n
-		    .format("NOSUCHMETHOD_IN_TRANSFORMER"), e);
-	} catch (IOException e) {
-	    throw new TransformerDisabledException(i18n
-		    .format("TDF_IO_EXCEPTION"), e);
+	public AbstractTransformerLoader(InputListener inputListener) {
+		this.inputListener = inputListener;
 	}
-    }
 
-    /**
-     * Creates an instance object of the Transformer class.
-     * 
-     * @param interactive
-     * @return a <code>Transformer</code> object
-     * @throws IllegalArgumentException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
-    public Transformer createTransformer(boolean interactive, Task task,
-	    TransformerInfo info) throws IllegalArgumentException,
-	    InstantiationException, IllegalAccessException,
-	    InvocationTargetException {
+	public void init(String classname, Collection<String> jars, String nicename)
+			throws TransformerDisabledException {
+		try {
+			loadClass(classname, getClassLoader(jars), nicename);
+			// Check the transformer class has a known constructor
+			checkConstructor();
+			// Do dependency checks in the class associated with the Transformer
+			if (!checkSupported()) {
+				throw new TransformerDisabledException(i18n
+						.format("TRANSFORMER_NOT_SUPPORTED"));
+			}
+		} catch (ClassNotFoundException e) {
+			throw new TransformerDisabledException(i18n
+					.format("CANNOT_CREATE_TRANSFORMER_CLASS"), e);
+		} catch (NoSuchMethodException e) {
+			throw new TransformerDisabledException(i18n
+					.format("NOSUCHMETHOD_IN_TRANSFORMER"), e);
+		} catch (IOException e) {
+			throw new TransformerDisabledException(i18n
+					.format("TDF_IO_EXCEPTION"), e);
+		}
+	}
 
-	/*
-	 * mg20070327; we check which constructor (old with listener set, or new
-	 * without) this transformer supports.
+	public Transformer createTransformer(boolean interactive, Task task,
+			TransformerInfo info) throws IllegalArgumentException,
+			InstantiationException, IllegalAccessException,
+			InvocationTargetException {
+
+		/*
+		 * mg20070327; we check which constructor (old with listener set, or new
+		 * without) this transformer supports.
+		 */
+
+		List<Object> params = new LinkedList<Object>();
+		if (transformerConstructor.getParameterTypes().length == 2) {
+			params.add(inputListener);
+			params.add(Boolean.valueOf(interactive));
+		} else {
+			params.add(inputListener);
+			params.add(new HashSet<Object>()); // this is the dummy no longer
+			// used but
+			// kept for Transformer backwards
+			// compatibility
+			params.add(Boolean.valueOf(interactive));
+		}
+
+		Transformer trans = (Transformer) transformerConstructor
+				.newInstance(params.toArray());
+		trans.setTransformerInfo(info);
+		trans.setLoadedFromJar(isLoadedFromJar());
+		trans.setTask(task);
+		return trans;
+	}
+
+	public abstract URL getTdfUrl() throws MalformedURLException;
+
+	public abstract File getTransformerDir();
+
+	private void loadClass(String classname, ClassLoader classloader,
+			String nicename) throws ClassNotFoundException {
+
+		EventBus.getInstance().publish(
+				new CoreMessageEvent(this, i18n.format("LOADING_TRANSFORMER",
+						nicename, classname), MessageEvent.Type.DEBUG));
+		Class<?> clazz = Class.forName(classname, true, classloader);
+
+		EventBus.getInstance().publish(
+				new CoreMessageEvent(this, i18n.format("TRANSFORMER_LOADED",
+						clazz.getProtectionDomain().getCodeSource()
+								.getLocation()), MessageEvent.Type.DEBUG));
+		transformerClass = clazz;
+	}
+
+	/**
+	 * Makes sure the constructor we wish to use exists.
+	 * 
+	 * @throws NoSuchMethodException
 	 */
+	private void checkConstructor() throws NoSuchMethodException {
+		/*
+		 * mg20070327: first we check for the 'new' constructor that doesnt take
+		 * the deprecated set of EventListener
+		 */
+		Class<?>[] params = { InputListener.class, Boolean.class };
+		try {
+			transformerConstructor = transformerClass.getConstructor(params);
+		} catch (NoSuchMethodException nsme) {
+			Class<?>[] params2 = { InputListener.class, Set.class,
+					Boolean.class };
+			transformerConstructor = transformerClass.getConstructor(params2);
+		}
 
-	List<Object> params = new LinkedList<Object>();
-	if (transformerConstructor.getParameterTypes().length == 2) {
-	    params.add(inputListener);
-	    params.add(Boolean.valueOf(interactive));
-	} else {
-	    params.add(inputListener);
-	    params.add(new HashSet<Object>()); // this is the dummy no longer
-	    // used but
-	    // kept for Transformer backwards
-	    // compatibility
-	    params.add(Boolean.valueOf(interactive));
 	}
 
-	Transformer trans = (Transformer) transformerConstructor
-		.newInstance(params.toArray());
-	trans.setTransformerInfo(info);
-	trans.setLoadedFromJar(isLoadedFromJar());
-	trans.setTask(task);
-	return trans;
-    }
-
-    /**
-     * @return
-     * @throws MalformedURLException
-     */
-    public abstract URL getTdfUrl() throws MalformedURLException;
-
-    /**
-     * @return
-     */
-    public abstract File getTransformerDir();
-
-    /**
-     * @param classname
-     * @param classloader
-     * @return
-     * @throws ClassNotFoundException
-     */
-    private void loadClass(String classname, ClassLoader classloader,
-	    String nicename) throws ClassNotFoundException {
-
-	EventBus.getInstance().publish(
-		new CoreMessageEvent(this, i18n.format("LOADING_TRANSFORMER",
-			nicename, classname), MessageEvent.Type.DEBUG));
-	Class<?> clazz = Class.forName(classname, true, classloader);
-
-	EventBus.getInstance().publish(
-		new CoreMessageEvent(this, i18n.format("TRANSFORMER_LOADED",
-			clazz.getProtectionDomain().getCodeSource()
-				.getLocation()), MessageEvent.Type.DEBUG));
-	transformerClass = clazz;
-    }
-
-    /**
-     * Makes sure the constructor we wish to use exists.
-     * 
-     * @throws NoSuchMethodException
-     */
-    private void checkConstructor() throws NoSuchMethodException {
-	/*
-	 * mg20070327: first we check for the 'new' constructor that doesnt take
-	 * the deprecated set of EventListener
+	/**
+	 * Calls the static method <code>isSupported</code> in the Transformer class
+	 * and returns the result.
+	 * 
+	 * @return
+	 * @throws NoSuchMethodException
+	 * @throws TransformerRunException
 	 */
-	Class<?>[] params = { InputListener.class, Boolean.class };
-	try {
-	    transformerConstructor = transformerClass.getConstructor(params);
-	} catch (NoSuchMethodException nsme) {
-	    Class<?>[] params2 = { InputListener.class, Set.class,
-		    Boolean.class };
-	    transformerConstructor = transformerClass.getConstructor(params2);
+	private boolean checkSupported() throws NoSuchMethodException,
+			TransformerDisabledException {
+		Method isSupportedMethod = transformerClass.getMethod("isSupported",
+				(Class[]) null);
+		Boolean result;
+		try {
+			result = (Boolean) isSupportedMethod.invoke(null, (Object[]) null);
+		} catch (IllegalArgumentException e) {
+
+			throw new TransformerDisabledException(
+					"Cannot run static isSupported method of Transformer: "
+							+ i18n.format("TRANSFORMER_ILLEGAL_ARGUMENT"), e);
+		} catch (IllegalAccessException e) {
+			throw new TransformerDisabledException(
+					"Cannot run static isSupported method of Transformer: "
+							+ i18n.format("TRANSFORMER_ILLEGAL_ACCESS"), e);
+		} catch (InvocationTargetException e) {
+			throw new TransformerDisabledException(
+					"Cannot run static isSupported method of Transformer: "
+							+ i18n.format("TRANSFORMER_INVOCATION_PROBLEM"), e);
+		}
+		return result.booleanValue();
 	}
 
-    }
+	/**
+	 * Returns the class loader used to load the {@link Transformer} subclass.
+	 * 
+	 * @param jars
+	 *            The optionally empty collection of jars bundled in the
+	 *            transformer.
+	 * @return the class loader used to load the {@link Transformer} subclass.
+	 * @throws IOException
+	 */
+	protected abstract ClassLoader getClassLoader(Collection<String> jars)
+			throws IOException;
 
-    /**
-     * Calls the static method <code>isSupported</code> in the Transformer class
-     * and returns the result.
-     * 
-     * @return
-     * @throws NoSuchMethodException
-     * @throws TransformerRunException
-     */
-    private boolean checkSupported() throws NoSuchMethodException,
-	    TransformerDisabledException {
-	Method isSupportedMethod = transformerClass.getMethod("isSupported",
-		(Class[]) null);
-	Boolean result;
-	try {
-	    result = (Boolean) isSupportedMethod.invoke(null, (Object[]) null);
-	} catch (IllegalArgumentException e) {
-
-	    throw new TransformerDisabledException(
-		    "Cannot run static isSupported method of Transformer: "
-			    + i18n.format("TRANSFORMER_ILLEGAL_ARGUMENT"), e);
-	} catch (IllegalAccessException e) {
-	    throw new TransformerDisabledException(
-		    "Cannot run static isSupported method of Transformer: "
-			    + i18n.format("TRANSFORMER_ILLEGAL_ACCESS"), e);
-	} catch (InvocationTargetException e) {
-	    throw new TransformerDisabledException(
-		    "Cannot run static isSupported method of Transformer: "
-			    + i18n.format("TRANSFORMER_INVOCATION_PROBLEM"), e);
-	}
-	return result.booleanValue();
-    }
-
-    protected abstract ClassLoader getClassLoader(Collection<String> jars)
-	    throws IOException;
-
-    protected abstract boolean isLoadedFromJar();
+	/**
+	 * Whether the transformer is loaded from a jar.
+	 * 
+	 * @return <code>true</code> iff the transformer is loaded from a jar.
+	 */
+	protected abstract boolean isLoadedFromJar();
 }

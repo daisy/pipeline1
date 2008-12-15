@@ -51,12 +51,17 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
+ * Contains static utility methods used for script manipulation and validation.
+ * 
  * @author Romain Deltour
  * 
  */
 public final class ScriptUtils {
 
 	private static final I18n i18n = new I18n();
+
+	// prevent instantiation of this static utility
+	private ScriptUtils() {}
 
 	private static class InternalErrorHandler implements ErrorHandler {
 

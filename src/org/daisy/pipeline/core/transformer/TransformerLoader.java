@@ -27,44 +27,56 @@ import org.daisy.pipeline.core.script.Task;
 import org.daisy.pipeline.exception.TransformerDisabledException;
 
 /**
- * @author Romain Deltour
+ * Represents a dynamic loader of {@link Transformer} objects.
  * 
+ * @author Romain Deltour
  */
 public interface TransformerLoader {
 
-    /**
-     * Creates an instance object of the Transformer class.
-     * 
-     * @param interactive
-     * @return a <code>Transformer</code> object
-     * @throws IllegalArgumentException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
-    public Transformer createTransformer(boolean interactive, Task task,
-	    TransformerInfo info) throws IllegalArgumentException,
-	    InstantiationException, IllegalAccessException,
-	    InvocationTargetException;
+	/**
+	 * Creates an instance object of the Transformer class.
+	 * 
+	 * @param interactive
+	 * @return a <code>Transformer</code> object
+	 * @throws IllegalArgumentException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	public Transformer createTransformer(boolean interactive, Task task,
+			TransformerInfo info) throws IllegalArgumentException,
+			InstantiationException, IllegalAccessException,
+			InvocationTargetException;
 
-    /**
-     * @return
-     * @throws MalformedURLException 
-     */
-    public URL getTdfUrl() throws MalformedURLException;
+	/**
+	 * Returns the TDF of the transformer managed by this loader.
+	 * 
+	 * @return the TDF of the transformer managed by this loader.
+	 * @throws MalformedURLException
+	 *             if the was an error creating the URL of the TDF.
+	 */
+	public URL getTdfUrl() throws MalformedURLException;
 
-    /**
-     * @return
-     */
-    public File getTransformerDir();
+	/**
+	 * Returns the directory containing the transformer managed by this loader.
+	 * 
+	 * @return the directory containing the transformer managed by this loader.
+	 */
+	public File getTransformerDir();
 
-    /**
-     * 
-     * @param classname
-     * @param jars
-     * @param nicename
-     * @throws TransformerDisabledException
-     */
-    public void init(String classname, Collection<String> jars, String nicename)
-	    throws TransformerDisabledException;
+	/**
+	 * Initialize this loader.
+	 * 
+	 * @param classname
+	 *            The fully qualified name of the main {@link Transformer}
+	 *            subclass of the transformer managed by this loader.
+	 * @param jars
+	 *            A collection of jars bundled in the transformer managed by
+	 *            this loader.
+	 * @param nicename
+	 *            The nice name of the transformer managed by this loader.
+	 * @throws TransformerDisabledException
+	 */
+	public void init(String classname, Collection<String> jars, String nicename)
+			throws TransformerDisabledException;
 }

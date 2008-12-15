@@ -26,67 +26,84 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.exception.TransformerDisabledException;
 
 /**
+ * Singleton holder of {@link TransformerHandler} instances.
+ * 
  * @author Romain Deltour
  * 
  */
 public enum TransformerHandlerLoader {
-    INSTANCE;
+	INSTANCE;
 
-    private final ConcurrentMap<String, TransformerHandler> handlersMap = new ConcurrentHashMap<String, TransformerHandler>();
-    private InputListener inputListener;
-    private File transformersDir;
-    
+	private final ConcurrentMap<String, TransformerHandler> handlersMap = new ConcurrentHashMap<String, TransformerHandler>();
+	private InputListener inputListener;
+	private File transformersDir;
+
 	/**
 	 * Get the TransformerHandler for the transformer with the given name.
-	 * @param transformerName the name of the transformer
+	 * 
+	 * @param transformerName
+	 *            the name of the transformer
 	 * @return a TransfomerHandler, or null if a handler cannot be created.
 	 * @throws TransformerDisabledException
 	 */
-    public TransformerHandler getTransformerHandler(String name)
-	    throws TransformerDisabledException {
-	TransformerHandler current = handlersMap.get(name);
+	public TransformerHandler getTransformerHandler(String name)
+			throws TransformerDisabledException {
+		TransformerHandler current = handlersMap.get(name);
 
-	if (current != null)
-	    return current;
+		if (current != null)
+			return current;
 
-	TransformerHandler candidate = createHandler(name);
-	current = handlersMap.putIfAbsent(name, candidate);
-	return (current == null) ? candidate : current;
-    }
-
-    private TransformerHandler createHandler(String transformerName)
-	    throws TransformerDisabledException {
-	// mg20070520: if subdir (such as se_tpb_dtbSplitterMerger.split)
-	transformerName = transformerName.replace('.', '/');
-
-	// Try to load TDF from directory
-	File[] files = new File(transformersDir, transformerName)
-		.listFiles(new FileFilter() {
-		    public boolean accept(File file) {
-			return file.getName().endsWith(".tdf");
-		    }
-		});
-
-	if (files != null && files.length > 0) {
-	    return new TransformerHandler(new DirTransformerLoader(files[0],
-		    transformersDir, inputListener));
-	} else {
-	    // Try to load from JAR if no TDF was found,
-	    File jarFile = new File(transformersDir, transformerName + ".jar");
-	    if (jarFile.exists()) {
-		return new TransformerHandler(new JarTransformerLoader(jarFile,
-			transformerName, inputListener));
-	    }
+		TransformerHandler candidate = createHandler(name);
+		current = handlersMap.putIfAbsent(name, candidate);
+		return (current == null) ? candidate : current;
 	}
-	return null;
-    }
 
-    public void setInputListener(InputListener inputListener) {
-	this.inputListener = inputListener;
-    }
+	private TransformerHandler createHandler(String transformerName)
+			throws TransformerDisabledException {
+		// mg20070520: if subdir (such as se_tpb_dtbSplitterMerger.split)
+		transformerName = transformerName.replace('.', '/');
 
-    public void setTransformersDirectory(File transformersDir) {
-	this.transformersDir = transformersDir;
-    }
+		// Try to load TDF from directory
+		File[] files = new File(transformersDir, transformerName)
+				.listFiles(new FileFilter() {
+					public boolean accept(File file) {
+						return file.getName().endsWith(".tdf");
+					}
+				});
+
+		if (files != null && files.length > 0) {
+			return new TransformerHandler(new DirTransformerLoader(files[0],
+					transformersDir, inputListener));
+		} else {
+			// Try to load from JAR if no TDF was found,
+			File jarFile = new File(transformersDir, transformerName + ".jar");
+			if (jarFile.exists()) {
+				return new TransformerHandler(new JarTransformerLoader(jarFile,
+						transformerName, inputListener));
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Configures this loader to set the given input listener to the loaded
+	 * TransformerHandlers.
+	 * 
+	 * @param inputListener
+	 *            an input listener
+	 */
+	public void setInputListener(InputListener inputListener) {
+		this.inputListener = inputListener;
+	}
+
+	/**
+	 * Configures this loader to search the transformers in the given directory.
+	 * 
+	 * @param transformersDir
+	 *            the directory containing Pipeline transformers
+	 */
+	public void setTransformersDirectory(File transformersDir) {
+		this.transformersDir = transformersDir;
+	}
 
 }

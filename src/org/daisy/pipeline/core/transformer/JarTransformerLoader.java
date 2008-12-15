@@ -26,47 +26,49 @@ import java.util.Collection;
 import org.daisy.pipeline.core.InputListener;
 
 /**
+ * Transformer loader that loads transformers packaged in jars.
+ * 
  * @author Romain Deltour
  * 
  */
 public class JarTransformerLoader extends AbstractTransformerLoader {
 
-    private File jarFile;
-    private String transformerName;
+	private File jarFile;
+	private String transformerName;
 
-    /**
-     * @param inputListener
-     * @param transformerName
-     * @param jarFile
-     */
-    public JarTransformerLoader(File jarFile, String transformerName,
-	    InputListener inputListener) {
-	super(inputListener);
-	this.jarFile = jarFile;
-	this.transformerName = transformerName;
-    }
+	/**
+	 * @param inputListener
+	 * @param transformerName
+	 * @param jarFile
+	 */
+	public JarTransformerLoader(File jarFile, String transformerName,
+			InputListener inputListener) {
+		super(inputListener);
+		this.jarFile = jarFile;
+		this.transformerName = transformerName;
+	}
 
-    @Override
-    protected ClassLoader getClassLoader(Collection<String> jars)
-	    throws MalformedURLException {
-	return new URLClassLoader(new URL[] { jarFile.toURI().toURL() }, this
-		.getClass().getClassLoader());
-    }
+	@Override
+	protected ClassLoader getClassLoader(Collection<String> jars)
+			throws MalformedURLException {
+		return new URLClassLoader(new URL[] { jarFile.toURI().toURL() }, this
+				.getClass().getClassLoader());
+	}
 
-    @Override
-    public URL getTdfUrl() throws MalformedURLException {
-	return new URL("jar:" + jarFile.toURI().toURL() + "!/"
-		+ transformerName + "/transformer.tdf");
-    }
+	@Override
+	public URL getTdfUrl() throws MalformedURLException {
+		return new URL("jar:" + jarFile.toURI().toURL() + "!/"
+				+ transformerName + "/transformer.tdf");
+	}
 
-    @Override
-    public File getTransformerDir() {
-	return null;
-    }
+	@Override
+	public File getTransformerDir() {
+		return null;
+	}
 
-    @Override
-    protected boolean isLoadedFromJar() {
-	return true;
-    }
+	@Override
+	protected boolean isLoadedFromJar() {
+		return true;
+	}
 
 }

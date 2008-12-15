@@ -27,51 +27,52 @@ import org.daisy.pipeline.core.DirClassLoader;
 import org.daisy.pipeline.core.InputListener;
 
 /**
- * @author Romain Deltour
+ * Transformer loader that loads transformers packaged in directories.
  * 
+ * @author Romain Deltour
  */
 public class DirTransformerLoader extends AbstractTransformerLoader {
 
-    private File tdfFile;
-    private File transformersDir;
+	private File tdfFile;
+	private File transformersDir;
 
-    /**
-     * @param inputListener
-     */
-    public DirTransformerLoader(File tdfFile, File transformersDir,
-	    InputListener inputListener) {
-	super(inputListener);
-	this.tdfFile = tdfFile;
-	this.transformersDir = transformersDir;
-    }
-
-    @Override
-    protected ClassLoader getClassLoader(Collection<String> jars) {
-
-	File dir = tdfFile.getAbsoluteFile().getParentFile();
-	DirClassLoader classLoader = new DirClassLoader(transformersDir,
-		transformersDir);
-
-	for (Iterator<String> it = jars.iterator(); it.hasNext();) {
-	    String jar = it.next();
-	    classLoader.addJar(new File(dir, jar));
+	/**
+	 * @param inputListener
+	 */
+	public DirTransformerLoader(File tdfFile, File transformersDir,
+			InputListener inputListener) {
+		super(inputListener);
+		this.tdfFile = tdfFile;
+		this.transformersDir = transformersDir;
 	}
-	return classLoader;
-    }
 
-    @Override
-    public URL getTdfUrl() throws MalformedURLException {
-	return tdfFile.toURI().toURL();
-    }
+	@Override
+	protected ClassLoader getClassLoader(Collection<String> jars) {
 
-    @Override
-    public File getTransformerDir() {
-	return tdfFile.getParentFile();
-    }
+		File dir = tdfFile.getAbsoluteFile().getParentFile();
+		DirClassLoader classLoader = new DirClassLoader(transformersDir,
+				transformersDir);
 
-    @Override
-    protected boolean isLoadedFromJar() {
-	return false;
-    }
+		for (Iterator<String> it = jars.iterator(); it.hasNext();) {
+			String jar = it.next();
+			classLoader.addJar(new File(dir, jar));
+		}
+		return classLoader;
+	}
+
+	@Override
+	public URL getTdfUrl() throws MalformedURLException {
+		return tdfFile.toURI().toURL();
+	}
+
+	@Override
+	public File getTransformerDir() {
+		return tdfFile.getParentFile();
+	}
+
+	@Override
+	protected boolean isLoadedFromJar() {
+		return false;
+	}
 
 }
