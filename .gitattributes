@@ -631,7 +631,10 @@ src/org/daisy/util/execution/TimeoutMonitor.java -text svneol=unset#text/plain
 src/org/daisy/util/file/BinaryStreamRedirector.java -text
 src/org/daisy/util/file/EFileFilter.java -text svneol=unset#text/plain
 src/org/daisy/util/file/FileJuggler.java -text
+src/org/daisy/util/file/FlatteningIterator.java -text svneol=unset#text/plain
 src/org/daisy/util/file/HtmlFileFilter.java -text svneol=unset#text/plain
+src/org/daisy/util/file/RecursiveFileListIterator.java -text svneol=unset#text/plain
+src/org/daisy/util/file/ZipUtils.java -text svneol=unset#text/plain
 src/org/daisy/util/file/detect/ByteHeaderSignature.java -text
 src/org/daisy/util/file/detect/ByteHeaderToken.java -text
 src/org/daisy/util/file/detect/CircularFifoXMLEventBuffer.java -text

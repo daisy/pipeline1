@@ -33,7 +33,9 @@ import java.nio.channels.WritableByteChannel;
  * @author Linus Ericson
  * @author Markus Gylling
  */
-public class FileUtils {
+public final class FileUtils {
+	
+	private FileUtils() {}
 
 	/**
 	 * Copy a file.
@@ -238,4 +240,31 @@ public class FileUtils {
 	    return !test.getAbsolutePath().equals(test.getCanonicalPath());
 	}
 	
+
+	
+
+	
+	/**
+	 * Returns the total length file, if file is a directory the directory is
+	 * scanned recursively and the total length of all files are returned.
+	 * 
+	 * @param file
+	 *            a file or directory.
+	 * @return the size of file.
+	 */
+	public static long getSize(File file) {
+		if (!file.exists()) {
+			return 0;
+		}
+		if (file.isDirectory()) {
+			File[] children = file.listFiles();
+			long sum = 0;
+			for (File child : children) {
+				sum += getSize(child);
+			}
+			return sum;
+		} else {
+			return file.length();
+		}
+	}
 }
