@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
  * @author Linus Ericson
  */
 public class StringDatatype extends Datatype {
+	
+	private static final long serialVersionUID = 1L;
 
 	private Pattern pattern = null;
 	

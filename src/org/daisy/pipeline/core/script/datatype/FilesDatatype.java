@@ -24,6 +24,9 @@ import java.io.File;
  * @author Markus Gylling
  */
 public class FilesDatatype extends Datatype {
+	
+	private static final long serialVersionUID = 1L;
+	
 	public static final char SEPARATOR_CHAR = ';'; 
 	public static final String SEPARATOR_STRING = ";"; 
 	private String mime;

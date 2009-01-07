@@ -23,6 +23,8 @@ package org.daisy.pipeline.core.script.datatype;
  */
 public class BooleanDatatype extends Datatype {
 	
+	private static final long serialVersionUID = 1L;
+	
 	private String trueValue = null;
 	private String falseValue = null;
 	

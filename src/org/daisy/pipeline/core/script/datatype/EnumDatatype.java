@@ -24,6 +24,8 @@ import java.util.List;
  * @author Linus Ericson
  */
 public class EnumDatatype extends Datatype {
+	
+	private static final long serialVersionUID = 1L;
 
 	private List<EnumItem> items;
 	

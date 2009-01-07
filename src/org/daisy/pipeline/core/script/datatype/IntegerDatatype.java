@@ -22,6 +22,8 @@ package org.daisy.pipeline.core.script.datatype;
  * @author Linus Ericson
  */
 public class IntegerDatatype extends Datatype {
+	
+	private static final long serialVersionUID = 1L;
 
 	private int min;
 	private int max;

@@ -17,8 +17,12 @@
  */
 package org.daisy.pipeline.core.script.datatype;
 
-public class EnumItem {
+import java.io.Serializable;
 
+public class EnumItem implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
 	private String niceName;
 	private String value;
 	

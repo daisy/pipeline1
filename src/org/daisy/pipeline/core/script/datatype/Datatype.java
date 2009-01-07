@@ -17,11 +17,16 @@
  */
 package org.daisy.pipeline.core.script.datatype;
 
+import java.io.Serializable;
+
 /**
  * Abstract base class for all script parameter data types.
  * @author Linus Ericson
  */
-public abstract class Datatype {	
+public abstract class Datatype implements Serializable {	
+
+	private static final long serialVersionUID = 1L;
+
 	public static enum Type {BOOLEAN, ENUM, STRING, INTEGER, FILE, FILES, DIRECTORY};
 	
 	private Type type;

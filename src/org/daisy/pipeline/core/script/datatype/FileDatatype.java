@@ -24,6 +24,8 @@ import java.io.File;
  * @author Linus Ericson
  */
 public class FileDatatype extends Datatype {
+	
+	private static final long serialVersionUID = 1L;
 
 	private String mime;
 	private String type;
