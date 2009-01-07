@@ -362,6 +362,7 @@ samples/input/xhtml/valentin.jpg -text
 samples/input/xhtml/valentinhauy.html -text
 samples/input/xhtml/valentinhauy11.html -text
 samples/input/xhtml/xhtml-rdf.xml -text
+scripts/_dev/AllParamTypes.taskScript -text
 scripts/_dev/BrailleEmbossPEF.taskScript -text
 scripts/_dev/BrailleFormatInputParamsStatic.paramGroup -text
 scripts/_dev/BrailleFormatOutputParamsStatic.paramGroup -text

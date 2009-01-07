@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE taskScript
+[
+<!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../ValidatorScriptParamsSimpleStatic.paramGroup">
+<!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../ValidatorTaskParamsSimpleStatic.paramGroup">
+]>
+<taskScript version="2.0" name="DTBookValidator">
+	<nicename>DTBook Validator</nicename>
+	<description>Validate a DTBook document against its DTD and additional schemas</description>
+   	<documentation uri="../../../doc/scripts/DTBookValidator.html"/>
+     <comment>
+	     Commandline template:
+	         ${workspace_loc}/dmfc/scripts/validation/simple/DTBookValidator.taskScript
+			--input=${workspace_loc}/pipeline_testsuite/testdata/input/dtbook/dontworrybehappy.xml
+     </comment>
+     	
+	<parameter name="fileinput" value="" required="true">
+		<nicename>File Input</nicename>
+		<description>Select the input DTBook document</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="input"/>
+		</datatype>
+	</parameter>
+
+	
+	<parameter name="fileoutput" value="" required="true">
+		<nicename>File Output</nicename>
+		<description>Select the input DTBook document</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="output"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="inputfiles" value="" required="true">
+	    <nicename>Input Files</nicename>
+	    <description>One or several DTBook files in 2005-1 or 2005-2 format</description>
+	    <datatype>
+	        <files mime="application/xml" type="input"/>
+	    </datatype>
+	</parameter>
+
+	<parameter name="outputfiles" value="" required="true">
+	    <nicename>Output Files</nicename>
+	    <description>One or several DTBook files in 2005-1 or 2005-2 format</description>
+	    <datatype>
+	        <files mime="application/xml" type="output"/>
+	    </datatype>
+	</parameter>
+
+	<parameter name="inputdir" value="" required="true">
+	    <nicename>Input Directory</nicename>
+	    <description>The directory the generated book will be placed in</description>
+	    <datatype>
+	        <directory type="input"/>
+	    </datatype>
+	</parameter>
+
+	<parameter name="outputdir" value="" required="true">
+	    <nicename>Output Directory</nicename>
+	    <description>The directory the generated book will be placed in</description>
+	    <datatype>
+	        <directory type="output"/>
+	    </datatype>
+	</parameter>
+
+	<parameter name="boolean" value="true" required="true">
+		<nicename>Boolean</nicename>
+		<description>Select the input DTBook document</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+
+	<parameter name="integer" value="4" required="true">
+		<nicename>Integer</nicename>
+		<description>Select the input DTBook document</description>
+		<datatype>
+			<integer min="1" max="10"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="enum" value="o" required="true">
+	    <nicename>Favorite fruit</nicename>
+	    <description>What's your favorite fruit?</description>
+	    <datatype>
+	        <enum>
+	            <item nicename="Apples" value="a"/>
+	            <item nicename="Oranges" value="o"/>
+	            <item nicename="Other" value="ot"/>
+	        </enum>
+	    </datatype>
+	</parameter>
+	
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${outputdir}/pipeline__temp/</value>
+		</parameter>					
+	</task>
+</taskScript>
