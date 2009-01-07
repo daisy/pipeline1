@@ -101,6 +101,40 @@ public final class FileUtils {
 			}
 		}
 	}
+	
+	/**
+	 * Deletes the given file or directory. If the argument is a directory, then
+	 * the directory is deleted recursively.
+	 * 
+	 * @param file
+	 *            the file to delete
+	 * @return <code>true</code> if and only if the file or directory is
+	 *         successfully deleted; <code>false</code> otherwise
+	 * @throws IOException
+	 *             if the given file does not exist
+	 */
+	public static boolean delete(File file) throws IOException {
+
+		if (!file.exists())
+			throw new IOException(file.getName() + " does not exist");
+
+		if (isSymlink(file)) {
+			return true;
+		}
+
+		boolean result = true;
+
+		if (file.isDirectory()) {
+			File[] children = file.listFiles();
+			if (children != null) {
+				for (File child : children) {
+					result &= delete(child);
+				}
+			}
+		}
+		result &= file.delete();
+		return result;
+	}
 
 	/**
 	 * Make sure a directory exists.
