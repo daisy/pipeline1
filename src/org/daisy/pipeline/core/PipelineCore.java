@@ -38,6 +38,7 @@ import org.daisy.util.file.TempFile;
 import org.daisy.util.i18n.I18n;
 import org.daisy.util.i18n.XMLProperties;
 import org.daisy.util.i18n.XMLPropertyResourceBundle;
+import org.daisy.util.runtime.RegistryQuery;
 
 /**
  * This is the class users of DMFC should instantiate. A common usage of DMFC
@@ -197,10 +198,65 @@ public class PipelineCore {
         // Set system properties
         for (Object key : properties.keySet()) {
             String name = (String) key;
-            System.setProperty(name, properties.getProperty(name));
+            if ("pipeline.lame.path".equals(name)) {
+                String lamePath = initLamePath(properties.getProperty(name));
+                System.setProperty(name, lamePath);
+            } else {
+                System.setProperty(name, properties.getProperty(name));
+            }
         }
         // Apply new properties if possible
         TempFile.setTempDir(new File(System.getProperty("pipeline.tempDir")));
+    }
+    
+    /**
+     * Initializes the Lame path. If the <code>pipline.lame.path</code> property is
+     * undefined (or set to the empty string), the Lame path can be autodetected on
+     * Windows if Lame has been installed using the NSIS installer. 
+     * If Lame is found in both HCLM and HKCU (i.e. installed both by the system
+     * administrator and the current user), the one with the latest version
+     * number is used.
+     * @param propertyValue the <code>pipeline.lame.path</code> property value
+     * @return the (possibly autodetected) lame path
+     */
+    private String initLamePath(String propertyValue) {
+        // If the pipeline.lame.path system property is undifined (or set to the empty string),
+        // and we are on the Windows platform, try to detect Lame using the registry.
+        if ((propertyValue == null || "".equals(propertyValue)) && System.getProperty("os.name").matches("Windows.*")) {
+            boolean found = false;
+            // We look in both HKLM and HKCU
+            String hklmPath = RegistryQuery.readString("HKLM\\Software\\Lame", "Path");
+            String hklmVersion = RegistryQuery.readString("HKLM\\Software\\Lame", "Version");
+            String hkcuPath = RegistryQuery.readString("HKCU\\Software\\Lame", "Path");
+            String hkcuVersion = RegistryQuery.readString("HKCU\\Software\\Lame", "Version");
+            if (hklmPath != null) {
+                File lameExe = new File(hklmPath, "lame.exe");
+                if (lameExe.exists()) {
+                    // Lame found in HKLM
+                    propertyValue = lameExe.getAbsolutePath();
+                    found = true;
+                    if (hkcuPath != null) {
+                        lameExe = new File(hkcuPath, "lame.exe");
+                        // If Lame is found in HKCU as well, we use the one with the latest
+                        // version number.
+                        if (lameExe.exists() && hkcuVersion != null) {
+                            if (hklmVersion == null || hkcuVersion.compareTo(hklmVersion) >= 0) {                                                        
+                                propertyValue = lameExe.getAbsolutePath();
+                            }
+                        }                        
+                    }
+                }                
+            } 
+            if (!found && hkcuPath != null) {
+                File lameExe = new File(hkcuPath, "lame.exe");
+                if (lameExe.exists()) {
+                    // Lame found in HKCU
+                    propertyValue = lameExe.getAbsolutePath();
+                }
+            }
+        }
+        //System.err.println("Lame path: " + propertyValue);
+        return propertyValue;
     }
 
     /**
