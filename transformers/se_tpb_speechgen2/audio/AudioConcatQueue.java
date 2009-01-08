@@ -33,6 +33,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.daisy.util.execution.Command;
 import org.daisy.util.execution.ExecutionException;
+import org.daisy.util.i18n.I18n;
 
 /**
  * A class providing the ability to merge and mp3-encode files in a concurrent
@@ -72,6 +73,10 @@ public class AudioConcatQueue implements Runnable {
 	 * The bitrate of the resulting mp3 file, if applicable
 	 */
 	private int mp3bitrate;
+	/**
+	 * The i18n support 
+	 */
+	private I18n i18n = new I18n();
 
 	/**
 	 * Represents a "merge job".
@@ -245,13 +250,13 @@ public class AudioConcatQueue implements Runnable {
 			} // while
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new RuntimeException(e);
+			throw new RuntimeException(e.getMessage());
 		} catch (ExecutionException e) {
 			e.printStackTrace();
-			throw new RuntimeException(e);
+			throw new RuntimeException(e.getMessage(),e);
 		} catch (UnsupportedAudioFileException e) {
 			e.printStackTrace();
-			throw new RuntimeException(e);
+			throw new RuntimeException(e.getMessage(),e);
 		}
 	}
 
@@ -382,12 +387,10 @@ public class AudioConcatQueue implements Runnable {
                 System.err.println("Unable to encode using lame:");
                 System.err.println(str);
                 System.err.println("Exit value: " + exitVal);
-                String msg = "Unable to encode using lame, lame exit code: "
-                        + exitVal;
-                throw new ExecutionException(msg);
+                throw new ExecutionException(i18n.format("LAME_ERROR", exitVal));
             }
         } catch (ExecutionException e) {
-            throw new ExecutionException("Unable to encode to MP3 using lame.", e);
+            throw new ExecutionException(i18n.format("LAME_NOT_FOUND"), e);
         } catch (FileNotFoundException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
@@ -408,5 +411,9 @@ public class AudioConcatQueue implements Runnable {
 			String prefix = "DEBUG [se_tpb_speechgen2.audio.AudioConcatQueue]: ";
 			System.err.println(prefix + msg);
 		}
+	}
+
+	public void setI18n(I18n i18n) {
+		this.i18n = i18n;
 	}
 }

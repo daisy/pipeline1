@@ -225,7 +225,20 @@ public class SpeechGen2 extends Transformer {
 			concurrentMerge = Boolean.parseBoolean(parameters.remove("concurrentAudioMerge"));
 			mp3Output = Boolean.parseBoolean(parameters.remove("mp3Output"));
 			mp3bitrate = Integer.parseInt(parameters.remove("mp3bitrate"));
-			audioConcatQueue = new AudioConcatQueue(countOnce, mp3bitrate);			
+			audioConcatQueue = new AudioConcatQueue(countOnce, mp3bitrate);		
+			audioConcatQueue.setI18n(getI18n());
+		      
+	        // rd20090108: eager checking of lame existence
+			if (mp3Output) {
+				String lamePath = System.getProperty("pipeline.lame.path");
+				File test = new File(lamePath);
+				if (!test.exists() || !test.canRead()) {
+					String message = i18n("LAME_NOT_FOUND");
+					this.sendMessage(message, MessageEvent.Type.ERROR,
+							MessageEvent.Cause.SYSTEM);
+					throw new TransformerRunException(message);
+				}
+			}
 			
 			// validate the configuration file for ttsbuilder
 			ErrorHandler handler = new ErrorHandler() {
