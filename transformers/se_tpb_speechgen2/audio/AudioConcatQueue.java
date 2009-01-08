@@ -386,6 +386,8 @@ public class AudioConcatQueue implements Runnable {
                         + exitVal;
                 throw new ExecutionException(msg);
             }
+        } catch (ExecutionException e) {
+            throw new ExecutionException("Unable to encode to MP3 using lame.", e);
         } catch (FileNotFoundException e) {
             throw new ExecutionException(e.getMessage(), e);
         }
