@@ -1,4 +1,4 @@
-package int_daisy_mathAltCreator.com.dessci.mathflow;
+package org.daisy.util.runtime;
 
 import java.io.IOException;
 import java.io.InputStream;

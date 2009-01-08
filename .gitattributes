@@ -688,6 +688,7 @@ src/org/daisy/util/fileset/validation/delegate/impl/InterDocURICheckerDelegate.j
 src/org/daisy/util/i18n/XMLProperties.java -text
 src/org/daisy/util/i18n/XMLPropertyResourceBundle.java -text
 src/org/daisy/util/location/LocationUtils.java -text
+src/org/daisy/util/runtime/RegistryQuery.java -text
 src/org/daisy/util/runtime/Service.java -text
 src/org/daisy/util/text/CircularFifoStringBuilder.java -text
 src/org/daisy/util/text/LineFilter.java -text
@@ -859,7 +860,6 @@ transformers/int_daisy_mathAltCreator/IMathAltCreator.java -text
 transformers/int_daisy_mathAltCreator/MathAltCreator.java -text
 transformers/int_daisy_mathAltCreator/MathAltCreatorFactory.java -text
 transformers/int_daisy_mathAltCreator/com/dessci/mathflow/MathFlowAltCreator.java -text
-transformers/int_daisy_mathAltCreator/com/dessci/mathflow/RegistryQuery.java -text
 transformers/int_daisy_mathAltCreator/messages.properties -text
 transformers/int_daisy_mathAltCreator/transformer.tdf -text
 transformers/int_daisy_mixedContentNormalizer/AbstractNormalizer.java -text
