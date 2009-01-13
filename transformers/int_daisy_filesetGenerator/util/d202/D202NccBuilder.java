@@ -201,6 +201,11 @@ public class D202NccBuilder {
 			dcTitleAdded = true;
 		}
 		
+		if(nameAttrValue.equals("dc:format")) {
+			//dc:format will later be set to "Daisy 2.02"
+			return;
+		}
+		
 		MetadataItem item = new MetadataItem(qMeta);
 		XMLEventFactory xef = StAXEventFactoryPool.getInstance().acquire();
 		item.addAttribute(xef.createAttribute("name", nameAttrValue));

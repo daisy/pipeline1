@@ -274,7 +274,7 @@
           <sch:pattern name="dcFormat" id="dcFormat">
             <sch:rule context="xht:head">
               <sch:assert test="count(xht:meta[@name='dc:format'])=1">
-                [sch][dtb::d202][type::error][msg::dc:date seems not to be in ncc exactly once]
+                [sch][dtb::d202][type::error][msg::dc:format seems not to be in ncc exactly once]
               </sch:assert>
             </sch:rule>
           </sch:pattern>
