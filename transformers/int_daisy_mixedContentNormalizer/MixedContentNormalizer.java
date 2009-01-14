@@ -70,7 +70,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 	}
 
 	@Override
-	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
+	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {		
 		try {
 			File input = FilenameOrFileURI.toFile(parameters.remove("input"));
 			if(input==null||!input.exists()||input.isDirectory()) throw new TransformerRunException(i18n("FILE_NOT_FOUND",input));
@@ -127,7 +127,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 					domNormalizer.setInputDocElementCount(docInfo.getElementCount());
 					DOMResult result = (DOMResult) domNormalizer.normalize(new DOMSource(doc,input.getAbsolutePath()));
 					this.sendMessage(i18n("NORMALIZATION_MODIFICATIONS",domNormalizer.getNumberOfModifications()),MessageEvent.Type.INFO_FINER);			
-
+					this.sendMessage(0.3);
 					
 					/*
 					 * If feature is activated, get an instance of the DOMSyncPointLocator and invoke
@@ -139,6 +139,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 						this.sendMessage(i18n("SYNCPOINTS_ADDED",domSyncPointLocator.getNumberOfSyncPoints()),MessageEvent.Type.INFO_FINER);
 					}
 			
+					this.sendMessage(0.5);
 									
 					/*
 					 * Serialize the result.
@@ -148,7 +149,9 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 					props.put("error-handler", this);	
 					//props.put("format-pretty-print", Boolean.TRUE);					
 					Serializer.serialize((Document)result.getNode(), output, "utf-8", props);					
-									
+						
+					this.sendMessage(0.7);
+					
 				}finally{
 					if(parser!=null)LSParserPool.getInstance().release(parser, domConfigMap);
 				}
@@ -156,6 +159,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 			
 //			long end = System.nanoTime();						
 //			System.err.println("normalized in " + (end-start)/1000000 + " milliseconds");
+						
 			
 			/*
 			 * Copy input fileset aux members, if any
@@ -188,6 +192,8 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 				}catch (Exception e) {
 					this.sendMessage(i18n("AUX_COPY_FAILURE", e.getMessage()));
 				}
+				
+				this.sendMessage(0.9);
 			}
 		} catch (Exception e) {
 			throw new TransformerRunException(e.getMessage(),e);
@@ -219,6 +225,7 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateMessage(java.lang.String, org.daisy.pipeline.core.event.MessageEvent.Type, org.daisy.pipeline.core.event.MessageEvent.Cause, javax.xml.stream.Location)
 	 */
+	@SuppressWarnings("unused")
 	public void delegateMessage(Object delegate, String message, Type type, Cause cause, Location location) {
 		this.sendMessage(message, type, cause, location);
 	}
@@ -227,14 +234,9 @@ public class MixedContentNormalizer extends Transformer implements TransformerDe
 	 * (non-Javadoc)
 	 * @see org.daisy.pipeline.core.transformer.TransformerDelegateListener#delegateProgress(java.lang.Class, double)
 	 */	
-	public void delegateProgress(Object delegate, double progress) {
-		if(delegate instanceof AbstractNormalizer) {
-			this.sendMessage(progress/2);
-		}else{
-			double p = 0.5+(progress/2);
-			if(p>1.0) p = 1.0; //hmm
-			this.sendMessage(p);
-		}						
+	@SuppressWarnings("unused")
+	public void delegateProgress(Object delegate, double progress) {		
+					
 	}
 
 	/*

@@ -163,7 +163,7 @@ public class DOMSyncPointLocator extends AbstractSyncPointLocator  {
 	class NodeFilterImpl implements NodeFilter{
 		public short acceptNode(Node n) {	
 			mCurrentElementCount++;
-			mTransformer.delegateProgress(this, ((double)mCurrentElementCount/mInputDocElementCount));
+			//mTransformer.delegateProgress(this, ((double)mCurrentElementCount/mInputDocElementCount));
 			if(mScopeElement==null) {
 				if(n.getNodeType() == Node.ELEMENT_NODE) {
 					Element t = (Element) n;
