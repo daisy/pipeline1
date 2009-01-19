@@ -601,7 +601,7 @@ public class SpeechGen2 extends Transformer {
 			} else if (event.isEndElement()) {
 				EndElement ee = event.asEndElement();
 				Stack<Boolean> ann = annMap.get(ee.getName());
-				if (ann != null) {
+				if (ann != null && !ann.isEmpty()) {
 					boolean wasAnnouncement = ann.pop();
 					if (wasAnnouncement) {
 						if (!before.isEmpty()) {
@@ -676,7 +676,7 @@ public class SpeechGen2 extends Transformer {
 			} else if (event.isEndElement()) {
 				EndElement ee = event.asEndElement();
 				Stack<Boolean> ann = annMap.get(ee.getName());
-				if (ann != null) {
+				if (ann != null && !ann.isEmpty()) {
 					boolean wasAnnouncement = ann.pop();
 					if (wasAnnouncement) {
 						if (!before.isEmpty()) {
