@@ -473,4 +473,8 @@
     <system systemId="http://java.sun.com/dtd/properties.dtd" uri="./sun/properties.dtd" />
   </group> 
  
+  <group> <!-- pef -->
+  		<system systemId="pef-2008-1.rng" uri="./pef/pef-2008-1.rng" />
+  </group>
+  
 </catalog>

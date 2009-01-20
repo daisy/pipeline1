@@ -30,6 +30,9 @@
 				<value>detect</value>
 				<value>en_US</value>
 				<value>da_DK</value>
+				<value>de_DE</value>
+				<value>es_ES</value>
+				<value>it_IT_FIRENZE</value>
 				<value>sv_SE_CX</value>
 				<value>UNICODE_BRAILLE</value>
 			</enum>

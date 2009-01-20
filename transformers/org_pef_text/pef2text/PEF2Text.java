@@ -1,21 +1,12 @@
 package org_pef_text.pef2text;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
+import java.io.PrintStream;
 import java.util.Map;
 
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
 import javax.print.PrintException;
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
-import javax.print.attribute.DocAttributeSet;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.daisy.pipeline.core.InputListener;
@@ -24,6 +15,7 @@ import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.TempFile;
 import org.xml.sax.SAXException;
+import org_pef_text.PipelineMessageOutputStream;
 
 /**
  * The purpose of this transformer is to convert a PEF 2008-1 file into plain text.
@@ -44,6 +36,8 @@ public class PEF2Text extends Transformer {
 	
 	@Override
 	protected boolean execute(Map<String, String> parameters) throws TransformerRunException {
+		PrintStream orOut = System.out;
+		System.setOut(new PrintStream(new PipelineMessageOutputStream(this)));
         File input = new File(parameters.remove("xml"));
         String outFileName = parameters.remove("out");
         String breaks = parameters.remove("breaks");
@@ -95,6 +89,7 @@ public class PEF2Text extends Transformer {
 			if ("".equals(outFileName) && output!=null) {
 				output.delete();
 			}
+			System.setOut(orOut);
 		}
 		progress(1);
         return true;

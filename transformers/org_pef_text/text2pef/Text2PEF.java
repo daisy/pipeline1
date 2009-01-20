@@ -2,12 +2,15 @@ package org_pef_text.text2pef;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+
+import org_pef_text.PipelineMessageOutputStream;
 import org_pef_text.TableFactory;
 
 /**
@@ -31,6 +34,8 @@ public class Text2PEF extends Transformer {
 	@Override
 	protected boolean execute(Map<String, String> parameters)
 			throws TransformerRunException {
+		PrintStream orOut = System.out;
+		System.setOut(new PrintStream(new PipelineMessageOutputStream(this)));
 		File input = new File(parameters.get("input"));
 		File output = new File(parameters.get("output"));
 		String mode = parameters.get("mode");
@@ -67,6 +72,8 @@ public class Text2PEF extends Transformer {
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (IOException e) {
 			throw new TransformerRunException(e.getMessage(), e);
+		} finally {
+			System.setOut(orOut);
 		}
 		progress(1);
 		return true;

@@ -126,9 +126,10 @@ public class TextParser {
 				FileInputStream is = new FileInputStream(input);
 				BitSet inputThumbprint = analyze(is);
 				is.close();
-				inputThumbprint.clear(0x0a);
-				inputThumbprint.clear(0x0c);
-				inputThumbprint.clear(0x0d);
+				inputThumbprint.clear(0x0a); //LF
+				inputThumbprint.clear(0x0c); //FF
+				inputThumbprint.clear(0x0d); //CF
+				inputThumbprint.clear(0x1a); //SUB
 				StringBuffer brailleChars = new StringBuffer();
 				for (int i=0; i<256; i++) {
 					brailleChars.append((char)(0x2800+i));
@@ -136,16 +137,32 @@ public class TextParser {
 				AbstractTable table;
 				TableFactory factory = new TableFactory();
 				BitSet tableThumbprint;
+				TableType t1 = null;
 				for (TableType type : TableFactory.TableType.values()) {
 					 table = factory.newTable(type);
 					 ByteArrayInputStream bis = new ByteArrayInputStream(table.toText(brailleChars.toString()).getBytes(table.getPreferredCharset().name()));
 					 tableThumbprint = analyze(bis);
 					 tableThumbprint.and(inputThumbprint);
 					 if (tableThumbprint.equals(inputThumbprint)) {
-						 System.out.println("Input matches " + type.name());
-						 return type;
+						 if (t1==null) {
+							 System.out.println("Input matches " + type.name());
+							 t1 = type;
+						 } else {
+							 System.out.println("Warning: Input also matches " + type.name());
+						 }
 					 }
 				}
+				if (t1!=null) {
+					System.out.println("Using " + t1.name());
+					return t1;
+				}
+				System.out.println("None found:");
+				for (int i=0; i<inputThumbprint.length(); i++) {
+					if (inputThumbprint.get(i)) {
+						System.out.print(""+(char)i);
+					}
+				}
+				System.out.println();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

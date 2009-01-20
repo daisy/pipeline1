@@ -299,6 +299,7 @@ samples/input/ops/package.opf -text
 samples/input/ops/the_waste_land.xml -text
 samples/input/pef/6-dot-chart.pef -text
 samples/input/pef/butterfly.pef -text
+samples/input/pef/extended.pef -text
 samples/input/pef/pef-2008-1.rng -text
 samples/input/pef/poem.pef -text
 samples/input/rtf/RTF2dtbook.rtf -text
@@ -705,6 +706,7 @@ src/org/daisy/util/xml/catalog/CatalogListener.java -text
 src/org/daisy/util/xml/catalog/CatalogLocator.java -text
 src/org/daisy/util/xml/catalog/audacity/audacityproject-1.3.0.dtd -text
 src/org/daisy/util/xml/catalog/idpf/opf20.rng -text
+src/org/daisy/util/xml/catalog/pef/pef-2008-1.rng -text
 src/org/daisy/util/xml/catalog/rdf/rdfxml.rng -text
 src/org/daisy/util/xml/catalog/sun/properties.dtd -text
 src/org/daisy/util/xml/catalog/svg/svg11-flat.dtd -text svneol=unset#application/octet-stream
@@ -929,6 +931,7 @@ transformers/int_daisy_xukCreator/transformer.tdf -text
 transformers/no_hks_xhtml2dtbook/Xhtml2DTBook.java -text
 transformers/no_hks_xhtml2dtbook/transformer.tdf -text
 transformers/org_pef_text/AbstractTable.java -text
+transformers/org_pef_text/PipelineMessageOutputStream.java -text
 transformers/org_pef_text/SimpleTable.java -text
 transformers/org_pef_text/TableFactory.java -text
 transformers/org_pef_text/pef2text/AbstractEmbosser.java -text

@@ -3,13 +3,16 @@
 
 	<parameter name="mode" value="detect" required="true">
 		<nicename>Source format</nicename>
-		<description>Source format</description>
+		<description>Source format. "Detect" will attempt to automatically detect the source format. Note that this process is not fail safe.</description>
 		<datatype>
 			<enum>
 			  <item nicename="Detect" value="detect"/>
 			  <item nicename="North American ASCII Braille" value="en_US" />
 			  <item nicename="Unicode braille" value="UNICODE_BRAILLE" />
 			  <item nicename="Danish" value="da_DK" />
+			  <item nicename="German" value="de_DE" />
+			  <item nicename="Spanish" value="es_ES" />
+			  <item nicename="Italian (Firenze)" value="it_IT_FIRENZE" />
 			  <item nicename="Swedish - CX" value="sv_SE_CX" />
 			</enum>
 		</datatype>
