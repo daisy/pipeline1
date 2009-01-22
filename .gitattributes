@@ -165,6 +165,7 @@ lib/batik-css.jar -text
 lib/batik-util.jar -text
 lib/chardet.jar -text
 lib/commons-cli-1.1.jar -text
+lib/commons-pool-1.4.jar -text
 lib/epubcheck.jar -text
 lib/icu4j-3_8.jar -text
 lib/jing-saxon8-patch.jar -text
@@ -496,6 +497,16 @@ src/org/daisy/pipeline/core/transformer/TransformerLoader.java -text svneol=unse
 src/org/daisy/pipeline/core/transformer/transformer-1.0.rng -text svneol=unset#application/octet-stream
 src/org/daisy/pipeline/core/transformer/transformer-1.1.rng -text
 src/org/daisy/pipeline/exception/TdfParseException.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/execution/AbstractJobExecutionService.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/execution/JobAdapter.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/execution/JobExecutionService.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/execution/JobListener.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/execution/Level.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/execution/Status.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/execution/rmi/PoolableRMIPipelineInstanceFactory.java -text
+src/org/daisy/pipeline/execution/rmi/RMIJobExecutionService.java -text
+src/org/daisy/pipeline/execution/rmi/RMIPipelineInstanceWrapper.java -text
+src/org/daisy/pipeline/execution/rmi/RMIPipelineListenerImpl.java -text
 src/org/daisy/pipeline/rmi/LocalClientSocketFactory.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/rmi/LocalServerSocketFactory.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/rmi/RMIPipelineApp.java -text svneol=unset#text/plain

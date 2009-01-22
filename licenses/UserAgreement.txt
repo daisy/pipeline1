@@ -53,6 +53,11 @@ with the DAISY Pipeline application are listed below:
 	Command Line Parser
 	Apache Software License, Version 2
 	http://www.apache.org/licenses/
+    
+	commons-pool-1.4.jar
+	Object Pooling Library
+	Apache Software License, Version 2
+	http://www.apache.org/licenses/
 	
 	icu4j-3_8.jar
 	Unicode and Internationalization support

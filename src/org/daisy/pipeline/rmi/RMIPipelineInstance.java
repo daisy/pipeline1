@@ -22,6 +22,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Map;
 
+import org.daisy.pipeline.core.event.UserAbortEvent;
+
 /**
  * Represents a remote Pipeline instance allowing remote job execution.
  * 
@@ -41,6 +43,20 @@ public interface RMIPipelineInstance extends Remote {
 	 */
 	public void executeJob(URL scriptURL, Map<String, String> parameters)
 			throws RemoteException;
+
+	/**
+	 * Tries to cancel the currently running job.
+	 * <p>
+	 * If no job is running, this method will return immediately, otherwise it
+	 * will try to cancel the currently running job by sending a
+	 * {@link UserAbortEvent}. Because a transformer is not guaranteed to listen
+	 * to this event, the caller of this method usually maintains a timeout and
+	 * shuts down this Pipeline instance if the job keeps on running.
+	 * </p>
+	 * 
+	 * @throws RemoteException
+	 */
+	public void cancelCurrentJob() throws RemoteException;
 
 	/**
 	 * Registers a (possibly remote) listener to this Pipeline instance.

@@ -34,6 +34,7 @@ import org.daisy.pipeline.core.event.EventBus;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.event.TaskProgressChangeEvent;
 import org.daisy.pipeline.core.event.TaskStateChangeEvent;
+import org.daisy.pipeline.core.event.UserAbortEvent;
 import org.daisy.pipeline.core.script.Job;
 import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.core.script.ScriptParameter;
@@ -174,6 +175,13 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 		} finally {
 			isRunning = false;
 		}
+	}
+
+	public void cancelCurrentJob() throws RemoteException {
+		if(!isRunning) {
+			return;
+		}
+		EventBus.getInstance().publish(new UserAbortEvent(this));
 	}
 
 	public void setListener(RMIPipelineListener listener) {

@@ -8,6 +8,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/batik-util.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/chardet.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-cli-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-pool-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/epubcheck.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/icu4j-3_8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jing-saxon8-patch.jar"/>
