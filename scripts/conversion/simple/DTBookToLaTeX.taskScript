@@ -27,7 +27,7 @@
   </parameter>		
   
   <parameter name="fontsize" value="17pt" required="false">
-    <nicename>The font size for the generated LaTeX</nicename>
+    <nicename>Font size for the generated LaTeX</nicename>
     <description>The font size to be used. See also the documentation of the extsizes package (http://www.ctan.org/tex-archive/macros/latex/contrib/extsizes)</description>
       
     <datatype>
@@ -41,13 +41,25 @@
   </parameter>
   
   <parameter name="fontfamily" value="cmr" required="false">
-    <nicename>The font family for the generated LaTeX</nicename>
+    <nicename>Font family for the generated LaTeX</nicename>
     <description>The font family to be used. See also the LaTeX font guide (http://www.latex-project.org/guides/fntguide.pdf)</description>
     <datatype>
      <enum>
        <item nicename="cmr" value="cmr"/>
        <item nicename="cmss" value="cmss"/>
        <item nicename="cmvtt" value="cmvtt"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
+  <parameter name="alignment" value="justified" required="false">
+    <nicename>Alignment for standard text</nicename>
+    <description>The alignment of the standard text. If you choose
+    'left aligned' there will be less hyphenation.</description>
+    <datatype>
+     <enum>
+       <item nicename="justified" value="justified"/>
+       <item nicename="left aligned" value="left"/>
      </enum>
     </datatype>
   </parameter>
@@ -69,7 +81,7 @@
   </parameter>
   
   <parameter name="papersize" value="a4paper" required="false">
-    <nicename>The paper size for the generated LaTeX</nicename>
+    <nicename>Paper size for the generated LaTeX</nicename>
     <description>The paper size to be used.</description>
     <datatype>
      <enum>
@@ -118,6 +130,11 @@
     <parameter>
       <name>fontfamily</name>
       <value>${fontfamily}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>alignment</name>
+      <value>${alignment}</value>			
     </parameter>				
 
     <parameter>

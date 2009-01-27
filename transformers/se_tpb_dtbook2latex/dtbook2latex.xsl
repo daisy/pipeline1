@@ -25,6 +25,8 @@ hyperlänkar
   <xsl:param name="fontfamily">cmr</xsl:param>
   <xsl:param name="defaultLanguage">english</xsl:param>
   <xsl:param name="papersize">a4paper</xsl:param>
+  <!-- Possible values are 'left', 'justified' -->
+  <xsl:param name="alignment">justified</xsl:param>
 
    <xsl:template match="/">
       <xsl:apply-templates/>
@@ -104,6 +106,9 @@ hyperlänkar
 
    <xsl:template match="dtb:book">
 	<xsl:text>\begin{document}&#10;</xsl:text>
+	<xsl:if test="$alignment='left'">
+	  <xsl:text>\raggedright&#10;</xsl:text>
+	</xsl:if>
         <xsl:text>\fontfamily{</xsl:text><xsl:value-of select="$fontfamily"/><xsl:text>}\selectfont&#10;</xsl:text>
 	<xsl:apply-templates/>
 	<xsl:text>\end{document}&#10;</xsl:text>

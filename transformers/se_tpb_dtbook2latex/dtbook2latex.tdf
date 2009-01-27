@@ -27,9 +27,8 @@
 		
 		<parameter type="enum" direction="in" required="false">
 		  <name>fontsize</name>			
-		  <description>The font size to be used in the
-		    generated LaTeX. See also the documentation of the
-		    extsizes package
+		  <description>Font size for the generated LaTeX. See
+		    also the documentation of the extsizes package
 		    (http://www.ctan.org/tex-archive/macros/latex/contrib/extsizes)</description>
 		  <example>17pt</example>
 		  <enum>
@@ -43,8 +42,8 @@
 		
 		<parameter type="enum" direction="in" required="false">
 		  <name>fontfamily</name>			
-		  <description>The font family to be used in the
-		    generated LaTeX. See also the LaTeX font guide
+		  <description>Font family for the generated LaTeX.
+		    See also the LaTeX font guide
 		    (http://www.latex-project.org/guides/fntguide.pdf)</description>
 		  <example>cmr</example>
 		  <enum>
@@ -56,11 +55,21 @@
 		</parameter>
 		
 		<parameter type="enum" direction="in" required="false">
+		  <name>alignment</name>			
+		  <description>Alinment for standard text</description>
+		  <example>justified</example>
+		  <enum>
+		    <value>justified</value>
+		    <value>left</value>
+		  </enum>
+		  <default>justified</default>
+		</parameter>
+		
+		<parameter type="enum" direction="in" required="false">
 		  <name>defaultLanguage</name>			
-		  <description>The language to use for the babel
-		  package if no language is specified in a xml:lang
-		  tag. For all valid values check the babel
-		  documentation
+		  <description>Language for the babel package if no
+		  language is specified in a xml:lang tag. For all
+		  valid values check the babel documentation
 		  (http://www.ctan.org/get/macros/latex/required/babel/babel.pdf)</description>
 		  <example>english</example>
 		  <enum>
@@ -77,7 +86,7 @@
 		
 		<parameter  type="enum" direction="in" required="false">
 		  <name>papersize</name>			
-		  <description>The paper size to be used in the generated LaTeX</description>
+		  <description>Paper size for the generated LaTeX</description>
 		  <example>a4paper</example>
 		  <enum>
 		    <value>a3paper</value>
