@@ -56,7 +56,7 @@
 		
 		<parameter type="enum" direction="in" required="false">
 		  <name>alignment</name>			
-		  <description>Alinment for standard text</description>
+		  <description>Alignment for standard text</description>
 		  <example>justified</example>
 		  <enum>
 		    <value>justified</value>
