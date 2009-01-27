@@ -55,6 +55,18 @@
 		</parameter>
 		
 		<parameter type="enum" direction="in" required="false">
+		  <name>pageStyle</name>			
+		  <description>Page style for the generated LaTeX.</description>
+		  <example>plain</example>
+		  <enum>
+		    <value>plain</value>
+		    <value>withPageNums</value>
+		    <value>scientific</value>
+		  </enum>
+		  <default>plain</default>
+		</parameter>
+
+		<parameter type="enum" direction="in" required="false">
 		  <name>alignment</name>			
 		  <description>Alignment for standard text</description>
 		  <example>justified</example>

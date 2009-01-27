@@ -27,6 +27,15 @@ hyperlänkar
   <xsl:param name="papersize">a4paper</xsl:param>
   <!-- Possible values are 'left', 'justified' -->
   <xsl:param name="alignment">justified</xsl:param>
+  <!-- Possible values are 'plain', 'withPageNums' and 'scientific' 
+       - 'plain' contains no original page numbers, no section numbering
+         and uses the 'plain' pagestyle.
+       - 'withPageNums' is similar to 'plain' but enables the display of the
+         original page numbers.
+       - 'scientific' has original page numbers, has section numbering
+         and uses the normal latex page style for the document class book.
+    -->
+  <xsl:param name="pageStyle">plain</xsl:param>
 
    <xsl:template match="/">
       <xsl:apply-templates/>
@@ -47,7 +56,12 @@ hyperlänkar
    	<xsl:call-template name="findLanguage"/>
    	<xsl:text>\setlength{\parskip}{1.5ex}&#10;</xsl:text>
    	<xsl:text>\setlength{\parindent}{0ex}&#10;</xsl:text>
-	<xsl:text>\usepackage[pdftex]{hyperref}&#10;&#10;</xsl:text>
+	<xsl:text>\usepackage[pdftex]{hyperref}&#10;</xsl:text>
+	<xsl:if test="$pageStyle!='scientific'">
+	  <xsl:text>\usepackage{titlesec}&#10;&#10;</xsl:text>
+	  <xsl:text>\titlelabel{}&#10;</xsl:text>
+	  <xsl:text>\titleformat{\chapter}[block]{}{}{0cm}{\Large\bfseries}&#10;&#10;</xsl:text>
+	</xsl:if>
 	<xsl:text>\renewcommand\familydefault{</xsl:text><xsl:value-of select="$fontfamily"/><xsl:text>}&#10;&#10;</xsl:text>
 	<xsl:apply-templates/>
    </xsl:template>
@@ -107,6 +121,9 @@ hyperlänkar
 
    <xsl:template match="dtb:book">
 	<xsl:text>\begin{document}&#10;</xsl:text>
+	<xsl:if test="$pageStyle='plain' or $pageStyle='withPageNums'">
+	  <xsl:text>\pagestyle{plain}&#10;</xsl:text>
+	</xsl:if>
 	<xsl:if test="$alignment='left'">
 	  <xsl:text>\raggedright&#10;</xsl:text>
 	</xsl:if>
@@ -190,9 +207,11 @@ hyperlänkar
    </xsl:template>
 
    <xsl:template match="dtb:pagenum">
-     <xsl:text>\marginpar{</xsl:text>
-	<xsl:apply-templates/>
-     <xsl:text>}&#10;</xsl:text>
+     <xsl:if test="$pageStyle!='plain'">
+       <xsl:text>\marginpar{</xsl:text>
+       <xsl:apply-templates/>
+       <xsl:text>}&#10;</xsl:text>
+     </xsl:if>
    </xsl:template>
 
    <xsl:template match="dtb:address">

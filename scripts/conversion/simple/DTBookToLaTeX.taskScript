@@ -52,6 +52,19 @@
     </datatype>
   </parameter>
   
+  <parameter name="pageStyle" value="plain" required="false">
+    <nicename>Page style</nicename>
+    <description>Style for the page. See the documentation for a
+    detailed explanation.</description>
+    <datatype>
+     <enum>
+       <item nicename="Plain" value="plain"/>
+       <item nicename="With original page numbers" value="withPageNums"/>
+       <item nicename="Scientific" value="scientific"/>
+     </enum>
+    </datatype>
+  </parameter>
+  
   <parameter name="alignment" value="justified" required="false">
     <nicename>Alignment for standard text</nicename>
     <description>The alignment of the standard text. If you choose
@@ -130,6 +143,11 @@
     <parameter>
       <name>fontfamily</name>
       <value>${fontfamily}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>pageStyle</name>
+      <value>${pageStyle}</value>			
     </parameter>				
 
     <parameter>
