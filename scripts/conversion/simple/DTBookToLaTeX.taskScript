@@ -45,9 +45,9 @@
     <description>The font family to be used. See also the LaTeX font guide (http://www.latex-project.org/guides/fntguide.pdf)</description>
     <datatype>
      <enum>
-       <item nicename="cmr" value="cmr"/>
-       <item nicename="cmss" value="cmss"/>
-       <item nicename="cmvtt" value="cmvtt"/>
+       <item nicename="Computer Modern Roman" value="cmr"/>
+       <item nicename="Computer Modern SansSerif" value="cmss"/>
+       <item nicename="Computer Modern Typewriter" value="cmvtt"/>
      </enum>
     </datatype>
   </parameter>
