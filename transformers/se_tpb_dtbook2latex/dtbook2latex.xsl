@@ -47,8 +47,9 @@ hyperlänkar
    	<xsl:call-template name="findLanguage"/>
    	<xsl:text>\setlength{\parskip}{1.5ex}&#10;</xsl:text>
    	<xsl:text>\setlength{\parindent}{0ex}&#10;</xsl:text>
-	<xsl:text>\usepackage[pdftex]{hyperref}&#10;&#10;&#10;</xsl:text>
-   	<xsl:apply-templates/>
+	<xsl:text>\usepackage[pdftex]{hyperref}&#10;&#10;</xsl:text>
+	<xsl:text>\renewcommand\familydefault{</xsl:text><xsl:value-of select="$fontfamily"/><xsl:text>}&#10;&#10;</xsl:text>
+	<xsl:apply-templates/>
    </xsl:template>
 
    <xsl:template name="iso639toBabel">
