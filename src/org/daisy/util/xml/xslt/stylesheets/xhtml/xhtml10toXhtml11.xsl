@@ -36,7 +36,7 @@
 			<xsl:if test="@lang and not(@xml:lang)">
 				<xsl:attribute name="xml:lang" select="@lang" />
 			</xsl:if>
-			<xsl:if test="local-name() eq 'meta and not(@http-equiv)'">
+			<xsl:if test="local-name() eq 'meta' and not(@http-equiv)">
 				<xsl:attribute name="name" select="@name" />
 			</xsl:if>
 			<xsl:apply-templates />
