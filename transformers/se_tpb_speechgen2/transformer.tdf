@@ -40,7 +40,7 @@
 			<name>sgConfigFilename</name>
 			<description>/path/to/configfile.xml</description>
 			<example>${transformer_dir}/conf/sgConfig.xml</example>
-			<default>${transformer_dir}/conf/sgConfig-sv.xml</default>
+			<default>${transformer_dir}/conf/sgConfig.xml</default>
 		</parameter>
 		
 		
@@ -108,7 +108,15 @@
 				<value>false</value>
 			</enum>
 			<default>true</default>
-		</parameter>	
+		</parameter>
+		
+		<parameter required="false" direction="in" type="text/plain">
+			<name>endSilencePadding</name>
+			<description>Add milliseconds of silence padding at the end of each audio file.
+			This silence is not pointed out by smil.</description>
+			<example>1000</example>
+			<default>500</default>
+		</parameter>
 		
 	</parameters>
 

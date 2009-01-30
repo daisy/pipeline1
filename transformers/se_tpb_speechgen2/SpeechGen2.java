@@ -170,6 +170,7 @@ public class SpeechGen2 extends Transformer {
 	private QName SMIL_SYNC_ATTR;
 	private boolean doSmilSyncAttributeBasedSyncPointLocation = false; //Which syncpoint location method to use, see #isSynchronizationPoint
 	private boolean failOnError = false;                       //Whether to abort after a TTS error
+	private int endSilencePadding = 0;							// add 0 milliseconds silence to each merged audio file.
 	
 	private CountDownLatch countOnce = new CountDownLatch(1);	// thread synchronization
 	private AudioConcatQueue audioConcatQueue = null;           // wav files concatenation and possibly mp3 encoding.
@@ -212,6 +213,14 @@ public class SpeechGen2 extends Transformer {
 			File ttsBuilderConfig = new File(parameters.remove("ttsBuilderConfig"));
 			inputFile = new File(parameters.remove("inputFilename"));
 			File outputFile = new File(parameters.remove("outputFilename"));
+			String silencePaddingStr = parameters.remove("endSilencePadding"); 
+			if (silencePaddingStr != null) {
+				try {
+					endSilencePadding = Integer.parseInt(silencePaddingStr);
+				} catch (NumberFormatException e) {
+					// nothing
+				}
+			}
 			
 			//mg200805
 			doSmilSyncAttributeBasedSyncPointLocation = Boolean.parseBoolean(parameters.remove("doSmilSyncAttributeBasedSyncPointLocation"));
@@ -923,9 +932,13 @@ public class SpeechGen2 extends Transformer {
 
 	/**
 	 * Merges the small clips (each synchpoint) so far into one
-	 * .wav file. Performes mp3-encoding as well, in a separate thread.
+	 * .wav file. Adds optional silence at the end. Performs mp3-encoding 
+	 * as well, in a separate thread.
+	 * @throws UnsupportedAudioFileException if the silence audio format
+	 * is corrupt.
+	 * @throws IOException if a silent audio clip could not be generated.
 	 */
-	private void mergeAudio() {
+	private void mergeAudio() throws IOException, UnsupportedAudioFileException {
 		if (0 == workingFiles.size()) {
 			numAudioFiles--;
 			return;
@@ -935,6 +948,10 @@ public class SpeechGen2 extends Transformer {
 		currentAudioFile = getCurrentAudioFile();
 		List<File> wf = new ArrayList<File>();
 		wf.addAll(workingFiles);
+		if (endSilencePadding > 0) {
+			wf.add(getSilentFile(endSilencePadding, mSilenceFormat));
+		}
+
 		
 		File mp3file = null;
 		if (mp3Output) {
