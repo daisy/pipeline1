@@ -77,7 +77,10 @@
 		<xsl:value-of select="@alt"/>
 		<xsl:text>, </xsl:text>
 	</xsl:template>
-
+	
+	<xsl:template match="w[@class='num-with-space']">
+		<xsl:value-of select="replace(current(),' ','')"/>
+	</xsl:template>
 
 	<xsl:template match="/">
 		<xsl:apply-templates/>
