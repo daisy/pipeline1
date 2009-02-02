@@ -5,14 +5,13 @@
 <head>
   <meta http-equiv="content-type"
   content="application/xhtml+xml; charset=UTF-8" />
-  <title>Transformer documentation: org_pef_text/text2pef</title>
+  <title>Transformer documentation: org_pef_dist</title>
   <style type="text/css">
   body {margin: 2em; font-family: arial, verdana, sans-serif;}</style>
 </head>
 
 <body>
-<h1 class="title">Transformer documentation:
-<em>org_pef_text/text2pef</em></h1>
+<h1 class="title">Transformer documentation: <em>org_pef_dist</em></h1>
 <!-- doc.html contains primarily developer-centric information, 
 not end-user-centric information. However, when describing extended configuration, remember
 that end users may come in contact with that information. -->
@@ -42,23 +41,20 @@ that end users may come in contact with that information. -->
 
 <h2 id="purpose">Transformer Purpose</h2>
 
-<p>The purpose of this transformer is to convert a braille text file into a
-PEF 2008-1 document.</p>
-
-<p><em>Note: This implementation is based on the December 9, 2008 Working
-Draft of the PEF 1.0 Specification.</em></p>
+<p>The purpose of this transformer is to insert a PEF 2008-1 document into an
+executable file (.jar).</p>
 <!-- brief summary of purpose -->
 
 <h2 id="inputReqs">Input Requirements</h2>
 
-<p>A braille text file.</p>
+<p>A PEF 2008-1 document.</p>
 <!-- contract definition: detailed requirements on input nature -->
 
 <h2 id="output">Output</h2>
 
 <h3 id="success">On success</h3>
 
-<p>A PEF 2008-1 document.</p>
+<p>A Jar file.</p>
 <!-- contract definition: details on delivered output given that input reqs are satisfied
 and no exception occurs -->
 
@@ -72,19 +68,9 @@ input reqs were not satisfied, or because an exception occurs -->
 <!-- description on params as defined in tdf, please use the below definition list -->
 <dl id="paramslist">
   <dt>input</dt>
-    <dd>Path to input text file</dd>
+    <dd>Path to PEF 2008-1 document</dd>
   <dt>output</dt>
-    <dd>Path to output PEF 2008-1 document</dd>
-  <dt>mode</dt>
-    <dd>Optional. Read mode</dd>
-  <dt>author</dt>
-    <dd>Optional. Document author</dd>
-  <dt>title</dt>
-    <dd>Optional. Document title</dd>
-  <dt>identifier</dt>
-    <dd>Optional. Document identifier</dd>
-  <dt>language</dt>
-    <dd>Optional. Document language</dd>
+    <dd>Path to Jar file</dd>
 </dl>
 
 <h3 id="extConfig">Extended configurability</h3>

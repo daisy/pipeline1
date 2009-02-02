@@ -47,6 +47,7 @@
 		<type id="gz" name="application/x-gzip" namePatterns="*.gz"/>
 		<type id="sit" name="application/x-stuffit" namePatterns="*.sit"/>
 		<type id="tar" name="application/x-tar" namePatterns="*.tar"/>
+		<type id="jar" name="application/x-jar" namePatterns="*.jar"/>
 		<!-- OpenDocument -->
 		<type id="odt" name="application/vnd.oasis.opendocument.text" namePatterns="*.odt" definition="OpenDocument Text"/>
 		<type id="odg" name="application/vnd.oasis.opendocument.graphics" namePatterns="*.odg" definition="OpenDocument Drawing"/>

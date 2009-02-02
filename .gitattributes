@@ -91,6 +91,7 @@ doc/scripts/DTBookToXhtml.html -text
 doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/Daisy202ToZ39862005.html -text
+doc/scripts/DistributePEF.html -text
 doc/scripts/EmbossPEF.html -text
 doc/scripts/EpubCheck.html -text
 doc/scripts/FilesetGenerator-Daisy202TextOnly.html -text
@@ -102,6 +103,7 @@ doc/scripts/OCFCreator.html -text
 doc/scripts/OPSCreator.html -text
 doc/scripts/PEFIntroduction.html -text
 doc/scripts/PEFToText.html -text
+doc/scripts/PEFValidator.html -text
 doc/scripts/PrettyPrinter.html -text
 doc/scripts/RenamerTaggerValidator.html -text
 doc/scripts/RtfToDtbook.html -text
@@ -137,6 +139,7 @@ doc/transformers/int_daisy_unicodeNormalizer.html -text
 doc/transformers/int_daisy_unicodeTranscoder.html -text
 doc/transformers/int_daisy_validator.html -text
 doc/transformers/no_hks_xhtml2dtbook.html -text
+doc/transformers/org_pef_dist.html -text
 doc/transformers/org_pef_pef2text.html -text
 doc/transformers/org_pef_text2pef.html -text
 doc/transformers/pipeline_system_copyer.html -text
@@ -366,9 +369,11 @@ samples/input/xhtml/valentinhauy.html -text
 samples/input/xhtml/valentinhauy11.html -text
 samples/input/xhtml/xhtml-rdf.xml -text
 scripts/_dev/AllParamTypes.taskScript -text
+scripts/_dev/BrailleDistributePEF.taskScript -text
 scripts/_dev/BrailleEmbossPEF.taskScript -text
 scripts/_dev/BrailleFormatInputParamsStatic.paramGroup -text
 scripts/_dev/BrailleFormatOutputParamsStatic.paramGroup -text
+scripts/_dev/BraillePEFValidator.taskScript -text
 scripts/_dev/BraillePefToText.taskScript -text
 scripts/_dev/BrailleTextToPEF.taskScript -text
 scripts/_dev/BrailleTextToText.taskScript -text
@@ -941,6 +946,9 @@ transformers/int_daisy_xukCreator/messages.properties -text
 transformers/int_daisy_xukCreator/transformer.tdf -text
 transformers/no_hks_xhtml2dtbook/Xhtml2DTBook.java -text
 transformers/no_hks_xhtml2dtbook/transformer.tdf -text
+transformers/org_pef_dist/Distribute.java -text
+transformers/org_pef_dist/lib/dist.jar -text
+transformers/org_pef_dist/transformer.tdf -text
 transformers/org_pef_text/AbstractTable.java -text
 transformers/org_pef_text/PipelineMessageOutputStream.java -text
 transformers/org_pef_text/SimpleTable.java -text
