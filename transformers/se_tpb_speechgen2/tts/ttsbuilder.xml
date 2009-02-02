@@ -74,6 +74,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 			<!--
 			<tts default="true">
@@ -92,6 +93,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="bs">
@@ -100,6 +102,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>		
 		<lang lang="cs">
@@ -108,6 +111,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>		
 		<lang lang="de">
@@ -116,6 +120,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 			<!-- Use the following if you'd like to use the AT&T Natural voices TTS
 			<tts>
@@ -130,6 +135,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>		
 		<lang lang="es">
@@ -138,6 +144,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="fi">
@@ -146,6 +153,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>		
 		<lang lang="fr">
@@ -154,6 +162,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<!--
@@ -163,6 +172,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		-->
@@ -172,6 +182,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>					
 		<lang lang="hr">
@@ -180,6 +191,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="hu">
@@ -188,6 +200,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="is">
@@ -196,6 +209,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="it">
@@ -204,6 +218,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="la">
@@ -212,6 +227,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="nl">
@@ -220,6 +236,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>		
 		<lang lang="no">
@@ -228,6 +245,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>		
 		<lang lang="pl">
@@ -236,6 +254,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>	
 		<lang lang="ru">
@@ -244,6 +263,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="sk">
@@ -252,6 +272,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>		
 		<lang lang="sr">
@@ -260,6 +281,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="sv">
@@ -268,6 +290,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="sw">
@@ -276,6 +299,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>		
 		<lang lang="ta">
@@ -284,6 +308,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="tr">
@@ -292,6 +317,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="vi">
@@ -300,6 +326,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<lang lang="zh">
@@ -308,6 +335,7 @@
 				<param name="class" value="se_tpb_speechgen2.external.linux.ESpeakTTS"/>				
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
 				<param name="year" value="${transformer_dir}/regex/year_en.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 		<!--
@@ -333,6 +361,7 @@
 			<tts default="true">
 				<param name="class" value="se_tpb_speechgen2.external.MacOS.MacSayTTS"/>
                 <param name="regex" value="${transformer_dir}/regex/macosx-say.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
 			</tts>
 		</lang>
 	
