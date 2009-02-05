@@ -20,9 +20,16 @@ package org.daisy.pipeline.execution.rmi;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.daisy.pipeline.execution.AbstractJobExecutionService;
@@ -76,9 +83,9 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 		MAX_ACTIVE("execution.maxpoolsize", "10"),
 		/**
 		 * The timeout after which a non-responding RMI Pipeline instance will
-		 * be shut down (defaults to 1000000000)
+		 * be shut down (defaults to 60000ms = 1min)
 		 */
-		TIMEOUT("execution.timeout", "1000000000"),
+		TIMEOUT("execution.timeout", "60000"),
 		/**
 		 * The time interval to check the timeout value (default to 2000)
 		 */
@@ -105,29 +112,145 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 			return key;
 		}
 
-		public String getValue(Map<String, String> config) {
-			String value = config.get(getKey());
+		public String getValue(Properties config) {
+			String value = config.getProperty(getKey());
 			return (value != null) ? value : defaultValue;
 		}
 	}
 
-	private class RMIPipelineInstanceKiller extends TimeoutMonitor {
-		private RMIPipelineInstanceWrapper pipeline;
-		private JobListener updater;
+	private class JobExecutionTask extends Thread {
 
-		public RMIPipelineInstanceKiller(RMIPipelineInstanceWrapper pipeline,
-				JobListener updater) {
-			super(Long.valueOf(Config.TIMEOUT.getValue(config)), Long
-					.valueOf(Config.TIMEOUT_MONITORING_INTERVAL
-							.getValue(config)));
-			this.pipeline = pipeline;
-			this.updater = updater;
+		private RMIPipelineInstanceWrapper pipeline = null;
+		private URL scriptURL;
+		private Map<String, String> parameters;
+		private JobListener listener;
+		private Map<String, Object> context;
+
+		private JobExecutionTask(URL scriptURL, Map<String, String> parameters,
+				JobListener listener, Map<String, Object> context) {
+			super();
+			this.scriptURL = scriptURL;
+			this.parameters = parameters;
+			this.listener = listener;
+			this.context = context;
+		}
+
+		public void run() {
+			listener.start();
+
+			StreamRedirector outRedirector = null;
+			StreamRedirector errRedirector = null;
+			TimeoutMonitor timeoutMonitor = null;
+			try {
+				// Get a RMI Pipeline from the pool
+				pipeline = (RMIPipelineInstanceWrapper) pipelinePool
+						.borrowObject();
+
+				// Setup log files
+				Object stdoutFile = context.get(STDOUT_FILE_KEY);
+				if (stdoutFile != null && stdoutFile instanceof File) {
+					outRedirector = new StreamRedirector(pipeline
+							.getInputStream(), new FileOutputStream(
+							(File) stdoutFile), true);
+					outRedirector.start();
+
+				}
+				Object stderrFile = context.get(STDERR_FILE_KEY);
+				if (stderrFile != null && stderrFile instanceof File) {
+					errRedirector = new StreamRedirector(pipeline
+							.getErroStream(), new FileOutputStream(
+							(File) stderrFile), true);
+					errRedirector.start();
+
+				}
+				// Setup the timeout monitor
+				timeoutMonitor = new TimeoutMonitor(Long.valueOf(Config.TIMEOUT
+						.getValue(config)), Long
+						.valueOf(Config.TIMEOUT_MONITORING_INTERVAL
+								.getValue(config))) {
+					@Override
+					protected void timeout() {
+						if (logger.isDebugEnabled()) {
+							logger.debug("Pipeline timeout");
+						}
+						pipeline.shutdown();
+						listener.stop(Status.SYSTEM_FAILED,
+								"Job not responding");
+					}
+				};
+				timeoutMonitor.start();
+
+				// Finally execute the job
+				RMIPipelineListener rmiListener = new RMIPipelineListenerImpl(
+						listener, timeoutMonitor);
+				pipeline.setListener(rmiListener);
+				pipeline.executeJob(scriptURL, parameters);
+
+			} catch (InterruptedException e) {
+				logger.warn(e.getLocalizedMessage(), e);
+				listener.stop(Status.ABORTED, "Aborted.");
+			} catch (Exception e) {
+				logger.warn(e.getLocalizedMessage(), e);
+				listener.stop(Status.SYSTEM_FAILED, "Unexpected Error: "
+						+ e.getLocalizedMessage());
+			} finally {
+
+				// Clean the pool
+				if (pipeline != null) {
+					try {
+						pipelinePool.returnObject(pipeline);
+						// pipelinePool.invalidateObject(pipeline);
+					} catch (Exception e) {
+						logger.warn("Couldn't return Pipeline to pool", e);
+					}
+				}
+
+				// Terminate the logging and timeout threads
+				if (outRedirector != null && outRedirector.isAlive()) {
+					outRedirector.cancel();
+				}
+				if (errRedirector != null && errRedirector.isAlive()) {
+					errRedirector.cancel();
+				}
+				if (timeoutMonitor != null && timeoutMonitor.isAlive()) {
+					timeoutMonitor.cancel();
+				}
+			}
 		}
 
 		@Override
-		protected void timeout() {
-			pipeline.shutdown();
-			updater.stop(Status.SYSTEM_FAILED, "Job not responding");
+		public void interrupt() {
+			if (pipeline != null) {
+				ExecutorService timeoutExecutor = Executors
+						.newSingleThreadExecutor();
+				Future<?> task = timeoutExecutor.submit(new Runnable() {
+					public void run() {
+						try {
+							pipeline.cancelCurrentJob();
+						} catch (RemoteException e) {
+							logger.error("Abortion failed", e);
+							pipeline.shutdown();
+
+						}
+					}
+				});
+				try {
+					task.get(Long.valueOf(Config.TIMEOUT.getValue(config)),
+							TimeUnit.MILLISECONDS);
+				} catch (TimeoutException e) {
+					logger
+							.warn("Abortion request timed out, shutting down Pipeline instance");
+					pipeline.shutdown();
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				} catch (ExecutionException e) {
+					logger.error("Abortion failed ", e);
+				} finally {
+					timeoutExecutor.shutdownNow();
+				}
+			}
+			super.interrupt();
+			listener.stop(Status.ABORTED, "Aborted.");
 		}
 
 	}
@@ -137,7 +260,8 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 
 	private GenericObjectPool pipelinePool;
 	private ExecutorService executor;
-	private Map<String, String> config;
+	private Properties config;
+	private Registry rmiRegistry;
 
 	/**
 	 * Initializes the pool and Thread executor with the configuration
@@ -148,8 +272,8 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 		File pipelineDir = new File(Config.PIPELINE_DIR.getValue(config));
 		File launcher = new File(Config.PIPELINE_LAUNCHER.getValue(config));
 		pipelinePool = new GenericObjectPool(
-				new PoolableRMIPipelineInstanceFactory(launcher, pipelineDir),
-				maxActive);
+				new PoolableRMIPipelineInstanceFactory(launcher, pipelineDir,
+						rmiRegistry), maxActive);
 		executor = Executors.newFixedThreadPool(maxActive);
 	}
 
@@ -162,8 +286,16 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 	 *            service.
 	 * @see Config
 	 */
-	public void setConfig(Map<String, String> config) {
+	public void setConfig(Properties config) {
 		this.config = config;
+	}
+
+	/**
+	 * @param rmiRegistry
+	 *            the rmiRegistry to set
+	 */
+	public void setRmiRegistry(Registry rmiRegistry) {
+		this.rmiRegistry = rmiRegistry;
 	}
 
 	/**
@@ -173,83 +305,25 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 	 * <p>
 	 * Two {@link File} objects are possibly retrieved from the context under
 	 * the keys {@link #STDERR_FILE_KEY} and {@link #STDOUT_FILE_KEY} to log the
-	 * RMI Pipline instance standard out and error streams.
+	 * RMI Pipeline instance standard out and error streams.
 	 * </p>
 	 */
 	@Override
-	protected void doExecute(final URL scriptURL,
+	protected Future<?> doExecute(final URL scriptURL,
 			final Map<String, String> parameters, final JobListener listener,
 			final Map<String, Object> context) {
-		executor.execute(new Runnable() {
-			public void run() {
-				listener.start();
-
-				RMIPipelineInstanceWrapper pipeline = null;
-				StreamRedirector outRedirector = null;
-				StreamRedirector errRedirector = null;
-				TimeoutMonitor timeoutMonitor = null;
-				try {
-					// Get a RMI Pipeline from the pool
-					// TODO catch interrupted exception
-					pipeline = (RMIPipelineInstanceWrapper) pipelinePool
-							.borrowObject();
-
-					// Setup log files
-					Object stdoutFile = context.get(STDOUT_FILE_KEY);
-					if (stdoutFile != null && stdoutFile instanceof File) {
-						outRedirector = new StreamRedirector(pipeline
-								.getInputStream(), new FileOutputStream(
-								(File) stdoutFile), true);
-						outRedirector.start();
-
-					}
-					Object stderrFile = context.get(STDERR_FILE_KEY);
-					if (stderrFile != null && stderrFile instanceof File) {
-						errRedirector = new StreamRedirector(pipeline
-								.getErroStream(), new FileOutputStream(
-								(File) stderrFile), true);
-						errRedirector.start();
-
-					}
-					// Setup the timeout monitor
-					timeoutMonitor = new RMIPipelineInstanceKiller(pipeline,
-							listener);
-					timeoutMonitor.start();
-
-					// Finally execute the job
-					RMIPipelineListener rmiListener = new RMIPipelineListenerImpl(
-							listener, timeoutMonitor);
-					pipeline.setListener(rmiListener);
-					pipeline.executeJob(scriptURL, parameters);
-
-				} catch (Exception e) {
-					logger.warn(e.getLocalizedMessage(), e);
-					listener.stop(Status.SYSTEM_FAILED, "Unexpected Error: "
-							+ e.getLocalizedMessage());
-				} finally {
-
-					// Clean the pool
-					if (pipeline != null) {
-						try {
-							pipelinePool.returnObject(pipeline);
-						} catch (Exception e) {
-							logger.warn("Couldn't return Pipeline to pool", e);
-						}
-					}
-
-					// Terminate the logging and timeout threads
-					if (outRedirector != null && outRedirector.isAlive()) {
-						outRedirector.cancel();
-					}
-					if (errRedirector != null && errRedirector.isAlive()) {
-						errRedirector.cancel();
-					}
-					if (timeoutMonitor != null && timeoutMonitor.isAlive()) {
-						timeoutMonitor.cancel();
-					}
-				}
-			}
-		});
+		return executor.submit(new JobExecutionTask(scriptURL, parameters,
+				listener, context));
 
 	}
+
+	public void destroy() {
+		try {
+			pipelinePool.close();
+			executor.shutdownNow();
+		} catch (Exception e) {
+			logger.warn("Couldn't close Pipeline pool");
+		}
+	}
+	
 }

@@ -21,6 +21,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.daisy.pipeline.rmi.RMIPipelineInstance;
 import org.daisy.pipeline.rmi.RMIPipelineListener;
@@ -40,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Romain Deltour
  * 
  */
-public class RMIPipelineInstanceWrapper {
+public class RMIPipelineInstanceWrapper implements RMIPipelineInstance {
 	private final Logger logger = LoggerFactory
 			.getLogger(RMIPipelineInstanceWrapper.class);
 	private RMIPipelineInstance pipeline;
@@ -51,10 +56,14 @@ public class RMIPipelineInstanceWrapper {
 		this.pipeline = pipeline;
 		this.process = process;
 	}
-	
+
 	public void executeJob(URL scriptURL, Map<String, String> parameters)
 			throws RemoteException {
 		pipeline.executeJob(scriptURL, parameters);
+	}
+
+	public void cancelCurrentJob() throws RemoteException {
+		pipeline.cancelCurrentJob();
 	}
 
 	public boolean isReady() throws RemoteException {
@@ -67,13 +76,23 @@ public class RMIPipelineInstanceWrapper {
 	}
 
 	public void shutdown() {
+		ExecutorService timeoutExecutor = Executors
+				.newSingleThreadExecutor();
+		Future<?> future = timeoutExecutor.submit(new Callable<Object>() {
+			public Object call() throws Exception {
+				pipeline.shutdown();
+				return null;
+			}
+		});
 		try {
-			pipeline.shutdown();
-		} catch (RemoteException e) {
+			future.get(5, TimeUnit.SECONDS);
+		} catch (Exception e) {
 			logger
 					.warn("Couldn't gracefully shutdown RMI Pipeline instance",
 							e);
 			process.destroy();
+		} finally {
+			timeoutExecutor.shutdownNow(); 
 		}
 	}
 

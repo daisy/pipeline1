@@ -23,14 +23,10 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.RMIClientSocketFactory;
-import java.rmi.server.RMIServerSocketFactory;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.pool.BasePoolableObjectFactory;
-import org.daisy.pipeline.rmi.LocalClientSocketFactory;
-import org.daisy.pipeline.rmi.LocalServerSocketFactory;
 import org.daisy.pipeline.rmi.RMIPipelineInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,48 +51,32 @@ import org.slf4j.LoggerFactory;
 public class PoolableRMIPipelineInstanceFactory extends
 		BasePoolableObjectFactory {
 
-	private static final Logger logger = LoggerFactory
+	private final Logger logger = LoggerFactory
 			.getLogger(PoolableRMIPipelineInstanceFactory.class);
-
-	private static class RegistryHolder {
-		static {
-			try {
-				RMIClientSocketFactory csf = new LocalClientSocketFactory();
-				RMIServerSocketFactory ssf = new LocalServerSocketFactory();
-				LocateRegistry.createRegistry(1099, csf, ssf);
-				logger.info("RMI registry intialized on localhost:1099");
-			} catch (Exception e) {
-				logger.error("Couldn't initialize the RMI registry", e);
-			}
-			try {
-				registry = LocateRegistry.getRegistry("127.0.0.1", 1099);
-			} catch (RemoteException e) {
-				logger.error("Couldn't get the RMI registry", e);
-			}
-		}
-
-		private static Registry registry;
-
-		public static Registry getRegistry() {
-			return registry;
-		}
-	}
 
 	private int timeout = 5000;
 	private File pipelineDir;
 	private File launcher;
+	private Registry rmiRegistry;
 
-	public PoolableRMIPipelineInstanceFactory(File launcher, File pipelineDir) {
-		if (launcher == null || pipelineDir == null) {
+	public PoolableRMIPipelineInstanceFactory(File launcher, File pipelineDir,
+			Registry rmiRegistry) {
+		if (launcher == null || pipelineDir == null || rmiRegistry == null) {
+			// TODO throw IAE instead
 			throw new NullPointerException();
 		}
 		this.launcher = launcher;
 		this.pipelineDir = pipelineDir;
+		this.rmiRegistry = rmiRegistry;
 	}
 
 	private Process launchNewPipelineInstance(final String id)
 			throws IOException {
-		String[] cmdarray = new String[] { launcher.getAbsolutePath(), id };
+		if (logger.isDebugEnabled()) {
+			logger.debug("Launching {} with laucher {}", id, launcher
+					.getAbsolutePath());
+		}
+		String[] cmdarray = new String[] {launcher.getAbsolutePath(), id };
 		final Process process = Runtime.getRuntime().exec(cmdarray, null,
 				pipelineDir);
 		// Register a shutdown hook to terminate live RMI Pipeline
@@ -104,10 +84,6 @@ public class PoolableRMIPipelineInstanceFactory extends
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				try {
-					Registry registry = RegistryHolder.getRegistry();
-					(((RMIPipelineInstance) registry.lookup(id))).shutdown();
-				} catch (Exception e) {}
 				process.destroy();
 			}
 		});
@@ -133,12 +109,11 @@ public class PoolableRMIPipelineInstanceFactory extends
 				Thread.sleep(100);
 			} catch (InterruptedException e) {}
 			try {
-				Registry registry = RegistryHolder.getRegistry();
-				pipeline = (RMIPipelineInstance) registry.lookup(uuid);
+				pipeline = (RMIPipelineInstance) rmiRegistry.lookup(uuid);
 			} catch (NotBoundException e) {}
 		}
 		if (pipeline == null) {
-			throw new TimeoutException();
+			throw new TimeoutException("Couldn't load the Pipeline instance");
 		}
 		return new RMIPipelineInstanceWrapper(pipeline, process);
 	}

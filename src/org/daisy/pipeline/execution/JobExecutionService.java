@@ -19,6 +19,7 @@ package org.daisy.pipeline.execution;
 
 import java.net.URL;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * 
@@ -44,8 +45,10 @@ public interface JobExecutionService<T> {
 	 * 
 	 * @param job
 	 *            an object representing a Pipeline job.
+	 * @return a cancelable future returning <code>null</code> when the job is
+	 *         done
 	 */
-	public void execute(T job);
+	public Future<?> execute(T job);
 
 	/**
 	 * Executes the Pipeline job represented by the argument, and listens to the
@@ -55,8 +58,10 @@ public interface JobExecutionService<T> {
 	 *            an object representing a Pipeline job.
 	 * @param listener
 	 *            a listener to the job execution.
+	 * @return a cancelable future returning <code>null</code> when the job is
+	 *         done
 	 */
-	public void execute(T job, JobListener listener);
+	public Future<?> execute(T job, JobListener listener);
 
 	/**
 	 * Executes the Pipeline job defined by the given Script URL and parameters,
@@ -68,7 +73,9 @@ public interface JobExecutionService<T> {
 	 *            the parameters to configure the Pipeline Job.
 	 * @param listener
 	 *            a listener to the job execution.
+	 * @return a cancelable future returning <code>null</code> when the job is
+	 *         done
 	 */
-	public void execute(URL scriptURL, Map<String, String> parameters,
-			JobListener listener);
+	public Future<?> execute(URL scriptURL,
+			Map<String, String> parameters, JobListener listener);
 }

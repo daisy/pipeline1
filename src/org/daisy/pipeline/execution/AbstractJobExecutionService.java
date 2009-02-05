@@ -20,6 +20,9 @@ package org.daisy.pipeline.execution;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
+
+import org.daisy.util.execution.DoneFuture;
 
 /**
  * Abstract generic implementation of a {@link JobExecutionService}, which uses
@@ -66,8 +69,8 @@ public abstract class AbstractJobExecutionService<T> implements
 	 * @throws IllegalStateException
 	 *             if no job adapter has been configured.
 	 */
-	public void execute(final T job) {
-		this.execute(job, null);
+	public Future<?> execute(final T job) {
+		return this.execute(job, null);
 	}
 
 	/**
@@ -84,7 +87,7 @@ public abstract class AbstractJobExecutionService<T> implements
 	 * @throws IllegalStateException
 	 *             if no job adapter has been configured.
 	 */
-	public void execute(final T job, JobListener listener) {
+	public Future<?> execute(final T job, JobListener listener) {
 		if (jobAdapter == null) {
 			throw new IllegalStateException("Job adapter is null");
 		}
@@ -101,31 +104,31 @@ public abstract class AbstractJobExecutionService<T> implements
 		URL scriptURL = jobAdapter.getScriptURL(job);
 		if (scriptURL == null) {
 			listener.stop(Status.SYSTEM_FAILED, "Couldn't get Script URL");
-			return;
+			return new DoneFuture<Object>();
 		}
 		Map<String, String> parameters = jobAdapter.getParameters(job);
 		if (parameters == null) {
 			listener.stop(Status.SYSTEM_FAILED, "Couldn't get Job parameters");
-			return;
+			return  new DoneFuture<Object>();
 
 		}
 		Map<String, Object> context = jobAdapter.getContext(job);
 		if (context == null) {
 			context = new HashMap<String, Object>();
 		}
-		doExecute(scriptURL, parameters, listener, context);
+		return doExecute(scriptURL, parameters, listener, context);
 	}
 
 	/**
 	 * Delegates to {@link #doExecute(URL, Map, JobListener, Map)}, with an
 	 * empty context and a dummy listener if the given one is <code>null</code>.
 	 */
-	public void execute(URL scriptURL, Map<String, String> parameters,
+	public Future<?> execute(URL scriptURL, Map<String, String> parameters,
 			JobListener listener) {
 		if (listener == null) {
 			listener = new IdleListener();
 		}
-		doExecute(scriptURL, parameters, listener,
+		return doExecute(scriptURL, parameters, listener,
 				new HashMap<String, Object>());
 	}
 
@@ -145,7 +148,7 @@ public abstract class AbstractJobExecutionService<T> implements
 	 * @param context
 	 *            the execution context
 	 */
-	protected abstract void doExecute(URL scriptURL,
+	protected abstract Future<?> doExecute(URL scriptURL,
 			Map<String, String> parameters, JobListener listener,
 			Map<String, Object> context);
 

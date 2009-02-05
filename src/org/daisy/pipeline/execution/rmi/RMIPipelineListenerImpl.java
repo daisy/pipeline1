@@ -23,8 +23,6 @@ import java.rmi.server.UnicastRemoteObject;
 import org.daisy.pipeline.execution.JobListener;
 import org.daisy.pipeline.execution.Level;
 import org.daisy.pipeline.execution.Status;
-import org.daisy.pipeline.rmi.LocalClientSocketFactory;
-import org.daisy.pipeline.rmi.LocalServerSocketFactory;
 import org.daisy.pipeline.rmi.RMIPipelineListener;
 import org.daisy.util.execution.TimeoutMonitor;
 
@@ -41,7 +39,7 @@ public class RMIPipelineListenerImpl extends UnicastRemoteObject implements
 
 	private static final long serialVersionUID = 1L;
 
-	private JobListener jobUpdater;
+	private JobListener jobListener;
 	private TimeoutMonitor timeoutMonitor;
 
 	/**
@@ -56,24 +54,30 @@ public class RMIPipelineListenerImpl extends UnicastRemoteObject implements
 	 */
 	public RMIPipelineListenerImpl(JobListener jobListener,
 			TimeoutMonitor timeoutMonitor) throws RemoteException {
-		super(0, new LocalClientSocketFactory(), new LocalServerSocketFactory());
+//		super(0, new LocalSocketFactory(), new LocalSocketFactory());
+		super();
 		if (jobListener == null)
 			throw new IllegalArgumentException("Job updater is null");
-		this.jobUpdater = jobListener;
+		this.jobListener = jobListener;
 		this.timeoutMonitor = timeoutMonitor;
 	}
 
 	public void message(String message, String type, String path, Integer line,
 			Integer column) throws RemoteException {
-		jobUpdater.message(message, toLevel(type), path, line, column);
-		if (timeoutMonitor != null) {
-			timeoutMonitor.reset();
+		try {
+			jobListener.message(message, toLevel(type), path, line, column);
+		} catch (Exception e) {
+			throw new RemoteException(e.getMessage(), e);
+		} finally {
+			if (timeoutMonitor != null) {
+				timeoutMonitor.reset();
+			}
 		}
 	}
 
 	public void progress(String taskName, double progress)
 			throws RemoteException {
-		jobUpdater.progress(taskName, progress);
+		jobListener.progress(taskName, progress);
 		if (timeoutMonitor != null) {
 			timeoutMonitor.reset();
 		}
@@ -87,21 +91,26 @@ public class RMIPipelineListenerImpl extends UnicastRemoteObject implements
 	}
 
 	public void stopped(ExitCode code, String message) throws RemoteException {
-		jobUpdater.stop(toStatus(code), message);
-		if (timeoutMonitor != null) {
-			timeoutMonitor.reset();
+		try {
+			jobListener.stop(toStatus(code), message);
+		} catch (Exception e) {
+			throw new RemoteException(e.getMessage(), e);
+		} finally {
+			if (timeoutMonitor != null) {
+				timeoutMonitor.reset();
+			}
 		}
 	}
 
 	public void taskStarted(String taskName) throws RemoteException {
-		jobUpdater.startTransformer(taskName);
+		jobListener.startTransformer(taskName);
 		if (timeoutMonitor != null) {
 			timeoutMonitor.reset();
 		}
 	}
 
 	public void taskStopped(String taskName) throws RemoteException {
-		jobUpdater.stopTransformer(taskName);
+		jobListener.stopTransformer(taskName);
 		if (timeoutMonitor != null) {
 			timeoutMonitor.reset();
 		}
