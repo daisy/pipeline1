@@ -6,6 +6,6 @@ package org.daisy.pipeline.execution;
  * @author Romain Deltour
  * 
  */
-public enum Level {
-	ERROR, WARNING, INFO, INFO_FINER, DEBUG
+public enum Level implements Comparable<Level> {
+	DEBUG, INFO_FINER, INFO, WARNING, ERROR
 };
