@@ -25,6 +25,9 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.EventObject;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.stream.Location;
 
@@ -38,7 +41,6 @@ import org.daisy.pipeline.core.event.UserAbortEvent;
 import org.daisy.pipeline.core.script.Job;
 import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.core.script.ScriptParameter;
-import org.daisy.pipeline.core.script.ScriptValidationException;
 import org.daisy.pipeline.core.script.Task;
 import org.daisy.pipeline.core.script.datatype.DatatypeException;
 import org.daisy.pipeline.exception.DMFCConfigurationException;
@@ -87,8 +89,12 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 	 * @throws RemoteException
 	 */
 	protected RMIPipelineApp(String name) throws RemoteException {
-		super(0, new LocalClientSocketFactory(), new LocalServerSocketFactory());
+		// super(0, new LocalSocketFactory(), new LocalSocketFactory());
+		super();
 		this.name = name;
+		if (logger.isDebugEnabled()) {
+			logger.debug("launching Pipeline instance {}", name);
+		}
 
 		// Subscribe this to the Event Listener
 		EventBus.getInstance().subscribe(this, MessageEvent.class);
@@ -96,6 +102,9 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 		EventBus.getInstance().subscribe(this, TaskProgressChangeEvent.class);
 
 		// Create the Pipeline Core
+		if (logger.isDebugEnabled()) {
+			logger.debug("Intializing Pipeline core");
+		}
 		try {
 			pipeline = new PipelineCore();
 		} catch (DMFCConfigurationException e) {
@@ -104,14 +113,20 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 		}
 
 		// Bind this to the registry
+		// Registry registry = LocateRegistry.getRegistry("127.0.0.1", 1099, new
+		// LocalSocketFactory());
 		Registry registry = LocateRegistry.getRegistry("127.0.0.1", 1099);
 		registry.rebind(name, this);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Pipeline instance bound");
+		}
 	}
 
 	public void executeJob(URL scriptURL, Map<String, String> parameters)
 			throws RemoteException {
 		synchronized (this) {
 			if (isRunning) {
+				isValid = false;
 				throw new IllegalStateException("A job is already running");
 			}
 			isRunning = true;
@@ -121,64 +136,70 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 		Script script = null;
 		try {
 			script = pipeline.newScript(scriptURL);
-		} catch (ScriptValidationException e) {
+		} catch (Exception e) {
 			logger.error("Invalid Script :" + e.getMessage(), e);
-			throw new RemoteException(messages.format("SCRIPT_NOT_VALID"), e);
+			stop(ExitCode.FAILED, messages.format("SCRIPT_NOT_VALID", e
+					.getLocalizedMessage()));
+			return;
 		}
 		Job job = new Job(script);
 
 		// Set parameters
 		for (String name : parameters.keySet()) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Received parameter {}={}", name, parameters
+						.get(name));
+			}
 			ScriptParameter scriptParam = job.getScriptParameter(name);
 			if (scriptParam == null) {
 				logger.warn("Unknown script parameter: {}", name);
+				if (listener != null) {
+					listener.message(messages.format("UNKNOWN_PARAM_MESSAGE",
+							name), "WARNING", null, null, null);
+				}
+				break;
 			}
 			try {
 				job.setParameterValue(name, parameters.get(name));
 			} catch (DatatypeException e) {
 				logger.error("Invalid parameter '" + name + "' :"
 						+ e.getMessage(), e);
-				throw new RemoteException(
-						messages.format("ILLEGAL_PARAM_MESSAGE", name, e
-								.getLocalizedMessage()), e);
+
+				if (listener != null) {
+					listener.message(messages.format("ILLEGAL_PARAM_MESSAGE",
+							name, e.getLocalizedMessage()), "WARNING", null,
+							null, null);
+				}
+				break;
 			}
 		}
 
 		// Execute script and catch the different possible outcomes
-		if (listener != null)
-			listener.started();
 		try {
+			if (listener != null)
+				listener.started();
 			pipeline.execute(job);
 			logger.info("Job done");
-			if (listener != null)
-				listener.stopped(ExitCode.FINISHED, null);
+			stop(ExitCode.FINISHED, null);
 		} catch (JobAbortedException e) {
 			logger.warn("Job aborted");
-			if (listener != null)
-				listener.stopped(ExitCode.ABORTED, null);
+			stop(ExitCode.ABORTED, null);
 		} catch (JobFailedException e) {
 			logger.error("Job failed: " + e.getMessage(), e);
-			if (listener != null)
-				listener.stopped(ExitCode.FAILED, e.getLocalizedMessage());
+			stop(ExitCode.FAILED, e.getLocalizedMessage());
 		} catch (Exception e) {
 			logger.error("Unexpected Exception: " + e.getMessage(), e);
-			if (listener != null)
-				listener.stopped(ExitCode.SYSTEM_FAILED, e
-						.getLocalizedMessage());
+			stop(ExitCode.SYSTEM_FAILED, e.getLocalizedMessage());
 		} catch (Error e) {// catch and re-throw to invalidate this instance
 			logger.error("Unexpected Error: " + e.getMessage(), e);
-			if (listener != null)
-				listener.stopped(ExitCode.SYSTEM_FAILED, e
-						.getLocalizedMessage());
+			stop(ExitCode.SYSTEM_FAILED, e.getLocalizedMessage());
 			isValid = false;
 			throw e;
-		} finally {
-			isRunning = false;
 		}
 	}
 
 	public void cancelCurrentJob() throws RemoteException {
-		if(!isRunning) {
+		if (!isRunning) {
 			return;
 		}
 		EventBus.getInstance().publish(new UserAbortEvent(this));
@@ -189,18 +210,31 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 	}
 
 	public boolean isReady() throws RemoteException {
-		return isRunning && isValid;
+		return !isRunning && isValid;
 	}
 
 	public void shutdown() throws RemoteException {
+		ScheduledExecutorService exitExecutor = Executors
+				.newSingleThreadScheduledExecutor();
+		boolean unbound = false;
 		try {
 			Registry registry = LocateRegistry.getRegistry("127.0.0.1", 1099);
+			StringBuilder sb = new StringBuilder();
+			sb.append("RMI bindings:\n");
 			registry.unbind(name);
+			if (logger.isDebugEnabled()) {
+				logger.debug("unbound {}", name);
+			}
+			unbound = true;
 		} catch (Exception e) {
 			logger.error("Couldn't unbind the RMI Pipeline instance", e);
-			System.exit(1);
 		} finally {
-			System.exit(0);
+			final boolean finalUnbound = unbound;
+			exitExecutor.schedule(new Runnable() {
+				public void run() {
+					System.exit((finalUnbound) ? 0 : 1);
+				}
+			}, 50, TimeUnit.MILLISECONDS);
 		}
 	}
 
@@ -265,7 +299,7 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 			listener.message(event.getMessage(), event.getType().toString(),
 					path, line, column);
 		} catch (RemoteException e) {
-			logger.error("Couldn't send remote message: " + e.getMessage(), e);
+			logger.warn("Couldn't send remote message: " + e.getMessage(), e);
 		}
 	}
 
@@ -288,5 +322,11 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 			logger.error(
 					"Couldn't send remote state change: " + e.getMessage(), e);
 		}
+	}
+
+	private void stop(ExitCode code, String message) throws RemoteException {
+		if (listener != null)
+			listener.stopped(code, message);
+		isRunning = false;
 	}
 }

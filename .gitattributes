@@ -517,8 +517,7 @@ src/org/daisy/pipeline/execution/rmi/PoolableRMIPipelineInstanceFactory.java -te
 src/org/daisy/pipeline/execution/rmi/RMIJobExecutionService.java -text
 src/org/daisy/pipeline/execution/rmi/RMIPipelineInstanceWrapper.java -text
 src/org/daisy/pipeline/execution/rmi/RMIPipelineListenerImpl.java -text
-src/org/daisy/pipeline/rmi/LocalClientSocketFactory.java -text svneol=unset#text/plain
-src/org/daisy/pipeline/rmi/LocalServerSocketFactory.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/rmi/LocalSocketFactory.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/rmi/RMIPipelineApp.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/rmi/RMIPipelineInstance.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/rmi/RMIPipelineListener.java -text svneol=unset#text/plain

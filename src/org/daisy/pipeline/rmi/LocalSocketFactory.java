@@ -20,8 +20,10 @@ package org.daisy.pipeline.rmi;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 
 /**
  * Client socket factory implementation creating sockets on the local host.
@@ -29,7 +31,7 @@ import java.rmi.server.RMIClientSocketFactory;
  * @author Romain Deltour
  * 
  */
-public class LocalClientSocketFactory implements RMIClientSocketFactory,
+public class LocalSocketFactory implements RMIClientSocketFactory,RMIServerSocketFactory,
 		Serializable {
 
 	private static final long serialVersionUID = -7246215298577363002L;
@@ -37,6 +39,11 @@ public class LocalClientSocketFactory implements RMIClientSocketFactory,
 	public Socket createSocket(String host, int port) throws IOException {
 		return new Socket(
 				InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 }), port);
+	}
+
+	public ServerSocket createServerSocket(int port) throws IOException {
+		return new ServerSocket(port, 0, InetAddress.getByAddress(new byte[] {
+				127, 0, 0, 1 }));
 	}
 
 }
