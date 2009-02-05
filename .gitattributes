@@ -168,6 +168,7 @@ launchers/pipeline-fromgui.sh -text
 launchers/pipeline-rmi-dev.sh -text
 launchers/pipeline-rmi.bat -text
 launchers/pipeline-rmi.sh -text
+launchers/pipeline.sh -text
 lib/batik-css.jar -text
 lib/batik-util.jar -text
 lib/chardet.jar -text
@@ -196,7 +197,6 @@ lib/zedval.jar -text svneol=unset#unset
 licenses/CeCILL-BLicense/CeCILL-B.txt -text
 licenses/MITLicense/MITLicense.txt -text svneol=unset#text/plain
 /logging.properties -text svneol=unset#text/plain
-/pipeline.sh -text
 samples/input/dtb/d202/dontworrybehappy-invalid/content.html -text
 samples/input/dtb/d202/dontworrybehappy-invalid/default.css -text
 samples/input/dtb/d202/dontworrybehappy-invalid/ncc.html -text
