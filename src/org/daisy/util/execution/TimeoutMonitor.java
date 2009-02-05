@@ -43,14 +43,18 @@ public abstract class TimeoutMonitor extends Thread {
 		super();
 		this.timeout = timeout;
 		this.interval = interval;
+		this.setDaemon(true);
 	}
 
 	@Override
-	public void run() {
+	public final void run() {
 		try {
 			reset();
 			while (!isInterrupted()
 					&& System.currentTimeMillis() - lastUpdate < timeout) {
+				if (shouldCancel()) {
+					cancel();
+				}
 				Thread.sleep(interval);
 			}
 			if (!isInterrupted()) {
@@ -67,17 +71,25 @@ public abstract class TimeoutMonitor extends Thread {
 	protected abstract void timeout();
 
 	/**
+	 * Whether this timeout monitor should cancel itself. The default implementation returns false.
+     * Subclasses can use that to control self cancellation based on a custom criteria.
+	 */
+	protected boolean shouldCancel() {
+		return false;
+	}
+
+	/**
 	 * Resets the timestamp against which the timeout it is checked (see the
 	 * class Javadoc).
 	 */
-	public void reset() {
+	public final void reset() {
 		lastUpdate = System.currentTimeMillis();
 	}
 
 	/**
 	 * Stops the monitoring by interrupting the thread.
 	 */
-	public void cancel() {
+	public final void cancel() {
 		interrupt();
 	}
 
