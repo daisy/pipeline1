@@ -186,6 +186,7 @@ lib/saxon8-dom.jar -text
 lib/saxon8.jar -text
 lib/serializer.jar -text
 lib/slf4j-api-1.5.6.jar -text
+lib/slf4j-jdk14-1.5.6.jar -text
 lib/stax-api-1.0.1.jar -text
 lib/tagsoup-1.2.jar -text
 lib/tritonus_remaining-0.3.6.jar -text
