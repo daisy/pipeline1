@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 1.0//EN" "http://www.w3.org/TR/REC-SMIL/SMIL10.dtd" []>
+<smil>
+   <head>
+      <meta name="ncc:generator" content="DMFC z3986-2005 to Daisy 2.02 (smil2smil v0.2)" />
+      <meta name="dc:format" content="Daisy 2.02" />
+      <meta name="dc:identifier" content="AUTO-UID-5577942661191370766" />
+      <meta name="title" content="  Get involved in your loved one’s healthcare&#xa;" />
+      <meta name="dc:title" content="FOR THE FAMILY:  IMPORTANT THINGS TO DO WHEN SOMEONE YOU LOVE IS MENTALLY ILL" />
+      <meta name="ncc:totalElapsedTime" content="0:06:54" />
+      <meta name="ncc:timeInThisSmil" content="0:01:09" />
+      <layout>
+         <region id="txtView" />
+      </layout>
+   </head>
+   <body>
+      <seq dur="68.779s">
+         <par endsync="last" id="tcp68">
+            <text id="text68" src="content.html#dtb68" />
+            <audio src="speechgen0007.mp3" id="audd104e10" clip-begin="npt=0.000s" clip-end="npt=3.896s" />
+         </par>
+         <par endsync="last" id="tcp69">
+            <text id="text69" src="content.html#dtb69" />
+            <audio src="speechgen0007.mp3" id="audd104e13" clip-begin="npt=3.896s" clip-end="npt=12.839s" />
+         </par>
+         <par endsync="last" id="tcp70">
+            <text id="text70" src="content.html#dtb70" />
+            <audio src="speechgen0007.mp3" id="audd104e16" clip-begin="npt=12.839s" clip-end="npt=19.517s" />
+         </par>
+         <par endsync="last" id="tcp71">
+            <text id="text71" src="content.html#dtb71" />
+            <audio src="speechgen0007.mp3" id="audd104e19" clip-begin="npt=19.517s" clip-end="npt=24.225s" />
+         </par>
+         <par endsync="last" id="tcp72">
+            <text id="text72" src="content.html#dtb72" />
+            <audio src="speechgen0007.mp3" id="audd104e22" clip-begin="npt=24.225s" clip-end="npt=33.063s" />
+         </par>
+         <par endsync="last" id="tcp73">
+            <text id="text73" src="content.html#dtb73" />
+            <audio src="speechgen0007.mp3" id="audd104e25" clip-begin="npt=33.063s" clip-end="npt=39.867s" />
+         </par>
+         <par endsync="last" id="tcp74">
+            <text id="text74" src="content.html#dtb74" />
+            <audio src="speechgen0007.mp3" id="audd104e28" clip-begin="npt=39.867s" clip-end="npt=47.533s" />
+         </par>
+         <par endsync="last" id="tcp75">
+            <text id="text75" src="content.html#dtb75" />
+            <audio src="speechgen0007.mp3" id="audd104e31" clip-begin="npt=47.533s" clip-end="npt=58.065s" />
+         </par>
+         <par endsync="last" id="tcp76">
+            <text id="text76" src="content.html#dtb76" />
+            <audio src="speechgen0007.mp3" id="audd104e34" clip-begin="npt=58.065s" clip-end="npt=68.779s" />
+         </par>
+      </seq>
+   </body>
+</smil>

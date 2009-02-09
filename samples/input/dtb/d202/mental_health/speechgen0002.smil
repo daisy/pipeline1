@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 1.0//EN" "http://www.w3.org/TR/REC-SMIL/SMIL10.dtd" []>
+<smil>
+   <head>
+      <meta name="ncc:generator" content="DMFC z3986-2005 to Daisy 2.02 (smil2smil v0.2)" />
+      <meta name="dc:format" content="Daisy 2.02" />
+      <meta name="dc:identifier" content="AUTO-UID-5577942661191370766" />
+      <meta name="title" content="    Understanding Mental Illness&#xa;" />
+      <meta name="dc:title" content="FOR THE FAMILY:  IMPORTANT THINGS TO DO WHEN SOMEONE YOU LOVE IS MENTALLY ILL" />
+      <meta name="ncc:totalElapsedTime" content="0:01:07" />
+      <meta name="ncc:timeInThisSmil" content="0:00:32" />
+      <layout>
+         <region id="txtView" />
+      </layout>
+   </head>
+   <body>
+      <seq dur="32.371s">
+         <par endsync="last" id="tcp15">
+            <text id="text15" src="content.html#dtb15" />
+            <audio src="speechgen0002.mp3" id="audd21e10" clip-begin="npt=0.000s" clip-end="npt=3.172s" />
+         </par>
+         <par endsync="last" id="tcp16">
+            <text id="text16" src="content.html#dtb16" />
+            <audio src="speechgen0002.mp3" id="audd21e13" clip-begin="npt=3.172s" clip-end="npt=10.396s" />
+         </par>
+         <par endsync="last" id="tcp17">
+            <text id="text17" src="content.html#dtb17" />
+            <audio src="speechgen0002.mp3" id="audd21e16" clip-begin="npt=10.396s" clip-end="npt=16.352s" />
+         </par>
+         <par endsync="last" id="tcp18">
+            <text id="text18" src="content.html#dtb18" />
+            <audio src="speechgen0002.mp3" id="audd21e19" clip-begin="npt=16.352s" clip-end="npt=20.487s" />
+         </par>
+         <par endsync="last" id="tcp19">
+            <text id="text19" src="content.html#dtb19" />
+            <audio src="speechgen0002.mp3" id="audd21e22" clip-begin="npt=20.487s" clip-end="npt=32.371s" />
+         </par>
+      </seq>
+   </body>
+</smil>

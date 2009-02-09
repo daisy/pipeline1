@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd" []>
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="en-US">
+	  <head>
+		    <meta content="AUTO-UID-5577942661191370766" name="dtb:uid" />
+		    <meta content="2" name="dtb:depth" />
+		
+		    <meta content="TPB Narrator" name="dtb:generator" />
+		    <meta content="0" name="dtb:totalPageCount" />
+		    <meta content="0" name="dtb:maxPageNumber" />
+	  </head>
+  
+	  <docTitle>
+	     <text>FOR THE FAMILY:  IMPORTANT THINGS TO DO WHEN SOMEONE YOU LOVE IS MENTALLY ILL</text>
+      <audio clipBegin="0:00:00" clipEnd="0:00:05.621" src="speechgen0001.mp3" />
+   </docTitle>
+  
+	  <docAuthor>
+	     <text>Karen Ward</text>
+      <audio clipBegin="0:00:05.621" clipEnd="0:00:08.590" src="speechgen0001.mp3" />
+   </docAuthor>
+	
+	  <navMap id="navMap">
+      <navPoint class="h1" id="ncx-1" playOrder="1">
+         <navLabel>
+            <text>    Understanding Mental Illness
+</text>
+            <audio clipBegin="0:00:00" clipEnd="0:00:03.172" src="speechgen0002.mp3" />
+         </navLabel>
+         <content src="speechgen0002.smil#tcp15" />
+         <navPoint class="h2" id="ncx-2" playOrder="2">
+            <navLabel>
+               <text>  Major Mental Illnesses
+</text>
+               <audio clipBegin="0:00:00" clipEnd="0:00:03.002" src="speechgen0003.mp3" />
+            </navLabel>
+            <content src="speechgen0003.smil#tcp20" />
+         </navPoint>
+         <navPoint class="h2" id="ncx-3" playOrder="3">
+            <navLabel>
+               <text>  Destigmatize the illness—Understand these basics:
+</text>
+               <audio clipBegin="0:00:00" clipEnd="0:00:04.829" src="speechgen0004.mp3" />
+            </navLabel>
+            <content src="speechgen0004.smil#tcp45" />
+         </navPoint>
+         <navPoint class="h2" id="ncx-4" playOrder="4">
+            <navLabel>
+               <text>  Educate yourself about Mental Illness
+</text>
+               <audio clipBegin="0:00:00" clipEnd="0:00:03.665" src="speechgen0005.mp3" />
+            </navLabel>
+            <content src="speechgen0005.smil#tcp50" />
+         </navPoint>
+         <navPoint class="h2" id="ncx-5" playOrder="5">
+            <navLabel>
+               <text>  Don’t go it alone – get support for yourself
+</text>
+               <audio clipBegin="0:00:00" clipEnd="0:00:04.565" src="speechgen0006.mp3" />
+            </navLabel>
+            <content src="speechgen0006.smil#tcp63" />
+         </navPoint>
+         <navPoint class="h2" id="ncx-6" playOrder="6">
+            <navLabel>
+               <text>  Get involved in your loved one’s healthcare
+</text>
+               <audio clipBegin="0:00:00" clipEnd="0:00:03.896" src="speechgen0007.mp3" />
+            </navLabel>
+            <content src="speechgen0007.smil#tcp68" />
+         </navPoint>
+         <navPoint class="h2" id="ncx-7" playOrder="7">
+            <navLabel>
+               <text>  Mental Health and Addiction Services 
+</text>
+               <audio clipBegin="0:00:00" clipEnd="0:00:03.767" src="speechgen0008.mp3" />
+            </navLabel>
+            <content src="speechgen0008.smil#tcp77" />
+         </navPoint>
+         <navPoint class="h2" id="ncx-8" playOrder="8">
+            <navLabel>
+               <text>  Senior Citizen Mental Health Issues
+</text>
+               <audio clipBegin="0:00:00" clipEnd="0:00:03.683" src="speechgen0009.mp3" />
+            </navLabel>
+            <content src="speechgen0009.smil#tcp141" />
+         </navPoint>
+      </navPoint>
+      <navPoint class="h1" id="ncx-9" playOrder="9">
+         <navLabel>
+            <text>    Legal Services
+</text>
+            <audio clipBegin="0:00:00" clipEnd="0:00:02.664" src="speechgen0010.mp3" />
+         </navLabel>
+         <content src="speechgen0010.smil#tcp178" />
+      </navPoint>
+      <navPoint class="h1" id="ncx-10" playOrder="10">
+         <navLabel>
+            <text>  Other Support Agencies and Support Groups
+</text>
+            <audio clipBegin="0:00:00" clipEnd="0:00:04.057" src="speechgen0011.mp3" />
+         </navLabel>
+         <content src="speechgen0011.smil#tcp204" />
+      </navPoint>
+      <navPoint class="h1" id="ncx-11" playOrder="11">
+         <navLabel>
+            <text>    Path to Recovery
+</text>
+            <audio clipBegin="0:00:00" clipEnd="0:00:02.612" src="speechgen0012.mp3" />
+         </navLabel>
+         <content src="speechgen0012.smil#tcp276" />
+         <navPoint class="h2" id="ncx-12" playOrder="12">
+            <navLabel>
+               <text>  The Path to Recovery is a Process and Requires Time 
+</text>
+               <audio clipBegin="0:00:00" clipEnd="0:00:04.851" src="speechgen0013.mp3" />
+            </navLabel>
+            <content src="speechgen0013.smil#tcp278" />
+         </navPoint>
+         <navPoint class="h2" id="ncx-13" playOrder="13">
+            <navLabel>
+               <text>   Self Care Can Help Us Move Closer to Recovery
+</text>
+               <audio clipBegin="0:00:00" clipEnd="0:00:04.436" src="speechgen0014.mp3" />
+            </navLabel>
+            <content src="speechgen0014.smil#tcp290" />
+         </navPoint>
+      </navPoint>
+      <navPoint class="h1" id="ncx-14" playOrder="14">
+         <navLabel>
+            <text>  RECOMMENDED READING/WEB SITES
+</text>
+            <audio clipBegin="0:00:00" clipEnd="0:00:04.485" src="speechgen0015.mp3" />
+         </navLabel>
+         <content src="speechgen0015.smil#tcp309" />
+      </navPoint>
+   </navMap>
+	
+	
+  
+</ncx>

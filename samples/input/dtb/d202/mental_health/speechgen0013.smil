@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 1.0//EN" "http://www.w3.org/TR/REC-SMIL/SMIL10.dtd" []>
+<smil>
+   <head>
+      <meta name="ncc:generator" content="DMFC z3986-2005 to Daisy 2.02 (smil2smil v0.2)" />
+      <meta name="dc:format" content="Daisy 2.02" />
+      <meta name="dc:identifier" content="AUTO-UID-5577942661191370766" />
+      <meta name="title" content="  The Path to Recovery is a Process and Requires Time &#xa;" />
+      <meta name="dc:title" content="FOR THE FAMILY:  IMPORTANT THINGS TO DO WHEN SOMEONE YOU LOVE IS MENTALLY ILL" />
+      <meta name="ncc:totalElapsedTime" content="0:26:50" />
+      <meta name="ncc:timeInThisSmil" content="0:01:19" />
+      <layout>
+         <region id="txtView" />
+      </layout>
+   </head>
+   <body>
+      <seq dur="78.759s">
+         <par endsync="last" id="tcp278">
+            <text id="text278" src="content.html#dtb289" />
+            <audio src="speechgen0013.mp3" id="audd361e10" clip-begin="npt=0.000s" clip-end="npt=4.851s" />
+         </par>
+         <par endsync="last" id="tcp279">
+            <text id="text279" src="content.html#dtb290" />
+            <audio src="speechgen0013.mp3" id="audd361e13" clip-begin="npt=4.851s" clip-end="npt=13.070s" />
+         </par>
+         <par endsync="last" id="tcp280">
+            <text id="text280" src="content.html#dtb292" />
+            <audio src="speechgen0013.mp3" id="audd361e17" clip-begin="npt=13.070s" clip-end="npt=15.677s" />
+         </par>
+         <par endsync="last" id="tcp281">
+            <text id="text281" src="content.html#dtb293" />
+            <audio src="speechgen0013.mp3" id="audd361e20" clip-begin="npt=15.677s" clip-end="npt=23.593s" />
+         </par>
+         <par endsync="last" id="tcp282">
+            <text id="text282" src="content.html#dtb294" />
+            <audio src="speechgen0013.mp3" id="audd361e23" clip-begin="npt=23.593s" clip-end="npt=31.906s" />
+         </par>
+         <par endsync="last" id="tcp283">
+            <text id="text283" src="content.html#dtb295" />
+            <audio src="speechgen0013.mp3" id="audd361e26" clip-begin="npt=31.906s" clip-end="npt=36.517s" />
+         </par>
+         <par endsync="last" id="tcp284">
+            <text id="text284" src="content.html#dtb297" />
+            <audio src="speechgen0013.mp3" id="audd361e30" clip-begin="npt=36.517s" clip-end="npt=38.275s" />
+         </par>
+         <par endsync="last" id="tcp285">
+            <text id="text285" src="content.html#dtb298" />
+            <audio src="speechgen0013.mp3" id="audd361e33" clip-begin="npt=38.275s" clip-end="npt=43.412s" />
+         </par>
+         <par endsync="last" id="tcp286">
+            <text id="text286" src="content.html#dtb299" />
+            <audio src="speechgen0013.mp3" id="audd361e36" clip-begin="npt=43.412s" clip-end="npt=58.144s" />
+         </par>
+         <par endsync="last" id="tcp287">
+            <text id="text287" src="content.html#dtb301" />
+            <audio src="speechgen0013.mp3" id="audd361e40" clip-begin="npt=58.144s" clip-end="npt=60.211s" />
+         </par>
+         <par endsync="last" id="tcp288">
+            <text id="text288" src="content.html#dtb302" />
+            <audio src="speechgen0013.mp3" id="audd361e43" clip-begin="npt=60.211s" clip-end="npt=69.425s" />
+         </par>
+         <par endsync="last" id="tcp289">
+            <text id="text289" src="content.html#dtb303" />
+            <audio src="speechgen0013.mp3" id="audd361e47" clip-begin="npt=69.425s" clip-end="npt=78.759s" />
+         </par>
+      </seq>
+   </body>
+</smil>

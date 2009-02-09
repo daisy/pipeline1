@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 1.0//EN" "http://www.w3.org/TR/REC-SMIL/SMIL10.dtd" []>
+<smil>
+   <head>
+      <meta name="ncc:generator" content="DMFC z3986-2005 to Daisy 2.02 (smil2smil v0.2)" />
+      <meta name="dc:format" content="Daisy 2.02" />
+      <meta name="dc:identifier" content="AUTO-UID-5577942661191370766" />
+      <meta name="title" content="  Don’t go it alone – get support for yourself&#xa;" />
+      <meta name="dc:title" content="FOR THE FAMILY:  IMPORTANT THINGS TO DO WHEN SOMEONE YOU LOVE IS MENTALLY ILL" />
+      <meta name="ncc:totalElapsedTime" content="0:06:18" />
+      <meta name="ncc:timeInThisSmil" content="0:00:36" />
+      <layout>
+         <region id="txtView" />
+      </layout>
+   </head>
+   <body>
+      <seq dur="36.403s">
+         <par endsync="last" id="tcp63">
+            <text id="text63" src="content.html#dtb63" />
+            <audio src="speechgen0006.mp3" id="audd93e10" clip-begin="npt=0.000s" clip-end="npt=4.565s" />
+         </par>
+         <par endsync="last" id="tcp64">
+            <text id="text64" src="content.html#dtb64" />
+            <audio src="speechgen0006.mp3" id="audd93e13" clip-begin="npt=4.565s" clip-end="npt=14.584s" />
+         </par>
+         <par endsync="last" id="tcp65">
+            <text id="text65" src="content.html#dtb65" />
+            <audio src="speechgen0006.mp3" id="audd93e16" clip-begin="npt=14.584s" clip-end="npt=21.763s" />
+         </par>
+         <par endsync="last" id="tcp66">
+            <text id="text66" src="content.html#dtb66" />
+            <audio src="speechgen0006.mp3" id="audd93e19" clip-begin="npt=21.763s" clip-end="npt=25.758s" />
+         </par>
+         <par endsync="last" id="tcp67">
+            <text id="text67" src="content.html#dtb67" />
+            <audio src="speechgen0006.mp3" id="audd93e22" clip-begin="npt=25.758s" clip-end="npt=36.403s" />
+         </par>
+      </seq>
+   </body>
+</smil>
