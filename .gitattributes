@@ -1610,6 +1610,7 @@ transformers/se_tpb_speechgen2/tts/TTSOutput.java -text
 transformers/se_tpb_speechgen2/tts/TTSSyncPoint.java -text
 transformers/se_tpb_speechgen2/tts/XMLParameter.java -text
 transformers/se_tpb_speechgen2/tts/adapters/AbstractTTSAdapter.java -text svneol=unset#text/plain
+transformers/se_tpb_speechgen2/tts/adapters/FilibusterTTS.java -text
 transformers/se_tpb_speechgen2/tts/adapters/LocalStreamTTS.java -text
 transformers/se_tpb_speechgen2/tts/adapters/RemoteStreamTTS.java -text
 transformers/se_tpb_speechgen2/tts/concurrent/TTSAdapter.java -text
