@@ -41,6 +41,7 @@ import org.daisy.util.fileset.OpfFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 /**
@@ -172,7 +173,7 @@ public class DtbAudioEncoder extends Transformer {
     }
     
     private void encodeFile(File wavFile, File outDir, URI relativeURI) throws EncodingException {
-        URI out = outDir.toURI().resolve(relativeURI);
+        URI out = URIUtils.resolve(outDir.toURI(), relativeURI);
         String path = out.toString();
         int index = path.lastIndexOf(".");
         path = path.substring(0, index) + ".mp3";
@@ -182,14 +183,14 @@ public class DtbAudioEncoder extends Transformer {
     
     private void copyFile(File inFile, File outDir, URI relativeURI) throws IOException {
         //System.err.println("Copying " + inFile);
-        URI out = outDir.toURI().resolve(relativeURI);
+        URI out = URIUtils.resolve(outDir.toURI(), relativeURI);
         //File outFile = new File(outDir, relativeURI.toString());
         FileUtils.copy(inFile, new File(out));
     }
     
     private void relinkFile(FilesetFile fsf, File outDir, URI relativeURI) throws FileNotFoundException, XMLStreamException {
         File in = fsf.getFile();
-        File out = new File(outDir.toURI().resolve(relativeURI));
+        File out = new File(URIUtils.resolve(outDir.toURI(), relativeURI));
         //System.err.println("Relinking " + fsf.getFile());        
         if (fsf instanceof OpfFile) {
             linkChanger.changeLinksOpf(in, out, "[Ww][Aa][Vv]", "mp3", "audio/mpeg");

@@ -79,6 +79,7 @@ import org.daisy.util.fileset.Z3986SmilFile;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.util.URIStringParser;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
@@ -673,7 +674,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 		for (Iterator<FilesetFile> it = files.iterator(); it.hasNext(); ) {			
 			FilesetFile fsf = it.next();
 			URI relativeURI = fileset.getManifestMember().getRelativeURI(fsf);
-			File out = new File(mOutputDir.toURI().resolve(relativeURI));
+			File out = new File(URIUtils.resolve(mOutputDir.toURI(), relativeURI));
 			FileUtils.copy(fsf.getFile(), out);
 			//populate the mManifestItems set for use when creating the the package manifest 
 			if(fsf instanceof Mp3File) {

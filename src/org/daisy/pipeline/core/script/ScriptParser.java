@@ -49,6 +49,7 @@ import org.daisy.pipeline.core.script.datatype.IntegerDatatype;
 import org.daisy.pipeline.core.script.datatype.StringDatatype;
 import org.daisy.pipeline.core.transformer.TransformerHandler;
 import org.daisy.pipeline.exception.NotSupposedToHappenException;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 
@@ -193,8 +194,9 @@ public class ScriptParser {
 				} else if (SCRIPT_DOCUMENTATION.equals(local)) {
 					Attribute uri = se.getAttributeByName(new QName("uri"));
 					try {
-						script.setDocumentation(script.getScriptURL().toURI()
-								.resolve(new URI(uri.getValue())));
+						script.setDocumentation(URIUtils.resolve(script
+								.getScriptURL().toURI(),
+								new URI(uri.getValue())));
 					} catch (URISyntaxException e) {
 						// non-terminating, alas no contact with listeners here
 						System.err

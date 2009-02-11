@@ -7,6 +7,7 @@
  */
 package org.daisy.util.text;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.EnumSet;
@@ -704,4 +705,84 @@ public final class URIUtils {
             }
         }
     }
+
+	/**
+	 * Resolves the second URI argument against the first URI argument.
+	 * 
+	 * <p>
+	 * This method overrides the {@link URI#resolve(URI)} method only for
+	 * <code>file</code> URIs representing UNC paths (i.e. of the form
+	 * <code>file:////server/path</code> or <code>file://server/path</code>).
+	 * </p>
+	 * <p>
+	 * The problem with the {@link URI#resolve(URI)} method was for
+	 * round-tripping with {@link File} objects: for a file at the UNC Location
+	 * <code>//server/file</code>, the {@link File#toURI()} method returns
+	 * <code>file:////server/file</code>. Now, if this latter URI is used for
+	 * resolution or is normalized, it results in <code>file:/server/file</code>
+	 * , which doesn't give the original file object with the constructor
+	 * {@link File#File(URI)}.
+	 * </p>
+	 * <p>
+	 * To circumvent this round-tripping problem, this method resolves UNC-like
+	 * file URIs with an empty host and a path starting with two slashes (like
+	 * <code>file:////server/path</code>).
+	 * </p>
+	 * 
+	 * @param reference
+	 *            the reference URI against which the second argument will be
+	 *            resolved
+	 * @param uri
+	 *            the URI to resolve
+	 * @return the resulting URI
+	 */
+	public static URI resolve(URI reference, URI uri) {
+		if (Scheme.FILE.isSchemeFor(reference.getScheme())
+				&& (reference.getHost() != null || reference.getPath()
+						.startsWith("//"))) {
+			URI resolved = normalizeFileURI(reference).resolve(uri);
+			try {
+				return new URI("file://" + resolved.toString().substring(5));
+			} catch (URISyntaxException e) {
+				throw new IllegalStateException("shouldn't happen: "
+						+ e.getMessage(), e);
+			}
+
+		} else {
+			return reference.resolve(uri);
+		}
+	}
+
+	/**
+	 * Resolves the second URI argument against the first URI argument.
+	 * 
+	 * <p>
+	 * This method overrides the {@link URI#resolve(URI)} method only for
+	 * <code>file</code> URIs representing UNC paths (i.e. of the form
+	 * <code>file:////server/path</code> or <code>file://server/path</code>).
+	 * </p>
+	 * 
+	 * @param the
+	 *            reference URI against which the second argument will be
+	 *            resolved
+	 * @param str
+	 *            the URI to resolve
+	 * @return the resulting URI
+	 * @see #resolve(URI, URI)
+	 */
+	public static URI resolve(URI ref, String str) {
+		if (Scheme.FILE.isSchemeFor(ref.getScheme())
+				&& (ref.getHost() != null || ref.getPath().startsWith("//"))) {
+			URI resolved = normalizeFileURI(ref).resolve(str);
+			try {
+				return new URI("file://" + resolved.toString().substring(5));
+			} catch (URISyntaxException e) {
+				throw new IllegalStateException("shouldn't happen: "
+						+ e.getMessage(), e);
+			}
+
+		} else {
+			return ref.resolve(str);
+		}
+	}
 }

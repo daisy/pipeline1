@@ -56,6 +56,7 @@ import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetFileFactory;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.util.ManifestFinder;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
@@ -267,7 +268,7 @@ public class NccNcxOnly extends Transformer implements FilesetErrorHandler {
         	FilesetFile fsf = it.next();
         	currentSize += fsf.getFile().length();
         	URI relative = manifest.getRelativeURI(fsf);
-    		File out = new File(outputDir.toURI().resolve(relative));
+        	File out = new File(URIUtils.resolve(outputDir.toURI(), relative));
     		FileUtils.copy(fsf.getFile(), out);
     		this.progress((double)count/total + (NCC_DONE + (COPY_DONE-NCC_DONE)*((double)currentSize/totalSize))/total);
             this.checkAbort();

@@ -324,7 +324,7 @@ public class FilesetRenamer extends Transformer implements FilesetErrorHandler {
 				URI oldUri = new URI(a.getValue());
 				
 				// create the old uri using current state
-				URI current = mCurrentFile.getFile().toURI().resolve(oldUri);
+				URI current = URIUtils.resolve(mCurrentFile.getFile().toURI(), oldUri);
 				// get the query and fragment
 				String fragAndQuery="";
 				if (oldUri.getRawFragment()!=null){

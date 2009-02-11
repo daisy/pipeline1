@@ -32,6 +32,7 @@ import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.UIDCarrier;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.util.URIStringParser;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.SmilClock;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -140,7 +141,7 @@ final class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile, UIDC
 			URI key = null;
 			if(str.indexOf(".smil")>=0) {		
 				str = URIStringParser.stripFragment(str);
-				key = this.getFile().toURI().resolve(str);
+				key = URIUtils.resolve(this.getFile().toURI(), str);
 				D202SmilFile ff = (D202SmilFile)fileset.getLocalMember(key);
 				if (ff!=null){
 					spineMap.put(key,(D202SmilFile)fileset.getLocalMember(key));

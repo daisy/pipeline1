@@ -27,6 +27,7 @@ import org.daisy.util.fileset.XmlFile;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;
+import org.daisy.util.text.URIUtils;
 
 /**
  * Carries misc generic routines for Fileset validation that
@@ -62,7 +63,7 @@ public class ValidatorUtils {
 				String fragment = URIStringParser.getFragment(value);
 				String path = URIStringParser.stripFragment(value);
 				//get the full URI of the member to resolve
-				URI uri = referer.getFile().toURI().resolve(path);
+				URI uri = URIUtils.resolve(referer.getFile().toURI(), path);
 				if(!uri.equals(cache)) {
 					//the referenced member is other than last time
 					cache=uri;

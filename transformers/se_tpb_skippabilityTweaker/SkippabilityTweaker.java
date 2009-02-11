@@ -53,6 +53,7 @@ import org.daisy.util.fileset.FilesetType;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
@@ -167,7 +168,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
                 } else {
                     // Find the relative path to the input dir and use that to create the output dir
                     URI relative = input.getParentFile().toURI().relativize(manifest.getParentFile().toURI());
-                    bookOutputDir = new File(outputDir.toURI().resolve(relative));
+                    bookOutputDir = new File(URIUtils.resolve(outputDir.toURI(), relative));
                 }
                 
                 // Tweak the book

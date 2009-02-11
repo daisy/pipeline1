@@ -41,6 +41,7 @@ import org.daisy.util.fileset.FilesetErrorHandler;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
@@ -134,7 +135,7 @@ public class DocChecker implements FilesetErrorHandler {
 				if(!file.getParentFile().getName().equals("_dev"))
 					System.err.println("[DocChecker Warning] File " + file.getParentFile().getName()+"/"+file.getName() + " has no inline documentation URI");
 			}else{
-				URI resolvedURI = file.toURI().resolve(docURI);
+				URI resolvedURI = URIUtils.resolve(file.toURI(), docURI);
 				File test = new File(resolvedURI);
 				if(test.exists()) {
 					existingDocumentationFiles.add(resolvedURI);

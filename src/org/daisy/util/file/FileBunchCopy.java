@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.daisy.util.execution.ProgressObserver;
 import org.daisy.util.fileset.Fileset;
+import org.daisy.util.text.URIUtils;
 
 /**
  * Utilities to copy different collections of files.
@@ -62,7 +63,7 @@ public class FileBunchCopy {
                 }
                 in = DummyFile.create(in.getName());
             }
-            File out = new File(outputDir.toURI().resolve(relativeURI));
+            File out = new File(URIUtils.resolve(outputDir.toURI(), relativeURI));
             FileUtils.copy(in, out);
             if (observer != null) {
                 observer.reportProgress((double)fileNum/uris.size());

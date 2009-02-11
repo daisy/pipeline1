@@ -31,6 +31,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXSource;
 
+import org.daisy.util.text.URIUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -69,7 +70,7 @@ public class CatalogURIResolver implements URIResolver {
             URI hrefUri = new URI(href);
             URI baseUri = new URI(base);
             
-            URI resolved = baseUri.resolve(hrefUri);
+            URI resolved = URIUtils.resolve(baseUri, hrefUri);
             
             if ("file".equals(resolved.getScheme())) {
                 Source xmlSource = new SAXSource(reader, new InputSource(new FileInputStream(new File(resolved))));

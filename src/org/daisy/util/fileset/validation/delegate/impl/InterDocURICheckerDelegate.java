@@ -32,6 +32,7 @@ import org.daisy.util.fileset.validation.delegate.ValidatorDelegateImplAbstract;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.exception.ValidatorNotSupportedException;
 import org.daisy.util.fileset.validation.message.ValidatorErrorMessage;
+import org.daisy.util.text.URIUtils;
 
 /**
  * A delegate that will check that fragment identifiers in interdocument URIS (URIs between fileset
@@ -72,7 +73,7 @@ public class InterDocURICheckerDelegate extends ValidatorDelegateImplAbstract {
 						String path = URIStringParser.stripFragment(uriString);
 						String fragment = URIStringParser.getFragment(uriString);
 						if (fragment.length()<1)fragment=null;
-						URI uri = referer.getFile().toURI().resolve(path);
+						URI uri = URIUtils.resolve(referer.getFile().toURI(), path);
 						if (!uri.equals(cache)) {
 							// the referenced member is other than last time
 							cache = uri;

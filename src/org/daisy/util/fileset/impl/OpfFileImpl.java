@@ -33,6 +33,7 @@ import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.OpfFile;
 import org.daisy.util.fileset.UIDCarrier;
 import org.daisy.util.fileset.exception.FilesetFileErrorException;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.SmilClock;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -121,7 +122,7 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 						//collect the id and uri for spinelist building
 						String idval = attrs.getValue("id");	
 						// Note: URI syntax has already been checked in putUriValue(attrValue)
-						this.manifestItems.put(idval, this.toURI().resolve(attrValue));
+						this.manifestItems.put(idval, URIUtils.resolve(this.toURI(), attrValue));
 					}						
 				}	
 			}

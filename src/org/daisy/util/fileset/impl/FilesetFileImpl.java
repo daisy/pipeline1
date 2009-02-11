@@ -36,6 +36,7 @@ import org.daisy.util.fileset.exception.FilesetFileErrorException;
 import org.daisy.util.fileset.exception.FilesetFileFatalErrorException;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.mime.MIMETypeException;
+import org.daisy.util.text.URIUtils;
 
 /**
  * <p>Base class for the org.daisy.util.fileset File hierarchy.</p>
@@ -141,7 +142,7 @@ abstract class FilesetFileImpl extends EFile implements FilesetFile, IEFile {
 	
 	public URI getAbsolutizedURI(String relativeURI) {
 		URI parent = this.getParentFile().toURI();
-		return parent.resolve(relativeURI);		
+		return URIUtils.resolve(parent, relativeURI);		
 	}
 	
     public boolean hadErrors() {

@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.regex.Pattern;
 
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 
 /**
@@ -92,7 +93,7 @@ public class LocationUtils {
 				try {
 					//relative
 					URI baseURI = new URI(base.toExternalForm());				
-					URI absolute = baseURI.resolve(identifier);
+					URI absolute = URIUtils.resolve(baseURI, identifier);
 					file = new File(absolute);
 				} catch (URISyntaxException e) {
 					file=null;
@@ -114,7 +115,7 @@ public class LocationUtils {
 		try {
 			returnURL = new URL(identifier);
 			if (base!=null && !returnURL.toURI().isAbsolute()) {				
-				returnURL = base.toURI().resolve(returnURL.toURI()).toURL();
+				returnURL = URIUtils.resolve(base.toURI(), returnURL.toURI()).toURL();
 			}
 		} catch (Exception e) {			
 			returnURL = null;

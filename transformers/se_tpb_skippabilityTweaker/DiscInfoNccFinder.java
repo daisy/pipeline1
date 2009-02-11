@@ -34,6 +34,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
 
@@ -81,7 +82,7 @@ import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
             			Attribute hrefAttr = se.getAttributeByName(new QName("href"));
             			if (hrefAttr != null) {
             				String href = hrefAttr.getValue();
-            				URI nccUri = discInfoUri.resolve(href);
+            				URI nccUri = URIUtils.resolve(discInfoUri, href);
             				File nccFile = new File(nccUri);
             				nccList.add(nccFile);
             			}

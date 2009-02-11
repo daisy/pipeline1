@@ -48,6 +48,7 @@ import org.daisy.util.fileset.util.FilesetConstants;
 import org.daisy.util.fileset.util.FilesetRegex;
 import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.mime.MIMETypeException;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
@@ -344,7 +345,7 @@ public class FilesetImpl implements Fileset {
 					value = URIStringParser.stripFragment(value);					
 					//resolve the uri string
 					try {
-						resolvedURI = referer.getFile().toURI().resolve(new URI(value));										
+						resolvedURI = URIUtils.resolve(referer.getFile().toURI(), new URI(value));
 						if (!resolvedURI.equals(cachedURI) && !value.equals("")) {
 							cachedURI = resolvedURI; 					
 	     					//check if this file has already been added to main collection						

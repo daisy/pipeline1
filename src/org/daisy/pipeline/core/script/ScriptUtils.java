@@ -36,6 +36,7 @@ import org.daisy.pipeline.core.transformer.Parameter;
 import org.daisy.pipeline.core.transformer.TransformerHandler;
 import org.daisy.util.file.TempFile;
 import org.daisy.util.i18n.I18n;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
@@ -123,7 +124,7 @@ public final class ScriptUtils {
 				String id = systemId;
 				if (id == null)
 					id = publicId;
-				URL url = scriptURL.toURI().resolve(id).toURL();
+				URL url = URIUtils.resolve(scriptURL.toURI(), id).toURL();
 				return new InputSource(url.openStream());
 			} catch (Exception e) {
 				e.printStackTrace();

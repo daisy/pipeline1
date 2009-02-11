@@ -58,6 +58,7 @@ import org.daisy.util.fileset.FilesetErrorHandler;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.i18n.CharsetDetector;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
@@ -175,7 +176,7 @@ public class Html2Xhtml extends Transformer implements AutoDetector, FilesetErro
 				for(String uriString : c) {
 					if(!uriString.startsWith("..")) {
 						try{
-							URI uri = mInputFile.toURI().resolve(URI.create(uriString));																
+							URI uri = URIUtils.resolve(mInputFile.toURI(), URI.create(uriString));																
 							File file = new File(uri);
 							if(file.exists() && file.canRead()) {
 								File dest = null;

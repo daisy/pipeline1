@@ -73,6 +73,7 @@ import org.daisy.util.fileset.validation.ValidatorFactory;
 import org.daisy.util.fileset.validation.ValidatorListener;
 import org.daisy.util.fileset.validation.exception.ValidatorException;
 import org.daisy.util.fileset.validation.message.ValidatorMessage;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.LocusTransformer;
 import org.daisy.util.xml.NamespaceReporter;
 import org.daisy.util.xml.Namespaces;
@@ -257,8 +258,8 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			    Collection<String> uris = zed.getUriStrings();
 			    
 			    for (String uri : uris) {			    	
-			        URI resolvedFrom = input.toURI().resolve(uri);
-			        URI resolvedTo = output.toURI().resolve(uri);
+			    	URI resolvedFrom = URIUtils.resolve(input.toURI(), uri);
+			    	URI resolvedTo = URIUtils.resolve(output.toURI(), uri);
 			        if ("file".equals(resolvedFrom.getScheme()) && "file".equals(resolvedTo.getScheme())) {
         		        File from = new File(resolvedFrom.getPath());
         		        File to = new File(resolvedTo.getPath());

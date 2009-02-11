@@ -30,6 +30,7 @@ import org.daisy.util.file.EFile;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.util.FilesetRegex;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.stax.StaxEntityResolver;
@@ -92,8 +93,8 @@ public class IllegalFilenameExecutor extends Executor {
                 URI toUri = renameMapping.get(fromUri);
                 //RD20081003: make sure the outputDir exist to have a dir URI
                 FileUtils.createDirectory(outputDir);
-                fromUri = inputDir.toURI().resolve(fromUri);
-                toUri = outputDir.toURI().resolve(toUri);
+                fromUri = URIUtils.resolve(inputDir.toURI(), fromUri);
+                toUri = URIUtils.resolve(outputDir.toURI(), toUri);
                 File fromFile = new File(fromUri);
                 File toFile = new File(toUri);
                 FileUtils.createDirectory(toFile.getParentFile());

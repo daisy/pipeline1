@@ -48,6 +48,7 @@ import org.daisy.pipeline.exception.TdfParseException;
 import org.daisy.util.i18n.I18n;
 import org.daisy.util.mime.MIMEException;
 import org.daisy.util.mime.MIMETypeRegistryException;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
 import org.daisy.util.xml.validation.SimpleValidator;
 import org.daisy.util.xml.validation.ValidationException;
@@ -142,8 +143,7 @@ public class TdfParser {
 		    } else if (seName.equals("documentation")) {
 			Attribute att = se.getAttributeByName(new QName("uri"));
 			try {
-			    documentationUri = url.toURI().resolve(
-				    att.getValue());
+				documentationUri = URIUtils.resolve(url.toURI(), att.getValue());
 			} catch (Exception e) {
 			    EventBus.getInstance().publish(
 				    new CoreMessageEvent(this, i18n.format(

@@ -23,6 +23,7 @@ import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.ManifestFile;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.NamespaceReporter;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
@@ -169,7 +170,7 @@ public class MathAltCreator extends Transformer implements FilesetErrorHandler {
 	    for (FilesetFile fsf : fileset.getLocalMembers()) {
 	        if (fsf != manifest) {
 	            URI relative = manifest.getFile().toURI().relativize(fsf.getFile().toURI());
-	            URI outUri = outputDir.toURI().resolve(relative);
+	            URI outUri = URIUtils.resolve(outputDir.toURI(), relative);
 	            FileUtils.copyFile(fsf.getFile(), new File(outUri));
 	        }
 	    }

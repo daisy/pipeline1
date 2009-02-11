@@ -56,6 +56,7 @@ import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
@@ -363,7 +364,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             //Object[] params = {new Integer(fileNum), new Integer(fileCount), fsf.getFile().getName()};
             //this.sendMessage(i18n("COPYING_FILE", params), MessageEvent.Type.DEBUG, MessageEvent.Cause.SYSTEM);
             URI relativeURI = fileset.getManifestMember().getRelativeURI(fsf);
-            File out = new File(outputDir.toURI().resolve(relativeURI));
+            File out = new File(URIUtils.resolve(outputDir.toURI(), relativeURI));
             FileUtils.copy(fsf.getFile(), out);
             this.progress(0.85 + (0.99-0.85)*((double)fileCount/fileNum));
             this.checkAbort();
