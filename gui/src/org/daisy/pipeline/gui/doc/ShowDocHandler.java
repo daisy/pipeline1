@@ -42,7 +42,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class ShowDocHandler extends AbstractHandler {
 	private static final String dontShowDocSwitchWarningKey = "dontShowDocSwitchWarningKey"; //$NON-NLS-1$
 
-	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
 		// Return if we're already in the doc perspective

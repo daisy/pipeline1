@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.1"?>
+<?pde version="3.4"?>
 
-<product name="DAISY Pipeline" id="org.daisy.pipeline.gui.product" application="org.daisy.pipeline.gui.application" useFeatures="true">
+<product name="DAISY Pipeline" id="org.daisy.pipeline.gui.product" application="org.daisy.pipeline.gui.application" version="20090213 Beta" useFeatures="true">
 
    <aboutInfo>
       <image path="branding/about.gif"/>
@@ -10,7 +10,8 @@
       </text>
    </aboutInfo>
 
-   <configIni use="default"/>
+   <configIni use="default">
+   </configIni>
 
    <launcherArgs>
       <vmArgs>-Dorg.osgi.framework.bootdelegation=javax.*,org.w3c.dom.*</vmArgs>
@@ -34,6 +35,9 @@
    </launcher>
 
    <intro introId="org.eclipse.ui.intro.universal"/>
+
+   <vm>
+   </vm>
 
    <plugins>
       <plugin id="com.ibm.icu"/>
@@ -69,8 +73,9 @@
 
    <features>
       <feature id="org.daisy.pipeline.gui" version="1.0.3"/>
-      <feature id="org.eclipse.rcp" version="3.3.2.R33x_r20071022-8y8eE9CEV3FspP8HJrY1M2dS"/>
-      <feature id="org.eclipse.rcp.additions" version="3.3.2.200712191738"/>
+      <feature id="org.eclipse.equinox.executable" version="3.3.101.R34x_v20080805-7H-ELeE8hXnkE15Wh9Rz0yu"/>
+      <feature id="org.eclipse.rcp" version="3.4.100.r341_v20080814-989JESIEdAciFYfkZZsBfSwQ2341"/>
+      <feature id="org.eclipse.rcp.additions" version="3.3.2.200902120936"/>
    </features>
 
 </product>

@@ -20,12 +20,12 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Switches the language in RCP based products. Works only if the product is
- * deployed to the local file system since the <product>.ini file is altered.
+ * deployed to the local file system since the product.ini file is altered.
  * 
  * <p>
  * This code has been inspired from the <a
- * href="http://max-server.myftp.org/trac/mp3m">MP3 Manager RCP demo</a>
- * written by Kai Tödter.
+ * href="http://max-server.myftp.org/trac/mp3m">MP3 Manager RCP demo</a> written
+ * by Kai Tödter.
  * </p>
  * 
  * @see org.eclipse.core.commands.IHandler
@@ -104,10 +104,9 @@ public class LanguageSwitchHandler extends AbstractHandler {
 	}
 
 	/**
-	 * the command has been executed, so extract extract the needed information
-	 * from the application context.
+	 * the command has been executed, so extract the needed information from the
+	 * application context.
 	 */
-	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String locale = event.getParameter(LOCALE_PARAMETER);
 

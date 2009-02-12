@@ -2,16 +2,16 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %bundle.name
 Bundle-SymbolicName: org.daisy.pipeline.gui;singleton:=true
-Bundle-Version: 1.0.3.qualifier
+Bundle-Version: 1.0.4.qualifier
 Bundle-Vendor: %bundle.vendor
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.daisy.pipeline,
- org.eclipse.pde.runtime,
  org.eclipse.core.expressions,
+ org.eclipse.ui.views.log;bundle-version="1.0.0",
  org.eclipse.ui.intro
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.daisy.pipeline.gui.GuiPlugin
 Export-Package: 
  org.daisy.pipeline.gui,
@@ -30,4 +30,3 @@ Export-Package:
  org.daisy.pipeline.gui.util.actions,
  org.daisy.pipeline.gui.util.swt,
  org.daisy.pipeline.gui.util.viewers
-Import-Package: org.eclipse.ui.dialogs

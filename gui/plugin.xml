@@ -634,13 +634,7 @@
             class="org.daisy.pipeline.gui.doc.DocView"
             icon="icons/view-doc.gif"
             id="org.daisy.pipeline.gui.views.doc"
-            name="%view.documentation"/>  
-     <view
-           class="org.eclipse.pde.internal.runtime.logview.LogView"
-           icon="icons/view-error-log.gif"
-           id="org.eclipse.pde.runtime.LogView"
-           name="%view.errorLog">
-      </view>    
+            name="%view.documentation"/>     
       <view
             class="org.daisy.pipeline.gui.jobs.JobsView"
             icon="icons/view-jobs.gif"

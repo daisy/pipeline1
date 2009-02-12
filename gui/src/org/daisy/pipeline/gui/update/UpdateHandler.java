@@ -39,7 +39,6 @@ public class UpdateHandler extends AbstractHandler {
 	/**
 	 * Creates and open the update wizard.
 	 */
-	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 		IWorkbenchWindow window = HandlerUtil

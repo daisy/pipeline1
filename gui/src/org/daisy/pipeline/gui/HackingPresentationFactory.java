@@ -23,9 +23,9 @@ import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.ui.internal.presentations.r33.WorkbenchPresentationFactory_33;
 import org.eclipse.ui.presentations.IStackPresentationSite;
 import org.eclipse.ui.presentations.StackPresentation;
+import org.eclipse.ui.presentations.WorkbenchPresentationFactory;
 
 /**
  * A presentation factory hooking the default presentation factory to add an
@@ -34,8 +34,7 @@ import org.eclipse.ui.presentations.StackPresentation;
  * @author Romain Deltour
  * 
  */
-@SuppressWarnings("restriction") //$NON-NLS-1$
-public class HackingPresentationFactory extends WorkbenchPresentationFactory_33 {
+public class HackingPresentationFactory extends WorkbenchPresentationFactory {
 
 	@Override
 	public StackPresentation createViewPresentation(Composite parent,
