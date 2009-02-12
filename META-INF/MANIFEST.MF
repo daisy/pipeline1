@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DAISY Pipeline
 Bundle-SymbolicName: org.daisy.pipeline
-Bundle-Version: 1.0.3
+Bundle-Version: 1.0.6
 Bundle-Vendor: DAISY Consortium
 Require-Bundle: system.bundle
 Bundle-NativeCode:  transformers/se_tpb_speechgen2/lib/com4j.dll; osname=win32; processor=x86,*
@@ -13,6 +13,7 @@ Bundle-ClassPath:
  lib/batik-util.jar,
  lib/chardet.jar,
  lib/commons-cli-1.1.jar,
+ lib/commons-pool-1.4.jar,
  lib/epubcheck.jar,
  lib/jing-saxon8-patch.jar,
  lib/icu4j-3_8.jar,
@@ -24,6 +25,8 @@ Bundle-ClassPath:
  lib/saxon8.jar,
  lib/saxon8-dom.jar,
  lib/serializer.jar,
+ lib/slf4j-api-1.5.6.jar,
+ lib/slf4j-jdk14-1.5.6.jar,
  lib/stax-api-1.0.1.jar,
  lib/tagsoup-1.2.jar,
  lib/tritonus_remaining-0.3.6.jar,
@@ -200,6 +203,8 @@ Export-Package: com.adobe.epubcheck.api,
  org.apache.bcel.verifier.statics,
  org.apache.bcel.verifier.structurals,
  org.apache.commons.cli,
+ org.apache.commons.pool,
+ org.apache.commons.pool.impl,
  org.apache.html.dom,
  org.apache.log4j,
  org.apache.log4j.chainsaw,
@@ -316,6 +321,9 @@ Export-Package: com.adobe.epubcheck.api,
  org.daisy.pipeline.core.script.function,
  org.daisy.pipeline.core.transformer,
  org.daisy.pipeline.exception,
+ org.daisy.pipeline.execution,
+ org.daisy.pipeline.execution.rmi,
+ org.daisy.pipeline.rmi,
  org.daisy.pipeline.test,
  org.daisy.pipeline.test.impl,
  org.daisy.pipeline.transformers,
@@ -418,6 +426,9 @@ Export-Package: com.adobe.epubcheck.api,
  org.mozilla.intl.chardet,
  org.relaxng.datatype,
  org.relaxng.datatype.helpers,
+ org.slf4j,
+ org.slf4j.helpers,
+ org.slf4j.spi,
  org.tritonus.midi.file,
  org.tritonus.sampled.convert,
  org.tritonus.sampled.file,
