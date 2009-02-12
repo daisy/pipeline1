@@ -20,9 +20,9 @@ package org.daisy.pipeline.gui.scripts;
 import java.io.File;
 
 import org.daisy.pipeline.gui.GuiPlugin;
-import org.daisy.pipeline.gui.util.EFileFilter;
 import org.daisy.util.file.Directory;
 import org.daisy.util.file.EFile;
+import org.daisy.util.file.EFileFilter;
 import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;

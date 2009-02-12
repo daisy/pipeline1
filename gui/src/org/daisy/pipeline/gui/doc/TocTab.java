@@ -21,13 +21,13 @@ import java.io.File;
 import java.io.FileFilter;
 import java.net.URI;
 
-import org.daisy.pipeline.gui.util.EFileFilter;
-import org.daisy.pipeline.gui.util.HtmlFileFilter;
 import org.daisy.pipeline.gui.util.swt.ITabItemProvider;
 import org.daisy.pipeline.gui.util.swt.TreeTabItemProvider;
 import org.daisy.pipeline.gui.util.viewers.ExpandTreeDoubleClickListener;
 import org.daisy.pipeline.gui.util.viewers.FileTreeContentProvider;
 import org.daisy.util.file.Directory;
+import org.daisy.util.file.EFileFilter;
+import org.daisy.util.file.HtmlFileFilter;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
