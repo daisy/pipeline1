@@ -722,7 +722,7 @@ public class SpeechGen2 extends Transformer {
 		Location loc = se.getLocation();
 		if (loc.getSystemId()==null){
 			LocationImpl newloc = new LocationImpl(loc);
-			newloc.setSystemId(inputFile.getAbsolutePath());
+			newloc.setSystemId(inputFile.toURI().toString());
 			loc=newloc;
 		}
 		scope.setUserData("location", loc, null);
