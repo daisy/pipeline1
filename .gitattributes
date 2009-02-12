@@ -99,6 +99,7 @@ doc/scripts/FilesetRenamer.html -text
 doc/scripts/HtmlToXhtml.html -text
 doc/scripts/ImageConverter.html -text
 doc/scripts/Narrator-DtbookToDaisy202.html -text
+doc/scripts/Narrator-multiplettsslaves.html -text
 doc/scripts/OCFCreator.html -text
 doc/scripts/OPSCreator.html -text
 doc/scripts/PEFIntroduction.html -text

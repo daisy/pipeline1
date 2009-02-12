@@ -8,7 +8,6 @@
 </head>
 <body>
 <h1 class="title">Pipeline Script: <em>Narrator</em></h1>
-<!-- script documentation contains primarily end-user-centric information -->
 
 <div id="toc" class="toc">
 <ul>
@@ -17,6 +16,8 @@
 <li><a href="#output">Output</a></li>
 <li><a href="#config">Configuration</a></li>
 <li><a href="#linux">Running Narrator on Linux</a></li>
+<li><a href="#math">Support for the MathML-in-DAISY extension</a></li>
+<li><a href="#slaves">Configuring Narrator for concurrent TTS rendering</a></li>
 <li><a href="#transformers">Appendix: List of Transformers used</a></li>
 </ul>
 </div>
@@ -27,11 +28,10 @@
    the audio for the book. <code>xml:lang</code> attributes in the DTBook input document are used
    to switch language of the TTS.</p>
    
-<p class="alert">Note - at the time of writing, the default distribution of the Daisy Pipeline only
-supports running the Narrator script on the Windows&trade; and Mac OS X&trade; operating systems.</p>   
+<p class="alert">Note - at the time of writing, the default distribution of the Daisy Pipeline 
+supports running the Narrator script on the Windows&trade; <a href="#linux">Linux</a>, and Mac OS X&trade; operating systems.</p>
 
 <p class="alert">Note - this script requires that you have the <strong>Lame MP3 encoder</strong> installed on your system. Please refer to the <a href="../enduser/installing-lame.html">LAME installation instructions</a>.</p>   
-
 
 <h2 id="inputReqs">Input Requirements</h2>
 <!-- detailed requirements on input nature -->
@@ -73,19 +73,22 @@ supports running the Narrator script on the Windows&trade; and Mac OS X&trade; o
 	Here, use the nicenames for parameters! Explain consequence of default values.
 -->
 	<dl id="paramslist">
-	<dt>Input DTBook file</dt>
-	<dd><strong>Required.</strong> A DTBook 2005 document valid against to the rules described in the <a href="#inputReqs">input
-	    requirements</a> section.</dd>
-	<dt>Output directory</dt>
-	<dd><strong>Required.</strong> The base directory of the output. Since Narrator stores some intermediate files in this directory,
-	    the resulting DAISY/NISO 2005 book will be located in the <code>z3986-mp3</code> subdirectory while the Daisy 2.02 book will be located in the <code>daisy202</code> subdirectory.</dd>
+		<dt>Input DTBook file</dt>
+		<dd><strong>Required.</strong> A DTBook 2005 document valid against to the rules described in the <a href="#inputReqs">input
+		    requirements</a> section.</dd>
+	    
+		<dt>Output directory</dt>
+		<dd><strong>Required.</strong> The base directory of the output. Since Narrator stores some intermediate files in this directory,
+		    the resulting DAISY/NISO 2005 book will be located in the <code>z3986-mp3</code> subdirectory while the Daisy 2.02 book will be located in the <code>daisy202</code> subdirectory.</dd>
+	
 		<dt>DTBook Fix</dt>
-		<dd><strong>Optional.</strong> Selects whether to apply DTBook Fix routines to the input document.</dd>
-		</dl>
-	<dt>MP3 Bitrate</dt>
-	<dd><strong>Optional.</strong> The bitrate of the generated MP3 files. A higher value will result in better sound quality but the audio files will be larger.</dd>
-	<dt>2.02 href target</dt>
-	<dd><strong>Optional.</strong> The SMIL element (<code>text</code> or <code>par</code>) to target by href URIs in the content document and NCC of the DAISY 2.02 book.</dd>
+		<dd><strong>Optional.</strong> Selects whether to apply DTBook Fix routines to the input document.</dd>	
+	
+		<dt>MP3 Bitrate</dt>
+		<dd><strong>Optional.</strong> The bitrate of the generated MP3 files. A higher value will result in better sound quality but the audio files will be larger.</dd>
+	
+		<dt>2.02 href target</dt>
+		<dd><strong>Optional.</strong> The SMIL element (<code>text</code> or <code>par</code>) to target by href URIs in the content document and NCC of the DAISY 2.02 book.</dd>
 	</dl>
 
 <h2 id="linux">Running Narrator on Linux</h2>
@@ -107,6 +110,17 @@ supports running the Narrator script on the Windows&trade; and Mac OS X&trade; o
 </dd>
 </dl>
  
+<h2 id="#math">Support for the MathML in DAISY extension</h2>
+<p>This script supports the <a href="http://www.daisy.org/projects/mathml/">MathML in DAISY</a> extension.</p>
+<p>The following key points should be taken into account when using this script to generate MathML-enabled DTBs:</p>
+<ul>
+<li>MathML in DAISY requires that the MathML islands have an alternate image and alternate text for use by reading systems that do not support MathML natively. 
+If your input document does not have the alternate image and alternate text, you will need to install an <a href="http://www.daisy.org/projects/pipeline/other-add-ins.shtml">add-in</a> to the Pipeline that provides the functionality to add these values.</p>
+<li>MathML in DAISY is an extension to the DAISY 3 (DAISY/NISO) standard. This script will still output a DAISY 2.02 DTB when MathML is present in the input, but in the 2.02 version of the DTB MathML islands are converted to measly images with alternate text.</li>
+</ul> 
+
+<h2 id="#slaves">Configuring Narrator for concurrent TTS rendering</h2>
+<p>The separate document <a href="Narrator-multiplettsslaves.html">Running speechgen2 using multiple TTS slaves</a> describes how to configure Narrator to use multiple concurrent TTS engines. <em>Note - this requires high technical proficiency</em>.</p>
 
 <h2 id="transformers">Appendix: List of Transformers used</h2>
 <p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
