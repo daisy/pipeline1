@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.daisy.util.text.LineFilter;
 
@@ -31,6 +32,8 @@ import org.daisy.util.text.LineFilter;
  * @author Linus Ericson
  */
 public class StreamRedirector extends Thread {
+
+    static final AtomicInteger threadNumber = new AtomicInteger(1);
     
     protected InputStream inputStream;
     protected OutputStream outputStream;
@@ -47,6 +50,7 @@ public class StreamRedirector extends Thread {
      *  flushed after each write, <code>false</code> otherwise
      */
     public StreamRedirector(InputStream inStream, OutputStream outSteam, LineFilter lineFilter, boolean flushOutstream) {
+    	super("StreamRedirector-"+threadNumber.getAndIncrement());
         inputStream = inStream;
         outputStream = outSteam;
         filter = lineFilter;
@@ -75,8 +79,8 @@ public class StreamRedirector extends Thread {
                 
             InputStreamReader isr = new InputStreamReader(inputStream);
             BufferedReader br = new BufferedReader(isr);
-            String line = null;
-            while ( (line = br.readLine()) != null && !isInterrupted()) {
+            String line = (br.ready())?br.readLine():null;
+            while (!isInterrupted() && line != null) {
                 if (writer != null) {
                 	if (filter != null) {
                 		line = filter.filterLine(line);
@@ -87,10 +91,12 @@ public class StreamRedirector extends Thread {
                 			writer.flush();
                 		}
                 	}
-                }  
+                } 
+                line = (br.ready())?br.readLine():null;
             }
             if (writer != null) {
                 writer.flush();
+                writer.close();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();  
