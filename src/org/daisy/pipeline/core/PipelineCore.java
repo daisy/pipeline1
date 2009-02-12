@@ -219,7 +219,7 @@ public class PipelineCore {
      * @param propertyValue the <code>pipeline.lame.path</code> property value
      * @return the (possibly autodetected) lame path
      */
-    private String initLamePath(String propertyValue) {
+    public static String initLamePath(String propertyValue) {
         // If the pipeline.lame.path system property is undifined (or set to the empty string),
         // and we are on the Windows platform, try to detect Lame using the registry.
         if ((propertyValue == null || "".equals(propertyValue)) && System.getProperty("os.name").matches("Windows.*")) {
