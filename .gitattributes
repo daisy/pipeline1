@@ -174,7 +174,7 @@ lib/batik-util.jar -text
 lib/chardet.jar -text
 lib/commons-cli-1.1.jar -text
 lib/commons-pool-1.4.jar -text
-lib/epubcheck.jar -text
+lib/epubcheck-1.0.5.jar -text
 lib/icu4j-3_8.jar -text
 lib/jing-saxon8-patch.jar -text
 lib/jl1.0.jar -text
@@ -191,7 +191,7 @@ lib/stax-api-1.0.1.jar -text
 lib/tagsoup-1.2.jar -text
 lib/tritonus_remaining-0.3.6.jar -text
 lib/tritonus_share-0.3.6.jar -text
-lib/wstx-lgpl-3.2.4.jar -text
+lib/wstx-lgpl-3.2.8.jar -text
 lib/xalan.jar -text
 lib/xercesImpl.jar -text
 lib/zedval.jar -text svneol=unset#unset
