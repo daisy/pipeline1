@@ -24,24 +24,23 @@
    </requires>
 
    <plugin
-         id="org.eclipse.pde.runtime"
+         id="org.eclipse.ui.views.log"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+   <plugin		
          id="org.eclipse.ui.intro"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+   <plugin		
          id="org.eclipse.ui.forms"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
 </feature>
