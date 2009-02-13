@@ -13,6 +13,18 @@ Report bugs and issues to:
 http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
 ***************************************
+Pipeline Beta Release, 2009-02-13
+***************************************
+
+- Support for MathML in DAISY in Narrator. Read more in the Narrator documentation.
+- Support for Narrator on Linux. Read more in the Narrator documentation.
+- The desktop user interface is now accessible via VoiceOver on Mac (RCP framework upgraded to 3.4.1).
+- Many improvements to the Dtbook to Latex conversion, thanks to Christian Egli, SBS
+- A beta of Save-as-DAISY Audacity.
+- Several scripts relating to the Portable Embosser Format (PEF), thanks to Joel Håkansson, TPB
+- ... and many bug fixes.
+
+***************************************
 Pipeline Maintenance Release, 2008-05-02
 ***************************************
 Complete Windows installer
