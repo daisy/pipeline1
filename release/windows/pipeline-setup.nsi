@@ -9,7 +9,7 @@
 ;   General Defines
 ;----------------------------------------------------------
 !define PRODUCT_NAME "DAISY Pipeline"
-!define PRODUCT_VERSION "20081009 Beta"
+!define PRODUCT_VERSION "20090213 Beta"
 !define PRODUCT_PUBLISHER "DAISY Consortium"
 !define PRODUCT_WEB_SITE "http://www.daisy.org/"
 !define PRODUCT_REG_ROOT SHCTX
@@ -168,24 +168,24 @@ FunctionEnd
 ;   Legacy Clean-Up Section
 ;----------------------------------------------------------
 Section -LegacyCleanUp SEC00
-;;;;    ; clean the configuration and workspce area
-;;;;    RMDir /r /REBOOTOK "$INSTDIR\configuration"
-;;;;    RMDir /r /REBOOTOK "$INSTDIR\plugins"
-;;;;    RMDir /r /REBOOTOK "$INSTDIR\features"
-;;;;    RMDir /r /REBOOTOK "$INSTDIR\workspace"
-;;;;    ; clean the start menu
-;;;;    ReadRegStr $SMGROUP ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY}" "${PRODUCT_REG_VALUENAME_STARTMENU}"
-;;;;    StrCmp $SMGROUP "" end
-;;;;    ReadRegStr $R0 HKCU "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" "Programs"
-;;;;    IfFileExists $R0\$SMGROUP 0 end
-;;;;    RMDIR /r "$R0\$SMGROUP\workspace"
-;;;;    ; If the current user doesn't have a user install, clean everything in the menu
-;;;;    ReadRegStr $R1 HKCU "${PRODUCT_REG_KEY}" "${PRODUCT_REG_VALUENAME_STARTMENU}"
-;;;;    StrCmp $R1 "" 0 end
-;;;;    Delete "$R0\$SMGROUP\${PRODUCT_NAME}.lnk"
-;;;;    Delete "$R0\$SMGROUP\Uninstall ${PRODUCT_NAME}.lnk"
-;;;;    RMDIR "$R0\$SMGROUP"
-;;;;    end:
+    ; clean the configuration and workspce area
+    RMDir /r /REBOOTOK "$INSTDIR\configuration"
+    RMDir /r /REBOOTOK "$INSTDIR\plugins"
+    RMDir /r /REBOOTOK "$INSTDIR\features"
+    RMDir /r /REBOOTOK "$INSTDIR\workspace"
+    ; clean the start menu
+    ReadRegStr $SMGROUP ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY}" "${PRODUCT_REG_VALUENAME_STARTMENU}"
+    StrCmp $SMGROUP "" end
+    ReadRegStr $R0 HKCU "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" "Programs"
+    IfFileExists $R0\$SMGROUP 0 end
+    RMDIR /r "$R0\$SMGROUP\workspace"
+    ; If the current user doesn't have a user install, clean everything in the menu
+    ReadRegStr $R1 HKCU "${PRODUCT_REG_KEY}" "${PRODUCT_REG_VALUENAME_STARTMENU}"
+    StrCmp $R1 "" 0 end
+    Delete "$R0\$SMGROUP\${PRODUCT_NAME}.lnk"
+    Delete "$R0\$SMGROUP\Uninstall ${PRODUCT_NAME}.lnk"
+    RMDIR "$R0\$SMGROUP"
+    end:
 SectionEnd
 
 ;----------------------------------------------------------
@@ -240,21 +240,21 @@ SectionEnd
 ;   Main Section
 ;----------------------------------------------------------
 Section -Main SEC01
-;;;;    SetOutPath $INSTDIR
-;;;;    SetOverwrite on
-;;;;    File UserAgreement.txt
-;;;;    File release-notes.txt
-;;;;    File .eclipseproduct
-;;;;    File "DAISY Pipeline.exe"
-;;;;    File "DAISY Pipeline.ini"
-;;;;    SetOutPath $INSTDIR\configuration
-;;;;    File configuration\config.ini
-;;;;    SetOutPath $INSTDIR\features
-;;;;    File /r features\*
-;;;;    SetOutPath $INSTDIR\licenses
-;;;;    File /r licenses\*
-;;;;    SetOutPath $INSTDIR\plugins
-;;;;    File /r plugins\*
+    SetOutPath $INSTDIR
+    SetOverwrite on
+    File UserAgreement.txt
+    File release-notes.txt
+    File .eclipseproduct
+    File "DAISY Pipeline.exe"
+    File "DAISY Pipeline.ini"
+    SetOutPath $INSTDIR\configuration
+    File configuration\config.ini
+    SetOutPath $INSTDIR\features
+    File /r features\*
+    SetOutPath $INSTDIR\licenses
+    File /r licenses\*
+    SetOutPath $INSTDIR\plugins
+    File /r plugins\*
 SectionEnd
 
 
@@ -264,9 +264,9 @@ SectionEnd
 SectionGroup "External Tools" SEC_TOOLS
 
 Section "Lame" SEC_LAME
-;;;;  SectionIn 1
-;;;;  SetOutPath $INSTDIR\ext
-;;;;  File ext\lame.exe
+  SectionIn 1
+  SetOutPath $INSTDIR\ext
+  File ext\lame.exe
 SectionEnd
 
 ;Section "ImageMagick" SEC_IM ;TBD
@@ -302,40 +302,40 @@ SectionGroupEnd
 ;   Finalization
 ;----------------------------------------------------------
 Section -AdditionalIcons
-;;;;  SetOutPath $INSTDIR
-;;;;  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-;;;;  WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-;;;;  CreateDirectory "$SMPROGRAMS\$SMGROUP"
-;;;;  CreateShortCut "$SMPROGRAMS\$SMGROUP\${UNINSTALLER_NAME}.lnk" "$INSTDIR\${UNINSTALLER_NAME}.exe"
-;;;;  CreateShortCut "$SMPROGRAMS\$SMGROUP\${PRODUCT_PUBLISHER}.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
-;;;;  CreateShortCut "$SMPROGRAMS\$SMGROUP\${PRODUCT_NAME}.lnk" "$INSTDIR\DAISY Pipeline.exe"
-;;;;  !insertmacro MUI_STARTMENU_WRITE_END
+  SetOutPath $INSTDIR
+  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+  WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
+  CreateDirectory "$SMPROGRAMS\$SMGROUP"
+  CreateShortCut "$SMPROGRAMS\$SMGROUP\${UNINSTALLER_NAME}.lnk" "$INSTDIR\${UNINSTALLER_NAME}.exe"
+  CreateShortCut "$SMPROGRAMS\$SMGROUP\${PRODUCT_PUBLISHER}.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
+  CreateShortCut "$SMPROGRAMS\$SMGROUP\${PRODUCT_NAME}.lnk" "$INSTDIR\DAISY Pipeline.exe"
+  !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
 Section -Post
-;;;;  ; Initialize the RCP configuration area
-;;;;  ExecWait '"$INSTDIR\DAISY Pipeline.exe" -initialize'
-;;;;  ; If it is a shared install, set the config and instance areas to the AppData dir
-;;;;  StrCmp $MultiUser.InstallMode "AllUsers" 0 next
-;;;;  FileOpen $0 "$INSTDIR\configuration\config.ini" a
-;;;;  FileSeek $0 0 END
-;;;;  FileWriteByte $0 "13"
-;;;;  FileWriteByte $0 "10"
-;;;;  FileWrite $0 "osgi.instance.area=@user.home/Application Data/${PRODUCT_NAME}/data"
-;;;;  FileWriteByte $0 "13"
-;;;;  FileWriteByte $0 "10"
-;;;;  FileWrite $0 "osgi.configuration.area=@user.home/Application Data/${PRODUCT_NAME}/configuration"
-;;;;  FileClose $0
-;;;;  next:
-;;;;  ; Create the uninstaller
-;;;;  WriteUninstaller "$INSTDIR\${UNINSTALLER_NAME}.exe"
-;;;;  WriteRegStr ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY_UNINST}" "DisplayName" "$(^Name)"
-;;;;  WriteRegStr ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY_UNINST}" "UninstallString" "$INSTDIR\${UNINSTALLER_NAME}.exe"
-;;;;  WriteRegStr ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY_UNINST}" "DisplayVersion" "${PRODUCT_VERSION}"
-;;;;  WriteRegStr ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY_UNINST}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
-;;;;  WriteRegStr ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY_UNINST}" "Publisher" "${PRODUCT_PUBLISHER}"
-;;;;  ; Save the Install Path
-;;;;  WriteRegStr ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY}" "${PRODUCT_REG_VALUENAME_INSTDIR}" $INSTDIR
+  ; Initialize the RCP configuration area
+  ExecWait '"$INSTDIR\DAISY Pipeline.exe" -initialize'
+  ; If it is a shared install, set the config and instance areas to the AppData dir
+  StrCmp $MultiUser.InstallMode "AllUsers" 0 next
+  FileOpen $0 "$INSTDIR\configuration\config.ini" a
+  FileSeek $0 0 END
+  FileWriteByte $0 "13"
+  FileWriteByte $0 "10"
+  FileWrite $0 "osgi.instance.area=@user.home/Application Data/${PRODUCT_NAME}/data"
+  FileWriteByte $0 "13"
+  FileWriteByte $0 "10"
+  FileWrite $0 "osgi.configuration.area=@user.home/Application Data/${PRODUCT_NAME}/configuration"
+  FileClose $0
+  next:
+  ; Create the uninstaller
+  WriteUninstaller "$INSTDIR\${UNINSTALLER_NAME}.exe"
+  WriteRegStr ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY_UNINST}" "DisplayName" "$(^Name)"
+  WriteRegStr ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY_UNINST}" "UninstallString" "$INSTDIR\${UNINSTALLER_NAME}.exe"
+  WriteRegStr ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY_UNINST}" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY_UNINST}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+  WriteRegStr ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY_UNINST}" "Publisher" "${PRODUCT_PUBLISHER}"
+  ; Save the Install Path
+  WriteRegStr ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY}" "${PRODUCT_REG_VALUENAME_INSTDIR}" $INSTDIR
 SectionEnd
 
 
@@ -369,56 +369,55 @@ SectionEnd
 ###########################################################
 ###              Uninstaller Sections                   ###
 ###########################################################
-;;;;; Header for HKU parsing (multi-users)
-;;;;!include EnumUsersReg.nsh
-;;;;
-;;;;Function un.onInit
-;;;;  ; check the user priviledges
-;;;;  !insertmacro MULTIUSER_UNINIT
-;;;;  ; get the unistaller language
-;;;;  !insertmacro MUI_UNGETLANGUAGE
-;;;;FunctionEnd
-;;;;
-;;;;Function "un.rmAppDataDir"
-;;;;  Pop $0
-;;;;  ReadRegStr $0 HKU "$0\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" "AppData"
-;;;;  IfFileExists "$0\${PRODUCT_NAME}" 0 +1
-;;;;    RMDir /r /REBOOTOK "$0\${PRODUCT_NAME}"
-;;;;FunctionEnd
-;;;;
-;;;;Section Uninstall
-;;;;  ; --- Clean the install dir ---
-;;;;  Delete /REBOOTOK "$INSTDIR\${PRODUCT_NAME}.url"
-;;;;  Delete /REBOOTOK "$INSTDIR\${UNINSTALLER_NAME}.exe"
-;;;;  Delete /REBOOTOK "$INSTDIR\UserAgreement.txt"
-;;;;  Delete /REBOOTOK "$INSTDIR\release-notes.txt"
-;;;;  Delete /REBOOTOK "$INSTDIR\.eclipseproduct"
-;;;;  Delete /REBOOTOK "$INSTDIR\DAISY Pipeline.exe"
-;;;;  Delete /REBOOTOK "$INSTDIR\DAISY Pipeline.ini"
-;;;;  Delete /REBOOTOK "$INSTDIR\configuration\config.ini"
-;;;;  RMDir /r /REBOOTOK "$INSTDIR\features"
-;;;;  RMDir /r /REBOOTOK "$INSTDIR\licenses"
-;;;;  RMDir /r /REBOOTOK "$INSTDIR\plugins"
-;;;;  RMDir /r /REBOOTOK "$INSTDIR\ext"
-;;;;  RMDir /r /REBOOTOK "$INSTDIR\configuration"
-;;;;  RMDir /r /REBOOTOK "$INSTDIR\workspace"
-;;;;  RMDir /REBOOTOK "$INSTDIR"
-;;;;
-;;;;  ; --- Clean the App Data dirs if it is a shared install
-;;;;  StrCmp "$MultiUser.InstallMode" "AllUsers" 0 next
-;;;;  ${un.EnumUsersReg} "un.rmAppDataDir" temp.key
-;;;;  next:
-;;;;
-;;;;  ; --- Clean the start menu ---
-;;;;  !insertmacro MUI_STARTMENU_GETFOLDER Application $SMGROUP
-;;;;  Delete "$SMPROGRAMS\$SMGROUP\${PRODUCT_NAME}.lnk"
-;;;;  Delete "$SMPROGRAMS\$SMGROUP\${PRODUCT_PUBLISHER}.lnk"
-;;;;  Delete "$SMPROGRAMS\$SMGROUP\${UNINSTALLER_NAME}.lnk"
-;;;;  RMDir "$SMPROGRAMS\$SMGROUP"
-;;;;
-;;;;  ; --- Clean the registry ---
-;;;;  DeleteRegKey ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY_UNINST}"
-;;;;  DeleteRegKey ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY}"
-;;;;SectionEnd
-;;;;
-;;;;
+; Header for HKU parsing (multi-users)
+!include EnumUsersReg.nsh
+
+Function un.onInit
+  ; check the user priviledges
+  !insertmacro MULTIUSER_UNINIT
+  ; get the unistaller language
+  !insertmacro MUI_UNGETLANGUAGE
+FunctionEnd
+
+Function "un.rmAppDataDir"
+  Pop $0
+  ReadRegStr $0 HKU "$0\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" "AppData"
+  IfFileExists "$0\${PRODUCT_NAME}" 0 +1
+    RMDir /r /REBOOTOK "$0\${PRODUCT_NAME}"
+FunctionEnd
+
+Section Uninstall
+  ; --- Clean the install dir ---
+  Delete /REBOOTOK "$INSTDIR\${PRODUCT_NAME}.url"
+  Delete /REBOOTOK "$INSTDIR\${UNINSTALLER_NAME}.exe"
+  Delete /REBOOTOK "$INSTDIR\UserAgreement.txt"
+  Delete /REBOOTOK "$INSTDIR\release-notes.txt"
+  Delete /REBOOTOK "$INSTDIR\.eclipseproduct"
+  Delete /REBOOTOK "$INSTDIR\DAISY Pipeline.exe"
+  Delete /REBOOTOK "$INSTDIR\DAISY Pipeline.ini"
+  Delete /REBOOTOK "$INSTDIR\configuration\config.ini"
+  RMDir /r /REBOOTOK "$INSTDIR\features"
+  RMDir /r /REBOOTOK "$INSTDIR\licenses"
+  RMDir /r /REBOOTOK "$INSTDIR\plugins"
+  RMDir /r /REBOOTOK "$INSTDIR\ext"
+  RMDir /r /REBOOTOK "$INSTDIR\configuration"
+  RMDir /r /REBOOTOK "$INSTDIR\workspace"
+  RMDir /REBOOTOK "$INSTDIR"
+
+  ; --- Clean the App Data dirs if it is a shared install
+  StrCmp "$MultiUser.InstallMode" "AllUsers" 0 next
+  ${un.EnumUsersReg} "un.rmAppDataDir" temp.key
+  next:
+
+  ; --- Clean the start menu ---
+  !insertmacro MUI_STARTMENU_GETFOLDER Application $SMGROUP
+  Delete "$SMPROGRAMS\$SMGROUP\${PRODUCT_NAME}.lnk"
+  Delete "$SMPROGRAMS\$SMGROUP\${PRODUCT_PUBLISHER}.lnk"
+  Delete "$SMPROGRAMS\$SMGROUP\${UNINSTALLER_NAME}.lnk"
+  RMDir "$SMPROGRAMS\$SMGROUP"
+
+  ; --- Clean the registry ---
+  DeleteRegKey ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY_UNINST}"
+  DeleteRegKey ${PRODUCT_REG_ROOT} "${PRODUCT_REG_KEY}"
+SectionEnd
+

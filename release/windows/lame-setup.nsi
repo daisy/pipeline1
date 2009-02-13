@@ -1,13 +1,13 @@
 # NSIS installer for Lame
 # Usage:
 #   - Download the lame release from (i.e.) www.rarewares.org
-#   - Unzip the lame release you wish to create an installer for into the "./lame"
+#   - Unzip the lame release you wish to create an installer for into the LAME_DIR
 #     directory.
 #   - Set the PRODUCT_VERSION define to the version of the lame release
 
 Name Lame
 !define PRODUCT_VERSION "3.98.2"
-!define LAME_DIR "lame"
+!define LAME_DIR "ext"
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
