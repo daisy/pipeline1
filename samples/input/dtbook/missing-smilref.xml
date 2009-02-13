@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dtbook PUBLIC "-//NISO//DTD dtbook 2005-3//EN" "http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd">
+<dtbook version="2005-3" xml:lang="sv" xmlns="http://www.daisy.org/z3986/2005/dtbook/">
+	<head>
+		<meta name="dc:Title" content="Crash test document."/>
+		<meta name="dc:Identifier" content="C11111"/>
+		<meta name="dc:Publisher" content="TPB"/>
+		<meta name="dc:Creator" content="Blomberg, Martin"/>
+
+		<meta name="dc:Language" content="en"/>
+	
+		<meta name="dc:Date" content="2009-01-20"/>
+		<meta name="dtb:uid" content="C11112"/>
+
+		<meta name="dc:Format" content="ANSI/NISO Z39.86-2005"/>
+	</head>
+	<book>
+		<frontmatter>
+			<doctitle>Missing smilref - run against narrator</doctitle>
+			<docauthor>Martin Blomberg</docauthor>			
+		</frontmatter>
+		
+		<bodymatter>
+			<level1>
+				<pagenum page="normal" id="page-1">1</pagenum>
+				<h1>Part 1</h1>
+				<p>
+						Överlåtelse av fast egendom kan, som nämnts inledningsvis, 
+						även ske genom gåva eller byte. Bestämmelserna om köp gäller 
+						i princip även för överlåtelse av fast egendom genom byte och 
+						gåva. Vid gåva gäller dock att det är möjligt att avtala om villkor 
+						som gäller under längre tid än två år (4 kap. 30 § JB).
+						Det betyder att den som ger bort en fastighet kan förbehålla sig återköpsrätt eller när gåvan avser flera personer, 
+						t.ex. ställa villkor på att de övriga delägarna i fastigheten har <pagenum id="page-2" page="normal">2</pagenum>förköpsrätt eller skall lämna sitt godkännande till överlåtelse.<noteref class="rearnote" idref="#note-53">1</noteref>
+				</p>		
+			</level1>
+		</bodymatter>
+		
+		<rearmatter>
+			<level1 class="footnotes">
+				<note class="rearnote" id="note-53">
+				<p>Jfr NJA 1986 s. 16, 1993 s. 529 och 2000:262.</p></note>			
+			</level1>
+		</rearmatter>
+	</book>
+</dtbook>

@@ -416,6 +416,7 @@ samples/input/dtbook/images\[1\]/Image[!!-~]1.jpg -text
 samples/input/dtbook/mental_health/MentalHealthGuide.xml -text
 samples/input/dtbook/mental_health/dtbookbasic.css -text
 samples/input/dtbook/mental_health/tree.jpg -text
+samples/input/dtbook/missing-smilref.xml -text svneol=unset#text/plain
 samples/input/dtbook/mixed-content-torture.xml -text svneol=unset#text/plain
 samples/input/dtbook/nativemathml0001.png -text
 samples/input/dtbook/nativemathml0002.png -text
