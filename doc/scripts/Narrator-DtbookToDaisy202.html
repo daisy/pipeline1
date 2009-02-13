@@ -118,16 +118,16 @@ supports running the Narrator script on the Windows&trade; <a href="#linux">Linu
 </dd>
 </dl>
  
-<h2 id="#math">Support for the MathML in DAISY extension</h2>
+<h2 id="math">Support for the MathML in DAISY extension</h2>
 <p>This script supports the <a href="http://www.daisy.org/projects/mathml/">MathML in DAISY</a> extension.</p>
 <p>The following key points should be taken into account when using this script to generate MathML-enabled DTBs:</p>
 <ul>
-<li>MathML in DAISY requires that the MathML islands have an alternate image and alternate text for use by reading systems that do not support MathML natively. 
-If your input document does not have the alternate image and alternate text, you will need to install an <a href="http://www.daisy.org/projects/pipeline/other-add-ins.shtml">add-in</a> to the Pipeline that provides the functionality to add these values.</p>
+<li>MathML in DAISY requires that the MathML islands have an alternate image and alternate text for use by reading systems that do not support MathML natively.<br/> 
+If your input document does not have the alternate image and alternate text, you will need to install an <a href="http://www.daisy.org/projects/pipeline/other-add-ins.shtml">add-in</a> to the Pipeline that provides the functionality to add these values.</li>
 <li>MathML in DAISY is an extension to the DAISY 3 (DAISY/NISO) standard. This script will still output a DAISY 2.02 DTB when MathML is present in the input, but in the 2.02 version of the DTB MathML islands are converted to measly images with alternate text.</li>
 </ul> 
 
-<h2 id="#slaves">Configuring Narrator for concurrent TTS rendering</h2>
+<h2 id="slaves">Configuring Narrator for concurrent TTS rendering</h2>
 <p>The separate document <a href="Narrator-multiplettsslaves.html">Running speechgen2 using multiple TTS slaves</a> describes how to configure Narrator to use multiple concurrent TTS engines. <em>Note - this requires high technical proficiency</em>.</p>
 
 <h2 id="transformers">Appendix: List of Transformers used</h2>

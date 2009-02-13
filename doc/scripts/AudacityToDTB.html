@@ -15,7 +15,7 @@
 <li><a href="#inputReqs">Input Requirements</a></li>
 <li><a href="#output">From Audacity project to DTB</a></li>
 <li><a href="#config">Configuration</a></li>
-<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+<!-- <li><a href="#transformers">Appendix: List of Transformers used</a></li> -->
 </ul>
 </div>
 
@@ -48,7 +48,7 @@ By using markers in the Audacity project in a predefined way in the recorded aud
 <p>For each heading you want create, drop a Marker at the appropriate time position in the Label track below the concerned Audio track. The markers value must begin with <code>h1, h2, h3, h4, h5, or h6</code> for the marker to be detected as a heading.</p>
 <p>The text following in the marker value will become the heading text. For example, a marker value of <code>h2 Chapter 3 Galapagos</code> will create a level 2 heading with the title "Chapter 3 Galapagos".</p>
 
-<p>It is important to remember that heading must be in numbered order. That is an h2 must follow an h1, another h2 or an h3.</pa>
+<p>It is important to remember that heading must be in numbered order. That is an h2 must follow an h1, another h2 or an h3.</p>
 
 <h4>Creating pages</h4>
 <p>For each page you want create, drop a Marker at the appropriate time position in the Label track below the concerned Audio track. The markers value must begin with <code>p</code> for the marker to be detected as a pagenumber.</p>
@@ -73,8 +73,8 @@ Simply create a marker with the value <code>p</code> and then activate the auton
 <h4 id="durMarkers"><em>Use markers with duration if you can!</em></h4>
 <p>By creating markers that have a duration (i.e. a start and an end point), you will provide for a maximum quality output DTB. Adopt this technique in the following way:</p>
 <ul>
-<li>Create markers that spans each heading announcement (the heading will not become skippable, this just enables proper labels to be set in the NCX)</p>
-<li>Create markers that spans each page number announcement (the page number will become skippable).</p>
+<li>Create markers that spans each heading announcement (the heading will not become skippable, this just enables proper labels to be set in the NCX)</li>
+<li>Create markers that spans each page number announcement (the page number will become skippable).</li>
 <!--
 <li>Create markers that spans each sidebar (the entire sidebar, not just the sidebar title announcement)</p>
 <li>Create markers that spans each producer note (the entire producer note, not just the producer note title announcement)</p>
@@ -94,18 +94,18 @@ Simply create a marker with the value <code>p</code> and then activate the auton
 
 <p>The audacity metadata editor will capture the following fields and bring them into the DTB:</p>
 <dl>
-<dt>Artist Name<dt>
+<dt>Artist Name</dt>
 <dd>Will be captured as the publication author (dc:creator)</dd>
-<dt>Album title<dt>
+<dt>Album title</dt>
 <dd>Will be captured as the publication title (dc:title)</dd>	
-<dt>Year<dt>
+<dt>Year</dt>
 <dd>Will be captured as the publication date (dc:date). You should use the the syntax <code>YYYY-MM-DD</code> in this field.</dd>
-<dt>uid<dt>
+<dt>uid</dt>
 <dd>Will be captured as the publication identifier (dc:identifier). <em>This meta entry will have to be created (use the "add" button of the Audacity metadata editor)</em></dd>
-<dt>lang<dt>
+<dt>lang</dt>
 <dd>Will be captured as the publication language (dc:language). <em>This meta entry will have to be created (use the "add" button of the Audacity metadata editor)</em></dd>
 
-<dt>publisher<dt>
+<dt>publisher</dt>
 <dd>Will be captured as the book's publisher (dc:publisher). <em>This meta entry will have to be created (use the "add" button of the Audacity metadata editor)</em></dd>
 
 
@@ -135,11 +135,12 @@ Simply create a marker with the value <code>p</code> and then activate the auton
 		<dd><strong>Optional.</strong> Select whether to renumber all normal page numbers in the book, and if so which page to start from.</dd>
 		
 	</dl>
-		
+<!--		
 <h2 id="transformers">Appendix: List of Transformers used</h2>
 <p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
 <ol>
 	<li><a href="../transformers/int_daisy_playlist2dtb.html">Playlist to DTB</a></li>
 </ol>
+-->
 </body>
 </html>
