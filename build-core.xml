@@ -118,7 +118,6 @@
 		<exclude name="se_tpb_aligner/**/*.*"/>
 		<exclude name="int_daisy_filesetEncryptor/**/*.*"/>
 		<exclude name="uk_rnib_odf2dtbook/**/*.*"/>
-		<exclude name="int_daisy_recorder2dtb/**/*.*"/>
 		<exclude name="se_tpb_speechgenerator/**/*.*"/>
 		<exclude name="int_daisy_xukCreator/**/*.*"/>
 	</patternset>

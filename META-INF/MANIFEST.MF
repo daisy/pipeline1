@@ -14,7 +14,7 @@ Bundle-ClassPath:
  lib/chardet.jar,
  lib/commons-cli-1.1.jar,
  lib/commons-pool-1.4.jar,
- lib/epubcheck-1.0-5.jar,
+ lib/epubcheck-1.0.5.jar,
  lib/jing-saxon8-patch.jar,
  lib/icu4j-3_8.jar,
  lib/jl1.0.jar,
@@ -37,7 +37,8 @@ Bundle-ClassPath:
  lib/zedval.jar,
  transformers/int_daisy_filesetAudioTagger/lib/jaudiotagger.jar,
  transformers/se_tpb_speechgen2/lib/com4j.jar
-Export-Package: com.adobe.epubcheck.api,
+Export-Package: 
+ com.adobe.epubcheck.api,
  com.adobe.epubcheck.bitmap,
  com.adobe.epubcheck.dtbook,
  com.adobe.epubcheck.dtd,
