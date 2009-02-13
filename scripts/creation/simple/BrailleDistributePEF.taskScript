@@ -3,7 +3,7 @@
 <taskScript version="2.0" name="DistributePef">
 	<nicename>Braille: Distribute PEF</nicename>
 	<description>This script distributes pef.</description>
-	<documentation uri="../../doc/scripts/DistributePEF.html"/>
+	<documentation uri="../../../doc/scripts/DistributePEF.html"/>
 		
 	<parameter name="input" value="" required="true">
 		<nicename>Input file</nicename>

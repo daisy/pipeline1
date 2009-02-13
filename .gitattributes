@@ -512,14 +512,6 @@ samples/input/xhtml/valentinhauy.html -text
 samples/input/xhtml/valentinhauy11.html -text
 samples/input/xhtml/xhtml-rdf.xml -text
 scripts/_dev/AllParamTypes.taskScript -text
-scripts/_dev/BrailleDistributePEF.taskScript -text
-scripts/_dev/BrailleEmbossPEF.taskScript -text
-scripts/_dev/BrailleFormatInputParamsStatic.paramGroup -text
-scripts/_dev/BrailleFormatOutputParamsStatic.paramGroup -text
-scripts/_dev/BraillePEFValidator.taskScript -text
-scripts/_dev/BraillePefToText.taskScript -text
-scripts/_dev/BrailleTextToPEF.taskScript -text
-scripts/_dev/BrailleTextToText.taskScript -text
 scripts/_dev/DTBBackwardMigrator.taskScript -text
 scripts/_dev/DTBookFix_NarratorValidation.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
@@ -532,9 +524,14 @@ scripts/_dev/Narrator_NoValidation.taskScript -text
 scripts/_dev/NccNcxOnly.taskScript -text
 scripts/_dev/XMLAudioAligner.taskScript -text
 scripts/_dev/XukCreator.taskScript -text
+scripts/conversion/BrailleFormatInputParamsStatic.paramGroup -text
+scripts/conversion/BrailleFormatOutputParamsStatic.paramGroup -text
 scripts/conversion/DtbookToXhtmlScriptParamsStatic.paramGroup -text
 scripts/conversion/advanced/WordMLtoDTBook.taskScript -text
 scripts/conversion/advanced/Xhtml2Dtbook.taskScript -text
+scripts/conversion/simple/BraillePefToText.taskScript -text
+scripts/conversion/simple/BrailleTextToPEF.taskScript -text
+scripts/conversion/simple/BrailleTextToText.taskScript -text
 scripts/conversion/simple/DTBookToLaTeX.taskScript -text
 scripts/conversion/simple/DtbookToRtf.taskScript -text
 scripts/conversion/simple/DtbookToXhtml.taskScript -text
@@ -547,6 +544,8 @@ scripts/creation/FilesetScriptParamsStatic.paramGroup -text
 scripts/creation/advanced/AudacityToDTB.taskScript -text
 scripts/creation/advanced/Fileset-DtbookToDaisy202TextOnly.taskScript -text
 scripts/creation/advanced/Fileset-XhtmlToDaisy202TextOnly.taskScript -text
+scripts/creation/simple/BrailleDistributePEF.taskScript -text
+scripts/creation/simple/BrailleEmbossPEF.taskScript -text
 scripts/creation/simple/Narrator-DtbookToDaisy202.taskScript -text
 scripts/creation/simple/OCFCreator.taskScript -text
 scripts/creation/simple/OPSCreator.taskScript -text
@@ -581,6 +580,7 @@ scripts/validation/ValidatorScriptParamsSimpleStatic.paramGroup -text
 scripts/validation/ValidatorTaskParamsAdvancedStatic.paramGroup -text
 scripts/validation/ValidatorTaskParamsSimpleStatic.paramGroup -text
 scripts/validation/advanced/ConfigurableValidator.taskScript -text
+scripts/validation/simple/BraillePEFValidator.taskScript -text
 scripts/validation/simple/DTBookValidator.taskScript -text
 scripts/validation/simple/Daisy202DTBValidator.taskScript -text
 scripts/validation/simple/EpubCheck.taskScript -text
