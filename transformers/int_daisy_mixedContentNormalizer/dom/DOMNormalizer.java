@@ -77,12 +77,12 @@ public class DOMNormalizer extends AbstractNormalizer {
             TreeWalker walker = dt.createTreeWalker(doc.getDocumentElement(),
             		NodeFilter.SHOW_ELEMENT, new NodeFilterImpl(), true); 
             
-            Element e = null;                        
+            Element e = null;     
+            
 		    while ((e=(Element)walker.nextNode())!=null) {					    			    	
-//		    	mTransformer.delegateProgress(this, 
-//		    			((double)mCurrentElementCount/(mInputDocElementCount+mModCount)));
-		    	if(mTransformer.delegateCheckAbort()) throw new TransformerRunException ("user abort");	
 
+		    	if(mTransformer.delegateCheckAbort()) throw new TransformerRunException ("user abort");	
+		    	
 		    	NodeList children = e.getChildNodes();		
 		    	SiblingState state = getSiblingState(children);
 		    	if(state==SiblingState.UNBALANCED) normalizeChildren(e);
@@ -106,6 +106,7 @@ public class DOMNormalizer extends AbstractNormalizer {
 		boolean hasNonIgnorableElems = false;
 		
 		for (int i = 0; i < siblings.getLength(); i++) {
+			
 			Node child = siblings.item(i);
 			if(child.getNodeType() == Node.TEXT_NODE) {				
 				TextNodeType tnt = mConfig.getTextNodeType(child.getNodeValue(), 
@@ -145,42 +146,63 @@ public class DOMNormalizer extends AbstractNormalizer {
 		return SiblingState.UNBALANCED;		
 	}
 		
-
+	private final static String KEY_VISITED_IGNORABLE = "KEY_VISITED_IGNORABLE";
+	
 	/**
-	 * Iterate over a list of siblings and normalize.
-	 * <p>assumes coalescing</p>
-	 * <p>assumes entity resolution done</p>
+	 * Normalize a sibling list by finding consecutive series of sync-ignorable nodes, and wrapping them.
+	 * @param parent an Element in State.UNBALANCED.
 	 */
 	private void normalizeChildren(Element parent) {
-		Node currentNode = null;		
-		List<Node> ignorables = new LinkedList<Node>();
-		NodeList children = null;
-		
 		//find as many consecutive ignorables (text or config ignores) as possible; 0-n per try
-		int loops = 0;
-		do {
-			loops++;
-			children = parent.getChildNodes();
-						
-			for (int i = 0; i < children.getLength(); i++) {			
-				currentNode = children.item(i);						
-				if (currentNode.getNodeType() == Node.TEXT_NODE 
-						|| (currentNode.getNodeType() == Node.ELEMENT_NODE 
-								&& mConfig.isIgnorable((Element)currentNode) 
-								&& mConfig.isIgnorableElementsAndTextOnly(((Element)currentNode).getChildNodes(), true))) {
-					//ignorable element, whitespace node or text node
-					ignorables.add(currentNode);				
-				}else{
-					//non-ignorable										
-					ignorables = evaluate(ignorables);
-				}
-			}	
-			ignorables = evaluate(ignorables);
-			
-		} while (currentNode != parent.getLastChild());		
-		//if(loops>1) System.err.println("did the do loop " + loops +" times");		
+		List<Node> ignorables = new LinkedList<Node>();		
+		while(true) {
+			ignorables.clear();
+			getConsecutiveIgnorableSiblings(parent,ignorables);			
+			if(ignorables.isEmpty()) break;
+			trimAndWrap(ignorables);
+		}			
 	}
-
+	
+	private void getConsecutiveIgnorableSiblings(Element parent,List<Node> ignorables) {
+		Node currentNode = null;		
+		NodeList children = parent.getChildNodes();
+		
+		for (int i = 0; i < children.getLength(); i++) {			
+			currentNode = children.item(i);
+			if(currentNode.getUserData(KEY_VISITED_IGNORABLE)==Boolean.TRUE) continue;
+			if (currentNode.getNodeType() == Node.TEXT_NODE 
+					|| (currentNode.getNodeType() == Node.ELEMENT_NODE 
+							&& mConfig.isIgnorable((Element)currentNode) 
+							&& mConfig.isIgnorableElementsAndTextOnly(((Element)currentNode).getChildNodes(), true))) {
+				//ignorable element, whitespace node or text node
+				ignorables.add(currentNode);		
+			}else{
+				//first match of a non-ignorable node
+				//if we have something collected, abort
+				if(!ignorables.isEmpty()) return;
+			}
+		}	
+	}
+	
+	private boolean trimAndWrap(List<Node> ignorables) {
+		//remove leading and trailing whitespace					
+		ignorables = trim(ignorables);		
+		//if we after trim have exactly one non-ws textnode 
+		//or if length (regardless of type) > 1, then wrap		
+		if(ignorables.size()>1 || (ignorables.size()==1 && ignorables.get(0).getNodeType() == Node.TEXT_NODE )) { 						
+			Element wrapper = wrap(ignorables);								  
+			if(mConfig.isScrubbingWrappers(wrapper.getNamespaceURI())) {
+				scrub(wrapper); 
+			}
+			return true;
+		}
+		//ignorable but not wrapped, mark that
+		for(Node n : ignorables) {
+			n.setUserData(KEY_VISITED_IGNORABLE, Boolean.TRUE, null);
+		}
+		return false;
+	}
+//	
 	
 	private List<Node> evaluate(List<Node> ignorables) {
 		//remove leading and trailing whitespace					
@@ -263,24 +285,19 @@ public class DOMNormalizer extends AbstractNormalizer {
 	 */
 	private List<Node> trim(List<Node> nodes) {						
 		while(!nodes.isEmpty()) {
-			Node n = nodes.get(0);
+			Node n = nodes.get(0);			
 			if(n.getNodeType()==Node.TEXT_NODE){				
-//				if(CharUtils.isXMLWhiteSpace(n.getNodeValue())){
-//					nodes.remove(0);	
-//				}else{
-//					break;
-//				}		
-//				alt::
 				TextNodeType tnt = mConfig.getTextNodeType(n.getNodeValue(), n.getParentNode().getNamespaceURI());
 				if(!(tnt==TextNodeType.TEXT)){
+					n.setUserData(KEY_VISITED_IGNORABLE, Boolean.TRUE, null);
 					nodes.remove(0);	
 				}else{
 					break;
 				}
-//				end alt::
 			} else if(n.getNodeType()==Node.ELEMENT_NODE){
 				Element e = (Element) n;
 				if(e.getFirstChild()==null) {
+					n.setUserData(KEY_VISITED_IGNORABLE, Boolean.TRUE, null);
 					nodes.remove(0);
 				}else{
 					break;
@@ -292,23 +309,19 @@ public class DOMNormalizer extends AbstractNormalizer {
 		
 		while(!nodes.isEmpty()) {
 			Node n = nodes.get(nodes.size()-1);
+			
 			if(n.getNodeType()==Node.TEXT_NODE){
-//				if(CharUtils.isXMLWhiteSpace(n.getNodeValue())){
-//					nodes.remove(nodes.size()-1);	
-//				}else{
-//					break;
-//				}
-//				alt::
 				TextNodeType tnt = mConfig.getTextNodeType(n.getNodeValue(), n.getParentNode().getNamespaceURI());
 				if(!(tnt==TextNodeType.TEXT)){
+					n.setUserData(KEY_VISITED_IGNORABLE, Boolean.TRUE, null);
 					nodes.remove(nodes.size()-1);	
 				}else{
 					break;
 				}
-//				end alt::
 			} else if(n.getNodeType()==Node.ELEMENT_NODE){
 				Element e = (Element) n;
 				if(e.getFirstChild()==null) {
+					n.setUserData(KEY_VISITED_IGNORABLE, Boolean.TRUE, null);
 					nodes.remove(nodes.size()-1);
 				}else{
 					break;
@@ -380,16 +393,6 @@ public class DOMNormalizer extends AbstractNormalizer {
 		}		
 	}
 	
-//	/**
-//	 * Return a wrapper parent of inparam wrapper, or null if one does not exist
-//	 */
-//	private Element hasWrapperAncestor(Element wrapper) {		
-//		Node parent = wrapper.getParentNode();		
-//		if(parent==null || parent.getNodeType()!= Node.ELEMENT_NODE) return null;
-//		if(((Element)parent).getUserData("isWrapper")!=null) return (Element)parent;
-//		return hasWrapperAncestor((Element)parent);
-//	}
-	
 	/**
 	 * Retrieve the number of elements in input document after normalization has been completed.
 	 * <p>If this method is called prior to calling {@link #normalize(Source)}, it will return
@@ -404,28 +407,3 @@ public class DOMNormalizer extends AbstractNormalizer {
 	}
 
 }
-
-
-////TEST*************************************************************
-//TreeWalker cleaner = dt.createTreeWalker(doc.getDocumentElement(),
-//		NodeFilter.SHOW_ELEMENT, null, true);
-//
-//e = null;
-//cur = 0;            
-//while ((e=(Element)cleaner.nextNode())!=null) {					    			    					
-//	if(e.getUserData("isWrapper")!=null){
-//		Element unwantedWrapper = hasWrapperAncestor(e);
-//		if(unwantedWrapper!=null) {
-//			Element unwantedWrappersParent = (Element)unwantedWrapper.getParentNode(); 
-//			NodeList unwantedWrappersChildren = unwantedWrapper.getChildNodes();
-//			for (int i = 0; i < unwantedWrappersChildren.getLength(); i++) {
-//				Node unwantedWrappersChild = unwantedWrapper.removeChild(unwantedWrappersChildren.item(i));
-//				unwantedWrappersParent.insertBefore(unwantedWrappersChild, unwantedWrapper);
-//			}
-//			unwantedWrappersParent.removeChild(unwantedWrapper);
-//			mModCount--;
-//			cleaner.setCurrentNode(cleaner.previousNode());
-//		}
-//	}
-//}
-////END TEST*************************************************************
