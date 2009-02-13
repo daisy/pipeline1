@@ -21,13 +21,16 @@
 
 <h2 id="overview">Overview</h2>
 <p>
-This script creates a DAISY/NISO NCX-Only DTB from an Audacity project. By using markers in a predefined 
-way while recording audio in Audacity, the resulting DTB can contain headings and pagenumbers<!--, producer notes and sidebars -->.</p>
-<p>You can also create DTBs through importing audio files. Note however: when you save the Audacity project, you <strong>must choose the option to <em>import</em> the audio files into the project</strong>.</p>
+This script creates a DAISY/NISO NCX (audio) only digital talking book from an Audacity project. 
+By using markers in the Audacity project in a predefined way in the recorded audio, the resulting DTB can contain headings and pagenumbers
+
+<!--, producer notes and sidebars -->.</p>
+
+<p>Note: when you save the Audacity project, you <strong>must choose the option to <em>import</em> the audio files into the project</strong>.</p>
 
 <p>A special "set-the-duration" technique (described <a href="#durMarkers">below</a>) also allows the pagenumbers <!-- producer notes and sidebars --> to become skippable in the output DTB.</p>
 
-<p><strong>This script has been tested against Audacity version 1.3.5. Earlier versions are not supported.</strong></p>
+<p><strong>This script has been tested against Audacity version 1.3.7. Earlier versions are not supported.</strong></p>
 
 <h2 id="inputReqs">Input Requirements</h2>
 <p>An Audacity project file (*.aup), following the DTB-enabling conventions as described in the section below.</p>
@@ -44,6 +47,8 @@ way while recording audio in Audacity, the resulting DTB can contain headings an
 <img src="./img/audacity-headingmarker.jpg" alt="Audacity Wave Track, a Label track below with a heading marker reading 'h2 Chapter 3: Galapagos' " />
 <p>For each heading you want create, drop a Marker at the appropriate time position in the Label track below the concerned Audio track. The markers value must begin with <code>h1, h2, h3, h4, h5, or h6</code> for the marker to be detected as a heading.</p>
 <p>The text following in the marker value will become the heading text. For example, a marker value of <code>h2 Chapter 3 Galapagos</code> will create a level 2 heading with the title "Chapter 3 Galapagos".</p>
+
+<p>It is important to remember that heading must be in numbered order. That is an h2 must follow an h1, another h2 or an h3.</pa>
 
 <h4>Creating pages</h4>
 <p>For each page you want create, drop a Marker at the appropriate time position in the Label track below the concerned Audio track. The markers value must begin with <code>p</code> for the marker to be detected as a pagenumber.</p>
@@ -99,6 +104,11 @@ Simply create a marker with the value <code>p</code> and then activate the auton
 <dd>Will be captured as the publication identifier (dc:identifier). <em>This meta entry will have to be created (use the "add" button of the Audacity metadata editor)</em></dd>
 <dt>lang<dt>
 <dd>Will be captured as the publication language (dc:language). <em>This meta entry will have to be created (use the "add" button of the Audacity metadata editor)</em></dd>
+
+<dt>publisher<dt>
+<dd>Will be captured as the book's publisher (dc:publisher). <em>This meta entry will have to be created (use the "add" button of the Audacity metadata editor)</em></dd>
+
+
 </dl>
 
 <p>If you dont provide the metadata required for a valid DTB, dummy values will be inserted during the Save-as-DAISY process. Dont forget to fix these (in the .opf) before finalizing the project!</p>
@@ -106,7 +116,7 @@ Simply create a marker with the value <code>p</code> and then activate the auton
 <h2 id="output">From Audacity project to DTB</h2>
 <ul>
 <li>Make sure the Audacity project is saved (*.aup). Note - at this time you must <strong>not</strong> use any of the "Export as..." features of Audaciy. Just save the project, and if you are prompted to "import external files", accept the import.</li>
-<li>Open the Pipeline, select the "Audacity Save-as-DAISY script" (available in the <code>creation/advanced</code> directory</li>
+<li>Open the Pipeline, select the "Audacity Save-as-DAISY script" (available in the <code>creation/advanced</code> directory)</li>
 <li>For the input file, point to the Audacity *.aup file that you saved in the steps above</li>
 <li>Add the additional required parameters, and launch the conversion process.</li>
 <li>Note: the output is a validated z3986-2005 NCX-only DTB, using wav files. In later (post-beta) versions of this script, MP3 encoding and Daisy 2.02 downgrade features can be added.</li>
