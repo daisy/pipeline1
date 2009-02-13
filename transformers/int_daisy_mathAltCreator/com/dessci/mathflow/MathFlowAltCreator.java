@@ -62,7 +62,7 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
 	 * (non-Javadoc)
 	 * @see int_daisy_mathAltCreator.IMathAltCreator#configure(java.io.File, java.io.File, java.util.Map)
 	 */
-	public void configure(File input, File output, @SuppressWarnings("unused")Map<String, Object> parameters) {
+	public void configure(File input, File output, Map<String, Object> parameters) {
     	mInputDoc = input;
     	mOutputDoc = output;
     	mImagesPath = "images";
@@ -83,6 +83,9 @@ public class MathFlowAltCreator implements IMathAltCreator, DOMErrorHandler {
     	    throw new IllegalStateException("Cannot locate the installation directory of " + getNiceName());
     	}    	
     	mComposerPath = new File(FilenameOrFileURI.toFile(programDir), "MathDAISY.exe");
+    	if (!mComposerPath.exists()) {
+    	    throw new IllegalStateException("Cannot find " + mComposerPath);
+    	}
     	
 		if(mInputDoc==null||mOutputDoc==null||programDir==null) {
 			throw new IllegalStateException();
