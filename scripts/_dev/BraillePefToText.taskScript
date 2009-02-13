@@ -26,6 +26,23 @@
 	</parameter>
 	
 	&BrailleFormatOutputParamsStatic;
+	
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+		
+		<parameter>
+			<name>schemas</name>
+			<value>pef-2008-1.rng</value>
+		</parameter>
+	</task>
 
 	<task name="org_pef_text/pef2text" interactive="false">
 		<parameter>
