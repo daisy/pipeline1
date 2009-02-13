@@ -26,7 +26,7 @@ public class Narrator5 extends PipelineTest {
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("Narrator-MathML.taskScript".equals(scriptName)) {
+		if("Narrator-DtbookToDaisy202.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;

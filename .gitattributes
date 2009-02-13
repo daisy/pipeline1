@@ -696,6 +696,7 @@ src/org/daisy/pipeline/test/impl/Narrator3.java -text
 src/org/daisy/pipeline/test/impl/Narrator4.java -text
 src/org/daisy/pipeline/test/impl/Narrator5.java -text
 src/org/daisy/pipeline/test/impl/Narrator6.java -text svneol=unset#text/plain
+src/org/daisy/pipeline/test/impl/Narrator7.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/test/impl/NarratorAutumn20081.java -text
 src/org/daisy/pipeline/test/impl/NarratorMathML1.java -text
 src/org/daisy/pipeline/test/impl/NarratorSADX.template -text

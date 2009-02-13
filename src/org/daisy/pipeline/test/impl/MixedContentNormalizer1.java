@@ -13,7 +13,7 @@ public class MixedContentNormalizer1 extends PipelineTest {
 	
 	@Override
 	public List<String> getParameters() {		
-		mParameters.add("--inputXML=" + mDataInputDir + "/dtbook/hauy-2005-1.xml");
+		mParameters.add("--inputXML=" + mDataInputDir + "/dtbook/mixed-content-torture.xml");
 		mParameters.add("--outputXML=" + mDataOutputDir + "/MixedContentNormalizer1/normalized.xml"); 		
 		return mParameters;
 	}

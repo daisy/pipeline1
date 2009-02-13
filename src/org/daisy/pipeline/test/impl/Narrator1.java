@@ -14,7 +14,6 @@ public class Narrator1 extends PipelineTest {
 	@Override
 	public List<String> getParameters() {		
 		mParameters.add("--input=" + mDataInputDir + "/dtbook/dontworrybehappy.xml");
-		//mParameters.add("--input=E:/vincent.xml");
 		mParameters.add("--outputPath=" + mDataOutputDir + "/Narrator1/");
 		mParameters.add("--dtbookFix=NOTHING");
 		return mParameters;

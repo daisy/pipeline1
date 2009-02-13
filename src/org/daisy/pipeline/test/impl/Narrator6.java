@@ -13,7 +13,8 @@ public class Narrator6 extends PipelineTest {
 	
 	@Override
 	public List<String> getParameters() {		
-		mParameters.add("--input=" + mDataInputDir +"/dtbook/mixed-content-torture.xml");
+		//mParameters.add("--input=" + mDataInputDir +"/dtbook/mixed-content-torture.xml");
+		mParameters.add("--input=/home/markusg/Desktop/missing-smilref.xml");
 		mParameters.add("--outputPath=" + mDataOutputDir + "/Narrator6/");
 		mParameters.add("--doSentDetection=true");
 		return mParameters;
@@ -26,7 +27,7 @@ public class Narrator6 extends PipelineTest {
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("Narrator-MathML.taskScript".equals(scriptName)) {
+		if("Narrator-DtbookToDaisy202.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;

@@ -25,7 +25,7 @@ public class Narrator4 extends PipelineTest {
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("Narrator-Dev.taskScript".equals(scriptName)) {
+		if("Narrator-DtbookToDaisy202.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;

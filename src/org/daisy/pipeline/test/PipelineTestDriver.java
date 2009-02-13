@@ -28,12 +28,14 @@ import org.daisy.pipeline.core.script.Job;
 import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.core.script.ScriptParameter;
 import org.daisy.pipeline.core.script.Task;
+import org.daisy.pipeline.test.impl.MixedContentNormalizer1;
 import org.daisy.pipeline.test.impl.Narrator1;
 import org.daisy.pipeline.test.impl.Narrator2;
 import org.daisy.pipeline.test.impl.Narrator3;
 import org.daisy.pipeline.test.impl.Narrator4;
 import org.daisy.pipeline.test.impl.Narrator5;
 import org.daisy.pipeline.test.impl.Narrator6;
+import org.daisy.pipeline.test.impl.Narrator7;
 import org.daisy.pipeline.test.impl.ValidatorConfigurable2;
 import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
@@ -240,6 +242,7 @@ public class PipelineTestDriver implements BusListener {
 //		tests.add(new Narrator4(inputDir, outputDir));
 //		tests.add(new Narrator5(inputDir, outputDir));
 //		tests.add(new Narrator6(inputDir, outputDir));
+//		tests.add(new Narrator7(inputDir, outputDir));
 //		tests.add(new NarratorAutumn20081(inputDir, outputDir));
 //		tests.add(new NarratorMathML1(inputDir, outputDir));		
 //		tests.add(new MultiFormatMedia1(inputDir, outputDir));
@@ -276,7 +279,7 @@ public class PipelineTestDriver implements BusListener {
 //		tests.add(new ValidatorEpubCheck1(inputDir, outputDir));
 //		tests.add(new ValidatorEpubCheck2(inputDir, outputDir));		
 //		tests.add(new ValidatorConfigurable1(inputDir, outputDir));		
-		tests.add(new ValidatorConfigurable2(inputDir, outputDir));
+//		tests.add(new ValidatorConfigurable2(inputDir, outputDir));
 //		tests.add(new PrettyPrinter1(inputDir, outputDir));
 //		tests.add(new PrettyPrinter2(inputDir, outputDir));		
 //		tests.add(new CharacterRepertoireManipulator1(inputDir, outputDir));
@@ -305,6 +308,7 @@ public class PipelineTestDriver implements BusListener {
 //		tests.add(new FilesetGenerator1(inputDir, outputDir));
 //		tests.add(new FilesetGenerator2(inputDir, outputDir));
 //		tests.add(new DTBook2LaTeX(inputDir, outputDir));
+//		tests.add(new MixedContentNormalizer1(inputDir, outputDir));
 		
 		//tests.add(new NarratorAutumn20081(inputDir, outputDir));
 		//tests.add(new FilesetGenerator3(inputDir, outputDir));
