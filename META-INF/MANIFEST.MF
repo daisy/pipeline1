@@ -14,7 +14,7 @@ Bundle-ClassPath:
  lib/chardet.jar,
  lib/commons-cli-1.1.jar,
  lib/commons-pool-1.4.jar,
- lib/epubcheck.jar,
+ lib/epubcheck-1.0-5.jar,
  lib/jing-saxon8-patch.jar,
  lib/icu4j-3_8.jar,
  lib/jl1.0.jar,
@@ -33,7 +33,7 @@ Bundle-ClassPath:
  lib/tritonus_share-0.3.6.jar,
  lib/xalan.jar,
  lib/xercesImpl.jar,
- lib/wstx-lgpl-3.2.4.jar,
+ lib/wstx-lgpl-3.2.8.jar,
  lib/zedval.jar,
  transformers/int_daisy_filesetAudioTagger/lib/jaudiotagger.jar,
  transformers/se_tpb_speechgen2/lib/com4j.jar
