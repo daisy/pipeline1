@@ -67,7 +67,7 @@ ShowUninstDetails show
 Section -Main SEC0000    
     SetOutPath $INSTDIR
     SetOverwrite on
-    File /r "${LAME_DIR}\*.*"
+    File /r "${LAME_DIR}\lame.exe"
     WriteRegStr ${PRODUCT_REG_ROOT} "${REGKEY}\Components" Main 1
 SectionEnd
 
