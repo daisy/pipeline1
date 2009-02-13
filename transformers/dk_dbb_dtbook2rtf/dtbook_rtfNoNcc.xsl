@@ -17,7 +17,7 @@
   59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 --> 
 <!--made 24.5.04-->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">	
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">	
 	<xsl:output indent="no" method="text" encoding="windows-1252"/>	
 	<xsl:include href="dtbook_rtf_call.xsl"/>
 	<xsl:strip-space elements="*"/>
