@@ -41,17 +41,16 @@
 		</parameter>
 		
 		<parameter type="enum" direction="in" required="false">
-		  <name>fontfamily</name>			
-		  <description>Font family for the generated LaTeX.
-		    See also the LaTeX font guide
-		    (http://www.latex-project.org/guides/fntguide.pdf)</description>
-		  <example>cmr</example>
+		  <name>font</name>			
+		  <description>Font for the generated LaTeX. This can basically be any installed TrueType or OpenType font.</description>
+		  <example>Tiresias LPfont</example>
 		  <enum>
-		    <value>cmr</value>
-		    <value>cmss</value>
-		    <value>cmvtt</value>
+		    <value>Tiresias LPfont</value>
+		    <value>LMRoman10 Regular</value>
+		    <value>LMSans10 Regular</value>
+		    <value>LMTypewriter10 Regular</value>
 		  </enum>
-		  <default>cmr</default>
+		  <default>Tiresias LPfont</default>
 		</parameter>
 		
 		<parameter type="enum" direction="in" required="false">

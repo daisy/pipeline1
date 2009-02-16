@@ -40,14 +40,15 @@
     </datatype>
   </parameter>
   
-  <parameter name="fontfamily" value="cmr" required="false">
-    <nicename>Font family</nicename>
-    <description>The font family to be used. See also the LaTeX font guide (http://www.latex-project.org/guides/fntguide.pdf)</description>
+  <parameter name="font" value="Tiresias LPfont" required="false">
+    <nicename>Font</nicename>
+    <description>The font to be used. This can basically be any installed TrueType or OpenType font.</description>
     <datatype>
      <enum>
-       <item nicename="Computer Modern Roman" value="cmr"/>
-       <item nicename="Computer Modern SansSerif" value="cmss"/>
-       <item nicename="Computer Modern Typewriter" value="cmvtt"/>
+       <item nicename="Tiresias LPfont" value="Tiresias LPfont"/>
+       <item nicename="LMRoman10 Regular" value="LMRoman10 Regular"/>
+       <item nicename="LMSans10 Regular" value="LMSans10 Regular"/>
+       <item nicename="LMTypewriter10 Regular" value="LMTypewriter10 Regular"/>
      </enum>
     </datatype>
   </parameter>
@@ -139,8 +140,8 @@
     </parameter>				
 
     <parameter>
-      <name>fontfamily</name>
-      <value>${fontfamily}</value>			
+      <name>font</name>
+      <value>${font}</value>			
     </parameter>				
 
     <parameter>

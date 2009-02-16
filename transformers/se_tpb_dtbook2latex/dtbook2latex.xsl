@@ -21,8 +21,10 @@ hyperlänkar
 	
   <!-- Possible values are 12pt, 14pt, 17pt and 20pt -->
   <xsl:param name="fontsize">17pt</xsl:param>
-  <!-- Possible values are for example 'cmr', 'cmss' or 'cmvtt' -->
-  <xsl:param name="fontfamily">cmr</xsl:param>
+  <!-- Possible values are for example 'Tiresias LPfont', 'LMRoman10
+  Regular', 'LMSans10 Regular' or 'LMTypewriter10 Regular'. Basically
+  any installed TrueType or OpenType font -->
+  <xsl:param name="font">LMRoman10 Regular</xsl:param>
   <xsl:param name="defaultLanguage">english</xsl:param>
   <xsl:param name="papersize">a4paper</xsl:param>
   <!-- Possible values are 'left', 'justified' -->
@@ -50,19 +52,19 @@ hyperlänkar
    	<xsl:text>,</xsl:text>
 	<xsl:value-of select="$papersize"/>
 	<xsl:text>,twoside]{extbook}&#10;</xsl:text>   
-   	<xsl:text>\usepackage[pdftex]{graphicx}&#10;</xsl:text>
-   	<xsl:text>\usepackage{ucs}&#10;</xsl:text>
-   	<xsl:text>\usepackage[utf8x]{inputenc}&#10;</xsl:text>
+   	<xsl:text>\usepackage{graphicx}&#10;</xsl:text>
    	<xsl:call-template name="findLanguage"/>
    	<xsl:text>\setlength{\parskip}{1.5ex}&#10;</xsl:text>
    	<xsl:text>\setlength{\parindent}{0ex}&#10;</xsl:text>
-	<xsl:text>\usepackage[pdftex]{hyperref}&#10;</xsl:text>
+	<xsl:text>\usepackage{fontspec,xunicode,xltxtra}&#10;</xsl:text>
+	<xsl:text>\defaultfontfeatures{Mapping=tex-text}&#10;</xsl:text>
+	<xsl:text>\setmainfont{</xsl:text><xsl:value-of select="$font"/><xsl:text>}&#10;</xsl:text>
+	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
 	<xsl:if test="$pageStyle!='scientific'">
 	  <xsl:text>\usepackage{titlesec}&#10;&#10;</xsl:text>
 	  <xsl:text>\titlelabel{}&#10;</xsl:text>
 	  <xsl:text>\titleformat{\chapter}[block]{}{}{0cm}{\Large\bfseries}&#10;&#10;</xsl:text>
 	</xsl:if>
-	<xsl:text>\renewcommand\familydefault{</xsl:text><xsl:value-of select="$fontfamily"/><xsl:text>}&#10;&#10;</xsl:text>
 	<xsl:apply-templates/>
    </xsl:template>
 
@@ -127,7 +129,6 @@ hyperlänkar
 	<xsl:if test="$alignment='left'">
 	  <xsl:text>\raggedright&#10;</xsl:text>
 	</xsl:if>
-        <xsl:text>\fontfamily{</xsl:text><xsl:value-of select="$fontfamily"/><xsl:text>}\selectfont&#10;</xsl:text>
 	<xsl:apply-templates/>
 	<xsl:text>\end{document}&#10;</xsl:text>
    </xsl:template>
