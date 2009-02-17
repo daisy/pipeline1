@@ -3,7 +3,6 @@ package org.daisy.pipeline.gui;
 import java.io.File;
 import java.io.IOException;
 
-import org.daisy.pipeline.core.PipelineCore;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -111,13 +110,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	private void initWindowsDefaults() {
 		setPrefPath(PreferencesKeys.PATH_TO_IMAGEMAGICK,
 				"C:\\Program Files\\ImageMagick-6.3.5-Q16\\convert.exe");//$NON-NLS-1$
-		String lamePath = PipelineCore.initLamePath(null);
-		if (lamePath == null) {
-			lamePath = new File(Platform.getInstallLocation().getURL()
-					.getPath()
-					+ "/ext/lame.exe").getPath();//$NON-NLS-1$
-		}
-		setPrefPath(PreferencesKeys.PATH_TO_LAME, lamePath);
+		setPrefPath(PreferencesKeys.PATH_TO_LAME,
+				(new File(Platform.getInstallLocation().getURL().getPath(),
+						"ext/lame.exe")).getPath());//$NON-NLS-1$
 	}
 
 	/**
