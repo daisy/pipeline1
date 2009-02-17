@@ -2,7 +2,7 @@
 <!DOCTYPE taskScript[
 <!ENTITY FilesetScriptParamsStatic SYSTEM "../FilesetScriptParamsStatic.paramGroup">
 ]>
-<taskScript version="2.0" name="dtbook2daisy202">
+<taskScript version="2.0" name="dtbook2daisy202-textonly">
 	<nicename>Daisy 2.02 Text-Only Fileset Generator (from DTBook) [BETA]</nicename>
 	<description>Converts a DTBook 2005 file to a Text-Only Daisy 2.02 file set</description>
 	<documentation uri="../../../doc/scripts/FilesetGenerator-Daisy202TextOnly.html"/>
