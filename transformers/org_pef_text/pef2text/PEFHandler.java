@@ -128,9 +128,9 @@ public class PEFHandler extends DefaultHandler {
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		elements.pop();
 		if (PEF_NS.equals(uri)) {
-			if ("page".equals(localName)) {
+			if ("page".equals(localName) && range.inRange(inputPages)) {
 				pageParent = elements.peek();
-			} else if ("row".equals(localName)) {
+			} else if ("row".equals(localName) && range.inRange(inputPages)) {
 				rowParent = elements.peek();
 			}
 		}
@@ -139,7 +139,8 @@ public class PEFHandler extends DefaultHandler {
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		Element context = elements.peek();
 		if (PEF_NS.equals(context.getUri()) 
-				&& "row".equals(context.getLocalName())) {
+				&& "row".equals(context.getLocalName())
+				&& range.inRange(inputPages)) {
 			String text = new String(ch, start, length);
 			try {
 				embosser.write(text);
