@@ -342,7 +342,8 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 			logger.info("Job {}", code.toString());
 		}
 		if (listener != null)
-			listener.stopped(code, e.getLocalizedMessage());
+			listener
+					.stopped(code, (e != null) ? e.getLocalizedMessage() : null);
 		isRunning = false;
 	}
 

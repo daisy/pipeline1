@@ -113,7 +113,6 @@ public class PoolableRMIPipelineInstanceFactory extends
 		}
 		for (File file : new File(pipelineDir, "lib")
 				.listFiles(new FileFilter() {
-					@Override
 					public boolean accept(File pathname) {
 						return pathname.isFile()
 								&& pathname.getName().endsWith(".jar");
