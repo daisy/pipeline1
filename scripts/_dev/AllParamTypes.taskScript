@@ -4,7 +4,7 @@
 <!ENTITY ValidatorScriptParamsSimpleStatic SYSTEM "../ValidatorScriptParamsSimpleStatic.paramGroup">
 <!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../ValidatorTaskParamsSimpleStatic.paramGroup">
 ]>
-<taskScript version="2.0" name="DTBookValidator">
+<taskScript version="2.0" name="dev-allparams">
 	<nicename>DTBook Validator</nicename>
 	<description>Validate a DTBook document against its DTD and additional schemas</description>
    	<documentation uri="../../../doc/scripts/DTBookValidator.html"/>
