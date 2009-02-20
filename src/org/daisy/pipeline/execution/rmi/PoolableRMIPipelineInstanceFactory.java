@@ -18,15 +18,17 @@
 package org.daisy.pipeline.execution.rmi;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.pool.BasePoolableObjectFactory;
+import org.daisy.pipeline.rmi.RMIPipelineApp;
 import org.daisy.pipeline.rmi.RMIPipelineInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +56,7 @@ public class PoolableRMIPipelineInstanceFactory extends
 	private final Logger logger = LoggerFactory
 			.getLogger(PoolableRMIPipelineInstanceFactory.class);
 
-	private int timeout = 5000;
+	private int timeout = 5000;// TODO externalize
 	private File pipelineDir;
 	private File launcher;
 	private Registry rmiRegistry;
@@ -72,13 +74,23 @@ public class PoolableRMIPipelineInstanceFactory extends
 
 	private Process launchNewPipelineInstance(final String id)
 			throws IOException {
+		List<String> cmd = new ArrayList<String>();
+		// TODO externalize args
+		cmd.add("java");
+		cmd.add("-Xms256m");
+		cmd.add("-Xmx1024m");
+		cmd.add("-cp");
+		cmd.add(buildClassPath());
+		cmd.add(RMIPipelineApp.class.getName());
+		cmd.add(id);
+		String[] cmdarray = (String[]) cmd.toArray(new String[cmd.size()]);
+
 		if (logger.isDebugEnabled()) {
-			logger.debug("Launching {} with laucher {}", id, launcher
-					.getAbsolutePath());
+			logger.debug("Launching {} with cmd {}", id, cmdarray.toString());
 		}
-		String[] cmdarray = new String[] {launcher.getAbsolutePath(), id };
 		final Process process = Runtime.getRuntime().exec(cmdarray, null,
 				pipelineDir);
+
 		// Register a shutdown hook to terminate live RMI Pipeline
 		// instances when the JVM quits.
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -88,6 +100,30 @@ public class PoolableRMIPipelineInstanceFactory extends
 			}
 		});
 		return process;
+	}
+
+	private String buildClassPath() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(".").append(File.pathSeparatorChar);
+		if (new File(pipelineDir, "bin").exists()) {
+			sb.append("bin").append(File.separatorChar).append(
+					File.pathSeparatorChar);
+		} else {
+			sb.append("pipeline.jar").append(File.pathSeparatorChar);
+		}
+		for (File file : new File(pipelineDir, "lib")
+				.listFiles(new FileFilter() {
+					@Override
+					public boolean accept(File pathname) {
+						return pathname.isFile()
+								&& pathname.getName().endsWith(".jar");
+					}
+				})) {
+			sb.append(pipelineDir.toURI().relativize(file.toURI()).getPath())
+					.append(File.pathSeparatorChar);
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		return sb.toString();
 	}
 
 	/**
@@ -107,13 +143,18 @@ public class PoolableRMIPipelineInstanceFactory extends
 		while (pipeline == null && System.currentTimeMillis() <= endtime) {
 			try {
 				Thread.sleep(100);
-			} catch (InterruptedException e) {}
+			} catch (InterruptedException e) {
+			}
 			try {
 				pipeline = (RMIPipelineInstance) rmiRegistry.lookup(uuid);
-			} catch (NotBoundException e) {}
+			} catch (NotBoundException e) {
+			}
 		}
 		if (pipeline == null) {
 			throw new TimeoutException("Couldn't load the Pipeline instance");
+		}
+		if (logger.isDebugEnabled()) {
+			logger.debug("Launched instance {}", uuid);
 		}
 		return new RMIPipelineInstanceWrapper(pipeline, process);
 	}
@@ -136,6 +177,7 @@ public class PoolableRMIPipelineInstanceFactory extends
 		try {
 			return ((RMIPipelineInstanceWrapper) obj).isReady();
 		} catch (Exception e) {
+			logger.warn("invalid instance");
 			return false;
 		}
 	}

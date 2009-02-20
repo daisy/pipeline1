@@ -57,9 +57,9 @@ public class RMIPipelineInstanceWrapper implements RMIPipelineInstance {
 		this.process = process;
 	}
 
-	public void executeJob(URL scriptURL, Map<String, String> parameters)
+	public void executeJob(URL scriptURL, Map<String, String> parameters, String jobId)
 			throws RemoteException {
-		pipeline.executeJob(scriptURL, parameters);
+		pipeline.executeJob(scriptURL, parameters, jobId);
 	}
 
 	public void cancelCurrentJob() throws RemoteException {
@@ -97,10 +97,10 @@ public class RMIPipelineInstanceWrapper implements RMIPipelineInstance {
 	}
 
 	public InputStream getInputStream() {
-		return process.getInputStream();
+		return (process!=null)?process.getInputStream():null;
 	}
 
 	public InputStream getErroStream() {
-		return process.getErrorStream();
+		return (process!=null)?process.getErrorStream():null;
 	}
 }

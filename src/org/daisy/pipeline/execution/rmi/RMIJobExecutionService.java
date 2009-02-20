@@ -18,7 +18,6 @@
 package org.daisy.pipeline.execution.rmi;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
@@ -39,7 +38,6 @@ import org.daisy.pipeline.execution.Status;
 import org.daisy.pipeline.rmi.RMIPipelineInstance;
 import org.daisy.pipeline.rmi.RMIPipelineListener;
 import org.daisy.util.execution.TimeoutMonitor;
-import org.daisy.util.file.StreamRedirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,32 +135,12 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 
 		public void run() {
 			listener.start();
-
-			StreamRedirector outRedirector = null;
-			StreamRedirector errRedirector = null;
 			TimeoutMonitor timeoutMonitor = null;
 			try {
 				// Get a RMI Pipeline from the pool
 				pipeline = (RMIPipelineInstanceWrapper) pipelinePool
 						.borrowObject();
 
-				// Setup log files
-				Object stdoutFile = context.get(STDOUT_FILE_KEY);
-				if (stdoutFile != null && stdoutFile instanceof File) {
-					outRedirector = new StreamRedirector(pipeline
-							.getInputStream(), new FileOutputStream(
-							(File) stdoutFile), true);
-					outRedirector.start();
-
-				}
-				Object stderrFile = context.get(STDERR_FILE_KEY);
-				if (stderrFile != null && stderrFile instanceof File) {
-					errRedirector = new StreamRedirector(pipeline
-							.getErroStream(), new FileOutputStream(
-							(File) stderrFile), true);
-					errRedirector.start();
-
-				}
 				// Setup the timeout monitor
 				timeoutMonitor = new TimeoutMonitor(Long.valueOf(Config.TIMEOUT
 						.getValue(config)), Long
@@ -180,11 +158,15 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 				};
 				timeoutMonitor.start();
 
+				// Get the job ID from context
+				Object jobId = context.get("jobId");
+
 				// Finally execute the job
 				RMIPipelineListener rmiListener = new RMIPipelineListenerImpl(
 						listener, timeoutMonitor);
 				pipeline.setListener(rmiListener);
-				pipeline.executeJob(scriptURL, parameters);
+				pipeline.executeJob(scriptURL, parameters,
+						(jobId != null) ? jobId.toString() : null);
 
 			} catch (InterruptedException e) {
 				logger.warn(e.getLocalizedMessage(), e);
@@ -205,13 +187,7 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 					}
 				}
 
-				// Terminate the logging and timeout threads
-				if (outRedirector != null && outRedirector.isAlive()) {
-					outRedirector.cancel();
-				}
-				if (errRedirector != null && errRedirector.isAlive()) {
-					errRedirector.cancel();
-				}
+				// Terminate the timeout thread
 				if (timeoutMonitor != null && timeoutMonitor.isAlive()) {
 					timeoutMonitor.cancel();
 				}
@@ -274,6 +250,7 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 		pipelinePool = new GenericObjectPool(
 				new PoolableRMIPipelineInstanceFactory(launcher, pipelineDir,
 						rmiRegistry), maxActive);
+		pipelinePool.setTestOnBorrow(true);
 		executor = Executors.newFixedThreadPool(maxActive);
 	}
 
@@ -325,5 +302,4 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 			logger.warn("Couldn't close Pipeline pool");
 		}
 	}
-	
 }

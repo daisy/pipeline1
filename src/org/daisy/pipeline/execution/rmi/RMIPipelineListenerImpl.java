@@ -23,6 +23,7 @@ import java.rmi.server.UnicastRemoteObject;
 import org.daisy.pipeline.execution.JobListener;
 import org.daisy.pipeline.execution.Level;
 import org.daisy.pipeline.execution.Status;
+import org.daisy.pipeline.rmi.LocalSocketFactory;
 import org.daisy.pipeline.rmi.RMIPipelineListener;
 import org.daisy.util.execution.TimeoutMonitor;
 
@@ -54,8 +55,7 @@ public class RMIPipelineListenerImpl extends UnicastRemoteObject implements
 	 */
 	public RMIPipelineListenerImpl(JobListener jobListener,
 			TimeoutMonitor timeoutMonitor) throws RemoteException {
-//		super(0, new LocalSocketFactory(), new LocalSocketFactory());
-		super();
+		super(0, new LocalSocketFactory(), new LocalSocketFactory());
 		if (jobListener == null)
 			throw new IllegalArgumentException("Job updater is null");
 		this.jobListener = jobListener;

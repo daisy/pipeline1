@@ -187,7 +187,7 @@ lib/saxon8-dom.jar -text
 lib/saxon8.jar -text
 lib/serializer.jar -text
 lib/slf4j-api-1.5.6.jar -text
-lib/slf4j-jdk14-1.5.6.jar -text
+lib/slf4j-log4j12-1.5.6.jar -text
 lib/stax-api-1.0.1.jar -text
 lib/tagsoup-1.2.jar -text
 lib/tritonus_remaining-0.3.6.jar -text
@@ -198,7 +198,6 @@ lib/xercesImpl.jar -text
 lib/zedval.jar -text svneol=unset#unset
 licenses/CeCILL-BLicense/CeCILL-B.txt -text
 licenses/MITLicense/MITLicense.txt -text svneol=unset#text/plain
-/logging.properties -text svneol=unset#text/plain
 samples/input/dtb/d202/dontworrybehappy-invalid/content.html -text
 samples/input/dtb/d202/dontworrybehappy-invalid/default.css -text
 samples/input/dtb/d202/dontworrybehappy-invalid/ncc.html -text
@@ -585,6 +584,7 @@ scripts/validation/simple/DTBookValidator.taskScript -text
 scripts/validation/simple/Daisy202DTBValidator.taskScript -text
 scripts/validation/simple/EpubCheck.taskScript -text
 scripts/validation/simple/Z3986DTBValidator.taskScript -text
+src/log4j-rmi.properties -text svneol=unset#text/plain
 src/org/daisy/pipeline/core/MyURLClassLoader.java -text
 src/org/daisy/pipeline/core/event/BusListener.java -text
 src/org/daisy/pipeline/core/event/CoreMessageEvent.java -text

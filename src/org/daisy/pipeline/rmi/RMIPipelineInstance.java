@@ -39,10 +39,12 @@ public interface RMIPipelineInstance extends Remote {
 	 *            the URL of the script the executed job is based on.
 	 * @param parameters
 	 *            the parameters of the job
+	 * @param jobId
+	 *            the id of the job (used for logging)
 	 * @throws RemoteException
 	 */
-	public void executeJob(URL scriptURL, Map<String, String> parameters)
-			throws RemoteException;
+	public void executeJob(URL scriptURL, Map<String, String> parameters,
+			String jobId) throws RemoteException;
 
 	/**
 	 * Tries to cancel the currently running job.
