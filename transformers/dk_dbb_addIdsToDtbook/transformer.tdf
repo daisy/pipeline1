@@ -5,7 +5,7 @@
  <license>LGPL</license>
  <author>Ole Holst Andersen</author>
  <support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
- <documentation uri="../../doc/transformers/dk_dbb_addIdAttrsToDtbook.html"/>
+ <documentation uri="../../doc/transformers/dk_dbb_addIdsToDtbook.html"/>
  
  <parameters>
 
