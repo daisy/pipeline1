@@ -16,7 +16,8 @@ public class DTBook2rtf1 extends PipelineTest {
 		//mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy_valid.xml");
 		mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy-2005-1.xml");
 		//mParameters.add("--input=" + mDataInputDir + "/dtbook/the_waste_land.xml");
-		mParameters.add("--output=" + mDataOutputDir + "/DTBook2RTF1/fromDtbook.rtf");				
+		mParameters.add("--output=" + mDataOutputDir + "/DTBook2RTF1/fromDtbook.rtf");
+		mParameters.add("--inclTOC=false");
 		return mParameters;
 	}
 
