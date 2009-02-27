@@ -10,6 +10,7 @@ transformers/ca_cnib_rtf2dtbook/rtf2xml-py/rtf2xml/*.class
 transformers/ca_cnib_rtf2dtbook/rtf2xml-py/rtf2xml/*.pyc
 transformers/ca_cnib_rtf2dtbook/rtf2xml-win/*.class
 transformers/dk_dbb_dtbook2rtf/*.class
+transformers/dk_dbb_dtbook2rtf_old/*.class
 transformers/int_daisy_dtbMigrator/*.class
 transformers/int_daisy_dtbMigrator/impl/*.class
 transformers/int_daisy_dtbMigrator/impl/d202_z2005/*.class

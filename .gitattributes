@@ -87,6 +87,7 @@ doc/scripts/DTBookFix.html -text
 doc/scripts/DTBookMigrator.html -text
 doc/scripts/DTBookToLaTeX.html -text
 doc/scripts/DTBookToRTF.html -text
+doc/scripts/DTBookToRTFOld.html -text
 doc/scripts/DTBookToXhtml.html -text
 doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
@@ -126,6 +127,7 @@ doc/summary.html -text
 doc/templates/script-doc-template.html -text
 doc/transformers/ca_cnib_rtf2dtbook.html -text
 doc/transformers/dk_dbb_addIdsToDtbook.html -text
+doc/transformers/dk_dbb_addIdsToDtbook_old.html -text
 doc/transformers/dk_dbb_dtbook2rtf.html -text
 doc/transformers/int_daisy_daisy2022Zed2005.html -text
 doc/transformers/int_daisy_dtbMigrator.html -text svneol=unset#text/plain
@@ -534,6 +536,7 @@ scripts/conversion/simple/BrailleTextToPEF.taskScript -text
 scripts/conversion/simple/BrailleTextToText.taskScript -text
 scripts/conversion/simple/DTBookToLaTeX.taskScript -text
 scripts/conversion/simple/DtbookToRtf.taskScript -text
+scripts/conversion/simple/DtbookToRtfOld.taskScript -text
 scripts/conversion/simple/DtbookToXhtml.taskScript -text
 scripts/conversion/simple/HtmlToXhtml.taskScript -text
 scripts/conversion/simple/RtfToDtbook.taskScript -text
@@ -977,6 +980,9 @@ transformers/dk_dbb_dtbook2rtf/dtbook_to_rtf_note_and_anno.xsl -text
 transformers/dk_dbb_dtbook2rtf/dtbook_to_rtf_styles.xsl -text
 transformers/dk_dbb_dtbook2rtf/dtbook_to_rtf_table.xsl -text
 transformers/dk_dbb_dtbook2rtf/transformer.tdf -text
+transformers/dk_dbb_dtbook2rtf_old/dtbook_rtfNoNcc.xsl -text
+transformers/dk_dbb_dtbook2rtf_old/dtbook_rtf_call.xsl -text
+transformers/dk_dbb_dtbook2rtf_old/transformer.tdf -text
 transformers/int_daisy_dtbMigrator/BookStruct.java -text
 transformers/int_daisy_dtbMigrator/DtbDescriptor.java -text
 transformers/int_daisy_dtbMigrator/DtbMigrator.java -text
