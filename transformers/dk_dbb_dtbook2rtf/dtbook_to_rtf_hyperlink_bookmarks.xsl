@@ -10,7 +10,7 @@
 	<xsl:template name="BOOKMARK_START">
 		<xsl:variable name="id" select="@id"/>
 		<xsl:choose>
-			<xsl:when test="self::levelhd|self::h1|self::h2|self::h3|self::h4|self::h5|self::h6|self::dtb:hd|self::dtb:h1|self::dtb:h2|self::dtb:h3|self::dtb:h4|self::dtb:h5|self::dtb:h6">
+			<xsl:when test="self::levelhd|self::h1|self::h2|self::h3|self::h4|self::h5|self::h6|self::note|self::noteref|self::annotation|self::dtb:hd|self::dtb:h1|self::dtb:h2|self::dtb:h3|self::dtb:h4|self::dtb:h5|self::dtb:h6|self::dtb:note|self::dtb:noteref|self::dtb:annotation">
 				<xsl:text>{\*\bkmkstart </xsl:text>
 				<xsl:value-of select="$id"/>
 				<xsl:text>}</xsl:text>
@@ -25,7 +25,7 @@
 	<xsl:template name="BOOKMARK_END">
 		<xsl:variable name="id" select="@id"/>
 		<xsl:choose>
-			<xsl:when test="self::levelhd|self::h1|self::h2|self::h3|self::h4|self::h5|self::h6|self::dtb:hd|self::dtb:h1|self::dtb:h2|self::dtb:h3|self::dtb:h4|self::dtb:h5|self::dtb:h6">
+			<xsl:when test="self::levelhd|self::h1|self::h2|self::h3|self::h4|self::h5|self::h6|self::note|self::noteref|self::annotation|self::dtb:hd|self::dtb:h1|self::dtb:h2|self::dtb:h3|self::dtb:h4|self::dtb:h5|self::dtb:h6|self::dtb:note|self::dtb:noteref|self::dtb:annotation">
 				<xsl:text>{\*\bkmkend </xsl:text>
 				<xsl:value-of select="$id"/>
 				<xsl:text>}</xsl:text>
@@ -67,5 +67,6 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
 
 </xsl:stylesheet>

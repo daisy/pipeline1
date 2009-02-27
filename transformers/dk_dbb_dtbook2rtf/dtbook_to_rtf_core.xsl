@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet 
 	version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -68,7 +68,7 @@
 			<xsl:when test="$depth = 4">
 				<xsl:call-template name="H4_STYLE"/>
 			</xsl:when>
-			<xsl:when test="$depth = 4">
+			<xsl:when test="$depth = 5">
 				<xsl:call-template name="H5_STYLE"/>
 			</xsl:when>
 			<xsl:otherwise>
@@ -77,7 +77,7 @@
 		</xsl:choose>
 		<xsl:text>\keep\keepn </xsl:text>
 		<xsl:apply-templates/>
-		<xsl:text>\par
+		<xsl:text>\plain\par
 \pard </xsl:text>
 	</xsl:template>
 
@@ -91,21 +91,21 @@
 	<!-- #### h2 ELEMENT #### -->
 	<xsl:template match = "h2|dtb:h2">
 		<xsl:call-template name="LEVEL_HD">
-			<xsl:with-param name="depth" select="1"/>
+			<xsl:with-param name="depth" select="2"/>
 		</xsl:call-template>
 	</xsl:template>
 
 	<!-- #### h3 ELEMENT #### -->
 	<xsl:template match = "h3|dtb:h3">
 		<xsl:call-template name="LEVEL_HD">
-			<xsl:with-param name="depth" select="1"/>
+			<xsl:with-param name="depth" select="3"/>
 		</xsl:call-template>
 	</xsl:template>
 
 	<!-- #### h4 ELEMENT #### -->
 	<xsl:template match = "h4|dtb:h4">
 		<xsl:call-template name="LEVEL_HD">
-			<xsl:with-param name="depth" select="1"/>
+			<xsl:with-param name="depth" select="4"/>
 		</xsl:call-template>
 	</xsl:template>
 
