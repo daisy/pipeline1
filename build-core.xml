@@ -424,8 +424,6 @@
 			<zipfileset dir="${base.dir}/launchers" prefix="${release.name}">
 				<include name="pipeline.sh"/>
 				<include name="pipeline.bat"/>
-				<include name="pipeline-rmi.sh"/>
-				<include name="pipeline-rmi.bat"/>
 			</zipfileset>
 			<!-- Scripts -->
 			<zipfileset dir="${base.dir}/scripts" prefix="${release.name}/scripts">
