@@ -20,9 +20,7 @@ package org.daisy.pipeline.execution.rmi;
 import java.io.File;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.rmi.registry.Registry;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,9 +44,9 @@ import org.slf4j.LoggerFactory;
  * of {@link RMIPipelineInstance} to execute Pipeline jobs.
  * 
  * <p>
- * This execution service must be configured via properties set in the
- * {@link #setConfig(Map)} method. Allowed properties are defined in the
- * embedded {@link Config} enumeration.
+ * This execution service must be configured with a {@link GenericObjectPool}
+ * creating {@link RMIPipelineInstanceWrapper}, and possibly with timeout and
+ * timeout monitoring interval values.
  * </p>
  * <p>
  * Additionally, as all subclasses of {@link AbstractJobExecutionService}, this
@@ -69,52 +67,6 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 	 * error stream of the RMI Pipeline instance can be logged.
 	 */
 	public static final String STDERR_FILE_KEY = "stderrFile";
-
-	/**
-	 * Enumerates configuration properties for the RMI execution service.
-	 */
-	public enum Config {
-		/**
-		 * The maximum number of active RMI Pipeline instance used by this
-		 * service (default to 10)
-		 */
-		MAX_ACTIVE("execution.maxpoolsize", "10"),
-		/**
-		 * The timeout after which a non-responding RMI Pipeline instance will
-		 * be shut down (defaults to 60000ms = 1min)
-		 */
-		TIMEOUT("execution.timeout", "60000"),
-		/**
-		 * The time interval to check the timeout value (default to 2000)
-		 */
-		TIMEOUT_MONITORING_INTERVAL("execution.timeout.interval", "2000"),
-		/**
-		 * The path to the directory of the Pipeline installation used by the
-		 * underlying RMI Pipeline instances (no default value)
-		 */
-		PIPELINE_DIR("execution.pipeline.dir", ""),
-		/**
-		 * The path to the script used to launch the underlying RMI Pipeline
-		 * instances (no default value)
-		 */
-		PIPELINE_LAUNCHER("execution.pipeline.launcher", "");
-		private String key;
-		private String defaultValue;
-
-		private Config(String key, String defaultValue) {
-			this.key = key;
-			this.defaultValue = defaultValue;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public String getValue(Properties config) {
-			String value = config.getProperty(getKey());
-			return (value != null) ? value : defaultValue;
-		}
-	}
 
 	private class JobExecutionTask extends Thread {
 
@@ -142,10 +94,8 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 						.borrowObject();
 
 				// Setup the timeout monitor
-				timeoutMonitor = new TimeoutMonitor(Long.valueOf(Config.TIMEOUT
-						.getValue(config)), Long
-						.valueOf(Config.TIMEOUT_MONITORING_INTERVAL
-								.getValue(config))) {
+				timeoutMonitor = new TimeoutMonitor(timeout,
+						timeoutMonitoringInterval) {
 					@Override
 					protected void timeout() {
 						if (logger.isDebugEnabled()) {
@@ -181,7 +131,6 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 				if (pipeline != null) {
 					try {
 						pipelinePool.returnObject(pipeline);
-						// pipelinePool.invalidateObject(pipeline);
 					} catch (Exception e) {
 						logger.warn("Couldn't return Pipeline to pool", e);
 					}
@@ -211,8 +160,7 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 					}
 				});
 				try {
-					task.get(Long.valueOf(Config.TIMEOUT.getValue(config)),
-							TimeUnit.MILLISECONDS);
+					task.get(timeout, TimeUnit.MILLISECONDS);
 				} catch (TimeoutException e) {
 					logger
 							.warn("Abortion request timed out, shutting down Pipeline instance");
@@ -236,43 +184,50 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 
 	private GenericObjectPool pipelinePool;
 	private ExecutorService executor;
-	private Properties config;
-	private Registry rmiRegistry;
+	private int timeout = 60000;
+	private int timeoutMonitoringInterval = 2000;
 
 	/**
 	 * Initializes the pool and Thread executor with the configuration
 	 * properties.
 	 */
 	public void init() {
-		int maxActive = Integer.valueOf(Config.MAX_ACTIVE.getValue(config));
-		File pipelineDir = new File(Config.PIPELINE_DIR.getValue(config));
-		File launcher = new File(Config.PIPELINE_LAUNCHER.getValue(config));
-		pipelinePool = new GenericObjectPool(
-				new PoolableRMIPipelineInstanceFactory(launcher, pipelineDir,
-						rmiRegistry), maxActive);
-		pipelinePool.setTestOnBorrow(true);
-		executor = Executors.newFixedThreadPool(maxActive);
+		if (pipelinePool == null) {
+			throw new IllegalStateException("Pipeline pool is null");
+		}
+		executor = Executors.newFixedThreadPool(pipelinePool.getMaxActive());
 	}
 
 	/**
-	 * Sets the configuration properties used for pools, RMI Pipeline launcher
-	 * path, etc.
+	 * Sets the pool of {@link RMIPipelineInstance} used to execute the jobs.
 	 * 
-	 * @param config
-	 *            a map containing the configuration properties used by this
-	 *            service.
-	 * @see Config
+	 * @param pipelinePool
+	 *            the pool of RMI Pipeline instances to set
 	 */
-	public void setConfig(Properties config) {
-		this.config = config;
+	public void setPipelinePool(GenericObjectPool pipelinePool) {
+		this.pipelinePool = pipelinePool;
 	}
 
 	/**
-	 * @param rmiRegistry
-	 *            the rmiRegistry to set
+	 * Sets the value of the timeout (in milliseconds) after which a non
+	 * responding job execution must be interrupted.
+	 * 
+	 * @param timeout
+	 *            the timeout value (in milliseconds)
 	 */
-	public void setRmiRegistry(Registry rmiRegistry) {
-		this.rmiRegistry = rmiRegistry;
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
+
+	/**
+	 * Sets the value of the time interval (in milliseconds) at which the
+	 * responsiveness of the job is checked.
+	 * 
+	 * @param timeoutMonitoringInterval
+	 *            the timeout monitoring interval value (in milliseconds)
+	 */
+	public void setTimeoutMonitoringInterval(int timeoutMonitoringInterval) {
+		this.timeoutMonitoringInterval = timeoutMonitoringInterval;
 	}
 
 	/**
@@ -294,6 +249,9 @@ public class RMIJobExecutionService<T> extends AbstractJobExecutionService<T> {
 
 	}
 
+	/**
+	 * Closes the pool and shut down the executor.
+	 */
 	public void destroy() {
 		try {
 			pipelinePool.close();

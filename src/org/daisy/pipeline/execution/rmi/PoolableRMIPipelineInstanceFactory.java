@@ -17,8 +17,10 @@
  */
 package org.daisy.pipeline.execution.rmi;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.registry.Registry;
@@ -38,10 +40,17 @@ import org.slf4j.LoggerFactory;
  * the Commons Pool library.
  * 
  * <p>
- * This factory is configured with the path to the Pipeline home directory, and
- * the path to the Pipeline RMI launcher script used to create new instances.
+ * This factory is configured with the path to the Pipeline home directory, the
+ * RMI registry used by the RMI Pipeline instances, and optionally a timeout
+ * value to stop waiting for a newly created instance to appear in the registry.
  * </p>
- * 
+ * <p>
+ * The remote Pipeline instances will be based on the {@link RMIPipelineApp}
+ * application in the confiured pipeline directory. The java command used to
+ * launch these instances can be configured with the file
+ * <code>$PIPELINE_DIR/rmi/vmargs.conf</code>, where each line wil be added as a
+ * parameter of the command.
+ * </p>
  * <p>
  * It uses an internal static holder to initialize an RMI registry on the port
  * 1099 of the localhost.
@@ -56,37 +65,119 @@ public class PoolableRMIPipelineInstanceFactory extends
 	private final Logger logger = LoggerFactory
 			.getLogger(PoolableRMIPipelineInstanceFactory.class);
 
-	private int timeout = 5000;// TODO externalize
+	private String javaPath = "java";
+	private int timeout = 10000;
 	private File pipelineDir;
-	private File launcher;
 	private Registry rmiRegistry;
 
-	public PoolableRMIPipelineInstanceFactory(File launcher, File pipelineDir,
-			Registry rmiRegistry) {
-		if (launcher == null || pipelineDir == null || rmiRegistry == null) {
-			// TODO throw IAE instead
-			throw new NullPointerException();
+	/**
+	 * Sets the path to the JVM launcher used to launch the remote Pipeline
+	 * instances. THe default value is <code>java</code>.
+	 * 
+	 * @param javaPath
+	 *            the path to the JVM launcher.
+	 */
+	public void setJavaPath(String javaPath) {
+		File file = new File(javaPath);
+		if (!file.exists()) {
+			this.javaPath = javaPath;
+		} else {
+			logger.info("Invalid java command: {}", javaPath);
 		}
-		this.launcher = launcher;
-		this.pipelineDir = pipelineDir;
+	}
+
+	/**
+	 * Sets the path to the pipeline installation directory used to launch the
+	 * remote Pipeline instances.
+	 * 
+	 * @param pipelinePath
+	 *            the path to the pipeline installation directory
+	 */
+	public void setPipelinePath(String pipelinePath) {
+		this.pipelineDir = new File(pipelinePath);
+	}
+
+	/**
+	 * Sets the RMI registry used to bind the remote pipeline instances
+	 * 
+	 * @param rmiRegistry
+	 *            an RMI registry
+	 */
+	public void setRmiRegistry(Registry rmiRegistry) {
 		this.rmiRegistry = rmiRegistry;
+	}
+
+	/**
+	 * Sets the timeout value (in milliseconds) to stop waiting for a newly
+	 * created instance to appear in the registry
+	 * 
+	 * @param timeout
+	 *            the creation timeout value (in milliseconds)
+	 */
+	public void setTimeout(String timeout) {
+		try {
+			this.timeout = Integer.valueOf(timeout);
+		} catch (NumberFormatException e) {
+			logger.info("Invalid timeout value: {}", timeout);
+		}
+	}
+
+	/**
+	 * Checks that the pool has been correctly configured.
+	 */
+	public void init() {
+		if (!pipelineDir.exists()) {
+			throw new IllegalStateException("Pipeline dir does not exist: "
+					+ pipelineDir.getPath());
+		}
+		if (!pipelineDir.isDirectory()) {
+			throw new IllegalStateException("Pipeline dir is not a directory: "
+					+ pipelineDir.getPath());
+		}
+		if (rmiRegistry == null) {
+			throw new IllegalStateException("RMI registry is null");
+		}
 	}
 
 	private Process launchNewPipelineInstance(final String id)
 			throws IOException {
 		List<String> cmd = new ArrayList<String>();
-		// TODO externalize args
-		cmd.add("java");
-		cmd.add("-Xms256m");
-		cmd.add("-Xmx1024m");
+		cmd.add(javaPath);
+
+		// Add VM arguments
+		BufferedReader br = null;
+		try {
+			File argFile = new File(pipelineDir, "rmi/vmargs.conf");
+			if (argFile.exists()) {
+				br = new BufferedReader(new FileReader(argFile));
+				String line;
+				while ((line = br.readLine()) != null) {
+					cmd.add(line);
+				}
+			}
+		} catch (Exception e) {
+			logger.warn("Couldn't read VM arguments", e);
+		} finally {
+			if (br != null) {
+				br.close();
+			}
+		}
+
+		// Add class path
 		cmd.add("-cp");
 		cmd.add(buildClassPath());
+
+		// Add application class and arguments
 		cmd.add(RMIPipelineApp.class.getName());
 		cmd.add(id);
 		String[] cmdarray = (String[]) cmd.toArray(new String[cmd.size()]);
 
 		if (logger.isDebugEnabled()) {
-			logger.debug("Launching {} with cmd {}", id, cmdarray.toString());
+			StringBuilder sb = new StringBuilder();
+			for (String item : cmdarray) {
+				sb.append(item).append(' ');
+			}
+			logger.debug("Launching {} with cmd \"{}\"", id, sb.toString());
 		}
 		final Process process = Runtime.getRuntime().exec(cmdarray, null,
 				pipelineDir);

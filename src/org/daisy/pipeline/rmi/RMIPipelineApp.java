@@ -69,6 +69,14 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 	private static final Logger logger = LoggerFactory
 			.getLogger(RMIPipelineApp.class);
 
+	/**
+	 * Launches the Pipeline instance. Once lauched, the application is ready to
+	 * receive execution orders via RMI calls.
+	 * 
+	 * @param args
+	 *            requires a unique argument equal to the RMI ID of this
+	 *            instance
+	 */
 	public static void main(String[] args) {
 		try {
 			new RMIPipelineApp(args[0]);
@@ -87,6 +95,9 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 	private long progressInterval = 1000L;
 
 	/**
+	 * Creates this instance: setup the logging environment, launches the
+	 * Pipeline Core, and bind itself to the RMI registry.
+	 * 
 	 * @throws RemoteException
 	 */
 	protected RMIPipelineApp(String name) throws RemoteException {
@@ -120,6 +131,18 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 		logger.info("Started RMI Pipeline instance {}", name);
 	}
 
+	/**
+	 * Executes the job represented by the given script URL and the associated
+	 * job parameters.
+	 * 
+	 * @param scriptURL
+	 *            the URL of the script file the job to execute is based on
+	 * @param parameters
+	 *            the parameters of the job to execute
+	 * @param jobID
+	 *            an optional job ID to redirect the log events to a separate
+	 *            file
+	 */
 	public void executeJob(URL scriptURL, Map<String, String> parameters,
 			String jobID) throws RemoteException {
 		setupLogging(jobID);
@@ -196,6 +219,9 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 		}
 	}
 
+	/**
+	 * Tries to cancel the job by sending a {@link UserAbortEvent}.
+	 */
 	public void cancelCurrentJob() throws RemoteException {
 		if (!isRunning) {
 			return;
@@ -204,6 +230,12 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 		EventBus.getInstance().publish(new UserAbortEvent(this));
 	}
 
+	/**
+	 * Registers the given remote listener to the job executions.
+	 * 
+	 * @param listener
+	 *            the listener to register
+	 */
 	public void setListener(RMIPipelineListener listener) {
 		if (logger.isTraceEnabled()) {
 			logger.trace("setting listener {}", listener);
@@ -211,6 +243,9 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 		this.listener = listener;
 	}
 
+	/**
+	 * Whether this instance is ready to execute a job
+	 */
 	public boolean isReady() throws RemoteException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("instance is {}ready", (!isRunning && isValid) ? ""
@@ -219,6 +254,10 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 		return !isRunning && isValid;
 	}
 
+	/**
+	 * Tries to gracefully shut down this instance, unbinding it to the RMI
+	 * registry.
+	 */
 	public void shutdown() throws RemoteException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("shutting down {}", name);
@@ -281,12 +320,13 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 	}
 
 	/**
+	 * Dispatches the message to the remote {@link RMIPipelineListener}.
+	 * 
 	 * @param event
+	 *            the message event
 	 */
 	private void receivedMessage(MessageEvent event) {
 		logger.info(event.toString());
-		System.out.println(event.toString());
-		System.out.println(event.toString());
 		if (listener == null)
 			return;
 		String path = null;
@@ -314,6 +354,12 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 		}
 	}
 
+	/**
+	 * Dispatches the event to the remote {@link RMIPipelineListener}.
+	 * 
+	 * @param event
+	 *            the task change event
+	 */
 	private void receivedTaskChange(TaskStateChangeEvent event) {
 		String taskName = ((Task) event.getSource()).getName();
 		String state = event.getState().toString();
@@ -354,6 +400,6 @@ public class RMIPipelineApp extends UnicastRemoteObject implements
 			System.setProperty("pipeline.logging.filename", "pipeline-" + name);
 		}
 		PropertyConfigurator.configure(RMIPipelineApp.class
-				.getResource("/log4j-rmi.properties"));
+				.getResource("/rmi/log4j-rmi.properties"));
 	}
 }
