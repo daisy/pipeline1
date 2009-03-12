@@ -513,6 +513,7 @@ samples/input/xhtml/valentinhauy.html -text
 samples/input/xhtml/valentinhauy11.html -text
 samples/input/xhtml/xhtml-rdf.xml -text
 scripts/_dev/AllParamTypes.taskScript -text
+scripts/_dev/DAISY[!!-~]Pipeline[!!-~]TTS[!!-~]Narrator.taskScript -text
 scripts/_dev/DTBBackwardMigrator.taskScript -text
 scripts/_dev/DTBookFix_NarratorValidation.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
