@@ -8,8 +8,11 @@
 package org.daisy.util.text;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.EnumSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -367,36 +370,33 @@ public final class URIUtils {
      * @return the decoded string or <code>null</code> if the specified string was <code>null</code>.
      * @throws IllegalArgumentException if the specified string contains invalid percent-encoded characters.
      */
-    public static String decode(String str, String skipChars) {
-        // LE 2008-10-01: rewritten to support multi byte characters
-        if (str == null) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (c == '%') {
-                if (i + 2 >= str.length()) {
-                    throw new IllegalArgumentException("Invalid encoded character in the string \"" + str + '\"');
-                }
-                int hi = Character.digit(str.charAt(i + 1), 16);
-                int lo = Character.digit(str.charAt(i + 2), 16);
-                if (lo < 0 || hi < 0) {
-                    throw new IllegalArgumentException("Invalid encoded character in the string \"" + str + '\"');
-                }
-                String encoded = String.valueOf(Character.toChars((hi << 4) + lo));
-                if (skipChars != null && skipChars.indexOf(encoded) != -1) {
-                    sb.append(c);
-                } else {
-                    sb.append(encoded);
-                    i += 2;
-                }
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();        
-    }
+	public static String decode(String str, String skipChars) {
+		// LE 2008-10-01: rewritten to support multi byte characters
+		if (str == null) {
+			return null;
+		}
+		try {
+			String res = URLDecoder.decode(str, "UTF-8");
+			if (skipChars != null && skipChars.length() > 0) {
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < res.length(); i++) {
+					char c = res.charAt(i);
+					if (skipChars.indexOf(c) != -1) {
+						sb
+								.append(URLEncoder.encode(String.valueOf(c),
+										"UTF-8"));
+					} else {
+						sb.append(c);
+					}
+				}
+				return sb.toString();
+			} else {
+				return res;
+			}
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException("shoudn't happen", e);
+		}
+	}
 
     /**
      * <p>
