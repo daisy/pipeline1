@@ -79,7 +79,9 @@ public class StreamRedirector extends Thread {
                 
             InputStreamReader isr = new InputStreamReader(inputStream);
             BufferedReader br = new BufferedReader(isr);
-            String line = (br.ready())?br.readLine():null;
+            // FIXME: The readLine() call will block, causing the thread to stay alive
+            // if the thread is interrupted.
+            String line = br.readLine();
             while (!isInterrupted() && line != null) {
                 if (writer != null) {
                 	if (filter != null) {
@@ -92,7 +94,7 @@ public class StreamRedirector extends Thread {
                 		}
                 	}
                 } 
-                line = (br.ready())?br.readLine():null;
+                line = br.readLine();
             }
             if (writer != null) {
                 writer.flush();
