@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,7 @@ import org.daisy.util.fileset.FilesetErrorHandler;
 import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
+import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
@@ -104,8 +106,19 @@ public class Daisy202Splitter extends Transformer implements FilesetErrorHandler
 			this.sendMessage("Building fileset", MessageEvent.Type.INFO_FINER);
 			File input = FilenameOrFileURI.toFile(paramInput);
 			Fileset fileset = new FilesetImpl(input.toURI(), this, false, false);
-			if (fileset.hadErrors()) {
-			    throw new TransformerRunException("Fileset had errors");
+			if (fileset.hadErrors()) {	
+				String detail = null;
+            	for (Iterator<Exception> iterator = fileset.getErrors().iterator(); iterator.hasNext();) {
+					FilesetFileException exc = (FilesetFileException) iterator.next();
+					if (exc instanceof FilesetFileWarningException) {
+					    continue;
+					}
+					detail = exc.getMessage();	
+					break;
+				}
+            	if (detail != null) {
+            	    throw new TransformerRunException("Fileset had errors: " + detail);
+            	}
 			}
 			Directory outputDir = new Directory(FilenameOrFileURI.toFile(paramOutput));
 			NccItem.Type maxSplitLevel = NccItem.Type.valueOf("H" + paramMaxSplitLevel);
