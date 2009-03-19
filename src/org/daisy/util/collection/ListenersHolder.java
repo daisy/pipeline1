@@ -51,6 +51,21 @@ public class ListenersHolder<E> {
 	 * @param listener
 	 *            a new listener.
 	 */
+	public void setListeners(Set<E> listeners) {
+		if (listeners == null)
+			return;
+		this.listeners.clear();
+		for (E listener : listeners) {
+			addListener(listener);
+		}
+	}
+
+	/**
+	 * Registers a new listener to this holder.
+	 * 
+	 * @param listener
+	 *            a new listener.
+	 */
 	public void addListener(E listener) {
 		listeners.put(listener, null);
 	}
