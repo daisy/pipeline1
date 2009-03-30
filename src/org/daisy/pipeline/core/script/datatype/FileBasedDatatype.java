@@ -17,48 +17,48 @@
  */
 package org.daisy.pipeline.core.script.datatype;
 
-import java.io.File;
 
 /**
- * A datatype for file values.
- * @author Linus Ericson
+ * @author Romain Deltour
+ *
  */
-public class FileDatatype extends FileBasedDatatype {
-	
+public abstract class FileBasedDatatype extends Datatype {
+
 	private static final long serialVersionUID = 1L;
 
+	private String mime;
+	private String type;
+	
 	/**
 	 * Constructor. Allowed values for the type attribute are "input" and "output".
 	 * @param mime the mime type
 	 * @param type 
 	 */
-	public FileDatatype(String mime, String type) {
-		super(Type.FILE, mime, type);
+	public FileBasedDatatype(Type datatype, String mime, String type) {
+		super(datatype);
+		this.mime = mime;
+		this.type = type;
 	}
 
-	@Override
-	public void validate(String value) throws DatatypeException {
-		if (isInput()) {
-			File file = new File(value);
-			if (!file.exists()) {
-				throw new DatatypeException("Input file '" + file.toString() + "' does not exist.");
-			}
-		}		
+	/**
+	 * Gets the mime type
+	 * @return the mime type
+	 */
+	public String getMime() {
+		return mime;
 	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		if (isInput()) {
-            builder.append("input ");
-        } else {
-            builder.append("output ");
-        }
-        if ("application/x-filesystemDirectory".equals(getMime())) {
-            builder.append("directory");
-        } else {
-            builder.append("file (").append(getMime()).append(")");
-        }
-		return builder.toString();
+	
+	/**
+	 * @return true if this is an input file datatype, false otherwise
+	 */
+	public boolean isInput() {
+		return "input".equals(type);
+	}
+	
+	/**
+	 * @return true if this is an output file datatype, false otherwise
+	 */
+	public boolean isOutput() {
+		return !isInput();
 	}
 }

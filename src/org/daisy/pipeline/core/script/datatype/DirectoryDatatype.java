@@ -23,34 +23,18 @@ import java.io.File;
  * A datatype for directories 
  * @author Linus Ericson
  */
-public class DirectoryDatatype extends Datatype {
+public class DirectoryDatatype extends FileBasedDatatype {
 	
 	private static final long serialVersionUID = 1L;
 
-	private String mType;
-	
 	/**
 	 * Constructor. Allowed values for the type attribute are "input" and "output".
 	 * @param type
 	 */
 	public DirectoryDatatype(String type) {
-		super(Type.DIRECTORY);
-		mType = type;
+		super(Type.DIRECTORY,null,type);
 	}
 
-	/**
-	 * @return true if this is an input directory datatype, false otherwise
-	 */
-	public boolean isInput() {
-		return "input".equals(mType);
-	}
-	
-	/**
-	 * @return true if this is an output directory datatype, false otherwise
-	 */
-	public boolean isOutput() {
-		return !isInput();
-	}
 	
 	@Override
 	public void validate(String value) throws DatatypeException {

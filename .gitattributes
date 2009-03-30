@@ -626,6 +626,7 @@ src/org/daisy/pipeline/core/script/datatype/DatatypeException.java -text
 src/org/daisy/pipeline/core/script/datatype/DirectoryDatatype.java -text
 src/org/daisy/pipeline/core/script/datatype/EnumDatatype.java -text
 src/org/daisy/pipeline/core/script/datatype/EnumItem.java -text
+src/org/daisy/pipeline/core/script/datatype/FileBasedDatatype.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/core/script/datatype/FileDatatype.java -text
 src/org/daisy/pipeline/core/script/datatype/FilesDatatype.java -text
 src/org/daisy/pipeline/core/script/datatype/IntegerDatatype.java -text

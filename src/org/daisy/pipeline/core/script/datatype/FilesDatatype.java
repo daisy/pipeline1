@@ -23,14 +23,12 @@ import java.io.File;
  * A datatype for a value consisting of multiple files.
  * @author Markus Gylling
  */
-public class FilesDatatype extends Datatype {
+public class FilesDatatype extends FileBasedDatatype {
 	
 	private static final long serialVersionUID = 1L;
 	
 	public static final char SEPARATOR_CHAR = ';'; 
 	public static final String SEPARATOR_STRING = ";"; 
-	private String mime;
-	private String type;
 	
 	/**
 	 * Constructor. Allowed values for the type attribute are "input" and "output".
@@ -38,31 +36,7 @@ public class FilesDatatype extends Datatype {
 	 * @param type 
 	 */
 	public FilesDatatype(String mime, String type) {
-		super(Type.FILES);
-		this.mime = mime;
-		this.type = type;
-	}
-
-	/**
-	 * Gets the mime type
-	 * @return the mime type
-	 */
-	public String getMime() {
-		return mime;
-	}
-	
-	/**
-	 * @return true if this is an input file datatype, false otherwise
-	 */
-	public boolean isInput() {
-		return "input".equals(type);
-	}
-	
-	/**
-	 * @return true if this is an output file datatype, false otherwise
-	 */
-	public boolean isOutput() {
-		return !isInput();
+		super(Type.FILES, mime, type);
 	}
 
 	@Override
