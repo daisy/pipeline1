@@ -98,7 +98,6 @@ public class StreamRedirector extends Thread {
             }
             if (writer != null) {
                 writer.flush();
-                writer.close();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();  
