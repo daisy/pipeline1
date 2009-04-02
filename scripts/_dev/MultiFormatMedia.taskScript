@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE taskScript
 [
-<!ENTITY FilesetRenamerScriptParamsStatic SYSTEM "../manipulation/FilesetRenamerScriptParamsStatic.paramGroup">
-<!ENTITY FilesetRenamerTaskParamsStatic SYSTEM "../manipulation/FilesetRenamerTaskParamsStatic.paramGroup">
-<!ENTITY AudioTaggerScriptParamsStatic SYSTEM "../manipulation/AudioTaggerScriptParamsStatic.paramGroup">
-<!ENTITY AudioTaggerTaskParamsStatic SYSTEM "../manipulation/AudioTaggerTaskParamsStatic.paramGroup">
+<!ENTITY FilesetRenamerScriptParamsStatic SYSTEM "../FilesetRenamerScriptParamsStatic.paramGroup">
+<!ENTITY FilesetRenamerTaskParamsStatic SYSTEM "../FilesetRenamerTaskParamsStatic.paramGroup">
+<!ENTITY AudioTaggerScriptParamsStatic SYSTEM "../AudioTaggerScriptParamsStatic.paramGroup">
+<!ENTITY AudioTaggerTaskParamsStatic SYSTEM "../AudioTaggerTaskParamsStatic.paramGroup">
 ]>
 <taskScript version="2.0" name="MultiFormatMediaCreator">
 	<nicename>Multi format media creator</nicename>
@@ -74,6 +74,10 @@
 		<parameter>
 			<name>out</name>
 			<value>${outputPath}/__temp__/rtf/valentin_hauy.rtf</value>			
+		</parameter>				
+		<parameter>
+			<name>inclTOC</name>
+			<value>true</value>			
 		</parameter>				
   	</task>
   	<!-- txt -->

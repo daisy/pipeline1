@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE taskScript
 [
-<!ENTITY AudioTaggerScriptParamsStatic SYSTEM "../manipulation/AudioTaggerScriptParamsStatic.paramGroup">
-<!ENTITY AudioTaggerTaskParamsStatic SYSTEM "../manipulation/AudioTaggerTaskParamsStatic.paramGroup">
-<!ENTITY FilesetRenamerScriptParamsStatic SYSTEM "../manipulation/FilesetRenamerScriptParamsStatic.paramGroup">
-<!ENTITY FilesetRenamerTaskParamsStatic SYSTEM "../manipulation/FilesetRenamerTaskParamsStatic.paramGroup">
+<!ENTITY AudioTaggerScriptParamsStatic SYSTEM "../AudioTaggerScriptParamsStatic.paramGroup">
+<!ENTITY AudioTaggerTaskParamsStatic SYSTEM "../AudioTaggerTaskParamsStatic.paramGroup">
+<!ENTITY FilesetRenamerScriptParamsStatic SYSTEM "../FilesetRenamerScriptParamsStatic.paramGroup">
+<!ENTITY FilesetRenamerTaskParamsStatic SYSTEM "../FilesetRenamerTaskParamsStatic.paramGroup">
 ]>
 <taskScript version="2.0" name="dtbook2daisy202">
 	<nicename>Narrator Dev Extended Stress version</nicename>

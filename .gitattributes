@@ -568,9 +568,9 @@ scripts/create_distribute/xhtml/WordMLtoXhtml.taskScript -text
 scripts/modify_improve/dtb/DTBAudioEncoder.taskScript -text
 scripts/modify_improve/dtb/DTBAudioEncoderRenamerSplitter.taskScript -text
 scripts/modify_improve/dtb/DTBAudioEncoderSplitter.taskScript -text
+scripts/modify_improve/dtb/DTBForwardMigrator.taskScript -text
 scripts/modify_improve/dtb/DTBMerger.taskScript -text
 scripts/modify_improve/dtb/DTBSplitter.taskScript -text
-scripts/modify_improve/dtbook/DTBForwardMigrator.taskScript -text
 scripts/modify_improve/dtbook/DTBookMigrator.taskScript -text
 scripts/modify_improve/dtbook/DTBookfix.taskScript -text
 scripts/modify_improve/multiformat/AudioTagger.taskScript -text
