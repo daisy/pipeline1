@@ -30,6 +30,9 @@
 		<lang lang="fr">
 			<before>et</before>
 		</lang>
+		<lang lang="fi">
+			<before>ja</before>
+		</lang>
 	</rule>
 
 	<!-- performed in speech generator
@@ -77,6 +80,10 @@
 		<lang lang="fr">
 			<before>Note.</before>
 		</lang>
+		<lang lang="fi">
+			<before>Viite.</before>
+			<after>Viitteen loppu.</after>
+		</lang>
 	</rule>
 	
 	<rule match="dtb:prodnote">
@@ -91,6 +98,10 @@
 		<lang lang="fr">
 			<before>Note de Production.</before>
 			<after>Fin de la note de production.</after>
+		</lang>
+		<lang lang="fi">
+			<before>Toimittajan huomautus.</before>
+			<after>Huomautuksen loppu.</after>
 		</lang>
 	</rule>
 
@@ -107,6 +118,10 @@
 			<before>Description d'image.</before>
 			<after>Fin de la description d'image.</after>
 		</lang>
+		<lang lang="fi">
+			<before>Kuvaselostus.</before>
+			<after>Kuvaselostuksen loppu.</after>
+		</lang>
 	</rule>
 	
 	<rule match="dtb:imggroup/dtb:caption">
@@ -118,9 +133,9 @@
 			<before>Caption.</before>
 			<after>End of caption.</after>
 		</lang>
-		<lang lang="fr">
-			<before>Légende.</before>
-			<after>Fin de légende.</after>
+		<lang lang="fi">
+			<before>Kuvateksti.</before>
+			<after>Kuvatekstin loppu.</after>
 		</lang>
 	</rule>
 
@@ -133,9 +148,13 @@
 			<before>Side bar.</before>
 			<after>End of side bar.</after>
 		</lang>
-		<lang lang="en">
+		<lang lang="fr">
 			<before>Encadré.</before>
 			<after>Fin de l'encadré.</after>
+		</lang>
+		<lang lang="fi">
+			<before>Marginaaliteksti.</before>
+			<after>Marginaalitekstin loppu.</after>
 		</lang>
 	</rule>
 
@@ -152,6 +171,10 @@
 			<before>Un poème suit.</before>
 			<after>Fin du poème.</after>
 		</lang>
+		<lang lang="fi">
+			<before>Runo.</before>
+			<after>Runon loppu.</after>
+		</lang>
 	</rule>
 
 	<rule match="dtb:blockquote">
@@ -166,6 +189,10 @@
 		<lang lang="fr">
 			<before>Une citation suit:</before>
 			<after>Fin de la citation.</after>
+		</lang>
+		<lang lang="fi">
+			<before>Lainaus:</before>
+			<after>Lainauksen loppu.</after>
 		</lang>
 	</rule>
 
@@ -183,6 +210,10 @@
 			<before>Tableau.</before>
 			<after>Fin du tableau.</after>
 		</lang>
+		<lang lang="fi">
+			<before>Taulukko.</before>
+			<after>Taulukon loppu.</after>
+		</lang>
 	</rule>
 
 	<rule match="dtb:code">
@@ -197,6 +228,10 @@
 		<lang lang="fr">
 			<before>Code.</before>
 			<after>Fin du code.</after>
+		</lang>
+		<lang lang="fi">
+			<before>Koodi.</before>
+			<after>Koodin loppu.</after>
 		</lang>
 	</rule>
 
@@ -223,18 +258,6 @@
 			<before>Maorisk text.</before>
 		</lang>
 	</rule>
- 
-	<rule match="m:math">
-		<lang lang="sv">
-			<before>Matematisk formel:</before>
-			<after>Slut på matematisk formel.</after>
-		</lang>
-		<lang lang="en">
-			<before>Matemathical expression:</before>
-			<after>End of matemathical expression.</after>
-		</lang>
-	</rule>
-	
 
 	<copy attributes="true" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 		<xsl:template match="dtb:li">
@@ -246,11 +269,11 @@
 								<xsl:when test="lang('en')">
 									<xsl:text>Roman numeral, </xsl:text>
 								</xsl:when>
-								<xsl:when test="lang('fr')">
-									<xsl:text>Chiffre romain, </xsl:text>
-								</xsl:when>
 								<xsl:when test="lang('sv')">
 									<xsl:text>Romersk siffra, </xsl:text>
+								</xsl:when>
+								<xsl:when test="lang('fi')">
+									<xsl:text>Roomalainen numero, </xsl:text>
 								</xsl:when>
 							</xsl:choose>
 						</xsl:if>
