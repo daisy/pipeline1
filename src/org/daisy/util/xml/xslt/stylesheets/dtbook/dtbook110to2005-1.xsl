@@ -21,17 +21,31 @@
 	 Based on dtb36to39.xsl (Aug 2001)
      April 2006
 -->
+<!-- Modified by Alex Bernier, BrailleNet, Jan 2009 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:output omit-xml-declaration="yes" 
+	<xsl:output omit-xml-declaration="no" 
 		    encoding="UTF-8"
 		    doctype-public="-//NISO//DTD dtbook 2005-1//EN"
 		    doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd"
 		    indent="yes"
 		    method="xml" />
 
-<!-- NOTE:  As a temporary thing for doing TTS work, we kill the links -->
-<xsl:template match="a">
-	<xsl:apply-templates />
+<!-- Utility: copy all attributes and convert @lang to @xml:lang -->
+<xsl:template name="copyAtts">
+	<xsl:for-each select="@*" >
+		<xsl:choose>
+			<xsl:when test="name()='lang'">
+				<xsl:if test="not(../@xml:lang)">
+					<xsl:attribute name="xml:lang">
+						<xsl:value-of select="." />
+					</xsl:attribute>
+				</xsl:if>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="." />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:for-each>
 </xsl:template>
 
 <xsl:template match="*">
@@ -39,7 +53,7 @@
 		<xsl:if test="name()!='head' and name()!='meta'">
 			<xsl:attribute name="id"><xsl:value-of select="generate-id()" /></xsl:attribute>
 		</xsl:if>
-		<xsl:copy-of select="@*" />
+		<xsl:call-template name="copyAtts"/>
 		<xsl:apply-templates />
 	</xsl:copy>
 </xsl:template>
@@ -47,6 +61,21 @@
 <!-- Root element name is changed, plus add version & namespace -->
 <xsl:template match="dtbook">
 	<dtbook version="2005-1">
+		<xsl:for-each select="@*" >
+			<xsl:choose>
+				<xsl:when test="name()='version'"/>
+				<xsl:when test="name()='lang'">
+					<xsl:if test="not(../@xml:lang)">
+						<xsl:attribute name="xml:lang">
+							<xsl:value-of select="." />
+						</xsl:attribute>
+					</xsl:if>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:copy-of select="." />
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
 		<xsl:apply-templates />
 	</dtbook>
 </xsl:template>
@@ -54,7 +83,7 @@
 <!-- wrap non-level block items in fromtmatter in a level -->
 <xsl:template match="frontmatter|bodymatter|rearmatter">
 	<xsl:copy>
-		<xsl:copy-of select="@*"/>
+		<xsl:call-template name="copyAtts"/>
 		<xsl:for-each-group select="*" group-adjacent="local-name()='level' or local-name()='level1' or local-name()='doctitle' or local-name()='docauthor'">
 			<xsl:choose>
 				<xsl:when test="current-grouping-key()">
@@ -77,7 +106,7 @@
 <!-- levels containing only a heading is appended an empty paragraph -->
 <xsl:template match="level|level1|level2|level3|level4|level5|level6">
 	<xsl:copy>
-		<xsl:copy-of select="@*" />
+		<xsl:call-template name="copyAtts"/>
 		<xsl:apply-templates/>
 		<xsl:if test="count(*[name()!='hd' and name()!='h1' and name()!='h2' and name()!='h3' and name()!='h4' and name()!='h5' and name()!='h6'])=0">
 			<p/>
@@ -88,7 +117,21 @@
 <!-- levelhd is transformed to hd, including all attributes excluding the depth attribute -->
 <xsl:template match="levelhd">
 	<hd>
-		<xsl:copy-of select="@*[name()!='depth']" />
+		<xsl:for-each select="@*" >
+			<xsl:choose>
+				<xsl:when test="name()='lang'">
+					<xsl:if test="not(../@xml:lang)">
+						<xsl:attribute name="xml:lang">
+							<xsl:value-of select="." />
+						</xsl:attribute>
+					</xsl:if>
+				</xsl:when>
+				<xsl:when test="name()='depth'" />
+				<xsl:otherwise>
+					<xsl:copy-of select="." />
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
 		<xsl:apply-templates />
 	</hd>
 </xsl:template>
@@ -138,12 +181,19 @@
 	</em>
 </xsl:template>
 
+<xsl:template match="bdo">
+	<bdo>
+		<xsl:copy-of select="@*" />
+		<xsl:apply-templates />
+	</bdo>
+</xsl:template>
+
 <!-- sidebars and prodnotes need @render (default = optional) -->
 <xsl:template match="sidebar | prodnote">
 	<xsl:copy>
 		<xsl:attribute name="id"><xsl:value-of select="generate-id()" /></xsl:attribute>
 		<xsl:attribute name="render">optional</xsl:attribute>
-		<xsl:copy-of select="@*" />
+		<xsl:call-template name="copyAtts"/>
 		<xsl:apply-templates />
 	</xsl:copy>
 </xsl:template>
@@ -180,15 +230,14 @@
 <xsl:template match="lin">
 	<line>
 		<xsl:attribute name="id"><xsl:value-of select="generate-id()" /></xsl:attribute>
-		<xsl:copy-of select="@*" />
+		<xsl:call-template name="copyAtts"/>
 		<xsl:apply-templates />
 	</line>
-
-
 </xsl:template>
+
 </xsl:stylesheet>
 <!-- Stylus Studio meta-information - (c) 2004-2006. Progress Software Corporation. All rights reserved.
 <metaInformation>
 <scenarios ><scenario default="yes" name="Scenario1" userelativepaths="yes" externalpreview="no" url="rf003.xml" htmlbaseurl="" outputurl="RF003_2005.xml" processortype="internal" useresolver="yes" profilemode="0" profiledepth="" profilelength="" urlprofilexml="" commandline="" additionalpath="" additionalclasspath="" postprocessortype="none" postprocesscommandline="" postprocessadditionalpath="" postprocessgeneratedext="" validateoutput="no" validator="internal" customvalidator=""/></scenarios><MapperMetaTag><MapperInfo srcSchemaPathIsRelative="yes" srcSchemaInterpretAsXML="no" destSchemaPath="" destSchemaRoot="" destSchemaPathIsRelative="yes" destSchemaInterpretAsXML="no"/><MapperBlockPosition></MapperBlockPosition><TemplateContext></TemplateContext><MapperFilter side="source"></MapperFilter></MapperMetaTag>
 </metaInformation>
--->
+--> 
