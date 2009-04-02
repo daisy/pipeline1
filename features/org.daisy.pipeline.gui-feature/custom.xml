@@ -32,9 +32,6 @@
 		  </copy>
 		 <copy file="${basedir}/../org.daisy.pipeline/licenses/UserAgreement.txt" todir="${destination.temp.folder}/.." failonerror="true" overwrite="true"/>
 		 <copy file="${basedir}/../org.daisy.pipeline/doc/releasenotes/release-notes.txt" todir="${destination.temp.folder}/.." failonerror="true" overwrite="true"/>
-         <copy todir="${destination.temp.folder}/../cli" failonerror="true" overwrite="true">
-           <fileset dir="${basedir}/../org.daisy.pipeline.gui/cli"/>
-         </copy>
 	</target>
 
 </project>
