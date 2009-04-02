@@ -15,6 +15,7 @@
 <li><a href="#inputReqs">Input Requirements</a></li>
 <li><a href="#output">From Audacity project to DTB</a></li>
 <li><a href="#config">Configuration</a></li>
+<li><a href="#issues">Known issues in this beta</a></li>
 <!-- <li><a href="#transformers">Appendix: List of Transformers used</a></li> -->
 </ul>
 </div>
@@ -135,6 +136,12 @@ Simply create a marker with the value <code>p</code> and then activate the auton
 		<dd><strong>Optional.</strong> Select whether to renumber all normal page numbers in the book, and if so which page to start from.</dd>
 		
 	</dl>
+	
+<h2 id="issues">Known issues in this beta</h2>	
+<dl>
+  <dt>Sketchy support for "uncommon" sample rates</dt>
+  <dd><p>Certain sample rates in the input audio files can cause the output audio to sound like "static". Until this issue is fixed, make sure to use "standard" sample rates (such as 44.1k) and bit depths (such as 16 bit) in the input audio files. You can use Audacity to easily do this conversion.</p><p>Also, to be on the safe side, it is recommended to make a test Save-as-DAISY run early on in the project (before doing any extensive editing) and assure that the output audio files sound ok.</p></dd>
+</dl>  
 <!--		
 <h2 id="transformers">Appendix: List of Transformers used</h2>
 <p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
