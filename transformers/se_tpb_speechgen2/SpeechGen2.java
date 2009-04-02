@@ -248,6 +248,17 @@ public class SpeechGen2 extends Transformer {
 					throw new TransformerRunException(message);
 				}
 			}
+			// rd20090401: eager checking of sox on MacOSX
+			if (System.getProperty("os.name").startsWith("Mac OS X")) {
+				String soxPath = System.getProperty("pipeline.sox.path");
+				File test = new File(soxPath);
+				if (!test.exists() || !test.canRead()) {
+					String message = i18n("SOX_NOT_FOUND");
+					this.sendMessage(message, MessageEvent.Type.ERROR,
+							MessageEvent.Cause.SYSTEM);
+					throw new TransformerRunException(message);
+				}
+			}
 			
 			// validate the configuration file for ttsbuilder
 			ErrorHandler handler = new ErrorHandler() {
