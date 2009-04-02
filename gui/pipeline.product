@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.4"?>
 
-<product name="DAISY Pipeline" id="org.daisy.pipeline.gui.product" application="org.daisy.pipeline.gui.application" version="20090213 Beta" useFeatures="true">
+<product name="DAISY Pipeline" id="org.daisy.pipeline.gui.product" application="org.daisy.pipeline.gui.application" version="20090403 RC1" useFeatures="true">
 
    <aboutInfo>
       <image path="branding/about.gif"/>
@@ -14,7 +14,8 @@
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Dorg.osgi.framework.bootdelegation=javax.*,org.w3c.dom.*</vmArgs>
+      <vmArgs>-Dorg.osgi.framework.bootdelegation=javax.*,org.w3c.dom.*
+-Xms256m -Xmx512m</vmArgs>
    </launcherArgs>
 
    <windowImages i16="/org.daisy.pipeline.gui/branding/pipeline-logo-16x16.gif" i32="/org.daisy.pipeline.gui/branding/pipeline-logo-32x32.gif" i48="/org.daisy.pipeline.gui/branding/pipeline-logo-48x48.gif" i64="/org.daisy.pipeline.gui/branding/pipeline-logo-64x64.gif" i128="/org.daisy.pipeline.gui/branding/pipeline-logo-128x128.gif"/>
