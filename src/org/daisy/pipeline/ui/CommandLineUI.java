@@ -180,7 +180,7 @@ public class CommandLineUI implements InputListener, BusListener {
                         "Can't read pipeline.user.properties", e);
             }
 
-            PipelineCore dmfc = new PipelineCore(ui, findHomeDirectory(),properties);
+            PipelineCore dmfc = new PipelineCore(ui, PipelineCore.findHomeDirectory(),properties);
             Script script = dmfc.newScript(scriptFile.toURI().toURL());
             Job job = new Job(script);
 
@@ -445,37 +445,7 @@ public class CommandLineUI implements InputListener, BusListener {
 
         return builder.toString();
     }
-
-    /**
-     * Finds the pipeline home directory.
-     * 
-     * @param propertiesURL
-     * @return
-     * @throws DMFCConfigurationException
-     */
-    private static File findHomeDirectory() throws DMFCConfigurationException {
-        URL propertiesURL = PipelineCore.class.getClassLoader().getResource(
-                "pipeline.properties");
-        File propertiesFile = null;
-        try {
-            propertiesFile = new File(propertiesURL.toURI());
-        } catch (URISyntaxException e) {
-            throw new DMFCConfigurationException(e.getMessage(), e);
-        }
-        // Is this the home dir?
-        File folder = propertiesFile.getParentFile();
-        if (PipelineCore.testHomeDirectory(folder)) {
-            return folder;
-        }
-        // Test parent
-        folder = folder.getParentFile();
-        if (PipelineCore.testHomeDirectory(folder)) {
-            return folder;
-        }
-        throw new DMFCConfigurationException(
-                "Cannot locate the Daisy Pipeline home directory");
-    }
-
+    
     /**
      * Print usage information.
      */
