@@ -128,10 +128,25 @@
 	<!--   target.folder - destination folder                                  -->
 	<!-- ===================================================================== -->
 	<target name="post.gather.bin.parts">
-		<chmod perm="755" file="${target.folder}/transformers/se_tpb_speechgen2/external/MacOS/daisytts.pl"/>
+		<!-- Set the rtf2xml python script executable -->
 		<chmod perm="755" file="${target.folder}/transformers/ca_cnib_rtf2dtbook/rtf2xml-py/rtf2xml.py"/>
 
+		<!-- Delete the transformer sources-->
 		<delete dir="${target.folder}/transformers" includes="**/*.java"/>
+
+		<!-- Move and rename the CLI launchers-->
+		<move file="${target.folder}/launchers/pipeline-plugin.sh" tofile="${target.folder}/pipeline-cli.sh"/>
+		<move file="${target.folder}/launchers/pipeline-plugin.bat" tofile="${target.folder}/pipeline-cli.bat"/>
+		<delete dir="${target.folder}" includes="launchers" includeemptydirs="true"/>
+		
+		<!-- Move the properties to the root directory -->
+		<move todir="${target.folder}" failonerror="true" overwrite="false">
+			<fileset dir="${target.folder}/src">
+				<include name="pipeline.properties"/>
+				<include name="pipeline.user.properties"/>
+			</fileset>
+		</move>
+		<delete dir="${target.folder}" includes="src" includeemptydirs="true"/>
 	</target>
 
 	<!-- ===================================================================== -->

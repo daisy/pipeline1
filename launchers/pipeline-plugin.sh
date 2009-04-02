@@ -41,13 +41,11 @@ fi
 
 
 # Set classpath
-DIR=`dirname $0`
-#TODO: make it version agnostic
-PIPELINE_DIR="$DIR/../plugins/org.daisy.pipeline_1.0.3"
+PIPELINE_DIR=`dirname $0`
 CP="$PIPELINE_DIR":"$PIPELINE_DIR/daisy-pipeline.jar":"$PIPELINE_DIR/daisy-util.jar"
 for lib in `find "$PIPELINE_DIR/lib" -name "*.jar"`; do
  CP=$CP:$lib
 done
 
 # Execute Daisy Pipeline
-$JAVA -classpath $CP org.daisy.pipeline.ui.CommandLineUI "$@"
+$JAVA -Xms256m -Xmx512m -classpath $CP org.daisy.pipeline.ui.CommandLineUI "$@"
