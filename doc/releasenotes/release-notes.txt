@@ -13,6 +13,17 @@ Report bugs and issues to:
 http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
 ***************************************
+Pipeline RC1 Release, 2009-04-03
+***************************************
+
+- Reorganization of the script tree.
+- Fixes to the DTBook 1.1.0 to DTBook 2005 Forward Migrator, thanks to Alex Bernier, BrailleNet
+- Improvements the DTBook to RTF converter, thanks to Ole Holst Andersen, DBB
+- Finnish localization of the Structure Announcer (used in the Narrator), thanks to Päivi Suhonen, Celia Library for the Visually Impaired
+- Command line launcher scripts are now available in the Pipeline GUI installation.
+- Improvement of the default Java heap space value
+
+***************************************
 Pipeline Beta Release, 2009-02-13
 ***************************************
 
