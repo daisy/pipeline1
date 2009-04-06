@@ -109,6 +109,15 @@
 		</dirset>
 	</path>
 	
+	
+	<path id="path.build.transformers">
+		<path refid="path.utilJars"/>
+		<pathelement location="${build.dir}"/>
+		<fileset dir="${base.dir}/transformers">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+	
 	<!-- ================================================================== -->
 	<!-- Patternset definitions                                             -->
 	<!-- ================================================================== -->
@@ -182,6 +191,7 @@
 	      Compiles all src classes.
 	     - - - - - - - - - - - - - - - - - -->
 	<target name="compile" depends="removeClasses">
+		<mkdir dir="${build.dir}"/>
 		<javac 	srcdir="${dmfc.src.dir}" 
 				destdir="${build.dir}" 
 				includes="**/*.java" 
@@ -192,7 +202,7 @@
 				destdir="${transformers.dir}" 
 				includes="**/*.java" 
 				debug="true">
-			<classpath refid="path.utilJars"/>
+			<classpath refid="path.build.transformers"/>
 		</javac>
 		<copy todir="${build.dir}" failonerror="true" overwrite="false">
 			<fileset dir="${dmfc.src.dir}">
