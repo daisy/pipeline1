@@ -483,7 +483,7 @@
 		</list>
 	</xsl:template>
 	
-	<xsl:template match="html:a | html:p | html:li | html:dl | html:dt | html:dd | html:span | html:strong | html:em | html:sub | html:sup | html:br | html:div | html:blockquote">
+	<xsl:template match="html:a | html:p | html:li | html:dl | html:dt | html:dd | html:span | html:strong | html:em | html:sub | html:sup | html:br | html:div | html:blockquote | html:abbr">
 		<xsl:element name="{local-name()}">
 			<xsl:call-template name="copy-attributes" />
 			<xsl:apply-templates/>
