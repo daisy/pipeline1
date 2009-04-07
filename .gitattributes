@@ -92,6 +92,7 @@ doc/scripts/DTBookToXhtml.html -text
 doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/Daisy202ToZ39862005.html -text
+doc/scripts/Daisy3ToDaisy202.html -text svneol=unset#text/plain
 doc/scripts/DistributePEF.html -text
 doc/scripts/EmbossPEF.html -text
 doc/scripts/EpubCheck.html -text
@@ -546,6 +547,7 @@ scripts/_dev/NccNcxOnly.taskScript -text
 scripts/_dev/XMLAudioAligner.taskScript -text
 scripts/_dev/XukCreator.taskScript -text
 scripts/create_distribute/dtb/AudacityToDTB.taskScript -text
+scripts/create_distribute/dtb/Daisy3ToDaisy202.taskScript -text
 scripts/create_distribute/dtb/Fileset-DtbookToDaisy202TextOnly.taskScript -text
 scripts/create_distribute/dtb/Fileset-XhtmlToDaisy202TextOnly.taskScript -text
 scripts/create_distribute/dtb/Narrator-DtbookToDaisy.taskScript -text
