@@ -135,6 +135,7 @@ doc/transformers/int_daisy_filesetAudioTagger.html -text
 doc/transformers/int_daisy_filesetGenerator.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
 doc/transformers/int_daisy_html2xhtml.html -text
+doc/transformers/int_daisy_mathAltCreator.html -text svneol=unset#text/plain
 doc/transformers/int_daisy_mixedContentNormalizer.html -text
 doc/transformers/int_daisy_ocfCreator.html -text
 doc/transformers/int_daisy_opsCreator.html -text
