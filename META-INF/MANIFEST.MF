@@ -39,6 +39,7 @@ Bundle-ClassPath:
  transformers/se_tpb_speechgen2/lib/com4j.jar
 Export-Package: 
  com.adobe.epubcheck.api,
+ com.adobe.epubcheck.autotest,
  com.adobe.epubcheck.bitmap,
  com.adobe.epubcheck.dtbook,
  com.adobe.epubcheck.dtd,
@@ -314,6 +315,7 @@ Export-Package:
  org.codehaus.stax2.io,
  org.codehaus.stax2.ri,
  org.codehaus.stax2.validation,
+ org.daisy,
  org.daisy.pipeline,
  org.daisy.pipeline.core,
  org.daisy.pipeline.core.event,
@@ -375,6 +377,7 @@ Export-Package:
  org.daisy.util.xml.catalog.mathml.iso8879,
  org.daisy.util.xml.catalog.mathml.mathml,
  org.daisy.util.xml.catalog.oeb,
+ org.daisy.util.xml.catalog.pef,
  org.daisy.util.xml.catalog.rdf,
  org.daisy.util.xml.catalog.relaxngcommon,
  org.daisy.util.xml.catalog.smil1,
