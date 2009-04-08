@@ -39,13 +39,14 @@ import se_tpb_speechgen2.tts.util.TTSUtils;
 public class DefaultSapiTTS extends AbstractTTSAdapter {
 
 	ISpeechVoice voice;
+	String sapiVoiceSelection;
 
 	public DefaultSapiTTS(TTSUtils ttsUtils, Map<String, String> params) {
 		super(ttsUtils, params);
 		voice = ClassFactory.createSpVoice();
+		sapiVoiceSelection = mParams.get("sapiVoiceSelection");
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void read(String line, File destination) throws IOException, TTSException {
 		ISpeechFileStream stream = null;
@@ -54,6 +55,10 @@ public class DefaultSapiTTS extends AbstractTTSAdapter {
 			stream.open(destination.getAbsolutePath(),
 					SpeechStreamFileMode.SSFMCreateForWrite, false);
 			voice.audioOutputStream(stream);
+			if (sapiVoiceSelection != null) {
+				line = "<voice optional=\"" + sapiVoiceSelection + "\">" + line
+						+ "</voice>";
+			}
 			voice.speak(line, SpeechVoiceSpeakFlags.SVSFIsXML);
 			voice.waitUntilDone(-1);
 		} catch (Exception e) {
@@ -66,7 +71,6 @@ public class DefaultSapiTTS extends AbstractTTSAdapter {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void close() throws IOException, TTSException {
 		if (voice != null) {

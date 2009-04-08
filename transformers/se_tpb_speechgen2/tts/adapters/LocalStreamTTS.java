@@ -120,6 +120,11 @@ public class LocalStreamTTS extends AbstractTTSAdapter {
 	 * @throws IOException
 	 */
 	private void send(String line, File destination) throws IOException {
+		String sapiVoiceSelection = mParams.get("sapiVoiceSelection");
+		if (sapiVoiceSelection != null) {
+			line = "<voice optional=\"" + sapiVoiceSelection + "\">" + line
+					+ "</voice>";
+		}
 		mLastText = line;
 		mWriter.write(destination.getAbsolutePath());
 		mWriter.write("\n");
