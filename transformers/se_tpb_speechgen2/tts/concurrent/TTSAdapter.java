@@ -24,6 +24,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.events.StartElement;
 
+import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.w3c.dom.Document;
 
 import se_tpb_speechgen2.tts.TTSException;
@@ -64,4 +65,15 @@ public interface TTSAdapter {
 	 * @throws IOException
 	 */
 	void close() throws IOException, TTSException;
+	
+	/**
+	 * Registers a transformer delegate listener to publish messages.
+	 * @param tdl the transformer delegate listener
+	 */
+	void setTransformerDelegateListener(TransformerDelegateListener tdl);
+	
+	/**
+	 * Intializes this TTS adapter 
+	 */
+	void init();
 }

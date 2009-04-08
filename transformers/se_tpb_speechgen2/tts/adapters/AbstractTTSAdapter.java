@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.events.StartElement;
 
+import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
 import org.w3c.dom.Document;
 
 import se_tpb_speechgen2.audio.AudioFiles;
@@ -47,6 +48,7 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 	protected TTSUtils mUtils;
 	/** The reference to the parameters passed to the constructor */
 	protected Map<String, String> mParams;
+	protected TransformerDelegateListener mTransformer;
 
 	/**
 	 * Creates the adapter and stores the given utils and parameters.
@@ -77,7 +79,6 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 	 * 
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unused")
 	public void close() throws IOException, TTSException {
 		// default implementation does nothing
 	}
@@ -176,5 +177,14 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 		}
 		return canSpeak;
 	}
+
+	public void setTransformerDelegateListener(TransformerDelegateListener tdl) {
+		this.mTransformer = tdl;
+	}
+
+	/**
+	 * This default implementation does nothing
+	 */
+	public void init() {}
 
 }
