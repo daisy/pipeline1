@@ -20,7 +20,12 @@ package se_tpb_speechgen2.external.MacOS;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Map;
+
+import org.daisy.pipeline.core.event.MessageEvent.Cause;
+import org.daisy.pipeline.core.event.MessageEvent.Type;
 
 import se_tpb_speechgen2.tts.TTSException;
 import se_tpb_speechgen2.tts.adapters.AbstractTTSAdapter;
@@ -36,21 +41,64 @@ import se_tpb_speechgen2.tts.util.TTSUtils;
  */
 public class MacSayTTS extends AbstractTTSAdapter {
 
+	private String voiceName;
+	private String say = "/usr/bin/say";
+	private String sox = System.getProperty("pipeline.sox.path");
+
 	public MacSayTTS(TTSUtils ttsUtils, Map<String, String> params) {
 		super(ttsUtils, params);
 	}
+	
+	
 
-	@SuppressWarnings("unused")
+	@Override
+	public void init() {
+		super.init();
+		// Parameter "voice" is a coma-separated list of voices
+		// We try to use the voices until we get one that works
+		String voices = mParams.get("voice");
+		if (voices != null) {
+			Iterator<String> it = Arrays.asList(voices.split(",")).iterator();
+			while (voiceName == null && it.hasNext()) {
+				String voice = it.next();
+				try {
+					File testFile = File.createTempFile("tmp", ".aiff");
+					testFile.delete();
+					Runtime.getRuntime().exec(
+							new String[] { say, "-v", voice, "-o",
+									testFile.getAbsolutePath(), "test" })
+							.waitFor();
+					if (testFile.exists()) {
+						voiceName = voice;
+						testFile.delete();
+					} else {
+						mTransformer.delegateMessage(this, "Cannot find voice \""
+								+ voice + "\"", Type.INFO, Cause.SYSTEM, null);
+					}
+				} catch (Exception e) {
+					// ignore
+				}
+			}
+		}
+		if (voiceName == null) {
+			mTransformer.delegateMessage(this, "No voice specified, using default voice", Type.INFO_FINER, Cause.SYSTEM, null);
+		}
+	}
+
+
+
 	@Override
 	public void read(String line, File destination) throws IOException,
 			TTSException {
 		String destName = destination.getAbsolutePath();
 		String aiffName = destName + ".aiff";
-		String say = "/usr/bin/say";
-		String sox = System.getProperty("pipeline.sox.path");
 		String[] cmd = null;
 		try {
-			cmd = new String[] { say, "-o", aiffName, line };
+			if (voiceName != null) {
+				cmd = new String[] { say, "-v", voiceName, "-o", aiffName, line };
+			} else {
+				cmd = new String[] { say, "-o", aiffName, line };
+			}
 			Runtime.getRuntime().exec(cmd).waitFor();
 			cmd = new String[] { sox, aiffName, "-t", "wav", destName };
 			Runtime.getRuntime().exec(cmd).waitFor();

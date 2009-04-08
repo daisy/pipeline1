@@ -296,6 +296,10 @@ public class TTSBuilder implements TTSConstants {
 						throw new TTSBuilderException(e.getMessage(), e);
 					}
 				}
+				// register the transformer delegate listener
+				tts.setTransformerDelegateListener(tdl);
+				// initialize the adapter
+				tts.init();
 				// add the tts to the group
 				ttsInstances.add(tts);
 			}

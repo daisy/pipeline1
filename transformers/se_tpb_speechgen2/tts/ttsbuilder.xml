@@ -362,9 +362,11 @@
 				<param name="class" value="se_tpb_speechgen2.external.MacOS.MacSayTTS"/>
                 <param name="regex" value="${transformer_dir}/regex/macosx-say.xml"/>
 				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<!-- the voice parameter is a coma-separated list of voice names-->
+				<!-- the first existing voice will be used (Alex is only available since Mac OS X 10.5)-->
+				<param name="voice" value="Alex,Vicky"/>
 			</tts>
 		</lang>
-	
 	</os>
 	
 </ttsbuilder>
