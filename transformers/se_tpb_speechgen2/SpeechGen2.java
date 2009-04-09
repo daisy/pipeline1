@@ -353,6 +353,8 @@ public class SpeechGen2 extends Transformer {
 				throw new TransformerRunException(e.getMessage(), e);
 			}
 
+			boolean multiLang = Boolean.parseBoolean(parameters
+					.remove("multiLang"));
 			for (Iterator<String> it = languages.iterator(); it.hasNext(); ) {
 				String lang = it.next();
 
@@ -374,27 +376,31 @@ public class SpeechGen2 extends Transformer {
 				};
 				
 				// try to get a tts for the language
-				try {
-					tts = ttsb.newTTS(lang,tdl);
-				} catch (TTSBuilderException e) {
-					tts = null;
-					String locMsg = i18n("TTS_NOT_FOUND", lang);
-					sendMessage(locMsg, MessageEvent.Type.WARNING);
-
-					// try and get a default voice by passing null as lang
+				if (multiLang) {
 					try {
-						tts = ttsb.newTTS(null,tdl);
-					} catch (TTSBuilderException e2) {
+						tts = ttsb.newTTS(lang, tdl);
+					} catch (TTSBuilderException e) {
 						tts = null;
-						String msg = i18n("DEFAULT_TTS_NOT_FOUND") + "\n" + e2.getMessage();
-						throw new TransformerRunException(msg, e2);
-					}
-				} finally {
-					if (tts != null) {
-						tts.setFailOnError(failOnError);
-						ttsEngines.put(lang, tts);
+						String locMsg = i18n("TTS_NOT_FOUND", lang);
+						sendMessage(locMsg, MessageEvent.Type.WARNING);
 					}
 				}
+				if (tts == null) {
+					// multilang is false or the TTS has not been found
+					try {
+						tts = ttsb.newTTS(null, tdl);
+					} catch (TTSBuilderException e2) {
+						tts = null;
+						String msg = i18n("DEFAULT_TTS_NOT_FOUND") + "\n"
+								+ e2.getMessage();
+						throw new TransformerRunException(msg, e2);
+					}
+				}
+				if (tts != null) {
+					tts.setFailOnError(failOnError);
+					ttsEngines.put(lang, tts);
+				}
+					
 			}
 
 			sendMessage(i18n("FOUND_NUMBER", String.valueOf(numSPoints)), MessageEvent.Type.DEBUG);

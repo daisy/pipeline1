@@ -38,6 +38,14 @@
 			<boolean/>
 		</datatype>
 	</parameter>
+	
+	<parameter name="multiLang" value="true" required="false">
+		<nicename>Multi-language support</nicename>
+		<description>Select whether to use different TTS voices depending on the xml:lang attributes.</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
 
 	<parameter name="bitrate" value="32" required="false">
 		<nicename>MP3 Bitrate</nicename>
@@ -291,6 +299,10 @@
 		<parameter>
 			<name>failOnError</name>
 			<value>false</value>
+		</parameter>
+		<parameter>
+			<name>multiLang</name>
+			<value>${multiLang}</value>
 		</parameter>
 	</task>
 
