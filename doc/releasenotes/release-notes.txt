@@ -12,6 +12,17 @@ The GUI is hosted on a separate sourceforge project
 Report bugs and issues to:
 http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
+
+***************************************
+Pipeline Major Release, 2009-04-10
+***************************************
+
+- Narrator now supports multiple language TTS rendering on all platforms
+- New option to generate a Table of Contents in the Dtbook to XHTML conversion, thanks to Alex Bernier, BrailleNet
+- New option to split the result of the Dtbook to XHTML conversion in multiple pages, thanks to Alex Bernier, BrailleNet
+- ... and bug fixes.
+
+
 ***************************************
 Pipeline RC1 Release, 2009-04-03
 ***************************************
