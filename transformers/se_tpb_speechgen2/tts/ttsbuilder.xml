@@ -13,21 +13,21 @@
 		<!-- all properties must match java's System.getProperties()-properties.
 			Standard regex match for an os to be usable in this program. -->
 		<property name="os.name" match="[Ww]indows.*" />
-		
-		<lang lang="en">
-			<!-- since xml:lang determines the tts use in this program, provide only one tts per language! -->
 			<!-- 
-								
+				The parameter "sapiVoiceSelection" is used to configure the SAPI voice selection SAPI XML tag
+				
+				For instance: 		
 				<param name="sapiVoiceSelection" value="Gender=Female;Age!=Child;Language=409"/>
 				
-				would result in a 
+				would result in a: 
 					<voice optional="Gender=Female;Age!=Child;Language=409">bla bla</voice>
 				around every phrase produced using this tts. More on sapi xml control tags here:
 				http://msdn.microsoft.com/library/default.asp?url=/library/en-us/SAPI51sr/Whitepapers/WP_XML_TTS_Tutorial.asp
-				
-				Language Code for Swedish voice: 41D
 					
 				On language codes:
+				A list of language codes is available on:
+				http://msdn.microsoft.com/en-us/goglobal/bb964664.aspx
+				
 				note: sapi language codes are in hex notation, without the characteristic "0x"...
 				The parameter:
 				A language ID is a 16 bit value which is the combination of a primary language ID 
@@ -41,10 +41,12 @@
 				
 				(http://xtras.timehouse.fi/download/speechXtradocs.pdf)
 			-->
-			
+			<!-- since xml:lang determines the tts use in this program, provide only one tts per language! -->
 			<!-- this is configuration for one tts impl. the "default" attribute may be se to true 
 				for one (1) configuration for each os. -->
-			
+		
+		<lang lang="__">
+			<!-- This TTS uses no voice selection tag, it falls back to the default system voice -->
 			<tts default="true">
             <!--
 				<param name="class" value="se_tpb_speechgen2.tts.adapters.LocalStreamTTS"/>
@@ -55,10 +57,88 @@
 				
 				<!-- character substitution choices -->
 				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
-				
 			</tts>
 		</lang>
-		
+		<lang lang="en">
+			<tts>
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=409"/>
+			</tts>
+		</lang>
+		<lang lang="da">
+			<tts>
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=406"/>
+			</tts>
+		</lang>
+		<lang lang="de">
+			<tts>
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=407"/>
+			</tts>
+		</lang>
+		<lang lang="es">
+			<tts>
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=C0A"/>
+			</tts>
+		</lang>
+		<lang lang="fi">
+			<tts>
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=40B"/>
+			</tts>
+		</lang>
+		<lang lang="fr">
+			<tts>
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=40C"/>
+			</tts>
+		</lang>
+		<lang lang="it">
+			<tts>
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=410"/>
+			</tts>
+		</lang>
+		<lang lang="jp">
+			<tts>
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=411"/>
+			</tts>
+		</lang>
+		<lang lang="nb">
+			<tts>
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=414"/>
+			</tts>
+		</lang>
+		<lang lang="sv">
+			<tts>
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=41D"/>
+			</tts>
+		</lang>
 	</os>
 	
 	
@@ -362,9 +442,10 @@
 				<param name="class" value="se_tpb_speechgen2.external.MacOS.MacSayTTS"/>
                 <param name="regex" value="${transformer_dir}/regex/macosx-say.xml"/>
 				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
-				<!-- the voice parameter is a coma-separated list of voice names-->
-				<!-- the first existing voice will be used (Alex is only available since Mac OS X 10.5)-->
-				<param name="voice" value="Alex,Vicky"/>
+				<!-- The voice parameter is a coma-separated list of voice names-->
+				<!-- The first existing voice will be used -->
+				<!-- If the voice is unknown, the default system voice will be used -->
+				<param name="voice" value="Alex"/>
 			</tts>
 		</lang>
 	</os>
