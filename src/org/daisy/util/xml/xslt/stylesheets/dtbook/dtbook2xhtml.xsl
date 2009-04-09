@@ -26,11 +26,22 @@
   xmlns="http://www.w3.org/1999/xhtml"
   exclude-result-prefixes="dtb s m svg xs">
 
+<!--	<xsl:include href="./loc/l10n.xsl"/>-->
+<!--	<xsl:include href="./dtbook2xhtml-l10n.xsl"/>-->
+	<xsl:include href="../l10n/l10n.xsl"/>
+	<xsl:param name="l10n_default_language" select="'en'"/>
+	<!-- Sets the l10n language -->
+	<xsl:param name="l10n_language" select="''"/>
+	<!-- Use the language of target when generating cross-reference text? -->
+	<xsl:param name="l10n_use_xref_language" select="0"/>
+	<xsl:variable name="l10n_file" select="document('dtbook2xhtml-l10n.xml')" />
+
 	<xsl:param name="filter_word"/>
 	<xsl:param name="baseDir"/>
 	<xsl:param name="first_smil"/>
 	<xsl:param name="css_path"/>
 	<xsl:param name="daisy_noteref"/>
+	<xsl:param name="note_back_to_text"/>
 	<xsl:param name="svg_mathml"/>
 	<xsl:param name="split_simple_table"/>
   <!-- The smil element to target in href URIs (values are TEXT or PAR) -->
@@ -38,24 +49,20 @@
   <!-- The prefix to add to the filename of each smil file -->
   <xsl:param name="smilPrefix"/>
 
+	<xsl:param name="toc_gen"/>
+	<xsl:param name="toc_maxdepth" select="3"/>
+
+	<xsl:param name="chunk_gen"/>
+	<xsl:param name="chunk_file_ext" select="'html'"/>
+	<xsl:param name="chunk_maxdepth" select="3"/>
+	<xsl:param name="chunk_navigation_showtitles" select="'true'"/>
+	<xsl:param name="chunk_navigationbar_show_header" select="'true'"/>
+	<xsl:param name="chunk_navigationbar_show_footer" select="'true'"/>
+
     <xsl:output method="xml" encoding="utf-8" indent="yes"/>
 
-	<xsl:template match="/">		
-		<xsl:choose>
-			<xsl:when test="$svg_mathml='true'">
-		    	<xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd"</xsl:text>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"</xsl:text>
-			</xsl:otherwise>
-		</xsl:choose>
-        <xsl:if test="$daisy_noteref='true'">
-  	      <xsl:text disable-output-escaping="yes"> [
-  	      &lt;!ATTLIST span bodyref CDATA #IMPLIED&gt;
-  	      ]</xsl:text>
-  	    </xsl:if>
-        <xsl:text disable-output-escaping="yes">&gt;
-</xsl:text>        
+	<xsl:template match="/">
+		<xsl:call-template name="write_doctype"/>
 		<xsl:apply-templates/>
 	</xsl:template>
 
@@ -72,6 +79,35 @@
 <xsl:template name="copyAttsNoId">
 	<xsl:copy-of select="@class|@title|@xml:lang"/>
 </xsl:template>
+
+<xsl:template name="write_css">
+	<xsl:if test="$css_path!=''">
+		<link rel="stylesheet" type="text/css">
+			<xsl:attribute name="href">
+				<xsl:value-of select="$css_path"/>
+			</xsl:attribute>
+		</link>
+	</xsl:if>
+</xsl:template>
+
+
+<xsl:template name="write_doctype">
+	<xsl:choose>
+		<xsl:when test="$svg_mathml='true'">
+			<xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd"</xsl:text>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"</xsl:text>
+		</xsl:otherwise>
+	</xsl:choose>
+	<xsl:if test="$daisy_noteref='true'">
+		<xsl:text disable-output-escaping="yes"> [
+	&lt;!ATTLIST span bodyref CDATA #IMPLIED&gt;
+]</xsl:text>
+	</xsl:if>
+	<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+</xsl:template>
+
 
 <!-- <!ENTITY inlineParent "ancestor::*[self::dtb:h1 or self::dtb:h2 or self::dtb:h3 or self::dtb:h4 or self::dtb:h5 or self::dtb:h6 or self::dtb:hd or self::dtb:span or self::dtb:p]"> -->
    <xsl:template name="inlineParent">
@@ -116,13 +152,7 @@
          <xsl:value-of select="dtb:meta[@name='dc:Title']/@content"/>
        </title>
       <xsl:apply-templates/>
-      <xsl:if test="$css_path!=''">
-        <link rel="stylesheet" type="text/css">
-          <xsl:attribute name="href">
-            <xsl:value-of select="$css_path"/>
-      	  </xsl:attribute>
-        </link>
-      </xsl:if>
+      <xsl:call-template name="write_css"/>
     </head>
    </xsl:template>
 
@@ -192,7 +222,28 @@
 					</xsl:choose>
 				</h1>
 			</xsl:for-each>
+			<xsl:if test="$toc_gen='true'">
+				<xsl:call-template name="tocgen"/>
+			</xsl:if>
 			<xsl:apply-templates/>
+			<xsl:if test="$chunk_gen='true'">
+				<xsl:if test="$toc_gen='true'">  
+					<p><a href="index-toc.{$chunk_file_ext}">
+						<xsl:call-template name="getString">
+							<xsl:with-param name="key" select="'tableofcontents'"/>
+						</xsl:call-template>
+					</a></p>
+				</xsl:if>
+				<xsl:variable name="cn"><xsl:call-template name="chunk_name"><xsl:with-param as="element()?" name="node"><xsl:call-template name="chunk_firstchunk"/></xsl:with-param></xsl:call-template></xsl:variable>
+				<p><a>
+					<xsl:attribute name="href">
+						<xsl:value-of select="concat($cn,'.',$chunk_file_ext)"/>
+					</xsl:attribute>
+					<xsl:call-template name="getString">
+						<xsl:with-param name="key" select="'beginofthebook'"/>
+					</xsl:call-template>
+				</a></p>
+			</xsl:if>
 		</body>
    </xsl:template>
 		
@@ -200,63 +251,64 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 
-   <xsl:template match="dtb:level1">
-     <div>
-       <xsl:call-template name="copyCatts"/>  
-       <xsl:if test="not(@class)">
-       	<xsl:attribute name="class">level1</xsl:attribute>
-       </xsl:if>
-       <xsl:apply-templates/></div>
-   </xsl:template>
-   <xsl:template match="dtb:level2">
-     <div>
-       <xsl:call-template name="copyCatts"/>  
-       <xsl:if test="not(@class)">
-       	<xsl:attribute name="class">level2</xsl:attribute>
-       </xsl:if>
-       <xsl:apply-templates/></div>
-   </xsl:template>
-   <xsl:template match="dtb:level3">
-     <div>
-       <xsl:call-template name="copyCatts"/>  
-       <xsl:if test="not(@class)">
-       	<xsl:attribute name="class">level3</xsl:attribute>
-       </xsl:if>
-       <xsl:apply-templates/></div>
-   </xsl:template>
-   <xsl:template match="dtb:level4">
-     <div>
-       <xsl:call-template name="copyCatts"/>  
-       <xsl:if test="not(@class)">
-       	<xsl:attribute name="class">level4</xsl:attribute>
-       </xsl:if>
-       <xsl:apply-templates/></div>
-   </xsl:template>
-   <xsl:template match="dtb:level5">
-     <div>
-       <xsl:call-template name="copyCatts"/>  
-       <xsl:if test="not(@class)">
-       	<xsl:attribute name="class">level5</xsl:attribute>
-       </xsl:if>
-     <xsl:apply-templates/></div>
-   </xsl:template>
-   <xsl:template match="dtb:level6">
-     <div>
-       <xsl:call-template name="copyCatts"/>    
-       <xsl:if test="not(@class)">
-       	<xsl:attribute name="class">level6</xsl:attribute>
-       </xsl:if>
-       <xsl:apply-templates/></div>
-   </xsl:template>
+	<xsl:template match="dtb:level1 | dtb:level2 | dtb:level3 | dtb:level4 | dtb:level5 | dtb:level6 | dtb:level">
+		<xsl:choose>
+			<xsl:when test="$chunk_gen='true'">
+				<xsl:variable name="ic"><xsl:call-template name="chunk_ischunk"/></xsl:variable>
+				<xsl:variable name="title"><xsl:call-template name="chunk_title"/></xsl:variable>
+				<xsl:variable name="cn"><xsl:call-template name="chunk_name"/></xsl:variable>
+				<xsl:choose>
+					<xsl:when test="$ic='1'">
+						<xsl:result-document href="{concat($cn,'.',$chunk_file_ext)}" method="xhtml" indent="yes">
+							<xsl:call-template name="write_doctype"/>
+							<xsl:element name="html" namespace="http://www.w3.org/1999/xhtml">              
+								<head>
+									<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+									<title>
+										<xsl:value-of select="//dtb:meta[@name='dc:Title']/@content"/>
+									</title>
+									<xsl:call-template name="write_css"/>
+									<xsl:call-template name="chunk_gennavigationbar"><xsl:with-param name="where" select="'inhead'"/></xsl:call-template>
+								</head>
+								<body>
+									<xsl:if test="$chunk_navigationbar_show_header='true'">
+										<xsl:call-template name="chunk_gennavigationbar"><xsl:with-param name="where" select="'header'"/></xsl:call-template>
+									</xsl:if>
+									<div>
+										<xsl:call-template name="copyCatts"/>
+										<xsl:if test="not(@class)">
+											<xsl:attribute name="class"><xsl:value-of select="local-name()"/></xsl:attribute>
+										</xsl:if>
+										<xsl:apply-templates/>
+										<xsl:apply-templates select="dtb:level1/dtb:h1|dtb:level2/dtb:h2|dtb:level3/dtb:h3|dtb:level4/dtb:h4|dtb:level5/dtb:h5|dtb:level6/dtb:h6|dtb:level/dtb:hd" mode="chunk_copytitles"/>
+									</div>
+									<xsl:if test="$chunk_navigationbar_show_footer='true'">
+										<xsl:call-template name="chunk_gennavigationbar"><xsl:with-param name="where" select="string('footer')"/></xsl:call-template>
+									</xsl:if>
+								</body>
+							</xsl:element>
+						</xsl:result-document>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="copylevelinsidediv"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="copylevelinsidediv"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
-   <xsl:template match="dtb:level">
-     <div>
-        <xsl:call-template name="copyCatts"/>
-        <xsl:if test="not(@class)">
-       	<xsl:attribute name="class">level</xsl:attribute>
-       </xsl:if>
-       <xsl:apply-templates/></div>
-   </xsl:template>
+	<xsl:template name="copylevelinsidediv">
+		<div>
+			<xsl:call-template name="copyCatts"/>
+			<xsl:if test="not(@class)">
+				<xsl:attribute name="class"><xsl:value-of select="local-name()"/></xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates/>
+		</div>
+	</xsl:template>
 
 
    <xsl:template match="dtb:covertitle">
@@ -336,49 +388,29 @@
    </div>
    </xsl:template>
 
-
-   <xsl:template match="dtb:h1">
-     <h1>
-       <xsl:call-template name="copyCatts"/>
-       <xsl:call-template name="maybeSmilref"/>
-    </h1>
-   </xsl:template>
-
-   <xsl:template match="dtb:h2">
-     <h2>
-       <xsl:call-template name="copyCatts"/>
-       <xsl:call-template name="maybeSmilref"/>
-    </h2>
-   </xsl:template>
-
-   <xsl:template match="dtb:h3">
-     <h3>
-       <xsl:call-template name="copyCatts"/>
-       <xsl:call-template name="maybeSmilref"/>
-    </h3>
-   </xsl:template>
-
-   <xsl:template match="dtb:h4">
-     <h4>
-       <xsl:call-template name="copyCatts"/>
-       <xsl:call-template name="maybeSmilref"/>
-    </h4>
-   </xsl:template>
-
-   <xsl:template match="dtb:h5">
-     <h5>
-       <xsl:call-template name="copyCatts"/>
-       <xsl:call-template name="maybeSmilref"/>
-    </h5>
-   </xsl:template>
-
-   <xsl:template match="dtb:h6">
-     <h6>
-       <xsl:call-template name="copyCatts"/>
-       <xsl:call-template name="maybeSmilref"/>
-    </h6>
-   </xsl:template>
-
+  <xsl:template match="dtb:h1 | dtb:h2 | dtb:h3 | dtb:h4 |dtb:h5 | dtb:h6">
+    <xsl:element name="{local-name()}">
+      <xsl:call-template name="copyCatts"/>
+      <xsl:if test="not(@id)">
+        <xsl:attribute name="id">
+          <xsl:value-of select="generate-id()"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:call-template name="maybeSmilref"/>
+    </xsl:element>
+    <xsl:if test="$toc_gen='true' and not($chunk_gen='true')">
+      <xsl:variable name="depth">
+        <xsl:call-template name="getdepth"/>
+      </xsl:variable>
+      <xsl:if test="$depth &lt; $toc_maxdepth + 1">
+        <p><a href="#toc-html">
+	    <xsl:call-template name="getString">
+	      <xsl:with-param name="key" select="'backtotableofcontents'"/>
+	    </xsl:call-template>
+        </a></p>
+      </xsl:if>
+    </xsl:if>
+  </xsl:template>
 
    <xsl:template match="dtb:bridgehead">
      <div class="bridgehead">
@@ -404,8 +436,9 @@
    </xsl:template>
 
 	<xsl:template match="dtb:br">
-		<xsl:copy-of select="@id|@class|@title"/>
-		<br/>
+    <xsl:element name="br">
+      <xsl:copy-of select="@id|@class|@title"/>
+    </xsl:element>
 	</xsl:template>
 
 
@@ -434,8 +467,16 @@
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:text>#</xsl:text>
-						<xsl:value-of select="translate(@idref, '#', '')"/>
+						<xsl:choose>
+							<xsl:when test="$chunk_gen='true'">
+								<xsl:variable name="cn"><xsl:call-template name="chunk_findid"><xsl:with-param name="id" select="translate(@idref, '#', '')"/></xsl:call-template></xsl:variable>
+								<xsl:value-of select="concat($cn,'.',$chunk_file_ext,'#',translate(@idref, '#', ''))"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>#</xsl:text>
+								<xsl:value-of select="translate(@idref, '#', '')"/>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:otherwise>
 				  </xsl:choose>
 			    </xsl:attribute>			
@@ -541,6 +582,7 @@
    <xsl:template match="dtb:epigraph">
      <div class="epigraph">
        <xsl:call-template name="copyCncatts"/>
+      <xsl:apply-templates/>
        <xsl:call-template name="maybeSmilref"/>
      </div>
    </xsl:template>
@@ -548,6 +590,14 @@
 	<xsl:template match="dtb:note">
 		<div class="notebody">
 			<xsl:call-template name="copyCncatts"/>
+			<xsl:if test="$note_back_to_text='true'">
+				<xsl:variable name="noteref">
+					<xsl:call-template name="whereisnoteref">
+						<xsl:with-param name="idref" select="@id"/>
+					</xsl:call-template>
+				</xsl:variable>
+				<a href="{$noteref}">^</a>
+			</xsl:if>
 			<xsl:call-template name="maybeSmilref"/>
 		</div>
 	</xsl:template>
@@ -559,22 +609,39 @@
       </div>
    </xsl:template>
 
-   <xsl:template match="dtb:hd">
-   	<xsl:choose>
-   		<xsl:when test="parent::dtb:level">
-   			<xsl:element name="{concat('h', count(ancestor::dtb:level))}">
-   				<xsl:call-template name="copyCatts"/>
-        		<xsl:call-template name="maybeSmilref"/>
-   			</xsl:element>
-   		</xsl:when>
-   		<xsl:otherwise>
-   			<div class="hd">
-        	<xsl:call-template name="copyCncatts"/>
-        	<xsl:call-template name="maybeSmilref"/>
-      	</div>
-   		</xsl:otherwise>
-   	</xsl:choose>
-   </xsl:template>
+	<xsl:template match="dtb:hd">
+		<xsl:choose>
+			<xsl:when test="parent::dtb:level">
+				<xsl:variable name="depth">
+					<xsl:value-of select="count(ancestor-or-self::dtb:level/dtb:hd)"/>
+				</xsl:variable>
+
+				<xsl:choose>
+					<xsl:when test="$depth &lt; 7">
+						<xsl:element name="{concat('h', $depth)}">
+							<xsl:call-template name="copyCatts"/>
+							<xsl:call-template name="maybeSmilref"/>
+						</xsl:element>
+					</xsl:when>
+					<xsl:otherwise>
+						<div>
+							<xsl:attribute name="class">
+								<xsl:value-of select="concat('h', $depth)"/>
+							</xsl:attribute>
+							<xsl:call-template name="copyCncatts"/>
+							<xsl:call-template name="maybeSmilref"/>
+						</div>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<div class="hd">
+					<xsl:call-template name="copyCncatts"/>
+					<xsl:call-template name="maybeSmilref"/>
+				</div>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
    <xsl:template match="dtb:list/dtb:hd">
       <li class="hd">
@@ -1014,13 +1081,23 @@
 		   </xsl:otherwise>
 	     </xsl:choose>
        </xsl:when>
-       <xsl:otherwise>
-         <a>
-           <xsl:call-template name="copyCatts"/>
-           <xsl:copy-of select="@href"/>
-           <xsl:apply-templates/>
-         </a>
-       </xsl:otherwise>
+			<xsl:otherwise>
+				<a>
+					<xsl:call-template name="copyCatts"/>
+					<xsl:choose>
+						<xsl:when test="$chunk_gen='true' and @href and substring(@href,1,1)='#'">
+							<xsl:variable name="cn"><xsl:call-template name="chunk_findid"><xsl:with-param name="id" select="translate(@href, '#', '')"/></xsl:call-template></xsl:variable>
+							<xsl:attribute name="href">
+								<xsl:value-of select="concat($cn,'.',$chunk_file_ext,'#',translate(@href, '#', ''))"/>
+							</xsl:attribute>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:copy-of select="@href"/>
+						</xsl:otherwise>
+					</xsl:choose>
+					<xsl:apply-templates/>
+				</a>
+			</xsl:otherwise>
      </xsl:choose>
    </xsl:template>
 
@@ -1035,8 +1112,16 @@
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:text>#</xsl:text>
-					<xsl:value-of select="translate(@idref, '#', '')"/>
+					<xsl:choose>
+						<xsl:when test="$chunk_gen='true'">
+							<xsl:variable name="cn"><xsl:call-template name="chunk_findid"><xsl:with-param name="id" select="translate(@idref, '#', '')"/></xsl:call-template></xsl:variable>
+							<xsl:value-of select="concat($cn,'.',$chunk_file_ext,'#',translate(@idref, '#', ''))"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:text>#</xsl:text>
+							<xsl:value-of select="translate(@idref, '#', '')"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:attribute>			
@@ -1200,6 +1285,559 @@
 	
 	<xsl:template match="svg:svg" mode="inlineOnly" >
     	<xsl:copy-of select="."/>  	
+	</xsl:template>
+
+	<xsl:template name="getdepth">
+		<xsl:param name="node" select="."/>
+		<xsl:value-of select="count($node/ancestor-or-self::dtb:level)+count($node/ancestor-or-self::dtb:level1)+count($node/ancestor-or-self::dtb:level2)+count($node/ancestor-or-self::dtb:level3)+count($node/ancestor-or-self::dtb:level4)+count($node/ancestor-or-self::dtb:level5)+count($node/ancestor-or-self::dtb:level6)"/>
+	</xsl:template>
+
+
+	<xsl:template name="tocgen">
+		<xsl:choose>
+			<xsl:when test="$chunk_gen='true'">
+				<xsl:result-document href="index-toc.{$chunk_file_ext}" method="xhtml" indent="yes">
+					<xsl:call-template name="write_doctype"/>
+					<xsl:element name="html" namespace="http://www.w3.org/1999/xhtml">              
+						<head>
+							<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+							<title>
+								<xsl:value-of select="dtb:meta[@name='dc:Title']/@content"/>
+							</title>
+							<xsl:call-template name="write_css"/>
+						</head>
+						<body>
+							<div id="toc-html" class="toc-html">
+								<p class="toc-title">
+									<xsl:call-template name="getString">
+										<xsl:with-param name="key" select="'tableofcontents'"/>
+									</xsl:call-template>
+								</p>
+								<ul class="toc">
+									<xsl:apply-templates mode="toc"/>
+								</ul>
+							</div>
+						</body>
+					</xsl:element>
+				</xsl:result-document>
+			</xsl:when>
+			<xsl:otherwise>
+				<div id="toc-html" class="toc-html">
+					<p class="toc-title">
+						<xsl:call-template name="getString">
+							<xsl:with-param name="key" select="'tableofcontents'"/>
+						</xsl:call-template>
+					</p>
+					<ul class="toc">
+						<xsl:apply-templates mode="toc"/>
+					</ul>
+				</div>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+
+	<xsl:template match="dtb:frontmatter | dtb:bodymatter | dtb:rearmatter" mode="toc">
+		<xsl:apply-templates mode="toc"/>
+	</xsl:template>
+
+	<xsl:template mode="toc" match="dtb:level1 | dtb:level2 | dtb:level3 | dtb:level4 | dtb:level5 | dtb:level6 | dtb:level">
+		<xsl:variable name="depth">
+			<xsl:call-template name="getdepth"/>
+		</xsl:variable>
+		<xsl:if test="$depth &lt; ($toc_maxdepth + 1)">
+			<xsl:apply-templates select="dtb:h1 | dtb:h2 | dtb:h3 | dtb:h4 | dtb:h5 | dtb:h6 | dtb:hd" mode="toc"/>
+			<xsl:if test="($depth &lt; $toc_maxdepth) and (dtb:level2 | dtb:level3 | dtb:level4 | dtb:level5 | dtb:level6 | dtb:level)">
+				<li>
+					<ul class="toc">
+						<xsl:apply-templates select="dtb:level2 | dtb:level3 | dtb:level4 | dtb:level5 | dtb:level6 | dtb:level" mode="toc"/>
+					</ul>
+				</li>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template mode="toc" match="dtb:h1 | dtb:h2 | dtb:h3 | dtb:h4 | dtb:h5 | dtb:h6 | dtb:hd">
+		<li>
+			<a>
+				<xsl:attribute name="href">
+					<xsl:choose>
+						<xsl:when test="$chunk_gen='true'">
+							<xsl:variable name="cn"><xsl:call-template name="chunk_name"><xsl:with-param as="element()?" name="node"><xsl:call-template name="chunk_beginchunk"><xsl:with-param name="node" select="."/></xsl:call-template></xsl:with-param></xsl:call-template></xsl:variable>
+							<xsl:choose>
+								<xsl:when test="@id">
+									<xsl:value-of select="concat($cn,'.',$chunk_file_ext,'#',@id)"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="concat($cn,'.',$chunk_file_ext,'#',generate-id())"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:choose>
+								<xsl:when test="@id">
+									<xsl:value-of select="concat('#',@id)"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="concat('#',generate-id())"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+				<xsl:value-of select="."/>
+			</a>
+		</li>
+	</xsl:template>
+
+	<xsl:template match="*" mode="toc"/>
+
+	<xsl:template name="whereisnoteref">
+		<xsl:param name="idref"/>
+		<xsl:variable name="id">
+			<xsl:value-of select="//*[@idref=concat('#',$idref)]/@id"/>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$chunk_gen='true'">
+				<xsl:variable name="cn">
+					<xsl:call-template name="chunk_name">
+						<xsl:with-param as="element()?" name="node">
+							<xsl:call-template name="chunk_beginchunk"><xsl:with-param name="node" select="//*[@idref=concat('#',$idref)]" /></xsl:call-template>
+						</xsl:with-param>
+					</xsl:call-template>
+				</xsl:variable>
+				<xsl:value-of select="concat($cn,'.',$chunk_file_ext,'#',$id)"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$id"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="chunk_num">
+		<xsl:param name="node" select="."/>
+		<xsl:value-of select="$node/count(preceding-sibling::dtb:level)+$node/count(preceding-sibling::dtb:level1)+$node/count(preceding-sibling::dtb:level2)+$node/count(preceding-sibling::dtb:level3)+$node/count(preceding-sibling::dtb:level4)+$node/count(preceding-sibling::dtb:level5)+$node/count(preceding-sibling::dtb:level6)+1"/>
+	</xsl:template>
+
+	<xsl:template name="chunk_name">
+		<xsl:param name="node" select="."/>
+		<xsl:choose>
+			<xsl:when test="$node/local-name()='level' or $node/local-name()='level1' or $node/local-name()='level2' or $node/local-name()='level3' or $node/local-name()='level4' or $node/local-name()='level4' or $node/local-name()='level5' or $node/local-name()='level6'">
+				<xsl:call-template name="chunk_name"><xsl:with-param name="node" select="$node/parent::*"/></xsl:call-template>
+				<xsl:text>-l</xsl:text><xsl:call-template name="chunk_num"><xsl:with-param name="node" select="$node"/></xsl:call-template>
+			</xsl:when>
+			<xsl:when test="$node/local-name()='frontmatter'">
+				<xsl:call-template name="chunk_name"><xsl:with-param name="node" select="$node/parent::*"/></xsl:call-template>
+				<xsl:text>-fm</xsl:text>
+			</xsl:when>
+			<xsl:when test="$node/local-name()='bodymatter'">
+				<xsl:call-template name="chunk_name"><xsl:with-param name="node" select="$node/parent::*"/></xsl:call-template>
+				<xsl:text>-bm</xsl:text>
+			</xsl:when>
+			<xsl:when test="$node/local-name()='rearmatter'">
+				<xsl:call-template name="chunk_name"><xsl:with-param name="node" select="$node/parent::*"/></xsl:call-template>
+				<xsl:text>-rm</xsl:text>
+			</xsl:when>
+			<xsl:when test="$node/local-name()='book'">
+				<xsl:text>dtb</xsl:text>
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template>
+
+
+	<xsl:template name="chunk_ischunk">
+		<xsl:param name="node" select="."/>
+		<xsl:variable name="depth"><xsl:call-template name="getdepth"><xsl:with-param name="node" select="$node"/></xsl:call-template></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="($node/local-name()='level' or $node/local-name()='level1' or $node/local-name()='level2' or $node/local-name()='level3' or $node/local-name()='level4' or $node/local-name()='level5' or $node/local-name()='level6') and ($depth &lt; $chunk_maxdepth + 1)">
+				<xsl:text>1</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>0</xsl:text>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="chunk_beginchunk">
+		<xsl:param name="node" select="."/>
+		<xsl:variable name="ic">
+			<xsl:call-template name="chunk_ischunk">
+				<xsl:with-param name="node" select="$node"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$ic='1'"> 
+				<xsl:sequence select="$node"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="chunk_beginchunk">
+					<xsl:with-param name="node" select="$node/.."/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="chunk_parentchunk">
+		<xsl:param name="node" select="."/>
+		<xsl:variable name="depth"><xsl:call-template name="getdepth"><xsl:with-param name="node" select="$node"/></xsl:call-template></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="($node/../local-name()='level' or $node/../local-name()='level1' or $node/../local-name()='level2' or $node/../local-name()='level3' or $node/../local-name()='level4' or $node/../local-name()='level5' or $node/../local-name()='level6')">
+				<xsl:sequence select="$node/.."/>
+			</xsl:when>
+			<xsl:when test="($node/../local-name()='frontmatter' or $node/../local-name()='bodymatter' or $node/../local-name()='rearmatter')"/>
+			<xsl:otherwise>
+				<xsl:call-template name="chunk_parentchunk">
+					<xsl:with-param name="node" select="$node/.."/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="chunk_prevchunk">
+		<xsl:param name="node" select="."/>
+		<xsl:variable name="pc" as="element()?" select="(($node/preceding-sibling::dtb:level)|($node/preceding-sibling::dtb:level1)|($node/preceding-sibling::dtb:level2)|($node/preceding-sibling::dtb:level3)|($node/preceding-sibling::dtb:level4)|($node/preceding-sibling::dtb:level5)|($node/preceding-sibling::dtb:level6)|($node/preceding::dtb:level)|($node/preceding::dtb:level1)|($node/preceding::dtb:level2)|($node/preceding::dtb:level3)|($node/preceding::dtb:level4)|($node/preceding::dtb:level5)|($node/preceding::dtb:level6)|($node/parent::*))[last()]"/>
+		<xsl:if test="$pc">
+			<xsl:variable name="ic"><xsl:call-template name="chunk_ischunk"><xsl:with-param name="node" select="$pc"/></xsl:call-template></xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$ic='0'">
+					<xsl:call-template name="chunk_prevchunk"><xsl:with-param name="node" select="$pc"/></xsl:call-template>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:sequence select="$pc"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template name="chunk_nextchunk">
+		<xsl:param name="node" select="."/>
+		<xsl:variable name="nc" as="element()?" select="(($node/child::dtb:level)|($node/child::dtb:level1)|($node/child::dtb:level2)|($node/child::dtb:level3)|($node/child::dtb:level4)|($node/child::dtb:level5)|($node/child::dtb:level6)|($node/following-sibling::dtb:level)|($node/following-sibling::dtb:level1)|($node/following-sibling::dtb:level2)|($node/following-sibling::dtb:level3)|($node/following-sibling::dtb:level4)|($node/following-sibling::dtb:level5)|($node/following-sibling::dtb:level6)|($node/following::dtb:level)|($node/following::dtb:level1)|($node/following::dtb:level2)|($node/following::dtb:level3)|($node/following::dtb:level4)|($node/following::dtb:level5)|($node/following::dtb:level6))[1]"/>
+		<xsl:if test="$nc">
+			<xsl:variable name="ic"><xsl:call-template name="chunk_ischunk"><xsl:with-param name="node" select="$nc"/></xsl:call-template></xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$ic='0'">
+					<xsl:call-template name="chunk_nextchunk"><xsl:with-param name="node" select="$nc"/></xsl:call-template>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:sequence select="$nc"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template name="chunk_firstchunk">
+		<xsl:sequence select="(//dtb:level1|//dtb:level2|//dtb:level3|//dtb:level4|//dtb:level5|//dtb:level6|//dtb:level)[1]"/>
+	</xsl:template>
+
+	<xsl:template name="chunk_title">
+		<xsl:param name="node" select="."/>
+		<xsl:value-of select="$node/dtb:h1|$node/dtb:h2|$node/dtb:h3|$node/dtb:h4|$node/dtb:h5|$node/dtb:h6|$node/dtb:hd"/>
+	</xsl:template>
+
+
+	<xsl:template match="dtb:level1/dtb:h1 | dtb:level2/dtb:h2 | dtb:level3/dtb:h3 | dtb:level4/dtb:h4 | dtb:level5/dtb:h5 | dtb:level6/dtb:h6" mode="chunk_copytitles">
+		<xsl:variable name="cn"><xsl:call-template name="chunk_name"><xsl:with-param name="node" select=".."/></xsl:call-template></xsl:variable>
+		<xsl:element name="{local-name()}">
+			<xsl:copy-of select="@*"/>
+			<a>
+				<xsl:attribute name="href">
+					<xsl:value-of select="concat($cn,'.',$chunk_file_ext)"/>
+				</xsl:attribute>
+			</a>
+		</xsl:element>
+	</xsl:template>
+
+	<xsl:template match="dtb:level/dtb:hd" mode="chunk_copytitles">
+		<xsl:variable name="cn"><xsl:call-template name="chunk_name"><xsl:with-param name="node" select=".."/></xsl:call-template></xsl:variable>
+		<xsl:variable name="depth"><xsl:value-of select="count(ancestor-or-self::dtb:level/dtb:hd)"/></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$depth &lt; 7">
+				<xsl:element name="{concat('h', $depth)}">
+					<a>
+						<xsl:attribute name="href">
+							<xsl:value-of select="concat($cn,'.',$chunk_file_ext)"/>
+						</xsl:attribute>
+					</a>
+				</xsl:element>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="h6">
+					<a>
+						<xsl:attribute name="href">
+							<xsl:value-of select="concat($cn,'.',$chunk_file_ext)"/>
+						</xsl:attribute>
+					</a>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="chunk_findid">
+		<xsl:param name="id"/>
+		<xsl:call-template name="chunk_name">
+			<xsl:with-param as="element()?" name="node">
+				<xsl:call-template name="chunk_beginchunk"><xsl:with-param name="node" select="//*[@id=$id]" /></xsl:call-template>
+			</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+
+
+	<xsl:template name="chunk_gennavigationbar">
+		<xsl:param name="where" />
+		<xsl:variable as="element()?" name="prev">
+			<xsl:call-template name="chunk_prevchunk" />
+		</xsl:variable>
+		<xsl:variable name="prevname">
+			<xsl:call-template name="chunk_name">
+				<xsl:with-param as="element()?" name="node" select="$prev" />
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="prevtitle">
+			<xsl:call-template name="chunk_title">
+				<xsl:with-param as="element()?" name="node" select="$prev" />
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable as="element()?" name="next">
+			<xsl:call-template name="chunk_nextchunk" />
+		</xsl:variable>
+		<xsl:variable name="nextname">
+			<xsl:call-template name="chunk_name">
+				<xsl:with-param as="element()?" name="node" select="$next" />
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="nexttitle">
+			<xsl:call-template name="chunk_title">
+				<xsl:with-param as="element()?" name="node" select="$next" />
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable as="element()?" name="parent">
+			<xsl:call-template name="chunk_parentchunk" />
+		</xsl:variable>
+		<xsl:variable name="parentname">
+			<xsl:call-template name="chunk_name">
+				<xsl:with-param as="element()?" name="node" select="$parent" />
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="parenttitle">
+			<xsl:call-template name="chunk_title">
+				<xsl:with-param as="element()?" name="node" select="$parent" />
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable as="element()?" name="home">
+			<xsl:call-template name="chunk_firstchunk" />
+		</xsl:variable>
+		<xsl:variable name="homename">
+			<xsl:call-template name="chunk_name">
+				<xsl:with-param as="element()?" name="node" select="$home" />
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="hometitle">
+			<xsl:value-of select="(//dtb:doctitle)[1]" />
+		</xsl:variable>
+		<xsl:if test="$where='inhead'">
+			<xsl:if test="$home">
+				<link rel="home">
+					<xsl:attribute name="href">
+						<xsl:value-of select="concat($homename,'.',$chunk_file_ext)" />
+					</xsl:attribute>
+					<xsl:attribute name="title">
+						<xsl:value-of select="$hometitle" />
+					</xsl:attribute>
+				</link>
+			</xsl:if>
+			<xsl:if test="$parent">
+				<link rel="up">
+					<xsl:attribute name="href">
+						<xsl:value-of select="concat($parentname,'.',$chunk_file_ext)" />
+					</xsl:attribute>
+					<xsl:attribute name="title">
+						<xsl:value-of select="$parenttitle" />
+					</xsl:attribute>
+				</link>
+			</xsl:if>
+			<xsl:if test="$prev">
+				<link rel="previous">
+					<xsl:attribute name="href">
+						<xsl:value-of select="concat($prevname,'.',$chunk_file_ext)" />
+					</xsl:attribute>
+					<xsl:attribute name="title">
+						<xsl:value-of select="$prevtitle" />
+					</xsl:attribute>
+				</link>
+			</xsl:if>
+			<xsl:if test="$next">
+				<link rel="next">
+					<xsl:attribute name="href">
+						<xsl:value-of select="concat($nextname,'.',$chunk_file_ext)" />
+					</xsl:attribute>
+					<xsl:attribute name="title">
+						<xsl:value-of select="$nexttitle" />
+					</xsl:attribute>
+				</link>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$where='header'">
+			<div class="nav header">
+				<xsl:if test="$chunk_navigation_showtitles='true'">
+					<p class="title">
+						<xsl:call-template name="chunk_title" />
+					</p>
+				</xsl:if>
+				<p>
+					<span class="prev">
+						<xsl:if test="$prev">
+							<a accesskey="p">
+								<xsl:attribute name="href">
+										<xsl:value-of select="concat($prevname,'.',$chunk_file_ext)" />
+									</xsl:attribute>
+								<xsl:call-template name="chunk_navigation_content">
+									<xsl:with-param name="direction" select="'prev'" />
+								</xsl:call-template>
+							</a>
+						</xsl:if>
+						<xsl:text>&#160;</xsl:text>
+					</span>
+					<span class="main">
+						<xsl:if test="$parent">
+							<xsl:value-of select="$parenttitle" />
+						</xsl:if>
+						<xsl:text>&#160;</xsl:text>
+					</span>
+					<span class="next">
+						<xsl:if test="$next">
+							<a accesskey="n">
+								<xsl:attribute name="href">
+										<xsl:value-of select="concat($nextname,'.',$chunk_file_ext)" />
+									</xsl:attribute>
+								<xsl:call-template name="chunk_navigation_content">
+									<xsl:with-param name="direction" select="'next'" />
+								</xsl:call-template>
+							</a>
+						</xsl:if>
+						<xsl:text>&#160;</xsl:text>
+					</span>
+				</p>
+
+
+			</div>
+
+		</xsl:if>
+		<xsl:if test="$where='footer'">
+			<div class="nav footer">
+				<xsl:if test="$prev or $next or $parent">
+					<p>
+						<span class="prev">
+							<xsl:if test="$prev">
+								<a accesskey="p">
+									<xsl:attribute name="href">
+							<xsl:value-of select="concat($prevname,'.',$chunk_file_ext)" />
+						</xsl:attribute>
+									<xsl:call-template name="chunk_navigation_content">
+										<xsl:with-param name="direction" select="'prev'" />
+									</xsl:call-template>
+								</a>
+							</xsl:if>
+							<xsl:text>&#160;</xsl:text>
+						</span>
+
+						<span class="main">
+							<xsl:if test="$parent">
+								<a accesskey="u">
+									<xsl:attribute name="href">
+								<xsl:value-of select="concat($parentname,'.',$chunk_file_ext)" />
+							</xsl:attribute>
+									<xsl:call-template name="chunk_navigation_content">
+										<xsl:with-param name="direction" select="'up'" />
+									</xsl:call-template>
+								</a>
+							</xsl:if>
+							<xsl:text>&#160;</xsl:text>
+						</span>
+						<span class="next">
+							<xsl:if test="$next">
+								<a accesskey="n">
+									<xsl:attribute name="href">
+							<xsl:value-of select="concat($nextname,'.',$chunk_file_ext)" />
+						</xsl:attribute>
+									<xsl:call-template name="chunk_navigation_content">
+										<xsl:with-param name="direction" select="'next'" />
+									</xsl:call-template>
+								</a>
+							</xsl:if>
+							<xsl:text>&#160;</xsl:text>
+						</span>
+					</p>
+				</xsl:if>
+				<p>
+					<span class="prev">
+						<xsl:if test="$chunk_navigation_showtitles='true'">
+							<xsl:value-of select="$prevtitle" />
+						</xsl:if>
+						<xsl:text>&#160;</xsl:text>
+					</span>
+					<span class="main">
+						<xsl:if test=". != $home">
+							<a accesskey="h">
+								<xsl:attribute name="href">
+								<xsl:value-of select="concat($homename,'.',$chunk_file_ext)" />
+							</xsl:attribute>
+								<xsl:call-template name="chunk_navigation_content">
+									<xsl:with-param name="direction" select="'home'" />
+								</xsl:call-template>
+							</a>
+							<xsl:text>&#160;|&#160;</xsl:text>
+						</xsl:if>
+						<xsl:if test="$toc_gen = 'true'">
+							<a accesskey="t">
+								<xsl:attribute name="href">
+									<xsl:value-of select="concat('index-toc','.',$chunk_file_ext)"/>
+								</xsl:attribute>
+								<xsl:call-template name="getString">
+									<xsl:with-param name="key" select="'nav-toc'"/>
+								</xsl:call-template>
+							</a>
+						</xsl:if>
+						<xsl:text>&#160;</xsl:text>
+					</span>
+					<span class="next">
+						<xsl:if test="$chunk_navigation_showtitles = 'true'">
+							<xsl:value-of select="$nexttitle"/>
+						</xsl:if>
+						<xsl:text>&#160;</xsl:text>
+					</span>
+				</p>
+			</div>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template name="chunk_navigation_content">
+		<xsl:param name="direction" select="next"/>
+		<xsl:variable name="navtext">
+			<xsl:choose>
+				<xsl:when test="$direction = 'prev'">
+    				<xsl:call-template name="getString">
+      					<xsl:with-param name="key" select="'nav-prev'"/>
+    				</xsl:call-template>
+				</xsl:when>
+				<xsl:when test="$direction = 'next'">
+    				<xsl:call-template name="getString">
+      					<xsl:with-param name="key" select="'nav-next'"/>
+    				</xsl:call-template>
+				</xsl:when>
+				<xsl:when test="$direction = 'up'">
+    				<xsl:call-template name="getString">
+      					<xsl:with-param name="key" select="'nav-up'"/>
+    				</xsl:call-template>
+				</xsl:when>
+				<xsl:when test="$direction = 'home'">
+    				<xsl:call-template name="getString">
+      					<xsl:with-param name="key" select="'nav-home'"/>
+    				</xsl:call-template>
+				</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:value-of select="$navtext"/>
 	</xsl:template>
 
 </xsl:stylesheet>

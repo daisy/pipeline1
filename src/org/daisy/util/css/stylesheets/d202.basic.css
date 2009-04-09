@@ -96,3 +96,40 @@ div.author {font-weight: 700; font-style:italic;}
 div.title {font-weight: 700; font-size: 125%; margin-top: 2em; }
 div.poem div.hd {font-size: 100%; font-weight: bold; margin-top: 1em; margin-bottom: 0.3em;}
 div.poem span.page-normal {font-family:arial, verdana,sans-serif; display: block; text-align: right; margin-right: 2em; font-weight: bold; border-top: solid 1px #E5E5E5; padding-top: 2em; margin-top: 3em;}
+
+/* --- NAVIGATION HEADERS --- */
+div.nav {
+	background-color: #eee;
+	border: thin solid #ccc;
+	padding: 0.5em;
+}
+div.nav p {
+	margin: 0;
+	padding: 0;
+	color: #666;
+}
+div.nav p.title {
+	text-align: center;
+}
+div.nav a {
+	color: #666;
+}
+div.nav a:hover, a:active, a:focus {
+	color: #333;
+	text-decoration: underline;
+	background-color: #eee;
+	
+}
+div.nav span {
+	width: 33.33%;
+	display: inline-block;
+}
+div.nav span.prev {
+	text-align: left;
+}
+div.nav span.main {
+	text-align: center;
+}
+div.nav span.next {
+	text-align: right;
+}
