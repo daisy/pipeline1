@@ -524,6 +524,7 @@ scripts/DTBookFixCategoryScriptParam.paramGroup -text
 scripts/DTBookFixScriptParamsStatic.paramGroup -text
 scripts/DTBookFixTaskParamsStatic.paramGroup -text
 scripts/DtbookToXhtmlScriptParamsStatic.paramGroup -text
+scripts/DtbookToXhtmlTaskParamsStatic.paramGroup -text
 scripts/FilesetRenamerScriptParamsStatic.paramGroup -text
 scripts/FilesetRenamerTaskParamsStatic.paramGroup -text
 scripts/FilesetScriptParamsStatic.paramGroup -text

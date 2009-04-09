@@ -68,6 +68,28 @@
 			</enum>
 			<default>false</default>
 		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>toc_gen</name>
+			<description>ToC Generation</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" direction="in" type="enum">
+			<name>chunk_gen</name>
+			<description>Multiple HTML Pages</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
 				
 	</parameters>	
 

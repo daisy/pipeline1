@@ -5,6 +5,7 @@
 <!ENTITY ValidatorTaskParamsSimpleStatic SYSTEM "../../ValidatorTaskParamsSimpleStatic.paramGroup">
 <!ENTITY CharsetSwitcherScriptParamsStatic SYSTEM "../../CharsetSwitcherScriptParamsStatic.paramGroup">
 <!ENTITY DtbookToXhtmlScriptParamsStatic SYSTEM "../../DtbookToXhtmlScriptParamsStatic.paramGroup">
+<!ENTITY DtbookToXhtmlTaskParamsStatic SYSTEM "../../DtbookToXhtmlTaskParamsStatic.paramGroup">
 ]>
 <taskScript version="2.0" name="DTBookToXhtml">
 	<nicename>DTBook to XHTML</nicename>
@@ -47,11 +48,8 @@
 			<name>copyReferring</name>
 			<value>true</value>
 		</parameter>				
-
-		<parameter>
-			<name>daisy_noteref</name>
-			<value>${daisyNoterefs}</value>
-		</parameter>										
+		
+		&DtbookToXhtmlTaskParamsStatic;	
 	</task>		
 	
 	<task name="se_tpb_charsetSwitcher" interactive="false">	
