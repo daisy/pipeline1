@@ -9,7 +9,7 @@
 ;   General Defines
 ;----------------------------------------------------------
 !define PRODUCT_NAME "DAISY Pipeline"
-!define PRODUCT_VERSION "20090213 Beta"
+!define PRODUCT_VERSION "20090410"
 !define PRODUCT_PUBLISHER "DAISY Consortium"
 !define PRODUCT_WEB_SITE "http://www.daisy.org/"
 !define PRODUCT_REG_ROOT SHCTX
@@ -170,6 +170,7 @@ FunctionEnd
 Section -LegacyCleanUp SEC00
     ; clean the configuration and workspce area
     RMDir /r /REBOOTOK "$INSTDIR\configuration"
+    RMDir /r /REBOOTOK "$INSTDIR\cli"
     RMDir /r /REBOOTOK "$INSTDIR\plugins"
     RMDir /r /REBOOTOK "$INSTDIR\features"
     RMDir /r /REBOOTOK "$INSTDIR\workspace"
@@ -248,7 +249,7 @@ Section -Main SEC01
     File "DAISY Pipeline.exe"
     File "DAISY Pipeline.ini"
     SetOutPath $INSTDIR\configuration
-    File configuration\config.ini
+    File /r configuration\*
     SetOutPath $INSTDIR\features
     File /r features\*
     SetOutPath $INSTDIR\licenses
@@ -275,13 +276,13 @@ SectionEnd
   ;File /r ext\ImageMagick-6.4.0-0-Q16-windows-dll.exe
 ;SectionEnd
 
-Section "MathDAISY" SEC_DESSCI
-  SectionIn 1
-  SetOutPath $INSTDIR\ext
-  File ext\MathDAISY10_install.exe
-  ExecWait "$INSTDIR\ext\MathDAISY10_install.exe"
-  Delete "$INSTDIR\ext\MathDAISY10_install.exe"
-SectionEnd
+;Section "MathDAISY" SEC_DESSCI
+;  SectionIn 1
+;  SetOutPath $INSTDIR\ext
+;  File ext\MathDAISY10_install.exe
+;  ExecWait "$INSTDIR\ext\MathDAISY10_install.exe"
+;  Delete "$INSTDIR\ext\MathDAISY10_install.exe"
+;SectionEnd
 
 SectionGroupEnd
 
@@ -401,6 +402,7 @@ Section Uninstall
   RMDir /r /REBOOTOK "$INSTDIR\plugins"
   RMDir /r /REBOOTOK "$INSTDIR\ext"
   RMDir /r /REBOOTOK "$INSTDIR\configuration"
+  RMDir /r /REBOOTOK "$INSTDIR\cli"
   RMDir /r /REBOOTOK "$INSTDIR\workspace"
   RMDir /REBOOTOK "$INSTDIR"
 
