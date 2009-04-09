@@ -345,7 +345,18 @@
 	<!-- ##### PAGE NUMBER STRUCTUR ##### -->
 	
 	<!-- #### pagenum ELEMENT #### (ignored) -->
-	<xsl:template match="pagenum|dtb:pagenum"/>
+	<xsl:template match="pagenum|dtb:pagenum">
+		<xsl:if test="$inclPagenum='true'">
+			<xsl:text>
+\pard\plain \ql \li0\ri0\sb120\sa80\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs16 \i\lang1030\langfe1033\cgrid\langnp2057\langfenp1033
+{
+			</xsl:text>			
+			<xsl:apply-templates/>
+			<xsl:text>
+\par }
+			</xsl:text>
+		</xsl:if>
+	</xsl:template>
 
 	<!-- ##### Text nodes - calls template rtf-encode in xslt dtbook_to_rtf_encode.xsl ##### -->
 	<xsl:template match="text()">

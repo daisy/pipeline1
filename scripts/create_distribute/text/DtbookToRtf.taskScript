@@ -11,7 +11,7 @@ DTBook document to RTF</description> <documentation uri="../../../doc/scripts/DT
 
  <parameter name="inclTOC" value="true" required="true">
   <nicename>Include TOC in output</nicename>
-  <description>Select input DTBook file</description>
+  <description>Whether to include an TOC in the generated RTF document</description>
   <datatype><boolean/></datatype>
  </parameter>
 
@@ -22,6 +22,13 @@ DTBook document to RTF</description> <documentation uri="../../../doc/scripts/DT
    <file mime="application/rtf" type="output" />
   </datatype>
  </parameter>
+ 
+ <parameter name="inclPagenum" value="false" required="true">
+  <nicename>Include Page Numbering</nicename>
+  <description>Whether to write page numbers in the generated RTF document</description>
+  <datatype><boolean/></datatype>
+ </parameter>
+ 
  <task name="dk_dbb_addIdsToDtbook" interactive="false">
   <parameter>
     <name>xml</name>
@@ -45,6 +52,10 @@ DTBook document to RTF</description> <documentation uri="../../../doc/scripts/DT
   <parameter>
     <name>inclTOC</name>
     <value>${inclTOC}</value>
+  </parameter>
+  <parameter>
+    <name>inclPagenum</name>
+    <value>${inclPagenum}</value>
   </parameter>
  </task>
 

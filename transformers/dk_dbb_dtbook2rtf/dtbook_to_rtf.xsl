@@ -14,6 +14,7 @@
 	<xsl:import href="dtbook_to_rtf_note_and_anno.xsl"/>
 	<xsl:import href="dtbook_to_rtf_metadata.xsl"/>
 	<xsl:param name="inclTOC">false</xsl:param>
+	<xsl:param name="inclPagenum">false</xsl:param>
 	<xsl:output method="text" encoding="Windows-1252"/>
 	<xsl:strip-space elements="*"/>
 
