@@ -1336,10 +1336,10 @@
 		</xsl:choose>
 	</xsl:template>
 
-
 	<xsl:template match="dtb:frontmatter | dtb:bodymatter | dtb:rearmatter" mode="toc">
 		<xsl:apply-templates mode="toc"/>
 	</xsl:template>
+
 
 	<xsl:template mode="toc" match="dtb:level1 | dtb:level2 | dtb:level3 | dtb:level4 | dtb:level5 | dtb:level6 | dtb:level">
 		<xsl:variable name="depth">
@@ -1347,17 +1347,15 @@
 		</xsl:variable>
 		<xsl:if test="$depth &lt; ($toc_maxdepth + 1)">
 			<xsl:apply-templates select="dtb:h1 | dtb:h2 | dtb:h3 | dtb:h4 | dtb:h5 | dtb:h6 | dtb:hd" mode="toc"/>
-			<xsl:if test="($depth &lt; $toc_maxdepth) and (dtb:level2 | dtb:level3 | dtb:level4 | dtb:level5 | dtb:level6 | dtb:level)">
-				<li>
-					<ul class="toc">
-						<xsl:apply-templates select="dtb:level2 | dtb:level3 | dtb:level4 | dtb:level5 | dtb:level6 | dtb:level" mode="toc"/>
-					</ul>
-				</li>
-			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 
+
+
 	<xsl:template mode="toc" match="dtb:h1 | dtb:h2 | dtb:h3 | dtb:h4 | dtb:h5 | dtb:h6 | dtb:hd">
+		<xsl:variable name="depth">
+			<xsl:call-template name="getdepth"/>
+		</xsl:variable>
 		<li>
 			<a>
 				<xsl:attribute name="href">
@@ -1387,8 +1385,14 @@
 				</xsl:attribute>
 				<xsl:value-of select="."/>
 			</a>
+			<xsl:if test="($depth &lt; $toc_maxdepth) and (../dtb:level2/dtb:h2 | ../dtb:level3/dtb:h3 | ../dtb:level4/dtb:h4 | ../dtb:level5/dtb:h5 | ../dtb:level6/dtb:h6 | ../dtb:level/dtb:hd)">
+				<ul class="toc">
+					<xsl:apply-templates select="../dtb:level2 | ../dtb:level3 | ../dtb:level4 | ../dtb:level5 | ../dtb:level6 | ../dtb:level" mode="toc"/>
+				</ul>
+			</xsl:if>
 		</li>
 	</xsl:template>
+
 
 	<xsl:template match="*" mode="toc"/>
 
