@@ -30,6 +30,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.pool.BasePoolableObjectFactory;
+import org.daisy.pipeline.core.PipelineCore;
 import org.daisy.pipeline.rmi.RMIPipelineApp;
 import org.daisy.pipeline.rmi.RMIPipelineInstance;
 import org.slf4j.Logger;
@@ -134,6 +135,11 @@ public class PoolableRMIPipelineInstanceFactory extends
 			throw new IllegalStateException("Pipeline dir is not a directory: "
 					+ pipelineDir.getPath());
 		}
+		if (!PipelineCore.testHomeDirectory(pipelineDir)) {
+			throw new IllegalStateException(
+					"Pipeline dir does not point to a Pipeline installation: "
+							+ pipelineDir.getPath());
+		}
 		if (rmiRegistry == null) {
 			throw new IllegalStateException("RMI registry is null");
 		}
@@ -233,12 +239,10 @@ public class PoolableRMIPipelineInstanceFactory extends
 		while (pipeline == null && System.currentTimeMillis() <= endtime) {
 			try {
 				Thread.sleep(100);
-			} catch (InterruptedException e) {
-			}
+			} catch (InterruptedException e) {}
 			try {
 				pipeline = (RMIPipelineInstance) rmiRegistry.lookup(uuid);
-			} catch (NotBoundException e) {
-			}
+			} catch (NotBoundException e) {}
 		}
 		if (pipeline == null) {
 			throw new TimeoutException("Couldn't load the Pipeline instance");
