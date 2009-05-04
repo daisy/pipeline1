@@ -1,0 +1,109 @@
+<transformer version="1.1">
+	<name>DTBook to PEF</name>
+	<description>Transforms braille encoded DTBook 2005-3 into PEF 2008-1</description>
+	<classname>org_pef_dtbook2pef.DTBook2PEF</classname>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/org_pef_dtbook2pef.html"/>	
+	
+	<parameters>
+
+<!-- Main parameters -->
+		<parameter required="true" direction="in" type="application/xml">
+			<name>input</name>
+			<description>The input DTBook file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>output</name>
+			<description>The output PEF folder</description>
+			<example>file:///path/to/output/folder/</example>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>setup</name>
+			<description>Conversion setup</description>
+			<example>en-US</example>
+			<enum>
+				<value>sv-SE</value>
+			</enum>
+			<default>sv-SE</default>
+		</parameter>
+
+		<parameter required="false" type="application/xml">
+			<name>filename</name>
+			<description>Optional file name for the PEF file</description>
+			<example>result.pef</example>
+			<default>result.pef</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>keepTempFiles</name>
+			<description>Keep temporary files.</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>dateFormat</name>
+			<description>Date format, see http://java.sun.com/javase/6/docs/api/java/text/SimpleDateFormat.html</description>
+			<example>yyyy-MM-dd</example>
+			<default>yyyy-MM-dd</default>
+		</parameter>
+		
+<!--		Specify a custom DTBook to XSL-FO xslt. -->
+<!-- 		Specify a custom Area Tree to PEF xslt -->
+
+		<!-- Renderer -->
+		<parameter required="false" type="string">
+			<name>title</name>
+			<description>The name of the publication. If no value is supplied, the information is extracted from the original file</description>
+			<example>The Book</example>
+			<default>title?</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>creator</name>
+			<description>The creator of the publication. If no value is supplied, the information is extracted from the original file</description>
+			<example>The Creator</example>
+			<default>creator?</default>
+		</parameter>
+		
+		<!-- Splitter -->
+		<parameter required="false" type="string">
+			<name>min</name>
+			<description>The minimum number of sheets in each volume that will trigger an equal distribution</description>
+			<example>40</example>
+			<default>40</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>target</name>
+			<description>The preferred number of sheets in each volume</description>
+			<example>50</example>
+			<default>50</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>max</name>
+			<description>The maximum number of sheets in any volume</description>
+			<example>55</example>
+			<default>55</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>duplex</name>
+			<description>Emboss sheets on both sides</description>
+			<example>true</example>
+			<default>false</default>
+		</parameter>
+		
+	</parameters>
+
+</transformer>

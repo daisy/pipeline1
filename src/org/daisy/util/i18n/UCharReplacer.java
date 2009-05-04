@@ -69,6 +69,12 @@ import com.ibm.icu.text.UCharacterIterator;
  * attribute and the replacement string as value of the <tt>entry</tt> 
  * element.</p>
  * 
+ * <p>If the <tt>key</tt> attribute contains exactly one unicode codepoint 
+ * (one character) it will be treated literally. It will not be interpreted 
+ * as a HEX representation of another character, even if theoretically 
+ * possible. E.g. if the <tt>key</tt> is "a", it will be
+ * treated as 0x0061 rather than as 0x000a</p>
+ * 
  * <p>Note - there is a significant difference between a unicode codepoint (32 bit int)
  * and a UTF16 codeunit (=char) - a codepoint consists of one or two codeunits.</p>  
  * <p>To make sure an int represents a codepoint and not a codeunit, use for example
@@ -387,11 +393,15 @@ public class UCharReplacer  {
 		Set<?> keys = props.keySet();
 		for (Iterator<?> it = keys.iterator(); it.hasNext(); ) {
 			String key = (String) it.next();
-			try {
-				map.put(Integer.decode("0x" + key), props.getProperty(key));
-			} catch (NumberFormatException e) {
-				System.err.println("error in translation table " 
-								+ tableURL.toString() + ": attribute key=\"" + key + "\" is not a hex number.");
+			if (key.codePointCount(0, key.length())==1) {
+				map.put(key.codePointAt(0), props.getProperty(key));
+			} else {
+				try {
+					map.put(Integer.decode("0x" + key), props.getProperty(key));
+				} catch (NumberFormatException e) {
+					System.err.println("error in translation table " 
+									+ tableURL.toString() + ": attribute key=\"" + key + "\" is not a hex number.");
+				}
 			}
 		}	
 		return map;

@@ -1,0 +1,26 @@
+<transformer version="1.1">
+	<name>Hyphenator</name>
+	<description>desc...</description>
+	<classname>se_tpb_hyphenator.Hyphenator</classname>
+	<jar>lib/texhyphj.jar</jar>
+	<license>LGPL</license>
+	<author>Joel Håkansson</author>
+	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/se_tpb_dtbookfix.html"/>	
+	
+	<parameters>
+		<parameter required="true" direction="in" type="application/xml">
+			<name>input</name>
+			<description>Input DTBook file</description>
+			<example>file:///path/to/file.xml</example>
+		</parameter>
+
+		<parameter required="true" direction="out" type="application/xml">
+			<name>output</name>
+			<description>Output DTBook file</description>
+			<example>file:///path/to/outFile.xml</example>
+		</parameter>
+
+	</parameters>
+
+</transformer>

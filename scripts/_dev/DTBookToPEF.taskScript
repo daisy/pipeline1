@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<taskScript version="2.0" name="DTBookToPEF">
+	<nicename>DTBook to PEF</nicename>
+	<description>desc...</description>
+	<documentation uri="../../doc/scripts/DTBookToPEF.html"/>
+
+	<parameter name="input" value="" required="true">
+		<nicename>Input XML-file</nicename>
+		<description>An XML-file</description>
+		<datatype>
+			<file mime="application/xml" type="input"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="outputPath" value="" required="true">
+		<nicename>Output folder</nicename>
+		<description>Base folder for the output</description>
+		<datatype>
+			<directory type="output"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="filename" value="result.pef" required="false">
+		<nicename>Filename</nicename>
+		<description>The filename</description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+
+	<!--
+		Validate input
+	-->
+
+	<task name="se_tpb_hyphenator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/pipeline_temp/00-hyphenator.xml</value>
+		</parameter>
+			
+	</task>
+
+	<task name="org_pef_dtbook2pef" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/pipeline_temp/00-hyphenator.xml</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}</value>
+		</parameter>
+
+		<parameter>
+			<name>filename</name>
+			<value>${filename}</value>
+		</parameter>
+
+	</task>
+
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>${outputPath}/pipeline_temp/</value>
+		</parameter>					
+	</task>
+
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${outputPath}/${filename}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+		
+		<parameter>
+			<name>schemas</name>
+			<value>pef-2008-1.rng</value>
+		</parameter>
+	</task>
+
+</taskScript>
