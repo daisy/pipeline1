@@ -70,6 +70,7 @@ import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.stax.AttributeByName;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
 import org.daisy.util.xml.stax.ContextStack;
 import org.w3c.dom.Attr;
@@ -123,7 +124,7 @@ public class NCXMaker implements BusListener {
 	private int depth;										// keeps track of the deepest (xml-wise) structure in this book
 	private Node depthHolder; 								// the latest parsed element in the maximum depth branch (start or end parsing)
 	private int pageCount;									// the number of pages
-	private String strPageMax = "0";						// the value of the greatest page number seen so far
+	private int pageMax = 0;								// the value of the greatest page number seen so far
 	private String uid;										// the dtbook uid
 	private Map<String,String> bookStructs;					// mapping between element names and book structs.
 	
@@ -600,7 +601,7 @@ public class NCXMaker implements BusListener {
 		meta.setAttribute("content", String.valueOf(pageCount));
 		
 		meta = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:meta[@name='dtb:maxPageNumber']", mNsc);
-		meta.setAttribute("content", strPageMax);
+		meta.setAttribute("content", String.valueOf(pageMax));
 	
 		meta = (Element) XPathUtils.selectSingleNode(ncxTemplate.getDocumentElement(), "//ncx:meta[@name='dtb:uid']", mNsc);
 		meta.setAttribute("content", getUid());
@@ -1243,14 +1244,19 @@ public class NCXMaker implements BusListener {
 		}
 		String pageNumber = ((Element) XPathUtils.selectSingleNode(pageTarget, "//ncx:text", mNsc)).getTextContent().trim();
 		DEBUG("NCXMaker#handlePageNum: text content: " + pageNumber);
-		try {
-			int pNumber = Integer.parseInt(pageNumber);
-			if (pNumber > 0) {
-				pageTarget.setAttribute("value", pageNumber);
-				strPageMax = pageNumber;
+		Attribute pageAttr = AttributeByName.get(new QName("page"), se);
+		if (pageAttr == null || "normal".equals(pageAttr.getValue())) {
+			try {
+				int pNumber = Integer.parseInt(pageNumber);
+				if (pNumber > 0) {
+					pageTarget.setAttribute("value", pageNumber);
+				}
+				if (pNumber > pageMax) {
+					pageMax = pNumber;
+				}
+			} catch (NumberFormatException nfe) {
+				// nada, pageNumber wasn't numeric
 			}
-		} catch (NumberFormatException nfe) {
-			// nada, pageNumber wasn't numeric
 		}
 
 		Element pageList = (Element) XPathUtils.selectSingleNode(ncxTemplate
