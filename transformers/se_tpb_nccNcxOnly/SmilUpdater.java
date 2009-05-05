@@ -19,6 +19,7 @@ package se_tpb_nccNcxOnly;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.daisy.util.xml.stax.AttributeByName;
 import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
 import org.daisy.util.xml.stax.StaxFilter;
 
@@ -80,6 +82,27 @@ class SmilUpdater extends StaxFilter {
 				}
 			}			
 			return this.getEventFactory().createStartElement(event.getName(), attributes.iterator(), event.getNamespaces());
+		}
+		if ("audio".equals(event.getName().getLocalPart())) {
+			// Reorder attributes to make all players happy
+			Attribute attrId = AttributeByName.get(new QName("id"), event);
+			Attribute attrClipBegin = AttributeByName.get(new QName("clip-begin"), event);
+			Attribute attrClipEnd = AttributeByName.get(new QName("clip-end"), event);
+			Attribute attrSrc = AttributeByName.get(new QName("src"), event);
+			Collection<Attribute> coll = new ArrayList<Attribute>();
+			if (attrSrc != null) {
+				coll.add(attrSrc);
+			}
+			if (attrClipBegin != null) {
+				coll.add(attrClipBegin);
+			}
+			if (attrClipEnd != null) {
+				coll.add(attrClipEnd);
+			}
+			if (attrId != null) {
+				coll.add(attrId);
+			}
+			return this.getEventFactory().createStartElement(event.getName(), coll.iterator(), event.getNamespaces());			
 		}
 		return super.startElement(event);
 	}
