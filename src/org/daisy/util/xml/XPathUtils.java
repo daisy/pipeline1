@@ -82,6 +82,27 @@ public class XPathUtils {
         }
     }
     
+    /**
+     * Evaluates an XPath expression given a namespace context and returns
+     * the {@link String} value of the result, similar to the
+     * <code>value-of</code> function in XSLT. If there is an error in the
+     * XPath syntax, an empty string will be returned. 
+     * @param node the {@link Node} to evaluate the expression on
+     * @param xpath the XPath expression to evaluate
+     * @return a {@link NodeList}, or <code>null</code> if there is an
+     * error in the XPath expression.
+     */
+    public static String valueOf(Node node, String xpath, NamespaceContext context) {        
+        try {
+        	xpathObj.setNamespaceContext(context);
+            String result = (String)xpathObj.evaluate(xpath, node, XPathConstants.STRING);
+        	xpathObj.reset();
+            return result;
+        } catch (XPathExpressionException e) {            
+            return "";
+        }
+    }
+    
     // Martin Blomberg 2007-05-11
     /**
      * Evaluates an XPath expression given a namespace context, and returns the result as a {@link NodeList}.
