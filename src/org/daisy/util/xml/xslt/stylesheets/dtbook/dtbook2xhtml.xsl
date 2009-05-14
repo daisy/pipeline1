@@ -773,6 +773,10 @@
 		</xsl:for-each-group>
 	</xsl:template>
 
+	<xsl:template match="dtb:blockquote/dtb:table/dtb:pagenum" mode="pagenumonly">
+		<div class="dummy"><xsl:call-template name="pagenum"/></div>
+	</xsl:template>
+
 	<xsl:template match="dtb:pagenum" mode="pagenumonly">
 		<xsl:call-template name="pagenum"/>
 	</xsl:template>
