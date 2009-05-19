@@ -103,7 +103,12 @@ public class Stylesheet {
 			}
 			
 			// Reset old factory property
-			System.setProperty(property, (oldFactory==null?"":oldFactory));			
+			if (oldFactory != null) {
+				System.setProperty(property, oldFactory);
+			} else {
+				System.clearProperty(property);
+			}
+						
 						
 			// Create transformer
             javax.xml.transform.Transformer transformer = transformerFactory.newTransformer(xslt);
