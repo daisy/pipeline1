@@ -607,18 +607,23 @@
 			<xsl:apply-templates/>
 		</span>
 	</xsl:template>
+
 	<xsl:template match="dtb:em">
-		<em>
-			<xsl:call-template name="copyCatts"/>
-			<xsl:apply-templates/>
-		</em>
+		<xsl:text>%</xsl:text><xsl:apply-templates/><xsl:text>%</xsl:text>
 	</xsl:template>
 	<xsl:template match="dtb:strong">
-		<strong>
+		<xsl:text>¤</xsl:text><xsl:apply-templates/><xsl:text>¤</xsl:text>
+	</xsl:template>
+	<xsl:template match="dtb:sup">
+		<xsl:text>#</xsl:text><xsl:apply-templates/><xsl:text>#</xsl:text>
+	</xsl:template>
+	<xsl:template match="dtb:sub">
+		<sub>
 			<xsl:call-template name="copyCatts"/>
 			<xsl:apply-templates/>
-		</strong>
+		</sub>
 	</xsl:template>
+
 	<xsl:template match="dtb:abbr">
 		<abbr>
 			<xsl:call-template name="copyCatts"/>
@@ -650,18 +655,7 @@
 	<xsl:template match="dtb:w">
 					<xsl:apply-templates/>
 	</xsl:template>
-	<xsl:template match="dtb:sup">
-		<sup>
-			<xsl:call-template name="copyCatts"/>
-			<xsl:apply-templates/>
-		</sup>
-	</xsl:template>
-	<xsl:template match="dtb:sub">
-		<sub>
-			<xsl:call-template name="copyCatts"/>
-			<xsl:apply-templates/>
-		</sub>
-	</xsl:template>
+
 	<xsl:template match="dtb:span">
 			<xsl:call-template name="copyCatts"/>
 			<xsl:apply-templates/>

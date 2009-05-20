@@ -173,10 +173,13 @@ public class DTBook2PEF extends Transformer {
 				throw new TransformerRunException("Unable to load setup " + setup);
 			}
 			sendMessage("Setup \"" + setup + "\" loaded");
+			double i = 0;
 			for (InternalTask task : tasks) {
 				sendMessage("Running " + task.getName());
 				task.execute(fj.getInput(), fj.getOutput(), map);
 				fj.swap();
+				i++;
+				progress(i/tasks.size());
 			}
 			fj.close();
 			

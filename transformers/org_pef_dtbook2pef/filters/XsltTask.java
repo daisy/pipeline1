@@ -38,8 +38,7 @@ public class XsltTask extends InternalTask {
 		try {
 			Stylesheet.apply(input.getAbsolutePath(), url, output.getAbsolutePath(), factory, options, null);
 		} catch (XSLTException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new TransformerRunException("Error: ", e);
 		}
 
 	}

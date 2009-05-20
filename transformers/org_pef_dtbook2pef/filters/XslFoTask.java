@@ -34,7 +34,7 @@ public class XslFoTask extends InternalTask {
 			// in the current environment.
 			// TODO: Find the fop environment problem.
 			String path = new File(new File(getTransformerDirectoryResource("../lib/fop").toURI()),"fop.jar").getAbsolutePath();
-			ret = Command.execute(new String[]{"java", "-jar", path, "-fo", input.getAbsolutePath(), "-at", output.getAbsolutePath()});
+			ret = Command.execute(new String[]{"java", "-Xmx512m", "-jar", path, "-fo", input.getAbsolutePath(), "-at", output.getAbsolutePath()});
 			if (ret!=0) throw new TransformerRunException("FOP error.");
 
 			// This should be identical to the call above, but it runs much slower. Why?
@@ -43,15 +43,8 @@ public class XslFoTask extends InternalTask {
 			// This is the preferred method, but like calling Main.main, this too runs much slower. Why?
 			//runFOP(input, output);
 
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new TransformerRunException("Error: ", e);
 		}
 	}
 
