@@ -94,14 +94,16 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         for (Iterator it = xmllang.iterator(); it.hasNext(); ) {
             String lang = (String)it.next();            
             Locale loc = LocaleUtils.string2locale(lang);
-            lang = loc.toString();
-            if (!loc.getCountry().equals("")) {
-                //logger.info("Preloading language: " + loc.getLanguage());
-                loadLanguage(loc.getLanguage(), lscommon);
-            }
-            
-            //logger.info("Loading language: " + lang);
-            loadLanguage(lang, lscommon);
+			if (loc != null) {
+				lang = loc.toString();
+				if (!loc.getCountry().equals("")) {
+					// logger.info("Preloading language: " + loc.getLanguage());
+					loadLanguage(loc.getLanguage(), lscommon);
+				}
+
+				// logger.info("Loading language: " + lang);
+				loadLanguage(lang, lscommon);
+			}
         }
         switchToLang("common");
     }
