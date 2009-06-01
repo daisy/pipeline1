@@ -487,6 +487,7 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 			}
 			
 			if(xe.isStartElement() && xe.asStartElement().getName().equals(qA)) {
+				reader.gotoAndRemoveBookmark("testingAnchor");
 				return true;
 			}
 		}
