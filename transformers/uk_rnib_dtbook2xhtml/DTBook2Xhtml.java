@@ -19,6 +19,7 @@ package uk_rnib_dtbook2xhtml;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,6 +43,7 @@ import org.daisy.util.fileset.ImageFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.LocusTransformer;
 import org.daisy.util.xml.NamespaceReporter;
 import org.daisy.util.xml.Namespaces;
@@ -134,7 +136,7 @@ public class DTBook2Xhtml extends Transformer implements FilesetErrorHandler,  D
 				for (Iterator<FilesetFile> it = fileset.getLocalMembers().iterator(); it.hasNext(); ) {
 					FilesetFile fsf = it.next();
 					if (fsf instanceof ImageFile) {
-						folder.addFile(fsf.getFile());
+						FileUtils.copyChild(fsf.getFile(), folder, inFile.getParentFile());
 					}
 				}
 			} else {

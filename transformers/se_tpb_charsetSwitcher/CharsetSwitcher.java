@@ -159,7 +159,7 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 					tempFile.delete();
 				} else {
 					// Just copy everything else
-					outputFolder.addFile(fsf.getFile());
+					FileUtils.copyChild(fsf.getFile(), outputFolder, inputFile.getParentFile());
 				}
 				count++;
 				this.progress(FILESET_DONE + (double)count/filesInFileset.size()*(TRANSFORM_DONE-FILESET_DONE));

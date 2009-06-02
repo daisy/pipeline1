@@ -23,9 +23,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.nio.ByteBuffer;
+import java.net.URI;
 import java.nio.channels.FileChannel;
-import java.nio.channels.WritableByteChannel;
 
 /**
  * Basic file functions.
@@ -98,6 +97,50 @@ public final class FileUtils {
 			}
 			if (destination != null) {
 				destination.close();
+			}
+		}
+	}
+
+
+	/**
+	 * Copy a file to a directory. If a base directory is specified, the file is
+	 * first relativized to this base directory and the relative path is
+	 * copied to the destination directory, creating sub directories if they do
+	 * not exist.
+	 * 
+	 * @param file
+	 *            the file to copy
+	 * @param toDir
+	 *            the destination directory
+	 * @param baseDir
+	 *            the base directory to relativize the file to copy
+	 * @throws IOException
+	 *             if anything bad happens
+	 */
+	public static void copyChild(File file, File toDir, File baseDir)
+			throws IOException {
+		if (file == null || toDir == null) {
+			throw new IllegalArgumentException();
+		}
+		Directory toDirectory = new Directory(toDir);
+		if (baseDir == null) {
+			toDirectory.addFile(file, true);
+		} else if (!file.getCanonicalPath().equals(
+				baseDir.getParentFile().getCanonicalPath())) {
+			if (file.getParentFile().getCanonicalPath().equals(
+					baseDir.getParentFile().getCanonicalPath())) {
+				// file is in the base directory
+				toDirectory.addFile(file, true);
+			} else {
+				// file is in a sub-directory
+				URI relative = baseDir.toURI().relativize(
+						file.getParentFile().toURI());
+				if (!relative.toString().startsWith("..")) {
+					Directory subdir = new Directory(toDirectory, relative
+							.getPath());
+					FileUtils.createDirectory(subdir);
+					subdir.addFile(file, true);
+				}
 			}
 		}
 	}
