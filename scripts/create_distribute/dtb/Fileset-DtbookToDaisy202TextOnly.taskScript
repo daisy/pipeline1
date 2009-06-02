@@ -16,20 +16,62 @@
 	</parameter>
     
 	
+	<parameter name="dtbookFix" value="REPAIR_TIDY_NARRATOR" required="false">
+		<nicename>DTBook Fix</nicename>
+		<description>Select whether to apply DTBook Fix routines</description>
+		<datatype>
+			<enum>
+				<item nicename="Do not apply DTBook Fix routines" value="NOTHING"/>
+				<item nicename="Apply DTBook Fix routines" value="REPAIR_TIDY_NARRATOR"/>
+			</enum>
+		</datatype>
+	</parameter>
+	
 	&FilesetScriptParamsStatic;
 
+		
 	<!-- *************************
-	      DTBook Fix 
+	      DTBook Fix - run Narrator category (which *includes* repair executors)
 	     ************************* -->
+	<task name="se_tpb_dtbookFix" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>${outputPath}/pipeline__temp/00/$filename{input}</value>
+		</parameter>
+
+		<parameter>
+			<name>runCategories</name>
+			<value>${dtbookFix}</value>
+		</parameter>
 		
+		<parameter>
+			<name>simplifyHeadingLayout</name>
+			<value>false</value>
+		</parameter>
+
+		<parameter>
+			<name>forceRun</name>
+			<value>false</value>
+		</parameter>
 		
+		<parameter>
+			<name>renameIllegalFilenames</name>
+			<value>true</value>
+		</parameter>
+			
+	</task>
 	<!-- *************************
 	      DTBook input validation 
 	     ************************* -->
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${input}</value>
+			<value>${outputPath}/pipeline__temp/00/$filename{input}</value>
 		</parameter>
 		<parameter>
 			<name>requireInputType</name>
@@ -47,7 +89,7 @@
 	<task name="se_tpb_xmldetection" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${input}</value>
+			<value>${outputPath}/pipeline__temp/00/$filename{input}</value>
 		</parameter>		
 		<parameter>
 			<name>output</name>
