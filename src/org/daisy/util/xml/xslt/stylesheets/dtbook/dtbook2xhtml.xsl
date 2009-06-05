@@ -582,7 +582,6 @@
    <xsl:template match="dtb:epigraph">
      <div class="epigraph">
        <xsl:call-template name="copyCncatts"/>
-      <xsl:apply-templates/>
        <xsl:call-template name="maybeSmilref"/>
      </div>
    </xsl:template>
