@@ -80,9 +80,17 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 */
 	public PeekResult peek(URL document) throws SAXException, IOException {
 		//redirect to this.peek(InputSource)
-		StreamSource ss = new StreamSource(document.openStream());
-		ss.setSystemId(document.toString());
-		return peek(SAXSource.sourceToInputSource(ss));			
+		InputStream is = null;
+		try {
+			is = document.openStream();
+			StreamSource ss = new StreamSource(is);
+			ss.setSystemId(document.toString());
+			return peek(SAXSource.sourceToInputSource(ss));
+		} finally {
+			if (is != null) {
+				is.close();
+			}
+		}
 	}
 
 	/*
@@ -91,9 +99,17 @@ class PeekerImpl implements Peeker, ContentHandler, EntityResolver, ErrorHandler
 	 */
 	public PeekResult peek(URI document) throws SAXException, IOException {
 		//redirect to this.peek(InputSource)
-		StreamSource ss = new StreamSource(document.toURL().openStream());
-		ss.setSystemId(document.toString());		
-		return peek(SAXSource.sourceToInputSource(ss));						
+		InputStream is = null;
+		try {
+			is = document.toURL().openStream();
+			StreamSource ss = new StreamSource(is);
+			ss.setSystemId(document.toString());		
+			return peek(SAXSource.sourceToInputSource(ss));						
+		} finally {
+			if (is != null) {
+				is.close();
+			}
+		}
 	}
 
 	/*
