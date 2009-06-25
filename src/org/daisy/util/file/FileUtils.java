@@ -47,6 +47,22 @@ public final class FileUtils {
 	 *             if anything bad happens.
 	 */
 	public static void copy(File inFile, File outFile) throws IOException {
+		copy(inFile, outFile, false);
+	}
+	
+	/**
+	 * Copy a file.
+	 * 
+	 * @param inFile
+	 *            source file
+	 * @param outFile
+	 *            destination file
+	 * @param keepLastModified
+	 *            keep the "last modified" date from the input file
+	 * @throws IOException
+	 *             if anything bad happens.
+	 */
+	public static void copy(File inFile, File outFile, boolean keepLastModified) throws IOException {
 		if (inFile.equals(outFile)) {
 			return;
 		}
@@ -60,6 +76,9 @@ public final class FileUtils {
 		}
 		fis.close();
 		fos.close();
+		if (keepLastModified) {
+			outFile.setLastModified(inFile.lastModified());
+		}
 	}
 
 	/**
@@ -73,7 +92,24 @@ public final class FileUtils {
 	 *             if anything bad happens.
 	 */
 
-	public static void copyFile(File inFile, File outFile) throws IOException {		
+	public static void copyFile(File inFile, File outFile) throws IOException {
+		copyFile(inFile, outFile, false);
+	}
+	
+	/**
+	 * Copy a file using java.nio
+	 * 
+	 * @param inFile
+	 *            source file
+	 * @param outFile
+	 *            destination file
+	 * @param keepLastModified
+	 *            keep the "last modified" date from the input file
+	 * @throws IOException
+	 *             if anything bad happens.
+	 */
+
+	public static void copyFile(File inFile, File outFile, boolean keepLastModified) throws IOException {		
 		if (inFile.equals(outFile)) return;		
 		if (!inFile.isFile()) throw new IOException(inFile.getAbsolutePath() + " is not a file");				
 		if (outFile.exists()) {
@@ -98,6 +134,9 @@ public final class FileUtils {
 			if (destination != null) {
 				destination.close();
 			}
+		}
+		if (keepLastModified) {
+			outFile.setLastModified(inFile.lastModified());
 		}
 	}
 
@@ -260,7 +299,7 @@ public final class FileUtils {
         
         // If that fails, do copy + delete instead
         if (!renameSuccess) {
-            copyFile(inFile, outFile);
+            copyFile(inFile, outFile, true);
             boolean deleteSuccess = inFile.delete();
             if (!deleteSuccess) {
                 throw new IOException("Failed to delete source file " + inFile.getAbsolutePath());

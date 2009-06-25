@@ -308,7 +308,25 @@ public class Directory extends File {
 	public File addFile(File source, boolean overwrite) throws IOException {
 		return addFile(source, overwrite, null);
 	}
-
+	
+	/**
+	 * Copies a file into this folder.
+	 * @param source
+	 *            File to be copied into this folder.
+	 * @param overwrite
+	 *            If true, will attempt to overwrite a preexisting destination.
+	 *            If false and the destination already exists, will not perform
+	 *            the add.
+	 * @param keepLastModified
+	 * 			  Keeps the "last modified" date of the input file
+	 * @return the resulting File if the add was performed, null if the add was
+	 *         not performed
+	 * @throws IOException
+	 */
+	public File addFile(File source, boolean overwrite, boolean keepLastModified) throws IOException {
+		return addFile(source, overwrite, null, keepLastModified);
+	}
+	
 	/**
 	 * Copies a file into this folder.
 	 * @param source
@@ -326,6 +344,28 @@ public class Directory extends File {
 	 * @throws IOException
 	 */
 	public File addFile(File source, boolean overwrite, String newName) throws IOException {
+		return addFile(source, overwrite, newName, false);
+	}
+
+	/**
+	 * Copies a file into this folder.
+	 * @param source
+	 *            File to be copied into this folder.
+	 * @param overwrite
+	 *            If true, will attempt to overwrite a preexisting destination.
+	 *            If false and the destination already exists, will not perform
+	 *            the add.
+	 * @param newName
+	 * 			  A local (pathless) name to give the added file.
+	 *            Null is an allowed value.
+	 *            If value is null, the source local name will be maintained.
+	 * @param keepLastModified
+	 * 			  Keeps the "last modified" date of the input file	           
+	 * @return the resulting File if the add (and optional rename ) was successfully performed, 
+	 * 			null if the add was not successfully performed
+	 * @throws IOException
+	 */
+	public File addFile(File source, boolean overwrite, String newName, boolean keepLastModified) throws IOException {
 		File dest;
 		
 		if(newName==null) {
@@ -338,11 +378,10 @@ public class Directory extends File {
 			return null;
 		}
 		
-		FileUtils.copyFile(source, dest);
+		FileUtils.copyFile(source, dest, keepLastModified);
 		
 		return dest;
 	}
-
 	
 	/**
 	 * Copies a collection of files into this folder.
@@ -358,6 +397,26 @@ public class Directory extends File {
 	 * @see #addFiles(Collection, boolean)
 	 */
 	public boolean addFiles(Collection<File> fileSources, boolean overwrite) throws IOException {
+		return addFiles(fileSources, overwrite, false);
+	}
+
+	
+	/**
+	 * Copies a collection of files into this folder.
+	 * <p>Note that any directory relative relations of input collection will be lost</p> 
+	 * @param fileSources
+	 *            Files to be copied into this folder.
+	 * @param overwrite
+	 *            If true, will attempt to overwrite a preexisting destination.
+	 *            If false and the destination already exists, will not perform
+	 *            the add.
+	 * @param keepLastModified
+	 * 			  Keeps the "last modified" date of the input files
+	 * @return true if all adds were successfully performed, false otherwise
+	 * @throws IOException
+	 * @see #addFiles(Collection, boolean)
+	 */
+	public boolean addFiles(Collection<File> fileSources, boolean overwrite, boolean keepLastModified) throws IOException {
 		Iterator<File> i = fileSources.iterator();
 		boolean result = true;
 		
@@ -368,7 +427,7 @@ public class Directory extends File {
 				result = false;
 				System.err.println("destination exists in EFolder.addFiles and overwrite disabled: " + dest.getPath());
 			}else{
-				FileUtils.copyFile(source, dest);
+				FileUtils.copyFile(source, dest, keepLastModified);
 			}
 			
 		}
@@ -386,7 +445,22 @@ public class Directory extends File {
 	 * @throws IOException if something bad happens
 	 */
 	public boolean addFileset(Fileset fileset, boolean overwrite) throws IOException {
-		return this.addFileset(fileset, overwrite, null);
+		return this.addFileset(fileset, overwrite, false);
+	}
+	
+	/**
+	 * Copies an org.daisy.util.fileset into this folder
+	 * <p>Any directory relative relations of input fileset (in relation to manifest) will be maintained.
+	 * <p>If a fileset member lives in a superdirectory of the manifest member, an IOException will be thrown. All members
+	 * must be in same folder as or subfolder of the Fileset manifest file.</p>
+	 * @param fileset the Fileset instance to copy into this folder
+	 * @param overwrite whether to overwrite preexisting specimen (specifiles) in destination 
+	 * @param keepLastModified Keeps the "last modified" date of the input files
+	 * @return true if all members were copied successfully; false otherwise. If overwrite is false and a copy is skipped, still returns true. 
+	 * @throws IOException if something bad happens
+	 */
+	public boolean addFileset(Fileset fileset, boolean overwrite, boolean keepLastModified) throws IOException {
+		return this.addFileset(fileset, overwrite, null, false);
 	}
 	
 	/**
@@ -401,6 +475,22 @@ public class Directory extends File {
 	 * @throws IOException if something bad happens
 	 */
 	public boolean addFileset(Fileset fileset, boolean overwrite, FilesetFileFilter filter) throws IOException {
+		return addFileset(fileset, overwrite, filter, false);
+	}
+	
+	/**
+	 * Copies an org.daisy.util.fileset into this folder
+	 * <p>Any directory relative relations of input fileset (in relation to manifest) will be maintained.
+	 * <p>If a fileset member lives in a superdirectory of the manifest member, an IOException will be thrown. All members
+	 * must be in same folder as or subfolder of the Fileset manifest file.</p>
+	 * @param fileset the Fileset instance to copy into this folder
+	 * @param overwrite whether to overwrite preexisting specimen (specifiles) in destination
+	 * @param filter An impl of FilesetFileFilter to use when only a subset of the Fileset should be added. May be null, in which case all Fileset members are added.
+	 * @param keepLastModified Keeps the "last modified" date of the input files
+	 * @return true if all members were copied successfully; false otherwise. If overwrite is false and a copy is skipped, still returns true. 
+	 * @throws IOException if something bad happens
+	 */
+	public boolean addFileset(Fileset fileset, boolean overwrite, FilesetFileFilter filter, boolean keepLastModified) throws IOException {
 		Directory inputBaseDir = fileset.getManifestMember().getParentFolder();
 		String baseDirCanonicalPath = inputBaseDir.getCanonicalPath();
 		Iterator<?> i = fileset.getLocalMembers().iterator();
@@ -410,14 +500,14 @@ public class Directory extends File {
 				File f = file.getFile();
 				if(f.getParentFile().getCanonicalPath().equals(baseDirCanonicalPath)) {
 					//file is in same dir as manifestfile
-					this.addFile(f,overwrite);
+					this.addFile(f,overwrite, false);
 				}else{
 					//file is in subdir
 					URI relative = inputBaseDir.toURI().relativize(f.getParentFile().toURI());
 					if(relative.toString().startsWith("..")) throw new IOException("fileset member "+file.getName()+" does not live in a sibling or descendant folder of manifest member");
 					Directory subdir = new Directory(this,relative.getPath());
 					FileUtils.createDirectory(subdir);
-					subdir.addFile(f,overwrite);
+					subdir.addFile(f,overwrite, false);
 				}		
 			}
 		}						
@@ -514,10 +604,25 @@ public class Directory extends File {
 	 * @throws IOException
 	 */
 	public boolean copyChildrenTo(Directory destination, boolean overwrite) throws IOException {
-		return copyChildrenTo(destination,overwrite,true,null);
+		return copyChildrenTo(destination,overwrite,false);
+	}
+	
+	/**
+	 * Copies the contents of this folder to a destination Folder. Deep recursion is used.
+	 * @param destination 
+	 * 		The Folder to which the contents of this folder should be copied
+	 * @param overwrite
+	 * 		whether a prexisting equal object in the destination folder should be overwritten
+	 * @param keepLastModified
+	 * 		Keeps the "last modified" date of the input files
+	 * @return 
+	 * 		True if all objects of this folder were successfully copied to destination, false otherwise
+	 * @throws IOException
+	 */
+	public boolean copyChildrenTo(Directory destination, boolean overwrite, boolean keepLastModified) throws IOException {
+		return copyChildrenTo(destination,overwrite,true,null, keepLastModified);
 	}
 
-	
 	/**
 	 * Copies the contents of this folder to a destination Folder. 
 	 * @param destination 
@@ -534,9 +639,29 @@ public class Directory extends File {
 	 * @throws IOException
 	 */
 	public boolean copyChildrenTo(Directory destination, boolean overwrite, boolean deep, String regex) throws IOException {
+		return copyChildrenTo(destination, overwrite, deep, regex, false);
+	}
+	
+	/**
+	 * Copies the contents of this folder to a destination Folder. 
+	 * @param destination 
+	 * 		The Folder to which the contents of this folder should be copied
+	 * @param overwrite
+	 * 		whether a prexisting equal object in the destination folder should be overwritten
+	 * @param 
+	 * 		deep
+	 * 		whether subdirectories and their children should be included in copy
+	 * @param regex
+	 * 		regex string describing patterns of files (not dirs) to exlude from copy, if null, no exclusions are made
+	 * @param keepLastModified
+	 * 		Keeps the "last modified" date of the input files 
+	 * @return 
+	 * 		True if all objects of this folder were successfully copied to destination, false otherwise
+	 * @throws IOException
+	 */
+	public boolean copyChildrenTo(Directory destination, boolean overwrite, boolean deep, String regex, boolean keepLastModified) throws IOException {
 		boolean result = true;
-		boolean cur;
-		
+		boolean cur;		
 		
 		if(!destination.exists()) { 
 			cur = destination.mkdirs();
@@ -557,7 +682,7 @@ public class Directory extends File {
 				//TODO its not a symlink?
 				if(children[i].isFile()){
 					if((regex==null)||!children[i].getName().matches(regex)){
-						if(destination.addFile(children[i],overwrite) == null) result = false;
+						if(destination.addFile(children[i],overwrite, keepLastModified) == null) result = false;
 					}else{
 						//System.err.println("not copying " + children[i].getName() + " because matches " + regex);
 					}
@@ -567,7 +692,7 @@ public class Directory extends File {
 						Directory destDir = new Directory(destination,srcDir.getName()); 
 						// jpritchett@rfbd.org, 14 May 2008:  Don't recurse on our destination directory!
 						if (!srcDir.equals(destination)) {
-							cur = srcDir.copyChildrenTo(destDir,overwrite,deep,regex); 
+							cur = srcDir.copyChildrenTo(destDir,overwrite,deep,regex, keepLastModified); 
 							if(!cur) result = cur;
 						}
 					}
