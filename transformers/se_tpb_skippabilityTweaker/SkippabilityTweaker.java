@@ -178,7 +178,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
             // Copy files not in the fileset (i.e. copy everything but don't overwrite anything)?
             if ("true".equals(paramCopyNonFilesetFiles)) {
             	Directory inputDir = new Directory(input.getParentFile());
-            	inputDir.copyChildrenTo(outputDir, false);
+            	inputDir.copyChildrenTo(outputDir, false, true);
             }
             
 		} catch (IOException e) {			
@@ -479,7 +479,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
                 internalSubsetAndMetaFilter.filter(tempFile.getFile(), outputFile, totalElapsedTime);
                 tempFile.delete();
             } else {                    
-                FileUtils.copyFile(filesetFile.getFile(), outputFile);
+                FileUtils.copyFile(filesetFile.getFile(), outputFile, true);
             }
             this.checkAbort();
         }
