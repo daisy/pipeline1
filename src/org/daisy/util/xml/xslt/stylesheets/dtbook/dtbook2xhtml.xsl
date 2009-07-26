@@ -583,6 +583,7 @@
      <div class="epigraph">
        <xsl:call-template name="copyCncatts"/>
        <xsl:call-template name="maybeSmilref"/>
+       <xsl:apply-templates/>
      </div>
    </xsl:template>
 
@@ -619,6 +620,11 @@
 					<xsl:when test="$depth &lt; 7">
 						<xsl:element name="{concat('h', $depth)}">
 							<xsl:call-template name="copyCatts"/>
+							<xsl:if test="not(@id)">
+								<xsl:attribute name="id">
+									<xsl:value-of select="generate-id()"/>
+								</xsl:attribute>
+							</xsl:if>
 							<xsl:call-template name="maybeSmilref"/>
 						</xsl:element>
 					</xsl:when>
@@ -629,6 +635,11 @@
 							</xsl:attribute>
 							<xsl:call-template name="copyCncatts"/>
 							<xsl:call-template name="maybeSmilref"/>
+							<xsl:if test="not(@id)">
+								<xsl:attribute name="id">
+									<xsl:value-of select="generate-id()"/>
+								</xsl:attribute>
+							</xsl:if>
 						</div>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -775,6 +786,7 @@
 	<xsl:template match="dtb:blockquote/dtb:table/dtb:pagenum" mode="pagenumonly">
 		<div class="dummy"><xsl:call-template name="pagenum"/></div>
 	</xsl:template>
+
 
 	<xsl:template match="dtb:pagenum" mode="pagenumonly">
 		<xsl:call-template name="pagenum"/>
@@ -1339,6 +1351,7 @@
 		</xsl:choose>
 	</xsl:template>
 
+
 	<xsl:template match="dtb:frontmatter | dtb:bodymatter | dtb:rearmatter" mode="toc">
 		<xsl:apply-templates mode="toc"/>
 	</xsl:template>
@@ -1386,7 +1399,7 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-				<xsl:value-of select="."/>
+				<xsl:value-of select="text()"/>
 			</a>
 			<xsl:if test="($depth &lt; $toc_maxdepth) and (../dtb:level2/dtb:h2 | ../dtb:level3/dtb:h3 | ../dtb:level4/dtb:h4 | ../dtb:level5/dtb:h5 | ../dtb:level6/dtb:h6 | ../dtb:level/dtb:hd)">
 				<ul class="toc">
@@ -1398,6 +1411,8 @@
 
 
 	<xsl:template match="*" mode="toc"/>
+
+
 
 	<xsl:template name="whereisnoteref">
 		<xsl:param name="idref"/>
@@ -1415,7 +1430,7 @@
 				</xsl:variable>
 				<xsl:value-of select="concat($cn,'.',$chunk_file_ext,'#',$id)"/>
 			</xsl:when>
-			<xsl:otherwise>
+			 <xsl:otherwise>
 				<xsl:value-of select="$id"/>
 			</xsl:otherwise>
 		</xsl:choose>
