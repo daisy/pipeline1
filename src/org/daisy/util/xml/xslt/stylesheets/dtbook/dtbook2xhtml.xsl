@@ -1399,7 +1399,7 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-				<xsl:value-of select="text()"/>
+				<xsl:value-of select=".//text()"/>
 			</a>
 			<xsl:if test="($depth &lt; $toc_maxdepth) and (../dtb:level2/dtb:h2 | ../dtb:level3/dtb:h3 | ../dtb:level4/dtb:h4 | ../dtb:level5/dtb:h5 | ../dtb:level6/dtb:h6 | ../dtb:level/dtb:hd)">
 				<ul class="toc">
