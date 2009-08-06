@@ -262,17 +262,13 @@ public class MIMETypeImpl implements MIMEType {
 	private String globToRegex(String glob){
 		//translate all non '*' chars to [CHARchar]
 		//translate . to (\\.)
-		//translate * to (\\w)
+		//translate * to (\\w)[\\w\\s]*
 		StringBuilder regex = new StringBuilder();
 		regex.append('^');
 		for (int i = 0; i < glob.length(); i++) {
 		  char ch = glob.charAt(i);
 		  if(ch == '*') {
-			  regex.append('(');
-			  regex.append('\\');
-			  regex.append('w');
-			  regex.append(')');
-			  regex.append('+');
+			  regex.append("(\\w)[\\w\\s]*");
 		  }else if (ch=='.'){
 			  regex.append('\\');
 			  regex.append('.');
