@@ -538,6 +538,7 @@ scripts/_dev/AllParamTypes.taskScript -text
 scripts/_dev/DAISY[!!-~]Pipeline[!!-~]TTS[!!-~]Narrator.taskScript -text
 scripts/_dev/DTBBackwardMigrator.taskScript -text
 scripts/_dev/DTBookFix_NarratorValidation.taskScript -text
+scripts/_dev/DTBookMetadataEditor.taskScript -text
 scripts/_dev/DTBookToPEF.taskScript -text
 scripts/_dev/MixedContentNormalizer.taskScript -text
 scripts/_dev/MultiFormatMedia.taskScript -text
@@ -545,6 +546,7 @@ scripts/_dev/Narrator-Autumn2008.taskScript -text
 scripts/_dev/Narrator-Dev.taskScript -text
 scripts/_dev/Narrator-MathML-samedir.taskScript -text
 scripts/_dev/Narrator-MathML.taskScript -text
+scripts/_dev/Narrator-NLB.taskScript -text
 scripts/_dev/Narrator_NoValidation.taskScript -text
 scripts/_dev/NccNcxOnly.taskScript -text
 scripts/_dev/XMLAudioAligner.taskScript -text

@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='utf-8'?>
+<taskScript version="2.0" name="dtbookMetadataEditor.dev">
+	<nicename>DTBook Metadata Editor</nicename>
+	<description>Edit metadata of a DTBook</description>
+	<documentation uri=""/>
+		
+	<parameter name="input" value="" required="true">
+		<nicename>Input DTBook file</nicename>
+		<description>A DTBook 2005 file</description>
+		<datatype>
+			<file mime="application/x-dtbook+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="dcCreator" value="" required="true">
+		<nicename>Metadata Name</nicename>
+		<description></description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="nlbRoyalties" value="" required="true">
+		<nicename>Apply Royalties</nicename>
+		<description></description>
+		<datatype>
+			<string/>
+		</datatype>
+	</parameter>
+		
+	
+	<!-- *************************
+	      Metadata Editor
+	     ************************* -->
+	<task name="int_daisy_metadataEditor" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>name</name>
+			<value>dc:Creator</value>
+		</parameter>
+		
+		<parameter>
+			<name>value</name>
+			<value>${dcCreator}</value>
+		</parameter>
+		
+		<parameter>
+			<name>mode</name>
+			<value>MERGE</value>
+		</parameter>
+	</task>
+	
+	<!-- *************************
+	      Metadata Adder
+	     ************************* -->
+	<task name="int_daisy_metadataEditor" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>name</name>
+			<value>nlb:royalties</value>
+		</parameter>
+		
+		<parameter>
+			<name>value</name>
+			<value>${nlbRoyalties}</value>
+		</parameter>
+		
+		<parameter>
+			<name>mode</name>
+			<value>OVERWRITE</value>
+		</parameter>
+	</task>		
+	
+		<!-- ************************************
+	      Pretty Printer (input and output same)
+	     ************************************ -->	
+	<task name="int_daisy_prettyPrinter" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>output</name>
+			<value>$parent{input}</value>
+		</parameter>
+	</task>
+</taskScript>
