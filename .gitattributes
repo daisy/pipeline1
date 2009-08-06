@@ -1051,6 +1051,11 @@ transformers/int_daisy_metadataEditor/MetadataEditorDriver.java -text svneol=uns
 transformers/int_daisy_metadataEditor/MetadataEditorFactory.java -text svneol=unset#text/plain
 transformers/int_daisy_metadataEditor/XSLTMetadataEditor.java -text svneol=unset#text/plain
 transformers/int_daisy_metadataEditor/transformer.tdf -text
+transformers/int_daisy_metadataEditor/xslt/copy.xsl -text svneol=unset#text/plain
+transformers/int_daisy_metadataEditor/xslt/dtbook-metadata-editor.xsl -text svneol=unset#text/plain
+transformers/int_daisy_metadataEditor/xslt/dtbook-output.xsl -text svneol=unset#text/plain
+transformers/int_daisy_metadataEditor/xslt/html-metadata-editor.xsl -text svneol=unset#text/plain
+transformers/int_daisy_metadataEditor/xslt/opf-metadata-editor.xsl -text svneol=unset#text/plain
 transformers/int_daisy_mixedContentNormalizer/AbstractNormalizer.java -text
 transformers/int_daisy_mixedContentNormalizer/AbstractSyncPointLocator.java -text
 transformers/int_daisy_mixedContentNormalizer/InputDocInfoProvider.java -text
