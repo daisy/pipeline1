@@ -136,6 +136,7 @@ doc/transformers/int_daisy_filesetGenerator.html -text
 doc/transformers/int_daisy_filesetRenamer.html -text
 doc/transformers/int_daisy_html2xhtml.html -text
 doc/transformers/int_daisy_mathAltCreator.html -text svneol=unset#text/plain
+doc/transformers/int_daisy_metadataEditor.html -text svneol=unset#text/plain
 doc/transformers/int_daisy_mixedContentNormalizer.html -text
 doc/transformers/int_daisy_ocfCreator.html -text
 doc/transformers/int_daisy_opsCreator.html -text
@@ -1043,6 +1044,11 @@ transformers/int_daisy_mathAltCreator/MathAltCreatorFactory.java -text
 transformers/int_daisy_mathAltCreator/com/dessci/mathflow/MathFlowAltCreator.java -text
 transformers/int_daisy_mathAltCreator/messages.properties -text
 transformers/int_daisy_mathAltCreator/transformer.tdf -text
+transformers/int_daisy_metadataEditor/MetadataEditor.java -text svneol=unset#text/plain
+transformers/int_daisy_metadataEditor/MetadataEditorDriver.java -text svneol=unset#text/plain
+transformers/int_daisy_metadataEditor/MetadataEditorFactory.java -text svneol=unset#text/plain
+transformers/int_daisy_metadataEditor/XSLTMetadataEditor.java -text svneol=unset#text/plain
+transformers/int_daisy_metadataEditor/transformer.tdf -text
 transformers/int_daisy_mixedContentNormalizer/AbstractNormalizer.java -text
 transformers/int_daisy_mixedContentNormalizer/AbstractSyncPointLocator.java -text
 transformers/int_daisy_mixedContentNormalizer/InputDocInfoProvider.java -text
