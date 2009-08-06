@@ -37,9 +37,10 @@ import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
-import org.daisy.util.xml.stax.StaxEntityResolver;
+import org.daisy.util.xml.pool.StAXInputFactoryPool;
+
+import com.ctc.wstx.api.WstxOutputProperties;
 
 /**
  * @author Linus Ericson
@@ -51,14 +52,14 @@ class LinkChanger {
     private XMLOutputFactory outputFactory = null;
     
     public LinkChanger() throws CatalogExceptionNotRecoverable {
-        inputFactory = XMLInputFactory.newInstance();
+    	StAXInputFactoryPool pool = StAXInputFactoryPool.getInstance();
+        inputFactory = pool.acquire(pool.getDefaultPropertyMap(false));
         eventFactory = XMLEventFactory.newInstance();
         outputFactory = XMLOutputFactory.newInstance();
-        
-        inputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
-        inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);        
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
-        inputFactory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
+        if (outputFactory.isPropertySupported(WstxOutputProperties.P_COPY_DEFAULT_ATTRS )) {
+        	outputFactory.setProperty(WstxOutputProperties.P_COPY_DEFAULT_ATTRS, Boolean.TRUE);
+        }
     }
     
     public void changeLinksOpf(File inputFile, File outputFile, String regex, String replacement, String mediaType) throws FileNotFoundException, XMLStreamException {

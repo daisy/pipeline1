@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -65,6 +66,7 @@ import org.daisy.pipeline.core.event.UserAbortEvent;
 import org.daisy.pipeline.exception.TransformerAbortException;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.collection.MultiHashMap;
+import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.execution.ProgressObserver;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.SimpleNamespaceContext;
@@ -99,6 +101,13 @@ public class NCXMaker implements BusListener {
 //	public class NCXMaker implements AbortListener, BusListener {
 	
 	public static String DEBUG_PROPERTY = "org.daisy.debug";	// the system property used to determine if we're in debug mode or not
+	public static final Set<String> nonRepeatableMetadata = new HashSet<String>(
+			Arrays.asList(new String[] { " dtb:sourceDate",
+					"dtb:sourceEdition", "dtb:sourcePublisher",
+					"dtb:sourceRights", "dtb:sourceTitle",
+					"dtb:multimediaType", "dtb:multimediaContent",
+					"dtb:producedDate", "dtb:revision", "dtb:revisionDate",
+					"dtb:revisionDescription", "dtb:totalTime" }));
 	
 	private Set<String> navListHeadings;							// heading element names
 	private Set<String> levels;										// level element names
@@ -153,6 +162,8 @@ public class NCXMaker implements BusListener {
 
 	private Set<Extension> extensions;
 	
+	private MetadataList xMetadata;                         // metadata other than the dc:elements
+	
 	
 	/**
 	 * @param inputFile the input document.
@@ -173,6 +184,7 @@ public class NCXMaker implements BusListener {
 			Set<String> navListHeadings,
 			Set<String> customNavList,
 			Set<Extension> extensions,
+			MetadataList xMetadata,
 			File dtbookOutputFile, 
 			File ncxTemplateFile,
 			ProgressObserver obs,
@@ -184,6 +196,7 @@ public class NCXMaker implements BusListener {
 		this.navListHeadings = navListHeadings;
 		this.dtbookOutputFile = dtbookOutputFile;
 		this.extensions = extensions;
+		this.xMetadata = xMetadata;
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setNamespaceAware(true);
@@ -1482,24 +1495,29 @@ public class NCXMaker implements BusListener {
 			String key = null;
 			String value = null;
 			
-			for (Iterator<?> it = event.asStartElement().getAttributes(); it.hasNext(); ) {
-				Attribute at = (Attribute) it.next();
+			if ("meta".equals(event.asStartElement().getName().getLocalPart())){
+				for (Iterator<?> it = event.asStartElement().getAttributes(); it.hasNext(); ) {
+					Attribute at = (Attribute) it.next();
 					
-				if (at.getName().getLocalPart().equals("name") && at.getValue().startsWith("dc:")) {
-					key = at.getValue();
-				} else if (at.getName().getLocalPart().equals("content")) {
-					value = at.getValue();
+					if (at.getName().getLocalPart().equals("name")) {
+						key = at.getValue();
+					} else if (at.getName().getLocalPart().equals("content")) {
+						value = at.getValue();
+					}
 				}
-			}
-			
-			if (key != null && value != null) {
-				dcElements.put(key, value);
-			} else {
-				Attribute at = event.asStartElement().getAttributeByName(new QName("name"));
-				if (at != null && at.getValue().equals("dtb:uid")) {
-					at = event.asStartElement().getAttributeByName(new QName("content"));
-					if (at != null) {
-						uid = at.getValue();
+				if (key != null && value != null) {
+					if (dcElements != null && key.startsWith("dc:")) {
+						dcElements.put(key, value);
+					} else if (key.equals("dtb:uid")) {
+						uid = value;
+					} else if (xMetadata != null) {
+						// We check the repeatability of x-metadata as per the
+						// section 3.2.3 of the Z39.86 spec.
+						// http://www.daisy.org/z3986/2005/Z3986-2005.html#XMeta
+						if (!nonRepeatableMetadata.contains(key)
+								|| xMetadata.get(new QName(key)) == null) {
+							xMetadata.add(key, value);
+						}
 					}
 				}
 			}
@@ -1819,6 +1837,14 @@ public class NCXMaker implements BusListener {
 	 */
 	public Map getDCElements() {
 		return dcElements;
+	}
+	
+	/**
+	 * Returns the metadata other than the dc:Elements and UID
+	 * @return the x-metadata
+	 */
+	public MetadataList getXMetadata() {
+		return xMetadata;
 	}
 
 

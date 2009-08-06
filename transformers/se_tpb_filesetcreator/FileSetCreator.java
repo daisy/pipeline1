@@ -255,6 +255,7 @@ public class FileSetCreator extends Transformer {
 					navListHeadings,
 					customNavLists,
 					extensions,
+					xMetadata,
 					finalDTBookFile,
 					new File(ncxTemplateFilename),
 					pr,
@@ -285,7 +286,8 @@ public class FileSetCreator extends Transformer {
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");	
 				dcElements.put("dc:Date", dateFormat.format(now));
 			}
-						
+					
+			xMetadata = ncx.getXMetadata();
 						
 //			mimeTypes = getMimeTypes();			
 //			String mediaContent = "";
