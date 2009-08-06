@@ -33,6 +33,7 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -422,6 +423,44 @@ public class Stylesheet {
         apply(xmlDom, xslt, result, parameters);
         outBuffer.append(sw.getBuffer());
     }
+    
+    public static Templates createTemplate(String fileOrFileUri,
+			String factory, ErrorListener errorListener) throws XSLTException {
+		// Create factory
+		String property = "javax.xml.transform.TransformerFactory";
+		String oldFactory = System.getProperty(property);
+		if (factory != null) {
+			System.setProperty(property, factory);
+		}
+		TransformerFactory transformerFactory = TransformerFactory
+				.newInstance();
+		try {
+			transformerFactory.setAttribute(
+					"http://saxon.sf.net/feature/version-warning",
+					Boolean.FALSE);
+		} catch (IllegalArgumentException iae) {}
+
+		if (errorListener != null) {
+			transformerFactory.setErrorListener(errorListener);
+		}
+
+		// Reset old factory property
+		System.setProperty(property, (oldFactory == null ? "" : oldFactory));
+
+		// Create transformer template
+		Source xslt;
+		try {
+			xslt = file2source(FilenameOrFileURI.toFile(fileOrFileUri),
+					CatalogEntityResolver.getInstance());
+			return transformerFactory.newTemplates(xslt);
+		} catch (ParserConfigurationException e) {
+			throw new XSLTException(e.getMessage(), e);
+		} catch (SAXException e) {
+			throw new XSLTException(e.getMessage(), e);
+		} catch (TransformerConfigurationException e) {
+			throw new XSLTException(e.getMessage(), e);
+		}
+	}
     
     /*package*/ static Source file2source(File xml, EntityResolver resolver) throws ParserConfigurationException, SAXException {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
