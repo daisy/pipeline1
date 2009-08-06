@@ -91,16 +91,8 @@
 	<dc:Subject><xsl:value-of select="../@content" /></dc:Subject>
 </xsl:template>
 
-<xsl:template match="@name[.='dc:description']" mode="dc-metadata">
-	<dc:Description><xsl:value-of select="../@content" /></dc:Description>
-</xsl:template>
-
 <xsl:template match="@name[.='dc:contributor']" mode="dc-metadata">
 	<dc:Contributor><xsl:value-of select="../@content" /></dc:Contributor>
-</xsl:template>
-
-<xsl:template match="@name[.='dc:type']" mode="dc-metadata">
-	<dc:Type><xsl:value-of select="../@content" /></dc:Type>
 </xsl:template>
 
 <xsl:template match="@name[.='dc:source']" mode="dc-metadata">
