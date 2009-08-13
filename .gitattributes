@@ -1444,6 +1444,7 @@ transformers/se_tpb_skippabilityTweaker/ContentDocSmilRepointer.java -text
 transformers/se_tpb_skippabilityTweaker/DiscInfoNccFinder.java -text
 transformers/se_tpb_skippabilityTweaker/FileAndFragment.java -text
 transformers/se_tpb_skippabilityTweaker/InternalSubsetAndMetaFilter.java -text
+transformers/se_tpb_skippabilityTweaker/MasterSmilFileClockFixer.java -text
 transformers/se_tpb_skippabilityTweaker/NccItem.java -text
 transformers/se_tpb_skippabilityTweaker/NccItemFinder.java -text
 transformers/se_tpb_skippabilityTweaker/NoterefNotebodySmilInfo.java -text

@@ -471,10 +471,12 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
             //URI outputUri = outputDirUri.resolve(relative);
             File outputFile = new File(outputDir, relative.toString());
             
-            if (filesetFile instanceof D202SmilFile ||
-                    filesetFile instanceof D202MasterSmilFile) {
+            if (filesetFile instanceof D202SmilFile) {
                 //System.err.println("skipping " + filesetFile);
-            } else if (filesetFile instanceof D202TextualContentFile || filesetFile instanceof D202NccFile) {
+            } else if (filesetFile instanceof D202MasterSmilFile) { 
+            	MasterSmilFileClockFixer masterSmilFileClockFixer = new MasterSmilFileClockFixer();
+            	masterSmilFileClockFixer.fix(filesetFile.getFile(), outputFile, totalElapsedTime);
+        	} else if (filesetFile instanceof D202TextualContentFile || filesetFile instanceof D202NccFile) {
                 TempFile tempFile = new TempFile(outputFile);
                 internalSubsetAndMetaFilter.filter(tempFile.getFile(), outputFile, totalElapsedTime);
                 tempFile.delete();
