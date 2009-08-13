@@ -283,11 +283,11 @@ import org.daisy.util.xml.pool.StAXOutputFactoryPool;
         List<Attribute> attrs = new ArrayList<Attribute>();
         attrs.add(createAttribute("endsync", "last"));
         attrs.add(createAttribute("system-required", "footnote-on"));
-        if (!idOnText) {
-            String parId = "par_" + session + "_" + counter;
-            attrs.add(createAttribute("id", parId));
-            contentBodyRefSmilBodyIdMap.put(contentBodyRef, smilPrefix + parId);
-            counter++;
+        String parId = "par_" + session + "_" + counter;
+        attrs.add(createAttribute("id", parId));
+        counter++;
+        if (!idOnText) {            
+            contentBodyRefSmilBodyIdMap.put(contentBodyRef, smilPrefix + parId);            
         }
     	result.add(createStartElement("par", attrs));
         result.add(createText("\n"));
