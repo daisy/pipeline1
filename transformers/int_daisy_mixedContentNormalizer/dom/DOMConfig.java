@@ -130,7 +130,7 @@ public class DOMConfig {
 	 */
 	public boolean isIgnorable(Element e) {				
 		for(StartElement se : mIgnorables) {
-			if(se.getName().getLocalPart().equals(e.getNodeName())) {
+			if(se.getName().getLocalPart().equals(e.getLocalName())) {
 				if(se.getName().getNamespaceURI().equals(e.getNamespaceURI())) {
 					if(matchesAttributes(e,se)) return true;
 				}	
