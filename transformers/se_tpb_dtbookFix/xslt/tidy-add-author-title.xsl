@@ -67,8 +67,10 @@
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:call-template name="insertDoctitle"/>
+			<!-- We apply the covertitle before the docauthor to respect the DTD order -->
+			<xsl:apply-templates select="dtb:covertitle"/>
 			<xsl:call-template name="insertDocauthor"/>
-			<xsl:apply-templates/>
+			<xsl:apply-templates select="*[not(local-name()='covertitle' and namespace-uri()='http://www.daisy.org/z3986/2005/dtbook/')]"/>
 		</xsl:copy>
 	</xsl:template>
 	
