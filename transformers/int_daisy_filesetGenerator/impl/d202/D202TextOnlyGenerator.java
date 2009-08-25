@@ -65,6 +65,7 @@ import org.daisy.util.fileset.Xhtml10File;
 import org.daisy.util.fileset.util.FilesetFileFilter;
 import org.daisy.util.fileset.util.FilesetLabelProvider;
 import org.daisy.util.i18n.CharUtils;
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
@@ -387,7 +388,8 @@ public class D202TextOnlyGenerator implements IFilesetGenerator {
 						 * Add ref in current smil builder
 						 */
 						boolean useTextUri = PARAM_HREFTARGET_VAL_TEXT.equals(mConfiguration.get(PARAM_HREFTARGET));
-						String smilParURI = mCurrentSmilBuilder.addPar(outputContentDoc.getName()+"#"+getID(xe.asStartElement()),useTextUri);
+						String contentDocURI = URIUtils.encodePath(outputContentDoc.getName()) +"#"+getID(xe.asStartElement());
+						String smilParURI = mCurrentSmilBuilder.addPar(contentDocURI,useTextUri);
 																							
 						/*
 						 * Add ref in NCC

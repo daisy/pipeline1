@@ -35,6 +35,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 
+import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.IDGenerator;
 import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
@@ -107,7 +108,7 @@ public class D202SmilBuilder {
 		ParContainer pc = new ParContainer(contentDocURI);
 		mParList.add(pc);
 		StringBuilder sb = new StringBuilder();
-		sb.append(mDestination.getName()).append('#');		
+		sb.append(URIUtils.encodePath(mDestination.getName())).append('#');		
 		if(!returnTextFragment || pc.mTextId == null ) {
 			sb.append(pc.mParId);
 		}else{
