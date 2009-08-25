@@ -5,12 +5,12 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 public class Images {
-	public static final String PIPELINE_LOGO = "pipeline-icon.gif";
-	public static final String MESSAGE_DEBUG = "message-debug.gif";
-	public static final String MESSAGE_ERROR = "message-error.gif";
-	public static final String MESSAGE_INFO_FINER = "message-info-finer.gif";
-	public static final String MESSAGE_INFO = "message-info.gif";
-	public static final String MESSAGE_WARNING = "message-warning.gif";
+	public static final String PIPELINE_LOGO = "pipeline-icon.gif"; //$NON-NLS-1$
+	public static final String MESSAGE_DEBUG = "message-debug.gif"; //$NON-NLS-1$
+	public static final String MESSAGE_ERROR = "message-error.gif"; //$NON-NLS-1$
+	public static final String MESSAGE_INFO_FINER = "message-info-finer.gif"; //$NON-NLS-1$
+	public static final String MESSAGE_INFO = "message-info.gif"; //$NON-NLS-1$
+	public static final String MESSAGE_WARNING = "message-warning.gif"; //$NON-NLS-1$
 	private static ImageRegistry registry;
 
 	public static Image getImage(String key) {

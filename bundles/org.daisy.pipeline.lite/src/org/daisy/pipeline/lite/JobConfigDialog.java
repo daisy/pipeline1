@@ -109,7 +109,7 @@ public class JobConfigDialog extends Dialog {
 	protected void createButtonsForButtonBar(Composite parent) {
 		if (hasOptParams) {
 			detailsButton = createButton(parent, IDialogConstants.DETAILS_ID,
-					"Advanced >>", false);
+					Messages.getString("common.action.advanced"), false); //$NON-NLS-1$
 		}
 		super.createButtonsForButtonBar(parent);
 	}
@@ -119,8 +119,8 @@ public class JobConfigDialog extends Dialog {
 		super.buttonPressed(buttonId);
 		if (IDialogConstants.DETAILS_ID == buttonId) {
 			toggleArea.toggle();
-			detailsButton.setText(toggleArea.isShown() ? "<< Hide"
-					: "Advanced >>");
+			detailsButton.setText(toggleArea.isShown() ? Messages.getString("common.action.hide") //$NON-NLS-1$
+					: Messages.getString("common.action.advanced")); //$NON-NLS-1$
 		}
 	}
 

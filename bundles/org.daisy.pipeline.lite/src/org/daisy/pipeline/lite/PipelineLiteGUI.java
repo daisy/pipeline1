@@ -38,7 +38,7 @@ public class PipelineLiteGUI {
 				@Override
 				protected void configureShell(Shell shell) {
 					super.configureShell(shell);
-					shell.setText("Pipeline Job Progress");
+					shell.setText(Messages.getString("JobProgressDialog.title")); //$NON-NLS-1$
 					shell.setImage(Images.getImage(Images.PIPELINE_LOGO));
 				}
 			};

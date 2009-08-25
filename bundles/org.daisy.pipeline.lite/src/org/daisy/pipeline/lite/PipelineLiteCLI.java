@@ -27,7 +27,7 @@ import org.daisy.pipeline.exception.DMFCConfigurationException;
 public class PipelineLiteCLI {
 
 	private Options options;
-	private String cmdName = "pipeline";
+	private String cmdName = "pipeline"; //$NON-NLS-1$
 	private PipelineCore pipeline;
 	private boolean showErrorDialog;
 	private PipelineLiteGUI gui;
@@ -50,7 +50,8 @@ public class PipelineLiteCLI {
 		PipelineLiteCLI app = new PipelineLiteCLI();
 		CommandLine line = app.parseArgs(args);
 		if (line.getArgList().size() > 0) {
-			app.printError("illegal argument -- " + args[0]);
+			app
+					.printError(Messages.getString("cli.error.illegalArgument") + args[0]); //$NON-NLS-1$
 			System.exit(1);
 		}
 		if (line.hasOption('h')) {
@@ -64,8 +65,8 @@ public class PipelineLiteCLI {
 		if (line.hasOption('s')) {
 			scriptFile = new File(line.getOptionValue('s'));
 			if (!scriptFile.exists()) {
-				app.printError("script file '" + scriptFile
-						+ "' does not exist");
+				app.printError(Messages.getString(
+						"cli.error.scriptNotFound", scriptFile)); //$NON-NLS-1$
 				System.exit(1);
 			}
 			// Load pipeline core finally
@@ -74,7 +75,7 @@ public class PipelineLiteCLI {
 			// Load pipeline core first
 			pipeline = app.loadPipeline();
 			scriptFile = gui.openScriptSelectionDialog(new File(pipeline
-					.getHomeDirectory(), "scripts"));
+					.getHomeDirectory(), "scripts")); //$NON-NLS-1$
 			if (scriptFile == null) {
 				System.exit(0);
 			}
@@ -92,7 +93,7 @@ public class PipelineLiteCLI {
 		Map<String, String> parameters = new HashMap<String, String>();
 		if (line.hasOption('p')) {
 			for (String pdecl : line.getOptionValues('p')) {
-				Pattern paramPattern = Pattern.compile("(\\w+)=(.+)");
+				Pattern paramPattern = Pattern.compile("(\\w+)=(.+)"); //$NON-NLS-1$
 				Matcher matcher = paramPattern.matcher(pdecl);
 				if (matcher.matches()) {
 					parameters.put(matcher.group(1), matcher.group(2));
@@ -109,12 +110,12 @@ public class PipelineLiteCLI {
 		}
 
 		// Execute job in progress dialog with a message manager
-		boolean monitorSubtasks = !line.hasOption("no-subtask");
+		boolean monitorSubtasks = !line.hasOption("no-subtask"); //$NON-NLS-1$
 		MessageEvent.Type severity = null;
-		if (line.hasOption("verbosity")) {
+		if (line.hasOption("verbosity")) { //$NON-NLS-1$
 			try {
 				severity = MessageEvent.Type.valueOf(line
-						.getOptionValue("verbosity"));
+						.getOptionValue("verbosity")); //$NON-NLS-1$
 			} catch (IllegalArgumentException iae) {
 				// do nothing
 			}
@@ -125,7 +126,7 @@ public class PipelineLiteCLI {
 		MessageManager messMan = new MessageManager();
 		if (gui.openProgressDialogAndExecute(job, pipeline, messMan,
 				monitorSubtasks, severity) != PipelineLiteGUI.OK) {
-			System.exit(0);
+			System.exit(2);
 		}
 
 		// If not '-q': show result dialog
@@ -156,7 +157,7 @@ public class PipelineLiteCLI {
 
 	public Script createScript(File scriptFile) {
 		if (scriptFile == null) {
-			throw new IllegalArgumentException("Script file must not be null");
+			throw new IllegalArgumentException("Script file must not be null"); //$NON-NLS-1$
 		}
 		Script script = null;
 		try {
@@ -177,17 +178,18 @@ public class PipelineLiteCLI {
 
 	public Job createJob(Script script, Map<String, String> parameters) {
 		if (script == null) {
-			throw new IllegalArgumentException("Script must not be null");
+			throw new IllegalArgumentException("Script must not be null"); //$NON-NLS-1$
 		}
 		if (parameters == null) {
-			throw new IllegalArgumentException("Parameters must not be null");
+			throw new IllegalArgumentException("Parameters must not be null"); //$NON-NLS-1$
 		}
 		Job job = new Job(script);
 		for (String name : parameters.keySet()) {
 			String value = parameters.get(name);
 			ScriptParameter param = job.getScriptParameter(name);
 			if (param == null) {
-				System.out.println("Ignoring unknown parameter '" + name + "'");
+				System.out.println(Messages.getString(
+						"cli.info.ignoringParam", name)); //$NON-NLS-1$
 			}
 			try {
 				job.setParameterValue(name, value);
@@ -205,68 +207,71 @@ public class PipelineLiteCLI {
 	private CommandLine parseArgs(String[] args) {
 		try {
 			options = new Options();
-			options.addOption("h", "help", false, "print this help message");
-			options.addOption("i", "info", false,
-					"display information on the script specified with '-s'");
-			options
-					.addOption("x", "execute", false,
-							"execute the script directly if all required parameters are set");
-			options.addOption("q", "quit", false,
-					"quit after a successful execution (no result dialog)");
+			options.addOption(
+					"h", "help", false, Messages.getString("cli.info.help")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			options.addOption("i", "info", false, //$NON-NLS-1$ //$NON-NLS-2$
+					Messages.getString("cli.info.info")); //$NON-NLS-1$
+			options.addOption("x", "execute", false, //$NON-NLS-1$ //$NON-NLS-2$
+					Messages.getString("cli.info.execute")); //$NON-NLS-1$
+			options.addOption("q", "quit", false, //$NON-NLS-1$ //$NON-NLS-2$
+					Messages.getString("cli.info.quit")); //$NON-NLS-1$
 
-			OptionBuilder.withLongOpt("no-subtask");
-			OptionBuilder
-					.withDescription("don't display the subtask label in the progress dialog");
+			OptionBuilder.withLongOpt("no-subtask"); //$NON-NLS-1$
+			OptionBuilder.withDescription(Messages
+					.getString("cli.info.nosubtask")); //$NON-NLS-1$
 			options.addOption(OptionBuilder.create());
 
-			OptionBuilder.withLongOpt("verbosity");
-			OptionBuilder
-					.withDescription("the severity above which messages are logged. Possible values are: DEBUG, INFO_FINER (default), INFO, WARNING, ERROR");
+			OptionBuilder.withLongOpt("verbosity"); //$NON-NLS-1$
+			OptionBuilder.withDescription(Messages
+					.getString("cli.info.verbosity")); //$NON-NLS-1$
 			OptionBuilder.hasArg();
-			OptionBuilder.withArgName("threshold");
+			OptionBuilder.withArgName("threshold"); //$NON-NLS-1$
 			options.addOption(OptionBuilder.create('v'));
 
-			OptionBuilder.withLongOpt("script");
-			OptionBuilder.withDescription("the script file to execute");
+			OptionBuilder.withLongOpt("script"); //$NON-NLS-1$
+			OptionBuilder
+					.withDescription(Messages.getString("cli.info.script")); //$NON-NLS-1$
 			OptionBuilder.hasArg();
-			OptionBuilder.withArgName("file");
+			OptionBuilder.withArgName("file"); //$NON-NLS-1$
 			options.addOption(OptionBuilder.create('s'));
 
 			OptionBuilder.hasArgs();
 			OptionBuilder.withValueSeparator(',');
-			OptionBuilder.withArgName("param=value,...");
-			OptionBuilder.withDescription("set script parameters");
-			OptionBuilder.withLongOpt("params");
-			options.addOption(OptionBuilder.create("p"));
+			OptionBuilder.withArgName(Messages.getString("cli.argname.params")); //$NON-NLS-1$
+			OptionBuilder
+					.withDescription(Messages.getString("cli.info.params")); //$NON-NLS-1$
+			OptionBuilder.withLongOpt("params"); //$NON-NLS-1$
+			options.addOption(OptionBuilder.create("p")); //$NON-NLS-1$
 
 			CommandLineParser parser = new PosixParser();
 			return parser.parse(options, args, false);
 		} catch (ParseException e) {
-			System.err.println("Parsing failed.  Reason: " + e.getMessage());
+			System.err
+					.println(Messages.getString("cli.error.parsingFailed") + e.getMessage()); //$NON-NLS-1$
 			return null;
 		}
 	}
 
 	private void printError(String message) {
-		String str = cmdName + ": " + message + "\nTry `" + cmdName
-				+ " --help` for more information";
+		String str = cmdName
+				+ ": " + message + "\n" + Messages.getString("cli.error.tryhelp", cmdName);//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
 		System.out.println(str);
 
 	}
 
 	private void printHelp() {
 		PrintWriter out = new PrintWriter(System.out);
-		String usage = cmdName
-				+ " [options] [-s <file>] [-p <param=value,...>]";
+		String usage = cmdName + Messages.getString("cli.info.usage"); //$NON-NLS-1$
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp(usage, "\nOptions:", options, null, false);
+		formatter.printHelp(usage, "\n" //$NON-NLS-1$
+				+ Messages.getString("cli.info.options"), options, null, false); //$NON-NLS-1$
 		out.println();
-		out.println("Examples:");
-		out.print(" 1. ");
-		out.println("pipeline -i -s path/to/DTBAudioEncoder.taskScript");
-		out.print(" 2. ");
-		out
-				.println("pipeline -x -q -s path/to/DTBAudioEncoder.taskScript -p input=path/to/manifest.opf output=path/to/dir bitrate=32");
+		out.println("\n" + Messages.getString("cli.info.examples")); //$NON-NLS-1$ //$NON-NLS-2$
+		out.print(" 1. "); //$NON-NLS-1$
+		out.println(Messages.getString("cli.info.example1")); //$NON-NLS-1$
+		out.print(" 2. "); //$NON-NLS-1$
+		out.println(Messages.getString("cli.info.example2")); //$NON-NLS-1$
 		out.flush();
 	}
 }

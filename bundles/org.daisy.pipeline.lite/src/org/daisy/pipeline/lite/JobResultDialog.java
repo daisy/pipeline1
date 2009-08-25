@@ -36,9 +36,12 @@ public class JobResultDialog extends AbstractDetailsDialog {
 	private TableViewer msgViewer;
 
 	public JobResultDialog(Shell shell, List<MessageEvent> messages, boolean ok) {
-		this(shell, messages, ok ? "Pipeline Job Completed"
-				: "Pipeline Job Failed", ok ? "Job completed." : messages.get(
-				messages.size() - 1).getMessage(),
+		this(
+				shell,
+				messages,
+				ok ? Messages.getString("JobResultDialog.title.ok") //$NON-NLS-1$
+						: Messages.getString("JobResultDialog.title.failed"), ok ? Messages.getString("JobResultDialog.text.ok") : messages.get( //$NON-NLS-1$ //$NON-NLS-2$
+										messages.size() - 1).getMessage(),
 				ok ? MessageDialog.INFORMATION : MessageDialog.ERROR);
 	}
 
@@ -103,14 +106,14 @@ public class JobResultDialog extends AbstractDetailsDialog {
 		// Pop-up menu for select all and paste
 		Menu menu = new Menu(msgViewer.getControl().getShell(), SWT.POP_UP);
 		MenuItem itemSelect = new MenuItem(menu, SWT.PUSH);
-		itemSelect.setText("Select All");
+		itemSelect.setText(Messages.getString("common.action.selectAll")); //$NON-NLS-1$
 		itemSelect.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				selectAll();
 			}
 		});
 		MenuItem itemCopy = new MenuItem(menu, SWT.PUSH);
-		itemCopy.setText("Copy");
+		itemCopy.setText(Messages.getString("common.action.copy")); //$NON-NLS-1$
 		itemCopy.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				copyToClipboard();
@@ -129,7 +132,7 @@ public class JobResultDialog extends AbstractDetailsDialog {
 		if (sel instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) sel;
 			for (Iterator<?> iterator = ssel.iterator(); iterator.hasNext();) {
-				sb.append(iterator.next()).append("\n");
+				sb.append(iterator.next()).append("\n"); //$NON-NLS-1$
 			}
 
 		}

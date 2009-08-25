@@ -39,7 +39,7 @@ public class ScriptSelectionDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
-		shell.setText("Script Selection");
+		shell.setText(Messages.getString("ScriptSelectionDialog.title")); //$NON-NLS-1$
 		shell.setImage(Images.getImage(Images.PIPELINE_LOGO));
 	}
 
@@ -55,7 +55,7 @@ public class ScriptSelectionDialog extends Dialog {
 				defaultSpacing.y * 2).numColumns(1).applyTo(area);
 		// Create the message label
 		Label message = new Label(area, SWT.LEFT);
-		message.setText("Please select a script file:");
+		message.setText(Messages.getString("ScriptSelectionDialog.text")); //$NON-NLS-1$
 		// Set width hint
 		GridData messageGD = new GridData(GridData.FILL_BOTH);
 		messageGD.widthHint = 300;

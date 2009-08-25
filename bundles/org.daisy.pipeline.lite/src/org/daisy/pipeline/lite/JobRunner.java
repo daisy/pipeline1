@@ -39,8 +39,8 @@ public class JobRunner implements IRunnableWithProgress, BusListener {
 	public void run(IProgressMonitor monitor) throws InvocationTargetException,
 			InterruptedException {
 		this.monitor = monitor;
-		monitor.beginTask("Running " + job.getScript().getNicename() + "...",
-				taskWork * taskSize);
+		monitor.beginTask(Messages.getString("JobProgressDialog.text", job //$NON-NLS-1$
+				.getScript().getNicename()), taskWork * taskSize);
 		try {
 			pipeline.execute(job);
 		} catch (JobFailedException e) {
@@ -72,7 +72,7 @@ public class JobRunner implements IRunnableWithProgress, BusListener {
 					&& (tsce.getState() == StateChangeEvent.Status.STARTED)) {
 				monitor.subTask(((Task) tsce.getSource()).getTransformerInfo()
 						.getNiceName()
-						+ " [" + currTaskIndex + "/" + taskSize + "]");
+						+ " [" + currTaskIndex + "/" + taskSize + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				currTaskIndex++;
 			}
 		}
