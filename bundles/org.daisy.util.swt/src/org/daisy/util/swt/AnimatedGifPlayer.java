@@ -28,7 +28,7 @@ public class AnimatedGifPlayer extends Thread {
 	ImageLoader loader;
 	ImageData[] imageDataArray;
 	Image image;
-	final boolean useGIFBackground = false;
+	boolean useGIFBackground = false;
 	Point controlSize;
 	boolean isDisposed = false;
 
@@ -36,7 +36,7 @@ public class AnimatedGifPlayer extends Thread {
 		try {
 			init(new FileInputStream(fileName), control, display);
 		} catch (FileNotFoundException e) {
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException(""); //$NON-NLS-1$
 		}
 	}
 
@@ -53,7 +53,7 @@ public class AnimatedGifPlayer extends Thread {
 		loader = new ImageLoader();
 		imageDataArray = loader.load(stream);
 		if (imageDataArray.length <= 1) {
-			throw new IllegalArgumentException("not a gif");
+			throw new IllegalArgumentException("not a gif"); //$NON-NLS-1$
 		}
 		setDaemon(true);
 		control.addListener(SWT.Resize, new Listener() {
@@ -166,7 +166,8 @@ public class AnimatedGifPlayer extends Thread {
 				}
 			}
 		} catch (SWTException ex) {
-			System.out.println("There was an error animating the GIF");
+			// TODO log the error
+			System.out.println("There was an error animating the GIF"); //$NON-NLS-1$
 		} finally {
 			if ((offscreenImage != null) && !offscreenImage.isDisposed()) {
 				offscreenImage.dispose();
@@ -182,6 +183,14 @@ public class AnimatedGifPlayer extends Thread {
 
 	public void dispose() {
 		isDisposed = true;
+	}
+
+	public boolean isUseGIFBackground() {
+		return useGIFBackground;
+	}
+
+	public void setUseGIFBackground(boolean useGIFBackground) {
+		this.useGIFBackground = useGIFBackground;
 	}
 
 	/**

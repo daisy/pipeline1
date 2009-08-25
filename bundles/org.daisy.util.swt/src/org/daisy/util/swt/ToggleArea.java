@@ -18,7 +18,7 @@ public class ToggleArea {
 
 	public ToggleArea(Composite parent, Shell shell) {
 		if ((parent == null) || (shell == null)) {
-			throw new IllegalArgumentException("Parameter is null");
+			throw new IllegalArgumentException("Parameter is null"); //$NON-NLS-1$
 		}
 		this.shell = shell;
 		isControlHidden = false;
