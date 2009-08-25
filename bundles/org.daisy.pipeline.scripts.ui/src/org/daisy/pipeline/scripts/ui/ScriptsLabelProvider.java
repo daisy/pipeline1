@@ -77,10 +77,8 @@ public class ScriptsLabelProvider extends LabelProvider implements
 		String text = null;
 		File file = (File) obj;
 		if (file.isDirectory()) {
-			text = file.getName();
+			text = Messages.getName(file);
 		} else {
-			// Script script = scriptMan.getScript((file).toURI());
-			// text = (script != null) ? script.getNicename() : file.getName();
 			try {
 				text = getNiceName(file.toURI());
 			} catch (Exception e) {
@@ -107,7 +105,7 @@ public class ScriptsLabelProvider extends LabelProvider implements
 			while (xsr.hasNext()) {
 				xsr.next();
 				if (xsr.isStartElement()) {
-					if (xsr.getLocalName().equals("nicename")) {
+					if (xsr.getLocalName().equals("nicename")) { //$NON-NLS-1$
 						return xsr.getElementText();
 					}
 				}

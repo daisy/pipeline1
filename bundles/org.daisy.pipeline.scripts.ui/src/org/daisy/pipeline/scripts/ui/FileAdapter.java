@@ -22,6 +22,7 @@ import java.io.File;
 import org.daisy.pipeline.core.script.ScriptParameter;
 import org.daisy.pipeline.core.script.datatype.FileDatatype;
 import org.daisy.util.swt.DialogHelper;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -31,8 +32,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * Used to edit script parameters of type {@link FileDatatype}. Uses a {@link
- * Text} widget with a "Browse" button.
+ * Used to edit script parameters of type {@link FileDatatype}. Uses a
+ * {@link Text} widget with a "Browse" button.
  * 
  * @author Romain Deltour
  * 
@@ -44,9 +45,9 @@ public class FileAdapter extends DefaultAdapter {
 	 * <code>parent</code>.
 	 * 
 	 * @param parent
-	 * 		The parent composite of the adapter widgets.
+	 *            The parent composite of the adapter widgets.
 	 * @param param
-	 * 		The parameter to edit.
+	 *            The parameter to edit.
 	 */
 	public FileAdapter(Composite parent, ScriptParameter param) {
 		super(parent, (param.getDatatype() instanceof FileDatatype) ? param
@@ -60,7 +61,7 @@ public class FileAdapter extends DefaultAdapter {
 		final FileDatatype type = (FileDatatype) param.getDatatype();
 		final Text field = new Text(parent, SWT.SINGLE | SWT.BORDER);
 		Button button = new Button(parent, SWT.PUSH | SWT.CENTER);
-		button.setText("Browse");
+		button.setText(JFaceResources.getString("openBrowse")); //$NON-NLS-1$
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
