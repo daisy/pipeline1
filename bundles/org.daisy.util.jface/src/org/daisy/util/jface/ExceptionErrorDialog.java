@@ -31,10 +31,10 @@ public class ExceptionErrorDialog extends AbstractDetailsDialog {
 
 	public ExceptionErrorDialog(Shell parentShell, Throwable t, String title,
 			String message) {
-		super(
-				parentShell,
-				title == null ? "Unexpected Error" : title,
-				message == null ? "An unexpected error occured, see the details for more information."
+		super(parentShell, title == null ? Messages
+				.getString("ExceptionErrorDialog.title") : title, //$NON-NLS-1$
+				message == null ? Messages
+						.getString("ExceptionErrorDialog.text") //$NON-NLS-1$
 						: message);
 		throwable = t;
 		clipboard = new Clipboard(Display.getCurrent());
@@ -85,7 +85,7 @@ public class ExceptionErrorDialog extends AbstractDetailsDialog {
 		// Pop-up menu for select all and paste
 		Menu menu = new Menu(text.getShell(), SWT.POP_UP);
 		MenuItem itemCopy = new MenuItem(menu, SWT.PUSH);
-		itemCopy.setText("Copy");
+		itemCopy.setText(Messages.getString("common.action.copy")); //$NON-NLS-1$
 		itemCopy.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				copyToClipboard();
