@@ -376,7 +376,8 @@ public final class URIUtils {
 			return null;
 		}
 		try {
-			String res = URLDecoder.decode(str, "UTF-8");
+			// We first encode '+' to ensure it won't be decoded as a space
+			String res = URLDecoder.decode(str.replace("+", "%2B"), "UTF-8");
 			if (skipChars != null && skipChars.length() > 0) {
 				StringBuilder sb = new StringBuilder();
 				for (int i = 0; i < res.length(); i++) {
