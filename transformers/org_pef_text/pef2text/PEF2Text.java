@@ -36,8 +36,8 @@ public class PEF2Text extends Transformer {
 	
 	@Override
 	protected boolean execute(Map<String, String> parameters) throws TransformerRunException {
-		PrintStream orOut = System.out;
-		System.setOut(new PrintStream(new PipelineMessageOutputStream(this)));
+		//PrintStream orOut = System.out;
+		//System.setOut(new PrintStream(new PipelineMessageOutputStream(this)));
         File input = new File(parameters.remove("xml"));
         String outFileName = parameters.remove("out");
         String breaks = parameters.remove("breaks");
@@ -89,7 +89,7 @@ public class PEF2Text extends Transformer {
 			if ("".equals(outFileName) && output!=null) {
 				output.delete();
 			}
-			System.setOut(orOut);
+			//System.setOut(orOut);
 		}
 		progress(1);
         return true;
