@@ -75,6 +75,27 @@
 			<default>creator?</default>
 		</parameter>
 		
+		<parameter required="false" type="string">
+			<name>rows</name>
+			<description>Page height</description>
+			<example>29</example>
+			<default>29</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>cols</name>
+			<description>Page width</description>
+			<example>30</example>
+			<default>30</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>rowgap</name>
+			<description>Rowgap</description>
+			<example>0</example>
+			<default>0</default>
+		</parameter>
+		
 		<!-- Splitter -->
 		<parameter required="false" type="string">
 			<name>min</name>
@@ -101,7 +122,7 @@
 			<name>duplex</name>
 			<description>Emboss sheets on both sides</description>
 			<example>true</example>
-			<default>false</default>
+			<default>true</default>
 		</parameter>
 		
 	</parameters>

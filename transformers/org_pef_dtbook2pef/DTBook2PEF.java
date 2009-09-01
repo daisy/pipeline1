@@ -2,6 +2,7 @@ package org_pef_dtbook2pef;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,14 +15,10 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileJuggler;
-import org_pef_dtbook2pef.filters.CaseFilter;
-import org_pef_dtbook2pef.filters.CharFilter;
-import org_pef_dtbook2pef.filters.InternalTask;
-import org_pef_dtbook2pef.filters.RegexFilter;
-import org_pef_dtbook2pef.filters.StringFilter;
-import org_pef_dtbook2pef.filters.TextNodeTask;
-import org_pef_dtbook2pef.filters.XslFoTask;
-import org_pef_dtbook2pef.filters.XsltTask;
+
+import org_pef_dtbook2pef.setups.sv_SE.SwedishBrailleSystem;
+import org_pef_dtbook2pef.system.InternalTask;
+import org_pef_dtbook2pef.system.TaskSystem;
 
 /**
  * <p>Transforms DTBook 2005-3 into PEF 2008-1</p>
@@ -51,73 +48,25 @@ import org_pef_dtbook2pef.filters.XsltTask;
 //TODO: Externalize regex-file (/text/regex.def)
 public class DTBook2PEF extends Transformer {
 	private HashMap<String, String> map;
-	private final static HashMap<String, ArrayList<InternalTask>> system;
 	
-	/*
-	 *  The conversion system is defined in the static code block below. It can contain 
-	 *  any number of conversion setups.
-	 *
-	 *  Each setup consists of a series of tasks that, put together, performs conversion from 
-	 *  DTBook to PEF. A setup is labeled by an identifier when inserted into the system.
+	/**
+	 *  System setups are defined here. Modification to other parts of this file should
+	 *  not be needed.
+	 *  
+	 *  Each system setup consists of a series of tasks that, put together, performs conversion from 
+	 *  DTBook to PEF. A system is labeled by an identifier when inserted into the HashMap.
 	 *  The recommended practice is to use a language region (or sub region) as identifier.
 	 *
-	 *  New setups can be added to the conversion system by following the example below. 
-	 *  Depending on setup needs, additional code may be required.
-	 *
+	 *  New systems setups can be added to the conversion system by following the example below.
 	 */
-	static {
-		system = new HashMap<String, ArrayList<InternalTask>>();
-		// Setup for Swedish
-			system.put("sv-SE", compileSetup_sv_SE());
-		// Add setup here
-			// ...
-			// For example:
-			// ArrayList<InternalTask> tmp = new ArrayList<InternalTask>();
-			// tmp.add(new InternalTask());
-			// system.put("xx-YY", tmp);
-	}
-	
-	// Setup for Swedish
-	private static ArrayList<InternalTask> compileSetup_sv_SE() {
-		ArrayList<InternalTask> setup = new ArrayList<InternalTask>();
-		// Check input conformance 
-		//tmp.add(new ConformaceTask());
+	private HashMap<String, TaskSystem> compileSystemSetups(Map<String, String> parameters) {
+		HashMap<String, TaskSystem> systemSetups = new HashMap<String, TaskSystem>();
 
-		// Add braille markers based on text contents
-		ArrayList<StringFilter> filters = new ArrayList<StringFilter>();
-		// One or more digit followed by zero or more digits, commas or periods
-		filters.add(new RegexFilter("([\\d]+[\\d,\\.]*)", "\u283c$1"));
-		// Add upper case marker to the beginning of any upper case sequence
-		filters.add(new RegexFilter("(\\p{Lu}[\\p{Lu}\\u00ad]*)", "\u2820$1"));
-		// Add another upper case marker if the upper case sequence contains more than one character
-		filters.add(new RegexFilter("(\\u2820\\p{Lu}\\u00ad*\\p{Lu}[\\p{Lu}\\u00ad]*)", "\u2820$1"));
-		// Add to setup
-		setup.add(new TextNodeTask("Braille markers injector", filters));
+		// Setup for Swedish //
+		systemSetups.put("sv-SE", new SwedishBrailleSystem(this)); 
+		// Add more Braille systems here //
 		
-		filters = new ArrayList<StringFilter>();
-		// Change case to lower case
-		filters.add(new CaseFilter(CaseFilter.Mode.LOWER_CASE));
-		// Transcode characters
-		filters.add(new CharFilter("./sv_SE/text/default-table.xml"));
-		// Add to setup
-		setup.add(new TextNodeTask("Character replacer (Swedish)", filters));
-		
-		// Redefines dtbook as XSL-FO input
-		setup.add(new XsltTask("DTBook to XSL-FO converter", "./sv_SE/definers/dtbook2xslfo.xsl", null));
-
-		// Perform layout
-		setup.add(new XslFoTask());
-		
-		// Transform into PEF precursor
-		setup.add(new XsltTask("Area tree to PEF converter", "./common/renderers/areatree2pef.xsl", null));
-		
-		// Finalizes character data on rows
-		setup.add(new XsltTask("Braille finalizer", "./common/renderers/braille-finalizer.xsl", null));
-		
-		// Split result into volumes 
-		setup.add(new XsltTask("Volume splitter", "./common/splitters/simple-splitter.xsl", null));
-
-		return setup;
+		return systemSetups;
 	}
 
 	/**
@@ -144,9 +93,9 @@ public class DTBook2PEF extends Transformer {
 
 		map = new HashMap<String, String>();
 		map.putAll(parameters);
-		
+
 		try {
-			//TODO: move to task
+			//TODO: move to task?
 			if (!map.containsKey("date")) {
 			    Calendar c = Calendar.getInstance();
 			    c.setTime(new Date());
@@ -162,13 +111,15 @@ public class DTBook2PEF extends Transformer {
 				id = id.substring(0, id.indexOf('p'));
 				map.put("identifier", "dummy-id-"+ id);
 			}
+
+			HashMap<String, TaskSystem> systemSetups = compileSystemSetups(map);
 			
 			// Copy resource
 			//FileUtils.writeInputStreamToFile(this.getTransformerDirectoryResource("./lib/pef2xhtml.xsl").openStream(), new File(outdir, "pef2xhtml.xsl"));
 			
 			// Run tasks
 			FileJuggler fj = new FileJuggler(new File(input), output);
-			ArrayList<InternalTask> tasks = system.get(setup);
+			ArrayList<InternalTask> tasks = systemSetups.get(setup).compile(map);
 			if (tasks==null) {
 				throw new TransformerRunException("Unable to load setup " + setup);
 			}
@@ -193,4 +144,9 @@ public class DTBook2PEF extends Transformer {
 		progress(1);
 		return true;
 	}
+	
+	public URL getResource(String subPath) throws IllegalArgumentException {
+		return getTransformerDirectoryResource(subPath);
+	}
+
 }

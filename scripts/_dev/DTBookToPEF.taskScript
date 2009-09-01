@@ -29,9 +29,29 @@
 		</datatype>
 	</parameter>
 
-	<!--
-		Validate input
-	-->
+	<parameter name="setup" value="sv-SE" required="false">
+		<nicename>Conversion Setup</nicename>
+		<description>Conversion setup to apply - see documentation</description>
+		<datatype>
+			<enum>
+			  <item nicename="Swedish" value="sv-SE" />
+			</enum>
+		</datatype>
+	</parameter>
+
+<!--
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+	</task>
+-->
 
 	<task name="se_tpb_hyphenator" interactive="false">
 		<parameter>
@@ -61,6 +81,11 @@
 			<name>filename</name>
 			<value>${filename}</value>
 		</parameter>
+		
+		<parameter>
+			<name>setup</name>
+			<value>${setup}</value>
+		</parameter>
 
 	</task>
 
@@ -85,6 +110,28 @@
 		<parameter>
 			<name>schemas</name>
 			<value>pef-2008-1.rng</value>
+		</parameter>
+	</task>
+	
+	<task name="org_pef_text/pef2text" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${outputPath}/${filename}</value>
+		</parameter>
+
+		<parameter>
+			<name>out</name>
+			<value>${outputPath}/${filename}.txt</value>
+		</parameter>
+		
+		<parameter>
+			<name>table</name>
+			<value>sv_SE_CX</value>
+		</parameter>
+		
+		<parameter>
+			<name>pad</name>
+			<value>both</value>
 		</parameter>
 	</task>
 
