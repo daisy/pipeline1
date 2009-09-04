@@ -23,7 +23,9 @@
 	<xsl:variable name="p_target" select="(if ($duplex) then 2 else 1)*$target" as="xs:integer"/>
 	<xsl:variable name="p_max" select="(if ($duplex) then 2 else 1)*$max" as="xs:integer"/>
 
-	<xsl:variable name="pages" select="count(descendant::pef:page)" as="xs:integer"/>
+	<xsl:variable name="pages" select="if ($duplex) then 
+			count(descendant::pef:page)+count(descendant::pef:section[(count(page) mod 2)=1])
+			else count(descendant::pef:page)" as="xs:integer"/>
 	<xsl:variable name="v_target" select="ceiling($pages div $p_target) cast as xs:integer" as="xs:integer"/>
 	<xsl:variable name="v_max" select="ceiling($pages div $p_max) cast as xs:integer" as="xs:integer"/>
 	<xsl:variable name="volumes" select="min(($v_target, $v_max))" as="xs:integer"/>
@@ -54,7 +56,11 @@
 	</xsl:template>
 
 	<xsl:template match="pef:page">
-		<xsl:if test="((count(preceding::pef:page)) mod $breakpoint) = 0">
+		<xsl:variable name="pageIndex" select="if ($duplex) then 
+				count(preceding::pef:page) + count(preceding::pef:section[(count(page) mod 2)=1])
+				else count(preceding::pef:page)
+				"/>
+		<xsl:if test="($pageIndex mod $breakpoint) = 0">
 			<xsl:if test="preceding::pef:page">
 				<xsl:text disable-output-escaping="yes">&lt;/section>&lt;/volume>&lt;volume</xsl:text>
 				<xsl:for-each select="ancestor::pef:volume/attribute()[not(name()='duplex')]">
