@@ -50,21 +50,18 @@ public class ValidatorTask extends InternalTask implements ErrorHandler {
 		throw new TransformerRunException("Input validation failed.");
 	}
 
-	@Override
 	public void error(SAXParseException exception) throws SAXException {
 		System.err.println(exception.toString());
 		throw new SAXException(exception);
 		// TODO Auto-generated method stub
 	}
 
-	@Override
 	public void fatalError(SAXParseException exception) throws SAXException {
 		System.err.println(exception.toString());
 		throw new SAXException(exception);
 		// TODO Auto-generated method stub
 	}
 
-	@Override
 	public void warning(SAXParseException exception) throws SAXException {
 		System.err.println(exception.toString());
 		// TODO Auto-generated method stub

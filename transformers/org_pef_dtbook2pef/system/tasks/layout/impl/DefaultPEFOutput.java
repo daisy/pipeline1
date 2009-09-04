@@ -57,14 +57,12 @@ public class DefaultPEFOutput implements PagedMediaOutput {
 		pst.println("<body>");
 	}
 
-	@Override
 	public void newPage() {
 		closeOpenPage();
 		pst.println("<page>");
 		hasOpenPage = true;
 	}
 
-	@Override
 	public void newRow(Row row) {
 		pst.print("<row>");
 		pst.print(row.getChars());
@@ -72,7 +70,6 @@ public class DefaultPEFOutput implements PagedMediaOutput {
 		pst.println();
 	}
 
-	@Override
 	public void newSection(LayoutMaster master) {
 		if (!hasOpenVolume) {
 			cCols = master.getPageWidth();
@@ -121,7 +118,6 @@ public class DefaultPEFOutput implements PagedMediaOutput {
 		}
 	}
 
-	@Override
 	public void close() {
 		closeOpenVolume();
 		pst.println("</body>");

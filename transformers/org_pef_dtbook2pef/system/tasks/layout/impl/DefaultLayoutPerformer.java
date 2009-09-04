@@ -247,7 +247,6 @@ whileLoop:		while (i>=0) {
 		flowStruct.newSequence(p);
 	}
 
-	@Override
 	public void insertLeader(Leader leader) {
 		currentLeader = leader;
 	}

@@ -60,7 +60,6 @@ public class SwedishBrailleSystem implements TaskSystem {
 		this.t = t;
 	}
 
-	@Override
 	public ArrayList<InternalTask> compile(Map<String, String> parameters) {
 		Properties p = new Properties();
 		p.putAll(parameters);

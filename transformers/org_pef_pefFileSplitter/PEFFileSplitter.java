@@ -170,18 +170,15 @@ public class PEFFileSplitter extends Transformer  implements ErrorHandler  {
 			throw new TransformerRunException("ValidationException: ", e);
 		}
 	}
-	
-	@Override
+
 	public void error(SAXParseException exception) throws SAXException {
 		throw new SAXException(exception);
 	}
 
-	@Override
 	public void fatalError(SAXParseException exception) throws SAXException {
 		throw new SAXException(exception);
 	}
 
-	@Override
 	public void warning(SAXParseException exception) throws SAXException {
 		System.err.println(exception.toString());
 	}
