@@ -104,6 +104,7 @@ doc/scripts/Narrator-DtbookToDaisy.html -text
 doc/scripts/Narrator-multiplettsslaves.html -text
 doc/scripts/OCFCreator.html -text
 doc/scripts/OPSCreator.html -text
+doc/scripts/PEFFileSplitter.html -text
 doc/scripts/PEFIntroduction.html -text
 doc/scripts/PEFToText.html -text
 doc/scripts/PEFValidator.html -text
@@ -147,6 +148,7 @@ doc/transformers/int_daisy_validator.html -text
 doc/transformers/no_hks_xhtml2dtbook.html -text
 doc/transformers/org_pef_dist.html -text
 doc/transformers/org_pef_pef2text.html -text
+doc/transformers/org_pef_pefFileSplitter.html -text
 doc/transformers/org_pef_text2pef.html -text
 doc/transformers/pipeline_system_copyer.html -text
 doc/transformers/pipeline_system_deleter.html -text
@@ -573,6 +575,7 @@ scripts/create_distribute/xhtml/DtbookToXhtml.taskScript -text
 scripts/create_distribute/xhtml/HtmlToXhtml.taskScript -text
 scripts/create_distribute/xhtml/RtfToXhtml.taskScript -text
 scripts/create_distribute/xhtml/WordMLtoXhtml.taskScript -text
+scripts/modify_improve/BraillePEFFileSplitter.taskScript -text
 scripts/modify_improve/dtb/DTBAudioEncoder.taskScript -text
 scripts/modify_improve/dtb/DTBAudioEncoderRenamerSplitter.taskScript -text
 scripts/modify_improve/dtb/DTBAudioEncoderSplitter.taskScript -text
@@ -1192,6 +1195,8 @@ transformers/org_pef_dtbook2pef/system/tasks/textnode/filters/RegexFilter.java -
 transformers/org_pef_dtbook2pef/system/tasks/textnode/filters/StringFilter.java -text
 transformers/org_pef_dtbook2pef/system/tasks/textnode/filters/StringFilterHandler.java -text
 transformers/org_pef_dtbook2pef/transformer.tdf -text
+transformers/org_pef_pefFileSplitter/PEFFileSplitter.java -text
+transformers/org_pef_pefFileSplitter/transformer.tdf -text
 transformers/org_pef_text/AbstractTable.java -text
 transformers/org_pef_text/PipelineMessageOutputStream.java -text
 transformers/org_pef_text/SimpleTable.java -text
