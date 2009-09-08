@@ -21,17 +21,17 @@
 		</datatype>
 	</parameter>
 
-	<parameter name="filename" value="" required="false">
-		<nicename>Filename</nicename>
-		<description>Optional file name base for the resulting files. If left blank, the file name base is derived from the input file.</description>
+	<parameter name="prefix" value="" required="false">
+		<nicename>Filename prefix</nicename>
+		<description>Optional filename prefix for the resulting files. If left blank, the filename prefix is derived from the input file.</description>
 		<datatype>
 			<string/>
 		</datatype>
 	</parameter>
 	
-	<parameter name="extension" value="" required="false">
-		<nicename>Extension</nicename>
-		<description>Optional extension for the resulting files. If left blank, the extension is derived from the input file.</description>
+	<parameter name="postfix" value="" required="false">
+		<nicename>Filename postfix</nicename>
+		<description>Optional filename postfix for the resulting files (typically, '.pef'). If left blank, the filename postfix is derived from the input file.</description>
 		<datatype>
 			<string/>
 		</datatype>
@@ -66,13 +66,13 @@
 		</parameter>
 
 		<parameter>
-			<name>filename</name>
-			<value>${filename}</value>
+			<name>prefix</name>
+			<value>${prefix}</value>
 		</parameter>
 		
 		<parameter>
-			<name>extension</name>
-			<value>${extension}</value>
+			<name>postfix</name>
+			<value>${postfix}</value>
 		</parameter>
 
 	</task>

@@ -5,12 +5,12 @@
 <head>
   <meta http-equiv="content-type"
   content="application/xhtml+xml; charset=UTF-8" />
-  <title>org_pef_pefFileSplitter</title>
+  <title>org_pef_pefFileMerger</title>
   <link rel="stylesheet" type="text/css" href="../pipeline.css" />
 </head>
 
 <body>
-<h1 class="title">Transformer documentation: <em>org_pef_pefFileSplitter</em>
+<h1 class="title">Transformer documentation: <em>org_pef_pefFileMerger</em>
 </h1>
 <!-- doc.html contains primarily developer-centric information, 
 not end-user-centric information. However, when describing extended configuration, remember
@@ -41,22 +41,21 @@ that end users may come in contact with that information. -->
 
 <h2 id="purpose">Transformer Purpose</h2>
 
-<p>The purpose of this transformer is to split a PEF file into several files,
-one file per volume.</p>
+<p>The purpose of this transformer is to merge several PEF files into one.</p>
 <!-- brief summary of purpose -->
 
 <h2 id="inputReqs">Input Requirements</h2>
 
-<p>A PEF 2008-1 document.</p>
+<p>A folder containing PEF 2008-1 documents only.</p>
 <!-- contract definition: detailed requirements on input nature -->
 
 <h2 id="output">Output</h2>
 
-<p>Multiple PEF 2008-1 documents.</p>
+<p>A PEF 2008-1 document.</p>
 
 <h3 id="success">On success</h3>
 
-<p>Multiple PEF 2008-1 documents.</p>
+<p>A PEF 2008-1 document.</p>
 <!-- contract definition: details on delivered output given that input reqs are satisfied
 and no exception occurs -->
 
@@ -70,13 +69,21 @@ input reqs were not satisfied, or because an exception occurs -->
 <!-- description on params as defined in tdf, please use the below definition list -->
 <dl id="paramslist">
   <dt>input</dt>
-    <dd>Path to PEF 2008-1 document</dd>
+    <dd>Path to input directory</dd>
   <dt>output</dt>
-    <dd>Path to output directory</dd>
-  <dt>prefix</dt>
-    <dd>Filename prefix for resulting files</dd>
-  <dt>postfix</dt>
-    <dd>Filename postfix for resulting files</dd>
+    <dd>Path to output PEF file</dd>
+  <dt>identifier</dt>
+    <dd>A publication identifier</dd>
+  <dt>sortType</dt>
+    <dd>Sorting algorithm type. Available options are "Numeral grouping" and
+      "Standard". Standard sorting can generate non-intuitive behaviour. E.g.
+      the standard sort order of the files 'volume-1.pef', 'volume-2.pef' and
+      'volume-10.pef' is 1, 10, 2. The "Numeral grouping" sorting type avoids
+      this behaviour by evaluating the sort order of number groups as numbers
+      instead of as strings, e.g. the files in the above example would be
+      sorted in the order 1, 2, 10. Note that the "Numeral grouping" sorting
+      algorithm disregards character case on all platforms, unlike the
+      "Standard" algorithm.</dd>
 </dl>
 
 <h3 id="extConfig">Extended configurability</h3>

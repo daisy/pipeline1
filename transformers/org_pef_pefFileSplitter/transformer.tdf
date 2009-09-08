@@ -22,15 +22,15 @@
 		</parameter>
 
 		<parameter required="false" type="string">
-			<name>filename</name>
-			<description>Optional file name base for the resulting files</description>
+			<name>prefix</name>
+			<description>Optional filename prefix for the resulting files</description>
 			<example>volume</example>
 			<default></default>
 		</parameter>
 		
 		<parameter required="false" type="string">
-			<name>extension</name>
-			<description>Optional extension for the resulting files</description>
+			<name>postfix</name>
+			<description>Optional filename postfix for the resulting files</description>
 			<example>.xml</example>
 			<default></default>
 		</parameter>

@@ -46,8 +46,8 @@ public class PEFFileSplitter extends Transformer  implements ErrorHandler  {
 		progress(0);
 		File input = new File(parameters.get("input"));
 		File directory = new File(parameters.get("output"));
-		String name = parameters.get("filename");
-		String extension = parameters.get("extension");
+		String prefix = parameters.get("prefix");
+		String postfix = parameters.get("postfix");
 		String inputName = input.getName();
 		String inputExt = ".pef";
 		int index = inputName.lastIndexOf('.');
@@ -58,11 +58,11 @@ public class PEFFileSplitter extends Transformer  implements ErrorHandler  {
 			inputName = inputName.substring(0, index);
 			
 		}
-		if (name==null || "".equals(name)) {
-			name = inputName;
+		if (prefix==null || "".equals(prefix)) {
+			prefix = inputName;
 		}
-		if (extension==null || "".equals(extension)) {
-			extension = inputExt;
+		if (postfix==null || "".equals(postfix)) {
+			postfix = inputExt;
 		}
 
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
@@ -96,7 +96,7 @@ public class PEFFileSplitter extends Transformer  implements ErrorHandler  {
 	            		&& volume.equals(event.asStartElement().getName())) {
 	            	state = State.BODY;
 	        		i++;
-	        		files.push(new File(directory, name + "-" + i + extension));
+	        		files.push(new File(directory, prefix + "-" + i + postfix));
 	    			os.push(new FileOutputStream(files.peek()));
 	    			writers.push(outputFactory.createXMLEventWriter(os.peek()));
 	    			// output header information
