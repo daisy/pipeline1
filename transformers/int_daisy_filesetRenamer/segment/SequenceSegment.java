@@ -123,9 +123,9 @@ public class SequenceSegment extends Segment {
 			//break the loop when inparam file is found,
 			//return the postincremented counter
 			long counter = 0;
+			Set<String> counterCache = new HashSet<String>(); 
+			Set<String> alreadySearchedCache = new HashSet<String>();
 			for (Iterator<? extends FilesetFile> iter = loop.iterator(); iter.hasNext();) {
-				Set<String> counterCache = new HashSet<String>(); 
-				Set<String> alreadySearchedCache = new HashSet<String>();
 				FilesetFile toCheck = iter.next();	
 				counter = search(toCheck,toFind,counterCache,alreadySearchedCache);
 				if(counter>-1) break;
