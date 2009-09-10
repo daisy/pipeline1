@@ -39,25 +39,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.DTD;
-import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.EFile;
 import org.daisy.util.file.Directory;
+import org.daisy.util.file.EFile;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.CssFile;
@@ -65,20 +60,13 @@ import org.daisy.util.fileset.Fileset;
 import org.daisy.util.fileset.FilesetErrorHandler;
 import org.daisy.util.fileset.FilesetFile;
 import org.daisy.util.fileset.Referring;
-import org.daisy.util.fileset.SmilFile;
-import org.daisy.util.fileset.Xhtml10File;
 import org.daisy.util.fileset.XmlFile;
-import org.daisy.util.fileset.Z3986DtbookFile;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.fileset.util.FilesetRegex;
-import org.daisy.util.fileset.util.URIStringParser;
 import org.daisy.util.text.URIUtils;
-import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
-import org.daisy.util.xml.stax.ContextStack;
-import org.daisy.util.xml.stax.DoctypeParser;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 import org.daisy.util.xml.stax.StaxFilter;
 
@@ -354,7 +342,7 @@ public class FilesetRenamer extends Transformer implements FilesetErrorHandler {
 						String newManifestName = mStrategy.getNewLocalName(mInputFileset.getManifestMember());
 						if (newReference.toString().equals(newManifestName)){
 							// internal link
-							newValue="";
+							newValue=fragAndQuery.length()>0?"":newManifestName;
 						} else{
 							newValue = newReference.toASCIIString();
 						}
