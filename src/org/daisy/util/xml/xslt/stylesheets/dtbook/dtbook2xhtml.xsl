@@ -651,6 +651,18 @@
 				</div>
 			</xsl:otherwise>
 		</xsl:choose>
+		<xsl:if test="$toc_gen='true' and not($chunk_gen='true')">
+			<xsl:variable name="depth">
+				<xsl:call-template name="getdepth"/>
+			</xsl:variable>
+			<xsl:if test="$depth &lt; $toc_maxdepth + 1">
+				<p><a href="#toc-html">
+					<xsl:call-template name="getString">
+						<xsl:with-param name="key" select="'backtotableofcontents'"/>
+					</xsl:call-template>
+				</a></p>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 
    <xsl:template match="dtb:list/dtb:hd">
