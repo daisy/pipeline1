@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -139,7 +140,7 @@ public class TTSBuilder implements TTSConstants {
 	}
 
 
-	public TTS newTTS(String lang, TransformerDelegateListener tdl) throws TTSBuilderException {
+	public TTS newTTS(Locale lang, TransformerDelegateListener tdl) throws TTSBuilderException {
 
 		String xpath = null;
 		Element docElement = null;
@@ -147,19 +148,26 @@ public class TTSBuilder implements TTSConstants {
 
 		// if lang != null, someone wants a TTS for a specific xml:lang
 		if (lang != null) {
-			// is lang a valid locale?
-			if (null == LocaleUtils.string2locale(lang)) {
-				// what? throw InvalidLangException??
-				throw new IllegalArgumentException(lang + " is not a valid lang parameter.");
-			}
 
-			xpath = "/ttsbuilder/os/lang[@lang='" + lang + "']/tts";
+			xpath = "/ttsbuilder/os/lang[@lang='" + lang.toString() + "']/tts";
 			docElement = configuration.getDocumentElement();
 			ttsElement = (Element) XPathUtils.selectSingleNode(docElement, xpath);
 
 			if (null == ttsElement) {
-				String msg = "No TTS found for language: " + lang;
-				throw new TTSBuilderException(msg);
+				xpath = "/ttsbuilder/os/lang[@lang='" + lang.getLanguage() + "']/tts";
+				docElement = configuration.getDocumentElement();
+				ttsElement = (Element) XPathUtils.selectSingleNode(docElement, xpath);
+				
+				if (null ==ttsElement){
+					xpath = "/ttsbuilder/os/lang[starts-with(@lang,'" + lang.getLanguage() + "_')]/tts";
+					docElement = configuration.getDocumentElement();
+					ttsElement = (Element) XPathUtils.selectSingleNode(docElement, xpath);
+					
+					if (null ==ttsElement){
+						String msg = "No TTS found for language: " + lang;
+						throw new TTSBuilderException(msg);
+					}
+				}
 				
 			}
 		} else {

@@ -98,9 +98,9 @@
 	</sch:pattern>	
 
 	
-	<sch:pattern name="The length of the lang attribute is 2 (confirms to ISO-639 2-letter code)">
+	<sch:pattern name="The length of the lang attribute must not be empty">
 		<sch:rule context="/ttsbuilder/os/lang">
-			<sch:assert test="string-length(./@lang) = 2">Length of lang attribute value must not be other than 2, and should cofirm to the ISO-639 2-letter standard</sch:assert>
+			<sch:assert test="string-length(./@lang) &gt; 0">Length of lang attribute value must not be empty</sch:assert>
 		</sch:rule>
 	</sch:pattern>
 	

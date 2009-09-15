@@ -312,14 +312,14 @@ public class SpeechGen2 extends Transformer {
 			numSPoints = 0;
 			String characterEncoding = "utf-8";
 			ContextStack peek = new ContextStack();
-			Set<String> languages = new HashSet<String>();
+			Set<Locale> languages = new HashSet<Locale>();
 			while (reader.hasNext()) {
 				XMLEvent event = reader.nextEvent();
 				peek.addEvent(event);
 				xmlContext.addEvent(event);
 				if (event.isStartElement()) {
 				    StartElement se = event.asStartElement();
-					languages.add(peek.getCurrentLocale().getLanguage());
+					languages.add(peek.getCurrentLocale());
 					String context = xmlContext.getContextXPath(ContextStack.XPATH_SELECT_ELEMENTS_ONLY, ContextStack.XPATH_PREDICATES_NONE);
 					if (isSynchronizationPoint(reader, se)) {
 						numSPoints++;
@@ -355,8 +355,8 @@ public class SpeechGen2 extends Transformer {
 
 			boolean multiLang = Boolean.parseBoolean(parameters
 					.remove("multiLang"));
-			for (Iterator<String> it = languages.iterator(); it.hasNext(); ) {
-				String lang = it.next();
+			for (Iterator<Locale> it = languages.iterator(); it.hasNext(); ) {
+				Locale lang = it.next();
 
 				TTS tts = null;
 				TransformerDelegateListener tdl = new DefaultTransformerDelegateListener(){
@@ -398,7 +398,7 @@ public class SpeechGen2 extends Transformer {
 				}
 				if (tts != null) {
 					tts.setFailOnError(failOnError);
-					ttsEngines.put(lang, tts);
+					ttsEngines.put(lang.toString(), tts);
 				}
 					
 			}
@@ -1066,8 +1066,8 @@ public class SpeechGen2 extends Transformer {
 			root.setAttribute(qn.getLocalPart(), at.getValue());
 		}
 		Locale currentLocale = xmlContext.getCurrentLocale();
-		if (currentLocale != null && currentLocale.getLanguage() != null) {
-			root.setAttribute("xml:lang", currentLocale.getLanguage());
+		if (currentLocale != null) {
+			root.setAttribute("xml:lang", currentLocale.toString());
 		}
 
 		dom.appendChild(root);
