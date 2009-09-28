@@ -10,18 +10,22 @@ import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformer;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Leader;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
 import org_pef_dtbook2pef.system.tasks.layout.flow.SequenceProperties;
-import org_pef_dtbook2pef.system.tasks.layout.impl.BreakPointHandler.BreakPoint;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
-import org_pef_dtbook2pef.system.tasks.layout.page.Page;
-import org_pef_dtbook2pef.system.tasks.layout.page.PageSequence;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaOutput;
-import org_pef_dtbook2pef.system.tasks.layout.page.Row;
+import org_pef_dtbook2pef.system.tasks.layout.page.field.CompoundField;
+import org_pef_dtbook2pef.system.tasks.layout.page.field.CurrentPageField;
+import org_pef_dtbook2pef.system.tasks.layout.page.field.MarkerReferenceField;
+import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterHandler;
+import org_pef_dtbook2pef.system.tasks.layout.utils.BreakPointHandler;
 import org_pef_dtbook2pef.system.tasks.layout.utils.LayoutTools;
+import org_pef_dtbook2pef.system.tasks.layout.utils.BreakPointHandler.BreakPoint;
 
 /**
  * Breaks flow into rows, page related block properties are left to next step
  * @author joha
- *
+ * TODO: implement initial-page-number attribute
+ * TODO: content-before (list-item) does align properly with nested block elements (aligns against left margin) 
+ * TODO: fix recursive keep problem
  */
 public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 	private static final Character SPACE_CHAR = ' '; //'\u2800'
@@ -29,25 +33,58 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 	private int rightMargin;
 	private FlowStruct flowStruct;
 	private Stack<BlockProperties> context;
-	private boolean newRow;
+	private boolean firstRow;
 	private int currentListNumber;
 	private BlockProperties.ListType currentListType;
 	private Leader currentLeader;
 	private HashMap<String, LayoutMaster> masters;
+	private StringFilterHandler filters;
 
+	public static class Builder {
+		HashMap<String, LayoutMaster> masters;
+		StringFilterHandler filters;
+		
+		public Builder() {
+			masters = new HashMap<String, LayoutMaster>();
+			setTextFilterHandler(null);
+		}
+		
+		/**
+		 * Set text filter handler, may be null
+		 * @param filters
+		 */
+		public Builder setTextFilterHandler(StringFilterHandler filters) {
+			if (filters == null) {
+				this.filters = new StringFilterHandler();
+			} else {
+				this.filters = filters;
+			}
+			return this;
+		}
+		
+		public Builder addLayoutMaster(String key, LayoutMaster value) {
+			masters.put(key, value);
+			return this;
+		}
+
+		public DefaultLayoutPerformer build() {
+			return new DefaultLayoutPerformer(this);
+		}
+	}
 	
 	/**
 	 * Create a new flow
 	 * @param flowWidth the width of the flow, in chars
 	 */
-	public DefaultLayoutPerformer(HashMap<String, LayoutMaster> masters) {
+	private DefaultLayoutPerformer(Builder builder) {
+		this.masters = builder.masters;
+		this.filters = builder.filters;
 		this.context = new Stack<BlockProperties>();
 		this.leftMargin = 0;
 		this.rightMargin = 0;
-		this.flowStruct = new FlowStruct(masters);
 		this.currentListType = BlockProperties.ListType.NONE;
 		this.currentLeader = null;
-		this.masters = masters;
+		this.flowStruct = new FlowStruct(); //masters
 	}
 
 	/**
@@ -57,19 +94,16 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 	public abstract void addRow(CharSequence chars);
 	public abstract void newPage();*/
 
-	/**
-	 * Add chars to flow
-	 * @param chars the characters to add to the flow
-	 */
 	public void addChars(CharSequence chars) {
 		if (context.size()==0) return; // TODO: Fix this, it's really the xml handler that outputs character where there shouldn't be any...
-		int available = flowStruct.getLayoutMaster(flowStruct.getCurrentSequence().getSequenceProperties().getMasterName()).getPageWidth() - rightMargin;
+		chars = filters.filter(chars.toString());
+		int available = masters.get(flowStruct.getCurrentSequence().getSequenceProperties().getMasterName()).getPageWidth() - rightMargin;
 		BlockProperties p = context.peek();
 		if (available < 1) {
 			throw new RuntimeException("Cannot continue layout: No space left for characters.");
 		}
 		// process first row, is it a new block or should we continue the current row?
-		if (newRow) {
+		if (firstRow) {
 			// add to left margin
 			if (currentListType!=BlockProperties.ListType.NONE) {
 				String listNumber;
@@ -83,11 +117,12 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 					default:
 						listNumber = "";
 				}
+				listNumber = filters.filter(listNumber);
 				chars = newRow(listNumber, chars, available, leftMargin, p.getFirstLineIndent());
 			} else {
 				chars = newRow(chars, available, leftMargin, p.getFirstLineIndent());
 			}
-			newRow = false;
+			firstRow = false;
 		} else {
 			Row r = flowStruct.getCurrentSequence().getCurrentGroup().popRow();
 			CharSequence cs = r.getChars();
@@ -194,20 +229,10 @@ whileLoop:		while (i>=0) {
 		return bp.getTail();
 	}
 
-	/**
-	 * Insert a marker at the current position in the flow
-	 * @param name a name for the marker
-	 * @param value a value for the marker
-	 */
 	public void insertMarker(Marker m) {
 		flowStruct.getCurrentSequence().getCurrentGroup().addMarker(m);
 	}
 
-	/**
-	 * Begin a new block with the supplied BlockProperties.
-	 * 
-	 * @param p the BlockProperties of the new block
-	 */
 	public void startBlock(BlockProperties p) {
 		if (context.size()>0) {
 			currentListType = context.peek().getListType();
@@ -218,30 +243,26 @@ whileLoop:		while (i>=0) {
 		FlowGroup c = flowStruct.getCurrentSequence().newFlowGroup();
 		c.addSpaceBefore(p.getTopMargin());
 		c.setBreakBeforeType(p.getBreakBeforeType());
+		c.setKeepType(p.getKeepType());
+		c.setKeepWithNext(p.getKeepWithNext());		
 		context.push(p);
 		leftMargin += p.getLeftMargin();
 		rightMargin += p.getRightMargin();
-		newRow = true;
+		firstRow = true;
 	}
 	
-	/**
-	 * End
-	 */
 	public void endBlock() {
 		BlockProperties p = context.pop();
 		flowStruct.getCurrentSequence().getCurrentGroup().addSpaceAfter(p.getBottomMargin());
 		if (context.size()>0) {
-			flowStruct.getCurrentSequence().newFlowGroup();
+			FlowGroup c = flowStruct.getCurrentSequence().newFlowGroup();
+			c.setKeepType(context.peek().getKeepType());
+			c.setKeepWithNext(context.peek().getKeepWithNext());
 		}
 		leftMargin -= p.getLeftMargin();
 		rightMargin -= p.getRightMargin();
-		newRow = true;
+		firstRow = true;
 	}
-
-	/*
-	public FlowStruct getStruct() {
-		return flowStruct;
-	}*/
 
 	public void newSequence(SequenceProperties p) {
 		flowStruct.newSequence(p);
@@ -250,14 +271,37 @@ whileLoop:		while (i>=0) {
 	public void insertLeader(Leader leader) {
 		currentLeader = leader;
 	}
+	
+	public void newLine() {
+		BlockProperties p = context.peek();
+		int thisMargin = leftMargin + p.getTextIndent();
+		flowStruct.getCurrentSequence().getCurrentGroup().pushRow(new Row(LayoutTools.fill(SPACE_CHAR, thisMargin)));
+	}
 
+	private int getKeepHeight(FlowGroup[] groupA, int gi) {
+		int keepHeight = groupA[gi].getSpaceBefore()+groupA[gi].toArray().length;
+		if (groupA[gi].getKeepWithNext()>0 && gi+1<groupA.length) {
+			keepHeight += groupA[gi].getSpaceAfter()+groupA[gi+1].getSpaceBefore()+groupA[gi].getKeepWithNext();
+			switch (groupA[gi+1].getKeepType()) {
+				case ALL:
+					keepHeight += getKeepHeight(groupA, gi+1);
+					break;
+				case AUTO: break;
+				default:;
+			}
+		}
+		return keepHeight;
+	}
+	
 	public PagedMediaOutput layout(PagedMediaOutput pm) {
-		PageStruct ps = new PageStruct(masters);
+		PageStruct ps = new PageStruct(); //masters
 		for (FlowSequence seq : flowStruct.toArray()) {
-			ps.newSection(seq.getSequenceProperties().getMasterName(), flowStruct.getLayoutMaster(seq.getSequenceProperties().getMasterName()));
+			ps.newSection(masters.get(seq.getSequenceProperties().getMasterName())); //seq.getSequenceProperties().getMasterName(), 
 			ps.newPage();
-			for (FlowGroup group : seq.toArray()) {
-				switch (group.getBreakBeforeType()) {
+			FlowGroup[] groupA = seq.toArray();
+			for (int gi = 0; gi<groupA.length; gi++) {
+				int height = ps.getCurrentLayoutMaster().getFlowHeight();
+				switch (groupA[gi].getBreakBeforeType()) {
 					case PAGE:
 						if (ps.countRowsOnCurrentPage()>0) {
 							ps.newPage();
@@ -265,32 +309,59 @@ whileLoop:		while (i>=0) {
 						break;
 					case AUTO:default:;
 				}
-				int height = ps.getCurrentLayoutMaster().getFlowHeight();
-				if (group.getSpaceBefore()+group.getSpaceAfter()>=height) {
+				//FIXME: se över recursiv hämtning
+				switch (groupA[gi].getKeepType()) {
+					case ALL:
+						int keepHeight = getKeepHeight(groupA, gi);
+						if (ps.countRowsOnCurrentPage()>0 && keepHeight>height-ps.countRowsOnCurrentPage() && keepHeight<=height) {
+							ps.newPage();
+						}
+						break;
+					case AUTO:
+						break;
+					default:;
+				}
+				if (groupA[gi].getSpaceBefore()+groupA[gi].getSpaceAfter()>=height) {
 					throw new RuntimeException("Group margins too large to fit on an empty page.");
-				} else if (group.getSpaceBefore()+1>height-ps.countRowsOnCurrentPage()) {
+				} else if (groupA[gi].getSpaceBefore()+1>height-ps.countRowsOnCurrentPage()) {
 					ps.newPage();
 				}
-				for (int i=0; i<group.getSpaceBefore();i++) {
+				for (int i=0; i<groupA[gi].getSpaceBefore();i++) {
 					ps.newRow(new Row(""));
 				}
-				ps.insertMarkers(group.getGroupMarkers());
-				for (Row row : group.toArray()) {
+				ps.insertMarkers(groupA[gi].getGroupMarkers());
+				for (Row row : groupA[gi].toArray()) {
 					ps.newRow(row);
 				}
-				if (group.getSpaceAfter()>=height-ps.countRowsOnCurrentPage()) {
+				if (groupA[gi].getSpaceAfter()>=height-ps.countRowsOnCurrentPage()) {
 					ps.newPage();
 				} else {
-					for (int i=0; i<group.getSpaceAfter();i++) {
+					for (int i=0; i<groupA[gi].getSpaceAfter();i++) {
 						ps.newRow(new Row(""));
 					}
 				}
 			}
 		}
+		/*
+		ArrayList<TabStopString> test = new ArrayList<TabStopString>();
+		test.add(new TabStopString(filters.filter("te1"), 2));
+		test.add(new TabStopString(filters.filter("te2"), 15, TabStopString.Alignment.CENTER));
+		test.add(new TabStopString(filters.filter("te3"), 30, TabStopString.Alignment.RIGHT, filters.filter(".")));*/
 		for (PageSequence s : ps.getSequenceArray()) {
 			for (Page p : s.getPages()) {
-				p.setHeader(s.getLayoutMaster().getHeader(p));
-				p.setFooter(s.getLayoutMaster().getFooter(p));
+				LayoutMaster lm = s.getLayoutMaster();
+				ArrayList<Row> header = new ArrayList<Row>();
+				int pagenum = p.getPageIndex()+1;
+				for (ArrayList<Object> row : lm.getHeader(pagenum)) {
+					header.add(new Row(distribute(row, lm.getPageWidth(), " ", p)));
+					//header.add(new Row(LayoutTools.distribute(test)));
+				}
+				ArrayList<Row> footer = new ArrayList<Row>();
+				for (ArrayList<Object> row : lm.getFooter(pagenum)) {
+					footer.add(new Row(distribute(row, lm.getPageWidth(), " ", p)));
+				}
+				p.setHeader(header);
+				p.setFooter(footer);
 			}
 		}
 
@@ -299,11 +370,93 @@ whileLoop:		while (i>=0) {
 			for (Page p1 : s.getPages()) {
 				pm.newPage();
 				for (Row row : p1.getRows()) {
-					pm.newRow(row);
+					pm.newRow(row.getChars());
 				}
 			}
 		}
 		return pm;
 	}
 
+	private String resolveCurrentPageField(CurrentPageField f, Page p) {
+		int pagenum = p.getPageIndex() + 1;
+		return f.style(pagenum);
+	}
+	
+	private String resolveCompoundField(CompoundField f, Page p) {
+		StringBuffer sb = new StringBuffer();
+		for (Object f2 : f) {
+			sb.append(resolveField(f2, p));
+		}
+		return sb.toString();
+	}
+	
+	private String resolveField(Object field, Page p) {
+		if (field instanceof CompoundField) {
+			return resolveCompoundField((CompoundField)field, p);
+		} else if (field instanceof MarkerReferenceField) {
+			MarkerReferenceField f2 = (MarkerReferenceField)field;
+			return findMarker(p, f2);
+		} else if (field instanceof CurrentPageField) {
+			return resolveCurrentPageField((CurrentPageField)field, p);
+		} else {
+			return field.toString();
+		}
+	}
+
+	private String distribute(ArrayList<Object> chunks, int width, String padding, Page p) {
+		ArrayList<String> chunkF = new ArrayList<String>();
+		for (Object f : chunks) {
+			chunkF.add(filters.filter(resolveField(f, p)));
+		}
+		return LayoutTools.distribute(chunkF, width, padding, LayoutTools.DistributeMode.EQUAL_SPACING);
+		
+		/*
+		int chunksLength = 0;
+		ArrayList<String> chunkF = new ArrayList<String>();
+		for (String s : chunks) {
+			String fs = filters.filter(s);
+			chunksLength += fs.length();
+			chunkF.add(fs);
+		}
+		int totalSpace = (width-chunksLength);
+		int parts = chunks.size()-1;
+		double target = totalSpace/(double)parts;
+		int used = 0;
+		StringBuffer sb = new StringBuffer();
+		for (int i=0; i<chunkF.size(); i++) {
+			if (i>0) {
+				int spacing = (int)Math.round(i * target) - used;
+				used += spacing;
+				sb.append(LayoutTools.fill(fillpattern, spacing));
+			}
+			sb.append(chunkF.get(i));
+		}
+		assert sb.length()==width;
+		return sb.toString();*/
+	}
+	
+	public String findMarker(Page page, MarkerReferenceField markerRef) {
+		int dir = 1;
+		int index = 0;
+		int count = 0;
+		ArrayList<Marker> m = page.getMarkers();
+		if (markerRef.getSearchDirection() == MarkerReferenceField.MarkerSearchDirection.BACKWARD) {
+			dir = -1;
+			index = m.size()-1;
+		}
+		while (count < m.size()) {
+			Marker m2 = m.get(index);
+			if (m2.getName().equals(markerRef.getName())) {
+				return m2.getValue();
+			}
+			index += dir; 
+			count++;
+		}
+		int nextPage = page.getPageIndex() + dir;
+		if (markerRef.getSearchScope() == MarkerReferenceField.MarkerSearchScope.SEQUENCE && nextPage < page.getParent().getPages().size() && nextPage >= 0) {
+			Page next = page.getParent().getPages().get(nextPage);
+			return findMarker(next, markerRef);
+		}
+		return "";
+	}
 }

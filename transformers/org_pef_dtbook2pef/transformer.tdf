@@ -61,19 +61,6 @@
 <!-- 		Specify a custom Area Tree to PEF xslt -->
 
 		<!-- Renderer -->
-		<parameter required="false" type="string">
-			<name>title</name>
-			<description>The name of the publication. If no value is supplied, the information is extracted from the original file</description>
-			<example>The Book</example>
-			<default>title?</default>
-		</parameter>
-		
-		<parameter required="false" type="string">
-			<name>creator</name>
-			<description>The creator of the publication. If no value is supplied, the information is extracted from the original file</description>
-			<example>The Creator</example>
-			<default>creator?</default>
-		</parameter>
 		
 		<parameter required="false" type="string">
 			<name>rows</name>

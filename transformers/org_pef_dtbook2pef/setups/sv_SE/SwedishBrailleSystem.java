@@ -1,7 +1,6 @@
 package org_pef_dtbook2pef.setups.sv_SE;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -11,18 +10,15 @@ import org_pef_dtbook2pef.setups.sv_SE.definers.FrontLayoutMaster;
 import org_pef_dtbook2pef.setups.sv_SE.tasks.VolumeCoverPageTask;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.TaskSystem;
-import org_pef_dtbook2pef.system.tasks.ValidatorTask;
 import org_pef_dtbook2pef.system.tasks.XsltTask;
 import org_pef_dtbook2pef.system.tasks.layout.LayoutEngineTask;
 import org_pef_dtbook2pef.system.tasks.layout.impl.DefaultLayoutPerformer;
 import org_pef_dtbook2pef.system.tasks.layout.impl.DefaultPEFOutput;
-import org_pef_dtbook2pef.system.tasks.layout.page.BaseLayoutMaster;
-import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
-import org_pef_dtbook2pef.system.tasks.textnode.TextNodeTask;
-import org_pef_dtbook2pef.system.tasks.textnode.filters.CaseFilter;
-import org_pef_dtbook2pef.system.tasks.textnode.filters.CharFilter;
-import org_pef_dtbook2pef.system.tasks.textnode.filters.RegexFilter;
-import org_pef_dtbook2pef.system.tasks.textnode.filters.StringFilterHandler;
+import org_pef_dtbook2pef.system.tasks.layout.text.CaseFilter;
+import org_pef_dtbook2pef.system.tasks.layout.text.CharFilter;
+import org_pef_dtbook2pef.system.tasks.layout.text.RegexFilter;
+import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterHandler;
+import org_pef_dtbook2pef.system.tasks.layout.utils.TextBorder;
 
 /**
  * <p>Transforms a DTBook 2005-3 into Swedish braille in PEF 2008-1 format.
@@ -68,9 +64,10 @@ public class SwedishBrailleSystem implements TaskSystem {
 
 		ArrayList<InternalTask> setup = new ArrayList<InternalTask>();
 		
+		//TODO: add input conformance test
 		// Check input conformance 
-		setup.add(new ValidatorTask("Conformance checker",
-				t.getResource("setups/sv_SE/validation/basic.sch")));
+		//setup.add(new ValidatorTask("Conformance checker",
+		//		t.getResource("setups/sv_SE/validation/basic.sch")));
 		
 		// Add braille markers based on text contents
 		StringFilterHandler filters = new StringFilterHandler();
@@ -92,7 +89,7 @@ public class SwedishBrailleSystem implements TaskSystem {
 				t.getResource("setups/sv_SE/text/default-table.xml")));
 
 		// Add to setup
-		setup.add(new TextNodeTask("Text to Braille processor (Swedish)", filters));
+		//setup.add(new TextNodeTask("Text to Braille processor (Swedish)", filters));
 		
 		// Add braille markers
 		setup.add(new XsltTask("Braille structure markers injector",
@@ -100,17 +97,18 @@ public class SwedishBrailleSystem implements TaskSystem {
 		
 		// Redefines dtbook as FLOW input
 		setup.add(new XsltTask("DTBook to FLOW converter",
-				t.getResource("setups/sv_SE/definers/dtbook2flow.xsl"), null));
+				t.getResource("setups/sv_SE/definers/dtbook2flow_sv_SE.xsl"), null));
+		
+		// Whitespace normalizer
+		setup.add(new XsltTask("FLOW whitespace normalizer", 
+				t.getResource("setups/sv_SE/preprocessing/remove-whitespace.xsl"), null));
 
 		// Layout FLOW as PEF
-		HashMap<String, LayoutMaster> masters = new HashMap<String, LayoutMaster>();
-		BodyLayoutMaster m1 = new BodyLayoutMaster(width, height, filters);
-		BaseLayoutMaster m2 = new BaseLayoutMaster(width, height, 0, 0, filters);
-		FrontLayoutMaster m3 = new FrontLayoutMaster(width, height, filters);
-		masters.put("main", m1);
-		masters.put("title", m2);
-		masters.put("front", m3);
-		DefaultLayoutPerformer flow = new DefaultLayoutPerformer(masters);
+		DefaultLayoutPerformer flow = new DefaultLayoutPerformer.Builder().
+										addLayoutMaster("main", new BodyLayoutMaster(width, height)).
+										addLayoutMaster("front", new FrontLayoutMaster(width, height)).
+										setTextFilterHandler(filters).
+										build();
 		DefaultPEFOutput paged = new DefaultPEFOutput(p);
 		setup.add(new LayoutEngineTask("FLOW to PEF converter", flow, flow, paged));
 		
@@ -118,11 +116,25 @@ public class SwedishBrailleSystem implements TaskSystem {
 		setup.add(new XsltTask("Volume splitter", t.getResource("setups/common/splitters/simple-splitter.xsl"), null));
 
 		// Add a title page first in each volume
-		setup.add(new VolumeCoverPageTask("Cover page adder", filters));
+    	TextBorder tb = new TextBorder.Builder(width).
+    						topLeftCorner("\u280F").
+    						topBorder("\u2809").
+    						topRightCorner("\u2839").
+    						leftBorder("\u2807  ").
+    						rightBorder("  \u2838").
+    						bottomLeftCorner("\u2827").
+    						bottomBorder("\u2824").
+    						bottomRightCorner("\u283c").
+    						alignment(TextBorder.Align.CENTER).
+    						build();
+		setup.add(new VolumeCoverPageTask("Cover page adder", filters, tb));
 
 		// Finalizes character data on rows
 		setup.add(new XsltTask("Braille finalizer", 
 				t.getResource("setups/common/renderers/braille-finalizer.xsl"), null));
+
+		// Finalize meta data from input file
+		setup.add(new XsltTask("Meta finalizer", t.getResource("setups/common/renderers/meta-finalizer.xsl"), null));
 
 		return setup;
 	}

@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaOutput;
-import org_pef_dtbook2pef.system.tasks.layout.page.Row;
 
 
 public class DefaultPEFOutput implements PagedMediaOutput {
@@ -48,9 +47,6 @@ public class DefaultPEFOutput implements PagedMediaOutput {
 		pst.println("<meta xmlns:dc=\"http://purl.org/dc/elements/1.1/\">");
 		pst.println("<dc:format>application/x-pef+xml</dc:format>");
 		pst.println("<dc:identifier>" + p.getProperty("identifier", "identifier?") + "</dc:identifier>");
-		pst.println("<dc:title>" + p.getProperty("title", "title?") + "</dc:title>");
-		pst.println("<dc:creator>" + p.getProperty("creator", "creator?") + "</dc:creator>");
-		pst.println("<dc:language>" + p.getProperty("language", "language?") + "</dc:language>");
 		pst.println("<dc:date>" + p.getProperty("date", "date?") + "</dc:date>");
 		pst.println("</meta>");
 		pst.println("</head>");
@@ -63,9 +59,9 @@ public class DefaultPEFOutput implements PagedMediaOutput {
 		hasOpenPage = true;
 	}
 
-	public void newRow(Row row) {
+	public void newRow(CharSequence row) {
 		pst.print("<row>");
-		pst.print(row.getChars());
+		pst.print(row);
 		pst.print("</row>");
 		pst.println();
 	}

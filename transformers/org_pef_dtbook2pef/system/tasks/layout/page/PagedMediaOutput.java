@@ -6,7 +6,7 @@ public interface PagedMediaOutput {
 	
 	public void newSection(LayoutMaster master);
 	public void newPage();
-	public void newRow(Row row);
+	public void newRow(CharSequence row);
 	public void open(File f);
 	public void close();
 

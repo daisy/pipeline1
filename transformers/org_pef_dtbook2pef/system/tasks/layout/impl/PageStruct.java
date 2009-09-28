@@ -1,25 +1,23 @@
 package org_pef_dtbook2pef.system.tasks.layout.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Stack;
 
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
-import org_pef_dtbook2pef.system.tasks.layout.page.PageSequence;
-import org_pef_dtbook2pef.system.tasks.layout.page.Row;
 
 public class PageStruct {
 	private Stack<PageSequence> sequence;
-	private HashMap<String, LayoutMaster> templates;
+	//private HashMap<String, LayoutMaster> templates;
 
-	public PageStruct(HashMap<String, LayoutMaster> templates) {
+	public PageStruct() { //HashMap<String, LayoutMaster> templates
 		this.sequence = new Stack<PageSequence>();
-		this.templates = templates;
+		//this.templates = templates;
 	}
 
-	public void newSection(String masterName, LayoutMaster master) {
-		sequence.push(new PageSequence(templates.get(masterName)));
+	public void newSection(LayoutMaster master) {
+		//sequence.push(new PageSequence(templates.get(masterName)));
+		sequence.push(new PageSequence(master));
 	}
 	
 	private PageSequence currentSequence() {

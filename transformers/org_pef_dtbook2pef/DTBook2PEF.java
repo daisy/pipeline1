@@ -8,14 +8,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileJuggler;
-
 import org_pef_dtbook2pef.setups.sv_SE.SwedishBrailleSystem;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.TaskSystem;
@@ -44,7 +42,6 @@ import org_pef_dtbook2pef.system.TaskSystem;
  * @since 2008-01-21
  * 
  */
-//TODO: Externalize FOP, or include in path 
 //TODO: Externalize regex-file (/text/regex.def)
 public class DTBook2PEF extends Transformer {
 	private HashMap<String, String> map;
@@ -82,12 +79,12 @@ public class DTBook2PEF extends Transformer {
 	protected boolean execute(Map<String, String> parameters) throws TransformerRunException {
 		progress(0);
 		// get parameters
-		String input = parameters.remove("input");
-		File outdir = new File(parameters.remove("output"));
-		String filename = parameters.remove("filename");
-		String setup = parameters.remove("setup");
-		String dateFormat = parameters.remove("dateFormat");
-		boolean keepTempFiles = "true".equals(parameters.remove("keepTempFiles"));
+		String input = parameters.get("input");
+		File outdir = new File(parameters.get("output"));
+		String filename = parameters.get("filename");
+		String setup = parameters.get("setup");
+		String dateFormat = parameters.get("dateFormat");
+		boolean keepTempFiles = "true".equals(parameters.get("keepTempFiles"));
 
 		final File output = new File(outdir, filename);
 
@@ -102,15 +99,13 @@ public class DTBook2PEF extends Transformer {
 			    SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 				map.put("date", sdf.format(c.getTime()));
 			}
-			if (!map.containsKey("language")) {				
-				map.put("language", Locale.getDefault().getLanguage());
-			}
 			if (!map.containsKey("identifier")) {
 				String id = Double.toHexString(Math.random());
 				id = id.substring(id.indexOf('.')+1);
 				id = id.substring(0, id.indexOf('p'));
 				map.put("identifier", "dummy-id-"+ id);
 			}
+			map.put("input-uri", new File(input).toURI().toString());
 
 			HashMap<String, TaskSystem> systemSetups = compileSystemSetups(map);
 			

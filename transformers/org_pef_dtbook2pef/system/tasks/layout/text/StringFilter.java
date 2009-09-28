@@ -1,4 +1,4 @@
-package org_pef_dtbook2pef.system.tasks.textnode.filters;
+package org_pef_dtbook2pef.system.tasks.layout.text;
 
 /**
  * StringFilter is in interface used when replacing a string with another string.

@@ -1,7 +1,6 @@
-package org_pef_dtbook2pef.system.tasks.layout.page;
+package org_pef_dtbook2pef.system.tasks.layout.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
 
@@ -60,7 +59,7 @@ public class Page {
 		return parent;
 	}
 	
-	public void setHeader(Collection<Row> c) {
+	public void setHeader(ArrayList<Row> c) {
 		for (int i=0; i<rowsInHeader; i++) {
 			rows.remove(0);
 		}
@@ -68,7 +67,7 @@ public class Page {
 		rows.addAll(0, c);
 	}
 	
-	public void setFooter(Collection<Row> c) {
+	public void setFooter(ArrayList<Row> c) {
 		for (int i=0; i<rowsInFooter; i++) {
 			rows.remove(rows.size()-1);
 		}

@@ -43,11 +43,11 @@
 	</xsl:template>
 
 	<xsl:template match="dtb:sup">
-		<xsl:message terminate="yes">add-structure-markers.xsl: Element "sup" not supported</xsl:message>
+		<xsl:message terminate="no">add-structure-markers.xsl: Element "sup" not supported</xsl:message>
 	</xsl:template>
 
 	<xsl:template match="dtb:sub">
-		<xsl:message terminate="yes">add-structure-markers.xsl: Element "sub" not supported</xsl:message>
+		<xsl:message terminate="no">add-structure-markers.xsl: Element "sub" not supported</xsl:message>
 	</xsl:template>
 
 	<xsl:template name="addMarkers">

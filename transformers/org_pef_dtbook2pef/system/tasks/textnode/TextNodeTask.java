@@ -15,7 +15,7 @@ import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 import org_pef_dtbook2pef.system.InternalTask;
-import org_pef_dtbook2pef.system.tasks.textnode.filters.StringFilterHandler;
+import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterHandler;
 
 /**
  * Task that runs a list of StringFilters on the character data of the input file.

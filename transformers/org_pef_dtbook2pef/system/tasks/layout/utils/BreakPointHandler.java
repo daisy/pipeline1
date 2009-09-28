@@ -1,4 +1,4 @@
-package org_pef_dtbook2pef.system.tasks.layout.impl;
+package org_pef_dtbook2pef.system.tasks.layout.utils;
 
 public class BreakPointHandler {
 	private String charsStr;

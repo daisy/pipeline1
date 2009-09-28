@@ -5,7 +5,6 @@ import java.util.Stack;
 
 import org_pef_dtbook2pef.system.tasks.layout.flow.BlockProperties;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
-import org_pef_dtbook2pef.system.tasks.layout.page.Row;
 
 public class FlowGroup {
 	private Stack<Row> rows;
@@ -13,6 +12,8 @@ public class FlowGroup {
 	private int spaceAfter;
 	private ArrayList<Marker> groupMarkers;
 	private BlockProperties.BreakBeforeType breakBefore;
+	private BlockProperties.KeepType keep;
+	private int keepWithNext;
 	
 	public FlowGroup() {
 		this.rows = new Stack<Row>();
@@ -20,6 +21,8 @@ public class FlowGroup {
 		this.spaceAfter = 0;
 		this.groupMarkers = new ArrayList<Marker>();
 		this.breakBefore = BlockProperties.BreakBeforeType.AUTO;
+		this.keep = BlockProperties.KeepType.AUTO;
+		this.keepWithNext = 0;
 	}
 	
 	public void pushRow(Row row) {
@@ -63,6 +66,14 @@ public class FlowGroup {
 		return breakBefore;
 	}
 	
+	public BlockProperties.KeepType getKeepType() {
+		return keep;
+	}
+	
+	public int getKeepWithNext() {
+		return keepWithNext;
+	}
+	
 	public void addSpaceBefore(int spaceBefore) {
 		this.spaceBefore += spaceBefore;
 	}
@@ -73,6 +84,14 @@ public class FlowGroup {
 	
 	public void setBreakBeforeType(BlockProperties.BreakBeforeType breakBefore) {
 		this.breakBefore = breakBefore;
+	}
+	
+	public void setKeepType(BlockProperties.KeepType keep) {
+		this.keep = keep;
+	}
+	
+	public void setKeepWithNext(int keepWithNext) {
+		this.keepWithNext = keepWithNext;
 	}
 	
 	public boolean isEmpty() {

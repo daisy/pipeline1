@@ -2,20 +2,19 @@ package org_pef_dtbook2pef.setups.sv_SE.tasks;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 
-import org_pef_dtbook2pef.system.tasks.layout.impl.BreakPointHandler;
-import org_pef_dtbook2pef.system.tasks.layout.impl.BreakPointHandler.BreakPoint;
-import org_pef_dtbook2pef.system.tasks.layout.page.Row;
-import org_pef_dtbook2pef.system.tasks.textnode.filters.StringFilterHandler;
+import org_pef_dtbook2pef.system.tasks.layout.impl.Row;
+import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterHandler;
+import org_pef_dtbook2pef.system.tasks.layout.utils.TextBorder;
 
 public class VolumeCoverPageFilter extends StaxFilter2 {
 	private final static String PEF_NS = "http://www.daisy.org/ns/2008/pef";
+
 	private final QName volume;
 	private final QName section;
 	private boolean firstSection;
@@ -25,7 +24,7 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
 	private ArrayList<String> creator;
 	private int rows;
 	private int cols;
-	private int width;
+	private TextBorder tb;
 	private int height;
 
 	public VolumeCoverPageFilter(XMLEventReader xer,
@@ -33,7 +32,7 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
 			StringFilterHandler filters,
 			String title,
 			ArrayList<String> creator,
-			int width,
+			TextBorder tb,
 			int height)
 			throws XMLStreamException {
 		super(xer, outStream);
@@ -45,7 +44,7 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
 		rows = 0;
 		cols = 0;
 		this.height = height;
-		this.width = width;
+		this.tb = tb;
 		this.title = title;
 		this.creator = creator;
 	}
@@ -68,7 +67,6 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
 	    		firstSection = true;
 	    		rows = Integer.parseInt(event.getAttributeByName(new QName("rows")).getValue());
 	    		cols = Integer.parseInt(event.getAttributeByName(new QName("cols")).getValue());
-	    		System.out.println("Rows: " + rows + " Cols: " + cols);
 	    	}
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
@@ -78,25 +76,32 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
     }
     
     private ArrayList<Row> buildTitlePage() {
+
     	ArrayList<Row> ret = new ArrayList<Row>();
-    	BreakPointHandler bph;
-    	BreakPoint bp;
-    	bph = new BreakPointHandler(filters.filter(title));
-    	while (bph.hasNext()) {
-    		bp = bph.nextRow(20);
-    		ret.add(new Row(bp.getHead()));
+    	ret.add(new Row(tb.getTopBorder()));
+
+    	for (int i=0; i<3; i++) {
+    		ret.add(new Row(tb.addBorderToRow("")));
     	}
-    	for (String s : creator) {
-        	bph = new BreakPointHandler(filters.filter(s));
-        	while (bph.hasNext()) {
-        		bp = bph.nextRow(width);
-        		ret.add(new Row(bp.getHead()));
-        	}
+    	for (String s : tb.addBorderToParagraph(filters.filter(title))) {
+    		ret.add(new Row(s));
     	}
-    	ret.add(new Row(filters.filter("Volym "+volumeNo)));
+    	ret.add(new Row(tb.addBorderToRow("")));
+    	for (String c : creator) {
+    		for (String s : tb.addBorderToParagraph(filters.filter(c))) {
+    			ret.add(new Row(s));
+    		}
+    	}
+    	ret.add(new Row(tb.addBorderToRow("")));
+    	ret.add(new Row(tb.addBorderToRow(filters.filter("Volym "+volumeNo))));
+    	while (ret.size()<height-1) {
+    		ret.add(new Row(tb.addBorderToRow("")));
+    	}
+    	ret.add(new Row(tb.getBottomBorder()));
     	if (ret.size()>height) {
     		throw new RuntimeException("Unable to perform layout. Title page contains too many rows.");
     	}
     	return ret;
     }
+
 }

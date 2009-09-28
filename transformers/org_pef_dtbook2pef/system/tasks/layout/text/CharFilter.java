@@ -1,4 +1,4 @@
-package org_pef_dtbook2pef.system.tasks.textnode.filters;
+package org_pef_dtbook2pef.system.tasks.layout.text;
 
 import java.net.URL;
 
@@ -30,16 +30,5 @@ public class CharFilter implements StringFilter {
 	public String replace(String str) {
 		return ucr.replace(str).toString();
 	}
-/*
-	final protected URL getTransformerDirectoryResource(String subPath) throws IllegalArgumentException {
-		//TODO check the viability of this method
-		URL url;
-	    url = this.getClass().getResource(subPath);
-	    if(null==url) {
-	    	String qualifiedPath = this.getClass().getPackage().getName().replace('.','/') + "/";	    	
-	    	url = this.getClass().getClassLoader().getResource(qualifiedPath+subPath);
-	    }
-	    if(url==null) throw new IllegalArgumentException(subPath + " in CharFilter");
-	    return url;
-	}*/
+
 }

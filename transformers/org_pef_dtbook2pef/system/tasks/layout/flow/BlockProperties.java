@@ -3,6 +3,7 @@ package org_pef_dtbook2pef.system.tasks.layout.flow;
 public class BlockProperties {
 	public static enum ListType {NONE, OL, UL, PL};
 	public static enum BreakBeforeType {AUTO, PAGE}; // TODO: Implement ODD_PAGE, EVEN_PAGE 
+	public static enum KeepType {AUTO, ALL}
 	private int leftMargin;
 	private int rightMargin;
 	private int topMargin;
@@ -12,6 +13,8 @@ public class BlockProperties {
 	private ListType listType;
 	private int listIterator;
 	private BreakBeforeType breakBefore;
+	private KeepType keep;
+	private int keepWithNext;
 	
 	public static class Builder {
 		// Optional parameters
@@ -23,6 +26,8 @@ public class BlockProperties {
 		int firstLineIndent = 0;
 		ListType listType = ListType.NONE;
 		BreakBeforeType breakBefore = BreakBeforeType.AUTO;
+		KeepType keep = KeepType.AUTO;
+		int keepWithNext = 0;
 		
 		public Builder() {
 		}
@@ -57,13 +62,23 @@ public class BlockProperties {
 			return this;
 		}
 		
-		public Builder setListType(ListType listType) {
+		public Builder listType(ListType listType) {
 			this.listType = listType;
 			return this;
 		}
 		
-		public Builder setBreakBefore(BreakBeforeType breakBefore) {
+		public Builder breakBefore(BreakBeforeType breakBefore) {
 			this.breakBefore = breakBefore;
+			return this;
+		}
+		
+		public Builder keep(KeepType keep) {
+			this.keep = keep;
+			return this;
+		}
+		
+		public Builder keepWithNext(int keepWithNext) {
+			this.keepWithNext = keepWithNext;
 			return this;
 		}
 		
@@ -82,6 +97,8 @@ public class BlockProperties {
 		listType = builder.listType;
 		listIterator = 0;
 		breakBefore = builder.breakBefore;
+		keep = builder.keep;
+		keepWithNext = builder.keepWithNext;
 	}
 	
 	public int getLeftMargin() {
@@ -119,6 +136,14 @@ public class BlockProperties {
 	
 	public BreakBeforeType getBreakBeforeType() {
 		return breakBefore;
+	}
+	
+	public KeepType getKeepType() {
+		return keep;
+	}
+	
+	public int getKeepWithNext() {
+		return keepWithNext;
 	}
 
 }

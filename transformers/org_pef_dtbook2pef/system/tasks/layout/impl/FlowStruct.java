@@ -13,11 +13,9 @@ import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
  */
 public class FlowStruct {
 	private Stack<FlowSequence> sequence;
-	private HashMap<String, LayoutMaster> masters;
 
-	public FlowStruct(HashMap<String, LayoutMaster> masters) {
+	public FlowStruct() {
 		this.sequence = new Stack<FlowSequence>();
-		this.masters = masters;
 	}
 	
 	public void newSequence(SequenceProperties p) {
@@ -28,9 +26,10 @@ public class FlowStruct {
 		return sequence.peek();
 	}
 	
+	/*
 	public LayoutMaster getLayoutMaster(String name) {
 		return masters.get(name);
-	}
+	}*/
 
 	/*
 	public void newFlowGroup() {

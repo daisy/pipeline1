@@ -25,8 +25,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Characters;
 
 import org.daisy.util.xml.stax.StaxFilter;
-import org_pef_dtbook2pef.system.tasks.textnode.filters.StringFilter;
-import org_pef_dtbook2pef.system.tasks.textnode.filters.StringFilterHandler;
+
+import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterHandler;
 
 /**
  * 

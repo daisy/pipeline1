@@ -45,6 +45,9 @@ public interface Flow {
 	 */
 	public void addChars(CharSequence chars);
 	
-	
+	/**
+	 * Start a new line, continue block
+	 */
+	public void newLine();
 
 }

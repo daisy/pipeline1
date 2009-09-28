@@ -51,9 +51,13 @@ public class FlowHandler extends DefaultHandler {
 				} else if (name.equals("first-line-indent")) {
 					builder.firstLineIndent(Integer.parseInt(atts.getValue(i)));
 				} else if (name.equals("list-type")) {
-					builder.setListType(BlockProperties.ListType.valueOf(atts.getValue(i).toUpperCase()));
+					builder.listType(BlockProperties.ListType.valueOf(atts.getValue(i).toUpperCase()));
 				} else if (name.equals("break-before")) {
-					builder.setBreakBefore(BlockProperties.BreakBeforeType.valueOf(atts.getValue(i).toUpperCase()));
+					builder.breakBefore(BlockProperties.BreakBeforeType.valueOf(atts.getValue(i).toUpperCase()));
+				} else if (name.equals("keep")) {
+					builder.keep(BlockProperties.KeepType.valueOf(atts.getValue(i).toUpperCase()));
+				} else if (name.equals("keep-with-next")) {
+					builder.keepWithNext(Integer.parseInt(atts.getValue(i)));
 				}
 			}
 			flow.startBlock(builder.build());
@@ -69,6 +73,8 @@ public class FlowHandler extends DefaultHandler {
 				}
 			}
 			flow.insertMarker(new Marker(markerName, markerValue));
+		} else if (localName.equals("br")) {
+			flow.newLine();
 		}
 	}
 
