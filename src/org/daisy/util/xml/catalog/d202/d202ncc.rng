@@ -589,7 +589,7 @@
         <ref name="httpEquiv"> <!-- optional zeroOrOne -->
           <sch:pattern name="httpEquiv" id="httpEquiv">                      
             <sch:rule context="xht:head">
-              <sch:assert test="count(xht:meta[@http-equiv='Content-type'])&lt;2">
+              <sch:assert test="count(xht:meta[lower-case(@http-equiv)='content-type'])&lt;2">
                 [sch][dtb::d202][type::warning][msg::meta http-equiv seems to occur more than once]
               </sch:assert>                                   
             </sch:rule>

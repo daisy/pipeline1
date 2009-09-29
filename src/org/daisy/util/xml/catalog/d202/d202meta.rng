@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grammar  
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
   ns="http://www.w3.org/1999/xhtml"
   xmlns="http://relaxng.org/ns/structure/1.0"
   xmlns:sch="http://www.ascc.net/xml/schematron"
@@ -261,7 +262,9 @@
       
       <define name="httpEquiv"> <!-- optional zeroOrOne --> 
         <attribute name="http-equiv">
-          <value type="string">Content-type</value>
+          <data type="string">
+            <param name="pattern">[C|c][o|O][n|N][t|T][e|E][n|N][t|T]-[t|T][y|Y][p|P][e|E]</param>
+          </data>
         </attribute>  
         <attribute name="content">
           <ref name="datatype.string"/>
