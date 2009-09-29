@@ -985,7 +985,10 @@
    <!-- Inlines -->
 
    <xsl:template match="dtb:a">
-     <span class="anchor"><xsl:apply-templates/></span>
+     <span class="anchor">
+     	<xsl:call-template name="copyCncatts"/>
+     	<xsl:apply-templates/>
+     </span>
    </xsl:template>
 
  <xsl:template match="dtb:em">
