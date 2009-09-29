@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name="Pipeline Lite odt2daisy">
+	<description>Buildfile for the Daisy Pipeline Lite</description>
+	
+	<import file="${basedir}/build-core.xml"/>
+  
+	<property name="addin.name" value="pipeline-lite"/>
+	<property name="lite.lib.home" value="/Users/Romain/Public/build/litelibs"/>
+	<property name="launchers.home" value="/Users/Romain/Public/build/litelibs"/>
+	<property name="lame.home" value="/Users/Romain/Documents/Work/pipeline/release/windows/ext"/>
+
+	
+	<!-- ================================================================== -->
+	<!-- Fileset definitions                                                -->
+	<!-- ================================================================== -->
+	
+	<fileset dir="${base.dir}/lib" id="fileset.pipeline.jars">
+		<patternset id="patternset.utilJars.1">
+			<include name="jing-saxon8-patch.jar"/>
+		</patternset>
+		<patternset id="patternset.utilJars.2">
+			<include name="batik-css.jar"/>
+			<include name="batik-util.jar"/>
+			<include name="chardet.jar"/>
+			<include name="commons-cli-1.1.jar"/>
+			<include name="epubcheck-1.0.5.jar"/>
+			<include name="icu4j-3_8.jar"/>		
+			<include name="jl1.0.jar"/>
+			<include name="log4j-1.2.15.jar"/>
+			<include name="onvdl.jar"/>
+			<include name="sac.jar"/>
+			<include name="saxon.jar"/>
+			<include name="saxon8.jar"/>
+			<include name="saxon8-dom.jar"/>
+			<include name="serializer.jar"/>
+			<include name="stax-api-1.0.1.jar"/>
+			<include name="tagsoup-1.2.jar"/>	
+			<include name="tritonus_remaining-0.3.6.jar"/>			
+			<include name="tritonus_share-0.3.6.jar"/>
+			<include name="wstx-lgpl-3.2.8.jar"/>
+			<include name="xalan.jar"/>
+			<include name="xercesImpl.jar"/>			
+			<include name="zedval.jar"/>
+		</patternset>
+	</fileset>
+	
+	<!-- Transformers -->
+	<fileset dir="${transformers.dir}" id="fileset.addin.transformers">
+		<include name="int_daisy_filesetRenamer/**/*.*"/>		
+		<include name="int_daisy_mathAltCreator/**/*.*"/>		
+		<include name="int_daisy_mixedContentNormalizer/**/*.*"/>		
+		<include name="int_daisy_validator/**/*.*"/>		
+		<include name="pipeline_system_deleter/**/*.*"/>		
+		<include name="se_tpb_annonsator/**/*.*"/>		
+		<include name="se_tpb_dtbAudioEncoder/**/*.*"/>		
+		<include name="se_tpb_dtbookFix/**/*.*"/>		
+		<include name="se_tpb_filesetcreator/**/*.*"/>		
+		<include name="se_tpb_speechgen2/**/*.*"/>		
+		<include name="se_tpb_xmldetection/**/*.*"/>		
+		<include name="se_tpb_zed2daisy202/**/*.*"/>		
+		<exclude name="**/*.java"/>
+	</fileset>
+
+	<!-- Scripts -->
+	<fileset dir="${basedir}/scripts" id="fileset.addin.scripts">
+		<include name="create_distribute/dtb/Narrator-DtbookToDaisy.taskScript"/>
+	</fileset>
+
+	<!-- Pipeline Lite Libs -->
+	<fileset dir="${lite.lib.home}" id="fileset.lite.jars">
+		<include name="org.daisy.pipeline.lite_*.jar"/>
+		<include name="org.daisy.pipeline.scripts.ui_*.jar"/>
+		<include name="org.daisy.util.jface_*.jar"/>
+		<include name="org.daisy.util.swt_*.jar"/>
+		<include name="org.eclipse.core.commands_*.jar"/>
+		<include name="org.eclipse.equinox.common_*.jar"/>
+		<include name="org.eclipse.jface_*.jar"/>
+		<include name="org.eclipse.swt_*.jar"/>
+	</fileset>
+	<fileset dir="${lite.lib.home}" id="fileset.lite.jars.win">
+		<include name="org.eclipse.swt.win32.win32.x86_*.jar"/>
+	</fileset>
+	<fileset dir="${lite.lib.home}" id="fileset.lite.jars.mac">
+		<include name="org.eclipse.swt.carbon.macosx_*.jar"/>
+	</fileset>
+	
+	<target name="buildForWin"
+			description="Builds a zipfile containing the Pipeline Lite distribution for Windows">
+		<antcall target="buildReleaseZip">
+			<param name="target.win" value="true"/>
+			<param name="releaseName" value="${addin.name}-win-${ISO-TODAY}.zip"/>
+		</antcall>
+	</target>
+	
+	<target name="buildForMac"
+			description="Builds a zipfile containing the Pipeline Lite distribution for Mac OS X">
+		<antcall target="buildReleaseZip">
+			<param name="target.mac" value="true"/>
+			<param name="releaseName" value="${addin.name}-mac-${ISO-TODAY}"/>
+		</antcall>
+	</target>
+	
+	<target name="buildReleaseZip" description="Builds a zipfile containing the Pipeline Lite distribution">
+		<property name="release.dir" value="${distribution.dir}/${releaseName}"/>
+		<antcall target="buildReleaseDir">
+			<param name="release.dir" value="${release.dir}"/>
+		</antcall>
+		<zip destfile="${distribution.dir}/${releaseName}.zip" basedir="${distribution.dir}" includes="${releaseName}/**/*.*"/>
+		<delete dir="${release.dir}"/>
+	</target>
+			
+	<target name="buildReleaseDir"
+			depends="buildCoreJar,buildUtil,createDistributionDir"
+			description="Builds a dir containing everything needed in a AddIn release">
+		<copy file="${distribution.dir}/pipeline.jar" tofile="${release.dir}/lib/org.daisy.pipeline_${ISO-TODAY}.jar" />
+		<copy file="${distribution.dir}/org.daisy.util.jar" tofile="${release.dir}/lib/org.daisy.util_${ISO-TODAY}.jar" />
+		<!-- Required JARs -->
+		<copy todir="${release.dir}/lib">
+			<fileset refid="fileset.pipeline.jars"/>
+			<fileset refid="fileset.lite.jars"/>
+		</copy>
+		<!-- Transformers -->
+		<copy todir="${release.dir}/transformers">
+			<fileset refid="fileset.addin.transformers"/>
+		</copy>
+		<!-- Property Files -->
+		<copy todir="${release.dir}">
+			<fileset dir="${base.dir}/bin">
+				<include name="pipeline.properties"/>
+			</fileset>
+		</copy>
+		<!-- Scripts -->
+		<copy todir="${release.dir}/scripts">
+			<fileset refid="fileset.addin.scripts"/>
+			<flattenmapper/>
+		</copy>
+		<!-- Licenses -->
+		<copy todir="${release.dir}/licenses">
+			<fileset dir="${base.dir}/licenses">
+				<include name="**/*.*"/>
+			</fileset>
+		</copy>
+		<!-- Call platform-specific targets -->
+		<antcall target="buildReleaseDir-Mac"/>
+		<antcall target="buildReleaseDir-Win"/>
+	</target>		
+	<target name="buildReleaseDir-Win" if="target.win">
+		<!-- Windows-specific JARs -->
+		<copy todir="${release.dir}/lib">
+			<fileset refid="fileset.lite.jars.win"/>
+		</copy>
+		<!-- Property Files -->
+		<copy tofile="${release.dir}/pipeline.user.properties" file="${lite.lib.home}/pipeline.user.win.properties"/>
+		<!-- Lame -->
+		<copy todir="${release.dir}/ext" file="${lame.home}/lame.exe"/>
+		<!-- Launchers -->
+		<copy todir="${release.dir}">
+			<fileset dir="${launchers.home}">
+				<include name="pipeline-lite.exe"/>
+			</fileset>
+		</copy>
+	</target>
+	<target name="buildReleaseDir-Mac" if="target.mac">
+		<!-- Mac-specific JARs -->
+		<copy todir="${release.dir}/lib">
+			<fileset refid="fileset.lite.jars.mac"/>
+		</copy>
+		<!-- Property Files -->
+		<copy tofile="${release.dir}/pipeline.user.properties" file="${lite.lib.home}/pipeline.user.mac.properties"/>
+		<!-- Launchers -->
+		<copy todir="${release.dir}">
+			<fileset dir="${launchers.home}">
+				<include name="pipeline-lite.sh"/>
+			</fileset>
+		</copy>
+	</target>
+</project>

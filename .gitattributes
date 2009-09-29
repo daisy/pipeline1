@@ -4,6 +4,8 @@ META-INF/MANIFEST.MF -text
 META-INF/services/javax.xml.validation.SchemaFactory -text
 /build-addin.xml -text svneol=unset#text/plain
 /build-bundles.xml -text
+/build-obi.xml -text svneol=unset#text/plain
+/build-odt-addin.xml -text svneol=unset#text/plain
 /build-sapi.xml -text svneol=unset#text/plain
 /build.properties -text
 /custom.xml -text
@@ -556,6 +558,10 @@ scripts/_dev/Narrator_NoValidation.taskScript -text
 scripts/_dev/NccNcxOnly.taskScript -text
 scripts/_dev/XMLAudioAligner.taskScript -text
 scripts/_dev/XukCreator.taskScript -text
+scripts/_dev/obi/DTBAudioEncoder.taskScript -text
+scripts/_dev/obi/Daisy202DTBValidator.taskScript -text
+scripts/_dev/obi/FilesetRenamer.taskScript -text
+scripts/_dev/obi/Z3986DTBValidator.taskScript -text
 scripts/create_distribute/dtb/AudacityToDTB.taskScript -text
 scripts/create_distribute/dtb/Daisy3ToDaisy202.taskScript -text
 scripts/create_distribute/dtb/Fileset-DtbookToDaisy202TextOnly.taskScript -text
