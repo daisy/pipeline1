@@ -21,7 +21,7 @@
   </xsl:template> 
   
   <xsl:template match="in:output">
-    <out:output method="xml" indent="no">
+    <out:output method="xml" indent="yes">
       <xsl:attribute name="encoding">
         <xsl:value-of select="$encoding"/>
       </xsl:attribute>    
