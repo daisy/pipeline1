@@ -722,11 +722,11 @@ public class NCXMaker implements BusListener {
 		for (Iterator<?> it = se.getAttributes(); it.hasNext(); ) {
 			Attribute at = (Attribute) it.next();
 			QName name = at.getName();
-			if (name.getLocalPart().equals(smilClipBegin)) {
+			if (smilNamespaceURI.equals(name.getNamespaceURI()) && name.getLocalPart().equals(smilClipBegin)) {
 				attributes.put(smilClipBegin, at.getValue());
-			} else if (name.getLocalPart().equals(smilClipEnd)) {
+			} else if (smilNamespaceURI.equals(name.getNamespaceURI()) && name.getLocalPart().equals(smilClipEnd)) {
 				attributes.put(smilClipEnd, at.getValue());
-			} if (name.getLocalPart().equals(smilSrc)) {
+			} if (smilNamespaceURI.equals(name.getNamespaceURI()) && name.getLocalPart().equals(smilSrc)) {
 				attributes.put(smilSrc, at.getValue());
 			} if (name.getLocalPart().equals(smilRef)) {
 				attributes.put(smilRef, at.getValue());
