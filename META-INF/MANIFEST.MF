@@ -315,7 +315,6 @@ Export-Package:
  org.codehaus.stax2.io,
  org.codehaus.stax2.ri,
  org.codehaus.stax2.validation,
- org.daisy,
  org.daisy.pipeline,
  org.daisy.pipeline.core,
  org.daisy.pipeline.core.event,
