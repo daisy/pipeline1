@@ -21,6 +21,7 @@ doc/developer/img/build-core-4.png -text
 doc/developer/img/build-gui-0.png -text
 doc/developer/img/build-gui-1.png -text
 doc/developer/img/build-gui-2.png -text
+doc/developer/img/build-gui-3.png -text
 doc/developer/img/co-core-0.png -text
 doc/developer/img/co-core-1.png -text
 doc/developer/img/co-core-2.png -text
@@ -43,6 +44,7 @@ doc/developer/img/subversive-4.png -text
 doc/developer/img/subversive-5.png -text
 doc/developer/img/subversive-6.png -text
 doc/developer/img/target-0.png -text
+doc/developer/img/target-1.png -text
 doc/developer/java-coding-conventions.html -text
 doc/developer/localizing-and-customizing-pipeline-narrator.html -text
 doc/developer/pipeline-from-svn.html -text
