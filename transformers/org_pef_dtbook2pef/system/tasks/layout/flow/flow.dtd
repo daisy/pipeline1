@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	Document root
+-->
+<!ELEMENT root (sequence+)>
+<!-- 
+	A sequence of blocks
+-->
+<!ELEMENT sequence (block+)>
+<!-- 
+	master, name of master to use for this sequence
+	format, hypenate, initial-page-number not implemented
+-->
+<!ATTLIST sequence
+	format CDATA #IMPLIED
+	hyphenate (true|false) #IMPLIED
+	initial-page-number CDATA #REQUIRED
+	master NMTOKEN #REQUIRED
+>
+
+<!--
+	A block of text
+-->
+<!ELEMENT block (#PCDATA | block | leader | marker | br)*>
+<!--
+	break-before, if present, break before block begins
+	first-line-indent, indent (in chars) of first line block
+	keep, keep rows in this block
+	keep-with-next, keep the following blocks first line(s) together with this block
+	list-type, the list type of this block
+	margin-bottom, bottom margin for this block (in rows)
+	margin-left, left margin for this block (in chars)
+	margin-top, top margin for this block (in rows)
+	margin-right, right margin for this block (in chars)
+	text-indent, indent (in chars) of every line in the block except the first one
+-->
+<!ATTLIST block
+	break-before (auto|page) #IMPLIED 
+	first-line-indent CDATA #IMPLIED
+	keep (auto|all) #IMPLIED
+	keep-with-next (0|1|2|3|4|5|6|7|8|9) #IMPLIED
+	list-type (none|ol|ul|pl) #IMPLIED
+	margin-bottom CDATA #IMPLIED
+	margin-left CDATA #IMPLIED
+	margin-top CDATA #IMPLIED
+	margin-right CDATA #IMPLIED
+	text-indent CDATA #IMPLIED
+>
+
+<!--
+	A marker, use with headers/footers
+-->
+<!ELEMENT marker EMPTY>
+<!--
+	class, class name for this marker
+	value, value for this marker
+-->
+<!ATTLIST marker
+	class CDATA #REQUIRED
+	value CDATA #REQUIRED
+>
+
+<!--
+	A leader, move to a specific location within the current row
+-->
+<!ELEMENT leader EMPTY>
+<!--
+	align, 	alignment of the text following the leader.
+				The leader can be aligned to the left, center or
+				right of the following text segment. Left is
+				default.
+	pattern, 	fill pattern to use up to the leader position, " "
+				is default.
+	position, position of the leader within the row. Can be
+				relative (percent) or absolute (column).
+ -->
+<!ATTLIST leader
+	align (left|center|right) #IMPLIED
+	pattern CDATA #IMPLIED
+	position CDATA #REQUIRED
+>
+
+<!--
+	Break line
+-->
+<!ELEMENT br EMPTY>

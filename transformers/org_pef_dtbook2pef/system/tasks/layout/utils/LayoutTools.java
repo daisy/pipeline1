@@ -11,6 +11,10 @@ public class LayoutTools {
 		EQUAL_SPACING,
 		UNISIZE_TABLE_CELL};
 	
+	public static int length(String str) {
+		return str.codePointCount(0, str.length());
+	}
+
 	public static String fill(char c, int amount) {
 		StringBuilder sb = new StringBuilder();
 		for (int i=0; i<amount; i++) {
@@ -20,6 +24,9 @@ public class LayoutTools {
 	}
 	
 	public static String fill(String s, int amount) {
+		if (amount<1) {
+			return "";
+		}
 		if (s.length()==0) {
 			throw new IllegalArgumentException("Cannot fill using an empty string.");
 		}
@@ -31,6 +38,9 @@ public class LayoutTools {
 	}
 
 	private static String distributeEqualSpacing(ArrayList<String> units, int width, String padding) {
+		if (units.size()==1) {
+			return units.get(0);
+		}
 		int chunksLength = 0;
 		for (String s : units) {
 			chunksLength += s.codePointCount(0, s.length());

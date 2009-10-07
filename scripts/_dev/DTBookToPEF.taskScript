@@ -6,10 +6,10 @@
 	<documentation uri="../../doc/scripts/DTBookToPEF.html"/>
 
 	<parameter name="input" value="" required="true">
-		<nicename>Input XML-file</nicename>
-		<description>An XML-file</description>
+		<nicename>Input DTBook file</nicename>
+		<description>A DTBook file</description>
 		<datatype>
-			<file mime="application/xml" type="input"/>
+			<file mime="application/x-dtbook+xml" type="input"/>
 		</datatype>
 	</parameter>
 
@@ -39,7 +39,6 @@
 		</datatype>
 	</parameter>
 
-<!--
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>
@@ -48,10 +47,9 @@
 		
 		<parameter>
 			<name>abortThreshold</name>
-			<value>ERROR</value>
+			<value>NONE</value>
 		</parameter>
 	</task>
--->
 
 	<task name="se_tpb_hyphenator" interactive="false">
 		<parameter>

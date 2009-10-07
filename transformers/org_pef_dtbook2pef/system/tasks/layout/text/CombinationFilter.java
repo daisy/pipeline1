@@ -2,7 +2,13 @@ package org_pef_dtbook2pef.system.tasks.layout.text;
 
 import java.util.ArrayList;
 
-public class StringFilterHandler extends ArrayList<StringFilter> {
+/**
+ * A CombinationFilter is a StringFilter that combines several other
+ * StringFilters into one.
+ * @author joha
+ *
+ */
+public class CombinationFilter extends ArrayList<StringFilter> implements StringFilter {
 
     /**
 	 * 
@@ -11,7 +17,7 @@ public class StringFilterHandler extends ArrayList<StringFilter> {
 
 	public String filter(String str) {
     	for (StringFilter e : this) {
-    		str = e.replace(str);
+    		str = e.filter(str);
     	}
     	return str;
     }

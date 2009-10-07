@@ -114,7 +114,10 @@
 	<entry key="/">&#x280C;</entry>
 		<entry key="÷">&#x280C;</entry>							<!-- DIVISION SIGN, 00F7 -->
 		<entry key="2215">&#x280C;</entry>						<!-- DIVISION SLASH, 2215 -->
-	<entry key="-">&#x2824;</entry>									<!-- HYPHEN-MINUS, 002D -->
+
+	<!-- Don't translate hyphen-minus as it is used to break rows. It will be translated later. -->
+	<!-- <entry key="-">&#x2824;</entry>  -->					<!-- HYPHEN-MINUS, 002D -->
+
 	<entry key="2010">&#x2824;</entry>								<!-- HYPHEN, 2010 -->
 	<entry key="2013">&#x2824;&#x2824;</entry>					<!-- EN DASH, 2013 -->
 	<entry key="2014">&#x2824;&#x2824;</entry>					<!-- EM DASH, 2014 -->

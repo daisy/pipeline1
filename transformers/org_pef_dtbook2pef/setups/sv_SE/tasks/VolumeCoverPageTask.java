@@ -25,14 +25,14 @@ import org.daisy.util.xml.stax.StaxEntityResolver;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org_pef_dtbook2pef.system.InternalTask;
-import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterHandler;
+import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
 import org_pef_dtbook2pef.system.tasks.layout.utils.TextBorder;
 
 public class VolumeCoverPageTask extends InternalTask {
-	private StringFilterHandler filters;
+	private StringFilter filters;
 	private TextBorder tb;
 
-	public VolumeCoverPageTask(String name, StringFilterHandler filters, TextBorder tb) {
+	public VolumeCoverPageTask(String name, StringFilter filters, TextBorder tb) {
 		super(name);
 		this.filters = filters;
 		this.tb = tb;
@@ -59,7 +59,7 @@ public class VolumeCoverPageTask extends InternalTask {
 			Document d = docBuilder.parse(dtbook);
 			XPath xp = XPathFactory.newInstance().newXPath();
 			String doctitle = xp.evaluate("/dtbook/book/frontmatter/doctitle", d);
-			org.apache.xml.dtm.ref.DTMNodeList ns = (org.apache.xml.dtm.ref.DTMNodeList)xp.evaluate("/dtbook/book/frontmatter/docauthor", d, XPathConstants.NODESET);
+			org.w3c.dom.NodeList ns = (org.w3c.dom.NodeList)xp.evaluate("/dtbook/book/frontmatter/docauthor", d, XPathConstants.NODESET);
 			ArrayList<String> al = new ArrayList<String>();
 			for (int i=0; i<ns.getLength(); i++) {
 				al.add(ns.item(i).getTextContent());

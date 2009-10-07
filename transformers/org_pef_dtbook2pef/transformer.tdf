@@ -72,10 +72,24 @@
 		<parameter required="false" type="string">
 			<name>cols</name>
 			<description>Page width</description>
-			<example>30</example>
-			<default>30</default>
+			<example>28</example>
+			<default>28</default>
 		</parameter>
 		
+		<parameter required="false" type="string">
+			<name>inner-margin</name>
+			<description>Page width</description>
+			<example>5</example>
+			<default>5</default>
+		</parameter>
+
+		<parameter required="false" type="string">
+			<name>outer-margin</name>
+			<description>Page width</description>
+			<example>2</example>
+			<default>2</default>
+		</parameter>
+
 		<parameter required="false" type="string">
 			<name>rowgap</name>
 			<description>Rowgap</description>

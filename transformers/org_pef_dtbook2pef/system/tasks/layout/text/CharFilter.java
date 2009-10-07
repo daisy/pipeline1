@@ -27,7 +27,7 @@ public class CharFilter implements StringFilter {
 		}
 	}
 
-	public String replace(String str) {
+	public String filter(String str) {
 		return ucr.replace(str).toString();
 	}
 

@@ -1170,7 +1170,6 @@ transformers/org_pef_dtbook2pef/setups/sv_SE/preprocessing/remove-whitespace.xsl
 transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/StaxFilter2.java -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/VolumeCoverPageFilter.java -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/VolumeCoverPageTask.java -text
-transformers/org_pef_dtbook2pef/setups/sv_SE/text/default-table.xml -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/validation/basic.sch -text
 transformers/org_pef_dtbook2pef/system/InternalTask.java -text
 transformers/org_pef_dtbook2pef/system/TaskSystem.java -text
@@ -1183,7 +1182,9 @@ transformers/org_pef_dtbook2pef/system/tasks/layout/flow/FlowHandler.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/flow/LayoutPerformer.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/flow/Leader.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/flow/Marker.java -text
+transformers/org_pef_dtbook2pef/system/tasks/layout/flow/Position.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/flow/SequenceProperties.java -text
+transformers/org_pef_dtbook2pef/system/tasks/layout/flow/flow.dtd -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/impl/DefaultLayoutPerformer.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/impl/DefaultPEFOutput.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/impl/FlowGroup.java -text
@@ -1205,9 +1206,12 @@ transformers/org_pef_dtbook2pef/system/tasks/layout/page/field/PagenumField.java
 transformers/org_pef_dtbook2pef/system/tasks/layout/page/field/RomanNumeral.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/CaseFilter.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/CharFilter.java -text
+transformers/org_pef_dtbook2pef/system/tasks/layout/text/CombinationFilter.java -text
+transformers/org_pef_dtbook2pef/system/tasks/layout/text/Locale2.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/RegexFilter.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/StringFilter.java -text
-transformers/org_pef_dtbook2pef/system/tasks/layout/text/StringFilterHandler.java -text
+transformers/org_pef_dtbook2pef/system/tasks/layout/text/StringFilterFactory.java -text
+transformers/org_pef_dtbook2pef/system/tasks/layout/text/tables/sv_SE.xml -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/utils/BreakPointHandler.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/utils/LayoutTools.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/utils/TabStopString.java -text

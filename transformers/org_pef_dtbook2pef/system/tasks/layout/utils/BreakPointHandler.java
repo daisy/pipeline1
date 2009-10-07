@@ -4,8 +4,8 @@ public class BreakPointHandler {
 	private String charsStr;
 	
 	public BreakPointHandler(String str) {
-		if (str==null || str.length()==0) {
-			throw new IllegalArgumentException("String must be at least one character long and not null");
+		if (str==null) {
+			throw new NullPointerException("Input string cannot be null.");
 		}
 		this.charsStr = str;
 	}
@@ -13,10 +13,12 @@ public class BreakPointHandler {
 	public class BreakPoint {
 		private final String head;
 		private final String tail;
+		private final boolean hardBreak;
 
-		private BreakPoint(String head, String tail) {
+		private BreakPoint(String head, String tail, boolean hardBreak) {
 			this.head = head;
 			this.tail = tail;
+			this.hardBreak = hardBreak;
 		}
 		
 		public String getHead() {
@@ -26,11 +28,20 @@ public class BreakPointHandler {
 		public String getTail() {
 			return tail;
 		}
+		
+		public boolean isHardBreak() {
+			return hardBreak;
+		}
 	}
 
 	public BreakPoint nextRow(int breakPoint) {
+		if (charsStr.length()==0) {
+			// pretty simple...
+			return new BreakPoint("", "", false);
+		}
 		String head;
 		String tail;
+		boolean hard = false;
 		assert charsStr.length()==charsStr.codePointCount(0, charsStr.length());
 		if (charsStr.length()>breakPoint) {
 			int strPos = -1;
@@ -73,6 +84,7 @@ whileLoop:		while (i>=0) {
 					i--;
 				}
 				if (i<0) { // no breakpoint found, break hard 
+					hard = true;
 					head = charsStr.substring(0, strPos+1);
 					tailStart = strPos+1;
 				} else if (charsStr.charAt(i)==' ') { // ignore space at breakpoint
@@ -96,7 +108,7 @@ whileLoop:		while (i>=0) {
 			tail = "";
 		}
 		charsStr = tail;
-		return new BreakPoint(head, tail);
+		return new BreakPoint(head, tail, hard);
 	}
 
 	public boolean hasNext() {

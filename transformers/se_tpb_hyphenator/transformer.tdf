@@ -20,6 +20,20 @@
 			<description>Output DTBook file</description>
 			<example>file:///path/to/outFile.xml</example>
 		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>breakLimitBegin</name>
+			<description>Number of characters from the beginning where a break is allowed to first occur</description>
+			<example>2</example>
+			<default>2</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>breakLimitEnd</name>
+			<description>Number of characters from the end where a break is allowed to last occur</description>
+			<example>2</example>
+			<default>2</default>
+		</parameter>
 
 	</parameters>
 

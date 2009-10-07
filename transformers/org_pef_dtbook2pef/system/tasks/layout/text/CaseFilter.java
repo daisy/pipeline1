@@ -33,7 +33,7 @@ public class CaseFilter implements StringFilter {
 		this.mode = mode;
 	}
 
-	public String replace(String expr) {
+	public String filter(String expr) {
 		switch (mode) {
 			case UPPER_CASE:
 				return expr.toUpperCase();

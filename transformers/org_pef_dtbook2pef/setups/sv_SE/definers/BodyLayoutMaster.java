@@ -10,8 +10,8 @@ import org_pef_dtbook2pef.system.tasks.layout.page.field.NumeralField.NumeralSty
 
 public class BodyLayoutMaster extends BaseLayoutMaster {
 
-	public BodyLayoutMaster(int pageWidth, int pageHeight) {
-		super(pageWidth, pageHeight, 1, 0);
+	public BodyLayoutMaster(int pageWidth, int pageHeight, int innerMargin, int outerMargin) {
+		super(pageWidth, pageHeight, 1, 0, innerMargin, outerMargin);
 	}
 /*
 	public ArrayList<ArrayList<Field>> getHeader(Page p) {

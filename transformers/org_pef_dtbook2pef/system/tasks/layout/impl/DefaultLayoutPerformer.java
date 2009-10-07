@@ -15,7 +15,8 @@ import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaOutput;
 import org_pef_dtbook2pef.system.tasks.layout.page.field.CompoundField;
 import org_pef_dtbook2pef.system.tasks.layout.page.field.CurrentPageField;
 import org_pef_dtbook2pef.system.tasks.layout.page.field.MarkerReferenceField;
-import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterHandler;
+import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
+import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterFactory;
 import org_pef_dtbook2pef.system.tasks.layout.utils.BreakPointHandler;
 import org_pef_dtbook2pef.system.tasks.layout.utils.LayoutTools;
 import org_pef_dtbook2pef.system.tasks.layout.utils.BreakPointHandler.BreakPoint;
@@ -38,26 +39,26 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 	private BlockProperties.ListType currentListType;
 	private Leader currentLeader;
 	private HashMap<String, LayoutMaster> masters;
-	private StringFilterHandler filters;
+	private StringFilter filters;
 
 	public static class Builder {
 		HashMap<String, LayoutMaster> masters;
-		StringFilterHandler filters;
+		StringFilterFactory filtersFactory;
 		
 		public Builder() {
 			masters = new HashMap<String, LayoutMaster>();
-			setTextFilterHandler(null);
+			setStringFilterFactory(null);
 		}
 		
 		/**
 		 * Set text filter handler, may be null
 		 * @param filters
 		 */
-		public Builder setTextFilterHandler(StringFilterHandler filters) {
+		public Builder setStringFilterFactory(StringFilterFactory filters) {
 			if (filters == null) {
-				this.filters = new StringFilterHandler();
+				this.filtersFactory = StringFilterFactory.newInstance();
 			} else {
-				this.filters = filters;
+				this.filtersFactory = filters;
 			}
 			return this;
 		}
@@ -78,7 +79,7 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 	 */
 	private DefaultLayoutPerformer(Builder builder) {
 		this.masters = builder.masters;
-		this.filters = builder.filters;
+		this.filters = builder.filtersFactory.newStringFilter();
 		this.context = new Stack<BlockProperties>();
 		this.leftMargin = 0;
 		this.rightMargin = 0;
@@ -112,7 +113,7 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 						listNumber = "" + currentListNumber;
 						break;
 					case UL:
-						listNumber = "*";
+						listNumber = "•";
 						break;
 					default:
 						listNumber = "";
@@ -125,103 +126,111 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 			firstRow = false;
 		} else {
 			Row r = flowStruct.getCurrentSequence().getCurrentGroup().popRow();
-			CharSequence cs = r.getChars();
-			chars = cs.toString() + chars;
-			chars = newRow(r.getMarkers(), chars, available, 0, 0); // indent already added, don't add it again
+			chars = newRow(r.getMarkers(), r.getChars().toString(), chars, available); // indent already added, don't add it again
 		}
-		while (chars.length()>0) {
+		while (LayoutTools.length(chars.toString())>0) {
 			chars = newRow(chars, available, leftMargin, p.getTextIndent());
 		}
 	}
 
-	private CharSequence newRow(ArrayList<Marker> m, CharSequence chars, int available, int margin, int indent) {
-		return newRow(m, "", chars, available ,margin, indent);
-	}
-
 	private CharSequence newRow(CharSequence chars, int available, int margin, int indent) {
-		return newRow(null, "", chars, available, margin, indent);
+		return newRow("", chars, available, margin, indent);
 	}
 	
 	private CharSequence newRow(String contentBefore, CharSequence chars, int available, int margin, int indent) {
-		return newRow(null, contentBefore, chars, available, margin, indent);
+		int thisIndent = indent - LayoutTools.length(contentBefore);
+		String preText = LayoutTools.fill(SPACE_CHAR, margin).toString() + contentBefore + LayoutTools.fill(SPACE_CHAR, thisIndent).toString();
+		assert thisIndent >= 0;
+		return newRow(null, preText, chars, available);
 	}
 
-	private CharSequence newRow(ArrayList<Marker> r, String contentBefore, CharSequence chars, int available, int margin, int indent) {
-		// Calculate breakpoint
-		int breakPoint = available-(margin+indent);
+	//TODO: in order to implement leader properly, margin (space chars) and proper text must be separated - or leader functionality moved to addChars
+	private CharSequence newRow(ArrayList<Marker> r, String preText, CharSequence chars, int available) {
 		String charsStr = chars.toString();
 		/*
-		String head;
-		String tail;
-		assert charsStr.length()==charsStr.codePointCount(0, charsStr.length());
-		if (charsStr.length()>breakPoint) {
-			int strPos = -1;
-			int len = 0;
-			for (char c : charsStr.toCharArray()) {
-				strPos++;
-				switch (c) {
-					case '\u00ad': 
-						break;
-					default:
-						len++;
-				}
-				if (len>=breakPoint) {
-					break;
-				}
-			}
-			assert strPos<charsStr.length();
-			
-			int tailStart;
-			
-			/*if (strPos>=charsStr.length()-1) {
-				head = charsStr.substring(0, strPos);
-				System.out.println(head);
-				tailStart = strPos;
-			} else *//*
-			// check next character to see if it can be removed.
-			if (strPos==charsStr.length()-1) {
-				head = charsStr.substring(0, strPos+1);
-				tailStart = strPos+1;
-			} else if (charsStr.charAt(strPos+1)==' ') {
-				head = charsStr.substring(0, strPos+1);
-				tailStart = strPos+2;
-			} else { // back up
-				int i=strPos;
-whileLoop:		while (i>=0) {
-					switch (charsStr.charAt(i)) {
-						case ' ' : case '-' : case '\u00ad' : 
-							break whileLoop;
+		 * om tabläget paserats {
+		 * 	ny rad
+		 *  försök igen
+		 * } annars {
+		 * 	om höger {
+		 * 		om hela strängen får plats {
+		 * 			space(strängen.length-av) + strängen
+		 * 		} else {
+		 * 			ignorera tabläget
+		 * 		}
+		 * 	}
+		 * om vänster {
+		 * 	space(till tabläget) + bryt som vanligt
+		 * } om center {
+		 *  bryt som vanligt (av) och space(det som blir över)
+		 * }
+		 * }
+		 * 
+		 */
+		int width = masters.get(flowStruct.getCurrentSequence().getSequenceProperties().getMasterName()).getPageWidth();
+		int col = LayoutTools.length(preText);
+		int maxLen = available-(col);
+
+		String tabSpace = "";
+		if (currentLeader!=null) {
+			/*
+			if (currentLeader.getPosition().makeAbsolute(width)>=col) {
+				flowStruct.getCurrentSequence().getCurrentGroup().pushRow(new Row(preText));
+				preText = "";
+				breakPoint = available;
+				col = 0;
+			}*/
+			int leaderPos = currentLeader.getPosition().makeAbsolute(width);
+			String leaderPattern = filters.filter(currentLeader.getPattern());
+			switch (currentLeader.getAlignment()) {
+				case LEFT:
+					// if leader position hasn't been passed yet
+					if (col<leaderPos) {
+						tabSpace = LayoutTools.fill(leaderPattern, leaderPos-col);
+					} else {
+						//FIXME: ignore, or what?
 					}
-					i--;
-				}
-				if (i<0) { // no breakpoint found, break hard 
-					head = charsStr.substring(0, strPos+1);
-					tailStart = strPos+1;
-				} else if (charsStr.charAt(i)==' ') { // ignore space at breakpoint
-					head = charsStr.substring(0, i);
-					tailStart = i+1;
-				} else if (charsStr.charAt(i)=='\u00ad'){ // convert soft hyphen to hard hyphen 
-					head = charsStr.substring(0, i) + '-';
-					tailStart = i+1;
-				} else {
-					head = charsStr.substring(0, i+1);
-					tailStart = i+1;
-				}
+					break;
+				case RIGHT:
+					if (LayoutTools.length(charsStr)<maxLen) {
+						if (col<leaderPos) {
+							tabSpace = LayoutTools.fill(leaderPattern, leaderPos-col-LayoutTools.length(charsStr));
+						} else {
+							//FIXME: ignore, or what?
+						}
+					} else {
+						//FIXME: ignore, or what?
+					}
+					break;
+				case CENTER:
+					if (col<leaderPos) {
+						tabSpace = LayoutTools.fill(leaderPattern, leaderPos-col-(LayoutTools.length(charsStr)/2));
+					} else {
+						//FIXME: ignore, or what?
+					}
+					break;
 			}
-			if (charsStr.length()>tailStart) {
-				tail = charsStr.substring(tailStart);
+			// }
+			// discard
+			currentLeader = null;
+		}
+		maxLen -= LayoutTools.length(tabSpace);
+		BreakPoint bp = null;
+		Row nr = null;
+		if (tabSpace.length()>0) { // break only on the new text
+			BreakPointHandler bph = new BreakPointHandler(charsStr);
+			bp = bph.nextRow(available-LayoutTools.length(preText + tabSpace));
+			if (bp.isHardBreak()) {
+				// FIXME: recalculate breakpoint on a new row
+				throw new RuntimeException("Not implemented");
 			} else {
-				tail = "";
+				nr = new Row(preText + tabSpace + bp.getHead().replaceAll("\u00ad", ""));
 			}
-		} else {
-			head = charsStr;
-			tail = "";
-		}*/
-		BreakPointHandler bph = new BreakPointHandler(charsStr);
-		BreakPoint bp = bph.nextRow(breakPoint);
-		int thisIndent = indent - contentBefore.length();
-		Row nr = new Row(LayoutTools.fill(SPACE_CHAR, margin).toString() + contentBefore + LayoutTools.fill(SPACE_CHAR, thisIndent).toString() + bp.getHead().replaceAll("\u00ad", ""));
-		//nr.setLeftMargin(margin);
+		} else { // break on the entire string, mainly to fix any trailing white space in preText
+			BreakPointHandler bph = new BreakPointHandler(preText + charsStr);
+			bp = bph.nextRow(available);
+			nr = new Row(bp.getHead().replaceAll("\u00ad", ""));
+		}
 		if (r!=null) {
 			nr.addMarkers(r);
 		}
@@ -234,6 +243,7 @@ whileLoop:		while (i>=0) {
 	}
 
 	public void startBlock(BlockProperties p) {
+		assert currentLeader == null;
 		if (context.size()>0) {
 			currentListType = context.peek().getListType();
 			if (currentListType!=BlockProperties.ListType.NONE) {
@@ -252,6 +262,10 @@ whileLoop:		while (i>=0) {
 	}
 	
 	public void endBlock() {
+		if (currentLeader!=null) {
+			// current leader finishes block, output now
+			addChars("");
+		}
 		BlockProperties p = context.pop();
 		flowStruct.getCurrentSequence().getCurrentGroup().addSpaceAfter(p.getBottomMargin());
 		if (context.size()>0) {
@@ -348,29 +362,34 @@ whileLoop:		while (i>=0) {
 		test.add(new TabStopString(filters.filter("te2"), 15, TabStopString.Alignment.CENTER));
 		test.add(new TabStopString(filters.filter("te3"), 30, TabStopString.Alignment.RIGHT, filters.filter(".")));*/
 		for (PageSequence s : ps.getSequenceArray()) {
+			LayoutMaster lm = s.getLayoutMaster();
 			for (Page p : s.getPages()) {
-				LayoutMaster lm = s.getLayoutMaster();
-				ArrayList<Row> header = new ArrayList<Row>();
 				int pagenum = p.getPageIndex()+1;
+				ArrayList<Row> header = new ArrayList<Row>();
 				for (ArrayList<Object> row : lm.getHeader(pagenum)) {
 					header.add(new Row(distribute(row, lm.getPageWidth(), " ", p)));
-					//header.add(new Row(LayoutTools.distribute(test)));
 				}
+				p.setHeader(header);
 				ArrayList<Row> footer = new ArrayList<Row>();
 				for (ArrayList<Object> row : lm.getFooter(pagenum)) {
 					footer.add(new Row(distribute(row, lm.getPageWidth(), " ", p)));
 				}
-				p.setHeader(header);
 				p.setFooter(footer);
 			}
 		}
 
 		for (PageSequence s : ps.getSequenceArray()) {
-			pm.newSection(s.getLayoutMaster());
-			for (Page p1 : s.getPages()) {
+			LayoutMaster lm = s.getLayoutMaster();
+			pm.newSection(lm);
+			for (Page p : s.getPages()) {
 				pm.newPage();
-				for (Row row : p1.getRows()) {
-					pm.newRow(row.getChars());
+				int pagenum = p.getPageIndex()+1;
+				for (Row row : p.getRows()) {
+					if (row.getChars().length()>0) {
+						pm.newRow(LayoutTools.fill(SPACE_CHAR, (pagenum % 2 == 0) ? lm.getOuterMargin() : lm.getInnerMargin()) + row.getChars());
+					} else {
+						pm.newRow(row.getChars());
+					}
 				}
 			}
 		}
@@ -409,30 +428,6 @@ whileLoop:		while (i>=0) {
 			chunkF.add(filters.filter(resolveField(f, p)));
 		}
 		return LayoutTools.distribute(chunkF, width, padding, LayoutTools.DistributeMode.EQUAL_SPACING);
-		
-		/*
-		int chunksLength = 0;
-		ArrayList<String> chunkF = new ArrayList<String>();
-		for (String s : chunks) {
-			String fs = filters.filter(s);
-			chunksLength += fs.length();
-			chunkF.add(fs);
-		}
-		int totalSpace = (width-chunksLength);
-		int parts = chunks.size()-1;
-		double target = totalSpace/(double)parts;
-		int used = 0;
-		StringBuffer sb = new StringBuffer();
-		for (int i=0; i<chunkF.size(); i++) {
-			if (i>0) {
-				int spacing = (int)Math.round(i * target) - used;
-				used += spacing;
-				sb.append(LayoutTools.fill(fillpattern, spacing));
-			}
-			sb.append(chunkF.get(i));
-		}
-		assert sb.length()==width;
-		return sb.toString();*/
 	}
 	
 	public String findMarker(Page page, MarkerReferenceField markerRef) {

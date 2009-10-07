@@ -47,13 +47,17 @@ public class HyphenReader extends StaxFilter {
 	private boolean root;
 	private net.davidashen.text.Hyphenator hyphenator;
 	private boolean bypass;
+	private int beginLimit;
+	private int endLimit;
 
-	public HyphenReader(Hyphenator t, XMLInputFactory inFactory, File input, File output) throws XMLStreamException, FileNotFoundException {
+	public HyphenReader(Hyphenator t, XMLInputFactory inFactory, File input, File output, int breakLimitBegin, int breakLimitEnd) throws XMLStreamException, FileNotFoundException {
 		super(inFactory.createXMLEventReader(new FileInputStream(input)), new FileOutputStream(output));
 		lang = new Stack<String>();
 		root = true;
 		bypass = false;
 		this.hyphenator = new net.davidashen.text.Hyphenator();
+		this.beginLimit = breakLimitBegin;
+		this.endLimit = breakLimitEnd;
 	}
 	
     protected StartElement startElement(StartElement event) {
@@ -87,7 +91,7 @@ public class HyphenReader extends StaxFilter {
     
     protected Characters characters(Characters event) {
     	if (bypass) return event;
-    	else return getEventFactory().createCharacters(hyphenator.hyphenate(event.getData()));
+    	else return getEventFactory().createCharacters(hyphenator.hyphenate(event.getData(), beginLimit, endLimit));
     }
     
     private void loadHyphenationRules(String locale) {

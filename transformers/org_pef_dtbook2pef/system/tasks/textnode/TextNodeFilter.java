@@ -25,8 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Characters;
 
 import org.daisy.util.xml.stax.StaxFilter;
-
-import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterHandler;
+import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
 
 /**
  * 
@@ -37,7 +36,7 @@ import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterHandler;
  * @since 1.0
  */
 public class TextNodeFilter extends StaxFilter {
-	private StringFilterHandler filters;
+	private StringFilter filters;
 
 	/**
 	 * Create a new TextNodeFilter
@@ -48,7 +47,7 @@ public class TextNodeFilter extends StaxFilter {
 	 * @throws XMLStreamException
 	 * @throws FileNotFoundException
 	 */
-	public TextNodeFilter(XMLEventReader input, OutputStream output, StringFilterHandler filters) throws XMLStreamException, FileNotFoundException {
+	public TextNodeFilter(XMLEventReader input, OutputStream output, StringFilter filters) throws XMLStreamException, FileNotFoundException {
 		super(input, output);
 		this.filters = filters;
 	}

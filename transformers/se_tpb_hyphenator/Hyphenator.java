@@ -38,6 +38,8 @@ public class Hyphenator extends Transformer {
 	protected boolean execute(Map<String, String> parameters) throws TransformerRunException {
 		File input = new File(parameters.remove("input"));
         File output = new File(parameters.remove("output"));
+        int breakLimitBegin = Integer.parseInt(parameters.get("breakLimitBegin"));
+        int breakLimitEnd = Integer.parseInt(parameters.get("breakLimitEnd"));
         output.getParentFile().mkdirs();
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
 		inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
@@ -51,7 +53,7 @@ public class Hyphenator extends Transformer {
 		}
 
 		try {
-			HyphenReader hr = new HyphenReader(this, inFactory, input, output);
+			HyphenReader hr = new HyphenReader(this, inFactory, input, output, breakLimitBegin, breakLimitEnd);
 			hr.filter();
 			hr.close();
 		} catch (FileNotFoundException e) {

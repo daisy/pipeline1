@@ -3,6 +3,7 @@ package org_pef_dtbook2pef.system.tasks.layout;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -10,11 +11,18 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.xml.sax.SAXException;
+import org_pef_dtbook2pef.setups.sv_SE.definers.BodyLayoutMaster;
+import org_pef_dtbook2pef.setups.sv_SE.definers.FrontLayoutMaster;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Flow;
 import org_pef_dtbook2pef.system.tasks.layout.flow.FlowHandler;
 import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformer;
+import org_pef_dtbook2pef.system.tasks.layout.impl.DefaultLayoutPerformer;
+import org_pef_dtbook2pef.system.tasks.layout.impl.DefaultPEFOutput;
+import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaOutput;
+import org_pef_dtbook2pef.system.tasks.layout.text.CombinationFilter;
+import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterFactory;
 
 /**
  * breaks row flow into pages
@@ -69,23 +77,35 @@ public class LayoutEngineTask extends InternalTask  {
 		fi.endBlock();
 		return fi;
 	}
-
+*/
 	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException {
-		run2();
+		run1();
 	}
 	
 	private static void run1() throws SAXException, IOException, ParserConfigurationException {
 		HashMap<String, LayoutMaster> masters = new HashMap<String, LayoutMaster>();
-		BodyLayoutMaster wi = new BodyLayoutMaster(30, 29, new ArrayList<StringFilter>());
+		HashMap<String, String> p = new HashMap<String, String>();
+		Properties prop = new Properties();
+		StringFilterFactory factory = StringFilterFactory.newInstance();
+		prop.putAll(p);
+		int width = 30;
+		int height = 29;
+		BodyLayoutMaster wi = new BodyLayoutMaster(width, height, 5, 2);
 		masters.put("main", wi);
-		TitleLayoutMaster twi = new TitleLayoutMaster(30, 29, new ArrayList<StringFilter>());
-		masters.put("title", twi);
-		LayoutEngineTask ft = new LayoutEngineTask("Internal Layout Engine", masters);
-		PrintStream ps = new PrintStream(new File("C:\\temp\\res.txt"), "UTF-8");
-		ft.fileFlowToPageStruct(new File("C:\\temp\\flow.xml"), ps,  new HashMap<String, String>());
-		ps.close();
+		DefaultLayoutPerformer flow = new DefaultLayoutPerformer.Builder().
+		addLayoutMaster("main", new BodyLayoutMaster(width, height, 5, 2)).
+		addLayoutMaster("front", new FrontLayoutMaster(width, height, 5, 2)).
+		setStringFilterFactory(factory).build();
+		DefaultPEFOutput paged = new DefaultPEFOutput(prop);
+		LayoutEngineTask ft = new LayoutEngineTask("FLOW to PEF converter", flow, flow, paged);
+		try {
+			ft.execute(new File("C:\\temp\\flow.xml"), new File("C:\\temp\\res.txt"), p);
+		} catch (TransformerRunException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
+	/*
 	private static void run2() throws FileNotFoundException, UnsupportedEncodingException {
 		
 		HashMap<String, LayoutMaster> masters = new HashMap<String, LayoutMaster>();

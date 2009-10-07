@@ -144,4 +144,26 @@ note, table, col, colgroup, tbody, td, tfoot, th, thead, title, tr
 	<xsl:template match="*" mode="apply-block-attributes"/>
 <!-- / default mode templates -->
 
+<!-- Inline assistance template -->
+	<xsl:template name="addMarkers">
+		<xsl:param name="prefix-single-word" select="''"/>
+		<xsl:param name="postfix-single-word" select="''"/>
+		<xsl:param name="prefix-multi-word" select="''"/>
+		<xsl:param name="postfix-multi-word" select="''"/>
+		<xsl:choose>
+			<!-- if text contains one word only -->
+			<xsl:when test="count(text())=1 and translate(text(), ' ', '')=text()">
+				<xsl:value-of select="$prefix-single-word"/>
+				<xsl:apply-templates/>
+				<xsl:value-of select="$postfix-single-word"/>
+			</xsl:when>
+			<!-- text contains several words -->
+			<xsl:otherwise>
+				<xsl:value-of select="$prefix-multi-word"/>
+				<xsl:apply-templates/>
+				<xsl:value-of select="$postfix-multi-word"/>
+			</xsl:otherwise>		
+		</xsl:choose>
+	</xsl:template>
+
 </xsl:stylesheet>

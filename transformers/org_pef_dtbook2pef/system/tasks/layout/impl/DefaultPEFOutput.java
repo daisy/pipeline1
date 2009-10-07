@@ -78,7 +78,7 @@ public class DefaultPEFOutput implements PagedMediaOutput {
 			hasOpenVolume = true;
 		}
 		closeOpenSection();
-		pst.println("<section");
+		pst.print("<section");
 		if (cCols!=master.getPageWidth() || cRows!=master.getPageHeight()) {
 			if (cCols!=master.getPageWidth()) {
 				pst.println(" cols=\"" + master.getPageWidth() + "\"");

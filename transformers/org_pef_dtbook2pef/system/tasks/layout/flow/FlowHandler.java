@@ -75,6 +75,19 @@ public class FlowHandler extends DefaultHandler {
 			flow.insertMarker(new Marker(markerName, markerValue));
 		} else if (localName.equals("br")) {
 			flow.newLine();
+		}  else if (localName.equals("leader")) {
+			Leader.Builder builder = new Leader.Builder();
+			for (int i=0; i<atts.getLength(); i++) {
+				String name = atts.getLocalName(i);
+				if (name.equals("align")) {
+					builder.align(Leader.Alignment.valueOf(atts.getValue(i).toUpperCase()));
+				} else if (name.equals("position")) {
+					builder.position(Position.parsePosition(atts.getValue(i)));
+				} else if (name.equals("pattern")) {
+					builder.pattern(atts.getValue(i));
+				}
+			}
+			flow.insertLeader(builder.build());
 		}
 	}
 

@@ -9,7 +9,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 
 import org_pef_dtbook2pef.system.tasks.layout.impl.Row;
-import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterHandler;
+import org_pef_dtbook2pef.system.tasks.layout.text.CombinationFilter;
+import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
 import org_pef_dtbook2pef.system.tasks.layout.utils.TextBorder;
 
 public class VolumeCoverPageFilter extends StaxFilter2 {
@@ -19,7 +20,7 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
 	private final QName section;
 	private boolean firstSection;
 	private int volumeNo;
-	private StringFilterHandler filters;
+	private StringFilter filters;
 	private String title;
 	private ArrayList<String> creator;
 	private int rows;
@@ -29,7 +30,7 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
 
 	public VolumeCoverPageFilter(XMLEventReader xer,
 			OutputStream outStream,
-			StringFilterHandler filters,
+			StringFilter filters,
 			String title,
 			ArrayList<String> creator,
 			TextBorder tb,
@@ -79,17 +80,20 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
 
     	ArrayList<Row> ret = new ArrayList<Row>();
     	ret.add(new Row(tb.getTopBorder()));
-
     	for (int i=0; i<3; i++) {
     		ret.add(new Row(tb.addBorderToRow("")));
     	}
-    	for (String s : tb.addBorderToParagraph(filters.filter(title))) {
-    		ret.add(new Row(s));
+    	if (title!=null && title.length()>0) {
+	    	for (String s : tb.addBorderToParagraph(filters.filter(title))) {
+	    		ret.add(new Row(s));
+	    	}
+	    	ret.add(new Row(tb.addBorderToRow("")));
     	}
-    	ret.add(new Row(tb.addBorderToRow("")));
     	for (String c : creator) {
-    		for (String s : tb.addBorderToParagraph(filters.filter(c))) {
-    			ret.add(new Row(s));
+    		if (c!=null && c.length()>0) {
+	    		for (String s : tb.addBorderToParagraph(filters.filter(c))) {
+	    			ret.add(new Row(s));
+	    		}
     		}
     	}
     	ret.add(new Row(tb.addBorderToRow("")));

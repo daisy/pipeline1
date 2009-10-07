@@ -15,6 +15,6 @@ public interface StringFilter {
 	 * @param str the string to replace
 	 * @return returns the replacement string
 	 */
-	public String replace(String str);
+	public String filter(String str);
 
 }

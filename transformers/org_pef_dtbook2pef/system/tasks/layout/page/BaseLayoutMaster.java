@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class BaseLayoutMaster extends AbstractLayoutMaster {
 
-	public BaseLayoutMaster(int pageWidth, int pageHeight, int headerHeight, int footerHeight) {
-		super(pageWidth, pageHeight, headerHeight, footerHeight);
+	public BaseLayoutMaster(int pageWidth, int pageHeight, int headerHeight, int footerHeight, int innerMargin, int outerMargin) {
+		super(pageWidth, pageHeight, headerHeight, footerHeight, innerMargin, outerMargin);
 	}
 
 	public ArrayList<ArrayList<Object>> getHeader(int pagenum) {

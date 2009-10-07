@@ -57,5 +57,18 @@ public interface LayoutMaster {
 	 * @return returns the footer height
 	 */
 	public int getFooterHeight();
+	
+	/**
+	 * Get binding margin
+	 * @param pagenum the page to get the binding margin for
+	 * @return returns the binding margin
+	 */
+	public int getInnerMargin();
+	
+	/**
+	 * Get outer margin
+	 * @return
+	 */
+	public int getOuterMargin();
 
 }
