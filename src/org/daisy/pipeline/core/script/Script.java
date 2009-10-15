@@ -175,7 +175,7 @@ public class Script {
 	void setDocumentation(URI uri) {
 		File test = new File(uri);
 		if(!test.exists()||!test.canRead()) {
-			System.err.println("Warning [in Script#setDocumentation]: Script documentation URI " + uri.toString() + " seems not to resolve");
+			System.out.println("Warning [in Script#setDocumentation]: Script documentation URI " + uri.toString() + " seems not to resolve");
 		}
 		this.mDocumentation = uri;
 	}
