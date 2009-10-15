@@ -65,7 +65,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:call-template name="rtf-encode">
-					<xsl:with-param name="str">Table of Content</xsl:with-param>
+					<xsl:with-param name="str">Table of Contents</xsl:with-param>
 				</xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>
