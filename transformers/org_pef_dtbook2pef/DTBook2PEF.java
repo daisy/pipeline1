@@ -1,6 +1,7 @@
 package org_pef_dtbook2pef;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -9,14 +10,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileJuggler;
 import org_pef_dtbook2pef.setups.sv_SE.SwedishBrailleSystem;
+import org_pef_dtbook2pef.setups.sv_SE.SwedishTextSystem;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.TaskSystem;
+import org_pef_dtbook2pef.system.TaskSystemException;
 
 /**
  * <p>Transforms DTBook 2005-3 into PEF 2008-1</p>
@@ -43,6 +47,7 @@ import org_pef_dtbook2pef.system.TaskSystem;
  * 
  */
 //TODO: Externalize regex-file (/text/regex.def)
+//TODO: Format detector (dtbook2pef -> xml2text)
 public class DTBook2PEF extends Transformer {
 	private HashMap<String, String> map;
 	
@@ -60,7 +65,9 @@ public class DTBook2PEF extends Transformer {
 		HashMap<String, TaskSystem> systemSetups = new HashMap<String, TaskSystem>();
 
 		// Setup for Swedish //
-		systemSetups.put("sv-SE", new SwedishBrailleSystem(this)); 
+		systemSetups.put("sv-SE", new SwedishBrailleSystem(getResource("setups/"), "sv_SE/config/default_A4.xml"));
+		systemSetups.put("sv-SE-FA44", new SwedishBrailleSystem(getResource("setups/"), "sv_SE/config/default_FA44.xml"));
+		systemSetups.put("sv-SE-text", new SwedishTextSystem(getResource("setups/"), "sv_SE/config/text_A4.xml"));
 		// Add more Braille systems here //
 		
 		return systemSetups;
@@ -80,41 +87,55 @@ public class DTBook2PEF extends Transformer {
 		progress(0);
 		// get parameters
 		String input = parameters.get("input");
-		File outdir = new File(parameters.get("output"));
-		String filename = parameters.get("filename");
+		File output = new File(parameters.get("output"));
 		String setup = parameters.get("setup");
 		String dateFormat = parameters.get("dateFormat");
 		boolean keepTempFiles = "true".equals(parameters.get("keepTempFiles"));
 
-		final File output = new File(outdir, filename);
-
 		map = new HashMap<String, String>();
 		map.putAll(parameters);
 
+		// Add default values for optional parameters
+		map.put("input-uri", new File(input).toURI().toString());
+		if (map.get("date")==null || "".equals(map.get("date"))) {
+		    Calendar c = Calendar.getInstance();
+		    c.setTime(new Date());
+		    SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+			map.put("date", sdf.format(c.getTime()));
+		}
+		if (map.get("identifier")==null || "".equals(map.get("identifier"))) {
+			String id = Double.toHexString(Math.random());
+			id = id.substring(id.indexOf('.')+1);
+			id = id.substring(0, id.indexOf('p'));
+			map.put("identifier", "dummy-id-"+ id);
+		}
 		try {
-			//TODO: move to task?
-			if (!map.containsKey("date")) {
-			    Calendar c = Calendar.getInstance();
-			    c.setTime(new Date());
-			    SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-				map.put("date", sdf.format(c.getTime()));
+			// Load additional settings from file
+			if (map.get("config")==null || "".equals(map.get("config"))) {
+				map.remove("config");
+			} else {
+				File config = new File(parameters.get("config"));
+				Properties p = new Properties();
+				FileInputStream in = new FileInputStream(config);
+				p.loadFromXML(in);
+				for (Object key : p.keySet()) {
+					map.put(key.toString(), p.get(key).toString());
+				}
 			}
-			if (!map.containsKey("identifier")) {
-				String id = Double.toHexString(Math.random());
-				id = id.substring(id.indexOf('.')+1);
-				id = id.substring(0, id.indexOf('p'));
-				map.put("identifier", "dummy-id-"+ id);
-			}
-			map.put("input-uri", new File(input).toURI().toString());
 
 			HashMap<String, TaskSystem> systemSetups = compileSystemSetups(map);
-			
+
 			// Copy resource
 			//FileUtils.writeInputStreamToFile(this.getTransformerDirectoryResource("./lib/pef2xhtml.xsl").openStream(), new File(outdir, "pef2xhtml.xsl"));
-			
+
 			// Run tasks
 			FileJuggler fj = new FileJuggler(new File(input), output);
-			ArrayList<InternalTask> tasks = systemSetups.get(setup).compile(map);
+			ArrayList<InternalTask> tasks = null;
+			try {
+				tasks = systemSetups.get(setup).compile(map);
+			} catch (TaskSystemException e) {
+				throw new TransformerRunException("Unable to load setup " + setup, e);
+			}
 			if (tasks==null) {
 				throw new TransformerRunException("Unable to load setup " + setup);
 			}
@@ -122,7 +143,7 @@ public class DTBook2PEF extends Transformer {
 			double i = 0;
 			for (InternalTask task : tasks) {
 				sendMessage("Running " + task.getName());
-				task.execute(fj.getInput(), fj.getOutput(), map);
+				task.execute(fj.getInput(), fj.getOutput());
 				fj.swap();
 				i++;
 				progress(i/tasks.size());

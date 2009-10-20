@@ -10,10 +10,10 @@
 <!ELEMENT sequence (block+)>
 <!-- 
 	master, name of master to use for this sequence
-	format, hypenate, initial-page-number not implemented
+	initial-page-number, number of first page in the sequence
+	hypenate not implemented
 -->
 <!ATTLIST sequence
-	format CDATA #IMPLIED
 	hyphenate (true|false) #IMPLIED
 	initial-page-number CDATA #REQUIRED
 	master NMTOKEN #REQUIRED
@@ -34,6 +34,7 @@
 	margin-top, top margin for this block (in rows)
 	margin-right, right margin for this block (in chars)
 	text-indent, indent (in chars) of every line in the block except the first one
+	block-indent, indent (in chars) of this block's block children
 -->
 <!ATTLIST block
 	break-before (auto|page) #IMPLIED 
@@ -46,6 +47,7 @@
 	margin-top CDATA #IMPLIED
 	margin-right CDATA #IMPLIED
 	text-indent CDATA #IMPLIED
+	block-indent CDATA #IMPLIED
 >
 
 <!--

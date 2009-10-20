@@ -101,7 +101,7 @@ note, table, col, colgroup, tbody, td, tfoot, th, thead, title, tr
 		<xsl:variable name="preceding-marker">
 			<xsl:if test="not($preceding-pagenum) or generate-id($preceding-pagenum/ancestor::dtb:level1/parent::*)=
 						generate-id(ancestor::dtb:level1/parent::*)">
-				<xsl:value-of select="$preceding-pagenum"/><xsl:text>-</xsl:text>
+				<xsl:value-of select="$preceding-pagenum"/><xsl:text>&#x2013;</xsl:text>
 			</xsl:if>
 		</xsl:variable>
 		<marker class="pagenum-turn" value="{$preceding-marker}"/>

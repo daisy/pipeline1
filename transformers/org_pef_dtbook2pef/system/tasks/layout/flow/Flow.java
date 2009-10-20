@@ -46,6 +46,13 @@ public interface Flow {
 	public void addChars(CharSequence chars);
 	
 	/**
+	 * Add chars to flow
+	 * @param chars the characters to add to the flow
+	 * @param p the SpanProperties for the characters 
+	 */
+	public void addChars(CharSequence chars, SpanProperties p);
+	
+	/**
 	 * Start a new line, continue block
 	 */
 	public void newLine();

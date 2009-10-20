@@ -14,12 +14,13 @@ import java.util.Map;
  *
  */
 public interface TaskSystem {
-	
+
 	/**
 	 * Compile the TaskSystem using the supplied parameters
-	 * @param parameters
+	 * @param parameters the parameters to pass to the TaskSystem
 	 * @return returns a list of InternalTasks
+	 * @throws TaskSystemException throws TaskSystemException if something went wrong when compiling the TaskSystem
 	 */
-	public ArrayList<InternalTask> compile(Map<String, String> parameters);
+	public ArrayList<InternalTask> compile(Map<String, String> parameters) throws TaskSystemException;
 
 }

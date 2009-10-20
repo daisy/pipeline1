@@ -9,7 +9,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 
 import org_pef_dtbook2pef.system.tasks.layout.impl.Row;
-import org_pef_dtbook2pef.system.tasks.layout.text.CombinationFilter;
 import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
 import org_pef_dtbook2pef.system.tasks.layout.utils.TextBorder;
 
@@ -27,6 +26,7 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
 	private int cols;
 	private TextBorder tb;
 	private int height;
+	private int vols;
 
 	public VolumeCoverPageFilter(XMLEventReader xer,
 			OutputStream outStream,
@@ -34,7 +34,7 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
 			String title,
 			ArrayList<String> creator,
 			TextBorder tb,
-			int height)
+			int height, int vols)
 			throws XMLStreamException {
 		super(xer, outStream);
 		this.filters = filters;
@@ -48,6 +48,7 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
 		this.tb = tb;
 		this.title = title;
 		this.creator = creator;
+		this.vols = vols;
 	}
 	
     protected StartElement startElement(StartElement event) {
@@ -83,29 +84,55 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
     	for (int i=0; i<3; i++) {
     		ret.add(new Row(tb.addBorderToRow("")));
     	}
-    	if (title!=null && title.length()>0) {
-	    	for (String s : tb.addBorderToParagraph(filters.filter(title))) {
-	    		ret.add(new Row(s));
-	    	}
-	    	ret.add(new Row(tb.addBorderToRow("")));
-    	}
+    	boolean hasCreator = false;
     	for (String c : creator) {
     		if (c!=null && c.length()>0) {
 	    		for (String s : tb.addBorderToParagraph(filters.filter(c))) {
 	    			ret.add(new Row(s));
 	    		}
+	    		hasCreator = true;
     		}
     	}
-    	ret.add(new Row(tb.addBorderToRow("")));
-    	ret.add(new Row(tb.addBorderToRow(filters.filter("Volym "+volumeNo))));
-    	while (ret.size()<height-1) {
+    	if (title!=null && title.length()>0) {
+    		if (hasCreator) {
+    			ret.add(new Row(tb.addBorderToRow("")));
+    		}
+	    	for (String s : tb.addBorderToParagraph(filters.filter(title))) {
+	    		ret.add(new Row(s));
+	    	}
+    	}
+    	while (ret.size()<height-2) {
     		ret.add(new Row(tb.addBorderToRow("")));
+    	}
+    	if (vols==1) {
+    		ret.add(new Row(tb.addBorderToRow(filters.filter("En volym"))));
+    	} else {
+    		ret.add(new Row(tb.addBorderToRow(filters.filter("Volym "+loc(volumeNo)+" av "+loc(vols)))));
     	}
     	ret.add(new Row(tb.getBottomBorder()));
     	if (ret.size()>height) {
     		throw new RuntimeException("Unable to perform layout. Title page contains too many rows.");
     	}
     	return ret;
+    }
+    
+    private String loc(int value) {
+    	switch (value) {
+    		case 0: return "noll"; 
+    		case 1: return "ett";
+    		case 2: return "två";
+    		case 3: return "tre";
+    		case 4: return "fyra";
+    		case 5: return "fem";
+    		case 6: return "sex";
+    		case 7: return "sju";
+    		case 8: return "åtta";
+    		case 9: return "nio";
+    		case 10: return "tio";
+    		case 11: return "elva";
+    		case 12: return "tolv";
+    	}
+    	return ""+value;
     }
 
 }

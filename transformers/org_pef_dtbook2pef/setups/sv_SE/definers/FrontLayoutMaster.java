@@ -3,13 +3,15 @@ package org_pef_dtbook2pef.setups.sv_SE.definers;
 import java.util.ArrayList;
 
 import org_pef_dtbook2pef.system.tasks.layout.page.BaseLayoutMaster;
+import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMasterConfigurator;
 import org_pef_dtbook2pef.system.tasks.layout.page.field.CurrentPageField;
 import org_pef_dtbook2pef.system.tasks.layout.page.field.NumeralField.NumeralStyle;
 
 public class FrontLayoutMaster extends BaseLayoutMaster {
 
-	public FrontLayoutMaster(int pageWidth, int pageHeight, int innerMargin, int outerMargin) {
-		super(pageWidth, pageHeight, 1, 0, innerMargin, outerMargin);
+	public FrontLayoutMaster(LayoutMasterConfigurator config) { //int flowWidth, int pageHeight, int innerMargin, int outerMargin, float rowSpacing
+		super(config.headerHeight(1).footerHeight(0));
+		//super(flowWidth+innerMargin+outerMargin, pageHeight, 1, 0, innerMargin, outerMargin, rowSpacing);
 	}
 /*
 	public ArrayList<ArrayList<String>> getHeader(Page p) {

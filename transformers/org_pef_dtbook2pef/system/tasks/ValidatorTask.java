@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 
 import javax.xml.transform.TransformerException;
 
+import net.sf.saxon.trace.Location;
+
+import org.daisy.pipeline.core.event.EventBus;
+import org.daisy.pipeline.core.event.MessageEvent;
+import org.daisy.pipeline.core.event.MessageEvent.Type;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.xml.validation.SimpleValidator;
@@ -19,7 +23,7 @@ import org_pef_dtbook2pef.system.InternalTask;
 
 public class ValidatorTask extends InternalTask implements ErrorHandler {
 	private URL schema;
-	
+	private boolean error = false;
 
 	public ValidatorTask(String name, URL schema) {
 		super(name);
@@ -27,13 +31,13 @@ public class ValidatorTask extends InternalTask implements ErrorHandler {
 	}
 
 	@Override
-	public void execute(File input, File output, HashMap<String, String> options)
+	public void execute(File input, File output)
 			throws TransformerRunException {
 		try {
 			SimpleValidator sv = new SimpleValidator(schema, this);
 			boolean ret = sv.validate(input.toURI().toURL());
 			FileUtils.copy(input, output);
-			if (ret) {
+			if (ret && !error) {
 				return;
 			}
 		} catch (SAXException e) {
@@ -51,20 +55,16 @@ public class ValidatorTask extends InternalTask implements ErrorHandler {
 	}
 
 	public void error(SAXParseException exception) throws SAXException {
-		System.err.println(exception.toString());
-		throw new SAXException(exception);
-		// TODO Auto-generated method stub
+		EventBus.getInstance().publish(new MessageEvent(this, exception.getMessage().replaceAll("\\s+", " "), Type.ERROR));
+		error = true;
 	}
 
 	public void fatalError(SAXParseException exception) throws SAXException {
-		System.err.println(exception.toString());
 		throw new SAXException(exception);
-		// TODO Auto-generated method stub
 	}
 
 	public void warning(SAXParseException exception) throws SAXException {
 		System.err.println(exception.toString());
-		// TODO Auto-generated method stub
 	}
 
 }

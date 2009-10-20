@@ -6,23 +6,25 @@ import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
 
 
 public class Row {
-	private CharSequence chars;
+	private String chars;
 	private ArrayList<Marker> markers;
+	private int leftMargin;
 	/*
 	private int spaceBefore;
 	private int spaceAfter;
-	private int leftMargin;*/
+	*/
 	
-	public Row(CharSequence chars) {
+	public Row(String chars) {
 		this.chars = chars;
 		this.markers = new ArrayList<Marker>();
+		this.leftMargin = 0;
 		/*
 		this.spaceBefore = 0;
 		this.spaceAfter = 0;
-		this.leftMargin = 0;*/
+		*/
 	}
 
-	public CharSequence getChars() {
+	public String getChars() {
 		return chars;
 	}
 	
@@ -42,7 +44,6 @@ public class Row {
 		return markers;
 	}
 
-	/*
 	public void setLeftMargin(int value) {
 		leftMargin = value;
 	}
@@ -50,7 +51,7 @@ public class Row {
 	public int getLeftMargin() {
 		return leftMargin;
 	}
-
+/*
 	public int getSpaceBefore() {
 		return spaceBefore;
 	}

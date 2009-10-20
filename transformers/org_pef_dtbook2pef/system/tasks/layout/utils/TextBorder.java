@@ -2,8 +2,6 @@ package org_pef_dtbook2pef.system.tasks.layout.utils;
 
 import java.util.ArrayList;
 
-import org_pef_dtbook2pef.system.tasks.layout.utils.BreakPointHandler.BreakPoint;
-
 public class TextBorder {
 	public enum Align {LEFT, CENTER, RIGHT};
 	private int topFill, rowFill, bottomFill;
@@ -11,7 +9,7 @@ public class TextBorder {
 					leftBorder, rightBorder,
 					bottomLeftCorner, bottomBorder, bottomRightCorner;
 	private Align align;
-	
+
 	public static class Builder {
 		int width;
 		String 	topLeftCorner, topBorder, topRightCorner, 
@@ -96,22 +94,22 @@ public class TextBorder {
 		this.rowFill = builder.width - (leftBorder.length() + rightBorder.length());
 		this.bottomFill = builder.width - (bottomLeftCorner.length() + bottomRightCorner.length());
 	}
-	
+
 	public String getTopBorder() {
 		return topLeftCorner + LayoutTools.fill(topBorder, topFill) + topRightCorner;
 	}
-	
+
 	public String getBottomBorder() { 
 		return bottomLeftCorner + LayoutTools.fill(bottomBorder, bottomFill) + bottomRightCorner;
 	}
-	
+
 	public ArrayList<String> addBorderToParagraph(String text) {
 		ArrayList<String> ret = new ArrayList<String>();
 		BreakPointHandler bph = new BreakPointHandler(text);
     	BreakPoint bp;
     	while (bph.hasNext()) {
     		bp = bph.nextRow(rowFill);
-    		ret.add(addBorderToRow(bp.getHead().replaceAll("\u00ad", "")));
+    		ret.add(addBorderToRow(bp.getHead().replaceAll("\\s*\\z", "")));
     	}
     	return ret;
 	}
@@ -144,5 +142,5 @@ public class TextBorder {
     	sb.append(rightBorder);
     	return sb.toString();
 	}
- 
+
 }

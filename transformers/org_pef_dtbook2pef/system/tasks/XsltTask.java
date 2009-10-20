@@ -3,6 +3,7 @@ package org_pef_dtbook2pef.system.tasks;
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.xml.xslt.Stylesheet;
@@ -19,6 +20,7 @@ import org_pef_dtbook2pef.system.InternalTask;
 public class XsltTask extends InternalTask {
 	final URL url;
 	final String factory;
+	final Map<String, Object> options;
 	
 	/**
 	 * Create a new XSLT task.
@@ -26,15 +28,16 @@ public class XsltTask extends InternalTask {
 	 * @param url relative path to XSLT
 	 * @param factory XSLT factory to use
 	 */
-	public XsltTask(String name, URL url, String factory) {
+	public XsltTask(String name, URL url, String factory, Map<String, Object> options) {
 		super(name);
 		this.url = url;
 		this.factory = factory;
+		this.options = options;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void execute(File input, File output, HashMap options)
+	public void execute(File input, File output)
 			throws TransformerRunException {
 		try {
 			Stylesheet.apply(input.getAbsolutePath(), url, output.getAbsolutePath(), factory, options, null);

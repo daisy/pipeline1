@@ -1,10 +1,8 @@
 package org_pef_dtbook2pef.system.tasks.layout.impl;
 
-import java.util.HashMap;
 import java.util.Stack;
 
 import org_pef_dtbook2pef.system.tasks.layout.flow.SequenceProperties;
-import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
 
 /**
  * FlowStruct is the data structure for the first step of the layout process

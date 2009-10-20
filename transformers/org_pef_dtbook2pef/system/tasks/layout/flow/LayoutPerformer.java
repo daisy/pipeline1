@@ -1,9 +1,19 @@
 package org_pef_dtbook2pef.system.tasks.layout.flow;
 
-import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaOutput;
+import java.io.OutputStream;
 
+/**
+ * Perform layout of a document to the specified OutputStream
+ * @author joha
+ *
+ */
 public interface LayoutPerformer {
 	
-	public PagedMediaOutput layout(PagedMediaOutput output);
+	/**
+	 * Write 
+	 * @param output
+	 * @throws LayoutPerformerException
+	 */
+	public void layout(OutputStream output) throws LayoutPerformerException;
 
 }

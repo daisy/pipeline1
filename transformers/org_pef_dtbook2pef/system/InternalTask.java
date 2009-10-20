@@ -18,7 +18,6 @@
 package org_pef_dtbook2pef.system;
 
 import java.io.File;
-import java.util.HashMap;
 
 import org.daisy.pipeline.exception.TransformerRunException;
 
@@ -57,6 +56,6 @@ public abstract class InternalTask {
 	 * @param options
 	 * @throws TransformerRunException
 	 */
-	public abstract void execute(File input, File output, HashMap<String, String> options) throws TransformerRunException;
+	public abstract void execute(File input, File output) throws TransformerRunException;
 
 }

@@ -7,17 +7,17 @@ import java.util.Locale;
  * @author joha
  *
  */
-public class Locale2 {
+public class FilterLocale {
 	private final String lang, country, variant, str;
 	
-	private Locale2(String lang, String country, String variant) {
+	private FilterLocale(String lang, String country, String variant) {
 		this.lang = lang.intern();
 		this.country = country.intern();
 		this.variant = variant.intern();
 		this.str = (lang + (country.equals("") ? "" : "-" + country + (variant.equals("") ? "" : "-" + variant))).intern();
 	}
 	
-	public static Locale2 parse(String locale) {
+	public static FilterLocale parse(String locale) {
 		if (!locale.matches("([a-zA-Z]{1,8}(\\-[0-9a-zA-Z]{1,8})*)?")) {
 			throw new IllegalArgumentException("Not a valid locale as defined by IETF RFC 3066: " + locale);
 		}
@@ -31,7 +31,7 @@ public class Locale2 {
 		if (parts.length>=3) {
 			variant = parts[2];
 		}
-		return new Locale2(lang, country, variant);
+		return new FilterLocale(lang, country, variant);
 	}
 	
 	public Locale toLocale() {
@@ -50,7 +50,7 @@ public class Locale2 {
 		return variant;
 	}
 
-	public boolean equals(Locale2 other) {
+	public boolean equals(FilterLocale other) {
 		// str is pooled using intern(), so str == other.str implies that str.equals(other.str)
 		return str == other.str;
 	}
@@ -60,7 +60,7 @@ public class Locale2 {
 	 * @param other
 	 * @return
 	 */
-	public boolean isA(Locale2 other) {
+	public boolean isA(FilterLocale other) {
 		// all strings are pooled so str == other.str implies that str.equals(other.str)
 		if (other.variant != "" && this.variant != other.variant) {
 			return false;

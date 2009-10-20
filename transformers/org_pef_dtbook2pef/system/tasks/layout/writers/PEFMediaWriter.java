@@ -1,16 +1,20 @@
-package org_pef_dtbook2pef.system.tasks.layout.impl;
+package org_pef_dtbook2pef.system.tasks.layout.writers;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
-import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
-import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaOutput;
+import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
+import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriterException;
+import org_pef_dtbook2pef.system.tasks.layout.page.SectionProperties;
 
-
-public class DefaultPEFOutput implements PagedMediaOutput {
+/**
+ * PEFMediaWriter is a simple implementation of PagedMediaWriter which outputs a PEF 2008-1 file.
+ * @author joha
+ *
+ */
+public class PEFMediaWriter implements PagedMediaWriter {
 	private PrintStream pst;
 	private Properties p;
 	private boolean hasOpenVolume;
@@ -18,25 +22,31 @@ public class DefaultPEFOutput implements PagedMediaOutput {
 	private boolean hasOpenPage;
 	private int cCols;
 	private int cRows;
+	private int cRowgap;
+	private boolean cDuplex;
 	
-	public DefaultPEFOutput(Properties p) {
+	/**
+	 * Create a new PEFMediaWriter using the supplied Properties. Available properties are:
+	 * "identifier", "date"
+	 * @param p configuration Properties
+	 */
+	public PEFMediaWriter(Properties p) {
 		this.p = p;
 		hasOpenVolume = false;
 		hasOpenSection = false;
 		hasOpenPage = false;
 		cCols = 0;
 		cRows = 0;
+		cRowgap = 0;
+		cDuplex = true;
 	}
 
-	public void open(File f) {
+	public void open(OutputStream os) throws PagedMediaWriterException {
 		try {
-			pst = new PrintStream(f, "UTF-8");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			pst = new PrintStream(os, true, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// should never happen
+			throw new PagedMediaWriterException("Cannot open PrintStream with UTF-8.", e);
 		}
 		hasOpenVolume = false;		
 		hasOpenSection = false;
@@ -65,27 +75,38 @@ public class DefaultPEFOutput implements PagedMediaOutput {
 		pst.print("</row>");
 		pst.println();
 	}
+	
+	public void newRow() {
+		pst.println("<row/>");
+	}
 
-	public void newSection(LayoutMaster master) {
+	public void newSection(SectionProperties master) {
 		if (!hasOpenVolume) {
 			cCols = master.getPageWidth();
 			cRows = master.getPageHeight();
+			cRowgap = Math.round((master.getRowSpacing()-1)*4);
+			cDuplex = master.duplex();
 			pst.println("<volume cols=\"" + cCols + 
 					"\" rows=\"" + cRows +
-					"\" rowgap=\"" + p.getProperty("rowgap", "0") +
-					"\" duplex=\"" + p.getProperty("duplex", "true") +
+					"\" rowgap=\"" + cRowgap +
+					"\" duplex=\"" + cDuplex +
 					"\">");
 			hasOpenVolume = true;
 		}
 		closeOpenSection();
 		pst.print("<section");
-		if (cCols!=master.getPageWidth() || cRows!=master.getPageHeight()) {
-			if (cCols!=master.getPageWidth()) {
-				pst.println(" cols=\"" + master.getPageWidth() + "\"");
-			}
-			if (cRows!=master.getPageHeight()) { 
-				pst.println(" rows=\"" + master.getPageHeight() + "\"");
-			}
+
+		if (cCols!=master.getPageWidth()) {
+			pst.print(" cols=\"" + master.getPageWidth() + "\"");
+		}
+		if (cRows!=master.getPageHeight()) { 
+			pst.print(" rows=\"" + master.getPageHeight() + "\"");
+		}
+		if (cRowgap!=Math.round((master.getRowSpacing()-1)*4)) {
+			pst.print(" rowgap=\"" + Math.round((master.getRowSpacing()-1)*4) + "\"");
+		}
+		if (cDuplex!=master.duplex()) {
+			pst.print(" duplex=\"" + master.duplex() + "\"");
 		}
 		pst.println(">");
 		hasOpenSection = true;

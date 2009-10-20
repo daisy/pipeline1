@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -20,7 +19,7 @@ import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
 /**
  * Task that runs a list of StringFilters on the character data of the input file.
  * 
- * @author  Joel Hakansson
+ * @author  Joel Håkansson, TPB
  * @version 4 maj 2009
  * @since 1.0
  */
@@ -38,7 +37,7 @@ public class TextNodeTask extends InternalTask {
 	}
 
 	@Override
-	public void execute(File input, File output, HashMap<String, String> options)
+	public void execute(File input, File output)
 			throws TransformerRunException {
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
 		inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        

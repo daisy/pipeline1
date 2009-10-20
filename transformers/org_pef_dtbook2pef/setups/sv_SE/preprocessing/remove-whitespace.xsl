@@ -30,6 +30,7 @@
 			<xsl:variable name="size" select="count(node())"/>
 			<xsl:for-each select="node()">
 				<xsl:choose>
+					<!-- this will have to change if inline text containers, such as "span", are implemented -->
 					<xsl:when test="self::text() and string-length(normalize-space(.))=0"></xsl:when>
 					<xsl:when test="self::text()">
 						<xsl:choose>
@@ -41,7 +42,7 @@
 									<xsl:text> </xsl:text>
 								</xsl:if>
 								<xsl:value-of select="normalize-space(.)"/>
-								<xsl:if test="position()&lt;$size and matches(substring(., string-length(.), 1), '\s+')">
+								<xsl:if test="position()&lt;$size and matches(substring(., string-length(.), 1), '\s+') and not((following-sibling::node()[1])[self::block or self::br])">
 									<xsl:text> </xsl:text>
 								</xsl:if>
 							</xsl:otherwise>

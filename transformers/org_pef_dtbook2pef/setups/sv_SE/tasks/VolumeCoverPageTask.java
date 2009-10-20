@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,16 +30,21 @@ import org_pef_dtbook2pef.system.tasks.layout.utils.TextBorder;
 public class VolumeCoverPageTask extends InternalTask {
 	private StringFilter filters;
 	private TextBorder tb;
+	private File dtbook;
+	private int height;
 
-	public VolumeCoverPageTask(String name, StringFilter filters, TextBorder tb) {
+	public VolumeCoverPageTask(String name, StringFilter filters, TextBorder tb, File dtbook, int height) {
 		super(name);
 		this.filters = filters;
 		this.tb = tb;
+		this.dtbook = dtbook;
+		this.height = height;
 	}
 
 	@Override
-	public void execute(File input, File output, HashMap<String, String> options)
+	public void execute(File input, File output)
 			throws TransformerRunException {
+
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
 		inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
         inFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
@@ -54,10 +58,12 @@ public class VolumeCoverPageTask extends InternalTask {
 		}
 		
 		try {
-			File dtbook = new File(options.get("input"));
+
 			DocumentBuilder docBuilder = initDocumentBuilder();
 			Document d = docBuilder.parse(dtbook);
+			Document d2 = docBuilder.parse(input);
 			XPath xp = XPathFactory.newInstance().newXPath();
+			int vol = ((Double)xp.evaluate("count(//volume)", d2, XPathConstants.NUMBER)).intValue();
 			String doctitle = xp.evaluate("/dtbook/book/frontmatter/doctitle", d);
 			org.w3c.dom.NodeList ns = (org.w3c.dom.NodeList)xp.evaluate("/dtbook/book/frontmatter/docauthor", d, XPathConstants.NODESET);
 			ArrayList<String> al = new ArrayList<String>();
@@ -68,7 +74,7 @@ public class VolumeCoverPageTask extends InternalTask {
 					inFactory.createXMLEventReader(new FileInputStream(input)), 
 					new FileOutputStream(output),
 					filters,
-					doctitle, al, tb, 29);
+					doctitle, al, tb, height, vol);
 			pf.filter();
 			pf.close();
 		} catch (FileNotFoundException e) {

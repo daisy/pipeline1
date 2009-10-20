@@ -1,5 +1,6 @@
 package org_pef_dtbook2pef.system.tasks.layout.impl;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
@@ -7,26 +8,30 @@ import java.util.Stack;
 import org_pef_dtbook2pef.system.tasks.layout.flow.BlockProperties;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Flow;
 import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformer;
+import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformerException;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Leader;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
 import org_pef_dtbook2pef.system.tasks.layout.flow.SequenceProperties;
+import org_pef_dtbook2pef.system.tasks.layout.flow.SpanProperties;
+import org_pef_dtbook2pef.system.tasks.layout.flow.BlockProperties.ListType;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
-import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaOutput;
+import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
+import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriterException;
 import org_pef_dtbook2pef.system.tasks.layout.page.field.CompoundField;
 import org_pef_dtbook2pef.system.tasks.layout.page.field.CurrentPageField;
 import org_pef_dtbook2pef.system.tasks.layout.page.field.MarkerReferenceField;
+import org_pef_dtbook2pef.system.tasks.layout.text.FilterFactory;
 import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
-import org_pef_dtbook2pef.system.tasks.layout.text.StringFilterFactory;
-import org_pef_dtbook2pef.system.tasks.layout.utils.BreakPointHandler;
+import org_pef_dtbook2pef.system.tasks.layout.utils.BlockHandler;
 import org_pef_dtbook2pef.system.tasks.layout.utils.LayoutTools;
-import org_pef_dtbook2pef.system.tasks.layout.utils.BreakPointHandler.BreakPoint;
 
 /**
  * Breaks flow into rows, page related block properties are left to next step
  * @author joha
- * TODO: implement initial-page-number attribute
  * TODO: content-before (list-item) does align properly with nested block elements (aligns against left margin) 
  * TODO: fix recursive keep problem
+ * FIXME: whitespace at break point isn't handled correctly, fixed?
+ * TODO check flow-file validity
  */
 public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 	private static final Character SPACE_CHAR = ' '; //'\u2800'
@@ -35,34 +40,41 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 	private FlowStruct flowStruct;
 	private Stack<BlockProperties> context;
 	private boolean firstRow;
-	private int currentListNumber;
-	private BlockProperties.ListType currentListType;
-	private Leader currentLeader;
+	//private int currentListNumber;
+	//private BlockProperties.ListType currentListType;
+	//private Leader currentLeader;
 	private HashMap<String, LayoutMaster> masters;
-	private StringFilter filters;
+	private final StringFilter filters;
+	private final PagedMediaWriter writer;
+	private BlockHandler bh;
+	private int currentBlockIndent;
 
 	public static class Builder {
+		//required
+		PagedMediaWriter writer;
+		//optional
 		HashMap<String, LayoutMaster> masters;
-		StringFilterFactory filtersFactory;
-		
-		public Builder() {
+		FilterFactory filtersFactory;
+	
+		/**
+		 * Create a new DefaultlayoutPerformer.Builder with the supplied PagedMediaWriter
+		 * @param writer the PagedMediaWriter to use for output.
+		 */
+		public Builder(PagedMediaWriter writer) {
+			this.writer = writer;
 			masters = new HashMap<String, LayoutMaster>();
 			setStringFilterFactory(null);
 		}
 		
 		/**
-		 * Set text filter handler, may be null
+		 * Set text filter handler, may not be null
 		 * @param filters
 		 */
-		public Builder setStringFilterFactory(StringFilterFactory filters) {
-			if (filters == null) {
-				this.filtersFactory = StringFilterFactory.newInstance();
-			} else {
-				this.filtersFactory = filters;
-			}
+		public Builder setStringFilterFactory(FilterFactory filters) {
+			this.filtersFactory = filters;
 			return this;
 		}
-		
+
 		public Builder addLayoutMaster(String key, LayoutMaster value) {
 			masters.put(key, value);
 			return this;
@@ -79,13 +91,16 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 	 */
 	private DefaultLayoutPerformer(Builder builder) {
 		this.masters = builder.masters;
-		this.filters = builder.filtersFactory.newStringFilter();
+		this.filters = builder.filtersFactory.getDefault();
+		this.writer = builder.writer;
 		this.context = new Stack<BlockProperties>();
 		this.leftMargin = 0;
 		this.rightMargin = 0;
-		this.currentListType = BlockProperties.ListType.NONE;
-		this.currentLeader = null;
+		//this.currentListType = BlockProperties.ListType.NONE;
+		//this.currentLeader = null;
 		this.flowStruct = new FlowStruct(); //masters
+		this.bh = new BlockHandler(filters);
+		this.currentBlockIndent = 0;
 	}
 
 	/**
@@ -95,10 +110,16 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 	public abstract void addRow(CharSequence chars);
 	public abstract void newPage();*/
 
-	public void addChars(CharSequence chars) {
-		if (context.size()==0) return; // TODO: Fix this, it's really the xml handler that outputs character where there shouldn't be any...
-		chars = filters.filter(chars.toString());
-		int available = masters.get(flowStruct.getCurrentSequence().getSequenceProperties().getMasterName()).getPageWidth() - rightMargin;
+	
+	//TODO Handle SpanProperites
+	public void addChars(CharSequence c, SpanProperties p) {
+		addChars(c);
+	}
+	/*
+	public void addChars(CharSequence c) {
+		assert context.size()!=0;
+		String chars = filters.filter(c.toString());
+		int available = masters.get(flowStruct.getCurrentSequence().getSequenceProperties().getMasterName()).getFlowWidth() - rightMargin;
 		BlockProperties p = context.peek();
 		if (available < 1) {
 			throw new RuntimeException("Cannot continue layout: No space left for characters.");
@@ -121,133 +142,159 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 				listNumber = filters.filter(listNumber);
 				chars = newRow(listNumber, chars, available, leftMargin, p.getFirstLineIndent());
 			} else {
-				chars = newRow(chars, available, leftMargin, p.getFirstLineIndent());
+				chars = newRow("", chars, available, leftMargin, p.getFirstLineIndent());
 			}
 			firstRow = false;
 		} else {
 			Row r = flowStruct.getCurrentSequence().getCurrentGroup().popRow();
-			chars = newRow(r.getMarkers(), r.getChars().toString(), chars, available); // indent already added, don't add it again
+			chars = newRow(r.getMarkers(), r.getLeftMargin(), "", r.getChars().toString(), chars, available);
 		}
 		while (LayoutTools.length(chars.toString())>0) {
-			chars = newRow(chars, available, leftMargin, p.getTextIndent());
+			String c2 = newRow("", chars, available, leftMargin, p.getTextIndent());
+			//c2 = c2.replaceFirst("\\A\\s*", ""); // remove leading white space from input
+			if (c2.length()>=chars.length()) {
+				System.out.println(c2);
+			}
+			chars = c2;
 		}
 	}
 
-	private CharSequence newRow(CharSequence chars, int available, int margin, int indent) {
-		return newRow("", chars, available, margin, indent);
-	}
-	
-	private CharSequence newRow(String contentBefore, CharSequence chars, int available, int margin, int indent) {
+	private String newRow(String contentBefore, String chars, int available, int margin, int indent) {
 		int thisIndent = indent - LayoutTools.length(contentBefore);
-		String preText = LayoutTools.fill(SPACE_CHAR, margin).toString() + contentBefore + LayoutTools.fill(SPACE_CHAR, thisIndent).toString();
-		assert thisIndent >= 0;
-		return newRow(null, preText, chars, available);
+		//assert thisIndent >= 0;
+		String preText = contentBefore + LayoutTools.fill(SPACE_CHAR, thisIndent).toString();
+		return newRow(null, margin, preText, "", chars, available);
 	}
 
-	//TODO: in order to implement leader properly, margin (space chars) and proper text must be separated - or leader functionality moved to addChars
-	private CharSequence newRow(ArrayList<Marker> r, String preText, CharSequence chars, int available) {
-		String charsStr = chars.toString();
-		/*
-		 * om tabläget paserats {
-		 * 	ny rad
-		 *  försök igen
-		 * } annars {
-		 * 	om höger {
-		 * 		om hela strängen får plats {
-		 * 			space(strängen.length-av) + strängen
-		 * 		} else {
-		 * 			ignorera tabläget
-		 * 		}
-		 * 	}
-		 * om vänster {
-		 * 	space(till tabläget) + bryt som vanligt
-		 * } om center {
-		 *  bryt som vanligt (av) och space(det som blir över)
-		 * }
-		 * }
-		 * 
-		 */
-		int width = masters.get(flowStruct.getCurrentSequence().getSequenceProperties().getMasterName()).getPageWidth();
-		int col = LayoutTools.length(preText);
-		int maxLen = available-(col);
+	//TODO: check leader functionality
+	private String newRow(ArrayList<Marker> r, int margin, String preContent, String preTabText, String postTabText, int available) {
 
+		// [margin][preContent][preTabText][tab][postTabText] 
+		//      preContentPos ^
+
+		int preTextIndent = LayoutTools.length(preContent);
+		int preContentPos = margin+preTextIndent;
+		int preTabPos = preContentPos+LayoutTools.length(preTabText);
+		int postTabTextLen = LayoutTools.length(postTabText);
+		int maxLenText = available-(preContentPos);
+
+		int width = masters.get(flowStruct.getCurrentSequence().getSequenceProperties().getMasterName()).getFlowWidth();
 		String tabSpace = "";
 		if (currentLeader!=null) {
-			/*
-			if (currentLeader.getPosition().makeAbsolute(width)>=col) {
-				flowStruct.getCurrentSequence().getCurrentGroup().pushRow(new Row(preText));
-				preText = "";
-				breakPoint = available;
-				col = 0;
-			}*/
 			int leaderPos = currentLeader.getPosition().makeAbsolute(width);
-			String leaderPattern = filters.filter(currentLeader.getPattern());
+			int offset = leaderPos-preTabPos;
+			int align = 0;
 			switch (currentLeader.getAlignment()) {
 				case LEFT:
-					// if leader position hasn't been passed yet
-					if (col<leaderPos) {
-						tabSpace = LayoutTools.fill(leaderPattern, leaderPos-col);
-					} else {
-						//FIXME: ignore, or what?
-					}
+					align = 0;
 					break;
 				case RIGHT:
-					if (LayoutTools.length(charsStr)<maxLen) {
-						if (col<leaderPos) {
-							tabSpace = LayoutTools.fill(leaderPattern, leaderPos-col-LayoutTools.length(charsStr));
-						} else {
-							//FIXME: ignore, or what?
-						}
-					} else {
-						//FIXME: ignore, or what?
-					}
+					align = postTabTextLen;
 					break;
 				case CENTER:
-					if (col<leaderPos) {
-						tabSpace = LayoutTools.fill(leaderPattern, leaderPos-col-(LayoutTools.length(charsStr)/2));
-					} else {
-						//FIXME: ignore, or what?
-					}
+					align = postTabTextLen/2;
 					break;
 			}
-			// }
-			// discard
-			currentLeader = null;
+			if (preTabPos>leaderPos || offset - align < 0) { // if tab position has been passed or if text does not fit within row, try on a new row
+				Row row = new Row(preContent + preTabText);
+				row.setLeftMargin(margin);
+				if (r!=null) {
+					row.addMarkers(r);
+					r = null;
+				}
+				flowStruct.getCurrentSequence().getCurrentGroup().pushRow(row);
+
+				preContent = LayoutTools.fill(SPACE_CHAR, context.peek().getTextIndent());
+				preTextIndent = LayoutTools.length(preContent);
+				preTabText = "";
+				preContentPos = margin+preTextIndent;
+				preTabPos = preContentPos;
+				maxLenText = available-(preContentPos);
+				offset = leaderPos-preTabPos;
+			}
+			if (offset - align > 0) {
+				String leaderPattern = filters.filter(currentLeader.getPattern());
+				tabSpace = LayoutTools.fill(leaderPattern, offset - align);
+			} // else: leader position has been passed on an empty row or text does not fit on an empty row, ignore
 		}
-		maxLen -= LayoutTools.length(tabSpace);
+
+		maxLenText -= LayoutTools.length(tabSpace);
+
 		BreakPoint bp = null;
 		Row nr = null;
-		if (tabSpace.length()>0) { // break only on the new text
-			BreakPointHandler bph = new BreakPointHandler(charsStr);
-			bp = bph.nextRow(available-LayoutTools.length(preText + tabSpace));
-			if (bp.isHardBreak()) {
-				// FIXME: recalculate breakpoint on a new row
-				throw new RuntimeException("Not implemented");
-			} else {
-				nr = new Row(preText + tabSpace + bp.getHead().replaceAll("\u00ad", ""));
-			}
-		} else { // break on the entire string, mainly to fix any trailing white space in preText
-			BreakPointHandler bph = new BreakPointHandler(preText + charsStr);
-			bp = bph.nextRow(available);
-			nr = new Row(bp.getHead().replaceAll("\u00ad", ""));
+		
+		if (tabSpace.length()>0) { // there is a tab...
+			maxLenText -= preTabText.length();
+			BreakPointHandler bph = new BreakPointHandler(postTabText);
+			bp = bph.nextRow(maxLenText);
+			nr = new Row(preContent + preTabText + tabSpace + bp.getHead());
+		} else { // no tab
+			BreakPointHandler bph = new BreakPointHandler(preTabText + postTabText);
+			bp = bph.nextRow(maxLenText);
+			nr = new Row(preContent + bp.getHead());
 		}
+		// discard leader
+		currentLeader = null;
+
+		assert nr != null;
 		if (r!=null) {
 			nr.addMarkers(r);
 		}
+		nr.setLeftMargin(margin);
+
 		flowStruct.getCurrentSequence().getCurrentGroup().pushRow(nr);
 		return bp.getTail();
 	}
+*/
 
+
+	// Using BlockHandler
+	public void addChars(CharSequence c) {
+
+		assert context.size()!=0;
+		bh.setBlockProperties(context.peek());
+		bh.setWidth(masters.get(flowStruct.getCurrentSequence().getSequenceProperties().getMasterName()).getFlowWidth() - rightMargin);
+		ArrayList<Row> ret;
+		if (firstRow) {
+			ret = bh.layoutBlock(c, leftMargin, masters.get(flowStruct.getCurrentSequence().getSequenceProperties().getMasterName()));
+			firstRow = false;
+		} else {
+			Row r = flowStruct.getCurrentSequence().getCurrentGroup().popRow();
+			ret = bh.appendBlock(c, leftMargin, r, masters.get(flowStruct.getCurrentSequence().getSequenceProperties().getMasterName()));
+		}
+		for (Row r : ret) {
+			flowStruct.getCurrentSequence().getCurrentGroup().pushRow(r);
+		}
+
+	}
+	// END Using BlockHandler
+	
+
+	
 	public void insertMarker(Marker m) {
 		flowStruct.getCurrentSequence().getCurrentGroup().addMarker(m);
 	}
 
 	public void startBlock(BlockProperties p) {
-		assert currentLeader == null;
+		//assert currentLeader == null;
+		assert bh.getCurrentLeader() == null;
 		if (context.size()>0) {
-			currentListType = context.peek().getListType();
-			if (currentListType!=BlockProperties.ListType.NONE) {
+			
+			//currentListType = context.peek().getListType();
+			//bh.setCurrentListType(context.peek().getListType());
+			//bh.setCurrentListType(context.peek().getListType());
+			
+			/*if (currentListType!=BlockProperties.ListType.NONE) {
 				currentListNumber = context.peek().nextListNumber();
+			}*/
+			
+			//if (bh.getCurrentListType()!=BlockProperties.ListType.NONE) {
+				//bh.setCurrentListNumber(context.peek().nextListNumber());
+			//}
+			currentBlockIndent += context.peek().getBlockIndent();
+			bh.setBlockIndent(currentBlockIndent);
+			if (context.peek().getListType()!=BlockProperties.ListType.NONE) {
+				bh.setListItem(context.peek().nextListNumber(), context.peek().getListType());
 			}
 		}
 		FlowGroup c = flowStruct.getCurrentSequence().newFlowGroup();
@@ -262,16 +309,29 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 	}
 	
 	public void endBlock() {
-		if (currentLeader!=null) {
-			// current leader finishes block, output now
+		/*if (currentLeader!=null) {
+			addChars("");
+		}*/
+		// BlockHandler
+		if (bh.getCurrentLeader()!=null || bh.getListItem()!=null) {
 			addChars("");
 		}
+		// BlockHandler
 		BlockProperties p = context.pop();
 		flowStruct.getCurrentSequence().getCurrentGroup().addSpaceAfter(p.getBottomMargin());
 		if (context.size()>0) {
 			FlowGroup c = flowStruct.getCurrentSequence().newFlowGroup();
 			c.setKeepType(context.peek().getKeepType());
 			c.setKeepWithNext(context.peek().getKeepWithNext());
+			//currentListType = context.peek().getListType();
+			//bh.setCurrentListType(context.peek().getListType());
+			currentBlockIndent -= context.peek().getBlockIndent();
+			bh.setBlockIndent(currentBlockIndent);
+		} else {
+			//TODO: what else need to be done when there is no context stack?
+			
+			//currentListType = ListType.NONE;
+			//bh.setCurrentListType(ListType.NONE);
 		}
 		leftMargin -= p.getLeftMargin();
 		rightMargin -= p.getRightMargin();
@@ -283,13 +343,14 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 	}
 
 	public void insertLeader(Leader leader) {
-		currentLeader = leader;
+		//currentLeader = leader;
+		bh.setCurrentLeader(leader);
 	}
 	
 	public void newLine() {
-		BlockProperties p = context.peek();
-		int thisMargin = leftMargin + p.getTextIndent();
-		flowStruct.getCurrentSequence().getCurrentGroup().pushRow(new Row(LayoutTools.fill(SPACE_CHAR, thisMargin)));
+		Row r = new Row("");
+		r.setLeftMargin(leftMargin + context.peek().getTextIndent());
+		flowStruct.getCurrentSequence().getCurrentGroup().pushRow(r);
 	}
 
 	private int getKeepHeight(FlowGroup[] groupA, int gi) {
@@ -307,10 +368,15 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 		return keepHeight;
 	}
 	
-	public PagedMediaOutput layout(PagedMediaOutput pm) {
+	public void layout(OutputStream os) throws LayoutPerformerException {
+		try {
+			writer.open(os);
+		} catch (PagedMediaWriterException e) {
+			throw new LayoutPerformerException("Could not open stream.", e);
+		}
 		PageStruct ps = new PageStruct(); //masters
 		for (FlowSequence seq : flowStruct.toArray()) {
-			ps.newSection(masters.get(seq.getSequenceProperties().getMasterName())); //seq.getSequenceProperties().getMasterName(), 
+			ps.newSection(masters.get(seq.getSequenceProperties().getMasterName()), seq.getSequenceProperties().getInitialPageNumber()-1); //seq.getSequenceProperties().getMasterName(), 
 			ps.newPage();
 			FlowGroup[] groupA = seq.toArray();
 			for (int gi = 0; gi<groupA.length; gi++) {
@@ -336,7 +402,7 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 					default:;
 				}
 				if (groupA[gi].getSpaceBefore()+groupA[gi].getSpaceAfter()>=height) {
-					throw new RuntimeException("Group margins too large to fit on an empty page.");
+					throw new LayoutPerformerException("Group margins too large to fit on an empty page.");
 				} else if (groupA[gi].getSpaceBefore()+1>height-ps.countRowsOnCurrentPage()) {
 					ps.newPage();
 				}
@@ -367,33 +433,42 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 				int pagenum = p.getPageIndex()+1;
 				ArrayList<Row> header = new ArrayList<Row>();
 				for (ArrayList<Object> row : lm.getHeader(pagenum)) {
-					header.add(new Row(distribute(row, lm.getPageWidth(), " ", p)));
+					header.add(new Row(distribute(row, lm.getFlowWidth(), " ", p)));
 				}
 				p.setHeader(header);
 				ArrayList<Row> footer = new ArrayList<Row>();
 				for (ArrayList<Object> row : lm.getFooter(pagenum)) {
-					footer.add(new Row(distribute(row, lm.getPageWidth(), " ", p)));
+					footer.add(new Row(distribute(row, lm.getFlowWidth(), " ", p)));
 				}
 				p.setFooter(footer);
 			}
 		}
-
+		
+		int rowNo = 1;
 		for (PageSequence s : ps.getSequenceArray()) {
 			LayoutMaster lm = s.getLayoutMaster();
-			pm.newSection(lm);
+			writer.newSection(lm);
 			for (Page p : s.getPages()) {
-				pm.newPage();
+				writer.newPage();
 				int pagenum = p.getPageIndex()+1;
 				for (Row row : p.getRows()) {
 					if (row.getChars().length()>0) {
-						pm.newRow(LayoutTools.fill(SPACE_CHAR, (pagenum % 2 == 0) ? lm.getOuterMargin() : lm.getInnerMargin()) + row.getChars());
+						int margin = ((pagenum % 2 == 0) ? lm.getOuterMargin() : lm.getInnerMargin()) + row.getLeftMargin();
+						String chars = row.getChars().replaceAll("\\s*\\z", "");
+						int rowWidth = LayoutTools.length(chars)+row.getLeftMargin();
+						String r = 	LayoutTools.fill(SPACE_CHAR, margin) + chars;
+						if (rowWidth>lm.getFlowWidth()) {
+							throw new LayoutPerformerException("Row no " + rowNo + " is too long (" + rowWidth + "/" + lm.getFlowWidth() + ") '" + chars + "'");
+						}
+						writer.newRow(r);
 					} else {
-						pm.newRow(row.getChars());
+						writer.newRow();
 					}
+					rowNo++;
 				}
 			}
 		}
-		return pm;
+		writer.close();
 	}
 
 	private String resolveCurrentPageField(CurrentPageField f, Page p) {

@@ -10,30 +10,11 @@ public class BreakPointHandler {
 		this.charsStr = str;
 	}
 
-	public class BreakPoint {
-		private final String head;
-		private final String tail;
-		private final boolean hardBreak;
-
-		private BreakPoint(String head, String tail, boolean hardBreak) {
-			this.head = head;
-			this.tail = tail;
-			this.hardBreak = hardBreak;
-		}
-		
-		public String getHead() {
-			return head;
-		}
-
-		public String getTail() {
-			return tail;
-		}
-		
-		public boolean isHardBreak() {
-			return hardBreak;
-		}
-	}
-
+	/**
+	 * Get the next row from this BreakPointHandler
+	 * @param breakPoint the desired breakpoint for this row
+	 * @return returns the next BreakPoint
+	 */
 	public BreakPoint nextRow(int breakPoint) {
 		if (charsStr.length()==0) {
 			// pretty simple...
@@ -43,7 +24,10 @@ public class BreakPointHandler {
 		String tail;
 		boolean hard = false;
 		assert charsStr.length()==charsStr.codePointCount(0, charsStr.length());
-		if (charsStr.length()>breakPoint) {
+		if (charsStr.length()<=breakPoint) {
+			head = charsStr;
+			tail = "";
+		} else {
 			int strPos = -1;
 			int len = 0;
 			for (char c : charsStr.toCharArray()) {
@@ -72,7 +56,7 @@ public class BreakPointHandler {
 				head = charsStr.substring(0, strPos+1);
 				tailStart = strPos+1;
 			} else if (charsStr.charAt(strPos+1)==' ') {
-				head = charsStr.substring(0, strPos+1);
+				head = charsStr.substring(0, strPos+2); // strPos+1
 				tailStart = strPos+2;
 			} else { // back up
 				int i=strPos;
@@ -87,8 +71,8 @@ whileLoop:		while (i>=0) {
 					hard = true;
 					head = charsStr.substring(0, strPos+1);
 					tailStart = strPos+1;
-				} else if (charsStr.charAt(i)==' ') { // ignore space at breakpoint
-					head = charsStr.substring(0, i);
+				} else if (charsStr.charAt(i)==' ') { // don't ignore space at breakpoint
+					head = charsStr.substring(0, i+1); //i
 					tailStart = i+1;
 				} else if (charsStr.charAt(i)=='\u00ad'){ // convert soft hyphen to hard hyphen 
 					head = charsStr.substring(0, i) + '-';
@@ -103,15 +87,25 @@ whileLoop:		while (i>=0) {
 			} else {
 				tail = "";
 			}
-		} else {
-			head = charsStr;
-			tail = "";
 		}
+		assert (tail.length()<charsStr.length());
 		charsStr = tail;
+		head = head.replaceAll("\u00ad", "");
 		return new BreakPoint(head, tail, hard);
 	}
 
 	public boolean hasNext() {
 		return (charsStr!=null && charsStr.length()>0);
+	}
+	
+	public static void main(String[] args) {
+		BreakPointHandler bph = new BreakPointHandler("citat/blockcitat20");
+		String t = "   ⠠⠅⠊⠇⠇⠑ ⠼⠁⠒ ⠠⠚⠁⠛ ⠓⠁⠗ ⠠⠉⠕⠍⠧⠊⠟    ";
+		System.out.println("T: '" + t.replaceAll("\\s*\\z", "") + "'");
+		BreakPoint bp = bph.nextRow(17);
+		System.out.println(bp.getHead());
+		System.out.println(bp.getTail());
+		System.out.println(bp.isHardBreak());
+		
 	}
 }

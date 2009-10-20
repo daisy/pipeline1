@@ -8,7 +8,7 @@
 		Joel Håkansson, TPB
 		Version 2006-03-24
  -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 	<xsl:template match="*|comment()|processing-instruction()">
 		<xsl:call-template name="copy"/>

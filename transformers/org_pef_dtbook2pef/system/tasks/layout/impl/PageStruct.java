@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
+import org_pef_dtbook2pef.system.tasks.layout.flow.SequenceProperties;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
 
 public class PageStruct {
@@ -15,9 +16,9 @@ public class PageStruct {
 		//this.templates = templates;
 	}
 
-	public void newSection(LayoutMaster master) {
+	public void newSection(LayoutMaster master, int pagesOffset) {
 		//sequence.push(new PageSequence(templates.get(masterName)));
-		sequence.push(new PageSequence(master));
+		sequence.push(new PageSequence(master, pagesOffset));
 	}
 	
 	private PageSequence currentSequence() {

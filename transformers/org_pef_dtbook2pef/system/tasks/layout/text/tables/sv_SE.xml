@@ -134,11 +134,16 @@
 	<entry key="}">&#x2820;&#x283E;</entry>
 	<entry key="〈">&#x2820;&#x2826;</entry>
 	<entry key="〉">&#x2820;&#x2834;</entry>
-	<entry key="¢">&#x2808;&#x2809;</entry>
-	<entry key="£">&#x2808;&#x2807;</entry>
-	<entry key="$">&#x2808;&#x280E;</entry>
-	<entry key="°">&#x2808;&#x2834;</entry>
-	<entry key="&amp;">&#x2810;&#x282C;</entry>
+	<entry key="¢">&#x2818;&#x2809;</entry>						<!-- CENT SIGN, 00A2 -->
+																				<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
+	<entry key="£">&#x2818;&#x2807;</entry>						<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
+	<entry key="$">&#x2818;&#x280E;</entry>						<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
+	<entry key="€">&#x2818;&#x2811;</entry>						<!-- EURO SIGN, 20AC -->																				<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
+	<entry key="¥">&#x2818;&#x283D;</entry>						<!-- YEN SIGN, 00A5 -->
+																				<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
+	<entry key="°">&#x283b;&#x281b;</entry>						<!-- DEGREE SIGN, 00B0 -->
+																				<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
+	<entry key="&amp;">&#x282f;</entry>							<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
 	<entry key="¸">&#x2818;&#x2802;</entry>
 	<entry key="¨">&#x2818;&#x2806;</entry>
 	<entry key="~">&#x2818;&#x2812;</entry>
@@ -155,14 +160,15 @@
 	<entry key="01C1">&#x2838;&#x2838;</entry>					<!-- LATIN LETTER LATERAL CLICK, 01C1 -->
 	<entry key="2045">&#x2830;&#x2826;</entry>					<!-- LEFT SQUARE BRACKET WITH QUILL, 2045 -->
 	<entry key="2046">&#x2830;&#x2834;</entry>					<!-- RIGHT SQUARE BRACKET WITH QUILL, 2046 -->
-	<entry key="%">&#x2828;&#x2834;</entry>
-	<entry key="‰">&#x2828;&#x2834;&#x2834;</entry>
+	<entry key="%">&#x2839;</entry>								<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
+	<entry key="‰">&#x2839;&#x2839;</entry>					<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
 	<entry key="±">&#x2832;&#x2824;</entry>
-	<entry key="&lt;">&#x282A;&#x2804;</entry>
-	<entry key=">">&#x2815;&#x2802;</entry>
+	<entry key="&lt;">&#x283c;&#x282a;</entry>					<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
+	<entry key=">">&#x283c;&#x2815;</entry>						<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
 	<entry key="…">&#x2804;&#x2804;&#x2804;</entry>					<!-- HORIZONTAL ELLIPSIS, 2026 -->
 	<entry key="©">&#x2826;&#x2809;&#x2834;</entry>					<!-- COPYRIGHT SIGN, 00a9 -->
 	<entry key="™">&#x2826;&#x281E;&#x280D;&#x2834;</entry>	<!-- TRADE MARK SIGN, 2122 -->
+	<entry key="®">&#x2826;&#x2817;&#x2834;</entry>					<!-- REGISTERED SIGN, 00ae -->
 	<entry key="½">&#x283c;&#x2801;&#x280C;&#x283c;&#x2803;</entry>
 																						<!-- VULGAR FRACTION ONE HALF, 00bd -->
 	<entry key="¹">&#x282c;&#x283c;&#x2801;</entry>					<!-- SUPERSCRIPT ONE, 00b9 -->

@@ -4,42 +4,38 @@ import java.net.URL;
 import java.util.HashMap;
 
 /**
- * StringFilterFactory is a factory for StringFilters. It can return different StringFilters
+ * BrailleFilterFactory is a factory for braille StringFilters. It can return different StringFilters
  * depending on the requested locale. 
  * @author joha
  *
  */
-public class StringFilterFactory {
-	private static HashMap<String, Locale2> locales = null;
+public class BrailleFilterFactory implements FilterFactory {
+	private static HashMap<String, FilterLocale> locales = null;
 	private StringFilter def;
 
-	protected StringFilterFactory() {
+	protected BrailleFilterFactory() {
 		if (locales == null) {
 			initTable();
 		}
 		def = new CombinationFilter();
 	}
 	
-	public static StringFilterFactory newInstance() {
-		return new StringFilterFactory();
+	public static BrailleFilterFactory newInstance() {
+		return new BrailleFilterFactory();
 	}
 	
 	private void initTable() {
-		locales = new HashMap<String, Locale2>();
+		locales = new HashMap<String, FilterLocale>();
 		putLocale("sv");
 		putLocale("sv-SE");
 	}
 	
 	private void putLocale(String str) {
-		Locale2 loc = Locale2.parse(str);
+		FilterLocale loc = FilterLocale.parse(str);
 		locales.put(loc.toString(), loc);
 	}
 	
-	/**
-	 * Get the default StringFilter
-	 * @return
-	 */
-	public StringFilter newStringFilter() {
+	public StringFilter getDefault() {
 		return def;
 	}
 
@@ -49,7 +45,7 @@ public class StringFilterFactory {
 	 * @param target target locale
 	 * @return returns a StringFilter for the given locale
 	 */
-	public StringFilter newStringFilter(Locale2 target) {
+	public StringFilter newStringFilter(FilterLocale target) {
 		if (target.isA(locales.get("sv"))) {
 			CombinationFilter filters = new CombinationFilter();
 			// Remove redundant whitespace
@@ -74,8 +70,12 @@ public class StringFilterFactory {
 		return def;
 	}
 	
-	public void setDefault(Locale2 locale) {
+	public void setDefault(FilterLocale locale) {
 		def = newStringFilter(locale);
+	}
+	
+	public void setDefault(StringFilter filter) {
+		def = filter;
 	}
 
 	/**
