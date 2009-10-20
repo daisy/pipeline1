@@ -91,8 +91,8 @@ public class SwedishTextSystem implements TaskSystem {
 		// Whitespace normalizer TransformerFactoryConstants.SAXON8
 		setup.add(new XsltTask("FLOW whitespace normalizer", flowWsNormalizer, null, h));
 
-		File debug = new File("D:\\debug.xml");
-		setup.add(new DebugTask("Debug output to " + debug, debug));
+		//File debug = new File("D:\\debug.xml");
+		//setup.add(new DebugTask("Debug output to " + debug, debug));
 
 		// Check that the result from the previous step is OK
 		setup.add(new ValidatorTask("FLOW validator", flowValidationURL));
