@@ -967,6 +967,13 @@ src/org/daisy/util/xml/xslt/stylesheets/dsdl/iso_schematron_skeleton.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/dsdl/iso_svrl.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/dsdl/relaxng2isoschematron.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/dsdl/relaxng2schematron.xsl -text
+src/org/daisy/util/xml/xslt/stylesheets/dtbook/dtbook110to2005-1.xsl -text
+src/org/daisy/util/xml/xslt/stylesheets/dtbook/dtbook2005-1to2.xsl -text
+src/org/daisy/util/xml/xslt/stylesheets/dtbook/dtbook2005-2to3.xsl -text
+src/org/daisy/util/xml/xslt/stylesheets/dtbook/dtbook2xhtml-l10n.xml -text svneol=unset#text/plain
+src/org/daisy/util/xml/xslt/stylesheets/dtbook/dtbook2xhtml.xsl -text
+src/org/daisy/util/xml/xslt/stylesheets/dtbook/mathml-fallback-transform.xslt -text
+src/org/daisy/util/xml/xslt/stylesheets/dtbook/xhtml2dtbook.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/l10n/l10n.xsl -text svneol=unset#text/plain
 src/org/daisy/util/xml/xslt/stylesheets/misc/echo.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/misc/xsl-doctype-switcher.xsl -text
