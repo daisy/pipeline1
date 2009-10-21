@@ -84,15 +84,16 @@
 	<xsl:output method="xml" indent="yes" doctype-public="-//NISO//DTD dtbook 2005-1//EN" doctype-system="http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd"/>
 
 	<!-- find a language code, based on language of  first text element of document -->
-	<xsl:variable name="language" select="substring-before(/rtf:doc/rtf:body/descendant::node()[@language][1]/@language, ' ')"/>
+	<xsl:variable name="language" select="substring-before(/rtf:doc/descendant::node()[@language][1]/@language, ' ')"/>
 	<xsl:variable name="lang">
 		<xsl:choose>
 			<xsl:when test="document( 'languages.xml' )/languages/lang[matches( $language, @name, 'i' )]">
 				<xsl:value-of select="document( 'languages.xml' )/languages/lang[matches( $language, @name, 'i' )]/@code "/>
 			</xsl:when>
-			<xsl:otherwise>
+			<xsl:when test="string-length($language)>0">
 				<xsl:value-of select="$language"/>
-			</xsl:otherwise>
+			</xsl:when>
+			<xsl:otherwise>en</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 

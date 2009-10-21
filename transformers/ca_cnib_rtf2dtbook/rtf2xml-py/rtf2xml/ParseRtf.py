@@ -384,7 +384,7 @@ class ParseRtf:
             run_level = self.__run_level,
             bug_handler = RtfInvalidCodeException,
             )
-        platform, code_page, default_font_num = encode_obj.find_default_encoding()
+        platform, code_page, default_font_num, language = encode_obj.find_default_encoding()
 
         hex2utf_obj = rtf2xml.hex_2_utf8.Hex2Utf8(
                 in_file = self.__temp_file,
@@ -440,7 +440,7 @@ class ParseRtf:
             file = self.__temp_file, copy = self.__copy,
             bug_handler = RtfInvalidCodeException,
             platform = platform, default_font = default_font,
-            code_page = code_page)
+            code_page = code_page, language = language)
         preamble_rest_obj.fix_preamble()
         self.__bracket_match('preamble_rest_info')
 

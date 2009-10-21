@@ -28,7 +28,7 @@ class Preamble:
     """
 
     def __init__(self, file, bug_handler,  platform, default_font, code_page, 
-    copy=None, temp_dir=None):
+    language, copy=None, temp_dir=None):
         """
 
         Required:
@@ -41,6 +41,7 @@ class Preamble:
 
             code_page --the code page (ansi1252, for example)
 
+            language --the document language
 
 
 
@@ -62,6 +63,7 @@ class Preamble:
         self.__default_font = default_font
         self.__code_page = code_page
         self.__platform = platform
+        self.__language = language
         if temp_dir:
             self.__write_to = os.path.join(temp_dir,"info_table_info.data")
         else:
@@ -119,8 +121,9 @@ class Preamble:
         self.__write_obj.write(
             'mi<tg<empty-att_<rtf-definition'
             '<default-font>%s<code-page>%s'
-            '<platform>%s\n' % (self.__default_font, self.__code_page,
-            self.__platform)
+            '<platform>%s<language>%s'
+            '\n' % (self.__default_font, self.__code_page,
+            self.__platform, self.__language)
         )
 
     def __found_list_table_func(self, line):

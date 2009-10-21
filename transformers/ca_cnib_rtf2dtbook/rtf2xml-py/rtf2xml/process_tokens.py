@@ -196,6 +196,7 @@ class ProcessTokens:
         'mac'                :	('ri', 'macintosh_', self.default_func),
         'ansi'               :	('ri', 'ansi______', self.default_func),
         'ansicpg'            :	('ri', 'ansi-codpg', self.default_func),
+        'deflang'            :	('ri', 'language__', self.__language_func),
 
         # notes => nt
         'footnote'           :	('nt', 'footnote__', self.default_func),

@@ -46,6 +46,7 @@ class DefaultEncoding:
         platform = 'Windows'
         default_num = 'not-defined'
         code_page = 'ansicpg1252'
+        language = ''
         read_obj = open(self.__file, 'r')
         line_to_read = 1
         while line_to_read:
@@ -62,10 +63,11 @@ class DefaultEncoding:
                 code_page = 'ansicpg' + num
             if self.__token_info == 'cw<ri<macintosh_':
                 platform = 'Macintosh'
-
             if self.__token_info == 'cw<ri<deflt-font':
                 default_num = line[20:-1]
                 #cw<ri<deflt-font<nu<0
+            if self.__token_info == 'cw<ri<language__':
+                language = line[20:-1]
 
 
             #action = self.__state_dict.get(self.__state)
@@ -76,4 +78,4 @@ class DefaultEncoding:
         read_obj.close()
         if platform == 'Macintosh':
             code_page = 'mac_roman'
-        return platform, code_page, default_num
+        return platform, code_page, default_num, language
