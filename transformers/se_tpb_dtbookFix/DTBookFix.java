@@ -263,7 +263,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 			        if ("file".equals(resolvedFrom.getScheme()) && "file".equals(resolvedTo.getScheme())) {
         		        File from = new File(resolvedFrom.getPath());
         		        File to = new File(resolvedTo.getPath());
-        		        if (from.exists()) {
+        		        if (from.exists() && from.isFile()) {
         		            // We only try to copy the file if it actually exists. If a file
         		            // has been renamed by an executor it will not reside in the input
         		            // directory. In those cases the executors themselves are responsible
