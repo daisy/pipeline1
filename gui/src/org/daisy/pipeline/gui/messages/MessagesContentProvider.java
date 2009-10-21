@@ -94,9 +94,17 @@ public class MessagesContentProvider extends CategorizedContentProvider
 	@Override
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof MessageEvent) {
-			Location loc = ((MessageEvent) parentElement).getLocation();
-			if (loc != null) {
-				ArrayList<Object> children = new ArrayList<Object>();
+			ArrayList<Object> children = new ArrayList<Object>();
+			MessageEvent msgEvent = ((MessageEvent) parentElement);
+			String msg = msgEvent.getMessage();
+			Location loc = msgEvent.getLocation();
+			String[] lines = msg.split("\n");
+			if (lines.length > 1) {
+				for (int i = 1; i < lines.length; i++) {
+					children.add(lines[i]);
+				}
+			}
+			if ((loc != null) && (loc.getSystemId() != null)) {
 				children.add(loc);
 				if (loc instanceof ExtendedLocationImpl) {
 					ExtendedLocationImpl eLoc = (ExtendedLocationImpl) loc;
@@ -108,8 +116,8 @@ public class MessagesContentProvider extends CategorizedContentProvider
 						}
 					}
 				}
-				return children.toArray();
 			}
+			return children.toArray();
 		}
 		return super.getChildren(parentElement);
 	}
@@ -125,7 +133,11 @@ public class MessagesContentProvider extends CategorizedContentProvider
 	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof MessageEvent) {
-			return ((MessageEvent) element).getLocation() != null;
+			MessageEvent msgEvent = ((MessageEvent) element);
+			String msg = msgEvent.getMessage();
+			Location loc = msgEvent.getLocation();
+			return (msg.split("\n").length > 1)
+					|| ((loc != null) && (loc.getSystemId() != null));
 		}
 		return super.hasChildren(element);
 	}

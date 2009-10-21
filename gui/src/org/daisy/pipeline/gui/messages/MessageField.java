@@ -70,7 +70,9 @@ class MessageField extends AbstractTableField {
 	@Override
 	public String getText(Object element) {
 		if (element instanceof MessageEvent) {
-			return ((MessageEvent) element).getMessage();
+			String msg = ((MessageEvent) element).getMessage();
+			int firstLineEnd = msg.indexOf("\n");
+			return firstLineEnd == -1 ? msg : msg.substring(0, firstLineEnd);
 		}
 		if (element instanceof Category) {
 			return ((Category) element).getName();
@@ -78,10 +80,10 @@ class MessageField extends AbstractTableField {
 		if (element instanceof Location) {
 			Location loc = (Location) element;
 			String sysId = loc.getSystemId();
-			try {
-				URI uri = new URI(sysId);
-				File path = new File(uri.getPath());
-				if ((sysId != null) && (sysId.length() > 0)) {
+			if ((sysId != null) && (sysId.length() > 0)) {
+				try {
+					URI uri = new URI(sysId);
+					File path = new File(uri.getPath());
 					if (loc.getLineNumber() > -1) {
 						if (loc.getColumnNumber() > -1) {
 							return NLS.bind(
@@ -98,16 +100,20 @@ class MessageField extends AbstractTableField {
 						return NLS.bind(Messages.location_file, path.getName(),
 								sysId);
 					}
+				} catch (URISyntaxException e) {
+					GuiPlugin.get().error(
+							"Couldn't create URI from SystemID", e); //$NON-NLS-1$
+					return "!err!"; //$NON-NLS-1$
 				}
-			} catch (URISyntaxException e) {
-				GuiPlugin.get().error("Couldn't create URI from SystemID", e); //$NON-NLS-1$
-				return "!err!"; //$NON-NLS-1$
 			}
 		}
 		if (element instanceof Object[]) {
 			Object[] eLocInfo = (Object[]) element;
 			return NLS.bind(Messages.location_extended, eLocInfo[0],
 					eLocInfo[1]);
+		}
+		if (element instanceof String) {
+			return element.toString();
 		}
 		return super.getText(element);
 	}
