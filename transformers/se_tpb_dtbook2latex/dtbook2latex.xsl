@@ -67,10 +67,10 @@ hyperlänkar
 	  <xsl:text>\titlelabel{}&#10;</xsl:text>
 	  <xsl:text>\titleformat{\chapter}[block]{}{}{0cm}{\Large\bfseries}&#10;&#10;</xsl:text>
 	</xsl:if>
-	<xsl:apply-templates/>
 	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
 	<xsl:text>\renewcommand{\theenumii}{\AlphAlph{\value{enumii}}}&#10;</xsl:text>
 	<xsl:text>\renewcommand{\labelenumii}{\theenumii}&#10;&#10;</xsl:text>
+	<xsl:apply-templates/>
    </xsl:template>
 
    <xsl:template name="iso639toBabel">
@@ -225,37 +225,49 @@ hyperlänkar
    </xsl:template>
 
    <xsl:template match="dtb:h1">
-   	<xsl:text>\chapter{</xsl:text>
+   	<xsl:text>\chapter[</xsl:text>
+	<xsl:value-of select="text()"/>
+	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:h2">
-   	<xsl:text>\section{</xsl:text>
+   	<xsl:text>\section[</xsl:text>
+	<xsl:value-of select="text()"/>
+	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:h3">
-   	<xsl:text>\subsection{</xsl:text>
+   	<xsl:text>\subsection[</xsl:text>
+	<xsl:value-of select="text()"/>
+	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
    </xsl:template>
 
    <xsl:template match="dtb:h4">
-   	<xsl:text>\subsubsection{</xsl:text>
+   	<xsl:text>\subsubsection[</xsl:text>
+	<xsl:value-of select="text()"/>
+	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
    </xsl:template>
 
    <xsl:template match="dtb:h5">
-   	<xsl:text>\paragraph{</xsl:text>
+   	<xsl:text>\paragraph[</xsl:text>
+	<xsl:value-of select="text()"/>
+	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
    </xsl:template>
 
    <xsl:template match="dtb:h6">
-   	<xsl:text>\subparagraph{</xsl:text>
+   	<xsl:text>\subparagraph[</xsl:text>
+	<xsl:value-of select="text()"/>
+	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
    </xsl:template>
@@ -308,6 +320,12 @@ hyperlänkar
    	<xsl:text>\includegraphics{</xsl:text>
    	<xsl:value-of select="@src"/>
    	<xsl:text>}&#10;&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:h1/dtb:img|dtb:h2/dtb:img|dtb:h3/dtb:img|dtb:h4/dtb:img|dtb:h5/dtb:img|dtb:h6/dtb:img">
+   	<xsl:text>\includegraphics{</xsl:text>
+   	<xsl:value-of select="@src"/>
+   	<xsl:text>}</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:caption">
@@ -395,6 +413,12 @@ hyperlänkar
      </xsl:choose>
      <xsl:apply-templates/>
      <xsl:text>}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:sidebar/dtb:hd">
+   	<xsl:text>\textbf{</xsl:text>
+	<xsl:apply-templates/>
+	<xsl:text>}&#10;&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:list/dtb:hd">
