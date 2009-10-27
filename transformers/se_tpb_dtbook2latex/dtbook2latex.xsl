@@ -96,26 +96,26 @@ hyperlänkar
    </xsl:template>
 
    <xsl:template name="findLanguage">
-   	<xsl:variable name="iso639Code">
-   		<xsl:choose>
-	   		<xsl:when test="//dtb:meta[@name='dc:Language']">
-	   			<xsl:value-of select="//dtb:meta[@name='dc:Language']/@content"/>
-	   		</xsl:when>
-	   		<xsl:when test="//dtb:meta[@name='dc:language']">
-	   			<xsl:value-of select="//dtb:meta[@name='dc:language']/@content"/>
-	   		</xsl:when>
-	   		<xsl:when test="/dtb:dtbook/@xml:lang">
-	   			<xsl:value-of select="/dtb:dtbook/@xml:lang"/>
-	   		</xsl:when>   			
-   		</xsl:choose>
-   	</xsl:variable>
-   	<xsl:text>\usepackage[</xsl:text>
-   	<xsl:call-template name="iso639toBabel">
- 	  <xsl:with-param name="iso639Code">
-	    <xsl:value-of select="$iso639Code"/>
-	  </xsl:with-param>
-	</xsl:call-template>
-   	<xsl:text>]{babel}&#10;</xsl:text>
+     <xsl:variable name="iso639Code">
+       <xsl:choose>
+	 <xsl:when test="//dtb:meta[@name='dc:Language']">
+	   <xsl:value-of select="//dtb:meta[@name='dc:Language']/@content"/>
+	 </xsl:when>
+	 <xsl:when test="//dtb:meta[@name='dc:language']">
+	   <xsl:value-of select="//dtb:meta[@name='dc:language']/@content"/>
+	 </xsl:when>
+	 <xsl:when test="/dtb:dtbook/@xml:lang">
+	   <xsl:value-of select="/dtb:dtbook/@xml:lang"/>
+	 </xsl:when>   			
+       </xsl:choose>
+     </xsl:variable>
+     <xsl:text>\usepackage[</xsl:text>
+     <xsl:call-template name="iso639toBabel">
+       <xsl:with-param name="iso639Code">
+	 <xsl:value-of select="$iso639Code"/>
+       </xsl:with-param>
+     </xsl:call-template>
+     <xsl:text>]{babel}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:head">
