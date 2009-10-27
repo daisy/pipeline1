@@ -61,12 +61,16 @@ hyperlänkar
 	<xsl:text>\setmainfont{</xsl:text><xsl:value-of select="$font"/><xsl:text>}&#10;</xsl:text>
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
 	<xsl:text>\usepackage{float}&#10;</xsl:text>
+	<xsl:text>\usepackage{alphalph}&#10;</xsl:text>
 	<xsl:if test="$pageStyle!='scientific'">
 	  <xsl:text>\usepackage{titlesec}&#10;&#10;</xsl:text>
 	  <xsl:text>\titlelabel{}&#10;</xsl:text>
 	  <xsl:text>\titleformat{\chapter}[block]{}{}{0cm}{\Large\bfseries}&#10;&#10;</xsl:text>
 	</xsl:if>
 	<xsl:apply-templates/>
+	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
+	<xsl:text>\renewcommand{\theenumii}{\AlphAlph{\value{enumii}}}&#10;</xsl:text>
+	<xsl:text>\renewcommand{\labelenumii}{\theenumii}&#10;&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template name="iso639toBabel">
