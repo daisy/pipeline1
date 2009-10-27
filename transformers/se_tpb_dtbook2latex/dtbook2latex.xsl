@@ -60,6 +60,7 @@ hyperlänkar
 	<xsl:text>\defaultfontfeatures{Mapping=tex-text}&#10;</xsl:text>
 	<xsl:text>\setmainfont{</xsl:text><xsl:value-of select="$font"/><xsl:text>}&#10;</xsl:text>
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
+	<xsl:text>\usepackage{float}&#10;</xsl:text>
 	<xsl:if test="$pageStyle!='scientific'">
 	  <xsl:text>\usepackage{titlesec}&#10;&#10;</xsl:text>
 	  <xsl:text>\titlelabel{}&#10;</xsl:text>
@@ -334,7 +335,7 @@ hyperlänkar
    	<xsl:apply-templates/>
    	<xsl:text>}}}</xsl:text>
    	-->
-   	<xsl:text>\begin{figure}[h]&#10;</xsl:text>
+   	<xsl:text>\begin{figure}[H]&#10;</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:apply-templates select="dtb:caption" mode="captionOnly"/>
    	<xsl:text>\end{figure}&#10;</xsl:text>   	
@@ -440,7 +441,7 @@ hyperlänkar
    </xsl:template>
 
    <xsl:template match="dtb:table">
-   	<xsl:text>\begin{table}[h]</xsl:text>
+   	<xsl:text>\begin{table}[H]</xsl:text>
    	<xsl:apply-templates select="dtb:caption" mode="captionOnly"/>
    	<xsl:text>\begin{tabular}{</xsl:text>
    	<xsl:variable name="numcols">
