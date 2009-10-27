@@ -10,8 +10,8 @@
    	<documentation uri="../../doc/scripts/DTBookValidator.html"/>
      <comment>
 	     Commandline template:
-	         ${workspace_loc}/dmfc/scripts/validation/simple/DTBookValidator.taskScript
-			--input=${workspace_loc}/pipeline_testsuite/testdata/input/dtbook/dontworrybehappy.xml
+	         ${workspace_loc}/dmfc/scripts/verify/DTBookValidator.taskScript
+			--input=${workspace_loc}/samples/input/dtbook/dontworrybehappy.xml
      </comment>
      	
 	<parameter name="input" value="" required="true">
