@@ -404,13 +404,16 @@ hyperlänkar
        <xsl:value-of select="count(ancestor::dtb:level)"/>
      </xsl:variable>
      <xsl:choose>
-       <xsl:when test="$level=1"><xsl:text>\chapter{</xsl:text></xsl:when>
-       <xsl:when test="$level=2"><xsl:text>\section{</xsl:text></xsl:when>
-       <xsl:when test="$level=3"><xsl:text>\subsection{</xsl:text></xsl:when>
-       <xsl:when test="$level=4"><xsl:text>\subsubsection{</xsl:text></xsl:when>
-       <xsl:when test="$level=5"><xsl:text>\paragraph{</xsl:text></xsl:when>
-       <xsl:when test="$level>5"><xsl:text>\subparagraph{</xsl:text></xsl:when>
+       <xsl:when test="$level=1"><xsl:text>\chapter</xsl:text></xsl:when>
+       <xsl:when test="$level=2"><xsl:text>\section</xsl:text></xsl:when>
+       <xsl:when test="$level=3"><xsl:text>\subsection</xsl:text></xsl:when>
+       <xsl:when test="$level=4"><xsl:text>\subsubsection</xsl:text></xsl:when>
+       <xsl:when test="$level=5"><xsl:text>\paragraph</xsl:text></xsl:when>
+       <xsl:when test="$level>5"><xsl:text>\subparagraph</xsl:text></xsl:when>
      </xsl:choose>
+     <xsl:text>[</xsl:text>
+     <xsl:value-of select="text()"/>
+     <xsl:text>]{</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>}&#10;</xsl:text>
    </xsl:template>
