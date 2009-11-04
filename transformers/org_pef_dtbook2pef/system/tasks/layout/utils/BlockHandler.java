@@ -1,6 +1,7 @@
 package org_pef_dtbook2pef.system.tasks.layout.utils;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 import org_pef_dtbook2pef.system.tasks.layout.flow.BlockProperties;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Leader;
@@ -20,18 +21,19 @@ public class BlockHandler {
 	private int available;
 	private ListItem item;
 	private int blockIndent;
+	private Stack<Integer> blockIndentParent;
 	
 	public class ListItem {
-		private int number;
+		private String label;
 		private BlockProperties.ListType type;
 		
-		public ListItem(int number, BlockProperties.ListType type) {
-			this.number = number;
+		public ListItem(String label, BlockProperties.ListType type) {
+			this.label = label;
 			this.type = type;
 		}
 		
-		public int getNumber() {
-			return number;
+		public String getLabel() {
+			return label;
 		}
 		
 		public BlockProperties.ListType getType() {
@@ -48,6 +50,9 @@ public class BlockHandler {
 		this.p = new BlockProperties.Builder().build();
 		this.available = 0;
 		this.item = null;
+		this.blockIndent = 0;
+		this.blockIndentParent = new Stack<Integer>();
+		blockIndentParent.add(0);
 	}
 	/*
 	public void setCurrentListType(BlockProperties.ListType type) {
@@ -67,8 +72,8 @@ public class BlockHandler {
 	}
 	*/
 	
-	public void setListItem(int number, BlockProperties.ListType type) {
-		item = new ListItem(number, type);
+	public void setListItem(String label, BlockProperties.ListType type) {
+		item = new ListItem(label, type);
 	}
 	
 	public ListItem getListItem() {
@@ -98,9 +103,20 @@ public class BlockHandler {
 	public Leader getCurrentLeader() {
 		return currentLeader;
 	}
-	
+	/*
 	public void setBlockIndent(int value) {
 		this.blockIndent = value;
+	}*/
+	
+	public void addToBlockIndent(int value) {
+		blockIndentParent.push(blockIndent);
+		blockIndent += value;
+	}
+	
+	public void subtractFromBlockIndent(int value) {
+		int test = blockIndentParent.pop();
+		blockIndent -= value;
+		assert blockIndent==test;
 	}
 	
 	public ArrayList<Row> layoutBlock(CharSequence c, int leftMargin, LayoutMaster master) {
@@ -118,20 +134,16 @@ public class BlockHandler {
 		if (firstRow) {
 			// add to left margin
 			if (item!=null) { //currentListType!=BlockProperties.ListType.NONE) {
-				String listNumber;
-				switch (item.getType()){ //currentListType) {
-					case OL:
-						listNumber = "" + item.getNumber(); //currentListNumber;
-						break;
-					case UL:
-						listNumber = "•";
-						break;
-					default:
-						listNumber = "";
+				String listLabel = filters.filter(item.getLabel());
+				if (item.getType()==BlockProperties.ListType.PL) {
+					int bypassBlockIndent = blockIndent;
+					blockIndent = blockIndentParent.peek();
+					chars = newRow(listLabel, chars, available, leftMargin, 0, master, p);
+					blockIndent = bypassBlockIndent;
+				} else {
+					chars = newRow(listLabel, chars, available, leftMargin, p.getFirstLineIndent(), master, p);
 				}
-				listNumber = filters.filter(listNumber);
 				item = null;
-				chars = newRow(listNumber, chars, available, leftMargin, p.getFirstLineIndent(), master, p);
 			} else {
 				chars = newRow("", chars, available, leftMargin, p.getFirstLineIndent(), master , p);
 			}
@@ -164,8 +176,8 @@ public class BlockHandler {
 
 		int preTextIndent = LayoutTools.length(preContent);
 		int preContentPos = margin+preTextIndent;
-		int preTabPos = preContentPos+LayoutTools.length(preTabText);
-		int postTabTextLen = LayoutTools.length(postTabText);
+		int preTabPos = preContentPos+LayoutTools.length(preTabText.replaceAll("\u00ad", ""));
+		int postTabTextLen = LayoutTools.length(postTabText.replaceAll("\u00ad", ""));
 		int maxLenText = available-(preContentPos);
 		if (maxLenText<1) {
 			throw new RuntimeException("Cannot continue layout: No space left for characters.");
@@ -197,7 +209,7 @@ public class BlockHandler {
 				}
 				ret.add(row);
 
-				preContent = LayoutTools.fill(SPACE_CHAR, p.getTextIndent());
+				preContent = LayoutTools.fill(SPACE_CHAR, p.getTextIndent()+blockIndent);
 				preTextIndent = LayoutTools.length(preContent);
 				preTabText = "";
 				preContentPos = margin+preTextIndent;

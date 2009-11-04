@@ -6,8 +6,8 @@
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
 
+	<xsl:import href="../../common/definers/dtbook2flow.xsl"/>
 	<xsl:output method="xml" encoding="utf-8" indent="no"/>
-	<xsl:include href="dtbook2flow.xsl"/>
 
 	<xsl:template match="dtb:frontmatter" mode="apply-sequence-attributes">
 		<xsl:attribute name="master">front</xsl:attribute>
@@ -121,8 +121,11 @@
 	<xsl:template match="dtb:li" mode="apply-block-attributes">
 		<xsl:choose>
 			<xsl:when test="parent::dtb:list/@type='pl'">
-				<xsl:attribute name="text-indent">3</xsl:attribute>
-				<xsl:attribute name="block-indent">3</xsl:attribute>
+				<xsl:variable name="indent_max" select="max((parent::dtb:list/dtb:li)/string-length(substring-before(descendant::text()[1], ' '))) + 1"/>
+				<xsl:variable name="indent_min" select="min((parent::dtb:list/dtb:li)/string-length(substring-before(descendant::text()[1], ' '))) + 1"/>
+				<xsl:variable name="indent" select="if ($indent_min=$indent_max and $indent_min &lt; 5) then $indent_min else 3"/>
+				<xsl:attribute name="text-indent"><xsl:value-of select="$indent"/></xsl:attribute>
+				<xsl:attribute name="block-indent"><xsl:value-of select="$indent"/></xsl:attribute>
 			</xsl:when>
 			<xsl:when test="parent::dtb:list/@type='ul'">
 				<xsl:attribute name="first-line-indent">2</xsl:attribute>
@@ -151,18 +154,40 @@
 			<xsl:attribute name="margin-top">1</xsl:attribute>
 		</xsl:if>
 	</xsl:template>
-		
+	
+	<!-- Don't output a sequence if there is nothing left when doctitle, docauthor and level1@class='backCoverText', level1@class='rearjacketcopy' and level1@class='colophon' has been moved -->
+	<xsl:template match="dtb:frontmatter" mode="sequence-mode">
+		<xsl:if test="*[not(self::dtb:doctitle or self::dtb:docauthor or self::dtb:level1[@class='backCoverText' or @class='rearjacketcopy' or @class='colophon'])]">
+			<sequence>
+				<xsl:apply-templates select="." mode="apply-sequence-attributes"/>
+				<xsl:apply-templates/>
+			</sequence>
+		</xsl:if>
+	</xsl:template>
+	
+	<!-- 	Don't output a sequence if there is nothing left when 
+			level1@class='backCoverText', level1@class='rearjacketcopy' and @class='colophon' has been moved.
+			Assume that bodymatter contains something besides this, don't even test it.
+	-->
+	<xsl:template match="dtb:rearmatter" mode="sequence-mode">
+		<xsl:if test="*[not(self::dtb:level1[@class='backCoverText' or @class='rearjacketcopy' or @class='colophon'])]">
+			<sequence>
+				<xsl:apply-templates select="." mode="apply-sequence-attributes"/>
+				<xsl:apply-templates/>
+			</sequence>
+		</xsl:if>
+	</xsl:template>
+
 	<!-- Exclude docauthor and doctitle in frontmatter. These will be inserted on a title page later. -->
 	<xsl:template match="dtb:doctitle[parent::dtb:frontmatter] | dtb:docauthor[parent::dtb:frontmatter]"></xsl:template>
-	
 	<!-- Exclude here, these are organized below. -->
-	<xsl:template match="dtb:level1[parent::dtb:frontmatter and @class='colophon']"></xsl:template>
+	<xsl:template match="dtb:level1[@class='colophon']"></xsl:template>
 	<xsl:template match="dtb:level1[@class='backCoverText' or @class='rearjacketcopy']"></xsl:template>
 	
 	<!-- Organize colophon and rearjacketcopy -->
 	<xsl:template match="dtb:book" priority="10">
 		<xsl:apply-templates/>
-		<xsl:for-each select="//dtb:level1[parent::dtb:frontmatter and @class='colophon']">
+		<xsl:for-each select="//dtb:level1[@class='colophon']">
 			<sequence master="plain" hyphenate="true" initial-page-number="1">
 				<block><xsl:text>:: Kolofon </xsl:text><leader position="100%" pattern=":"/></block>
 				<block>
@@ -222,18 +247,30 @@
 		</block>
 	</xsl:template>
 
-	<xsl:template match="dtb:lic[not(following-sibling::node()[not(self::dtb:list) and not(self::text() and normalize-space()='')]) and ancestor::dtb:*[@class='toc']]" mode="inline-mode">
+	<xsl:template match="dtb:lic[
+				not(
+					following-sibling::node()[
+						not(self::dtb:list) and not(self::text() and normalize-space()='')
+					]
+				) 
+				and ancestor::dtb:*[@class='toc'] and preceding-sibling::dtb:lic
+			]" mode="inline-mode">
 		<leader position="100%" pattern="." align="right"/><xsl:apply-templates/>
 	</xsl:template>
 
-	<xsl:template match="dtb:dt" mode="inline-mode">
-		<block><xsl:apply-templates/></block>
+	<!-- Override default processing -->
+	<xsl:template match="dtb:dt">
+		<xsl:apply-templates select="." mode="block-mode"/>
 	</xsl:template>
 
-	<xsl:template match="dtb:dd" mode="inline-mode">
-		<block text-indent="3"><xsl:apply-templates/></block>
+	<!-- Override default processing -->
+	<xsl:template match="dtb:dd">
+		<xsl:apply-templates select="." mode="block-mode"/>
 	</xsl:template>
 
+	<xsl:template match="dtb:dd" mode="apply-block-attributes">
+		<xsl:attribute name="text-indent">3</xsl:attribute>
+	</xsl:template>
 
 	<!-- Svenska skrivregler för punktskrift 2009, page 34
 	<xsl:template match="dtb:em" mode="inline-mode">

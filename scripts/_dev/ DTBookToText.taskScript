@@ -29,12 +29,12 @@
 		</datatype>
 	</parameter>
 
-	<parameter name="setup" value="sv-SE-text" required="false">
+	<parameter name="setup" value="sv-SE" required="true">
 		<nicename>Conversion Setup</nicename>
 		<description>Conversion setup to apply - see documentation</description>
 		<datatype>
 			<enum>
-			  <item nicename="Swedish - A4" value="sv-SE-text" />
+			  <item nicename="Swedish" value="sv-SE" />
 			</enum>
 		</datatype>
 	</parameter>
@@ -86,6 +86,11 @@
 		<parameter>
 			<name>setup</name>
 			<value>${setup}</value>
+		</parameter>
+		
+		<parameter>
+			<name>outputFormat</name>
+			<value>text</value>
 		</parameter>
 		
 		<parameter>

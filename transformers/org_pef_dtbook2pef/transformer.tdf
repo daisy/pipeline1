@@ -1,6 +1,6 @@
 <transformer version="1.1">
 	<name>DTBook to PEF</name>
-	<description>Transforms braille encoded DTBook 2005-3 into PEF 2008-1</description>
+	<description>Transforms DTBook 2005-3 into PEF 2008-1</description>
 	<classname>org_pef_dtbook2pef.DTBook2PEF</classname>
 	<license>LGPL</license>
 	<author>Joel Håkansson</author>
@@ -12,26 +12,26 @@
 <!-- Main parameters -->
 		<parameter required="true" direction="in" type="application/xml">
 			<name>input</name>
-			<description>The input DTBook file</description>
+			<description>The input file</description>
 			<example>file:///path/to/file.xml</example>
 		</parameter>
 
 		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
 			<name>output</name>
-			<description>The output PEF folder</description>
+			<description>The output folder</description>
 			<example>file:///path/to/output/folder/</example>
 		</parameter>
 
 		<parameter required="false" type="application/xml">
 			<name>filename</name>
-			<description>Optional file name for the PEF file</description>
+			<description>Optional file name</description>
 			<example>result.pef</example>
 			<default>result.pef</default>
 		</parameter>
 		
 		<parameter required="false" type="string">
 			<name>identifier</name>
-			<description>Publication identifier.</description>
+			<description>Publication identifier</description>
 			<example>PEF00001</example>
 			<default></default>
 		</parameter>
@@ -53,6 +53,17 @@
 			</enum>
 			<default>sv-SE</default>
 		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>outputFormat</name>
+			<description>Output format</description>
+			<example>pef</example>
+			<enum>
+				<value>pef</value>
+				<value>text</value>
+			</enum>
+			<default>pef</default>
+		</parameter>
 
 		<parameter required="false" type="application/xml">
 			<name>config</name>
@@ -69,14 +80,21 @@
 		</parameter>
 
 		<parameter required="false" type="enum">
-			<name>keepTempFiles</name>
-			<description>Keep temporary files.</description>
+			<name>writeTempFiles</name>
+			<description>Write temporary files.</description>
 			<example>true</example>
 			<enum>
 				<value>true</value>
 				<value>false</value>
 			</enum>
 			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" type="application/xml">
+			<name>tempFilesDirectory</name>
+			<description>Path to temp files directory</description>
+			<example>file:///path/to/file.xml</example>
+			<default>C:\TEMP\</default>
 		</parameter>
 
 		<!-- Other date formats can be generated. However, since PEF 2008-1 requires ISO8601 the resulting file will be invalid if this is changed. -->

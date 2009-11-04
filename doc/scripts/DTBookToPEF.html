@@ -31,12 +31,12 @@ Format</em></h1>
 
 <h2 id="inputReqs">Input Requirements</h2>
 
-<p>This script accepts "simple" DTBook documents.</p>
+<p>This script accepts DTBook documents.</p>
 <!-- detailed requirements on input nature -->
 
 <h2 id="output">Output</h2>
 
-<p>The output is a PEF document.</p>
+<p>The output is a PEF 2008-1 document.</p>
 
 <h2 id="config">Configuration</h2>
 <!-- description on params exposed in script -->
@@ -46,14 +46,22 @@ Format</em></h1>
 	Here, use the nicenames for parameters! Explain consequence of default values.
 -->
 <dl id="paramslist">
-  <dt>Input file</dt>
+  <dt>Input DTBook file</dt>
     <dd>Select input DTBook document</dd>
   <dt>Output folder</dt>
     <dd>Select output directory</dd>
   <dt>Filename</dt>
-    <dd>Optional filename</dd>
+    <dd>Filename</dd>
+  <dt>Publication identifier</dt>
+    <dd>Publication identifier. Leave blank to generate</dd>
+  <dt>Publication date</dt>
+    <dd>Publication date. Leave blank to use today's date</dd>
   <dt>Conversion Setup</dt>
-    <dd>Conversion setup to apply</dd>
+    <dd>Conversion setup to apply - see documentation</dd>
+  <dt>Settings file</dt>
+    <dd>A file containing additional conversion settings</dd>
+  <dt>Duplex</dt>
+    <dd>Emboss on both sides</dd>
 </dl>
 
 <h2 id="transformers">Appendix: List of Transformers used</h2>
@@ -63,11 +71,13 @@ documentation</em>. These are developer and systems-administrator centric
 documents.</p>
 <ol>
   <li><a
-    href="../transformers/int_daisy_validator.html">(int_daisy_validator)</a></li>
-  <li><a href="../transformers/transformerDoc1.html">se_tpb_hyphenator</a></li>
-  <li><a href="../transformers/transformerDoc3.html">org_pef_dtbook2pef</a></li>
+  href="../transformers/int_daisy_validator.html">int_daisy_validator</a></li>
   <li><a
-    href="../transformers/int_daisy_validator.html">pipeline_system_deleter</a></li>
+  href="../transformers/se_tpb_hyphenator.html">se_tpb_hyphenator</a></li>
+  <li><a
+  href="../transformers/org_pef_dtbook2pef.html">org_pef_dtbook2pef</a></li>
+  <li><a
+    href="../transformers/pipeline_system_deleter.html">pipeline_system_deleter</a></li>
   <li><a
   href="../transformers/int_daisy_validator.html">int_daisy_validator</a></li>
 </ol>

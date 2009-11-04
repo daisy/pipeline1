@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Remove whitespace (sv_SE)
+    Flow whitespace normalizer
+
     Version
     2009-09-14
 
     Description
-    Removes redundant whitespace text nodes
+    The purpose of Flow whitespace normalizer is to remove undesired whitespace
+	that will effect the layout process. Whitespace is often injected
+	by misstake into the input file, e.g. by "Pretty printing".
+
+	Note: 1. 	This implementation does not support inline containers
+			2.	This implementation does not support xml:space="preserve"
     
     Nodes
-    *
+    text()
     
     Namespaces
     (x) ""
@@ -22,8 +28,7 @@
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 	<xsl:output indent="no"/>
-    <xsl:include href="recursive-copy.xsl"/>
-    
+
     <xsl:template match="block">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
@@ -38,7 +43,7 @@
 								<xsl:value-of select="normalize-space(.)"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:if test="position()>1 and matches(substring(., 1, 1), '\s+')">
+								<xsl:if test="position()>1 and matches(substring(., 1, 1), '\s+') and not((preceding-sibling::node()[1])[self::block or self::br])">
 									<xsl:text> </xsl:text>
 								</xsl:if>
 								<xsl:value-of select="normalize-space(.)"/>
@@ -51,19 +56,18 @@
 					<xsl:otherwise><xsl:apply-templates select="."/></xsl:otherwise>
 				</xsl:choose>
 			</xsl:for-each>
-			<!--
-			<xsl:choose>
-				<xsl:when test="text()[position()=1]">
-					<xsl:value-of select="normalize-space(text()[position()=1])"/><xsl:text> </xsl:text>
-					<xsl:apply-templates select="node()[position()>1]"/>
-				</xsl:when>
-				<xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
-			</xsl:choose>-->
 		</xsl:copy>
     </xsl:template>
-<!--
-	<xsl:template match="text()[string-length(normalize-space(.))=0]">
-		<xsl:value-of select="normalize-space(.)"/>
+    
+	<xsl:template match="*|comment()|processing-instruction()">
+		<xsl:call-template name="copy"/>
 	</xsl:template>
--->
+
+	<xsl:template name="copy">
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates/>
+		</xsl:copy>
+	</xsl:template>
+
 </xsl:stylesheet>

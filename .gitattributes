@@ -152,6 +152,7 @@ doc/transformers/int_daisy_unicodeTranscoder.html -text
 doc/transformers/int_daisy_validator.html -text
 doc/transformers/no_hks_xhtml2dtbook.html -text
 doc/transformers/org_pef_dist.html -text
+doc/transformers/org_pef_dtbook2pef.html -text
 doc/transformers/org_pef_pef2text.html -text
 doc/transformers/org_pef_pefFileMerger.html -text
 doc/transformers/org_pef_pefFileSplitter.html -text
@@ -1156,6 +1157,8 @@ transformers/org_pef_dtbook2pef/lib/fop/xercesImpl-2.7.1.jar -text
 transformers/org_pef_dtbook2pef/lib/fop/xml-apis-1.3.02.jar -text
 transformers/org_pef_dtbook2pef/lib/fop/xmlgraphics-commons-1.2.jar -text
 transformers/org_pef_dtbook2pef/lib/pef2xhtml.xsl -text
+transformers/org_pef_dtbook2pef/setups/common/definers/dtbook2flow.xsl -text
+transformers/org_pef_dtbook2pef/setups/common/preprocessing/flow-whitespace-normalizer.xsl -text
 transformers/org_pef_dtbook2pef/setups/common/renderers/braille-finalizer.xsl -text
 transformers/org_pef_dtbook2pef/setups/common/renderers/meta-finalizer.xsl -text
 transformers/org_pef_dtbook2pef/setups/common/splitters/simple-splitter.xsl -text
@@ -1166,12 +1169,12 @@ transformers/org_pef_dtbook2pef/setups/sv_SE/config/default_FA44.xml -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/config/text_A4.xml -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/definers/BodyLayoutMaster.java -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/definers/FrontLayoutMaster.java -text
-transformers/org_pef_dtbook2pef/setups/sv_SE/definers/dtbook2flow.xsl -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/definers/dtbook2flow_sv_SE.xsl -text
+transformers/org_pef_dtbook2pef/setups/sv_SE/definers/dtbook2flow_sv_SE_braille.xsl -text
+transformers/org_pef_dtbook2pef/setups/sv_SE/definers/dtbook2flow_sv_SE_text.xsl -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/preprocessing/add-structure-markers.xsl -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/preprocessing/output.xsl -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/preprocessing/recursive-copy.xsl -text
-transformers/org_pef_dtbook2pef/setups/sv_SE/preprocessing/remove-whitespace.xsl -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/StaxFilter2.java -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/VolumeCoverPageFilter.java -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/VolumeCoverPageTask.java -text
@@ -1225,11 +1228,14 @@ transformers/org_pef_dtbook2pef/system/tasks/layout/text/FilterFactory.java -tex
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/FilterLocale.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/RegexFilter.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/StringFilter.java -text
+transformers/org_pef_dtbook2pef/system/tasks/layout/text/brailleFilters/sv_SE/CapitalizationMarkers.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/tables/sv_SE.xml -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/utils/BlockHandler.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/utils/BreakPoint.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/utils/BreakPointHandler.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/utils/LayoutTools.java -text
+transformers/org_pef_dtbook2pef/system/tasks/layout/utils/SplitResult.java -text
+transformers/org_pef_dtbook2pef/system/tasks/layout/utils/StringSplitter.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/utils/TabStopString.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/utils/TextBorder.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/writers/PEFMediaWriter.java -text

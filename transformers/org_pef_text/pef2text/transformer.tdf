@@ -49,6 +49,7 @@
 				<value>en_US</value>
 				<value>da_DK</value>
 				<value>sv_SE_CX</value>
+				<value>sv_SE_mixed</value>
 				<value>UNICODE_BRAILLE</value>
 			</enum>
 			<default>en_US</default>

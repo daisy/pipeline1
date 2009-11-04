@@ -13,7 +13,6 @@ import org_pef_dtbook2pef.system.tasks.layout.flow.Leader;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
 import org_pef_dtbook2pef.system.tasks.layout.flow.SequenceProperties;
 import org_pef_dtbook2pef.system.tasks.layout.flow.SpanProperties;
-import org_pef_dtbook2pef.system.tasks.layout.flow.BlockProperties.ListType;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriterException;
@@ -28,9 +27,7 @@ import org_pef_dtbook2pef.system.tasks.layout.utils.LayoutTools;
 /**
  * Breaks flow into rows, page related block properties are left to next step
  * @author joha
- * TODO: content-before (list-item) does align properly with nested block elements (aligns against left margin) 
  * TODO: fix recursive keep problem
- * FIXME: whitespace at break point isn't handled correctly, fixed?
  * TODO check flow-file validity
  */
 public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
@@ -47,7 +44,7 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 	private final StringFilter filters;
 	private final PagedMediaWriter writer;
 	private BlockHandler bh;
-	private int currentBlockIndent;
+	//private int currentBlockIndent;
 
 	public static class Builder {
 		//required
@@ -100,7 +97,7 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 		//this.currentLeader = null;
 		this.flowStruct = new FlowStruct(); //masters
 		this.bh = new BlockHandler(filters);
-		this.currentBlockIndent = 0;
+		//this.currentBlockIndent = 0;
 	}
 
 	/**
@@ -291,10 +288,20 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 			//if (bh.getCurrentListType()!=BlockProperties.ListType.NONE) {
 				//bh.setCurrentListNumber(context.peek().nextListNumber());
 			//}
-			currentBlockIndent += context.peek().getBlockIndent();
-			bh.setBlockIndent(currentBlockIndent);
+			//currentBlockIndent += context.peek().getBlockIndent();
+			bh.addToBlockIndent(context.peek().getBlockIndent());
 			if (context.peek().getListType()!=BlockProperties.ListType.NONE) {
-				bh.setListItem(context.peek().nextListNumber(), context.peek().getListType());
+				String listLabel;
+				switch (context.peek().getListType()) {
+				case OL:
+					listLabel = context.peek().nextListNumber()+""; break;
+				case UL:
+					listLabel = "•";
+					break;
+				case PL: default:
+					listLabel = "";
+				}
+				bh.setListItem(listLabel, context.peek().getListType());
 			}
 		}
 		FlowGroup c = flowStruct.getCurrentSequence().newFlowGroup();
@@ -325,8 +332,8 @@ public class DefaultLayoutPerformer implements Flow, LayoutPerformer {
 			c.setKeepWithNext(context.peek().getKeepWithNext());
 			//currentListType = context.peek().getListType();
 			//bh.setCurrentListType(context.peek().getListType());
-			currentBlockIndent -= context.peek().getBlockIndent();
-			bh.setBlockIndent(currentBlockIndent);
+			//currentBlockIndent -= context.peek().getBlockIndent();
+			bh.subtractFromBlockIndent(context.peek().getBlockIndent());
 		} else {
 			//TODO: what else need to be done when there is no context stack?
 			

@@ -97,15 +97,5 @@ whileLoop:		while (i>=0) {
 	public boolean hasNext() {
 		return (charsStr!=null && charsStr.length()>0);
 	}
-	
-	public static void main(String[] args) {
-		BreakPointHandler bph = new BreakPointHandler("citat/blockcitat20");
-		String t = "   ⠠⠅⠊⠇⠇⠑ ⠼⠁⠒ ⠠⠚⠁⠛ ⠓⠁⠗ ⠠⠉⠕⠍⠧⠊⠟    ";
-		System.out.println("T: '" + t.replaceAll("\\s*\\z", "") + "'");
-		BreakPoint bp = bph.nextRow(17);
-		System.out.println(bp.getHead());
-		System.out.println(bp.getTail());
-		System.out.println(bp.isHardBreak());
-		
-	}
+
 }

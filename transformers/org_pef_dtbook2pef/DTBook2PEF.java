@@ -16,11 +16,14 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileJuggler;
+import org.daisy.util.file.FileUtils;
+
 import org_pef_dtbook2pef.setups.sv_SE.SwedishBrailleSystem;
 import org_pef_dtbook2pef.setups.sv_SE.SwedishTextSystem;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.TaskSystem;
 import org_pef_dtbook2pef.system.TaskSystemException;
+import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
 
 /**
  * <p>Transforms DTBook 2005-3 into PEF 2008-1</p>
@@ -41,36 +44,68 @@ import org_pef_dtbook2pef.system.TaskSystemException;
  * This transformer handles steps 2-7.
  * </p>
  * 
- * @author Joel Håkansson
+ * @author Joel Håkansson, TPB
  * @version 2008-05-16
  * @since 2008-01-21
  * 
  */
-//TODO: Externalize regex-file (/text/regex.def)
+
 //TODO: Format detector (dtbook2pef -> xml2text)
 public class DTBook2PEF extends Transformer {
 	private HashMap<String, String> map;
 	
+
+	/*private HashMap<String, TaskSystem> compileSystemSetups(Format format, Map<String, String> parameters) {
+		HashMap<String, TaskSystem> systemSetups = new HashMap<String, TaskSystem>();
+
+		// Setup for Swedish //
+		switch (format) {
+			case PEF:
+				systemSetups.put("sv-SE", new SwedishBrailleSystem(getResource("setups/"), "sv_SE/config/default_A4.xml"));
+				systemSetups.put("sv-SE-FA44", new SwedishBrailleSystem(getResource("setups/"), "sv_SE/config/default_FA44.xml"));
+				break;
+			case TEXT:
+				systemSetups.put("sv-SE", new SwedishTextSystem(getResource("setups/"), "sv_SE/config/text_A4.xml"));
+				break;
+		}
+		// Add more Braille systems here //
+		return systemSetups;
+	}*/
+
+	public enum OutputFormat {PEF, TEXT};
+	public enum Setup {sv_SE, sv_SE_FA44};
 	/**
 	 *  System setups are defined here. Modification to other parts of this file should
 	 *  not be needed.
 	 *  
 	 *  Each system setup consists of a series of tasks that, put together, performs conversion from 
-	 *  DTBook to PEF. A system is labeled by an identifier when inserted into the HashMap.
+	 *  XML to a {@link PagedMediaWriter}. A system is labeled by an identifier when inserted into the HashMap.
 	 *  The recommended practice is to use a language region (or sub region) as identifier.
 	 *
-	 *  New systems setups can be added to the conversion system by following the example below.
+	 *  New system setups can be added to the conversion system by following the example below.
 	 */
-	private HashMap<String, TaskSystem> compileSystemSetups(Map<String, String> parameters) {
-		HashMap<String, TaskSystem> systemSetups = new HashMap<String, TaskSystem>();
-
-		// Setup for Swedish //
-		systemSetups.put("sv-SE", new SwedishBrailleSystem(getResource("setups/"), "sv_SE/config/default_A4.xml"));
-		systemSetups.put("sv-SE-FA44", new SwedishBrailleSystem(getResource("setups/"), "sv_SE/config/default_FA44.xml"));
-		systemSetups.put("sv-SE-text", new SwedishTextSystem(getResource("setups/"), "sv_SE/config/text_A4.xml"));
-		// Add more Braille systems here //
-		
-		return systemSetups;
+	private TaskSystem getSystemSetup(OutputFormat outputFormat, Setup setup, Map<String, String> parameter) {
+		switch (outputFormat) {
+			case PEF:
+				switch (setup) {
+					// Braille setups for Swedish //
+					case sv_SE: 
+						return new SwedishBrailleSystem(getResource("setups/"), "sv_SE/config/default_A4.xml");
+					case sv_SE_FA44:
+						return new SwedishBrailleSystem(getResource("setups/"), "sv_SE/config/default_FA44.xml");
+					// Add more Braille systems here //
+				}
+				break;
+			case TEXT:
+				switch (setup) {
+					// Text setup for Swedish //
+					case sv_SE: 
+						return new SwedishTextSystem(getResource("setups/"), "sv_SE/config/text_A4.xml");
+					// Add more text systems here //
+				}
+				break;
+		}
+		return null;
 	}
 
 	/**
@@ -88,9 +123,11 @@ public class DTBook2PEF extends Transformer {
 		// get parameters
 		String input = parameters.get("input");
 		File output = new File(parameters.get("output"));
-		String setup = parameters.get("setup");
+		File debug = new File(parameters.get("tempFilesDirectory"));
+		Setup setup = Setup.valueOf(parameters.get("setup").replace('-', '_'));
+		OutputFormat outputformat = OutputFormat.valueOf(parameters.get("outputFormat").toUpperCase());
 		String dateFormat = parameters.get("dateFormat");
-		boolean keepTempFiles = "true".equals(parameters.get("keepTempFiles"));
+		boolean writeTempFiles = "true".equals(parameters.get("writeTempFiles"));
 
 		map = new HashMap<String, String>();
 		map.putAll(parameters);
@@ -123,16 +160,13 @@ public class DTBook2PEF extends Transformer {
 				}
 			}
 
-			HashMap<String, TaskSystem> systemSetups = compileSystemSetups(map);
-
-			// Copy resource
-			//FileUtils.writeInputStreamToFile(this.getTransformerDirectoryResource("./lib/pef2xhtml.xsl").openStream(), new File(outdir, "pef2xhtml.xsl"));
+			//HashMap<String, TaskSystem> systemSetups = compileSystemSetups(format, map);
 
 			// Run tasks
 			FileJuggler fj = new FileJuggler(new File(input), output);
 			ArrayList<InternalTask> tasks = null;
 			try {
-				tasks = systemSetups.get(setup).compile(map);
+				tasks = getSystemSetup(outputformat, setup, map).compile(map);
 			} catch (TaskSystemException e) {
 				throw new TransformerRunException("Unable to load setup " + setup, e);
 			}
@@ -144,6 +178,13 @@ public class DTBook2PEF extends Transformer {
 			for (InternalTask task : tasks) {
 				sendMessage("Running " + task.getName());
 				task.execute(fj.getInput(), fj.getOutput());
+				if (writeTempFiles) {
+					String it = ""+((int)i+1);
+					while (it.length()<3) {
+						it = "0" + it; 
+					}
+					FileUtils.copy(fj.getOutput(), new File(debug, "debug_dtbook2pef_" + it + "_" + task.getName().replaceAll("\\s+", "_")));
+				}
 				fj.swap();
 				i++;
 				progress(i/tasks.size());
@@ -152,10 +193,6 @@ public class DTBook2PEF extends Transformer {
 			
 		} catch (IOException e) {
 			throw new TransformerRunException("IO error: ", e.getCause());
-		} finally {
-			if (!keepTempFiles) {
-
-			}
 		}
 		progress(1);
 		return true;

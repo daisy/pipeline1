@@ -3,11 +3,12 @@ package org_pef_dtbook2pef.system.tasks.layout.text;
 import java.net.URL;
 import java.util.HashMap;
 
+import org_pef_dtbook2pef.system.tasks.layout.text.brailleFilters.sv_SE.CapitalizationMarkers;
+
 /**
  * BrailleFilterFactory is a factory for braille StringFilters. It can return different StringFilters
  * depending on the requested locale. 
  * @author joha
- *
  */
 public class BrailleFilterFactory implements FilterFactory {
 	private static HashMap<String, FilterLocale> locales = null;
@@ -54,10 +55,13 @@ public class BrailleFilterFactory implements FilterFactory {
 			filters.add(new RegexFilter("\\u200B", ""));
 			// One or more digit followed by zero or more digits, commas or periods
 			filters.add(new RegexFilter("([\\d]+[\\d,\\.]*)", "\u283c$1"));
+			// Insert a "reset character" between a digit and lower case a-j
+			filters.add(new RegexFilter("([\\d])([a-j])", "$1\u2831$2"));
 			// Add upper case marker to the beginning of any upper case sequence
-			filters.add(new RegexFilter("(\\p{Lu}[\\p{Lu}\\u00ad]*)", "\u2820$1"));
+			//filters.add(new RegexFilter("(\\p{Lu}[\\p{Lu}\\u00ad]*)", "\u2820$1"));
 			// Add another upper case marker if the upper case sequence contains more than one character
-			filters.add(new RegexFilter("(\\u2820\\p{Lu}\\u00ad*\\p{Lu}[\\p{Lu}\\u00ad]*)", "\u2820$1"));
+			//filters.add(new RegexFilter("(\\u2820\\p{Lu}\\u00ad*\\p{Lu}[\\p{Lu}\\u00ad]*)", "\u2820$1"));
+			filters.add(new CapitalizationMarkers());
 			// Change case to lower case
 			filters.add(new CaseFilter(CaseFilter.Mode.LOWER_CASE));
 			if (target.isA(locales.get("sv-SE"))) {
@@ -94,27 +98,5 @@ public class BrailleFilterFactory implements FilterFactory {
 	    if(url==null) throw new IllegalArgumentException(subPath);
 	    return url;
 	}
-	
-	/*
-	// test 
-	public static void main(String[] args) {
-		Locale2 sv = Locale2.parse("sv");
-		Locale2 sv_se = Locale2.parse("sv-se");
-		Locale2 sv_fi = Locale2.parse("sv-FI");
-		Locale2 l = Locale2.parse("sv-SE-test");
-		System.out.println(l + " " + l.getLanguage() + " " +l.getCountry() + " " + l.getVariant());
-		testIsa(l, sv);
-		testIsa(l, sv_se);
-		testIsa(l, l);
-		testIsa(l, sv_fi);
-		StringFilterFactory.newInstance().newStringFilter(sv);
-		System.out.println(
-		StringFilterFactory.newInstance().newStringFilter(sv_se).filter("test"));
-	}
-	
-	public static void testIsa(Locale2 l1, Locale2 l2) {
-		System.out.println(l1 + (l1.isA(l2) ? " is a " : " is not a ")  + l2);
-	}
-	*/
 
 }

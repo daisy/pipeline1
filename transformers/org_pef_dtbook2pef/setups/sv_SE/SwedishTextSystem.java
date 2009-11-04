@@ -50,9 +50,9 @@ public class SwedishTextSystem implements TaskSystem {
 		URL inputSchURL;
 		try {
 			inputSchURL = new URL(resourceBase, "sv_SE/validation/basic.sch");
-			dtbook2flow = new URL(resourceBase, "sv_SE/definers/dtbook2flow_sv_SE.xsl");
+			dtbook2flow = new URL(resourceBase, "sv_SE/definers/dtbook2flow_sv_SE_text.xsl");
 			flowValidationURL = new URL(resourceBase, "sv_SE/validation/flow.xsd");
-			flowWsNormalizer = new URL(resourceBase, "sv_SE/preprocessing/remove-whitespace.xsl");
+			flowWsNormalizer = new URL(resourceBase, "common/preprocessing/flow-whitespace-normalizer.xsl");
 			configURL = new URL(resourceBase, config);
 		} catch (MalformedURLException e) {
 			throw new TaskSystemException(e);

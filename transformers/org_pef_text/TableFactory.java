@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
  *
  */
 public class TableFactory {
-	public enum TableType {EN_US, EN_GB, DA_DK, DE_DE, ES_ES, IT_IT_FIRENZE, SV_SE_CX, UNICODE_BRAILLE};
+	public enum TableType {EN_US, EN_GB, DA_DK, DE_DE, ES_ES, IT_IT_FIRENZE, SV_SE_CX, SV_SE_MIXED, UNICODE_BRAILLE};
 	public enum EightDotFallbackMethod {MASK, REPLACE, REMOVE}; //, FAIL
 	private TableFactory.TableType tableType;
 	private EightDotFallbackMethod fallback;
@@ -82,6 +82,14 @@ public class TableFactory {
 			    return new SimpleTable(new String(" a,b'k;l\"cif/msp)e:h*o!r%djg&ntq(1?2-u<v#396^x\\@+5.8>z=[$4w7_y]0"),  Charset.forName("UTF-8"), fallback, replacement, true);
 			case SV_SE_CX:
 				return new SimpleTable(new String(" a,b.k;l^cif/msp'e:h*o!r~djgäntq_å?ê-u(v@îöë§xèç\"û+ü)z=à|ôwï#yùé"), Charset.forName("UTF-8"), fallback, replacement, true);
+			case SV_SE_MIXED:
+				StringBuffer sb = new StringBuffer(" a,b.k;l_cif/msp'e:h_o!r_djgäntq_å?_-u(v__öë_xè_\"_+ü)z=___w__y__");
+				for (int i=0; i<64; i++) {
+					if (sb.charAt(i)=='_') {
+						sb.setCharAt(i,(char)(0x2800+i));
+					}
+				}
+				return new SimpleTable(sb.toString(), Charset.forName("UTF-8"), fallback, replacement, true);
 			case UNICODE_BRAILLE:
 				StringBuffer tmp = new StringBuffer();
 				for (int i=0; i<256; i++) {

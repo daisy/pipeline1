@@ -82,9 +82,9 @@ public class SwedishBrailleSystem implements TaskSystem {
 		try {
 			inputSchURL = new URL(resourceBase, "sv_SE/validation/basic.sch");
 			markersXsl = new URL(resourceBase, "sv_SE/preprocessing/add-structure-markers.xsl");
-			dtbook2flow = new URL(resourceBase, "sv_SE/definers/dtbook2flow_sv_SE.xsl");
+			dtbook2flow = new URL(resourceBase, "sv_SE/definers/dtbook2flow_sv_SE_braille.xsl");
 			flowValidationURL = new URL(resourceBase, "sv_SE/validation/flow.xsd");
-			flowWsNormalizer = new URL(resourceBase, "sv_SE/preprocessing/remove-whitespace.xsl");
+			flowWsNormalizer = new URL(resourceBase, "common/preprocessing/flow-whitespace-normalizer.xsl");
 			volumeSplitter = new URL(resourceBase, "common/splitters/simple-splitter.xsl");
 			brailleFinalizer = new URL(resourceBase, "common/renderers/braille-finalizer.xsl");
 			metaFinalizer = new URL(resourceBase, "common/renderers/meta-finalizer.xsl");
@@ -122,7 +122,7 @@ public class SwedishBrailleSystem implements TaskSystem {
 		setup.add(new ValidatorTask("Conformance checker", inputSchURL));
 
 		// Add braille markers
-		setup.add(new XsltTask("Markers injector", markersXsl, null, h));
+		//setup.add(new XsltTask("Markers injector", markersXsl, null, h));
 		
 		// Add braille markers and redefines dtbook as FLOW input
 		setup.add(new XsltTask("DTBook to FLOW converter", dtbook2flow, null, h));
@@ -192,7 +192,10 @@ public class SwedishBrailleSystem implements TaskSystem {
 		setup.add(new VolumeCoverPageTask("Cover page adder", factory.getDefault(), tb, new File(parameters.get("input")), pageHeight));
 
 		// Finalizes character data on rows
-		setup.add(new XsltTask("Braille finalizer", brailleFinalizer, null, h));
+		HashMap<String, Object> finalizerOptions = new HashMap<String, Object>();
+		finalizerOptions.put("finalizer-input", " \u00a0-\u00ad");
+		finalizerOptions.put("finalizer-output", "\u2800\u2800\u2824\u2824");
+		setup.add(new XsltTask("Braille finalizer", brailleFinalizer, null, finalizerOptions));
 
 		// Finalize meta data from input file
 		setup.add(new XsltTask("Meta data finalizer", metaFinalizer, null, h));

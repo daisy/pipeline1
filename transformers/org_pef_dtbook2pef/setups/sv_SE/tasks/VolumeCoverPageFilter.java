@@ -101,13 +101,18 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
 	    		ret.add(new Row(s));
 	    	}
     	}
-    	while (ret.size()<height-2) {
+    	String voltext;
+    	if (vols==1) {
+    		voltext = "En volym";
+    	} else {
+    		voltext = "Volym "+intToText(volumeNo)+" av "+intToText(vols);
+    	}
+    	ArrayList<String> vol = tb.addBorderToParagraph(filters.filter(voltext));
+    	while (ret.size()<height-vol.size()-1) {
     		ret.add(new Row(tb.addBorderToRow("")));
     	}
-    	if (vols==1) {
-    		ret.add(new Row(tb.addBorderToRow(filters.filter("En volym"))));
-    	} else {
-    		ret.add(new Row(tb.addBorderToRow(filters.filter("Volym "+loc(volumeNo)+" av "+loc(vols)))));
+    	for (String s : vol) {
+    		ret.add(new Row(s));
     	}
     	ret.add(new Row(tb.getBottomBorder()));
     	if (ret.size()>height) {
@@ -131,8 +136,72 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
     		case 10: return "tio";
     		case 11: return "elva";
     		case 12: return "tolv";
+    		case 13: return "tretton";
+    		case 14: return "fjorton";
+    		case 15: return "femton";
+    		case 16: return "sexton";
+    		case 17: return "sjutton";
+    		case 18: return "arton";
+    		case 19: return "nitton";
+    		case 20: return "tjugo"; 
     	}
     	return ""+value;
     }
 
+    private static String intToText(int value) {
+    	if (value<0) return "minus " + intToText(-value);
+    	switch (value) {
+			case 0: return "noll"; 
+			case 1: return "ett";
+			case 2: return "två";
+			case 3: return "tre";
+			case 4: return "fyra";
+			case 5: return "fem";
+			case 6: return "sex";
+			case 7: return "sju";
+			case 8: return "åtta";
+			case 9: return "nio";
+			case 10: return "tio";
+			case 11: return "elva";
+			case 12: return "tolv";
+			case 13: return "tretton";
+			case 14: return "fjorton";
+			case 15: return "femton";
+			case 16: return "sexton";
+			case 17: return "sjutton";
+			case 18: return "arton";
+			case 19: return "nitton";
+    		case 20: return "tjugo";
+    		case 30: return "trettio";
+    		case 40: return "fyrtio";
+    		case 50: return "femtio";
+    		case 60: return "sextio";
+    		case 70: return "sjuttio";
+    		case 80: return "åttio";
+    		case 90: return "nittio";
+    	}
+    	String pre = "";
+    	if (value>=1000) {
+    		pre = intToText(value / 1000) + "tusen";
+    		value = value % 1000;
+    	}
+    	if (value>=100) {
+    		pre = pre + (value>=200?intToText(value / 100):"") + "hundra";
+    		value = value % 100;
+    	}
+    	if (value==0) return pre;
+    	if (value<20) {
+    		return pre + intToText(value);
+    	} else {
+        	int t = value % 10;
+        	int r = (value / 10) * 10;
+    		return pre + intToText(r) + (t>0?intToText(t):"");
+    	}
+    }
+    
+    public static void main (String[] args) {
+    	for (int i = 0; i<100; i++) {
+    		System.out.println(i + " " + intToText(i));
+    	}
+    }
 }

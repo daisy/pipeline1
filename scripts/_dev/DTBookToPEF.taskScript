@@ -45,7 +45,7 @@
 		</datatype>
 	</parameter>
 
-	<parameter name="setup" value="sv-SE" required="false">
+	<parameter name="setup" value="sv-SE" required="true">
 		<nicename>Conversion Setup</nicename>
 		<description>Conversion setup to apply - see documentation</description>
 		<datatype>
@@ -124,6 +124,11 @@
 		</parameter>
 		
 		<parameter>
+			<name>outputFormat</name>
+			<value>pef</value>
+		</parameter>
+		
+		<parameter>
 			<name>config</name>
 			<value>${config}</value>
 		</parameter>
@@ -172,7 +177,7 @@
 		
 		<parameter>
 			<name>table</name>
-			<value>sv_SE_CX</value>
+			<value>sv_SE_cx</value>
 		</parameter>
 		
 		<parameter>

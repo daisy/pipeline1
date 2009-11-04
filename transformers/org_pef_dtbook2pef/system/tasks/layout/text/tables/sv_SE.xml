@@ -108,7 +108,9 @@
 		<entry key="201d">&#x2830;</entry>					<!-- RIGHT DOUBLE QUOTATION MARK, 201d -->
 		<entry key="201e">&#x2830;</entry>						<!-- DOUBLE LOW-9 QUOTATION MARK, 201e -->
 	<entry key="'">&#x2810;</entry>
+		<entry key="2018">&#x2810;</entry>						<!-- LEFT SINGLE QUOTATION MARK, 2018 -->
 		<entry key="2019">&#x2810;</entry>						<!-- RIGHT SINGLE QUOTATION MARK, 2019 -->
+		<entry key="201a">&#x2810;</entry>						<!-- SINGLE LOW-9 QUOTATION MARK, 201a -->
 		<entry key="2039">&#x2810;</entry>						<!-- SINGLE LEFT-POINTING ANGLE QUOTATION MARK, 2039 -->
 		<entry key="203a">&#x2810;</entry>						<!-- SINGLE RIGHT-POINTING ANGLE QUOTATION MARK, 203a -->
 	<entry key="/">&#x280C;</entry>
@@ -127,7 +129,8 @@
 	<entry key="§">&#x282C;</entry>
 	<entry key="|">&#x2838;</entry>
 	<entry key="=">&#x2836;</entry>
-	<entry key="•">&#x283F;</entry>
+	<entry key="•">&#x283F;</entry>									<!-- BULLET, 2022 -->
+	<entry key="2219">&#x283F;</entry>							<!-- BULLET OPERATOR, 2219 -->
 	<entry key="[">&#x2837;</entry>
 	<entry key="]">&#x283E;</entry>
 	<entry key="{">&#x2820;&#x2837;</entry>

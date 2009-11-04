@@ -47,8 +47,4 @@ public class Position {
 		return (int)Math.round(ret);
 	}
 
-	public static void main(String[] args) {
-		Position p = parsePosition("33%");
-		System.out.println(p.isRelative + " " + p.getValue() + " " + p.makeAbsolute(30));
-	}
 }
