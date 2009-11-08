@@ -38,6 +38,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
@@ -50,6 +51,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.catalog.CatalogURIResolver;
 import org.daisy.util.xml.pool.SAXParserPool;
 import org.daisy.util.xml.sax.SAXConstants;
+import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -479,4 +481,45 @@ public class Stylesheet {
         Result result = new StreamResult(xml);
         return result;
     }
+    
+    /**
+     * Perform a XSLT transform with the catalog hooked up. Will try to use
+     * Saxon8 or later, if not available fall back on the system default.
+     * Parameters:
+     * <ol>
+     * <li>String representing input file path</li>
+     * <li>String representing output file path</li>
+     * <li>String representing XSLT to use, can refer to keys in the 
+     * <code>org.daisy.util.xml.xslt.stylesheets.Stylesheets</code> list, in
+     * which case the stylesheets provided there take precedence</li>  
+     * </ol>
+     * <p>To use this to transform a DTBook document to XHTML, use:</p>
+     * <pre>
+     * <code>Stylesheet input.xml output.xhtml dtbook2xhtml.xsl
+     * </pre> 
+     */
+	public static void main(String[] args) {
+		String property = "javax.xml.transform.TransformerFactory";
+	    String systemDefaultFactory = System.getProperty(property);
+	    
+		try{
+			URL xslt = Stylesheets.get(args[2]);
+			if(xslt==null) {
+				xslt = FilenameOrFileURI.toURI(args[2]).toURL();
+			}
+			
+			try{
+				apply(args[0], xslt, args[1], "net.sf.saxon.TransformerFactoryImpl", 
+					null, CatalogEntityResolver.getInstance());
+			}catch(TransformerFactoryConfigurationError tfce) {
+				System.setProperty(property, systemDefaultFactory);
+				apply(args[0], xslt, args[1], null, 
+						null, CatalogEntityResolver.getInstance());
+			}
+		}catch (Exception e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		System.exit(0);
+	}
 }
