@@ -1,7 +1,9 @@
 package se_tpb_hyphenator;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
@@ -49,13 +51,24 @@ public class Hyphenator extends Transformer {
     	try {
 			inFactory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
 		} catch (CatalogExceptionNotRecoverable e1) {
-			e1.printStackTrace();
+			throw new TransformerRunException(e1.getMessage(), e1);
 		}
-
 		try {
-			HyphenReader hr = new HyphenReader(this, inFactory, input, output, breakLimitBegin, breakLimitEnd);
+			File temp = File.createTempFile("pipeline", ".tmp");
+			FileInputStream instream = new FileInputStream(input);
+			HyphenReader hr = new HyphenReader(this, inFactory, instream, new FileOutputStream(temp), breakLimitBegin, breakLimitEnd);
 			hr.filter();
 			hr.close();
+			instream.close();
+			for (int i=0; i<10 && output.exists(); i++) {
+				output.delete();
+				if (output.exists()) {
+					try { Thread.sleep(100); } catch (InterruptedException e) { }
+				}
+			}
+			if (!temp.renameTo(output)) {
+				throw new TransformerRunException("Unable to rename temporary file to " + output);
+			}
 		} catch (FileNotFoundException e) {
 			throw new TransformerRunException(e.getMessage(),e);			
 		} catch (XMLStreamException e) {

@@ -6,18 +6,18 @@
 	<license>LGPL</license>
 	<author>Joel Håkansson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
-	<documentation uri="../../doc/transformers/se_tpb_dtbookfix.html"/>	
+	<documentation uri="../../doc/transformers/se_tpb_hyphenator.html"/>	
 	
 	<parameters>
 		<parameter required="true" direction="in" type="application/xml">
 			<name>input</name>
-			<description>Input DTBook file</description>
+			<description>Input XML file</description>
 			<example>file:///path/to/file.xml</example>
 		</parameter>
 
 		<parameter required="true" direction="out" type="application/xml">
 			<name>output</name>
-			<description>Output DTBook file</description>
+			<description>Output XML file</description>
 			<example>file:///path/to/outFile.xml</example>
 		</parameter>
 		

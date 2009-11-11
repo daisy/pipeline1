@@ -103,6 +103,7 @@ doc/scripts/EpubCheck.html -text
 doc/scripts/FilesetGenerator-Daisy202TextOnly.html -text
 doc/scripts/FilesetRenamer.html -text
 doc/scripts/HtmlToXhtml.html -text
+doc/scripts/Hyphenator.html -text
 doc/scripts/ImageConverter.html -text
 doc/scripts/Narrator-DtbookToDaisy.html -text
 doc/scripts/Narrator-multiplettsslaves.html -text
@@ -167,6 +168,7 @@ doc/transformers/se_tpb_dtbSplitter.html -text
 doc/transformers/se_tpb_dtbook2latex.html -text
 doc/transformers/se_tpb_dtbookfix.html -text
 doc/transformers/se_tpb_filesetcreator.html -text
+doc/transformers/se_tpb_hyphenator.html -text
 doc/transformers/se_tpb_imageConverter.html -text
 doc/transformers/se_tpb_nccNcxOnly.html -text
 doc/transformers/se_tpb_speechgen2.html -text
@@ -601,6 +603,7 @@ scripts/modify_improve/multiformat/AudioTagger.taskScript -text
 scripts/modify_improve/multiformat/CharacterRepertoireManipulator.taskScript -text
 scripts/modify_improve/multiformat/CharsetSwitcher.taskScript -text
 scripts/modify_improve/multiformat/FilesetRenamer.taskScript -text
+scripts/modify_improve/multiformat/Hyphenator.taskScript -text
 scripts/modify_improve/multiformat/ImageConverter.taskScript -text
 scripts/modify_improve/multiformat/PrettyPrinter.taskScript -text
 scripts/modify_improve/multiformat/RenamerTaggerValidator.taskScript -text
@@ -1523,6 +1526,9 @@ transformers/se_tpb_hyphenator/Hyphenator.java -text
 transformers/se_tpb_hyphenator/HyphenatorErrorHandler.java -text
 transformers/se_tpb_hyphenator/hyphenation_tables.xml -text
 transformers/se_tpb_hyphenator/lib/texhyphj.jar -text
+transformers/se_tpb_hyphenator/rules/dehyph_x.tex -text
+transformers/se_tpb_hyphenator/rules/frhyph_x.tex -text
+transformers/se_tpb_hyphenator/rules/nohyphbx.tex -text
 transformers/se_tpb_hyphenator/rules/sehyph.tex -text
 transformers/se_tpb_hyphenator/rules/ukhyph.tex -text
 transformers/se_tpb_hyphenator/rules/ushyph.tex -text
