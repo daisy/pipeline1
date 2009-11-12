@@ -1148,17 +1148,6 @@ transformers/org_pef_dist/lib/dist.jar -text
 transformers/org_pef_dist/transformer.tdf -text
 transformers/org_pef_dtbook2pef/DTBook2PEF.java -text
 transformers/org_pef_dtbook2pef/lib/default_renderer.xsl -text
-transformers/org_pef_dtbook2pef/lib/fop/avalon-framework-4.2.0.jar -text
-transformers/org_pef_dtbook2pef/lib/fop/batik-all-1.6.jar -text
-transformers/org_pef_dtbook2pef/lib/fop/commons-io-1.3.1.jar -text
-transformers/org_pef_dtbook2pef/lib/fop/commons-logging-1.0.4.jar -text
-transformers/org_pef_dtbook2pef/lib/fop/fop.jar -text
-transformers/org_pef_dtbook2pef/lib/fop/fopv.jar -text
-transformers/org_pef_dtbook2pef/lib/fop/serializer-2.7.0.jar -text
-transformers/org_pef_dtbook2pef/lib/fop/xalan-2.7.0.jar -text
-transformers/org_pef_dtbook2pef/lib/fop/xercesImpl-2.7.1.jar -text
-transformers/org_pef_dtbook2pef/lib/fop/xml-apis-1.3.02.jar -text
-transformers/org_pef_dtbook2pef/lib/fop/xmlgraphics-commons-1.2.jar -text
 transformers/org_pef_dtbook2pef/lib/pef2xhtml.xsl -text
 transformers/org_pef_dtbook2pef/setups/common/definers/dtbook2flow.xsl -text
 transformers/org_pef_dtbook2pef/setups/common/preprocessing/flow-whitespace-normalizer.xsl -text
