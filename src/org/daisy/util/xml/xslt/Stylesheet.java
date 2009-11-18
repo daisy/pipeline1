@@ -492,7 +492,7 @@ public class Stylesheet {
      * <li>String representing XSLT to use, can refer to keys in the 
      * <code>org.daisy.util.xml.xslt.stylesheets.Stylesheets</code> list, in
      * which case the stylesheets provided there take precedence</li>
-     * <li>(optional) String representing parameters to the XSLT.  Can contain multiple parameters.</li>  
+     * <li>(optional) XSLT parameters.  A series of name=value pairs.</li>  
      * </ol>
      * <p>To use this to transform a DTBook document to XHTML, use:</p>
      * <pre>
