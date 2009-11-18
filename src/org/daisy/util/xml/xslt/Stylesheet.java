@@ -509,13 +509,26 @@ public class Stylesheet {
 				xslt = FilenameOrFileURI.toURI(args[2]).toURL();
 			}
 			
-			//parse the stylesheet parameters
-			//everything from args[3] on .. 
+			//17-11-2009 marisa added stylesheet parameter handling
+			//parse everything from args[3..n] as stylesheet parameters
 			HashMap<String,Object> paramMap = null;
 			for (int i = 3; i<args.length; i++){
 				paramMap = new HashMap<String,Object>();
 				String[] param = args[i].split("=");
-				paramMap.put(param[0], param[1]);
+				
+				//make file paths into URL objects: otherwise the xslt cannot deal with space characters in the paths.
+				//the example used to test was a dtbook2xhtml stylesheet with baseDir="file:///the/book directory/"
+				//the stylesheet would run but since it was unable to resolve SMIL references due to path problems,
+				//the linkbacks were not created in the output document
+				//however: this means that file paths in XSLT parameters must contain "://", as in "file:///..." 
+				//an improvement for this code would be to automatically detect that a string is a local or remote file path
+				if (param[1].contains("://")){
+					URL file = FilenameOrFileURI.toURI(param[1]).toURL();
+					paramMap.put(param[0], file);
+				}
+				else{
+					paramMap.put(param[0], param[1]);
+				}
 			}
 			
 			try{
