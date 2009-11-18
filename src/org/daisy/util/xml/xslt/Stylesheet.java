@@ -491,7 +491,8 @@ public class Stylesheet {
      * <li>String representing output file path</li>
      * <li>String representing XSLT to use, can refer to keys in the 
      * <code>org.daisy.util.xml.xslt.stylesheets.Stylesheets</code> list, in
-     * which case the stylesheets provided there take precedence</li>  
+     * which case the stylesheets provided there take precedence</li>
+     * <li>(optional) String representing parameters to the XSLT.  Can contain multiple parameters.</li>  
      * </ol>
      * <p>To use this to transform a DTBook document to XHTML, use:</p>
      * <pre>
@@ -508,9 +509,18 @@ public class Stylesheet {
 				xslt = FilenameOrFileURI.toURI(args[2]).toURL();
 			}
 			
+			//parse the stylesheet parameters
+			//everything from args[3] on .. 
+			HashMap<String,Object> paramMap = null;
+			for (int i = 3; i<args.length; i++){
+				paramMap = new HashMap<String,Object>();
+				String[] param = args[i].split("=");
+				paramMap.put(param[0], param[1]);
+			}
+			
 			try{
 				apply(args[0], xslt, args[1], "net.sf.saxon.TransformerFactoryImpl", 
-					null, CatalogEntityResolver.getInstance());
+					paramMap, CatalogEntityResolver.getInstance());
 			}catch(TransformerFactoryConfigurationError tfce) {
 				System.setProperty(property, systemDefaultFactory);
 				apply(args[0], xslt, args[1], null, 
