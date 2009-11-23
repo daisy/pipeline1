@@ -11,8 +11,7 @@ import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
 import java.util.Properties;
 
-import org_pef_dtbook2pef.setups.sv_SE.definers.BodyLayoutMaster;
-import org_pef_dtbook2pef.setups.sv_SE.definers.FrontLayoutMaster;
+import org_pef_dtbook2pef.setups.common.InputDetectorTaskSystem;
 import org_pef_dtbook2pef.setups.sv_SE.tasks.VolumeCoverPageTask;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.TaskSystem;
@@ -21,8 +20,7 @@ import org_pef_dtbook2pef.system.tasks.ValidatorTask;
 import org_pef_dtbook2pef.system.tasks.XsltTask;
 import org_pef_dtbook2pef.system.tasks.layout.LayoutEngineTask;
 import org_pef_dtbook2pef.system.tasks.layout.impl.DefaultLayoutPerformer;
-import org_pef_dtbook2pef.system.tasks.layout.page.BaseLayoutMaster;
-import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMasterConfigurator;
+import org_pef_dtbook2pef.system.tasks.layout.impl.PageStruct;
 import org_pef_dtbook2pef.system.tasks.layout.text.BrailleFilterFactory;
 import org_pef_dtbook2pef.system.tasks.layout.text.FilterLocale;
 import org_pef_dtbook2pef.system.tasks.layout.utils.LayoutTools;
@@ -57,32 +55,36 @@ import org_pef_dtbook2pef.system.tasks.layout.writers.PEFMediaWriter;
  * </ol>
  * <p>The result should be validated against the PEF Relax NG schema using int_daisy_validator.</p>
  * @author joha
- *
+ * TODO: hyphenation "sjuttonåringar", "blårött" och "jättestor".
+ * TODO: clean
+ * TODO: remove "sv_SE/preprocessing"
  */
 public class SwedishBrailleSystem implements TaskSystem {
 	private URL resourceBase;
 	private String config;
+	private InputDetectorTaskSystem inputDetector;
 	
 	public SwedishBrailleSystem(URL resourceBase, String config) {
 		this.resourceBase = resourceBase;
 		this.config = config;
+		this.inputDetector = new InputDetectorTaskSystem(resourceBase, "sv_SE/config/", "common/config/");
 	}
 
 	public ArrayList<InternalTask> compile(Map<String, String> parameters) throws TaskSystemException {
-		URL markersXsl;
-		URL dtbook2flow;
+		//URL markersXsl;
+		//URL dtbook2flow;
 		URL flowWsNormalizer;
 		URL volumeSplitter;
 		URL brailleFinalizer;
 		URL metaFinalizer;
 		URL configURL;
 		URL flowValidationURL;
-		URL inputSchURL;
+		//URL inputSchURL;
 		
 		try {
-			inputSchURL = new URL(resourceBase, "sv_SE/validation/basic.sch");
-			markersXsl = new URL(resourceBase, "sv_SE/preprocessing/add-structure-markers.xsl");
-			dtbook2flow = new URL(resourceBase, "sv_SE/definers/dtbook2flow_sv_SE_braille.xsl");
+			//inputSchURL = new URL(resourceBase, "sv_SE/validation/basic.sch");
+			//markersXsl = new URL(resourceBase, "sv_SE/preprocessing/add-structure-markers.xsl");
+			//dtbook2flow = new URL(resourceBase, "sv_SE/definers/dtbook2flow_sv_SE_braille.xsl");
 			flowValidationURL = new URL(resourceBase, "sv_SE/validation/flow.xsd");
 			flowWsNormalizer = new URL(resourceBase, "common/preprocessing/flow-whitespace-normalizer.xsl");
 			volumeSplitter = new URL(resourceBase, "common/splitters/simple-splitter.xsl");
@@ -106,8 +108,6 @@ public class SwedishBrailleSystem implements TaskSystem {
 		// GUI parameters should take precedence
 		p.putAll(parameters);
 
-		HashMap h = new HashMap();
-		h.putAll(p);
 
 		int flowWidth = Integer.parseInt(p.getProperty("cols", "28"));
 		int pageHeight = Integer.parseInt(p.getProperty("rows", "29"));
@@ -118,14 +118,23 @@ public class SwedishBrailleSystem implements TaskSystem {
 
 		ArrayList<InternalTask> setup = new ArrayList<InternalTask>();
 
+		p.put("page-height", pageHeight);
+		p.put("page-width", flowWidth+innerMargin+outerMargin);
+		p.put("row-spacing", (rowgap/4)+1);
+
+		HashMap h = new HashMap();
+		h.putAll(p);
+
+		setup.addAll(inputDetector.compile(h));
+
 		// Check input conformance 
-		setup.add(new ValidatorTask("Conformance checker", inputSchURL));
+		//setup.add(new ValidatorTask("Conformance checker", inputSchURL));
 
 		// Add braille markers
 		//setup.add(new XsltTask("Markers injector", markersXsl, null, h));
 		
 		// Add braille markers and redefines dtbook as FLOW input
-		setup.add(new XsltTask("DTBook to FLOW converter", dtbook2flow, null, h));
+		//setup.add(new XsltTask("DTBook to FLOW converter", dtbook2flow, null, h));
 
 		// Whitespace normalizer TransformerFactoryConstants.SAXON8
 		setup.add(new XsltTask("FLOW whitespace normalizer", flowWsNormalizer, null, h));
@@ -140,8 +149,9 @@ public class SwedishBrailleSystem implements TaskSystem {
 		BrailleFilterFactory factory = BrailleFilterFactory.newInstance();
 		PEFMediaWriter paged = new PEFMediaWriter(p);
 		factory.setDefault(sv_SE);
-		DefaultLayoutPerformer flow = new DefaultLayoutPerformer.Builder(paged).
-										addLayoutMaster("main",
+		PageStruct paginator = new PageStruct(factory.getDefault());
+		DefaultLayoutPerformer flow = new DefaultLayoutPerformer.Builder().
+										/*addLayoutMaster("main",
 												new BodyLayoutMaster(
 													new LayoutMasterConfigurator(flowWidth+innerMargin+outerMargin, pageHeight).
 														innerMargin(innerMargin).
@@ -169,10 +179,10 @@ public class SwedishBrailleSystem implements TaskSystem {
 														headerHeight(0).
 														footerHeight(0)
 													)
-												).
+												).*/
 										setStringFilterFactory(factory).
 										build();
-		setup.add(new LayoutEngineTask("FLOW to PEF converter", flow, flow));
+		setup.add(new LayoutEngineTask("FLOW to PEF converter", flow, paginator, paged));
 
 		// Split result into volumes
 		setup.add(new XsltTask("Volume splitter", volumeSplitter, null, h));

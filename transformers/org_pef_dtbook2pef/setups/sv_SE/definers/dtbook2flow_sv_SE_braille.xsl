@@ -9,6 +9,58 @@
 	<xsl:import href="dtbook2flow_sv_SE.xsl" />
 	<xsl:output method="xml" encoding="utf-8" indent="no"/>
 
+	<xsl:template name="insertLayoutMaster">
+		<layout-master name="front" page-width="{$page-width}" 
+							page-height="{$page-height}" inner-margin="{$inner-margin}"
+							outer-margin="{$outer-margin}" row-spacing="{$row-spacing}" duplex="{$duplex}">
+			<template use-when="(= (% $page 2) 0)">
+				<header>
+					<field><current-page style="roman"/></field>
+				</header>
+				<footer></footer>
+			</template>
+			<default-template>
+				<header>
+					<field><string value=""/></field>
+					<field><current-page style="roman"/></field>
+				</header>
+				<footer></footer>
+			</default-template>
+		</layout-master>
+		<layout-master name="main" page-width="{$page-width}" 
+							page-height="{$page-height}" inner-margin="{$inner-margin}"
+							outer-margin="{$outer-margin}" row-spacing="{$row-spacing}" duplex="{$duplex}">
+			<template use-when="(= (% $page 2) 0)">
+				<header>
+					<field><current-page style="default"/></field>
+					<field>
+						<marker-reference marker="pagenum-turn" direction="forward" scope="page_content"/>
+						<marker-reference marker="pagenum" direction="backward" scope="sequence"/>
+					</field>
+				</header>
+				<footer></footer>
+			</template>
+			<default-template>
+				<header>
+					<field>
+						<marker-reference marker="pagenum-turn" direction="forward" scope="page_content"/>
+						<marker-reference marker="pagenum" direction="backward" scope="sequence"/>
+					</field>
+					<field><current-page style="default"/></field>
+				</header>
+				<footer></footer>
+			</default-template>
+		</layout-master>
+		<layout-master name="plain" page-width="{$page-width}" 
+							page-height="{$page-height}" inner-margin="{$inner-margin}"
+							outer-margin="{$outer-margin}" row-spacing="{$row-spacing}" duplex="{$duplex}">
+			<default-template>
+				<header></header>
+				<footer></footer>
+			</default-template>
+		</layout-master>
+	</xsl:template>
+
 	<!-- Svenska skrivregler för punktskrift 2009, page 34 -->
 	<xsl:template match="dtb:em[not(ancestor::dtb:list[@class='toc'])]" mode="inline-mode">
 		<xsl:call-template name="addMarkers">

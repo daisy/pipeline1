@@ -62,7 +62,7 @@ public class LayoutTools {
 		return sb.toString();
 	}
 	
-	private static String distributeTable(ArrayList<String> units, int width, String padding) {
+	private static String distributeTable(ArrayList<String> units, int width, String padding) throws LayoutToolsException {
 		double target = width/(double)units.size();
 		StringBuffer sb = new StringBuffer();
 		int used = 0;
@@ -72,8 +72,7 @@ public class LayoutTools {
 			used += spacing;
 			spacing -= cell.codePointCount(0, cell.length());
 			if (spacing<0) {
-				//FIXME: Change exception type
-				throw new RuntimeException("Text does not fit within cell: " + cell);
+				throw new LayoutToolsException("Text does not fit within cell: " + cell);
 			}
 			sb.append(cell);
 			if (i<units.size()-1) {
@@ -92,7 +91,7 @@ public class LayoutTools {
 	 * @param mode the distribution mode to use
 	 * @return returns a string of <tt>width</tt> chars 
 	 */
-	public static String distribute(ArrayList<String> units, int width, String padding, DistributeMode mode) {
+	public static String distribute(ArrayList<String> units, int width, String padding, DistributeMode mode) throws LayoutToolsException {
 		switch (mode) {
 			case EQUAL_SPACING:
 				return distributeEqualSpacing(units, width, padding);

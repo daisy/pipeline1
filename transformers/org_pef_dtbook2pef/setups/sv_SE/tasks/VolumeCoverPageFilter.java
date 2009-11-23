@@ -8,7 +8,7 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 
-import org_pef_dtbook2pef.system.tasks.layout.impl.Row;
+import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
 import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
 import org_pef_dtbook2pef.system.tasks.layout.utils.TextBorder;
 
@@ -71,7 +71,6 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
 	    		cols = Integer.parseInt(event.getAttributeByName(new QName("cols")).getValue());
 	    	}
 		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         return event;
@@ -148,7 +147,7 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
     	return ""+value;
     }
 
-    private static String intToText(int value) {
+    public static String intToText(int value) {
     	if (value<0) return "minus " + intToText(-value);
     	switch (value) {
 			case 0: return "noll"; 
@@ -198,10 +197,5 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
     		return pre + intToText(r) + (t>0?intToText(t):"");
     	}
     }
-    
-    public static void main (String[] args) {
-    	for (int i = 0; i<100; i++) {
-    		System.out.println(i + " " + intToText(i));
-    	}
-    }
+
 }

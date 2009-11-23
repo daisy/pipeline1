@@ -5,12 +5,14 @@ import java.util.Stack;
 
 import org_pef_dtbook2pef.system.tasks.layout.flow.BlockProperties;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
+import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
 
 public class FlowGroup {
 	private Stack<Row> rows;
 	private int spaceBefore;
 	private int spaceAfter;
 	private ArrayList<Marker> groupMarkers;
+	private ArrayList<String> groupAnchors;
 	private BlockProperties.BreakBeforeType breakBefore;
 	private BlockProperties.KeepType keep;
 	private int keepWithNext;
@@ -20,6 +22,7 @@ public class FlowGroup {
 		this.spaceBefore = 0;
 		this.spaceAfter = 0;
 		this.groupMarkers = new ArrayList<Marker>();
+		this.groupAnchors = new ArrayList<String>();
 		this.breakBefore = BlockProperties.BreakBeforeType.AUTO;
 		this.keep = BlockProperties.KeepType.AUTO;
 		this.keepWithNext = 0;
@@ -41,12 +44,24 @@ public class FlowGroup {
 		}
 	}
 	
+	public void addAnchor(String ref) {
+		if (isEmpty()) {
+			groupAnchors.add(ref);
+		} else {
+			rows.peek().addAnchor(ref);
+		}
+	}
+	
 	/**
 	 * Get markers that are not attached to a row, i.e. markers that proceeds any text contents
 	 * @return returns markers that proceeds this FlowGroups text contents
 	 */
 	public ArrayList<Marker> getGroupMarkers() {
 		return groupMarkers;
+	}
+	
+	public ArrayList<String> getGroupAnchors() {
+		return groupAnchors;
 	}
 	
 	public Row[] toArray() {

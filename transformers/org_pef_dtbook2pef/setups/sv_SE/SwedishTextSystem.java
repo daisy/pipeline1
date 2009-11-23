@@ -1,6 +1,5 @@
 package org_pef_dtbook2pef.setups.sv_SE;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -11,19 +10,18 @@ import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
 import java.util.Properties;
 
+import org_pef_dtbook2pef.setups.common.InputDetectorTaskSystem;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.TaskSystem;
 import org_pef_dtbook2pef.system.TaskSystemException;
-import org_pef_dtbook2pef.system.tasks.DebugTask;
 import org_pef_dtbook2pef.system.tasks.ValidatorTask;
 import org_pef_dtbook2pef.system.tasks.XsltTask;
 import org_pef_dtbook2pef.system.tasks.layout.LayoutEngineTask;
 import org_pef_dtbook2pef.system.tasks.layout.impl.DefaultLayoutPerformer;
-import org_pef_dtbook2pef.system.tasks.layout.page.BaseLayoutMaster;
-import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMasterConfigurator;
+import org_pef_dtbook2pef.system.tasks.layout.impl.PageStruct;
+import org_pef_dtbook2pef.system.tasks.layout.text.BrailleFilterFactory;
 import org_pef_dtbook2pef.system.tasks.layout.text.FilterLocale;
 import org_pef_dtbook2pef.system.tasks.layout.text.RegexFilter;
-import org_pef_dtbook2pef.system.tasks.layout.text.BrailleFilterFactory;
 import org_pef_dtbook2pef.system.tasks.layout.writers.TextMediaWriter;
 
 /**
@@ -36,21 +34,23 @@ import org_pef_dtbook2pef.system.tasks.layout.writers.TextMediaWriter;
 public class SwedishTextSystem implements TaskSystem {
 	private URL resourceBase;
 	private String config;
+	private InputDetectorTaskSystem inputDetector;
 	
 	public SwedishTextSystem(URL resourceBase, String config) {
 		this.resourceBase = resourceBase;
 		this.config = config;
+		this.inputDetector = new InputDetectorTaskSystem(resourceBase, "sv_SE/config/", "common/config/");
 	}
 
 	public ArrayList<InternalTask> compile(Map<String, String> parameters) throws TaskSystemException {
-		URL dtbook2flow;
+		//URL dtbook2flow;
 		URL flowWsNormalizer;
 		URL configURL;
 		URL flowValidationURL;
-		URL inputSchURL;
+		//URL inputSchURL;
 		try {
-			inputSchURL = new URL(resourceBase, "sv_SE/validation/basic.sch");
-			dtbook2flow = new URL(resourceBase, "sv_SE/definers/dtbook2flow_sv_SE_text.xsl");
+			//inputSchURL = new URL(resourceBase, "sv_SE/validation/basic.sch");
+			//dtbook2flow = new URL(resourceBase, "sv_SE/definers/dtbook2flow_sv_SE_text.xsl");
 			flowValidationURL = new URL(resourceBase, "sv_SE/validation/flow.xsd");
 			flowWsNormalizer = new URL(resourceBase, "common/preprocessing/flow-whitespace-normalizer.xsl");
 			configURL = new URL(resourceBase, config);
@@ -71,8 +71,6 @@ public class SwedishTextSystem implements TaskSystem {
 		// GUI parameters should take precedence
 		p.putAll(parameters);
 
-		HashMap h = new HashMap();
-		h.putAll(p);
 
 		int flowWidth = Integer.parseInt(p.getProperty("cols", "28"));
 		int pageHeight = Integer.parseInt(p.getProperty("rows", "29"));
@@ -82,11 +80,20 @@ public class SwedishTextSystem implements TaskSystem {
 
 		ArrayList<InternalTask> setup = new ArrayList<InternalTask>();
 
+		p.put("page-height", pageHeight);
+		p.put("page-width", flowWidth+innerMargin+outerMargin);
+		p.put("row-spacing", (rowgap/4)+1);
+
+		HashMap h = new HashMap();
+		h.putAll(p);
+		
+		setup.addAll(inputDetector.compile(h));
+
 		// Check input conformance 
-		setup.add(new ValidatorTask("Conformance checker", inputSchURL));
+		//setup.add(new ValidatorTask("Conformance checker", inputSchURL));
 
 		// Redefines dtbook as FLOW input
-		setup.add(new XsltTask("DTBook to FLOW converter", dtbook2flow, null, h));
+		//setup.add(new XsltTask("DTBook to FLOW converter", dtbook2flow, null, h));
 
 		// Whitespace normalizer TransformerFactoryConstants.SAXON8
 		setup.add(new XsltTask("FLOW whitespace normalizer", flowWsNormalizer, null, h));
@@ -102,8 +109,9 @@ public class SwedishTextSystem implements TaskSystem {
 		BrailleFilterFactory factory = BrailleFilterFactory.newInstance();
 		factory.setDefault(new RegexFilter("\\u200B", ""));
 		TextMediaWriter paged = new TextMediaWriter(p, "UTF-8");
-		DefaultLayoutPerformer flow = new DefaultLayoutPerformer.Builder(paged).
-										addLayoutMaster("main",
+		PageStruct paginator = new PageStruct(factory.getDefault());
+		DefaultLayoutPerformer flow = new DefaultLayoutPerformer.Builder().
+										/*addLayoutMaster("main",
 												new BaseLayoutMaster(
 													new LayoutMasterConfigurator(flowWidth+innerMargin+outerMargin, pageHeight).
 														innerMargin(innerMargin).
@@ -126,10 +134,10 @@ public class SwedishTextSystem implements TaskSystem {
 														outerMargin(outerMargin).
 														rowSpacing((rowgap/4)+1)
 													)
-												).
+												).*/
 										setStringFilterFactory(factory).
 										build();
-		setup.add(new LayoutEngineTask("FLOW to Text converter", flow, flow));
+		setup.add(new LayoutEngineTask("FLOW to Text converter", flow, paginator, paged));
 
 		return setup;
 	}

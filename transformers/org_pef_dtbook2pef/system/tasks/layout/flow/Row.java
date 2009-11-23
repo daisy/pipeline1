@@ -1,13 +1,11 @@
-package org_pef_dtbook2pef.system.tasks.layout.impl;
+package org_pef_dtbook2pef.system.tasks.layout.flow;
 
 import java.util.ArrayList;
-
-import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
-
 
 public class Row {
 	private String chars;
 	private ArrayList<Marker> markers;
+	private ArrayList<String> anchors;
 	private int leftMargin;
 	/*
 	private int spaceBefore;
@@ -17,11 +15,16 @@ public class Row {
 	public Row(String chars) {
 		this.chars = chars;
 		this.markers = new ArrayList<Marker>();
+		this.anchors = new ArrayList<String>();
 		this.leftMargin = 0;
 		/*
 		this.spaceBefore = 0;
 		this.spaceAfter = 0;
 		*/
+	}
+	
+	public Row() {
+		this("");
 	}
 
 	public String getChars() {
@@ -36,12 +39,20 @@ public class Row {
 		markers.add(m);
 	}
 	
+	public void addAnchor(String ref) {
+		anchors.add(ref);
+	}
+	
 	public void addMarkers(ArrayList<Marker> m) {
 		markers.addAll(m);
 	}
 
 	public ArrayList<Marker> getMarkers() {
 		return markers;
+	}
+	
+	public ArrayList<String> getAnchors() {
+		return anchors;
 	}
 
 	public void setLeftMargin(int value) {

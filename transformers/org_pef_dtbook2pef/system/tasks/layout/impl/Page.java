@@ -1,32 +1,40 @@
 package org_pef_dtbook2pef.system.tasks.layout.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
+import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
+import org_pef_dtbook2pef.system.tasks.layout.page.Template;
 
 /**
  * A page object
  * @author joha
- *
+ * TODO: clean
  */
 public class Page {
 	private PageSequence parent;
 	private ArrayList<Row> rows;
 	private ArrayList<Marker> markers;
-	private Integer pageIndex;
-	private int rowsInHeader;
-	private int rowsInFooter;
+	private final int pageIndex;
+	private final Template template;
+	private final int flowHeight;
+	private int contentMarkersBegin;
 	
 	public Page(PageSequence parent, int pageIndex) {
 		this.rows = new ArrayList<Row>();
 		this.markers = new ArrayList<Marker>();
 		this.pageIndex = pageIndex;
-		this.rowsInHeader = 0;
-		this.rowsInFooter = 0;
+		contentMarkersBegin = 0;
 		this.parent = parent;
+		this.template = parent.getLayoutMaster().getTemplate(pageIndex+1);
+		this.flowHeight = parent.getLayoutMaster().getPageHeight()-template.getHeaderHeight()-template.getFooterHeight();
 	}
 	
 	public void newRow(Row r) {
+		if (rowsOnPage()==0) {
+			contentMarkersBegin = markers.size();
+		}
 		rows.add(r);
 		markers.addAll(r.getMarkers());
 	}
@@ -39,8 +47,20 @@ public class Page {
 		markers.addAll(m);
 	}
 	
+	/**
+	 * Get all markers for this page
+	 * @return returns a list of all markers on a page
+	 */
 	public ArrayList<Marker> getMarkers() {
 		return markers;
+	}
+	
+	/**
+	 * Get markers for this page excluding markers before text content
+	 * @return returns a list of markers on a page
+	 */
+	public List<Marker> getContentMarkers() {
+		return markers.subList(contentMarkersBegin, markers.size());
 	}
 	
 	public ArrayList<Row> getRows() {
@@ -51,7 +71,7 @@ public class Page {
 	 * Get the number for the page
 	 * @return returns the page index in the sequence (zero based)
 	 */
-	public Integer getPageIndex() {
+	public int getPageIndex() {
 		return pageIndex;
 	}
 
@@ -59,20 +79,12 @@ public class Page {
 		return parent;
 	}
 	
-	public void setHeader(ArrayList<Row> c) {
-		for (int i=0; i<rowsInHeader; i++) {
-			rows.remove(0);
-		}
-		rowsInHeader = c.size();
-		rows.addAll(0, c);
-	}
-	
-	public void setFooter(ArrayList<Row> c) {
-		for (int i=0; i<rowsInFooter; i++) {
-			rows.remove(rows.size()-1);
-		}
-		rowsInFooter = c.size();
-		rows.addAll(c);
+	/**
+	 * Get the flow height
+	 * @return returns the flow height, i.e. the height available for the text flow
+	 */
+	public int getFlowHeight() {
+		return flowHeight;
 	}
 
 }

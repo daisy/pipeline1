@@ -31,7 +31,7 @@ import org.daisy.pipeline.exception.TransformerRunException;
  */
 public abstract class InternalTask {
 	protected String name = null;
-		
+
 	/**
 	 * Constructor.
 	 * @param parameters
@@ -40,7 +40,7 @@ public abstract class InternalTask {
 	protected InternalTask(String name) {
 		this.name = name;
 	}
-		
+
 	/**
 	 * The name of the internal task.
 	 * @return returns the name of this internal task

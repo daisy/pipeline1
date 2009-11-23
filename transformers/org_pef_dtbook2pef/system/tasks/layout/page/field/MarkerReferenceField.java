@@ -9,7 +9,7 @@ package org_pef_dtbook2pef.system.tasks.layout.page.field;
  */
 public class MarkerReferenceField {
 	public static enum MarkerSearchDirection {FORWARD, BACKWARD}
-	public static enum MarkerSearchScope {PAGE, SEQUENCE}
+	public static enum MarkerSearchScope {PAGE_CONTENT, PAGE, SEQUENCE}
 
 	private String markerName;
 	private MarkerSearchDirection dir;

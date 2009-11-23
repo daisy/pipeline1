@@ -13,19 +13,11 @@
 		</datatype>
 	</parameter>
 
-	<parameter name="outputPath" value="" required="true">
-		<nicename>Output folder</nicename>
-		<description>Base folder for the output</description>
+	<parameter name="output" value="" required="true">
+		<nicename>Output text file</nicename>
+		<description>Output text file</description>
 		<datatype>
-			<directory type="output"/>
-		</datatype>
-	</parameter>
-
-	<parameter name="filename" value="result.txt" required="true">
-		<nicename>Filename</nicename>
-		<description>The filename</description>
-		<datatype>
-			<string/>
+			<file mime="text/plain" type="output"/>
 		</datatype>
 	</parameter>
 
@@ -67,20 +59,19 @@
 
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/pipeline_temp/00-hyphenator.xml</value>
+			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
 		</parameter>
-			
 	</task>
 
 	<task name="org_pef_dtbook2pef" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${outputPath}/pipeline_temp/00-hyphenator.xml</value>
+			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
 		</parameter>
 
 		<parameter>
 			<name>output</name>
-			<value>${outputPath}/${filename}</value>
+			<value>${output}</value>
 		</parameter>
 		
 		<parameter>
@@ -103,7 +94,7 @@
 	<task name="pipeline_system_deleter" interactive="false">
 		<parameter>
 			<name>delete</name>
-			<value>${outputPath}/pipeline_temp/</value>
+			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
 		</parameter>					
 	</task>
 

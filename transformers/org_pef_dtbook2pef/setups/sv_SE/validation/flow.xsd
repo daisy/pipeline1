@@ -5,8 +5,116 @@
 	<xs:element name="root">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element ref="layout-master" maxOccurs="unbounded"/>
 				<xs:element ref="sequence" maxOccurs="unbounded"/>
 			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="layout-master">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="template" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="default-template"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="required"/>
+			<xs:attribute name="page-width" type="xs:anySimpleType" use="required"/>
+			<xs:attribute name="page-height" type="xs:anySimpleType" use="required"/>
+			<xs:attribute name="inner-margin" type="xs:anySimpleType"/>
+			<xs:attribute name="outer-margin" type="xs:anySimpleType"/>
+			<xs:attribute name="row-spacing" type="xs:anySimpleType"/>
+			<xs:attribute name="duplex">
+				<xs:simpleType>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="true"/>
+						<xs:enumeration value="false"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="template">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="header"/>
+				<xs:element ref="footer"/>
+			</xs:sequence>
+			<xs:attribute name="use-when" type="xs:anySimpleType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="default-template">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="header"/>
+				<xs:element ref="footer"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="header">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="field"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="footer">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="field"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="field">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="marker-reference"/>
+				<xs:element ref="string"/>
+				<xs:element ref="current-page"/>
+				<xs:element ref="evaluate"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="current-page">
+		<xs:complexType>
+			<xs:attribute name="style" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="default"/>
+						<xs:enumeration value="roman"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="marker-reference">
+		<xs:complexType>
+			<xs:attribute name="marker" type="xs:NMTOKEN" use="required"/>
+			<xs:attribute name="direction" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="backward"/>
+						<xs:enumeration value="forward"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="scope" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="sequence"/>
+						<xs:enumeration value="page"/>
+						<xs:enumeration value="page_content"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="string">
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:anySimpleType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="evaluate">
+		<xs:complexType>
+			<xs:attribute name="expression" type="xs:anySimpleType" use="required"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="sequence">
@@ -23,7 +131,7 @@
 				</xs:simpleType>
 			</xs:attribute>
 			<xs:attribute name="initial-page-number" type="xs:anySimpleType" use="required"/>
-			<xs:attribute name="master" type="xs:NMTOKEN" use="required"/>
+			<xs:attribute name="master" type="xs:IDREF" use="required"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="block">

@@ -1,12 +1,13 @@
 package org_pef_dtbook2pef.system.tasks.layout.page;
 
+import java.io.Closeable;
 import java.io.OutputStream;
 
 /**
  * PagedMediaWriter is an interface for writing output to a paged media.
  * @author Joel Håkansson, TPB
  */
-public interface PagedMediaWriter {
+public interface PagedMediaWriter extends Closeable {
 
 	/**
 	 * Insert a new section
@@ -36,10 +37,5 @@ public interface PagedMediaWriter {
 	 * @throws PagedMediaWriterException throws an PagedMediaWriterException if the PagedMediaWriter could not be opened
 	 */
 	public void open(OutputStream os) throws PagedMediaWriterException;
-	
-	/**
-	 * Close the PagedMediaWriter After a call to close(), the PagedMediaWriter should not be reused.
-	 */
-	public void close();
 
 }

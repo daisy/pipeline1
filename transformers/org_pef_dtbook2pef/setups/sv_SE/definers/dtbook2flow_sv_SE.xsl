@@ -4,11 +4,17 @@
 		- komplexa sub, sup
 		- länkar, e-postadresser
 -->
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
 
 	<xsl:import href="../../common/definers/dtbook2flow.xsl"/>
 	<xsl:output method="xml" encoding="utf-8" indent="no"/>
-
+	<xsl:param name="page-width" select="10" as="xs:integer"/>
+	<xsl:param name="page-height" select="10" as="xs:integer"/>
+	<xsl:param name="inner-margin" select="0" as="xs:integer"/>
+	<xsl:param name="outer-margin" select="0" as="xs:integer"/>
+	<xsl:param name="row-spacing" select="1" as="xs:decimal"/>
+	<xsl:param name="duplex" select="true()" as="xs:boolean"/>
+	
 	<xsl:template match="dtb:frontmatter" mode="apply-sequence-attributes">
 		<xsl:attribute name="master">front</xsl:attribute>
 		<xsl:attribute name="hyphenate">true</xsl:attribute>

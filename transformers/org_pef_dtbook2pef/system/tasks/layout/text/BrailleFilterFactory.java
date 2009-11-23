@@ -49,8 +49,6 @@ public class BrailleFilterFactory implements FilterFactory {
 	public StringFilter newStringFilter(FilterLocale target) {
 		if (target.isA(locales.get("sv"))) {
 			CombinationFilter filters = new CombinationFilter();
-			// Remove redundant whitespace
-			filters.add(new RegexFilter("(\\s+)", " "));
 			// Remove zero width space
 			filters.add(new RegexFilter("\\u200B", ""));
 			// One or more digit followed by zero or more digits, commas or periods
@@ -65,9 +63,13 @@ public class BrailleFilterFactory implements FilterFactory {
 			// Change case to lower case
 			filters.add(new CaseFilter(CaseFilter.Mode.LOWER_CASE));
 			if (target.isA(locales.get("sv-SE"))) {
-				// Transcode characters
-				filters.add(new CharFilter(getResource("tables/sv_SE.xml")));
+				// Text to braille, Pas 1
+				filters.add(new CharFilter(getResource("brailleFilters/sv_SE/sv_SE-pas1.xml")));
+				// Text to braille, Pas 2
+				filters.add(new CharFilter(getResource("brailleFilters/sv_SE/sv_SE-pas2.xml")));
 			}
+			// Remove redundant whitespace
+			filters.add(new RegexFilter("(\\s+)", " "));
 			return filters;
 		}
 		// use default

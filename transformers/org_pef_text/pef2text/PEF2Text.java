@@ -3,7 +3,6 @@ package org_pef_text.pef2text;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Map;
 
 import javax.print.PrintException;
@@ -15,7 +14,6 @@ import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.TempFile;
 import org.xml.sax.SAXException;
-import org_pef_text.PipelineMessageOutputStream;
 
 /**
  * The purpose of this transformer is to convert a PEF 2008-1 file into plain text.

@@ -49,8 +49,6 @@ import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
  * @since 2008-01-21
  * 
  */
-
-//TODO: Format detector (dtbook2pef -> xml2text)
 public class DTBook2PEF extends Transformer {
 	private HashMap<String, String> map;
 	
@@ -183,7 +181,7 @@ public class DTBook2PEF extends Transformer {
 					while (it.length()<3) {
 						it = "0" + it; 
 					}
-					FileUtils.copy(fj.getOutput(), new File(debug, "debug_dtbook2pef_" + it + "_" + task.getName().replaceAll("\\s+", "_")));
+					FileUtils.copy(fj.getOutput(), new File(debug, "debug_dtbook2pef_" + it + "_" + task.getName().replaceAll("[\\s:]+", "_")));
 				}
 				fj.swap();
 				i++;

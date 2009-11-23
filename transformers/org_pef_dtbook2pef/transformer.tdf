@@ -16,17 +16,10 @@
 			<example>file:///path/to/file.xml</example>
 		</parameter>
 
-		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+		<parameter required="true" direction="out" type="application/xml">
 			<name>output</name>
-			<description>The output folder</description>
+			<description>The output file</description>
 			<example>file:///path/to/output/folder/</example>
-		</parameter>
-
-		<parameter required="false" type="application/xml">
-			<name>filename</name>
-			<description>Optional file name</description>
-			<example>result.pef</example>
-			<default>result.pef</default>
 		</parameter>
 		
 		<parameter required="false" type="string">

@@ -2,6 +2,7 @@ package org_pef_dtbook2pef.system.tasks.layout.impl;
 
 import java.util.Stack;
 
+import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
 
 
@@ -33,7 +34,10 @@ public class PageSequence {
 	}
 	
 	public void newRow(Row row) {
-		if (currentPage().rowsOnPage()>=master.getFlowHeight()) {
+		//TODO: clean
+		//Template t = master.getTemplate(currentPage().getPageIndex()+1);
+		//master.getPageHeight()-t.getHeaderHeight()-t.getFooterHeight()
+		if (currentPage().rowsOnPage()>=currentPage().getFlowHeight()) {
 			newPage();
 		}
 		currentPage().newRow(row);

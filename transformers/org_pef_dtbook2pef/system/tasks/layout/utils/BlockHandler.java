@@ -6,10 +6,14 @@ import java.util.Stack;
 import org_pef_dtbook2pef.system.tasks.layout.flow.BlockProperties;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Leader;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
-import org_pef_dtbook2pef.system.tasks.layout.impl.Row;
+import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
 import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
 
+/**
+ * @author joha
+ *
+ */
 public class BlockHandler {
 	private static final Character SPACE_CHAR = ' ';
 	private final StringFilter filters;
@@ -119,12 +123,28 @@ public class BlockHandler {
 		assert blockIndent==test;
 	}
 	
-	public ArrayList<Row> layoutBlock(CharSequence c, int leftMargin, LayoutMaster master) {
-		return layoutBlock(c, leftMargin, true, null, master);
+	/**
+	 * Break text into rows. 
+	 * @param text the text to break into rows
+	 * @param leftMargin left margin of the text
+	 * @param master the layout master to use
+	 * @return returns an ArrayList of Rows
+	 */
+	public ArrayList<Row> layoutBlock(CharSequence text, int leftMargin, LayoutMaster master) {
+		return layoutBlock(text, leftMargin, true, null, master);
 	}
 	
-	public ArrayList<Row> appendBlock(CharSequence c, int leftMargin, Row r, LayoutMaster master) {
-		return layoutBlock(c, leftMargin, false, r, master);
+	/**
+	 * Continue a block of text, starting on the supplied row.
+	 * @param text the text to break into rows
+	 * @param leftMargin left margin of the text
+	 * @param row the row to continue the layout on
+	 * @param master the layout master to use
+	 * @return returns an ArrayList of Rows. The first row being the supplied row, with zero or more characters
+	 * from <tt>text</tt>
+	 */
+	public ArrayList<Row> appendBlock(CharSequence text, int leftMargin, Row row, LayoutMaster master) {
+		return layoutBlock(text, leftMargin, false, row, master);
 	}
 
 	private ArrayList<Row> layoutBlock(CharSequence c, int leftMargin, boolean firstRow, Row r, LayoutMaster master) {

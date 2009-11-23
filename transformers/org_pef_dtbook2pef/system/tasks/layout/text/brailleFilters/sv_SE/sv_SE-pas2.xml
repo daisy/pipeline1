@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>		
-	<comment>Braille translation table for Swedish.</comment>
+	<comment>Braille translation table for Swedish (2nd pas).</comment>
 <!-- Numbers, excluding the number sign. -->
     <entry key="1">&#x2801;</entry>	
 	<entry key="2">&#x2803;</entry>
@@ -123,14 +123,17 @@
 	<entry key="2010">&#x2824;</entry>								<!-- HYPHEN, 2010 -->
 	<entry key="2013">&#x2824;&#x2824;</entry>					<!-- EN DASH, 2013 -->
 	<entry key="2014">&#x2824;&#x2824;</entry>					<!-- EM DASH, 2014 -->
+	<entry key="2015">&#x2824;&#x2824;</entry>					<!-- HORIZONTAL BAR, 2015 -->
 	<entry key="222A">&#x283b;&#x2825;</entry>				<!-- UNION, 222A -->
 	<entry key="22C3">&#x283b;&#x2825;</entry>					<!-- N-ARY UNION, 22C3 -->
 	<entry key="+">&#x2832;</entry>
 	<entry key="§">&#x282C;</entry>
-	<entry key="|">&#x2838;</entry>
+	<entry key="|">&#x2838;</entry>									<!-- VERTICAL LINE, 007C -->
 	<entry key="=">&#x2836;</entry>
+	<!--  -->																	<!-- TODO: add MIDDLE DOT, 00B7 -->
 	<entry key="•">&#x283F;</entry>									<!-- BULLET, 2022 -->
-	<entry key="2219">&#x283F;</entry>							<!-- BULLET OPERATOR, 2219 -->
+	<entry key="2219">&#x283b;&#x2804;</entry>					<!-- BULLET OPERATOR, 2219 -->
+	<!--  -->																	<!-- TODO: add DOT OPERATOR, 22C5 -->
 	<entry key="[">&#x2837;</entry>
 	<entry key="]">&#x283E;</entry>
 	<entry key="{">&#x2820;&#x2837;</entry>
@@ -160,7 +163,7 @@
 	<entry key="ˇ">&#x2818;&#x2836;</entry>
 	<entry key="#">&#x2818;&#x283C;</entry>
 	<entry key="@">&#x2818;&#x2837;</entry>
-	<entry key="01C1">&#x2838;&#x2838;</entry>					<!-- LATIN LETTER LATERAL CLICK, 01C1 -->
+	<entry key="2016">&#x2838;&#x2838;</entry>					<!-- DOUBLE VERTICAL LINE, 2016 -->
 	<entry key="2045">&#x2830;&#x2826;</entry>					<!-- LEFT SQUARE BRACKET WITH QUILL, 2045 -->
 	<entry key="2046">&#x2830;&#x2834;</entry>					<!-- RIGHT SQUARE BRACKET WITH QUILL, 2046 -->
 	<entry key="%">&#x2839;</entry>								<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
@@ -177,21 +180,15 @@
 	<entry key="¹">&#x282c;&#x283c;&#x2801;</entry>					<!-- SUPERSCRIPT ONE, 00b9 -->
 	<entry key="²">&#x282c;&#x283c;&#x2803;</entry>					<!-- SUPERSCRIPT TWO, 00b2 -->
 	<entry key="³">&#x282c;&#x283c;&#x2809;</entry>					<!-- SUPERSCRIPT THREE, 00b3 -->
-	
 	<entry key="2022">&#x283f;</entry>									<!-- BULLET, 2022 -->
-	<entry key="■">&#x2818;&#x283f;</entry>							<!-- BLACK SQUARE, 25a0 -->
+	<entry key="º">&#x282c;&#x2815;</entry>								<!-- MASCULINE ORDINAL INDICATOR, 00ba -->
+	<entry key="→"> &#x2812;&#x2815; </entry>							<!-- RIGHTWARDS ARROW, 2192 -->
+	<entry key="↓"> &#x2823;&#x2815; </entry>							<!-- DOWNWARDS ARROW, 2193 -->
 
-	<!-- TODO: FIX -->
-	<entry key="066d">066d</entry>								<!-- ARABIC FIVE POINTED STAR, 066d -->
-	<entry key="2015">2015</entry>								<!-- HORIZONTAL BAR, 2015 -->
-	<entry key="2607">2607</entry>								<!-- LIGHTNING, 2607 -->
-	<entry key="2639">2639</entry>								<!-- WHITE FROWNING FACE, 2639 -->
-	<entry key="263a">263a</entry>								<!-- WHITE SMILING FACE, 263a -->
+	<!-- TODO: -->
+	<!--
+	<entry key="■">&#x2818;&#x283f;</entry>			-->				<!-- BLACK SQUARE, 25a0 -->
+	<!--
+	<entry key="01C1">&#x2838;&#x2838;</entry>			-->				<!-- LATIN LETTER LATERAL CLICK, 01C1 -->
 
-<!--
-	<entry key="º">00ba</entry>									--><!-- MASCULINE ORDINAL INDICATOR, 00ba -->
-<!--
-	<entry key="→">2192</entry>									--><!-- RIGHTWARDS ARROW, 2192 -->
-<!--
-	<entry key="↓">2193</entry>									--><!-- DOWNWARDS ARROW, 2193 -->
 </properties>

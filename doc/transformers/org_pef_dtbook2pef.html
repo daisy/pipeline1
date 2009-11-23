@@ -80,11 +80,9 @@ input reqs were not satisfied, or because an exception occurs -->
 <!-- description on params as defined in tdf, please use the below definition list -->
 <dl id="paramslist">
   <dt>input</dt>
-    <dd>The input DTBook file</dd>
+    <dd>The input xml file</dd>
   <dt>output</dt>
-    <dd>The output folder</dd>
-  <dt>filename</dt>
-    <dd>Optional file name</dd>
+    <dd>The output xml file</dd>
   <dt>identifier</dt>
     <dd>Publication identifier</dd>
   <dt>date</dt>
@@ -120,49 +118,87 @@ input reqs were not satisfied, or because an exception occurs -->
 <p>Adding a new locale requires some work, depending on your requirements. At
 least the following items need to be considered:</p>
 <ul>
-  <li>Add a folder in "/setups", e.g. da_DK</li>
-  <li>Add your setup name to the "Setup" enum in DTBook2PEF</li>
+  <li>Add a folder in "/setups", e.g. de_DE. All locale specific code should be
+    stored here except text filters, see Adding a language below.</li>
+  <li>Add your setup name to the "Setup" enum in DTBook2PEF. Also, add it to
+    the transformer.tdf and task script files.</li>
   <li>Create a class that implements TaskSystem, and add to it the tasks that
-    your locale needs. Refer to the sv_SE implementation for a example.</li>
+    your locale needs, see below.</li>
   <li>Add your TaskSystem to DTBook2PEF. Add the lines needed to the method
     called "getSystemSetup".</li>
-  <li>Add a language, se below.</li>
+  <li>Add a language, see below.</li>
 </ul>
+
+<h4>Implementing TaskSystem</h4>
+
+<p>A TaskSystem implementation should contain at least these steps:</p>
+<ul>
+  <li>An input format to FLOW format conversion (comparable to XSL-FO): 
+    <p><code>setup.add(new XsltTask("DTBook to FLOW converter", dtbook2flow,
+    null, h));</code></p>
+  </li>
+  <li>A conversion of the FLOW format to a PagedMedia: 
+    <p><code>setup.add(new LayoutEngineTask("FLOW to PEF converter", flow,
+    flow));</code></p>
+  </li>
+</ul>
+
+<p>Refer to the sv_SE implementation for more information.</p>
 
 <h4>Adding a language</h4>
 <ul>
-  <li>Create a table that follows the rules of UCharReplacer, and place it in
-    "/system/tasks/layout/text/tables", e.g da_DK.xml. If your locale has
-    special requirements (such as contractions), this method cannot be used. In
-    this case, another implementation must be created. If your class implements
-    the StringFilter interface, the next step can still be applied.</li>
+  <li>Create a table that follows the rules of UCharReplacer (for more
+    information, see the <a
+    href="int_daisy_unicodeTranscoder.html">int_daisy_unicodeTranscoder</a>
+    documentation), and place it in a subfolder to
+    "/system/tasks/layout/text/brailleFilters/", e.g de_DE/de_DE.xml. If your
+    locale has special requirements (such as contractions), this method cannot
+    be used. In this case, another implementation must be created. If your
+    class implements the StringFilter interface, the next step can still be
+    applied.</li>
   <li>Add your locale to BrailleFilterFactory, use existing code as an example
     of how to do this. The purpose of the BrailleFilterFactory is to allow all
-    locales to access each others rules, and output braille using that
-  locale.</li>
+    locales to access each others rules, and optionally output braille using
+    that locale.</li>
 </ul>
 
 <h4>Customizing layout</h4>
 
-<p>Layout can be customized in several places, depending on the nature of the
-customization:</p>
-<ul>
-  <li>Interpretation of input document elements and attributes</li>
-  <li>Page layout, such as headers and footers</li>
-</ul>
+<p>Page layout, such as headers and footers, as well as the interpretation of
+elements in the input document are customized by writing a new input format
+stylesheet or by extending an existing one.</p>
 
-<p>The interpretation of elements in the input document can be customized by
-writing a new stylesheet or by extending an existing one. As a general rule, it
-should be safe to extend a stylesheet in "/setups/common", but it is not
+<p>It should be safe to extend a stylesheet in "/setups/common", but it is not
 recommended to extend another locale's stylesheets. In this case, it is better
-to copy the stylesheet into your locale's directory.</p>
-
-<p>Page layout, such as headers and footers, can be customized by extending the
-"LayoutMaster" interface.</p>
+to copy the stylesheet into your locale's directory. See
+/system/tasks/layout/flow/flow.dtd for a description of what the output of this
+stylesheet should be.</p>
 
 <h4>Adding input formats</h4>
 
-<p></p>
+<p>Similarly to customizing layout, a new input format requires a translation
+between the grammar in the input document and the grammar that the
+LayoutEngineTask reads. This can typically be acheived by applying an XSLT
+tailored for the task.</p>
+
+<p>Detecting the input format can require some work. However, the
+InputDetectorTaskSystem is specifically designed to aid the process of
+selecting and executing the correct validation rules and stylesheet for a given
+input document and locale. It can be inserted at the appropriate place in
+another TaskSystem.</p>
+
+<p>Add to InputDetectorTaskSystem the lines needed to support the new format,
+e.g:</p>
+
+<p><code>if (rootNS.equals("http://www.daisy.org/z3986/2005/dtbook/")
+&amp;&amp; rootElement.equals("dtbook")) {</code><code>inputformat =
+"dtbook.properties";</code><code>}</code></p>
+
+<p>Choose a suitable name for the properties file, typically using the name of
+the format, e.g. "html.properties".</p>
+
+<p>Refer to the Javadoc for more information on how to customize the
+InputDetectorTaskSystem for your locale.</p>
 
 <h4>Adding output formats</h4>
 

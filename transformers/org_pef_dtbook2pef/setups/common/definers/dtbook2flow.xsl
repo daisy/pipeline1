@@ -2,6 +2,8 @@
 <!-- 
 Base stylesheet for DTBook. Categorizes DTBook elements into five groups, sequence, block, inline, special and no-op.
 
+An implementation that extends this stylesheet must implement the template "insertLayoutMaster" adding layout definition elements (see flow.dtd).
+
 Sequence:
 Use "sequence-mode" to override default sequence element and "apply-sequence-attributes" to override default sequence attributes
 
@@ -45,7 +47,7 @@ note, table, col, colgroup, tbody, td, tfoot, th, thead, title, tr
 
 	<xsl:output method="xml" encoding="utf-8" indent="no"/>
 
-	<xsl:template match="/"><root><xsl:apply-templates/></root></xsl:template>
+	<xsl:template match="/"><root><xsl:call-template name="insertLayoutMaster"/><xsl:apply-templates/></root></xsl:template>
 	<xsl:template match="dtb:dtbook | dtb:book"><xsl:apply-templates/></xsl:template>
 	<xsl:template match="dtb:head | dtb:meta | dtb:link"></xsl:template>
 	
@@ -100,13 +102,17 @@ note, table, col, colgroup, tbody, td, tfoot, th, thead, title, tr
 	<xsl:template match="dtb:pagenum">
 		<marker class="pagenum" value="{text()}"/>
 		<xsl:variable name="preceding-pagenum" select="preceding::dtb:pagenum[1]"/>
-		<xsl:variable name="preceding-marker">
-			<xsl:if test="not($preceding-pagenum) or generate-id($preceding-pagenum/ancestor::dtb:level1/parent::*)=
-						generate-id(ancestor::dtb:level1/parent::*)">
-				<xsl:value-of select="$preceding-pagenum"/><xsl:text>&#x2013;</xsl:text>
-			</xsl:if>
-		</xsl:variable>
-		<marker class="pagenum-turn" value="{$preceding-marker}"/>
+		<!-- @page='normal' or $preceding-pagenum/@page='normal' -->
+		<!-- This should be true for all normal pages, but false for a sequence of "unnumbered page" or similar. -->
+		<xsl:if test="text()!=$preceding-pagenum/text()">
+			<xsl:variable name="preceding-marker">
+				<xsl:if test="not($preceding-pagenum) or generate-id($preceding-pagenum/ancestor::dtb:level1/parent::*)=
+							generate-id(ancestor::dtb:level1/parent::*)">
+					<xsl:value-of select="$preceding-pagenum"/><xsl:text>&#x2013;</xsl:text>
+				</xsl:if>
+			</xsl:variable>
+			<marker class="pagenum-turn" value="{$preceding-marker}"/>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="dtb:br"><br/></xsl:template>

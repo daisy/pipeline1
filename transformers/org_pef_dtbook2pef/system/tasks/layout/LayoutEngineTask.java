@@ -15,7 +15,8 @@ import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Flow;
 import org_pef_dtbook2pef.system.tasks.layout.flow.FlowHandler;
 import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformer;
-import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformerException;
+import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
+import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriterException;
 
 /**
  * breaks row flow into pages
@@ -23,25 +24,32 @@ import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformerException;
  *
  */
 public class LayoutEngineTask extends InternalTask  {
-	private final Flow flow;
-	private LayoutPerformer lp;
+	private final Flow performer;
+	private LayoutPerformer paginator;
+	private PagedMediaWriter writer;
 	
-	public LayoutEngineTask(String name, Flow flow, LayoutPerformer lp) {
+	public LayoutEngineTask(String name, Flow flow, LayoutPerformer layoutPerformer, PagedMediaWriter writer) {
 		super(name);
-		this.flow = flow;
-		this.lp = lp;
+		this.performer = flow;
+		this.paginator = layoutPerformer;
+		this.writer = writer;
 	}
 
 	@Override
 	public void execute(File input, File output)
 			throws TransformerRunException {
 		try {
+			FileOutputStream os = new FileOutputStream(output);
+			writer.open(os);
+			paginator.open(writer);
+			performer.open(paginator);
 			SAXParserFactory spf = SAXParserFactory.newInstance();
 			spf.setNamespaceAware(true);
 			SAXParser sp = spf.newSAXParser();
-			sp.parse(input, new FlowHandler(flow));
-			FileOutputStream os = new FileOutputStream(output);
-			lp.layout(os);
+			sp.parse(input, new FlowHandler(performer));
+			performer.close();
+			paginator.close();
+			writer.close();
 		} catch (SAXException e) {
 			throw new TransformerRunException("SAXException while runing task.", e);
 		} catch (FileNotFoundException e) {
@@ -50,8 +58,8 @@ public class LayoutEngineTask extends InternalTask  {
 			throw new TransformerRunException("IOException while runing task. ", e);
 		} catch (ParserConfigurationException e) {
 			throw new TransformerRunException("ParserConfigurationException while runing task. ", e);
-		} catch (LayoutPerformerException e) {
-			throw new TransformerRunException("Exception in layout performer.", e);
+		} catch (PagedMediaWriterException e) {
+			throw new TransformerRunException("Could not open media writer.", e);
 		}
 	}
 

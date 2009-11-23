@@ -27,6 +27,9 @@ public class BreakPointHandler {
 		if (charsStr.length()<=breakPoint) {
 			head = charsStr;
 			tail = "";
+		} else if (breakPoint<=0) {
+			head = "";
+			tail = charsStr;
 		} else {
 			int strPos = -1;
 			int len = 0;

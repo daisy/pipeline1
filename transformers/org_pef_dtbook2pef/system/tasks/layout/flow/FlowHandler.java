@@ -1,8 +1,20 @@
 package org_pef_dtbook2pef.system.tasks.layout.flow;
 
+import java.util.ArrayList;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+import org_pef_dtbook2pef.system.tasks.layout.page.AbstractLayoutMaster;
+import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMasterConfigurator;
+import org_pef_dtbook2pef.system.tasks.layout.page.SimpleTemplate;
+import org_pef_dtbook2pef.system.tasks.layout.page.field.CompoundField;
+import org_pef_dtbook2pef.system.tasks.layout.page.field.CurrentPageField;
+import org_pef_dtbook2pef.system.tasks.layout.page.field.MarkerReferenceField;
+import org_pef_dtbook2pef.system.tasks.layout.page.field.MarkerReferenceField.MarkerSearchDirection;
+import org_pef_dtbook2pef.system.tasks.layout.page.field.MarkerReferenceField.MarkerSearchScope;
+import org_pef_dtbook2pef.system.tasks.layout.page.field.NumeralField.NumeralStyle;
+import org_pef_dtbook2pef.system.tasks.layout.utils.Expression;
 
 /**
  * FlowHandler reads a nested "flow" file containing blocks or text within
@@ -15,6 +27,12 @@ import org.xml.sax.helpers.DefaultHandler;
 public class FlowHandler extends DefaultHandler {
 	private Flow flow;
 	private StringBuffer sb;
+	private LayoutMasterConfigurator masterConfig;
+	private String masterName;
+	private SimpleTemplate template;
+	private ArrayList<Object> fields;
+	private ArrayList<Object> compound;
+	private boolean content;
 	
 	/**
 	 * Create a new FlowReader
@@ -23,11 +41,56 @@ public class FlowHandler extends DefaultHandler {
 	public FlowHandler(Flow flow) {
 		this.flow = flow;
 		sb = new StringBuffer();
+		content = false;
 	}
 	
 	public void startElement (String uri, String localName, String qName, Attributes atts) throws SAXException {
 		flushChars();
-		if (localName.equals("sequence")) {
+		if (localName.equals("layout-master")) {
+			int width = Integer.parseInt(atts.getValue("page-width"));
+			int height = Integer.parseInt(atts.getValue("page-height"));
+			masterConfig = new LayoutMasterConfigurator(width, height);
+			masterName = atts.getValue("name");
+			for (int i=0; i<atts.getLength(); i++) {
+				String name = atts.getLocalName(i);
+				String value = atts.getValue(i);
+				if (name.equals("inner-margin")) {
+					masterConfig.innerMargin(Integer.parseInt(value));
+				} else if (name.equals("outer-margin")) {
+					masterConfig.outerMargin(Integer.parseInt(value));
+				} else if (name.equals("row-spacing")) {
+					masterConfig.rowSpacing(Float.parseFloat(value));
+				} else if (name.equals("duplex")) {
+					masterConfig.duplex(value.equals("true"));
+				}
+			}
+		} else if (localName.equals("template")) {
+			template = new SimpleTemplate(atts.getValue("use-when"));
+		} else if (localName.equals("default-template")) {
+			template = new SimpleTemplate();
+		} else if (localName.equals("header")) {
+			fields = new ArrayList<Object>();
+		} else if (localName.equals("footer")) {
+			fields = new ArrayList<Object>();
+		} else if (localName.equals("string")) {
+			compound.add(atts.getValue("value"));
+		} else if (localName.equals("evaluate")) {
+			compound.add(new Expression().evaluate(atts.getValue("expression")));
+		} else if (localName.equals("current-page")) {
+			compound.add(new CurrentPageField(NumeralStyle.valueOf(atts.getValue("style").toUpperCase())));
+		} else if (localName.equals("marker-reference")) {
+			compound.add(
+				new MarkerReferenceField(
+						atts.getValue("marker"), 
+						MarkerSearchDirection.valueOf(atts.getValue("direction").toUpperCase()),
+						MarkerSearchScope.valueOf(atts.getValue("scope").toUpperCase())
+				)
+			);
+		} else if (localName.equals("field")) {
+			compound = new ArrayList<Object>();
+		}
+		else if (localName.equals("sequence")) {
+			content = true;
 			String masterName = atts.getValue("master");
 			SequenceProperties.Builder builder = new SequenceProperties.Builder(masterName); 
 			for (int i=0; i<atts.getLength(); i++) {
@@ -66,6 +129,8 @@ public class FlowHandler extends DefaultHandler {
 				}
 			}
 			flow.startBlock(builder.build());
+		} else if (localName.equals("float-item")) {
+			flow.startFloat(atts.getValue("name"));
 		} else if (localName.equals("marker")) {
 			String markerName = "";
 			String markerValue = "";
@@ -78,6 +143,8 @@ public class FlowHandler extends DefaultHandler {
 				}
 			}
 			flow.insertMarker(new Marker(markerName, markerValue));
+		} else if (localName.equals("anchor")) {
+			flow.insertAnchor(atts.getValue("float-item"));
 		} else if (localName.equals("br")) {
 			flow.newLine();
 		} else if (localName.equals("leader")) {
@@ -100,11 +167,45 @@ public class FlowHandler extends DefaultHandler {
 		flushChars();
 		if (localName.equals("block")) {
 			flow.endBlock();
+		} else if (localName.equals("float-item")) {
+			flow.endFloat();
+		} else if (localName.equals("layout-master")) {
+			flow.addLayoutMaster(masterName, new AbstractLayoutMaster(masterConfig));
+		} else if (localName.equals("template") || localName.equals("default-template")) {
+			masterConfig.addTemplate(template);
+		} else if (localName.equals("field")) {
+			if (compound.size()==1) {
+				fields.add(compound.get(0));
+			} else {
+				CompoundField f = new CompoundField();
+				f.addAll(compound);
+				fields.add(f);
+			}
+		}
+		else if (localName.equals("header")) {
+			if (fields.size()>0) {
+				template.addToHeader(fields);
+			}
+			/*for (Object obj : fields) {
+				
+			}*/
+		} else if (localName.equals("footer")) {
+			if (fields.size()>0) {
+				template.addToFooter(fields);
+			}
+			/*for (Object obj : fields) {
+				
+			}	*/		
+		}
+		 else if (localName.equals("sequence")) {
+			content = false;
 		}
 	}
 	
 	public void characters (char ch[], int start, int length) throws SAXException {
-		sb.append(new String(ch, start, length));
+		if (content) {
+			sb.append(new String(ch, start, length));
+		}
 	}
 	
 	// Coalescing feature

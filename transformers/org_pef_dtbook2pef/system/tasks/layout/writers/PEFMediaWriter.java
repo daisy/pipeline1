@@ -8,6 +8,7 @@ import java.util.Properties;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriterException;
 import org_pef_dtbook2pef.system.tasks.layout.page.SectionProperties;
+import org_pef_dtbook2pef.system.tasks.layout.utils.StateObject;
 
 /**
  * PEFMediaWriter is a simple implementation of PagedMediaWriter which outputs a PEF 2008-1 file.
@@ -24,6 +25,7 @@ public class PEFMediaWriter implements PagedMediaWriter {
 	private int cRows;
 	private int cRowgap;
 	private boolean cDuplex;
+	private StateObject state;
 	
 	/**
 	 * Create a new PEFMediaWriter using the supplied Properties. Available properties are:
@@ -39,9 +41,12 @@ public class PEFMediaWriter implements PagedMediaWriter {
 		cRows = 0;
 		cRowgap = 0;
 		cDuplex = true;
+		state = new StateObject("Writer");
 	}
 
 	public void open(OutputStream os) throws PagedMediaWriterException {
+		state.assertUnopened();
+		state.open();
 		try {
 			pst = new PrintStream(os, true, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -64,12 +69,14 @@ public class PEFMediaWriter implements PagedMediaWriter {
 	}
 
 	public void newPage() {
+		state.assertOpen();
 		closeOpenPage();
 		pst.println("<page>");
 		hasOpenPage = true;
 	}
 
 	public void newRow(CharSequence row) {
+		state.assertOpen();
 		pst.print("<row>");
 		pst.print(row);
 		pst.print("</row>");
@@ -77,10 +84,12 @@ public class PEFMediaWriter implements PagedMediaWriter {
 	}
 	
 	public void newRow() {
+		state.assertOpen();
 		pst.println("<row/>");
 	}
 
 	public void newSection(SectionProperties master) {
+		state.assertOpen();
 		if (!hasOpenVolume) {
 			cCols = master.getPageWidth();
 			cRows = master.getPageHeight();
@@ -113,6 +122,7 @@ public class PEFMediaWriter implements PagedMediaWriter {
 	}
 	
 	private void closeOpenVolume() {
+		state.assertOpen();
 		closeOpenSection();
 		if (hasOpenVolume) {
 			pst.println("</volume>");
@@ -121,6 +131,7 @@ public class PEFMediaWriter implements PagedMediaWriter {
 	}
 	
 	private void closeOpenSection() {
+		state.assertOpen();
 		closeOpenPage();
 		if (hasOpenSection) {
 			pst.println("</section>");
@@ -129,6 +140,7 @@ public class PEFMediaWriter implements PagedMediaWriter {
 	}
 	
 	private void closeOpenPage() {
+		state.assertOpen();
 		if (hasOpenPage) {
 			pst.println("</page>");
 			hasOpenPage = false;
@@ -136,10 +148,15 @@ public class PEFMediaWriter implements PagedMediaWriter {
 	}
 
 	public void close() {
+		if (state.isClosed()) {
+			return;
+		}
+		state.assertOpen();
 		closeOpenVolume();
 		pst.println("</body>");
 		pst.println("</pef>");
 		pst.close();
+		state.close();
 	}
 
 }
