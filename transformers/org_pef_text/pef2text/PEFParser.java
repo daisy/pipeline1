@@ -101,7 +101,7 @@ public class PEFParser {
 				} else if ("-replacement".equals(args[2+i*2])) {
 					ef.setProperty("replacement", args[3+i*2]);
 				} else if ("-pad".equals(args[2+i*2])) {
-					ef.setProperty("pad_newline", args[3+i*2]);
+					ef.setProperty("padNewline", args[3+i*2]);
 				} else {
 					throw new IllegalArgumentException("Unknown option \"" + args[2+i*2] + "\"");
 				}
