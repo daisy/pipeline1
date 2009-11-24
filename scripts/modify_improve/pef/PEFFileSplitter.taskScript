@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 
 <taskScript version="2.0" name="PEFFileSplitter">
-	<nicename>Braille: PEF File Splitter</nicename>
+	<nicename>PEF File Splitter</nicename>
 	<description>Splits a PEF file into several files, one file per volume</description>
-	<documentation uri="../../doc/scripts/PEFFileSplitter.html"/>
+	<documentation uri="../../../doc/scripts/PEFFileSplitter.html"/>
 
 	<parameter name="input" value="" required="true">
 		<nicename>Input PEF file</nicename>

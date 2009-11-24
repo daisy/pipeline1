@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 
 <taskScript version="2.0" name="PEFFileMerger">
-	<nicename>Braille: PEF File Merger</nicename>
+	<nicename>PEF File Merger</nicename>
 	<description>Merges several PEF files into one</description>
-	<documentation uri="../../doc/scripts/PEFFileMerger.html"/>
+	<documentation uri="../../../doc/scripts/PEFFileMerger.html"/>
 
 
 	<parameter name="input" value="" required="true">

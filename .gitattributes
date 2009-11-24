@@ -589,8 +589,6 @@ scripts/create_distribute/xhtml/DtbookToXhtml.taskScript -text
 scripts/create_distribute/xhtml/HtmlToXhtml.taskScript -text
 scripts/create_distribute/xhtml/RtfToXhtml.taskScript -text
 scripts/create_distribute/xhtml/WordMLtoXhtml.taskScript -text
-scripts/modify_improve/BraillePEFFileMerger.taskScript -text
-scripts/modify_improve/BraillePEFFileSplitter.taskScript -text
 scripts/modify_improve/dtb/DTBAudioEncoder.taskScript -text
 scripts/modify_improve/dtb/DTBAudioEncoderRenamerSplitter.taskScript -text
 scripts/modify_improve/dtb/DTBAudioEncoderSplitter.taskScript -text
@@ -608,6 +606,8 @@ scripts/modify_improve/multiformat/ImageConverter.taskScript -text
 scripts/modify_improve/multiformat/PrettyPrinter.taskScript -text
 scripts/modify_improve/multiformat/RenamerTaggerValidator.taskScript -text
 scripts/modify_improve/multiformat/UnicodeNormalizer.taskScript -text
+scripts/modify_improve/pef/PEFFileMerger.taskScript -text
+scripts/modify_improve/pef/PEFFileSplitter.taskScript -text
 scripts/verify/BraillePEFValidator.taskScript -text
 scripts/verify/ConfigurableValidator.taskScript -text
 scripts/verify/DTBookValidator.taskScript -text
