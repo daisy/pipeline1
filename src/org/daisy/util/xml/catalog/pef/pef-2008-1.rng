@@ -3,8 +3,11 @@
   ns="http://www.daisy.org/ns/2008/pef"
   xmlns="http://relaxng.org/ns/structure/1.0"
   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+  xmlns:sch="http://www.ascc.net/xml/schematron"
   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
 >
+
+	<sch:ns prefix="pef" uri="http://www.daisy.org/ns/2008/pef"/>
 
 	<a:documentation>
 		RELAX NG schema for PEF 1.0 - Portable Embosser Format
@@ -412,5 +415,19 @@
 	<define name="datatype.positiveInteger">
 		<data type="positiveInteger"/>
 	</define>
+	
+	<!-- Rule 1: Check that result does not have too many rows on a page -->
+	<sch:pattern name="rows_on_page" id="rows_on_page">
+		<sch:rule context="pef:page">
+			<sch:assert test="count(pef:row)&lt;=(ancestor::pef:*[@rows][1])/@rows">[Rule 1] Too many rows on page</sch:assert>
+		</sch:rule>
+	</sch:pattern>
+
+	<!-- Rule 2: Check that result does not have too many characters on a row -->
+	<sch:pattern name="chars_on_row" id="chars_on_row">
+		<sch:rule context="pef:row">
+			<sch:assert test="string-length(text())&lt;=(ancestor::pef:*[@cols][1])/@cols">[Rule 2] Too many characters on row</sch:assert>
+		</sch:rule>
+	</sch:pattern>
 	
 </grammar>
