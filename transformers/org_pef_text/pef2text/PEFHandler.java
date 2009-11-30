@@ -16,6 +16,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 /*
  * NOTE: Always use upper case in enum values
+ * TODO: check height/width
  */
 public class PEFHandler extends DefaultHandler {
 	private static final String PEF_NS="http://www.daisy.org/ns/2008/pef";

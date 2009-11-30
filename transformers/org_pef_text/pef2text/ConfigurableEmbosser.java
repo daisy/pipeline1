@@ -32,6 +32,8 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 	private boolean currentDuplex;
 	private boolean isOpen;
 	private boolean isClosed;
+	private int charsOnRow;
+	private int rowsOnPage;
 	
 	public static class Builder {
 		// required params
@@ -104,6 +106,8 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 		os = builder.os;
 		isOpen = false;
 		isClosed = false;
+		charsOnRow = 0;
+		rowsOnPage = 0;
 	}
 	
 	public LineBreaks getLinebreakStyle() {
@@ -115,6 +119,8 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 	}
 	
 	private void lineFeed() throws IOException {
+		rowsOnPage++;
+		charsOnRow = 0;
 		os.write(breaks.getString().getBytes());
 	}
 
@@ -125,6 +131,11 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 	}
 	
 	private void formFeed() throws IOException {
+		charsOnRow = 0;
+		rowsOnPage++;
+		if (rowsOnPage>getMaxHeight()) {
+			throw new IOException("The maximum number of rows on a page was exceeded (page is too short).");
+		}
         switch (padNewline) {
 	    	case BEFORE:
 	    		lineFeed();
@@ -138,6 +149,7 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 	    		lineFeed();
 	    		break;
 	    }
+        rowsOnPage = 0;
         currentPage++;
 	}
 
@@ -156,9 +168,15 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 		currentDuplex = duplex;
 	}
 
-	public void newVolume() throws IOException { }
+	public void newVolume() throws IOException { 
+		charsOnRow = 0;
+	}
 
 	public void write(String braille) throws IOException {
+		charsOnRow += braille.length();
+		if (charsOnRow>getMaxWidth()) {
+			throw new IOException("The maximum number of characters on a row was exceeded (page is too narrow).");
+		}
 		os.write(String.valueOf(bf.toText(braille)).getBytes(bf.getPreferredCharset().name()));
 	}
 	

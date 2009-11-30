@@ -37,6 +37,7 @@
 				<value>NONE</value>
 				<value>INDEX_EVEREST</value>
 				<value>INDEX_BASIC</value>
+				<value>INDEX_EVEREST_V3</value>
 			</enum>
 			<default>NONE</default>
 		</parameter>
