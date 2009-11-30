@@ -19,12 +19,13 @@
 		<datatype>
 			<enum>
 			  <item nicename="Generic" value="NONE" />
-			  <item nicename="Index Braille: Everest (older)" value="INDEX_EVEREST" />
-			  <item nicename="Index Braille: Basic (older)" value="INDEX_BASIC" />
+			  <item nicename="Index Braille - 9.20 Everest V2" value="INDEX_EVEREST" />
+			  <item nicename="Index Braille - Everest V3" value="INDEX_EVEREST_V3" />
+			  <item nicename="Index Braille - 3.30 Basic V2" value="INDEX_BASIC" />
 			</enum>
 		</datatype>
 	</parameter>
-
+	
 	<parameter name="deviceName" value="" required="true">
 		<nicename>Device name</nicename>
 		<description>Name of embosser as labelled by the computer</description>
@@ -32,6 +33,18 @@
 			<string regex=".{3,}"/>
 		</datatype>
 	</parameter>
+	
+	<!--
+	<parameter name="papersize" value="A4" required="true">
+		<nicename>Paper size</nicename>
+		<description>Set the size of the paper</description>
+		<datatype>
+			<enum>
+			  <item nicename="A4" value="A4" />
+			</enum>
+		</datatype>
+	</parameter>
+	-->
 	
 	<parameter name="pageRange" value="" required="false">
 		<nicename>Page range</nicename>
