@@ -16,6 +16,10 @@
 			<before>Table:</before>
 			<after>End of table.</after>
 		</lang>
+		<lang lang="ja">
+			<before>表　開始:</before>
+			<after>表　終了</after>
+		</lang>
 	</rule>
 
 </ruleSet>

@@ -168,7 +168,7 @@ public class PipelineCore {
         // Load messages
         ResourceBundle bundle = XMLPropertyResourceBundle.getBundle((this
                 .getClass().getPackage().getName()).replace('.', '/')
-                + "/messages.properties", Locale.ENGLISH, this.getClass()
+                + "/messages.properties", Locale.getDefault(), this.getClass()
                 .getClassLoader());
         // ResourceBundle bundle =
         // XMLPropertyResourceBundle.getBundle(this.getClass().getPackage().getName()

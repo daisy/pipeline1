@@ -18,6 +18,9 @@
 		<lang lang="fr">
 			<before>Par</before>
 		</lang>
+		<lang lang="ja">
+			<before>著者</before>
+		</lang>
 	</rule>
 	
 	<rule match="dtb:docauthor[position()=last() and last()!=1]">
@@ -32,6 +35,9 @@
 		</lang>
 		<lang lang="fi">
 			<before>ja</before>
+		</lang>
+		<lang lang="ja">
+			<before>と</before>
 		</lang>
 	</rule>
 
@@ -84,6 +90,10 @@
 			<before>Viite.</before>
 			<after>Viitteen loppu.</after>
 		</lang>
+		<lang lang="ja">
+			<before>注記　開始</before>
+			<after>注記　終了</after>
+		</lang>
 	</rule>
 	
 	<rule match="dtb:prodnote">
@@ -102,6 +112,10 @@
 		<lang lang="fi">
 			<before>Toimittajan huomautus.</before>
 			<after>Huomautuksen loppu.</after>
+		</lang>
+		<lang lang="ja">
+			<before>製作者ノート　開始</before>
+			<after>製作者ノート　終了</after>
 		</lang>
 	</rule>
 
@@ -122,6 +136,10 @@
 			<before>Kuvaselostus.</before>
 			<after>Kuvaselostuksen loppu.</after>
 		</lang>
+		<lang lang="ja">
+			<before>画像の説明　開始</before>
+			<after>画像の説明　終了</after>
+		</lang>
 	</rule>
 	
 	<rule match="dtb:imggroup/dtb:caption">
@@ -136,6 +154,10 @@
 		<lang lang="fi">
 			<before>Kuvateksti.</before>
 			<after>Kuvatekstin loppu.</after>
+		</lang>
+		<lang lang="ja">
+			<before>キャプション開始</before>
+			<after>キャプション終了</after>
 		</lang>
 	</rule>
 
@@ -156,6 +178,10 @@
 			<before>Marginaaliteksti.</before>
 			<after>Marginaalitekstin loppu.</after>
 		</lang>
+		<lang lang="ja">
+			<before>サイドバー開始</before>
+			<after>サイドバー終了</after>
+		</lang>
 	</rule>
 
 	<rule match="dtb:poem">
@@ -175,6 +201,10 @@
 			<before>Runo.</before>
 			<after>Runon loppu.</after>
 		</lang>
+		<lang lang="ja">
+			<before>詩　開始</before>
+			<after>詩　終了</after>
+		</lang>
 	</rule>
 
 	<rule match="dtb:blockquote">
@@ -193,6 +223,10 @@
 		<lang lang="fi">
 			<before>Lainaus:</before>
 			<after>Lainauksen loppu.</after>
+		</lang>
+		<lang lang="ja">
+			<before>引用　開始:</before>
+			<after>引用　終了</after>
 		</lang>
 	</rule>
 
@@ -214,6 +248,10 @@
 			<before>Taulukko.</before>
 			<after>Taulukon loppu.</after>
 		</lang>
+		<lang lang="ja">
+			<before>表　開始</before>
+			<after>表　終了</after>
+		</lang>
 	</rule>
 
 	<rule match="dtb:code">
@@ -233,6 +271,10 @@
 			<before>Koodi.</before>
 			<after>Koodin loppu.</after>
 		</lang>
+		<lang lang="ja">
+			<before>コード開始</before>
+			<after>コード終了</after>
+		</lang>
 	</rule>
 
 	<rule match="dtb:kbd">
@@ -244,6 +286,9 @@
 		</lang>
 		<lang lang="fr">
 			<before>Instructions clavier.</before>
+		</lang>
+		<lang lang="ja">
+			<before>キーボード操作説明</before>
 		</lang>
 	</rule>
 
@@ -274,6 +319,9 @@
 								</xsl:when>
 								<xsl:when test="lang('fi')">
 									<xsl:text>Roomalainen numero, </xsl:text>
+								</xsl:when>
+								<xsl:when test="lang('ja')">
+									<xsl:text>ローマ数字, </xsl:text>
 								</xsl:when>
 							</xsl:choose>
 						</xsl:if>

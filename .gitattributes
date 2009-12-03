@@ -549,6 +549,7 @@ scripts/ValidatorTaskParamsSimpleStatic.paramGroup -text
 scripts/_dev/[!!-~]DTBookToText.taskScript -text
 scripts/_dev/AllParamTypes.taskScript -text
 scripts/_dev/DAISY[!!-~]Pipeline[!!-~]TTS[!!-~]Narrator.taskScript -text
+scripts/_dev/DAISY[!!-~]Pipeline[!!-~]TTS[!!-~]Narrator_ja.taskScript -text
 scripts/_dev/DTBBackwardMigrator.taskScript -text
 scripts/_dev/DTBookFix_NarratorValidation.taskScript -text
 scripts/_dev/DTBookMetadataEditor.taskScript -text
@@ -633,6 +634,7 @@ src/org/daisy/pipeline/core/event/UserEvent.java -text
 src/org/daisy/pipeline/core/event/UserReplyEvent.java -text
 src/org/daisy/pipeline/core/messages.properties -text
 src/org/daisy/pipeline/core/messages_hi.properties -text
+src/org/daisy/pipeline/core/messages_ja.properties -text svneol=unset#text/plain
 src/org/daisy/pipeline/core/script/AbstractProperty.java -text
 src/org/daisy/pipeline/core/script/Creator.java -text
 src/org/daisy/pipeline/core/script/Job.java -text
@@ -1058,6 +1060,7 @@ transformers/int_daisy_filesetGenerator/util/d202/D202MasterSmilBuilder.java -te
 transformers/int_daisy_filesetGenerator/util/d202/D202NccBuilder.java -text
 transformers/int_daisy_filesetGenerator/util/d202/D202SmilBuilder.java -text
 transformers/int_daisy_filesetRenamer/messages_hi.properties -text svneol=unset#unset
+transformers/int_daisy_filesetRenamer/messages_ja.properties -text svneol=unset#text/plain
 transformers/int_daisy_filesetRenamer/transformer.tdf -text
 transformers/int_daisy_html2xhtml/transformer.tdf -text
 transformers/int_daisy_html2xhtml/xhtml-clean-minimum.xsl -text
@@ -1066,6 +1069,7 @@ transformers/int_daisy_mathAltCreator/MathAltCreator.java -text
 transformers/int_daisy_mathAltCreator/MathAltCreatorFactory.java -text
 transformers/int_daisy_mathAltCreator/com/dessci/mathflow/MathFlowAltCreator.java -text
 transformers/int_daisy_mathAltCreator/messages.properties -text
+transformers/int_daisy_mathAltCreator/messages_ja.properties -text svneol=unset#text/plain
 transformers/int_daisy_mathAltCreator/transformer.tdf -text
 transformers/int_daisy_metadataEditor/MetadataEditor.java -text svneol=unset#text/plain
 transformers/int_daisy_metadataEditor/MetadataEditorDriver.java -text svneol=unset#text/plain
@@ -1090,6 +1094,7 @@ transformers/int_daisy_mixedContentNormalizer/dom/DOMSyncPointLocator.java -text
 transformers/int_daisy_mixedContentNormalizer/dom/DOMUtil.java -text
 transformers/int_daisy_mixedContentNormalizer/messages.properties -text
 transformers/int_daisy_mixedContentNormalizer/messages_hi.properties -text svneol=unset#unset
+transformers/int_daisy_mixedContentNormalizer/messages_ja.properties -text svneol=unset#text/plain
 transformers/int_daisy_mixedContentNormalizer/transformer.tdf -text
 transformers/int_daisy_ocfCreator/OcfCreator.java -text
 transformers/int_daisy_ocfCreator/messages.properties -text
@@ -1131,6 +1136,7 @@ transformers/int_daisy_unicodeTranscoder/messages_hi.properties -text svneol=uns
 transformers/int_daisy_unicodeTranscoder/transformer.tdf -text
 transformers/int_daisy_validator/XMLReporter.java -text
 transformers/int_daisy_validator/messages_hi.properties -text svneol=unset#unset
+transformers/int_daisy_validator/messages_ja.properties -text svneol=unset#text/plain
 transformers/int_daisy_validator/validator.css -text
 transformers/int_daisy_validator/validator.xsl -text
 transformers/int_daisy_xukCreator/XukCreator.java -text
@@ -1276,6 +1282,7 @@ transformers/pipeline_system_copyer/transformer.tdf -text
 transformers/pipeline_system_deleter/Deleter.java -text
 transformers/pipeline_system_deleter/messages.properties -text
 transformers/pipeline_system_deleter/messages_hi.properties -text svneol=unset#unset
+transformers/pipeline_system_deleter/messages_ja.properties -text svneol=unset#text/plain
 transformers/pipeline_system_deleter/transformer.tdf -text
 transformers/se_tpb_aligner/AlignerDriver.java -text
 transformers/se_tpb_aligner/align/Aligner.java -text
@@ -1391,6 +1398,7 @@ transformers/se_tpb_aligner/util/Triple.java -text
 transformers/se_tpb_aligner/util/XMLResult.java -text
 transformers/se_tpb_aligner/util/XMLSource.java -text
 transformers/se_tpb_annonsator/messages_hi.properties -text svneol=unset#unset
+transformers/se_tpb_annonsator/messages_ja.properties -text svneol=unset#text/plain
 transformers/se_tpb_daisy202splitter/ContentDocFilter.java -text
 transformers/se_tpb_daisy202splitter/Daisy202Splitter.java -text
 transformers/se_tpb_daisy202splitter/NccCreator.java -text
@@ -1444,6 +1452,7 @@ transformers/se_tpb_daisy202splitter/promptFiles/sv/skiva_9.mp3 -text
 transformers/se_tpb_daisy202splitter/promptFiles/sv/skiva_9.smil -text
 transformers/se_tpb_daisy202splitter/transformer.tdf -text
 transformers/se_tpb_dtbAudioEncoder/messages_hi.properties -text svneol=unset#unset
+transformers/se_tpb_dtbAudioEncoder/messages_ja.properties -text svneol=unset#text/plain
 transformers/se_tpb_dtbAudioEncoder/transformer.tdf -text
 transformers/se_tpb_dtbSplitterMerger/merge/messages_hi.properties -text svneol=unset#unset
 transformers/se_tpb_dtbSplitterMerger/merge/transformer.tdf -text
@@ -1482,6 +1491,7 @@ transformers/se_tpb_dtbookFix/NarratorMetadataExecutor.java -text
 transformers/se_tpb_dtbookFix/XSLTExecutor.java -text
 transformers/se_tpb_dtbookFix/messages.properties -text
 transformers/se_tpb_dtbookFix/messages_hi.properties -text svneol=unset#unset
+transformers/se_tpb_dtbookFix/messages_ja.properties -text svneol=unset#text/plain
 transformers/se_tpb_dtbookFix/transformer.tdf -text
 transformers/se_tpb_dtbookFix/xslt/dummy-headings-tools.xsl -text svneol=unset#text/plain
 transformers/se_tpb_dtbookFix/xslt/iterative-processor.xsl -text
@@ -1518,6 +1528,7 @@ transformers/se_tpb_dtbookFix/xslt/tidy-move-pagenum.xsl -text
 transformers/se_tpb_dtbookFix/xslt/tidy-pagenum-type.xsl -text svneol=unset#text/plain
 transformers/se_tpb_dtbookFix/xslt/tidy-remove-empty-elements.xsl -text
 transformers/se_tpb_filesetcreator/messages_hi.properties -text svneol=unset#unset
+transformers/se_tpb_filesetcreator/messages_ja.properties -text svneol=unset#text/plain
 transformers/se_tpb_filesetcreator/resource/tpbnarrator_res.mp3 -text
 transformers/se_tpb_filesetcreator/transformer.tdf -text
 transformers/se_tpb_hyphenator/HyphenReader.java -text
@@ -1768,6 +1779,7 @@ transformers/se_tpb_speechgen2/lib/com4j.jar -text
 transformers/se_tpb_speechgen2/lib/tlbimp.jar -text
 transformers/se_tpb_speechgen2/messages.properties -text
 transformers/se_tpb_speechgen2/messages_hi.properties -text svneol=unset#unset
+transformers/se_tpb_speechgen2/messages_ja.properties -text svneol=unset#text/plain
 transformers/se_tpb_speechgen2/regex/loquendo-general.xml -text
 transformers/se_tpb_speechgen2/regex/macosx-say.xml -text svneol=unset#text/plain
 transformers/se_tpb_speechgen2/regex/year_en.xml -text
@@ -1855,6 +1867,7 @@ transformers/se_tpb_wordml2dtbook/xslt/post-remove-temporary-structure.xsl -text
 transformers/se_tpb_wordml2dtbook/xslt/pre-input-validator.xsl -text
 transformers/se_tpb_xmldetection/lang/fr.xml -text
 transformers/se_tpb_xmldetection/messages_hi.properties -text svneol=unset#unset
+transformers/se_tpb_xmldetection/messages_ja.properties -text svneol=unset#text/plain
 transformers/se_tpb_xmldetection/transformer.tdf -text
 transformers/se_tpb_zed2daisy202/messages_hi.properties -text svneol=unset#unset
 transformers/uk_rnib_dtbook2xhtml/messages.properties -text

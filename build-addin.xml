@@ -6,6 +6,7 @@
 	<import file="${basedir}/build-core.xml"/>
   
 	<property name="addin.name" value="pipeline-lite"/>
+	<!--property name="addin.lang.ja" value="true"/-->
 	<property name="lite.lib.home" value="/Users/Romain/Public/build/litelibs"/>
 	<property name="launchers.home" value="/Users/Romain/Public/build/litelibs"/>
 	<property name="lame.home" value="/Users/Romain/Documents/Work/pipeline/release/windows/ext"/>
@@ -66,6 +67,9 @@
 	<fileset dir="${basedir}/scripts" id="fileset.addin.scripts">
 		<include name="_dev/DAISY Pipeline TTS Narrator.taskScript"/>
 	</fileset>
+	<fileset dir="${basedir}/scripts" id="fileset.addin.scripts.lang.ja">
+		<include name="_dev/DAISY Pipeline TTS Narrator_ja.taskScript"/>
+	</fileset>
 
 	<!-- Pipeline Lite Libs -->
 	<fileset dir="${lite.lib.home}" id="fileset.lite.jars">
@@ -84,12 +88,18 @@
 	<fileset dir="${lite.lib.home}" id="fileset.lite.jars.mac">
 		<include name="org.eclipse.swt.carbon.macosx_*.jar"/>
 	</fileset>
+	<fileset dir="${lite.lib.home}" id="fileset.lite.jars.lang.ja">
+		<include name="org.eclipse.core.commands.nl_ja_*.jar"/>
+		<include name="org.eclipse.equinox.common.nl_ja_*.jar"/>
+		<include name="org.eclipse.jface.nl_ja_*.jar"/>
+		<include name="org.eclipse.swt.nl_ja_*.jar"/>
+	</fileset>
 	
 	<target name="buildForWin"
 			description="Builds a zipfile containing the Pipeline Lite distribution for Windows">
 		<antcall target="buildReleaseZip">
 			<param name="target.win" value="true"/>
-			<param name="zipName" value="${addin.name}-ms-${ISO-TODAY}.zip"/>
+			<param name="releaseName" value="${addin.name}-ms-${ISO-TODAY}"/>
 		</antcall>
 	</target>
 	
@@ -144,6 +154,7 @@
 		<!-- Call platform-specific targets -->
 		<antcall target="buildReleaseDir-Mac"/>
 		<antcall target="buildReleaseDir-Win"/>
+		<antcall target="buildReleaseDir-lang"/>
 	</target>		
 	<target name="buildReleaseDir-Win" if="target.win">
 		<!-- Windows-specific JARs -->
@@ -173,6 +184,23 @@
 			<fileset dir="${launchers.home}">
 				<include name="pipeline-lite.sh"/>
 			</fileset>
+		</copy>
+	</target>
+	<target name="buildReleaseDir-lang">
+		<antcall target="buildReleaseDir-lang.ja"/>
+	</target>
+	<target name="buildReleaseDir-lang.ja" if="addin.lang.ja">
+		<!-- Eclipse localization -->
+		<copy todir="${release.dir}/lib">
+			<fileset refid="fileset.lite.jars.lang.ja"/>
+		</copy>
+		<!-- Overwrite Scripts -->
+		<copy todir="${release.dir}/scripts" overwrite="yes">
+			<fileset refid="fileset.addin.scripts.lang.ja"/>
+			<chainedmapper>
+				<flattenmapper/>
+				<globmapper from="*_ja.taskScript" to="*.taskScript"/>
+			</chainedmapper>
 		</copy>
 	</target>
 </project>
