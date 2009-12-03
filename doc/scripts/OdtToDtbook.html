@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+<head>
+	<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
+	<title>Pipeline Script: ODT to DAISY 3.0 XML</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
+</head>
+<body>
+<h1 class="title">Pipeline Script: <em>ODT to DAISY 3.0 XML</em></h1>
+
+<div id="toc" class="toc">
+	<ul>
+		<li><a href="#overview">Overview</a></li>
+		<li><a href="#inputReqs">Input Requirements</a></li>
+		<li><a href="#output">Output</a></li>
+		<li><a href="#config">Configuration</a></li>
+		<li><a href="#transformers">Appendix: List of Transformers used</a></li>
+	</ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+<p>This script converts an ODT file to a DAISY 3.0 XML, and then validates the result.</p>
+
+<h2 id="inputReqs">Input Requirements</h2>
+<p>An ODT file. To ensure correctness of the DAISY 3.0 XML output, make sure to follow the <a href="#rtf-formatting">ODT authoring guidelines</a>.</p>
+
+<h2 id="output">Output</h2>
+<p>A DAISY 3.0 XML file, which may or may not be valid - be sure to check the result of the validation pass!</p>
+
+<h2 id="config">Configuration</h2>
+	<dl id="paramslist">
+	<dt><strong>Required.</strong> Input ODT file</dt>
+	<dd></dd>
+	<dt><strong>Required.</strong> Output DAISY 3.0 XML file</dt>
+	<dd></dd>
+	<dt><strong>Optional.</strong> XML Validation Report</dt>
+	<dd>Select a file to store the DTBook validation XML report in. Note that information on the validation result is always shown in the user interface; regardless of whether you activate this option or not.</dd>	
+	</dl>
+
+<h2 id="transformers">Appendix: List of Transformers used</h2>
+<p>The documents linked below are parts of the <em>Transformer technical documentation</em>. These are developer and systems-administrator centric documents.</p>
+
+<ol>
+	<li><a href="../transformers/int_vspiewak_odt2daisy.html">ODT to DAISY 3.0 XML</a></li>
+	<li><a href="../transformers/se_tpb_dtbookFix.html">DTBook fix</a></li>
+	<li><a href="../transformers/int_daisy_validator.html">Validator</a></li>
+</ol>
+
+</body>
+</html>

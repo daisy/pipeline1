@@ -109,6 +109,7 @@ doc/scripts/Narrator-DtbookToDaisy.html -text
 doc/scripts/Narrator-multiplettsslaves.html -text
 doc/scripts/OCFCreator.html -text
 doc/scripts/OPSCreator.html -text
+doc/scripts/OdtToDtbook.html -text svneol=unset#text/plain
 doc/scripts/PEFFileMerger.html -text
 doc/scripts/PEFFileSplitter.html -text
 doc/scripts/PEFIntroduction.html -text
@@ -151,6 +152,7 @@ doc/transformers/int_daisy_prettyPrinter.html -text
 doc/transformers/int_daisy_unicodeNormalizer.html -text
 doc/transformers/int_daisy_unicodeTranscoder.html -text
 doc/transformers/int_daisy_validator.html -text
+doc/transformers/int_vspiewak_odt2daisy.html -text svneol=unset#text/plain
 doc/transformers/no_hks_xhtml2dtbook.html -text
 doc/transformers/org_pef_dist.html -text
 doc/transformers/org_pef_dtbook2pef.html -text
@@ -574,6 +576,7 @@ scripts/create_distribute/dtb/Daisy3ToDaisy202.taskScript -text
 scripts/create_distribute/dtb/Fileset-DtbookToDaisy202TextOnly.taskScript -text
 scripts/create_distribute/dtb/Fileset-XhtmlToDaisy202TextOnly.taskScript -text
 scripts/create_distribute/dtb/Narrator-DtbookToDaisy.taskScript -text
+scripts/create_distribute/dtbook/OdtToDtbook.taskScript -text
 scripts/create_distribute/dtbook/RtfToDtbook.taskScript -text
 scripts/create_distribute/dtbook/WordMLtoDTBook.taskScript -text
 scripts/create_distribute/dtbook/Xhtml2Dtbook.taskScript -text
@@ -1147,6 +1150,9 @@ transformers/int_daisy_xukCreator/impl/Daisy202toObi.java -text
 transformers/int_daisy_xukCreator/impl/Daisy202toObi.xsl -text
 transformers/int_daisy_xukCreator/messages.properties -text
 transformers/int_daisy_xukCreator/transformer.tdf -text
+transformers/int_vspiewak_odt2daisy/Odt2daisy.java -text svneol=unset#text/plain
+transformers/int_vspiewak_odt2daisy/chess-en.odt -text
+transformers/int_vspiewak_odt2daisy/transformer.tdf -text
 transformers/no_hks_xhtml2dtbook/Xhtml2DTBook.java -text
 transformers/no_hks_xhtml2dtbook/transformer.tdf -text
 transformers/org_pef_dist/Distribute.java -text

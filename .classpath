@@ -34,5 +34,6 @@
 	<classpathentry kind="lib" path="transformers/se_tpb_hyphenator/lib/texhyphj.jar"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="lib/junit-4.7.jar"/>
+	<classpathentry kind="lib" path="transformers/int_vspiewak_odt2daisy/lib/odt2daisy.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
