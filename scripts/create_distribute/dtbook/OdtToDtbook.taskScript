@@ -183,5 +183,11 @@
 		&ValidatorTaskParamsSimpleStatic;
 												
 	</task>	
-			
+
+	<task name="pipeline_system_deleter" interactive="false">
+		<parameter>
+			<name>delete</name>
+			<value>$parent{dtbook}/pipeline__temp/</value>
+		</parameter>					
+	</task>
 </taskScript>

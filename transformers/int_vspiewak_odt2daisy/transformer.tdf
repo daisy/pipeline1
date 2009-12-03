@@ -2,6 +2,8 @@
 	<name>ODT to DAISY 3.0 XML</name>
 	<description>OpenDocument Text to DAISY 3.0 XML transformer</description>
 	<classname>int_vspiewak_odt2daisy.Odt2daisy</classname>
+	<jar>lib/odt2daisy.jar</jar>
+	<jar>lib/JODL.jar</jar>
 	<license>GPL 3.0</license>
 	<author>Vincent Spiewak</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>

@@ -118,13 +118,16 @@ public class Odt2daisy extends Transformer {
             odt2daisy.correctionProcessing();
 
             if (odt2daisy.isEmptyDocument()) {
-            	
-            	TransformerRunException tre = new TransformerRunException("Blank document");
-            	sendMessage(tre.getMessage(), MessageEvent.Type.ERROR, MessageEvent.Cause.INPUT);
-            	throw new TransformerRunException(tre.getMessage(), tre);
+            	throw new TransformerRunException("Blank document");
             }
             
-            System.out.println("Main Language detected: " + odt2daisy.getLangParam());
+            //System.out.println("Main Language detected: " + odt2daisy.getLangParam());
+            
+            // Make sure the output DTBook exists
+            if (!outputDtbook.exists()) {
+            	outputDtbook.getParentFile().mkdirs();
+            	outputDtbook.createNewFile();
+            }            
             
             odt2daisy.convertAsDTBook(outputDtbook.getAbsolutePath(), com.versusoft.packages.ooo.odt2daisy.Configuration.DEFAULT_IMAGE_DIR);
             
@@ -134,8 +137,8 @@ public class Odt2daisy extends Transformer {
             //mTempDir.delete();
             
         } catch (Exception e) {
-        	this.sendMessage(i18n("ERROR_ABORTING",e.getMessage()),MessageEvent.Type.ERROR,MessageEvent.Cause.SYSTEM);
-            throw new TransformerRunException(e.getMessage(), e);
+			String message = i18n("ERROR_ABORTING", e.getMessage());
+            throw new TransformerRunException(message, e);
 		}finally{
         	System.setProperty("javax.xml.transform.TransformerFactory",systemTransformerFactory);        	
         }
