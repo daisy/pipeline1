@@ -123,10 +123,9 @@ public class Odt2daisy extends Transformer {
             
             //System.out.println("Main Language detected: " + odt2daisy.getLangParam());
             
-            // Make sure the output DTBook exists
-            if (!outputDtbook.exists()) {
+            // Make sure the output directory exists
+            if (!outputDtbook.getParentFile().exists()) {
             	outputDtbook.getParentFile().mkdirs();
-            	outputDtbook.createNewFile();
             }            
             
             odt2daisy.convertAsDTBook(outputDtbook.getAbsolutePath(), com.versusoft.packages.ooo.odt2daisy.Configuration.DEFAULT_IMAGE_DIR);

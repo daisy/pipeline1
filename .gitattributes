@@ -1151,7 +1151,6 @@ transformers/int_daisy_xukCreator/impl/Daisy202toObi.xsl -text
 transformers/int_daisy_xukCreator/messages.properties -text
 transformers/int_daisy_xukCreator/transformer.tdf -text
 transformers/int_vspiewak_odt2daisy/Odt2daisy.java -text svneol=unset#text/plain
-transformers/int_vspiewak_odt2daisy/chess-en.odt -text
 transformers/int_vspiewak_odt2daisy/lib/JODL.jar -text
 transformers/int_vspiewak_odt2daisy/lib/odt2daisy.jar -text
 transformers/int_vspiewak_odt2daisy/transformer.tdf -text
