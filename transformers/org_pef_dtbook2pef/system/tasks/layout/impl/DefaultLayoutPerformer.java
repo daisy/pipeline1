@@ -249,7 +249,9 @@ public class DefaultLayoutPerformer implements Flow {
 					default:;
 				}
 				if (groupA[gi].getSpaceBefore()+groupA[gi].getSpaceAfter()>=paginator.getPageInfo().getFlowHeight()) {
-					throw new IOException("Layout exception: ", new LayoutPerformerException("Group margins too large to fit on an empty page."));
+					IOException ex = new IOException("Layout exception");
+					ex.initCause(new LayoutPerformerException("Group margins too large to fit on an empty page."));
+					throw ex;
 				} else if (groupA[gi].getSpaceBefore()+1>paginator.getPageInfo().getFlowHeight()-paginator.getPageInfo().countRows()) {
 					paginator.newPage();
 				}

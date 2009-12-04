@@ -138,7 +138,9 @@ public class PageStruct implements LayoutPerformer, CurrentPageInfo {
 			}
 		}
 		} catch (LayoutPerformerException e) {
-			throw new IOException("Layout exception: ", e);
+			IOException ex = new IOException("Layout exception");
+			ex.initCause(e);
+			throw ex;
 		} finally {
 			state.close();
 		}
