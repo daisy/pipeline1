@@ -57,4 +57,17 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<xsl:template match="*" mode="localizedPageBreak">
+		<xsl:choose>
+			<xsl:when test="lang('en')">
+				<xsl:text>Page break</xsl:text>
+			</xsl:when>
+			<xsl:when test="lang('fr')">
+				<xsl:text>Saut de Page</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>Page break</xsl:text>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 </xsl:stylesheet>

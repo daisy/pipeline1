@@ -14,6 +14,9 @@
 			the @page attribute is changed to "normal"
 			(note:  arabic numbers are theoretically allowed from @page="front", but
 			are not considered standard practice by many)
+			
+			If @page="special" but the element has no content, adds a dummy content
+			("page break").
 
 		Nodes
 			pagenum
@@ -27,11 +30,14 @@
 		Author
 			Linus Ericson, TPB
 			James  Pritchett, RFBD
+			James Norrish, VUW
+			Romain Deltour, DAISY
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/">
 
 	<xsl:include href="recursive-copy2.xsl"/>
 	<xsl:include href="output2.xsl"/>
+	<xsl:include href="localization.xsl"/>
 	
 	<!-- jpritchett@rfbd.org, 2008-05-30:  Removed front-to-special conversion, as this is now in the "repair" stylesheet -->
 	<!-- 
@@ -46,5 +52,17 @@
 			<xsl:copy-of select="@*[local-name()!='page']"/>
 			<xsl:apply-templates/>			
 		</xsl:copy>				
+	</xsl:template>
+	
+	<!--
+		Match: page with @type=special with no content.
+		Action: add some dummy content.
+	-->
+	<xsl:template match="dtb:pagenum[@page='special'][not(normalize-space())]">
+		<xsl:message>adding dummy content to empty "special" pagenum</xsl:message>
+		<xsl:copy>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates select="." mode="localizedPageBreak"/>
+		</xsl:copy>
 	</xsl:template>
 </xsl:stylesheet>
