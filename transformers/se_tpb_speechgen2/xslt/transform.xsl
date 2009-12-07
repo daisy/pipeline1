@@ -23,7 +23,11 @@
 				<xsl:value-of select="current()"/>
 				<xsl:text>. </xsl:text>
 			</xsl:when>
-			
+			<xsl:when test="lang('fi')">
+				<xsl:text>Roomalainen numero, sivu </xsl:text>
+				<xsl:value-of select="current()"/>
+				<xsl:text>. </xsl:text>
+			</xsl:when>
 			<!-- lang('en') as default -->
 			<xsl:otherwise>
 				<xsl:text>Page, Roman Numeral, </xsl:text>
@@ -41,6 +45,11 @@
 				<xsl:value-of select="current()"/>
 				<xsl:text>. </xsl:text>
 			</xsl:when>
+			<xsl:when test="lang('fi')">
+				<xsl:text>Sivu </xsl:text>
+				<xsl:value-of select="current()"/>
+				<xsl:text>. </xsl:text>
+			</xsl:when>
 			
 			<!-- lang('en') as default -->
 			<xsl:otherwise>
@@ -55,6 +64,11 @@
 		<xsl:choose>
 			<xsl:when test="lang('sv')">
 				<xsl:text> Notreferens, </xsl:text>
+				<xsl:apply-templates />
+				<xsl:text>. </xsl:text>
+			</xsl:when>
+			<xsl:when test="lang('fi')">
+				<xsl:text> Alaviite, </xsl:text>
 				<xsl:apply-templates />
 				<xsl:text>. </xsl:text>
 			</xsl:when>
