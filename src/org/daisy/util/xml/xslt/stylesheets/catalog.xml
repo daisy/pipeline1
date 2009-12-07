@@ -16,6 +16,7 @@
   </group>
   
   <group> <!-- dtbook --> 
+    <system systemId="dtbook2daisy3textonly.xsl" uri="./dtbook/dtbook2daisy3textonly.xsl" />
     <system systemId="dtbook2xhtml.xsl" uri="./dtbook/dtbook2xhtml.xsl" />
     <system systemId="dtbook110to2005-1.xsl" uri="./dtbook/dtbook110to2005-1.xsl" />
     <system systemId="dtbook2005-1to2.xsl" uri="./dtbook/dtbook2005-1to2.xsl" />

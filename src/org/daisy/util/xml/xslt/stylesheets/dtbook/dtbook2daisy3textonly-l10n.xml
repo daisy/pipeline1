@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<strings>
+
+	<str xml:lang="en" name="pagenumlist" >Page numbers list</str>
+	<str xml:lang="fr" name="pagenumlist" >Liste des numéros de pages</str>
+
+	<str xml:lang="en" name="pagenum" >Page number</str>
+	<str xml:lang="fr" name="pagenum" >Numéro de page</str>
+
+	<str xml:lang="en" name="linenumlist" >Line numbers list</str>
+	<str xml:lang="fr" name="linenumlist" >Liste des numéros de ligne</str>
+
+	<str xml:lang="en" name="linenum" >Line number</str>
+	<str xml:lang="fr" name="linenum" >Numéro de ligne</str>
+
+	<str xml:lang="en" name="annotationlist" >Annotations list</str>
+	<str xml:lang="fr" name="annotationlist" >Liste des annotations</str>
+
+	<str xml:lang="en" name="annotation" >Annotation</str>
+	<str xml:lang="fr" name="annotation" >Annotation</str>
+
+	<str xml:lang="en" name="sidebarlist" >Sidebars list</str>
+	<str xml:lang="fr" name="sidebarlist" >Liste des informations supplémentaires</str>
+
+	<str xml:lang="en" name="sidebar" >Sidebar</str>
+	<str xml:lang="fr" name="sidebar" >Informations supplémentaires</str>
+
+	<str xml:lang="en" name="listlist" >List of lists</str>
+	<str xml:lang="fr" name="listlist" >Liste des listes</str>
+
+	<str xml:lang="en" name="list" >List</str>
+	<str xml:lang="fr" name="list" >Liste</str>
+
+	<str xml:lang="en" name="listlist" >List of lists</str>
+	<str xml:lang="fr" name="listlist" >Liste des listes</str>
+
+	<str xml:lang="en" name="list" >List</str>
+	<str xml:lang="fr" name="list" >Liste</str>
+
+	<str xml:lang="en" name="prodnotelist" >Producer notes list</str>
+	<str xml:lang="fr" name="prodnotelist" >Liste des notes du transcripteur</str>
+
+	<str xml:lang="en" name="prodnote" >Producer note</str>
+	<str xml:lang="fr" name="prodnote" >Note du transcripteur</str>
+
+	<str xml:lang="en" name="notelist" >Notes list</str>
+	<str xml:lang="fr" name="notelist" >Liste des notes</str>
+
+	<str xml:lang="en" name="note" >Note</str>
+	<str xml:lang="fr" name="note" >Note</str>
+
+	<str xml:lang="en" name="notereflist" >Note references list</str>
+	<str xml:lang="fr" name="notereflist" >Liste des références vers des notes</str>
+
+	<str xml:lang="en" name="noteref" >Note reférence</str>
+	<str xml:lang="fr" name="noteref" >Référence vers une note</str>
+
+	<str xml:lang="en" name="tablelist" >Table list</str>
+	<str xml:lang="fr" name="tablelist" >Liste des tableaux</str>
+
+	<str xml:lang="en" name="table" >Table</str>
+	<str xml:lang="fr" name="table" >Tableau</str>
+
+	<str xml:lang="en" name="notitle" >No title</str>
+	<str xml:lang="fr" name="notitle" >Pas de titre</str>
+
+</strings>
