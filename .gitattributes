@@ -89,6 +89,7 @@ doc/scripts/DTBMerger.html -text
 doc/scripts/DTBSplitter.html -text
 doc/scripts/DTBookFix.html -text
 doc/scripts/DTBookMigrator.html -text
+doc/scripts/DTBookToDAISY3-XSLT.html -text svneol=unset#text/plain
 doc/scripts/DTBookToLaTeX.html -text
 doc/scripts/DTBookToPEF.html -text
 doc/scripts/DTBookToRTF.html -text
@@ -137,6 +138,7 @@ doc/templates/script-doc-template.html -text
 doc/transformers/ca_cnib_rtf2dtbook.html -text
 doc/transformers/dk_dbb_addIdsToDtbook.html -text
 doc/transformers/dk_dbb_dtbook2rtf.html -text
+doc/transformers/fr_braillenet_dtbook2daisy3.html -text svneol=unset#text/plain
 doc/transformers/int_daisy_daisy2022Zed2005.html -text
 doc/transformers/int_daisy_dtbMigrator.html -text svneol=unset#text/plain
 doc/transformers/int_daisy_filesetAudioTagger.html -text
@@ -573,6 +575,7 @@ scripts/_dev/obi/FilesetRenamer.taskScript -text
 scripts/_dev/obi/Z3986DTBValidator.taskScript -text
 scripts/create_distribute/dtb/AudacityToDTB.taskScript -text
 scripts/create_distribute/dtb/Daisy3ToDaisy202.taskScript -text
+scripts/create_distribute/dtb/DtbookToDaisy3-XSLT.taskScript -text
 scripts/create_distribute/dtb/Fileset-DtbookToDaisy202TextOnly.taskScript -text
 scripts/create_distribute/dtb/Fileset-XhtmlToDaisy202TextOnly.taskScript -text
 scripts/create_distribute/dtb/Narrator-DtbookToDaisy.taskScript -text
@@ -1016,7 +1019,7 @@ transformers/dk_dbb_dtbook2rtf/dtbook_to_rtf_note_and_anno.xsl -text
 transformers/dk_dbb_dtbook2rtf/dtbook_to_rtf_styles.xsl -text
 transformers/dk_dbb_dtbook2rtf/dtbook_to_rtf_table.xsl -text
 transformers/dk_dbb_dtbook2rtf/transformer.tdf -text
-transformers/fr_braillenet_dtbook2daisy3/DTBook2Daisy3.java -text svneol=unset#text/plain
+transformers/fr_braillenet_dtbook2daisy3/DTBookToDaisy3.java -text svneol=unset#text/plain
 transformers/fr_braillenet_dtbook2daisy3/messages.properties -text svneol=unset#text/plain
 transformers/fr_braillenet_dtbook2daisy3/messages_hi.properties -text
 transformers/fr_braillenet_dtbook2daisy3/transformer.tdf -text

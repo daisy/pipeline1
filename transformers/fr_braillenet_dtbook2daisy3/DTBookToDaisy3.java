@@ -19,7 +19,6 @@ package fr_braillenet_dtbook2daisy3;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,9 +30,6 @@ import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.css.stylesheets.Css;
-import org.daisy.util.file.EFile;
-import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.file.FilenameOrFileURI;
 import org.daisy.util.fileset.Fileset;
@@ -43,41 +39,32 @@ import org.daisy.util.fileset.ImageFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
-import org.daisy.util.text.URIUtils;
 import org.daisy.util.xml.LocusTransformer;
 import org.daisy.util.xml.NamespaceReporter;
 import org.daisy.util.xml.Namespaces;
-import org.daisy.util.xml.SimpleNamespaceContext;
-import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
-import org.daisy.util.xml.dom.Serializer;
-import org.daisy.util.xml.pool.LSParserPool;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.XSLTException;
 import org.daisy.util.xml.xslt.stylesheets.Stylesheets;
-import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.DOMError;
 import org.w3c.dom.DOMErrorHandler;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.LSParser;
 
 /**
  * Main transformer class.
  * <p>Note: this transformer uses the XSLT dtbook2daisy3textonly.xsl placed in org/daisy/util/xml/xslt/stylesheets</p>
  * @author Romain Deltour
  */
-public class DTBook2Daisy3 extends Transformer implements FilesetErrorHandler,  DOMErrorHandler {
+public class DTBookToDaisy3 extends Transformer implements FilesetErrorHandler,  DOMErrorHandler {
 
-	public DTBook2Daisy3(InputListener inListener, Boolean isInteractive) {
+	private static final String XSLT_FACTORY = "net.sf.saxon.TransformerFactoryImpl";
+	
+	public DTBookToDaisy3(InputListener inListener, Boolean isInteractive) {
 		super(inListener,  isInteractive);
 	}
 
 	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
-		String inputXML = parameters.remove("xml");
-		String factory = parameters.remove("factory");
+		String inputXML = parameters.remove("input");
 		String outPath = parameters.remove("output");
 		String copyReferring = parameters.remove("copyReferring");				
 		
@@ -131,7 +118,7 @@ public class DTBook2Daisy3 extends Transformer implements FilesetErrorHandler,  
 			// Apply the XSLT
 			Map<String,Object> xslParams = new HashMap<String,Object>();
 			xslParams.putAll(parameters);
-			Stylesheet.apply(inputXML, xsltURL, outFile.getAbsolutePath(), factory, xslParams, CatalogEntityResolver.getInstance());
+			Stylesheet.apply(inputXML, xsltURL, outFile.getAbsolutePath(), XSLT_FACTORY, xslParams, CatalogEntityResolver.getInstance());
 			
 			
 			//Some post-xslt namespace cleanup.

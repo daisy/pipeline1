@@ -1,7 +1,7 @@
 <transformer version="1.0">
 	<name>DTBook to DAISY 3 text-only</name>
 	<description>Transforms a DTBook 2005 document to a text-only DAISY 3 book</description>
-	<classname>fr_braillenet_dtbook2daisy3.DTBook2Daisy3</classname>
+	<classname>fr_braillenet_dtbook2daisy3.DTBookToDaisy3</classname>
 	<license>LGPL</license>
 	<author>Alex Bernier, Romain Deltour</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
@@ -15,14 +15,9 @@
 	<parameters>
 
 		<parameter required="true" direction="in" type="application/x-dtbook+xml">
-			<name>xml</name>
+			<name>input</name>
 			<description>The DTBook 2005 XML file</description>
 			<example>file:///path/to/file.xml</example>
-		</parameter>
-
-		<parameter type="string">
-			<name>factory</name>			
-			<value>net.sf.saxon.TransformerFactoryImpl</value>
 		</parameter>
 		
 		<parameter required="true" direction="out" type="text/plain">
