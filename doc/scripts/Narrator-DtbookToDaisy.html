@@ -20,6 +20,7 @@
 -->
 <li><a href="#linux">Running Narrator on Linux</a></li>
 <li><a href="#math">Support for the MathML-in-DAISY extension</a></li>
+<li><a href="#multilang">Support for multi-language TTS configuration</a></li>
 <li><a href="#slaves">Configuring Narrator for concurrent TTS rendering</a></li>
 <li><a href="#transformers">Appendix: List of Transformers used</a></li>
 </ul>
@@ -132,6 +133,10 @@ supports running the Narrator script on the Windows&trade; <a href="#linux">Linu
 If your input document does not have the alternate image and alternate text, you will need to install an <a href="http://www.daisy.org/projects/pipeline/other-add-ins.shtml">add-in</a> to the Pipeline that provides the functionality to add these values.</li>
 <li>MathML in DAISY is an extension to the DAISY 3 (DAISY/NISO) standard. This script will still output a DAISY 2.02 DTB when MathML is present in the input, but in the 2.02 version of the DTB MathML islands are converted to measly images with alternate text.</li>
 </ul> 
+
+<h2 id="multilang">Support for multi-language TTS configuration</h2>
+<p>The separate document <a href="Narrator-multilang.html">Speechgen2 multi-language support</a> describes how to refine the configuration of per-language TTS engines in the Narrator.</p>
+<p><em>Note - this requires manual edition of XML configuration files</em>.</p>
 
 <h2 id="slaves">Configuring Narrator for concurrent TTS rendering</h2>
 <p>The separate document <a href="Narrator-multiplettsslaves.html">Running speechgen2 using multiple TTS slaves</a> describes how to configure Narrator to use multiple concurrent TTS engines. <em>Note - this requires high technical proficiency</em>.</p>

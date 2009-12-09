@@ -107,6 +107,7 @@ doc/scripts/HtmlToXhtml.html -text
 doc/scripts/Hyphenator.html -text
 doc/scripts/ImageConverter.html -text
 doc/scripts/Narrator-DtbookToDaisy.html -text
+doc/scripts/Narrator-multilang.html -text svneol=unset#text/plain
 doc/scripts/Narrator-multiplettsslaves.html -text
 doc/scripts/OCFCreator.html -text
 doc/scripts/OPSCreator.html -text
