@@ -31,6 +31,14 @@
 		</datatype>
 	</parameter>
 	
+	<parameter name="validatorTimeTolerance" value="0" required="false">
+		<nicename>Time Tolerance</nicename>
+		<description>Set the time tolerance threshold in milliseconds</description>		
+		<datatype>
+				<integer min="0" max ="10000" />
+		</datatype>		
+	</parameter>
+	
 	
 	<!-- *************************
 	      z3986 Validation (zedval)
@@ -43,6 +51,10 @@
 		<parameter>
 			<name>abortThreshold</name>
 			<value>ERROR</value>
+		</parameter>
+		<parameter>
+			<name>time-tolerance</name>
+			<value>${validatorTimeTolerance}</value>
 		</parameter>
 	</task>
 
@@ -77,6 +89,10 @@
 		<parameter>
 			<name>abortThreshold</name>
 			<value>ERROR</value>
+		</parameter>
+		<parameter>
+			<name>time-tolerance</name>
+			<value>${validatorTimeTolerance}</value>
 		</parameter>
 	</task>
 	
