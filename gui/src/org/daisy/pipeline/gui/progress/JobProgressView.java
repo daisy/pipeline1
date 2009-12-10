@@ -32,7 +32,6 @@ import org.daisy.pipeline.gui.util.Timer;
 import org.daisy.util.execution.State;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -48,7 +47,6 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -178,17 +176,6 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 			}
 		});
 
-		// Hack for Mac OS X background color
-		if (Platform.OS_MACOSX.equals(Platform.getOS())) {
-			// TODO remove when Eclipse bug #204915 is fixed
-			Color bgcolor = container.getDisplay().getSystemColor(
-					SWT.COLOR_WIDGET_BACKGROUND);
-			container.setBackground(bgcolor);
-			iconLabel.setBackground(bgcolor);
-			stateLabel.setBackground(bgcolor);
-			toolbar.setBackground(bgcolor);
-		}
-
 		// Add accessibility to Job label
 		jobLabel.getAccessible().addAccessibleListener(new AccessibleAdapter() {
 			@Override
@@ -239,13 +226,6 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 		container.setLayout(new GridLayout());
 		Text text = new Text(container, SWT.READ_ONLY);
 		text.setText(Messages.label_noJob);
-		if (Platform.OS_MACOSX.equals(Platform.getOS())) {
-			// TODO remove when Eclipse bug #204915 is fixed
-			container.setBackground(text.getDisplay().getSystemColor(
-					SWT.COLOR_WIDGET_BACKGROUND));
-			text.setBackground(text.getDisplay().getSystemColor(
-					SWT.COLOR_WIDGET_BACKGROUND));
-		}
 		return container;
 	}
 
@@ -286,7 +266,9 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.daisy.pipeline.gui.jobs.IJobChangeListener#jobChanged(org.daisy.pipeline.gui.model.JobInfo)
+	 * @see
+	 * org.daisy.pipeline.gui.jobs.IJobChangeListener#jobChanged(org.daisy.pipeline
+	 * .gui.model.JobInfo)
 	 */
 	public void jobChanged(final JobInfo jobInfo) {
 		if (!jobInfo.equals(currJobInfo)) {
@@ -309,7 +291,9 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.daisy.pipeline.gui.jobs.IJobChangeListener#jobsChanged(java.util.List)
+	 * @see
+	 * org.daisy.pipeline.gui.jobs.IJobChangeListener#jobsChanged(java.util.
+	 * List)
 	 */
 	public void jobsChanged(List<JobInfo> jobInfos) {
 		for (JobInfo jobInfo : jobInfos) {
@@ -356,8 +340,8 @@ public class JobProgressView extends ViewPart implements ISelectionListener,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart,
-	 *      org.eclipse.jface.viewers.ISelection)
+	 * @seeorg.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.
+	 * IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		if (selection.isEmpty()) {
