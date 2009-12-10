@@ -17,7 +17,6 @@
  */
 package org.daisy.pipeline.gui.util.swt;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
@@ -102,12 +101,7 @@ public class TabFolderTraverseListener implements TraverseListener {
 	private void switchToTab(int index) {
 		folder.setSelection(index);
 		TabItem item = folder.getItem(index);
-		if (Platform.OS_MACOSX.equals(Platform.getOS())) {
-			item.getControl().forceFocus();
-			item.getControl().traverse(SWT.TRAVERSE_TAB_PREVIOUS);
-		} else {
-			folder.forceFocus();
-		}
+		folder.forceFocus();
 		// Notify listeners
 		Event event = new Event();
 		event.item = item;
