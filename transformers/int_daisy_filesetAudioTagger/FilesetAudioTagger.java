@@ -195,8 +195,8 @@ public class FilesetAudioTagger extends Transformer implements FilesetErrorHandl
 		 */
 		
 		if(spineSize == -1.0) spineSize = Double.parseDouble(Integer.toString(mAudioSpine.size())+".0");
-		nextFileCallCount++;				
-		this.sendMessage(0.05 + ((nextFileCallCount/spineSize)*0.9)); //assumes that progress 0.05 was called before first nextFile call
+		nextFileCallCount++;	
+		this.sendMessage(0.05 + ((nextFileCallCount/(spineSize+1))*0.9)); //assumes that progress 0.05 was called before first nextFile call
 		
 		if (mAudioSpine.contains(file)) {	
 			//String titleFrame, String artistFrame, String albumFrame, String trackNumberFrame
