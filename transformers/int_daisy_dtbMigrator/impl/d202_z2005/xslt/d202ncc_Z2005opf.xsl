@@ -74,7 +74,20 @@
 	<x-metadata>
 		<meta name="dtb:totalTime" content="{$dtbTotalTime}" />
 		<meta name="dtb:multimediaContent" content="{$dtbMultimediaContent}" />
+		<xsl:choose>
+			<xsl:when test="html:meta[@name='ncc:multimediaType']">
 		<meta name="dtb:multimediaType" content="{replace(html:meta[@name='ncc:multimediaType']/@content, 'Ncc', 'NCX', 'i')}" />
+			</xsl:when>
+			<xsl:when test="$dtbMultimediaContent eq 'audio,text' or $dtbMultimediaContent eq 'audio,image,text' ">
+		<meta name="dtb:multimediaType" content="audioFullText" />
+			</xsl:when>
+			<xsl:when test="$dtbMultimediaContent eq 'audio' or $dtbMultimediaContent eq 'audio,image' ">
+		<meta name="dtb:multimediaType" content="audioNCX" />
+			</xsl:when>
+			<xsl:otherwise>
+		<meta name="dtb:multimediaType" content="textNCX" />
+			</xsl:otherwise>
+		</xsl:choose>
 		<xsl:apply-templates select="*/@name" mode="x-metadata" />
 	</x-metadata>
 </xsl:template>
