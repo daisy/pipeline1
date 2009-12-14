@@ -439,7 +439,7 @@
 				<include name="**/*.*"/>
 			</zipfileset>
 			<!-- Shell scripts -->
-			<zipfileset dir="${base.dir}/launchers" prefix="${release.name}">
+			<zipfileset dir="${base.dir}/launchers" prefix="${release.name}" filemode="755">
 				<include name="pipeline.sh"/>
 				<include name="pipeline.bat"/>
 			</zipfileset>

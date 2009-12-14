@@ -136,7 +136,9 @@
 
 		<!-- Move and rename the CLI launchers-->
 		<move file="${target.folder}/launchers/pipeline-plugin.sh" tofile="${target.folder}/pipeline-cli.sh"/>
+		<chmod perm="755" file="${target.folder}/pipeline-cli.sh"/>
 		<move file="${target.folder}/launchers/pipeline-plugin.bat" tofile="${target.folder}/pipeline-cli.bat"/>
+		<chmod perm="755" file="${target.folder}/pipeline-cli.bat"/>
 		<delete dir="${target.folder}" includes="launchers" includeemptydirs="true"/>
 		
 		<!-- Move the properties to the root directory -->
