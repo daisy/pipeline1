@@ -40,11 +40,27 @@ public class PrinterDevice {
 	public PrinterDevice(String deviceName, boolean fuzzyLookup) {
 		PrintService[] printers = PrintServiceLookup.lookupPrintServices(FLAVOR, null);
 		for (PrintService p : printers) {
-			if (p.getName().equals(deviceName) ||
-					(p.getName().contains(deviceName) && fuzzyLookup)) {
+			if (p.getName().equals(deviceName)) {
 				dpj = p.createPrintJob();
 				return;
 			}
+		}
+		if (fuzzyLookup) {
+			PrintService match = null;
+			double currentMatch = 0;
+			for (PrintService p : printers) {
+				if (p.getName().contains(deviceName)) {
+					double thisMatch = deviceName.length() / (double)p.getName().length();
+					if (thisMatch > currentMatch) {
+						currentMatch = thisMatch;
+						match = p;
+					}
+				}
+			}
+			if (match != null) {
+				dpj = match.createPrintJob();
+				return;
+			}			
 		}
 		throw new IllegalArgumentException("Could not find embosser.");
 	}

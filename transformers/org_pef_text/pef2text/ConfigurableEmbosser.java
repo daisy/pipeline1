@@ -19,6 +19,7 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 	
 	private boolean supports8dot;
 	private boolean supportsDuplex;
+	private boolean supportsAligning;
 	private int rowgap;
 	private int maxHeight;
 	private int maxWidth;
@@ -43,6 +44,7 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 		// optional params
 		private boolean supports8dot=false;
 		private boolean supportsDuplex=false;
+		private boolean supportsAligning=false;
 		private int maxHeight=Integer.MAX_VALUE;
 		private int maxWidth=Integer.MAX_VALUE;
 		private LineBreaks.Type breaks = LineBreaks.Type.DEFAULT;
@@ -57,6 +59,7 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 		
 		public Builder supports8dot(boolean val) { supports8dot = val; return this; }
 		public Builder supportsDuplex(boolean val) { supportsDuplex = val; return this; }
+		public Builder supportsAligning(boolean val) { supportsAligning = val; return this; }
 		public Builder height(int value) { 
 			if (value<0) { throw new IllegalArgumentException("Positive integer expected."); }
 			maxHeight = value;
@@ -95,6 +98,7 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 		bf = builder.bt;
 		supports8dot = builder.supports8dot;
 		supportsDuplex = builder.supportsDuplex;
+		supportsAligning = builder.supportsAligning;
 		maxWidth = builder.maxWidth;
 		maxHeight = builder.maxHeight;
 		breaks = new LineBreaks(builder.breaks);
@@ -134,7 +138,7 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 		charsOnRow = 0;
 		rowsOnPage++;
 		if (rowsOnPage>getMaxHeight()) {
-			throw new IOException("The maximum number of rows on a page was exceeded (page is too short).");
+			throw new IOException("The maximum number of rows on a page was exceeded (page is too short)");
 		}
         switch (padNewline) {
 	    	case BEFORE:
@@ -219,6 +223,10 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 	
 	public boolean supports8dot() {
 		return supports8dot;
+	}
+	
+	public boolean supportsAligning() {
+		return supportsAligning;
 	}
 	
 	public boolean supportsDuplex() {

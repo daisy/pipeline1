@@ -18,6 +18,7 @@ import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileJuggler;
 import org.daisy.util.file.FileUtils;
 
+import org_pef_dtbook2pef.setups.en_US.DefaultTextSystem;
 import org_pef_dtbook2pef.setups.sv_SE.SwedishBrailleSystem;
 import org_pef_dtbook2pef.setups.sv_SE.SwedishTextSystem;
 import org_pef_dtbook2pef.system.InternalTask;
@@ -71,7 +72,7 @@ public class DTBook2PEF extends Transformer {
 	}*/
 
 	public enum OutputFormat {PEF, TEXT};
-	public enum Setup {sv_SE, sv_SE_FA44};
+	public enum Setup {sv_SE, sv_SE_FA44, en_US};
 	/**
 	 *  System setups are defined here. Modification to other parts of this file should
 	 *  not be needed.
@@ -99,6 +100,8 @@ public class DTBook2PEF extends Transformer {
 					// Text setup for Swedish //
 					case sv_SE: 
 						return new SwedishTextSystem(getResource("setups/"), "sv_SE/config/text_A4.xml");
+					case en_US:
+						return new DefaultTextSystem(getResource("setups/"), "en_US/config/text.xml");
 					// Add more text systems here //
 				}
 				break;
@@ -126,6 +129,10 @@ public class DTBook2PEF extends Transformer {
 		OutputFormat outputformat = OutputFormat.valueOf(parameters.get("outputFormat").toUpperCase());
 		String dateFormat = parameters.get("dateFormat");
 		boolean writeTempFiles = "true".equals(parameters.get("writeTempFiles"));
+		String cols = parameters.get("cols");
+		if (cols==null || "".equals(cols)) {
+			parameters.remove("cols");
+		}
 
 		map = new HashMap<String, String>();
 		map.putAll(parameters);

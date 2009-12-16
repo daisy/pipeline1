@@ -42,7 +42,8 @@
 			<example>en-US</example>
 			<enum>
 				<value>sv-SE</value>
-				<value>sv-SE-FA44</value>
+				<value>sv-SE-FA44</value> <!-- Only implemented for braille -->
+				<value>en-US</value> <!-- Only implemented for text -->
 			</enum>
 			<default>sv-SE</default>
 		</parameter>
@@ -96,6 +97,13 @@
 			<description>Date format, see http://java.sun.com/javase/6/docs/api/java/text/SimpleDateFormat.html</description>
 			<example>yyyy-MM-dd</example>
 			<default>yyyy-MM-dd</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>cols</name>
+			<description>Column width, in characters. Leave blank to use the default value for this setup/format combination.</description>
+			<example>50</example>
+			<default></default>
 		</parameter>
 
 	</parameters>

@@ -1,4 +1,4 @@
-package org_pef_dtbook2pef.setups.sv_SE;
+package org_pef_dtbook2pef.setups.en_US;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,26 +30,22 @@ import org_pef_dtbook2pef.system.tasks.layout.writers.TextMediaWriter;
  * @author joha
  *
  */
-public class SwedishTextSystem implements TaskSystem {
+public class DefaultTextSystem implements TaskSystem {
 	private URL resourceBase;
 	private String config;
 	private InputDetectorTaskSystem inputDetector;
 	
-	public SwedishTextSystem(URL resourceBase, String config) {
+	public DefaultTextSystem(URL resourceBase, String config) {
 		this.resourceBase = resourceBase;
 		this.config = config;
-		this.inputDetector = new InputDetectorTaskSystem(resourceBase, "sv_SE/config/", "common/config/");
+		this.inputDetector = new InputDetectorTaskSystem(resourceBase, "en_US/config/", "common/config/");
 	}
 
 	public ArrayList<InternalTask> compile(Map<String, String> parameters) throws TaskSystemException {
-		//URL dtbook2flow;
 		URL flowWsNormalizer;
 		URL configURL;
 		URL flowValidationURL;
-		//URL inputSchURL;
 		try {
-			//inputSchURL = new URL(resourceBase, "sv_SE/validation/basic.sch");
-			//dtbook2flow = new URL(resourceBase, "sv_SE/definers/dtbook2flow_sv_SE_text.xsl");
 			flowValidationURL = new URL(resourceBase, "common/validation/flow.xsd");
 			flowWsNormalizer = new URL(resourceBase, "common/preprocessing/flow-whitespace-normalizer.xsl");
 			configURL = new URL(resourceBase, config);
@@ -58,10 +54,6 @@ public class SwedishTextSystem implements TaskSystem {
 		}
 
 		Properties p = new Properties();
-		p.put("l10nrearjacketcopy", "Baksidestext");
-		p.put("l10imagedescription", "Bildbeskrivning");
-		p.put("l10ncolophon", "Kolofon");
-		p.put("l10ncaption", "Bildtext");
 
 		try {
 			p.loadFromXML(configURL.openStream());
@@ -74,7 +66,6 @@ public class SwedishTextSystem implements TaskSystem {
 		}
 		// GUI parameters should take precedence
 		p.putAll(parameters);
-
 
 		int flowWidth = Integer.parseInt(p.getProperty("cols", "28"));
 		int pageHeight = Integer.parseInt(p.getProperty("rows", "29"));
@@ -93,17 +84,8 @@ public class SwedishTextSystem implements TaskSystem {
 		
 		setup.addAll(inputDetector.compile(h));
 
-		// Check input conformance 
-		//setup.add(new ValidatorTask("Conformance checker", inputSchURL));
-
-		// Redefines dtbook as FLOW input
-		//setup.add(new XsltTask("DTBook to FLOW converter", dtbook2flow, null, h));
-
 		// Whitespace normalizer TransformerFactoryConstants.SAXON8
 		setup.add(new XsltTask("FLOW whitespace normalizer", flowWsNormalizer, null, h));
-
-		//File debug = new File("D:\\debug.xml");
-		//setup.add(new DebugTask("Debug output to " + debug, debug));
 
 		// Check that the result from the previous step is OK
 		setup.add(new ValidatorTask("FLOW validator", flowValidationURL));
@@ -114,30 +96,6 @@ public class SwedishTextSystem implements TaskSystem {
 		TextMediaWriter paged = new TextMediaWriter(p, "UTF-8");
 		PageStruct paginator = new PageStruct(factory.getDefault());
 		DefaultLayoutPerformer flow = new DefaultLayoutPerformer.Builder().
-										/*addLayoutMaster("main",
-												new BaseLayoutMaster(
-													new LayoutMasterConfigurator(flowWidth+innerMargin+outerMargin, pageHeight).
-														innerMargin(innerMargin).
-														outerMargin(outerMargin).
-														rowSpacing((rowgap/4)+1)
-													)
-												).
-										addLayoutMaster("front", 
-												new BaseLayoutMaster(
-													new LayoutMasterConfigurator(flowWidth+innerMargin+outerMargin, pageHeight).
-														innerMargin(innerMargin).
-														outerMargin(outerMargin).
-														rowSpacing((rowgap/4)+1)
-													)
-												).
-										addLayoutMaster("plain",
-												new BaseLayoutMaster(
-													new LayoutMasterConfigurator(flowWidth+innerMargin+outerMargin, pageHeight).
-														innerMargin(innerMargin).
-														outerMargin(outerMargin).
-														rowSpacing((rowgap/4)+1)
-													)
-												).*/
 										setStringFilterFactory(factory).
 										build();
 		setup.add(new LayoutEngineTask("FLOW to Text converter", flow, paginator, paged));

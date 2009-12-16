@@ -15,6 +15,7 @@ import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.TempFile;
 import org.xml.sax.SAXException;
 
+// TODO: Implement variable braille cell dimensions
 /**
  * The purpose of this transformer is to convert a PEF 2008-1 file into plain text.
  * Transformer wrapper for PEFParser
@@ -43,6 +44,12 @@ public class PEF2Text extends Transformer {
         String range = parameters.remove("pageRange");
         String table = parameters.remove("table");
         String pad = parameters.remove("pad");
+        String alignmentOffset = parameters.remove("alignmentOffset");
+        String mirrorAlign = parameters.remove("mirrorAlign");
+        String paperWidthFallback = parameters.remove("paperWidthFallback");
+        String papersize = parameters.remove("papersize");
+        String cellWidth = parameters.remove("cellWidth");
+        String cellHeight = parameters.remove("cellHeight");
         
         String deviceName = parameters.remove("deviceName");
 
@@ -59,15 +66,23 @@ public class PEF2Text extends Transformer {
 			if (embosser!=null && !"".equals(embosser)) {
 				ef.setEmbosserType(EmbosserFactory.EmbosserType.valueOf(embosser.toUpperCase()));
 			}
+			if (papersize != null && !"".equals(papersize)) {
+				ef.setPaperSize(Paper.PaperSize.valueOf(papersize.toUpperCase()));
+			}
 			ef.setProperty("breaks", breaks);
 			if (range!=null && !"".equals(range)) {
 				rangeObj = Range.parseRange(range);
 			}
 			ef.setProperty("table", table);
 			ef.setProperty("padNewline", pad);
+			ef.setProperty("cellWidth", cellWidth);
+			ef.setProperty("cellHeight", cellHeight);
 			AbstractEmbosser embosserObj = ef.newEmbosser(new FileOutputStream(output));
-			PEFHandler.Builder builder = new PEFHandler.Builder(embosserObj);
-			builder.range(rangeObj);
+			PEFHandler.Builder builder = new PEFHandler.Builder(embosserObj)
+				.range(rangeObj)
+				.alignmentFallback(paperWidthFallback)
+				.mirrorAlignment("true".equals(mirrorAlign)).
+				offset(Integer.parseInt(alignmentOffset));
 			PEFHandler ph = builder.build();
 			PEFParser.parse(input, ph);
 			progress(0.5);

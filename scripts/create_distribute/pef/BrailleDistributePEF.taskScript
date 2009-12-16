@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 
 <taskScript version="2.0" name="DistributePef">
-	<nicename>Braille: Distribute PEF</nicename>
+	<nicename>Distribute PEF</nicename>
 	<description>This script distributes pef.</description>
 	<documentation uri="../../../doc/scripts/DistributePEF.html"/>
 		

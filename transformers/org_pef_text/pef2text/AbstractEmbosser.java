@@ -97,6 +97,12 @@ public interface AbstractEmbosser {
 	public boolean supportsDuplex();
 	
 	/**
+	 * Does this embosser support page alignment adjustment?
+	 * @return
+	 */
+	public boolean supportsAligning();
+	
+	/**
 	 * Get the maximum row width for this embosser  
 	 * @return
 	 */

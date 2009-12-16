@@ -15,6 +15,11 @@
 	<xsl:param name="row-spacing" select="1" as="xs:decimal"/>
 	<xsl:param name="duplex" select="true()" as="xs:boolean"/>
 	
+	<xsl:param name="l10nrearjacketcopy" select="'Rear jacket copy'"/>
+	<xsl:param name="l10nimagedescription" select="'Image description'"/>
+	<xsl:param name="l10ncolophon" select="'Colophon'"/>
+	<xsl:param name="l10ncaption" select="'Caption'"/>
+
 	<xsl:template match="dtb:frontmatter" mode="apply-sequence-attributes">
 		<xsl:attribute name="master">front</xsl:attribute>
 		<xsl:attribute name="hyphenate">true</xsl:attribute>
@@ -195,7 +200,7 @@
 		<xsl:apply-templates/>
 		<xsl:for-each select="//dtb:level1[@class='colophon']">
 			<sequence master="plain" hyphenate="true" initial-page-number="1">
-				<block><xsl:text>:: Kolofon </xsl:text><leader position="100%" pattern=":"/></block>
+				<block><xsl:value-of select="concat(':: ', $l10ncolophon, ' ')"/><leader position="100%" pattern=":"/></block>
 				<block>
 					<xsl:apply-templates select="node()"/>
 				</block>
@@ -204,7 +209,7 @@
 		</xsl:for-each>
 		<xsl:for-each select="//dtb:level1[@class='backCoverText' or @class='rearjacketcopy']">
 			<sequence master="plain" hyphenate="true" initial-page-number="1">
-				<block><xsl:text>:: Baksidestext </xsl:text><leader position="100%" pattern=":"/></block>
+				<block><xsl:value-of select="concat(':: ', $l10nrearjacketcopy, ' ')"/><leader position="100%" pattern=":"/></block>
 				<block>
 					<xsl:apply-templates select="node()"/>
 				</block>
@@ -215,7 +220,7 @@
 	
 	<!-- Override default processing -->
 	<xsl:template match="dtb:prodnote[ancestor::dtb:imggroup]" priority="10">
-		<block keep="all" keep-with-next="1"><xsl:text>:: Bildbeskrivning </xsl:text><leader position="100%" pattern=":"/></block>
+		<block keep="all" keep-with-next="1"><xsl:value-of select="concat(':: ', $l10nimagedescription, ' ')"/><leader position="100%" pattern=":"/></block>
 		<block>
 			<xsl:apply-templates/>
 		</block>
@@ -224,7 +229,7 @@
 	
 	<!-- Override default processing -->
 	<xsl:template match="dtb:caption[ancestor::dtb:imggroup]" priority="10">
-		<block keep="all" keep-with-next="1"><xsl:text>:: Bildtext </xsl:text><leader position="100%" pattern=":"/></block>
+		<block keep="all" keep-with-next="1"><xsl:value-of select="concat(':: ', $l10ncaption, ' ')"/><leader position="100%" pattern=":"/></block>
 		<block>
 			<xsl:apply-templates/>
 		</block>

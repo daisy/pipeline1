@@ -35,9 +35,12 @@
 			<example>Everest</example>
 			<enum>
 				<value>NONE</value>
+				<value>BRAILLO_400_S</value>
+				<value>BRAILLO_400_SR</value>
 				<value>INDEX_EVEREST</value>
 				<value>INDEX_BASIC</value>
 				<value>INDEX_EVEREST_V3</value>
+				<value>INDEX_BASIC_D_V3</value>
 			</enum>
 			<default>NONE</default>
 		</parameter>
@@ -75,6 +78,49 @@
 			<example>3-10</example>
 			<default>1-</default>
 		</parameter>
+				
+		<parameter required="false" type="string">
+			<name>alignmentOffset</name>
+			<description>Alignment offset in characters</description>
+			<example>0</example>
+			<default>0</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>mirrorAlign</name>
+			<description>Mirror recto-verso alignment</description>
+			<example>true</example>
+			<default>false</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>paperWidthFallback</name>
+			<description>Paper width error handling</description>
+			<example>true</example>
+			<enum>
+			  <value>left</value>
+			  <value>center_left</value>
+			  <value>center_right</value>
+			  <value>right</value>
+			  <value>abort</value>
+			</enum>
+			<default>left</default>
+		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>papersize</name>
+			<description>Set the size of the paper</description>
+			<example>A4</example>
+			<enum>
+			  <value>undefined</value>
+			  <value>A4</value>
+			  <value>w210mm_x_h10inch</value>
+			  <value>w210mm_x_h11inch</value>
+			  <value>w210mm_x_h12inch</value>
+			  <value>FA44</value>
+			</enum>
+			<default>undefined</default>
+		</parameter>
 		
 		<parameter required="false" type="enum">
 			<name>pad</name>
@@ -87,6 +133,20 @@
 				<value>none</value>
 			</enum>
 			<default>both</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>cellWidth</name>
+			<description>Set cell width in mm</description>
+			<example>6</example>
+			<default>6</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>cellHeight</name>
+			<description>Set cell height in mm</description>
+			<example>10</example>
+			<default>10</default>
 		</parameter>
 
 	</parameters>

@@ -27,13 +27,17 @@
 
 <p>This script embosses a PEF 2008-1 document.</p>
 
+<p>Sections marked by * only applies to "Emboss PEF (specific embosser)"</p>
+
+<p><em>Note that the scripts only supports embossers that produce braille cells
+that are 6 mm wide and 10 mm high.</em></p>
+
 <h4>What is PEF?</h4>
 
-<p>The Portable Embosser Format (PEF) is a data format for representing
-braille books, accurately and unambiguously. PEF can be used for braille
-embossing and archiving anywhere in the world, no matter where nor how it was
-produced. PEF is a digital braille hardcopy - the PDF of braille books, if
-you will.</p>
+<p>The Portable Embosser Format (PEF) is a data format for representing braille
+books, accurately and unambiguously. PEF can be used for braille embossing and
+archiving anywhere in the world, no matter where nor how it was produced. PEF
+is a digital braille hardcopy - the PDF of braille books, if you will.</p>
 
 <p>For more information, see <a href="PEFIntroduction.html">Introduction to
 PEF</a>.</p>
@@ -57,13 +61,35 @@ PEF</a>.</p>
 -->
 <dl id="paramslist">
   <dt>Input file</dt>
-    <dd>Select input PEF document</dd>
+    <dd>Select input PEF document.</dd>
   <dt>Embosser</dt>
-    <dd>Select the make and model of target embosser</dd>
+    <dd>Select the make and model of target embosser.</dd>
+  <dt>Paper size</dt>
+    <dd>Set the size of the paper in the embosser.</dd>
   <dt>Device name</dt>
-    <dd>Type in the name of the embosser as labelled by the computer OS</dd>
+    <dd>Type in the name of the embosser as labelled by the computer OS. The
+      device name is case sensitive, but Emboss PEF will try to find the
+      embosser even if only a part of the device name is entered.</dd>
   <dt>Page range</dt>
     <dd>Select a range of pages to emboss.</dd>
+  <dt>Paper width error handling *</dt>
+    <dd>Select a fallback action to use when the selected paper is wider than
+      specified in the file.</dd>
+  <dt>Offset *</dt>
+    <dd><p>If the paper is wider than specified in the file, it is possible to
+      adjust the margin offset (in characters). Offset depends on paper width
+      error handling and is directed away from the alignment edge.</p>
+      <p><em>Note that this setting only has effect if the selected paper is
+      wider than specified in the file.</em></p>
+    </dd>
+  <dt>Mirror recto-verso alignment *</dt>
+    <dd><p>Applies to double sided material when the paper is wider than
+      specified in the file. If true, left-hand pages will have the opposite
+      alignment compared to right-hand pages. If false, left-hand pages will
+      have the same alignment as right-hand pages.</p>
+      <p><em>Note that this setting only has effect if the selected paper is
+      wider than specified in the file.</em></p>
+    </dd>
   <dt>Keep output file</dt>
     <dd>Select a destination for the file that is sent to the embosser.</dd>
 </dl>
@@ -75,9 +101,9 @@ documentation</em>. These are developer and systems-administrator centric
 documents.</p>
 <ol>
   <li><a
-    href="../transformers/int_daisy_validator.html">int_daisy_validator</a></li>
+  href="../transformers/int_daisy_validator.html">int_daisy_validator</a></li>
   <li><a
-    href="../transformers/org_pef_pef2text.html">org_pef_text/pef2text</a></li>
+  href="../transformers/org_pef_pef2text.html">org_pef_text/pef2text</a></li>
 </ol>
 </body>
 </html>

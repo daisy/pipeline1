@@ -419,7 +419,9 @@
 	<!-- Rule 1: Check that result does not have too many rows on a page -->
 	<sch:pattern name="rows_on_page" id="rows_on_page">
 		<sch:rule context="pef:page">
-			<sch:assert test="count(pef:row)&lt;=(ancestor::pef:*[@rows][1])/@rows">[Rule 1] Too many rows on page</sch:assert>
+		<!--
+			<sch:assert test="count(pef:row)&lt;=(ancestor::pef:*[@rows][1])/@rows">[Rule 1] Too many rows on page</sch:assert> -->
+			<sch:assert test="(ceiling(sum(pef:row/sum(ancestor-or-self::pef:*[@rowgap][1]/@rowgap)) div 4) + count(pef:row))&lt;=(ancestor::pef:*[@rows][1])/@rows">[Rule 1] Rows do not fit within the defined page height</sch:assert>
 		</sch:rule>
 	</sch:pattern>
 

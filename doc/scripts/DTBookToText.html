@@ -5,12 +5,12 @@
 <head>
   <meta http-equiv="content-type"
   content="application/xhtml+xml; charset=UTF-8" />
-  <title>Pipeline Script: DTBook to PEF</title>
+  <title>Pipeline Script: DTBook to text</title>
   <link rel="stylesheet" type="text/css" href="../pipeline.css" />
 </head>
 
 <body>
-<h1 class="title">Pipeline Script: DTBook to PEF<em></em></h1>
+<h1 class="title">Pipeline Script: DTBook to text [BETA]</h1>
 <!-- script documentation contains primarily end-user-centric information -->
 
 <div id="toc" class="toc">
@@ -25,7 +25,7 @@
 
 <h2 id="overview">Overview</h2>
 
-<p>This script converts a DTBook document into a PEF 2008-1 file.</p>
+<p>This script converts a DTBook document into text.</p>
 <!-- brief summary of purpose and whats going on. What does this script do really? -->
 
 <h2 id="inputReqs">Input Requirements</h2>
@@ -47,28 +47,22 @@
 <dl id="paramslist">
   <dt>Input DTBook file</dt>
     <dd>Select input DTBook document</dd>
-  <dt>Output file</dt>
+  <dt>Output text file</dt>
     <dd>Select path to output file</dd>
-  <dt>Publication identifier</dt>
-    <dd>Publication identifier. Leave blank to generate</dd>
-  <dt>Publication date</dt>
-    <dd>Publication date. Leave blank to use today's date</dd>
+  <dt>Column width</dt>
+    <dd>Set column width, in characters</dd>
   <dt>Conversion Setup</dt>
     <dd>Conversion setup to apply. See the conversion setup documentation for
       more information: 
       <ul>
         <li><a
-          href="../../transformers/org_pef_dtbook2pef/setups/sv_SE/doc/SwedishBrailleSystem.html">Swedish
-          - A4</a></li>
+          href="../../transformers/org_pef_dtbook2pef/setups/en_US/doc/DefaultTextSystem.html">English</a></li>
         <li><a
-          href="../../transformers/org_pef_dtbook2pef/setups/sv_SE/doc/SwedishBrailleSystem.html">Swedish
-          - FA44</a></li>
+          href="../../transformers/org_pef_dtbook2pef/setups/sv_SE/doc/SwedishTextSystem.html">Swedish</a></li>
       </ul>
     </dd>
   <dt>Settings file</dt>
     <dd>A file containing additional conversion settings</dd>
-  <dt>Duplex</dt>
-    <dd>Emboss on both sides</dd>
 </dl>
 
 <h2 id="transformers">Appendix: List of Transformers used</h2>
@@ -85,8 +79,6 @@ documents.</p>
   href="../transformers/org_pef_dtbook2pef.html">org_pef_dtbook2pef</a></li>
   <li><a
     href="../transformers/pipeline_system_deleter.html">pipeline_system_deleter</a></li>
-  <li><a
-  href="../transformers/int_daisy_validator.html">int_daisy_validator</a></li>
 </ol>
 </body>
 </html>

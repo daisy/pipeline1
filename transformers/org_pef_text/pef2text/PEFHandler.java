@@ -20,18 +20,33 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class PEFHandler extends DefaultHandler {
 	private static final String PEF_NS="http://www.daisy.org/ns/2008/pef";
-	private AbstractEmbosser embosser;
+	public static enum AlignmentFallback {LEFT, CENTER_LEFT, CENTER_RIGHT, RIGHT, ABORT};
+	
+	private final AbstractEmbosser embosser;
+	private final Range range;
+	private final AlignmentFallback alignFallback;
+	private final boolean mirrorAlign;
+	private final int offset;
+
 	private Stack<Element> elements;
 	private Element rowParent;
 	private Element pageParent;
-	private int inputPages;
-	private Range range;
+	//private int inputPages;
+	private int pageCount;
+	private int alignmentPadding;
+	private int versoAlignmentPadding;
+	private boolean verso;
+	private boolean isDuplex;
+
 	
 	public static class Builder {
 		//required params
 		private AbstractEmbosser embosser;
 		//optional params
 		private Range range = new Range(1);
+		private AlignmentFallback alignFallback = AlignmentFallback.LEFT;
+		private boolean mirrorAlign = false;
+		private int offset = 0;
 
 		/**
 		 * Create a new PEFHandler builder
@@ -48,63 +63,151 @@ public class PEFHandler extends DefaultHandler {
 			}
 			return this; 
 		}
-
+		public Builder alignmentFallback(String value) {
+			if (value!=null && !"".equals(value)) {
+				return alignmentFallback(AlignmentFallback.valueOf(value.toUpperCase()));
+			}
+			return this;
+		}
+		public Builder alignmentFallback(AlignmentFallback value) { alignFallback = value; return this; }
+		public Builder mirrorAlignment(boolean value) {
+			mirrorAlign = value;
+			return this;
+		}
+		public Builder offset(int value) {
+			offset = value;
+			return this;
+		}
 		public PEFHandler build() throws IOException {
 			return new PEFHandler(this);
 		}
 	}
 	
 	private PEFHandler(Builder builder) throws IOException {
-		range = builder.range;
-		embosser = builder.embosser;
+		this.range = builder.range;
+		this.embosser = builder.embosser;
+		this.alignFallback = builder.alignFallback;
+		this.mirrorAlign = builder.mirrorAlign;
+		this.offset = builder.offset;
         this.elements = new Stack<Element>();
         this.rowParent = null;
         this.pageParent = null;
-        this.inputPages = 0;
+        //this.inputPages = 0;
+        this.pageCount = 0;
+        this.alignmentPadding = 0;
+        this.versoAlignmentPadding = 0;
 	}
 
+	
+	// Pages:
+	// sum(//section/(if (ancestor-or-self::*[@duplex][1]/@duplex=false()) then (count(page) * 2) else (count(page) + count(page) mod 2)))
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		HashMap<String, String> atts = new HashMap<String, String>();
-		if (!elements.isEmpty()) {
-			for (int i=0; i<attributes.getLength(); i++) {
-				String attNS = attributes.getURI(i);
-				addKey(atts, attNS, attributes.getLocalName(i), attributes.getValue(i));
-			}
-			inheritKey(atts, "", "rowgap");
-			inheritKey(atts, "", "duplex");
-		}
 		if (PEF_NS.equals(uri)) {
+			if (!elements.isEmpty()) {
+				for (int i=0; i<attributes.getLength(); i++) {
+					String attNS = attributes.getURI(i);
+					addKey(atts, attNS, attributes.getLocalName(i), attributes.getValue(i));
+				}
+				inheritKey(atts, "", "rowgap");
+				inheritKey(atts, "", "duplex");
+				inheritKey(atts, "", "cols");
+			}
 			if (elements.isEmpty() && !"pef".equals(localName)) {
 				throw new RuntimeException("Wrong root element.");
 			} else if ("row".equals(localName)) {
-				if (rowParent==elements.peek() && range.inRange(inputPages)) {
+				if (range.inRange(pageCount)) {
 					try {
-						embosser.newLine();
+						if (rowParent==elements.peek()) {
+							embosser.newLine();
+						}
+						if (mirrorAlign && verso && isDuplex) {
+							addAlignPadding(versoAlignmentPadding);
+						} else {
+							addAlignPadding(alignmentPadding);
+						}
 					} catch (IOException e) {
 						throw new SAXException(e);
 					}
 				}
 				embosser.setRowGap(Integer.parseInt(getKey(atts, "", "rowgap")));
 			} else if ("page".equals(localName)) {
-				inputPages++;
-				if (range.inRange(inputPages)) {
-					try {
-						if (pageParent==elements.peek()) {
-							embosser.newPage();
-						} else if (pageParent!=null) {
-							embosser.newSectionAndPage("true".equals(getKey(atts, "", "duplex")));
-						} else {
-							embosser.open("true".equals(getKey(atts, "", "duplex")));
-						}
-					} catch (IOException e) {
-						throw new SAXException(e);
+				if (isDuplex) {
+					verso = !verso;
+				} else {
+					verso = false;
+					if (pageCount % 2 == 1) {
+						pageCount++;
 					}
 				}
+				pageCount++;
+				//inputPages++;
+				try {
+					if (pageParent==elements.peek()) { // same section
+						if (range.inRange(pageCount)) {
+							embosser.newPage();
+						}
+					} else if (pageParent!=null) { // not the same section as the previous page
+						if (range.inRange(pageCount)) {
+							embosser.newSectionAndPage(isDuplex);
+						}
+					} else { // nothing has been written yet
+						if (range.inRange(pageCount)) {
+							embosser.open(isDuplex);
+							if (verso) {
+								embosser.newPage(); 
+							}
+						}
+					}
+					System.out.println("page:" + pageCount);
+				} catch (IOException e) { throw new SAXException(e); }
+			} else if ("section".equals(localName)) {
+				verso = true;
+				if (pageCount % 2 == 1) {
+					pageCount++;
+				}
+				int currentWidth = Integer.parseInt(getKey(atts, "", "cols"));
+				isDuplex = "true".equals(getKey(atts, "", "duplex"));
+				if (!embosser.supportsAligning() || currentWidth==embosser.getMaxWidth()) {
+					alignmentPadding = 0;
+					versoAlignmentPadding = 0;
+				} else {
+					switch (alignFallback) {
+						case LEFT:
+							alignmentPadding = 0 + offset;
+							break;
+						case CENTER_LEFT:
+							alignmentPadding = (embosser.getMaxWidth()-currentWidth) / 2  + offset;
+							break;
+						case CENTER_RIGHT:
+							alignmentPadding = (int)Math.ceil((embosser.getMaxWidth()-currentWidth) / 2d) - offset;
+							break;
+						case RIGHT:
+							alignmentPadding = embosser.getMaxWidth()-currentWidth - offset;
+							break;
+						case ABORT:
+							throw new SAXException("Section width does not match paper width");
+						default:
+							throw new SAXException("Unexpected value: " + alignFallback);
+					}
+					versoAlignmentPadding = embosser.getMaxWidth() - currentWidth - alignmentPadding;
+					if (alignmentPadding<0 || versoAlignmentPadding<0) {
+						throw new SAXException("Cannot fit page on paper with offset " + offset);
+					}
+					
+				}
 			}
-		}
+		} 
 		elements.push(new Element(uri, localName, atts));
 	}
-	
+	private void addAlignPadding(int align) throws IOException {
+		if (align < 1) return;
+		char[] c = new char[align];
+		for (int i=0; i<align; i++) {
+			c[i] = '\u2800';
+		}
+		embosser.write(new String(c));
+	}
 	private String toKey(String uri, String localName) {
 		return uri+">"+localName;
 	}
@@ -129,9 +232,9 @@ public class PEFHandler extends DefaultHandler {
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		elements.pop();
 		if (PEF_NS.equals(uri)) {
-			if ("page".equals(localName) && range.inRange(inputPages)) {
+			if ("page".equals(localName) && range.inRange(pageCount)) {
 				pageParent = elements.peek();
-			} else if ("row".equals(localName) && range.inRange(inputPages)) {
+			} else if ("row".equals(localName) && range.inRange(pageCount)) {
 				rowParent = elements.peek();
 			}
 		}
@@ -141,7 +244,7 @@ public class PEFHandler extends DefaultHandler {
 		Element context = elements.peek();
 		if (PEF_NS.equals(context.getUri()) 
 				&& "row".equals(context.getLocalName())
-				&& range.inRange(inputPages)) {
+				&& range.inRange(pageCount)) {
 			String text = new String(ch, start, length);
 			try {
 				embosser.write(text);
@@ -154,6 +257,7 @@ public class PEFHandler extends DefaultHandler {
 	public void endDocument() throws SAXException {
 		try {
 			embosser.newPage();
+			verso = !verso;
 			embosser.close();
 		} catch (IOException e) {
 			throw new SAXException(e);

@@ -34,4 +34,24 @@ public interface SectionProperties {
 	 * @return returns true if output is intended on both sides of the sheets
 	 */
 	public boolean duplex();
+	
+
+	/**
+	 * Get the flow width
+	 * @return returns the flow width
+	 */
+	public int getFlowWidth();
+
+	/**
+	 * Get inner margin
+	 * @return returns the inner margin
+	 */
+	public int getInnerMargin();
+
+	/**
+	 * Get outer margin
+	 * @return returns the outer margin
+	 */
+	public int getOuterMargin();
+	
 }

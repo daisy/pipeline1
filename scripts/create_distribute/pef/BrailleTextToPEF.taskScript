@@ -5,7 +5,7 @@
 ]>
 
 <taskScript version="2.0" name="TextToPef">
-	<nicename>Braille: Text to PEF</nicename>
+	<nicename>Text to PEF</nicename>
 	<description>This script converts an ASCII type braille file into a PEF 2008-1 document.</description>
 	<documentation uri="../../../doc/scripts/TextToPEF.html"/>
 		

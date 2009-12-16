@@ -87,6 +87,9 @@ public class PEFParser {
 		} else {
 			Range range = null;
 			EmbosserFactory ef = new EmbosserFactory();
+			String alignmentFallback = "left";
+			boolean mirrorAlign = false;
+			int offset = 0;
 			for (int i=0; i<(args.length-2)/2; i++) {
 				if ("-embosser".equals(args[2+i*2])) {
 					ef.setEmbosserType(EmbosserFactory.EmbosserType.valueOf(args[3+i*2].toUpperCase()));
@@ -102,13 +105,29 @@ public class PEFParser {
 					ef.setProperty("replacement", args[3+i*2]);
 				} else if ("-pad".equals(args[2+i*2])) {
 					ef.setProperty("padNewline", args[3+i*2]);
+				} else if ("-alignmentOffset".equals(args[2+i*2])) {
+					offset = Integer.parseInt(args[3+i*2]);
+				} else if ("-mirrorAlign".equals(args[2+i*2])) {
+					ef.setProperty("mirrorAlign", args[3+i*2]);
+				} else if ("-paperWidthFallback".equals(args[2+i*2])) {
+					ef.setProperty("paperWidthFallback", args[3+i*2]);
+				} else if ("-papersize".equals(args[2+i*2])) {
+					ef.setPaperSize(Paper.PaperSize.valueOf(args[3+i*2].toUpperCase()));
+				} else if ("-cellWidth".equals(args[2+i*2])) {
+					ef.setProperty("cellWidth", args[3+i*2]);
+				} else if ("-cellHeight".equals(args[2+i*2])) {
+					ef.setProperty("cellHeight", args[3+i*2]);
 				} else {
 					throw new IllegalArgumentException("Unknown option \"" + args[2+i*2] + "\"");
 				}
 			}
 			AbstractEmbosser embosser = ef.newEmbosser(new FileOutputStream(args[1]));
-			PEFHandler.Builder builder = new PEFHandler.Builder(embosser);
-			builder.range(range);
+			PEFHandler.Builder builder = 
+				new PEFHandler.Builder(embosser).
+					range(range).
+					alignmentFallback(alignmentFallback).
+					mirrorAlignment(mirrorAlign).
+					offset(offset);
 			PEFHandler ph = builder.build();
 			parse(new File(args[0]), ph);
 		}

@@ -85,7 +85,7 @@ public class SwedishBrailleSystem implements TaskSystem {
 			//inputSchURL = new URL(resourceBase, "sv_SE/validation/basic.sch");
 			//markersXsl = new URL(resourceBase, "sv_SE/preprocessing/add-structure-markers.xsl");
 			//dtbook2flow = new URL(resourceBase, "sv_SE/definers/dtbook2flow_sv_SE_braille.xsl");
-			flowValidationURL = new URL(resourceBase, "sv_SE/validation/flow.xsd");
+			flowValidationURL = new URL(resourceBase, "common/validation/flow.xsd");
 			flowWsNormalizer = new URL(resourceBase, "common/preprocessing/flow-whitespace-normalizer.xsl");
 			volumeSplitter = new URL(resourceBase, "common/splitters/simple-splitter.xsl");
 			brailleFinalizer = new URL(resourceBase, "common/renderers/braille-finalizer.xsl");
@@ -96,6 +96,11 @@ public class SwedishBrailleSystem implements TaskSystem {
 		}
 
 		Properties p = new Properties();
+		p.put("l10nrearjacketcopy", "Baksidestext");
+		p.put("l10imagedescription", "Bildbeskrivning");
+		p.put("l10ncolophon", "Tryckuppgifter");
+		p.put("l10ncaption", "Bildtext");
+
 		try {
 			p.loadFromXML(configURL.openStream());
 		} catch (FileNotFoundException e) {
@@ -151,35 +156,6 @@ public class SwedishBrailleSystem implements TaskSystem {
 		factory.setDefault(sv_SE);
 		PageStruct paginator = new PageStruct(factory.getDefault());
 		DefaultLayoutPerformer flow = new DefaultLayoutPerformer.Builder().
-										/*addLayoutMaster("main",
-												new BodyLayoutMaster(
-													new LayoutMasterConfigurator(flowWidth+innerMargin+outerMargin, pageHeight).
-														innerMargin(innerMargin).
-														outerMargin(outerMargin).
-														rowSpacing((rowgap/4)+1).
-														duplex(duplex)
-													)
-												).
-										addLayoutMaster("front", 
-												new FrontLayoutMaster(
-													new LayoutMasterConfigurator(flowWidth+innerMargin+outerMargin, pageHeight).
-														innerMargin(innerMargin).
-														outerMargin(outerMargin).
-														rowSpacing((rowgap/4)+1).
-														duplex(duplex)
-													)
-												).
-										addLayoutMaster("plain",
-												new BaseLayoutMaster(
-													new LayoutMasterConfigurator(flowWidth+innerMargin+outerMargin, pageHeight).
-														innerMargin(innerMargin).
-														outerMargin(outerMargin).
-														rowSpacing((rowgap/4)+1).
-														duplex(duplex).
-														headerHeight(0).
-														footerHeight(0)
-													)
-												).*/
 										setStringFilterFactory(factory).
 										build();
 		setup.add(new LayoutEngineTask("FLOW to PEF converter", flow, paginator, paged));

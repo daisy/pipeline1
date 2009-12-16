@@ -5,7 +5,7 @@
 ]>
 
 <taskScript version="2.0" name="EmbossPEF">
-	<nicename>Emboss PEF (specific embosser)</nicename>
+	<nicename>Emboss PEF (generic embosser)</nicename>
 	<description>This script sends a PEF 2008-1 file to an embosser</description>
 	<documentation uri="../../../doc/scripts/EmbossPEF.html"/>
 		
@@ -14,21 +14,6 @@
 		<description>A PEF-file</description>
 		<datatype>
 			<file mime="application/x-pef+xml" type="input"/>
-		</datatype>
-	</parameter>
-	
-	<parameter name="embosser" value="" required="true">
-		<nicename>Embosser</nicename>
-		<description>Select the make and model of the target embosser</description>
-		<datatype>
-			<enum>
-			  <item nicename="Braillo 400S" value="BRAILLO_400_S" />
-			  <item nicename="Braillo 400SR" value="BRAILLO_400_SR" />
-			  <item nicename="Index Braille - 9.20 Everest V2" value="INDEX_EVEREST" />
-			  <item nicename="Index Braille - Everest V3" value="INDEX_EVEREST_V3" />
-			  <item nicename="Index Braille - 3.30 Basic V2" value="INDEX_BASIC" />
-			  <item nicename="Index Braille - Basic-D V3" value="INDEX_BASIC_D_V3" />
-			</enum>
 		</datatype>
 	</parameter>
 	
@@ -47,36 +32,6 @@
 		<description>Emboss a selection of pages</description>
 		<datatype>
 			<string regex="(([0-9]+-)?[0-9]*)?"/>
-		</datatype>
-	</parameter>
-	
-	<parameter name="paperWidthFallback" value="center_right" required="false">
-		<nicename>Paper width error handling</nicename>
-		<description>Select a fallback action to use when the selected paper is wider than the width specified in the file</description>
-		<datatype>
-			<enum>
-			  <item nicename="Align left" value="left" />
-			  <item nicename="Align center, round off towards the left edge" value="center_left" />
-			  <item nicename="Align center, round off towards the right edge" value="center_right" />
-			  <item nicename="Align right" value="right" />
-			  <item nicename="Abort" value="abort" />
-			</enum>
-		</datatype>
-	</parameter>
-	
-	<parameter name="alignmentOffset" value="0" required="false">
-		<nicename>Offset</nicename>
-		<description>Adjust the margin offset in characters to match the physical alignment of the paper in the embosser</description>
-		<datatype>
-			<string regex="[0-9]"/>
-		</datatype>
-	</parameter>
-
-	<parameter name="mirrorAlign" value="true" required="false">
-		<nicename>Mirror recto-verso alignment</nicename>
-		<description>If checked, left-hand pages will have the opposite alignment compared to right-hand pages</description>
-		<datatype>
-			<boolean/>
 		</datatype>
 	</parameter>
 	
@@ -123,9 +78,9 @@
 		
 		<parameter>
 			<name>embosser</name>
-			<value>${embosser}</value>
+			<value>NONE</value>
 		</parameter>
-		
+
 		<parameter>
 			<name>deviceName</name>
 			<value>${deviceName}</value>
@@ -137,23 +92,8 @@
 		</parameter>
 
 		<parameter>
-			<name>paperWidthFallback</name>
-			<value>${paperWidthFallback}</value>
-		</parameter>
-
-		<parameter>
 			<name>pageRange</name>
 			<value>${pageRange}</value>
-		</parameter>
-		
-		<parameter>
-			<name>alignmentOffset</name>
-			<value>${alignmentOffset}</value>
-		</parameter>
-		
-		<parameter>
-			<name>mirrorAlign</name>
-			<value>${mirrorAlign}</value>
 		</parameter>
 
 	</task>

@@ -9,22 +9,4 @@ public interface LayoutMaster extends SectionProperties {
 
 	public Template getTemplate(int pagenum);
 
-	/**
-	 * Get the flow width
-	 * @return returns the flow width
-	 */
-	public int getFlowWidth();
-
-	/**
-	 * Get inner margin
-	 * @return returns the inner margin
-	 */
-	public int getInnerMargin();
-
-	/**
-	 * Get outer margin
-	 * @return returns the outer margin
-	 */
-	public int getOuterMargin();
-
 }

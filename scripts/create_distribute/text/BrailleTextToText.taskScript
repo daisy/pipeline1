@@ -6,7 +6,7 @@
 ]>
 
 <taskScript version="2.0" name="TextToText">
-	<nicename>Braille: Text to text</nicename>
+	<nicename>Braille text to text</nicename>
 	<description>This script converts from one ASCII type braille file into another.</description>
 	<documentation uri="../../../doc/scripts/TextToText.html"/>
 		
