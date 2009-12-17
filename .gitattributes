@@ -1203,11 +1203,7 @@ transformers/org_pef_dtbook2pef/setups/sv_SE/definers/dtbook2flow_sv_SE_braille.
 transformers/org_pef_dtbook2pef/setups/sv_SE/definers/dtbook2flow_sv_SE_text.xsl -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/doc/SwedishBrailleSystem.html -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/doc/SwedishTextSystem.html -text
-transformers/org_pef_dtbook2pef/setups/sv_SE/preprocessing/output.xsl -text
-transformers/org_pef_dtbook2pef/setups/sv_SE/preprocessing/recursive-copy.xsl -text
-transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/StaxFilter2.java -text
-transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/VolumeCoverPageFilter.java -text
-transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/VolumeCoverPageTask.java -text
+transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/SwedishVolumeCoverPage.java -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/validation/basic.sch -text
 transformers/org_pef_dtbook2pef/system/InternalTask.java -text
 transformers/org_pef_dtbook2pef/system/TaskSystem.java -text
@@ -1215,6 +1211,10 @@ transformers/org_pef_dtbook2pef/system/TaskSystemException.java -text
 transformers/org_pef_dtbook2pef/system/tasks/DebugTask.java -text
 transformers/org_pef_dtbook2pef/system/tasks/ValidatorTask.java -text
 transformers/org_pef_dtbook2pef/system/tasks/XsltTask.java -text
+transformers/org_pef_dtbook2pef/system/tasks/cover/StaxFilter2.java -text
+transformers/org_pef_dtbook2pef/system/tasks/cover/VolumeCoverPage.java -text
+transformers/org_pef_dtbook2pef/system/tasks/cover/VolumeCoverPageFilter.java -text
+transformers/org_pef_dtbook2pef/system/tasks/cover/VolumeCoverPageTask.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/LayoutEngineTask.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/flow/BlockPosition.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/flow/BlockProperties.java -text

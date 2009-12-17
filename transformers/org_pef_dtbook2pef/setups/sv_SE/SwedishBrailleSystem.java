@@ -11,13 +11,19 @@ import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.xml.sax.SAXException;
+
 import org_pef_dtbook2pef.setups.common.InputDetectorTaskSystem;
-import org_pef_dtbook2pef.setups.sv_SE.tasks.VolumeCoverPageTask;
+import org_pef_dtbook2pef.setups.sv_SE.tasks.SwedishVolumeCoverPage;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.TaskSystem;
 import org_pef_dtbook2pef.system.TaskSystemException;
 import org_pef_dtbook2pef.system.tasks.ValidatorTask;
 import org_pef_dtbook2pef.system.tasks.XsltTask;
+import org_pef_dtbook2pef.system.tasks.cover.VolumeCoverPageTask;
 import org_pef_dtbook2pef.system.tasks.layout.LayoutEngineTask;
 import org_pef_dtbook2pef.system.tasks.layout.impl.DefaultLayoutPerformer;
 import org_pef_dtbook2pef.system.tasks.layout.impl.PageStruct;
@@ -56,8 +62,6 @@ import org_pef_dtbook2pef.system.tasks.layout.writers.PEFMediaWriter;
  * <p>The result should be validated against the PEF Relax NG schema using int_daisy_validator.</p>
  * @author joha
  * TODO: hyphenation "sjuttonåringar", "blårött" och "jättestor".
- * TODO: clean
- * TODO: remove "sv_SE/preprocessing"
  */
 public class SwedishBrailleSystem implements TaskSystem {
 	private URL resourceBase;
@@ -71,20 +75,14 @@ public class SwedishBrailleSystem implements TaskSystem {
 	}
 
 	public ArrayList<InternalTask> compile(Map<String, String> parameters) throws TaskSystemException {
-		//URL markersXsl;
-		//URL dtbook2flow;
 		URL flowWsNormalizer;
 		URL volumeSplitter;
 		URL brailleFinalizer;
 		URL metaFinalizer;
 		URL configURL;
 		URL flowValidationURL;
-		//URL inputSchURL;
 		
 		try {
-			//inputSchURL = new URL(resourceBase, "sv_SE/validation/basic.sch");
-			//markersXsl = new URL(resourceBase, "sv_SE/preprocessing/add-structure-markers.xsl");
-			//dtbook2flow = new URL(resourceBase, "sv_SE/definers/dtbook2flow_sv_SE_braille.xsl");
 			flowValidationURL = new URL(resourceBase, "common/validation/flow.xsd");
 			flowWsNormalizer = new URL(resourceBase, "common/preprocessing/flow-whitespace-normalizer.xsl");
 			volumeSplitter = new URL(resourceBase, "common/splitters/simple-splitter.xsl");
@@ -113,13 +111,11 @@ public class SwedishBrailleSystem implements TaskSystem {
 		// GUI parameters should take precedence
 		p.putAll(parameters);
 
-
 		int flowWidth = Integer.parseInt(p.getProperty("cols", "28"));
 		int pageHeight = Integer.parseInt(p.getProperty("rows", "29"));
 		int innerMargin = Integer.parseInt(p.getProperty("inner-margin", "5"));
 		int outerMargin = Integer.parseInt(p.getProperty("outer-margin", "2"));
 		float rowgap = Float.parseFloat(p.getProperty("rowgap", "0"));
-		boolean duplex = "true".equals(p.getProperty("duplex", "true"));
 
 		ArrayList<InternalTask> setup = new ArrayList<InternalTask>();
 
@@ -132,22 +128,11 @@ public class SwedishBrailleSystem implements TaskSystem {
 
 		setup.addAll(inputDetector.compile(h));
 
-		// Check input conformance 
-		//setup.add(new ValidatorTask("Conformance checker", inputSchURL));
-
-		// Add braille markers
-		//setup.add(new XsltTask("Markers injector", markersXsl, null, h));
-		
-		// Add braille markers and redefines dtbook as FLOW input
-		//setup.add(new XsltTask("DTBook to FLOW converter", dtbook2flow, null, h));
-
 		// Whitespace normalizer TransformerFactoryConstants.SAXON8
 		setup.add(new XsltTask("FLOW whitespace normalizer", flowWsNormalizer, null, h));
 
 		// Check that the result from the previous step is OK
 		setup.add(new ValidatorTask("FLOW validator", flowValidationURL));
-		
-		//setup.add(new DebugTask("Debug", new File("D:\\debug.xml")));
 
 		// Layout FLOW as PEF
 		FilterLocale sv_SE = FilterLocale.parse("sv-SE");
@@ -175,7 +160,19 @@ public class SwedishBrailleSystem implements TaskSystem {
     						bottomRightCorner("\u283c").
     						alignment(TextBorder.Align.CENTER).
     						build();
-		setup.add(new VolumeCoverPageTask("Cover page adder", factory.getDefault(), tb, new File(parameters.get("input")), pageHeight));
+    	SwedishVolumeCoverPage cover;
+		try {
+			cover = new SwedishVolumeCoverPage(new File(parameters.get("input")), tb, factory.getDefault(), pageHeight);
+		} catch (XPathExpressionException e) {
+			throw new TaskSystemException(e);
+		} catch (ParserConfigurationException e) {
+			throw new TaskSystemException(e);
+		} catch (SAXException e) {
+			throw new TaskSystemException(e);
+		} catch (IOException e) {
+			throw new TaskSystemException(e);
+		}
+		setup.add(new VolumeCoverPageTask("Cover page adder", cover));
 
 		// Finalizes character data on rows
 		HashMap<String, Object> finalizerOptions = new HashMap<String, Object>();

@@ -18,6 +18,8 @@ import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformer;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriterException;
 
+//TODO: Validate against schema
+
 /**
  * breaks row flow into pages
  * @author joha

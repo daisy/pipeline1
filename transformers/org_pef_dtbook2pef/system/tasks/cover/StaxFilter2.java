@@ -1,4 +1,4 @@
-package org_pef_dtbook2pef.setups.sv_SE.tasks;
+package org_pef_dtbook2pef.system.tasks.cover;
 
 /*
  * org.daisy.util (C) 2005-2008 Daisy Consortium

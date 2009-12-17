@@ -34,9 +34,6 @@ public class PageSequence {
 	}
 	
 	public void newRow(Row row) {
-		//TODO: clean
-		//Template t = master.getTemplate(currentPage().getPageIndex()+1);
-		//master.getPageHeight()-t.getHeaderHeight()-t.getFooterHeight()
 		if (currentPage().rowsOnPage()>=currentPage().getFlowHeight()) {
 			newPage();
 		}

@@ -69,7 +69,7 @@ public class InputDetectorTaskSystem implements TaskSystem {
 		String input = parameters.get("input");
 		String inputformat = null;
 		Peeker peeker = null;
-		try{
+		try {
 			PeekResult peekResult;
 			peeker = PeekerPool.getInstance().acquire();
 			FileInputStream is = new FileInputStream(new File(input));

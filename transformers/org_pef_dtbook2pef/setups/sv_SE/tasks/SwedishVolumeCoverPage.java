@@ -1,110 +1,101 @@
 package org_pef_dtbook2pef.setups.sv_SE.tasks;
 
-import java.io.OutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.StartElement;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
+import org.daisy.util.xml.catalog.CatalogEntityResolver;
+import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import org_pef_dtbook2pef.system.tasks.cover.VolumeCoverPage;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
 import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
 import org_pef_dtbook2pef.system.tasks.layout.utils.TextBorder;
 
-public class VolumeCoverPageFilter extends StaxFilter2 {
-	private final static String PEF_NS = "http://www.daisy.org/ns/2008/pef";
-
-	private final QName volume;
-	private final QName section;
-	private boolean firstSection;
-	private int volumeNo;
+public class SwedishVolumeCoverPage implements VolumeCoverPage {
 	private StringFilter filters;
 	private String title;
 	private ArrayList<String> creator;
-	private int rows;
-	private int cols;
+	//private int rows;
+	//private int cols;
 	private TextBorder tb;
 	private int height;
-	private int vols;
 
-	public VolumeCoverPageFilter(XMLEventReader xer,
-			OutputStream outStream,
-			StringFilter filters,
-			String title,
-			ArrayList<String> creator,
-			TextBorder tb,
-			int height, int vols)
-			throws XMLStreamException {
-		super(xer, outStream);
-		this.filters = filters;
-		volume = new QName(PEF_NS, "volume");
-		section = new QName(PEF_NS, "section");
-		firstSection = true;
-		volumeNo = 0;
-		rows = 0;
-		cols = 0;
-		this.height = height;
+	public SwedishVolumeCoverPage(File dtbook, TextBorder tb, StringFilter filters, int height) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+		DocumentBuilder docBuilder = initDocumentBuilder();
+		Document d = docBuilder.parse(dtbook);
+		XPath xp = XPathFactory.newInstance().newXPath();
+		this.title = xp.evaluate("/dtbook/book/frontmatter/doctitle", d);
+		org.w3c.dom.NodeList ns = (org.w3c.dom.NodeList)xp.evaluate("/dtbook/book/frontmatter/docauthor", d, XPathConstants.NODESET);
+		this.creator = new ArrayList<String>();
+		for (int i=0; i<ns.getLength(); i++) {
+			creator.add(ns.item(i).getTextContent());
+		}
 		this.tb = tb;
-		this.title = title;
-		this.creator = creator;
-		this.vols = vols;
+		this.filters = filters;
+		this.height = height;
 	}
 	
-    protected StartElement startElement(StartElement event) {
+	protected DocumentBuilder initDocumentBuilder() throws ParserConfigurationException {
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = dbf.newDocumentBuilder();
 		try {
-	    	if (event.getName().equals(section) && firstSection) {
-				getEventWriter().add(getEventFactory().createStartElement("", PEF_NS, "section"));
-				getEventWriter().add(getEventFactory().createStartElement("", PEF_NS, "page"));
-				for (Row r : buildTitlePage()) {
-					getEventWriter().add(getEventFactory().createStartElement("", PEF_NS, "row"));
-					getEventWriter().add(getEventFactory().createCharacters(r.getChars().toString()));
-					getEventWriter().add(getEventFactory().createEndElement("", PEF_NS, "row"));
-				}
-				getEventWriter().add(getEventFactory().createEndElement("", PEF_NS, "page"));
-				getEventWriter().add(getEventFactory().createEndElement("", PEF_NS, "section"));
-				firstSection = false;
-	    	} else if (event.getName().equals(volume)) {
-	    		volumeNo++;
-	    		firstSection = true;
-	    		rows = Integer.parseInt(event.getAttributeByName(new QName("rows")).getValue());
-	    		cols = Integer.parseInt(event.getAttributeByName(new QName("cols")).getValue());
-	    	}
-		} catch (XMLStreamException e) {
-			e.printStackTrace();
+			db.setEntityResolver(CatalogEntityResolver.getInstance());
+		} catch (CatalogExceptionNotRecoverable e) {
+			ParserConfigurationException pce = new ParserConfigurationException("Unable to set CatalogEntityResolver");
+			pce.initCause(e);
+			throw pce;
 		}
-        return event;
-    }
-    
-    private ArrayList<Row> buildTitlePage() {
+		return db;
+	}
+	
+	public ArrayList<Row> buildPage(int volumeNo, int volumeCount) {
 
     	ArrayList<Row> ret = new ArrayList<Row>();
     	ret.add(new Row(tb.getTopBorder()));
     	for (int i=0; i<3; i++) {
     		ret.add(new Row(tb.addBorderToRow("")));
     	}
-    	boolean hasCreator = false;
-    	for (String c : creator) {
-    		if (c!=null && c.length()>0) {
-	    		for (String s : tb.addBorderToParagraph(filters.filter(c))) {
-	    			ret.add(new Row(s));
-	    		}
-	    		hasCreator = true;
-    		}
-    	}
+
+    	// add title
     	if (title!=null && title.length()>0) {
-    		if (hasCreator) {
-    			ret.add(new Row(tb.addBorderToRow("")));
-    		}
 	    	for (String s : tb.addBorderToParagraph(filters.filter(title))) {
 	    		ret.add(new Row(s));
 	    	}
+   			ret.add(new Row(tb.addBorderToRow("")));
     	}
+    	
+    	// add authors
+    	if (creator.size()>3) {
+    		for (String s : tb.addBorderToParagraph(filters.filter(creator.get(0) + " m.fl."))) {
+    			ret.add(new Row(s));
+    		}
+    	} else {
+	    	for (String c : creator) {
+	    		if (c!=null && c.length()>0) {
+		    		for (String s : tb.addBorderToParagraph(filters.filter(c))) {
+		    			ret.add(new Row(s));
+		    		}
+	    		}
+	    	}
+    	}
+
+    	// add volume number
     	String voltext;
-    	if (vols==1) {
+    	if (volumeCount==1) {
     		voltext = "En volym";
     	} else {
-    		voltext = "Volym "+intToText(volumeNo)+" av "+intToText(vols);
+    		voltext = "Volym "+intToText(volumeNo)+" av "+intToText(volumeCount);
     	}
     	ArrayList<String> vol = tb.addBorderToParagraph(filters.filter(voltext));
     	while (ret.size()<height-vol.size()-1) {
@@ -118,8 +109,9 @@ public class VolumeCoverPageFilter extends StaxFilter2 {
     		throw new RuntimeException("Unable to perform layout. Title page contains too many rows.");
     	}
     	return ret;
+
     }
-    
+	
     private String loc(int value) {
     	switch (value) {
     		case 0: return "noll"; 
