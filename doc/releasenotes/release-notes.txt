@@ -48,7 +48,7 @@ Pipeline Beta Release, 2009-12-22
 - Fixed the DTBookFixer to add dummy content to pagenum[@page='special'] (reported by Jamie Norrish)
 - Fixed the Audio Tagger, failing on some 239.86 books (reported by Greg Kearney)
 - Fixed the DAISY 2.02 to DAISY 3 Forward Migrator to generate a dtb:mediaType if none was present (reported by Sébastien Hinderer)
-- Fixed miscellaneous issues in the DTbook to LaTeX transformer
+- Fixed the DTbook to LaTeX transformer to be able to handle many floats, more than 26 bullets in an alphanumeric enumeration, images within section headings and to handle hd inside sidebars correctly (all reported by Greg Kearney)
 
 ***************************************
 Pipeline Major Release, 2009-04-10
