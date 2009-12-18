@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 
 <taskScript version="2.0" name="TextToPef">
-	<nicename>Braille: PEF Validator</nicename>
+	<nicename>PEF Validator</nicename>
 	<description>This script validates a PEF 2008-1 document.</description>
 	<documentation uri="../../doc/scripts/PEFValidator.html"/>
 		

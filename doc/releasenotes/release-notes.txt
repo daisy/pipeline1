@@ -19,7 +19,9 @@ Pipeline Beta Release, 2009-12-22
 
 - New Hyphenator script, contributed by Joel Håkansson, TPB
 - New DTBook to PEF script, contributed by Joel Håkansson, TPB
+- New DTBook to text script, contributed by Joel Håkansson, TPB 
 - New PEF File splitter script, contributed by Joel Håkansson, TPB
+- New PEF File merger script, contributed by Joel Håkansson, TPB
 - New ODT to DTBook script, contributed by Vincent Spiewak, Freelance.
 - Beta version of a DAISY 2.02 to DAISY 3 text-only script based on XSLT, contributed by Alex Bernier, BrailleNet.
 - Added Finnish localization of the Narrator transformers, contributed by Päivi Suhonen, Celia.
