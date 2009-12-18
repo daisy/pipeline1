@@ -50,7 +50,7 @@
 		</datatype>
 	</parameter>
 	
-	<parameter name="paperWidthFallback" value="center_right" required="false">
+	<parameter name="paperWidthFallback" value="center_left" required="false">
 		<nicename>Paper width error handling</nicename>
 		<description>Select a fallback action to use when the selected paper is wider than the width specified in the file</description>
 		<datatype>

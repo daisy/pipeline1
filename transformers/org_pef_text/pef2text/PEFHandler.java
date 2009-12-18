@@ -37,6 +37,7 @@ public class PEFHandler extends DefaultHandler {
 	private int versoAlignmentPadding;
 	private boolean verso;
 	private boolean isDuplex;
+	private boolean widthError;
 
 	
 	public static class Builder {
@@ -96,11 +97,14 @@ public class PEFHandler extends DefaultHandler {
         this.pageCount = 0;
         this.alignmentPadding = 0;
         this.versoAlignmentPadding = 0;
+        this.widthError = false;
 	}
 
 	
-	// Pages:
-	// sum(//section/(if (ancestor-or-self::*[@duplex][1]/@duplex=false()) then (count(page) * 2) else (count(page) + count(page) mod 2)))
+	// Pages, XPath 2:
+	// sum(//section/(if (ancestor-or-self::*[@duplex][1]/@duplex=false()) then (count(descendant::page) * 2) else (count(descendant::page) + count(descendant::page) mod 2)))
+	// Pages, XPath 1:
+	// count(//section[ancestor-or-self::*[@duplex][1][@duplex='false']]/descendant::page)*2 + count(//section[ancestor-or-self::*[@duplex][1][@duplex='true']]/descendant::page) + count(//section[count(descendant::page) mod 2 = 1][ancestor-or-self::*[@duplex][1][@duplex='true']])
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		HashMap<String, String> atts = new HashMap<String, String>();
 		if (PEF_NS.equals(uri)) {
@@ -159,7 +163,7 @@ public class PEFHandler extends DefaultHandler {
 							}
 						}
 					}
-					System.out.println("page:" + pageCount);
+					//System.out.println("page:" + pageCount);
 				} catch (IOException e) { throw new SAXException(e); }
 			} else if ("section".equals(localName)) {
 				verso = true;
@@ -192,6 +196,7 @@ public class PEFHandler extends DefaultHandler {
 					}
 					versoAlignmentPadding = embosser.getMaxWidth() - currentWidth - alignmentPadding;
 					if (alignmentPadding<0 || versoAlignmentPadding<0) {
+						widthError = true;
 						throw new SAXException("Cannot fit page on paper with offset " + offset);
 					}
 					
@@ -199,6 +204,9 @@ public class PEFHandler extends DefaultHandler {
 			}
 		} 
 		elements.push(new Element(uri, localName, atts));
+	}
+	public boolean hasWidthError() {
+		return widthError;
 	}
 	private void addAlignPadding(int align) throws IOException {
 		if (align < 1) return;

@@ -80,8 +80,9 @@ public class PEFParser {
 	 * @throws SAXException 
 	 * @throws ParserConfigurationException 
 	 * @throws NumberFormatException 
+	 * @throws EmbosserFactoryException 
 	 */
-	public static void parse(String[] args) throws NumberFormatException, ParserConfigurationException, SAXException, IOException {
+	public static void parse(String[] args) throws NumberFormatException, ParserConfigurationException, SAXException, IOException, EmbosserFactoryException, UnsupportedWidthException {
 		if (args.length < 2 || args.length % 2 != 0) {
 			throw new IllegalArgumentException("Wrong number of arguments");
 		} else {
@@ -108,9 +109,9 @@ public class PEFParser {
 				} else if ("-alignmentOffset".equals(args[2+i*2])) {
 					offset = Integer.parseInt(args[3+i*2]);
 				} else if ("-mirrorAlign".equals(args[2+i*2])) {
-					ef.setProperty("mirrorAlign", args[3+i*2]);
+					mirrorAlign = "true".equals(args[3+i*2]);
 				} else if ("-paperWidthFallback".equals(args[2+i*2])) {
-					ef.setProperty("paperWidthFallback", args[3+i*2]);
+					alignmentFallback = args[3+i*2];
 				} else if ("-papersize".equals(args[2+i*2])) {
 					ef.setPaperSize(Paper.PaperSize.valueOf(args[3+i*2].toUpperCase()));
 				} else if ("-cellWidth".equals(args[2+i*2])) {
@@ -139,14 +140,22 @@ public class PEFParser {
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	public static void parse(File input, PEFHandler ph) throws ParserConfigurationException, SAXException, IOException {
+	public static void parse(File input, PEFHandler ph) throws ParserConfigurationException, SAXException, IOException, UnsupportedWidthException {
 		if (!input.exists()) {
 			throw new IllegalArgumentException("Input does not exist");
 		}
 		SAXParserFactory spf = SAXParserFactory.newInstance();
 		spf.setNamespaceAware(true);
 		SAXParser sp = spf.newSAXParser();
-		sp.parse(input, ph);
+		try {
+			sp.parse(input, ph);
+		} catch (SAXException e) {
+			if (ph.hasWidthError()) {
+				throw new UnsupportedWidthException(e);
+			} else {
+				throw e;
+			}
+		}
 	}
 
 }

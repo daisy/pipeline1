@@ -16,6 +16,8 @@ import org_pef_text.AbstractTable;
  */
 public class ConfigurableEmbosser implements AbstractEmbosser {
 	public static enum Padding {BOTH, BEFORE, AFTER, NONE};
+	private final static double cellWidth = 6;
+	private final static double cellHeight = 10;
 	
 	private boolean supports8dot;
 	private boolean supportsDuplex;
@@ -60,7 +62,7 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 		public Builder supports8dot(boolean val) { supports8dot = val; return this; }
 		public Builder supportsDuplex(boolean val) { supportsDuplex = val; return this; }
 		public Builder supportsAligning(boolean val) { supportsAligning = val; return this; }
-		public Builder height(int value) { 
+		/*public Builder height(int value) { 
 			if (value<0) { throw new IllegalArgumentException("Positive integer expected."); }
 			maxHeight = value;
 			return this;
@@ -69,6 +71,19 @@ public class ConfigurableEmbosser implements AbstractEmbosser {
 			if (value<0) { throw new IllegalArgumentException("Positive integer expected."); }
 			maxWidth = value;
 			return this;
+		}*/
+		public Builder setPaper(Paper paper) {
+			if (paper!=null) {
+				maxWidth = paper.getWidth(cellWidth);
+				maxHeight = paper.getHeight(cellHeight);
+			}
+			return this;
+		}
+		public int getWidth() {
+			return maxWidth;
+		}
+		public int getHeight() {
+			return maxHeight;
 		}
 		public Builder breaks(String value) { 
 			if (value!=null && !"".equals(value)) {

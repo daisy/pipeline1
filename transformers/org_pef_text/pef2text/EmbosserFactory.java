@@ -1,6 +1,5 @@
 package org_pef_text.pef2text;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 
@@ -26,8 +25,6 @@ public class EmbosserFactory {
 		BRAILLO_400_S, 
 		BRAILLO_400_SR};
 
-	private final static double cellWidth = 6;
-	private final static double cellHeight = 10;
 	private HashMap<String, String> settings;
 	private EmbosserType t;
 	private PaperSize s;
@@ -66,23 +63,26 @@ public class EmbosserFactory {
 		return t;
 	}
 	
-	public AbstractEmbosser newEmbosser(OutputStream os) throws IOException {
+	public AbstractEmbosser newEmbosser(OutputStream os) throws UnsupportedPaperException, EmbosserFactoryException {
 		ConfigurableEmbosser.Builder b;
 		TableFactory btb;
-		if (!getProperty("cellWidth").equals("6")) {
-			throw new IOException("Changing cell width has not been implemented.");
+		if (getProperty("cellWidth")!=null && getProperty("cellWidth")!="") { 
+			if (!getProperty("cellWidth").equals("6")) {
+				throw new EmbosserFactoryException("Changing cell width has not been implemented.");
+			}
+		} else {
+			setProperty("cellWidth", "6");
 		}
-		if (!getProperty("cellHeight").equals("10")) {
-			throw new IOException("Changing cell height has not been implemented.");
+		if (getProperty("cellHeight")!=null && getProperty("cellHeight")!="") { 
+			if (!getProperty("cellHeight").equals("10")) {
+				throw new EmbosserFactoryException("Changing cell height has not been implemented.");
+			}
+		} else {
+			setProperty("cellHeight", "10");
 		}
-		Integer width = null;
-		Integer height = null;
+
 		Paper paper = Paper.newPaper(s);
 		String unsupportedPaperFormat = "Unsupported paper size for " + t;
-		if (paper != null) {
-			width = paper.getWidth(cellWidth);
-			height = paper.getHeight(cellHeight);
-		}
 		switch (t) {
 			case NONE:
 				btb = new TableFactory();
@@ -96,10 +96,7 @@ public class EmbosserFactory {
 				b.supportsDuplex(true);
 				b.supportsAligning(false);
 				// All paper sizes are supported
-				if (paper != null) {
-					b.width(width);
-					b.height(height);
-				}
+				b.setPaper(paper);
 				return b.build();
 			case INDEX_BASIC:
 			case INDEX_EVEREST:
@@ -113,14 +110,9 @@ public class EmbosserFactory {
 				b.supportsDuplex(true);
 				b.supportsAligning(true);
     			b.footer(new byte[]{0x1a});
-    			b.width(width);
-    			b.height(height);
+    			b.setPaper(paper);
 				// Supports paper formats smaller than 100 cells wide
-				try {
-					b.header(getIndexV2Header(width, height));
-				} catch (UnsupportedPaperException e) {
-					throw new IOException(unsupportedPaperFormat);
-				}
+				b.header(getIndexV2Header(b.getWidth(), b.getHeight()));
     			return b.build();
 			case INDEX_EVEREST_V3:
 				btb = new TableFactory();
@@ -133,14 +125,9 @@ public class EmbosserFactory {
 					.supportsDuplex(true)
 					.supportsAligning(true)
 					.footer(new byte[]{0x1a})
-					.width(width)
-					.height(height);
-				try {
-					// Supports paper formats smaller than 100 cm in either direction
-					b.header(getEverestV3Header(paper));
-				} catch (UnsupportedPaperException e) {
-					throw new IOException(unsupportedPaperFormat);
-				}
+					.setPaper(paper);
+				// Supports paper formats smaller than 100 cm in either direction
+				b.header(getEverestV3Header(paper));
     			return b.build();
 			case INDEX_BASIC_D_V3:
 				btb = new TableFactory();
@@ -153,8 +140,7 @@ public class EmbosserFactory {
 					.supportsDuplex(true)
 					.supportsAligning(true)
 					.footer(new byte[]{0x1a})
-					.width(width)
-					.height(height);
+					.setPaper(paper);
 				switch (s) {
 					case W210MM_X_H10INCH:
 						b.header(new byte[]{
@@ -181,7 +167,7 @@ public class EmbosserFactory {
 								});
 						break;
 					default:
-						throw new IOException(unsupportedPaperFormat);
+						throw new UnsupportedPaperException(unsupportedPaperFormat);
 				}
     			return b.build();
 			case BRAILLO_400_S: case BRAILLO_400_SR:
@@ -194,14 +180,9 @@ public class EmbosserFactory {
 					.padNewline(ConfigurableEmbosser.Padding.BEFORE)
 					.supportsDuplex(true)
 					.supportsAligning(true)
-					.width(width)
-					.height(height);
+					.setPaper(paper);
 				// Supports paper formats smaller than 100 cells in either direction
-				try {
-					b.header(getBrailloHeader(width, height));
-				} catch (UnsupportedPaperException e) {
-					throw new IOException(unsupportedPaperFormat);
-				}
+				b.header(getBrailloHeader(b.getWidth(), b.getHeight()));
     			return b.build();
 		}
 		throw new IllegalArgumentException("Cannot find embosser type " + t);

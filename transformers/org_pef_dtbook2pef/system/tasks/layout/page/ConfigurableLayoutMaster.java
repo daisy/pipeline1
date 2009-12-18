@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 
 /**
- * AbstractLayoutMaster will ensure that the LayoutMaster measurements adds up. 
+ * ConfigurableLayoutMaster will ensure that the LayoutMaster measurements adds up.
  * @author joha
  *
  *
  */
-// TODO: change name (class isn't abstract anymore)
-public class AbstractLayoutMaster implements LayoutMaster {
+// TODO: Since class isn't abstract anymore, it is possible to change LayoutMasterConfigurator into a regular builder
+public class ConfigurableLayoutMaster implements LayoutMaster {
 	protected final int headerHeight;
 	protected final int footerHeight;
 	protected final int flowWidth;
@@ -23,7 +23,7 @@ public class AbstractLayoutMaster implements LayoutMaster {
 	protected final boolean duplex;
 	protected final ArrayList<Template> templates;
 
-	public AbstractLayoutMaster(LayoutMasterConfigurator config) {
+	public ConfigurableLayoutMaster(LayoutMasterConfigurator config) {
 		// int flowWidth, int flowHeight, int headerHeight, int footerHeight, int innerMargin, int outerMargin, float rowSpacing
 		this.headerHeight = config.headerHeight;
 		this.footerHeight = config.footerHeight;

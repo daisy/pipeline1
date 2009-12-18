@@ -200,7 +200,7 @@
 		<xsl:apply-templates/>
 		<xsl:for-each select="//dtb:level1[@class='colophon']">
 			<sequence master="plain" hyphenate="true" initial-page-number="1">
-				<block><xsl:value-of select="concat(':: ', $l10ncolophon, ' ')"/><leader position="100%" pattern=":"/></block>
+				<block margin-bottom="1"><xsl:value-of select="concat(':: ', $l10ncolophon, ' ')"/><leader position="100%" pattern=":"/></block>
 				<block>
 					<xsl:apply-templates select="node()"/>
 				</block>
@@ -209,7 +209,7 @@
 		</xsl:for-each>
 		<xsl:for-each select="//dtb:level1[@class='backCoverText' or @class='rearjacketcopy']">
 			<sequence master="plain" hyphenate="true" initial-page-number="1">
-				<block><xsl:value-of select="concat(':: ', $l10nrearjacketcopy, ' ')"/><leader position="100%" pattern=":"/></block>
+				<block margin-bottom="1"><xsl:value-of select="concat(':: ', $l10nrearjacketcopy, ' ')"/><leader position="100%" pattern=":"/></block>
 				<block>
 					<xsl:apply-templates select="node()"/>
 				</block>

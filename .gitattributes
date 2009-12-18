@@ -1237,8 +1237,7 @@ transformers/org_pef_dtbook2pef/system/tasks/layout/impl/FlowStruct.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/impl/Page.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/impl/PageSequence.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/impl/PageStruct.java -text
-transformers/org_pef_dtbook2pef/system/tasks/layout/page/AbstractLayoutMaster.java -text
-transformers/org_pef_dtbook2pef/system/tasks/layout/page/BaseLayoutMaster.java -text
+transformers/org_pef_dtbook2pef/system/tasks/layout/page/ConfigurableLayoutMaster.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/page/LayoutMaster.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/page/LayoutMasterConfigurator.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/page/PagedMediaWriter.java -text
@@ -1301,6 +1300,7 @@ transformers/org_pef_text/pef2text/Paper.java -text
 transformers/org_pef_text/pef2text/PrinterDevice.java -text
 transformers/org_pef_text/pef2text/Range.java -text
 transformers/org_pef_text/pef2text/UnsupportedPaperException.java -text
+transformers/org_pef_text/pef2text/UnsupportedWidthException.java -text
 transformers/org_pef_text/pef2text/pef2text.xsl -text
 transformers/org_pef_text/pef2text/transformer.tdf -text
 transformers/org_pef_text/text2pef/Text2PEF.java -text

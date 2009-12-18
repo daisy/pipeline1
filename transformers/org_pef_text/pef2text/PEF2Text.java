@@ -98,6 +98,10 @@ public class PEF2Text extends Transformer {
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (PrintException e) {
 			throw new TransformerRunException(e.getMessage(), e);
+		} catch (EmbosserFactoryException e) {
+			throw new TransformerRunException(e.getMessage(), e);
+		} catch (UnsupportedWidthException e) {
+			throw new TransformerRunException(e.getMessage(), e);
 		} finally {
 			if ("".equals(outFileName) && output!=null) {
 				output.delete();

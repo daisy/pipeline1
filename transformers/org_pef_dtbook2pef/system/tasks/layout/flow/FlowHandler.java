@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import org_pef_dtbook2pef.system.tasks.layout.page.AbstractLayoutMaster;
+import org_pef_dtbook2pef.system.tasks.layout.page.ConfigurableLayoutMaster;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMasterConfigurator;
 import org_pef_dtbook2pef.system.tasks.layout.page.SimpleTemplate;
 import org_pef_dtbook2pef.system.tasks.layout.page.field.CompoundField;
@@ -170,7 +170,7 @@ public class FlowHandler extends DefaultHandler {
 		} else if (localName.equals("float-item")) {
 			flow.endFloat();
 		} else if (localName.equals("layout-master")) {
-			flow.addLayoutMaster(masterName, new AbstractLayoutMaster(masterConfig));
+			flow.addLayoutMaster(masterName, new ConfigurableLayoutMaster(masterConfig));
 		} else if (localName.equals("template") || localName.equals("default-template")) {
 			masterConfig.addTemplate(template);
 		} else if (localName.equals("field")) {

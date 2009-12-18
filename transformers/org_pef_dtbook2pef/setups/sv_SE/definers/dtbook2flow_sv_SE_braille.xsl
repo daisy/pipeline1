@@ -55,7 +55,7 @@
 							page-height="{$page-height}" inner-margin="{$inner-margin}"
 							outer-margin="{$outer-margin}" row-spacing="{$row-spacing}" duplex="{$duplex}">
 			<default-template>
-				<header></header>
+				<header><field><string value=""/></field></header>
 				<footer></footer>
 			</default-template>
 		</layout-master>
