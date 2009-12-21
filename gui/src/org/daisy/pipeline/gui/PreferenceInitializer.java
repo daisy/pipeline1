@@ -100,8 +100,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	private void initMacDefaults() {
 		setPrefPath(PreferencesKeys.PATH_TO_IMAGEMAGICK,
 				detectMacPath("convert"));//$NON-NLS-1$
-		setPrefPath(PreferencesKeys.PATH_TO_LAME, detectMacPath("lame"));//$NON-NLS-1$
-		setPrefPath(PreferencesKeys.PATH_TO_SOX, detectMacPath("sox"));//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_LAME,
+				(new File(Platform.getInstallLocation().getURL().getPath(),
+						"ext/lame")).getPath());//$NON-NLS-1$
+		setPrefPath(PreferencesKeys.PATH_TO_SOX, (new File(Platform
+				.getInstallLocation().getURL().getPath(), "ext/sox")).getPath());//$NON-NLS-1$
 	}
 
 	/**
