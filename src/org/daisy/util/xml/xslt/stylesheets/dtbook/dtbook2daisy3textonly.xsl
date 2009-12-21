@@ -20,6 +20,7 @@
   <xsl:param name="facade" select="false"/>
   <xsl:param name="facade_name"/>
 
+  <xsl:variable name="outputnameEsc" select="encode-for-uri($outputname)"/>
   <xsl:variable name="lower">abcdefghijklmnopqrstuvwxyz</xsl:variable>
   <xsl:variable name="upper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 
@@ -606,7 +607,7 @@
   </xsl:template>
 
   <xsl:template name="write_opf_manifest">
-    <xsl:param name="prefix" select="$outputname"/>
+    <xsl:param name="prefix" select="$outputnameEsc"/>
          <xsl:element name="manifest" namespace="http://openebook.org/namespaces/oeb-package/1.0/">
            <xsl:element name="item" namespace="http://openebook.org/namespaces/oeb-package/1.0/">
              <xsl:attribute name="id" select="'opf'"/>
@@ -692,7 +693,7 @@
         </xsl:element>
       </xsl:element>
       <xsl:element name="content" namespace="http://www.daisy.org/z3986/2005/ncx/">
-        <xsl:attribute name="src" select="concat($outputname,'.smil#smil_par_',$id)"/>
+        <xsl:attribute name="src" select="concat($outputnameEsc,'.smil#smil_par_',$id)"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
@@ -715,7 +716,7 @@
         </xsl:element>
       </xsl:element>
       <xsl:element name="content" namespace="http://www.daisy.org/z3986/2005/ncx/">
-        <xsl:attribute name="src" select="concat($outputname,'.smil#smil_par_',$id)"/>
+        <xsl:attribute name="src" select="concat($outputnameEsc,'.smil#smil_par_',$id)"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
@@ -738,7 +739,7 @@
         </xsl:element>
       </xsl:element>
       <xsl:element name="content" namespace="http://www.daisy.org/z3986/2005/ncx/">
-        <xsl:attribute name="src" select="concat($outputname,'.smil#smil_par_',$id)"/>
+        <xsl:attribute name="src" select="concat($outputnameEsc,'.smil#smil_par_',$id)"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
@@ -762,7 +763,7 @@
         </xsl:element>
       </xsl:element>
       <xsl:element name="content" namespace="http://www.daisy.org/z3986/2005/ncx/">
-        <xsl:attribute name="src" select="concat($outputname,'.smil#smil_par_',$id)"/>
+        <xsl:attribute name="src" select="concat($outputnameEsc,'.smil#smil_par_',$id)"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
@@ -785,7 +786,7 @@
         </xsl:element>
       </xsl:element>
       <xsl:element name="content" namespace="http://www.daisy.org/z3986/2005/ncx/">
-        <xsl:attribute name="src" select="concat($outputname,'.smil#smil_par_',$id)"/>
+        <xsl:attribute name="src" select="concat($outputnameEsc,'.smil#smil_par_',$id)"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
@@ -815,7 +816,7 @@
         </xsl:element>
       </xsl:element>
       <xsl:element name="content" namespace="http://www.daisy.org/z3986/2005/ncx/">
-        <xsl:attribute name="src" select="concat($outputname,'.smil#smil_par_',$id)"/>
+        <xsl:attribute name="src" select="concat($outputnameEsc,'.smil#smil_par_',$id)"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
@@ -845,7 +846,7 @@
         </xsl:element>
       </xsl:element>
       <xsl:element name="content" namespace="http://www.daisy.org/z3986/2005/ncx/">
-        <xsl:attribute name="src" select="concat($outputname,'.smil#smil_par_',$id)"/>
+        <xsl:attribute name="src" select="concat($outputnameEsc,'.smil#smil_par_',$id)"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
@@ -1202,7 +1203,7 @@
         <xsl:attribute name="class" select="$timeContainerClass"/>
         <xsl:call-template name="setCustomTestAttr"/>
         <xsl:element name="text" namespace="http://www.w3.org/2001/SMIL20/">
-          <xsl:attribute name="src" select="concat($outputname,'.xml','#',$id)"/>
+          <xsl:attribute name="src" select="concat($outputnameEsc,'.xml','#',$id)"/>
         </xsl:element>
       </xsl:element>
       <xsl:apply-templates mode="smil" select="*"/>
@@ -1220,7 +1221,7 @@
       <xsl:attribute name="class" select="$timeContainerClass"/>
       <xsl:call-template name="setCustomTestAttr"/>
       <xsl:element name="text" namespace="http://www.w3.org/2001/SMIL20/">
-        <xsl:attribute name="src" select="concat($outputname,'.xml','#',$id)"/>
+        <xsl:attribute name="src" select="concat($outputnameEsc,'.xml','#',$id)"/>
       </xsl:element>
     </xsl:element>
     <xsl:apply-templates mode="smil" select="*"/>
@@ -1236,7 +1237,7 @@
       <xsl:variable name="href">
         <xsl:choose>
           <xsl:when test="@external='false'">
-            <xsl:value-of select="concat($outputname,'.smil','#smil_par_',substring-after(@href,'#'))"/>
+            <xsl:value-of select="concat($outputnameEsc,'.smil','#smil_par_',substring-after(@href,'#'))"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="@href"/>
@@ -1258,7 +1259,7 @@
         <xsl:variable name="id">
           <xsl:call-template name="getid"/>
         </xsl:variable>
-        <xsl:attribute name="src" select="concat($outputname,'.xml','#',$id)"/>
+        <xsl:attribute name="src" select="concat($outputnameEsc,'.xml','#',$id)"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
@@ -1273,10 +1274,10 @@
         <xsl:attribute name="id" select="$id"/>
         <xsl:choose>
           <xsl:when test="local-name()='a'">
-            <xsl:attribute name="smilref" select="concat($outputname,'.smil#smil_a_',$id)"/>
+            <xsl:attribute name="smilref" select="concat($outputnameEsc,'.smil#smil_a_',$id)"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:attribute name="smilref" select="concat($outputname,'.smil#smil_par_',$id)"/>
+            <xsl:attribute name="smilref" select="concat($outputnameEsc,'.smil#smil_par_',$id)"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
@@ -1360,7 +1361,7 @@
             </xsl:element>
           </xsl:element>      
           <xsl:element name="content" namespace="http://www.daisy.org/z3986/2005/ncx/">
-            <xsl:attribute name="src" select="concat($outputname,'.smil#smil_par_',$id)"/>
+            <xsl:attribute name="src" select="concat($outputnameEsc,'.smil#smil_par_',$id)"/>
           </xsl:element>
           <xsl:apply-templates mode="ncxtoc" select="dtb:level|dtb:level1|dtb:level2|dtb:level3|dtb:level4|dtb:level5|dtb:level6"/>
         </xsl:element>
@@ -1424,7 +1425,7 @@
         <xsl:call-template name="getid"/>
       </xsl:variable>
       <xsl:element name="content" namespace="http://www.daisy.org/z3986/2005/ncx/">
-        <xsl:attribute name="src" select="concat($outputname,'.smil#smil_par_',$id)"/>
+        <xsl:attribute name="src" select="concat($outputnameEsc,'.smil#smil_par_',$id)"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>

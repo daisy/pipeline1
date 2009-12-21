@@ -20,10 +20,16 @@
 			<example>file:///path/to/file.xml</example>
 		</parameter>
 		
-		<parameter required="true" direction="out" type="text/plain">
-			<name>output</name>
-			<description>The output OPF file</description>
+		<parameter required="true" direction="out" type="application/x-filesystemDirectory">
+			<name>outputDir</name>
+			<description>The output directory</description>
 			<example>file:///path/to/dir</example>
+		</parameter>
+		
+		<parameter required="true" direction="out" type="string">
+			<name>outputName</name>
+			<description>The name of the output OPF file (without extension)</description>
+			<example>dtb</example>
 		</parameter>
 
 		<parameter required="false" direction="in" type="enum">

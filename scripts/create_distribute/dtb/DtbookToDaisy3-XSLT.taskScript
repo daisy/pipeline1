@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <taskScript version="2.0" name="xhtml2dtbook">
-	<nicename>DTBook 2005 to DAISY 3 Text-Only [BETA]</nicename>
-	<description>Converts a DTBook 2005 document to a text-only DAISY 3 book</description>
+	<nicename>DTBook 2005 to DAISY 3 Text-Only (XSLT) [BETA]</nicename>
+	<description>Converts a DTBook 2005 document to a text-only DAISY 3 book using XSLT</description>
 	<documentation uri="../../../doc/scripts/DtbookToDaisy3-XSLT.html"/>
 	
 	<parameter name="input" value="" required="true">
@@ -13,8 +13,8 @@
 	</parameter>
 
 	<parameter name="output" value="" required="true">
-		<nicename>Output OPF</nicename>
-		<description>Select the path to the OPF manifest of the output DTB.</description>
+		<nicename>Output directory</nicename>
+		<description>Select directory for the output DTB</description>
 		<datatype>
 			<directory type="output"/>
 		</datatype>
@@ -46,8 +46,13 @@
 		</parameter>
 					
 		<parameter>
-			<name>output</name>
+			<name>outputDir</name>
 			<value>${output}</value>
+		</parameter>					
+					
+		<parameter>
+			<name>outputName</name>
+			<value>dtb</value>
 		</parameter>					
 
 		<parameter>
@@ -61,7 +66,7 @@
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${output}</value>
+			<value>${output}/dtb.opf</value>
 		</parameter>
 		
 		<parameter>

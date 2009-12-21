@@ -65,7 +65,8 @@ public class DTBookToDaisy3 extends Transformer implements FilesetErrorHandler, 
 
 	protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
 		String inputXML = parameters.remove("input");
-		String outPath = parameters.remove("output");
+		String outPath = parameters.remove("outputDir");
+		String outName = parameters.remove("outputName");
 		String copyReferring = parameters.remove("copyReferring");				
 		
 		URL xsltURL = Stylesheets.get("dtbook2daisy3textonly.xsl");		
@@ -94,9 +95,8 @@ public class DTBookToDaisy3 extends Transformer implements FilesetErrorHandler, 
 		
 		
 		try {	
-			File outFile = FilenameOrFileURI.toFile(outPath);	
-			File outDir = outFile.getParentFile();
-			FileUtils.createDirectory(outDir);
+			File outDir = FilenameOrFileURI.toFile(outPath);	
+			File outFile = new File(outDir,outName+".opf");
 			
 			// Copy possible referring files
 			if ("true".equals(copyReferring)) {				
@@ -113,7 +113,7 @@ public class DTBookToDaisy3 extends Transformer implements FilesetErrorHandler, 
 			}
 			
 			// Set Missing parameters
-			parameters.put("outputname", outFile.getName().substring(0, outFile.getName().lastIndexOf('.')));
+			parameters.put("outputname", outName);
 			
 			// Apply the XSLT
 			Map<String,Object> xslParams = new HashMap<String,Object>();
