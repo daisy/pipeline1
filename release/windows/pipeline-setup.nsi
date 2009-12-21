@@ -9,7 +9,7 @@
 ;   General Defines
 ;----------------------------------------------------------
 !define PRODUCT_NAME "DAISY Pipeline"
-!define PRODUCT_VERSION "20090410"
+!define PRODUCT_VERSION "20091222-BETA"
 !define PRODUCT_PUBLISHER "DAISY Consortium"
 !define PRODUCT_WEB_SITE "http://www.daisy.org/"
 !define PRODUCT_REG_ROOT SHCTX
