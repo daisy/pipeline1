@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.4"?>
+<?pde version="3.5"?>
 
-<product name="DAISY Pipeline" id="org.daisy.pipeline.gui.product" application="org.daisy.pipeline.gui.application" version="20090410" useFeatures="true">
+<product name="DAISY Pipeline" id="org.daisy.pipeline.gui.product" application="org.daisy.pipeline.gui.application" version="20091222-BETA" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="branding/about.gif"/>
@@ -41,7 +41,7 @@
    </vm>
 
    <plugins>
-      <plugin id="com.ibm.icu"/>
+      <plugin id="com.ibm.icu" fragment=""/>
       <plugin id="org.daisy.pipeline"/>
       <plugin id="org.daisy.pipeline.gui"/>
       <plugin id="org.eclipse.core.commands"/>
@@ -56,7 +56,7 @@
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.osgi"/>
-      <plugin id="org.eclipse.pde.runtime"/>
+      <plugin id="org.eclipse.pde.runtime" fragment=""/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
@@ -64,8 +64,8 @@
       <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.solaris.sparc" fragment="true"/>
       <plugin id="org.eclipse.swt.motif.aix.ppc" fragment="true"/>
-      <plugin id="org.eclipse.swt.motif.hpux.PA_RISC"/>
-      <plugin id="org.eclipse.swt.motif.linux.x86"/>
+      <plugin id="org.eclipse.swt.motif.hpux.PA_RISC" fragment=""/>
+      <plugin id="org.eclipse.swt.motif.linux.x86" fragment=""/>
       <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.carbon" fragment="true"/>
@@ -78,5 +78,6 @@
       <feature id="org.eclipse.rcp" version="3.4.100.r341_v20080814-989JESIEdAciFYfkZZsBfSwQ2341"/>
       <feature id="org.eclipse.rcp.additions" version="3.3.2.200902120936"/>
    </features>
+
 
 </product>
