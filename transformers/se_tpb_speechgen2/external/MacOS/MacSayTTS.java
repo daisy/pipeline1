@@ -101,6 +101,7 @@ public class MacSayTTS extends AbstractTTSAdapter {
 			}
 			Runtime.getRuntime().exec(cmd).waitFor();
 			cmd = new String[] { sox, aiffName, "-t", "wav", destName };
+			destination.delete();
 			Runtime.getRuntime().exec(cmd).waitFor();
 		} catch (Exception e) {
 			throw new TTSException(e.getMessage(), e);
