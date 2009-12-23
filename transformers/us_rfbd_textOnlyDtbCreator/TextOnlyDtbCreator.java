@@ -676,6 +676,11 @@ public class TextOnlyDtbCreator extends Transformer {
 				String miName = se.getAttributeByName(new QName("name")).getValue();
 				String miValue = se.getAttributeByName(new QName("content")).getValue();
 				
+				// Ignore dc:Identifier -- we only recognize dtb:uid
+				if (miName.equals("dc:Identifier")) {
+					return se;
+				}
+				
 				// dtb:uid becomes dc:Identifier in the OPF
 				if (miName.equals("dtb:uid")) {
 					uid = miValue;
@@ -918,8 +923,11 @@ public class TextOnlyDtbCreator extends Transformer {
                 	// External links:  just set and forget
                 	Attribute externalAtt = se.getAttributeByName(new QName("external"));
                 	if (externalAtt != null && externalAtt.getValue().equals("true")) {
-                		sst.setLinkExternal(true);
-                		sst.setLinkTarget(targetAtt.getValue());
+	                	// Ignore mailto: links, which aren't really URIs
+	                	if (!targetAtt.getValue().startsWith("mailto:")) {
+	                		sst.setLinkExternal(true);
+	                		sst.setLinkTarget(targetAtt.getValue());
+	                	}
                 	}
                 	
                 	// Internal links:  Add to the list of SMIL links for resolution later
