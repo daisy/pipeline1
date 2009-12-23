@@ -814,7 +814,19 @@ src/org/daisy/util/css/stylesheets/Css.java -text
 src/org/daisy/util/css/stylesheets/d202.basic.css -text
 src/org/daisy/util/css/stylesheets/dtbook.2005.basic.css -text
 src/org/daisy/util/dtb/build/BuildException.java -text svneol=unset#text/plain
+src/org/daisy/util/dtb/build/NavigationItem.java -text svneol=unset#text/plain
+src/org/daisy/util/dtb/build/NavigationItemPage.java -text svneol=unset#text/plain
+src/org/daisy/util/dtb/build/NavigationItemPoint.java -text svneol=unset#text/plain
+src/org/daisy/util/dtb/build/NavigationItemTarget.java -text svneol=unset#text/plain
+src/org/daisy/util/dtb/build/NavigationLabel.java -text svneol=unset#text/plain
+src/org/daisy/util/dtb/build/NcxBuilder.java -text svneol=unset#text/plain
 src/org/daisy/util/dtb/build/OpfBuilder.java -text svneol=unset#text/plain
+src/org/daisy/util/dtb/build/PrettyEventWriter.java -text svneol=unset#text/plain
+src/org/daisy/util/dtb/build/SmilBuilder.java -text svneol=unset#text/plain
+src/org/daisy/util/dtb/build/SmilStructure.java -text svneol=unset#text/plain
+src/org/daisy/util/dtb/build/SmilStructureContainer.java -text svneol=unset#text/plain
+src/org/daisy/util/dtb/build/SmilStructureMedia.java -text svneol=unset#text/plain
+src/org/daisy/util/dtb/build/SmilStructureText.java -text svneol=unset#text/plain
 src/org/daisy/util/dtb/meta/MetadataItem.java -text
 src/org/daisy/util/dtb/meta/MetadataList.java -text
 src/org/daisy/util/dtb/ncxonly/model/AudioClip.java -text
