@@ -1945,3 +1945,8 @@ transformers/us_rfbd_dtbookMigrator/messages.properties -text
 transformers/us_rfbd_dtbookMigrator/transformer.tdf -text
 transformers/us_rfbd_nimasCreator/NimasCreator.java -text svneol=unset#text/plain
 transformers/us_rfbd_nimasCreator/transformer.tdf -text
+transformers/us_rfbd_textOnlyDtbCreator/TextOnlyDtbCreator.java -text svneol=unset#text/plain
+transformers/us_rfbd_textOnlyDtbCreator/textOnlyDtbCreator.tdf -text
+transformers/us_rfbd_textOnlyDtbCreator/toConfig.xml -text svneol=unset#text/plain
+transformers/us_rfbd_textOnlyDtbCreator/toResource.res -text
+transformers/us_rfbd_textOnlyDtbCreator/toResource.wav -text

@@ -1,0 +1,22 @@
+﻿<!-- 
+Default configuration file for TextOnlyDtbCreator
+jpritchett@rfbd.org
+23 Dec 2009
+
+To change the defaults, create a new configuration file and reference
+it in the task script using the configFile parameter.
+-->     
+<toConfig>
+	<!-- These are the elements that create SMIL synch points -->
+    <synchElements>
+        <synchElement name="sent" />
+        <synchElement name="pagenum" />
+        <synchElement name="noteref" />
+        <synchElement name="annoref" />
+        <synchElement name="linenum" />
+    </synchElements>
+    
+    <!-- This is the default number of events in a SMIL file, after which
+    a new file is created (at the next heading) -->
+    <smilEventThreshold value="600" />
+</toConfig>
