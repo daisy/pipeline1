@@ -186,6 +186,7 @@ doc/transformers/se_tpb_zed2daisy202.html -text
 doc/transformers/uk_rnib_dtbook2xhtml.html -text
 doc/transformers/us_rfbd_dtbookMigrator.html -text
 doc/transformers/us_rfbd_nimasCreator.html -text svneol=unset#text/plain
+doc/transformers/us_rfbd_textOnlyDtbCreator.html -text svneol=unset#text/plain
 launchers/pipeline-plugin.bat -text
 launchers/pipeline-plugin.sh -text
 launchers/pipeline.sh -text
