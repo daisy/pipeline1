@@ -27,6 +27,8 @@ import javax.xml.stream.events.XMLEvent;
 import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.fileset.FilesetFile;
+import org.daisy.util.fileset.Z3986NcxFile;
+import org.daisy.util.fileset.Z3986ResourceFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.impl.FilesetFileFactory;
 import org.daisy.util.xml.IDGenerator;
@@ -39,6 +41,7 @@ import org.daisy.util.xml.pool.StAXOutputFactoryPool;
  * @author James Pritchett (jpritchett@rfbd.org)
  *
  */
+// TODO:  Refactor to use the new PrettyEventWriter, like the SMIL and NCX builders
 
 public class OpfBuilder {
 	OpfType mOutputType;
@@ -443,6 +446,7 @@ public class OpfBuilder {
 		if (myManifest == null || myManifest.size() == 0) {
 			throw new BuildException("No files in manifest!");
 		}
+		
 		QName manifest = new QName(opfNamespace.getNamespaceURI(),"manifest");
 		QName item = new QName(opfNamespace.getNamespaceURI(),"item");
 		
@@ -476,7 +480,15 @@ public class OpfBuilder {
 			writer.add(xef.createAttribute("media-type", mi.getMimeTypeString()));
 			writeEventPlusNewline(writer, xef.createEndElement(item,null), 0);
 		}
+		// And finally, add this package file itself to its own manifest
+		writer.add(tab); writer.add(tab);
+		writer.add(xef.createStartElement(item,null,null));
+		writer.add(xef.createAttribute("id", "dunsel"));
+		writer.add(xef.createAttribute("href", outputOPF.getName()));
+		writer.add(xef.createAttribute("media-type", "text/xml"));
+		writeEventPlusNewline(writer, xef.createEndElement(item,null), 0);
 		
+		// Manifest done
 		writeEventPlusNewline(writer, xef.createEndElement(manifest,null), 0);
 
 	// Spine
@@ -563,7 +575,16 @@ public class OpfBuilder {
 
 		public ManifestItem(FilesetFile file) {
 			f = file;
-			id = idg.generateId();
+			// NCX and Resource files get special @id values
+			if (f instanceof Z3986NcxFile) {
+				id = "ncx";
+			}
+			else if (f instanceof Z3986ResourceFile) {
+				id = "resource";
+			}
+			else {
+				id = idg.generateId();
+			}
 		}
 		
 		public String getId() {
@@ -583,7 +604,10 @@ public class OpfBuilder {
 		}
 		
 		public String getMimeTypeString() {
-			return f.getMimeType().getString();
+			// If SMIL, force the correct string
+			// TODO:  Fix the underlying bug in MIMEType constants
+			if (f.getMimeType().getString().equals("application/smil+xml")) { return "application/smil"; }
+			else { return f.getMimeType().getString(); }
 		}
 		
 	}
