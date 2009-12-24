@@ -100,6 +100,7 @@ doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/Daisy202ToZ39862005.html -text
 doc/scripts/Daisy3ToDaisy202.html -text svneol=unset#text/plain
 doc/scripts/DistributePEF.html -text
+doc/scripts/DtbookToDaisy3TextOnlyDTB.html -text svneol=unset#text/plain
 doc/scripts/EmbossPEF.html -text
 doc/scripts/EpubCheck.html -text
 doc/scripts/FilesetGenerator-Daisy202TextOnly.html -text
