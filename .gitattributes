@@ -578,6 +578,7 @@ scripts/_dev/obi/Z3986DTBValidator.taskScript -text
 scripts/create_distribute/dtb/AudacityToDTB.taskScript -text
 scripts/create_distribute/dtb/Daisy3ToDaisy202.taskScript -text
 scripts/create_distribute/dtb/DtbookToDaisy3-XSLT.taskScript -text
+scripts/create_distribute/dtb/DtbookToDaisy3TextOnlyDTB.taskScript -text
 scripts/create_distribute/dtb/Fileset-DtbookToDaisy202TextOnly.taskScript -text
 scripts/create_distribute/dtb/Fileset-XhtmlToDaisy202TextOnly.taskScript -text
 scripts/create_distribute/dtb/Narrator-DtbookToDaisy.taskScript -text
