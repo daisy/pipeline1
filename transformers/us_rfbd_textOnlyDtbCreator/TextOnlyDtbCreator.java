@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.EndElement;
+import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
@@ -67,7 +68,7 @@ import org.daisy.util.xml.stax.StaxFilter;
  * TextOnlyDtbCreator:  Creates a Z39.86-2005 text-only fileset from an input dtbook file
  * @author jpritchett@rfbd.org
  * @version 0.9 (beta)
- * 23 December 2009
+ * 24 December 2009 (Ho Ho Ho!)
  * 
  * This transformer just collects data for the "Builder" classes in
  * org.daisy.util.dtb.build, allowing them to do all the actual XML rendering.
@@ -441,27 +442,31 @@ public class TextOnlyDtbCreator extends Transformer {
 			throw new TransformerRunException("XML error rendering NCX", e1);
 		}
 		
-	// Copy files to output
-		this.sendMessage("Copying files to output");
-		// Open text file as fileset
-		DefaultFilesetErrorHandlerImpl fsErrHandler = new DefaultFilesetErrorHandlerImpl();
+	// Copy files to output (if necessary)
 		FilesetImpl fs = null;
+		DefaultFilesetErrorHandlerImpl fsErrHandler = new DefaultFilesetErrorHandlerImpl();
+		FilesetFile baseFile;
 		
-		try {
-			fs = new FilesetImpl(inputFile.toURI(), fsErrHandler);
-		} catch (FilesetFatalException e) {
-			throw new TransformerRunException("Can't create fileset from input document", e);
-		}
-		
-		FilesetFile baseFile = fs.getLocalMember(inputFile.toURI());
-		
-		for (FilesetFile fsf : fs.getLocalMembers()) {
-			if (!fsf.getName().equals(inputFile.getName())) {
-				URI relURI = baseFile.getRelativeURI(fsf);
-				try {
-					FileUtils.copy(fsf.getFile(), new File(outputDir.getAbsolutePath() + File.separator + relURI.getPath()));
-				} catch (IOException e) {
-					throw new TransformerRunException("Error copying file", e);
+		if (!inputFile.getParent().equals(outputDir.getPath())) {
+			this.sendMessage("Copying files to output");
+			
+			// Open text file as fileset
+			try {
+				fs = new FilesetImpl(inputFile.toURI(), fsErrHandler);
+			} catch (FilesetFatalException e) {
+				throw new TransformerRunException("Can't create fileset from input document", e);
+			}
+			
+			baseFile = fs.getLocalMember(inputFile.toURI());
+			
+			for (FilesetFile fsf : fs.getLocalMembers()) {
+				if (!fsf.getName().equals(inputFile.getName())) {
+					URI relURI = baseFile.getRelativeURI(fsf);
+					try {
+						FileUtils.copy(fsf.getFile(), new File(outputDir.getAbsolutePath() + File.separator + relURI.getPath()));
+					} catch (IOException e) {
+						throw new TransformerRunException("Error copying file", e);
+					}
 				}
 			}
 		}
@@ -665,7 +670,23 @@ public class TextOnlyDtbCreator extends Transformer {
 		//	* Detects and sets up new SMIL text items
 		protected StartElement startElement(StartElement se) {
 			String localName = se.getName().getLocalPart();
-						
+			
+			// For dtbook, just strip out any foreign namespaces
+			// TODO:  This is a workaround to remove the vnml namespace added by the sentence detector; fix that bug!
+			if (localName.equals("dtbook")) {
+				Collection<Namespace> elemNS = new ArrayList<Namespace>();
+				elemNS.add(this.getEventFactory().createNamespace("http://www.daisy.org/z3986/2005/dtbook/"));
+				
+				Collection<Attribute> atts = new ArrayList<Attribute>();
+				for (Iterator<Attribute> i = se.getAttributes(); i.hasNext(); ) {
+					Attribute a = i.next();
+					if (!a.getName().getPrefix().equals("xmlns")) {
+						atts.add(a);
+					}
+				}
+				return this.getEventFactory().createStartElement(se.getName(), atts.iterator(), elemNS.iterator());
+			}
+			
 		// ==================================
 		// PART 1:  metadata handling
 		// ==================================
