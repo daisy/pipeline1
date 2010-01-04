@@ -69,9 +69,6 @@ language-specific sub-sections containing the declaration of a single TTS engine
 &lt;/ttsbuilder&gt;
 </pre>
 
-<p>The length of the <tt>lang</tt>-attribute value must be 2. This is to follow the ISO-639 2-letter lower-case
-standard used in Java.</p>
-
 <p>For each OS, there can be one (and only one) descendant TTS with the attribute <code>default="true"</code> to be used as fallback.
 Note that this deault TTS can be configured in a "dummy" language section (with a fake language code), as it is done for the Windows
 section in the example above.</p>
@@ -80,8 +77,16 @@ section in the example above.</p>
 
 <p>When the Narrator must generate the audio for a DTBook element, it first looks at the value of the <code>xml:lang</code> attribute of the element or its closest ancestor.
 It then tries to instantiate a TTS engine based on the configuration in the <code>tts</code> element in the language section corresponding to the <code>xml:lang</code> value
-and in the OS section corresponding to the user's OS. If the TTS engine cannot be instantiated, it falls back to the TTS engine configured in the <code>tts</code> section
-with the attribute <code>default="true"</code>.</p> 
+and in the OS section corresponding to the user's OS. For instance if the document locale is en-US it will pick the best match in that order:</p>
+
+<ol>
+	<li>the section with the lang attribute equals to 'en_US'</li>
+	<li>the section with the lang attribute equals to 'en'</li>
+	<li>the first section with the lang attribute starting with 'en_' </li>
+	<li>the section with the default attribute set to 'true'</li>
+</ol>
+
+<p>Note that the configuration uses underscores to separate the language and country codes as done in the java.util.Locale#toString() method</p>
 
 <p>Note that this multi-language support can be disabled with the script parameter named "Multi-language support". If this option is disabled, the TTS engine configured in
  the default section will always be used.</p>
@@ -113,7 +118,7 @@ The text "This is is a sentence." is transformed into the following SAPI XML tag
 
 The default <code>ttsbuilder.xml</code> configuration uses Microsoft language codes to select voice matching a language section, but note that it is possible to
 refine the selection, with queries such as "<code>Gender=Female;Age!=Child;Language=409</code>". It is even possible to explicitly name the voice to use for a
-particular language section. For more information on the TTS selection attributes, refer to the <a href="http://msdn.microsoft.com/en-us/library/ms717077%28VS.85%29.aspx">Microsoft XML TTS tutorial</a>. 
+particular language section. For more information on the TTS selection attributes, refer to the <a href="http://msdn.microsoft.com/en-us/library/ms717077%28VS.85%29.aspx">Microsoft XML TTS tutorial</a> and to the <a href="http://msdn.microsoft.com/en-us/goglobal/bb964664.aspx">list of language codes</a>. 
 
 <h2 id="mac">Configuration on Mac OS X</h2>
 
