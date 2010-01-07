@@ -17,29 +17,22 @@
  */
 package org.daisy.pipeline.core.script.function;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.daisy.util.file.EFile;
+import org.daisy.util.i18n.CharUtils;
 
 /**
- * Script function registry.
+ * Script function for extracting the filename part of a path.
+ * 
  * @author Linus Ericson
  */
-public class FunctionRegistry {
+public class SafeFilenameNoExtFunction extends Function {
 
-	private static Map<String,Function> sFunctions = new HashMap<String, Function>();
-	
-	static {
-		sFunctions.put("filename", new FilenameFunction());
-		sFunctions.put("parent", new ParentFunction());
-		sFunctions.put("safeFilenameNoExt", new SafeFilenameNoExtFunction());
+	@Override
+	public String apply(String value) {
+		EFile file = new EFile(value);
+		String name = file.getNameMinusExtension();
+		return CharUtils.toRestrictedSubset(
+				CharUtils.FilenameRestriction.Z3986, name);
 	}
-	
-	/**
-	 * Lookup a function in the registry.
-	 * @param name the name of the function
-	 * @return a Function, or null a function with the specified name is not found
-	 */
-	public static Function lookup(String name) {
-		return sFunctions.get(name);
-	}
+
 }

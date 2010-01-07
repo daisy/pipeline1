@@ -676,6 +676,7 @@ src/org/daisy/pipeline/core/script/function/FilenameFunction.java -text
 src/org/daisy/pipeline/core/script/function/Function.java -text
 src/org/daisy/pipeline/core/script/function/FunctionRegistry.java -text
 src/org/daisy/pipeline/core/script/function/ParentFunction.java -text
+src/org/daisy/pipeline/core/script/function/SafeFilenameNoExtFunction.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/core/script/script-1.0.rng -text
 src/org/daisy/pipeline/core/script/script-2.0.rng -text
 src/org/daisy/pipeline/core/script/script10to20.xsl -text

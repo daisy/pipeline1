@@ -14,14 +14,6 @@
         </datatype>
     </parameter>
 
-    <parameter name="inputName" value="" required="true">
-        <nicename>Input dtbook file name (minus extension)</nicename>
-        <description>Enter just the name part of the input file (no path or extension)</description>
-        <datatype>
-            <string />
-        </datatype>
-    </parameter>
-
     <parameter name="outputPath" value="" required="true">
         <nicename>Output path for DTB</nicename>
         <description>Select the directory for the text-only DTB</description>
@@ -98,7 +90,7 @@
     <task name="se_tpb_xmldetection" interactive="false">
         <parameter>
             <name>input</name>
-            <value>${input}</value>
+            <value>${outputPath}/temp/dtbookFix.xml</value>
         </parameter>
         <parameter>
             <name>output</name>
@@ -128,7 +120,7 @@
         </parameter>
         <parameter>
             <name>output</name>
-            <value>${outputPath}/temp/${inputName}.xml</value>
+            <value>${outputPath}/temp/$safeFilenameNoExt{input}.xml</value>
         </parameter>
     </task>
 
@@ -138,7 +130,7 @@
     <task name="us_rfbd_textOnlyDtbCreator" interactive="false">
         <parameter>
             <name>input</name>
-            <value>${outputPath}/temp/${inputName}.xml</value>
+            <value>${outputPath}/temp/$safeFilenameNoExt{input}.xml</value>
         </parameter>
         <parameter>
             <name>output</name>
@@ -152,7 +144,7 @@
     <task name="int_daisy_validator" interactive="false">
         <parameter>
             <name>input</name>
-            <value>${outputPath}/${inputName}.opf</value>
+            <value>${outputPath}/$safeFilenameNoExt{input}.opf</value>
         </parameter>
         <parameter>
             <name>abortThreshold</name>
