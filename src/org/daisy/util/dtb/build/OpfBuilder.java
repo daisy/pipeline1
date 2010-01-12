@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -339,7 +340,9 @@ public class OpfBuilder {
 		writeEventPlusNewline(writer, xef.createDTD(OPF_DOCTYPE), 0);		
 		
 	// Root element
-		writer.add(xef.createStartElement("",pkg.getNamespaceURI(),pkg.getLocalPart()));
+		Collection<Namespace> namespaces = new ArrayList<Namespace>();
+		namespaces.add(opfNamespace);
+		writer.add(xef.createStartElement("",pkg.getNamespaceURI(),pkg.getLocalPart(), null, namespaces.iterator()));
 		
 		// Look for a dc:Identifier; this is an error if not found
 		if (!metadataNames.contains("dc:Identifier")) {

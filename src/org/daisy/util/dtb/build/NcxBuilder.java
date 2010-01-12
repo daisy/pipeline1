@@ -14,6 +14,7 @@ import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.Namespace;
 
 import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.dtb.meta.MetadataList;
@@ -174,11 +175,15 @@ public class NcxBuilder {
 		pew.writeEvent(xef.createDTD("<!DOCTYPE ncx PUBLIC \"-//NISO//DTD ncx 2005-1//EN\" \"http://www.daisy.org/z3986/2005/ncx-2005-1.dtd\" >"));
 		
 	// Root element
-		pew.writeEvent(xef.createStartElement("", Namespaces.Z2005_NCX_NS_URI ,"ncx"));
+		Namespace ncxNamespace = xef.createNamespace(Namespaces.Z2005_NCX_NS_URI);
+		Collection<Namespace> namespaces = new ArrayList<Namespace>();
+		namespaces.add(ncxNamespace);
+		pew.writeEvent(xef.createStartElement("", Namespaces.Z2005_NCX_NS_URI ,"ncx", null, namespaces.iterator()));
+		//pew.writeEvent(xef.createStartElement("", Namespaces.Z2005_NCX_NS_URI ,"ncx"));
 		pew.writeEvent(xef.createAttribute("version", "2005-1"));
 
 	// Head element with metadata and customTests
-		writer.add(xef.createStartElement("", Namespaces.Z2005_NCX_NS_URI ,"head"));
+		pew.writeEvent(xef.createStartElement("", Namespaces.Z2005_NCX_NS_URI ,"head"));
 		
 		// TODO:  Validate metadata against Z39.86-2005 requirements
 		for (MetadataItem mi : metadata) {
