@@ -1,22 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?oxygen RNGSchema="file:/G:/eclipseProjects/Pipeline_dev/src/org/daisy/pipeline/core/script/script-2.0.rng" type="xml"?>
 <taskScript name="textOnlyDtbCreator" version="2.0">
-    <nicename>Create a Z39.86-2005 text-only DTB from an input dtbook file [BETA]</nicename>
-    <description>Runs a Z39.86-2005 textual content file (dtbook) through validation, sentence detection,
-    normalization, and Z39.86-2005 text-only DTB fileset generation</description>
-    <documentation uri="../../../doc/scripts/DtbookToDaisy3TextOnlyDTB.html" />
+    <nicename>DAISY XML (DTBook) to DAISY 3 Text-Only DTB [BETA]</nicename>
+    <description>Converts a DAISY XML document (DTBook 2005) to a  Z39.86-2005 text-only DTB fileset.
+    Applies validation, normalization and sentence detection passes to the DTBook input.</description>
+    <documentation uri="../../../doc/scripts/DTBookToDaisy3TextOnlyDTB.html" />
 
     <parameter name="input" value="" required="true">
-        <nicename>Input dtbook file</nicename>
-        <description>Select the input Z39.86-2005 textual content file (dtbook)</description>
+        <nicename>Input DTBook file</nicename>
+        <description>Select the input DTBook file (Z39.86-2005 textual content file)</description>
         <datatype>
             <file mime="application/x-dtbook+xml" type="input"/>
         </datatype>
     </parameter>
 
     <parameter name="outputPath" value="" required="true">
-        <nicename>Output path for DTB</nicename>
-        <description>Select the directory for the text-only DTB</description>
+        <nicename>Output directory</nicename>
+        <description>Select the directory for the output text-only DTB</description>
         <datatype>
             <directory type="output"/>
         </datatype>
