@@ -90,6 +90,7 @@ doc/scripts/DTBSplitter.html -text
 doc/scripts/DTBookFix.html -text
 doc/scripts/DTBookMigrator.html -text
 doc/scripts/DTBookToDaisy3TextOnlyDTB-XSLT.html -text svneol=unset#text/plain
+doc/scripts/DTBookToDaisy3TextOnlyDTB.html -text svneol=unset#text/plain
 doc/scripts/DTBookToLaTeX.html -text
 doc/scripts/DTBookToPEF.html -text
 doc/scripts/DTBookToRTF.html -text
@@ -100,7 +101,6 @@ doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/Daisy202ToZ39862005.html -text
 doc/scripts/Daisy3ToDaisy202.html -text svneol=unset#text/plain
 doc/scripts/DistributePEF.html -text
-doc/scripts/DtbookToDaisy3TextOnlyDTB.html -text svneol=unset#text/plain
 doc/scripts/EmbossPEF.html -text
 doc/scripts/EpubCheck.html -text
 doc/scripts/FilesetGenerator-Daisy202TextOnly.html -text
