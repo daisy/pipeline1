@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rcp.additions"
       label="%featureName"
-      version="3.3.2.qualifier"
+      version="3.5.1.qualifier"
       provider-name="%providerName"
       plugin="org.eclipse.rcp"
       image="eclipse_update_120.jpg">
@@ -20,7 +20,7 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.rcp" version="3.3.2.R33x_r20071022-8y8eE9CEV3FspP8HJrY1M2dS"/>
+      <import feature="org.eclipse.rcp" version="3.5.1" match="equivalent"/>
    </requires>
 
    <plugin
@@ -30,17 +30,18 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin		
+   <plugin
          id="org.eclipse.ui.intro"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-   <plugin		
+   <plugin
          id="org.eclipse.ui.forms"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
 </feature>
