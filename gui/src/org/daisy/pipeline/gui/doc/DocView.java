@@ -198,6 +198,7 @@ public class DocView extends ViewPart {
 		// Finalize
 		sashForm.setWeights(new int[] { 1, 3 });
 		selectionProvider = new DelegatingSelectionProvider();
+		currToc = tocList.get(tocFolder.getSelectionIndex());
 		selectionProvider.setSelectionProviderDelegate(currToc.getViewer());
 		getSite().setSelectionProvider(selectionProvider);
 		currToc.getViewer().getTree().setSelection(
