@@ -12,6 +12,13 @@ The GUI is hosted on a separate sourceforge project
 Report bugs and issues to:
 http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
+***************************************
+Pipeline RC1 Release, 2010-01-18
+***************************************
+
+- New DTBook to DAISY 3 text-only script based on Java, contributed by James Pritchett, RFB&D.
+- Added a DTBook Fix step to the XSLT-based DTBook to DAISY 3 text-only script. 
+- Upgraded the Eclipse RCP target platform to a version based on Eclipse 3.5.1
 
 ***************************************
 Pipeline Beta Release, 2009-12-22
@@ -23,7 +30,7 @@ Pipeline Beta Release, 2009-12-22
 - New PEF File splitter script, contributed by Joel Håkansson, TPB
 - New PEF File merger script, contributed by Joel Håkansson, TPB
 - New ODT to DTBook script, contributed by Vincent Spiewak, Freelance.
-- Beta version of a DAISY 2.02 to DAISY 3 text-only script based on XSLT, contributed by Alex Bernier, BrailleNet.
+- Beta version of a DTBook to DAISY 3 text-only script based on XSLT, contributed by Alex Bernier, BrailleNet.
 - Added Finnish localization of the Narrator transformers, contributed by Päivi Suhonen, Celia.
 - Added Norwegian localization of the Narrator transformers, contributed by Olav Indergaard, NLB.
 - Added Japanese localization of the Narrator transformers, contributed by ATDO
