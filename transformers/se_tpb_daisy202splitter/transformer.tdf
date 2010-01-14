@@ -5,7 +5,6 @@
 	<license>LGPL</license>
 	<author>Linus Ericson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
-	<documentation uri="../../../doc/transformers/se_tpb_daisy202splitter.html"/>
 	
 	<parameters>
 	    <parameter required="true" direction="in" type="application/x-dtbd202ncc+xml">

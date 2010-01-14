@@ -36,10 +36,11 @@ import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
-import org.daisy.pipeline.core.PipelineCore;
 import org.daisy.pipeline.core.InputListener;
+import org.daisy.pipeline.core.PipelineCore;
 import org.daisy.pipeline.core.event.RequestEvent;
 import org.daisy.pipeline.core.event.UserReplyEvent;
 import org.daisy.pipeline.core.script.Script;
@@ -90,7 +91,9 @@ public class SummaryGenerator implements InputListener {
 //				if(x.getEventType() == XMLEvent.START_ELEMENT) System.err.println(x.asStartElement().getName().getLocalPart());
 //				if(x.getEventType() == XMLEvent.END_ELEMENT) System.err.println("/"+x.asEndElement().getName().getLocalPart());
 //				if(x.getEventType() == XMLEvent.ATTRIBUTE) System.err.println(((Attribute)x).getValue() + ((Attribute)x).getName().toString());
-				xew.add(x);				
+				if (x.getEventType() != XMLEvent.ATTRIBUTE || ((Attribute)x).getValue()!=null){
+					xew.add(x);				
+				}
 			}
 			xew.flush();
 			xew.close();

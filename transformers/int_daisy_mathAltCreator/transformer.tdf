@@ -6,6 +6,7 @@
 	<license>LGPL</license>
 	<author>Markus Gylling</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/int_daisy_mathAltCreator.html"/>
 	
 	<parameters>
 

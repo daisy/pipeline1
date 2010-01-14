@@ -5,7 +5,8 @@
 	<license>unknown</license>
 	<author>James Pritchett</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
-
+	<documentation uri="../../doc/transformers/us_rfbd_textOnlyDtbCreator.html"/>
+	
 	<parameters>
 
 <!-- input path -->

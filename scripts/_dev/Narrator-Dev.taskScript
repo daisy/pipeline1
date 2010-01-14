@@ -9,7 +9,6 @@
 <taskScript version="2.0" name="dtbook2daisy202">
 	<nicename>Narrator Dev Extended Stress version</nicename>
 	<description>Converts a DTBook 2005 file to a complete Daisy 2.02 file set</description>
-	<documentation uri="../../../doc/scripts/Narrator-DtbookToDaisy202.html"/>
 		
 	<parameter name="input" value="" required="true">
 		<nicename>Input DTBook file</nicename>

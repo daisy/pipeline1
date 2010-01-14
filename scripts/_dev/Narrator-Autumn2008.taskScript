@@ -4,7 +4,6 @@
 
 	<nicename>Narrator Autumn 2008 version BETA</nicename>
 	<description>Narrator Autumn 2008 version BETA</description>
-	<documentation uri="../../../doc/scripts/Narrator-DtbookToDaisy202.html"/>
 		
 	<parameter name="input" value="" required="true">
 		<nicename>Input DTBook file</nicename>

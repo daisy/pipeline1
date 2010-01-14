@@ -6,6 +6,7 @@
 	<license>LGPL</license>
 	<author>Joel Håkansson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<documentation uri="../../doc/transformers/org_pef_pefFileMerger.html"/>
 
 	<parameters>
 
