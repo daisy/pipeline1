@@ -471,7 +471,7 @@
             <value>dtb:sourceDate</value>
           </attribute>
           <attribute name="content">
-            <ref name="datatype.iso8601.yyyyMmDd"/>
+            <ref name="datatype.iso8601"/>
             <zed:test id="opf_xMetaDtbSourceDateValue"/>
           </attribute>
           <ref name="attribute.scheme.optional"/>

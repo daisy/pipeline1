@@ -31,7 +31,7 @@
           <value type="string">dc:date</value>
         </attribute>
         <attribute name="content">
-          <ref name="datatype.iso8601.yyyyMmDd"/>
+          <ref name="datatype.iso8601"/>
         </attribute>
       </define>
       
@@ -229,7 +229,7 @@
           <value type="string">ncc:sourceDate</value>
         </attribute>                  
         <attribute name="content">
-          <ref name="datatype.iso8601.yyyyMmDd"/>
+          <ref name="datatype.iso8601"/>
         </attribute>
       </define>
       
@@ -285,7 +285,7 @@
           <value type="string">ncc:producedDate</value>
         </attribute>           
         <attribute name="content">
-          <ref name="datatype.iso8601.yyyyMmDd"/>
+          <ref name="datatype.iso8601"/>
         </attribute>
       </define>
       
@@ -312,7 +312,7 @@
           <value type="string">ncc:revisionDate</value>
         </attribute>           
         <attribute name="content">
-          <ref name="datatype.iso8601.yyyyMmDd"/>
+          <ref name="datatype.iso8601"/>
         </attribute>
       </define>
       
