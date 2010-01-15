@@ -10,7 +10,8 @@
 			  <item nicename="210 mm wide, 10 inch high" value="w210mm_x_h10inch" />
 			  <item nicename="210 mm wide, 11 inch high" value="w210mm_x_h11inch" />
 			  <item nicename="210 mm wide, 12 inch high" value="w210mm_x_h12inch" />
-			  <item nicename="FA44 (261 mm x 297 mm)" value="FA44" />
+			  <item nicename="FA44 (legacy)" value="FA44_LEGACY" />
+			  <item nicename="FA44 (accurate)" value="FA44" />
 			</enum>
 		</datatype>
 	</parameter>

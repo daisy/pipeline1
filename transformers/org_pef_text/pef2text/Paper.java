@@ -7,8 +7,9 @@ public class Paper {
 		W210MM_X_H10INCH, 
 		W210MM_X_H11INCH, 
 		W210MM_X_H12INCH,
-		FA44};
-	private static final double INCH = 25.4;
+		FA44,
+		FA44_LEGACY};
+	public static final double INCH_IN_MM = 25.4;
 	
 	private double width;
 	private double height;
@@ -29,13 +30,15 @@ public class Paper {
 			case A4:
 				return new Paper(210d, 297d, "A4");
 			case W210MM_X_H10INCH:
-				return new Paper(210d, 10*INCH, "210 mm wide, 10 inch high");
+				return new Paper(210d, 10*INCH_IN_MM, "210 mm wide, 10 inch high");
 			case W210MM_X_H11INCH:
-				return new Paper(210d, 11*INCH, "210 mm wide, 11 inch high");
+				return new Paper(210d, 11*INCH_IN_MM, "210 mm wide, 11 inch high");
 			case W210MM_X_H12INCH:
-				return new Paper(210d, 12*INCH, "210 mm wide, 12 inch high");
+				return new Paper(210d, 12*INCH_IN_MM, "210 mm wide, 12 inch high");
 			case FA44:
-				return new Paper(261d, 297d, "FA44");
+				return new Paper(261d, 297d, "FA44 (accurate)");
+			case FA44_LEGACY:
+				return new Paper(252d, 297d, "FA44 (legacy)");
 		}
 		return null;
 	}

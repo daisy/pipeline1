@@ -118,6 +118,7 @@
 			  <value>w210mm_x_h11inch</value>
 			  <value>w210mm_x_h12inch</value>
 			  <value>FA44</value>
+			  <value>FA44_LEGACY</value>
 			</enum>
 			<default>undefined</default>
 		</parameter>

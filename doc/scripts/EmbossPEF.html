@@ -25,16 +25,16 @@
 
 <h2 id="overview">Overview</h2>
 
-<p>This script embosses a PEF 2008-1 document.</p>
+<p>This script embosses PEF 2008-1 documents.</p>
 
-<p>To achieve correct result using the script "Emboss PEF (generic embosser)",
-the embosser must be configured for North American ASCII Braille and dual-sided
-embossing.</p>
+<p>To achieve correct result using Braillo embossers, the embosser must be
+configured for "USA 6 DOT 001.00" or "ENGLAND 6 DOT 044.00".</p>
+
+<p>To achieve correct result using other embossers with the script "Emboss PEF
+(generic embosser)", the embosser must be configured for North American ASCII
+Braille and dual-sided embossing.</p>
 
 <p>Sections marked by * only applies to "Emboss PEF (specific embosser)"</p>
-
-<p><em>The scripts only support embossers that produce braille cells that are 6
-mm wide and 10 mm high.</em></p>
 
 <h4>What is PEF?</h4>
 
@@ -45,11 +45,16 @@ is a digital braille hardcopy - the PDF of braille books, if you will.</p>
 
 <p>For more information, see <a href="PEFIntroduction.html">Introduction to
 PEF</a>.</p>
+
+<h4>Limitations</h4>
+
+<p>The scripts only support embossers that produce braille cells that are 6 mm
+wide and 10 mm high.</p>
 <!-- brief summary of purpose and whats going on. What does this script do really? -->
 
 <h2 id="inputReqs">Input Requirements</h2>
 
-<p>This script accepts PEF 2008-1 documents.</p>
+<p>This script accepts PEF 2008-1 documents (6 dot only).</p>
 <!-- detailed requirements on input nature -->
 
 <h2 id="output">Output</h2>

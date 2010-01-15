@@ -64,7 +64,7 @@ public class PEFFileSplitter extends Transformer  implements ErrorHandler  {
 		if (postfix==null || "".equals(postfix)) {
 			postfix = inputExt;
 		}
-
+		directory.mkdirs();
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
 		inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
         inFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);

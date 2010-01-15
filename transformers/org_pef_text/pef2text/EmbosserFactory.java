@@ -181,8 +181,7 @@ public class EmbosserFactory {
 					.supportsDuplex(true)
 					.supportsAligning(true)
 					.setPaper(paper);
-				// Supports paper formats smaller than 100 cells in either direction
-				b.header(getBrailloHeader(b.getWidth(), b.getHeight()));
+				b.header(getBrailloHeader(b.getWidth(), paper));
     			return b.build();
 		}
 		throw new IllegalArgumentException("Cannot find embosser type " + t);
@@ -224,9 +223,17 @@ public class EmbosserFactory {
 		};
 	}
 	
-	private static byte[] getBrailloHeader(int width, int height) throws UnsupportedPaperException {
-		if (width > 99 || height > 99) { 
-			throw new UnsupportedPaperException("Paper too wide or high: " + width + " x " + height); 
+	// B200, B400S, B400SR
+	// Supported paper width (chars): 10 <= width <= 42
+	// Supported paper height (inches): 4 <= height <= 14
+	private static byte[] getBrailloHeader(int width, Paper paper) throws UnsupportedPaperException {
+		// Round to the closest possible higher value, so that all characters fit on the page
+		int height = (int)Math.ceil(2*paper.getHeight()/Paper.INCH_IN_MM);
+		if (width > 42 || height > 28) { 
+			throw new UnsupportedPaperException("Paper too wide or high: " + width + " chars x " + height / 2d + " inches."); 
+		}
+		if (width < 10 || height < 8) {
+			throw new UnsupportedPaperException("Paper too narrow or short: " + width + " chars x " + height / 2d + " inches.");
 		}
 		byte[] w = toBytes(width, 2);
 		byte[] h = toBytes(height, 2);
