@@ -51,6 +51,7 @@ import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -306,16 +307,28 @@ public class OPFMaker {
 	 */
 	private void makeXMetaElements() {
 		Element xMeta = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "//opf:x-metadata", mNsc);
+		// Construct a set of the metadata to ignore (already in the template and non repeatable) 
+		Set<String> toIgnore = new HashSet<String>();
+		NodeList existingMeta = XPathUtils.selectNodes(opf.getDocumentElement(), "//opf:x-metadata/opf:meta/@name", mNsc);
+		for (int i = 0; i < existingMeta.getLength(); i++) {
+			String metaName = existingMeta.item(i).getNodeValue();
+			if (NCXMaker.nonRepeatableMetadata.contains(metaName)) {
+				toIgnore.add(metaName);
+			}
+		}
+		
 		for(MetadataItem item : xMetaData) {
 			Element newMeta = opf.createElementNS(opfNamespaceURI, "meta");
-			newMeta.setAttribute("name", item.getQName().getLocalPart());
-			newMeta.setAttribute("content", item.getValue());
-			Iterator<Attribute> iter = item.getAttributes();
-			while(iter.hasNext()) {
-				Attribute a = iter.next();
-				newMeta.setAttribute(a.getName().getLocalPart(), a.getValue());
+			if (!toIgnore.contains(item.getQName().getLocalPart())){
+				newMeta.setAttribute("name", item.getQName().getLocalPart());
+				newMeta.setAttribute("content", item.getValue());
+				Iterator<Attribute> iter = item.getAttributes();
+				while(iter.hasNext()) {
+					Attribute a = iter.next();
+					newMeta.setAttribute(a.getName().getLocalPart(), a.getValue());
+				}
+				xMeta.appendChild(newMeta);
 			}
-			xMeta.appendChild(newMeta);
 		}
 	}
 	
