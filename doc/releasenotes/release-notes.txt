@@ -19,6 +19,7 @@ Pipeline RC1 Release, 2010-01-18
 - New DTBook to DAISY 3 text-only script based on Java, contributed by James Pritchett, RFB&D.
 - Added a DTBook Fix step to the XSLT-based DTBook to DAISY 3 text-only script. 
 - Upgraded the Eclipse RCP target platform to a version based on Eclipse 3.5.1
+- Updated the documentation of newly contributed scripts.
 
 ***************************************
 Pipeline Beta Release, 2009-12-22

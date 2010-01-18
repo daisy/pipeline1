@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DAISY Pipeline
 Bundle-SymbolicName: org.daisy.pipeline
-Bundle-Version: 1.0.8
+Bundle-Version: 1.0.9
 Bundle-Vendor: DAISY Consortium
 Require-Bundle: system.bundle
 Bundle-NativeCode:  transformers/se_tpb_speechgen2/lib/com4j.dll; osname=win32; processor=x86,*
