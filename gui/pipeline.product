@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="DAISY Pipeline" id="org.daisy.pipeline.gui.product" application="org.daisy.pipeline.gui.application" version="20091222-BETA" useFeatures="true" includeLaunchers="true">
+<product name="DAISY Pipeline" id="org.daisy.pipeline.gui.product" application="org.daisy.pipeline.gui.application" version="20100118-RC1" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="branding/about.gif"/>
