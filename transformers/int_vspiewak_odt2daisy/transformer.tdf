@@ -6,7 +6,7 @@
 	<jar>lib/JODL.jar</jar>
 	<license>GPL 3.0</license>
 	<author>Vincent Spiewak</author>
-	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+	<support>http://sourceforge.net/projects/odt2daisy/forums/forum/989286</support>
 	<documentation uri="../../doc/transformers/int_vspiewak_odt2daisy.html"/>
 	
 	<parameters>

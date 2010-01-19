@@ -2,11 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
 <head>
-<meta http-equiv='Content-type' content='application/xhtml+xml; charset=utf-8' />
-<title>int_vspiewak_odt2daisy</title>
-<style type="text/css">
-  body {margin: 2em; font-family: arial, verdana, sans-serif;}
-</style>
+	<meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
+	<title>int_vspiewak_odt2daisy</title>
+	<link rel="stylesheet" type="text/css" href="../pipeline.css"/>
 </head>
 <body>
 <h1 class="title">Transformer documentation: <em>int_vspiewak_odt2daisy</em></h1>
@@ -39,11 +37,18 @@ that end users may come in contact with that information. -->
 
 <h2 id="purpose">Transformer Purpose</h2>
 <!-- brief summary of purpose -->
+<p>Convert an OpenDocument Text (ODT) to DTBook using the Java library odt2daisy at 
+   <a href="http://odt2daisy.sf.net">odt2daisy.sf.net</a>.
+</p>
 
 <h2 id="inputReqs">Input Requirements</h2>
 <!-- contract definition: detailed requirements on input nature -->
+<p>The document must be well structured. For more informations, see "Authoring Guidelines" in the
+   <a href="http://odt2daisy.sf.net/doc/">online documentation</a> available in many formats.
+</p>
 
 <h2 id="output">Output</h2>
+<p>The output DTBook document may or may not be valid, why post-transform validation is highly recommended.</p>
 
 <h3 id="success">On success</h3>
 <!-- contract definition: details on delivered output given that input reqs are satisfied
@@ -52,7 +57,7 @@ and no exception occurs -->
 <h3 id="failure">On error</h3>
 <!-- contract definition: details on delivered output when an error occurs, either because
 input reqs were not satisfied, or because an exception occurs -->
-
+<p>On error, this transformer will send a fatal message, then throw an exception and abort.</p>
 
 <h2 id="config">Configuration/Customization</h2>
 
@@ -64,7 +69,7 @@ input reqs were not satisfied, or because an exception occurs -->
 	<dt>dtbook</dt>
 	<dd>Output DAISY 3.0 XML file</dd>
 	<dt>uid</dt>
-	<dd>Unique IDentifier of the DAISY 3.0 XML file</dd>	
+	<dd>Unique IDentifier of the DAISY 3.0 XML file. If ommited, generate an UUID.</dd>	
 	<dt>title</dt>
 	<dd>Title of the DAISY 3.0 XML file</dd>
 	<dt>creator</dt>
@@ -87,25 +92,15 @@ input reqs were not satisfied, or because an exception occurs -->
 	
 <h2 id="future">Further development</h2>
 <!-- notes on refactoring; TODOs and MAYDOs -->
-<p>Enter the name of the person who submitted the item, a brief description and a date by which the item 
-should be reviewed</p>
-
-<table>
-<tr>
-  <th>Submit</th>
-  <th>Item</th>
-  <th>Review Date</th>
-</tr>
-<tr>
-  <td>Vincent Spiewak</td>
-  <td>Review parameters needed for an ODF transform. E.g. Ignore changes.</td>
-  <td>Sept 09</td>
-</tr>
-</table>
-
+<p>An update list of development tasks is available in the 
+   <a href="https://sourceforge.net/tracker/?group_id=272398&amp;atid=1158054">Feature Requests Tracker</a>.
+</p>
 
 <h2 id="dependencies">Dependencies</h2>
 <!-- notes on dependencies beyond the java runtime and dmfc packages (ie 3d party packages)-->
+<ul>
+   <li>Java runtime (1.5 or +)</li>
+</ul>
 
 <h2 id="owner">Author</h2>
 <!-- name of owner/initial committer -->
@@ -114,5 +109,4 @@ should be reviewed</p>
 <h2 id="licensing">Licensing</h2>
 <!-- Licensing information -->
 <p>GPL 3.0 Licence</p>
-</body>
-</html>
+</body></html>
