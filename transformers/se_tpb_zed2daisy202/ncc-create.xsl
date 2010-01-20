@@ -414,34 +414,42 @@
     <xsl:call-template name="opf_x_metadata">
     	<xsl:with-param name="name" select="'dtb:producer'"/>
     	<xsl:with-param name="meta" select="'ncc:producer'"/>
+    	<xsl:with-param name="repeatable" select="false()"/>
     </xsl:call-template>
     <xsl:call-template name="opf_x_metadata">
     	<xsl:with-param name="name" select="'dtb:producedDate'"/>
     	<xsl:with-param name="meta" select="'ncc:producedDate'"/>
+    	<xsl:with-param name="repeatable" select="false()"/>
     </xsl:call-template>
     <xsl:call-template name="opf_x_metadata">
     	<xsl:with-param name="name" select="'dtb:revision'"/>
     	<xsl:with-param name="meta" select="'ncc:revision'"/>
+    	<xsl:with-param name="repeatable" select="false()"/>
     </xsl:call-template>
     <xsl:call-template name="opf_x_metadata">
     	<xsl:with-param name="name" select="'dtb:revisionDate'"/>
     	<xsl:with-param name="meta" select="'ncc:revisionDate'"/>
+    	<xsl:with-param name="repeatable" select="false()"/>
     </xsl:call-template>
     <xsl:call-template name="opf_x_metadata">
     	<xsl:with-param name="name" select="'dtb:sourceDate'"/>
     	<xsl:with-param name="meta" select="'ncc:sourceDate'"/>
+    	<xsl:with-param name="repeatable" select="false()"/>
     </xsl:call-template>
     <xsl:call-template name="opf_x_metadata">
     	<xsl:with-param name="name" select="'dtb:sourceEdition'"/>
     	<xsl:with-param name="meta" select="'ncc:sourceEdition'"/>
+    	<xsl:with-param name="repeatable" select="false()"/>
     </xsl:call-template>
     <xsl:call-template name="opf_x_metadata">
     	<xsl:with-param name="name" select="'dtb:sourcePublisher'"/>
     	<xsl:with-param name="meta" select="'ncc:sourcePublisher'"/>
+    	<xsl:with-param name="repeatable" select="false()"/>
     </xsl:call-template>
     <xsl:call-template name="opf_x_metadata">
     	<xsl:with-param name="name" select="'dtb:sourceRights'"/>
     	<xsl:with-param name="meta" select="'ncc:sourceRights'"/>
+    	<xsl:with-param name="repeatable" select="false()"/>
     </xsl:call-template>
   </xsl:template>
   
@@ -463,17 +471,28 @@
   
   <xsl:template name="opf_x_metadata">
   	<xsl:param name="name"/>
-  	<xsl:param name="meta"/>  	
-  	<xsl:for-each select="//o:x-metadata/o:meta[@name=$name]">
-  		<ncc:meta>
-  			<xsl:attribute name="name">
-  				<xsl:value-of select="$meta"/>
-  			</xsl:attribute>
-  			<xsl:attribute name="content">
-  				<xsl:value-of select="@content"/>
-  			</xsl:attribute>
-  		</ncc:meta>
-  	</xsl:for-each>
+  	<xsl:param name="meta"/> 
+  	<xsl:param name="repeatable">
+  	<xsl:value-of select="true()"/>
+  	</xsl:param>
+  	<xsl:choose>
+  		<xsl:when test="$repeatable">
+  			<xsl:for-each select="//o:x-metadata/o:meta[@name=$name]">
+  				<ncc:meta>
+  					<xsl:attribute name="name"><xsl:value-of select="$meta"/></xsl:attribute>
+  					<xsl:attribute name="content"><xsl:value-of select="@content"/></xsl:attribute>
+  				</ncc:meta>
+  			</xsl:for-each>
+  		</xsl:when>
+  		<xsl:otherwise>
+  			<xsl:for-each select="//o:x-metadata/o:meta[@name=$name][1]">
+  				<ncc:meta>
+  					<xsl:attribute name="name"><xsl:value-of select="$meta"/></xsl:attribute>
+  					<xsl:attribute name="content"><xsl:value-of select="@content"/></xsl:attribute>
+  				</ncc:meta>
+  			</xsl:for-each>
+  		</xsl:otherwise>
+  	</xsl:choose> 	
   </xsl:template>
   
 </xsl:transform>
