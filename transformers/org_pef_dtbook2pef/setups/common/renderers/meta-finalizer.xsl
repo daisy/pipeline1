@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--	
-		Braille finalizer.
-		The Braille finalizer performs post-rendering character-by-character braille injection 
-		replacing space, no-break space, hyphen and soft hyphen.
+		Meta finalizer.
+		The meta finalizer inserts meta data from the input dtbook:
+			- dc:Title
+			- dc:Creator
+			- dc:Language
+			- dc:Description
+			- dc:Publisher
+			- dtb:uid
+
+		The following dc elements are kept:
+			- dc:format
+			- dc:identifier
+			- dc:date
 -->
 <!--
 		Joel Håkansson, TPB
@@ -40,6 +50,11 @@ exclude-result-prefixes="dtb">
 				<xsl:with-param name="inName" select="'dc:Publisher'"/>
 				<xsl:with-param name="outName" select="'dc:publisher'"/>
 			</xsl:call-template>
+			<xsl:call-template name="addMetaElement">
+				<xsl:with-param name="inName" select="'dtb:uid'"/>
+				<xsl:with-param name="outName" select="'dc:source'"/>
+			</xsl:call-template>
+			<xsl:apply-templates select="*[not(self::dc:*)]"/>
 		</xsl:copy>
 	</xsl:template>
 	

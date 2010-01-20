@@ -59,10 +59,15 @@ public class PEFMediaWriter implements PagedMediaWriter {
 		pst.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		pst.println("<pef version=\"2008-1\" xmlns=\"http://www.daisy.org/ns/2008/pef\">");
 		pst.println("<head>");
-		pst.println("<meta xmlns:dc=\"http://purl.org/dc/elements/1.1/\">");
+		pst.println("<meta xmlns:dc=\"http://purl.org/dc/elements/1.1/\" " +
+				    "xmlns:generator=\"http://daisymfc.svn.sourceforge.net/viewvc/daisymfc/trunk/dmfc/transformers/org_pef_dtbook2pef/\"" +
+				">");
 		pst.println("<dc:format>application/x-pef+xml</dc:format>");
 		pst.println("<dc:identifier>" + p.getProperty("identifier", "identifier?") + "</dc:identifier>");
 		pst.println("<dc:date>" + p.getProperty("date", "date?") + "</dc:date>");
+		for (Object key : p.keySet()) {
+			pst.println("<generator:entry key=\"" + key + "\">" + p.get(key) + "</generator:entry>" );
+		}
 		pst.println("</meta>");
 		pst.println("</head>");
 		pst.println("<body>");

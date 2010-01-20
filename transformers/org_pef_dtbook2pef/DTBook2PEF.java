@@ -136,7 +136,8 @@ public class DTBook2PEF extends Transformer {
 
 		map = new HashMap<String, String>();
 		map.putAll(parameters);
-
+		map.put("systemRelease", "20100125");
+		map.put("conversionDate", new Date().toString());
 		// Add default values for optional parameters
 		map.put("input-uri", new File(input).toURI().toString());
 		if (map.get("date")==null || "".equals(map.get("date"))) {

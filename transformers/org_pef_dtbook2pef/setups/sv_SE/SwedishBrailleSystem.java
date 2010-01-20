@@ -137,7 +137,22 @@ public class SwedishBrailleSystem implements TaskSystem {
 		// Layout FLOW as PEF
 		FilterLocale sv_SE = FilterLocale.parse("sv-SE");
 		BrailleFilterFactory factory = BrailleFilterFactory.newInstance();
-		PEFMediaWriter paged = new PEFMediaWriter(p);
+
+		// Customize which parameters are sent to the PEFMediaWriter, as it outputs all parameters for future reference
+		Properties p2 = new Properties();
+		p2.putAll(p);
+		// Localization parameters are not that interesting in retrospect
+		p2.remove("l10nrearjacketcopy");
+		p2.remove("l10imagedescription");
+		p2.remove("l10ncolophon");
+		p2.remove("l10ncaption");
+		// System file paths should be concealed for security reasons 
+		p2.remove("input");
+		p2.remove("input-uri");
+		p2.remove("output");
+		p2.remove("tempFilesDirectory");
+
+		PEFMediaWriter paged = new PEFMediaWriter(p2);
 		factory.setDefault(sv_SE);
 		PageStruct paginator = new PageStruct(factory.getDefault());
 		DefaultLayoutPerformer flow = new DefaultLayoutPerformer.Builder().
