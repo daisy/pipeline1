@@ -10,7 +10,11 @@ import java.nio.charset.Charset;
  *
  */
 public class TableFactory {
-	public enum TableType {EN_US, EN_GB, DA_DK, DE_DE, ES_ES, IT_IT_FIRENZE, SV_SE_CX, SV_SE_MIXED, UNICODE_BRAILLE};
+	public enum TableType { EN_US, // US computer braille, compatible with "Braillo USA 6 DOT 001.00"
+							EN_GB, // US computer braille (lower case), compatible with "Braillo ENGLAND 6 DOT 044.00" which is identical to "Braillo USA 6 DOT 001.00"
+							DA_DK, DE_DE, ES_ES, IT_IT_FIRENZE, SV_SE_CX, SV_SE_MIXED, UNICODE_BRAILLE,
+							BRAILLO_6DOT_046_01 // compatible with "Braillo SWEDEN 6 DOT 046.01"
+							};
 	public enum EightDotFallbackMethod {MASK, REPLACE, REMOVE}; //, FAIL
 	private TableFactory.TableType tableType;
 	private EightDotFallbackMethod fallback;
@@ -80,6 +84,8 @@ public class TableFactory {
 				return new SimpleTable(new String(" a,b.k;l'cif/msp@e:h}o+r^djg|ntq_1?2-u<v{3960x$&\"5*8>z=(%4w7#y)\\"), Charset.forName("UTF-8"), fallback, replacement, true);
 			case IT_IT_FIRENZE:
 			    return new SimpleTable(new String(" a,b'k;l\"cif/msp)e:h*o!r%djg&ntq(1?2-u<v#396^x\\@+5.8>z=[$4w7_y]0"),  Charset.forName("UTF-8"), fallback, replacement, true);
+			case BRAILLO_6DOT_046_01:
+				return new SimpleTable(new String(" a,b'k;l^cif/msp!e:h*o+r\"djg[ntq_1?2-u<v%396]x\\&#5.8>z=($4w70y)@"), Charset.forName("UTF-8"), fallback, replacement, true);
 			case SV_SE_CX:
 				return new SimpleTable(new String(" a,b.k;l^cif/msp'e:h*o!r~djgäntq_å?ê-u(v@îöë§xèç\"û+ü)z=à|ôwï#yùé"), Charset.forName("UTF-8"), fallback, replacement, true);
 			case SV_SE_MIXED:

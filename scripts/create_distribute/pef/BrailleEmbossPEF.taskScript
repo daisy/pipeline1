@@ -22,8 +22,9 @@
 		<description>Select the make and model of the target embosser</description>
 		<datatype>
 			<enum>
-			  <item nicename="Braillo 400S" value="BRAILLO_400_S" />
-			  <item nicename="Braillo 400SR" value="BRAILLO_400_SR" />
+			  <item nicename="Braillo 200 (firmware 000.17 or later)" value="BRAILLO_200" />
+			  <item nicename="Braillo 400S (firmware 000.17 or later)" value="BRAILLO_400_S" />
+			  <item nicename="Braillo 400SR (firmware 000.17 or later)" value="BRAILLO_400_SR" />
 			  <item nicename="Index Braille - 9.20 Everest V2" value="INDEX_EVEREST" />
 			  <item nicename="Index Braille - Everest V3" value="INDEX_EVEREST_V3" />
 			  <item nicename="Index Braille - 3.30 Basic V2" value="INDEX_BASIC" />

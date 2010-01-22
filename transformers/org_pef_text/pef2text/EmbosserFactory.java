@@ -21,7 +21,8 @@ public class EmbosserFactory {
 		INDEX_EVEREST, 
 		INDEX_BASIC, 
 		INDEX_EVEREST_V3, 
-		INDEX_BASIC_D_V3, 
+		INDEX_BASIC_D_V3,
+		BRAILLO_200,
 		BRAILLO_400_S, 
 		BRAILLO_400_SR};
 
@@ -170,9 +171,9 @@ public class EmbosserFactory {
 						throw new UnsupportedPaperException(unsupportedPaperFormat);
 				}
     			return b.build();
-			case BRAILLO_400_S: case BRAILLO_400_SR:
+			case BRAILLO_200: case BRAILLO_400_S: case BRAILLO_400_SR:
 				btb = new TableFactory();
-				btb.setTable(TableFactory.TableType.EN_US);
+				btb.setTable(settings.get("table"));
 				btb.setFallback(settings.get("fallback"));
 				btb.setReplacement(settings.get("replacement"));
 				b = new ConfigurableEmbosser.Builder(os, btb.newTable())

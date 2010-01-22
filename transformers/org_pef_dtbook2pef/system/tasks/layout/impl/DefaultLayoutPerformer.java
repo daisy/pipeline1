@@ -35,7 +35,7 @@ public class DefaultLayoutPerformer implements Flow {
 	private Stack<BlockProperties> context;
 	private boolean firstRow;
 	private HashMap<String, LayoutMaster> masters;
-	private final StringFilter filters;
+	//private final StringFilter filters;
 	private LayoutPerformer paginator;
 	private StateObject state;
 
@@ -81,12 +81,12 @@ public class DefaultLayoutPerformer implements Flow {
 	 */
 	private DefaultLayoutPerformer(Builder builder) {
 		this.masters = new HashMap<String, LayoutMaster>();
-		this.filters = builder.filtersFactory.getDefault();
+		//this.filters = builder.filtersFactory.getDefault();
 		this.context = new Stack<BlockProperties>();
 		this.leftMargin = 0;
 		this.rightMargin = 0;
 		this.flowStruct = new FlowStruct(); //masters
-		this.bh = new BlockHandler(filters);
+		this.bh = new BlockHandler(builder.filtersFactory.getDefault());
 		this.state = new StateObject();
 	}
 

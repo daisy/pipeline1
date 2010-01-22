@@ -35,6 +35,7 @@
 			<example>Everest</example>
 			<enum>
 				<value>NONE</value>
+				<value>BRAILLO_200</value>
 				<value>BRAILLO_400_S</value>
 				<value>BRAILLO_400_SR</value>
 				<value>INDEX_EVEREST</value>
@@ -52,9 +53,13 @@
 			<enum>
 				<value>en_US</value>
 				<value>da_DK</value>
+				<value>de_DE</value>
+				<value>es_ES</value>
+				<value>it_IT_FIRENZE</value>
 				<value>sv_SE_CX</value>
 				<value>sv_SE_mixed</value>
 				<value>UNICODE_BRAILLE</value>
+				<value>BRAILLO_6DOT_046_01</value>
 			</enum>
 			<default>en_US</default>
 		</parameter>	
