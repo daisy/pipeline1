@@ -12,6 +12,15 @@ The GUI is hosted on a separate sourceforge project
 Report bugs and issues to:
 http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
+
+***************************************
+Pipeline Release, 2010-01-25
+***************************************
+
+- Refined documentation of the ODT to DAISY XML script and transformer
+- Fixed a bug with DTB metadata repeatable in Z39.86 but not in DAISY 2.02
+- Added support for Braillo 200 in PEF embosser scripts  
+
 ***************************************
 Pipeline RC1 Release, 2010-01-18
 ***************************************

@@ -23,7 +23,7 @@
  */
 public class Version {
 
-	private static final String VERSION = "20100118-RC1";
+	private static final String VERSION = "20100125";
 	
 	public static String getVersion() {
 		return VERSION;
