@@ -13,6 +13,7 @@ import javax.xml.stream.XMLStreamException;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.util.file.FileUtils;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.StaxEntityResolver;
@@ -66,9 +67,7 @@ public class Hyphenator extends Transformer {
 					try { Thread.sleep(100); } catch (InterruptedException e) { }
 				}
 			}
-			if (!temp.renameTo(output)) {
-				throw new TransformerRunException("Unable to rename temporary file to " + output);
-			}
+			FileUtils.moveFile(temp, output);
 		} catch (FileNotFoundException e) {
 			throw new TransformerRunException(e.getMessage(),e);			
 		} catch (XMLStreamException e) {
