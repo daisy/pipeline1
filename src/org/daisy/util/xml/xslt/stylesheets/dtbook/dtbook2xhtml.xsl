@@ -898,18 +898,21 @@
 
    <xsl:template match="dtb:poem/dtb:title">
      <p class="title">
+       <xsl:call-template name="copyCncatts"/>
        <xsl:call-template name="maybeSmilref"/>
      </p>
    </xsl:template>
 
    <xsl:template match="dtb:cite/dtb:title">
      <span class="title">
+       <xsl:call-template name="copyCncatts"/>
        <xsl:call-template name="maybeSmilref"/>
      </span>
    </xsl:template>
 
 	<xsl:template match="dtb:cite/dtb:author">
      <span class="author">
+       <xsl:call-template name="copyCncatts"/>
        <xsl:call-template name="maybeSmilref"/>
      </span>
    </xsl:template>
