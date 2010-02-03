@@ -11,8 +11,6 @@
 	<entry key="rowgap">0</entry>
 
 	<!-- Splitter -->
-	<entry key="min">40</entry>
-	<entry key="target">50</entry>
-	<entry key="max">55</entry>
+	<entry key="splitterMax">49</entry>
 
 </properties>

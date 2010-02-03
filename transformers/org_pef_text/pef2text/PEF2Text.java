@@ -35,9 +35,6 @@ public class PEF2Text extends Transformer {
 	
 	@Override
 	protected boolean execute(Map<String, String> parameters) throws TransformerRunException {
-		//PrintStream orOut = System.out;
-		//System.setOut(new PrintStream(new PipelineMessageOutputStream(this)));
-        File input = new File(parameters.remove("xml"));
         String outFileName = parameters.remove("out");
         String breaks = parameters.remove("breaks");
         String embosser = parameters.remove("embosser");
@@ -54,61 +51,95 @@ public class PEF2Text extends Transformer {
         String deviceName = parameters.remove("deviceName");
 
 		sendMessage("This implementation does not support volumes.", MessageEvent.Type.WARNING);
-		File output=null;
+
+		Range rangeObj = null;
+		EmbosserFactory ef = new EmbosserFactory();
+		if (embosser!=null && !"".equals(embosser)) {
+			ef.setEmbosserType(EmbosserFactory.EmbosserType.valueOf(embosser.toUpperCase()));
+		}
+		if (papersize != null && !"".equals(papersize)) {
+			ef.setPaperSize(Paper.PaperSize.valueOf(papersize.toUpperCase()));
+		}
+		ef.setProperty("breaks", breaks);
+		if (range!=null && !"".equals(range)) {
+			rangeObj = Range.parseRange(range);
+		}
+		ef.setProperty("table", table);
+		ef.setProperty("padNewline", pad);
+		ef.setProperty("cellWidth", cellWidth);
+		ef.setProperty("cellHeight", cellHeight);
+		
+        File orIn = new File(parameters.remove("xml"));
+		File[] in = getInput(orIn);
+		boolean emboss = deviceName!=null && !"".equals(deviceName);
+		int i = 1;
+		for (File input : in) {
+			File output=null;
+			try {
+				if ("".equals(outFileName)) {
+					output = TempFile.create();
+				} else {
+					output = new File(outFileName);
+					if (orIn.isDirectory()) {
+						// input is a directory, therefore output must be too.
+						if (output.isDirectory() || output.mkdirs()) {
+							output = new File(output, input.getName() + ".txt");
+						} else {
+							throw new TransformerRunException("Unable to create output directory.");
+						}
+					}
+				}
+				convert(input, output, ef, rangeObj, paperWidthFallback, "true".equals(mirrorAlign), Integer.parseInt(alignmentOffset));
+				if (emboss) {
+					progress((i-0.5)/(double)in.length);
+					PrinterDevice bd = new PrinterDevice(deviceName, true);
+					bd.transmit(output);
+				}
+				progress(i/(double)in.length);
+				i++;
+			} catch (IOException e) {
+				throw new TransformerRunException(e.getMessage(), e);
+			} catch (PrintException e) {
+				throw new TransformerRunException(e.getMessage(), e);
+			} finally {
+				if ("".equals(outFileName) && output!=null) {
+					output.delete();
+				}
+			}
+		}
+		
+		progress(1);
+        return true;
+	}
+	
+	private File[] getInput(File input) {
+		if (input.isDirectory()) {
+			return input.listFiles();
+		} else {
+			return new File[]{input};
+		}
+	}
+	
+	private void convert(File input, File output, EmbosserFactory ef, Range rangeObj, String paperWidthFallback, boolean align, int offset) throws TransformerRunException {
 		try {
-			if ("".equals(outFileName)) {
-				output = TempFile.create();
-			} else {
-				output = new File(outFileName);
-			}
-			Range rangeObj = null;
-			EmbosserFactory ef = new EmbosserFactory();
-			if (embosser!=null && !"".equals(embosser)) {
-				ef.setEmbosserType(EmbosserFactory.EmbosserType.valueOf(embosser.toUpperCase()));
-			}
-			if (papersize != null && !"".equals(papersize)) {
-				ef.setPaperSize(Paper.PaperSize.valueOf(papersize.toUpperCase()));
-			}
-			ef.setProperty("breaks", breaks);
-			if (range!=null && !"".equals(range)) {
-				rangeObj = Range.parseRange(range);
-			}
-			ef.setProperty("table", table);
-			ef.setProperty("padNewline", pad);
-			ef.setProperty("cellWidth", cellWidth);
-			ef.setProperty("cellHeight", cellHeight);
 			AbstractEmbosser embosserObj = ef.newEmbosser(new FileOutputStream(output));
 			PEFHandler.Builder builder = new PEFHandler.Builder(embosserObj)
 				.range(rangeObj)
 				.alignmentFallback(paperWidthFallback)
-				.mirrorAlignment("true".equals(mirrorAlign)).
-				offset(Integer.parseInt(alignmentOffset));
+				.mirrorAlignment(align).
+				offset(offset);
 			PEFHandler ph = builder.build();
 			PEFParser.parse(input, ph);
-			progress(0.5);
-			if (deviceName!=null && !"".equals(deviceName)) {
-				PrinterDevice bd = new PrinterDevice(deviceName, true);
-				bd.transmit(output);
-			}
 		} catch (ParserConfigurationException e) {
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (SAXException e) {
-			throw new TransformerRunException(e.getMessage(), e);
-		} catch (IOException e) {
-			throw new TransformerRunException(e.getMessage(), e);
-		} catch (PrintException e) {
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (EmbosserFactoryException e) {
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (UnsupportedWidthException e) {
 			throw new TransformerRunException(e.getMessage(), e);
-		} finally {
-			if ("".equals(outFileName) && output!=null) {
-				output.delete();
-			}
-			//System.setOut(orOut);
+		}  catch (IOException e) {
+			throw new TransformerRunException(e.getMessage(), e);
 		}
-		progress(1);
-        return true;
 	}
 }
