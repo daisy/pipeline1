@@ -61,7 +61,9 @@ hyperlänkar
 	<xsl:text>\setmainfont{</xsl:text><xsl:value-of select="$font"/><xsl:text>}&#10;</xsl:text>
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
 	<xsl:text>\usepackage{float}&#10;</xsl:text>
-	<xsl:text>\usepackage{alphalph}&#10;</xsl:text>
+	<xsl:text>\usepackage{alphalph}&#10;&#10;</xsl:text>
+	<xsl:text>%% avoid overfull \hbox (which is a serious problem with large fonts)&#10;</xsl:text>
+	<xsl:text>\sloppy&#10;&#10;</xsl:text>
 	<xsl:if test="$pageStyle!='scientific'">
 	  <xsl:text>\usepackage{titlesec}&#10;&#10;</xsl:text>
 	  <xsl:text>\titlelabel{}&#10;</xsl:text>
