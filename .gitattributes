@@ -904,6 +904,7 @@ src/org/daisy/util/fileset/validation/delegate/impl/FilesetFileTypeRestrictionDe
 src/org/daisy/util/fileset/validation/delegate/impl/InnerDocURICheckerDelegate.java -text
 src/org/daisy/util/fileset/validation/delegate/impl/InterDocURICheckerD202Delegate.java -text
 src/org/daisy/util/fileset/validation/delegate/impl/InterDocURICheckerDelegate.java -text
+src/org/daisy/util/fileset/validation/delegate/impl/NoDocTypeDeclarationDelegate.java -text
 src/org/daisy/util/i18n/XMLProperties.java -text
 src/org/daisy/util/i18n/XMLPropertyResourceBundle.java -text
 src/org/daisy/util/location/LocationUtils.java -text
