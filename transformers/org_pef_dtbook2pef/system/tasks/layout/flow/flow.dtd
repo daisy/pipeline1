@@ -56,7 +56,7 @@
 -->
 <!ATTLIST sequence
 	hyphenate (true|false) #IMPLIED
-	initial-page-number CDATA #REQUIRED
+	initial-page-number CDATA #IMPLIED
 	master IDREF #REQUIRED
 >
 

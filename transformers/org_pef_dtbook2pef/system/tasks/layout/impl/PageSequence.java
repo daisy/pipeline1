@@ -29,6 +29,10 @@ public class PageSequence {
 		pages.push(new Page(this, pages.size()+pagesOffset));
 	}
 	
+	public int getOffset() {
+		return pagesOffset;
+	}
+	
 	public Page currentPage() {
 		return pages.peek();
 	}

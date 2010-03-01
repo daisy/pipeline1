@@ -2,6 +2,11 @@ package org_pef_dtbook2pef.system.tasks.layout.page;
 
 import java.util.ArrayList;
 
+/**
+ * A Template specifies page objects such as header and footer
+ * for the pages to which it applies.
+ * @author Joel Håkansson, TPB
+ */
 public interface Template {
 	
 	/**
@@ -23,7 +28,6 @@ public interface Template {
 	 * fit within a single row, i.e. the combined length of all resolved strings in each ArrayList must
 	 * be smaller than the flow width. Keep in mind that text filters will be applied to the 
 	 * resolved string, which could affect its length.
-	 * @param page the page to get the header for
 	 * @return returns an ArrayList containing an ArrayList of String
 	 */
 	public ArrayList<ArrayList<Object>> getHeader();
@@ -33,7 +37,6 @@ public interface Template {
 	 * fit within a single row, i.e. the combined length of all resolved strings in each ArrayList must
 	 * be smaller than the flow width. Keep in mind that text filters will be applied to the 
 	 * resolved string, which could affect its length.
-	 * @param page the page to get the header for
 	 * @return returns an ArrayList containing an ArrayList of String
 	 */
 	public ArrayList<ArrayList<Object>> getFooter();

@@ -11,20 +11,21 @@ import org_pef_dtbook2pef.system.tasks.layout.page.SectionProperties;
 import org_pef_dtbook2pef.system.tasks.layout.utils.StateObject;
 
 /**
- * PEFMediaWriter is a simple implementation of PagedMediaWriter which outputs a PEF 2008-1 file.
- * @author joha
+ * TextMediaWriter is a simple implementation of PagedMediaWriter which outputs a plain text file.
+ * @author Joel Håkansson, TPB
  *
  */
 public class TextMediaWriter implements PagedMediaWriter {
 	private PrintStream pst;
-	private Properties p;
+	//private Properties p;
 	private boolean hasOpenVolume;
 	private boolean hasOpenSection;
 	private boolean hasOpenPage;
+	/*
 	private int cCols;
 	private int cRows;
 	private int cRowgap;
-	private boolean cDuplex;
+	private boolean cDuplex;*/
 	private String encoding;
 	private StateObject state;
 	
@@ -34,14 +35,14 @@ public class TextMediaWriter implements PagedMediaWriter {
 	 * @param p configuration Properties
 	 */
 	public TextMediaWriter(Properties p, String encoding) {
-		this.p = p;
+		//this.p = p;
 		hasOpenVolume = false;
 		hasOpenSection = false;
 		hasOpenPage = false;
-		cCols = 0;
+		/*cCols = 0;
 		cRows = 0;
 		cRowgap = 0;
-		cDuplex = true;
+		cDuplex = true;*/
 		this.encoding = encoding;
 		this.state = new StateObject("Writer");
 	}
@@ -78,10 +79,11 @@ public class TextMediaWriter implements PagedMediaWriter {
 	public void newSection(SectionProperties master) {
 		state.assertOpen();
 		if (!hasOpenVolume) {
+			/*
 			cCols = master.getPageWidth();
 			cRows = master.getPageHeight();
 			cRowgap = Math.round((master.getRowSpacing()-1)*4);
-			cDuplex = master.duplex();
+			cDuplex = master.duplex();*/
 			hasOpenVolume = true;
 		}
 		closeOpenSection();

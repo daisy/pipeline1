@@ -28,7 +28,7 @@ public class RegexFilter implements StringFilter {
 	}
 	
 	/**
-	 * Get this objects <a href="../util/regex/Pattern.html#sum">regular expression</a>
+	 * Get this objects regular expression
 	 * @return this objects regular expression
 	 */
 	public Pattern getPattern() {
@@ -44,8 +44,8 @@ public class RegexFilter implements StringFilter {
 	}
 	
 	/**
-     * Replaces each substring of the given str that matches this objects <a
-     * href="../util/regex/Pattern.html#sum">regular expression</a> with this objects
+     * Replaces each substring of the given str that matches this objects 
+     * regular expression with this objects
      * replacement.
      * 
 	 * @param str The string to replace in

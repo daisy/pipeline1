@@ -10,7 +10,7 @@ public interface VolumeCoverPage {
 	 * Build cover page for this volume
 	 * @param volumeNo
 	 * @param volumeCount
-	 * @return
+	 * @return returns the page as an ArrayList of Rows
 	 */
 	public ArrayList<Row> buildPage(int volumeNo, int volumeCount);
 

@@ -17,6 +17,7 @@
  */
 package org.daisy.util.xml.stax;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -49,7 +50,7 @@ import javax.xml.stream.events.XMLEvent;
  * in. By default, all events are copied as-is to the output.
  * @author Linus Ericson
  */
-public abstract class StaxFilter {
+public abstract class StaxFilter implements Closeable {
 
     private XMLEventReader reader = null;
     private XMLEventFactory eventFactory = null;

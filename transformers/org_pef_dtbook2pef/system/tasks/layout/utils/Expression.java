@@ -5,9 +5,30 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+/**
+ * <p>Expression is a small expressions language interpreter. The language 
+ * uses prefix notation with arguments separated by whitespace. The entire expression must 
+ * be surrounded with parentheses.</p>
+ * <p>The following operators are defined: +, -, *, /, %, =, &lt;, &lt;=, >, >=, &amp;, |</p>
+ * <p>All operators require at least two arguments. E.g. (+ 5 7 9) evaluates to 21.</p>
+ * <p>Special keywords:</p>
+ * <ul>
+ * <li>if: (if (boolean_expression) value_when_true value_when_false)</li>
+ * <li>now: (now date_format) where date_format is as defined by {@link SimpleDateFormat}</li> 
+ * <li>round: (round value)</li>
+ * <li>set: (set key value) where key is the key that will be replaced by value in any subsequent expressions (within the same evaluation).</li>
+ * </ul>
+ * <p>Quotes must surround arguments containing whitespace.</p>
+ * @author Joel Håkansson, TPB
+ */
 public class Expression {
 	private HashMap<String, Object> vars;
 	
+	/**
+	 * Evaluate is the method to use when evaluating an expression.
+	 * @param expr the expression to evaluate
+	 * @return returns the evaluation result
+	 */
 	public Object evaluate(String expr) {
 		// init
 		vars = new HashMap<String, Object>();
@@ -263,7 +284,5 @@ public class Expression {
 		}*/
 		return ret.toArray(r);
 	}
-	
-
 
 }

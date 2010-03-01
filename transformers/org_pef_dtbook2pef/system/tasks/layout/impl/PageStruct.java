@@ -7,7 +7,7 @@ import java.util.Stack;
 
 import org_pef_dtbook2pef.system.tasks.layout.flow.CurrentPageInfo;
 import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformer;
-import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformerException;
+import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutException;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
@@ -46,6 +46,18 @@ public class PageStruct implements LayoutPerformer, CurrentPageInfo {
 		state.assertOpen();
 		//sequence.push(new PageSequence(templates.get(masterName)));
 		sequence.push(new PageSequence(master, pagesOffset));
+	}
+	
+	public void newSequence(LayoutMaster master) {
+		if (sequence.size()==0) {
+			newSequence(master, 0);
+		} else {
+			int next = sequence.peek().currentPage().getPageIndex()+1;
+			if (sequence.peek().getLayoutMaster().duplex() && (next % 2)==1) {
+				next++;
+			}
+			newSequence(master, next);
+		}
 	}
 	
 	private PageSequence currentSequence() {
@@ -127,7 +139,7 @@ public class PageStruct implements LayoutPerformer, CurrentPageInfo {
 						int rowWidth = LayoutTools.length(chars)+row.getLeftMargin();
 						String r = 	LayoutTools.fill(SPACE_CHAR, margin) + chars;
 						if (rowWidth>lm.getFlowWidth()) {
-							throw new LayoutPerformerException("Row no " + rowNo + " is too long (" + rowWidth + "/" + lm.getFlowWidth() + ") '" + chars + "'");
+							throw new LayoutException("Row no " + rowNo + " is too long (" + rowWidth + "/" + lm.getFlowWidth() + ") '" + chars + "'");
 						}
 						writer.newRow(r);
 					} else {
@@ -137,7 +149,7 @@ public class PageStruct implements LayoutPerformer, CurrentPageInfo {
 				}
 			}
 		}
-		} catch (LayoutPerformerException e) {
+		} catch (LayoutException e) {
 			IOException ex = new IOException("Layout exception");
 			ex.initCause(e);
 			throw ex;
@@ -146,13 +158,13 @@ public class PageStruct implements LayoutPerformer, CurrentPageInfo {
 		}
 	}
 	
-	private ArrayList<Row> renderFields(LayoutMaster lm, Page p, ArrayList<ArrayList<Object>> fields) throws LayoutPerformerException {
+	private ArrayList<Row> renderFields(LayoutMaster lm, Page p, ArrayList<ArrayList<Object>> fields) throws LayoutException {
 		ArrayList<Row> ret = new ArrayList<Row>();
 		for (ArrayList<Object> row : fields) {
 			try {
 				ret.add(new Row(distribute(row, lm.getFlowWidth(), " ", p)));
 			} catch (LayoutToolsException e) {
-				throw new LayoutPerformerException("Error while rendering header", e);
+				throw new LayoutException("Error while rendering header", e);
 			}
 		}
 		return ret;
@@ -210,7 +222,8 @@ public class PageStruct implements LayoutPerformer, CurrentPageInfo {
 			count++;
 		}
 		if (markerRef.getSearchScope() == MarkerReferenceField.MarkerSearchScope.SEQUENCE) {
-			int nextPage = page.getPageIndex() + dir;
+			int nextPage = page.getPageIndex() - page.getParent().getOffset() + dir;
+			//System.out.println("Next page: "+page.getPageIndex() + " | " + nextPage);
 			if (nextPage < page.getParent().getPages().size() && nextPage >= 0) {
 				Page next = page.getParent().getPages().get(nextPage);
 				return findMarker(next, markerRef);

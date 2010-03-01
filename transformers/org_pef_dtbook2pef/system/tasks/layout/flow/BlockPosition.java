@@ -1,5 +1,9 @@
 package org_pef_dtbook2pef.system.tasks.layout.flow;
-
+/**
+ * Class not in use.
+ * @author joha
+ *
+ */
 public class BlockPosition {
 	public enum Alignment {TOP, BOTTOM, CENTER};
 	private final Position position;

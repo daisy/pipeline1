@@ -1,4 +1,4 @@
-package org_pef_dtbook2pef.system.tasks.cover;
+package org_pef_dtbook2pef.system.tasks;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,18 +16,20 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
 import org_pef_dtbook2pef.system.InternalTask;
+import org_pef_dtbook2pef.system.InternalTaskException;
+import org_pef_dtbook2pef.system.tasks.cover.VolumeCoverPage;
+import org_pef_dtbook2pef.system.tasks.cover.VolumeCoverPageFilter;
 
 /**
- * Add a Volume Cover to each volume
- * @author joha
+ * <p>Add a Volume Cover to each volume.</p>
+ * <p>Input file type requirement: PEF</p>
+ * @author Joel Håkansson, TPB
  *
  */
 public class VolumeCoverPageTask extends InternalTask {
@@ -40,7 +42,7 @@ public class VolumeCoverPageTask extends InternalTask {
 
 	@Override
 	public void execute(File input, File output)
-			throws TransformerRunException {
+			throws InternalTaskException {
 
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
 		inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
@@ -65,17 +67,17 @@ public class VolumeCoverPageTask extends InternalTask {
 			pf.filter();
 			pf.close();
 		} catch (FileNotFoundException e) {
-			throw new TransformerRunException("FileNotFoundException:", e);
+			throw new InternalTaskException("FileNotFoundException:", e);
 		} catch (XMLStreamException e) {
-			throw new TransformerRunException("XMLStreamException:", e);
+			throw new InternalTaskException("XMLStreamException:", e);
 		} catch (IOException e) {
-			throw new TransformerRunException("IOException:", e);
+			throw new InternalTaskException("IOException:", e);
 		} catch (SAXException e) {
-			throw new TransformerRunException("SAXException:", e);
+			throw new InternalTaskException("SAXException:", e);
 		} catch (ParserConfigurationException e) {
-			throw new TransformerRunException("ParserConfigurationException:", e);
+			throw new InternalTaskException("ParserConfigurationException:", e);
 		} catch (XPathExpressionException e) {
-			throw new TransformerRunException("XPathExpressionException:", e);
+			throw new InternalTaskException("XPathExpressionException:", e);
 		}
 	}
 	

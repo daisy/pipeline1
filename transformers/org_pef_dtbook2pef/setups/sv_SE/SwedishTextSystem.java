@@ -14,9 +14,9 @@ import org_pef_dtbook2pef.setups.common.InputDetectorTaskSystem;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.TaskSystem;
 import org_pef_dtbook2pef.system.TaskSystemException;
+import org_pef_dtbook2pef.system.tasks.LayoutEngineTask;
 import org_pef_dtbook2pef.system.tasks.ValidatorTask;
 import org_pef_dtbook2pef.system.tasks.XsltTask;
-import org_pef_dtbook2pef.system.tasks.layout.LayoutEngineTask;
 import org_pef_dtbook2pef.system.tasks.layout.impl.DefaultLayoutPerformer;
 import org_pef_dtbook2pef.system.tasks.layout.impl.PageStruct;
 import org_pef_dtbook2pef.system.tasks.layout.text.BrailleFilterFactory;
@@ -34,11 +34,17 @@ public class SwedishTextSystem implements TaskSystem {
 	private URL resourceBase;
 	private String config;
 	private InputDetectorTaskSystem inputDetector;
+	private final String name;
 	
-	public SwedishTextSystem(URL resourceBase, String config) {
+	public SwedishTextSystem(URL resourceBase, String config, String name) {
 		this.resourceBase = resourceBase;
 		this.config = config;
 		this.inputDetector = new InputDetectorTaskSystem(resourceBase, "sv_SE/config/", "common/config/");
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 	public ArrayList<InternalTask> compile(Map<String, String> parameters) throws TaskSystemException {
@@ -99,9 +105,7 @@ public class SwedishTextSystem implements TaskSystem {
 		factory.setDefault(new RegexFilter("\\u200B", ""));
 		TextMediaWriter paged = new TextMediaWriter(p, "UTF-8");
 		PageStruct paginator = new PageStruct(factory.getDefault());
-		DefaultLayoutPerformer flow = new DefaultLayoutPerformer.Builder().
-										setStringFilterFactory(factory).
-										build();
+		DefaultLayoutPerformer flow = new DefaultLayoutPerformer(factory);
 		setup.add(new LayoutEngineTask("FLOW to Text converter", flow, paginator, paged));
 
 		return setup;

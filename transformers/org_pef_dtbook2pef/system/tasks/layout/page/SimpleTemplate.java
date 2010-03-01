@@ -15,6 +15,11 @@ public class SimpleTemplate implements Template {
 		this(null);
 	}
 
+	/**
+	 * Create a new SimpleTemplate.
+	 * @param useWhen string to evaluate. In addition to the syntax of {@link Expression}, the value $page can be
+	 * used. This will be replaced by the current page number before the expression is evaluated.
+	 */
 	public SimpleTemplate(String useWhen) {
 		this.condition = useWhen;
 		this.header = new ArrayList<ArrayList<Object>>();

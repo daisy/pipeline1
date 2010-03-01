@@ -5,30 +5,37 @@ import java.io.Closeable;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
 
 /**
- * Flow is an interface designed to convert blocks of text into rows and pages. 
- * @author joha
+ * <p>Flow is the entry point when converting a hierarchical 
+ * layout structure into pages.</p>
+ * 
+ * <p>An implementation of Flow interprets layout properties
+ * and break blocks of characters into rows.</p>
+ * 
+ * <p>The rows are then passed on to the {@link LayoutPerformer}.</p>
+ *  
+ * @author Joel Håkansson, TPB
  *
  */
 public interface Flow extends Closeable {
 	
 	/**
-	 * Open 
-	 * @param performer
+	 * Open the Flow with the supplied LayoutPerformer
+	 * @param performer the LayoutPerformer that the result should
+	 * be passed to
 	 */
 	public void open(LayoutPerformer performer);
 
 	/**
 	 * Start a new Sequence at the current position in the flow.
-	 * @param p the SequenceProperties for the new Sequence
+	 * @param props the SequenceProperties for the new sequence
 	 */
-	public void newSequence(SequenceProperties p);
+	public void newSequence(SequenceProperties props);
 
 	/**
 	 * Start a new block with the supplied BlockProperties.
-	 * 
-	 * @param p the BlockProperties of the new block
+	 * @param props the BlockProperties of the new block
 	 */
-	public void startBlock(BlockProperties p);
+	public void startBlock(BlockProperties props);
 
 	/**
 	 * End the current block
@@ -48,9 +55,9 @@ public interface Flow extends Closeable {
 
 	/**
 	 * Insert a marker at the current position in the flow
-	 * @param m the marker to insert
+	 * @param marker the marker to insert
 	 */
-	public void insertMarker(Marker m);
+	public void insertMarker(Marker marker);
 	
 	/**
 	 * Insert an anchor at the current position in the flow
@@ -65,27 +72,29 @@ public interface Flow extends Closeable {
 	public void insertLeader(Leader leader);
 
 	/**
-	 * Add chars to flow
+	 * Add chars to the current block
 	 * @param chars the characters to add to the flow
 	 */
 	public void addChars(CharSequence chars);
 	
 	/**
-	 * Add chars to flow
+	 * Add chars to the current block
 	 * @param chars the characters to add to the flow
-	 * @param p the SpanProperties for the characters 
+	 * @param props the SpanProperties for the characters 
 	 */
-	public void addChars(CharSequence chars, SpanProperties p);
+	public void addChars(CharSequence chars, SpanProperties props);
 	
 	/**
-	 * Start a new line, continue block
+	 * Explicitly break the current line, even if the line has space 
+	 * left for more characters. The current block remains open.
 	 */
 	public void newLine();
-	
+
 	/**
-	 * 
-	 * @param name
-	 * @param master
+	 * Add a LayoutMaster
+	 * @param name The name of the LayoutMaster. This is the named used in when retrieving
+	 * a master for a particular sequence from the {@link SequenceProperties}.
+	 * @param master the LayoutMaster
 	 */
 	public void addLayoutMaster(String name, LayoutMaster master);
 

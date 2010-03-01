@@ -1,37 +1,37 @@
 package org_pef_dtbook2pef.system;
 
 /**
- * A TaskSystemException is an exception that indicates 
- * conditions in a {@link TaskSystem} that a reasonable 
+ * An InternalTaskException is an exception that indicates 
+ * conditions in an {@link InternalTask} that a reasonable 
  * application might want to catch.
  * @author Joel Håkansson, TPB
  */
-public class TaskSystemException extends Exception {
+public class InternalTaskException extends TaskSystemException {
 
-	static final long serialVersionUID = 45773873175031980L;
+	static final long serialVersionUID = -3190485874533528098L;
 
 	/**
 	 * Constructs a new exception with null as its detail message.
 	 */
-	public TaskSystemException() { super(); }
+	public InternalTaskException() { }
 
 	/**
 	 * Constructs a new exception with the specified detail message.
 	 * @param message the detail message
 	 */
-	public TaskSystemException(String message) { super(message); }
+	public InternalTaskException(String message) { super(message); }
 
 	/**
 	 * Constructs a new exception with the specified cause
 	 * @param cause the cause
 	 */
-	public TaskSystemException(Throwable cause) { super(cause); }
+	public InternalTaskException(Throwable cause) { super(cause); }
 
 	/**
 	 * Constructs a new exception with the specified detail message and cause.
 	 * @param message the detail message
 	 * @param cause the cause
 	 */
-	public TaskSystemException(String message, Throwable cause) { super(message, cause); }
+	public InternalTaskException(String message, Throwable cause) { super(message, cause); }
 
 }

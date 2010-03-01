@@ -18,7 +18,7 @@ import org.daisy.util.xml.peek.PeekResult;
 import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
 import org.xml.sax.SAXException;
-import org_pef_dtbook2pef.DTBook2PEF.OutputFormat;
+import org_pef_dtbook2pef.setups.TaskSystemFactory.OutputFormat;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.TaskSystem;
 import org_pef_dtbook2pef.system.TaskSystemException;
@@ -48,6 +48,7 @@ public class InputDetectorTaskSystem implements TaskSystem {
 	private final URL resourceBase;
 	private final String localBase;
 	private final String commonBase;
+	private final String name;
 
 	/**
 	 * Create a new InputDetectorTaskSystem. 
@@ -56,9 +57,18 @@ public class InputDetectorTaskSystem implements TaskSystem {
 	 * @param commonBase a path relative the resource root to the common resources
 	 */
 	public InputDetectorTaskSystem(URL resourceBase, String localBase, String commonBase) {
+		this(resourceBase, localBase, commonBase, "InputDetectorTaskSystem");
+	}
+	
+	public InputDetectorTaskSystem(URL resourceBase, String localBase, String commonBase, String name) {
 		this.resourceBase = resourceBase;
 		this.localBase = localBase;
 		this.commonBase = commonBase;
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 	public ArrayList<InternalTask> compile(Map<String, String> parameters)

@@ -80,6 +80,10 @@ whileLoop:		while (i>=0) {
 				} else if (charsStr.charAt(i)=='\u00ad'){ // convert soft hyphen to hard hyphen 
 					head = charsStr.substring(0, i) + '-';
 					tailStart = i+1;
+				} else if (charsStr.charAt(i)=='-' && charsStr.length()>1 && charsStr.charAt(i-1)==' ') {
+					// if hyphen is preceded by space, back up one more
+					head = charsStr.substring(0, i);
+					tailStart = i;
 				} else {
 					head = charsStr.substring(0, i+1);
 					tailStart = i+1;

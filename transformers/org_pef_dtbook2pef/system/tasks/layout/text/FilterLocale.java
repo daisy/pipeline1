@@ -58,7 +58,7 @@ public class FilterLocale {
 	/**
 	 * This locale is a subtype of the other locale
 	 * @param other
-	 * @return
+	 * @return returns true if this locale is a subtype of the supplied locale
 	 */
 	public boolean isA(FilterLocale other) {
 		// all strings are pooled so str == other.str implies that str.equals(other.str)

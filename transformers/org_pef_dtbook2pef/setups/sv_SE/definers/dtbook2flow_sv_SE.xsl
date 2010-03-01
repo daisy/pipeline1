@@ -25,10 +25,14 @@
 		<xsl:attribute name="hyphenate">true</xsl:attribute>
 		<xsl:attribute name="initial-page-number">1</xsl:attribute>
 	</xsl:template>
-	<xsl:template match="dtb:bodymatter | dtb:rearmatter" mode="apply-sequence-attributes">
+	<xsl:template match="dtb:bodymatter" mode="apply-sequence-attributes">
 		<xsl:attribute name="master">main</xsl:attribute>
 		<xsl:attribute name="hyphenate">true</xsl:attribute>
 		<xsl:attribute name="initial-page-number">1</xsl:attribute>
+	</xsl:template>
+	<xsl:template match="dtb:rearmatter" mode="apply-sequence-attributes">
+		<xsl:attribute name="master">main</xsl:attribute>
+		<xsl:attribute name="hyphenate">true</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="dtb:h1" mode="apply-block-attributes">
 		<xsl:attribute name="margin-top">3</xsl:attribute>

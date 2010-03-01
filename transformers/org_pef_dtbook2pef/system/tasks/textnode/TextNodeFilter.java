@@ -43,7 +43,6 @@ public class TextNodeFilter extends StaxFilter {
 	 * @param input
 	 * @param output
 	 * @param filters ArrayList of regular expressions
-	 * @param toLowerCase if true, output will be lower case
 	 * @throws XMLStreamException
 	 * @throws FileNotFoundException
 	 */

@@ -5,11 +5,8 @@ import java.util.ArrayList;
 
 /**
  * ConfigurableLayoutMaster will ensure that the LayoutMaster measurements adds up.
- * @author joha
- *
- *
+ * @author Joel Håkansson, TPB
  */
-// TODO: Since class isn't abstract anymore, it is possible to change LayoutMasterConfigurator into a regular builder
 public class ConfigurableLayoutMaster implements LayoutMaster {
 	protected final int headerHeight;
 	protected final int footerHeight;
@@ -22,8 +19,71 @@ public class ConfigurableLayoutMaster implements LayoutMaster {
 	protected final float rowSpacing;
 	protected final boolean duplex;
 	protected final ArrayList<Template> templates;
+	
+	/**
+	 * Configuration class for a ConfigurableLayoutMaster
+	 * @author Joel Håkansson, TPB
+	 *
+	 */
+	public static class Builder {
+		int pageWidth;
+		int pageHeight;
+		// optional
+		int headerHeight = 0; 
+		int footerHeight = 0;
+		int innerMargin = 0;
+		int outerMargin = 0;
+		float rowSpacing = 1;
+		boolean duplex = true;
+		ArrayList<Template> templates;
 
-	public ConfigurableLayoutMaster(LayoutMasterConfigurator config) {
+		public Builder(int pageWidth, int pageHeight) {
+			this.pageWidth = pageWidth;
+			this.pageHeight = pageHeight;
+			this.templates = new ArrayList<Template>();
+		}
+		
+		public Builder headerHeight(int value) {
+			this.headerHeight = value;
+			return this;
+		}
+
+		public Builder footerHeight(int value) {
+			this.footerHeight = value;
+			return this;
+		}
+
+		public Builder innerMargin(int value) {
+			this.innerMargin = value;
+			return this;
+		}
+		
+		public Builder outerMargin(int value) {
+			this.outerMargin = value;
+			return this;
+		}
+		
+		public Builder rowSpacing(float value) {
+			this.rowSpacing = value;
+			return this;
+		}
+		
+		public Builder duplex(boolean value) {
+			this.duplex = value;
+			return this;
+		}
+		
+		public Builder addTemplate(Template value) {
+			this.templates.add(value);
+			return this;
+		}
+		
+		public ConfigurableLayoutMaster build() {
+			return new ConfigurableLayoutMaster(this);
+		}
+	}
+
+	private ConfigurableLayoutMaster(Builder config) {
 		// int flowWidth, int flowHeight, int headerHeight, int footerHeight, int innerMargin, int outerMargin, float rowSpacing
 		this.headerHeight = config.headerHeight;
 		this.footerHeight = config.footerHeight;

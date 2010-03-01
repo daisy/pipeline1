@@ -7,12 +7,9 @@ import java.net.URL;
 
 import javax.xml.transform.TransformerException;
 
-import net.sf.saxon.trace.Location;
-
 import org.daisy.pipeline.core.event.EventBus;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.event.MessageEvent.Type;
-import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.xml.validation.SimpleValidator;
 import org.daisy.util.xml.validation.ValidationException;
@@ -20,7 +17,16 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org_pef_dtbook2pef.system.InternalTask;
+import org_pef_dtbook2pef.system.InternalTaskException;
 
+/**
+ * <p>This tasks validates the input file against the given schema and copies the original file to 
+ * the output file, to conform with the contract of an {@link InternalTask}.</p>
+ * <p>The tasks throws an exception if anything goes wrong.</p>
+ * <p>Input file type requirement: XML</p>
+ * @author Joel Håkansson, TPB
+ *
+ */
 public class ValidatorTask extends InternalTask implements ErrorHandler {
 	private URL schema;
 	private boolean error = false;
@@ -31,8 +37,7 @@ public class ValidatorTask extends InternalTask implements ErrorHandler {
 	}
 
 	@Override
-	public void execute(File input, File output)
-			throws TransformerRunException {
+	public void execute(File input, File output) throws InternalTaskException {
 		try {
 			SimpleValidator sv = new SimpleValidator(schema, this);
 			boolean ret = sv.validate(input.toURI().toURL());
@@ -41,17 +46,17 @@ public class ValidatorTask extends InternalTask implements ErrorHandler {
 				return;
 			}
 		} catch (SAXException e) {
-			throw new TransformerRunException("Input validation failed: ", e);
+			throw new InternalTaskException("Input validation failed: ", e);
 		} catch (TransformerException e) {
-			throw new TransformerRunException("Input validation failed: ", e);
+			throw new InternalTaskException("Input validation failed: ", e);
 		} catch (ValidationException e) {
-			throw new TransformerRunException("Input validation failed: ", e);
+			throw new InternalTaskException("Input validation failed: ", e);
 		} catch (MalformedURLException e) {
-			throw new TransformerRunException("Input validation failed: ", e);
+			throw new InternalTaskException("Input validation failed: ", e);
 		} catch (IOException e) {
-			throw new TransformerRunException("Input validation failed: ", e);
+			throw new InternalTaskException("Input validation failed: ", e);
 		}
-		throw new TransformerRunException("Input validation failed.");
+		throw new InternalTaskException("Input validation failed.");
 	}
 
 	public void error(SAXParseException exception) throws SAXException {

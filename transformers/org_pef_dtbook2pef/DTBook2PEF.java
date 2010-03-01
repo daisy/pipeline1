@@ -3,7 +3,6 @@ package org_pef_dtbook2pef;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,100 +16,38 @@ import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.FileJuggler;
 import org.daisy.util.file.FileUtils;
-
-import org_pef_dtbook2pef.setups.en_US.DefaultTextSystem;
-import org_pef_dtbook2pef.setups.sv_SE.SwedishBrailleSystem;
-import org_pef_dtbook2pef.setups.sv_SE.SwedishTextSystem;
+import org_pef_dtbook2pef.setups.TaskSystemFactory;
+import org_pef_dtbook2pef.setups.TaskSystemFactoryException;
+import org_pef_dtbook2pef.setups.TaskSystemFactory.OutputFormat;
+import org_pef_dtbook2pef.setups.TaskSystemFactory.Setup;
 import org_pef_dtbook2pef.system.InternalTask;
+import org_pef_dtbook2pef.system.InternalTaskException;
 import org_pef_dtbook2pef.system.TaskSystem;
 import org_pef_dtbook2pef.system.TaskSystemException;
-import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
 
 /**
- * <p>Transforms DTBook 2005-3 into PEF 2008-1</p>
+ * <p>The transformer loads a TaskSystem implementation and runs the steps
+ * in it. The original intent was to convert DTBook into braille (PEF),
+ * but other uses are possible.</p>
  * 
- * <p>The script process should consist of these steps:</p>
- * <ol>
- * <li>Hyphenator</li>
- * <li>Braille code translator, with soft hyphens and space at breakpoints.</li>
- * <li>Layout definer. Defines the layout.</li>
- * <li>FOP. Performs the layout.</li>
- * <li>Renderer. Interprets the layout as PEF.</li>
- * <li>Braille finalizer. Post-rendering character-by-character braille injection (replacing e.g. spaces and hyphens)</li>
- * <li>Volume splitter</li>
- * <li>Validation</li>
- * <li>System clean up</li>
- * </ol>
- * <p>
- * This transformer handles steps 2-7.
- * </p>
+ * <p>Before running the setup, a few globally useful parameters,
+ * such as todays date, are added.</p>
  * 
+ * <p>The result from each step can be kept using the writeTempFiles
+ * parameter in the tdf.</p>
+ * 
+ * <p>Additional conversions can be implemented by modifying the {@link TaskSystemFactory}</p>
+ *   
  * @author Joel Håkansson, TPB
- * @version 2008-05-16
+ * @version 2010-02-08
  * @since 2008-01-21
  * 
  */
 public class DTBook2PEF extends Transformer {
 	private HashMap<String, String> map;
 	
-
-	/*private HashMap<String, TaskSystem> compileSystemSetups(Format format, Map<String, String> parameters) {
-		HashMap<String, TaskSystem> systemSetups = new HashMap<String, TaskSystem>();
-
-		// Setup for Swedish //
-		switch (format) {
-			case PEF:
-				systemSetups.put("sv-SE", new SwedishBrailleSystem(getResource("setups/"), "sv_SE/config/default_A4.xml"));
-				systemSetups.put("sv-SE-FA44", new SwedishBrailleSystem(getResource("setups/"), "sv_SE/config/default_FA44.xml"));
-				break;
-			case TEXT:
-				systemSetups.put("sv-SE", new SwedishTextSystem(getResource("setups/"), "sv_SE/config/text_A4.xml"));
-				break;
-		}
-		// Add more Braille systems here //
-		return systemSetups;
-	}*/
-
-	public enum OutputFormat {PEF, TEXT};
-	public enum Setup {sv_SE, sv_SE_FA44, en_US};
 	/**
-	 *  System setups are defined here. Modification to other parts of this file should
-	 *  not be needed.
-	 *  
-	 *  Each system setup consists of a series of tasks that, put together, performs conversion from 
-	 *  XML to a {@link PagedMediaWriter}. A system is labeled by an identifier when inserted into the HashMap.
-	 *  The recommended practice is to use a language region (or sub region) as identifier.
-	 *
-	 *  New system setups can be added to the conversion system by following the example below.
-	 */
-	private TaskSystem getSystemSetup(OutputFormat outputFormat, Setup setup, Map<String, String> parameter) {
-		switch (outputFormat) {
-			case PEF:
-				switch (setup) {
-					// Braille setups for Swedish //
-					case sv_SE: 
-						return new SwedishBrailleSystem(getResource("setups/"), "sv_SE/config/default_A4.xml");
-					case sv_SE_FA44:
-						return new SwedishBrailleSystem(getResource("setups/"), "sv_SE/config/default_FA44.xml");
-					// Add more Braille systems here //
-				}
-				break;
-			case TEXT:
-				switch (setup) {
-					// Text setup for Swedish //
-					case sv_SE: 
-						return new SwedishTextSystem(getResource("setups/"), "sv_SE/config/text_A4.xml");
-					case en_US:
-						return new DefaultTextSystem(getResource("setups/"), "en_US/config/text.xml");
-					// Add more text systems here //
-				}
-				break;
-		}
-		return null;
-	}
-
-	/**
-	 * Default constructor
+	 * Default constructor.
 	 * @param inListener
 	 * @param isInteractive
 	 */
@@ -118,6 +55,16 @@ public class DTBook2PEF extends Transformer {
 		super(inListener, isInteractive);
 	}
 
+	/**
+	 * <p>This is the transformer entry point that 
+	 * loads and runs the specified setup.</p>
+	 * 
+	 * <p>Before running the setup, a few globally useful parameters,
+	 * such as todays date, are added.</p>
+	 * 
+	 * <p>The result from each step can be kept using the writeTempFiles
+	 * parameter in the tdf.</p>
+	 */
 	@Override
 	protected boolean execute(Map<String, String> parameters) throws TransformerRunException {
 		progress(0);
@@ -166,21 +113,26 @@ public class DTBook2PEF extends Transformer {
 				}
 			}
 
-			//HashMap<String, TaskSystem> systemSetups = compileSystemSetups(format, map);
-
-			// Run tasks
-			FileJuggler fj = new FileJuggler(new File(input), output);
+			// Load setup
 			ArrayList<InternalTask> tasks = null;
+			TaskSystem ts = null;
 			try {
-				tasks = getSystemSetup(outputformat, setup, map).compile(map);
+				ts = new TaskSystemFactory().newTaskSystem(outputformat, setup, map);
+				tasks = ts.compile(map);
 			} catch (TaskSystemException e) {
-				throw new TransformerRunException("Unable to load setup " + setup, e);
+				throw new TransformerRunException("Unable to load '" + (ts!=null?ts.getName():"") + "' with parameters " + map.toString(), e);
+			} catch (TaskSystemFactoryException e) {
+				throw new TransformerRunException("Unable to retrieve a TaskSystem", e);
 			}
 			if (tasks==null) {
-				throw new TransformerRunException("Unable to load setup " + setup);
+				// Should never happen
+				throw new TransformerRunException("Unable to load \"" + (ts!=null?ts.getName():"") + "\"");
 			}
-			sendMessage("Setup \"" + setup + "\" loaded");
+			sendMessage("About to run TaskSystem \"" + (ts!=null?ts.getName():"") + "\"");
+
+			// Run tasks
 			double i = 0;
+			FileJuggler fj = new FileJuggler(new File(input), output);
 			for (InternalTask task : tasks) {
 				sendMessage("Running " + task.getName());
 				task.execute(fj.getInput(), fj.getOutput());
@@ -199,13 +151,11 @@ public class DTBook2PEF extends Transformer {
 			
 		} catch (IOException e) {
 			throw new TransformerRunException("IO error: ", e.getCause());
+		} catch (InternalTaskException e) {
+			throw new TransformerRunException("Error in internal task", e);
 		}
 		progress(1);
 		return true;
-	}
-	
-	public URL getResource(String subPath) throws IllegalArgumentException {
-		return getTransformerDirectoryResource(subPath);
 	}
 
 }

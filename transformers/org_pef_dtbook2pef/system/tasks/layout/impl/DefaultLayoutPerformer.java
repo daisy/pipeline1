@@ -8,7 +8,7 @@ import java.util.Stack;
 import org_pef_dtbook2pef.system.tasks.layout.flow.BlockProperties;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Flow;
 import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformer;
-import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformerException;
+import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutException;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Leader;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
@@ -16,7 +16,6 @@ import org_pef_dtbook2pef.system.tasks.layout.flow.SequenceProperties;
 import org_pef_dtbook2pef.system.tasks.layout.flow.SpanProperties;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
 import org_pef_dtbook2pef.system.tasks.layout.text.FilterFactory;
-import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
 import org_pef_dtbook2pef.system.tasks.layout.utils.BlockHandler;
 import org_pef_dtbook2pef.system.tasks.layout.utils.StateObject;
 
@@ -24,7 +23,6 @@ import org_pef_dtbook2pef.system.tasks.layout.utils.StateObject;
  * Breaks flow into rows, page related block properties are left to next step
  * @author joha
  * TODO: fix recursive keep problem
- * TODO: Remove builder
  * TODO: Implement SpanProperites
  * TODO: Implement floating elements
  */
@@ -41,52 +39,18 @@ public class DefaultLayoutPerformer implements Flow {
 
 	private BlockHandler bh;
 
-	public static class Builder {
-		//required
-
-		//optional
-		FilterFactory filtersFactory;
-
-		/**
-		 * Create a new DefaultlayoutPerformer.Builder with the supplied PagedMediaWriter
-		 * @param writer the PagedMediaWriter to use for output.
-		 */
-		public Builder() {
-			setStringFilterFactory(null);
-		}
-
-		/**
-		 * Set text filter handler, may not be null
-		 * @param filters
-		 */
-		public Builder setStringFilterFactory(FilterFactory filters) {
-			this.filtersFactory = filters;
-			return this;
-		}
-
-/*
-		public Builder addLayoutMaster(String key, LayoutMaster value) {
-			masters.put(key, value);
-			return this;
-		}*/
-
-		public DefaultLayoutPerformer build() {
-			return new DefaultLayoutPerformer(this);
-		}
-	}
-
 	/**
 	 * Create a new flow
 	 * @param flowWidth the width of the flow, in chars
 	 */
-	private DefaultLayoutPerformer(Builder builder) {
+	public DefaultLayoutPerformer(FilterFactory filtersFactory) {
 		this.masters = new HashMap<String, LayoutMaster>();
 		//this.filters = builder.filtersFactory.getDefault();
 		this.context = new Stack<BlockProperties>();
 		this.leftMargin = 0;
 		this.rightMargin = 0;
 		this.flowStruct = new FlowStruct(); //masters
-		this.bh = new BlockHandler(builder.filtersFactory.getDefault());
+		this.bh = new BlockHandler(filtersFactory.getDefault());
 		this.state = new StateObject();
 	}
 
@@ -223,7 +187,11 @@ public class DefaultLayoutPerformer implements Flow {
 	public void close() throws IOException {
 		state.assertOpen();
 		for (FlowSequence seq : flowStruct.toArray()) {
-			paginator.newSequence(masters.get(seq.getSequenceProperties().getMasterName()), seq.getSequenceProperties().getInitialPageNumber()-1); //seq.getSequenceProperties().getMasterName(), 
+			if (seq.getSequenceProperties().getInitialPageNumber()==null) {
+				paginator.newSequence(masters.get(seq.getSequenceProperties().getMasterName()));
+			} else {
+				paginator.newSequence(masters.get(seq.getSequenceProperties().getMasterName()), seq.getSequenceProperties().getInitialPageNumber()-1);
+			}
 			paginator.newPage();
 			FlowGroup[] groupA = seq.toArray();
 			for (int gi = 0; gi<groupA.length; gi++) {
@@ -250,7 +218,7 @@ public class DefaultLayoutPerformer implements Flow {
 				}
 				if (groupA[gi].getSpaceBefore()+groupA[gi].getSpaceAfter()>=paginator.getPageInfo().getFlowHeight()) {
 					IOException ex = new IOException("Layout exception");
-					ex.initCause(new LayoutPerformerException("Group margins too large to fit on an empty page."));
+					ex.initCause(new LayoutException("Group margins too large to fit on an empty page."));
 					throw ex;
 				} else if (groupA[gi].getSpaceBefore()+1>paginator.getPageInfo().getFlowHeight()-paginator.getPageInfo().countRows()) {
 					paginator.newPage();
@@ -273,40 +241,6 @@ public class DefaultLayoutPerformer implements Flow {
 		}
 		state.close();
 	}
-	/*
-	private PageStruct setHeadersAndFooters(PageStruct ps) throws LayoutPerformerException {
-		for (PageSequence s : ps.getSequenceArray()) {
-			LayoutMaster lm = s.getLayoutMaster();
-			for (Page p : s.getPages()) {
-				int pagenum = p.getPageIndex()+1;
-				/*
-				ArrayList<Row> header = new ArrayList<Row>();
-				for (ArrayList<Object> row : lm.getHeader(pagenum)) {
-					try {
-						header.add(new Row(distribute(row, lm.getFlowWidth(), " ", p)));
-					} catch (LayoutToolsException e) {
-						throw new LayoutPerformerException("Error while rendering header", e);
-					}
-				}*/
-				//p.setHeader(header);
-	/*
-				p.setHeader(renderFields(lm, p, lm.getHeader(pagenum)));
-				/*
-				ArrayList<Row> footer = new ArrayList<Row>();
-				for (ArrayList<Object> row : lm.getFooter(pagenum)) {
-					try {
-						footer.add(new Row(distribute(row, lm.getFlowWidth(), " ", p)));
-					} catch (LayoutToolsException e) {
-						throw new LayoutPerformerException("Error while rendering footer", e);
-					}
-				}*/
-				//p.setFooter(footer);
-	/*
-				p.setFooter(renderFields(lm, p, lm.getFooter(pagenum)));
-			}
-		}
-		return ps;
-	}*/
 
 	public void endFloat() {
 		state.assertOpen();

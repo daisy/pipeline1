@@ -21,10 +21,10 @@ import org_pef_dtbook2pef.setups.sv_SE.tasks.SwedishVolumeCoverPage;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.TaskSystem;
 import org_pef_dtbook2pef.system.TaskSystemException;
+import org_pef_dtbook2pef.system.tasks.LayoutEngineTask;
 import org_pef_dtbook2pef.system.tasks.ValidatorTask;
+import org_pef_dtbook2pef.system.tasks.VolumeCoverPageTask;
 import org_pef_dtbook2pef.system.tasks.XsltTask;
-import org_pef_dtbook2pef.system.tasks.cover.VolumeCoverPageTask;
-import org_pef_dtbook2pef.system.tasks.layout.LayoutEngineTask;
 import org_pef_dtbook2pef.system.tasks.layout.impl.DefaultLayoutPerformer;
 import org_pef_dtbook2pef.system.tasks.layout.impl.PageStruct;
 import org_pef_dtbook2pef.system.tasks.layout.text.BrailleFilterFactory;
@@ -60,18 +60,23 @@ import org_pef_dtbook2pef.system.tasks.layout.writers.PEFMediaWriter;
 
  * </ol>
  * <p>The result should be validated against the PEF Relax NG schema using int_daisy_validator.</p>
- * @author joha
- * TODO: hyphenation "sjuttonåringar", "blårött" och "jättestor".
+ * @author Joel Håkansson, TPB
  */
 public class SwedishBrailleSystem implements TaskSystem {
 	private URL resourceBase;
 	private String config;
 	private InputDetectorTaskSystem inputDetector;
+	private final String name;
 	
-	public SwedishBrailleSystem(URL resourceBase, String config) {
+	public SwedishBrailleSystem(URL resourceBase, String config, String name) {
 		this.resourceBase = resourceBase;
 		this.config = config;
 		this.inputDetector = new InputDetectorTaskSystem(resourceBase, "sv_SE/config/", "common/config/");
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 	public ArrayList<InternalTask> compile(Map<String, String> parameters) throws TaskSystemException {
@@ -155,9 +160,7 @@ public class SwedishBrailleSystem implements TaskSystem {
 		PEFMediaWriter paged = new PEFMediaWriter(p2);
 		factory.setDefault(sv_SE);
 		PageStruct paginator = new PageStruct(factory.getDefault());
-		DefaultLayoutPerformer flow = new DefaultLayoutPerformer.Builder().
-										setStringFilterFactory(factory).
-										build();
+		DefaultLayoutPerformer flow = new DefaultLayoutPerformer(factory);
 		setup.add(new LayoutEngineTask("FLOW to PEF converter", flow, paginator, paged));
 
 		// Split result into volumes

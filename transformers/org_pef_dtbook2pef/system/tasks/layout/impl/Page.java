@@ -9,8 +9,7 @@ import org_pef_dtbook2pef.system.tasks.layout.page.Template;
 
 /**
  * A page object
- * @author joha
- * TODO: clean
+ * @author Joel Håkansson, TPB
  */
 public class Page {
 	private PageSequence parent;

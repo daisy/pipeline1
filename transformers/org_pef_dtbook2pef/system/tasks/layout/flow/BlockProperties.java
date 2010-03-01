@@ -1,23 +1,35 @@
 package org_pef_dtbook2pef.system.tasks.layout.flow;
 
 /**
- * BlockProperties defines properties in a block of text in the flow.
+ * BlockProperties defines properties specific for a block of text
  * @author Joel Håkansson, TPB
  */
 public class BlockProperties {
 	/**
-	 * List types: <ul><li>NONE not a list</li><li>OL ordered list</li><li>UL unordered list</li><li>PL preformatted list</li></ul>
+	 * List types:
+	 * <ul>
+	 * 	<li>NONE not a list</li>
+	 * 	<li>OL ordered list</li>
+	 * 	<li>UL unordered list</li>
+	 * 	<li>PL preformatted list</li>
+	 * </ul>
 	 */
 	public static enum ListType {NONE, OL, UL, PL};
 	/**
 	 * Break before types:
-	 * <ul><li>AUTO no break</li><li>PAGE start block on a new page</li></ul>
+	 * <ul>
+	 * 	<li>AUTO no break</li>
+	 * 	<li>PAGE start block on a new page</li>
+	 * </ul>
 	 */
 	public static enum BreakBeforeType {AUTO, PAGE}; // TODO: Implement ODD_PAGE, EVEN_PAGE 
 	/**
 	 * 
 	 * Keep types:
-	 * <ul><li>AUTO do not keep</li><li>ALL all rows in a block</li></ul>
+	 * <ul>
+	 * 	<li>AUTO do not keep</li>
+	 * 	<li>ALL all rows in a block</li>
+	 * </ul>
 	 *
 	 */
 	public static enum KeepType {AUTO, ALL}
@@ -33,11 +45,10 @@ public class BlockProperties {
 	private KeepType keep;
 	private int keepWithNext;
 	private int blockIndent;
-	
+
 	/**
-	 * Builder for BlockProperties
+	 * The Builder is used when creating an instance of BlockProperties
 	 * @author Joel Håkansson, TPB
-	 *
 	 */
 	public static class Builder {
 		// Optional parameters
@@ -53,8 +64,10 @@ public class BlockProperties {
 		int keepWithNext = 0;
 		int blockIndent = 0;
 		
-		public Builder() {
-		}
+		/**
+		 * Create a new Builder
+		 */
+		public Builder() { }
 		
 		/**
 		 * Set the left margin for the block, in characters.
@@ -179,8 +192,8 @@ public class BlockProperties {
 		}
 		
 		/**
-		 * Build BlockProperties with the current settings.
-		 * @return returns a new BlockProperties object
+		 * Build BlockProperties using the current state of the Builder.
+		 * @return returns a new BlockProperties instance
 		 */
 		public BlockProperties build() {
 			return new BlockProperties(this);
@@ -267,8 +280,8 @@ public class BlockProperties {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Increments the list iterator and returns the current list number
+	 * @return returns the current list number
 	 */
 	public int nextListNumber() {
 		listIterator++;
@@ -282,7 +295,7 @@ public class BlockProperties {
 	public int getListNumber() {
 		return listIterator;
 	}
-	
+
 	/**
 	 * Get break before type
 	 * @return returns the break before type
@@ -290,7 +303,7 @@ public class BlockProperties {
 	public BreakBeforeType getBreakBeforeType() {
 		return breakBefore;
 	}
-	
+
 	/**
 	 * Get keep type
 	 * @return returns the keep type
@@ -298,10 +311,10 @@ public class BlockProperties {
 	public KeepType getKeepType() {
 		return keep;
 	}
-	
+
 	/**
-	 * Get keep with next, in characters
-	 * @return returns keep with next
+	 * Get the number of rows containing text in the next block that must be on the same page as this block
+	 * @return returns the number of rows in the next block to keep with this block 
 	 */
 	public int getKeepWithNext() {
 		return keepWithNext;

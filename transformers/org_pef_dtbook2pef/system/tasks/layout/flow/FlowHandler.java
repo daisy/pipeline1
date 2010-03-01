@@ -6,7 +6,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import org_pef_dtbook2pef.system.tasks.layout.page.ConfigurableLayoutMaster;
-import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMasterConfigurator;
 import org_pef_dtbook2pef.system.tasks.layout.page.SimpleTemplate;
 import org_pef_dtbook2pef.system.tasks.layout.page.field.CompoundField;
 import org_pef_dtbook2pef.system.tasks.layout.page.field.CurrentPageField;
@@ -27,7 +26,7 @@ import org_pef_dtbook2pef.system.tasks.layout.utils.Expression;
 public class FlowHandler extends DefaultHandler {
 	private Flow flow;
 	private StringBuffer sb;
-	private LayoutMasterConfigurator masterConfig;
+	private ConfigurableLayoutMaster.Builder masterConfig;
 	private String masterName;
 	private SimpleTemplate template;
 	private ArrayList<Object> fields;
@@ -44,12 +43,12 @@ public class FlowHandler extends DefaultHandler {
 		content = false;
 	}
 	
-	public void startElement (String uri, String localName, String qName, Attributes atts) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
 		flushChars();
 		if (localName.equals("layout-master")) {
 			int width = Integer.parseInt(atts.getValue("page-width"));
 			int height = Integer.parseInt(atts.getValue("page-height"));
-			masterConfig = new LayoutMasterConfigurator(width, height);
+			masterConfig = new ConfigurableLayoutMaster.Builder(width, height);
 			masterName = atts.getValue("name");
 			for (int i=0; i<atts.getLength(); i++) {
 				String name = atts.getLocalName(i);
@@ -163,14 +162,14 @@ public class FlowHandler extends DefaultHandler {
 		}
 	}
 
-	public void endElement (String uri, String localName, String qName) throws SAXException {
+	public void endElement(String uri, String localName, String qName) throws SAXException {
 		flushChars();
 		if (localName.equals("block")) {
 			flow.endBlock();
 		} else if (localName.equals("float-item")) {
 			flow.endFloat();
 		} else if (localName.equals("layout-master")) {
-			flow.addLayoutMaster(masterName, new ConfigurableLayoutMaster(masterConfig));
+			flow.addLayoutMaster(masterName, masterConfig.build());
 		} else if (localName.equals("template") || localName.equals("default-template")) {
 			masterConfig.addTemplate(template);
 		} else if (localName.equals("field")) {
@@ -202,7 +201,7 @@ public class FlowHandler extends DefaultHandler {
 		}
 	}
 	
-	public void characters (char ch[], int start, int length) throws SAXException {
+	public void characters(char ch[], int start, int length) throws SAXException {
 		if (content) {
 			sb.append(new String(ch, start, length));
 		}

@@ -10,16 +10,22 @@ import java.util.Map;
  * constructor arguments.
  * 
  * Implement this interface to create a new TaskSystem.
- * @author joha
+ * @author Joel Håkansson, TPB
  *
  */
 public interface TaskSystem {
+	
+	/**
+	 * Get a descriptive name for the TaskSystem
+	 * @return returns the name for the TaskSystem
+	 */
+	public String getName();
 
 	/**
 	 * Compile the TaskSystem using the supplied parameters
 	 * @param parameters the parameters to pass to the TaskSystem
 	 * @return returns a list of InternalTasks
-	 * @throws TaskSystemException throws TaskSystemException if something went wrong when compiling the TaskSystem
+	 * @throws TaskSystemException throws TaskSystemException if something goes wrong when compiling the TaskSystem
 	 */
 	public ArrayList<InternalTask> compile(Map<String, String> parameters) throws TaskSystemException;
 

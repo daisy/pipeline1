@@ -2,6 +2,10 @@ package org_pef_dtbook2pef.system.tasks.layout.flow;
 
 import java.util.ArrayList;
 
+/**
+ * Row represents a single row of text
+ * @author Joel Håkansson, TPB
+ */
 public class Row {
 	private String chars;
 	private ArrayList<Marker> markers;
@@ -12,6 +16,10 @@ public class Row {
 	private int spaceAfter;
 	*/
 	
+	/**
+	 * Create a new Row
+	 * @param chars the characters on this row
+	 */
 	public Row(String chars) {
 		this.chars = chars;
 		this.markers = new ArrayList<Marker>();
@@ -22,43 +30,78 @@ public class Row {
 		this.spaceAfter = 0;
 		*/
 	}
-	
+
+	/**
+	 * Create a new empty Row
+	 */
 	public Row() {
 		this("");
 	}
 
+	/**
+	 * Get the characters on this row
+	 * @return returns the characters on the row
+	 */
 	public String getChars() {
 		return chars;
 	}
 	
-	public void appendChars(CharSequence c) {
+/*	public void appendChars(CharSequence c) {
 		chars = chars.toString() + c;
+	}*/
+
+	/**
+	 * Add a marker to the Row
+	 * @param marker
+	 */
+	public void addMarker(Marker marker) {
+		markers.add(marker);
 	}
 
-	public void addMarker(Marker m) {
-		markers.add(m);
-	}
-	
+	/**
+	 * Add an anchor to the Row
+	 * @param ref
+	 */
 	public void addAnchor(String ref) {
 		anchors.add(ref);
 	}
 	
+	/**
+	 * Add a collection of markers to the Row
+	 * @param m
+	 */
 	public void addMarkers(ArrayList<Marker> m) {
 		markers.addAll(m);
 	}
 
+	/**
+	 * Get all markers on this Row
+	 * @return returns the markers
+	 */
 	public ArrayList<Marker> getMarkers() {
 		return markers;
 	}
 	
+	/**
+	 * Get all anchors on this Row
+	 * @return returns an ArrayList of anchors
+	 */
 	public ArrayList<String> getAnchors() {
 		return anchors;
 	}
 
+	/**
+	 * Set the left margin
+	 * @param value the left margin, in characters
+	 */
 	public void setLeftMargin(int value) {
 		leftMargin = value;
 	}
 
+	/**
+	 * Get the left margin value for the Row, in characters
+	 * @return returns the left margin
+	 */
 	public int getLeftMargin() {
 		return leftMargin;
 	}

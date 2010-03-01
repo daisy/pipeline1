@@ -1,4 +1,4 @@
-package org_pef_dtbook2pef.system.tasks.layout;
+package org_pef_dtbook2pef.system.tasks;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,9 +9,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.daisy.pipeline.exception.TransformerRunException;
 import org.xml.sax.SAXException;
 import org_pef_dtbook2pef.system.InternalTask;
+import org_pef_dtbook2pef.system.InternalTaskException;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Flow;
 import org_pef_dtbook2pef.system.tasks.layout.flow.FlowHandler;
 import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformer;
@@ -21,8 +21,17 @@ import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriterException;
 //TODO: Validate against schema
 
 /**
- * breaks row flow into pages
- * @author joha
+ * <p>
+ * The LayoutEngineTask converts a FLOW-file into a file format defined by the
+ * supplied {@link PagedMediaWriter}.</p>
+ * 
+ * <p>The LayoutEngineTask is an advanced text-only layout system.</p>
+ * <p>Input file must be of type FLOW.</p>
+ * <p>The rendering is done in two steps:</p>
+ * <ol>
+ * 	<li></li>
+ * </ol>
+ * @author Joel Håkansson, TPB
  *
  */
 public class LayoutEngineTask extends InternalTask  {
@@ -30,16 +39,22 @@ public class LayoutEngineTask extends InternalTask  {
 	private LayoutPerformer paginator;
 	private PagedMediaWriter writer;
 	
-	public LayoutEngineTask(String name, Flow flow, LayoutPerformer layoutPerformer, PagedMediaWriter writer) {
+	/**
+	 * Create a new instance of LayoutEngineTask.
+	 * @param name a descriptive name for the task
+	 * @param flow 
+	 * @param paginator
+	 * @param writer
+	 */
+	public LayoutEngineTask(String name, Flow flow, LayoutPerformer paginator, PagedMediaWriter writer) {
 		super(name);
 		this.performer = flow;
-		this.paginator = layoutPerformer;
+		this.paginator = paginator;
 		this.writer = writer;
 	}
 
 	@Override
-	public void execute(File input, File output)
-			throws TransformerRunException {
+	public void execute(File input, File output) throws InternalTaskException {
 		try {
 			FileOutputStream os = new FileOutputStream(output);
 			writer.open(os);
@@ -53,15 +68,15 @@ public class LayoutEngineTask extends InternalTask  {
 			paginator.close();
 			writer.close();
 		} catch (SAXException e) {
-			throw new TransformerRunException("SAXException while runing task.", e);
+			throw new InternalTaskException("SAXException while runing task.", e);
 		} catch (FileNotFoundException e) {
-			throw new TransformerRunException("FileNotFoundException while runing task. ", e);
+			throw new InternalTaskException("FileNotFoundException while runing task. ", e);
 		} catch (IOException e) {
-			throw new TransformerRunException("IOException while runing task. ", e);
+			throw new InternalTaskException("IOException while runing task. ", e);
 		} catch (ParserConfigurationException e) {
-			throw new TransformerRunException("ParserConfigurationException while runing task. ", e);
+			throw new InternalTaskException("ParserConfigurationException while runing task. ", e);
 		} catch (PagedMediaWriterException e) {
-			throw new TransformerRunException("Could not open media writer.", e);
+			throw new InternalTaskException("Could not open media writer.", e);
 		}
 	}
 

@@ -1,4 +1,4 @@
-package org_pef_dtbook2pef.system.tasks.textnode;
+package org_pef_dtbook2pef.system.tasks;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,15 +9,17 @@ import java.io.IOException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 
-import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 import org_pef_dtbook2pef.system.InternalTask;
+import org_pef_dtbook2pef.system.InternalTaskException;
 import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
+import org_pef_dtbook2pef.system.tasks.textnode.TextNodeFilter;
 
 /**
- * Task that runs a list of StringFilters on the character data of the input file.
+ * <p>Task that runs a list of StringFilters on the character data of the input file.</p>
+ * <p>Input file type requirement: XML</p>
  * 
  * @author  Joel Håkansson, TPB
  * @version 4 maj 2009
@@ -37,8 +39,7 @@ public class TextNodeTask extends InternalTask {
 	}
 
 	@Override
-	public void execute(File input, File output)
-			throws TransformerRunException {
+	public void execute(File input, File output) throws InternalTaskException {
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
 		inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
         inFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
@@ -58,11 +59,11 @@ public class TextNodeTask extends InternalTask {
 			tnf.filter();
 			tnf.close();
 		} catch (FileNotFoundException e) {
-			throw new TransformerRunException("FileNotFoundException:", e);
+			throw new InternalTaskException("FileNotFoundException:", e);
 		} catch (XMLStreamException e) {
-			throw new TransformerRunException("XMLStreamException:", e);
+			throw new InternalTaskException("XMLStreamException:", e);
 		} catch (IOException e) {
-			throw new TransformerRunException("IOException:", e);
+			throw new InternalTaskException("IOException:", e);
 		}
 
 	}

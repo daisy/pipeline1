@@ -7,6 +7,11 @@ package org_pef_dtbook2pef.system.tasks.layout.page;
  */
 public interface LayoutMaster extends SectionProperties {
 
+	/**
+	 * Get the template for the specified page number
+	 * @param pagenum the page number to get the template for
+	 * @return returns the template
+	 */
 	public Template getTemplate(int pagenum);
 
 }
