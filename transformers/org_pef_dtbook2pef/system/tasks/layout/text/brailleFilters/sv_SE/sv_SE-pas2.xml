@@ -26,6 +26,7 @@
 	<entry key="c">&#x2809;</entry>
 	<entry key="ç">&#x2808;&#x2809;</entry>
 	<entry key="č">&#x2808;&#x2809;</entry>						<!-- LATIN SMALL LETTER C WITH CARON, 010d -->
+	<entry key="0107">&#x2808;&#x2809;</entry>					<!-- LATIN SMALL LETTER C WITH ACUTE, 0107 -->
 	<entry key="d">&#x2819;</entry>
 	<entry key="ð">&#x2808;&#x2819;</entry>
 	<entry key="e">&#x2811;</entry>
@@ -105,7 +106,7 @@
 		<entry key="«">&#x2830;</entry>							<!-- LEFT-POINTING DOUBLE ANGLE QUOTATION MARK, 00ab -->
 		<entry key="»">&#x2830;</entry>							<!-- RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK, 00bb -->
 		<entry key="201c">&#x2830;</entry>						<!-- LEFT DOUBLE QUOTATION MARK, 201c -->
-		<entry key="201d">&#x2830;</entry>					<!-- RIGHT DOUBLE QUOTATION MARK, 201d -->
+		<entry key="201d">&#x2830;</entry>						<!-- RIGHT DOUBLE QUOTATION MARK, 201d -->
 		<entry key="201e">&#x2830;</entry>						<!-- DOUBLE LOW-9 QUOTATION MARK, 201e -->
 	<entry key="'">&#x2810;</entry>
 		<entry key="2018">&#x2810;</entry>						<!-- LEFT SINGLE QUOTATION MARK, 2018 -->
@@ -120,20 +121,22 @@
 	<!-- Don't translate hyphen-minus as it is used to break rows. It will be translated later. -->
 	<!-- <entry key="-">&#x2824;</entry>  -->					<!-- HYPHEN-MINUS, 002D -->
 
-	<entry key="2010">&#x2824;</entry>								<!-- HYPHEN, 2010 -->
+	<entry key="2010">&#x2824;</entry>							<!-- HYPHEN, 2010 -->
+	<entry key="2212">&#x2824;</entry>							<!-- MINUS SIGN, 2212 -->
 	<entry key="2013">&#x2824;&#x2824;</entry>					<!-- EN DASH, 2013 -->
 	<entry key="2014">&#x2824;&#x2824;</entry>					<!-- EM DASH, 2014 -->
 	<entry key="2015">&#x2824;&#x2824;</entry>					<!-- HORIZONTAL BAR, 2015 -->
-	<entry key="222A">&#x283b;&#x2825;</entry>				<!-- UNION, 222A -->
+	<entry key="222A">&#x283b;&#x2825;</entry>					<!-- UNION, 222A -->
 	<entry key="22C3">&#x283b;&#x2825;</entry>					<!-- N-ARY UNION, 22C3 -->
 	<entry key="+">&#x2832;</entry>
 	<entry key="§">&#x282C;</entry>
-	<entry key="|">&#x2838;</entry>									<!-- VERTICAL LINE, 007C -->
+	<entry key="|">&#x2838;</entry>								<!-- VERTICAL LINE, 007C -->
 	<entry key="=">&#x2836;</entry>
-	<!--  -->																	<!-- TODO: add MIDDLE DOT, 00B7 -->
-	<entry key="•">&#x283F;</entry>									<!-- BULLET, 2022 -->
+	<!--  -->													<!-- TODO: add MIDDLE DOT, 00B7 -->
+	<entry key="•">&#x283F;</entry>								<!-- BULLET, 2022 -->
 	<entry key="2219">&#x283b;&#x2804;</entry>					<!-- BULLET OPERATOR, 2219 -->
-	<!--  -->																	<!-- TODO: add DOT OPERATOR, 22C5 -->
+	
+	<!--  -->													<!-- TODO: add DOT OPERATOR, 22C5 -->
 	<entry key="[">&#x2837;</entry>
 	<entry key="]">&#x283E;</entry>
 	<entry key="{">&#x2820;&#x2837;</entry>
@@ -141,7 +144,7 @@
 	<entry key="〈">&#x2820;&#x2826;</entry>
 	<entry key="〉">&#x2820;&#x2834;</entry>
 	<entry key="¢">&#x2818;&#x2809;</entry>						<!-- CENT SIGN, 00A2 -->
-																				<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
+																<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
 	<entry key="£">&#x2818;&#x2807;</entry>						<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
 	<entry key="$">&#x2818;&#x280E;</entry>						<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
 	<entry key="€">&#x2818;&#x2811;</entry>						<!-- EURO SIGN, 20AC -->																				<!-- Svenska skrivregler för punktskrift 2009, page 12 -->
@@ -177,6 +180,7 @@
 	<entry key="®">&#x2826;&#x2817;&#x2834;</entry>					<!-- REGISTERED SIGN, 00ae -->
 	<entry key="½">&#x283c;&#x2801;&#x280C;&#x283c;&#x2803;</entry>
 																						<!-- VULGAR FRACTION ONE HALF, 00bd -->
+	<entry key="×">&#x283b;&#x282d;</entry>							<!-- MULTIPLICATION SIGN, 00D7 -->
 	<entry key="¹">&#x282c;&#x283c;&#x2801;</entry>					<!-- SUPERSCRIPT ONE, 00b9 -->
 	<entry key="²">&#x282c;&#x283c;&#x2803;</entry>					<!-- SUPERSCRIPT TWO, 00b2 -->
 	<entry key="³">&#x282c;&#x283c;&#x2809;</entry>					<!-- SUPERSCRIPT THREE, 00b3 -->
