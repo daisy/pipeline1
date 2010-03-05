@@ -11,7 +11,23 @@ package org_pef_dtbook2pef.system.tasks.layout.utils;
  * @author Joel Håkansson, TPB
  */
 public class StateObject {
-	public enum State {UNOPENED, OPEN, CLOSED}
+	/**
+	 * Possible states for a StateObject
+	 */
+	public enum State {
+		/**
+		 * Indicates that the StateObject has not yet been opened
+		 */
+		UNOPENED,
+		/**
+		 * Indicates that the StateObject is open
+		 */
+		OPEN,
+		/**
+		 * Indicates that the StateObject has been open, but is now closed
+		 */
+		CLOSED
+	}
 	private State state;
 	private String type;
 	

@@ -11,8 +11,12 @@ import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
 import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
 
 /**
- * @author joha
- *
+ * BlockHandler is responsible for breaking blocks of text into rows. BlockProperties
+ * such as list numbers, leaders and margins are resolved in the process. The input
+ * text is filtered using the supplied StringFilter before breaking into rows, since
+ * the length of the text could change.
+ * 
+ * @author Joel Håkansson, TPB
  */
 public class BlockHandler {
 	private static final Character SPACE_CHAR = ' ';
@@ -76,10 +80,23 @@ public class BlockHandler {
 	}
 	*/
 	
+	//TODO: if list type is only used to differentiate between pre and other lists, and pre implies that label.equals(""), then type could be removed
+	/**
+	 * Sets the list item to use for the following call to layoutBlock. Since
+	 * the list item label is resolved prior to this call, the list type
+	 * is only used to differentiate between pre formatted list items and other
+	 * types of lists. 
+	 * @param label the resolved list item label, typically a number or a bullet 
+	 * @param type type of list item
+	 */
 	public void setListItem(String label, BlockProperties.ListType type) {
 		item = new ListItem(label, type);
 	}
 	
+	/**
+	 * Gets the current list item.
+	 * @return returns the current list item, or null if there is no current list item
+	 */
 	public ListItem getListItem() {
 		return item;
 	}

@@ -1,7 +1,7 @@
 package org_pef_dtbook2pef.system.tasks.layout.text;
 /**
- * @author joha
- *
+ * FilterFactory is an interface for creating a StringFilter for a specified FilterLocale.
+ * @author Joel Håkansson
  */
 public interface FilterFactory {
 

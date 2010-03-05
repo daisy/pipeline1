@@ -27,6 +27,7 @@ public class XsltTask extends InternalTask {
 	 * @param name task name
 	 * @param url relative path to XSLT
 	 * @param factory XSLT factory to use
+	 * @param options XSLT parameters
 	 */
 	public XsltTask(String name, URL url, String factory, Map<String, Object> options) {
 		super(name);

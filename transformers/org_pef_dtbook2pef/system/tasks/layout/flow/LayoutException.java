@@ -8,23 +8,30 @@ package org_pef_dtbook2pef.system.tasks.layout.flow;
  */
 public class LayoutException extends Exception {
 
+	static final long serialVersionUID = -2908554164728732775L;
+
 	/**
-	 * 
+	 * Constructs a new exception with null as its detail message.
 	 */
-	private static final long serialVersionUID = -2908554164728732775L;
+	public LayoutException() { super(); }
 
-	public LayoutException() { }
+	/**
+	 * Constructs a new exception with the specified detail message.
+	 * @param message the detail message
+	 */
+	public LayoutException(String message) { super(message); }
 
-	public LayoutException(String message) {
-		super(message);
-	}
+	/**
+	 * Constructs a new exception with the specified cause
+	 * @param cause the cause
+	 */
+	public LayoutException(Throwable cause) { super(cause); }
 
-	public LayoutException(Throwable cause) {
-		super(cause);
-	}
-
-	public LayoutException(String message, Throwable cause) {
-		super(message, cause);
-	}
+	/**
+	 * Constructs a new exception with the specified detail message and cause.
+	 * @param message the detail message
+	 * @param cause the cause
+	 */
+	public LayoutException(String message, Throwable cause) { super(message, cause); }
 
 }

@@ -5,9 +5,9 @@ import java.util.regex.PatternSyntaxException;
 
 
 /**
- *  
+ * Implements StringFilter using a regex pattern.
  * 
- * @author  Joel Hakansson, TPB
+ * @author  Joel Håkansson, TPB
  * @version 30 apr 2009
  * @since 1.0
  */

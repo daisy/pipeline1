@@ -1,40 +1,81 @@
 package org_pef_dtbook2pef.system.tasks.layout.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.TreeSet;
 
-
+/**
+ * LayoutTools is a utility class for simple static operations related
+ * to text layout.
+ * @author Joel Håkansson, TPB
+ */
 public class LayoutTools {
 
+	/**
+	 * Distribution modes 
+	 */
 	public enum DistributeMode {
+		/**
+		 * Distribute so that the spaces between strings are kept equal
+		 */
 		EQUAL_SPACING,
-		UNISIZE_TABLE_CELL};
-	
+		/**
+		 * Distribute so that each cell is equally wide
+		 */
+		UNISIZE_TABLE_CELL
+	};
+
+	// Default constructor is private as this class is not intended to be instantiated.
+	private LayoutTools() { }
+
+	/**
+	 * Count the number of code points in a String. This is equivalent
+	 * to calling codePointCount on the entire String (beginIndex=0
+	 * and endIndex=string.length()).
+	 * @param str the String to count length on
+	 * @return returns the number of code points in the entire String
+	 */
 	public static int length(String str) {
 		return str.codePointCount(0, str.length());
 	}
 
-	public static String fill(char c, int amount) {
+	/**
+	 * Fill a String with a single character 
+	 * @param c the character to fill with
+	 * @param length the length of the resulting String
+	 * @return returns a String filled with character c 
+	 */
+	public static String fill(char c, int length) {
+		/*
 		StringBuilder sb = new StringBuilder();
-		for (int i=0; i<amount; i++) {
+		for (int i=0; i<length; i++) {
 			sb.append(c);
 		}
-		return sb.toString();
+		return sb.toString();*/
+		char[] ca = new char[length];
+		Arrays.fill(ca, c);
+		return new String(ca);
 	}
-	
-	public static String fill(String s, int amount) {
-		if (amount<1) {
+
+	/**
+	 * Fill a String with copies of another String
+	 * @param s the String to fill with
+	 * @param length the length of the resulting String
+	 * @return returns a String filled with String s
+	 */
+	public static String fill(String s, int length) {
+		if (length<1) {
 			return "";
 		}
 		if (s.length()==0) {
 			throw new IllegalArgumentException("Cannot fill using an empty string.");
 		}
 		StringBuilder sb = new StringBuilder();
-		while (sb.codePointCount(0, sb.length())<amount) {
+		while (sb.codePointCount(0, sb.length())<length) {
 			sb.append(s);
 		}
-		return sb.subSequence(0, amount).toString();
+		return sb.subSequence(0, length).toString();
 	}
 
 	private static String distributeEqualSpacing(ArrayList<String> units, int width, String padding) {
@@ -101,7 +142,7 @@ public class LayoutTools {
 		// Cannot happen
 		return null;
 	}
-	
+
 	public static String distribute(Collection<TabStopString> units) {
 		TreeSet<TabStopString> sortedUnits = new TreeSet<TabStopString>();
 		sortedUnits.addAll(units);

@@ -26,22 +26,34 @@ import org_pef_dtbook2pef.system.tasks.ValidatorTask;
 import org_pef_dtbook2pef.system.tasks.XsltTask;
 
 /**
- * The InputDetectorTaskSystem is a TaskSystem that tries to determine the
- * input format and load the appropriate settings based on the detected 
- * input format.
+ * <p>Provides a method to determine the input format and load the 
+ * appropriate settings based on the detected input format.</p>
  * 
- * It can be used as a first step in a TaskSystem, if input format detection
- * is desired.
+ * <p>The InputDetectorTaskSystem is specifically designed to aid 
+ * the process of selecting and executing the correct validation rules 
+ * and stylesheet for a given input document and locale.</p>
  * 
- * Resources are located in the following order: 
- * resourceBase/localBase/[output format]/[input format].properties
- * resourceBase/localBase/[output format]/xml.properties
- * resourceBase/commonBase/[output format]/[input format].properties
- * resourceBase/commonBase/[output format]/xml.properties
+ * <p>It can be used as a first step in a TaskSystem, if input format detection
+ * is desired.</p>
  * 
- * Currently supported formats are: DTBook and xml (heuristic block detection, no layout).
+ * <p>Note that, input format must be well-formed XML.</p>
  * 
- * @author joha
+ * <p>Resources are located in the following order:</p>
+ * <ul> 
+ * <li>resourceBase/localBase/[output format]/[input format].properties</li>
+ * <li>resourceBase/localBase/[output format]/xml.properties</li>
+ * <li>resourceBase/commonBase/[output format]/[input format].properties</li>
+ * <li>resourceBase/commonBase/[output format]/xml.properties</li>
+ * </ul>
+ * <p>The properties file for the format should contain two entries:</p>
+ * <ul>
+ * <li>&lt;entry key="validation"&gt;path/to/schema/file&lt;/entry&gt;</li>
+ * <li>&lt;entry key="transformation"&gt;path/to/xslt/file&lt;/entry&gt;</li>
+ * </ul>
+ * <p>Paths in the properties file are relative to the resource base url.</p>
+ * <p>Currently supported formats are: DTBook and xml (heuristic block detection, no layout).</p>
+ * 
+ * @author Joel Håkansson, TPB
  *
  */
 public class InputDetectorTaskSystem implements TaskSystem {
@@ -151,7 +163,7 @@ public class InputDetectorTaskSystem implements TaskSystem {
 					} else if ("transformation".equals(key.toString())) {
 						for (String s : schemas) {
 							if (s!=null && s!="") {
-								setup.add(new XsltTask("DTBook to FLOW converter: " + s, new URL(resourceBase, s), null, xsltProps));
+								setup.add(new XsltTask("Input to FLOW converter: " + s, new URL(resourceBase, s), null, xsltProps));
 							}
 						}
 					} else {

@@ -6,33 +6,49 @@ package org_pef_dtbook2pef.system.tasks.layout.flow;
  */
 public class BlockProperties {
 	/**
-	 * List types:
-	 * <ul>
-	 * 	<li>NONE not a list</li>
-	 * 	<li>OL ordered list</li>
-	 * 	<li>UL unordered list</li>
-	 * 	<li>PL preformatted list</li>
-	 * </ul>
-	 */
-	public static enum ListType {NONE, OL, UL, PL};
+	 * Defines list types for BlockProperties.
+	 */ 
+	public static enum ListType {
+		/**
+		 * Not a list
+		 */
+		NONE,
+		/**
+		 * Ordered list
+		 */
+		OL,
+		/**
+		 * Unordered list
+		 */
+		UL,
+		/**
+		 * Preformatted list
+		 */
+		PL};
 	/**
-	 * Break before types:
-	 * <ul>
-	 * 	<li>AUTO no break</li>
-	 * 	<li>PAGE start block on a new page</li>
-	 * </ul>
+	 * Defines break before types for BlockProperties.
 	 */
-	public static enum BreakBeforeType {AUTO, PAGE}; // TODO: Implement ODD_PAGE, EVEN_PAGE 
+	public static enum BreakBeforeType {
+		/**
+		 * No break
+		 */
+		AUTO,
+		/**
+		 * Start block on a new page
+		 */
+		PAGE}; // TODO: Implement ODD_PAGE, EVEN_PAGE 
 	/**
-	 * 
-	 * Keep types:
-	 * <ul>
-	 * 	<li>AUTO do not keep</li>
-	 * 	<li>ALL all rows in a block</li>
-	 * </ul>
-	 *
+	 * Defines keep types for BlockProperties.
 	 */
-	public static enum KeepType {AUTO, ALL}
+	public static enum KeepType {
+		/**
+		 * Do not keep
+		 */
+		AUTO,
+		/**
+		 * Keep all rows in a block
+		 */
+		ALL}
 	private int leftMargin;
 	private int rightMargin;
 	private int topMargin;
@@ -47,7 +63,7 @@ public class BlockProperties {
 	private int blockIndent;
 
 	/**
-	 * The Builder is used when creating an instance of BlockProperties
+	 * The Builder is used when creating a BlockProperties instance.
 	 * @author Joel Håkansson, TPB
 	 */
 	public static class Builder {

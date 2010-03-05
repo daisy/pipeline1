@@ -6,9 +6,9 @@ import java.util.HashMap;
 import org_pef_dtbook2pef.system.tasks.layout.text.brailleFilters.sv_SE.CapitalizationMarkers;
 
 /**
- * BrailleFilterFactory is a factory for braille StringFilters. It can return different StringFilters
- * depending on the requested locale. 
- * @author joha
+ * Provides a factory for braille StringFilters. It can return different StringFilters
+ * depending on the requested locale. Allow access to all locale rules and optionally output braille using that locale.
+ * @author Joel Håkansson, TPB
  */
 public class BrailleFilterFactory implements FilterFactory {
 	private static HashMap<String, FilterLocale> locales = null;
@@ -21,6 +21,10 @@ public class BrailleFilterFactory implements FilterFactory {
 		def = new CombinationFilter();
 	}
 	
+	/**
+	 * Gets a new instance of BrailleFilterFactory
+	 * @return returns a new instance of BrailleFilterFactory
+	 */
 	public static BrailleFilterFactory newInstance() {
 		return new BrailleFilterFactory();
 	}
@@ -36,15 +40,18 @@ public class BrailleFilterFactory implements FilterFactory {
 		locales.put(loc.toString(), loc);
 	}
 	
+	/**
+	 * Gets the default StringFilter for this factory
+	 */
 	public StringFilter getDefault() {
 		return def;
 	}
 
 	/**
-	 * Attempt to retrieve a StringFilter for the given locale. If none is found
+	 * Attempts to retrieve a StringFilter for the given locale. If none is found
 	 * the default StringFilter is returned.
 	 * @param target target locale
-	 * @return returns a StringFilter for the given locale
+	 * @return returns a StringFilter for the given locale, or the default StringFilter if no match is found
 	 */
 	public StringFilter newStringFilter(FilterLocale target) {
 		if (target.isA(locales.get("sv"))) {
@@ -76,10 +83,18 @@ public class BrailleFilterFactory implements FilterFactory {
 		return def;
 	}
 	
+	/**
+	 * Sets the default StringFilter for this factory by retrieving a StringFilter for the supplied FilterLocale.
+	 * Identical to setDefault(newStringFilter(locale));
+	 * @param locale the FilterLocale to use
+	 */
 	public void setDefault(FilterLocale locale) {
 		def = newStringFilter(locale);
 	}
 	
+	/**
+	 * Sets the default StringFilter for this factory.
+	 */
 	public void setDefault(StringFilter filter) {
 		def = filter;
 	}

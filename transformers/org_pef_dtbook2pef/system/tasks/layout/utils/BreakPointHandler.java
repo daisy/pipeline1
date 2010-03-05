@@ -1,8 +1,21 @@
 package org_pef_dtbook2pef.system.tasks.layout.utils;
 
+/**
+ * Breaks a paragraph of text into rows. It is assumed that all 
+ * preferred break points are supplied with the input String.
+ * As a consequence, non standard hyphenation is not supported. 
+ * @author Joel Håkansson, TPB
+ *
+ */
 public class BreakPointHandler {
 	private String charsStr;
 	
+	/**
+	 * Create a new BreakPointHandler. All preferred break points 
+	 * must be in supplied with the input String, represented by 
+	 * hyphen 0x2d, soft hyphen 0xad or space 0x20.
+	 * @param str the paragraph to break into rows. 
+	 */
 	public BreakPointHandler(String str) {
 		if (str==null) {
 			throw new NullPointerException("Input string cannot be null.");
@@ -101,6 +114,10 @@ whileLoop:		while (i>=0) {
 		return new BreakPoint(head, tail, hard);
 	}
 
+	/**
+	 * Does this BreakPointHandler has any text left to break into rows 
+	 * @return returns true if this BreakPointHandler has any text left to break into rows
+	 */
 	public boolean hasNext() {
 		return (charsStr!=null && charsStr.length()>0);
 	}

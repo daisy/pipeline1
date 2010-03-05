@@ -27,7 +27,7 @@ import org_pef_dtbook2pef.system.tasks.layout.writers.TextMediaWriter;
  * <p>Transforms a DTBook 2005-3 into text format.
  * The input DTBook should be hyphenated (using SOFT HYPHEN U+00AD) at all
  * breakpoints prior to conversion.</p>
- * @author joha
+ * @author Joel Håkansson, TPB
  *
  */
 public class DefaultTextSystem implements TaskSystem {

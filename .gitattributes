@@ -1192,6 +1192,7 @@ transformers/org_pef_dist/transformer.tdf -text
 transformers/org_pef_dtbook2pef/DTBook2PEF.java -text
 transformers/org_pef_dtbook2pef/lib/default_renderer.xsl -text
 transformers/org_pef_dtbook2pef/lib/pef2xhtml.xsl -text
+transformers/org_pef_dtbook2pef/package.html -text
 transformers/org_pef_dtbook2pef/setups/TaskSystemFactory.java -text
 transformers/org_pef_dtbook2pef/setups/TaskSystemFactoryException.java -text
 transformers/org_pef_dtbook2pef/setups/common/InputDetectorTaskSystem.java -text
@@ -1207,7 +1208,9 @@ transformers/org_pef_dtbook2pef/setups/common/validation/flow.xsd -text
 transformers/org_pef_dtbook2pef/setups/en_US/DefaultTextSystem.java -text
 transformers/org_pef_dtbook2pef/setups/en_US/config/text.xml -text
 transformers/org_pef_dtbook2pef/setups/en_US/config/text/dtbook.properties -text
-transformers/org_pef_dtbook2pef/setups/en_US/doc/DefaultTextSystem.html -text
+transformers/org_pef_dtbook2pef/setups/en_US/doc-files/DefaultTextSystem.html -text
+transformers/org_pef_dtbook2pef/setups/en_US/package.html -text
+transformers/org_pef_dtbook2pef/setups/package.html -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/SwedishBrailleSystem.java -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/SwedishTextSystem.java -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/config/A4_full_width.xml -text
@@ -1220,14 +1223,16 @@ transformers/org_pef_dtbook2pef/setups/sv_SE/config/text_A4.xml -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/definers/dtbook2flow_sv_SE.xsl -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/definers/dtbook2flow_sv_SE_braille.xsl -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/definers/dtbook2flow_sv_SE_text.xsl -text
-transformers/org_pef_dtbook2pef/setups/sv_SE/doc/SwedishBrailleSystem.html -text
-transformers/org_pef_dtbook2pef/setups/sv_SE/doc/SwedishTextSystem.html -text
+transformers/org_pef_dtbook2pef/setups/sv_SE/doc-files/SwedishBrailleSystem.html -text
+transformers/org_pef_dtbook2pef/setups/sv_SE/doc-files/SwedishTextSystem.html -text
+transformers/org_pef_dtbook2pef/setups/sv_SE/package.html -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/SwedishVolumeCoverPage.java -text
 transformers/org_pef_dtbook2pef/setups/sv_SE/validation/basic.sch -text
 transformers/org_pef_dtbook2pef/system/InternalTask.java -text
 transformers/org_pef_dtbook2pef/system/InternalTaskException.java -text
 transformers/org_pef_dtbook2pef/system/TaskSystem.java -text
 transformers/org_pef_dtbook2pef/system/TaskSystemException.java -text
+transformers/org_pef_dtbook2pef/system/package.html -text
 transformers/org_pef_dtbook2pef/system/tasks/DebugTask.java -text
 transformers/org_pef_dtbook2pef/system/tasks/LayoutEngineTask.java -text
 transformers/org_pef_dtbook2pef/system/tasks/TextNodeTask.java -text
@@ -1295,6 +1300,7 @@ transformers/org_pef_dtbook2pef/system/tasks/layout/utils/TabStopString.java -te
 transformers/org_pef_dtbook2pef/system/tasks/layout/utils/TextBorder.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/writers/PEFMediaWriter.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/writers/TextMediaWriter.java -text
+transformers/org_pef_dtbook2pef/system/tasks/package.html -text
 transformers/org_pef_dtbook2pef/system/tasks/textnode/TextNodeFilter.java -text
 transformers/org_pef_dtbook2pef/transformer.tdf -text
 transformers/org_pef_pefFileMerger/NumeralSortString.java -text
