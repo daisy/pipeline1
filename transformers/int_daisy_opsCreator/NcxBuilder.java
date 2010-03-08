@@ -382,7 +382,7 @@ class NcxBuilder extends Builder implements ErrorHandler  {
 						  mEventList.add(xef.createEndElement(mQNameNcxNavPoint, null));
 						  rel2 = getRelation(next, nps2);
 					  }
-				  } while (rel2!=null && rel2 != relation.SIBLING);
+				  } while (!openPointStack.empty() && rel2!=null && rel2 != relation.SIBLING);
 			  }	
 		  }
 		}
