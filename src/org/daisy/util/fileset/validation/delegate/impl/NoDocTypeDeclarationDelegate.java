@@ -56,7 +56,6 @@ public class NoDocTypeDeclarationDelegate extends ValidatorDelegateImplAbstract 
 	 * @seeorg.daisy.util.fileset.validation.delegate.ValidatorDelegate#
 	 * isFilesetTypeSupported(org.daisy.util.fileset.FilesetType)
 	 */
-	@Override
 	public boolean isFilesetTypeSupported(FilesetType type) {
 		return true;
 	}
