@@ -1,8 +1,15 @@
-package org_pef_dtbook2pef.system.tasks.layout.text;
+package org_pef_dtbook2pef.system.tasks.layout.text.brailleFilters;
 
 import java.net.URL;
 import java.util.HashMap;
 
+import org_pef_dtbook2pef.system.tasks.layout.text.CaseFilter;
+import org_pef_dtbook2pef.system.tasks.layout.text.CharFilter;
+import org_pef_dtbook2pef.system.tasks.layout.text.CombinationFilter;
+import org_pef_dtbook2pef.system.tasks.layout.text.FilterFactory;
+import org_pef_dtbook2pef.system.tasks.layout.text.FilterLocale;
+import org_pef_dtbook2pef.system.tasks.layout.text.RegexFilter;
+import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
 import org_pef_dtbook2pef.system.tasks.layout.text.brailleFilters.sv_SE.CapitalizationMarkers;
 
 /**
@@ -71,9 +78,9 @@ public class BrailleFilterFactory implements FilterFactory {
 			filters.add(new CaseFilter(CaseFilter.Mode.LOWER_CASE));
 			if (target.isA(locales.get("sv-SE"))) {
 				// Text to braille, Pas 1
-				filters.add(new CharFilter(getResource("brailleFilters/sv_SE/sv_SE-pas1.xml")));
+				filters.add(new CharFilter(getResource("sv_SE/sv_SE-pas1.xml")));
 				// Text to braille, Pas 2
-				filters.add(new CharFilter(getResource("brailleFilters/sv_SE/sv_SE-pas2.xml")));
+				filters.add(new CharFilter(getResource("sv_SE/sv_SE-pas2.xml")));
 			}
 			// Remove redundant whitespace
 			filters.add(new RegexFilter("(\\s+)", " "));

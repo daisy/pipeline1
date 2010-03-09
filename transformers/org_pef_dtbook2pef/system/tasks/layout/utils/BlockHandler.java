@@ -1,6 +1,7 @@
 package org_pef_dtbook2pef.system.tasks.layout.utils;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import org_pef_dtbook2pef.system.tasks.layout.flow.BlockProperties;
@@ -206,7 +207,7 @@ public class BlockHandler {
 	}
 
 	//TODO: check leader functionality
-	private String newRow(ArrayList<Marker> r, int margin, String preContent, String preTabText, String postTabText, int available, LayoutMaster master, BlockProperties p) {
+	private String newRow(List<Marker> r, int margin, String preContent, String preTabText, String postTabText, int available, LayoutMaster master, BlockProperties p) {
 
 		// [margin][preContent][preTabText][tab][postTabText] 
 		//      preContentPos ^

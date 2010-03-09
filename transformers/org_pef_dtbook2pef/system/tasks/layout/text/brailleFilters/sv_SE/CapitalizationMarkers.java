@@ -1,9 +1,13 @@
 package org_pef_dtbook2pef.system.tasks.layout.text.brailleFilters.sv_SE;
 
 import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
-import org_pef_dtbook2pef.system.tasks.layout.utils.SplitResult;
-import org_pef_dtbook2pef.system.tasks.layout.utils.StringSplitter;
+import org_pef_dtbook2pef.system.utils.SplitResult;
+import org_pef_dtbook2pef.system.utils.StringSplitter;
 
+/**
+ * Adds Swedish braille capitalization markers to a String.
+ * @author Joel Håkansson, TPB
+ */
 public class CapitalizationMarkers implements StringFilter {
 	private final static String CHAR_MARKER = "\u2820";
 	private final static String WORD_MARKER = "\u2820\u2820";

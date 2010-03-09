@@ -1,15 +1,15 @@
-package org_pef_dtbook2pef.system.tasks.layout.flow;
+package org_pef_dtbook2pef.system.tasks.layout.page;
 
 import java.io.Closeable;
 import java.util.ArrayList;
 
-import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
-import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
+import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
+import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
 
 /**
- * <p>The LayoutPerformer breaks a stream of {@link Row} into pages.</p>
+ * <p>Breaks a stream of {@link Row} into pages.</p>
  * 
- * <p>The LayoutPerformer implementation is responsible for breaking
+ * <p>The Paginator implementation is responsible for breaking
  * pages when required by the properties of the {@link LayoutMaster}. It
  * is also responsible for placing page dependent items such
  * as headers, footers and footnotes.</p>
@@ -19,10 +19,10 @@ import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
  * @author Joel Håkansson, TPB
  *
  */
-public interface LayoutPerformer extends Closeable {
+public interface Paginator extends Closeable {
 	
 	/**
-	 * Open the LayoutPerformer for writing to the supplied writer 
+	 * Open for writing to the supplied writer 
 	 * @param writer the PagedMediaWriter to use
 	 */
 	public void open(PagedMediaWriter writer);
@@ -53,7 +53,7 @@ public interface LayoutPerformer extends Closeable {
 	
 	/**
 	 * Insert markers that cannot be assigned to a row at the current position
-	 * @param m
+	 * @param m ArrayList of Markers to insert at the current position
 	 */
 	public void insertMarkers(ArrayList<Marker> m);
 	

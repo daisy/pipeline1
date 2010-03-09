@@ -7,7 +7,6 @@ import java.util.Stack;
 
 import org_pef_dtbook2pef.system.tasks.layout.flow.BlockProperties;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Flow;
-import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformer;
 import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutException;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Leader;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
@@ -15,16 +14,14 @@ import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
 import org_pef_dtbook2pef.system.tasks.layout.flow.SequenceProperties;
 import org_pef_dtbook2pef.system.tasks.layout.flow.SpanProperties;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
+import org_pef_dtbook2pef.system.tasks.layout.page.Paginator;
 import org_pef_dtbook2pef.system.tasks.layout.text.FilterFactory;
 import org_pef_dtbook2pef.system.tasks.layout.utils.BlockHandler;
-import org_pef_dtbook2pef.system.tasks.layout.utils.StateObject;
+import org_pef_dtbook2pef.system.utils.StateObject;
 
 /**
  * Breaks flow into rows, page related block properties are left to next step
- * @author joha
- * TODO: fix recursive keep problem
- * TODO: Implement SpanProperites
- * TODO: Implement floating elements
+ * @author Joel Håkansson, TPB
  */
 public class DefaultLayoutPerformer implements Flow {
 	private int leftMargin;
@@ -34,14 +31,17 @@ public class DefaultLayoutPerformer implements Flow {
 	private boolean firstRow;
 	private HashMap<String, LayoutMaster> masters;
 	//private final StringFilter filters;
-	private LayoutPerformer paginator;
+	private Paginator paginator;
 	private StateObject state;
 
 	private BlockHandler bh;
 
+	// TODO: fix recursive keep problem
+	// TODO: Implement SpanProperites
+	// TODO: Implement floating elements
 	/**
 	 * Create a new flow
-	 * @param flowWidth the width of the flow, in chars
+	 * @param filtersFactory the filters factory to use
 	 */
 	public DefaultLayoutPerformer(FilterFactory filtersFactory) {
 		this.masters = new HashMap<String, LayoutMaster>();
@@ -54,7 +54,7 @@ public class DefaultLayoutPerformer implements Flow {
 		this.state = new StateObject();
 	}
 
-	public void open(LayoutPerformer paginator) {
+	public void open(Paginator paginator) {
 		state.assertUnopened();
 		state.open();
 		this.paginator = paginator;

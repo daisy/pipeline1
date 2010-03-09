@@ -5,23 +5,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import org_pef_dtbook2pef.system.tasks.layout.flow.CurrentPageInfo;
-import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformer;
 import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutException;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Marker;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
+import org_pef_dtbook2pef.system.tasks.layout.impl.field.CompoundField;
+import org_pef_dtbook2pef.system.tasks.layout.impl.field.CurrentPageField;
+import org_pef_dtbook2pef.system.tasks.layout.impl.field.MarkerReferenceField;
+import org_pef_dtbook2pef.system.tasks.layout.page.CurrentPageInfo;
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
+import org_pef_dtbook2pef.system.tasks.layout.page.Paginator;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
 import org_pef_dtbook2pef.system.tasks.layout.page.Template;
-import org_pef_dtbook2pef.system.tasks.layout.page.field.CompoundField;
-import org_pef_dtbook2pef.system.tasks.layout.page.field.CurrentPageField;
-import org_pef_dtbook2pef.system.tasks.layout.page.field.MarkerReferenceField;
 import org_pef_dtbook2pef.system.tasks.layout.text.StringFilter;
 import org_pef_dtbook2pef.system.tasks.layout.utils.LayoutTools;
 import org_pef_dtbook2pef.system.tasks.layout.utils.LayoutToolsException;
-import org_pef_dtbook2pef.system.tasks.layout.utils.StateObject;
+import org_pef_dtbook2pef.system.utils.StateObject;
 
-public class PageStruct implements LayoutPerformer, CurrentPageInfo {
+public class PaginatorImpl implements Paginator, CurrentPageInfo {
 	private static final Character SPACE_CHAR = ' '; //'\u2800'
 	private final StringFilter filters;
 	private final Stack<PageSequence> sequence;
@@ -29,7 +29,7 @@ public class PageStruct implements LayoutPerformer, CurrentPageInfo {
 	private StateObject state;
 	//private HashMap<String, LayoutMaster> templates;
 
-	public PageStruct(StringFilter filters) { //HashMap<String, LayoutMaster> templates
+	public PaginatorImpl(StringFilter filters) { //HashMap<String, LayoutMaster> templates
 		this.filters = filters;
 		this.sequence = new Stack<PageSequence>();
 		this.state = new StateObject();

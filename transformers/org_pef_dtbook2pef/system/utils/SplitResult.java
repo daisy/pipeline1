@@ -1,4 +1,4 @@
-package org_pef_dtbook2pef.system.tasks.layout.utils;
+package org_pef_dtbook2pef.system.utils;
 
 /**
  * Data object returned by StringSplitter containing a sub sequence along with 

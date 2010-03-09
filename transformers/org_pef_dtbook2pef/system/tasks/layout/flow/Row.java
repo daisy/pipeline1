@@ -1,6 +1,7 @@
 package org_pef_dtbook2pef.system.tasks.layout.flow;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Row represents a single row of text
@@ -8,8 +9,8 @@ import java.util.ArrayList;
  */
 public class Row {
 	private String chars;
-	private ArrayList<Marker> markers;
-	private ArrayList<String> anchors;
+	private List<Marker> markers;
+	private List<String> anchors;
 	private int leftMargin;
 	/*
 	private int spaceBefore;
@@ -70,7 +71,7 @@ public class Row {
 	 * Add a collection of markers to the Row
 	 * @param m
 	 */
-	public void addMarkers(ArrayList<Marker> m) {
+	public void addMarkers(List<Marker> m) {
 		markers.addAll(m);
 	}
 
@@ -78,7 +79,7 @@ public class Row {
 	 * Get all markers on this Row
 	 * @return returns the markers
 	 */
-	public ArrayList<Marker> getMarkers() {
+	public List<Marker> getMarkers() {
 		return markers;
 	}
 	
@@ -86,7 +87,7 @@ public class Row {
 	 * Get all anchors on this Row
 	 * @return returns an ArrayList of anchors
 	 */
-	public ArrayList<String> getAnchors() {
+	public List<String> getAnchors() {
 		return anchors;
 	}
 

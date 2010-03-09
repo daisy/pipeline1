@@ -1,8 +1,9 @@
-package org_pef_dtbook2pef.system.tasks.layout.page;
+package org_pef_dtbook2pef.system.tasks.layout.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org_pef_dtbook2pef.system.tasks.layout.page.Template;
 import org_pef_dtbook2pef.system.tasks.layout.utils.Expression;
 
 public class SimpleTemplate implements Template {

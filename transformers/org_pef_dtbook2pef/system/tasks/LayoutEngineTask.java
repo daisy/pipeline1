@@ -8,15 +8,16 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.validation.Schema;
 
 import org.xml.sax.SAXException;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.InternalTaskException;
 import org_pef_dtbook2pef.system.tasks.layout.flow.Flow;
-import org_pef_dtbook2pef.system.tasks.layout.flow.FlowHandler;
-import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformer;
+import org_pef_dtbook2pef.system.tasks.layout.impl.FlowHandler;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriterException;
+import org_pef_dtbook2pef.system.tasks.layout.page.Paginator;
 
 //TODO: Validate against schema
 
@@ -36,8 +37,9 @@ import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriterException;
  */
 public class LayoutEngineTask extends InternalTask  {
 	private final Flow performer;
-	private LayoutPerformer paginator;
+	private Paginator paginator;
 	private PagedMediaWriter writer;
+	private Schema schema;
 	
 	/**
 	 * Create a new instance of LayoutEngineTask.
@@ -46,11 +48,16 @@ public class LayoutEngineTask extends InternalTask  {
 	 * @param paginator
 	 * @param writer
 	 */
-	public LayoutEngineTask(String name, Flow flow, LayoutPerformer paginator, PagedMediaWriter writer) {
+	public LayoutEngineTask(String name, Flow flow, Paginator paginator, PagedMediaWriter writer) {
 		super(name);
 		this.performer = flow;
 		this.paginator = paginator;
 		this.writer = writer;
+		this.schema = null;
+	}
+	
+	public void setSchema(Schema schema) {
+		this.schema = schema;
 	}
 
 	@Override
@@ -62,6 +69,9 @@ public class LayoutEngineTask extends InternalTask  {
 			performer.open(paginator);
 			SAXParserFactory spf = SAXParserFactory.newInstance();
 			spf.setNamespaceAware(true);
+			if (schema != null) {
+				spf.setSchema(schema);
+			}
 			SAXParser sp = spf.newSAXParser();
 			sp.parse(input, new FlowHandler(performer));
 			performer.close();

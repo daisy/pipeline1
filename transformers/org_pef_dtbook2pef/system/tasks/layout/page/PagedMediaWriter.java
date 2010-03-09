@@ -3,13 +3,12 @@ package org_pef_dtbook2pef.system.tasks.layout.page;
 import java.io.Closeable;
 import java.io.OutputStream;
 
-import org_pef_dtbook2pef.system.tasks.layout.flow.LayoutPerformer;
 
 /**
  * <p>PagedMediaWriter is an interface for writing to a paged media.</p>
  * 
  * <p>An implementation of PagedMediaWriter is to render 
- * a result created by e.g. a {@link LayoutPerformer} implementation by
+ * a result created by e.g. a {@link Paginator} implementation by
  * adding the tokens and properties that are specific for a particular 
  * output format.</p>
  * 

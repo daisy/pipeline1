@@ -1,6 +1,9 @@
-package org_pef_dtbook2pef.system.tasks.layout.page;
+package org_pef_dtbook2pef.system.tasks.layout.impl;
 
 import java.util.ArrayList;
+
+import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
+import org_pef_dtbook2pef.system.tasks.layout.page.Template;
 
 
 /**

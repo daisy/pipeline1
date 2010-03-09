@@ -8,6 +8,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 
 import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
+import org_pef_dtbook2pef.system.utils.StaxFilter2;
 
 public class VolumeCoverPageFilter extends StaxFilter2 {
 	private final static String PEF_NS = "http://www.daisy.org/ns/2008/pef";

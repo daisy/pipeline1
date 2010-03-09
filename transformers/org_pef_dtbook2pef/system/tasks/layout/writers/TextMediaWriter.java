@@ -8,10 +8,10 @@ import java.util.Properties;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriterException;
 import org_pef_dtbook2pef.system.tasks.layout.page.SectionProperties;
-import org_pef_dtbook2pef.system.tasks.layout.utils.StateObject;
+import org_pef_dtbook2pef.system.utils.StateObject;
 
 /**
- * TextMediaWriter is a simple implementation of PagedMediaWriter which outputs a plain text file.
+ * PagedMediaWriter implementation that outputs plain text.
  * @author Joel Håkansson, TPB
  *
  */

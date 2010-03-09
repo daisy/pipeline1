@@ -1,7 +1,8 @@
-package org_pef_dtbook2pef.system.tasks.layout.utils;
+package org_pef_dtbook2pef.system.utils;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 /**
  * Provides a method for splitting a CharSequence using regex 

@@ -18,9 +18,9 @@ import org_pef_dtbook2pef.system.tasks.LayoutEngineTask;
 import org_pef_dtbook2pef.system.tasks.ValidatorTask;
 import org_pef_dtbook2pef.system.tasks.XsltTask;
 import org_pef_dtbook2pef.system.tasks.layout.impl.DefaultLayoutPerformer;
-import org_pef_dtbook2pef.system.tasks.layout.impl.PageStruct;
-import org_pef_dtbook2pef.system.tasks.layout.text.BrailleFilterFactory;
+import org_pef_dtbook2pef.system.tasks.layout.impl.PaginatorImpl;
 import org_pef_dtbook2pef.system.tasks.layout.text.RegexFilter;
+import org_pef_dtbook2pef.system.tasks.layout.text.brailleFilters.BrailleFilterFactory;
 import org_pef_dtbook2pef.system.tasks.layout.writers.TextMediaWriter;
 
 /**
@@ -104,7 +104,7 @@ public class SwedishTextSystem implements TaskSystem {
 		BrailleFilterFactory factory = BrailleFilterFactory.newInstance();
 		factory.setDefault(new RegexFilter("\\u200B", ""));
 		TextMediaWriter paged = new TextMediaWriter(p, "UTF-8");
-		PageStruct paginator = new PageStruct(factory.getDefault());
+		PaginatorImpl paginator = new PaginatorImpl(factory.getDefault());
 		DefaultLayoutPerformer flow = new DefaultLayoutPerformer(factory);
 		setup.add(new LayoutEngineTask("FLOW to Text converter", flow, paginator, paged));
 

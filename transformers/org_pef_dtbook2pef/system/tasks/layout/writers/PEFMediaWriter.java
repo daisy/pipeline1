@@ -8,11 +8,11 @@ import java.util.Properties;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriter;
 import org_pef_dtbook2pef.system.tasks.layout.page.PagedMediaWriterException;
 import org_pef_dtbook2pef.system.tasks.layout.page.SectionProperties;
-import org_pef_dtbook2pef.system.tasks.layout.utils.StateObject;
+import org_pef_dtbook2pef.system.utils.StateObject;
 
 /**
- * PEFMediaWriter is a simple implementation of PagedMediaWriter which outputs a PEF 2008-1 file.
- * @author joha
+ * PagedMediaWriter implementation that outputs PEF 2008-1.
+ * @author Joel Håkansson, TPB
  *
  */
 public class PEFMediaWriter implements PagedMediaWriter {

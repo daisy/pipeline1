@@ -3,6 +3,7 @@ package org_pef_dtbook2pef.system.tasks.layout.flow;
 import java.io.Closeable;
 
 import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
+import org_pef_dtbook2pef.system.tasks.layout.page.Paginator;
 
 /**
  * <p>Flow is the entry point when converting a hierarchical 
@@ -11,7 +12,7 @@ import org_pef_dtbook2pef.system.tasks.layout.page.LayoutMaster;
  * <p>An implementation of Flow interprets layout properties
  * and break blocks of characters into rows.</p>
  * 
- * <p>The rows are then passed on to the {@link LayoutPerformer}.</p>
+ * <p>The rows are then passed on to the {@link Paginator}.</p>
  *  
  * @author Joel Håkansson, TPB
  *
@@ -23,7 +24,7 @@ public interface Flow extends Closeable {
 	 * @param performer the LayoutPerformer that the result should
 	 * be passed to
 	 */
-	public void open(LayoutPerformer performer);
+	public void open(Paginator performer);
 
 	/**
 	 * Start a new Sequence at the current position in the flow.

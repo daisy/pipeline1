@@ -26,9 +26,9 @@ import org_pef_dtbook2pef.system.tasks.ValidatorTask;
 import org_pef_dtbook2pef.system.tasks.VolumeCoverPageTask;
 import org_pef_dtbook2pef.system.tasks.XsltTask;
 import org_pef_dtbook2pef.system.tasks.layout.impl.DefaultLayoutPerformer;
-import org_pef_dtbook2pef.system.tasks.layout.impl.PageStruct;
-import org_pef_dtbook2pef.system.tasks.layout.text.BrailleFilterFactory;
+import org_pef_dtbook2pef.system.tasks.layout.impl.PaginatorImpl;
 import org_pef_dtbook2pef.system.tasks.layout.text.FilterLocale;
+import org_pef_dtbook2pef.system.tasks.layout.text.brailleFilters.BrailleFilterFactory;
 import org_pef_dtbook2pef.system.tasks.layout.utils.LayoutTools;
 import org_pef_dtbook2pef.system.tasks.layout.utils.TextBorder;
 import org_pef_dtbook2pef.system.tasks.layout.writers.PEFMediaWriter;
@@ -159,7 +159,7 @@ public class SwedishBrailleSystem implements TaskSystem {
 
 		PEFMediaWriter paged = new PEFMediaWriter(p2);
 		factory.setDefault(sv_SE);
-		PageStruct paginator = new PageStruct(factory.getDefault());
+		PaginatorImpl paginator = new PaginatorImpl(factory.getDefault());
 		DefaultLayoutPerformer flow = new DefaultLayoutPerformer(factory);
 		setup.add(new LayoutEngineTask("FLOW to PEF converter", flow, paginator, paged));
 

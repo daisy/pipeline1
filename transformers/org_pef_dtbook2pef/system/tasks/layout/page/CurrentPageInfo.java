@@ -1,4 +1,4 @@
-package org_pef_dtbook2pef.system.tasks.layout.flow;
+package org_pef_dtbook2pef.system.tasks.layout.page;
 
 /**
  * Get information about the current page
