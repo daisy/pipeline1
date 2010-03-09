@@ -68,13 +68,11 @@ transformers/org_pef_dtbook2pef/setups/common/validation/*.class
 transformers/org_pef_dtbook2pef/setups/en_US/*.class
 transformers/org_pef_dtbook2pef/setups/en_US/config/*.class
 transformers/org_pef_dtbook2pef/setups/en_US/config/text/*.class
-transformers/org_pef_dtbook2pef/setups/en_US/doc/*.class
 transformers/org_pef_dtbook2pef/setups/sv_SE/*.class
 transformers/org_pef_dtbook2pef/setups/sv_SE/config/*.class
 transformers/org_pef_dtbook2pef/setups/sv_SE/config/pef/*.class
 transformers/org_pef_dtbook2pef/setups/sv_SE/config/text/*.class
 transformers/org_pef_dtbook2pef/setups/sv_SE/definers/*.class
-transformers/org_pef_dtbook2pef/setups/sv_SE/doc/*.class
 transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/*.class
 transformers/org_pef_dtbook2pef/setups/sv_SE/validation/*.class
 transformers/org_pef_dtbook2pef/system/*.class
@@ -84,11 +82,9 @@ transformers/org_pef_dtbook2pef/system/tasks/layout/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/flow/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/impl/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/page/*.class
-transformers/org_pef_dtbook2pef/system/tasks/layout/page/field/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/brailleFilters/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/brailleFilters/sv_SE/*.class
-transformers/org_pef_dtbook2pef/system/tasks/layout/text/tables/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/utils/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/writers/*.class
 transformers/org_pef_dtbook2pef/system/tasks/textnode/*.class
