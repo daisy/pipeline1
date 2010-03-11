@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Flow whitespace normalizer
+	Flow whitespace normalizer
 
-    Version
-    2009-09-14
+	Description
+	Removes undesired whitespace that will effect the layout 
+	process. Whitespace is often injected by mistake into the 
+	input file, e.g. by "Pretty printing".
 
-    Description
-    The purpose of Flow whitespace normalizer is to remove undesired whitespace
-	that will effect the layout process. Whitespace is often injected
-	by misstake into the input file, e.g. by "Pretty printing".
+	Notes
+		1.	This implementation does not support inline containers
+		2.	This implementation does not support xml:space="preserve"
 
-	Note: 1. 	This implementation does not support inline containers
-			2.	This implementation does not support xml:space="preserve"
+	Parameters
+		None
+
+	Format (input -> output)
+		Flow -> Flow
+
+	Nodes
+		text()
     
-    Nodes
-    text()
-    
-    Namespaces
-    (x) ""
-    
-    Doctype
-    ( ) 
-    
-    Author
-	Joel Håkansson, TPB
+	Author: Joel Håkansson, TPB
+	Version: 2009-09-14
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 

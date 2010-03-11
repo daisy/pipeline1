@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
+	DTBook to Flow (sv_SE)
+
+	Description
+	Base DTBook to Flow stylesheet for Swedish.
+
+	Parameters
+		page-width
+		page-height
+		inner-margin
+		outer-margin
+		row-spacing
+		duplex
+
+	Format (input -> output)
+		DTBook -> Flow
+
+	Author: Joel Håkansson, TPB
+-->
+<!--
 	TODO:
 		- komplexa sub, sup
 		- länkar, e-postadresser

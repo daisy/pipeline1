@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>braille-finalizer.xsl</title>
+</head>
+<body>
+<h1>Description for braille-finalizer.xsl</h1>
+<pre>
+	Braille finalizer
+
+	Performs post rendering character replacing. The purpose is to 
+	replace remaining non braille characters that are needed in the 
+	layout process, such as space, no-break space, hyphen and soft
+	hyphen.
+
+	For each row, the braille-finalizer replaces occurrences of characters
+	in the finalizer-input string with the character at the corresponding
+	position in the finalizer-output string.
+
+	Parameters
+		finalizer-input
+		finalizer-output
+
+	Format (input -&gt; output)
+		PEF -&gt; PEF
+
+	Author: Joel Håkansson, TPB
+	Version: 2009-10-26
+</pre>
+</body>
+</html>

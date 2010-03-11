@@ -1,47 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?build-xslt-doc disable-output-escaping?>
 <!-- 
-Base stylesheet for DTBook. Categorizes DTBook elements into five groups, sequence, block, inline, special and no-op.
+<pre>
+	DTBook to Flow
 
-An implementation that extends this stylesheet must implement the template "insertLayoutMaster" adding layout definition elements (see flow.dtd).
+	Description
+	Provides a base stylesheet for DTBook. The stylesheet must be extended. 
+	The minimum requirement is to implement a template with the name 
+	insertLayoutMaster. This template should add layout definition elements,
+	see flow.dtd. The extending stylesheet can also benefit from the 
+	processing modes to refine layout. See below.
+	
+	Parameters
+		None
 
-Sequence:
-Use "sequence-mode" to override default sequence element and "apply-sequence-attributes" to override default sequence attributes
+	Format (input -> output)
+		DTBook -> Flow
+    
+	Author: Joel Håkansson, TPB
+</pre>
 
-Block:
-Use "block-mode" to override default block element and "apply-block-attributes" to override default element attributes
+<h2>Processing modes</h2>
+<h3>Sequence modes</h3>
+<p>Use "sequence-mode" to override default sequence element processing and "apply-sequence-attributes" to override default sequence attributes</p>
 
-Inline:
-Use "inline-mode" to override default inline processing
--->
-<!--
-sequence elements: 
-bodymatter, frontmatter, rearmatter
+<h3>Block modes</h3>
+<p>Use "block-mode" to override default block element processing and "apply-block-attributes" to override default element attributes</p>
 
-block elements:
-	no text:
-		level, level1, level2, level3, level4, level5, level6
-	can be surrounded by text, does not contain text:
-		list, blockquote, linegroup, poem, div, annotation, dl, imggroup
-	can contain text, but cannot be surrounded by text:
-		bridgehead, caption, covertitle, docauthor, doctitle, li, h1, h2, h3, h4, h5, h6
-	can be surrounded by text and contain text:
-		author, address, hd, line, p, sidebar, byline, dateline, epigraph, prodnote
+<h3>Inline modes</h3>
+<p>Use "inline-mode" to override default inline processing</p>
 
-inline/block:
-a, cite, kbd, samp
+<h2>Element groups</h2>
+<p>This stylesheet categorizes DTBook elements into five groups: sequence, block, inline, special and no-op. The first three (sequence, block and
+inline) can easily be customized using the processing modes.</p>
 
-inline elements:
-code, bdo, em, strong, span, sub, sup, abbr, acronym, 
-dfn, q, noteref, annoref, sent, w, linenum, lic, dd, dt
+<h3>sequence</h3> 
+<p>bodymatter, frontmatter, rearmatter</p>
 
-special:
-br, pagenum
+<h3>block</h3>
+<dl>
+	<dt>no text</dt>
+		<dd>level, level1, level2, level3, level4, level5, level6</dd>
+	<dt>can be surrounded by text, does not contain text</dt>
+		<dd>list, blockquote, linegroup, poem, div, annotation, dl, imggroup</dd>
+	<dt>can contain text, but cannot be surrounded by text</dt>
+		<dd>bridgehead, caption, covertitle, docauthor, doctitle, li, h1, h2, h3, h4, h5, h6</dd>
+	<dt>can be surrounded by text and contain text</dt>
+		<dd>author, address, hd, line, p, sidebar, byline, dateline, epigraph, prodnote</dd>
+<dl>
+<h3>inline/block</h3>
+<p>The following elemnts may be treated as inline or block depending on context:</p>
+<p>a, cite, kbd, samp</p>
 
-no-op:
-book, dtbook, head, meta, link, img
+<h3>inline</h3>
+<p>code, bdo, em, strong, span, sub, sup, abbr, acronym, 
+dfn, q, noteref, annoref, sent, w, linenum, lic, dd, dt</p>
 
-unhandled:
-note, table, col, colgroup, tbody, td, tfoot, th, thead, title, tr
+<h3>special</h3>
+<p>br, pagenum</p>
+
+<h3>no-op</h3>
+<p>book, dtbook, head, meta, link, img</p>
+
+<h2>Unhandled elements</h2>
+<p>note, table, col, colgroup, tbody, td, tfoot, th, thead, title, tr</p>
 -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/" exclude-result-prefixes="dtb">
 

@@ -22,43 +22,43 @@ import org_pef_dtbook2pef.system.tasks.layout.flow.Row;
 public interface Paginator extends Closeable {
 	
 	/**
-	 * Open for writing to the supplied writer 
+	 * Opens for writing to the supplied writer 
 	 * @param writer the PagedMediaWriter to use
 	 */
 	public void open(PagedMediaWriter writer);
 
 	/**
-	 * Add a new sequence of pages
+	 * Adds a new sequence of pages
 	 * @param master the {@link LayoutMaster} to use for this sequence
 	 * @param pagesOffset page offset
 	 */
 	public void newSequence(LayoutMaster master, int pagesOffset);
 	
 	/**
-	 * Add a new sequence of pages. Continue page numbering from preceding sequence or zero if there is no preceding section
+	 * Adds a new sequence of pages. Continue page numbering from preceding sequence or zero if there is no preceding section
 	 * @param master the {@link LayoutMaster} to use for this sequence
 	 */
 	public void newSequence(LayoutMaster master);
 	
 	/**
-	 * Explicitly break a page
+	 * Explicitly breaks a page
 	 */
 	public void newPage();
 	
 	/**
-	 * Add a new row of characters
+	 * Adds a new row of characters
 	 * @param row the row to add
 	 */
 	public void newRow(Row row);
 	
 	/**
-	 * Insert markers that cannot be assigned to a row at the current position
+	 * Inserts markers that cannot be assigned to a row at the current position
 	 * @param m ArrayList of Markers to insert at the current position
 	 */
 	public void insertMarkers(ArrayList<Marker> m);
 	
 	/**
-	 * Get information about the current page
+	 * Gets information about the current page
 	 */
 	public CurrentPageInfo getPageInfo();
 

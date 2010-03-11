@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--	
-		Simple splitter
-
-		Splits a PEF file with a single volume into several volumes.
-		The splitter will distribute pages into volumes equally with a
-		maximum of "max" pages per volume.
-
-		Note: Simple splitter does not preserve or respect the duplex attribute
-		anywhere in the input file. The duplex attribute will be overwritten 
-		using the value of the duplex parameter supplied when calling the xslt.
-
-		Future improvements: Support existing duplex attributes in input.
--->
 <!--
-		Joel Håkansson, TPB
-		Version 2010-02-02
+	Simple splitter
+
+	Splits a PEF file with a single volume into several volumes.
+	The splitter will distribute pages into volumes equally with a
+	maximum of "splitterMax" pages per volume.
+
+	Note:	Simple splitter does not preserve or respect the duplex attribute
+			anywhere in the input file. The duplex attribute will be overwritten 
+			using the value of the duplex parameter supplied when calling the xslt.
+
+	Future improvements: Support existing duplex attributes in input.
+
+	Parameters
+		splitterMax
+
+	Format (input -> output)
+		PEF -> PEF
+
+	Author: Joel Håkansson, TPB
+	Version: 2010-02-02
  -->
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pef="http://www.daisy.org/ns/2008/pef" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fn="http://www.w3.org/2005/xpath-functions">
 

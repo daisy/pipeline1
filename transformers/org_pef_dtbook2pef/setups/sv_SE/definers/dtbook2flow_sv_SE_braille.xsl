@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
+	DTBook to Flow for braille (sv_SE)
+
+	Description
+	DTBook to Flow stylesheet for Swedish braille.
+
+	Parameters
+		page-width (inherited)
+		page-height (inherited)
+		inner-margin (inherited)
+		outer-margin (inherited)
+		row-spacing (inherited)
+		duplex (inherited)
+
+	Format (input -> output)
+		DTBook -> Flow
+
+	Author: Joel Håkansson, TPB
+-->
+<!--
 	TODO:
 		- komplexa sub, sup
 		- länkar, e-postadresser

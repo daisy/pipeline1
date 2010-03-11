@@ -3,7 +3,7 @@ package org_pef_dtbook2pef.system.tasks.layout.page;
 import java.util.ArrayList;
 
 /**
- * A Template specifies page objects such as header and footer
+ * Specifies page objects such as header and footer
  * for the pages to which it applies.
  * @author Joel Håkansson, TPB
  */

@@ -1,22 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--	
-		Meta finalizer.
-		The meta finalizer inserts meta data from the input dtbook:
-			- dc:Title
-			- dc:Creator
-			- dc:Language
-			- dc:Description
-			- dc:Publisher
-			- dtb:uid
-
-		The following dc elements are kept:
-			- dc:format
-			- dc:identifier
-			- dc:date
--->
 <!--
-		Joel Håkansson, TPB
-		Version 2009-06-26
+	Meta finalizer
+		
+	Description
+	The meta finalizer inserts meta data from the supplied dtbook (input-uri):
+		- dc:Title
+		- dc:Creator
+		- dc:Language
+		- dc:Description
+		- dc:Publisher
+		- dtb:uid
+
+	The following dc elements are kept from the input PEF-file:
+		- dc:format
+		- dc:identifier
+		- dc:date
+
+	Parameters
+		input-uri
+
+	Format (input -> output)
+		PEF -> PEF
+		
+	Author: Joel Håkansson, TPB
+	Version: 2009-06-26
  -->
 
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pef="http://www.daisy.org/ns/2008/pef" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
