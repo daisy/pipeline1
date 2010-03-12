@@ -592,6 +592,7 @@ scripts/create_distribute/epub/OPSCreator.taskScript -text
 scripts/create_distribute/latex/DTBookToLaTeX.taskScript -text
 scripts/create_distribute/pef/BrailleDistributePEF.taskScript -text
 scripts/create_distribute/pef/BrailleEmbossPEF.taskScript -text
+scripts/create_distribute/pef/BrailleEmbossPEFBraillo.taskScript -text
 scripts/create_distribute/pef/BrailleEmbossPefGeneric.taskScript -text
 scripts/create_distribute/pef/BrailleTextToPEF.taskScript -text
 scripts/create_distribute/pef/DTBookToPEF.taskScript -text

@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE taskScript
+[
+<!ENTITY BraillePaperFormatParamsStatic SYSTEM "../../BraillePaperFormatParamsStatic.paramGroup">
+]>
+
+<taskScript version="2.0" name="EmbossPEF">
+	<nicename>Emboss PEF (Braillo embosser, with table select)</nicename>
+	<description>This script sends a PEF 2008-1 file to an embosser</description>
+	<documentation uri="../../../doc/scripts/EmbossPEF.html"/>
+		
+	<parameter name="input" value="" required="true">
+		<nicename>Input file</nicename>
+		<description>A PEF-file</description>
+		<datatype>
+			<file mime="application/x-pef+xml" type="input"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="embosser" value="" required="true">
+		<nicename>Embosser</nicename>
+		<description>Select the make and model of the target embosser</description>
+		<datatype>
+			<enum>
+			  <item nicename="Braillo 200 (firmware 000.17 or later)" value="BRAILLO_200" />
+			  <item nicename="Braillo 400S (firmware 000.17 or later)" value="BRAILLO_400_S" />
+			  <item nicename="Braillo 400SR (firmware 000.17 or later)" value="BRAILLO_400_SR" />
+			</enum>
+		</datatype>
+	</parameter>
+	
+	<parameter name="table" value="" required="true">
+		<nicename>Braille table</nicename>
+		<description>Select the braille table that the embosser is configured for</description>
+		<datatype>
+			<enum>
+				<item nicename="USA 6 DOT 001.00" value="EN_US" />
+				<item nicename="ENGLAND 6 DOT 044.00" value="EN_GB" />
+				<item nicename="SWEDEN 6 DOT 046.01" value="BRAILLO_6DOT_046_01" />
+				<item nicename="NORWAY 6 DOT 047.01" value="BRAILLO_6DOT_047_01" />
+			</enum>
+		</datatype>
+	</parameter>
+	
+	&BraillePaperFormatParamsStatic;
+
+	<parameter name="deviceName" value="" required="true">
+		<nicename>Device name</nicename>
+		<description>Name of embosser as labelled by the computer</description>
+		<datatype>
+			<string regex=".{3,}"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="pageRange" value="" required="false">
+		<nicename>Page range</nicename>
+		<description>Emboss a selection of pages</description>
+		<datatype>
+			<string regex="(([0-9]+-)?[0-9]*)?"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="paperWidthFallback" value="center_left" required="false">
+		<nicename>Paper width error handling</nicename>
+		<description>Select a fallback action to use when the selected paper is wider than the width specified in the file</description>
+		<datatype>
+			<enum>
+			  <item nicename="Align left" value="left" />
+			  <item nicename="Align center, round off towards the left edge" value="center_left" />
+			  <item nicename="Align center, round off towards the right edge" value="center_right" />
+			  <item nicename="Align right" value="right" />
+			  <item nicename="Abort" value="abort" />
+			</enum>
+		</datatype>
+	</parameter>
+	
+	<parameter name="alignmentOffset" value="0" required="false">
+		<nicename>Offset</nicename>
+		<description>Adjust the margin offset in characters to match the physical alignment of the paper in the embosser</description>
+		<datatype>
+			<string regex="[0-9]"/>
+		</datatype>
+	</parameter>
+
+	<parameter name="mirrorAlign" value="true" required="false">
+		<nicename>Mirror recto-verso alignment</nicename>
+		<description>If checked, left-hand pages will have the opposite alignment compared to right-hand pages</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="output" value="" required="false">
+		<nicename>Keep output file</nicename>
+		<description>Keep the print file</description>
+		<datatype>
+			<file mime="text/plain" type="output"/>
+		</datatype>
+	</parameter>
+	
+	<task name="int_daisy_validator" interactive="false">
+		<parameter>
+			<name>input</name>
+			<value>${input}</value>
+		</parameter>
+		
+		<parameter>
+			<name>abortThreshold</name>
+			<value>ERROR</value>
+		</parameter>
+		
+		<parameter>
+			<name>schemas</name>
+			<value>pef-2008-1.rng</value>
+		</parameter>
+	</task>
+
+	<task name="org_pef_text/pef2text" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>${input}</value>
+		</parameter>
+
+		<parameter>
+			<name>out</name>
+			<value>${output}</value>
+		</parameter>
+		
+		<parameter>
+			<name>table</name>
+			<value>${table}</value>
+		</parameter>
+		
+		<parameter>
+			<name>embosser</name>
+			<value>${embosser}</value>
+		</parameter>
+		
+		<parameter>
+			<name>deviceName</name>
+			<value>${deviceName}</value>
+		</parameter>
+		
+		<parameter>
+			<name>papersize</name>
+			<value>${papersize}</value>
+		</parameter>
+
+		<parameter>
+			<name>paperWidthFallback</name>
+			<value>${paperWidthFallback}</value>
+		</parameter>
+
+		<parameter>
+			<name>pageRange</name>
+			<value>${pageRange}</value>
+		</parameter>
+		
+		<parameter>
+			<name>alignmentOffset</name>
+			<value>${alignmentOffset}</value>
+		</parameter>
+		
+		<parameter>
+			<name>mirrorAlign</name>
+			<value>${mirrorAlign}</value>
+		</parameter>
+
+	</task>
+
+</taskScript>
