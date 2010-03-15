@@ -87,6 +87,16 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
 					Messages.pref_soxPath_tooltip);
 			addField(soxEditor);
 		}
+		// Espeak Path (Linux only)
+		if (System.getProperty("os.name").startsWith("Linux")) { //$NON-NLS-1$ //$NON-NLS-2$
+			parent = getFieldEditorParent();
+			FileFieldEditor espeakEditor = new FileFieldEditor(
+					PreferencesKeys.PATH_TO_ESPEAK,
+					Messages.pref_espeakPath_label, parent);
+			espeakEditor.getTextControl(parent).setToolTipText(
+					Messages.pref_espeakPath_tooltip);
+			addField(espeakEditor);
+		}
 		// Temp Dir Path
 		parent = getFieldEditorParent();
 		DirectoryFieldEditor tempDirEditor = new DirectoryFieldEditor(
@@ -111,7 +121,8 @@ public class PathsPrefPage extends FieldEditorPreferencePage implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 * @see
+	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
 		mustReloadCore = false;

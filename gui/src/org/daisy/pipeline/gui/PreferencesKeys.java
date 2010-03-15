@@ -13,6 +13,10 @@ public interface PreferencesKeys {
 	/** The preference holding the last file path used as output parameter. */
 	public static final String LAST_SELECTED_OUTPUT = "LAST_SELECTED_OUTPUT"; //$NON-NLS-1$
 
+	/** The preference holding the path to espeak */
+	public static final String PATH_TO_ESPEAK = "PATH_TO_ESPEAK"; //$NON-NLS-1$
+	/** The preference holding the default path to espeak */
+	public static final String PATH_TO_ESPEAK_DEFAULT = "espeak"; //$NON-NLS-1$
 	/** The preference holding the path to ImageMagick */
 	public static final String PATH_TO_IMAGEMAGICK = "PATH_TO_IMAGEMAGICK"; //$NON-NLS-1$
 	/** The preference holding the default path to ImageMagick */

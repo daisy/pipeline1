@@ -46,6 +46,10 @@ public class Messages extends NLS {
 	public static String menu_window_openPerspective;
 	/** The title of the open show view sub-menu */
 	public static String menu_window_showView;
+	/** The label presenting the preference for the path to eSpeak */
+	public static String pref_espeakPath_label;
+	/** The tooltip for the preference for the path to eSpeak */
+	public static String pref_espeakPath_tooltip;
 	/** The label presenting the preference for the path to ImageMagick */
 	public static String pref_imageMagickPath_label;
 	/** The tooltip for the preference for the path to ImageMagick */
