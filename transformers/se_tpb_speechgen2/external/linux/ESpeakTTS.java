@@ -21,7 +21,8 @@ public class ESpeakTTS extends AbstractTTSAdapter {
 	@Override
 	public void read(String line, File destination) throws IOException, TTSException {
 				
-		String eSpeak = "espeak";
+		String eSpeak = System.getProperty("pipeline.espeak.path");
+		eSpeak = (eSpeak!=null)?eSpeak:"espeak";
 		String voiceFile = mParams.get("eSpeakVoiceFile");
 		if(voiceFile==null||voiceFile.length()<1) voiceFile = "default";
 		String dest = destination.getAbsolutePath();
