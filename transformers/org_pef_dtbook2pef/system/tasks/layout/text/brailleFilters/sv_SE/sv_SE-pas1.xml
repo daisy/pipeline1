@@ -14,4 +14,8 @@
 
 	<!-- WHITE SMILING FACE, 263a -->
 	<entry key="263a">&#x2818;&#x2826;:)&#x2818;&#x2834;</entry>
+	
+	<!-- BLACK HEART SUIT, 2665 -->
+	<entry key="2665">&#x2818;&#x2826;hjärta&#x2818;&#x2834;</entry>
+	
 </properties>
