@@ -18,6 +18,7 @@
 package org.daisy.util.fileset.validation.delegate.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -127,51 +128,63 @@ public class CorrectXMLEncodingDeclarationDelegate extends ValidatorDelegateImpl
         inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);
         
         // Collect encoding declarations
-        XMLEventReader reader = inputFactory.createXMLEventReader(url.openStream());        
-        while (reader.hasNext()) {
-        	XMLEvent event = reader.nextEvent();
-        	
-        	// StartDocument
-        	if (event.isStartDocument()) {
-        		StartDocument sd = (StartDocument)event;
-        		if (sd.encodingSet()) {
-        			xmlDeclarationEncoding = sd.getCharacterEncodingScheme();        			
-        		} else {
-        			xmlDeclarationEncoding = "utf-8";        			        			
-        		}
-        		if (!this.charsetMatches(charset, probableCharsets, xmlDeclarationEncoding)) {
-        			this.report(new ValidatorSevereErrorMessage(url.toURI(), "Incorrect XML encoding declaration", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
-        		}
+        InputStream is = null;
+        XMLEventReader reader = null;
+        try {
+	        is = url.openStream();
+	        reader = inputFactory.createXMLEventReader(is);
+              
+	        while (reader.hasNext()) {
+	        	XMLEvent event = reader.nextEvent();
+	        	
+	        	// StartDocument
+	        	if (event.isStartDocument()) {
+	        		StartDocument sd = (StartDocument)event;
+	        		if (sd.encodingSet()) {
+	        			xmlDeclarationEncoding = sd.getCharacterEncodingScheme();        			
+	        		} else {
+	        			xmlDeclarationEncoding = "utf-8";        			        			
+	        		}
+	        		if (!this.charsetMatches(charset, probableCharsets, xmlDeclarationEncoding)) {
+	        			this.report(new ValidatorSevereErrorMessage(url.toURI(), "Incorrect XML encoding declaration", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
+	        		}
+	        	}
+	        	
+	        	// StartElement
+	        	if (event.isStartElement()) {
+	        		StartElement se = event.asStartElement();
+	        		// XHTML 1.0
+	        		if (se.getName().getNamespaceURI().equals(FilesetConstants.NAMESPACEURI_XHTML10)) {
+	        			if (se.getName().getLocalPart().equals("meta")) {
+	        				Attribute name = se.getAttributeByName(new QName("name"));
+	        				Attribute content = se.getAttributeByName(new QName("content"));
+	        				if (name != null && name.getValue().equals("ncc:charset") && content != null) {
+	        					EncodingLocation encLoc = new EncodingLocation("ncc:charset", content.getValue(), se.getLocation());
+	        					encodingDeclarations.add(encLoc);        					
+	        				}
+	        			}        			
+	        		}
+	        	}
+	        }
+	        
+	        // Make sure all collected encoding declarations have the same value.
+	        for (Iterator<EncodingLocation> it = encodingDeclarations.iterator(); it.hasNext(); ) {
+	        	EncodingLocation encLoc = it.next();
+	        	if (!xmlDeclarationEncoding.equalsIgnoreCase(encLoc.encoding)) {
+	        		this.report(new ValidatorErrorMessage(url.toURI(), encLoc.name + " differs from the XML encoding declaration.", encLoc.location.getLineNumber(), encLoc.location.getColumnNumber()));
+	        	}
+	        	if (!this.charsetMatches(charset, probableCharsets, encLoc.encoding)) {
+	        		this.report(new ValidatorErrorMessage(url.toURI(), "Incorrect encoding declaration.", encLoc.location.getLineNumber(), encLoc.location.getColumnNumber()));
+	        	}
+	        }
+        } finally {
+        	if (reader != null) {
+        		reader.close();
         	}
-        	
-        	// StartElement
-        	if (event.isStartElement()) {
-        		StartElement se = event.asStartElement();
-        		// XHTML 1.0
-        		if (se.getName().getNamespaceURI().equals(FilesetConstants.NAMESPACEURI_XHTML10)) {
-        			if (se.getName().getLocalPart().equals("meta")) {
-        				Attribute name = se.getAttributeByName(new QName("name"));
-        				Attribute content = se.getAttributeByName(new QName("content"));
-        				if (name != null && name.getValue().equals("ncc:charset") && content != null) {
-        					EncodingLocation encLoc = new EncodingLocation("ncc:charset", content.getValue(), se.getLocation());
-        					encodingDeclarations.add(encLoc);        					
-        				}
-        			}        			
-        		}
+        	if (is != null) {
+        		is.close();
         	}
         }
-        reader.close();
-        
-        // Make sure all collected encoding declarations have the same value.
-        for (Iterator<EncodingLocation> it = encodingDeclarations.iterator(); it.hasNext(); ) {
-        	EncodingLocation encLoc = it.next();
-        	if (!xmlDeclarationEncoding.equalsIgnoreCase(encLoc.encoding)) {
-        		this.report(new ValidatorErrorMessage(url.toURI(), encLoc.name + " differs from the XML encoding declaration.", encLoc.location.getLineNumber(), encLoc.location.getColumnNumber()));
-        	}
-        	if (!this.charsetMatches(charset, probableCharsets, encLoc.encoding)) {
-        		this.report(new ValidatorErrorMessage(url.toURI(), "Incorrect encoding declaration.", encLoc.location.getLineNumber(), encLoc.location.getColumnNumber()));
-        	}
-        }        
 	}
 	
 	/**

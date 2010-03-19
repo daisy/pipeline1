@@ -17,6 +17,7 @@
  */package org.daisy.util.fileset.validation.delegate.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -109,13 +110,25 @@ public class NoProcessingInstructionDelegate extends
         inputFactory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
         inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);
         
-        XMLEventReader reader = inputFactory.createXMLEventReader(url.openStream());
-        
-        while (reader.hasNext()) {
-        	XMLEvent event = reader.nextEvent();
-        	
-        	if (event.isProcessingInstruction()) {
-        		this.report(new ValidatorErrorMessage(url.toURI(), "Processing instructions are not allowed", event.getLocation().getLineNumber(), event.getLocation().getColumnNumber()));
+        InputStream is = null;
+        XMLEventReader reader = null;
+        try {
+	        is = url.openStream();
+	        reader = inputFactory.createXMLEventReader(is);
+	        
+	        while (reader.hasNext()) {
+	        	XMLEvent event = reader.nextEvent();
+	        	
+	        	if (event.isProcessingInstruction()) {
+	        		this.report(new ValidatorErrorMessage(url.toURI(), "Processing instructions are not allowed", event.getLocation().getLineNumber(), event.getLocation().getColumnNumber()));
+	        	}
+	        }
+        } finally {
+        	if (reader != null) {
+        		reader.close();
+        	}
+        	if (is != null) {
+        		is.close();
         	}
         }
 	}

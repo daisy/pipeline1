@@ -18,6 +18,7 @@
 package org.daisy.util.fileset.validation.delegate.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -156,60 +157,72 @@ public abstract class AbstractXMLDeclarationDelegate extends ValidatorDelegateIm
         inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);
         
         // Collect encoding declarations
-        XMLEventReader reader = inputFactory.createXMLEventReader(url.openStream());
-        String xmlDeclarationEncoding = null;
         
-        while (reader.hasNext()) {
-        	XMLEvent event = reader.nextEvent();
-        	
-        	if (event.isStartDocument()) {
-        		StartDocument sd = (StartDocument)event;
-        		
-        		// XML version
-        		if (mXmlVersion != null) {
-        			if (!mXmlVersion.equals(sd.getVersion())) {
-        				this.report(new ValidatorErrorMessage(url.toURI(), "Incorrect XML version. Found '" + sd.getVersion() + "', expected '" + mXmlVersion + "'.", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
-        			}
-        		}
-        		
-        		// XML encoding
-        		if (sd.encodingSet()) {
-    				if (!mXmlEncodingMayBeSpecified) {
-        				this.report(new ValidatorWarningMessage(url.toURI(), "Encoding may not be specified in the XML declaration.", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
-        			}
-        			xmlDeclarationEncoding = sd.getCharacterEncodingScheme();        			
-        		} else {
-        			if (mXmlEncodingMustBeSpecified) {
-        				this.report(new ValidatorWarningMessage(url.toURI(), "Encoding must be specified in the XML declaration. Assuming utf-8.", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
-        			}
-        			xmlDeclarationEncoding = "utf-8";        			        			
-        		}
-        		if (mXmlEncoding != null) {        			
-        			if (!mXmlEncoding.equalsIgnoreCase(xmlDeclarationEncoding)) {
-            			this.report(new ValidatorErrorMessage(url.toURI(), xmlDeclarationEncoding + " encoding found when " + mXmlEncoding + " was expected.", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
-            		}
-        		}
-        		
-        		// XML standalone
-        		if (sd.standaloneSet()) {
-    				if (!mXmlStandaloneMayBeSpecified) {
-    					this.report(new ValidatorWarningMessage(url.toURI(), "The standalone property may not be specified in the XML declaration.", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
-    				}
-    			} else {
-    				if (mXmlStandaloneMustBeSpecified) {
-    					this.report(new ValidatorWarningMessage(url.toURI(), "The standalone property is not specified in the XML declaration. Assuming 'no'.", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
-    				}
-    			}
-        		if (mXmlStandalone != null) {        			
-        			if (sd.isStandalone() != mXmlStandalone.booleanValue()) {
-        				this.report(new ValidatorErrorMessage(url.toURI(), "Incorrect value of standalone property in the XML declaration", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
-        			}
-        		}        		
-        		
-        		break;
-        	} 
-        }
-        reader.close();
+        InputStream is = null;
+        XMLEventReader reader = null;
+        try {
+	        is = url.openStream();
+	        reader = inputFactory.createXMLEventReader(is);
+	        String xmlDeclarationEncoding = null;
+	        
+	        while (reader.hasNext()) {
+	        	XMLEvent event = reader.nextEvent();
+	        	
+	        	if (event.isStartDocument()) {
+	        		StartDocument sd = (StartDocument)event;
+	        		
+	        		// XML version
+	        		if (mXmlVersion != null) {
+	        			if (!mXmlVersion.equals(sd.getVersion())) {
+	        				this.report(new ValidatorErrorMessage(url.toURI(), "Incorrect XML version. Found '" + sd.getVersion() + "', expected '" + mXmlVersion + "'.", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
+	        			}
+	        		}
+	        		
+	        		// XML encoding
+	        		if (sd.encodingSet()) {
+	    				if (!mXmlEncodingMayBeSpecified) {
+	        				this.report(new ValidatorWarningMessage(url.toURI(), "Encoding may not be specified in the XML declaration.", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
+	        			}
+	        			xmlDeclarationEncoding = sd.getCharacterEncodingScheme();        			
+	        		} else {
+	        			if (mXmlEncodingMustBeSpecified) {
+	        				this.report(new ValidatorWarningMessage(url.toURI(), "Encoding must be specified in the XML declaration. Assuming utf-8.", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
+	        			}
+	        			xmlDeclarationEncoding = "utf-8";        			        			
+	        		}
+	        		if (mXmlEncoding != null) {        			
+	        			if (!mXmlEncoding.equalsIgnoreCase(xmlDeclarationEncoding)) {
+	            			this.report(new ValidatorErrorMessage(url.toURI(), xmlDeclarationEncoding + " encoding found when " + mXmlEncoding + " was expected.", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
+	            		}
+	        		}
+	        		
+	        		// XML standalone
+	        		if (sd.standaloneSet()) {
+	    				if (!mXmlStandaloneMayBeSpecified) {
+	    					this.report(new ValidatorWarningMessage(url.toURI(), "The standalone property may not be specified in the XML declaration.", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
+	    				}
+	    			} else {
+	    				if (mXmlStandaloneMustBeSpecified) {
+	    					this.report(new ValidatorWarningMessage(url.toURI(), "The standalone property is not specified in the XML declaration. Assuming 'no'.", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
+	    				}
+	    			}
+	        		if (mXmlStandalone != null) {        			
+	        			if (sd.isStandalone() != mXmlStandalone.booleanValue()) {
+	        				this.report(new ValidatorErrorMessage(url.toURI(), "Incorrect value of standalone property in the XML declaration", sd.getLocation().getLineNumber(), sd.getLocation().getColumnNumber()));
+	        			}
+	        		}        		
+	        		
+	        		break;
+	        	} 
+	        }
+        } finally {
+        	if (reader != null) {
+        		reader.close();
+        	}
+        	if (is != null) {
+        		is.close();
+        	}
+        }        
 	}
 
 }

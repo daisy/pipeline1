@@ -19,6 +19,7 @@
 package org.daisy.util.fileset.validation.delegate.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -101,17 +102,30 @@ public class NoDocTypeDeclarationDelegate extends ValidatorDelegateImplAbstract 
 			URISyntaxException {
 		boolean foundDocTypeDecl = false;
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-		XMLEventReader eventReader = inputFactory.createXMLEventReader(url.openStream());
+		
+		InputStream is = null;
+        XMLEventReader eventReader = null;
+        try {
+	        is = url.openStream();
+	        eventReader = inputFactory.createXMLEventReader(is);
 
-		while (!foundDocTypeDecl && eventReader.hasNext()) {
-			XMLEvent event = (XMLEvent) eventReader.next();
-			if (event.getEventType() == XMLStreamConstants.DTD
-					&& ((DTD) event).getDocumentTypeDeclaration() != null) {
-				foundDocTypeDecl = true;
+			while (!foundDocTypeDecl && eventReader.hasNext()) {
+				XMLEvent event = (XMLEvent) eventReader.next();
+				if (event.getEventType() == XMLStreamConstants.DTD
+						&& ((DTD) event).getDocumentTypeDeclaration() != null) {
+					foundDocTypeDecl = true;
+				}
 			}
-		}
-		if (!foundDocTypeDecl) {
-			this.report(new ValidatorErrorMessage(url.toURI(), "Document Type Declaration is required"));
-		}
+			if (!foundDocTypeDecl) {
+				this.report(new ValidatorErrorMessage(url.toURI(), "Document Type Declaration is required"));
+			}
+        } finally {
+        	if (eventReader != null) {
+        		eventReader.close();
+        	}
+        	if (is != null) {
+        		is.close();
+        	}
+        }
 	}
 }
